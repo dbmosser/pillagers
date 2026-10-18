@@ -498,3 +498,7 @@
 2026-10-18 2.2381 02-raid-hud-redesign
 2026-10-18 0.0299 critic-02-raid-hud-redesign
 2026-10-18 0.0308 critic-02-raid-hud-redesign
+2026-10-18 0.0293 critic-02-raid-hud-redesign
+2026-10-18 2.1664 b-02-gun-enemy-feel
+2026-10-18 2.0019 03-title-and-backdrop
+2026-10-18 1.9968 02-raid-hud-redesign

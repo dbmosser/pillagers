@@ -1,5 +1,5 @@
 <style>
-.q32-b{width:560px;font-family:Bahnschrift,"Segoe UI Variable Display","Segoe UI",sans-serif;color:#f2efe6;-webkit-font-smoothing:antialiased;box-sizing:border-box}
+.q32-b{text-transform:lowercase;width:560px;font-family:Bahnschrift,"Segoe UI Variable Display","Segoe UI",sans-serif;color:#f2efe6;-webkit-font-smoothing:antialiased;box-sizing:border-box}
 .q32-b *{box-sizing:border-box;margin:0;padding:0}
 .q32-b-stage{position:relative;width:560px;height:320px;background:#0b0c0d;border-radius:8px;overflow:hidden}
 .q32-b-card{position:absolute;left:10px;top:10px;width:540px;height:300px;background:#14171a;border:1px solid #2e3337;border-radius:4px;overflow:hidden}
@@ -12,14 +12,13 @@
 .q32-b-row{position:absolute;left:54px;width:432px;height:52px;display:flex;align-items:center;justify-content:space-between;font-size:22px;font-weight:500;border-bottom:1px solid #2e3337;will-change:transform,opacity}
 .q32-b-row b{font-weight:600}
 .q32-b-cap{margin-top:10px;font-size:15px;line-height:20px;color:#a9a79e;letter-spacing:.01em}
-.q32-b-cap b{color:#e4ff2e;font-weight:700;margin-right:8px}
 </style>
 <div class="q32-b" id="q32-b">
   <div class="q32-b-stage"><div class="q32-b-card">
-    <div class="q32-b-tabs"><span class="q32-b-tab on" style="left:54px">Raid</span><span class="q32-b-tab" style="left:154px">Audio</span><span class="q32-b-tab" style="left:270px">Controls</span><i class="q32-b-ul"></i></div>
-    <div class="q32-b-clip"><div class="q32-b-page" style=""><div class="q32-b-row" style="top:0px"><span>Shared sight</span><b>On</b></div><div class="q32-b-row" style="top:52px"><span>Superhot mode</span><b>Off</b></div><div class="q32-b-row" style="top:104px"><span>Edit the words</span><b>Off</b></div><div class="q32-b-row" style="top:156px"><span>Raid length</span><b>10 min</b></div></div><div class="q32-b-page" style="opacity:0;visibility:hidden"><div class="q32-b-row" style="top:0px"><span>Master volume</span><b>Full</b></div><div class="q32-b-row" style="top:52px"><span>Sound effects</span><b>Full</b></div><div class="q32-b-row" style="top:104px"><span>Music</span><b>Off</b></div><div class="q32-b-row" style="top:156px"><span>Subtitles</span><b>On</b></div></div><div class="q32-b-page" style="opacity:0;visibility:hidden"><div class="q32-b-row" style="top:0px"><span>Move up</span><b>W</b></div><div class="q32-b-row" style="top:52px"><span>Move down</span><b>S</b></div><div class="q32-b-row" style="top:104px"><span>Dodge roll</span><b>Space</b></div><div class="q32-b-row" style="top:156px"><span>Reload</span><b>R</b></div></div></div>
+    <div class="q32-b-tabs"><span class="q32-b-tab on" style="left:54px">raid</span><span class="q32-b-tab" style="left:154px">audio</span><span class="q32-b-tab" style="left:270px">controls</span><i class="q32-b-ul"></i></div>
+    <div class="q32-b-clip"><div class="q32-b-page" style=""><div class="q32-b-row" style="top:0px"><span>shared sight</span><b>on</b></div><div class="q32-b-row" style="top:52px"><span>superhot mode</span><b>off</b></div><div class="q32-b-row" style="top:104px"><span>edit the words</span><b>off</b></div><div class="q32-b-row" style="top:156px"><span>raid length</span><b>10 min</b></div></div><div class="q32-b-page" style="opacity:0;visibility:hidden"><div class="q32-b-row" style="top:0px"><span>master volume</span><b>full</b></div><div class="q32-b-row" style="top:52px"><span>sound effects</span><b>full</b></div><div class="q32-b-row" style="top:104px"><span>music</span><b>off</b></div><div class="q32-b-row" style="top:156px"><span>subtitles</span><b>on</b></div></div><div class="q32-b-page" style="opacity:0;visibility:hidden"><div class="q32-b-row" style="top:0px"><span>move up</span><b>w</b></div><div class="q32-b-row" style="top:52px"><span>move down</span><b>s</b></div><div class="q32-b-row" style="top:104px"><span>dodge roll</span><b>space</b></div><div class="q32-b-row" style="top:156px"><span>reload</span><b>r</b></div></div></div>
   </div></div>
-  <div class="q32-b-cap"><b>B</b>Instant swap: rows fade in 60 ms, underline springs with a small overshoot</div>
+  <div class="q32-b-cap">rows swap at once, the underline springs</div>
 </div>
 <script>
 (function(){

@@ -19,10 +19,9 @@ body{position:relative;font-family:Bahnschrift,"Segoe UI Variable Display","Sego
 
   .drawer{position:absolute;left:0;top:0;width:560px;height:1080px;background:rgba(16,19,22,.96);border-right:1px solid var(--line);box-shadow:20px 0 80px rgba(0,0,0,.45)}
   .title{position:absolute;left:96px;top:96px;font-size:48px;line-height:56px;font-weight:700}
-  .row{position:absolute;left:0;width:559px;height:72px;display:flex;align-items:center;padding-left:96px;font-size:32px;font-weight:600;color:var(--text)}
-  .row.on{background:linear-gradient(90deg,rgba(228,255,46,.20),rgba(228,255,46,.06));}
-  .row.on::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--lime)}
-  .row.dg{color:var(--danger)}
+  .row{position:absolute;left:48px;width:464px;height:72px;display:flex;align-items:center;padding-left:48px;font-size:32px;font-weight:600;color:var(--text);border-radius:4px}
+  .row.on{background:var(--lime);color:var(--ink);font-weight:700;box-shadow:0 0 36px rgba(228,255,46,.22)}
+  .row.dg{color:var(--danger);border:2px solid rgba(255,90,60,.75);padding-left:46px}
   .sep{position:absolute;left:96px;width:368px;top:620px;height:1px;background:var(--line)}
   .fb{position:absolute;left:96px;top:940px;font-size:22px;line-height:30px;color:var(--muted)}
   .hint{left:0;width:560px;justify-content:flex-start;padding-left:96px;gap:36px}

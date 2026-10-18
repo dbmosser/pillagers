@@ -1,0 +1,7 @@
+v30.64: the support mg no longer builds into a heavy shake
+
+The Support MG no longer builds into a heavy shake.
+
+Check 30.64. Fails on v30.63.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -19,12 +19,17 @@ foreach ($h in ($Html | ForEach-Object { $_ -split ',' } | Where-Object { $_ }))
     $name = [IO.Path]::GetFileNameWithoutExtension($p)
     $png = Join-Path (Split-Path $p) ($name + '.png')
     $prof = Join-Path $env:TEMP ('msurvey-' + [guid]::NewGuid().ToString('N').Substring(0, 8))
-    $url = 'file:///' + ($p -replace '\\', '/')
+    # 10-18 his order "change all text shown to player to lowercase only": every mockup is drawn in lower case, from a temp copy beside it
+    $src0 = [IO.File]::ReadAllText($p); $lcs = '<style>*,*::before,*::after{text-transform:lowercase!important}</style>'
+    $src1 = if ($src0 -match '</head>') { $src0.Replace('</head>', $lcs + '</head>') } elseif ($src0 -match '(?i)<!doctype[^>]*>') { [regex]::Replace($src0, '(?i)(<!doctype[^>]*>)', ('$1' + $lcs), 1) } else { $lcs + $src0 }
+    $lcp = Join-Path (Split-Path $p) ('_lc_' + $name + '.html'); [IO.File]::WriteAllText($lcp, $src1, (New-Object Text.UTF8Encoding $false))
+    $url = 'file:///' + ($lcp -replace '\\', '/')
     $args2 = @('--headless=new', '--disable-gpu', '--hide-scrollbars', "--user-data-dir=`"$prof`"", '--allow-file-access-from-files',
       '--window-size=1920,1080', '--force-device-scale-factor=1', '--virtual-time-budget=4000', "--screenshot=`"$png`"", "`"$url`"")
     Start-Process -FilePath $chrome -ArgumentList $args2 -Wait -WindowStyle Hidden -RedirectStandardError (Join-Path $env:TEMP 'msurvey-err.txt')
     Start-Sleep -Milliseconds 300
     Remove-Item -Recurse -Force $prof -ErrorAction SilentlyContinue
+    Remove-Item -Force $lcp -ErrorAction SilentlyContinue
     if (-not (Test-Path $png)) { "FAIL $h (no picture)"; continue }
     $src = [System.Drawing.Image]::FromFile($png)
     $w = 1280; $hh = [int]($src.Height * $w / $src.Width)

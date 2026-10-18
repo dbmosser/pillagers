@@ -48,10 +48,10 @@ Panel P: fill --ui-panel at 90%, 1px --ui-line-hi border, --rad, padding 24px, N
 Window (his Q43, 10-18: "centred card with an X, taking up nearly the entire screen"): every WINDOW (Settings, stash, shop, craft, hire, contracts, codex, trophies, mirror, board, what's new, welcome pack, party) is one centred card at 90% of the screen width and height (the 5% margin on every side), on --scrim, header row 56px high (title left 32px, the X right), body, footer action row 72px. The content inside keeps its own measure, centred in the card (list rows max 900px, a grid fills the card). Replaces the old 960x680 cap and the full-screen slabs. A DIALOG (ask, confirm, pause 480, end card 720) is NOT a window: it stays a small card sized to its content (480x240 for a question), centred, with the same X.
 Header H: title left at x = margin (5%), --fs-title f-cond 700, tx-1, sentence case, optional muted count on the same baseline in tx-2 20px ("10 of 20 found"). Never a sentence, never currency (currency lives in the one top-right currency block).
 Close / back: ONE place: top-right of the modal header, a 48x48 square ghost button with the uiIcon "close" glyph, plus the pad glyph "B" beside it and Esc. Where a footer exists the primary sits right and a "Back" ghost sits left of it; no third close style. In-raid panels close with the same X.
-Primary button: 56px high (44px minimum in dense lists), fill --acc, text --acc-ink --fs-body 700, padding 0 32px, min-width 200px, --rad. One per screen. Hover: #f7c25a. Pressed: #dfa52f, 1px down.
+Primary button: 56px high (44px minimum in dense lists), fill --acc, text --acc-ink --fs-body 700, padding 0 32px, min-width 200px, --rad. One per screen. Hover: --acc-hover #f0ff7a. Pressed: --acc-press #c8e22c, 1px down.
 Secondary (ghost) button: same size, transparent, 1px --ui-line-hi, text tx-1. Hover: --ui-hover, border tx-2. Danger button: ghost with --danger border and text, never filled except on its confirm dialog. Disabled: 40% opacity, never see-through grey on cream, and say why in the label ("Need 29,100 more").
 Tab: text --fs-body f-cond 600 tx-2, 48px high, 24px side padding; active = tx-1 with a 3px --acc underline. ONE tab strip per screen (settings has two nav systems today: delete one). Tabs carry words, never icon-only. Pad: LB/RB glyphs at the strip ends.
-List row: 56px pitch (48 min), padding 0 16px, name --fs-body tx-1, value right-aligned --fs-label tx-2 (amber only if it is the focused value), 1px --ui-line divider. Rows fill the panel width up to 900px; label and control stay within 400px of each other (no stepper 900px from its label).
+List row: 56px pitch (48 min), padding 0 16px, name --fs-body tx-1, value right-aligned --fs-label tx-2 (lime only if it is the focused value), 1px --ui-line divider. Rows fill the panel width up to 900px; label and control stay within 400px of each other (no stepper 900px from its label).
 Tile (grid cell): square, --ui-raised fill, 1px --ui-line, --rad, rarity as a 3px bar on the bottom edge (not a name colour), count as a corner badge --fs-label, gutter 8px. Locked: 40% opacity, silhouette. Unfocused tiles at 70% brightness.
 Chip / key cap: 28px high, 1px --ui-line-hi, --fs-label, padding 0 8px. A key hint is a cap plus a word ("E  Loot"), never a bare letter. Pad glyphs replace key caps when the last input was a pad.
 Toast: ONE component. Top-centre, 40px high, 4px left bar (accent info, ok gain, danger threat), --fs-label, 3s, max 3 stacked, de-duplicated within 3s (the same event never shows as banner + toast + chip). Toasts never sit over a modal; they wait.
@@ -63,29 +63,31 @@ Backdrop: the live world dimmed to ~55% (scrim above), baked once on open. Never
 ## 3. Placement (every screen)
 - Margin 5% of screen on all sides; nothing but a toast or the HUD crosses it.
 - Title top-left; close top-right; currency block top-right (left of close); primary action bottom-right of the card; back/secondary left of it; key-hint strip along the bottom edge (--fs-label), live to the last input device.
-- Sentence case everywhere ("Host a party", "Create a new save"). Acronyms (SP, XP, HP, LMG) stay caps. The CSS already forces text-transform:none; canvas labels written in caps ("REC", "AMMO", "SMK", "2X" are icons/labels in art, leave them) are the only exception.
+- ALL LOWER CASE everywhere, his order 2026-10-18: "change all text shown to player to lowercase only -- i don't like how you have random words capitalized" ("host a party", "create a new save", "sp", "esc"). One text door (ncFix, cw-lowercase) lowers every canvas line, text node and tooltip, and a CSS line lowers stylesheet words. Never write code that re-capitalizes. A box the player types in shows what is typed.
 - No explaining sentences. A label or a short callout; help goes on focus in the detail pane, one line.
 - Min text 16px (14 only for fine print). Contrast: tx-2 on panel is >= 4.5:1; never dimmer text for anything a player has to read.
 - Space: panel padding 24, gap between sections 32, between rows 0 (dividers), between tiles 8, title to body 24. Content packs to the TOP of its panel and the panel is sized to content or the grid fills it; never 50% dead black.
 
 ## 4. States
-- Hover (mouse) = focus (pad): ONE look. 3px --acc left bar on rows (or a 3px --acc outline on tiles), --ui-raised fill, text to tx-1. The existing .padfocus (3px amber outline + glow) is the tile style; rows get the bar. Mouse hover and pad focus must look identical.
+- Hover (mouse) = focus (pad): ONE look. 3px --acc left bar on rows (or a 3px --acc outline on tiles), --ui-raised fill, text to tx-1. The existing .padfocus (3px lime outline + glow) is the tile style; rows get the bar. Mouse hover and pad focus must look identical.
 - Something is focused whenever a window opens; if it vanishes jump to the nearest. Selected (equipped, chosen) = filled badge/check or --acc fill, DIFFERENT from focus (ring).
 - Pressed: scale .98 or 1px down for 90ms. Disabled: 40%.
-- Two players: focus ring tinted per player (P1 amber, P2 --ally).
+- Two players: focus ring tinted per player (P1 lime, P2 --ally).
 - Destructive (Abandon, Sell all): hold 500ms with a filling ring, or a confirm dialog 480x240 (title "Abandon run?", one line, Abandon danger ghost + Keep playing primary focused).
 
 ## 5. Motion (smooth is mostly motion; targets from references.md, time-based)
 - Focus move: highlight eases to the target, 95% in 120ms (x += (t-x)*(1-exp(-dt/.04))); focused tile scale 1.05.
-- Open: 240ms ease-out, alpha 0 to 1 with a 16px rise. Close: 140ms ease-in, no stagger.
-- Tab change: 200ms cross-fade + 24px slide in the travel direction.
+- BOUNCE (his Q47, 10-18: "livelier, with bounce"): position moves use ease-out-back, c1 = 1.5, which runs 8% of the travel past home and settles (his band is 6 to 10%; never above 10%). Opacity never overshoots. Code: UIM.E.back.
+- Open: 240ms, alpha 0 to 1 (ease-out) with a 24px rise on ease-out-back (1.9px past home, then settles); each row 16px rise, 35ms apart. Close: 140ms ease-in, no stagger, no bounce (a close must feel instant).
+- Tab change: 200ms cross-fade + 24px slide in the travel direction, ease-out-back.
 - Stagger: 35ms per card, at most 8; whole entrance under 500ms.
-- Confirm: scale 1 + .06 sin(pi t) over 120ms. Deny: 6px shake over 100ms.
+- Confirm: scale 1 + .08 sin(pi t) over 120ms (peak 1.08). Deny: 6px shake over 100ms.
 - A press mid-animation retargets from the current value; never ignored.
 - Counters: --m-count 450ms ease-out. Never linear, never over 300ms for a common action, never overshoot more than 6%.
 - Never static: slow backdrop drift on title and hub menus; new items get one 600ms glimmer sweep.
 
 ## 6. Sound
+- His Q48 (10-18): SOFT ticks on focus (quiet, 30-80ms, high and short, never a click you notice on a fast scroll), PUNCHY hits on confirm and on score (a low thump with a short bright tail, louder than the tick by about 6 dB; the SP count-up and a purchase get the same hit, the biggest on the extract sting).
 - Focus tick 30-80ms, 3-4 variants, pitch +-3%, at most one per 40ms. Confirm deeper; back lighter and shorter; deny a dull thud; open/close a soft sweep; purchase, unlock, extract a bigger sting. Max 3 copies of one sound. Play on the input frame. (All via the existing sfx(), no new audio files.)
 
 ## 7. Map: every existing variant to its replacement

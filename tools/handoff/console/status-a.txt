@@ -1,1 +1,1 @@
-10-18 11:59 running 02-raid-hud-redesign (cap $4.00; spent today $115.45 of $176.54)
+10-18 13:47 02-raid-hud-redesign: partial (run 2 of 5), $1.9968

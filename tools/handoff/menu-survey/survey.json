@@ -1,0 +1,2241 @@
+{
+ "questions": [
+  {
+   "id": "q01",
+   "group": "look",
+   "kind": "image",
+   "title": "Type family",
+   "context": "Menus today mix a tall narrow font for headings with a normal font for small words, and a few places use only the narrow one. From the couch narrow letters get harder to read, but big narrow numbers look strong. The same sample screen is drawn in four font setups so you can compare them.",
+   "question": "Which font setup should every menu and the on-screen display use?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Narrow for everything",
+     "description": "Every word in the tall narrow face. Most words per line, strongest numbers, how much of the game looks today.",
+     "from": "Halo 4",
+     "spec": "Backdrop: notes/shots/all4k/50-arcade-hud-live-4k.jpg cropped to x806 y288 w2458 h1382 and scaled to 1920x1080 (a clean top-down street with no on-screen display), darkened to 35 percent brightness. Palette: panel #14171a, line #2e3337, text #f2efe6, muted #a9a79e, lime #e4ff2e with ink #0d1200. Centred card 1200x720 at x360 y180: fill #14171a, 1px #2e3337, 4px radius, padding 40px. Inside: title 'Settings' 56px; tab strip under it 'The raid', 'Audio', 'Controls', 'Display' at 28px with the first tab active (4px lime underline); four rows 64px high with 1px #2e3337 dividers ('Damage' 'Standard', 'Raid length' 'Standard', 'Master volume' 'Full', 'Shared sight' 'On'; name left, value right, both 28px); a lime button 'Resume' 280x72 (28px text, ink #0d1200) bottom-left; bottom-right a sample ammo '12 / 24' at 120px with 'Scav pistol' 26px muted under it. FONT FOR THIS OPTION: Barlow Condensed everywhere: weight 800 for the title and numbers, 700 for tabs and buttons, 600 for rows and values; letter-spacing +0.02em; sentence case only."
+    },
+    {
+     "key": "B",
+     "label": "Narrow headings, normal-width body",
+     "description": "Big words and numbers stay narrow and punchy; small words get wider letters that read better from far away.",
+     "from": "ARC Raiders",
+     "spec": "Same backdrop, card, rows, button and ammo sample as option A (see A for sizes and palette). FONT FOR THIS OPTION: Barlow Condensed 800 for the title, tabs, buttons and the ammo number; Barlow (normal width) 500 for the row names and row values; letter-spacing +0.01em on the Barlow text; everything sentence case."
+    },
+    {
+     "key": "C",
+     "label": "Normal width everywhere",
+     "description": "One calm, wide family. Looks cleaner and more modern, but fewer words fit per line and numbers are less punchy.",
+     "from": "Destiny 2",
+     "spec": "Same backdrop, card, rows, button and ammo sample as option A. FONT FOR THIS OPTION: Barlow (normal width) only: weight 600 for the title, tabs, buttons and the ammo number (600 is the heaviest Barlow weight embedded today; going heavier means embedding one more file, about 40 KB), weight 500 for rows and values; tabular figures for numbers; letter-spacing 0; sentence case."
+    },
+    {
+     "key": "D",
+     "label": "Round and friendly",
+     "description": "A rounder face with soft corners. Warmer and a bit more playful, closest to Fortnite, but less 'shooter'.",
+     "from": "Fortnite",
+     "spec": "Same backdrop, card, rows, button and ammo sample as option A, but the lime button gets an 8px radius and the card 8px. FONT FOR THIS OPTION: Rubik (already embedded, variable weight): 700 for the title and ammo number, 600 for tabs and buttons, 500 for rows and values; letter-spacing 0; sentence case."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "Big words and numbers stay punchy while small words get wider letters for the TV, and both fonts are already built into the game so it works offline.",
+   "refs": [
+    "halo-4-3.png",
+    "arc-raiders-3.jpg",
+    "fortnite-1.png",
+    "halo-reach-3.png"
+   ]
+  },
+  {
+   "id": "q02",
+   "group": "look",
+   "kind": "image",
+   "title": "Text sizes for the TV",
+   "context": "At the party the screens are 6 to 10 feet away, and the demo already makes the on-screen display 50 percent bigger. The base sizes still decide how big the smallest text and the one big number really are. Each option shows the same screen with its real pixel sizes and how tall the small letters are on a 55 inch TV.",
+   "question": "How big should the smallest text, normal text, titles and the one big number be?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Compact",
+     "description": "Smallest text 16, normal 20, titles 32, big number 56. Fits a lot on screen; from 8 feet the small text is fine print.",
+     "spec": "Backdrop: notes/shots/all4k/50-arcade-hud-live-4k.jpg cropped to x806 y288 w2458 h1382 scaled to 1920x1080 (clean street), darkened to 40 percent. Palette: panel #14171a, line #2e3337, text #f2efe6, muted #a9a79e, lime #e4ff2e. Fonts: Barlow Condensed 700 (title, numbers), Barlow 500 (rows). Card 1300x780 centred (fill #14171a, 1px #2e3337, 4px radius, padding 40px). Draw: title 'Paused' at the TITLE size; three rows 'Resume', 'Settings', 'Feedback' at the BODY size with values 'On', 'Full', 'Off' right-aligned at the SMALL size; a hint bar along the card bottom with key caps 'A Select' and 'B Back' at the SMALL size; a stat 'Armour 60' at the SMALL size; the big number '12 / 24' at the HERO size in lime. Along the very bottom of the screen a ribbon (#0b0c0d, 28px text) says: 'Small 16, body 20, title 32, hero 56. Small letters on a 55 inch TV at 8 ft: 0.7 cm tall, 1.1 cm in the demo (x1.5).' SIZES FOR THIS OPTION: small 16, body 20, title 32, hero 56."
+    },
+    {
+     "key": "B",
+     "label": "Roomy",
+     "description": "Smallest text 20, normal 26, titles 40, big number 72. In the demo's 1.5x the small text becomes 30, comfortable from 8 feet.",
+     "spec": "Same backdrop, card (grow it to 1500x860 to fit), content and palette as option A. SIZES FOR THIS OPTION: small 20, body 26, title 40, hero 72. Ribbon text: 'Small 20, body 26, title 40, hero 72. Small letters on a 55 inch TV at 8 ft: 0.9 cm tall, 1.3 cm in the demo (x1.5).'"
+    },
+    {
+     "key": "C",
+     "label": "Couch first",
+     "description": "Smallest text 24, normal 32, titles 48, big number 96. Easiest on a TV, but menus get big and fewer rows fit.",
+     "spec": "Same backdrop, content and palette as option A; the card is 1700x960 at x110 y60 so the bigger text fits (rows may need two columns of values). SIZES FOR THIS OPTION: small 24, body 32, title 48, hero 96. Ribbon text: 'Small 24, body 32, title 48, hero 96. Small letters on a 55 inch TV at 8 ft: 1.1 cm tall, 1.6 cm in the demo (x1.5).'"
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "With the demo's 1.5x the small text lands at 30 px (about 1.3 cm letters), which reads from 8 feet, and A is still under the comfortable mark even in the demo.",
+   "refs": [
+    "halo-reach-3.png",
+    "arc-raiders-3.jpg"
+   ]
+  },
+  {
+   "id": "q03",
+   "group": "look",
+   "kind": "image",
+   "title": "The exact lime",
+   "context": "You picked a lime yellow accent for the selected item and the main button. Lime runs from almost lemon yellow to almost green, and it looks different over the orange floors and green grass in a raid. Each option shows the same pieces so you can judge which one jumps out most.",
+   "question": "Which exact lime yellow should be the accent?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Lemon lime #f6f02c",
+     "description": "The yellowest of the four, close to Fortnite's Ready button. Also the closest cousin to the old amber.",
+     "from": "Fortnite",
+     "spec": "Backdrop: notes/shots/all4k/50-arcade-hud-live-4k.jpg cropped to x806 y288 w2458 h1382, scaled to 1920x1080, full brightness. Palette: panel #14171a, line #2e3337, text #f2efe6, muted #a9a79e. ACCENT FOR THIS OPTION: #f6f02c with ink #0d1200 on it. Draw: (1) ammo plate 460x200 at x1364 y820 (fill rgba(20,23,26,.9), 1px #2e3337, 4px radius) with 'Scav pistol' 26px muted and '12 / 24' 110px in the accent; (2) tab strip at x96 y70 with tabs 'Guns', 'Heals', 'Parts' at 28px, 'Guns' active in white with a 4px accent underline; (3) button 'Resume' 300x72 at x96 y160, accent fill, ink text 28px; (4) a belt of 5 slots 96x96 at x560 y930 (fill #14171a) with the third slot ringed 4px in the accent; (5) a selected list row 520x64 at x96 y280: 6px accent bar on the left, fill 14 percent accent, text 'Grenade' 28px; (6) a visibility strip at x96 y980: the text 'Goal +400 SP' 36px in the accent on three plates 260x56 in a row: dark #14171a, floor orange #c9774a, grass green #4b6a3a; (7) a chip at the bottom-right with the hex and name of the shade in 28px white on #0b0c0d."
+    },
+    {
+     "key": "B",
+     "label": "Volt #e4ff2e",
+     "description": "Bright electric yellow-green. The brightest of the four, so it pops on dark, orange and green grounds.",
+     "spec": "Same layout, backdrop and pieces as option A. ACCENT FOR THIS OPTION: #e4ff2e with ink #0d1200 on it. Chip text: 'Volt #e4ff2e'."
+    },
+    {
+     "key": "C",
+     "label": "Lime #c4f12e",
+     "description": "A clearly green-leaning lime. Fresh and modern, a little less bright, and closer to the grass colour.",
+     "spec": "Same layout, backdrop and pieces as option A. ACCENT FOR THIS OPTION: #c4f12e with ink #0d1200 on it. Chip text: 'Lime #c4f12e'."
+    },
+    {
+     "key": "D",
+     "label": "Green lime #a8e82a",
+     "description": "The greenest and softest. Easiest on the eyes, but the least 'yellow' and the weakest against grass.",
+     "spec": "Same layout, backdrop and pieces as option A. ACCENT FOR THIS OPTION: #a8e82a with ink #0d1200 on it. Chip text: 'Green lime #a8e82a'."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "Highest brightness of the four (about 17:1 against the dark) so it stays visible over orange floors and grass, yet it is clearly not the old amber.",
+   "refs": [
+    "fortnite-1.png",
+    "fortnite-2.jpg",
+    "arc-raiders-2.jpg"
+   ]
+  },
+  {
+   "id": "q04",
+   "group": "look",
+   "kind": "image",
+   "title": "Card and panel look",
+   "context": "You want windows to be a centred card with an X in the corner that fills nearly the whole screen. How that card is built (sharp or round, flat or glassy, border or glow, where the X sits) sets the feel of every menu. Same Settings window in four builds.",
+   "question": "How should the big window cards look?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Solid slab",
+     "description": "Flat dark card, thin border, slightly rounded, no glow. Cleanest and always readable.",
+     "from": "ARC Raiders",
+     "spec": "Backdrop: notes/shots/all4k/50-arcade-hud-live-4k.jpg cropped to x806 y288 w2458 h1382, scaled to 1920x1080, darkened to 50 percent. Palette: void #0b0c0d, panel #14171a, raised #1e2225, line #2e3337, text #f2efe6, muted #a9a79e, lime #e4ff2e with ink #0d1200. Card 1728x972 at x96 y54 (90 percent of the screen). Content: header with 'Settings' 48px at left padding 40px and a close X at the top-right; four rows 72px high ('Damage' 'Standard', 'Raid length' 'Standard', 'Master volume' 'Full', 'Shared sight' 'On', 28px, the first row focused with a 6px lime bar and 14 percent lime wash); footer with a ghost button 'Back' 200x64 and a lime button 'Done' 200x64. BUILD FOR THIS OPTION: fill #14171a, 1px #2e3337 border, radius 4px, no shadow, no gradient; a 3px lime tab 48px wide on the top-left edge; the close X is a 48x48 square ghost button (1px #4a5257 border, 2px white X glyph) inside the header at the top-right; rows separated by 1px #2e3337 lines."
+    },
+    {
+     "key": "B",
+     "label": "Frosted glass",
+     "description": "See-through blurred card with a soft shadow and round corners. Modern and airy, a bit lower contrast.",
+     "from": "Destiny 2",
+     "spec": "Same backdrop, content and layout as option A. BUILD FOR THIS OPTION: fill rgba(16,19,22,.62) with backdrop blur 22px; 1px border rgba(255,255,255,.12); radius 16px; shadow 0 30px 80px rgba(0,0,0,.55); a 1px inner top highlight rgba(255,255,255,.06); the close X is a 56px circle (fill rgba(255,255,255,.10)) inside the header at the top-right; rows have no dividers, the focused row is a rounded 12px lime-wash pill."
+    },
+    {
+     "key": "C",
+     "label": "Cut corners",
+     "description": "Sharp card with two diagonal cut corners and a thin lime edge line. Feels like a Halo 4 menu.",
+     "from": "Halo 4",
+     "spec": "Same backdrop, content and layout as option A. BUILD FOR THIS OPTION: fill #101418, 1px border #3a4a55, radius 0 but two 28px diagonal cuts at the top-right and bottom-left corners; a 3px lime line 160px long along the top-left edge; a faint inner glow 1px rgba(228,255,46,.10); the close X is a 48px square with its own diagonal cut sitting in the top-right cut corner; rows have 1px dividers."
+    },
+    {
+     "key": "D",
+     "label": "Big soft card, hanging X",
+     "description": "Very round, soft shadow with a faint lime halo, pill-shaped rows and a round X that hangs off the corner.",
+     "from": "Diablo IV + Fortnite",
+     "spec": "Same backdrop, content and layout as option A. BUILD FOR THIS OPTION: fill #181c20, no border, radius 28px, shadow 0 20px 60px rgba(0,0,0,.6) plus a faint lime halo 0 0 60px rgba(228,255,46,.08); rows are 56px high pills (radius 18px, fill #1e2225, focused row lime-washed); the close X is a 64px round button (fill #232830, white 2px X) whose centre sits exactly on the card's top-right corner so half of it hangs outside."
+    }
+   ],
+   "pick": "A",
+   "pick_reason": "A solid slab is the easiest to read from a TV, costs the least to draw at 4K, and the blurred world behind it (next questions) already gives the modern feel.",
+   "refs": [
+    "arc-raiders-3.jpg",
+    "halo-4-1.png",
+    "diablo-iv-1.jpg",
+    "destiny-2-1.png"
+   ]
+  },
+  {
+   "id": "q05",
+   "group": "look",
+   "kind": "image",
+   "title": "Selected button look",
+   "context": "Every button and list row needs a clear 'this one is selected' look that is identical for mouse hover and for a pad, and visible across a room. Same pause menu drawn with four ways of showing the selected button.",
+   "question": "How should the selected button look?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Lime fill",
+     "description": "The selected button turns solid lime with dark text. The lime moves with you, like Fortnite's lobby.",
+     "from": "Fortnite",
+     "spec": "Backdrop: notes/shots/all/25-raid-pause-box-1080.jpg with a black overlay at 55 percent and a 12px blur. Palette: panel #14171a, line #4a5257, text #f2efe6, muted #a9a79e, danger #ff5a3c, lime #e4ff2e with ink #0d1200. Column of five buttons 520x72, gap 16, starting at x700 y250: 'Resume', 'Settings', 'Feedback', 'What's new', 'End run' (28px text). 'End run' is a danger ghost (2px #ff5a3c border, #ff5a3c text) with 32px extra space above it. At the right (x1300 y250) a state strip shows one button 360x64 in four stacked states: idle, focused, pressed (1px lower, scale .98), disabled (40 percent opacity, text 'Need 29,100 more'). A hint strip at the bottom 'A Select   B Back'. Focus sits on 'Settings'. STYLE FOR THIS OPTION: focused = solid lime fill, ink text weight 700; idle = transparent with a 2px #4a5257 border and white text; on opening, focus starts on 'Resume' so the one lime button is also the main action; pressed fill #c9dd24."
+    },
+    {
+     "key": "B",
+     "label": "Floating ring",
+     "description": "The selected button keeps its dark fill but gets a bright lime ring a little away from it.",
+     "from": "ARC Raiders",
+     "spec": "Same backdrop, buttons, state strip and hint strip as option A. STYLE FOR THIS OPTION: focused = a 3px lime outline drawn 6px outside the button (radius 14px), text white, fill unchanged #14171a; the main action 'Resume' keeps a permanent lime fill with ink text (so the ring wraps it when it is focused); idle buttons have a 1px #2e3337 border."
+    },
+    {
+     "key": "C",
+     "label": "Bar and wash",
+     "description": "A thick lime bar on the left edge and a light lime tint behind the row. Calm, very readable in long lists.",
+     "from": "Halo Reach",
+     "spec": "Same backdrop, buttons, state strip and hint strip as option A. STYLE FOR THIS OPTION: focused = a 6px lime bar on the button's left edge plus a fill of rgba(228,255,46,.14) and white text; idle buttons have no border, fill #14171a at 70 percent; the main action 'Resume' keeps a lime fill with ink text."
+    },
+    {
+     "key": "D",
+     "label": "Lift and glow",
+     "description": "The selected button grows a little and glows while the others dim. Lively and obvious, most 'game-like'.",
+     "from": "Destiny 2",
+     "spec": "Same backdrop, buttons, state strip and hint strip as option A. STYLE FOR THIS OPTION: focused = scale 1.06, a 2px lime outline and a glow 0 0 28px rgba(228,255,46,.45); every unfocused button dims to 60 percent brightness; the main action 'Resume' keeps a lime fill with ink text."
+    }
+   ],
+   "pick": "A",
+   "pick_reason": "It is exactly your rule (lime means selected and main), it is the loudest from 10 feet, and mouse and pad can share it.",
+   "refs": [
+    "fortnite-1.png",
+    "arc-raiders-3.jpg",
+    "halo-reach-3.png",
+    "destiny-2-1.png"
+   ]
+  },
+  {
+   "id": "q06",
+   "group": "look",
+   "kind": "image",
+   "title": "Icons and button prompts",
+   "context": "Menus use small pictures (close X, backpack, heal, coin) and little button prompts like 'E Loot' or a pad's A and B. Their drawing style changes how clean or busy a screen feels. Same icon sheet in four styles.",
+   "question": "What style should icons and key or pad button prompts have?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Thin outline",
+     "description": "Thin white line drawings. Light and clean; pad buttons are plain circles with a letter.",
+     "from": "Halo Reach",
+     "spec": "Backdrop: #0b0c0d with notes/shots/all/23-raid-backpack-open-1080.jpg at 12 percent opacity. Sheet card 1500x820 centred (fill #14171a, 1px #2e3337, 4px radius). Palette: text #f2efe6, muted #a9a79e, lime #e4ff2e. Rows: (1) 12 icons at 56px with 24px muted labels under: close X, back arrow, check, lock, backpack, map pin, gear, heal cross, grenade, bullet, coin, star; (2) key caps with a word: 'E Loot', 'Space Roll', 'R Reload', 'Tab Pause' (cap text 24px); (3) pad glyphs A, B, X, Y, LB, RB, RT each followed by a word: 'Select', 'Back', 'Reload', 'Heal', 'Previous tab', 'Next tab', 'Fire'; (4) at the bottom of the card a sample hint bar 'A Select   B Back   LB RB Tabs'. STYLE FOR THIS OPTION: icons 2px white stroke, round caps, 90 percent white; key caps = 1px #4a5257 outline, 8px radius, no fill; pad glyphs = outlined circles with the letter in white; LB and RB as outlined pills."
+    },
+    {
+     "key": "B",
+     "label": "Solid, Xbox colours",
+     "description": "Filled icons, 3D-looking key caps and the real Xbox button colours so guests instantly know which button to press.",
+     "from": "Fortnite",
+     "spec": "Same sheet, rows and content as option A. STYLE FOR THIS OPTION: icons filled white; key caps filled #2a2f33 with a 4px darker bottom edge (3D keyboard-key look), 8px radius; pad glyphs filled circles in Xbox colours: A #6cc36c, B #e0554a, X #4aa0e0, Y #e8c93a, with a dark letter; LB, RB and RT as filled #3a4046 pills with white text."
+    },
+    {
+     "key": "C",
+     "label": "Duotone with lime",
+     "description": "White icons with one small lime detail each. The button you should press right now is lime.",
+     "from": "Halo 4",
+     "spec": "Same sheet, rows and content as option A. STYLE FOR THIS OPTION: icons white with exactly one detail in lime (the plus of the heal cross, the pin of the map pin, the shackle of the lock); key caps = outline with the letter in lime; pad glyphs = white filled circle with a black letter; in the sample hint bar the main prompt 'A Select' is drawn lime and the others white."
+    },
+    {
+     "key": "D",
+     "label": "Words first",
+     "description": "Almost no icons. Only X, arrows and checks are drawn; everything else is plain words with a simple box around keys.",
+     "from": "ARC Raiders",
+     "spec": "Same sheet, rows and content as option A, but rows (1) shows only close X, back arrow and check as 2px outline icons and the other nine are replaced by their words in 24px muted text. STYLE FOR THIS OPTION: key caps are plain text in a 1px #4a5257 box (4px radius); pad glyphs are small mono letters in 1px circles, muted; the hint bar reads 'A Select   B Back   LB RB Tabs' with the buttons as those mono circles."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "Coloured Xbox button circles and real key caps are recognised in half a second by party guests, which helps your 'guests cannot tell how to start' worry.",
+   "refs": [
+    "halo-reach-3.png",
+    "fortnite-1.png",
+    "arc-raiders-1.jpg",
+    "halo-4-3.png"
+   ]
+  },
+  {
+   "id": "q07",
+   "group": "look",
+   "kind": "image",
+   "title": "What shows behind menus",
+   "context": "Behind every menu or small card (pause, end of run) the game world can stay visible. Too sharp and it fights the text, too dark and the menu feels like a black wall. Same pause card over four treatments.",
+   "question": "How should the world look behind a menu?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Dimmed, still sharp",
+     "description": "The world stays crisp under a dark layer. You still see what was happening.",
+     "from": "Diablo IV",
+     "spec": "Backdrop: notes/shots/all4k/50-arcade-hud-live-4k.jpg cropped to x806 y288 w2458 h1382, scaled to 1920x1080, full brightness first. Pause card 560x680 centred at x680 y200 (fill #14171a, 1px #2e3337, 4px radius): title 'Paused' 48px, five rows 64px high 'Resume' (lime #e4ff2e fill, ink #0d1200), 'Settings', 'Feedback', 'What's new', 'End run' (danger #ff5a3c outline). All raid on-screen display hidden behind it. TREATMENT FOR THIS OPTION: black overlay at 70 percent, no blur."
+    },
+    {
+     "key": "B",
+     "label": "Blurred and dimmed",
+     "description": "The world is softly blurred and darker. Shapes and colours remain, text stands out.",
+     "from": "ARC Raiders + Destiny 2",
+     "spec": "Same backdrop and pause card as option A. TREATMENT FOR THIS OPTION: blur 12px (baked once when the menu opens) plus a black overlay at 55 percent."
+    },
+    {
+     "key": "C",
+     "label": "Nearly black",
+     "description": "Almost black with only soft colour glows left. Very clean and the easiest to read, but the world is gone.",
+     "from": "Halo Reach",
+     "spec": "Same backdrop and pause card as option A. TREATMENT FOR THIS OPTION: blur 40px plus a black overlay at 88 percent, and a vignette (radial, edges rgba(0,0,0,.6)); the world only survives as soft colour blobs."
+    },
+    {
+     "key": "D",
+     "label": "Tinted room",
+     "description": "Blurred and washed in a cool blue-green with a faint lime glow at the bottom, so every menu feels like the same room.",
+     "from": "Halo 4",
+     "spec": "Same backdrop and pause card as option A. TREATMENT FOR THIS OPTION: blur 16px, overlay #06141a at 62 percent, plus a faint lime glow along the bottom edge (a 220px high radial gradient rgba(228,255,46,.10) fading up)."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "Your reference games blur and dim the world, it keeps the menu feeling alive, and it can be drawn once on opening so it does not cost frames at 4K.",
+   "refs": [
+    "arc-raiders-3.jpg",
+    "arc-raiders-5.jpg",
+    "destiny-2-1.png",
+    "halo-4-2.png"
+   ]
+  },
+  {
+   "id": "q08",
+   "group": "look",
+   "kind": "image",
+   "title": "Pickup and kill messages",
+   "context": "You already decided on ten lines in the bottom-left. How those lines look decides whether they are readable on a busy map or just noise. Same seven messages in four looks.",
+   "question": "How should the pickup, kill and event lines look?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Plain text lines",
+     "description": "No boxes, just bold text with a dark outline and a small coloured dot. Lightest on the eye.",
+     "from": "Halo Reach",
+     "spec": "Backdrop: notes/shots/all4k/50-arcade-hud-live-4k.jpg cropped to x806 y288 w2458 h1382, scaled to 1920x1080, full brightness. Palette: text #f2efe6, muted #a9a79e, lime #e4ff2e, gold #ffc72e, uncommon green #5fbf6a, danger #ff5a3c. Draw only the bottom-left feed from x96, newest line at the bottom (baseline y940), upwards: 'Scrap metal x3' (common grey), 'Cracked cell' (uncommon green), 'Copper wire x2' (common grey), 'Robot sentry   +120 SP' (lime), 'Golden enemy   Kill it for the hoard' (gold), 'Stronghold   2 on the map' (white), 'Contract done   Search 3 crates +200 SP' (lime). Maximum 10 lines, lines fade after 6 s, older lines at 60 percent. STYLE FOR THIS OPTION: no plate; 24px Barlow 600 text with a 2px black shadow and a 1px black outline; an 8px round dot in the line colour at the left; line pitch 32px."
+    },
+    {
+     "key": "B",
+     "label": "Slim dark plates",
+     "description": "Each line sits on a thin dark plate with an icon and a coloured bar. Readable on any ground.",
+     "from": "Fortnite + ARC Raiders",
+     "spec": "Same backdrop and the same seven lines as option A. STYLE FOR THIS OPTION: each line on a plate 40px high (fill rgba(14,16,18,.78), radius 4px, width fits text + 24px padding), a 3px left bar in the line colour (grey info, rarity colour for loot, lime for score, danger for threats), a 24px outline icon, 22px text; line pitch 46px; new lines slide in from the left in 160 ms."
+    },
+    {
+     "key": "C",
+     "label": "Item chips and text",
+     "description": "Loot shows as small item tiles with a rarity bar, kills and events stay as plain text. Best to see what you picked up.",
+     "from": "ARC Raiders",
+     "spec": "Same backdrop and the same seven lines as option A. STYLE FOR THIS OPTION: loot lines are chips 56px high (a 56x56 item tile with a 4px rarity bar along its bottom, then the name 22px and 'x3' count on a plate rgba(14,16,18,.78)); kill, score and event lines are plain 22px text with a 2px black shadow and lime '+120 SP'; pitch 64px for chips, 32px for text."
+    },
+    {
+     "key": "D",
+     "label": "Text feed plus score pops",
+     "description": "A plain-text feed on the left plus big '+120 SP' pops above the belt for kills and goals, like Halo medals.",
+     "from": "Halo Reach",
+     "spec": "Same backdrop and the same seven lines as option A, drawn in the plain-text style of option A. EXTRA FOR THIS OPTION: three score pops stacked above the belt at the bottom-centre (x860 y800): '+400 SP' 56px lime 800 with the small label 'Elite down' 22px white under it, '+120 SP' 44px lime at 70 percent opacity, '+200 SP' 44px lime at 40 percent opacity; each pop rises 40px and fades over 900 ms; draw a faint 1px black outline on the lime text."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "Plates keep the lines readable over bright orange floors and from a TV, and the coloured bar means a colour-blind player still reads the type of line from the icon.",
+   "refs": [
+    "halo-4-6.png",
+    "fortnite-1.png",
+    "arc-raiders-2.jpg"
+   ]
+  },
+  {
+   "id": "q09",
+   "group": "look",
+   "kind": "motion",
+   "title": "How a menu opens and closes",
+   "context": "Opening and closing a menu is the movement you will see most. It should feel quick and lively without making guests wait. Each option plays on a small demo card that opens, rests and closes in a loop.",
+   "question": "How should a menu card open and close?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Rise and fade",
+     "description": "Fades in while rising a little. Calm and quick, no bounce.",
+     "spec": "Demo stage 560x340 on #0b0c0d with a 480x260 card (fill #14171a, 1px #2e3337, 4px radius, a title bar and two rows) centred; loop: open, hold 700 ms, close, rest 400 ms. OPEN 240 ms with cubic-bezier(0.2,0.8,0.2,1): card opacity 0 to 1, translateY +16px to 0; scrim (black) 0 to 60 percent over the same 240 ms. Overshoot 0 percent. CLOSE 140 ms with cubic-bezier(0.4,0,1,1): opacity 1 to 0, translateY 0 to +8px; scrim 60 percent to 0 over 140 ms."
+    },
+    {
+     "key": "B",
+     "label": "Pop",
+     "description": "Grows from slightly small, a hair past full size, then settles. Lively but still quick.",
+     "from": "Fortnite",
+     "spec": "Same demo stage, card and loop as option A. OPEN 280 ms: opacity 0 to 1 linearly over the first 120 ms; scale keyframes 0 percent: 0.92, 55 percent: 1.02 (ease-out cubic between), 100 percent: 1.00 (ease-in-out between), so the overshoot is 2 percent of full size; scrim 0 to 60 percent over 200 ms. CLOSE 140 ms with cubic-bezier(0.4,0,1,1): scale 1.00 to 0.96, opacity 1 to 0, scrim to 0 over 140 ms."
+    },
+    {
+     "key": "C",
+     "label": "Rise from below",
+     "description": "The card slides up from the bottom edge fast and eases in, like a drawer. No bounce.",
+     "from": "Diablo IV",
+     "spec": "Same demo stage, card and loop as option A. OPEN 320 ms with cubic-bezier(0.16,1,0.3,1) (about 95 percent of the travel in the first 120 ms): translateY +72px to 0; opacity 0 to 1 over 160 ms; scrim 0 to 60 percent over 200 ms; overshoot 0 percent. CLOSE 160 ms with cubic-bezier(0.4,0,1,1): translateY 0 to +40px, opacity 1 to 0 over 140 ms, scrim to 0 over 160 ms."
+    },
+    {
+     "key": "D",
+     "label": "Zoom in from the world",
+     "description": "The card starts a bit large and blurry and snaps into focus. Cinematic, like Halo 4.",
+     "from": "Halo 4",
+     "spec": "Same demo stage, card and loop as option A. OPEN 300 ms with cubic-bezier(0.22,1,0.36,1): scale 1.08 to 1.00, blur 10px to 0, opacity 0 to 1 over 160 ms; scrim 0 to 60 percent over 300 ms; overshoot 0 percent. CLOSE 160 ms with cubic-bezier(0.4,0,1,1): scale 1.00 to 0.97, opacity 1 to 0, scrim to 0 over 160 ms."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "You asked for livelier motion with a little bounce; a 2 percent overshoot in 280 ms is noticeable but never makes a guest wait.",
+   "refs": [
+    "halo-4-3.png",
+    "fortnite-2.jpg",
+    "destiny-2-1.png"
+   ]
+  },
+  {
+   "id": "q10",
+   "group": "look",
+   "kind": "motion",
+   "title": "Moving between items",
+   "context": "Every time you press up or down the highlight has to jump to the next item. How it travels is what makes a menu feel smooth or stiff. Each option plays a highlight moving down a five-row list and back.",
+   "question": "How should the highlight move from one item to the next?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Glide",
+     "description": "One lime highlight slides to the next row and eases to a stop. Smooth, no bounce.",
+     "spec": "Demo stage 480x360 on #0b0c0d: a list of 5 rows 56px high, 360px wide (row text 24px, fill #14171a, 1px dividers); the highlight (lime bar 4px + wash rgba(228,255,46,.14)) steps down a row every 600 ms and back up. MOTION: the highlight position follows y += (target - y) * (1 - exp(-dt / 0.04)) so it is 95 percent there in 120 ms; overshoot 0 percent; the focused row text goes from 70 percent to 100 percent white over 90 ms; the unfocused rows return to 70 percent over 90 ms."
+    },
+    {
+     "key": "B",
+     "label": "Springy glide",
+     "description": "The highlight slides and overshoots by a hair before settling. Smooth and a bit alive.",
+     "from": "Halo 4",
+     "spec": "Same demo stage, list and stepping as option A. MOTION: an under-damped spring with omega 30 rad/s and damping ratio 0.70: x(t) = 1 - e^(-21 t) * (cos(21.4 t) + 0.98 * sin(21.4 t)); overshoot 4.6 percent of the step (about 2.6 px on a 56px step); within 5 percent of the target at about 190 ms; the focused row text brightens 70 to 100 percent over 90 ms."
+    },
+    {
+     "key": "C",
+     "label": "Snap and pop",
+     "description": "The highlight appears at once on the new row and the row pops slightly bigger. Snappy, like Destiny.",
+     "from": "Destiny 2",
+     "spec": "Same demo stage, list and stepping as option A. MOTION: the highlight jumps to the new row in 0 ms; the new row scales 1.00 to 1.05 with easeOutBack c1 = 1.70158 over 160 ms (peak 1.055, which is 10 percent past the 1.05 target); the row that lost focus eases from 1.05 to 1.00 over 100 ms with cubic-bezier(0.2,0.8,0.2,1)."
+    },
+    {
+     "key": "D",
+     "label": "Fade swap and nudge",
+     "description": "No travel: the old highlight fades out, the new one fades in, and the selected text slides right a little. Very calm.",
+     "from": "ARC Raiders",
+     "spec": "Same demo stage, list and stepping as option A. MOTION: old highlight opacity 1 to 0 over 90 ms; new highlight opacity 0 to 1 over 90 ms starting 40 ms later; the focused row's text translates 0 to +8px over 140 ms with cubic-bezier(0.2,0.8,0.2,1) (0 percent overshoot); the previous row's text returns 8 to 0 over 100 ms."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "A 4.6 percent spring is the 'little bounce' you asked for and it settles in under 200 ms, so a fast press never feels slow.",
+   "refs": [
+    "diablo-iv-3.jpg",
+    "destiny-2-1.png",
+    "halo-4-3.png"
+   ]
+  },
+  {
+   "id": "q11",
+   "group": "title",
+   "kind": "image",
+   "title": "Title screen layout",
+   "context": "You said to keep the normal title screen but drop the story paragraph and step cards for 'Ascend. Pillage. Extract.', with the live map behind it. Where the logo and the menu sit decides how the whole screen reads. Same content in four layouts.",
+   "question": "Where should the logo and the mode menu sit on the title screen?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Menu column on the left",
+     "description": "Logo top-left, menu stacked below it, the live fight fills the right two thirds.",
+     "from": "ARC Raiders + Halo 4",
+     "spec": "Backdrop: notes/shots/all4k/50-arcade-hud-live-4k.jpg cropped to x806 y288 w2458 h1382, scaled to 1920x1080, darkened to 45 percent, with five short bright tracer streaks (#fff3b0, 3px x 60px, different angles) drawn near the middle to hint at a live fight. Palette: void #0b0c0d, panel #14171a, text #f2efe6, muted #a9a79e, lime #e4ff2e with ink #0d1200. Content: wordmark 'Pillagers' (Barlow Condensed 800), tagline 'Ascend. Pillage. Extract.', menu items '1 player', '2 player co-op', 'Arcade demo', 'Saves', a small 'Settings' link, version 'v0.0681' 18px muted at the bottom-right, hint bar bottom-left 'A Select   B Back'. First item focused (lime fill). LAYOUT FOR THIS OPTION: a left scrim from x0 (rgba(11,12,13,.92)) fading to 0 at x900; wordmark at x96 y88, 128px white; tagline under it 30px muted; menu column at x96 y430: four rows 88px high 560px wide (text 36px), 'Settings' as a 24px link under them; the right two thirds show the fight clear."
+    },
+    {
+     "key": "B",
+     "label": "Everything centred",
+     "description": "Big logo centred on top, tagline under it, one centred column of buttons. Classic, symmetrical.",
+     "from": "Diablo IV",
+     "spec": "Same backdrop (dimmed 55 percent with the same tracers), palette and content as option A. LAYOUT FOR THIS OPTION: wordmark centred at y130, 160px; tagline centred under it 32px; menu column centred, 640px wide, four rows 80px high with 16px gaps starting at y430 (text 34px); 'Settings' link centred under them; hint bar centred at the bottom; no side scrim, just a vignette."
+    },
+    {
+     "key": "C",
+     "label": "Mode cards along the bottom",
+     "description": "Small logo in the corner and a row of big mode cards across the bottom with a screenshot on each.",
+     "from": "Fortnite",
+     "spec": "Same backdrop, palette and content as option A (backdrop dimmed 40 percent). LAYOUT FOR THIS OPTION: wordmark top-left at x96 y70, 96px; tagline under it 28px; four cards 420x300 at y650 starting x96 with 24px gaps ('1 player', '2 player co-op', 'Arcade demo', 'Saves'): each card shows a cropped screenshot (from notes/shots/all/21-raid-hud-calm-1080.jpg, 50-arcade-hud-live and 03-hub-floor) darkened 35 percent, the mode name 36px at the bottom-left and a small tag 22px under it; the focused card lifts 12px and has a 4px lime border; 'Settings' link top-right."
+    },
+    {
+     "key": "D",
+     "label": "Menu column on the right",
+     "description": "Logo bottom-left over the live fight, menu on the right edge. Puts the action first.",
+     "from": "Halo 4",
+     "spec": "Same backdrop, palette and content as option A. LAYOUT FOR THIS OPTION: a right scrim from x1920 (rgba(11,12,13,.92)) fading to 0 at x1100; menu column at x1264 y300: four rows 88px high 560px wide (36px text) right-aligned text, 'Settings' link under them; wordmark at the bottom-left x96 y820, 128px; tagline under it 30px; version bottom-right; the fight shows clear on the left and middle."
+    }
+   ],
+   "pick": "A",
+   "pick_reason": "The logo and the menu share one clear column and the whole right side shows the live fight, which is exactly the living background you asked for.",
+   "refs": [
+    "fortnite-1.png",
+    "fortnite-2.jpg",
+    "halo-4-1.png",
+    "arc-raiders-3.jpg"
+   ]
+  },
+  {
+   "id": "q12",
+   "group": "title",
+   "kind": "image",
+   "title": "Logo size and colour",
+   "context": "The logo is the first thing guests see. Today it is an orange gradient wordmark with a drop shadow. Same title screen with four logo treatments.",
+   "question": "How big and what colour should the Pillagers logo be?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Big white wordmark",
+     "description": "Large white logo with the tagline in lime. Reads on any background.",
+     "spec": "Backdrop and left-column layout of q11 option A (notes/shots/all4k/50-arcade-hud-live-4k.jpg cropped x806 y288 w2458 h1382 scaled to 1920x1080, darkened 45 percent, left scrim, tracer streaks; menu column at x96 y430 with '1 player', '2 player co-op', 'Arcade demo', 'Saves'). Palette: text #f2efe6, muted #a9a79e, lime #e4ff2e. LOGO FOR THIS OPTION: 'Pillagers' Barlow Condensed 800 at 176px, colour #f4f1e8, no gradient, no shadow, letter-spacing +0.01em, at x96 y76; tagline 'Ascend. Pillage. Extract.' 30px in lime 24px under the wordmark."
+    },
+    {
+     "key": "B",
+     "label": "Lime wordmark",
+     "description": "The logo itself is lime, so the brand colour and the 'press me' colour are the same.",
+     "spec": "Same backdrop, layout and menu as option A. LOGO FOR THIS OPTION: 'Pillagers' Barlow Condensed 800 at 144px in lime #e4ff2e with a 1px rgba(0,0,0,.4) outline, no shadow, at x96 y90; tagline white 30px under it. The first menu item is focused with a white outline instead of lime fill so lime is not used twice."
+    },
+    {
+     "key": "C",
+     "label": "Small and quiet",
+     "description": "A small white wordmark in the corner. The game art and the menu are the heroes.",
+     "spec": "Same backdrop, layout and menu as option A. LOGO FOR THIS OPTION: 'Pillagers' Barlow Condensed 800 at 72px, colour #f4f1e8, at x96 y60; tagline 24px muted under it; the menu column moves up to start at y300 with rows 88px high; the fight is visible from y0 down."
+    },
+    {
+     "key": "D",
+     "label": "Wordmark with a lime slash",
+     "description": "Big white logo with a lime slash mark under the first letter as the only brand mark.",
+     "spec": "Same backdrop, layout and menu as option A. LOGO FOR THIS OPTION: 'Pillagers' Barlow Condensed 800 at 150px, colour #f4f1e8, at x96 y80; under it a lime parallelogram 260x14px (skewX -18deg) starting below the 'P' at y250; tagline 'Ascend. Pillage. Extract.' 30px white at 70 percent opacity at y280."
+    }
+   ],
+   "pick": "A",
+   "pick_reason": "White keeps lime meaning 'you can press this', and a big plain wordmark never clashes with the orange floor or the green grass behind it.",
+   "refs": [
+    "fortnite-1.png",
+    "halo-4-2.png"
+   ]
+  },
+  {
+   "id": "q13",
+   "group": "title",
+   "kind": "image",
+   "title": "The mode list",
+   "context": "The title currently has seven buttons that all look about equally important. You decided PvP is hidden and the party uses the arcade demo. The list needs a clear order and a clear main button.",
+   "question": "How should the list of modes look?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Four big rows",
+     "description": "Play, Co-op, Arcade demo, Saves as four equal big rows.",
+     "spec": "Backdrop: notes/shots/all4k/50-arcade-hud-live-4k.jpg cropped x806 y288 w2458 h1382 scaled to 1920x1080, darkened 45 percent, left scrim (rgba(11,12,13,.92) fading to 0 by x900). Palette: panel #14171a, line #4a5257, text #f2efe6, muted #a9a79e, lime #e4ff2e with ink #0d1200. Wordmark 'Pillagers' 128px white at x96 y88 and tagline 'Ascend. Pillage. Extract.' 30px muted. MODE LIST FOR THIS OPTION at x96 y430: four rows 88px high 560px wide, 16px gaps: 'Play', 'Co-op', 'Arcade demo', 'Saves' (36px); 'Play' focused (lime fill, ink text), others 2px #4a5257 outline; a small 'Settings' link under them. Hint bar bottom-left 'A Select   B Back'."
+    },
+    {
+     "key": "B",
+     "label": "Two-line rows",
+     "description": "Same rows but each has a short grey line under the name saying how many players.",
+     "spec": "Same backdrop, wordmark and tagline as option A. MODE LIST FOR THIS OPTION at x96 y400: five rows 96px high 620px wide: name 34px white 700 with a muted 22px line under it: 'Play' / '1 player', 'Co-op' / '2 players, one screen', 'Arcade demo' / '1 player', 'Arcade demo' / '2 players', 'Saves' / 'Pillager, 0 raids'; first row focused (lime fill, ink text, muted line in ink at 70 percent), others 2px #4a5257 outline; 'Settings' link under."
+    },
+    {
+     "key": "C",
+     "label": "Player switch plus three rows",
+     "description": "A 1 player / 2 players switch on top; below it only three rows. Cuts seven buttons down to a switch and three.",
+     "from": "Fortnite",
+     "spec": "Same backdrop, wordmark and tagline as option A. MODE LIST FOR THIS OPTION at x96 y400: a segmented switch 560x64 (two halves '1 player' and '2 players', the active half lime fill with ink text, LB and RB glyph chips at its ends); 24px below it three rows 88px high 560px wide: 'Career', 'Arcade demo', 'Saves' (36px), 'Career' focused (white 3px outline), others 2px #4a5257 outline; 'Settings' link under."
+    },
+    {
+     "key": "D",
+     "label": "One big Play button",
+     "description": "One huge lime Play button that remembers your last mode and four small buttons under it.",
+     "from": "Fortnite",
+     "spec": "Same backdrop, wordmark and tagline as option A. MODE LIST FOR THIS OPTION at x96 y400: a lime button 'Play' 560x120 (48px text, ink #0d1200) with a muted line inside 'Last: 2 player arcade demo' 22px in ink at 70 percent; 24px below it a 2x2 grid of ghost buttons 268x72 (gap 24): 'Co-op', 'Arcade demo', 'Saves', 'Settings' (28px, 2px #4a5257 outline)."
+    }
+   ],
+   "pick": "D",
+   "pick_reason": "One obvious lime button answers 'how do I start' in a second and still leaves every mode one press away.",
+   "refs": [
+    "fortnite-1.png",
+    "fortnite-2.jpg",
+    "halo-4-1.png"
+   ]
+  },
+  {
+   "id": "q14",
+   "group": "title",
+   "kind": "image",
+   "title": "The live picture behind the title",
+   "context": "You decided the title, the scoreboard and the how-to page sit on the live map with real pillager-against-robot fighting. How that picture is treated decides whether the fight is visible and the menu still readable from the couch.",
+   "question": "How should the live fight look behind the title and scoreboard?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Dimmed, sharp",
+     "description": "Real game colours, darker and crisp, camera slowly drifting. You can follow the fight.",
+     "spec": "Backdrop: notes/shots/all4k/50-arcade-hud-live-4k.jpg cropped x806 y288 w2458 h1382 scaled to 1920x1080 as the stand-in for the live map; draw five bright tracer streaks (#fff3b0, 3px x 60px) and two small orange muzzle flashes near x1300 y500 to suggest a fight. Palette: text #f2efe6, muted #a9a79e, lime #e4ff2e. Draw the title content of q11 option A on top (wordmark, tagline, menu column with first item lime). TREATMENT FOR THIS OPTION: black overlay at 55 percent, no blur, a vignette (edges rgba(0,0,0,.5)) and the left scrim for the menu; note in the corner: camera drifts 12 px per second to the right."
+    },
+    {
+     "key": "B",
+     "label": "Blurred, tracers sharp",
+     "description": "The map is softly blurred and dark but bullets and flashes stay crisp, so motion stands out.",
+     "spec": "Same stand-in backdrop, tracers, flashes and title content as option A. TREATMENT FOR THIS OPTION: the map layer blurred 6px and dimmed with black at 50 percent; the tracers and muzzle flashes drawn after the blur, unblurred; the left scrim for the menu; vignette."
+    },
+    {
+     "key": "C",
+     "label": "Graded in dark teal",
+     "description": "Colours drained and tinted dark teal so the lime accent and the muzzle flashes pop.",
+     "from": "Halo 4",
+     "spec": "Same stand-in backdrop, tracers, flashes and title content as option A. TREATMENT FOR THIS OPTION: desaturate the map to 30 percent colour, overlay #07131a at 60 percent, the tracers become lime #e4ff2e and the muzzle flashes white; the left scrim for the menu; vignette."
+    },
+    {
+     "key": "D",
+     "label": "Framed window",
+     "description": "The fight plays in a rounded picture frame on the right and the left half is plain dark with the menu.",
+     "from": "Fortnite",
+     "spec": "Same title content as option A. TREATMENT FOR THIS OPTION: the left 760px of the screen is plain #0b0c0d with the wordmark and menu column; the live stand-in picture (same crop, brightness 85 percent, tracers and flashes) sits in a frame 1100x620 at x780 y230 with 16px radius, a 1px #2e3337 border and a soft shadow 0 30px 80px rgba(0,0,0,.6); the rest of the screen around it is #0b0c0d."
+    }
+   ],
+   "pick": "A",
+   "pick_reason": "You asked for real pillager-versus-robot combat, and keeping the real colours dimmed (not tinted or blurred) shows it best while the left scrim keeps the menu readable.",
+   "refs": [
+    "arc-raiders-3.jpg",
+    "fortnite-2.jpg",
+    "halo-4-2.png"
+   ]
+  },
+  {
+   "id": "q15",
+   "group": "title",
+   "kind": "image",
+   "title": "The player 2 window",
+   "context": "In the party player 2 has their own window, usually on the second TV. Today it shows nearly the full title with many buttons and a long paragraph, and 'guests cannot tell how to start' is on your worst-problems list. This screen only has to say 'you are player 2, and here is how to join'.",
+   "question": "What should the second player's window show before the run starts?",
+   "options": [
+    {
+     "key": "A",
+     "label": "One waiting card",
+     "description": "The live fight behind and one centred card: Player 2, press A to join.",
+     "spec": "Backdrop: notes/shots/all4k/50-arcade-hud-live-4k.jpg cropped x806 y288 w2458 h1382 scaled to 1920x1080, darkened 55 percent, with tracers (#fff3b0, 3px x 60px) for the live fight. Palette: panel #14171a, line #2e3337, text #f2efe6, muted #a9a79e, lime #e4ff2e, player 2 blue #4fb4ff. Card 640x360 centred at x640 y360 (fill #14171a, 1px #2e3337, 4px radius, a 3px blue tab on the top-left): 'Player 2' 56px white; a blue pad glyph chip 'A' with 'Join' 36px; below, a name chip 'Player 2' 24px muted. Nothing else on the screen except the wordmark 'Pillagers' 72px at x96 y64."
+    },
+    {
+     "key": "B",
+     "label": "Same title in blue",
+     "description": "The same title as player 1, but with a blue accent and a 'Player 2' tag, buttons disabled except Join.",
+     "spec": "Same stand-in backdrop as option A, the title of q11 option A drawn in full (wordmark, tagline, menu column) but the accent is player 2 blue #4fb4ff instead of lime: focused row fill blue, ink #04121c; a chip 'Player 2' 28px top-right (blue outline); all rows except the first are drawn at 40 percent opacity; first row reads 'Join' with an A glyph."
+    },
+    {
+     "key": "C",
+     "label": "Two ready slots",
+     "description": "Two cards for Player 1 and Player 2 with a green check when each is ready; start when both are.",
+     "from": "Fortnite",
+     "spec": "Same stand-in backdrop as option A. Two slot cards 440x320 side by side at y380 (x440 and x1040): left 'Player 1' with a green check badge (#76b97c) and 'Ready' 28px, 3px lime top bar; right 'Player 2' (3px blue top bar) with a blue pad chip 'A' and 'Press A to join' 28px, pulsing outline. Under them a lime button 'Start' 280x72 centred at y760 at 40 percent opacity (disabled until both ready) and the hint bar. Wordmark 72px top-left."
+    },
+    {
+     "key": "D",
+     "label": "Just a big prompt",
+     "description": "No card. Huge 'Player 2' and a pulsing 'Press A to join' over the fight.",
+     "spec": "Same stand-in backdrop as option A (darkened 45 percent). Centre-low: 'Player 2' 144px white 800 with a 4px blue underline bar 320px wide at x800 y560; under it 'Press A to join' 44px in blue pulsing opacity 0.6 to 1.0 every 1.2 s; the pad glyph A 56px before it. Wordmark top-left 72px. Nothing else."
+    }
+   ],
+   "pick": "C",
+   "pick_reason": "Showing both players' state answers 'did my friend join and can we start' at a glance, which targets your biggest party worry (guests cannot tell how to start).",
+   "refs": [
+    "fortnite-1.png",
+    "halo-reach-2.png"
+   ]
+  },
+  {
+   "id": "q16",
+   "group": "raid",
+   "kind": "image",
+   "title": "Raid screen layout",
+   "context": "This is the screen people stare at for ten minutes. Health, ammo, the belt, the map and the goals each need a home, and the middle must stay clear because that is where the fighting happens. Same raid drawn with four layouts.",
+   "question": "Where should each part of the raid screen sit?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Four corners",
+     "description": "Health bottom-left, ammo bottom-right, map top-right, goals top-left, timer and score top-centre, belt bottom-centre. One job per corner.",
+     "from": "Halo 4 + ARC Raiders",
+     "spec": "Backdrop: notes/shots/all4k/50-arcade-hud-live-4k.jpg cropped x806 y288 w2458 h1382 scaled to 1920x1080 at full brightness (clean street). Palette: panel rgba(20,23,26,.88), line #2e3337, text #f2efe6, muted #a9a79e, lime #e4ff2e with ink #0d1200, hp green #6ccf6a, armour blue #4aa0e0, extract teal #47d8c6. Sample: HP 100, armour 60, stamina 70 percent, gun 'Scav pistol' 12 / 24, score '420 SP', timer '8:51', extraction 'Extract 152 m', five belt slots, goals 'Kill an elite +400 SP', '3 pillagers 1/3 +400 SP', 'Open a vault +400 SP'. Margins 96px left/right, 54px top/bottom. LAYOUT FOR THIS OPTION: top-left goals box 420x170 at x96 y54; top-centre score 48px at y54 and timer 40px at y110 and the extract chip 26px teal at y160 (x centred); top-right minimap 300x300 at x1524 y54 with the zone name under it; bottom-left health block 520x120 at x96 y906 (big '100' 64px, bar, armour bar); bottom-centre belt slots 96x96 at y930 centred; bottom-right ammo plate 460x200 at x1364 y826 (gun name 26px, '12' 110px, '/ 24' 48px)."
+    },
+    {
+     "key": "B",
+     "label": "One bar along the bottom",
+     "description": "A wide strip at the bottom: health left, belt middle, ammo right. Map top-right, goals top-left.",
+     "from": "Destiny 2",
+     "spec": "Same backdrop, palette, sample data and margins as option A. LAYOUT FOR THIS OPTION: one bottom bar x96 y900 w1728 h126 (fill rgba(20,23,26,.88), 1px #2e3337, 4px radius) split into three: health left (480px: '100' 56px, bar, armour bar), belt centre (780px: five slots 88x88), ammo right (420px: '12' 88px, '/ 24' 40px, gun name 24px); top-left goals box 420x170 at x96 y54; top-centre score, timer and extract chip as in A; top-right minimap 300x300."
+    },
+    {
+     "key": "C",
+     "label": "Halo style",
+     "description": "Shield and health as a wide thin bar top-centre, ammo bottom-right, round radar bottom-left, belt only when you switch.",
+     "from": "Halo Reach",
+     "spec": "Same backdrop, palette, sample data and margins as option A. LAYOUT FOR THIS OPTION: top-centre a thin vitals bar 760x14 at x580 y54 (armour blue above, health green below, 760x10 each) with timer '8:51' 36px and score '420 SP' 44px under it and the extract chip; bottom-left a round radar 280px diameter at x96 y710 (2px ring); bottom-right ammo plate 460x200 at x1364 y826 as in A; the belt is not drawn at rest (draw a 30 percent ghost of its slots at the bottom-centre to show where it fades in); goals box 420x170 vertically centred on the right edge x1404 y400."
+    },
+    {
+     "key": "D",
+     "label": "Side rails",
+     "description": "Left rail: health, ammo, belt in a column. Right rail: map and goals. The whole centre and bottom stay clear.",
+     "spec": "Same backdrop, palette, sample data and margins as option A. LAYOUT FOR THIS OPTION: left rail x96 from y300 to y1026: health block 360x90 ('100' 56px, bar, armour bar), ammo block 360x150 ('12' 96px, '/ 24' 44px, gun name), then the belt as a vertical column of five 84x84 slots (gap 8) with the selected one pushed 12px right; right rail x1404: minimap 300x300 at y54, goals box 420x170 under it; top-centre score, timer and extract chip as in A; nothing along the bottom edge."
+    }
+   ],
+   "pick": "A",
+   "pick_reason": "Each corner has one job, the middle stays clear, and the ammo sits near the right hand and health near the left, which is the layout most top-down shooters settle on.",
+   "refs": [
+    "halo-4-6.png",
+    "arc-raiders-5.jpg",
+    "destiny-2-3.png",
+    "diablo-iv-1.jpg"
+   ]
+  },
+  {
+   "id": "q17",
+   "group": "raid",
+   "kind": "image",
+   "title": "The ammo display",
+   "context": "You said ammo must be prominent. Today it is the same size as other numbers in a card in the corner. In a top-down game the eye is on the cursor, so the question is also where the number lives. Same ammo shown four ways, with a low-ammo inset.",
+   "question": "How should the ammo be shown?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Big number plate",
+     "description": "A plate in the bottom-right corner with a huge magazine number and the spare ammo beside it.",
+     "from": "Halo 4",
+     "spec": "Backdrop: notes/shots/all4k/50-arcade-hud-live-4k.jpg cropped x806 y288 w2458 h1382 scaled to 1920x1080, full brightness; the player at (960,540) with an aim reticle at (1010,470). Other raid pieces drawn only as quiet ghost outlines (1px rgba(255,255,255,.18)): health area x96 y940 w520 h60, belt x560 y930 w800 h96, minimap x1524 y54 w300 h300, goals x96 y54 w420 h150. Palette: panel #14171a, line #2e3337, text #f2efe6, muted #a9a79e, lime #e4ff2e, danger #ff5a3c. Sample: 'Scav pistol', 12 rounds in the magazine and 24 in reserve. STYLE FOR THIS OPTION: plate 460x210 at x1364 y816 (fill rgba(20,23,26,.92), 1px #2e3337, a 36px lime tab on the top-left edge): gun name 26px muted; '12' 120px white 800; '/ 24' 56px muted; below an 8px bar showing the magazine fill in lime. A low-ammo inset (x96 y780, 360x200, 1px line): the same plate at 3 rounds with the number in danger red and a marker 'Ammo box 40 m' with an arrow (the low-ammo marker stays)."
+    },
+    {
+     "key": "B",
+     "label": "Bullet pips",
+     "description": "A row of little bullet shapes lights up for each round, with the number below. Shows the magazine at a glance.",
+     "from": "Halo Reach",
+     "spec": "Same backdrop, ghost outlines, sample and low-ammo inset idea as option A. STYLE FOR THIS OPTION: plate 520x190 at x1304 y836: top row of 15 pips (18x30px rounded rectangles, gap 6px), 12 lit lime and 3 dark #2e3337; below it '12' 88px white at the left and '/ 24' 44px muted; a gun silhouette 140px at the right; reloading refills the pips one by one 40 ms apart. Low-ammo inset: 3 pips lit, the last 3 pulsing danger red, number red, marker 'Ammo box 40 m'."
+    },
+    {
+     "key": "C",
+     "label": "Ring at the cursor",
+     "description": "A ring around the aim reticle empties as you shoot and the number sits right under it; only the spare ammo stays in the corner.",
+     "from": "Destiny 2 + Halo",
+     "spec": "Same backdrop, ghost outlines, sample and low-ammo inset idea as option A. STYLE FOR THIS OPTION: around the reticle at (1010,470) a ring 104px diameter, 5px stroke: track rgba(255,255,255,.2), fill lime clockwise showing 12 of 15 rounds; under the ring the number '12' 48px white 800 centred at y545 with a 2px black shadow; '/ 24' 24px muted beside it. Bottom-right a small plate 300x110 at x1524 y916 (gun name 26px, 'Reserve 24' 28px). Low-ammo inset: the ring turns danger red and pulses at 2 Hz, number red, marker 'Ammo box 40 m'; on reload the ring becomes a progress ring."
+    },
+    {
+     "key": "D",
+     "label": "Gun card",
+     "description": "A card with the gun's picture, a rarity bar and the number. Shows what you are holding as well as what is left.",
+     "from": "ARC Raiders",
+     "spec": "Same backdrop, ghost outlines, sample and low-ammo inset idea as option A. STYLE FOR THIS OPTION: card 560x260 at x1304 y776 (fill rgba(20,23,26,.92), 1px #2e3337, 4px radius): gun silhouette 300px wide white 90 percent at the left; gun name 28px top-left; a 6px rarity bar along the bottom edge in rare blue #3f9de9; '12' 110px white at the right and '/ 24' 48px muted. Low-ammo inset: number danger red, marker 'Ammo box 40 m'."
+    }
+   ],
+   "pick": "C",
+   "pick_reason": "In a top-down game the eye lives on the cursor, so a ring and number at the reticle put the ammo exactly where you look, and the corner plate keeps spare ammo and the gun name.",
+   "refs": [
+    "halo-4-6.png",
+    "destiny-2-3.png",
+    "arc-raiders-1.jpg"
+   ]
+  },
+  {
+   "id": "q18",
+   "group": "raid",
+   "kind": "image",
+   "title": "The health display",
+   "context": "Health, armour and stamina are three bars in the bottom-left today, with a stance word and a stamina label. They compete with the ammo. Same sample (HP 100, armour 60) in four styles.",
+   "question": "How should health and armour be shown?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Three clean bars",
+     "description": "A green health bar, a thinner blue armour bar and a thin stamina line, bottom-left.",
+     "spec": "Backdrop: notes/shots/all4k/50-arcade-hud-live-4k.jpg cropped x806 y288 w2458 h1382 scaled to 1920x1080, full brightness; the player at (960,540). Other pieces as quiet ghost outlines (1px rgba(255,255,255,.18)): ammo x1364 y826 w460 h200, belt x560 y930 w800 h96, minimap x1524 y54 w300 h300. Palette: panel rgba(20,23,26,.88), text #f2efe6, muted #a9a79e, lime #e4ff2e, hp green #6ccf6a, armour blue #4aa0e0, danger #ff5a3c. STYLE FOR THIS OPTION: health bar 520x40 at x96 y940 (fill #6ccf6a on a #14171a track, '100' 40px white 800 inside left); armour bar 520x18 under it (blue, 'Armour 60' 20px); stamina bar 520x8 under that (lime-grey); no stance word. A low-health inset (x96 y780, 360x120): health 18 with the bar and number in danger red."
+    },
+    {
+     "key": "B",
+     "label": "Big number first",
+     "description": "A big health number with a thin bar under it and the armour as a second number with a shield icon.",
+     "from": "Halo 4",
+     "spec": "Same backdrop, ghost outlines, palette and low-health inset idea as option A. STYLE FOR THIS OPTION: at x96 y900: a cross icon 40px then '100' 96px white 800; to its right a shield icon 36px and '60' 48px in armour blue; under them a thin health bar 360x8 (green) and a stamina line 360x4; stance word removed. Low-health inset: '18' in danger red, shaking 2px, bar red."
+    },
+    {
+     "key": "C",
+     "label": "Ring around the raider",
+     "description": "A curved bar wraps around your character so you never look at a corner. Numbers show only when they change.",
+     "from": "Zero Sievert style top-down",
+     "spec": "Same backdrop, ghost outlines and palette as option A (no corner bars). STYLE FOR THIS OPTION: around the player at (960,540) a 3/4 arc, 150px diameter, 8px stroke: health green sweep, outside it an armour arc in blue 5px, inside it a 3px stamina arc in lime-grey; a number '100' 36px appears 1.5 s after any change just under the character. Low-health inset (x96 y780): the arc in danger red, number '18' red and pulsing."
+    },
+    {
+     "key": "D",
+     "label": "Thin bar at the top",
+     "description": "A wide thin armour-over-health bar at the top-centre like Halo Reach; stamina as a small arc at the feet.",
+     "from": "Halo Reach",
+     "spec": "Same backdrop, ghost outlines and palette as option A. STYLE FOR THIS OPTION: top-centre at x580 y54: armour bar 760x12 (blue) over health bar 760x12 (green) with the numbers '60' and '100' 24px at the right end; the timer and score sit under it; stamina as a 3px lime-grey arc 60px at the player's feet. Low-health inset: the health bar in danger red, segments pulsing."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "A big readable number works on a TV, a thin bar still shows trends, and it frees the bottom-left from three wide bars.",
+   "refs": [
+    "halo-4-6.png",
+    "halo-reach-2.png",
+    "diablo-iv-1.jpg"
+   ]
+  },
+  {
+   "id": "q19",
+   "group": "raid",
+   "kind": "image",
+   "title": "The belt and gun keys",
+   "context": "Every gun has its own key (1 to 9, 0) and the belt shows them along the bottom. Today it always draws all ten slots with grey ghost guns in the empty ones, and two highlight colours. Same sample: five guns owned, the fourth selected.",
+   "question": "How should the belt of guns, heals and throwables look?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Full strip",
+     "description": "All ten key slots in a row. Empty ones are dim outlines, the selected one has a lime ring.",
+     "spec": "Backdrop: notes/shots/all4k/50-arcade-hud-live-4k.jpg cropped x806 y288 w2458 h1382 scaled to 1920x1080, full brightness. Sample: five guns owned in keys 1-5 (pistol, SMG, assault rifle, carbine, shotgun; ammo 24, 90, 120, 60, 18); key 4 selected; heals 'Bandage x2', 'Medkit x1'; throwable 'Frag x2'. Gun silhouettes: copy the slot art from notes/shots/all/21-raid-hud-calm-1080.jpg (belt slots at x570-1550 y960-1055) in white at 85 percent. Palette: panel #14171a, line #2e3337, text #f2efe6, muted #a9a79e, lime #e4ff2e, danger #ff5a3c. STYLE FOR THIS OPTION: ten slots 84x84, gap 8, centred at x504 y942; empty slots are 1px outlines at 25 percent with only the key number; the selected slot (4) scaled 1.1 with a 4px lime ring; key number top-left 18px; ammo count bottom-right 18px; gun name 26px above the strip; heals and throwables as three 56px chips at the right end."
+    },
+    {
+     "key": "B",
+     "label": "Only what you own",
+     "description": "Slots only for guns you carry, the held one bigger and raised, small chips for heals and throwables.",
+     "from": "ARC Raiders",
+     "spec": "Same backdrop, sample, silhouettes and palette as option A. STYLE FOR THIS OPTION: five slots 96x96 gap 10 centred (the held gun slot enlarged to 124x124, raised 14px, 4px lime ring and the gun name under it); the other four at 70 percent brightness; each slot has a 5px ammo bar along its bottom and a key-number badge; to the right after a thin 1px divider three chips 56x56 for 'Bandage x2', 'Medkit x1', 'Frag x2' with counts in the corner."
+    },
+    {
+     "key": "C",
+     "label": "Shows only when you switch",
+     "description": "At rest only the held gun's small icon. The strip fades in for two seconds when you press a key or scroll.",
+     "from": "Halo Reach",
+     "spec": "Same backdrop, sample, silhouettes and palette as option A. STYLE FOR THIS OPTION: main picture shows the just-switched state: a strip of five 96x96 slots fading in at x560 y880 with the held slot ringed lime and its name above; below it a small plate 144x72 at x888 y980 with the held gun's icon and ammo '60'. A bottom-left inset (x96 y840, 240x140, 1px line) shows the at-rest state: only the small plate. Note: strip fades out after 1.8 s."
+    },
+    {
+     "key": "D",
+     "label": "Vertical rail on the left",
+     "description": "Slots stacked down the left edge, the held one sliding out to the right. The bottom stays clear.",
+     "spec": "Same backdrop, sample, silhouettes and palette as option A. STYLE FOR THIS OPTION: five slots 80x80 stacked at x96 starting y320 (gap 8); the held slot pushed 16px to the right with a 4px lime ring and the name beside it; under them a thin divider and three 56px chips for heals and throwables; key numbers inside each slot top-left; nothing along the bottom edge."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "Only drawing guns you own removes dead slots, a bigger held slot makes 'what am I holding' obvious, and it matches 'every gun on its own key'.",
+   "refs": [
+    "arc-raiders-1.jpg",
+    "halo-reach-2.png",
+    "diablo-iv-1.jpg"
+   ]
+  },
+  {
+   "id": "q20",
+   "group": "raid",
+   "kind": "image",
+   "title": "The minimap frame",
+   "context": "The minimap is cut off by the screen edge today and the zone name prints over it and gets clipped. It needs a clean frame and a place for the name. Same map drawn with four frames.",
+   "question": "How should the minimap be framed?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Square, thin line",
+     "description": "A square map with a thin border and the zone name below it. Matches the straight walls of the map.",
+     "spec": "Backdrop: notes/shots/all4k/50-arcade-hud-live-4k.jpg cropped x806 y288 w2458 h1382 scaled to 1920x1080, full brightness. Palette: panel #0e1114, line #4a5257, text #f2efe6, muted #a9a79e, lime #e4ff2e, danger #ff5a3c, extract teal #47d8c6. Map content (all options): walls as light-grey lines #c9ccd0 on #0e1114, a lime arrow at the centre, three red dots (hostiles), a teal triangle (extraction) on the edge, three goal pins (lime star, teal diamond, red skull) and the zone name 'The long dock'. STYLE FOR THIS OPTION: 300x300 at x1524 y54, fill rgba(14,17,20,.88), 1px #4a5257 border, radius 4px; north tag 'N' 18px top-left inside; zone name 24px muted right-aligned under the frame at y364 (never over the map)."
+    },
+    {
+     "key": "B",
+     "label": "Round radar",
+     "description": "A circular radar with a view cone, like Halo. Looks sleek but crops the square map corners.",
+     "from": "Halo Reach",
+     "spec": "Same backdrop and map content as option A. STYLE FOR THIS OPTION: circle 300px diameter at x1524 y54: fill rgba(14,17,20,.88), 3px #4a5257 ring plus a 1px inner ring at 10px inside; a lime wedge showing the view cone at 20 percent opacity; north tick; zone name 24px under it."
+    },
+    {
+     "key": "C",
+     "label": "No frame, soft fade",
+     "description": "The map fades into the world at its edges with no border. Subtle and stylish, a little harder to read.",
+     "spec": "Same backdrop and map content as option A. STYLE FOR THIS OPTION: 340x340 at x1484 y40, map layer with a radial alpha mask (opaque to 70 percent of the radius, transparent at 100 percent); no border; markers drawn on top; zone name 24px muted under it with a 2px shadow."
+    },
+    {
+     "key": "D",
+     "label": "Corner brackets",
+     "description": "A dark map with four lime corner marks instead of a full border. Techy, keeps lime in the picture.",
+     "spec": "Same backdrop and map content as option A. STYLE FOR THIS OPTION: 300x300 at x1524 y54, fill rgba(14,17,20,.8), no border; four lime corner brackets 28px long, 3px thick at the corners; 'N' in lime; zone name 24px muted under it."
+    }
+   ],
+   "pick": "A",
+   "pick_reason": "The map is full of straight walls, so a square frame crops nothing, and moving the zone name under it fixes the clipped label for good.",
+   "refs": [
+    "arc-raiders-5.jpg",
+    "halo-4-6.png",
+    "destiny-2-3.png"
+   ]
+  },
+  {
+   "id": "q21",
+   "group": "raid",
+   "kind": "image",
+   "title": "The goals box",
+   "context": "You decided the box shows only 3 goals and every goal is also marked on the map. Today it is a long ragged list of contracts at tiny size. Same three goals in four looks.",
+   "question": "How should the three run goals look?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Plain list",
+     "description": "A small box with three lines: a pin icon, the goal, and the SP reward. Done goals fade out.",
+     "spec": "Backdrop: notes/shots/all4k/50-arcade-hud-live-4k.jpg cropped x806 y288 w2458 h1382 scaled to 1920x1080, full brightness. Palette: panel rgba(20,23,26,.88), line #2e3337, text #f2efe6, muted #a9a79e, lime #e4ff2e, teal #47d8c6, danger #ff5a3c. Draw a minimap ghost 300x300 at x1524 y54 (14111e fill) with three pins matching the goals: lime star, teal diamond, red skull; the goals under it at x1404 y380 (width 420). Goals: 'Kill an elite' +400 SP (lime star), '3 pillagers' 1/3 +400 SP (teal diamond), 'Open a vault' +400 SP (red skull). STYLE FOR THIS OPTION: box 420x170 (fill rgba(20,23,26,.88), 1px #2e3337, 4px radius): 'Run goals' 22px muted; three rows 40px high: pin icon 24px in the matching colour, name 26px white, '1/3' count muted after the name, reward '+400 SP' 24px lime right-aligned; a done goal gets a check and fades to 50 percent then slides out after 1.2 s."
+    },
+    {
+     "key": "B",
+     "label": "Three mini cards",
+     "description": "Each goal is its own small card with a progress bar. Easy to see which is closest to done.",
+     "spec": "Same backdrop, minimap ghost, pins and goals as option A. STYLE FOR THIS OPTION: three cards 420x76 stacked with 8px gaps at x1404 y380 (fill rgba(20,23,26,.88), 1px #2e3337, 4px radius): pin icon 36px left, goal name 26px, reward chip right ('+400 SP' lime on #1e2225), a 6px lime progress bar along the bottom (the pillagers card 33 percent filled); no outer box. A done card flashes lime for 300 ms and slides out to the right."
+    },
+    {
+     "key": "C",
+     "label": "Text on the world",
+     "description": "No box at all: three lines with distances and little arrows pointing at each goal.",
+     "spec": "Same backdrop, minimap ghost, pins and goals as option A. STYLE FOR THIS OPTION: no panel; right-aligned lines ending at x1824 starting y380 with a 40px pitch: 'Kill an elite   186 m   +400 SP' 28px white with a 2px black shadow and the SP part in lime; each line has a small 18px arrow pointing toward its pin; '3 pillagers' shows 1/3 as three small dots; done lines get a strike-through and fade."
+    },
+    {
+     "key": "D",
+     "label": "A pill that opens",
+     "description": "One small pill with the nearest goal and its distance. Hold a button to open the full list.",
+     "spec": "Same backdrop, minimap ghost and pins as option A. STYLE FOR THIS OPTION: main picture shows the collapsed pill 420x56 at x1404 y380 (fill rgba(20,23,26,.88), radius 28px): teal diamond pin 28px, '3 pillagers 1/3' 24px, '186 m' 22px muted right; an inset (x1100 y700, 420x170) shows the expanded list in the style of option A with the hint 'Hold Tab' (pad: D-pad up)."
+    }
+   ],
+   "pick": "A",
+   "pick_reason": "Three short lines read from a TV in one glance, the matching pin colours tie each line to the map, and nothing needs a button to see.",
+   "refs": [
+    "arc-raiders-5.jpg",
+    "arc-raiders-1.jpg",
+    "destiny-2-3.png"
+   ]
+  },
+  {
+   "id": "q22",
+   "group": "raid",
+   "kind": "image",
+   "title": "Alerts at the top centre",
+   "context": "Alerts like 'Hostiles closing in' or 'Extraction open' show up two or three times today (banner, toast and a small chip). One event should show once, in one place, big enough to read in a fight. Score and timer stay at the top centre.",
+   "question": "How should alerts at the top centre look?",
+   "options": [
+    {
+     "key": "A",
+     "label": "One banner",
+     "description": "A single banner with an icon, a title and one grey line. One at a time, the newest replaces the old.",
+     "spec": "Backdrop: notes/shots/all4k/50-arcade-hud-live-4k.jpg cropped x806 y288 w2458 h1382 scaled to 1920x1080, full brightness. Palette: panel rgba(20,23,26,.92), text #f2efe6, muted #a9a79e, lime #e4ff2e, danger #ff5a3c, extract teal #47d8c6. Always at the top centre: score '420 SP' 48px white (centred at y54), timer '8:51' 40px at y110, extraction chip 'Extract 152 m' 26px teal with an arrow at y160. Alert area under that. STYLE FOR THIS OPTION: banner 640x84 at x640 y200 with an 8px left bar in danger red; a warning icon 40px; title 'Hostiles closing in' 36px white 700; subline '16 hostiles, east' 22px muted. One alert at a time; slides down 200 ms; shown 3 s. A small inset row (x640 y320) shows the same banner shape in teal for 'Extraction open' and in lime for 'Goal done'."
+    },
+    {
+     "key": "B",
+     "label": "Big words only",
+     "description": "Large text over the world with no box, a coloured underline and a quick pop-in.",
+     "from": "Halo Reach",
+     "spec": "Same backdrop and top-centre score, timer and extraction chip as option A. STYLE FOR THIS OPTION: text only: 'Hostiles closing in' 64px white 800 centred at y230 with a 3px black shadow and a 6px danger underline bar 220px wide under it; subline 26px white at y300; pops in with scale 1.12 to 1.0 over 160 ms and stays 2.5 s. A small inset row below shows 'Extraction open' (teal underline) and 'Goal done' (lime underline)."
+    },
+    {
+     "key": "C",
+     "label": "Stacked pills",
+     "description": "Up to three small pills stacked under the timer. Danger is a solid red pill, info is a dark pill.",
+     "spec": "Same backdrop and top-centre score, timer and extraction chip as option A. STYLE FOR THIS OPTION: three pills 56px high (radius 28px, width fits text + 48px padding) stacked with 8px gaps from y200: a danger pill (fill #ff5a3c, white text 26px, icon 28px) 'Hostiles closing in'; a teal-outlined pill 'Extraction open'; a dark pill (fill #14171a, 1px #2e3337) 'Goal done +400 SP' with lime SP. Each pill lasts 4 s; the same event never shows twice within 3 s."
+    },
+    {
+     "key": "D",
+     "label": "Banner plus red edge flash",
+     "description": "The banner of option A plus a red glow around the screen edge for danger events only.",
+     "spec": "Same backdrop, top-centre score, timer and extraction chip and banner (danger red) as option A. EXTRA FOR THIS OPTION: an inner red edge glow over the whole screen (inset 0 0 160px rgba(255,90,60,.35)) fading in over 150 ms and out over 600 ms, drawn at its peak; info and extraction banners (inset row) have no glow."
+    }
+   ],
+   "pick": "A",
+   "pick_reason": "One banner in one place says each thing once, and keeping lime, teal and red for goal, extraction and danger lets players read the type before the words.",
+   "refs": [
+    "halo-4-6.png",
+    "destiny-2-3.png",
+    "arc-raiders-5.jpg"
+   ]
+  },
+  {
+   "id": "q23",
+   "group": "raid",
+   "kind": "image",
+   "title": "Low health and downed",
+   "context": "When you are nearly dead or downed the screen should make that unmistakable without hiding the fight. Today a red tint and a small 'Down' with a bar appear. Each option shows low health (HP 18) and a smaller picture of the downed state.",
+   "question": "How should low health and the downed state look?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Red edge pulse",
+     "description": "A red glow pulses around the screen edge at low health. Downed greys out the world with a big 'Down' and a draining ring.",
+     "from": "Halo Reach",
+     "spec": "Backdrop: notes/shots/all4k/50-arcade-hud-live-4k.jpg cropped x806 y288 w2458 h1382 scaled to 1920x1080, full brightness; player at (960,540). Palette: panel rgba(20,23,26,.92), text #f2efe6, danger #ff5a3c, hp green #6ccf6a, player 2 blue #4fb4ff, lime #e4ff2e. Health block bottom-left as in q18 option B drawn at x96 y900. MAIN PICTURE (low health, HP 18) FOR THIS OPTION: inner red edge glow inset 0 0 220px rgba(255,60,40,.45) pulsing at 1.1 Hz between 25 and 45 percent; the health number '18' in danger red; the world colours unchanged. INSET (x96 y54, 640x360, 1px #2e3337) shows downed: world desaturated 60 percent, 'Down' 72px danger red centred, a 160px bleed-out ring around the player draining over 16 s, a pad chip 'Y Self-revive' 28px, and a blue 'Revive' prompt for the teammate."
+    },
+    {
+     "key": "B",
+     "label": "Grey-out",
+     "description": "The world loses its colour as health drops. Downed is black and white with a big countdown number.",
+     "spec": "Same backdrop, palette and health block as option A. MAIN PICTURE FOR THIS OPTION: world saturation lowered to 40 percent with a light black vignette at 25 percent; no red; health number '18' in danger red. INSET (x96 y54, 640x360) shows downed: world in black and white, a big white '16' 128px at the bottom-centre with a thin ring, and a chip 'Y Self-revive'."
+    },
+    {
+     "key": "C",
+     "label": "Calm and clear",
+     "description": "No screen effects at all. Only the health number flashes and a small red cross pulses over your head.",
+     "spec": "Same backdrop, palette and health block as option A. MAIN PICTURE FOR THIS OPTION: no overlay or tint on the world; the health number and bar flash danger red three times (draw one flash); a red cross icon 40px pulsing above the player's head. INSET (x96 y54, 640x360) shows downed: no tint, a 120px ring over the player's head with '16' 40px inside and a small chip 'Y Self-revive' beside the player."
+    },
+    {
+     "key": "D",
+     "label": "Heartbeat glow",
+     "description": "A red glow pulses around your raider with the heartbeat, a mild edge shade and a tiny shake.",
+     "spec": "Same backdrop, palette and health block as option A. MAIN PICTURE FOR THIS OPTION: a red radial glow around the player (radius 140px, rgba(255,60,40,.35)) pulsing at 1.5 Hz, a mild edge vignette at 25 percent, camera shake 2px on each beat (note it in the corner). INSET (x96 y54, 640x360) shows downed: the whole screen tinted red at 30 percent, the glow brighter, a countdown ring around the player with '16'."
+    }
+   ],
+   "pick": "A",
+   "pick_reason": "An edge pulse is understood by everyone instantly, it leaves the middle of the screen clear for the fight and it is cheap to draw.",
+   "refs": [
+    "halo-4-6.png",
+    "destiny-2-3.png"
+   ]
+  },
+  {
+   "id": "q24",
+   "group": "cards",
+   "kind": "image",
+   "title": "Run over card (party demo)",
+   "context": "This is the card the whole party sees when a two-player demo run ends. Today it is a small grey box with the score in plain letters. You decided score is SP, extracting doubles it, dying or quitting halves it, and the board comes after. Sample: extracted, You 2,900 SP and Player 2 1,920 SP.",
+   "question": "How should the run-over card look?",
+   "options": [
+    {
+     "key": "A",
+     "label": "One hero number",
+     "description": "One giant combined SP number with a chip saying Extracted x2, a row of three stats and one big button.",
+     "spec": "Backdrop: notes/shots/12-j2/52-arcade-run-over-1080.jpg (blurred world) under a black overlay at 55 percent; draw the new card over its small old card. Palette: panel #14171a, line #2e3337, text #f2efe6, muted #a9a79e, lime #e4ff2e with ink #0d1200, extract teal #47d8c6, player 2 blue #4fb4ff. Sample: You 2,900 SP and Player 2 1,920 SP, 20 kills, 1 extraction, 0 deaths; total 4,820 SP times 2 for extracting = 9,640 SP. STYLE FOR THIS OPTION: card 1000x620 at x460 y230 (solid panel, 1px #2e3337, 4px radius): 'Run over' 28px muted top-left; hero '9,640 SP' 144px white 800 left-aligned with a teal chip 'Extracted x2' 24px to its right; under it 'You 2,900   Player 2 1,920' 28px; a hairline; three stats 'Kills 20', 'Extractions 1', 'Deaths 0' (numbers 56px, labels 24px muted); lime button 'Continue' 280x72 bottom-right with an A glyph."
+    },
+    {
+     "key": "B",
+     "label": "Receipt",
+     "description": "A list of lines (kills, goals, pickups, subtotal, extract bonus) that count in one by one and end in a big total.",
+     "spec": "Same backdrop and sample as option A. STYLE FOR THIS OPTION: card 900x700 at x510 y190: lines with 36px label left and value right, dotted leader: 'Kills 20  +2,000 SP', 'Goals 3  +1,200 SP', 'Pickups  +1,620 SP', 'Subtotal  4,820 SP', 'Extracted  x2'; then a 2px line and 'Total 9,640 SP' with the number 88px in lime; lines count in 120 ms apart; lime button 'Continue' 280x72."
+    },
+    {
+     "key": "C",
+     "label": "Two players and a total",
+     "description": "Player 1 on the left, Player 2 on the right (each with their own colour), the combined total big in the middle.",
+     "spec": "Same backdrop and sample as option A. STYLE FOR THIS OPTION: card 1240x640 at x340 y220: left column 'You' 32px with a 4px lime top bar, '2,900 SP' 88px, '12 kills' 28px muted; right column 'Player 2' with a 4px blue top bar, '1,920 SP' 88px, '8 kills'; between them a vertical 1px line and in the centre-bottom of the card the combined 'Total 9,640 SP' 112px white with a teal chip 'Extracted x2'; lime 'Continue' button 280x72 bottom-right."
+    },
+    {
+     "key": "D",
+     "label": "Ribbon across the screen",
+     "description": "No card: a wide dark band across the middle with the score and stats, the world visible above and below.",
+     "spec": "Same backdrop and sample as option A (overlay 40 percent). STYLE FOR THIS OPTION: a full-width band y380 to y700 (fill rgba(11,12,13,.92), 2px lime lines on its top and bottom edges); inside at the left: 'Run over' 28px muted and '9,640 SP' 160px white at x160; teal chip 'Extracted x2'; at the right three stats stacked 36px ('Kills 20', 'Extractions 1', 'Deaths 0') at x1250; lime 'Continue' button 260x64 at x1500 y610 with an A glyph."
+    }
+   ],
+   "pick": "C",
+   "pick_reason": "The party plays two at a time, so showing each person's SP in their own colour and then the shared total makes the end of a run a moment for both of them.",
+   "refs": [
+    "halo-reach-1.png",
+    "fortnite-1.png"
+   ]
+  },
+  {
+   "id": "q25",
+   "group": "cards",
+   "kind": "image",
+   "title": "Extracted and killed cards (career)",
+   "context": "The career end cards are a long stack of centred lines in 14 pixel type: title, grey line, orange line, five 'Lost' lines, totals, stats. The payoff (your haul) is the smallest number. Same Extracted card in four layouts; each also shows the killed version as a small picture.",
+   "question": "How should the extracted and killed cards look?",
+   "options": [
+    {
+     "key": "A",
+     "label": "One shell, hero haul",
+     "description": "One card shape for every ending: title, one huge haul number, a row of item tiles, four stats, two buttons.",
+     "spec": "Backdrop: notes/shots/all/38-extracted-card-1080.jpg with a black overlay at 55 percent; draw the new card over its old card. Palette: panel #14171a, line #2e3337, text #f2efe6, muted #a9a79e, lime #e4ff2e with ink #0d1200, extract teal #47d8c6, danger #ff5a3c, rarity bars: common #9da3a8, uncommon #5fbf6a, rare #3f9de9, epic #a866e0, gold #ffc72e. Sample: haul $1,770, 5 items, +130 XP, stats Containers 7, Accuracy 38 percent, Kills 4, Time 8:12. STYLE FOR THIS OPTION: card 760x640 at x580 y220: title 'Extracted' 32px teal (killed would be 'Killed in action' danger, abandoned white); label 'Haul' 24px muted; hero '$1,770' 96px white 800; a row of five item tiles 84x84 (gap 8) with a 4px rarity bar along the bottom; stats row of four (value 28px, label 20px muted); an XP bar 6px lime with '+130 XP'; buttons: lime 'Back to the undercroft' 360x72 and ghost 'Copy report' 220x72. KILLED INSET (x40 y740, 480x300, 1px line): same shell, title danger, hero '-$1,770', tiles dimmed 40 percent with a red diagonal strike."
+    },
+    {
+     "key": "B",
+     "label": "Loot reveal",
+     "description": "A big grid of the loot on the left with rarity glows, the numbers and achievements on the right.",
+     "from": "ARC Raiders",
+     "spec": "Same backdrop and sample as option A. STYLE FOR THIS OPTION: card 1240x700 at x340 y190: left 56 percent an item grid 6 columns x 3 rows tiles 112x112 with a rarity glow and count badges; right: hero '$1,770' 112px, an XP bar with '+130 XP', three achievement chips 'First out', 'Untouched', 'Ghost' 22px; lime 'Back to the undercroft' 360x72 bottom-right, ghost 'Copy report'. KILLED INSET (x40 y740, 480x300): the grid with every tile dimmed 40 percent and a red strike, hero '-$1,770' danger."
+    },
+    {
+     "key": "C",
+     "label": "Band with item strip",
+     "description": "A wide band across the screen with title, haul and button, and a strip of items along its edge.",
+     "spec": "Same backdrop and sample as option A (overlay 45 percent). STYLE FOR THIS OPTION: band y370 to y710 full width (fill rgba(11,12,13,.92), 2px teal top and bottom lines): at the left title 'Extracted' 40px teal and hero '$1,770' 96px; the middle four stats in a 2x2 grid; right the lime 'Back to the undercroft' button 360x72; along the bottom of the band a strip of 96px item tiles edge to edge. KILLED INSET (x40 y740, 480x300): the band version in danger red."
+    },
+    {
+     "key": "D",
+     "label": "Small and fast",
+     "description": "A small card: title, one line of haul, two buttons. Details are one press away. Gets you back in fast.",
+     "spec": "Same backdrop and sample as option A. STYLE FOR THIS OPTION: card 560x380 at x680 y350: title 'Extracted' 40px teal; one line '$1,770 secured' 56px white; '+130 XP' 24px lime-grey under it; buttons 'Back' lime 240x72 and 'Details' ghost 240x72. KILLED INSET (x40 y740, 400x260): the same small card, title 'Killed in action' danger, line '$1,770 lost' 56px."
+    }
+   ],
+   "pick": "A",
+   "pick_reason": "One shared shell for every ending makes all of them feel finished, and putting the haul number at 96 px makes the payoff the biggest thing on the card.",
+   "refs": [
+    "halo-reach-1.png",
+    "arc-raiders-2.jpg",
+    "diablo-iv-1.jpg"
+   ]
+  },
+  {
+   "id": "q26",
+   "group": "cards",
+   "kind": "image",
+   "title": "Scoreboard and initials",
+   "context": "After a party run each player puts in initials and the board shows tonight's best. Today the board is a thin box with 'No scores yet' on a black wall and 'Press any button' in dim brown. It should be a trophy wall you can read from the couch. Each option shows a filled board plus the initials entry.",
+   "question": "How should the scoreboard and the initials entry look?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Table and letter boxes",
+     "description": "A top ten table with gold, silver and bronze bars and your new row lit lime, plus three big letter boxes beside it.",
+     "spec": "Backdrop: notes/shots/all4k/50-arcade-hud-live-4k.jpg cropped x806 y288 w2458 h1382 scaled to 1920x1080, darkened 45 percent (stand-in for the live map with a fight). Palette: panel #14171a, line #2e3337, text #f2efe6, muted #a9a79e, lime #e4ff2e with ink #0d1200, gold #ffc72e, silver #c9ccd0, bronze #c98a5a, player 2 blue #4fb4ff. Board sample, SP: 1 ABC 12,480; 2 JAX 9,640; 3 MOM 8,120; 4 DAD 7,300; 5 ZEE 6,900; 6 KAI 5,100; 7 LEO 4,820 (the new entry); 8 SAM 4,000; 9 BOB 3,150; 10 AVA 2,800. STYLE FOR THIS OPTION: board card 900x860 at x96 y110 with title 'Tonight's best' 40px; ten rows 64px (rank 28px muted, initials 40px white 700, SP 40px right-aligned); rows 1-3 with a 6px left bar in gold, silver, bronze; row 7 filled lime-wash with a lime 'New' chip. Initials card 640x420 at x1140 y330: 'Player 1' 32px; three letter boxes 120x160 (fill #1e2225, 2px line; the active box with a 4px lime ring), letters 96px; small arrows above and below the active box; hint 'Up Down  Change   A  Confirm' 22px with glyphs. Hint bar 'A Continue' bottom."
+    },
+    {
+     "key": "B",
+     "label": "Podium and list",
+     "description": "The top three as three tall podium cards, the rest as a plain list below. Initials entered on a letter grid.",
+     "from": "Fortnite",
+     "spec": "Same backdrop, palette and board sample as option A. STYLE FOR THIS OPTION: top three as podium cards 300x340 (first one centred and taller, 380) at y100 centred with initials 88px, SP 44px and a 6px gold, silver, bronze top bar; rows 4-10 below in a card 900x430 at x510 y480 with rows 56px (32px text), the new row 7 lime-washed with a 'New' chip. Initials entry: a card 760x400 at x1080 y620 hmm: draw it at the bottom-right: three slots 96x120 (active slot lime ring) above a letter grid of 9x3 keys 56x56 (A to Z and a delete key) with the focused key lime."
+    },
+    {
+     "key": "C",
+     "label": "Big five",
+     "description": "Only the top five, each row huge so it reads from ten feet. The new entry is typed in place.",
+     "spec": "Same backdrop, palette and board sample as option A. STYLE FOR THIS OPTION: card 1200x760 at x360 y160: title 'Tonight's best' 44px; five rows 96px high (rank 36px, initials 72px, SP 72px right-aligned) with 6px gold, silver, bronze left bars on the first three; below a 2px dashed line and the new entry as a sixth row 'LEO 4,820' lime-washed where the three initials are three live boxes 80x96 (active one with a lime ring) typed in place; hint bar bottom."
+    },
+    {
+     "key": "D",
+     "label": "Side panel",
+     "description": "A narrow board on the right so the live fight stays visible on the left. Initials typed in the new row.",
+     "spec": "Same backdrop, palette and board sample as option A (backdrop brightness 60 percent so the fight is clear). STYLE FOR THIS OPTION: board panel 560x860 at x1264 y110: title 'Tonight's best' 36px, eight rows 56px (rank 24px, initials 36px, SP 36px right), the new row lime-washed with three small initials boxes 56x64 (active one lime ring); hint bar along the bottom of the screen 'A Confirm   B Back'; the left 1160px of the screen show only the live fight."
+    }
+   ],
+   "pick": "A",
+   "pick_reason": "A table with three big letter boxes is the arcade-board feel your guests already know, readable from the couch, and works for both players one after the other.",
+   "refs": [
+    "halo-reach-1.png",
+    "fortnite-1.png"
+   ]
+  },
+  {
+   "id": "q27",
+   "group": "cards",
+   "kind": "image",
+   "title": "The what's-new card",
+   "context": "Today it is a full-width grey slab with five near-identical 'Polish pass' lines and tiny dismiss text. It is supposed to be a quick 'here is what changed'. Same three changes in four formats.",
+   "question": "How should the what's-new card look?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Short list",
+     "description": "A small centred card: version, three short lines, one Got it button.",
+     "spec": "Backdrop: notes/shots/all/03-hub-floor-1080.jpg blurred 8px and darkened 60 percent; cover its old station label plates at x240-1700 y95-155, x240-580 y440-500, x1430-1590 y440-500, x860-1060 y690-755, x610-760 y775-830, x1330-1690 y690-790 with flat #14183c rectangles. Palette: panel #14171a, line #2e3337, text #f2efe6, muted #a9a79e, lime #e4ff2e with ink #0d1200. Sample: version 'v0.0681'; changes (sentence case, max six words each): 'New ammo display', 'Player 2 ready screen', 'Softer menu sounds'. STYLE FOR THIS OPTION: card 720x520 at x600 y280 (solid panel, 1px line, 4px radius, close X top-right): title 'New in v0.0681' 40px; three rows 40px high with a 10px lime dot and 28px text; lime button 'Got it' 240x72 bottom-right with an A glyph."
+    },
+    {
+     "key": "B",
+     "label": "Big version number",
+     "description": "The version number as a giant lime number on the left, three lines on the right.",
+     "spec": "Same backdrop and sample as option A. STYLE FOR THIS OPTION: card 1000x560 at x460 y260: left half a big '0.0681' 150px lime 800 with 'New' 28px muted above it; right half the three changes at 32px with 24px gaps; lime 'Got it' 240x72 bottom-right; close X top-right."
+    },
+    {
+     "key": "C",
+     "label": "Three news tiles",
+     "description": "Three picture tiles with only a short title each, like a game's news strip. Nothing to read.",
+     "from": "Fortnite",
+     "spec": "Same backdrop and sample as option A. STYLE FOR THIS OPTION: header 'New in v0.0681' 40px at x300 y230; three tiles 440x360 at y300 (x300, x760, x1220; gap 20) each with a cropped screenshot 440x220 (ammo display from notes/shots/all/21-raid-hud-calm-1080.jpg, the ready screen from notes/shots/all/58-coop-player2-window-title-1080.jpg, a menu from notes/shots/all/18-settings-hub-1080.jpg) and a 28px title under it; lime 'Got it' 240x72 at x1180 y720."
+    },
+    {
+     "key": "D",
+     "label": "Corner card",
+     "description": "No pop-up: a small card in the corner of the hub that fades away by itself.",
+     "spec": "Same backdrop as option A but NOT blurred or dimmed (hub visible at full brightness). STYLE FOR THIS OPTION: card 520x200 at x1304 y820 (solid panel): 'New in v0.0681' 28px, '3 changes' 22px muted; buttons 'View' ghost 160x56 and 'Got it' lime 160x56; a thin 4px lime timer bar along its bottom edge at 60 percent (auto-hides after 10 s)."
+    }
+   ],
+   "pick": "A",
+   "pick_reason": "A small centred card with three short lines follows your 'no explaining sentences' rule and uses the same card shape as the rest of the game.",
+   "refs": [
+    "fortnite-2.jpg",
+    "halo-4-1.png"
+   ]
+  },
+  {
+   "id": "q28",
+   "group": "cards",
+   "kind": "motion",
+   "title": "How much bounce",
+   "context": "You asked for livelier motion with a little bounce. 'A little' needs a number: how far a card or button overshoots before settling. Each option plays the same result card arriving, the score counting up and a button being pressed, with a different bounce.",
+   "question": "How much bounce should things have?",
+   "options": [
+    {
+     "key": "A",
+     "label": "None",
+     "description": "Everything eases to a stop. Crisp and calm, no bounce.",
+     "spec": "Demo stage 640x400 on #0b0c0d: a result card 480x300 (fill #14171a, 1px #2e3337, 4px radius) shows 'Score' and '4,820 SP' 72px; loop 3 s: the card enters (translateY +48px to 0 and scale 0.92 to 1.00, opacity 0 to 1 over the first 40 percent), the score counts 0 to 4,820 over 900 ms starting 120 ms after the card, the score pops at the end, a lime 'Continue' button 200x56 fades in and is pressed (scale dip) at 1.6 s. CURVE FOR THIS OPTION: easeOutCubic f(t) = 1 - (1 - t)^3 for everything; overshoot 0 percent; card 220 ms; end pop none; button press scale 1 to 0.97 in 80 ms and back to 1 in 80 ms."
+    },
+    {
+     "key": "B",
+     "label": "Light",
+     "description": "A hair of overshoot on cards and a small pop on the score. Noticeable up close, never silly.",
+     "spec": "Same demo stage, card, score and loop as option A. CURVE FOR THIS OPTION: easeOutBack f(t) = 1 + (c1 + 1)(t - 1)^3 + c1 (t - 1)^2 with c1 = 1.2: overshoot 5.3 percent of the travel (about 2.5 px on the 48px rise); card 240 ms; end score pop scale 1 to 1.06 to 1 over 160 ms; button press 1 to 0.96 and back to 1.00 over 140 ms with the same curve."
+    },
+    {
+     "key": "C",
+     "label": "Lively",
+     "description": "Clear overshoot on cards and a punchy score pop and button press. Feels like Fortnite and Halo 4.",
+     "from": "Fortnite + Halo 4",
+     "spec": "Same demo stage, card, score and loop as option A. CURVE FOR THIS OPTION: easeOutBack with c1 = 1.70158: overshoot 10.0 percent of the travel (about 4.8 px on the 48px rise); card 280 ms; end score pop scale 1 to 1.12 to 1 over 200 ms; button press 1 to 0.94 and back to 1.00 over 160 ms with the same curve."
+    },
+    {
+     "key": "D",
+     "label": "Bouncy",
+     "description": "Big overshoot and a wobble. Very playful, but it starts to look like a toy.",
+     "spec": "Same demo stage, card, score and loop as option A. CURVE FOR THIS OPTION: easeOutBack with c1 = 2.8: overshoot 22.5 percent of the travel (about 10.8 px on the 48px rise); card 320 ms; end score pop scale 1 to 1.20 to 0.97 to 1 over 280 ms; button press 1 to 0.92 and back to 1.00 over 180 ms."
+    }
+   ],
+   "pick": "C",
+   "pick_reason": "A 10 percent overshoot is clearly livelier than the old 6 percent cap, still stays out of cartoon territory, and the score pop makes the big number land.",
+   "refs": [
+    "fortnite-2.jpg",
+    "halo-4-3.png"
+   ]
+  },
+  {
+   "id": "q29",
+   "group": "pause-settings",
+   "kind": "image",
+   "title": "The pause menu",
+   "context": "The pause box is crowded today: a wall of key chips, a feedback sentence and five buttons on one row. You said a pause stays paused, all settings must be reachable from the demo pause, and the feedback line and button stay. Same buttons in four layouts.",
+   "question": "How should the pause menu be laid out?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Centred stack",
+     "description": "A tall centred card with the title, the feedback line and five stacked buttons. End run is set apart.",
+     "spec": "Backdrop: notes/shots/all4k/50-arcade-hud-live-4k.jpg cropped x806 y288 w2458 h1382 scaled to 1920x1080, blurred 12px and darkened 55 percent, all raid on-screen display hidden. Palette: panel #14171a, line #2e3337, text #f2efe6, muted #a9a79e, lime #e4ff2e with ink #0d1200, danger #ff5a3c. Buttons: 'Resume' (lime), 'Settings', 'Feedback', 'What's new', 'End run' (danger ghost). One muted line 'Tell us anything that felt wrong' 22px (the feedback line stays). STYLE FOR THIS OPTION: card 560x740 at x680 y170 (solid panel): title 'Paused' 48px; the feedback line under it; five buttons 480x72 with 16px gaps (an extra 32px gap above 'End run'); 'Resume' focused; hint bar at the bottom of the screen 'A Select   B Resume'."
+    },
+    {
+     "key": "B",
+     "label": "Left drawer",
+     "description": "A full-height panel on the left with the menu; the world stays visible on the right.",
+     "from": "Destiny 2",
+     "spec": "Same backdrop (dimmed 45 percent), palette and buttons as option A. STYLE FOR THIS OPTION: a panel x0 to x560 full height (fill #101316 at 96 percent, 1px right border #2e3337): title 'Paused' 48px at x96 y96; five rows 72px high from y300 (text 32px, focused row = 6px lime bar and lime wash, 'Resume' focused, 'End run' in danger red at the bottom of the list); the feedback line at x96 y940; the world fully visible to the right."
+    },
+    {
+     "key": "C",
+     "label": "Tile grid",
+     "description": "Six big tiles in two rows with an icon and a word each. Easy to hit with a pad and a mouse.",
+     "from": "Fortnite",
+     "spec": "Same backdrop (blurred and darkened as option A), palette and buttons as option A plus a sixth 'Controls' tile. STYLE FOR THIS OPTION: title 'Paused' 48px at y200; six tiles 300x200 in 3 columns x 2 rows, gap 24, from x486 y330: icon 56px and label 28px each: 'Resume' (lime fill), 'Settings', 'Controls', 'Feedback', 'What's new', 'End run' (danger outline); focus on 'Settings' with a 4px lime ring; the feedback line 22px under the tiles at y790."
+    },
+    {
+     "key": "D",
+     "label": "Button bar",
+     "description": "One horizontal bar of five square-ish buttons in the middle, the world visible above and below.",
+     "from": "Halo 4",
+     "spec": "Same backdrop (blurred and darkened 45 percent), palette and buttons as option A. STYLE FOR THIS OPTION: title 'Paused' 48px at x210 y330; a bar 1500x200 at x210 y400 containing five buttons 280x160 (gap 12): icon 56px above a 28px label; 'Resume' lime fill, 'End run' danger outline; the feedback line 22px at y640; hint bar at the bottom."
+    }
+   ],
+   "pick": "A",
+   "pick_reason": "A single centred column is the easiest for two players to use in turn on a TV and it carries the feedback line without crowding.",
+   "refs": [
+    "arc-raiders-3.jpg",
+    "halo-reach-2.png",
+    "fortnite-1.png"
+   ]
+  },
+  {
+   "id": "q30",
+   "group": "pause-settings",
+   "kind": "image",
+   "title": "Settings layout",
+   "context": "Settings has two layers of tabs today (underline tabs and chip tabs both say Display), rows 1300 pixels wide with the control far from its name, and an empty side box. You said one control per job. Same Audio page in four layouts.",
+   "question": "How should Settings be organised?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Tabs on top, help on the right",
+     "description": "One tab strip across the top with LB and RB marks, rows in the middle and a help box on the right.",
+     "from": "Halo Reach + ARC Raiders",
+     "spec": "Backdrop: notes/shots/all4k/50-arcade-hud-live-4k.jpg cropped x806 y288 w2458 h1382 scaled to 1920x1080, blurred 12px and darkened 55 percent. Palette: panel #14171a, raised #1e2225, line #2e3337, text #f2efe6, muted #a9a79e, lime #e4ff2e. Card 1728x972 at x96 y54 (solid panel, 4px radius) with header 'Settings' 48px and a close X top-right. Sections: 'The raid', 'Audio', 'Controls', 'Controller', 'Display', 'Accessibility'. Rows of Audio: 'Master volume' 'Full', 'Sound effects' 'Full', 'Music' 'Off', 'Subtitles' 'On'. STYLE FOR THIS OPTION: tab strip 56px high under the header with six tabs 28px, LB and RB glyph chips at its ends, 'Audio' active (white, 4px lime underline); rows 72px high, 900px wide at x136 (name 28px left, value stepper right with '<' value '>' arrows 28px); the focused row (Music) has a 6px lime bar and lime wash; a help box 560x420 at x1100 y230 (fill #1e2225) showing the focused setting name 32px and one help line 24px muted; hint bar bottom."
+    },
+    {
+     "key": "B",
+     "label": "Left rail",
+     "description": "Sections listed down the left side, rows in the middle, help under the focused row.",
+     "from": "Diablo IV + Destiny 2",
+     "spec": "Same backdrop, card, header, sections and Audio rows as option A. STYLE FOR THIS OPTION: vertical section list x136 y190 w320: six entries 72px high with 32px text, active 'Audio' with a 6px lime left bar and lime wash; rows area x520 w1100, rows 72px high; no right box; a help bar 56px at the card bottom (fill #1e2225) with the focused row's one-line help 24px muted."
+    },
+    {
+     "key": "C",
+     "label": "One long page",
+     "description": "No tabs: one scrolling page with section headings and a small chip row that jumps to each.",
+     "spec": "Same backdrop, card, header, sections and Audio rows as option A. STYLE FOR THIS OPTION: a sticky row of six chips (36px high, 24px text) under the header, the active chip lime-filled with ink text; below, stacked sections with 40px headings ('The raid' then 'Audio'...) and rows 72px high 1000px wide; a thin 6px lime scrollbar at the card's right edge; no help box (help line appears under the focused row)."
+    },
+    {
+     "key": "D",
+     "label": "Landing tiles first",
+     "description": "A first page of six big tiles, then a rows page with a Back button. Two levels, like a console menu.",
+     "from": "Fortnite",
+     "spec": "Same backdrop, card and header as option A. STYLE FOR THIS OPTION: main picture is the landing: six tiles 480x240 (gap 24, 3 columns x 2 rows) from x180 y260, each with an icon 64px, name 36px and a one-value hint 22px muted (for example 'Master volume Full'); focus on 'Audio' with a 4px lime ring. A second picture as an inset (x1180 y800, 640x360, scaled) shows the Audio page: back arrow, header 'Audio', four rows."
+    }
+   ],
+   "pick": "A",
+   "pick_reason": "One tab strip with LB and RB is the Halo and ARC pattern, replaces your two layers of tabs, and the help box puts the explanation on focus instead of on every row.",
+   "refs": [
+    "halo-reach-3.png",
+    "halo-reach-5.png",
+    "arc-raiders-3.jpg",
+    "diablo-iv-1.jpg"
+   ]
+  },
+  {
+   "id": "q31",
+   "group": "pause-settings",
+   "kind": "image",
+   "title": "Keys and pad buttons",
+   "context": "The keys window is a wall of 28 identical Rebind buttons with two sentences above it, and the pad buttons live in a separate window. Your party uses a pad for player 2, so the pad should be easy to understand. Same rebinding screen in four forms.",
+   "question": "How should the keys and pad-buttons window look?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Key cap list",
+     "description": "Two columns of actions; the key cap itself is the button. Pressing it waits for a new key.",
+     "spec": "Backdrop: notes/shots/all4k/50-arcade-hud-live-4k.jpg cropped x806 y288 w2458 h1382 scaled to 1920x1080, blurred 12px and darkened 55 percent. Palette: panel #14171a, raised #1e2225, line #2e3337, text #f2efe6, muted #a9a79e, lime #e4ff2e. Card 1728x972 at x96 y54 (solid panel) with header 'Controls' 48px and close X. Sample bindings: Move up W, Move down S, Dodge roll Space, Crouch Ctrl, Reload R (waiting), Melee V, Heal H, Next gun F, Search and use E, Backpack B, Map M, Pause Tab. STYLE FOR THIS OPTION: two columns of rows 64px high; action name 26px left, a key cap button 120x48 at its right (fill #1e2225, 1px line, key 24px white); section headers 'Move', 'Fight', 'World' 22px muted; the 'Reload' cap shows 'Press a key' with a pulsing 3px lime outline; ghost button 'Reset to defaults' bottom-left."
+    },
+    {
+     "key": "B",
+     "label": "Keyboard picture",
+     "description": "A drawn keyboard and mouse with each bound key labelled. Click a key to change it.",
+     "spec": "Same backdrop, card, header, palette and sample as option A. STYLE FOR THIS OPTION: a simplified keyboard drawing (keys 56x56, 8px radius, gap 6px; rows Q-P, A-L, Z-M plus Space, Shift, Ctrl, Tab) centred at x300-1300 y300-700 and a mouse drawing at x1360; bound keys are filled #1e2225 with a tiny action label under the letter (W 'Up', S 'Down', R 'Reload', E 'Use'...); lines run out to callout labels 24px at the left and right like a controller diagram; the key being rebound has a pulsing lime outline; a 'List' ghost button top-right."
+    },
+    {
+     "key": "C",
+     "label": "Pad diagram plus list",
+     "description": "An outline controller picture with labelled buttons on the left, the key list on the right. Tabs switch between keyboard and controller.",
+     "from": "Halo Reach",
+     "spec": "Same backdrop, card, header, palette and sample as option A. STYLE FOR THIS OPTION: tab chips 'Keyboard' and 'Controller' under the header with LB and RB glyphs (Controller active); left half: an outline Xbox controller drawing 460px wide (2px white lines, the button being rebound filled lime) with callout lines to labels 26px: 'Fire', 'Aim', 'Move', 'Roll', 'Reload', 'Switch gun', 'Items', 'Loot'; right half: a single column of 8 rows 64px (name 26px left, pad glyph pill right) with the focused row lime-washed; 'Reset to defaults' ghost button bottom-left."
+    },
+    {
+     "key": "D",
+     "label": "Tabs and one list",
+     "description": "Keyboard and Controller tabs, then one tidy single-column list with the key or button shown on the right.",
+     "spec": "Same backdrop, card, header, palette and sample as option A. STYLE FOR THIS OPTION: tab chips 'Keyboard' and 'Controller' with LB and RB (Keyboard active); one single column 700px wide at x560: rows 72px high (name 28px left, key cap or pad glyph right in the solid style); the row being rebound shows 'Press a button' with a lime outline; section headers 22px muted; 'Reset to defaults' ghost button under the list."
+    }
+   ],
+   "pick": "C",
+   "pick_reason": "A controller drawing with labels is understood by guests in seconds (Halo does it) and it puts the pad for player 2 on equal footing with the keyboard list.",
+   "refs": [
+    "halo-reach-3.png",
+    "halo-reach-5.png",
+    "arc-raiders-3.jpg"
+   ]
+  },
+  {
+   "id": "q32",
+   "group": "pause-settings",
+   "kind": "motion",
+   "title": "Changing between tabs",
+   "context": "Switching a tab (Settings sections, stash filters) is the most repeated screen change after opening a menu. The content should arrive without making you wait or losing where you were. Each option plays a tab switch back and forth.",
+   "question": "How should the screen change when you switch tabs?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Fade and slide",
+     "description": "The old rows fade and slide away while the new ones fade and slide in from the direction you pressed.",
+     "spec": "Demo stage 560x360 on #0b0c0d: a card with a tab strip 'Raid', 'Audio', 'Controls' (28px, active white with a 4px lime underline) and four rows; the demo switches tab every 1.2 s (Raid, Audio, Controls, Audio, Raid; travelling right then left). MOTION: 200 ms total; outgoing rows opacity 1 to 0 over 100 ms while sliding 24px against the travel direction; incoming rows opacity 0 to 1 over 120 ms starting at 80 ms, sliding in from 24px on the travel side; easing cubic-bezier(0.2,0.8,0.2,1); the underline follows x += (target - x) * (1 - exp(-dt / 0.05)) (95 percent in 150 ms), overshoot 0 percent."
+    },
+    {
+     "key": "B",
+     "label": "Instant swap, springy underline",
+     "description": "The rows swap at once with a very quick fade; only the underline moves, with a little spring.",
+     "spec": "Same demo stage, card and switching schedule as option A. MOTION: rows swap at 0 ms and fade in from opacity 0.6 to 1 over 60 ms, no slide; the underline is a spring with omega 28 rad/s and damping ratio 0.70: overshoot 4.6 percent of its travel, within 5 percent of the target by about 200 ms."
+    },
+    {
+     "key": "C",
+     "label": "Rows rise in one by one",
+     "description": "The old rows vanish fast and the new ones rise into place one after another. Lively without a bounce.",
+     "from": "Halo 4",
+     "spec": "Same demo stage, card and switching schedule as option A. MOTION: outgoing rows disappear in 80 ms (opacity to 0, no movement); incoming rows rise from +12px: each row 160 ms with cubic-bezier(0.2,0.8,0.2,1), starting 25 ms after the row above (with 4 rows the change is done at 235 ms, with 8 rows by 335 ms); the underline glides x += (target - x) * (1 - exp(-dt / 0.035)), overshoot 0 percent."
+    },
+    {
+     "key": "D",
+     "label": "Carousel push",
+     "description": "The pages sit side by side and slide together, so you feel which way you moved.",
+     "from": "Diablo IV + Fortnite",
+     "spec": "Same demo stage, card and switching schedule as option A. MOTION: pages sit 480px apart; the outgoing page slides 480px against the travel and fades to 0; the incoming page slides in from 480px and fades in; both 280 ms with easeInOutCubic (t < 0.5: 4t^3, otherwise 1 - (-2t + 2)^3 / 2); the underline moves in sync; overshoot 0 percent."
+    }
+   ],
+   "pick": "C",
+   "pick_reason": "Staggered rows feel lively without any bounce on text you need to read, and the whole change is done in about a quarter of a second.",
+   "refs": [
+    "halo-reach-3.png",
+    "arc-raiders-3.jpg",
+    "diablo-iv-3.jpg"
+   ]
+  },
+  {
+   "id": "q33",
+   "group": "stash-hub",
+   "kind": "image",
+   "title": "Stash and backpack grid",
+   "context": "The stash screen has five bands of small text, a loadout column in 9 pixel type, a belt, a gun-key table and a freebie banner, and it uses only about half of its space well. Same sample stash in four layouts.",
+   "question": "How should the stash and what you take with you be arranged?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Two panes",
+     "description": "Stash grid on the left, what you take (guns, backpack, belt) on the right. One filter strip, no paragraphs.",
+     "spec": "Backdrop: notes/shots/all/03-hub-floor-1080.jpg blurred 12px and darkened 60 percent. Palette: panel #14171a, raised #1e2225, line #2e3337, text #f2efe6, muted #a9a79e, lime #e4ff2e with ink #0d1200, rarity bars common #9da3a8, uncommon #5fbf6a, rare #3f9de9, epic #a866e0, gold #ffc72e. Card 1728x972 at x96 y54 (solid panel) with header 'Stash' 48px, '$3,750' 28px near the X, close X. Item art: crop the tiles from notes/shots/all/04-stash-terminal-1080.jpg (x35-1085 y155-495). Sample: stash of 13 items (SMG, rifle, armour plate x2, medkit x2, frag x2, smoke, bandage x3, pistol); two equipped guns; backpack 6x2 with four items; belt of 9. STYLE FOR THIS OPTION: one filter strip under the header 'All 13', 'Guns 3', 'Heals', 'Parts', 'Keys' (26px) with a search field; left 1040px: stash grid 8 columns tiles 120x120 gap 8 (4px rarity bar along the tile bottom, count badge bottom-right 20px); right pane 600px: 'Loadout' heading, two equipped gun cards 280x130, backpack grid 6x2 tiles 84x84, belt row of 9 tiles 56x56; the focused tile with a 3px lime ring; one hint bar at the bottom 'A Pick up   Y Quick move   X Sell'."
+    },
+    {
+     "key": "B",
+     "label": "Three blocks",
+     "description": "Stash on the left, equipment in the middle, backpack and quick-use on the right.",
+     "from": "ARC Raiders",
+     "spec": "Same backdrop, palette, header, art and sample as option A. STYLE FOR THIS OPTION: headers 24px with counts ('Stash 13', 'Equipment', 'Backpack 4/12'); left block stash grid 5 columns of 100px tiles; middle block two big gun cards 400x200 (art, ammo, rarity corner) and an armour slot; right block backpack grid 5 columns x 5 rows of 80px tiles and under it a 'Quick use' row of 5 tiles; filter strip and hint bar as in A."
+    },
+    {
+     "key": "C",
+     "label": "The raider in the middle",
+     "description": "Your raider drawn big in the centre with slots around them for guns and armour; stash grid to the right.",
+     "from": "Diablo IV",
+     "spec": "Same backdrop, palette, header, art and sample as option A. STYLE FOR THIS OPTION: the raider character (copy a character sprite from notes/shots/all/03-hub-floor-1080.jpg, scaled to 380px tall) centred at x500; slots 96x96 placed around the raider: primary gun left, secondary right, armour on the chest, heals and throwables below, belt row along the bottom of that area; the stash grid 6 columns of 100px tiles at the right (x1000); backpack as a 6x2 strip under the raider; filter strip and hint bar as in A."
+    },
+    {
+     "key": "D",
+     "label": "List with a big preview",
+     "description": "A list of items with a large preview of the selected one; the loadout is a thin strip on top.",
+     "from": "Halo 4",
+     "spec": "Same backdrop, palette, header, art and sample as option A. STYLE FOR THIS OPTION: a loadout strip of six tiles 72x72 across the top of the card under the header; below, a list 640px wide at x136 with rows 64px high (icon 48, name 26px, count, value right); a preview pane 880px wide at x860: item art 360px, name 40px, rarity chip, three stats 28px, price, buttons 'Equip' (lime) and 'Sell' (ghost); a 'Grid' toggle chip top-right of the list."
+    }
+   ],
+   "pick": "A",
+   "pick_reason": "It matches how people think (stash, then what I take), it is closest to what exists so it is the least risky, and it fills the screen with tiles instead of text.",
+   "refs": [
+    "arc-raiders-1.jpg",
+    "diablo-iv-1.jpg",
+    "halo-4-1.png"
+   ]
+  },
+  {
+   "id": "q34",
+   "group": "stash-hub",
+   "kind": "image",
+   "title": "Item tooltips",
+   "context": "When you hover or focus an item you need to know what it is. Today the stash has a paragraph strip instead and the backpack has tiny stat text. Same rare carbine in four forms.",
+   "question": "How should item details show up?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Floating card",
+     "description": "A small card next to the item: name, type, four stats and the price. Nothing else.",
+     "spec": "Backdrop: notes/shots/all/04-stash-terminal-1080.jpg darkened 60 percent. Focus on the blue carbine tile at (118,236) (use the stash grid art at x35-1085 y155-495); the tooltip for 'Burst carbine' (rare). Palette: panel #14171a, line #4a5257, text #f2efe6, muted #a9a79e, lime #e4ff2e, danger #ff5a3c, rare #3f9de9. STYLE FOR THIS OPTION: card 380px wide placed 24px right of the focused tile (fill #14171a, 1px #4a5257, 4px radius): a 4px rare-blue bar on top; name 28px; 'Carbine  Rare' 20px muted; four stat rows 24px (Damage 34, Range 42 m, Magazine 30, Fire rate 8 per second) label left value right; '$1,200' 28px bottom-right; no description text; a lime 3px ring around the tile."
+    },
+    {
+     "key": "B",
+     "label": "Fixed detail pane",
+     "description": "No floating card. A big detail area on the right fills as you move; stat bars show strength.",
+     "from": "Halo 4",
+     "spec": "Same backdrop, tile, palette and item as option A. STYLE FOR THIS OPTION: no floating card; the right side of the screen shows a pane 480px wide at x1344 y110 (fill #1e2225): item art 200px, name 36px, rare chip 20px, four stat rows 26px each with a 6px lime bar under the value, price 32px, buttons 'Equip' lime and 'Sell' ghost; the focused tile shows only a small rarity dot."
+    },
+    {
+     "key": "C",
+     "label": "Compare card",
+     "description": "The floating card of A, plus how each stat compares with the gun you are holding (green plus, red minus).",
+     "from": "Diablo IV",
+     "spec": "Same backdrop, tile, palette and item as option A. STYLE FOR THIS OPTION: card 460px wide as in A with every stat followed by a delta chip: 'Damage 34  +11' (lime), 'Range 42 m  +6' (lime), 'Magazine 30  +18' (lime), 'Fire rate 8 per second  -2' (danger); a footer line 'Holding: Scav pistol' 20px muted and a hint chip 'Y Equip' with the Y glyph."
+    },
+    {
+     "key": "D",
+     "label": "Name chip, then press",
+     "description": "Hover shows only a small name chip. The full details appear in a drawer after you press A or click.",
+     "spec": "Same backdrop, tile, palette and item as option A. STYLE FOR THIS OPTION: main picture: a pill 44px high above the focused tile (fill #14171a, 24px name 'Burst carbine' with a blue rarity dot); inset bottom-left (x96 y620, 560x420, 1px line): the detail drawer opened after a press with art 160px, name 32px, four stats 24px, price and 'Equip' lime button."
+    }
+   ],
+   "pick": "C",
+   "pick_reason": "Guns are the heart of the game and 'is this better than mine' is the first question, so showing the difference in plus and minus saves a lot of guessing.",
+   "refs": [
+    "diablo-iv-2.jpg",
+    "arc-raiders-2.jpg",
+    "halo-4-1.png"
+   ]
+  },
+  {
+   "id": "q35",
+   "group": "stash-hub",
+   "kind": "image",
+   "title": "The hub floor labels",
+   "context": "Walking round the Undercroft you see eight big black name plates (as large as 'Enter raid!'), a leftover 'Experimental feature' line, and a hotbar over the stations. 'Enter raid' should be the loudest thing and the rest should stay quiet until you are close.",
+   "question": "How should the stations on the hub floor be labelled?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Only the near one and Enter raid",
+     "description": "Labels appear only for the station you stand near; Enter raid always has a lime plate.",
+     "spec": "Backdrop: notes/shots/all/03-hub-floor-1080.jpg at full brightness; first cover its old label plates and the 'Experimental feature' line with flat #14183c rectangles at x270-550 y95-155, x865-1055 y98-152, x1380-1640 y95-155, x245-578 y440-500, x1434-1586 y440-500, x885-1035 y695-750, x612-758 y775-830, x1396-1625 y694-748, x1338-1682 y756-788. Palette: panel #14171a, text #f2efe6, muted #a9a79e, lime #e4ff2e with ink #0d1200. Stations: 'Wirt the gambler' (top-left), 'Enter raid' (top-centre), 'The mainframe' (top-right), 'Shop, craft and hire' (middle-left), 'Settings' (middle-right), 'The stash' (bottom-centre), 'Fashion' (bottom-left), 'The last pour' (bottom-right). The player stands next to 'The stash'. STYLE FOR THIS OPTION: 'Enter raid' always shows a lime plate 44px type with an A glyph at the lift; the nearest station ('The stash') shows a slim plate (fill rgba(14,16,18,.82), 40px high, 24px text) with the key cap 'E'; all other stations show no label; no jokes under labels."
+    },
+    {
+     "key": "B",
+     "label": "Icons first, words when near",
+     "description": "Every station gets a small icon badge floating above it; the word appears only for the near one. Enter raid is a big lime badge.",
+     "from": "Fortnite",
+     "spec": "Same backdrop (old plates covered), stations and player position as option A. STYLE FOR THIS OPTION: each station has a round badge 72px floating 60px above it (fill #14171a, 2px #4a5257 ring, an outline icon: dice, door, computer, bag, gear, chest, mirror, mug), bobbing 4px; the 'Enter raid' badge is 112px lime filled with a pulsing outer ring; the near station ('The stash') also shows its name 32px under the badge and a key cap 'E Open'."
+    },
+    {
+     "key": "C",
+     "label": "Rings on the floor",
+     "description": "Each station has a thin floor ring with its name on the rim. The near ring lights up lime.",
+     "spec": "Same backdrop (old plates covered), stations and player position as option A. STYLE FOR THIS OPTION: each station has a 220px ring on the floor (2px white at 40 percent) with its name 22px on the ring's rim; the near ring (The stash) is 4px lime with its name 32px and a key cap 'E Open'; the 'Enter raid' ring is always lime dashed with the name 36px."
+    },
+    {
+     "key": "D",
+     "label": "Near label plus an arrow to the lift",
+     "description": "Like A, plus a lime arrow chip at the screen edge that always points to Enter raid and shows how far it is.",
+     "spec": "Same backdrop (old plates covered), stations and player position as option A (but move the player to the middle-left near 'Shop, craft and hire'). STYLE FOR THIS OPTION: the near station shows the slim plate with key cap 'E'; no other labels; a lime chip 'Enter raid  24 m' 28px with an arrow 24px at the top edge near x900 y54 pointing up toward the lift (the lift is above the screen in this picture)."
+    }
+   ],
+   "pick": "B",
+   "pick_reason": "Icons let a new guest see what each station is at a glance without any words, and the lime lift badge makes 'Enter raid' the obvious next step.",
+   "refs": [
+    "fortnite-2.jpg",
+    "destiny-2-1.png",
+    "arc-raiders-5.jpg"
+   ]
+  },
+  {
+   "id": "q36",
+   "group": "stash-hub",
+   "kind": "image",
+   "title": "Shop, craft and hire windows",
+   "context": "The shop, craft, hire and contracts windows use a bright cream detail card that is the loudest thing on screen, a stack of tiles that stops two thirds down, and dead space below. They should share one layout. Same shop window in four layouts.",
+   "question": "How should the shop, craft and hire windows be laid out?",
+   "options": [
+    {
+     "key": "A",
+     "label": "Grid and detail pane",
+     "description": "A grid of item tiles on the left with price badges and a dark detail pane on the right with a big lime Buy button.",
+     "from": "ARC Raiders",
+     "spec": "Backdrop: notes/shots/all/08-shop-1080.jpg blurred 12px and darkened 60 percent. Palette: panel #14171a, raised #1e2225, line #2e3337, text #f2efe6, muted #a9a79e, lime #e4ff2e with ink #0d1200, rarity bars as in the stash. Card 1728x972 at x96 y54 (solid panel): header 'Shop' 48px, '$900' 28px near the X, close X; tab strip under it 'Shop', 'Craft', 'Hire' (active 'Shop', lime underline). Item art: crop the tiles from notes/shots/all/08-shop-1080.jpg (x35-1040 y155-420). Items: Frag charge $120, Medkit $180, Bandage $60, Armour plate $340 (focused), Smoke $90, Stim $150, Sniper $2,400, Carbine $1,200. STYLE FOR THIS OPTION: grid 5 columns x 4 rows tiles 160x160 gap 12 with a price badge at the bottom-left (20px white on #1e2225) and a 4px rarity bar; right pane 560x820 at x1200 y170 (fill #1e2225, 4px radius): art 240px, name 32px, three stat lines 24px, price '$340' 48px, lime 'Buy' button 360x72 with an A glyph; a second small picture of the button disabled: 'Need $120 more' at 40 percent opacity."
+    },
+    {
+     "key": "B",
+     "label": "List and detail",
+     "description": "A list of rows with a small icon, name and price, and the same detail pane on the right. Easier to scan prices.",
+     "from": "Diablo IV",
+     "spec": "Same backdrop, palette, card, header, tabs, art and items as option A. STYLE FOR THIS OPTION: left list 900px wide at x136: nine rows 76px high (icon 52px, name 28px, price 28px right-aligned), the focused row with a 6px lime bar and lime wash; right detail pane identical to option A (art 240, name, stats, price, lime Buy)."
+    },
+    {
+     "key": "C",
+     "label": "Feature and shelf",
+     "description": "The selected item shown big on top; a scrolling shelf of small tiles below it.",
+     "from": "Fortnite",
+     "spec": "Same backdrop, palette, card, header, tabs, art and items as option A. STYLE FOR THIS OPTION: top feature 1500x400 at x210 y180 (fill #1e2225): art 300px at the left, name 48px, three stats 26px, price 56px and a lime 'Buy' 360x72 on the right; below it a shelf of eight tiles 150x150 at y640 (gap 12) with the focused tile scaled 1.08 and a 4px lime ring; LB and RB chips at the shelf ends for categories."
+    },
+    {
+     "key": "D",
+     "label": "Expanding cards",
+     "description": "A few big cards side by side; the focused one grows to show details and the Buy button inside it.",
+     "from": "Halo 4",
+     "spec": "Same backdrop, palette, card, header, tabs, art and items as option A. STYLE FOR THIS OPTION: four category cards at y200: the focused card 560x700 (art 240px, name 32px, three stats, price 48px, lime 'Buy' button inside at its bottom) and three neighbours 330x700 each showing only art 160px and name 28px at 60 percent brightness; gaps 20px; LB and RB chips to change tab."
+    }
+   ],
+   "pick": "A",
+   "pick_reason": "A tile grid and a dark detail pane with one lime Buy button is the pattern your ARC Raiders reference uses for crafting and it can serve shop, craft, hire and contracts with one layout.",
+   "refs": [
+    "arc-raiders-2.jpg",
+    "arc-raiders-1.jpg",
+    "halo-4-1.png",
+    "diablo-iv-1.jpg"
+   ]
+  }
+ ],
+ "built": [
+  {
+   "g": "look",
+   "r": "q01-a ok\nq01-b ok\nq01-c ok\nq01-d ok\nq02-a ok\nq02-b ok\nq02-c ok\nq03-a ok\nq03-b ok\nq03-c ok\nq03-d ok\nq04-a ok\nq04-b ok\nq04-c ok\nq04-d ok\nq05-a ok\nq05-b ok\nq05-c ok\nq05-d ok\nq06-a ok\nq06-b ok\nq06-c ok\nq06-d ok\nq07-a ok\nq07-b ok\nq07-c ok\nq07-d ok\nq08-a ok\nq08-b ok\nq08-c ok\nq08-d ok\nq09-a ok\nq09-b ok\nq09-c ok\nq09-d ok\nq10-a ok\nq10-b ok\nq10-c ok\nq10-d ok\nNOTE layout: q03 moves the visibility strip from y980 to y400, because at y980 it overlapped the belt at x560 y930. q03's colour chip sits just under the ammo plate for the same reason. q04 shows 8 settings rows and a detail pane instead of 4 rows. q05 puts a \"Paused\" title above the buttons, lifts the dark backdrop's brightness before the 55 percent overlay, and covers the old pause dialog so its amber button does not show through. q02 and q06 add small captions or labels.\nNOTE motion: q09-*.html and q10-*.html in snip/ are CSS-only (no JS) and were checked by freezing them at several times. The q09 stage is 560x340 with a caption row below it. The q10 stage is 480x360 with a caption row below it.\nNOTE usage: I cannot see any spend estimate from inside this job, so I cannot say whether it allows for repeat requests like this one. The work here was 31 pictures and 8 loops, with no agents started."
+  },
+  {
+   "g": "title",
+   "r": "q11-a ok\nq11-b ok\nq11-c ok\nq11-d ok\nq12-a ok\nq12-b ok\nq12-c ok\nq12-d ok\nq13-a ok\nq13-b ok\nq13-c ok\nq13-d ok\nq14-a ok\nq14-b ok\nq14-c ok\nq14-d ok\nq15-a ok\nq15-b ok\nq15-c ok\nq15-d ok\nNOTE: I can't see the usage-spend estimates, so I can't say whether they allow for repeat requests like this. This job was one Python generator and 20 headless-Chrome renders, with no agents started.\n\nDeviations from the specs:\n- The mockups use the game's own embedded Barlow and Barlow Condensed fonts, because Windows doesn't have them.\n- q14-c has a faint extra teal colour layer on top of the specified #07131a overlay. With the overlay alone the map read as grey, not teal.\n- In q15-d I added a soft dark halo behind the centre text. Without it the backdrop pillager sprite showed through \"Press A to join\".\n- LB and RB on the q13-c switch are in caps because they are the controller button labels.\n\nThe pictures are in `C:\\claudecode\\dark raiders\\tools\\handoff\\menu-survey\\img\\` and the HTML in `...\\menu-survey\\mock\\`, both named QID-KEY (for example q11-a). The generator is `gen.py` in my scratchpad, outside the project, so it can be rerun."
+  },
+  {
+   "g": "raid",
+   "r": "q16-a ok\nq16-b ok\nq16-c ok\nq16-d ok\nq17-a ok\nq17-b ok\nq17-c ok\nq17-d ok\nq18-a ok\nq18-b ok\nq18-c ok\nq18-d ok\nq19-a ok\nq19-b ok\nq19-c ok\nq19-d ok\nq20-a ok\nq20-b ok\nq20-c ok\nq20-d ok\nq21-a ok\nq21-b ok\nq21-c ok\nq21-d ok\nq22-a ok\nq22-b ok\nq22-c ok\nq22-d ok\nq23-a ok\nq23-b ok\nq23-c ok\nq23-d ok"
+  },
+  {
+   "g": "cards",
+   "r": "q24-a ok\nq24-b ok\nq24-c ok\nq24-d ok (old result card hidden under the ribbon with mirrored backdrop patches)\nq25-a ok\nq25-b ok (card moved to x540 y90 so it clears the killed inset at x40 y740)\nq25-c ok\nq25-d ok\nq26-a ok\nq26-b ok (board and podium shifted left to x96-996 so the entry card at x1080 does not overlap)\nq26-c ok\nq26-d ok\nq27-a ok\nq27-b ok\nq27-c ok (checked after the final re-render, no black bottom strip)\nq27-d ok (hub left unblurred, so the old floor labels stay visible behind the corner card)\nq28-a ok (None: eases to a stop, no overshoot)\nq28-b ok (Light: 5% overshoot, small pop on the score)\nq28-c ok (Lively: 10% overshoot, punchy pop)\nq28-d ok (Bouncy: 22% overshoot, wobble on the pop)\nnote: the images are in C:\\claudecode\\dark raiders\\tools\\handoff\\menu-survey\\img (q24 to q27, a to d), sources in mock\\, snippets in snip\\q28-a..d.html. I have no view of usage-spend estimates, so the question about whether they account for repeated requests like this one needs the main session."
+  },
+  {
+   "g": "pause-settings",
+   "r": "q29-A ok\nq29-B ok\nq29-C ok\nq29-D ok\nq30-A ok\nq30-B ok\nq30-C ok\nq30-D ok (the spec's 640x360 inset at y800 would run off the 1080 screen, so the inset is 576x324 at x1244 y740 and the tiles start at y196; the inset shows the Audio page at half scale and overlaps the card's bottom edge)\nq31-A ok\nq31-B ok\nq31-C ok\nq31-D ok\nq32-A ok (snippet, not rendered)\nq32-B ok (snippet, not rendered)\nq32-C ok (snippet, not rendered)\nq32-D ok (snippet, not rendered)\n\nNotes on the spec that you should know:\n- **Q32 stage:** Each q32 stage is 560x320 (the brief) instead of the spec's 560x360, with the caption under it. I checked them by stepping their timers in headless Chrome and looking at the frames.\n- **Q31 binding list:** The lists add Move left A, Move right D and Sprint Shift to the spec's 12 sample bindings, so W and S don't stand alone.\n- **Q31-D and q31-A, B, C:** In q31-D the list is scrolled, so the Reload row sits near the bottom and Melee is cut off by a fade. In q31-A the 'Press a key' cap is wider than 120px so the text fits. In q31-B I added a 'Reset to defaults' button and hint bar to match the other options.\n\nFiles are in C:\\claudecode\\dark raiders\\tools\\handoff\\menu-survey:\n- mock\\q29-a.html to q31-d.html, with PNGs beside them\n- img\\q29-a.jpg to q31-d.jpg\n- snip\\q32-a.html to q32-d.html"
+  },
+  {
+   "g": "stash-hub",
+   "r": "q33-a ok\nq33-b ok\nq33-c ok\nq33-d ok\nq34-a ok\nq34-b ok\nq34-c ok\nq34-d ok\nq35-a ok\nq35-b ok\nq35-c ok\nq35-d ok\nq36-a ok\nq36-b ok\nq36-c ok\nq36-d ok\nnote: All 16 mockups are in C:\\claudecode\\dark raiders\\tools\\handoff\\menu-survey\\mock\\ and rendered to img\\*.jpg, and I looked at every final picture.\nnote: render.ps1 (changed at 12:14, not by me) forces lowercase on a temp copy, so the JPGs show lowercase text. The HTML sources are in sentence case.\nnote: q35 uses mock\\art\\03-hub-floor-clean.png as its backdrop, a copy of the hub picture with the old name plates painted out.\nnote: The raider in q33-c is a hand-drawn SVG in the game's style, because the game's sprite is too small to enlarge cleanly.\nnote: On your usage-estimate question, I can't see the estimator, so I can't say whether it allows for repeat requests. This run used roughly 340k tokens, and each similar mockup run would cost about that much."
+  }
+ ],
+ "rejected": [
+  {
+   "id": "q01-A",
+   "what": "Stale picture: rendered before the lowercase rule was added to render.ps1 (12:14). Shows capitalised words and caps SP. Owner order: all player text lowercase.",
+   "fix": "Re-render this mock with the current render.ps1 so all text is lowercase."
+  },
+  {
+   "id": "q01-B",
+   "what": "Stale picture: rendered before the lowercase rule. Shows capitalised words and caps SP.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q01-C",
+   "what": "Stale picture: rendered before the lowercase rule. Shows capitalised words and caps SP.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q01-D",
+   "what": "Stale picture: rendered before the lowercase rule. Shows capitalised words and caps SP.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q02-A",
+   "what": "Stale case. Rows read 'Resume On / Settings Full / Feedback Off', which are nonsense values for those rows. Big dead gap between title and rows.",
+   "fix": "Re-render lowercase. Give each row a sensible value or none. Pull the rows up under the title."
+  },
+  {
+   "id": "q02-B",
+   "what": "Stale case. Same nonsense row values (Resume On, Settings Full, Feedback Off). Dead space between title and rows.",
+   "fix": "Re-render lowercase. Fix the row values and close the gap."
+  },
+  {
+   "id": "q02-C",
+   "what": "Stale case. Same nonsense row values. Dead space between title and rows.",
+   "fix": "Re-render lowercase. Fix the row values and close the gap."
+  },
+  {
+   "id": "q03-A",
+   "what": "Stale picture: capitalised words, caps SP, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q03-B",
+   "what": "Stale picture: capitalised words, caps SP, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q03-C",
+   "what": "Stale picture: capitalised words, caps SP, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q03-D",
+   "what": "Stale picture: capitalised words, caps SP, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q04-A",
+   "what": "Stale case. A stray lime tick appears that the description never mentions. Selected row uses a bar-and-wash style, while B and D use a ring, so the options differ in a way the question is not about.",
+   "fix": "Re-render lowercase. Remove the tick or add it to the label. Use one selected-row style across all options."
+  },
+  {
+   "id": "q04-B",
+   "what": "Stale case. The card is barely see-through, so it reads as A with rounder corners and does not show what the label says. It uses a ring where A and C use a bar.",
+   "fix": "Re-render lowercase. Make the see-through glass difference obvious (visible blur and world behind it). Keep the selected-row style the same as the other options."
+  },
+  {
+   "id": "q04-C",
+   "what": "Stale case. Bar-and-wash selected row, but B and D use a ring. This is a difference the question is not about.",
+   "fix": "Re-render lowercase. Use one selected-row style across the options."
+  },
+  {
+   "id": "q04-D",
+   "what": "Stale case. The faint lime halo cannot be seen at TV distance, so the option looks like a plain card.",
+   "fix": "Re-render lowercase. Make the lime halo strong enough to read at 6-10 ft."
+  },
+  {
+   "id": "q05-A",
+   "what": "Stale case. 'Need 29,100 more' has no unit. Money must use $ and score must use SP.",
+   "fix": "Re-render lowercase. Write '$29,100 more' or the right SP figure."
+  },
+  {
+   "id": "q05-B",
+   "what": "Stale case. Resume is lime-filled and another row is also selected, so it is unclear which row is selected. This also differs from A.",
+   "fix": "Re-render lowercase. Only the selected row is lime. Resume should show a normal state when it is not selected."
+  },
+  {
+   "id": "q05-C",
+   "what": "Stale case. The bar is thin although the option is called thick. Resume is lime while another row is selected, so selection is ambiguous.",
+   "fix": "Re-render lowercase. Make the bar visibly thick. Lime only on the selected row."
+  },
+  {
+   "id": "q05-D",
+   "what": "Stale case. The dimmed Resume is a muddy olive block. Two rows read as active at once.",
+   "fix": "Re-render lowercase. Dim Resume to neutral grey. Lime only on the selected row."
+  },
+  {
+   "id": "q06-A",
+   "what": "Stale case. The old HUD (900 Credits, 0 TP, run info) shows behind the sheet. It uses wrong vocabulary (credits should be $) and clutters the screen. The sheet has big dead gaps.",
+   "fix": "Re-render lowercase over the current HUD or a clean dark backdrop. Tighten the layout."
+  },
+  {
+   "id": "q06-B",
+   "what": "Stale case. The key caps are not really 3D, so the option does not show what its label says. Old HUD behind. Dead gaps.",
+   "fix": "Re-render lowercase. Give the caps a visible raised edge and shadow. Use a clean backdrop."
+  },
+  {
+   "id": "q06-C",
+   "what": "Stale case. The first three icons have no lime detail, and all four keyboard labels are lime, so the accent does not mean anything. Old HUD behind. Dead gaps.",
+   "fix": "Re-render lowercase. Put lime only on the selected or main item. Clean backdrop."
+  },
+  {
+   "id": "q06-D",
+   "what": "Stale case. The pad circles are tiny and dim, so they fail at 6-10 ft. Old HUD behind. Dead gaps.",
+   "fix": "Re-render lowercase. Enlarge the circles and raise their contrast. Clean backdrop."
+  },
+  {
+   "id": "q07-A",
+   "what": "Stale picture: capitalised words, caps SP and keys, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q07-B",
+   "what": "Stale picture: capitalised words, caps SP and keys, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q07-C",
+   "what": "Stale picture: capitalised words, caps SP and keys, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q07-D",
+   "what": "Stale picture: capitalised words, caps SP and keys, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q08-A",
+   "what": "Stale case. The outline is weak and the contrast is low against the light wall, so it will not read on a TV.",
+   "fix": "Re-render lowercase. Use a stronger, darker outline or a dark plate behind the item."
+  },
+  {
+   "id": "q08-B",
+   "what": "Stale picture: capitalised words, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q08-C",
+   "what": "Stale picture: capitalised words, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q08-D",
+   "what": "Stale case. The outline is weak and the contrast is low against the light wall, so it will not read on a TV.",
+   "fix": "Re-render lowercase. Use a stronger outline or a dark plate behind the item."
+  },
+  {
+   "id": "q09-A",
+   "what": "Motion snippet shows capitalised words and caps SP, and its caption uses developer jargon (ms, px, easing numbers). The owner wants no explaining sentences.",
+   "fix": "Lowercase the strings (or add a lowercase CSS rule). Replace the caption with a plain 2-4 word label such as 'slides up'."
+  },
+  {
+   "id": "q09-B",
+   "what": "Motion snippet shows capitalised words and caps SP. The caption has developer jargon (ms, px).",
+   "fix": "Lowercase the strings. Use a plain short caption."
+  },
+  {
+   "id": "q09-C",
+   "what": "Moves only 72 px and also fades, on a 340 px stage. It is not a drawer rising from the bottom edge and is near-identical to A. The caption has jargon and the strings are capitalised.",
+   "fix": "Start fully off the bottom edge and slide the whole distance without a fade, so it differs from A. Lowercase the strings. Use a plain caption."
+  },
+  {
+   "id": "q09-D",
+   "what": "Motion snippet shows capitalised words and caps SP. The caption has developer jargon (ms, px).",
+   "fix": "Lowercase the strings. Use a plain short caption."
+  },
+  {
+   "id": "q10-A",
+   "what": "Motion snippet shows capitalised words and caps SP. The caption has developer jargon (ms, px, percent).",
+   "fix": "Lowercase the strings. Use a plain short caption."
+  },
+  {
+   "id": "q10-B",
+   "what": "The overshoot is only about 2.5 px on a 56 px move. It is invisible and the option looks the same as A, so it does not show 'a little bounce'. The strings are capitalised and the caption has jargon.",
+   "fix": "Raise the overshoot to about 10-15 percent of the move so the bounce can be seen. Lowercase the strings. Use a plain caption."
+  },
+  {
+   "id": "q10-C",
+   "what": "Motion snippet shows capitalised words and caps SP. The caption has developer jargon.",
+   "fix": "Lowercase the strings. Use a plain short caption."
+  },
+  {
+   "id": "q10-D",
+   "what": "Motion snippet shows capitalised words and caps SP. The caption has developer jargon.",
+   "fix": "Lowercase the strings. Use a plain short caption."
+  },
+  {
+   "id": "q11-A",
+   "what": "Stale picture: capitalised words and caps SP, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q11-B",
+   "what": "Stale picture: capitalised words and caps SP, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q11-C",
+   "what": "Stale case. The co-op and arcade thumbnails are almost identical and muddy, so the two modes cannot be told apart.",
+   "fix": "Re-render lowercase. Give each mode a distinct, clear thumbnail with its own colour or scene."
+  },
+  {
+   "id": "q11-D",
+   "what": "Stale picture: capitalised words and caps SP, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q12-A",
+   "what": "Stale picture: capitalised words, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q12-B",
+   "what": "Stale case. The selected button has a white outline, not the lime accent. It does not match the owner's selection style.",
+   "fix": "Re-render lowercase. Fill the selected button lime."
+  },
+  {
+   "id": "q12-C",
+   "what": "Stale picture: capitalised words, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q12-D",
+   "what": "Stale picture: capitalised words, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q13-A",
+   "what": "Stale picture: capitalised words, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q13-B",
+   "what": "Stale case. Five rows, with 'Arcade demo' repeated and a Saves line that is not a player count. The question is about the player count only.",
+   "fix": "Re-render lowercase. Keep only the player-count rows and remove the duplicate and the Saves line."
+  },
+  {
+   "id": "q13-C",
+   "what": "Stale case. The focused row has a white outline, not lime, so it is inconsistent with the selection style.",
+   "fix": "Re-render lowercase. Use the lime selected style."
+  },
+  {
+   "id": "q13-D",
+   "what": "Stale picture: capitalised words, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q14-A",
+   "what": "Stale case. Contains a developer annotation, 'Camera drifts 12 px per second to the right'. It is an explaining sentence and jargon on a player screen.",
+   "fix": "Re-render lowercase. Remove the annotation. Show the drift only through the picture."
+  },
+  {
+   "id": "q14-B",
+   "what": "Stale picture: capitalised words, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q14-C",
+   "what": "Stale picture: capitalised words, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q14-D",
+   "what": "Stale picture: capitalised words, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q15-A",
+   "what": "Stale case. The chip repeats 'Player 2', which is redundant with the heading or label.",
+   "fix": "Re-render lowercase. Show the label once."
+  },
+  {
+   "id": "q15-B",
+   "what": "Stale picture: capitalised words, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q15-C",
+   "what": "Stale case. Generic silhouette placeholders look like a wireframe. The Start button is a muddy translucent block, not a finished lime button.",
+   "fix": "Re-render lowercase. Use the real raider art for the portraits. Make Start a solid lime button."
+  },
+  {
+   "id": "q15-D",
+   "what": "Stale picture: capitalised words, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q16-C",
+   "what": "The health numbers are tiny and will not read at 6-10 ft.",
+   "fix": "Enlarge the health numbers to at least the size of the other options' numbers."
+  },
+  {
+   "id": "q17-A",
+   "what": "Faint empty ghost rectangles are visible. They look like wireframe leftovers.",
+   "fix": "Remove the empty placeholder boxes from the mock."
+  },
+  {
+   "id": "q17-B",
+   "what": "Faint empty ghost rectangles are visible. They look like wireframe leftovers.",
+   "fix": "Remove the empty placeholder boxes."
+  },
+  {
+   "id": "q17-C",
+   "what": "Ammo numbers appear twice (at the cursor and in the corner). The text is tiny. Faint empty ghost rectangles are visible.",
+   "fix": "Show the ammo number once. Enlarge the text. Remove the ghost boxes."
+  },
+  {
+   "id": "q17-D",
+   "what": "Faint empty ghost rectangles are visible. They look like wireframe leftovers.",
+   "fix": "Remove the empty placeholder boxes."
+  },
+  {
+   "id": "q18-A",
+   "what": "Faint empty ghost rectangles are visible.",
+   "fix": "Remove the empty placeholder boxes."
+  },
+  {
+   "id": "q18-B",
+   "what": "Faint empty ghost rectangles are visible.",
+   "fix": "Remove the empty placeholder boxes."
+  },
+  {
+   "id": "q18-C",
+   "what": "Faint empty ghost rectangles are visible.",
+   "fix": "Remove the empty placeholder boxes."
+  },
+  {
+   "id": "q18-D",
+   "what": "Faint empty ghost rectangles are visible.",
+   "fix": "Remove the empty placeholder boxes."
+  },
+  {
+   "id": "q19-A",
+   "what": "The belt counts and 'x2' chips are about 12-15 px in a 1920 frame. That is too small to read at 6-10 ft.",
+   "fix": "Raise belt counts and chips to at least 20 px with a dark plate behind them."
+  },
+  {
+   "id": "q19-B",
+   "what": "The belt counts and 'x2' chips are about 12-15 px. Too small for a TV.",
+   "fix": "Raise belt counts and chips to at least 20 px."
+  },
+  {
+   "id": "q19-C",
+   "what": "The belt is busy, and its counts and 'x2' chips are about 12-15 px. Too small for a TV.",
+   "fix": "Drop the extra items. Raise counts and chips to at least 20 px."
+  },
+  {
+   "id": "q19-D",
+   "what": "The belt counts and 'x2' chips are about 12-15 px. Too small for a TV.",
+   "fix": "Raise belt counts and chips to at least 20 px."
+  },
+  {
+   "id": "q20-A",
+   "what": "A stray lowercase 'n' sits in the map corner with no clear meaning. The map border is barely visible. Faint empty ghost rectangles are visible.",
+   "fix": "Replace the 'n' with a clear north arrow or remove it. Strengthen the map border. Remove the ghost boxes."
+  },
+  {
+   "id": "q20-B",
+   "what": "Faint empty ghost rectangles are visible.",
+   "fix": "Remove the empty placeholder boxes."
+  },
+  {
+   "id": "q20-C",
+   "what": "Faint empty ghost rectangles are visible.",
+   "fix": "Remove the empty placeholder boxes."
+  },
+  {
+   "id": "q20-D",
+   "what": "A stray lowercase 'n' sits in the map corner with no clear meaning. Faint empty ghost rectangles are visible.",
+   "fix": "Replace the 'n' with a clear north arrow or remove it. Remove the ghost boxes."
+  },
+  {
+   "id": "q21-A",
+   "what": "Faint empty ghost rectangles are visible.",
+   "fix": "Remove the empty placeholder boxes."
+  },
+  {
+   "id": "q21-B",
+   "what": "Faint empty ghost rectangles are visible.",
+   "fix": "Remove the empty placeholder boxes."
+  },
+  {
+   "id": "q21-C",
+   "what": "Faint empty ghost rectangles are visible.",
+   "fix": "Remove the empty placeholder boxes."
+  },
+  {
+   "id": "q21-D",
+   "what": "The expanded list floats mid-screen about 300 px from the pill, so it does not look attached to it. Faint empty ghost rectangles are visible.",
+   "fix": "Anchor the list directly under or beside the pill. Remove the ghost boxes."
+  },
+  {
+   "id": "q22-A",
+   "what": "An extra 'other events' tray contradicts 'one at a time'. Faint empty ghost rectangles are visible.",
+   "fix": "Remove the tray so only one event shows. Remove the ghost boxes."
+  },
+  {
+   "id": "q22-B",
+   "what": "The extra 'other events' tray contradicts both 'one at a time' and 'no box'. Faint ghost rectangles are visible.",
+   "fix": "Remove the tray and any box. Remove the ghost boxes."
+  },
+  {
+   "id": "q22-C",
+   "what": "Faint empty ghost rectangles are visible.",
+   "fix": "Remove the empty placeholder boxes."
+  },
+  {
+   "id": "q22-D",
+   "what": "An extra 'other events' tray contradicts 'one at a time'. Faint empty ghost rectangles are visible.",
+   "fix": "Remove the tray. Remove the ghost boxes."
+  },
+  {
+   "id": "q23-D",
+   "what": "A dev-note pill reads 'camera shakes 2 px on each beat'. That is developer text on a player screen. The edge shade cannot be seen.",
+   "fix": "Remove the dev-note pill. Make the edge shade strong enough to see on a TV."
+  },
+  {
+   "id": "q24-A",
+   "what": "Stale picture: capitalised words and caps SP, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q24-B",
+   "what": "Stale picture: capitalised words and caps SP, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q24-C",
+   "what": "Stale case. Labels Player 1 as 'You', which is inconsistent with the other options and with two-player play.",
+   "fix": "Re-render lowercase. Label as 'player 1'."
+  },
+  {
+   "id": "q24-D",
+   "what": "Stale case. The background is near-black, so the world is not visible. That fails the 'world visible' point.",
+   "fix": "Re-render lowercase. Show the world behind the screen with only a light dim."
+  },
+  {
+   "id": "q25-A",
+   "what": "Stale case. The old HUD shows behind and the Killed inset is tiny.",
+   "fix": "Re-render lowercase over the current HUD or a clean backdrop. Enlarge the inset."
+  },
+  {
+   "id": "q25-B",
+   "what": "Stale case. The old HUD shows behind, the Killed inset is tiny, and the grid is empty, so the option shows nothing.",
+   "fix": "Re-render lowercase. Fill the grid with real items. Enlarge the inset."
+  },
+  {
+   "id": "q25-C",
+   "what": "Stale case. The old HUD shows behind and the Killed inset is tiny.",
+   "fix": "Re-render lowercase over a clean backdrop. Enlarge the inset."
+  },
+  {
+   "id": "q25-D",
+   "what": "Stale case. The old HUD shows behind and the Killed inset is tiny.",
+   "fix": "Re-render lowercase over a clean backdrop. Enlarge the inset."
+  },
+  {
+   "id": "q26-A",
+   "what": "Stale case. Capitalised initials, an A-Z grid and caps SP. Initials are not covered by the lowercase rule in the picture.",
+   "fix": "Re-render lowercase. Decide with the owner whether initials are an exception. Otherwise show them lowercase."
+  },
+  {
+   "id": "q26-B",
+   "what": "Stale case. Capitalised initials, an A-Z grid and caps SP.",
+   "fix": "Re-render lowercase and settle the initials rule."
+  },
+  {
+   "id": "q26-C",
+   "what": "Stale case. Capitalised initials, an A-Z grid and caps SP.",
+   "fix": "Re-render lowercase and settle the initials rule."
+  },
+  {
+   "id": "q26-D",
+   "what": "Stale case. Capitalised initials, an A-Z grid and caps SP.",
+   "fix": "Re-render lowercase and settle the initials rule."
+  },
+  {
+   "id": "q27-A",
+   "what": "Stale picture: capitalised words, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q27-B",
+   "what": "Stale picture: capitalised words, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q27-C",
+   "what": "The worst of the set. Old amber screenshots, a lot of text and lore, 'v0.0552', and a detached button. Stale case as well.",
+   "fix": "Rebuild with the current lime-and-dark style. Cut the lore and version text. Attach the button to the card. Re-render lowercase."
+  },
+  {
+   "id": "q27-D",
+   "what": "Shows the old amber hub and the line '***Experimental feature may glitch***'. That is a dev note and it is the wrong style. Stale case as well.",
+   "fix": "Rebuild with the current lime-and-dark style. Remove the glitch line. Re-render lowercase."
+  },
+  {
+   "id": "q28-A",
+   "what": "Motion snippet shows capitalised words and caps SP. The caption has developer jargon (percent, ms).",
+   "fix": "Lowercase the strings (q28 has text-transform:none, so change it). Use a plain short caption."
+  },
+  {
+   "id": "q28-B",
+   "what": "Motion snippet shows capitalised words and caps SP. The caption has developer jargon.",
+   "fix": "Lowercase the strings. Use a plain short caption."
+  },
+  {
+   "id": "q28-C",
+   "what": "Motion snippet shows capitalised words and caps SP. The caption has developer jargon.",
+   "fix": "Lowercase the strings. Use a plain short caption."
+  },
+  {
+   "id": "q28-D",
+   "what": "Motion snippet shows capitalised words and caps SP. The caption has developer jargon.",
+   "fix": "Lowercase the strings. Use a plain short caption."
+  },
+  {
+   "id": "q29-A",
+   "what": "Stale picture: capitalised words, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q29-B",
+   "what": "Stale case. The selected style differs from the other options, which is a difference the question is not about.",
+   "fix": "Re-render lowercase. Use the same selected style as the other options."
+  },
+  {
+   "id": "q29-C",
+   "what": "Stale case. Two items are lime, so it is unclear which one is selected.",
+   "fix": "Re-render lowercase. Only the selected item is lime."
+  },
+  {
+   "id": "q29-D",
+   "what": "Stale picture: capitalised words, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q30-A",
+   "what": "Stale picture: capitalised words, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q30-B",
+   "what": "Stale case. The help text sits in a footer, not under the focused row, so it does not show the option as labelled.",
+   "fix": "Re-render lowercase. Put the help directly under the focused row."
+  },
+  {
+   "id": "q30-C",
+   "what": "Stale picture: capitalised words, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q30-D",
+   "what": "Stale case. The inset overlaps the card border.",
+   "fix": "Re-render lowercase. Keep the inset inside the card with padding."
+  },
+  {
+   "id": "q31-A",
+   "what": "Stale picture: capitalised words and key names, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q31-B",
+   "what": "Stale case. Key names Tab, Q, W and the like are capitalised. The sub-labels under the keycaps (Up, Down, Use) are tiny for a TV. The diagram stops at the letter keys and the mouse is cut off at the right.",
+   "fix": "Re-render lowercase. Enlarge the sub-labels. Show the whole keyboard and mouse inside the frame."
+  },
+  {
+   "id": "q31-C",
+   "what": "Stale picture: capitalised words and key names, rendered before the lowercase rule.",
+   "fix": "Re-render with the current render.ps1."
+  },
+  {
+   "id": "q31-D",
+   "what": "Stale case. The Keyboard tab says 'Press a button', which is a pad prompt. The 'Melee' row is clipped.",
+   "fix": "Re-render lowercase. Use a keyboard prompt on the Keyboard tab. Fix the clipped row."
+  },
+  {
+   "id": "q32-A",
+   "what": "Motion snippet shows capitalised words and caps SP. The caption has developer jargon.",
+   "fix": "Lowercase the strings. Use a plain short caption."
+  },
+  {
+   "id": "q32-B",
+   "what": "Motion snippet shows capitalised words and caps SP. The caption has developer jargon.",
+   "fix": "Lowercase the strings. Use a plain short caption."
+  },
+  {
+   "id": "q32-C",
+   "what": "Motion snippet shows capitalised words and caps SP. The caption has developer jargon.",
+   "fix": "Lowercase the strings. Use a plain short caption."
+  },
+  {
+   "id": "q32-D",
+   "what": "The pages fade while they slide, so it is not a true side-by-side carousel. The strings are capitalised and the caption has jargon.",
+   "fix": "Remove the opacity fade so both pages slide in view together. Lowercase the strings. Use a plain caption."
+  },
+  {
+   "id": "q33-C",
+   "what": "Off-style vector cartoon raider that is not centred, so it does not match the pixel-art look of the other options.",
+   "fix": "Redraw in the game's art style and centre it on the card."
+  },
+  {
+   "id": "q34-A",
+   "what": "The backdrop is the old amber stash UI with jokes and 'v0.0549'. It is the wrong style and shows version text.",
+   "fix": "Use the current lime-and-dark backdrop. Remove the jokes and version text."
+  },
+  {
+   "id": "q34-B",
+   "what": "The backdrop is the old amber stash UI with jokes and 'v0.0549'.",
+   "fix": "Use the current lime-and-dark backdrop. Remove the jokes and version text."
+  },
+  {
+   "id": "q34-C",
+   "what": "The backdrop is the old amber stash UI with jokes and 'v0.0549'.",
+   "fix": "Use the current lime-and-dark backdrop. Remove the jokes and version text."
+  },
+  {
+   "id": "q34-D",
+   "what": "The old amber stash backdrop with jokes and 'v0.0549'. The chip covers the tabs, and the 'drawer' is a floating card.",
+   "fix": "Use the current backdrop. Move the chip off the tabs. Attach the drawer to the screen edge."
+  },
+  {
+   "id": "q35-A",
+   "what": "Old amber hub counters show in the corners, which is the wrong style and clutters the screen.",
+   "fix": "Use the current backdrop without old counters."
+  },
+  {
+   "id": "q35-B",
+   "what": "Old amber hub counters show in the corners.",
+   "fix": "Use the current backdrop without old counters."
+  },
+  {
+   "id": "q35-C",
+   "what": "Old amber hub counters show in the corners.",
+   "fix": "Use the current backdrop without old counters."
+  },
+  {
+   "id": "q35-D",
+   "what": "Old amber hub counters in the corners. The arrow chip is redundant and the lime plate is missing.",
+   "fix": "Remove the old counters and the arrow chip. Add the lime plate."
+  },
+  {
+   "id": "q36-A",
+   "what": "The Buy button and a disabled 'need $120 more' button appear together for an affordable item. The two states contradict each other.",
+   "fix": "Show only the Buy button when the item is affordable."
+  },
+  {
+   "id": "q36-B",
+   "what": "The Buy button and a disabled 'need $120 more' button appear together for an affordable item.",
+   "fix": "Show only the Buy button when the item is affordable."
+  }
+ ]
+}

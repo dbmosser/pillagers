@@ -1,0 +1,108 @@
+{
+    "title":  "prompts follow the last input device",
+    "why":  "His order (2026-10-18): \"player should get key prompts if that is the last input they used -- xbox controller prompts should only pop up if player is actively using the controller -- e.g. real time glyph switching -- fortnite does a great job with this\". The game showed pad prompts whenever a pad was plugged in. Each window now keeps the last input device it saw: any key press, mouse click, wheel turn or mouse move of more than 6 pixels is the keyboard, a pad button press or a stick push past its deadzone is the pad (drift and a held stick never flip it). padOn(), the one reader every prompt asks, is true only for a connected pad that is also the last device used, and the body.padon class that drives the DOM hints follows it the same frame. The player 2 window, which has no keyboard or mouse of its own, keeps the pad prompts. Twenty canvas and DOM hints that read the connected pad directly now ask the same reader.",
+    "now":  "Prompts follow what you used last: press a key and you see keys, touch the controller and you see its buttons.",
+    "edits":  [
+                  {
+                      "anchor":  "var keys={},mouse={x:0,y:0,down:false},pauseOpen=false,tuneOpen=false;",
+                      "replacement":  "var keys={},mouse={x:0,y:0,down:false},pauseOpen=false,tuneOpen=false;\n// v30.xx (cw-glyphs), HIS ORDER (2026-10-18): \"player should get key prompts if that is the last input they used -- xbox controller\n// prompts should only pop up if player is actively using the controller -- e.g. real time glyph switching -- fortnite does a great\n// job with this\". INDEV.dev is the last input device THIS window saw: \u0027kb\u0027 (a key press, a mouse click or wheel turn, or a mouse move\n// of more than INDEV_MOVE pixels) or \u0027pad\u0027 (a pad button newly pressed, or a stick pushed past INDEV_DZ). padOn() is the one reader\n// every prompt asks and it is true only while a pad is connected AND it is the last device used: a pad that is merely plugged in or\n// drifting never puts its glyphs up, and a key press takes them down on the very next frame. Each window is one player with its own\n// tracker. The player 2 window of a same machine pair has no keyboard or mouse of its own (it hands every key to player 1, netKeyFwd),\n// so it ignores both and keeps the pad prompts while its pad is there. Mouse events count only when real (the pad\u0027s own synthetic\n// presses must not flip it back); key events always count (the keys player 2 hands over arrive as synthetic keydowns and are player 1\n// on the keyboard). INDEV.legacy is for the test fixture only: it keeps the older checks, which set PAD.on by hand, meaning what they meant.\nvar INDEV={dev:\u0027kb\u0027,legacy:false,ax:null,ay:null,lx:null,ly:null,pb:[],pa:[]}, INDEV_MOVE=6, INDEV_DZ=0.4;\nfunction indevP2(){ try{ return !!((typeof NET===\u0027object\u0027\u0026\u0026NET\u0026\u0026NET.same===\u0027p2\u0027)||(typeof ARCADE===\u0027object\u0027\u0026\u0026ARCADE\u0026\u0026ARCADE.on\u0026\u0026ARCADE.role===\u0027p2\u0027)); }catch(_ip){ return false; } }\nfunction indevSet(d){\n  if(INDEV.dev===d) return false;\n  INDEV.dev=d;\n  if(d===\u0027pad\u0027){ INDEV.ax=INDEV.lx; INDEV.ay=INDEV.ly; }   // the mouse is judged from where it lay when the pad took over\n  try{ if(typeof padBodyCls===\u0027function\u0027) padBodyCls(); }catch(_ib){}   // the DOM hints (body.padon) switch in the same breath\n  return true;\n}\nfunction indevKey(){ if(!indevP2()) indevSet(\u0027kb\u0027); }\nfunction indevMouse(x,y,mx,my){\n  INDEV.lx=x; INDEV.ly=y;\n  if(indevP2()) return;\n  if(INDEV.dev===\u0027kb\u0027||INDEV.ax===null){ INDEV.ax=x; INDEV.ay=y; return; }\n  if(mx===0\u0026\u0026my===0) return;   // a move the browser made up (the page moved under a still cursor) is not a hand on the mouse\n  if(Math.hypot(x-INDEV.ax,y-INDEV.ay)\u003eINDEV_MOVE) indevSet(\u0027kb\u0027);\n}\nfunction indevPadTick(gp){\n  var b=(gp\u0026\u0026gp.buttons)||[], a=(gp\u0026\u0026gp.axes)||[], i, v, av, hit=false, th=INDEV_DZ;\n  try{ th=Math.max(INDEV_DZ,padDz()+0.15); }catch(_pd){}\n  for(i=0;i\u003cb.length\u0026\u0026i\u003c32;i++){   // a button counts on its press, not while it is held\n    v=b[i]; av=v?((v.value!==undefined)?+v.value:(v.pressed?1:0)):0;\n    if(v\u0026\u0026(v.pressed||av\u003e0.5)){ if(!INDEV.pb[i]) hit=true; INDEV.pb[i]=1; }\n    else if(!v||(!v.pressed\u0026\u0026av\u003c0.3)) INDEV.pb[i]=0;\n  }\n  for(i=0;i\u003ca.length\u0026\u0026i\u003c4;i++){   // a stick counts when it crosses the line, not while it sits past it (drift never flips)\n    av=Math.abs(+a[i]||0);\n    if(av\u003eth){ if(!INDEV.pa[i]) hit=true; INDEV.pa[i]=1; }\n    else if(av\u003cth*0.6) INDEV.pa[i]=0;\n  }\n  if(hit) indevSet(\u0027pad\u0027);\n  return hit;\n}\ntry{\n  window.addEventListener(\u0027keydown\u0027,function(){ indevKey(); },true);\n  window.addEventListener(\u0027mousedown\u0027,function(e){ if(e.isTrusted) indevKey(); },true);\n  window.addEventListener(\u0027wheel\u0027,function(e){ if(e.isTrusted) indevKey(); },{capture:true,passive:true});\n  window.addEventListener(\u0027mousemove\u0027,function(e){ if(e.isTrusted) indevMouse(e.clientX,e.clientY,e.movementX,e.movementY); },true);\n}catch(_ig){}"
+                  },
+                  {
+                      "anchor":  "function padOn(){ return !!(typeof PAD!==\u0027undefined\u0027\u0026\u0026PAD\u0026\u0026PAD.on); }",
+                      "replacement":  "// v30.xx (cw-glyphs), HIS ORDER (2026-10-18): \"xbox controller prompts should only pop up if player is actively using the controller\". A pad that is only\n// connected no longer counts: it must also be the last device used (INDEV, above). The player 2 window has no other device, so it keeps the pad prompts.\nfunction padOn(){ return !!(typeof PAD!==\u0027undefined\u0027\u0026\u0026PAD\u0026\u0026PAD.on\u0026\u0026(typeof INDEV===\u0027undefined\u0027||!INDEV||INDEV.dev===\u0027pad\u0027||INDEV.legacy||indevP2())); }"
+                  },
+                  {
+                      "anchor":  "function padBodyCls(){ var on=!!(PAD\u0026\u0026PAD.on), r;",
+                      "replacement":  "function padBodyCls(){ var on=padOn(), r; /* v30.xx (cw-glyphs): body.padon follows the last input device, not just a connected pad */"
+                  },
+                  {
+                      "anchor":  "PAD.on=true; padBodyCls();   // v19.70: the page knows the pad is on (body.padon)",
+                      "replacement":  "indevPadTick(gp);   // v30.xx (cw-glyphs): this window\u0027s pad, own or handed over, is read for use before anything else\n  PAD.on=true; padBodyCls();   // v19.70: the page knows the pad is on (body.padon)"
+                  },
+                  {
+                      "anchor":  "if(PAD\u0026\u0026PAD.on\u0026\u0026(typeof G===\u0027undefined\u0027||!G||state===\u0027hub\u0027))",
+                      "replacement":  "if(padOn()\u0026\u0026(typeof G===\u0027undefined\u0027||!G||state===\u0027hub\u0027))"
+                  },
+                  {
+                      "anchor":  "if(PAD\u0026\u0026PAD.on\u0026\u0026typeof LEGEND_PAD!==\u0027undefined\u0027\u0026\u0026LEGEND_PAD)",
+                      "replacement":  "if(padOn()\u0026\u0026typeof LEGEND_PAD!==\u0027undefined\u0027\u0026\u0026LEGEND_PAD)"
+                  },
+                  {
+                      "anchor":  "_fLEG=(PAD\u0026\u0026PAD.on)?LEGEND_PAD:LEGEND;",
+                      "replacement":  "_fLEG=padOn()?LEGEND_PAD:LEGEND;"
+                  },
+                  {
+                      "anchor":  "if(!(PAD\u0026\u0026PAD.on)\u0026\u0026!(typeof arcadeCardOn===\u0027function\u0027\u0026\u0026arcadeCardOn()\u003e0)) ctx.fillText(legendKeys(\u0027F1\u0027)+\u0027  controls\u0027",
+                      "replacement":  "if(!padOn()\u0026\u0026!(typeof arcadeCardOn===\u0027function\u0027\u0026\u0026arcadeCardOn()\u003e0)) ctx.fillText(legendKeys(\u0027F1\u0027)+\u0027  controls\u0027"
+                  },
+                  {
+                      "anchor":  "var MN=((PAD\u0026\u0026PAD.on)?LEGEND_MINI_PAD:LEGEND_MINI).slice(),mi;",
+                      "replacement":  "var MN=(padOn()?LEGEND_MINI_PAD:LEGEND_MINI).slice(),mi;"
+                  },
+                  {
+                      "anchor":  "if(PAD\u0026\u0026PAD.on) MN.push([\u0027Y\u0027,\u0027drop to trade\u0027])",
+                      "replacement":  "if(padOn()) MN.push([\u0027Y\u0027,\u0027drop to trade\u0027])"
+                  },
+                  {
+                      "anchor":  "if(!(PAD\u0026\u0026PAD.on)) for(mi=0;mi\u003cMN.length;mi++)",
+                      "replacement":  "if(!padOn()) for(mi=0;mi\u003cMN.length;mi++)"
+                  },
+                  {
+                      "anchor":  "MH=MROW*_mr+((PAD\u0026\u0026PAD.on)?LH(6):LH(16));",
+                      "replacement":  "MH=MROW*_mr+(padOn()?LH(6):LH(16));"
+                  },
+                  {
+                      "anchor":  "if(!(PAD\u0026\u0026PAD.on)) ctx.fillText(legendKeys(\u0027F1\u0027)+\u0027  full list\u0027",
+                      "replacement":  "if(!padOn()) ctx.fillText(legendKeys(\u0027F1\u0027)+\u0027  full list\u0027"
+                  },
+                  {
+                      "anchor":  "var LEG=(PAD\u0026\u0026PAD.on)?LEGEND_PAD:LEGEND;",
+                      "replacement":  "var LEG=padOn()?LEGEND_PAD:LEGEND;"
+                  },
+                  {
+                      "anchor":  "padB((PAD\u0026\u0026PAD.on)?_lgk[0]:legendKeys(_lgk[0]))",
+                      "replacement":  "padB(padOn()?_lgk[0]:legendKeys(_lgk[0]))"
+                  },
+                  {
+                      "anchor":  "padB((PAD\u0026\u0026PAD.on)?k[0]:legendKeys(k[0]))",
+                      "replacement":  "padB(padOn()?k[0]:legendKeys(k[0]))"
+                  },
+                  {
+                      "anchor":  "if(!(PAD\u0026\u0026PAD.on)) ctx.fillText(legendKeys(\u0027F1\u0027)+\u0027  hide\u0027",
+                      "replacement":  "if(!padOn()) ctx.fillText(legendKeys(\u0027F1\u0027)+\u0027  hide\u0027"
+                  },
+                  {
+                      "anchor":  "var _bh=(PAD\u0026\u0026PAD.on)?((state===\u0027hub\u0027)?padB(\u0027VIEW to close\u0027)",
+                      "replacement":  "var _bh=padOn()?((state===\u0027hub\u0027)?padB(\u0027VIEW to close\u0027)"
+                  },
+                  {
+                      "anchor":  "_bo=((PAD\u0026\u0026PAD.on)?padB(\u0027Y\u0027):\u0027Z\u0027)+\u0027 drop for teammate   \u0027",
+                      "replacement":  "_bo=(padOn()?padB(\u0027Y\u0027):\u0027Z\u0027)+\u0027 drop for teammate   \u0027"
+                  },
+                  {
+                      "anchor":  "_bh=((PAD\u0026\u0026PAD.on)?padB(\u0027Y\u0027):\u0027Z\u0027)+\u0027 drop   \u0027",
+                      "replacement":  "_bh=(padOn()?padB(\u0027Y\u0027):\u0027Z\u0027)+\u0027 drop   \u0027"
+                  },
+                  {
+                      "anchor":  "((PAD\u0026\u0026PAD.on)?\u0027\u0027:\u0027drag to tactical belt\u0027)",
+                      "replacement":  "(padOn()?\u0027\u0027:\u0027drag to tactical belt\u0027)"
+                  },
+                  {
+                      "anchor":  ":(PAD\u0026\u0026PAD.on)?padB(\u0027DPAD move, past the ends to the tactical belt",
+                      "replacement":  ":padOn()?padB(\u0027DPAD move, past the ends to the tactical belt"
+                  },
+                  {
+                      "anchor":  "if(!(PAD\u0026\u0026PAD.on)\u0026\u0026G.bagCells)",
+                      "replacement":  "if(!padOn()\u0026\u0026G.bagCells)"
+                  },
+                  {
+                      "anchor":  "ctx.fillText((PAD\u0026\u0026PAD.on)?\u0027walk to dismiss\u0027",
+                      "replacement":  "ctx.fillText(padOn()?\u0027walk to dismiss\u0027"
+                  },
+                  {
+                      "anchor":  "say2((PAD\u0026\u0026PAD.on)?padB(\u0027TACTICAL BELT",
+                      "replacement":  "say2(padOn()?padB(\u0027TACTICAL BELT"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027prompts follow the last input device in real time: a key press puts the key prompts up, a pad button or stick puts the pad prompts up, a pad that is only plugged in or drifting changes nothing, in the raid hint and the DOM hints (his order: Fortnite style glyph switching)\u0027,\n   run:function(){\n     if(typeof INDEV!==\u0027object\u0027||!INDEV||typeof indevPadTick!==\u0027function\u0027) return \u0027prompts do not follow the last input device (no INDEV tracker)\u0027;\n     if(typeof pollPad!==\u0027function\u0027||typeof drawHUD!==\u0027function\u0027||typeof PAD!==\u0027object\u0027||!PAD||typeof NET!==\u0027object\u0027||!NET||!window.__deploy||!window.__endRaid) return \u0027SKIP: no pad or raid code here\u0027;\n     var NG=navigator.getGamepads, ownNG=Object.prototype.hasOwnProperty.call(navigator,\u0027getGamepads\u0027), pad=null, bad=[], g, seen=[], t1, t2, t3, t4, cs,\n         on0=PAD.on, br0=PAD.brand, an0=PAD.announced, mx0=mouse.x, my0=mouse.y, lg0=INDEV.legacy, dv0=INDEV.dev, ns0=NET.same,\n         hadT=Object.prototype.hasOwnProperty.call(ctx,\u0027fillText\u0027), oFT=ctx.fillText;\n     function mk(btn,ax){ var bt=[], j; for(j=0;j\u003c17;j++) bt.push({pressed:(j===btn),value:(j===btn)?1:0,touched:(j===btn)}); return {connected:true,id:\u0027glyph check pad\u0027,index:0,mapping:\u0027standard\u0027,timestamp:1,buttons:bt,axes:ax||[0,0,0,0]}; }\n     function poll(btn,ax){ pad=mk(btn,ax); pollPad(); }\n     function key(){ window.dispatchEvent(new KeyboardEvent(\u0027keydown\u0027,{code:\u0027F13\u0027,key:\u0027F13\u0027,bubbles:true,cancelable:true})); window.dispatchEvent(new KeyboardEvent(\u0027keyup\u0027,{code:\u0027F13\u0027,key:\u0027F13\u0027,bubbles:true})); }\n     function st(){ return INDEV.dev+\u0027 padOn=\u0027+padOn()+\u0027 body.padon=\u0027+document.body.classList.contains(\u0027padon\u0027); }\n     function grab(){ seen=[]; ctx.fillText=function(s){ seen.push(String(s)); return oFT.apply(this,arguments); }; try{ drawHUD(); }catch(_h){} if(hadT) ctx.fillText=oFT; else delete ctx.fillText; return seen.filter(function(s){ return /backpack$/i.test(s); }).join(\u0027|\u0027).toLowerCase(); }\n     function strip(){ var m=document.getElementById(\u0027settingsmodal\u0027), c; if(!m) return \u0027nomodal\u0027; c=getComputedStyle(m,\u0027::after\u0027).content; return String(c).replace(/[\"\u0027]/g,\u0027\u0027).replace(/\\s+/g,\u0027 \u0027).toLowerCase(); }\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       INDEV.legacy=false; INDEV.dev=\u0027kb\u0027; INDEV.pb=[]; INDEV.pa=[]; INDEV.ax=null; INDEV.ay=null; INDEV.lx=null; INDEV.ly=null; NET.same=null; PAD.announced=true;\n       navigator.getGamepads=function(){ return [pad]; };\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||g.over||!g.player) return \u0027SKIP: no live raid\u0027;\n       g.player.roll=0; g.player.downed=false; g.bagOpen=false; g.mapOpen=false; g.trade=null; g.searching=null; mouse.x=Math.round(W*0.5); mouse.y=Math.round(H*0.4);\n       // 1. a pad that is only plugged in: nothing changes\n       poll(-1);\n       if(!PAD.on) return \u0027SKIP: staging: the stub pad did not come on\u0027;\n       t1=grab(); cs=strip();\n       if(st()!==\u0027kb padOn=false body.padon=false\u0027) bad.push(\u0027a pad that is only plugged in already shows the pad prompts (\u0027+st()+\u0027)\u0027);\n       if(keyLabel(\u0027KeyE\u0027,\u0027E\u0027)!==\u0027E\u0027) bad.push(\u0027the use key reads \u0027+keyLabel(\u0027KeyE\u0027,\u0027E\u0027)+\u0027 with the pad only plugged in\u0027);\n       if(/view/.test(t1)||!/b \\/ i/.test(t1)) bad.push(\u0027the raid backpack hint reads \"\u0027+t1+\u0027\" with the pad only plugged in, not B / I\u0027);\n       if(/a\\s+change/.test(cs)) bad.push(\u0027the settings hint strip reads \"\u0027+cs+\u0027\" with the pad only plugged in\u0027);\n       // 2. a pad button press: the pad prompts, at once, in the raid and in the DOM\n       poll(5);\n       t2=grab(); cs=strip();\n       if(st()!==\u0027pad padOn=true body.padon=true\u0027) bad.push(\u0027a pad button press did not put the pad prompts up (\u0027+st()+\u0027)\u0027);\n       if(keyLabel(\u0027KeyE\u0027,\u0027E\u0027)===\u0027E\u0027) bad.push(\u0027the use key still reads E after a pad press\u0027);\n       if(!/view/.test(t2)) bad.push(\u0027the raid backpack hint reads \"\u0027+t2+\u0027\" after a pad press, not VIEW\u0027);\n       if(!/a\\s+change/.test(cs)) bad.push(\u0027the settings hint strip reads \"\u0027+cs+\u0027\" after a pad press, not the pad buttons\u0027);\n       // 3. a key press: the key prompts, on the very next frame, and the pad button still held does not take them back\n       key();\n       if(st()!==\u0027kb padOn=false body.padon=false\u0027) bad.push(\u0027a key press did not take the pad prompts down (\u0027+st()+\u0027)\u0027);\n       poll(5);\n       if(INDEV.dev!==\u0027kb\u0027) bad.push(\u0027a pad button held down since before the key press took the key prompts back\u0027);\n       t3=grab(); cs=strip();\n       if(t3!==t1) bad.push(\u0027the raid backpack hint reads \"\u0027+t3+\u0027\" after a key press, it read \"\u0027+t1+\u0027\" before\u0027);\n       if(/a\\s+change/.test(cs)) bad.push(\u0027the settings hint strip reads \"\u0027+cs+\u0027\" after a key press\u0027);\n       // 4. drift never flips; a real stick push does; a stick held where it is does not flip back after a key\n       poll(-1,[0.22,-0.18,0.15,0.1]);\n       if(INDEV.dev!==\u0027kb\u0027) bad.push(\u0027stick drift put the pad prompts up\u0027);\n       poll(-1,[0,0,0.9,0]);\n       if(INDEV.dev!==\u0027pad\u0027) bad.push(\u0027a stick push did not put the pad prompts up\u0027);\n       key(); poll(-1,[0,0,0.9,0]);\n       if(INDEV.dev!==\u0027kb\u0027) bad.push(\u0027a stick held in place took the key prompts back after a key press\u0027);\n       poll(-1,[0,0,0,0]); poll(-1,[0,0,0,0.8]);\n       if(INDEV.dev!==\u0027pad\u0027) bad.push(\u0027the other stick did not put the pad prompts up\u0027);\n       // 5. the mouse: jitter is ignored, a real move and a click win; made up and pad made events do not\n       INDEV.ax=300; INDEV.ay=300; indevMouse(300,300,0,0);\n       if(INDEV.dev!==\u0027pad\u0027) bad.push(\u0027a mouse event with no move took the pad prompts down\u0027);\n       indevMouse(303,301,3,1);\n       if(INDEV.dev!==\u0027pad\u0027) bad.push(\u00273 pixels of mouse jitter took the pad prompts down\u0027);\n       window.dispatchEvent(new MouseEvent(\u0027mousemove\u0027,{clientX:900,clientY:700,bubbles:true}));\n       window.dispatchEvent(new MouseEvent(\u0027mousedown\u0027,{clientX:900,clientY:700,button:0,bubbles:true}));\n       if(INDEV.dev!==\u0027pad\u0027) bad.push(\u0027a mouse event the page made up took the pad prompts down\u0027);\n       indevMouse(340,320,40,20);\n       if(INDEV.dev!==\u0027kb\u0027) bad.push(\u0027a 40 pixel mouse move did not put the key prompts up\u0027);\n       // 6. the player 2 window has no keyboard or mouse of its own: it keeps the pad prompts\n       indevSet(\u0027kb\u0027); NET.same=\u0027p2\u0027;\n       key();\n       if(INDEV.dev!==\u0027kb\u0027||!padOn()) bad.push(\u0027the player 2 window lost its pad prompts (\u0027+st()+\u0027)\u0027);\n       NET.same=null;\n       if(padOn()) bad.push(\u0027the pad prompts stayed up after leaving the player 2 window\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{\n       if(hadT) ctx.fillText=oFT; else delete ctx.fillText;\n       if(ownNG) navigator.getGamepads=NG; else { try{ delete navigator.getGamepads; }catch(_d){} if(navigator.getGamepads!==NG) navigator.getGamepads=NG; }\n       keys={}; try{ padRelease(); }catch(_pr){}\n       INDEV.legacy=lg0; INDEV.dev=dv0; INDEV.pb=[]; INDEV.pa=[]; INDEV.ax=null; INDEV.ay=null; INDEV.lx=null; INDEV.ly=null; NET.same=ns0;\n       PAD.on=on0; PAD.brand=br0; PAD.announced=an0; PAD.prev=[]; mouse.x=mx0; mouse.y=my0;\n       try{ padBodyCls(); }catch(_bc){}\n       try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ g2.player.downed=false; __endRaid(\u0027abandon\u0027); } }catch(_e){}\n       __topClear();\n     }\n     return bad.length?bad.join(\u0027; \u0027):null;\n   }},"
+}

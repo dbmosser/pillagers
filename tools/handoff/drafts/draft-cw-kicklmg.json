@@ -1,0 +1,12 @@
+{
+    "title":  "THE SUPPORT MG NO LONGER BUILDS INTO A HEAVY SHAKE",
+    "why":  "His Q5: gun feel. The Support MG fires every 105 ms. At the flat 2.2 kick each round adds 0.157 trauma and only 0.147 drains, so a held 60 round magazine climbed into a heavy shake (the same fault the SMG had). 2.0 adds 0.143, so it holds at about 0.3 px.",
+    "now":  "The Support MG no longer builds into a heavy shake.",
+    "edits":  [
+                  {
+                      "anchor":  "var GUN_SHAKE={shotgun:6.5,smg:1.9,pistol:3.6,rifle:2.7,magnum:5.5};",
+                      "replacement":  "var GUN_SHAKE={shotgun:6.5,smg:1.9,pistol:3.6,rifle:2.7,magnum:5.5,lmg:2.0};   // v28.xx (cw-kicklmg): the Support MG 2.2 to 2.0, so a held 60 round magazine (105 ms a round, trauma drains 0.147 a round, 2.2 adds 0.157) no longer climbs into a heavy shake; 2.0 adds 0.143 and the measured shake of a held magazine stays about 0.3 px"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a Support MG round kicks the camera 2.0, down from 2.2, and a held full 60 round magazine stays under 1.5 px (his Q5 gun feel)\u0027,\n   run:function(){\n     if(typeof gunShake!==\u0027function\u0027||typeof gfxTrauma!==\u0027function\u0027) return \u0027SKIP: no gunShake\u0027;\n     var g=null;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player) return \u0027SKIP: no raid\u0027;\n       var w=WEAPONS.lmg, mx=0, i, nx=0, t=0, dt=1/60, n=0, one=-1;\n       CFG.shake=1; CFG.fxInt=1; GFX.shG=null; G.shake=0; gfxTrauma(dt);\n       for(i=0;i\u003c540;i++){\n         t+=dt;\n         if(t\u003e=nx\u0026\u0026n\u003cw.mag){ G.shake=0; fireWeapon(g.player,w,g.player.x+200,g.player.y,true); if(n===0) one=G.shake; nx+=w.rof/1000; n++; }\n         gfxTrauma(dt); if(GFX.shA\u003emx) mx=GFX.shA;\n         if(G.shake\u003e0) G.shake=Math.max(0,G.shake-dt*26);\n       }\n       if(Math.abs(one-2.0)\u003e0.01) return \u0027a Support MG round sets a kick of \u0027+one+\u0027, not 2.0\u0027;\n       if(!(mx\u003e0.2)) return \u0027a held Support MG magazine shakes the camera only \u0027+mx.toFixed(2)+\u0027 px, under 0.2\u0027;\n       if(!(mx\u003c1.5)) return \u0027a held Support MG magazine shakes the camera \u0027+mx.toFixed(2)+\u0027 px, over 1.5\u0027;\n       return null;\n     } finally {\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}

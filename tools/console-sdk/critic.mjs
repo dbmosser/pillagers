@@ -20,7 +20,7 @@ encourage. A 4 means a player would call it polished; most amateur game screens 
 Rubric (weight): hierarchy, what the eye hits first and whether it should (3); consistency with the style guide and the other screens:
 type sizes, palette, panels, buttons, title and close/back placement (3); craft: alignment, spacing, padding, clipping, overlaps,
 crowding, contrast (2); identity, does it feel like this game and not a generic template (1); readability at 1080 from a couch, with
-pad focus visible (1). Sentence case is required (never all caps). Clutter and explaining sentences on screen are defects.
+pad focus visible (1). ALL LOWER CASE is required: the owner ordered every word on screen lower case (2026-10-18), so never flag lower case as a defect and flag any capital letter on screen except inside art. Clutter and explaining sentences on screen are defects.
 Style guide:\n${guide}\n
 Answer with ONLY a JSON object: {"score":1-5,"better_than_before":"yes"|"no"|"same"|"n/a","verdict":"one plain sentence",
 "findings":[{"sev":"P0"|"P1"|"P2","where":"...","what":"...","fix":"concrete, numeric where possible"}]} with at most 8 findings, worst first.`;

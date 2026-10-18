@@ -1,0 +1,16 @@
+{
+    "title":  "RUN INFO TITLE IS WHITE",
+    "why":  "The critic on the raid screen (10-19): lime is spent on a label in the Run info panel. The title is white and the section headings grey.",
+    "now":  "The Run info panel title is white and its section headings are grey.",
+    "edits":  [
+                  {
+                      "anchor":  "    ctx.fillStyle=UIC.acc; ctx.fillText(\u0027RUN INFO\u0027,bx+pad,ry);   // v27.42 (info1): was CONDITIONS",
+                      "replacement":  "    ctx.fillStyle=UIC.tx_1; ctx.fillText(\u0027RUN INFO\u0027,bx+pad,ry);   // v27.42 (info1): was CONDITIONS; v28.xx (cw-runinfotitle), the critic (2026-10-19): \u0027Lime is spent on a label ... Remove all lime.\u0027 The title is white"
+                  },
+                  {
+                      "anchor":  "      if(R2.k){ ctx.fillStyle=R2.c; ctx.fillText(R2.k,bx+pad,ry); ry+=lh; }",
+                      "replacement":  "      if(R2.k){ ctx.fillStyle=UIC.tx_2; ctx.fillText(R2.k,bx+pad,ry); ry+=lh; }   // v28.xx (cw-runinfotitle): the section headings are grey, the panel title white, no lime"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the Run info panel has a white title and grey section headings, no lime (the critic, 10-19)\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid\u0026\u0026window.__frame)) return \u0027SKIP: this fixture cannot deploy\u0027;\n     var g=null, oF=ctx.fillText, rec=[], t, lime=[], i;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[\u0027gun_shotgun\u0027,\u0027gun_rifle\u0027],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player||g.over) return \u0027SKIP: staging: no raid\u0027;\n       g.bagOpen=false; g.mapOpen=false; g.paused=false; keys={}; mouse.down=false;\n       ctx.fillText=function(s){ rec.push({s:String(s),c:String(this.fillStyle).toLowerCase()}); return oF.apply(this,arguments); };\n       try{ __frame(0.016); }finally{ ctx.fillText=oF; }\n       t=rec.filter(function(r){ return (/^run info$/i).test(r.s); });\n       if(!t.length) return \u0027the Run info panel is not drawn in this staging\u0027;\n       if(t[t.length-1].c===\u0027#e6ff3d\u0027) return \u0027the Run info title is lime\u0027;\n       for(i=0;i\u003crec.length;i++){ if(rec[i].c===\u0027#e6ff3d\u0027\u0026\u0026(/^(run goals|contracts)$/i).test(rec[i].s)) lime.push(rec[i].s); }\n       if(lime.length) return \u0027a Run info section heading is lime: \u0027+lime.join(\u0027,\u0027);\n       return null;\n     } finally {\n       ctx.fillText=oF;\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}

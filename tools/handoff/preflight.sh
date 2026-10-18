@@ -6,7 +6,7 @@
 # control failing on the current build, and the newest 80 older checks. Nothing in the repo changes. PASS: queue it with shipq.sh.
 S="C:/Users/User1/AppData/Local/Temp/claude/C--Users-User1-Desktop-dark-raiders/8a09e991-b4f4-4b23-b10f-ded92e837fc3/scratchpad"
 R="/c/claudecode/dark raiders"; H="$R/tools/handoff"; L=$1; K=$2
-case "$L" in a) n=1;; b) n=2;; c) n=3;; d) n=4;; e) n=5;; f) n=6;; *) echo "usage: preflight.sh a|b|c|d|e|f cw-KEY"; exit 2;; esac
+case "$L" in a) n=1;; b) n=2;; c) n=3;; d) n=4;; e) n=5;; f) n=6;; g) n=7;; h) n=8;; *) echo "usage: preflight.sh a|b|c|d|e|f|g|h cw-KEY"; exit 2;; esac
 T="pf$L"; CDP=$((9350+n))
 die(){ echo "PREFLIGHT FAIL ($K): $*"; exit 1; }
 pw(){ powershell -NoProfile -ExecutionPolicy Bypass "$@" 2>&1; }

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.64 - THE SUPPORT MG NO LONGER BUILDS INTO A HEAVY SHAKE
+
+Co-op hunt while he was away. His Q5: gun feel. The Support MG fires every 105 ms. At the flat 2.2 kick each round adds 0.157 trauma and only 0.147 drains, so a held 60 round magazine climbed into a heavy shake (the same fault the SMG had). 2.0 adds 0.143, so it holds at about 0.3 px.
+
+MEASURED. Check 30.64 passes, and fails on v30.63.
 ## v30.63 - THE MAGNUM KICKS THE SCREEN HARDER
 
 Co-op hunt while he was away. His Q5: gun feel. The Magnum shared the heavy-gun kick of 4.5 with the Longshot, 1.9 px. A 62 damage shot every 0.62 s should hit harder: 5.5 gives 2.8 px, and the shake drains in 0.28 s so shots never stack.

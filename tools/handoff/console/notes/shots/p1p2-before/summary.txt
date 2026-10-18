@@ -1,0 +1,4 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  03-hub-floor                           staged       7.6s  
+  45-arcade-attract-board                staged       8.1s  
+  58-coop-player2-window-title           staged       7.9s    |  title:true

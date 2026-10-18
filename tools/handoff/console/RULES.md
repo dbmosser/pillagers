@@ -23,9 +23,14 @@ questions and never wait. Your runs are billed to his Claude Console credits, so
 - Never edit dark_raiders.html directly. Every game change ships through a mk script and the ship queue (below).
 - Never git push --force, reset, rebase or delete branches. Never commit anything in tools/handoff/console/.
 - Keep 6 GB of RAM free: never start more than one extra Chrome, and close what you start.
-- In-game text is short, punchy callouts in SENTENCE CASE (his hard rule 2026-10-18: NEVER all caps; "Location revealed",
-  "Machine alert"; acronyms like SP, XP, HP, LMG stay). Never an
-  explaining sentence on screen. Score is SP, never $.
+- In-game text is short, punchy callouts, and EVERY WORD ON SCREEN IS LOWER CASE (his order 2026-10-18, later the same day:
+  "change all text shown to player to lowercase only -- i don't like how you have random words capitalized"; "location revealed",
+  "machine alert", "sp", "esc"). One text door (ncFix, cw-lowercase) lowers everything drawn, so never write code that puts capitals
+  back. Never an explaining sentence on screen. Score is SP (shown "sp"), money is $.
+- His other orders of 2026-10-18 afternoon (binding): keys control whichever window is in front (cw-p2keys); the FIRST pad plugged in
+  is player 2 only and the SECOND pad is player 1 only (cw-p2pads); prompts switch live between keys and pad by the last input used,
+  like Fortnite (cw-glyphs); player 1 and player 2 windows look and behave the same, and see each other in the Undercroft (cw-p1p2);
+  a name typed on the title goes into a new save (cw-newsavename). Do not undo any of these.
 - Never start agents, workflows, cloud sessions or scheduled tasks.
 
 ## How a change ships

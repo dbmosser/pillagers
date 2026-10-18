@@ -1,0 +1,1 @@
+| THE SUPPORT MG NO LONGER BUILDS INTO A HEAVY SHAKE | v30.64 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 30.64 passes, fails on v30.63 |

@@ -1,0 +1,12 @@
+{
+    "title":  "THE MOTION LAYER GETS AN OVERSHOOT CURVE",
+    "why":  "His Q47 (2026-10-18): livelier menu motion with bounce, overshoot about 6 to 10 percent. The curve first, used in the next build.",
+    "now":  "Nothing visible yet.",
+    "edits":  [
+                  {
+                      "anchor":  "UIM.E={out:function(u){ u=1-u; return 1-u*u*u; },inn:function(u){ return u*u; },sm:function(u){ return u*u*(3-2*u); }};",
+                      "replacement":  "// v28.xx (cw-bounce), his Q47 (2026-10-18): back is ease-out-back with c1 = 1.5: 8 percent past the target, then home. Not used yet.\nUIM.E={out:function(u){ u=1-u; return 1-u*u*u; },inn:function(u){ return u*u; },sm:function(u){ return u*u*(3-2*u); },back:function(u){ var v=u-1; return 1+2.5*v*v*v+1.5*v*v; }};"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the motion layer has an ease-out-back curve that peaks 8 percent past its target and ends on it\u0027,\n   run:function(){\n     if(typeof UIM!==\u0027object\u0027||!UIM||!UIM.E) return \u0027no motion layer (no UIM)\u0027;\n     if(typeof UIM.E.back!==\u0027function\u0027) return \u0027no back ease in UIM.E\u0027;\n     var mx=0, i, v;\n     for(i=0;i\u003c=200;i++){ v=UIM.E.back(i/200); if(v\u003emx) mx=v; }\n     if(!(mx\u003e1.06\u0026\u0026mx\u003c1.10)) return \u0027the back ease peaks at \u0027+mx.toFixed(3)+\u0027, want 1.06 to 1.10\u0027;\n     if(UIM.E.back(0)!==0||UIM.E.back(1)!==1) return \u0027the back ease does not run 0 to 1\u0027;\n     return null; }},"
+}

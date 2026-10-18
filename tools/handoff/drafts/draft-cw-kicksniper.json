@@ -1,0 +1,12 @@
+{
+    "title":  "THE LONGSHOT KICKS THE SCREEN HARDER",
+    "why":  "His Q5: gun feel. The Longshot (170 damage, one shot every 1.6 s) used the generic heavy kick 4.5, about 1.9 px, the same as a Magnum before its pass. 7.0 is trauma 0.5, about 4 px, gone in 0.36 s, so it never stacks and the biggest hit has the biggest kick.",
+    "now":  "The Longshot now kicks the screen harder with every shot.",
+    "edits":  [
+                  {
+                      "anchor":  "var GUN_SHAKE={shotgun:6.5,smg:1.9,pistol:3.6,rifle:2.7,magnum:5.5,lmg:2.0};",
+                      "replacement":  "var GUN_SHAKE={shotgun:6.5,smg:1.9,pistol:3.6,rifle:2.7,magnum:5.5,lmg:2.0,sniper:7.0};   // v28.xx (cw-kicksniper): the Longshot 4.5 to 7.0, one shot 1.9 px to about 4.1 px of camera kick (trauma 0.32 to 0.5, size 18 x trauma squared), draining in 0.36 s, far inside its 1600 ms rate, so 170 damage on one pull lands with the biggest kick of any gun"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a Longshot shot kicks the camera 7.0, up from 4.5 (about 4 px), and five shots at full rate never stack past 5 px (his Q5 gun feel)\u0027,\n   run:function(){\n     if(typeof gunShake!==\u0027function\u0027||typeof gfxTrauma!==\u0027function\u0027) return \u0027SKIP: no gunShake\u0027;\n     var g=null;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player) return \u0027SKIP: no raid\u0027;\n       var w=WEAPONS.sniper, mx=0, i, nx=0, t=0, dt=1/60, n=0, one=-1;\n       CFG.shake=1; CFG.fxInt=1; GFX.shG=null; G.shake=0; gfxTrauma(dt);\n       for(i=0;i\u003c600;i++){\n         t+=dt;\n         if(t\u003e=nx\u0026\u0026n\u003c5){ G.shake=0; fireWeapon(g.player,w,g.player.x+200,g.player.y,true); if(n===0) one=G.shake; nx+=w.rof/1000; n++; }\n         gfxTrauma(dt); if(GFX.shA\u003emx) mx=GFX.shA;\n         if(G.shake\u003e0) G.shake=Math.max(0,G.shake-dt*26);\n       }\n       if(Math.abs(one-7.0)\u003e0.01) return \u0027a Longshot shot sets a kick of \u0027+one+\u0027, not 7.0\u0027;\n       if(!(mx\u003e3.4)) return \u0027five Longshot shots shake the camera only \u0027+mx.toFixed(2)+\u0027 px, under 3.4\u0027;\n       if(!(mx\u003c5.0)) return \u0027five Longshot shots shake the camera \u0027+mx.toFixed(2)+\u0027 px, over 5.0\u0027;\n       return null;\n     } finally {\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}

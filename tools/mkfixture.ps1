@@ -6099,6 +6099,30 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.64',what:'a Support MG round kicks the camera 2.0, down from 2.2, and a held full 60 round magazine stays under 1.5 px (his Q5 gun feel)',
+   run:function(){
+     if(typeof gunShake!=='function'||typeof gfxTrauma!=='function') return 'SKIP: no gunShake';
+     var g=null;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player) return 'SKIP: no raid';
+       var w=WEAPONS.lmg, mx=0, i, nx=0, t=0, dt=1/60, n=0, one=-1;
+       CFG.shake=1; CFG.fxInt=1; GFX.shG=null; G.shake=0; gfxTrauma(dt);
+       for(i=0;i<540;i++){
+         t+=dt;
+         if(t>=nx&&n<w.mag){ G.shake=0; fireWeapon(g.player,w,g.player.x+200,g.player.y,true); if(n===0) one=G.shake; nx+=w.rof/1000; n++; }
+         gfxTrauma(dt); if(GFX.shA>mx) mx=GFX.shA;
+         if(G.shake>0) G.shake=Math.max(0,G.shake-dt*26);
+       }
+       if(Math.abs(one-2.0)>0.01) return 'a Support MG round sets a kick of '+one+', not 2.0';
+       if(!(mx>0.2)) return 'a held Support MG magazine shakes the camera only '+mx.toFixed(2)+' px, under 0.2';
+       if(!(mx<1.5)) return 'a held Support MG magazine shakes the camera '+mx.toFixed(2)+' px, over 1.5';
+       return null;
+     } finally {
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     } }},
   {v:'30.63',what:'a Magnum shot kicks the camera 5.5, up from 4.5 (about 2.8 px), and six shots at full rate never stack past 3.4 px (his Q5 gun feel)',
    run:function(){
      if(typeof gunShake!=='function'||typeof gfxTrauma!=='function') return 'SKIP: no gunShake';
@@ -89325,6 +89349,7 @@ window.__runPrep=function(){
   try{ if(window.__pinDPR) __pinDPR(1); }catch(e){}
   try{ var _bt=document.getElementById('title'); if(_bt) _bt.classList.remove('on'); }catch(e){}   // v12.06: the boot title is dismissed, as a player does before the floor
   try{ if(window.__cleanProfile) __cleanProfile(); }catch(e){}
+  try{ if(typeof INDEV==='object'&&INDEV) INDEV.legacy=true; }catch(e){}   // v30.xx (cw-glyphs): older checks set PAD.on by hand and mean "show the pad prompts"; the last-input rule has its own check, which turns this off
 };
 window.__regress=function(){
   var res={pass:true,checked:0,fail:[],skipped:[],cleared:0};
