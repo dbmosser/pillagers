@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.69 - TITLE: A LIVE PILLAGER AND ROBOT FIGHT BEHIND THE MENU
+
+Co-op hunt while he was away. His answers Q52 and Q54: behind the title, the scoreboard and the how-to pages, the live map with real pillager-versus-robot combat, no recorded clip, no frame cost. Two fights on the Undercroft floor either side of the menu: the game own pillager and sentry bodies, tracer shots, sparks, a robot that blows up and rolls back in, a pillager that goes down and gets up. Four bodies on a private random generator, so the raid seed and the seed 4242 fingerprint are untouched.
+
+MEASURED. Check 30.69 passes, and fails on v30.68.
 ## v30.68 - The window in front takes the keys
 
 Co-op hunt while he was away. His order (2026-10-18): if I bring the 2nd player screen to the front, it should take my key input, e.g. keys control whatever screen is to the top. The player 2 window handed every key to the player 1 window and did not act on it (v16.89). It now plays its own keys; the keyboard drives whichever window is in front. The player 2 mouse takes the crosshair back from its pad once the window is in front, and a key or click there drops player 2 into the arcade like A.

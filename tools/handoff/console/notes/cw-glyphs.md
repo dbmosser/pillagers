@@ -31,3 +31,11 @@ His order, verbatim: "player should get key prompts if that is the last input th
 - initials entry hint (DOM .aoq and canvas arcadeIniHud) 'TYPE OR arrows . A NEXT . B BACK . ENTER / MENU DONE' mixes both devices -> split.
 - easy mode card 'Y or A yes . N or B no' mixes both -> split.
 - pad focus ring (PAD.focus / padfocus) stays on the last pad focused control after switching to the mouse; not a prompt, left alone.
+
+## Ship 2 (cw-glyphs2), drafted 14:55, waits for the lock
+- Arcade attract (arcadeAttShow): host says PRESS ANY KEY or PRESS ANY BUTTON by padOn(); benched player 1 says PLAYER 1: PRESS ANY ...; player 2 window keeps PLAYER 2: PRESS A (it is the pad window).
+- Idle callouts (STILL PLAYING?, RUN ENDS IN n) take the same sub. Easy mode card: Y yes / N no on keys, A yes / B no on the pad (was "Y or A yes, N or B no").
+- Initials hint is one function, iniHint(): keys "Type or arrows, Space next, Backspace back, Enter done"; pad "arrows letter, A next, B back, MENU done" (MENU upper case so a PlayStation pad renames it via padB). Used by the DOM card, the canvas card in the raid, and arcadeOverSync updates the open card in place (the card is only rebuilt on a letter change).
+- Hub trade offer the taker sees: one key (T or Y by padOn()). The giver line "They take it with T or Y" stays: it names the teammate key and the teammate may use the other device.
+- Old checks widened first (fixq): 23.39 said('STILL PLAYING?|warn|PRESS ANY') and the bench attract regex (BUTTON|KEY).
+- Check: stage by indevSet (not pollPad) because a real press in a benched arcade raid un-benches player 1; one real key() on the open initials card. Control (old build) fails 11 asserts; mutation (no in-place update) fails "did not follow".

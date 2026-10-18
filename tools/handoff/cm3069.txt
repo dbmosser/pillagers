@@ -1,0 +1,7 @@
+v30.69: title: a live pillager and robot fight behind the menu
+
+Behind the title and the scoreboard a pillager and a robot fight, live.
+
+Check 30.69. Fails on v30.68.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

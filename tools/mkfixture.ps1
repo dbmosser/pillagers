@@ -6099,6 +6099,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.69',what:'behind the title a pillager and a robot really fight: shots fly, hits land, the robot dies and the pillager goes down, drawn in the hub pass (his Q52/Q54)',
+   run:function(){
+     if(typeof tskInit!=='function'||typeof tskStep!=='function'||typeof tskDraw!=='function') return 'no title fight (no tskInit, tskStep, tskDraw)';
+     if(String(drawHubWorld).indexOf('tskDraw')<0) return 'the hub pass never draws the title fight';
+     var was=TSK, i, err=null;
+     try{
+       tskInit();
+       for(i=0;i<1200;i++) tskStep(.05);
+       var n=TSK.n;
+       if(n.shots<40) return 'only '+n.shots+' shots in 60 s of fight';
+       if(n.hits<15) return 'only '+n.hits+' hits in 60 s of fight';
+       if(n.kills<1) return 'no robot died in 60 s of fight';
+       if(TSK.fx.length>90||TSK.bolts.length>40) return 'the fight leaves too many bolts or sparks: '+TSK.fx.length+' '+TSK.bolts.length;
+       if(wc){ wc.save(); try{ for(i=0;i<TSK.ents.length;i++) tskDraw(TSK.ents[i]); tskDraw({kind:'fx'}); }catch(e){ err=e; } finally{ wc.restore(); } if(err) return 'the fight does not draw: '+err; }
+       return null;
+     } finally { TSK=was; } }},
   {v:'30.68',what:'the window in front plays the keyboard as its own player (his order: keys control whatever screen is to the top): a key pressed in the player 2 window is not handed to player 1 and lands in its own keys, a key held there is let go when it loses focus with nothing handed up, a key there asks to drop player 2 into the arcade like A, and its mouse takes the crosshair back from its pad once it is in front',
    run:function(){
      if(typeof netKeyFwd!=='function'||typeof netSamePost!=='function'||typeof netKeyLetGo!=='function'||typeof NET!=='object'||!NET) return 'SKIP: no player 2 window here';

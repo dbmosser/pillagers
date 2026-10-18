@@ -12,12 +12,12 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-if ($s.Contains("  {v:'30.68',what:")) { throw "check 30.68 is in the fixture already" }
+if ($s.Contains("  {v:'30.70',what:")) { throw "check 30.70 is in the fixture already" }
 
 SubRx @'
-  {v:'30.67',what:
+  {v:'30.69',what:
 '@ @'
-  {v:'30.68',what:'the gun card is the one raid panel with a lime tab, and in the demo it is shorter than in career (critic 10-19, his Q56)',
+  {v:'30.70',what:'the gun card is the one raid panel with a lime tab, and in the demo it is shorter than in career (critic 10-19, his Q56)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)||typeof hudPanel!=='function') return 'SKIP: this fixture cannot deploy';
      var g=null, oP=hudPanel, rec=[], a0, car, dem;
@@ -44,7 +44,7 @@ SubRx @'
        try{ __endRaid('abandon'); }catch(_e2){}
        __topClear();
      } }},
-  {v:'30.67',what:
+  {v:'30.69',what:
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

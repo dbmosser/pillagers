@@ -78,19 +78,20 @@ hudPanel(x-8,top-6,LEGW,boxH+10,0.84,1)
 SubRx @'
        if(_wpw>LH(60)) hudPanel(_wpx,by-LH(90),_wpw,LH(100),0.62);
 '@ @'
-       if(_wpw>LH(60)){ var _gtop=trDemo()?LH(76):LH(90), _gh=trDemo()?LH(72):LH(100); hudPanel(_wpx,by-_gtop,_wpw,_gh,0.62); }   // v28.xx (cw-hudstar): the demo hides the item line and the backpack hint (Q56), so the card is 72 high and not 100 with an empty strip; it keeps the tab, it is the star
+       /* v28.xx (cw-hudstar): the demo hides the item line and the backpack hint (Q56), so the card is 72 high and not 100 with an empty strip; it keeps the tab, it is the star */
+       if(_wpw>LH(60)){ var _gtop=trDemo()?LH(76):LH(90), _gh=trDemo()?LH(72):LH(100); hudPanel(_wpx,by-_gtop,_wpw,_gh,0.62); }
 '@
 
 SubRx @'
-var VER='30.67';
+var VER='30.69';
 '@ @'
-var VER='30.68';
+var VER='30.70';
 '@
 
-$pat = "(?m)^  now:'v30\.67:.*$"
+$pat = "(?m)^  now:'v30\.69:.*$"
 $c = ([regex]::Matches($s, $pat)).Count
 if ($c -ne 1) { throw "DEVNOW now line matched $c times, expected 1" }
-$new = "  now:'v30.68: Only the gun card keeps its lime tab, and in the demo it is shorter. Check 30.68 fails on v30.67',"
+$new = "  now:'v30.70: Only the gun card keeps its lime tab, and in the demo it is shorter. Check 30.70 fails on v30.69',"
 $s = [regex]::Replace($s, $pat, { param($m) $new })
 if (([regex]::Matches($s, "(?m)^  now:'")).Count -ne 1) { throw "more than one now key in DEVNOW" }
 $script:s = $s
