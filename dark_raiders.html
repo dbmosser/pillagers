@@ -2670,7 +2670,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.89';
+var VER='29.90';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -45908,7 +45908,7 @@ function drawHubHUD(ox,oy){
       wnRole=wtry?'label':'head';
       wnLH=wtry?LH(20):LH(25);
       ctx.font=FS(TYPE[wnRole]);
-      wnW=Math.min(_wnWW-LH(60),LH(1000));
+      wnW=Math.min(_wnWW-LH(60),LH(460));   // v28.xx (cw-wnew40) critic on screen 40 (2 of 5): "1560px slab". The card is a 720px card now (the style guide: a modal never exceeds its content).
       wnRows=[]; wnGaps=0;
       for(var wm=0;wm<Math.min(WN_SHOW,WHATSNEW.length);wm++){
         var wWords=TX((wm+1)+'. '+wnShort(WHATSNEW[wm])).split(' '),wLine='',wFirst=1;   // v21.84: his wording of the entry is what is wrapped
@@ -45942,10 +45942,14 @@ function drawHubHUD(ox,oy){
       for(_wk=0;_wk<wnRows.length;_wk++) if(wnRows[_wk].gap) wnGaps++;
       wnH=LH(90)+wnRows.length*wnLH+wnGaps*LH(7);
     }
+    wnH+=LH(34);   // v28.xx (cw-wnew40): room for the footer row (Got it)
     var wnX=_wnWW/2-wnW/2, wnY=_wnHH/2-wnH/2-LH(10);
     // v27.xx, UI CLEANUP uic8 (his 2026-10-14 note, from the 1080p shot of the card over the floor): THE CARD IS THE ONE HUD PLATE, AND SOLID. It was a flat 94 percent
     // rectangle with its own blue-grey border, unlike every other plate, and the station signs of the floor (SHOP, CRAFT AND HIRE, SETTINGS) read through its words.
-    hudPanel(wnX,wnY,wnW,wnH,1);
+    // v28.xx (cw-wnew40) critic on screen 40: "no scrim, so station labels, the weapon bar and a toast fight it". Scrim first, then a flat panel (1px line-hi, no chamfer, no tick).
+    ctx.fillStyle=UIC.ui_scrim; ctx.fillRect(0,0,_wnWW,_wnHH);
+    ctx.fillStyle=UIC.ui_panel; ctx.fillRect(wnX,wnY,wnW,wnH);
+    ctx.strokeStyle=UIC.ui_line_hi; ctx.lineWidth=1; ctx.strokeRect(wnX+0.5,wnY+0.5,wnW-1,wnH-1);
     ctx.textAlign='center';
     ctx.font=FS(TYPE.title); ctx.fillStyle='#ffc04a';
     // WHATSNEW_VER, not VER: the list belongs to the build that last changed it,
@@ -45954,9 +45958,12 @@ function drawHubHUD(ox,oy){
     // "UPDATED TO v6.26" was read by a v6.34 player as a claim about THEIR build,
     // and it was false. "NEW IN" says the same thing about the list instead, which
     // is what the number actually describes, and cannot go stale.
-    ctx.fillText('NEW IN '+verShown(WHATSNEW_VER,1),_wnWW/2,wnY+LH(32));
+    // v28.xx (cw-wnew40): "centred amber title": the title sits top-left in tx-1 over a rule (amber is for the one primary).
+    ctx.textAlign='left'; ctx.fillStyle=UIC.tx_1;
+    ctx.fillText('NEW IN '+verShown(WHATSNEW_VER,1),wnX+LH(22),wnY+LH(32));
+    ctx.fillStyle=UIC.ui_line_hi; ctx.fillRect(wnX+LH(22),wnY+LH(44),wnW-LH(44),1);
     ctx.textAlign='left';
-    ctx.font=FS(TYPE[wnRole]); ctx.fillStyle='#cdd6dd';
+    ctx.font=FS(TYPE[wnRole]); ctx.fillStyle=UIC.tx_1;
     var wnCy=wnY+LH(52);
     for(var wq=0;wq<wnRows.length;wq++){
       if(wnRows[wq].gap) wnCy+=LH(7);
@@ -45967,7 +45974,13 @@ function drawHubHUD(ox,oy){
     ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1';
     // v19.72, seen on the controller pass (2026-10-08): on a controller (player 2 in co-op) no pad button closes this card, walking
     // does (below), and the line named ENTER, a key the pad player does not have. On a pad it names only the walk.
-    ctx.fillText((PAD&&PAD.on)?'walk to dismiss':'press ENTER or walk to dismiss',_wnWW/2,wnY+wnH-LH(12));
+    // v28.xx (cw-wnew40): "no close or primary": the one amber primary (Got it) sits bottom-right, the dismiss hint bottom-left at label size.
+    var _gbW=LH(104), _gbH=LH(36), _gbX=wnX+wnW-LH(22)-_gbW, _gbY=wnY+wnH-LH(18)-_gbH;
+    ctx.fillStyle=UIC.acc; ctx.fillRect(_gbX,_gbY,_gbW,_gbH);
+    ctx.textAlign='center'; ctx.font=FS(TYPE.label); ctx.fillStyle=UIC.acc_ink;
+    ctx.fillText('Got it',_gbX+_gbW/2,_gbY+_gbH*0.68);
+    ctx.textAlign='left'; ctx.fillStyle=UIC.tx_2;
+    ctx.fillText((PAD&&PAD.on)?'walk to dismiss':'press ENTER or walk to dismiss',wnX+LH(22),_gbY+_gbH*0.68);
     ctx.textAlign='left';
     ctx.restore();
     if(p.moving){ WNSEEN=1; }
@@ -47809,7 +47822,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.89: Abandon question: clearer title and one primary button. Check 29.89 fails on v29.88',
+  now:'v29.90: What is new card: cleaner layout and a Got it button. Check 29.90 fails on v29.89',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

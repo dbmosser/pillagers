@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.90 - What is new card: scrim, a 720px flat panel, left title, one Got it
+
+Co-op hunt while he was away. The critic scored the What is new card 2 of 5: no scrim so the station labels fought it, a 1560px slab, a centred amber title and no primary. Now a scrim, a 720px flat panel with a rule, the title top-left in tx-1 and one amber Got it bottom-right with the dismiss hint on the left. Drawing only; the text, the stamp and the dismiss rules are unchanged.
+
+MEASURED. Check 29.90 passes, and fails on v29.89.
 ## v29.89 - Abandon question: a named title, one amber primary, a snug card
 
 Co-op hunt while he was away. The critic scored the abandon question 2 of 5: two identical red buttons, the title still Raid paused, and a 556px card around two buttons. Now the title asks Abandon this run, Keep playing is the amber primary on top, YES is a plain red outline, and the card is 320px. Restyle and text only; the arm and disarm logic is unchanged.

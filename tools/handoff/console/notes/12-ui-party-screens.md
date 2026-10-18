@@ -15,6 +15,12 @@ Run 4 (lane a). Run 3 shipped 52,55 (over cards) - see below.
 - Screens CSS: arcade page/over card in game CSS ~lines 1517-1591 (body #attract .arcpage/.arcover), pause 1598-1618.
 - p2line at line 828; 46 how-to-play table built in script (arcpage).
 
+## Run 5 (build v29.89 at start; shots notes/shots/12-e1; critic scores 10:41)
+- Others shipped on party pages meanwhile: 29.84 one column+56px button, 29.87 slide ghost floats, 29.88 operator menu one red/solid backdrop, 29.89 abandon.
+- Scores now: 46=3, 62=3, 58=2 (stack of small explaining sentences, amber 12px paragraph, mixed sizes), 63=2, 56=2, 64=2, 47=2, 49=3, 52=2, 55=2, 48/53/54=2 (HUD).
+- Common P1 across critic: no close X, no key/pad hints, empty attract (no hook), type below floor.
+- DON'T list scratchpad dir (huge). DON'T re-read old scores (accept.json 236-410 is the list).
+
 ## Lessons
 - Edit mkfixture with 7-space indent in the 6100-6200 range; lock.sh first, then edit, then HELD=1 bash fixq.sh, then unlock.sh.
 - Preflight takes ~2 min. Gate reruns old checks: any old check asserting centred/width will regress.

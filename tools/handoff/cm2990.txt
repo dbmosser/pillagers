@@ -1,0 +1,7 @@
+v29.90: what is new card: scrim, a 720px flat panel, left title, one got it
+
+What is new card: cleaner layout and a Got it button.
+
+Check 29.90. Fails on v29.89.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

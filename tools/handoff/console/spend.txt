@@ -334,3 +334,7 @@
 2026-10-18 0.0532 critic-12-ui-party-screens
 2026-10-18 0.0504 critic-12-ui-party-screens
 2026-10-18 4.0125 12-ui-party-screens
+2026-10-18 0.0488 critic-13-ui-end-cards
+2026-10-18 0.0472 critic-12-ui-party-screens
+2026-10-18 0.0403 critic-12-ui-party-screens
+2026-10-18 0.0485 critic-12-ui-party-screens

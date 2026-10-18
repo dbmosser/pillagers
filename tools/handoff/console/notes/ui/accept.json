@@ -248,12 +248,12 @@
   "when": "2026-10-18T07:04"
  },
  "59-raid-abandon-confirm": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "A bare dark card with two identical red-outlined buttons: the safe choice looks as dangerous as the destructive one, there is no visible focus, and the card is half empty, so it reads as an unfinished template rather than a polished confirm dialog.",
-  "pic": "tools/handoff/console/notes/shots/13-c5/59-raid-abandon-confirm-1080.jpg",
+  "verdict": "The dialog now has a clear hierarchy (title states the question, amber 'Keep playing' is the safe primary, red ghost is the destructive option) and is sized to its content, but it still has a clipped corner and an unexplained consequence, there is no close or pad hint, and the HUD behind the scrim is still too visible.",
+  "pic": "tools/handoff/console/notes/shots/13-d1/59-raid-abandon-confirm-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T10:35"
+  "when": "2026-10-18T10:39"
  },
  "65-codex": {
   "score": 2,
@@ -272,12 +272,12 @@
   "when": "2026-10-18T06:21"
  },
  "62-arcade-operator-menu": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "A clean but generic stack of three full-width bars in a dark card; the hierarchy and token use are mostly right, but it is a bare template with no close X, no key hints, tiny type, and a d1 variant with a bleed-through glitch.",
-  "pic": "tools/handoff/console/notes/shots/12-d2/62-arcade-operator-menu-1080.jpg",
+  "verdict": "A clean, on-palette operator card with a clear focused row and correct sentence case, but it is a small, bare template-style box floating on a flat black void, with no close control, no key hints and a stat line below the type floor.",
+  "pic": "tools/handoff/console/notes/shots/12-e1/62-arcade-operator-menu-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T10:36"
+  "when": "2026-10-18T10:41"
  },
  "61-raid-wheel-open": {
   "score": 2,
@@ -290,18 +290,18 @@
  "58-coop-player2-window-title": {
   "score": 2,
   "pass": false,
-  "verdict": "A centred title screen that stacks about ten text blocks, including a tiny amber four-line co-op paragraph, so the one thing to do (Enter the undercroft) is buried and the screen reads as a web form rather than a AAA front door.",
-  "pic": "tools/handoff/console/notes/shots/12-d1/58-coop-player2-window-title-1080.jpg",
+  "verdict": "The title and the amber CTA read clearly, but the screen is a stack of small explaining sentences, an amber 12px paragraph and mixed type sizes, so it looks like a dev template and not a polished AAA title menu.",
+  "pic": "tools/handoff/console/notes/shots/12-e1/58-coop-player2-window-title-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T10:12"
+  "when": "2026-10-18T10:42"
  },
  "46-arcade-attract-how-to-play": {
   "score": 3,
   "pass": false,
-  "verdict": "The second pass is a clear step up: the title is left-aligned to the card edge, the CTA is a proper amber primary button, and the table is clean, but the content block floats above dead space and the 'Press any button' primary is a prompt dressed as a button.",
-  "pic": "tools/handoff/console/notes/shots/12-d2/46-arcade-attract-how-to-play-1080.jpg",
+  "verdict": "A clean, on-palette controls table with a clear amber action and sentence case, but it reads as a generic spreadsheet with weak hierarchy, small row text for a couch, and a button that wastes the primary slot.",
+  "pic": "tools/handoff/console/notes/shots/12-e1/46-arcade-attract-how-to-play-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T10:36"
+  "when": "2026-10-18T10:41"
  },
  "37-raid-extracting-countdown": {
   "score": 2,

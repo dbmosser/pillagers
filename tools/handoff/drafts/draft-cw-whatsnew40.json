@@ -1,0 +1,64 @@
+{
+    "title":  "What is new card: a 900px card on a scrim, left header, Got it button",
+    "why":  "The critic scored the What is new card 2 of 5: no scrim, a 1560px slab, no close or primary, a centred amber title. Now the floor is dimmed behind it, the card is 900px at most, the title sits left in a header row over a rule, and a footer row holds the hint and an amber Got it button. Drawing only: Enter and walking dismiss it exactly as before.",
+    "now":  "What is new card: tidier layout and a Got it button.",
+    "edits":  [
+                  {
+                      "anchor":  "var wnRole=\u0027head\u0027,wnRows=[],wnW=0,wnH=0,wnLH=0,wnGaps=0;",
+                      "replacement":  "var wnRole=\u0027head\u0027,wnRows=[],wnW=0,wnH=0,wnLH=0,wnGaps=0,wnCH=LH(100);   // v28.xx (cw-whatsnew40): the critic on screen 40: a header row (LH 36, 56px at 1080p) and a footer row (LH 46, 72px) around the notes"
+                  },
+                  {
+                      "anchor":  "wnW=Math.min(_wnWW-LH(60),LH(1000));",
+                      "replacement":  "wnW=Math.min(_wnWW-LH(60),LH(620));   // v28.xx (cw-whatsnew40): \"a 1560px slab\": a card of about 960px at 1080p at most (LH is 1.56 px there)"
+                  },
+                  {
+                      "anchor":  "txRawW(ctx,wCand)\u003ewnW-LH(44)",
+                      "replacement":  "txRawW(ctx,wCand)\u003ewnW-LH(40)"
+                  },
+                  {
+                      "anchor":  "wnH=LH(90)+wnRows.length*wnLH+wnGaps*LH(7);\n      if(wnH\u003c=_wnHH-LH(60)) break;",
+                      "replacement":  "wnH=wnCH+wnRows.length*wnLH+wnGaps*LH(7);\n      if(wnH\u003c=_wnHH-LH(60)) break;"
+                  },
+                  {
+                      "anchor":  "var _wnFit=_wnHH-LH(60), _wnAcc=LH(90),",
+                      "replacement":  "var _wnFit=_wnHH-LH(60), _wnAcc=wnCH,"
+                  },
+                  {
+                      "anchor":  "wnH=LH(90)+wnRows.length*wnLH+wnGaps*LH(7);\n    }\n    var wnX=",
+                      "replacement":  "wnH=wnCH+wnRows.length*wnLH+wnGaps*LH(7);\n    }\n    var wnX="
+                  },
+                  {
+                      "anchor":  "hudPanel(wnX,wnY,wnW,wnH,1);",
+                      "replacement":  "ctx.fillStyle=\u0027rgba(6,7,8,.80)\u0027; ctx.fillRect(0,0,_wnWW,_wnHH);   // v28.xx (cw-whatsnew40): \"P0 no scrim\": the floor is dimmed behind the card, as behind every other card\n    hudPanel(wnX,wnY,wnW,wnH,1);"
+                  },
+                  {
+                      "anchor":  "ctx.font=FS(TYPE.title); ctx.fillStyle=\u0027#ffc04a\u0027;",
+                      "replacement":  "ctx.font=FS(TYPE.title); ctx.fillStyle=\u0027#efe9dc\u0027; ctx.textAlign=\u0027left\u0027;   // v28.xx (cw-whatsnew40): \"centred amber title\": the title sits left in the header row, white; the one amber thing is the button"
+                  },
+                  {
+                      "anchor":  "ctx.fillText(\u0027NEW IN \u0027+verShown(WHATSNEW_VER,1),_wnWW/2,wnY+LH(32));",
+                      "replacement":  "ctx.fillText(\u0027NEW IN \u0027+verShown(WHATSNEW_VER,1),wnX+LH(20),wnY+LH(25)); ctx.fillStyle=\u0027#2e3337\u0027; ctx.fillRect(wnX,wnY+LH(36),wnW,1);"
+                  },
+                  {
+                      "anchor":  "ctx.font=FS(TYPE[wnRole]); ctx.fillStyle=\u0027#cdd6dd\u0027;",
+                      "replacement":  "ctx.font=FS(TYPE[wnRole]); ctx.fillStyle=\u0027#efe9dc\u0027;"
+                  },
+                  {
+                      "anchor":  "var wnCy=wnY+LH(52);",
+                      "replacement":  "var wnCy=wnY+LH(40);"
+                  },
+                  {
+                      "anchor":  "ctx.fillText(wnRows[wq].t,wnX+LH(22),wnCy);",
+                      "replacement":  "ctx.fillText(wnRows[wq].t,wnX+LH(20),wnCy);"
+                  },
+                  {
+                      "anchor":  "ctx.font=FS(TYPE.micro); ctx.fillStyle=\u0027#8a96a1\u0027;\n    // v19.72",
+                      "replacement":  "var _wnFy=wnY+wnH-LH(46); ctx.fillStyle=\u0027#2e3337\u0027; ctx.fillRect(wnX,_wnFy,wnW,1);   // v28.xx (cw-whatsnew40): \"no close or primary\": a footer row, the hint left and a Got it button right (Enter or walking dismisses it, as before)\n    if(!(PAD\u0026\u0026PAD.on)){ ctx.fillStyle=\u0027#f5b73b\u0027; ctx.fillRect(wnX+wnW-LH(15)-LH(128),_wnFy+LH(5),LH(128),LH(36)); ctx.font=FS(TYPE.head); ctx.fillStyle=\u0027#1a1205\u0027; ctx.textAlign=\u0027center\u0027; ctx.fillText(\u0027Got it\u0027,wnX+wnW-LH(15)-LH(64),_wnFy+LH(5)+LH(23)); }\n    ctx.textAlign=\u0027left\u0027; ctx.font=FS(TYPE.label); ctx.fillStyle=\u0027#aaa498\u0027;\n    // v19.72"
+                  },
+                  {
+                      "anchor":  "\u0027press ENTER or walk to dismiss\u0027,_wnWW/2,wnY+wnH-LH(12));",
+                      "replacement":  "\u0027press ENTER or walk to dismiss\u0027,wnX+LH(20),wnY+wnH-LH(19));"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the What is new card is a left-aligned header over a rule, a 900px card on a scrim, with a Got it button (critic: no scrim, 1560px slab, no close or primary, centred amber title; screen 40)\u0027,\n   run:function(){\n     if(typeof drawHubHUD!==\u0027function\u0027||!window.__hubEnter||!window.__wnseen||!window.__P) return \u0027SKIP: no floor here\u0027;\n     var bad=[], texts=[], rects=[], oT=null, oR=null, p0=null, runs0=0, hadT=false, hadR=false;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __hubEnter(); p0=__P(); runs0=p0.runs; p0.runs=Math.max(1,runs0|0); __wnseen(0);\n       hadT=Object.prototype.hasOwnProperty.call(ctx,\u0027fillText\u0027); hadR=Object.prototype.hasOwnProperty.call(ctx,\u0027fillRect\u0027);\n       oT=ctx.fillText; oR=ctx.fillRect;\n       ctx.fillText=function(t,x,y){ texts.push({t:String(t),x:x,y:y,al:ctx.textAlign}); return oT.apply(ctx,arguments); };\n       ctx.fillRect=function(x,y,w,h){ rects.push({x:x,y:y,w:w,h:h,fs:String(ctx.fillStyle)}); return oR.apply(ctx,arguments); };\n       try{ drawHubHUD(0,0); }catch(e){ bad.push(\u0027draw threw: \u0027+(e\u0026\u0026e.message||e)); }\n     } finally {\n       try{ if(hadT) ctx.fillText=oT; else delete ctx.fillText; if(hadR) ctx.fillRect=oR; else delete ctx.fillRect; }catch(_r){}\n       try{ if(p0) p0.runs=runs0; __wnseen(1); __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}\n     }\n     var ti=null, row=null, btn=false, rule=null, scrim=false, i;\n     for(i=0;i\u003ctexts.length;i++){ if(!ti\u0026\u0026/new in/i.test(texts[i].t)) ti=texts[i]; if(!row\u0026\u0026/^1\\. /.test(texts[i].t)) row=texts[i]; if(texts[i].t===\u0027Got it\u0027) btn=true; }\n     if(!ti) return \u0027the card did not draw\u0027;\n     for(i=0;i\u003crects.length;i++){ if(rects[i].h===1\u0026\u0026rects[i].w\u003eLH(300)\u0026\u0026rects[i].w\u003c=LH(620)+1\u0026\u0026Math.abs(rects[i].y-ti.y)\u003cLH(25)) rule=rects[i]; if(/^rgba\\(6, 7, 8, 0\\.8/.test(rects[i].fs)\u0026\u0026rects[i].w\u003e=W/Math.max(1,hudRes())-1) scrim=true; }\n     if(ti.al!==\u0027left\u0027) bad.push(\u0027the title is \u0027+ti.al+\u0027 aligned, not left\u0027);\n     if(row\u0026\u0026Math.abs(row.x-ti.x)\u003e1) bad.push(\u0027the title and the notes do not share a left edge\u0027);\n     if(!rule) bad.push(\u0027no header rule under the title\u0027);\n     if(!scrim) bad.push(\u0027no scrim behind the card\u0027);\n     if(!btn) bad.push(\u0027no Got it button\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null;\n   }},"
+}
