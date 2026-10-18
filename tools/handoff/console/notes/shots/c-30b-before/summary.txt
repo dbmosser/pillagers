@@ -1,0 +1,6 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  01-title-mode-menu                     staged       4.8s  
+  18-settings-hub                        staged       7.3s    | settingsmodal
+  25-raid-pause-box                      staged       9.0s  
+  42-hub-pause-box                       staged      11.9s  
+  49-arcade-pause-box                    staged      13.2s  

@@ -6097,6 +6097,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.34',what:'the run info panel is drawn at the label size (16 px class), not the 13 px micro size',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy and draw';
+     var bad=[], proto=CanvasRenderingContext2D.prototype, o=proto.fillText, hit=null, g, want;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player||g.over) return 'SKIP: no live raid';
+       g.bagOpen=false; g.mapOpen=false;
+       want=parseFloat((/([\d.]+)px/).exec(String(FS(TYPE.label)))[1]);
+       proto.fillText=function(t,x,y){ if(/^run info$/i.test(String(t))){ var fm=(/([\d.]+)px/).exec(String(this.font)); hit=fm?parseFloat(fm[1]):0; } return o.apply(this,arguments); };
+       __frame(0.001);
+       if(hit===null) bad.push('the run info heading was not drawn');
+       else if(Math.abs(hit-want)>0.6) bad.push('run info text is '+hit+' px, not the label size '+want);
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ proto.fillText=o; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'29.33',what:'the title and mode menu run on the shared look: tokens in the CSS equal UIT, the ui-shared block has no raw color or font-size literals, the mode rows are 20px with a 4px radius, Panel P draws (his order 2026-10-18, one shared UI)',
    run:function(){
      if(typeof UIT==='undefined'||typeof uiFont!=='function'||typeof uiPanel!=='function') return 'no shared UI object (UIT, uiFont, uiPanel)';

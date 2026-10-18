@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.34 - RUN INFO TEXT IS THE LABEL SIZE
+
+Co-op hunt while he was away. UI step 4, the HUD in play. The run info panel (conditions, contracts, goals) was drawn at the 13 px micro size, below the 16 px floor of the style guide, and was the densest block on the screen. It is drawn at the label size now, in a slightly wider and taller row, so the same contracts wrap the same way. Every contract is still shown (his v6.79).
+
+MEASURED. Check 29.34 passes, and fails on v29.33.
 ## v29.33 - The title and mode menu use the shared UI look
 
 Co-op hunt while he was away. His order 2026-10-18 (UI step 2): ONE shared look in the code. The style guide is now tokens at :root (five type sizes 56/32/20/16/14, an 8px space grid, one 4px radius, button heights), the same table in the script (UIT, uiFont, uiPanel), and one style block (ui-shared) that reads only those tokens. The title and mode menu (screens 01 and 57) are the first screens on it: mode rows 48px at 20px type, the one primary 56px, ghost rows on the panel fill with a 1px line, all text 16px or more, cards on Panel P.
