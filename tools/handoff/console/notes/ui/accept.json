@@ -162,26 +162,26 @@
  "25-raid-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, centred pause card with one amber primary, a danger ghost and clear sentence-case type, but it lacks a close X and pad glyphs, and its footer hint is tiny. It also has a generic stack-of-buttons look and a stray corner notch.",
-  "pic": "tools/handoff/console/notes/shots/c-31u-now/25-raid-pause-box-1080.jpg",
+  "verdict": "The pause card is now clean, with one clear amber primary, a red Abandon and the guide's top-right close X, but the X has no pad glyph, the corner tick and divider remain, and the dimmed HUD behind still shows distracting ghost text.",
+  "pic": "tools/handoff/console/notes/shots/c-31u-after/25-raid-pause-box-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T12:15"
+  "when": "2026-10-18T12:22"
  },
  "26-settings-from-pause-top": {
   "score": 3,
   "pass": false,
-  "verdict": "A tidy, on-guide settings card with one tab strip, a top-right X and sentence case, but the focused row has no visible highlight, the tab strip is crowded, and the text is small and low-contrast for a couch.",
-  "pic": "tools/handoff/console/notes/shots/c-31u-now/26-settings-from-pause-top-1080.jpg",
+  "verdict": "The new version fixes the biggest defect (no visible focus; now there is an amber left bar, raised row fill and a boxed stepper), but the modal is still cramped, the backdrop is a flat black wall, and there is no pad hint strip, so it reads as competent but not polished.",
+  "pic": "tools/handoff/console/notes/shots/c-31u-after/26-settings-from-pause-top-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T12:15"
+  "when": "2026-10-18T12:22"
  },
  "32-keys-window": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, consistent dark modal that follows the guide's header, close button and sentence-case rules, but it is a flat grid of identical key buttons with tiny section labels, a hard-clipped row at the bottom, a flat black backdrop and no visible focus state, so it reads as a competent template with no hierarchy or identity.",
-  "pic": "tools/handoff/console/notes/shots/c-31u-now/32-keys-window-1080.jpg",
+  "verdict": "The new Keys window is cleaner than the old one because the half-clipped World row is gone and the section labels are bigger, but it is still a flat, template-looking grid with a tiny close X, no visible focus state and a bottom edge that hides the scroll.",
+  "pic": "tools/handoff/console/notes/shots/c-31u-after/32-keys-window-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T12:15"
+  "when": "2026-10-18T12:23"
  },
  "33-raid-fight-alerts": {
   "score": 2,
@@ -192,20 +192,20 @@
   "when": "2026-10-18T06:18"
  },
  "35-kia-card": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "A tidy, centred KIA card whose red title and amber button read clearly, but the hero is a '$' figure the guide bans, the type is far below the 56/32/20/16 scale, and the card is still one stack of small same-weight lines with no real focal point.",
-  "pic": "tools/handoff/console/notes/shots/13-g1/35-kia-card-1080.jpg",
+  "verdict": "A clean, centred end card that mostly follows the shell (red title, one hero number, row of 4 stats, tile row, one primary), but the hero is a banned '$' figure, the secondary text is tiny and dim, and the item tiles are too small and confusingly placed above the number.",
+  "pic": "tools/handoff/console/notes/shots/13-h1/35-kia-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T12:19"
+  "when": "2026-10-18T12:21"
  },
  "38-extracted-card": {
   "score": 3,
   "pass": false,
-  "verdict": "This is a clean, centred end card that follows the shell, with a teal title, one hero number and one amber primary. It is crowded with small text, uses a banned \"$\" on the hero, and the type is mostly under the 16px floor.",
-  "pic": "tools/handoff/console/notes/shots/13-c6/38-extracted-card-1080.jpg",
+  "verdict": "The card has the right shell (centred, teal title, big haul number, 4-stat row, amber primary plus ghost), but it is overstuffed with six extra text and chip groups and it still shows a banned \"$\" instead of SP.",
+  "pic": "tools/handoff/console/notes/shots/13-h1/38-extracted-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T10:46"
+  "when": "2026-10-18T12:22"
  },
  "40-whats-new-card": {
   "score": 3,
@@ -314,10 +314,10 @@
  "77-haul-reveal-done": {
   "score": 3,
   "pass": false,
-  "verdict": "The end card has a clear shell and the haul number leads the eye, but it breaks the guide in several places: a $ currency sign where the guide says SP, too many stacked elements, undersized text, a weak item row and a hero that is smaller than specified.",
-  "pic": "tools/handoff/console/notes/shots/13-e1/77-haul-reveal-done-1080.jpg",
-  "task": "manual",
-  "when": "2026-10-18T12:06"
+  "verdict": "A clean, centred end card that follows the shell (teal title, hero haul number, stats row, tile row, one amber primary) and is clearly better organised than a typical amateur screen. Too much text and too many tiers of small grey type crowd the top and bottom, and it uses a '$' where the guide says score is SP.",
+  "pic": "tools/handoff/console/notes/shots/13-h1/77-haul-reveal-done-1080.jpg",
+  "task": "13-ui-end-cards",
+  "when": "2026-10-18T12:22"
  },
  "63-arcade-operator-new-party-armed": {
   "score": 2,

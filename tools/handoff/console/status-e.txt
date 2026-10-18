@@ -1,1 +1,1 @@
-10-18 08:20 b-30-ui-hud: failed, $0.15663649999999998
+10-18 08:24 b-31-ui-undercroft: partial (run 4 of 5), $0.2245685

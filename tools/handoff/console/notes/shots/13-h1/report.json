@@ -1,0 +1,9 @@
+{"generated":"2026-10-18T08:21:20","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":89,"screens":[
+{"name":"35-kia-card","screen":"KILLED IN ACTION card with feedback tags","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"35-kia-card-1080.jpg","lint":""}},
+{"name":"38-extracted-card","screen":"EXTRACTED card","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"38-extracted-card-1080.jpg","lint":""}},
+{"name":"40-whats-new-card","screen":"What\u0027s New card (NEW IN v23.48) over the hub","1080":{"staged":true,"note":"runs 1 wnseen 0","viewport":"1920x1080","shot":"40-whats-new-card-1080.jpg","lint":""}},
+{"name":"59-raid-abandon-confirm","screen":"Pause box with YES, ABANDON THIS RUN confirm","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"59-raid-abandon-confirm-1080.jpg","lint":""}},
+{"name":"60-abandoned-card","screen":"ABANDONED outcome card","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"60-abandoned-card-1080.jpg","lint":""}},
+{"name":"76-haul-reveal-mid","screen":"Extracted card while the haul reveal is running","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"76-haul-reveal-mid-1080.jpg","lint":""}},
+{"name":"77-haul-reveal-done","screen":"Extracted card after the haul reveal (HAUL total)","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"77-haul-reveal-done-1080.jpg","lint":""}}
+]}

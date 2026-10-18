@@ -1649,6 +1649,13 @@ body #attract .arcover .aosn{ min-width:calc(var(--sp-5) * var(--attz,1)); font-
 body #attract .arcover .aosc{ display:block; flex:1; }
 body #attract .arcover .aosc b{ display:block; font-size:calc(var(--fs-title) * var(--attz,1)); font-weight:700; line-height:1.1; color:var(--tx-1); }
 body #attract .arcover .aosc i{ display:block; margin-top:calc(var(--sp-1) * var(--attz,1)); font-style:normal; font-size:calc(var(--fs-label) * var(--attz,1)); font-weight:600; color:var(--tx-2); }
+/* v29.95 (cw-partycard), the critic on v29.94 (46 = 2, 55 = 3, 56 = 2): "the primary hangs outside the card, the wordmark floats off the card edge, the hub shows through and stays legible". One card per page: Press any button sits in its bottom right corner as the footer action, the wordmark is the logo on the top left margin, the run over card is 720 x scale wide, and the backdrop blurs the world behind it so labels and HUD smear out and the glow stays. Restyle only. */
+body #attract{ -webkit-backdrop-filter:blur(var(--sp-2)); backdrop-filter:blur(var(--sp-2)); background:radial-gradient(ellipse at 50% 38%, color-mix(in srgb, var(--ui-raised) 34%, transparent) 0%, color-mix(in srgb, var(--ui-bg) 82%, transparent) 46%, color-mix(in srgb, var(--ui-void) 94%, transparent) 100%); }
+body #attract[style*="block"]:has(.arcpage[style*="block"]) .attname{ position:absolute; left:calc(var(--sp-5) * var(--attz,1)); top:calc(var(--sp-5) * var(--attz,1)); color:var(--tx-1); }
+body #attract[style*="block"]:has(.arcpage[style*="block"]) .arcpage, body #attract[style*="block"]:has(.arcover[style*="block"]) .arcover{ grid-area:1 / 1; padding-bottom:calc((var(--sp-3) * 2 + var(--btn-h)) * var(--attz,1)); }
+body #attract[style*="block"]:has(.arcpage[style*="block"]) .attpress, body #attract[style*="block"]:has(.arcover[style*="block"]) .attpress{ grid-area:1 / 1; align-self:end; justify-self:end; z-index:2; margin:0 calc(var(--sp-4) * var(--attz,1)) calc(var(--sp-3) * var(--attz,1)) 0; }
+body #attract[style*="block"]:has(.arcpage[style*="block"]) .arcpage.uimghost{ grid-row:1; }
+body #attract[style*="block"]:has(.arcover[style*="block"]) .arcover{ min-width:calc(var(--sp-5) * 15 * var(--attz,1)); }
 /* v28.xx (cw-ps-look), his order 2026-10-18 (UI step 6): the PAUSE BOX and the SETTINGS window (screens 18, 25-32, 42, 49, 68-75) on the shared look.
    The critic scored Settings 2 of 5 (two nav strips, 13px sentences under every row, no focus on the row, steppers a screen away from their labels).
    Pause: the title is the 32px title size in light text (the one amber thing in the box is Resume run), the key legend and the note line are 16px grey.
@@ -2708,7 +2715,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.96';
+var VER='29.97';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47860,7 +47867,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.96: Pause card has a close X, Settings shows the focused row, Keys fades out. Check 29.96 fails on v29.95',
+  now:'v29.97: The party pages have the button inside the card and a soft backdrop. Check 29.97 fails on v29.96',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,7 @@
+v29.97: party pages: the button in the card, the logo in the corner, a blurred backdrop
+
+The party pages have the button inside the card and a soft backdrop.
+
+Check 29.97. Fails on v29.96.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

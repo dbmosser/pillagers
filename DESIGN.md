@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.97 - Party pages: the button in the card, the logo in the corner, a blurred backdrop
+
+Co-op hunt while he was away. Critic on 46, 55 and 56: Press any button hangs outside the card, the wordmark floats off the card edge, and the hub behind the card stays legible (labels, HUD). The button is the card footer now, the wordmark the logo on the top left margin, the run over card the 720px end card width, and the backdrop blurs what is behind it. Restyle only.
+
+MEASURED. Check 29.97 passes, and fails on v29.96.
 ## v29.96 - PAUSE X, SETTINGS FOCUS ROW, KEYS FADE
 
 Co-op hunt while he was away. Critic c-31 round 9 (pause 25/42/49, Settings 26, Keys 32 all at 3): no header X on the pause card, no visible focus row in Settings, Keys rows sliced mid glyph with 16px labels. One 48px X that resumes, the shown row wears the focus look, a 32px fade and 20px section labels.
