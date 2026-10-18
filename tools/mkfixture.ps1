@@ -6124,7 +6124,7 @@ window.__REGRESS=[
          sl.scrollTop=Math.floor(sl.scrollHeight/2);
          if(typeof window.__setDetailSync==='function') window.__setDetailSync();
          a=sl.getBoundingClientRect(); rows=sl.querySelectorAll('.row');
-         for(i=0;i<rows.length;i++){ c=rows[i].getBoundingClientRect(); m=(c.top+c.bottom)/2; if(m>=a.top&&m<=a.bottom&&rows[i].querySelector('div > b')&&!/opacity:\s*\.7/.test(rows[i].getAttribute('style')||'')){ vis=rows[i]; break; } }
+         for(i=0;i<rows.length;i++){ c=rows[i].getBoundingClientRect(); m=(c.top+c.bottom)/2; if(m>=a.top+(sl.querySelector('.setjump')?sl.querySelector('.setjump').getBoundingClientRect().height:0)&&m<=a.bottom&&rows[i].querySelector('div > b')&&!/opacity:\s*\.7/.test(rows[i].getAttribute('style')||'')){ vis=rows[i]; break; } }
          k=d.querySelector('.sdk'); nm=k?k.textContent:'';
          if(sl.scrollTop<5) bad.push('the list did not scroll');
          else if(!vis) bad.push('no row in view');
