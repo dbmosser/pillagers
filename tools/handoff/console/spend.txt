@@ -483,3 +483,4 @@
 2026-10-18 0.0289 critic-12-ui-party-screens
 2026-10-18 0.0246 critic-12-ui-party-screens
 2026-10-18 0.5696 12-ui-party-screens
+2026-10-18 1.1227 b-01-easy-mode-drops-words

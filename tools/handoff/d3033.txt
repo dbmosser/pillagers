@@ -1,0 +1,5 @@
+## v30.33 - A 2 player run ends only when both players are out
+
+Co-op hunt while he was away. His answer Q65 (10-18): in 2P the run ends when both players are out. One extraction used to double the score and end the run for both. Now the first player to extract stands out and the run goes on; the second extraction (either order) doubles and ends it.
+
+MEASURED. Check 30.33 passes, and fails on v30.32.

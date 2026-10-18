@@ -2790,7 +2790,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.32';
+var VER='30.33';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -48016,7 +48016,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.32: The 2 player demo now asks once if you want easy mode after your second death. Check 30.32 fails on v30.31',
+  now:'v30.33: In a 2 player run, one player extracting no longer ends the run for the other. Check 30.33 fails on v30.32',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -53751,6 +53751,7 @@ function netUpTick(dt){
   }
   p=G.player;
   if(G.over||!p||!netInCount()) return 0;
+  if(G.arcade&&p.specOut&&typeof ARCADE==='object'&&ARCADE&&ARCADE.role==='p2') return 0;   // v28.xx (cw-bothout): player 2 extracted and waits for the run end; its body leaves the host's world
   // v16.96, co-op hunt 2026-09-28: a party search on the host ran on the raw frame time, so with the whole party paused and the
   // world stopped a teammate box kept filling, paying out and sounding. It now stands still whenever the world does, as in netSpecTick.
   if(NET.role==='host') netSrchTick((G.paused&&!netPauseLive())?0:dt); else if(NET.role==='join') netSrchSync();   // v15.91: the host runs every search one of the party holds; a linked window tells the host when its own hold ended
@@ -57243,7 +57244,7 @@ function arcadeDeploy(o){
   if(o.cond) P.cond=o.cond;
   if(o.seed!==undefined) pendSeed=(o.seed>>>0);
   else { var _ps=arcadePartySeed(); if(_ps) pendSeed=_ps; }   // v26.xx (party6): the party seed, unless a seed was passed
-  ARCADE.deaths=0; ARCADE.holdT=0;   // v23.22 (arcade3)
+  ARCADE.deaths=0; ARCADE.holdT=0; ARCADE.xOut=0;   // v23.22 (arcade3); v28.xx (cw-bothout): who has extracted
   ARCADE.waveT=0; ARCADE.waveN=0;   // v23.37 (arcade14): the wave clock and count start again
   ARCADE.streak=null;   // v23.38 (arcade15): the kill streak starts again
   ARCADE.bm=arcadeBmNew(); ARCADE.mateBm=null;   // v23.xx (his answer 20): the best moments start again
@@ -57391,6 +57392,19 @@ function arcadeExtractEnd(){
   if(ARCADE.role==='p2'&&!G.netWasJoin){
     p.specOut=1; p.vx=0; p.vy=0; keys={};
     netSamePost({t:'arcx',pair:NET.pair,run:String((ARCADE.run&&ARCADE.run.id)||''),s:Math.max(0,ARCADE.mine|0),k:Math.max(0,ARCADE.kills|0)});
+    return true;
+  }
+  // v28.xx (cw-bothout), his answer Q65 (2026-10-18): "In 2P the run ends when both players are out." One player extracting no longer ends a
+  // 2 player run: the host stands out (benched, as the idle bench does) and the run goes on for player 2; player 2 extracting later (arcx)
+  // doubles both and ends it. A 1 player run, a host whose teammate is not up, or a host whose teammate already extracted ends as before.
+  if(!ARCADE.solo&&ARCADE.xOut!=='p'&&typeof arcadeMateLive==='function'&&arcadeMateLive()){
+    var _xi, _xz;
+    ARCADE.ext=(ARCADE.ext|0)+1; ARCADE.xOut='h';
+    for(_xi=0;_xi<(G.zones||[]).length;_xi++){ _xz=G.zones[_xi]; if(!_xz) continue; if(dist(p,_xz)<_xz.r&&typeof _xz.hold==='number'){ _xz.beaconT=null; _xz.hold=null; if(_xz===G.active){ G.beaconT=null; G.shipHold=null; } } _xz.pullT=null; _xz.boardT=0; _xz.pullFloor=0; }
+    p.specOut=1; p.vx=0; p.vy=0; keys={};
+    try{ say('Extracted','ally',{sub:'Player 2 is still out'}); }catch(_xs){}
+    try{ arcadeScSend(); }catch(_xc){}
+    try{ arcadeAttShow(); }catch(_xa){}
     return true;
   }
   ARCADE.ext=(ARCADE.ext|0)+1;
@@ -60575,6 +60589,7 @@ function arcadeOnMsg(m){
     if(m.t==='arcx'){   // v24.xx (feat0g): player 2 extracted: its last score, then both doubled and the run ends
       if(!G||!G.arcade||G.over||G.arcEnd||!ARCADE.run||String(m.run||'')!==ARCADE.run.id) return 'ignored';
       ARCADE.mate=Math.max(ARCADE.mate|0,Math.round(+m.s||0)); ARCADE.mateK=Math.max(ARCADE.mateK|0,m.k|0); ARCADE.mateX=(ARCADE.mateX|0)+1;
+      if(!arcadeBenched()&&arcadeMateLive()){ ARCADE.xOut='p'; try{ say('Player 2 extracted','ally',{sub:'Your run goes on'}); }catch(_xp){} return 'arcx'; }   // v28.xx (cw-bothout), his Q65: the run ends when both players are out
       arcadeX2();
       return 'arcx';
     }
@@ -60976,6 +60991,7 @@ function arcadeDropIn(){
 function arcadeBenched(){ return !!(ARCADE.on&&ARCADE.role==='host'&&G&&G.arcade&&!G.over&&G.player&&G.player.specOut); }
 function arcadeUnbench(){
   if(!arcadeBenched()) return false;
+  if(ARCADE.xOut==='h') return false;   // v28.xx (cw-bothout): he extracted; he stays out until the run ends
   G.player.specOut=0;
   ARCADE.ownAt=Date.now(); ARCADE.idleSaid=0;   // v23.39 (arcade16)
   try{ attStop(); }catch(_as){}
@@ -61002,13 +61018,13 @@ function arcadeJoinAsk(){
 // A fresh arcade raid on the same sector for a player 2 who cannot join this one: player 1 keeps his score (and his bench).
 function arcadeRebuild(){
   if(!ARCADE.on||ARCADE.role!=='host'||!G||!G.arcade) return false;
-  var s={mine:ARCADE.mine|0,mate:ARCADE.mate|0,ext:ARCADE.ext|0,deaths:ARCADE.deaths|0}, bench=!!(G.player&&G.player.specOut), ok;
+  var s={mine:ARCADE.mine|0,mate:ARCADE.mate|0,ext:ARCADE.ext|0,deaths:ARCADE.deaths|0,xo:ARCADE.xOut||0}, bench=!!(G.player&&G.player.specOut), ok;
   netSamePost({t:'arcnew',pair:NET.pair});
   var run0=ARCADE.run, k0=ARCADE.kills|0;   // v23.29 (arcade8): the same run, so the team score carries on
   var tl0=(typeof G.timeLeft==='number')?G.timeLeft:0;   // v23.6x (feat0e): the run keeps its clock
   ok=arcadeDeploy({role:'host',mapIx:P.mapIx});
   if(ok&&G&&G.arcade&&tl0>0&&G.timeLeft>tl0) G.timeLeft=tl0;
-  ARCADE.mine=s.mine; ARCADE.mate=s.mate; ARCADE.ext=s.ext; ARCADE.deaths=s.deaths;
+  ARCADE.mine=s.mine; ARCADE.mate=s.mate; ARCADE.ext=s.ext; ARCADE.deaths=s.deaths; ARCADE.xOut=s.xo;
   if(run0) ARCADE.run=run0; ARCADE.kills=k0;
   if(!ok||!G||!G.player){ try{ arcadeAttShow(); }catch(_aa){} return false; }
   if(bench){ G.player.specOut=1; arcadeAttShow(); }

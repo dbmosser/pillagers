@@ -1,0 +1,1 @@
+| A 2 player run ends only when both players are out | v30.33 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 30.33 passes, fails on v30.32 |

@@ -1,0 +1,7 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  01-title-mode-menu                     staged       5.7s  
+  44-title-from-character-select         staged      14.0s  
+  45-arcade-attract-board                staged       8.2s  
+  46-arcade-attract-how-to-play          staged      16.3s  
+  56-arcade-attract-board-scored         staged      35.7s  
+  57-title-2p-coop-picked                staged       9.1s  

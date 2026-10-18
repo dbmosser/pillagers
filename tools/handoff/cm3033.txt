@@ -1,0 +1,7 @@
+v30.33: a 2 player run ends only when both players are out
+
+In a 2 player run, one player extracting no longer ends the run for the other.
+
+Check 30.33. Fails on v30.32.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
