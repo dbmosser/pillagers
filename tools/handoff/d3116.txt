@@ -1,0 +1,5 @@
+## v31.16 - THE SHOP FILLS ITS CARD
+
+Co-op hunt while he was away. The critic scored the shop 2: the grid and detail stopped 280 px short of the card foot, a subtitle repeated the tab, and the answer line sat across the card border. Now the body stretches to the foot with buy pinned at the bottom of the detail, the subtitle is gone, the answer line sits inside the card.
+
+MEASURED. Check 31.16 passes, and fails on v31.15.

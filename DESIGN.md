@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.16 - THE SHOP FILLS ITS CARD
+
+Co-op hunt while he was away. The critic scored the shop 2: the grid and detail stopped 280 px short of the card foot, a subtitle repeated the tab, and the answer line sat across the card border. Now the body stretches to the foot with buy pinned at the bottom of the detail, the subtitle is gone, the answer line sits inside the card.
+
+MEASURED. Check 31.16 passes, and fails on v31.15.
 ## v31.15 - THE TEAM STRIP IS NOT BEHIND THE HOW TO PLAY CARD
 
 Co-op hunt while he was away. His order of 2026-10-18: there seem to be a lot of inconsistencies between p1 and p2 games, please coordinate them better. A party window that waits while a run is live (player 2, or a benched player 1) draws JOIN YOUR TEAM, TEAM SCORE as a strip 28.5 percent from the bottom. The how to play card now reaches down to 84 percent of the screen, so the strip was drawn behind its rows and read faintly through the card. With a page or the run over card up it now sits on the bottom margin under the card.

@@ -6101,6 +6101,27 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.16',what:'the shop grid and detail reach the bottom of the card, the subtitle is gone, and the answer line sits inside the card',
+   run:function(){
+     if(!(window.__hubEnter&&window.__showScreen)) return 'SKIP: this fixture cannot walk the Undercroft';
+     var bad=[], g, d, sub, t, th=window.innerHeight, q, q2;
+     try{
+       __topClear(); __cleanProfile();
+       G=null; keys={}; __showScreen('hub'); __hubEnter();
+       openTrader('buy');
+       g=document.getElementById('shopgrid'); d=document.getElementById('shopdetail');
+       q=g?g.getBoundingClientRect():null; q2=d?d.getBoundingClientRect():null;
+       if(!q||!(q.height>40)) bad.push('the shop grid has no box');
+       else if(!(q.bottom>=th*0.95-130)) bad.push('the shop grid ends at '+Math.round(q.bottom)+' of '+th+', short of the card foot');
+       if(q2&&q2.height>40&&!(q2.bottom>=th*0.95-130)) bad.push('the shop detail ends at '+Math.round(q2.bottom)+' of '+th);
+       sub=document.querySelector('#tpane_buy .msub');
+       if(sub&&getComputedStyle(sub).display!=='none') bad.push('the buy subtitle line still shows');
+       t=document.getElementById('hubtoast');
+       if(t&&!(parseFloat(getComputedStyle(t).bottom)>=th*0.05+6)) bad.push('the answer line sits on the card border ('+getComputedStyle(t).bottom+' up)');
+       var b=document.getElementById('closetrader'); if(b) b.click();
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ __topClear(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'31.15',what:'the team strip (JOIN YOUR TEAM, TEAM SCORE) of a waiting party window is not drawn behind the how to play card (his order of 2026-10-18: p1 and p2 should look and behave the same): while a run is live and the player 2 window waits on the how to play page, the strip sits clear of the card, under it, and still reads join your team',
    run:function(){
      if(typeof arcadeEnter!=='function'||typeof arcadeLeave!=='function'||typeof arcadeAttShow!=='function'||typeof ARCADE!=='object'||!ARCADE) return 'SKIP: no arcade here';

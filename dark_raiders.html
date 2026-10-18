@@ -1309,6 +1309,10 @@ html.party #slotpanel, html.party #titlesub, html.party #titlestart, html.party 
      width, so the detail card ends on that same right edge. Nothing else moved. */
   #root #tradermodal .tpane, #root #opmodal .tpane{ justify-content:flex-start; }
   #root #tradermodal .vend, #root #opmodal .vend{ max-width:none; width:100%; }
+  /* v28.xx (cw-shopfill), his Q43 (2026-10-18, a card that takes nearly the whole screen) and the critic on the shop shot (2/5: "body stops at y740 leaving 280px of void"): the shop grid and detail now stretch to the bottom of the card, the buy button stays pinned at the foot of the detail, the subtitle line goes (it only repeated the tab), and the answer line sits inside the card instead of across its bottom border. */
+  #root #tradermodal .tpane > .vend{ flex:1 1 0; max-height:none; }
+  #root #tradermodal #tpane_buy .msub{ display:none; }
+  body:has(#tradermodal.on) #hubtoast{ bottom:calc(5vh + 14px); }
   /* vNN.xx, UI REDESIGN ui5q1g (his #50, from the AAA judge of the Settings shot): SETTINGS READS AS ONE LAYOUT. The list was a
      centred 1080px column under a title and tabs on the left edge, so the page read as two layouts with a 400px gutter; the row
      labels mixed sentence case (Edit the words) with caps (LIGHTING); THE RAID head was faint grey; and the values were plain
@@ -2818,7 +2822,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.15';
+var VER='31.16';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -49153,7 +49157,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.15: While a party run is live the waiting window shows Join your team on the bottom edge under the how to play card, not behind its rows. Check 31.15 fails on v31.14',
+  now:'v31.16: The shop, craft and hire body fills the card. Check 31.16 fails on v31.15',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

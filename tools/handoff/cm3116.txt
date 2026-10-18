@@ -1,0 +1,7 @@
+v31.16: the shop fills its card
+
+The shop, craft and hire body fills the card.
+
+Check 31.16. Fails on v31.15.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
