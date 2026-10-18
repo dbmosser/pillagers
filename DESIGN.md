@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.81 - no multiplier beside the combo ring at the cursor
+
+Co-op hunt while he was away. His order (2026-10-18): "i don't like the multiplier next to the reticule, get rid of that". The combo ring at the cursor (v28.21) carried the chain multiplier (x2 to x5) on a plate to its right. The plate and its number are gone; the ring, its countdown sweep, the flash when the chain grows and the red flicker when it is about to run out stay (his menu survey pick q17 keeps the ring at the cursor). The multiplier still shows left of the score at the top of the screen.
+
+MEASURED. Check 30.81 passes, and fails on v30.80.
 ## v30.80 - a name typed on the title goes into a new save
 
 Co-op hunt while he was away. His order (2026-10-18): if he types a name into the name box on the title and then clicks create a new save, the new save should have that name. The button reloads the game onto an empty slot and a fresh save was always named PILLAGER, so the typed name was dropped. The typed name now rides along with the reload and the fresh save takes it as it boots, only for that slot, only once, only a save with no raids.

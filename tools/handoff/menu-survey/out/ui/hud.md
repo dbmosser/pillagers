@@ -6,7 +6,7 @@ Pictures: notes/shots/b-30-before (21, 33, 36 viewed). Critic before scores: 21 
 - Top-right: minimap x1524 y54 300x300 (q20), zone name 24 muted under it at y364, goals pill x1404 y404 420x56 (q21), its list at y468.
 - Top-left: free. Career money row "$900  0 xp" 24 at x96 y54 (career only); the pillagers board only if kept, in this corner.
 - Bottom-left: feed plates above y924 (pitch 46, 10 lines, q08); vitals x96, 460 wide: health 40 high y938, armour 28 high y984, stamina 8 high y1018 (q18).
-- Bottom-centre: belt, ten 72 px slots, gap 6, x573-1347, y954-1026 (q19); gun name above the selected slot; heal and throwable chips x1163-1347 y890-946.
+- Bottom-centre: the gun strip, 72 px cells, gap 6, centred on x960, y954-1026 (q19; the picture drew ten cells = x573-1347, the game has nine gun cells = x612-1308); gun name above the selected slot; three 56x56 item chips (icon + count, a read-out of the wheel items) above its right end, y890-946.
 - Bottom-right: ammo plate x1364 y836 460x190 (q17): 15 bullet pips, magazine number 88, reserve 44, gun silhouette. Magazine ring, reload ring and draw ring at the cursor STAY (recoloured lime; low ammo = danger red pulsing 2 Hz).
 - Low health (q23 D): red heartbeat glow radius 140, 1.5 Hz, vignette 25 percent; shake 2 px per beat is a feel change, its own ship. Downed: red tint 30 percent, countdown ring around the raider.
 

@@ -1,0 +1,7 @@
+v30.81: no multiplier beside the combo ring at the cursor
+
+The multiplier number next to the aiming ring is gone. The ring stays.
+
+Check 30.81. Fails on v30.80.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

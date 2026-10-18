@@ -1,0 +1,6 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  21-raid-hud-calm                       staged      14.5s  
+  50-arcade-hud-live                     staged      22.3s  
+== 4k : window 3872x2263, viewport 3840x2160
+  21-raid-hud-calm                       staged      14.4s  
+  50-arcade-hud-live                     staged      22.5s  

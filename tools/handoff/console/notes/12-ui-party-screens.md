@@ -1,11 +1,26 @@
-# 12-ui-party-screens (lane a)
-- Run 8: shipped v30.22 card P17, v30.23 cw-modalflat. Shots 12-h1 (before), 12-h2 (after).
-- Run 9: shipped v30.24 cw-partyempty (ghost rows hidden, centred empty line; operator New party amber primary, Exit demo ghost). Shots 12-i1/12-i2. Critic: 56 = 3 (better), 62 = 3 (same).
-- Run 10: shipped v30.30 cw-pausehint (plain Esc hint removed from the pause card; fixture 29.56/29.57 retargeted). Shots 12-j1/12-j2. Critic 49 = 3 (same), 46 = 3.
-- STUCK: the critic gives 3 to every small card and flip-flops between rounds. Its open asks that I did not do:
-  - 49/46: bake the world dimmed and hide HUD and overlays behind the pause card (fixture 29.88 needs a 95%+ solid scrim, so a dimmed world needs a ruling).
-  - 46: a 48px ghost X in the How to play header, and the footer "Press any button" as a real 56px button (earlier critic round made it the card footer; check which is current before changing).
-  - 49: focus state on ghost rows (2px acc border, raised fill, 3px acc left bar); button text 20px, card 520px.
-  - 56/64: "No scores yet" renders bright (find the override of .apn).
-  - 47/48/53/54 are in-raid HUD stages (HUD task owns them); 58 is the title page (other task).
-- Nothing reaches 4 after 3 rounds. Next run: do the 46 X and footer button, the 49 focus state, then the .apn colour.
+# 12-ui-party-screens (lane b) notes
+
+Screens 46 47 48 49 52 53 54 55 56 58 62 63 64. All sit at 3 of 5 from the critic (58 and 56/64 at 2-3 earlier).
+
+## Shipped
+- v30.24 cw-partyempty, v30.23 cw-modalflat, v30.30 cw-pausehint (earlier runs)
+- v30.78 cw-partyx2: 48px ghost X on the how to play / board cards (critic 46: 3, better)
+- cw-cardP24 (what's new card stamp, needed to get the gate through)
+
+## Pictures
+shots/12b-before and shots/12b-after (all 13 screens, 1080).
+
+## Stuck: the critic contradicts itself on the footer "press any key"
+- v29.97 cw-partyprompt turned the filled 56px button into a footer HINT (dot + words), because the critic called it
+  "an instruction drawn as a filled button, a fake action".
+- Now (v30.78) the critic on 46 and 52 asks for the opposite: a 56px primary "got it" / "continue" button and a ghost
+  "back to menu", plus a pad glyph, a 16px label size floor, 4 equal stat columns, a 720px dialog with 56px header / 72px footer.
+- Do not flip it back again without the owner: the prompt is a real any-key prompt on the arcade cabinet (any key closes
+  the page), a button would be a fake choice. Logged for him.
+- Open P1/P2 left on 52/55: title "run over" is tx-2 (kept on purpose, score leads); stats labels are 14-15px (fs-label token);
+  card sits on the blurred hub (his scrim ruling). 62/63: the white ring on the lime row and the "tonight: 0 runs" line.
+
+## Next run could try (one ship each, none reverse a ruling)
+1. 62: hide "tonight: 0 runs" when the count is 0; focus ring only the lime bar (no white ring).
+2. 52/55: stats as 4 equal columns, 24px values / 16px labels; score line with a 16px "score" label over a 56px number.
+3. 46: row names 20px, headers 16px tx-2 tracked, "left stick"/"right stick" spelled out in lower case.

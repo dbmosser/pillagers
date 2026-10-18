@@ -214,6 +214,26 @@ A.scenes.duo=async function(o){
   return {zoom:3.2,chars:[{id:'p1',kind:'player',ref:'p1'},{id:'mate',kind:'player',ref:'mate'}]};
 };
 
+A.scenes.fight=async function(o){
+  var st=await A.stage(o), p=st.p, s=st.s, X=BASE.x, Y=BASE.y, Z=2.3;
+  var pa, pb, sen, cra, a;
+  p.x=X-200; p.y=Y+24; p.face=0.12;
+  A.mate(X-262,Y-44,0.05,{ads:1});
+  pa=A.pillager(X-40,Y-18,{id:'beef',gun:'shotgun',rig:'none',state:'chase',face:Math.PI-0.1});
+  pb=A.pillager(X+22,Y+86,{id:'gamer',gun:'carbine',rig:'light',state:'chase',face:Math.PI-0.35});
+  cra=A.machine('crawler',X+70,Y+20,{state:'chase',face:Math.PI});
+  sen=A.machine('sentry',X+178,Y-66,{state:'chase',face:Math.PI-0.15});
+  // the shots: P1 at the near pillager, the pillager and the second one back at the pair, the sentry at the mate
+  A.shoot(p,p.wep,pa.x,pa.y-8,true,[70,210,350]);
+  A.shoot(pa,pa.wep,p.x,p.y-6,false,[55,150]);
+  A.shoot(pb,pb.wep,p.x+10,p.y+10,false,[120,300]);
+  A.shoot(sen,{dmg:sen.dmg,spread:.10,rng:sen.rng,noise:340,tint:'#ff9a6a'},X-262,Y-44,false,[90,260]);
+  s.noiseRings.length=0; s.shake=0;
+  A.cam(X-40,Y+8,Z);
+  return {zoom:Z,chars:[{id:'p1',kind:'player',ref:'p1'},{id:'mate',kind:'player',ref:'mate'},
+    {id:'pillager-a',kind:'pillager',ref:pa},{id:'pillager-b',kind:'pillager',ref:pb},{id:'crawler',kind:'machine',ref:cra},{id:'sentry',kind:'machine',ref:sen}]};
+};
+
 // the picture: scene (or its plate), measured, the last frame drawn, a JSON line back
 A.scene=async function(name,o){
   o=o||{};
