@@ -1,0 +1,18 @@
+{
+ "a29-A": {
+  "js": "return await window.__art.scene('duo',{x:1191,y:3054});",
+  "expect": "!!window.__art&&!!__state().player&&!__state().over&&!__state().drawErr&&document.getElementById('topright').style.display==='none'&&__state().ents.length===0&&__P().cond==='day'"
+ },
+ "a29-B": {
+  "js": "return await window.__art.scene('duo',{x:1191,y:3054});",
+  "expect": "!!window.__art&&!!__state().player&&!__state().over&&!__state().drawErr&&document.getElementById('topright').style.display==='none'&&__state().ents.length===0&&__P().cond==='day'&&__gx('ART29.f').length>5"
+ },
+ "a29-C": {
+  "js": "return await window.__art.scene('duo',{x:1191,y:3054});",
+  "expect": "!!window.__art&&!!__state().player&&!__state().over&&!__state().drawErr&&document.getElementById('topright').style.display==='none'&&__state().ents.length===0&&__P().cond==='day'&&__gx('ART29.f').length>5"
+ },
+ "a29-D": {
+  "js": "return await window.__art.scene('duo',{x:1191,y:3054});",
+  "expect": "!!window.__art&&!!__state().player&&!__state().over&&!__state().drawErr&&document.getElementById('topright').style.display==='none'&&__state().ents.length===0&&__P().cond==='day'&&__gx('ART29.f').length>5"
+ }
+}

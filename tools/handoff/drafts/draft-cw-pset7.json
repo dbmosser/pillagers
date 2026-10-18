@@ -1,0 +1,12 @@
+{
+    "title":  "KEYS LIST: LOWER CASE WORDS, FLAT KEY CAPS",
+    "why":  "Critic c-31z on Pad buttons 74: every action label began with a capital (a ::first-letter uppercase rule), which breaks his lower-case order; the key cap bevel is a shadow the guide bans.",
+    "now":  "The Keys and Pad buttons lists show lower case words and flat key caps.",
+    "edits":  [
+                  {
+                      "anchor":  "#root #keyslist .keybtn.wait{ box-shadow:none; }",
+                      "replacement":  "#root #keyslist .keybtn.wait{ box-shadow:none; }\n/* v31.xx (cw-pset7) critic c-31z round 2 (Pad buttons 74 at 2, P0: \"every action label starts with a capital letter ... his order is all lower case\"; P1: \"the 3px bottom bevel is a shadow-style edge the guide bans\"; \"the last line is hard-clipped at the footer\"). Now: the Keys and Pad buttons rows show their words as written (lower case, the ::first-letter capital is gone), key caps are a flat 1px line box with no bevel, and the list keeps 32px under its last row. */\n#root #keyslist .row b::first-letter{ text-transform:none; }\n#root #keyslist .keybtn{ box-shadow:none; }\n#root #keyslist{ padding-bottom:var(--sp-4); }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the Keys list shows lower case words: no first-letter capital, and key caps have no bevel\u0027,\n   run:function(){\n     var bad=[], b, k, cs, padWas=document.body.classList.contains(\u0027padon\u0027);\n     __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n     try{\n       document.body.classList.remove(\u0027padon\u0027);\n       keysOpen(false);\n       b=document.querySelector(\u0027#keyslist .row b\u0027); k=document.querySelector(\u0027#keyslist .keybtn\u0027);\n       if(!b) bad.push(\u0027no key row\u0027);\n       else{ cs=getComputedStyle(b,\u0027::first-letter\u0027); if(cs.textTransform===\u0027uppercase\u0027) bad.push(\u0027the first letter of a key action is still upper case\u0027); }\n       if(k \u0026\u0026 getComputedStyle(k).boxShadow!==\u0027none\u0027) bad.push(\u0027the key cap still has a bevel: \u0027+getComputedStyle(k).boxShadow);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ var q=document.getElementById(\u0027keysmodal\u0027); if(q) q.classList.remove(\u0027on\u0027); }catch(_k){} try{ __topClear(); }catch(_c){} document.body.classList.toggle(\u0027padon\u0027,padWas); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

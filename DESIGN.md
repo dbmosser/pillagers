@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.37 - at the party f2 and f8 need ctrl held, so a guest cannot freeze a raid by accident
+
+Co-op hunt while he was away. The coordinator: at the party the guest plays on keyboard and mouse at localhost, so the F2 (edit the words) and F8 (snip) keys are live, and the F keys sit right above the gun number keys. A stray F2 or F8 froze the raid in a state the guest cannot read. In party mode (the ?party=1 launch, which includes the 2 player arcade demo played from it) a plain F2 or F8 now does nothing and Ctrl+F2 and Ctrl+F8 do the job, the same hidden operator pattern as the Ctrl+Shift+F10 operator card. The chord gives back the one crouch change the Ctrl press makes, as Ctrl with the wheel already does. The tag reads edit words: on (ctrl f2); the Keys window row and the Settings hint name the key that works. Outside party mode nothing changes.
+
+MEASURED. Check 31.37 passes, and fails on v31.36.
 ## v31.36 - PAUSE AND SETTINGS POLISH (56PX REPORT ROW, FLUSH TAB, SHORT PAD LABELS)
 
 Co-op hunt while he was away. Critic c-31z: the pause report box was a 72px input among 56px buttons with dim text, the accent tab was inset, two pad labels wrapped to three lines, the scrollbar was a sliver, key caps looked like plain boxes.

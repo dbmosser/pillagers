@@ -1,0 +1,62 @@
+{
+ "about": "cw-mapstyle pictures: the restyled sector map (game scope through __gx).",
+ "prelude": "window.__uis=window.__uis||(function(){ function kv(c){ if(/^Key[A-Z]$/.test(c)) return c.slice(3).toLowerCase(); if(/^Digit\\d$/.test(c)) return c.slice(5); if(c==='Space') return ' '; return c; } var U={ wait:function(ms){ return new Promise(function(r){ setTimeout(r,ms); }); }, down:function(c){ window.dispatchEvent(new KeyboardEvent('keydown',{code:c,key:kv(c),bubbles:true,cancelable:true})); }, up:function(c){ window.dispatchEvent(new KeyboardEvent('keyup',{code:c,key:kv(c),bubbles:true,cancelable:true})); }, key:async function(c,hold){ U.down(c); await U.wait(hold||50); U.up(c); }, el:function(s){ return typeof s==='string'?document.querySelector(s):s; }, on:function(s){ var e=U.el(s); if(!e) return false; var b=e.getBoundingClientRect(); if(b.width<1||b.height<1) return false; return e.checkVisibility?e.checkVisibility({opacityProperty:true,visibilityProperty:true}):true; }, click:function(s){ var e=U.el(s); if(!e) return false; e.click(); return true; }, closeModals:function(){ [].slice.call(document.querySelectorAll('.modal.on')).forEach(function(m){ m.classList.remove('on'); }); }, untitle:function(){ var t=document.getElementById('title'); if(t) t.classList.remove('on'); }, until:async function(f,ms){ var t0=Date.now(); while(Date.now()-t0<(ms||5000)){ try{ if(f()) return true; }catch(e){} await U.wait(100); } return false; }, prep:async function(){ try{ __pinDPR(1); }catch(e){} }, floor:async function(){ U.click('#titlestart'); await U.until(function(){ return U.on('#welcomemodal'); },3000); U.click('#welcometake'); await U.wait(900); __hubEnter(); await U.wait(400); }, hold:async function(c,ms){ U.down(c); await U.wait(ms); U.up(c); }, raid:function(){ var g=__state(); return !!(g&&g.player&&!g.over); }, dep:function(o){ U.untitle(); U.closeModals(); __topClear(); return __deploy(o); }, near:function(list,n){ var g=__state(), p=g.player; return list.slice().sort(function(a,b){ return Math.hypot(a.x-p.x,a.y-p.y)-Math.hypot(b.x-p.x,b.y-p.y); }).slice(0,n); }, modal:function(){ var m=[].slice.call(document.querySelectorAll('.modal.on')).filter(function(x){ return U.on(x); }); return m.map(function(x){ return x.id; }).join(' '); } }; return U; })()",
+ "screens": [
+  {
+   "name": "60-mapfirst-1p",
+   "screen": "Raid opens on the sector map, keyboard prompt, eight contracts",
+   "before": "",
+   "query": "",
+   "expect": "U.raid()&&__state().mapFirst===1&&__state().mapOpen",
+   "js": "__gx(\"P.contracts=[{type:'kill',tgt:'crawler',n:5,prog:3,reward:450,desc:'x',tier:'std'},{type:'open',ct:'crate',n:4,prog:1,reward:280,desc:'x',tier:'std'},{type:'district',d:0,n:3,prog:0,reward:480,desc:'x',tier:'std'},{type:'exItem',item:'core',n:1,prog:0,reward:1450,desc:'x',tier:'std'},{type:'haul',v:1200,n:1,prog:0,reward:720,desc:'x',tier:'std'},{type:'conduct',ck:'clean',n:1,prog:0,reward:900,desc:'x',tier:'std'},{type:'kill',tgt:'sentry',n:3,prog:3,reward:450,desc:'x',tier:'std'},{type:'conduct',ck:'swift',n:1,prog:0,reward:1000,desc:'x',tier:'std'}]\"); __gx(\"MAPFIRST.skip=0\"); U.dep({kit:['gun_carbine','medkit','bandage','bandage','plate','frag','smoke'],seed:4242,mapIx:0}); await U.wait(1500);"
+  },
+  {
+   "name": "61-mapfirst-pad",
+   "screen": "Raid opens on the sector map, pad prompt",
+   "before": "",
+   "query": "",
+   "expect": "U.raid()&&__state().mapFirst===1&&__gx(\"padOn()\")",
+   "js": "__gx(\"P.contracts=[{type:'kill',tgt:'crawler',n:5,prog:3,reward:450,desc:'x',tier:'std'},{type:'open',ct:'crate',n:4,prog:1,reward:280,desc:'x',tier:'std'},{type:'district',d:0,n:3,prog:0,reward:480,desc:'x',tier:'std'},{type:'exItem',item:'core',n:1,prog:0,reward:1450,desc:'x',tier:'std'},{type:'haul',v:1200,n:1,prog:0,reward:720,desc:'x',tier:'std'},{type:'conduct',ck:'clean',n:1,prog:0,reward:900,desc:'x',tier:'std'},{type:'kill',tgt:'sentry',n:3,prog:3,reward:450,desc:'x',tier:'std'},{type:'conduct',ck:'swift',n:1,prog:0,reward:1000,desc:'x',tier:'std'}]\"); __gx(\"MAPFIRST.skip=0\"); U.dep({kit:['gun_carbine','medkit','bandage','bandage','plate','frag','smoke'],seed:4242,mapIx:0}); __gx(\"(function(){var b=[],q;for(q=0;q<17;q++)b.push({pressed:false,value:0});var gp={connected:true,id:'Xbox Wireless Controller',index:0,axes:[0,0,0,0],buttons:b,mapping:'standard'};navigator.getGamepads=function(){return [gp];};INDEV.dev='pad';})()\"); await U.wait(1200);"
+  },
+  {
+   "name": "62-mapfirst-2p-wait",
+   "screen": "Opening map after the press, waiting for p2",
+   "before": "",
+   "query": "",
+   "expect": "U.raid()&&__state().mapFirst===1&&__state().mapFirstMe===1",
+   "js": "__gx(\"P.contracts=[{type:'kill',tgt:'crawler',n:5,prog:3,reward:450,desc:'x',tier:'std'},{type:'open',ct:'crate',n:4,prog:1,reward:280,desc:'x',tier:'std'},{type:'district',d:0,n:3,prog:0,reward:480,desc:'x',tier:'std'},{type:'exItem',item:'core',n:1,prog:0,reward:1450,desc:'x',tier:'std'},{type:'haul',v:1200,n:1,prog:0,reward:720,desc:'x',tier:'std'},{type:'conduct',ck:'clean',n:1,prog:0,reward:900,desc:'x',tier:'std'},{type:'kill',tgt:'sentry',n:3,prog:3,reward:450,desc:'x',tier:'std'},{type:'conduct',ck:'swift',n:1,prog:0,reward:1000,desc:'x',tier:'std'}]\"); __gx(\"MAPFIRST.skip=0\"); U.dep({kit:['gun_carbine','medkit','bandage','bandage','plate','frag','smoke'],seed:4242,mapIx:0}); await U.wait(600); __gx(\"(function(){var g=G;var peer={id:991,pc:null,dc:{readyState:'open',send:function(){}},fc:null,state:'in',seat:1,pid:'zqxseat1',name:'P2',timers:[]};NET.on=true;NET.role='host';NET.seat=0;NET.max=4;NET.upSeed=g.seed>>>0;NET.peers=[peer];NET.up=[];NET.upOut=undefined;NET.upAcc=0;NET.roster=[{seat:0,name:'P1',host:true},{seat:1,name:'P2'}];try{netEntsInit(g);}catch(e){}var feed=function(){netOnState(peer,{t:'st',k:'r',sd:g.seed>>>0,x:g.player.x+120,y:g.player.y,f:0,m:0,r:0,c:0,sp:0,dn:0,w:'',pz:0,hp:100,mh:100,ar:0,ac:0,dt:0,sa:1,mf:1});};feed();window.__mfFeed=setInterval(feed,200);})()\"); await U.wait(700); __gx(\"mapFirstGo('key')\"); await U.wait(1200);"
+  },
+  {
+   "name": "63-map-open-m",
+   "screen": "The map opened in the raid with M, a waypoint set",
+   "before": "",
+   "query": "",
+   "expect": "U.raid()&&__state().mapOpen",
+   "js": "__gx(\"P.contracts=[{type:'kill',tgt:'crawler',n:5,prog:3,reward:450,desc:'x',tier:'std'},{type:'open',ct:'crate',n:4,prog:1,reward:280,desc:'x',tier:'std'},{type:'district',d:0,n:3,prog:0,reward:480,desc:'x',tier:'std'},{type:'exItem',item:'core',n:1,prog:0,reward:1450,desc:'x',tier:'std'},{type:'haul',v:1200,n:1,prog:0,reward:720,desc:'x',tier:'std'},{type:'conduct',ck:'clean',n:1,prog:0,reward:900,desc:'x',tier:'std'},{type:'kill',tgt:'sentry',n:3,prog:3,reward:450,desc:'x',tier:'std'},{type:'conduct',ck:'swift',n:1,prog:0,reward:1000,desc:'x',tier:'std'}]\"); U.dep({kit:['gun_carbine','medkit','bandage','bandage','plate','frag','smoke'],seed:4242,mapIx:0}); await U.wait(800); __gx(\"G.waypoint={x:G.player.x+900,y:G.player.y-500}; G.mapOpen=true;\"); await U.wait(900);"
+  },
+  {
+   "name": "64-map-open-demo",
+   "screen": "The map in the demo: no contracts",
+   "before": "",
+   "query": "",
+   "expect": "U.raid()&&__state().mapOpen&&__state().arcade",
+   "js": "__gx(\"arcadeDeploy({mapIx:0,seed:4242})\"); await U.wait(800); __gx(\"G.mapOpen=true;\"); await U.wait(900);"
+  },
+  {
+   "name": "65-map-open-tv",
+   "screen": "The map at the TV text size",
+   "before": "",
+   "query": "",
+   "expect": "U.raid()&&__state().mapOpen",
+   "js": "__gx(\"P.contracts=[{type:'kill',tgt:'crawler',n:5,prog:3,reward:450,desc:'x',tier:'std'},{type:'open',ct:'crate',n:4,prog:1,reward:280,desc:'x',tier:'std'},{type:'district',d:0,n:3,prog:0,reward:480,desc:'x',tier:'std'},{type:'exItem',item:'core',n:1,prog:0,reward:1450,desc:'x',tier:'std'},{type:'haul',v:1200,n:1,prog:0,reward:720,desc:'x',tier:'std'},{type:'conduct',ck:'clean',n:1,prog:0,reward:900,desc:'x',tier:'std'},{type:'kill',tgt:'sentry',n:3,prog:3,reward:450,desc:'x',tier:'std'},{type:'conduct',ck:'swift',n:1,prog:0,reward:1000,desc:'x',tier:'std'}]\"); __gx(\"P.uiScale=1.5\"); U.dep({kit:['gun_carbine','medkit','bandage','bandage','plate','frag','smoke'],seed:4242,mapIx:0}); await U.wait(800); __gx(\"G.mapOpen=true;\"); await U.wait(900);"
+  },
+  {
+   "name": "66-map-open-p2",
+   "screen": "The map for player 2: the ally colour and a 2",
+   "before": "",
+   "query": "",
+   "expect": "U.raid()&&__state().mapOpen",
+   "js": "__gx(\"P.contracts=[{type:'kill',tgt:'crawler',n:5,prog:3,reward:450,desc:'x',tier:'std'},{type:'open',ct:'crate',n:4,prog:1,reward:280,desc:'x',tier:'std'},{type:'district',d:0,n:3,prog:0,reward:480,desc:'x',tier:'std'},{type:'exItem',item:'core',n:1,prog:0,reward:1450,desc:'x',tier:'std'},{type:'haul',v:1200,n:1,prog:0,reward:720,desc:'x',tier:'std'},{type:'conduct',ck:'clean',n:1,prog:0,reward:900,desc:'x',tier:'std'},{type:'kill',tgt:'sentry',n:3,prog:3,reward:450,desc:'x',tier:'std'},{type:'conduct',ck:'swift',n:1,prog:0,reward:1000,desc:'x',tier:'std'}]\"); U.dep({kit:['gun_carbine','medkit','bandage','bandage','plate','frag','smoke'],seed:4242,mapIx:0}); await U.wait(800); __gx(\"seatHere=function(){return 1;}; G.mapOpen=true;\"); await U.wait(900);"
+  }
+ ]
+}

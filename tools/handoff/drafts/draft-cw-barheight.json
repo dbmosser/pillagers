@@ -1,0 +1,28 @@
+{
+    "title":  "ARMOUR AND STAMINA BARS ONE HEIGHT",
+    "why":  "The critic on the raid screen (10-19): three vitals bars with different heights; armour is 16 and stamina 12.",
+    "now":  "Armour and stamina bars are both 16 high with the same gap; health stays the tall hero bar.",
+    "edits":  [
+                  {
+                      "anchor":  "    bar(16,by-46,HBW,16,p.armor/armorCap(),\u0027#5aa9e6\u0027);",
+                      "replacement":  "    bar(16,by-50,HBW,16,p.armor/armorCap(),\u0027#5aa9e6\u0027);   /* v28.xx (cw-barheight), the critic (2026-10-19): \u0027use three bars of the same height with the same gaps\u0027. Armour and stamina are both 16 high with a 5 gap (stamina was 12), health stays the tall hero bar */"
+                  },
+                  {
+                      "anchor":  "  bar(16,by-25,HBW,12,p.stam/100,_stc);",
+                      "replacement":  "  bar(16,by-29,HBW,16,p.stam/100,_stc);   /* v28.xx (cw-barheight): 16 high like the armour bar, same bottom edge as before */"
+                  },
+                  {
+                      "anchor":  "  ctx.fillText(p.stamLock?\u0027WINDED\u0027:\u0027STAMINA\u0027,16+HBW+8,by-15);",
+                      "replacement":  "  ctx.fillText(p.stamLock?\u0027WINDED\u0027:\u0027STAMINA\u0027,16+HBW+8,by-17);   /* v28.xx (cw-barheight): centred on the taller bar */"
+                  },
+                  {
+                      "anchor":  "  var _up=(p.armor\u003e0)?(46+LH(5)):(25+LH(5));",
+                      "replacement":  "  var _up=(p.armor\u003e0)?(50+LH(5)):(29+LH(5));   /* v28.xx (cw-barheight): the taller bars lift the chip 4 */"
+                  },
+                  {
+                      "anchor":  "    ctx.fillText(\u0027ARMOUR  \u0027+Math.round(p.armor),24,(_apx\u003e_apm)?Math.round(by-46+8+_apm*0.36):by-33);",
+                      "replacement":  "    ctx.fillText(\u0027ARMOUR  \u0027+Math.round(p.armor),24,(_apx\u003e_apm)?Math.round(by-50+8+_apm*0.36):by-37);   /* v28.xx (cw-barheight): follows the bar */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the armour and stamina bars are the same height (the critic, 10-19: three bars of the same height)\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid\u0026\u0026window.__frame)||typeof bar!==\u0027function\u0027) return \u0027SKIP: this fixture cannot deploy\u0027;\n     var g=null, oB=bar, rec=[], i, hs=[];\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[\u0027gun_shotgun\u0027,\u0027gun_rifle\u0027],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player||g.over) return \u0027SKIP: staging: no raid\u0027;\n       g.bagOpen=false; g.mapOpen=false; g.paused=false; keys={}; mouse.down=false; g.player.armor=40;\n       bar=function(x,y,w,h,f,c,bg){ rec.push({x:x,w:w,h:h}); return oB.apply(this,arguments); };\n       try{ __frame(0.016); }finally{ bar=oB; }\n       for(i=0;i\u003crec.length;i++) if(rec[i].x===16\u0026\u0026rec[i].h\u003e=10\u0026\u0026rec[i].h\u003c=18) hs.push(rec[i].h);\n       if(hs.length\u003c2) return \u0027fewer than two small vitals bars drawn (\u0027+hs.length+\u0027)\u0027;\n       for(i=1;i\u003chs.length;i++) if(hs[i]!==hs[0]) return \u0027the armour and stamina bars differ in height: \u0027+hs.join(\u0027,\u0027);\n       return null;\n     } finally {\n       bar=oB;\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e2){}\n       __topClear();\n     } }},"
+}

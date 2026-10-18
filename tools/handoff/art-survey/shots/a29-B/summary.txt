@@ -1,2 +1,4 @@
 == 1080 : window 1952x1183, viewport 1920x1080
-  a29-B                                  staged       6.5s    | {"scene":"duo","plate":false,"zoom":5,"w":1920,"h":1080,"chars":[{"id":"p1","kind":"player","x":781,"y":546,"w":166,"h":297,"fx":781,"fy":631},{"id":"mate","kind":"player","x":1139,"y":583,"w":168,"h":316,"fx":1141,"fy":651}],"objects":null}
+  a29-B                                  staged       5.7s    | {"scene":"duo","plate":false,"zoom":5,"w":1920,"h":1080,"chars":[{"id":"p1","kind":"player","x":781,"y":546,"w":166,"h":297,"fx":781,"fy":631},{"id":"mate","kind":"player","x":1139,"y":583,"w":168,"h":316,"fx":1141,"fy":651}],"objects":null}
+== 4k : window 3872x2263, viewport 3840x2160
+  a29-B                                  staged       6.3s    | {"scene":"duo","plate":false,"zoom":9.99074074074074,"w":1920,"h":1080,"chars":[{"id":"p1","kind":"player","x":1559,"y":1101,"w":333,"h":594,"fx":1560,"fy":1270},{"id":"mate","kind":"player","x":2275,"y":1173,"w":336,"h":631,"fx":2279,"fy":1310}],"objects":null}

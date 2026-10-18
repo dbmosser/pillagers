@@ -1,0 +1,1 @@
+| at the party f2 and f8 need ctrl held, so a guest cannot freeze a raid by accident | v31.37 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 31.37 passes, fails on v31.36 |

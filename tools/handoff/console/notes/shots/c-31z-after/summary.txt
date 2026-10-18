@@ -1,0 +1,6 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  25-raid-pause-box                      staged       8.9s  
+  32-keys-window                         staged      10.7s  
+  74-settings-change-pad-buttons         staged       8.5s    | keysmodal
+  75-settings-pad-rebind-waiting         staged       9.0s    | keysmodal
+  18-settings-hub                        staged       7.6s    | settingsmodal

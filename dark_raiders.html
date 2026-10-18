@@ -2838,7 +2838,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.36';
+var VER='31.37';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -4431,6 +4431,13 @@ function txKeyToggle(){
   try{ hubToast(CFG.textEdit===1?'edit words on':'edit words off'); }catch(_ht){}
   return true;
 }
+// v30.xx (cw-partykeys), the coordinator: AT THE PARTY F2 AND F8 NEED CTRL. The party launch mode (?party=1, and the 2 player arcade demo played from it) is a guest on keyboard and mouse at localhost, so these two
+// keys are live there, and the F keys sit right above the gun number keys: a stray F2 or F8 froze the raid in a state the guest cannot read. In party mode a plain F2 or F8 is not taken (nothing changes, nothing
+// is swallowed) and Ctrl+F2 and Ctrl+F8 do the job, the same hidden-operator pattern as the Ctrl+Shift+F10 operator card. Outside party mode the keys are exactly what they were (a Ctrl chord is still not taken there).
+function partyKeyOk(e){ if(!e||e.altKey||e.metaKey||e.shiftKey) return false; return PARTY?!!e.ctrlKey:!e.ctrlKey; }
+// The Ctrl that starts the chord has already flipped the crouch in raidKey (one change per press), so the chord gives that one change back, exactly as Ctrl with the wheel does (v15.65): a party guest who
+// uses the chord keeps the stance he had.
+function partyCtrlGive(e){ try{ if(PARTY&&e&&e.ctrlKey&&G&&!G.over&&!G.sim&&('ctrlUndo' in G)&&G.ctrlUndo!==null&&(keys.ControlLeft||keys.ControlRight)){ G.crouchTog=G.ctrlUndo; G.ctrlUndo=null; } }catch(_pg){} }   // 'in', not != null: a stance that was never set is undefined, and that is a stance too
 // The tag: a small plate top left (under SHOW FPS, clear of the upper right corner) so he knows why a click opens an editor and does not shoot. A page element, not drawn on the canvas, no pointer.
 var TXTAG=null, _txTagOn=-1;
 function txTagSync(){
@@ -4441,7 +4448,7 @@ function txTagSync(){
     if(!on) return on;
     el=document.createElement('div'); el.id='txtag';
     el.style.cssText='position:fixed;left:8px;top:38px;z-index:9001;display:none;padding:2px 10px 1px 12px;background:rgba(11,12,13,.82);border:1px solid var(--ui-line-hi);color:var(--acc);font:700 14px/1.3 var(--f-cond);letter-spacing:.1em;pointer-events:none;clip-path:polygon(8px 0,100% 0,100% 100%,0 100%,0 8px)';
-    el.textContent='edit words: on (f2)';
+    el.textContent=PARTY?'edit words: on (ctrl f2)':'edit words: on (f2)';
     document.body.appendChild(el); TXTAG=el;
   }
   el.style.display=on?'block':'none';
@@ -4451,11 +4458,11 @@ function txTagSync(){
   try{
     window.addEventListener('keydown',function(e){
       if(!DEV_LOCAL||!e||e.code!=='F2') return;
-      if(e.ctrlKey||e.altKey||e.metaKey||e.shiftKey) return;
+      if(!partyKeyOk(e)) return;   // v30.xx (cw-partykeys): in party mode the chord is Ctrl+F2, plain F2 does nothing
       try{ if(typeof KEYS==='object'&&KEYS&&KEYS.waiting) return; }catch(_kw){}   // the Keys window is waiting for a key to bind: it says F2 keeps its own job
       try{ e.preventDefault(); e.stopImmediatePropagation(); }catch(_x){}
       if(e.repeat) return;
-      try{ txKeyToggle(); }catch(_t){}
+      partyCtrlGive(e); try{ txKeyToggle(); }catch(_t){}
     },true);
   }catch(_e){}
 })();
@@ -4690,11 +4697,11 @@ function snipMouse(e){
     ['mousedown','mouseup','mousemove','click','dblclick','auxclick','contextmenu','pointerdown','pointerup','pointermove','wheel'].forEach(function(n){ window.addEventListener(n,snipMouse,true); });
     window.addEventListener('keydown',function(e){
       if(!DEV_LOCAL||!e) return;
-      if(e.code==='F8'&&!(e.ctrlKey||e.altKey||e.metaKey||e.shiftKey)){
+      if(e.code==='F8'&&partyKeyOk(e)){   // v30.xx (cw-partykeys): in party mode the chord is Ctrl+F8, plain F8 does nothing
         try{ if(typeof KEYS==='object'&&KEYS&&KEYS.waiting) return; }catch(_kw){}   // the Keys window is waiting for a key to bind: it says F8 keeps its own job
         try{ e.preventDefault(); e.stopImmediatePropagation(); }catch(_x){}
         if(e.repeat) return;   // an edge press only
-        try{ if(SNIP.on) snipEnd('key'); else snipStart(); }catch(_t){}
+        partyCtrlGive(e); try{ if(SNIP.on) snipEnd('key'); else snipStart(); }catch(_t){}
         return;
       }
       if(!SNIP.on) return;
@@ -18631,8 +18638,8 @@ function keysListBody(){
 // v26.xx (settings11): THE KEYS THAT CANNOT MOVE, listed under the others so the window names every key the game answers. 1 to 9 pick a gun (the stash sets which gun is on which),
 // P and TAB pause or back out, ESC closes a window, BACKSPACE puts the cursor back, the key left of 1 is Superhot and F11 is fullscreen.
 var KEYS_LOCKED=[['SELECT A GUN','1 - 8, 0'],['PAUSE','P'],['PAUSE, OR BACK OUT','TAB'],['CLOSE A WINDOW','ESC'],['PUT THE CURSOR BACK','BACKSPACE'],['SUPERHOT MODE','LEFT OF 1'],['FULLSCREEN','F11']];
-if(DEV_LOCAL) KEYS_LOCKED.push(['EDIT THE WORDS','F2']);   // v30.xx (cw-txkey): the Keys window names it too (this machine only)
-if(DEV_LOCAL) KEYS_LOCKED.push(['SNIP THE SCREEN','F8']);   // v30.xx (cw-snip): the Keys window names it too (this machine only)
+if(DEV_LOCAL) KEYS_LOCKED.push(['EDIT THE WORDS',PARTY?'CTRL + F2':'F2']);   // v30.xx (cw-txkey): the Keys window names it too (this machine only)
+if(DEV_LOCAL) KEYS_LOCKED.push(['SNIP THE SCREEN',PARTY?'CTRL + F8':'F8']);   // v30.xx (cw-snip): the Keys window names it too (this machine only)
 function keysFixedHtml(){
   var h='<div class="keysec">LOCKED: THESE KEEP THEIR JOBS</div>', i;
   for(i=0;i<KEYS_LOCKED.length;i++) h+='<div class="row"><div style="flex:1"><b>'+KEYS_LOCKED[i][0]+'</b></div><span class="keyfixed">'+KEYS_LOCKED[i][1]+'</span></div>';
@@ -49275,7 +49282,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.36: The pause report box is a 56px row, the card tab sits in the corner, pad labels fit on one line, the scrollbar is 6px, key caps have a lip. Check 31.36 fails on v31.35',
+  now:'v31.37: At the party, F2 and F8 now need Ctrl held, so a stray press from a guest does nothing. Ctrl and F2 edits the words, Ctrl and F8 snips. Check 31.37 fails on v31.36',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -65468,7 +65475,7 @@ function maybeWelcome(){
 // "Few, about half as many out there" is a decision.
 var GAMEOPTS=[
   {k:'textEdit', label:'Edit the words',
-   hint:'Turns every line of text in the game into something you can click and type over. Click a word anywhere, in a menu or on the screen during a raid, and rewrite it. Clear the box and press Enter to put the original back. Your wording is saved with your profile and follows the phrase everywhere it appears. F2 turns it on and off from anywhere, and a raid stands still while it is on.',
+   hint:'Turns every line of text in the game into something you can click and type over. Click a word anywhere, in a menu or on the screen during a raid, and rewrite it. Clear the box and press Enter to put the original back. Your wording is saved with your profile and follows the phrase everywhere it appears. '+(PARTY?'Ctrl with F2 turns':'F2 turns')+' it on and off from anywhere, and a raid stands still while it is on.',
    opts:[
      {n:'Off', cfg:{textEdit:0}},
      {n:'On',  cfg:{textEdit:1}}

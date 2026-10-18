@@ -598,3 +598,9 @@
 2026-10-18 0.0301 critic-b-30-ui-hud
 2026-10-18 0.0309 critic-b-30-ui-hud
 2026-10-18 0.0240 critic-b-30-ui-hud
+2026-10-18 0.0362 critic-02-raid-hud-redesign
+2026-10-18 0.0333 critic-02-raid-hud-redesign
+2026-10-18 1.3467 02-raid-hud-redesign
+2026-10-18 0.0274 critic-c-31-ui-pause-settings
+2026-10-18 0.0363 critic-c-31-ui-pause-settings
+2026-10-18 0.0455 03-title-and-backdrop

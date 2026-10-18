@@ -1,0 +1,7 @@
+v31.37: at the party f2 and f8 need ctrl held, so a guest cannot freeze a raid by accident
+
+At the party, F2 and F8 now need Ctrl held, so a stray press from a guest does nothing. Ctrl and F2 edits the words, Ctrl and F8 snips.
+
+Check 31.37. Fails on v31.36.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

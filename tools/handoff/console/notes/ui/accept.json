@@ -151,17 +151,17 @@
  "21-raid-hud-calm": {
   "score": 2,
   "pass": false,
-  "verdict": "The raid hud is still a pile of mismatched boxes: the controls cheat sheet and the right-column stack are as busy as before, the type is tiny and capitals show on screen, and nothing clearly leads the eye except the timer.",
+  "verdict": "The new version is lower case, the ammo panel has a real hierarchy and the career HUD is a tidy list, but the HUD is still a pile of unrelated boxes: the cheat sheet is still always on, the minimap and run info are bulky, the zone label is clipped behind the stats, and the type is tiny.",
   "findings": [
-   "P0 controls cheat sheet (bottom centre, x492-902, y697-867): Hide it by default and show a single 'f1 controls' chip (16px tx-2) for the first 30s only. If it stays, use 16px text, 24px padding, an --ui-panel fill and a 1px --ui-line-hi border, with keys in tx-1 and actions in tx-2 at 4.5:1.",
-   "P0 right column (x1582-1902, y12-695): credits, xp, stash, backpack, minimap, run info: Merge credits, xp, stash and backpack into one panel. Use 16px tx-2 labels with right-aligned 20px tx-1 numbers, a 24px inset and an 8px gap between panels. Remove the clipped zone label. Give the minimap a 1px --ui-line-hi border and a 4px radius, inset 5% from the screen edge. Rewrite every string in lower case, and dock the extract chip 8px under the panel.",
-   "P1 ammo panel and status tags (bottom right, x1578-1910, y803-1053): Order it: name 20px tx-1, then ammo 56px/800 tx-1 with '/ 24' at 20px tx-2, then 'b backpack' at 16px tx-2 at the bottom. Use a flat --ui-panel fill at 90%, 24px padding, and a 1px --ui-line-hi border. Make the status tag a tx-1 outline with no amber and 8px clearance.",
-   "P1 current pillagers list (top left, x10-390, y152-258): Show it on tab only, or at 40% opacity. Use an --ui-panel fill, a 1px --ui-line-hi border, a 4px radius, 24px padding and a 28px row pitch. Make the title tx-1 at 16px. Inset it 5% from the edge.",
-   "P1 hp, stamina and 'standing' (bottom left, x25-520, y945-1068): Use a 16px label above each bar, left-aligned. Make the bars 12px tall with an 8px gap and the same left edge. Use --ok for hp, turning red below 30%. Merge 'standing' into the status tag, and keep 48px from the bottom edge."
+   "P0 controls cheat sheet (bottom centre, x492-902, y697-867): Hide it by default and show a single 'f1 controls' chip (16px tx-2) for the first 30s only. If it stays, use 16px text, 24px padding, an --ui-panel fill and a 1px --ui-line-hi border, with keys in tx-1 and actions in tx-2. Remove the grip glyph.",
+   "P0 right column (x1582-1902, y18-695): Merge the four rows into one panel with 16px tx-2 labels and right-aligned 20px tx-1 numbers, 8px row gap, 24px inset. Move the zone label under the minimap or into the top-centre HUD. Shrink the minimap to about 240px, with a 1px --ui-line-hi border and 4px radius, inset 48px from the screen edge.",
+   "P1 run info panel (x1583-1902, y533-695) and extraction chip (y702-725): Give all section heads the same 16px tx-2 style, with the title at tx-1 and 20px. Use a hanging indent for wrapped contract lines, or truncate them with an ellipsis. Dock the extract chip 8px under the panel, flush to the same left edge. Inset the whole column 48px from the right edge.",
+   "P1 ammo panel (x1578-1910, y893-1052) and status tag (x1720-1905, y803-832): Put the 'b backpack' hint at 16px tx-2 in the bottom row, with the item count and value as a single 16px tx-2 right-aligned line. Make the status tag a tx-1 text on --ui-panel with a 1px --ui-line-hi border and no amber. Keep 8px clearance above the panel and 48px from the right and bottom edges.",
+   "P1 current pillagers list (top left, x10-390, y152-258): Show it on tab only, or at 40% opacity. Use an --ui-panel fill, a 1px --ui-line-hi border, a 4px radius, 24px padding and a 28px row pitch. Make the title tx-1 at 16px, and mark your own row with the accent. Inset it 48px from the edge."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-30h-after/21-raid-hud-calm-1080.jpg",
-  "task": "b-30-ui-hud",
-  "when": "2026-10-18T22:56"
+  "pic": "tools/handoff/console/notes/shots/02-after10/21-raid-hud-calm-1080.jpg",
+  "task": "02-raid-hud-redesign",
+  "when": "2026-10-18T22:57"
  },
  "22-raid-map-open": {
   "score": 2,
@@ -182,10 +182,17 @@
  "25-raid-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "The pause modal is a clean, well-aligned card with a clear amber primary, danger-outlined Abandon and a top-right X, but it is generic, the buttons are all the same width and weight, and the only change from the old version is slightly different text in the dimmed HUD behind it.",
-  "pic": "tools/handoff/console/notes/shots/c-31x-after2/25-raid-pause-box-1080.jpg",
+  "verdict": "The pause card is cleaner and more consistent now that 'report a problem' is a single-height row like the other buttons, but it is still a plain stack of near-identical outlined boxes with weak identity, and the field-versus-button difference is faint.",
+  "findings": [
+   "P1 'report a problem' row: Either make it a real button that opens a report dialog (f-cond 600 20px, tx-1, same fill as its siblings), or keep it a field with a visible text cursor or magnifier/pencil glyph and a tx-2 label at 4.5:1 or better. Pad focus should show a 2px --acc outline.",
+   "P1 button stack (settings, report, feedback, what's new): Demote report, feedback and what's new to a compact row of three 40px quiet text buttons or a 2-column grid under settings. Keep resume and settings full width and add a 16px key-hint label (esc) on resume. Show the raid state (time, location) in the header as a tx-2 16px line.",
+   "P2 Card header: title and close X: Shrink the X to 40px with a 2px glyph and no box until it is focused. Make the accent tab 3px by 36px flush with the card's left padding edge, or drop it.",
+   "P2 Vertical rhythm and the abandon gap: Put a 1px --ui-line divider centred in the gap, or shrink abandon to a narrower or text-only danger button. Make sure it opens a confirm step.",
+   "P2 Card proportions and the background: Use --scrim at .80 as specified so the raid stays faintly visible. Keep the card at 480 to 520px but bump button text to 20px with 64px rows for couch reading."
+  ],
+  "pic": "tools/handoff/console/notes/shots/c-31z-after/25-raid-pause-box-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T13:13"
+  "when": "2026-10-18T22:58"
  },
  "26-settings-from-pause-top": {
   "score": 3,
@@ -260,17 +267,17 @@
  "50-arcade-hud-live": {
   "score": 3,
   "pass": false,
-  "verdict": "The HUD is cleaner and fully lower case, with the score now boxed and the minimap moved, but the stamina label still crowds the hotbar, a pink 'dock cache' label collides with 'f1 controls', and the old styling (bright gradient bars, caret, tooltip) is mostly unchanged.",
+  "verdict": "lower case and a few small cleanups are the only real gains; the HUD still sits in the screen corners with no safe-zone inset, and none of the earlier P0/P1 layout fixes (labels clear of the hotbar, flat vitals, one active hotbar slot, one run-goals title) were applied.",
   "findings": [
-   "P0 top-left, 'dock cache' over 'f1 controls' (x≈0-135, y≈155-195): Keep world labels out of the HUD safe zone (clamp to x≥96). Hide them when they overlap a HUD element, and use tx-1 16px, not pink. Move 'f1 controls' to a 16px tx-2 footer legend at x=96, y=1026.",
-   "P0 stamina label vs hotbar slot 1 (x≈455-535, y≈988-1015): Put the 16px labels left of the bars. Fix the bars at 360px wide (x=96-456) and start the hotbar at x≥570, leaving 24px clear.",
-   "P1 bottom-left vitals (x≈24-443, y≈965-1068): Use flat 10px bars on --ui-line tracks. Colour hp with --ok, stamina with --acc, and armour neutral tx-2. Put 16px labels and values outside the bars. Make 'standing' plain 16px tx-2 text. Inset the block 96px from the left and 54px from the bottom.",
-   "P1 hotbar and tooltip (x≈570-1555, y≈925-1060): Only the active slot gets a 2px --acc border and a --ui-raised fill. Give the other slots a 1px --ui-line border with no blue. Delete the tooltip or reduce it to a 16px tx-2 legend with no chip. Set slot numbers and counts at 16px.",
-   "P1 right 'run info / run goals' panel (x≈1500-1900, y≈245-390): Use one 20px tx-1 'run goals' title with 16px tx-2 rows on a 32px pitch and right-aligned sp values. Add 24px padding and a 1px --ui-line-hi border. Leave a 16px gap under the minimap. Delete 'run info' and make the caret a 48px close target."
+   "P0 bottom-left vitals and hotbar (x≈24-535, y≈965-1068): Fix the bars at 360px wide (x=96-456), flat 10px, on --ui-line tracks. Set hp to --ok, stamina to --acc, armour to tx-2. Put 16px labels and values left of or above the bars. Start the hotbar at x≥570 with 24px clear. Inset the block 96px from the left and 54px from the bottom.",
+   "P0 top-left, 'f1 controls' (x≈22-135, y≈155-180) and the green terrain patch behind it: Make it a 16px tx-2 legend at x=96, y=1026 on a --scrim chip, or delete it. Keep every world label at x≥96.",
+   "P1 right 'run info / run goals' panel (x≈1582-1900, y≈348-495): Delete 'run info'. Use one 20px tx-1 'run goals' title with 16px tx-2 rows on a 32px pitch and right-aligned sp values. Add 24px padding, a 1px --ui-line-hi border, and a 16px gap under the minimap. Make the caret a 48px close target.",
+   "P1 hotbar (x≈570-1555, y≈950-1060) and tooltip (x≈870-1050, y≈925-950): Give only the active slot a 2px --acc border on --ui-raised. Give all others a 1px --ui-line border with no tint. Drop the tooltip chip, or make it a 16px tx-2 legend. Set slot numbers and counts at 16px.",
+   "P1 bottom-right ammo panel (x≈1578-1910, y≈870-1020): Inset the panel to x=1824 (96px margin). Use a --ui-panel fill at 90% and a 1px --ui-line-hi border. Make the name 20px tx-2 and keep 56px 800 for the 60. Make the lime tab 2px by 36px at the top."
   ],
-  "pic": "tools/handoff/console/notes/shots/02-after9/50-arcade-hud-live-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/02-after10/50-arcade-hud-live-1080.jpg",
   "task": "02-raid-hud-redesign",
-  "when": "2026-10-18T22:26"
+  "when": "2026-10-18T22:57"
  },
  "52-arcade-run-over": {
   "score": 3,
@@ -581,10 +588,17 @@
  "74-settings-change-pad-buttons": {
   "score": 2,
   "pass": false,
-  "verdict": "The new version dims the backdrop and adds a fade at the scroll edge and an 'Esc Close' hint, but the cramped three-line wrapped label, the clipped fade row and the loose 'Esc Close' hint keep it at an amateur 2, and no pad focus is visible.",
-  "pic": "tools/handoff/console/notes/shots/c-31x-after2/74-settings-change-pad-buttons-1080.jpg",
+  "verdict": "The new version fixes the worst craft bug: the three-line wrapped label that crowded the y row is gone and the rows sit on an even grid. The screen is still a flat, small-type table with capital letters on labels, a clipped footer line, no visible pad focus and a lot of dead space.",
+  "findings": [
+   "P0 row labels: Sprint, Dodge roll, Crouch, Fire / use, Focus aim, Aim distance, Use / reload, Help / finish, Previous gun, Next gun, Item wheel, Backpack, Ping, Pause: Lower-case every action label at the source string or render path (e.g. 'sprint', 'dodge roll', 'fire / use'). Do not use a text-transform hack that leaves capitals in the data.",
+   "P1 whole screen: section headers vs row labels vs key buttons: Set the section headers to --fs-label 16px, --tx-2, +.08em tracking, with a 3px lime tab or 24px spacing above each group. Set the row labels to 20px --tx-1. Set the key chips to --fs-label in a raised fill so the bindable value reads as the interactive part.",
+   "P1 all 16 key buttons (ls, a, rt, ...): Show a 2px --acc outline and --ui-raised fill on the focused chip, plus a lime scale of about 1.04 with the bounce. Remove the bottom bevel and use a 1px --ui-line-hi border with a 4px radius.",
+   "P1 bottom of the scroll area, 'locked: these keep their jobs': Add 24px bottom padding inside the scroll region and a 16px fade mask instead of a hard cut. Raise the text to --tx-2 (#aaa498) at 16px. Make the scrollbar thumb 6px wide in --ui-line-hi.",
+   "P1 layout: content column x480-1430 inside a 1870px card: Either widen the table to span x49-1870 with the same 2-column grid and scrollbar on the card edge, or add a left detail pane (pad diagram, 40% width) so the empty side earns its space. Keep the margin at 48px."
+  ],
+  "pic": "tools/handoff/console/notes/shots/c-31z-after/74-settings-change-pad-buttons-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T13:13"
+  "when": "2026-10-18T22:58"
  },
  "01-title-mode-menu": {
   "score": 3,
