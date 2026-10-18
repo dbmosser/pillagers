@@ -5,11 +5,11 @@ Memory files named below live in C:\Users\User1\.claude\projects\C--Users-User1-
 Finding types: contradiction (two rulings disagree and the file never says which stands), stale (written for a plan that is gone), unclear (the helpers need a concrete choice), undecided (never decided), reconfirm (old decision worth one more yes).
 Line numbers in dark_raiders.html and DESIGN.md move all day because helpers keep editing, so code is cited by grep-able quote, not by line.
 
-40 findings: A) party night (18), B) words and naming (10), C) progression and rules (4), D) after the party (8).
+40 findings: A) party night (18), B) words and naming (10), C) progression and rules (3), D) after the party (9).
 
 ## The 5 that matter most before the 10/26 cutoff
 1. S2-02 Two-player score rules: his answers 65 (run ends when both are out), 62 (one board entry per player) and 60 (ending early halves) do not say how the doubling, the halving and the respawn-loses-everything rule combine. The board is the party's headline.
-2. S2-04 Settings are open to guests (answer 30) but his fair-board rule (answer 67) and "gameplay identical" rule need the same rules for everyone. The demo also starts from his own saved dials.
+2. S2-04 Settings are open to guests (answer 30) but his fair-board rule (answer 67) and "gameplay identical" rule need the same rules for everyone. The demo also runs on his own live dials, not on fixed party defaults.
 3. S2-01 "No tutorial prompts" (answer 70) against the [E] verbs, the controls card, the how-to page and the finisher prompt he asked for on 10-15.
 4. S2-06 "Keys go to the window in front" (10-18 afternoon) with player 1 on keyboard and mouse: one stray click puts player 1's keys into player 2's window. "P2 pad or window fails" is his third-worst fear.
 5. S2-03 The Forge is paid with score, but in the demo "high score is the only objective", so upgrading lowers your own score.
@@ -65,7 +65,7 @@ Line numbers in dark_raiders.html and DESIGN.md move all day because helpers kee
 ### S2-04. Settings are open to guests, but the board is meant to be fair
 - **Type:** contradiction
 - **Rulings (pillagers-answers-1-78-2026-10-18.md):** #30 "All settings are reachable from the demo pause menu. This overrides "Settings out of reach" in 28." #67 "Same kit all night, and a new kit after NEW PARTY." pillagers-answers-third50-2026-10-12.md: "GAMEPLAY ELEMENTS ... SHOULD BE EXACTLY THE SAME IN DEMO AND CAREER". pillagers-polish-answers-2026-10-15.md #1: an EXPERIMENTAL section "where he can turn the new features on and off" (30 switches).
-- **What conflicts:** his reasons for the fair-board rule (same kit, same map all night) are undone by a guest flipping a rule-changing row. Rows that change play: damage presets, enemy counts, superhot (pillagers-controller-layout-2026-09-27.md: "Superhot turned on by player 1 applies to the whole party session"), kid mode at 1/20 damage, and the 30 experimental switches. The 10-18 question 30 only described "volume, text size, a game option". Also, the demo starts from a copy of his own saved dials (the sandbox copies CFG), not from fixed party defaults, so the party's difficulty is whatever he last set.
+- **What conflicts:** his reasons for the fair-board rule (same kit, same map all night) are undone by a guest flipping a rule-changing row. Rows that change play: damage presets, enemy counts, superhot (pillagers-controller-layout-2026-09-27.md: "Superhot turned on by player 1 applies to the whole party session"), kid mode at 1/20 damage, and the 30 experimental switches. The 10-18 question 30 only described "volume, text size, a game option". Also, the demo runs on his own live dials (the sandbox only copies them aside so it can put them back when the demo ends), not on fixed party defaults, so the party's difficulty is whatever he last set.
 - **Why it matters:** one guest at 11 pm sets kid mode or turns the air strike off and the rest of the night is a different game with the same board.
 - **Question:** "Guests can open Settings from the pause menu. Some rows only change how things look or sound, but some change the rules of the game (how hard enemies hit, kid mode, superhot, the new-feature switches). What should guests see?"
   - a) Everything, as you said. A guest who breaks the rules is the operator's problem.
@@ -303,7 +303,7 @@ Line numbers in dark_raiders.html and DESIGN.md move all day because helpers kee
 ### S2-26. 'Tactical belt': the bar is now guns only
 - **Type:** stale
 - **Rulings:** pillagers-vocabulary.md: "Tactical belt (the nine keyed cells at the bottom ... HIS WORD since v10.26)"; hotbar is the never-word. The 10/14 wheel plan: guns only on the bar; grenades, heals, plates in a wheel on hold Q.
-- **Conflict:** the pad mini-legend still says 'LB / RB tactical belt'; the in-game GEARRULES text still says "Keys 1 to 4 bring up your guns" (v21.93); the vocabulary file calls plates part of the belt. There is no word for the wheel.
+- **Conflict:** the pad mini-legend still says 'LB / RB tactical belt'; the in-game GEARRULES text still says "Keys 1 to 4 bring up your guns" (v21.93); the vocabulary file still describes nine keyed cells. There is no word for the wheel.
 - **Question:** "What do we call what?"
   - a) 'tactical belt' for the gun row, 'item wheel' for the wheel. Plates are items in the wheel.
   - b) 'belt' means both, the wheel opens from it.
@@ -357,7 +357,7 @@ Line numbers in dark_raiders.html and DESIGN.md move all day because helpers kee
 ### S2-31. A better version of the gun in your hands swaps in at once, against 'never in his hands mid-fight'
 - **Type:** contradiction
 - **Rulings:** pillagers-arcade-demo-2026-10-11.md: "the currently equipped gun (the one the player has out / is actively holding) doesn't get replaced in real time". pillagers-fifty-answers-2026-09-03.md: "when i find a gun it should go to the next open slot, not kick my scav pistol out of slot 1".
-- **Conflict:** DESIGN v26.36 (every gun has its own key): "A higher rarity of the same gun swaps in at once: if the old one is in your hands, the new one is in your hands and the rounds in the magazine come with it." It was built from the key-slot order, not from his words about the hands.
+- **Conflict:** DESIGN v26.36 (every gun has its own key): "A higher rarity of the same gun swaps in at once: if the old one is in your hands, the new one is in your hands and the rounds in the magazine come with it." The DESIGN entry credits him only with the 'same slot' order; the swap-into-the-hands detail reads as the helper's own choice.
 - **Question:** "You pick up a better copy of the gun you're holding, mid-fight. What should happen?"
   - a) It never changes what's in your hands; it goes to its key and you switch when you want.
   - b) It swaps in once you've stopped shooting and reloading for two seconds.
@@ -438,7 +438,7 @@ Line numbers in dark_raiders.html and DESIGN.md move all day because helpers kee
 ### S2-39. Stash selling and loot-filter controls
 - **Type:** reconfirm
 - **Rulings:** pillagers-fifty-answers-2026-09-03.md Q2: "sell bar and hint stay ... no search box". pillagers-answers-third50-2026-10-12.md: "Sell by RIGHT-CLICK and choosing SELL." pillagers-100-picks-2026-10-14.md #34: stash sort, filter and lock. pillagers-one-control-per-job.md: "Never add a parallel row or panel".
-- **What is unclear:** the code carries the sell bar, the right-click SELL, a JUNK tag with 'sell all', and the filter/lock chips. I did not verify which ones are still visible.
+- **What is unclear:** the code has a JUNK tag with SELL ALL and the filter/lock chips; I did not verify whether the sell bar or the right-click SELL are still visible, so check before asking.
 - **Question:** "How should you sell items in the stash?"
   - a) Right-click SELL only; junk tag and sell-all go.
   - b) Right-click SELL plus a 'sell all junk' button.
@@ -475,10 +475,10 @@ Line numbers in dark_raiders.html and DESIGN.md move all day because helpers kee
 - 3-2-1 GO and attract video: removed; live map instead (10-18 #54).
 - Sentence case (10-18 morning) and ALL CAPS callouts (10-09): lower case everything (10-18 afternoon).
 - Host drop = abandon (09-25): replaced 10-02 (teammate keeps the raid).
-- Weak spots: machines keep them, pillagers have none (10-13 #31; DESIGN v27.xx pillager flank bonus removed).
+- Weak spots: machines keep them, pillagers have none (10-13 #31; DESIGN v27.06 took the back-shot bonus off pillagers).
 - Block rejoining after dying or extracting (10-01): "Never re-open this."
 - Coming back empty (09-11), guns never wear or jam (09-01): reaffirmed 10-13 #21; the Forge keeps the gun's tier only through an extraction.
-- Cosmetics are earned, never bought, and rank by deeds (09-03): see S2-29 for the leftover level gates only.
+- Cosmetics are earned, never bought (09-03): see S2-29 for the leftover level gates only.
 - "A pause stays paused until a player unpauses" (10-18 #29): his choice over my 30-second auto-resume.
 - Same level all night (party seed, 10-14 #38 and 10-18 #67): accepted.
 - Trading is dropping (10-03) and share by drop with auto-ping (10-14 #48): consistent.

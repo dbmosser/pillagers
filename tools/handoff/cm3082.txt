@@ -1,0 +1,7 @@
+v30.82: title: the fight can be seen behind the scoreboard and how-to pages
+
+The fight behind the scoreboard and how-to can be seen.
+
+Check 30.82. Fails on v30.81.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

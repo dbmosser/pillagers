@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.82 - TITLE: THE FIGHT CAN BE SEEN BEHIND THE SCOREBOARD AND HOW-TO PAGES
+
+Co-op hunt while he was away. His answers Q52 and Q54: the live map with real combat behind the title, scoreboard and how-to pages. The fight was drawn but a 16px blur and a 90 percent edge scrim hid it, and it stood low in the dark corner. Floor labels and the HUD are not drawn behind the attract pages now, so the blur drops to 5px and the scrim to about 60 percent at the edges, and the fights stand at mid height in the side margins.
+
+MEASURED. Check 30.82 passes, and fails on v30.81.
 ## v30.81 - no multiplier beside the combo ring at the cursor
 
 Co-op hunt while he was away. His order (2026-10-18): "i don't like the multiplier next to the reticule, get rid of that". The combo ring at the cursor (v28.21) carried the chain multiplier (x2 to x5) on a plate to its right. The plate and its number are gone; the ring, its countdown sweep, the flash when the chain grows and the red flicker when it is about to run out stay (his menu survey pick q17 keeps the ring at the cursor). The multiplier still shows left of the score at the top of the screen.

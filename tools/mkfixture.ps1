@@ -6099,6 +6099,17 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.82',what:'behind the scoreboard and how-to pages the live fight can be seen: no floor labels or HUD drawn there, a light blur, the fights at mid height (his Q52/Q54)',
+   run:function(){
+     if(typeof tskInit!=='function'||typeof hubStationNames!=='function'||typeof drawHubHUD!=='function') return 'missing functions';
+     if(String(hubStationNames).indexOf('tskOn()')<0) return 'the station names still draw behind the attract pages';
+     if(String(drawHubHUD).indexOf('tskOn()')<0) return 'the floor HUD still draws behind the attract pages';
+     var was=TSK;
+     try{ tskInit(); if(!(TSK.ents[0].y<=330&&TSK.ents[2].y<=330)) return 'the fights stand too low: '+TSK.ents[0].y; } finally { TSK=was; }
+     var blur='', ss, rr, i, j;
+     try{ for(i=0;i<document.styleSheets.length;i++){ rr=document.styleSheets[i].cssRules; for(j=0;j<rr.length;j++){ if(rr[j].selectorText==='body #attract'&&rr[j].style.backdropFilter) blur=rr[j].style.backdropFilter; } } }catch(e){}
+     if(blur.indexOf('blur(5px)')<0) return 'the attract blur is '+blur;
+     return null; }},
   {v:'30.81',what:'cw-nomult, his order (2026-10-18) i do not like the multiplier next to the reticule: a live chain draws its ring at the cursor and no number or plate beside it, with the TEAM ring up too',
    run:function(){
      if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object'||typeof styleDraw!=='function') return 'SKIP: no arcade here';

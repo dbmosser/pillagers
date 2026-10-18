@@ -1695,6 +1695,8 @@ body #attract .arcpage .apg{ display:none; }
 body #attract .arcpage .apn{ text-align:center; padding:var(--sp-3) 0 var(--sp-2); color:var(--tx-2); font-weight:600; }
 /* v30.xx (cw-partyglow), the critic on v30.14 (46 52 55 56 64): "the blur is so heavy and dark the world is unreadable mush; bake it at about 55 percent brightness with a lighter 6 to 8px blur". An 8px blur (still smears every label and the HUD text into colour) and a scrim that lets about half of the world through in the middle and a fifth at the edges. */
 body #attract{ -webkit-backdrop-filter:blur(var(--sp-2)); backdrop-filter:blur(var(--sp-2)); background:radial-gradient(ellipse at 50% 42%, color-mix(in srgb, var(--ui-raised) 30%, transparent) 0%, color-mix(in srgb, var(--ui-bg) 76%, transparent) 50%, color-mix(in srgb, var(--ui-void) 90%, transparent) 100%); }   /* v30.xx (cw-partyglow2): 16px again, the 8px blur showed the hub labels (critic 56 = 2) */
+/* v28.xx (cw-title-see), HIS ANSWERS 10-18 (Q52, Q54): "show the live map, dimmed, with REAL pillager-versus-robot combat happening in it". The 16px blur and the 90 percent edge scrim turned the fight into mud. The floor labels and HUD are no longer drawn behind these pages (they were the reason for the heavy blur), so the blur is 5px and the scrim lets about 40 percent of the world through at the edges, where the fights stand. The card keeps its own panel. */
+body #attract{ -webkit-backdrop-filter:blur(5px); backdrop-filter:blur(5px); background:radial-gradient(ellipse at 50% 42%, color-mix(in srgb, var(--ui-raised) 24%, transparent) 0%, color-mix(in srgb, var(--ui-bg) 66%, transparent) 50%, color-mix(in srgb, var(--ui-void) 58%, transparent) 100%); }
 /* v29.98 (cw-partyprompt), the critic on v29.97 (46, 55, 56, 64 = 3 each): "Press any button is an instruction drawn as a filled button, a fake action", "the logo out-shouts the title", "No scores yet is the one message that matters and it is small and dim", "the ring is unexplained". The prompt is a footer hint now: a button glyph and the words in the accent, pulsing, no fill. The wordmark is the 32px logo on the 5 percent margin. The empty line is 20px light, the seed line a 16px label, the table heads 20px. Restyle only. */
 body #attract[style*="block"]:has(.arcpage[style*="block"]) .attpress, body #attract[style*="block"]:has(.arcover[style*="block"]) .attpress{ background:transparent; border-color:transparent; color:var(--acc); padding:0; min-width:0; gap:calc(var(--sp-1) * var(--attz,1)); animation:attpulse 1.6s ease-in-out infinite; }
 body #attract[style*="block"]:has(.arcpage[style*="block"]) .attpress::before, body #attract[style*="block"]:has(.arcover[style*="block"]) .attpress::before{ content:''; flex:none; box-sizing:border-box; width:calc(var(--sp-3) * var(--attz,1)); height:calc(var(--sp-3) * var(--attz,1)); border:1px solid var(--acc); border-radius:50%; background:radial-gradient(circle, var(--acc) 0 35%, transparent 38%); }
@@ -2794,7 +2796,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.81';
+var VER='30.82';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -45033,7 +45035,7 @@ var TSK=null;
 function tskOn(){ var a=false; try{ a=!!(ATT&&ATT.on); }catch(_a){} return titleOn()||a; }
 function tskRnd(){ TSK.s=(Math.imul(TSK.s,1664525)+1013904223)>>>0; return TSK.s/4294967296; }
 function tskInit(){
-  var A=[[62,392,152,392],[638,392,548,392]], i, a, P, R;
+  var A=[[62,300,152,300],[638,300,548,300]], i, a, P, R;   // v28.xx (cw-title-see): the fights stand at mid height, in the light of the side margins, not down in the dark corner under the saves block
   TSK={s:20261018,t:0,ents:[],bolts:[],fx:[],ar:[],n:{shots:0,hits:0,kills:0,downs:0}};
   for(i=0;i<2;i++){
     a=A[i];
@@ -46231,7 +46233,7 @@ function hubStationNames(S,ox,oy){
   wc.textAlign='center';
   for(i=0;i<HB.stations.length;i++){
     var s3=HB.stations[i],on=HB.near===s3;
-    if(titleOn()) continue;   // v17.84: no station names under the title
+    if(titleOn()||tskOn()) continue;   // v17.84: no station names under the title; v28.xx (cw-title-see): nor behind the scoreboard and the how-to page, where they smeared into the fight
     wc.font=FS(TYPE.label);
     var tw=wc.measureText(s3.label).width;
     // v10.93: a firm plate. It was half transparent, so the floor showed through
@@ -46303,7 +46305,7 @@ function hubWinOn(){
   return false;
 }
 function drawHubHUD(ox,oy){
-  if(titleOn()) return;   // v17.84: nothing of the floor HUD under the title
+  if(titleOn()||tskOn()) return;   // v17.84: nothing of the floor HUD under the title; v28.xx (cw-title-see): nor behind the attract pages (the stray THE UNDERCROFT in the corner, critic 46)
   var p=HB.player;
   // The hub is a place you point at things, so it always has an arrow, v2.91.
   if(_curNow!=='default'){ _curNow='default'; try{ cv.style.cursor='default'; }catch(e){} }
@@ -47732,7 +47734,7 @@ function loop(ts){
       try{
         // v9.88: the belt is on the floor now, answer 22. The opened backpack
         // draws its own copy of it as before, so exactly one is ever drawn.
-        if(!titleOn()){ if(hubBagOpen) drawHubBag(); else drawHubBelt(); }   // v17.83: not under the title
+        if(!titleOn()&&!tskOn()){ if(hubBagOpen) drawHubBag(); else drawHubBelt(); }   // v17.83: not under the title
         hubWheelStep(dt); hubWheelDraw();   // v28.xx (cw-wheelhub): the item wheel on the floor
       }catch(_hbd){}
     }
@@ -48312,7 +48314,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.81: The multiplier number next to the aiming ring is gone. The ring stays. Check 30.81 fails on v30.80',
+  now:'v30.82: The fight behind the scoreboard and how-to can be seen. Check 30.82 fails on v30.81',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

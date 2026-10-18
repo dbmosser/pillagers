@@ -117,7 +117,8 @@ function put(e,x,y,face,state){
 }
 A.pillager=function(x,y,o){
   o=o||{};
-  var e=gx('mkRaider('+Math.round(x)+','+Math.round(y)+',"'+(o.id||'beef')+'")');
+  window.__idn=gx('IDENTITIES').filter(function(i){ return i.id===(o.id||'beef'); })[0];
+  var e=gx('mkRaider('+Math.round(x)+','+Math.round(y)+',window.__idn)');
   var wk=o.gun||'smg';
   e.wep=gx('WEAPONS["'+wk+'"]'); e.dmg=e.wep.dmg; e.rng=e.wep.rng*.72;
   e.rig=o.rig||'none';
@@ -167,6 +168,9 @@ A.shoot=function(sh,wep,tx,ty,fromPlayer,rounds){
   return b;
 };
 
+// a frozen shot would show every muzzle light at its brightest frame; age them to the middle of their short life, and drop the sound marks
+A.settleFx=function(){ var s=g(), i; for(i=0;i<s.flashes.length;i++) s.flashes[i].t=s.flashes[i].life*0.8; s.noiseRings.length=0; s.pings.length=0; s.shake=0; };
+
 // ---- measuring: where each character lands in the 1920x1080 picture ----
 function bbox(img0,img1,w,h){
   var x0=1e9,y0=1e9,x1=-1,y1=-1,i,n=w*h,d0=img0.data,d1=img1.data,dd;
@@ -215,21 +219,22 @@ A.scenes.duo=async function(o){
 };
 
 A.scenes.fight=async function(o){
-  var st=await A.stage(o), p=st.p, s=st.s, X=BASE.x, Y=BASE.y, Z=2.3;
-  var pa, pb, sen, cra, a;
-  p.x=X-200; p.y=Y+24; p.face=0.12;
-  A.mate(X-262,Y-44,0.05,{ads:1});
-  pa=A.pillager(X-40,Y-18,{id:'beef',gun:'shotgun',rig:'none',state:'chase',face:Math.PI-0.1});
-  pb=A.pillager(X+22,Y+86,{id:'gamer',gun:'carbine',rig:'light',state:'chase',face:Math.PI-0.35});
-  cra=A.machine('crawler',X+70,Y+20,{state:'chase',face:Math.PI});
-  sen=A.machine('sentry',X+178,Y-66,{state:'chase',face:Math.PI-0.15});
-  // the shots: P1 at the near pillager, the pillager and the second one back at the pair, the sentry at the mate
-  A.shoot(p,p.wep,pa.x,pa.y-8,true,[70,210,350]);
+  var st=await A.stage(o), p=st.p, s=st.s, X=BASE.x, Y=BASE.y, Z=2.5;
+  var pa, pb, sen, cra;
+  p.x=X-176; p.y=Y+14; p.face=0.1;
+  A.mate(X-248,Y-40,0.0,{ads:1});
+  pa=A.pillager(X-30,Y-26,{id:'beef',gun:'shotgun',rig:'none',state:'chase',face:Math.PI-0.12});
+  pb=A.pillager(X+14,Y+70,{id:'gamer',gun:'carbine',rig:'light',state:'chase',face:Math.PI-0.3});
+  cra=A.machine('crawler',X+50,Y+34,{state:'chase',face:Math.PI});
+  sen=A.machine('sentry',X+150,Y-6,{state:'chase',face:Math.PI-0.1});
+  sen.rng=170;   // its red sight cone stops short of the pair
+  // the shots: P1 at the near pillager, both pillagers back at the pair, the sentry at P1
+  A.shoot(p,p.wep,pa.x,pa.y-8,true,[70,200,330]);
   A.shoot(pa,pa.wep,p.x,p.y-6,false,[55,150]);
-  A.shoot(pb,pb.wep,p.x+10,p.y+10,false,[120,300]);
-  A.shoot(sen,{dmg:sen.dmg,spread:.10,rng:sen.rng,noise:340,tint:'#ff9a6a'},X-262,Y-44,false,[90,260]);
-  s.noiseRings.length=0; s.shake=0;
-  A.cam(X-40,Y+8,Z);
+  A.shoot(pb,pb.wep,p.x+10,p.y+10,false,[110,260]);
+  A.shoot(sen,{dmg:sen.dmg,spread:.10,rng:sen.rng,noise:340,tint:'#ff9a6a'},p.x,p.y,false,[80,240]);
+  A.settleFx();
+  A.cam(X-40,Y+10,Z);
   return {zoom:Z,chars:[{id:'p1',kind:'player',ref:'p1'},{id:'mate',kind:'player',ref:'mate'},
     {id:'pillager-a',kind:'pillager',ref:pa},{id:'pillager-b',kind:'pillager',ref:pb},{id:'crawler',kind:'machine',ref:cra},{id:'sentry',kind:'machine',ref:sen}]};
 };
