@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.37 - A PROBLEM-REPORT TEXT BOX IN THE PAUSE MENU
+
+Co-op hunt while he was away. His Q9 (2026-10-18): a text box in the pause menu, or chat, both carry the same weight. The pause menu only had a Feedback button that opened a window. It now has a Report a problem box right in the menu: type, press Feedback (it reads Send feedback) or CTRL+ENTER, and the note is saved through the same save as the Feedback window with the version and a screenshot. An empty box still opens the window. A pad steps onto the box with the D-pad and A focuses it. Q61: the feedback line, the button and Send play data are kept.
+
+MEASURED. Check 30.37 passes, and fails on v30.36.
 ## v30.36 - Initials for each player, no rude ones
 
 Co-op hunt while he was away. His answers Q62 and Q63 (10-18): one board entry per player, and block rude initials. A 2 player run asks player 1 and then player 2 for initials, the board shows both, and a short list of rude three letter sets is refused.

@@ -1,0 +1,7 @@
+v30.37: a problem-report text box in the pause menu
+
+The pause menu has a Report a problem box. Type, press Send feedback, and the note goes out with a screenshot and the version.
+
+Check 30.37. Fails on v30.36.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

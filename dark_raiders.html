@@ -1873,6 +1873,11 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
 #root #setdetail:not(:has(.sdh)){ display:none; }
 #root #setdetail{ min-height:0; }
 #root #setdetail .sdh{ font-size:var(--fs-body); line-height:1.4; }
+/* v28.xx (cw-pausefb) HIS Q9: a problem box in the pause menu. Full column width (560), 72px high (two lines of 20px), 16px inner padding, the panel fill and a 1px line like the buttons, amber edge on focus; hidden while Abandon asks. */
+#root #pausebox #pausefb{ box-sizing:border-box; width:100%; height:calc(var(--btn-h) + var(--sp-2)); min-height:0; resize:none; padding:var(--sp-1) var(--sp-2); border:1px solid var(--ui-line-hi); border-radius:var(--rad); background:var(--ui-panel); color:var(--tx-1); font:400 var(--fs-body)/1.3 var(--f-body); letter-spacing:0; text-transform:none; margin:0; }
+#root #pausebox #pausefb::placeholder{ color:var(--tx-3); opacity:1; }
+#root #pausebox #pausefb:focus{ outline:none; border-color:var(--acc); }
+#root #pausebox.asking #pausefb{ display:none !important; }
 </style><canvas id="cv"></canvas>
 <canvas id="hcv"></canvas>
 <div id="hubtoast"></div>
@@ -1888,8 +1893,10 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
     <button id="pausesetbtn" style="padding:8px 22px">Settings</button>
     <!-- v27.NN (cboard4), HIS ORDER (2026-10-15): the CAREER LEADERBOARD, on the Undercroft floor only (a raid has its own run card) -->
     <button id="lbbtn" style="padding:8px 22px">LEADERBOARD</button>
-    <!-- v24.50, his answer 38: FEEDBACK, a typed note and a screenshot of this moment (the note box above is replaced by it) -->
-    <button id="fbbtn" style="padding:8px 22px">FEEDBACK</button>
+    <!-- v28.xx (cw-pausefb), HIS Q9 (2026-10-18): "A text box in the pause menu, or chat. Both carry the same weight". A problem-report box right in the pause menu, above the Feedback button. Typed text + the Feedback button saves it exactly like the Feedback window does (fbSave: note, version, time, where, screenshot). Q61: the feedback line, the button and Send play data stay. -->
+    <textarea id="pausefb" rows="2" maxlength="1000" placeholder="Report a problem" aria-label="Report a problem"></textarea>
+    <!-- v24.50, his answer 38: FEEDBACK, a typed note and a screenshot of this moment (empty box: the window; text typed: sends it) -->
+    <button id="fbbtn" style="padding:8px 22px">Feedback</button>
     <!-- v27.xx (wnbutton), HIS ANSWER 37 (2026-10-13): the What's New card leaves the floor and is a button here -->
     <button id="wnbtn" style="padding:8px 22px">WHAT'S NEW</button>
     <!-- v10.96, HIS NOTE: the second of his two choices, shown on the floor and
@@ -2790,7 +2797,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.36';
+var VER='30.37';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17108,7 +17115,7 @@ function padFocusables(root){
   // buttons and CLOSE: no cosmetic could be worn or bought, no slot chosen and no saved look worn, the operator panel on the ascent
   // check had the same gap, and no run tag could be picked. They are in the list now and A runs the click a mouse runs (a locked
   // tile that cannot be bought still clanks). The card still opens on Log run and return (padMenu).
-  var out=[],q=root.querySelectorAll('button,.cell,.vcell,.crow,.invtab,.scard,.vpill,.sectorpick,input,select,[data-plan],.imenurow:not(.dim),[data-slot],.costile,.avslot,.tag,.kst');
+  var out=[],q=root.querySelectorAll('button,.cell,.vcell,.crow,.invtab,.scard,.vpill,.sectorpick,input,select,[data-plan],.imenurow:not(.dim),[data-slot],.costile,.avslot,.tag,.kst,#pausefb');   // v28.xx (cw-pausefb): the pause menu problem box
   for(var i=0;i<q.length;i++){
     var el=q[i],cs=getComputedStyle(el);
     // v16.52, stability (controller audit): the PARTY window opens with the pad highlight on its CONTROLLER row, and one press of
@@ -18281,6 +18288,7 @@ window.addEventListener('keydown',function(ev){
     var _fm=document.querySelector('.modal.on'), _tx=(typeof TXBOX!=='undefined'&&TXBOX&&document.activeElement===TXBOX);
     if(_fm||_tx){ if(_tx){ try{ txClose(); }catch(_txe){} } else escCloseTopModal(); try{ syncPause(); }catch(_sps){} return; }
     var _ta=document.getElementById('pausenote'); if(_ta) _ta.blur();
+    var _tf=document.getElementById('pausefb'); if(_tf) _tf.blur();   // v28.xx (cw-pausefb)
     togglePauseBox(false);
   }
 },true);
@@ -48089,7 +48097,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.36: Each player enters initials in a 2 player run, and rude initials are blocked. Check 30.36 fails on v30.35',
+  now:'v30.37: The pause menu has a Report a problem box. Type, press Send feedback, and the note goes out with a screenshot and the version. Check 30.37 fails on v30.36',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -62518,7 +62526,34 @@ function lbClose(){
 }
 document.getElementById('lbbtn').onclick=function(){ lbOpen(); };
 document.getElementById('lbclose').onclick=function(){ lbClose(); };
-document.getElementById('fbbtn').onclick=function(){ fbOpen(); };
+// v28.xx (cw-pausefb), HIS Q9 (2026-10-18): "A text box in the pause menu, or chat. Both carry the same weight". The pause menu has its own problem box
+// (#pausefb). With text in it the Feedback button reads Send feedback and saves the note through fbSave, with a screenshot of the world as it stands and
+// the version, exactly like the Feedback window; with the box empty the button opens that window as before. CTRL+ENTER in the box sends too; ESC shuts the
+// pause menu as ever. Landing: on this PC through the collector into exports\feedback-STAMP.txt and .png, elsewhere the browser's downloads as
+// pillagers_feedback_STAMP.txt and .png, and in an itch page the note is copied.
+function pauseFbLabel(){
+  var ta=document.getElementById('pausefb'), b=document.getElementById('fbbtn');
+  if(b) b.textContent=(ta&&String(ta.value||'').trim())?'Send feedback':'Feedback';
+}
+function pauseFbSend(){
+  var ta=document.getElementById('pausefb'), t=ta?String(ta.value||'').trim():'', png;
+  if(!t) return false;
+  png=fbShot();
+  ta.value=''; try{ ta.blur(); }catch(_b){}
+  pauseFbLabel();
+  fbSave(t.slice(0,1000),png);
+  return true;
+}
+document.getElementById('fbbtn').onclick=function(){ if(!pauseFbSend()) fbOpen(); };
+(function(){
+  var ta=document.getElementById('pausefb');
+  if(!ta) return;
+  ta.addEventListener('input',pauseFbLabel);
+  ta.addEventListener('click',function(){ try{ ta.focus(); }catch(_f){} });   // a pad A is a click
+  ta.addEventListener('keydown',function(e){
+    if((e.ctrlKey||e.metaKey)&&(e.code==='Enter'||e.code==='NumpadEnter')){ e.preventDefault(); document.getElementById('fbbtn').click(); }
+  });
+})();
 document.getElementById('fbsave').onclick=function(){ var ta=document.getElementById('fbnote'), png=FB.png; fbClose(); fbSave(ta?ta.value:'',png); };
 document.getElementById('fbcancel').onclick=function(){ fbClose(); };
 // the game ignores keys typed into a text field, so the note field answers its own two: CTRL+ENTER saves, ESC cancels

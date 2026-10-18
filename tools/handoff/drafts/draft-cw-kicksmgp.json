@@ -1,0 +1,12 @@
+{
+    "title":  "PROBE",
+    "why":  "probe",
+    "now":  "probe",
+    "edits":  [
+                  {
+                      "anchor":  "var GUN_SHAKE={shotgun:6.5};",
+                      "replacement":  "var GUN_SHAKE={shotgun:6.5,smg:2.2};"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027probe: a full held magazine of the Compact SMG at the old 2.2 kick shakes under 3 px\u0027,\n   run:function(){\n     var g=null;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player) return \u0027SKIP: no raid\u0027;\n       var held=function(sh){\n         var w=WEAPONS.smg, mx=0, i, nx=0, t=0, dt=1/60; CFG.shake=1; CFG.fxInt=1; GFX.shG=null; G.shake=0; GUN_SHAKE.smg=sh;\n         for(i=0;i\u003cw.mag*8;i++){\n           t+=dt;\n           if(t\u003e=nx){ fireWeapon(g.player,w,g.player.x+200,g.player.y,true); nx+=w.rof/1000; }\n           gfxTrauma(dt); if(GFX.shA\u003emx) mx=GFX.shA;\n           if(G.shake\u003e0) G.shake=Math.max(0,G.shake-dt*26);\n         }\n         return mx;\n       };\n       return \u0027PROBE 2.2=\u0027+held(2.2).toFixed(2)+\u0027 1.7=\u0027+held(1.7).toFixed(2)+\u0027 1.9=\u0027+held(1.9).toFixed(2)+\u0027 2.0=\u0027+held(2.0).toFixed(2);\n     } finally {\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}

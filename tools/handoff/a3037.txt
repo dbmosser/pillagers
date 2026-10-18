@@ -1,0 +1,1 @@
+| A PROBLEM-REPORT TEXT BOX IN THE PAUSE MENU | v30.37 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 30.37 passes, fails on v30.36 |
