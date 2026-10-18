@@ -1,0 +1,20 @@
+{
+    "title":  "PAUSE AND SETTINGS POLISH (56PX REPORT ROW, FLUSH TAB, SHORT PAD LABELS)",
+    "why":  "Critic c-31z: the pause report box was a 72px input among 56px buttons with dim text, the accent tab was inset, two pad labels wrapped to three lines, the scrollbar was a sliver, key caps looked like plain boxes.",
+    "now":  "The pause report box is a 56px row, the card tab sits in the corner, pad labels fit on one line, the scrollbar is 6px, key caps have a lip.",
+    "edits":  [
+                  {
+                      "anchor":  "[7,\u0027fire, use what is selected\u0027,\u0027FIGHT\u0027]",
+                      "replacement":  "[7,\u0027fire / use\u0027,\u0027FIGHT\u0027]"
+                  },
+                  {
+                      "anchor":  "[2,\u0027use, search, reload, call for extraction\u0027,\u0027FIGHT\u0027],[3,\u0027search in a ring, help a teammate, finish a downed pillager\u0027,\u0027FIGHT\u0027]",
+                      "replacement":  "[2,\u0027use / reload\u0027,\u0027FIGHT\u0027],[3,\u0027help / finish\u0027,\u0027FIGHT\u0027]"
+                  },
+                  {
+                      "anchor":  "#root #pausebox.asking #pausefb{ display:none !important; }",
+                      "replacement":  "#root #pausebox.asking #pausefb{ display:none !important; }\n/* v31.xx (cw-pset6) critic c-31z (pause 25 at 3: \"report a problem is a 72px input while every other row is a 56px button, dim grey text\"; \"the lime tab is inset, not flush\"; Pad buttons 75 at 2: \"labels wrap to three lines\", \"scrollbar is a thin sliver\"; Keys 32: \"make the key cap look like a key\"). Now: the report box is one 56px row like the buttons (centred, tx-2 hint, grows to two rows only while you type), the accent tab on the pause, Settings and Keys cards sits flush in the top-left corner, the Settings and Keys scrollbar is 6px in the line colour, key caps have a 3px lip, and two pad labels are short (his words shortened under Q8: use / reload and help / finish, so they stay on one line). */\n#root #pausebox #pausefb{ height:var(--btn-h); padding:calc((var(--btn-h) - 28px) / 2) var(--sp-2); line-height:26px; overflow:hidden; }\n#root #pausebox #pausefb:focus{ height:calc(var(--btn-h) * 2); padding-top:var(--sp-2); overflow:auto; }\n#root #pausebox #pausefb:placeholder-shown:not(:focus){ text-align:center; }\n#root #pausebox #pausefb::placeholder{ color:var(--tx-2); }\n#root #pausebox::before, #root #settingsmodal::before, #root #keysmodal::before{ background:linear-gradient(var(--acc),var(--acc)) 0 0/calc(var(--sp-1) * 4.5) 2px no-repeat, var(--ui-grain) 0 0/128px 128px repeat, var(--ui-bg); background-origin:border-box; }\n#root #setlist::-webkit-scrollbar, #root #keyslist::-webkit-scrollbar{ width:6px; }\n#root #setlist::-webkit-scrollbar-thumb, #root #keyslist::-webkit-scrollbar-thumb{ background:var(--ui-line-hi); border-radius:3px; }\n#root #keyslist .keybtn{ border-radius:var(--rad); font-weight:700; box-shadow:inset 0 -3px 0 var(--ui-line-hi); }\n#root #keyslist .keybtn.wait{ box-shadow:none; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the pause report box is a 56px row, and the two long pad labels are short\u0027,\n   run:function(){\n     var bad=[], f, h, i, a2=\u0027\u0027, a3=\u0027\u0027;\n     try{\n       f=document.getElementById(\u0027pausefb\u0027);\n       if(!f) bad.push(\u0027no pause report box\u0027);\n       else{ h=parseFloat(getComputedStyle(f).height); if(Math.abs(h-56)\u003e1) bad.push(\u0027the report box is \u0027+h+\u0027px high, not 56\u0027); }\n       for(i=0;i\u003cPAD_ACTS.length;i++){ if(PAD_ACTS[i][0]===2) a2=String(PAD_ACTS[i][1]); if(PAD_ACTS[i][0]===3) a3=String(PAD_ACTS[i][1]); }\n       if(a2.length\u003e20) bad.push(\u0027pad row X is long: \u0027+a2);\n       if(a3.length\u003e20||a3.indexOf(\u0027finish\u0027)\u003c0) bad.push(\u0027pad row Y is long or lost finish: \u0027+a3);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

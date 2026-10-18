@@ -593,3 +593,5 @@
 2026-10-18 0.0314 critic-c-31-ui-pause-settings
 2026-10-18 0.0285 critic-c-31-ui-pause-settings
 2026-10-18 0.0257 critic-c-31-ui-pause-settings
+2026-10-18 0.0329 critic-b-30-ui-hud
+2026-10-18 1.228 b-30-ui-hud

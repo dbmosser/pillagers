@@ -1,0 +1,5 @@
+## v31.35 - GUN CARD HINT ROW, RUN INFO ROWS FIT
+
+Co-op hunt while he was away. The critic (10-19) on the raid HUD: the career gun card had the backpack hint above the gun name and a dead strip; a long run info row ran onto the panel edge.
+
+MEASURED. Check 31.35 passes, and fails on v31.34.

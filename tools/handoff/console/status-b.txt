@@ -1,1 +1,1 @@
-10-18 18:22 running b-30-ui-hud (cap $4.00; spent today $141.48 of $176.54)
+10-18 18:52 running b-30-ui-hud (cap $4.00; spent today $143.83 of $176.54)

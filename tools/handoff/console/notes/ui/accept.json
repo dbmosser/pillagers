@@ -694,17 +694,17 @@
  "34-raid-downed-pickups": {
   "score": 2,
   "pass": false,
-  "verdict": "The downed state now sits on a dark plate with a larger timer, which helps, but the rest of the HUD is unchanged: tiny cramped type, the top-right stack floating off-grid, two pickup feeds, and capital letters still on screen.",
+  "verdict": "the downed plate is now a contained dark card and the career row is a vertical list, but the right column is a crowded stack where the pickup feed, run info, 'extraction available' and the 'concealed' tag overlap each other, and the timer is still not the hero.",
   "findings": [
-   "P0 top-right career row, minimap, run info, extraction line: Put the career row in a 16px label panel (--ui-panel 90%, 1px --ui-line-hi, 4px radius). Inset the minimap 48px from the right edge and clip its label inside the frame. Give the three modules the same 48px right margin and 16px gaps. Fix the string to 'extraction available'.",
-   "P0 centre downed plate: Centre one column on the plate with 24px padding. Make the timer the 56px hero in tx-1. Set 'down' at 32px in --danger. Use one 8px --danger bar, and put the prompt at 20px tx-1 with [f] in a lime chip. Keep 16px between elements.",
-   "P1 capital letters on screen: Check the strings, since 'In' and 'Item' are real capitals. Force .toLowerCase() on every drawn string. Choose a face whose lower-case 'i' and 'l' read clearly at 16px.",
-   "P1 left pickup feed and world labels: Keep one right-aligned feed, 3 rows at 32px with an 8px gap. Remove the left feed. Draw each world label once, with a 1px dark outline and no overlap with the HUD.",
-   "P1 bottom-right weapon panel and status tag: Set the ammo to the 56px hero in tx-1, with the reserve at 20px tx-2. Raise secondary text to #aaa498 at 16px minimum. Leave a 16px gap above the panel. Make the tag a warn-amber glyph or short word, not a filled gold box."
+   "P0 right column: run info, pickup feed, 'extraction available', 'concealed · in cover' tag: stack the right column top to bottom with a fixed 16px gap and a 48px right margin: career list, minimap at about 240px tall, run info, then status. Move the pickup feed out of this column to a separate anchor (above the weapon panel, right-aligned). Give 'extraction available' its own 24px row and drop the concealed tag to its own row or into the weapon panel.",
+   "P0 top-right career list (credits / xp / stash / backpack): shrink rows to 32px with 16px label text, a 240px width, and tx-2 labels with tx-1 values. Hide world labels under HUD panels, or add a 1px dark outline and keep them at least 16px clear of the HUD.",
+   "P1 centre downed plate: 'down' at 32px --danger, the timer at 56px tx-1 as the one hero, one 8px --danger bar, then the prompt at 20px with [f] in a lime chip. Use 24px padding and 16px gaps. Give the plate the same 1px --ui-line-hi border and 4px radius as the other panels.",
+   "P1 run info panel: cap it at 3 contract lines with 24px padding and 8px row gaps, and use tx-1 for names with tx-2 for counts. Keep colour only for status glyphs.",
+   "P1 left pickup feed, contract toast and world labels: keep one feed, right-aligned, 3 rows with a 32px row height and an 8px gap, and delete the left one. Use a face where lower-case 'l' and 'i' are distinct. Give world labels a 1px dark outline at tx-1 and a 16px minimum."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-30f-after/34-raid-downed-pickups-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/b-30g-after/34-raid-downed-pickups-1080.jpg",
   "task": "b-30-ui-hud",
-  "when": "2026-10-18T22:40"
+  "when": "2026-10-18T22:51"
  },
  "36-raid-low-health": {
   "score": 0,

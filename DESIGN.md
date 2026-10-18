@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.35 - GUN CARD HINT ROW, RUN INFO ROWS FIT
+
+Co-op hunt while he was away. The critic (10-19) on the raid HUD: the career gun card had the backpack hint above the gun name and a dead strip; a long run info row ran onto the panel edge.
+
+MEASURED. Check 31.35 passes, and fails on v31.34.
 ## v31.34 - THE DOWNED TIMER GETS ITS OWN CENTRED ROW
 
 Co-op hunt while he was away. Critic on screen 34: the timer was pushed to the edge of the plate and the block was off-centre. The timer now sits centred under the word down, the bar and the prompt follow in one column, and the plate is 480 wide.

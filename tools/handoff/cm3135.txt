@@ -1,0 +1,7 @@
+v31.35: gun card hint row, run info rows fit
+
+The career gun card puts the backpack hint on its bottom row, and run info rows stay inside the panel.
+
+Check 31.35. Fails on v31.34.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

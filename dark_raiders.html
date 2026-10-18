@@ -2828,7 +2828,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.34';
+var VER='31.35';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -40956,7 +40956,7 @@ else if(CC.ck==='elite'){ note=((T.eliteKills||0)>0)?'elite down, get out':'no e
     // collided. Effects get their own wrapped lines under the name, and the box
     // is measured from the wrapped result rather than guessed at.
     ctx.font=FS(TYPE.label);   // v28.xx (cw-runinfo16), UI step 4 (style guide: 16 px floor for anything read): the run info panel was the micro size (13 px), a wall of small print
-    var pad=8, lh=LH(13), bw=trBW(), inner=bw-pad*2;   // v28.xx (cw-runinfo16): and a little wider and taller in the row so the bigger text wraps no more than before
+    var pad=8, lh=LH(13), bw=trBW(), inner=bw-pad*2-6; /* v28.xx (cw-cardhint), the critic (2026-10-19): a long contract row ended on the panel edge (rows are drawn 6 in from the margin); the wrap leaves the 6 */   // v28.xx (cw-runinfo16): and a little wider and taller in the row so the bigger text wraps no more than before
     // v19.82, seen on the 4K raid screenshot (2026-10-08): greedy wrapping left one word and the count alone on a second line
     // (Extract carrying 1x Data / Core 0/1), splitting the item name. The same number of lines, so the box keeps its height, but
     // the words are shared out: the narrowest width that needs no more lines. Kept per font, width and text, so a frame
@@ -41757,7 +41757,7 @@ if(p.armor>0){
        var _gdx=(typeof _boG==='object'&&_boG)?(_boG.dx||0):0, _lim=_hcL?(W+((_hcL.x+_hcL.w+LH(8))-_gdx-W)/_gz):-1e9;   // the belt edge, brought into this corner's scaled space
        if(_hcL&&_wpx<_lim){ _wpx=_lim; _wpw=_wpR-_wpx; }   // v18.39: never over the belt (it covered key 9)
        /* v28.xx (cw-hudstar): the demo hides the item line and the backpack hint (Q56), so the card is 72 high and not 100 with an empty strip; it keeps the tab, it is the star */
-       if(_wpw>LH(60)){ var _gtop=trDemo()?LH(62):LH(90), _gh=trDemo()?LH(58):LH(100);   /* v28.xx (cw-panelflat), the critic (2026-10-19): the demo card had dead space over the name; it is 58 high, the top moves down 14 */ hudPanel(_wpx,by-_gtop,_wpw,_gh,0.62); } ctx.textAlign='right'; }catch(_wp){}
+       if(_wpw>LH(60)){ var _gtop=trDemo()?LH(62):LH(66), _gh=trDemo()?LH(58):LH(76); /* v28.xx (cw-cardhint), the critic (2026-10-19): the career card is 76 high, the backpack hint left the top (order: name, ammo, one quiet row) so the card has no dead strip over the name */   /* v28.xx (cw-panelflat), the critic (2026-10-19): the demo card had dead space over the name; it is 58 high, the top moves down 14 */ hudPanel(_wpx,by-_gtop,_wpw,_gh,0.62); } ctx.textAlign='right'; }catch(_wp){}
   ctx.fillText(_cornName,W-16,by-LH(46));   // v28.xx (cw-hudammo): the name rides higher (was 34) so the big ammo figure has the room
   ctx.font=FS(TYPE.title);
   if(!_heldGun){
@@ -41807,7 +41807,7 @@ if(p.armor>0){
     ctx.font=FS(TYPE.label); ctx.fillStyle='#aaa498';   // v28.xx (cw-hudhero), UI step 4: the backpack cue is a quiet hint (style guide tx-2), not bold amber; amber is for focus
     // v22.65, the raid text rewrite (R23): THE BACKPACK CUE FOLLOWS KEY CHANGES. On the keyboard it always said B / I even after
     // CHANGE KEYS moved the backpack; both keys now come from keyLabel, so an unmoved keyboard reads B / I as before.
-    ctx.fillText(padOn()?padB(pbn(8)+'  BACKPACK'):(keyLabel('KeyB','B')+' / '+keyLabel('KeyI','I')+'  BACKPACK'),W-16,by-LH(70));   // v13.52: pad B is the dodge roll  // v27.70 (cloud-menus-pad-prompts-follow-binds), CLOUD HUNT 2026-10-15: the backpack cue said VIEW after the backpack moved to another button, and VIEW no longer opened it; it names the button it is on
+    ctx.textAlign='left'; ctx.fillText(padOn()?padB(pbn(8)+'  BACKPACK'):(keyLabel('KeyB','B')+' / '+keyLabel('KeyI','I')+'  BACKPACK'),(typeof _wpx==='number'&&_wpx===_wpx)?_wpx+LH(10):W-LH(130),by); ctx.textAlign='right'; /* v28.xx (cw-cardhint), the critic (2026-10-19): the backpack hint sits on the bottom row of the card, left, opposite the item count; it was above the gun name */   // v13.52: pad B is the dodge roll  // v27.70 (cloud-menus-pad-prompts-follow-binds), CLOUD HUNT 2026-10-15: the backpack cue said VIEW after the backpack moved to another button, and VIEW no longer opened it; it names the button it is on
   }
   var pl2=[],tsn=THROWKEYS[G.tsel];
   for(i=0;i<3;i++){
@@ -49265,7 +49265,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.34: When you are down, the timer now sits centred under the word down and everything stacks in one column. Check 31.34 fails on v31.33',
+  now:'v31.35: The career gun card puts the backpack hint on its bottom row, and run info rows stay inside the panel. Check 31.35 fails on v31.34',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
