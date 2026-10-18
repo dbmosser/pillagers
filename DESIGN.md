@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.89 - Abandon question: a named title, one amber primary, a snug card
+
+Co-op hunt while he was away. The critic scored the abandon question 2 of 5: two identical red buttons, the title still Raid paused, and a 556px card around two buttons. Now the title asks Abandon this run, Keep playing is the amber primary on top, YES is a plain red outline, and the card is 320px. Restyle and text only; the arm and disarm logic is unchanged.
+
+MEASURED. Check 29.89 passes, and fails on v29.88.
 ## v29.88 - Operator menu: one red, even gaps, a solid backdrop
 
 Co-op hunt while he was away. The critic scored the operator menu 2: Exit demo and the armed confirm were both red, the gaps were uneven and the board showed through the scrim. Restyle only.

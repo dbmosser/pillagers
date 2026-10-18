@@ -192,28 +192,28 @@
   "when": "2026-10-18T06:18"
  },
  "35-kia-card": {
-  "score": 3,
+  "score": 2,
   "pass": false,
-  "verdict": "The tile row, one hero number and 4-up stat strip make this a real end card that follows the guide's shell, but it still shows currency with a '$', has a floating 'How did that run feel' toggle, and the title and hero compete weakly with small supporting text.",
-  "pic": "tools/handoff/console/notes/shots/13-c3/35-kia-card-1080.jpg",
+  "verdict": "A clean, centred KIA card, but it breaks the end-card spec: the hero is a '$' figure, the title is small, the explaining sentences are clutter, the items sit above the hero, and there is no pad focus.",
+  "pic": "tools/handoff/console/notes/shots/13-c5/35-kia-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T10:23"
+  "when": "2026-10-18T10:34"
  },
  "38-extracted-card": {
-  "score": 3,
+  "score": 2,
   "pass": false,
-  "verdict": "The c4 extracted card is cleaner than c3, with a quieter hero number, evenly spread stats and plain chips, but it is still a stack of small centred lines with an undersized hero, a '$' that breaks the SP rule, and no close or pad hint.",
-  "pic": "tools/handoff/console/notes/shots/13-c4/38-extracted-card-1080.jpg",
+  "verdict": "The shell is right (dark card, teal title, one amber primary, uniform tile row), but it is overstuffed: two chip systems, three text lines before the hero, a '$' haul figure and tiny muted text crowd the layout, so it reads as a cluttered receipt, not a polished end card.",
+  "pic": "tools/handoff/console/notes/shots/13-c5/38-extracted-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T10:28"
+  "when": "2026-10-18T10:35"
  },
  "40-whats-new-card": {
   "score": 2,
   "pass": false,
-  "verdict": "A full-width dark slab with a centred amber title and five near-identical wall-of-text lines, sitting over a busy hub with no scrim, no close button and no primary action, so it reads as a debug dump and not a polished card.",
-  "pic": "tools/handoff/console/notes/shots/13-c4/40-whats-new-card-1080.jpg",
+  "verdict": "The What's new card is a full-width slab over a live hub with no scrim, so station labels, the weapon bar and a trophy toast fight it, and its content is five near-identical sentences with no hierarchy or action button.",
+  "pic": "tools/handoff/console/notes/shots/13-c5/40-whats-new-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T10:28"
+  "when": "2026-10-18T10:35"
  },
  "45-arcade-attract-board": {
   "score": 2,
@@ -250,10 +250,10 @@
  "59-raid-abandon-confirm": {
   "score": 2,
   "pass": false,
-  "verdict": "A dark card with two identical red-outlined buttons and a title that doesn't ask the question, so a destructive confirm has no hierarchy, no safe default and no clear focus, and the card is half empty.",
-  "pic": "tools/handoff/console/notes/shots/13-c4/59-raid-abandon-confirm-1080.jpg",
+  "verdict": "A bare dark card with two identical red-outlined buttons: the safe choice looks as dangerous as the destructive one, there is no visible focus, and the card is half empty, so it reads as an unfinished template rather than a polished confirm dialog.",
+  "pic": "tools/handoff/console/notes/shots/13-c5/59-raid-abandon-confirm-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T10:28"
+  "when": "2026-10-18T10:35"
  },
  "65-codex": {
   "score": 2,
@@ -272,12 +272,12 @@
   "when": "2026-10-18T06:21"
  },
  "62-arcade-operator-menu": {
-  "score": 3,
+  "score": 2,
   "pass": false,
-  "verdict": "A clean, readable operator modal with a clear amber primary and sentence case, but it ignores the guide's modal structure (no close X, no 56px header, no footer, no key hints), the buttons are full-width slabs, and the dimmed attract screen bleeds through and collides with the card.",
-  "pic": "tools/handoff/console/notes/shots/12-c5/62-arcade-operator-menu-1080.jpg",
+  "verdict": "A clean but generic stack of three full-width bars in a dark card; the hierarchy and token use are mostly right, but it is a bare template with no close X, no key hints, tiny type, and a d1 variant with a bleed-through glitch.",
+  "pic": "tools/handoff/console/notes/shots/12-d2/62-arcade-operator-menu-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T10:07"
+  "when": "2026-10-18T10:36"
  },
  "61-raid-wheel-open": {
   "score": 2,
@@ -298,10 +298,10 @@
  "46-arcade-attract-how-to-play": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, on-palette, sentence-case controls card that reads fine from a couch, but it is a plain spreadsheet with a generic template look and no game identity, and it breaks a few of the guide's hierarchy and spacing rules.",
-  "pic": "tools/handoff/console/notes/shots/12-d1/46-arcade-attract-how-to-play-1080.jpg",
+  "verdict": "The second pass is a clear step up: the title is left-aligned to the card edge, the CTA is a proper amber primary button, and the table is clean, but the content block floats above dead space and the 'Press any button' primary is a prompt dressed as a button.",
+  "pic": "tools/handoff/console/notes/shots/12-d2/46-arcade-attract-how-to-play-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T10:14"
+  "when": "2026-10-18T10:36"
  },
  "37-raid-extracting-countdown": {
   "score": 2,
@@ -312,20 +312,20 @@
   "when": "2026-10-18T06:23"
  },
  "77-haul-reveal-done": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The end card has the right shell (centred card, teal title, big haul number, amber primary), but the middle is a wall of centred 14-16px explaining sentences with no stat row, so the eye has no clear route and it reads as a debug log, not an ARC Raiders-grade result screen.",
-  "pic": "tools/handoff/console/notes/shots/13-c1/77-haul-reveal-done-1080.jpg",
+  "verdict": "The card follows the end-card shell (Extracted in teal, hero haul number, stat row of 4, one primary and one ghost button), but the haul hero sits below a cluttered middle, the card is packed with extra elements, and it uses '$' where the guide says SP.",
+  "pic": "tools/handoff/console/notes/shots/13-c5/77-haul-reveal-done-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T10:12"
+  "when": "2026-10-18T10:36"
  },
  "63-arcade-operator-new-party-armed": {
   "score": 2,
   "pass": false,
-  "verdict": "A clean dark card with the right tokens, but every action is red, so the confirm step has no clear primary, no focus indicator, no close X, and the buttons look like a generic template.",
-  "pic": "tools/handoff/console/notes/shots/12-d1/63-arcade-operator-new-party-armed-1080.jpg",
+  "verdict": "A clean, sparse dark card that follows the panel tokens, but it is a stack of identical full-width bars with tiny text, no close X, no pad glyphs, and a 'Confirm' state that is only marked by red; it reads as a generic template.",
+  "pic": "tools/handoff/console/notes/shots/12-d2/63-arcade-operator-new-party-armed-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T10:16"
+  "when": "2026-10-18T10:36"
  },
  "55-arcade-run-over-scored": {
   "score": 2,
@@ -338,10 +338,10 @@
  "60-abandoned-card": {
   "score": 2,
   "pass": false,
-  "verdict": "The card is tidy and centred with a clear amber primary, but it is a small 718px box of tiny same-weight text with no hero line, a muted grey title, and a currency symbol and explaining sentences the guide bans, so it reads as a generic template, not the shared end-card shell.",
-  "pic": "tools/handoff/console/notes/shots/13-after2/60-abandoned-card-1080.jpg",
+  "verdict": "The card follows the shared end-card shell (dark panel, amber primary, stats row), but the title is small and muted, there is no hero line, and the cramped explanatory text and stray '$' make it read as a template dialog, not a polished screen.",
+  "pic": "tools/handoff/console/notes/shots/13-c5/60-abandoned-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T08:39"
+  "when": "2026-10-18T10:35"
  },
  "42-hub-pause-box": {
   "score": 3,
@@ -362,10 +362,10 @@
  "56-arcade-attract-board-scored": {
   "score": 2,
   "pass": false,
-  "verdict": "It's tidy and on-palette, but it is a mostly empty dark screen with a small, bare card, a dim amber prompt and no sign of the game, so it looks like a placeholder and not an attract screen.",
-  "pic": "tools/handoff/console/notes/shots/12-d1/56-arcade-attract-board-scored-1080.jpg",
+  "verdict": "The screen is clean and follows the tokens, but it is an empty attract screen with a title, a nearly empty 'No scores yet' card and a prompt, and it has no game identity or visual hook, so it reads as a placeholder.",
+  "pic": "tools/handoff/console/notes/shots/12-d2/56-arcade-attract-board-scored-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T10:15"
+  "when": "2026-10-18T10:37"
  },
  "47-arcade-drop-controls-card": {
   "score": 2,
@@ -414,5 +414,13 @@
   "pic": "tools/handoff/console/notes/shots/c-31t-after/70-settings-sec-controls-1080.jpg",
   "task": "c-31-ui-pause-settings",
   "when": "2026-10-18T10:12"
+ },
+ "76-haul-reveal-mid": {
+  "score": 3,
+  "pass": false,
+  "verdict": "A clean, centred end card that follows the shell (teal title, one hero number, 4-stat row, amber primary plus ghost), but the hero is the same size as the title, it still shows '$', and it carries too many stacked text blocks and tiny muted text.",
+  "pic": "tools/handoff/console/notes/shots/13-c5/76-haul-reveal-mid-1080.jpg",
+  "task": "13-ui-end-cards",
+  "when": "2026-10-18T10:36"
  }
 }

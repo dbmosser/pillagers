@@ -1728,6 +1728,11 @@ body:not(.padon) #root #pausebox::before{ width:min(calc(var(--pw) + var(--sp-5)
 #root #setlist .setjump .sj{ gap:var(--sp-2); }
 #root #pausebox h3{ box-sizing:border-box; width:var(--pw); max-width:100%; margin:0; padding-bottom:var(--sp-2); border-bottom:1px solid var(--ui-line); text-align:left; }
 #root #pausebox::after{ box-sizing:border-box; width:var(--pw); max-width:100%; text-align:right; }
+/* v28.xx (cw-confirm59) the critic on screen 59, the abandon question (2 of 5): "two identical red buttons", "title still says Raid paused", "dead space in a 556px card". Now: the title asks Abandon this run, Keep playing is the one amber primary on top, the YES button is a plain red outline under it, and the card shrinks to 320px around the two buttons. */
+#root #pausebox.asking #abandonbtn{ order:-1; margin-top:0 !important; background:var(--acc); border-color:var(--acc) !important; color:var(--acc-ink) !important; }
+#root #pausebox.asking #abandonbtn:hover{ filter:brightness(1.08); }
+#root #pausebox.asking #confirmabandon{ margin-top:var(--sp-3); background:transparent; border-color:var(--danger) !important; color:var(--danger) !important; }
+#root #pausebox.asking::before{ height:min(calc(var(--sp-1) * 40),calc(100% - var(--sp-4))) !important; }
 
 /* v28.xx (cw-setnear2) critic c-31 round 2 (Settings 2): "steppers float 400px from the label with 200px of dead space to their right", "the section label Controls repeats the active tab", "the toast overlaps the card footer". Now: the card is 15 x 48 wide, the stepper is right-aligned at the row edge (6 x 48 wide), the section label that sits straight under the tab strip is gone (the tab already says it), and the toast moves to the top while Settings is open. */
 #root #settingsmodal{ --cw:calc(var(--sp-5) * 15); }
@@ -2665,7 +2670,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.88';
+var VER='29.89';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17599,7 +17604,14 @@ var titleRefresh=null;
 // acts, and until now only Resume disarmed it, so closing the box with Escape
 // left a live YES, ABANDON THIS RUN waiting for the next time it opened. One
 // place decides what disarmed looks like; the open and Resume both ask it.
+// v28.xx (cw-confirm59): "title still says Raid paused": while the question is up the title asks it, and any disarm gives the old title back.
+function pauseAskTitle(on){
+  var h=document.querySelector('#pausebox h3'); if(!h) return;
+  if(on){ if(!h.hasAttribute('data-was')) h.setAttribute('data-was',h.textContent); h.textContent='Abandon this run?'; }
+  else if(h.hasAttribute('data-was')){ h.textContent=h.getAttribute('data-was'); h.removeAttribute('data-was'); }
+}
 function disarmAbandon(){
+  try{ pauseAskTitle(false); }catch(_pa){}
   var _ca=document.getElementById('confirmabandon');
   if(_ca) _ca.style.display='none';
   try{ var _pbx3=document.getElementById('pausebox'); if(_pbx3) _pbx3.classList.remove('asking'); }catch(_as3){}   // v27.xx (uic1): every disarm gives the box its buttons back
@@ -47797,7 +47809,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.88: The operator menu is calmer: one red thing, even gaps. Check 29.88 fails on v29.87',
+  now:'v29.89: Abandon question: clearer title and one primary button. Check 29.89 fails on v29.88',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -61878,7 +61890,7 @@ document.getElementById('abandonbtn').onclick=function(){
   var cb=document.getElementById('confirmabandon');
   if(cb.style.display==='none'){
     cb.style.display='inline-block';
-    this.textContent='NO, keep playing';
+    this.textContent='Keep playing'; try{ pauseAskTitle(true); }catch(_pt){}   // v28.xx (cw-confirm59): "two identical red buttons": the way back is the amber primary
     try{ var _pbx=document.getElementById('pausebox'); if(_pbx) _pbx.classList.add('asking'); }catch(_as){}   // v27.xx (uic1): only YES and NO while it is armed
     this.style.borderColor=''; this.style.color='';
     var _el=(G&&!G.over)?runElapsed():0;   // v17.64: from when this player joined
@@ -61896,7 +61908,7 @@ document.getElementById('abandonbtn').onclick=function(){
   }
   // second press on the same button is the NO: disarm and go back.
   cb.style.display='none';
-  try{ var _pbx2=document.getElementById('pausebox'); if(_pbx2) _pbx2.classList.remove('asking'); }catch(_as2){}   // v27.xx (uic1)
+  try{ var _pbx2=document.getElementById('pausebox'); if(_pbx2) _pbx2.classList.remove('asking'); }catch(_as2){} try{ pauseAskTitle(false); }catch(_pu){}   // v27.xx (uic1)
   this.textContent='Abandon run';
   this.style.borderColor='var(--rust)'; this.style.color='var(--rust)';
 };

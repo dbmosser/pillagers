@@ -6097,6 +6097,41 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.89',what:'the abandon question names itself, Keep playing is the one amber primary and the card is 320px, not 556 (critic: two identical red buttons, title says Raid paused, dead space; screen 59)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: cannot deploy here';
+     if(typeof togglePauseBox!=='function'||typeof disarmAbandon!=='function') return 'SKIP: no pause box in this build';
+     var ab=document.getElementById('abandonbtn'), cb=document.getElementById('confirmabandon'), pb=document.getElementById('pausebox');
+     if(!ab||!cb||!pb||typeof ab.onclick!=='function') return 'SKIP: no abandon button or confirm in this build';
+     var bad=[], g=null, h, t0, ch, bgA, bgC, rA, rC;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player) return 'SKIP: no live raid';
+       togglePauseBox(true);
+       if(!pb.classList.contains('on')) return 'SKIP: the pause box did not open here';
+       h=pb.querySelector('h3'); t0=h.textContent;
+       ab.onclick.call(ab);
+       if(cb.style.display==='none') return 'SKIP: the press did not arm the confirm here';
+       if(!/abandon/i.test(h.textContent)||/paused/i.test(h.textContent)) bad.push('armed, the title reads "'+h.textContent+'"');
+       if(ab.textContent.trim()!=='Keep playing') bad.push('the way back reads "'+ab.textContent+'"');
+       ab.style.transition='none'; cb.style.transition='none'; void ab.offsetWidth;   // a colour fade would read as transparent
+       bgA=getComputedStyle(ab).backgroundColor; bgC=getComputedStyle(cb).backgroundColor;
+       if(bgA!=='rgb(245, 183, 59)') bad.push('Keep playing is '+bgA+', not the amber primary');
+       if(bgC===bgA||bgC==='rgb(245, 183, 59)') bad.push('the YES button is also '+bgC);
+       rA=ab.getBoundingClientRect(); rC=cb.getBoundingClientRect();
+       if(rA.top>=rC.top) bad.push('Keep playing is not above the YES button');
+       ch=parseFloat(getComputedStyle(pb,'::before').height);
+       if(!(ch>0&&ch<=340)) bad.push('the card is '+ch+'px tall, not about 320');
+       disarmAbandon();
+       if(h.textContent!==t0) bad.push('disarming left the title "'+h.textContent+'", it was "'+t0+'"');
+       return bad.length?bad.join('; '):null;
+     } finally {
+       try{ disarmAbandon(); }catch(_d){}
+       try{ if(pb.classList.contains('on')) togglePauseBox(false); }catch(_t){}
+       try{ if(g&&!g.over) __endRaid('abandon'); }catch(_e){}
+       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
+     } }},
   {v:'29.88',what:'operator menu: the backdrop is a near solid scrim (the board no longer shows through), the three buttons share one 16px gap, and Exit demo is not red until it is focused (critic 2 of 5: one red, uneven gaps, clutter behind; screens 62 63)',
    run:function(){
      if(typeof arcadeEnter!=='function'||typeof ARCADE!=='object'||typeof arcadeLeave!=='function'||typeof ARCADE_BOARD_KEY!=='string') return 'SKIP: no arcade here';

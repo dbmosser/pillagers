@@ -1,0 +1,7 @@
+v29.89: abandon question: a named title, one amber primary, a snug card
+
+Abandon question: clearer title and one primary button.
+
+Check 29.89. Fails on v29.88.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

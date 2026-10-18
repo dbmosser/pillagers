@@ -14,4 +14,5 @@ Critic BEFORE: all 2. Common findings (35,38,60,77 share #outcome card, markup ~
 - Plan: cw-endcard-stats (ocStatRow fn before ocLedger, hidden .ocsr keeps old text for fixture checks like 22.02 'on the surface'; .ocstat/.ocach CSS). Then buttons, then 40 whats new, 59 confirm.
 - Run 3: SHIPPED v29.81 cw-endcard-stats, v29.83 cw-endcard-lost. Critic (13-c3 shots): 35=3, 38=3. Next cw-endcard-polish: stat cells equal 120px no dividers 24/16px, chips no amber bar, hero label small over number, 16px floor on subtitle/XP/feedback, 'Killed by unknown' fix, 8px tile gap.
 - Run 3 cont: SHIPPED v29.85 cw-endcard-polish. Critic 13-c4: 38=3 (still: close X/hint strip, tiles 72px, XP line, $), 40=2 (P0 no scrim, slab 1560px, no close/primary, centred amber title), 59=2 (P0 two identical red buttons, title 'Raid paused', dead space). Next: cw-confirm-59, cw-whatsnew-40.
+- Run 4: writing S/mk-cw-confirm59.ps1 (title 'Abandon this run?', Keep playing amber primary on top, card 320px via #pausebox.asking::before). Then cw-whatsnew40 (canvas card ~line 45868-45960, WN_SHOW).
 - $ stays: haulTotalLine and Credits use $ everywhere in game (not touching).
