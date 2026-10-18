@@ -1,0 +1,7 @@
+v30.13: settings key-hint line and clean backdrop
+
+Settings and Keys show a key hint under the card and a cleaner backdrop.
+
+Check 30.13. Fails on v30.12.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.13 - SETTINGS KEY-HINT LINE AND CLEAN BACKDROP
+
+Co-op hunt while he was away. Critic c-31 round 13 (Settings 18, 72 and Pad buttons 74 at 2): no key-hint strip anywhere, and menu text ghosted through the backdrop.
+
+MEASURED. Check 30.13 passes, and fails on v30.12.
 ## v30.12 - Arcade controls card: a title, clear of the feed and the F1 hint
 
 Co-op hunt while he was away. Critic on 47 (2 of 5): the F1 controls hint and a feed line showed through the edge of the card, and the card had no header. The card has a How to play title, sits above the feed, and the hint is not drawn under it.

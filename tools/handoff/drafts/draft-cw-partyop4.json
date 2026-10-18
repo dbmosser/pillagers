@@ -1,0 +1,20 @@
+{
+    "title":  "Operator card: two rows, focus is a bar",
+    "why":  "Critic on 62 and 63 (3 and 2 of 5): the Back row repeated the X and Esc (three ways to close), and the focused row was a full width accent slab. Back goes, and focus is the shared row look: a raised fill and a 3px accent bar.",
+    "now":  "The operator card has New party and Exit demo, and the X closes it.",
+    "edits":  [
+                  {
+                      "anchor":  "function arcadeOpRows(){ return [{id:\u0027party\u0027,label:(ARCOP\u0026\u0026ARCOP.arm)?\u0027Confirm new party\u0027:\u0027New party\u0027},{id:\u0027exit\u0027,label:\u0027Exit demo\u0027},{id:\u0027back\u0027,label:\u0027Back\u0027}]; }",
+                      "replacement":  "function arcadeOpRows(){ return [{id:\u0027party\u0027,label:(ARCOP\u0026\u0026ARCOP.arm)?\u0027Confirm new party\u0027:\u0027New party\u0027},{id:\u0027exit\u0027,label:\u0027Exit demo\u0027}]; }   /* v30.xx (cw-partyop4) critic 62 (3 of 5): Back repeated the X and Esc, three ways to close. The X and Esc close the card */"
+                  },
+                  {
+                      "anchor":  "    bg=on?(red?\u0027var(--danger-bg)\u0027:\u0027var(--acc)\u0027):\u0027var(--ui-raised)\u0027;\n    fg=on?(red?\u0027var(--danger)\u0027:\u0027var(--acc-ink)\u0027):(red?\u0027var(--danger)\u0027:\u0027var(--tx-1)\u0027);\n    bc=red?\u0027var(--danger)\u0027:(on?\u0027var(--acc)\u0027:\u0027var(--ui-line-hi)\u0027);",
+                      "replacement":  "    bg=on?(red?\u0027var(--danger-bg)\u0027:\u0027var(--ui-hover)\u0027):\u0027var(--ui-raised)\u0027;   /* v30.xx (cw-partyop4) critic 62 (3 of 5): the focused row was a full width accent slab that read as a row highlight, not the one action. Focus is the shared row look: a raised fill and a 3px accent bar */\n    fg=red?\u0027var(--danger)\u0027:\u0027var(--tx-1)\u0027;\n    bc=red?\u0027var(--danger)\u0027:\u0027var(--ui-line-hi)\u0027;"
+                  },
+                  {
+                      "anchor":  "      \u0027background:\u0027+bg+\u0027;color:\u0027+fg+\u0027;border:\u0027+(on?\u00272px\u0027:\u00271px\u0027)+\u0027 solid \u0027+bc;",
+                      "replacement":  "      \u0027background:\u0027+bg+\u0027;color:\u0027+fg+\u0027;border:1px solid \u0027+bc+\u0027;border-left:3px solid \u0027+(on?(red?\u0027var(--danger)\u0027:\u0027var(--acc)\u0027):bc)+\u0027;\u0027;"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the operator card has two rows (New party, Exit demo): Back is gone and the X and Esc close it, and the focused row is a raised fill with a 3px accent bar, not an accent slab (critic on 62 and 63: 3 and 2 of 5)\u0027,\n   run:function(){\n     if(typeof arcadeOpOpen!==\u0027function\u0027||typeof arcadeOpClose!==\u0027function\u0027||typeof ARCADE!==\u0027object\u0027||!ARCADE) return \u0027SKIP: no operator card\u0027;\n     var was=ARCADE.on, op, bs, cs, res=null, p, acc;\n     try{\n       ARCADE.on=true;\n       if(!arcadeOpOpen()) return \u0027the operator card did not open\u0027;\n       op=document.getElementById(\u0027arcop\u0027); if(!op) return \u0027no operator card element\u0027;\n       bs=op.querySelectorAll(\u0027button[data-op]\u0027);\n       if(op.querySelector(\u0027[data-op=\"back\"]\u0027)) res=\u0027the Back row is still on the operator card\u0027;\n       else if(bs.length!==2) res=bs.length+\u0027 rows, not 2 (New party, Exit demo)\u0027;\n       if(res) return res;\n       p=document.createElement(\u0027i\u0027); p.style.color=\u0027var(--acc)\u0027; document.body.appendChild(p); acc=getComputedStyle(p).color; p.remove();\n       cs=getComputedStyle(bs[0]);\n       if(cs.backgroundColor===acc) res=\u0027the focused row is an accent slab: \u0027+cs.backgroundColor;\n       else if(parseFloat(cs.borderLeftWidth)\u003cparseFloat(cs.borderTopWidth)*1.8||cs.borderLeftColor!==acc) res=\u0027the focused row has no 3px accent bar: \u0027+cs.borderLeftWidth+\u0027 \u0027+cs.borderLeftColor;\n       return res;\n     } finally { try{ arcadeOpClose(); }catch(e){} ARCADE.on=was; }\n   }},"
+}

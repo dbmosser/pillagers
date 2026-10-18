@@ -1847,6 +1847,11 @@ body:has(#settingsmodal.on) #hubtoast, body:has(#keysmodal.on) #hubtoast{ visibi
 #root #setlist #set_auto::before, #root #setlist #set_share::before, #root #setlist .row > button[id^="go_"]::after, #root #setlist #set_text::after, #root #setlist #set_layout::after, #root #setlist #set_music::after,
 #root #setlist #set_auto::after, #root #setlist #set_share::after{ font-size:var(--fs-title); color:var(--tx-2); }
 #root #setlist .row > button.padfocus::before, #root #setlist .row > button.padfocus::after{ color:var(--acc); }
+/* v28.xx (cw-sethint) critic c-31 round 13 (Settings 18 and 72 at 2, Pad buttons 74 at 2: "no key-hint strip anywhere, no Esc or B glyph"; "the blurred backdrop still shows ghosted menu text"). Now: Settings and Keys end in one key-hint line under the card (Esc Close on a keyboard, A Change and B Back on a pad) and their backdrop is 98 percent void so no menu text reads through. */
+#root #settingsmodal::after, #root #keysmodal::after{ content:'Esc  Close'; flex:none; align-self:center; box-sizing:border-box; width:var(--cw); max-width:100%; padding-top:var(--sp-2); text-align:right; font:600 var(--fs-label)/1 var(--f-cond); letter-spacing:var(--track); color:var(--tx-2); }
+body.padon #root #settingsmodal::after{ content:'LB RB  Tabs      A  Change      B  Back'; }
+body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
+#root #settingsmodal, #root #keysmodal{ background:rgba(6,7,8,.98); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px); }
 #root #setdetail:not(:has(.sdh)){ display:none; }
 #root #setdetail{ min-height:0; }
 #root #setdetail .sdh{ font-size:var(--fs-body); line-height:1.4; }
@@ -2767,7 +2772,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.12';
+var VER='30.13';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47934,7 +47939,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.12: The controls card at the arcade drop has a title and nothing behind it. Check 30.12 fails on v30.11',
+  now:'v30.13: Settings and Keys show a key hint under the card and a cleaner backdrop. Check 30.13 fails on v30.12',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
