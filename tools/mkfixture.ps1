@@ -5639,7 +5639,7 @@ window.__REGRESS=[
      // that the game plays best in fullscreen at 1080p, 1440p, or 4k resolution."
      if(!note) return 'the title screen carries no note about what to run the game in';
      var txt=(note.textContent||'').replace(/\s+/g,' ').trim();
-     ['fullscreen','1080','1440','4K'].forEach(function(w){
+     ['fullscreen'].forEach(function(w){   // retargeted 2026-10-18 (cw-title-clean), the critic and his Q51 short callouts: the "best in fullscreen at 1080p, 1440p or 4K" sentence is gone from the title; the Go fullscreen button stays
        if(txt.toLowerCase().indexOf(w.toLowerCase())<0)
          bad.push('the note does not mention '+w+': "'+txt+'"');
      });
