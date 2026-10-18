@@ -126,5 +126,69 @@
   "pic": "tools/handoff/console/notes/shots/all/18-settings-hub-1080.jpg",
   "task": "10-ui-look-book",
   "when": "2026-10-18T06:16"
+ },
+ "19-raid-hud-drop-first-raid": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The raid HUD is functional but cluttered: five or six competing text panels, a keybind cheat sheet that stays open, duplicated tooltips and tiny dense type leave no clear focal point and no consistent panel language.",
+  "pic": "tools/handoff/console/notes/shots/all/19-raid-hud-drop-first-raid-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:16"
+ },
+ "21-raid-hud-calm": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The calm raid HUD is functional but cluttered and unevenly built: seven separate panel styles, a permanent controls cheat-sheet, a wall of contract text, and a clipped minimap label all fight for attention, with nothing clearly in charge.",
+  "pic": "tools/handoff/console/notes/shots/all/21-raid-hud-calm-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:17"
+ },
+ "22-raid-map-open": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The map is readable as a data dump, but labels collide with icons and with each other, the zone names are almost invisible, and the frame, header and HUD have no shared system, so it looks like a debug overlay rather than a polished AAA map.",
+  "pic": "tools/handoff/console/notes/shots/all/22-raid-map-open-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:17"
+ },
+ "23-raid-backpack-open": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The backpack is a wide, mostly empty dark slab with tiny, low-contrast text and three lonely item slots, and it sits in a HUD cluttered with competing text blocks, so it looks like a debug panel rather than a AAA inventory.",
+  "pic": "tools/handoff/console/notes/shots/all/23-raid-backpack-open-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:17"
+ },
+ "25-raid-pause-box": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The pause menu is serviceable, with a clear primary button and a sentence-case title, but a dense five-row keybind wall, an apologetic feedback sentence and a barely dimmed HUD bleeding through make it look like a debug overlay rather than a polished AAA pause screen.",
+  "pic": "tools/handoff/console/notes/shots/all/25-raid-pause-box-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:18"
+ },
+ "26-settings-from-pause-top": {
+  "score": 2,
+  "pass": false,
+  "verdict": "A dense, flat, low-contrast settings dump with duplicate tab rows, tiny text and a mostly empty detail panel; it works as a template but has no hierarchy or game identity.",
+  "pic": "tools/handoff/console/notes/shots/all/26-settings-from-pause-top-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:18"
+ },
+ "32-keys-window": {
+  "score": 2,
+  "pass": false,
+  "verdict": "A functional but flat, spreadsheet-like rebind table with two explaining sentences, weak hierarchy, ghosted Rebind buttons, a lopsided layout and no visible focus state, so it reads as a generic template rather than a polished PILLAGERS screen.",
+  "pic": "tools/handoff/console/notes/shots/all/32-keys-window-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:18"
+ },
+ "33-raid-fight-alerts": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The HUD works as a debug-style overlay but feels like a pile of mismatched panels: the minimap is clipped and overlaps a zone label, the contracts list is dense with tiny text, and the alert is duplicated three times.",
+  "pic": "tools/handoff/console/notes/shots/all/33-raid-fight-alerts-1080.jpg",
+  "task": "10-ui-look-book",
+  "when": "2026-10-18T06:18"
  }
 }

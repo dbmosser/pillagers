@@ -1,0 +1,7 @@
+v29.26: pack all and clear sit by the pack label
+
+On the pre-raid screen, Pack all and Clear sit next to the Pack label.
+
+Check 29.26. Fails on v29.25.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

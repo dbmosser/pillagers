@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.26 - PACK ALL AND CLEAR SIT BY THE PACK LABEL
+
+Co-op hunt while he was away. Quality pass: the two whole-pack buttons stood after the cash chip and read as cash buttons beside its own MAX. They now come right after the PACK label and are named Pack all and Clear.
+
+MEASURED. Check 29.26 passes, and fails on v29.25.
 ## v29.25 - A DEAD PEDDLER LEAVES HIS REMAINS, NOT A BOX
 
 Co-op hunt while he was away. His note: it would be cool if it showed wreckage instead, same for other enemy deaths. A dead Peddler left the purple cache box. The cache is now tagged and drawn as the trader fallen in his duster with the wide hat knocked off, his pack frame and bedroll toppled beside him, the stock spilled, the lantern knocked out. Looting is unchanged.

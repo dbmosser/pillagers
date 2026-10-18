@@ -65,3 +65,12 @@
 2026-10-18 0.0315 critic-10-ui-look-book
 2026-10-18 0.0372 critic-10-ui-look-book
 2026-10-18 0.0360 critic-10-ui-look-book
+2026-10-18 0.0364 critic-10-ui-look-book
+2026-10-18 3.597 c-00a-wreckage
+2026-10-18 0.0378 critic-10-ui-look-book
+2026-10-18 0.0345 critic-10-ui-look-book
+2026-10-18 0.0358 critic-10-ui-look-book
+2026-10-18 0.0347 critic-10-ui-look-book
+2026-10-18 0.0325 critic-10-ui-look-book
+2026-10-18 0.0336 critic-10-ui-look-book
+2026-10-18 0.0335 critic-10-ui-look-book

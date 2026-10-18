@@ -19,4 +19,6 @@ Run 2 (lane c):
   Keep the existing death say() text unchanged (old checks test 'It dropped a cache.').
 - SHIPPED too: cw-wreckpillbox (v29.13), cw-wrecklistener (v29.16). Copy S\mk-cw-wreckpillbox.ps1 for the next ones (2 edits, check by bot kind).
 - botwreck kinds (sentry, crawler, bulwark, howler, snitch) already have c.bot: no death edit, only the draw fn + registration + check (find container near e with c.bot===kind).
+Run 3: SHIPPED wrecksentry v29.17, wreckcrawler v29.19, wreckbulwark v29.20, wreckhowler v29.21, wreckcrier v29.24, wreckpeddler v29.25
+  (shared builder S\mk-cw-wreckcommon.ps1). ALL ENEMY TYPES COVERED. TASK DONE.
 - Status (old line): warden DONE. Remaining: pillbox(choir), listener, sentry, crawler, bulwark, howler, crier(snitch), peddler.

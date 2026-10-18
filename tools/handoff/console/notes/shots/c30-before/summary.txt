@@ -1,0 +1,7 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  01-title-mode-menu                     staged       5.4s  
+  07-party-coop                          staged       7.3s    | partymodal
+  18-settings-hub                        staged       7.1s    | settingsmodal
+  25-raid-pause-box                      staged       8.9s  
+  26-settings-from-pause-top             staged       9.3s  
+  32-keys-window                         staged      10.8s  
