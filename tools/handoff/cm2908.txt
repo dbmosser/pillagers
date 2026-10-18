@@ -1,0 +1,7 @@
+v29.08: player 2 sees his teammate's flash at the muzzle
+
+In co-op your teammates muzzle flash and tracer start at the end of his gun, as they do on his screen.
+
+Check 29.08. Fails on v29.07.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

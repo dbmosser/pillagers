@@ -1,0 +1,5 @@
+## v29.08 - PLAYER 2 SEES HIS TEAMMATE'S FLASH AT THE MUZZLE
+
+Co-op hunt while he was away. Since the guns were drawn bigger (v27.10), the shooters own window draws the muzzle flash and starts the tracer at the drawn muzzle (39 out and 20 up for a rifle), but the tracer word carried only the spawn point, so the other window drew the flash and the tracer start inside the gun (17 out). Proven in the cloud: a host rifle shot east drew the flash at 39,-20 on the host and at 17,-13 on the partner window, the partner tracer with no muzzle distance; the same aiming west. The word now carries the tracers muzzle distance and the flash point on its end; the other window uses them the way the shooters window does. Old windows ignore the extra numbers. Cosmetic only; the round is unchanged.
+
+MEASURED. Check 29.08 passes, and fails on v29.07.

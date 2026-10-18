@@ -2307,7 +2307,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.07';
+var VER='29.08';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21021,7 +21021,7 @@ if(wep.mag===0){
       life:wep.rng/1180,player:!!fromPlayer,owner:sh,tint:wep.tint||'#ffd48a',
       el:(fromPlayer&&wep.el&&ELEM[wep.el])?wep.el:'',   // v23.xx (forge3): a MK III round carries its element
       thru:(wep.id==='lance')?1:0,gid:fromPlayer?String(wep.id||''):''});   // v26.xx (career1): the round carries the id of the gun it came from, for the kill tally   // v11.84, HIS NOTE: the Lance travels through crawlers
-    if(NET.on) netFxShot(G.bullets[G.bullets.length-1]);   // v16.21: the rest of the party sees this round
+    if(NET.on) netFxShot(G.bullets[G.bullets.length-1],sh,wep,ang);   // v16.21: the rest of the party sees this round   // v28.xx (cw-muzzlenet), CLOUD HUNT 2026-10-15: with the gun, for where its flash is drawn
   }
   // A burst weapon fires its extra rounds on a short delay, one per 70ms, each
   // rolled for spread on its own. Queued as world state so the burst finishes
@@ -46825,7 +46825,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.07: Player 2s crowbar, frag charges and air strikes hit a pillager the same way the hosts do. Check 29.07 fails on v29.06',
+  now:'v29.08: In co-op your teammates muzzle flash and tracer start at the end of his gun, as they do on his screen. Check 29.08 fails on v29.07',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -52717,10 +52717,10 @@ function netUpShared(){ return !!((netEntsHost()||netEntsPeer())&&netInCount()>0
 // others. A tracer flies on the receiving window until its time runs out or a wall stops it, and hurts nothing (the host lands
 // hits, as before). A sound is played through sfx, which draws its ring by the same rules as your own. Nothing is drawn from the
 // seeded stream. Solo play never sends or takes any of it.
-function netFxShot(b){
+function netFxShot(b,sh,wep,ang){ var mz=null;   // v28.xx (cw-muzzlenet), CLOUD HUNT 2026-10-15: the word carried only the spawn point, so the other windows drew the flash and started the tracer inside the gun (17 out) while the shooter own window draws them at the drawn muzzle
   var i, m;
   if(!b||!netUpShared()) return false;
-  m={t:'fx',k:'b',s:NET.seat,b:[Math.round(b.x),Math.round(b.y),Math.round(b.vx),Math.round(b.vy),+(+b.life||0).toFixed(3),String(b.tint||'#ffd48a').slice(0,9),b.el?1:0,b._rico?1:0]};   // v23.xx (forge8): 1 for an elemental round, drawn wider   // v28.xx (cw-ricoseen), CLOUD HUNT 2026-10-15: the 8th field is 1 for a round sent again from a ricochet
+  m={t:'fx',k:'b',s:NET.seat,b:[Math.round(b.x),Math.round(b.y),Math.round(b.vx),Math.round(b.vy),+(+b.life||0).toFixed(3),String(b.tint||'#ffd48a').slice(0,9),b.el?1:0,b._rico?1:0]}; if(sh&&wep&&isFinite(ang)){ try{ mz=gunMuzzleAt(sh,wep,ang); }catch(_mz){} } if(mz&&isFinite(mz.x)&&isFinite(mz.y)) m.b.push(+(+b.mzd||0).toFixed(2),+mz.x.toFixed(1),+mz.y.toFixed(1));   /* v28.xx (cw-muzzlenet), CLOUD HUNT 2026-10-15: fields 9 to 11: the tracer muzzle distance and the flash point; an old window reads the first eight */   // v23.xx (forge8): 1 for an elemental round, drawn wider   // v28.xx (cw-ricoseen), CLOUD HUNT 2026-10-15: the 8th field is 1 for a round sent again from a ricochet
   for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in') netSendFast(NET.peers[i],m);
   return true;
 }
@@ -52817,9 +52817,9 @@ function netFxTake(peer,m){
   if(NET.role==='host') for(i=0;i<NET.peers.length;i++){ q=NET.peers[i]; if(q!==peer&&q.state==='in') netSendFast(q,m); }
   if(m.k==='b'&&m.b&&m.b.length>=5){
     a=m.b; G.fxBullets=G.fxBullets||[];
-    if(G.fxBullets.length<80) G.fxBullets.push({x:+a[0]||0,y:+a[1]||0,vx:+a[2]||0,vy:+a[3]||0,life:Math.min(3,Math.max(0,+a[4]||0)),tint:(/^#[0-9a-fA-F]{3,8}$/).test(a[5])?a[5]:'#ffd48a',owner:1,fx:1,elw:a[6]?1:0});
+    if(G.fxBullets.length<80) G.fxBullets.push({x:+a[0]||0,y:+a[1]||0,vx:+a[2]||0,vy:+a[3]||0,life:Math.min(3,Math.max(0,+a[4]||0)),tint:(/^#[0-9a-fA-F]{3,8}$/).test(a[5])?a[5]:'#ffd48a',owner:1,fx:1,elw:a[6]?1:0}); var _mzw=(a.length>=11&&isFinite(a[8])&&isFinite(a[9])&&isFinite(a[10])&&Math.abs(a[9]-a[0])<120&&Math.abs(a[10]-a[1])<120)?1:0, _fb=G.fxBullets[G.fxBullets.length-1]; if(_mzw&&(+a[8])>0&&_fb&&_fb.fx&&_fb.x===(+a[0]||0)){ var _fv=Math.hypot(_fb.vx,_fb.vy)||1; _fb.mzd=Math.min(80,+a[8]); _fb.sx=_fb.x-_fb.vx/_fv*17; _fb.sy=_fb.y-_fb.vy/_fv*17; }   // v28.xx (cw-muzzlenet), CLOUD HUNT 2026-10-15: a word that carries the drawn muzzle starts the tracer there, as the shooter window does
     if(!G.sim&&a[7]){ try{ spark(+a[0]||0,+a[1]||0,'#fff0c0',12,320); ricoPing(+a[0]||0,+a[1]||0); }catch(_rc){} }   // v28.xx (cw-ricoseen), CLOUD HUNT 2026-10-15: a bounce word: the ricochet spark and ping, as the shooter sees and hears it, no muzzle flash
-    else if(!G.sim){ try{ gfxShotFx(+a[0]||0,+a[1]||0,Math.atan2(+a[3]||0,+a[2]||0),a[5]); }catch(_gsx){} }   // v23.xx (gfx24): and its muzzle flash
+    else if(!G.sim){ try{ if(_mzw) gfxShotFx(+a[9],+a[10]+12,Math.atan2(+a[3]||0,+a[2]||0),a[5]); else gfxShotFx(+a[0]||0,+a[1]||0,Math.atan2(+a[3]||0,+a[2]||0),a[5]); }catch(_gsx){} }   // v23.xx (gfx24): and its muzzle flash
     return 'fx:b';
   }
   if(m.k==='a'&&m.a&&m.a.length>=4){   // v23.xx (forge8): a shock arc the host drew
