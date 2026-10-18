@@ -1,0 +1,7 @@
+v31.32: the corner of the raid hud is one column, every item the same size
+
+The upper right corner of the raid is one column of equal plates: credits, xp, stash, backpack, notes logged, the minimap and the run info.
+
+Check 31.32. Fails on v31.31.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

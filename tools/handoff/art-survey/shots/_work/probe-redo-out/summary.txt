@@ -1,2 +1,0 @@
-== 1080 : window 1952x1183, viewport 1920x1080
-  probe                                  staged      11.0s    | {"mk":["fixed","name","ground","veg","story","walls","segs","buildings","water","roadRects","roadDashes","cullLog","ruinLog","cw","ch","cols","rows","bushes","landmarks","zones","districtAt","zoneAt","woods","bigPairs","plats","ramps","platAt","liftAt","locked","spawns","extracts","nav","navD","door

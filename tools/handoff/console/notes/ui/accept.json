@@ -18,17 +18,17 @@
  "04-stash-terminal": {
   "score": 2,
   "pass": false,
-  "verdict": "The only real change is a new top-right X in place of the footer close button, but the stash is still a dense, flat, cluttered terminal with no clear focal point, tiny type and several guide violations.",
+  "verdict": "the stash is now a bordered card with an x, but it is still a dense debug-style panel with no title, 11-13px text, two paragraphs of help and several competing lime boxes, so it reads as a tool and not a polished menu.",
   "findings": [
-   "P0 whole screen, hierarchy: Add a 32px f-cond 700 'stash' title at x=5% with a muted '13 held' at 20px. Keep one lime primary ('take the freebie kit', 56px high, filled --acc). Make the first-raid banner a muted tx-2 line without the lime border. Collapse the belt, gun keys and item wheel into one tab or drawer.",
-   "P0 window frame / close: Build a card at 90% width and height (96px side margins, 54px top and bottom) on rgba(6,7,8,.80). Add a 56px header with the title left and the 48x48 X at right with a 'B' glyph. Move the currency into a separate block that does not collide with the X. Add a 72px footer row.",
-   "P1 currency block top-right: Put the currency in one right-aligned block 24px left of the X, with credits at --fs-body 700 and a tx-2 label at 16px. Move 'stash 3,750 bag 0' into the footer or a tooltip.",
-   "P1 text sizes throughout (belt, gun keys, item wheel, key legend, 'reset', item labels): Set every read label to at least 16px f-cond 600, and enlarge gun-key and wheel cells to a 56px pitch. Delete 'oc going up' or replace it with a real status. Drop the swap hint.",
-   "P1 explaining sentences and clutter (bottom half): Delete both help paragraphs. Keep the key legend as a 14px footer line with the pad glyphs. Cut the freebie text to 'issued gear: pistol, 2 bandages, frag, plate'. Move the toast to a top-centre slot that auto-dismisses."
+   "P0 whole screen, hierarchy and header: Put 'stash' in 32px f-cond 700 tx-1 at the card's left, 24px from the edge, with '13 held' at 20px tx-2 beside it. Delete the version stamp and the xp line from the card. Hide or dim the 'the undercroft' backdrop title behind the scrim (.80).",
+   "P0 bottom half: hint rows, two help paragraphs, freebie bar, toast: Delete both help paragraphs and the 'drag a tile onto another to swap' line. Cut the freebie text to 'issued gear: pistol, 2 bandages, frag, plate'. Keep the legend as a single 14px footer line. Move the toast to a top-centre slot that auto-dismisses after 3s.",
+   "P0 lime accents: first-raid banner, freebie bar, 'take the freebie kit', loadout headers: Use lime only for the one primary: 'take the freebie kit' as a filled --acc button, 56px high with --acc-ink text, bottom-right. Make the first-raid banner a tx-2 line with no border, or remove it. Set body text to tx-1.",
+   "P1 text sizes throughout: Set every read label to at least 16px f-cond 600 with +.04em tracking. Set section headers ('stash', 'loadout', 'backpack', 'tactical belt') to 20px f-cond 700. Reserve f-mono for table numbers only.",
+   "P1 right column: backpack, tactical belt, gun keys, item wheel: Use one 8px-grid cell size (56px pitch, 8px gap) for belt, gun keys and wheel. Show the backpack as two full rows with no clipping. Delete 'oc going up' and the stray 'guns' caption. Move gun keys and wheel into a tab or drawer, or a single 2-column block aligned to the pane's 24px padding."
   ],
-  "pic": "tools/handoff/console/notes/shots/04-r2-after/04-stash-terminal-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/04-r6-after/04-stash-terminal-1080.jpg",
   "task": "04-style-guide-update",
-  "when": "2026-10-18T20:53"
+  "when": "2026-10-18T22:43"
  },
  "05-sector-page": {
   "score": 2,

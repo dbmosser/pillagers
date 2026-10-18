@@ -586,3 +586,5 @@
 2026-10-18 0.0323 critic-02-raid-hud-redesign
 2026-10-18 0.0296 critic-02-raid-hud-redesign
 2026-10-18 0.0332 critic-b-30-ui-hud
+2026-10-18 0.0298 critic-04-style-guide-update
+2026-10-18 0.7451 04-style-guide-update

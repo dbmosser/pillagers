@@ -1,0 +1,1 @@
+| the corner of the raid HUD is one column, every item the same size | v31.32 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 31.32 passes, fails on v31.31 |

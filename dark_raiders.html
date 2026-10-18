@@ -649,6 +649,7 @@ html.party #slotpanel, html.party #titlesub, html.party #titlestart, html.party 
   #topright small{ font-size:16px; color:var(--ash); letter-spacing:.12em; font-weight:400; margin-left:7px; margin-right:20px; }
   #topright small:nth-last-child(2){ margin-right:22px; }   /* v28.xx (cw-trrow), HIS ANSWER Q58 (2026-10-18): career top right goes into one row. The XP label is followed by the stash and bag figures on the same line now. */
   #topright .trsub{ position:static; display:inline; line-height:inherit; font-size:16px; font-weight:700; letter-spacing:.1em; color:var(--ash); }   /* v28.xx (cw-trrow): was a second line hanging under the readout (absolute, top 40px); now inline in the one row */
+  body.trcol #topright{ clip-path:inset(50%); }   /* v30.xx (cw-trcol), HIS ORDER (2026-10-18): in a raid the credits, xp, stash and bag are rows of the HUD column drawn on the canvas, so the page text is clipped away there (it keeps its box, for whatever reads it) */
   .toprow{ padding-right:560px; }   /* v11.52: the stash screen's top row keeps clear of the corner readout, so CLOSE stays reachable; v11.78: the readout is twice as wide; v12.25: the readout carries the window zoom now, up to 1.3 times wider again at 1080p */
   #credits{ display:none; }         /* v11.52: the corner readout replaces the stash screen's own credits figure */
   /* The pause and modal overlays were a flat black wash with content floating
@@ -2827,7 +2828,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.31';
+var VER='31.32';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -4701,6 +4702,68 @@ function snipMouse(e){
 function trStash(){ var v=0, i; try{ for(i=0;i<P.stash.length;i++) v+=ival(P.stash[i]); }catch(_ts){} return v; }
 function trBag(){ var v=0; try{ if(G&&G.bag&&!G.over) v=bagValue(); }catch(_tb){} return v; }
 var _trLast='';
+// v30.xx (cw-trcol), HIS ORDER (2026-10-18): "everything in the right hand upper corner should be in a vertical 1 by 1 list and they should all be the same size".
+// In a raid the corner is ONE COLUMN from the top right corner down: credits, xp, stash and bag (career), notes logged (when there are notes), then the
+// minimap, then the run info panel. One width for all of them (the run info panel's), one right edge, one gap between neighbours, one row height and one
+// type size for the rows, and the minimap is a square as wide as the rows. The Settings minimap size (S, N, L) and the run info panel's size grip move the
+// whole column together, so nothing in it is ever a different size from its neighbour. The wallet used to be page text in a bigger font with no plate; in
+// a raid that text is clipped away (body.trcol) and the rows are drawn here on the HUD canvas, so they scale with the screen (hudRes) like the rest. The
+// Undercroft and the menus keep the page text. His Q58 (one row in career) is replaced by this newer order.
+var TRV={c:'0',x:'0',sv:'0',bv:'0',nn:-1,ns:''};   // the wallet figures as text, written by syncTopRight only when one changes
+var TRG={z:1,bw:0,rh:0,gp:8,x:0,y0:16,n:0,yE:0,t:-1e9,hid:0};   // the column as last laid out: zoom-space numbers, except z and yE (screen px)
+function trBW(){ var u=uiScale(); if(trDemo()&&u>1.2) u=1.2; return Math.round(196*TEXTLIFT*u*mmSizeK()); }   // the column's width: the run info panel's (LH(196)); the party screen's 1.5 text scale does not widen it, so its minimap is the career one (the picture he chose had 300)
+function trGeo(){
+  var g=TRG, T=G&&G.tel, n=0;
+  g.z=(HUDZ.cond||1)*hudRes()*hudUserZ('cond');
+  if(!trDemo()) n=4;
+  if(T&&T.notes&&T.notes.length) n++;
+  g.n=n; g.bw=trBW(); g.rh=16+LH(13); g.x=W-16-g.bw;
+  g.yE=Math.ceil((g.y0+(n?n*g.rh+(n-1)*g.gp+g.gp:0))*g.z);   // where the next item (the minimap) starts, in screen px: under the last row and one gap
+  return g;
+}
+// the column as one box for the things that keep clear of the corner (the extraction badge, the map header): from the first row to the minimap's bottom
+function trBox(){
+  var g=trGeo(), b=MMAP.box, E=EDGEBOX.trcol, y1;
+  if(!g.n&&!b){ EDGEBOX.trcol=null; return; }
+  if(!E) E=EDGEBOX.trcol={x:0,y:0,w:0,h:0};
+  y1=b?(b.y+b.h):(g.yE-Math.round(g.gp*g.z));
+  E.x=W-(16+g.bw)*g.z; E.y=g.y0*g.z; E.w=g.bw*g.z; E.h=Math.max(0,y1-E.y);
+}
+// the plate of the HUD panels (hudPanel: chamfer, one flat 88% fill, the 1px light edge of v31.03), drawn by hand so a row costs no closure and no gradient
+function trPlate(x,y,w,h){
+  var c=Math.max(0,Math.min(10,w/3,h/3)), d=Math.max(0,c-.5);
+  ctx.beginPath(); ctx.moveTo(x+c,y); ctx.lineTo(x+w,y); ctx.lineTo(x+w,y+h); ctx.lineTo(x,y+h); ctx.lineTo(x,y+c); ctx.closePath();
+  ctx.fillStyle='rgba(17,19,21,.88)'; ctx.fill();
+  ctx.beginPath(); ctx.moveTo(x+.5+d,y+.5); ctx.lineTo(x+w-.5,y+.5); ctx.lineTo(x+w-.5,y+h-.5); ctx.lineTo(x+.5,y+h-.5); ctx.lineTo(x+.5,y+.5+d); ctx.closePath();
+  ctx.strokeStyle='rgba(112,122,130,.95)'; ctx.lineWidth=1; ctx.stroke();
+}
+function trRow(i,lab,val){
+  var g=TRG, y=g.y0+i*(g.rh+g.gp), by=y+8+LH(8);   // the same baseline as the run info title: pad 8 and LH(8) under the plate's top
+  trPlate(g.x,y,g.bw,g.rh);
+  ctx.textAlign='left'; ctx.fillStyle=UIC.tx_2; ctx.fillText(lab,g.x+8,by);
+  ctx.textAlign='right'; ctx.fillStyle=UIC.tx_1; ctx.fillText(val,g.x+g.bw-8,by);
+}
+// drawn last in drawHUD, so the rows stay over the sector map and the backpack the way the page text did
+function trColDraw(){
+  var g=trGeo(), T=G&&G.tel, i=0, nn=(T&&T.notes)?T.notes.length:0;
+  if(!(g.n>0)||!G||!G.player) return 0;
+  TRG.t=(typeof performance!=='undefined')?performance.now():Date.now();
+  if(nn&&TRV.nn!==nn){ TRV.nn=nn; TRV.ns=String(nn); }
+  ctx.save(); hudZoomIn('cond',W,0);
+  ctx.globalAlpha=1; ctx.font=FS(TYPE.label); ctx.textBaseline='alphabetic';
+  if(!trDemo()){ trRow(i++,'credits',TRV.c); trRow(i++,'xp',TRV.x); trRow(i++,'stash',TRV.sv); trRow(i++,'backpack',TRV.bv); }
+  if(nn) trRow(i++,'notes logged',TRV.ns);
+  ctx.textAlign='left';
+  ctx.restore();
+  return i;
+}
+// the page text is hidden while the rows were drawn in the last 200 ms; a frame cap that skips frames cannot make it flicker
+function trHide(now){
+  var on=(now-TRG.t<200)?1:0;
+  if(on===TRG.hid) return;
+  TRG.hid=on;
+  try{ document.body.classList.toggle('trcol',!!on); }catch(_e){}
+}
 // v11.78: where the corner readout ends, in CSS pixels, so the raid HUD can
 // start its CONDITIONS box below it. The HUD canvas is W CSS pixels wide (the
 // device ratio is applied to the backing store, not to W), so no conversion.
@@ -4718,6 +4781,7 @@ function syncTopRight(){
   if(s===_trLast) return;
   _trLast=s;
   if(s==='demo'){ el.innerHTML=''; return; }
+  TRV.c=c; TRV.x=x; TRV.sv=sv.toLocaleString(); TRV.bv=bv.toLocaleString();   // v30.xx (cw-trcol): the same figures as text, for the rows the raid HUD draws
   el.innerHTML=c+' <small>CREDITS</small> '+x+' <small>XP</small> <span class="trsub">STASH '+sv.toLocaleString()+' BAG '+bv.toLocaleString()+'</span>';   // v28.xx (cw-stashbag): spaces, so the text reads right when copied
 }
 // v17.24, co-op hunt 2026-09-28: TWO TABS ON ONE SAVE. Each tab reads the save once, at boot, and every save writes its whole
@@ -40115,10 +40179,10 @@ var MMSPAN=1000, MMAP={cv:null,map:null,bs:0,bakes:0,box:null,ops:0};
 function mmSizeK(){ var s=+CFG.mmSz; return (s>=0.5&&s<=2)?s:1; }
 function mmSpan(){ var s=+CFG.mmSpan; return (s>=400&&s<=2500)?s:MMSPAN; }
 function mmRect(){
-  var R=hudRes(), s=Math.round(216*R*mmSizeK()), T=G&&G.tel, top;   // v26.xx (settings7): MINIMAP SIZE
-  top=Math.ceil(topRightBottom()+8+((T&&T.notes&&T.notes.length)?LH(20):0));
-  top=Math.max(Math.round(16*R),top);
-  return {x:Math.round(W-16*R-s),y:top,w:s,h:s};
+  // v30.xx (cw-trcol), HIS ORDER (2026-10-18): the minimap is a square as wide as the rows above it and the run info panel under it (the Settings size S, N, L
+  // widens the whole column), one gap under the last row, and never taller than half the screen (a run info panel zoomed to the limit). It was 216 wide above a 268 wide panel.
+  var g=trGeo(), s=Math.min(Math.round(g.bw*g.z),Math.round(H*0.5));   // v26.xx (settings7): MINIMAP SIZE
+  return {x:Math.round(W-16*g.z-s),y:g.yE,w:s,h:s};
 }
 function mmBottom(){ var b=MMAP.box; return b?(b.y+b.h):0; }
 function mmPath(c,r,cut){ c.beginPath(); c.moveTo(r.x+cut,r.y); c.lineTo(r.x+r.w,r.y); c.lineTo(r.x+r.w,r.y+r.h); c.lineTo(r.x,r.y+r.h); c.lineTo(r.x,r.y+cut); c.closePath(); }
@@ -40295,7 +40359,7 @@ function drawMinimap(){
   MMAP.box=null; MMAP.ops=0;
   if(!p||G.sim||!G.map||!(W>0)||!(H>0)) return 0;
   if(!mmShown()) return 0;   // v24.xx (minimap3): the Settings row, the map, the backpack, the end cards and the Undercroft
-  r=mmRect(); R=hudRes(); sc=r.w/mmSpan(); cut=Math.round(10*R);   // v26.xx (settings7): MINIMAP ZOOM
+  r=mmRect(); R=hudRes(); sc=r.w/mmSpan(); cut=Math.round(10*TRG.z);   // v26.xx (settings7): MINIMAP ZOOM; v30.xx (cw-trcol): the corner is cut like the panels beside it
   bs=Math.min(sc*Math.max(1,DPRH||1),4096/Math.max(WORLD_W,WORLD_H));
   if(!MMAP.cv||MMAP.map!==G.map||Math.abs(MMAP.bs-bs)>1e-6){ MMAP.cv=mmBake(bs); MMAP.map=G.map; MMAP.bs=bs; }
   ctx.save();
@@ -40316,7 +40380,7 @@ function drawMinimap(){
   // the frame: a hairline amber edge, and N at the top
   ctx.save();
   mmPath(ctx,{x:r.x+0.5,y:r.y+0.5,w:r.w-1,h:r.h-1},Math.max(0,cut-0.5));
-  ctx.strokeStyle='rgba(245,183,59,.62)'; ctx.lineWidth=Math.max(1,R); ctx.stroke(); MMAP.ops++;
+  ctx.strokeStyle='rgba(112,122,130,.95)'; ctx.lineWidth=Math.max(1,TRG.z); ctx.stroke(); MMAP.ops++;   // v30.xx (cw-trcol): the same 1px light edge as every plate in the column (v31.03), no amber
   ctx.font=hudFS(TYPE.micro); ctx.textAlign='center'; ctx.fillStyle=HUDC.dim;
   hudText('N',cx,r.y+Math.round(15*R)); MMAP.ops+=2;
   ctx.restore();
@@ -40758,6 +40822,7 @@ _tgt=G.active; _lbl='EXTRACTION';
   // it is anchored to. Wrapped around the call rather than inside it because the
   // collapsed state returns early and would skip the restore.
   try{ drawMinimap(); }catch(_mm){ MMAP.box=null; }   // v24.xx (minimap1): his "add minimap", top right, before CONDITIONS so it can start below it
+  try{ trBox(); }catch(_tb){}   // v30.xx (cw-trcol): the column's box for everything that keeps clear of the corner
   ctx.save(); hudZoomIn('cond',W,0);
   (function(){
     var _arc=!!G.arcade;   // v27.42 (info1): the DEMO shows the panel too, with its run goals only
@@ -40899,7 +40964,7 @@ else if(CC.ck==='elite'){ note=((T.eliteKills||0)>0)?'elite down, get out':'no e
     // collided. Effects get their own wrapped lines under the name, and the box
     // is measured from the wrapped result rather than guessed at.
     ctx.font=FS(TYPE.label);   // v28.xx (cw-runinfo16), UI step 4 (style guide: 16 px floor for anything read): the run info panel was the micro size (13 px), a wall of small print
-    var pad=8, lh=LH(13), bw=Math.round(LH(196)), inner=bw-pad*2;   // v28.xx (cw-runinfo16): and a little wider and taller in the row so the bigger text wraps no more than before
+    var pad=8, lh=LH(13), bw=trBW(), inner=bw-pad*2;   // v28.xx (cw-runinfo16): and a little wider and taller in the row so the bigger text wraps no more than before
     // v19.82, seen on the 4K raid screenshot (2026-10-08): greedy wrapping left one word and the count alone on a second line
     // (Extract carrying 1x Data / Core 0/1), splitting the item name. The same number of lines, so the box keeps its height, but
     // the words are shared out: the narrowest width that needs no more lines. Kept per font, width and text, so a frame
@@ -40941,8 +41006,9 @@ else if(CC.ck==='elite'){ note=((T.eliteKills||0)>0)?'elite down, get out':'no e
     // at LH(30), under it. It starts below the readout's real bottom, read from
     // the page in CSS pixels and put into this scaled space; LH(30) still holds
     // if the readout is ever shorter than that.
-    by=Math.max(by,Math.ceil((topRightBottom()+8+((T.notes&&T.notes.length)?LH(20):0))/_cz));   // v12.05: and under the notes-logged line when there is one
-    if(MMAP.box) by=Math.max(by,Math.ceil((mmBottom()+Math.round(10*hudRes()))/_cz));   // v24.xx (minimap1): and under the minimap
+    var _tg=trGeo();   // v30.xx (cw-trcol), HIS ORDER (2026-10-18): the column above this panel is laid out by trGeo in this same space: the wallet rows, then the minimap, one gap each
+    if(_tg.n) by=Math.max(by,Math.ceil(_tg.yE/_cz));   // v12.05: under the last row (notes logged when there is one); it was the page readout's box and 18 below it
+    if(MMAP.box) by=Math.max(by,Math.ceil((mmBottom()+Math.round(_tg.gp*_tg.z))/_cz));   // v24.xx (minimap1): and under the minimap, one gap (v30.xx, cw-trcol: the column's gap)
     bx=clamp(bx+HOc.dx/_cz,Math.min(W-16-bw,W-(W-4)/_cz),Math.max(W-(W-4)/_cz,W-bw-4/_cz));
     by=clamp(by+HOc.dy/_cz,LH(10),Math.max(LH(10),H/_cz-LH(30)));
 hudPanel(bx,by,bw,bh,undefined,1);   // v18.13: the one HUD panel
@@ -41764,13 +41830,7 @@ ctx.restore();
   // textAlign was 'left' here - restored from a state that inherited it - so the
   // string started at x=1904 on a 1920 canvas and ran off the edge. Set locally
   // rather than relying on a caller, which is how it got lost in the first place.
-  if(T.notes.length){ ctx.save(); ctx.textAlign='right'; ctx.fillStyle='#6b7783';
-    // v12.05: BELOW THE CORNER READOUT, not through it. y 26 sat inside the
-    // rectangle the v11.78 credits and XP readout now fills, so the line and
-    // the readout printed over each other from the first note he left. The
-    // CONDITIONS panel, which starts under the readout, starts under this too.
-    var _nly=Math.max(26,Math.ceil(topRightBottom())+LH(14));
-    ctx.fillText(T.notes.length+' note'+(T.notes.length>1?'s':'')+' logged',W-16,_nly); ctx.restore(); }
+  // v30.xx (cw-trcol), HIS ORDER (2026-10-18): the notes logged line is a row of the corner column now (trColDraw), one plate like the credits above it, not loose grey text at the right edge.
   ctx.textAlign='left';
   // v8.98: everything below stacks UP FROM THE BELT rather than up from the
   // bottom of the screen. The belt has sized itself to the screen since v8.81
@@ -42225,6 +42285,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
     }
   })();
   if(G.mapOpen){ drawMapOverlay(); try{ _lanes(); }catch(_ln){} }   // v22.xx (R38): the message band over the map
+  try{ trColDraw(); }catch(_tc){}   // v30.xx (cw-trcol): the wallet and notes rows of the corner column, over everything else the way the page text was
 }
 // EVERYTHING KNOWN ABOUT AN ITEM, as [label,value] rows. Shared by the stash
 // hover and the in-raid bag hover so both windows say the same thing.
@@ -45227,12 +45288,17 @@ function drawMapOverlayRaw(){
   // and XP readout in the top right corner (8am Clear ran into 900 CREDITS). When that readout covers the line, it ends just left of it.
   var _wxR=ox+WORLD_W*sc;
   try{
-    var _trE=document.getElementById('topright'), _trR=_trE?_trE.getBoundingClientRect():null, _cvR=ctx.canvas.getBoundingClientRect(), _wm=ctx.getTransform(), _wk=(_cvR.width>0)?ctx.canvas.width/_cvR.width:1;
+    var _trE=document.getElementById('topright'), _trR=(_trE&&!TRG.hid)?_trE.getBoundingClientRect():null, _cvR=ctx.canvas.getBoundingClientRect(), _wm=ctx.getTransform(), _wk=(_cvR.width>0)?ctx.canvas.width/_cvR.width:1;
     if(_trR&&_trR.width>0&&_wm.a){
       var _wfp=parseFloat(((/([\d.]+)px/).exec(String(ctx.font))||[0,11])[1])||11;
       var _trL=((_trR.left-_cvR.left)*_wk-_wm.e)/_wm.a, _trB=((_trR.bottom-_cvR.top)*_wk-_wm.f)/(_wm.d||1);
       // v19.33, seen on the 4K map screenshot after v19.32: 14 pixels read as touching beside the big 900 at 4K; the gap is a word wide now
       if(_trB>_hdY-_wfp&&_trL<_wxR+_wfp*1.6) _wxR=Math.min(_wxR,_trL-Math.max(14,_wfp*1.6));
+    }
+    // v30.xx (cw-trcol): and clear of the HUD column in the corner (the wallet rows and the minimap's place), which is drawn on the canvas in a raid and has no page box to read
+    if(TRG.n&&EDGEBOX.trcol&&EDGEBOX.trcol.w>0&&_wm.a){
+      var _tfp=parseFloat(((/([\d.]+)px/).exec(String(ctx.font))||[0,11])[1])||11, _tcL=(EDGEBOX.trcol.x*_wk-_wm.e)/_wm.a, _tcB=((EDGEBOX.trcol.y+EDGEBOX.trcol.h)*_wk-_wm.f)/(_wm.d||1);
+      if(_tcB>_hdY-_tfp&&_tcL<_wxR+_tfp*1.6) _wxR=Math.min(_wxR,_tcL-Math.max(14,_tfp*1.6));
     }
   }catch(_wx){}
   ctx.fillText((isDay()?tod().name:'night')+'  '+G.wx.name+
@@ -48571,6 +48637,7 @@ function hidStart(){
 function loop(ts){
   if(!HID.fromWorker){ requestAnimationFrame(loop); HID.lastRaf=(typeof performance!=='undefined')?performance.now():Date.now(); if(!HID.w) hidStart(); }
   try{ syncTopRight(); }catch(_tr2){}   // v11.52: a string compare per frame, a DOM write only on change
+  try{ trHide(ts); }catch(_th){}   // v30.xx (cw-trcol): the page text in the corner is clipped away while the raid HUD draws its rows
   try{ txTagSync(); }catch(_tg){}   // v30.xx (cw-txkey): the tag that says Edit the words is on, on every screen
   // Nothing is drawable while the context is gone, and the raid clock should not
   // run down behind a blank screen either, so the whole frame is skipped until the
@@ -49206,7 +49273,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.31: The stash is a centred 90 percent card like the shop. Check 31.31 fails on v31.30',
+  now:'v31.32: The upper right corner of the raid is one column of equal plates: credits, xp, stash, backpack, notes logged, the minimap and the run info. Check 31.32 fails on v31.31',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

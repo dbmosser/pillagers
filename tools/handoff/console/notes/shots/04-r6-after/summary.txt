@@ -1,0 +1,3 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  04-stash-terminal                      staged       7.5s  total   6: clip 0 off 0 small 6 contrast 0 font 0 overlap 0 focus 0
+  65-codex                               staged       6.1s  total  10: clip 7 off 0 small 1 contrast 2 font 0 overlap 0 focus 0  | codexmodal

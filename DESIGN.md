@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.32 - the corner of the raid HUD is one column, every item the same size
+
+Co-op hunt while he was away. His order (2026-10-18): "everything in the right hand upper corner should be in a vertical 1 by 1 list and they should all be the same size". The corner held loose credits and xp text in a big font, a small stash and bag line, a grey notes line, a minimap 216 wide and a run info panel 268 wide, each in its own size and place. In a raid it is now one column from the top right corner down: credits, xp, stash and bag (career only), notes logged (when there are notes), the minimap and the run info panel. Every plate has the same width and the same right edge, the rows have one height and one type size, there is one gap between neighbours, and the minimap is a square as wide as the rows. The Settings minimap size and the run info grip scale the whole column together. The page text in the corner is clipped away in a raid while the rows are drawn on the HUD canvas. His earlier Q58 (career top right in one row) is replaced by this newer order.
+
+MEASURED. Check 31.32 passes, and fails on v31.31.
 ## v31.31 - THE STASH IS A 90 PERCENT CARD
 
 Co-op hunt while he was away. His Q43: windows (Settings, stash and the rest) are a centred card with an X in the corner taking nearly the whole screen. The stash was the one window still edge to edge. Now a card with a 5 percent margin all round, 4 px corners, a scrim around it, the X and credits inside its top right.

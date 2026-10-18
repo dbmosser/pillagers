@@ -118,20 +118,17 @@ P['a27-B'] = { screen: 'm-fightwind', edits: [...WINDHOOK, inject(RINGB)] };
 
 const LINEC = MUZ + `
 function __lineC(e){
-  var f=__wf(e), m=__muz(e), p=G.player, tx=p.x, ty=p.y-12, dx=tx-m.x, dy=ty-m.y, L=Math.hypot(dx,dy), ux=dx/L, uy=dy/L, hd=L*f, hx=m.x+ux*hd, hy=m.y+uy*hd, gr, k, a;
+  var f=__wf(e), m=__muz(e), p=G.player, tx=p.x, ty=p.y-12, dx=tx-m.x, dy=ty-m.y, L=Math.hypot(dx,dy), ux=dx/L, uy=dy/L, ex=tx-ux*9, ey=ty-uy*9, gr, k, a;
   wc.save(); wc.lineCap='round';
-  // the whole way to the target, faint and dashed: where the shot will go
-  wc.strokeStyle='rgba(255,59,48,.30)'; wc.lineWidth=1.3; wc.setLineDash([5,5]);
-  wc.beginPath(); wc.moveTo(m.x,m.y); wc.lineTo(tx,ty); wc.stroke(); wc.setLineDash([]);
-  // the line that has grown so far: thick, bright at the gun, fading toward its head
-  gr=wc.createLinearGradient(m.x,m.y,hx,hy); gr.addColorStop(0,'rgba(255,59,48,.98)'); gr.addColorStop(1,'rgba(255,59,48,.55)');
-  wc.globalCompositeOperation='lighter'; wc.strokeStyle='rgba(255,59,48,.22)'; wc.lineWidth=7; wc.beginPath(); wc.moveTo(m.x,m.y); wc.lineTo(hx,hy); wc.stroke();
-  wc.globalCompositeOperation='source-over'; wc.strokeStyle=gr; wc.lineWidth=3; wc.beginPath(); wc.moveTo(m.x,m.y); wc.lineTo(hx,hy); wc.stroke();
-  wc.strokeStyle='rgba(255,215,205,.85)'; wc.lineWidth=1; wc.beginPath(); wc.moveTo(m.x,m.y); wc.lineTo(hx,hy); wc.stroke();
-  wc.fillStyle='#fff1ec'; wc.beginPath(); wc.arc(hx,hy,2.6,0,6.2832); wc.fill();
-  // where it ends: a ring on the target
-  wc.strokeStyle='rgba(255,59,48,.8)'; wc.lineWidth=1.8; wc.beginPath(); wc.arc(tx,ty,9,0,6.2832); wc.stroke();
-  for(k=0;k<4;k++){ a=k*1.5708; wc.beginPath(); wc.moveTo(tx+Math.cos(a)*7,ty+Math.sin(a)*7); wc.lineTo(tx+Math.cos(a)*13,ty+Math.sin(a)*13); wc.stroke(); }
+  // one straight line from the gun to the target, and it stops there: thick, bright at the gun, brighter as the windup runs out
+  gr=wc.createLinearGradient(m.x,m.y,ex,ey); gr.addColorStop(0,'rgba(255,59,48,'+(0.7+0.3*f).toFixed(3)+')'); gr.addColorStop(1,'rgba(255,59,48,'+(0.45+0.3*f).toFixed(3)+')');
+  wc.globalCompositeOperation='lighter'; wc.strokeStyle='rgba(255,59,48,.24)'; wc.lineWidth=9; wc.beginPath(); wc.moveTo(m.x,m.y); wc.lineTo(ex,ey); wc.stroke();
+  wc.globalCompositeOperation='source-over'; wc.strokeStyle=gr; wc.lineWidth=4; wc.beginPath(); wc.moveTo(m.x,m.y); wc.lineTo(ex,ey); wc.stroke();
+  wc.strokeStyle='rgba(255,225,215,.85)'; wc.lineWidth=1.3; wc.beginPath(); wc.moveTo(m.x,m.y); wc.lineTo(ex,ey); wc.stroke();
+  wc.fillStyle='#fff1ec'; wc.beginPath(); wc.arc(m.x,m.y,3,0,6.2832); wc.fill();
+  // where it ends: a ring and four ticks on the target
+  wc.strokeStyle='rgba(255,59,48,.9)'; wc.lineWidth=2.2; wc.beginPath(); wc.arc(tx,ty,9,0,6.2832); wc.stroke();
+  for(k=0;k<4;k++){ a=k*1.5708; wc.beginPath(); wc.moveTo(tx+Math.cos(a)*6,ty+Math.sin(a)*6); wc.lineTo(tx+Math.cos(a)*14,ty+Math.sin(a)*14); wc.stroke(); }
   wc.restore();
 }
 window.__LATE=function(){ var w=window.__wind, i; if(!w) return; for(i=0;i<w.length;i++) if(w[i]&&w[i].hp>0&&w[i].windup!==undefined&&w[i].windup!==null) __lineC(w[i]); };
@@ -222,13 +219,13 @@ var __CH={
    {deg:-84,sp:640,spin:-3.4,s:1.1,fn:function(){ __poly([-6,-3,5,-5,8,2,-2,6],'#7c868f'); wc.fillStyle='#9aa4ad'; wc.fillRect(-4,-3,8,1.2); }}
   ],
   crawler:[
-   {deg:-150,sp:600,spin:3.0,s:1.3,fn:function(){ __poly([-9,-3,-3,-6,6,-5,9,0,5,5,-6,5],'#7a3a2a'); wc.fillStyle='#9c5038'; wc.fillRect(-6,-4.2,11,1.8); wc.fillStyle='#4e2419'; wc.fillRect(4,0,3,4); }},
-   {deg:-72,sp:560,spin:-3.6,s:1.3,fn:function(){ __poly([-8,-3,0,-6,8,-3,8,3,0,6,-8,3],'#7a3a2a'); wc.fillStyle='#9c5038'; wc.fillRect(-5,-3.6,9,1.6); wc.fillStyle='#4e2419'; wc.fillRect(-1,-5,1.4,10); }},
-   {deg:-12,sp:640,spin:2.4,s:1.25,fn:function(){ __poly([-7,-4,7,-4,9,0,7,4,-7,4],'#7a3a2a'); wc.fillStyle='#9c5038'; wc.fillRect(-5,-3,10,1.4); }},
-   {deg:44,sp:580,spin:-4.4,s:1.35,fn:function(){ __poly([-6,-4,5,-4,8,0,5,4,-6,4],'#3e454c'); wc.fillStyle='#59626b'; wc.fillRect(-5,-3,9,1.4); wc.fillStyle='#dfe9f0'; wc.fillRect(1,-1.6,1.8,1.8); wc.fillRect(4,-1.6,1.8,1.8);
+   {deg:-110,sp:600,spin:3.0,s:1.3,fn:function(){ __poly([-9,-3,-3,-6,6,-5,9,0,5,5,-6,5],'#7a3a2a'); wc.fillStyle='#9c5038'; wc.fillRect(-6,-4.2,11,1.8); wc.fillStyle='#4e2419'; wc.fillRect(4,0,3,4); }},
+   {deg:-48,sp:560,spin:-3.6,s:1.3,fn:function(){ __poly([-8,-3,0,-6,8,-3,8,3,0,6,-8,3],'#7a3a2a'); wc.fillStyle='#9c5038'; wc.fillRect(-5,-3.6,9,1.6); wc.fillStyle='#4e2419'; wc.fillRect(-1,-5,1.4,10); }},
+   {deg:-8,sp:640,spin:2.4,s:1.25,fn:function(){ __poly([-7,-4,7,-4,9,0,7,4,-7,4],'#7a3a2a'); wc.fillStyle='#9c5038'; wc.fillRect(-5,-3,10,1.4); }},
+   {deg:30,sp:580,spin:-4.4,s:1.35,fn:function(){ __poly([-6,-4,5,-4,8,0,5,4,-6,4],'#3e454c'); wc.fillStyle='#59626b'; wc.fillRect(-5,-3,9,1.4); wc.fillStyle='#dfe9f0'; wc.fillRect(1,-1.6,1.8,1.8); wc.fillRect(4,-1.6,1.8,1.8);
         wc.strokeStyle=INK; wc.lineWidth=2.4; wc.beginPath(); wc.moveTo(6,-3); wc.lineTo(11,-6); wc.moveTo(6,3); wc.lineTo(11,6); wc.stroke(); wc.strokeStyle='#8d98a3'; wc.lineWidth=1; wc.stroke(); }},
-   {deg:118,sp:560,spin:5.2,s:1.3,fn:function(){ wc.lineCap='round'; wc.lineJoin='round'; wc.strokeStyle=INK; wc.lineWidth=4.2; wc.beginPath(); wc.moveTo(-10,3); wc.lineTo(-2,-5); wc.lineTo(9,2); wc.stroke(); wc.strokeStyle='#59626b'; wc.lineWidth=2.2; wc.stroke(); wc.strokeStyle='#8d98a3'; wc.lineWidth=0.8; wc.stroke(); }},
-   {deg:158,sp:520,spin:-5.6,s:1.25,fn:function(){ wc.lineCap='round'; wc.lineJoin='round'; wc.strokeStyle=INK; wc.lineWidth=4.2; wc.beginPath(); wc.moveTo(-9,-2); wc.lineTo(0,5); wc.lineTo(10,-3); wc.stroke(); wc.strokeStyle='#59626b'; wc.lineWidth=2.2; wc.stroke(); wc.strokeStyle='#8d98a3'; wc.lineWidth=0.8; wc.stroke(); }}
+   {deg:58,sp:560,spin:5.2,s:1.3,fn:function(){ wc.lineCap='round'; wc.lineJoin='round'; wc.strokeStyle=INK; wc.lineWidth=4.2; wc.beginPath(); wc.moveTo(-10,3); wc.lineTo(-2,-5); wc.lineTo(9,2); wc.stroke(); wc.strokeStyle='#59626b'; wc.lineWidth=2.2; wc.stroke(); wc.strokeStyle='#8d98a3'; wc.lineWidth=0.8; wc.stroke(); }},
+   {deg:88,sp:520,spin:-5.6,s:1.25,fn:function(){ wc.lineCap='round'; wc.lineJoin='round'; wc.strokeStyle=INK; wc.lineWidth=4.2; wc.beginPath(); wc.moveTo(-9,-2); wc.lineTo(0,5); wc.lineTo(10,-3); wc.stroke(); wc.strokeStyle='#59626b'; wc.lineWidth=2.2; wc.stroke(); wc.strokeStyle='#8d98a3'; wc.lineWidth=0.8; wc.stroke(); }}
   ]
 };
 function __chunkD(e,c,tau,sh){
