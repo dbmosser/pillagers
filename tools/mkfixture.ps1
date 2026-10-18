@@ -248,6 +248,8 @@ window.__startRaid=function(o){
   return startRaid();
 };
 window.__mapOverlay=function(){ drawMapOverlay(); return {w:W,h:H,dpr:DPR}; };
+// cw-mapfirst: fixture raids skip the map first screen (the check that tests it sets MAPFIRST.skip=0 itself)
+try{ MAPFIRST.skip=1; }catch(_mf){}
 // Damage a breakable by index into G.map.walls and report ONLY scalars: handing
 // back the wall object serialises the whole geometry graph and blows the result
 // budget, which is how the first attempt at this test failed.
