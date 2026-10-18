@@ -1,0 +1,5 @@
+{"generated":"2026-10-18T09:29:36","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":36,"screens":[
+{"name":"26-settings-from-pause-top","screen":"Settings opened from pause, top (THE RAID section)","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"26-settings-from-pause-top-1080.jpg","lint":""}},
+{"name":"70-settings-sec-controls","screen":"Settings, section CONTROLS (jump chip clicked)","1080":{"staged":true,"note":"settingsmodal","viewport":"1920x1080","shot":"70-settings-sec-controls-1080.jpg","lint":""}},
+{"name":"72-settings-sec-display","screen":"Settings, section DISPLAY (jump chip clicked)","1080":{"staged":true,"note":"settingsmodal","viewport":"1920x1080","shot":"72-settings-sec-display-1080.jpg","lint":""}}
+]}

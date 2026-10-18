@@ -1,0 +1,9 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  46-arcade-attract-how-to-play          staged      16.9s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  52-arcade-run-over                     staged      15.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  55-arcade-run-over-scored              staged      24.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  56-arcade-attract-board-scored         staged      34.6s  total  10: clip 0 off 0 small 0 contrast 10 font 0 overlap 0 focus 0
+  62-arcade-operator-menu                staged       7.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  63-arcade-operator-new-party-armed     staged       8.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  64-arcade-board-seeded-night           staged      10.7s  total  10: clip 0 off 0 small 0 contrast 10 font 0 overlap 0 focus 0
+  47-arcade-drop-controls-card           staged      11.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0

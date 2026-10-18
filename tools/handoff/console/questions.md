@@ -8,3 +8,8 @@
 
 - 10-20 (b-20-quality-pass): the Current pillagers board and the end card rows still draw $ for values (for example $2,950, about 20 places in dark_raiders.html). Your rule is score in SP, never $. Are those haul and credit values meant to stay $ (credits are $ in the shop), or should the pillager board read SP? Left as is.
 - 10-20 (b-31-ui-undercroft): the critic holds the 25 Undercroft screens (welcome pack, stash, shop, mainframe, codex) at 2 to 3 of 5. Three findings need your word, so I left them: (1) full-window slab to a centred card of at most 960x680 with a close X top right (this reverses your ONE GRID, ONE RIGHT EDGE #50 and the footer Close); (2) "$" on prices to SP or credits; (3) the explaining hint lines under the Mainframe buttons and stash (frozen words). Say yes to (1) and I cap the card, cap racks buttons near 640px and centre the codex grid.
+
+## 2026-10-18 12-ui-party-screens (lane d, run 7)
+- Screens 55 and 56 are staged as "scored" but the staged extraction scores 0 SP, so 55 shows "Score 0 SP" and 56 shows an empty board (the critic grades an empty board and a zero card). Could the stage in tools/handoff/shots/ui-screens-js.json seed one board row (and a real score) before the shot? My pick: left as is, the empty states are designed (five ghost rows, three stat cells).
+- The critic flips on the empty board (56, 64): one run wants the five ghost rows removed, the next wants them brighter. I kept them. Say if you want a single "No scores yet" line instead.
+- Screen 58 (player 2 window title) is the whole title page (lore, three steps, key legend, saves); it needs the title redesign (left column, one primary, no lore), not a card fix. Left for the title task.

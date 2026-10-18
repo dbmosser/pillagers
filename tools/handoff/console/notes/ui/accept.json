@@ -1,12 +1,4 @@
 {
- "01-title-mode-menu": {
-  "score": 2,
-  "pass": false,
-  "verdict": "The new title menu is a bit cleaner (white button text, less amber, no boxed step cards, a Settings button), but it is still a crowded stack of seven same-size buttons under a wall of explaining text, and the screen keeps breaking the style guide.",
-  "pic": "tools/handoff/console/notes/shots/11-after3/01-title-mode-menu-1080.jpg",
-  "task": "11-ui-shared-style",
-  "when": "2026-10-18T07:03"
- },
  "02-welcome-pack": {
   "score": 2,
   "pass": false,
@@ -274,10 +266,10 @@
  "62-arcade-operator-menu": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, on-guide modal with clear focus and a working close, but the type is undersized, the backdrop is nearly black, and the menu is a bare three-button list with little identity.",
-  "pic": "tools/handoff/console/notes/shots/12-g6/62-arcade-operator-menu-1080.jpg",
+  "verdict": "A clean, on-token operator card with sentence case, a top-right X, an accent tab and a clear focused row, but the type is too small for a couch, the card floats in a flat void, and the two rows have no hierarchy or primary action.",
+  "pic": "tools/handoff/console/notes/shots/12-g10/62-arcade-operator-menu-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T12:47"
+  "when": "2026-10-18T13:30"
  },
  "61-raid-wheel-open": {
   "score": 2,
@@ -298,10 +290,10 @@
  "46-arcade-attract-how-to-play": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, sentence-case controls table that follows the panel and key-cap tokens, but the text is undersized for a couch, there is no close control, and the hierarchy is flat, so it still reads as a generic cheat sheet.",
-  "pic": "tools/handoff/console/notes/shots/12-g7/46-arcade-attract-how-to-play-1080.jpg",
+  "verdict": "A clean, sentence-case, token-faithful controls table with a clear amber-tab card, but the text is too small for couch reading, there is no close X, and the card's weight sits in a generic key-cap grid with a lot of dead space.",
+  "pic": "tools/handoff/console/notes/shots/12-g10/46-arcade-attract-how-to-play-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T12:58"
+  "when": "2026-10-18T13:30"
  },
  "37-raid-extracting-countdown": {
   "score": 2,
@@ -354,26 +346,40 @@
  "49-arcade-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, centred pause card that mostly follows the guide (one amber primary, X top-right, sentence case, danger End run), but the footer hint is tiny, the tab and focus cues are weak, and a stray control-list ghost shows through the scrim.",
-  "pic": "tools/handoff/console/notes/shots/12-g6/49-arcade-pause-box-1080.jpg",
+  "verdict": "A clean, guide-compliant pause card with one amber primary, a clear hierarchy and a top-right X, but the footer hint is tiny and bare, the focus state is only implied by the amber fill, and it reads as a generic menu template.",
+  "findings": [
+   "P1 Footer hint 'Esc Resume' (bottom right): Render it as a 28px key cap 'Esc' plus 'Resume' at 16px f-cond 600 tx-2, swapping to the pad glyph when the pad is active. Or delete it, since the X already shows the close glyph, and shrink the card by about 48px.",
+   "P1 Resume button vs other buttons (focus): Keep Resume as the amber primary. Give the focused ghost button a 2px --acc border, a --ui-raised fill and a 3px left accent bar, and show a screenshot of that state.",
+   "P1 Modal card frame (top-left corner): Use a plain 4px-radius rectangle with a 1px --ui-line-hi border. If a star tab is wanted, draw a 2px x 36px --acc bar flush at the top-left with no chamfer.",
+   "P2 Button stack spacing and the End run group: Set the gap before End run to 48px (sp-5) or 32px (sp-4). Lighten the danger text slightly, or confirm it meets 4.5:1.",
+   "P2 Header row: Make the X ghost with a --ui-line-hi border and a tx-2 glyph at 20px, brightening it on focus. Add the B pad glyph beside it when the pad is active."
+  ],
+  "pic": "tools/handoff/console/notes/shots/12-h1/49-arcade-pause-box-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T12:47"
+  "when": "2026-10-18T13:39"
  },
  "56-arcade-attract-board-scored": {
   "score": 2,
   "pass": false,
-  "verdict": "A tidy dark card that follows the panel tokens, but it is an empty five-row placeholder with weak hierarchy, dim text, a stray 'Pillagers' title and a wasted blurred backdrop, so it doesn't feel finished.",
-  "pic": "tools/handoff/console/notes/shots/12-g9/56-arcade-attract-board-scored-1080.jpg",
+  "verdict": "Clean and on-palette with a correct sentence-case title and accent tab, but it is an empty placeholder board: five dead rows of dashes, a weak call to action, and a blurred backdrop that shows nothing.",
+  "findings": [
+   "P1 Score rows 1-5: With no scores, drop the 5 placeholder rows. Show one centred line in tx-2 20px ('No scores yet') and a single hero prompt. If rows stay, raise the text to tx-2 #aaa498 (4.5:1 minimum) and show rank 1 in tx-1.",
+   "P1 Hierarchy: title vs 'No scores yet' vs prompt: Make the subhead 20px tx-2 weight 600, or remove it. Make 'Press any button' the focal element: 32px tx-1 centred under the board, or a 56px-high primary-style prompt. Keep the amber for the focus glyph only.",
+   "P1 Backdrop: Use a lighter blur (4-6px max) and a scrim at rgba(6,7,8,.80) over the dimmed live world at ~55%. Remove the dark column at the right edge so the margin does not look like a rendering bug.",
+   "P1 'Pillagers' wordmark, top-left: Either replace it with a proper logo lockup (e.g. 160x48) in the same top-left slot, or remove it. Put a hero title or logo above the card so the attract screen has one clear brand moment.",
+   "P2 Card padding and footer: Use 24px padding and an 8px grid: 24px below the last row, a 72px footer row. Replace the ring with a real pad glyph (A) or a key cap chip (28px high, 1px --ui-line-hi), followed by the word."
+  ],
+  "pic": "tools/handoff/console/notes/shots/12-h1/56-arcade-attract-board-scored-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T13:23"
+  "when": "2026-10-18T13:39"
  },
  "47-arcade-drop-controls-card": {
   "score": 2,
   "pass": false,
-  "verdict": "The controls card is a legible two-column table, but it is a left-edge slab dropped on a busy, undimmed raid HUD with no close button, no action, and no scrim. Stacked with duplicate weather toasts and a cluttered corner HUD, it reads as a debug overlay, not a polished screen.",
-  "pic": "tools/handoff/console/notes/shots/12-g8/47-arcade-drop-controls-card-1080.jpg",
+  "verdict": "The controls card is a tidy, readable table, but it sits as an unscrimmed, un-dismissable panel over a live HUD that is already crowded with duplicate fog messages, clipped text and mixed type, so nothing has a clear focal point.",
+  "pic": "tools/handoff/console/notes/shots/12-g10/47-arcade-drop-controls-card-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T13:14"
+  "when": "2026-10-18T13:30"
  },
  "48-arcade-hud-move-to-start": {
   "score": 2,
@@ -434,10 +440,10 @@
  "72-settings-sec-display": {
   "score": 3,
   "pass": false,
-  "verdict": "The new version fixes the two biggest defects of the old one (no focused row, and a placeholder 'Edit the words / Don't use this unless you know what you are doing!' help pane), so pad focus now reads and the help text is real, but the screen is still a cramped, small-type settings list with a stranded control column and no visual identity.",
-  "pic": "tools/handoff/console/notes/shots/c-31r3b-after/72-settings-sec-display-1080.jpg",
+  "verdict": "A clean, consistent dark settings modal with a clear amber focus row and one tab strip, but the stepper values sit far from their labels, a row is clipped at the list bottom, and the small type and tiny chevrons would be hard to read from a couch.",
+  "pic": "tools/handoff/console/notes/shots/c-31r3c-after/72-settings-sec-display-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T13:25"
+  "when": "2026-10-18T13:29"
  },
  "74-settings-change-pad-buttons": {
   "score": 2,
