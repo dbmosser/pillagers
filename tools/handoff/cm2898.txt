@@ -1,0 +1,7 @@
+v28.98: red barrels leave fire
+
+A red barrel that blows up now leaves a fire that burns anyone standing in it for a few seconds.
+
+Check 28.98. Fails on v28.97.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

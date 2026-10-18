@@ -6097,6 +6097,32 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'28.98',what:'an exploding red barrel leaves a fire that burns what stands in it over time and then burns out (his order: after the first explosion, also leave fire that deals damage over time)',
+   run:function(){
+     if(typeof brlFireAdd!=='function') return 'a barrel blast leaves no fire (no brlFireAdd)';
+     var g=null, B, p, od=damagePlayer, calls=[], n0, n1, hp0;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player) return 'SKIP: no raid';
+       if(!g.brl||!g.brl.length) return 'SKIP: no barrel on this map';
+       B=g.brl[0]; p=g.player; p.x=B.x+30; p.y=B.y;
+       damagePlayer=function(a,s){ calls.push(String(s)); return od.apply(this,arguments); };
+       brlBlast(B);
+       if(!g.bfire||!g.bfire.length) return 'the blast left no fire';
+       p.hp=Math.max(p.hp||0,100); p.downed=false; p.dying=false; p.x=B.x+20; p.y=B.y;
+       n0=calls.filter(function(s){ return s==='fire'; }).length;
+       brlTick(0.3); brlTick(0.3); brlTick(0.3);
+       n1=calls.filter(function(s){ return s==='fire'; }).length;
+       if(n1<=n0) return 'standing in the fire it never burned the player (fires '+g.bfire.length+', t '+(g.bfire[0]&&g.bfire[0].t)+', by '+(g.bfire[0]&&g.bfire[0].by)+', dying '+p.dying+', specOut '+p.specOut+', los '+losClear(B.x,B.y,p.x,p.y,g.map.segs)+', calls '+calls.join('/')+')';
+       brlTick(30);
+       if(g.bfire.length) return 'the fire never burns out';
+       return null;
+     } finally {
+       damagePlayer=od;
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     } }},
   {v:'28.97',what:'cloud-coop-ricochet-seen: a round that ricochets off steel in one window is sent again from the bounce flagged, so the teammate sees it fly on with the bounce spark and no second muzzle flash',
    run:function(){
      if(!(window.__state&&window.__endRaid&&window.__runPrep&&window.__deploy)) return 'SKIP: no raid here';

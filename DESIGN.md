@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.98 - RED BARRELS LEAVE FIRE
+
+Co-op hunt while he was away. His order: red barrels, after the first explosion, also leave fire that deals damage over time. A blast now leaves a small fire where the barrel stood, 7 seconds plus a short ember glow. It burns the player 5 every half second (never one a teammate lit) and machines and pillagers 22 a second, credited to whoever lit the barrel, and it never blocks a way.
+
+MEASURED. Check 28.98 passes, and fails on v28.97.
 ## v28.97 - TEAMMATE SEES RICOCHETS
 
 Co-op hunt while he was away. A round that ricochets off steel (v26.66) bounced only in the window that fired it. The teammate got one tracer at fire time, which died at the wall, so he saw the round stop on the steel and then maybe a damage number or a kill with no visible source, and never saw the spark or heard the ping. Proven in the fixture: the shooter window sends 1 tracer word for a bounced round, and the teammate tracer dies 3 frames in with its flight unturned. Now the bounce sends a second tracer word, flagged, from the bounce point (one extra word per round at most); the teammate draws it flying on with the ricochet spark and ping, and no muzzle flash at the wall.

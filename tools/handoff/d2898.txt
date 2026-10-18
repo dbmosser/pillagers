@@ -1,0 +1,5 @@
+## v28.98 - RED BARRELS LEAVE FIRE
+
+Co-op hunt while he was away. His order: red barrels, after the first explosion, also leave fire that deals damage over time. A blast now leaves a small fire where the barrel stood, 7 seconds plus a short ember glow. It burns the player 5 every half second (never one a teammate lit) and machines and pillagers 22 a second, credited to whoever lit the barrel, and it never blocks a way.
+
+MEASURED. Check 28.98 passes, and fails on v28.97.
