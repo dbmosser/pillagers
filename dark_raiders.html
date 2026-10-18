@@ -1363,8 +1363,8 @@
      with dark bands round it, like a letterboxed screenshot. The title glass now blurs the floor a little and closes to near black
      towards every edge, so no edge of the floor shows and the people walking still read as a world behind the menu. */
   #root #title.on{ background:radial-gradient(ellipse 58% 60% at 50% 45%, rgba(8,9,10,0) 40%, rgba(8,9,10,.95) 88%),
-    linear-gradient(90deg, rgba(17,19,21,.8) 0%, rgba(17,19,21,.9) 26%, rgba(17,19,21,.9) 74%, rgba(17,19,21,.8) 100%);
-    -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px); }
+    linear-gradient(90deg, rgba(17,19,21,.7) 0%, rgba(17,19,21,.58) 26%, rgba(17,19,21,.58) 74%, rgba(17,19,21,.7) 100%);
+    -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px); }   /* v28.xx (cw-title-scrim), the critic (3 of 5, P2): the backdrop was so dark it read flat. Centre column scrim .9 to .58, sides .8 to .7, blur 4 to 3px, so the live world shows (Q52). */
   /* vNN.xx, UI REDESIGN ui5q2l (his #50, from the AAA judge of the Fashion shot): ONE TILE SIZE ON EVERY RACK. The rack tiles were
      132px columns, so eight outfits left the right 30 percent of the rack empty, a long requirement (PUT 3 WARDENS DOWN (0 OF 3))
      broke into three lines, and the tiles were 145px high on OUTFIT, 128 on BUILD and 95 on SKIN, so the racks jumped in height.
@@ -2786,7 +2786,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.64';
+var VER='30.65';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -48116,7 +48116,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.64: The Support MG no longer builds into a heavy shake. Check 30.64 fails on v30.63',
+  now:'v30.65: The title backdrop is brighter. Check 30.65 fails on v30.64',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

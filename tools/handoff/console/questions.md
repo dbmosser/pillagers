@@ -1,5 +1,8 @@
 # Questions for him
 
+## URGENT (b-02-gun-enemy-feel, 10-18): THE SHIP QUEUE IS BLOCKED
+- .git/index.lock is left over from the ship.sh "Segmentation fault: git add -A" at v30.64 (cw-kicklmg, 13:32). Last commit is v30.63 at 12:08. dark_raiders.html (v30.64 lmg:2.0, VER 30.64) and tools/mkfixture.ps1 (+25 lines, not mine) stay uncommitted, so every ship STOPs "uncommitted changes". Workers cannot delete index.lock. Owner: delete .git/index.lock (check no git runs), then commit "v30.64: the support mg no longer builds into a heavy shake" and the mkfixture lines. Then draft cw-kicksniper (preflight ok except old check 30.35 pins the Longshot kick at 4.5; retarget it to 4.5 or 7).
+
 ## Open (asked in chat 10-18)
 - The title's mode list has two "coming later" online rows in the middle of the rows that work. Move them to the bottom, or hide them? (c-30-ui-menu-map)
 - The empty scoreboard (before anyone has played) shows five faint placeholder rows. Keep them, or show one line such as "No scores yet"? (12-ui-party-screens)

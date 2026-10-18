@@ -1,0 +1,7 @@
+v30.65: title: let the world show
+
+The title backdrop is brighter.
+
+Check 30.65. Fails on v30.64.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

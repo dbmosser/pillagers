@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.65 - TITLE: LET THE WORLD SHOW
+
+Co-op hunt while he was away. The critic: the title backdrop was so dark it read flat. The centre scrim drops from .9 to .58.
+
+MEASURED. Check 30.65 passes, and fails on v30.64.
 ## v30.64 - THE SUPPORT MG NO LONGER BUILDS INTO A HEAVY SHAKE
 
 Co-op hunt while he was away. His Q5: gun feel. The Support MG fires every 105 ms. At the flat 2.2 kick each round adds 0.157 trauma and only 0.147 drains, so a held 60 round magazine climbed into a heavy shake (the same fault the SMG had). 2.0 adds 0.143, so it holds at about 0.3 px.

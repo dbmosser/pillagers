@@ -6099,6 +6099,18 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.65',what:'the title glass lets the world behind it show (centre scrim at most 0.65)',
+   run:function(){
+     var t=document.getElementById('title'); if(!t) return 'SKIP: no title here';
+     var was=t.classList.contains('on'); if(!was) t.classList.add('on');
+     try{
+       var bi=getComputedStyle(t).backgroundImage, m=/linear-gradient\(([^]*)\)\s*$/.exec(bi), a=[], re=/rgba\(\s*17,\s*19,\s*21,\s*([0-9.]+)\)/g, x;
+       if(!m) return 'no linear scrim on the title: '+bi.slice(0,80);
+       while((x=re.exec(m[1]))) a.push(parseFloat(x[1]));
+       if(a.length<4) return 'scrim stops not found: '+a.length;
+       var mid=Math.max(a[1],a[2]);
+       return mid>0.65?('the centre scrim is '+mid+', over 0.65, the world behind is flat'):null;
+     } finally { if(!was) t.classList.remove('on'); } }},
   {v:'30.64',what:'a Support MG round kicks the camera 2.0, down from 2.2, and a held full 60 round magazine stays under 1.5 px (his Q5 gun feel)',
    run:function(){
      if(typeof gunShake!=='function'||typeof gfxTrauma!=='function') return 'SKIP: no gunShake';
