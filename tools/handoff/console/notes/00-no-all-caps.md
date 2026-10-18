@@ -25,4 +25,8 @@ REMAINING (next run)
 2. Optional quality pass: .toUpperCase() display sites (names then show as "Scav pistol", not "Scav Pistol"). Net already guarantees no caps.
 3. Final whole-game scan: nothing known outside the TX door (no OffscreenCanvas, no textTransform in JS, no alert/confirm, no strokeText words).
    Unknown: text baked into image assets.
+RUN 2 (10-18): S/mk-cw-capscan.ps1 scans the fixture for checks testing caps words -> notes/caps-scan.txt (line, v, text), caps-list.txt, caps-l1..5.txt (LF lists).
+  Ran all 330 via runchk (outputs notes/caps-o1..o5.txt). Non-PASS/SKIP: 28.08 27.42 27.20 26.52 26.37 26.10 25.35 23.54 23.24 22.95 20.38 19.95 17.89 17.38
+  16.38 15.76 14.93 14.90 13.08 10.41 10.39 9.97 9.94 9.58 (some fail for other reasons: 26.52 Digit0, 19.95, 14.90, 13.08, 16.38 check each).
+  Fix by case-blind regex (add i flag) via fixture edit under lock; then runchk the list; HELD=1 fixq.
 Status: TASK PARTIAL (the no-caps behaviour is shipped; old-check retargeting remains).

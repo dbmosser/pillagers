@@ -1,0 +1,7 @@
+v29.17: a dead sentry leaves wreckage, not a box
+
+A dead Sentry leaves a smoking wreck of itself.
+
+Check 29.17. Fails on v29.16.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

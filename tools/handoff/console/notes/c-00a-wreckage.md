@@ -17,4 +17,6 @@ Run 2 (lane c):
   rrF(x,y,w,h,r) fills with current fillStyle, mbPoly(arr) fills a polygon, MBPAL palette (ink,gm[0-3],ox[0-2],och,brass,rub,tooth,steel), o=ct.opened -> cavity open, no smoke.
   Check: e=mkX(p.x+60,p.y); e.hp=0; e.byPlayer=1; g.ents=[e]; __ents(0.016); find container near e.x,e.y; stub PR.translate.
   Keep the existing death say() text unchanged (old checks test 'It dropped a cache.').
-- Status: warden DONE. Remaining: pillbox(choir), listener, sentry, crawler, bulwark, howler, crier(snitch), peddler.
+- SHIPPED too: cw-wreckpillbox (v29.13), cw-wrecklistener (v29.16). Copy S\mk-cw-wreckpillbox.ps1 for the next ones (2 edits, check by bot kind).
+- botwreck kinds (sentry, crawler, bulwark, howler, snitch) already have c.bot: no death edit, only the draw fn + registration + check (find container near e with c.bot===kind).
+- Status (old line): warden DONE. Remaining: pillbox(choir), listener, sentry, crawler, bulwark, howler, crier(snitch), peddler.

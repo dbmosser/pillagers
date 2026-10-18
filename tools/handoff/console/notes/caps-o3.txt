@@ -1,0 +1,71 @@
+21.75: PASS
+21.74: PASS
+21.65: PASS
+21.61: PASS
+21.59: PASS
+21.45: PASS
+21.26: PASS
+21.17: PASS
+21.15: PASS
+20.79: PASS
+20.75: PASS
+20.66: PASS
+20.55: PASS
+20.38: the host was branded MARKED by a Crier that marked player 2; the host was told a Crier raised the alarm on him; player 2 was never told the Crier fired
+20.25: PASS
+20.24: SKIP: no ascend button
+20.21: PASS
+19.95: with a pad on the title shows no pad row
+19.87: PASS
+19.86: PASS
+19.80: PASS
+19.72: PASS
+19.71: PASS
+19.67: PASS
+19.66: PASS
+19.63: PASS
+19.59: PASS
+19.57: PASS
+19.56: PASS
+19.55: SKIP: the ring prompt was not drawn
+19.54: PASS
+19.53: PASS
+19.43: PASS
+19.34: PASS
+19.29: PASS
+19.28: PASS
+19.22: PASS
+19.21: PASS
+19.20: PASS
+19.10: PASS
+19.04: PASS
+18.95: PASS
+18.75: PASS
+18.71: PASS
+18.70: PASS
+18.63: PASS
+18.62: PASS
+18.61: SKIP: no stowed line was drawn
+18.59: PASS
+18.49: PASS
+18.35: PASS
+18.25: PASS
+18.21: PASS
+18.05: PASS
+17.93: PASS
+17.89: the pointer reads "First raid: drag a gun and two heals in here, then go up at Enter raid!"
+17.81: PASS
+17.77: PASS
+17.71: PASS
+17.70: PASS
+17.68: PASS
+17.63: PASS
+17.62: PASS
+17.61: PASS
+17.52: PASS
+17.40: PASS
+17.39: PASS
+17.38: the stash key bar does not name CTRL
+17.14: PASS
+17.05: PASS
+ALL DONE

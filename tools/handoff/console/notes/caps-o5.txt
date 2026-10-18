@@ -1,0 +1,51 @@
+12.26: PASS
+12.24: PASS
+12.21: PASS
+12.20: PASS
+12.18: PASS
+12.10: PASS
+12.04: PASS
+12.03: PASS
+11.94: PASS
+11.92: PASS
+11.88: SKIP: the conditions panel is not drawn here
+11.85: PASS
+11.81: PASS
+11.74: PASS
+11.72: PASS
+11.33: PASS
+11.30: PASS
+11.04: PASS
+11.03: PASS
+10.96: PASS
+10.93: PASS
+10.65: PASS
+10.61: PASS
+10.53: PASS
+10.52: PASS
+10.49: PASS
+10.44: PASS
+10.41: the pause box does not say RAID PAUSED, it says " Raid paused WASD walk Shift jog Space r"
+10.39: the way out reads "Close" and not CLOSE
+10.38: PASS
+10.37: PASS
+10.30: PASS
+10.29: PASS
+10.22: PASS
+10.16: PASS
+10.12: PASS
+10.11: PASS
+10.08: PASS
+9.97: the buttons read [Day] and [Night]
+9.94: the section heads are not THE GAMBLE and LIMITED TIME OFFER
+9.87: PASS
+9.76: control: the line he actually edited did not change either, so the edit was thrown away
+9.75: SKIP: the extraction distance line was not drawn this frame
+9.71: PASS
+9.70: PASS
+9.64: PASS
+9.58: the button reads "Go fullscreen", which does not say what it does
+9.56: PASS
+9.43: PASS
+9.42: PASS
+ALL DONE

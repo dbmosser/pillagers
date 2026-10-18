@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.17 - A DEAD SENTRY LEAVES WRECKAGE, NOT A BOX
+
+Co-op hunt while he was away. His note: it would be cool if it showed wreckage instead, same for other enemy deaths. A dead Sentry left the generic brown wreck shared by every machine. It now leaves its own wreck in its own palette: the scorched tread with a dead wheel row, the slumped hull with the ochre chevrons, the camera head snapped off with a dead black lens, the twin gun fallen on the ground, a bent mast. Smoke while unsearched. Looting is unchanged.
+
+MEASURED. Check 29.17 passes, and fails on v29.16.
 ## v29.16 - A DEAD LISTENER LEAVES WRECKAGE, NOT A BOX
 
 Co-op hunt while he was away. His note: it would be cool if it showed wreckage instead, same for other enemy deaths. A dead Listener left the generic purple cache box. The cache is now tagged a Listener wreck and drawn as the tall machine fallen on its side in its own slate colours, arms sprawled, the dish torn off beside it, smoke while unsearched. Looting is unchanged.

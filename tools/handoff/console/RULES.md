@@ -79,7 +79,13 @@ actually look good". So for any change a player can see:
 - Look with view_image. Judge like a picky art director at a AAA studio (ARC Raiders and Fortnite menus are his bar), not a
   tester: alignment, spacing, hierarchy (what the eye hits first), one font family, few text sizes, few colors, consistent
   panels, buttons, headers and close/back placement on EVERY screen. Clutter is a defect. Readable from a couch at 1080p.
-- After shipping, compare after with before. If it is not clearly better, fix it again (ship a follow-up); never leave it worse.
+- NEVER GRADE YOUR OWN SCREEN (agents praise their own work). After shipping, run the critic on the new picture, with the old
+  one first if you have it: node tools/console-sdk/critic.mjs tools/handoff/console/notes/shots/TASKID-before/NAME-1080.jpg tools/handoff/console/notes/shots/TASKID-after/NAME-1080.jpg
+  (a path with "before" in it is the old version; 1-4 pictures; about 4 cents). It answers with a score 1-5 and P0/P1/P2
+  findings, and records the score in notes/ui/accept.json. Fix every P0 and P1 it names (ship a follow-up) and run it again.
+  A screen is done at 4 or more. After two follow-ups that do not raise the score, write what is stuck in your notes and move on.
+- Give numbers, not adjectives: "header 28 to 36px, 24px gap" is a change; "make it pop" is not. Never mix a game-feel change
+  (shake, timings, speeds) into a UI or art change, and never touch feel values outside a task about feel.
 - Consistency beats a one-off: follow tools/handoff/console/notes/ui/style-guide.md once it exists, and fix the guide, not the
   screen, when the guide is wrong. His reference pictures, if any, are in tools/handoff/ui-refs/.
 - One control per job: never add a second row or menu that does what an existing control does; merge into it.

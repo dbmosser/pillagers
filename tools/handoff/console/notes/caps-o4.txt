@@ -1,0 +1,71 @@
+16.97: PASS
+16.88: SKIP: the card has moved on to v29.06, a later card check covers it
+16.84: SKIP: staging: the tactical belt shows no heal slot
+16.74: PASS
+16.71: SKIP: the card has moved on to v29.06, a later card check covers it
+16.68: PASS
+16.54: SKIP: the card has moved on to v29.06, a later card check covers it
+16.46: PASS
+16.43: PASS
+16.40: PASS
+16.38: the hosting line reads: You are hosting. Closing this window or ending the party ends the raid for your whole party.
+16.37: PASS
+16.33: PASS
+16.26: PASS
+16.16: PASS
+16.12: PASS
+16.08: PASS
+16.07: SKIP: the card has moved on to v29.06, a later card check covers it
+15.96: PASS
+15.92: SKIP: the card has moved on to v29.06, a later card check covers it
+15.91: PASS
+15.81: SKIP: the card has moved on to v29.06, a later card check covers it
+15.79: PASS
+15.78: SKIP: retired by v17.70, one sound setting for the pair replaced the per-window sound buttons this check drove
+15.77: PASS
+15.76: the arcade row reads 2 player arcade demo; the 1 player arcade row reads 1 player arcade demo; row 1 reads 1 player, not 1 PLAYER; row 2 reads 2 player co-op (same machine), not 2 PLAYER CO-OP (SAME MACHINE); row 3 reads 2 player co-op (server), not 2 PLAYER CO-OP (SERVER); row 4 reads 2 player PVP 
+15.72: SKIP: the card has moved on to v29.06, a later card check covers it
+15.61: SKIP: the card has moved on to v29.06, a later card check covers it
+15.51: SKIP: the card has moved on to v29.06, a later card check covers it
+15.48: PASS
+15.42: PASS
+15.39: SKIP: the card has moved on to v29.06, a later card check covers it
+15.38: PASS
+15.33: SKIP: staging: a window run out with 200 seconds on the clock said no missed extraction line here (EXTRACTION MISSED Hold [X] to call again)
+15.27: SKIP: the card has moved on to v29.06, a later card check covers it
+15.15: PASS
+15.12: SKIP: the card has moved on to v29.06, a later card check covers it
+14.94: SKIP: the card has moved on to v29.06, a later card check covers it
+14.93: his own pattern for the line You hold $375,700  ú  $2,500 per roll lost to the baked words: Zqxp You hold $375,700  ú  $2,500 per roll
+14.92: PASS
+14.90: the row Bandage was reworded in his profile and the menu still opened with the original words
+14.83: SKIP: the card has moved on to v29.06, a later card check covers it
+14.73: PASS
+14.72: SKIP: the card has moved on to v29.06, a later card check covers it
+14.60: SKIP: the card has moved on to v29.06, a later card check covers it
+14.40: SKIP: the card has moved on to v29.06, a later card check covers it
+14.27: SKIP: the card has moved on to v29.06, a later card check covers it
+14.14: SKIP: the card has moved on to v29.06, a later card check covers it
+14.11: PASS
+14.02: SKIP: the card has moved on to v29.06, a later card check covers it
+13.66: SKIP: the card has moved on to v29.06, a later card check covers it
+13.39: PASS
+13.27: PASS
+13.25: PASS
+13.24: PASS
+13.22: PASS
+13.15: PASS
+13.14: PASS
+13.10: PASS
+13.08: control: the belt caption is gone from the RAID as well, where FIRE and SIGNAL are real actions he uses, so it was deleted rather than moved out of the Undercroft
+13.04: SKIP: the card did not open on an abandoned run, so there is no card here to read
+12.94: PASS
+12.81: PASS
+12.73: PASS
+12.64: PASS
+12.36: PASS
+12.35: PASS
+12.32: PASS
+12.28: PASS
+12.27: SKIP: removed by his order (no item keys on the belt plan; items go on the wheel and a refused key drop says ITEMS GO ON THE WHEEL, checked by the wheel checks)
+ALL DONE
