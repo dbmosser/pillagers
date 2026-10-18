@@ -75,7 +75,7 @@ function dust(t){
   var k, tb, tau, kk, xb, x, y;
   for(k=0;k<8;k++){ tb=1.5+k*0.20; tau=t-tb; if(tau<0||tau>=0.26) continue; kk=tau/0.26;
     x=CXF-24-(scroll(t)-scroll(tb)); y=GY-3-10*kk;
-    c.save(); c.globalAlpha=0.35*(1-kk); c.fillStyle='#8a8478'; c.beginPath(); c.arc(x,y,(2+3*kk)*U4,0,TWO); c.fill(); c.restore(); }
+    c.save(); c.globalAlpha=0.5*(1-kk); c.fillStyle='#8a8478'; c.beginPath(); c.arc(x,y,(2+3*kk)*U4,0,TWO); c.fill(); c.restore(); }
 }
     function draw(t){
       

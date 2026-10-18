@@ -1,0 +1,4 @@
+{"generated":"2026-10-18T16:44:10","url":"http://localhost:8808/fixture.html","recipes":"tools/handoff/console/notes/shots/barrels3-recipes-before.json","seconds":32,"screens":[
+{"name":"b1-red-closeup","screen":"red barrel close-up","1080":{"staged":true,"note":"barrel red at 426,3237","viewport":"1920x1080","shot":"b1-red-closeup-1080.jpg","lint":""},"4k":{"staged":true,"note":"barrel red at 426,3237","viewport":"3840x2160","shot":"b1-red-closeup-4k.jpg","lint":""}},
+{"name":"b2-red-blast","screen":"red barrel blast","1080":{"staged":true,"note":"blast red","viewport":"1920x1080","shot":"b2-red-blast-1080.jpg","lint":""},"4k":{"staged":true,"note":"blast red","viewport":"3840x2160","shot":"b2-red-blast-4k.jpg","lint":""}}
+]}

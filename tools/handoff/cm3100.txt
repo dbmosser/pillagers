@@ -1,0 +1,7 @@
+v31.00: title: saves block as wide as the modes, name box lower case
+
+The saves block lines up with the mode buttons and the name box is lower case.
+
+Check 31.00. Fails on v30.99.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

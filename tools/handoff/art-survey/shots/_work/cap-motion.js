@@ -7,9 +7,9 @@ A.draw(3);
 const S=4, CX=36, CY=60, CW=100, CH=74;     // a cell is CW x CH game units, the feet at (CX,CY)
 function mkcv(w,h){ const c=document.createElement('canvas'); c.width=w; c.height=h; return c; }
 function fig(x2,o){
-  window.__x2=x2; window.__fo=o; window.__MOT=o.mot||undefined;
+  window.__x2=x2; window.__fo=o; window.__MOT=o.mot||undefined; window.__TILT=o.tilt||0;
   __gx("(function(){ var k=wc, sk=shadowE, o=window.__fo, p=G.player; wc=window.__x2; shadowE=function(){}; try{ drawOp(0,0,0,o.ph||0,'#242832',0,0,'',0,{hero:1,own:p,team:'ally',moving:!!o.moving,sprint:!!o.sprint,ads:false,hurt:o.hurt||0,bulk:armorById(p.rig).bulk,rl:0}); } finally{ wc=k; shadowE=sk; } })()");
-  window.__MOT=undefined;
+  window.__MOT=undefined; window.__TILT=0;
 }
 function cell(o,drawFn){
   const c=mkcv(CW*S,CH*S), x2=c.getContext('2d',{willReadFrequently:true});
@@ -33,6 +33,8 @@ for(const k in MOTS){
 }
 sets['stand']=[cell({ph:0,moving:0,sprint:0})];
 sets['hurtA']=[0.4,0.35,0.3,0.25,0.2,0.15,0.1,0.05].map(h=>cell({ph:0,hurt:h}));
+sets['hitC']=[];
+for(let i=0;i<14;i++){ const tau=i*0.02; sets['hitC'].push(cell({ph:0,hurt:Math.max(0,0.175*(1-tau/0.25)),tilt:(tau<0.12?8*Math.sin(Math.PI*tau/0.12):0)*Math.PI/180})); }
 sets['hurtC']=[0.175,0.14,0.105,0.07,0.035].map(h=>cell({ph:0,hurt:h}));
 sets['shadow']=[cell(null,function(x2){ window.__x2=x2; __gx("(function(){ var k=wc; wc=window.__x2; try{ shadowE(1.5,1.5,10,4,.34); shadowE(6,2.5,6.5,2.5,.18); } finally{ wc=k; } })()"); })];
 // the held gun alone, and the pack alone (same colours as drawOp uses)

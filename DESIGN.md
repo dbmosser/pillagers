@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.00 - TITLE: SAVES BLOCK AS WIDE AS THE MODES, NAME BOX LOWER CASE
+
+Co-op hunt while he was away. The critic scored the title 3 of 5: the saves block was 898px wide under a 558px mode column and the name box showed PILLAGER in capitals. The block is the menu width and the default name is lower case.
+
+MEASURED. Check 31.00 passes, and fails on v30.99.
 ## v30.99 - Settings from the pause menu opens at the top every time; the dead screen-height padding rule is gone
 
 Co-op hunt while he was away. His note (2026-10-18, build 30.73, in a raid): "accessing settings from pauise menu doesn't work right (maybe due to usperhot?)". Not Superhot: with Superhot on and a key held the world stands still under Settings (the pause outranks Superhot), and P, the Settings button, a row, CLOSE and ESC all behave. Two real faults: (1) at any screen taller than 1080p (he plays at 4K) the Settings and Keys cards took their air from an unzoomed 100vh inside a zoomed window, so the list collapsed to a sliver (v30.89 cw-cardwide already overrides it with a plain margin; the dead rule is removed here and a check reads the margin); (2) the Settings window is kept in the page and only hidden, so it kept its scroll offset between visits and a second visit from the pause box opened half way down the list. A fresh open now starts at the top; a tab or jump inside the open window keeps its place.

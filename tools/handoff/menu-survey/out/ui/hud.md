@@ -1,5 +1,5 @@
 # HUD in play: audit (b-30-ui-hud, 2026-10-18) + his picture survey layout (q16-q23), rev 2026-10-18 evening (tasks 25a, 25b, 26a, 26b, 33a, 33b, 33c)
-Pictures: notes/shots/b-30-before (21, 33, 36 viewed). Critic before scores: 21 = 2, 33 = 2 (no after yet, nothing shipped). His chosen pictures: menu-survey\img\q16-a, q17-b, q18-a, q19-a, q20-a, q21-d, q22-c, q23-d (.jpg). The layout below is BINDING (it answers the lock on the HUD layout: the fixtures retarget to it, task 25 and 26).
+Pictures: notes/shots/b-30-before (21, 33, 36 viewed). Critic before scores: 21 = 2, 33 = 2 (no after yet, nothing shipped). His chosen pictures: menu-survey\img\q16-a, q17-b, q18-a, q19-a, q20-a, q21-d, q22-c, q23-d (.jpg). The layout below is BINDING (it answers the lock on the HUD layout: the fixtures retarget to it, tasks 25a, 25b, 26a and 26b).
 
 ## The layout (1920x1080, scale by H/1080; margins 96 left/right, 54 top/bottom; no two rectangles overlap)
 - Top-centre cluster, centred on x960: score "420 sp" 48 (y54-102), timer "8:51" 40 (y110-150), extract chip "extract 152 m" 26 teal, 36 high (y160-196), alert pills from y200 (56 high, 8 gap, max 3).

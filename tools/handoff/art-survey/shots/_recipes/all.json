@@ -33,6 +33,70 @@
    "query": "",
    "expect": "!!window.__art&&!!__state().player&&!__state().over&&!__state().drawErr&&document.getElementById('topright').style.display==='none'&&__state().ents.length===0&&__P().cond==='day'",
    "js": "return await window.__art.scene('duo',{});"
+  },
+  {
+   "name": "a30-A",
+   "screen": "a30-A",
+   "before": "art survey a29-a37 (scratch recipes)",
+   "query": "",
+   "expect": "!!window.__art&&!!__state().player&&!__state().over&&!__state().drawErr&&document.getElementById('topright').style.display==='none'&&__P().cond==='night'",
+   "js": "return await window.__art.scene('dark',{});"
+  },
+  {
+   "name": "a30-B",
+   "screen": "a30-B",
+   "before": "art survey a29-a37 (scratch recipes)",
+   "query": "",
+   "expect": "!!window.__art&&!!__state().player&&!__state().over&&!__state().drawErr&&document.getElementById('topright').style.display==='none'&&__P().cond==='night'",
+   "js": "return await window.__art.scene('dark',{});"
+  },
+  {
+   "name": "a30-C",
+   "screen": "a30-C",
+   "before": "art survey a29-a37 (scratch recipes)",
+   "query": "",
+   "expect": "!!window.__art&&!!__state().player&&!__state().over&&!__state().drawErr&&document.getElementById('topright').style.display==='none'&&__P().cond==='night'",
+   "js": "return await window.__art.scene('dark',{});"
+  },
+  {
+   "name": "a30-D",
+   "screen": "a30-D",
+   "before": "art survey a29-a37 (scratch recipes)",
+   "query": "",
+   "expect": "!!window.__art&&!!__state().player&&!__state().over&&!__state().drawErr&&document.getElementById('topright').style.display==='none'&&__P().cond==='night'",
+   "js": "return await window.__art.scene('dark',{});"
+  },
+  {
+   "name": "a31-A",
+   "screen": "a31-A",
+   "before": "art survey a29-a37 (scratch recipes)",
+   "query": "",
+   "expect": "!!window.__art&&!!__state().player&&!__state().over&&!__state().drawErr&&document.getElementById('topright').style.display==='none'&&__state().ents.length===0&&__P().cond==='day'",
+   "js": "var r=await window.__art.scene('duo',{}); var A=window.__art, gx=window.__gx; window.__cfg({ambient:gx('DEF.ambient'),viewFar:gx('DEF.viewFar'),coneDeg:gx('DEF.coneDeg')}); var b=A.base(); A.cam(b.x,b.y-10,1.6); A.draw(2); return r;"
+  },
+  {
+   "name": "a31-B",
+   "screen": "a31-B",
+   "before": "art survey a29-a37 (scratch recipes)",
+   "query": "",
+   "expect": "!!window.__art&&!!__state().player&&!__state().over&&!__state().drawErr&&document.getElementById('topright').style.display==='none'&&__state().ents.length===0&&__P().cond==='day'",
+   "js": "var r=await window.__art.scene('duo',{}); var A=window.__art, gx=window.__gx; window.__cfg({ambient:gx('DEF.ambient'),viewFar:gx('DEF.viewFar'),coneDeg:gx('DEF.coneDeg')}); var b=A.base(); A.cam(b.x,b.y-10,1.6); A.draw(2); return r;"
+  },
+  {
+   "name": "a31-C",
+   "screen": "a31-C",
+   "before": "art survey a29-a37 (scratch recipes)",
+   "query": "",
+   "expect": "!!window.__art&&!!__state().player&&!__state().over&&!__state().drawErr&&document.getElementById('topright').style.display==='none'&&__state().ents.length===0&&__P().cond==='day'",
+   "js": "var r=await window.__art.scene('duo',{}); var A=window.__art, gx=window.__gx; window.__cfg({ambient:gx('DEF.ambient'),viewFar:gx('DEF.viewFar'),coneDeg:gx('DEF.coneDeg')}); var b=A.base(); A.cam(b.x,b.y-10,1.6); A.draw(2); return r;"
+  },
+  {
+   "name": "a31-D",
+   "screen": "a31-D",
+   "before": "art survey a29-a37 (scratch recipes)",
+   "query": "",
+   "expect": "!!window.__art&&!!__state().player&&!__state().over&&!__state().drawErr&&document.getElementById('topright').style.display==='none'&&__state().ents.length===0&&__P().cond==='day'",
+   "js": "var r=await window.__art.scene('duo',{}); var A=window.__art, gx=window.__gx; window.__cfg({ambient:gx('DEF.ambient'),viewFar:gx('DEF.viewFar'),coneDeg:gx('DEF.coneDeg')}); var b=A.base(); A.cam(b.x,b.y-10,1.6); A.draw(2); return r;"
   }
  ]
 }

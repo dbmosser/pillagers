@@ -17,6 +17,14 @@
    "query": "",
    "expect": "!!window.__art&&!!__state().player&&!__state().over&&!__state().drawErr&&document.getElementById('topright').style.display==='none'&&__state().ents.length===16&&__state().ents.every(e=>e.seen)&&__state().ents.filter(e=>e.kind==='raider').length===7",
    "js": "return await window.__art.scene('lineupmood',{});"
+  },
+  {
+   "name": "m-dbg",
+   "screen": "dbg",
+   "before": "staged by window.__art.scene (art-survey scene-lib.js + mach ext.js)",
+   "query": "",
+   "expect": "true",
+   "js": "await window.__art.scene('lineup',{}); return JSON.stringify({m:typeof window.__MACH, mode:window.__MACH&&window.__MACH.mode, err:__state().drawErr, kinds:__state().ents.map(function(e){return e.kind+':'+e.id;}).join(','), sprFn:String(sprEyeOf).slice(0,60)});"
   }
  ]
 }

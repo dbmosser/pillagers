@@ -9,6 +9,7 @@ mkgame('a11-cap', [
   { from: 'var liftB=moving?Math.max(0,-Math.sin(ph))*(sprint?3.4:2.2):0;', to: 'var liftB=moving?Math.max(0,-Math.sin(ph))*(window.__MOT?window.__MOT.lift:(sprint?3.4:2.2)):0;' },
   { from: 'var bobY=moving?Math.abs(Math.sin(ph))*1.5:Math.sin(ph*.35)*.5;', to: 'var bobY=window.__MOT?window.__MOT.bob:(moving?Math.abs(Math.sin(ph))*1.5:Math.sin(ph*.35)*.5);' },
   { from: 'var leanX=sprint?fl*1.6:(moving?fl*.7:0);', to: 'var leanX=window.__MOT?fl*window.__MOT.lean:(sprint?fl*1.6:(moving?fl*.7:0));' },
-  { from: 'var hx2=x+leanX;', to: 'var hx2=x+leanX+(window.__MOT&&window.__MOT.head?fl*window.__MOT.head:0);' }
+  { from: '  var hx2=x+leanX;', to: '  var hx2=x+leanX+(window.__MOT&&window.__MOT.head?fl*window.__MOT.head:0); var _tiltOn=(window.__TILT&&st.hero)?1:0; if(_tiltOn){ wc.save(); wc.translate(hx2,ty-23); wc.rotate(window.__TILT); wc.translate(-hx2,-(ty-23)); }' },
+  { from: "  // v10.54, his notes: THE SUIT'S OWN PAINT. Last, over everything the racks", to: "  if(_tiltOn) wc.restore();" + String.fromCharCode(10) + "  // v10.54, his notes: THE SUIT'S OWN PAINT. Last, over everything the racks" }
 ], { __OPT: 'cap' });
 console.log('ok');

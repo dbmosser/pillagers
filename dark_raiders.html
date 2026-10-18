@@ -1294,7 +1294,7 @@ html.party #slotpanel, html.party #titlesub, html.party #titlestart, html.party 
   #root #modemenu .modelater button.moderow{ min-height:40px; font-size:15px; }
   #root #modemenu .modelater span{ left:auto; right:14px; margin-left:0; padding:4px 8px; border:1px solid var(--ui-line); border-radius:2px;
     font-family:var(--f-cond); font-weight:600; font-size:13px; letter-spacing:.12em; color:var(--tx-2); pointer-events:none; }
-  #root #slotpanel{ max-width:900px; margin-left:auto; margin-right:auto; }
+  #root #slotpanel{ max-width:var(--menu-w); margin-left:auto; margin-right:auto; }   /* v28.xx (cw-title-saves), the critic on screen 01 (3 of 5): "the saves block is 898px wide under a 558px mode column". One column: the saves block is as wide as the mode buttons (--menu-w). */
   /* vNN.xx, UI REDESIGN ui5q1i (his #50, from the lint of the craft shot): A LOCKED TILE KEEPS ITS NAME. A recipe you cannot make
      yet (and a locked tile anywhere in the shop) faded the whole tile to 42 percent, so its name read at about 2.3:1 against the
      cell. The picture and the price fade as before; the name stays readable in the second text colour, as on the locked Fashion
@@ -2805,7 +2805,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.99';
+var VER='31.00';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -48275,7 +48275,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.99: Settings from the pause menu opens at the top every time. Check 30.99 fails on v30.98',
+  now:'v31.00: The saves block lines up with the mode buttons and the name box is lower case. Check 31.00 fails on v30.99',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -66125,7 +66125,8 @@ loadProfile().then(function(){
     }
     renderSlots();
     var pin=document.getElementById('pnamein');
-    if(pin) pin.value=P.pname||'';
+    window.titleNameShown=function(n){ return n==='PILLAGER'?'pillager':n; };   // v28.xx (cw-title-saves), the critic on screen 01 (P0): the name box showed PILLAGER in capitals, and every word on screen is lower case (his order 2026-10-18). Only the default name is lowered; a name he typed keeps its letters.
+    if(pin) pin.value=titleNameShown(P.pname||'');
     if(pin) pin.oninput=function(){ pin.__typed=1; };   // v30.xx (cw-newsavename): a name typed here, even the same one, goes into a new save
     var psv=document.getElementById('pnamesave');
     if(psv) psv.onclick=function(){
@@ -66162,7 +66163,7 @@ loadProfile().then(function(){
     var go=function(){
       if(!t.classList.contains('on')) return;
       var _nv=(pin&&pin.value||'').trim().slice(0,16);
-      if(_nv&&_nv!==P.pname){ P.pname=_nv; saveProfile(); }
+      if(_nv&&_nv!==P.pname&&_nv!==titleNameShown(P.pname)){ P.pname=_nv; saveProfile(); }   // v28.xx (cw-title-saves): the lowered default is not a new name
       t.classList.remove('on');
       ac(); showScreen('hub');
     };

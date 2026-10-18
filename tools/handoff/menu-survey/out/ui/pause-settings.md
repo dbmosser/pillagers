@@ -2,7 +2,7 @@
 Before shots: notes/shots/c-31-before (screens 18,25,26,32,42,49,68-75, 1080).
 Code map: .pausebox CSS at html line ~714 (old look: rgba(17,19,21,.9), h3 25px uppercase-class, gap 11px); .modal at ~720 (padding 22px).
 Settings = #settingsmodal, #setwrap > #setlist + #setdetail; openSettings(tab) at ~64242.
-Shared look: <style id="ui-shared"> ends at line ~1401, tokens --fs-*, --sp-*, --rad, --btn-h*; the check 29.33 forbids raw color/px literals inside ui-shared (only 1px/3px allowed). With the new look every new size and colour (glass, 4px, 6px, 12px, 16px, 56px, 72px) must be a :root token first (task 20 and 21), or the 29.33 allow-list is extended in the same ship by fixq.sh. Do not add raw literals.
+Shared look: <style id="ui-shared"> ends at line ~1401, tokens --fs-*, --sp-*, --rad, --btn-h*; the check 29.33 forbids raw color/px literals inside ui-shared (only 1px/3px allowed). With the new look every new size and colour (glass, 4px, 6px, 12px, 16px, 56px, 72px) must be a :root token first (tasks 20, 21a and 21b), or the 29.33 allow-list is extended in the same ship by fixq.sh. Do not add raw literals.
 Pattern to copy: S/mk-cw-uishared-board.ps1 (append rules before </style> of ui-shared).
 
 ## What his picks replace

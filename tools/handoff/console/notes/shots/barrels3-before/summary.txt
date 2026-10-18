@@ -1,0 +1,14 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  b1-red-closeup                         staged       7.8s    | barrel red at 426,3237
+  b2-red-blast                           NOT STAGED   7.1s    | EXCEPTION ReferenceError: mkCrawler is not defined
+    at <anonymous>:1:2726
+    at async <anonymous>:1:21
+== 4k : window 3872x2263, viewport 3840x2160
+  b1-red-closeup                         staged       7.7s    | barrel red at 426,3237
+  b2-red-blast                           NOT STAGED   7.2s    | EXCEPTION ReferenceError: mkCrawler is not defined
+    at <anonymous>:1:2726
+    at async <anonymous>:1:21
+== 1080 : window 1952x1183, viewport 1920x1080
+  b2-red-blast                           staged       7.6s    | blast red
+== 4k : window 3872x2263, viewport 3840x2160
+  b2-red-blast                           staged       8.0s    | blast red
