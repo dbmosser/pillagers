@@ -6260,8 +6260,8 @@ window.__REGRESS=[
        if(res) return res;
        p=document.createElement('i'); p.style.color='var(--acc)'; document.body.appendChild(p); acc=getComputedStyle(p).color; p.remove();
        cs=getComputedStyle(bs[0]);
-       if(cs.backgroundColor===acc) res='the focused row is an accent slab: '+cs.backgroundColor;
-       else if(parseFloat(cs.borderLeftWidth)<parseFloat(cs.borderTopWidth)*1.8||cs.borderLeftColor!==acc) res='the focused row has no 3px accent bar: '+cs.borderLeftWidth+' '+cs.borderLeftColor;
+       /* v30.xx (cw-partyempty) critic 62: New party is now the one amber primary, so the slab test is gone (a fill is allowed); the 3px bar test stays */
+       if(parseFloat(cs.borderLeftWidth)<parseFloat(cs.borderTopWidth)*1.8||cs.borderLeftColor!==acc) res='the focused row has no 3px accent bar: '+cs.borderLeftWidth+' '+cs.borderLeftColor;
        return res;
      } finally { try{ arcadeOpClose(); }catch(e){} ARCADE.on=was; }
    }},
