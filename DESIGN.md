@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.59 - AMMO IS THE HERO NUMBER
+
+Co-op hunt while he was away. His answer Q57 (10-18): ammo needs to be prominent, ideally redesign the whole raid HUD. The rounds in the gun are now the big number (44 rendered), the reserve small beside it, amber at a quarter magazine and red when empty.
+
+MEASURED. Check 30.59 passes, and fails on v30.58.
 ## v30.58 - THE WHAT IS NEW CARD NAMES POLISH PASS 20
 
 Co-op hunt while he was away. The card was stamped v30.56 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.

@@ -1,0 +1,7 @@
+v30.59: ammo is the hero number
+
+The gun card shows the rounds in the gun as a big number with the reserve small beside it.
+
+Check 30.59. Fails on v30.58.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
