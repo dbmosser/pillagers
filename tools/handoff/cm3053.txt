@@ -1,0 +1,7 @@
+v30.53: demo gun card hides item value and backpack hint
+
+The demo gun card no longer shows the item-value line or the backpack hint.
+
+Check 30.53. Fails on v30.52.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

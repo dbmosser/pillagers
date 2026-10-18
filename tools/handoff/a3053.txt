@@ -1,0 +1,1 @@
+| DEMO GUN CARD HIDES ITEM VALUE AND BACKPACK HINT | v30.53 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 30.53 passes, fails on v30.52 |

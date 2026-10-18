@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.53 - DEMO GUN CARD HIDES ITEM VALUE AND BACKPACK HINT
+
+Co-op hunt while he was away. His answer Q56 (10-18): in the demo also hide the item-value line and the backpack hint, keep the run goals. Career keeps both.
+
+MEASURED. Check 30.53 passes, and fails on v30.52.
 ## v30.52 - A HIT RAIDER JUMPS BACK A LITTLE FARTHER
 
 Co-op hunt while he was away. His Q5: enemy feel. The raider is the commonest body in a raid and a hit pushed it only 5 px for 0.16 s. It now jumps back 6.5 px at the full flash, easing to 0 over the same 0.16 s. The Crawler keeps 8 px, every other body 5.

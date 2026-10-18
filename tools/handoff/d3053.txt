@@ -1,0 +1,5 @@
+## v30.53 - DEMO GUN CARD HIDES ITEM VALUE AND BACKPACK HINT
+
+Co-op hunt while he was away. His answer Q56 (10-18): in the demo also hide the item-value line and the backpack hint, keep the run goals. Career keeps both.
+
+MEASURED. Check 30.53 passes, and fails on v30.52.
