@@ -1,0 +1,7 @@
+v30.27: pillager roles are worn gear, not marks in the air
+
+Pillager role marks are now drawn gear worn on the body.
+
+Check 30.27. Fails on v30.26.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

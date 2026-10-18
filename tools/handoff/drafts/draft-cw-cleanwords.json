@@ -1,0 +1,24 @@
+{
+    "title":  "Clean the swearing out of the baked on-screen lines",
+    "why":  "His answer Q76 (2026-10-18): clean the swearing out of on-screen lines but keep the attitude. Three baked lines swore: \"You cheap bastard.\", \"Shit is about to get real.\" and \"This is some shit Claude came up with.\" They now read \"You cheapskate.\", \"Things are about to get real.\" and \"This is some wild idea Claude came up with.\"",
+    "now":  "Three on-screen lines lost their swearing and kept their attitude.",
+    "edits":  [
+                  {
+                      "anchor":  "  You cheap bastard.",
+                      "replacement":  "  You cheapskate."
+                  },
+                  {
+                      "anchor":  "Shit\u0027s about to get real.",
+                      "replacement":  "Things are about to get real."
+                  },
+                  {
+                      "anchor":  "This is some shit Claude came up with.",
+                      "replacement":  "This is some wild idea Claude came up with."
+                  },
+                  {
+                      "anchor":  "var TXSHIP={",
+                      "replacement":  "// v28.xx (cw-cleanwords), HIS ANSWER (2026-10-18, Q76): clean the swearing out of on-screen lines and keep the attitude. Three of his baked lines\n// (Q8: a changed line gets its reason in notes/ui/changes.md): \"You cheap bastard.\" is now \"You cheapskate.\", \"Shit\u0027s about to get real.\" is now\n// \"Things are about to get real.\", and \"This is some shit Claude came up with.\" is now \"This is some wild idea Claude came up with.\"\nvar TXSHIP={"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027no swearing in the baked on-screen lines (his answer Q76): the three lines that had it keep their attitude without it\u0027,\n   run:function(){\n     if(typeof TXSHIP!==\u0027object\u0027||!TXSHIP) return \u0027no TXSHIP table\u0027;\n     var bad=[], k, v, rx=/\\b(shit\\w*|fuck\\w*|bastards?|damn\\w*|hell|bitch\\w*|crap\\w*|asshole|ass|piss\\w*)\\b/i, n=0, sw=0;\n     for(k in TXSHIP){ v=String(TXSHIP[k]); n++; if(rx.test(v)){ sw++; bad.push(\u0027swearing in: \u0027+v.slice(0,60)); } }\n     if(n\u003c20) bad.push(\u0027the table is gone (\u0027+n+\u0027 lines)\u0027);\n     var cs=0, rg=0, wi=0;\n     for(k in TXSHIP){ v=String(TXSHIP[k]); if(/cheapskate/.test(v)) cs++; if(/about to get real/.test(v)) rg++; if(/wild idea Claude/.test(v)) wi++; }\n     if(cs!==1||rg!==1||wi!==1) bad.push(\u0027the cleaned lines lost their attitude (cheapskate \u0027+cs+\u0027, get real \u0027+rg+\u0027, wild idea \u0027+wi+\u0027)\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
