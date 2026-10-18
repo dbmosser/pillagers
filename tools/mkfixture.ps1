@@ -18722,10 +18722,10 @@ window.__REGRESS=[
        if(hit) bad.push('the notoriety banner draw is still in the source');
        g.alert=null; g.alertQ=[];
        ARCADE.holdT=2.4; arcadeDropHud();
-       a=g.alert; if(!a||a.m!=='DROPPING IN 3') bad.push('the drop-in count is not an alert (reads '+(a?a.m:'nothing')+')');
+       a=g.alert; if(!a||!/^(dropping|ascending) in 3$/i.test(String(a.m))) bad.push('the drop-in count is not an alert (reads '+(a?a.m:'nothing')+')');
        ARCADE.holdT=1.2; arcadeDropHud();
-       a=g.alert; if(!a||a.m!=='DROPPING IN 2') bad.push('the drop-in alert is not refreshed in place (reads '+(a?a.m:'nothing')+')');
-       F=g.fd; if(F) for(i=0;i<F.lines.length;i++) if(F.lines[i].txt.indexOf('DROPPING IN')===0) bad.push('the drop-in count is written into the feed');
+       a=g.alert; if(!a||!/^(dropping|ascending) in 2$/i.test(String(a.m))) bad.push('the drop-in alert is not refreshed in place (reads '+(a?a.m:'nothing')+')');
+       F=g.fd; if(F) for(i=0;i<F.lines.length;i++) if(/^(dropping|ascending) in/i.test(String(F.lines[i].txt))) bad.push('the drop-in count is written into the feed');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ ARCADE.holdT=holdWas; ARCADE.on=ni; }catch(_h){} try{ var g2=__state(); if(g2){ g2.alert=null; g2.alertQ=[]; if(!g2.over){ g2.player.downed=false; __endRaid('abandon'); } } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
@@ -28133,13 +28133,14 @@ window.__REGRESS=[
        togglePauseBox(true); b.click(); b.click();
        if(up()) return 'SKIP: END RUN left the raid up';
        if(!ARCADE.over||ARCADE.over.why!=='menu') return 'SKIP: END RUN did not end the run ('+(ARCADE.over?ARCADE.over.why:'no card')+')';
+       var fin85=ARCADE.over.team;   // retarget (cw-endhalf): END RUN halves the score now, so the board is read for the score the run ended on (12345 before, half of it after)
        arcadeAttShow();
        if(!ARCADE.on) bad.push('END RUN left the arcade');
        if(!cardOn()) bad.push('after END RUN the RUN OVER card is not up');
        if(!arcadeIniLive()) return bad.length?bad.join('; '):'SKIP: staging: the run did not make the board, so no initials card';
        arcadeIniOp('done'); arcadeAttShow();
        if(!pageOn()) bad.push('after the initials the high score board is not shown');
-       else { tx=pg().textContent; if(tx.indexOf(arcadeCr(12345))<0) bad.push('the board does not list the run ('+tx.slice(0,80)+')'); }
+       else { tx=pg().textContent; if(tx.indexOf(arcadeCr(fin85))<0) bad.push('the board does not list the run ('+tx.slice(0,80)+')'); }
        if(cardOn()) bad.push('the RUN OVER card is still up over the board');
        if(up()) bad.push('a new run started before the board');
        // a press the moment the board is up is held, a later press starts the next run
@@ -37383,6 +37384,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'23.49',what:'arcade25, his yes 2026-10-11: valuables ignore a full backpack, in an arcade raid with the backpack at its cap a box holding only valuables is opened by walking over it, scores into the team score, says no BACKPACK FULL and leaves the backpack as it was, with autoloot on nothing is shed for it and its ammo reaches the reserve, a box holding a Bandage is still refused, and in a normal raid the full backpack still refuses a valuables box',
    run:function(){
+     if(typeof bagDropHint!=='function') return 'SKIP: retarget (cw-nobagfull): the BACKPACK FULL refusal is gone (his ruling: no bag limit, no weight, ever), so this holds on the old build and is skipped on the new one';
      var bad=[], g=null, g2=null, p, ct=null, said=[], realSay=say, ownSay=false, cap0=PACKCAP.slice(), ownCap=false, al0=P.autoloot,
          vals=[], ammo=null, k, bag0, mine0, pot0, res0, exp, i, nB='band'+'age', BF='BACKPACK'+' FULL';
      function full(gg){ var n=0; gg.bag.length=0; while(n<6){ gg.bag.push(nB); n++; } PACKCAP[P.pack|0]=bagWeight(); ownCap=true; }
@@ -37666,7 +37668,7 @@ window.__REGRESS=[
        base=performance.now()+1000;
        tr=frame(base);
        if(!has(tr,nE)) bad.push('no initials card drawn at the extraction');
-       if(has(tr,nD)) bad.push('DROPPING IN counts while the initials card is up');
+       if(has(tr,nD)||has(tr,'ascending in')) bad.push('DROPPING IN counts while the initials card is up');   // retarget (cw-ascendin): the count reads ascending in n since then
        gt0=+g.t||0;
        for(f=1;f<=150&&__state()===g&&!g.over;f++){ ARCADE.ownAt=Date.now(); __loop(base+f*100); }
        if(__state()!==g||g.over) return bad.concat(['the arcade raid ended during the frames']).join('; ');
@@ -37988,7 +37990,7 @@ window.__REGRESS=[
        if(!arcadeDeploy({mapIx:0,seed:4242})||!__state()||!__state().arcade) return bad.concat(['no arcade drop']).join('; ');
        try{ attStop(); }catch(_as){}
        id=ARCADE.run&&ARCADE.run.id; ARCADE.mine=5000; ARCADE.mate=0; ARCADE.ownAt=Date.now();
-       arcadeRunEnd('menu');
+       arcadeRunEnd('end');   // retarget (cw-endhalf): a run end that is not END RUN (END RUN halves the score now), so the row is still the 5000 this check wrote
        r=row(id);
        if(!r||r.s!==5000) bad.push('the run end did not write the board row ('+JSON.stringify(r)+')');
        if(!ARCADE.ini||ARCADE.ini.run!==id) bad.push('a top 10 run end did not ask for initials');
@@ -38429,7 +38431,7 @@ window.__REGRESS=[
          if(seen[i].indexOf(nB)>=0) bad.push('the arcade HUD draws the CURRENT PILLAGERS board');
          if(seen[i].indexOf(nN)===0) bad.push('the arcade HUD draws the notoriety stamp');
          if(seen[i].indexOf(nE)===0) hasE=true;
-         if(seen[i].indexOf(nD)===0) bad.push('DROPPING IN is drawn with no hold running');
+         if(seen[i].indexOf(nD)===0||seen[i].indexOf('ascending in')===0) bad.push('DROPPING IN is drawn with no hold running');   // retarget (cw-ascendin)
        }
        if(!hasE) bad.push('the arcade HUD lost the EXTRACT compass readout');
        if(HUDBOX.cond&&!(g.flow&&g.flow.goals&&g.flow.goals.length)) bad.push('the CONDITIONS box is still laid out');   // v28.82 retarget (corpus-fix 23.35): with run goals the arcade draws the RUN INFO panel (v27.42), its title is not CONDITIONS (checked above)
@@ -38437,7 +38439,7 @@ window.__REGRESS=[
        g.notoAt=null;
        ARCADE.holdT=2;
        trace();
-       for(i=0;i<seen.length;i++) if(seen[i].indexOf(nD)===0) hasD=true;
+       for(i=0;i<seen.length;i++) if(seen[i].indexOf(nD)===0||seen[i].indexOf('ascending in')===0) hasD=true;   // retarget (cw-ascendin): DROPPING IN before, ascending in n after
        if(!hasD) bad.push('no DROPPING IN countdown during the drop-in hold (holdT '+ARCADE.holdT+')');
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{
@@ -41419,7 +41421,8 @@ window.__REGRESS=[
   {v:'22.62',what:'backpack full and the stall refusal in the shooter voice: BACKPACK FULL at a stall and on a search with autoloot on has the caps detail naming the backpack key and the drop key, never drops the selected item or nothing left worth dropping, and NOT ENOUGH BANKED CREDITS with stall money on him reads Carrying with the figure, not a sentence about banking',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop)) return 'SKIP: this fixture cannot deploy or step the loop';
-     if(typeof pedBuy!=='function'||typeof bagWeight!=='function'||typeof bagDropHint!=='function'||typeof padOn!=='function'||typeof keyLabel!=='function') return 'SKIP: no stall or backpack here';
+     if(typeof pedBuy!=='function'||typeof bagWeight!=='function'||typeof padOn!=='function'||typeof keyLabel!=='function') return 'SKIP: no stall or backpack here';
+     var hasBF=(typeof bagDropHint==='function');   // retarget (cw-nobagfull): the BACKPACK FULL refusal is gone (his ruling: no bag limit, no weight, ever), so this holds on the old build and is skipped on the new one (arm B, the stall refusal wording, still runs)
      if(!ITEMS.scrap) return 'SKIP: no Scrap Metal item';
      var bad=[], g=null, p, ct=null, kp=null, i, c, t0, f=0, keepCr=P.credits, keepAuto=P.autoloot, keepBW=bagWeight, s, lg, BF=['BACKPACK','FULL'].join(' '),
          OLD1=['the','selected','item'].join(' '), OLD2=['worth','dropping'].join(' '), OLD3=['not','banked'].join(' ');
@@ -41442,7 +41445,7 @@ window.__REGRESS=[
        P.credits=1e6; bagWeight=function(){ return 1e9; };
        g.trade={x:p.x,y:p.y,stock:[{k:'scrap',price:1,sold:false}]};
        pedBuy(0);
-       okHint(bfSub(),'buying with a full backpack');
+       if(hasBF) okHint(bfSub(),'buying with a full backpack');
        // B. the refusal with stall money on him
        g.trade={x:p.x,y:p.y,stock:[{k:'scrap',price:999,sold:false}]};
        P.credits=0; g.pedCarry=4321; g.msgLog=[];
@@ -41467,7 +41470,7 @@ window.__REGRESS=[
          t0=Math.max(performance.now(),(typeof lastTs==='number'&&isFinite(lastTs))?lastTs:0);
          for(i=0;i<40;i++){ keys['KeyE']=true; __loop(t0+(++f)*16.7); if(__state()!==g||g.over) break; }
          keys={};
-         okHint(bfSub(),'searching with autoloot on and a full backpack');
+         if(hasBF) okHint(bfSub(),'searching with autoloot on and a full backpack');
        }
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{
@@ -41563,6 +41566,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'22.59',what:'backpack full is one red row: with a controller connected, E held for 3 s beside a crate on a full backpack draws exactly one BACKPACK FULL row in the pickup stack, and no line said names the Z key',
    run:function(){
+     if(typeof bagDropHint!=='function') return 'SKIP: retarget (cw-nobagfull): the BACKPACK FULL refusal is gone (his ruling: no bag limit, no weight, ever), so this holds on the old build and is skipped on the new one';
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop)) return 'SKIP: this fixture cannot deploy or step the loop';
      if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so nothing is drawn';
      if(typeof pollPad!=='function'||typeof PAD==='undefined'||typeof bagWeight!=='function'||typeof padOn!=='function') return 'SKIP: no controller or backpack weight here';
@@ -71973,6 +71977,7 @@ window.__REGRESS=[
        padWith(2); frames(5);
        if(!__state().searching) bad.push('holding pad X on the ring with an openable box at his feet no longer searches it');
        padWith(-1); frames(2); keysOff();
+       if(typeof bagDropHint==='function'){   // retarget (cw-nobagfull): the BACKPACK FULL refusal is gone (his ruling: no bag limit, no weight, ever), so this holds on the old build and is skipped on the new one (arm A and the control still run)
        // ARM B, THE FINDING: the search is refused (a full backpack), so the box never opens.
        g=__state(); g.searching=null; box.prog=0;
        bagWeight=function(){ return 1e9; };
@@ -71982,6 +71987,7 @@ window.__REGRESS=[
        if(__keysRef()[__padSrchKey()]) bad.push('with the search refused, pad X still holds X half a second in');
        padWith(-1); frames(2); keysOff();
        bagWeight=keepBW;
+       }
        // CONTROL: nothing in reach, X is the call at once.
        g=__state(); g.searching=null; box.x=z.x+600; box.y=z.y;
        padWith(-1); frames(3);
