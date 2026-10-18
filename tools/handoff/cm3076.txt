@@ -1,0 +1,7 @@
+v30.76: the what is new card names polish pass 22
+
+The what is new card names polish pass 22.
+
+Check 30.76. Fails on v30.75.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
