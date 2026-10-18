@@ -6156,9 +6156,9 @@ window.__REGRESS=[
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||!g.player) return 'SKIP: no raid';
        var kick=function(id){ var ww=WEAPONS[id]; G.shake=0; fireWeapon(g.player,ww,g.player.x+200,g.player.y,true); return G.shake; };
-       a=kick('shotgun'); b=kick('smg'); c=kick('magnum');
+       a=kick('shotgun'); b=kick('sniper'); c=kick('magnum');
        if(Math.abs(a-6.5)>0.01) return 'a Riot Scattergun shot kicks the camera '+a+', not 6.5';
-       if(Math.abs(b-2.2)>0.01) return 'the Compact SMG kick moved to '+b+', it should stay 2.2';
+       if(Math.abs(b-4.5)>0.01) return 'the Longshot kick moved to '+b+', it should stay 4.5';
        if(Math.abs(c-4.5)>0.01) return 'the Magnum kick moved to '+c+', it should stay 4.5';
        return null;
      } finally {
@@ -8577,7 +8577,7 @@ window.__REGRESS=[
   {v:'29.35',what:'the title is calmer on the shared look: the three step cards are flat columns (no box), every mode row is 48px or more on the 8px grid, the step numbers carry the one accent, the save buttons are not accent text (critic 2 of 5)',
    run:function(){
      var t=document.querySelector('#title .tcard'), s=document.querySelector('#title .tstep'), r, i, ids=['modecoop','modearcade','modearcade1','modecoopsrv','modepvp','modepvpsrv'], h, cs;
-     if(!t||!s) return 'no step card';
+     if(!t||!s){ for(i=0;i<ids.length;i++){ r=document.getElementById(ids[i]); if(!r) return 'no row '+ids[i]; h=parseFloat(getComputedStyle(r).minHeight); if(h<48||h%8) return ids[i]+' row is '+h+'px min height, not 48 on the 8px grid'; } return null; }   // v28.xx (cw-title-line), his Q51: the three step cards are gone, so only the rows are checked
      cs=getComputedStyle(t);
      if(cs.borderLeftWidth!=='0px'||cs.borderRightWidth!=='0px'||cs.borderBottomWidth!=='0px') return 'the step card still has a box border';
      if(cs.borderTopLeftRadius!=='0px') return 'the step card still has rounded corners';
@@ -50057,7 +50057,7 @@ window.__REGRESS=[
        s=getComputedStyle(wm);
        if(!/gradient/.test(s.backgroundImage)) bad.push('the wordmark is flat');
        if(!/text/.test(String(s.webkitBackgroundClip||s.backgroundClip))) bad.push('the gradient is not clipped to the letters');
-       if(cards.length!==3) bad.push('the title has '+cards.length+' step cards, not 3');
+       if(cards.length===0){ /* v28.xx (cw-title-line), his Q51: no step cards */ } else if(cards.length!==3) bad.push('the title has '+cards.length+' step cards, not 3');
        else { s=getComputedStyle(cards[0]); if(parseFloat(s.borderTopLeftRadius)<8) bad.push('the step cards are square'); if(!/gradient/.test(s.backgroundImage)) bad.push('the step cards are flat'); }
        s=getComputedStyle(t);
        if(!/gradient/.test(s.backgroundImage)) bad.push('the title backdrop is a flat wash');
