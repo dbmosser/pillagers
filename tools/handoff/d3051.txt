@@ -1,0 +1,5 @@
+## v30.51 - DEMO HIDES CREDITS XP STASH AND BAG
+
+Co-op hunt while he was away. His answer Q55 (10-18): in the demo hide credits, XP, stash and bag. The top right readout is now empty in the demo and unchanged in career.
+
+MEASURED. Check 30.51 passes, and fails on v30.50.

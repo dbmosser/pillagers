@@ -1,0 +1,7 @@
+v30.51: demo hides credits xp stash and bag
+
+The demo no longer shows credits, XP, stash and bag in the top right.
+
+Check 30.51. Fails on v30.50.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

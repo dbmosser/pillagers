@@ -2779,7 +2779,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.50';
+var VER='30.51';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -4342,15 +4342,20 @@ var _trLast='';
 // v11.78: where the corner readout ends, in CSS pixels, so the raid HUD can
 // start its CONDITIONS box below it. The HUD canvas is W CSS pixels wide (the
 // device ratio is applied to the backing store, not to W), so no conversion.
+// v28.xx (cw-hudDemoTR), HIS ANSWER Q55 (2026-10-18): "in the demo hide credits, XP, stash and bag." trDemo is true in the arcade demo (the menu flag or a demo raid).
+function trDemo(){ return !!((typeof ARCADE==='object'&&ARCADE&&ARCADE.on)||(typeof G==='object'&&G&&G.arcade)); }
 function topRightBottom(){
   var el=document.getElementById('topright'); if(!el) return 0;
+  if(!el.innerHTML) return 0;   // v28.xx (cw-hudDemoTR): an empty corner readout takes no room
   try{ return (el.getBoundingClientRect().bottom||0)+Math.round(18*(parseFloat(el.style.zoom)||1)); }catch(_e){ return 0; }   // v28.xx (cw-stashbag): the STASH and BAG line hangs 18 below the readout box
 }
 function syncTopRight(){
   var el=document.getElementById('topright'); if(!el) return;
   var c=(P.credits||0).toLocaleString(), x=(P.xp||0).toLocaleString(), sv=trStash(), bv=trBag(), s=c+'|'+x+'|'+sv+'|'+bv;   // v28.xx (cw-stashbag)
+  if(trDemo()) s='demo';   // v28.xx (cw-hudDemoTR), his Q55: nothing in the corner in the demo
   if(s===_trLast) return;
   _trLast=s;
+  if(s==='demo'){ el.innerHTML=''; return; }
   el.innerHTML=c+' <small>CREDITS</small> '+x+' <small>XP</small> <span class="trsub">STASH '+sv.toLocaleString()+' BAG '+bv.toLocaleString()+'</span>';   // v28.xx (cw-stashbag): spaces, so the text reads right when copied
 }
 // v17.24, co-op hunt 2026-09-28: TWO TABS ON ONE SAVE. Each tab reads the save once, at boot, and every save writes its whole
@@ -48090,7 +48095,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.50: No controls card pops up when a demo run starts. Check 30.50 fails on v30.49',
+  now:'v30.51: The demo no longer shows credits, XP, stash and bag in the top right. Check 30.51 fails on v30.50',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

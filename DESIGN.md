@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.51 - DEMO HIDES CREDITS XP STASH AND BAG
+
+Co-op hunt while he was away. His answer Q55 (10-18): in the demo hide credits, XP, stash and bag. The top right readout is now empty in the demo and unchanged in career.
+
+MEASURED. Check 30.51 passes, and fails on v30.50.
 ## v30.50 - No tutorial prompts in the demo raid
 
 Co-op hunt while he was away. His answer Q70 (10-18): no tutorial prompts, the game must be completely self-explanatory. The controls card at every drop is off and the shield tag no longer says MOVE TO START. The HOW TO PLAY page on the attract stays.

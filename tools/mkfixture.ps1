@@ -6097,6 +6097,18 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.51',what:'the demo hides credits, XP, stash and bag in the top right; career keeps them (his Q55, 10-18)',
+   run:function(){
+     if(typeof trDemo!=='function') return 'no trDemo: the corner readout is not hidden in the demo';
+     var el=document.getElementById('topright'), on0=ARCADE.on, t1, t2;
+     if(!el) return 'SKIP: no corner readout';
+     try{
+       ARCADE.on=0; _trLast=''; syncTopRight(); t1=el.textContent;
+       ARCADE.on=1; syncTopRight(); t2=el.textContent;
+       if(!/CREDITS/.test(t1)) return 'career shows no credits in the corner: '+t1;
+       if(t2!=='') return 'the demo still shows the corner readout: '+t2;
+       return null;
+     } finally { ARCADE.on=on0; _trLast=''; try{ syncTopRight(); }catch(_e){} } }},
   {v:'30.50',what:'his Q70: no tutorial prompt in the first demo raid; the controls card does not come up at the drop and the shield tag does not say MOVE TO START',
    run:function(){
      if(typeof arcadeDeploy!=='function'||typeof arcadeCardOn!=='function'||typeof arcadeShieldRing!=='function'||typeof ARCADE!=='object') return 'SKIP: no arcade here';
