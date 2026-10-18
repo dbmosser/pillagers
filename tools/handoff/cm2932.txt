@@ -1,0 +1,7 @@
+v29.32: the title says create a new save, not create a new save with a capital a
+
+The title button now reads Create a new save.
+
+Check 29.32. Fails on v29.31.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

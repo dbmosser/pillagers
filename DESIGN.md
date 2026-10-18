@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.32 - THE TITLE SAYS CREATE A NEW SAVE, NOT CREATE A NEW SAVE WITH A CAPITAL A
+
+Co-op hunt while he was away. UI step 30, menu map. The no-all-caps door lowers words of 3 or more letters and left the one-letter A alone, so the title button read Create A new save. An A between a word and a caps word now lowers with the line. A sector letter at the end of a line is untouched.
+
+MEASURED. Check 29.32 passes, and fails on v29.31.
 ## v29.31 - HUD HAS ONE HERO: QUIET CREDITS AND BACKPACK CUE
 
 Co-op hunt while he was away. UI step 4, the HUD in play. Credits at 32 px amber and a bold amber backpack cue shouted as loud as the ammo count. The style guide keeps amber for focus and one hero number. Credits are 24 px cream now, the labels 16 px, and the backpack cue is quiet grey. No layout moves.

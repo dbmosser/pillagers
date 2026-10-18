@@ -6097,6 +6097,14 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.32',what:'the title button reads Create a new save, not Create A new save (the article A lowers with its line)',
+   run:function(){
+     var a=TX('CREATE A NEW SAVE'), b=TX('SECTOR A'), c=TX('ENTER RAID!');
+     if(a!=='Create a new save') return 'CREATE A NEW SAVE reads "'+a+'"';
+     if(b!=='Sector A') return 'a lone sector letter changed: "'+b+'"';
+     if(c!=='Enter raid!') return 'other text changed: "'+c+'"';
+     return null;
+   }},
   {v:'29.31',what:'the HUD has one hero: the corner credits are 24 px cream, not 32 px amber, and the backpack cue is a quiet grey, not amber (style guide)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy and draw';

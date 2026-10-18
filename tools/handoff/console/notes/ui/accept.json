@@ -138,10 +138,10 @@
  "21-raid-hud-calm": {
   "score": 2,
   "pass": false,
-  "verdict": "The calm raid HUD is functional but cluttered and unevenly built: seven separate panel styles, a permanent controls cheat-sheet, a wall of contract text, and a clipped minimap label all fight for attention, with nothing clearly in charge.",
-  "pic": "tools/handoff/console/notes/shots/all/21-raid-hud-calm-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:17"
+  "verdict": "The new HUD only trims the contract list and shrinks the credits and backpack labels, while the same pile of boxed panels, $ currency, tiny type, an always-on controls cheat sheet and a clipped minimap label still fails the style guide and the AAA bar.",
+  "pic": "tools/handoff/console/notes/shots/b-30-after/21-raid-hud-calm-1080.jpg",
+  "task": "b-30-ui-hud",
+  "when": "2026-10-18T06:43"
  },
  "22-raid-map-open": {
   "score": 2,
