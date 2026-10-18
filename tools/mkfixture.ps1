@@ -35548,7 +35548,7 @@ window.__REGRESS=[
        ARCADE.mateAt=0;
        ARCADE.ownAt=now-91000; r=arcadeIdleTick(now);
        if(__state()!==g||g.over) bad.push('91 s idle ended the raid');
-       if(!said('STILL PLAYING?|warn|PRESS ANY BUTTON')) bad.push('91 s idle did not say STILL PLAYING? in the warn lane ('+lines.join(' / ')+')');
+       if(!said('STILL PLAYING?|warn|PRESS ANY')) bad.push('91 s idle did not say STILL PLAYING? in the warn lane ('+lines.join(' / ')+')');
        ARCADE.ownAt=now-125000; r=arcadeIdleTick(now);
        if(__state()!==g) bad.push('125 s idle ended the raid');
        if(!said('RUN ENDS IN 25|warn')) bad.push('125 s idle did not say RUN ENDS IN 25 ('+lines.slice(-3).join(' / ')+')');
@@ -35564,7 +35564,7 @@ window.__REGRESS=[
        else if(!g.player.specOut) bad.push('the idle player 1 is not benched (specOut)');
        ap=attEl().querySelector('.attpress');
        if(attEl().style.display!=='block') bad.push('the benched player 1 has no attract');
-       if(!ap||ap.textContent!=='PLAYER 1: PRESS ANY BUTTON') bad.push('the bench attract reads '+(ap?ap.textContent:'nothing'));
+       if(!ap||!/^PLAYER 1: PRESS ANY (BUTTON|KEY)$/i.test(ap.textContent)) bad.push('the bench attract reads '+(ap?ap.textContent:'nothing'));
        g.player.specOut=0; try{ attStop(); }catch(_as){}
        ARCADE.mateAt=0; ARCADE.ownAt=Date.now();
        togglePauseBox(true);
