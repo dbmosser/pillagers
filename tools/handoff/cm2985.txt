@@ -1,0 +1,7 @@
+v29.85: end cards: equal stat cells, plain chips, a haul label line
+
+End cards: tidier stat row and chips, the Haul label above the figure.
+
+Check 29.85. Fails on v29.84.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

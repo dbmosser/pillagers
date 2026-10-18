@@ -1450,6 +1450,12 @@
   #root .octile img{ width:44px !important; height:44px !important; }
   #root .octile i{ position:absolute; right:2px; top:2px; padding:0 6px; font-style:normal; font-size:16px; line-height:20px; color:var(--tx-1); background:var(--ui-bg); border-radius:4px; }
   #root .ocach.ocok{ border-left-color:var(--ok); }
+  /* v28.xx (cw-endcard-polish), the critic on the Extracted and Killed cards (3 of 5): "the stat cells are unequal widths driven by label length", "three amber accents on a screen whose amber marks the one primary", "Haul has the same size and weight as the number", "How did that run feel is 13px bold grey". Four equal 140px cells (560px) with no dividers, a 1px chip border with no amber bar, a 20px Haul label over the 56px figure, and the feedback link in 18px body type. */
+  #root .ocstat{ width:560px; max-width:100%; }
+  #root .ocstat > div{ flex:1 1 0; min-width:0; border-left:0; padding:16px 8px; }
+  #root .ocach, #root .ocach.ocok{ border:1px solid var(--ui-line-hi); }
+  #root .haultot .htl{ display:block; margin-bottom:4px; font-size:20px; font-weight:600; letter-spacing:.04em; line-height:1.2; color:var(--tx-2); }
+  #root .ocwin .fbhead{ font-family:inherit; font-weight:600; font-size:18px; letter-spacing:.02em; text-transform:none; }
   /* vNN.xx, UI CLEANUP uic4 (his 2026-10-14 note, "ui and player messaging just isn't as clean as it should be", from the 1080p shots of the
      map select screen and the Undercroft floor): THE ANSWER LINE STAYS OFF THE BUTTONS. The line sat 38 px up in the middle of the screen
      whatever was open, so it landed on ASCEND TO THIS SECTOR (the whole bottom of the map select screen is that one button) and, on the
@@ -2657,7 +2663,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.84';
+var VER='29.85';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31610,7 +31616,8 @@ function haulTotalLine(){
   var R=HAUL_REV, el;
   if(!R) return;
   el=document.getElementById('haultot'); if(!el) return;
-  el.textContent=(el.hasAttribute('data-pre')?el.getAttribute('data-pre'):'HAUL  ')+'$'+Math.round(R.sum).toLocaleString();
+  // v28.xx (cw-endcard-polish): "Haul has the same size and weight as the number": the label is its own 20px line over the figure; the text is the same.
+  el.innerHTML='<span class="htl">'+(el.hasAttribute('data-pre')?el.getAttribute('data-pre'):'HAUL  ')+'</span>\x24'+Math.round(R.sum).toLocaleString();
 }
 function haulRevealStart(){
   var w=document.getElementById('oc_manifest'), strip, its, i, list=[], sec;
@@ -47787,7 +47794,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.84: The score board and how to play pages line up with the run over card. Check 29.84 fails on v29.83',
+  now:'v29.85: End cards: tidier stat row and chips, the Haul label above the figure. Check 29.85 fails on v29.84',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

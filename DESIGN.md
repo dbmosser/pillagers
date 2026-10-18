@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.85 - End cards: equal stat cells, plain chips, a Haul label line
+
+Co-op hunt while he was away. The critic scored the Extracted and Killed cards 3 of 5: stat cells of unequal width, an amber bar on every chip, Haul as big as its number, a 13px feedback link. Now four equal 140px cells with no dividers, a 1px chip border, a 20px Haul label over the 56px figure, an 18px feedback link. Restyle only.
+
+MEASURED. Check 29.85 passes, and fails on v29.84.
 ## v29.84 - Party pages: one column, a 56px button under the card
 
 Co-op hunt while he was away. The critic scored the board and how to play 2 and 3: the prompt sat 150px under the card, detached. The attract pages now use the run over layout: wordmark, card, then a 56px accent button flush right. Restyle only.

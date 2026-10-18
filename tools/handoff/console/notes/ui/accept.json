@@ -192,12 +192,12 @@
   "when": "2026-10-18T06:18"
  },
  "35-kia-card": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The shell is now centred, dark and sentence case with a red title and amber primary, but it has no hero line and reads as a stack of centred 14-16px text lines that is too small for a couch. Image 2's four-stat row is the right direction, and Image 1's dotted stat sentence is the weaker variant.",
-  "pic": "tools/handoff/console/notes/shots/13-c2/35-kia-card-1080.jpg",
+  "verdict": "The tile row, one hero number and 4-up stat strip make this a real end card that follows the guide's shell, but it still shows currency with a '$', has a floating 'How did that run feel' toggle, and the title and hero compete weakly with small supporting text.",
+  "pic": "tools/handoff/console/notes/shots/13-c3/35-kia-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T10:17"
+  "when": "2026-10-18T10:23"
  },
  "38-extracted-card": {
   "score": 3,
