@@ -5,10 +5,18 @@
 # RUN IT:   powershell -NoProfile -ExecutionPolicy Bypass -File tools\fuzz.ps1                       (120 minutes, port 9331, 300 s raids)
 #           ... -Minutes 5 -RaidSec 60 -IgnoreFlag       a short run (-IgnoreFlag: run even if light.flag, the "he is at the PC" flag, exists)
 #           ... -SelfTest                                injects setTimeout(function(){throw new Error('fuzztest')},0) once, to prove it is logged
-#           ... -Mode demo1|demo2|career -RaidSeed N     REPLAY one raid (the mode and raidSeed are in every problem record)
-# WHAT ONE RAID DOES: starts a raid in its own headless Chrome (1920x1080, port 9331) from a fixture copy, modes in turn: demo1 (1 PLAYER
-#   ARCADE DEMO), career (a CAREER raid from the Undercroft path), demo2 (the arcade with 2 player rules, this window as host alone; the real
-#   2P same-PC party needs a second window and the pad channel, so it is skipped). Then for -RaidSec seconds it sends random but plausible
+#           ... -Mode demo1|demo2|demo2p|career -RaidSeed N     REPLAY one raid (the mode and raidSeed are in every problem record)
+#           ... -P2Share 75                              percent of raids that are the REAL 2-player demo (demo2p): the default, 3 of every 4
+#           ... -P2Share 0                               the old rotation: demo1, career, demo2 in turn
+# WHAT ONE RAID DOES: starts a raid in its own headless Chrome (1920x1080, port 9331) from a fixture copy. 10-18, his order "75% of overnight
+#   robot time on the real 2-player setup": 3 of every 4 raids are demo2p, THE REAL PARTY RIG. Player 1 is the first page, the host, on keyboard
+#   and mouse (the random input below). Player 2 is a SECOND WINDOW of the same Chrome, opened with the address the game itself gives it
+#   (?p2=1&mode=coop&pair=..&arc=1), paired over the game's own BroadcastChannel and WebRTC link, and played by a SIMULATED XBOX PAD:
+#   tools\fuzz-pad.js replaces navigator.getGamepads in that window only with a fake standard pad on slot 2 (controller 2, which is what the
+#   arcade gives player 2) that wanders, fires, rolls, reloads, uses the wheel, backpack and pause like a restless guest. Player 1 drops in,
+#   then player 2 presses A to join. Both windows are polled for errors, NaN and stalls (player 2 problems are kind p2:error, p2:nan ...).
+#   The 4th raid alternates demo1 (1 PLAYER ARCADE DEMO) and career (a CAREER raid from the Undercroft path). demo2 (the arcade with 2 player
+#   rules, this window as host alone) is only the fallback when the two-window link cannot be made 3 raids in a row. Then for -RaidSec seconds it sends random but plausible
 #   input as REAL CDP events (Input.dispatchKeyEvent / dispatchMouseEvent, ticks of 50 ms, from a SEEDED System.Random so a raid replays;
 #   the game's own RNG is never touched): WASD bursts (+ shift sprint), aim drift, fire clicks, RMB aim, wheel, R E X G U H J Q F 1-9
 #   (taps and holds), B/I M ESC P Alt SPACE CTRL C middle click Tab Enter, and random backpack drags on the real bag/belt cells.
@@ -33,12 +41,14 @@ param(
   [switch]$IgnoreFlag,
   [switch]$SelfTest,
   [switch]$Trace,
-  [string]$Fixture='fixture.html'
+  [string]$Fixture='fixture.html',
+  [int]$P2Share=75
 )
 $ErrorActionPreference='Stop'
 $R='C:\claudecode\dark raiders'; $T=$R+'\tools'; $OutDir=$T+'\handoff\fuzz'
 $Flag='C:\Users\User1\AppData\Local\Temp\claude\C--Users-User1-Desktop-dark-raiders\8a09e991-b4f4-4b23-b10f-ded92e837fc3\scratchpad\light.flag'
 if($FlagFile -ne ''){ $Flag=$FlagFile }
+if($env:FUZZ_OUT_DIR){ $OutDir=$env:FUZZ_OUT_DIR }   # a hand test writes its log and records somewhere else, never into the nightly ones
 $LogF=$OutDir+'\fuzz.log'; $Jsonl=$OutDir+'\fuzz-'+(Get-Date -Format 'yyyy-MM-dd')+'.jsonl'
 $Enc=New-Object Text.UTF8Encoding $false
 New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
@@ -48,6 +58,9 @@ if($Port -in 8802,9346,9335,9345,9344){ Write-Output ('refusing port '+$Port); e
 # version gets both the full test set and 30+ robot minutes, which is what tools\stable.sh needs. It uses its own copy name so the two robots never share a file.
 if($Fixture -notmatch '^[A-Za-z0-9._-]+\.html$'){ $Fixture='fixture.html' }
 $FzName = $(if($Fixture -eq 'fixture.html'){ 'fixture-soak-fuzz.html' } else { 'fixture-soak-fuzzc.html' })
+# 2026-10-18 (the 2-player robots): FUZZ_COPY_NAME=name.html gives a hand test its own served copy name, so it never touches a running robot's copy
+if($env:FUZZ_COPY_NAME -and $env:FUZZ_COPY_NAME -match '^[A-Za-z0-9._-]+\.html$'){ $FzName=$env:FUZZ_COPY_NAME }
+if($P2Share -lt 0){ $P2Share=0 }; if($P2Share -gt 100){ $P2Share=100 }
 
 function Stamp(){ (Get-Date).ToString('yyyy-MM-dd HH:mm:ss') }
 function Clean([string]$s){ ($s -replace '[^\x20-\x7e]','?') }
@@ -139,10 +152,55 @@ function Ev([string]$expr,[int]$ms=15000){
 function Gx([string]$js,[int]$ms=15000){ return (Ev ('window.__gx('+(JsStr $js)+')') $ms) }
 function Cmd([string]$method,[string]$params='{}'){ $id=NextId; [void](Cdp $id ('{"id":'+$id+',"method":"'+$method+'","params":'+$params+'}') 15000) }
 
+# ---------------------------------------------------------------- the second window (demo2p): two pages, one socket each
+# The functions above talk to ONE socket kept in $script:ws / rxTask / rxBuf / rxMs. Pg-Use switches those four to another page's, saving the
+# current ones first, so every helper (Ev, Gx, Cmd, ...) works unchanged on whichever page is in use. 'p1' is the host page the old modes use.
+$script:pgs=@{ p1=@{ ws=$null; rxTask=$null; rxBuf=$script:rxBuf; rxMs=$script:rxMs } }; $script:curPg='p1'
+function Pg-Use([string]$n){
+  if($n -eq $script:curPg){ return }
+  $c=$script:pgs[$script:curPg]; $c.ws=$script:ws; $c.rxTask=$script:rxTask
+  $t=$script:pgs[$n]; $script:ws=$t.ws; $script:rxTask=$t.rxTask; $script:rxBuf=$t.rxBuf; $script:rxMs=$t.rxMs
+  $script:curPg=$n
+}
+function Pg-Drop2(){   # forget the player 2 page (its window is closed by Open-Page); back on the host page
+  try{ if($script:curPg -ne 'p1'){ Pg-Use 'p1' } }catch{}
+  if($script:pgs.ContainsKey('p2')){ try{ if($script:pgs['p2'].ws){ $script:pgs['p2'].ws.Dispose() } }catch{}; $script:pgs.Remove('p2') }
+}
+# One request on a throwaway socket (the browser endpoint), answered by its id 1.
+function Cdp-Once([string]$wsUrl,[string]$method,[string]$params){
+  $w=New-Object System.Net.WebSockets.ClientWebSocket
+  try{
+    $w.ConnectAsync([Uri]$wsUrl,[Threading.CancellationToken]::None).Wait(8000) | Out-Null
+    $b=[Text.Encoding]::UTF8.GetBytes('{"id":1,"method":"'+$method+'","params":'+$params+'}')
+    if(-not $w.SendAsync((New-Object 'ArraySegment[byte]' -ArgumentList (,$b)),[System.Net.WebSockets.WebSocketMessageType]::Text,$true,[Threading.CancellationToken]::None).Wait(8000)){ throw 'CDP timeout (send once)' }
+    $buf=New-Object byte[] 65536; $ms=New-Object IO.MemoryStream; $sw=[Diagnostics.Stopwatch]::StartNew()
+    while($sw.ElapsedMilliseconds -lt 15000){
+      $t=$w.ReceiveAsync((New-Object 'ArraySegment[byte]' -ArgumentList (,$buf)),[Threading.CancellationToken]::None)
+      if(-not $t.Wait(15000-[int]$sw.ElapsedMilliseconds)){ break }
+      $ms.Write($buf,0,$t.Result.Count)
+      if($t.Result.EndOfMessage){ $txt=[Text.Encoding]::UTF8.GetString($ms.ToArray()); $ms.SetLength(0); if($txt.StartsWith('{"id":1,')){ return $txt } }
+    }
+    throw 'CDP timeout (once)'
+  } finally { try{ $w.Dispose() }catch{} }
+}
+# A page in a WINDOW of its own (a second tab of the same window would be hidden, and a hidden page gets no animation frames).
+function New-WindowPage([string]$url,[int]$w,[int]$h){
+  $v=Invoke-RestMethod ('http://127.0.0.1:'+$Port+'/json/version') -TimeoutSec 5
+  $r=Cdp-Once ([string]$v.webSocketDebuggerUrl) 'Target.createTarget' ('{"url":'+(JsStr $url)+',"newWindow":true,"width":'+$w+',"height":'+$h+'}')
+  $o=$r | ConvertFrom-Json
+  if(-not $o.result.targetId){ throw ('Target.createTarget said: '+$r) }
+  return ('ws://127.0.0.1:'+$Port+'/devtools/page/'+$o.result.targetId)
+}
+$script:PadJs=''; try{ $script:PadJs=[IO.File]::ReadAllText($T+'\fuzz-pad.js') }catch{ $script:PadJs='' }
+# The other way round: a window Chrome is NOT feeding (not in front) sees no pads at all. Installed in the player 2 window when player 1's window (in front) holds the pad.
+$script:BlindJs='(function(){ try{ Object.defineProperty(navigator,"getGamepads",{value:function(){ return [null,null,null,null]; },configurable:true,writable:true}); }catch(e){ try{ navigator.getGamepads=function(){ return [null,null,null,null]; }; }catch(e2){ return "failed "+e2; } } try{ document.hasFocus=function(){ return false; }; }catch(e3){} return "installed"; })()'
+$script:padPage='p2'
+
 $script:needReset=$true; $script:ver='?'; $script:maps=@()
 $script:Hook=[IO.File]::ReadAllText($T+'\fuzz-hook.js')
 function Open-Page(){
   $base='http://127.0.0.1:'+$Port
+  Pg-Drop2   # a player 2 window from a demo2p raid is closed with every other page just below
   try{ (Invoke-RestMethod ($base+'/json') -TimeoutSec 5) | Where-Object { $_.type -eq 'page' } | ForEach-Object { try{ Invoke-RestMethod ($base+'/json/close/'+$_.id) -TimeoutSec 5 | Out-Null }catch{} } }catch{}
   $tab=Invoke-RestMethod -Method Put -Uri ($base+'/json/new?http://localhost:'+$script:srvPort+'/'+$FzName) -TimeoutSec 10
   Ws-Connect $tab.webSocketDebuggerUrl
@@ -235,6 +293,125 @@ function Add-Problem([string]$kind,[string]$msg,[string]$where){
 
 # ---------------------------------------------------------------- one raid
 $POLLX='JSON.stringify(window.__fz.poll())'
+
+# ---------------------------------------------------------------- demo2p: the real 2-player party rig (10-18)
+$script:p2Info=''; $script:p2Dead=$false; $script:p2StallAt=-99999.0; $script:scMis=0; $script:scRep=$false
+$SCJS='JSON.stringify({m:(ARCADE.mine|0),t:(ARCADE.mate|0),r:(state==="raid"&&G&&G.arcade&&!G.over)?1:0})'
+$P1PROBE='(function(){ try{ window.__fz.lastPoll=performance.now(); return JSON.stringify({inn:netInCount(),same:NET.same,arc:ARCADE.on?1:0,raid:(state==="raid"&&G)?1:0,garc:(G&&G.arcade)?1:0,err:NET.err||"",st:NET.status||""}); }catch(e){ return "ERR "+e; } })()'
+$P2PROBE='(function(){ try{ window.__fz.lastPoll=performance.now(); return JSON.stringify({inn:netInCount(),same:NET.same,role:NET.role,arc:ARCADE.on?1:0,arole:ARCADE.role,raid:(state==="raid"&&G)?1:0,garc:(G&&G.arcade)?1:0,wantIn:ARCADE.wantIn?1:0,err:NET.err||"",st:NET.status||"",padIx:NET.padIx,padOther:NET.padOther,pads:(navigator.getGamepads?navigator.getGamepads().length:-1),pcalls:(window.__fzpad?window.__fzpad.calls:-1)}); }catch(e){ return "ERR "+e; } })()'
+function P2-Probe(){ try{ Pg-Use 'p2'; return [string](Gx $P2PROBE 20000) }catch{ return 'ERR '+$_.Exception.Message }finally{ try{ Pg-Use 'p1' }catch{} } }
+function Pad-Press(){ try{ Pg-Use $script:padPage; [void](Gx 'window.__fzpad.press(0,300)' 8000) }catch{}finally{ try{ Pg-Use 'p1' }catch{} } }
+function P2-PadLog(){ try{ Pg-Use $script:padPage; return [string](Gx 'window.__fzpad?window.__fzpad.logText():""' 8000) }catch{ return '' }finally{ try{ Pg-Use 'p1' }catch{} } }
+# Starts the 2-player demo as the title row does it, then opens player 2 in a window of its own and gets both into one raid.
+# Returns a string with "ok":true, or ERR text saying where it stopped (that text is the start problem).
+function Start-2P([int]$mapIx,[int]$rseed){
+  $script:p2Info=''; $script:p2Dead=$false; $script:p2StallAt=-99999.0; $script:scMis=0; $script:scRep=$false
+  if($script:PadJs -eq ''){ return 'ERR tools\fuzz-pad.js is missing' }
+  $pair='fz'+$rseed.ToString('x')
+  # Two ways the pad reaches player 2, as in a real party: even raid seeds, the player 2 window reads the pad itself; odd raid seeds, Chrome feeds only the window
+  # in front (player 1's), which reads the pad and HANDS it over the pair channel (the game's netPadSend / netPadRecv path), and player 2's window sees no pad.
+  $padMode='own'; if(($rseed -band 1) -eq 1){ $padMode='fwd' }
+  $script:padPage=$(if($padMode -eq 'fwd'){ 'p1' } else { 'p2' })
+  $t0=[Diagnostics.Stopwatch]::StartNew()
+  # 1. player 1 picks 2 PLAYER ARCADE DEMO (window.open stubbed: a headless page has no click to open a window with; the address is the game's own)
+  #    The two localStorage marks removed first are the game's "player 2 is still in a raid in the other window" guard (p2RaidNow, 75 s). A player 2
+  #    window closed by this robot mid raid never runs its pagehide cleanup, so the mark of the raid before would refuse the next pick for 75 s
+  #    ("p2raid"). No real player 2 window can be open here: every page is closed between raids.
+  $js1='(function(){ try{ __topClear(); __runPrep(); CAREER_ON=0; NET.sess="'+$pair+'"; try{ localStorage.removeItem("salvagerun:p2raid"); localStorage.removeItem("salvagerun:p2live"); }catch(_lk){} window.__p2url=""; window.open=function(u){ window.__p2url=String(u); return {closed:false,focus:function(){}}; }; var r=arcadePick(); return JSON.stringify({ok:(r==="opened"&&NET.same==="host"&&!!ARCADE.on&&!!window.__p2url),r:r,url:window.__p2url,pair:NET.pair}); }catch(e){ return "ERR "+e+" "+String(e&&e.stack||"").slice(0,200); } })()'
+  $r1=[string](Gx $js1 60000)
+  if($r1 -notmatch '"ok":true'){ return 'ERR the 2 player pick: '+$r1 }
+  $url=[string](($r1 | ConvertFrom-Json).url)
+  # 2. the player 2 window, with its own socket, the hook and the simulated pad
+  $ws2=New-WindowPage $url 1280 720
+  $script:pgs['p2']=@{ ws=$null; rxTask=$null; rxBuf=(New-Object byte[] 262144); rxMs=(New-Object IO.MemoryStream) }
+  try{
+    Pg-Use 'p2'
+    Ws-Connect $ws2
+    Cmd 'Page.enable'
+    Cmd 'Emulation.setDeviceMetricsOverride' '{"width":1280,"height":720,"deviceScaleFactor":1,"mobile":false}'
+    Cmd 'Emulation.setFocusEmulationEnabled' '{"enabled":true}'
+    $ok=$false
+    for($i=0;$i -lt 90;$i++){
+      try{ if((Ev "typeof window.__gx==='function'&&typeof window.__deploy==='function'") -eq $true){ $ok=$true; break } }catch{}
+      Start-Sleep 1
+    }
+    if(-not $ok){ return 'ERR the player 2 page did not come up in 90 s' }
+    Start-Sleep 1
+    $r=Gx $script:Hook
+    if($r -ne 'installed' -and $r -ne 'already'){ return ('ERR player 2 hook install said: '+$r) }
+    $padSeed=[int]($rseed -bxor 1540483477)
+    if($padMode -eq 'own'){ $r=Gx ($script:PadJs.Replace('__SEED__',[string]$padSeed)) } else { $r=Gx $script:BlindJs }
+    if($r -ne 'installed' -and $r -ne 'already'){ return ('ERR the simulated pad install (player 2 window, '+$padMode+') said: '+$r) }
+  }catch{ return 'ERR the player 2 window setup: '+$_.Exception.Message }
+  finally{ try{ Pg-Use 'p1' }catch{} }
+  if($padMode -eq 'fwd'){
+    try{ $r=Gx ($script:PadJs.Replace('__SEED__',[string]$padSeed)) }catch{ $r='threw '+$_.Exception.Message }
+    if($r -ne 'installed' -and $r -ne 'already'){ return ('ERR the simulated pad install (player 1 window, fwd) said: '+$r) }
+  }
+  # 3. the link: the host sees player 2 in (a WebRTC channel over the pair channel) and player 2 is in the arcade
+  $linked=$false; $h=''; $p=''
+  for($i=0;$i -lt 60;$i++){
+    $h=[string](Gx $P1PROBE 20000); $p=P2-Probe
+    if($h -match '"inn":[1-9]' -and $p -match '"arc":1'){ $linked=$true; break }
+    Start-Sleep -Milliseconds 750
+  }
+  if(-not $linked){ return ('ERR the two windows did not link in 45 s. host='+$h+' p2='+$p) }
+  $tLink=[int]$t0.Elapsed.TotalSeconds
+  # 4. player 1 drops in (the sector and seed are fixed so the raid replays); the arcade is then up on the host
+  $js3='(function(){ try{ try{ attStop(); }catch(_a){} var ok=arcadeDeploy({role:"host",mapIx:'+$mapIx+',seed:'+$rseed+'}); return JSON.stringify({ok:!!(ok&&G&&G.arcade&&!ARCADE.solo&&NET.on),arc:!!(G&&G.arcade),inn:netInCount()}); }catch(e){ return "ERR "+e+" "+String(e&&e.stack||"").slice(0,200); } })()'
+  $r3=[string](Gx $js3 60000)
+  if($r3 -notmatch '"ok":true'){ return 'ERR player 1 could not drop in: '+$r3 }
+  # 5. player 2 presses A on its pad (and again every 4 s) until it is in the raid
+  $joined=$false; $nA=0
+  for($i=0;$i -lt 60;$i++){
+    if(($i % 5) -eq 1){
+      Pad-Press; $nA++
+    }
+    Start-Sleep -Milliseconds 800
+    $h=[string](Gx $P1PROBE 20000); $p=P2-Probe
+    if($p -match '"raid":1' -and $p -match '"garc":1'){ $joined=$true; break }
+  }
+  if(-not $joined){ return ('ERR player 2 did not join the raid in 48 s after '+$nA+' presses of A. host='+$h+' p2='+$p+' padlog='+(P2-PadLog)) }
+  $script:p2Info='link '+$tLink+'s join '+[int]$t0.Elapsed.TotalSeconds+'s pad '+$padMode
+  $script:raidSw=[Diagnostics.Stopwatch]::StartNew()   # the raid clock for -RaidSec starts when both are in
+  return '{"ok":true,"p2":"'+$script:p2Info+'"}'
+}
+# One poll of the player 2 page: its errors, non-finite numbers and stalls are problems of kind p2:...
+function P2-Poll([string]$mode){
+  if($script:p2Dead){ return }
+  $q=$null; $err=''
+  try{ Pg-Use 'p2'; $q=(Ev $POLLX 20000) | ConvertFrom-Json }catch{ $err=$_.Exception.Message }
+  finally{ try{ Pg-Use 'p1' }catch{} }
+  if($err -ne ''){
+    $script:p2Dead=$true
+    if($err -like 'CDP timeout*'){ Add-Problem 'p2:hang' ('the player 2 page stopped answering for 10+ s ('+$mode+')') ('padlog='+(P2-PadLog)) }
+    else { Add-Problem 'p2:poll' $err '' }
+    return
+  }
+  if($Trace -and ($script:tick % 40) -eq 3){   # -Trace: what the simulated pad is doing to player 2, every 2 s
+    $tr=''
+    try{ Pg-Use 'p2'; $tr=[string](Gx 'JSON.stringify({pr:window.__fzpad?window.__fzpad.presses:-1,ax:window.__fzpad?window.__fzpad.pad.axes.map(function(v){return Math.round(v*100)/100}):null,x:(G&&G.player)?Math.round(G.player.x):null,y:(G&&G.player)?Math.round(G.player.y):null,hp:(G&&G.player)?Math.round(G.player.hp):null,am:(G&&G.player)?G.player.ammo:null,menu:(pauseOpen?1:0),ents:(G&&G.ents)?G.ents.length:-1,mine:ARCADE.mine,mate:ARCADE.mate,up:(NET.up||[]).length,padFwd:NET.padFwd?1:0})' 8000) }catch{ $tr='ERR '+$_.Exception.Message }finally{ try{ Pg-Use 'p1' }catch{} }
+    [IO.File]::AppendAllText(($OutDir+"\fuzz-trace.txt"),("p2 t"+$script:tick+" "+$tr+"`n"),$Enc)
+  }
+  $pl=''
+  foreach($e in @($q.errs)){ if($e){ if($pl -eq ''){ $pl='padlog='+(P2-PadLog) }; Add-Problem ('p2:'+[string]$e.k) ([string]$e.m) (([string]$e.w)+' '+$pl) } }
+  $el=0.0; if($script:raidSw){ $el=$script:raidSw.Elapsed.TotalSeconds }
+  if($q.raf -gt 5000 -or ($q.raid -eq 1 -and $q.gl -gt 5000)){
+    if(($el-$script:p2StallAt) -gt 30){ $script:p2StallAt=$el; Add-Problem 'p2:stall' ('no animation frame for '+[Math]::Max($q.raf,$q.gl)+' ms in the player 2 window ('+$mode+')') ('raf='+$q.raf+' gameloop='+$q.gl) }
+  }
+  # the team score: the host's own score is what player 2 hears as its mate's, and the other way round; a mismatch that lasts 12 s is a desync
+  if(($script:tick % 40) -eq 23 -and -not $script:scRep){
+    $sa=$null; $sb=$null
+    try{ $sa=(Gx $SCJS 8000) | ConvertFrom-Json }catch{}
+    try{ Pg-Use 'p2'; $sb=(Gx $SCJS 8000) | ConvertFrom-Json }catch{}finally{ try{ Pg-Use 'p1' }catch{} }
+    if($sa -and $sb -and $sa.r -eq 1 -and $sb.r -eq 1){
+      if(($sa.m -ne $sb.t) -or ($sa.t -ne $sb.m)){ $script:scMis++ } else { $script:scMis=0 }
+      if($script:scMis -ge 6){ $script:scRep=$true; Add-Problem 'p2:score-desync' ('the two windows disagreed on the score for 12 s: player 1 mine/mate '+$sa.m+'/'+$sa.t+', player 2 mine/mate '+$sb.m+'/'+$sb.t) '' }
+    } else { $script:scMis=0 }
+  }
+  foreach($b in @($q.bad)){ if($b){ Add-Problem 'p2:nan' ('non-finite '+([string]$b -replace '\d+','#')+' in the player 2 window') ('raw='+$b+' x='+$q.x+' y='+$q.y+' hp='+$q.hp) } }
+}
+
 function Run-Raid([string]$mode,[int]$rseed,[int]$secs){
   $script:curMode=$mode; $script:curSeed=$rseed; $script:raidProblems=0; $script:newUniq=0
   $script:ring.Clear(); $script:held=(New-Object 'System.Collections.Generic.Dictionary[string,object]'); $script:btns=0; $script:mx=960; $script:my=540; $script:tick=0; $script:lastAct=-1000; $script:nEv=0
@@ -247,13 +424,15 @@ function Run-Raid([string]$mode,[int]$rseed,[int]$secs){
     for($i=0;$i -lt $n;$i++){ $ks+=("'"+$pool[$rng.Next(0,$pool.Count)]+"'") }
     $kit='['+($ks -join ',')+']'
   }
-  $res=[ordered]@{ mode=$mode; seed=$rseed; map=$mapIx; god=[int]$god; sec=0; end=''; ticks=0; events=0; heap=0; score=0; ents=0; travel=0; fires=0; menuPct=0 }
+  $res=[ordered]@{ mode=$mode; seed=$rseed; map=$mapIx; god=[int]$god; sec=0; end=''; ticks=0; events=0; heap=0; score=0; ents=0; travel=0; fires=0; menuPct=0; p2='' }
   $script:raidSw=[Diagnostics.Stopwatch]::StartNew()
   if($mode -eq 'demo1'){ $js='(function(){ try{ __topClear(); __runPrep(); CAREER_ON=0; var r=arcadeSoloPick(); var ok=arcadeDeploy({mapIx:'+$mapIx+',seed:'+$rseed+'}); return JSON.stringify({ok:!!(ok&&G&&G.arcade&&ARCADE.solo),r:r,arc:!!(G&&G.arcade)}); }catch(e){ return "ERR "+e+" "+String(e&&e.stack||"").slice(0,200); } })()' }
   elseif($mode -eq 'demo2'){ $js='(function(){ try{ __topClear(); __runPrep(); CAREER_ON=0; var ok=arcadeDeploy({mapIx:'+$mapIx+',seed:'+$rseed+'}); return JSON.stringify({ok:!!(ok&&G&&G.arcade&&!ARCADE.solo),arc:!!(G&&G.arcade)}); }catch(e){ return "ERR "+e+" "+String(e&&e.stack||"").slice(0,200); } })()' }
+  elseif($mode -eq 'demo2p'){ $js='' }
   else { $js='(function(){ try{ __topClear(); __runPrep(); CAREER_ON=1; var r=__deploy({kit:'+$kit+',mapIx:'+$mapIx+',seed:'+$rseed+'}); return JSON.stringify({ok:!!(G&&G.career&&!G.arcade),err:(r&&r.error)||null}); }catch(e){ return "ERR "+e+" "+String(e&&e.stack||"").slice(0,200); } })()' }
   $sr=''
-  try{ $sr=[string](Gx $js 60000) }catch{ $sr='ERR '+$_.Exception.Message }
+  try{ if($mode -eq 'demo2p'){ $sr=[string](Start-2P $mapIx $rseed) } else { $sr=[string](Gx $js 60000) } }catch{ $sr='ERR '+$_.Exception.Message }
+  if($mode -eq 'demo2p'){ $res.p2=$script:p2Info }
   if($sr -notmatch '"ok":true'){
     Add-Problem 'start' ($mode+' raid did not start: '+$sr) ''
     $res.end='nostart'; $res.sec=[int]$script:raidSw.Elapsed.TotalSeconds
@@ -346,6 +525,8 @@ function Run-Raid([string]$mode,[int]$rseed,[int]$secs){
         $dx=($tx-$script:mx)*0.3+($a[18]-0.5)*6; $dy=($ty-$script:my)*0.3+($a[19]-0.5)*6
         if([Math]::Abs($dx)+[Math]::Abs($dy) -ge 2){ MMove ([int]($script:mx+$dx)) ([int]($script:my+$dy)) }
       }
+      # ---- the player 2 window (demo2p): polled every 10th tick, its problems are kind p2:...
+      if($mode -eq 'demo2p' -and ($tk % 10) -eq 3){ P2-Poll $mode }
       # ---- the poll, every 5th tick
       if(($tk % 5) -eq 0){
         try{ $o=(Ev $POLLX 20000) | ConvertFrom-Json }
@@ -390,12 +571,14 @@ function Run-Raid([string]$mode,[int]$rseed,[int]$secs){
     }
   }
   catch{
+    try{ Pg-Use 'p1' }catch{}   # never stay on the player 2 socket after a failure
     $em=$_.Exception.Message
     if($em -like 'CDP timeout*'){ Add-Problem 'hang' ('the page stopped answering for 10+ s ('+$mode+')') $em; $reason='hang' }
     else { Add-Problem 'cdp' $em ''; $reason='cdp' }
     $script:needReset=$true
   }
   $res.sec=[int]$sw.Elapsed.TotalSeconds; $res.ticks=$script:tick; $res.events=$script:nEv; $res.end=$reason
+  if($mode -eq 'demo2p'){ $res.p2=$script:p2Info; if($script:p2Dead){ $res.p2+=' DEAD' } }
   if(-not $script:needReset){
     try{
       Release-All
@@ -427,6 +610,7 @@ try{
   Open-Page
   LogLine ((Stamp)+' FUZZ START seed='+$Seed+' minutes='+$Minutes+' raidsec='+$RaidSec+' port='+$Port+' srv='+$script:srvPort+' build='+$script:ver+' maps='+($script:maps -join ','))
   $modes=@('demo1','career','demo2'); $master=New-Object System.Random($Seed)
+  $others=@('demo1','career'); $script:otherNo=0; $script:p2Off=$false; $script:p2Fails=0; $script:dirty=$false
   while($true){
     if(-not $IgnoreFlag -and (Test-Path -LiteralPath $Flag)){ $stopWhy='light.flag (he is back)'; break }
     $left=($deadline-(Get-Date)).TotalSeconds
@@ -435,12 +619,25 @@ try{
     if($freeGB -lt $MinFreeGB){ $stopWhy=('low RAM '+[Math]::Round($freeGB,1)+' GB free'); break }
     $script:raidNo++
     $m=$modes[($script:raidNo-1) % 3]; $rs=$master.Next(1,2147483000)
+    if($P2Share -gt 0){   # 10-18, his order: 3 of every 4 raids are the real 2-player demo (-P2Share 75); the 4th alternates demo1 and career
+      $n=$script:raidNo
+      if([Math]::Ceiling($n*$P2Share/100.0) -gt [Math]::Ceiling(($n-1)*$P2Share/100.0)){ if($script:p2Off){ $m='demo2' } else { $m='demo2p' } }
+      else { $m=$others[$script:otherNo % 2]; $script:otherNo++ }
+    }
     if($Mode -ne ''){ $m=$Mode; $rs=$RaidSeed }
     $secs=$RaidSec; if($Mode -eq '' -and $secs -gt ($left-60)){ $secs=[int]($left-60) }
+    if($script:dirty){ $script:dirty=$false; if(-not $script:needReset){ try{ Open-Page }catch{ $script:needReset=$true } } }   # after a 2-window raid: a fresh host page, the player 2 window closed
     if($script:needReset){ Kill-Chrome; Start-Sleep 2; $so=& powershell.exe -NoProfile -ExecutionPolicy Bypass -File ($T+'\cdp.ps1') -Start -Port $Port -Profile $prof; Open-Page }
     $rres=Run-Raid $m $rs $secs; if($rres -is [array]){ $rres=$rres[-1] }
     $raids++; $totProb+=$script:raidProblems
-    LogLine ((Stamp)+' raid '+$script:raidNo+' '+$m+' raidSeed='+$rs+' map='+$rres.map+' god='+$rres.god+' sec='+$rres.sec+' end='+$rres.end+' problems='+$script:raidProblems+' newUnique='+$script:newUniq+' totalUnique='+$script:uniq.Count+' totalProblems='+$totProb+' events='+$rres.events+' score='+$rres.score+' ents='+$rres.ents+' travelPx='+$rres.travel+' fires='+$rres.fires+' menuPct='+$rres.menuPct+' heapMB='+$rres.heap+' build='+$script:ver)
+    if($m -eq 'demo2p'){
+      $script:dirty=$true
+      if($rres.end -eq 'nostart'){
+        $script:p2Fails++
+        if($script:p2Fails -ge 3 -and -not $script:p2Off){ $script:p2Off=$true; LogLine ((Stamp)+' FUZZ 2P ROBOTS OFF: three 2-window starts in a row failed, so the 2-player share runs as demo2 (this window as host alone) for the rest of this run') }
+      } else { $script:p2Fails=0 }
+    }
+    LogLine ((Stamp)+' raid '+$script:raidNo+' '+$m+' raidSeed='+$rs+' map='+$rres.map+' god='+$rres.god+' sec='+$rres.sec+' end='+$rres.end+' problems='+$script:raidProblems+' newUnique='+$script:newUniq+' totalUnique='+$script:uniq.Count+' totalProblems='+$totProb+' events='+$rres.events+' score='+$rres.score+' ents='+$rres.ents+' travelPx='+$rres.travel+' fires='+$rres.fires+' menuPct='+$rres.menuPct+' heapMB='+$rres.heap+' p2='+(([string]$rres.p2) -replace '\s','_')+' build='+$script:ver)   # build= stays LAST: tools\stable.mjs counts robot minutes per version with endsWith(' build='+ver)
     if($rres.end -eq 'lightflag'){ $stopWhy='light.flag (he is back)'; break }
     if($Mode -ne ''){ $stopWhy='replay done'; break }
   }

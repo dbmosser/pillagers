@@ -1,16 +1,16 @@
 {
     "title":  "THE WHAT IS NEW CARD NAMES POLISH PASS 20",
-    "why":  "The card was stamped v30.39 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.",
+    "why":  "The card was stamped v30.55 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.",
     "now":  "The what is new card names polish pass 20.",
     "edits":  [
                   {
-                      "anchor":  "var WHATSNEW_VER=\u002730.39\u0027;",
-                      "replacement":  "var WHATSNEW_VER=\u002730.55\u0027;"
+                      "anchor":  "var WHATSNEW_VER=\u002730.55\u0027;",
+                      "replacement":  "var WHATSNEW_VER=\u002730.56\u0027;"
                   },
                   {
                       "anchor":  "  \u0027THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.\u0027,",
                       "replacement":  "  \u0027THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.\u0027,\n  \u0027POLISH PASS 20. More fixes to the screens, the sounds and two player play.\u0027,"
                   }
               ],
-    "check":  "  {v:\u0027VER\u0027,what:\u0027the what is new card is stamped within 0.15 of the build and leads with the new news shown whole\u0027,\n   run:function(){\n     if(typeof WHATSNEW===\u0027undefined\u0027||typeof WHATSNEW_VER===\u0027undefined\u0027||typeof VER===\u0027undefined\u0027||typeof wnShort!==\u0027function\u0027) return \u0027SKIP: this build has no what is new card\u0027;\n     if(parseFloat(WHATSNEW_VER)\u003e30.55+0.001) return \u0027SKIP: the card has moved on, a later card check covers it\u0027;\n     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER);\n     if(!(d\u003c=0.15+1e-9)) bad.push(\u0027the card is stamped v\u0027+WHATSNEW_VER+\u0027, \u0027+d.toFixed(2)+\u0027 behind v\u0027+VER);\n     if(String(WHATSNEW[1]).indexOf(\u0027POLISH\u0027+\u0027 PASS 20.\u0027)!==0) bad.push(\u0027the card does not lead with the new news\u0027);\n     else if(wnShort(WHATSNEW[1]).slice(-3)===\u0027...\u0027) bad.push(\u0027the new line is cut on the card\u0027);\n     if(String(WHATSNEW[0]).indexOf(\u0027THIS IS AN\u0027+\u0027 ALPHA\u0027)!==0) bad.push(\u0027the card no longer opens with the alpha line\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the what is new card is stamped within 0.15 of the build and leads with the new news shown whole\u0027,\n   run:function(){\n     if(typeof WHATSNEW===\u0027undefined\u0027||typeof WHATSNEW_VER===\u0027undefined\u0027||typeof VER===\u0027undefined\u0027||typeof wnShort!==\u0027function\u0027) return \u0027SKIP: this build has no what is new card\u0027;\n     if(parseFloat(WHATSNEW_VER)\u003e30.56+0.001) return \u0027SKIP: the card has moved on, a later card check covers it\u0027;\n     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER);\n     if(!(d\u003c=0.15+1e-9)) bad.push(\u0027the card is stamped v\u0027+WHATSNEW_VER+\u0027, \u0027+d.toFixed(2)+\u0027 behind v\u0027+VER);\n     if(String(WHATSNEW[1]).indexOf(\u0027POLISH\u0027+\u0027 PASS 20.\u0027)!==0) bad.push(\u0027the card does not lead with the new news\u0027);\n     else if(wnShort(WHATSNEW[1]).slice(-3)===\u0027...\u0027) bad.push(\u0027the new line is cut on the card\u0027);\n     if(String(WHATSNEW[0]).indexOf(\u0027THIS IS AN\u0027+\u0027 ALPHA\u0027)!==0) bad.push(\u0027the card no longer opens with the alpha line\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
 }
