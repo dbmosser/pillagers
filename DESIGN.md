@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.08 - THE WHAT IS NEW CARD SHOWS THE POLISH LINE ONCE
+
+Co-op hunt while he was away. Critic on screen 40: four of the five notes were the same Polish pass sentence. The card and the pause window now list the generic polish line once; the list itself is unchanged.
+
+MEASURED. Check 30.08 passes, and fails on v30.07.
 ## v30.07 - THE WELCOME PACK FITS ITS CARD
 
 Co-op hunt while he was away. The critic on the centred welcome pack: the intro paragraph spilled out of the card and was struck through by its top edge, and the footer floated below the card. The intro cap was beaten by a later rule and the rows were 80px, so the content was taller than the frame. The intro is capped at 880 and the rows are 64px.

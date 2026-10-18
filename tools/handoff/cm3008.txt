@@ -1,0 +1,7 @@
+v30.08: the what is new card shows the polish line once
+
+The What is New card no longer repeats the polish pass line.
+
+Check 30.08. Fails on v30.07.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

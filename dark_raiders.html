@@ -2750,7 +2750,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.07';
+var VER='30.08';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -2766,6 +2766,17 @@ var WHATSNEW_VER='30.06';
 // whole floor. It now shows the newest WN_SHOW notes, each as its headline sentence and the start of what follows. The notes
 // themselves are unchanged.
 var WN_SHOW=5, WN_TAIL=150;
+// v28.xx (cw-wnded), critic on screen 40 (What's New): "4 of 5 notes are the same Polish pass sentence". The card shows the newest generic
+// polish line once and every other note once; the list itself is untouched (old checks read it by index).
+function wnList(){
+  var o=[], i, t, seen=0;
+  for(i=0;i<WHATSNEW.length;i++){
+    t=String(WHATSNEW[i]);
+    if(/^POLISH PASS \d+\. MORE FIXES TO THE SCREENS/i.test(t)){ if(seen) continue; seen=1; }
+    o.push(WHATSNEW[i]);
+  }
+  return o;
+}
 function wnShort(s){
   var t=String(s||''), i=t.indexOf('. '), head, rest, cut;
   if(i<0||i>140) return (t.length>WN_TAIL+60)?(t.slice(0,WN_TAIL+60).replace(/\s+\S*$/,'')+'...'):t;
@@ -45993,8 +46004,9 @@ function drawHubHUD(ox,oy){
       ctx.font=FS(TYPE[wnRole]);
       wnW=Math.min(_wnWW-LH(60),LH(460));   // v28.xx (cw-wnew40) critic on screen 40 (2 of 5): "1560px slab". The card is a 720px card now (the style guide: a modal never exceeds its content).
       wnRows=[]; wnGaps=0;
-      for(var wm=0;wm<Math.min(WN_SHOW,WHATSNEW.length);wm++){
-        var wWords=TX((wm+1)+'. '+wnShort(WHATSNEW[wm])).split(' '),wLine='',wFirst=1;   // v21.84: his wording of the entry is what is wrapped
+      var wnL=wnList();   /* v28.xx (cw-wnded): the generic polish line once */
+      for(var wm=0;wm<Math.min(WN_SHOW,wnL.length);wm++){
+        var wWords=TX((wm+1)+'. '+wnShort(wnL[wm])).split(' '),wLine='',wFirst=1;   // v21.84: his wording of the entry is what is wrapped
         for(var ww=0;ww<wWords.length;ww++){
           var wCand=wLine?(wLine+' '+wWords[ww]):wWords[ww];
           if(wLine&&txRawW(ctx,wCand)>wnW-LH(44)){
@@ -47905,7 +47917,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.07: The welcome pack title, list and buttons sit inside the card. Check 30.07 fails on v30.06',
+  now:'v30.08: The What is New card no longer repeats the polish pass line. Check 30.08 fails on v30.07',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -62172,8 +62184,9 @@ function wnOpen(){
   var m=document.getElementById('wnmodal'), L=document.getElementById('wnlist'), S=document.getElementById('wnsub'), i, n, d;
   if(!m||!L) return false;
   L.textContent='';
-  n=Math.min(8,WHATSNEW.length);
-  for(i=0;i<n;i++){ d=document.createElement('div'); d.style.cssText='margin:0 0 .7em'; d.textContent=TX((i+1)+'. '+wnShort(WHATSNEW[i])); L.appendChild(d); }
+  var wnL2=wnList();   /* v28.xx (cw-wnded): the generic polish line once */
+  n=Math.min(8,wnL2.length);
+  for(i=0;i<n;i++){ d=document.createElement('div'); d.style.cssText='margin:0 0 .7em'; d.textContent=TX((i+1)+'. '+wnShort(wnL2[i])); L.appendChild(d); }
   if(S) S.textContent='NEW IN '+verShown(WHATSNEW_VER,1);
   m.classList.add('on');
   try{ sndUi('open'); }catch(_su){}

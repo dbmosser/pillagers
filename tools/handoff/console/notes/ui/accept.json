@@ -10,10 +10,10 @@
  "02-welcome-pack": {
   "score": 2,
   "pass": false,
-  "verdict": "Image 2 is a centred card on a dimmed backdrop, but the intro paragraph spills out of the card and is struck through by the card's top edge, and the footer floats outside the card; Image 1 is still a full-screen slab with a huge empty void. The guide's modal rules are only half applied.",
-  "pic": "tools/handoff/console/notes/shots/b-31-e2/02-welcome-pack-1080.jpg",
+  "verdict": "The welcome pack is now a centred card on a dimmed backdrop (image 2), but it is still a text-heavy list with a long explaining paragraph, small type, a centred title against left-aligned content, and no close X or pad focus cue.",
+  "pic": "tools/handoff/console/notes/shots/b-31-e3/02-welcome-pack-1080.jpg",
   "task": "manual",
-  "when": "2026-10-18T12:33"
+  "when": "2026-10-18T12:50"
  },
  "03-hub-floor": {
   "score": 2,

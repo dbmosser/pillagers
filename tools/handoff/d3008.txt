@@ -1,0 +1,5 @@
+## v30.08 - THE WHAT IS NEW CARD SHOWS THE POLISH LINE ONCE
+
+Co-op hunt while he was away. Critic on screen 40: four of the five notes were the same Polish pass sentence. The card and the pause window now list the generic polish line once; the list itself is unchanged.
+
+MEASURED. Check 30.08 passes, and fails on v30.07.
