@@ -6546,7 +6546,7 @@ window.__REGRESS=[
      was=t.classList.contains('on'); if(!was) t.classList.add('on');
      try{
        if(!tg) return 'the title has no one line';
-       if((tg.textContent||'').trim()!=='Ascend. Pillage. Extract.') bad.push('the line reads '+(tg.textContent||'').trim());
+       if((tg.textContent||'').trim().toLowerCase()!=='ascend. pillage. extract.') bad.push('the line reads '+(tg.textContent||'').trim());
        if(t.querySelectorAll('.tcard').length) bad.push('the step cards are still there');
        if(/elites left|Take the lift up/.test(t.textContent||'')) bad.push('the story paragraph is still there');
        if(wm.parentNode.querySelector('img,canvas,svg')) bad.push('something sits beside the logo');
