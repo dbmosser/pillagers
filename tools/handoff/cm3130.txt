@@ -1,0 +1,7 @@
+v31.30: the downed block sits on one plate and the timer is the big number
+
+When you are down, the down word, the bar, the timer and the prompts now sit on one dark panel, and the timer is big.
+
+Check 31.30. Fails on v31.29.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

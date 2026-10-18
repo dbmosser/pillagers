@@ -1,0 +1,5 @@
+## v31.30 - THE DOWNED BLOCK SITS ON ONE PLATE AND THE TIMER IS THE BIG NUMBER
+
+Co-op hunt while he was away. Critic on screen 34 (P0): the downed words sat straight on the red wash and the busy world, with the timer small. They now sit on one shared panel sized to their rows, and the timer is as big as the word down. Layout and keys are unchanged.
+
+MEASURED. Check 31.30 passes, and fails on v31.29.

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.30 - THE DOWNED BLOCK SITS ON ONE PLATE AND THE TIMER IS THE BIG NUMBER
+
+Co-op hunt while he was away. Critic on screen 34 (P0): the downed words sat straight on the red wash and the busy world, with the timer small. They now sit on one shared panel sized to their rows, and the timer is as big as the word down. Layout and keys are unchanged.
+
+MEASURED. Check 31.30 passes, and fails on v31.29.
 ## v31.29 - the dead backpack full message and its refusals are gone
 
 Co-op hunt while he was away. His ruling: no bag limit, no weight, ever (PACKCAP is 99999 since 2026-08-22). Four places still refused or dropped a gun for a full backpack and said BACKPACK FULL: the stall sale, the crate search, and the two gun swaps that push a gun into the backpack. With the cap at 99999 none of them can run. They are removed with bagDropHint (the detail under that row) and the cap locals only they read. The pack cap constant, the autoloot cull, arcadeBagFree and the bot greed test stay, because the test fixture names them.

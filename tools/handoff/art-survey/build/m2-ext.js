@@ -8,7 +8,7 @@ function g(){ return __state(); }
 
 // a26: P1 and the pillagers in the front row, the nine machines in one row behind them, centres spaced from the widths measured in the plain lineup
 A.scenes.lineupbig=async function(o){
-  var st=await A.stage(o), p=st.p, s=st.s, X=A.base().x, Y=A.base().y, Z=2.5, i, e, chars=[], x;
+  var st=await A.stage(o), p=st.p, s=st.s, X=A.base().x, Y=A.base().y, Z=2.4, i, e, chars=[], x;
   var XC=X-33, FY=Y+132, BY=Y-12, face=1.5708;   // the meadow runs from 434 left to 368 right of the site centre (a building stands beyond each end): the row is centred in it
   var rows=[
     {n:'pillager-rush',  id:'beef',  gun:'shotgun',rig:'none'},
@@ -28,7 +28,7 @@ A.scenes.lineupbig=async function(o){
   }
   // the machines: the width each is drawn at today (units), times 1.5 for the widest setting, half of it each side of the centre, 18 units clear between neighbours
   var ms=[['sentry','sentry',40],['crawler','crawler',42],['snitch','crier',34],['bulwark','bulwark',48],['howler','howler',41],['listener','listener',26],['choir','pillbox',60],['warden','warden',59],['overseer','overseer',87]];
-  var gap=18, tot=0, ents=[], hw=[];
+  var gap=12, tot=0, ents=[], hw=[];
   for(i=0;i<ms.length;i++){
     e=(ms[i][0]==='overseer')?A.overseer(XC,BY,face):A.machine(ms[i][0],XC,BY,{face:face});
     if(ms[i][0]==='sentry') e.rng=2;   // no sight cone on the ground in a line-up
