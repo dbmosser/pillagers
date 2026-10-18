@@ -210,10 +210,10 @@
  "40-whats-new-card": {
   "score": 2,
   "pass": false,
-  "verdict": "The what's-new card is now a centred dark modal with a clear amber 'Got it' button, but it is still a wall of numbered explaining sentences at one weight, with no close X, and a cluttered, stale backdrop behind it.",
-  "pic": "tools/handoff/console/notes/shots/13-j1/40-whats-new-card-1080.jpg",
+  "verdict": "The What's new modal is now a centred card with a decent amber primary, but it is a wall of five run-on explaining paragraphs at one weight and size, while the world behind it leaks toasts, a hotbar and HUD that should be hidden or waiting.",
+  "pic": "tools/handoff/console/notes/shots/13-k1/40-whats-new-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T12:53"
+  "when": "2026-10-18T12:56"
  },
  "45-arcade-attract-board": {
   "score": 2,
@@ -250,10 +250,10 @@
  "59-raid-abandon-confirm": {
   "score": 3,
   "pass": false,
-  "verdict": "The c6 card is a clear step up: the title now matches the question, the safe action is the single amber primary, and the dead space is gone. It is still a bare dialog with no close X, no pad glyphs, no focus cue on the danger button, and a HUD behind it that clutters the scrim.",
-  "pic": "tools/handoff/console/notes/shots/13-c6/59-raid-abandon-confirm-1080.jpg",
+  "verdict": "A clean, compact confirm card with a clear title and a sensible primary/danger pair, but it has no close X or pad glyphs, a loose layout, a dim card edge, and a leftover HUD ghosting through the scrim.",
+  "pic": "tools/handoff/console/notes/shots/13-k1/59-raid-abandon-confirm-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T10:45"
+  "when": "2026-10-18T12:56"
  },
  "65-codex": {
   "score": 2,
@@ -298,10 +298,10 @@
  "46-arcade-attract-how-to-play": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, consistent, sentence-case controls card with a clear Keyboard/Controller grid and a proper amber top tab, but the label text is too small for a couch, there is no close affordance, and the card is cramped with dead space around it.",
-  "pic": "tools/handoff/console/notes/shots/12-g6/46-arcade-attract-how-to-play-1080.jpg",
+  "verdict": "A clean, sentence-case controls table that follows the panel and key-cap tokens, but the text is undersized for a couch, there is no close control, and the hierarchy is flat, so it still reads as a generic cheat sheet.",
+  "pic": "tools/handoff/console/notes/shots/12-g7/46-arcade-attract-how-to-play-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T12:48"
+  "when": "2026-10-18T12:58"
  },
  "37-raid-extracting-countdown": {
   "score": 2,
@@ -330,10 +330,10 @@
  "55-arcade-run-over-scored": {
   "score": 3,
   "pass": false,
-  "verdict": "This is a clean, on-guide end card in sentence case with a clear title, hero line and stat row, but the hero is undersized, the card is a bit small and sparse, and the 'Press any button' prompt is a weak, amber-text stand-in for the 56px primary and ghost buttons the guide asks for.",
-  "pic": "tools/handoff/console/notes/shots/12-g6/55-arcade-run-over-scored-1080.jpg",
+  "verdict": "A clean, sentence-case end card that follows the guide's panel, accent tab and tone, but the 'Score 0 SP' hero is under-sized, the title is dimmer than the hero, and the dead-end 'Press any button' footer has no real primary action or close affordance.",
+  "pic": "tools/handoff/console/notes/shots/12-g7/55-arcade-run-over-scored-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T12:48"
+  "when": "2026-10-18T12:58"
  },
  "60-abandoned-card": {
   "score": 3,
@@ -370,10 +370,10 @@
  "47-arcade-drop-controls-card": {
   "score": 2,
   "pass": false,
-  "verdict": "The controls card is a readable table, but it is a pale amber-bordered box dropped over the live HUD with no title, no close, and mixed type, so the whole screen reads as an unfinished overlay instead of a styled card.",
-  "pic": "tools/handoff/console/notes/shots/12-d1/47-arcade-drop-controls-card-1080.jpg",
+  "verdict": "The controls card is readable as a table, but it sits on a busy HUD with a clipped title, wrong placement, leaking text behind it, and several off-guide sizes and colours, so it looks like a debug overlay rather than a polished screen.",
+  "pic": "tools/handoff/console/notes/shots/12-g7/47-arcade-drop-controls-card-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T10:12"
+  "when": "2026-10-18T12:58"
  },
  "48-arcade-hud-move-to-start": {
   "score": 2,

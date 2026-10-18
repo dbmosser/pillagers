@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.11 - THE WELCOME PACK HAS ONE FRAME AND A LEFT TITLE
+
+Co-op hunt while he was away. The critic on the centred welcome pack (2 of 5, better than before): a double frame, a centred title over left content, buttons under the 56px floor and 13px hints. The list border goes, the title is left at 32px, names are 20px and hints 16px, buttons 56px high and 200px wide.
+
+MEASURED. Check 30.11 passes, and fails on v30.10.
 ## v30.10 - Arcade drop controls card is the how to play table
 
 Co-op hunt while he was away. Critic on the arcade drop (47 and 48, 2 of 5): the controls card was an amber headed table with a two pixel amber box. It is the how to play page on the HUD now: Panel P, light action names, key caps, a teal ring glyph for the extract ring. The prompt on the party pages is light text, the run over footer is 104px, the run over title the muted colour.

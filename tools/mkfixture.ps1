@@ -6097,6 +6097,26 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.11',what:'the welcome pack has one frame (no border round the list), a left 32px title, 56px buttons and 16px hints (the critic: double frame, centred title, 15px buttons)',
+   run:function(){
+     var el=null, lb=null, h3=null, bt=null, hn=null, q, bad=[];
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       el=document.getElementById('welcomemodal'); if(!el) return 'SKIP: no welcome pack';
+       lb=document.getElementById('welcomelist'); if(!lb) return 'SKIP: no list';
+       if(!lb.querySelector('.row')){ for(q=0;q<7;q++) lb.insertAdjacentHTML('beforeend','<div class="row"><canvas class="wpic" width="56" height="56" style="flex:none;margin-right:14px"></canvas><div style="flex:1"><b>Item '+q+'</b><div class="hint">to your stash</div></div></div>'); }
+       openModal('welcomemodal'); cardFrameFit(el);
+       h3=el.querySelector('h3'); bt=document.getElementById('welcometake'); hn=lb.querySelector('.hint');
+       if(parseFloat(getComputedStyle(lb).borderTopWidth)>0) bad.push('the list has its own border inside the card frame');
+       if(getComputedStyle(h3).textAlign!=='left'&&getComputedStyle(h3).textAlign!=='start') bad.push('the title is '+getComputedStyle(h3).textAlign+' aligned over left content');
+       if(parseFloat(getComputedStyle(h3).fontSize)<31.5) bad.push('the title is '+getComputedStyle(h3).fontSize);
+       if(bt&&parseFloat(getComputedStyle(bt).height)<55.5) bad.push('Take the pack is '+getComputedStyle(bt).height+' high');
+       if(hn&&parseFloat(getComputedStyle(hn).fontSize)<15.5) bad.push('the hints are '+getComputedStyle(hn).fontSize);
+       return bad.length?bad.join('; '):null;
+     } finally {
+       try{ if(el) el.classList.remove('on'); }catch(_e){}
+       __topClear();
+     } }},
   {v:'30.10',what:'the controls card on the arcade drop is the how to play table on the HUD: light action names, a key cap for every key, the extract ring as a ring glyph and no amber names; the run over footer is 104px and its title the muted colour (critic: 47 48 = 2, 46 55 = 3; screens 46 47 48 52 55)',
    run:function(){
      if(typeof arcadeCardHud!=='function'||typeof arcadeCardOn!=='function'||typeof ctx==='undefined'||!ctx) return 'SKIP: no arcade controls card here';
