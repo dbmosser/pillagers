@@ -1,10 +1,9 @@
-# b-00a-rocket-launcher notes
-## Findings (run 1)
-- Gun keys: HOTBAR_N=9 (l.2268), GUNKEYS=9 (2274), BELT_CLASS 9x'gun' (2278), GUN_CLASSES (23147) 9 classes, GUN_CLASS_OF (23148): dmr,whisper -> marksman.
-- gunKeyTable accepts P.gunKeys only if length==GUN_CLASSES.length, else falls back (auto migration of saved plan).
-- Digit handler raidKey ~15509 (dn 1..9, setHot(dn-1)); Digit0 = zoom 100% at ~15608 (+ controls lists 17183,17230); stall digits 15441.
-- Plan: 10 keys. GUN_CLASSES = pistol,smg,rifle,carbine,lmg,shotgun,sniper,energy,spare,rocket (key 9 = overflow, key 0 = rocket). HOTBAR_N=GUNKEYS=10. Digit0 -> index 9. Key labels (i+1) need %10.
-- Weapons in WEAPONS ~2766; WTIER 2810; explodeFrag 18411; reload code ~25295; p.reserve is the ammo reserve.
-- Gate: recent.ps1 reruns 80 checks; fingerprint ents 85/374 must not move.
-## Status
-- nothing shipped yet
+# b-00a notes
+PLAN: keep GUNKEYS=9/HOTBAR_N=9 cells. GUN_CLASSES (line ~23147) becomes 8 classes + 'rocket' on cell index 8 labelled "0" (key Digit0). Key 9 unused.
+Files facts (line numbers of build 29.11):
+- WEAPONS table ~2774 (dmr 2774, whisper 2794, lance 2795); WTIER 2812; ITEMS gun_dmr 3091/gun_whisper 3092; loot tables 3207-3218
+- GUN_CLASS_OF 23148, GUN_CLASSES 23147, GHOST_OF 37194, GUN_CLASS_ICON 48533, GUN_FAMILY 41488 (art in gunArt 41507/gunIcon 41610 by fam)
+- sfx gun table 7588-7595; recoil table 20941-20946; DRAWT 22973; bullet spawn ~21058 fn near 21087; 21865 aim class
+- other refs: PED_GUNS 13355, 13429, 12720 pool, 27478, 29927 (lance sp), 46981-47031 kits/recipes, 47783, 55692 ARCADE_VAULT_GUNS
+- belt label: String(q+1) at ~37345; 'to slot '+(at+1) ~23225
+Status: nothing shipped yet.

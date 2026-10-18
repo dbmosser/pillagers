@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.12 - A DEAD WARDEN LEAVES WRECKAGE, NOT A BOX
+
+Co-op hunt while he was away. His note: Warden wreck drops a box, it would be cool if it showed wreckage instead, same for other enemy deaths. A dead Warden left the generic purple cache box. The cache is now tagged a Warden wreck and drawn as the Warden in pieces in its own palette: a slipped track, a slumped chassis, the toppled torso with a dead visor, the cannon on the ground, the torn off pod, smoke while unsearched. The Overseer wreck is the black and brass version, bigger. Looting is unchanged, and this adds the table the other machine wrecks plug into.
+
+MEASURED. Check 29.12 passes, and fails on v29.11.
 ## v29.11 - No all-caps text anywhere
 
 Co-op hunt while he was away. His hard rule (2026-10-18): nothing shown to the player is ever in all caps. Every canvas draw and every menu text node already passes through the TX door, so words of 3+ capital letters (not SP, XP, HP, LMG, SMG, DMR, KIA, HUD, FPS and the like) are made sentence case there, and the CSS text-transform:uppercase is removed. The tab title is Pillagers.

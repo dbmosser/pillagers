@@ -6097,6 +6097,30 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.12',what:'a killed Warden leaves wreckage in its own shape (drawn by the Warden wreck path, drawWreckWarden), not the purple cache box (his note: Warden wreck drops a box, show wreckage instead)',
+   run:function(){
+     if(typeof __frame!=='function'||typeof mkWarden!=='function'||typeof __ents!=='function') return 'SKIP: no frame or entity helper';
+     var PR=CanvasRenderingContext2D.prototype, otr=PR.translate, g=null, p, e, i, c, ct=null, hit=0;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player) return 'SKIP: no raid';
+       p=g.player; p.iv=99; p.hp=100; p.downed=false;
+       e=mkWarden(p.x+60,p.y); e.hp=0; e.byPlayer=1; e.boss=0; g.ents=[e]; __ents(0.016);
+       for(i=0;i<g.containers.length;i++){ c=g.containers[i]; if(Math.abs(c.x-e.x)<2&&Math.abs(c.y-e.y)<2&&c.tag==='WARDEN WRECK'){ ct=c; break; } }
+       if(!ct) return 'a dead Warden left no wreck container';
+       if(ct.bot!=='warden') return 'the Warden wreck is not tagged as a Warden wreck (bot is '+ct.bot+')';
+       p.x=ct.x-60; p.y=ct.y;
+       PR.translate=function(x,y){ if(Math.abs(x-ct.x)<0.01&&/drawContS/.test(String(new Error().stack))&&/drawWreckWarden/.test(String(new Error().stack))) hit++; return otr.apply(this,arguments); };
+       __frame(); __frame();
+       PR.translate=otr;
+       if(!hit) return 'a dead Warden loot is not drawn by the Warden wreck path (still a box)';
+       return null;
+     } finally {
+       PR.translate=otr;
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     } }},
   {v:'29.11',what:'no all-caps text: canvas text, menu text and the tab title come out in sentence case (his hard rule 2026-10-18)',
    run:function(){
      if(typeof txRecord!=='function'||typeof txDom!=='function') return 'SKIP: no text door';

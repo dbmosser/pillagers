@@ -1,0 +1,7 @@
+v29.12: a dead warden leaves wreckage, not a box
+
+A dead Warden leaves a smoking wreck, not a box.
+
+Check 29.12. Fails on v29.11.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
