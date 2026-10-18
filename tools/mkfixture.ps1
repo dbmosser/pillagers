@@ -6097,6 +6097,20 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.53',what:'the end card has a 56px hero total, a near-solid scrim and a quiet feedback link (critic: no hero line, HUD bleeds, third control; screens 35 38 77)',
+   run:function(){
+     var oc=document.getElementById('outcome'), win=oc&&oc.querySelector('.ocwin'), fb=document.getElementById('fbhead'), d, res=null, a;
+     if(!oc||!win||!fb) return 'SKIP: no end card here';
+     d=document.createElement('div'); d.className='haultot'; win.appendChild(d);
+     try{
+       if(parseFloat(getComputedStyle(d).fontSize)<56) res='the haul total is '+getComputedStyle(d).fontSize+', not 56px';
+     }finally{ win.removeChild(d); }
+     if(res) return res;
+     a=/rgba?\([^)]*?,\s*([\d.]+)\)/.exec(getComputedStyle(oc).backgroundColor);
+     if(!a||parseFloat(a[1])<0.9) return 'the scrim is '+getComputedStyle(oc).backgroundColor+', the HUD reads through';
+     if(getComputedStyle(fb).borderTopWidth!=='0px') return 'the feedback prompt still has a box';
+     return null;
+   }},
   {v:'29.52',what:'the end card is one flat shell: 4px radius, no glow on the title, a 56px primary, the scrim blurs the world behind it (critic: debug dialog, screens 35 38 60 77)',
    run:function(){
      var oc=document.getElementById('outcome'), win=oc&&oc.querySelector('.ocwin'), h=document.getElementById('oc_title'), b=document.getElementById('oc_btn'), res=null, cs;

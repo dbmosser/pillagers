@@ -194,18 +194,18 @@
  "35-kia-card": {
   "score": 2,
   "pass": false,
-  "verdict": "The death card has a clear red title and a single yellow primary button, but the stacked centered text, the tiny low-contrast lines, the 'Lost' repetition and the cluttered info above make it look like a debug dialog rather than a polished AAA screen.",
-  "pic": "tools/handoff/console/notes/shots/all/35-kia-card-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:19"
+  "verdict": "The card is centred on a dimmed backdrop and the KIA title is red, but it is a stack of centred small text with no hero line, no stat row and no tile row, so it looks like a debug dump and not the one end-card shell the guide asks for.",
+  "pic": "tools/handoff/console/notes/shots/13-after1/35-kia-card-1080.jpg",
+  "task": "13-ui-end-cards",
+  "when": "2026-10-18T08:33"
  },
  "38-extracted-card": {
   "score": 2,
   "pass": false,
-  "verdict": "The Extracted card has a clear title and a strong primary button, but it is a dense stack of small centered text lines with weak hierarchy, a muddy dimmed HUD behind it, and no pad focus cue.",
-  "pic": "tools/handoff/console/notes/shots/all/38-extracted-card-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:19"
+  "verdict": "The extracted card is a centred, readable dark panel with a teal title and a clear primary button, but it breaks the end-card shell with no hero line, a wall of small explaining text, a '$' haul figure, an amber text label and a tiny secondary control.",
+  "pic": "tools/handoff/console/notes/shots/13-after1/38-extracted-card-1080.jpg",
+  "task": "13-ui-end-cards",
+  "when": "2026-10-18T08:33"
  },
  "40-whats-new-card": {
   "score": 2,
@@ -314,10 +314,10 @@
  "77-haul-reveal-done": {
   "score": 2,
   "pass": false,
-  "verdict": "A centered modal with a nice teal title and a clear primary button, but the body is a long stack of small centered text lines with explaining sentences, weak hierarchy between the loot and the stats, and a cluttered HUD bleeding through behind it.",
-  "pic": "tools/handoff/console/notes/shots/all/77-haul-reveal-done-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:23"
+  "verdict": "The new card is cleaner, with the HUD hidden, a blurred backdrop, flat panel fill and less amber noise, but it is still a wall of centred sentences with no hero number and no stat row, so it misses the end-card spec.",
+  "pic": "tools/handoff/console/notes/shots/13-after1/77-haul-reveal-done-1080.jpg",
+  "task": "13-ui-end-cards",
+  "when": "2026-10-18T08:31"
  },
  "63-arcade-operator-new-party-armed": {
   "score": 3,
@@ -334,5 +334,13 @@
   "pic": "tools/handoff/console/notes/shots/12-after3/55-arcade-run-over-scored-1080.jpg",
   "task": "12-ui-party-screens",
   "when": "2026-10-18T08:17"
+ },
+ "60-abandoned-card": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The card is cleaner than before (HUD hidden, backdrop blurred, glow and gradient gone), but it is still a generic dark box with a weak title, a small unreadable stat line and a sentence-heavy body, nowhere near the end-card shell in the guide.",
+  "pic": "tools/handoff/console/notes/shots/13-after1/60-abandoned-card-1080.jpg",
+  "task": "13-ui-end-cards",
+  "when": "2026-10-18T08:31"
  }
 }

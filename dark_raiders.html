@@ -1375,6 +1375,13 @@
   #root .ocwin .haulit[data-r="rare"]{ border-bottom-color:var(--r-rare) !important; }
   #root .ocwin .haulit[data-r="elite"]{ border-bottom-color:var(--r-elite) !important; }
   #root .ocwin .haulit[data-r="gold"]{ border-bottom-color:var(--r-gold) !important; }
+  /* v28.xx (cw-endcard-hero): the critic, second pass on the Extracted and KIA cards (2 of 5): "no hero line, the HUD still bleeds through the scrim,
+     the feedback chip is a third competing control with an amber plus". The haul total is the hero now: 56px, bone, no tracking, 16px above and 24px
+     below. The scrim is near solid (.94) so the HUD cannot read through. The feedback prompt is a quiet 16px text link in tx-2 with no box and no amber. */
+  #root .outcome{ background:rgba(6,7,8,.94); }
+  #root .haultot{ font-size:56px; line-height:1.05; letter-spacing:0; color:var(--tx-1); text-transform:none; margin:16px 0 24px; }
+  #root .ocwin .fbhead{ background:transparent; border:0; color:var(--tx-2); font-size:16px; padding:8px 16px; margin-top:16px; }
+  #root .ocwin .fbhead::after{ color:var(--tx-2); }
   /* vNN.xx, UI CLEANUP uic4 (his 2026-10-14 note, "ui and player messaging just isn't as clean as it should be", from the 1080p shots of the
      map select screen and the Undercroft floor): THE ANSWER LINE STAYS OFF THE BUTTONS. The line sat 38 px up in the middle of the screen
      whatever was open, so it landed on ASCEND TO THIS SECTOR (the whole bottom of the map select screen is that one button) and, on the
@@ -2447,7 +2454,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.52';
+var VER='29.53';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47506,7 +47513,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.52: The end cards are cleaner: flat panel, bigger buttons, the world blurred behind. Check 29.52 fails on v29.51',
+  now:'v29.53: The end card shows the haul big, with a cleaner backdrop. Check 29.53 fails on v29.52',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

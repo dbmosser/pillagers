@@ -76,10 +76,10 @@ function useTool(name, a) {
       if (n !== 1) return 'NOT CHANGED: old_text found ' + n + ' times (must be exactly once)';
       writeFileSync(norm(a.path), t.replace(a.old_text, () => a.new_text)); return 'edited'; }
     if (name === 'view_image') { const x = low(a.path);
-      if (!['/tools/handoff/console/notes/', '/tools/handoff/shots/', '/tools/handoff/ui-refs/'].some(d => x.startsWith(RL + d)) || !/\.(jpe?g|png)$/.test(x))
+      if (!['/tools/handoff/console/notes/', '/tools/handoff/shots/', '/tools/handoff/ui-refs/'].some(d => x.startsWith(RL + d)) || !/\.(jpe?g|png|webp)$/.test(x))
         return 'REFUSED: only jpg or png files in the notes, shots or ui-refs folders';
       const buf = readFileSync(norm(a.path)); if (buf.length > 3.7e6) return 'TOO BIG: ' + buf.length + ' bytes; use the 1080 shot';
-      return [{ type: 'text', text: a.path }, { type: 'image', source: { type: 'base64', media_type: /png$/.test(x) ? 'image/png' : 'image/jpeg', data: buf.toString('base64') } }]; }
+      return [{ type: 'text', text: a.path }, { type: 'image', source: { type: 'base64', media_type: /png$/.test(x) ? 'image/png' : /webp$/.test(x) ? 'image/webp' : 'image/jpeg', data: buf.toString('base64') } }]; }
     if (name === 'run') { const c = String(a.command).trim().replace(/\\/g, '/');
       if (!ALLOW_CMD.some(re => re.test(c))) return 'REFUSED: not an allowed command. See the exact forms in your rules.';
       // 10-17 16:30: a helper took the lock with lock.sh, then ran fixq.sh without HELD=1, and fixq waited 46 minutes for the

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.53 - The end card total is the hero
+
+Co-op hunt while he was away. Critic pass 2 on the Extracted and KIA cards: no hero line, HUD bleeds through, feedback chip competes. The haul total is 56px, the scrim is near solid, the feedback prompt is a quiet text link. Restyle only.
+
+MEASURED. Check 29.53 passes, and fails on v29.52.
 ## v29.52 - The end cards share one flat shell
 
 Co-op hunt while he was away. The critic scored the Extracted, KIA, Abandoned and haul cards 2 of 5: HUD showing through, a glowing glass card, small buttons, amber lines. One flat 720px panel, blurred scrim, 56px buttons, rarity bars. Restyle only.

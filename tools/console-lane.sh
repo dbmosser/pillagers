@@ -50,8 +50,20 @@ mins=$(( 10#$(date +%H) * 60 + 10#$(date +%M) + 60 ))
 read DAY_USD allow < <(awk -v t="$TOTAL" -v b="${before:-0}" -v d="$dl" -v m="$mins" -v g="$DAY_USD" 'BEGIN{c=(t-b)/d; if(c<0)c=0; if(c>g)c=g; a=c*m/1440; if(a>c)a=c; printf "%.2f %.2f", c, a}')
 if [ "$(cap PACE 1)" != 0 ] && awk -v s="$spent" -v a="$allow" 'BEGIN{exit !(s+0>=a+0)}'; then   # 10-17 13:55 his "you can spend it all today ... just spend it efficiently": PACE=0 turns the pacing off
   echo "$(date '+%m-%d %H:%M') pacing: spent \$$spent today, \$$allow allowed by now (\$$DAY_USD for today, $dl days to $END)" > "$C/status-$L.txt"; exit 0; fi
-if [ "$L" = a ]; then t=$(ls "$C/tasks/"[0-9]*.md 2>/dev/null | sort | head -1); else t=$(ls "$C/tasks/$L-"*.md 2>/dev/null | sort | head -1); fi
+# 10-18 04:40, his "I shouldn't have had to ask" (two helpers sat idle with empty lists while lane a had five jobs waiting): a lane
+# never takes a job another lane is running (each lock names its job), an idle lane takes the next job from any list, and when every
+# list is empty a job that ran out of tries gets one more round, once (retried.txt).
+busy=$(for d in "$C"/lane-*.lock; do [ "$d" = "$LK" ] && continue; cat "$d/task" 2>/dev/null; echo; done)
+free(){ while read -r f; do [ -n "$f" ] || continue; printf '%s\n' "$busy" | grep -qxF "$(basename "$f")" || { echo "$f"; return; }; done; }
+retry(){ ls "$C/failed/"*.md 2>/dev/null | sort | while read -r f; do n=$(basename "$f" .md)
+  grep -qxF "$n" "$C/retried.txt" 2>/dev/null && continue; echo "$n" >> "$C/retried.txt"
+  awk -v n="$n" '$3==n{$3=n"-r2"} {print}' "$C/spend.txt" > "$C/spend.$L.tmp" && mv "$C/spend.$L.tmp" "$C/spend.txt"
+  mv "$f" "$C/tasks/" 2>/dev/null && echo "$C/tasks/$n.md"; break; done; }
+if [ "$L" = a ]; then t=$(ls "$C/tasks/"[0-9]*.md 2>/dev/null | sort | free); else t=$(ls "$C/tasks/$L-"*.md 2>/dev/null | sort | free); fi
+[ -z "$t" ] && t=$(ls "$C/tasks/"*.md 2>/dev/null | sort | free)
+[ -z "$t" ] && t=$(retry)
 [ -z "$t" ] && { echo "$(date '+%m-%d %H:%M') no tasks left" > "$C/status-$L.txt"; exit 0; }
+basename "$t" > "$LK/task"
 k=$(powershell -NoProfile -Command "[Environment]::GetEnvironmentVariable('PILLAGERS_API_KEY','User')" 2>/dev/null | tr -d '\r\n')
 [ -z "$k" ] && { echo "$(date '+%m-%d %H:%M') waiting for his key (Windows user variable PILLAGERS_API_KEY)" > "$C/status-$L.txt"; exit 0; }
 name=$(basename "$t" .md); stamp=$(date +%m%d-%H%M); out="$C/log/$name-$stamp.json"
@@ -75,8 +87,8 @@ if grep -q '"terminal_reason":"api_error"' "$out" && awk -v c="$cost" 'BEGIN{exi
 echo "$today $cost $name" >> "$C/spend.txt"
 n=$(grep -c " $name$" "$C/spend.txt")
 if grep -q 'TASK DONE' "$out"; then mv "$t" "$C/done/"; r=done
-elif [ "$n" -ge 3 ]; then mv "$t" "$C/failed/"; r=failed
-else r="partial (run $n of 3)"; fi
+elif [ "$n" -ge "$(cap MAXRUNS 3)" ]; then mv "$t" "$C/failed/"; r=failed
+else r="partial (run $n of $(cap MAXRUNS 3))"; fi
 echo "$(date '+%m-%d %H:%M') $name: $r, \$$cost" | tee -a "$C/runs.log" > "$C/status-$L.txt"
 # 10-17 evening (his "check all your stuff to see if there are other misestimates"): the runner looks only every 5 minutes, so a
 # helper sat idle up to 5 minutes between jobs. A run that did real work (a minute or more) starts the next job at once.

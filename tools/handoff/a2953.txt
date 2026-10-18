@@ -1,0 +1,1 @@
+| The end card total is the hero | v29.53 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 29.53 passes, fails on v29.52 |

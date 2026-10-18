@@ -1,0 +1,7 @@
+v29.53: the end card total is the hero
+
+The end card shows the haul big, with a cleaner backdrop.
+
+Check 29.53. Fails on v29.52.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

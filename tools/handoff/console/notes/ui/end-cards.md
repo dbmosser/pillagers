@@ -13,3 +13,5 @@ Plan (small ships, each its own cw- key):
  2 cw-abandon-confirm: pause confirm buttons (keep playing primary, sentence case)
  3 cw-whatsnew-card: width cap, Got it button
 ## Log
+- SHIPPED v29.52 cw-endcard-shell (scrim, HUD hide, flat shell). After1 critic: 35=2, 38=3, 60=2, 77=2. Remaining P0/P1: no hero number, stat row, sentence-wall. 
+- Next: cw-endcard-hero (hero line + stat row). Lines are built in fn near 30613 'var lines=[]' ; ocLedger at ~31452 builds the stat ledger rows (row('hv',...) HAUL VALUE, cnt()).
