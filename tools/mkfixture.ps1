@@ -6097,6 +6097,19 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.48',what:'the title line is centred on the title column and quieter than the logo',
+   run:function(){
+     var t=document.getElementById('title'), tg=document.getElementById('titletag'), wm=t&&t.querySelector('.wordmark'), was, bad=[];
+     if(!t||!tg) return 'SKIP: no title here';
+     was=t.classList.contains('on'); if(!was) t.classList.add('on');
+     try{
+       var r=tg.getBoundingClientRect(), p=tg.parentNode.getBoundingClientRect(), tr=document.createRange();
+       tr.selectNodeContents(tg); var q=tr.getBoundingClientRect();
+       var dx=Math.abs((q.left+q.right)/2-(p.left+p.right)/2);
+       if(dx>6) bad.push('the line is '+dx.toFixed(0)+'px off the centre of the title column');
+       if(parseFloat(getComputedStyle(tg).fontSize)>24) bad.push('the line is over 24px, it competes with the logo');
+     } finally { if(!was) t.classList.remove('on'); }
+     return bad.length?bad.join('; '):null; }},
   {v:'30.47',what:'his Q67: the demo kit is the same all night (every drop and respawn) and changes only after NEW PARTY',
    run:function(){
      if(window.storage&&window.storage.set) return 'SKIP: this host saves through window.storage, not localStorage';

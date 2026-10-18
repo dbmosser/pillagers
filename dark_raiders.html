@@ -1562,7 +1562,7 @@
 #root #title .tcard{ background:transparent; border:0; border-top:1px solid var(--ui-line-hi); border-radius:0; box-shadow:none; padding:var(--sp-2) var(--sp-1) 0 0; }
 #root #title .tstep{ color:var(--acc); }
 /* v28.xx (cw-title-line), his Q51: the one line that replaces the story and the cards. Title size, tracked, the one bone colour; nothing else carries the accent here. */
-#root #title #titletag{ margin:24px 0 16px; font:700 var(--fs-title)/1.1 var(--f-cond); letter-spacing:var(--track); color:var(--tx-1); }   /* v28.xx (cw-title-gap): the one line had 12px above it and sat on the fullscreen row; 24px above, 16px below the key row. */
+#root #title #titletag{ margin:24px auto 16px; text-align:center; font:600 var(--fs-body)/1.1 var(--f-cond); letter-spacing:var(--track); color:var(--tx-2); }   /* v28.xx (cw-title-centre), the critic (2 of 5, P0): "left-aligned at x=435 while everything else is centred on 960; the boldest text under the logo, it competes with the title". Centred (auto margins, 24px above and 16px below), 20px in tx-2 so the logo and 1 player lead. */   /* v28.xx (cw-title-gap): the one line had 12px above it and sat on the fullscreen row; 24px above, 16px below the key row. */
 #root #title .titlecol > div[style*="grid"]{ margin-top:var(--sp-3) !important; gap:var(--sp-4) !important; }
 #root #title .kbrow, #root #title .padrow{ margin-top:var(--sp-3) !important; }
 #root #title .kbrow b{ font-size:var(--fs-fine) !important; }
@@ -2779,7 +2779,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.47';
+var VER='30.48';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -48082,7 +48082,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.47: The starting guns stay the same all night and change after New party. Check 30.47 fails on v30.46',
+  now:'v30.48: The title line is centred and quieter. Check 30.48 fails on v30.47',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

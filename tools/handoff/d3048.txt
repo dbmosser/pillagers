@@ -1,0 +1,5 @@
+## v30.48 - TITLE: CENTRE THE LINE
+
+Co-op hunt while he was away. The critic: the line sat left at x=435 while the stack is centred on 960 (P0), and was the boldest text under the logo. Centred, 20px, quieter.
+
+MEASURED. Check 30.48 passes, and fails on v30.47.

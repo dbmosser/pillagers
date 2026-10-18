@@ -1,0 +1,7 @@
+v30.48: title: centre the line
+
+The title line is centred and quieter.
+
+Check 30.48. Fails on v30.47.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

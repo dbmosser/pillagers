@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.48 - TITLE: CENTRE THE LINE
+
+Co-op hunt while he was away. The critic: the line sat left at x=435 while the stack is centred on 960 (P0), and was the boldest text under the logo. Centred, 20px, quieter.
+
+MEASURED. Check 30.48 passes, and fails on v30.47.
 ## v30.47 - The demo kit stays the same all night
 
 Co-op hunt while he was away. His answer Q67 (10-18): same kit all night, and a new kit after NEW PARTY. The two random guns are drawn once and kept in the party record; every drop and respawn uses them and NEW PARTY draws the next pair.
