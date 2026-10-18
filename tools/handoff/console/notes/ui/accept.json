@@ -50,10 +50,17 @@
  "08-shop": {
   "score": 2,
   "pass": false,
-  "verdict": "The dark tile grid and amber Buy button are a decent start, but the screen is a full-bleed slab with half its area empty, tiny sub-16px text, a stacked currency block, a bottom-left toast-like quip, a bottom-left Close instead of top-right X, and a '$' price that breaks the style guide.",
-  "pic": "tools/handoff/console/notes/shots/b-31-c1/08-shop-1080.jpg",
-  "task": "b-31-ui-undercroft",
-  "when": "2026-10-18T09:55"
+  "verdict": "the new shop screen is pixel-identical to the old one: a dark, competent item grid with a loud lime buy button, but it still ignores the guide's window, header, close and type rules and wastes the bottom third of the screen.",
+  "findings": [
+   "P0 whole screen vs. old: Make it a 90% x 90% centred card (5% margin) on rgba(6,7,8,.80), with a 56px header holding the title left at 32px and a 48x48 X ghost button at top-right with a B glyph.",
+   "P0 bottom 40% of screen (y 690-1000): Fill the card: use 120-140px tiles in a 6-8 column grid that stretches to the panel bottom, or stretch the detail pane to the full body height with the buy block pinned to the bottom. Remove the empty gap above the footer.",
+   "P1 footer: 'everything here works. cannot say the same for you.' pill and 'close' button: Delete the quip. Move close to the 48x48 X in the header, and put a ghost 'back' at the footer left, 56px high, with a pad glyph B.",
+   "P1 header: 'shop, craft, and hire' + tab strip + 'shop before you drop.' subtitle: Title 'shop' at 32/700. Delete the subtitle. Make the currency one clean block: '900' at 20px tx-1 with 'credits' at 16px tx-2, and drop the stash and bag line into the footer legend at 14px.",
+   "P1 detail pane: stat rows and quantity stepper: Stats at 16px with tx-2 labels on 1px #2e3337 dividers at a 48-56px pitch. Narrow the stepper to about 200px and center it, or place it on the same row as the buy button. Use one currency format everywhere."
+  ],
+  "pic": "tools/handoff/console/notes/shots/04-cw-after/08-shop-1080.jpg",
+  "task": "04-style-guide-update",
+  "when": "2026-10-18T20:31"
  },
  "09-craft": {
   "score": 2,
@@ -114,17 +121,17 @@
  "18-settings-hub": {
   "score": 2,
   "pass": false,
-  "verdict": "the settings screen now follows the near-full-screen window spec with the close button at the top right, but the list is a narrow column in a big empty card, and the raid and audio rows are mixed in one list with a broken row and an inconsistent scroll cut.",
+  "verdict": "the settings card now fills the screen as the style guide asks, but the content is still one narrow column floating in a huge empty card, the audio rows still leak into the raid tab, the heat row has a stray gap, and the list clips mid-row at the bottom.",
   "findings": [
-   "P0 list rows 'heat when you call for extraction' and 'master volume': split audio rows into the audio tab. Make every row 56px with the label and value vertically centred. Check the section-header spacing code for the stray gap.",
-   "P1 bottom of list, 'music volume' row at y~870: snap the scroll to whole 56px rows or add a 24px fade mask at the bottom edge. Make the scrollbar 4px wide in --ui-line-hi, and show it only while scrolling.",
-   "P1 overall card composition: either put a left nav or a live preview/detail pane in the side space, or tighten the column. Align the title to the content column (x=480) or make the rows fill the card up to the 900px max.",
-   "P1 value controls (chevrons and value): right-align the control group within 400px of the label, or widen the label column. Make chevrons 24px with tx-2, lit in lime only on the focused row.",
-   "P2 focus state, 'edit the words' row: raise the focus fill to --ui-raised with a full 1px lime outline or a 4px bar. Add LB/RB glyphs at the strip ends."
+   "P0 list rows 'heat when you call for extraction' and 'master volume' (y~700-840): move the volume rows to the audio tab. Make every row exactly 56px with label and value vertically centred. Find and remove the extra margin or padding on the row that follows a section break.",
+   "P0 overall card composition (x 25-1895, content x 481-1439): fill the card: a 280px left nav, or a stacked category list, replaces the tab strip. A right-hand detail pane (480px) takes the description. Or cap the list at 900px and align the title and footer to that column. Do not leave empty flanks.",
+   "P1 bottom of list, 'music volume' row at y~870: snap the scroll to whole 56px rows. Or add a 24px fade mask at the bottom edge. Show the scrollbar as a 4px track in --ui-line-hi. Leave 24px padding under the detail pane.",
+   "P1 value controls (chevrons at x=923 and x=1175, value at x=1049): right-align the control group at the row's right padding (x≈1420). Make chevrons 24px in tx-2, lit lime only on the focused row. Or widen the value column to 240px.",
+   "P1 tab strip (y=140) and 'send play data': use 20px tabs, 48px high, with 24px side padding. Add LB/RB glyphs at the strip ends. Move 'send play data' into the footer as a ghost button, or into the accessibility tab. Start the scrollbar below the strip."
   ],
   "pic": "tools/handoff/console/notes/shots/04-cw-after/18-settings-hub-1080.jpg",
   "task": "04-style-guide-update",
-  "when": "2026-10-18T20:12"
+  "when": "2026-10-18T20:31"
  },
  "19-raid-hud-drop-first-raid": {
   "score": 2,

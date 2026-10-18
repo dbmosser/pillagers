@@ -1,0 +1,7 @@
+v30.96: score plate at the top
+
+The score, label and clock sit on one plate hung from the top edge.
+
+Check 30.96. Fails on v30.95.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

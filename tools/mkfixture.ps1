@@ -6099,6 +6099,30 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.96',what:'the score cluster at the top centre sits on one plate: label, number and clock, hung from the top edge (the critic, 10-19)',
+   run:function(){
+     if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object'||typeof arcadeScoreHud!=='function') return 'SKIP: no arcade here';
+     var g=null, oHp, calls=[], b, rs=say, pl, own=false;
+     try{
+       __topClear(); __runPrep();
+       if(ARCADE.on) return 'SKIP: the arcade is on after __topClear';
+       if(!arcadeDeploy({mapIx:0,seed:4242})) return 'SKIP: arcadeDeploy built no arcade raid';
+       g=__state(); if(!g||g.over||!g.player||!raidClockOn()) return 'SKIP: no live arcade raid with a clock';
+       say=function(){}; own=true;
+       oHp=hudPlate; g.timeLeft=300;
+       hudPlate=function(x,y,w,h){ calls.push({x:x,y:y,w:w,h:h}); return oHp.apply(this,arguments); };
+       try{ b=arcadeScoreHud(60,1); } finally { hudPlate=oHp; }
+       pl=calls.filter(function(c){ return c.y<=0&&c.x<W/2&&c.x+c.w>W/2; })[0];
+       if(!pl) return 'no plate hangs from the top edge behind the score ('+calls.length+' plates)';
+       if(pl.y+pl.h<(b||0)-2) return 'the plate ends at '+(pl.y+pl.h)+', above the bottom of the clock row '+b;
+       if(Math.abs((pl.x+pl.w/2)-W/2)>2) return 'the plate is not centred';
+       return null;
+     } finally {
+       if(own) say=rs;
+       try{ if(oHp) hudPlate=oHp; }catch(_e){}
+       try{ __endRaid('abandon'); }catch(_e2){}
+       __topClear();
+     } }},
   {v:'30.95',what:'on the wide Settings card a row stepper sits within 420 px of its label, never at the far edge of the 960 column',
    run:function(){
      if(!(window.__station&&window.__hubEnter)) return 'SKIP: this fixture cannot walk the Undercroft';

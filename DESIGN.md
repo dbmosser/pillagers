@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.96 - SCORE PLATE AT THE TOP
+
+Co-op hunt while he was away. The critic on the raid screen (10-19): the score cluster at the top centre has no plate. One HUD plate now hangs from the top edge behind the label, the number and the clock.
+
+MEASURED. Check 30.96 passes, and fails on v30.95.
 ## v30.95 - SETTINGS STEPPERS SIT NEXT TO THEIR LABELS
 
 Co-op hunt while he was away. Critic on Settings after the wide card (2 of 5): label and stepper 650 px apart. The name column is 384 wide and the stepper follows it.

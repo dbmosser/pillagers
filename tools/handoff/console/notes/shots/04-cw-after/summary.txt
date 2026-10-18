@@ -1,3 +1,6 @@
 == 1080 : window 1952x1183, viewport 1920x1080
-  18-settings-hub                        staged       7.3s    | settingsmodal
-  32-keys-window                         staged      10.8s  
+  02-welcome-pack                        staged       6.3s  
+  04-stash-terminal                      staged       7.1s  
+  08-shop                                staged       7.4s    | tradermodal
+  18-settings-hub                        staged       7.0s    | settingsmodal
+  65-codex                               staged       6.0s    | codexmodal

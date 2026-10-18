@@ -1,0 +1,3 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  duo                                    staged       5.7s    | {"scene":"duo","plate":false,"zoom":5,"w":1920,"h":1080,"chars":[{"id":"p1","kind":"player","x":781,"y":546,"w":166,"h":297,"fx":781,"fy":631},{"id":"mate","kind":"player","x":1139,"y":583,"w":168,"h":316,"fx":1141,"fy":651}],"objects":null}
+  duo-plate                              staged       5.3s    | {"scene":"duo","plate":true,"zoom":5,"w":1920,"h":1080,"chars":null,"objects":null}

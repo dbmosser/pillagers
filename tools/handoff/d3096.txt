@@ -1,0 +1,5 @@
+## v30.96 - SCORE PLATE AT THE TOP
+
+Co-op hunt while he was away. The critic on the raid screen (10-19): the score cluster at the top centre has no plate. One HUD plate now hangs from the top edge behind the label, the number and the clock.
+
+MEASURED. Check 30.96 passes, and fails on v30.95.
