@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v28.99 - THE TEAMMATE HEARS THE SPIN-UP AND THE LANCE CHARGE
+
+Co-op hunt while he was away. The Support MG spin-up whirr (lmgWhirr from spinTick), the Meridian Lance charge whine and its ready ping (rlfxWhine and rlfxPing in rlfxPlay) are synth sounds played straight to the speakers, so unlike every foley clip they never went through netFxNoise and the teammate never heard them, though v25.52 promised that your teammate hears your reload where you stand and named the Lance whine and ping. Proven with eval: staged as player 2, a spin-up and a full Lance reload put no whirr, whine or ping in the queue sent to the party. Now each is sent as f:~whirr, f:~whine (with its length) or f:~ping, and the teammate window plays it with the same distance fade as a foley clip (not its stereo pan or through-the-wall muffle), without touching its own spin or reload sound. Letting go of the trigger (f:~whirrx) or a Lance reload cut short (f:~whinex) cuts the teammate copy too, and he hears at most one of each at a time, so a tap-tap does not stack whirrs. The active reload ping stays your own cue and is not sent.
+
+MEASURED. Check 28.99 passes, and fails on v28.98.
 ## v28.98 - RED BARRELS LEAVE FIRE
 
 Co-op hunt while he was away. His order: red barrels, after the first explosion, also leave fire that deals damage over time. A blast now leaves a small fire where the barrel stood, 7 seconds plus a short ember glow. It burns the player 5 every half second (never one a teammate lit) and machines and pillagers 22 a second, credited to whoever lit the barrel, and it never blocks a way.

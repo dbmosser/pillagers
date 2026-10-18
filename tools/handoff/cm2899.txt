@@ -1,0 +1,7 @@
+v28.99: the teammate hears the spin-up and the lance charge
+
+Your teammate now hears your Support MG spin up and your Meridian Lance charge and ping where you stand.
+
+Check 28.99. Fails on v28.98.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

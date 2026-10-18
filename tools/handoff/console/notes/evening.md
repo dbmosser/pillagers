@@ -6,5 +6,6 @@ Already shipped before (git log): score SP, KIA 50%, liquor halved, frame cap 24
   STILL OPEN for PRE-RAID: CASH (a raid has no cash to carry in; needs a design: e.g. P.takeCash -> G.pedCarry or a raid wallet); maybe type-a-number / x5 step; also the stage (ASCENT CHECK) page is unchanged.
 - DONE (c-06-evening, v28.94 cw-precash): PRE-RAID cash. CASH chip (-, +, MAX; ALL/NONE set it) in #sectorpack, P.takeCash (null=ALL, session only). Deploy with MY LOADOUT copies it to P.takeCashRaid; raid start sets G.cash (null = no cap); pedBuy refuses above G.cash (NOT ENOUGH CASH ON YOU) and spends it. Banked credits are never at risk. Not done: the ASCENT CHECK stage page is unchanged (fine).
 - DONE (c-07, v28.96 cw-headbars): heal/plate bar above head moved from the pre-sort world pass into _wtA (after every wall). Reload/search/revive/downed bars were HUD bars already (drawn on top).
-Open next, in order: barrel fire DOT; mimic; breach hold; all text into feed; wheel in Undercroft + cursor; rocket launcher slot; craft hold bar + x10.
+- DONE (c-08, v28.98 cw-barrelfire): brlBlast calls brlFireAdd; G.bfire list, 7 s fire r64, burns player 5/0.5 s (not a teammate's barrel), enemies 22/s, never blocks; ticked in brlTick, drawn in the DR sort pass (brlFireDraw).
+Open next, in order: mimic; breach hold; all text into feed; wheel in Undercroft + cursor; rocket launcher slot; craft hold bar + x10.
 (Other lanes may be taking items: grep git log for the item before starting.)
