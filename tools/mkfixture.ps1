@@ -6422,7 +6422,7 @@ window.__REGRESS=[
        if(String(man.textContent||'').indexOf(' lost, ')<0) return 'SKIP: nothing was lost on this card';
        tiles=man.querySelectorAll('.octile');
        if(!tiles.length) return 'what you lost is not a tile row';
-       if(tiles[0].offsetWidth!==64) bad.push('a tile is '+tiles[0].offsetWidth+'px, not 64');
+       if(tiles[0].offsetWidth!==72) bad.push('a tile is '+tiles[0].offsetWidth+'px, not 72');   /* v28.xx (cw-endcard-clean): the critic, 64px tiles are small: 72 */
        hero=man.querySelector('.ocloss b');
        if(!hero) bad.push('no loss figure');
        else if(Math.round(parseFloat(getComputedStyle(hero).fontSize))!==56) bad.push('the loss figure is '+getComputedStyle(hero).fontSize+', not 56px');
