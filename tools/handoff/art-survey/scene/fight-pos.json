@@ -1,0 +1,69 @@
+{
+ "scene": "fight",
+ "picture": "1920x1080",
+ "zoom": 3,
+ "plate": "fight-plate-1080.jpg",
+ "characters": [
+  {
+   "id": "p1",
+   "kind": "player",
+   "x": 591,
+   "y": 533,
+   "w": 177,
+   "h": 157,
+   "fx": 553,
+   "fy": 595
+  },
+  {
+   "id": "mate",
+   "kind": "player",
+   "x": 372,
+   "y": 373,
+   "w": 170,
+   "h": 153,
+   "fx": 337,
+   "fy": 433
+  },
+  {
+   "id": "pillager-a",
+   "kind": "pillager",
+   "x": 953,
+   "y": 423,
+   "w": 208,
+   "h": 137,
+   "fx": 991,
+   "fy": 475
+  },
+  {
+   "id": "pillager-b",
+   "kind": "pillager",
+   "x": 1091,
+   "y": 711,
+   "w": 196,
+   "h": 137,
+   "fx": 1123,
+   "fy": 763
+  },
+  {
+   "id": "crawler",
+   "kind": "machine",
+   "x": 1227,
+   "y": 604,
+   "w": 139,
+   "h": 138,
+   "fx": 1231,
+   "fy": 655
+  },
+  {
+   "id": "sentry",
+   "kind": "machine",
+   "x": 1514,
+   "y": 461,
+   "w": 214,
+   "h": 220,
+   "fx": 1531,
+   "fy": 535
+  }
+ ],
+ "objects": []
+}

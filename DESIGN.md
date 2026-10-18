@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.91 - the downed bar gives half a second back per hit and shows it; the bleed clock has two decimals
+
+Co-op hunt while he was away. His words (2026-10-18): "the active downed system should show you the increase in time when you hit it successfully, e.g. +1 second -- or whatever" and "maybe it should give player a half second back, and players clock should include 2 decimals so that it is shown to run down". A hit on the downed bar used to halve the bleed for 1.2 s, which showed nothing but a STEADY tag. Now a hit adds half a second to the clock at once and a green +0.50s rises over the bar while the clock flashes green. One hit a pass (the spot turns green until the slider leaves it), so spamming clicks inside the spot gives one half second; a hit on every pass is the same best case as before (half speed). The clock under DOWN reads like 14.37s.
+
+MEASURED. Check 30.91 passes, and fails on v30.90.
 ## v30.90 - TITLE: FEWER KEY HINTS, 48PX BUTTONS
 
 Co-op hunt while he was away. The critic scored the title 3 of 5: nine gameplay key hints on a menu strip and top-right buttons at 44px. The legend keeps move, aim, fire, search and F1; the buttons are 48px.

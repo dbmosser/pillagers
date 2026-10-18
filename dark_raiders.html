@@ -2799,7 +2799,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.90';
+var VER='30.91';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -25622,21 +25622,30 @@ z.hold=(raidClockOn())?Math.min(30,Math.max(3,G.timeLeft-1)):30;   // v12.24: wi
 // runs at half speed (DB_RATE) for DB_STEADY seconds, and a hit renews that time, it does not stack, so a hit about every pass keeps the bleed slow. A press outside the spot is a
 // MISS: a dull sound, a red flash and DB_LOCK seconds in which the trigger is dead, no other penalty. Everything else that reads fire sits below the downed return of
 // updatePlayer, so the press does nothing more. Live play only (G.sim never runs it), and nothing here draws from the seeded stream: the slider runs on the downed clock.
-var DB_ZA=0.40, DB_ZB=0.60, DB_PASS=1.0, DB_STEADY=1.2, DB_LOCK=0.3, DB_RATE=0.5, DB_DRAWS=0;
+// cw-downgain, HIS WORDS (2026-10-18): "the active downed system should show you the increase in time when you hit it successfully, e.g. +1 second -- or
+// whatever" and "maybe it should give player a half second back, and players clock should include 2 decimals so that it is shown to run down". A HIT now
+// gives DB_GAIN (half a second) back to the bleed-out clock at once, in place of the slow bleed above, and a green +0.50s rises over the bar for DB_POP
+// seconds while the clock flashes green. ONE HIT A PASS: after a hit the spot turns green and is spent until the slider leaves it, so a burst of clicks
+// inside one pass gives one half second (a press in a spent spot does nothing, it is not a miss). The slider crosses the spot once a second, so a hit on
+// every pass bleeds at half speed, the same best case as the slow bleed it replaces. The clock under DOWN shows two decimals.
+var DB_ZA=0.40, DB_ZB=0.60, DB_PASS=1.0, DB_GAIN=0.5, DB_POP=0.8, DB_LOCK=0.3, DB_DRAWS=0;
 function downBarPos(t){ var u=t/DB_PASS; u-=2*Math.floor(u/2); return u<1?u:2-u; }
 function downBarTick(p,dt){
   var dn=!!mouse.down, press, f;
   if(!G||G.sim||G.over||!p||!p.downed){ if(p&&p.dbOn) p.dbOn=0; return false; }
-  if(p.dbOn!==1){ p.dbOn=1; p.dbT=0; p.dbSteady=0; p.dbLock=0; p.dbFlash=0; p.dbPulse=0; p.dbPrev=dn; }   // a trigger already held as he fell is not a press
+  if(p.dbOn!==1){ p.dbOn=1; p.dbT=0; p.dbSpent=0; p.dbLock=0; p.dbFlash=0; p.dbPulse=0; p.dbGain=0; p.dbGainT=0; p.dbPrev=dn; }   // a trigger already held as he fell is not a press
   p.dbT+=dt;
   if(p.dbLock>0) p.dbLock=Math.max(0,p.dbLock-dt);
   if(p.dbFlash>0) p.dbFlash=Math.max(0,p.dbFlash-dt);
   if(p.dbPulse>0) p.dbPulse=Math.max(0,p.dbPulse-dt);
+  if(p.dbGainT>0) p.dbGainT=Math.max(0,p.dbGainT-dt);
+  f=downBarPos(p.dbT);
+  if(f<DB_ZA||f>DB_ZB) p.dbSpent=0;   // cw-downgain: out of the spot, the next pass may score again
   press=dn&&!p.dbPrev; p.dbPrev=dn;
   if(!press||p.dbLock>0) return false;
-  f=downBarPos(p.dbT);
   if(f<DB_ZA||f>DB_ZB){ p.dbLock=DB_LOCK; p.dbFlash=DB_LOCK; try{ blip('arMiss'); }catch(_dm){} return false; }
-  p.dbSteady=DB_STEADY; p.dbPulse=0.25;
+  if(p.dbSpent) return false;   // cw-downgain: one hit a pass
+  p.dbSpent=1; p.downT+=DB_GAIN; p.dbGain=DB_GAIN; p.dbGainT=DB_POP; p.dbPulse=0.25;
   try{ blip('arHit'); }catch(_dh){}
   return true;
 }
@@ -25647,13 +25656,13 @@ function downBarDraw(cx,yb,p){
   if(!p||p.dbOn!==1||!p.downed) return;
   DB_DRAWS++;
   x0=Math.round(cx-BW/2); y0=Math.round(yb-BH); zx=Math.round(x0+BW*DB_ZA); zw=Math.round(BW*(DB_ZB-DB_ZA));
-  f=downBarPos(p.dbT); inz=(f>=DB_ZA&&f<=DB_ZB); lk=(p.dbLock>0); st=(p.dbSteady>0);
+  f=downBarPos(p.dbT); inz=(f>=DB_ZA&&f<=DB_ZB); lk=(p.dbLock>0); st=!!(p.dbSpent&&inz);   // cw-downgain: st is a spot already scored this pass
   ctx.save();
   ctx.fillStyle=(p.dbFlash>0)?'rgba(170,30,24,.92)':'rgba(6,9,13,.82)';
   ctx.fillRect(x0-3,y0-3,BW+6,BH+6);
   ctx.fillStyle='rgba(70,58,56,.9)'; ctx.fillRect(x0,y0,BW,BH);
-  ctx.fillStyle=lk?'rgba(150,40,32,.60)':(inz?'rgb(255,150,138)':'rgb(232,58,44)');
-  if(inz&&!lk){ ctx.shadowColor='rgba(255,90,70,.95)'; ctx.shadowBlur=9; }
+  ctx.fillStyle=lk?'rgba(150,40,32,.60)':(st?'rgb(110,196,132)':(inz?'rgb(255,150,138)':'rgb(232,58,44)'));
+  if(inz&&!lk){ ctx.shadowColor=st?'rgba(110,220,140,.9)':'rgba(255,90,70,.95)'; ctx.shadowBlur=9; }
   ctx.fillRect(zx,y0,zw,BH);
   ctx.shadowBlur=0; ctx.shadowColor='rgba(0,0,0,0)';
   ctx.fillStyle=lk?'rgba(255,69,56,.45)':(inz?'rgb(255,255,255)':'rgb(255,69,56)');
@@ -25662,14 +25671,15 @@ function downBarDraw(cx,yb,p){
   if(p.dbPulse>0){ ctx.strokeStyle='rgba(159,232,176,'+Math.min(1,p.dbPulse*4).toFixed(2)+')'; ctx.lineWidth=3; ctx.strokeRect(zx-4,y0-5,zw+8,BH+10); }
   ctx.fillStyle=lk?'rgba(255,255,255,.45)':'rgb(255,255,255)';
   ctx.fillRect(Math.round(x0+BW*f)-2,y0-5,4,BH+10);
-  if(st){ ctx.font=FS(TYPE.label); ctx.textAlign='center'; ctx.fillStyle='#9fe8b0'; ctx.fillText('STEADY',cx,y0-10); }
+  if(p.dbGainT>0){   // cw-downgain: the time a hit gave back rises over the bar and fades
+    var _gk=p.dbGainT/DB_POP; ctx.font=FS(TYPE.head); ctx.textAlign='center'; ctx.globalAlpha=Math.min(1,_gk*2); ctx.fillStyle='#9fe8b0';
+    ctx.fillText('+'+(+p.dbGain||0).toFixed(2)+'s',cx,Math.round(y0-10-(1-_gk)*14)); ctx.globalAlpha=1;
+  }
   ctx.restore();
 }
 function tickDowned(dt){
   var p=G.player;
-  var _ds=(p.dbSteady>0)?Math.min(dt,p.dbSteady):0;   // v28.xx (downbar1): the slice of this step that is a slow bleed
-  if(_ds>0) p.dbSteady-=_ds;
-  p.downT-=(dt-_ds)+_ds*DB_RATE;
+  p.downT-=dt;   // cw-downgain: a hit on the downed bar gives time back at once (downBarTick); there is no slow bleed any more
   if(p.downT<=0){ killPlayer(p.pendKiller); return true; }
   return false;
 }
@@ -25846,7 +25856,7 @@ function updatePlayer(dt){
     return;
   }
 
-  if(p.dbOn){ p.dbOn=0; p.dbSteady=0; p.dbLock=0; }   // v28.xx (downbar1): on his feet again, the downed bar is gone
+  if(p.dbOn){ p.dbOn=0; p.dbSpent=0; p.dbLock=0; p.dbGainT=0; }   // v28.xx (downbar1): on his feet again, the downed bar is gone
   if(p.rollCd>0) p.rollCd-=dt;
   if(p.roll>0){
     if(G.netRevT){ G.netRevT=0; G.netRevS=-1; }   // v17.05, co-op hunt 2026-09-28: a roll breaks a pick-up hold too; netRevHold, which reset it, runs only after a roll
@@ -41046,8 +41056,10 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
     // has room of its own instead of leaning on the line below.
     var _barY=_dy+Math.round(_hH*0.42);
     bar(W/2-100,_barY,200,10,p.downT/CFG.downTime,'#c8452f');
-    ctx.font=_fD; ctx.fillStyle='#ffb0a0';
-    ctx.fillText(Math.max(0,Math.ceil(p.downT))+'s',W/2+130,_barY+9);
+    // cw-downgain, HIS WORDS (2026-10-18): "players clock should include 2 decimals so that it is shown to run down". Left aligned so the digits do not
+    // push into the bar as they change, and green while a hit's +0.50s shows.
+    ctx.font=_fD; ctx.fillStyle=(p.dbGainT>DB_POP*0.5)?'#9fe8b0':'#ffb0a0'; ctx.textAlign='left';
+    ctx.fillText(Math.max(0,p.downT).toFixed(2)+'s',W/2+110,_barY+9); ctx.textAlign='center';
     var _rowY=_barY+10+Math.round(_hD*1.15);
     ctx.font=_fD; ctx.fillStyle='#e8d5d2';
     // v8.87, his wording. The old line opened with what he had just used up.
@@ -48324,7 +48336,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.90: The title key line is shorter and the top-right buttons are taller. Check 30.90 fails on v30.89',
+  now:'v30.91: Downed: a good hit on the bar gives half a second back and shows +0.50s. The bleed clock counts down in hundredths. Check 30.91 fails on v30.90',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,29 @@
+{
+ "scene": "duo",
+ "picture": "1920x1080",
+ "zoom": 5,
+ "plate": "duo-plate-1080.jpg",
+ "characters": [
+  {
+   "id": "p1",
+   "kind": "player",
+   "x": 781,
+   "y": 546,
+   "w": 166,
+   "h": 297,
+   "fx": 781,
+   "fy": 631
+  },
+  {
+   "id": "mate",
+   "kind": "player",
+   "x": 1139,
+   "y": 583,
+   "w": 168,
+   "h": 316,
+   "fx": 1141,
+   "fy": 651
+  }
+ ],
+ "objects": []
+}

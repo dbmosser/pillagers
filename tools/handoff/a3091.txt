@@ -1,0 +1,1 @@
+| the downed bar gives half a second back per hit and shows it; the bleed clock has two decimals | v30.91 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 30.91 passes, fails on v30.90 |

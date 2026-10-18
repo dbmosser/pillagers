@@ -1,0 +1,86 @@
+{
+ "scene": "loot",
+ "picture": "1920x1080",
+ "zoom": 3.4,
+ "plate": "loot-plate-1080.jpg",
+ "characters": [
+  {
+   "id": "p1",
+   "kind": "player",
+   "x": 958,
+   "y": 553,
+   "w": 164,
+   "h": 178,
+   "fx": 933,
+   "fy": 623
+  }
+ ],
+ "objects": [
+  {
+   "id": "open-crate",
+   "kind": "container",
+   "fx": 695,
+   "fy": 691
+  },
+  {
+   "id": "open-locker",
+   "kind": "container",
+   "fx": 593,
+   "fy": 521
+  },
+  {
+   "id": "open-safe",
+   "kind": "container",
+   "fx": 474,
+   "fy": 691
+  },
+  {
+   "id": "open-cache",
+   "kind": "container",
+   "fx": 361,
+   "fy": 521
+  },
+  {
+   "id": "open-jackpot",
+   "kind": "container",
+   "fx": 239,
+   "fy": 691
+  },
+  {
+   "id": "pile-uncommon",
+   "kind": "pile",
+   "fx": 1137,
+   "fy": 678
+  },
+  {
+   "id": "pile-rare",
+   "kind": "pile",
+   "fx": 1313,
+   "fy": 596
+  },
+  {
+   "id": "pile-elite",
+   "kind": "pile",
+   "fx": 1490,
+   "fy": 678
+  },
+  {
+   "id": "pile-gold",
+   "kind": "pile",
+   "fx": 1667,
+   "fy": 596
+  },
+  {
+   "id": "wreck-sentry",
+   "kind": "wreck",
+   "fx": 851,
+   "fy": 378
+  },
+  {
+   "id": "wreck-crawler",
+   "kind": "wreck",
+   "fx": 1109,
+   "fy": 399
+  }
+ ]
+}
