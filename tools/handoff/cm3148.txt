@@ -1,0 +1,7 @@
+v31.48: the sector map card, second pass
+
+The sector map is calmer: quieter zone names, labels clear of the frame, an even contracts list and a close hint.
+
+Check 31.48. Fails on v31.47.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

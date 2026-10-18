@@ -1,0 +1,3 @@
+{"generated":"2026-10-18T19:34:29","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":14,"screens":[
+{"name":"36-raid-low-health","screen":"In-raid HUD at low health (HP 18)","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"36-raid-low-health-1080.jpg","lint":""}}
+]}

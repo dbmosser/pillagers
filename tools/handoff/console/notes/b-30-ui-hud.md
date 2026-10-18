@@ -1,9 +1,12 @@
-# b-30-ui-hud notes (run of 10-18 night)
-- Shipped v31.38 cw-barheight: armour and stamina bars both 16 high (stamina was 12), chip and armour text follow. Pictures: shots/b-30h-after -> shots/b-30i-after (51).
-- Critic on 51 stays 2. Left over, and why it is not mine:
-  - same alert twice (top card + left log): his 10-15 order "all text on screen also goes into the player feed" (cw-feedall). Not changed.
-  - "delete the sentence under locked on": the sentence is the alert detail; 02 owns the alert cards.
-  - left log row component (32px, 3 rows max): 02 owns the feed (cw-feedcalm v30.93). Left to 02.
-  - top-right column: waits on cw-trcol.
-  - score block timer as 56px hero, vitals labels inside bars, hp damage chip: next for 02 / a later b-30 run.
-- Never judged before, shot this run (b-30h-after): 20, 24, 34, 36, 51, 78. 36 critic reply was not JSON; rerun later.
+# b-30-ui-hud notes (latest run, 2026-10-18 evening)
+- Guide READY. Shots: notes/shots/b-30j-before (all 15, v31.4x). Critic (before): 24 = 2, 36 = 2 (new). 20, 34, 78 critic runs done earlier in the run (scores not kept; all around 2).
+- SHIPPED v31.44 cw-lowhp (pulsing red outline on hp bar under 25 percent), v31.47 cw-lowhp2 (3px, alpha floor 0.56, stamina bar dims at low hp). Critic on 36 after: still 2, "same"; it says the hp bar has no red fill (it does, 54px, but the label sits on it) and wants hp text above the bar, a screen-edge vignette, and the stamina is now faint (P2: raise back to ~0.6 alpha if it matters).
+- Repeated critic findings, NOT done (belong to 02 or cw-trcol or need a ruling): 
+  * "the long dock cache" landmark label drawn under the stash row, clipped (top-right block: waits on cw-trcol).
+  * key legend card at bottom centre is clutter: wants auto-hide after ~30s or collapse to "f1 keys". Not done: needs a check of the legend auto-fade code (legend fade exists in 02 notes?) and old checks.
+  * 'run info' / 'run goals' two titles (check 27.42 needs RUN GOALS).
+  * capital I in "run Info": the font draws a lowercase i as a tall I-like glyph in this face; ncFix lowercases everything, not a code bug.
+  * toast duplicates (codex entry shown top centre and bottom left); "contract item nearby" explaining sentence on toast. NEXT candidate: one codex toast only.
+  * hotbar: dim empty slots to 40 percent, no silhouettes; prompt 'scav pistol fire use' 12px -> 16px. NEXT candidate.
+  * ammo card: 'b / i backpack' 24px -> 16px tx-2. 02 owns (cw-cardhint).
+- Next run: do the toast dedupe and the hotbar empty-slot dim, then shoot 15 screens and critic each.

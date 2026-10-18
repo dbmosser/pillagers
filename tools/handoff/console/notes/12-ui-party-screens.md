@@ -38,4 +38,12 @@ shots/12b-before and shots/12b-after (all 13 screens, 1080).
 2. 52/55: stats as 4 equal columns, 24px values / 16px labels; score line with a 16px "score" label over a 56px number.
 3. 46: row names 20px, headers 16px tx-2 tracked, "left stick"/"right stick" spelled out in lower case.
 
+## Lane a run (10-19, run 4)
+- Shipped v31.4x cw-partylook4 and v31.46 cw-partylook5 (see changes.md). Pictures: shots/12-r4-before, 12-r4-after2.
+- Critic after: 46=3 same, 52=3 better, 55=3 better, 56=3 same, 62=3 better, 64=2 same. Two ships did not lift any to 4: stop per rule.
+- Still asked, all repeats: bigger prompt with a pad/key glyph (not a fake button; keep live any-key prompt), 4 equal stat columns,
+  "score" label over a 56px hero, 16px floor for labels, scrim .80, 56px header / 72px footer rows.
+- Next try on 64: card is small and nearly empty (2/5): show "seeded night" without the seed code, 16px subline, empty state left-aligned.
+  58/63/48/49/53/54 not re-shot this run.
+
 - 2026-10-18 evening (coordinator): screens 46 and 56 belong to this task only (03 dropped them); 03 keeps 45 for the title and backdrop, the attract card code is this task's. See the SCREEN HANDOVER block at the end of the task file.

@@ -1,0 +1,13 @@
+# 44-camera-closer : camera 30 percent closer (art survey a36 C, his pick)
+
+- The default camera zoom becomes 1.3 (spec: __setZoom(1.3)) in raids, for both players, solo and two-player, demo and career. If Settings has a zoom row, 1.3 becomes its default, and his own saved setting is left alone.
+- Measure, and write in your notes, at 1920x1080 and 3840x2160: how many world units show across and up and down at 1.3, against how far a pillager bot will fire (the 600-unit rule) and the machines' ranges. If anything that can hurt you can now fire from off screen, do NOT change any range. Put the numbers in your notes and in questions.md for the coordinator.
+- Check that the HUD, the map, the minimap, the extraction marker and the off-screen arrows still work at 1.3. Retarget, through the queue, any check or screenshot staging that assumed zoom 1.0.
+- Keep it to one small ship, so it is easy to undo.
+
+## How
+- Each pick has its exact spec in tools/handoff/art-survey/survey.json (question id, then options[key].spec). Build it as written unless the notes here say otherwise. tools/handoff/art-survey/answers.md has his words and the coordinator's calls.
+- The look to match: tools/handoff/art-survey/img/<id>-<key>.jpg (lower case key; the "a" picture is today). Motion picks have clips in art-survey/snip/<id>-<key>.html.
+- Take before and after pictures of the same scene at 1080. Look at them (Read shows pictures) and fix what looks wrong. The critic (tools/console-sdk/critic.mjs) is for screens and is optional here.
+- One ship per task through the queue, with a check that fails on the old build. The fingerprint must not change: these are drawing changes only, so add no random rolls to the map build or spawns.
+- Frame cost: 60 fps at 4K is the bar. Measure the frame time before and after with two players on screen, and note both numbers.
