@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.93 - CALMER LEFT FEED
+
+Co-op hunt while he was away. The critic on the raid screen (10-19): the left toasts are faint and carry explaining sentences. Details over four words stay out of the feed line and old lines dim to 60 percent, not 35.
+
+MEASURED. Check 30.93 passes, and fails on v30.92.
 ## v30.92 - THE WHAT IS NEW CARD NAMES POLISH PASS 25
 
 Co-op hunt while he was away. The card was stamped v30.76 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
