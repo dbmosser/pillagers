@@ -6097,6 +6097,17 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.42',what:'the pause screen hides the HUD behind it (scrim 97 percent) and the Keys window has no explaining sentence above its list',
+   run:function(){
+     var pb=document.getElementById('pausebox'), host, m, s, cs, a, mm, bad=[];
+     if(!pb) return 'SKIP: no pause box here';
+     cs=getComputedStyle(pb).backgroundColor; mm=/[\/,]\s*([0-9.]+)\s*\)\s*$/.exec(cs); a=/^rgb\(/.test(cs)?1:(mm?parseFloat(mm[1]):(/^color\(/.test(cs)?1:0));
+     if(!(a>=0.96)) bad.push('the pause scrim is '+cs+', the HUD shows through');
+     host=pb.parentNode; m=document.createElement('div'); m.className='modal'; m.id='keysmodal'; m.innerHTML='<h3>Keys</h3><div class="msub">x</div>';
+     host.appendChild(m);
+     try{ s=getComputedStyle(m.querySelector('.msub')).display; if(s!=='none') bad.push('the Keys window still opens with a sentence ('+s+')'); }
+     finally{ host.removeChild(m); }
+     return bad.length?bad.join('; '):null; }},
   {v:'29.41',what:'the attract board card is one menu width wide (not 44% of the screen) and its empty line is the 20px body size times the menu scale (critic 2 of 5 on screen 45)',
    run:function(){
      if(typeof attZ!=='function'||typeof arcadeAttEl!=='function'||typeof arcadeAttLine!=='function') return 'no attract page here';

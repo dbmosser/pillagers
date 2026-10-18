@@ -1,0 +1,12 @@
+{
+    "title":  "PAUSE SCRIM AND KEYS INTRO",
+    "why":  "Critic c-31: the HUD showed through the pause card, and the Keys window opened with an explaining sentence. The scrim goes to 97 percent and the sentence is hidden. Pause title and legend sizes stay as the old checks pin them.",
+    "now":  "The pause screen covers the HUD behind it, and the Keys window opens straight on the list.",
+    "edits":  [
+                  {
+                      "anchor":  "#root #setdetail .sdh{ font-size:var(--fs-body); line-height:1.5; }",
+                      "replacement":  "#root #setdetail .sdh{ font-size:var(--fs-body); line-height:1.5; }   /* v28.xx (cw-pausescrim) critic c-31 (pause 2, keys 2): the HUD showed through the pause card, and the Keys window opened with an explaining sentence above the list */ #root #pausebox{ background:color-mix(in srgb,var(--ui-void) 97%,transparent); } #root #keysmodal .msub{ display:none; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the pause screen hides the HUD behind it (scrim 97 percent) and the Keys window has no explaining sentence above its list\u0027,\n   run:function(){\n     var pb=document.getElementById(\u0027pausebox\u0027), host, m, s, cs, a, mm, bad=[];\n     if(!pb) return \u0027SKIP: no pause box here\u0027;\n     cs=getComputedStyle(pb).backgroundColor; mm=/[\\/,]\\s*([0-9.]+)\\s*\\)\\s*$/.exec(cs); a=/^rgb\\(/.test(cs)?1:(mm?parseFloat(mm[1]):(/^color\\(/.test(cs)?1:0));\n     if(!(a\u003e=0.96)) bad.push(\u0027the pause scrim is \u0027+cs+\u0027, the HUD shows through\u0027);\n     host=pb.parentNode; m=document.createElement(\u0027div\u0027); m.className=\u0027modal\u0027; m.id=\u0027keysmodal\u0027; m.innerHTML=\u0027\u003ch3\u003eKeys\u003c/h3\u003e\u003cdiv class=\"msub\"\u003ex\u003c/div\u003e\u0027;\n     host.appendChild(m);\n     try{ s=getComputedStyle(m.querySelector(\u0027.msub\u0027)).display; if(s!==\u0027none\u0027) bad.push(\u0027the Keys window still opens with a sentence (\u0027+s+\u0027)\u0027); }\n     finally{ host.removeChild(m); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

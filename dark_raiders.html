@@ -1485,7 +1485,7 @@ body #attract .arcstrip{ font:600 calc(var(--fs-body) * var(--attz,1))/1.4 var(-
 #root #setlist .row[style*="opacity:.7"]{ padding-top:var(--sp-3); }
 #root #setdetail .sdk{ font-size:var(--fs-title); letter-spacing:var(--track); text-transform:none; }
 #root #setdetail .sdv{ font-size:var(--fs-body); letter-spacing:var(--track); text-transform:none; border-radius:var(--rad); }
-#root #setdetail .sdh{ font-size:var(--fs-body); line-height:1.5; }
+#root #setdetail .sdh{ font-size:var(--fs-body); line-height:1.5; }   /* v28.xx (cw-pausescrim) critic c-31 (pause 2, keys 2): the HUD showed through the pause card, and the Keys window opened with an explaining sentence above the list */ #root #pausebox{ background:color-mix(in srgb,var(--ui-void) 97%,transparent); } #root #keysmodal .msub{ display:none; }
 </style><canvas id="cv"></canvas>
 <canvas id="hcv"></canvas>
 <div id="hubtoast"></div>
@@ -2402,7 +2402,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.41';
+var VER='29.42';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47390,7 +47390,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.41: The score board card is narrower and its text is the standard size. Check 29.41 fails on v29.40',
+  now:'v29.42: The pause screen covers the HUD behind it, and the Keys window opens straight on the list. Check 29.42 fails on v29.41',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

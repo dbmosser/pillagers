@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.42 - PAUSE SCRIM AND KEYS INTRO
+
+Co-op hunt while he was away. Critic c-31: the HUD showed through the pause card, and the Keys window opened with an explaining sentence. The scrim goes to 97 percent and the sentence is hidden. Pause title and legend sizes stay as the old checks pin them.
+
+MEASURED. Check 29.42 passes, and fails on v29.41.
 ## v29.41 - The attract board card is one menu width and its empty line is the body size
 
 Co-op hunt while he was away. The critic scored the attract board 2 of 5: an 845px card (44% of the screen) held two short lines with a huge empty right side, and the empty line was 18px, off the 20/16 scale. A page with no table is now one menu width (560 times the menu scale), the empty line is the 20px body size times the scale. The how to play page keeps its width. No wording moved.

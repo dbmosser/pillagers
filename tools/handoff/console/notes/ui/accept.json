@@ -122,10 +122,10 @@
  "18-settings-hub": {
   "score": 2,
   "pass": false,
-  "verdict": "A dense, flat settings list with two competing tab rows, a duplicated detail panel and a wasted right half, so it reads as a debug form rather than a polished AAA settings screen.",
-  "pic": "tools/handoff/console/notes/shots/all/18-settings-hub-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:16"
+  "verdict": "Clean dark palette and sentence case, but two stacked tab strips, a joke subtitle, a full-screen slab with a small detail pane and dead space, tiny text and a toast stuck over the footer leave it well short of the guide.",
+  "pic": "tools/handoff/console/notes/shots/c-31d-now/18-settings-hub-1080.jpg",
+  "task": "c-31-ui-pause-settings",
+  "when": "2026-10-18T07:40"
  },
  "19-raid-hud-drop-first-raid": {
   "score": 2,
@@ -162,26 +162,26 @@
  "25-raid-pause-box": {
   "score": 2,
   "pass": false,
-  "verdict": "The only real change is a cream-white title in place of the amber one, which fits the 'boldness in one place' rule, but the pause card is still a dense key-cap cheat sheet with a feedback sentence and five equal-width buttons, and the live HUD still shows through behind it.",
-  "pic": "tools/handoff/console/notes/shots/c-31-after/25-raid-pause-box-1080.jpg",
+  "verdict": "The pause card has a clear primary button and sentence case, but it is dominated by a five-line key-binding dump and a feedback sentence, the HUD still shows through behind it, and the title is small and crowded, so it reads as a debug overlay rather than a polished pause menu.",
+  "pic": "tools/handoff/console/notes/shots/c-31d-now/25-raid-pause-box-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T07:15"
+  "when": "2026-10-18T07:35"
  },
  "26-settings-from-pause-top": {
   "score": 2,
   "pass": false,
-  "verdict": "The new settings screen is calmer and the nested tab strip and descriptions are cleaner, but it is now a lopsided full-bleed slab with a dead right half, a leftover joke subtitle, two tab strips, and a Close button that breaks the style guide.",
-  "pic": "tools/handoff/console/notes/shots/c-31-after/26-settings-from-pause-top-1080.jpg",
+  "verdict": "The new screenshot is pixel-identical to the old one: a full-bleed settings slab with two stacked tab strips, a joke subtitle, tiny low-contrast labels, and an empty right half, none of which the style guide allows.",
+  "pic": "tools/handoff/console/notes/shots/c-31c-now/26-settings-from-pause-top-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T07:16"
+  "when": "2026-10-18T07:30"
  },
  "32-keys-window": {
   "score": 2,
   "pass": false,
-  "verdict": "A functional but flat, spreadsheet-like rebind table with two explaining sentences, weak hierarchy, ghosted Rebind buttons, a lopsided layout and no visible focus state, so it reads as a generic template rather than a polished PILLAGERS screen.",
-  "pic": "tools/handoff/console/notes/shots/all/32-keys-window-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:18"
+  "verdict": "A full-bleed slab of 40+ identical key boxes and Rebind buttons with no focal point, two explaining sentences, lowercase action names, tiny muted type and a Close button at the bottom-right, so it ignores the guide's modal, header and close rules.",
+  "pic": "tools/handoff/console/notes/shots/c-31d-now/32-keys-window-1080.jpg",
+  "task": "c-31-ui-pause-settings",
+  "when": "2026-10-18T07:38"
  },
  "33-raid-fight-alerts": {
   "score": 2,
@@ -218,10 +218,10 @@
  "45-arcade-attract-board": {
   "score": 2,
   "pass": false,
-  "verdict": "The new attract screen follows the guide's panel, tab and type tokens and is calmer than the old one, but it is still a black void with a small logo, an empty-state card and a dim prompt, with no world backdrop and no identity.",
-  "pic": "tools/handoff/console/notes/shots/11-after4/45-arcade-attract-board-1080.jpg",
+  "verdict": "A bare black screen with a small 'Pillagers' wordmark, an empty-state leaderboard card and dim 'Press any button' text; it is tidy and on-palette but has no identity, no world backdrop and no focal point, and the card was only narrowed from 845px to 558px.",
+  "pic": "tools/handoff/console/notes/shots/11-after5/45-arcade-attract-board-1080.jpg",
   "task": "11-ui-shared-style",
-  "when": "2026-10-18T07:13"
+  "when": "2026-10-18T07:18"
  },
  "50-arcade-hud-live": {
   "score": 2,

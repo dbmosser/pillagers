@@ -1,0 +1,5 @@
+## v29.42 - PAUSE SCRIM AND KEYS INTRO
+
+Co-op hunt while he was away. Critic c-31: the HUD showed through the pause card, and the Keys window opened with an explaining sentence. The scrim goes to 97 percent and the sentence is hidden. Pause title and legend sizes stay as the old checks pin them.
+
+MEASURED. Check 29.42 passes, and fails on v29.41.

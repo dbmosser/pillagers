@@ -1,0 +1,7 @@
+v29.42: pause scrim and keys intro
+
+The pause screen covers the HUD behind it, and the Keys window opens straight on the list.
+
+Check 29.42. Fails on v29.41.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
