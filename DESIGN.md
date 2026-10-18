@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.90 - TITLE: FEWER KEY HINTS, 48PX BUTTONS
+
+Co-op hunt while he was away. The critic scored the title 3 of 5: nine gameplay key hints on a menu strip and top-right buttons at 44px. The legend keeps move, aim, fire, search and F1; the buttons are 48px.
+
+MEASURED. Check 30.90 passes, and fails on v30.89.
 ## v30.89 - SETTINGS AND KEYS FILL THE SCREEN AS A CARD
 
 Co-op hunt while he was away. His Q43 (2026-10-18): windows are a centred card with an X in the corner that takes up nearly the whole screen. Settings and Keys were 720 wide cards; now the card is the screen less 48 px a side, the X stays in its corner, rows keep a 960 column.

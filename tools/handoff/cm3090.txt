@@ -1,0 +1,7 @@
+v30.90: title: fewer key hints, 48px buttons
+
+The title key line is shorter and the top-right buttons are taller.
+
+Check 30.90. Fails on v30.89.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

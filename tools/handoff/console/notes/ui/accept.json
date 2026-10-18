@@ -112,12 +112,19 @@
   "when": "2026-10-18T06:16"
  },
  "18-settings-hub": {
-  "score": 3,
+  "score": 2,
   "pass": false,
-  "verdict": "The new settings modal is cleaner: the half-clipped ghost row is gone and the detail text is larger, but it is still a long, dim, evenly weighted list with tiny tabs, a stranded value column and a mushy backdrop.",
-  "pic": "tools/handoff/console/notes/shots/c-31w-after/18-settings-hub-1080.jpg",
-  "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T12:55"
+  "verdict": "the settings screen now follows the near-full-screen window spec with the close button at the top right, but the list is a narrow column in a big empty card, and the raid and audio rows are mixed in one list with a broken row and an inconsistent scroll cut.",
+  "findings": [
+   "P0 list rows 'heat when you call for extraction' and 'master volume': split audio rows into the audio tab. Make every row 56px with the label and value vertically centred. Check the section-header spacing code for the stray gap.",
+   "P1 bottom of list, 'music volume' row at y~870: snap the scroll to whole 56px rows or add a 24px fade mask at the bottom edge. Make the scrollbar 4px wide in --ui-line-hi, and show it only while scrolling.",
+   "P1 overall card composition: either put a left nav or a live preview/detail pane in the side space, or tighten the column. Align the title to the content column (x=480) or make the rows fill the card up to the 900px max.",
+   "P1 value controls (chevrons and value): right-align the control group within 400px of the label, or widen the label column. Make chevrons 24px with tx-2, lit in lime only on the focused row.",
+   "P2 focus state, 'edit the words' row: raise the focus fill to --ui-raised with a full 1px lime outline or a 4px bar. Add LB/RB glyphs at the strip ends."
+  ],
+  "pic": "tools/handoff/console/notes/shots/04-cw-after/18-settings-hub-1080.jpg",
+  "task": "04-style-guide-update",
+  "when": "2026-10-18T20:12"
  },
  "19-raid-hud-drop-first-raid": {
   "score": 2,

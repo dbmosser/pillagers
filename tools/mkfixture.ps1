@@ -6099,6 +6099,19 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.90',what:'the title key legend is five hints at most (crouch, backpack and map live in the F1 list) and the top-right buttons are 48px high (critic on screen 01, 3 of 5: nine hints, small buttons)',
+   run:function(){
+     var t=document.getElementById('title'), kb=t&&t.querySelector('.kbrow'), tr=document.getElementById('titleres'), n, bt, was, h;
+     if(!t||!kb||!tr) return 'SKIP: no title here';
+     was=t.classList.contains('on'); if(!was) t.classList.add('on');
+     try{
+       n=kb.querySelectorAll('b').length;
+       if(n>5) return 'the title key legend has '+n+' hints, more than 5';
+       if(!/\bf1\s+controls/i.test(kb.textContent||'')) return 'the title key legend lost F1 controls';
+       bt=tr.querySelector('button'); if(!bt) return 'no top-right button';
+       h=parseFloat(getComputedStyle(bt).minHeight);   // CSS px, before the page zoom
+       return h<47.5?('the top-right buttons are '+Math.round(h)+'px high, not 48'):null;
+     } finally { if(!was) t.classList.remove('on'); } }},
   {v:'30.89',what:'his Q43: the Settings window is a centred card that takes up nearly the whole screen (frame within 60 px of every screen edge) with its X in the card corner',
    run:function(){
      if(!(window.__station&&window.__hubEnter)) return 'SKIP: this fixture cannot walk the Undercroft';

@@ -1575,7 +1575,7 @@ html.party #slotpanel, html.party #titlesub, html.party #titlestart, html.party 
 /* v28.xx (cw-title-clean), the critic (2 of 5, P0/P1) on the title: "six stacked rows of small text between the logo and the menu; delete the subtitle, move Go fullscreen and Settings top-right, move the key legend to a bottom strip, the logo about 96px, version in a 14px footer". Logo 64 to 96px; Go fullscreen and Settings 44px high at the top-right, 32px from the top and 5vw from the edge; the version bottom-left, 16px, tx-2; the key legend one bottom strip, 16px, 24px from the bottom; the saves note line gone. */
 #root #title .wordmark{ font-size:96px; }
 #root #title #titleres{ position:fixed; top:32px; right:5vw; margin:0 !important; display:flex; gap:12px; z-index:2; }
-#root #title #titleres button{ min-height:44px; padding:0 24px; font-size:16px; }
+#root #title #titleres button{ min-height:48px; padding:0 24px; font-size:16px; }   /* v28.xx (cw-title-legend), the critic (3 of 5, P2): the top-right buttons 44 to 48px, the guide button height --btn-h-sm. */
 #root #title #titlefoot{ position:fixed; left:5vw; bottom:24px; margin:0; font:600 var(--fs-fine)/1 var(--f-cond); letter-spacing:var(--track); color:var(--tx-2); }
 #root #title .kbrow, #root #title .padrow{ position:fixed; left:0; right:0; bottom:24px; margin:0 !important; text-align:center; font-size:16px !important; }
 #root #title #slotnote{ margin:0 !important; }
@@ -2345,10 +2345,8 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
       <b style="color:var(--bone)">WASD</b> move &nbsp;
       <b style="color:var(--bone)">MOUSE</b> aim &nbsp;
       <b style="color:var(--bone)">LMB</b> fire &nbsp;
-      <b style="color:var(--bone)">CTRL</b> crouch &nbsp;
+      <!-- v28.xx (cw-title-legend), the critic on screen 01 (3 of 5, P1): "nine key hints are gameplay controls on a menu, clutter, too small to read from a couch; cut it". Five stay (move, aim, fire, search, F1 for the rest); crouch, backpack and map live in the F1 controls list. -->
       <b style="color:var(--bone)">E</b> search &nbsp;
-      <b style="color:var(--bone)">B / I</b> backpack &nbsp;
-      <b style="color:var(--bone)">M</b> map &nbsp;
       <!-- v28.xx (cw-menu-f1hint), UI step 30 (menu map): the title key line said H opens the controls. Since keyswap (v25.xx) H heals and F1 is the controls list, so a guest who read the title pressed H and healed. It names F1. -->
       <b style="color:var(--bone)">F1</b> controls
     </div>
@@ -2801,7 +2799,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.89';
+var VER='30.90';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -48326,7 +48324,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.89: Settings and Keys now fill nearly the whole screen as one card with the X in the corner. Check 30.89 fails on v30.88',
+  now:'v30.90: The title key line is shorter and the top-right buttons are taller. Check 30.90 fails on v30.89',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

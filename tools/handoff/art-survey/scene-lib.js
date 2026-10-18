@@ -304,6 +304,45 @@ A.scenes.lineup=async function(o){
   return {zoom:Z,chars:chars};
 };
 
+
+// a container of the game, made by its own maker; open ones are empty with the lid thrown back, piles are drops with their rarity beam
+A.box=function(type,x,y,o){
+  o=o||{};
+  var s=g(), c=gx("mkContainer("+Math.round(x)+","+Math.round(y)+",\""+type+"\")");
+  window.__ct=c;
+  gx("setLoot(window.__ct,"+JSON.stringify(o.loot||[])+")");
+  c.x=x; c.y=y; c.prog=0; c.opened=!!o.opened;
+  if(o.drop){ c.dropped=1; c.time=0.6; }
+  s.containers.push(c);
+  return c;
+};
+
+A.scenes.loot=async function(o){
+  var st=await A.stage(o), p=st.p, s=st.s, X=BASE.x, Y=BASE.y, Z=3.4, i, c, objs=[];
+  p.x=X; p.y=Y+6; p.face=0.5;
+  // to his left: the five kinds of box, all opened (lid thrown back, nothing inside), in two staggered rows
+  var opened=[["crate",-70,26],["locker",-100,-24],["safe",-135,26],["cache",-168,-24],["jackpot",-204,26]];
+  for(i=0;i<opened.length;i++){ c=A.box(opened[i][0],X+opened[i][1],Y+opened[i][2],{opened:true}); objs.push({id:"open-"+opened[i][0],kind:"container",ref:c}); }
+  // to his right: four piles on the floor, one for each rarity that has a beam
+  var piles=[["medkit",60,22,"uncommon"],["core",112,-2,"rare"],["blackbox",164,22,"elite"],["gun_sniper",216,-2,"gold"]];
+  for(i=0;i<piles.length;i++){ c=A.box("crate",X+piles[i][1],Y+piles[i][2],{loot:[piles[i][0]],drop:1}); objs.push({id:"pile-"+piles[i][3],kind:"pile",ref:c}); }
+  // behind him: what two dead machines leave, the wrecks (still shut)
+  c=A.box("botwreck",X-24,Y-66,{loot:["board"]}); c.bot="sentry"; objs.push({id:"wreck-sentry",kind:"wreck",ref:c});
+  c=A.box("botwreck",X+52,Y-60,{loot:["comp"]}); c.bot="crawler"; objs.push({id:"wreck-crawler",kind:"wreck",ref:c});
+  A.settleFx();
+  A.cam(X+8,Y-6,Z);
+  return {zoom:Z,chars:[{id:"p1",kind:"player",ref:"p1"}],objs:objs};
+};
+
+A.scenes.dark=async function(o){
+  o=o||{}; o.night=true;
+  var st=await A.stage(o), p=st.p, X=BASE.x, Y=BASE.y;
+  p.x=X-36; p.y=Y; p.face=1.15;
+  A.mate(X+36,Y+4,1.95);
+  A.cam(X,Y-10,5.0);
+  return {zoom:5.0,chars:[{id:"p1",kind:"player",ref:"p1"},{id:"mate",kind:"player",ref:"mate"}]};
+};
+
 // the picture: scene (or its plate), measured, the last frame drawn, a JSON line back
 A.scene=async function(name,o){
   o=o||{};
@@ -313,7 +352,9 @@ A.scene=async function(name,o){
   if(!o.plate){ chars=A.measure(r.chars); }
   else { s.ents.length=0; s.bullets.length=0; s.flashes.length=0; s.sparks.length=0; s.shells.length=0; s.puffs.length=0; s.noiseRings.length=0; gx('GFXMUZ.length=0'); window.__goldShine=0; A.only('none'); }
   A.draw(2);
-  return JSON.stringify({scene:name,plate:!!o.plate,zoom:gx('ZOOM()'),w:CAM.w,h:CAM.h,chars:chars});
+  var objs=null;
+  if(!o.plate&&r.objs){ objs=r.objs.map(function(q){ var w=gx('w2s('+q.ref.x+',0,'+q.ref.y+')'); return {id:q.id,kind:q.kind,fx:Math.round(w.x)+1,fy:Math.round(w.y)+1}; }); }
+  return JSON.stringify({scene:name,plate:!!o.plate,zoom:gx('ZOOM()'),w:CAM.w,h:CAM.h,chars:chars,objects:objs});
 };
 
 A.P1=function(){ return g().player; };

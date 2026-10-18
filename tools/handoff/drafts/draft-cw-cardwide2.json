@@ -1,0 +1,12 @@
+{
+    "title":  "SETTINGS STEPPERS SIT NEXT TO THEIR LABELS",
+    "why":  "Critic on Settings after the wide card (2 of 5): label and stepper 650 px apart. The name column is 384 wide and the stepper follows it.",
+    "now":  "Settings values sit right next to their names.",
+    "edits":  [
+                  {
+                      "anchor":  "#root #keysmodal #keyslist{ max-height:calc(100vh - var(--sp-5) * 6); }",
+                      "replacement":  "#root #keysmodal #keyslist{ max-height:calc(100vh - var(--sp-5) * 6); }\n/* v28.xx (cw-cardwide2) critic on Settings 18 after cw-cardwide (2 of 5): \"the label is at x=500 and the control at x=1150 to 1400, about 650px away, keep them within 400px\". Now the name column is 8 x 48 wide (384) and the stepper sits straight after it in the 960 column, so a label and its value are never more than 400px apart on the wide card. */\n#root #settingsmodal #setlist .row:not(.setjump) \u003e div:first-child{ flex:0 0 calc(var(--sp-5) * 8) !important; }\n#root #settingsmodal #setlist .row:not(.setjump) \u003e button{ margin-left:0; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027on the wide Settings card a row stepper sits within 420 px of its label, never at the far edge of the 960 column\u0027,\n   run:function(){\n     if(!(window.__station\u0026\u0026window.__hubEnter)) return \u0027SKIP: this fixture cannot walk the Undercroft\u0027;\n     var bad=[], m, row, lab, st, r;\n     try{\n       __topClear(); __hubEnter();\n       r=__station(\u0027dev\u0027,\u0027KeyE\u0027); if(r\u0026\u0026r.err) return \u0027station: \u0027+r.err;\n       m=document.getElementById(\u0027settingsmodal\u0027);\n       if(!m||!m.classList.contains(\u0027on\u0027)) return \u0027the settings window did not open\u0027;\n       UIM.step(600);\n       row=document.querySelector(\u0027#setlist .row:not(.setjump) \u003e button\u0027); if(!row) return \u0027no stepper row\u0027;\n       row=row.parentNode; lab=row.firstElementChild.getBoundingClientRect(); st=row.querySelector(\u0027:scope \u003e button\u0027).getBoundingClientRect();\n       var z=parseFloat(m.style.zoom)||1;\n       if(!((st.left-lab.left)\u003c=420*z)) bad.push(\u0027the stepper starts \u0027+Math.round((st.left-lab.left)/z)+\u0027 px from the label, want 420 or less\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ __topClear(); }catch(_c){} }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
