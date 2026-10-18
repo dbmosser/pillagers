@@ -72,6 +72,9 @@ S = C:\Users\User1\AppData\Local\Temp\claude\C--Users-User1-Desktop-dark-raiders
   HELD=1 bash S/fixq.sh "MESSAGE" (commits while you hold the lock), then bash S/unlock.sh. Keep each hold short, a few checks at a time.
 - If your ship STOPs with "uncommitted changes", another worker is mid-edit: wait with bash S/lock.sh then bash S/unlock.sh
   (lock.sh waits for the lock), and ship again, up to 3 times. Never end a run just because of that STOP.
+- Before you ship again after a STOP, run git log --oneline -8 and look at what changed in the game: if your change is already in
+  (10-18 15:00: two ships ran at once and one commit carried another worker's change), do NOT ship it again. Ship only what is missing.
+- unlock.sh (10-18) no longer frees a lock that a running ship holds; it prints NOT UNLOCKED. That is not an error: wait for that ship.
 - Never leave the game file edited. Only the ship scripts change it.
 - The lock stops EVERY worker's ships. Hold it at most 8 minutes (after 8 it is taken back automatically): plan and write your fixture edits BEFORE you take it, then take
   it, apply, runchk only the checks you touched, commit and release. Never think, explore or read code while you hold it.
