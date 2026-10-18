@@ -6097,6 +6097,24 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.35',what:'the Riot Scattergun kicks the camera 6.5 a shot, up from 2.2 (under half a pixel), and the other guns keep their kick (his Q5: gun feel)',
+   run:function(){
+     if(typeof gunShake!=='function'||typeof GUN_SHAKE!=='object') return 'a gun has no kick of its own (no gunShake)';
+     var g=null, w, r, a, b, c;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player) return 'SKIP: no raid';
+       var kick=function(id){ var ww=WEAPONS[id]; G.shake=0; fireWeapon(g.player,ww,g.player.x+200,g.player.y,true); return G.shake; };
+       a=kick('shotgun'); b=kick('smg'); c=kick('magnum');
+       if(Math.abs(a-6.5)>0.01) return 'a Riot Scattergun shot kicks the camera '+a+', not 6.5';
+       if(Math.abs(b-2.2)>0.01) return 'the Compact SMG kick moved to '+b+', it should stay 2.2';
+       if(Math.abs(c-4.5)>0.01) return 'the Magnum kick moved to '+c+', it should stay 4.5';
+       return null;
+     } finally {
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     } }},
   {v:'30.34',what:'the raider rises from underground at the start of a raid (1.3 s, any input ends it, drawn clipped at the ground) and sinks again over the boarding hold; a dropped pile of rare loot stands in a rarity light shaft, an unopened box never does (his picks 77 and 75)',
    run:function(){
      if(typeof ascentSink!=='function'||typeof lootShaft!=='function') return 'no rise from underground and no rarity light shaft (no ascentSink, no lootShaft)';

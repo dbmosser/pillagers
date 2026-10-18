@@ -1,6 +1,8 @@
 # 03-title-and-backdrop notes
-- before shots: notes/shots/03-before (01,44,45,46,56,57 at 1080) taken.
-- Code map (dark_raiders.html line numbers, v28 build): title DOM `#title` (starts ~2290, `#titlestart` 2362), titleOn() 46303, titleSceneReady() 46304 builds HB=buildHub() under title (hub world drawn by drawHubWorld 45758 from main loop ~47435).
-- Attract mode (v21.17 recorded clip) ~46309+; arcade attract board DOM id 'attract' created ~46275+ (before shift: grep `d.id='attract'`).
-- Raid pieces: buildRaid(sim) 14410, simStep(dt) 32137 (headless: updateBot, updateEnts, updateBullets), render2D(dt) 36080, main loop ends 47757 `render2D(dt)`; main loop `if(state!=='raid'||!G||G.sim) return;` at 47509. var G at 8901, state var 46298.
-- AVOID reading main loop 47500-47760 again (huge, costs a lot).
+- Before shots: notes/shots/03-before (01,44,45,46,56,57 at 1080). Port 9361.
+- Title HTML: dark_raiders.html ~2298-2400 (#title .titlecol). Story div (max-width:760px) line ~2310, 3 .tcard lines ~2315-2331, kbrow/padrow after.
+  Old checks touching them in mkfixture.ps1: ~8529 (.tcard,.tstep), ~27525 (max-width:760px div + .tcard .tbody), ~48808 (.tcard), ~50002 (cards).
+- Behind title today: Undercroft hub floor (HB) via titleSceneReady (line ~46313), drawn in frame loop ~47496 (updateHubWorld/drawHubWorld ~47435), blurred+dimmed by CSS.
+- Attract (arcade): ATT/attEl ~46328, arcadeAttLoop ~60752 (pages board/howto over a <video> clip at opacity .22). No clip file => black.
+- buildRaid(sim) ~14410, runSim ~32095, render2D ~36020, startRaid ~15724, WORLD_W 2663.
+- Plan: (1) title copy -> one line "Ascend. Pillage. Extract." (2) live sim backdrop.

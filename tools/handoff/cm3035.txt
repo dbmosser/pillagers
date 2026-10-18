@@ -1,0 +1,7 @@
+v30.35: the riot scattergun kicks the screen
+
+The Riot Scattergun now kicks the screen when it fires.
+
+Check 30.35. Fails on v30.34.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

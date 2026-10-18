@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.35 - THE RIOT SCATTERGUN KICKS THE SCREEN
+
+Co-op hunt while he was away. His Q5: gun and enemy feel this week. The camera shake only grows when the shot number rises and is 18 px times trauma squared, so the flat 2.2 every light gun set was under half a pixel, and the Riot Scattergun (six pellets, 96 damage a pull) kicked like a pistol. The kick is now per gun, and the scattergun sets 6.5: about 4 px at 1080p, gone in a third of a second. Every other gun keeps its kick.
+
+MEASURED. Check 30.35 passes, and fails on v30.34.
 ## v30.34 - THE RAIDER RISES FROM UNDERGROUND AND RARE DROPS GET LIGHT SHAFTS
 
 Co-op hunt while he was away. His picks 77 and 75 of 10-14 and Q5 of 10-18, and the Ascend lore: you do not drop in, you come up from underground. A raid now starts with the raider rising out of a dark hatch in the ground in 1.3 s, and extraction sinks him back into it over the 1.4 s boarding hold. Any key, click, step or shot ends the rise and nothing is blocked. A pile somebody dropped stands in a rarity-coloured light shaft (taller and brighter the rarer it is, none for common); an unopened box never does.
