@@ -21427,7 +21427,7 @@ window.__REGRESS=[
        hadFoley=Object.prototype.hasOwnProperty.call(window,'foley'); oFoley=foley;
        foley=function(role,x,y,o){ calls.push({r:role,g:o&&o.g}); return true; };
        try{
-         mim.mimicDone=0; mim.mimicWake=0; mim.prog=0; mim.mim=1; mim.tkT=undefined; p.x=mim.x+60; p.y=mim.y; p.downed=false;
+         mim.opened=false; delete mim.mimicVoid; mim.mimicDone=0; mim.mimicWake=0; mim.prog=0; mim.mim=1; mim.tkT=undefined; p.x=mim.x+60; p.y=mim.y; p.downed=false;
          for(i=0;i<420;i++) __sim(1/60);
          if(!calls.some(function(c){ return c.r==='pinClick'&&c.g>0&&c.g<=0.3; })) bad.push('standing 60 from a sleeping mimic for seven seconds made no faint tick');
          calls.length=0; p.x=mim.x+400; p.y=mim.y; mim.tkT=undefined;
