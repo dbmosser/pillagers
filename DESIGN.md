@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.88 - Operator menu: one red, even gaps, a solid backdrop
+
+Co-op hunt while he was away. The critic scored the operator menu 2: Exit demo and the armed confirm were both red, the gaps were uneven and the board showed through the scrim. Restyle only.
+
+MEASURED. Check 29.88 passes, and fails on v29.87.
 ## v29.87 - Party pages: the slide ghost floats over the card
 
 Co-op hunt while he was away. The page change slides a copy of the old page for 200 ms. In the new one column layout that copy took a grid row and pushed the card and the button down. It floats now. Restyle only.

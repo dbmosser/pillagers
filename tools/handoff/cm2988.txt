@@ -1,0 +1,7 @@
+v29.88: operator menu: one red, even gaps, a solid backdrop
+
+The operator menu is calmer: one red thing, even gaps.
+
+Check 29.88. Fails on v29.87.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

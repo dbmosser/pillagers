@@ -2665,7 +2665,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.87';
+var VER='29.88';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47797,7 +47797,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.87: The board and how to play pages change without a jump. Check 29.87 fails on v29.86',
+  now:'v29.88: The operator menu is calmer: one red thing, even gaps. Check 29.88 fails on v29.87',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -60530,7 +60530,7 @@ function arcadeOpOpen(){
     'background:var(--ui-panel);border:1px solid var(--ui-line-hi);border-radius:var(--rad);box-shadow:none;color:var(--tx-1);font:600 var(--fs-body)/1.3 var(--f-cond);letter-spacing:var(--track);cursor:default';
   try{ el.style.zoom=menuScale(); }catch(_mz){}
   el.addEventListener('contextmenu',function(_ev){ _ev.preventDefault(); return false; });
-  var bd=document.createElement('div'); bd.style.cssText='position:fixed;left:0;top:0;right:0;bottom:0;z-index:19999;background:var(--ui-scrim)';   // the attract is hidden behind the card
+  var bd=document.createElement('div'); bd.style.cssText='position:fixed;left:0;top:0;right:0;bottom:0;z-index:19999;background:color-mix(in srgb,var(--ui-void) 97%,transparent)';   // the attract is hidden behind the card
   document.body.appendChild(bd); document.body.appendChild(el);
   ARCOP={el:el,bd:bd,ix:0,arm:0,note:''};
   arcadeOpDraw();
@@ -60559,7 +60559,7 @@ function arcadeOpDraw(){
   }
   if(ARCOP.note){
     d=document.createElement('div'); d.className='arcopnote'; d.textContent=ARCOP.note;
-    d.style.cssText='font:600 var(--fs-label)/1.3 var(--f-cond);letter-spacing:var(--track);margin-top:var(--sp-3);color:'+(ARCOP.arm?'var(--danger)':'var(--ok)');
+    d.style.cssText='font:600 var(--fs-label)/1.3 var(--f-cond);letter-spacing:var(--track);margin-top:var(--sp-3);color:'+(ARCOP.arm?'var(--tx-2)':'var(--ok)');
     el.appendChild(d);
   }
   arcadeOpStyle();
@@ -60568,11 +60568,11 @@ function arcadeOpStyle(){
   if(!ARCOP) return;
   var bs=ARCOP.el.querySelectorAll('button[data-op]'), i, on, red, ex, bg, fg, bc;
   for(i=0;i<bs.length;i++){
-    on=(i===ARCOP.ix); ex=(bs[i].getAttribute('data-op')==='exit'); red=((i===0&&ARCOP.arm)||ex);
+    on=(i===ARCOP.ix); ex=(bs[i].getAttribute('data-op')==='exit'); red=((i===0&&ARCOP.arm)||(ex&&on));   // v28.xx (cw-party-op3): the critic on screens 62 63 (2 of 5): Exit demo wore the same red as the armed confirm, so nothing read as the one danger; red now shows on the armed confirm and on Exit demo only while it is the focused row
     bg=on?(red?'var(--danger-bg)':'var(--acc)'):'var(--ui-raised)';
     fg=on?(red?'var(--danger)':'var(--acc-ink)'):(red?'var(--danger)':'var(--tx-1)');
     bc=red?'var(--danger)':(on?'var(--acc)':'var(--ui-line-hi)');
-    bs[i].style.cssText='display:block;box-sizing:border-box;width:100%;height:var(--btn-h);margin:'+(ex?'var(--sp-4)':'var(--sp-2)')+' 0 0;padding:0 var(--sp-3);text-align:left;cursor:pointer;border-radius:var(--rad);'+
+    bs[i].style.cssText='display:block;box-sizing:border-box;width:100%;height:var(--btn-h);margin:var(--sp-2) 0 0;padding:0 var(--sp-3);text-align:left;cursor:pointer;border-radius:var(--rad);'+
       'font:700 var(--fs-body)/1 var(--f-cond);letter-spacing:var(--track);box-shadow:none;outline:none;'+
       'background:'+bg+';color:'+fg+';border:'+(on?'2px':'1px')+' solid '+bc;
   }

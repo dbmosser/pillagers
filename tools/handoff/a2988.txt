@@ -1,0 +1,1 @@
+| Operator menu: one red, even gaps, a solid backdrop | v29.88 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 29.88 passes, fails on v29.87 |
