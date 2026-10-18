@@ -1,0 +1,1 @@
+| F2 turns Edit the words on and off from anywhere and freezes the raid while it is on | v31.05 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 31.05 passes, fails on v31.04 |

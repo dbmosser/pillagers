@@ -2812,7 +2812,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.04';
+var VER='31.05';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -4145,6 +4145,7 @@ function txSet(orig,next){
       delete pm[so.pat];
     }
   }
+  try{ txArcMirror(orig,so.pat); }catch(_am){}   // v30.xx (cw-txkey): a word edited in the arcade is kept
   TXPANY=0; for(var q in pm){ TXPANY=1; break; }
   try{ saveProfile(); }catch(e){}
   try{ txDom(document.getElementById('root')); }catch(e){}
@@ -4383,6 +4384,66 @@ function txClick(cx,cy){
     document.addEventListener('click',function(ev){ if(!TXEAT) return; TXEAT=0; ev.preventDefault(); ev.stopPropagation(); },true);   // v14.88
   }catch(e){}
 })();
+// v30.xx (cw-txkey), HIS ORDER (2026-10-18): "add a toggle key for text editing mode so that I can edit text at anytime e.g middle of a raid. ... ideally when I click it the game would pause too so
+// whatever is on screen stays there for me to modify". F2 (the key that renames a thing in Windows) turns Edit the words on and off from anywhere: the title, the menus, the Undercroft and the middle
+// of a raid. Only on this machine (DEV_LOCAL), exactly as the Settings row. ONE SETTING: the key is that row's own click (cycleGameOpt), so the row, the key, the profile and the tag cannot disagree.
+// THE FREEZE: while the mode is on a live raid is paused through the one pause every other door uses (syncPause: the pause box and the tuning console make it too), so the world, the enemies, the raid
+// clock, the bleed-out and every timer stand still while the screen keeps drawing exactly what it had, HUD included, for a click to find. The pause box is NOT opened (it would cover the HUD).
+// In a shared raid it is the pause box rule (v16.04): this window player stands still and the world runs on for the others until every window is paused, so press F2 in each window to stop it all.
+// An edge press only (a held key does not toggle twice), taken in the capture phase ahead of every other key listener, so it never reaches the game as any other action.
+function devFreeze(){ return !!(DEV_LOCAL&&CFG.textEdit===1&&typeof G!=='undefined'&&G&&!G.over&&!G.sim&&state==='raid'); }
+function devLetGo(){ keys={}; mouse.down=false; try{ HHOLD.arm=0; }catch(_hh){} }
+function txKeyToggle(){
+  if(!DEV_LOCAL) return false;
+  cycleGameOpt('textEdit');   // the row's own click: the next option, the console's claim let go, applied, saved
+  devLetGo();   // no key and no mouse button stays held across the switch, so nothing walks or fires when the game carries on
+  try{ syncPause(); }catch(_sp){}
+  try{ var _sm=document.getElementById('settingsmodal'); if(_sm&&_sm.classList.contains('on')) renderSettings(); }catch(_rs){}
+  try{ txTagSync(); }catch(_tg){}
+  try{ hubToast(CFG.textEdit===1?'edit words on':'edit words off'); }catch(_ht){}
+  return true;
+}
+// The tag: a small plate top left (under SHOW FPS, clear of the upper right corner) so he knows why a click opens an editor and does not shoot. A page element, not drawn on the canvas, no pointer.
+var TXTAG=null, _txTagOn=-1;
+function txTagSync(){
+  var on=(DEV_LOCAL&&CFG.textEdit===1)?1:0, el=TXTAG;
+  if(on===_txTagOn&&(!on||(el&&el.isConnected))) return on;
+  _txTagOn=on;
+  if(!el||!el.isConnected){
+    if(!on) return on;
+    el=document.createElement('div'); el.id='txtag';
+    el.style.cssText='position:fixed;left:8px;top:38px;z-index:9001;display:none;padding:2px 10px 1px 12px;background:rgba(11,12,13,.82);border:1px solid var(--ui-line-hi);color:var(--acc);font:700 14px/1.3 var(--f-cond);letter-spacing:.1em;pointer-events:none;clip-path:polygon(8px 0,100% 0,100% 100%,0 100%,0 8px)';
+    el.textContent='edit words: on (f2)';
+    document.body.appendChild(el); TXTAG=el;
+  }
+  el.style.display=on?'block':'none';
+  return on;
+}
+(function(){
+  try{
+    window.addEventListener('keydown',function(e){
+      if(!DEV_LOCAL||!e||e.code!=='F2') return;
+      if(e.ctrlKey||e.altKey||e.metaKey||e.shiftKey) return;
+      try{ if(typeof KEYS==='object'&&KEYS&&KEYS.waiting) return; }catch(_kw){}   // the Keys window is waiting for a key to bind: it says F2 keeps its own job
+      try{ e.preventDefault(); e.stopImmediatePropagation(); }catch(_x){}
+      if(e.repeat) return;
+      try{ txKeyToggle(); }catch(_t){}
+    },true);
+  }catch(_e){}
+})();
+// v30.xx (cw-txkey): A WORD EDITED IN THE ARCADE IS KEPT. In the 2 player demo P is a sandbox copy of his profile that is never saved and is swapped for his own (ARCADE.realJs) when the demo is
+// left, so a line he reworded in a demo raid was gone at the next title. The one edit (the line and its shape) is written into his own profile string as well, which that swap puts back and saves.
+function txArcMirror(orig,pat){
+  if(typeof ARCADE!=='object'||!ARCADE||!ARCADE.on||typeof ARCADE.realJs!=='string') return false;
+  var rj=JSON.parse(ARCADE.realJs), m=txMap(), pm=txPatMap();
+  if(!rj||typeof rj!=='object') return false;
+  if(!rj.txt||typeof rj.txt!=='object') rj.txt={};
+  if(!rj.txp||typeof rj.txp!=='object') rj.txp={};
+  if(typeof m[orig]==='string') rj.txt[orig]=m[orig]; else delete rj.txt[orig];
+  if(pat){ if(typeof pm[pat]==='string') rj.txp[pat]=pm[pat]; else delete rj.txp[pat]; }
+  ARCADE.realJs=JSON.stringify(rj);
+  return true;
+}
 // v11.52, HIS NOTE: credits and XP shown at all times in the upper right, in
 // the Undercroft and in a raid. One element, rewritten only when a figure
 // changes, so the frame loop can call it for free.
@@ -15915,7 +15976,7 @@ try{
   window.addEventListener('wheel',function(e){ if(e.isTrusted) indevKey(); },{capture:true,passive:true});
   window.addEventListener('mousemove',function(e){ if(indevMoveOk(e)) indevMouse(e.clientX,e.clientY,e.movementX,e.movementY); },true);
 }catch(_ig){}
-function syncPause(){ if(G) G.paused=pauseOpen||tuneOpen; }
+function syncPause(){ if(G) G.paused=pauseOpen||tuneOpen||devFreeze(); }   // v30.xx (cw-txkey): and Edit the words (devFreeze) holds a live raid still the same way
 window.addEventListener('keydown',function(e){
   var tn=(e.target&&e.target.tagName)||'';
   if(tn==='TEXTAREA'||tn==='INPUT') return;
@@ -17955,6 +18016,7 @@ var KEYS={inv:null,waiting:null,built:0,inited:0,note:null};
 // may take: ESC, TAB and P (the pause and back-out keys), BACKSPACE (the cursor rescue), the key left of 1 (Superhot), F9 (the recorder) and
 // F11 (fullscreen). 1 to 9 stay the tactical belt.
 var KEYS_V=2, KEYS_FIXED={Escape:1,Tab:1,KeyP:1,Backspace:1,Backquote:1,F9:1,F11:1};
+if(DEV_LOCAL) KEYS_FIXED.F2=1;   // v30.xx (cw-txkey): F2 turns Edit the words on and off on this machine, so no action can be bound to it
 function keysMap(){ return (typeof P!=='undefined'&&P&&P.keymap&&typeof P.keymap==='object')?P.keymap:{}; }
 function keysInv(){ var m=keysMap(), k, inv={}; for(k in m) if(Object.prototype.hasOwnProperty.call(m,k)&&typeof m[k]==='string'&&m[k]!==k&&KEYS_ACTS.some(function(a){ return a[0]===k; })) inv[m[k]]=k;   /* v25.xx (noemotes): an action that is not on the list any more (the old V) takes no key */ KEYS.inv=inv; return inv; }
 function keyRemap(code){ var inv=KEYS.inv||keysInv(); if(!KEYS.inited){ KEYS.inited=1; try{ keysLegendApply(); }catch(_kl){} } return (typeof code==='string'&&inv[code])?inv[code]:code; }
@@ -18016,6 +18078,7 @@ function keysListBody(){
 // v26.xx (settings11): THE KEYS THAT CANNOT MOVE, listed under the others so the window names every key the game answers. 1 to 9 pick a gun (the stash sets which gun is on which),
 // P and TAB pause or back out, ESC closes a window, BACKSPACE puts the cursor back, the key left of 1 is Superhot and F11 is fullscreen.
 var KEYS_LOCKED=[['SELECT A GUN','1 - 9'],['PAUSE','P'],['PAUSE, OR BACK OUT','TAB'],['CLOSE A WINDOW','ESC'],['PUT THE CURSOR BACK','BACKSPACE'],['SUPERHOT MODE','LEFT OF 1'],['FULLSCREEN','F11']];
+if(DEV_LOCAL) KEYS_LOCKED.push(['EDIT THE WORDS','F2']);   // v30.xx (cw-txkey): the Keys window names it too (this machine only)
 function keysFixedHtml(){
   var h='<div class="keysec">LOCKED: THESE KEEP THEIR JOBS</div>', i;
   for(i=0;i<KEYS_LOCKED.length;i++) h+='<div class="row"><div style="flex:1"><b>'+KEYS_LOCKED[i][0]+'</b></div><span class="keyfixed">'+KEYS_LOCKED[i][1]+'</span></div>';
@@ -47653,6 +47716,7 @@ function hidStart(){
 function loop(ts){
   if(!HID.fromWorker){ requestAnimationFrame(loop); HID.lastRaf=(typeof performance!=='undefined')?performance.now():Date.now(); if(!HID.w) hidStart(); }
   try{ syncTopRight(); }catch(_tr2){}   // v11.52: a string compare per frame, a DOM write only on change
+  try{ txTagSync(); }catch(_tg){}   // v30.xx (cw-txkey): the tag that says Edit the words is on, on every screen
   // Nothing is drawable while the context is gone, and the raid clock should not
   // run down behind a blank screen either, so the whole frame is skipped until the
   // browser hands the context back. lastTs is restamped on restore.
@@ -47712,6 +47776,7 @@ function loop(ts){
   }
   if(NETMATE.on){ try{ netMateLeave(); }catch(_ml){} }   // v30.xx (cw-p1p2): this window is no longer on the floor, so the other window loses the body he was drawing
   if(state!=='raid'||!G||G.sim) return;
+  if(G._dz!==devFreeze()){ G._dz=devFreeze(); try{ syncPause(); }catch(_dz){} }   // v30.xx (cw-txkey): the Edit the words freeze starts and ends on the frame the mode does, whichever door turned it on (the key, the Settings row, a check)
   if(G.arcade&&G.arcEnd){ var _ae=G.arcEnd; G.arcEnd=0; try{ if(!arcadeRunEnd(_ae)) arcadeRaidStop('end'); }catch(_are){} return; }   // v23.6x (feat0e): a run end marked inside the last frame
   if(NET.on) netUpTick(dt);   // v15.79: where the party stands up top, eased in and sent out, whatever the frame does below
   if(NET.on) netFxStep(dt);   // v16.21: the party's tracers fly, and this window's sounds go out
@@ -48285,7 +48350,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.04: The key left of 1 turns Superhot on and off. It is on the F1 list and beside the Settings row, and the line always shows the state just set. Check 31.04 fails on v31.03',
+  now:'v31.05: F2 turns the word editor on and off from anywhere. In a raid it freezes the game so you can click and edit any text, and F2 again carries on. Check 31.05 fails on v31.04',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -64469,7 +64534,7 @@ function maybeWelcome(){
 // "Few, about half as many out there" is a decision.
 var GAMEOPTS=[
   {k:'textEdit', label:'Edit the words',
-   hint:'Turns every line of text in the game into something you can click and type over. Click a word anywhere, in a menu or on the screen during a raid, and rewrite it. Clear the box and press Enter to put the original back. Your wording is saved with your profile and follows the phrase everywhere it appears.',
+   hint:'Turns every line of text in the game into something you can click and type over. Click a word anywhere, in a menu or on the screen during a raid, and rewrite it. Clear the box and press Enter to put the original back. Your wording is saved with your profile and follows the phrase everywhere it appears. F2 turns it on and off from anywhere, and a raid stands still while it is on.',
    opts:[
      {n:'Off', cfg:{textEdit:0}},
      {n:'On',  cfg:{textEdit:1}}
