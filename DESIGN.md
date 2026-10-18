@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.37 - The attract board and how to play page use the shared UI look
+
+Co-op hunt while he was away. His order 2026-10-18 (UI step 2): the attract screens (45 board, 46 how to play) move onto the shared look. Sizes are the guide tokens times the menu scale (name 56, headline and PRESS ANY KEY 32, page text 20, column heads 16), the page is a 1px panel at the 4px radius on the scrim with 24 and 32px padding, one accent for PRESS ANY KEY and your own row, action names in grey and keys in light text. The rules sit in the ui-shared block, so the no raw literals check covers them. No wording moved.
+
+MEASURED. Check 29.37 passes, and fails on v29.36.
 ## v29.36 - THE TITLE HAS A SETTINGS BUTTON
 
 Co-op hunt while he was away. UI step 30, menu map. Settings could only be reached from the pause box inside a game, so a party guest on the title could not turn the sound down or the text up. A Settings button sits beside Go fullscreen, opens the same window, and CLOSE or ESC returns to the title. Nothing was removed.

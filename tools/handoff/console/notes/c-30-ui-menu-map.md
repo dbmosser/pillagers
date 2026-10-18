@@ -22,5 +22,8 @@
 7. ESC/TAB back-out: every modal closes, because a modal with no known close button is just hidden. No dead end found by reading. Not probed live (no screen path to test every one).
 8. Controls reachable only by F1 in play; no button for it in the pause box (the key list is printed there instead). Fine.
 
+## Fixes shipped (five)
+v29.28 first Settings tab is Game, not Display. v29.30 title key line F1 controls. v29.32 Create a new save. v29.33 title and mode menu on the shared look. v29.36 title has a Settings button (before: Settings only reachable inside a game's pause box; after: beside Go fullscreen, ESC closes). Pictures: shots/c-30b-before and c-30c-after. Critic on the title: it wants the whole title rebuilt (left column, drop lore and steps, group the modes); that is a redesign, not a menu fix. Left for a title redesign task.
+
 ## Not done
 - Items 3, 4, 5 need his answer (3 and 4 are his wording and order). The task asked for five fixes; two shipped, so PARTIAL.

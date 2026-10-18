@@ -1,0 +1,7 @@
+v29.37: the attract board and how to play page use the shared ui look
+
+The attract board and how to play page now share the menu sizes, panel and colors.
+
+Check 29.37. Fails on v29.36.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

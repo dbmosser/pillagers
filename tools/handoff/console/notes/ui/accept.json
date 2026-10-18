@@ -2,10 +2,10 @@
  "01-title-mode-menu": {
   "score": 2,
   "pass": false,
-  "verdict": "The new title menu is calmer and less boxy, with amber now limited to the title, the one primary button and the focus outline, but it still reads as a stacked web form, with too much explaining text, a cramped bottom edge, and sizes and currency that break the guide.",
-  "pic": "tools/handoff/console/notes/shots/11-after2/01-title-mode-menu-1080.jpg",
-  "task": "11-ui-shared-style",
-  "when": "2026-10-18T06:52"
+  "verdict": "The new title menu loses the three boxed cards and gains a Settings button, but it is still a long, crowded stack of explaining sentences and equal-weight buttons that reads like a web form, not an ARC Raiders-grade title screen.",
+  "pic": "tools/handoff/console/notes/shots/c-30c-after/01-title-mode-menu-1080.jpg",
+  "task": "c-30-ui-menu-map",
+  "when": "2026-10-18T06:53"
  },
  "02-welcome-pack": {
   "score": 2,
