@@ -1,0 +1,7 @@
+v30.77: the player 2 window follows the last input device too
+
+The second player window now follows what it used last too: a key shows keys, its controller shows its buttons.
+
+Check 30.77. Fails on v30.76.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
