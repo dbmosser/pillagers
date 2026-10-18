@@ -1,0 +1,7 @@
+v29.09: no stronghold over the forge
+
+A stronghold is no longer a building with the Forge in it.
+
+Check 29.09. Fails on v29.08.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

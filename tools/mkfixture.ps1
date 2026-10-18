@@ -6097,6 +6097,29 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.09',what:'cw-shforge: a building that holds the Forge is never a stronghold candidate',
+   run:function(){
+     if(!(window.__state&&window.__runPrep)) return 'SKIP: no raid here';
+     if(typeof arcadeDeploy!=='function'||typeof shCands!=='function') return 'SKIP: no arcade or strongholds in this fixture';
+     var g, oF, C0, c, b, C1, i, bad=null, rs=say, own=false;
+     try{
+       say=function(){}; own=true;
+       __topClear(); __runPrep();
+       if(!arcadeDeploy({mapIx:0,seed:4242})) return 'SKIP: arcadeDeploy built no arcade raid';
+       g=__state(); if(!g||!g.player) return 'SKIP: no live raid';
+       keys={}; oF=g.forge;
+       C0=shCands([]); if(!C0.length) return 'SKIP: staging: no building could be a stronghold';
+       c=C0[0]; b=c.b;
+       g.forge={x:b.x+b.w/2,y:b.y+b.h/2,name:'THE FORGE'};
+       C1=shCands([]);
+       for(i=0;i<C1.length;i++) if(C1[i].bi===c.bi) bad='the building holding the Forge is still a stronghold candidate';
+       g.forge=oF;
+       C1=shCands([]);
+       if(!bad&&C1.length!==C0.length) bad='the candidates changed with the Forge back in its place ('+C0.length+' to '+C1.length+')';
+       return bad;
+     }catch(x){ return 'threw: '+(x&&x.stack||x); }
+     finally{ if(own) say=rs; try{ if(g&&oF!==undefined) g.forge=oF; }catch(_f){} try{ __endRaid('abandon'); }catch(_e){} try{ __topClear(); }catch(_t){} }
+   }},
   {v:'29.08',what:'cw-muzzlenet: the partner window draws a teammate rifle flash at the drawn muzzle and starts his tracer there, as the shooter window does, aiming east and west',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: no raid here';

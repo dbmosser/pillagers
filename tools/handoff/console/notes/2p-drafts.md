@@ -12,12 +12,13 @@ p2-near-miss-pins | DONE (lane-b) | v28.95 via cw-nearmiss (anchor 3 retargeted 
 p2-screen-clear | DROPPED (lane-b) | superseded: v27.86 partyp4 already sends a pulse word (nc,1500) and pays the medal in a linked window
 ricochet-seen | DONE (lane-b) | v28.97 via cw-ricoseen
 teammate-hears-windup | DONE (lane-b) | v28.99 via cw-windup (rebuilt: whirr via spkPlay lmgSpinUp since v27.95; one-line anchors)
-feel lane-target | CLAIMED lane-b (b-15) |
-muzzle-net | CLAIMED lane-b (b-15) |
-p2-blow-not-round | CLAIMED lane-b (b-15) |
-padcap-nextgun | CLAIMED lane-b (b-15) |
-role-twin | CLAIMED lane-b (b-15) |
-raid bountyfire | CLAIMED lane-b (b-15) |
-evsh | |
-shforge | |
-shrespawn | |
+feel lane-target | DONE (lane-b) | v29.05 via cw-lanetarget
+muzzle-net | DONE (lane-b) | v29.08 via cw-muzzlenet (rebuilt: rico field now 8th, new fields 9-11)
+p2-blow-not-round | DONE (lane-b) | v29.07 via cw-blowround (rebuilt: only the roll was left; stop/pin fixed by hitstoprule/nearmiss; roll now needs sk)
+padcap-nextgun | DONE (lane-b) | v29.04 via cw-padcap
+role-twin | DONE (lane-b) | v29.02 via cw-roletwin
+raid bountyfire | DROPPED (lane-b) | already fixed in HEAD: bounty pays only on byPlayer===true or bySeat>0
+# NOTE: preflight.sh is runnable (bash tools/handoff/preflight.sh b cw-KEY). A card-stamp STOP was fixed with mk-cw-cardP9 (P9 used, next is P10).
+evsh | DROPPED (lane-b) | already in HEAD: convoy ok() and the bounty pick both carry shAt(x,y,80)
+shforge | CLAIMED lane-b | strongholds are now real buildings (shCands), no fence/compound circle; rebuilding as cw-shforge: shCands skips a building holding the Forge
+shrespawn | DROPPED (lane-b) | obsolete: strongholds are now map buildings with walls, no fence and no p.shS side memory in HEAD

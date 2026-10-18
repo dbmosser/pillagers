@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.09 - NO STRONGHOLD OVER THE FORGE
+
+Co-op hunt while he was away. The Forge is placed at the raid build and the strongholds three seconds later. A stronghold could be a building that held the Forge, leaving it out of reach behind the shut gate. A building with the Forge in or within 70 of it is no longer a candidate. The old compound circle is gone since strongholds became real buildings, so this guards the building pick.
+
+MEASURED. Check 29.09 passes, and fails on v29.08.
 ## v29.08 - PLAYER 2 SEES HIS TEAMMATE'S FLASH AT THE MUZZLE
 
 Co-op hunt while he was away. Since the guns were drawn bigger (v27.10), the shooters own window draws the muzzle flash and starts the tracer at the drawn muzzle (39 out and 20 up for a rifle), but the tracer word carried only the spawn point, so the other window drew the flash and the tracer start inside the gun (17 out). Proven in the cloud: a host rifle shot east drew the flash at 39,-20 on the host and at 17,-13 on the partner window, the partner tracer with no muzzle distance; the same aiming west. The word now carries the tracers muzzle distance and the flash point on its end; the other window uses them the way the shooters window does. Old windows ignore the extra numbers. Cosmetic only; the round is unchanged.
