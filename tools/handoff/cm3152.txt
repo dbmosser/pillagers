@@ -1,0 +1,7 @@
+v31.52: end cards: close x, no copy report, clean haul reveal
+
+Every end card has a 48px X top right that leaves like the primary. Copy report is gone from the card. Haul tiles not yet shown are empty slots, and each settles in instead of flashing big.
+
+Check 31.52. Fails on v31.51.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

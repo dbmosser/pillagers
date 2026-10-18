@@ -1,0 +1,14 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  tr1-career-calm                        staged      15.0s  
+  tr2-career-busy                        staged      12.5s  
+  tr3-arcade                             staged      22.4s  
+  tr4-p2-career                          staged      14.5s  
+  tr5-career-labels                      staged      10.4s  
+  tr6-arcade-labels                      staged      20.7s  
+== 4k : window 3872x2263, viewport 3840x2160
+  tr1-career-calm                        staged      14.5s  
+  tr2-career-busy                        staged      12.6s  
+  tr3-arcade                             staged      22.4s  
+  tr4-p2-career                          staged      14.4s  
+  tr5-career-labels                      staged      10.5s  
+  tr6-arcade-labels                      staged      20.6s  

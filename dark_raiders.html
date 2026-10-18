@@ -1445,6 +1445,19 @@ html.party #slotpanel, html.party #titlesub, html.party #titlestart, html.party 
   #root #oc_btn, #root #oc_copy{ min-height:56px; min-width:200px; padding:0 32px !important; font-size:20px; letter-spacing:0; border-radius:4px; }
   #root #oc_btn{ background:var(--acc); background-image:none; border:1px solid var(--acc); color:var(--acc-ink); font-weight:700; box-shadow:none; }
   #root #oc_copy{ background:transparent; border:1px solid var(--ui-line-hi); color:var(--tx-1); font-weight:600; }
+  /* v28.xx (cw-endx), the critic on 35, 38, 60, 76 and 77 (2 and 3 of 5): "no close X", "copy report is a dev action", "a lone dark tile outside the strip". His Q43: a dialog gets the card with an X in the corner.
+     (1) the 48px ghost X sits top right of every end card; it is the same job as the primary (log the run and go back), so it clicks that button and adds no second way out.
+     (2) Q8, reason logged in notes/ui/changes.md: copy report and its 13px sentence are off the card. The recorder page in Settings already has Copy to clipboard and holds the same text (the raid is logged before the card opens), so that one row is the one control for it.
+     (3) the haul reveal: a tile not yet shown stays an empty slot (rarity bar gone, picture hidden) instead of vanishing, and the pop is a 1.25x settle with no glow, so a tile arriving at the strip edge no longer looks like a stray box. */
+  #root #oc_x{ position:absolute; top:var(--sp-3); right:var(--sp-3); box-sizing:border-box; width:var(--btn-h-sm); height:var(--btn-h-sm); min-width:0 !important; min-height:0 !important; padding:0 !important; display:flex; align-items:center; justify-content:center; background:transparent; background-image:none; color:var(--tx-1); border:1px solid var(--ui-line-hi); border-radius:var(--rad); font:400 var(--fs-title)/1 var(--f-cond); cursor:pointer; outline:none; box-shadow:none; z-index:3; }
+  #root #oc_x::before{ content:'\00d7'; }
+  #root #oc_x:hover, #root #oc_x:focus-visible{ border-color:var(--acc); color:var(--acc); }
+  #root #oc_copy, #root #oc_copynote{ display:none !important; }
+  #root .ocwin .haulit.hid{ opacity:1; border-bottom-color:var(--ui-line) !important; }
+  #root .ocwin .haulit.hid>*{ opacity:0; }
+  #root .ocwin .haulit>*{ transition:opacity .12s; }
+  #root .ocwin .haulit.pop{ animation:haulsettle .35s ease-out; }
+  @keyframes haulsettle{ 0%{ transform:scale(1.25); filter:brightness(2); } 100%{ transform:scale(1); filter:none; } }
   #root .ocwin .fbhead{ font-size:16px; letter-spacing:.04em; padding:12px 24px; border-radius:4px; }
   #root .ocwin .haulit{ border-radius:4px !important; background:var(--ui-raised) !important; border:1px solid var(--ui-line) !important; border-bottom-width:3px !important; }
   #root .ocwin .haulit[data-r="common"]{ border-bottom-color:var(--r-common) !important; }
@@ -2023,6 +2036,7 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
 </div>
 <div class="outcome" id="outcome">
 <div class="ocwin">
+  <button type="button" id="oc_x" aria-label="Close" onclick="document.getElementById('oc_btn').click()"></button>   <!-- v28.xx (cw-endx): the card's one X, the same job as the primary -->
   <h1 id="oc_title">EXTRACTED</h1>
   <div class="sub" id="oc_sub"></div>
   <div class="manifest" id="oc_manifest"></div>
@@ -2039,7 +2053,7 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
     <button style="padding:8px 22px" id="oc_btn">Log run and return</button>
     <button style="padding:8px 22px" id="oc_copy">Copy report</button>
   </div>
-  <div style="font-size:13px;color:var(--ash);margin-top:8px;max-width:774px;line-height:1.5;margin-bottom:26px">Copy report puts this raid, and every raid before it, on your clipboard. Paste it to Daniel and the game gets fixed from it.</div>
+  <div id="oc_copynote" style="font-size:13px;color:var(--ash);margin-top:8px;max-width:774px;line-height:1.5;margin-bottom:26px">Copy report puts this raid, and every raid before it, on your clipboard. Paste it to Daniel and the game gets fixed from it.</div>
 </div>
 </div>
 
@@ -2861,7 +2875,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.51';
+var VER='31.52';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -49496,7 +49510,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.51: A gun you find for the first time is noted once in the left feed, no longer twice on screen. Check 31.51 fails on v31.50',
+  now:'v31.52: Every end card has a 48px X top right that leaves like the primary. Copy report is gone from the card. Haul tiles not yet shown are empty slots, and each settles in instead of flashing big. Check 31.52 fails on v31.51',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

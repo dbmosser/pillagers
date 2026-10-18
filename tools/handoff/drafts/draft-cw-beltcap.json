@@ -1,0 +1,12 @@
+{
+    "title":  "THE CAPTION OVER THE BELT IS PROMPT SIZE",
+    "why":  "The critic on the raid hud (screen 36): the line over the belt, the item name with fire and use, is 12 px type and cannot be read from a couch. It now takes the label size the world prompts use. The emote strip and wind-up bars above it already take their height from the same function, so they move up with it.",
+    "now":  "The line over the weapon belt is bigger and easier to read.",
+    "edits":  [
+                  {
+                      "anchor":  "function beltCapFS(bw){ var a=beltFS(bw,0.12), b=hudFS(TYPE.micro),",
+                      "replacement":  "/* v31.xx (cw-beltcap), the critic on screen 36 (2026-10-19): the line over the belt (scav pistol, fire, use) was the smallest print on the HUD, 13 px, unreadable from a couch. It takes the label size (15.6 px rendered, the size of prompts) and the emote strip and bars above it move up with it, as they already read this function. */\nfunction beltCapFS(bw){ var a=beltFS(bw,0.12), b=hudFS(TYPE.label),"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the caption over the belt (item name, fire, use) is prompt size (label, 15.6 px), not the 13 px micro print\u0027,\n   run:function(){\n     if(typeof beltCapFS!==\u0027function\u0027) return \u0027SKIP: no beltCapFS\u0027;\n     var cap=parseFloat(((/([\\d.]+)px/).exec(String(beltCapFS(40)))||[0,0])[1])||0;\n     var want=parseFloat(((/([\\d.]+)px/).exec(String(FS(TYPE.label)))||[0,99])[1])||99;\n     if(cap\u003cwant-0.01) return \u0027the belt caption is \u0027+cap+\u0027 px, under the label size \u0027+want+\u0027 px\u0027;\n     return null; }},"
+}
