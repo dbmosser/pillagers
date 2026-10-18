@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.63 - THE MAGNUM KICKS THE SCREEN HARDER
+
+Co-op hunt while he was away. His Q5: gun feel. The Magnum shared the heavy-gun kick of 4.5 with the Longshot, 1.9 px. A 62 damage shot every 0.62 s should hit harder: 5.5 gives 2.8 px, and the shake drains in 0.28 s so shots never stack.
+
+MEASURED. Check 30.63 passes, and fails on v30.62.
 ## v30.62 - RESIZE HATCH ONLY ON HOVER
 
 Co-op hunt while he was away. Critic on the raid HUD (10-18): hatched resize grips on every panel are clutter. The style guide says chrome shows only when used. The hatch now draws only while the pointer is over its panel.

@@ -225,17 +225,17 @@
  "50-arcade-hud-live": {
   "score": 2,
   "pass": false,
-  "verdict": "The in-raid HUD still ignores the style guide: the currency block is gone but the same amber labels, mixed type sizes, floating unframed text and washed-out grey notices remain, and the ammo count is now the dominant element.",
+  "verdict": "The HUD is still a set of unrelated widgets with lime body text, clipped and cramped corners, and a cluttered score cluster; almost none of the earlier advice shows up in the picture.",
   "findings": [
-   "P1 Top-centre score cluster (Score / 0 SP / 9:46 / Extract 113m): Put the cluster in a 90% --ui-panel strip starting at y≥54px (5% margin). Make SP the single 56px f-cond 800 hero. Set the timer at 20px tx-1 and 'Extract 113m' at 16px --extract. Drop the 'Score' label or set it at 16px tx-2.",
-   "P1 Run info / Run goals panel (right, y≈245-390): Use one 20px tx-1 title with a 16px tx-2 'Run goals' label. Right-align the SP values in tx-2 at 16px. Make rows 32px pitch, add a 1px --ui-line-hi border with 24px padding, and remove the hatch. Leave 16px between the minimap and the panel.",
-   "P1 Bottom-right weapon/ammo block (Burst Carbine 24 / 144): Use a panel P of about 320x120 with a 1px --ui-line-hi border. Set the weapon name at 20px tx-1 and ammo at 56px f-cond 800, with the reserve at 20px tx-2. Remove the dead space. If the backpack hint returns, show it as a key-cap chip.",
-   "P1 Left notices (Storm · Lightning shows you from farther off, Stronghold, Golden enemy): Use the toast component: 40px high, a 4px left accent bar, 16px tx-1 text on a solid 90% --ui-panel. Keep 'Storm' and drop the explanation. Show at most 3 for 3s, then fade, rather than leaving them on screen permanently.",
-   "P2 Bottom-left vitals (Standing, Armour 60, Stamina, HP 100): Use flat 6-10px bars with a --ui-line track. Put labels at 16px outside the bars, aligned left. Keep health on the HUD scheme but remove the gradient. Use a consistent bar height and move the block in to the 5% margin."
+   "P0 Top-centre score cluster (Score / 0 SP / 9:46 / Extract 113m): Put the cluster in a 90% --ui-panel strip with its top at y=54. Make '0 SP' 56px f-cond 800 tx-1. Set 9:46 at 20px tx-1 and 'Extract 113m' at 16px --extract. Delete the 'Score' label or set it at 16px tx-2. Move the arrow beside the extract text.",
+   "P1 Right 'Run info / Run goals' panel (y≈245-390): Keep one 20px tx-1 'Run goals' title and delete 'Run info'. Set the rows at 16px tx-2 on a 32px pitch, with SP values right-aligned in tx-1. Use a 1px --ui-line-hi border, 24px padding and a 16px gap below the minimap. Remove all lime from the text.",
+   "P1 Left notices (Storm, Stronghold, Golden enemy): Use the toast component: 40px high, a solid 90% --ui-panel fill, a 4px left accent bar and 16px tx-1 text. Show only the name, at most 3 toasts for 3s, then fade. Start them at x=96. Keep world labels such as 'cache' inside the screen, with a 16px minimum and a panel pill behind them.",
+   "P1 Bottom-left vitals (Standing, Armour 60, Stamina, HP 100): Use three flat bars, each 10px high and 360px wide, with --ui-line tracks and no gradient. Put 16px labels and values on the left, outside the bars. Make 'Standing' a 16px tx-2 label with no box. Move the block to x=96 with its bottom at 54px.",
+   "P1 Bottom-right weapon/ammo block (Support MG 60 / 360): Shrink it to about 320x120 with a 1px --ui-line-hi border and a 90% --ui-panel fill, and keep a 48px margin from the screen edges. Set the name at 20px tx-1, the ammo at 56px f-cond 800 and '/ 360' at 20px tx-2. Remove the lime tick."
   ],
-  "pic": "tools/handoff/console/notes/shots/02-after/50-arcade-hud-live-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/02-after2/50-arcade-hud-live-1080.jpg",
   "task": "02-raid-hud-redesign",
-  "when": "2026-10-18T15:47"
+  "when": "2026-10-18T16:05"
  },
  "52-arcade-run-over": {
   "score": 3,

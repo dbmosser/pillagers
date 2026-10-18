@@ -1,0 +1,74 @@
+<!-- q28-c: Lively: 10% overshoot, punchy pop -->
+<style>
+.q28-c{position:relative;width:560px;height:320px;overflow:hidden;background:#0b0c0d;border:1px solid #23282c;border-radius:6px;font-family:"Bahnschrift SemiCondensed","Barlow Condensed","Arial Narrow",sans-serif;font-weight:600;color:#f2efe6;font-variant-numeric:tabular-nums;box-sizing:border-box;text-transform:none}
+.q28-c *{box-sizing:border-box}
+.q28-c-stage{position:absolute;left:50%;top:0;width:640px;height:400px;margin-left:-320px;transform-origin:50% 0;transform:scale(.7)}
+.q28-c-card{position:absolute;left:80px;top:50px;width:480px;height:300px;background:#14171a;border:1px solid #2e3337;border-radius:4px;opacity:0;will-change:transform,opacity}
+.q28-c-tab{position:absolute;left:-1px;top:-1px;width:36px;height:4px;background:#e4ff2e;border-radius:4px 0 0 0}
+.q28-c-lab{position:absolute;left:36px;top:30px;font-size:28px;line-height:34px;color:#a9a79e}
+.q28-c-score{position:absolute;left:36px;top:72px;font-size:72px;line-height:80px;font-weight:700;letter-spacing:-.01em;white-space:nowrap;transform-origin:0 50%;will-change:transform}
+.q28-c-score i{font-style:normal;font-size:.62em;color:#a9a79e;margin-left:.18em;font-weight:600}
+.q28-c-line{position:absolute;left:36px;right:36px;top:176px;height:1px;background:#2e3337}
+.q28-c-btn{position:absolute;right:36px;bottom:36px;width:200px;height:56px;border-radius:4px;background:#e4ff2e;color:#0d1200;font-size:28px;font-weight:700;display:flex;align-items:center;justify-content:center;opacity:0;will-change:transform,opacity}
+.q28-c-plot{position:absolute;right:10px;top:12px;width:96px;height:64px}
+.q28-c-cap{position:absolute;left:0;right:0;bottom:0;height:40px;padding:0 16px;display:flex;align-items:center;font-size:17px;color:#a9a79e;border-top:1px solid #1c2024;background:#0b0c0d}
+</style>
+<div class="q28-c">
+  <svg class="q28-c-plot" viewBox="0 0 96 64"><line x1="4" y1="60" x2="92" y2="60" stroke="#2e3337" stroke-width="1"/><line x1="4" y1="14" x2="92" y2="14" stroke="#4a5257" stroke-width="1" stroke-dasharray="3 3"/><path class="q28-c-curve" d="" fill="none" stroke="#e4ff2e" stroke-width="2" stroke-linejoin="round"/><circle class="q28-c-dot" cx="4" cy="60" r="3.5" fill="#f2efe6"/></svg>
+  <div class="q28-c-stage">
+    <div class="q28-c-card">
+      <div class="q28-c-tab"></div>
+      <div class="q28-c-lab">Score</div>
+      <div class="q28-c-score">0<i>SP</i></div>
+      <div class="q28-c-line"></div>
+      <div class="q28-c-btn">Continue</div>
+    </div>
+  </div>
+  <div class="q28-c-cap">Lively: 10% overshoot, punchy pop</div>
+</div>
+<script>
+(function(){
+  var CFG={"c1":1.70158,"card":280,"pop":[[0,1],[0.45,1.12],[1,1]],"popDur":200,"dip":0.06,"pressDur":160,"pressBack":true}, P='q28-c';
+  var roots=document.querySelectorAll('.'+P);
+  Array.prototype.forEach.call(roots,function(root){
+    if(root.getAttribute('data-q28-on'))return; root.setAttribute('data-q28-on','1');
+    var card=root.querySelector('.'+P+'-card'), sc=root.querySelector('.'+P+'-score'), btn=root.querySelector('.'+P+'-btn');
+    var dot=root.querySelector('.'+P+'-dot'), curve=root.querySelector('.'+P+'-curve');
+    function oc(t){return 1-Math.pow(1-t,3)}
+    function ob(t,c){var u=t-1;return 1+(c+1)*u*u*u+c*u*u}
+    function cl(x){return x<0?0:x>1?1:x}
+    function ease(t){return CFG.c1===null?oc(t):ob(t,CFG.c1)}
+    function kf(a,q){for(var i=1;i<a.length;i++){if(q<=a[i][0]){var r=(q-a[i-1][0])/(a[i][0]-a[i-1][0]);r=.5-.5*Math.cos(Math.PI*r);return a[i-1][1]+(a[i][1]-a[i-1][1])*r}}return a[a.length-1][1]}
+    // curve plot: progress 0..1 on x, value on y (0 at the bottom line, 1 on the dashed line, room above for overshoot)
+    function py(v){return 60-v*46}
+    var d='';for(var i=0;i<=40;i++){var x=4+88*i/40;d+=(i?'L':'M')+x.toFixed(1)+' '+py(ease(i/40)).toFixed(1)+' '}
+    curve.setAttribute('d',d);
+    var LOOP=3000, T0=null, run=true;
+    function frame(now){
+      if(!root.isConnected){return}
+      if(T0===null)T0=now;
+      var t=(now-T0)%LOOP;
+      // card in
+      var p=cl(t/CFG.card), e=ease(p), a=cl(p/.4);
+      var out=cl((t-2700)/200); a=a*(1-out);
+      card.style.opacity=a;
+      card.style.transform='translateY('+(48*(1-e)).toFixed(2)+'px) scale('+(0.92+0.08*e).toFixed(4)+')';
+      dot.setAttribute('cx',(4+88*p).toFixed(1)); dot.setAttribute('cy',py(e).toFixed(1));
+      // score counts 0 to 4,820 over 900 ms, starting 120 ms after the card
+      var cp=cl((t-120)/900), n=Math.round(4820*oc(cp));
+      sc.firstChild.nodeValue=n.toLocaleString('en-US');
+      var pop=1; if(CFG.pop){var q=(t-1020)/CFG.popDur; if(q>=0&&q<=1)pop=kf(CFG.pop,q)}
+      sc.style.transform='scale('+pop.toFixed(4)+')';
+      // button fades in, then is pressed at 1.6 s
+      var bo=cl((t-1200)/200)*(1-out), bs=1, bt=(t-1600)/CFG.pressDur, flash=0;
+      if(bt>=0&&bt<=1){
+        if(bt<.5){bs=1-CFG.dip*oc(bt/.5);flash=1}
+        else{var r=(bt-.5)/.5; bs=(1-CFG.dip)+CFG.dip*(CFG.pressBack?ob(r,CFG.c1):oc(r)); flash=1-r}
+      }
+      btn.style.opacity=bo; btn.style.transform='scale('+bs.toFixed(4)+')'; btn.style.filter='brightness('+(1+.12*flash).toFixed(3)+')';
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  });
+})();
+</script>

@@ -1,0 +1,7 @@
+v30.63: the magnum kicks the screen harder
+
+The Magnum now kicks the screen harder with every shot.
+
+Check 30.63. Fails on v30.62.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

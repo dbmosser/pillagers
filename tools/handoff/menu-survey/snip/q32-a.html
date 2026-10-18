@@ -1,0 +1,71 @@
+<style>
+.q32-a{width:560px;font-family:Bahnschrift,"Segoe UI Variable Display","Segoe UI",sans-serif;color:#f2efe6;-webkit-font-smoothing:antialiased;box-sizing:border-box}
+.q32-a *{box-sizing:border-box;margin:0;padding:0}
+.q32-a-stage{position:relative;width:560px;height:320px;background:#0b0c0d;border-radius:8px;overflow:hidden}
+.q32-a-card{position:absolute;left:10px;top:10px;width:540px;height:300px;background:#14171a;border:1px solid #2e3337;border-radius:4px;overflow:hidden}
+.q32-a-tabs{position:absolute;left:0;right:0;top:0;height:56px;border-bottom:1px solid #2e3337}
+.q32-a-tab{position:absolute;top:0;height:56px;line-height:54px;font-size:28px;font-weight:600;color:#a9a79e;transition:color .12s linear;white-space:nowrap}
+.q32-a-tab.on{color:#fff}
+.q32-a-ul{position:absolute;left:0;top:52px;height:4px;width:60px;background:#e4ff2e;will-change:transform,width}
+.q32-a-clip{position:absolute;left:0;right:0;top:64px;bottom:0;overflow:hidden}
+.q32-a-page{position:absolute;left:0;top:0;width:100%;height:100%;will-change:transform,opacity}
+.q32-a-row{position:absolute;left:54px;width:432px;height:52px;display:flex;align-items:center;justify-content:space-between;font-size:22px;font-weight:500;border-bottom:1px solid #2e3337;will-change:transform,opacity}
+.q32-a-row b{font-weight:600}
+.q32-a-cap{margin-top:10px;font-size:15px;line-height:20px;color:#a9a79e;letter-spacing:.01em}
+.q32-a-cap b{color:#e4ff2e;font-weight:700;margin-right:8px}
+</style>
+<div class="q32-a" id="q32-a">
+  <div class="q32-a-stage"><div class="q32-a-card">
+    <div class="q32-a-tabs"><span class="q32-a-tab on" style="left:54px">Raid</span><span class="q32-a-tab" style="left:154px">Audio</span><span class="q32-a-tab" style="left:270px">Controls</span><i class="q32-a-ul"></i></div>
+    <div class="q32-a-clip"><div class="q32-a-page" style=""><div class="q32-a-row" style="top:0px"><span>Shared sight</span><b>On</b></div><div class="q32-a-row" style="top:52px"><span>Superhot mode</span><b>Off</b></div><div class="q32-a-row" style="top:104px"><span>Edit the words</span><b>Off</b></div><div class="q32-a-row" style="top:156px"><span>Raid length</span><b>10 min</b></div></div><div class="q32-a-page" style="opacity:0;visibility:hidden"><div class="q32-a-row" style="top:0px"><span>Master volume</span><b>Full</b></div><div class="q32-a-row" style="top:52px"><span>Sound effects</span><b>Full</b></div><div class="q32-a-row" style="top:104px"><span>Music</span><b>Off</b></div><div class="q32-a-row" style="top:156px"><span>Subtitles</span><b>On</b></div></div><div class="q32-a-page" style="opacity:0;visibility:hidden"><div class="q32-a-row" style="top:0px"><span>Move up</span><b>W</b></div><div class="q32-a-row" style="top:52px"><span>Move down</span><b>S</b></div><div class="q32-a-row" style="top:104px"><span>Dodge roll</span><b>Space</b></div><div class="q32-a-row" style="top:156px"><span>Reload</span><b>R</b></div></div></div>
+  </div></div>
+  <div class="q32-a-cap"><b>A</b>Fade and slide: 200 ms, rows slide 24 px, underline eases in 150 ms</div>
+</div>
+<script>
+(function(){
+  var root=document.getElementById('q32-a'); if(!root||root.getAttribute('data-q')) return; root.setAttribute('data-q','1');
+  var tabs=root.querySelectorAll('.q32-a-tab'), ul=root.querySelector('.q32-a-ul'), pages=root.querySelectorAll('.q32-a-page');
+  var rows=[]; for(var i=0;i<pages.length;i++) rows.push(pages[i].querySelectorAll('.q32-a-row'));
+  var cycle=[0,1,2,1], step=0, cur=0, prev=0, dir=1, HOLD=1200, t0=null, last=0, END=600;
+  function bez(a,b,c,d){return function(x){if(x<=0)return 0;if(x>=1)return 1;var lo=0,hi=1,t=x,i,mt;for(i=0;i<30;i++){mt=1-t;var cx=3*mt*mt*t*a+3*mt*t*t*c+t*t*t;if(Math.abs(cx-x)<1e-6)break;if(cx<x)lo=t;else hi=t;t=(lo+hi)/2;}mt=1-t;return 3*mt*mt*t*b+3*mt*t*t*d+t*t*t;};}
+  function cl(v){return v<0?0:(v>1?1:v);}
+  var E=bez(.2,.8,.2,1);
+  var tx=[],tw=[]; function measure(){for(var i=0;i<tabs.length;i++){tx[i]=tabs[i].offsetLeft;tw[i]=tabs[i].offsetWidth;}}
+  measure();
+  var ux=tx[0],uw=tw[0],ux0=ux,uw0=uw,vx=0,vw=0;
+  function put(){ul.style.transform='translateX('+ux.toFixed(2)+'px)';ul.style.width=uw.toFixed(2)+'px';}
+  put();
+  function showOnly(k){for(var i=0;i<pages.length;i++){var on=(i===k);pages[i].style.visibility=on?'visible':'hidden';pages[i].style.opacity=on?1:0;pages[i].style.transform='none';for(var j=0;j<rows[i].length;j++){rows[i][j].style.opacity=1;rows[i][j].style.transform='none';}}}
+  
+  function begin(){ }
+  var settled=true;
+  function frame(t,dt){
+    var k=1-Math.exp(-dt/0.05); ux+=(tx[cur]-ux)*k; uw+=(tw[cur]-uw)*k;
+    var po=cl(t/100), eo=E(po), pi=cl((t-80)/120), ei=E(pi);
+    var o=pages[prev], n=pages[cur];
+    o.style.opacity=1-eo; o.style.transform='translateX('+(-dir*24*eo).toFixed(2)+'px)';
+    n.style.opacity=ei; n.style.transform='translateX('+(dir*24*(1-ei)).toFixed(2)+'px)';
+    if(po>=1) o.style.visibility='hidden';
+  }
+  function settle(dt){ var k=1-Math.exp(-dt/0.05); ux+=(tx[cur]-ux)*k; uw+=(tw[cur]-uw)*k; showOnly(cur); }
+  showOnly(0);
+  function go(){
+    step=(step+1)%4; prev=cur; cur=cycle[step]; dir=cur>prev?1:-1; measure();
+    for(var i=0;i<tabs.length;i++) tabs[i].className='q32-a-tab'+(i===cur?' on':'');
+    ux0=ux; uw0=uw; vx=0; vw=0;
+    for(var k=0;k<pages.length;k++){ if(k!==cur&&k!==prev){pages[k].style.visibility='hidden';pages[k].style.opacity=0;} }
+    pages[prev].style.visibility='visible'; pages[cur].style.visibility='visible';
+    begin();
+  }
+  function tick(now){
+    if(t0===null){ t0=now; last=now; }
+    var dt=Math.min((now-last)/1000,0.05); last=now;
+    var t=now-t0;
+    if(t>=HOLD){ t0=now-(t-HOLD); t=now-t0; go(); }
+    if(t<END) frame(t,dt); else settle(dt);
+    put();
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>q26-b podium and list</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#0b0c0d}
+body{position:relative;font-family:"Bahnschrift SemiCondensed","Barlow Condensed","Arial Narrow",sans-serif;font-weight:600;color:#f2efe6;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased;text-transform:none}
+.a{position:absolute}
+.bd{position:absolute;inset:0;background-size:cover;background-position:center}
+.ov{position:absolute;inset:0}
+.panel{position:absolute;background:#14171a;border:1px solid #2e3337;border-radius:4px}
+.tabmark{position:absolute;left:-1px;top:-1px;width:36px;height:4px;background:#e4ff2e;border-radius:4px 0 0 0}
+.muted{color:#a9a79e}
+.lime{color:#e4ff2e}
+.teal{color:#47d8c6}
+.blue{color:#4fb4ff}
+.danger{color:#ff5a3c}
+.hero{font-weight:700;-webkit-text-stroke:.011em currentColor;letter-spacing:-.012em;line-height:1;white-space:nowrap}
+.nw{white-space:nowrap}
+.btn{position:absolute;display:flex;align-items:center;justify-content:center;gap:18px;font-weight:700;border-radius:4px;white-space:nowrap;line-height:1}
+.btn.pri{background:#e4ff2e;color:#0d1200}
+.btn.gh{border:2px solid #4a5257;color:#f2efe6;background:rgba(255,255,255,.02)}
+.gl{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;border:3px solid currentColor;font-weight:800;font-size:24px;line-height:1;flex:none;padding-bottom:1px}
+.gl.s{width:32px;height:32px;border-width:2.5px;font-size:19px}
+.chip{display:inline-flex;align-items:center;white-space:nowrap;font-weight:700;border-radius:4px;line-height:1}
+.chip.tl{background:rgba(71,216,198,.14);border:1.5px solid #47d8c6;color:#47d8c6}
+.chip.lm{background:#e4ff2e;color:#0d1200}
+
+.rows{position:absolute}
+.row{position:relative;display:flex;align-items:center;border-bottom:1px solid #23282c}
+.row:last-child{border-bottom:0}
+.row .rk{color:#a9a79e;text-align:center;flex:none}
+.row .in{font-weight:700;flex:none;letter-spacing:.02em}
+.row .sp{margin-left:auto;font-weight:700;white-space:nowrap}
+.row .sp small{font-weight:600;color:#a9a79e;font-size:.7em;margin-left:.2em}
+.row .bar{position:absolute;left:0;top:0;bottom:0}
+.row.new{background:rgba(228,255,46,.13);border-bottom-color:rgba(228,255,46,.35)}
+.newchip{display:inline-flex;align-items:center;background:#e4ff2e;color:#0d1200;font-weight:700;border-radius:4px;line-height:1;white-space:nowrap}
+.box{position:relative;display:flex;align-items:center;justify-content:center;background:#1e2225;border:2px solid #3a4045;border-radius:4px;font-weight:700;color:#f2efe6;line-height:1;flex:none}
+.box.on{border:4px solid #e4ff2e;box-shadow:0 0 0 5px rgba(228,255,46,.18)}
+.hintbar{position:absolute;left:0;right:0;bottom:0;height:60px;background:rgba(11,12,13,.78);border-top:1px solid #2e3337;display:flex;align-items:center;gap:36px;padding:0 80px;font-size:26px;color:#f2efe6}
+.hintbar .h{display:flex;align-items:center;gap:12px}
+.mini{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border:2px solid #a9a79e;border-radius:6px}
+
+.pod{position:absolute;background:#14171a;border:1px solid #2e3337;border-radius:4px 4px 0 0;text-align:center;overflow:hidden}
+.pod .tb{position:absolute;left:0;right:0;top:0;height:6px}
+.pod .md{position:absolute;left:50%;width:72px;height:72px;margin-left:-36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:800;color:#14171a;line-height:1;padding-bottom:3px}
+.pod .ini{position:absolute;left:0;right:0;font-size:88px;font-weight:700;line-height:88px;letter-spacing:.02em}
+.pod .scr{position:absolute;left:0;right:0;font-size:44px;font-weight:700;line-height:50px}
+.pod .scr small{font-size:.62em;color:#a9a79e;margin-left:.2em}
+.lst{left:96px;top:480px;width:900px;height:430px;border-radius:0 0 4px 4px}
+.rows{left:20px;right:20px;top:22px}
+.ent{left:1080px;top:620px;width:760px;height:400px}
+.key{width:56px;height:56px;display:flex;align-items:center;justify-content:center;background:#1e2225;border:1px solid #2e3337;border-radius:4px;font-size:28px;font-weight:700;color:#f2efe6;line-height:1}
+.key.f{background:#e4ff2e;color:#0d1200;border-color:#e4ff2e}
+</style></head>
+<body>
+<div class="bd" style="background:url('../../console/notes/shots/all4k/50-arcade-hud-live-4k.jpg') -629.6px -225.0px/2999.5px 1687.2px no-repeat"></div>
+<div class="ov" style="background:rgba(0,0,0,0.45)"></div>
+<div class="pod" style="left:96px;top:140px;width:300px;height:340px">
+      <div class="tb" style="background:#c9ccd0"></div>
+      <div class="md" style="top:40px;background:#c9ccd0">2</div>
+      <div class="ini" style="top:142px">JAX</div>
+      <div class="scr" style="top:254px">9,640<small>SP</small></div>
+    </div><div class="pod" style="left:396px;top:100px;width:300px;height:380px">
+      <div class="tb" style="background:#ffc72e"></div>
+      <div class="md" style="top:50px;background:#ffc72e">1</div>
+      <div class="ini" style="top:156px">ABC</div>
+      <div class="scr" style="top:268px">12,480<small>SP</small></div>
+    </div><div class="pod" style="left:696px;top:140px;width:300px;height:340px">
+      <div class="tb" style="background:#c98a5a"></div>
+      <div class="md" style="top:40px;background:#c98a5a">3</div>
+      <div class="ini" style="top:142px">MOM</div>
+      <div class="scr" style="top:254px">8,120<small>SP</small></div>
+    </div>
+<div class="panel lst"><div class="rows"><div class="row" style="height:56px;padding-left:0px">
+      <span class="rk" style="width:48px;font-size:24px;">4</span>
+      <span class="in" style="font-size:32px;margin-left:0px">DAD</span>
+      
+      <span class="sp" style="font-size:32px;padding-right:16px">7,300<small>SP</small></span>
+    </div><div class="row" style="height:56px;padding-left:0px">
+      <span class="rk" style="width:48px;font-size:24px;">5</span>
+      <span class="in" style="font-size:32px;margin-left:0px">ZEE</span>
+      
+      <span class="sp" style="font-size:32px;padding-right:16px">6,900<small>SP</small></span>
+    </div><div class="row" style="height:56px;padding-left:0px">
+      <span class="rk" style="width:48px;font-size:24px;">6</span>
+      <span class="in" style="font-size:32px;margin-left:0px">KAI</span>
+      
+      <span class="sp" style="font-size:32px;padding-right:16px">5,100<small>SP</small></span>
+    </div><div class="row new" style="height:56px;padding-left:0px">
+      <span class="rk" style="width:48px;font-size:24px;">7</span>
+      <span class="in" style="font-size:32px;margin-left:0px">LEO</span>
+      <span class="newchip" style="margin-left:14px;height:26px;padding:0 12px;font-size:18px">New</span>
+      <span class="sp" style="font-size:32px;padding-right:16px">4,820<small>SP</small></span>
+    </div><div class="row" style="height:56px;padding-left:0px">
+      <span class="rk" style="width:48px;font-size:24px;">8</span>
+      <span class="in" style="font-size:32px;margin-left:0px">SAM</span>
+      
+      <span class="sp" style="font-size:32px;padding-right:16px">4,000<small>SP</small></span>
+    </div><div class="row" style="height:56px;padding-left:0px">
+      <span class="rk" style="width:48px;font-size:24px;">9</span>
+      <span class="in" style="font-size:32px;margin-left:0px">BOB</span>
+      
+      <span class="sp" style="font-size:32px;padding-right:16px">3,150<small>SP</small></span>
+    </div><div class="row" style="height:56px;padding-left:0px">
+      <span class="rk" style="width:48px;font-size:24px;">10</span>
+      <span class="in" style="font-size:32px;margin-left:0px">AVA</span>
+      
+      <span class="sp" style="font-size:32px;padding-right:16px">2,800<small>SP</small></span>
+    </div></div></div>
+<div class="panel ent"><div class="tabmark"></div>
+ <div class="a lime" style="left:28px;top:16px;font-size:32px;line-height:40px;font-weight:700">Player 1</div>
+ <div class="a" style="left:28px;top:62px;display:flex;gap:12px"><div class="box" style="width:96px;height:120px;font-size:72px">L</div><div class="box" style="width:96px;height:120px;font-size:72px">E</div><div class="box on" style="width:96px;height:120px;font-size:72px">O</div></div>
+ <div class="a" style="left:376px;top:62px;width:356px;height:120px;display:flex;flex-direction:column;justify-content:center;align-items:flex-end;text-align:right">
+   <div style="font-size:28px;line-height:34px;color:#a9a79e">Rank 7</div>
+   <div class="hero" style="font-size:60px;line-height:66px">4,820 SP</div>
+ </div>
+ <div class="a" style="left:112px;top:200px;width:536px;display:grid;grid-template-columns:repeat(9,56px);gap:4px"><div class="key">A</div><div class="key">B</div><div class="key">C</div><div class="key">D</div><div class="key">E</div><div class="key">F</div><div class="key">G</div><div class="key">H</div><div class="key">I</div><div class="key">J</div><div class="key">K</div><div class="key">L</div><div class="key">M</div><div class="key">N</div><div class="key f">O</div><div class="key">P</div><div class="key">Q</div><div class="key">R</div><div class="key">S</div><div class="key">T</div><div class="key">U</div><div class="key">V</div><div class="key">W</div><div class="key">X</div><div class="key">Y</div><div class="key">Z</div><div class="key"><svg width="30" height="24" viewBox="0 0 30 24"><path d="M10 3 H26 V21 H10 L3 12 Z" fill="none" stroke="#f2efe6" stroke-width="2.4" stroke-linejoin="round"/><path d="M14.5 8.5 L21.5 15.5 M21.5 8.5 L14.5 15.5" stroke="#f2efe6" stroke-width="2.4" stroke-linecap="round"/></svg></div></div>
+</div>
+<div class="hintbar" style="justify-content:flex-end"><div class="h"><span class="gl s">A</span><span>Pick</span></div><div class="h"><span class="gl s">B</span><span>Delete</span></div></div>
+</body></html>

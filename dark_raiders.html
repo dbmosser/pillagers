@@ -2786,7 +2786,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.62';
+var VER='30.63';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21681,7 +21681,7 @@ var ACC_NEAR=350, ACC_SPAN=600, ACC_FALL=0.8;
 // and the camera shake only grows when the number RISES (gfxTrauma: trauma += rise/14, size = 18 px x trauma squared), so a lone 2.2 is 0.16 trauma, under half a pixel: the Riot
 // Scattergun, six pellets and 96 damage on one pull, kicked the screen like a pea shooter. GUN_SHAKE names a gun base and the shake one round of it sets; a gun with no entry keeps the old
 // number (4.5 over 40 damage, else 2.2). Riot Scattergun 2.2 to 6.5: trauma 0.16 to 0.46, a kick of 0.4 px to 3.9 px at 1080p, settling in about a third of a second. Live feel only, no draw.
-var GUN_SHAKE={shotgun:6.5,smg:1.9,pistol:3.6,rifle:2.7};   // v28.xx (cw-kickrifle): the Auto Rifle 2.2 to 2.7, one round 0.44 px to 0.66 px of camera kick and a held 25 round magazine (132 ms a round, trauma drains 0.185 a round, 2.7 adds 0.193) climbs slowly to under 3 px, so a burst has weight and a held mag never goes wild   // v28.xx (cw-kickpistol): the Scav Pistol 2.2 to 3.6, one tap 0.4 px to 1.2 px of camera kick (trauma 0.157 to 0.257, size 18 x trauma squared); six taps at its 290 ms rate stay under 1.1 px   // v28.xx (cw-kicksmg): the Compact SMG 2.2 to 1.9, so a held magazine no longer climbs into a heavy shake (88 ms between rounds: 2.2 adds 0.157 trauma a round and 0.123 drains; measured worst shake of a full held magazine 4.65 px at 2.2, 1.41 px at 1.9)
+var GUN_SHAKE={shotgun:6.5,smg:1.9,pistol:3.6,rifle:2.7,magnum:5.5};   // v28.xx (cw-kickmagnum): the Magnum 4.5 to 5.5, one shot 1.9 px to 2.8 px of camera kick (trauma 0.321 to 0.393, size 18 x trauma squared), draining in 0.28 s, well inside its 620 ms rate so shots never stack   // v28.xx (cw-kickrifle): the Auto Rifle 2.2 to 2.7, one round 0.44 px to 0.66 px of camera kick and a held 25 round magazine (132 ms a round, trauma drains 0.185 a round, 2.7 adds 0.193) climbs slowly to under 3 px, so a burst has weight and a held mag never goes wild   // v28.xx (cw-kickpistol): the Scav Pistol 2.2 to 3.6, one tap 0.4 px to 1.2 px of camera kick (trauma 0.157 to 0.257, size 18 x trauma squared); six taps at its 290 ms rate stay under 1.1 px   // v28.xx (cw-kicksmg): the Compact SMG 2.2 to 1.9, so a held magazine no longer climbs into a heavy shake (88 ms between rounds: 2.2 adds 0.157 trauma a round and 0.123 drains; measured worst shake of a full held magazine 4.65 px at 2.2, 1.41 px at 1.9)
 function gunShake(wep){
   var b=(wep&&wep.id)?gunBase(wep.id):'', s=GUN_SHAKE[b];
   return (s===undefined)?((wep&&wep.dmg>40)?4.5:2.2):s;
@@ -48116,7 +48116,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.62: The raid HUD panels show their resize hatch only when the pointer is over them. Check 30.62 fails on v30.61',
+  now:'v30.63: The Magnum now kicks the screen harder with every shot. Check 30.63 fails on v30.62',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
