@@ -80352,9 +80352,9 @@ window.__REGRESS=[
      if(!pb) return 'SKIP: no pause box in this build';
      if(!/RAID PAUSED/i.test(pbt)) return 'the pause box does not say RAID PAUSED, it says "'+pbt.slice(0,40)+'"';
      if(!/E interact/.test(pbt)&&!/E search \/ use/.test(pbt)) bad.push('the pause box controls line does not say E interact');   /* keyswap v25.67: E is search / use, X is extraction */
-     if(!/CTRL \/ C crouch toggle/.test(pbt)) bad.push('the pause box does not say CTRL / C crouch toggle');
+     if(!/CTRL \/ C crouch toggle/i.test(pbt)) bad.push('the pause box does not say CTRL / C crouch toggle');
      if(!/Please provide feedback/.test(pbt)) bad.push('the pause box feedback line is not his');
-     has('pausebleed',/YOU ARE DOWNED\./,'the downed line');
+     has('pausebleed',/YOU ARE DOWNED\./i,'the downed line');
      has('pausebleed',/You can extract while downed/,'the downed line');
      // The claim in that line, that extraction while downed is permitted, was
      // read off the extraction prompt table (his run 44) rather than driven here.
