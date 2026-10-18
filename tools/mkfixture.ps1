@@ -86549,6 +86549,7 @@ window.__REGRESS=[
      var target=null;
      for(i=0;i<before.length;i++) if(/^extract \d+m$/i.test(before[i])){ target=before[i]; break; }   /* v30.xx (00-fix-new-reds): never all caps (2026-10-18): drawn as Extract 120m */
      if(!target) return bad.length?bad.join('; '):'SKIP: no lettered numbered line was drawn to test with';
+     target='EXTRACT '+target.replace(/^extract /i,'');   /* the edit is keyed by the line as the game writes it (the case is fixed after the lookup) */
      __tx.set(target,'Zqx ring '+target.replace(/^extract /i,''));
      p.x+=40; p.y+=40;
      for(var f2=0;f2<3;f2++) __loop(performance.now()+1000+f2*16.7);
