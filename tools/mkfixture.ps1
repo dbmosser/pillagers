@@ -6097,6 +6097,26 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.49',what:'the run over card is wide (840px x scale) and the PILLAGERS wordmark steps out while it is up (critic: small box under a competing wordmark, screen 55)',
+   run:function(){
+     if(typeof arcadeOverEl!=='function'||typeof attEl!=='function') return 'SKIP: no arcade overlay here';
+     var d, c, wasDisp, z, res=null, nm, w;
+     try{
+       __topClear(); __runPrep();
+       d=attEl(); wasDisp=d.style.display; d.style.display='block';
+       try{ if(typeof attZ==='function') attZ(d); }catch(_z){}
+       z=parseFloat(getComputedStyle(d).getPropertyValue('--attz'))||1;
+       c=arcadeOverEl(); c.textContent='x'; c.style.display='block';
+       nm=d.querySelector('.attname'); w=parseFloat(getComputedStyle(c).width);
+       if(getComputedStyle(nm).display!=='none') res='the wordmark still shows over the run over card';
+       else if(w<840*z-2) res='the card is only '+w+'px wide, not 840px x '+z;
+       c.style.display='none';
+       if(!res&&getComputedStyle(nm).display==='none') res='the wordmark stays hidden when the card is gone';
+       return res;
+     } finally {
+       try{ c.style.display='none'; c.textContent=''; c.removeAttribute('data-at'); d.style.display=wasDisp; }catch(_f){}
+     }
+   }},
   {v:'29.48',what:'the mouse cursor shows (the arrow, and no reticle) while the item wheel is open with a mouse, and the reticle cursor is back when it closes (his order 2026-10-15)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: no raid here';

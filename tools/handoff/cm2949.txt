@@ -1,0 +1,7 @@
+v29.49: the run over card is wider and the wordmark steps out
+
+The run over card is bigger and the title no longer competes.
+
+Check 29.49. Fails on v29.48.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

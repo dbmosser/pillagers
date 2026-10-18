@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.49 - The run over card is wider and the wordmark steps out
+
+Co-op hunt while he was away. The critic scored the run over screen 2: a small box under a competing wordmark. The wordmark hides while the card is up, and the card is 840px times scale wide. Restyle only.
+
+MEASURED. Check 29.49 passes, and fails on v29.48.
 ## v29.48 - The cursor shows over the item wheel
 
 Co-op hunt while he was away. His order 2026-10-15: the mouse cursor shows over the wheel while it is open, so the player never loses the cursor when the wheel closes. The raid canvas hides the OS cursor (the reticle is the pointer) and the wheel plates covered the reticle, so the cursor vanished under the wheel. With a mouse the arrow is up while the wheel is open and the reticle steps aside; a pad keeps its reticle.
