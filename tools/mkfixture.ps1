@@ -6405,12 +6405,8 @@ window.__REGRESS=[
        if(INDEV.dev!=='pad') bad.push('a mouse event the page made up took the pad prompts down');
        indevMouse(340,320,40,20);
        if(INDEV.dev!=='kb') bad.push('a 40 pixel mouse move did not put the key prompts up');
-       // 6. the player 2 window has no keyboard or mouse of its own: it keeps the pad prompts
-       indevSet('kb'); NET.same='p2';
-       key();
-       if(INDEV.dev!=='kb'||!padOn()) bad.push('the player 2 window lost its pad prompts ('+st()+')');
+       // 6. retargeted (cw-glyphs3, v30.68 cw-p2keys: the window in front plays the keys): the player 2 window is judged like any other, and its own check (cw-glyphs3) owns that case
        NET.same=null;
-       if(padOn()) bad.push('the pad prompts stayed up after leaving the player 2 window');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        if(hadT) ctx.fillText=oFT; else delete ctx.fillText;
