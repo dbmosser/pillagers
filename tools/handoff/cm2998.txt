@@ -1,0 +1,7 @@
+v29.98: ghost header x, quieter focus box, keys labels
+
+Header X buttons are quieter ghosts, Keys labels are brighter.
+
+Check 29.98. Fails on v29.97.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

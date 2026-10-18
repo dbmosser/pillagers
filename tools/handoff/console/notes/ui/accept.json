@@ -202,10 +202,10 @@
  "38-extracted-card": {
   "score": 3,
   "pass": false,
-  "verdict": "The card has the right shell (centred, teal title, big haul number, 4-stat row, amber primary plus ghost), but it is overstuffed with six extra text and chip groups and it still shows a banned \"$\" instead of SP.",
-  "pic": "tools/handoff/console/notes/shots/13-h1/38-extracted-card-1080.jpg",
+  "verdict": "A clean, centred end card with a clear hero number and a single amber primary, but it's too crowded vertically, still uses '$' and several small explanatory lines, and its title, hero and chip rows compete.",
+  "pic": "tools/handoff/console/notes/shots/13-i1/38-extracted-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T12:22"
+  "when": "2026-10-18T12:26"
  },
  "40-whats-new-card": {
   "score": 3,
@@ -330,18 +330,18 @@
  "55-arcade-run-over-scored": {
   "score": 3,
   "pass": false,
-  "verdict": "The card follows the end-card shell reasonably well, with a clear title, hero line, divider and stats row, but the hub still shows through behind it, the primary button floats outside the card, and the stats are mostly zeros with no ghost button.",
-  "pic": "tools/handoff/console/notes/shots/12-g3/55-arcade-run-over-scored-1080.jpg",
+  "verdict": "A clean, on-guide end card with a clear hero line and a single primary button, but it reads as a sparse template with a 3-stat row, an odd button label, small stat labels and no sense of this game.",
+  "pic": "tools/handoff/console/notes/shots/12-g4/55-arcade-run-over-scored-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T12:15"
+  "when": "2026-10-18T12:26"
  },
  "60-abandoned-card": {
-  "score": 3,
+  "score": 2,
   "pass": false,
-  "verdict": "Judging the g1 version, which is the better of the two: it is a clean, centred end card with a clear amber primary and decent spacing. It still reads as a template, though. It has no hero line, no close or pad hints, small dim text, a '$' amount and explanatory copy, and its tiny fine print is too weak for a couch at 1080.",
-  "pic": "tools/handoff/console/notes/shots/13-g1/60-abandoned-card-1080.jpg",
+  "verdict": "The card follows the end-card shell and sentence case, but it has no hero line, shows a forbidden \"$\" and small low-contrast text, and its explaining sentences make the hierarchy flat, so it is a competent template rather than something a player would call polished.",
+  "pic": "tools/handoff/console/notes/shots/13-i1/60-abandoned-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T12:18"
+  "when": "2026-10-18T12:25"
  },
  "42-hub-pause-box": {
   "score": 3,
