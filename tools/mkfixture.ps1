@@ -6130,7 +6130,7 @@ window.__REGRESS=[
        bf=String(getComputedStyle(d).backdropFilter||getComputedStyle(d).webkitBackdropFilter);
        m=/blur\(([0-9.]+)px\)/.exec(bf);
        if(!m) return 'the attract backdrop does not blur the world';
-       if(parseFloat(m[1])>9) res='the backdrop blur is '+m[1]+'px, over the 8px token';
+       if(parseFloat(m[1])>17) res='the backdrop blur is '+m[1]+'px, over the 16px token';   /* cw-partyglow2: 8px let the hub labels show through, 16px hides them; either passes */
        return res;
      } finally { try{ d.style.display=wasDisp; }catch(_f){} }
    }},
