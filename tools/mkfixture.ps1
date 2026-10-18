@@ -6104,7 +6104,7 @@ window.__REGRESS=[
      try{
        __topClear(); __runPrep();
        d=attEl(); wasDisp=d.style.display; d.style.display='block';
-       pg=arcadeAttEl('arcpage'); pg.style.display='block';
+       pg=arcadeAttEl('arcpage'); pg.textContent=''; pg.style.display='block'; pg.style.translate='none'; pg.style.opacity='1'; try{ d.querySelectorAll('.uimghost').forEach(function(g){ g.remove(); }); }catch(_g){}   // a tab slide left over from an earlier check offsets the card
        s=document.createElement('div'); s.className='aph'; s.textContent='Tonights best'; pg.appendChild(s);
        s=document.createElement('div'); s.className='apr'; s.textContent='1. ABC'; pg.appendChild(s);
        nm=d.querySelector('.attname').getBoundingClientRect(); ap=d.querySelector('.attpress').getBoundingClientRect(); pr=pg.getBoundingClientRect();
