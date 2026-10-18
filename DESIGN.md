@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.42 - A pause stays paused
+
+Co-op hunt while he was away. His answer Q29 (10-18): a pause stays paused until a player unpauses. The demo idle timer kept running under the pause box, so a long pause benched the player or ended the run. An open pause box now counts as being there.
+
+MEASURED. Check 30.42 passes, and fails on v30.41.
 ## v30.41 - TITLE: ONE LINE
 
 Co-op hunt while he was away. His Q51 (10-18): drop the story paragraph and the three step cards for one line, Ascend. Pillage. Extract. Q53: no raiders beside the logo (none are there). The title is calmer: logo, one line, keys, the mode rows.

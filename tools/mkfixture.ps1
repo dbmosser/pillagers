@@ -6097,6 +6097,32 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.42',what:'his Q29: an open pause box never idles the demo out; a pause stays until a player unpauses',
+   run:function(){
+     if(typeof arcadeIdleTick!=='function'||typeof arcadeDeploy!=='function'||typeof ARCADE!=='object') return 'SKIP: no arcade idle here';
+     var bad=[], g, ru0, now, r, p0=pauseOpen;
+     try{
+       __topClear(); __runPrep();
+       if(ARCADE.on) return 'SKIP: the arcade is on after __topClear';
+       if(!arcadeDeploy({mapIx:0,seed:4242})) return 'SKIP: arcadeDeploy built no arcade raid';
+       g=__state(); keys={}; ARCADE.holdT=0; ARCADE.waveT=0; ARCADE.solo=1; ARCADE.mateAt=0;
+       ru0=RUMBLE.usedAt; RUMBLE.usedAt=-1e9;
+       now=Date.now(); ARCADE.ownAt=now-400000; pauseOpen=true;
+       r=arcadeIdleTick(now);
+       if(__state()!==g||g.over||r==='end'||r==='bench') bad.push('a pause box open for over six minutes idled the demo out (tick gave '+(r||'nothing')+')');
+       pauseOpen=false;
+       r=arcadeIdleTick(now);
+       if(r!=='end'&&__state()===g) bad.push('control: the same idle with no pause box did not end the run (tick gave '+(r||'nothing')+')');
+       RUMBLE.usedAt=ru0;
+     }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
+     finally{
+       pauseOpen=p0; keys={};
+       try{ ARCADE.solo=0; ARCADE.over=null; ARCADE.ini=null; }catch(_i){}
+       try{ if(typeof ARCADE==='object'&&ARCADE.on) arcadeLeave(); }catch(_l){}
+       try{ if(__state()&&!__state().over) __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'30.41',what:'the title shows one line, Ascend. Pillage. Extract., with no story paragraph, no step cards and nothing beside the logo (his Q51 and Q53)',
    run:function(){
      var t=document.getElementById('title'), tg=document.getElementById('titletag'), wm=t&&t.querySelector('.wordmark'), bad=[], was;

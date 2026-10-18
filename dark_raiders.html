@@ -2779,7 +2779,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.41';
+var VER='30.42';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -48081,7 +48081,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.41: The title shows one line, Ascend. Pillage. Extract., instead of the story and the three step cards. Check 30.41 fails on v30.40',
+  now:'v30.42: A long pause no longer ends or benches the demo run. Check 30.42 fails on v30.41',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -61134,6 +61134,9 @@ function arcadeStamp(e){
 try{ ['keydown','mousedown','wheel','touchstart','mousemove'].forEach(function(t){ window.addEventListener(t,arcadeStamp,{capture:true,passive:true}); }); }catch(_ast){}
 // The last activity of this window: its own input, or its own pad (RUMBLE.usedAt is on the performance clock).
 function arcadeOwnAt(){
+  // v28.xx (cw-pausehold), his answer Q29 (2026-10-18): "A pause stays paused until a player unpauses." An open pause box counts as this window
+  // being there: it used to look idle, so a pause longer than the idle limit benched the player or ended the run under the box.
+  if(typeof pauseOpen!=='undefined'&&pauseOpen&&G&&G.arcade) return Date.now();
   var a=+ARCADE.ownAt||0, u=+RUMBLE.usedAt, pn=(typeof performance!=='undefined')?performance.now():Date.now(), pd;
   if(isFinite(u)&&u>0&&u<=pn){ pd=Date.now()-(pn-u); if(pd>a) a=pd; }
   return a;

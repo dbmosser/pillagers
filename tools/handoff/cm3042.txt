@@ -1,0 +1,7 @@
+v30.42: a pause stays paused
+
+A long pause no longer ends or benches the demo run.
+
+Check 30.42. Fails on v30.41.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

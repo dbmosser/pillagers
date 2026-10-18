@@ -1,0 +1,5 @@
+## v30.42 - A pause stays paused
+
+Co-op hunt while he was away. His answer Q29 (10-18): a pause stays paused until a player unpauses. The demo idle timer kept running under the pause box, so a long pause benched the player or ended the run. An open pause box now counts as being there.
+
+MEASURED. Check 30.42 passes, and fails on v30.41.

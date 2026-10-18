@@ -1,0 +1,16 @@
+{
+    "title":  "TITLE: ROOM AROUND THE LINE",
+    "why":  "The critic wants air: the one line sat 12px under the fullscreen row. 24px above and 16px below.",
+    "now":  "The title line has more room around it.",
+    "edits":  [
+                  {
+                      "anchor":  "#root #title #titletag{ margin-top:var(--sp-3); font:700 var(--fs-title)/1.1 var(--f-cond); letter-spacing:var(--track); color:var(--tx-1); }",
+                      "replacement":  "#root #title #titletag{ margin:24px 0 16px; font:700 var(--fs-title)/1.1 var(--f-cond); letter-spacing:var(--track); color:var(--tx-1); }   /* v28.xx (cw-title-gap): the one line had 12px above it and sat on the fullscreen row; 24px above, 16px below the key row. */"
+                  },
+                  {
+                      "anchor":  "\u003cdiv id=\"titletag\" style=\"max-width:760px;margin:0 auto\"\u003e",
+                      "replacement":  "\u003cdiv id=\"titletag\" style=\"max-width:760px\"\u003e"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the title line sits at least 20px under the fullscreen row and 12px above the key row\u0027,\n   run:function(){\n     var t=document.getElementById(\u0027title\u0027), tg=document.getElementById(\u0027titletag\u0027), was, bad=[];\n     if(!t||!tg) return \u0027SKIP: no title here\u0027;\n     was=t.classList.contains(\u0027on\u0027); if(!was) t.classList.add(\u0027on\u0027);\n     try{\n       var cs=getComputedStyle(tg);\n       if(parseFloat(cs.marginTop)\u003c24) bad.push(\u0027the line has \u0027+cs.marginTop+\u0027 above it, not 24px\u0027);\n       if(parseFloat(cs.marginBottom)\u003c16) bad.push(\u0027the line has \u0027+cs.marginBottom+\u0027 below it, not 16px\u0027);\n     } finally { if(!was) t.classList.remove(\u0027on\u0027); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
