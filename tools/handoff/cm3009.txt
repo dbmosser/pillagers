@@ -1,0 +1,7 @@
+v30.09: settings pane names the row, bigger arrows
+
+Settings pane names the row, arrows are bigger, no repeated section label.
+
+Check 30.09. Fails on v30.08.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

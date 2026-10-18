@@ -208,12 +208,12 @@
   "when": "2026-10-18T12:26"
  },
  "40-whats-new-card": {
-  "score": 3,
+  "score": 2,
   "pass": false,
-  "verdict": "The new card is now a centred, scrimmed modal with a clear primary button and a left-aligned title, but the body is still a wall of near-identical changelog filler with no close X, and the HUD toast and hotbar remain on top of the dimmed world.",
-  "pic": "tools/handoff/console/notes/shots/13-c6/40-whats-new-card-1080.jpg",
+  "verdict": "The what's-new card is now a centred dark modal with a clear amber 'Got it' button, but it is still a wall of numbered explaining sentences at one weight, with no close X, and a cluttered, stale backdrop behind it.",
+  "pic": "tools/handoff/console/notes/shots/13-j1/40-whats-new-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T10:45"
+  "when": "2026-10-18T12:53"
  },
  "45-arcade-attract-board": {
   "score": 2,

@@ -6097,6 +6097,24 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.09',what:'the Settings pane names the row, the stepper arrows are 28px and the first section label that repeats the tab is hidden',
+   run:function(){
+     var bad=[], d, k, a, h, i, bs, fs=null, padWas=document.body.classList.contains('padon');
+     __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     try{
+       document.body.classList.remove('padon');
+       openSettings('display');
+       if(typeof window.__setDetailSync==='function') window.__setDetailSync();
+       d=document.getElementById('setdetail'); k=d&&d.querySelector('.sdk');
+       if(!d) bad.push('no detail pane');
+       else if(k&&getComputedStyle(k).display==='none') bad.push('the detail pane hides the row name');
+       bs=document.querySelectorAll('#setlist .row > button');
+       for(i=0;i<bs.length;i++){ a=getComputedStyle(bs[i],'::before'); if(a.content&&a.content!=='none'&&a.content!=='normal'&&bs[i].offsetParent){ fs=parseFloat(a.fontSize); break; } }
+       if(fs===null) bad.push('no stepper arrow found');
+       else if(fs<27) bad.push('the stepper arrows are '+fs+'px');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var q=document.getElementById('settingsmodal'); if(q) q.classList.remove('on'); }catch(_k){} try{ __topClear(); }catch(_c){} document.body.classList.toggle('padon',padWas); }
+     return bad.length?bad.join('; '):null; }},
   {v:'30.08',what:'the What is New card shows the generic polish pass line once, not four times (critic on screen 40)',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WNSEEN==='undefined'||typeof drawHubHUD!=='function'||typeof __hubEnter!=='function') return 'SKIP: no What is New card here';

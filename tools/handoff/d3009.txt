@@ -1,0 +1,5 @@
+## v30.09 - SETTINGS PANE NAMES THE ROW, BIGGER ARROWS
+
+Co-op hunt while he was away. Critic c-31 round 12 (Settings 18 and 72 at 2): the footer showed a warning with no setting name; the stepper arrows were tiny; the first section label repeated the tab.
+
+MEASURED. Check 30.09 passes, and fails on v30.08.

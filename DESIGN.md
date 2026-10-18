@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.09 - SETTINGS PANE NAMES THE ROW, BIGGER ARROWS
+
+Co-op hunt while he was away. Critic c-31 round 12 (Settings 18 and 72 at 2): the footer showed a warning with no setting name; the stepper arrows were tiny; the first section label repeated the tab.
+
+MEASURED. Check 30.09 passes, and fails on v30.08.
 ## v30.08 - THE WHAT IS NEW CARD SHOWS THE POLISH LINE ONCE
 
 Co-op hunt while he was away. Critic on screen 40: four of the five notes were the same Polish pass sentence. The card and the pause window now list the generic polish line once; the list itself is unchanged.

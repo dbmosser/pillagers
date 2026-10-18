@@ -1829,7 +1829,14 @@ body:has(#settingsmodal.on) #hubtoast, body:has(#keysmodal.on) #hubtoast{ visibi
 #root #keyslist .keysec{ color:var(--tx-1); }
 /* v28.xx (cw-setnote) critic c-31 round 11 (Pad buttons 75 at 2: "an explaining sentence in a tinted bar at about 14px"; Settings 18 and 72 at 3: "the detail pane repeats Edit the words Off, which duplicates the focused row"; "its sentence is about 15px"). Now: the rebind callout is one short line at 20px with square corners, and the Settings detail pane shows only the row help line at 20px (the row above already wears the name and the value, so the pane drops its title and value, and hides when a row has no help). */
 #root #keysnote{ clip-path:none; border-radius:var(--rad); font-size:var(--fs-body); }
-#root #setdetail .sdk, #root #setdetail .sdv{ display:none; }
+/* v28.xx (cw-setname) critic c-31 round 12 (Settings 18 and 72 at 2: "the footer shows only a warning with no setting name"; "the arrows are tiny, about 12px, thin and dim"; "the Display section label repeats the active tab name"). Now: the pane wears the row name at 20px over its help line, the value stays in the row, the stepper arrows are 28px. */
+#root #setdetail .sdk{ display:block; font-size:var(--fs-body); font-weight:600; line-height:1.3; }
+#root #setdetail .sdv{ display:none; }
+#root #setdetail .sdh{ margin-top:var(--sp-1); }
+#root #setlist .row > button[id^="go_"]::before, #root #setlist #set_text::before, #root #setlist #set_layout::before, #root #setlist #set_music::before,
+#root #setlist #set_auto::before, #root #setlist #set_share::before, #root #setlist .row > button[id^="go_"]::after, #root #setlist #set_text::after, #root #setlist #set_layout::after, #root #setlist #set_music::after,
+#root #setlist #set_auto::after, #root #setlist #set_share::after{ font-size:var(--fs-title); color:var(--tx-2); }
+#root #setlist .row > button.padfocus::before, #root #setlist .row > button.padfocus::after{ color:var(--acc); }
 #root #setdetail:not(:has(.sdh)){ display:none; }
 #root #setdetail{ min-height:0; }
 #root #setdetail .sdh{ font-size:var(--fs-body); line-height:1.4; }
@@ -2750,7 +2757,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.08';
+var VER='30.09';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47917,7 +47924,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.08: The What is New card no longer repeats the polish pass line. Check 30.08 fails on v30.07',
+  now:'v30.09: Settings pane names the row, arrows are bigger, no repeated section label. Check 30.09 fails on v30.08',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
