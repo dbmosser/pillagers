@@ -1,0 +1,7 @@
+v31.21: vitals bars 300 wide
+
+The three vitals bars are 300 wide and the stamina word clears the belt.
+
+Check 31.21. Fails on v31.20.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

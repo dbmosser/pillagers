@@ -6101,6 +6101,26 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.21',what:'the stamina word does not reach the belt: it ends left of belt slot 1 at 1080p (the critic, 10-19: it overlapped slot 1)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy';
+     var g=null, oFT=ctx.fillText, at=null, aw=0, cv=ctx.canvas;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:['gun_shotgun','gun_rifle'],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player||g.over) return 'SKIP: staging: no raid';
+       g.bagOpen=false; g.mapOpen=false; g.paused=false; keys={}; mouse.down=false;
+       ctx.fillText=function(s,x,y){ if(String(s)==='STAMINA'||String(s)==='WINDED'){ at=x; aw=ctx.measureText(String(s)).width; } return oFT.apply(this,arguments); };
+       try{ __frame(0.016); }finally{ ctx.fillText=oFT; }
+       if(at===null) return 'the stamina word is not drawn';
+       if(at+aw>16+300+8+aw+1) return 'the stamina word starts too far right (x '+at+')';
+       if(at>16+300+9) return 'the stamina word is past the 300 wide bar end plus gap (x '+at+')';
+       return null;
+     } finally {
+       ctx.fillText=oFT;
+       try{ __endRaid('abandon'); }catch(_e2){}
+       __topClear();
+     } }},
   {v:'31.20',what:'cw-ascendin, his lore (you ascend, you never drop in): the arcade respawn count drawn on the real HUD reads ascending in n, counts down in place, and never says dropping in',
    run:function(){
      if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object'||typeof txRecord!=='function') return 'SKIP: no arcade or text recorder in this build';

@@ -2823,7 +2823,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.20';
+var VER='31.21';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -41475,7 +41475,7 @@ var by=H-34;
   // Now 360 by 26 with the number set in the title face, and armour and stamina
   // stay narrow underneath it so the hierarchy reads at a glance.
   ctx.save(); hudZoomIn('body',0,H);     // v8.08, his order: bigger, from the corner out
-  var HBW=360,HBH=26;
+  var HBW=300,HBH=26;   /* v28.xx (cw-barnarrow), the critic (2026-10-19): at 360 the stamina word past the bar ran into belt slot 1; all three vitals bars are 300 wide, the word ends clear of the belt */
   bar(16,by,HBW,HBH,p.hp/p.maxhp,p.hp>50?'#5fae6f':(p.hp>25?'#d0a13c':'#c8452f'));
   // THE RED BLOCK, his note the same day. Drawn from the current health up to
   // what it was before the hit, so the width of the red IS the size of the hit.
@@ -49161,7 +49161,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.20: The respawn count on the demo HUD reads ascending in 3, 2, 1 (it said dropping in). Check 31.20 fails on v31.19',
+  now:'v31.21: The three vitals bars are 300 wide and the stamina word clears the belt. Check 31.21 fails on v31.20',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

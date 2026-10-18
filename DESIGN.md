@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.21 - VITALS BARS 300 WIDE
+
+Co-op hunt while he was away. The critic (10-19): after the bars went one width (360) the stamina word ran into belt slot 1. 300 keeps one width and clears the belt.
+
+MEASURED. Check 31.21 passes, and fails on v31.20.
 ## v31.20 - the two player respawn count says ascending in n, not dropping in
 
 Co-op hunt while he was away. His lore (memory pillagers-lore-ascend.md, 2026-08-29): YOU DO NOT DROP. YOU ASCEND. Every player-facing line that says drop in is wrong. The arcade respawn count in the top lane said DROPPING IN n. It says ascending in n now, lower case like all text since 2026-10-18. The count itself, its timing and its place are unchanged.
