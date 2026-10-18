@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.43 - TITLE: ROOM AROUND THE LINE
+
+Co-op hunt while he was away. The critic wants air: the one line sat 12px under the fullscreen row. 24px above and 16px below.
+
+MEASURED. Check 30.43 passes, and fails on v30.42.
 ## v30.42 - A pause stays paused
 
 Co-op hunt while he was away. His answer Q29 (10-18): a pause stays paused until a player unpauses. The demo idle timer kept running under the pause box, so a long pause benched the player or ended the run. An open pause box now counts as being there.

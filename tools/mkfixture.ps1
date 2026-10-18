@@ -6097,6 +6097,17 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.43',what:'the title line sits at least 20px under the fullscreen row and 12px above the key row',
+   run:function(){
+     var t=document.getElementById('title'), tg=document.getElementById('titletag'), was, bad=[];
+     if(!t||!tg) return 'SKIP: no title here';
+     was=t.classList.contains('on'); if(!was) t.classList.add('on');
+     try{
+       var cs=getComputedStyle(tg);
+       if(parseFloat(cs.marginTop)<24) bad.push('the line has '+cs.marginTop+' above it, not 24px');
+       if(parseFloat(cs.marginBottom)<16) bad.push('the line has '+cs.marginBottom+' below it, not 16px');
+     } finally { if(!was) t.classList.remove('on'); }
+     return bad.length?bad.join('; '):null; }},
   {v:'30.42',what:'his Q29: an open pause box never idles the demo out; a pause stays until a player unpauses',
    run:function(){
      if(typeof arcadeIdleTick!=='function'||typeof arcadeDeploy!=='function'||typeof ARCADE!=='object') return 'SKIP: no arcade idle here';

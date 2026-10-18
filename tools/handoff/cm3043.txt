@@ -1,0 +1,7 @@
+v30.43: title: room around the line
+
+The title line has more room around it.
+
+Check 30.43. Fails on v30.42.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

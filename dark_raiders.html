@@ -1562,7 +1562,7 @@
 #root #title .tcard{ background:transparent; border:0; border-top:1px solid var(--ui-line-hi); border-radius:0; box-shadow:none; padding:var(--sp-2) var(--sp-1) 0 0; }
 #root #title .tstep{ color:var(--acc); }
 /* v28.xx (cw-title-line), his Q51: the one line that replaces the story and the cards. Title size, tracked, the one bone colour; nothing else carries the accent here. */
-#root #title #titletag{ margin-top:var(--sp-3); font:700 var(--fs-title)/1.1 var(--f-cond); letter-spacing:var(--track); color:var(--tx-1); }
+#root #title #titletag{ margin:24px 0 16px; font:700 var(--fs-title)/1.1 var(--f-cond); letter-spacing:var(--track); color:var(--tx-1); }   /* v28.xx (cw-title-gap): the one line had 12px above it and sat on the fullscreen row; 24px above, 16px below the key row. */
 #root #title .titlecol > div[style*="grid"]{ margin-top:var(--sp-3) !important; gap:var(--sp-4) !important; }
 #root #title .kbrow, #root #title .padrow{ margin-top:var(--sp-3) !important; }
 #root #title .kbrow b{ font-size:var(--fs-fine) !important; }
@@ -2317,7 +2317,7 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
       <button id="titleset" style="padding:5px 14px;font-size:13px;letter-spacing:.12em">SETTINGS</button></div>
 
     <!-- v28.xx (cw-title-line), his Q51 (2026-10-18): "drop the story paragraph and the three step cards for one line". The story paragraph and the ASCEND, PILLAGE, EXTRACT cards are gone; this is the one line. Q53: nothing sits beside the logo. -->
-    <div id="titletag" style="max-width:760px;margin:0 auto">Ascend. Pillage. Extract.</div>
+    <div id="titletag" style="max-width:760px">Ascend. Pillage. Extract.</div>
 
     <div class="kbrow" style="margin-top:22px;font-size:13px;color:var(--ash);letter-spacing:.05em;line-height:2">
       <b style="color:var(--bone)">WASD</b> move &nbsp;
@@ -2779,7 +2779,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.42';
+var VER='30.43';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -48081,7 +48081,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.42: A long pause no longer ends or benches the demo run. Check 30.42 fails on v30.41',
+  now:'v30.43: The title line has more room around it. Check 30.43 fails on v30.42',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
