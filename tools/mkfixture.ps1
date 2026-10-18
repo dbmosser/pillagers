@@ -6097,6 +6097,24 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.21',what:'the Settings section label rows show no text (the tab already says it) yet the Display chip still jumps to its rows',
+   run:function(){
+     var bad=[], sl, hd, chip, n, padWas=document.body.classList.contains('padon');
+     __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     try{
+       document.body.classList.remove('padon');
+       openSettings();
+       sl=document.getElementById('setlist'); hd=document.getElementById('setsec_DISPLAY'); chip=document.querySelector('.setjump button[data-sec="DISPLAY"]');
+       if(!sl||!hd||!chip){ bad.push('no list, Display head or chip'); }
+       else{
+         n=hd.getBoundingClientRect().height;
+         if(n>4) bad.push('the Display label row is '+Math.round(n)+'px tall, it should be a bare anchor');
+         chip.click();
+         if(sl.scrollTop<5) bad.push('the Display chip did not scroll the list');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var q=document.getElementById('settingsmodal'); if(q) q.classList.remove('on'); }catch(_k){} try{ __topClear(); }catch(_c){} document.body.classList.toggle('padon',padWas); }
+     return bad.length?bad.join('; '):null; }},
   {v:'30.20',what:'the attract backdrop blurs the world by 16px (the 16px spacing token): at 8px the hub labels read through the card scrim as ghost words (critic on v30.18: 56 back to 2; screens 46 52 55 56 64)',
    run:function(){
      if(typeof attEl!=='function') return 'SKIP: no attract here';

@@ -1,0 +1,7 @@
+v30.21: settings section labels are bare anchors
+
+Settings section labels hidden, 16px gap between groups.
+
+Check 30.21. Fails on v30.20.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

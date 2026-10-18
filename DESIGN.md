@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.21 - SETTINGS SECTION LABELS ARE BARE ANCHORS
+
+Co-op hunt while he was away. Critic c-31 (Settings 72 at 3, P1): the 13px grey section label repeats the active tab.
+
+MEASURED. Check 30.21 passes, and fails on v30.20.
 ## v30.20 - Party backdrop: the 16px blur is back
 
 Co-op hunt while he was away. The 8px blur let the labels of the hub show through the party pages as ghost words and the critic scored the board 2 of 5 again. The 16px blur is back, with a scrim that keeps a little more of the glow.
