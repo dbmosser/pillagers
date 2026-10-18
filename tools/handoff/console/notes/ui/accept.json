@@ -10,42 +10,42 @@
  "02-welcome-pack": {
   "score": 2,
   "pass": false,
-  "verdict": "A full-screen dark slab with a tiny left-hugging list, a wall of explaining text and a huge dead void; it reads as a debug dump rather than a welcome reward moment, with no hierarchy and no celebration.",
-  "pic": "tools/handoff/console/notes/shots/all/02-welcome-pack-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:12"
+  "verdict": "A full-screen slab with seven small rows floating in a huge empty panel, an explaining paragraph, tiny text and a primary button stranded far from the close, so it ignores the guide's centred-card modal rules.",
+  "pic": "tools/handoff/console/notes/shots/b-31-after2/02-welcome-pack-1080.jpg",
+  "task": "b-31-ui-undercroft",
+  "when": "2026-10-18T09:48"
  },
  "03-hub-floor": {
   "score": 2,
   "pass": false,
-  "verdict": "The hub reads as a prototype: the eight same-size station labels compete with each other, the HUD text is tiny and pushed into the corners, and the bottom of the screen is cluttered with a hotbar, a toast and a hint line.",
-  "pic": "tools/handoff/console/notes/shots/all/03-hub-floor-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:12"
+  "verdict": "The hub floor is a readable playground but not a polished AAA screen: station labels are oversized and equal-weight, there is no clear primary action, and the corner text, test-build joke caption and cramped footer ignore the style guide.",
+  "pic": "tools/handoff/console/notes/shots/b-31-after2/03-hub-floor-1080.jpg",
+  "task": "b-31-ui-undercroft",
+  "when": "2026-10-18T09:48"
  },
  "04-stash-terminal": {
   "score": 2,
   "pass": false,
-  "verdict": "A dense, cluttered stash screen with no clear focal point, tiny low-contrast labels and several stacked instruction and explanation strips; it reads as a debug tool, not a polished extraction-shooter menu.",
-  "pic": "tools/handoff/console/notes/shots/all/04-stash-terminal-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:12"
+  "verdict": "A dense full-screen slab with tiny type, three competing instruction strips, a toast on top of the modal and a half-empty stash grid, so it works as a debug inventory dump rather than a polished AAA stash screen.",
+  "pic": "tools/handoff/console/notes/shots/b-31-after2/04-stash-terminal-1080.jpg",
+  "task": "b-31-ui-undercroft",
+  "when": "2026-10-18T09:49"
  },
  "05-sector-page": {
   "score": 2,
   "pass": false,
-  "verdict": "A dense, form-like pre-raid screen where a half-empty brown banner with a tiny map, rows of identical amber chips and three explanatory paragraphs bury the one decision that matters, so it reads as a debug panel rather than a polished menu.",
-  "pic": "tools/handoff/console/notes/shots/all/05-sector-page-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:13"
+  "verdict": "A full-bleed form slab with a huge empty brown banner, an unreadable tiny map, wrapped steppers and explanatory sentences everywhere, so it ignores the modal, header, type-scale and close-button rules and looks like a debug panel, not a shippable pre-raid screen.",
+  "pic": "tools/handoff/console/notes/shots/b-31-after2/05-sector-page-1080.jpg",
+  "task": "b-31-ui-undercroft",
+  "when": "2026-10-18T09:49"
  },
  "06-terms": {
   "score": 2,
   "pass": false,
-  "verdict": "A tidy but flat, generic dark modal with no focal point, no visible pad focus, a wordy intro paragraph, and footer buttons that break the content margins, so it reads as a debug list rather than a game contract screen.",
-  "pic": "tools/handoff/console/notes/shots/all/06-terms-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:13"
+  "verdict": "A clean dark modal that follows the panel rules, but it is a flat wall of same-weight rows with an explaining paragraph, no primary action, centred title, wrong close placement and sub-minimum text, so nothing leads the eye and it reads like a generic template.",
+  "pic": "tools/handoff/console/notes/shots/b-31-after2/06-terms-1080.jpg",
+  "task": "b-31-ui-undercroft",
+  "when": "2026-10-18T09:49"
  },
  "07-party-coop": {
   "score": 2,
@@ -162,10 +162,10 @@
  "25-raid-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "The narrower 480px card tightens the pause menu and the amber Resume button is a clear first read, but the title is still centred, there is no close X or pad glyph, and the stacked full-width outline buttons still look like a generic template.",
-  "pic": "tools/handoff/console/notes/shots/c-31p-after/25-raid-pause-box-1080.jpg",
+  "verdict": "A clean, well-ordered pause card with a clear amber primary, a danger-ghost Abandon and sentence case throughout, but it lacks the guide's close button, uses undersized type, and shows faint HUD ghosting behind it.",
+  "pic": "tools/handoff/console/notes/shots/c-31s-after/25-raid-pause-box-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T09:37"
+  "when": "2026-10-18T09:49"
  },
  "26-settings-from-pause-top": {
   "score": 2,
@@ -406,5 +406,13 @@
   "pic": "tools/handoff/console/notes/shots/12-a3/64-arcade-board-seeded-night-1080.jpg",
   "task": "12-ui-party-screens",
   "when": "2026-10-18T09:34"
+ },
+ "70-settings-sec-controls": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The settings modal has a consistent dark palette and a clear tab strip, but its flat, same-weight rows, small text, a toast colliding with the footer and a stray explaining sentence keep it at amateur level.",
+  "pic": "tools/handoff/console/notes/shots/c-31s-after/70-settings-sec-controls-1080.jpg",
+  "task": "c-31-ui-pause-settings",
+  "when": "2026-10-18T09:49"
  }
 }

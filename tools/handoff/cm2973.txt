@@ -1,0 +1,7 @@
+v29.73: run over card: one centred column with a button
+
+The run over screen is tidier and the prompt is a button.
+
+Check 29.73. Fails on v29.72.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

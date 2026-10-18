@@ -6097,6 +6097,25 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.73',what:'while the run over card is up, Press any button is a plate under the card (a 1px accent line, in the same centred column, under 60px below it), not loose text pinned at the bottom (critic: card floats in a void, prompt detached; screens 52 55)',
+   run:function(){
+     if(typeof arcadeAttEl!=='function'||typeof attEl!=='function') return 'SKIP: no arcade attract here';
+     var d, oc, wasDisp, ap, ar, cr, cs, res=null;
+     try{
+       __topClear(); __runPrep();
+       d=attEl(); wasDisp=d.style.display; d.style.display='block';
+       oc=arcadeAttEl('arcover'); oc.style.display='block';
+       ap=d.querySelector('.attpress'); cs=getComputedStyle(ap);
+       ar=ap.getBoundingClientRect(); cr=oc.getBoundingClientRect();
+       if(cs.position!=='relative') res='Press any button is '+cs.position+', not in the card column';
+       else if(parseFloat(cs.borderTopWidth)<1) res='Press any button has no plate line';
+       else if(ar.top-cr.bottom<0||ar.top-cr.bottom>80) res='Press any button sits '+Math.round(ar.top-cr.bottom)+'px under the card, not within 80px';
+       else if(Math.abs((ar.left+ar.right)/2-(cr.left+cr.right)/2)>3) res='Press any button is not centred under the card';
+       return res;
+     } finally {
+       try{ oc.style.display='none'; d.style.display=wasDisp; }catch(_f){}
+     }
+   }},
   {v:'29.72',what:'Settings: the stepper sits within 400px of its name and the card is 17 x 48; the pause title is left-aligned over the button column',
    run:function(){
      if(typeof openSettings!=='function') return 'SKIP: no Settings here';

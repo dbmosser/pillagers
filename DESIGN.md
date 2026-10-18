@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.73 - Run over card: one centred column with a button
+
+Co-op hunt while he was away. The critic scored the run over card 2: a small box floating in a void with the prompt as loose text far below. The card and Press any button now sit in one centred column, the prompt as a plate button. Restyle only.
+
+MEASURED. Check 29.73 passes, and fails on v29.72.
 ## v29.72 - SETTINGS NEAR
 
 Co-op hunt while he was away. Critic c-31: Settings steppers sit 700px from their names; pause title centred. Settings card 816, name column 384 with the stepper beside it, pause title left over the column.
