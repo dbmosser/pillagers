@@ -1,0 +1,20 @@
+{
+    "title":  "DEMO HIDES CREDITS XP STASH AND BAG",
+    "why":  "His answer Q55 (10-18): in the demo hide credits, XP, stash and bag. The top right readout is now empty in the demo and unchanged in career.",
+    "now":  "The demo no longer shows credits, XP, stash and bag in the top right.",
+    "edits":  [
+                  {
+                      "anchor":  "function topRightBottom(){\n  var el=document.getElementById(\u0027topright\u0027); if(!el) return 0;",
+                      "replacement":  "// v28.xx (cw-hudDemoTR), HIS ANSWER Q55 (2026-10-18): \"in the demo hide credits, XP, stash and bag.\" trDemo is true in the arcade demo (the menu flag or a demo raid).\nfunction trDemo(){ return !!((typeof ARCADE===\u0027object\u0027\u0026\u0026ARCADE\u0026\u0026ARCADE.on)||(typeof G===\u0027object\u0027\u0026\u0026G\u0026\u0026G.arcade)); }\nfunction topRightBottom(){\n  var el=document.getElementById(\u0027topright\u0027); if(!el) return 0;\n  if(!el.innerHTML) return 0;   // v28.xx (cw-hudDemoTR): an empty corner readout takes no room"
+                  },
+                  {
+                      "anchor":  "  if(s===_trLast) return;",
+                      "replacement":  "  if(trDemo()) s=\u0027demo\u0027;   // v28.xx (cw-hudDemoTR), his Q55: nothing in the corner in the demo\n  if(s===_trLast) return;"
+                  },
+                  {
+                      "anchor":  "  el.innerHTML=c+\u0027 \u003csmall\u003eCREDITS\u003c/small\u003e \u0027",
+                      "replacement":  "  if(s===\u0027demo\u0027){ el.innerHTML=\u0027\u0027; return; }\n  el.innerHTML=c+\u0027 \u003csmall\u003eCREDITS\u003c/small\u003e \u0027"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the demo hides credits, XP, stash and bag in the top right; career keeps them (his Q55, 10-18)\u0027,\n   run:function(){\n     if(typeof trDemo!==\u0027function\u0027) return \u0027no trDemo: the corner readout is not hidden in the demo\u0027;\n     var el=document.getElementById(\u0027topright\u0027), on0=ARCADE.on, t1, t2;\n     if(!el) return \u0027SKIP: no corner readout\u0027;\n     try{\n       ARCADE.on=0; _trLast=\u0027\u0027; syncTopRight(); t1=el.textContent;\n       ARCADE.on=1; syncTopRight(); t2=el.textContent;\n       if(!/CREDITS/.test(t1)) return \u0027career shows no credits in the corner: \u0027+t1;\n       if(t2!==\u0027\u0027) return \u0027the demo still shows the corner readout: \u0027+t2;\n       return null;\n     } finally { ARCADE.on=on0; _trLast=\u0027\u0027; try{ syncTopRight(); }catch(_e){} } }},"
+}

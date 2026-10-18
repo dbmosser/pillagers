@@ -2779,7 +2779,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.49';
+var VER='30.50';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -48090,7 +48090,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.49: The Run info box in the raid shows only the 3 contracts closest to done. Check 30.49 fails on v30.48',
+  now:'v30.50: No controls card pops up when a demo run starts. Check 30.50 fails on v30.49',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -56884,6 +56884,9 @@ function arcadeCardRows(){
 }
 // how much of the card shows now, 0 to 1: full while shielded, then 4 s, fading over the last 0.6 s
 function arcadeCardOn(){
+  // v28.xx (cw-notutor), his answer Q70 (2026-10-18): "No tutorial prompts. The game must be completely self-explanatory." The controls card that
+  // came up at every drop (and for 4 s after the shield) is gone from the raid; the HOW TO PLAY page on the attract and F1 keep the same rows.
+  return 0;
   var p=G&&G.player, t;
   if(!G||!G.arcade||G.over||!p||p.specOut) return 0;
   if(p.arcSh) return 1;
@@ -56942,7 +56945,7 @@ function arcadeShieldRing(x,y,own){
   wc.globalAlpha=0.55+0.35*pu; wc.strokeStyle='#5ff5e4'; wc.lineWidth=2;
   wc.beginPath(); wc.ellipse(x,cy,rx,ry,0,0,6.2832); wc.stroke();
   if(own){
-    tg='SHIELD \u00b7 MOVE TO START';
+    tg='Shield';   // v28.xx (cw-notutor), his Q70: the tag names the shield, it no longer tells him what to do
     wc.globalAlpha=1; wc.font=FS(TYPE.micro); tw=wc.measureText(tg).width;
     wc.fillStyle='rgba(6,9,13,.86)'; wc.fillRect(x-tw/2-4,y+14,tw+8,13);
     wc.fillStyle='#5ff5e4'; wc.fillText(tg,x-tw/2,y+24);

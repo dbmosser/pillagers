@@ -533,16 +533,16 @@
  "01-title-mode-menu": {
   "score": 2,
   "pass": false,
-  "verdict": "Cutting the lore paragraph and the three-column blurbs removed real clutter, but the new tagline is stranded left of the centred stack, the screen still has too many text lines and small controls, and it still breaks the guide's tokens.",
+  "verdict": "The tagline is now centred, but the stack is still a cluttered centred form: a 4-line header, a key legend, five equal-width mode bars, two explaining sentences and a full saves editor, with no clear first read beyond the amber 1 player bar.",
   "findings": [
-   "P0 Tagline 'Ascend. Pillage. Extract.' at x~435, y~347: Centre it on x=960 under the title. Set it in f-cond 600 at 20px in tx-2, or delete it. Keep one hero element (the logo) and let '1 player' be the only amber fill.",
-   "P1 Whole stack, y 170-920: Keep title, then the 5 mode buttons, then a single quiet footer. Move 'Go fullscreen' and 'Settings' to a top-right corner row. Collapse the saves block to one line ('Pillager New · 0 raids · 900 credits') with a ghost 'Switch save' button. Drop the name field and the Create button to a Saves sub-screen.",
-   "P1 Explaining sentences: 'Best in fullscreen…', 'First time out. Take the welcome pack…', 'Changing save reloads the game…': Delete all three. Show the fullscreen hint only as a tooltip or toast. Replace the first-time sentence with a small 'New' chip on '1 player'. Only the save-reload warning stays, and only inside the confirm dialog.",
-   "P1 Key legend row, y~393: Move the legend to a bottom-edge strip at 5% margin in --fs-label 16px, switching to pad glyphs when the last input was a pad. Show 3-4 keys at most; the rest belong in F1 controls.",
-   "P1 Mode buttons, y 430-709: Group by function: 'Play', 'Co-op', then a 'Demos' ghost row. Use a 56px primary and 48px secondary rows on an 8px gap. Give focus a 3px amber left bar plus a --ui-raised fill. Disabled at 40% opacity with the chip dropped."
+   "P0 Header block, y 170-400: title, subtitle, fullscreen hint, 2 buttons, tagline and key legend: Keep the logo (raise it to about 96px) and the tagline at 20px tx-2 with 24px above and below. Delete the subtitle line (move 'v0.0678' to a 14px footer at bottom-left). Delete 'Best in fullscreen…'. Move 'Go fullscreen' and 'Settings' to a top-right row at the 5% margin (y=54, x≈1824 right edge), as 48px ghost buttons.",
+   "P1 Explaining sentences at y~292, y~731 and y~850: Delete all three. Show a 28px 'New' chip on the '1 player' row if the save has 0 raids. Move the reload warning into the Switch save confirm dialog.",
+   "P1 Saves block, y 760-912: Collapse to one 48px row: 'Pillager New · 0 raids · 900 credits · 0 XP' in tx-2 20px, with a ghost 'Switch save' button on the right. Put rename and create in a Saves modal (960x680). Use a --ui-line-hi border on the row, not amber. Replace '$900' with 'Credits 900'.",
+   "P1 Mode buttons, y 423-703: Show 'Play' (56px primary, amber), 'Co-op (same machine)' (48px ghost) and a ghost 'Demos' that opens a sub-list with the two arcade demos. Use an 8px gap. Remove the 'coming later' row or show it at 40% opacity with no chip. Focus: --ui-raised fill plus a 3px amber left bar.",
+   "P1 Key legend, y~386: Move it to a bottom-edge strip at y≈1010 in --fs-label 16px. Show 4 hints ('Enter  Select', 'Esc  Back', 'F1  Controls', 'Tab  Switch save'), switching to pad glyphs when the last input was a pad. Chips should be 28px high with a key cap plus a word."
   ],
-  "pic": "tools/handoff/console/notes/shots/03-after2/01-title-mode-menu-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/03-mid/01-title-mode-menu-1080.jpg",
   "task": "03-title-and-backdrop",
-  "when": "2026-10-18T14:56"
+  "when": "2026-10-18T15:17"
  }
 }

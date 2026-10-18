@@ -1,0 +1,1 @@
+| No tutorial prompts in the demo raid | v30.50 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 30.50 passes, fails on v30.49 |

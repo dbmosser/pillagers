@@ -1,0 +1,7 @@
+v30.50: no tutorial prompts in the demo raid
+
+No controls card pops up when a demo run starts.
+
+Check 30.50. Fails on v30.49.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
