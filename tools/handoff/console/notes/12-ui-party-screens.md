@@ -1,7 +1,12 @@
 # 12-ui-party-screens notes
-- Before shots: notes/shots/12-b3 (13 screens, 1080).
-- Critic baseline: 46=3, 49=3, 56=2. Findings: flat black backdrop (attract), 14px column headers (need 16+),
-  Press any button 32px detached from card (move to 20px/24px under card), pause: no close X, 14px Esc hint, 4 equal buttons,
-  panel tab should be 36px at x=24.
-- Attract CSS: dark_raiders.html ~line 45842 attEl(); 'How to play' / board cards drawn elsewhere (grep 'How to play').
-- Plan: ship small CSS/draw edits via mk-cw-*.ps1; one change per ship.
+
+## State (run 1)
+- Shipped cw-party-att (v29.65): attract page changes (title band / prompt position / table lines). Prompt kept at 32px: old check 29.37 holds it.
+- Before pics: notes/shots/12-b3/  After cw-party-att: notes/shots/12-a3/ (all 13 screens)
+- Critic scores on 12-a3 (after cw-party-att):
+  46=3 47=2 48=2(P0 HUD overlaps) 49=3 52=2 53=2 54=2 55=2 56=2 58=2? 62=3 63=2 64=2
+- Critic's repeated asks (not all doable): no close X / B hint; backdrop = dimmed world not vignette;
+  black bands behind title/prompt; amber prompt text not a button; drop box-shadow on modals;
+  subtitle 14px < 16px min; end card 720px centred with 4-stat row + primary button;
+  47/48/53/54 are in-raid HUD shots (controls card over HUD) - HUD chrome belongs to the HUD task, not here.
+- Do NOT re-run critic on all 13 (cost). Re-check only the screens changed.

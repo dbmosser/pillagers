@@ -1045,6 +1045,38 @@
   #root .vdet, .ui-card{ background:var(--ui-paper); color:var(--ui-paper-ink); border:1px solid rgba(0,0,0,.2); border-radius:2px; box-shadow:0 12px 32px rgba(0,0,0,.45); }
   #root .vdet h4{ color:var(--ui-paper-ink); }
   #root .vdet .vpill, #root .vdet .vpill.r{ background:var(--ui-paper-ink); color:var(--ui-paper); letter-spacing:.1em; }
+  /* v28.xx (cw-vdetdark), UI STEP 7 (his AAA bar, style guide): the detail pane of the shop, craft, hire, contracts and gambler windows
+     is a dark pane, not the cream paper card. The guide keeps paper for the ask dialog only (it was the brightest thing on every
+     Undercroft screen and pulled the eye off the list). Fill --ui-raised, 1px --ui-line-hi, 4px radius, 24px padding; title 32px, labels
+     16px tx-2, values tx-1, hero price 32px; the stepper is two 48px ghost squares; Buy is 56px. Colours only: no text or logic moves. */
+  #root .vdet{ background:var(--ui-raised); color:var(--tx-1); border:1px solid var(--ui-line-hi); border-radius:4px; box-shadow:none; padding:24px; }
+  #root .vdet h4{ color:var(--tx-1); font-family:var(--f-cond); font-weight:700; font-size:32px; line-height:1.1; letter-spacing:.02em; margin:0 0 12px; }
+  #root .vdet .vpill, #root .vdet .vpill.r{ background:var(--ui-hover); color:var(--tx-1); font-family:var(--f-cond); font-size:14px; letter-spacing:.1em; }
+  #root .vdet .vdesc{ color:var(--tx-2); font-size:16px; }
+  #root .vdet .vdesc[style]{ color:var(--tx-2) !important; }
+  #root .vdet .vdesc[style] b{ color:var(--tx-1) !important; }
+  #root .vdet .vdesc[style*="8a3423"], #root .vdet .vdesc[style*="8a5a2c"]{ color:var(--danger) !important; }
+  #root .vdet .vstat{ color:var(--tx-2); font-size:16px; }
+  #root .vdet .vbar{ background:var(--ui-line); }
+  #root .vdet .vbar i{ background:var(--tx-1); }
+  #root .vdet .crlab{ color:var(--tx-2); font-size:16px; }
+  #root .vdet .crew, #root .vdet .vprice{ border-top:1px solid var(--ui-line); }
+  #root .vdet .crewc, #root .vdet .crn, #root .vdet .crv{ color:var(--tx-1); }
+  #root .vdet .crewc{ font-size:20px; }
+  #root .vdet .crewc em, #root .vdet .crv em{ color:var(--tx-2); font-size:16px; }
+  #root .vdet .crv[style*="2f6f4e"]{ color:var(--ok) !important; }
+  #root .vdet .crv[style*="a33d22"]{ color:var(--danger) !important; }
+  #root .vdet .crewcell{ background:var(--ui-panel); border:1px solid var(--ui-line-hi); border-radius:2px; }
+  #root .vdet .crewcell .cnt{ color:var(--tx-1); text-shadow:none; }
+  #root .vdet .vprice{ color:var(--tx-2); font-size:16px; letter-spacing:.08em; }
+  #root .vdet .vprice b{ color:var(--tx-1); font-family:var(--f-cond); font-size:32px; font-weight:700; }
+  #root .vdet .vqty button{ width:48px; height:48px; background:transparent; color:var(--tx-1); border:1px solid var(--ui-line-hi); border-radius:2px; }
+  #root .vdet .vqty button:hover:not(:disabled){ background:var(--ui-hover); color:var(--tx-1); border-color:var(--tx-2); }
+  #root .vdet .vqty span{ background:transparent; color:var(--tx-1); font-size:20px; letter-spacing:.04em; }
+  #root .vdet .cqty button{ color:var(--tx-1); }
+  #root .vdet .cqty button.on{ color:var(--acc-ink); }
+  #root .vdet .vbuy{ min-height:56px; font-size:20px; letter-spacing:.06em; }
+  #root .vdet .vbuy:disabled:not(.padfocus){ background:var(--ui-hover); color:var(--tx-3) !important; border-color:var(--ui-line) !important; }
   #root .vendgrid{ border-radius:2px; border-color:var(--ui-line); }
   /* item cells: flat graphite, the rarity frame, a bar of the rarity along the foot and a faint tint of it behind the icon */
   #root .cell, #root .vcell{ border-radius:2px; transform:none;
@@ -2538,7 +2570,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.67';
+var VER='29.68';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47627,7 +47659,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.67: Settings and Keys are 960 cards with a detail strip. Check 29.67 fails on v29.66',
+  now:'v29.68: The shop, craft, hire and contracts detail panes are dark instead of cream. Check 29.68 fails on v29.67',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

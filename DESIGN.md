@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.68 - Detail panes go dark
+
+Co-op hunt while he was away. UI step 7 (Undercroft screens, restyle only). The style guide keeps the cream paper card for the ask dialog alone; the detail pane of the shop, craft, hire, contracts and gambler windows is now a dark raised pane with a 32px title, 16px labels and a 56px primary button. No text or logic changes.
+
+MEASURED. Check 29.68 passes, and fails on v29.67.
 ## v29.67 - SETTINGS SLIM
 
 Co-op hunt while he was away. Critic c-31: Settings and Keys cards too wide, label far from stepper, side pane empty, X glyph tiny. 960 card, detail strip, plain steppers, drawn X, 400 pause stack.

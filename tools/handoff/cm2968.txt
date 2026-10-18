@@ -1,0 +1,7 @@
+v29.68: detail panes go dark
+
+The shop, craft, hire and contracts detail panes are dark instead of cream.
+
+Check 29.68. Fails on v29.67.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

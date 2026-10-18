@@ -320,12 +320,12 @@
   "when": "2026-10-18T08:38"
  },
  "63-arcade-operator-new-party-armed": {
-  "score": 3,
+  "score": 2,
   "pass": false,
-  "verdict": "The Operator modal is cleaner and better centred than before, with larger text and more padding, but the red Confirm and Exit demo buttons look almost the same, so the choice is muddy, and the 'Back' button has no visible focus.",
-  "pic": "tools/handoff/console/notes/shots/12-after1/63-arcade-operator-new-party-armed-1080.jpg",
+  "verdict": "A clean dark modal that follows the panel tokens, but the armed state is a wall of red full-width bars with no clear primary, tiny labels, no close X, and a modal stacked over a live menu card.",
+  "pic": "tools/handoff/console/notes/shots/12-a3/63-arcade-operator-new-party-armed-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T07:59"
+  "when": "2026-10-18T09:34"
  },
  "55-arcade-run-over-scored": {
   "score": 2,
@@ -398,5 +398,13 @@
   "pic": "tools/handoff/console/notes/shots/12-a3/54-arcade-initials-redrop-1080.jpg",
   "task": "12-ui-party-screens",
   "when": "2026-10-18T09:32"
+ },
+ "64-arcade-board-seeded-night": {
+  "score": 2,
+  "pass": false,
+  "verdict": "A clean but nearly empty arcade board: a lone, tiny 'No scores yet' card floats under a centred title in a sea of dark, with a dim amber prompt that is not a real button and no sign of a game behind it.",
+  "pic": "tools/handoff/console/notes/shots/12-a3/64-arcade-board-seeded-night-1080.jpg",
+  "task": "12-ui-party-screens",
+  "when": "2026-10-18T09:34"
  }
 }
