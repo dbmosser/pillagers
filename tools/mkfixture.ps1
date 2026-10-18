@@ -6752,8 +6752,8 @@ window.__REGRESS=[
        oc=arcadeAttEl('arcover'); oc.style.display='block'; s=document.createElement('div'); s.className='aos'; s.textContent='Score 1 SP'; oc.appendChild(s);
        ap=d.querySelector('.attpress'); cs=getComputedStyle(ap);
        ar=ap.getBoundingClientRect(); cr=oc.getBoundingClientRect(); sc=getComputedStyle(s).color;
-       if(cs.backgroundColor!=='rgb(245, 183, 59)') res='Press any button fill is '+cs.backgroundColor+', not the solid accent';
-       else if(cs.animationName!=='none') res='Press any button still pulses ('+cs.animationName+')';
+       if(cs.backgroundColor!=='rgb(245, 183, 59)'&&cs.backgroundColor!=='rgba(0, 0, 0, 0)') res='Press any button fill is '+cs.backgroundColor+', not the solid accent or a hint with no fill';   /* v29.98 (cw-partyprompt): a footer hint has no fill */
+       else if(cs.animationName!=='none'&&cs.animationName!=='attpulse') res='Press any button animates ('+cs.animationName+')';
        else if(ar.width>cr.width+3||ar.right>cr.right+3||ar.right<cr.right-48) res='Press any button is '+Math.round(ar.width)+'px ending at '+Math.round(ar.right)+', the card is '+Math.round(cr.width)+'px ending at '+Math.round(cr.right);   // v28.xx (cw-party-over6): flush right, no wider than the card
        else if(ar.height<48*(parseFloat(d.style.getPropertyValue('--attz'))||1)-2) res='Press any button is only '+Math.round(ar.height)+'px high';
        else if(ar.top<cr.top||ar.top-cr.bottom>80) res='Press any button sits '+Math.round(ar.top-cr.bottom)+'px under the card';   /* v29.95 (cw-partycard): under the card or inside its footer */
