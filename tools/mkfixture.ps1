@@ -12173,7 +12173,7 @@ window.__REGRESS=[
        if(txts.indexOf('HOLD TO'+' BREACH')<0) bad.push('FOUR: the label HOLD TO BREACH is not drawn at the gate (said: '+txts.slice(0,6).join(' / ')+')');
        if(txts.indexOf('STAND AT THE'+' GATE')>=0) bad.push('FOUR: the old label STAND AT THE GATE is still drawn');
        // FIVE: the breach: holding at the gate fills the ring, the shutter comes out, wave two comes from inside
-       p.x=gp.x+s.nx*40; p.y=gp.y+s.ny*40; lines.length=0; st=g.ents.length;
+       p.x=gp.x+s.nx*40; p.y=gp.y+s.ny*40; lines.length=0; st=g.ents.length; keys={KeyE:true};
        for(i=0;i<8;i++){ g.t+=0.25; flowTick(0.25); }
        if(s.open) bad.push('FIVE: the gate opened after only 2 s');
        if(!(s.prog>0.5&&s.prog<1)) bad.push('FIVE: the breach is at '+s.prog.toFixed(2)+' after 2 s');
@@ -13831,7 +13831,7 @@ window.__REGRESS=[
          if(d<s2.r-0.5) bad.push('TWO: the fence did not hold player 2 out: he stands '+Math.round(s2.r-d)+' inside a compound of '+s2.r);
          }
          // THREE: the gate: player 2 stands at it from outside, tells the host, and the host opens it with its own player far away
-         p.shS=[0,0,0]; gp=shGatePt(s2);
+         p.shS=[0,0,0]; gp=shGatePt(s2); keys={KeyE:true};
          p.x=gp.x+(s2.kind?s2.nx:Math.cos(s2.ga))*40; p.y=gp.y+(s2.kind?s2.ny:Math.sin(s2.ga))*40;
          posted.length=0; flowTick(0.25);
          if(!posted.some(function(m){ return m.t==='fl'&&m.k==='gate'&&m.i===s2.i; })) bad.push('THREE: player 2 stood at the gate and told the host nothing ('+JSON.stringify(posted.slice(0,2))+')');
@@ -15179,7 +15179,7 @@ window.__REGRESS=[
        if(Math.hypot(p.x-s.x,p.y-s.y)<s.r) bad.push('FOUR: the player walked through the closed gate');
        }
        // FIVE: the breach: 3 s at the gate opens it, wave two comes, the cache is marked
-       gp=shGatePt(s); p.x=gp.x+(s.kind?s.nx:Math.cos(s.ga))*30; p.y=gp.y+(s.kind?s.ny:Math.sin(s.ga))*30; (p.shS=p.shS||[0,0,0])[s.i]=2; lines.length=0;
+       gp=shGatePt(s); p.x=gp.x+(s.kind?s.nx:Math.cos(s.ga))*30; p.y=gp.y+(s.kind?s.ny:Math.sin(s.ga))*30; (p.shS=p.shS||[0,0,0])[s.i]=2; lines.length=0; keys={KeyE:true};
        for(i=0;i<8;i++) flowTick(0.25);
        if(s.open) bad.push('FIVE: the gate opened after only 2 s');
        if(!(s.prog>0.5&&s.prog<1)) bad.push('FIVE: the breach is at '+s.prog.toFixed(2)+' after 2 s');
