@@ -1,0 +1,12 @@
+{
+    "title":  "THE MAGNUM KICKS THE SCREEN HARDER",
+    "why":  "His Q5: gun feel. The Magnum shared the heavy-gun kick of 4.5 with the Longshot, 1.9 px. A 62 damage shot every 0.62 s should hit harder: 5.5 gives 2.8 px, and the shake drains in 0.28 s so shots never stack.",
+    "now":  "The Magnum now kicks the screen harder with every shot.",
+    "edits":  [
+                  {
+                      "anchor":  "var GUN_SHAKE={shotgun:6.5,smg:1.9,pistol:3.6,rifle:2.7};",
+                      "replacement":  "var GUN_SHAKE={shotgun:6.5,smg:1.9,pistol:3.6,rifle:2.7,magnum:5.5};   // v28.xx (cw-kickmagnum): the Magnum 4.5 to 5.5, one shot 1.9 px to 2.8 px of camera kick (trauma 0.321 to 0.393, size 18 x trauma squared), draining in 0.28 s, well inside its 620 ms rate so shots never stack"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a Magnum shot kicks the camera 5.5, up from 4.5 (about 2.8 px), and six shots at full rate never stack past 3.4 px (his Q5 gun feel)\u0027,\n   run:function(){\n     if(typeof gunShake!==\u0027function\u0027||typeof gfxTrauma!==\u0027function\u0027) return \u0027SKIP: no gunShake\u0027;\n     var g=null;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player) return \u0027SKIP: no raid\u0027;\n       var w=WEAPONS.magnum, mx=0, i, nx=0, t=0, dt=1/60, n=0, one=-1;\n       CFG.shake=1; CFG.fxInt=1; GFX.shG=null; G.shake=0; gfxTrauma(dt);\n       for(i=0;i\u003c420;i++){\n         t+=dt;\n         if(t\u003e=nx\u0026\u0026n\u003c6){ G.shake=0; fireWeapon(g.player,w,g.player.x+200,g.player.y,true); if(n===0) one=G.shake; nx+=w.rof/1000; n++; }\n         gfxTrauma(dt); if(GFX.shA\u003emx) mx=GFX.shA;\n         if(G.shake\u003e0) G.shake=Math.max(0,G.shake-dt*26);\n       }\n       if(Math.abs(one-5.5)\u003e0.01) return \u0027a Magnum shot sets a kick of \u0027+one+\u0027, not 5.5\u0027;\n       if(!(mx\u003e2.3)) return \u0027six Magnum shots shake the camera only \u0027+mx.toFixed(2)+\u0027 px, under 2.3\u0027;\n       if(!(mx\u003c3.4)) return \u0027six Magnum shots shake the camera \u0027+mx.toFixed(2)+\u0027 px, over 3.4\u0027;\n       return null;\n     } finally {\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}
