@@ -10,6 +10,9 @@ Front "fxdry$NN"
 $d=powershell -NoProfile -ExecutionPolicy Bypass -File $c -Port $Cdp -Match "fxdry$NN" -TimeoutSec 400 -Expr $e 2>$null
 Front "fxctl$NN"
 $k=powershell -NoProfile -ExecutionPolicy Bypass -File $c -Port $Cdp -Match "fxctl$NN" -TimeoutSec 400 -Expr $e 2>$null
+# 2026-10-18: a page left open keeps drawing the title (the live world since v30.65) in software, about 1.3 cores per test
+# Chrome; idle lanes had the PC at 100 percent. This is the last step that uses these pages, so close them.
+try{ (Invoke-RestMethod http://127.0.0.1:$Cdp/json) | Where-Object { $_.type -eq "page" -and ($_.url -like "*fxdry$NN.html*" -or $_.url -like "*fxctl$NN.html*") } | ForEach-Object { Invoke-RestMethod ("http://127.0.0.1:$Cdp/json/close/"+$_.id) | Out-Null } }catch{}
 try{ $dj=$d | ConvertFrom-Json; $kj=$k | ConvertFrom-Json }catch{ "RECENT ERROR: dry=$d ctl=$k"; exit 1 }
 $cnt=0
 foreach($p in $dj.PSObject.Properties){ if(-not $kj.PSObject.Properties[$p.Name]){ "REGRESS $($p.Name): $($p.Value)"; $cnt++ } }

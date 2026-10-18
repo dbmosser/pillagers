@@ -11,16 +11,28 @@ function OpenWait([string]$url,[string]$m,[string]$ready){
   for($i=0;$i -lt 60;$i++){ Start-Sleep -Milliseconds 500; $r=Ev $m $ready 10; if($r -eq 'true'){ return } }
   Write-Output "TIMEOUT loading $url"
 }
+# 2026-10-18: a page left open keeps drawing the title in software (about 1.3 cores per test Chrome), so pages close when the caller
+# will stop here (the same tests as shipone.sh and preflight.sh) and after -Fix. On a pass the dry and control pages stay for recent.ps1,
+# which closes them.
+function Shut([string[]]$ms){ try{ (Invoke-RestMethod http://127.0.0.1:$Cdp/json) | Where-Object { $u=$_.url; $_.type -eq "page" -and ($ms | Where-Object { $u -like "*$_*" }) } | ForEach-Object { Invoke-RestMethod ("http://127.0.0.1:$Cdp/json/close/"+$_.id) | Out-Null } }catch{} }
 $run="(function(){ var t=__REGRESS.find(function(x){return x.v==='$V'}); if(!t) return 'NO CHECK $V'; var o=[]; for(var k=0;k<2;k++){ __runPrep(); __topClear(); var r; try{ r=t.run(); }catch(e){ r='threw '+e; } o.push(r?String(r).slice(0,300):'PASS'); } return o.join(' / '); })()"
 if($Fix){
   OpenWait "http://localhost:$Port/fixture.html" "$Port/fixture" "String(typeof __REGRESS!=='undefined'&&typeof __verifySafe==='function')"
   "fixture.html check ${V}: " + (Ev "$Port/fixture" $run)
   "verifySafe: " + (Ev "$Port/fixture" "Promise.resolve(__verifySafe()).then(function(r){ return JSON.stringify({pass:r.pass,ents:r.ents,containers:r.containers,fail:r.fail}); })" 300)
+  Shut @("$Port/fixture.html")
   exit 0
 }
 OpenWait "http://localhost:$Port/parsecheck.html?f=fxdry$NN.html" "parsecheck" "String(/parse check/.test(document.title))"
-"parse: " + (Ev 'parsecheck' 'document.title')
+$pr=Ev 'parsecheck' 'document.title'
+"parse: " + $pr
+Shut @("parsecheck.html?f=fxdry$NN.html")
+if("$pr" -notmatch '^PASS'){ exit 0 }
 OpenWait "http://localhost:$Port/fxdry$NN.html" "fxdry$NN" "String(typeof __REGRESS!=='undefined')"
-"dry fxdry$NN check ${V}: " + (Ev "fxdry$NN" $run)
+$dy=Ev "fxdry$NN" $run
+"dry fxdry$NN check ${V}: " + $dy
+if("$dy" -notmatch '^PASS / PASS'){ Shut @("fxdry$NN.html"); exit 0 }
 OpenWait "http://localhost:$Port/fxctl$NN.html" "fxctl$NN" "String(typeof __REGRESS!=='undefined')"
-"control fxctl$NN check ${V}: " + (Ev "fxctl$NN" $run)
+$ct=Ev "fxctl$NN" $run
+"control fxctl$NN check ${V}: " + $ct
+if("$ct" -match "^PASS|^SKIP|NO CHECK|TIMEOUT"){ Shut @("fxdry$NN.html","fxctl$NN.html") }
