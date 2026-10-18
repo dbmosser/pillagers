@@ -1,0 +1,1 @@
+| Hub windows ease in too | v29.82 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 29.82 passes, fails on v29.81 |

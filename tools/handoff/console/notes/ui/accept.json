@@ -194,18 +194,18 @@
  "35-kia-card": {
   "score": 2,
   "pass": false,
-  "verdict": "The KIA card has the right shell (centred, dark scrim, red title, one amber primary), but it ignores the end-card spec: no hero line, no stat row or tile row, tiny centred text, a \"$\" currency and explaining sentences.",
-  "pic": "tools/handoff/console/notes/shots/13-c1/35-kia-card-1080.jpg",
+  "verdict": "The shell is now centred, dark and sentence case with a red title and amber primary, but it has no hero line and reads as a stack of centred 14-16px text lines that is too small for a couch. Image 2's four-stat row is the right direction, and Image 1's dotted stat sentence is the weaker variant.",
+  "pic": "tools/handoff/console/notes/shots/13-c2/35-kia-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T10:11"
+  "when": "2026-10-18T10:17"
  },
  "38-extracted-card": {
   "score": 2,
   "pass": false,
-  "verdict": "The shell is roughly right (centred dark card, teal title, one amber primary), but it is a wall of centred explaining sentences with a hero line that uses the banned \"$\" and sits below the item tiles, so it reads like a debug report and not an extraction card.",
-  "pic": "tools/handoff/console/notes/shots/13-c1/38-extracted-card-1080.jpg",
+  "verdict": "The Extracted card follows the end-card shell (720px card, teal title, Haul hero, amber primary and ghost), but explaining sentences, a currency mark the rules ban, a tiny hero and the lack of a close control leave it a text-heavy, dim template.",
+  "pic": "tools/handoff/console/notes/shots/13-c2/38-extracted-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T10:10"
+  "when": "2026-10-18T10:17"
  },
  "40-whats-new-card": {
   "score": 2,
@@ -234,10 +234,10 @@
  "52-arcade-run-over": {
   "score": 2,
   "pass": false,
-  "verdict": "The run-over card follows the guide's tokens and has a clear hero line, but it is a sparse, left-heavy box with a duplicated score, a dot-separated stats sentence, no button and a dim footer prompt, so it does not match the guide's end-card shell.",
-  "pic": "tools/handoff/console/notes/shots/12-a3/52-arcade-run-over-1080.jpg",
+  "verdict": "The screen is clean and uses the right tokens (sentence case, amber primary, 2px tab), but it is a sparse template card on a flat vignette. It misses the end-card shell: no live-world backdrop, a weak hero line, a run-on stats string and a mislabelled button.",
+  "pic": "tools/handoff/console/notes/shots/12-d1/52-arcade-run-over-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T09:32"
+  "when": "2026-10-18T10:16"
  },
  "57-title-2p-coop-picked": {
   "score": 2,
@@ -402,10 +402,10 @@
  "64-arcade-board-seeded-night": {
   "score": 2,
   "pass": false,
-  "verdict": "A clean but nearly empty arcade board: a lone, tiny 'No scores yet' card floats under a centred title in a sea of dark, with a dim amber prompt that is not a real button and no sign of a game behind it.",
-  "pic": "tools/handoff/console/notes/shots/12-a3/64-arcade-board-seeded-night-1080.jpg",
+  "verdict": "A clean, on-palette but nearly empty title screen: the logo and the tiny scoreboard card compete, the card is a dead-end with 'No scores yet', and the lower two-thirds is a void, so it reads as a placeholder rather than a polished AAA title.",
+  "pic": "tools/handoff/console/notes/shots/12-d1/64-arcade-board-seeded-night-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T09:34"
+  "when": "2026-10-18T10:16"
  },
  "70-settings-sec-controls": {
   "score": 2,

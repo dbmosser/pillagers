@@ -1,0 +1,6 @@
+{"generated":"2026-10-18T06:17:07","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":54,"screens":[
+{"name":"35-kia-card","screen":"KILLED IN ACTION card with feedback tags","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"35-kia-card-1080.jpg","lint":""}},
+{"name":"38-extracted-card","screen":"EXTRACTED card","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"38-extracted-card-1080.jpg","lint":""}},
+{"name":"60-abandoned-card","screen":"ABANDONED outcome card","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"60-abandoned-card-1080.jpg","lint":""}},
+{"name":"77-haul-reveal-done","screen":"Extracted card after the haul reveal (HAUL total)","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"77-haul-reveal-done-1080.jpg","lint":""}}
+]}

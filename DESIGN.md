@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.82 - Hub windows ease in too
+
+Co-op hunt while he was away. UI STEP 2b continued. His words: "they are just reallly compelling and smooth". Trader, gamble, bar, looks, trophies, codex, board, news, sector, stage, carry, crate, ops, welcome and terms windows join the shared UI motion layer: 240 ms open with a 16 px rise, 140 ms close, one open and one close sound. Menus only, no raid value touched.
+
+MEASURED. Check 29.82 passes, and fails on v29.81.
 ## v29.81 - End cards: a stats row and achievement chips
 
 Co-op hunt while he was away. The critic scored the Extracted, Killed in action and Abandoned cards 2 of 5: the stats are a run-on dotted sentence in 14px grey and the achievements are sentences. They are now a row of four cells (24px value, 16px label) and name chips. The old words stay as hidden text. Restyle only.
