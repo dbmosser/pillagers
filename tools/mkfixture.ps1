@@ -6099,6 +6099,30 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.71',what:'a Longshot shot kicks the camera 7.0, up from 4.5 (about 4 px), and five shots at full rate never stack past 5 px (his Q5 gun feel)',
+   run:function(){
+     if(typeof gunShake!=='function'||typeof gfxTrauma!=='function') return 'SKIP: no gunShake';
+     var g=null;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player) return 'SKIP: no raid';
+       var w=WEAPONS.sniper, mx=0, i, nx=0, t=0, dt=1/60, n=0, one=-1;
+       CFG.shake=1; CFG.fxInt=1; GFX.shG=null; G.shake=0; gfxTrauma(dt);
+       for(i=0;i<600;i++){
+         t+=dt;
+         if(t>=nx&&n<5){ G.shake=0; fireWeapon(g.player,w,g.player.x+200,g.player.y,true); if(n===0) one=G.shake; nx+=w.rof/1000; n++; }
+         gfxTrauma(dt); if(GFX.shA>mx) mx=GFX.shA;
+         if(G.shake>0) G.shake=Math.max(0,G.shake-dt*26);
+       }
+       if(Math.abs(one-7.0)>0.01) return 'a Longshot shot sets a kick of '+one+', not 7.0';
+       if(!(mx>3.4)) return 'five Longshot shots shake the camera only '+mx.toFixed(2)+' px, under 3.4';
+       if(!(mx<5.0)) return 'five Longshot shots shake the camera '+mx.toFixed(2)+' px, over 5.0';
+       return null;
+     } finally {
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     } }},
   {v:'30.70',what:'the first controller is player 2 only and the second is player 1 only (his order, 2026-10-18: my controller controls both screens at the same time, that is not the intent): through the arcade entry and navigator.getGamepads, with two controllers the player 1 window reads only the second and the player 2 window only the first, with one controller only the player 2 window has it, a state handed over for the other player is never played, and an old kept pick is cleared once',
    run:function(){
      if(typeof NET==='undefined'||!NET||typeof netPadTick!=='function'||typeof netPadRecv!=='function'||typeof pollPad!=='function'||typeof arcadePadsIn!=='function'||typeof netPadNow!=='function'||typeof netSamePost!=='function'||typeof netPadKey!=='function'||typeof PAD==='undefined'||!PAD||typeof RUMBLE==='undefined') return 'SKIP: this build has no same machine controllers';

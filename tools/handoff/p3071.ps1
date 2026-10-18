@@ -1,0 +1,41 @@
+$ErrorActionPreference = 'Stop'
+trap { Write-Output "FAILED: $_"; exit 1 }
+$p = 'C:\claudecode\dark raiders\dark_raiders.html'
+$s = [IO.File]::ReadAllText($p)
+$n = 0
+function SubRx([string]$old, [string]$new) {
+  $pat = ($old -split "`n" | ForEach-Object { [regex]::Escape($_.TrimEnd("`r")) }) -join "\r?\n"
+  $c = ([regex]::Matches($script:s, $pat)).Count
+  if ($c -ne 1) { throw "regex matched $c times: $($old.Substring(0,[Math]::Min(70,$old.Length)))" }
+  $new = $new.Replace("`r`n", "`n")
+  $script:s = [regex]::Replace($script:s, $pat, { param($m) $new })
+  $script:n++
+}
+
+# THE LONGSHOT KICKS THE SCREEN HARDER (co-op hunt, 2026-09-28; found and drafted by agents, each verified by a second).
+
+SubRx @'
+var GUN_SHAKE={shotgun:6.5,smg:1.9,pistol:3.6,rifle:2.7,magnum:5.5,lmg:2.0};
+'@ @'
+var GUN_SHAKE={shotgun:6.5,smg:1.9,pistol:3.6,rifle:2.7,magnum:5.5,lmg:2.0,sniper:7.0};   // v28.xx (cw-kicksniper): the Longshot 4.5 to 7.0, one shot 1.9 px to about 4.1 px of camera kick (trauma 0.32 to 0.5, size 18 x trauma squared), draining in 0.36 s, far inside its 1600 ms rate, so 170 damage on one pull lands with the biggest kick of any gun
+'@
+
+SubRx @'
+var VER='30.70';
+'@ @'
+var VER='30.71';
+'@
+
+$pat = "(?m)^  now:'v30\.70:.*$"
+$c = ([regex]::Matches($s, $pat)).Count
+if ($c -ne 1) { throw "DEVNOW now line matched $c times, expected 1" }
+$new = "  now:'v30.71: The Longshot now kicks the screen harder with every shot. Check 30.71 fails on v30.70',"
+$s = [regex]::Replace($s, $pat, { param($m) $new })
+if (([regex]::Matches($s, "(?m)^  now:'")).Count -ne 1) { throw "more than one now key in DEVNOW" }
+$script:s = $s
+
+$src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
+$want = ([regex]::Matches($src, "(?m)^SubRx @'")).Count
+if ($n -ne $want) { throw "expected $want edits, made $n" }
+[IO.File]::WriteAllText($p, $script:s, (New-Object Text.UTF8Encoding $false))
+Write-Output "OK, $n edits applied plus DEVNOW"

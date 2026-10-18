@@ -12,24 +12,27 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-#  (co-op hunt, 2026-09-28; found and drafted by agents, each verified by a second).
+# PARTY BISECT D (co-op hunt, 2026-09-28; found and drafted by agents, each verified by a second).
 
 SubRx @'
+*{ text-transform:none !important; }
 
 '@ @'
+*{ text-transform:none !important; }
+/* v30.xx (cw-partyd): bisect, a comment only. */
 
 '@
 
 SubRx @'
-var VER='30.70';
-'@ @'
 var VER='30.71';
+'@ @'
+var VER='30.72';
 '@
 
-$pat = "(?m)^  now:'v30\.70:.*$"
+$pat = "(?m)^  now:'v30\.71:.*$"
 $c = ([regex]::Matches($s, $pat)).Count
 if ($c -ne 1) { throw "DEVNOW now line matched $c times, expected 1" }
-$new = "  now:'v30.71:  Check 30.71 fails on v30.70',"
+$new = "  now:'v30.72: Nothing. Check 30.72 fails on v30.71',"
 $s = [regex]::Replace($s, $pat, { param($m) $new })
 if (([regex]::Matches($s, "(?m)^  now:'")).Count -ne 1) { throw "more than one now key in DEVNOW" }
 $script:s = $s

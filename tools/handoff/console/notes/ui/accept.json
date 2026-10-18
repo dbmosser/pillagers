@@ -554,16 +554,16 @@
  "01-title-mode-menu": {
   "score": 3,
   "pass": false,
-  "verdict": "The lime primary and the flat dark buttons are on-style, but none of the earlier advice was followed: the saves block, orange gradient logo, five-button stack and nine-hint legend are unchanged, and capitals still appear in several places.",
+  "verdict": "The lime '1 player' button now clearly leads the eye, but the orange gradient logo, the capitals that were never removed, the five-button mode stack and the crowded saves block and key legend still make it read as a template rather than a polished AAA title screen.",
   "findings": [
-   "P1 Logo, y 262-345: Use solid --acc or --tx-1 with a 2px dark offset, no gradient, about 96px high, written 'pillagers'. Lime on the logo and the button together is too much, so use tx-1 for the logo and keep lime for '1 player'.",
-   "P1 Capitals on screen: 'Go fullscreen', 'Pillager New', 'Saves', 'PILLAGER', 'Ascend. Pillage. Extract.', 'Change name', 'Create a new save', 'WASD', 'Mouse', 'LMB', 'Ctrl', 'F1', '$900', 'XP': Lower-case every string: 'go fullscreen', 'pillager new', 'saves', 'ascend. pillage. extract.' (or delete it). Force `text-transform: lowercase` on the input and set the placeholder to 'name'. Keycap text such as 'wasd', 'lmb' and 'esc' is lower case too, unless it sits inside key art.",
-   "P1 Saves block, y 715-832: Collapse to one 48px row, 558px wide: 'pillager new · 0 raids · 900 · 0 xp' in tx-2 20px plus a ghost 'switch save'. Move the rename and create-save fields into a modal. Delete the 'saves' label. Drop the '$' sign and the capitals.",
-   "P1 Mode buttons, y 413-693: Keep three: 'play' (primary), '2 player co-op' (ghost) and 'demos' (ghost, opens a sub-list). Delete the server row and the 'coming later' tag. Use 48px ghosts with an 8px gap.",
-   "P1 Key legend, y~1042: Cut to three: 'enter select', 'esc back', 'f1 controls', at 16px tx-2. Move the gameplay keys to the controls screen. Show pad glyphs when the last input was a pad."
+   "P1 Capitals across the screen: 'Pillagers' logo, 'Ascend. Pillage. Extract.', 'Go fullscreen', 'Saves', 'Pillager New', 'PILLAGER' input, 'Change name', 'Create a new save', 'WASD', 'Mouse', 'LMB', 'Ctrl', 'F1', 'M', 'B / I', '$900', 'XP': Lower-case every string: 'pillagers', 'ascend. pillage. extract.' (or delete it), 'go fullscreen', 'saves', 'pillager new', 'change name', 'create a new save', 'wasd', 'mouse', 'lmb', 'ctrl', 'f1'. Set text-transform: lowercase on the input and use the placeholder 'name'. Drop the '$' sign and write '0 xp'.",
+   "P1 Logo, y 262-345: Make the logo flat --tx-1 (#efe9dc) with a 2px dark offset, about 96px high. Keep lime only for the primary button. Delete the tagline, or set it in tx-2 at 20px.",
+   "P1 Mode stack, y 413-693: Keep three: 'play' (primary, 56px), '2 player co-op' (ghost) and 'demos' (ghost, opens a sub-list). Delete the server row and the 'coming later' tag. Use an 8px gap and a 4px radius. Show a 3px lime left bar plus a pad 'A' glyph on the focused row.",
+   "P1 Saves block, y 715-832: Collapse to one 48px row, 558px wide: 'pillager new · 0 raids · 900 · 0 xp' in tx-2 at 20px, plus a ghost 'switch save'. Move rename and create into a modal. Delete the 'saves' label and the lime outline.",
+   "P1 Key legend, y~1042: Cut to three: 'enter select', 'esc back', 'f1 controls', at 16px tx-2. Move the gameplay keys to the controls screen. Swap in pad glyphs when the last input was a pad."
   ],
-  "pic": "tools/handoff/console/notes/shots/03-fight/01-title-mode-menu-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/03-final/01-title-mode-menu-1080.jpg",
   "task": "03-title-and-backdrop",
-  "when": "2026-10-18T19:09"
+  "when": "2026-10-18T19:12"
  }
 }

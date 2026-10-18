@@ -1,0 +1,12 @@
+{
+    "title":  "PARTY BISECT D",
+    "why":  "bisect",
+    "now":  "Nothing.",
+    "edits":  [
+                  {
+                      "anchor":  "*{ text-transform:none !important; }\n",
+                      "replacement":  "*{ text-transform:none !important; }\n/* v30.xx (cw-partyd): bisect, a comment only. */\n"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027party bisect d: nothing\u0027,\n   run:function(){ return null; }},"
+}

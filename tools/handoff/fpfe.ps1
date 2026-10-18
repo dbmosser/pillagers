@@ -12,13 +12,14 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-if ($s.Contains("  {v:'30.71',what:")) { throw "check 30.71 is in the fixture already" }
+if ($s.Contains("  {v:'30.72',what:")) { throw "check 30.72 is in the fixture already" }
 
 SubRx @'
-  {v:'30.70',what:
+  {v:'30.71',what:
 '@ @'
-
-  {v:'30.70',what:
+  {v:'30.72',what:'party bisect d: nothing',
+   run:function(){ return null; }},
+  {v:'30.71',what:
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

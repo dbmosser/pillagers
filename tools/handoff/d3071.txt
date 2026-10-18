@@ -1,0 +1,5 @@
+## v30.71 - THE LONGSHOT KICKS THE SCREEN HARDER
+
+Co-op hunt while he was away. His Q5: gun feel. The Longshot (170 damage, one shot every 1.6 s) used the generic heavy kick 4.5, about 1.9 px, the same as a Magnum before its pass. 7.0 is trauma 0.5, about 4 px, gone in 0.36 s, so it never stacks and the biggest hit has the biggest kick.
+
+MEASURED. Check 30.71 passes, and fails on v30.70.

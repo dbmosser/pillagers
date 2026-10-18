@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.71 - THE LONGSHOT KICKS THE SCREEN HARDER
+
+Co-op hunt while he was away. His Q5: gun feel. The Longshot (170 damage, one shot every 1.6 s) used the generic heavy kick 4.5, about 1.9 px, the same as a Magnum before its pass. 7.0 is trauma 0.5, about 4 px, gone in 0.36 s, so it never stacks and the biggest hit has the biggest kick.
+
+MEASURED. Check 30.71 passes, and fails on v30.70.
 ## v30.70 - First controller is player 2, second is player 1
 
 Co-op hunt while he was away. His order (2026-10-18): right now if both games are fullscreened, my controller controls both screens at the same time, that is not the intent -- first controller plugged in always controls p2 only, second controller plugged in always controls p1 only. Entering the arcade put player 1 on controller 1 and player 2 on controller 2, and a window whose controller was not plugged in fell to the first free one before the other window pick reached it, so one controller was read by both windows. The arcade now leaves both windows on the order the controllers were plugged in (first is player 2, second is player 1, one alone is player 2), a controller state handed over names the side it is for and the other window refuses one meant for its partner, and a controller pick kept under the old order is cleared once.
