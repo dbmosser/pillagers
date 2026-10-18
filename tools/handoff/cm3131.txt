@@ -1,0 +1,7 @@
+v31.31: the stash is a 90 percent card
+
+The stash is a centred 90 percent card like the shop.
+
+Check 31.31. Fails on v31.30.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

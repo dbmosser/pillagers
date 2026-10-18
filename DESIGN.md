@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.31 - THE STASH IS A 90 PERCENT CARD
+
+Co-op hunt while he was away. His Q43: windows (Settings, stash and the rest) are a centred card with an X in the corner taking nearly the whole screen. The stash was the one window still edge to edge. Now a card with a 5 percent margin all round, 4 px corners, a scrim around it, the X and credits inside its top right.
+
+MEASURED. Check 31.31 passes, and fails on v31.30.
 ## v31.30 - THE DOWNED BLOCK SITS ON ONE PLATE AND THE TIMER IS THE BIG NUMBER
 
 Co-op hunt while he was away. Critic on screen 34 (P0): the downed words sat straight on the red wash and the busy world, with the timer small. They now sit on one shared panel sized to their rows, and the timer is as big as the word down. Layout and keys are unchanged.

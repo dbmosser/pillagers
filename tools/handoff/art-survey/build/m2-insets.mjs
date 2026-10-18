@@ -4,4 +4,9 @@ export const SETS = {
   'a24-D': { screen: 'm-lineup', crops: [{ x: 203, y: 335, w: 360, h: 270, l: 20, t: 10 }, { x: 361, y: 400, w: 360, h: 270, l: 388, t: 10 }, { x: 503, y: 372, w: 360, h: 270, l: 756, t: 10 }] },
   // four machines of four lens colours, side by side in the free strip above the row: the crawler (amber), the crier (lime), the howler (violet), the listener (magenta)
   'a25-B': { screen: 'm-lineupmood', crops: [{ x: 329, y: 392, w: 360, h: 270, l: 20, t: 10 }, { x: 503, y: 342, w: 360, h: 270, l: 392, t: 10 }, { x: 825, y: 380, w: 360, h: 270, l: 764, t: 10 }, { x: 1010, y: 305, w: 360, h: 270, l: 1136, t: 10 }] },
+  // the four size settings share one box: the warden tank (a tank in every setting) at 3x, in the empty strip above the row
+  'a26-A': { screen: 'm-lineupbig', crops: [{ x: 1412, y: 455, w: 560, h: 330, l: 20, t: 10 }] },
+  'a26-B': { screen: 'm-lineupbig', crops: [{ x: 1412, y: 455, w: 560, h: 330, l: 20, t: 10 }] },
+  'a26-C': { screen: 'm-lineupbig', crops: [{ x: 1412, y: 455, w: 560, h: 330, l: 20, t: 10 }] },
+  'a26-D': { screen: 'm-lineupbig', crops: [{ x: 1412, y: 455, w: 560, h: 330, l: 20, t: 10 }] },
 };

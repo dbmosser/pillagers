@@ -1,0 +1,3 @@
+{"generated":"2026-10-18T18:40:13","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":16,"screens":[
+{"name":"34-raid-downed-pickups","screen":"DOWN state (self-revive timer, HP 0, damage number) plus the pickup stack and world loot labels","1080":{"staged":true,"note":"downed true hp 0","viewport":"1920x1080","shot":"34-raid-downed-pickups-1080.jpg","lint":""}}
+]}

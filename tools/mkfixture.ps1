@@ -6101,6 +6101,26 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.31',what:'the stash is a card with a 5 percent margin on every side (90 x 90 of the screen), and its X sits inside the card',
+   run:function(){
+     if(!(window.__hubEnter&&window.__showScreen)) return 'SKIP: this fixture cannot walk the Undercroft';
+     var bad=[], h, r, tw=window.innerWidth, th=window.innerHeight, b, q;
+     try{
+       __topClear(); __cleanProfile();
+       G=null; keys={}; __showScreen('hub'); __hubEnter();
+       renderHub(); h=document.getElementById('hub'); h.classList.add('on');
+       var cs=getComputedStyle(h), hb=h.getBoundingClientRect();
+       r={left:parseFloat(cs.left),top:parseFloat(cs.top),right:tw-parseFloat(cs.right),bottom:th-parseFloat(cs.bottom)}; r.width=r.right-r.left;
+       if(!(Math.abs(r.left-tw*0.05)<=3)) bad.push('the stash left margin is '+Math.round(r.left)+' px, not 5 percent ('+Math.round(tw*0.05)+')');
+       if(!(Math.abs(tw-r.right-tw*0.05)<=3)) bad.push('the stash right margin is '+Math.round(tw-r.right)+' px, not 5 percent');
+       if(!(Math.abs(r.top-th*0.05)<=3)) bad.push('the stash top margin is '+Math.round(r.top)+' px, not 5 percent ('+Math.round(th*0.05)+')');
+       if(!(Math.abs(th-r.bottom-th*0.05)<=3)) bad.push('the stash bottom margin is '+Math.round(th-r.bottom)+' px, not 5 percent');
+       b=document.getElementById('stashclose'); q=b?b.getBoundingClientRect():null;
+       if(!q||!(q.width>8)) bad.push('the stash X has no box');
+       else if(!(q.right<=hb.right+0.5&&q.left>hb.left+hb.width*0.8&&q.top>=hb.top-1)) bad.push('the stash X is not inside the card top right ('+Math.round(q.left)+','+Math.round(q.top)+','+Math.round(q.right)+')');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ document.getElementById('hub').classList.remove('on'); __topClear(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'31.30',what:'the downed block sits on one plate (uiPanel) and draws it every frame it is down, sized to its rows (critic on screen 34: a plate behind the whole block)',
    run:function(){
      if(typeof downPlateRect!=='function'||typeof downPlateDraw!=='function'||typeof DP_DRAWS!=='number') return 'the downed block has no plate behind it (no downPlateRect)';

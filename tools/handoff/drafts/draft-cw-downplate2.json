@@ -1,0 +1,28 @@
+{
+    "title":  "THE DOWNED TIMER GETS ITS OWN CENTRED ROW",
+    "why":  "Critic on screen 34: the timer was pushed to the edge of the plate and the block was off-centre. The timer now sits centred under the word down, the bar and the prompt follow in one column, and the plate is 480 wide.",
+    "now":  "When you are down, the timer now sits centred under the word down and everything stacks in one column.",
+    "edits":  [
+                  {
+                      "anchor":  "    var _barY=_dy+Math.round(_hH*0.42);\n",
+                      "replacement":  "    var _tmY=_dy+Math.round(_hH*1.05), _barY=_dy+Math.round(_hH*0.42)+Math.round(_hH*1.05);   // v28.xx (cw-downplate2): the timer has its own row under the word down, centred\n"
+                  },
+                  {
+                      "anchor":  "ctx.textAlign=\u0027left\u0027;   // v28.xx (cw-downplate): the timer is the hero, as big as the word down",
+                      "replacement":  "ctx.textAlign=\u0027center\u0027;   // v28.xx (cw-downplate2): one centred column (critic on screen 34: the timer was pushed to the plate edge)"
+                  },
+                  {
+                      "anchor":  "ctx.fillText(Math.max(0,p.downT).toFixed(2)+\u0027s\u0027,W/2+110,_barY+9); ctx.textAlign=\u0027center\u0027;",
+                      "replacement":  "ctx.fillText(Math.max(0,p.downT).toFixed(2)+\u0027s\u0027,W/2,_tmY);"
+                  },
+                  {
+                      "anchor":  "rowY=dy+Math.round(hH*0.42)+10+Math.round(hD*1.15);",
+                      "replacement":  "rowY=dy+Math.round(hH*0.42)+Math.round(hH*1.05)+10+Math.round(hD*1.15);"
+                  },
+                  {
+                      "anchor":  "return {x:Math.round(cx-260),y:top,w:520,h:rowY+16-top};",
+                      "replacement":  "return {x:Math.round(cx-240),y:top,w:480,h:rowY+16-top};"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the downed timer has its own centred row under the word down, and the plate is 480 wide with room for it (critic on screen 34: one centred column)\u0027,\n   run:function(){\n     if(typeof downPlateRect!==\u0027function\u0027) return \u0027no downPlateRect\u0027;\n     var r=downPlateRect(960,500,39,19,false,false,false,null,true), g, p, i, d0;\n     if(r.w!==480) return \u0027the plate is \u0027+r.w+\u0027 wide, not 480\u0027;\n     if(r.h\u003c170) return \u0027the plate leaves no row for a centred timer (\u0027+r.h+\u0027 tall, wants 170 or more)\u0027;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player) return \u0027SKIP: no raid\u0027;\n       p=g.player; g.ents.length=0; p.hp=0; p.downed=true; p.downT=60; p.revived=1; p.iv=99; p.pendKiller=null;\n       if(typeof __vpAlive===\u0027function\u0027\u0026\u0026!__vpAlive()) return null;\n       d0=DP_DRAWS; for(i=0;i\u003c3;i++) __loop(performance.now()+i*17);\n       if(DP_DRAWS\u003c=d0) return \u0027a downed frame drew no plate\u0027;\n       return null;\n     } finally {\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}

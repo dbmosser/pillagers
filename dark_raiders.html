@@ -1866,6 +1866,10 @@ body:has(.modal.ui-win.on:not(#settingsmodal):not(#welcomemodal)) #topright, bod
 #root .modal.ui-win:not(#settingsmodal):not(#welcomemodal)::before{ inset:5vh 5vw; border-radius:4px; clip-path:none; border-color:var(--ui-line-hi); background:var(--ui-bg); }
 #root .modal.ui-win:not(#settingsmodal):not(#welcomemodal) > .ui-foot > .ui-back{ top:calc(5vh + 12px); right:calc(5vw + 16px); }
 body:has(.modal.ui-win.on:not(#settingsmodal):not(#welcomemodal)) #topright{ top:calc(5vh + 14px) !important; right:calc(5vw + 82px) !important; }
+/* v28.xx (cw-stashcard), his Q43 (2026-10-18): "centred card with an X in the corner ... nearly the entire screen", Settings, stash and the rest. The stash (the Undercroft terminal) was the one window still edge to edge. Now it is the same 90 percent card as the shop: 5 percent margin on every side, 4 px corners, the scrim around it, the X and the credits readout inside its top right, the toast inside its foot. */
+#root #hub{ inset:5vh 5vw; border-radius:4px; border:1px solid var(--ui-line-hi); box-shadow:0 0 0 100vmax rgba(6,7,8,.82); }
+body:has(#hub.on) #topright{ top:calc(5vh + 14px) !important; right:calc(5vw + 82px) !important; }
+body:has(#hub.on) #hubtoast{ bottom:calc(5vh + 26px); }
 
 /* v28.xx (cw-setheight) critic c-31 (Settings 18/70, Keys 32): "the card is about 1005x1030 and fills the screen height ... a modal never exceeds its content ... cap the card at 960x680". Now the Settings and Keys cards are 15 x 48 (720) tall and centred in the screen (top and bottom air --py, never under 48), the frame, the header X and the tab strip follow it. The list scrolls inside, as before. */
 /* v30.xx (cw-pausesets), HIS NOTE (2026-10-18): "accessing settings from pauise menu doesn't work right (maybe due to usperhot?)". The air above and below the Settings
@@ -2823,7 +2827,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.30';
+var VER='31.31';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -49202,7 +49206,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.30: When you are down, the down word, the bar, the timer and the prompts now sit on one dark panel, and the timer is big. Check 31.30 fails on v31.29',
+  now:'v31.31: The stash is a centred 90 percent card like the shop. Check 31.31 fails on v31.30',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

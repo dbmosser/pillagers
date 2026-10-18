@@ -5,7 +5,7 @@ const here = path.dirname(fileURLToPath(import.meta.url)), AS = path.resolve(her
 const r = JSON.parse(fs.readFileSync(path.join(AS, 'recipes.json'), 'utf8'));
 const old = JSON.parse(fs.readFileSync(path.join(AS, 'shots', '_recipes', 'all.json'), 'utf8'));
 const extra = fs.existsSync(path.join(here, 'extra-scenes.js')) ? fs.readFileSync(path.join(here, 'extra-scenes.js'), 'utf8') : '';
-const scr = JSON.parse(fs.readFileSync(path.join(here, 'screens.json'), 'utf8'));
+const scr = {}; for (const f of fs.readdirSync(here).filter(f => /^screens.*.json$/.test(f))) Object.assign(scr, JSON.parse(fs.readFileSync(path.join(here, f), 'utf8')));
 const out = { about: r.about + ' REDO (2026-10-18, port 9375).', prelude: r.prelude + '\n' + extra, screens: [] };
 for (const [name, s0] of Object.entries(scr)) {
   let s = s0;

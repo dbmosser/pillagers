@@ -694,17 +694,17 @@
  "34-raid-downed-pickups": {
   "score": 2,
   "pass": false,
-  "verdict": "The downed state is readable at the centre, but the HUD around it is a crowded pile of mismatched panels, type sizes and colours, with stray capitals, clipped text and a typo, and it would not pass for AAA.",
+  "verdict": "The downed state now sits on a dark plate with a larger timer, which helps, but the rest of the HUD is unchanged: tiny cramped type, the top-right stack floating off-grid, two pickup feeds, and capital letters still on screen.",
   "findings": [
-   "P0 top-right career HUD, minimap and run info stack: Put the career row in the 16px label style inside a 1px --ui-line-hi panel. Inset the minimap 5% from the screen edge and keep its label inside the frame. Fix the string to 'extraction available'. Use a 16px gap between modules and the same right margin (about 48px) for all three.",
-   "P0 centre downed state (down, bar, 15.42s, self-revive prompt): Put a --scrim 80% plate behind the whole block. Make the timer the 56px hero in tx-1. Set 'down' at 32px. Style the bar with one 8px --danger fill. Put the prompt on the plate at 20px tx-1 with the key in an accent chip.",
-   "P1 whole HUD, panel and type consistency: Use one panel P: --ui-panel 90%, 1px --ui-line-hi, 4px radius, 16px padding. Allow only the sizes 56/32/20/16/14. Make headers 16px tx-2 and keep lime for focus only.",
-   "P1 left pickup feed and floating world labels: Show a single feed, right-aligned, with at most 3 rows of identical height (32px) and a 8px gap. Remove the left duplicate. Fix the double-draw of the world labels so each shows once, with a 1px outline and no overlap.",
-   "P1 bottom-right weapon/ammo panel: Make ammo the 56px hero in tx-1 with the reserve in tx-2 at 20px. Raise secondary text to tx-2 (#aaa498) at 16px minimum. Move the key hint to the footer at 14px. Leave a 16px gap between the status tag and the panel."
+   "P0 top-right career row, minimap, run info, extraction line: Put the career row in a 16px label panel (--ui-panel 90%, 1px --ui-line-hi, 4px radius). Inset the minimap 48px from the right edge and clip its label inside the frame. Give the three modules the same 48px right margin and 16px gaps. Fix the string to 'extraction available'.",
+   "P0 centre downed plate: Centre one column on the plate with 24px padding. Make the timer the 56px hero in tx-1. Set 'down' at 32px in --danger. Use one 8px --danger bar, and put the prompt at 20px tx-1 with [f] in a lime chip. Keep 16px between elements.",
+   "P1 capital letters on screen: Check the strings, since 'In' and 'Item' are real capitals. Force .toLowerCase() on every drawn string. Choose a face whose lower-case 'i' and 'l' read clearly at 16px.",
+   "P1 left pickup feed and world labels: Keep one right-aligned feed, 3 rows at 32px with an 8px gap. Remove the left feed. Draw each world label once, with a 1px dark outline and no overlap with the HUD.",
+   "P1 bottom-right weapon panel and status tag: Set the ammo to the 56px hero in tx-1, with the reserve at 20px tx-2. Raise secondary text to #aaa498 at 16px minimum. Leave a 16px gap above the panel. Make the tag a warn-amber glyph or short word, not a filled gold box."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-30e/34-raid-downed-pickups-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/b-30f-after/34-raid-downed-pickups-1080.jpg",
   "task": "b-30-ui-hud",
-  "when": "2026-10-18T22:26"
+  "when": "2026-10-18T22:40"
  },
  "36-raid-low-health": {
   "score": 0,
