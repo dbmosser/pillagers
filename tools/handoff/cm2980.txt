@@ -1,0 +1,7 @@
+v29.80: settings and keys card height
+
+Settings and Keys are centred cards, not full-height slabs.
+
+Check 29.80. Fails on v29.79.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

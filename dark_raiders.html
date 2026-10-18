@@ -1710,6 +1710,12 @@ body:has(#settingsmodal.on) #hubtoast, body:has(#keysmodal.on) #hubtoast{ bottom
 
 /* v28.xx (cw-settoast) critic c-31 (Settings, P0): "a toast sits inside the modal header, between the title and the close button; toasts never sit over a modal". Now a toast waits out of sight while Settings or Keys is open. */
 body:has(#settingsmodal.on) #hubtoast, body:has(#keysmodal.on) #hubtoast{ visibility:hidden; }
+
+/* v28.xx (cw-setheight) critic c-31 (Settings 18/70, Keys 32): "the card is about 1005x1030 and fills the screen height ... a modal never exceeds its content ... cap the card at 960x680". Now the Settings and Keys cards are 15 x 48 (720) tall and centred in the screen (top and bottom air --py, never under 48), the frame, the header X and the tab strip follow it. The list scrolls inside, as before. */
+#root #settingsmodal, #root #keysmodal{ --py:max(var(--sp-5), calc((100vh - var(--sp-5) * 15) / 2)); padding-top:var(--py); padding-bottom:var(--py); }
+#root #settingsmodal::before, #root #keysmodal::before{ inset-block:calc(var(--py) - var(--sp-3)); }
+#root #settingsmodal #closesettings, #root #keysmodal #closekeys{ top:var(--py); }
+#root #settingsmodal #settabs{ top:calc(var(--py) + var(--sp-1)); }
 </style><canvas id="cv"></canvas>
 <canvas id="hcv"></canvas>
 <div id="hubtoast"></div>
@@ -2626,7 +2632,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.79';
+var VER='29.80';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47716,7 +47722,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.79: The run over button is smaller and tidier. Check 29.79 fails on v29.78',
+  now:'v29.80: Settings and Keys are centred cards, not full-height slabs. Check 29.80 fails on v29.79',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

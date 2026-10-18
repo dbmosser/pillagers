@@ -194,10 +194,10 @@
  "35-kia-card": {
   "score": 2,
   "pass": false,
-  "verdict": "The card is centred on a dimmed backdrop and the KIA title is red, but it is a stack of centred small text with no hero line, no stat row and no tile row, so it looks like a debug dump and not the one end-card shell the guide asks for.",
-  "pic": "tools/handoff/console/notes/shots/13-after1/35-kia-card-1080.jpg",
+  "verdict": "The KIA card is a centred stack of small, same-weight lines with no hero number, no stat row and no tile row, so it ignores the end-card shell and the eye only has the red title and amber button to land on.",
+  "pic": "tools/handoff/console/notes/shots/13-c1/35-kia-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T08:33"
+  "when": "2026-10-18T10:10"
  },
  "38-extracted-card": {
   "score": 2,
@@ -274,10 +274,10 @@
  "62-arcade-operator-menu": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, on-guide modal with clear hierarchy (amber primary, red danger, ghost Back), but the stacked card overlaps the 'Tonight's best' panel behind it, the subtitle is tiny, and it lacks a close X, a pad glyph and a focus indicator.",
-  "pic": "tools/handoff/console/notes/shots/12-a3/62-arcade-operator-menu-1080.jpg",
+  "verdict": "A clean, readable operator modal with a clear amber primary and sentence case, but it ignores the guide's modal structure (no close X, no 56px header, no footer, no key hints), the buttons are full-width slabs, and the dimmed attract screen bleeds through and collides with the card.",
+  "pic": "tools/handoff/console/notes/shots/12-c5/62-arcade-operator-menu-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T09:33"
+  "when": "2026-10-18T10:07"
  },
  "61-raid-wheel-open": {
   "score": 2,
@@ -330,10 +330,10 @@
  "55-arcade-run-over-scored": {
   "score": 2,
   "pass": false,
-  "verdict": "The Run over card is tidy and in sentence case, but a full-width amber slab that says 'Press any button' beats a 0 SP score in the hierarchy, the tiny stats line repeats the headline, and the card is a sparse floating box with no end-card structure.",
-  "pic": "tools/handoff/console/notes/shots/12-c4/55-arcade-run-over-scored-1080.jpg",
+  "verdict": "The card is now sentence case with a clear title-to-hero hierarchy and a right-aligned button, but it is mostly empty, the hero is undersized, and the screen shows a zero score with no real content, so it falls short of the End card shell.",
+  "pic": "tools/handoff/console/notes/shots/12-c5/55-arcade-run-over-scored-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T09:59"
+  "when": "2026-10-18T10:06"
  },
  "60-abandoned-card": {
   "score": 2,

@@ -6097,6 +6097,26 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.80',what:'Settings and Keys cards are centred and about 720 tall, not full height',
+   run:function(){
+     if(typeof openSettings!=='function'||typeof keysOpen!=='function') return 'SKIP: no Settings here';
+     var bad=[], m, h, t, lim, bx;
+     try{
+       lim=Math.max(48,(innerHeight-720)/2)-30;   /* the card is still scaling in when read */
+       openSettings('display'); m=document.getElementById('settingsmodal'); h=m&&m.querySelector('h3');
+       if(!h||!h.offsetWidth) return 'SKIP: no title';
+       t=h.getBoundingClientRect().top;
+       if(t<lim) bad.push('Settings title sits at '+Math.round(t)+'px (needs '+Math.round(lim)+')');
+       bx=document.getElementById('setlist').getBoundingClientRect().bottom;
+       if(bx>innerHeight-lim) bad.push('Settings list ends at '+Math.round(bx)+'px, past the card');
+       m.classList.remove('on'); try{ __topClear(); }catch(_c){}
+       keysOpen(false); m=document.getElementById('keysmodal'); h=m&&m.querySelector('h3');
+       if(!h||!h.offsetWidth) return bad.length?bad.join('; '):'SKIP: no keys title';
+       t=h.getBoundingClientRect().top;
+       if(t<lim) bad.push('Keys title sits at '+Math.round(t)+'px (needs '+Math.round(lim)+')');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var q=document.getElementById('settingsmodal'); if(q) q.classList.remove('on'); q=document.getElementById('keysmodal'); if(q) q.classList.remove('on'); }catch(_k){} try{ __topClear(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'29.79',what:'while the run over card is up, Press any button is a 56px (x scale) accent button, flush right under the card and not as wide as it (critic on v29.76: a 108px full width slab was the loudest thing on screen; screens 52 55)',
    run:function(){
      if(typeof arcadeAttEl!=='function'||typeof attEl!=='function') return 'SKIP: no arcade attract here';
