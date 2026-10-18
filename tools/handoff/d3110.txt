@@ -1,0 +1,5 @@
+## v31.10 - WINDOWS ARE A 90 PERCENT CARD
+
+Co-op hunt while he was away. His Q43: windows are a centred card with an X in the corner taking nearly the whole screen. The windows were a slab 14 px from the edge with a clipped tick. Now a card with a 5 percent margin all round, 4 px corners, no tick, the X and credits inside its top right.
+
+MEASURED. Check 31.10 passes, and fails on v31.09.

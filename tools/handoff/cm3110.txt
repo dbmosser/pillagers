@@ -1,0 +1,7 @@
+v31.10: windows are a 90 percent card
+
+Shop, codex, trophies and the other windows are a centred 90 percent card.
+
+Check 31.10. Fails on v31.09.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

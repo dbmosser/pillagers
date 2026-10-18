@@ -1855,6 +1855,11 @@ body:has(#settingsmodal.on) #hubtoast, body:has(#keysmodal.on) #hubtoast{ visibi
 #root .modal.ui-win:not(#settingsmodal):not(#welcomemodal) > .ui-foot > .ui-back:hover::after, #root .modal.ui-win:not(#settingsmodal):not(#welcomemodal) > .ui-foot > .ui-back:focus-visible::after, #root #hub #stashclose:hover::after, #root #hub #stashclose:focus-visible::after{ --xc:var(--tx-1); }
 #root .modal.ui-win:not(#settingsmodal):not(#welcomemodal) > .ui-foot:not(:has(> button:not(.ui-back):not([style*="display: none"]):not([style*="display:none"]))){ border-top:0; padding:0; height:0; min-height:0; }
 body:has(.modal.ui-win.on:not(#settingsmodal):not(#welcomemodal)) #topright, body:has(#hub.on) #topright{ right:90px !important; }
+/* v28.xx (cw-cardmargin), his Q43 (2026-10-18): windows are "a centred card with an X in the corner ... nearly the entire screen". The shop, codex, trophies, fashion, mainframe, gamble, bar, terms, party and sector windows were a slab 14 px from the screen edge with a clipped corner tick. Now the card is 90 percent of the screen both ways (5 percent margin all round, the scrim shows around it), 4 px corners, no corner tick, no accent tab, and the X and the credits readout sit inside its top right. Style guide: Window, 90 x 90. */
+#root .modal.ui-win:not(#settingsmodal):not(#welcomemodal){ padding:calc(5vh + 22px) calc(5vw + 22px); }
+#root .modal.ui-win:not(#settingsmodal):not(#welcomemodal)::before{ inset:5vh 5vw; border-radius:4px; clip-path:none; border-color:var(--ui-line-hi); background:var(--ui-bg); }
+#root .modal.ui-win:not(#settingsmodal):not(#welcomemodal) > .ui-foot > .ui-back{ top:calc(5vh + 12px); right:calc(5vw + 16px); }
+body:has(.modal.ui-win.on:not(#settingsmodal):not(#welcomemodal)) #topright{ top:calc(5vh + 14px) !important; right:calc(5vw + 82px) !important; }
 
 /* v28.xx (cw-setheight) critic c-31 (Settings 18/70, Keys 32): "the card is about 1005x1030 and fills the screen height ... a modal never exceeds its content ... cap the card at 960x680". Now the Settings and Keys cards are 15 x 48 (720) tall and centred in the screen (top and bottom air --py, never under 48), the frame, the header X and the tab strip follow it. The list scrolls inside, as before. */
 /* v30.xx (cw-pausesets), HIS NOTE (2026-10-18): "accessing settings from pauise menu doesn't work right (maybe due to usperhot?)". The air above and below the Settings
@@ -2812,7 +2817,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.09';
+var VER='31.10';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -48875,7 +48880,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.09: A raid opens on the sector map. Click, press E or press A to start. The clock waits for you, and for your partner. Check 31.09 fails on v31.08',
+  now:'v31.10: Shop, codex, trophies and the other windows are a centred 90 percent card. Check 31.10 fails on v31.09',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

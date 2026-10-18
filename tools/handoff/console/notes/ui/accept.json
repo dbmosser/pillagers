@@ -645,5 +645,20 @@
   "pic": "tools/handoff/console/notes/shots/cw-shkey-after/92-settings-superhot-pane-1080.jpg",
   "task": "manual",
   "when": "2026-10-18T21:10"
+ },
+ "60-mapfirst-1p": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The map-first screen adds a small 'or click to start' prompt but is still an unstyled debug-looking map on navy and periwinkle, with overlapping labels, amber and teal text soup, no window frame or X, and none of the style guide's lime, charcoal or panel tokens.",
+  "findings": [
+   "P0 whole screen palette and frame: Put the map in a window card (90% w/h, 5% margin, fill #16191b, 1px #4a5257 border, 4px radius) on rgba(6,7,8,.8). Recolour terrain to desaturated greys (#2e3337 and #4a5257 lines). Keep colour only for POIs: extract teal, danger red, rarity bars. Use lime only for the player and focus.",
+   "P0 bottom 'e or click to start' pill: Make a real primary button: 56px high, min-width 200px, #e6ff3d fill, #11150a 20px/700 text reading 'start run', with the pad glyph and E key hint beside it. Centre it in a 72px footer row inside the card, clear of the frame.",
+   "P1 extract c, cache, foreman office, blast freezer labels: Give every label a 2px #0b0c0d halo or pill backing. Offset labels 8px from the icons and collision-test them. Raise zone names to #aaa498 at 16px minimum. Merge stacked cache icons into one badge with a count.",
+   "P1 type sizes and weights across the map: Use only 16px labels (f-cond 600, +.04em) and 20px for extract names. Drop the explanatory 'richer, and busier' or shorten it to 'hot ground' with a small danger glyph. Move it fully outside the dashed ring.",
+   "P1 header 'sector map', 'dawn clear', top-right currency: Add a 56px header row: 'sector map' at 32px/700 #efe9dc left, 'dawn · clear' at 20px #aaa498 beside it, and a 48x48 ghost X (with B glyph) at the right. Keep currency in its one block, aligned to the 5% margin."
+  ],
+  "pic": "tools/handoff/console/notes/shots/cw-mapfirst-after/60-mapfirst-1p-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-18T21:36"
  }
 }

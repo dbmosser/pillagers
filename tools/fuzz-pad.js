@@ -1,6 +1,7 @@
 // fuzz-pad.js : the SIMULATED XBOX PAD for player 2, injected by tools/fuzz.ps1 (mode demo2p) into the PLAYER 2 window of the 2-player
 // arcade demo, through window.__gx (a direct eval in game scope). It is a TOOL: it replaces navigator.getGamepads in THAT page only with a
-// fake standard pad on slot 1 ("controller 2", which is what the arcade gives player 2: arcadePadsIn), and plays it like a restless guest:
+// fake standard pad on slot 0 (the first controller: since cw-p2pads, v30.70, the first controller plugged in is player 2 and the second is player 1, see arcadePadsIn
+// and netPadFor), and plays it like a restless guest:
 // both sticks wander, the right trigger fires in bursts, A rolls, B crouches, X reloads / searches / holds, the bumpers change the belt, the
 // D-pad uses the wheel and the map, now and then VIEW (backpack) and MENU (pause), each of those closed again a moment later.
 // It never touches the game, its code or its seeded random stream (its own tiny random generator is seeded from the raid seed).
@@ -10,7 +11,7 @@
   if(window.__fzpad) return 'already';
   var seed=(__SEED__)>>>0;
   function rnd(){ seed=(Math.imul(seed,1664525)+1013904223)>>>0; return seed/4294967296; }
-  var NB=17, pad={id:'Xbox 360 Controller (STANDARD GAMEPAD Vendor: 045e Product: 028e)',index:1,connected:true,mapping:'standard',timestamp:0,axes:[0,0,0,0],buttons:[]};
+  var NB=17, pad={id:'Xbox 360 Controller (STANDARD GAMEPAD Vendor: 045e Product: 028e)',index:0,connected:true,mapping:'standard',timestamp:0,axes:[0,0,0,0],buttons:[]};
   var i;
   for(i=0;i<NB;i++) pad.buttons.push({pressed:false,touched:false,value:0});
   var Z=window.__fzpad={on:true,calls:0,presses:0,pad:pad,log:[]};
@@ -72,7 +73,7 @@
   }
   function snap(){
     step();
-    return [null,pad,null,null];
+    return [pad,null,null,null];
   }
   Z.press=function(b,ms){ var n=performance.now(); setB(b,true); ev.push([n+(ms||250),b]); return true; };
   Z.logText=function(){ return Z.log.join(' | '); };

@@ -12,8 +12,8 @@
 #   robot time on the real 2-player setup": 3 of every 4 raids are demo2p, THE REAL PARTY RIG. Player 1 is the first page, the host, on keyboard
 #   and mouse (the random input below). Player 2 is a SECOND WINDOW of the same Chrome, opened with the address the game itself gives it
 #   (?p2=1&mode=coop&pair=..&arc=1), paired over the game's own BroadcastChannel and WebRTC link, and played by a SIMULATED XBOX PAD:
-#   tools\fuzz-pad.js replaces navigator.getGamepads in that window only with a fake standard pad on slot 2 (controller 2, which is what the
-#   arcade gives player 2) that wanders, fires, rolls, reloads, uses the wheel, backpack and pause like a restless guest. Player 1 drops in,
+#   tools\fuzz-pad.js replaces navigator.getGamepads in that window only with a fake standard pad on slot 0 (the first controller, which since
+#   cw-p2pads, v30.70, is the one player 2 plays: netPadFor) that wanders, fires, rolls, reloads, uses the wheel, backpack and pause like a restless guest. Player 1 drops in,
 #   then player 2 presses A to join. Both windows are polled for errors, NaN and stalls (player 2 problems are kind p2:error, p2:nan ...).
 #   The 4th raid alternates demo1 (1 PLAYER ARCADE DEMO) and career (a CAREER raid from the Undercroft path). demo2 (the arcade with 2 player
 #   rules, this window as host alone) is only the fallback when the two-window link cannot be made 3 raids in a row. Then for -RaidSec seconds it sends random but plausible

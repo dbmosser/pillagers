@@ -30,7 +30,7 @@ const LEAF = [
   "    wc.globalAlpha=1;",
   "  }",
   "  if(window.__LEAF&&st&&st.hero&&G&&G.pBush&&G.pCrouch){",
-  "    var _lv=[[-8.5,-17,-0.5,'#4d8a3e'],[8.5,-18,0.5,'#6fae52'],[9,-11,0.9,'#4d8a3e'],[1.5,-31,-0.3,'#6fae52']], _li;",
+  "    var _lv=[[-11,-23,-0.5,'#4d8a3e'],[11,-23,0.5,'#6fae52'],[-13.5,-16,0.9,'#4d8a3e'],[-4,-42,-0.3,'#6fae52']], _li;",
   "    for(_li=0;_li<_lv.length;_li++){ wc.save(); wc.translate(x+leanX+_lv[_li][0],ty+_lv[_li][1]); wc.rotate(_lv[_li][2]); wc.fillStyle=_lv[_li][3]; wc.beginPath(); wc.ellipse(0,0,2.5,1.5,0,0,6.2832); wc.fill(); wc.restore(); }",
   "  }",
   "}",

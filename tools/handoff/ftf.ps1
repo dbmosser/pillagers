@@ -12,18 +12,18 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-if ($s.Contains("  {v:'31.09',what:")) { throw "check 31.09 is in the fixture already" }
+if ($s.Contains("  {v:'31.11',what:")) { throw "check 31.11 is in the fixture already" }
 
 SubRx @'
-  {v:'31.08',what:
+  {v:'31.10',what:
 '@ @'
-  {v:'31.09',what:'cw-trcol, his order (2026-10-18) everything in the right hand upper corner in a vertical 1 by 1 list, all the same size: in a raid the credits, xp, stash, backpack (career) and notes logged rows, the minimap and the run info panel are ONE column from the top right corner, each its own plate on one right edge and one width, the rows one height and one type size, no two on a row, none overlapping, at 1080p, at 4K and in the demo',
+  {v:'31.11',what:'cw-trcol, his order (2026-10-18) everything in the right hand upper corner in a vertical 1 by 1 list, all the same size: in a raid the credits, xp, stash, backpack (career) and notes logged rows, the minimap and the run info panel are ONE column from the top right corner, each its own plate on one right edge and one width, the rows one height and one type size, no two on a row, none overlapping, at 1080p, at 4K and in the demo',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__frame&&window.__forceSize&&window.__runPrep&&window.__topClear&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy and draw';
      if(typeof HUDBOX==='undefined'||typeof MMAP==='undefined'||typeof TX!=='function'||typeof syncTopRight!=='function') return 'SKIP: no HUD boxes here';
      if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
      var bad=[], proto=CanvasRenderingContext2D.prototype, oFt=proto.fillText, oBp=proto.beginPath, oMv=proto.moveTo, oLn=proto.lineTo, oFl=proto.fill;
-     var sw=cv.style.width, sh=cv.style.height, hw=hcv.style.width, hh=hcv.style.height, p0=null, keepC, keepX, keepHud, hadHud, g=null, o, oSolo, el, now, cs0, i, colL=0, colL2=0, h=null, oTb=null, oSz=null;
+     var sw=cv.style.width, sh=cv.style.height, hw=hcv.style.width, hh=hcv.style.height, p0=null, keepC, keepX, keepHud, hadHud, g=null, o, oSolo, el, now, cs0, i, colL=0, colW=0, colL2=0, h=null, oTb=null, oSz=null;
      function grab(){
        var r={t:[],p:[]}, bb=null, D=(ctx.getTransform().a)||1;
        function pt(c,x,y){ var m=c.getTransform(), X=(m.a*x+m.c*y+m.e)/D, Y=(m.b*x+m.d*y+m.f)/D; if(!bb) bb={x0:X,y0:Y,x1:X,y1:Y}; else { if(X<bb.x0) bb.x0=X; if(X>bb.x1) bb.x1=X; if(Y<bb.y0) bb.y0=Y; if(Y>bb.y1) bb.y1=Y; } }
@@ -84,7 +84,7 @@ SubRx @'
        p0=__P(); p0.credits=4471337; p0.xp=98761; p0.hud={};
        g.tel.notes=[{t:1,txt:'probe note 4242'}];
        syncTopRight();
-       o=grab(); colL=HUDBOX.cond?HUDBOX.cond.x:0; judge('career 1080p',o,true,true);
+       o=grab(); colL=HUDBOX.cond?HUDBOX.cond.x:0; colW=HUDBOX.cond?HUDBOX.cond.w:0; judge('career 1080p',o,true,true);
        if(g.wx&&g.wx.name&&colL){   // the map header: the time and weather line ends left of the column (the page box it used to keep clear of is clipped in a raid)
          oSz=CFG.mmSz; CFG.mmSz=1.35; __frame(0.016); colL2=HUDBOX.cond?HUDBOX.cond.x:0;   // the large minimap, so the column starts well left of where the header ends on its own
          g.ents.length=0; g.bagOpen=false; g.mapOpen=true; TRG.hid=1;   // hid 1 is how a raid runs: the page readout is clipped, so only the column keeps the header off the corner
@@ -120,7 +120,7 @@ SubRx @'
              keys={}; ARCADE.holdT=0; oSolo=ARCADE.solo; ARCADE.solo=0;
              try{ if(typeof goalsTick==='function') goalsTick(0.1); }catch(_gt){}
              __frame(0.016); __frame(0.016);
-             if(g.flow&&g.flow.goals&&g.flow.goals.length){ o=grab(); judge('the demo 1080p',o,false,false); }   // no goals, no run info panel to line up with: the career runs above still decide
+             if(g.flow&&g.flow.goals&&g.flow.goals.length){ o=grab(); judge('the demo 1080p',o,false,false); if(colW&&HUDBOX.cond&&Math.abs(HUDBOX.cond.w-colW)>1.5) bad.push('the demo column is '+HUDBOX.cond.w.toFixed(0)+' wide and the career one '+colW.toFixed(0)+': the party screen text size must not make the minimap bigger'); }   // no goals, no run info panel to line up with: the career runs above still decide
            }
          }
        }
@@ -139,7 +139,7 @@ SubRx @'
        __topClear(); __cleanProfile();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'31.08',what:
+  {v:'31.10',what:
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

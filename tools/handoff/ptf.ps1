@@ -37,7 +37,7 @@ var _trLast='';
 // Undercroft and the menus keep the page text. His Q58 (one row in career) is replaced by this newer order.
 var TRV={c:'0',x:'0',sv:'0',bv:'0',nn:-1,ns:''};   // the wallet figures as text, written by syncTopRight only when one changes
 var TRG={z:1,bw:0,rh:0,gp:4,x:0,y0:16,n:0,yE:0,t:-1e9,hid:0};   // the column as last laid out: zoom-space numbers, except z and yE (screen px)
-function trBW(){ return Math.round(LH(196)*mmSizeK()); }
+function trBW(){ var u=uiScale(); if(trDemo()&&u>1.2) u=1.2; return Math.round(196*TEXTLIFT*u*mmSizeK()); }   // the column's width: the run info panel's (LH(196)); the party screen's 1.5 text scale does not widen it, so its minimap is the career one (the picture he chose had 300)
 function trGeo(){
   var g=TRG, T=G&&G.tel, n=0;
   g.z=(HUDZ.cond||1)*hudRes()*hudUserZ('cond');
@@ -214,15 +214,15 @@ SubRx @'
 '@
 
 SubRx @'
-var VER='31.08';
+var VER='31.10';
 '@ @'
-var VER='31.09';
+var VER='31.11';
 '@
 
-$pat = "(?m)^  now:'v31\.08:.*$"
+$pat = "(?m)^  now:'v31\.10:.*$"
 $c = ([regex]::Matches($s, $pat)).Count
 if ($c -ne 1) { throw "DEVNOW now line matched $c times, expected 1" }
-$new = "  now:'v31.09: The upper right corner of the raid is one column of equal plates: credits, xp, stash, backpack, notes logged, the minimap and the run info. Check 31.09 fails on v31.08',"
+$new = "  now:'v31.11: The upper right corner of the raid is one column of equal plates: credits, xp, stash, backpack, notes logged, the minimap and the run info. Check 31.11 fails on v31.10',"
 $s = [regex]::Replace($s, $pat, { param($m) $new })
 if (([regex]::Matches($s, "(?m)^  now:'")).Count -ne 1) { throw "more than one now key in DEVNOW" }
 $script:s = $s

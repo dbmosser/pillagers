@@ -1,0 +1,10 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  tr1-career-calm                        staged      14.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  tr2-career-busy                        staged      13.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  tr3-arcade                             staged      22.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  tr4-p2-career                          staged      14.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+== 4k : window 3872x2263, viewport 3840x2160
+  tr1-career-calm                        staged      15.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  tr2-career-busy                        staged      12.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  tr3-arcade                             staged      23.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  tr4-p2-career                          staged      15.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
