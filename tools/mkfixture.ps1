@@ -16301,8 +16301,8 @@ window.__REGRESS=[
        if(!ARCADE.on) bad.push('the operator chord on the attract left the arcade at once: there is no operator menu and no NEW PARTY');
        else if(!op) bad.push('the operator chord opened no operator menu');
        else {
-         if(!/NEW PARTY/.test(op.textContent)) bad.push('the operator menu has no NEW PARTY');
-         if(!/EXIT DEMO/.test(op.textContent)) bad.push('the operator menu has no EXIT DEMO');
+         if(!/new party/i.test(op.textContent)) bad.push('the operator menu has no NEW PARTY');   // cw-party-op: sentence case now
+         if(!/exit demo/i.test(op.textContent)) bad.push('the operator menu has no EXIT DEMO');
          key('KeyX'); key('Space');
          if(__state()&&__state().arcade) bad.push('a key with the operator menu up dropped a player in');
          if(!opEl()) bad.push('a key closed the operator menu');
