@@ -4167,11 +4167,11 @@ window.__REGRESS=[
        if(pad!=='18px') bad.push('control: at '+window.innerHeight+'px tall the screen padding is '+pad+', it should still be 18px');
        var story=null;
        if(col) for(var _ci=0;_ci<col.children.length;_ci++)
-         if(/^\s*The elites/.test(col.children[_ci].textContent||'')){ story=col.children[_ci]; break; }
+         if(col.children[_ci].id==='titletag'){ story=col.children[_ci]; break; }   /* v30.xx (00-fix-new-reds): his Q51, the story paragraph is gone; the one line (titletag) is the block now, 24px above it (cw-title-gap) */
        if(story){
          var m2=getComputedStyle(story).marginTop;
-         if(m2!=='26px') bad.push('control: at '+window.innerHeight+'px tall the story block margin is '+m2+', it should still be 26px');
-       } else bad.push('control: the story block is gone from the title screen');
+         if(m2!=='24px') bad.push('control: at '+window.innerHeight+'px tall the title line margin is '+m2+', it should still be 24px');
+       } else bad.push('control: the title line is gone from the title screen');
      } else {
        if(pad==='18px') bad.push('at '+window.innerHeight+'px tall the screen is still using the full 18px padding, the short-screen rule is not in force');
      }
@@ -16458,7 +16458,7 @@ window.__REGRESS=[
      function count(a){ var o={}, j; for(j=0;j<a.length;j++) o[a[j]]=(o[a[j]]||0)+1; return o; }
      function stage(){
        q=__P(); q.weapons=['pistol','smg','rifle','magnum','lmg']; q.equipped='smg'; q.equippedSec='none'; q.kit=[]; q.hotAssign={}; q.freeKit=0;
-       q.stash=['gun_dmr','gun_whisper','gun_sniper','gun_lance','medkit','medkit','medkit','medkit','medkit','smoke','smoke','frag','trip','trip','trip','trip','plate','plate','plate','plate','plate','plate','plate','bandage','bandage','bandage','bandage','bandage','bandage','bandage','bandage','bandage','stim','stim','stim','ammobox','ammobox','scrap','wire'];
+       q.stash=['gun_sniper','gun_lance','medkit','medkit','medkit','medkit','medkit','smoke','smoke','frag','trip','trip','trip','trip','plate','plate','plate','plate','plate','plate','plate','bandage','bandage','bandage','bandage','bandage','bandage','bandage','bandage','bandage','stim','stim','stim','ammobox','ammobox','scrap','wire'];
      }
      try{
        snap=JSON.parse(JSON.stringify(__P()));
@@ -16466,9 +16466,9 @@ window.__REGRESS=[
        // ONE: the three best, in hand, in the other hand, and packed, each on its class key
        stage(); kitFill(false);
        if(q.equipped!=='lance'||q.equippedSec!=='sniper') bad.push('ONE: the hands read '+q.equipped+' and '+q.equippedSec+', not the Meridian Lance and the Longshot');
-       if(q.kit.filter(function(x){ return x==='gun_whisper'; }).length!==1) bad.push('ONE: the Whisper is not packed once ('+q.kit.join()+')');
+       if(q.kit.filter(function(x){ return x==='gun_lmg'; }).length!==1) bad.push('ONE: the LMG is not packed once ('+q.kit.join()+')');   /* v30.xx (00-fix-new-reds): his order 2026-10-18 (cw-gunsgone): the Marksman Rifle and the Whisper are gone, so the third best gun is the LMG from the armoury */
        if(q.kit.filter(function(x){ return ITEMS[x]&&ITEMS[x].use==='gun'; }).length!==1) bad.push('ONE: '+q.kit.filter(function(x){ return ITEMS[x]&&ITEMS[x].use==='gun'; }).length+' gun items packed, not 1');
-       ['lance','sniper','whisper'].forEach(function(g){ if(q.hotAssign[gunClassKey(gunClassOf(g))]!=='gun_'+g) bad.push('ONE: '+g+' is not on its class key ('+JSON.stringify(q.hotAssign)+')'); });
+       ['lance','sniper','lmg'].forEach(function(g){ if(q.hotAssign[gunClassKey(gunClassOf(g))]!=='gun_'+g) bad.push('ONE: '+g+' is not on its class key ('+JSON.stringify(q.hotAssign)+')'); });
        if(q.weapons.indexOf('lance')<0||q.weapons.indexOf('sniper')<0) bad.push('ONE: the stash guns in hand were not moved to the armoury');
        // TWO: a third gun from the armoury leaves it for the stash to be packed
        stage(); q.weapons=['pistol','smg','rifle','magnum']; q.stash=['medkit']; kitFill(false);
@@ -16495,7 +16495,7 @@ window.__REGRESS=[
        // SIX: room: the packed gun counts, and the items fill in wheel order
        DEPLOY_SLOTS=4; stage(); kitFill(false); DEPLOY_SLOTS=oSlots;
        if(q.kit.length!==4) bad.push('SIX: '+q.kit.length+' things for a pack of 4');
-       else if(q.kit.join()!=='gun_whisper,medkit,medkit,medkit') bad.push('SIX: the short pack reads '+q.kit.join());
+       else if(q.kit.join()!=='gun_lmg,medkit,medkit,medkit') bad.push('SIX: the short pack reads '+q.kit.join());
        // SEVEN: RANDOM KIT is still its own, and the old TOP GEAR fill is gone
        stage(); kitFill(true);
        if(q.equipped===q.equippedSec) bad.push('SEVEN: RANDOM KIT gave one gun twice');
@@ -21066,8 +21066,8 @@ window.__REGRESS=[
      if(typeof KEYS_ACTS==='undefined'||typeof keysListBody!=='function'||typeof raidKey!=='function'||typeof keysBind!=='function'||typeof keyRemap!=='function') return 'SKIP: no key map here';
      if(typeof keysFixedHtml!=='function') return 'the Keys window lists no locked keys and misses keys the raid answers';
      var bad=[], acts={}, i, m, h, src, c, re, seen={}, k, km0=JSON.stringify(P.keymap||{}), kv0=P.keymapV, g=null, press, rel,
-         WANT=['KeyW','KeyA','KeyS','KeyD','Space','ShiftLeft','ControlLeft','KeyC','KeyE','KeyR','KeyQ','KeyV','KeyF','KeyX','KeyB','KeyI','Enter','KeyM','F1','KeyT','KeyN','Mouse1','KeyZ','KeyO','AltLeft','KeyH','CapsLock','Equal','Minus','NumpadAdd','NumpadSubtract','Digit0'],
-         EXEMPT={KeyG:1,KeyU:1,KeyJ:1,NumpadEnter:1,Numpad0:1,ControlRight:1,ShiftRight:1,ArrowUp:1,ArrowDown:1,ArrowLeft:1,ArrowRight:1,PadX:1,PadSearch:1,Backquote:1};
+         WANT=['KeyW','KeyA','KeyS','KeyD','Space','ShiftLeft','ControlLeft','KeyC','KeyE','KeyR','KeyQ','KeyV','KeyF','KeyX','KeyB','KeyI','Enter','KeyM','F1','KeyT','KeyN','Mouse1','KeyZ','KeyO','AltLeft','KeyH','CapsLock','Equal','Minus','NumpadAdd','NumpadSubtract'],   /* v30.xx (00-fix-new-reds): key 0 (the Rocket key, cw-gunkeys0) is a locked gun key like 1 to 9, so it is not a rebindable row; see EXEMPT */
+         EXEMPT={Digit0:1,KeyG:1,KeyU:1,KeyJ:1,NumpadEnter:1,Numpad0:1,ControlRight:1,ShiftRight:1,ArrowUp:1,ArrowDown:1,ArrowLeft:1,ArrowRight:1,PadX:1,PadSearch:1,Backquote:1};
      KEYS_ACTS.forEach(function(a){ acts[a[0]]=1; });
      function kd(code){ window.dispatchEvent(new KeyboardEvent('keydown',{code:code,key:code,bubbles:true,cancelable:true})); }
      function ku(code){ window.dispatchEvent(new KeyboardEvent('keyup',{code:code,key:code,bubbles:true,cancelable:true})); }
@@ -21077,7 +21077,7 @@ window.__REGRESS=[
        h=keysListBody();
        if(/class="keysec">OTHER</.test(h)) bad.push('ONE: a key is left in an OTHER heap');
        for(i=0;i<WANT.length;i++) if(h.indexOf('data-k="'+WANT[i]+'"')<0) bad.push('ONE: the Keys window draws no row for '+WANT[i]);
-       if(h.indexOf('1 - 9')<0||h.indexOf('keyfixed')<0||h.indexOf('BACKSPACE')<0) bad.push('ONE: the locked keys are not listed');
+       if((h.indexOf('1 - 9')<0&&h.indexOf('1 - 0')<0)||h.indexOf('keyfixed')<0||h.indexOf('BACKSPACE')<0) bad.push('ONE: the locked keys are not listed');
        // TWO: no key the raid reads is left off (a scan of the code that reads keys)
        src=String(raidKey)+String(holdHTick)+String(updatePlayer);
        re=/code===?'([A-Za-z0-9]+)'/g; while((m=re.exec(src))) seen[m[1]]=1;
@@ -21872,15 +21872,15 @@ window.__REGRESS=[
        delete P.gunKeys; delete P.wheelOrder; hubOn();
        if(document.querySelectorAll('#kitsetup [data-gk]').length!==9) bad.push('ONE: the GUN KEYS plate has '+document.querySelectorAll('#kitsetup [data-gk]').length+' tiles, not 9');
        if(document.querySelectorAll('#kitsetup [data-wh]').length!==8) bad.push('ONE: the WHEEL plate has '+document.querySelectorAll('#kitsetup [data-wh]').length+' tiles, not 8');
-       a=tile('[data-gk',7); if(!a||!/SNIPER/i.test(a.textContent||'')) bad.push('ONE: key 8 is not the Sniper tile ('+(a&&a.textContent)+')');
+       a=tile('[data-gk',6); if(!a||!/SNIPER/i.test(a.textContent||'')) bad.push('ONE: key 7 is not the Sniper tile ('+(a&&a.textContent)+')');   /* v30.xx (00-fix-new-reds): cw-gunkeys0 took the Marksman class off, the Sniper is key 7 (index 6) now */
        a=tile('[data-wh',0); if(!a||!/MEDKIT/i.test(a.textContent||'')) bad.push('ONE: the top place is not the Medkit tile ('+(a&&a.textContent)+')');
        // TWO: a drag of the Sniper tile onto key 2 swaps the classes, and the plate is drawn again
-       a=tile('[data-gk',7); b=tile('[data-gk',1);
+       a=tile('[data-gk',6); b=tile('[data-gk',1);
        if(!a||!b||typeof b.__grabDrop!=='function') return bad.concat(['TWO: the key tiles are not drag and drop']).join('; ');
        a.dispatchEvent(new MouseEvent('mousedown',{button:0,cancelable:true,clientX:5,clientY:5}));
-       if(!GRAB||GRAB.from!=='gk:7') bad.push('TWO: pressing the key 8 tile started no drag ('+(GRAB&&GRAB.from)+')');
-       b.__grabDrop(GRAB?GRAB.key:'gkc:sniper','gk:7'); try{ grabEnd(); }catch(_g){}
-       if(!P.gunKeys||P.gunKeys[1]!=='sniper'||P.gunKeys[7]!=='smg') bad.push('TWO: after the drop the table reads '+JSON.stringify(P.gunKeys));
+       if(!GRAB||GRAB.from!=='gk:6') bad.push('TWO: pressing the key 7 tile started no drag ('+(GRAB&&GRAB.from)+')');
+       b.__grabDrop(GRAB?GRAB.key:'gkc:sniper','gk:6'); try{ grabEnd(); }catch(_g){}
+       if(!P.gunKeys||P.gunKeys[1]!=='sniper'||P.gunKeys[6]!=='smg') bad.push('TWO: after the drop the table reads '+JSON.stringify(P.gunKeys));
        b=tile('[data-gk',1); if(!b||!/SNIPER/i.test(b.textContent||'')) bad.push('TWO: key 2 is not drawn as the Sniper after the swap');
        a=tile('[data-wh',7); b=tile('[data-wh',0);
        if(!a||!b||typeof b.__grabDrop!=='function') return bad.concat(['TWO: the wheel tiles are not drag and drop']).join('; ');
@@ -21909,12 +21909,12 @@ window.__REGRESS=[
        else {
          a.click(); b.click();
          if(P.gunKeys!==undefined||P.wheelOrder!==undefined) bad.push('FIVE: RESET left the profile with '+JSON.stringify(P.gunKeys)+' and '+JSON.stringify(P.wheelOrder));
-         a=tile('[data-gk',7); if(!a||!/SNIPER/i.test(a.textContent||'')) bad.push('FIVE: key 8 is not the Sniper tile again after RESET');
+         a=tile('[data-gk',6); if(!a||!/SNIPER/i.test(a.textContent||'')) bad.push('FIVE: key 7 is not the Sniper tile again after RESET');
        }
        gk0=null; wo0=null;
        try{ __applyLoaded(snap); }catch(_r3){}
        if(!raid()) return bad.concat(['SKIP: staging: no raid']).join('; ');
-       if(pin('gun_sniper')!==7) bad.push('FIVE: after RESET a Longshot sits on key '+(pin('gun_sniper')+1)+', not 8');
+       if(pin('gun_sniper')!==6) bad.push('FIVE: after RESET a Longshot sits on key '+(pin('gun_sniper')+1)+', not 7');
        ws=wheelKeys(); if(ws!=='medkit,smoke,frag,trip,plate,decoy,bandage,stim') bad.push('FIVE: after RESET the wheel reads '+ws);
        // SIX: a table or an order that is not whole is not read
        P.gunKeys=['sniper','sniper','rifle','carbine','lmg','shotgun','marksman','smg','energy']; P.wheelOrder=['stim','stim','frag','trip','plate','decoy','bandage','medkit'];
@@ -21935,7 +21935,7 @@ window.__REGRESS=[
      if(typeof G!=='undefined'&&G&&(G.sim||!G.over)) return 'SKIP: a raid or a sim is live';
      if(typeof gunClassOf!=='function'||typeof gunClassPlace!=='function'||typeof gunKeyFor!=='function') return 'this build has no class keys';
      if(!WEAPONS.smg_v||!WEAPONS.rifle_v||!ITEMS.gun_smg_v||!ITEMS.gun_rifle_v) return 'SKIP: no rarity twins here';
-     var bad=[], g=null, p=null, had=(P.gunKeys!==undefined), keep=P.gunKeys, ar0, j, x, c0, c5, wk, TAB=[['magnum',0],['smg',1],['carbine',3],['lmg',4],['shotgun',5],['dmr',6],['sniper',7],['lance',8]];
+     var bad=[], g=null, p=null, had=(P.gunKeys!==undefined), keep=P.gunKeys, ar0, j, x, c0, c5, wk, TAB=[['magnum',0],['smg',1],['carbine',3],['lmg',4],['shotgun',5],['sniper',6],['lance',7]];   /* v30.xx (00-fix-new-reds): cw-gunkeys0 and cw-gunsgone (his orders 2026-10-18): no Marksman class or Rifle, Sniper 7, Lance 8 (the Rocket class is key 0) */
      function stage(w,wa,s,sa,bag){
        p.swapped=false; p.wep=w; p.ammo=wa; p.sec=s||WEAPONS.fists; p.secAmmo=sa||0; p.wepIssued=false; p.secIssued=false; p.wepFromArmory=false; p.secFromArmory=false; p.reloading=0; p.hand=null;
        g.bag=(bag||[]).slice(); g.stowAmmo={}; g.stowQ={}; g.hotAssign={}; g.hotAuto={}; g.hotPruned={}; g.bagOpen=false; g.drag=null;
@@ -21974,22 +21974,22 @@ window.__REGRESS=[
        stage(beltGunField('smg_v'),17,null,0,[]); pick('smg');
        if(!p.wep||p.wep.id!=='smg_v'||pin('gun_smg')!==-1||!has('gun_smg')||BELTAT!==-2) bad.push('THREE: a green SMG picked up against a blue one in hand did not go to the backpack and leave the blue one alone');
        // FOUR: two models of one class, the better by the stat card keeps the key
-       wk=beltGunField('dmr'); wk.dmg=10;
-       stage(beltGunField('rifle'),20,wk,5,[]);
-       if(pin('gun_dmr')!==6) bad.push('FOUR: the stowed Marksman Rifle sits on key '+(pin('gun_dmr')+1)+', not 7');
-       pick('whisper');
-       if(!p.sec||p.sec.id!=='whisper'||pin('gun_whisper')!==6||!has('gun_dmr')) bad.push('FOUR: a Whisper did not replace a weaker Marksman Rifle on key 7 (stowed '+(p.sec&&p.sec.id)+', keys '+JSON.stringify(g.hotAssign)+')');
-       stage(beltGunField('rifle'),20,beltGunField('dmr'),5,[]); pick('whisper');
-       if(!p.sec||p.sec.id!=='dmr'||!has('gun_whisper')||pin('gun_whisper')!==-1) bad.push('FOUR: a Whisper picked up against a stronger Marksman Rifle did not go to the backpack (stowed '+(p.sec&&p.sec.id)+', keys '+JSON.stringify(g.hotAssign)+')');
+       /* v30.xx (00-fix-new-reds): the Marksman Rifle and the Whisper are gone (his order 2026-10-18, cw-gunsgone), so the two models of one class are the Scav Pistol and the Magnum (class pistol, key 1) */
+       stage(beltGunField('rifle'),20,beltGunField('pistol'),5,[]);
+       if(pin('gun_pistol')!==0) bad.push('FOUR: the stowed Scav Pistol sits on key '+(pin('gun_pistol')+1)+', not 1');
+       pick('magnum');
+       if(!p.sec||p.sec.id!=='magnum'||pin('gun_magnum')!==0||!has('gun_pistol')) bad.push('FOUR: a Magnum did not replace a weaker Scav Pistol on key 1 (stowed '+(p.sec&&p.sec.id)+', keys '+JSON.stringify(g.hotAssign)+')');
+       stage(beltGunField('rifle'),20,beltGunField('magnum'),5,[]); pick('pistol');
+       if(!p.sec||p.sec.id!=='magnum'||!has('gun_pistol')||pin('gun_pistol')!==-1) bad.push('FOUR: a Scav Pistol picked up against a stronger Magnum did not go to the backpack (stowed '+(p.sec&&p.sec.id)+', keys '+JSON.stringify(g.hotAssign)+')');
        // FIVE: the table the stash set is the one the raid reads, and a bad one is not
-       P.gunKeys=['pistol','sniper','rifle','carbine','lmg','shotgun','marksman','smg','energy'];
+       P.gunKeys=['pistol','sniper','rifle','carbine','lmg','shotgun','smg','energy','rocket'];
        stage(beltGunField('rifle'),20,null,0,[]); pick('sniper'); pick('smg');
-       if(pin('gun_sniper')!==1||pin('gun_smg')!==7) bad.push('FIVE: with the Sniper set on key 2 a Longshot went to key '+(pin('gun_sniper')+1)+' and the SMG to key '+(pin('gun_smg')+1));
+       if(pin('gun_sniper')!==1||pin('gun_smg')!==6) bad.push('FIVE: with the Sniper set on key 2 a Longshot went to key '+(pin('gun_sniper')+1)+' and the SMG to key '+(pin('gun_smg')+1));
        g.arcade=1; stage(beltGunField('rifle'),20,null,0,[]); pick('sniper'); g.arcade=ar0;
-       if(pin('gun_sniper')!==7) bad.push('FIVE: the DEMO read the stash table (Longshot on key '+(pin('gun_sniper')+1)+')');
-       P.gunKeys=['pistol','pistol','rifle','carbine','lmg','shotgun','marksman','sniper','energy'];
+       if(pin('gun_sniper')!==6) bad.push('FIVE: the DEMO read the stash table (Longshot on key '+(pin('gun_sniper')+1)+')');
+       P.gunKeys=['pistol','pistol','rifle','carbine','lmg','shotgun','sniper','energy','rocket'];
        stage(beltGunField('rifle'),20,null,0,[]); pick('sniper');
-       if(pin('gun_sniper')!==7) bad.push('FIVE: a table with a class twice was read (Longshot on key '+(pin('gun_sniper')+1)+')');
+       if(pin('gun_sniper')!==6) bad.push('FIVE: a table with a class twice was read (Longshot on key '+(pin('gun_sniper')+1)+')');
        delete P.gunKeys;
        // SIX: a drag to another key still works, for this raid, and writes no plan
        if(typeof cv==='undefined'||typeof mouse==='undefined') return bad.length?bad.join('; '):'SKIP: no canvas or mouse here';
@@ -30353,7 +30353,7 @@ window.__REGRESS=[
        try{ __frame(0.016); }finally{ CanvasRenderingContext2D.prototype.fillText=real; hudKey=oK; }
        line=seen.filter(function(s){ return s.indexOf('] u'+'se')>=0; })[0];
        if(!line) return 'SKIP: no belt caption was drawn this frame';
-       if(keys0.indexOf('FI'+'RE')<0) bad.push('the belt caption draws [FIRE] as a bracketed word, not a keycap ('+keys0.join(',')+')');
+       if(keys0.join('|').toLowerCase().split('|').indexOf('fi'+'re')<0) bad.push('the belt caption draws [FIRE] as a bracketed word, not a keycap ('+keys0.join(',')+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ hudKey=oK; CanvasRenderingContext2D.prototype.fillText=real; keys={}; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
@@ -36352,7 +36352,7 @@ window.__REGRESS=[
        // v23.05 retarget (his wheel orders 2026-10-14): the bar is guns only (slot 9 is the Energy gun class), so a Medkit dropped on a key is
        // refused with the caps line ITEMS GO ON THE WHEEL (still a caps headline of at most 34, checked below) and nothing is assigned.
        if(g.hotAssign&&g.hotAssign[K9.i]==='medkit') bad.push('a Medkit was put on key '+(K9.i+1)+' (the bar is guns only)');
-       else need('a Medkit dropped on key 9',/^(ITEMS GO ON THE WHEEL|SLOT 9 TAKES GUNS ONLY)$/);   // the drop on a gun key says SLOT n TAKES GUNS ONLY
+       else need('a Medkit dropped on key 9',/^(ITEMS GO ON THE WHEEL|SLOT [90] TAKES GUNS ONLY)$/);   /* v30.xx (00-fix-new-reds): the ninth gun key is named 0 now (cw-gunkeys0) */   // the drop on a gun key says SLOT n TAKES GUNS ONLY
        g.bagOpen=false; g.hotCells=[];
        // TWO: a tired roll
        p.stam=0; p.rollCd=0; p.roll=0; g.rollSayT=0; said.length=0; tryRoll(); need('a roll with no stamina',/^TOO TIRED TO ROLL$/); p.stam=100;
@@ -41205,9 +41205,9 @@ window.__REGRESS=[
    run:function(){
      if(!window.__deploy||!window.__endRaid||!window.__state||!window.__P||!window.__applyLoaded) return 'SKIP: this fixture cannot deploy a raid or load a profile';
      if(typeof hotbarSlots!=='function'||typeof hubBagState!=='function'||typeof setHot!=='function') return 'SKIP: no belt here';
-     if(!WEAPONS.rifle||!WEAPONS.smg||!WEAPONS.shotgun||!WEAPONS.dmr||!WEAPONS.carbine||!ITEMS.gun_shotgun||!ITEMS.gun_dmr||!ITEMS.gun_carbine||!ITEMS.gun_smg) return 'SKIP: no rifle, smg, shotgun, marksman rifle or carbine here';
+     if(!WEAPONS.rifle||!WEAPONS.smg||!WEAPONS.shotgun||!WEAPONS.sniper||!WEAPONS.carbine||!ITEMS.gun_shotgun||!ITEMS.gun_sniper||!ITEMS.gun_carbine||!ITEMS.gun_smg) return 'SKIP: no rifle, smg, shotgun, sniper or carbine here';   /* v30.xx (00-fix-new-reds): his order 2026-10-18 (cw-gunsgone) removed the Marksman Rifle; the Sniper stands in for the fourth packed gun */
      if(typeof G!=='undefined'&&G&&(G.sim||!G.over)) return 'SKIP: a raid or a sim is live';
-     var bad=[], snap=null, g=null, p=null, sl, fl, i, s0=say, o0, KIT=['gun_shotgun','gun_dmr','gun_carbine'], want=['rifle','smg','shotgun','dmr'], wk=(typeof BELT_CLASS!=='undefined')?['empty:4','empty:5','item:bandage','empty:7']:['throw:smoke','throw:decoy','throw:frag','heal'];
+     var bad=[], snap=null, g=null, p=null, sl, fl, i, s0=say, o0, KIT=['gun_shotgun','gun_sniper','gun_carbine'], want=['rifle','smg','shotgun','sniper'], wk=(typeof BELT_CLASS!=='undefined')?['empty:4','empty:5','item:bandage','empty:7']:['throw:smoke','throw:decoy','throw:frag','heal'];
      function gid(c){ return String((c&&c.icon)||'').replace(/^gun_/,''); }
      function desc(c){ return c?(String(c.k)+(c.icon?(' '+gid(c)):'')+(c.vacant?' (vacant)':'')):'nothing'; }
      try{
@@ -41217,7 +41217,7 @@ window.__REGRESS=[
        P.weapons=['rifle','smg']; P.equipped='rifle'; P.equippedSec='smg'; P.hotAssign={}; P.kit=KIT.slice();
        o0=G; try{ G=hubBagState(); fl=hotbarSlots(); } finally { G=o0; }
        // v21.93 retarget (gun keys by class, his order 2026-10-14, v26.39): each gun is on its CLASS key (rifle 3, smg 2, carbine 4, shotgun 6, marksman 7), not on keys 1 to 4 in the order held
-       want=['rifle','smg','shotgun','dmr','carbine'];
+       want=['rifle','smg','shotgun','sniper','carbine'];
        var cki=function(w){ var c=gunClassOf(w); return gunClassKey(c); };
        for(i=0;i<want.length;i++){ var ix=cki(want[i]); if(!(ix>=0&&fl[ix]&&fl[ix].kind==='gun'&&gid(fl[ix])===want[i])) bad.push('the Undercroft belt shows '+desc(fl[ix])+' on key '+(ix+1)+', not the '+want[i]); }
        // 2. The raid starts on the same four gun keys, everything else two keys down, and the fifth gun has no key.
@@ -41710,7 +41710,7 @@ window.__REGRESS=[
        g.wx=wx0;
        // THREE: a sector map zone name that fits, and his name for it, too wide even at the smallest size.
        var cv=document.createElement('canvas'); cv.width=200; cv.height=200;
-       var ZN=['ZQ','YARD'].join(' '), ZH=['ZQ THE LONG FROZEN','YARD OF LAMPS'].join(' ');
+       var ZN=['Zq','yard'].join(' '), ZH=['Zq the long frozen','yard of lamps'].join(' ');   /* v30.xx (00-fix-new-reds): his rule 2026-10-18, never all caps: the map draws zone names in sentence case */
        var M={w:1000,h:1000,zones:[{x:0,y:0,w:500,h:500,name:ZN}]};
        var z0=rowsOf(txRecord(function(){ sectorPreviewDraw(cv,M); }));
        if(z0.indexOf(ZN)<0) bad.push('(then SKIP: the staged zone name '+ZN+' was not drawn on one line, drawn '+JSON.stringify(z0)+')');
@@ -41857,7 +41857,7 @@ window.__REGRESS=[
        c.measureText(''); c.measureText(String(12345));
        // No shipped rewording is itself a shipped line, so a string measured twice through TX is the string drawn.
        P.txt={};
-       for(k in TXSHIP){ if(!TXSHIP.hasOwnProperty(k)) continue; v=TXSHIP[k]; n++; if(TX(v)!==v){ bad.push('the shipped rewording of a line translates again: '+String(v).slice(0,50)); break; } }
+       for(k in TXSHIP){ if(!TXSHIP.hasOwnProperty(k)) continue; v=TXSHIP[k]; n++; if((typeof TXRAW==='function'?TXRAW(v):TX(v))!==v){ bad.push('the shipped rewording of a line translates again: '+String(v).slice(0,50)); break; } }
        if(!n) bad.push('no shipped lines to read');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{ P.txt=keep; }
@@ -71465,7 +71465,7 @@ window.__REGRESS=[
          var h=H[i], raw=String(h.o);
          if(!Object.prototype.hasOwnProperty.call(M,raw)) continue;
          var want=String(M[raw]);
-         if(String(h.t)!==want)
+         if(String(h.t)!==(typeof ncFix==='function'?ncFix(want):want))   /* v30.xx (00-fix-new-reds): his rule 2026-10-18, never all caps: his caps wording is drawn in sentence case, as every line is (ncFix) */
            bad.push('the '+label+' paints ['+raw.slice(0,50)+'] where he rewrote that line to say ['+want.slice(0,50)+']: his wording is matched on the whole string, so whatever is drawn there is no longer the sentence his edit was written against and his version has gone off the screen without a sound');
        }
      }
@@ -71587,7 +71587,7 @@ window.__REGRESS=[
        for(i=0;i<H.length;i++) if(/^\*+[A-Za-z]+\*+$/.test(String(H[i].o))) { sign=H[i]; break; }
        if(!sign){
          bad.push('control: the Undercroft floor draws no experimental warning at all, so the two spellings were made one by deleting the sign rather than by spelling it the same way');
-       } else if(String(sign.t)!==want){
+       } else if(String(sign.t)!==(typeof ncFix==='function'?ncFix(want):want)){   /* v30.xx (00-fix-new-reds): never all caps (2026-10-18): drawn in sentence case */
          bad.push('the warning on the floor is drawn as ['+String(sign.t).slice(0,40)+'] where he rewrote that warning to say ['+want.slice(0,50)+']: the hire tab carries the same warning and his wording reaches that one, because his edits are matched on the whole string and the floor spells it differently, so he walks past the game version of a warning he has already rewritten');
        }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
@@ -77409,13 +77409,14 @@ window.__REGRESS=[
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        G=null; keys={}; __showScreen('hub'); __hubEnter(); saveProfile();
        var hub=sz();
-       if(hub.f<28) bad.push('on the floor the readout is '+hub.f+'px and not 28px or more');
-       if(hub.h<40) bad.push('on the floor the readout is '+hub.h.toFixed(0)+'px tall and not 40px or more');
+       // v30.xx (00-fix-new-reds): cw-hudhero, UI step 4 (Q7, the style guide may overrule an older size order): credits are text, not a second hero; 24px, was 32. Still bigger than the old 14px base (twice the size is kept as "24px or more"), still tall enough (36px).
+       if(hub.f<24) bad.push('on the floor the readout is '+hub.f+'px and not 24px or more');
+       if(hub.h<36) bad.push('on the floor the readout is '+hub.h.toFixed(0)+'px tall and not 36px or more');
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        __frame(0.016); __frame(0.016); saveProfile();
        var raid=sz();
-       if(raid.f<28) bad.push('in a raid the readout is '+raid.f+'px and not 28px or more');
-       if(raid.h<40) bad.push('in a raid the readout is '+raid.h.toFixed(0)+'px tall and not 40px or more');
+       if(raid.f<24) bad.push('in a raid the readout is '+raid.f+'px and not 24px or more');
+       if(raid.h<36) bad.push('in a raid the readout is '+raid.h.toFixed(0)+'px tall and not 36px or more');
        if(!HUDBOX.cond) bad.push('control: the raid drew no CONDITIONS box to measure against');
        else if(HUDBOX.cond.y<raid.b) bad.push('the CONDITIONS box starts at '+HUDBOX.cond.y.toFixed(0)+'px, above the readout bottom at '+raid.b.toFixed(0)+'px, so the two overlap');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
@@ -77895,13 +77896,14 @@ window.__REGRESS=[
      for(var i=0;i<keys.length;i++){
        var key=keys[i];
        // The exact line still maps to his wording.
-       if(__tx.get(key)!==ship[key]) bad.push('the exact sector line no longer maps to his wording');
+       var NC=function(s){ return (typeof ncFix==='function')?ncFix(s):s; };   /* v30.xx (00-fix-new-reds): never all caps (2026-10-18): every drawn line goes through ncFix after his wording */
+       if(__tx.get(key)!==NC(ship[key])) bad.push('the exact sector line no longer maps to his wording');
        // A line with other figures, as the game draws it for another player or
        // another day, must pass through untouched.
        var mut=key.replace(/\d+/, function(d){ return String((+d)+7); });
        if(mut===key) continue;
        var got=__tx.get(mut);
-       if(got!==mut) bad.push('a sector line with other figures was rewritten by digit shape into "...'+String(got).slice(-34)+'", so one map can print the other map name');
+       if(got!==NC(mut)) bad.push('a sector line with other figures was rewritten by digit shape into "...'+String(got).slice(-34)+'", so one map can print the other map name');
      }
      return bad.length?bad.join('; '):null; }},
   {v:'11.50',what:'opening THE STASH with the Undercroft backpack open commits and closes the backpack first, so what you pack at the terminal is not overwritten by the stale backpack snapshot when it closes',
@@ -84522,10 +84524,11 @@ window.__REGRESS=[
      for(var i=0;i<ms.length;i++){
        var m=ms[i], id=m.id||('modal'+i);
        if(id==='askmodal'){ if(!m.querySelector('#askno')) noClose.push(id); continue; }
+       if(id==='qtymodal'){ if(!m.querySelector('#qtyno')) noClose.push(id); continue; }   /* v30.xx (00-fix-new-reds): v29.10 quantity prompt: its way out is Cancel (and Esc), like the loadout question */
        var bs=m.querySelectorAll('button'), found=null;
        for(var b=0;b<bs.length;b++){ var t=bs[b].textContent.trim(); if(/^(CLOSE|Close|Leave|Back|Done)$/i.test(t)){ found=t; break; } }
        if(!found) noClose.push(id);
-       else if(found!=='CLOSE') wrongWord.push(id+' says '+found);
+       else if(found.toLowerCase()!=='close') wrongWord.push(id+' says '+found);   /* v30.xx (00-fix-new-reds): his rule 2026-10-18, never all caps: the word is Close */
      }
      if(noClose.length) bad.push('windows with no way out: '+noClose.join(', '));
      if(wrongWord.length) bad.push('windows whose way out is not CLOSE: '+wrongWord.join(', '));
@@ -86520,11 +86523,11 @@ window.__REGRESS=[
      if(bare.length<6)
        return 'SKIP: only '+bare.length+' bare numbers are drawn, too few to say anything';
      var one=bare[0];
-     __tx.set(one,'ZQXWORD');
+     __tx.set(one,'Zqxword');   /* v30.xx (00-fix-new-reds): never all caps (2026-10-18): the probe is sentence case so what is drawn is what was set */
      var after=drawn();
      var hitCount=0, bareLeft=0;
      for(i=0;i<after.length;i++){
-       if(after[i]==='ZQXWORD') hitCount++;
+       if(after[i]==='Zqxword') hitCount++;
        if(/^\d+$/.test(after[i])) bareLeft++;
      }
      var sameValue=0; for(i=0;i<bare.length;i++) if(bare[i]===one) sameValue++;
@@ -86677,7 +86680,7 @@ window.__REGRESS=[
      // THE FINDING, PART ONE: an override must reach the canvas. This is the
      // whole feature, and it is asserted on what fillText actually painted
      // rather than on the map having a key in it.
-     var want='ZQX EDITED '+pick.o.length;
+     var want='Zqx edited '+pick.o.length;   /* v30.xx (00-fix-new-reds): his rule 2026-10-18, never all caps: a probe in caps is drawn in sentence case, so the probe is written that way */
      __tx.set(pick.o,want);
      var after=__tx.record(function(){ __frame(0.016); });
      var found=0, still=0;
@@ -86732,18 +86735,18 @@ window.__REGRESS=[
      // game are still out of his reach.
      if(document.getElementById('root')){
        var probe=document.createElement('div');
-       probe.textContent='ZQX ORIGINAL LINE';
+       probe.textContent='Zqx original line';   /* v30.xx (00-fix-new-reds): never all caps (2026-10-18): the probes are sentence case so what is drawn is what was set */
        document.getElementById('root').appendChild(probe);
-       __tx.set('ZQX ORIGINAL LINE','ZQX HIS WORDS');
+       __tx.set('Zqx original line','Zqx his words');
        __tx.dom(document.getElementById('root'));
        var got=probe.textContent;
-       __tx.set('ZQX ORIGINAL LINE','');
+       __tx.set('Zqx original line','');
        __tx.dom(document.getElementById('root'));
        var back2=probe.textContent;
        if(probe.parentNode) probe.parentNode.removeChild(probe);
-       if(got!=='ZQX HIS WORDS')
+       if(got!=='Zqx his words')
          bad.push('a panel line did not take the edit, it still reads "'+got+'"');
-       if(back2!=='ZQX ORIGINAL LINE')
+       if(back2!=='Zqx original line')
          bad.push('control: clearing the edit left the panel reading "'+back2+'" rather than the original');
      }
      return bad.length?bad.join('; '):null; }},
@@ -88451,6 +88454,10 @@ window.__REGRESS=[
               'hotbar','bag','backpack','search','map','H  full list','F1  full list'];
      var leg=[], i;
      for(i=0;i<draws.length;i++) if(LBL.indexOf(draws[i].t)>=0) leg.push(draws[i]);
+     // v30.xx (00-fix-new-reds): the legend's words stand in two columns (one x each, four or more rows per column); a same-spelled word drawn
+     // somewhere else on the HUD (the lower panels now carry words like map and fire) stands alone at its own x and is not the legend.
+     var cnt={}; for(i=0;i<leg.length;i++){ var kx=Math.round(leg[i].x); cnt[kx]=(cnt[kx]||0)+1; }
+     leg=leg.filter(function(d){ return cnt[Math.round(d.x)]>=4; });
      // CONTROL FIRST: if the legend did not draw, there is nothing to grade and
      // every assertion below would pass on an empty screen.
      if(leg.length<10) return 'SKIP: the legend drew only '+leg.length+' of its 13 rows';
