@@ -1,0 +1,7 @@
+v30.01: party pages: press any button is a footer hint, the logo is smaller
+
+The party pages show Press any button as a hint in the card footer.
+
+Check 30.01. Fails on v30.00.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

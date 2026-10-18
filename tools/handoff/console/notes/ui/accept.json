@@ -10,10 +10,10 @@
  "02-welcome-pack": {
   "score": 2,
   "pass": false,
-  "verdict": "A full-screen slab with seven short rows stranded in a huge empty box, an explaining paragraph, tiny text and the primary button far from the content; it ignores the centred-card modal rule.",
-  "pic": "tools/handoff/console/notes/shots/b-31-c1/02-welcome-pack-1080.jpg",
-  "task": "b-31-ui-undercroft",
-  "when": "2026-10-18T09:56"
+  "verdict": "Image 2 is a centred card on a dimmed backdrop, but the intro paragraph spills out of the card and is struck through by the card's top edge, and the footer floats outside the card; Image 1 is still a full-screen slab with a huge empty void. The guide's modal rules are only half applied.",
+  "pic": "tools/handoff/console/notes/shots/b-31-e2/02-welcome-pack-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-18T12:33"
  },
  "03-hub-floor": {
   "score": 2,

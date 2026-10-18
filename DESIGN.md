@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.01 - Party pages: Press any button is a footer hint, the logo is smaller
+
+Co-op hunt while he was away. Critic on 46, 55, 56 and 64 (3 of 5 each): Press any button is an instruction drawn as a filled button, a fake action; the 56px wordmark out-shouts the page title; the empty board line is the one message that matters and it is dim; the ring has no words. The prompt is a footer hint with a button glyph and accent words, the wordmark the 32px logo, the empty line light, the ring labelled. Restyle only.
+
+MEASURED. Check 30.01 passes, and fails on v30.00.
 ## v30.00 - THE WELCOME PACK IS A CENTRED CARD
 
 Co-op hunt while he was away. The critic scored the Welcome pack 2 of 5: a full-screen slab with seven rows hugging the left and the buttons 1600px apart. The style guide says a modal is a centred card at most 960 wide. It now takes the Terms frame, fitted to its content, with the list and footer 880 wide.
