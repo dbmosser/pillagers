@@ -2402,7 +2402,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.42';
+var VER='29.43';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -32489,6 +32489,12 @@ function drawVest(id,b,cx,ty,cc,sch,fl){
     wc.fillStyle='#2d343b'; wc.fillRect(cx-HP+0.6,py0+6.6,2*HP-1.2,1.6); wc.fillRect(cx-0.6,py0+2.6,1.2,4.2);
     wc.fillStyle=A; wc.fillRect(cx-HP+1.0,py0+4.4,2*HP-2.0,1.0);
     wc.fillStyle='#9aa6b2'; wc.fillRect(cx-HP+0.9,py0+1.0,0.9,0.9); wc.fillRect(cx+HP-1.8,py0+1.0,0.9,0.9);
+    // v28.xx (cw-setplates), art build step b (char-art-build-brief): "chunkier armour plates ... chipped paint edges and colour-panel stripes on armour",
+    // most of all on the Heavy and Raider sets. Two scheme colour panel stripes down the plate sides and six bare steel chips on the edges. Inside the old outline.
+    wc.fillStyle=A; wc.fillRect(cx-HP+1.6,py0+2.8,1.0,3.1); wc.fillRect(cx+HP-2.6,py0+2.8,1.0,3.1);
+    wc.fillStyle='#dfe6ec';
+    wc.fillRect(cx-HP+0.3,py0+3.4,1.0,0.9); wc.fillRect(cx-HP+3.4,py0+0.2,1.0,0.9); wc.fillRect(cx-HP+1.6,py0+7.5,1.0,0.9);
+    wc.fillRect(cx+HP-1.4,py0+3.2,1.0,0.9); wc.fillRect(cx+2.8,py0+0.3,1.0,0.9); wc.fillRect(cx+HP-4.0,py0+7.4,1.0,0.9);
   }
 }
 // v28.13 (cosm4): THE SHOULDERS. Round pads, spiked pads and one big pauldron on the shoulder away from the gun, drawn over the shoulder caps
@@ -32506,6 +32512,8 @@ function drawPads(id,b,cx,ty,fl,sch){
       wc.fillStyle='#4e5963'; wc.beginPath(); wc.ellipse(px,y0+2.4,4.9,4.0,0,0,6.2832); wc.fill();
       wc.fillStyle='#8896a3'; wc.beginPath(); wc.ellipse(px-0.7,y0+1.2,3.4,2.1,0,0,6.2832); wc.fill();
       wc.strokeStyle=A; wc.lineWidth=0.9; wc.beginPath(); wc.ellipse(px,y0+2.4,4.2,3.3,0,0.3,2.9); wc.stroke();
+      // v28.xx (cw-setplates): the Raider pad is chipped: two bare steel flecks on the lit edge (the spiked pad keeps its clean paint).
+      if(id==='padsround'){ wc.fillStyle='#dfe6ec'; wc.fillRect(px-3.4,y0+0.5,1.1,0.8); wc.fillRect(px+3.0,y0+1.2,1.1,0.8); }
     }
   } else if(id==='padsbig'){
     px=cx-fl*(sx+2.0);
@@ -32515,6 +32523,13 @@ function drawPads(id,b,cx,ty,fl,sch){
     wc.fillStyle='#98a5b1'; wc.beginPath(); wc.ellipse(px-1.4,y0+0.4,3.4,1.5,0,0,6.2832); wc.fill();
     wc.strokeStyle='#2f363d'; wc.lineWidth=1.0; wc.beginPath(); wc.arc(px,y0+2.6,4.6,0.5,2.6); wc.stroke();
     wc.fillStyle=A; wc.fillRect(px-5.6,y0+3.4,11.2,1.3);
+    // v28.xx (cw-setplates): the Heavy pauldron is a layered plate: a lower lip, a panel seam, three rivets under the colour stripe and four bare steel paint chips.
+    wc.strokeStyle='#363f48'; wc.lineWidth=1.1; wc.beginPath(); wc.ellipse(px,y0+2.6,6.2,4.7,0,0.15,2.99); wc.stroke();
+    wc.fillStyle='#2f363d'; wc.fillRect(px+1.6,y0-2.0,0.8,2.8);
+    wc.fillStyle='#1d2227'; wc.fillRect(px-3.7,y0+3.3+1.4,1.1,1.1); wc.fillRect(px-0.5,y0+3.3+1.4,1.1,1.1); wc.fillRect(px+2.7,y0+3.3+1.4,1.1,1.1);
+    wc.fillStyle='#b8c3cd'; wc.fillRect(px-3.7,y0+4.7,0.5,0.5); wc.fillRect(px-0.5,y0+4.7,0.5,0.5); wc.fillRect(px+2.7,y0+4.7,0.5,0.5);
+    wc.fillStyle='#dfe6ec';
+    wc.fillRect(px-5.6,y0+1.0,1.2,0.9); wc.fillRect(px-3.4,y0-1.0,1.2,0.9); wc.fillRect(px+4.6,y0+3.6-1.0,1.2,0.9); wc.fillRect(px+1.4,y0+6.6,1.2,0.9);
   }
 }
 function outfitOf(st){
@@ -47390,7 +47405,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.42: The pause screen covers the HUD behind it, and the Keys window opens straight on the list. Check 29.42 fails on v29.41',
+  now:'v29.43: Heavy and Raider armour now shows chipped paint and colour stripes. Check 29.43 fails on v29.42',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -7,4 +7,8 @@ Findings (before):
 - 58 coop P2 title: orange paragraph 4 lines = explaining text, violates short-callout rule.
 - 49 pause: box sparse, sentence "Please provide feedback - tell us anything..." ; F1 controls panel shows through behind scrim.
 - 47: F1 controls card OK.
+PLAN (ship order): S1 operator menu 62/63 (code arcadeOpOpen/Draw/Style ~60085-60138; labels all caps 'NEW PARTY','EXIT DEMO','BACK','OPERATOR';
+ old check mkfixture ~16271-16272 tests /NEW PARTY/ /EXIT DEMO/ -> retarget to /new party/i when labels go sentence case (lock, fixq)).
+ S2 run over 52/55 (~60440-60520). S3 pause 49. S4 coop P2 title 58 (orange paragraph). S5 attract 46/56/64. Tokens: --fs-title 32 --fs-body 20 --fs-label 16 --sp-1..5 8/16/24/32/48 --btn-h 56 --menu-w 560 --ui-panel --ui-line-hi --acc --ui-scrim .82.
+ Pattern file for edits: S/mk-cw-uishared-board2.ps1 (L helper, $chk with run:function, ordered draft).
 Attract overlay code: dark_raiders.html ~line 45650 (d.id='attract'). Arcade pause/over code ~59915-60700.

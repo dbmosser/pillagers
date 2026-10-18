@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.43 - HEAVY AND RAIDER ARMOUR IS CHIPPED AND STRIPED
+
+Co-op hunt while he was away. Art build step b (his pick: Refined Chibi with Gear-heavy raider). The Heavy plates, the Big Pauldron and the Raider round pads now carry bare steel paint chips on their edges, the plates carry two scheme colour panel stripes, and the Big Pauldron gets a lower lip, a seam and three rivets. Everything stays inside the old outline, so no anchor moves. The spiked pad and the other vests stay clean.
+
+MEASURED. Check 29.43 passes, and fails on v29.42.
 ## v29.42 - PAUSE SCRIM AND KEYS INTRO
 
 Co-op hunt while he was away. Critic c-31: the HUD showed through the pause card, and the Keys window opened with an explaining sentence. The scrim goes to 97 percent and the sentence is hidden. Pause title and legend sizes stay as the old checks pin them.

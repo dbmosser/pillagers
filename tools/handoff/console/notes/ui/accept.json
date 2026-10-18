@@ -162,10 +162,10 @@
  "25-raid-pause-box": {
   "score": 2,
   "pass": false,
-  "verdict": "The pause card has a clear primary button and sentence case, but it is dominated by a five-line key-binding dump and a feedback sentence, the HUD still shows through behind it, and the title is small and crowded, so it reads as a debug overlay rather than a polished pause menu.",
-  "pic": "tools/handoff/console/notes/shots/c-31d-now/25-raid-pause-box-1080.jpg",
+  "verdict": "The pause card has a clear title and one amber primary, but it is still a dense keybind cheat-sheet with an explaining sentence, and the HUD underneath still shows through the scrim as muddy clutter.",
+  "pic": "tools/handoff/console/notes/shots/c-31e-after/25-raid-pause-box-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T07:35"
+  "when": "2026-10-18T07:48"
  },
  "26-settings-from-pause-top": {
   "score": 2,
@@ -178,10 +178,10 @@
  "32-keys-window": {
   "score": 2,
   "pass": false,
-  "verdict": "A full-bleed slab of 40+ identical key boxes and Rebind buttons with no focal point, two explaining sentences, lowercase action names, tiny muted type and a Close button at the bottom-right, so it ignores the guide's modal, header and close rules.",
-  "pic": "tools/handoff/console/notes/shots/c-31d-now/32-keys-window-1080.jpg",
+  "verdict": "Removing the explaining sentence recovered a row and made the list denser, but the screen is still a wall of identical boxed rows with tiny type, lowercase action names, and no focus state, so it reads as a debug dump instead of a polished menu.",
+  "pic": "tools/handoff/console/notes/shots/c-31e-after/32-keys-window-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T07:38"
+  "when": "2026-10-18T07:49"
  },
  "33-raid-fight-alerts": {
   "score": 2,
