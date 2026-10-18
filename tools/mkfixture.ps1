@@ -6459,10 +6459,10 @@ window.__REGRESS=[
        z=parseFloat(d.style.getPropertyValue('--attz'))||1;
        if(Math.abs(ap.height-56*z)>3) res='Press any button is '+Math.round(ap.height)+'px high, not '+Math.round(56*z);
        else if(ap.top-pr.bottom>56*z) res='Press any button sits '+Math.round(ap.top-pr.bottom)+'px under the card';
-       else if(ap.top<pr.bottom-1) res='Press any button is above the card bottom';
-       else if(Math.abs(ap.right-pr.right)>3) res='Press any button ends at '+Math.round(ap.right)+', the card at '+Math.round(pr.right);
+       else if(ap.top<pr.top) res='Press any button is above the card';   /* v29.95 (cw-partycard): under the card or inside its footer */
+       else if(ap.right>pr.right+3||ap.right<pr.right-48) res='Press any button ends at '+Math.round(ap.right)+', the card at '+Math.round(pr.right);
        else if(nm.bottom>pr.top+1) res='the wordmark ends at '+Math.round(nm.bottom)+', the card starts at '+Math.round(pr.top);
-       else if(Math.abs(nm.left-pr.left)>3) res='the wordmark starts at '+Math.round(nm.left)+', the card at '+Math.round(pr.left);
+       else if(nm.left>pr.left+3) res='the wordmark starts at '+Math.round(nm.left)+', right of the card at '+Math.round(pr.left);   /* v29.95 (cw-partycard): on the card edge or the logo on the left margin */
        return res;
      } finally {
        try{ pg.textContent=''; pg.style.display='none'; d.style.display=wasDisp; }catch(_f){}
@@ -6603,7 +6603,7 @@ window.__REGRESS=[
        z=parseFloat(d.style.getPropertyValue('--attz'))||1;
        if(Math.abs(ar.height-56*z)>3) res='Press any button is '+Math.round(ar.height)+'px high, not '+Math.round(56*z);
        else if(ar.width>cr.width*0.6) res='Press any button is '+Math.round(ar.width)+'px wide under a '+Math.round(cr.width)+'px card';
-       else if(Math.abs(ar.right-cr.right)>3) res='Press any button ends at '+Math.round(ar.right)+', the card at '+Math.round(cr.right);
+       else if(ar.right>cr.right+3||ar.right<cr.right-48) res='Press any button ends at '+Math.round(ar.right)+', the card at '+Math.round(cr.right);   /* v29.95 (cw-partycard): flush right or inside its footer */
        return res;
      } finally {
        try{ oc.textContent=''; oc.style.display='none'; d.style.display=wasDisp; }catch(_f){}
@@ -6649,9 +6649,9 @@ window.__REGRESS=[
        ar=ap.getBoundingClientRect(); cr=oc.getBoundingClientRect(); sc=getComputedStyle(s).color;
        if(cs.backgroundColor!=='rgb(245, 183, 59)') res='Press any button fill is '+cs.backgroundColor+', not the solid accent';
        else if(cs.animationName!=='none') res='Press any button still pulses ('+cs.animationName+')';
-       else if(ar.width>cr.width+3||Math.abs(ar.right-cr.right)>3) res='Press any button is '+Math.round(ar.width)+'px ending at '+Math.round(ar.right)+', the card is '+Math.round(cr.width)+'px ending at '+Math.round(cr.right);   // v28.xx (cw-party-over6): flush right, no wider than the card
+       else if(ar.width>cr.width+3||ar.right>cr.right+3||ar.right<cr.right-48) res='Press any button is '+Math.round(ar.width)+'px ending at '+Math.round(ar.right)+', the card is '+Math.round(cr.width)+'px ending at '+Math.round(cr.right);   // v28.xx (cw-party-over6): flush right, no wider than the card
        else if(ar.height<48*(parseFloat(d.style.getPropertyValue('--attz'))||1)-2) res='Press any button is only '+Math.round(ar.height)+'px high';
-       else if(ar.top-cr.bottom<0||ar.top-cr.bottom>80) res='Press any button sits '+Math.round(ar.top-cr.bottom)+'px under the card';
+       else if(ar.top<cr.top||ar.top-cr.bottom>80) res='Press any button sits '+Math.round(ar.top-cr.bottom)+'px under the card';   /* v29.95 (cw-partycard): under the card or inside its footer */
        else if(sc==='rgb(245, 183, 59)') res='the score is still the accent colour';
        return res;
      } finally {
@@ -6693,8 +6693,8 @@ window.__REGRESS=[
        mid=(cr.top+ar.bottom)/2; half=d.getBoundingClientRect().height/2;
        if(cs.position!=='relative') res='Press any button is '+cs.position+', not in the card column';
        else if(parseFloat(cs.borderTopWidth)<1) res='Press any button has no plate line';
-       else if(ar.top-cr.bottom<0||ar.top-cr.bottom>80) res='Press any button sits '+Math.round(ar.top-cr.bottom)+'px under the card, not within 80px';
-       else if(Math.abs((ar.left+ar.right)/2-(cr.left+cr.right)/2)>3&&Math.abs(ar.right-cr.right)>3) res='Press any button is not centred under the card or flush right';   // v28.xx (cw-party-over6): flush right is as good
+       else if(ar.top<cr.top||ar.top-cr.bottom>80) res='Press any button sits '+Math.round(ar.top-cr.bottom)+'px under the card, not within 80px';   /* v29.95 (cw-partycard): under the card or inside its footer */
+       else if(Math.abs((ar.left+ar.right)/2-(cr.left+cr.right)/2)>3&&(ar.right>cr.right+3||ar.right<cr.right-48)) res='Press any button is not centred under the card, flush right or in its footer';   // v28.xx (cw-party-over6): flush right is as good
        else if(Math.abs(mid-half)>60) res='the card and button sit at '+Math.round(mid)+'px, not about the middle of the screen ('+Math.round(half)+')';
        return res;
      } finally {
@@ -6713,8 +6713,8 @@ window.__REGRESS=[
        ar=ap.getBoundingClientRect(); cr=oc.getBoundingClientRect();
        if(cs.position!=='relative') res='Press any button is '+cs.position+', not in the card column';
        else if(parseFloat(cs.borderTopWidth)<1) res='Press any button has no plate line';
-       else if(ar.top-cr.bottom<0||ar.top-cr.bottom>80) res='Press any button sits '+Math.round(ar.top-cr.bottom)+'px under the card, not within 80px';
-       else if(Math.abs((ar.left+ar.right)/2-(cr.left+cr.right)/2)>3&&Math.abs(ar.right-cr.right)>3) res='Press any button is not centred under the card or flush right';   // v28.xx (cw-party-over6): flush right is as good
+       else if(ar.top<cr.top||ar.top-cr.bottom>80) res='Press any button sits '+Math.round(ar.top-cr.bottom)+'px under the card, not within 80px';   /* v29.95 (cw-partycard): under the card or inside its footer */
+       else if(Math.abs((ar.left+ar.right)/2-(cr.left+cr.right)/2)>3&&(ar.right>cr.right+3||ar.right<cr.right-48)) res='Press any button is not centred under the card, flush right or in its footer';   // v28.xx (cw-party-over6): flush right is as good
        return res;
      } finally {
        try{ oc.style.display='none'; d.style.display=wasDisp; }catch(_f){}
@@ -6836,7 +6836,7 @@ window.__REGRESS=[
        pg=arcadeAttEl('arcpage'); pg.textContent=''; arcadeAttHow(pg); pg.style.display='block';
        ap=d.querySelector('.attpress'); th=pg.querySelector('th'); w=parseFloat(getComputedStyle(pg).width);
        if(getComputedStyle(d).backgroundImage.indexOf('radial-gradient')<0) res='the attract backdrop is still flat black';
-       else if(Math.abs(parseFloat(getComputedStyle(d).height)-ap.getBoundingClientRect().bottom-parseFloat(getComputedStyle(d).height)*0.08)>2&&!(ap.getBoundingClientRect().top>=pg.getBoundingClientRect().bottom-1&&ap.getBoundingClientRect().top-pg.getBoundingClientRect().bottom<=56*z+1)) res='Press any button is not pinned 8 percent from the bottom, nor 24px under the card';   // cw-party-att3: the page is one column with the button under the card
+       else if(Math.abs(parseFloat(getComputedStyle(d).height)-ap.getBoundingClientRect().bottom-parseFloat(getComputedStyle(d).height)*0.08)>2&&!(ap.getBoundingClientRect().top>=pg.getBoundingClientRect().bottom-1&&ap.getBoundingClientRect().top-pg.getBoundingClientRect().bottom<=56*z+1)&&!(ap.getBoundingClientRect().top>=pg.getBoundingClientRect().top&&ap.getBoundingClientRect().bottom<=pg.getBoundingClientRect().bottom+1)) res='Press any button is not pinned 8 percent from the bottom, nor 24px under the card, nor in its footer';   // cw-party-att3: the page is one column with the button under the card
        else if(Math.abs(w-840*z)>3) res='the how to play card is '+w+'px wide, not 840px x '+z;
        else if(parseFloat(getComputedStyle(th).borderBottomWidth)<1) res='no line under the header row';
        return res;
@@ -7328,7 +7328,7 @@ window.__REGRESS=[
        c=arcadeOverEl(); c.textContent='x'; c.style.display='block';
        nm=d.querySelector('.attname'); w=parseFloat(getComputedStyle(c).width);
        if(getComputedStyle(nm).display!=='none') res='the wordmark still shows over the run over card';
-       else if(w<840*z-2) res='the card is only '+w+'px wide, not 840px x '+z;
+       else if(w<720*z-2) res='the card is only '+w+'px wide, not 720px x '+z;   /* v29.95 (cw-partycard): the end card width */
        c.style.display='none';
        if(!res&&getComputedStyle(nm).display==='none') res='the wordmark stays hidden when the card is gone';
        return res;
