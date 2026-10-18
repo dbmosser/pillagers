@@ -1,0 +1,5 @@
+## v30.83 - SCORE LABEL CLEAR OF THE TOP EDGE
+
+Co-op hunt while he was away. The critic on the raid screen (10-19): the SCORE label is clipped at y=0. The block rides 10 to 14 pixels lower and the label is quiet grey.
+
+MEASURED. Check 30.83 passes, and fails on v30.82.

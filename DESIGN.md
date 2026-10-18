@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.83 - SCORE LABEL CLEAR OF THE TOP EDGE
+
+Co-op hunt while he was away. The critic on the raid screen (10-19): the SCORE label is clipped at y=0. The block rides 10 to 14 pixels lower and the label is quiet grey.
+
+MEASURED. Check 30.83 passes, and fails on v30.82.
 ## v30.82 - TITLE: THE FIGHT CAN BE SEEN BEHIND THE SCOREBOARD AND HOW-TO PAGES
 
 Co-op hunt while he was away. His answers Q52 and Q54: the live map with real combat behind the title, scoreboard and how-to pages. The fight was drawn but a 16px blur and a 90 percent edge scrim hid it, and it stood low in the dark corner. Floor labels and the HUD are not drawn behind the attract pages now, so the blur drops to 5px and the scrim to about 60 percent at the edges, and the fights stand at mid height in the side margins.

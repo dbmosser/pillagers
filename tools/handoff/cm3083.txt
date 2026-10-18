@@ -1,0 +1,7 @@
+v30.83: score label clear of the top edge
+
+The score label at the top centre is no longer cut off by the top edge.
+
+Check 30.83. Fails on v30.82.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

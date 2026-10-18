@@ -239,6 +239,44 @@ A.scenes.fight=async function(o){
     {id:'pillager-a',kind:'pillager',ref:pa},{id:'pillager-b',kind:'pillager',ref:pb},{id:'crawler',kind:'machine',ref:cra},{id:'sentry',kind:'machine',ref:sen}]};
 };
 
+A.scenes.lineup=async function(o){
+  var st=await A.stage(o), p=st.p, s=st.s, X=BASE.x, Y=BASE.y, Z=2.5, i, e, chars=[], x;
+  var FY=Y+58, BY=Y-62, face=1.5708;
+  // front row: P1 then the pillagers (the five roles by gun and rig, an elite, a golden one)
+  var rows=[
+    {n:'pillager-rush',  id:'beef',  gun:'shotgun',rig:'none'},
+    {n:'pillager-flank', id:'prone', gun:'carbine',rig:'light'},
+    {n:'pillager-supp',  id:'gamer', gun:'lmg',    rig:'medium'},
+    {n:'pillager-mark',  id:'noscp', gun:'magnum', rig:'none'},
+    {n:'pillager-shield',id:'sigma', gun:'smg',    rig:'heavy'},
+    {n:'pillager-elite', id:'crouch',gun:'rifle',  rig:'medium',elite:1},
+    {n:'pillager-golden',id:'lag',   gun:'carbine',rig:'light', golden:1}];
+  var sp=70, x0=X-3.5*sp-sp*0.5;
+  p.x=x0; p.y=FY; p.face=face;
+  chars.push({id:'p1',kind:'player',ref:'p1'});
+  for(i=0;i<rows.length;i++){
+    e=A.pillager(x0+sp*(i+1),FY,{id:rows[i].id,gun:rows[i].gun,rig:rows[i].rig,elite:rows[i].elite,face:face,state:'patrol'});
+    chars.push({id:rows[i].n,kind:'pillager',ref:e});
+    if(rows[i].golden){ window.__ge=e; gx('goldMake(window.__ge)'); s.flow=s.flow||{}; s.flow.gold={ref:e,hp0:e.maxhp,dead:0,tried:0}; window.__goldShine=1; }
+  }
+  // back row: every machine, left to right by size
+  var ms=[['sentry','sentry'],['crawler','crawler'],['snitch','crier'],['bulwark','bulwark'],['howler','howler'],['listener','listener'],['choir','pillbox'],['warden','warden'],['overseer','overseer']];
+  var gap=24, tot=0, ents=[], r;
+  for(i=0;i<ms.length;i++){
+    e=(ms[i][0]==='overseer')?A.overseer(X,BY,face):A.machine(ms[i][0],X,BY,{face:face});
+    if(ms[i][0]==='sentry') e.rng=2;   // no sight cone on the ground in a line-up
+    ents.push(e); tot+=e.r*2+(i?gap:0);
+  }
+  x=X-tot/2;
+  for(i=0;i<ents.length;i++){
+    r=ents[i].r; x+=r; ents[i].x=x; ents[i].tx=x; ents[i].y=BY; ents[i].ty=BY; x+=r+gap;
+    chars.push({id:ms[i][1],kind:'machine',ref:ents[i]});
+  }
+  A.settleFx();
+  A.cam(X,Y-6,Z);
+  return {zoom:Z,chars:chars};
+};
+
 // the picture: scene (or its plate), measured, the last frame drawn, a JSON line back
 A.scene=async function(name,o){
   o=o||{};

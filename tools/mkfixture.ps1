@@ -6099,6 +6099,27 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.83',what:'the SCORE label at the top centre is fully on screen, its ink starting 6 pixels or more below the top edge (the critic, 10-19)',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy';
+     var g=null, oF=ctx.fillText, rec=[], t, top, m;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:['gun_shotgun','gun_rifle'],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player||g.over) return 'SKIP: staging: no raid';
+       g.bagOpen=false; g.mapOpen=false; g.paused=false; keys={}; mouse.down=false; g.arcade=1;
+       ctx.fillText=function(s,x,y){ var mm=null; try{ mm=ctx.measureText(String(s)); }catch(_m){} rec.push({s:String(s),y:y,a:mm?mm.actualBoundingBoxAscent:0}); return oF.apply(this,arguments); };
+       try{ __frame(0.016); }finally{ ctx.fillText=oF; }
+       t=rec.filter(function(r){ return (/^(team )?score$/i).test(r.s); });
+       if(!t.length) return 'the score label is not drawn in this staging';
+       m=t[t.length-1]; top=m.y-m.a;
+       if(top<6) return 'the SCORE label ink starts at '+Math.round(top)+' pixels from the top edge (needs 6 or more)';
+       return null;
+     } finally {
+       ctx.fillText=oF;
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     } }},
   {v:'30.82',what:'behind the scoreboard and how-to pages the live fight can be seen: no floor labels or HUD drawn there, a light blur, the fights at mid height (his Q52/Q54)',
    run:function(){
      if(typeof tskInit!=='function'||typeof hubStationNames!=='function'||typeof drawHubHUD!=='function') return 'missing functions';
