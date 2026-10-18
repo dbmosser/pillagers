@@ -12,6 +12,9 @@ Already shipped before (git log): score SP, KIA 50%, liquor halved, frame cap 24
 - DONE (c-11, v29.03 cw-feedall): say() and label() already fed everything. The gaps closed: lore card (name + text lines in loreTick), cookFeed (cooked grenade shout, called from drawHUD), feedLabel now lets ACTIVE RELOAD and bare CLOSE CALL through. WEAK SPOT / PICKED UP / NOTORIETY +n stay out on purpose (old check 28790 relies on WEAK SPOT being skipped; NOTORIETY has its own say line). Menu hubToast lines stay menu-only.
 - DONE (c-62-evening, v29.48 cw-wheelcursor): arrow cursor shows and reticle steps aside while the mouse wheel is open (_wantCur in drawHUD; pad keeps its reticle).
 - DONE (c-62-evening, v29.50 cw-wheelhub): HOLD Q on the Undercroft floor opens the same wheel (HUBWHEEL, hubWheelOpen/Step/Draw/Release near HUBBELT; counts from hubBagState); release on a slot toasts "Nothing to use down here"; hint reads RELEASE TO CLOSE (w.hub).
-Open next now: rocket launcher slot (gunkeys0 mk exists in S, check whether shipped); craft hold bar + x10.
+- DONE (c-63-evening, v29.51 cw-craftbar): craft hold bar = dark track #2b2414 + solid amber fill (craftHoldPaint, f<0 clears); chips x1/x5/x10/Max (P._craftQty, shown when stash has 2+ sets) above HOLD TO CRAFT, fireN crafts min(qty, affordable) on one hold, toast "Crafted xN". No screenshot/critic taken this run.
+- Rocket launcher: DONE by lane b (v29.15 keys, v29.18 gun). Not checked: "consolidate Scav Pistol and SMG slots" (b-00a step 3 only removes marksman); check if still wanted. Frame cap options: already shipped.
+- Evening list now has no open item except the unconfirmed Scav pistol/SMG consolidation and "what else for the tuning console".
+Old open line (superseded): rocket launcher slot (gunkeys0 mk exists in S, check whether shipped); craft hold bar + x10.
 Open next, in order (older line): (all text into feed DONE); wheel in Undercroft + cursor; rocket launcher slot; craft hold bar + x10.
 (Other lanes may be taking items: grep git log for the item before starting.)

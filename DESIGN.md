@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.52 - The end cards share one flat shell
+
+Co-op hunt while he was away. The critic scored the Extracted, KIA, Abandoned and haul cards 2 of 5: HUD showing through, a glowing glass card, small buttons, amber lines. One flat 720px panel, blurred scrim, 56px buttons, rarity bars. Restyle only.
+
+MEASURED. Check 29.52 passes, and fails on v29.51.
 ## v29.51 - The craft hold has a clear bar, and the bench crafts x5, x10 or Max
 
 Co-op hunt while he was away. His order 2026-10-15: "Hold to craft does not work correctly: it needs a clear 1-second bar" and "A way to craft multiples quickly (for example craft 10)". The old fill was 55% amber over an amber button, so a hold looked like nothing. Now a press turns the button into a dark track with a solid amber fill and light text, and it resets when the hold ends. Chips x1, x5, x10 and Max sit above the button when the stash holds at least two sets; one 1-second hold crafts that many, never more than the stash allows.

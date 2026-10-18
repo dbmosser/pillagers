@@ -1,0 +1,7 @@
+v29.52: the end cards share one flat shell
+
+The end cards are cleaner: flat panel, bigger buttons, the world blurred behind.
+
+Check 29.52. Fails on v29.51.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

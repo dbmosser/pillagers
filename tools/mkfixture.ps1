@@ -6097,6 +6097,19 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'29.52',what:'the end card is one flat shell: 4px radius, no glow on the title, a 56px primary, the scrim blurs the world behind it (critic: debug dialog, screens 35 38 60 77)',
+   run:function(){
+     var oc=document.getElementById('outcome'), win=oc&&oc.querySelector('.ocwin'), h=document.getElementById('oc_title'), b=document.getElementById('oc_btn'), res=null, cs;
+     if(!oc||!win||!h||!b) return 'SKIP: no end card here';
+     cs=getComputedStyle(win);
+     if(cs.borderTopLeftRadius!=='4px') res='the card radius is '+cs.borderTopLeftRadius+', not 4px';
+     else if(cs.boxShadow!=='none') res='the card still has a shadow: '+cs.boxShadow;
+     else if(cs.backgroundImage!=='none') res='the card still has a gradient';
+     else if(getComputedStyle(h).textShadow!=='none') res='the title still glows';
+     else if(parseFloat(getComputedStyle(b).minHeight)<56) res='the primary is '+getComputedStyle(b).minHeight+' high, not 56px';
+     else if(String(getComputedStyle(oc).backdropFilter||getComputedStyle(oc).webkitBackdropFilter).indexOf('blur')<0) res='the scrim does not blur the world behind it';
+     return res;
+   }},
   {v:'29.51',what:'the craft hold has a clear bar (dark track, solid fill, back to normal when it ends) and the bench crafts x5, x10 or Max in one 1-second hold, never more than the stash allows (his order 2026-10-15)',
    run:function(){
      if(typeof openTrader!=='function'||typeof renderCraftDetail!=='function'||typeof renderWork!=='function'||typeof craftHoldStep!=='function'||typeof craftHoldCancel!=='function'||!window.__P||!window.__hubEnter||!window.__showScreen) return 'SKIP: this fixture cannot reach the bench';
