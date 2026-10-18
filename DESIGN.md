@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.07 - PLAYER 2'S CROWBAR AND BLASTS ACT LIKE THE HOST'S
+
+Co-op hunt while he was away. When player 2 hit a pillager with the crowbar, a frag charge, a finisher or an air strike, the host rolled the pillager out of the line as if it were a gun round. The host own blows never do that. Now only a gun round of player 2 (the word carrying sk) rolls him; damage and the kill credit are unchanged.
+
+MEASURED. Check 29.07 passes, and fails on v29.06.
 ## v29.06 - THE WHAT IS NEW CARD NAMES POLISH PASS 9
 
 Co-op hunt while he was away. The card was stamped v28.90 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.

@@ -1,0 +1,7 @@
+v29.07: player 2's crowbar and blasts act like the host's
+
+Player 2s crowbar, frag charges and air strikes hit a pillager the same way the hosts do.
+
+Check 29.07. Fails on v29.06.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

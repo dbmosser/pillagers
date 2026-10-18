@@ -2307,7 +2307,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.06';
+var VER='29.07';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -46825,7 +46825,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.06: The what is new card names polish pass 9. Check 29.06 fails on v29.05',
+  now:'v29.07: Player 2s crowbar, frag charges and air strikes hit a pillager the same way the hosts do. Check 29.07 fails on v29.06',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -54600,7 +54600,8 @@ function netShotTake(peer,m){
   if(_nel==='acid'&&typeof m.ar==='number'&&m.ar>=1&&m.ar<=1.5&&!m.wk&&e.armor>0) elemShred(e,d/m.ar);
   if(typeof m.ar==='number'&&m.ar>=1&&m.ar<=1.5&&!m.wk&&e.armor>0){ var _nab=d/m.ar, _nsk=elemAbsorb(e), _nea=Math.min(e.armor,_nab*_nsk); e.armor-=_nea; d=(_nab-_nea)*m.ar; }   // v22.04 (K16): armour first, then the back shot bonus, as a host round
   e.hp-=(m.sk?affixSoak(e,d):d); e.hitT=.16; e.pHitT=.3; e.pHitSeat=s; hitStopOn(e,m.hs===1?HITSTOP_DMG:0); /*v28.xx (cw-nearmiss), CLOUD HUNT 2026-10-15: no suppHit here: a gun round already counted by its sup word as it reached him, and the host own frag, fists, finisher, air strike and screen clear never pin*/ /*v28.xx (cw-hitstoprule), CLOUD HUNT 2026-10-15: hit stop by the host rule, not by the multiplied number*/   // v26.xx (ai22): and player 2's rounds that land pin him as yours do   // v17.31, co-op hunt 2026-09-28: and whose round it was, so a man who made peace turned by it charges that seat   // v28.xx (cw-blastshield), CLOUD HUNT 2026-10-15: only a round soaks on the shield (v26.72), as on the host
-  if(CFG.raiderRoll!==0&&e.kind==='raider'&&!e.downed&&!e.finished&&!e.roll&&!(e.rollCd>0)&&e.hp>0&&typeof m.a==='number'&&isFinite(m.a)&&
+  /* v28.xx (cw-blowround), CLOUD HUNT 2026-10-15: only a gun round (sk) rolls him out of the line; player 2 crowbar, frag, finisher and air strike do not, as the host own blows do not */
+  if(m.sk&&CFG.raiderRoll!==0&&e.kind==='raider'&&!e.downed&&!e.finished&&!e.roll&&!(e.rollCd>0)&&e.hp>0&&typeof m.a==='number'&&isFinite(m.a)&&
      dist(e,{x:sx,y:sy})<(CFG.raiderRollEar===undefined?900:CFG.raiderRollEar)){
     px=-Math.sin(m.a); py=Math.cos(m.a);
     if((px*Math.cos(e.face)+py*Math.sin(e.face))<0){ px=-px; py=-py; }
