@@ -1,0 +1,12 @@
+{
+    "title":  "TITLE: THE NAME BOX SHOWS LOWER CASE",
+    "why":  "His order 2026-10-18: all text shown to the player is lower case. The title name box showed PILLAGER in capitals (text-transform none). The saved name is unchanged, only how it is drawn.",
+    "now":  "The name box on the title is lower case.",
+    "edits":  [
+                  {
+                      "anchor":  "#root #title #slotpanel #pnamein{ text-transform:none; }",
+                      "replacement":  "#root #title #slotpanel #pnamein{ text-transform:lowercase; }   /* v28.xx (cw-title-name), his order 2026-10-18: \"change all text shown to player to lowercase only\"; the critic on 01 saw PILLAGER in capitals in the name box. */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the name box on the title shows lower case (his order: every word on screen lower case)\u0027,\n   run:function(){\n     var e=document.getElementById(\u0027pnamein\u0027); if(!e) return \u0027no name box\u0027;\n     var t=getComputedStyle(e).textTransform;\n     if(t!==\u0027lowercase\u0027) return \u0027the name box text-transform is \u0027+t;\n     return null; }},"
+}

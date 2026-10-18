@@ -1,0 +1,7 @@
+v30.84: player 1 and player 2 see each other in the undercroft
+
+The other player now appears in the Undercroft as soon as both windows are on the floor, walking and standing where they are, with a name over the head, and disappears when that window leaves the floor.
+
+Check 30.84. Fails on v30.83.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

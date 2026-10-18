@@ -215,19 +215,19 @@
   "when": "2026-10-18T12:56"
  },
  "45-arcade-attract-board": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "A small, clean dark card on a blurred backdrop follows the tokens (lime tab, condensed type), but it is mostly empty, capitalised, and its only action reads as dim text with no clear focus.",
+  "verdict": "The card now follows the guide (lower case, dark panel, lime top tab, ghost X, flat scrim), but it is a small sparse box with a weak 'press any key' prompt and a dead centre, so it reads as clean but unfinished.",
   "findings": [
-   "P1 card title 'Tonight's best', 'Pillagers' wordmark top-left: Set every string lower case: 'tonight's best' and 'pillagers'. Only capitals inside baked art are allowed.",
-   "P1 'Press any button' prompt, bottom-right of card: Make it a 56px-high primary button, fill #e6ff3d, text #11150a at 20px/700, min-width 200px. Or use tx-1 at 20px with a visible focus bar. Keep it right-aligned at 24px padding.",
-   "P1 card body, 'No scores yet': Left-align at x=714 under the title. Use tx-2 at 20px weight 400. Shrink the card to content (about 480x200), or add a one-line cue, such as a dim placeholder row with 56px pitch.",
-   "P1 card header: Add a 48x48 ghost X at the top-right with a B pad glyph. Make the title exactly 32px/700 with a 56px header row and 24px padding.",
-   "P2 background blur and wordmark: Use a flat rgba(6,7,8,.80) scrim with a light 4–6px blur. Either blur the wordmark with the rest or give it a deliberate lockup position. Remove the amber smear at the top-left."
+   "P1 'press any key' prompt, bottom-right of card: Make it a 56px-high primary button: fill #e6ff3d, text #11150a at 20px/700, min-width 200px, right-aligned at 24px padding. Or at minimum use tx-1 at 20px with a lime focus bar. Make the ring a full-brightness #e6ff3d.",
+   "P1 card body, 'no scores yet': Left-align at x=714 in tx-2, 20px, weight 400 (or 600). Put it 24px below the 56px header row. Reduce the card height to about 220px, or add a dim 56px placeholder row so the empty state looks designed.",
+   "P1 card size and header: Either size it as a true dialog at 480x240, or as a 90% window with a real leaderboard layout. Add a 'B' pad glyph left of the X. Set the title to 32px/700 in a 56px header row, with the X at 24px from the card edges.",
+   "P2 'pillagers' wordmark, top-left: Either drop it, or make it a deliberate lockup: 32px/800 at the 5% margin (x=96, y=48), tx-2 or tx-1 at 70% opacity, with a small lime tab. Do not let it compete with the card title.",
+   "P2 background scene and scrim: Use a uniform rgba(6,7,8,.80) scrim and a blur of 6px or more. Give the card a 1px #4a5257 border at full opacity and a solid #16191b fill. Remove the vignette bars at the sides, or make them part of the scrim."
   ],
-  "pic": "tools/handoff/console/notes/shots/03-scrim/45-arcade-attract-board-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/03-after/45-arcade-attract-board-1080.jpg",
   "task": "03-title-and-backdrop",
-  "when": "2026-10-18T18:03"
+  "when": "2026-10-18T19:58"
  },
  "50-arcade-hud-live": {
   "score": 2,
@@ -332,17 +332,17 @@
  "46-arcade-attract-how-to-play": {
   "score": 3,
   "pass": false,
-  "verdict": "The lower-casing is done and a close X has been added, which fixes the two biggest compliance defects, but the screen is still a bare table with no primary button, a small ghost X, and no focus or pad glyph, so it reads as a debug sheet and not a polished card.",
+  "verdict": "The reference table is tidy and readable, but the footer is still a lone radio dot with 'press any key' instead of a real primary button, the close X is still undersized and unfocused, and the card is not framed as a proper dialog with header and footer.",
   "findings": [
-   "P1 Footer 'press any key' with lime radio dot (x≈1204-1346, y≈856): Replace it with a 56px high, min 200px wide --acc button 'got it' (--acc-ink text, 20px/700) in a 72px footer, right-aligned. Keep an optional 16px tx-2 'press any button' hint to its left. Remove the dot.",
-   "P1 Close X (x≈1306-1354, y≈190-237): Use the uiIcon close glyph at 24px, centred in a 48x48 ghost button, with its right edge at x=1346 to match the table. Add a 'b' pad glyph to its left and bind Esc. Add a visible focus state of a 2px --acc outline.",
-   "P1 Card as a whole (x 541-1378, y 172-907): Make it a dialog of 720-800px with a 56px header and a 72px footer separated by 1px --ui-line rules. Set the column widths to 180 / 1fr / 1fr. Raise the scrim to rgba(6,7,8,.80).",
-   "P1 Row names (x≈573) and column headers (y≈278): Row names: 20px f-cond 600 tx-1. Headers: 16px f-cond 600 tx-2 with +.04em tracking. Key caps: 20px/700 in a --ui-raised fill with 12px side padding. Add a lime emphasis to the 'extract' row only if it is the focused row.",
-   "P2 Key caps (all rows): Spell out 'left stick' and 'right stick'. Give the caps a 1px --ui-line-hi border, a --ui-raised fill, a 4px radius and a 1px bottom edge. For pad buttons, draw the actual face glyphs (A, X, LB, RB) as art."
+   "P1 Footer 'press any key' with lime radio dot (x≈1204-1346, y≈846-868): Remove the dot. Add a 56px high, min 200px wide --acc button 'got it' (--acc-ink text, 20px/700, 4px radius), right-aligned in a 72px footer with its right edge at x=1346. Put a 16px tx-2 'press any button' hint to its left.",
+   "P1 Close X (x≈1306-1354, y≈190-237): Use the uiIcon close glyph at 24px in a 48x48 ghost button with its right edge at x=1346 and a 1px --ui-line-hi border. Add a 'b' pad glyph to its left and bind Esc. Add a 2px --acc focus outline.",
+   "P1 Card structure (x 541-1378, y 172-907): Make the header 56px high with a 1px --ui-line rule below it. Make the footer 72px high with a 1px --ui-line rule above it. Set the card width to 720-800px. Raise the scrim to rgba(6,7,8,.80), because the busy blurred lobby still shows through.",
+   "P1 Column layout (headers at y≈278, key cells x≈759 and x≈1053): Set the grid to 180px / 1fr / 1fr with 16px gaps so the keyboard and controller columns split the remaining width evenly. Align the 'in the ring' chips in a consistent place.",
+   "P2 Type hierarchy in rows and headers (x≈573-1130, y 278-775): Row names 20px f-cond 600 tx-1. Headers 16px f-cond 600 tx-2 with +.04em tracking. Key caps 18-20px/600 on a --ui-raised fill with 12px side padding."
   ],
-  "pic": "tools/handoff/console/notes/shots/12b-after/46-arcade-attract-how-to-play-1080.jpg",
-  "task": "12-ui-party-screens",
-  "when": "2026-10-18T19:52"
+  "pic": "tools/handoff/console/notes/shots/03-after/46-arcade-attract-how-to-play-1080.jpg",
+  "task": "03-title-and-backdrop",
+  "when": "2026-10-18T19:59"
  },
  "37-raid-extracting-countdown": {
   "score": 2,
@@ -554,16 +554,16 @@
  "01-title-mode-menu": {
   "score": 3,
   "pass": false,
-  "verdict": "The lime '1 player' button now clearly leads the eye, but the orange gradient logo, the capitals that were never removed, the five-button mode stack and the crowded saves block and key legend still make it read as a template rather than a polished AAA title screen.",
+  "verdict": "The lower-casing and the lime primary button are done and the screen reads cleaner, but the amber gradient logo, a five-row mode stack with a dead server row, an uppercase 'PILLAGER' input and a cluttered saves block and key legend still keep it at template level.",
   "findings": [
-   "P1 Capitals across the screen: 'Pillagers' logo, 'Ascend. Pillage. Extract.', 'Go fullscreen', 'Saves', 'Pillager New', 'PILLAGER' input, 'Change name', 'Create a new save', 'WASD', 'Mouse', 'LMB', 'Ctrl', 'F1', 'M', 'B / I', '$900', 'XP': Lower-case every string: 'pillagers', 'ascend. pillage. extract.' (or delete it), 'go fullscreen', 'saves', 'pillager new', 'change name', 'create a new save', 'wasd', 'mouse', 'lmb', 'ctrl', 'f1'. Set text-transform: lowercase on the input and use the placeholder 'name'. Drop the '$' sign and write '0 xp'.",
-   "P1 Logo, y 262-345: Make the logo flat --tx-1 (#efe9dc) with a 2px dark offset, about 96px high. Keep lime only for the primary button. Delete the tagline, or set it in tx-2 at 20px.",
-   "P1 Mode stack, y 413-693: Keep three: 'play' (primary, 56px), '2 player co-op' (ghost) and 'demos' (ghost, opens a sub-list). Delete the server row and the 'coming later' tag. Use an 8px gap and a 4px radius. Show a 3px lime left bar plus a pad 'A' glyph on the focused row.",
-   "P1 Saves block, y 715-832: Collapse to one 48px row, 558px wide: 'pillager new · 0 raids · 900 · 0 xp' in tx-2 at 20px, plus a ghost 'switch save'. Move rename and create into a modal. Delete the 'saves' label and the lime outline.",
-   "P1 Key legend, y~1042: Cut to three: 'enter select', 'esc back', 'f1 controls', at 16px tx-2. Move the gameplay keys to the controls screen. Swap in pad glyphs when the last input was a pad."
+   "P1 name input, x 511-1110, y 794-831: Set text-transform: lowercase on the input and use the placeholder 'name'. Give it a 1px --ui-line-hi border and 4px radius. Move rename and create into a modal, or hide the field until the player picks 'new save'.",
+   "P1 logo, y 265-345: Make the logo flat --tx-1 #efe9dc with a 2px dark offset, about 96px high, and keep lime for the primary button only. Set the tagline in --tx-2 at 20px, or delete it.",
+   "P1 mode stack, y 413-693: Keep 'play', '2 player co-op' and 'demos' (opens a sub-list). Delete the server row and the 'coming later' tag. Make all rows 56px high with an 8px gap and a 4px radius. Add a 3px lime left bar and a pad 'A' glyph on the focused row.",
+   "P1 saves block, y 715-832: Collapse to one 48px row, 558px wide, centred: 'pillager new · 0 raids · 900 · 0 xp' in --tx-2 at 20px, plus a ghost 'switch save'. Delete the 'saves' label and the lime outline, and drop the '$'.",
+   "P1 key legend, y~1042: Cut to 'enter select', 'esc back' and 'f1 controls' at 16px --tx-2. Move the gameplay keys to the controls screen. Swap in pad glyphs when the last input was a pad."
   ],
-  "pic": "tools/handoff/console/notes/shots/03-final/01-title-mode-menu-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/03-after/01-title-mode-menu-1080.jpg",
   "task": "03-title-and-backdrop",
-  "when": "2026-10-18T19:12"
+  "when": "2026-10-18T19:59"
  }
 }

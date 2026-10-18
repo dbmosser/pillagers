@@ -21,5 +21,6 @@ Code: gun card at ~line 40692-40760 of dark_raiders.html (ctx.fillText(_cornName
 - RUN 4: SHIPPED v30.67 cw-runinfotitle. Next: vitals flat bars, toasts, score plate, ammo panel (one ship each), then re-shoot + critic.
 - SHIPPED v30.73 cw-hudstar (tab only on gun card; demo card shorter; hudPanel 6th arg plain). TIP: never list_dir tools/handoff (huge). If shipq says p30xx.ps1 missing it is a race; retry. Lane a preflight Chrome 9351 auto-starts. A mk replacement that ends in // comment breaks a mid-line anchor.
 - NEXT: score label clipped (arcadeScoreHud yL-h*0.80), flat vitals bars (bar() ~38176), toasts, minimap margin.
+- RUN 5: SHIPPED v30.83 cw-scoretop (score label clear of top edge), cw-cardP23 stamp. Next: shoot all 15 (02-after4), critic, then flat vitals bars (bar() ~38176; vitals ~40734-40750) and toasts.
 - Pattern learned: mk script at S/mk-cw-KEY.ps1 (copy of mk-alarmcap style); preflight: bash tools/handoff/preflight.sh a cw-KEY; ship: bash S/shipq.sh cw-KEY.
 - Run info drawn in drawHUD ~line 39880-39975 (rows[], 'RUN GOALS' rows kept). Top-right credits is DOM: find topRightBottom().

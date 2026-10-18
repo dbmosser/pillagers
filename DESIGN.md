@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.84 - PLAYER 1 AND PLAYER 2 SEE EACH OTHER IN THE UNDERCROFT
+
+Co-op hunt while he was away. His order of 2026-10-18 after his first look at the two-window game: players 1 and 2 should be able to see each other in the undercroft. The floor drew the other player only over the WebRTC link, which comes up some seconds after the pick, and never before it. The pair channel the two windows already talk on is up at once, so each window now posts where it stands on the floor a few times a second (with the pair code, its name and its look) and says once when it leaves the floor, and the other window draws that body with the same operator drawing the party uses, with its name over its head. A silent body goes by itself, a linked party that already shows him is not drawn twice, and solo play posts and draws nothing.
+
+MEASURED. Check 30.84 passes, and fails on v30.83.
 ## v30.83 - SCORE LABEL CLEAR OF THE TOP EDGE
 
 Co-op hunt while he was away. The critic on the raid screen (10-19): the SCORE label is clipped at y=0. The block rides 10 to 14 pixels lower and the label is quiet grey.

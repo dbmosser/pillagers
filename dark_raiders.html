@@ -2796,7 +2796,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='30.83';
+var VER='30.84';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -45591,6 +45591,7 @@ function updateHubWorld(dt){
   // where they last said they stood. Ahead of the window test, so a man reading the PARTY window at the lift is still seen.
   // Solo play never gets here: NET.on is false until HOST A PARTY or JOIN A PARTY is pressed.
   if(NET.on) netHubTick(dt);
+  try{ netMateTick(dt); }catch(_mt){}   // v30.xx (cw-p1p2), HIS ORDER (2026-10-18): "players 1 and 2 should be able to see each other in the undercroft". The other window of the pair, over the pair channel.
   if(hubModalOpen()){ p.moving=false; HB.near=null; return; }
   var mx=0,my=0,ana=1;
   if(keys['KeyW']||keys['ArrowUp'])my-=1;
@@ -46035,6 +46036,7 @@ function drawHubWorld(dt){
   if(tskOn()){ try{ if(!TSK) tskInit(); tskStep(dt); for(i=0;i<TSK.ents.length;i++) DR.push({k:TSK.ents[i].y,tk:TSK.ents[i]}); DR.push({k:99999,tk:{kind:'fx'}}); }catch(_tk){} }
   // v15.75 (multiplayer, build 2): the party, sorted with the walls, the posts, the crowd and him. Only while a party is on.
   if(NET.on) netDrawPeers(DR);
+  try{ netMatePeer(DR); }catch(_mp){}   // v30.xx (cw-p1p2): and the other window of the pair, when no linked party already draws him
   hubDropsToDR(DR);   // v18.28: the dropped crates, sorted with everything else
   DR.sort(function(a,b){return a.k-b.k;});
   for(i=0;i<DR.length;i++){
@@ -46221,6 +46223,7 @@ function drawHubWorld(dt){
   // dark is no reason for its signage to be. Same place, same size, same
   // transform; only the moment changed, and the alpha with it.
   hubStationNames(S,ox,oy);
+  try{ netMateTag(S,ox,oy); }catch(_mg){}   // v30.xx (cw-p1p2): the name of the other window, over the darkness like the party names
   if(NET.on) netDrawTags(S,ox,oy);   // v15.75: the party names, over the darkness like the station names
   drawHubHUD(ox,oy);
 }
@@ -47740,6 +47743,7 @@ function loop(ts){
     }
     return;
   }
+  if(NETMATE.on){ try{ netMateLeave(); }catch(_ml){} }   // v30.xx (cw-p1p2): this window is no longer on the floor, so the other window loses the body he was drawing
   if(state!=='raid'||!G||G.sim) return;
   if(G.arcade&&G.arcEnd){ var _ae=G.arcEnd; G.arcEnd=0; try{ if(!arcadeRunEnd(_ae)) arcadeRaidStop('end'); }catch(_are){} return; }   // v23.6x (feat0e): a run end marked inside the last frame
   if(NET.on) netUpTick(dt);   // v15.79: where the party stands up top, eased in and sent out, whatever the frame does below
@@ -48314,7 +48318,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v30.83: The score label at the top centre is no longer cut off by the top edge. Check 30.83 fails on v30.82',
+  now:'v30.84: The other player now appears in the Undercroft as soon as both windows are on the floor, walking and standing where they are, with a name over the head, and disappears when that window leaves the floor. Check 30.84 fails on v30.83',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -53020,6 +53024,106 @@ function netDrawTags(S,ox,oy){
   wc.restore();
   return n;
 }
+// v30.xx (cw-p1p2), HIS ORDER (2026-10-18, from his first look at the two-window game): "players 1 and 2 should be able to see each other in
+// the undercroft". The floor already drew the other player (netHubTick, netDrawPeer), but only over the WebRTC link, which comes up some seconds
+// after the pick. The pair channel (the BroadcastChannel the two windows already talk on, netSamePost and netSameOnMsg, with the pair code on every
+// word) is up at once, so the same body now also rides on it: each window posts hubmate a few times a second while it stands on the floor (where it
+// stands, which way it faces, walking or rolling, its name, and its look every fifth word so a window that joins late is dressed within a second),
+// hubgone once when it leaves the floor (a raid, or the title), and the other window draws the body with the same operator drawing the party uses,
+// with its name over its head. A body not heard from for NET_MATE_STALE seconds goes by itself. When a linked party already shows him the pair body
+// is not drawn a second time. Solo play posts nothing and draws nothing: NET.same is empty. No seeded stream is touched.
+var NET_MATE_STEP=0.12, NET_MATE_STALE=2.5;
+var NETMATE={g:null,pair:'',acc:0,on:0,n:0,lkSent:''};
+function netMateLive(){
+  var g=NETMATE.g;
+  return !!g&&g.n>0&&g.age<NET_MATE_STALE&&!!NET.same&&!!NET.pair&&NETMATE.pair===NET.pair;
+}
+// A linked party draws him from the floor list; then the pair body would stand on him a second time.
+function netMateShadowed(){
+  var i;
+  if(!NET.on) return false;
+  for(i=0;i<NET.floor.length;i++) if(netShown(NET.floor[i])) return true;
+  return false;
+}
+// His own name when he has one, else which player he is: the host window is player 1, the other is player 2.
+function netMateName(g){
+  var nm=netClean(g&&g.nm,16);
+  if(!nm||/^pillager$/i.test(nm)) nm='Player '+(((g&&g.seat)|0)+1);
+  return nm;
+}
+// A word from the other window. Returns what it did, so a check can read the answer.
+function netMateIn(m){
+  var g, x, y, f, lk;
+  if(!NET.same||!NET.pair||!m||m.pair!==NET.pair) return 'ignored';
+  if(m.t==='hubgone'){ NETMATE.g=null; return 'hubgone'; }
+  if(typeof m.x!=='number'||typeof m.y!=='number'||!isFinite(m.x)||!isFinite(m.y)) return 'bad';
+  x=clamp(m.x,0,HUBW); y=clamp(m.y,0,HUBH);
+  f=(typeof m.f==='number'&&isFinite(m.f)&&m.f>-100&&m.f<100)?m.f:0;
+  f=f-6.2832*Math.floor(f/6.2832);
+  lk=(m.lk!==undefined)?netLookClean(m.lk):null;
+  g=NETMATE.g;
+  if(!g||NETMATE.pair!==NET.pair){ g={seat:(NET.same==='host')?1:0,x:x,y:y,f:f,tx:x,ty:y,tf:f,mv:0,roll:0,bob:0,age:0,n:0,lk:null,nm:''}; NETMATE.g=g; NETMATE.pair=NET.pair; }
+  else if(g.age>=NET_MATE_STALE||Math.sqrt((x-g.x)*(x-g.x)+(y-g.y)*(y-g.y))>NET_HUB_SNAP){ g.x=x; g.y=y; g.f=f; }
+  g.tx=x; g.ty=y; g.tf=f; g.mv=m.m?1:0; g.roll=clamp(+m.r||0,0,0.38); g.age=0; g.n++; g.nm=netClean(m.nm,16);
+  if(lk) g.lk=lk;
+  return 'hubmate';
+}
+// This window is off the floor: say so once.
+function netMateLeave(){
+  if(NETMATE.on){ NETMATE.on=0; NETMATE.acc=0; if(NET.same&&NET.pair) netSamePost({t:'hubgone',pair:NET.pair}); }
+  return 0;
+}
+// Every floor frame while the pair is on: eases the other body toward where he last said he stood, drops him when he is not heard from, and
+// a few times a second posts where this player stands. Returns 1 when a word went out.
+function netMateTick(dt){
+  var g=NETMATE.g, k, dx, dy, da, sp, p, msg, lk, ls;
+  if(!isFinite(dt)||dt<0) dt=0;
+  if(g&&(!NET.same||!NET.pair||NETMATE.pair!==NET.pair||g.age>=NET_MATE_STALE)){ NETMATE.g=null; g=null; }
+  if(g){
+    g.age+=dt; k=1-Math.exp(-NET_HUB_EASE*dt);
+    dx=(g.tx-g.x)*k; dy=(g.ty-g.y)*k;
+    g.x+=dx; g.y+=dy;
+    da=g.tf-g.f;
+    if(da>Math.PI) da-=6.2832; else if(da<-Math.PI) da+=6.2832;
+    g.f+=da*k; g.f=g.f-6.2832*Math.floor(g.f/6.2832);
+    sp=(dt>0)?Math.sqrt(dx*dx+dy*dy)/dt:0;
+    g.bob+=dt*(g.mv?((sp>200)?15:9):1.2);
+    if(g.roll>0) g.roll=Math.max(0,g.roll-dt);
+  }
+  p=(typeof HB!=='undefined'&&HB)?HB.player:null;
+  if(!NET.same||!NET.pair||!p||titleOn()){ if(NET.same&&NET.pair) netMateLeave(); else NETMATE.on=0; return 0; }
+  NETMATE.acc+=dt;
+  if(NETMATE.on&&NETMATE.acc<NET_MATE_STEP) return 0;
+  NETMATE.acc=NETMATE.on?Math.min(NETMATE.acc-NET_MATE_STEP,NET_MATE_STEP):0;
+  msg={t:'hubmate',pair:NET.pair,x:+(+p.x||0).toFixed(1),y:+(+p.y||0).toFixed(1),f:+(+p.face||0).toFixed(2),m:p.moving?1:0,r:(p.rollT>0)?+(+p.rollT).toFixed(2):0,nm:netClean(P&&P.pname,16)};
+  lk=netLook(); ls=JSON.stringify(lk);
+  if(!NETMATE.on||ls!==NETMATE.lkSent||NETMATE.n%5===0){ msg.lk=lk; NETMATE.lkSent=ls; }   // the first word after arriving on the floor always carries it: the other window drew nobody before
+  NETMATE.n++; NETMATE.on=1;
+  return netSamePost(msg)?1:0;
+}
+// The other window body goes into the y-sorted floor list; the list draws him with netDrawPeer.
+function netMatePeer(DR){
+  if(!DR||!netMateLive()||netMateShadowed()) return 0;
+  DR.push({k:NETMATE.g.y,np:NETMATE.g});
+  return 1;
+}
+// His name over his head: the same plate the party names use.
+function netMateTag(S,ox,oy){
+  var g=NETMATE.g, nm, tw;
+  if(!netMateLive()||netMateShadowed()) return 0;
+  nm=netMateName(g);
+  wc.save();
+  try{
+    wc.scale(S,S); wc.translate(-ox,-oy);
+    wc.textAlign='center'; wc.font=FS(TYPE.micro);
+    tw=wc.measureText(nm).width;
+    wc.fillStyle='rgba(6,9,13,.86)'; wc.fillRect(g.x-tw/2-4,g.y-62,tw+8,13);
+    wc.fillStyle='#ffc04a'; wc.fillText(nm,g.x,g.y-52);
+  }catch(e){}
+  wc.textAlign='left';
+  wc.restore();
+  return 1;
+}
 // Where the others stand on this floor, for the test page handle.
 function netFloorView(){
   var out=[], i, g;
@@ -53196,6 +53300,7 @@ function netSameOnMsg(m){
   if(m.t==='pad') return netPadRecv(m);
   if(m.t==='padpick'){ if(netPadIxOk(m.ix)!==NET.padOther) NET.padWas=null; NET.padOther=netPadIxOk(m.ix); return 'padpick'; }   // v17.27: a changed pick from the other window starts the kept sides over
   if(m.t==='snd'){ NET.sndOther=(m.on===1||m.on===true)?1:0; netRefresh(); return 'snd'; }   // v15.78: the other window says whether its sound is on
+  if(m.t==='hubmate'||m.t==='hubgone') return netMateIn(m);   // v30.xx (cw-p1p2): where the other window stands on the floor, or that he left it
   if(m.t.indexOf('arc')===0) return arcadeOnMsg(m);   // v23.24 (arcade5): the arcade words (arcon, arcoff, arcbusy, arcjoin and the later ones)
   if(NET.same==='host'){
     if(m.t==='ready'){
