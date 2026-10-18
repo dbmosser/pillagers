@@ -1,0 +1,2 @@
+var r=await window.__art.scene('fight',{}); var s=window.__art.state();
+return {r:r.chars&&r.chars.length, bullets:s.bullets.map(function(b){return [Math.round(b.x),Math.round(b.y),b.tint,b.owner,b.el||'',b.mzd||0,b.name||'']; }), playerWep:s.player.wep&&[s.player.wep.name,s.player.wep.tint,s.player.wep.fk,s.player.wep.el], ents:s.ents.map(function(e){return [e.kind,e.wep&&e.wep.name,e.wep&&e.wep.tint]; })};

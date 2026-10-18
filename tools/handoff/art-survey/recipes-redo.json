@@ -11,6 +11,22 @@
    "js": "var r=await window.__art.scene('dark',{}); var A=window.__art, gx=window.__gx, s=A.state(), b=A.base(); s.wx=gx('WEATHER[0]'); s.wxNext=null; s.lights.push({x:b.x+78,y:b.y+34,r:200,c:'#ffc878',i:.55,f:0,fl:false,post:true}); A.draw(3); return r;"
   },
   {
+   "name": "a31-B",
+   "screen": "a31-B",
+   "before": "redo",
+   "query": "",
+   "expect": "!!window.__art&&!!__state().player&&!__state().over&&!__state().drawErr&&document.getElementById('topright').style.display==='none'&&__state().ents.length===0&&__P().cond==='day'",
+   "js": "var r=await window.__art.scene('duo',{}); var A=window.__art, gx=window.__gx; window.__cfg({ambient:gx('DEF.ambient'),viewFar:gx('DEF.viewFar'),coneDeg:gx('DEF.coneDeg')}); var b=A.base(); A.cam(b.x,b.y-10,2.8); A.draw(2); return r;"
+  },
+  {
+   "name": "a31-C",
+   "screen": "a31-C",
+   "before": "redo",
+   "query": "",
+   "expect": "!!window.__art&&!!__state().player&&!__state().over&&!__state().drawErr&&document.getElementById('topright').style.display==='none'&&__state().ents.length===0&&__P().cond==='day'",
+   "js": "var r=await window.__art.scene('duo',{}); var A=window.__art, gx=window.__gx; window.__cfg({ambient:gx('DEF.ambient'),viewFar:gx('DEF.viewFar'),coneDeg:gx('DEF.coneDeg')}); var b=A.base(); A.cam(b.x,b.y-10,2.8); A.draw(2); return r;"
+  },
+  {
    "name": "a37-A",
    "screen": "a37-A",
    "before": "redo",

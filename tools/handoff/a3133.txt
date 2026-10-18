@@ -1,0 +1,1 @@
+| the key lists and tips name the keys as they are now | v31.33 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 31.33 passes, fails on v31.32 |

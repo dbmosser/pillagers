@@ -2828,7 +2828,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.32';
+var VER='31.33';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18550,7 +18550,8 @@ var KEYS_ACTS=[['KeyW','move up'],['KeyA','move left'],['KeyS','move down'],['Ke
   // v26.xx (settings11), HIS ORDER 2026-10-14 ("make sure it covers every current action"): THE KEYS THAT WERE MISSING. H (tap to heal, hold for an armour plate, v25.xx holdhplate),
   // CAPS LOCK (auto-jog), the HUD size pair, the zoom pair and the zoom reset all work in the raid and were not on the list, so none could be moved and a bind onto one
   // did not swap. They are on it now. The keys that cannot move (1 to 9, P, TAB, ESC, BACKSPACE, the key left of 1, F11) are listed at the end, locked.
-  ['KeyH','heal (tap), armour plate (hold)'],['KeyG','air strike (when charged)'],['CapsLock','auto-jog'],['Equal','hud bigger'],['Minus','hud smaller'],['NumpadAdd','zoom in'],['NumpadSubtract','zoom out'],['Numpad0','zoom to 100%']];
+  // v31.33 (cw-gearrules): the H row is gone. H tapped a heal and held a plate, but the item wheel (hold Q) took both and nothing arms the H hold any more, so a row for H listed a key that does nothing.
+  ['KeyG','air strike (when charged)'],['CapsLock','auto-jog'],['Equal','hud bigger'],['Minus','hud smaller'],['NumpadAdd','zoom in'],['NumpadSubtract','zoom out'],['Numpad0','zoom to 100%']];
 var KEYS={inv:null,waiting:null,built:0,inited:0,note:null};
 // v25.xx (keyremap), HIS ORDER 2026-10-13 ("add something in settings where the player can remap keys"): the version of the map (a map made
 // before the key swap named jobs that have moved, so a profile older than this starts on the defaults, once, at load), and the keys no action
@@ -18582,7 +18583,7 @@ function keysOf(logical){ var m=keysMap(); return (typeof m[logical]==='string')
 function keysBind(logical,physical){
   var m=keysMap(), k, other=null, old=keysOf(logical), i;
   if(typeof logical!=='string'||typeof physical!=='string'||!physical) return false;
-  if(KEYS_FIXED[physical]||/^Digit[0-8]$/.test(physical)){ KEYS.note={t:'clash',s:keyName(physical)+' KEEPS ITS OWN JOB. ESC, TAB, P, BACKSPACE, F9, F11, THE KEY LEFT OF 1 AND 1-9 CANNOT BE REBOUND.'}; return false; }   // v25.xx (keyremap): the pause key and its kin are reserved
+  if(KEYS_FIXED[physical]||/^Digit[0-8]$/.test(physical)){ KEYS.note={t:'clash',s:keyName(physical)+' KEEPS ITS OWN JOB. ESC, TAB, P, BACKSPACE, F9, F11, THE KEY LEFT OF 1, 1-8 AND 0 CANNOT BE REBOUND.'}; return false; }   // v25.xx (keyremap): the pause key and its kin are reserved
   if(!P.keymap||typeof P.keymap!=='object') P.keymap={}; m=P.keymap;
   for(i=0;i<KEYS_ACTS.length;i++){ k=KEYS_ACTS[i][0]; if(k!==logical&&keysOf(k)===physical){ other=k; break; } }
   if(!other&&physical!==logical){ for(i=0;i<KEYS_ACTS.length;i++){ k=KEYS_ACTS[i][0]; if(k===physical&&k!==logical&&keysOf(k)===k){ other=k; break; } } }
@@ -18598,7 +18599,7 @@ function keysReset(){ if(P){ P.keymap={}; P.keymapV=KEYS_V; } KEYS.note={t:'set'
 // who moved where. The two side mouse buttons bind too (Mouse3 and Mouse4): a bound button is dispatched as the keyboard event of that code,
 // so every reader of keys, in the raid, the Undercroft and the menus, sees it as the key it stands for, and an unbound button keeps the
 // browser back and forward. The pad is never touched.
-var KEYS_SECT=[['MOVE',['KeyW','KeyA','KeyS','KeyD','Space','ShiftLeft','ControlLeft','KeyC','CapsLock']],['FIGHT',['KeyR','KeyQ','KeyV','KeyF','KeyH','KeyG']],
+var KEYS_SECT=[['MOVE',['KeyW','KeyA','KeyS','KeyD','Space','ShiftLeft','ControlLeft','KeyC','CapsLock']],['FIGHT',['KeyR','KeyQ','KeyV','KeyF','KeyG']],
   ['WORLD',['KeyE','KeyX','KeyB','KeyI','Enter','KeyM','F1','KeyO','AltLeft']],['PARTY',['KeyT','KeyZ','KeyN','Mouse1']],['VIEW',['Equal','Minus','NumpadAdd','NumpadSubtract','Numpad0']]];
 function keysActName(code){ var i; for(i=0;i<KEYS_ACTS.length;i++) if(KEYS_ACTS[i][0]===code) return String(KEYS_ACTS[i][1]).toUpperCase(); return String(code).toUpperCase(); }
 function keysRow1(a){
@@ -18619,7 +18620,7 @@ function keysListBody(){
 }
 // v26.xx (settings11): THE KEYS THAT CANNOT MOVE, listed under the others so the window names every key the game answers. 1 to 9 pick a gun (the stash sets which gun is on which),
 // P and TAB pause or back out, ESC closes a window, BACKSPACE puts the cursor back, the key left of 1 is Superhot and F11 is fullscreen.
-var KEYS_LOCKED=[['SELECT A GUN','1 - 9'],['PAUSE','P'],['PAUSE, OR BACK OUT','TAB'],['CLOSE A WINDOW','ESC'],['PUT THE CURSOR BACK','BACKSPACE'],['SUPERHOT MODE','LEFT OF 1'],['FULLSCREEN','F11']];
+var KEYS_LOCKED=[['SELECT A GUN','1 - 8, 0'],['PAUSE','P'],['PAUSE, OR BACK OUT','TAB'],['CLOSE A WINDOW','ESC'],['PUT THE CURSOR BACK','BACKSPACE'],['SUPERHOT MODE','LEFT OF 1'],['FULLSCREEN','F11']];
 if(DEV_LOCAL) KEYS_LOCKED.push(['EDIT THE WORDS','F2']);   // v30.xx (cw-txkey): the Keys window names it too (this machine only)
 if(DEV_LOCAL) KEYS_LOCKED.push(['SNIP THE SCREEN','F8']);   // v30.xx (cw-snip): the Keys window names it too (this machine only)
 function keysFixedHtml(){
@@ -20882,17 +20883,8 @@ function beltInfoCard(S,c){
   it=ITEMS[k]; rk=dispR(k)||it.r||'common'; v=ival(k); n=(S.count|0);
   o={name:String(it.name).toUpperCase(), col:RCOL[rk]||HUDC.text, rar:ITEMRAR[rk]||'', held:'HELD '+n, rows:beltInfoRows(k),
      val:(v>0)?('$'+v.toLocaleString()):'', keys:[[String(keyLabel(slotKeyCode(c.i),slotKeyName(c.i))),'SELECT'],['FIRE','USE']]};
-  if(!padOn()){   // v25.xx (belt6b): and the key of its class
-    if(state!=='hub'&&(it.use==='throw'||it.use==='heal'||it.use==='stim'||it.use==='armor')){   // v26.02 (beltkeys): the digit acts at once, G and H act on the pick, U and J move it
-      var _hk=String(keyLabel(slotKeyCode(c.i),slotKeyName(c.i))), _hh=String(keyLabel('KeyH','H'));
-      if(it.use==='throw') o.keys=[[_hk,'THROW'],[String(keyLabel('KeyG','G')),'THROW CHOSEN'],[String(keyLabel('KeyU','U')),'NEXT']];
-      else if(it.use==='heal') o.keys=[[_hk,'HEAL'],[_hh,'HEAL CHOSEN'],[String(keyLabel('KeyJ','J')),'NEXT']];
-      else if(it.use==='stim') o.keys=[[_hk,'USE'],[_hh,'USE CHOSEN'],[String(keyLabel('KeyJ','J')),'NEXT']];
-      else o.keys=[[_hk,'SLOT'],['HOLD '+_hh,'PLATE']];
-    }
-    else if(it.use==='throw') o.keys.push([String(keyLabel('KeyG','G')),'THROW']);
-    else if(it.use==='heal') o.keys.push([String(keyLabel('KeyH','H')),'HEAL']);
-    else if(it.use==='armor') o.keys.push(['HOLD '+String(keyLabel('KeyH','H')),'PLATE']);
+  if(!padOn()&&state!=='hub'&&(it.use==='throw'||it.use==='heal'||it.use==='stim'||it.use==='armor')){   // v31.33 (cw-gearrules): the card named HEAL on H, THROW on G and PLATE on HOLD H. Those keys do nothing since the item wheel (wheel4), so the card names the wheel.
+    o.keys=[[String(keyLabel('KeyQ','Q')),'item wheel']];
   }
   rs=Math.max(1,hudRes()); m=Math.round(LH(8)*rs); sz=itemCardSize(o);
   xR=Math.round(Math.max(m+sz.w,Math.min(W-m,c.x+c.w/2+sz.w/2)));
@@ -42703,8 +42695,9 @@ var LEGEND_PAD=[
 var GEARRULES=[
   // v12.14: there is no X (or pad Y) swap; the belt is the swap. Pressing the
   // key of the stowed gun brings it up (setHot, the v8.67 rule).
-  ['WEAPONS','Keys 1 to 4 bring up'],   // v21.93: four gun keys
-  ['','your guns.'],
+  // v31.33 (cw-gearrules): the gun keys are 1 to 8 and 0 (GUN_CLASSES: a key for each kind of gun, the rocket launcher on 0; key 9 does nothing). Said short, lower case.
+  ['WEAPONS','keys 1 to 8 and 0 bring up'],
+  ['','your guns, a key for each kind.'],
   // v8.51, audit: this said a better gun equips itself only "if you switch it on
   // in Settings". autoEquipOn returns the dial for the BOT and true for a human,
   // deliberately, and Settings has no such row - so the card described a switch
@@ -42716,11 +42709,10 @@ var GEARRULES=[
   ['ARMOUR','Plates top you up when'],
   ['','you pick one up. When armour is'],
   ['','full they go to the backpack,'],
-  ['','so keep one on a key.'],
-  ['TACTICAL BELT','1-4 guns, 5-6 throw,'],
-  ['','7-8 heal, 9 plate. G, H use'],
-  ['','the pick. U, J pick the next.'],
-  ['','Gun stays in hand.'],
+  ['','so use one from the item wheel.'],
+  // v31.33 (cw-gearrules): this block taught 1-4 guns, 5-6 throw, 7-8 heal, 9 plate and the G, H, U, J keys. All of them went with the item wheel (wheel4): hold Q.
+  ['ITEM WHEEL','hold q, aim at a grenade,'],
+  ['','a heal or a plate, and let go.'],
   ['WATER','Slows you and is loud.'],
   ['','Crouch will not quiet a splash.'],
 ['RINGS','Teal ring is live. Grey cold.'],
@@ -49273,7 +49265,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.32: The upper right corner of the raid is one column of equal plates: credits, xp, stash, backpack, notes logged, the minimap and the run info. Check 31.32 fails on v31.31',
+  now:'v31.33: The Keys window no longer lists an H heal row, it says the locked gun keys are 1 - 8, 0, and the controls tips point at the item wheel (hold q) instead of the old belt keys. Check 31.33 fails on v31.32',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

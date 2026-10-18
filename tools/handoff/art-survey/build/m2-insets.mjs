@@ -13,5 +13,5 @@ export const SETS = {
   'a27-B': { screen: 'm-fightwind', crops: [{ x: 1440, y: 462, w: 520, h: 300, l: 20, t: 760 }, { x: 1275, y: 590, w: 520, h: 300, l: 570, t: 760 }] },
   'a27-C': { screen: 'm-fightwind', crops: [{ x: 1440, y: 462, w: 520, h: 300, l: 20, t: 760 }, { x: 1275, y: 590, w: 520, h: 300, l: 570, t: 760 }] },
   'a28-C': { screen: 'm-fightdead', crops: [{ x: 1540, y: 487, w: 520, h: 300, l: 20, t: 760 }, { x: 1235, y: 635, w: 520, h: 300, l: 570, t: 760 }] },
-  'a28-D': { screen: 'm-fightdead', crops: [{ x: 1350, y: 380, w: 520, h: 300, l: 20, t: 760 }, { x: 1500, y: 570, w: 520, h: 300, l: 570, t: 760 }] },
+  'a28-D': { screen: 'm-fightdead', crops: [{ x: 1350, y: 380, w: 520, h: 300, l: 20, t: 760 }, { x: 1495, y: 640, w: 520, h: 300, l: 570, t: 760 }] },
 };

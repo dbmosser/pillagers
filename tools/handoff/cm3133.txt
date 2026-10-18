@@ -1,0 +1,7 @@
+v31.33: the key lists and tips name the keys as they are now
+
+The Keys window no longer lists an H heal row, it says the locked gun keys are 1 - 8, 0, and the controls tips point at the item wheel (hold q) instead of the old belt keys.
+
+Check 31.33. Fails on v31.32.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

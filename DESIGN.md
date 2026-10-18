@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.33 - the key lists and tips name the keys as they are now
+
+Co-op hunt while he was away. GEARRULES said Keys 1 to 4 bring up your guns (v21.93) and taught a belt of 1-4 guns, 5-6 throw, 7-8 heal, 9 plate with G, H, U and J (v26.02), and keep a plate on a key. The Settings Keys window still listed H heal (tap), armour plate (hold), but H does nothing since the item wheel took the heals. The locked keys read 1 - 9 and the rebind note said 1-9 cannot be rebound, but the gun keys are 1 to 8 and 0 (nine kinds, the rocket launcher on 0, key 9 does nothing). The item hover card named HEAL, THROW and PLATE keys that do nothing. All now say what is true, short and lower case: the guns on 1 to 8 and 0, the heals, grenades and plate on the item wheel (hold q).
+
+MEASURED. Check 31.33 passes, and fails on v31.32.
 ## v31.32 - the corner of the raid HUD is one column, every item the same size
 
 Co-op hunt while he was away. His order (2026-10-18): "everything in the right hand upper corner should be in a vertical 1 by 1 list and they should all be the same size". The corner held loose credits and xp text in a big font, a small stash and bag line, a grey notes line, a minimap 216 wide and a run info panel 268 wide, each in its own size and place. In a raid it is now one column from the top right corner down: credits, xp, stash and bag (career only), notes logged (when there are notes), the minimap and the run info panel. Every plate has the same width and the same right edge, the rows have one height and one type size, there is one gap between neighbours, and the minimap is a square as wide as the rows. The Settings minimap size and the run info grip scale the whole column together. The page text in the corner is clipped away in a raid while the rows are drawn on the HUD canvas. His earlier Q58 (career top right in one row) is replaced by this newer order.
