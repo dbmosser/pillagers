@@ -274,10 +274,10 @@
  "62-arcade-operator-menu": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, on-guide dark card with sentence case, a single amber focus row and a proper close and key-hint strip, but it is a generic centred list floating on a flat black void with a redundant Back and undersized text.",
-  "pic": "tools/handoff/console/notes/shots/12-f1/62-arcade-operator-menu-1080.jpg",
+  "verdict": "A clean, on-guide modal with clear focus and a working close, but the type is undersized, the backdrop is nearly black, and the menu is a bare three-button list with little identity.",
+  "pic": "tools/handoff/console/notes/shots/12-g6/62-arcade-operator-menu-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T10:50"
+  "when": "2026-10-18T12:47"
  },
  "61-raid-wheel-open": {
   "score": 2,
@@ -298,10 +298,10 @@
  "46-arcade-attract-how-to-play": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, mostly on-guide how-to-play card with a clear keycap table and one amber action, but it has a competing game title, a mislabelled button, tiny column headers and a stray teal ring, so it is functional rather than polished.",
-  "pic": "tools/handoff/console/notes/shots/12-g4/46-arcade-attract-how-to-play-1080.jpg",
+  "verdict": "A clean, consistent, sentence-case controls card with a clear Keyboard/Controller grid and a proper amber top tab, but the label text is too small for a couch, there is no close affordance, and the card is cramped with dead space around it.",
+  "pic": "tools/handoff/console/notes/shots/12-g6/46-arcade-attract-how-to-play-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T12:26"
+  "when": "2026-10-18T12:48"
  },
  "37-raid-extracting-countdown": {
   "score": 2,
@@ -330,10 +330,10 @@
  "55-arcade-run-over-scored": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, on-guide end card with a clear hero line and a single primary button, but it reads as a sparse template with a 3-stat row, an odd button label, small stat labels and no sense of this game.",
-  "pic": "tools/handoff/console/notes/shots/12-g4/55-arcade-run-over-scored-1080.jpg",
+  "verdict": "This is a clean, on-guide end card in sentence case with a clear title, hero line and stat row, but the hero is undersized, the card is a bit small and sparse, and the 'Press any button' prompt is a weak, amber-text stand-in for the 56px primary and ghost buttons the guide asks for.",
+  "pic": "tools/handoff/console/notes/shots/12-g6/55-arcade-run-over-scored-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T12:26"
+  "when": "2026-10-18T12:48"
  },
  "60-abandoned-card": {
   "score": 3,
@@ -354,10 +354,10 @@
  "49-arcade-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, guide-following pause card with a clear single primary and a danger-separated End run, but it still lacks a close X, sits on a near-black scrim that has lost the world, and has a tiny hint and no visible pad focus.",
-  "pic": "tools/handoff/console/notes/shots/12-g1/49-arcade-pause-box-1080.jpg",
+  "verdict": "A clean, centred pause card that mostly follows the guide (one amber primary, X top-right, sentence case, danger End run), but the footer hint is tiny, the tab and focus cues are weak, and a stray control-list ghost shows through the scrim.",
+  "pic": "tools/handoff/console/notes/shots/12-g6/49-arcade-pause-box-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T11:57"
+  "when": "2026-10-18T12:47"
  },
  "56-arcade-attract-board-scored": {
   "score": 3,

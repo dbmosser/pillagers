@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.07 - THE WELCOME PACK FITS ITS CARD
+
+Co-op hunt while he was away. The critic on the centred welcome pack: the intro paragraph spilled out of the card and was struck through by its top edge, and the footer floated below the card. The intro cap was beaten by a later rule and the rows were 80px, so the content was taller than the frame. The intro is capped at 880 and the rows are 64px.
+
+MEASURED. Check 30.07 passes, and fails on v30.06.
 ## v30.06 - THE WHAT IS NEW CARD NAMES POLISH PASS 15
 
 Co-op hunt while he was away. The card was stamped v30.03 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.

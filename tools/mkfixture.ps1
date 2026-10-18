@@ -6097,6 +6097,25 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.07',what:'the welcome pack intro, list and footer all sit inside the card frame (the critic: the intro was struck through by the card edge, the footer floated outside)',
+   run:function(){
+     var el=null, ms=null, ft=null, w=0, h=0, r=null, cy=0, cb=0, ct=0;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       el=document.getElementById('welcomemodal'); if(!el) return 'SKIP: no welcome pack';
+       try{ P.welcomed=0; if(typeof maybeWelcome==='function') maybeWelcome(); }catch(_m){}
+       var lb=document.getElementById('welcomelist'), q; if(lb&&!lb.querySelector('.row')){ for(q=0;q<7;q++) lb.insertAdjacentHTML('beforeend','<div class="row"><canvas class="wpic" width="56" height="56" style="flex:none;margin-right:14px"></canvas><div style="flex:1"><b>Item '+q+'</b><div class="hint">to your stash</div></div></div>'); }
+       openModal('welcomemodal'); cardFrameFit(el);
+       ms=el.querySelector('.msub'); ft=el.querySelector('.ui-foot')||el.querySelector('#welcometake');
+       h=parseFloat(getComputedStyle(el,'::before').height)||0; r=el.getBoundingClientRect(); cy=r.top+r.height/2; ct=cy-h/2; cb=cy+h/2;
+       if(ms&&ms.getBoundingClientRect().width>881) return 'the welcome pack intro is '+Math.round(ms.getBoundingClientRect().width)+'px wide in a 960px card';
+       if(ms&&ms.getBoundingClientRect().top<ct-1) return 'the welcome pack intro starts at '+Math.round(ms.getBoundingClientRect().top)+' above the card top '+Math.round(ct);
+       if(ft&&ft.getBoundingClientRect().bottom>cb+1) return 'the welcome pack footer ends at '+Math.round(ft.getBoundingClientRect().bottom)+' below the card bottom '+Math.round(cb);
+       return null;
+     } finally {
+       try{ if(el) el.classList.remove('on'); }catch(_e){}
+       __topClear();
+     } }},
   {v:'30.06',what:'the what is new card is stamped within 0.15 of the build and leads with the new news shown whole',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';

@@ -1,0 +1,5 @@
+## v30.07 - THE WELCOME PACK FITS ITS CARD
+
+Co-op hunt while he was away. The critic on the centred welcome pack: the intro paragraph spilled out of the card and was struck through by its top edge, and the footer floated below the card. The intro cap was beaten by a later rule and the rows were 80px, so the content was taller than the frame. The intro is capped at 880 and the rows are 64px.
+
+MEASURED. Check 30.07 passes, and fails on v30.06.

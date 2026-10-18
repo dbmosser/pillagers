@@ -1,0 +1,7 @@
+v30.07: the welcome pack fits its card
+
+The welcome pack title, list and buttons sit inside the card.
+
+Check 30.07. Fails on v30.06.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
