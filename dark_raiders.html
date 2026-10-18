@@ -1,8 +1,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PILLAGERS</title>
+<title>Pillagers</title>
 <div id="root">
 <style>
+/* v28.xx (cw-nocaps-net), HIS HARD RULE (2026-10-18): never any all-caps text. The words themselves are fixed in TX (ncFix). */
+*{ text-transform:none !important; }
   /* Fonts embedded as data URIs: the game must look right offline, and the font
      IS part of the art direction now. Titan One is the toybox display voice,
      Rubik (variable, one file covers 400-700) is the body voice. */
@@ -2307,7 +2309,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.10';
+var VER='29.11';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3501,9 +3503,42 @@ var TXPSHIP={}, TXPSHIPANY=0;
   }
 })();
 var TXPANY=0;
-function TX(s){
-  if(typeof s!=='string'||!s) return s;
-  var pm=P&&P.txt, v=pm?pm[s]:undefined;
+// v28.xx (cw-nocaps-net), HIS HARD RULE (2026-10-18): "NOTHING should be in all caps -- all text shown to the player, should never ever
+// ever be in all caps". One door for the whole game: every canvas fillText, measureText and every text node under #root already goes
+// through TX, so the case is fixed here, once, and nothing added later can escape it. A word of 3+ letters in capitals that is not an
+// acronym below becomes lower case, and its first letter stays a capital at the start of the line or after a full stop or a dot. The
+// CSS line at the top of the style block takes away text-transform:uppercase for the same reason.
+var NCKEEP={SP:1,XP:1,HP:1,LMG:1,SMG:1,DMR:1,KIA:1,HUD:1,FPS:1,RPG:1,LMB:1,RMB:1,MMB:1,ADS:1,DPS:1,RPM:1,KPH:1,MPH:1,PVP:1,PVE:1,NPC:1,WASD:1,FOV:1,CPU:1,GPU:1,USB:1,URL:1,HDR:1,TNT:1,UFO:1,AI:1,UI:1,LB:1,RB:1,LT:1,RT:1,LS:1,RS:1,PC:1,TV:1,ID:1,KB:1,MG:1,AR:1,SR:1};
+var NCKEYS={ESC:'Esc',TAB:'Tab',ENTER:'Enter',SPACE:'Space',SHIFT:'Shift',CTRL:'Ctrl',ALT:'Alt'};
+var NCC={}, NCN=0, NCRE=/[A-Za-z][A-Za-z'\u2019]*/g;
+function ncCand(w,o,s){
+  var n=w.replace(/['\u2019]/g,'').length;
+  if(n<2||w!==w.toUpperCase()||NCKEEP[w]||/^[IVX]+$/.test(w)) return 0;
+  var pv=s.charAt(o-1), nx=s.charAt(o+w.length);
+  if(/\d/.test(pv)||/\d/.test(nx)) return 0;
+  if(n===2&&((pv==='-'&&/\d/.test(s.charAt(o-2)))||(nx==='-'&&/\d/.test(s.charAt(o+w.length+1))))) return 0;
+  return n;
+}
+function ncFix(s){
+  if(typeof s!=='string'||s.length<2||!/[A-Z][A-Z]/.test(s)) return s;
+  var c=NCC[s]; if(c!==undefined) return c;
+  var low=/[a-z]/.test(s), has3=0;
+  s.replace(NCRE,function(w,o){ if(ncCand(w,o,s)>=3) has3=1; return w; });
+  var r=s.replace(NCRE,function(w,o){
+    var n=ncCand(w,o,s); if(!n) return w;
+    if(n===2&&low&&!has3) return w;
+    if(NCKEYS[w]) return NCKEYS[w];
+    var lw=w.toLowerCase(), b=s.slice(0,o);
+    if(/^[^A-Za-z0-9]*$/.test(b)||/[.!?\u00b7|]\s*$/.test(b)) lw=lw.charAt(0).toUpperCase()+lw.slice(1);
+    return lw;
+  });
+  if(NCN>4000){ NCC={}; NCN=0; }
+  NCC[s]=r; NCN++;
+  return r;
+}
+function TX(s){ var r=TXRAW(s); return (typeof r==='string')?ncFix(r):r; }
+function TXRAW(s){
+  if(typeof s!=='string'||!s) return s;  var pm=P&&P.txt, v=pm?pm[s]:undefined;
   if(typeof v==='string') return v;
   // v14.93, words audit finding 6: HIS OWN PATTERN BEATS A BAKED EXACT LINE. His rewording of a number line saves a pattern for
   // any number, but a line baked at one number was consulted first, so at exactly that number the old wording came back,
@@ -46825,7 +46860,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.10: Ctrl and drag a stack between the stash and the backpack to choose how many move. Enter confirms, Esc cancels. Check 29.10 fails on v29.09',
+  now:'v29.11: All text shows in sentence case, never in capitals. Check 29.11 fails on v29.10',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

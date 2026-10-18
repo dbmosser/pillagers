@@ -1,0 +1,7 @@
+v29.11: no all-caps text anywhere
+
+All text shows in sentence case, never in capitals.
+
+Check 29.11. Fails on v29.10.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

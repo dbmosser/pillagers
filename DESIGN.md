@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.11 - No all-caps text anywhere
+
+Co-op hunt while he was away. His hard rule (2026-10-18): nothing shown to the player is ever in all caps. Every canvas draw and every menu text node already passes through the TX door, so words of 3+ capital letters (not SP, XP, HP, LMG, SMG, DMR, KIA, HUD, FPS and the like) are made sentence case there, and the CSS text-transform:uppercase is removed. The tab title is Pillagers.
+
+MEASURED. Check 29.11 passes, and fails on v29.10.
 ## v29.10 - Ctrl drag asks how many to move
 
 Co-op hunt while he was away. His note: in the stash, ctrl drag an item to the backpack should ask how many to transfer. A Ctrl drag of a stack, stash to backpack or back, now opens a small prompt: a number and a slider with the most preselected, minus, plus, Half and All buttons for a pad, Enter moves, Esc cancels. A plain drag is unchanged and moves one.
