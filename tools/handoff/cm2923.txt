@@ -1,0 +1,7 @@
+v29.23: support mg loosens on a long burst
+
+The Support MG gets a little less accurate the longer you hold the trigger, and tightens again a second after you let go.
+
+Check 29.23. Fails on v29.22.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

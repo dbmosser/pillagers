@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.23 - Support MG loosens on a long burst
+
+Co-op hunt while he was away. His order: the Support MG should get marginally less accurate the longer it fires without a break. Unbroken fire heats it over 4.5 seconds, up to 30 percent wider spread on top of the bloom, the cursor ring opens with it, and it is back to normal about a second after the trigger is let go. The spin-up is unchanged.
+
+MEASURED. Check 29.23 passes, and fails on v29.22.
 ## v29.22 - THE WHAT IS NEW CARD NAMES POLISH PASS 10
 
 Co-op hunt while he was away. The card was stamped v29.06 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.

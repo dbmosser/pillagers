@@ -1,0 +1,1 @@
+| Support MG loosens on a long burst | v29.23 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 29.23 passes, fails on v29.22 |
