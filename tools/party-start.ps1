@@ -18,7 +18,7 @@ function Say([string]$t) { Write-Host $t }
 function Snap() { $script:all = @(Get-CimInstance Win32_Process) }
 function Pick([string]$name, [string]$rx) { @($script:all | Where-Object { $_.ProcessId -ne $me -and $_.Name -ieq $name -and $_.CommandLine -and ($_.CommandLine -match $rx) }) }
 $rxRunner = '^(?!.*\s-c\s).*nightly\.sh"?\s*$'
-$rxLane   = '^(?!.*\s-c\s).*(console-lane\.sh"? [a-f]|console-worker\.sh)"?\s*$'
+$rxLane   = '^(?!.*\s-c\s).*(console-lane\.sh"? [a-z]|console-worker\.sh)"?\s*$'
 function Listening([int]$port) {
   try { $c = New-Object System.Net.Sockets.TcpClient; $iar = $c.BeginConnect('127.0.0.1', $port, $null, $null); $ok = $iar.AsyncWaitHandle.WaitOne(1500) -and $c.Connected; $c.Close(); return $ok } catch { return $false }
 }
@@ -78,5 +78,5 @@ if (-not $DryRun) {
   Say '  The robots, the helpers and the full test run appear within about 5 to 10 minutes (the runner looks every 5 minutes).'
   Say '  Look at the PILLAGERS DEV window: "Background runner" should say Running.'
   Say ''
-  Say 'Not done by this script: in the Claude app, resume the scheduled task "pillagers-watchdog" if you paused it, and tell Claude the party is over.'
+  Say 'Not done by this script: tell Claude the party is over (the scheduled task "pillagers-watchdog" stays off).'
 }

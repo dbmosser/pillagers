@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.25 - CAREER TOP RIGHT IN ONE ROW
+
+Co-op hunt while he was away. His answer Q58 (10-18): career top right goes into one row. Credits and XP were one line and the stash and bag figures a second line under it.
+
+MEASURED. Check 31.25 passes, and fails on v31.24.
 ## v31.24 - THE WHAT IS NEW CARD NAMES POLISH PASS 27
 
 Co-op hunt while he was away. The card was stamped v31.08 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.

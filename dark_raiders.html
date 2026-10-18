@@ -647,8 +647,8 @@ html.party #slotpanel, html.party #titlesub, html.party #titlestart, html.party 
      have no heading row in the corner, and at 4K the move put the figures on the PARTY frame's top line. They keep the corner. */
   body:has(.modal.on:not(#partymodal):not(#termsmodal):not(#gamblemodal):not(#barmodal):not(#askmodal)) #topright{ top:24px; right:33px; }   /* v19.74: and its right edge ends where the heading line ends, inside the frame */
   #topright small{ font-size:16px; color:var(--ash); letter-spacing:.12em; font-weight:400; margin-left:7px; margin-right:20px; }
-  #topright small:nth-last-child(2){ margin-right:0; }   /* v28.xx (cw-stashbag): the STASH and BAG line is the last child now */
-  #topright .trsub{ position:absolute; right:0; top:40px; line-height:16px; font-size:15px; font-weight:700; letter-spacing:.1em; color:var(--ash); }
+  #topright small:nth-last-child(2){ margin-right:22px; }   /* v28.xx (cw-trrow), HIS ANSWER Q58 (2026-10-18): career top right goes into one row. The XP label is followed by the stash and bag figures on the same line now. */
+  #topright .trsub{ position:static; display:inline; line-height:inherit; font-size:16px; font-weight:700; letter-spacing:.1em; color:var(--ash); }   /* v28.xx (cw-trrow): was a second line hanging under the readout (absolute, top 40px); now inline in the one row */
   .toprow{ padding-right:560px; }   /* v11.52: the stash screen's top row keeps clear of the corner readout, so CLOSE stays reachable; v11.78: the readout is twice as wide; v12.25: the readout carries the window zoom now, up to 1.3 times wider again at 1080p */
   #credits{ display:none; }         /* v11.52: the corner readout replaces the stash screen's own credits figure */
   /* The pause and modal overlays were a flat black wash with content floating
@@ -2823,7 +2823,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.24';
+var VER='31.25';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -49225,7 +49225,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.24: The what is new card names polish pass 27. Check 31.24 fails on v31.23',
+  now:'v31.25: In career the top right corner is one row: credits, XP, stash and bag side by side. Check 31.25 fails on v31.24',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

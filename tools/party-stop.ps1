@@ -34,7 +34,7 @@ function StopThese([object[]]$procs, [string]$what, [switch]$Tree) {
 }
 # ---- the groups, found by what is in their command lines
 $rxRunner = '^(?!.*\s-c\s).*nightly\.sh"?\s*$'
-$rxLane   = '^(?!.*\s-c\s).*(console-lane\.sh"? [a-f]|console-worker\.sh)"?\s*$'
+$rxLane   = '^(?!.*\s-c\s).*(console-lane\.sh"? [a-z]|console-worker\.sh)"?\s*$'
 $rxApi    = 'run-api\.mjs|review-batch\.mjs|critic\.mjs|balance\.mjs|Your task id is'
 $rxShip   = 'shipq\.sh|shipone\.sh|shipdraft\.sh|fixq\.sh|preflight\.sh|[\\/]ship\.sh|gate\.ps1|mkfixture\.ps1|uishots\.ps1'
 $rxFuzz   = 'fuzz\.ps1'
@@ -94,7 +94,7 @@ while (-not $DryRun) {
 Snap
 Say '4. The helpers'
 StopThese (PickAny @('node.exe', 'claude.exe') $rxApi) 'helper runs (Claude working on a job)'
-StopThese (Pick 'bash.exe' $rxLane) 'helper lanes (console-lane.sh a, b, c, e, f)'
+StopThese (Pick 'bash.exe' $rxLane) 'helper lanes (console-lane.sh, every lane a to z)'
 if (-not $DryRun) {
   Start-Sleep -Seconds 2
   Get-ChildItem -LiteralPath $C -Directory -Filter 'lane-*.lock' -ErrorAction SilentlyContinue | ForEach-Object { Remove-Item -LiteralPath $_.FullName -Recurse -Force -ErrorAction SilentlyContinue }
@@ -151,7 +151,7 @@ if (-not $DryRun) {
   if ((Pick 'powershell.exe' 'collector\.ps1').Count -gt 0) { Say '  KEPT (running) collector on :8799 (saves the party runs into exports\)' } else { Say '  note: the collector on :8799 is not running (party runs are then not saved to exports\); tools\start-servers.ps1 starts it' }
   Say ''
   Say 'Two things this script cannot do for you:'
-  Say '  - In the Claude app, pause the scheduled task "pillagers-watchdog" (sidebar: Scheduled) and close any Claude session that is still working on Pillagers.'
+  Say '  - In the Claude app, close any Claude session that is still working on Pillagers (the scheduled task "pillagers-watchdog" has been off since 10-18; leave it off).'
   Say '  - Windows may restart the servers and Ollama when you log in again; that is fine (the runner and the helpers stay off).'
   Say 'To start everything again after the party: tools\party-start.ps1'
 }

@@ -6101,6 +6101,25 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.25',what:'the career corner readout is one row: credits, XP, stash and bag sit on the same line, the stash and bag figures are not a second line under it (his answer Q58)',
+   run:function(){
+     if(typeof syncTopRight!=='function') return 'SKIP: no syncTopRight';
+     var el=document.getElementById('topright'); if(!el) return 'SKIP: no corner readout';
+     var bad=[], sub, r, rs, cs;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       G=null; keys={}; __showScreen('hub'); __hubEnter();
+       _trLast=''; syncTopRight();
+       sub=el.querySelector('.trsub'); if(!sub) return 'the readout has no stash and bag part';
+       cs=getComputedStyle(sub);
+       if(cs.position==='absolute') bad.push('the stash and bag part is still positioned under the readout');
+       r=el.getBoundingClientRect(); rs=sub.getBoundingClientRect();
+       if(!(rs.height>0)) bad.push('the stash and bag part has no size');
+       if(rs.bottom>r.bottom+2||rs.top<r.top-2) bad.push('the stash and bag part is outside the readout row (top '+Math.round(rs.top)+' bottom '+Math.round(rs.bottom)+' against '+Math.round(r.top)+'..'+Math.round(r.bottom)+')');
+       if(!/CREDITS/.test(el.textContent)||!/\bXP\b/.test(el.textContent)||!/STASH/.test(el.textContent)||!/BAG/.test(el.textContent)) bad.push('the one row lost a label ("'+el.textContent+'")');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'31.24',what:'the what is new card is stamped within 0.15 of the build and leads with the new news shown whole',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';

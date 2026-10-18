@@ -1,0 +1,5 @@
+## v31.25 - CAREER TOP RIGHT IN ONE ROW
+
+Co-op hunt while he was away. His answer Q58 (10-18): career top right goes into one row. Credits and XP were one line and the stash and bag figures a second line under it.
+
+MEASURED. Check 31.25 passes, and fails on v31.24.

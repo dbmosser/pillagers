@@ -1,0 +1,7 @@
+v31.25: career top right in one row
+
+In career the top right corner is one row: credits, XP, stash and bag side by side.
+
+Check 31.25. Fails on v31.24.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,9 +1,27 @@
+# PC HANDOFF: CURRENT STATUS (refreshed 2026-10-18 evening; the file below is a history log that stops on 10-14)
+
+**READ THIS BLOCK, THEN tools/handoff/START-HERE.md (its CURRENT block is the entry point). Everything under the next line is history and much of it is stale.** In the old text, "Daniel" means the owner.
+
+- Game: PILLAGERS, dark_raiders.html, newest ship v31.23 at 18:14 on 10-18 (read `var VER`). Repo dbmosser/pillagers, branch master; every ship pushes GitHub (and itch when set up). Runs on his Windows PC.
+- Deadlines (his 10-18 rulings): 2-player party demo Fri 10/30; features until Mon 10/26, fixes only after; party build locks Thu 10/29 evening; NO public launch on 10/31. After-cutoff and after-lock helper rules are waiting on his answers (round 3 questions 41, 44, 45).
+- Queue and lanes: helper lanes a, b, c (started by tools/nightly.sh), e and f (Claude Code on his plan) and session agents d, g, h. Jobs are in tools/handoff/console/tasks (waiting), done and failed; live status in tools/handoff/console/status-LANE.txt; the rules every helper reads are tools/handoff/console/RULES.md (lanes, vetoes, how a change ships). Snapshot at 18:15 (the tasks folder is the live list): three jobs (02-raid-hud-redesign, 03-title-and-backdrop, 04-style-guide-update), five screen jobs in failed/ to be re-queued, and a 2-player bug-fix job (09-2p-bugfix-from-real-test) added later.
+- Shipping: mk script, `bash tools/handoff/preflight.sh LANE cw-KEY`, `shipq.sh cw-KEY`. The ship scripts live in the coordinator session's scratch folder (path in RULES.md); backup copy: tools/handoff/shipkit. Replaced: the "Ship flow on this PC" steps and the per-build p/f/d/a/cm files described below.
+- Tests: tools/nightly.sh runs the fuzzers, the full corpus (at most every 4 hours, only on a new HEAD), the hourly stable check and the morning and evening reports. Latest stable build: v29.09 (10-18 10:23); see tools/handoff/stable-status.txt.
+- Party rig: tools/party/ (party.cfg, party.ps1, party.vbs, party.log; desktop shortcut "Pillagers Party"), tools/party-start.ps1 and tools/party-stop.ps1, the stop list "party-day-stop-list.md" on his Desktop, and "2-player-test-today.md" there for the two-window test. Pads: the first pad plugged in is player 2, the second is player 1; keys go to the window in front.
+- Servers: tools/start-servers.ps1 (play server :8802, collector :8799, test shards). :8802 is HIS play port: never test or restart on it.
+- Weekly usage resets Sun 10-25 05:00Z and the helpers are paced to it (memory pillagers-hard-pacing-rule.md).
+- Cloud: do not restart the hourly cloud routine (memory pillagers-github-and-cloud.md); two sessions must never push at once.
+- Binding memory: pillagers-answers-1-78-2026-10-18.md, pillagers-afternoon-orders-2026-10-18.md, pillagers-feedback-notes-2026-10-18.md. tools/handoff/q-round3/helper-fixes.md lists the stale documents and memory notes and who is fixing them.
+
+=== EVERYTHING BELOW THIS LINE IS HISTORY (2026-09-27 to 2026-10-14). Do not follow its procedures. ===
+
 # PC HANDOFF (2026-09-27, cloud session to his PC, at v16.47)
 
 You are taking over PILLAGERS on Daniel's PC from a cloud session. Read this file, then tools/handoff/CLOUD-BRIEF.md in full.
 The brief holds his binding rules (frozen numbers, TXSHIP keys, retired words, co-op rulings, BUDGETS). They all still bind.
 
 ## Where things stand
+> STALE (2026-10-18): these facts are from v16.47 on 09-27. Use the CURRENT block above.
 - Game: dark_raiders.html at v16.47 (commit 3e099b5), all pushed to origin master. VER and WHATSNEW_VER in the file; the
   changelog is DESIGN.md, one row per build in AUDIT.md.
 - Every build since v15.85 passed its own new check twice on the dry build, FAILED on the build before, and kept the seed
@@ -14,6 +32,7 @@ The brief holds his binding rules (frozen numbers, TXSHIP keys, retired words, c
 - The cloud hourly routine is PAUSED so two sessions never push at once. Do not turn it back on from here.
 
 ## His rules that matter most this week
+> STALE (2026-10-18): that daily cap was replaced. His current rule is to pace the week to the reset (Sun 10-25 05:00Z). His 10-18 answers win.
 - BUDGETS: he is on his weekly Claude allocation, cap 10% of the week per 24 hours. A cap means work lean, NEVER slow down or
   stop substantive progress. Targeted greps and small reads; no workflows or subagents unless he asks; one live test per
   co-op build; short reports with a play link (rawcdn.githack.com/dbmosser/pillagers/<commit>/dark_raiders.html).
@@ -21,6 +40,7 @@ The brief holds his binding rules (frozen numbers, TXSHIP keys, retired words, c
 - Push to origin master after every ship. The itch push (butler) is his PC's job and only with his key.
 
 ## Ship flow on this PC (Windows PowerShell 5.1)
+> STALE (2026-10-18): replaced by the ship queue (preflight.sh, shipq.sh; tools/handoff/console/RULES.md, "How a change ships"). The cloud generators and the manual dryrun/ship.sh steps are no longer run by hand.
 Each build NNNN has pNNNN.ps1, fNNNN.ps1, dNNNN.txt, aNNNN.txt, cmNNNN.txt in tools/handoff (see 'Ship flow' in the brief):
 1. powershell -File tools/handoff/dryrun.ps1 -Prev PREV -New NEW
 2. parsecheck.html?f=fxdryNN.html reads PASS; the new check PASSES twice on fxdryNN and FAILS on fxctlNN.
@@ -32,6 +52,7 @@ The cloud wrote pNNNN/fNNNN with Python generators (tools/cloud/bNNNN.py + gen.p
 replaces them.
 
 ## Next, in order
+> STALE (2026-10-18): this was the 09-27 list. Nothing here is waiting.
 0. HIS ORDER 2026-09-27 09:15 EDT: GENERAL STABILITY is the focus; HARD DEADLINE 12:15 EDT (he moved it at 09:35) for a stable build he plays co-op
    with his son. No risky render or feature work before then. Deliver a play link to a build that passed: verify chain,
    full corpus (reds rerun alone), live nettest RUN SAME MACHINE, and a crash sweep. Fixes only for real crashes, dead
@@ -85,6 +106,7 @@ replaces them.
 4. Keep combing for player 2 parity gaps: anything player 1 sees, hears or can do that player 2 cannot.
 
 ## PLAYTEST QUEUE (2026-09-27 afternoon, see memory pillagers-playtest-2026-09-27)
+> STALE (2026-10-18): the 09-27 playtest queue is finished or superseded.
 Shipped 16.72-16.76. Generated, not shipped: p1677 crosshair, p1678 alarm quarter (+check 16.30 retarget), p1679 backpack on a
 pad. Reviewed drafts in tools/handoff/drafts (*-2026-09-27.json; generate with drafts/gen-draft.ps1 -Key after copying to the
 scratchpad as draft-KEY.json): autofire (renumber from 16.76), p2-saves. Drafting when stopped or pending: stash-pad, y-heal,
@@ -92,6 +114,7 @@ pad-liveness, downed-extract; kit-options (random loadout / top gear) was stoppe
 sprint takes the player out of focus aim. BUDGET: weekly all-models must stay at or under 20% (RULEBOOK rule 21).
 
 ## STOPPED 2026-09-27 15:37 AT v16.82 FOR HIS BUDGET (weekly all-models 19%, his cap 20% until ~08:00 2026-09-28)
+> STALE (2026-10-18): that stop is long over.
 Shipped this afternoon: 16.72 layout, 16.73 kid 1/20, 16.74 host out wording, 16.75 Superhot shared + clock, 16.76 pause hum,
 16.77 crosshair, 16.78 alarms quarter, 16.79 backpack on a pad (raid), 16.80 pad follows its window, 16.81 sprint drops focus
 aim, 16.82 player 2 sees only its own save. NEXT (drafts in tools/handoff/drafts): kid firing = autofire draft PLUS his rule:
@@ -101,6 +124,7 @@ ok, read it); downed-extract (review: edit 2 breaks check 15.79, fix before use)
 Asked him: is the 125% menu zoom Chrome own zoom? (game menus already default to 130%). Gave him the AAA gap list.
 
 ## STOPPED AGAIN 2026-09-27 16:25 AT v16.86 (weekly all-models reads 19%; his cap 20% to ~08:00 2026-09-28)
+> STALE (2026-10-18): that stop is long over.
 Shipped since 15:37: 16.83 kid firing (P2 row, right stick takes over), 16.84 hold Y / T heals a teammate with the item
 selected on the tactical belt only, 16.85 stash screen on a pad (A grab, D-pad, A place, B lets go), 16.86 a teammate who has
 left is never waited for (a narrow fix; his downed-extract report may instead be keyboard focus on the P2 window: asked him).
@@ -164,6 +188,7 @@ Weekly all-models read 31% at 23:50 (21% that morning): the agent teams cost ~10
 still token-lean; I said no, and asked whether to go lean after these ten. Until he answers: no new agent teams.
 
 ## NEXT UP (kept current; the hourly watchdog reads this when nobody is working)
+> STALE (2026-10-18): an old to-do list; the watchdog task that read it is off. Do not work from it. Current work: START-HERE.md and tools/handoff/console/tasks.
 1. SHELVED (2026-09-29, waiting on his word): the local model scan. On Windows with his AMD card Ollama keeps a copy of the model in system RAM (32b: about 23 GB, near-freeze; 14b: 8.6 GB and still tripped the 6 GB guard) and the 14b found nothing in 16 co-op sections and gave only style notes by hand. Do not run it unless he asks. 2026-09-29 11:00, at his ask, the 32b ran (tools\localscan\load32.ps1 then scan.ps1 -Model qwen2.5-coder:32b -MinFreeMB 0 -Chunk 140 -Ctx 8192): it loads fully on the GPU but keeps an 18.6 GB private copy in RAM (under 1 GB free); 30 co-op sections, 17 flags, every one checked was a false alarm. Evening stress test: 4 h 20 min, PC stayed up at about 1 GB free (load dipped to 64 MB), 626 flags. DELETED 2026-09-29 on his word ("not worth it"); Ollama itself is still installed with no model.
 2. DONE 2026-09-29: the full suite on v17.24 is clean (15.79 retargeted to v17.14; 13.23/12.94/12.80/12.79/12.74/12.21 were shard harness reds, all pass alone; 9.42 takes 20 s alone, far longer under load). Two-player soak on v17.24: 3 of 3 pass. v17.25 card line for the menu fixes. NEXT: run bash tools/handoff/overnight.sh 14400 (four loops, 6 GB RAM floor) and read SOAKFAIL lines in tools/handoff/overnight.log for the two open leads (roster drop, extra item); keep tokens low, no agent teams.
 3. Waiting on him (do not decide): P2 payout uses P2 own saved terms and hire; his 125% zoom question.
@@ -243,6 +268,7 @@ in one window, not yet in the two-window nettest.
   The pad loot report now names a stall, a peddler or a door in reach. Do not run quick checks on 9336/8804 while loop B runs.
 
 ## NEXT UP (2026-10-02 ~11:00, before he switched the model to Fable)
+> STALE (2026-10-18): an old to-do list; the watchdog task that read it is off. Do not work from it. Current work: START-HERE.md and tools/handoff/console/tasks.
 - Game at v17.67, all shipped and pushed. Focus: two-player same-PC co-op, low tokens, no agent teams unless he asks.
 - RUNNING: tools/handoff/overnight.sh 14400 A (two-player soaks on Chrome 9335/:8809, until ~15:00, log tools/handoff/overnight.log);
   a watcher wakes on a "pad loot" or "hit none" failure. Heartbeat: tools/handoff/heartbeat.sh in the background each session.
@@ -313,6 +339,7 @@ in one window, not yet in the two-window nettest.
   (no anchors on a fresh page); v10.41 fixed by v17.86 (legend says crouch toggle).
 
 ## NEXT UP (2026-10-03 02:10)
+> STALE (2026-10-18): an old to-do list; the watchdog task that read it is off. Do not work from it. Current work: START-HERE.md and tools/handoff/console/tasks.
 - Game at v17.86 (v17.87 slowhint shipping on gate 9346: GATE_CDP=9346). All pushed. Priorities (his, 10-02): no bugs, smooth menus,
   look and feel, two-player; no new depth. Bar: ARC Raiders x Fortnite 2026 x CoD BR. Alpha for friends: Halloween.
 - RUNNING: night runs (overnight.sh ABC -> overnight.log, DE -> overnight2.log) until ~06:40. Six test Chromes: 9335/9338 soaks,
@@ -336,6 +363,7 @@ in one window, not yet in the two-window nettest.
   ran, the rest 54-60. Game at v17.91.
 
 ## STYLING PASS (his order 2026-10-03 07:50: "styling across all menus, HUDs etc needs massive improvements") — DO THIS FIRST
+> STALE (2026-10-18): "DO THIS FIRST" applied on 10-03 only. The current UI program is tools/handoff/console/notes/ui/style-guide.md and the UI jobs in the console task lists.
 Bar: ARC Raiders x Fortnite 2026 x CoD BR. One look everywhere: dark glass panels (translucent, 1 px light border, 6 px radius,
 no hatched corner grips), one type scale (Rubik; uppercase letter-spaced labels for headers, sentence case for body), one accent
 (amber) for the primary action, bone text, ash hints, consistent button heights and paddings, visible hover/focus, generous spacing.

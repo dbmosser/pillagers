@@ -1,0 +1,2 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  busy                                   staged       5.6s    | {"scene":"busy","plate":false,"zoom":3.4,"w":1920,"h":1080,"chars":[{"id":"p1","kind":"player","x":958,"y":552,"w":163,"h":175,"fx":933,"fy":623}],"objects":[{"id":"open-crate","kind":"container","fx":715,"fy":684},{"id":"open-locker","kind":"container","fx":606,"fy":514},{"id":"open-safe","kind":"c

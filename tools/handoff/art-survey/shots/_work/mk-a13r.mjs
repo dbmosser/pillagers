@@ -43,15 +43,15 @@ const STAIN = `  if(_lowHp){   // the chest stain, drawn on the torso before the
     (function(){
       var cx=x+leanX, sd=-fl;
       function blob(px,py,rx,ry,rot,fill){ wc.fillStyle=fill; wc.beginPath(); wc.ellipse(px,py,rx,ry,rot,0,6.2832); wc.fill(); }
-      blob(cx+sd*3.4+0.5,ty-16.9+0.5,5.6,4.8,0.3,'#5a0b09');
+      blob(cx+sd*3.4+0.5,ty-16.9+0.5,5.6,4.8,0.3,'#2a0504');
       blob(cx+sd*1.3+0.4,ty-14.0+0.4,3.8,3.2,0,'#5a0b09');
       blob(cx+sd*5.8+0.4,ty-19.8+0.4,3.0,2.4,0,'#5a0b09');
-      blob(cx+sd*3.4,ty-17.0,5.0,4.2,0.3,'#b0231a');
-      blob(cx+sd*1.3,ty-14.1,3.2,2.7,0,'#b0231a');
-      blob(cx+sd*5.8,ty-19.9,2.5,2.0,0,'#b0231a');
-      blob(cx+sd*4.4,ty-18.3,2.1,1.2,0.3,'#e0584a');
+      blob(cx+sd*3.4,ty-17.0,5.0,4.2,0.3,'#7d1410');
+      blob(cx+sd*1.3,ty-14.1,3.2,2.7,0,'#7d1410');
+      blob(cx+sd*5.8,ty-19.9,2.5,2.0,0,'#7d1410');
+      blob(cx+sd*4.4,ty-18.3,2.1,1.2,0.3,'#d0402f');
       wc.fillStyle='#5a0b09'; wc.fillRect(cx+sd*2.6-0.9,ty-13.6,1.8,5.6);
-      wc.fillStyle='#b0231a'; wc.fillRect(cx+sd*2.6-0.55,ty-13.6,1.1,5.2);
+      wc.fillStyle='#7d1410'; wc.fillRect(cx+sd*2.6-0.55,ty-13.6,1.1,5.2);
       wc.fillStyle='#e0584a'; wc.fillRect(cx+sd*2.6-0.55,ty-13.2,0.5,1.4);
     })();
     wc.save(); wc.translate(0,1.4); wc.translate(x+leanX,ty-22); wc.rotate(fl*0.09); wc.translate(-(x+leanX),-(ty-22));   // the head hangs lower and forward

@@ -1,6 +1,41 @@
-# START HERE (written 2026-09-05, handoff from Fable to Opus; rewritten 2026-09-06 (morning) for the alpha run)
+# START HERE
+
+## CURRENT (refreshed 2026-10-18 evening, game at v31.23). Read this block. EVERYTHING BELOW IT IS HISTORY (2026-09-05 to 09-13) and is stale.
+
+The game is PILLAGERS (old name Dark Raiders; the file is still dark_raiders.html). In the old text below, "Daniel" means the owner: say "the owner" or "he". He plays and gives orders; he is not a coder. His answers are binding.
+
+**Deadlines (his rulings of 10-18, questions 13-16):** the 2-player party demo is Fri 10/30. New features until Mon 10/26, then fixes only. The party build locks Thu 10/29 evening. He stops everything himself on 10/30. There is NO public launch on 10/31 (party feedback first, launch date not set). What helpers may do after the cutoff and after the lock is WAITING ON HIS ANSWERS (round 3 questions 41, 44 and 45).
+
+**State (checked 10-18 18:15):**
+- Newest ship v31.23 (`var VER` in dark_raiders.html moves with every ship; ships ran all day, v29.x to v31.x on 10-18). The ship queue is healthy.
+- Latest STABLE build: v29.09 (promoted 10-18 10:23, played at http://localhost:8802/stable.html). Nothing newer is promoted yet: the redesigned screens made old tests red, and the known-red list that would allow it does not exist yet (helper-fixes item 16, question 44). Read tools/handoff/stable-status.txt.
+- Test runs: the corpus (full regression run) at most every 4 hours on a new HEAD, two robot fuzzers, hourly stable check. All started by tools/nightly.sh (its header is current).
+- Weekly usage resets Sun 10-25 05:00Z. Helpers are paced so the week lasts to the reset (memory pillagers-hard-pacing-rule.md says "Sat 10-25": that is wrong).
+
+**Who works (live view: tools/handoff/console/status-LANE.txt; rules: tools/handoff/console/RULES.md, "Lanes"):**
+- Lanes a, b, c are helper lanes that tools/nightly.sh starts; e and f run on Claude Code on his plan; d, g, h are session agents the coordinator starts. Job lists: tools/handoff/console/tasks (waiting), done, failed. Snapshot at 18:15 (the tasks folder is the live list): a was on 02-raid-hud-redesign, c on 04-style-guide-update, b on 03-title-and-backdrop (3 of 5 tries used), and five screen jobs sat in failed/ waiting to be re-queued (helper-fixes item 08); a 2-player bug-fix job (09-2p-bugfix-from-real-test) was added after that (item 09).
+- The coordinator is the Claude Code desktop session that hands out jobs and answers him. Its scratch folder holds the ship scripts (path in RULES.md); a backup is tools/handoff/shipkit (README there). Moving them to a tracked folder is still open (helper-fixes item 10).
+- Replaced: the ship.sh start/commit chain, the pNNNN/fNNNN/dNNNN files, the cron loop and the Browser pane tab "seed" described below. A change now ships as: mk script, then `bash tools/handoff/preflight.sh LANE cw-KEY`, then `shipq.sh cw-KEY` (exact steps: RULES.md "How a change ships").
+
+**Read these, in this order:**
+1. tools/handoff/console/RULES.md (rules, lanes, the veto list of things he banned for good, how a change ships).
+2. Memory (folder C:\Users\User1\.claude\projects\C--Users-User1-Desktop-dark-raiders\memory): pillagers-answers-1-78-2026-10-18.md and pillagers-afternoon-orders-2026-10-18.md (both BINDING), then pillagers-feedback-notes-2026-10-18.md. MEMORY.md is the index; some older notes in it are stale, and tools/handoff/q-round3/helper-fixes.md lists what is being fixed.
+3. tools/handoff/console/notes/ui/style-guide.md for any screen work (pictures of his reference games: tools/handoff/ui-refs; camera: tools/uishots.ps1).
+4. His questions (plain-language rounds, on his Desktop in the "dark raiders" folder): questions-100.md (he answered 1-78; 79-95 were skipped; 96-100 are open), questions-100-round2.md and questions-100-round3.md (his answers to these are not in memory yet as of 18:15; for anything he skips, the pick shown wins). Helpers put questions for him in tools/handoff/console/questions.md.
+
+**Where the news is:** the plain morning and evening reports with pictures (tools/handoff/reports/YYYY-MM-DD-am.html and -pm.html); the PILLAGERS DEV window (tools/devdash, port 8820); tools/handoff/nightly/DATE.md (hourly runner summary); tools/handoff/console/notes/ui/changes.md (every visible UI change).
+
+**Party rig (the 2-player demo):** one click opens both windows full screen: the desktop shortcut "Pillagers Party" runs tools/party/party.vbs, then party.ps1; settings tools/party/party.cfg (URL_OPTIONS=1 opens both on the attract screen; URL_BASE is the newest build until the lock, then switch it to stable.html); log tools/party/party.log. Player 1 plays keyboard and mouse, player 2 a pad (the first pad plugged in is player 2, the second is player 1). The one real double-click test of the shortcut is still to do; the first start at 15:36 on 10-18 opened nothing and the cause (the server check) was fixed in v30.89/v30.90. The 2-player test sheet is "2-player-test-today.md" on his Desktop.
+On 10/30 he stops everything with tools/party-stop.cmd (list: "party-day-stop-list.md" on his Desktop; tools/party-start.ps1 puts it back). The runner is restarted only by the Windows task "Pillagers runner" (every 15 minutes), which party-stop turns off.
+
+**Other documents that are stale (do not copy rules from them):** HANDOFF.md in the game folder (v1.55, 2026-08-23); tools/handoff/README-HANDOFF.md (09-03); CLOUD-BRIEF.md (09-27) and CLOUD-DRAFTS.md (10-15), both written for a cloud session; tools/handoff/RULEBOOK.md (10-02, partly older than his 10-18 answers; the answers win); tools/handoff/PC-HANDOFF.md (history to 10-14; it has its own current block).
+
+=== EVERYTHING BELOW THIS LINE IS HISTORY. Written 2026-09-05 to 09-13 for the alpha run. Do not follow its procedures. ===
+
+# (old title, kept for history) START HERE (written 2026-09-05, handoff from Fable to Opus; rewritten 2026-09-06 (morning) for the alpha run)
 
 ## ALPHA SHIPS TODAY, 2026-09-06, about ten hours from 07:15 (his words at 07:15). Read this block first.
+> STALE (marked 2026-10-18): this was the plan for the 09-06 alpha. The state line, the cron and the Browser pane steps below no longer apply. Use the CURRENT block at the top.
 
 **STATE (kept current by fixstate.ps1):** HEAD is v12.41 (a1a534b). The tree has **v12.42 APPLIED** and
 verified on all four gates; its FULL CORPUS is running on the Browser pane tab "seed" (the only tab; the pane holds one tab since 2026-09-07 12:44).
@@ -200,6 +235,7 @@ grenade kills him rather than the warning being late. If he gives a number it
 is one line.
 
 ## FINAL RUN BEFORE ALPHA (handoff to Fable, 2026-09-06)
+> STALE (marked 2026-10-18): history of the 09-06 run. Do not copy its queue or commands.
 
 **STATE: HEAD is v11.72 (8ac8eec) and THE TREE IS CLEAN.** Nothing is
 mid-flight. The whole v11.46 audit queue is shipped, along with all six of his
@@ -411,6 +447,7 @@ The range in every command below is therefore 1150 to 1164, and the dry run
 is `dry.ps1 NEW 1164`.
 
 ## The per-build procedure (one build at a time, never two)
+> STALE (marked 2026-10-18): replaced by the ship queue (mk script, preflight.sh, shipq.sh; see tools/handoff/console/RULES.md, "How a change ships"). ship.sh start/commit and the pNNNN/fNNNN files are no longer run by hand.
 
 Below, PREV is HEAD's four-digit tag (v11.50 = 1150) and NEW is PREV+1.
 
@@ -452,6 +489,7 @@ serves the tools folder: fixture.html, parsecheck.html, fx<PREV>.html.)
    available; a tick that ships nothing is a failed tick.
 
 ## Standing rules that bit this week
+> STALE in part (marked 2026-10-18): these are lessons from 09-11 to 09-13. The testing lessons may still help; the rest of the procedure does not apply.
 
 - v11.58 ALSO REPAIRED CHECK 9.88, whose control required the bottom of the HUD
   canvas to be blank with the belt dial off. That was only true because the
@@ -520,6 +558,7 @@ are the testable ones):
   findings. Several shipped since (v11.37 to v11.41); check AUDIT.md first.
 
 ## How a draft is written (for builds after 1163)
+> STALE (marked 2026-10-18): drafts are now written by mk scripts (tools/handoff/drafts/draft-cw-KEY.json). WHATSNEW_VER is no longer bumped by every ship.
 
 p<n>.ps1 patches the game with SubRx exact-match asserts (each anchor must
 match exactly once) plus an edit-count assert, and bumps VER, WHATSNEW_VER,
@@ -548,6 +587,7 @@ as the template. Reproduce the defect in the page BEFORE writing the fix.
 **I READ FINDING 2 MYSELF AND HALF OF IT IS WRONG, which is what the re-read is for.** The retired name IS real: game line 32359 is the only occurrence of it in the whole file and it is the name of the file dropped into the player's Downloads. But the audit also said the Settings row promises a drop every second raid while the code drops after raid one; it does not. The dropping gate at 32385 carries a comment explaining that the first raid of a session is dropped deliberately, because measuring the path with the drop unreachable showed six raids played, one file saved and five silently lost, so the one copy he ever hands over held his first raid and nothing after it. The Settings words at game 1532 say only that CLOSE keeps the reports in his Downloads. So the build is the filename alone, one line, and renaming it is safe because the importer identifies a report by its contents and not by its name.
 
 ## STOPPED 2026-09-08 BY HIS ORDER, TO SAVE USAGE. READ THIS FIRST WHEN RESUMING.
+> STALE (marked 2026-10-18): work went on after this stop (the next dated section is 09-09). Nothing here is waiting to be resumed.
 
 **HEAD is v12.45 (5249ed5). v12.46 is APPLIED TO THE TREE AND NOT COMMITTED.** Both
 dark_raiders.html and tools/mkfixture.ps1 are modified in the working tree and that is
