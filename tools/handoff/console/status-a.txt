@@ -1,1 +1,1 @@
-10-18 09:09 13-ui-end-cards: failed, $0.0554
+10-18 09:14 running c-31-ui-pause-settings (cap $4.00; spent today $96.78 of $176.54)

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.16 - Operator backdrop is solid
+
+Co-op hunt while he was away. Critic on 63: the words of the board page showed through the 97 percent backdrop of the operator card as ghost text. The backdrop is solid.
+
+MEASURED. Check 30.16 passes, and fails on v30.15.
 ## v30.15 - SETTINGS HINT 20PX, SHORTER LIST FADE
 
 Co-op hunt while he was away. Critic c-31 round 14 (Pad buttons 74 at 2): the hint was about 14px, the fade clipped a row mid-glyph, a wrapped label crowded the row above.

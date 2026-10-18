@@ -6097,6 +6097,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.16',what:'the operator backdrop is solid (the board page behind it never shows through as ghost words; critic on 62 and 63)',
+   run:function(){
+     if(typeof arcadeOpOpen!=='function'||typeof arcadeOpClose!=='function'||typeof ARCADE!=='object'||!ARCADE) return 'SKIP: no operator card';
+     var was=ARCADE.on, op, bd, a, res=null, al;
+     try{
+       ARCADE.on=true;
+       if(!arcadeOpOpen()) return 'the operator card did not open';
+       op=document.getElementById('arcop'); if(!op) return 'no operator card element';
+       bd=op.previousElementSibling; if(!bd) return 'no backdrop element';
+       a=getComputedStyle(bd).backgroundColor;
+       al=/\/\s*([0-9.]+)\s*\)/.exec(a); al=al?parseFloat(al[1]):(/rgba\([^)]*,\s*([0-9.]+)\)/.exec(a)?parseFloat(/rgba\([^)]*,\s*([0-9.]+)\)/.exec(a)[1]):1);
+       if(al<0.999) res='the operator backdrop is '+a+', not solid';
+       return res;
+     } finally { try{ arcadeOpClose(); }catch(e){} ARCADE.on=was; }
+   }},
   {v:'30.15',what:'the Settings key-hint line is 20px and the list fade is 24px',
    run:function(){
      var bad=[], m, fs, mk, l, padWas=document.body.classList.contains('padon');

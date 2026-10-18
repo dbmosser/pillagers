@@ -162,10 +162,10 @@
  "25-raid-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, guide-compliant pause card with one clear primary and sentence case, but it reads like a generic template, the HUD ghosts through the scrim, and the footer hint and lack of pad focus fall short.",
-  "pic": "tools/handoff/console/notes/shots/c-31w-after/25-raid-pause-box-1080.jpg",
+  "verdict": "The pause modal is a clean, well-aligned card with a clear amber primary, danger-outlined Abandon and a top-right X, but it is generic, the buttons are all the same width and weight, and the only change from the old version is slightly different text in the dimmed HUD behind it.",
+  "pic": "tools/handoff/console/notes/shots/c-31x-after2/25-raid-pause-box-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T12:55"
+  "when": "2026-10-18T13:13"
  },
  "26-settings-from-pause-top": {
   "score": 3,
@@ -232,12 +232,12 @@
   "when": "2026-10-18T06:20"
  },
  "52-arcade-run-over": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The screen is clean and uses the right tokens (sentence case, amber primary, 2px tab), but it is a sparse template card on a flat vignette. It misses the end-card shell: no live-world backdrop, a weak hero line, a run-on stats string and a mislabelled button.",
-  "pic": "tools/handoff/console/notes/shots/12-d1/52-arcade-run-over-1080.jpg",
+  "verdict": "A clean, on-token end card with a clear hero line and sentence case, but it is undersized against the guide, has no real button, and the 'Run over' title reads weaker than the score.",
+  "pic": "tools/handoff/console/notes/shots/12-g8/52-arcade-run-over-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T10:16"
+  "when": "2026-10-18T13:14"
  },
  "57-title-2p-coop-picked": {
   "score": 2,
@@ -370,10 +370,10 @@
  "47-arcade-drop-controls-card": {
   "score": 2,
   "pass": false,
-  "verdict": "The controls card is readable as a table, but it sits on a busy HUD with a clipped title, wrong placement, leaking text behind it, and several off-guide sizes and colours, so it looks like a debug overlay rather than a polished screen.",
-  "pic": "tools/handoff/console/notes/shots/12-g7/47-arcade-drop-controls-card-1080.jpg",
+  "verdict": "The controls card is a legible two-column table, but it is a left-edge slab dropped on a busy, undimmed raid HUD with no close button, no action, and no scrim. Stacked with duplicate weather toasts and a cluttered corner HUD, it reads as a debug overlay, not a polished screen.",
+  "pic": "tools/handoff/console/notes/shots/12-g8/47-arcade-drop-controls-card-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T12:58"
+  "when": "2026-10-18T13:14"
  },
  "48-arcade-hud-move-to-start": {
   "score": 2,
@@ -402,10 +402,10 @@
  "64-arcade-board-seeded-night": {
   "score": 3,
   "pass": false,
-  "verdict": "It is a clean, on-token card with correct sentence case and one amber action, but it is a mostly empty leaderboard with a weak hierarchy, no close control, and a mislabelled button, so it reads as a template placeholder rather than a polished AAA screen.",
-  "pic": "tools/handoff/console/notes/shots/12-g4/64-arcade-board-seeded-night-1080.jpg",
+  "verdict": "A clean, on-guide dark card with an amber top tab and sentence case, but the empty board is five rows of dashes with weak hierarchy, small muted type and no close affordance, so it feels like a placeholder rather than a finished arcade screen.",
+  "pic": "tools/handoff/console/notes/shots/12-g8/64-arcade-board-seeded-night-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T12:27"
+  "when": "2026-10-18T13:14"
  },
  "70-settings-sec-controls": {
   "score": 2,
@@ -442,9 +442,9 @@
  "74-settings-change-pad-buttons": {
   "score": 2,
   "pass": false,
-  "verdict": "The modal is tidier in the new version (hard scroll clip with a fade, a key-hint line, a calmer backdrop), but the dense two-column list, wrapped labels, tiny hint and weak focus state keep it at amateur level.",
-  "pic": "tools/handoff/console/notes/shots/c-31x-after/74-settings-change-pad-buttons-1080.jpg",
+  "verdict": "The new version dims the backdrop and adds a fade at the scroll edge and an 'Esc Close' hint, but the cramped three-line wrapped label, the clipped fade row and the loose 'Esc Close' hint keep it at an amateur 2, and no pad focus is visible.",
+  "pic": "tools/handoff/console/notes/shots/c-31x-after2/74-settings-change-pad-buttons-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T13:09"
+  "when": "2026-10-18T13:13"
  }
 }

@@ -1,0 +1,5 @@
+## v30.16 - Operator backdrop is solid
+
+Co-op hunt while he was away. Critic on 63: the words of the board page showed through the 97 percent backdrop of the operator card as ghost text. The backdrop is solid.
+
+MEASURED. Check 30.16 passes, and fails on v30.15.

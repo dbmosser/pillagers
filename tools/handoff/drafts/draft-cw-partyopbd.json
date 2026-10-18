@@ -1,0 +1,12 @@
+{
+    "title":  "Operator backdrop is solid",
+    "why":  "Critic on 63: the words of the board page showed through the 97 percent backdrop of the operator card as ghost text. The backdrop is solid.",
+    "now":  "The operator card sits on a clean dark backdrop.",
+    "edits":  [
+                  {
+                      "anchor":  "background:color-mix(in srgb,var(--ui-void) 97%,transparent)\u0027;   // the attract is hidden behind the card",
+                      "replacement":  "background:var(--ui-void)\u0027;   /* v30.xx (cw-partyopbd) critic 63: the words of the board page showed through the 97 percent backdrop as ghost text. Solid now; the attract is hidden behind the card */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the operator backdrop is solid (the board page behind it never shows through as ghost words; critic on 62 and 63)\u0027,\n   run:function(){\n     if(typeof arcadeOpOpen!==\u0027function\u0027||typeof arcadeOpClose!==\u0027function\u0027||typeof ARCADE!==\u0027object\u0027||!ARCADE) return \u0027SKIP: no operator card\u0027;\n     var was=ARCADE.on, op, bd, a, res=null, al;\n     try{\n       ARCADE.on=true;\n       if(!arcadeOpOpen()) return \u0027the operator card did not open\u0027;\n       op=document.getElementById(\u0027arcop\u0027); if(!op) return \u0027no operator card element\u0027;\n       bd=op.previousElementSibling; if(!bd) return \u0027no backdrop element\u0027;\n       a=getComputedStyle(bd).backgroundColor;\n       al=/\\/\\s*([0-9.]+)\\s*\\)/.exec(a); al=al?parseFloat(al[1]):(/rgba\\([^)]*,\\s*([0-9.]+)\\)/.exec(a)?parseFloat(/rgba\\([^)]*,\\s*([0-9.]+)\\)/.exec(a)[1]):1);\n       if(al\u003c0.999) res=\u0027the operator backdrop is \u0027+a+\u0027, not solid\u0027;\n       return res;\n     } finally { try{ arcadeOpClose(); }catch(e){} ARCADE.on=was; }\n   }},"
+}

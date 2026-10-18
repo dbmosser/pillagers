@@ -1,0 +1,4 @@
+{"generated":"2026-10-18T09:12:57","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":27,"screens":[
+{"name":"25-raid-pause-box","screen":"RAID PAUSED box (normal mode) with feedback box and buttons","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"25-raid-pause-box-1080.jpg","lint":""}},
+{"name":"74-settings-change-pad-buttons","screen":"CHANGE PAD BUTTONS window","1080":{"staged":true,"note":"keysmodal","viewport":"1920x1080","shot":"74-settings-change-pad-buttons-1080.jpg","lint":""}}
+]}
