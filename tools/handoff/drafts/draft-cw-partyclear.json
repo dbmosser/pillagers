@@ -1,0 +1,12 @@
+{
+    "title":  "Party start clears any open window",
+    "why":  "The welcome pack of a fresh profile stayed open under the party attract and showed through its backdrop in the pictures of how to play and the board. Starting the arcade now closes every window still open on the title.",
+    "now":  "The party attract starts on a clear screen.",
+    "edits":  [
+                  {
+                      "anchor":  "  var mi=(P\u0026\u0026typeof P.mapIx===\u0027number\u0027)?P.mapIx:0;\n  WNSEEN=1;",
+                      "replacement":  "  var mi=(P\u0026\u0026typeof P.mapIx===\u0027number\u0027)?P.mapIx:0;\n  WNSEEN=1;\n  try{ var _om=document.querySelectorAll(\u0027.modal.on\u0027), _oi; for(_oi=0;_oi\u003c_om.length;_oi++) _om[_oi].classList.remove(\u0027on\u0027); }catch(_om2){}   /* v30.xx (cw-partyclear): a window left open on the title (the welcome pack on a fresh profile) stayed open under the party attract and showed through it. The party starts on a clear screen */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027starting the arcade closes any window still open on the title: the welcome pack of a fresh profile stayed open under the party attract and showed through the backdrop (screens 46 64)\u0027,\n   run:function(){\n     if(typeof arcadeEnter!==\u0027function\u0027||typeof arcadeLeave!==\u0027function\u0027||typeof ARCADE!==\u0027object\u0027||!ARCADE) return \u0027SKIP: no arcade here\u0027;\n     var m=document.getElementById(\u0027welcomemodal\u0027), res=null, o;\n     if(!m) return \u0027SKIP: no welcome window\u0027;\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       m.classList.add(\u0027on\u0027);\n       if(!arcadeEnter(\u0027host\u0027)||!ARCADE.on) return \u0027SKIP: arcadeEnter did not turn the arcade on\u0027;\n       o=document.querySelector(\u0027.modal.on\u0027);\n       if(o) res=\u0027a window is still open over the party attract: \u0027+o.id;\n       return res;\n     } finally {\n       try{ if(ARCADE.on) arcadeLeave(); }catch(_l){}\n       try{ m.classList.remove(\u0027on\u0027); __topClear(); __cleanProfile(); }catch(_c){}\n     }\n   }},"
+}

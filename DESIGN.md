@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.02 - THE WHAT IS NEW CARD NAMES POLISH PASS 15
+
+Co-op hunt while he was away. The card was stamped v29.86 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
+
+MEASURED. Check 30.02 passes, and fails on v30.01.
 ## v30.01 - Party pages: Press any button is a footer hint, the logo is smaller
 
 Co-op hunt while he was away. Critic on 46, 55, 56 and 64 (3 of 5 each): Press any button is an instruction drawn as a filled button, a fake action; the 56px wordmark out-shouts the page title; the empty board line is the one message that matters and it is dim; the ring has no words. The prompt is a footer hint with a button glyph and accent words, the wordmark the 32px logo, the empty line light, the ring labelled. Restyle only.

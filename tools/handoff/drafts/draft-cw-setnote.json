@@ -1,0 +1,20 @@
+{
+    "title":  "SHORT REBIND CALLOUT, QUIETER SETTINGS DETAIL PANE",
+    "why":  "Critic c-31 round 11 (Pad buttons 75 at 2, Settings 18 and 72 at 3): the rebind banner is an explaining sentence at 14px with clipped corners; the Settings detail pane repeats the focused row title and value. One short callout at 20px, and a pane that shows only the help line.",
+    "now":  "Rebind callout is one short line, Settings detail pane shows only the help text.",
+    "edits":  [
+                  {
+                      "anchor":  "#root #keyslist .keysec{ color:var(--tx-1); }",
+                      "replacement":  "#root #keyslist .keysec{ color:var(--tx-1); }\n/* v28.xx (cw-setnote) critic c-31 round 11 (Pad buttons 75 at 2: \"an explaining sentence in a tinted bar at about 14px\"; Settings 18 and 72 at 3: \"the detail pane repeats Edit the words Off, which duplicates the focused row\"; \"its sentence is about 15px\"). Now: the rebind callout is one short line at 20px with square corners, and the Settings detail pane shows only the row help line at 20px (the row above already wears the name and the value, so the pane drops its title and value, and hides when a row has no help). */\n#root #keysnote{ clip-path:none; border-radius:var(--rad); font-size:var(--fs-body); }\n#root #setdetail .sdk, #root #setdetail .sdv{ display:none; }\n#root #setdetail:not(:has(.sdh)){ display:none; }\n#root #setdetail{ min-height:0; }\n#root #setdetail .sdh{ font-size:var(--fs-body); line-height:1.4; }"
+                  },
+                  {
+                      "anchor":  "s=\u0027PRESS A KEY FOR \u0027+keysActName(KEYS.waiting)+\u0027. ESC CANCELS.\u0027;",
+                      "replacement":  "s=\u0027PRESS A KEY FOR \u0027+keysActName(KEYS.waiting)+\u0027  \\u00b7  ESC CANCELS\u0027;"
+                  },
+                  {
+                      "anchor":  "s=\u0027PRESS A BUTTON FOR \u0027+padActName(PADB.waiting)+\u0027. ESC OR TEN SECONDS CANCELS.\u0027;",
+                      "replacement":  "s=\u0027PRESS A BUTTON FOR \u0027+padActName(PADB.waiting)+\u0027  \\u00b7  ESC CANCELS\u0027;"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the rebind callout is one short line without \"ten seconds\", and the Settings detail pane hides its repeated title and value\u0027,\n   run:function(){\n     var bad=[], el, t, d, k, h, padWas=document.body.classList.contains(\u0027padon\u0027);\n     __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n     try{\n       el=document.createElement(\u0027div\u0027); document.body.appendChild(el);\n       PADB.waiting=0; padNoteShow(el); t=el.textContent; PADB.waiting=null;\n       if(/ten seconds/i.test(t)) bad.push(\u0027the pad rebind callout still explains: \u0027+t);\n       if(/\\.\\s/.test(t)||/\\.$/.test(t)) bad.push(\u0027the pad rebind callout is a sentence: \u0027+t);\n       KEYS.waiting=KEYS_ACTS[0][0]; keysNoteShow.call(null); KEYS.waiting=null;\n       el.remove();\n       document.body.classList.remove(\u0027padon\u0027);\n       openSettings(\u0027display\u0027);\n       if(typeof window.__setDetailSync===\u0027function\u0027) window.__setDetailSync();\n       d=document.getElementById(\u0027setdetail\u0027); k=d\u0026\u0026d.querySelector(\u0027.sdk\u0027); h=d\u0026\u0026d.querySelector(\u0027.sdh\u0027);\n       if(k\u0026\u0026getComputedStyle(k).display!==\u0027none\u0027) bad.push(\u0027the detail pane still repeats the row title\u0027);\n       if(!d) bad.push(\u0027no detail pane\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ PADB.waiting=null; KEYS.waiting=null; var q=document.getElementById(\u0027settingsmodal\u0027); if(q) q.classList.remove(\u0027on\u0027); }catch(_k){} try{ __topClear(); }catch(_c){} document.body.classList.toggle(\u0027padon\u0027,padWas); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
