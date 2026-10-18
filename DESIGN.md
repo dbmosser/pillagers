@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.83 - End cards: lost items as tiles, a loss figure, contract chips
+
+Co-op hunt while he was away. The critic scored the Killed in action card 2 of 5: no hero figure, five rows each repeating Lost with the name in rarity colour, long green contract sentences. Now one tile row (64px, 3px rarity bar, x2 stacks), one 56px loss figure, one chip per contract. The old words stay as hidden text. Restyle only.
+
+MEASURED. Check 29.83 passes, and fails on v29.82.
 ## v29.82 - Hub windows ease in too
 
 Co-op hunt while he was away. UI STEP 2b continued. His words: "they are just reallly compelling and smooth". Trader, gamble, bar, looks, trophies, codex, board, news, sector, stage, carry, crate, ops, welcome and terms windows join the shared UI motion layer: 240 ms open with a 16 px rise, 140 ms close, one open and one close sound. Menus only, no raid value touched.

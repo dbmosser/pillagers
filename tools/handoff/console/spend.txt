@@ -311,3 +311,5 @@
 2026-10-18 0.0411 critic-12-ui-party-screens
 2026-10-18 0.0560 critic-13-ui-end-cards
 2026-10-18 0.0638 critic-13-ui-end-cards
+2026-10-18 0.2981 11b-ui-motion
+2026-10-18 0.0516 11b-ui-motion

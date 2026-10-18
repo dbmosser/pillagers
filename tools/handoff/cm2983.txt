@@ -1,0 +1,7 @@
+v29.83: end cards: lost items as tiles, a loss figure, contract chips
+
+The death card shows lost items as tiles with one big loss figure.
+
+Check 29.83. Fails on v29.82.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

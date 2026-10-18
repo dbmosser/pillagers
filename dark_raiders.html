@@ -1441,6 +1441,15 @@
   #root .ocstat span{ display:block; margin-top:4px; font-size:16px; line-height:1.2; letter-spacing:.04em; color:var(--tx-2); }
   #root .ocachs{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:16px 0 8px; }
   #root .ocach{ padding:8px 16px; font-size:16px; line-height:1.2; color:var(--tx-1); background:var(--ui-raised); border:1px solid var(--ui-line); border-left:3px solid var(--acc); border-radius:4px; }
+  /* v28.xx (cw-endcard-lost), the critic on the Killed in action card (2 of 5): "no hero line", "five centred rows each repeat a red Lost and the name is coloured by rarity; the guide says rarity is a 3px bar", "two identical Bandage rows are not stacked", "the contract lines are long green sentences". A tile row (64px tiles, 3px rarity bar, x2 count), one 56px loss figure with a 16px label, and the contract lines as one chip each. */
+  #root .ocloss{ margin:16px 0 24px; text-align:center; }
+  #root .ocloss b{ display:block; font-family:var(--f-cond); font-size:56px; font-weight:700; line-height:1.05; letter-spacing:0; color:var(--tx-1); }
+  #root .ocloss span{ display:block; margin-top:4px; font-size:16px; line-height:1.2; letter-spacing:.04em; color:var(--tx-2); }
+  #root .octiles{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:16px 0 8px; }
+  #root .octile{ position:relative; display:flex; align-items:center; justify-content:center; width:64px; height:64px; box-sizing:border-box; background:var(--ui-raised); border:1px solid var(--ui-line); border-bottom:3px solid var(--ui-line-hi); border-radius:4px; }
+  #root .octile img{ width:44px !important; height:44px !important; }
+  #root .octile i{ position:absolute; right:2px; top:2px; padding:0 6px; font-style:normal; font-size:16px; line-height:20px; color:var(--tx-1); background:var(--ui-bg); border-radius:4px; }
+  #root .ocach.ocok{ border-left-color:var(--ok); }
   /* vNN.xx, UI CLEANUP uic4 (his 2026-10-14 note, "ui and player messaging just isn't as clean as it should be", from the 1080p shots of the
      map select screen and the Undercroft floor): THE ANSWER LINE STAYS OFF THE BUTTONS. The line sat 38 px up in the middle of the screen
      whatever was open, so it landed on ASCEND TO THIS SECTOR (the whole bottom of the map select screen is that one button) and, on the
@@ -2642,7 +2651,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='29.82';
+var VER='29.83';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -31687,7 +31696,12 @@ function ocEmblem(n,d,id){
 // v28.xx (cw-endcard-stats): the critic, "a run-on dotted sentence at 14px". The one stats sentence (containers, accuracy, kills, time) becomes a row of four cells and each
 // achievement becomes a name chip; the old words stay in the card as hidden spans (class ocsr), so nothing that reads the card text moves. A career card has its own ledger and is left alone.
 function ocStatRow(lines,st){
-  var out=[], i, k, ln, m, names=[], cells, h, chips;
+  var out=[], i, k, ln, m, names=[], cells, h, chips, lost=[], lostTxt='';
+  function flushLost(){
+    var t='<div class="octiles">', q;
+    for(q=0;q<lost.length;q++) t+='<span class="octile" title="'+lost[q].name+'" style="border-bottom-color:'+lost[q].col+'">'+lost[q].img+(lost[q].n>1?'<i>x'+lost[q].n+'</i>':'')+'</span>';
+    out.push(t+'</div><span class="ocsr">'+lostTxt+'</span>'); lost=[]; lostTxt='';
+  }
   for(i=0;i<lines.length;i++){ m=/ACHIEVEMENT: ([^<]*)<\/span>/.exec(String(lines[i])); if(m) names.push(m[1]); }
   for(i=0;i<lines.length;i++){
     ln=String(lines[i]);
@@ -31697,6 +31711,17 @@ function ocStatRow(lines,st){
       h='<div class="ocstat">';
       for(k=0;k<cells.length;k++) h+='<div><b>'+cells[k][0]+'</b><span>'+cells[k][1]+'</span></div>';
       out.push(h+'</div><span class="ocsr">'+ln+'</span>'); continue;
+    }
+    if(lost.length&&!/LOST<\/span>$/.test(ln)) flushLost();
+    if(/LOST<\/span>$/.test(ln)&&(m=/^(<img[^>]*>)? ?<span style="color:([^"]*)">([^<]*)<\/span><span style="color:var\(--rust\)">\s*LOST<\/span>$/.exec(ln))){
+      for(k=0;k<lost.length;k++) if(lost[k].name===m[3]){ lost[k].n++; break; }
+      if(k===lost.length) lost.push({img:m[1]||'',col:m[2],name:m[3],n:1});
+      lostTxt+=ln; continue;
+    }
+    if(/^\d+ items? secured for \$[\d,]+$/.test(ln)){ out.push('<span class="ocsr">'+ln+'</span>'); continue; }
+    if((m=/^(.* lost), \$([\d,]+) gone$/.exec(ln))){ out.push('<div class="ocloss"><b>\x24'+m[2]+'</b><span>'+m[1].charAt(0).toUpperCase()+m[1].slice(1)+'</span></div><span class="ocsr">'+ln+'</span>'); continue; }
+    if((m=/^<span style="color:#7fc4a0">CONTRACT COMPLETE: (.*)\. Complete contract at mainframe\.<\/span>$/.exec(ln))){
+      out.push('<div class="ocachs"><span class="ocach ocok">'+m[1].charAt(0).toUpperCase()+m[1].slice(1).toLowerCase()+'</span></div><span class="ocsr">'+ln+'</span>'); continue;
     }
     if(ln.indexOf('>ACHIEVEMENT: ')>=0){
       chips='';
@@ -47756,7 +47781,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v29.82: The hub windows now ease open and shut. Check 29.82 fails on v29.81',
+  now:'v29.83: The death card shows lost items as tiles with one big loss figure. Check 29.83 fails on v29.82',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
