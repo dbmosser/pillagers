@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v29.70 - THE WHAT IS NEW CARD NAMES POLISH PASS 13
+
+Co-op hunt while he was away. The card was stamped v29.54 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
+
+MEASURED. Check 29.70 passes, and fails on v29.69.
 ## v29.69 - Attract pages: no dark bands, one accent, no operator shadow
 
 Co-op hunt while he was away. The critic scored the attract pages 2 and 3: letterbox bands behind the title and prompt, two amber stubs, a drop shadow on the operator card. While a page is up the bands and the underline go and the operator shadow goes. Restyle only.

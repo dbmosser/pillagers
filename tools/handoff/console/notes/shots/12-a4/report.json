@@ -1,0 +1,4 @@
+{"generated":"2026-10-18T05:38:47","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":50,"screens":[
+{"name":"56-arcade-attract-board-scored","screen":"Arcade attract TONIGHT\u0027S BEST with one row (???), LAST RUN, BEST EVER","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"56-arcade-attract-board-scored-1080.jpg","lint":""}},
+{"name":"63-arcade-operator-new-party-armed","screen":"DEMO operator menu, NEW PARTY pressed once (CONFIRM NEW PARTY)","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"63-arcade-operator-new-party-armed-1080.jpg","lint":""}}
+]}

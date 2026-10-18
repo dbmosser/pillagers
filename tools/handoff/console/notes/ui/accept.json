@@ -162,10 +162,10 @@
  "25-raid-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, centred pause card with one clear amber primary and good sentence case, but it ignores the guide's close X and footer rules, has a tiny footer hint, a cut-corner tab that breaks the 4px panel rule, and gives no visible pad focus.",
-  "pic": "tools/handoff/console/notes/shots/c-31i-after/25-raid-pause-box-1080.jpg",
+  "verdict": "The narrower 480px card tightens the pause menu and the amber Resume button is a clear first read, but the title is still centred, there is no close X or pad glyph, and the stacked full-width outline buttons still look like a generic template.",
+  "pic": "tools/handoff/console/notes/shots/c-31p-after/25-raid-pause-box-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T08:59"
+  "when": "2026-10-18T09:37"
  },
  "26-settings-from-pause-top": {
   "score": 2,
@@ -176,12 +176,12 @@
   "when": "2026-10-18T09:37"
  },
  "32-keys-window": {
-  "score": 3,
+  "score": 2,
   "pass": false,
-  "verdict": "The second pass fixes the worst problems of the first (lowercase labels, tiny key text, the explaining banner) and reads as a clean, consistent dark card, but the window is a long two-column form with no focus state, undersized section headers and a missing key hint strip, so it still looks like a settings dump rather than a designed screen.",
-  "pic": "tools/handoff/console/notes/shots/c-31m-after/32-keys-window-1080.jpg",
+  "verdict": "The new Keys window is a modest improvement (narrower card, a real close glyph, tighter columns), but it is still a dense, undifferentiated wall of identical rows and key boxes with tiny muted section labels, a clipped list and a non-standard layout, so it reads as a 2 rather than a polished screen.",
+  "pic": "tools/handoff/console/notes/shots/c-31p-after/32-keys-window-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T09:19"
+  "when": "2026-10-18T09:38"
  },
  "33-raid-fight-alerts": {
   "score": 2,
@@ -362,10 +362,10 @@
  "56-arcade-attract-board-scored": {
   "score": 2,
   "pass": false,
-  "verdict": "A clean but nearly empty attract screen: the title and the lone card sit in a void, the 'board' has no content, and the dark bands, vignette and centered layout read as a generic template, not Pillagers.",
-  "pic": "tools/handoff/console/notes/shots/12-a3/56-arcade-attract-board-scored-1080.jpg",
+  "verdict": "The black title and prompt bands from the earlier version are gone, so it reads cleaner, but it is still a nearly empty screen with a tiny, orphaned 'no scores yet' card, a plain text title and no identity or focus.",
+  "pic": "tools/handoff/console/notes/shots/12-a4/56-arcade-attract-board-scored-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T09:33"
+  "when": "2026-10-18T09:39"
  },
  "47-arcade-drop-controls-card": {
   "score": 2,
