@@ -1,0 +1,7 @@
+v30.04: party start clears any open window
+
+The party attract starts on a clear screen.
+
+Check 30.04. Fails on v30.03.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

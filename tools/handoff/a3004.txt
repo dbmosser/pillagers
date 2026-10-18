@@ -1,0 +1,1 @@
+| Party start clears any open window | v30.04 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 30.04 passes, fails on v30.03 |

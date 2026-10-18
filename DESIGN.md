@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v30.04 - Party start clears any open window
+
+Co-op hunt while he was away. The welcome pack of a fresh profile stayed open under the party attract and showed through its backdrop in the pictures of how to play and the board. Starting the arcade now closes every window still open on the title.
+
+MEASURED. Check 30.04 passes, and fails on v30.03.
 ## v30.03 - THE WHAT IS NEW CARD NAMES POLISH PASS 16
 
 Co-op hunt while he was away. The card was stamped v30.02 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.

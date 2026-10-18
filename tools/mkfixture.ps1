@@ -6097,6 +6097,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'30.04',what:'starting the arcade closes any window still open on the title: the welcome pack of a fresh profile stayed open under the party attract and showed through the backdrop (screens 46 64)',
+   run:function(){
+     if(typeof arcadeEnter!=='function'||typeof arcadeLeave!=='function'||typeof ARCADE!=='object'||!ARCADE) return 'SKIP: no arcade here';
+     var m=document.getElementById('welcomemodal'), res=null, o;
+     if(!m) return 'SKIP: no welcome window';
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       m.classList.add('on');
+       if(!arcadeEnter('host')||!ARCADE.on) return 'SKIP: arcadeEnter did not turn the arcade on';
+       o=document.querySelector('.modal.on');
+       if(o) res='a window is still open over the party attract: '+o.id;
+       return res;
+     } finally {
+       try{ if(ARCADE.on) arcadeLeave(); }catch(_l){}
+       try{ m.classList.remove('on'); __topClear(); __cleanProfile(); }catch(_c){}
+     }
+   }},
   {v:'30.03',what:'the what is new card is stamped within 0.15 of the build and leads with the new news shown whole',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';
