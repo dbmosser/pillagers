@@ -1,0 +1,1 @@
+| F8 is an in game snipping tool: it freezes the game, you drag a box, then copy it or save it | v31.13 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 31.13 passes, fails on v31.12 |

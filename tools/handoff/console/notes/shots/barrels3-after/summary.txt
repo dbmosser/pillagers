@@ -54,3 +54,17 @@
   b3-shock-closeup                       staged       7.3s    | barrel shock at 2114,1309
   b5-acid-closeup                        staged       7.2s    | barrel acid at 1682,2269
   b7-cryo-closeup                        staged       7.3s    | barrel cryo at 2118,1282
+== 1080 : window 1952x1183, viewport 1920x1080
+  b8-cryo-blast                          staged       7.2s    | blast cryo crawler stun false frozen true hp 871
+  b11-acid-pool                          staged       8.3s    | pool, armour 60
+  b12-cryo-fog                           staged       7.7s    | fog, frozen true
+  b4-shock-blast                         staged       7.1s    | blast shock crawler stun true frozen false hp 829
+  b6-acid-blast                          staged       7.1s    | blast acid crawler stun false frozen false hp 835
+  b2-red-blast                           staged       7.2s    | blast red crawler stun false frozen false hp 779
+== 4k : window 3872x2263, viewport 3840x2160
+  b8-cryo-blast                          staged       7.4s    | blast cryo crawler stun false frozen true hp 871
+  b11-acid-pool                          staged       8.3s    | pool, armour 59
+  b12-cryo-fog                           staged       7.8s    | fog, frozen true
+  b4-shock-blast                         staged       7.2s    | blast shock crawler stun true frozen false hp 829
+  b6-acid-blast                          staged       7.2s    | blast acid crawler stun false frozen false hp 835
+  b2-red-blast                           staged       7.3s    | blast red crawler stun false frozen false hp 778

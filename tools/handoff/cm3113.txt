@@ -1,0 +1,7 @@
+v31.13: f8 is an in game snipping tool: it freezes the game, you drag a box, then copy it or save it
+
+F8 freezes the game so you can drag a box around any part of the screen. Press copy to put it on your clipboard, or save to write it to the exports folder. ESC or F8 carries on.
+
+Check 31.13. Fails on v31.12.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
