@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.61 - QUIET KEY CAPS, RAISED REBIND CALLOUT, PANEL DETAIL STRIP
+
+Co-op hunt while he was away. Critic c-31y round 2: olive callout fill, 24 identical loud key caps, detail pane the same fill as the focused row.
+
+MEASURED. Check 31.61 passes, and fails on v31.60.
 ## v31.60 - WELCOME PACK: ONE LINE INTRO
 
 Co-op hunt while he was away. Critic b-31 on the welcome pack (02): the four sentence intro paragraph is an explaining sentence over the pack list. Shortened under his Q8, reason in changes.md.

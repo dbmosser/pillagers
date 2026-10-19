@@ -1,0 +1,7 @@
+v31.61: quiet key caps, raised rebind callout, panel detail strip
+
+The rebind callout wears the raised fill, idle key caps have a quiet border, and the settings detail strip is the panel fill.
+
+Check 31.61. Fails on v31.60.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

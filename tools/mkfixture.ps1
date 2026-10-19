@@ -6101,6 +6101,28 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.61',what:'Rebind callout is the raised fill, idle key caps have a quiet border, the detail strip is the panel fill',
+   run:function(){
+     var bad=[], kn, kb, sd, bg, padWas=document.body.classList.contains('padon');
+     __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     try{
+       document.body.classList.remove('padon');
+       keysOpen(false); kn=document.getElementById('keysnote'); kb=document.querySelector('#keyslist .keybtn');
+       if(!kn||!kb) bad.push('no keys note or cap');
+       else{
+         kn.className='wait'; kn.textContent='press a key for sprint';
+         bg=getComputedStyle(kn).backgroundColor;
+         if(bg.replace(/\s/g,'')!=='rgb(30,34,37)') bad.push('callout fill is '+bg);
+         bg=getComputedStyle(kb).borderTopColor;
+         if(bg.replace(/\s/g,'')!=='rgb(46,51,55)') bad.push('idle key cap border is '+bg);
+       }
+       try{ document.getElementById('keysmodal').classList.remove('on'); }catch(_k){}
+       openSettings('display'); sd=document.getElementById('setdetail');
+       if(!sd) bad.push('no detail strip');
+       else{ bg=getComputedStyle(sd).backgroundColor; if(bg.replace(/\s/g,'')!=='rgb(22,25,27)') bad.push('detail strip fill is '+bg); }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var q=document.getElementById('settingsmodal'); if(q) q.classList.remove('on'); q=document.getElementById('keysmodal'); if(q) q.classList.remove('on'); }catch(_k){} try{ __topClear(); }catch(_c){} document.body.classList.toggle('padon',padWas); }
+     return bad.length?bad.join('; '):null; }},
   {v:'31.60',what:'the welcome pack intro is one short line, not a four sentence paragraph',
    run:function(){
      var m=document.getElementById('welcomemodal'), el=m&&m.querySelector('.msub'), t;

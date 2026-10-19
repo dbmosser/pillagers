@@ -1,0 +1,5 @@
+## v31.61 - QUIET KEY CAPS, RAISED REBIND CALLOUT, PANEL DETAIL STRIP
+
+Co-op hunt while he was away. Critic c-31y round 2: olive callout fill, 24 identical loud key caps, detail pane the same fill as the focused row.
+
+MEASURED. Check 31.61 passes, and fails on v31.60.
