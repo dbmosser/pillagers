@@ -1,0 +1,4 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  18-settings-hub                        staged       7.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | settingsmodal
+  72-settings-sec-display                staged       7.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | settingsmodal
+  74-settings-change-pad-buttons         staged       8.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | keysmodal

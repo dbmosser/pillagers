@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.66 - STASH TYPE FLOOR 16PX AND $ GOING UP
+
+Co-op hunt while he was away. The stash labels, tabs, counts, key bar and hint lines painted at 13px, under the 16px floor of the style guide, and the loadout head showed the old credits letter c. Type is 17.4px (16px after the 0.92 scale) and the head reads $ going up (his Q59).
+
+MEASURED. Check 31.66 passes, and fails on v31.65.
 ## v31.65 - SETTINGS FILL THE CARD WITH A DETAIL PANE
 
 Co-op hunt while he was away. Critic c-31 rounds: Settings block floats in dead space and the description is the loudest block; fill the card and move the description to a right pane.

@@ -1,0 +1,7 @@
+v31.66: stash type floor 16px and $ going up
+
+The stash text is 16px or more and the loadout head says $ going up.
+
+Check 31.66. Fails on v31.65.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

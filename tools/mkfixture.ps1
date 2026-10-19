@@ -6101,6 +6101,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.66',what:'the stash labels and hint lines are at the 16px floor (17.4px before the 0.92 scale) and the loadout head says $ going up, not the old c',
+   run:function(){
+     if(!(window.__hubEnter&&window.__showScreen)) return 'SKIP: this fixture cannot walk the Undercroft';
+     var bad=[], ids=['sellhint','nextunlock','invkeybar'], i, el, fs, em;
+     try{
+       __topClear(); __cleanProfile();
+       G=null; keys={}; __showScreen('hub'); __hubEnter();
+       for(i=0;i<ids.length;i++){
+         el=document.getElementById(ids[i]); if(!el){ bad.push('no '+ids[i]); continue; }
+         fs=parseFloat(getComputedStyle(el.querySelector('kbd')||el).fontSize);
+         if(!(fs>=17)) bad.push(ids[i]+' text is '+fs+'px, under the 17.4px floor');
+       }
+       em=document.querySelector('#kitcol .lohead em');
+       if(!em||!/^\$/.test(em.textContent.trim())) bad.push('the loadout head reads "'+(em&&em.textContent)+'", not $ going up');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ __topClear(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'31.65',what:'Settings detail pane sits at the right of the rows and the block fills the card',
    run:function(){
      var bad=[], l, d, w, c, padWas=document.body.classList.contains('padon');

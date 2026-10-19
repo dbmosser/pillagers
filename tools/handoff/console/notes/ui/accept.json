@@ -664,32 +664,32 @@
  "72-settings-sec-display": {
   "score": 3,
   "pass": false,
-  "verdict": "the left tab rail and boxed value steppers fix the old cramped tab row and floating arrows, but the content block is still a narrow island in a huge card, the labels are small, and the scroll thumb and last-row clipping are the same as before.",
+  "verdict": "The three-column layout is now correct (rail at x=48, list filling the card, description pane on the right, bottom fade) and it reads as one coherent settings card, but it is still a flat spreadsheet of identical bordered steppers, the description pane is tiny and mostly empty, and the focused row still stacks too many signals.",
   "findings": [
-   "P1 overall layout: settings block inside the card: align the rail to x=48 with a 280px width and let the list fill to x≈1870, so the stepper column sits at about x=1300-1600. If the block stays centred, keep the card margins symmetric and stack the description beneath the list.",
-   "P1 bottom of the list: 'show fps' row: set the list viewport height to a multiple of 56px (11 rows = 616px) or add a 24px fade mask to the panel colour. Snap the scroll to whole rows.",
-   "P1 row labels and tab rail text: raise row labels and rail items to 20px, set idle rail items to tx-2 at 4.5:1 or better, and put the rail at 56px pitch with 24px left padding.",
-   "P2 focused row 'render resolution': keep one signal: a raised fill (--ui-raised) plus the 3px lime left bar, and drop the full outline. Border the focused stepper in lime. Keep the value at 22-24px.",
-   "P2 stepper boxes: drop the borders on idle rows and show the box only on the focused row, or use a 1px --ui-line border. Make the chevrons 20px with a 44px hit area and dim idle ones to tx-2."
+   "P1 right description pane (x≈1392-1870): Put the pane in a --ui-raised panel with 24px padding and a 3px lime top tab. Set the title to 32px tx-1, and the body to 20px f-body tx-1 at 90% (never below 16px). Add a larger preview or the current-value readout beneath it so the column carries content, or narrow it to about 360px and give the list the width.",
+   "P1 focused row 'render resolution': Keep only the raised fill (--ui-raised), the 3px lime left bar and the lime value. Remove the outline and the stepper box border on the focused row, or make the box the single lime-bordered element. Keep the chevrons in tx-1.",
+   "P1 stepper boxes on every row (x=762-1048): On idle rows drop the box border (or use --ui-line at 1px) and show the box only on the focused row. Right-align the stepper at x≈1100-1340 so label and value sit at opposite ends of the row, or widen the box to the row edge.",
+   "P1 row labels and rail items: Set row labels and rail items to 20px f-cond 600. Use tx-1 for row labels and idle rail items in tx-2 at 4.5:1 or better. Keep the selected rail item tx-1 on --ui-raised with the lime bar.",
+   "P2 bottom of the list (rows 'crosshair' and 'crosshair colour', y≈900-994): End the list viewport 16px above the footer line, with a viewport height that is a multiple of 56px (14 rows = 784px). Use the fade mask over the last 24px only. Make the thumb 6px wide in --ui-line-hi and keep it inside the panel padding."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-31ac-after/72-settings-sec-display-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/c-31ad-after/72-settings-sec-display-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-19T00:29"
+  "when": "2026-10-19T00:36"
  },
  "74-settings-change-pad-buttons": {
   "score": 2,
   "pass": false,
-  "verdict": "the second version widens the table to x240-1670, which fixes the label/chip crowding, but the screen is still a flat grey list with no focused chip, a clipped footer line, a lopsided column layout and weak section hierarchy.",
+  "verdict": "The new screenshot is pixel-identical to the old one, so none of the earlier advice was applied and every defect remains: no focused chip, a clipped 'locked' line, flat headers, and a lopsided table.",
   "findings": [
-   "P1 all 16 key chips (ls, a, rt ... menu): focus the first chip (ls) with a 2px --acc outline, --acc text and 1.04 scale with bounce. Idle chips: --ui-raised fill, 1px --ui-line-hi border, 16px --tx-1 text. Add a 3px --acc left tab on the focused row.",
-   "P1 'locked: these keep their jobs' at y~925, cut by the footer line at y~935: add 24px bottom padding in the scroll region plus a 16px fade mask above the footer line. Set the text to 16px --tx-2 #aaa498. Scrollbar thumb 6px wide in --ui-line-hi.",
-   "P1 section headers 'move', 'fight', 'gear', 'world' vs row labels: headers: 16px --tx-2, +.08em tracking, with a 3x16px --acc tab on the left. Row labels: 20px, weight 600, --tx-1. Put 24px above each group.",
-   "P1 table layout, x240-1670 in a 1870px card: span the table x49-1870 with the scrollbar on the card edge at x1856, or use a 60/40 split: a left 40% pad diagram that highlights the selected button, and the list on the right. Keep a 48px margin. Make the label column 360px and the chip 160px, with a 48px gutter between the two column pairs.",
-   "P2 footer: 'reset to defaults' button (x49-238, y947-994) and 'esc close' (x1797, y1021): align reset and the hint on one baseline at y~972. Make reset a 20px --danger-outlined secondary button. Replace 'esc close' with the live device prompt 'b back' at 16px --tx-2, or drop it."
+   "P1 all 16 key chips (ls, a, rt ... menu): Focus the first chip with a 2px --acc outline, --acc text, a 1.04 scale with bounce, and a 3px --acc left tab on its row. Idle chips: --ui-raised fill, 1px --ui-line-hi border, 16px --tx-1 text.",
+   "P1 'locked: these keep their jobs' at y~925, under the footer line at y~935: Add 24px bottom padding to the scroll region and a 16px fade mask above the footer line. Set the text to 16px --tx-2 #aaa498. Make the scrollbar thumb 6px wide in --ui-line-hi.",
+   "P1 section headers 'move', 'fight', 'gear', 'world' against the row labels: Headers: 16px --tx-2, +.08em tracking, with a 3x16px --acc tab on the left. Row labels: 20px, weight 600, --tx-1. Put 24px above each group.",
+   "P1 table layout, x240-1670 inside a 1870px card: Span the table from x49 to x1870 with the scrollbar at x1856. Make the label column 360px and the chip 160px, with a 48px gutter between column pairs. Alternative: a 60/40 split with a pad diagram that highlights the selected button.",
+   "P2 footer: 'reset to defaults' (x49-238, y947-994) and 'esc close' (x1797, y1021): Put both on one baseline at y~972. Make reset a 20px --danger-outlined secondary button. Replace 'esc close' with the live device prompt 'b back' at 16px --tx-2, or drop it, since the x already closes."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-31w-after2/74-settings-change-pad-buttons-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/c-31ad-after/74-settings-change-pad-buttons-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T23:54"
+  "when": "2026-10-19T00:36"
  },
  "01-title-mode-menu": {
   "score": 3,
