@@ -1,0 +1,7 @@
+v31.70: stash gun keys at the 16px floor, no build stamp
+
+Gun key names are 16px and the stash header has no build stamp.
+
+Check 31.70. Fails on v31.69.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

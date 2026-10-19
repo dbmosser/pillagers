@@ -6101,6 +6101,24 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.70',what:'the stash gun key and item wheel names are at the 16px label size and the build stamp is gone from the stash header',
+   run:function(){
+     if(!window.__hubEnter||!window.__station) return 'SKIP: this fixture cannot walk the Undercroft';
+     var bad=[], els, i, el, fs, vl;
+     try{
+       __topClear(); __runPrep(); __cleanProfile(); __wnseen(1);
+       __hubEnter(); __station('term','KeyE');
+       el=document.querySelector('#kitsetup .kst span');
+       if(!el) return 'SKIP: no gun keys drawn';
+       fs=parseFloat(getComputedStyle(el).fontSize);
+       if(!(fs>=15.5)) bad.push('the gun key names are '+fs+'px, under the 16px floor');
+       fs=parseFloat(getComputedStyle(document.querySelector('#kitsetup .ksreset')).fontSize);
+       if(!(fs>=15.5)) bad.push('the reset buttons are '+fs+'px');
+       vl=document.getElementById('verlabel');
+       if(vl&&getComputedStyle(vl).display!=='none') bad.push('the build stamp still shows in the stash header');
+     }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
+     finally{ try{ var hb=document.getElementById('hub'); if(hb) hb.classList.remove('on'); }catch(_h){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'31.69',what:'the stash help row, sell note and freebie bar lost their explaining sentences (Q8): no recipes line, no sell note, no go up with issued gear',
    run:function(){
      if(!window.__hubEnter||!window.__station) return 'SKIP: this fixture cannot walk the Undercroft';

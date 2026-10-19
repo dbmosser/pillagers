@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.70 - STASH GUN KEYS AT THE 16PX FLOOR, NO BUILD STAMP
+
+Co-op hunt while he was away. Critic on the stash: gun key and wheel names about 11px, and the build stamp reads as the title. Names, captions and reset buttons use the 16px label size; the stamp is hidden in the stash header.
+
+MEASURED. Check 31.70 passes, and fails on v31.69.
 ## v31.69 - STASH LOSES ITS EXPLAINING SENTENCES
 
 Co-op hunt while he was away. Q8: the stash help row carried a recipes sentence and a sell sentence, the sell button had a three sentence note under it, and the freebie bar and first raid pointer ran long. Short lines now; reasons are in notes/ui/changes.md.
