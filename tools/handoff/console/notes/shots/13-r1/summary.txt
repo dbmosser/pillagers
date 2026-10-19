@@ -1,0 +1,7 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  40-whats-new-card                      staged      12.0s    | runs 1 wnseen 0
+  76-haul-reveal-mid                     staged       7.4s  
+  77-haul-reveal-done                    staged      12.2s  
+  35-kia-card                            staged       9.6s  
+  59-raid-abandon-confirm                staged      12.5s  
+  60-abandoned-card                      staged      14.6s  

@@ -1,0 +1,7 @@
+v31.95: pad career name
+
+Name a career save with the pad: up or down for a letter, A next, B back, Menu done. The stash shows the saved name.
+
+Check 31.95. Fails on v31.94.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

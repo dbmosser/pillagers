@@ -15,14 +15,17 @@
 #   -Stop           stop those two servers again. Add -RestartRelay to start the play relay again afterwards.
 #   -Status         look only: is the copy there, which commit, is it being served (changes nothing)
 #   -Dir PATH       where the copy lives (default C:\claudecode\pillagers-party). It must NOT be, or be inside, C:\claudecode\dark raiders.
-#   -RepoUrl URL    default https://github.com/dbmosser/pillagers.git (public: no login, no key)
+#   -RepoUrl URL    default https://github.com/dbmosser/pillagers.git (public: no login, no key). Only https://github.com/OWNER/REPO(.git) is accepted.
 #   -Port N         the game port (default 8802). The collector always uses 8799, because the game posts its reports to localhost:8799.
 #   -NoCollector    do not serve the collector
 #   -Force          -Prepare: throw away local edits in the copy / allow a copy that points at another repository / accept a history that is not
 #                   a simple fast-forward (hard reset to GitHub).
 #   -DryRun         only print what would be done (changes nothing)
 #
-# SAFETY: it only writes inside -Dir (and its own state file under tools\migrate\state and the log under tools\migrate\logs). It starts only the
+# SAFETY: it only writes inside -Dir (and its own state file under tools\migrate\state and the log under tools\migrate\logs). -Dir may not be, or
+# contain, any Pillagers working folder (C:\claudecode\dark raiders, C:\claudecode\pillagers-codex, the Desktop copy), and -Prepare only updates a
+# git folder it made itself (a small marker inside .git); any other git folder given as -Dir is left alone, even with -Force. -Status asks the
+# game port a question only while a server of the copy is running. It starts only the
 # two small servers of the copy (tools\serve.ps1 with -Root pointing at the copy, tools\collector.ps1 likewise); it never starts a helper, the
 # runner or a ship. It refuses to start when 8802 or 8799 is already answering (it will not stop the main PC's own servers; host-stop.ps1 does that).
 # While the copy is being served do NOT run host-stop.ps1 or party-stop.ps1: they recognise "tools\serve.ps1" in a command line and would stop it.
@@ -82,7 +85,34 @@ function Test-DirAllowed {
   if ($full -ieq $repo) { return 'that is the real Pillagers folder; the copy must be somewhere else' }
   if ($full.StartsWith($repo + '\', [System.StringComparison]::OrdinalIgnoreCase)) { return 'the copy must not be inside the real Pillagers folder' }
   if ($repo.StartsWith($full + '\', [System.StringComparison]::OrdinalIgnoreCase)) { return 'the real Pillagers folder would be inside the copy folder' }
+  # the other working copies of Pillagers on this PC are never a party copy either (the Codex lane's copy, the old Desktop copy)
+  $others = @('C:\claudecode\pillagers-codex')
+  if ($env:USERPROFILE) { $others += (Join-Path $env:USERPROFILE 'Desktop\dark raiders') }
+  $others += 'C:\Users\User1\Desktop\dark raiders'
+  foreach ($o in $others) {
+    $oo = $o.TrimEnd('\', '/')
+    if ($full -ieq $oo -or $full.StartsWith($oo + '\', [System.StringComparison]::OrdinalIgnoreCase)) { return ('that is another Pillagers working folder (' + $oo + '); the party copy must be a folder of its own') }
+    if ($oo.StartsWith($full + '\', [System.StringComparison]::OrdinalIgnoreCase)) { return ('the other Pillagers working folder ' + $oo + ' would be inside the copy folder') }
+  }
+  if ((Split-Path -Path $full -Leaf) -ieq 'dark raiders') { return 'a folder called "dark raiders" is a Pillagers working folder; choose another name for the copy' }
   return ''
+}
+
+function Test-RepoUrlAllowed {
+  # The copy is only ever cloned from github.com (public, https, no login in the address). Returns '' when fine, else the reason.
+  param([string]$Url)
+  $u = ([string]$Url).Trim()
+  if (-not $u) { return 'no address given' }
+  if ($u -notmatch '^https://github\.com/') { return 'the address must start with https://github.com/' }
+  if ($u -notmatch '^https://github\.com/[A-Za-z0-9][A-Za-z0-9._-]*/[A-Za-z0-9][A-Za-z0-9._-]*(\.git)?/?$') { return 'the address must look like https://github.com/OWNER/REPO.git' }
+  return ''
+}
+
+function Get-MarkerPath { return (Join-Path $Dir '.git\pillagers-party-copy.txt') }
+
+function Test-OurCopy {
+  # true when the .git folder in -Dir was made by this script's clone (it leaves a small marker inside .git)
+  return (Test-Path -LiteralPath (Get-MarkerPath))
 }
 
 function Test-SameRepoUrl {
@@ -212,6 +242,8 @@ function Invoke-Prepare {
   if (-not $git) { Write-Mig 'git was not found on this PC.' 'FAIL'; return 3 }
   $why = Test-DirAllowed $Dir $script:RepoRoot
   if ($why) { Write-Mig ('-Dir "' + $Dir + '": ' + $why + '.') 'FAIL'; return 2 }
+  $whyUrl = Test-RepoUrlAllowed $RepoUrl
+  if ($whyUrl) { Write-Mig ('-RepoUrl "' + $RepoUrl + '": ' + $whyUrl + '.') 'FAIL'; return 2 }
   $spec = ConvertTo-RefSpec $Ref
   if (-not $spec) { Write-Mig ('-Ref "' + $Ref + '" is not usable. Use origin/master, a tag name, or the FULL 40-character commit id (a short id cannot be fetched).') 'FAIL'; return 2 }
   Write-Mig ('Copy folder : ' + $Dir) 'INFO'
@@ -240,12 +272,12 @@ function Invoke-Prepare {
     if ($parent -and -not (Test-Path -LiteralPath $parent)) { New-Item -ItemType Directory -Force -Path $parent | Out-Null }
     $cloneArgs = @('clone', '--no-checkout', '--single-branch', '--branch', 'master', '--origin', 'origin')
     if (-not $Full) { $cloneArgs += @('--depth', '1', '--filter=blob:none') }
-    $r = Invoke-Git ($cloneArgs + @($RepoUrl, $Dir))
+    $r = Invoke-Git ($cloneArgs + @('--', $RepoUrl, $Dir))
     if ($r.Code -ne 0 -and -not $Full) {
       Write-Mig 'The small download did not work; trying again without the partial-download feature (bigger, slower).' 'WARN'
       Write-GitOut $r 'WARN'
       if (Test-Path -LiteralPath $Dir) { Get-ChildItem -LiteralPath $Dir -Force -ErrorAction SilentlyContinue | ForEach-Object { try { Remove-Item -LiteralPath $_.FullName -Recurse -Force -ErrorAction Stop } catch { } } }
-      $r = Invoke-Git @('clone', '--no-checkout', '--single-branch', '--branch', 'master', '--origin', 'origin', '--depth', '1', $RepoUrl, $Dir)
+      $r = Invoke-Git @('clone', '--no-checkout', '--single-branch', '--branch', 'master', '--origin', 'origin', '--depth', '1', '--', $RepoUrl, $Dir)
     }
     if ($r.Code -ne 0) {
       Write-Mig 'git could not download the copy. Is the internet on? The last lines git printed:' 'FAIL'
@@ -253,6 +285,8 @@ function Invoke-Prepare {
       return 3
     }
     Write-Mig 'Download finished.' 'OK'
+    # mark the copy as this script's own, so a later -Prepare never "updates" (and resets) somebody else's git folder that was given as -Dir
+    try { Write-AsciiFile -Path (Get-MarkerPath) -Text ('made by party-host-copy.ps1 on ' + (Get-Date).ToString('s') + "`r`n" + 'from ' + $RepoUrl + "`r`n") } catch { Write-Mig ('Could not write the copy marker: ' + $_.Exception.Message) 'WARN' }
     if (-not $Full) {
       $rs = Invoke-Git @('sparse-checkout', 'set', '--no-cone', '--stdin') $Dir $SparsePatterns
       if ($rs.Code -ne 0) { Write-Mig 'Could not limit the checkout to the few files the party needs; the whole tree will be written instead.' 'WARN'; Write-GitOut $rs 'WARN' }
@@ -261,6 +295,10 @@ function Invoke-Prepare {
     if ($rh.Code -ne 0) { Write-Mig 'git could not write the files of the copy.' 'FAIL'; Write-GitOut $rh 'FAIL'; return 3 }
   } else {
     if (-not (Test-IsRepo)) { Write-Mig ($Dir + ' has a .git folder that git cannot read. It is left alone.') 'FAIL'; return 2 }
+    if (-not (Test-OurCopy)) {
+      Write-Mig ('The folder ' + $Dir + ' already holds a git folder that this script did not make (no party-copy marker inside .git). It is left alone, even with -Force. Pick another -Dir, or delete that folder yourself.') 'FAIL'
+      return 2
+    }
     $facts = Get-CopyFacts
     if ($facts.Origin -and -not (Test-SameRepoUrl $facts.Origin $RepoUrl)) {
       if (-not $Force) { Write-Mig ('The copy points at ' + $facts.Origin + ', not at ' + $RepoUrl + '. Not touching it (-Force overrides).') 'FAIL'; return 2 }
@@ -472,7 +510,9 @@ function Invoke-StatusCopy {
     if ($bad) { Write-Mig ('  not usable: ' + $bad) 'WARN' } else { Write-Mig ('  ready to serve: dark_raiders.html ' + (Format-Bytes $facts.HtmlBytes) + ', both small servers present') 'OK' }
   }
   $procs = Get-PartyProcs
-  $len = Get-ServedLength $Port
+  # -Status looks only: it asks the port a question only when a server of the copy is running (the copy's own servers are the only thing it may probe)
+  $len = [int64]-1
+  if ($procs.Count -gt 0) { $len = Get-ServedLength $Port }
   if ($procs.Count -gt 0 -and $facts.HtmlBytes -gt 0 -and $len -eq $facts.HtmlBytes) { Write-Mig ('Serving: yes, http://localhost:' + $Port + '/dark_raiders.html (process ' + (($procs | ForEach-Object { $_.ProcessId }) -join ', ') + ').') 'OK' }
   elseif ($procs.Count -gt 0) { Write-Mig ('Servers of the copy are running (process ' + (($procs | ForEach-Object { $_.ProcessId }) -join ', ') + ') but localhost:' + $Port + ' does not give the copy''s game file.') 'WARN' }
   else {

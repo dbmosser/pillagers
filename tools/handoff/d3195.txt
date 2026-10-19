@@ -1,0 +1,5 @@
+## v31.95 - PAD CAREER NAME
+
+Co-op hunt while he was away. J4: the career name field had no pad route and other text fields trapped pad focus.
+
+MEASURED. Check 31.95 passes, and fails on v31.94.
