@@ -1,0 +1,6 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  25-raid-pause-box                      staged       8.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  32-keys-window                         staged      10.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  42-hub-pause-box                       staged      12.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  49-arcade-pause-box                    staged      13.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  72-settings-sec-display                staged       7.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | settingsmodal

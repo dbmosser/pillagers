@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.72 - THE WHAT IS NEW CARD NAMES POLISH PASS 30
+
+Co-op hunt while he was away. The card was stamped v31.56 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
+
+MEASURED. Check 31.72 passes, and fails on v31.71.
 ## v31.71 - SETTINGS FOCUS, DETAIL PANE AND PAUSE BOX ROWS
 
 Co-op hunt while he was away. Critic c-31 rounds (settings 72 = 3, pad buttons 74 = 3, pause box 25 = 3): focus row stacks four lime signals, detail pane is a dead column, pause buttons all equal weight, abandon floats, X is heavy.

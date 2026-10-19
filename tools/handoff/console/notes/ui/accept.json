@@ -217,17 +217,17 @@
  "25-raid-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "clean, readable pause card with a clear lime primary and a tidy lower-case title, but the five-button stack is still tall and uniform, the X is a heavy boxed button, and the dead gap above a small abandon link leaves the bottom of the card feeling unfinished.",
+  "verdict": "The card is shorter and the close X is quieter, but the small buttons and the abandon run link are still unfinished: feedback and what's new sit in a 2-up row under a full-width report a problem, which looks half-converted.",
   "findings": [
-   "P1 button stack (settings, report a problem, feedback, what's new): Keep resume run and settings full width at 56px. Put report a problem, feedback and what's new in one row of three 40px quiet buttons with the same --ui-panel fill. This saves about 100px of height. Make every outline 1px --ui-line-hi.",
-   "P1 abandon run: Put a 1px --ui-line divider centred in a 24px gap above it. Make it a 40px full-width button with a 1px --danger border at 50% opacity and --danger text. Draw a 2px --danger focus outline, and confirm before abandoning.",
-   "P1 focus state: Draw focus as a 2px --acc outline with 2px offset, plus a --ui-raised fill, on whichever button has focus. When resume is not focused, drop it to the outline style or keep the fill and add a visible second ring.",
-   "P2 close X, top right: Shrink it to 40px with a 2px glyph in --tx-2 and no border until focused. Align its right edge to the 40px content edge, which is also the right edge of the buttons.",
-   "P2 accent tab, top-left of card: Make it a 3px by 36px --acc tab aligned to x = content left (760px), or remove it."
+   "P1 report a problem, feedback, what's new: Put report a problem, feedback and what's new in one row of three 40px quiet buttons (about 125px wide, 8px gaps). Use the same --ui-panel fill and a 1px --ui-line-hi border on all of them. Keep only resume run and settings at 56px.",
+   "P1 abandon run: Add a 1px --ui-line divider in a 24px gap above it. Make it a 40px full-width button with a 1px --danger border at 50% opacity and --danger text at 18-20px. Draw a 2px --danger focus outline, and add a confirm step.",
+   "P1 focus state: Draw focus as a 2px --acc outline with a 2px offset plus a --ui-raised fill on whichever button has it. Keep lime fill only for the primary action when it is not focused, and show a second ring when focus moves.",
+   "P2 feedback and what's new labels: Set them to 16px f-cond 600 with +.04em tracking in --tx-1 at about 85% opacity, or at least --tx-2 at 4.5:1 or better.",
+   "P2 accent tab, top-left of card: Make it 3px by 36px --acc, aligned to x=760 on the top edge, or remove it."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-31ae-after/25-raid-pause-box-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/c-31af-after/25-raid-pause-box-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-19T00:46"
+  "when": "2026-10-19T00:57"
  },
  "26-settings-from-pause-top": {
   "score": 3,
@@ -247,10 +247,17 @@
  "32-keys-window": {
   "score": 3,
   "pass": false,
-  "verdict": "Clean, consistent keybind window that follows the guide's panel, close X and sentence-case rules, but it is a flat wall of identical key boxes with weak focus, a dim modal and nothing that says this is Pillagers.",
-  "pic": "tools/handoff/console/notes/shots/c-31u-after2/32-keys-window-1080.jpg",
+  "verdict": "A clean, near-full-screen dark card with an x in the corner that matches the window rule, but a flat wall of same-weight rows, tiny section labels, a long gap between each action and its key, and a half-clipped row at the bottom keep it from looking polished.",
+  "findings": [
+   "P1 list bottom edge, rows 'controls list' / 'order your hire': Fade the list out over the last 24px with a gradient mask, or snap the scroll to whole rows and add 16px bottom padding. Make the scrollbar thumb 6px wide in --ui-line-hi, brightening on focus.",
+   "P1 section headers 'move' / 'fight' / 'world': Set the headers to 16px f-cond 700 in tx-2 with +.04em tracking. Make the lime bar 3px wide and match its height to the header text, or span the header plus its first row. Keep 24px above each header and 8px below.",
+   "P1 row layout, action name vs key cap: Narrow each column to about 760px and give each row a 1px --ui-line bottom divider, or put the key cap directly after a fixed 360px label column. Add a --ui-raised fill for the focused row.",
+   "P1 pad focus / selected state: Draw focus as a 2px --acc border on the cap plus a --ui-raised row fill. Show a 'press a key' state with an --acc-ink on --acc cap. Keep the rest quiet.",
+   "P2 title bar 'keys' and x: Remove the stray tick or turn it into a 3px by 36px tab drawn on purpose. Make the header row 56px with the title centred vertically. Put the x in a 44px square with a focus border."
+  ],
+  "pic": "tools/handoff/console/notes/shots/c-31af-after/32-keys-window-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T12:27"
+  "when": "2026-10-19T00:57"
  },
  "33-raid-fight-alerts": {
   "score": 2,
@@ -664,17 +671,17 @@
  "72-settings-sec-display": {
   "score": 3,
   "pass": false,
-  "verdict": "image 2 (c-31ae) is the better of the two: the stepper boxes are gone from idle rows and the description pane has a lime top tab, so it is calmer and more consistent, but the empty right pane, the lime-outlined focus row, a thin gap between label and value, and the clipped last row keep it from looking polished.",
+  "verdict": "the settings screen now fills the card with a left rail, a centred list and a detail pane, so it is clearly better, but the detail pane is a mostly empty box, the stepper columns float in the middle of each row, and the list is cut off at the footer.",
   "findings": [
-   "P1 right description pane (x≈1392-1870, y≈116-990): Fill the pane with --ui-raised and 24px padding. Set the title to 32px tx-1 and the body to 20px f-body tx-1 at 90%. Add a current-value readout or preview at 56px hero size, or narrow the pane to about 360px and give the width to the list.",
-   "P1 focused row 'render resolution' (x=338-1351, y=117-171): Remove the lime outline. Keep the --ui-raised fill, the 3px lime left bar, the lime value, and chevrons in tx-1. Keep a 1px --ui-line-hi bottom border if an edge is needed.",
-   "P1 row layout (label x=354, value column x=775-1035, empty x=1050-1350): Right-align the stepper cluster to the row edge (chevrons at x≈1280 and x≈1330, value centred between them), or set the value column at about x=560 so the pairs sit close. Use the same stepper width on all rows.",
-   "P1 row labels and rail items (x=68 and x=354): Set rail items and row labels to 20px f-cond 600. Use tx-1 for row labels and tx-2 (#aaa498) for idle rail items. Keep the selected rail item tx-1 on --ui-raised with the lime bar.",
-   "P2 list bottom (rows 'crosshair colour', y≈960-994): End the viewport 16px above the footer line at a multiple of 56px. Limit the fade to the last 24px. Make the thumb 6px wide in --ui-line-hi, inset 8px from the border."
+   "P1 right detail pane (x=1088-1870, y=116-354, with empty space below to y=994): Narrow the pane to about 400px and give the extra width to the list. Or stretch it to the full height (y=116-994) in --ui-raised and add a 56px hero readout of the current value ('full') under the title. Set the body to 20px f-body tx-1 at 90%.",
+   "P1 row stepper columns (chevrons x≈731 and x≈982, value x≈857, row x=338-1046): Right-align the stepper cluster to the row edge, with chevrons at x≈1000 and x≈1030 and the value centred between them, with a fixed 160px value width. Or shrink the list column to about 560px. Make the chevrons 20px.",
+   "P1 left rail (x=50-313, y=116-994) and selected 'display' item (y=375-431): Set idle items to tx-2 #aaa498 at 20px f-cond 600 and keep the selected item in tx-1. Add a 1px --ui-line divider and 24px of space above 'send play data'. Close the rail border 16px above the footer.",
+   "P1 list bottom (rows 'crosshair' and 'crosshair colour', y≈900-994): End the viewport 16px above the footer line on a multiple of 56px (for example y=952). Limit the fade to the last 24px. Make the thumb 6px wide in --ui-line-hi, inset 8px from the border.",
+   "P2 focused row 'render resolution' (x=338-1046, y=117-171): Inset the list by 8px at the top, or add a 1px --ui-line gap. Make the detail pane's top tab 36px wide and not full-width, so only the focused row carries the strong lime."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-31ae-after/72-settings-sec-display-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/c-31af-after/72-settings-sec-display-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-19T00:45"
+  "when": "2026-10-19T00:57"
  },
  "74-settings-change-pad-buttons": {
   "score": 3,
