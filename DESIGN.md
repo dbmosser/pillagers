@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.92 - THE SENTRY IS A HUMANOID COMBAT ROBOT
+
+Co-op hunt while he was away. His order: the Sentry should look more humanoid robot-y, not like a big garbage can. It was a tread, a boxy hull and a camera on a mast. It is now a heavy walking combat robot: two armoured legs with knee plates and flat feet that walk on its step, a pelvis, a chest broad at the shoulders, a small head with a visor holding the same sensor lens, the antenna kept, one arm hanging and swinging and the other arm being the gun, turning to its aim from the shoulder. Same palette, size, shadow and footprint. A dead one now leaves a toppled robot: torso on its back, head knocked off with a dead lens, a bent leg, the gun arm lying apart. Drawn only, no random numbers.
+
+MEASURED. Check 31.92 passes, and fails on v31.91.
 ## v31.91 - CRYO BARREL ICE SLIDE
 
 Co-op hunt while he was away. His order (2026-10-19): "Player should slide across cold patches made by ice barrels, with limited direction change, like players feet are ice, ala Fortnite. Ice should not hurt player". The frost fog hurt the player 2 every half second and the cryo blast up to 20; both now do the player nothing (the bodies keep every effect), and the fog leaves an ice sheet: on it the walk keeps momentum, steers slowly and glides, the leftover momentum is gone in under 0.3 s off it, and walls still stop him. The fog radius (96) and life (5 s) are unchanged. The sheet is its own item in the draw order under the bodies, because the fog cloud is sorted over them.

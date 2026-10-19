@@ -138,3 +138,5 @@
 
 2026-10-19 | o-07-pad-lost | shipped v31.90 recovery box and partner loss tag | picture path clarification, no further visible change | before: unavailable recovery state on v31.89 | after requested: tools/handoff/console/notes/shots/o-07-pad-lost-after/j8-p1-pad-lost-1080.jpg, j8-p2-pad-lost-1080.jpg, j8-p1-press-a-1080.jpg, j8-p2-press-a-1080.jpg, j8-p1-sees-p2-lost-1080.jpg, j8-p2-sees-p1-lost-1080.jpg; camera not yet run
 
+2026-10-19 | o-08-pad-owner | j7-hub-p1-pad-owner, j7-hub-p2-pad-owner, j7-raid-p1-pad-owner, j7-raid-p2-pad-owner | On claim/reclaim, local p1 amber or p2 cyan tag for 2 seconds; 22 px type, 32 px dark plate, 44 px below pillager at 1080p. | before: unavailable for custom camera recipes | after: lane o camera recipes pending; record returned paths after capture.
+

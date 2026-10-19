@@ -1,0 +1,7 @@
+v31.92: the sentry is a humanoid combat robot
+
+the sentry is a walking humanoid combat robot, and its wreck is a toppled robot.
+
+Check 31.92. Fails on v31.91.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
