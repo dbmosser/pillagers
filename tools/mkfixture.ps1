@@ -6101,6 +6101,18 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.76',what:'detail pane stat rows are 16px with a dark --ui-line rule, not 15px with a cream rule',
+   run:function(){
+     var r=document.getElementById('root'); if(!r) return 'SKIP: no root';
+     var d=document.createElement('div'); d.className='vdet'; d.style.cssText='position:absolute;left:-9999px;top:0';
+     d.innerHTML='<div class="vstat" style="font-size:15px;padding:4px 0;border-bottom:1px solid #ddd5c4"><span>a</span><b>b</b></div>';
+     r.appendChild(d);
+     var cs=getComputedStyle(d.firstChild), fs=cs.fontSize, bc=cs.borderBottomColor, pd=cs.paddingTop;
+     d.remove();
+     if(fs!=='16px') return 'stat row font is '+fs+', not 16px';
+     if(pd!=='6px') return 'stat row padding is '+pd+', not 6px';
+     if(bc!=='rgb(46, 51, 55)') return 'stat row rule is '+bc+', not the --ui-line grey';
+     return null; }},
   {v:'31.75',what:'Settings and keys lists fade out at the bottom and the settings detail pane runs the full height of the list',
    run:function(){
      var bad=[], l, d, k, m, a, b;

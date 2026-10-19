@@ -217,17 +217,17 @@
  "25-raid-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "The card is shorter and the close X is quieter, but the small buttons and the abandon run link are still unfinished: feedback and what's new sit in a 2-up row under a full-width report a problem, which looks half-converted.",
+  "verdict": "The pause card is cleaner and the hierarchy is clearer (lime resume run, quiet secondary buttons, a red abandon run link), but the button stack has four different treatments and the footer is cramped, so it still reads as a decent template and not polished AAA.",
   "findings": [
-   "P1 report a problem, feedback, what's new: Put report a problem, feedback and what's new in one row of three 40px quiet buttons (about 125px wide, 8px gaps). Use the same --ui-panel fill and a 1px --ui-line-hi border on all of them. Keep only resume run and settings at 56px.",
-   "P1 abandon run: Add a 1px --ui-line divider in a 24px gap above it. Make it a 40px full-width button with a 1px --danger border at 50% opacity and --danger text at 18-20px. Draw a 2px --danger focus outline, and add a confirm step.",
-   "P1 focus state: Draw focus as a 2px --acc outline with a 2px offset plus a --ui-raised fill on whichever button has it. Keep lime fill only for the primary action when it is not focused, and show a second ring when focus moves.",
-   "P2 feedback and what's new labels: Set them to 16px f-cond 600 with +.04em tracking in --tx-1 at about 85% opacity, or at least --tx-2 at 4.5:1 or better.",
-   "P2 accent tab, top-left of card: Make it 3px by 36px --acc, aligned to x=760 on the top edge, or remove it."
+   "P1 button stack (settings, report a problem, feedback, what's new): Give settings the same --ui-panel fill and 1px --ui-line-hi border as every other secondary button. Make report a problem, feedback and what's new one row of three 40px buttons about 125px wide with 8px gaps, so only resume run and settings stay at 56px.",
+   "P1 abandon run: Add a 1px --ui-line divider in a 24px gap above it. Make it a 40px full-width button with a 1px --danger border at 50% opacity and 18-20px --danger text. Draw a 2px --danger focus outline, and put a confirm step behind it.",
+   "P1 focus state: Draw focus as a 2px --acc outline with a 2px offset plus a --ui-raised fill on whichever button has it. Keep lime fill only for the primary action when it is not focused.",
+   "P2 feedback and what's new labels: Set it to 16px f-cond 600 with +.04em tracking in --tx-1, in buttons 40px tall. If the three do not fit in one row at 16px, drop one.",
+   "P2 accent tab, top-left of card (x≈720-756, y≈306): Make it 3px by 36px --acc and align it to x=760 on the top edge, or remove it."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-31af-after/25-raid-pause-box-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/c-31ag-after/25-raid-pause-box-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-19T00:57"
+  "when": "2026-10-19T01:10"
  },
  "26-settings-from-pause-top": {
   "score": 3,
@@ -513,10 +513,17 @@
  "42-hub-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "The pause card is now clean and reads in one pass: a single amber primary, ghost buttons and a danger-bordered exit. It is still cramped at the top and bottom, with a toast under the modal and no close button or pad hints, so it falls short of the style guide.",
-  "pic": "tools/handoff/console/notes/shots/c-31h-after/42-hub-pause-box-1080.jpg",
+  "verdict": "a clean, readable pause card with one lime primary action and a clear x, but the buttons are weakly graded, the secondary row is tiny, and the card does not follow the near-full-screen window rule.",
+  "findings": [
+   "P1 card size and placement: either document the pause menu as a small-dialog exception, or widen the card to about 560px with 32px padding. Add a visible pad focus state to every button so it is clear which one is selected.",
+   "P1 feedback / what's new buttons: raise the label to 16px f-cond 600 with +.04em tracking, make the buttons 48px tall, and keep the 16px gap between them and the rows above.",
+   "P1 button hierarchy (settings / leaderboard / report a problem): give all secondary buttons --ui-panel fill, a 1px --ui-line-hi border and a 4px radius. Move 'report a problem' into the small row with feedback.",
+   "P1 return to character selection: give it a 48px ghost button with a 1px --danger border and --danger text, at least 20px. Keep 32px of space above it and ask the player to confirm.",
+   "P2 title bar: set the title at 32px f-cond 700, centre the x vertically with it at a 40x40 hit area, and make the accent tab a clear 2px lime line."
+  ],
+  "pic": "tools/handoff/console/notes/shots/c-31ag-after/42-hub-pause-box-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T08:52"
+  "when": "2026-10-19T01:11"
  },
  "49-arcade-pause-box": {
   "score": 3,
@@ -671,32 +678,32 @@
  "72-settings-sec-display": {
   "score": 3,
   "pass": false,
-  "verdict": "the settings screen now fills the card with a left rail, a centred list and a detail pane, so it is clearly better, but the detail pane is a mostly empty box, the stepper columns float in the middle of each row, and the list is cut off at the footer.",
+  "verdict": "the settings card is clean, consistent and all lower case, but the detail pane is a huge empty box, the stepper columns float mid-row, and the list is cut off at the bottom, so it still reads as a template options screen.",
   "findings": [
-   "P1 right detail pane (x=1088-1870, y=116-354, with empty space below to y=994): Narrow the pane to about 400px and give the extra width to the list. Or stretch it to the full height (y=116-994) in --ui-raised and add a 56px hero readout of the current value ('full') under the title. Set the body to 20px f-body tx-1 at 90%.",
-   "P1 row stepper columns (chevrons x≈731 and x≈982, value x≈857, row x=338-1046): Right-align the stepper cluster to the row edge, with chevrons at x≈1000 and x≈1030 and the value centred between them, with a fixed 160px value width. Or shrink the list column to about 560px. Make the chevrons 20px.",
-   "P1 left rail (x=50-313, y=116-994) and selected 'display' item (y=375-431): Set idle items to tx-2 #aaa498 at 20px f-cond 600 and keep the selected item in tx-1. Add a 1px --ui-line divider and 24px of space above 'send play data'. Close the rail border 16px above the footer.",
-   "P1 list bottom (rows 'crosshair' and 'crosshair colour', y≈900-994): End the viewport 16px above the footer line on a multiple of 56px (for example y=952). Limit the fade to the last 24px. Make the thumb 6px wide in --ui-line-hi, inset 8px from the border.",
-   "P2 focused row 'render resolution' (x=338-1046, y=117-171): Inset the list by 8px at the top, or add a 1px --ui-line gap. Make the detail pane's top tab 36px wide and not full-width, so only the focused row carries the strong lime."
+   "P1 right detail pane (x=1088-1870, y=116-994): Narrow the pane to about 420px and give the freed width to the list. Or keep it full height and add a 56px f-cond 800 hero readout of the current value ('full') in --acc under the 32px title. Put the description 24px below the title at 20px f-body tx-1 and top-align it.",
+   "P1 stepper columns (chevrons x≈731 and x≈982, value x≈857, row x=338-1046): Right-align the cluster to the row edge: chevrons at x≈1000 and x≈1030 with a 160px value cell centred between them. Or shrink the list column to about 560px. Make the chevrons 20px, with tx-2 when idle and --acc when the row is focused.",
+   "P1 list bottom (rows 'crosshair' and 'crosshair colour', y≈900-994): End the viewport on a multiple of the 56px row height (for example y=952), 16px above the footer. Limit the fade to the last 24px. Make the thumb 6px wide in --ui-line-hi, inset 8px from the border, with a visible track.",
+   "P1 left rail (x=50-313) idle items and 'send play data' (y=555): Set idle items to 20px f-cond 600 tx-2 and the selected item to tx-1 on --ui-raised. Add a 1px --ui-line divider and 24px of space above 'send play data', and mark it as a utility link in 16px tx-2.",
+   "P2 focused row 'render resolution' (x=338-1046, y=117-171) and the detail pane top edge (y=116): Inset the list 8px from the top, or add a 1px --ui-line gap. Make the pane's top tab 36px wide, not full-width, so only the focused row carries the strong lime."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-31af-after/72-settings-sec-display-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/c-31ag-after/72-settings-sec-display-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-19T00:57"
+  "when": "2026-10-19T01:10"
  },
  "74-settings-change-pad-buttons": {
   "score": 3,
   "pass": false,
-  "verdict": "The table now spans the card, the section headers have lime tabs and the locked note is readable, but there is still no focused chip, the headers are too small, and the footer is unresolved, so it reads as a clean spreadsheet rather than a polished pad-remap screen.",
+  "verdict": "the screen is clean and consistent with the card style, but nothing is focused, the label-to-chip gaps are huge, and the bottom is clipped, so it still reads as a flat settings table.",
   "findings": [
-   "P1 all 16 key chips (ls, a, rt ... menu): Focus the first chip with a 2px --acc outline, --acc text, a 3px --acc left tab on its row and a 1.04 bounce scale. Idle chips: --ui-raised fill, 1px --ui-line-hi border, 16px --tx-1 text.",
-   "P1 section headers 'move', 'fight', 'gear', 'world', 'locked' (x65, y~146 to 903): Set headers to 16px --tx-2 with +.08em tracking. Shrink each tab to 3x16px, centred on the header text. Drop the tab on 'locked'. Add 24px above each group.",
-   "P1 row-label to chip gap, x66-753 and x994-1681: Make the label column 360px with the chip right after it (gap 24px). Use two equal 50% columns with a 48px gutter. Or use a 60/40 split with a pad diagram that highlights the selected button.",
-   "P1 scrollbar, x1866, y112-810: Make the thumb 6px wide in --ui-line-hi, and place it 16px outside the chip column. Add 24px bottom padding and a 16px fade mask above the footer line.",
-   "P2 'locked: these keep their jobs' (y903): Show locked bindings as dimmed rows with a lock glyph and drop the sentence. If it stays, make it 16px --tx-2 #aaa498."
+   "P1 all 16 key chips (x753-913, x1681-1841): focus the first chip with a 2px --acc outline, --acc text and a 3px --acc left tab on its row, with a 1.04 scale bounce. Idle chips: --ui-raised fill, 1px --ui-line-hi border, 16px --tx-1 text.",
+   "P1 row label to chip gap, x66-753 and x994-1681: make the label column 360px with the chip 24px after it, in two equal 50% columns with a 48px gutter. Or add a 1px --ui-line row divider and a hover or focus fill across the row.",
+   "P1 'locked: these keep their jobs' (x65, y903) and the clipped bottom (y~925): scroll the list so the locked rows are fully visible, as dimmed rows with a lock glyph, and drop the sentence. Add 24px bottom padding and a 16px fade above the footer line (y934).",
+   "P1 section headers 'move', 'fight', 'gear', 'world' (x65, y146-784): set headers to 16px --tx-2 with +.08em tracking. Shrink each bar to 3x16px, or use --ui-line-hi. Add 24px above each group.",
+   "P2 row labels (x66, x994): labels in 20px f-cond 600 --tx-1. Chip text in 16px --tx-1 on --ui-raised, with the focused chip in --acc."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-31ae-after/74-settings-change-pad-buttons-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/c-31ag-after/74-settings-change-pad-buttons-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-19T00:46"
+  "when": "2026-10-19T01:10"
  },
  "01-title-mode-menu": {
   "score": 3,

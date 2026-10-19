@@ -1,17 +1,13 @@
-# c-31-ui-pause-settings (lane c) notes
+# c-31-ui-pause-settings notes (lane c, run 2026-10-19)
 
-## Run 2026-10-18 night (c-31aa) - no work possible
-- In this Console run the `run` tool REFUSED tools/uishots.ps1 (both with and without -NoLint, port 9353), so no new pictures could be taken. The critic (node tools/console-sdk/critic.mjs) does run, but the newest pictures on disk (c-31z-before/after2, c-31y-after2) predate v31.59-v31.61 for some screens and predate pset6/pset8 for 25 (pause box), so grading them would judge old builds.
-- A critic run on c-31z-before/25 returned 3 and the same findings pset6/pset8 already shipped fixes for (56px report row, quiet abandon, flush tab). Nothing new to act on blind.
-- Did not ship blind UI changes: no way to see them or have the critic grade them (rule: never grade my own screen).
-- Next run needs the camera: shoot 18,25,26,32,42,49,70,72,74,75 first, then critic them (old picture first), then do the items still open from the c-31y list: snap settings list to whole rows, section labels before keys/pad rows, lb/rb glyphs, pad focus staging for 74/75, pause box 42/49 not yet touched.
+Shipped this run (pset12..16 = v31.63 to v31.75): left rail tabs, settings card with rail + list + detail pane, stepper box only on focus, keys table two column pairs with 16px section names, focus row = raised fill + 4px lime bar, pause box feedback / what's new row + quiet abandon, X without border until hover, lists fade at the bottom, detail pane full height.
+Pictures: shots/c-31ab-before (start), c-31ag-after (end). Critic scores at the end: 72 = 3, 25 = 3, 74 = 3, 42 = 3 (all "same" or "better" than before, none reached 4).
 
-## Run 2026-10-18 late (c-31y)
-- Before shots: shots/c-31y-before. Shipped v31.59 (cw-pset10) and v31.61 (cw-pset11); after shots c-31y-after, c-31y-after2.
-- Critic: 75 pad rebind 2 -> 3 (better) -> 3 (same); 70 settings controls 2 -> 3 (better) -> 3 (same). Other screens not re-shot this run (18/72/74 ~ 3 earlier).
-- STUCK, so the next run should not repeat it:
-  * Critic keeps asking to widen the Settings column (960) and move steppers to the right edge. That is a documented decision (cw-cardwide / v30.95: label sits next to its stepper). It also contradicts itself between rounds (pane fill: "drop it" then "put it back"). Do not chase it.
-  * "send play data" as a row instead of a tab: Q61 allows moving it, not removing; not done.
-  * Not done: snap list height to whole 56px rows (needs JS to measure; the 48px fade hides the cut), 20px tab strip with 32px gaps, lb/rb glyphs at the tab ends, section labels "keyboard / pad" before keys and pad rows, 3px accent tab flush on title (stray 36px lime tick is the existing 4.5*8 tab).
-  * Pause box 25/42/49 not touched this run.
-- All steps through cw-pset11 are lower case and keep every Q61 item.
+## Stuck, in order of what the critic repeats (next run starts here)
+1. Settings 72: detail pane is a huge empty box. Needs a hero value readout (56px, current value in lime) under the 32px title: JS in setDetailSync, not CSS. Or narrow the pane to ~420px (list then wider, so the stepper cluster must be right-aligned: chevrons 20px, value cell 160px, button flex:0 0 fixed width). A check from 31.61 wants the detail strip fill rgb(30,34,37), so do not set --ui-raised on it.
+2. Settings list clip at the footer: snap the list height to whole 56px rows (JS sizing in pauseFrameFit style) and a 6px scrollbar thumb inset 8px.
+3. Keys 74/75: no pad focus is visible in the staged shot. The staging in tools/handoff/shots/ui-screens-js.json (screens 74, 75) must set a padfocus on the first chip (add via questions.md ask, rules forbid editing that json). Key caps as raised keys, label column 360px, section bar 3x16px, locked group sentence dropped (Q70 no explaining sentences; Q8 reason needed in changes.md).
+4. Pause box 25/42/49: critic wants report a problem + feedback + what's new as one row of three 40px, abandon as a 40px bordered button. An older check ("abandon still has a box") blocks the border; retarget it with fixq.sh first. Report field is a textarea, so a row of three means moving it. Q61 allows moving. Also scrim .80 and a visible pad focus ring on pause buttons (check how the pad focus class draws there).
+5. Stray 36x2 lime tick at the card top-left on every window: critic reads it as a glitch. Find which rule draws it (a ::before on .modal and the pause box) and make it a deliberate 3x36 tab or remove it. One shared rule, so one ship.
+6. Left rail: idle items 20px tx-2, send play data as a divided utility link.
+Not looked at this run: 26-31, 49, 68-71, 73 individual scores (they share the settings CSS, expect the same findings as 72).

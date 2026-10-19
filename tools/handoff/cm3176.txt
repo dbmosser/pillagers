@@ -1,0 +1,7 @@
+v31.76: detail stat rows on the dark pane
+
+Shop detail stat rows are 16px with a quiet grey rule instead of a bright cream one.
+
+Check 31.76. Fails on v31.75.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

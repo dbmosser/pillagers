@@ -1,0 +1,5 @@
+## v31.76 - DETAIL STAT ROWS ON THE DARK PANE
+
+Co-op hunt while he was away. UI step 7 restyle. The stat rows in the shop, craft and hire detail pane kept a 15px inline size and a cream rule from the paper card. They now use the 16px floor and the shared line colour. No words change.
+
+MEASURED. Check 31.76 passes, and fails on v31.75.

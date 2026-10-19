@@ -1,0 +1,12 @@
+{
+    "title":  "DETAIL STAT ROWS ON THE DARK PANE",
+    "why":  "UI step 7 restyle. The stat rows in the shop, craft and hire detail pane kept a 15px inline size and a cream rule from the paper card. They now use the 16px floor and the shared line colour. No words change.",
+    "now":  "Shop detail stat rows are 16px with a quiet grey rule instead of a bright cream one.",
+    "edits":  [
+                  {
+                      "anchor":  "  #root .vdet .vstat{ color:var(--tx-2); font-size:16px; }",
+                      "replacement":  "  #root .vdet .vstat{ color:var(--tx-2); font-size:16px; }\n  /* v31.xx (cw-uc-statrows), UI STEP 7 (b-31): the stat rows of the shop, craft and hire detail pane (heals, over, takes) carry an inline 15px size and a cream rule (#ddd5c4) from the paper card days, so on the dark pane they were the brightest lines and under the 16px floor. Now 16px, 6px rows, a --ui-line rule and the value in --tx-1. No words change. */\n  #root .vdet .vstat[style]{ font-size:16px !important; padding:6px 0 !important; border-bottom:1px solid var(--ui-line) !important; }\n  #root .vdet .vstat b{ color:var(--tx-1); font-weight:700; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027detail pane stat rows are 16px with a dark --ui-line rule, not 15px with a cream rule\u0027,\n   run:function(){\n     var r=document.getElementById(\u0027root\u0027); if(!r) return \u0027SKIP: no root\u0027;\n     var d=document.createElement(\u0027div\u0027); d.className=\u0027vdet\u0027; d.style.cssText=\u0027position:absolute;left:-9999px;top:0\u0027;\n     d.innerHTML=\u0027\u003cdiv class=\"vstat\" style=\"font-size:15px;padding:4px 0;border-bottom:1px solid #ddd5c4\"\u003e\u003cspan\u003ea\u003c/span\u003e\u003cb\u003eb\u003c/b\u003e\u003c/div\u003e\u0027;\n     r.appendChild(d);\n     var cs=getComputedStyle(d.firstChild), fs=cs.fontSize, bc=cs.borderBottomColor, pd=cs.paddingTop;\n     d.remove();\n     if(fs!==\u002716px\u0027) return \u0027stat row font is \u0027+fs+\u0027, not 16px\u0027;\n     if(pd!==\u00276px\u0027) return \u0027stat row padding is \u0027+pd+\u0027, not 6px\u0027;\n     if(bc!==\u0027rgb(46, 51, 55)\u0027) return \u0027stat row rule is \u0027+bc+\u0027, not the --ui-line grey\u0027;\n     return null; }},"
+}

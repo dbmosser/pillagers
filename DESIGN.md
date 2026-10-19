@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.76 - DETAIL STAT ROWS ON THE DARK PANE
+
+Co-op hunt while he was away. UI step 7 restyle. The stat rows in the shop, craft and hire detail pane kept a 15px inline size and a cream rule from the paper card. They now use the 16px floor and the shared line colour. No words change.
+
+MEASURED. Check 31.76 passes, and fails on v31.75.
 ## v31.75 - SETTINGS AND KEYS LISTS FADE OUT, FULL HEIGHT DETAIL PANE
 
 Co-op hunt while he was away. Critic c-31 rounds (settings 72 = 3, keys 32 = 3, pause box 25 = 3): lists clipped mid row at the footer, detail pane a short box over empty space, report field fill and labels off.
