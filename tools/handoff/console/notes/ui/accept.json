@@ -208,10 +208,17 @@
  "22-raid-map-open": {
   "score": 2,
   "pass": false,
-  "verdict": "The map is readable as a data dump, but labels collide with icons and with each other, the zone names are almost invisible, and the frame, header and HUD have no shared system, so it looks like a debug overlay rather than a polished AAA map.",
-  "pic": "tools/handoff/console/notes/shots/all/22-raid-map-open-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:17"
+  "verdict": "the camera change left this map overlay untouched, and the screen still reads as a crowded placeholder map with a toast bleeding outside the window.",
+  "findings": [
+   "P0 bottom-left, 'codex entry · scav pistol · common' and 'contract item nearby' toast rows: clamp toast x-origin to card-left + 24px padding (style guide's panel padding), or move the toast to a layer that clips to the window card rect",
+   "P1 right edge cluster, 'strongbox'/'cache' icons (~1030-1060,353-470) next to 'extract b' and its own up-arrow extract icon (~1050,551): space icon anchors at least 48px apart (--sp-5) or move the strongbox box up/left so it has clear air from the extract-b cluster",
+   "P1 top strip, 'cache' box top-right corner (~1028,185-255): give the top-right cache box 16px internal padding between its two icons, and move 'foreman office · locked' label left by ~24px so it clears the box border",
+   "P1 whole map canvas: give locked/special rooms a distinct fill tint (e.g. --ui-raised for lootable rooms, a 1px --warn border on locked doors) so room type is visible without reading the label",
+   "P1 map pin icon set (cache dot-circle, peddler dot, strongbox ring-cluster, warning triangle, encampment diamond, extract arrow-circle): redraw all pins from one glyph family (same stroke width, same base shape e.g. circle badge) and vary only fill color by rarity/hazard per the token list"
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-04-camera-closer-after/22-raid-map-open-1080.jpg",
+  "task": "o-04-camera-closer",
+  "when": "2026-10-19T17:17"
  },
  "23-raid-backpack-open": {
   "score": 2,
@@ -269,10 +276,17 @@
  "33-raid-fight-alerts": {
   "score": 2,
   "pass": false,
-  "verdict": "The HUD works as a debug-style overlay but feels like a pile of mismatched panels: the minimap is clipped and overlaps a zone label, the contracts list is dense with tiny text, and the alert is duplicated three times.",
-  "pic": "tools/handoff/console/notes/shots/all/33-raid-fight-alerts-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:18"
+  "verdict": "the closer camera makes the player and nearby threats easier to read, but the screen still drowns the one thing that should win, the pillbox alert, under nine simultaneous panels and a triplicated warning.",
+  "findings": [
+   "P0 top-center alert vs left-side event log vs world tag, 1080 shot: drop the floating world tag (keep it on the pillbox icon only, no duplicate text) and let the event log entries fade after ~3s instead of persisting under an active toast; one alert surface, not three.",
+   "P0 bottom-center floating keybind panel, overlaps the walkway between player and pillbox: move this to a corner (e.g. bottom-left under hp/stamina) or collapse it to the \"f1 full list\" toggle only, so the center of the screen is clear during combat; it already has a caret, so default it collapsed after the first few seconds of a raid.",
+   "P1 right edge: credits/xp/stash/backpack stack, minimap, run info panel: demote the stat stack to tx-2 (muted) numbers until they change, keep only --acc on the one number that just updated, and tighten panel padding so the column reads as one unit, not three competing boxes.",
+   "P1 world tags \"pillbox v-64\" and \"sentry k-98\" compared old vs new shot: pin entity name-tag text to a fixed screen size (e.g. --fs-label, 16px) regardless of camera zoom, same as the style guide's other labels, so zoom changes don't silently drift type scale.",
+   "P1 whole 1080 frame: during an active alert, auto-dim or shrink the non-combat panels (bots list, keybind card) to ~60% opacity so the eye has fewer equal-weight boxes to parse."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-04-camera-closer-after/33-raid-fight-alerts-1080.jpg",
+  "task": "o-04-camera-closer",
+  "when": "2026-10-19T17:18"
  },
  "35-kia-card": {
   "score": 3,
@@ -466,10 +480,17 @@
  "37-raid-extracting-countdown": {
   "score": 2,
   "pass": false,
-  "verdict": "The HUD is overloaded: a controls cheat-sheet, contracts list, scoreboard, pickup toasts, and a backpack panel all compete at once, with mismatched type sizes, overlapping labels, and no clear first read.",
-  "pic": "tools/handoff/console/notes/shots/all/37-raid-extracting-countdown-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:23"
+  "verdict": "the closer camera pushed the top-right enemy nametag and its alert icon into an overlapping, partly clipped mess, and nothing about the raid hud's clutter or hierarchy was otherwise fixed.",
+  "findings": [
+   "P0 top-right corner, enemy nametag over afk_in_the_bushes: keep a fixed 4-6px vertical gap between the alert icon and the nametag regardless of camera distance, or anchor the icon to the sprite's screen position independent of zoom so it never overlaps the label",
+   "P1 same nametag, right edge of the play area: clamp world-space nametags to stay at least 24px inside the game viewport edge (viewport width minus hud-panel width), same margin rule as the --sp-2 16px token",
+   "P1 same corner, the enemy sprite itself: keep a minimum screen-space margin (one tile height) between any rendered actor and the top/side viewport edges, or ease the zoom back where an actor would cross that margin",
+   "P2 whole screen, both before and after: per the style guide's one-panel-fill rule, consolidate the left-side legend stack and the bot leaderboard into a single --ui-panel block instead of two stacked boxes with different fills",
+   "P2 loot tags near the minimap (induction coil / titanium cell / medkit): add the --sp-1 8px gap used elsewhere between world labels and fixed hud panels"
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-04-camera-closer-after/37-raid-extracting-countdown-1080.jpg",
+  "task": "o-04-camera-closer",
+  "when": "2026-10-19T17:19"
  },
  "77-haul-reveal-done": {
   "score": 3,
@@ -819,17 +840,17 @@
  "20-raid-hud-drop": {
   "score": 2,
   "pass": false,
-  "verdict": "the raid hud has too many competing text boxes and no clear first read: the kit bar and bottom-left bars are readable, but the top-right career corner collides with the minimap, tiny low-contrast type is scattered everywhere, and panel styles, capitals and amber/lime accents are inconsistent.",
+  "verdict": "the closer camera reads fine but it did nothing for the real problem: the hud is still a pile of mismatched boxes fighting each other for the eye.",
   "findings": [
-   "P0 top-right: credits / xp / stash line, minimap, and the purple 'the long d…' label: put the career items in one panel (--ui-panel at 90%, 1px --ui-line-hi) in a vertical list with a 48px safe margin. move the minimap below it with 16px gap, inside the 5% margin. move the zone name out of the map or truncate it cleanly. use tx-1 for the values at 20px and tx-2 for labels at 16px.",
-   "P0 whole screen: panel language: use one panel P everywhere: fill --ui-panel at 90%, 1px --ui-line-hi, 4px radius, 16px padding, no ticks. keep the 2px lime top tab only on the ammo panel as the star.",
-   "P1 capitals on screen: 'run Info', 'contract Item nearby' (centre toast and bottom-left), 'extraction c available': lower-case 'run info' and 'contract item nearby'. show each notice once, in a single toast stack at the bottom-left, and delete the centre duplicates.",
-   "P1 left-middle keys cheat sheet (wasd … f1 full list) and the explanatory toast 'gold glow marks the box': collapse the cheat sheet to a single 'f1 keys' hint at 14px in the footer and show the list only on demand. remove the explaining sentence. if kept, give it a 16px minimum size and 24px padding.",
-   "P1 bottom-right ammo panel: make 12 / 24 the only hero (56px, 800). set the weapon name to 20px tx-1 and the backpack hint to 16px tx-2 in the footer. use a solid panel fill. merge the cover state into the status row beside the 'standing' tag."
+   "P0 center screen, y~700-860: codex toast should auto-dismiss after ~3s or move to a corner slot; never render it stacked on the keybind legend, keep max one transient overlay center-screen at a time",
+   "P0 whole hud: credits/xp/stash/backpack stack (top right), run info panel, squad list (top left), minimap frame: rebuild all 5 panels on one component: same --ui-panel fill, same --rad 4px, same 24px padding, same header type size (fs-label 16px), delete the per-panel custom backgrounds",
+   "P1 run info panel, 3rd contract line: fix the string to its real noun (e.g. \"destroy 2 crawlers\"), QA every contract string for truncation",
+   "P1 keybind legend, lmb row: show only the context-active binding, or label the second row \"lmb (item wheel open)\" so it's clearly conditional",
+   "P1 bottom-left, \"standing\" tag above the stamina bar: redraw as a --rad 4px rectangle tag matching the hotbar cells and status bars"
   ],
-  "pic": "tools/handoff/console/notes/shots/b-30e/20-raid-hud-drop-1080.jpg",
-  "task": "b-30-ui-hud",
-  "when": "2026-10-18T22:25"
+  "pic": "tools/handoff/console/notes/shots/o-04-camera-closer-after/20-raid-hud-drop-1080.jpg",
+  "task": "o-04-camera-closer",
+  "when": "2026-10-19T17:15"
  },
  "34-raid-downed-pickups": {
   "score": 2,

@@ -1,0 +1,7 @@
+v31.86: sticks keep their angle and full diagonal speed
+
+Both sticks use a circular deadzone with full diagonal travel. Deadzone and sensitivity settings stay available.
+
+Check 31.86. Fails on v31.85.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -11,3 +11,5 @@
 - Take before and after pictures of the same scene at 1080. Look at them (Read shows pictures) and fix what looks wrong. The critic (tools/console-sdk/critic.mjs) is for screens and is optional here.
 - One ship per task through the queue, with a check that fails on the old build. The fingerprint must not change: these are drawing changes only, so add no random rolls to the map build or spawns.
 - Frame cost: 60 fps at 4K is the bar. Measure the frame time before and after with two players on screen, and note both numbers.
+
+Coordinator note 2026-10-19 13:45: SHIPPED v31.85 (camera 1.3). Left, lane-side only: run .codex-work/o-04-camera-closer/camera-run-request.json (both-window pictures, 4K frame times). Do not rebuild.

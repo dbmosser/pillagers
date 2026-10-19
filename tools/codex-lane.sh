@@ -340,6 +340,7 @@ $out
 # ================================================================ the loop: codex -> harvest -> gate -> feedback
 say "running $name (codex, run $((n0+1)) of $MAXR)"
 log "start $name n0=$n0 left=$left"
+prevkeys=$(keys_list)
 while [ "$it" -lt "$left" ]; do
   it=$((it+1))
   if [ -f "$C/STOP" ] || [ -f "$X/STOP" ]; then say "paused (STOP file); $name kept"; r="stopped"; break; fi
@@ -403,17 +404,26 @@ $CRITTXT"
     if [ "$claim" = DONE ] && [ $need = 1 ]; then appendfb "You said TASK DONE, but the critic is below $OKSC on a screen with P0/P1 findings. Fix them (new key) unless a finding would reverse one of his rulings or the finish lines in RULES.md say this screen is good enough; then end with TASK DONE."; idle=0
     else
       [ ${#SHIPPED_NOW[@]} -eq 0 ] && idle=$((idle+1)) || idle=0
+      # 2026-10-19 (o-01 and o-04 each spent 3 runs asking the lane for pictures and fixture edits after they shipped): once this job has
+      # shipped, a run that ships nothing and drafts no new key means only lane-side steps are left. Park it in waiting/, spend no more runs.
+      if [ "$idle" -ge 1 ] && [ -s "$LS/shipped.txt" ] && [ "$keys" = "$prevkeys" ]; then r="parked"; break; fi
       [ "$idle" -ge 2 ] && { r="partial-idle"; break; }
       appendfb "You ended with ${claim}. Continue with what remains of the task; when everything is shipped end with TASK DONE."
     fi
   else
     idle=0
   fi
+  prevkeys=$keys
 done
 
 # ---- the end of this job's turn
 n=$(cat "$C/spend.txt" "$C/cli-spend.txt" 2>/dev/null | grep -c " $name$")
 case "$r" in
+  parked)   # 2026-10-19: shipped, only lane-side steps left (pictures, fixture retargets, two-window checks); the coordinator finishes it
+    final="parked"; mv "$t" "$C/waiting/"
+    { echo; echo "Lane note $(date '+%F %H:%M'): shipped $(tr '
+' ' ' < "$LS/shipped.txt" 2>/dev/null)and parked: only lane-side steps are left. Codex's last words:"; tail -c 700 "$LAST" 2>/dev/null; echo; } >> "$C/waiting/$(basename "$t")"
+    echo "$(date '+%m-%d %H:%M') $name: shipped, parked in waiting/ (lane-side steps left), codex" | tee -a "$C/runs.log" > "$C/status-$L.txt";;
   limit|login|crash|stopped|waiting)   # the job stays where it is; the status line was written where it happened
     final="$r"; echo "$(date '+%m-%d %H:%M') $name: codex $r; kept (runs so far: $n of $MAXR)" >> "$C/runs.log"
     [ "$r" = waiting ] && say "gate waiting on another worker; $name kept (codex)";;

@@ -1,0 +1,5 @@
+## v31.86 - STICKS KEEP THEIR ANGLE AND FULL DIAGONAL SPEED
+
+Co-op hunt while he was away. Separate axis deadzones bent aim and walking toward straight directions and shortened diagonal travel.
+
+MEASURED. Check 31.86 passes, and fails on v31.85.

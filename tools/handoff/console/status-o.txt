@@ -1,1 +1,1 @@
-10-19 13:12 gate: shipping cw-cx-camera130 (o-04-camera-closer, codex)
+10-19 13:43 gate: shipping cw-cx-stickmath (o-04b-stick-math, codex)
