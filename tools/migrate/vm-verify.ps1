@@ -88,9 +88,11 @@ $script:LogOk = $false
 
 # the servers (port, how to ask, what it is). 8802 is the play port: HEAD only, "any reply" counts, nothing else is ever sent to it.
 $script:ServerSpecs = @(
-  @{ Port = 8800; Method = 'HEAD'; Path = '/fixture.html'; HostName = 'localhost'; What = 'test fixture server (tools folder)'; AnyReply = $false },
+  # 8800 and 8803 serve the tools folder. They are probed with tools\serve.ps1, a file that is always in the repo.
+  # (tools\fixture.html is gitignored and only exists after mkfixture.ps1 has run, so on a fresh VM it would answer 404.)
+  @{ Port = 8800; Method = 'HEAD'; Path = '/serve.ps1'; HostName = 'localhost'; What = 'test fixture server (tools folder)'; AnyReply = $false },
   @{ Port = 8799; Method = 'GET';  Path = '/';             HostName = 'localhost'; What = 'run-report collector'; AnyReply = $false },
-  @{ Port = 8803; Method = 'HEAD'; Path = '/fixture.html'; HostName = 'localhost'; What = 'test shard server'; AnyReply = $false },
+  @{ Port = 8803; Method = 'HEAD'; Path = '/serve.ps1'; HostName = 'localhost'; What = 'test shard server'; AnyReply = $false },
   @{ Port = 8820; Method = 'GET';  Path = '/';             HostName = '127.0.0.1'; What = 'dev console server'; AnyReply = $false },
   @{ Port = 8802; Method = 'HEAD'; Path = '/';             HostName = 'localhost'; What = 'play server (HEAD only)'; AnyReply = $true }
 )

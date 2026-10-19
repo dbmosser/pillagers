@@ -14,3 +14,13 @@ Sandbox validation passed: all six anchors match once, the mk script prints writ
 
 Four camera recipes stage actual linked CAREER windows and synthetic pads: p1 and p2 in the Undercroft, then p1 and p2 in the raid. Each checks three trials with pads present and three with A then B arriving later, then A reconnect and pad-only resume. They leave the two-second claim tag visible for the picture, and close their partner window afterwards. Camera output and critic scores are still pending. No claim of a hardware test or a shipped result yet.
 
+
+--- codex run 2026-10-19 19:05 ---
+2026-10-19 - Retry after preflight on v31.91.
+
+The reported older-check failures came from the new check's text spy. Assigning ctx.fillText and then assigning the old function back left an own method on the canvas context. The later checks wrap CanvasRenderingContext2D.prototype.fillText, which that own method bypasses. This explains the missing board heading, contract colour, zone names and backpack hint in their traces.
+
+Changed the new check to wrap and restore the prototype, like the existing map checks. It records only calls on the HUD context. No game edits or older checks changed. The key remains cw-cx-padowner.
+
+Local validation passes on v31.91: six unique anchors, mk prints written, original and drafted game scripts parse, new check parses, four camera recipes parse, and the mk is ASCII. Added a small JavaScript property-lifecycle probe: it reproduces the old failure, runs the exact new spy setup and cleanup from the draft, verifies no own fillText remains, and verifies a subsequent prototype spy observes a draw. The full browser gate and pictures still belong to lane o and must be rerun.
+

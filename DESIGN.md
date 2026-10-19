@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.93 - KNOW YOUR PAD
+
+Co-op hunt while he was away. J7: guests could not tell which pad belonged to their window when it connected or came back.
+
+MEASURED. Check 31.93 passes, and fails on v31.92.
 ## v31.92 - THE SENTRY IS A HUMANOID COMBAT ROBOT
 
 Co-op hunt while he was away. His order: the Sentry should look more humanoid robot-y, not like a big garbage can. It was a tread, a boxy hull and a camera on a mast. It is now a heavy walking combat robot: two armoured legs with knee plates and flat feet that walk on its step, a pelvis, a chest broad at the shoulders, a small head with a visor holding the same sensor lens, the antenna kept, one arm hanging and swinging and the other arm being the gun, turning to its aim from the shoulder. Same palette, size, shadow and footprint. A dead one now leaves a toppled robot: torso on its back, head knocked off with a dead lens, a bent leg, the gun arm lying apart. Drawn only, no random numbers.

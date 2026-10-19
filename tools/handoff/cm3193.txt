@@ -1,0 +1,7 @@
+v31.93: know your pad
+
+Claiming a pad gives that pad a 250 ms pulse and puts p1 in amber or p2 in cyan beside its pillager for two seconds. First pad stays p2 and second stays p1.
+
+Check 31.93. Fails on v31.92.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

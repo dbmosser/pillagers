@@ -15,6 +15,7 @@ import { spawn, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import {
   parsePortSpecs, isPrivateIPv4, classifyHostToken, parseAddressFile, parseArgs, UsageError, probePort,
+  ipInNetwork, defaultSwitchNetwork, checkTargetAddress, TargetResolver, makeLogger,
 } from './play-relay.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -42,7 +43,7 @@ async function freePortCheck(port) {
 }
 
 // ------------------------------------------------------------------ helpers: relay process
-function startRelay(args, { env = {}, name = 'r' + Math.random().toString(36).slice(2, 7), waitStart = true, vmFileContent = null } = {}) {
+function startRelay(args, { env = {}, name = 'r' + Math.random().toString(36).slice(2, 7), waitStart = true, vmFileContent = null, loopback = true } = {}) {
   const logFile = path.join(TMP, name + '.log');
   const statusFile = path.join(TMP, name + '.status.json');
   const vmFile = path.join(TMP, name + '.vm-address.txt');
@@ -50,6 +51,7 @@ function startRelay(args, { env = {}, name = 'r' + Math.random().toString(36).sl
   const full = [RELAY, '--log', logFile, '--status-file', statusFile];
   if (!args.includes('--vm-file')) full.push('--vm-file', vmFile);
   if (!args.includes('--vm-name')) full.push('--vm-name', '');
+  if (loopback) full.push('--allow-loopback-target');   // the fake "VM" in these tests is on 127.0.0.1 (a test of the real rules passes loopback: false)
   full.push(...args);
   const proc = spawn(process.execPath, full, { env: cleanEnv(env), stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true });
   children.add(proc);
@@ -378,18 +380,18 @@ describe('the VM is away or moves', () => {
     } finally { await relay.stop(); await closeServer(srv); }
   });
 
-  it('looks the VM up again after a failure and moves to the new address (stale file entry -> name)', async () => {
+  it('looks the VM up again after a failure and moves to the new address (stale address -> name)', async () => {
     const srv = http.createServer((req, res) => res.end('new home'));
     await listen(srv, P_TARGET);
-    // 127.0.0.2 is a loopback address nothing listens on (refused at once); the name "localhost" resolves to the working 127.0.0.1
-    const relay = await startRelay(['--ports', P_RELAY + ':' + P_TARGET], { vmFileContent: 'ip=127.0.0.2\ncomputer=localhost\n' });
+    // 127.0.0.2 is a loopback address nothing listens on (refused at once); the name "localhost" (typed on purpose, so used as typed) resolves to the working 127.0.0.1
+    const relay = await startRelay(['--ports', P_RELAY + ':' + P_TARGET, '--vm-host', '127.0.0.2'], { env: { PILLAGERS_VM_HOST: 'localhost' } });
     try {
       const r = await rawHttp({ port: P_RELAY, hostHeader: 'localhost:' + P_RELAY });
       assert.equal(r.status, 200, relay.log());
       assert.equal(r.body.toString(), 'new home');
       const log = relay.log();
       assert.match(log, /the VM is at 127\.0\.0\.2/);
-      assert.match(log, /the VM is at 127\.0\.0\.1 \(file vm-address\.txt, was 127\.0\.0\.2\)/);
+      assert.match(log, /the VM is at 127\.0\.0\.1 \(env PILLAGERS_VM_HOST, was 127\.0\.0\.2\)/);
     } finally { await relay.stop(); await closeServer(srv); }
   });
 
@@ -525,7 +527,7 @@ describe('logs and status', () => {
 describe('--probe', () => {
   it('reports open ports (exit 0), a closed port (exit 5) and no address (exit 4)', async () => {
     const srv = net.createServer(() => {}); await listen(srv, P_TARGET);
-    const run = (args) => spawnSync(process.execPath, [RELAY, '--probe', '--vm-file', path.join(TMP, 'probe-none.txt'), '--vm-name', '', ...args], { env: cleanEnv(), encoding: 'utf8', windowsHide: true });
+    const run = (args) => spawnSync(process.execPath, [RELAY, '--probe', '--allow-loopback-target', '--vm-file', path.join(TMP, 'probe-none.txt'), '--vm-name', '', ...args], { env: cleanEnv(), encoding: 'utf8', windowsHide: true });
     try {
       let r = run(['--ports', P_RELAY + ':' + P_TARGET, '--vm-host', '127.0.0.1']);
       assert.equal(r.status, 0, r.stdout + r.stderr);

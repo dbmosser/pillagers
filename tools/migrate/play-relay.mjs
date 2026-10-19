@@ -19,8 +19,13 @@
 //     C:\Users\User1\AppData\Local\PillagersMove\vm-address.txt, (c) <computer name>.mshome.net (the Hyper-V Default Switch answers that name;
 //     default computer name VM_Oct2026, change it with env PILLAGERS_VM_NAME or --vm-name). A command-line --vm-host beats all three.
 //     When a connection to the VM fails it looks the VM up again (a changed address is picked up without a restart) and logs the new address.
-//   - Refuses targets that are not private addresses (10.x, 172.16-31.x, 192.168.x, 169.254.x, 127.x) unless --allow-any-target is given, so a
-//     wrong or tampered address file can never send the game's traffic to the internet.
+//   - Only talks to the VM on the Hyper-V Default Switch. A target must be a private address (10.x, 172.16-31.x, 192.168.x, 169.254.x), must not
+//     be a loopback address (127.x: that would loop back into the relay itself), and, when this PC has a "Default Switch" network card, must lie
+//     inside that card's network. Anything else is refused unless --allow-any-target is given, so a wrong or tampered address file, or a device
+//     on the home network that answers for the VM's name, can never make the game page come from somewhere else.
+//   - A bare VM name (no dot) from the address file or the default VM name is looked up only as <name>.mshome.net (the Default Switch's own name
+//     service). It is NOT also tried as a plain name, because a plain name is answered by whatever device is on the LAN (LLMNR/NetBIOS). A name
+//     typed on purpose with --vm-host or PILLAGERS_VM_HOST is looked up exactly as typed.
 //   - REFUSES TO START when one of its listen ports is already taken (for example the main PC's own play server is still running).
 //   - Logs one line per real connection error (repeats within 10 seconds are folded into "+N similar"). It never logs request or response
 //     contents, headers or cookies. Browser-side resets (a tab closing) are only counted, not logged, unless --verbose.
@@ -33,7 +38,7 @@
 //   node play-relay.mjs --vm-host 192.168.164.103        use this VM address (overrides env, file and name)
 //   node play-relay.mjs --probe                          do not listen: look the VM up, try its ports once, print key=value lines, exit
 //   options: --vm-name NAME  --vm-file PATH  --log PATH  --status-file PATH  --idle-seconds N (default 900)  --connect-timeout-ms N (default 4000)
-//            --also-ipv6 (also listen on ::1)  --no-error-page  --allow-any-target  --verbose  --help
+//            --also-ipv6 (also listen on ::1)  --no-error-page  --allow-any-target  --allow-loopback-target (tests only)  --verbose  --help
 // Exit codes: 0 stopped normally / probe all open, 1 unexpected error, 2 bad options, 3 a listen port is taken (refused to start),
 //             4 probe: the VM address could not be found, 5 probe: the VM did not answer on every port.
 // Files: log tools\migrate\logs\play-relay.log (kept to about 2 MB, then moved to play-relay.log.old), status tools\migrate\state\play-relay.status.json.
@@ -59,7 +64,7 @@ export class UsageError extends Error {}
 
 // ------------------------------------------------------------------------------------------------ options
 const VALUE_OPTS = new Set(['ports', 'vm-host', 'vm-name', 'vm-file', 'log', 'status-file', 'idle-seconds', 'connect-timeout-ms', 'ics-dns']);
-const FLAG_OPTS = new Set(['also-ipv6', 'allow-any-target', 'probe', 'verbose', 'help', 'no-error-page']);
+const FLAG_OPTS = new Set(['also-ipv6', 'allow-any-target', 'allow-loopback-target', 'probe', 'verbose', 'help', 'no-error-page']);
 
 export function parsePortSpecs(text) {
   const out = [];
@@ -86,6 +91,60 @@ export function isPrivateIPv4(ip) {
   if ([a, b, c, d].some((n) => n > 255)) return false;
   if (a === 0 || (a === 255 && b === 255 && c === 255 && d === 255)) return false;
   return a === 10 || a === 127 || (a === 172 && b >= 16 && b <= 31) || (a === 192 && b === 168) || (a === 169 && b === 254);
+}
+
+function ipv4ToInt(ip) {
+  const m = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.exec(String(ip));
+  if (!m) return null;
+  const p = m.slice(1).map(Number);
+  if (p.some((n) => n > 255)) return null;
+  return (((p[0] * 256 + p[1]) * 256 + p[2]) * 256 + p[3]);
+}
+
+// Is ip inside the network that `address` / `netmask` describe? (IPv4 only; anything unparsable is "no".)
+export function ipInNetwork(ip, address, netmask) {
+  const a = ipv4ToInt(ip);
+  const b = ipv4ToInt(address);
+  const m = ipv4ToInt(netmask);
+  if (a === null || b === null || m === null) return false;
+  return ((a & m) >>> 0) === ((b & m) >>> 0);
+}
+
+function prefixLength(netmask) {
+  const m = ipv4ToInt(netmask);
+  if (m === null) return 0;
+  let n = 0;
+  for (let bit = 31; bit >= 0; bit--) { if ((m >>> bit) & 1) n++; else break; }
+  return n;
+}
+
+// The network of this PC's Hyper-V "Default Switch" network card, or null when there is none: { address, netmask, text }.
+export function defaultSwitchNetwork(ifaces) {
+  try {
+    const all = ifaces || os.networkInterfaces();
+    for (const [name, list] of Object.entries(all || {})) {
+      if (!/default switch/i.test(name)) continue;
+      for (const a of list || []) {
+        if (a.family === 'IPv4' && !a.internal && a.netmask && ipv4ToInt(a.address) !== null) {
+          return { address: a.address, netmask: a.netmask, text: a.address + '/' + prefixLength(a.netmask) };
+        }
+      }
+    }
+  } catch { /* no network card list: treat as "no Default Switch card" */ }
+  return null;
+}
+
+// May the relay talk to this VM address? -> { ok, why }. The rules are in the header of this file.
+export function checkTargetAddress(ip, opts = {}, ifaces) {
+  if (opts.allowAnyTarget) return { ok: true, why: '' };
+  if (!isPrivateIPv4(ip)) return { ok: false, why: 'not a private address, refused' };
+  const loop = /^127\./.test(ip);
+  if (loop) return opts.allowLoopback ? { ok: true, why: '' } : { ok: false, why: 'a loopback address (this PC itself), refused' };
+  const sw = defaultSwitchNetwork(ifaces);
+  if (sw && !ipInNetwork(ip, sw.address, sw.netmask)) {
+    return { ok: false, why: 'outside the Default Switch network ' + sw.text + ', refused (use --allow-any-target only if this really is the VM)' };
+  }
+  return { ok: true, why: '' };
 }
 
 // A VM address from the user: an IPv4 address or a host name (letters, digits, dot, dash, underscore). Anything else is refused.
@@ -137,6 +196,7 @@ export function parseArgs(argv, env = process.env) {
     icsDns: '',
     alsoIpv6: false,
     allowAnyTarget: false,
+    allowLoopback: false,
     probe: false,
     verbose: false,
     help: false,
@@ -153,6 +213,7 @@ export function parseArgs(argv, env = process.env) {
       if (val !== undefined) throw new UsageError('--' + name + ' takes no value');
       if (name === 'also-ipv6') cfg.alsoIpv6 = true;
       else if (name === 'allow-any-target') cfg.allowAnyTarget = true;
+      else if (name === 'allow-loopback-target') cfg.allowLoopback = true;
       else if (name === 'probe') cfg.probe = true;
       else if (name === 'verbose') cfg.verbose = true;
       else if (name === 'help') cfg.help = true;
@@ -196,7 +257,7 @@ export function parseArgs(argv, env = process.env) {
 export const USAGE = [
   'play-relay.mjs : listens on 127.0.0.1 and forwards each connection, byte for byte, to the same port in the Pillagers VM.',
   '  node play-relay.mjs [--ports 8802,8799] [--vm-host ADDRESS|NAME] [--vm-name NAME] [--vm-file PATH] [--log PATH] [--status-file PATH]',
-  '                      [--idle-seconds N] [--connect-timeout-ms N] [--also-ipv6] [--no-error-page] [--allow-any-target] [--verbose]',
+  '                      [--idle-seconds N] [--connect-timeout-ms N] [--also-ipv6] [--no-error-page] [--allow-any-target] [--allow-loopback-target] [--verbose]',
   '  node play-relay.mjs --probe      look the VM up and try its ports once (prints key=value lines)',
   'VM address order: --vm-host, env PILLAGERS_VM_HOST, file vm-address.txt, then <name>.mshome.net (name from env PILLAGERS_VM_NAME, default ' + DEFAULT_VM_NAME + ').',
 ].join('\n');
@@ -296,15 +357,18 @@ export class TargetResolver {
     const c = [];
     const cfg = this.cfg;
     const addTok = (text, source) => { const t = classifyHostToken(text); if (t) c.push({ kind: t.kind, value: t.value, source }); };
+    // A bare name (no dot) that comes from the address file or from the default VM name is only ever looked up as <name>.mshome.net, the Default
+    // Switch's own name service. It is never also tried as a plain name, because a plain name is answered by any device on the LAN (LLMNR /
+    // NetBIOS). A name typed on purpose with --vm-host or PILLAGERS_VM_HOST is used exactly as typed.
     const addName = (n, source) => {
       if (!n) return;
-      if (!n.includes('.')) { c.push({ kind: 'name', value: n + '.mshome.net', source }); c.push({ kind: 'name', value: n, source }); } else c.push({ kind: 'name', value: n, source });
+      if (!n.includes('.')) c.push({ kind: 'name', value: n + '.mshome.net', source }); else c.push({ kind: 'name', value: n, source });
     };
     if (cfg.vmHostArg) addTok(cfg.vmHostArg, 'command line --vm-host');
     if (cfg.vmHostEnv) {
       const t = classifyHostToken(cfg.vmHostEnv);
       if (!t) this.log.once('badenv', 'env PILLAGERS_VM_HOST is not an IPv4 address or a host name, so it is ignored');
-      else if (t.kind === 'name') addName(t.value, 'env PILLAGERS_VM_HOST'); else c.push({ kind: 'ip', value: t.value, source: 'env PILLAGERS_VM_HOST' });
+      else c.push({ kind: t.kind, value: t.value, source: 'env PILLAGERS_VM_HOST' });
     }
     if (cfg.vmFile) {
       try {
@@ -329,7 +393,8 @@ export class TargetResolver {
         ip = r.ip;
         if (!ip) { notes.push(cand.value + ': ' + r.err); continue; }
       }
-      if (!this.cfg.allowAnyTarget && !isPrivateIPv4(ip)) { notes.push(cand.value + ' is ' + ip + ', not a private address, refused'); continue; }
+      const verdict = checkTargetAddress(ip, this.cfg);
+      if (!verdict.ok) { notes.push(cand.value + ' is ' + ip + ', ' + verdict.why); continue; }
       const found = { ip, source: cand.source, name: cand.kind === 'name' ? cand.value : '', at: Date.now() };
       if (!avoid || !avoid.has(ip)) return found;
       if (!fallback) fallback = found;
@@ -348,9 +413,16 @@ export class TargetResolver {
       const r = await this.lookup(avoid);
       if (r.error) {
         this.lastError = r.error;
+        if (this.cache) {
+          // A good address is already known. A look-up that finds nothing right now (the name service dropped the name for a moment) must not
+          // break connections that would still work: keep using the known address and look again in about 3 seconds.
+          this.cache.at = Date.now() - RESOLVE_TTL_MS + 3000;
+          this.log.once('keepaddr', 'cannot look the VM up again (' + r.error + '); keeping ' + this.cache.ip + ' for now');
+          return this.cache;
+        }
         this.errAt = Date.now();
         this.errResult = r;
-        if (!this.cache) this.log.once('noaddr', 'cannot find the VM yet: ' + r.error);
+        this.log.once('noaddr', 'cannot find the VM yet: ' + r.error);
         return r;
       }
       const prev = this.cache && this.cache.ip;
@@ -697,12 +769,15 @@ async function main(argv) {
   if (cfg.probe) return runProbe(cfg);
   try { process.stdout.on('error', () => { /* hidden window: no console to write to */ }); } catch { /* ignore */ }
 
-  // a plainly wrong (public) literal address is refused at once, with a clear message
+  // a plainly wrong literal address (public, loopback, or outside the Default Switch network) is refused at once, with a clear message
   if (!cfg.allowAnyTarget) {
     for (const lit of [cfg.vmHostArg, cfg.vmHostEnv]) {
-      if (lit && net.isIPv4(lit) && !isPrivateIPv4(lit)) {
-        console.error('play-relay: ' + lit + ' is not a private address (10.x, 172.16-31.x, 192.168.x). Refusing, so game traffic can never leave this PC by mistake. Use --allow-any-target only on purpose.');
-        return 2;
+      if (lit && net.isIPv4(lit)) {
+        const v = checkTargetAddress(lit, cfg);
+        if (!v.ok) {
+          console.error('play-relay: ' + lit + ' is ' + v.why + '. The VM is on the Hyper-V Default Switch (a private 192.168.x address). Use --allow-any-target only on purpose.');
+          return 2;
+        }
       }
     }
   }
