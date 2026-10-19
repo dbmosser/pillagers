@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.68 - PARTY CARD LABELS NEVER DRAW UNDER 16PX
+
+Co-op hunt while he was away. The critic scored the party cards (how to play, board, run over) on small labels: about 14px, under the 16px minimum for anything read from a couch. Table heads, the seeded night line, stat labels, best moment labels and initials lines now floor at 16px whatever the menu scale. Restyle only.
+
+MEASURED. Check 31.68 passes, and fails on v31.67.
 ## v31.67 - SETTINGS STEPPERS AND KEYS TABLE POLISH
 
 Co-op hunt while he was away. Critic c-31 rounds: every stepper boxed (my own mistake in pset12), key section names look like row labels, keys table off to one side.

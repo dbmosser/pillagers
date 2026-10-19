@@ -1,0 +1,7 @@
+v31.68: party card labels never draw under 16px
+
+Small labels on the how to play page, the board and the run over card are never under 16px.
+
+Check 31.68. Fails on v31.67.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
