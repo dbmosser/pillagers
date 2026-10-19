@@ -10,7 +10,7 @@ $ErrorActionPreference='Continue'
 $R='C:\claudecode\dark raiders'; $G=Join-Path $R 'dark_raiders.html'; $O=Join-Path $R 'tools\handoff\llm-night'
 New-Item -ItemType Directory -Force $O | Out-Null
 $lines=[IO.File]::ReadAllLines($G)
-$olBase=$env:PILLAGERS_OLLAMA_URL; if(-not $olBase){ $olBase=[Environment]::GetEnvironmentVariable('PILLAGERS_OLLAMA_URL','User') }; if("$olBase".Trim() -match '^https?://[^\s/]+/*$'){ $api="$olBase".Trim().TrimEnd('/')+'/api/generate' } else { $api='http://127.0.0.1:11434/api/generate' }   # PILLAGERS_OLLAMA_URL (set in the VM) points at the main PC's Ollama; not set = this PC
+$olBase=$env:PILLAGERS_OLLAMA_URL; if(-not $olBase){ $olBase=[Environment]::GetEnvironmentVariable('PILLAGERS_OLLAMA_URL','User') }; if("$olBase".Trim() -match '^https?://(localhost|127(\.\d{1,3}){3}|10(\.\d{1,3}){3}|192\.168(\.\d{1,3}){2}|172\.(1[6-9]|2\d|3[01])(\.\d{1,3}){2})(:\d{1,5})?/*$'){ $api="$olBase".Trim().TrimEnd('/')+'/api/generate' } else { $api='http://127.0.0.1:11434/api/generate' }   # PILLAGERS_OLLAMA_URL (set in the VM) points at the main PC's Ollama; only localhost or a private-network address is accepted (code is sent there); not set or anything else = this PC
 function Ask([string]$prompt,[int]$max=500){
   # 2026-10-13: the first run let the model ramble (no cap): one batch took 30 min. Cap the answer and keep the context small.
   $body=@{ model=$Model; prompt=$prompt; stream=$false; think=$false; options=@{ temperature=0.1; num_ctx=8192; num_predict=$max; repeat_penalty=1.15 } } | ConvertTo-Json -Depth 4

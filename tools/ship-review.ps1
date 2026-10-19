@@ -28,7 +28,7 @@ $log=Join-Path $O 'run.log'; $last=Join-Path $O "last-reviewed-$Engine.txt"; $fo
 $utf8=New-Object Text.UTF8Encoding($false)
 $node=(Get-Command node -ErrorAction SilentlyContinue).Source
 $gem=if($node){ Join-Path (Split-Path $node) 'node_modules\@google\gemini-cli\bundle\gemini.js' } else { '' }
-$api=$env:PILLAGERS_OLLAMA_URL; if(-not $api){ $api=[Environment]::GetEnvironmentVariable('PILLAGERS_OLLAMA_URL','User') }; if("$api".Trim() -match '^https?://[^\s/]+/*$'){ $api="$api".Trim().TrimEnd('/') } else { $api='http://127.0.0.1:11434' }   # PILLAGERS_OLLAMA_URL (set in the VM) points at the main PC's Ollama; not set = this PC
+$api=$env:PILLAGERS_OLLAMA_URL; if(-not $api){ $api=[Environment]::GetEnvironmentVariable('PILLAGERS_OLLAMA_URL','User') }; if("$api".Trim() -match '^https?://(localhost|127(\.\d{1,3}){3}|10(\.\d{1,3}){3}|192\.168(\.\d{1,3}){2}|172\.(1[6-9]|2\d|3[01])(\.\d{1,3}){2})(:\d{1,5})?/*$'){ $api="$api".Trim().TrimEnd('/') } else { $api='http://127.0.0.1:11434' }   # PILLAGERS_OLLAMA_URL (set in the VM) points at the main PC's Ollama; only localhost or a private-network address is accepted (diffs are sent there); not set or anything else = this PC
 $agy=Join-Path $env:LOCALAPPDATA 'agy\bin\agy.exe'
 function Log([string]$m){ "$(Get-Date -Format 'MM-dd HH:mm:ss') [$Engine] $m" | Add-Content $log }
 function Status([string]$state,[string]$m){ [IO.File]::WriteAllText($stat, "$((Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')) $Engine $state $m`n", $utf8) }

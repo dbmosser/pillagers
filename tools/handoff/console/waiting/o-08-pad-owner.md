@@ -10,3 +10,8 @@ Checks (each control must FAIL on the old build): two stub pads connected A then
 fires on the right pad; the tag shows in the right window; unplug A and replug it, and the same player gets it back with no
 rumble on the other pad.
 TASK DONE when shipped and the checks pass; TASK PARTIAL with what is left.
+
+Lane note 2026-10-19 19:09: shipped cw-cx-padowner and parked: only lane-side steps are left. Codex's last words:
+`cw-cx-padowner` shipped in v31.93. Added the coordinator’s camera command and updated recipes for pictures from both windows.
+
+TASK PARTIAL: coordinator must run the camera recipes and return pictures and critic results.

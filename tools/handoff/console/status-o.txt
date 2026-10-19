@@ -1,1 +1,1 @@
-10-19 19:06 gate: shipping cw-cx-padowner (o-08-pad-owner, codex)
+10-19 19:16 waiting for RAM: 5 GB free, need 6 (o-09-pad-name-entry)

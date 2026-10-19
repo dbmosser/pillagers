@@ -686,8 +686,8 @@ function Check-Keys {
   $setHint = 'On the MAIN PC run host-ollama-bridge.ps1 -Install (administrator window), then in the VM: [Environment]::SetEnvironmentVariable(''PILLAGERS_OLLAMA_URL'', ''http://' + $(if ($gw) { $gw } else { '192.168.160.1' }) + ':11434'', ''User'')   and open new windows.'
   if (-not $url) {
     Add-Result 'WAIT' 'PILLAGERS_OLLAMA_URL answers' 'the variable is not set yet (the local-AI audits would run on nothing)' $setHint
-  } elseif ($url -notmatch '^https?://[^\s/]+/*$') {
-    Add-Result 'FAIL' 'PILLAGERS_OLLAMA_URL answers' ('the value is not a plain http://host:port address: ' + (Protect-Url $url)) $setHint
+  } elseif ($url -notmatch '^https?://(localhost|127(\.\d{1,3}){3}|10(\.\d{1,3}){3}|192\.168(\.\d{1,3}){2}|172\.(1[6-9]|2\d|3[01])(\.\d{1,3}){2})(:\d{1,5})?/*$') {
+    Add-Result 'FAIL' 'PILLAGERS_OLLAMA_URL answers' ('the value is not a plain http://<private address>:port address (ship-review.ps1 and llm-night.ps1 ignore anything else and use this VM instead): ' + (Protect-Url $url)) $setHint
   } elseif ($script:NoNet) {
     Add-Result 'WAIT' 'PILLAGERS_OLLAMA_URL answers' ('set to ' + (Protect-Url $url) + '; not tested because of -NoNetwork') 'Run again without -NoNetwork.'
   } else {

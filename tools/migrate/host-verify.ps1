@@ -18,7 +18,7 @@ WHAT IT CHECKS
                   see (the Hyper-V service, VM worker processes) and tells you how to read it (administrator window, or Hyper-V Manager).
    the pad route  the relay that makes http://localhost:8802/ and :8799 on this PC show the game that runs in the VM (only needed for the party
                   night, so "not running yet" is a WARN): who listens on 127.0.0.1 port 8802 and 8799, that it is the loopback address only and not the
-                  old Pillagers server, and that it answers.
+                  old Pillagers server, and (only if it is the relay) that it answers.
    Ollama bridge  the user variable OLLAMA_HOST, the firewall rule "Pillagers Ollama for VM" (read from the registry), Ollama listening beyond
                   127.0.0.1, and a request to Ollama at this PC's Default Switch address (what the VM's audits use). Full detail: host-ollama-bridge.ps1 -Status.
    nothing here   no Pillagers runner, lane, helper run, ship, test run, server, dashboard or test Chrome runs on this PC (every process whose command line
@@ -33,8 +33,9 @@ WHAT THE WORDS MEAN
 
 WHAT IT NEVER DOES
   It never stops, starts or changes anything: no process is touched, no task, no file except its own log (tools\migrate\logs\host-verify-<time>.log),
-  no setting, no firewall command (rules are read from the registry). It does not use the play port 8802 for anything except one bare HEAD request to
-  see whether the relay answers (and only if something listens there). No secret value is read, printed or logged; the only variable value read is
+  no setting, no firewall command (rules are read from the registry). It sends a request (one bare HEAD to 8802, one GET to 8799) ONLY to the
+  relay itself: a node.exe running play-relay.mjs that listens on 127.0.0.1. Whatever else holds those ports (your own play server and collector
+  today, which Windows lists as the System process because they use HTTP.sys, or the party copy) is never sent a request. No secret value is read, printed or logged; the only variable value read is
   OLLAMA_HOST (a host:port address). ASCII only. Works in Windows PowerShell 5.1.
 #>
 [CmdletBinding()]
@@ -187,9 +188,20 @@ function Get-PortListeners {
     if ($p) { $name = [string]$p.Name; $cmd = [string]$p.CommandLine }
     else { try { $name = [string](Get-Process -Id ([int]$c.OwningProcess) -ErrorAction Stop).ProcessName } catch { } }
     $kind = 'other'
-    if ($cmd -and $cmd -match $script:RxServers) { $kind = 'old' }
+    $ownerPid = [int]$c.OwningProcess
+    if ($ownerPid -eq 4) {
+      # An HttpListener (tools\serve.ps1, tools\collector.ps1) is served by Windows HTTP.sys, so its socket belongs to the System process (pid 4), never to
+      # powershell.exe. Find the script by its command line instead (it names its port with -Port). Nothing is ever sent to such a listener.
+      $kind = 'httpsys'
+      if ($Snap) {
+        $rxPort = '(?i)-Port\s+["'']?' + [int]$c.LocalPort + '\b'
+        $owner = $Snap | Where-Object { $_.CommandLine -and ([string]$_.CommandLine -match $script:RxServers) -and ([string]$_.CommandLine -match $rxPort) } | Select-Object -First 1
+        if ($owner) { $kind = 'old'; $name = [string]$owner.Name; $cmd = [string]$owner.CommandLine; $ownerPid = [int]$owner.ProcessId }
+      }
+    }
+    elseif ($cmd -and $cmd -match $script:RxServers) { $kind = 'old' }
     elseif ($cmd -and $cmd -match $script:RxPyPages) { $kind = 'old' }
-    [void]$out.Add([pscustomobject]@{ Port = [int]$c.LocalPort; Address = [string]$c.LocalAddress; Pid = [int]$c.OwningProcess; Name = $name; Cmd = $cmd; Kind = $kind })
+    [void]$out.Add([pscustomobject]@{ Port = [int]$c.LocalPort; Address = [string]$c.LocalAddress; Pid = $ownerPid; Name = $name; Cmd = $cmd; Kind = $kind })
   }
   return $out.ToArray()
 }
@@ -348,14 +360,24 @@ function Check-Relay {
     $old = @($mine | Where-Object { $_.Kind -eq 'old' })
     if ($old.Count -gt 0) {
       if ($keptOn) { Add-Result 'PASS' $name ('the OLD Pillagers server (pid ' + $old[0].Pid + ') still holds port ' + $port + ' on purpose (the marker says playServersKept=yes); stop it before you start the relay') }
-      else { Add-Result 'WARN' $name ('the OLD Pillagers server (' + $old[0].Name + ' pid ' + $old[0].Pid + ') still holds port ' + $port + ', so a relay cannot use it') 'Stop it (host-stop.ps1 does, unless you used -KeepPlayServers). The "nothing runs here" section below lists it too.' }
+      else { Add-Result 'WARN' $name ('the OLD Pillagers server (' + $old[0].Name + ' pid ' + $old[0].Pid + ') still holds port ' + $port + ', so a relay cannot use it; no request was sent to it') 'Stop it (host-stop.ps1 does, unless you used -KeepPlayServers). If this is the party copy (party-host-copy.ps1 -Start), that is expected on the party night. The "nothing runs here" section below lists it too.' }
+      continue
+    }
+    $hs = @($mine | Where-Object { $_.Kind -eq 'httpsys' })
+    if ($hs.Count -gt 0) {
+      Add-Result 'WARN' $name ('a program that uses Windows HTTP.sys (Windows lists it as the System process, pid ' + $hs[0].Pid + ') holds port ' + $port + ' on this PC; it is not the relay, and no request was sent to it') 'If it is a Pillagers server you still need, fine. Otherwise stop whatever holds the port before you start the relay.'
+      continue
+    }
+    $isRelay = @($mine | Where-Object { $_.Name -match '(?i)^node(\.exe)?$' -and $_.Cmd -match 'play-relay\.mjs' }).Count -gt 0
+    if (-not $isRelay) {
+      Add-Result 'WARN' $name ($mine[0].Name + ' pid ' + $mine[0].Pid + ' holds port ' + $port + ' on this PC; it is not recognised as the relay, and no request was sent to it') 'If it is not something you started on purpose, stop it before you start the relay (host-play-relay.ps1 -Status says more).'
       continue
     }
     $wide = @($mine | Where-Object { -not (Test-IsLoopback $_.Address) })
     $who = $mine[0].Name + ' pid ' + $mine[0].Pid
     $probe = $script:RelayProbes[$port]
     $reply = $null
-    if (-not $script:NoNet -and $probe) { $reply = Test-HttpEndpoint -Url ('http://localhost:' + $port + $probe.Path) -Method $probe.Method -Seconds $script:HttpTimeout }
+    if (-not $script:NoNet -and $probe) { $reply = Test-HttpEndpoint -Url ('http://127.0.0.1:' + $port + $probe.Path) -Method $probe.Method -Seconds $script:HttpTimeout }
     if ($wide.Count -gt 0) {
       Add-Result 'WARN' $name ($who + ' listens on ' + $wide[0].Address + ':' + $port + ', i.e. beyond this PC; the relay should listen on 127.0.0.1 only') 'Restart the relay bound to 127.0.0.1 only. Anything on your network could reach the game otherwise.'
     } elseif ($script:NoNet) {
@@ -396,6 +418,29 @@ function Check-OllamaBridge {
     if ($probs.Count -eq 0) { Add-Result 'PASS' ('firewall rule "' + $script:OllamaRuleName + '" exists') ('inbound TCP ' + $script:OllamaPort + ' only from ' + ((@($r.RA4) + @($r.RA6)) -join ', ')) }
     else { Add-Result 'FAIL' ('firewall rule "' + $script:OllamaRuleName + '" exists') ('the rule exists but: ' + ($probs -join '; ')) 'In an administrator window: host-ollama-bridge.ps1 -Undo, then host-ollama-bridge.ps1 -Install (the Undo removes only this one rule).' }
   }
+
+  # The whole protection is the Windows Firewall: it must really be on and block inbound by default, and no other rule may open or block Ollama.
+  $bridgeOn = ($envVal -eq ('0.0.0.0:' + $script:OllamaPort))
+  $fwProblems = @()
+  $fwRead = $false
+  try {
+    $profs = @(Get-NetFirewallProfile -PolicyStore ActiveStore -ErrorAction Stop)
+    $fwRead = ($profs.Count -gt 0)
+    foreach ($pf in $profs) {
+      if ([string]$pf.Enabled -ne 'True') { $fwProblems += ('the firewall is off or not set for the ' + $pf.Name + ' profile') }
+      if ([string]$pf.DefaultInboundAction -eq 'Allow') { $fwProblems += ('the ' + $pf.Name + ' profile allows inbound connections by default') }
+    }
+  } catch { }
+  if (-not $fwRead) { Add-Result 'WAIT' 'the Windows Firewall is on and blocks inbound by default' 'the firewall state could not be read from this window' 'Look at Windows Security > Firewall & network protection: Domain, Private and Public must all be on. host-ollama-bridge.ps1 -Install checks this itself and refuses if it is not.' }
+  elseif ($fwProblems.Count -gt 0) { Add-Result $(if ($bridgeOn) { 'FAIL' } else { 'WARN' }) 'the Windows Firewall is on and blocks inbound by default' (($fwProblems -join '; ') + '. Ollama listens on every card once the bridge is on, so the firewall is what keeps your network out.') 'Switch the firewall back on in Windows Security (this script never changes it). host-ollama-bridge.ps1 -Install refuses while it is not.' }
+  else { Add-Result 'PASS' 'the Windows Firewall is on and blocks inbound by default' 'Domain, Private and Public are on and block inbound by default' }
+  $otherRules = @($rules | Where-Object { [string]$_.Name -ne $script:OllamaRuleName -and [string]$_.Active -eq 'TRUE' -and [string]$_.Dir -eq 'In' -and ((([string]$_.App) -match '(?i)ollama') -or (@($_.LPort) -contains [string]$script:OllamaPort)) })
+  $otherBlocks = @($otherRules | Where-Object { [string]$_.Action -eq 'Block' })
+  $otherWide = @($otherRules | Where-Object { [string]$_.Action -eq 'Allow' -and (Test-WideRemote $_) })
+  if ($otherBlocks.Count -gt 0) { Add-Result 'FAIL' 'no block rule stops the Ollama bridge' ('block rule(s) for Ollama or port ' + $script:OllamaPort + ': ' + ((@($otherBlocks | ForEach-Object { [string]$_.Name }) | Select-Object -First 3) -join ', ') + '. A block beats the allow rule, so the VM cannot get through.') 'Windows adds one when the "Allow Ollama on networks?" window is closed with Cancel. host-ollama-bridge.ps1 -Status (administrator window) prints the exact command that removes it.' }
+  else { Add-Result 'PASS' 'no block rule stops the Ollama bridge' 'no enabled inbound block rule names Ollama or port 11434' }
+  if ($otherWide.Count -gt 0) { Add-Result 'FAIL' 'no other rule opens Ollama to the whole network' ('allow rule(s) that let other computers in: ' + ((@($otherWide | ForEach-Object { [string]$_.Name }) | Select-Object -First 3) -join ', ')) 'Remove it if you did not make it on purpose. host-ollama-bridge.ps1 -Status (administrator window) prints the exact command.' }
+  else { Add-Result 'PASS' 'no other rule opens Ollama to the whole network' 'no other enabled inbound allow rule for Ollama or port 11434 lets in every address' }
 
   $beyond = @($ls | Where-Object { -not (Test-IsLoopback $_.Address) })
   $loop = @($ls | Where-Object { Test-IsLoopback $_.Address })
@@ -521,8 +566,8 @@ function Check-Marker {
 function Get-Plan {
   return @(
     'THE VM: Automatic Start Action is Start with a 60 second delay; the VM is Running (if a normal window may not read Hyper-V, it says so and shows the indirect evidence)',
-    'THE PAD ROUTE: who listens on 127.0.0.1 ports 8802 and 8799, that it is not the old server, loopback only, and answers (WARN while not built)',
-    'THE OLLAMA BRIDGE: OLLAMA_HOST, the firewall rule "Pillagers Ollama for VM" (registry), Ollama listening beyond 127.0.0.1, a request at the Default Switch address',
+    'THE PAD ROUTE: who listens on 127.0.0.1 ports 8802 and 8799, that it is not the old server, loopback only, and (only if it is the relay) that it answers (WARN while not built; nothing is ever sent to any other listener)',
+    'THE OLLAMA BRIDGE: OLLAMA_HOST, the firewall rule "Pillagers Ollama for VM" (registry), the Windows Firewall on for all three profiles and blocking inbound by default, no block rule or wide allow rule for Ollama, Ollama listening beyond 127.0.0.1, a request at the Default Switch address',
     'NOTHING RUNS HERE: no Pillagers process (command lines into C:\claudecode\dark raiders), tasks off, no startup shortcut, no ship lock',
     'THE MARKER: tools\migrate\host-stopped.txt exists, stopped, this computer, check line matches; the repo is still at its commit'
   )

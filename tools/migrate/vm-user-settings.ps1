@@ -32,7 +32,7 @@ EXIT CODES: 0 = done and PASS, 2 = done, but the main PC is not answering yet ("
 NEVER DONE: no secret value is read, printed, copied or logged (key variables are only checked for "set / not set"); no administrator rights, no
 firewall, Defender, UAC or Windows Update change. It never sets OPENAI_API_KEY, CODEX_API_KEY or ANTHROPIC_API_KEY.
 This script is ASCII only and runs on Windows PowerShell 5.1.
-Log: C:\PillagersMove\kit\logs\vm-user-settings-<time>.log
+Log: C:\PillagersMove\kit\logs\vm-user-settings-<time>.log   (no log is written on a -DryRun or on the main PC; the old PATH value is logged before it is changed)
 #>
 [CmdletBinding()]
 param(
@@ -56,18 +56,35 @@ $script:DryRun = [bool]$DryRun
 # ----------------------------------------------------------------------------------------------------------------------
 # logging (plain words; the same lines go to the log file)
 # ----------------------------------------------------------------------------------------------------------------------
-$script:LogDir = ''
-if (Test-Path -LiteralPath 'C:\PillagersMove\kit') { $script:LogDir = 'C:\PillagersMove\kit\logs' }
-elseif ($PSScriptRoot) { $script:LogDir = Join-Path $PSScriptRoot 'logs' }
-else { $script:LogDir = Join-Path (Get-Location).Path 'logs' }
+# The log always goes to C:\PillagersMove\kit\logs (or, if that cannot be made, to a folder under %TEMP%). It never goes to the current folder (that could be
+# inside the Pillagers repository, which ships publish with "git add -A"), and nothing is written at all on a -DryRun or when this turns out to be the main PC.
+$script:LogDir = 'C:\PillagersMove\kit\logs'
 $script:LogFile = Join-Path $script:LogDir ('vm-user-settings-' + (Get-Date -Format 'yyyyMMdd-HHmmss') + '.log')
-try { if (-not (Test-Path -LiteralPath $script:LogDir)) { $null = New-Item -ItemType Directory -Force -Path $script:LogDir } } catch { }
+$script:LogOff = [bool]$DryRun
+$script:LogReady = $false
+function Open-Log {
+  if ($script:LogReady -or $script:LogOff) { return }
+  $script:LogReady = $true
+  try {
+    if (-not (Test-Path -LiteralPath $script:LogDir)) { $null = New-Item -ItemType Directory -Force -Path $script:LogDir -ErrorAction Stop }
+  } catch {
+    try {
+      $alt = Join-Path ([System.IO.Path]::GetTempPath()) 'PillagersMove-logs'
+      if (-not (Test-Path -LiteralPath $alt)) { $null = New-Item -ItemType Directory -Force -Path $alt -ErrorAction Stop }
+      $script:LogFile = Join-Path $alt (Split-Path -Leaf $script:LogFile)
+    } catch { $script:LogOff = $true }
+  }
+}
+function Say-LogPath {
+  if ($script:LogOff) { Say 'no log file was written (dry run or nothing to record)' } else { Say ('log file: ' + $script:LogFile) }
+}
 
 function Write-Log {
   param([string]$Level, [string]$Text, [string]$Color = 'Gray')
   $clean = ($Text -replace '[^\x20-\x7E]', '?')
   $line = (Get-Date -Format 'yyyy-MM-dd HH:mm:ss') + ' ' + $Level.PadRight(5) + ' ' + $clean
-  try { [System.IO.File]::AppendAllText($script:LogFile, $line + "`r`n", [System.Text.Encoding]::ASCII) } catch { }
+  Open-Log
+  if (-not $script:LogOff) { try { [System.IO.File]::AppendAllText($script:LogFile, $line + "`r`n", [System.Text.Encoding]::ASCII) } catch { } }
   Write-Host ((Get-Date -Format 'HH:mm:ss') + '  ' + $Level.PadRight(5) + ' ' + $clean) -ForegroundColor $Color
 }
 function Say([string]$t)  { Write-Log 'INFO' $t 'Gray' }
@@ -122,7 +139,9 @@ function Resolve-HostIp {
 
 function Test-UrlShape {
   param([string]$Url)
-  return ([string]$Url).Trim() -match '^https?://[^\s/]+/*$'
+  # The same rule as tools\ship-review.ps1 and tools\llm-night.ps1: localhost or a private-network address only (code and diffs are sent there).
+  # Anything else would be ignored by them, so it is refused here too.
+  return ([string]$Url).Trim() -match '^https?://(localhost|127(\.\d{1,3}){3}|10(\.\d{1,3}){3}|192\.168(\.\d{1,3}){2}|172\.(1[6-9]|2\d|3[01])(\.\d{1,3}){2})(:\d{1,5})?/*$'
 }
 
 function Add-PathEntry {
@@ -255,15 +274,17 @@ function Test-HyperVHost {
 # ----------------------------------------------------------------------------------------------------------------------
 # main
 # ----------------------------------------------------------------------------------------------------------------------
+$script:OnMainPc = Test-HyperVHost
+if ($script:OnMainPc) { $script:LogOff = $true }     # no log (and no C:\PillagersMove folder) on the main PC, whatever happens next
 Hd ('vm-user-settings' + $(if ($script:DryRun) { ' (DRY RUN: nothing is changed)' } else { '' }))
 $profileDir = [Environment]::GetFolderPath('UserProfile')
 Say ('computer ' + $env:COMPUTERNAME + ', user ' + $env:USERNAME + ', profile ' + $profileDir)
 
-if (Test-HyperVHost) {
+if ($script:OnMainPc) {
   if ($script:DryRun) { Warn 'This looks like the MAIN PC (it has the Hyper-V service), not the VM. This is a dry run, so nothing is changed. Run the real thing only inside the VM.' }
   elseif (-not $Force) {
     Bad 'This looks like the MAIN PC (it has the Hyper-V service), not the VM. Nothing was changed. This script is for the VM only. (-Force overrides this; never use it on the main PC.)'
-    Say ('log file: ' + $script:LogFile)
+    Say-LogPath
     exit 1
   } else { Warn '-Force was given on a PC that looks like the main PC. Going on because you asked.' }
 }
@@ -272,12 +293,12 @@ if (Test-HyperVHost) {
 $hostIpUsed = ''
 $url = ''
 if ($OllamaUrl) {
-  if (-not (Test-UrlShape $OllamaUrl)) { Bad ('-OllamaUrl must look like http://host:port (got: ' + $OllamaUrl + '). Nothing was changed.'); Say ('log file: ' + $script:LogFile); exit 1 }
+  if (-not (Test-UrlShape $OllamaUrl)) { Bad ('-OllamaUrl must look like http://host:port (got: ' + $OllamaUrl + '). Nothing was changed.'); Say-LogPath; exit 1 }
   $url = $OllamaUrl.Trim().TrimEnd('/')
   Say ('using the address you gave: ' + $url)
 } else {
   if ($HostIp) {
-    if ($HostIp -notmatch '^\d{1,3}(\.\d{1,3}){3}$') { Bad ('-HostIp must be an address like 192.168.160.1 (got: ' + $HostIp + '). Nothing was changed.'); Say ('log file: ' + $script:LogFile); exit 1 }
+    if (($HostIp -notmatch '^\d{1,3}(\.\d{1,3}){3}$') -or -not (Test-UrlShape ('http://' + $HostIp + ':' + $script:Port))) { Bad ('-HostIp must be a private-network address like 192.168.160.1 (got: ' + $HostIp + '). Nothing was changed.'); Say-LogPath; exit 1 }
     $hostIpUsed = $HostIp
     Say ('using the main PC address you gave: ' + $hostIpUsed)
   } else {
@@ -286,6 +307,7 @@ if ($OllamaUrl) {
     if ($res.Warn) { Warn ('main PC address ' + $hostIpUsed + ': ' + $res.Note) } else { Say ('main PC address ' + $hostIpUsed + ': ' + $res.Note) }
   }
   $url = 'http://' + $hostIpUsed + ':' + $script:Port
+  if (-not (Test-UrlShape $url)) { Bad ('the main PC address ' + $hostIpUsed + ' is not a private-network address, and the helpers would ignore it. Nothing was changed. Run again with -HostIp <the main PC address on the Default Switch, normally 192.168.160.1>.'); Say-LogPath; exit 1 }
 }
 
 # ---- step 1 of 4: PILLAGERS_OLLAMA_URL
@@ -301,7 +323,7 @@ else {
       [Environment]::SetEnvironmentVariable($script:UrlVar, $url, 'User')
       $env:PILLAGERS_OLLAMA_URL = $url
       Good ($script:UrlVar + ' set to ' + $url)
-    } catch { Bad ('could not set the variable: ' + $_.Exception.Message); Say ('log file: ' + $script:LogFile); exit 1 }
+    } catch { Bad ('could not set the variable: ' + $_.Exception.Message); Say-LogPath; exit 1 }
   }
 }
 
@@ -314,22 +336,32 @@ if (Test-Path -LiteralPath $claudeExe) { Say ('claude.exe is there: ' + $claudeE
 else { Warn ('claude.exe is not in ' + $bin + ' yet (is Claude Code installed in this VM?). The folder is put on the PATH anyway, so it works as soon as it is installed.') }
 $rawPath = ''
 $kindPath = [Microsoft.Win32.RegistryValueKind]::ExpandString
+$pathReadOk = $false
 try {
   $up = Read-UserPath
   $rawPath = $up.Raw
   $kindPath = $up.Kind
+  $pathReadOk = $true
 } catch { Warn ('could not read your user PATH: ' + $_.Exception.Message) }
+if (-not $pathReadOk) {
+  # Never write a PATH that was not read: with an empty start the write would REPLACE the whole user PATH with just this one folder.
+  $script:PathSkipped = $true
+  Warn ('Your user PATH was NOT touched, because it could not be read. To add the folder by hand: Start menu, "Edit environment variables for your account", select Path, Edit, New, paste ' + $bin + ', OK.')
+}
+else {
 $add = Add-PathEntry -Raw $rawPath -Entry $bin
 if (-not $add.Changed) { Good ($bin + ' is already on your user PATH (nothing to do)') }
 elseif ($script:DryRun) { Dry ('add ' + $bin + ' to the end of your user PATH') }
 else {
   try {
+    # the old value is written to the log BEFORE the change, so it can always be put back
+    if (-not $script:LogOff) { try { [System.IO.File]::AppendAllText($script:LogFile, (Get-Date -Format 'yyyy-MM-dd HH:mm:ss') + ' INFO  user PATH before this change: ' + ($rawPath -replace '[^\x20-\x7E]', '?') + "`r`n", [System.Text.Encoding]::ASCII) } catch { } }
     Write-UserPath -New $add.New -Kind $kindPath
     Send-EnvironmentChange
     if (($env:Path -split ';') -notcontains $bin) { $env:Path = $env:Path.TrimEnd(';') + ';' + $bin }
     Good ($bin + ' added to your user PATH. Open a NEW PowerShell window to use  claude  there.')
-    try { [System.IO.File]::AppendAllText($script:LogFile, (Get-Date -Format 'yyyy-MM-dd HH:mm:ss') + ' INFO  user PATH before this change: ' + ($rawPath -replace '[^\x20-\x7E]', '?') + "`r`n", [System.Text.Encoding]::ASCII) } catch { }
-  } catch { Bad ('could not write your user PATH: ' + $_.Exception.Message); Say ('log file: ' + $script:LogFile); exit 1 }
+  } catch { Bad ('could not write your user PATH: ' + $_.Exception.Message); Say-LogPath; exit 1 }
+}
 }
 
 # ---- step 3 of 4: key names
@@ -391,5 +423,6 @@ Blank
 if ($script:DryRun) { Say 'Dry run finished. Nothing was changed.' }
 elseif ($pass) { Good 'All done. Programs that are already running keep the old values until they restart; open a NEW PowerShell window, or sign out of the VM and in again.' }
 else { Say 'Settings are saved. Programs that are already running keep the old values until they restart; open a NEW PowerShell window, or sign out of the VM and in again.' }
-Say ('log file: ' + $script:LogFile)
+Say-LogPath
+if ($script:PathSkipped -and -not $script:DryRun) { Bad 'The PATH step did not happen (see the warning above), so this run is not complete.'; exit 1 }
 if ($pass) { exit 0 } else { exit 2 }

@@ -299,32 +299,32 @@
  "38-extracted-card": {
   "score": 3,
   "pass": false,
-  "verdict": "The card is clean, lower case and has one lime action, but it is still a narrow 718px centred column that does not use the 90% card the guide asks for. The haul number is under the hero token, and the secondary text is small and crowded under the title.",
+  "verdict": "solid use of the palette and type scale but it ships two real couch-play gaps: no visible pad focus and unlabeled loot icons.",
   "findings": [
-   "P1 whole card (718x722, centred): Widen the card to about 1100px at minimum, or 90% of the screen. Put the loot tiles and haul on the left and the stats, badges and button on the right. Keep an 8px-grid padding of 32px.",
-   "P1 haul '$1,770' (about 48px) and the 'haul' label: Set the haul to 56px f-cond 800 in tx-1. Set the title to 32px f-cond 700. Put the 'haul' label at 16px tx-2 with +.04em tracking, with 8px between label and number.",
-   "P1 subtitle 'out clean · never spotted', xp line '+130 xp · 130 of 1,200,000', 'burst carbine recovered to the armoury': Merge the subtitle and xp into one 16px tx-2 line, '+130 xp · out clean'. Drop '130 of 1,200,000'. Set the armoury line to 16px tx-2 with 16px above the tiles. Use even 16px or 24px gaps.",
-   "P1 'log run and return' button (200x56) and the x at top-right: Widen the button to about 280px at 64px tall. Add a 3px --acc-hover outline with a 2px offset, and the pad or key glyph inside the button. Make the x a quiet tx-2 glyph with no box, with a lime ring only when focused.",
-   "P2 stats row (containers, kills, accuracy, time): Set labels to 16px tx-2 with +.04em tracking. Set values to 24-28px tx-1. Tighten the gap between the haul and the stats row to 32px."
+   "P1 log run and return button, bottom of card: add a 2-3px --acc outline or --acc-hover fill on the default-focused button so pad focus is visible at 1080 from a couch.",
+   "P1 5-icon loot row under the objective text: add a 14px --fs-fine label or count badge (e.g. \"x2\") under or on each icon, matching the row-name convention used elsewhere in the guide.",
+   "P2 'burst carbine recovered to the armoury' line, directly under the checkmarked objective: either give it its own icon/glyph (e.g. a small armoury icon) or drop it to --fs-label/tx-2 weight so it stops competing with the real checkmarked objective.",
+   "P2 bottom border under icon 1 (blue) and icon 2 (green) in the loot row: apply the 3px rarity bar from the style guide to every item consistently, or remove it from all five if rarity isn't meaningful here.",
+   "P2 card frame, overall: either widen the card toward the guide's standard proportions or add a deliberate secondary element (a thin side rail, map thumbnail) to justify the negative space."
   ],
-  "pic": "tools/handoff/console/notes/shots/13-p3/38-extracted-card-1080.jpg",
-  "task": "13-ui-end-cards",
-  "when": "2026-10-19T01:22"
+  "pic": "tools/handoff/console/notes/shots/13-q1/38-extracted-card-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-19T23:12"
  },
  "40-whats-new-card": {
   "score": 2,
   "pass": false,
-  "verdict": "The what's-new card is still a small wall of numbered 20px paragraphs in a plain box with no close x, no hero and no clear hierarchy, so none of the earlier advice was followed.",
+  "verdict": "readable and on-palette but the card ignores the guide's own window spec for this exact screen and buries the player in five paragraphs of changelog prose.",
   "findings": [
-   "P1 card body, items 1-5 (635,330 to 1280,712): Cut to 3 one-line bullets of about 8 words each, 20px tx-1, 16px gaps. Drop the alpha disclaimer or move it to a 16px tx-2 footer line. Replace the '1.' to '5.' numerals with a 3px lime tick.",
-   "P1 card title 'new in v0.0802' (635,255 to 808,285): Title 'new in' at 32px f-cond 700 tx-1, with a 36px-wide 2px lime tab above it. Make 'v0.0802' the single 56px f-cond 800 hero, or a tx-2 16px tag after the title. Give the header row 24px padding.",
-   "P1 card frame (602,231 to 1318,817): Use the shared window card (90% width, --ui-panel at 90%, 1px --ui-line-hi border, 4px radius). Add a 40px x top-right with a focus ring. Add the 56px header and 72px footer rows. Raise the scrim to rgba(6,7,8,.80).",
-   "P1 body type (635,330 to 1280,712): Use f-body 400 20px at 28px line-height, with 16px gaps between paragraphs. Use tx-2 for secondary lines.",
-   "P2 footer: 'press enter or walk to dismiss' and 'got it' button (635,755 to 1285,790): Set the button label at 20px f-cond 700 acc-ink, with a 2px outer focus ring in tx-1. Make the hint name the device ('a to dismiss' on pad) at 16px tx-2. Align the hint baseline to the button centre."
+   "P0 the whats-new card, centred modal: resize the card to 90% width per the Window spec, add the standard x-close glyph top-right corner like other windows (settings, shop, codex)",
+   "P1 body, 5 numbered paragraphs under the title: cut each line to a single short phrase (5-8 words), drop connecting clauses like 'and the needed-item glow says why', use a bullet glyph or icon per line instead of numerals to feel like a game HUD element not a document",
+   "P1 card interior, all 5 list paragraphs: bold only the lead phrase of each line (e.g. 'polish pass 31.' in fs-body 600) and drop the rest to tx-2, matching the guide's 'boldness in one place' rule applied per-row",
+   "P2 top-right HUD, '900 credits': render as '$900' and '$960' / '$0' per the settled money-vs-score rule, even if this corner is otherwise parked for the cw-trcol task",
+   "P2 card vs. background hub buttons ('wirt the gambler', 'enter raid!', 'the mainframe'): drop background tile opacity further or increase scrim to the guide's --scrim .80 value if not already applied; the card title should be the only bold element in view"
   ],
-  "pic": "tools/handoff/console/notes/shots/13-p2/40-whats-new-card-1080.jpg",
-  "task": "13-ui-end-cards",
-  "when": "2026-10-19T01:14"
+  "pic": "tools/handoff/console/notes/shots/13-q1/40-whats-new-card-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-19T23:11"
  },
  "45-arcade-attract-board": {
   "score": 3,
@@ -688,19 +688,19 @@
   "when": "2026-10-19T00:17"
  },
  "76-haul-reveal-mid": {
-  "score": 3,
+  "score": 2,
   "pass": false,
-  "verdict": "the stray grey tile and the double slot row are gone from the first pass, but the haul reveal still stacks two rows of empty slots over three real items, and the challenge pill, recovery lines and tag chips stay cluttered, so the card reads as a template.",
+  "verdict": "the haul reveal reads clean at a glance but contradicts its own success check and is missing half the component polish the style guide requires.",
   "findings": [
-   "P0 item area, y385-520: two staggered rows of empty slot boxes (6 above, 3 empty plus 3 filled below), with a larger grey focus tile at x858-934: use one row of 64px tiles with an 8px gap, centred on x960. Reveal items into the slots in place, left to right, and hide the unfilled placeholders (or draw them at 30% opacity). Keep the focus tile at the same 64px size with a 2px --acc outline and no scale-up. Put '+7 more' inside the row at tx-2, 16px.",
-   "P1 challenge pill and recovery lines, y282-375: make the challenge a flat row with a 16px ok-green tick and tx-1 text, with no border. Merge the recovery lines into one tx-2 16px line: 'recovered: burst carbine, compact smg'. Leave 24px between that block and the item row.",
-   "P1 hierarchy, haul $770 (y545-615) vs the title 'extracted': leave 24px above the 'haul' label and 8px between the label and the number. Keep $770 at 56px f-cond 800 tx-1. Keep the teal on the title only. Leave the lime for the single button.",
-   "P1 x button, x1246-1293 y119-166: use the guide's 40px x with a line-hi border and tx-2 glyph, inset 16px from the top and right edges. Or drop it, since the lime button closes the card. Do not keep 'copy report' as a competing button.",
-   "P1 tag chips (first out, heavy haul, untouched, ghost), y777-814: drop the borders and render the tags as one tx-2 16px line separated by ' · ' ('first out · heavy haul · untouched · ghost'). Or show only the top 2. Leave a 24px gap."
+   "P0 objective line vs haul number: gate the checkmark on the actual haul total (haul >= 1200) or drop the objective line when it was not met; never show a check next to a number that contradicts it.",
+   "P1 xp line under the title, 'extracted': relabel to 'sp' if this is the score track, or get an explicit ruling from the owner before shipping a new 'xp' currency distinct from $ and sp.",
+   "P1 item grid, rows under the recovered-weapons lines: collapse the grid to only the slots that hold items (pack them left-to-right, no empty cells), or if empty slots are intentional capacity indicators, dim them further and add a consistent dashed outline so they read as 'empty' and not 'missing render'.",
+   "P1 item icon slots: add the 3px rarity-color bottom or left bar from the token set to every filled slot so the grid matches the Diablo-style rarity read the guide specifies.",
+   "P2 'first out . heavy haul . untouched . ghost' row: render each as a small pill/tag (1px --ui-line-hi border, --rad corners, --fs-label text) so they read as discrete earned badges, not a sentence fragment."
   ],
-  "pic": "tools/handoff/console/notes/shots/13-p1/76-haul-reveal-mid-1080.jpg",
-  "task": "13-ui-end-cards",
-  "when": "2026-10-19T00:09"
+  "pic": "tools/handoff/console/notes/shots/13-q1/76-haul-reveal-mid-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-19T23:10"
  },
  "75-settings-pad-rebind-waiting": {
   "score": 3,

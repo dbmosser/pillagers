@@ -21,7 +21,11 @@ function Show {
 }
 $Service=$Service.ToLower()
 if(-not $Service){ Show; 'To add one: powershell -ExecutionPolicy Bypass -File tools\ai-keys.ps1 gemini   (or openai, xai, openrouter, console, admin)'; return }
-if(-not $names.Contains($Service)){ "Unknown service '$Service'. Use one of: $($names.Keys -join ', ')"; return }
+if(-not $names.Contains($Service)){
+  # never print the argument back: if a key was pasted here by mistake it must not be echoed again
+  if($Service.Length -gt 20 -or $Service -like 'sk-*' -or $Service -like 'aiza*'){ 'That looks like a key, not a service word. Never put a key on the command line: it stays in this window and in its history. Nothing was saved.'; 'If it was a real key, close this window and make a new key at the provider (the old one is now exposed). Then run the script with just a service word and paste the key when it asks.'; "Service words: $($names.Keys -join ', ')"; return }
+  'Unknown service word. Use one of: ' + ($names.Keys -join ', '); return
+}
 $n=$names[$Service]
 if($Remove){ [Environment]::SetEnvironmentVariable($n,$null,'User'); "Removed $n."; Show; return }
 $sec=Read-Host "Paste your $Service key (it stays hidden), then press Enter" -AsSecureString

@@ -24,3 +24,13 @@ Changed the new check to wrap and restore the prototype, like the existing map c
 
 Local validation passes on v31.91: six unique anchors, mk prints written, original and drafted game scripts parse, new check parses, four camera recipes parse, and the mk is ASCII. Added a small JavaScript property-lifecycle probe: it reproduces the old failure, runs the exact new spy setup and cleanup from the draft, verifies no own fillText remains, and verifies a subsequent prototype spy observes a draw. The full browser gate and pictures still belong to lane o and must be rerun.
 
+
+--- codex run 2026-10-19 19:09 ---
+2026-10-19 - cw-cx-padowner shipped, v31.93 / 63465daf.
+
+The shipped fixture contains the new J7 check as 31.93. The lane reports the key shipped. Do not ship it again. No game change is needed in this run.
+
+The remaining work is pictures of both real windows and critic review. No J7 picture, report, or critic result is saved in the real notes folders. Inspection of the installed tools/codex-lane.sh confirms that it reads only shots.txt and calls uishots with -Screens; it has no camera-recipes.json handler. The addendum describes a handler that is not in this installed lane script.
+
+Added camera-run-request.json with the exact project camera command for the coordinator, output paths, and critic instructions. Updated the four recipes so the final visible tag comes from actual stub-pad loss and reclaim, followed by physical A confirmation, instead of clearing the claim variable to trigger a tag. The ordinary two-second expiry is retained. Camera scripts and predicates parse locally. No browser or localhost was used in the sandbox. Lane/coordinator must run the supplied camera command and return the four pictures, staging results, and critic scores. The game and check are shipped; the required visual evidence is still pending.
+

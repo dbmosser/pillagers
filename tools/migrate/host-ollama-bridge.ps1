@@ -26,11 +26,20 @@
 #
 # WHAT THIS EXPOSES: Ollama has no password. After -Install, anything inside a VM on this PC's Default Switch can ask your Ollama for its model list,
 # send it prompts and use your graphics card. Computers on your Wi-Fi / LAN / VPN cannot, as long as no other firewall rule lets them in
-# (-Status lists any other rule that mentions Ollama or port 11434). If Windows ever asks "Allow Ollama on networks?", click Cancel.
+# (-Status lists any other rule that mentions Ollama or port 11434). Windows Sandbox, if you use it, also lives on the Default Switch network.
+# The whole protection is the Windows Firewall, so -Install first READS (changes nothing) whether the firewall is really doing that job, and REFUSES (exit 2,
+# nothing changed, OLLAMA_HOST not set) when: the firewall is switched off or cannot be read for any of the three profiles (Domain, Private, Public); any
+# profile allows inbound connections by default; or another enabled rule already lets other computers reach ollama.exe or port 11434. It also refuses
+# when the Default Switch network card cannot be found, because a rule limited only by address could match a home network that picked the same range.
+#
+# If Windows shows "Allow Ollama on networks?": the rule this script makes comes first, so the question should not appear. If it does, do not tick Private or
+# Public (that would let your Wi-Fi in). Close the window without allowing, then run -Status: pressing Cancel can make Windows add a BLOCK rule for Ollama
+# (reported online, not confirmed by Microsoft), and a block rule beats the allow rule, so the bridge would silently not work. -Status lists such a rule
+# and prints the exact command that removes it.
 #
 # Safety: no secret is read or printed. It changes only: the rule named above, your user variable OLLAMA_HOST, and the Ollama process.
 # It never touches Defender, UAC, other firewall rules, Windows Update or any other setting.
-# Exit codes: 0 done / status shown, 1 error, 2 done but Ollama did not come back the way it should (see the text), 3 needs an administrator window.
+# Exit codes: 0 done / status shown, 1 error, 2 refused because the firewall is not safe for this, or done but Ollama did not come back the way it should (see the text), 3 needs an administrator window.
 # ASCII only. Works in Windows PowerShell 5.1 and PowerShell 7.
 param(
   [switch]$Install,
@@ -209,8 +218,17 @@ function Get-BridgeRule {
   return [pscustomobject]$info
 }
 
+function Test-BroadRemote {
+  # True when a rule's remote address lets OTHER computers in (Any, an empty list, the whole local subnet, or 0.0.0.0/0).
+  param([string]$Remote)
+  $r = ([string]$Remote).Trim()
+  if ($r -eq '') { return $true }
+  return [bool]($r -match '(?i)(^|,)\s*(Any|\*|LocalSubnet|0\.0\.0\.0/0|0\.0\.0\.0/0\.0\.0\.0\.0|0\.0\.0\.0-255\.255\.255\.255)\s*(,|$)')
+}
+
 function Get-OtherOpenRules {
-  # Other ENABLED inbound ALLOW rules that name ollama or open port 11434. They are not ours; this only reports. Needs a readable firewall store.
+  # Other ENABLED inbound rules that name ollama or open port 11434: Allow rules (Rules) and Block rules (Blocks). They are not ours; this only reports.
+  # Needs a readable firewall store (an administrator window).
   $out = @()
   try {
     $apps = @(Get-NetFirewallApplicationFilter -ErrorAction Stop | Where-Object { ([string]$_.Program) -like '*ollama*' })
@@ -220,17 +238,40 @@ function Get-OtherOpenRules {
       $rule = $null
       try { $rule = $f | Get-NetFirewallRule -ErrorAction Stop } catch { continue }
       if ($rule.DisplayName -eq $script:RuleName) { continue }
-      if ([string]$rule.Enabled -ne 'True' -or [string]$rule.Direction -ne 'Inbound' -or [string]$rule.Action -ne 'Allow') { continue }
+      $act = [string]$rule.Action
+      if ([string]$rule.Enabled -ne 'True' -or [string]$rule.Direction -ne 'Inbound' -or ($act -ne 'Allow' -and $act -ne 'Block')) { continue }
       if ($seen.ContainsKey($rule.Name)) { continue }
       $seen[$rule.Name] = $true
       $remote = ''
       try { $remote = (@(($rule | Get-NetFirewallAddressFilter).RemoteAddress) -join ',') } catch { }
-      $out += [pscustomobject]@{ Name = [string]$rule.DisplayName; Profile = [string]$rule.Profile; Remote = $remote }
+      $out += [pscustomobject]@{ Name = [string]$rule.DisplayName; Id = [string]$rule.Name; Profile = [string]$rule.Profile; Remote = $remote; Action = $act }
     }
-    return [pscustomobject]@{ Readable = $true; Rules = @($out) }
+    return [pscustomobject]@{ Readable = $true; Rules = @($out | Where-Object { $_.Action -eq 'Allow' }); Blocks = @($out | Where-Object { $_.Action -eq 'Block' }) }
   } catch {
-    return [pscustomobject]@{ Readable = $false; Rules = @() }
+    return [pscustomobject]@{ Readable = $false; Rules = @(); Blocks = @() }
   }
+}
+
+function Get-FirewallPosture {
+  # READS (changes nothing) whether the Windows Firewall really does the job this bridge depends on: on for all three profiles, and blocking inbound by default.
+  # Uses the ACTIVE policy (what Windows enforces right now, including Group Policy). Readable = $false when it could not be read at all.
+  $o = [ordered]@{ Readable = $false; Problems = @(); Lines = @(); Error = '' }
+  try {
+    $p = @(Get-NetFirewallProfile -PolicyStore ActiveStore -ErrorAction Stop)
+    $names = @($p | ForEach-Object { [string]$_.Name })
+    foreach ($need in @('Domain', 'Private', 'Public')) { if ($names -notcontains $need) { $o.Problems += ('the ' + $need + ' profile could not be read') } }
+    foreach ($x in $p) {
+      $nm = [string]$x.Name
+      $en = [string]$x.Enabled
+      $inb = [string]$x.DefaultInboundAction
+      $o.Lines += ($nm + ': firewall ' + $en + ', inbound by default ' + $inb)
+      if ($en -ne 'True') { $o.Problems += ('the Windows Firewall is switched off (or not set) for the ' + $nm + ' profile') }
+      if ($inb -eq 'Allow') { $o.Problems += ('the ' + $nm + ' profile allows inbound connections by default') }
+    }
+    $o.Readable = ($p.Count -gt 0)
+    if (-not $o.Readable) { $o.Error = 'Windows returned no firewall profiles' }
+  } catch { $o.Error = $_.Exception.Message }
+  return [pscustomobject]$o
 }
 
 # ------------------------------------------------------------------ remembered change (so -Undo can reverse exactly what -Install did)
@@ -303,8 +344,8 @@ function Show-Warning {
   Write-Mig 'This makes Ollama (your local AI on the graphics card) listen on EVERY network card of this PC, not only on this PC itself.' 'WARN'
   Write-Mig 'Ollama has no password. What limits who can reach it is a Windows Firewall rule this script adds:' 'WARN'
   Write-Mig ('   only the network ' + $Sw.Cidr + ' (the VMs on the Hyper-V Default Switch of THIS PC), only on the card "' + $script:SwitchAlias + '", only for ollama.exe, only TCP 11434.') 'WARN'
-  Write-Mig 'So after this, anything inside a VM on this PC can list your models, send prompts and use your graphics card. Computers on your Wi-Fi, LAN or VPN cannot.' 'WARN'
-  Write-Mig 'If Windows ever pops up "Allow Ollama on networks?", click Cancel (do not tick Private or Public).' 'WARN'
+  Write-Mig 'So after this, anything inside a VM on this PC (and Windows Sandbox, if you use it) can list your models, send prompts and use your graphics card. Computers on your Wi-Fi, LAN or VPN cannot, because the Windows Firewall stops them (this script checked that it is on).' 'WARN'
+  Write-Mig 'If Windows ever pops up "Allow Ollama on networks?": do NOT tick Private or Public. Close the window without allowing, then run -Status (it finds and explains any block rule Windows added).' 'WARN'
   Write-Mig 'To go back: run this script with -Undo.' 'WARN'
   Write-MigBlank
 }
@@ -313,7 +354,12 @@ function Step-Rule {
   param($Sw)
   Write-Mig 'Step 1: the Windows Firewall rule' 'STEP'
   $want = [pscustomobject]@{ Port = '11434'; Remote = $Sw.Cidr; Alias = $(if ($Sw.Found) { $script:SwitchAlias } else { '' }); Program = $(if (Test-Path -LiteralPath $script:OllamaExe) { $script:OllamaExe } else { '' }) }
-  if (-not $Sw.Found) { Write-Mig ('The network card "' + $script:SwitchAlias + '" was not found. The rule will only be limited by address (' + $Sw.Cidr + '), not by card.') 'WARN' }
+  if (-not $Sw.Found) {
+    # Fail closed: a rule limited only by address could match a home network or VPN that happens to use the same range, while Ollama is about to listen on every card.
+    Write-Mig ('The network card "' + $script:SwitchAlias + '" was not found, so the rule cannot be limited to it. Nothing was changed (no rule, no setting, no restart).') 'FAIL'
+    Write-Mig 'The Default Switch card exists once Hyper-V has created it (start the VM once, or open Hyper-V Manager), and its name must contain "Default Switch". Then run -Install again.' 'INFO'
+    return $false
+  }
   if (-not $want.Program) { Write-Mig ('ollama.exe was not found at ' + $script:OllamaExe + '. The rule will not be limited to that program.') 'WARN' }
   $ex = Get-BridgeRule
   if (Test-RuleMatches -Info $ex -Want $want) { Write-Mig ('rule "' + $script:RuleName + '" already exists and is correct') 'SKIP'; return $true }
@@ -330,12 +376,9 @@ function Step-Rule {
     if ($ex.Exists) { Remove-NetFirewallRule -DisplayName $script:RuleName -ErrorAction Stop }
     $splat = @{ DisplayName = $script:RuleName; Description = 'Pillagers: lets VMs on the Hyper-V Default Switch reach Ollama. Remove with tools\migrate\host-ollama-bridge.ps1 -Undo'; Direction = 'Inbound'; Action = 'Allow'; Protocol = 'TCP'; LocalPort = $script:Port; RemoteAddress = $want.Remote; Profile = 'Any'; Enabled = 'True' }
     if ($want.Program) { $splat['Program'] = $want.Program }
-    $made = $false
-    if ($want.Alias) {
-      try { $splat['InterfaceAlias'] = $want.Alias; New-NetFirewallRule @splat -ErrorAction Stop | Out-Null; $made = $true }
-      catch { Write-Mig ('Windows did not accept the card limit (' + $_.Exception.Message + '). Making the rule limited by address only.') 'WARN'; $splat.Remove('InterfaceAlias') }
-    }
-    if (-not $made) { New-NetFirewallRule @splat -ErrorAction Stop | Out-Null }
+    # The card limit is part of the safety, so there is no fallback to an address-only rule: if Windows refuses it, the whole step fails (and the catch below stops the install).
+    $splat['InterfaceAlias'] = $want.Alias
+    New-NetFirewallRule @splat -ErrorAction Stop | Out-Null
     $st['ruleCreated'] = $true
     $st['ruleRemote'] = $want.Remote
     Save-BridgeState
@@ -530,13 +573,26 @@ function Show-Status {
     if ($ruleOk) { Write-Mig 'the rule is correct for the current Default Switch network' 'OK' }
     else { Write-Mig 'the rule differs from what -Install would create now (run -Install to fix it)' 'WARN' }
   }
+  $problems = @()
+  $fw = Get-FirewallPosture
+  if (-not $fw.Readable) { Write-Mig ('Could not read the Windows Firewall state (' + $fw.Error + ').') 'WARN'; $problems += 'the Windows Firewall state could not be read' }
+  elseif ($fw.Problems.Count -gt 0) {
+    foreach ($pr in $fw.Problems) { Write-Mig ('FIREWALL: ' + $pr + '. Ollama listens on every card, so the firewall is what keeps your network out; this is not safe.') 'FAIL'; $problems += $pr }
+  } else { Write-Mig 'the Windows Firewall is on for Domain, Private and Public and blocks inbound by default (good)' 'OK' }
   $other = Get-OtherOpenRules
-  if (-not $other.Readable) { Write-Mig 'Could not read all firewall rules from this window (open an administrator window to check for other rules that mention Ollama or port 11434).' 'INFO' }
-  elseif ($other.Rules.Count -eq 0) { Write-Mig 'no other enabled inbound allow rule mentions Ollama or port 11434 (good)' 'OK' }
+  if (-not $other.Readable) { Write-Mig 'Could not read all firewall rules from this window (open an administrator window to check for other rules that mention Ollama or port 11434, including a block rule Windows may have added).' 'INFO' }
+  elseif ($other.Rules.Count -eq 0 -and $other.Blocks.Count -eq 0) { Write-Mig 'no other enabled inbound rule mentions Ollama or port 11434 (good)' 'OK' }
   else {
     foreach ($o in $other.Rules) {
-      $broad = ($o.Remote -eq '' -or $o.Remote -eq 'Any' -or $o.Remote -match '(^|,)Any(,|$)')
-      Write-Mig ('OTHER rule "' + $o.Name + '" (profile ' + $o.Profile + ', from ' + $(if ($o.Remote) { $o.Remote } else { 'anywhere' }) + ')' + $(if ($broad) { ' lets OTHER computers on your network reach Ollama. This script does not touch it. If you did not make it on purpose, delete it in "Windows Defender Firewall with Advanced Security".' } else { '' })) $(if ($broad) { 'WARN' } else { 'INFO' })
+      $broad = Test-BroadRemote $o.Remote
+      if ($broad) {
+        Write-Mig ('OTHER allow rule "' + $o.Name + '" (profile ' + $o.Profile + ', from ' + $(if ($o.Remote) { $o.Remote } else { 'anywhere' }) + ') lets OTHER computers on your network reach Ollama. This script does not touch it. If you did not make it on purpose, remove it in an administrator window: Remove-NetFirewallRule -Name ''' + $o.Id + '''') 'FAIL'
+        $problems += ('another rule lets other computers reach Ollama: ' + $o.Name)
+      } else { Write-Mig ('OTHER allow rule "' + $o.Name + '" (profile ' + $o.Profile + ', from ' + $o.Remote + ')') 'INFO' }
+    }
+    foreach ($b in $other.Blocks) {
+      Write-Mig ('BLOCK rule "' + $b.Name + '" (profile ' + $b.Profile + ') for Ollama or port ' + $script:Port + '. A block rule beats the allow rule, so the VM cannot get through. Windows adds one when the "Allow Ollama on networks?" window is closed with Cancel. If you did not make it on purpose, remove it in an administrator window: Remove-NetFirewallRule -Name ''' + $b.Id + '''') 'FAIL'
+      $problems += ('a block rule stops the bridge: ' + $b.Name)
     }
   }
 
@@ -550,13 +606,16 @@ function Show-Status {
   Write-Mig 'Note: a test from this PC to its own address goes around the Windows Firewall, so it proves the LISTENING part only. The real proof is vm-user-settings.ps1 run inside the VM.' 'INFO'
 
   Write-MigBlank
-  if ($ls.Wide -and $rule.Exists -and $ruleOk -and $t2.Ok) { Write-Mig ('READY for the VM: use ' + $url + ' (the VM sets PILLAGERS_OLLAMA_URL to it with vm-user-settings.ps1).') 'DONE' }
+  if ($ls.Wide -and $rule.Exists -and $ruleOk -and $t2.Ok -and $problems.Count -eq 0) { Write-Mig ('READY for the VM: use ' + $url + ' (the VM sets PILLAGERS_OLLAMA_URL to it with vm-user-settings.ps1).') 'DONE' }
   else {
     $todo = @()
+    foreach ($pr in $problems) { $todo += $pr }
     if (-not $ls.Wide) { $todo += 'Ollama does not listen on every address yet' }
     if (-not $rule.Exists) { $todo += 'the firewall rule is missing' } elseif (-not $ruleOk) { $todo += 'the firewall rule needs updating' }
     if (-not $t2.Ok -and $ls.Wide) { $todo += 'the test to the Default Switch address failed' }
-    Write-Mig ('NOT ready: ' + ($todo -join '; ') + '. Run -Install (in an administrator window; add -DryRun first to look).') 'WARN'
+    $tail = '. Run -Install (in an administrator window; add -DryRun first to look).'
+    if ($problems.Count -gt 0) { $tail = '. Fix the FAIL / WARN lines above first (-Install refuses while the firewall is not safe), then run -Install in an administrator window (add -DryRun first to look).' }
+    Write-Mig ('NOT ready: ' + ($todo -join '; ') + $tail) 'WARN'
   }
 }
 
@@ -592,6 +651,37 @@ if (-not $DryRun) {
 }
 
 if ($mode -eq 'Install') {
+  # Safety gate, before anything is shown as a plan or changed: the Windows Firewall is the only thing that keeps the rest of the network out of an
+  # Ollama that listens on every card. Read it (changes nothing) and REFUSE if it is not clearly doing that job.
+  Write-Mig 'Safety check: is the Windows Firewall really protecting this PC? (reading only)' 'STEP'
+  $fw = Get-FirewallPosture
+  $refuse = @()
+  if (-not $fw.Readable) { $refuse += ('the Windows Firewall state could not be read (' + $fw.Error + ')') }
+  else {
+    foreach ($ln in $fw.Lines) { Write-Mig ('  ' + $ln) 'INFO' }
+    foreach ($pr in $fw.Problems) { $refuse += $pr }
+  }
+  $oth = Get-OtherOpenRules
+  if (-not $oth.Readable) {
+    if ($isAdmin) { $refuse += 'the firewall rules could not be read in full, so other rules that already open Ollama or port 11434 cannot be ruled out' }
+    else { Write-Mig 'This (non-administrator) window cannot read all firewall rules, so the check for other rules that open Ollama is skipped in this dry run. The real run, in an administrator window, makes it and refuses if it cannot.' 'INFO' }
+  }
+  else {
+    foreach ($o in $oth.Rules) {
+      if (Test-BroadRemote $o.Remote) { $refuse += ('another enabled rule "' + $o.Name + '" (profile ' + $o.Profile + ', from ' + $(if ($o.Remote) { $o.Remote } else { 'anywhere' }) + ') already lets other computers reach Ollama or port ' + $script:Port + '. To remove it: Remove-NetFirewallRule -Name ''' + $o.Id + '''') }
+    }
+    foreach ($b in $oth.Blocks) { Write-Mig ('A BLOCK rule "' + $b.Name + '" for Ollama or port ' + $script:Port + ' exists. It would stop the bridge from working (a block beats an allow). To remove it: Remove-NetFirewallRule -Name ''' + $b.Id + '''') 'WARN' }
+  }
+  if ($refuse.Count -gt 0) {
+    Write-MigBlank
+    Write-Mig 'REFUSED. Nothing was changed (no rule, no OLLAMA_HOST, no restart). Why:' 'FAIL'
+    foreach ($r in $refuse) { Write-Mig ('   - ' + $r) 'FAIL' }
+    Write-Mig 'Ollama has no password; with an open firewall it would be reachable from your whole network. Fix the reason above (this script never changes the firewall settings of Windows itself), then run -Install again.' 'INFO'
+    Exit-Mig 2
+  }
+  if ($oth.Readable) { Write-Mig 'The firewall is on for Domain, Private and Public, blocks inbound by default, and no other rule opens Ollama (good).' 'OK' }
+  else { Write-Mig 'The firewall is on for Domain, Private and Public and blocks inbound by default (good).' 'OK' }
+  Write-MigBlank
   Show-Warning -Sw $swi
   if (-not (Confirm-Plain 'Do you want to go on?')) { Write-Mig 'Cancelled. Nothing was changed.' 'INFO'; Exit-Mig 0 }
   $okRule = Step-Rule -Sw $swi

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.94 - END CARDS: HAUL STRIP IN ONE ROW, WHAT IS NEW CARD GETS AN X AND THREE SHORT NOTES
+
+Co-op hunt while he was away. The critic scored 76 and 77 for ragged two row haul slots, and 40 for no X and five two line paragraphs.
+
+MEASURED. Check 31.94 passes, and fails on v31.93.
 ## v31.93 - KNOW YOUR PAD
 
 Co-op hunt while he was away. J7: guests could not tell which pad belonged to their window when it connected or came back.

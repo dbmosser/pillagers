@@ -1,0 +1,7 @@
+v31.94: end cards: haul strip in one row, what is new card gets an x and three short notes
+
+The haul strip is one row of up to eight tiles with a count at its end. The what is new card has a lime tab, an X and Got it that both close it by click, and three short notes.
+
+Check 31.94. Fails on v31.93.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -409,6 +409,103 @@ describe('the VM is away or moves', () => {
   });
 });
 
+const FAKE_NICS = {
+  Ethernet: [{ address: '192.168.1.20', netmask: '255.255.255.0', family: 'IPv4', internal: false }],
+  'vEthernet (Default Switch)': [
+    { address: 'fe80::1', netmask: 'ffff:ffff:ffff:ffff::', family: 'IPv6', internal: false },
+    { address: '192.168.160.1', netmask: '255.255.240.0', family: 'IPv4', internal: false },
+  ],
+};
+
+describe('which addresses the relay will talk to', () => {
+  it('ipInNetwork and defaultSwitchNetwork', () => {
+    assert.equal(ipInNetwork('192.168.164.103', '192.168.160.1', '255.255.240.0'), true);
+    assert.equal(ipInNetwork('192.168.175.255', '192.168.160.1', '255.255.240.0'), true);
+    assert.equal(ipInNetwork('192.168.176.1', '192.168.160.1', '255.255.240.0'), false);
+    assert.equal(ipInNetwork('192.168.159.255', '192.168.160.1', '255.255.240.0'), false);
+    assert.equal(ipInNetwork('not an ip', '192.168.160.1', '255.255.240.0'), false);
+    assert.equal(ipInNetwork('10.0.0.1', '192.168.160.1', 'junk'), false);
+    const sw = defaultSwitchNetwork(FAKE_NICS);
+    assert.equal(sw.address, '192.168.160.1');
+    assert.equal(sw.text, '192.168.160.1/20');
+    assert.equal(defaultSwitchNetwork({ Ethernet: FAKE_NICS.Ethernet }), null);
+    assert.equal(defaultSwitchNetwork({ 'vEthernet (Default Switch)': [{ address: '192.168.160.1', netmask: '255.255.240.0', family: 'IPv4', internal: true }] }), null);
+    assert.equal(defaultSwitchNetwork({}), null);
+  });
+
+  it('checkTargetAddress: inside the Default Switch network only, never loopback, never public', () => {
+    const ok = (ip, o, n = FAKE_NICS) => checkTargetAddress(ip, o || {}, n);
+    assert.equal(ok('192.168.164.103').ok, true);
+    let r = ok('192.168.1.50');            // the home network
+    assert.equal(r.ok, false);
+    assert.match(r.why, /outside the Default Switch network 192\.168\.160\.1\/20/);
+    assert.equal(ok('10.0.0.5').ok, false);
+    assert.match(ok('8.8.8.8').why, /not a private address/);
+    r = ok('127.0.0.1');
+    assert.equal(r.ok, false);
+    assert.match(r.why, /loopback/);
+    assert.equal(ok('127.0.0.1', { allowLoopback: true }).ok, true);
+    assert.equal(ok('8.8.8.8', { allowLoopback: true }).ok, false);
+    assert.equal(ok('8.8.8.8', { allowAnyTarget: true }).ok, true);
+    assert.equal(ok('192.168.1.50', { allowAnyTarget: true }).ok, true);
+    // no Default Switch card on this PC: the VM can only be on the LAN, so any private address is allowed, but still not loopback
+    assert.equal(ok('192.168.1.50', {}, {}).ok, true);
+    assert.equal(ok('127.0.0.1', {}, {}).ok, false);
+  });
+
+  it('a bare VM name is looked up only as <name>.mshome.net; a name typed on purpose is used as typed', () => {
+    const quiet = makeLogger('', { echo: false });
+    const none = path.join(TMP, 'no-such-address-file.txt');
+    const values = (cfg) => new TargetResolver(cfg, quiet).candidates().map((c) => c.value);
+    assert.deepEqual(values(parseArgs(['--vm-file', none], {})), ['VM_Oct2026.mshome.net']);
+    const f = path.join(TMP, 'bare-names.txt');
+    fs.writeFileSync(f, 'computer=OtherVm\nmshome=OtherVm.mshome.net\nname=host.example.test\n');
+    assert.deepEqual(values(parseArgs(['--vm-file', f], {})), ['OtherVm.mshome.net', 'host.example.test', 'VM_Oct2026.mshome.net']);
+    assert.deepEqual(values(parseArgs(['--vm-file', none, '--vm-name', '', '--vm-host', 'mybox'], {})), ['mybox']);
+    assert.deepEqual(values(parseArgs(['--vm-file', none, '--vm-name', ''], { PILLAGERS_VM_HOST: 'otherbox' })), ['otherbox']);
+  });
+
+  it('keeps using a known VM address when a later look-up finds nothing (the name service drops the name for a moment)', async () => {
+    const quiet = makeLogger('', { echo: false });
+    const f = path.join(TMP, 'keep-address.txt');
+    fs.writeFileSync(f, 'ip=127.0.0.1\n');
+    const cfg = parseArgs(['--vm-file', f, '--vm-name', '', '--allow-loopback-target'], {});
+    const res = new TargetResolver(cfg, quiet);
+    const first = await res.get(false);
+    assert.equal(first.ip, '127.0.0.1');
+    fs.unlinkSync(f);                                // every look-up source is gone now
+    res.cache.at = Date.now() - 20000;               // and the 15-second trust in the address has run out
+    const second = await res.get(false);
+    assert.equal(second.error, undefined, 'a good address must survive a failed look-up');
+    assert.equal(second.ip, '127.0.0.1');
+    const age = Date.now() - res.cache.at;
+    assert.ok(age > 10000 && age < 15000, 'it should look again in about 3 seconds, not wait another 15 (age ' + age + ')');
+    const forced = await res.get(true, new Set(['127.0.0.1']));     // the "connect failed, look again" path
+    assert.equal(forced.ip, '127.0.0.1');
+    assert.ok(res.lastError, 'the failed look-up is still remembered for the status file');
+    // a resolver that never knew an address still reports the problem
+    const empty = new TargetResolver(cfg, quiet);
+    const e = await empty.get(false);
+    assert.ok(e.error, 'with no known address the error must still be reported');
+  });
+
+  it('end to end: a connection still works after the address file is gone and the 15-second trust has expired', async () => {
+    const srv = http.createServer((req, res) => res.end('still here'));
+    await listen(srv, P_TARGET);
+    const relay = await startRelay(['--ports', P_RELAY + ':' + P_TARGET], { vmFileContent: 'ip=127.0.0.1\n' });
+    try {
+      const one = await rawHttp({ port: P_RELAY, hostHeader: 'localhost:' + P_RELAY });
+      assert.equal(one.status, 200);
+      fs.unlinkSync(relay.vmFile);
+      await sleep(16500);
+      const two = await rawHttp({ port: P_RELAY, hostHeader: 'localhost:' + P_RELAY });
+      assert.equal(two.status, 200, relay.log());
+      assert.equal(two.body.toString(), 'still here');
+      assert.match(relay.log(), /keeping 127\.0\.0\.1/);
+    } finally { await relay.stop(); await closeServer(srv); }
+  });
+});
+
 describe('address order', () => {
   it('command line beats env beats file', async () => {
     const a = http.createServer((req, res) => res.end('A')); await listen(a, P_TARGET, '127.0.0.1');
@@ -585,5 +682,34 @@ describe('HTTP.sys through the Default Switch address', { skip: process.platform
       const rawIp = await rawHttp({ port: P_RELAY, hostHeader: SWITCH_ADDR + ':' + P_RELAY, pathName: '/small.html' });
       assert.equal(rawIp.status, 400);
     } finally { if (relay) await relay.stop(); ps.kill(); await sleep(300); }
+  });
+});
+
+// The real rules with the real network cards of this PC (loopback is NOT allowed here: these relays run without --allow-loopback-target).
+describe('the relay refuses a VM address it should not use', () => {
+  it('a loopback address on the command line is refused at start (exit 2)', async () => {
+    const r = await startRelay(['--ports', P_RELAY + ':' + P_TARGET, '--vm-host', '127.0.0.1'], { loopback: false, waitStart: false });
+    assert.equal(await r.exited, 2);
+    assert.match(r.out(), /loopback/);
+  });
+  it('a loopback address in the address file is ignored and the page says the VM cannot be found', async () => {
+    const relay = await startRelay(['--ports', P_RELAY + ':' + P_TARGET], { loopback: false, vmFileContent: 'ip=127.0.0.1\n' });
+    try {
+      const r = await rawHttp({ port: P_RELAY, hostHeader: 'localhost:' + P_RELAY });
+      assert.equal(r.status, 502);
+      assert.match(r.body.toString(), /cannot find the vm/);
+      assert.match(relay.log(), /loopback address/);
+    } finally { await relay.stop(); }
+  });
+  it('an address outside the Default Switch network is refused (file entry and command line)', { skip: !SWITCH_ADDR }, async () => {
+    const relay = await startRelay(['--ports', P_RELAY + ':' + P_TARGET], { loopback: false, vmFileContent: 'ip=10.77.77.77\n' });
+    try {
+      const r = await rawHttp({ port: P_RELAY, hostHeader: 'localhost:' + P_RELAY });
+      assert.equal(r.status, 502);
+      assert.match(relay.log(), /outside the Default Switch network/);
+    } finally { await relay.stop(); }
+    const bad = await startRelay(['--ports', P_RELAY + ':' + P_TARGET, '--vm-host', '10.77.77.77'], { loopback: false, waitStart: false });
+    assert.equal(await bad.exited, 2);
+    assert.match(bad.out(), /outside the Default Switch network/);
   });
 });

@@ -140,3 +140,5 @@
 
 2026-10-19 | o-08-pad-owner | j7-hub-p1-pad-owner, j7-hub-p2-pad-owner, j7-raid-p1-pad-owner, j7-raid-p2-pad-owner | On claim/reclaim, local p1 amber or p2 cyan tag for 2 seconds; 22 px type, 32 px dark plate, 44 px below pillager at 1080p. | before: unavailable for custom camera recipes | after: lane o camera recipes pending; record returned paths after capture.
 
+2026-10-19 | o-09-pad-name-entry | title career name, player 1 and player 2 | added pre-filled 16-letter pad picker using the arcade controls, 32px letters, 24px gaps, 48px controls; stash brand now shows the saved name instead of generic PILLAGERS so ownership is visible without an extra row | before: new picker, no old screen | after: lane camera recipes j4-p1-name-picker, j4-p2-name-picker, j4-p1-named-stash, j4-p2-named-stash (paths pending)
+

@@ -108,8 +108,11 @@ CLAUDE (the coordinator window) - optional: -ResumeClaude
   A restart ends the coordinator Claude Code session. To bring it back you open the desktop shortcut "Claude Code - Pillagers" (or run claude in the folder)
   and paste the message in VM-CLAUDE-FIRST-MESSAGE.md again (it is safe to repeat). With -ResumeClaude this script instead puts ONE shortcut in your
   own Startup folder:   "Pillagers Claude resume.lnk"   which, 60 seconds after sign-in, opens a PowerShell window in the Pillagers folder and runs
-      claude --continue "<one short sentence: run CronList, re-arm the check-in if missing, run tools/health.sh, fix what it reports, continue>"
+      claude --continue "<a short message: first read host-stopped.txt and do nothing if it is not valid; then run CronList, re-arm the check-in if missing,
+                         run tools/health.sh, fix what it reports, continue>"
   so the last conversation is reopened and told to re-arm its check-in. -Undo removes that shortcut (only a shortcut made by this script).
+  ONLY AFTER THE SWITCH-OVER: the script refuses to make the shortcut until host-stopped.txt is valid (the same strict check as vm-verify.ps1), and the
+  message itself starts with that same check, so a restart of the VM before the main PC is stopped can never start helper lanes or a ship in the VM.
   Not verified here: whether "--continue" with a message works the same on every Claude Code version, and whether the check-in is restored by it. Test
   once while watching (restart the VM; the window should open by itself and the coordinator should say that the check-in is armed). If it does not, the
   shortcut is harmless: close the window and use the desktop shortcut and the first message instead.
@@ -143,7 +146,10 @@ $script:ShortcutName = 'Pillagers Claude resume.lnk'
 $script:ShortcutDesc = 'PILLAGERS: reopens the coordinator Claude Code after each sign-in (made by vm-autologon.ps1 -ResumeClaude)'
 $script:MirrorCoord = 'C:\Users\User1\Desktop\dark raiders'
 $script:RepoRoot = 'C:\claudecode\dark raiders'
-$script:ResumePrompt = 'The VM restarted. Resume as the coordinator: run CronList and re-arm the check-in if it is missing, run bash tools/health.sh, fix what it reports, then continue the top job. End with Next.'
+$script:Kit = 'C:\PillagersMove\kit'
+# The prompt starts with the same gate as section 0 of VM-CLAUDE-FIRST-MESSAGE.md, so a resumed conversation can never start lanes or ship while the main PC may still be running Pillagers.
+# It must contain no quote characters of any kind (Get-ResumeShortcutArgs puts it between single quotes inside a double-quoted command).
+$script:ResumePrompt = 'The VM restarted. First read C:\PillagersMove\kit\host-stopped.txt. If it is missing, or its status line is not exactly stopped, or it names this computer, change nothing, start nothing (no runner, no helper, no lane, no ship) and tell me. Only if it is valid: run CronList and re-arm the check-in if it is missing, run bash tools/health.sh, fix what it reports, then continue the top job. End with Next.'
 $script:ResumeDelaySec = 60
 $script:DryRun = [bool]$DryRun
 $script:Undo = [bool]$Undo
@@ -447,6 +453,74 @@ function Start-AutologonWindow([string]$Exe) {
 }
 
 # ----------------------------------------------------------------------------------------------------------------------
+# host-stopped.txt : COPIED from vm-setup.ps1 (Get-MarkerCheck and Get-MarkerInfo), the same strict rules that vm-verify.ps1 and the runner guard use. Keep
+# the three copies identical. -ResumeClaude refuses to make its Startup shortcut until this says the main PC is stopped, because the shortcut starts
+# the coordinator, and the coordinator starts the helper lanes and can ship: before the switch-over that would be a SECOND shipper next to the main PC.
+# ----------------------------------------------------------------------------------------------------------------------
+function Get-MarkerCheck([string[]]$Lines) {
+  # Same rule as Get-MarkerCheck in host-common.ps1 (this script cannot load that file; keep the two identical):
+  # SHA-256 (lower-case hex) over every non-empty line except the check= line, each trimmed, joined with LF.
+  $keep = New-Object System.Collections.ArrayList
+  foreach ($l in $Lines) {
+    $t = ([string]$l).Trim()
+    if (-not $t) { continue }
+    if ($t -match '^check\s*=') { continue }
+    [void]$keep.Add($t)
+  }
+  $bytes = [System.Text.Encoding]::ASCII.GetBytes(($keep -join "`n"))
+  $sha = [System.Security.Cryptography.SHA256]::Create()
+  try { $h = $sha.ComputeHash($bytes) } finally { $sha.Dispose() }
+  return (($h | ForEach-Object { $_.ToString('x2') }) -join '')
+}
+
+function Get-MarkerInfo {
+  # host-stopped.txt is written by host-stop.ps1 as key=value lines (status, computer, time, gitHead, shipLockClear, unpushedCommits, ..., check).
+  # STRICT: Stopped is $true only when ALL of these hold: status is exactly "stopped", computer is present and is not this VM,
+  # gitHead is a full 40-character commit id, shipLockClear is yes, the check= line matches the other lines, and no key appears twice.
+  # A marker that is missing, cut short, edited by hand, glued together from two runs, or in an older format is NOT stopped; Why says what is wrong.
+  $o = [pscustomobject]@{ Exists = $false; Stopped = $false; Text = ''; Status = ''; Head = ''; ShipLockClear = $null; Computer = ''; Time = ''; Unpushed = ''; Changed = ''; GpuPack = ''; Why = @() }
+  $f = Join-Path $script:Kit 'host-stopped.txt'
+  if (-not (Test-Path -LiteralPath $f)) { $o.Why = @('host-stopped.txt does not exist in the kit folder'); return $o }
+  $o.Exists = $true
+  $t = ''
+  try { $t = [System.IO.File]::ReadAllText($f) } catch { }
+  $o.Text = $t
+  $why = New-Object System.Collections.ArrayList
+  if (-not $t.Trim()) { [void]$why.Add('host-stopped.txt is empty') }
+  $kv = @{}
+  $dupes = New-Object System.Collections.ArrayList
+  $allLines = @($t -split "`r?`n")
+  foreach ($l in $allLines) {
+    if ($l -match '^\s*([A-Za-z][A-Za-z0-9]*)\s*=\s*(.*?)\s*$') {
+      $k = $Matches[1].ToLowerInvariant()
+      if ($kv.ContainsKey($k)) { if ($dupes -notcontains $k) { [void]$dupes.Add($k) } } else { $kv[$k] = $Matches[2] }
+    }
+  }
+  if ($dupes.Count -gt 0) { [void]$why.Add('these lines appear twice (a file glued together from two runs?): ' + ($dupes -join ', ')) }
+  if ($kv.ContainsKey('status')) { $o.Status = $kv['status'].ToLowerInvariant() } else { $o.Status = 'unknown' }
+  if ($kv.ContainsKey('githead') -and $kv['githead'] -match '^[0-9a-fA-F]{40}$') { $o.Head = $kv['githead'].ToLowerInvariant() }
+  if ($kv.ContainsKey('shiplockclear')) {
+    $v = $kv['shiplockclear'].ToLowerInvariant()
+    if ($v -eq 'yes') { $o.ShipLockClear = $true } elseif ($v -eq 'no') { $o.ShipLockClear = $false }
+  }
+  if ($kv.ContainsKey('computer')) { $o.Computer = $kv['computer'] }
+  if ($kv.ContainsKey('time')) { $o.Time = $kv['time'] }
+  if ($kv.ContainsKey('unpushedcommits')) { $o.Unpushed = $kv['unpushedcommits'] }
+  if ($kv.ContainsKey('changedfiles')) { $o.Changed = $kv['changedfiles'] }
+  if ($kv.ContainsKey('gpupack')) { $o.GpuPack = $kv['gpupack'] }
+  if ($o.Status -ne 'stopped') { [void]$why.Add('the status line says "' + $o.Status + '" (it must say exactly stopped)') }
+  if (-not $o.Computer) { [void]$why.Add('there is no computer= line') }
+  elseif ($o.Computer -ieq $env:COMPUTERNAME) { [void]$why.Add('the marker names THIS computer (' + $o.Computer + '); it must come from the main PC') }
+  if (-not $o.Head) { [void]$why.Add('there is no full 40-character gitHead= line') }
+  if ($o.ShipLockClear -ne $true) { [void]$why.Add('the marker does not say shipLockClear=yes') }
+  if (-not $kv.ContainsKey('check')) { [void]$why.Add('there is no check= line (older host-stop.ps1, or the file was cut short): run host-stop.ps1 again and push again') }
+  elseif ($kv['check'].ToLowerInvariant() -ne (Get-MarkerCheck $allLines)) { [void]$why.Add('the check= line does not match the other lines (edited by hand, cut short, or copied half-written)') }
+  $o.Why = $why.ToArray()
+  $o.Stopped = ($why.Count -eq 0)
+  return $o
+}
+
+# ----------------------------------------------------------------------------------------------------------------------
 # the Startup shortcut for the coordinator Claude Code (-ResumeClaude)
 # ----------------------------------------------------------------------------------------------------------------------
 function Get-StartupFolder { try { return [Environment]::GetFolderPath('Startup') } catch { return '' } }
@@ -491,6 +565,14 @@ function Write-Shortcut([string]$Path, [string]$Target, [string]$ArgLine, [strin
 function Set-ResumeShortcut {
   $path = Get-ResumeShortcutPath
   if (-not $path) { Warn 'could not find your Startup folder; no shortcut made'; return }
+  # Gate: only after the switch-over. Before it the main PC may still ship, and the coordinator started by this shortcut would be a second shipper.
+  $mk = Get-MarkerInfo
+  if (-not $mk.Stopped) {
+    Warn 'no Startup shortcut made: the main PC has not been switched over yet (C:\PillagersMove\kit\host-stopped.txt is missing or not accepted).'
+    foreach ($w in @($mk.Why)) { Info ('  - ' + $w) }
+    Info 'Do the switch-over first (guide, switch-over day, up to step S5), then run this script again with -ResumeClaude. Automatic sign-in itself is not affected by this.'
+    return
+  }
   $claude = Get-ClaudeExe
   if (-not $claude) { Warn 'Claude Code is not installed for this user yet (no claude.exe); no Startup shortcut made. Install Claude Code, then run this script again with -ResumeClaude.'; return }
   $coord = Get-CoordFolder

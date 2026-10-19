@@ -1490,7 +1490,10 @@ html.party #slotpanel, html.party #titlesub, html.party #titlestart, html.party 
   /* v28.xx (cw-endslots), the critic on 76 (3 of 5, P0): "nine empty boxes with coloured bottom bars above the revealed items". The rarity rules just above (same weight, later) beat the .hid rule, so a slot not yet shown gave away its rarity. A hidden slot is now a plain grey slot, and the strip wraps balanced (7 and 6, not 9 and 3). */
   #root .ocwin .haulit.hid[data-r]{ border-bottom-color:var(--ui-line) !important; }
   #root .ocwin .haulstrip{ text-wrap:balance; }
-  /* v28.xx (cw-endcard-hero): the critic, second pass on the Extracted and KIA cards (2 of 5): "no hero line, the HUD still bleeds through the scrim,
+  /* v28.xx (cw-endrow), the critic on 76 and 77 (2 and 3 of 5): "haul slots should be one row of 64px tiles, items reveal in place, +n more inside the row". The strip is one centred row of up to eight tiles (the JS cap is eight now, was twelve in two ragged rows) with the +n more count at its end. */
+  #root .ocwin .haulstrip{ display:flex !important; flex-wrap:nowrap; justify-content:center; align-items:center; gap:6px; margin:16px 0 8px !important; }
+  #root .ocwin .haulstrip .haulit{ margin:0 !important; flex:0 0 auto; }
+  #root .ocwin .haulstrip>span:not(.haulit){ margin:0 0 0 6px !important; color:var(--tx-2) !important; font-size:16px; white-space:nowrap; }  /* v28.xx (cw-endcard-hero): the critic, second pass on the Extracted and KIA cards (2 of 5): "no hero line, the HUD still bleeds through the scrim,
      the feedback chip is a third competing control with an amber plus". The haul total is the hero now: 56px, bone, no tracking, 16px above and 24px
      below. The scrim is near solid (.94) so the HUD cannot read through. The feedback prompt is a quiet 16px text link in tx-2 with no box and no amber. */
   #root .outcome{ background:rgba(6,7,8,.94); }
@@ -2996,7 +2999,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.93';
+var VER='31.94';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3034,6 +3037,14 @@ function wnShort(s){
   if(cut.lastIndexOf('. ')>=WN_TAIL*0.4) return head+' '+rest.slice(0,cut.lastIndexOf('. ')+1);
   cut=cut.replace(/\s+\S*$/,'');
   return head+' '+cut+'...';
+}
+var WNX=null;   // v28.xx (cw-endrow): the card's X and Got it boxes in canvas pixels, set when the card draws, read by the click handler
+// v28.xx (cw-endrow), the critic on 40 (2 of 5): "five paragraphs of two lines; cut to short one-line bullets". Q8, reason in notes/ui/changes.md: the card shows the headline sentence of each of the newest three notes (the whole note when it is short); the pause window still shows the longer notes.
+function wnHead(s){
+  var t=String(s||''), i=t.indexOf('. ');
+  if(i<0) return wnShort(t);
+  if(t.length<=60) return t;
+  return t.slice(0,i+1);
 }
 var WNSEEN=1;   // v27.xx (wnbutton), HIS ANSWER 37: the card no longer shows by itself on the floor (it was 0 until you walked off it); WHAT'S NEW in the pause box shows the notes. Left at 0 by a check, the old card still draws.          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
@@ -17263,7 +17274,10 @@ cv.addEventListener('mousedown',function(e){
   // is a deliberate use of the mouse there, so it takes the crosshair from that window pad at once and aims where it landed, in front yet or not (the first click on a window behind
   // it focuses it, and its mousemove cannot take the crosshair before that).
   if(typeof PAD!=='undefined'&&PAD&&typeof NET!=='undefined'&&NET&&NET.same==='p2'){ PAD.curOwn=0; try{ var _p2r=cv.getBoundingClientRect(); mouse.x=e.clientX-_p2r.left; mouse.y=e.clientY-_p2r.top; }catch(_p2m){} }
-  if(G&&G.mapFirst&&!G.over){ if(e.button===0) mapFirstGo('click'); return; }   // cw-mapfirst: a click on the opening map starts the raid and is never a shot
+  if(e.button===0&&!WNSEEN&&WNX){   // v28.xx (cw-endrow): a click on the what is new card's X or Got it closes it
+    var _wr=cv.getBoundingClientRect(), _wcx=(e.clientX-_wr.left)*cv.width/Math.max(1,_wr.width), _wcy=(e.clientY-_wr.top)*cv.height/Math.max(1,_wr.height);
+    if((_wcx>=WNX.x&&_wcx<=WNX.x+WNX.w&&_wcy>=WNX.y&&_wcy<=WNX.y+WNX.h)||(WNX.gw&&_wcx>=WNX.gx&&_wcx<=WNX.gx+WNX.gw&&_wcy>=WNX.gy&&_wcy<=WNX.gy+WNX.gh)){ WNSEEN=1; WNX=null; try{ blip('pick'); }catch(_wb){} return; }
+  }  if(G&&G.mapFirst&&!G.over){ if(e.button===0) mapFirstGo('click'); return; }   // cw-mapfirst: a click on the opening map starts the raid and is never a shot
   // MARK A WAYPOINT. While the map is up the click belongs to the map and must
   // not reach the trigger, which is why this returns rather than falling through.
   // Right button clears, left button sets, and a click outside the map rectangle
@@ -32981,8 +32995,8 @@ var _cdone=contractExtract(G.bag,haul);
     (function(){ var keys=G.bag.slice(), iss=(_issN||0), k, s='', n=0;
       for(k=keys.length-1;k>=0&&iss>0;k--) if(keys[k]==='bandage'){ keys.splice(k,1); iss--; }
       keys.sort(function(a,b){ return ival(b)-ival(a); });
-      for(k=0;k<keys.length&&k<12;k++){ if(ITEMS[keys[k]]){ s+='<span class="haulit" data-k="'+keys[k]+'" data-r="'+(dispR(keys[k])||ITEMS[keys[k]].r||'common')+'" data-v="'+ival(keys[k])+'" title="'+escHtml(ITEMS[keys[k]].name)+'" style="display:inline-block;margin:3px;padding:3px;border-radius:8px;background:rgba(0,0,0,.25);border:1px solid '+(RCOL[dispR(keys[k])||ITEMS[keys[k]].r]||'rgba(127,146,216,.35)')+'">'+iconImgHTML(keys[k],52)+'</span>'; n++; } }   // v19.99, seen on the 4K extraction card (2026-10-08): the haul pictures were 34px chips; 52 now
-      if(keys.length>12) s+='<span style="color:var(--ash);margin-left:6px">+'+(keys.length-12)+' more</span>';
+      for(k=0;k<keys.length&&k<8;k++){ if(ITEMS[keys[k]]){ s+='<span class="haulit" data-k="'+keys[k]+'" data-r="'+(dispR(keys[k])||ITEMS[keys[k]].r||'common')+'" data-v="'+ival(keys[k])+'" title="'+escHtml(ITEMS[keys[k]].name)+'" style="display:inline-block;margin:3px;padding:3px;border-radius:8px;background:rgba(0,0,0,.25);border:1px solid '+(RCOL[dispR(keys[k])||ITEMS[keys[k]].r]||'rgba(127,146,216,.35)')+'">'+iconImgHTML(keys[k],52)+'</span>'; n++; } }   // v19.99, seen on the 4K extraction card (2026-10-08): the haul pictures were 34px chips; 52 now
+      if(keys.length>8) s+='<span style="color:var(--ash);margin-left:6px">+'+(keys.length-8)+' more</span>';
       if(n) lines.push('<span class="haulstrip" data-sec="'+_secV+'" style="display:inline-block;margin:4px 0 2px">'+s+'</span>');   // v26.xx (career7): the value the card secured, for the reveal total
     })();
     lines.push('You extracted with '+Math.round(G.player.hp)+' of 100 health');
@@ -48135,8 +48149,8 @@ function drawHubHUD(ox,oy){
       wnW=Math.min(_wnWW-LH(60),LH(460));   // v28.xx (cw-wnew40) critic on screen 40 (2 of 5): "1560px slab". The card is a 720px card now (the style guide: a modal never exceeds its content).
       wnRows=[]; wnGaps=0;
       var wnL=wnList();   /* v28.xx (cw-wnded): the generic polish line once */
-      for(var wm=0;wm<Math.min(WN_SHOW,wnL.length);wm++){
-        var wWords=TX((wm+1)+'. '+wnShort(wnL[wm])).split(' '),wLine='',wFirst=1;   // v21.84: his wording of the entry is what is wrapped
+      for(var wm=0;wm<Math.min(3,wnL.length);wm++){
+        var wWords=TX((wm+1)+'. '+wnHead(wnL[wm])).split(' '),wLine='',wFirst=1;   // v21.84: his wording of the entry is what is wrapped
         for(var ww=0;ww<wWords.length;ww++){
           var wCand=wLine?(wLine+' '+wWords[ww]):wWords[ww];
           if(wLine&&txRawW(ctx,wCand)>wnW-LH(44)){
@@ -48187,7 +48201,12 @@ function drawHubHUD(ox,oy){
     ctx.textAlign='left'; ctx.fillStyle=UIC.tx_1;
     ctx.fillText('NEW IN '+verShown(WHATSNEW_VER,1),wnX+LH(22),wnY+LH(32));
     ctx.fillStyle=UIC.ui_line_hi; ctx.fillRect(wnX+LH(22),wnY+LH(44),wnW-LH(44),1);
-    ctx.textAlign='left';
+    // v28.xx (cw-endrow), the critic on 40: "no X, no accent tab" (Q43: a card gets an X; the guide: a 3px lime tab). The X is the same job as Got it.
+    ctx.fillStyle=UIC.acc; ctx.fillRect(wnX,wnY,LH(3),wnH);
+    var _wxs=LH(40), _wxx=wnX+wnW-LH(14)-_wxs, _wxy=wnY+LH(14);
+    ctx.strokeStyle=UIC.ui_line_hi; ctx.strokeRect(_wxx+0.5,_wxy+0.5,_wxs-1,_wxs-1);
+    ctx.textAlign='center'; ctx.font=FS(TYPE.title); ctx.fillStyle=UIC.tx_1; ctx.fillText('\u00d7',_wxx+_wxs/2,_wxy+_wxs*0.72); ctx.textAlign='left';
+    WNX={x:_wxx*_wnr,y:_wxy*_wnr,w:_wxs*_wnr,h:_wxs*_wnr};    ctx.textAlign='left';
     ctx.font=FS(TYPE[wnRole]); ctx.fillStyle=UIC.tx_1;
     var wnCy=wnY+LH(52);
     for(var wq=0;wq<wnRows.length;wq++){
@@ -48204,7 +48223,7 @@ function drawHubHUD(ox,oy){
     ctx.fillStyle=UIC.acc; ctx.fillRect(_gbX,_gbY,_gbW,_gbH);
     ctx.textAlign='center'; ctx.font=FS(TYPE.label); ctx.fillStyle=UIC.acc_ink;
     ctx.fillText('Got it',_gbX+_gbW/2,_gbY+_gbH*0.68);
-    ctx.textAlign='left'; ctx.fillStyle=UIC.tx_2;
+    WNX.gx=_gbX*_wnr; WNX.gy=_gbY*_wnr; WNX.gw=_gbW*_wnr; WNX.gh=_gbH*_wnr;    ctx.textAlign='left'; ctx.fillStyle=UIC.tx_2;
     ctx.fillText(padOn()?'walk to dismiss':'press ENTER or walk to dismiss',wnX+LH(22),_gbY+_gbH*0.68);
     ctx.textAlign='left';
     ctx.restore();
@@ -50055,7 +50074,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.93: Claiming a pad gives that pad a 250 ms pulse and puts p1 in amber or p2 in cyan beside its pillager for two seconds. First pad stays p2 and second stays p1. Check 31.93 fails on v31.92',
+  now:'v31.94: The haul strip is one row of up to eight tiles with a count at its end. The what is new card has a lime tab, an X and Got it that both close it by click, and three short notes. Check 31.94 fails on v31.93',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
