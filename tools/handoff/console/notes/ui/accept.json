@@ -278,17 +278,17 @@
  "38-extracted-card": {
   "score": 3,
   "pass": false,
-  "verdict": "The extracted card is clean, centred and in the right palette, but it is still a narrow 718px template card with small grey text, boxed chips, and no visible focus or pad hint, and none of the earlier advice was applied.",
+  "verdict": "The card is clean, lower case and has one lime action, but it is still a narrow 718px centred column that does not use the 90% card the guide asks for. The haul number is under the hero token, and the secondary text is small and crowded under the title.",
   "findings": [
-   "P1 whole card (718x740 at 1080p): Widen the card to about 1100px or more, or 90% per the guide. Put the loot tiles and haul on the left and the stats and badges on the right. Raise the haul number from about 48px to the 56px hero token.",
-   "P1 secondary text: subtitle 'out clean · never spotted', xp line, 'haul' label, stat labels: Set all read text to at least 16px in tx-2 #aaa498. Merge the subtitle and xp into one 16px line, or drop '130 of 1,200,000'. Set stat labels to 16px with +.04em tracking.",
-   "P1 'log run and return' button and x at top-right: Add a 3px outline in --acc-hover with a 2px offset on the focused button. Add a pad-button glyph inside it. Widen the button to about 280px. Make the x a quiet tx-2 glyph with a 16px corner margin and a lime ring only when focused.",
-   "P2 image 2, 'extract without ever being knocked down' chip: Make it a flat 16px tx-2 line with a small lime check or dot, with no border. Leave 24px above and below it, or drop it from the card.",
-   "P2 badge chips 'first out', 'untouched', 'ghost' and 'how did that run feel +': Render badges as flat 16px text tags with a 3px left bar in a rarity colour and no outline. Make the feedback prompt a 16px tx-2 link and leave 32px between it and the primary button, or move it out of the card."
+   "P1 whole card (718x722, centred): Widen the card to about 1100px at minimum, or 90% of the screen. Put the loot tiles and haul on the left and the stats, badges and button on the right. Keep an 8px-grid padding of 32px.",
+   "P1 haul '$1,770' (about 48px) and the 'haul' label: Set the haul to 56px f-cond 800 in tx-1. Set the title to 32px f-cond 700. Put the 'haul' label at 16px tx-2 with +.04em tracking, with 8px between label and number.",
+   "P1 subtitle 'out clean · never spotted', xp line '+130 xp · 130 of 1,200,000', 'burst carbine recovered to the armoury': Merge the subtitle and xp into one 16px tx-2 line, '+130 xp · out clean'. Drop '130 of 1,200,000'. Set the armoury line to 16px tx-2 with 16px above the tiles. Use even 16px or 24px gaps.",
+   "P1 'log run and return' button (200x56) and the x at top-right: Widen the button to about 280px at 64px tall. Add a 3px --acc-hover outline with a 2px offset, and the pad or key glyph inside the button. Make the x a quiet tx-2 glyph with no box, with a lime ring only when focused.",
+   "P2 stats row (containers, kills, accuracy, time): Set labels to 16px tx-2 with +.04em tracking. Set values to 24-28px tx-1. Tighten the gap between the haul and the stats row to 32px."
   ],
-  "pic": "tools/handoff/console/notes/shots/13-p2/38-extracted-card-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/13-p3/38-extracted-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-19T01:15"
+  "when": "2026-10-19T01:22"
  },
  "40-whats-new-card": {
   "score": 2,
@@ -368,17 +368,17 @@
  "59-raid-abandon-confirm": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, lower-case confirm card with a clear lime primary and a red danger outline, but the title is small for the screen, the card is cramped, and the danger label carries an explaining parenthetical.",
+  "verdict": "A clean, readable two-choice confirm with a clear lime primary action, but the close x floats outside the card, the title is small and the card is padded unevenly, and the destructive button is cramped by its note.",
   "findings": [
-   "P1 danger button label: Shorten the label to 'abandon run'. Move the 'free this early' note to a --fs-label (16px) --tx-2 line under the title, or delete it. Use --danger text at 600 weight with a 2px border.",
-   "P1 title 'abandon this run?': Keep the lime fill but set the title to --fs-title 32px at weight 700 in --tx-1. Add a 16px --tx-2 consequence line, such as what is lost, and tighten the gap between title and divider to 16px.",
-   "P1 scrim and background: Use exactly --scrim rgba(6,7,8,.80) with an optional 4px blur, so the raid context stays recognisable but quiet.",
-   "P2 card padding and spacing: Set padding to 32px on all sides, button gap to 16px, and divider spacing to 16px. Make the accent tab a clear 36x2px or 3px left bar.",
-   "P2 focus state: Add a 2px --acc outline with a 2px offset on the focused button. Give the danger button a --danger tinted fill (about 12%) when focused. Add a 14px footer hint with the pad glyph."
+   "P1 close x (top right, ~1135,354): Move the x inside the card, 16px from the top and right edges, in a 40x40 hit area with a --ui-line-hi border on focus. Or drop it, since keep playing already closes the card.",
+   "P1 danger button 'yes, abandon this run' + 'free this early': Use the single label 'abandon run' in --danger at 20px/600, with the button at 56px. Move 'free this early' to a 16px --tx-2 line under the title, or delete it.",
+   "P1 title 'abandon this run?': Set the title to 32px/700 in --tx-1. Add one 16px --tx-2 line, such as 'your bag is lost'. Keep the divider 16px below the text.",
+   "P2 card padding and vertical rhythm: Use 32px padding all round. Put 16px between the divider and the first button and 16px between the buttons. Width 520px.",
+   "P2 accent tab (top-left of card, ~720-756,380): Make it 36x3px in solid --acc, flush to the top-left edge, or remove it."
   ],
-  "pic": "tools/handoff/console/notes/shots/13-p2/59-raid-abandon-confirm-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/13-p3/59-raid-abandon-confirm-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-19T01:15"
+  "when": "2026-10-19T01:22"
  },
  "65-codex": {
   "score": 2,
@@ -467,10 +467,17 @@
  "77-haul-reveal-done": {
   "score": 3,
   "pass": false,
-  "verdict": "The end card has a sound shell with a teal title, one amber primary and a centred stack, but it is overloaded with five text tiers, a '$' hero that breaks the SP rule, and body text that is too small for a couch.",
-  "pic": "tools/handoff/console/notes/shots/13-k1/77-haul-reveal-done-1080.jpg",
+  "verdict": "a clean, mostly on-system extracted card with a good hero number and one lime action, but the hero is undersized and tx-2 text is too small and dim, the card is nowhere near the 90% window rule, and too many small centred lines compete before the haul.",
+  "findings": [
+   "P1 stacked text above the loot grid (subtitle, xp line, two 'recovered to the armoury' lines): merge the first two into one 16px tx-2 line and drop 'never spotted'. Turn the two recovered lines into one row with a small ok-green glyph and the item names ('burst carbine, compact smg'). Add 24px of space before the loot grid.",
+   "P1 haul value '$7,620' and the 'extracted' title: set the haul to 56px f-cond 800 tx-1 and the title to 32px. Cut the gap under the haul to 24px. Keep teal for the title only.",
+   "P1 muted text: xp line, stat labels (containers/kills/accuracy/time), tags row, 'how did that run feel +', '+7 more': set every label to 16px f-cond 600 +.04em in --tx-2 (#aaa498). Brighten the tag row to tx-1 at 16px. Make '+7 more' a 16px chip of 56px width, aligned to the tile baseline.",
+   "P1 card size and frame: either document this as a result-dialog exception in the guide, or widen the card and use a two-column layout (loot grid left, haul and stats right). Use a --ui-line-hi border.",
+   "P2 loot grid, two rows: use a fixed 6-column grid with 68px tiles and 8px gaps, left-aligned inside the card padding. Put '+7 more' as a 7th tile in the grid. Keep rarity bars only at 3px."
+  ],
+  "pic": "tools/handoff/console/notes/shots/13-p3/77-haul-reveal-done-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T12:56"
+  "when": "2026-10-19T01:23"
  },
  "63-arcade-operator-new-party-armed": {
   "score": 3,
@@ -505,17 +512,17 @@
  "60-abandoned-card": {
   "score": 2,
   "pass": false,
-  "verdict": "The card is clean and the lime action is clear, but the type is tiny, the card is a small modal where the guide wants a near-full-screen centred card, and removing 'copy report' while adding an X is a mixed change. It still reads as a generic template with no identity.",
+  "verdict": "The card is clean and all lower case with a clear lime main action, but it is still a small 720px modal with a weak hero, tiny stats, a loss that does not read as a loss, and an xp line that explains too much.",
   "findings": [
-   "P1 whole card: Either scale the card to the shared window size (about 90% of the screen, with a 56px header and 72px footer), or record the run-over card as an explicit exception in the guide. Do not leave it as a one-off.",
-   "P1 xp line under the title: Cut it to '+33 xp' at 16px in tx-2. Show the penalty as a short --warn tag such as '-75%'. Drop the 'total xp of 1,200,000' text or move it to the progress screen.",
-   "P1 stat row (containers / kills / accuracy / time): Set values to 32px f-cond 700 and labels to 16px tx-2 (+.04em). Cut the gap between the hero block and the stat strip from about 64px to 32px.",
-   "P1 hero '$1,170' and 'left behind': Raise the hero to the 56px token. Colour the number --danger, or add a 3px --danger top tab on the card, so the loss reads at a glance. Keep 'left behind' at 16px tx-2.",
-   "P2 'how did that run feel +': Move it into the footer as a quiet tertiary text button with a visible focus outline in --acc, or remove it from this card."
+   "P1 whole card (601-1318 x 246-833): Either scale it to the shared window size (90% wide, 56px header and 72px footer), or add the run-over card to the guide as a named exception with a fixed 720px width. Do not leave it undecided.",
+   "P1 hero '$1,170' / 'left behind': Set the number to 56px f-cond 800 in --danger, or add a 3px --danger top tab to the card. Set 'left behind' to 16px --tx-2 with +.04em tracking.",
+   "P1 xp line under the title (y≈362): Cut it to '+33 xp' at 16px --tx-2, plus a small --warn tag '-75%'. Move the total xp to the progress screen. Keep 24px between the title and this line.",
+   "P1 stat strip (containers / kills / accuracy / time): Set values to 32px f-cond 700 in --tx-1 and labels to 16px --tx-2. Cut the gap between hero and strip to 32px. Keep the 1px --ui-line rules.",
+   "P2 'how did that run feel +' (y≈705): Make it a tertiary text button in the footer row beside the main action, with a 2px --acc focus outline, or drop it from this card."
   ],
-  "pic": "tools/handoff/console/notes/shots/13-n1/60-abandoned-card-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/13-p3/60-abandoned-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T23:59"
+  "when": "2026-10-19T01:22"
  },
  "42-hub-pause-box": {
   "score": 3,

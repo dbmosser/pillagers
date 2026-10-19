@@ -1,0 +1,7 @@
+v31.79: a downed partner gets a clear alert and a pulsing arrow
+
+When your partner goes down you hear a clear two-note alert, and the arrow pointing at them pulses.
+
+Check 31.79. Fails on v31.78.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

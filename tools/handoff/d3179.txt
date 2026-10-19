@@ -1,0 +1,5 @@
+## v31.79 - A DOWNED PARTNER GETS A CLEAR ALERT AND A PULSING ARROW
+
+Co-op hunt while he was away. His answer 2.72 a: when your partner goes down, a clear alert sound plays and the edge arrow pointing at them pulses. The old sound was a low thud where he fell, silent past 1400 units, and the arrow only turned red. Now a two-note alert plays at the same loudness wherever he is, and the red arrow beats between full size and one and a half times, twice a second.
+
+MEASURED. Check 31.79 passes, and fails on v31.78.

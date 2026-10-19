@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.79 - A DOWNED PARTNER GETS A CLEAR ALERT AND A PULSING ARROW
+
+Co-op hunt while he was away. His answer 2.72 a: when your partner goes down, a clear alert sound plays and the edge arrow pointing at them pulses. The old sound was a low thud where he fell, silent past 1400 units, and the arrow only turned red. Now a two-note alert plays at the same loudness wherever he is, and the red arrow beats between full size and one and a half times, twice a second.
+
+MEASURED. Check 31.79 passes, and fails on v31.78.
 ## v31.78 - END CARDS: FLAT CHIPS, ABANDON CONFIRM X AND COST LINE
 
 Co-op hunt while he was away. The critic scored 38, 60 and 77 down for boxed chips that read as buttons, and 59 for no X and a bracket on the danger button.

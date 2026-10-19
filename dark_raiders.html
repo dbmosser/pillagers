@@ -2978,7 +2978,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.78';
+var VER='31.79';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -6095,6 +6095,31 @@ function sndDipOf(a){
   try{ f=a.createBiquadFilter(); f.type='lowpass'; f.frequency.value=a.sampleRate/2; f.Q.value=0.5; src.disconnect(); src.connect(f); f.connect(S.out); S.dip=f; }
   catch(e){ try{ src.connect(S.out); }catch(_e){} return null; }
   return f;
+}
+// v31.xx (cw-matedown), HIS ANSWER 2.72 a (2026-10-18): "when your partner goes down, a clear alert sound plays and the edge arrow pointing at them pulses".
+// The old sound for a downed partner was the low thud placed where he fell, silent past 1400 units. This is a plain two-note alert, the same
+// loudness wherever he is, played with it. The arrow pulse is a scale between 1 and 1.5, two beats a second, only while he is down.
+function mateArrowPulse(dn,ms){
+  if(!dn) return 1;
+  return 1+0.25*(1+Math.sin((+ms||0)/1000*Math.PI*4));
+}
+function sndMateAlert(){
+  var a, out, t, i, o, og, f=[880,660,880,660], at;
+  if(G&&G.sim) return false;
+  if(typeof NET==='object'&&NET&&NET.specTick) return false;
+  a=ac(); if(!a) return false;
+  out=sndBus('sting'); if(!out) return false;
+  t=a.currentTime;
+  try{
+    for(i=0;i<f.length;i++){
+      at=t+i*0.16;
+      o=a.createOscillator(); og=a.createGain(); o.type='triangle'; o.frequency.setValueAtTime(f[i],at);
+      og.gain.setValueAtTime(0.0001,at); og.gain.exponentialRampToValueAtTime(0.2,at+0.012); og.gain.exponentialRampToValueAtTime(0.0001,at+0.14);
+      o.connect(og); og.connect(out); o.start(at); o.stop(at+0.16);
+    }
+  }catch(err){ return false; }
+  SND_DOWN.alert=(SND_DOWN.alert|0)+1;
+  return true;
 }
 function sndDowned(mine,wx,wy){
   var a, out, t, e, vol=1, pan, pn, b, d, i, n, src, f, g, o, og, r1, r2, rg, dip, ny;
@@ -49619,7 +49644,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.78: Chips are flat names with dots. The contract line has a tick. The armed abandon confirm keeps its X and shows its cost on its own line. Check 31.78 fails on v31.77',
+  now:'v31.79: When your partner goes down you hear a clear two-note alert, and the arrow pointing at them pulses. Check 31.79 fails on v31.78',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -54239,7 +54264,7 @@ function netOnState(peer,m){
   // v22.71 (tr5fixb), the review of raid text batch 5: the TEAMMATE DOWN detail was a sentence (his name, then needs a revive, with a
   // full stop). It now reads REVIVE and his name in caps, the verb his [E] REVIVE prompt uses at his body. The Peddler plate beside a
   // crate not yet searched reads THE PEDDLER, a middle dot, SEARCH CRATE FIRST, in the caps of every other nameplate.
-  if(up&&m.dn&&!g.dn&&g.n>1&&typeof G!=='undefined'&&G&&!G.over&&!G.sim&&(G.seed>>>0)===((+m.sd)>>>0)){ try{ say('TEAMMATE DOWN','crit',{sub:'REVIVE '+String(netSeatName(s)||'your teammate').toUpperCase(),key:'tmdown'+s,icon:'party',hold:(function(gg){ return function(){ return !!(gg&&gg.dn); }; })(g)}); padRumble(0.55,420); try{ sndDowned(0,x,y); }catch(_dn){} }catch(_md){} }   // v24.xx (his order 2026-10-12): and heard, where he fell
+  if(up&&m.dn&&!g.dn&&g.n>1&&typeof G!=='undefined'&&G&&!G.over&&!G.sim&&(G.seed>>>0)===((+m.sd)>>>0)){ try{ say('TEAMMATE DOWN','crit',{sub:'REVIVE '+String(netSeatName(s)||'your teammate').toUpperCase(),key:'tmdown'+s,icon:'party',hold:(function(gg){ return function(){ return !!(gg&&gg.dn); }; })(g)}); padRumble(0.55,420); try{ sndDowned(0,x,y); }catch(_dn){} try{ sndMateAlert(); }catch(_mq){} }catch(_md){} }   // v24.xx (his order 2026-10-12): and heard, where he fell
   if(up){ g.cr=m.c?1:0; g.sp=m.sp?1:0; g.dn=m.dn?1:0; g.w=netClean(m.w,24); g.fk=(m.fk===1||m.fk===2)?m.fk:0; g.el=(g.fk===2&&typeof m.el==='string'&&ELEM[m.el])?m.el:''; g.sd=(+m.sd)>>>0; g.pz=m.pz?1:0; g.mf=(m.mf===1||m.mf===2)?m.mf:0; g.hp=+m.hp||0; g.mh=+m.mh||100; g.ar=+m.ar||0; g.ac=+m.ac||0; g.dt=+m.dt||0; g.sa=(m.sa===undefined)?1:(m.sa?1:0); g.hd=m.hd?1:0; }   // v15.79: crouched, sprinting, downed, the gun in hand and the seed of the raid he is in; v16.20: paused; v16.23: health and armour // v28.47 (cloud-coop-teammate-bare-hands), CLOUD HUNT 2026-10-15: hd kept; a word without it (an older window) reads as empty hands
   if(up&&(m.sh||g.sh)) g.sh=m.sh?1:0;   // v23.30 (arcade9): the teammate spawn shield
   if(up) g.pb=m.pb?1:0;   // v28.48 (cloud-coop-teammate-shield-bubble), CLOUD HUNT 2026-10-15: his SHIELD BUBBLE, kept from every word; a word without it (an older window) reads as no bubble
@@ -56289,7 +56314,7 @@ function netMateArrow(g){
   k=Math.min((W/2-M)/Math.max(1e-6,Math.abs(dx)),(H/2-M)/Math.max(1e-6,Math.abs(dy)));
   ax=cx+dx*k; ay=cy+dy*k; a=Math.atan2(dy,dx);
   c=g.dn?HUDC.danger:HUDC.ally;   // v22.70 (R27): one teammate colour
-  ctx.save(); ctx.translate(ax,ay); ctx.rotate(a); if(r>1) ctx.scale(r,r);
+  ctx.save(); ctx.translate(ax,ay); ctx.rotate(a); if(r>1) ctx.scale(r,r); if(g.dn){ var _mp=mateArrowPulse(1,(typeof performance!=='undefined'&&performance.now)?performance.now():Date.now()); ctx.scale(_mp,_mp); }   // v31.xx (cw-matedown): the arrow of a downed partner pulses
   ctx.fillStyle=c; ctx.strokeStyle='rgba(6,9,13,.9)'; ctx.lineWidth=2;
   ctx.beginPath(); ctx.moveTo(LH(14),0); ctx.lineTo(-LH(8),-LH(9)); ctx.lineTo(-LH(4),0); ctx.lineTo(-LH(8),LH(9)); ctx.closePath(); ctx.stroke(); ctx.fill();
   ctx.restore();

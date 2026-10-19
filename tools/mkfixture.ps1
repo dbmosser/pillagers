@@ -6101,6 +6101,19 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.79',what:'a downed partner sounds a clear alert and his edge arrow pulses (his 2.72 a)',
+   run:function(){
+     if(typeof mateArrowPulse!=='function'||typeof sndMateAlert!=='function') return 'no partner alert sound and no arrow pulse (mateArrowPulse, sndMateAlert missing)';
+     var a=mateArrowPulse(1,0), b=mateArrowPulse(1,125), c=mateArrowPulse(0,125), lo=9, hi=0, i, v;
+     for(i=0;i<500;i++){ v=mateArrowPulse(1,i*2); if(v<lo) lo=v; if(v>hi) hi=v; }
+     if(c!==1) return 'an arrow of a partner who is up pulses';
+     if(a===b) return 'the downed arrow does not change over time';
+     if(lo<0.99||hi>1.51||hi-lo<0.4) return 'the pulse range is wrong: '+lo+' to '+hi;
+     if(String(netOnState).indexOf('sndMateAlert')<0) return 'the partner down word does not play the alert';
+     if(String(netMateArrow).indexOf('mateArrowPulse')<0) return 'the edge arrow does not use the pulse';
+     var r=sndMateAlert(); if(r!==true&&r!==false) return 'the alert did not return a result';
+     return null;
+   }},
   {v:'31.78',what:'an end card chip is a flat name with no box, the contract line has a tick, the armed abandon confirm keeps its X and puts its cost on its own line (the critic on 38, 59, 60)',
    run:function(){
      if(!(window.__deploy&&window.__endRaid&&window.__state&&window.__P)) return 'SKIP: this build cannot end a raid';
