@@ -168,3 +168,12 @@ actually look good". So for any change a player can see:
 - End your final message with exactly one line: TASK DONE, or TASK PARTIAL: what remains.
 
 - WORDS (his order 10-18 PM): on screen a player is a "pillager", the AI humans are "pillager bots", and "raider" never shows. Code names (kind raider, CFG.nRaider) stay as they are.
+
+- HIS ROUND 2-3 RULES (10-18 evening; full list in tools/handoff/q-round3/answers.md):
+  - Finish line (3.51 a): critic 4 for the raid, waiting, pause and run-over screens; 3 is enough for the rest.
+  - After 6 tries without reaching the finish line (2.83 b), stop and leave the two best versions with pictures in your notes.
+  - You may decide alone (2.85): anything that is not a brand new feature and not a change to one of his rulings, including tuning up to about 25 percent.
+  - A 2-player change is done only after you have seen it work in both windows, with a picture from each (2.86 a).
+  - After Mon 10/26 (3.37 c): nothing brand new, everything else up to the lock. After the lock (2.81 c): only fixes you judge urgent, reported afterwards.
+  - Callouts use the specific name, e.g. "golden sentry down" or "golden pillager bot down" (3.84 b).
+  - Plain language ALWAYS in anything written for him (2.38 b).

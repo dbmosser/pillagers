@@ -278,32 +278,32 @@
  "38-extracted-card": {
   "score": 3,
   "pass": false,
-  "verdict": "the extracted card is clean and has a clear hierarchy (teal title, $1,770 hero number, lime primary button), but the card is a narrow 718px column rather than the near-full-screen window, and it carries small muted text, a stack of unrelated small elements and a missing pad focus indicator.",
+  "verdict": "The extracted card is clean, centred and in the right palette, but it is still a narrow 718px template card with small grey text, boxed chips, and no visible focus or pad hint, and none of the earlier advice was applied.",
   "findings": [
-   "P1 whole card: widen the card to about 90% of the screen, or at least about 1100px, and lay it out in two columns: loot tiles and haul on the left, stats and badges on the right. Raise the hero number from about 48px to the 56px token.",
-   "P1 secondary text: xp line, subtitle, stat labels, haul label: set all read text to at least 16px in tx-2 (#aaa498) and stat labels to 16px with +.04em tracking. Merge the xp line into one 16px line, or drop the '130 of 1,200,000' total.",
-   "P1 close x top-right (image 2) and focus state: drop the x on this screen, or move it to the card corner with 16px margins and a 2px lime focus ring. Give 'log run and return' a visible 3px focus outline plus a pad-button glyph hint.",
-   "P2 vertical rhythm between title block, loot block and stats: snap to the 8px grid: 24px between groups and 8px within a group. Put the caption and tiles in one group and haul and its number in the next.",
-   "P2 badge chips 'first out', 'untouched', 'ghost' and 'how did that run feel +': render badges as flat text tags with no border, or with a 3px rarity bar. Move the feedback prompt out of the card or make it a 16px tx-2 link, with 32px of space above the primary button."
+   "P1 whole card (718x740 at 1080p): Widen the card to about 1100px or more, or 90% per the guide. Put the loot tiles and haul on the left and the stats and badges on the right. Raise the haul number from about 48px to the 56px hero token.",
+   "P1 secondary text: subtitle 'out clean · never spotted', xp line, 'haul' label, stat labels: Set all read text to at least 16px in tx-2 #aaa498. Merge the subtitle and xp into one 16px line, or drop '130 of 1,200,000'. Set stat labels to 16px with +.04em tracking.",
+   "P1 'log run and return' button and x at top-right: Add a 3px outline in --acc-hover with a 2px offset on the focused button. Add a pad-button glyph inside it. Widen the button to about 280px. Make the x a quiet tx-2 glyph with a 16px corner margin and a lime ring only when focused.",
+   "P2 image 2, 'extract without ever being knocked down' chip: Make it a flat 16px tx-2 line with a small lime check or dot, with no border. Leave 24px above and below it, or drop it from the card.",
+   "P2 badge chips 'first out', 'untouched', 'ghost' and 'how did that run feel +': Render badges as flat 16px text tags with a 3px left bar in a rarity colour and no outline. Make the feedback prompt a 16px tx-2 link and leave 32px between it and the primary button, or move it out of the card."
   ],
-  "pic": "tools/handoff/console/notes/shots/13-n1/38-extracted-card-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/13-p2/38-extracted-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T23:58"
+  "when": "2026-10-19T01:15"
  },
  "40-whats-new-card": {
   "score": 2,
   "pass": false,
-  "verdict": "a dense, five-paragraph wall of text in a small card with no hero element and no close x, so it reads as a generic modal rather than the near-full-screen card the guide demands.",
+  "verdict": "The what's-new card is still a small wall of numbered 20px paragraphs in a plain box with no close x, no hero and no clear hierarchy, so none of the earlier advice was followed.",
   "findings": [
-   "P1 card body, items 1-5: cut to at most 3 one-line bullets of about 8 words each. Make the version number the single hero (56px f-cond 800). Set the bullets at 20px tx-1 with 16px gaps. Drop the numbering or turn it into a 3px lime tick.",
-   "P1 card window (602,231 to 1318,817): use the shared window card at 90% width. Add a 40px x top-right, with a visible focus ring. Use the 56px header and 72px footer rows that other windows have.",
-   "P1 card title 'new in v0.0770': title at --fs-title 32px f-cond 700 tx-1, with a 36px-wide 2px lime tab above it. Put the version in tx-2 16px after the title. Give the header row 24px padding.",
-   "P1 body text type: f-body 400 20px, line-height 1.4 (28px), tx-1. Use tx-2 for the secondary lines. Keep paragraph spacing at 16px.",
-   "P2 footer: 'press enter or walk to dismiss' and 'got it' button: button label 20px f-cond 700 acc-ink. Add a 2px outer focus ring. Make the hint name the active device (a on pad). Align the hint baseline to the button centre and set it at 16px tx-2 at 4.5:1 or better."
+   "P1 card body, items 1-5 (635,330 to 1280,712): Cut to 3 one-line bullets of about 8 words each, 20px tx-1, 16px gaps. Drop the alpha disclaimer or move it to a 16px tx-2 footer line. Replace the '1.' to '5.' numerals with a 3px lime tick.",
+   "P1 card title 'new in v0.0802' (635,255 to 808,285): Title 'new in' at 32px f-cond 700 tx-1, with a 36px-wide 2px lime tab above it. Make 'v0.0802' the single 56px f-cond 800 hero, or a tx-2 16px tag after the title. Give the header row 24px padding.",
+   "P1 card frame (602,231 to 1318,817): Use the shared window card (90% width, --ui-panel at 90%, 1px --ui-line-hi border, 4px radius). Add a 40px x top-right with a focus ring. Add the 56px header and 72px footer rows. Raise the scrim to rgba(6,7,8,.80).",
+   "P1 body type (635,330 to 1280,712): Use f-body 400 20px at 28px line-height, with 16px gaps between paragraphs. Use tx-2 for secondary lines.",
+   "P2 footer: 'press enter or walk to dismiss' and 'got it' button (635,755 to 1285,790): Set the button label at 20px f-cond 700 acc-ink, with a 2px outer focus ring in tx-1. Make the hint name the device ('a to dismiss' on pad) at 16px tx-2. Align the hint baseline to the button centre."
   ],
-  "pic": "tools/handoff/console/notes/shots/13-p1/40-whats-new-card-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/13-p2/40-whats-new-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-19T00:09"
+  "when": "2026-10-19T01:14"
  },
  "45-arcade-attract-board": {
   "score": 3,
@@ -368,10 +368,17 @@
  "59-raid-abandon-confirm": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, compact confirm card with a clear title and a sensible primary/danger pair, but it has no close X or pad glyphs, a loose layout, a dim card edge, and a leftover HUD ghosting through the scrim.",
-  "pic": "tools/handoff/console/notes/shots/13-k1/59-raid-abandon-confirm-1080.jpg",
+  "verdict": "A clean, lower-case confirm card with a clear lime primary and a red danger outline, but the title is small for the screen, the card is cramped, and the danger label carries an explaining parenthetical.",
+  "findings": [
+   "P1 danger button label: Shorten the label to 'abandon run'. Move the 'free this early' note to a --fs-label (16px) --tx-2 line under the title, or delete it. Use --danger text at 600 weight with a 2px border.",
+   "P1 title 'abandon this run?': Keep the lime fill but set the title to --fs-title 32px at weight 700 in --tx-1. Add a 16px --tx-2 consequence line, such as what is lost, and tighten the gap between title and divider to 16px.",
+   "P1 scrim and background: Use exactly --scrim rgba(6,7,8,.80) with an optional 4px blur, so the raid context stays recognisable but quiet.",
+   "P2 card padding and spacing: Set padding to 32px on all sides, button gap to 16px, and divider spacing to 16px. Make the accent tab a clear 36x2px or 3px left bar.",
+   "P2 focus state: Add a 2px --acc outline with a 2px offset on the focused button. Give the danger button a --danger tinted fill (about 12%) when focused. Add a 14px footer hint with the pad glyph."
+  ],
+  "pic": "tools/handoff/console/notes/shots/13-p2/59-raid-abandon-confirm-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T12:56"
+  "when": "2026-10-19T01:15"
  },
  "65-codex": {
   "score": 2,
@@ -483,17 +490,17 @@
  "55-arcade-run-over-scored": {
   "score": 3,
   "pass": false,
-  "verdict": "The card is clean and all lower case, but the hierarchy is still flat: the title, subline, hero and stats stay small and left-heavy in a wide empty card, and the new divider line and larger prompt barely change that.",
+  "verdict": "The card is calm and lower case, but the hero reads as a flat white line with no label, the stats and prompt are small, and two dividers plus an off-grid tab leave the layout unsettled, so it still looks like a template.",
   "findings": [
-   "P1 hero 'score 0 sp': Add a 16px tx-2 'score' label. Set '0 sp' at 56px f-cond 800. For a zero run, dim the number to tx-2. Put 16px above the hero and 24px below it to the divider.",
-   "P1 'press any key' prompt, bottom-right: Set the text to tx-1, 20px f-cond 700. Use a 24px glyph with a full --acc (#e6ff3d) ring and dot. Keep it 24px from the card's right and bottom edges, and 16px under the divider.",
-   "P1 stats row and the new bottom divider: Delete the divider, or inset it to 634 to 1286 with 24px of space above and below. Use three equal 217px columns, with values at 24px tx-1, labels at 16px tx-2 and a 4px gap.",
-   "P1 title 'run over' and subline: Set the title to 32px f-cond 700 tx-1 with 8px to the subline. Drop the tab to sit flush with the title's left edge, or move it to the card's left edge as a 3px full-height bar.",
+   "P1 hero 'score 0 sp': Set a 16px tx-2 'score' label 16px above a 56px f-cond 800 '0 sp'. Dim a zero result to tx-2. Leave 24px below the hero before the divider.",
+   "P1 'press any key' prompt, bottom-right: Set the text to tx-1, 20px f-cond 700. Make the glyph 24px with a full #e6ff3d ring and dot. Keep it 24px from the card's right and bottom edges and 16px under the divider.",
+   "P1 stats row and bottom divider (y≈634): Delete the bottom divider, or inset it to 634 to 1286 with 24px of space above and below. Use three equal 217px columns, with values at 24px tx-1 and labels at 16px tx-2 with a 4px gap.",
+   "P1 title 'run over' and accent tab: Set the title to 32px f-cond 700 tx-1 with 8px to the subline. Make the tab a 3px full-height bar on the card's left edge, or align it flush with the title.",
    "P2 subline 'ended early -50%': Use 16px. Keep 'ended early' in tx-2 and colour '-50%' in --warn #f5b73b."
   ],
   "pic": "tools/handoff/console/notes/shots/12-r5-after2/55-arcade-run-over-scored-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-19T01:04"
+  "when": "2026-10-19T01:12"
  },
  "60-abandoned-card": {
   "score": 2,

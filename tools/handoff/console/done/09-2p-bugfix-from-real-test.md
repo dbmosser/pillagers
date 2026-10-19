@@ -1,3 +1,4 @@
+<!-- RETIRED 10-18 evening: his answers 3.1 a, 3.2 a and 3.3 a (smooth, sound fine, no freezes) and 3.35 b (sharing not tried). Nothing to fix from the real test. -->
 2-PLAYER BUG FIXING FROM THE REAL TEST (his answers 10-18: Q5 puts "2P runs and bug fixing" first; Q27 gives his order of worries; Q35 is the first real test). The party is Fri 10/30 on two TVs, 6 to 10 ft away: player 1 on keyboard and mouse, player 2 on a pad, one window each, on this PC. Read the memory files pillagers-answers-1-78-2026-10-18.md (Q20 to Q33), pillagers-afternoon-orders-2026-10-18.md and pillagers-feedback-notes-2026-10-18.md first. Notes: notes\09-2p-bugfix-from-real-test.md (read it first on a later run).
 This task fixes ONLY what a real run showed. It builds nothing new and guesses at nothing.
 INPUT: read these three, in this order. All are small.

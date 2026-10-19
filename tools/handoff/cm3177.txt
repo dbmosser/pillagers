@@ -1,0 +1,7 @@
+v31.77: run over card: score label, dim zero, warn penalty, inset rule
+
+The run over card has a small score label over the big figure, a zero score is dim, the penalty is amber, and the rules line up.
+
+Check 31.77. Fails on v31.76.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

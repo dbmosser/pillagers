@@ -1,0 +1,1 @@
+| RUN OVER CARD: SCORE LABEL, DIM ZERO, WARN PENALTY, INSET RULE | v31.77 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 31.77 passes, fails on v31.76 |
