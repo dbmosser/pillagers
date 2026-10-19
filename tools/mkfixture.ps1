@@ -6101,6 +6101,29 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.80',what:'the armed abandon confirm X sits inside the card and the money left behind is danger coloured (the critic on 59 and 60)',
+   run:function(){
+     var pb=document.getElementById('pausebox'), px=document.getElementById('pausex'), abtn=document.getElementById('abandonbtn'), cb=document.getElementById('confirmabandon'), bad=[], wasShown, d, r, host, b, cs;
+     if(!pb||!px||!abtn||!cb) return 'the pause box has no abandon, confirm or X';
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       wasShown=cb.style.display;
+       if(cb.style.display!=='none') abtn.click();
+       pb.classList.remove('asking'); pb.classList.add('on');
+       var t0=parseFloat(getComputedStyle(px).top);
+       abtn.click();
+       if(!pb.classList.contains('asking')) bad.push('the confirm did not arm');
+       var t1=parseFloat(getComputedStyle(px).top);
+       if(!(t1>t0+30)) bad.push('the armed X top is '+t1+' against '+t0+' unarmed: it still hangs off the tall frame');
+       abtn.click(); cb.style.display=wasShown||'none';
+       host=document.createElement('div'); host.className='ocloss'; host.innerHTML='<b>$1</b><span>x</span>'; document.getElementById('outcome').appendChild(host);
+       b=host.querySelector('b'); var c=getComputedStyle(b).color;
+       var dv=getComputedStyle(document.getElementById('root')||document.body).getPropertyValue('--danger').trim();
+       host.remove();
+       if(c==='rgb(240, 234, 220)'||/^rgb\(2[0-4]\d, 2[0-4]\d, 2[0-4]\d\)$/.test(c)) bad.push('the loss number is still cream '+c);
+       return bad.length?bad.join('; '):null;
+     } finally { try{ pb.classList.remove('on'); }catch(_e){} __topClear(); }
+   }},
   {v:'31.79',what:'a downed partner sounds a clear alert and his edge arrow pulses (his 2.72 a)',
    run:function(){
      if(typeof mateArrowPulse!=='function'||typeof sndMateAlert!=='function') return 'no partner alert sound and no arrow pulse (mateArrowPulse, sndMateAlert missing)';

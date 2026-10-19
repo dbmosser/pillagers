@@ -1,0 +1,7 @@
+v31.80: end cards: armed abandon x inside the card, loss in danger colour
+
+The armed abandon X sits inside the card corner. The money left behind is red. The main end card button is 240px wide.
+
+Check 31.80. Fails on v31.79.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

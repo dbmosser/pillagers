@@ -1,1 +1,1 @@
-10-18 21:18 running 14-party-2p-flow (cap $2.01; spent today $174.53 of $176.54)
+10-18 21:24 running 14-party-2p-flow (cap $1.23; spent today $175.31 of $176.54)
