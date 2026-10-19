@@ -1,0 +1,218 @@
+NAME: loadout bench
+PITCH: What you carry up is the hero. A big gun card with rarity colour and forge tier, an armour plate, a data core slot and item tiles with one -/+ stepper each fill the left side. The four kits sit above it as a switch, cold storage shrinks to a small card with its conditions, and one big lime ascend button sits bottom right, focused by default.
+CHANGES: the pack becomes a bench: gun 1 and gun 2 cards with rarity colour and forge pips, armour and data core slots, and grouped item tiles (heal, throw, ammo, key) with a single stepper each, replacing the ragged chip rows; the four kits become one segmented switch with lb/rb on the ends; the 370px map banner becomes a small card with an "ascending here" tag, a real-palette map with 5 labelled zones, teal exit rings and keyed rooms (blast freezer lit because its key is packed), and stats cut to "420 x 340 m · 5 zones · 2 keyed rooms · 3 exits"; surface and weather merge into one conditions card with xp shown as short badges instead of sentences; the going-up sentence becomes chips, with "no armour equipped" as an amber warning chip; ascend is a 56px lime button pinned bottom right, and lime now only means selected (the pad focus ring uses the p1 seat colour amber, with a p1 host and p2 guest chip in the header)
+PAD: the pad starts on ascend, lb/rb switch kit, the d-pad moves tile to tile in a fixed grid, left/right on a tile changes its count, and b closes.
+TRADEOFFS: the bench packs a lot onto one screen (7 item tiles, 2 gun cards, 3 conditions groups), so it is the densest of the layouts and only works while the pack stays under about 10 distinct things.
+
+<<<HTML
+<div class="mk mk-b">
+<style>
+.mk-b{--fc:'Barlow Condensed','Bahnschrift','Arial Narrow',sans-serif;--fb:'Barlow','Segoe UI',Arial,sans-serif;--void:#0b0c0d;--face:#131517;--p1:#181b1e;--p2:#1e2226;--line:#2d3338;--line2:#454d54;--tx:#ebe9e4;--dim:#9ea4a8;--off:#55524c;--lime:#e6ff3d;--limedim:rgba(230,255,61,.16);--warn:#f5b73b;--ext:#47d8c6;--s1:#ffb02e;--s2:#38d6ff;--armour:#7fa6c9;--common:#9da3a8;--unc:#5fbf6a;--rare:#3f9de9;--elite:#a866e0;position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--void);color:var(--tx);font:600 20px/1.15 var(--fc)}
+.mk-b *{box-sizing:border-box;margin:0;padding:0}
+.mk-b .back,.mk-b .scrim{position:absolute;left:0;top:0;width:1920px;height:1080px}
+.mk-b .scrim{background:rgba(6,7,8,.8)}
+.mk-b .card{position:absolute;left:96px;top:54px;width:1728px;height:972px;background:#3a4147;clip-path:polygon(28px 0,100% 0,100% calc(100% - 28px),calc(100% - 28px) 100%,0 100%,0 28px)}
+.mk-b .face{position:absolute;left:1px;top:1px;right:1px;bottom:1px;background:var(--face);clip-path:polygon(27px 0,100% 0,100% calc(100% - 27px),calc(100% - 27px) 100%,0 100%,0 27px);display:flex;flex-direction:column}
+.mk-b .ic{fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.mk-b .sm{stroke-width:5}
+.mk-b .sp{flex:1}
+.mk-b .hd{height:80px;flex:none;display:flex;align-items:center;gap:20px;padding:0 40px 0 56px;border-bottom:1px solid var(--line)}
+.mk-b .tick{width:8px;height:32px;background:var(--lime);clip-path:polygon(0 0,100% 0,100% 72%,0 100%)}
+.mk-b .ttl{font:700 32px/1 var(--fc);letter-spacing:.02em}
+.mk-b .seat{display:flex;align-items:center;gap:10px;height:40px;padding:0 16px;border:1px solid;border-radius:4px;font:600 20px/1 var(--fc)}
+.mk-b .seat i{width:12px;height:12px;border-radius:50%;background:currentColor}
+.mk-b .s1{color:var(--s1);border-color:rgba(255,176,46,.5);background:rgba(255,176,46,.08)}
+.mk-b .s2{color:var(--s2);border-color:rgba(56,214,255,.5);background:rgba(56,214,255,.08)}
+.mk-b .close{height:56px;display:flex;align-items:center;gap:12px;padding:0 16px 0 20px;border:1px solid var(--line2);border-radius:4px;background:var(--p1);font:600 20px/1 var(--fc)}
+.mk-b .kc,.mk-b .pb,.mk-b .pg{display:inline-flex;align-items:center;justify-content:center;font:700 16px/1 var(--fc);color:var(--tx);background:var(--p2);border:1px solid #5a636b;flex:none}
+.mk-b .kc{min-width:32px;height:28px;padding:0 8px;border-bottom-width:3px;border-radius:4px}
+.mk-b .pb{height:28px;padding:0 10px;border-radius:14px}
+.mk-b .pg{width:28px;height:28px;border-radius:50%}
+.mk-b .main{flex:1;min-height:0;display:grid;grid-template-columns:1fr 476px;gap:32px;padding:12px 40px}
+.mk-b .lc,.mk-b .rc{display:flex;flex-direction:column;min-height:0}
+.mk-b .lc{gap:22px}
+.mk-b .rc{gap:24px}
+.mk-b .kit{height:96px;flex:none;display:flex;border:1px solid var(--line);border-radius:4px;background:var(--p1);overflow:hidden}
+.mk-b .sh{width:56px;flex:none;display:flex;align-items:center;justify-content:center}
+.mk-b .sh.l{border-right:1px solid var(--line)}
+.mk-b .sg{flex:1;position:relative;display:flex;flex-direction:column;justify-content:center;gap:4px;padding:0 20px;border-right:1px solid var(--line)}
+.mk-b .sg .n{font:700 32px/1 var(--fc)}
+.mk-b .sg .s{font:500 16px/1.2 var(--fb);color:var(--dim)}
+.mk-b .sg.on{background:var(--lime);color:var(--void)}
+.mk-b .sg.on .s{color:rgba(11,12,13,.8)}
+.mk-b .sg .ck{position:absolute;right:16px;top:16px}
+.mk-b .bench{flex:1;min-height:0;background:var(--p1);border:1px solid var(--line);border-radius:4px;padding:20px;display:flex;flex-direction:column;gap:16px}
+.mk-b .bh{height:40px;flex:none;display:flex;align-items:center;gap:16px}
+.mk-b .bt{font:700 20px/1 var(--fc);letter-spacing:.06em}
+.mk-b .bs{font:500 16px/1 var(--fb);color:var(--dim)}
+.mk-b .btn2{height:40px;padding:0 20px;display:flex;align-items:center;border:1px solid var(--line2);border-radius:4px;font:600 20px/1 var(--fc)}
+.mk-b .grid{flex:1;min-height:0;display:grid;grid-template-columns:456px 1fr;gap:16px}
+.mk-b .guns{display:flex;flex-direction:column;gap:16px;min-height:0}
+.mk-b .gun{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:4px;background:linear-gradient(165deg,#222a2f 0%,#171a1d 72%);padding:16px 20px 18px;display:flex;flex-direction:column}
+.mk-b .gun::before,.mk-b .tile::before{content:"";position:absolute;left:0;top:0;right:0;height:4px;background:var(--rc)}
+.mk-b .g1{height:328px;flex:none}
+.mk-b .g2{flex:1;flex-direction:row;align-items:center;gap:12px}
+.mk-b .gt{height:28px;display:flex;align-items:center;justify-content:space-between}
+.mk-b .lb{font:600 16px/1 var(--fc);letter-spacing:.06em;color:var(--dim)}
+.mk-b .chip{height:28px;padding:0 10px;display:flex;align-items:center;gap:6px;border:1px solid;border-radius:4px;font:600 16px/1 var(--fc)}
+.mk-b .chip.on{color:var(--lime);border-color:var(--lime);background:var(--limedim)}
+.mk-b .g1 .art{display:block;width:100%;height:182px;margin-top:4px;color:var(--rc)}
+.mk-b .g2 .art{width:190px;height:110px;flex:none;color:var(--rc)}
+.mk-b .gi{flex:1;display:flex;flex-direction:column;gap:8px}
+.mk-b .gn{font:700 32px/1 var(--fc);margin-top:6px}
+.mk-b .gm{display:flex;align-items:center;gap:12px;margin-top:8px;font:600 20px/1 var(--fc)}
+.mk-b .d{color:var(--dim)}
+.mk-b .fg{display:flex;align-items:center;gap:10px;margin-left:auto}
+.mk-b .g2 .fg{margin-left:0}
+.mk-b .pips{display:flex;gap:7px}
+.mk-b .pips i{width:12px;height:12px;transform:rotate(45deg);border:2px solid var(--rc)}
+.mk-b .pips i.l{background:var(--rc)}
+.mk-b .rest{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:176px 1fr 1fr;gap:16px;min-height:0}
+.mk-b .rowa{grid-column:1 / 4;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.mk-b .tile{position:relative;overflow:hidden;background:var(--p2);border:1px solid var(--line);border-radius:4px;padding:14px;display:flex;flex-direction:column}
+.mk-b .tile.z{opacity:.72}
+.mk-b .ct{height:16px;display:flex;align-items:center;justify-content:space-between;margin-top:2px}
+.mk-b .cat{font:600 16px/1 var(--fc);letter-spacing:.06em;color:var(--dim)}
+.mk-b .wn{display:flex;align-items:center;gap:6px;color:var(--warn);font:600 16px/1 var(--fc)}
+.mk-b .mid{flex:1;display:flex;align-items:center;gap:10px;color:var(--rc)}
+.mk-b .nm{font:600 20px/1.1 var(--fc);color:var(--tx)}
+.mk-b .step{height:44px;display:flex;align-items:center;justify-content:space-between}
+.mk-b .step b{width:44px;height:44px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line2);border-radius:4px;background:var(--p1);color:var(--tx)}
+.mk-b .step b.off{color:var(--off);border-color:var(--line)}
+.mk-b .step .v{font:700 32px/1 var(--fc)}
+.mk-b .step .v small{font:500 16px/1 var(--fb);color:var(--dim);margin-left:4px}
+.mk-b .core{border:2px solid var(--lime);background:linear-gradient(180deg,var(--limedim),rgba(230,255,61,.04))}
+.mk-b .sub{height:44px;display:flex;align-items:center;font:500 16px/1.2 var(--fb);color:var(--dim)}
+.mk-b .map{flex:1;min-height:0;background:var(--p1);border:1px solid var(--line);border-radius:4px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.mk-b .mh{height:40px;flex:none;display:flex;align-items:center;justify-content:space-between}
+.mk-b .mh .t{font:700 32px/1 var(--fc)}
+.mk-b .mp{display:block;flex:none;width:100%;height:246px;border:1px solid var(--line);border-radius:2px}
+.mk-b .mp text{font-family:var(--fc);font-weight:700;font-size:16px;letter-spacing:.3px}
+.mk-b .mp .zl{fill:#a4aaae}
+.mk-b .mp .rl{fill:#d9d7d2;font-weight:600}
+.mk-b .stats{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px}
+.mk-b .st{height:28px;display:flex;align-items:center;gap:8px;font:600 20px/1 var(--fc)}
+.mk-b .cond{height:310px;flex:none;background:var(--p1);border:1px solid var(--line);border-radius:4px;padding:20px;display:flex;flex-direction:column}
+.mk-b .cl{font:600 16px/1 var(--fc);letter-spacing:.06em;color:var(--dim);margin-bottom:8px}
+.mk-b .two{display:flex;height:66px;border:1px solid var(--line);border-radius:4px;overflow:hidden;margin-bottom:14px}
+.mk-b .o{flex:1;display:flex;flex-direction:column;justify-content:center;gap:3px;padding:0 14px;border:1px solid var(--line);border-radius:4px}
+.mk-b .two .o{border:0;border-radius:0}
+.mk-b .two .o+.o{border-left:1px solid var(--line)}
+.mk-b .o .n{font:600 20px/1 var(--fc)}
+.mk-b .o .s{font:500 16px/1 var(--fb);color:var(--dim)}
+.mk-b .o.on{background:var(--lime);border-color:var(--lime);color:var(--void)}
+.mk-b .o.on .s{color:rgba(11,12,13,.8)}
+.mk-b .wx{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:66px 66px;gap:8px}
+.mk-b .ft{height:116px;flex:none;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 40px}
+.mk-b .fl{display:flex;flex-direction:column;gap:16px}
+.mk-b .sum{display:flex;align-items:center;gap:10px}
+.mk-b .pill{height:36px;padding:0 14px;display:flex;align-items:center;gap:8px;border:1px solid var(--line2);border-radius:4px;background:var(--p1);font:600 20px/1 var(--fc)}
+.mk-b .pill i{width:12px;height:12px;border-radius:50%;background:var(--rc)}
+.mk-b .pill.w{color:var(--warn);border-color:rgba(245,183,59,.55);background:rgba(245,183,59,.1)}
+.mk-b .hints{display:flex;align-items:center;gap:24px;color:var(--dim);font:500 16px/1 var(--fb)}
+.mk-b .h{display:flex;align-items:center;gap:8px}
+.mk-b .vr{width:1px;height:24px;background:var(--line2)}
+.mk-b .ring{width:436px;height:100px;flex:none;padding:3px;background:var(--s1);clip-path:polygon(22px 0,100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%,0 22px)}
+.mk-b .gap{width:100%;height:100%;padding:5px;background:var(--face);clip-path:polygon(19px 0,100% 0,100% calc(100% - 19px),calc(100% - 19px) 100%,0 100%,0 19px)}
+.mk-b .go{width:100%;height:100%;display:flex;align-items:center;gap:14px;padding:0 22px;background:var(--lime);color:var(--void);clip-path:polygon(16px 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%,0 16px)}
+.mk-b .go .t{flex:1;font:800 56px/1 var(--fc);letter-spacing:.01em}
+.mk-b .go .kc,.mk-b .go .pg{background:transparent;color:var(--void);border-color:rgba(11,12,13,.6)}
+</style>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="b-ck" viewBox="0 0 48 48"><path d="M9 25l10 10 20-22"/></symbol>
+<symbol id="b-x" viewBox="0 0 48 48"><path d="M10 10L38 38M38 10L10 38"/></symbol>
+<symbol id="b-mn" viewBox="0 0 48 48"><path d="M10 24H38"/></symbol>
+<symbol id="b-pl" viewBox="0 0 48 48"><path d="M10 24H38M24 10V38"/></symbol>
+<symbol id="b-wr" viewBox="0 0 48 48"><path d="M24 6L44 40H4Z"/><path d="M24 18V28M24 35V36"/></symbol>
+<symbol id="b-up" viewBox="0 0 48 48"><path d="M8 28L24 12L40 28M8 42L24 26L40 42"/></symbol>
+<symbol id="b-medkit" viewBox="0 0 48 48"><rect x="6" y="14" width="36" height="28" rx="3"/><path d="M17 14V8h14v6M24 21v14M17 28h14"/></symbol>
+<symbol id="b-bandage" viewBox="0 0 48 48"><g transform="rotate(-28 24 24)"><rect x="3" y="15" width="42" height="18" rx="9"/><rect x="17" y="15" width="14" height="18"/><path d="M22 21v.1M26 27v.1"/></g></symbol>
+<symbol id="b-frag" viewBox="0 0 48 48"><circle cx="22" cy="29" r="14"/><path d="M17 15V9h10v6M27 11h9l4 5M13 25h18M13 32h18"/><circle cx="41" cy="19" r="3"/></symbol>
+<symbol id="b-smoke" viewBox="0 0 48 48"><rect x="14" y="18" width="20" height="26" rx="3"/><path d="M19 18v-5h10v5M9 11c0-5 7-5 7 0M30 7c0-5 8-5 8 0M20 5c0-3 5-3 5 0"/></symbol>
+<symbol id="b-ammo" viewBox="0 0 48 48"><path d="M6 42V24l4-8 4 8v18zM20 42V24l4-8 4 8v18zM34 42V24l4-8 4 8v18z"/></symbol>
+<symbol id="b-key" viewBox="0 0 48 48"><circle cx="15" cy="24" r="9"/><path d="M24 24h20M36 24v9M43 24v6"/></symbol>
+<symbol id="b-plate" viewBox="0 0 48 48"><path d="M24 4L41 10V26C41 36 33 42 24 45C15 42 7 36 7 26V10Z"/><path d="M24 13V35M15 20H33"/></symbol>
+<symbol id="b-core" viewBox="0 0 48 48"><path d="M24 3L42 13.500V34.500L24 45L6 34.500V13.500Z"/><circle cx="24" cy="24" r="7"/><path d="M24 3v14M24 31v14M6 13.500l12 7M42 13.500l-12 7"/></symbol>
+<symbol id="b-sz" viewBox="0 0 48 48"><path d="M8 8h32v32H8z"/></symbol>
+<symbol id="b-zn" viewBox="0 0 48 48"><path d="M8 8h14v14H8zM26 8h14v14H26zM8 26h14v14H8zM26 26h14v14H26z"/></symbol>
+<symbol id="b-ring" viewBox="0 0 48 48"><circle cx="24" cy="24" r="16"/><path d="M24 23v2"/></symbol>
+</defs></svg>
+<svg class="back" width="1920" height="1080" viewBox="0 0 1920 1080"><g fill="#111315" stroke="#1c2024" stroke-width="2"><rect x="30" y="30" width="520" height="340"/><rect x="600" y="60" width="300" height="220"/><rect x="1500" y="40" width="380" height="300"/><rect x="40" y="700" width="420" height="330"/><rect x="1450" y="720" width="430" height="300"/><rect x="900" y="900" width="360" height="150"/></g></svg>
+<div class="scrim"></div>
+<div class="card"><div class="face">
+<div class="hd"><i class="tick"></i><span class="ttl">pre-raid</span><span class="sp"></span><span class="seat s1"><i></i>p1 · host</span><span class="seat s2"><i></i>p2 · guest</span><span class="close"><svg class="ic sm" width="20" height="20"><use href="#b-x"/></svg>close<span class="kc">esc</span></span></div>
+<div class="main">
+<div class="lc">
+<div class="kit"><span class="sh l"><span class="pb">lb</span></span>
+<div class="sg on"><span class="n">my loadout</span><span class="s">your pack</span><svg class="ic sm ck" width="24" height="24"><use href="#b-ck"/></svg></div>
+<div class="sg"><span class="n">freebie kit</span><span class="s">scav pistol · 4 items</span></div>
+<div class="sg"><span class="n">random kit</span><span class="s">2 guns · 1 each</span></div>
+<div class="sg"><span class="n">best kit</span><span class="s">3 guns · up to 3 each</span></div>
+<span class="sh r"><span class="pb">rb</span></span></div>
+<div class="bench">
+<div class="bh"><span class="bt">carrying up</span><span class="bs">2 guns · 8 items · 90 ammo · 1 key</span><span class="sp"></span><span class="btn2">pack all</span><span class="btn2">clear</span></div>
+<div class="grid">
+<div class="guns">
+<div class="gun g1" style="--rc:var(--rare)"><div class="gt"><span class="lb">gun 1</span><span class="chip on"><svg class="ic sm" width="16" height="16"><use href="#b-ck"/></svg>packed</span></div>
+<svg class="art" viewBox="0 0 416 182"><defs><radialGradient id="b-gl1"><stop offset="0" stop-color="#3f9de9" stop-opacity=".3"/><stop offset="1" stop-color="#3f9de9" stop-opacity="0"/></radialGradient></defs><ellipse cx="208" cy="92" rx="200" ry="74" fill="url(#b-gl1)"/><g transform="translate(0 10)" fill="#2b3238" stroke="#7b858c" stroke-width="1.6" stroke-linejoin="round"><path d="M26 72L112 62V100L56 112Q30 112 26 96Z"/><path d="M112 58H226V98H112Z"/><rect x="140" y="46" width="52" height="12" rx="2"/><path d="M226 62H312V92H226Z"/><rect x="312" y="72" width="70" height="10"/><rect x="378" y="66" width="18" height="22" rx="2"/><path d="M170 98H206L214 146H178Z"/><path d="M122 98H148L142 138H118Z"/><path d="M150 98V112H172V98" fill="none"/><path d="M244 66V88M262 66V88M280 66V88" fill="none" stroke="#4d565d"/><path d="M114 70H224" fill="none" stroke="currentColor" stroke-width="3"/></g></svg>
+<div class="gn">burst carbine</div>
+<div class="gm"><span style="color:var(--rc)">rare</span><span class="d">(field)</span><span class="fg"><span class="pips"><i class="l"></i><i class="l"></i><i></i></span>forge 2</span></div></div>
+<div class="gun g2" style="--rc:var(--unc)">
+<svg class="art" viewBox="0 0 190 110"><defs><radialGradient id="b-gl2"><stop offset="0" stop-color="#5fbf6a" stop-opacity=".26"/><stop offset="1" stop-color="#5fbf6a" stop-opacity="0"/></radialGradient></defs><ellipse cx="95" cy="56" rx="92" ry="48" fill="url(#b-gl2)"/><g fill="#2b3238" stroke="#7b858c" stroke-width="1.6" stroke-linejoin="round"><path d="M10 40L44 36V62H16Z"/><rect x="44" y="32" width="86" height="30" rx="3"/><rect x="70" y="24" width="30" height="8" rx="2"/><rect x="130" y="42" width="34" height="8"/><rect x="162" y="38" width="12" height="16" rx="2"/><path d="M76 62H100L102 100H80Z"/><path d="M52 62H70L66 90H48Z"/><path d="M46 42H128" fill="none" stroke="currentColor" stroke-width="3"/></g></svg>
+<div class="gi"><div class="gt"><span class="lb">gun 2</span><span class="chip on"><svg class="ic sm" width="16" height="16"><use href="#b-ck"/></svg>packed</span></div>
+<div class="gn" style="margin-top:0">compact smg</div>
+<div class="gm" style="margin-top:0"><span style="color:var(--rc)">uncommon</span><span class="d">(field)</span></div>
+<div class="gm" style="margin-top:0"><span class="fg"><span class="pips"><i class="l"></i><i></i><i></i></span>forge 1</span></div></div></div>
+</div>
+<div class="rest">
+<div class="rowa">
+<div class="tile" style="--rc:var(--armour)"><div class="ct"><span class="cat">armour</span><span class="wn"><svg class="ic sm" width="16" height="16"><use href="#b-wr"/></svg>none worn</span></div><div class="mid"><svg class="ic" width="52" height="52"><use href="#b-plate"/></svg><span class="nm">armour plate</span></div><div class="step"><b><svg class="ic sm" width="20" height="20"><use href="#b-mn"/></svg></b><span class="v">2<small>/2</small></span><b class="off"><svg class="ic sm" width="20" height="20"><use href="#b-pl"/></svg></b></div></div>
+<div class="tile core" style="--rc:var(--lime)"><div class="ct"><span class="cat">data core</span><svg class="ic sm" width="20" height="20" style="color:var(--lime)"><use href="#b-ck"/></svg></div><div class="mid"><svg class="ic" width="60" height="60"><use href="#b-core"/></svg><span class="nm">data core slotted</span></div><div class="sub">2 held · burns on ascent</div></div>
+</div>
+<div class="tile" style="--rc:var(--unc)"><div class="ct"><span class="cat">heal</span></div><div class="mid"><svg class="ic" width="44" height="44"><use href="#b-medkit"/></svg><span class="nm">medkit</span></div><div class="step"><b><svg class="ic sm" width="20" height="20"><use href="#b-mn"/></svg></b><span class="v">1<small>/2</small></span><b><svg class="ic sm" width="20" height="20"><use href="#b-pl"/></svg></b></div></div>
+<div class="tile" style="--rc:var(--common)"><div class="ct"><span class="cat">heal</span></div><div class="mid"><svg class="ic" width="44" height="44"><use href="#b-bandage"/></svg><span class="nm">bandage</span></div><div class="step"><b><svg class="ic sm" width="20" height="20"><use href="#b-mn"/></svg></b><span class="v">3<small>/3</small></span><b class="off"><svg class="ic sm" width="20" height="20"><use href="#b-pl"/></svg></b></div></div>
+<div class="tile" style="--rc:var(--unc)"><div class="ct"><span class="cat">throw</span></div><div class="mid"><svg class="ic" width="44" height="44"><use href="#b-frag"/></svg><span class="nm">frag charge</span></div><div class="step"><b><svg class="ic sm" width="20" height="20"><use href="#b-mn"/></svg></b><span class="v">2<small>/2</small></span><b class="off"><svg class="ic sm" width="20" height="20"><use href="#b-pl"/></svg></b></div></div>
+<div class="tile z" style="--rc:var(--common)"><div class="ct"><span class="cat">throw</span></div><div class="mid"><svg class="ic" width="44" height="44"><use href="#b-smoke"/></svg><span class="nm">smoke canister</span></div><div class="step"><b class="off"><svg class="ic sm" width="20" height="20"><use href="#b-mn"/></svg></b><span class="v">0<small>/1</small></span><b><svg class="ic sm" width="20" height="20"><use href="#b-pl"/></svg></b></div></div>
+<div class="tile" style="--rc:var(--common)"><div class="ct"><span class="cat">ammo</span></div><div class="mid"><svg class="ic" width="44" height="44"><use href="#b-ammo"/></svg><span class="nm">ammo</span></div><div class="step"><b><svg class="ic sm" width="20" height="20"><use href="#b-mn"/></svg></b><span class="v">90<small>/240</small></span><b><svg class="ic sm" width="20" height="20"><use href="#b-pl"/></svg></b></div></div>
+<div class="tile" style="--rc:var(--elite)"><div class="ct"><span class="cat">key</span></div><div class="mid"><svg class="ic" width="44" height="44"><use href="#b-key"/></svg><span class="nm">blast freezer key</span></div><div class="step"><b><svg class="ic sm" width="20" height="20"><use href="#b-mn"/></svg></b><span class="v">1<small>/1</small></span><b class="off"><svg class="ic sm" width="20" height="20"><use href="#b-pl"/></svg></b></div></div>
+</div>
+</div>
+</div>
+</div>
+<div class="rc">
+<div class="map">
+<div class="mh"><span class="t">cold storage</span><span class="chip on"><svg class="ic sm" width="16" height="16"><use href="#b-ck"/></svg>ascending here</span></div>
+<svg class="mp" viewBox="0 0 434 246">
+<rect width="434" height="246" fill="#0e1012"/>
+<g fill="rgba(255,255,255,.025)" stroke="#2c3338" stroke-dasharray="4 3"><rect x="6" y="6" width="262" height="76"/><rect x="274" y="6" width="154" height="76"/><rect x="6" y="88" width="206" height="96"/><rect x="218" y="88" width="210" height="96"/><rect x="6" y="190" width="262" height="54"/><rect x="274" y="190" width="154" height="54"/></g>
+<g fill="#0a0b0c" stroke="#4a525a" stroke-width="1.2"><rect x="14" y="34" width="70" height="42"/><rect x="92" y="34" width="46" height="42"/><rect x="146" y="34" width="74" height="42"/><rect x="228" y="34" width="32" height="42"/><rect x="282" y="34" width="44" height="42"/><rect x="334" y="34" width="34" height="42"/><rect x="144" y="118" width="60" height="60"/><rect x="356" y="118" width="64" height="60"/><rect x="196" y="202" width="28" height="34"/><rect x="300" y="204" width="16" height="16"/><rect x="324" y="214" width="16" height="16"/><rect x="350" y="202" width="20" height="20"/></g>
+<ellipse cx="116" cy="224" rx="64" ry="13" fill="#122326" stroke="#29474a"/>
+<rect x="14" y="118" width="122" height="60" fill="#0a0b0c" stroke="#7b858c" stroke-width="1.4" stroke-dasharray="5 3"/>
+<rect x="226" y="118" width="122" height="60" fill="#0a0b0c" stroke="#e6ff3d" stroke-width="1.6"/>
+<use class="ic" href="#b-key" x="110" y="122" width="20" height="20" style="color:#7b858c;stroke-width:5"/>
+<use class="ic" href="#b-key" x="322" y="122" width="20" height="20" style="color:#e6ff3d;stroke-width:5"/>
+<text class="rl" x="20" y="156">foreman office</text><text class="rl" x="234" y="156">blast freezer</text>
+<text class="zl" x="14" y="24">the long dock</text><text class="zl" x="282" y="24">scrap line</text><text class="zl" x="14" y="106">packing floor</text><text class="zl" x="226" y="106">chill row</text><text class="zl" x="14" y="208">the sump</text>
+<g fill="#0e1012" stroke="#47d8c6" stroke-width="2"><circle cx="404" cy="56" r="11"/><circle cx="242" cy="218" r="11"/><circle cx="402" cy="216" r="11"/></g>
+<g fill="#47d8c6"><circle cx="404" cy="56" r="3"/><circle cx="242" cy="218" r="3"/><circle cx="402" cy="216" r="3"/></g>
+</svg>
+<div class="stats"><span class="st"><svg class="ic sm" width="18" height="18" style="color:var(--dim)"><use href="#b-sz"/></svg>420 x 340 m</span><span class="st"><svg class="ic sm" width="18" height="18" style="color:var(--dim)"><use href="#b-zn"/></svg>5 zones</span><span class="st"><svg class="ic sm" width="18" height="18" style="color:var(--dim)"><use href="#b-key"/></svg>2 keyed rooms</span><span class="st"><svg class="ic sm" width="18" height="18" style="color:var(--ext)"><use href="#b-ring"/></svg>3 exits</span></div>
+</div>
+<div class="cond">
+<div class="cl">surface</div>
+<div class="two"><div class="o on"><span class="n">day</span><span class="s">base xp</span></div><div class="o"><span class="n">night</span><span class="s">+20% xp</span></div></div>
+<div class="cl">weather</div>
+<div class="wx"><div class="o on"><span class="n">surprise me</span><span class="s">any sky</span></div><div class="o"><span class="n">clear</span><span class="s">base xp</span></div><div class="o"><span class="n">rain</span><span class="s">+10% xp</span></div><div class="o"><span class="n">fog</span><span class="s">+10% xp</span></div><div class="o"><span class="n">blackout</span><span class="s">+10% xp</span></div><div class="o"><span class="n">storm</span><span class="s">+10% xp</span></div></div>
+</div>
+</div>
+</div>
+<div class="ft">
+<div class="fl">
+<div class="sum"><span class="lb">going up with</span><span class="pill" style="--rc:var(--rare)"><i></i>burst carbine</span><span class="pill" style="--rc:var(--unc)"><i></i>compact smg</span><span class="pill">8 items</span><span class="pill">90 ammo</span><span class="pill">1 key</span><span class="pill">data core</span><span class="pill w"><svg class="ic sm" width="18" height="18"><use href="#b-wr"/></svg>no armour equipped</span></div>
+<div class="hints"><span class="h"><span class="kc">esc</span>close</span><span class="h"><span class="kc">q</span><span class="kc">e</span>kit</span><span class="h"><span class="kc">arrows</span>move</span><span class="h"><span class="kc">enter</span>ascend</span><span class="vr"></span><span class="h"><span class="pg">b</span>back</span><span class="h"><span class="pb">lb</span><span class="pb">rb</span>kit</span><span class="h"><span class="pb">d-pad</span>move</span><span class="h"><span class="pg">a</span>ascend</span></div>
+</div>
+<div class="ring"><div class="gap"><div class="go"><svg class="ic" width="44" height="44" style="stroke-width:4"><use href="#b-up"/></svg><span class="t">ascend</span><span class="kc">enter</span><span class="pg">a</span></div></div></div>
+</div>
+</div></div>
+</div>
+HTML>>>

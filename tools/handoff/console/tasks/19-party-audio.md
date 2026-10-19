@@ -1,11 +1,11 @@
 # 19-party-audio : sound for the night (his round 2 answers)
 
-- 2.12, his words: "put a hard cap on loud sounds". Put a hard limiter on the master output, always on, so nothing can go past a set ceiling. In party mode, also lower the loudest sounds (explosions, heavy guns, the boss) by a few decibels.
+- 2.12, his words: "put a hard cap on loud sounds". Put a hard limiter on the master output, always on, so nothing can go past a set ceiling. In the demo, also lower the loudest sounds (explosions, heavy guns, the boss) by a few decibels.
 - 2.73 a: a measured loudness pass that levels the sounds against each other, then fixes.
 - 2.69 b: rain about a third quieter. 2.71 a: the deep bass stays as it is.
 - 2.70 c: the idle loop's music cycles through three variations of the piece in turn.
-- 2.5 b: each TV plays only its own player's sound. That means a sound-device choice per window (Chrome's setSinkId), saved by the launcher. If the saved device is missing, fall back to the default and say so on the operator card.
-- 2.18 b: the operator card gets a "play a test sound in both windows" button.
+- CUT 2026-10-19 (2.5 b, his order 2026-10-19: "'party' and 'demo' need to be synonymous --- you are doing too much to try to make the party demo polished. for the party demo, we need to just open the game on the localhost and then click the demo -- don't overengineer this"): no sound-device choice per window and no launcher. Each window plays where Windows sends it; keep today's left and right split.
+- CUT 2026-10-19 (2.18 b): no operator test-sound button.
 
 ## How
 - His answers are in tools/handoff/q-round3/answers.md (the decoded list, then "How I read them"). He said they are guidance: if something in the game makes one wrong, do the sensible thing and write down why.

@@ -1,0 +1,7 @@
+v31.83: raid purchases use the stash
+
+The forge and stall spend stash credits. One interaction buys MK II. MK III keeps its element choice. Raid score stays whole.
+
+Check 31.83. Fails on v31.82.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

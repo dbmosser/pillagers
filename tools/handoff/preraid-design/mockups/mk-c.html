@@ -1,0 +1,196 @@
+<div class="mk mk-c">
+<style>
+.mk-c{--void:#0b0c0d;--hov:#272c30;--off:#55524c;--acc:#e6ff3d;--accd:rgba(230,255,61,.16);--warn:#f5b73b;--ext:#47d8c6;--p1:#ffb02e;--p2:#38d6ff;--c0:#9da3a8;--c1:#5fbf6a;--c2:#3f9de9;--c3:#a866e0;--c4:#ffc72e;--pn:#111416;--pl:#171b1e;--tl:#1f2427;--ln:#2e3438;--tx:#e9ecec;--mu:#9da3a8;position:relative;width:1920px;height:1080px;overflow:hidden;background:#1d2124;font-family:'Barlow Condensed',Bahnschrift,'Arial Narrow',sans-serif;font-weight:600;font-size:20px;line-height:1.1;color:var(--tx);text-transform:lowercase}
+.mk-c *{box-sizing:border-box;margin:0;padding:0}
+.mk-c svg{flex:none;display:block}
+.mk-c .sprite{position:absolute;width:0;height:0}
+.mk-c .ic{width:36px;height:36px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.mk-c .bd{font-family:'Barlow',Bahnschrift,sans-serif;font-weight:500}
+.mk-c .bg{position:absolute;inset:0;background:repeating-linear-gradient(0deg,#2c3236 0 2px,transparent 2px 72px),repeating-linear-gradient(90deg,#2c3236 0 2px,transparent 2px 72px),#1d2124}
+.mk-c .gb{position:absolute;background:#343b40;border:2px solid #444d53}
+.mk-c .scr{position:absolute;inset:0;background:rgba(6,7,7,.78)}
+.mk-c .card{position:absolute;left:96px;top:54px;width:1728px;height:972px;background:var(--ln);clip-path:polygon(28px 0,100% 0,100% calc(100% - 28px),calc(100% - 28px) 100%,0 100%,0 28px)}
+.mk-c .card::before{content:"";position:absolute;inset:1px;background:var(--pn);clip-path:polygon(27px 0,100% 0,100% calc(100% - 27px),calc(100% - 27px) 100%,0 100%,0 27px)}
+.mk-c .card>*{position:absolute}
+.mk-c .hd{left:32px;top:0;width:1664px;height:72px;display:flex;align-items:center;gap:16px}
+.mk-c .tick{width:6px;height:32px;background:var(--acc)}
+.mk-c .ttl{font-weight:700;font-size:32px;margin-right:12px}
+.mk-c .seat{height:40px;padding:0 16px;display:flex;align-items:center;gap:10px;border:2px solid;border-radius:20px;font-weight:700;font-size:20px}
+.mk-c .seat i{width:12px;height:12px;border-radius:50%;background:currentColor}
+.mk-c .s1{color:var(--p1)}
+.mk-c .s2{color:var(--p2)}
+.mk-c .xb{margin-left:auto;height:52px;padding:0 16px 0 22px;display:flex;align-items:center;gap:14px;border:1px solid #4a5156;border-radius:4px;background:var(--tl);font-size:20px;color:var(--tx)}
+.mk-c .xb svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round}
+.mk-c .stp{left:32px;top:72px;width:1664px;height:104px;display:flex}
+.mk-c .st{position:relative;flex:1;height:88px;margin:8px 0 0 -20px;padding:0 52px 0 56px;display:flex;align-items:center;gap:16px;background:var(--tl);clip-path:polygon(0 0,calc(100% - 32px) 0,100% 50%,calc(100% - 32px) 100%,0 100%,32px 50%)}
+.mk-c .st.f{margin-left:0;padding-left:24px;clip-path:polygon(0 0,calc(100% - 32px) 0,100% 50%,calc(100% - 32px) 100%,0 100%)}
+.mk-c .st.now{background:var(--hov)}
+.mk-c .st.now::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:var(--acc)}
+.mk-c .sl{font-size:16px;color:var(--mu);letter-spacing:.1em;margin-bottom:4px}
+.mk-c .sv{font-weight:700;font-size:32px}
+.mk-c .sv u{text-decoration:none;color:var(--mu);font-weight:600}
+.mk-c .cb{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--acc);flex:none}
+.mk-c .cb svg{width:26px;height:26px;fill:none;stroke:var(--void);stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+.mk-c .cb.n{background:none;border:3px solid var(--acc);font-size:20px;font-weight:700;color:var(--tx)}
+.mk-c .kits{left:32px;top:192px;width:1200px;height:168px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.mk-c .kt{position:relative;padding:16px 18px;display:flex;flex-direction:column;justify-content:space-between;background:var(--tl);border:1px solid var(--ln);border-radius:4px}
+.mk-c .kt.on{background:linear-gradient(var(--accd),var(--accd)),var(--tl);border:2px solid var(--acc);padding:15px 17px}
+.mk-c .kt .cb{position:absolute;right:14px;top:14px;width:32px;height:32px}
+.mk-c .kt .cb svg{width:20px;height:20px}
+.mk-c .fc{outline:3px solid var(--p1);outline-offset:4px}
+.mk-c .kn{font-weight:700;font-size:32px}
+.mk-c .ks{font-size:20px;color:var(--mu);margin-top:4px}
+.mk-c .kr{display:flex;align-items:center;gap:8px;height:32px}
+.mk-c .kr .ic{width:30px;height:30px}
+.mk-c .kr span{font-size:16px;color:var(--mu)}
+.mk-c .pip{width:10px;height:10px;border:2px solid var(--mu);border-radius:2px}
+.mk-c .pk{left:32px;top:376px;width:1200px;height:408px;padding:0 20px;background:var(--pl);border:1px solid var(--ln);border-radius:4px}
+.mk-c .ph{height:60px;display:flex;align-items:center;gap:16px}
+.mk-c .pt1{font-size:32px;font-weight:700}
+.mk-c .cnt{font-size:20px;color:var(--mu)}
+.mk-c .bt{height:48px;padding:0 24px;display:grid;place-items:center;border:1px solid #4a5156;border-radius:4px;background:var(--tl);font-size:20px;color:var(--tx)}
+.mk-c .bt.m{margin-left:auto}
+.mk-c .pg{display:grid;grid-template-columns:repeat(5,1fr);column-gap:12px;row-gap:8px;grid-template-rows:24px 124px 30px 124px}
+.mk-c .gl{font-size:16px;color:var(--mu);letter-spacing:.1em;align-self:end}
+.mk-c .g2{grid-column:span 2}
+.mk-c .g3{grid-column:span 3}
+.mk-c .pt{position:relative;padding:10px 10px 8px;display:grid;grid-template-columns:36px 1fr;grid-template-rows:48px 48px;column-gap:10px;row-gap:8px;background:var(--tl);border:1px solid var(--ln);border-radius:4px}
+.mk-c .pt.on{background:linear-gradient(var(--accd),var(--accd)),var(--tl);border-color:rgba(230,255,61,.55)}
+.mk-c .pt .ic{margin-top:6px}
+.mk-c .pt .cb{position:absolute;right:8px;top:8px;width:20px;height:20px}
+.mk-c .pt .cb svg{width:14px;height:14px;stroke-width:5}
+.mk-c .tn{font-size:20px;font-weight:600;padding-top:2px}
+.mk-c .tn small{display:block;font-size:16px;color:var(--mu);font-weight:500;margin-top:4px}
+.mk-c .sp{grid-column:1/3;display:flex;border:1px solid #3a4146;border-radius:4px;background:var(--void);overflow:hidden}
+.mk-c .sp b{width:52px;display:grid;place-items:center;font-size:32px;font-weight:600;background:var(--tl)}
+.mk-c .sp span{flex:1;display:flex;align-items:baseline;justify-content:center;padding-top:8px;gap:4px;font-size:32px;font-weight:700;color:var(--mu)}
+.mk-c .sp i{font-style:normal;font-size:16px;font-weight:500;color:var(--mu)}
+.mk-c .pt.on .sp span{color:var(--acc)}
+.mk-c .tg{grid-column:1/3;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid var(--acc);border-radius:4px;background:var(--accd);font-size:20px}
+.mk-c .tg svg{width:22px;height:22px;fill:none;stroke:var(--acc);stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+.mk-c .mp{left:1256px;top:192px;width:440px;height:592px;background:var(--pl);border:1px solid var(--ln);border-radius:4px;opacity:.9}
+.mk-c .mp>*{position:absolute}
+.mk-c .mh{left:16px;top:0;width:406px;height:64px;display:flex;align-items:center;justify-content:space-between}
+.mk-c .tag{display:flex;align-items:center;gap:8px;font-size:16px;letter-spacing:.06em}
+.mk-c .tag .cb{width:22px;height:22px}
+.mk-c .tag .cb svg{width:14px;height:14px;stroke-width:5}
+.mk-c .map{left:16px;top:76px}
+.mk-c .mb{fill:#0f1315;stroke:var(--ln)}
+.mk-c .zn rect{fill:rgba(255,255,255,.02);stroke:#3a4146;stroke-dasharray:5 4}
+.mk-c .bl rect{fill:#1d2226;stroke:#454d53}
+.mk-c .bl .kd{fill:#252b30;stroke:#e9ecec;stroke-dasharray:4 3}
+.mk-c .wv{fill:none;stroke:#7fa6c9;stroke-width:2;opacity:.6}
+.mk-c .zl{font:600 16px 'Barlow Condensed',Bahnschrift,sans-serif;fill:#9da3a8;letter-spacing:.04em}
+.mk-c .kl{font:600 16px 'Barlow Condensed',Bahnschrift,sans-serif;fill:#e9ecec;text-anchor:middle}
+.mk-c .xr circle{fill:none;stroke:#47d8c6;stroke-width:2}
+.mk-c .xr .h{stroke-opacity:.3}
+.mk-c .xr .d{fill:#47d8c6;stroke:none}
+.mk-c .kg{fill:none;stroke:#e9ecec;stroke-width:3;stroke-linecap:round}
+.mk-c .stats{left:16px;top:430px;width:408px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mk-c .sg{height:56px;padding:0 16px;display:flex;align-items:center;gap:10px;background:var(--tl);border:1px solid var(--ln);border-radius:4px;font-size:20px}
+.mk-c .sg svg{width:26px;height:26px}
+.mk-c .sb{left:0;top:800px;width:1728px;height:124px;background:#181c1f;border-top:1px solid var(--ln)}
+.mk-c .sb>*{position:absolute}
+.mk-c .sbl{left:32px;top:14px;font-size:16px;color:var(--mu);letter-spacing:.1em}
+.mk-c .chs{left:32px;top:44px;display:flex;gap:12px}
+.mk-c .ch{height:56px;padding:0 16px;display:flex;align-items:center;gap:10px;background:var(--tl);border:1px solid var(--ln);border-radius:4px;font-size:20px}
+.mk-c .ch .ic{width:30px;height:30px}
+.mk-c .cl{font-size:16px;color:var(--mu)}
+.mk-c .ch.w{border-color:var(--warn);background:rgba(245,183,59,.12);color:var(--warn)}
+.mk-c .go{right:32px;top:12px;width:360px;height:76px;padding:0 24px 0 32px;display:flex;align-items:center;justify-content:space-between;background:var(--acc);color:var(--void);font-weight:800;font-size:56px;clip-path:polygon(14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%,0 14px)}
+.mk-c .go .kk{display:flex;gap:8px;align-items:center;font-size:16px;font-weight:700}
+.mk-c .go .kc{height:28px;padding:0 8px;display:grid;place-items:center;border:2px solid var(--void);border-radius:4px}
+.mk-c .go .gy{width:28px;height:28px;display:grid;place-items:center;border:2px solid var(--void);border-radius:50%}
+.mk-c .cap{right:32px;top:92px;width:360px;text-align:center;font-size:16px;color:var(--mu)}
+.mk-c .hs{left:0;top:924px;width:1728px;height:48px;padding:0 32px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--ln);font-size:16px;color:var(--mu)}
+.mk-c .hg{display:flex;align-items:center}
+.mk-c .hi{display:inline-flex;align-items:center;gap:8px;margin-right:28px}
+.mk-c .k{min-width:28px;height:28px;padding:0 8px;display:grid;place-items:center;border:1px solid #4a5156;border-bottom-width:3px;border-radius:4px;background:var(--tl);color:var(--tx);font:600 16px 'Barlow Condensed',Bahnschrift,sans-serif}
+.mk-c .g{width:28px;height:28px;display:grid;place-items:center;border:2px solid #6b7378;border-radius:50%;color:var(--tx);font:700 16px 'Barlow Condensed',Bahnschrift,sans-serif}
+.mk-c .g.bp{width:36px;border-radius:6px}
+</style>
+<svg class="sprite" aria-hidden="true"><defs>
+<symbol id="mkc-chk" viewBox="0 0 32 32"><path d="M7 17l6 6 12-13"/></symbol>
+<symbol id="mkc-x" viewBox="0 0 32 32"><path d="M6 6l20 20M26 6L6 26"/></symbol>
+<symbol id="mkc-warn" viewBox="0 0 32 32"><path d="M16 4l13 23H3zM16 12v8M16 23v1"/></symbol>
+<symbol id="mkc-med" viewBox="0 0 32 32"><rect x="4" y="8" width="24" height="18" rx="3"/><path d="M16 12v10M11 17h10M12 8V5h8v3"/></symbol>
+<symbol id="mkc-band" viewBox="0 0 32 32"><g transform="rotate(-35 16 16)"><rect x="3" y="10" width="26" height="12" rx="3"/><rect x="12" y="10" width="8" height="12"/></g></symbol>
+<symbol id="mkc-stim" viewBox="0 0 32 32"><path d="M5 27l6-6M10 22L22 10l4 4-12 12zM20 8l4 4M24 4l4 4M15 17l3 3"/></symbol>
+<symbol id="mkc-frag" viewBox="0 0 32 32"><circle cx="16" cy="19" r="9"/><path d="M13 10V6h6v4M19 6l5-2M10 19h12M16 12v14"/></symbol>
+<symbol id="mkc-smoke" viewBox="0 0 32 32"><rect x="9" y="9" width="14" height="19" rx="2"/><path d="M12 9V5h8v4M9 15h14M13 2c2 1 4-1 6 0"/></symbol>
+<symbol id="mkc-plate" viewBox="0 0 32 32"><path d="M16 4l11 4v8c0 7-5 11-11 13C10 27 5 23 5 16V8z"/></symbol>
+<symbol id="mkc-carb" viewBox="0 0 32 32"><path d="M2 14h20l3-2h5v5h-9l-2 7h-5l1-7H8l-2 3H2z"/></symbol>
+<symbol id="mkc-smg" viewBox="0 0 32 32"><path d="M4 13h18l3 2h3v4h-8l-1 7h-5l1-7H9l-2 2H4z"/></symbol>
+<symbol id="mkc-pistol" viewBox="0 0 32 32"><path d="M5 11h20v6h-9l-2 9h-6l1-9H5z"/></symbol>
+<symbol id="mkc-key" viewBox="0 0 32 32"><circle cx="9" cy="16" r="5"/><path d="M14 16h15M24 16v6M28 16v5"/></symbol>
+<symbol id="mkc-core" viewBox="0 0 32 32"><path d="M16 3l11 6v14l-11 6-11-6V9z"/><circle cx="16" cy="16" r="4"/></symbol>
+<symbol id="mkc-pack" viewBox="0 0 32 32"><path d="M8 28V13a8 8 0 0116 0v15zM12 6V4h8v2M12 19h8v5h-8z"/></symbol>
+</defs></svg>
+<div class="bg"></div>
+<div class="gb" style="left:20px;top:140px;width:60px;height:260px"></div>
+<div class="gb" style="left:1840px;top:300px;width:60px;height:320px"></div>
+<div class="gb" style="left:300px;top:1034px;width:420px;height:40px"></div>
+<div class="gb" style="left:1100px;top:4px;width:300px;height:36px"></div>
+<div class="scr"></div>
+<div class="card">
+<div class="hd"><span class="tick"></span><span class="ttl">pre-raid</span><span class="seat s1"><i></i>p1 &middot; host</span><span class="seat s2"><i></i>p2 &middot; joins</span><div class="xb">close<svg><use href="#mkc-x"/></svg></div></div>
+<div class="stp">
+<div class="st f"><span class="cb"><svg><use href="#mkc-chk"/></svg></span><div><div class="sl">where</div><div class="sv">cold storage</div></div></div>
+<div class="st"><span class="cb"><svg><use href="#mkc-chk"/></svg></span><div><div class="sl">conditions</div><div class="sv">day <u>&middot; surprise me</u></div></div></div>
+<div class="st now"><span class="cb n">3</span><div><div class="sl">kit</div><div class="sv">my loadout</div></div></div>
+</div>
+<div class="kits">
+<div class="kt on fc"><span class="cb"><svg><use href="#mkc-chk"/></svg></span><div><div class="kn">my loadout</div><div class="ks bd">your pack</div></div><div class="kr"><svg class="ic" style="color:var(--c1)"><use href="#mkc-med"/></svg><svg class="ic" style="color:var(--c0)"><use href="#mkc-band"/></svg><svg class="ic" style="color:var(--c1)"><use href="#mkc-frag"/></svg><svg class="ic" style="color:var(--c2)"><use href="#mkc-plate"/></svg><span>11 items</span></div></div>
+<div class="kt"><div><div class="kn">freebie kit</div><div class="ks bd">scav pistol &middot; 4 items</div></div><div class="kr"><svg class="ic" style="color:var(--c0)"><use href="#mkc-pistol"/></svg><i class="pip"></i><i class="pip"></i><i class="pip"></i><i class="pip"></i></div></div>
+<div class="kt"><div><div class="kn">random kit</div><div class="ks bd">2 guns &middot; 1 each</div></div><div class="kr"><svg class="ic" style="color:var(--c0);stroke-dasharray:3 3"><use href="#mkc-carb"/></svg><svg class="ic" style="color:var(--c0);stroke-dasharray:3 3"><use href="#mkc-smg"/></svg><span>rolls on ascent</span></div></div>
+<div class="kt"><div><div class="kn">best kit</div><div class="ks bd">3 guns &middot; up to 3 each</div></div><div class="kr"><svg class="ic" style="color:var(--c2)"><use href="#mkc-carb"/></svg><svg class="ic" style="color:var(--c3)"><use href="#mkc-smg"/></svg><svg class="ic" style="color:var(--c4)"><use href="#mkc-pistol"/></svg></div></div>
+</div>
+<div class="pk">
+<div class="ph"><span class="pt1">pack</span><span class="cnt">11 items &middot; 1 gun</span><div class="bt m">pack all</div><div class="bt">clear</div></div>
+<div class="pg">
+<div class="gl g3">heals</div><div class="gl g2">throwables</div>
+<div class="pt on"><span class="cb"><svg><use href="#mkc-chk"/></svg></span><svg class="ic" style="color:var(--c1)"><use href="#mkc-med"/></svg><div class="tn">medkit<small class="bd">uncommon</small></div><div class="sp"><b>&minus;</b><span>1<i>/2</i></span><b>+</b></div></div>
+<div class="pt on"><span class="cb"><svg><use href="#mkc-chk"/></svg></span><svg class="ic" style="color:var(--c0)"><use href="#mkc-band"/></svg><div class="tn">bandage<small class="bd">common</small></div><div class="sp"><b>&minus;</b><span>3<i>/3</i></span><b>+</b></div></div>
+<div class="pt on"><span class="cb"><svg><use href="#mkc-chk"/></svg></span><svg class="ic" style="color:var(--c2)"><use href="#mkc-stim"/></svg><div class="tn">stim<small class="bd">rare</small></div><div class="sp"><b>&minus;</b><span>1<i>/1</i></span><b>+</b></div></div>
+<div class="pt on"><span class="cb"><svg><use href="#mkc-chk"/></svg></span><svg class="ic" style="color:var(--c1)"><use href="#mkc-frag"/></svg><div class="tn">frag charge<small class="bd">uncommon</small></div><div class="sp"><b>&minus;</b><span>2<i>/2</i></span><b>+</b></div></div>
+<div class="pt on"><span class="cb"><svg><use href="#mkc-chk"/></svg></span><svg class="ic" style="color:var(--c0)"><use href="#mkc-smoke"/></svg><div class="tn">smoke canister<small class="bd">common</small></div><div class="sp"><b>&minus;</b><span>1<i>/1</i></span><b>+</b></div></div>
+<div class="gl">armour</div><div class="gl g2">guns (field)</div><div class="gl g2">key and core</div>
+<div class="pt on"><span class="cb"><svg><use href="#mkc-chk"/></svg></span><svg class="ic" style="color:var(--c2)"><use href="#mkc-plate"/></svg><div class="tn">armour plate<small class="bd">rare</small></div><div class="sp"><b>&minus;</b><span>2<i>/2</i></span><b>+</b></div></div>
+<div class="pt on"><span class="cb"><svg><use href="#mkc-chk"/></svg></span><svg class="ic" style="color:var(--c1)"><use href="#mkc-carb"/></svg><div class="tn">burst carbine<small class="bd">field</small></div><div class="sp"><b>&minus;</b><span>1<i>/1</i></span><b>+</b></div></div>
+<div class="pt"><svg class="ic" style="color:var(--c0)"><use href="#mkc-smg"/></svg><div class="tn">compact smg<small class="bd">field</small></div><div class="sp"><b>&minus;</b><span>0<i>/1</i></span><b>+</b></div></div>
+<div class="pt on"><span class="cb"><svg><use href="#mkc-chk"/></svg></span><svg class="ic" style="color:var(--c3)"><use href="#mkc-key"/></svg><div class="tn">foreman key<small class="bd">elite</small></div><div class="sp"><b>&minus;</b><span>1<i>/1</i></span><b>+</b></div></div>
+<div class="pt on"><svg class="ic" style="color:var(--c4)"><use href="#mkc-core"/></svg><div class="tn">data core slot<small class="bd">burns on ascent</small></div><div class="tg"><svg><use href="#mkc-chk"/></svg>data core slotted</div></div>
+</div>
+</div>
+<div class="mp">
+<div class="mh"><span class="pt1">cold storage</span><span class="tag"><span class="cb"><svg><use href="#mkc-chk"/></svg></span>ascending here</span></div>
+<svg class="map" width="408" height="330" viewBox="0 0 408 330">
+<rect class="mb" x=".5" y=".5" width="407" height="329" rx="6"/>
+<g class="zn"><rect x="6" y="6" width="150" height="104" rx="6"/><rect x="164" y="6" width="238" height="104" rx="6"/><rect x="6" y="118" width="230" height="132" rx="6"/><rect x="244" y="118" width="158" height="132" rx="6"/><rect x="6" y="258" width="396" height="66" rx="6"/></g>
+<g class="bl"><rect x="18" y="38" width="58" height="46"/><rect x="88" y="50" width="56" height="50"/><rect x="176" y="34" width="34" height="64"/><rect x="218" y="34" width="34" height="64"/><rect x="260" y="34" width="24" height="64"/><rect class="kd" x="292" y="36" width="102" height="60"/><rect x="18" y="150" width="58" height="42"/><rect x="86" y="150" width="58" height="42"/><rect x="154" y="150" width="62" height="42"/><rect class="kd" x="110" y="200" width="118" height="44"/><rect x="256" y="148" width="30" height="92"/><rect x="296" y="148" width="30" height="92"/><rect x="336" y="148" width="30" height="92"/><rect x="24" y="304" width="38" height="16"/><rect x="76" y="304" width="38" height="16"/><rect x="128" y="304" width="38" height="16"/><rect x="238" y="304" width="38" height="16"/><rect x="290" y="304" width="38" height="16"/><rect x="342" y="304" width="38" height="16"/></g>
+<path class="wv" d="M18 98q8-6 16 0t16 0t16 0"/>
+<text class="zl" x="16" y="28">the sump</text><text class="zl" x="174" y="28">chill row</text><text class="zl" x="16" y="140">packing floor</text><text class="zl" x="254" y="140">scrap line</text><text class="zl" x="16" y="282">the long dock</text>
+<text class="kl" x="337" y="62">blast</text><text class="kl" x="337" y="80">freezer</text><text class="kl" x="163" y="219">foreman</text><text class="kl" x="163" y="237">office</text>
+<use class="kg" href="#mkc-key" x="373" y="38" width="18" height="18"/><use class="kg" href="#mkc-key" x="205" y="203" width="18" height="18"/>
+<g class="xr"><g transform="translate(26 232)"><circle class="h" r="15"/><circle r="9"/><circle class="d" r="3"/></g><g transform="translate(204 290)"><circle class="h" r="15"/><circle r="9"/><circle class="d" r="3"/></g><g transform="translate(384 214)"><circle class="h" r="15"/><circle r="9"/><circle class="d" r="3"/></g></g>
+</svg>
+<div class="stats"><div class="sg">420 x 340 m</div><div class="sg">5 zones</div><div class="sg"><svg class="ic" style="color:var(--tx)"><use href="#mkc-key"/></svg>2 keyed rooms</div><div class="sg"><svg viewBox="0 0 26 26"><circle cx="13" cy="13" r="9" fill="none" stroke="#47d8c6" stroke-width="2"/><circle cx="13" cy="13" r="3" fill="#47d8c6"/></svg>3 exits</div></div>
+</div>
+<div class="sb">
+<div class="sbl">going up with</div>
+<div class="chs">
+<div class="ch"><svg class="ic" style="color:var(--c0)"><use href="#mkc-pistol"/></svg><span class="cl">gun</span>scav pistol</div>
+<div class="ch"><svg class="ic" style="color:var(--c1)"><use href="#mkc-carb"/></svg><span class="cl">gun 2</span>burst carbine</div>
+<div class="ch"><svg class="ic" style="color:var(--c1)"><use href="#mkc-pack"/></svg><span class="cl">items</span>11</div>
+<div class="ch"><svg class="ic" style="color:var(--c4)"><use href="#mkc-core"/></svg><span class="cl">data core</span>slotted</div>
+<div class="ch w"><svg class="ic"><use href="#mkc-warn"/></svg>no armour equipped</div>
+</div>
+<div class="go">ascend<span class="kk"><span class="kc">enter</span><span class="gy">y</span></span></div>
+<div class="cap bd">p2 goes up with you</div>
+</div>
+<div class="hs bd">
+<div class="hg"><span class="hi"><span class="k">esc</span>close</span><span class="hi"><span class="k">enter</span>ascend</span><span class="hi"><span class="k">q</span><span class="k">e</span>step</span><span class="hi"><span class="k">&larr;</span><span class="k">&rarr;</span>move</span><span class="hi"><span class="k">space</span>pick</span></div>
+<div class="hg"><span class="hi"><span class="g">a</span>pick</span><span class="hi"><span class="g bp">lb</span><span class="g bp">rb</span>step</span><span class="hi"><span class="g">y</span>ascend</span><span class="hi" style="margin-right:0"><span class="g">b</span>close</span></div>
+</div>
+</div>
+</div>

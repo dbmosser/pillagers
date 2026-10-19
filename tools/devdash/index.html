@@ -26,12 +26,24 @@ main{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1
 <a class="big" id="rep" href="/report" target="_blank" rel="noopener">Latest report</a>
 <span class="sub" id="upd">connecting...</span></header>
 <main>
+<section class="card"><h2>EVERYONE WORKING ON THE GAME</h2>
+<div class="what">Every AI and program working on PILLAGERS right now, in one list. Green is working, amber is resting on purpose, red needs a look, grey is idle.</div>
+<div id="crew"></div></section>
+
+<section class="card"><h2>YOUR CLAUDE PLAN THIS WEEK</h2>
+<div class="what">Your Max plan's weekly usage, the same number as Claude's /usage. The goal is 85% by the weekly reset, spread evenly; the dashed line is where an even pace puts you right now. Whenever you are above it, the helpers on your plan pause by themselves.</div>
+<div id="plan"></div></section>
+
 <section class="card"><h2>CLAUDE HELPERS</h2>
-<div class="what">Three Claude workers that write fixes for the game on their own, paid from your Claude Console credits. Each works on one job at a time.</div>
+<div class="what">Claude workers that write fixes for the game on their own, one job each at a time. Since the Console credits ran out (10-18) they run on your Claude plan, and only while your week is on pace.</div>
 <div id="lanes"></div></section>
 
+<section class="card"><h2>OTHER AI SERVICES</h2>
+<div class="what">AIs from other companies that add work on top of your Claude plan, so the game keeps moving when your Claude week runs low. None of them uses your Claude usage.</div>
+<div id="aisvc"></div></section>
+
 <section class="card"><h2>CONSOLE MONEY</h2>
-<div class="what">Your $200 of Claude Console credits. The helpers spend it as they work, a few dollars per job, with no rush and no waste, until it runs out. These are estimates; the Console Billing page has the exact balance.</div>
+<div class="what">The $200 of Claude Console credit that came with your plan this month. It is used up ($2.46 left on 10-19) and comes back with your next billing month. The Console Billing page has the exact balance.</div>
 <div id="money"></div></section>
 
 <section class="card"><h2>QUALITY CHECK LINE</h2>
@@ -62,11 +74,13 @@ const JOBS=[[/corpus-triage/,'Sorting the old failing tests into "test is out of
  [/review/,'Checking possible bugs found by the nightly code review']];
 let TITLES={};
 const job=n=>{if(/corpus-night/.test(n)) return 'Full re-run of all the tests'; if(/^manual/.test(n)) return 'Claude saving tool changes'; for(const [r,t] of JOBS) if(r.test(n)) return t; if(TITLES[n]) return TITLES[n].charAt(0)+TITLES[n].slice(1).toLowerCase(); return n.replace(/^cw-/,'');};
-const LANE={a:'Helper A',b:'Helper B',c:'Helper C',d:'Helper D (from the chat, your plan)',e:'Helper E (your plan)'};
+const LANE={a:'Helper A',b:'Helper B',c:'Helper C',d:'Helper D (from the chat, your plan)',e:'Helper E (your plan)',f:'Helper F (your plan)',o:'ChatGPT helper (your ChatGPT Plus)'};
 function laneLine(s){
   let m;
   if(!s) return ['d','Not started yet'];
   if(m=/running (\S+)/.exec(s)) return ['g','Working on: '+job(m[1])+' (since '+s.slice(6,11)+')'];
+  if(m=/pacing your plan: week (\d+)% used \(the 85% line is at ([\d.]+)%/.exec(s)) return ['a','Resting: your Claude week is at '+m[1]+'%, ahead of the even pace ('+m[2]+'% by now). It starts again when the week is back on pace'];
+  if(/Console money used up/.test(s)) return ['d','Resting: the Console credit is used up, so only the helpers on your plan run'];
   if(/pacing/.test(s)){ m=/\$([\d.]+) allowed by now \(\$([\d.]+) for today/.exec(s); return ['a','Resting so the money lasts until Halloween'+(m?' (today\'s share is $'+m[2]+')':'')]; }
   if(m=/(\S+): done/.exec(s)) return ['g','Just finished: '+job(m[1])];
   if(m=/(\S+): partial/.exec(s)) return ['a','Stopped partway on: '+job(m[1])+'. It picks up where it left off next time'];
@@ -89,13 +103,64 @@ function shipLine(l){
 }
 const row=(c,t,k)=>'<div class="row"><span class="dot '+c+'"></span>'+(t!==null?'<span class="t">'+esc(t)+'</span>':'')+'<span class="k">'+k+'</span></div>';
 function ago(s){ if(s===null) return 'never'; if(s<90) return s+' seconds ago'; return Math.round(s/60)+' minutes ago'; }
+const when=ms=>new Date(ms).toLocaleString([],{weekday:'short',hour:'numeric',minute:'2-digit'});
+function planHtml(p){
+  if(p.wk===null) return row('d',null,'No reading yet. The dashboard asks Claude for it every 10 minutes.');
+  const gap=+(p.wk-p.line).toFixed(1), c=gap>5?'r':gap>0?'a':'g', now=Date.now();
+  const W=420,H=180,L=34,B=20,x=t=>(L+(W-L-8)*(t-p.start)/(p.reset-p.start)).toFixed(1),y=v=>(6+(H-6-B)*(1-v/100)).toFixed(1);
+  let g='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block;margin:10px 0 6px" role="img" aria-label="weekly usage against the even pace">';
+  [0,25,50,75,100].forEach(v=>{g+='<line x1="'+L+'" x2="'+(W-8)+'" y1="'+y(v)+'" y2="'+y(v)+'" stroke="'+(v===100?'#ff6b5e':'#262b33')+'"'+(v===100?' stroke-opacity=".7"':'')+'/><text x="'+(L-6)+'" y="'+(+y(v)+4)+'" fill="#9aa1ab" font-size="12" text-anchor="end">'+v+'%</text>';});
+  for(let i=0;i<7;i++){const t=p.start+(i+.5)*864e5; g+='<text x="'+x(t)+'" y="'+(H-5)+'" fill="#9aa1ab" font-size="12" text-anchor="middle">'+new Date(p.start+i*864e5+43200e3).toLocaleDateString([],{weekday:'short'})+'</text>';}
+  g+='<line x1="'+x(p.start)+'" y1="'+y(0)+'" x2="'+x(p.reset)+'" y2="'+y(p.target)+'" stroke="#9aa1ab" stroke-dasharray="6 5"/>';
+  const pts=p.hist.concat([[now,p.wk]]).map(q=>x(q[0])+','+y(q[1]));
+  if(pts.length>1) g+='<polyline points="'+pts.join(' ')+'" fill="none" stroke="#f0a83a" stroke-width="2.5" stroke-linejoin="round"/>';
+  g+='<line x1="'+x(now)+'" x2="'+x(now)+'" y1="6" y2="'+y(0)+'" stroke="#6fb3ff" stroke-opacity=".45"/><circle cx="'+x(now)+'" cy="'+y(p.wk)+'" r="5" fill="#f0a83a"/></svg>';
+  return '<span class="stat"><b>'+p.wk+'%</b>used this week</span><span class="stat"><b>'+p.line+'%</b>even pace right now</span><span class="stat"><b'+(c==='r'?' class="warn"':'')+'>'+(gap>0?'+':'')+gap+'</b>points '+(gap>0?'ahead of pace':'under pace')+'</span>'+g+
+    '<div class="small" style="margin-bottom:6px"><span style="color:#f0a83a">&#9644;</span> your usage &nbsp; <span>- - -</span> even pace to '+p.target+'% &nbsp; <span style="color:#ff6b5e">&#9644;</span> the 100% limit</div>'+
+    row(c,null,gap>0?'<b>Ahead of pace.</b> The helpers on your plan are paused. Back on pace around <b>'+when(p.catchUp)+'</b> if nothing else runs.':'<b>On pace.</b> About <b>'+p.perDay+'%</b> a day is left to spend until the reset.')+
+    row(p.ses>=p.sesMax?'a':'d',null,'<b>5-hour window:</b> '+p.ses+'% used (the helpers stop at '+p.sesMax+'%)')+
+    row('d',null,'Resets <b>'+when(p.reset)+'</b> &middot; reading taken '+ago(p.ageS)+' &middot; goal '+p.target+'% by the reset');
+}
+function svcRow(c,name,line,sub){ return row(c,null,'<b>'+name+'</b>: '+line+(sub?'<div class="small">'+sub+'</div>':'')); }
+function rvLine(r){ return 'v'+esc(String(r.ver).replace(/^v/,''))+' checked by '+(r.engine==='agy'?'Google':r.engine==='ollama'?'the local AI':esc(r.engine))+': '+(r.bugs?'<span class="warn">'+r.bugs+' possible bug'+(r.bugs>1?'s':'')+'</span>':'no bugs'); }
+function rsStatus(t){ const m=/^\S+ \S+ (\S+) (.*)$/.exec(t||''); return m?{state:m[1],msg:m[2]}:{state:'',msg:''}; }
+function aiHtml(a,p){
+  const cx=a.codex, cl=/Logged in using ChatGPT/.test(cx.login), [cc,ct]=laneLine(cx.status);
+  const g=a.google, gs=rsStatus(g.status), l=a.local, ls=rsStatus(l.status);
+  const has38=l.models.some(m=>/^qwen3\.8/.test(m.name));
+  let o='';
+  o+=svcRow(!cl?'r':cx.busy?'g':cc,'ChatGPT helper','writes game changes, like the Claude helpers. '+(!cl?'<span class="warn">Not signed in.</span>':cx.busy?'Working on: '+esc(job(cx.task.replace(/\.md$/,'')))+(cx.running?' (ChatGPT is thinking)':' (testing its change)'):esc(ct)),
+    'ChatGPT Plus, $20 a month, its own allowance (a 5-hour limit and a weekly limit). Works in its own copy of the game; only the quality check line can add its changes. Jobs finished: '+cx.done+(cx.stop?' &middot; <span class="warn">paused (STOP file)</span>':''));
+  o+=svcRow(gs.state==='needs-you'||gs.state==='broken'?'r':g.busy?'g':g.running?'g':'d','Google bug checker','reads every new version of the game and lists possible bugs. '+(g.busy?'Checking a version now.':g.running?esc(gs.msg||'Waiting for the next version.'):'<span class="warn">Not running.</span>'),
+    'Google Antigravity, free (weekly limit not published). It only reads; Claude checks every bug it lists before anything changes.');
+  o+=svcRow(!l.up?'r':l.loaded.length?'g':(l.pull&&l.pull!=='done')?'b':'d','Local AI (your graphics card)',(!l.up?'<span class="warn">Ollama is not running.</span>':l.loaded.length?'Thinking now ('+esc(l.loaded.join(', '))+').':(l.pull&&l.pull!=='done'&&!has38)?'Downloading the new model: '+esc(l.pull):'Idle.')+(ls.msg?' '+esc(ls.msg):''),
+    'Free. Models: '+(l.models.map(m=>esc(m.name)+' ('+m.gb+' GB)').join(', ')||'none')+'. Rests during your usual PC hours so your games stay smooth.');
+  o+='<div class="small" style="margin:10px 0 2px"><b>Bug checks</b> ('+a.reviewsToday+' today)</div>'+(a.reviews.length?a.reviews.map(r=>row(r.bugs?'a':'g',new Date(r.at).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),rvLine(r))).join(''):row('d',null,'None yet'));
+  if(a.findings.length) o+='<div class="small" style="margin:10px 0 2px"><b>Latest possible bugs</b> (leads, not facts: Claude checks each one in the code)</div>'+a.findings.slice().reverse().map(f=>row('a',null,esc(f))).join('');
+  o+='<div class="small" style="margin-top:10px">Not used, on purpose: Grok, Copilot, Perplexity, Venice, DeepSeek and the free API tiers (cost or quality; see tools/handoff/ai-services/research.md).</div>';
+  return o;
+}
+function crewHtml(d){
+  const a=d.ai||{}, p=d.procs, L=d.lanes.filter(l=>l.lane!=='o'), busy=L.filter(l=>l.busy).length, alive=d.runnerAgeS!==null&&d.runnerAgeS<900;
+  const lr=L.map(l=>laneLine(l.status)), rest=lr.find(x=>x[0]==='a');
+  let o='';
+  o+=svcRow(busy?'g':rest?'a':'d','Claude helpers',busy?busy+' working now':(rest?esc(rest[1]):'idle'),L.length+' helpers; '+d.done+' jobs finished so far');
+  if(a.codex){ const cl=/Logged in using ChatGPT/.test(a.codex.login); o+=svcRow(!cl?'r':a.codex.busy?'g':laneLine(a.codex.status)[0],'ChatGPT helper',!cl?'not signed in':a.codex.busy?'working on '+esc(job(a.codex.task.replace(/\.md$/,''))):esc(laneLine(a.codex.status)[1])); }
+  if(a.google){ const gs=rsStatus(a.google.status); o+=svcRow(a.google.busy||a.google.running?'g':'r','Google bug checker',a.google.busy?'checking a version now':a.google.running?esc(gs.msg||'waiting for the next version'):'not running'); }
+  if(a.local) o+=svcRow(!a.local.up?'r':a.local.loaded.length?'g':'d','Local AI',!a.local.up?'Ollama not running':a.local.loaded.length?'thinking now':(a.local.pull&&a.local.pull!=='done')?'downloading the new model ('+esc(a.local.pull)+')':'idle');
+  o+=svcRow(d.lockOwner?'b':'d','Quality check line',d.lockOwner?'testing a change now':'nobody in line');
+  o+=svcRow(p.fuzz.length?'g':'d','Crash-hunting robots',p.fuzz.length?p.fuzz.length+' playing the game now':'none running');
+  o+=svcRow(alive?'g':'r','Background runner',alive?'running (backups, test re-runs, starting the helpers)':'<span class="warn">not running</span>');
+  o+=svcRow(d.questions.length?'a':'d','Waiting on you',d.questions.length?d.questions.length+' question'+(d.questions.length>1?'s':'')+' (see QUESTIONS FOR YOU)':'nothing');
+  return o;
+}
 async function tick(){
   let d; try{ d=await (await fetch('/api',{cache:'no-store'})).json(); }catch(e){ $('upd').innerHTML='<span class="warn">Dashboard server not answering</span>'; return; }
   TITLES=d.titles||{}; $('ver').textContent=d.ver; $('ships').textContent=d.shipsToday;
   const sb=d.stable||{}; $('stable').textContent=sb.version?('v'+sb.version+' ('+sb.at.slice(5)+')'+(sb.frozen?' frozen':'')):'none yet';
   const rp=d.report; $('rep').textContent=rp?('Latest report ('+rp.name.replace(/\.html$/,'').slice(5)+')'):'Latest report (none yet)'; $('upd').textContent='Updated '+d.now+' (every 5 seconds)';
   $('lanes').innerHTML=(d.stopFile?row('r',null,'<b>All helpers are paused</b> because the STOP file is in tools/handoff/console. Delete it to restart them.'):'')+
-    d.lanes.map(l=>{const [c,t]=laneLine(l.status);return row(c,null,'<b>'+LANE[l.lane]+'</b>: '+esc(t)+'<div class="small">Next up: '+([...new Set(l.queue.map(job))].slice(0,3).map(esc).join(' / ')||'nothing')+(l.queue.length>3?' ... ('+l.queue.length+' jobs waiting)':'')+'</div>');}).join('')+
+    d.lanes.filter(l=>l.lane!=='o').map(l=>{const [c,t]=laneLine(l.status);return row(c,null,'<b>'+LANE[l.lane]+'</b>: '+esc(t)+'<div class="small">Next up: '+([...new Set(l.queue.map(job))].slice(0,3).map(esc).join(' / ')||'nothing')+(l.queue.length>3?' ... ('+l.queue.length+' jobs waiting)':'')+'</div>');}).join('')+
     '<div class="small" style="margin-top:8px">Jobs finished: '+d.done+(d.failed.length?' &middot; <span class="warn">Gave up: '+d.failed.length+'</span>':'')+'</div>';
   const s=d.spend, pct=Math.min(100,Math.round(100*s.all/s.total)), tp=Math.min(100,Math.round(100*s.today/Math.max(.01,s.share)));
   $('money').innerHTML='<span class="stat"><b>$'+s.today.toFixed(2)+'</b>spent today</span><span class="stat"><b>$'+Math.max(0,s.total-s.all).toFixed(2)+'</b>left to spend'+(s.real?' (exact, from Console)':' (estimate)')+'</span>'+
@@ -114,6 +179,9 @@ async function tick(){
   $('runner').innerHTML=row(alive?'g':'r',null,alive?'Running (last check-in '+ago(d.runnerAgeS)+')':'<span class="warn">Not running (last check-in '+ago(d.runnerAgeS)+'). It restarts itself within 15 minutes.</span>')+
     d.nightly.slice().reverse().slice(0,5).map(l=>row('d',null,esc(l.replace(/fuzz2? start/,'crash robot started').replace(/fuzz2? done/,'crash robot finished a 2-hour shift').replace(/corpus start/,'full test re-run started').replace(/corpus done/,'full test re-run finished').replace(/daily: /,'backup: ')))).join('')+
     (d.review.length?row('b',null,'<b>Nightly code review:</b> '+esc(d.review[d.review.length-1].replace(/^\S+ review: /,''))):'');
+  if(d.plan) $('plan').innerHTML=planHtml(d.plan);
+  if(d.ai) $('aisvc').innerHTML=aiHtml(d.ai,d.procs);
+  $('crew').innerHTML=crewHtml(d);
   $('qs').innerHTML=d.questions.length?d.questions.map(q=>row('a',null,esc(q))).join(''):row('d',null,'No questions right now');
 }
 tick(); setInterval(tick,5000);

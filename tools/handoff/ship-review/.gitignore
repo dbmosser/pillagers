@@ -1,0 +1,3 @@
+# runtime output of tools/ship-review.ps1 (diff copies, logs, status); the reviews and findings are read locally, not shipped
+*
+!.gitignore

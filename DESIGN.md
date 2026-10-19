@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.83 - RAID PURCHASES USE THE STASH
+
+Co-op hunt while he was away. His order 2026-10-19: any money spent in a raid comes from credits stash, with no cash to take in, and the forge upgrades MK II instantly.
+
+MEASURED. Check 31.83 passes, and fails on v31.82.
 ## v31.82 - OPERATOR CARD: ONE FRAME, 40PX X, READABLE CONFIRM
 
 Co-op hunt while he was away. The critic scored the operator card 3 of 5 on 62 and 63: the lime row wore a fill plus a ring (double frame), the armed confirm was red on maroon with low contrast and no lime focus bar, and the 48px X was heavier than the title and 4px off its centre. Restyle only, same text.

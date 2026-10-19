@@ -1,0 +1,5 @@
+## v31.83 - RAID PURCHASES USE THE STASH
+
+Co-op hunt while he was away. His order 2026-10-19: any money spent in a raid comes from credits stash, with no cash to take in, and the forge upgrades MK II instantly.
+
+MEASURED. Check 31.83 passes, and fails on v31.82.

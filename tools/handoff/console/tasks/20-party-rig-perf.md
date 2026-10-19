@@ -1,15 +1,13 @@
-# 20-party-rig-perf : the two-TV rig and frame rate (his round 2 answers)
+# 20-party-rig-perf : frame rate in the 2-player demo (his round 2 answers; TRIMMED 2026-10-19)
 
-The rig: both screens are 4K at 120 or 144 Hz (his 2.11 note).
-- 2.11 a and 2.57: each window draws at the TV's full size, capped at the TV's refresh rate (120 or 144).
+TRIMMED 2026-10-19 by his order 2026-10-19: "'party' and 'demo' need to be synonymous --- you are doing too much to try to make the party demo polished. for the party demo, we need to just open the game on the localhost and then click the demo -- don't overengineer this". The party is the normal demo, opened from the title at localhost. No launcher, no operator card, no corner dot, no special rig test. What is left is plain frame rate, which guests feel (stutter is the worst problem on his list, Q27).
+
+Two windows on this PC, each full screen on a 4K TV at 120 or 144 Hz (his 2.11 note).
+- 2.43 a: janky means under 60 frames a second for more than a few seconds. Measure the 2-player demo (two windows, 4K) against that and fix the worst causes.
 - 2.44 b: the quality ladder may drop effects, but never picture sharpness below 75 percent.
-- 2.43 a: janky means under 60 frames a second for more than a few seconds. Measure the two-window rig against that.
-- 2.45 a: each window shows a tiny coloured dot (green fine, yellow slow, red struggling) in a corner, always.
-- 2.19 a: while nobody is playing, the windows draw the same as in a raid.
-- 2.13 a: the launcher puts player 1's window in front only at the start.
-- 2.18 b: the operator card runs a quick self-check: pad found, both windows linked, sound on, frame rate fine.
-- 2.27 b: player 2 may get no more than 50 ms (about 3 frames) of extra delay over player 1. Measure it first. If it is over, add prediction to player 2's own movement.
-- 2.33 a: before the rehearsal (Wed 10/28, 2.31 c), a 3-hour non-stop run of scripted 2-player games on the two-window rig. Any slowdown or crash is a blocker. Write it so the runner can start it, and say in your notes how.
+- 2.11 a and 2.57: each window draws at its full size, capped at the screen's refresh rate. Confirm with a check; do not rebuild it if it is already so.
+- 2.27 b: measure player 2's extra delay over player 1. Only if it is over 50 ms, fix it.
+- CUT: the corner dot (2.45 a), the launcher (2.13 a), the operator self-check (2.18 b), the 3-hour rig run (2.33 a; the overnight robots already play 2-player demo raids), and "same drawing while nobody plays" (2.19 a).
 
 ## How
 - His answers are in tools/handoff/q-round3/answers.md (the decoded list, then "How I read them"). He said they are guidance: if something in the game makes one wrong, do the sensible thing and write down why.

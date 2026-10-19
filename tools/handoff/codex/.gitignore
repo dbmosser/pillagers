@@ -1,0 +1,6 @@
+# the Codex lane's bulky or throw-away files (the logs are the whole Codex transcripts)
+log/
+work/
+rest-until.txt
+rest-why.txt
+fails.txt

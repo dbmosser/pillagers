@@ -1,0 +1,263 @@
+NAME: map first deploy
+PITCH: The cold storage map takes about two thirds of the card, with zone names, 3 exits and the 2 keyed rooms drawn large enough to read from the couch. Surface and weather sit in a list beside it, and the right column holds the kit, the pack and one big lime ascend button at the foot.
+CHANGES: map grows from about 420px wide to 840px with real zone names at 20px and exits and keyed rooms marked; surface and weather merge into one vertical conditions list, with the xp bonus as a small +10% or +20% badge instead of a sentence, and "host sets" marks them as read-only for p2; the stats line shrinks to "420 x 340 m · 5 zones · 2 keyed rooms · 3 exits", and the dev-sim line and hectares are gone; kit becomes a 2x2 set of tiles, and the pack becomes grouped rows (heals, throw, armour, guns, data core) with a rarity edge, an icon and one stepper each; no cash control, and the going-up sentences become chips (gun, gun 2, and an amber "no armour equipped" warning); ascend is a big lime plate pinned to the foot of the right column, the focus ring and p1/p2 chips use seat colours so lime only ever means selected, and a key and pad hint strip runs along the bottom
+PAD: focus opens on ascend, lb and rb jump between the conditions list, the kit tiles and the pack, the d-pad moves straight up and down inside each list (about 24 stops instead of 41), and (a) presses, (b) closes and (x)/(y) pack all and clear.
+TRADEOFFS: the map is a fixed shape, so it cannot grow without squeezing the conditions list, and the pack rows are tight at 40px each, so a stash with many extra items (ammo, keys, tripwire, decoy, stim) will need a scrolling list.
+<<<HTML
+<div class="mk mk-a">
+<style>
+.mk-a{--card:#15171a;--panel:#181b1e;--cell:#1d2124;--hover:#272c30;--line:#343a3f;--line2:#2a2f33;--tx:#e8e9e6;--tx2:#9da3a8;--off:#55524c;--lime:#e6ff3d;--warn:#f5b73b;--exit:#47d8c6;--p1:#ffb02e;--p2:#38d6ff;--key:#a866e0;--cond:'Barlow Condensed','Bahnschrift Condensed','Arial Narrow',sans-serif;position:relative;width:1920px;height:1080px;overflow:hidden;background:#08090a;color:var(--tx);font:400 20px/1.2 'Barlow','Bahnschrift','Segoe UI',sans-serif;text-transform:lowercase}
+.mk-a *{box-sizing:border-box;margin:0;padding:0}
+.mk-a .scrim{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,#14171a 0,#08090a 72%)}
+.mk-a .scrim:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,.03) 0 1px,transparent 1px 96px),repeating-linear-gradient(0deg,rgba(255,255,255,.03) 0 1px,transparent 1px 96px)}
+.mk-a .card{position:absolute;left:96px;top:54px;width:1728px;height:972px;background:var(--line);clip-path:polygon(28px 0,100% 0,100% calc(100% - 28px),calc(100% - 28px) 100%,0 100%,0 28px)}
+.mk-a .ci{position:absolute;inset:2px;background:var(--card);clip-path:polygon(27px 0,100% 0,100% calc(100% - 27px),calc(100% - 27px) 100%,0 100%,0 27px)}
+.mk-a .grow{flex:1}
+.mk-a .hd{position:absolute;left:0;top:0;right:0;height:80px;display:flex;align-items:center;gap:16px;padding:0 24px 0 32px;border-bottom:1px solid var(--line2)}
+.mk-a .tick{width:6px;height:36px;background:var(--lime)}
+.mk-a h1{font:700 32px var(--cond);letter-spacing:.04em}
+.mk-a .sep{width:1px;height:36px;background:var(--line);margin:0 8px}
+.mk-a .seat{display:inline-flex;align-items:center;gap:10px;height:44px;padding:0 16px;border:1px solid var(--line);background:var(--cell);font:600 20px var(--cond)}
+.mk-a .dot{width:12px;height:12px;border-radius:50%}
+.mk-a .p1{background:var(--p1)}.mk-a .p2{background:var(--p2)}
+.mk-a .close{display:inline-flex;align-items:center;gap:10px;height:48px;padding:0 20px 0 16px;border:1px solid var(--off);background:var(--cell);color:var(--tx);font:600 20px var(--cond)}
+.mk-a .ic{width:26px;height:26px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;color:var(--tx2)}
+.mk-a .close .ic{width:22px;height:22px;color:var(--tx)}
+.mk-a .cap{font:600 16px var(--cond);letter-spacing:.12em;color:var(--tx2)}
+.mk-a .mapp{position:absolute;left:24px;top:92px;width:1140px;height:800px;background:var(--panel);border:1px solid var(--line2)}
+.mk-a .mh{height:64px;display:flex;align-items:center;gap:16px;padding:0 20px;border-bottom:1px solid var(--line2)}
+.mk-a h2{font:700 32px var(--cond);letter-spacing:.03em}
+.mk-a .tag{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px 0 10px;border:1px solid var(--lime);background:rgba(230,255,61,.16);font:600 20px var(--cond)}
+.mk-a .tag svg{width:20px;height:20px;fill:none;stroke:var(--lime);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.mk-a .stats{font:500 20px var(--cond);color:var(--tx2);letter-spacing:.02em}
+.mk-a .stats i{font-style:normal;color:var(--off);margin:0 10px}
+.mk-a .cv{position:absolute;left:0;top:64px;right:0;bottom:0}
+.mk-a .map{position:absolute;left:16px;top:28px;width:840px;height:680px;box-shadow:0 0 0 1px var(--line2)}
+.mk-a .zn{font:700 20px var(--cond);letter-spacing:.06em;fill:#d7dadc}
+.mk-a .rl{font:600 16px var(--cond);letter-spacing:.04em;fill:#dcc3f4}
+.mk-a .xl{font:600 16px var(--cond);letter-spacing:.04em;fill:var(--exit)}
+.mk-a .ex{fill:none;stroke:var(--exit)}
+.mk-a .kk{color:var(--key);fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.mk-a .sb{position:absolute;left:872px;top:16px;width:252px;bottom:16px;display:flex;flex-direction:column;justify-content:space-between}
+.mk-a .cr{display:flex;justify-content:space-between;margin-bottom:12px}
+.mk-a .cap.l{margin:0 0 6px}
+.mk-a .stack{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.mk-a .chip{height:48px;display:flex;align-items:center;gap:10px;padding:0 14px;background:var(--cell);border:1px solid var(--line);font:600 20px var(--cond);white-space:nowrap}
+.mk-a .chip em{margin-left:auto;font:500 16px 'Barlow','Bahnschrift',sans-serif;font-style:normal;color:var(--tx2)}
+.mk-a .sel{background:rgba(230,255,61,.16);border-color:var(--lime);box-shadow:inset 0 0 0 1px var(--lime)}
+.mk-a .rd{width:22px;height:22px;flex:none;border-radius:50%;border:2px solid var(--off);display:grid;place-items:center}
+.mk-a .rd svg{display:none;width:14px;height:14px;fill:none;stroke:#0b0c0d;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}
+.mk-a .sel .rd{background:var(--lime);border-color:var(--lime)}
+.mk-a .sel .rd svg{display:block}
+.mk-a .hint{font:400 16px 'Barlow','Bahnschrift',sans-serif;color:var(--tx2);margin-top:-6px}
+.mk-a .key{border-top:1px solid var(--line2);padding-top:14px}
+.mk-a .kr{height:40px;display:flex;align-items:center;gap:12px;font:600 20px var(--cond)}
+.mk-a .kr svg{width:30px;height:30px;flex:none}
+.mk-a .kr em{margin-left:auto;font:500 16px 'Barlow','Bahnschrift',sans-serif;font-style:normal;color:var(--tx2)}
+.mk-a .rc{position:absolute;left:1188px;top:92px;width:512px;height:800px;padding:12px 14px;display:flex;flex-direction:column;justify-content:space-between;background:var(--panel);border:1px solid var(--line2)}
+.mk-a .kit{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.mk-a .tile{height:68px;display:flex;align-items:center;gap:10px;padding:0 12px;background:var(--cell);border:1px solid var(--line);white-space:nowrap}
+.mk-a .tile b{display:block;font:600 20px var(--cond)}
+.mk-a .tile small{display:block;font:400 16px 'Barlow','Bahnschrift',sans-serif;color:var(--tx2);margin-top:2px}
+.mk-a .ph{height:44px;display:flex;align-items:center;gap:10px}
+.mk-a .ph b{font:700 20px var(--cond);letter-spacing:.04em}
+.mk-a .ph span{font:500 16px 'Barlow','Bahnschrift',sans-serif;color:var(--tx2)}
+.mk-a .bt{height:40px;padding:0 16px;border:1px solid var(--line);background:var(--cell);color:var(--tx);font:600 20px var(--cond)}
+.mk-a .row{height:40px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #23282c;white-space:nowrap}
+.mk-a .row.g{margin-top:6px}
+.mk-a .rar{width:4px;height:24px;flex:none}
+.mk-a .c{background:#9da3a8}.mk-a .u{background:#5fbf6a}.mk-a .r{background:#3f9de9}.mk-a .e{background:#a866e0}
+.mk-a .nm{flex:1;font:600 20px var(--cond)}
+.mk-a .held{font:500 16px 'Barlow','Bahnschrift',sans-serif;color:var(--tx2);min-width:26px}
+.mk-a .st{display:flex}
+.mk-a .st b,.mk-a .st em{height:32px;display:grid;place-items:center;font:700 20px var(--cond);font-style:normal}
+.mk-a .st b{width:34px;border:1px solid var(--line);background:var(--cell)}
+.mk-a .st em{width:30px;color:var(--tx)}
+.mk-a .st .dis{color:var(--off)}
+.mk-a .cb{width:26px;height:26px;border:2px solid var(--off);border-radius:4px;margin-right:4px}
+.mk-a .sum{display:flex;flex-wrap:wrap;gap:8px}
+.mk-a .gc{flex:1 1 0;height:40px;display:flex;align-items:center;gap:8px;padding:0 12px;background:var(--cell);border:1px solid var(--line);white-space:nowrap}
+.mk-a .gc i{font:400 16px 'Barlow','Bahnschrift',sans-serif;font-style:normal;color:var(--tx2)}
+.mk-a .gc b{font:700 20px var(--cond)}
+.mk-a .wn{flex:1 1 100%;height:40px;display:flex;align-items:center;gap:10px;padding:0 12px;border:1px solid var(--warn);background:rgba(245,183,59,.12);color:var(--warn);white-space:nowrap}
+.mk-a .wn .ic{width:24px;height:24px;color:var(--warn)}
+.mk-a .wn b{font:700 20px var(--cond)}
+.mk-a .wn i{margin-left:auto;font:400 16px 'Barlow','Bahnschrift',sans-serif;font-style:normal;color:var(--tx2)}
+.mk-a .ar{height:88px;padding:3px;background:var(--p1);clip-path:polygon(20px 0,100% 0,100% calc(100% - 20px),calc(100% - 20px) 100%,0 100%,0 20px)}
+.mk-a .ag{height:100%;padding:4px;background:var(--panel);clip-path:polygon(18px 0,100% 0,100% calc(100% - 18px),calc(100% - 18px) 100%,0 100%,0 18px)}
+.mk-a .ab{height:100%;display:flex;align-items:center;justify-content:space-between;padding:0 24px 0 30px;background:var(--lime);color:#0b0c0d;font:800 56px/1 var(--cond);letter-spacing:.05em;clip-path:polygon(16px 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%,0 16px)}
+.mk-a .ab span+span{display:flex;align-items:center;gap:8px}
+.mk-a .kc{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:30px;padding:0 10px;border:1px solid var(--off);border-bottom-width:3px;border-radius:4px;background:var(--hover);font:600 16px var(--cond);letter-spacing:.04em;color:var(--tx)}
+.mk-a .pg{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;border:2px solid var(--tx2);font:700 16px var(--cond);color:var(--tx)}
+.mk-a .pb{display:inline-grid;place-items:center;min-width:38px;height:26px;padding:0 8px;border-radius:13px;border:2px solid var(--tx2);font:700 16px var(--cond);color:var(--tx)}
+.mk-a .dk{background:rgba(11,12,13,.1);border-color:#0b0c0d;color:#0b0c0d}
+.mk-a .ft{position:absolute;left:0;right:0;bottom:0;height:64px;display:flex;align-items:center;gap:26px;padding:0 44px 0 32px;border-top:1px solid var(--line2)}
+.mk-a .hn{display:inline-flex;align-items:center;gap:8px;font:500 20px var(--cond);color:var(--tx2);white-space:nowrap}
+.mk-a .vs{width:1px;height:28px;background:var(--line)}
+.mk-a .sv{font:400 16px 'Barlow','Bahnschrift',sans-serif;color:var(--tx2)}
+</style>
+<svg width="0" height="0" style="position:absolute"><defs>
+<symbol id="mka-ck" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+<symbol id="mka-x" viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19"/></symbol>
+<symbol id="mka-warn" viewBox="0 0 24 24"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17v.5"/></symbol>
+<symbol id="mka-key" viewBox="0 0 24 24"><circle cx="8" cy="12" r="4"/><path d="M12 12h9M18 12v3.5M21 12v2.5"/></symbol>
+<symbol id="mka-med" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V4.5h6V7M12 10.5v6M9 13.5h6"/></symbol>
+<symbol id="mka-band" viewBox="0 0 24 24"><rect x="1.5" y="8.5" width="21" height="7" rx="3.5" transform="rotate(-40 12 12)"/><path d="M10 10.5l3.5 3.5"/></symbol>
+<symbol id="mka-frag" viewBox="0 0 24 24"><circle cx="12" cy="14.5" r="7"/><path d="M9.5 7.5h5M12 7.5V4h3.5"/></symbol>
+<symbol id="mka-smoke" viewBox="0 0 24 24"><rect x="8" y="8" width="8" height="13" rx="2"/><path d="M9.5 5h5M8 12h8M9 3c1 1 2 1 3 0s2-1 3 0"/></symbol>
+<symbol id="mka-plate" viewBox="0 0 24 24"><path d="M12 3l7.5 3v6c0 4-3.2 7-7.5 9-4.300-2-7.500-5-7.500-9V6z"/><path d="M12 7v10"/></symbol>
+<symbol id="mka-gun" viewBox="0 0 24 24"><path d="M2 12h13l2-2h5v3.500h-3.500l-1 1.500h-4l-1 3.500H8l1-3.500H2z"/></symbol>
+<symbol id="mka-smg" viewBox="0 0 24 24"><path d="M3 10.500h12l2-2h4v3.500h-3.500l-1 1.500H12L11 17H8l1-3.500H3z"/></symbol>
+<symbol id="mka-chip" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1.500"/><path d="M9 3v3M12 3v3M15 3v3M9 18v3M12 18v3M15 18v3M3 9h3M3 12h3M3 15h3M18 9h3M18 12h3M18 15h3"/></symbol>
+<g id="mka-ring"><circle r="26" opacity=".3" stroke-dasharray="3 5"/><circle r="19" stroke-width="3"/><circle r="6" fill="#47d8c6" stroke="none"/></g>
+<g id="mka-rk"><path d="M8 30h76M8 60h76M8 90h76" stroke="#22272b"/></g>
+<pattern id="mka-g" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#191c1f"/></pattern>
+<pattern id="mka-h" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0V10" stroke="#232a30" stroke-width="2"/></pattern>
+<pattern id="mka-t" x="92" y="306" width="64" height="40" patternUnits="userSpaceOnUse"><rect width="48" height="22" fill="none" stroke="#2b3034"/></pattern>
+<pattern id="mka-d" x="58" y="622" width="38" height="10" patternUnits="userSpaceOnUse"><rect width="22" height="10" fill="#2b3034"/></pattern>
+<pattern id="mka-r" x="700" y="100" width="22" height="12" patternUnits="userSpaceOnUse"><path d="M0 6H22" stroke="#2b3034" stroke-width="2"/></pattern>
+</defs></svg>
+<div class="scrim"></div>
+<div class="card"><div class="ci">
+
+<div class="hd">
+<i class="tick"></i><h1>pre-raid</h1><i class="sep"></i>
+<span class="seat"><i class="dot p1"></i>p1 · host</span>
+<span class="seat"><i class="dot p2"></i>p2 · joined</span>
+<span class="grow"></span>
+<span class="close"><svg class="ic"><use href="#mka-x"/></svg>close</span>
+</div>
+
+<div class="mapp">
+<div class="mh">
+<h2>cold storage</h2>
+<span class="tag"><svg viewBox="0 0 24 24"><use href="#mka-ck"/></svg>ascending here</span>
+<span class="grow"></span>
+<span class="stats">420 x 340 m<i>·</i>5 zones<i>·</i>2 keyed rooms<i>·</i>3 exits</span>
+</div>
+<div class="cv">
+<svg class="map" viewBox="0 0 840 680">
+<rect width="840" height="680" fill="#0f1113"/><rect width="840" height="680" fill="url(#mka-g)"/>
+<rect x="8" y="8" width="824" height="664" fill="none" stroke="#3a4046" stroke-width="2" stroke-dasharray="12 7"/>
+
+<rect x="28" y="28" width="520" height="190" fill="#15181b" stroke="#2a2f33"/>
+<text class="zn" x="44" y="58">chill row</text>
+<g fill="#0d0e10" stroke="#3a4046" stroke-width="1.5"><rect x="44" y="80" width="92" height="120"/><rect x="140" y="80" width="92" height="120"/><rect x="236" y="80" width="92" height="120"/><rect x="332" y="80" width="92" height="120"/></g>
+<use href="#mka-rk" x="44" y="80"/><use href="#mka-rk" x="140" y="80"/><use href="#mka-rk" x="236" y="80"/><use href="#mka-rk" x="332" y="80"/>
+<rect x="428" y="80" width="92" height="120" fill="#14101b" stroke="#a866e0" stroke-width="2" stroke-dasharray="7 4"/>
+<use class="kk" href="#mka-key" x="458" y="100" width="32" height="32"/>
+<text class="rl" x="474" y="166" text-anchor="middle">blast</text><text class="rl" x="474" y="186" text-anchor="middle">freezer</text>
+
+<rect x="28" y="236" width="470" height="240" fill="#15181b" stroke="#2a2f33"/>
+<rect x="70" y="254" width="400" height="206" fill="#0d0e10" stroke="#3a4046" stroke-width="1.5"/>
+<text class="zn" x="88" y="284">packing floor</text>
+<rect x="92" y="306" width="368" height="120" fill="url(#mka-t)"/>
+<path d="M92 442H452" stroke="#2b3034" stroke-width="8" stroke-dasharray="14 6"/>
+<rect x="470" y="300" width="76" height="88" fill="#14101b" stroke="#a866e0" stroke-width="2" stroke-dasharray="7 4"/>
+<use class="kk" href="#mka-key" x="492" y="308" width="32" height="32"/>
+<text class="rl" x="508" y="360" text-anchor="middle">foreman</text><text class="rl" x="508" y="378" text-anchor="middle">office</text>
+<path d="M28 508H580" stroke="#22272b" stroke-width="2" stroke-dasharray="14 10"/>
+
+<rect x="28" y="540" width="552" height="124" fill="#15181b" stroke="#2a2f33"/>
+<rect x="44" y="552" width="520" height="70" fill="#0d0e10" stroke="#3a4046" stroke-width="1.5"/>
+<text class="zn" x="62" y="594">the long dock</text>
+<g fill="none" stroke="#2b3034"><rect x="330" y="572" width="52" height="32"/><rect x="394" y="572" width="52" height="32"/><rect x="458" y="572" width="52" height="32"/></g>
+<rect x="58" y="622" width="494" height="10" fill="url(#mka-d)"/>
+<g fill="none" stroke="#3a4046" stroke-dasharray="5 4"><rect x="70" y="640" width="72" height="20"/><rect x="170" y="640" width="72" height="20"/><rect x="300" y="640" width="72" height="20"/><rect x="430" y="640" width="72" height="20"/></g>
+
+<polygon points="650,500 730,484 806,510 824,580 800,648 726,662 656,646 628,580" fill="#12161a" stroke="#2a3238" stroke-width="2"/>
+<polygon points="650,500 730,484 806,510 824,580 800,648 726,662 656,646 628,580" fill="url(#mka-h)"/>
+<path d="M690 540C730 520 780 540 790 580C796 620 750 640 710 628C672 616 662 566 690 540Z" fill="rgba(127,166,201,.12)" stroke="#7fa6c9" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text class="zn" x="728" y="590" text-anchor="middle">the sump</text>
+
+<rect x="590" y="28" width="234" height="430" fill="#15181b" stroke="#2a2f33"/>
+<text class="zn" x="606" y="58">scrap line</text>
+<rect x="700" y="100" width="22" height="290" fill="#0d0e10" stroke="#3a4046" stroke-width="1.5"/>
+<rect x="700" y="100" width="22" height="290" fill="url(#mka-r)"/>
+<rect x="650" y="390" width="122" height="54" fill="#0d0e10" stroke="#3a4046" stroke-width="1.5"/>
+<path d="M662 402l24 30M690 402l24 30M718 402l24 30M746 402l16 20" stroke="#2b3034"/>
+<g fill="#1a1d20" stroke="#3a4046"><polygon points="612,130 640,112 668,128 662,170 626,176"/><polygon points="614,230 648,214 676,240 660,280 622,270"/><polygon points="752,150 790,138 808,170 780,200 748,190"/><polygon points="744,260 780,246 808,278 790,312 752,306"/></g>
+
+<use class="ex" href="#mka-ring" x="34" y="356"/><text class="xl" x="34" y="398" text-anchor="middle">exit a</text>
+<use class="ex" href="#mka-ring" x="780" y="84"/><text class="xl" x="780" y="124" text-anchor="middle">exit b</text>
+<use class="ex" href="#mka-ring" x="606" y="612"/><text class="xl" x="606" y="658" text-anchor="middle">exit c</text>
+</svg>
+
+<div class="sb">
+<div>
+<div class="cr"><span class="cap">conditions</span><span class="cap">host sets</span></div>
+<div class="cap l">surface</div>
+<div class="stack">
+<span class="chip sel"><i class="rd"><svg viewBox="0 0 24 24"><use href="#mka-ck"/></svg></i>day</span>
+<span class="chip"><i class="rd"><svg viewBox="0 0 24 24"><use href="#mka-ck"/></svg></i>night<em>+20%</em></span>
+</div>
+<div class="cap l">weather</div>
+<div class="stack">
+<span class="chip sel"><i class="rd"><svg viewBox="0 0 24 24"><use href="#mka-ck"/></svg></i>surprise me</span>
+<span class="chip"><i class="rd"><svg viewBox="0 0 24 24"><use href="#mka-ck"/></svg></i>clear</span>
+<span class="chip"><i class="rd"><svg viewBox="0 0 24 24"><use href="#mka-ck"/></svg></i>rain<em>+10%</em></span>
+<span class="chip"><i class="rd"><svg viewBox="0 0 24 24"><use href="#mka-ck"/></svg></i>fog<em>+10%</em></span>
+<span class="chip"><i class="rd"><svg viewBox="0 0 24 24"><use href="#mka-ck"/></svg></i>blackout<em>+10%</em></span>
+<span class="chip"><i class="rd"><svg viewBox="0 0 24 24"><use href="#mka-ck"/></svg></i>storm<em>+10%</em></span>
+</div>
+<p class="hint">whatever the surface gives you</p>
+</div>
+<div class="key">
+<div class="cap" style="margin-bottom:6px">map key</div>
+<div class="kr"><svg viewBox="-30 -30 60 60" class="ex"><use href="#mka-ring"/></svg>extract<em>3</em></div>
+<div class="kr"><svg viewBox="0 0 24 24" class="kk"><use href="#mka-key"/></svg>keyed room<em>2</em></div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="rc">
+<div>
+<div class="cap">kit</div>
+<div class="kit">
+<span class="tile sel"><i class="rd"><svg viewBox="0 0 24 24"><use href="#mka-ck"/></svg></i><span><b>my loadout</b><small>your pack</small></span></span>
+<span class="tile"><i class="rd"><svg viewBox="0 0 24 24"><use href="#mka-ck"/></svg></i><span><b>freebie kit</b><small>scav pistol · 4 items</small></span></span>
+<span class="tile"><i class="rd"><svg viewBox="0 0 24 24"><use href="#mka-ck"/></svg></i><span><b>random kit</b><small>2 guns · 1 each</small></span></span>
+<span class="tile"><i class="rd"><svg viewBox="0 0 24 24"><use href="#mka-ck"/></svg></i><span><b>best kit</b><small>3 guns · up to 3 each</small></span></span>
+</div>
+</div>
+
+<div>
+<div class="ph"><b>pack</b><span>9 packed</span><i class="grow"></i><span class="bt" style="font:600 20px var(--cond);color:var(--tx);display:inline-grid;place-items:center">pack all</span><span class="bt" style="font:600 20px var(--cond);color:var(--tx);display:inline-grid;place-items:center">clear</span></div>
+<div class="row"><i class="rar u"></i><svg class="ic"><use href="#mka-med"/></svg><span class="nm">medkit</span><span class="held">/2</span><span class="st"><b>-</b><em>2</em><b class="dis">+</b></span></div>
+<div class="row"><i class="rar c"></i><svg class="ic"><use href="#mka-band"/></svg><span class="nm">bandage</span><span class="held">/3</span><span class="st"><b>-</b><em>2</em><b>+</b></span></div>
+<div class="row g"><i class="rar u"></i><svg class="ic"><use href="#mka-frag"/></svg><span class="nm">frag charge</span><span class="held">/2</span><span class="st"><b>-</b><em>1</em><b>+</b></span></div>
+<div class="row"><i class="rar c"></i><svg class="ic"><use href="#mka-smoke"/></svg><span class="nm">smoke canister</span><span class="held">/1</span><span class="st"><b>-</b><em>1</em><b class="dis">+</b></span></div>
+<div class="row g"><i class="rar r"></i><svg class="ic"><use href="#mka-plate"/></svg><span class="nm">armour plate</span><span class="held">/2</span><span class="st"><b>-</b><em>2</em><b class="dis">+</b></span></div>
+<div class="row g"><i class="rar u"></i><svg class="ic"><use href="#mka-gun"/></svg><span class="nm">burst carbine (field)</span><span class="held">/1</span><span class="st"><b class="dis">-</b><em class="dis">0</em><b>+</b></span></div>
+<div class="row"><i class="rar r"></i><svg class="ic"><use href="#mka-smg"/></svg><span class="nm">compact smg (field)</span><span class="held">/1</span><span class="st"><b>-</b><em>1</em><b class="dis">+</b></span></div>
+<div class="row g"><i class="rar e"></i><svg class="ic"><use href="#mka-chip"/></svg><span class="nm">slot data core (1)</span><span class="held" style="min-width:0">burns on ascent</span><i class="cb"></i></div>
+</div>
+
+<div class="sum">
+<span class="gc"><i>gun</i><b>dmr</b></span>
+<span class="gc"><i>gun 2</i><b>compact smg</b></span>
+<span class="wn"><svg class="ic"><use href="#mka-warn"/></svg><b>no armour equipped</b><i>equip plates on the surface</i></span>
+</div>
+
+<div class="ar"><div class="ag"><div class="ab"><span>ascend</span><span><i class="kc dk">enter</i><i class="pg dk">a</i></span></div></div></div>
+</div>
+
+<div class="ft">
+<span class="hn"><i class="kc">esc</i>close</span>
+<span class="hn"><i class="kc">enter</i>ascend</span>
+<span class="hn"><i class="kc">arrows</i>move</span>
+<span class="hn"><i class="kc">click</i>pick</span>
+<i class="vs"></i>
+<span class="hn"><i class="pg">a</i>ascend</span>
+<span class="hn"><i class="pg">b</i>close</span>
+<span class="hn"><i class="pg">x</i>pack all</span>
+<span class="hn"><i class="pg">y</i>clear</span>
+<span class="hn"><i class="pb">lb</i><i class="pb">rb</i>panel</span>
+<i class="grow"></i>
+<span class="sv">saves as you go</span>
+</div>
+
+</div></div>
+</div>
+HTML>>>

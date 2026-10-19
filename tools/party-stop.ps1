@@ -35,11 +35,11 @@ function StopThese([object[]]$procs, [string]$what, [switch]$Tree) {
 # ---- the groups, found by what is in their command lines
 $rxRunner = '^(?!.*\s-c\s).*nightly\.sh"?\s*$'
 $rxLane   = '^(?!.*\s-c\s).*(console-lane\.sh"? [a-z]|console-worker\.sh)"?\s*$'
-$rxApi    = 'run-api\.mjs|review-batch\.mjs|critic\.mjs|balance\.mjs|Your task id is'
+$rxApi    = 'gemini\.js|codex\.js|run-api\.mjs|review-batch\.mjs|critic\.mjs|balance\.mjs|Your task id is'
 $rxShip   = 'shipq\.sh|shipone\.sh|shipdraft\.sh|fixq\.sh|preflight\.sh|[\\/]ship\.sh|gate\.ps1|mkfixture\.ps1|uishots\.ps1'
 $rxFuzz   = 'fuzz\.ps1'
 $rxCorpus = 'corpq\.sh|corpus-slices\.sh'
-$rxLlm    = 'llm-night\.ps1'
+$rxLlm    = 'llm-night\.ps1|ship-review\.ps1'
 function TestChromes() { @($script:all | Where-Object { $_.Name -ieq 'chrome.exe' -and $_.CommandLine -and $_.CommandLine -match '--headless' -and $_.CommandLine -match 'remote-debugging-port=93\d\d(\s|"|$)' }) }
 function PlayServers() {
   $o = @()
@@ -111,7 +111,7 @@ Say '6. The full test run (corpus)'
 StopThese (Pick 'bash.exe' $rxCorpus) 'the full test run'
 if (-not $DryRun) { Remove-Item -LiteralPath ($S + '\corpus.lock') -Recurse -Force -ErrorAction SilentlyContinue }
 Say '7. The local AI (Ollama)'
-StopThese (Pick 'powershell.exe' $rxLlm) 'the overnight AI audit (llm-night.ps1)'
+StopThese (Pick 'powershell.exe' $rxLlm) 'the overnight AI audits (llm-night.ps1, ship-review.ps1)'
 StopThese (@($script:all | Where-Object { $_.ProcessId -ne $me -and $_.Name -match '^(ollama|ollama app|ollama_llama_server)\.exe$' })) 'Ollama (the local AI program)'
 Say '8. The hidden test browsers (Chrome on ports 9331-9399) and test servers'
 Start-Sleep -Seconds 1

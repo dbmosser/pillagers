@@ -1,3 +1,5 @@
+CUT 2026-10-19 before any work, by his order 2026-10-19: "'party' and 'demo' need to be synonymous --- you are doing too much to try to make the party demo polished. for the party demo, we need to just open the game on the localhost and then click the demo -- don't overengineer this".
+
 # 21-party-sheets : papers for the night (his round 2 answers; writing only, NO game change and NO pipeline edits)
 
 - 2.15 a: write one page, C:\Users\User1\Desktop\before-guests-checklist.txt, about 10 lines in plain language. It covers: pads charged or on a cable (Xbox pads, 2.35 a; player 2's pad on a cable about 3 m long, 2.2 b), TV inputs, each TV's picture-size setting so nothing is cut off at the edges (2.17 a), the Windows Game Bar switched off for the night (2.14 c: and tell guests not to press the Xbox button), the sound device for each window (2.5 b), and double-clicking the Pillagers Party shortcut. Add the Game Bar "switch back on" step to party-day-stop-list.md on his Desktop.

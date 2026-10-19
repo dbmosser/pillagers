@@ -2981,7 +2981,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.82';
+var VER='31.83';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5093,6 +5093,8 @@ if(!P.arrays)P.arrays=0;   // v6.76: folded racks. Additive, so old saves just h
 // longer exists. This line can go once no live profile has been near v12.34.
 if(P.safe!==undefined) delete P.safe;
 if(P.safeUp!==undefined) delete P.safeUp;
+// v28.xx (cw-cx-stashraid): old saves load without the retired carried cash fields.
+delete P.takeCash; delete P.takeCashRaid;
 if(P.cosHat==='pigtails'){ P.cosHat='none'; P.cosCut='pigtails'; }  // v7.26 migration
 if(P.buzzCd) delete P.buzzCd;   // v7.34: no cooldowns
 if(P.sp!==undefined) delete P.sp;   // v7.38: PROGRESS folded into XP; the field is dead
@@ -13496,18 +13498,15 @@ function forgeAnvil(c,x,y,s,fill,ink){
   c.fillStyle=fill; c.fill();
   c.restore();
 }
-// v26.xx (forgest2), HIS ORDERS 2026-10-12 ("a pack-a-punch mechanism to upgrade guns", "in-raid only", "if you extract with an upgraded gun you
-// get to keep it") AND HIS QUESTION 2026-10-14: THE BENCH. At the Forge E opens THE FORGE panel; picking MK II turns the gun in your hands into
-// its MK II (forgeApply, the model of v24.03) and takes FORGE_COST[0] from the RAID SCORE, the same in the DEMO (ARCADE.mine) and in CAREER
-// (G.cs.s), so no caller ever asks which mode it is in. The panel is not a pause (the raid runs on, like the stall); the mouse, the number
-// keys and the pad all work; ESC, TAB, B and CLOSE leave it with no charge. Too little score says NEED $2,500 and opens nothing. Done, it
-// says GUN UPGRADED, shows the new gun against the old on the pickup card, rings the anvil, throws gold sparks and is HEARD: the upgrade
-// pings 700 out, so machines and pillagers in earshot come to look. In two players each window has its own score and its own bench; the
-// station stands in the same place in both. Nothing here draws from any stream.
-function forgeScore(){ return (G&&G.arcade)?Math.max(0,ARCADE.mine|0):((G&&G.cs)?Math.max(0,G.cs.s|0):0); }
+// v28.xx (cw-cx-stashraid), HIS ORDER 2026-10-19: "any money spent in a raid comes from credits stash".
+// v28.xx (cw-cx-stashraid): each window pays from its own save P.credits in DEMO and CAREER, and saves the purchase.
+// v28.xx (cw-cx-stashraid): E buys MK II instantly; MK III opens the element picker. Too little stash money opens nothing.
+// v28.xx (cw-cx-stashraid): the existing gun card, sparks, upgrade sound and 700 ping stay; raid score and its ledger are untouched.
+function forgeScore(){ return Math.max(0,+P.credits||0); }
+function forgeMoney(n){ return '$'+Math.max(0,n).toLocaleString('en-US'); }
 function forgeSpend(n){
   if(!(n>0)||forgeScore()<n) return false;
-  if(G.arcade){ ARCADE.mine=(ARCADE.mine|0)-n; try{ arcadeScSend(); }catch(_fs){} } else{ G.cs.s=(G.cs.s|0)-n; csTally('forge',-n); }
+  P.credits-=n; saveProfile();
   return true;
 }
 function forgeGun(){ var p=G&&G.player, w=p&&p.wep; return (w&&w.id&&w.id!=='fists'&&w.mag>0&&WEAPONS[w.id])?w:null; }
@@ -13522,14 +13521,15 @@ function forgePromptInfo(){
   var R=forgeOpts(), w=forgeGun(), need, short;
   if(R.err) return {line:R.err,sub:'',short:false};
   need=R.opts[0].cost; short=forgeScore()<need;
-  return {line:'['+keyLabel('KeyE','E')+'] UPGRADE \u00b7 '+(w.fk===1?'MK III':'MK II'),sub:short?('NEED '+arcadeCr(need)):(arcadeCr(need)+(w.fk===1?' \u00b7 CHOOSE ELEMENT':'')),short:short};
+  return {line:'['+keyLabel('KeyE','E')+'] UPGRADE \u00b7 '+(w.fk===1?'MK III':'MK II'),sub:short?('NEED '+forgeMoney(need)):(forgeMoney(need)+(w.fk===1?' \u00b7 CHOOSE ELEMENT':'')),short:short};
 }
 function forgeOpen(){
   var R=forgeOpts(), need;
   if(!G||G.over||G.forgeUI) return false;
   if(R.err){ say(R.err,'info'); try{ sndUi('deny'); }catch(_f0){} return false; }
   need=R.opts[0].cost;
-  if(forgeScore()<need){ say('NEED '+arcadeCr(need),'warn'); try{ sndUi('deny'); }catch(_f1){} return false; }
+  if(forgeScore()<need){ say('need '+forgeMoney(need),'warn'); try{ sndUi('deny'); }catch(_f1){} return false; }
+  if(R.opts[0].k==='mk2') return forgeBuy(0);   // v28.xx (cw-cx-stashraid): one interaction buys MK II; MK III needs an element.
   G.forgeUI={t0:G.t||0,sel:0,n:R.opts.length,cells:[],closeBox:null,mx:NaN,my:NaN};
   G.mapOpen=false; mouse.down=false;
   try{ sndUi('open'); }catch(_f2){}
@@ -13544,14 +13544,14 @@ function forgeClose(spent){
 }
 function forgeBuy(ix){
   var U=G&&G.forgeUI, p=G&&G.player, w=forgeGun(), R=forgeOpts(), o=R.opts[ix], nw, col, tag, F=G&&G.forge;
-  if(!U||!p||!w||!o||G.over) return false;
-  if(!forgeSpend(o.cost)){ say('NEED '+arcadeCr(o.cost),'warn'); try{ sndUi('deny'); }catch(_b0){} return false; }
+  if(!p||!w||!o||G.over||(!U&&o.k!=='mk2')) return false;
+  if(!forgeSpend(o.cost)){ say('need '+forgeMoney(o.cost),'warn'); try{ sndUi('deny'); }catch(_b0){} return false; }
   nw=forgeApply(w,1);
   if(o.k==='el') nw=forgeApply(w,2,o.el);   // v26.xx (forgest3): MK III with the element picked
   p.wep=nw; p.wepIssued=false;
   col=(o.k==='el')?ELEM[o.el].c:FORGE_GOLD; tag=(o.k==='el')?ELEM[o.el].name:'MK II';
-  say('GUN UPGRADED','obj',{sub:String(nw.name).toUpperCase()+((o.k==='el')?('  \u00b7  '+ELEM[o.el].name):'')});
-  G.gunCard={gk:nw.id,w:nw,vs:w,route:tag+'  -'+arcadeCr(o.cost),t0:G.t||0};
+  say('gun upgraded','obj',{sub:String(nw.name).toLowerCase()+((o.k==='el')?('  \u00b7  '+ELEM[o.el].name):'')});
+  G.gunCard={gk:nw.id,w:nw,vs:w,route:tag+'  -'+forgeMoney(o.cost),t0:G.t||0};
   blip('forge'); if(o.k==='el'&&ELEM[o.el]&&ELEM[o.el].snd) blip(ELEM[o.el].snd);   // v26.xx (forgest3): and the element's own sound
   if(F&&isFinite(F.x)){
     spark(F.x,F.y-26,col,40,420); flash(F.x,F.y-30,130,col,0.5);
@@ -13647,8 +13647,8 @@ function drawForgeUI(){
     U.closeBox={x:xr-ckL,y:hy-u(15),w:ckL,h:u(30)};
     forgeKeycap(lab,xr-ckL+u(8),hy+Math.round(pL*0.35),fL);
     ctx.textAlign='left'; ctx.font=fL; ctx.fillStyle=UIC.tx_2; ctx.fillText('CLOSE',xr-ckL+u(8)+kw+u(8),hy+Math.round(pL*0.35));
-    ctx.textAlign='right'; ctx.font=fH; ctx.fillStyle=UIC.tx_1; ctx.fillText(arcadeCr(ok),xr-ckL-u(24),hy+Math.round(pH*0.4));
-    ctx.font=fM; ctx.fillStyle=UIC.tx_3; ctx.fillText('RAID SCORE',xr-ckL-u(24),hy-Math.round(pH*0.5));
+    ctx.textAlign='right'; ctx.font=fH; ctx.fillStyle=UIC.tx_1; ctx.fillText(forgeMoney(ok),xr-ckL-u(24),hy+Math.round(pH*0.4));
+    ctx.font=fM; ctx.fillStyle=UIC.tx_3; ctx.fillText('stash',xr-ckL-u(24),hy-Math.round(pH*0.5));
     ctx.textAlign='left';
     ctx.fillStyle=UIC.ui_line; ctx.fillRect(x+pad,y+HH,PW-pad*2,1);
     // the gun on the bench and the ladder it climbs
@@ -13691,7 +13691,7 @@ function drawForgeUI(){
           ctx.fillStyle=UIC.tx_1; ctx.textAlign='left'; ctx.fillText(String(vr[k][2]),tx+u(152),yy);
         }
         ctx.textAlign='right'; ctx.font=fG; ctx.fillStyle=(forgeScore()<o.cost)?UIC.danger:UIC.acc;
-        ctx.fillText(arcadeCr(o.cost),c.x+c.w-u(22),c.y+u(58));
+        ctx.fillText(forgeMoney(o.cost),c.x+c.w-u(22),c.y+u(58));
         ctx.font=fM; ctx.fillStyle=UIC.tx_3; ctx.fillText('COST',c.x+c.w-u(22),c.y+u(28));
         ctx.textAlign='left';
         forgeKeycap(padOn()?padB('A'):'1',c.x+c.w-u(22)-u(30),c.y+chh-u(14),fL);
@@ -13703,7 +13703,7 @@ function drawForgeUI(){
         ctx.textAlign='center';
         ctx.font=fH; ctx.fillStyle=E.c; ctx.fillText(E.name,c.x+c.w/2,c.y+u(84));
         ctx.font=fM; ctx.fillStyle=UIC.tx_2; ctx.fillText(wd[0]||'',c.x+c.w/2,c.y+u(101)); ctx.fillText(wd[1]||'',c.x+c.w/2,c.y+u(115));
-        ctx.textAlign='left'; ctx.font=fL; ctx.fillStyle=(forgeScore()<o.cost)?UIC.danger:UIC.acc; ctx.fillText(arcadeCr(o.cost),c.x+u(14),c.y+chh-u(12));
+        ctx.textAlign='left'; ctx.font=fL; ctx.fillStyle=(forgeScore()<o.cost)?UIC.danger:UIC.acc; ctx.fillText(forgeMoney(o.cost),c.x+u(14),c.y+chh-u(12));
         if(!padOn()) forgeKeycap(String(i+1),c.x+c.w-u(14)-u(24),c.y+chh-u(12),fM);
       }
       cx+=cw+u(12);
@@ -14878,8 +14878,7 @@ function pedBuy(ix){
   // money is told it is not banked yet rather than that he has nothing.
   // v22.56 (R18): a caps headline and a short detail, not a sentence of up to 110 characters. It still says the money is banked
   // money, and names the stall money on him that is not banked yet (v12.74).
-  if(G.cash!=null&&G.cash<st.price){ say('NOT ENOUGH CASH ON YOU','info',{sub:'Costs '+'$'+st.price.toLocaleString()+'. Carrying '+'$'+G.cash.toLocaleString()+'.'}); return; }   // v28.xx (cw-precash), HIS ORDER (2026-10-15): "quickly pick how much cash ... to take": a raid that took a set amount of cash can spend no more than that at the stall
-  if((P.credits||0)<st.price){ say('NOT ENOUGH BANKED CREDITS','info',{sub:'Costs '+'$'+st.price.toLocaleString()+'.'+((G.pedCarry||0)>0?(' Carrying '+'$'+(G.pedCarry||0).toLocaleString()+'.'):'')}); return; }   // v22.xx (tr4fixc): the shooter voice, the headline says banked
+  if((P.credits||0)<st.price){ say('need '+'$'+st.price.toLocaleString(),'info'); return; }   // v28.xx (cw-cx-stashraid): the stall draws from the stash, as the forge does.
 
   // v31.29 (cw-nobagfull), HIS RULING: no bag limit, no weight, ever. A stall sale is never refused for a full backpack, so no cap or weight is read here.
   // v12.60, 2026-09-08 audit: AMMUNITION GOES WHERE AMMUNITION GOES. Every other
@@ -14893,7 +14892,6 @@ function pedBuy(ix){
   // a man buying ammunition.
   var _pAmmo=!!(ITEMS[st.k]&&ITEMS[st.k].use==='ammo');
   P.credits-=st.price; saveProfile();
-  if(G.cash!=null) G.cash=Math.max(0,G.cash-st.price);   // v28.xx (cw-precash)
   st.sold=true; G.trade.traded=1; if(typeof NET==='object'&&NET&&NET.on&&!G.sim) netPedSoldSend(G.trade,ix);   // v21.72 (K4): and the rest of the party is told the row is sold
   if(_pAmmo){ var _pp=G.player; _pp.reserve=(_pp.reserve||0)+(ITEMS[st.k].amt||0); }
   else {
@@ -16595,10 +16593,6 @@ function startRaid(){
   try{ G.hot=gunCell(); }catch(_gh){}   // v13.42: a raid starts with the gun in hand selected, wherever his belt put it
   G.carriedIn=bagValue();
   if(G&&!G.sim) G.rise={t0:G.t||0,dur:RISE_SEC};   // v28.xx (cw-ascent), his pick 77: he comes up from underground
-  // v28.xx (cw-precash), HIS ORDER (2026-10-15): "On the pre-raid screen ... quickly pick how much cash ... to take". The amount set on the PRE-RAID page (P.takeCashRaid, written when he deploys with MY LOADOUT) is the cash on him: the stall sells him no more than that, and banked Credits stay banked (nothing is lost with it). No pick means no cap.
-  G.cash=null;
-  if(!G.sim&&P.takeCashRaid!=null) G.cash=Math.max(0,Math.min(P.takeCashRaid|0,P.credits|0));
-  P.takeCashRaid=null;
   G.carriedKit=(G.bag||[]).slice();   // v13.55: WHICH items came up, so an item contract counts only what was found   // v10.27: what the lift carried in, valued as the haul is
   if(NET.on&&NET.role==='host'&&!G.sim) netUpAnnounce(G);   // v15.79: the party is told to ascend into this world (the net section)
   // v17.21, co-op hunt 2026-09-28: THE HIRE IS SPENT AT THE LIFT, as the Data Core below is. It was spent only in endRaid, so a
@@ -49647,7 +49641,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.82: The operator card has one frame on the lime row, a lighter 40px X, and the armed confirm is readable. Check 31.82 fails on v31.81',
+  now:'v31.83: The forge and stall spend stash credits. One interaction buys MK II. MK III keeps its element choice. Raid score stays whole. Check 31.83 fails on v31.82',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -64973,13 +64967,6 @@ function packSet(key,n){
   if(n>cur) packSome(key,n-cur); else if(n<cur) unpackSome(key,cur-n);
   saveProfile();
 }
-// v28.xx (cw-precash), HIS ORDER (2026-10-15): "quickly pick how much cash ... to take". P.takeCash is null for ALL (no cap) or a number of credits; the step is a tenth of the bank, in hundreds.
-function cashStep(d){
-  var c=P.credits|0, st=Math.max(100,Math.round(c/10/100)*100), cur=(P.takeCash==null)?c:Math.min(P.takeCash|0,c);
-  if(d==='all'){ P.takeCash=null; return; }
-  cur+=(d>0?st:-st);
-  P.takeCash=(cur>=c)?null:Math.max(0,cur);
-}
 function packCore(){
   if(P.intel){ P.intel=0; P.stash.push('core'); }
   else if(heldCount('core')>0){ spendHeld('core',1); P.intel=1; }
@@ -64994,7 +64981,7 @@ careerStyle('careercsspk',
   '.pkc button,.pkb{padding:2px 9px;font-size:14px;min-width:0}'+
   '.pkc b{min-width:1.4em;text-align:center}');
 function syncSectorPack(){
-  var host=document.getElementById('sectorpack'), keys, i, k, h, held, got, nc, tc;
+  var host=document.getElementById('sectorpack'), keys, i, k, h, held, got, nc;
   if(!host) return;
   if(kitPickOf()!=='mine'){ host.style.display='none'; host.innerHTML=''; return; }
   host.style.display='';
@@ -65006,9 +64993,7 @@ function syncSectorPack(){
        '<button data-pd="-1">-</button><b>'+got+'</b><span style="color:var(--ash)">/'+held+'</span><button data-pd="1">+</button><button data-pd="max">MAX</button></span>';
   }
   nc=heldCount('core');
-  tc=(P.takeCash==null)?null:Math.min(P.takeCash|0,P.credits|0);
-  h+='<span class="pkc'+(tc!==null?' on':'')+'" data-cashchip="1"><span class="pkn">CASH</span><button data-cash="-1">-</button><b style="min-width:4.2em">'+(tc===null?'ALL':tc.toLocaleString())+'</b><span style="color:var(--ash)">/'+(P.credits|0).toLocaleString()+'</span><button data-cash="1">+</button><button data-cash="all">MAX</button></span>';
-  // v28.xx (cw-packbulk), quality pass: the two whole-pack buttons stood after the CASH chip and read as cash buttons beside its own MAX. They sit right after the PACK label now and say what they do, PACK ALL and CLEAR.
+  // v28.xx (cw-cx-stashraid): pack only items and the data core; stash money stays available in the raid.
   h+='<button class="pkb" data-core="1"'+((!P.intel&&!nc)?' disabled':'')+(P.intel?' style="border-color:var(--amber);color:var(--amber)"':'')+'>'+
      (P.intel?'DATA CORE SLOTTED':(nc?('SLOT DATA CORE ('+nc+')'):'NO DATA CORE'))+'</button></div>';
   host.innerHTML=h;
@@ -65016,9 +65001,8 @@ function syncSectorPack(){
     var b=ev.target&&ev.target.closest?ev.target.closest('button'):null, ch, pk, d, pa, j, ks;
     if(!b||b.disabled) return;
     ch=b.closest('[data-pk]'); pk=ch?ch.getAttribute('data-pk'):null; d=b.getAttribute('data-pd'); pa=b.getAttribute('data-pa');
-    if(b.getAttribute('data-cash')){ cashStep(b.getAttribute('data-cash')==='all'?'all':(+b.getAttribute('data-cash'))); }   // v28.xx (cw-precash)
-    else if(b.getAttribute('data-core')){ if(!packCore()) return; }
-    else if(pa){ P.takeCash=(pa==='all')?null:0; ks=packList(); for(j=0;j<ks.length;j++) packSet(ks[j],pa==='all'?heldCount(ks[j]):0); }
+    if(b.getAttribute('data-core')){ if(!packCore()) return; }
+    else if(pa){ ks=packList(); for(j=0;j<ks.length;j++) packSet(ks[j],pa==='all'?heldCount(ks[j]):0); }
     else if(pk&&d){ packSet(pk,d==='max'?heldCount(pk):packedCount(pk)+(+d)); }
     else return;
     try{ sndUi('click'); }catch(_ps){}
@@ -65737,7 +65721,6 @@ document.getElementById('stagedrop').onclick=function(){   // v26.xx (kit1): eve
 document.getElementById('sectordeploy').onclick=function(){
   // v7.42: choosing the sector leads to the loadout question, not straight up.
   document.getElementById('sectormodal').classList.remove('on');
-  P.takeCashRaid=(kitPickOf()==='mine')?P.takeCash:null;   // v28.xx (cw-precash): the cash he picked goes up with MY LOADOUT only
   kitDeploy();   // v26.xx (kit1): the kit was chosen on this page, so it goes straight up
 };
 document.getElementById('closesector').onclick=function(){

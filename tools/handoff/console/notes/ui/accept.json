@@ -406,17 +406,17 @@
  "62-arcade-operator-menu": {
   "score": 3,
   "pass": false,
-  "verdict": "The operator menu is now a clean, consistent dark card with a clear lime primary row, an x, and a key-cap footer, but it floats in a flat black void and has no hero, so it still feels like a template dialog.",
+  "verdict": "The new version is slightly cleaner: the doubled outer ring on the focused row is gone and the close button is smaller. It is still a tiny generic dark card floating in an empty black screen, with no identity and a weak focus read.",
   "findings": [
    "P1 whole screen / backdrop: Show the attract frame or live world at about 55% brightness under rgba(6,7,8,.80). Add a faint marquee or scanline motif at 6-8% opacity behind the card.",
-   "P1 new party row: Drop the outer ring, or make it a 2px tx-1 outline at a 2px offset. Right-align an 'enter' key cap in the row, 24px from the edge. Keep the label at 20px f-cond 700 with 24px left padding.",
-   "P1 card hierarchy: Tighten it to about 480x300, or give it an identity element such as an 'operator' title at 32px f-cond 800 over a one-line state readout (for example the current party size) at 16px tx-2.",
-   "P2 exit demo row: Use a 1px --ui-line-hi border, tx-1 text and a right-aligned 'esc' key cap. Optionally use a --danger text and border tint for exit.",
-   "P2 footer key legend: Set the labels to 16px f-cond 600 in --tx-2 (at least 4.5:1). Use 8px inside a group and 24px between groups. Keep the x and the esc hint, but make the hint a single entry."
+   "P1 card size and hierarchy: Either scale the card to the window standard, or keep it as a compact dialog. Then add a 16px tx-2 state line under the title (for example party size) and raise the row text to 24px with 56px row height. Make the title 32px f-cond 800.",
+   "P1 new party row (focus state): Add a right-aligned 'enter' key cap, 24px from the edge, in --acc-ink on a 1px acc-ink-at-40% border. Keep the label at 20px f-cond 700 with 24px left padding. Add a 2px tx-1 outline at a 2px offset only for pad focus.",
+   "P2 exit demo row: Use a 1px --ui-line-hi border and tx-1 text. Add a right-aligned 'esc' key cap and optionally a --danger tint (text and 1px border at 60%).",
+   "P2 footer key legend: Set the labels to 16px f-cond 600 in --tx-2. Use 8px inside a group and 24px between groups. Keep a single esc/back entry and drop either the X or the legend."
   ],
-  "pic": "tools/handoff/console/notes/shots/12-r4-after2/62-arcade-operator-menu-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/12-r7-after/62-arcade-operator-menu-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T23:34"
+  "when": "2026-10-19T01:37"
  },
  "61-raid-wheel-open": {
   "score": 2,
@@ -444,17 +444,17 @@
  "46-arcade-attract-how-to-play": {
   "score": 3,
   "pass": false,
-  "verdict": "The how-to-play card is tidy and fully lower case, but nothing in it has been fixed since the last review: the 'press any key' prompt is still a small cream line, the column headers are still tiny and dim, and the X is still there on a screen where any key continues.",
+  "verdict": "the how-to-play card is tidy and fully lower case, but the previous fixes were mostly not applied: the prompt is still white with a radio dot, the card is still narrow with small text, and the scrim is still too light, so it reads as a tidy table rather than something polished.",
   "findings": [
-   "P1 footer prompt 'press any key' (x≈1204-1346, y≈843-866): Set it to 20px f-cond 700 in --acc (#e6ff3d), swap the radio dot for a 16px key glyph, and put a 1px --ui-line rule above a 72px footer row. Keep the right edge at x=1346 and cut the gap above to 24px.",
-   "P1 column headers 'keyboard' / 'controller' (x≈759 and x≈1053, y≈271-285): Set them to 16px f-cond 600 with +.04em tracking in --tx-2 (#aaa498 or brighter). Use a 40px header row with the existing 1px --ui-line rule below.",
-   "P1 close X (x≈1298-1346, y≈192-239): Delete the X on this screen. If you keep it, make it a 48x48 ghost button with a 24px glyph and a 16px 'b' hint to its left, in a 56px header row with a 1px --ui-line rule below.",
-   "P1 card frame (x 541-1378, y 176-905) and scrim: Raise the scrim to rgba(6,7,8,.80). Either widen the card to about 1700px (90%) with row names at 24px, or keep it narrow with a fixed 24px padding on every side.",
-   "P2 row names and key caps (x≈573-1230, y 325-772): Set row names to 20px f-cond 600 in --tx-1. Set keycaps to 20px/600 on --ui-raised with a 1px --ui-line-hi border and 12px side padding, and use 64px rows."
+   "P1 footer prompt 'press any key' (x≈1166-1346, y≈838-870): Set the text to 20-24px f-cond 700 in --acc #e6ff3d, swap the radio dot for a 16px key glyph, and use a 72px footer row under the 1px --ui-line rule. Keep the right edge at x=1346.",
+   "P1 card scale (x 541-1378, y 176-905): Widen the card to about 1600-1700px (90%), set row names to 24px and keycaps to 22px, and use 64px rows. If you keep it narrow, scale the text to 20px minimum and pad every side by 24px.",
+   "P1 column headers 'keyboard' / 'controller' (x≈759, 1053; y≈271-285): Set them to 16px f-cond 600 with +.04em tracking in --tx-2 #aaa498 or brighter, inside a 40px header row above the existing 1px rule.",
+   "P1 close X (x≈1298-1346, y≈192-239): Delete it on this walk-up screen. If you keep it, make it a 48x48 ghost button with a 24px glyph in a 56px header row.",
+   "P2 background scrim (whole screen): Set the scrim to rgba(6,7,8,.80) and lift the card border to --ui-line-hi #4a5257."
   ],
-  "pic": "tools/handoff/console/notes/shots/12-r5-after/46-arcade-attract-how-to-play-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/12-r7-after/46-arcade-attract-how-to-play-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-19T00:47"
+  "when": "2026-10-19T01:38"
  },
  "37-raid-extracting-countdown": {
   "score": 2,
@@ -482,32 +482,32 @@
  "63-arcade-operator-new-party-armed": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, on-token dark card with sentence case, a correct top-right close and a clear armed-danger state, but it is a small generic dialog on a flat black void, with weak hierarchy among its rows, small muted text and no pad-focus treatment.",
+  "verdict": "The armed row now reads tx-1 on dark red with a thin lime focus edge and the close button is smaller, but the card still floats on a flat black void with a tiny helper line, so it is a cleaner template modal rather than a polished one.",
   "findings": [
-   "P1 Backdrop: Bake the live world behind the card, dimmed to ~55%, with a --scrim rgba(6,7,8,.80) layer. The card and its border then separate from the background.",
-   "P1 Confirm new party / Exit demo rows: Make the armed row a 56px ghost with a 1px --danger border, tx-1 text and a faint fill (#1e2225). Keep red only for the border and a small label. Put Exit demo as a lower-weight ghost with a 16px gap, or move it to a footer left of the primary.",
-   "P1 Helper line 'Clears tonight's best · New seed': Remove it, or fold it into the armed row as a 16px tx-2 right-aligned value ('Clears best, new seed'). Floor it at 16px and 4.5:1.",
-   "P2 Header: 'Operator' + 'Tonight: 0 runs': Set the subline to 20px tx-2 on the title baseline, as '0 runs tonight' in the muted count style, or drop it. Keep 16px minimum.",
-   "P2 Key hint strip: Use 16px tx-2 labels with 28px-high caps and equal 24px gaps. Swap in pad glyphs (A/B/D-pad) when the last input was a pad. Right-align the strip or place it on the bottom edge."
+   "P1 Backdrop: Render the live world behind it dimmed to about 55% under --scrim rgba(6,7,8,.80). Keep the card at a deliberate size, or bring it toward the 90% window spec.",
+   "P1 Confirm new party row: Use a #1e2225 fill with a 1px --danger border and a 3px --acc left bar inset by 0. Keep red to the border and a small 'clears best' label. Make the row 56px tall with a 16px gap to the next row.",
+   "P1 Helper line 'clears tonight's best · new seed': Fold it into the armed row as a right-aligned 16px tx-2 value ('clears best, new seed'), or delete it. If kept, use 16px at 4.5:1 or better.",
+   "P2 Exit demo row: Make exit demo a ghost row with a 1px --ui-line-hi border and tx-2 text. Put the dangerous confirm on the row the player has to reach deliberately.",
+   "P2 Close button: Align the x right edge to the row edge at x=1246, make it 48px, and centre it on the title's cap height."
   ],
-  "pic": "tools/handoff/console/notes/shots/12-h2/63-arcade-operator-new-party-armed-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/12-r7-after/63-arcade-operator-new-party-armed-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T13:52"
+  "when": "2026-10-19T01:37"
  },
  "55-arcade-run-over-scored": {
   "score": 3,
   "pass": false,
-  "verdict": "The run-over card is still a clean, readable column, but the new 'score 0 sp' hero is a brighter, flatter line that has lost its label and the dim zero treatment, and the amber '-50%' warning, the full-strength prompt and the divider fixes were not applied.",
+  "verdict": "The card is cleaner and now has a clear title, score label, grey zero hero and a ringed prompt, but the type is still small for a couch, the lower half is crowded with rules, and the card is a lot of empty dark space with the hero still not dominant.",
   "findings": [
-   "P1 hero 'score 0 sp' (x 634, y≈487): Restore a 16px tx-2 'score' label 8px above a 56px f-cond 800 '0 sp'. Colour a zero result tx-2. Keep 24px between the hero and the divider.",
-   "P1 bottom divider and stats row (y≈634): Delete it, or set it to x 634 to 1286 with 24px of space above (below the labels) and 24px below, before the prompt.",
-   "P1 'press any key' prompt, bottom-right: Set the text to tx-1, 20px f-cond 700. Make the glyph 24px with a full #e6ff3d ring and dot. Keep it 24px from the card's right and bottom edges.",
-   "P2 subline 'ended early -50%': Use 16px. Keep 'ended early' in tx-2 and colour '-50%' in --warn #f5b73b. Leave 8px to the title and 16px to the hero.",
-   "P2 stats row (kills / extractions / deaths): Use three equal 217px columns. Set values to 24px tx-2 when zero, and labels to 16px tx-2 at 4.5:1 or better. Leave a 4px gap between value and label."
+   "P1 hero '0 sp' (x 634, y≈500): Make the hero a true 56px f-cond 800. Set the 'score' label to 16px tx-2. Make the stat values tx-2 at 24px so only the title and hero are bright. Leave 24px between the hero and the divider.",
+   "P1 'press any key' prompt (x 1106-1286, y≈697): Set the text to tx-1, 20px f-cond 700. Make the glyph 24px with a full #e6ff3d ring and dot. Delete the divider at y≈650, or leave 24px above and below it.",
+   "P1 labels 'kills / extractions / deaths' (y≈632) and 'score' (y≈448): Set all labels to 16px f-cond 600 with +.04em tracking in tx-2 #aaa498 or brighter. Keep a 4px gap to each value.",
+   "P2 stats row column grid (x 634, 859, 1085): Use three equal 217px columns from x 634 to 1286, or right-align the prompt with the third column. Keep 24px of padding on all sides.",
+   "P2 title block ('run over', 'ended early -50%'): Set the title to 32px f-cond 700 tx-1. Set the subline to 16px with 'ended early' in tx-2 and '-50%' in --warn. Leave 8px between them."
   ],
-  "pic": "tools/handoff/console/notes/shots/12-r5-after2/55-arcade-run-over-scored-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/12-r7-after/55-arcade-run-over-scored-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-19T01:26"
+  "when": "2026-10-19T01:38"
  },
  "60-abandoned-card": {
   "score": 2,
@@ -557,17 +557,17 @@
  "56-arcade-attract-board-scored": {
   "score": 3,
   "pass": false,
-  "verdict": "The card is clean and on-palette, but the empty board is a small, dead dialog: 'no scores yet' floats unanchored, the prompt is tiny, and the wordmark and X are leftover clutter, so none of the earlier advice was really followed.",
+  "verdict": "The card is now tidy, with a clear title, a divider and a footer row holding the 'press any key' chip, but it is a small, sparse box with an unnecessary X floating over a busy blurred scene.",
   "findings": [
-   "P1 'press any key' prompt, bottom-right of card (1065-1206, 616): Put it in a 56px footer row. Use a 28px key or pad-button chip with a 1px #4a5257 border, then the label at 24-28px f-cond 700 in tx-1. Centre the row or right-align it to the 24px padding. Keep lime to a single dot or underline.",
-   "P1 'no scores yet' at (960,534): Set it in tx-2 #aaa498, f-cond 600 20px, left-aligned at x=713. Better, show a muted 56px f-cond 800 '0 sp' hero above it so the board looks intentional.",
-   "P1 Card shell, 558x255 at (681,412): Use 24px padding on all sides, a 56px header row with a 1px #2e3337 divider, a body that fills the remaining space, and a 56px footer. Enlarge to about 640x300, or to the 90% window card if it counts as a window.",
-   "P1 'pillagers' wordmark, top-left (95,72): Replace it with a real logo lockup of about 160x48 at (96,54), or remove it. Keep only one brand element on screen.",
-   "P2 Close X, (1160-1206, 430-476): Remove it. If kept, make it a 48x48 ghost X in tx-2 with a 1px #2e3337 border, aligned to x=1214 and vertically centred on the title baseline."
+   "P1 Card shell, 558x255 at (681,412): Enlarge to about 640x320 and use a 56px hero '0 sp' (f-cond 800, tx-1) or a 3-row placeholder list inside the body. Keep the 24px padding and the divider.",
+   "P1 'no scores yet' at (713,534): Set it to f-cond 600 20px in tx-2 #aaa498. Put a 56px muted '0 sp' above it, or centre the pair vertically in the body between y=490 and y=560.",
+   "P1 'press any key' prompt (1027-1206, 600-634): Draw a 32px rounded key chip with a 1px #4a5257 border and the actual key or pad glyph inside. Set the label to 24px f-cond 700 in tx-1. Make the footer row 56px with equal 24px padding top and bottom.",
+   "P2 Close X, (1159-1207, 429-477): Remove it. If kept, make it a 40px ghost X with no fill, a tx-2 glyph, a 1px #2e3337 border, and the right edge at x=1214 (24px padding), centred on the title line.",
+   "P2 'pillagers' wordmark, (95,72): Replace it with a real logo lockup of about 160x48 at (96,54), or remove it so the screen has only the card as its focal point."
   ],
-  "pic": "tools/handoff/console/notes/shots/12-r5-after/56-arcade-attract-board-scored-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/12-r7-after/56-arcade-attract-board-scored-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-19T00:47"
+  "when": "2026-10-19T01:38"
  },
  "47-arcade-drop-controls-card": {
   "score": 2,
@@ -632,17 +632,17 @@
  "64-arcade-board-seeded-night": {
   "score": 2,
   "pass": false,
-  "verdict": "The second pass only adds a divider line and a slightly larger prompt, so the small card still has a tiny seed caption, a centred 'no scores yet' floating in dead space, a mushy scrim and a prompt with no key chip, which is still a 2.",
+  "verdict": "the card is still a small, quiet dialog with a tiny 'seeded night' line, a bare 'no scores yet', a dim prompt and a blurred, busy backdrop, so nothing here reads as AAA polish.",
   "findings": [
-   "P1 'seeded night · pb1j' (x713-833, y496): Show only 'seeded night' at 16px f-cond 600 in tx-2 #aaa498 with +.04em tracking, 8px under the title. Drop the seed code.",
-   "P1 'no scores yet' (x906-1013, y545): Left-align it at x713 in 20px tx-1. Add a 16px tx-2 line beneath, such as 'finish a run to post a score'. Or draw 5 ghost rows (rank, name, sp) at 40px pitch in the y510-580 zone.",
-   "P1 scrim and card (x681-1239, y400-680): Raise the scrim to rgba(6,7,8,.80). Either make the card a 90% centred window with a 56px header and 72px footer, or keep it as a deliberate dialog and widen it to about 720px with a 24px padding grid.",
-   "P1 'press any key' prompt (x1027-1206, y612-645): Set it to 20px f-cond 600 in tx-1. Replace the radio dot with a 24px key chip showing the live key or pad glyph, with the right edge on the 24px padding line at x1214. Make the divider --ui-line-hi #4a5257.",
-   "P2 close x (x1159-1207, y417-465): Make the glyph 20px tx-1 inside a 40px box. Add a 2px --acc border when focused. Align the box's vertical centre to the title's centre at y443 and its right edge to the 24px padding line."
+   "P1 'seeded night · zbxx' (x713-837, y496): Show only 'seeded night' at 16px f-cond 600, +.04em, in tx-2 #aaa498, 8px under the title. Drop the seed code.",
+   "P1 'no scores yet' (x713-820, y545): Draw 5 ghost rows at 40px pitch (rank, name, sp) in --ui-line at 40% opacity under the title block. Keep 'no scores yet' in tx-1 20px above them. No explanatory sentence.",
+   "P1 'press any key' prompt (x1027-1206, y612-645): Set the text to 20px f-cond 600 tx-1. Replace the dot with a 24px key chip showing the live key or pad glyph. Put the right edge on the 24px padding line at x1214. Use --ui-line-hi #4a5257 for the divider at y582.",
+   "P1 card and scrim (x681-1239, y400-680): Raise the scrim to rgba(6,7,8,.80) and add 2px blur-free darkening. Either widen the card to about 720px with a 24px padding grid, or make it a 90% window with a 56px header and 72px footer.",
+   "P2 close x (x1159-1207, y417-465): Make the glyph 20px tx-1 in a 40px box centred on y443, with the right edge at x1214. Draw a 2px --acc border when focused."
   ],
-  "pic": "tools/handoff/console/notes/shots/12-r5-after2/64-arcade-board-seeded-night-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/12-r7-after/64-arcade-board-seeded-night-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-19T01:04"
+  "when": "2026-10-19T01:38"
  },
  "70-settings-sec-controls": {
   "score": 3,

@@ -1,0 +1,138 @@
+[
+  {
+    "key": "a",
+    "verdict": "needs fixes",
+    "fixes": [
+      {
+        "find": ".mk-a .hint{font:400 16px 'Barlow','Bahnschrift',sans-serif;color:var(--tx2);margin-top:-6px}",
+        "replace": ".mk-a .hint{font:400 18px 'Barlow','Bahnschrift',sans-serif;color:var(--tx2);margin-top:-6px}"
+      },
+      {
+        "find": ".mk-a .wn i{margin-left:auto;font:400 16px 'Barlow','Bahnschrift',sans-serif;font-style:normal;color:var(--tx2)}",
+        "replace": ".mk-a .wn i{margin-left:auto;font:400 18px 'Barlow','Bahnschrift',sans-serif;font-style:normal;color:var(--tx2)}"
+      },
+      {
+        "find": ".mk-a .rl{font:600 16px var(--cond);letter-spacing:.04em;fill:#dcc3f4}",
+        "replace": ".mk-a .rl{font:600 16px var(--cond);letter-spacing:.04em;fill:#e8e9e6}"
+      }
+    ],
+    "optional": [
+      {
+        "why": "strict reading of 'amber only for warnings': the p1 amber focus ring on ascend is not a warning",
+        "find": ".mk-a .ar{height:88px;padding:3px;background:var(--p1);",
+        "replace": ".mk-a .ar{height:88px;padding:3px;background:var(--tx);"
+      }
+    ],
+    "manual": [],
+    "notes": [
+      "The first two fixes are sentence-style hints at 16px, which is under the 18px body floor. All other 16px text is a label, badge or key cap, which is fine.",
+      "After the .hint change the sentence wraps to 2 lines in the 252px conditions column. The column then uses about 691 of 702px, so it still fits. Do not add anything else to it.",
+      "#dcc3f4 (keyed room labels) is the only off-palette colour that was not a plain neutral grey.",
+      "All required functions are present: map, surface, weather, 4 kits, pack counts, data core, going-up chips, armour warning, ascend, close X, key and pad hints.",
+      "Checked and clean: lower case, no 'raider', no cash control, all selectors prefixed .mk-a, no scripts or external URLs, nothing outside 1920x1080.",
+      "Layout checked: the right column uses about 733 of 774px and the footer strip about 1540 of 1648px. The map text is 1:1 at 16 and 20px. Tile sub-lines fit in the 179px of text width with about 30px to spare.",
+      "p1 amber and p2 cyan seat chips follow his R2 answer, so they are fine as identity colours.",
+      "The map geometry is invented and differs from mockups b, c and d. Implementation must draw the real map."
+    ]
+  },
+  {
+    "key": "b",
+    "verdict": "ok",
+    "fixes": [],
+    "optional": [
+      {
+        "why": "strict reading of 'amber only for warnings': the p1 amber focus ring on ascend is not a warning",
+        "find": ".mk-b .ring{width:436px;height:100px;flex:none;padding:3px;background:var(--s1);",
+        "replace": ".mk-b .ring{width:436px;height:100px;flex:none;padding:3px;background:var(--tx);"
+      }
+    ],
+    "manual": [],
+    "notes": [
+      "No required violations: lower case, no 'raider', no money or cash control, lime only for selected or ascend, fonts correct, all selectors prefixed .mk-b, no scripts or external URLs.",
+      "All functions are present: map, surface, weather, 4 kits with lb/rb, gun cards, 6 item tiles with counts, armour tile with the amber 'none worn', data core tile, going-up pills with the amber 'no armour equipped', ascend, close X, key and pad hints.",
+      "Two cards are exactly full, so do not change anything in them. The conditions card needs 268 of 268px, and the map card needs 374 of 374px (40+12+246+12+64). Bumping a font or adding a row there will overflow.",
+      "'smoke canister' and 'blast freezer key' wrap to 2 lines inside the 113px name column. They still fit in the 71px tile body, so nothing is clipped.",
+      "Map text is about 15.9px, since the svg scales to 0.99. That is above the 15px floor but with no margin. Do not shrink the .mp box.",
+      "The ammo stepper '90/240' fits the 167px tile with about 17px to spare.",
+      "Left column checked: 750px content, 96px kit bar, 632px bench, 534px grid, gun cards 328 and 190px. Nothing is outside 1920x1080."
+    ]
+  },
+  {
+    "key": "c",
+    "verdict": "needs fixes",
+    "fixes": [
+      {
+        "find": ".mk-c .cap{right:32px;top:92px;width:360px;text-align:center;font-size:16px;color:var(--mu)}",
+        "replace": ".mk-c .cap{right:32px;top:92px;width:360px;text-align:center;font-size:18px;color:var(--mu)}"
+      }
+    ],
+    "optional": [
+      {
+        "why": "strict reading of 'amber only for warnings': the p1 amber focus outline on the kit tile is not a warning",
+        "find": ".mk-c .fc{outline:3px solid var(--p1);outline-offset:4px}",
+        "replace": ".mk-c .fc{outline:3px solid var(--tx);outline-offset:4px}"
+      }
+    ],
+    "manual": [
+      "Surface and weather are not drawn anywhere. Step 2 'conditions' only shows as a read-only chip reading 'day · surprise me'. The day/night and surprise me/clear/rain/fog/blackout/storm controls with their xp badges (+20%, +10%) have no frame, so the mockup drops two required functions. Add a second frame for step 2, or put the surface and weather chips on this screen. There is no room in the current layout, so the map recap card (about 40px free under the stats) would have to shrink."
+    ],
+    "notes": [
+      "The .cap fix: 'p2 goes up with you' is a sentence at 16px, under the 18px body floor. At 18px it still fits (about 20px tall, ending at y=112 inside the 124px summary bar).",
+      "Everything else passes: lower case, no 'raider', no money or cash chip, all selectors prefixed .mk-c, no scripts or external URLs, fonts correct. The map labels are 16px at 1:1 scale.",
+      "Layout checked: step bar, kit row, pack grid (326 of 406px), map recap, summary bar and hint strip all fit with no overlap and nothing outside 1920x1080. The 4 kits, 10 pack tiles with counts, data core toggle, going-up chips, amber 'no armour equipped', ascend, close X and key and pad hints are all present.",
+      "The gold --c4 #ffc72e on the data core icons and best-kit pistol reads as amber next to the warning chip. This is fine only if gold is the game's top rarity colour. Otherwise use var(--c3).",
+      "Ascend is bound to pad y here, while mockups a, b and d use a. Pick one binding across the screen."
+    ]
+  },
+  {
+    "key": "d",
+    "verdict": "needs fixes",
+    "fixes": [
+      {
+        "find": "<span class=\"bk\"><b>$9,900</b> banked</span>",
+        "replace": ""
+      },
+      {
+        "find": ".mk-d .hnt{align-self:center;font:500 16px/1 var(--c);letter-spacing:.04em;color:rgba(235,229,214,.62)}",
+        "replace": ".mk-d .hnt{align-self:center;font:500 18px/1 var(--c);letter-spacing:.04em;color:rgba(235,229,214,.62)}"
+      },
+      {
+        "find": ".mk-d .bxo{position:relative;height:60px;padding:8px 12px;",
+        "replace": ".mk-d .bxo{position:relative;height:60px;padding:8px 10px;"
+      }
+    ],
+    "optional": [
+      {
+        "why": "p2 seat chip is missing (a, b and c show p1 and p2)",
+        "find": "<div class=\"seat\"><i></i>p1 &middot; host</div>",
+        "replace": "<div class=\"seat\"><i></i>p1 &middot; host</div><div class=\"seat\"><i style=\"background:#38d6ff\"></i>p2 &middot; joined</div>"
+      },
+      {
+        "why": "map numerals render at 15.2px, barely above the 15px floor",
+        "find": ".mk-d .map .bn{font-size:16px;fill:#ebe5d6;text-anchor:middle}",
+        "replace": ".mk-d .map .bn{font-size:17px;fill:#ebe5d6;text-anchor:middle}"
+      },
+      {
+        "why": "hide the made-up threat pips (first pair) and their column header (second pair) until real zone data exists",
+        "find": ".mk-d .pp{display:flex;gap:4px}",
+        "replace": ".mk-d .pp{display:none}"
+      },
+      {
+        "find": "<div class=\"zh\"><span>zone</span><span>threat</span></div>",
+        "replace": "<div class=\"zh\"><span>zone</span></div>"
+      }
+    ],
+    "manual": [
+      "Off-palette: the cream paper #ebe5d6 and ink #17150f (plus every rgba(235,229,214,x) and rgba(23,21,15,x), and the #ebe5d6 ring on the ascend button) are not game colours, and the cream sheet is the brightest thing on screen. Re-skin the sheet to the dark panel tokens used in a and b: panel #181b1e, cell #1d2124, line #343a3f, text #e8e9e6, dim #9da3a8. Make the selected state a lime tint (rgba(230,255,61,.16) plus a lime border) instead of an ink fill with lime text. This cannot be done as a few find/replace pairs.",
+      "The zone threat pips and the zone notes ('wet, dark, slow going', 'best loot, most traffic') are invented game facts. Drop them or fill them from real map data, since numbers shown to players must come from the real source."
+    ],
+    "notes": [
+      "The $9,900 banked readout contradicts this mockup's own 'no cash chip' claim and the rule that nothing is cash-to-take. Money format is correct, but the readout should go.",
+      "The .hnt fix: 'equip plates on the surface' is a sentence at 16px. At 18px the worst case is a third chip row, which still fits (about 666 of 672px).",
+      "The .bxo fix: 'surprise me' needs about 92px in a 93px box, so a fallback font could overflow. Tighter padding gives room.",
+      "Other checks pass: lower case, no 'raider', all selectors prefixed .mk-d, no scripts or external URLs, fonts correct. Functions present: map, surface, weather, 4 kits, pack with counts, data core, going-up chips, amber 'no armour equipped', ascend, close X, key and pad hints.",
+      "Layout checked: left page 656 of 672px, right page 640 of 672px, footer and ascend button fit. Nothing is outside 1920x1080.",
+      "The d footer shows pad 'b back', but the PAD description has a and b changing counts. Settle which one b does."
+    ]
+  }
+]
