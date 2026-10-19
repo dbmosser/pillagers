@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.74 - CORNER READOUT ONE QUIET LABEL STYLE
+
+Co-op hunt while he was away. Critic: the credits, xp, stash and bag readout used four treatments. Labels and the stash and bag figures now share one style (16px, 600, second text colour, 0.04em).
+
+MEASURED. Check 31.74 passes, and fails on v31.73.
 ## v31.73 - PARTY CARD PROMPT IS 24PX, WITH A FOOTER RULE
 
 Co-op hunt while he was away. The critic scored the party cards 3 after v31.68: the press any key prompt is the primary action but draws at 20px, the size of the table text, and the card has no footer row. The prompt is now 24px with a 32px glyph, and a hairline above the footer row gives header, body, footer. Restyle only.

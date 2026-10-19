@@ -483,17 +483,17 @@
  "55-arcade-run-over-scored": {
   "score": 3,
   "pass": false,
-  "verdict": "The card is identical to the old one, so none of the earlier advice was applied; only the blurred background characters moved. It is clean and lower case but still a small, left-heavy card with a weak prompt and a hero that reads 'score 0 sp'.",
+  "verdict": "The card is clean and all lower case, but the hierarchy is still flat: the title, subline, hero and stats stay small and left-heavy in a wide empty card, and the new divider line and larger prompt barely change that.",
   "findings": [
-   "P1 hero 'score 0 sp': Add a 16px tx-2 'score' label above a 56px f-cond 800 '0 sp'. For a zero run, dim the number to tx-2 or replace it with 'no haul'. Alternatively, align the hero and stats to a shared grid.",
-   "P1 'press any key' prompt, bottom-right: Set the text to 20px f-cond 700 tx-1. Draw the device glyph at 24px with a full-strength --acc (#e6ff3d) ring. Keep it on a 24px bottom-right margin.",
-   "P1 title 'run over': Set the title to 32px f-cond 700 tx-1. Put 8px between the title and the subline. Keep the 36×3px lime tab flush with the title's left edge.",
-   "P2 subline 'ended early -50%': Keep 'ended early' in tx-2 at 16px and colour '-50%' in --warn (#f5b73b).",
-   "P2 stats row (kills, extractions, deaths): Set labels to 16px tx-2 and values to 24px tx-1, with 4px between them. Use equal columns across the inner width, or add a fourth stat such as 'time'. Cut the gap above the prompt to 24px."
+   "P1 hero 'score 0 sp': Add a 16px tx-2 'score' label. Set '0 sp' at 56px f-cond 800. For a zero run, dim the number to tx-2. Put 16px above the hero and 24px below it to the divider.",
+   "P1 'press any key' prompt, bottom-right: Set the text to tx-1, 20px f-cond 700. Use a 24px glyph with a full --acc (#e6ff3d) ring and dot. Keep it 24px from the card's right and bottom edges, and 16px under the divider.",
+   "P1 stats row and the new bottom divider: Delete the divider, or inset it to 634 to 1286 with 24px of space above and below. Use three equal 217px columns, with values at 24px tx-1, labels at 16px tx-2 and a 4px gap.",
+   "P1 title 'run over' and subline: Set the title to 32px f-cond 700 tx-1 with 8px to the subline. Drop the tab to sit flush with the title's left edge, or move it to the card's left edge as a 3px full-height bar.",
+   "P2 subline 'ended early -50%': Use 16px. Keep 'ended early' in tx-2 and colour '-50%' in --warn #f5b73b."
   ],
-  "pic": "tools/handoff/console/notes/shots/12-r5-after/55-arcade-run-over-scored-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/12-r5-after2/55-arcade-run-over-scored-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-19T00:46"
+  "when": "2026-10-19T01:04"
  },
  "60-abandoned-card": {
   "score": 2,
@@ -611,17 +611,17 @@
  "64-arcade-board-seeded-night": {
   "score": 2,
   "pass": false,
-  "verdict": "Only the random seed text and the background characters changed; the small card, tiny subtitle, centred empty state and weak prompt are identical to the version I already marked down.",
+  "verdict": "The second pass only adds a divider line and a slightly larger prompt, so the small card still has a tiny seed caption, a centred 'no scores yet' floating in dead space, a mushy scrim and a prompt with no key chip, which is still a 2.",
   "findings": [
-   "P1 card (x681-1239, y400-680): Make it a 90% centred card, or keep it a fixed small ask dialog with a 24px padding grid. Raise the scrim to rgba(6,7,8,.80). Build the 5-row rank/name/sp layout so the empty state sits inside that frame.",
-   "P1 'seeded night · vrrz' (x713-833, y496): Set it to 16px f-cond 600 in tx-2 #aaa498 with +.04em tracking, 8px under the title. Drop the seed code or show only 'seeded night'.",
-   "P1 'no scores yet' (x906-1013, y545): Left-align it to x713 in 20px tx-1, with an optional 16px tx-2 line beneath, in a body zone of y520-600.",
-   "P1 'press any key' prompt (x1065-1206, y615-642): Set it to 20px f-cond 600 in tx-1, with a 24px key chip showing the actual key or pad button, right-aligned to the 24px padding line.",
-   "P2 close x (x1159-1207, y417-465): Make the glyph 20px tx-1 with a 2px --acc border when focused. Align the top to the title cap line and the right edge to the 24px padding line."
+   "P1 'seeded night · pb1j' (x713-833, y496): Show only 'seeded night' at 16px f-cond 600 in tx-2 #aaa498 with +.04em tracking, 8px under the title. Drop the seed code.",
+   "P1 'no scores yet' (x906-1013, y545): Left-align it at x713 in 20px tx-1. Add a 16px tx-2 line beneath, such as 'finish a run to post a score'. Or draw 5 ghost rows (rank, name, sp) at 40px pitch in the y510-580 zone.",
+   "P1 scrim and card (x681-1239, y400-680): Raise the scrim to rgba(6,7,8,.80). Either make the card a 90% centred window with a 56px header and 72px footer, or keep it as a deliberate dialog and widen it to about 720px with a 24px padding grid.",
+   "P1 'press any key' prompt (x1027-1206, y612-645): Set it to 20px f-cond 600 in tx-1. Replace the radio dot with a 24px key chip showing the live key or pad glyph, with the right edge on the 24px padding line at x1214. Make the divider --ui-line-hi #4a5257.",
+   "P2 close x (x1159-1207, y417-465): Make the glyph 20px tx-1 inside a 40px box. Add a 2px --acc border when focused. Align the box's vertical centre to the title's centre at y443 and its right edge to the 24px padding line."
   ],
-  "pic": "tools/handoff/console/notes/shots/12-r5-after/64-arcade-board-seeded-night-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/12-r5-after2/64-arcade-board-seeded-night-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-19T00:46"
+  "when": "2026-10-19T01:04"
  },
  "70-settings-sec-controls": {
   "score": 3,

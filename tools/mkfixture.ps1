@@ -6101,6 +6101,18 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.74',what:'the corner readout labels and the stash and bag figures share one quiet style: 16px, weight 600, the same colour and tracking',
+   run:function(){
+     var el=document.getElementById('topright'), bad=[], sm, ts, a, b;
+     if(!el) return 'SKIP: no corner readout';
+     try{
+       __topClear(); if(typeof syncTopRight==='function'){ _trLast=''; syncTopRight(); }
+       sm=el.querySelector('small'); ts=el.querySelector('.trsub');
+       if(!sm||!ts) return 'SKIP: the readout is empty here (demo)';
+       a=getComputedStyle(sm); b=getComputedStyle(ts);
+       if(a.fontSize!==b.fontSize||a.fontWeight!==b.fontWeight||a.color!==b.color||a.letterSpacing!==b.letterSpacing) bad.push('labels and stash/bag differ: '+a.fontSize+'/'+a.fontWeight+'/'+a.letterSpacing+' vs '+b.fontSize+'/'+b.fontWeight+'/'+b.letterSpacing);
+     }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
+     return bad.length?bad.join('; '):null; }},
   {v:'31.73',what:'the party card prompt is 24px (not 20px) so the eye lands on it (critic on 46 55 56 64: press any key is the same size as the table text)',
    run:function(){
      if(typeof arcadeAttEl!=='function'||typeof arcadeAttHow!=='function'||typeof attEl!=='function') return 'SKIP: no arcade attract here';

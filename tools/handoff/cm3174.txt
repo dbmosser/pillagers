@@ -1,0 +1,7 @@
+v31.74: corner readout one quiet label style
+
+The corner readout labels match.
+
+Check 31.74. Fails on v31.73.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

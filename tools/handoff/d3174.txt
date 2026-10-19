@@ -1,0 +1,5 @@
+## v31.74 - CORNER READOUT ONE QUIET LABEL STYLE
+
+Co-op hunt while he was away. Critic: the credits, xp, stash and bag readout used four treatments. Labels and the stash and bag figures now share one style (16px, 600, second text colour, 0.04em).
+
+MEASURED. Check 31.74 passes, and fails on v31.73.
