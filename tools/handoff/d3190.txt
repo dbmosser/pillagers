@@ -1,0 +1,5 @@
+## v31.90 - PAD LOST AND PRESS A
+
+Co-op hunt while he was away. J8: a pad gap was only handled by a focus dependent event, the box promised a resume it did not perform, and another pad could take its slot.
+
+MEASURED. Check 31.90 passes, and fails on v31.89.

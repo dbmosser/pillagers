@@ -93,7 +93,7 @@ WHAT A WINDOWS UPDATE RESTART DOES IN THE VM, AND HOW THE LANES COME BACK  (docu
      3. within 15 minutes the "Pillagers runner" task fires, runner-guard.vbs checks the marker host-stopped.txt, and starts nightly.sh. nightly.sh refuses to
         start while the old heartbeat is under 10 minutes old, so the first try may be skipped and the next one (15 minutes later) takes it: allow about 25 minutes;
      4. the runner starts the lanes again and they pick up from the job queue and the files on disk. A job that was running at the restart is lost and
-        runs again. A ship that was in the middle of a push may leave tools\handoff's ship lock behind; it is cleared ONLY by
+        runs again. A ship that was in the middle of a push may leave the ship lock (the folder shipq.lock in the helper scratch folder) behind; it is cleared ONLY by
         tools/handoff/shipkit/clearstale.sh (a lock whose process is gone counts as stale after about 2 minutes), which the coordinator or the lane
         rules run - never delete the lock by hand. A killed git can also leave .git\index.lock; the same rule: check that no git is running, then delete only that file.
      5. the coordinator Claude Code window does NOT come back by itself (see CLAUDE). Until it does, nobody re-arms the 30-minute check-in; the runner

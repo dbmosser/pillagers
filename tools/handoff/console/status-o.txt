@@ -1,1 +1,1 @@
-10-19 18:46 gate: shipping cw-cx-xfight (o-06-pad-controls, codex)
+10-19 18:55 gate: shipping cw-cx-padlost (o-07-pad-lost, codex)

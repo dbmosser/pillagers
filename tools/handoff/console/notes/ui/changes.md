@@ -134,3 +134,5 @@
 2026-10-19 | o-06-pad-controls | raid gun handling | An exhausted selected gun takes the next loaded belt gun and gives one lower-case gun-name callout; better same-model DEMO copies upgrade in hand while retaining rounds. Before/after raid action pictures: pending lane two-window rig.
 2026-10-19 | o-06-pad-controls | live pad prompts | Device identification selects Xbox button pictures for every live pad. Reason for replacing older automatic-make selection: his 2.35 a requires Xbox only. Before: no custom recipe capture. After: pending lane pad-controls-pause and pad-controls-layout pictures.
 
+2026-10-19 | o-07-pad-lost | raid pause and partner HUD | existing pause title becomes pad lost, then press a; existing partner HUD plate says p1 pad lost or p2 pad lost; no sizes or spacing changed | before: recovery states unavailable on v31.89 | after: pending lane camera-recipes.json pictures j8-p1-pad-lost, j8-p2-pad-lost, j8-p1-press-a, j8-p2-press-a, j8-p1-sees-p2-lost, j8-p2-sees-p1-lost
+

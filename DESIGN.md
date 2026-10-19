@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.90 - PAD LOST AND PRESS A
+
+Co-op hunt while he was away. J8: a pad gap was only handled by a focus dependent event, the box promised a resume it did not perform, and another pad could take its slot.
+
+MEASURED. Check 31.90 passes, and fails on v31.89.
 ## v31.89 - X RELOADS IN A FIGHT
 
 Co-op hunt while he was away. His 3.10 b: X stays reload and search and reload wins while a fight is on.

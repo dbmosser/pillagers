@@ -2996,7 +2996,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.89';
+var VER='31.90';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18258,6 +18258,36 @@ function padXMode(mateDown){
   if(inCombatNow()&&!p.hand&&p.wep&&p.ammo<p.wep.mag&&(rlHave(p)||p.reloading>0)) return 'KeyR';
   return (G.nearContainer||G.nearPad||G.nearDoor||G.nearPed||G.nearForge||(G.nearSeal&&!G.nearSeal.done)||(G.nearStray&&G.nearStray.found&&!G.nearStray.hostile))?'KeyE':'KeyR';
 }
+// v28.xx (cw-cx-padlost): J8, "pad lost", then "press a"; poll even in the covered window.
+function padLostStart(ix){
+  if(!G||G.over||G.sim||state!=='raid') return;
+  PAD.lossRaid=G; PAD.lossIx=ix;
+  if(!PAD.lost||PAD.lost.raid!==G) PAD.lost={raid:G,ix:ix,ready:false};
+  padRelease(); PAD.on=false; PAD.mx=0; PAD.my=0; PAD.aiming=false;
+  PAD.prev=[]; PAD.mSpent=null; PAD.prevMap=null;
+  if(!pauseOpen) togglePauseBox(true);
+  var h=document.querySelector('#pausebox h3'); if(h) h.textContent='pad lost';
+}
+function padLostPoll(gp){
+  var live=!!(G&&!G.over&&!G.sim&&state==='raid'), lost=PAD.lost;
+  if(!live||PAD.lossRaid!==G){ PAD.lost=null; lost=null; PAD.lossRaid=live?G:null; PAD.lossIx=-1; }
+  if(!live) return false;
+  if(!lost&&gp&&gp.connected){ PAD.lossIx=gp.index; return false; }
+  if(!lost&&PAD.lossIx>=0){ padLostStart(PAD.lossIx); lost=PAD.lost; }
+  if(!lost) return false;
+  var ready=!!(gp&&gp.connected&&gp.index===lost.ix), b=ready&&gp.buttons&&gp.buttons[0], a=!!(b&&(b.pressed||b.value>0.5));
+  lost.ready=ready;
+  padRelease(); PAD.mx=0; PAD.my=0; PAD.aiming=false;
+  if(!pauseOpen) togglePauseBox(true);
+  var h=document.querySelector('#pausebox h3'); if(h) h.textContent=ready?'press a':'pad lost';
+  if(a){
+    PAD.lost=null; PAD.on=true; PAD.ix=gp.index;
+    PAD.prev=[]; PAD.mSpent=[]; PAD.prevMap=null;
+    for(var i=0;i<(gp.buttons||[]).length;i++){ var q=gp.buttons[i], down=!!(q&&(q.pressed||q.value>0.35)); PAD.prev[i]=down; PAD.mSpent[i]=down?1:0; }
+    indevPadTick(gp); padBodyCls(); togglePauseBox(false);
+  }
+  return true;
+}
 function pollPad(){
   if(!navigator.getGamepads) return;
   if(typeof SNIP==='object'&&SNIP&&SNIP.on) return;   // v30.xx (cw-snip): the pad is not read while a snip is up, so a press cannot reach a menu under it
@@ -18267,7 +18297,10 @@ function pollPad(){
   // connected pad, while it hands the other window the state of that window's pad; not in front, the state the window in
   // front handed over. Outside those modes the first connected pad, as ever, and nothing below this line is asked.
   if(typeof NET!=='undefined'&&NET&&NET.same) gp=netPadTick(gps);
+  // v28.xx (cw-cx-padlost): a raid keeps its slot through a gap; another pad cannot resume it.
+  else if(G&&PAD.lossRaid===G&&PAD.lossIx>=0) gp=(gps[PAD.lossIx]&&gps[PAD.lossIx].connected)?gps[PAD.lossIx]:null;
   else for(var i=0;i<gps.length;i++){ if(gps[i]&&gps[i].connected){ gp=gps[i]; break; } }
+  if(padLostPoll(gp)){ RUMBLE.gp=null; return; }
   RUMBLE.gp=(gp&&gp.vibrationActuator&&typeof gp.vibrationActuator.playEffect==='function')?gp:null;   // v17.37: the pad this window plays, for padRumble
   if(gp&&typeof gp.index==='number') PAD.ix=gp.index;   // v18.52, from the code comb (2026-10-07): the last pad this window played, own or handed over, for the unplug handler
   PAD.brand=padBrandOf(gp);   // v17.78: the pad make, for the prompts
@@ -18720,7 +18753,8 @@ window.addEventListener('gamepaddisconnected',function(ev){
   // last played (PAD.ix, kept by pollPad); in a same machine pair a window that never played a pad (the keyboard player) ignores them all.
   if(_gi>=0&&((typeof PAD.ix==='number')?(_gi!==PAD.ix):!!(typeof NET==='object'&&NET&&NET.same))) return;
   padRelease(); PAD.on=false; PAD.announced=false; PAD.mx=0; PAD.my=0; PAD.aiming=false; padBodyCls();
-  if(typeof G!=='undefined'&&G&&!G.over&&!G.sim&&typeof state!=='undefined'&&state==='raid'){ try{ if(!pauseOpen) togglePauseBox(true); }catch(_pd){} try{ say('CONTROLLER DISCONNECTED','sys',{sub:'RECONNECT TO RESUME'}); }catch(_pd2){} }   // v22.xx (R55): a system label in caps   // v23.xx (tr9fixm): a short detail, never an explaining sentence
+  // v28.xx (cw-cx-padlost): the event is a fast path; the polling path does not depend on focus.
+  if(typeof G!=='undefined'&&G&&!G.over&&!G.sim&&state==='raid'){ padLostStart(_gi); try{ say('CONTROLLER DISCONNECTED','sys'); }catch(_pd2){} }
 });
 cv.addEventListener('contextmenu',function(e){e.preventDefault();});
 // v10.96: the character screen is written at boot, from the profile as it was
@@ -49777,7 +49811,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.89: A fresh X press reloads in combat when rounds can be loaded. Revives still work. Check 31.89 fails on v31.88',
+  now:'v31.90: A lost pad pauses its own window. Its slot stays reserved, the other window keeps running with a small loss tag, and physical A resumes when that slot returns. Check 31.90 fails on v31.89',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -54984,10 +55018,14 @@ try{ netPadOrderFix(); }catch(_pof){}
 // player 2 window, and a pad coming back to a lower slot swapped the two. Now, with was, a side keeps its pad while it stays
 // plugged in, player 2 never takes the pad the host is on, and only a pad nobody is on fills a side with none. A pick clears it.
 function netPadWasFor(){ var w=NET.padWas; return (w&&w.pair===NET.pair)?w:null; }
-function netPadStick(host,p2){ NET.padWas={pair:NET.pair,host:netPadIxOk(host),p2:netPadIxOk(p2)}; }
+// v28.xx (cw-cx-padlost): keep both reservations when one slot is absent; a new pair or an explicit pick clears them as before.
+function netPadStick(host,p2){ var w=netPadWasFor(); NET.padWas={pair:NET.pair,host:host>=0?netPadIxOk(host):(w?w.host:-1),p2:p2>=0?netPadIxOk(p2):(w?w.p2:-1)}; }
 function netPadFor(side,pick,taken,gps,was){
   var i, n=(gps&&gps.length)||0, held=-1;
   pick=netPadIxOk(pick); taken=netPadIxOk(taken);
+  // v28.xx (cw-cx-padlost): a previously played slot stays reserved, including connected:false and null entries.
+  var reserved=was?netPadIxOk(side==='p2'?was.p2:was.host):-1;
+  if(reserved>=0&&(pick<0||pick===reserved)) return (reserved!==taken&&gps&&gps[reserved]&&gps[reserved].connected)?reserved:-1;
   if(side!=='p2'){
     if(pick>=0) return (pick<n&&gps[pick]&&gps[pick].connected)?pick:-1;
     // v16.35, HIS RULE of 2026-09-27: player 1 plays keyboard and mouse, player 2 takes the first controller, and a second
@@ -55014,6 +55052,9 @@ function netPadFor(side,pick,taken,gps,was){
 // The pad this window will take from the window in front: its pick; for player 2 with no pick (or a pick the host holds)
 // any pad but the sender's own (-2); for the host with no pick, none (-1).
 function netPadWant(){
+  // v28.xx (cw-cx-padlost): forwarded input must also respect the reserved slot.
+  var w=netPadWasFor(), ix=w?netPadIxOk(NET.same==='p2'?w.p2:w.host):-1;
+  if(netPadIxOk(NET.padIx)<0&&ix>=0) return ix;
   if(NET.same==='host') return (netPadIxOk(NET.padIx)>=0)?NET.padIx:-2;   // v16.35: with no pick, the second controller player 2 hands over
   // v17.26, co-op hunt 2026-09-28: a pick this window last saw unplugged, while the host picked none, takes any pad but the
   // sender own, as no pick does, since netPadFor then gives player 2 the first free pad and the host hands that one over.
@@ -55052,7 +55093,9 @@ function netPadSend(g,ix,at){   // v17.27: at is the pad the sending window play
   for(i=0;i<ax.length&&i<8;i++) a.push(Math.round((+ax[i]||0)*1000)/1000);
   // v30.xx (cw-p2pads), HIS ORDER (2026-10-18): "first controller plugged in always controls p2 only, second controller plugged in always controls p1 only". The state names the side it is for
   // (to), so the window that takes it can tell a state meant for the other player and never play it (netPadRecv).
-  if(!netSamePost({t:'pad',pair:NET.pair,ix:ix,own:NET.padIx,at:netPadIxOk(at),to:(NET.same==='host')?'p2':'host',p:p,v:v,a:a,b:padBrandOf(g)})) return false;
+  // v28.xx (cw-cx-padlost): send empty slots too, so a covered window sees loss on the next poll, without waiting for stale input.
+  var slots=netPadWasFor(), ownSlot=slots?netPadIxOk(NET.same==='p2'?slots.p2:slots.host):-1;
+  if(!netSamePost({t:'pad',pair:NET.pair,ix:ix,own:NET.padIx,at:netPadIxOk(at),to:(NET.same==='host')?'p2':'host',p:p,v:v,a:a,b:padBrandOf(g),slots:slots,lost:ownSlot>=0&&at<0})) return false;
   NET.padSent++;
   return true;
 }
@@ -55061,7 +55104,10 @@ function netPadSend(g,ix,at){   // v17.27: at is the pad the sending window play
 function netPadRecv(m){
   var ix=netPadIxOk(m.ix), own=netPadIxOk(m.own), want, i, n, v, bts=[], a=[];
   if(typeof m.own==='number') NET.padOther=own;
-  if(typeof m.to==='string'&&m.to!==NET.same) return 'padnot';   // v30.xx (cw-p2pads), HIS ORDER (2026-10-18): "my controller controls both screens at the same time, that is not the intent". A state meant for the other player is never played here
+  if(typeof m.to==='string'&&m.to!==NET.same) return 'padnot';
+  // v28.xx (cw-cx-padlost): the sender reports both reservations and its loss; only the addressed window accepts them.
+  if(m.slots&&m.slots.pair===NET.pair) netPadStick(netPadIxOk(m.slots.host),netPadIxOk(m.slots.p2));
+  if(typeof m.lost==='boolean') NET.padPeerLost=m.lost;
   want=netPadWant();
   if(ix<0){ NET.padFwd=null; return 'padnone'; }
   if(want===-1) return 'padnone';
@@ -55109,8 +55155,9 @@ function netPadDead(){ return !!(NET.same&&NET.padHad&&NET.padOkAt!==undefined&&
 // plate at LH(96)-LH(113) and never across it; a throw after the scale still restores the context. Returns what it drew.
 function netPadHud(){
   var t, w;
-  if(!netPadDead()) return '';
-  t='CONTROLLER PAUSED: click one of the game windows';
+  // v28.xx (cw-cx-padlost): reuse the existing small HUD plate; the unaffected window keeps its raid running.
+  if(NET.padPeerLost&&G&&!G.over&&state==='raid') t=NET.same==='host'?'p2 pad lost':'p1 pad lost';
+  else { if(!netPadDead()) return ''; t='CONTROLLER PAUSED: click one of the game windows'; }
   try{
     ctx.save();
     hudZoomIn('msg',W/2,0);
@@ -55168,7 +55215,10 @@ function padRumble(s,ms){
     RUMBLE.other=(other>=0&&gps[other])?gps[other]:null;   // v17.37: the pad this window reads for the other player, which buzzes when he asks
     mine=netPadFor(NET.same,NET.padIx,NET.padOther,gps,was);
     if(NET.same==='host') netPadStick(mine,other); else netPadStick(other,mine);
-    if(other>=0) netPadSend(gps[other],other,mine);
+    // v28.xx (cw-cx-padlost): local polling also draws the other pillager loss tag, while this pad keeps running.
+    var slots=netPadWasFor(), peerSlot=slots?netPadIxOk(NET.same==='host'?slots.p2:slots.host):-1;
+    NET.padPeerLost=peerSlot>=0&&other<0;
+    if(other>=0||peerSlot>=0) netPadSend(other>=0?gps[other]:null,other,mine);
     return netPadOut((mine>=0)?gps[mine]:null,true);
   }
   if(fwd&&fwd.gp&&(netPadNow()-fwd.at)<=NET_PAD_STALE) return netPadOut(fwd.gp,false);

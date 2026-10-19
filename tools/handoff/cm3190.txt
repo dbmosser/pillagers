@@ -1,0 +1,7 @@
+v31.90: pad lost and press a
+
+A lost pad pauses its own window. Its slot stays reserved, the other window keeps running with a small loss tag, and physical A resumes when that slot returns.
+
+Check 31.90. Fails on v31.89.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
