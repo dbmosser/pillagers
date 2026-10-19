@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.82 - OPERATOR CARD: ONE FRAME, 40PX X, READABLE CONFIRM
+
+Co-op hunt while he was away. The critic scored the operator card 3 of 5 on 62 and 63: the lime row wore a fill plus a ring (double frame), the armed confirm was red on maroon with low contrast and no lime focus bar, and the 48px X was heavier than the title and 4px off its centre. Restyle only, same text.
+
+MEASURED. Check 31.82 passes, and fails on v31.81.
 ## v31.81 - A KEYBOARD MARKER ON THE WINDOW THE KEYS PLAY
 
 Co-op hunt while he was away. His answer 3.5 c: the keys play whichever window is in front, plus a marker on each screen showing where the keyboard is. With two windows paired, the front one now wears a small keyboard chip in its top left corner and the other wears none. A lone window never shows it.

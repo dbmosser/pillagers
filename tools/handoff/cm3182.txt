@@ -1,0 +1,7 @@
+v31.82: operator card: one frame, 40px x, readable confirm
+
+The operator card has one frame on the lime row, a lighter 40px X, and the armed confirm is readable.
+
+Check 31.82. Fails on v31.81.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

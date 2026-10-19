@@ -1,0 +1,24 @@
+{
+    "title":  "OPERATOR CARD: ONE FRAME, 40PX X, READABLE CONFIRM",
+    "why":  "The critic scored the operator card 3 of 5 on 62 and 63: the lime row wore a fill plus a ring (double frame), the armed confirm was red on maroon with low contrast and no lime focus bar, and the 48px X was heavier than the title and 4px off its centre. Restyle only, same text.",
+    "now":  "The operator card has one frame on the lime row, a lighter 40px X, and the armed confirm is readable.",
+    "edits":  [
+                  {
+                      "anchor":  "top:var(--sp-3);right:var(--sp-3);width:var(--btn-h-sm);height:var(--btn-h-sm);padding:0;display:flex;align-items:center;justify-content:center;background:transparent;color:var(--tx-1)",
+                      "replacement":  "/* v31.xx (cw-partylook9), critic on 62 and 63 (3 of 5): the 48px X was heavier than the 32px title and its centre sat 4px off the title. 40px, centred on the title line, right edge on the 32px content edge. */top:calc(var(--sp-4) - 2px);right:var(--sp-4);width:var(--btn-h-xs);height:var(--btn-h-xs);padding:0;display:flex;align-items:center;justify-content:center;background:transparent;color:var(--tx-1)"
+                  },
+                  {
+                      "anchor":  "fg=red?\u0027var(--danger)\u0027:\u0027var(--tx-1)\u0027;",
+                      "replacement":  "fg=(red\u0026\u0026ex)?\u0027var(--danger)\u0027:\u0027var(--tx-1)\u0027;   /* v31.xx (cw-partylook9) critic 63 (3 of 5): red text on the maroon fill was only about 3.5 to 4 to 1. The armed confirm keeps the danger fill and border but reads in tx-1, with the lime focus bar every other row has. Exit demo stays red while focused. */"
+                  },
+                  {
+                      "anchor":  "(on?(red?\u0027var(--danger)\u0027:\u0027var(--acc)\u0027):bc))+\u0027;\u0027+",
+                      "replacement":  "(on?((red\u0026\u0026ex)?\u0027var(--danger)\u0027:\u0027var(--acc)\u0027):bc))+\u0027;\u0027+"
+                  },
+                  {
+                      "anchor":  "((i===0\u0026\u0026!ARCOP.arm\u0026\u0026on)?\u0027box-shadow:0 0 0 2px var(--ui-panel),0 0 0 4px var(--acc);\u0027:\u0027\u0027);",
+                      "replacement":  "\u0027\u0027;   /* v31.xx (cw-partylook9) critic 62 (3 of 5): the lime fill plus a 2px ring and glow was a double frame. One treatment: the fill. */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the operator card: the X is 40px, the focused lime New party row has no second ring, and the armed confirm reads in the body text colour with the lime focus bar (critic on 62 and 63: 3 of 5)\u0027,\n   run:function(){\n     if(typeof arcadeOpOpen!==\u0027function\u0027||typeof arcadeOpClose!==\u0027function\u0027||typeof arcadeOpPick!==\u0027function\u0027||typeof ARCADE!==\u0027object\u0027||!ARCADE) return \u0027SKIP: no operator card\u0027;\n     var was=ARCADE.on, op, x, bs, res=null, p, tx, acc, cs;\n     try{\n       ARCADE.on=true;\n       if(!arcadeOpOpen()) return \u0027the operator card did not open\u0027;\n       op=document.getElementById(\u0027arcop\u0027); if(!op) return \u0027no operator card element\u0027;\n       x=op.querySelector(\u0027.arcopx\u0027); if(!x) return \u0027no close X\u0027;\n       if(Math.abs(parseFloat(getComputedStyle(x).width)-40)\u003e1.5) res=\u0027the X is \u0027+getComputedStyle(x).width+\u0027 wide, not 40\u0027;\n       bs=op.querySelectorAll(\u0027button[data-op]\u0027);\n       if(!res\u0026\u0026getComputedStyle(bs[0]).boxShadow!==\u0027none\u0027) res=\u0027the focused New party row has a second ring: \u0027+getComputedStyle(bs[0]).boxShadow;\n       if(res) return res;\n       arcadeOpPick(0);\n       op=document.getElementById(\u0027arcop\u0027); bs=op.querySelectorAll(\u0027button[data-op]\u0027);\n       p=document.createElement(\u0027i\u0027); p.style.color=\u0027var(--tx-1)\u0027; document.body.appendChild(p); tx=getComputedStyle(p).color; p.style.color=\u0027var(--acc)\u0027; acc=getComputedStyle(p).color; p.remove();\n       cs=getComputedStyle(bs[0]);\n       if(!/confirm/i.test(bs[0].textContent)) return \u0027the row did not arm: \u0027+bs[0].textContent;\n       if(cs.color!==tx) res=\u0027the armed confirm text is \u0027+cs.color+\u0027, not the body text colour \u0027+tx;\n       else if(cs.borderLeftColor!==acc) res=\u0027the armed confirm has no lime focus bar: \u0027+cs.borderLeftColor;\n       return res;\n     } finally { try{ arcadeOpClose(); }catch(e){} ARCADE.on=was; }\n   }},"
+}
