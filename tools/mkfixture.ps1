@@ -6101,6 +6101,16 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.56',what:'the what is new card is stamped within 0.15 of the build and leads with the new news shown whole',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';
+     if(parseFloat(WHATSNEW_VER)>31.56+0.001) return 'SKIP: the card has moved on, a later card check covers it';
+     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER);
+     if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
+     if(String(WHATSNEW[1]).indexOf('POLISH'+' PASS 29.')!==0) bad.push('the card does not lead with the new news');
+     else if(wnShort(WHATSNEW[1]).slice(-3)==='...') bad.push('the new line is cut on the card');
+     if(String(WHATSNEW[0]).indexOf('THIS IS AN'+' ALPHA')!==0) bad.push('the card no longer opens with the alpha line');
+     return bad.length?bad.join('; '):null; }},
   {v:'31.55',what:'cw-mapstyle3: on the sector map card the marker tags sit at their own marks, every contract row has a bar (a rule contract too) and a full list runs to the bottom of the map frame, the hot ground has no explaining line, zone names are at the label size, and the sector name and the muted words sector map sit on one baseline',
    run:function(){
      if(typeof mapCard!=='function'||typeof mapContractRows!=='function') return 'no map card in this build (mapCard or mapContractRows is missing)';

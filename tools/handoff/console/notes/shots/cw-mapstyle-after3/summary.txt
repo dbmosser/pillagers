@@ -1,10 +1,16 @@
 == 1080 : window 1952x1183, viewport 1920x1080
-  60-mapfirst-1p                         staged       6.3s  
-  61-mapfirst-pad                        staged       5.9s  
-  62-mapfirst-2p-wait                    staged       7.4s  
-  63-map-open-m                          staged       6.7s  
-  64-map-open-demo                       staged       6.2s  
-  65-map-open-tv                         staged       6.6s  
-  66-map-open-p2                         staged       6.6s  
-== 1080 : window 1952x1183, viewport 1920x1080
-  60-mapfirst-1p                         staged       6.3s  
+  60-mapfirst-1p                         staged       7.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  61-mapfirst-pad                        staged       6.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  62-mapfirst-2p-wait                    staged       8.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  63-map-open-m                          staged       6.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  64-map-open-demo                       staged       6.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  65-map-open-tv                         staged       6.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  66-map-open-p2                         staged       7.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+== 4k : window 3872x2263, viewport 3840x2160
+  60-mapfirst-1p                         staged       7.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  61-mapfirst-pad                        staged       7.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  62-mapfirst-2p-wait                    staged       8.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  63-map-open-m                          staged       7.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  64-map-open-demo                       staged       7.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  65-map-open-tv                         staged       7.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  66-map-open-p2                         staged       7.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0

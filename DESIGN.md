@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.56 - THE WHAT IS NEW CARD NAMES POLISH PASS 29
+
+Co-op hunt while he was away. The card was stamped v31.40 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
+
+MEASURED. Check 31.56 passes, and fails on v31.55.
 ## v31.55 - THE SECTOR MAP, THIRD PASS
 
 Co-op hunt while he was away. The critic scored the sector map card 3 of 5 again and named what was left: marker tags that floated away from their marks (the mark under a tag was treated as an obstacle, so a tag was pushed up a whole line), contract rows that were uneven (a bar on some rows, a word on the rule rows) and a panel that ended short of the map frame, a hot ground tag with a second explaining line that crossed the ring, zone names still loud against the marks, walls that competed with the tags, and the sector name and the muted words sector map on different baselines.

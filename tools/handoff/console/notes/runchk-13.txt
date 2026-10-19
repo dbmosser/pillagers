@@ -1,0 +1,5 @@
+10.74: SKIP: on a 977 pixel screen a full bag does not fill the card, so the buttons cannot be pushed off it
+10.65: PASS
+11.32: PASS
+11.65: PASS
+ALL DONE

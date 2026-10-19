@@ -236,10 +236,17 @@
  "38-extracted-card": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, centred end card with a clear hero number and a single amber primary, but it's too crowded vertically, still uses '$' and several small explanatory lines, and its title, hero and chip rows compete.",
-  "pic": "tools/handoff/console/notes/shots/13-i1/38-extracted-card-1080.jpg",
+  "verdict": "the extracted card is clean and has a clear hierarchy (teal title, $1,770 hero number, lime primary button), but the card is a narrow 718px column rather than the near-full-screen window, and it carries small muted text, a stack of unrelated small elements and a missing pad focus indicator.",
+  "findings": [
+   "P1 whole card: widen the card to about 90% of the screen, or at least about 1100px, and lay it out in two columns: loot tiles and haul on the left, stats and badges on the right. Raise the hero number from about 48px to the 56px token.",
+   "P1 secondary text: xp line, subtitle, stat labels, haul label: set all read text to at least 16px in tx-2 (#aaa498) and stat labels to 16px with +.04em tracking. Merge the xp line into one 16px line, or drop the '130 of 1,200,000' total.",
+   "P1 close x top-right (image 2) and focus state: drop the x on this screen, or move it to the card corner with 16px margins and a 2px lime focus ring. Give 'log run and return' a visible 3px focus outline plus a pad-button glyph hint.",
+   "P2 vertical rhythm between title block, loot block and stats: snap to the 8px grid: 24px between groups and 8px within a group. Put the caption and tiles in one group and haul and its number in the next.",
+   "P2 badge chips 'first out', 'untouched', 'ghost' and 'how did that run feel +': render badges as flat text tags with no border, or with a 3px rarity bar. Move the feedback prompt out of the card or make it a 16px tx-2 link, with 32px of space above the primary button."
+  ],
+  "pic": "tools/handoff/console/notes/shots/13-n1/38-extracted-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T12:26"
+  "when": "2026-10-18T23:58"
  },
  "40-whats-new-card": {
   "score": 2,
@@ -433,12 +440,19 @@
   "when": "2026-10-18T23:34"
  },
  "60-abandoned-card": {
-  "score": 3,
+  "score": 2,
   "pass": false,
-  "verdict": "The abandoned card now follows the shared end-card shell and finally has a hero number, but it is still small and timid, with a sub-minimum XP line, a leftover \"$\" and no close X or pad glyphs, so it falls short of ARC Raiders polish.",
-  "pic": "tools/handoff/console/notes/shots/13-i2/60-abandoned-card-1080.jpg",
+  "verdict": "The card is clean and the lime action is clear, but the type is tiny, the card is a small modal where the guide wants a near-full-screen centred card, and removing 'copy report' while adding an X is a mixed change. It still reads as a generic template with no identity.",
+  "findings": [
+   "P1 whole card: Either scale the card to the shared window size (about 90% of the screen, with a 56px header and 72px footer), or record the run-over card as an explicit exception in the guide. Do not leave it as a one-off.",
+   "P1 xp line under the title: Cut it to '+33 xp' at 16px in tx-2. Show the penalty as a short --warn tag such as '-75%'. Drop the 'total xp of 1,200,000' text or move it to the progress screen.",
+   "P1 stat row (containers / kills / accuracy / time): Set values to 32px f-cond 700 and labels to 16px tx-2 (+.04em). Cut the gap between the hero block and the stat strip from about 64px to 32px.",
+   "P1 hero '$1,170' and 'left behind': Raise the hero to the 56px token. Colour the number --danger, or add a 3px --danger top tab on the card, so the loss reads at a glance. Keep 'left behind' at 16px tx-2.",
+   "P2 'how did that run feel +': Move it into the footer as a quiet tertiary text button with a visible focus outline in --acc, or remove it from this card."
+  ],
+  "pic": "tools/handoff/console/notes/shots/13-n1/60-abandoned-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T12:31"
+  "when": "2026-10-18T23:59"
  },
  "42-hub-pause-box": {
   "score": 3,
@@ -562,12 +576,19 @@
   "when": "2026-10-18T10:12"
  },
  "76-haul-reveal-mid": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The Extracted card follows the shell (teal title, dark panel, amber primary) but it is a stack of seven equal-weight centred bands, with a '$' hero that breaks the SP rule, a stray floating tile, and too many small text lines.",
-  "pic": "tools/handoff/console/notes/shots/13-c6/76-haul-reveal-mid-1080.jpg",
+  "verdict": "The card is a clean centred layout with a clear teal title, a bold $ hero and one lime action. But mid-reveal it looks broken: a stray orphan tile in one shot, a row of nine empty slots and a scrollbar in the other, and a pile of small bordered chips that all look alike.",
+  "findings": [
+   "P0 Image 1, right of the card at about x1185-1277, y353-443: Remove it, or anchor it inside the card grid as the next item slot (64px square, inline with the item row). It must never be positioned against the card edge.",
+   "P0 Image 2, the empty slot row at y420-480 above the real item row: Use a single item row. Reveal the items into these slots in place, left to right, or hide the placeholders until each item lands. Keep the +7 more overflow on that same row. Pin the row at 64px tiles with an 8px gap.",
+   "P1 Image 2, card right edge at x1313 and the x button at 1239-1287: Remove the overflow by cutting rows (see the clutter finding) or by tightening the vertical spacing to 16/24px. Hide the scrollbar. Use the same x (40px, line-hi border, tx-2 glyph) on every windowed variant, or drop it everywhere because the lime button already closes the card.",
+   "P1 Challenge chips and recovery lines (Image 1 y264-360, Image 2 y264-410): Make challenges flat rows with a 16px ok-green tick or tx-2 dash, with no border. Merge the recovery lines into one tx-2 line, for example 'recovered: burst carbine, compact smg'. Use one 24px gap between blocks.",
+   "P1 Image 1, first item tile at x825-897: Drop the glow. Use a 3px rarity bar at the bottom, and for focus a 2px --acc outline. Scale the focused tile 1.0 to 1.08 only during the reveal."
+  ],
+  "pic": "tools/handoff/console/notes/shots/13-n1/76-haul-reveal-mid-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T10:46"
+  "when": "2026-10-18T23:59"
  },
  "75-settings-pad-rebind-waiting": {
   "score": 2,
@@ -670,17 +691,17 @@
  "60-mapfirst-1p": {
   "score": 4,
   "pass": true,
-  "verdict": "the map now sits in a proper centred card with a header, an x, a footer cta and a muted palette, and it finally looks like the same game as the other menus, but some map labels still crowd or sit on icons and the contract rows are a little busy.",
+  "verdict": "the map screen has gone from a blue-purple debug overlay to a proper dark centred card with a title bar, contracts list, footer and one lime main action, and the remaining faults are label collisions around the east blocks and uneven contract rows.",
   "findings": [
-   "P1 map labels: cache / strongbox / cache stack at the right edge, extract b, blast freezer: anchor each label 8px from its icon on a fixed side (above for pickups, right for extracts). Merge each crate stack into one 24px badge with a count. Move 'blast freezer · locked' 16px up so it clears 'extract b' (about 24px of gap). Give every label a 2px #0b0c0d halo.",
-   "P1 contracts panel rows: use a fixed 72px row with the name at 20px/600 #efe9dc, the reward at 16px #aaa498, and the bar at 4px with the count on the bar line, right-aligned to the same edge. Show 'holding' as an empty bar with no extra word. Add a 1px #2e3337 divider. Keep lime on the active bar and green on done.",
-   "P2 zone names: packing floor, chill row, the long dock, the sump, scrap line: set zone names to 16px/600 #aaa498 with +.04em tracking and a 2px halo, placed in a clear corner of each zone. Keep the teal 20px/700 extract names as the only loud labels. Pickup labels stay #efe9dc.",
-   "P2 hot ground label and warning glyph: set 'hot ground' in #efe9dc 16px/600 with a halo, above the ring, with the 'warn' glyph at 20px beside it. Shift the ring or the extract a label so the label is not inside the red tint, or give it a halo.",
-   "P2 header: 'cold storage', 'sector map', 'dawn · clear' and the x: align the 'sector map' baseline to the title baseline (8px gap). Set the 'dawn · clear' at 16px #aaa498. Make the x button 40px with a 1px #4a5257 border and a lime focus ring when the pad is on it."
+   "P1 map, east blocks: 'extract b', 'stays open', 'chill row', 'cache' and the blast freezer icon cluster: Move 'extract b' and 'stays open' 24px right, into the empty strip beside the extract icon, and right-align them to that icon. Merge the crate rings into one 24px badge with a count. Move 'chill row' to the block's lower-left corner. Keep every label 8px from its own icon.",
+   "P1 contracts panel: progress bars and right column: Give every bar the same x-range, ending 16px before the right-aligned reward and count column. Use a #2e3337 track with a lime fill. Replace 'holding' with '0/1' or hide the bar on those rows. Keep green for 'done' only.",
+   "P2 map labels: 'hot ground', 'encampment' x2, 'extract a' and 'closes in 5:00': Set these labels to 16px/600 with a 2px #0b0c0d halo, or switch 'hot ground' to #efe9dc beside the 20px warn glyph. Lower the ring fill to about 12% alpha. Move 'extract a' and its sub-line 16px down and 12px left of the extract icon to clear the ring.",
+   "P2 map, zone names (packing floor, the long dock, the sump, scrap line): Set them at 16px/600 #aaa498 with +.04em tracking and a halo. Pin each to an empty top-left corner of its zone, 8px inside the border. Keep pickup labels #efe9dc.",
+   "P2 header: 'cold storage', 'sector map', 'dawn · clear', x: Align 'sector map' to the title's baseline with a 16px gap and set it to 20px #aaa498. Put 'dawn · clear' at 16px #aaa498 with a 24px gap to the x. Add a lime focus ring on the x when the pad is on it."
   ],
-  "pic": "tools/handoff/console/notes/shots/cw-mapstyle-after3/60-mapfirst-1p-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/cw-mapstyle-after3/60-mapfirst-1p-4k.jpg",
   "task": "manual",
-  "when": "2026-10-18T23:53"
+  "when": "2026-10-18T23:59"
  },
  "91-snip-panel-raid": {
   "score": 2,

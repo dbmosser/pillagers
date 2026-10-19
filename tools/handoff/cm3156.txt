@@ -1,0 +1,7 @@
+v31.56: the what is new card names polish pass 29
+
+The what is new card names polish pass 29.
+
+Check 31.56. Fails on v31.55.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
