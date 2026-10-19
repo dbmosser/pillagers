@@ -1,0 +1,5 @@
+## v31.81 - A KEYBOARD MARKER ON THE WINDOW THE KEYS PLAY
+
+Co-op hunt while he was away. His answer 3.5 c: the keys play whichever window is in front, plus a marker on each screen showing where the keyboard is. With two windows paired, the front one now wears a small keyboard chip in its top left corner and the other wears none. A lone window never shows it.
+
+MEASURED. Check 31.81 passes, and fails on v31.80.

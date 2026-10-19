@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.81 - A KEYBOARD MARKER ON THE WINDOW THE KEYS PLAY
+
+Co-op hunt while he was away. His answer 3.5 c: the keys play whichever window is in front, plus a marker on each screen showing where the keyboard is. With two windows paired, the front one now wears a small keyboard chip in its top left corner and the other wears none. A lone window never shows it.
+
+MEASURED. Check 31.81 passes, and fails on v31.80.
 ## v31.80 - END CARDS: ARMED ABANDON X INSIDE THE CARD, LOSS IN DANGER COLOUR
 
 Co-op hunt while he was away. The critic scored 59 down for an X floating outside the card, and 60 for a loss that reads neutral.

@@ -368,17 +368,17 @@
  "59-raid-abandon-confirm": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, readable two-choice confirm with a clear lime primary action, but the close x floats outside the card, the title is small and the card is padded unevenly, and the destructive button is cramped by its note.",
+  "verdict": "the x now sits inside the card, which fixes the worst flaw, but it is still stranded mid-card at the title line and the title, danger button and padding are unchanged from the last review.",
   "findings": [
-   "P1 close x (top right, ~1135,354): Move the x inside the card, 16px from the top and right edges, in a 40x40 hit area with a --ui-line-hi border on focus. Or drop it, since keep playing already closes the card.",
-   "P1 danger button 'yes, abandon this run' + 'free this early': Use the single label 'abandon run' in --danger at 20px/600, with the button at 56px. Move 'free this early' to a 16px --tx-2 line under the title, or delete it.",
-   "P1 title 'abandon this run?': Set the title to 32px/700 in --tx-1. Add one 16px --tx-2 line, such as 'your bag is lost'. Keep the divider 16px below the text.",
-   "P2 card padding and vertical rhythm: Use 32px padding all round. Put 16px between the divider and the first button and 16px between the buttons. Width 520px.",
-   "P2 accent tab (top-left of card, ~720-756,380): Make it 36x3px in solid --acc, flush to the top-left edge, or remove it."
+   "P1 close x (~1136,428): put the x 16px from the top and right edges (centre ~1160,404), in a 40x40 hit area, same position as on every other card. Or remove it, since 'keep playing' already closes the card.",
+   "P1 danger button 'yes, abandon this run' + 'free this early': label it 'abandon run' at 20px/600 in --danger in a 56px button. Delete 'free this early', or move it to a 16px --tx-2 line under the title. Keep the 1px --danger border.",
+   "P1 title 'abandon this run?': title at 32px/700 --tx-1, top padding 32px. Add one 16px --tx-2 line such as 'your bag is lost'. Keep the divider 16px below.",
+   "P2 card padding and vertical rhythm: use 32px padding all round, 16px between the divider and the first button, 16px between the buttons. Card width 520px.",
+   "P2 accent tab (top-left, ~720-756,380): make it 36x3px solid --acc flush to the card's top-left corner, or delete it."
   ],
-  "pic": "tools/handoff/console/notes/shots/13-p3/59-raid-abandon-confirm-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/13-p4/59-raid-abandon-confirm-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-19T01:22"
+  "when": "2026-10-19T01:28"
  },
  "65-codex": {
   "score": 2,

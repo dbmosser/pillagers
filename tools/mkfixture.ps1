@@ -6101,6 +6101,18 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.81',what:'two paired windows: the one the keyboard plays wears a keyboard marker (his 3.5 c)',
+   run:function(){
+     if(typeof kbMarkWant!=='function'||typeof kbMarkSet!=='function'||typeof kbMarkTick!=='function') return 'no keyboard marker (kbMarkWant, kbMarkSet, kbMarkTick missing)';
+     if(kbMarkWant('host',true,true)!==true) return 'the front host window with its partner up has no marker';
+     if(kbMarkWant('p2',false,true)!==true) return 'the front player 2 window has no marker';
+     if(kbMarkWant('host',true,false)!==false||kbMarkWant('p2',true,false)!==false) return 'a window that is not in front wears the marker';
+     if(kbMarkWant('host',false,true)!==false||kbMarkWant('',true,true)!==false) return 'a lone window wears the marker';
+     kbMarkSet(true); var e=document.getElementById('kbmark');
+     if(!e||e.style.display!=='block'||e.textContent!=='keyboard') return 'the marker chip is not shown as keyboard';
+     kbMarkSet(false); if(e.style.display!=='none') return 'the marker chip does not hide';
+     return null;
+   }},
   {v:'31.80',what:'the armed abandon confirm X sits inside the card and the money left behind is danger coloured (the critic on 59 and 60)',
    run:function(){
      var pb=document.getElementById('pausebox'), px=document.getElementById('pausex'), abtn=document.getElementById('abandonbtn'), cb=document.getElementById('confirmabandon'), bad=[], wasShown, d, r, host, b, cs;

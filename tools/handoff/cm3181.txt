@@ -1,0 +1,7 @@
+v31.81: a keyboard marker on the window the keys play
+
+With two windows paired, the one in front shows a small keyboard chip in its top left corner.
+
+Check 31.81. Fails on v31.80.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
