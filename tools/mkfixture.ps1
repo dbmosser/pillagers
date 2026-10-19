@@ -6784,7 +6784,7 @@ window.__REGRESS=[
        pr=d.querySelector('.attpress'); if(!pr) return 'SKIP: no attpress';
        z=parseFloat(getComputedStyle(d).getPropertyValue('--attz'))||1;
        fs=parseFloat(getComputedStyle(pr).fontSize);
-       if(fs>20.5*z+0.01) return 'the any-key prompt is '+fs+'px, over the 20px body size (zoom '+z+')';
+       if(fs>24.5*z+0.01) return 'the any-key prompt is '+fs+'px, over the 24px step (zoom '+z+')';
        xr=getComputedStyle(pg,'::after').right; mr=getComputedStyle(pr).marginRight;
        if(xr!==mr) return 'the corner X right edge is '+xr+' but the prompt right margin is '+mr;
        return res;
