@@ -1,0 +1,7 @@
+v31.57: undercroft: racks column, codex four columns, stash type
+
+Racks page is one centred column, the codex is four columns, stash plates are bigger.
+
+Check 31.57. Fails on v31.56.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

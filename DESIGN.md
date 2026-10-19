@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.57 - UNDERCROFT: RACKS COLUMN, CODEX FOUR COLUMNS, STASH TYPE
+
+Co-op hunt while he was away. Critic b-31 on the Undercroft screens (racks 14 at 1, codex 65 at 2, stash 04 at 2): buttons 1316px wide in a 1700px card, hint lines 14px, the codex a top-left grid with a dead lower half, 12px plates on the stash. One centred 672px racks column at 16px, a centred four column codex, 14px stash plates, two filler lines gone (reasons in changes.md).
+
+MEASURED. Check 31.57 passes, and fails on v31.56.
 ## v31.56 - THE WHAT IS NEW CARD NAMES POLISH PASS 29
 
 Co-op hunt while he was away. The card was stamped v31.40 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
