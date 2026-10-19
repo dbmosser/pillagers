@@ -5721,7 +5721,7 @@ window.__REGRESS=[
      var head=null, more=null, names=0, i;
      for(i=0;i<draws.length;i++){
        var t=draws[i].t;
-       if(/^CURRENT PILLAGERS/.test(t)) head=t;
+       if(/^CURRENT PILLAGER( BOTS|S)/.test(t)) head=t;   /* v31.xx retarget (cw-vocab-bots): the board title is CURRENT PILLAGER BOTS */
        else if(/^\+\d+ more out here$/.test(t)) more=t;
        else if(draws[i].x<R.x+R.w&&draws[i].x>=R.x-4&&draws[i].y>R.y&&draws[i].y<R.y+R.h) names++;
      }
@@ -30248,7 +30248,7 @@ window.__REGRESS=[
        g.bag.length=0; g.bag.push('scrap');
        hud();
        if(!has(/^RAID STATUS$/)) bad.push('holding ALT drew no RAID STATUS plate');
-       if(!has(/^CURRENT PILLAGERS\s+\d+$/)) bad.push('the plate drew no CURRENT PILLAGERS board');
+       if(!has(/^CURRENT PILLAGER( BOTS|S)\s+\d+$/)) bad.push('the plate drew no CURRENT PILLAGERS board');
        if(!has(/^YOU$/)) bad.push('the board on the plate has no YOU row');
        if(!has(/^CARRIED$/)||!has(/^\$[\d,]+$/)) bad.push('the plate drew no haul');
        if(!has(/^CREDITS \$/)) bad.push('the plate drew no credits');
@@ -40241,7 +40241,7 @@ window.__REGRESS=[
   {v:'23.35',what:'arcade13, his order 2026-10-11: the arcade HUD draws no CONDITIONS panel, no CURRENT PILLAGERS board and no notoriety stamp, keeps the EXTRACT compass, and counts DROPPING IN during the drop-in hold',
    run:function(){
      var bad=[], g, cx=null, ft=null, own=false, seen=[], i, hasE=false, hasD=false,
-         nC='CONDI'+'TIONS', nB='CURRENT PIL'+'LAGERS', nE='EXTR'+'ACT', nD='DROPPING'+' IN', nN='NOTOR'+'IETY ';
+         nC='CONDI'+'TIONS', nB='CURRENT PIL'+'LAGER', nE='EXTR'+'ACT', nD='DROPPING'+' IN', nN='NOTOR'+'IETY ';
      function trace(){
        var f; seen=[]; cx=hcv.getContext('2d'); ft=cx.fillText; own=true;
        cx.fillText=function(s){ seen.push(String(s)); return ft.apply(this,arguments); };
@@ -42106,7 +42106,7 @@ window.__REGRESS=[
          if(src.indexOf(n[0])>=0) bad.push(n[1]+' still says the old sentence');
        });
        [['PILLAGER CALLED','EXTRACTION'],['SURVIVOR','EXTRACTED'],['THE PEDDLER SET','UP SHOP'],['THE PEDDLER IS','BACK'],[' IS','FRIENDLY'],[' IS','WATCHING'],['DEER','DOWN'],['BIRD','DOWN'],['Not your','kill']].forEach(function(n){
-         if(src.indexOf(Q+n[0]+' '+n[1]+Q)<0) bad.push('the page has no '+n[0]+' '+n[1]+' line');
+         if(src.indexOf(Q+n[0]+' '+n[1]+Q)<0&&src.indexOf(Q+n[0].replace('PILLAGER ','PILLAGER BOT ')+' '+n[1]+Q)<0) bad.push('the page has no '+n[0]+' '+n[1]+' line');   /* v31.xx retarget (cw-vocab-bots): PILLAGER BOT CALLED EXTRACTION */
        });
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{
@@ -84603,7 +84603,7 @@ window.__REGRESS=[
      var n=0; for(k in live) n++;
      if(n<4) bad.push('control: only '+n+' colours were found in the colour table, so this is not checking the game');
      var need=[['machine moving','robot moving'],['machine firing','robot firing'],
-               ['pillager moving'],['pillager firing']];
+               ['pillager moving','pillager bot moving'],['pillager firing','pillager bot firing']];   /* v31.xx retarget (cw-vocab-bots) */
      for(i=0;i<need.length;i++){
        var have=false;
        for(j=0;j<need[i].length;j++) if(joined.indexOf(need[i][j])>=0) have=true;
@@ -92499,7 +92499,7 @@ window.__REGRESS=[
        Object.keys(byY).map(Number).sort(function(a,b){return a-b;}).forEach(function(k){
          var r3=byY[k];
          if(!r3.left||!r3.right) return;
-         if(/CURRENT PILLAGERS/.test(r3.left)) return;   // the header, not a row
+         if(/CURRENT PILLAGER/.test(r3.left)) return;   // the header, not a row
          var m=/\$([\d,]+)/.exec(r3.right);
          rows.push({name:r3.left, val:m?+m[1].replace(/,/g,''):0});
        });
