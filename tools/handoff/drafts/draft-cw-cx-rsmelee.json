@@ -1,0 +1,68 @@
+{
+    "title":  "RIGHT STICK CROWBAR",
+    "why":  "His 3.11 b and J6: RS swings the crowbar and LT holds focus aim.",
+    "now":  "RS swings once per click with an 80 ms aim hold. LT still focuses.",
+    "edits":  [
+                  {
+                      "anchor":  "  // aim, as a virtual cursor placed off the player in the stick direction",
+                      "replacement":  "  // v28.xx (cw-cx-rsmelee): his 3.11 b and J6: RS swings; keep the pre-click angle for 80 ms.\n  var _rsBtn=bt[padMapArr()[11]], _rsDown=!!(_rsBtn\u0026\u0026(_rsBtn.pressed||_rsBtn.value\u003e0.5));\n  var _rsNow=netPadNow(), _rsLive=!!(G\u0026\u0026!G.over\u0026\u0026!G.paused\u0026\u0026state===\u0027raid\u0027\u0026\u0026!G.bagOpen\u0026\u0026!G.mapOpen\u0026\u0026!G.wheel\u0026\u0026!G.trade\u0026\u0026!G.forgeUI\u0026\u0026!padOpenModal());\n  if(_rsLive\u0026\u0026_rsDown\u0026\u0026!PAD.meleeDown){ PAD.meleeAimUntil=_rsNow+0.08; PAD.meleeAimA=PAD.aimA===undefined?G.player.face:PAD.aimA; }\n  PAD.meleeDown=_rsDown;\n  var _rsFreeze=!!(_rsLive\u0026\u0026PAD.meleeAimUntil\u003e_rsNow);\n  if(_rsFreeze) PAD.aimA=PAD.meleeAimA;\n  // aim, as a virtual cursor placed off the player in the stick direction"
+                  },
+                  {
+                      "anchor":  "  if(G\u0026\u0026!G.over\u0026\u0026!rx\u0026\u0026!ry\u0026\u0026(PAD.mx||PAD.my)){",
+                      "replacement":  "  if(G\u0026\u0026!G.over\u0026\u0026!_rsFreeze\u0026\u0026!rx\u0026\u0026!ry\u0026\u0026(PAD.mx||PAD.my)){"
+                  },
+                  {
+                      "anchor":  "  if(G\u0026\u0026!G.over\u0026\u0026!G.wheel\u0026\u0026(rx||ry)){   // wheel5pad: and not while the item wheel is open",
+                      "replacement":  "  if(G\u0026\u0026!G.over\u0026\u0026!G.wheel\u0026\u0026!_rsFreeze\u0026\u0026(rx||ry)){   // v28.xx (cw-cx-rsmelee): freeze the click nudge, never the wheel."
+                  },
+                  {
+                      "anchor":  "  if(G\u0026\u0026!G.over\u0026\u0026state===\u0027raid\u0027\u0026\u0026G.player\u0026\u0026PAD.curOwn\u0026\u0026!rx\u0026\u0026!ry\u0026\u0026!PAD.mx\u0026\u0026!PAD.my\u0026\u0026!G.mapOpen\u0026\u0026!G.bagOpen){",
+                      "replacement":  "  if(G\u0026\u0026!G.over\u0026\u0026state===\u0027raid\u0027\u0026\u0026G.player\u0026\u0026(PAD.curOwn||_rsFreeze)\u0026\u0026((_rsFreeze)||(!rx\u0026\u0026!ry\u0026\u0026!PAD.mx\u0026\u0026!PAD.my))\u0026\u0026!G.mapOpen\u0026\u0026!G.bagOpen){"
+                  },
+                  {
+                      "anchor":  "PAD.xSearched=false; PAD.mx=0; PAD.my=0; padBodyCls(); return;",
+                      "replacement":  "PAD.xSearched=false; PAD.meleeDown=false; PAD.meleeAimUntil=0; PAD.mx=0; PAD.my=0; padBodyCls(); return;"
+                  },
+                  {
+                      "anchor":  "  if(pressed(11)\u0026\u0026!PAD.prev[11]\u0026\u0026!G.over\u0026\u0026!G.paused) PAD.adsTog=!PAD.adsTog;   // v16.72, his order: RS click toggles focus aim\n  if(G.over) PAD.adsTog=false;\n  PAD.adsAim=!!(PAD.adsTog||(trig(6)\u003e0.35\u0026\u0026!G.over\u0026\u0026!G.paused));   // v19.08, from the review (2026-10-07): a deliberate aim (LT or the RS toggle), apart from the steadying after each RT pull\n  if((PAD.adsT\u003e0||PAD.adsTog||(trig(6)\u003e0.35\u0026\u0026!G.over\u0026\u0026!G.paused))\u0026\u0026!(pressed(10)\u0026\u0026G.player\u0026\u0026G.player.moving)){ G.player.ads=true; PAD.adsing=1; }   // v16.81: never while sprinting   // v16.72, his order: LT held or RS toggled is focus aim",
+                      "replacement":  "  // v28.xx (cw-cx-rsmelee): his 3.11 b: \"a click of the right stick\"; LT hold stays focus aim.\n  if(pressed(11)\u0026\u0026!PAD.prev[11]\u0026\u0026_rsLive) meleeStrike();\n  PAD.adsTog=false;\n  PAD.adsAim=!!(trig(6)\u003e0.35\u0026\u0026!G.over\u0026\u0026!G.paused);\n  if((PAD.adsT\u003e0||PAD.adsAim)\u0026\u0026!(pressed(10)\u0026\u0026G.player\u0026\u0026G.player.moving)){ G.player.ads=true; PAD.adsing=1; }"
+                  },
+                  {
+                      "anchor":  "KeyQ:\u0027D-DOWN\u0027,KeyV:\u0027Y\u0027,",
+                      "replacement":  "KeyQ:\u0027D-DOWN\u0027,KeyV:\u0027RS\u0027,"
+                  },
+                  {
+                      "anchor":  "KeyI:8,KeyV:3};",
+                      "replacement":  "KeyI:8,KeyV:11};"
+                  },
+                  {
+                      "anchor":  "[11,\u0027focus aim (toggle)\u0027,\u0027FIGHT\u0027]",
+                      "replacement":  "[11,\u0027melee (crowbar)\u0027,\u0027FIGHT\u0027]"
+                  },
+                  {
+                      "anchor":  "\u0027sprint\u0027,\u0027focus toggle\u0027,\u0027ping / map\u0027",
+                      "replacement":  "\u0027sprint\u0027,\u0027crowbar\u0027,\u0027ping / map\u0027"
+                  },
+                  {
+                      "anchor":  "[n(6)+\u0027 / \u0027+n(11),\u0027focus aim, hold / toggle\u0027]",
+                      "replacement":  "[n(6),\u0027focus aim (hold)\u0027],[n(11),\u0027melee (crowbar)\u0027]"
+                  },
+                  {
+                      "anchor":  "[b(6)+\u0027 / \u0027+b(11),\u0027focus aim\u0027]",
+                      "replacement":  "[b(6),\u0027focus aim\u0027],[b(11),\u0027crowbar\u0027]"
+                  },
+                  {
+                      "anchor":  "[\u0027LT / RS\u0027,\u0027focus aim\u0027]",
+                      "replacement":  "[\u0027LT\u0027,\u0027focus aim\u0027],[\u0027RS\u0027,\u0027crowbar\u0027]"
+                  },
+                  {
+                      "anchor":  "[\u0027LT / RS CLICK\u0027,\u0027focus aim, hold / toggle\u0027]",
+                      "replacement":  "[\u0027LT\u0027,\u0027focus aim (hold)\u0027],[\u0027RS CLICK\u0027,\u0027melee (crowbar)\u0027]"
+                  },
+                  {
+                      "anchor":  "keyLabel(\u0027KeyV\u0027,\u0027V\u0027)+\u0027] FINISH\u0027",
+                      "replacement":  "(padOn()?padB(pbn(3)):keyLabel(\u0027KeyV\u0027,\u0027V\u0027))+\u0027] FINISH\u0027"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027RS crowbar uses the real melee cooldown, blocks panels, holds aim for 80 ms and leaves focus to LT\u0027,\n   run:function(){\n     var NG=navigator.getGamepads, own=Object.prototype.hasOwnProperty.call(navigator,\u0027getGamepads\u0027), PK=Object.assign({},PAD), ns=NET.same, pm=P.padmap, nowFn=netPadNow, ms=meleeStrike, fw=fireWeapon, pad, clock=100, calls=0, shots=0, g;\n     function poll(button,axes){ var b=[]; for(var i=0;i\u003c17;i++) b.push({pressed:i===button,value:i===button?1:0}); pad={connected:true,index:0,id:\u0027Xbox check\u0027,mapping:\u0027standard\u0027,buttons:b,axes:axes||[0,0,0,0]}; pollPad(); }\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile(); NET.same=null; P.padmap=null;\n       __deploy({kit:[\u0027gun_rifle\u0027],safe:null,mapIx:0,seed:4242}); g=__state(); __topClear(); g.mapFirst=false;g.mapOpen=false;g.bagOpen=false;g.paused=false;g.trade=null;g.forgeUI=null;g.wheel=null;\n       navigator.getGamepads=function(){return [pad];}; netPadNow=function(){return clock;};\n       PAD.announced=true; PAD.prev=[]; PAD.adsT=0; PAD.adsTog=false; PAD.meleeDown=false; PAD.meleeAimUntil=0;\n       g.player.roll=0; g.searching=null; g.player.downed=false; g.player.meleeAt=undefined; g.t=10;\n       meleeStrike=function(){calls++;return ms();}; fireWeapon=function(){shots++;};\n       poll(-1,[0,0,1,0]); var a=PAD.aimA;\n       poll(11,[0,0,0,1]);\n       if(calls!==1||shots!==1) return \u0027RS did not make exactly one real crowbar swing: \u0027+calls+\u0027/\u0027+shots;\n       if(PAD.adsTog||g.player.ads) return \u0027RS still focuses aim\u0027;\n       if(Math.abs(PAD.aimA-a)\u003e1e-6) return \u0027the click nudged the aim angle\u0027;\n       clock+=0.04; poll(11,[0,0,0,1]); if(calls!==1||PAD.aimA!==a) return \u0027held RS repeats or the 80 ms aim hold ended early\u0027;\n       clock+=0.05; poll(11,[0,0,0,1]); if(Math.abs(PAD.aimA-Math.PI/2)\u003e0.001) return \u0027aim did not resume after 80 ms\u0027;\n       g.t+=0.1; poll(-1); poll(11); if(shots!==1) return \u0027a second click bypassed the melee cooldown\u0027;\n       g.t+=1; poll(-1); poll(11); if(shots!==2) return \u0027a fresh click after cooldown did not swing\u0027;\n       var props=[\u0027bagOpen\u0027,\u0027mapOpen\u0027,\u0027wheel\u0027,\u0027trade\u0027,\u0027forgeUI\u0027];\n       for(var j=0;j\u003cprops.length;j++){ poll(-1); g[props[j]]=props[j]===\u0027trade\u0027?{stock:[]}:props[j]===\u0027forgeUI\u0027?{n:1,sel:0}:props[j]===\u0027wheel\u0027?{pad:0}:true; var before=calls; poll(11); if(calls!==before) return \u0027RS swung under \u0027+props[j]; g[props[j]]=props[j].indexOf(\u0027Open\u0027)\u003e=0?false:null; }\n       poll(-1); poll(6); if(!g.player.ads||!PAD.adsAim) return \u0027LT no longer holds focus\u0027; poll(-1); if(g.player.ads||PAD.adsAim) return \u0027LT release left focus latched\u0027;\n       PADB.sig=\u0027\u0027; padLabelsApply(); if(PADLABEL.KeyV!==\u0027RS\u0027) return \u0027crowbar label is not RS\u0027;\n       return null;\n     }finally{\n       meleeStrike=ms; fireWeapon=fw; netPadNow=nowFn; NET.same=ns; P.padmap=pm;\n       try{padRelease(); __endRaid(\u0027abandon\u0027);}catch(e){} __topClear();\n       if(own) navigator.getGamepads=NG; else delete navigator.getGamepads;\n       Object.keys(PAD).forEach(function(k){delete PAD[k];}); Object.assign(PAD,PK); PADB.sig=\u0027\u0027; padLabelsApply();\n     }\n   }},"
+}

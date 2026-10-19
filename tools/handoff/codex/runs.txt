@@ -35,3 +35,6 @@
 2026-10-19 13:25 o-04-camera-closer 76s ok PARTIAL in=3058580 out=23831 run=4
 2026-10-19 13:26 o-04-camera-closer 47s ok PARTIAL in=170215 out=1786 run=5
 2026-10-19 13:42 o-04b-stick-math 275s ok PARTIAL in=827881 out=14569 run=1
+2026-10-19 13:45 o-04b-stick-math 34s usage-limit (not counted) back 2026-10-19 15:04
+2026-10-19 15:08 o-04b-stick-math 36s ok DONE in=162685 out=1337 run=2
+2026-10-19 15:51 o-06-pad-controls 853s ok PARTIAL in=5008879 out=41450 run=1

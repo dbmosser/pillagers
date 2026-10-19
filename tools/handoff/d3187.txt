@@ -1,0 +1,5 @@
+## v31.87 - RIGHT STICK CROWBAR
+
+Co-op hunt while he was away. His 3.11 b and J6: RS swings the crowbar and LT holds focus aim.
+
+MEASURED. Check 31.87 passes, and fails on v31.86.

@@ -12,3 +12,7 @@ fixture-retarget.json updates only the maths section of check 26.51 so that it a
 
 No camera request: this is input arithmetic and movement verification, with no changed screen layout, art or player text. Pending lane work: apply the fixture retarget under the lock, preflight cw-cx-stickmath, run its browser regression and ship it. A later run must review the lane result before calling this task done.
 
+
+--- codex run 2026-10-19 15:08 ---
+2026-10-19 follow-up: Confirmed cw-cx-stickmath is already shipped in v31.86, commit 34b97ade. The current game contains the shared radial function and all five call-site changes, and tools/mkfixture.ps1 contains check 31.86. The saved ship audit (tools/handoff/a3186.txt and d3186.txt, also AUDIT.md) records that check 31.86 passes on v31.86 and fails on v31.85. No additional code or fixture changes are needed. keys.txt retains the shipped key, which the lane skips. Task complete.
+

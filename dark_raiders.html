@@ -2996,7 +2996,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.86';
+var VER='31.87';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17900,7 +17900,7 @@ function padOn(){ return !!(typeof PAD!=='undefined'&&PAD&&PAD.on&&(typeof INDEV
 // The label to show for a keyboard code, swapped for its controller button when a pad is
 // connected. Bracketed ASCII on purpose: circled-letter glyphs are non-ASCII and this
 // file has been corrupted twice by non-ASCII surviving a patch script badly.
-var PADLABEL={KeyE:'X',KeyR:'X',KeyF:'D-DOWN',KeyT:'RB',KeyG:'RT',KeyQ:'D-DOWN',KeyV:'Y',
+var PADLABEL={KeyE:'X',KeyR:'X',KeyF:'D-DOWN',KeyT:'RB',KeyG:'RT',KeyQ:'D-DOWN',KeyV:'RS',
               Space:'A',Tab:'BACK',KeyP:'MENU',KeyX:'X',
               ShiftLeft:'LS',ControlLeft:'B',KeyM:'D-UP',KeyI:'VIEW'};
 // v26.xx (padbind), HIS ORDER 2026-10-14 ("CONTROLLER REBINDING is NEW"): PADLABEL is the table the raid prompts read, and it follows the pad bindings now (padLabelsApply rewrites it);
@@ -18264,7 +18264,7 @@ function pollPad(){
   PAD.brand=padBrandOf(gp);   // v17.78: the pad make, for the prompts
   if(gp&&(((gp.buttons||[]).some(function(b){ return b&&(b.pressed||b.value>0.3); }))||((gp.axes||[]).some(function(a){ return Math.abs(a)>0.3; })))) RUMBLE.usedAt=(typeof performance!=='undefined')?performance.now():Date.now();
   // v27.69 (cloud-menus-pad-menu-press-spent), CLOUD HUNT 2026-10-15: a pad gap forgets the buttons a menu spent and the raid button numbering too
-  if(!gp){ if(PAD.on) padRelease(); PAD.on=false; PAD.prev=[]; PAD.mSpent=null; PAD.prevMap=null; PAD.xWas=false; PAD.xDownAt=null; PAD.xSearched=false; PAD.mx=0; PAD.my=0; padBodyCls(); return; }   // v8.39; v17.00, co-op hunt 2026-09-28: a pad gap forgets the X press too, but not xAfterTrade, which still spends an X held from the stall
+  if(!gp){ if(PAD.on) padRelease(); PAD.on=false; PAD.prev=[]; PAD.mSpent=null; PAD.prevMap=null; PAD.xWas=false; PAD.xDownAt=null; PAD.xSearched=false; PAD.meleeDown=false; PAD.meleeAimUntil=0; PAD.mx=0; PAD.my=0; padBodyCls(); return; }   // v8.39; v17.00, co-op hunt 2026-09-28: a pad gap forgets the X press too, but not xAfterTrade, which still spends an X held from the stall
   PAD.held=PAD.held||{};
   function padHold(code,down){
     if(down){ keys[code]=true; PAD.held[code]=1; }
@@ -18288,11 +18288,18 @@ function pollPad(){
   // movement, analog
   var ls=padStick(ax[0]||0,ax[1]||0); PAD.mx=ls.x; PAD.my=ls.y; // v28.xx (cw-cx-stickmath): sensitivity scales length before the radial clamp.
 
+  // v28.xx (cw-cx-rsmelee): his 3.11 b and J6: RS swings; keep the pre-click angle for 80 ms.
+  var _rsBtn=bt[padMapArr()[11]], _rsDown=!!(_rsBtn&&(_rsBtn.pressed||_rsBtn.value>0.5));
+  var _rsNow=netPadNow(), _rsLive=!!(G&&!G.over&&!G.paused&&state==='raid'&&!G.bagOpen&&!G.mapOpen&&!G.wheel&&!G.trade&&!G.forgeUI&&!padOpenModal());
+  if(_rsLive&&_rsDown&&!PAD.meleeDown){ PAD.meleeAimUntil=_rsNow+0.08; PAD.meleeAimA=PAD.aimA===undefined?G.player.face:PAD.aimA; }
+  PAD.meleeDown=_rsDown;
+  var _rsFreeze=!!(_rsLive&&PAD.meleeAimUntil>_rsNow);
+  if(_rsFreeze) PAD.aimA=PAD.meleeAimA;
   // aim, as a virtual cursor placed off the player in the stick direction
   var rs=padStick(ax[2]||0,ax[3]||0),rx=rs.x,ry=rs.y; // v28.xx (cw-cx-stickmath): aim and the item wheel share this vector.
   if(G&&!G.over) PAD.aiming=!!(rx||ry);   // v17.03, co-op hunt 2026-09-28: the aiming flag follows the right stick every raid frame; only the left stick cleared it, so with both sticks let go Superhot time ran on for the party and kid firing stayed off
   // v6.85, his note: with the right stick idle, you look where you are going.
-  if(G&&!G.over&&!rx&&!ry&&(PAD.mx||PAD.my)){
+  if(G&&!G.over&&!_rsFreeze&&!rx&&!ry&&(PAD.mx||PAD.my)){
     PAD.aiming=false;
     var _fp=G.player,_fz=ZOOM();
     var _fcx=(G.camX===undefined?_fp.x-W/(2*_fz):G.camX);
@@ -18303,7 +18310,7 @@ function pollPad(){
     PAD.aimA=Math.atan2(PAD.my,PAD.mx);   // v16.77, his order: the angle the idle frames keep the crosshair on
     padCursorPut(_fsx,_fsy,(PAD.mx/_fl)*_fr*_fz,(PAD.my/_fl)*_fr*_fz);
   }
-  if(G&&!G.over&&!G.wheel&&(rx||ry)){   // wheel5pad: and not while the item wheel is open
+  if(G&&!G.over&&!G.wheel&&!_rsFreeze&&(rx||ry)){   // v28.xx (cw-cx-rsmelee): freeze the click nudge, never the wheel.
     PAD.aiming=true;
     var p=G.player,pz=ZOOM();
     var cx=(G.camX===undefined?p.x-W/(2*pz):G.camX);
@@ -18319,7 +18326,7 @@ function pollPad(){
   // follows the aim distance as it is changed, and is drawn in to the canvas edge by padCursorPut. Only in a raid, and not
   // under the open map or backpack, where the pointer is the instrument. A pad that never aimed keeps the angle the
   // crosshair already had from the player.
-  if(G&&!G.over&&state==='raid'&&G.player&&PAD.curOwn&&!rx&&!ry&&!PAD.mx&&!PAD.my&&!G.mapOpen&&!G.bagOpen){
+  if(G&&!G.over&&state==='raid'&&G.player&&(PAD.curOwn||_rsFreeze)&&((_rsFreeze)||(!rx&&!ry&&!PAD.mx&&!PAD.my))&&!G.mapOpen&&!G.bagOpen){
     var _ip=G.player,_iz=ZOOM();
     var _icx=(G.camX===undefined?_ip.x-W/(2*_iz):G.camX);
     var _icy=(G.camY===undefined?_ip.y-H/_iz*0.54:G.camY);
@@ -18500,10 +18507,11 @@ function pollPad(){
   // stays steady instead of flicking in and out between rounds.
   if(rtOn) PAD.adsT=0.35;
   else if(PAD.adsT>0) PAD.adsT-=dtPad();
-  if(pressed(11)&&!PAD.prev[11]&&!G.over&&!G.paused) PAD.adsTog=!PAD.adsTog;   // v16.72, his order: RS click toggles focus aim
-  if(G.over) PAD.adsTog=false;
-  PAD.adsAim=!!(PAD.adsTog||(trig(6)>0.35&&!G.over&&!G.paused));   // v19.08, from the review (2026-10-07): a deliberate aim (LT or the RS toggle), apart from the steadying after each RT pull
-  if((PAD.adsT>0||PAD.adsTog||(trig(6)>0.35&&!G.over&&!G.paused))&&!(pressed(10)&&G.player&&G.player.moving)){ G.player.ads=true; PAD.adsing=1; }   // v16.81: never while sprinting   // v16.72, his order: LT held or RS toggled is focus aim
+  // v28.xx (cw-cx-rsmelee): his 3.11 b: "a click of the right stick"; LT hold stays focus aim.
+  if(pressed(11)&&!PAD.prev[11]&&_rsLive) meleeStrike();
+  PAD.adsTog=false;
+  PAD.adsAim=!!(trig(6)>0.35&&!G.over&&!G.paused);
+  if((PAD.adsT>0||PAD.adsAim)&&!(pressed(10)&&G.player&&G.player.moving)){ G.player.ads=true; PAD.adsing=1; }
   else if(PAD.adsing){ G.player.ads=false; PAD.adsing=0; }
 
   // With the bag open the dpad browses it, the same doubling the arrow keys
@@ -18931,7 +18939,7 @@ function padRaidAxes(ax){
   if(P.padSticks!=='swap'||state!=='raid'||!G||G.over||padOpenModal()||(typeof ATT==='object'&&ATT&&ATT.on)) return ax;
   var a=[].slice.call(ax); a[0]=ax[2]||0; a[1]=ax[3]||0; a[2]=ax[0]||0; a[3]=ax[1]||0; return a;
 }
-var PAD_PICTURE_ACTIONS=['roll','crouch','reload / search','ring search','belt -','belt +','focus','fire','backpack','pause','sprint','focus toggle','ping / map','item wheel','aim -','aim +'];
+var PAD_PICTURE_ACTIONS=['roll','crouch','reload / search','ring search','belt -','belt +','focus','fire','backpack','pause','sprint','crowbar','ping / map','item wheel','aim -','aim +'];
 function padPictureLabel(button){
   var m=padMapArr(), i; for(i=0;i<16;i++) if(m[i]===button) return PAD_PICTURE_ACTIONS[i]; return '';
 }
@@ -18976,11 +18984,11 @@ function padLayoutStep(cur,dy){
 }
 var PAD_BTN=['A','B','X','Y','LB','RB','LT','RT','VIEW','MENU','LS','RS','D-UP','D-DOWN','D-LEFT','D-RIGHT'];
 var PAD_ACTS=[[10,'sprint','MOVE'],[0,'dodge roll','MOVE'],[1,'crouch','MOVE'],
-  [7,'fire / use','FIGHT'],[6,'focus aim (hold)','FIGHT'],[11,'focus aim (toggle)','FIGHT'],[14,'aim distance shorter','FIGHT'],[15,'aim distance longer','FIGHT'],
+  [7,'fire / use','FIGHT'],[6,'focus aim (hold)','FIGHT'],[11,'melee (crowbar)','FIGHT'],[14,'aim distance shorter','FIGHT'],[15,'aim distance longer','FIGHT'],
   [2,'use / reload','FIGHT'],[3,'help / finish','FIGHT'],
   [4,'previous gun (hold: zoom out)','GEAR'],[5,'next gun (hold: zoom in)','GEAR'],[13,'item wheel (hold)','GEAR'],[8,'backpack','GEAR'],
   [12,'ping (hold: the map)','WORLD'],[9,'pause','WORLD']];
-var PADLOGIC={KeyE:2,KeyR:2,KeyF:13,KeyT:5,KeyG:7,KeyQ:13,Space:0,KeyP:9,KeyX:2,ShiftLeft:10,ControlLeft:1,KeyM:12,KeyI:8,KeyV:3};   // v27.xx (feel2g): V, the finisher, is on action 3 (Y)
+var PADLOGIC={KeyE:2,KeyR:2,KeyF:13,KeyT:5,KeyG:7,KeyQ:13,Space:0,KeyP:9,KeyX:2,ShiftLeft:10,ControlLeft:1,KeyM:12,KeyI:8,KeyV:11};   // v27.xx (feel2g): V, the finisher, is on action 3 (Y)
 var PADB={waiting:null,armed:0,t0:0,note:null,sig:''};
 function padMapArr(){
   var m=(typeof P!=='undefined'&&P&&P.padmap&&typeof P.padmap==='object')?P.padmap:null, o=[], used={}, i, v;
@@ -19003,7 +19011,7 @@ function padLegendBuild(){
   var n=pln, dl=n(14), dr=n(15);
   return [
     ['MOVE',[[(P.padSticks==='swap'?'R STICK':'L STICK'),'move, analog'],[n(10),'sprint'],[n(1),'crouch'],[n(0),'dodge roll']]],
-    ['FIGHT',[[(P.padSticks==='swap'?'L STICK':'R STICK'),'aim'],[n(7),'fire / use selected'],[n(6)+' / '+n(11),'focus aim, hold / toggle'],[(dl==='D-LEFT'&&dr==='D-RIGHT')?'D-LEFT/RIGHT':(dl+' / '+dr),'aim distance'],[n(2),'reload']]],
+    ['FIGHT',[[(P.padSticks==='swap'?'L STICK':'R STICK'),'aim'],[n(7),'fire / use selected'],[n(6),'focus aim (hold)'],[n(11),'melee (crowbar)'],[(dl==='D-LEFT'&&dr==='D-RIGHT')?'D-LEFT/RIGHT':(dl+' / '+dr),'aim distance'],[n(2),'reload']]],
     ['GEAR',[[n(4)+'/'+n(5)+' tap','change tactical belt slot'],[n(4)+'/'+n(5)+' hold','zoom out / in'],[n(13),'item wheel (hold), revive when down'],[n(8),'backpack']]],
     ['WORLD',[[n(2),'search / open / call for extraction'],[n(3),'search in a ring; hold to finish a pillager bot'],[n(12),'ping (twice: danger); hold: map'],[n(9),'pause']]],
     ['TEAM',[[n(3),'backpack open: drop an item for a teammate'],[n(12),'ping, twice for danger']]]
@@ -19011,7 +19019,7 @@ function padLegendBuild(){
 }
 function padMiniBuild(){
   var b=pbn, dl=b(14), dr=b(15);
-  return [[(P.padSticks==='swap'?'R STICK':'L STICK'),'move'],[b(10),'sprint'],[b(1),'crouch'],[b(0),'roll'],[b(7),'fire / use'],[b(6)+' / '+b(11),'focus aim'],[b(2),'reload'],
+  return [[(P.padSticks==='swap'?'R STICK':'L STICK'),'move'],[b(10),'sprint'],[b(1),'crouch'],[b(0),'roll'],[b(7),'fire / use'],[b(6),'focus aim'],[b(11),'crowbar'],[b(2),'reload'],
     [(dl==='D-LEFT'&&dr==='D-RIGHT')?'D-L / D-R':(dl+' / '+dr),'aim distance'],[b(4)+' / '+b(5),'tactical belt'],[b(8),'backpack'],[b(12),'ping, hold: map'],[b(9),'pause']];
 }
 function padLabelsApply(){
@@ -22881,7 +22889,7 @@ function drawFinisher(c,p){
       _fhs=hudAtIn(_fp.x,_fp.y);
       try{
         _fy=_fp.y+((G.nearDown===e&&promptPick(p)==='down')?LH(26):0);
-        hudPrompt('HOLD ['+keyLabel('KeyV','V')+'] FINISH',_fp.x,_fy,{col:HUDC.danger});
+        hudPrompt('HOLD ['+(padOn()?padB(pbn(3)):keyLabel('KeyV','V'))+'] FINISH',_fp.x,_fy,{col:HUDC.danger});
       } finally { c.textAlign='left'; if(_fhs) c.restore(); }
     }
   }
@@ -42987,7 +42995,7 @@ function legendKeys(s){
 var LEGEND_MINI_PAD=[
   ['L STICK','move'],['LS','sprint'],
   ['B','crouch'],['A','roll'],
-  ['RT','fire / use'],['LT / RS','focus aim'],
+  ['RT','fire / use'],['LT','focus aim'],['RS','crowbar'],
   ['X','reload'],['D-L / D-R','aim distance'],
   ['LB / RB','tactical belt'],['VIEW','backpack'],
   ['D-UP','ping, hold: map'],['MENU','pause']
@@ -43011,7 +43019,7 @@ var SOUNDKEY=[
 // a controller player reading key names has to translate every line.
 var LEGEND_PAD=[
   ['MOVE',[['L STICK','move, analog'],['LS CLICK','sprint'],['B','crouch'],['A','dodge roll']]],
-  ['FIGHT',[['R STICK','aim'],['RT','fire / use selected'],['LT / RS CLICK','focus aim, hold / toggle'],['D-LEFT/RIGHT','aim distance'],['X','reload']]],
+  ['FIGHT',[['R STICK','aim'],['RT','fire / use selected'],['LT','focus aim (hold)'],['RS CLICK','melee (crowbar)'],['D-LEFT/RIGHT','aim distance'],['X','reload']]],
   ['GEAR',[['LB/RB tap','change tactical belt slot'],['LB/RB hold','zoom out / in'],['D-DOWN','item wheel (hold), revive when down'],['VIEW','backpack']]],
   ['WORLD',[['X','search / open / call for extraction'],['Y','search in a ring; hold to finish a pillager bot'],['DPAD UP','ping (twice: danger); hold: map'],['MENU','pause']]],
   // v20.76, from the whole-game bug hunt of 2026-10-08 (H46): THE PING IS D-UP ON A CONTROLLER. This row said LB + RB, but both
@@ -49760,7 +49768,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.86: Both sticks use a circular deadzone with full diagonal travel. Deadzone and sensitivity settings stay available. Check 31.86 fails on v31.85',
+  now:'v31.87: RS swings once per click with an 80 ms aim hold. LT still focuses. Check 31.87 fails on v31.86',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

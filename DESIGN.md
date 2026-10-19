@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.87 - RIGHT STICK CROWBAR
+
+Co-op hunt while he was away. His 3.11 b and J6: RS swings the crowbar and LT holds focus aim.
+
+MEASURED. Check 31.87 passes, and fails on v31.86.
 ## v31.86 - STICKS KEEP THEIR ANGLE AND FULL DIAGONAL SPEED
 
 Co-op hunt while he was away. Separate axis deadzones bent aim and walking toward straight directions and shortened diagonal travel.

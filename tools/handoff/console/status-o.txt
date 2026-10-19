@@ -1,1 +1,1 @@
-10-19 13:43 gate: shipping cw-cx-stickmath (o-04b-stick-math, codex)
+10-19 15:52 gate: shipping cw-cx-rsmelee (o-06-pad-controls, codex)
