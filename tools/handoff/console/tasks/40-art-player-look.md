@@ -1,12 +1,20 @@
-# 40-art-player-look : the player figure (art survey a04, a06, a07, a09, a10)
+# 40-art-player-look : the human figures (art survey a01 to a10, HIS picks)
 
-His art survey, 10-18. He skipped a01 to a10, so these are the coordinator's picks, adjusted for his camera pick (a36 C, 30 percent closer, task 44).
-- a04 B: stronger build shapes (broad wider, lean slimmer, curved stronger).
-- a06 B: the player-colour edge on the body itself. It replaces the seat ring (drawSeatRing) for both players. P1 and P2 colours stay as shipped (his order: P1 and P2 match everywhere).
-- a07 B: a dark outline plus a thin light edge on the lit top-left side. Layering: the dark outline first, the player-colour edge (a06) just outside it. One outline stack, not three.
+His picks, pasted 10-18 evening: a01 D, a02 B, a03 A, a04 C, a05 B, a06 A, a07 A, a08 A, a09 B, a10 D.
+These replace the coordinator's earlier picks (an earlier version of this task said not to do a02 or a05: he picked them, so do them).
+- a01 D: the mascot head, scaled 1.2 about the neck point. Hats and hair scale with it.
+- a02 B: the whole figure 1.25 about the feet, at every human draw site: you, your mate, the pillager bots (both drawOp calls) and hires. Shadow and gun scale with the body, as the spec says.
+- a04 C: different heights. Lean wc.scale(0.92,1.08), broad (1.1,0.96), curved (1,1), about the feet. Shadows scale with it.
+- a05 B: bigger cosmetic pieces: the pack 1.3, the vest and pauldron plates 1.12, the chest patch 1.6. Do NOT scale the hat and hair again: a01 D already scales them with the head, and doing both would make hats 1.4 times the head.
 - a09 B: a bigger, darker shadow.
-- a10 D: the mate name plate plus a 36x3 health bar under the name.
-- NOT doing a02, a05 or a08 (bigger figure, cosmetics, gun and pack): the closer camera already makes them bigger.
+- a10 D: the mate name plate, plus a 36x3 health bar under the name.
+- No change: a03 (face), a06 (the seat ring and number stay), a07 (the dark outline stays), a08 (gun and pack size).
+
+Watch for:
+- With his closer camera (task 44, zoom 1.3), figures end up about 1.6 times today's size on screen. That is his choice; keep the 1.25 in one named constant, so it is one number to dial back.
+- Nameplates, name tags, the alert mark and the downed bar must clear the bigger head. Raise them with the figure.
+- Hit areas do not change. Check whether shots visibly pass through the drawn edge of a bigger body. If they do, write it in your notes and in questions.md, and do not change any hit area.
+- Doorways and the narrow gaps in the map must still look passable.
 
 ## How
 - Each pick has its exact spec in tools/handoff/art-survey/survey.json (question id, then options[key].spec). Build it as written unless the notes here say otherwise. tools/handoff/art-survey/answers.md has his words and the coordinator's calls.

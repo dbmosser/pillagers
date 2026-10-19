@@ -668,3 +668,6 @@
 2026-10-18 0.0320 critic-c-31-ui-pause-settings
 2026-10-18 0.0293 critic-c-31-ui-pause-settings
 2026-10-18 1.2128 b-31-ui-undercroft
+2026-10-18 0.0326 critic-13-ui-end-cards
+2026-10-18 0.0303 critic-13-ui-end-cards
+2026-10-18 1.9314 13-ui-end-cards

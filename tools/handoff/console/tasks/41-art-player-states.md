@@ -2,7 +2,7 @@
 
 - a11 B: a bouncy walk and sprint (bigger bob, a little squash and stretch).
 - a12 B: the hit reaction is a white flash for about 66 ms, then red, with a small recoil.
-- a13 D: at low health, option B's body changes plus option C's edge pulse. The edge is task 40's player-colour edge (a06) if 40 has shipped; if not, pulse the body outline. The screen-side low-health look (menu survey q23 D) stays as shipped.
+- a13 D: at low health, option B's body changes plus option C's edge pulse. He kept today's outline (a07 A) and seat ring (a06 A), so the edge pulse is the dark body outline turning red. The screen-side low-health look (menu survey q23 D) stays as shipped.
 - a14 B: downed means kneeling, head dropped, gun on the ground, a red ring pulsing. The downed bar with +0.50s and the two-decimal clock (v30.91) stay.
 - a15 B: at player death the body drops flat, then breaks into rising points of light. No body stays.
 - a16 B: a faint dotted line from the gun to 40 px short of the crosshair, always on while a gun is held. His note: "the better/rarer version of each gun can also have the red laser". So guns at the game's two highest rarity tiers, and the golden gun, show option C's red laser while the sights are held. The dotted line hides while the laser shows (one aim mark at a time). Find the rarity tiers in the code and name them in your notes.

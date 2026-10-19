@@ -1984,6 +1984,13 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
 #root #keysmodal #keyslist{ max-width:calc(var(--sp-5) * 30); }
 #root #setlist .row:not(.setjump):hover, #root #setlist .row:not(.setjump):focus-within, #root #setlist .row.dshow:not(.setjump), #root #setlist .row:not(.setjump):has(.padfocus){ background:var(--ui-hover); box-shadow:inset 4px 0 0 var(--acc), inset 0 0 0 1px var(--acc); }
 #root #keyslist, #root #setlist{ padding-bottom:var(--sp-5); -webkit-mask-image:linear-gradient(to bottom, var(--ui-void) calc(100% - var(--sp-5)), transparent); mask-image:linear-gradient(to bottom, var(--ui-void) calc(100% - var(--sp-5)), transparent); }
+/* v31.xx (cw-pset10) critic c-31y (Pad buttons 75 at 2: "the banner is offset (481 to 1439) from the list columns", "the scrollbar is a thin dim 4px line", "the key column leaves empty cells"; Settings 70 at 2: "the pause when the window loses focus row is 82px against 66px for the others", "the description pane touches the footer divider with no bottom padding"). Now: the rebind callout is as wide as the pad buttons table (1440) and lines up with its labels, the Settings and Keys scrollbar is 8px, every Settings row is one height (the hidden hint line no longer pads a row), and the detail strip keeps 16px above the footer hint. */
+#root #keysmodal #keysnote{ max-width:calc(var(--sp-5) * 30); padding-inline:var(--sp-3); }
+#root #setlist::-webkit-scrollbar, #root #keyslist::-webkit-scrollbar{ width:8px; }
+#root #setlist::-webkit-scrollbar-thumb, #root #keyslist::-webkit-scrollbar-thumb{ border-radius:4px; }
+#root #setlist .row:not(.setjump) > div:first-child > .hint{ display:none; }
+#root #setlist .row:not(.setjump){ box-sizing:border-box; height:var(--btn-h); padding-block:0; align-items:center; }
+#root #setdetail{ margin-bottom:var(--sp-2); }
 /* v28.xx (cw-uc-racks) b-31 step 7, the Undercroft on the shared look (style guide: one reading column, 16px type floor, no filler lines). The racks page ran 1316px wide buttons across a 1700px card (his "one grid" rule gave way to the centred card, Q7 and Q43) with 14px grey-amber hint lines: now one 672px column centred in the card, buttons 48px high, status and hint lines 16px in the second text colour, and the line under the tab name that only repeated it is gone (Q8, reason in changes.md). The codex was an auto-fill grid hugging the top left: now four columns, 1344px at most, centred, 16px rarity and kills lines. The stash setup plates (gun keys, item wheel) and their reset buttons were 12px: 14px now, and the one-line swap note under them is gone (Q70 no tutorial prompts, Q8). */
 #root #opane_mf > *{ box-sizing:border-box; width:100%; max-width:calc(var(--sp-5) * 14); margin-left:auto; margin-right:auto; }
 #root #opane_mf .msub{ display:none; }
@@ -2892,7 +2899,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.58';
+var VER='31.59';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -49531,7 +49538,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.58: A tile not yet shown is a plain grey slot. The haul strip wraps in even rows. Check 31.58 fails on v31.57',
+  now:'v31.59: The pad buttons callout lines up with the table, scrollbars are 8px, and every settings row is the same height. Check 31.59 fails on v31.58',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

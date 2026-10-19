@@ -29,14 +29,18 @@ Page: https://claude.ai/artifact/9FE6Z1FhG197FsrqVLRJFH. The page's database cam
 - a36 C camera 30 percent closer (my pick was B, 15 percent)
 - a37 A finishing look as now
 
-## a01 to a10: not sent, so my picks apply, adjusted for his a36 C
-- a01 A, a03 A: no change.
-- a02 A instead of my B; a05 A instead of my B; a08 A instead of my B. Those three made figures, cosmetics, guns and packs bigger so they read at game size. His 30 percent closer camera already does that. Stacking both would make a figure about 1.6 times today's size on screen.
-- a04 B stronger build shapes.
-- a06 B player-colour edge on the body (replaces the seat ring).
-- a07 B dark outline plus a light top-left edge.
-- a09 B bigger, darker shadow.
-- a10 D mate name tag plus a health bar.
+## a01 to a10 (his second paste, the same evening)
+- a01 D mascot head
+- a02 B figure a quarter bigger
+- a03 A face as now
+- a04 C different heights for the builds
+- a05 B bigger cosmetic pieces
+- a06 A seat ring and number as now
+- a07 A dark outline as now
+- a08 A gun and pack as now
+- a09 B bigger, darker shadow
+- a10 D mate name plus a health bar
+- My call: a05's hat and hair scaling is skipped, because a01 D already scales them with the head. With the closer camera, figures end up about 1.6 times today's size on screen, so the 1.25 sits in one constant he can dial back.
 
 ## My calls on his notes
 - Red clothes (a18 and a19) are for the pillager bots that are against you. A hire fighting on your side keeps its own colours, because red now means enemy. The golden enemy stays gold, and elites keep their purple ring on top of the red.

@@ -251,10 +251,17 @@
  "40-whats-new-card": {
   "score": 2,
   "pass": false,
-  "verdict": "The What's new modal is now a centred card with a decent amber primary, but it is a wall of five run-on explaining paragraphs at one weight and size, while the world behind it leaks toasts, a hotbar and HUD that should be hidden or waiting.",
-  "pic": "tools/handoff/console/notes/shots/13-k1/40-whats-new-card-1080.jpg",
+  "verdict": "a dense, five-paragraph wall of text in a small card with no hero element and no close x, so it reads as a generic modal rather than the near-full-screen card the guide demands.",
+  "findings": [
+   "P1 card body, items 1-5: cut to at most 3 one-line bullets of about 8 words each. Make the version number the single hero (56px f-cond 800). Set the bullets at 20px tx-1 with 16px gaps. Drop the numbering or turn it into a 3px lime tick.",
+   "P1 card window (602,231 to 1318,817): use the shared window card at 90% width. Add a 40px x top-right, with a visible focus ring. Use the 56px header and 72px footer rows that other windows have.",
+   "P1 card title 'new in v0.0770': title at --fs-title 32px f-cond 700 tx-1, with a 36px-wide 2px lime tab above it. Put the version in tx-2 16px after the title. Give the header row 24px padding.",
+   "P1 body text type: f-body 400 20px, line-height 1.4 (28px), tx-1. Use tx-2 for the secondary lines. Keep paragraph spacing at 16px.",
+   "P2 footer: 'press enter or walk to dismiss' and 'got it' button: button label 20px f-cond 700 acc-ink. Add a 2px outer focus ring. Make the hint name the active device (a on pad). Align the hint baseline to the button centre and set it at 16px tx-2 at 4.5:1 or better."
+  ],
+  "pic": "tools/handoff/console/notes/shots/13-p1/40-whats-new-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T12:56"
+  "when": "2026-10-19T00:09"
  },
  "45-arcade-attract-board": {
   "score": 3,
@@ -578,17 +585,17 @@
  "76-haul-reveal-mid": {
   "score": 3,
   "pass": false,
-  "verdict": "The card is a clean centred layout with a clear teal title, a bold $ hero and one lime action. But mid-reveal it looks broken: a stray orphan tile in one shot, a row of nine empty slots and a scrollbar in the other, and a pile of small bordered chips that all look alike.",
+  "verdict": "the stray grey tile and the double slot row are gone from the first pass, but the haul reveal still stacks two rows of empty slots over three real items, and the challenge pill, recovery lines and tag chips stay cluttered, so the card reads as a template.",
   "findings": [
-   "P0 Image 1, right of the card at about x1185-1277, y353-443: Remove it, or anchor it inside the card grid as the next item slot (64px square, inline with the item row). It must never be positioned against the card edge.",
-   "P0 Image 2, the empty slot row at y420-480 above the real item row: Use a single item row. Reveal the items into these slots in place, left to right, or hide the placeholders until each item lands. Keep the +7 more overflow on that same row. Pin the row at 64px tiles with an 8px gap.",
-   "P1 Image 2, card right edge at x1313 and the x button at 1239-1287: Remove the overflow by cutting rows (see the clutter finding) or by tightening the vertical spacing to 16/24px. Hide the scrollbar. Use the same x (40px, line-hi border, tx-2 glyph) on every windowed variant, or drop it everywhere because the lime button already closes the card.",
-   "P1 Challenge chips and recovery lines (Image 1 y264-360, Image 2 y264-410): Make challenges flat rows with a 16px ok-green tick or tx-2 dash, with no border. Merge the recovery lines into one tx-2 line, for example 'recovered: burst carbine, compact smg'. Use one 24px gap between blocks.",
-   "P1 Image 1, first item tile at x825-897: Drop the glow. Use a 3px rarity bar at the bottom, and for focus a 2px --acc outline. Scale the focused tile 1.0 to 1.08 only during the reveal."
+   "P0 item area, y385-520: two staggered rows of empty slot boxes (6 above, 3 empty plus 3 filled below), with a larger grey focus tile at x858-934: use one row of 64px tiles with an 8px gap, centred on x960. Reveal items into the slots in place, left to right, and hide the unfilled placeholders (or draw them at 30% opacity). Keep the focus tile at the same 64px size with a 2px --acc outline and no scale-up. Put '+7 more' inside the row at tx-2, 16px.",
+   "P1 challenge pill and recovery lines, y282-375: make the challenge a flat row with a 16px ok-green tick and tx-1 text, with no border. Merge the recovery lines into one tx-2 16px line: 'recovered: burst carbine, compact smg'. Leave 24px between that block and the item row.",
+   "P1 hierarchy, haul $770 (y545-615) vs the title 'extracted': leave 24px above the 'haul' label and 8px between the label and the number. Keep $770 at 56px f-cond 800 tx-1. Keep the teal on the title only. Leave the lime for the single button.",
+   "P1 x button, x1246-1293 y119-166: use the guide's 40px x with a line-hi border and tx-2 glyph, inset 16px from the top and right edges. Or drop it, since the lime button closes the card. Do not keep 'copy report' as a competing button.",
+   "P1 tag chips (first out, heavy haul, untouched, ghost), y777-814: drop the borders and render the tags as one tx-2 16px line separated by ' · ' ('first out · heavy haul · untouched · ghost'). Or show only the top 2. Leave a 24px gap."
   ],
-  "pic": "tools/handoff/console/notes/shots/13-n1/76-haul-reveal-mid-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/13-p1/76-haul-reveal-mid-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T23:59"
+  "when": "2026-10-19T00:09"
  },
  "75-settings-pad-rebind-waiting": {
   "score": 2,

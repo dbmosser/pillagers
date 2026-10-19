@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.59 - PAD BUTTONS CALLOUT WIDTH, 8PX SCROLLBAR, ONE SETTINGS ROW HEIGHT
+
+Co-op hunt while he was away. Critic c-31y: the rebind callout was offset from the table, the scrollbar was a thin sliver, one Settings row was taller than the rest.
+
+MEASURED. Check 31.59 passes, and fails on v31.58.
 ## v31.58 - HAUL REVEAL: PLAIN EMPTY SLOTS, BALANCED ROWS
 
 Co-op hunt while he was away. The critic scored the haul reveal 3 with a P0: empty boxes with coloured bars above the revealed items. The rarity rules out-weighed the hidden rule, so unrevealed slots showed their rarity; and the strip wrapped 9 and 3.

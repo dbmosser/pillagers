@@ -1,0 +1,7 @@
+v31.59: pad buttons callout width, 8px scrollbar, one settings row height
+
+The pad buttons callout lines up with the table, scrollbars are 8px, and every settings row is the same height.
+
+Check 31.59. Fails on v31.58.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
