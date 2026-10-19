@@ -712,19 +712,19 @@
   "when": "2026-10-19T01:10"
  },
  "74-settings-change-pad-buttons": {
-  "score": 3,
+  "score": 2,
   "pass": false,
-  "verdict": "the screen is clean and consistent with the card style, but nothing is focused, the label-to-chip gaps are huge, and the bottom is clipped, so it still reads as a flat settings table.",
+  "verdict": "the new pad diagram is a good identity idea but it is executed with so much lime text and duplicate information that it reads busier and less disciplined than the plain list it replaced.",
   "findings": [
-   "P1 all 16 key chips (x753-913, x1681-1841): focus the first chip with a 2px --acc outline, --acc text and a 3px --acc left tab on its row, with a 1.04 scale bounce. Idle chips: --ui-raised fill, 1px --ui-line-hi border, 16px --tx-1 text.",
-   "P1 row label to chip gap, x66-753 and x994-1681: make the label column 360px with the chip 24px after it, in two equal 50% columns with a 48px gutter. Or add a 1px --ui-line row divider and a hover or focus fill across the row.",
-   "P1 'locked: these keep their jobs' (x65, y903) and the clipped bottom (y~925): scroll the list so the locked rows are fully visible, as dimmed rows with a lock glyph, and drop the sentence. Add 24px bottom padding and a 16px fade above the footer line (y934).",
-   "P1 section headers 'move', 'fight', 'gear', 'world' (x65, y146-784): set headers to 16px --tx-2 with +.08em tracking. Shrink each bar to 3x16px, or use --ui-line-hi. Add 24px above each group.",
-   "P2 row labels (x66, x994): labels in 20px f-cond 600 --tx-1. Chip text in 16px --tx-1 on --ui-raised, with the focused chip in --acc."
+   "P0 right diagram panel, all ~16 button-code labels (lt, lb, ls, view, d-up, d-left, d-right, d-down, rt, rb, y, x, b, a, menu, rs): set all diagram button codes to --tx-1 (cream) by default; reserve --acc for only the currently-focused/hovered binding, or drop accent from the diagram entirely since the left list already uses plain text",
+   "P0 whole screen: left list (move/fight sections) vs right diagram: pick one source of truth: either drop the text list and let the diagram be the full reference, or keep the list and cut the diagram to only the handful of bindings that benefit from a picture (move/aim sticks)",
+   "P1 left column, compare to old screenshot: restore the two-binding-per-row layout in the list column (or remove the redundant list per the finding above) so all five sections fit in the visible area at 1080p",
+   "P1 diagram, lead lines from labels to controller sketch: route each lead line with a single bend and at least 8px of separation from any other line; none should cross a circle it doesn't belong to",
+   "P2 diagram, 'move'/'aim' circle text and the thin grey lead-lines: set circle labels to --tx-2 minimum (#aaa498) and thicken lead-lines to 1.5px"
   ],
-  "pic": "tools/handoff/console/notes/shots/c-31ag-after/74-settings-change-pad-buttons-1080.jpg",
-  "task": "c-31-ui-pause-settings",
-  "when": "2026-10-19T01:10"
+  "pic": "tools/handoff/console/notes/shots/o-05-pad-presets-after/74-settings-change-pad-buttons-1080.jpg",
+  "task": "o-05-pad-presets",
+  "when": "2026-10-19T16:43"
  },
  "01-title-mode-menu": {
   "score": 3,

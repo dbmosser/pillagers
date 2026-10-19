@@ -1,0 +1,7 @@
+v31.85: camera 30 percent closer
+
+The default camera is 30 percent closer. Reset zoom returns to 130 percent.
+
+Check 31.85. Fails on v31.84.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

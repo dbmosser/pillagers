@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.85 - CAMERA 30 PERCENT CLOSER
+
+Co-op hunt while he was away. His art survey a36 C pick: camera 30 percent closer. The default dial is 1.3 in the shared camera; saved personal zoom values stay as chosen.
+
+MEASURED. Check 31.85 passes, and fails on v31.84.
 ## v31.84 - CONTROLLER LAYOUT PRESETS
 
 Co-op hunt while he was away. His 2026-10-19 order: familiar controller layouts, always twin stick, with lefty swapping sticks.

@@ -29,3 +29,5 @@
 2026-10-19 12:30 o-05-pad-presets 289s ok PARTIAL in=5360866 out=35757 run=3
 2026-10-19 12:35 o-05-pad-presets 63s ok PARTIAL in=6211571 out=38052 run=4
 2026-10-19 12:37 o-05-pad-presets 99s ok PARTIAL in=7308708 out=42158 run=5
+2026-10-19 13:08 o-04-camera-closer 80s ok PARTIAL in=211294 out=3294 run=1
+2026-10-19 13:11 o-04-camera-closer 113s ok PARTIAL in=817502 out=8139 run=2

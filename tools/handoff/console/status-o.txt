@@ -1,1 +1,1 @@
-10-19 12:40 gate: shipping cw-cx-padpresets (o-05-pad-presets, codex)
+10-19 13:12 gate: shipping cw-cx-camera130 (o-04-camera-closer, codex)

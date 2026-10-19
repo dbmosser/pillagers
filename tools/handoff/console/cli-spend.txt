@@ -46,3 +46,6 @@
 2026-10-19 0.0000 o-05-pad-presets
 2026-10-19 0.0000 o-05-pad-presets
 2026-10-19 0.0000 o-05-pad-presets
+2026-10-19 0.3568 critic-o-05-pad-presets
+2026-10-19 0.0000 o-04-camera-closer
+2026-10-19 0.0000 o-04-camera-closer

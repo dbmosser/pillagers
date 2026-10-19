@@ -45,3 +45,5 @@ after. Critic 4 (his 10-18 bar).
 
 TASK DONE when shipped and the checks pass; TASK PARTIAL with what is left. Later jobs (not this one): aim assist (o-06), and a
 layout chip on the pre-raid page once task 22 ships.
+
+Coordinator note 2026-10-19 13:10: SHIPPED v31.84 (07ef7356). The lane died before the pictures (my edit to codex-lane.sh while it ran). Left: AFTER pictures of the CHANGE PAD BUTTONS screen (pillagers, call of duty, lefty), critic 4, and the two-window check. These are lane-side steps: when this job goes back to tasks, only those remain. Do not rebuild the presets.
