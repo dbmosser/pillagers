@@ -1,0 +1,10 @@
+{"generated":"2026-10-18T20:26:58","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":62,"screens":[
+{"name":"05-sector-page","screen":"Sector page WHERE ARE YOU GOING? (maps, surface, weather, going-up summary)","1080":{"staged":true,"note":"sectormodal","viewport":"1920x1080","shot":"05-sector-page-1080.jpg","lint":""}},
+{"name":"06-terms","screen":"Terms modal (lift T)","1080":{"staged":true,"note":"termsmodal","viewport":"1920x1080","shot":"06-terms-1080.jpg","lint":""}},
+{"name":"07-party-coop","screen":"PARTY / co-op window (lift F)","1080":{"staged":true,"note":"partymodal","viewport":"1920x1080","shot":"07-party-coop-1080.jpg","lint":""}},
+{"name":"12-mainframe-contracts","screen":"Mainframe: contracts","1080":{"staged":true,"note":"opmodal","viewport":"1920x1080","shot":"12-mainframe-contracts-1080.jpg","lint":""}},
+{"name":"14-mainframe-racks","screen":"Mainframe: racks","1080":{"staged":true,"note":"opmodal","viewport":"1920x1080","shot":"14-mainframe-racks-1080.jpg","lint":""}},
+{"name":"15-mainframe-stats","screen":"Mainframe: your stats","1080":{"staged":true,"note":"opmodal","viewport":"1920x1080","shot":"15-mainframe-stats-1080.jpg","lint":""}},
+{"name":"16-bar-last-pour","screen":"The Last Pour bar modal","1080":{"staged":true,"note":"barmodal","viewport":"1920x1080","shot":"16-bar-last-pour-1080.jpg","lint":""}},
+{"name":"65-codex","screen":"The armory codex (career stash screen)","1080":{"staged":true,"note":"codexmodal","viewport":"1920x1080","shot":"65-codex-1080.jpg","lint":""}}
+]}

@@ -6101,6 +6101,25 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.63',what:'Settings section tabs are a left rail beside the rows, not a strip over them',
+   run:function(){
+     var bad=[], sj, bs, row, a, b, pw, wr, padWas=document.body.classList.contains('padon');
+     __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     try{
+       openSettings('display');
+       sj=document.querySelector('#setlist .setjump .sj'); bs=document.querySelectorAll('#setlist .setjump button');
+       row=document.querySelector('#setlist .row:not(.setjump) > button'); wr=document.getElementById('setwrap');
+       if(!sj||!bs.length||!row) bad.push('no tabs or rows');
+       else{
+         if(getComputedStyle(sj).flexDirection!=='column') bad.push('tabs are not a column: '+getComputedStyle(sj).flexDirection);
+         a=bs[0].getBoundingClientRect(); b=row.parentNode.getBoundingClientRect();
+         if(a.right>b.left+2) bad.push('first tab right '+Math.round(a.right)+' passes the rows left '+Math.round(b.left));
+         if(bs.length>1 && bs[1].getBoundingClientRect().top<=a.bottom-2) bad.push('tabs are not stacked');
+         if(a.height<20) bad.push('tab height '+a.height);
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var q=document.getElementById('settingsmodal'); if(q) q.classList.remove('on'); }catch(_k){} try{ __topClear(); }catch(_c){} document.body.classList.toggle('padon',padWas); }
+     return bad.length?bad.join('; '):null; }},
   {v:'31.62',what:'the terms, party, gamble and bar windows draw the same 90 percent card frame as the shop (not a small box in the top left corner)',
    run:function(){
      if(!(window.__hubEnter&&window.__showScreen)) return 'SKIP: this fixture cannot walk the Undercroft';

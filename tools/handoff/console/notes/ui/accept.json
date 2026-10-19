@@ -96,10 +96,17 @@
  "12-mainframe-contracts": {
   "score": 2,
   "pass": false,
-  "verdict": "A full-bleed dark slab with a flat, monotone list: it is tidy but generic, with tiny type, a muddy amber focus row, and several style-guide violations (the $ sign, explaining sentences, a toast over a modal, and a top-left close that is not a close icon).",
-  "pic": "tools/handoff/console/notes/shots/b-31-c1/12-mainframe-contracts-1080.jpg",
+  "verdict": "it has the right card-and-x structure and a clear lime focus row, but the list is a flat wall of identical rows, the text is tiny and low-contrast for a couch, and the unused detail pane, clipped last row and overlapping toast make it feel unfinished.",
+  "findings": [
+   "P1 contract list rows (left pane): drop the repeated 'standard' tag (show a tag only for hard or elite), set the row name to 20px tx-1 and the pays line to 16px tx-2 (min 4.5:1). Right-align the $ reward at 20px in a fixed column. Raise row height to 72px with 16px padding.",
+   "P1 selected row fill: use --ui-raised #1e2225 for the fill, a 4px solid --acc left bar, and tx-1 text. Optionally a 1px --acc-at-40% outline.",
+   "P1 bottom of list and toast ('the welcome pack is in your stash.'): fit the list to the card with 24px bottom padding and a fade or scroll indicator on the cut row. Move the toast to 24px above the card edge, outside the border, or inside the safe area, and shorten it or remove it.",
+   "P1 detail pane (right): stretch the pane to the full list height, pin the action button to the bottom at 56px tall, and make the progress bar 8px with an --acc fill. Enlarge the reward icon to 56px with a 16px count. State the disabled state in tx-2 with a 1px --ui-line-hi border.",
+   "P2 header stats (900 credits, 0 xp, stash 3,750 bag 0): use one pattern for all three: a 20px tx-1 number plus a 16px tx-2 label, 32px gaps. Split stash and bag into two items. Use '$' consistently for money ('$600', not '600 c' and not 'credits' next to '$')."
+  ],
+  "pic": "tools/handoff/console/notes/shots/b-31-f2/12-mainframe-contracts-1080.jpg",
   "task": "b-31-ui-undercroft",
-  "when": "2026-10-18T09:54"
+  "when": "2026-10-19T00:28"
  },
  "14-mainframe-racks": {
   "score": 2,
@@ -119,10 +126,17 @@
  "16-bar-last-pour": {
   "score": 2,
   "pass": false,
-  "verdict": "A clean but generic dark modal with a mismatched centered title, two identical yellow buttons that flatten hierarchy, no visible pad focus, and a lot of dead space.",
-  "pic": "tools/handoff/console/notes/shots/all/16-bar-last-pour-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:15"
+  "verdict": "a full-size card that is mostly empty, with a small off-centre content block, a title that is too small and doesn't align with the content below it, and two identical lime buttons competing for attention, so it reads as a template rather than a bar menu.",
+  "findings": [
+   "P1 whole card composition: Anchor a 56px header row at the top of the card with the title at left, 32px f-cond 700, 24px padding. Make the list fill the card width, with 72px rows and 16px gaps. Or move the content block up so it starts about 120px below the header.",
+   "P1 title 'the last pour' (y≈390): Left-align the title to x=431 and set it at 32px f-cond 700 in tx-1. Remove the short underline, or make it a 2px, 36px-wide accent tab. Add 24px between the title and the body copy.",
+   "P1 ingest buttons x2 and the $300/$520 prices: Make the prices tx-1 at 20px. Make the idle buttons outline-only (1px line-hi, tx-1). Fill the focused row's button with lime. Add a --ui-raised row fill and a 3px lime left bar on the focused row.",
+   "P1 descriptions and 'things are about to get real.': Delete 'things are about to get real.' and 'you hold $900' since the header already shows the balance. Keep one short effect line per row at 16px in tx-2 (at least 4.5:1). Cut the long blotter sentence to about 6 words.",
+   "P2 top-right currency strip: Show '$900' with a 16px label, and use one size and weight for every item. Put 24px between items and a 1px divider before the stash/bag group. Show stash and bag as 'stash $3,750' and 'bag 0' at 16px, in tx-2 on --ui-panel."
+  ],
+  "pic": "tools/handoff/console/notes/shots/b-31-f2/16-bar-last-pour-1080.jpg",
+  "task": "b-31-ui-undercroft",
+  "when": "2026-10-19T00:27"
  },
  "17-fashion-mirror": {
   "score": 2,

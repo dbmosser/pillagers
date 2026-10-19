@@ -1,0 +1,7 @@
+v31.63: settings tabs as a left rail
+
+The settings section tabs are a left rail beside the rows, with send play data last in the rail.
+
+Check 31.63. Fails on v31.62.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

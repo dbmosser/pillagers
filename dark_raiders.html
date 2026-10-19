@@ -1996,6 +1996,17 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
 #root #keysnote.wait, #root #keysnote.set{ background:var(--ui-raised); }
 #root #keyslist .keybtn:not(.wait){ border-color:var(--ui-line); }
 #root #setdetail{ background:var(--ui-panel); }
+/* v31.xx (cw-pset12) critic c-31y/c-31z (Settings 18, 70, 72 at 3: "a narrow 960px column floating in a 1870px card, 450px of empty void each side", "move the six tabs into a 280px left rail aligned with the list", "tiny low-contrast tabs", "send play data: move it into the list or the footer"). Now: the section tabs are a 288px left rail beside the 960px rows (one 1248px block centred in the card), 56px rail buttons at 20px with a 3px accent bar on the section in view, send play data is the last rail button, the detail strip lines up with the rows. The tab strip sticks as a zero-height anchor, so a row never hides under it. Q61 keeps send play data; Q43 keeps the near full screen card. */
+#root #settingsmodal #setwrap{ max-width:calc(var(--sp-5) * 26); }
+#root #settingsmodal #setlist{ --rail:calc(var(--sp-5) * 6); box-sizing:border-box; padding-left:var(--rail); }
+#root #settingsmodal #setlist .setjump{ position:sticky; top:0; margin:0 0 0 calc(var(--rail) * -1); width:var(--rail); height:0; min-height:0; padding:0; border:0; background:transparent; overflow:visible; z-index:3; }
+#root #settingsmodal #setlist .setjump .sj{ position:absolute; top:0; left:0; width:100%; box-sizing:border-box; padding-right:var(--sp-3); flex-direction:column; align-items:stretch; flex-wrap:nowrap; gap:var(--sp-1); }
+#root #settingsmodal #setlist .setjump button{ width:100%; min-height:var(--btn-h); padding:0 var(--sp-2); text-align:left; justify-content:flex-start; border:0 !important; border-left:3px solid transparent !important; margin:0; }
+#root #settingsmodal #setlist .setjump button:hover:not(:disabled):not(.on){ background:var(--ui-hover); color:var(--tx-1); border-left-color:var(--ui-line-hi) !important; }
+#root #settingsmodal #setlist .setjump button.on{ background:var(--ui-raised); color:var(--tx-1); border-left-color:var(--acc) !important; }
+#root #settingsmodal #setlist .setjump button[data-go]{ margin-top:var(--sp-3); }
+#root #settingsmodal #setdetail{ margin-left:var(--sp-5); }
+#root #settingsmodal #setlist .row > button[id^="go_"]{ border-color:var(--ui-line-hi); }
 /* v28.xx (cw-uc-racks) b-31 step 7, the Undercroft on the shared look (style guide: one reading column, 16px type floor, no filler lines). The racks page ran 1316px wide buttons across a 1700px card (his "one grid" rule gave way to the centred card, Q7 and Q43) with 14px grey-amber hint lines: now one 672px column centred in the card, buttons 48px high, status and hint lines 16px in the second text colour, and the line under the tab name that only repeated it is gone (Q8, reason in changes.md). The codex was an auto-fill grid hugging the top left: now four columns, 1344px at most, centred, 16px rarity and kills lines. The stash setup plates (gun keys, item wheel) and their reset buttons were 12px: 14px now, and the one-line swap note under them is gone (Q70 no tutorial prompts, Q8). */
 #root #opane_mf > *{ box-sizing:border-box; width:100%; max-width:calc(var(--sp-5) * 14); margin-left:auto; margin-right:auto; }
 #root #opane_mf .msub{ display:none; }
@@ -2904,7 +2915,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.62';
+var VER='31.63';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -49543,7 +49554,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.62: The terms, party, gamble and bar windows sit in the same centred 90 percent card as the shop. Check 31.62 fails on v31.61',
+  now:'v31.63: The settings section tabs are a left rail beside the rows, with send play data last in the rail. Check 31.63 fails on v31.62',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
