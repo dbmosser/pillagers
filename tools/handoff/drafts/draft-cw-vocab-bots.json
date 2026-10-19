@@ -1,0 +1,172 @@
+{
+    "title":  "NO RAIDERS ON SCREEN: THE AI ONES ARE PILLAGER BOTS",
+    "why":  "His order 2026-10-18: get rid of the concept of raiders; players are pillagers and the AI ones are pillager bots. Every string a player reads that meant an AI pillager now says pillager bot(s): the settings rows and option, the board title, the sound key, the callouts, the contract words, the run report line, the hints and the bush note. Code names (kind raider, CFG.nRaider, saves) are unchanged.",
+    "now":  "The AI humans are now called pillager bots everywhere on screen, and raider is gone.",
+    "edits":  [
+                  {
+                      "anchor":  "var UNITPLURAL={sentry:\u0027sentries\u0027,crawler:\u0027crawlers\u0027,raider:\u0027pillagers\u0027",
+                      "replacement":  "// v31.xx (cw-vocab-bots), HIS ORDER 2026-10-18: \"get rid of the conept of praiders -- there are players, who are pillagers, then there are pillager bots\". A player is a pillager; the AI ones are pillager bots; raider never shows. Words only: kind:\u0027raider\u0027 and CFG.nRaider are code names and stay.\nvar UNITPLURAL={sentry:\u0027sentries\u0027,crawler:\u0027crawlers\u0027,raider:\u0027pillager bots\u0027"
+                  },
+                  {
+                      "anchor":  "var UNITNAME={sentry:\u0027sentry\u0027,crawler:\u0027crawler\u0027,raider:\u0027pillager\u0027",
+                      "replacement":  "var UNITNAME={sentry:\u0027sentry\u0027,crawler:\u0027crawler\u0027,raider:\u0027pillager bot\u0027"
+                  },
+                  {
+                      "anchor":  "var KINDWORD={sentry:\u0027SENTRY\u0027,crawler:\u0027CRAWLER\u0027,raider:\u0027PILLAGER\u0027",
+                      "replacement":  "var KINDWORD={sentry:\u0027SENTRY\u0027,crawler:\u0027CRAWLER\u0027,raider:\u0027PILLAGER BOT\u0027"
+                  },
+                  {
+                      "anchor":  "\u0027Word has spread. Hires cost more and pillagers trust you less.\u0027",
+                      "replacement":  "\u0027Word has spread. Hires cost more and pillager bots trust you less.\u0027"
+                  },
+                  {
+                      "anchor":  "return \u0027Hires cost more and pillagers trust you less.\u0027",
+                      "replacement":  "return \u0027Hires cost more and pillager bots trust you less.\u0027"
+                  },
+                  {
+                      "anchor":  "[n(3),\u0027search in a ring; hold to finish a pillager\u0027]",
+                      "replacement":  "[n(3),\u0027search in a ring; hold to finish a pillager bot\u0027]"
+                  },
+                  {
+                      "anchor":  "[\u0027Y\u0027,\u0027search in a ring; hold to finish a pillager\u0027]",
+                      "replacement":  "[\u0027Y\u0027,\u0027search in a ring; hold to finish a pillager bot\u0027]"
+                  },
+                  {
+                      "anchor":  "(f.by.name||\u0027A PILLAGER\u0027)",
+                      "replacement":  "(f.by.name||\u0027A PILLAGER BOT\u0027)"
+                  },
+                  {
+                      "anchor":  "say(\u0027PILLAGER REINFORCEMENTS\u0027",
+                      "replacement":  "say(\u0027PILLAGER BOT REINFORCEMENTS\u0027"
+                  },
+                  {
+                      "anchor":  "(e.name||\u0027PILLAGER\u0027)+\u0027 DOWNED\u0027",
+                      "replacement":  "(e.name||\u0027PILLAGER BOT\u0027)+\u0027 DOWNED\u0027"
+                  },
+                  {
+                      "anchor":  "say(\u0027PILLAGER TURNED HOSTILE\u0027",
+                      "replacement":  "say(\u0027PILLAGER BOT TURNED HOSTILE\u0027"
+                  },
+                  {
+                      "anchor":  "say(\u0027PILLAGER CALLED EXTRACTION\u0027",
+                      "replacement":  "say(\u0027PILLAGER BOT CALLED EXTRACTION\u0027"
+                  },
+                  {
+                      "anchor":  "desc:\u002740% more machines, pillagers and criers.\u0027",
+                      "replacement":  "desc:\u002740% more machines, pillager bots and criers.\u0027"
+                  },
+                  {
+                      "anchor":  "desc:\u0027Every pillager is hostile and already searching for you.\u0027",
+                      "replacement":  "desc:\u0027Every pillager bot is hostile and already searching for you.\u0027"
+                  },
+                  {
+                      "anchor":  "|  AI pillagers extracted: \u0027",
+                      "replacement":  "|  Pillager bots extracted: \u0027"
+                  },
+                  {
+                      "anchor":  "String(G.nearDown.name||\u0027PILLAGER\u0027)",
+                      "replacement":  "String(G.nearDown.name||\u0027PILLAGER BOT\u0027)"
+                  },
+                  {
+                      "anchor":  "[SNDCOL.raider.move,\u0027pillager moving\u0027]",
+                      "replacement":  "[SNDCOL.raider.move,\u0027pillager bot moving\u0027]"
+                  },
+                  {
+                      "anchor":  "[SNDCOL.raider.fire,\u0027pillager firing\u0027]",
+                      "replacement":  "[SNDCOL.raider.fire,\u0027pillager bot firing\u0027]"
+                  },
+                  {
+                      "anchor":  "ctx.fillText(\u0027CURRENT PILLAGERS  \u0027+live",
+                      "replacement":  "ctx.fillText(\u0027CURRENT PILLAGER BOTS  \u0027+live"
+                  },
+                  {
+                      "anchor":  "rsText(\u0027CURRENT PILLAGERS  \u0027+RSTAT.live",
+                      "replacement":  "rsText(\u0027CURRENT PILLAGER BOTS  \u0027+RSTAT.live"
+                  },
+                  {
+                      "anchor":  "[\u0027nRaider\u0027,\u0027AI pillagers\u0027",
+                      "replacement":  "[\u0027nRaider\u0027,\u0027Pillager bots\u0027"
+                  },
+                  {
+                      "anchor":  "[\u0027raiderExtract\u0027,\u0027Seconds a pillager must hold the ring\u0027",
+                      "replacement":  "[\u0027raiderExtract\u0027,\u0027Seconds a pillager bot must hold the ring\u0027"
+                  },
+                  {
+                      "anchor":  "[\u0027raiderFeud\u0027,\u0027Pillager crews feud (0 truce)\u0027",
+                      "replacement":  "[\u0027raiderFeud\u0027,\u0027Pillager bot crews feud (0 truce)\u0027"
+                  },
+                  {
+                      "anchor":  "[\u0027raiderFloorN\u0027,\u0027Min pillagers alive\u0027",
+                      "replacement":  "[\u0027raiderFloorN\u0027,\u0027Min pillager bots alive\u0027"
+                  },
+                  {
+                      "anchor":  "Find them in rare containers or on elite pillagers.\u0027",
+                      "replacement":  "Find them in rare containers or on elite pillager bots.\u0027"
+                  },
+                  {
+                      "anchor":  "a pillager walking out tries a revive for a crewmate near his path.",
+                      "replacement":  "a pillager bot walking out tries a revive for a crewmate near his path."
+                  },
+                  {
+                      "anchor":  "[\u0027DONE\u0027,\u0027Pillagers play like people:",
+                      "replacement":  "[\u0027DONE\u0027,\u0027Pillager bots play like people:"
+                  },
+                  {
+                      "anchor":  "Plain-language raid settings: pillagers, machines",
+                      "replacement":  "Plain-language raid settings: pillager bots, machines"
+                  },
+                  {
+                      "anchor":  "[\u0027DONE\u0027,\u0027Pillagers that equip what they loot",
+                      "replacement":  "[\u0027DONE\u0027,\u0027Pillager bots that equip what they loot"
+                  },
+                  {
+                      "anchor":  "for you and for every pillager on the board",
+                      "replacement":  "for you and for every pillager bot on the board"
+                  },
+                  {
+                      "anchor":  "Bushes you can hide in, and raiders who hide in them too",
+                      "replacement":  "Bushes you can hide in, and pillager bots who hide in them too"
+                  },
+                  {
+                      "anchor":  "next:\u0027His ruling on the pillagers: machines at war with them",
+                      "replacement":  "next:\u0027His ruling on the pillager bots: machines at war with them"
+                  },
+                  {
+                      "anchor":  "\u0027Half the pillagers down here walk past scrap. Their loss.\u0027",
+                      "replacement":  "\u0027Half the pillager bots down here walk past scrap. Their loss.\u0027"
+                  },
+                  {
+                      "anchor":  "\u003cspan class=\"vpill\"\u003ePILLAGER\u003c/span\u003e",
+                      "replacement":  "\u003cspan class=\"vpill\"\u003ePILLAGER BOT\u003c/span\u003e"
+                  },
+                  {
+                      "anchor":  "d:\u0027Kill 25 pillagers in all.\u0027",
+                      "replacement":  "d:\u0027Kill 25 pillager bots in all.\u0027"
+                  },
+                  {
+                      "anchor":  "_bits.push(\u0027Pillagers need \u0027+(2+clamp",
+                      "replacement":  "_bits.push(\u0027Pillager bots need \u0027+(2+clamp"
+                  },
+                  {
+                      "anchor":  "an unarmed survivor, or a pillager who had not fought you.",
+                      "replacement":  "an unarmed survivor, or a pillager bot who had not fought you."
+                  },
+                  {
+                      "anchor":  "flowChip(BOUNTY.pay,\u0027BOUNTY CLAIMED\u0027,\u0027BOUNTY PILLAGER\u0027)",
+                      "replacement":  "flowChip(BOUNTY.pay,\u0027BOUNTY CLAIMED\u0027,\u0027BOUNTY PILLAGER BOT\u0027)"
+                  },
+                  {
+                      "anchor":  "t:\u00273 PILLAGERS\u0027",
+                      "replacement":  "t:\u00273 PILLAGER BOTS\u0027"
+                  },
+                  {
+                      "anchor":  "EVENTS.bounty={name:\u0027BOUNTY PILLAGER\u0027",
+                      "replacement":  "EVENTS.bounty={name:\u0027BOUNTY PILLAGER BOT\u0027"
+                  },
+                  {
+                      "anchor":  "{k:\u0027raiders\u0027, label:\u0027Other pillagers\u0027",
+                      "replacement":  "{k:\u0027raiders\u0027, label:\u0027Pillager bots\u0027"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his order 2026-10-18 (no raider on screen; the AI ones are pillager bots): the settings rows, the pillager bots option, the board title, the sound key, the contract words, the callouts and the bush hint say pillager bot(s) and none of them says raider\u0027,\n   run:function(){\n     var bad=[], i, s, src, rx=/\\braiders?\\b/i, g=null, draws, head=false, old=false, want, txt;\n     try{\n       // 1. the settings rows (key, label)\n       want={nRaider:/pillager bots/i,raiderExtract:/pillager bot/i,raiderFeud:/pillager bot/i,raiderFloorN:/pillager bots/i};\n       for(i=0;i\u003cSLIDERS.length;i++){ s=SLIDERS[i];\n         if(rx.test(String(s[1]))) bad.push(\u0027settings row \u0027+s[0]+\u0027 says \u0027+s[1]);\n         if(want[s[0]]\u0026\u0026!want[s[0]].test(String(s[1]))) bad.push(\u0027settings row \u0027+s[0]+\u0027 reads \u0027+JSON.stringify(s[1])+\u0027, not pillager bots\u0027);\n         if(/\\bAI pillagers\\b|\\bpillagers alive\\b/i.test(String(s[1]))) bad.push(\u0027settings row \u0027+s[0]+\u0027 still names the AI ones pillagers: \u0027+s[1]); }\n       // 2. the pillager bots option (label and hint)\n       for(i=0;i\u003cGAMEOPTS.length;i++){ s=GAMEOPTS[i];\n         if(rx.test(String(s.label)+\u0027 \u0027+String(s.hint))) bad.push(\u0027option \u0027+s.k+\u0027 says raider\u0027);\n         if(s.k===\u0027raiders\u0027\u0026\u0026!/pillager bots/i.test(String(s.label))) bad.push(\u0027the AI pillagers option reads \u0027+JSON.stringify(s.label)); }\n       // 3. the kind-to-word tables and the sound key\n       if(UNITNAME.raider!==\u0027pillager bot\u0027||UNITPLURAL.raider!==\u0027pillager bots\u0027||KINDWORD.raider!==\u0027PILLAGER BOT\u0027) bad.push(\u0027the kind words read \u0027+UNITNAME.raider+\u0027 / \u0027+UNITPLURAL.raider+\u0027 / \u0027+KINDWORD.raider);\n       txt=JSON.stringify(SOUNDKEY);\n       if(txt.indexOf(\u0027pillager bot moving\u0027)\u003c0||txt.indexOf(\u0027pillager bot firing\u0027)\u003c0) bad.push(\u0027the sound key does not say pillager bot moving and firing\u0027);\n       // 4. the bush hint on the roadmap, and no raider anywhere on it\n       txt=JSON.stringify(ROADMAP);\n       if(txt.indexOf(\u0027pillager bots who hide in them too\u0027)\u003c0) bad.push(\u0027the bush hint does not say pillager bots\u0027);\n       if(rx.test(txt)) bad.push(\u0027the roadmap still says raider\u0027);\n       if(rx.test(JSON.stringify(TERMS))||rx.test(JSON.stringify(ACHS))) bad.push(\u0027the heat terms or the achievements say raider\u0027);\n       // 5. the callouts and legend rows in the page source\n       src=[].slice.call(document.scripts).map(function(x){ return x.textContent||\u0027\u0027; }).join(\u0027\\n\u0027);\n       // (the strings are split so this check does not find itself in the page source)\n       [\"say(\u0027PILLAGER BOT\"+\" REINFORCEMENTS\u0027\",\"say(\u0027PILLAGER BOT\"+\" TURNED HOSTILE\u0027\",\"say(\u0027PILLAGER BOT\"+\" CALLED EXTRACTION\u0027\",\"hold to finish a pillager\"+\" bot\u0027\",\"|  Pillager bots\"+\" extracted: \u0027\",\"pillager bots trust\"+\" you less.\",\"Kill 25 pillager\"+\" bots in all.\",\"t:\u00273 PILLAGER\"+\" BOTS\u0027\",\"BOUNTY PILLAGER\"+\" BOT\u0027\",\"a pillager bot\"+\" who had not fought you.\"].forEach(function(n){\n         if(src.indexOf(n)\u003c0) bad.push(\u0027the page has no \u0027+n); });\n       [\"say(\u0027PILLAGER\"+\" REINFORCEMENTS\u0027\",\"say(\u0027PILLAGER\"+\" TURNED HOSTILE\u0027\",\"say(\u0027PILLAGER\"+\" CALLED EXTRACTION\u0027\",\"hold to finish a pillager\"+\"\u0027\",\"AI pillagers\"+\" extracted\",\"and pillagers\"+\" trust you less\",\"raiders who\"+\" hide\"].forEach(function(n){\n         if(src.indexOf(n)\u003e=0) bad.push(\u0027the page still says \u0027+n); });\n       // 6. the board of who is still out there, drawn in a real raid\n       if(typeof __frame===\u0027function\u0027\u0026\u0026typeof __textTrace===\u0027function\u0027){\n         __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n         __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n         g=__state();\n         if(g\u0026\u0026g.player){\n           draws=__textTrace(function(){ __frame(0.016); });\n           for(i=0;i\u003cdraws.length;i++){ s=String(draws[i].t);\n             if(/^CURRENT PILLAGER BOTS\\s+\\d+$/.test(s)) head=true;\n             if(/^CURRENT PILLAGERS/.test(s)) old=true; }\n           if(!head) bad.push(\u0027the board drew no CURRENT PILLAGER BOTS heading\u0027);\n           if(old) bad.push(\u0027the board still reads CURRENT PILLAGERS\u0027);\n         }\n       }\n       return bad.length?bad.join(\u0027; \u0027):null;\n     } finally {\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}

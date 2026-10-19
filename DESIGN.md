@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.62 - TERMS, PARTY, GAMBLE AND BAR FRAMES ARE THE 90 PERCENT CARD
+
+Co-op hunt while he was away. The 90 percent card only set the edges, but four windows still had their old fitted-card width, height and centring shift, so the frame showed as a small grey box in the top left corner of the screen with the content floating in the dark. The old size and shift are cancelled.
+
+MEASURED. Check 31.62 passes, and fails on v31.61.
 ## v31.61 - QUIET KEY CAPS, RAISED REBIND CALLOUT, PANEL DETAIL STRIP
 
 Co-op hunt while he was away. Critic c-31y round 2: olive callout fill, 24 identical loud key caps, detail pane the same fill as the focused row.

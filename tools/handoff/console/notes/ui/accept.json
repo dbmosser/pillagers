@@ -18,17 +18,17 @@
  "04-stash-terminal": {
   "score": 2,
   "pass": false,
-  "verdict": "the stash is now a bordered card with an x, but it is still a dense debug-style panel with no title, 11-13px text, two paragraphs of help and several competing lime boxes, so it reads as a tool and not a polished menu.",
+  "verdict": "the stash window still reads as a dense debug panel: no real title, a version stamp, two help paragraphs, a lime banner, a freebie bar and a toast all compete, and the earlier advice has not been applied.",
   "findings": [
-   "P0 whole screen, hierarchy and header: Put 'stash' in 32px f-cond 700 tx-1 at the card's left, 24px from the edge, with '13 held' at 20px tx-2 beside it. Delete the version stamp and the xp line from the card. Hide or dim the 'the undercroft' backdrop title behind the scrim (.80).",
-   "P0 bottom half: hint rows, two help paragraphs, freebie bar, toast: Delete both help paragraphs and the 'drag a tile onto another to swap' line. Cut the freebie text to 'issued gear: pistol, 2 bandages, frag, plate'. Keep the legend as a single 14px footer line. Move the toast to a top-centre slot that auto-dismisses after 3s.",
-   "P0 lime accents: first-raid banner, freebie bar, 'take the freebie kit', loadout headers: Use lime only for the one primary: 'take the freebie kit' as a filled --acc button, 56px high with --acc-ink text, bottom-right. Make the first-raid banner a tx-2 line with no border, or remove it. Set body text to tx-1.",
-   "P1 text sizes throughout: Set every read label to at least 16px f-cond 600 with +.04em tracking. Set section headers ('stash', 'loadout', 'backpack', 'tactical belt') to 20px f-cond 700. Reserve f-mono for table numbers only.",
-   "P1 right column: backpack, tactical belt, gun keys, item wheel: Use one 8px-grid cell size (56px pitch, 8px gap) for belt, gun keys and wheel. Show the backpack as two full rows with no clipping. Delete 'oc going up' and the stray 'guns' caption. Move gun keys and wheel into a tab or drawer, or a single 2-column block aligned to the pane's 24px padding."
+   "P0 card header (version stamp, xp line, credits row): delete the version stamp and the xp line. add 'stash' at 32px f-cond 700 tx-1, 24px from the card's left edge, with '13 held' at 20px tx-2 beside it. put credits as one 56px hero number or a single 20px stat. dim the backdrop title under the .80 scrim.",
+   "P0 bottom half: legend, two help paragraphs, freebie bar, toast: delete both help paragraphs. cut the freebie text to 'issued gear: pistol, 2 bandages, frag, plate' with no joke. keep the legend as one 14px footer line. move the toast to top-centre and dismiss it after 3s.",
+   "P0 lime accents: first-raid banner, freebie bar border and label, 'take the freebie kit', gun key numbers: use lime only for 'take the freebie kit' as a filled --acc button, 56px high with --acc-ink text, bottom-right. make the first-raid banner a tx-2 line with no border, or remove it. set the key digits and body text to tx-1.",
+   "P1 type sizes throughout: set every read label to at least 16px f-cond 600 with +.04em tracking. set section headers (stash, loadout, backpack, tactical belt) to 20px f-cond 700 tx-1. limit f-mono to table numbers.",
+   "P1 right column: backpack, tactical belt, gun keys, item wheel: use one 56px cell on an 8px gap for belt, gun keys and wheel. show the backpack as two full rows with no clip. delete 'oc going up' and 'guns'. move gun keys and wheel into a tab or drawer, or a single 2-column block aligned to the pane's 24px padding."
   ],
-  "pic": "tools/handoff/console/notes/shots/04-r6-after/04-stash-terminal-1080.jpg",
-  "task": "04-style-guide-update",
-  "when": "2026-10-18T22:43"
+  "pic": "tools/handoff/console/notes/shots/b-31-f1/04-stash-terminal-1080.jpg",
+  "task": "b-31-ui-undercroft",
+  "when": "2026-10-19T00:16"
  },
  "05-sector-page": {
   "score": 2,
@@ -102,12 +102,19 @@
   "when": "2026-10-18T09:54"
  },
  "14-mainframe-racks": {
-  "score": 1,
+  "score": 2,
   "pass": false,
-  "verdict": "A flat, text-heavy dark form with placeholder profanity on screen, disabled buttons that read as dead rectangles, a collision in the header currency block, and nothing to draw the eye, so it is far below the polish bar.",
-  "pic": "tools/handoff/console/notes/shots/all/14-mainframe-racks-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:15"
+  "verdict": "a dark window frame in the right style, but the racks tab is a narrow column of dead grey buttons and explanatory paragraphs floating in a huge empty card, with a dev-note sentence shown to players and a mix of capital letters.",
+  "findings": [
+   "P0 import a friend paragraph (bottom of the column): delete the sentence. Replace it with a 16px tx-2 label of 5 words or fewer ('import a friend's run report') or drop the text, and put the details in a tooltip.",
+   "P0 whole racks tab layout: make two columns with a 24px gap. Left: a panel with the rack grid and a 56px hero '0 / 10' count. Right: a raised detail pane with costs as a table. Left-align to the 118px margin or centre the whole block.",
+   "P1 build a rack, fold 10 racks, slot a data core buttons: make build a rack the one lime-filled primary (--acc fill, --acc-ink text, 20px). Keep the disabled ones as tx-2 text at 4.5:1 or better with a --ui-line-hi border. Show a 2px lime focus bar on the focused row.",
+   "P1 capital letters: '0 of 10 racks' text, '(0 held)' text, '900', '0 xp', header numbers: audit the strings. Use 'the map (m)' or the key glyph in a keycap chip so no loose single letters read as typos.",
+   "P1 description paragraphs under each button (13-14px body): turn costs into a row of ingredient chips ('scrap 0/12', 'wire 0/9', 'cell 0/6', 'board 0/6'), red where short, at 16px label size. Delete the sentences that restate the button."
+  ],
+  "pic": "tools/handoff/console/notes/shots/b-31-f1/14-mainframe-racks-1080.jpg",
+  "task": "b-31-ui-undercroft",
+  "when": "2026-10-19T00:17"
  },
  "16-bar-last-pour": {
   "score": 2,
@@ -334,10 +341,17 @@
  "65-codex": {
   "score": 2,
   "pass": false,
-  "verdict": "A legible but sparse card grid that fills only the top third of the screen, leaving a huge dead void, with a weak title, a jammed header, and no visible focus state.",
-  "pic": "tools/handoff/console/notes/shots/all/65-codex-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:21"
+  "verdict": "it is a clean dark card with a working x, but the grid fills only the top half of a huge empty window, the rows have uneven heights and no focus state, and the header is a mess of three different number styles.",
+  "findings": [
+   "P0 codex grid and the empty lower half of the card (y 530-950): Scale the tiles to fill the card: 4 columns spanning the 24px-padded content width (about 1680px), row height about 160px with a 96px weapon icon, so the 4 rows reach about y 900. Or add a detail pane on the right (--ui-raised) that shows the selected weapon in large size.",
+   "P1 tile rows 1-4 (heights about 86, 86, 82, 82 px): Fix every tile at one size (for example 322x96, exactly 16px gap on an 8px grid) and anchor the text block at the same top offset. Show 'kills 0' or leave the line blank so 2-line and 3-line tiles align.",
+   "P1 header right side: '48,250 credits  212,000 xp  stash 8,405 bag 0': Remove the stats from this window, or make it one consistent pair style: 20px tx-1 value plus 16px tx-2 label, with the same 24px gap. Show money as '$48,250', and the bag line in the same style.",
+   "P1 tile text: rarity and category lines, 'not found' tiles: Minimum 16px with +.04em. Keep the locked rarity text at full rarity colour, or switch it to --tx-2 (#aaa498). Keep the rarity colour only on the 3px left bar.",
+   "P1 selection and focus state: Give the focused tile a 2px --acc border plus a --ui-raised fill. Make the 'new' badge 16px text with 8px padding inset 8px from the edge, or use a small lime dot."
+  ],
+  "pic": "tools/handoff/console/notes/shots/b-31-f1/65-codex-1080.jpg",
+  "task": "b-31-ui-undercroft",
+  "when": "2026-10-19T00:17"
  },
  "66-trophy-case": {
   "score": 2,
@@ -577,17 +591,17 @@
  "70-settings-sec-controls": {
   "score": 3,
   "pass": false,
-  "verdict": "the new version is tighter and more consistent: row height drops from 66px to 56px, the detail pane now sits inside the card instead of being cut off by the footer rule, and more rows fit. It is still a narrow 960px column inside a 90% card, so about half the card is dead black, and the lime focus row is the only real accent.",
+  "verdict": "The detail pane is now flat, but the settings card still has the same weaknesses as before: a narrow 960px column floating in a 1870px card, steppers stranded mid-row, tiny low-contrast tabs, and a list that is clipped mid-row.",
   "findings": [
-   "P1 whole card, left and right of the 960px column: Widen the list to about 1400px (75% of the card), or add a left category rail of 280px for the tabs and give the rows the rest. Move the value controls closer to the labels, or right-align them to a 1200px column.",
-   "P1 value column (arrows and values at x≈920-1175): Right-align the stepper to the row's right padding (24px), with value text at 20px tx-1 and arrows at 24px tx-2. Brighten the arrows to lime only on the focused row. Or add a 1px --ui-line-hi pill around the value.",
-   "P1 tab strip (the raid, audio, controls...) and 'send play data': Use 20px tabs with 32px gaps, a 3px lime underline on the active tab, and tx-2 at 4.5:1 or better for the rest. Move 'send play data' into the list as a row, or into the footer. Add lb/rb glyphs at the strip ends.",
-   "P2 bottom of the list, 'stick deadzone' row: Snap the viewport height to a whole number of 56px rows (10 rows = 560px), or keep the fade but add a 24px gradient mask. Make the scrollbar 6px with --ui-line-hi.",
-   "P2 detail pane (keys / rebind...): Keep it, but add an 8px gap above it, set the title to 20px tx-1 and the body to 16px tx-2, and reduce the text to one short clause. Drop the pane fill to --ui-panel with a 1px border so the focused row stays the brightest thing."
+   "P1 whole card: 960px column centred in a 1870px card, with about 450px of empty void on each side: Widen the list column to about 1400px, or add a 280px left rail for the tabs (the raid, audio, controls...) and give the rows the rest. Left-align the title with the column.",
+   "P1 value column: arrows at x≈923 and x≈1175, values at x≈1049: Right-align the stepper to a column ending 24px inside the row. Use 20px tx-1 values and 24px tx-2 arrows, with the arrows turning lime only on the focused row. Give action rows ('change keys') a 1px --ui-line-hi pill or button outline so they read as buttons.",
+   "P1 tab strip (the raid ... accessibility) and 'send play data' at the top right: Use 20px tabs with 32px gaps, a 3px lime underline plus tx-1 on the active tab, and tx-2 at 4.5:1 or better for the rest. Move 'send play data' into the list as a row or into the footer. Add lb/rb glyphs at the strip ends.",
+   "P2 bottom of the list, 'stick deadzone' row (y≈825): Snap the viewport to whole rows (for example 10 × 56px = 560px), or add a 24px gradient mask at the bottom. Make the scrollbar 6px in --ui-line-hi and brighter on focus.",
+   "P2 detail pane (keys / rebind...), y≈860-978: Put a 1px --ui-line-hi border and --ui-panel fill back at 24px padding, with an 8px gap above the pane. Use a 20px tx-1 title and a 16px tx-2 body trimmed to one short clause, e.g. 'rebind any action; conflicts swap'."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-31y-after/70-settings-sec-controls-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/c-31y-after2/70-settings-sec-controls-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-19T00:11"
+  "when": "2026-10-19T00:17"
  },
  "76-haul-reveal-mid": {
   "score": 3,
@@ -607,17 +621,17 @@
  "75-settings-pad-rebind-waiting": {
   "score": 3,
   "pass": false,
-  "verdict": "the instruction banner now spans the full content column and lines up with the row dividers at x=241, which fixes the old misaligned inset, but the screen is still a dense two-column list with a dull title and weak hierarchy.",
+  "verdict": "the waiting chip now reads cleanly as the one lime thing (image 2 calms the banner to a raised fill with a thin lime tab), but the screen is still a flat wall of same-weight 16px text with a left-heavy offset layout, a faded half-row at the bottom, and a footer that strands 'esc close' in the corner.",
   "findings": [
-   "P1 whole content area, rows and key chips: keep lime only on the waiting chip. Drop the idle chip borders to --ui-line (#2e3337) or use a --ui-raised fill with no border. Set action labels to 20px tx-1 and category labels (move, fight) to 16px tx-2 with +.04em tracking.",
-   "P1 banner 'press a button for sprint · esc cancels': delete the banner, or cut it to 'esc cancels' at 16px in tx-2 and put it in the footer legend. If it stays, use --ui-raised with a 3px --acc left tab, and set the text to 20px tx-1.",
-   "P1 bottom edge of list (world row: ping, pause): snap the scroll to whole rows, or add a 24px fade mask at the bottom. Make the scrollbar 6px wide in --ui-line-hi and keep it visible on pad.",
-   "P2 footer: 'reset to defaults' and 'esc close': put the footer in a single 72px row. Reset on the left, and a legend on the right at 16px tx-2 with the pad glyphs (b close, y reset). Hide the esc text on pad.",
-   "P2 left and right margins of content: align the list, banner and category labels to a single left edge. Either use the 49px margin with wider columns or align the title to x=241. Pick one left edge and use it everywhere."
+   "P1 banner 'press a button for sprint · esc cancels': keep the image 2 treatment (--ui-raised fill) with a 3px --acc tab, set text to 20px tx-1, and cut it to 'press a button for sprint'. Move 'esc cancels' to the footer legend at 16px tx-2, and show 'b cancel' on pad.",
+   "P1 list rows and chips (all categories): category labels 16px tx-2 uppercase-free with +.04em tracking, no bold. Action names 20px tx-1 weight 600. Idle chips use --ui-raised fill and a --ui-line border. Keep --acc only on the waiting chip.",
+   "P1 bottom of list, 'world' row (ping, pause): snap the scroll so the focused row is fully visible, or add a 24px gradient mask to --ui-panel. Make the scrollbar 6px --ui-line-hi, with the thumb in tx-2.",
+   "P2 left edge alignment: pick one left edge: align the banner and list to x=49 with the title, or centre a 1440px column and align the title to it. Align category labels and action names to the same inset.",
+   "P2 footer 'reset to defaults' and 'esc close': make one 72px footer row: reset on the left, and on the right a legend 'b close · y reset' at 16px tx-2 with pad glyphs. Both items are vertically centred on the same line."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-31y-after/75-settings-pad-rebind-waiting-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/c-31y-after2/75-settings-pad-rebind-waiting-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-19T00:11"
+  "when": "2026-10-19T00:16"
  },
  "72-settings-sec-display": {
   "score": 3,

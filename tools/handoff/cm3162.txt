@@ -1,0 +1,7 @@
+v31.62: terms, party, gamble and bar frames are the 90 percent card
+
+The terms, party, gamble and bar windows sit in the same centred 90 percent card as the shop.
+
+Check 31.62. Fails on v31.61.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

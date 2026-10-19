@@ -1,0 +1,5 @@
+## v31.62 - TERMS, PARTY, GAMBLE AND BAR FRAMES ARE THE 90 PERCENT CARD
+
+Co-op hunt while he was away. The 90 percent card only set the edges, but four windows still had their old fitted-card width, height and centring shift, so the frame showed as a small grey box in the top left corner of the screen with the content floating in the dark. The old size and shift are cancelled.
+
+MEASURED. Check 31.62 passes, and fails on v31.61.

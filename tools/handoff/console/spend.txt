@@ -675,3 +675,13 @@
 2026-10-18 0.0300 critic-c-31-ui-pause-settings
 2026-10-18 0.474 b-31-ui-undercroft
 2026-10-18 0.3866 b-31-ui-undercroft
+2026-10-18 0.0293 critic-b-31-ui-undercroft
+2026-10-18 0.0301 critic-c-31-ui-pause-settings
+2026-10-18 0.0256 critic-b-31-ui-undercroft
+2026-10-18 0.0325 critic-c-31-ui-pause-settings
+2026-10-18 0.0262 critic-b-31-ui-undercroft
+2026-10-18 1.535 c-31-ui-pause-settings
+2026-10-18 0.0279 critic-c-31-ui-pause-settings
+2026-10-18 0.1313 c-31-ui-pause-settings
+2026-10-18 0.0314 critic-c-31-ui-pause-settings
+2026-10-18 0.0272 critic-c-31-ui-pause-settings

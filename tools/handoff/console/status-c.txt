@@ -1,1 +1,1 @@
-10-18 19:54 running c-31-ui-pause-settings (cap $4.00; spent today $153.30 of $176.54)
+10-18 20:18 running c-31-ui-pause-settings (cap $4.00; spent today $159.70 of $176.54)
