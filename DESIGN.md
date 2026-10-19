@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.60 - WELCOME PACK: ONE LINE INTRO
+
+Co-op hunt while he was away. Critic b-31 on the welcome pack (02): the four sentence intro paragraph is an explaining sentence over the pack list. Shortened under his Q8, reason in changes.md.
+
+MEASURED. Check 31.60 passes, and fails on v31.59.
 ## v31.59 - PAD BUTTONS CALLOUT WIDTH, 8PX SCROLLBAR, ONE SETTINGS ROW HEIGHT
 
 Co-op hunt while he was away. Critic c-31y: the rebind callout was offset from the table, the scrollbar was a thin sliver, one Settings row was taller than the rest.

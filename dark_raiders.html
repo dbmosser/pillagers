@@ -2566,7 +2566,7 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
 <!-- v10.29, his note: the WELCOME PACK, offered once to a new character. -->
 <div class="modal" id="welcomemodal">
   <h3>WELCOME PACK</h3>
-  <div class="msub">A few things to play with before your first climb, straight into your stash: a green gun and a blue one, heals, plates and grenades. Nothing here is bought. It is yours for turning up. Take it, or close this and go without; it is offered once.</div>
+  <div class="msub">free, once. take it or go without.</div>
   <div id="welcomelist" class="plist" style="border:1px solid var(--steel-hi);padding:6px 12px"></div>
   <div style="display:flex;gap:8px;margin-top:10px">
     <button id="welcometake" class="deploy" style="padding:8px 22px">TAKE THE PACK</button>
@@ -2899,7 +2899,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.59';
+var VER='31.60';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -49538,7 +49538,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.59: The pad buttons callout lines up with the table, scrollbars are 8px, and every settings row is the same height. Check 31.59 fails on v31.58',
+  now:'v31.60: The welcome pack intro is one short line. Check 31.60 fails on v31.59',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

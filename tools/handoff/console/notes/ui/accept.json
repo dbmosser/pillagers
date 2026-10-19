@@ -575,12 +575,19 @@
   "when": "2026-10-18T23:35"
  },
  "70-settings-sec-controls": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The new settings card is shorter, so it shows only 6 rows before the fade-out cut (the old one showed about 9). It trades usable content for centering, and it keeps the same weak hierarchy, a stray footer warning, and undersized type.",
-  "pic": "tools/handoff/console/notes/shots/c-31t-after/70-settings-sec-controls-1080.jpg",
+  "verdict": "the new version is tighter and more consistent: row height drops from 66px to 56px, the detail pane now sits inside the card instead of being cut off by the footer rule, and more rows fit. It is still a narrow 960px column inside a 90% card, so about half the card is dead black, and the lime focus row is the only real accent.",
+  "findings": [
+   "P1 whole card, left and right of the 960px column: Widen the list to about 1400px (75% of the card), or add a left category rail of 280px for the tabs and give the rows the rest. Move the value controls closer to the labels, or right-align them to a 1200px column.",
+   "P1 value column (arrows and values at x≈920-1175): Right-align the stepper to the row's right padding (24px), with value text at 20px tx-1 and arrows at 24px tx-2. Brighten the arrows to lime only on the focused row. Or add a 1px --ui-line-hi pill around the value.",
+   "P1 tab strip (the raid, audio, controls...) and 'send play data': Use 20px tabs with 32px gaps, a 3px lime underline on the active tab, and tx-2 at 4.5:1 or better for the rest. Move 'send play data' into the list as a row, or into the footer. Add lb/rb glyphs at the strip ends.",
+   "P2 bottom of the list, 'stick deadzone' row: Snap the viewport height to a whole number of 56px rows (10 rows = 560px), or keep the fade but add a 24px gradient mask. Make the scrollbar 6px with --ui-line-hi.",
+   "P2 detail pane (keys / rebind...): Keep it, but add an 8px gap above it, set the title to 20px tx-1 and the body to 16px tx-2, and reduce the text to one short clause. Drop the pane fill to --ui-panel with a 1px border so the focused row stays the brightest thing."
+  ],
+  "pic": "tools/handoff/console/notes/shots/c-31y-after/70-settings-sec-controls-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T10:12"
+  "when": "2026-10-19T00:11"
  },
  "76-haul-reveal-mid": {
   "score": 3,
@@ -598,12 +605,19 @@
   "when": "2026-10-19T00:09"
  },
  "75-settings-pad-rebind-waiting": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The banner text is now bigger and shorter, and the clipped 'Gear' rows no longer peek out, but the modal is still a cramped scrolling list with wrapped labels, collided rows, and a sub-spec type scale.",
-  "pic": "tools/handoff/console/notes/shots/c-31v-after/75-settings-pad-rebind-waiting-1080.jpg",
+  "verdict": "the instruction banner now spans the full content column and lines up with the row dividers at x=241, which fixes the old misaligned inset, but the screen is still a dense two-column list with a dull title and weak hierarchy.",
+  "findings": [
+   "P1 whole content area, rows and key chips: keep lime only on the waiting chip. Drop the idle chip borders to --ui-line (#2e3337) or use a --ui-raised fill with no border. Set action labels to 20px tx-1 and category labels (move, fight) to 16px tx-2 with +.04em tracking.",
+   "P1 banner 'press a button for sprint · esc cancels': delete the banner, or cut it to 'esc cancels' at 16px in tx-2 and put it in the footer legend. If it stays, use --ui-raised with a 3px --acc left tab, and set the text to 20px tx-1.",
+   "P1 bottom edge of list (world row: ping, pause): snap the scroll to whole rows, or add a 24px fade mask at the bottom. Make the scrollbar 6px wide in --ui-line-hi and keep it visible on pad.",
+   "P2 footer: 'reset to defaults' and 'esc close': put the footer in a single 72px row. Reset on the left, and a legend on the right at 16px tx-2 with the pad glyphs (b close, y reset). Hide the esc text on pad.",
+   "P2 left and right margins of content: align the list, banner and category labels to a single left edge. Either use the 49px margin with wider columns or align the title to x=241. Pick one left edge and use it everywhere."
+  ],
+  "pic": "tools/handoff/console/notes/shots/c-31y-after/75-settings-pad-rebind-waiting-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T12:46"
+  "when": "2026-10-19T00:11"
  },
  "72-settings-sec-display": {
   "score": 3,

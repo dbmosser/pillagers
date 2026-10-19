@@ -1,0 +1,7 @@
+v31.60: welcome pack: one line intro
+
+The welcome pack intro is one short line.
+
+Check 31.60. Fails on v31.59.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

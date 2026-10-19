@@ -6101,6 +6101,14 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.60',what:'the welcome pack intro is one short line, not a four sentence paragraph',
+   run:function(){
+     var m=document.getElementById('welcomemodal'), el=m&&m.querySelector('.msub'), t;
+     if(!el) return 'no welcome pack intro';
+     t=String(el.textContent||'');
+     if(t.length>60) return 'the welcome pack intro is '+t.length+' characters';
+     if(/before your first climb|turning up/.test(t)) return 'the old intro paragraph is still there';
+     return null; }},
   {v:'31.59',what:'Keys callout is as wide as the table, scrollbars are 8px, Settings rows share one height',
    run:function(){
      var bad=[], kl, kn, rows, i, hs={}, ks=0, padWas=document.body.classList.contains('padon');
