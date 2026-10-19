@@ -1,0 +1,7 @@
+v31.99: steady pad triggers
+
+RT and LT press above 0.35 and release below 0.25, holding steady between those points.
+
+Check 31.99. Fails on v31.98.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

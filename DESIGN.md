@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.99 - STEADY PAD TRIGGERS
+
+Co-op hunt while he was away. J9: trigger travel near 0.35 releases and presses again, firing a semi-auto twice during one pull.
+
+MEASURED. Check 31.99 passes, and fails on v31.98.
 ## v31.98 - FLOOR BACKPACK ON A PAD
 
 Co-op hunt while he was away. View opened the Undercroft backpack but its pad buttons still went to stations. J5 requires the same bag controls as a raid.
