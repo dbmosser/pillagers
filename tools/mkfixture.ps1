@@ -37607,6 +37607,7 @@ window.__REGRESS=[
      function paint(e){ x2.setTransform(1,0,0,1,0,0); x2.clearRect(0,0,420,420); x2.setTransform(6,0,0,6,210,370); wc=x2;
        try{ drawSentryS(e); } finally { wc=w0; x2.setTransform(1,0,0,1,0,0); } }
      function px(lx,ly){ return x2.getImageData(Math.round(210+lx*6),Math.round(370+ly*6),1,1).data; }
+     function lens(sx){ var a=px(sx*8.6,-42), b=px(sx*7.8,-43.6); return a[0]>=b[0]?a:b; }   // v31.xx (cw-sentrybot): the lens moved up into the robot head
      function count(lx,ly,w,h,f){ var d=x2.getImageData(Math.round(210+lx*6),Math.round(370+ly*6),Math.round(w*6),Math.round(h*6)).data, n=0, q;
        for(q=0;q<d.length;q+=4) if(d[q+3]>200&&f(d[q],d[q+1],d[q+2])) n++; return n; }
      function ink(r,g,b){ return r<34&&g<34&&b<34; }
@@ -37617,22 +37618,22 @@ window.__REGRESS=[
        paint(mk({}));
        var nInk=count(-16.5,-34.5,33,22.5,ink);
        if(nInk<600) bad.push('the hull has no ink contour ('+nInk+' near-ink pixels round it, want 600 or more)');
-       var p=px(8.6,-42);
+       var p=lens(1);
        if(!(p[3]>200&&p[0]>100&&p[2]>=p[0]-10)) bad.push('the idle lens is not a dim cool white ('+p.join(',')+')');
        paint(mk({state:'chase',seenYou:true}));
-       p=px(8.6,-42);
+       p=lens(1);
        if(!(p[0]>200&&p[1]<130)) bad.push('the hunting lens is not red ('+p.join(',')+')');
        paint(mk({face:Math.PI}));
-       p=px(-8.6,-42);
+       p=lens(-1);
        if(!(p[3]>200&&p[0]>100&&p[2]>=p[0]-10)) bad.push('facing left, the lens is not on the left side ('+p.join(',')+')');
        if(count(-16.5,-34.5,33,22.5,ink)<600) bad.push('facing left, the hull lost its contour');
-       paint(mk({step:0.3})); var a=x2.getImageData(210-17*6,Math.round(370-1.2*6),34*6,1).data;
-       paint(mk({step:0.8})); var b=x2.getImageData(210-17*6,Math.round(370-1.2*6),34*6,1).data, nd=0, q;
+       paint(mk({step:0.3,moving:true})); var a=x2.getImageData(210-17*6,Math.round(370-1.2*6),34*6,1).data;
+       paint(mk({step:0.8,moving:true})); var b=x2.getImageData(210-17*6,Math.round(370-1.2*6),34*6,1).data, nd=0, q;
        for(q=0;q<a.length;q+=4) if(Math.abs(a[q]-b[q])+Math.abs(a[q+1]-b[q+1])+Math.abs(a[q+2]-b[q+2])>30) nd++;
-       if(nd<20) bad.push('the tread teeth do not run with the step ('+nd+' pixels differ)');
+       if(nd<20) bad.push('the tread teeth (the legs, since cw-sentrybot) do not run with the step ('+nd+' pixels differ)');
        paint(mk({elite:1}));
-       var nB=count(-14,-33,20,1.2,function(r,g,b2){ return r>170&&g>130&&b2<110; });
-       if(nB<30) bad.push('an elite has no brass edge on its top plate ('+nB+' px)');
+       var nB=count(-22,-50,44,36,function(r,g,b2){ return r>170&&g>130&&b2<110; });   // v31.xx (cw-sentrybot): anywhere on the upper body
+       if(nB<30) bad.push('an elite has no brass trim on its upper body ('+nB+' px)');
      }catch(ex){ bad.push('threw: '+(ex&&ex.message||ex)); }
      finally{ wc=w0; try{ if(t0!==null&&G) G.t=t0; }catch(_g){} if(staged){ try{ __endRaid('abandon'); }catch(_e){} try{ __topClear(); }catch(_t){} } }
      return bad.length?bad.join('; '):null; }},
