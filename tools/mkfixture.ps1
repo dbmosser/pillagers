@@ -6101,6 +6101,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.69',what:'the stash help row, sell note and freebie bar lost their explaining sentences (Q8): no recipes line, no sell note, no go up with issued gear',
+   run:function(){
+     if(!window.__hubEnter||!window.__station) return 'SKIP: this fixture cannot walk the Undercroft';
+     var bad=[], sh, dt, fk, src=[].slice.call(document.scripts).map(function(s){ return s.textContent||''; }).join('\n');
+     try{
+       __topClear(); __runPrep(); __cleanProfile(); __wnseen(1);
+       __hubEnter(); __station('term','KeyE');
+       sh=document.getElementById('sellhint'); dt=document.getElementById('stashdetail');
+       if(!sh||getComputedStyle(sh).display!=='none') bad.push('the sell note still shows');
+       if(!dt||/recipes|clears junk/i.test(dt.textContent)) bad.push('the help row still explains: '+(dt&&dt.textContent));
+       fk=document.getElementById('hubfreekit');
+       if(typeof renderFreeKit==='function'){ renderFreeKit(); if(!fk||/instead of your own|saved for when/i.test(fk.textContent)) bad.push('the freebie bar still explains: '+(fk&&fk.textContent)); }
+     }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
+     finally{ try{ var hb=document.getElementById('hub'); if(hb) hb.classList.remove('on'); }catch(_h){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'31.68',what:'the party cards never draw a label under 16px: the how to play table heads and the board seeded night line stay 16px at a small menu scale (critic on 46 52 55 56 64: labels about 14px)',
    run:function(){
      if(typeof arcadeAttEl!=='function'||typeof arcadeAttHow!=='function'||typeof attEl!=='function'||typeof arcadeAttLine!=='function') return 'SKIP: no arcade attract here';

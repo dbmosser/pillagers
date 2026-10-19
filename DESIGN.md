@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.69 - STASH LOSES ITS EXPLAINING SENTENCES
+
+Co-op hunt while he was away. Q8: the stash help row carried a recipes sentence and a sell sentence, the sell button had a three sentence note under it, and the freebie bar and first raid pointer ran long. Short lines now; reasons are in notes/ui/changes.md.
+
+MEASURED. Check 31.69 passes, and fails on v31.68.
 ## v31.68 - PARTY CARD LABELS NEVER DRAW UNDER 16PX
 
 Co-op hunt while he was away. The critic scored the party cards (how to play, board, run over) on small labels: about 14px, under the 16px minimum for anything read from a couch. Table heads, the seeded night line, stat labels, best moment labels and initials lines now floor at 16px whatever the menu scale. Restyle only.

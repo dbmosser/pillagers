@@ -217,17 +217,17 @@
  "25-raid-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "The pause card is slightly better because 'report a problem' now matches its sibling buttons and abandon is quieter, but it is still a flat stack of five equal-weight buttons with an oversized boxed X and no raid context.",
+  "verdict": "clean, readable pause card with a clear lime primary and a tidy lower-case title, but the five-button stack is still tall and uniform, the X is a heavy boxed button, and the dead gap above a small abandon link leaves the bottom of the card feeling unfinished.",
   "findings": [
-   "P1 button stack (settings, report a problem, feedback, what's new): Keep resume run and settings full width. Put report, feedback and what's new in one row of three 40px quiet text buttons, or a 2-column grid. Give them the same --ui-panel fill as the others. Add a 16px tx-2 'esc' key hint on resume. Draw focus as a 2px --acc outline.",
-   "P1 abandon run: Keep it as a 40px-high text button with a 1px --danger border at 50% opacity, or add a 1px --ui-line divider centred in the 24px gap above it. Show a --danger 2px focus outline. Confirm before abandoning.",
-   "P2 card header: title and close X: Shrink the X to 40px with a 2px glyph and no box until it is focused. Align the accent tab to the 40px content edge, 3px by 36px, or drop it.",
-   "P2 header content: Add one 16px tx-2 line under the title with time and location, e.g. 'sector 3 · 04:12'. Keep it to one line.",
-   "P2 background scrim: Use --scrim at .80 as specified, so the raid stays faintly visible. Optionally blur the backdrop 4px."
+   "P1 button stack (settings, report a problem, feedback, what's new): Keep resume run and settings full width at 56px. Put report a problem, feedback and what's new in one row of three 40px quiet buttons with the same --ui-panel fill. This saves about 100px of height. Make every outline 1px --ui-line-hi.",
+   "P1 abandon run: Put a 1px --ui-line divider centred in a 24px gap above it. Make it a 40px full-width button with a 1px --danger border at 50% opacity and --danger text. Draw a 2px --danger focus outline, and confirm before abandoning.",
+   "P1 focus state: Draw focus as a 2px --acc outline with 2px offset, plus a --ui-raised fill, on whichever button has focus. When resume is not focused, drop it to the outline style or keep the fill and add a visible second ring.",
+   "P2 close X, top right: Shrink it to 40px with a 2px glyph in --tx-2 and no border until focused. Align its right edge to the 40px content edge, which is also the right edge of the buttons.",
+   "P2 accent tab, top-left of card: Make it a 3px by 36px --acc tab aligned to x = content left (760px), or remove it."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-31w-after/25-raid-pause-box-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/c-31ae-after/25-raid-pause-box-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T23:42"
+  "when": "2026-10-19T00:46"
  },
  "26-settings-from-pause-top": {
   "score": 3,
@@ -476,17 +476,17 @@
  "55-arcade-run-over-scored": {
   "score": 3,
   "pass": false,
-  "verdict": "The title is now brighter than the subline and the lime 'ended early' text is demoted to muted grey, so the card reads cleaner, but it is still a small, bare card with a weak hero and a dim bottom-right prompt.",
+  "verdict": "The card is identical to the old one, so none of the earlier advice was applied; only the blurred background characters moved. It is clean and lower case but still a small, left-heavy card with a weak prompt and a hero that reads 'score 0 sp'.",
   "findings": [
-   "P1 Hero 'score 0 sp': Put a 16px tx-2 'score' label above a 56px f-cond 800 '0 sp'. For a zero run, either dim the number to tx-2 or replace the slot with a line such as 'no haul'.",
-   "P1 'press any key' prompt, bottom-right: Set it to 20px f-cond 700 in tx-1, with the actual device glyph (key cap or pad button) at 24px. Keep it bottom-right on a 24px margin and give the glyph a lime ring (--acc) as the single accent.",
-   "P1 Title 'run over': Set the title to 32px f-cond 700 tx-1. Lengthen the top tab to 36px × 3px so it reads as deliberate, and add 8px between title and subline.",
-   "P2 Subline 'ended early -50%': Keep 'ended early' in tx-2 at 16px and colour only '-50%' in --warn (#f5b73b), so the warning stays apart from the lime accent.",
-   "P2 Stats row (kills, extractions, deaths): Use equal 217px columns on the 652px inner width. Set values to 24px tx-1 and labels to 16px tx-2 with 4px between them, or add a fourth stat such as 'time' so the row fills the width."
+   "P1 hero 'score 0 sp': Add a 16px tx-2 'score' label above a 56px f-cond 800 '0 sp'. For a zero run, dim the number to tx-2 or replace it with 'no haul'. Alternatively, align the hero and stats to a shared grid.",
+   "P1 'press any key' prompt, bottom-right: Set the text to 20px f-cond 700 tx-1. Draw the device glyph at 24px with a full-strength --acc (#e6ff3d) ring. Keep it on a 24px bottom-right margin.",
+   "P1 title 'run over': Set the title to 32px f-cond 700 tx-1. Put 8px between the title and the subline. Keep the 36×3px lime tab flush with the title's left edge.",
+   "P2 subline 'ended early -50%': Keep 'ended early' in tx-2 at 16px and colour '-50%' in --warn (#f5b73b).",
+   "P2 stats row (kills, extractions, deaths): Set labels to 16px tx-2 and values to 24px tx-1, with 4px between them. Use equal columns across the inner width, or add a fourth stat such as 'time'. Cut the gap above the prompt to 24px."
   ],
-  "pic": "tools/handoff/console/notes/shots/12-r4-after2/55-arcade-run-over-scored-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/12-r5-after/55-arcade-run-over-scored-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T23:34"
+  "when": "2026-10-19T00:46"
  },
  "60-abandoned-card": {
   "score": 2,
@@ -604,17 +604,17 @@
  "64-arcade-board-seeded-night": {
   "score": 2,
   "pass": false,
-  "verdict": "The card is tidy and fully lower case, but it is still a small, near-empty box with a tiny grey subtitle and a dim prompt, and it ignores the near-full-screen centred-card rule.",
+  "verdict": "Only the random seed text and the background characters changed; the small card, tiny subtitle, centred empty state and weak prompt are identical to the version I already marked down.",
   "findings": [
-   "P1 card size (x681-1239, y400-680): Either keep it as a deliberate small ask dialog at a fixed 560x280 with the 8px-grid padding, or build a real leaderboard card with 5 rows of rank, name and sp, plus an empty state inside that frame. Raise the scrim to rgba(6,7,8,.80) so the map stops competing.",
-   "P1 subtitle 'seeded night · ayi6' (x713, y496): Set it to 16px f-cond 600 in tx-2 (#aaa498) with +.04em tracking, 8px under the title. Drop the seed, or show it as 'seeded night' only.",
-   "P1 'press any key' prompt (x1065-1206, y615-642): Set the text to 20px f-cond 600 in tx-1 (#efe9dc). Replace the dot with a 24px key chip showing the actual key or pad button. Right-align to the 24px padding line.",
-   "P1 'no scores yet' (x906-1013, y545): Left-align it to x713, or centre it in a body zone of y520-600. Use 20px tx-1 with an optional 16px tx-2 line below it.",
-   "P2 close x button (x1159-1207, y417-465): Make the glyph 20px tx-1 on a 40px hit area, with a 2px --acc border when focused. Align its top to the title cap line, with the right edge on the 24px padding line."
+   "P1 card (x681-1239, y400-680): Make it a 90% centred card, or keep it a fixed small ask dialog with a 24px padding grid. Raise the scrim to rgba(6,7,8,.80). Build the 5-row rank/name/sp layout so the empty state sits inside that frame.",
+   "P1 'seeded night · vrrz' (x713-833, y496): Set it to 16px f-cond 600 in tx-2 #aaa498 with +.04em tracking, 8px under the title. Drop the seed code or show only 'seeded night'.",
+   "P1 'no scores yet' (x906-1013, y545): Left-align it to x713 in 20px tx-1, with an optional 16px tx-2 line beneath, in a body zone of y520-600.",
+   "P1 'press any key' prompt (x1065-1206, y615-642): Set it to 20px f-cond 600 in tx-1, with a 24px key chip showing the actual key or pad button, right-aligned to the 24px padding line.",
+   "P2 close x (x1159-1207, y417-465): Make the glyph 20px tx-1 with a 2px --acc border when focused. Align the top to the title cap line and the right edge to the 24px padding line."
   ],
-  "pic": "tools/handoff/console/notes/shots/12-r4-after2/64-arcade-board-seeded-night-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/12-r5-after/64-arcade-board-seeded-night-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T23:35"
+  "when": "2026-10-19T00:46"
  },
  "70-settings-sec-controls": {
   "score": 3,
@@ -664,32 +664,32 @@
  "72-settings-sec-display": {
   "score": 3,
   "pass": false,
-  "verdict": "The three-column layout is now correct (rail at x=48, list filling the card, description pane on the right, bottom fade) and it reads as one coherent settings card, but it is still a flat spreadsheet of identical bordered steppers, the description pane is tiny and mostly empty, and the focused row still stacks too many signals.",
+  "verdict": "image 2 (c-31ae) is the better of the two: the stepper boxes are gone from idle rows and the description pane has a lime top tab, so it is calmer and more consistent, but the empty right pane, the lime-outlined focus row, a thin gap between label and value, and the clipped last row keep it from looking polished.",
   "findings": [
-   "P1 right description pane (x≈1392-1870): Put the pane in a --ui-raised panel with 24px padding and a 3px lime top tab. Set the title to 32px tx-1, and the body to 20px f-body tx-1 at 90% (never below 16px). Add a larger preview or the current-value readout beneath it so the column carries content, or narrow it to about 360px and give the list the width.",
-   "P1 focused row 'render resolution': Keep only the raised fill (--ui-raised), the 3px lime left bar and the lime value. Remove the outline and the stepper box border on the focused row, or make the box the single lime-bordered element. Keep the chevrons in tx-1.",
-   "P1 stepper boxes on every row (x=762-1048): On idle rows drop the box border (or use --ui-line at 1px) and show the box only on the focused row. Right-align the stepper at x≈1100-1340 so label and value sit at opposite ends of the row, or widen the box to the row edge.",
-   "P1 row labels and rail items: Set row labels and rail items to 20px f-cond 600. Use tx-1 for row labels and idle rail items in tx-2 at 4.5:1 or better. Keep the selected rail item tx-1 on --ui-raised with the lime bar.",
-   "P2 bottom of the list (rows 'crosshair' and 'crosshair colour', y≈900-994): End the list viewport 16px above the footer line, with a viewport height that is a multiple of 56px (14 rows = 784px). Use the fade mask over the last 24px only. Make the thumb 6px wide in --ui-line-hi and keep it inside the panel padding."
+   "P1 right description pane (x≈1392-1870, y≈116-990): Fill the pane with --ui-raised and 24px padding. Set the title to 32px tx-1 and the body to 20px f-body tx-1 at 90%. Add a current-value readout or preview at 56px hero size, or narrow the pane to about 360px and give the width to the list.",
+   "P1 focused row 'render resolution' (x=338-1351, y=117-171): Remove the lime outline. Keep the --ui-raised fill, the 3px lime left bar, the lime value, and chevrons in tx-1. Keep a 1px --ui-line-hi bottom border if an edge is needed.",
+   "P1 row layout (label x=354, value column x=775-1035, empty x=1050-1350): Right-align the stepper cluster to the row edge (chevrons at x≈1280 and x≈1330, value centred between them), or set the value column at about x=560 so the pairs sit close. Use the same stepper width on all rows.",
+   "P1 row labels and rail items (x=68 and x=354): Set rail items and row labels to 20px f-cond 600. Use tx-1 for row labels and tx-2 (#aaa498) for idle rail items. Keep the selected rail item tx-1 on --ui-raised with the lime bar.",
+   "P2 list bottom (rows 'crosshair colour', y≈960-994): End the viewport 16px above the footer line at a multiple of 56px. Limit the fade to the last 24px. Make the thumb 6px wide in --ui-line-hi, inset 8px from the border."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-31ad-after/72-settings-sec-display-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/c-31ae-after/72-settings-sec-display-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-19T00:36"
+  "when": "2026-10-19T00:45"
  },
  "74-settings-change-pad-buttons": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The new screenshot is pixel-identical to the old one, so none of the earlier advice was applied and every defect remains: no focused chip, a clipped 'locked' line, flat headers, and a lopsided table.",
+  "verdict": "The table now spans the card, the section headers have lime tabs and the locked note is readable, but there is still no focused chip, the headers are too small, and the footer is unresolved, so it reads as a clean spreadsheet rather than a polished pad-remap screen.",
   "findings": [
-   "P1 all 16 key chips (ls, a, rt ... menu): Focus the first chip with a 2px --acc outline, --acc text, a 1.04 scale with bounce, and a 3px --acc left tab on its row. Idle chips: --ui-raised fill, 1px --ui-line-hi border, 16px --tx-1 text.",
-   "P1 'locked: these keep their jobs' at y~925, under the footer line at y~935: Add 24px bottom padding to the scroll region and a 16px fade mask above the footer line. Set the text to 16px --tx-2 #aaa498. Make the scrollbar thumb 6px wide in --ui-line-hi.",
-   "P1 section headers 'move', 'fight', 'gear', 'world' against the row labels: Headers: 16px --tx-2, +.08em tracking, with a 3x16px --acc tab on the left. Row labels: 20px, weight 600, --tx-1. Put 24px above each group.",
-   "P1 table layout, x240-1670 inside a 1870px card: Span the table from x49 to x1870 with the scrollbar at x1856. Make the label column 360px and the chip 160px, with a 48px gutter between column pairs. Alternative: a 60/40 split with a pad diagram that highlights the selected button.",
-   "P2 footer: 'reset to defaults' (x49-238, y947-994) and 'esc close' (x1797, y1021): Put both on one baseline at y~972. Make reset a 20px --danger-outlined secondary button. Replace 'esc close' with the live device prompt 'b back' at 16px --tx-2, or drop it, since the x already closes."
+   "P1 all 16 key chips (ls, a, rt ... menu): Focus the first chip with a 2px --acc outline, --acc text, a 3px --acc left tab on its row and a 1.04 bounce scale. Idle chips: --ui-raised fill, 1px --ui-line-hi border, 16px --tx-1 text.",
+   "P1 section headers 'move', 'fight', 'gear', 'world', 'locked' (x65, y~146 to 903): Set headers to 16px --tx-2 with +.08em tracking. Shrink each tab to 3x16px, centred on the header text. Drop the tab on 'locked'. Add 24px above each group.",
+   "P1 row-label to chip gap, x66-753 and x994-1681: Make the label column 360px with the chip right after it (gap 24px). Use two equal 50% columns with a 48px gutter. Or use a 60/40 split with a pad diagram that highlights the selected button.",
+   "P1 scrollbar, x1866, y112-810: Make the thumb 6px wide in --ui-line-hi, and place it 16px outside the chip column. Add 24px bottom padding and a 16px fade mask above the footer line.",
+   "P2 'locked: these keep their jobs' (y903): Show locked bindings as dimmed rows with a lock glyph and drop the sentence. If it stays, make it 16px --tx-2 #aaa498."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-31ad-after/74-settings-change-pad-buttons-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/c-31ae-after/74-settings-change-pad-buttons-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-19T00:36"
+  "when": "2026-10-19T00:46"
  },
  "01-title-mode-menu": {
   "score": 3,

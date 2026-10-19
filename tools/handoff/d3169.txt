@@ -1,0 +1,5 @@
+## v31.69 - STASH LOSES ITS EXPLAINING SENTENCES
+
+Co-op hunt while he was away. Q8: the stash help row carried a recipes sentence and a sell sentence, the sell button had a three sentence note under it, and the freebie bar and first raid pointer ran long. Short lines now; reasons are in notes/ui/changes.md.
+
+MEASURED. Check 31.69 passes, and fails on v31.68.

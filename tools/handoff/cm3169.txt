@@ -1,0 +1,7 @@
+v31.69: stash loses its explaining sentences
+
+The stash help row, sell note and freebie bar are short.
+
+Check 31.69. Fails on v31.68.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

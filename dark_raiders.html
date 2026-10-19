@@ -2727,7 +2727,7 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
         </div>
         <div id="kitcol" class="invside" style="flex:1;border-left:1px solid var(--steel-hi)">
           <div class="lohead">LOADOUT<em>$<span id="kitval">0</span> going up</em></div>
-          <div id="firstkit" class="hint" style="display:none;margin:4px 0 8px;padding:8px 10px;border:1px solid var(--amber);border-radius:4px;color:var(--amber);font-weight:700;letter-spacing:.04em">FIRST RAID: drag a gun and two heals in here, then go up at ENTER RAID!</div>
+          <div id="firstkit" class="hint" style="display:none;margin:4px 0 8px;padding:8px 10px;border:1px solid var(--amber);border-radius:4px;color:var(--amber);font-weight:700;letter-spacing:.04em">FIRST RAID: drag a gun and two heals in, then ENTER RAID</div>
           <div class="losec" style="flex:1;border-top:none">
             <div class="loslab">Backpack<b><span id="kitn">0</span> packed</b></div>
             <div class="invgrid" id="kitgrid"></div>
@@ -2933,7 +2933,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.68';
+var VER='31.69';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -49573,7 +49573,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.68: Small labels on the how to play page, the board and the run over card are never under 16px. Check 31.68 fails on v31.67',
+  now:'v31.69: The stash help row, sell note and freebie bar are short. Check 31.69 fails on v31.68',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -51557,9 +51557,9 @@ try{ renderFreeKit(); }catch(_fk){}
   });
   var detail=document.getElementById('stashdetail');
   function detailIdle(){
-    if(detail) detail.innerHTML='<span style="color:var(--tx-2)">'+((typeof netHubSeat==='function'&&netHubSeat()>=0)?('Right-click an item (Y on a controller) and pick Drop on the floor to hand it to '+(netSeatName(netHubSeat())||'your teammate')+'; they walk to it and press E. '):'')+'Hover an item and press J to tag it JUNK. '+
-      'PARTS are eaten by recipes and racks; SALVAGE is safe to sell. '+
-      'The sell button clears junk and loose salvage.</span>';
+    if(detail) detail.innerHTML='<span style="color:var(--tx-2)">'+((typeof netHubSeat==='function'&&netHubSeat()>=0)?('Drop on the floor for '+(netSeatName(netHubSeat())||'your teammate')+'. '):'')+'Hover an item and press J to tag it JUNK. '+
+      ''+   /* v28.xx (cw-uc-stash2): Q8, the parts line was an explaining sentence on the stash help row (reason in notes/ui/changes.md) */
+      '</span>';
   }
   detailIdle();
   // WHICH PLACE. STASH is the vault, INVENTORY is what you are taking up, and
@@ -51816,6 +51816,7 @@ try{ renderFreeKit(); }catch(_fk){}
     _sb.style.opacity=_sn?'':'0.5';
   }
   var _sh=document.getElementById('sellhint');
+  if(_sh) _sh.style.display='none';   /* v28.xx (cw-uc-stash2): Q8, the sell note was a three sentence paragraph under the sell button (reason in notes/ui/changes.md) */
   if(_sh){
     _sh.textContent=_sn
       // v8.49, audit: ONE sentence, and a true one. These two branches contradicted
@@ -65520,8 +65521,8 @@ function renderFreeKit(){
   // fixes: getElementById only ever reached the copy on a screen that no longer opens.
   var html='<div class="fkbox">'+
     '<b>FREEBIE KIT</b>'+
-    '<span>'+(on?'Taking the freebie kit. '+escHtml(freeKitText())+(P.kitSaved?' Your own loadout is saved for when you switch back.':''):
-      'Go up with issued gear instead of your own. '+escHtml(freeKitText()))+'</span>'+
+    '<span>'+(on?'In use: '+escHtml(freeKitText()):
+      escHtml(freeKitText()))+'</span>'+
     '<button class="deploy ghost fkbtn">'+(on?'USE MY OWN GEAR':'TAKE THE FREEBIE KIT')+'</button>'+
     '</div>';
   var hosts=[document.getElementById('freekit'),document.getElementById('hubfreekit')];
