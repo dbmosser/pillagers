@@ -6101,6 +6101,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.73',what:'the party card prompt is 24px (not 20px) so the eye lands on it (critic on 46 55 56 64: press any key is the same size as the table text)',
+   run:function(){
+     if(typeof arcadeAttEl!=='function'||typeof arcadeAttHow!=='function'||typeof attEl!=='function') return 'SKIP: no arcade attract here';
+     var d, pg, wasDisp, oz, res=null, ap, fs;
+     try{
+       __topClear(); __runPrep();
+       d=attEl(); wasDisp=d.style.display; d.style.display='block';
+       oz=d.style.getPropertyValue('--attz'); d.setAttribute('data-attz','1'); d.style.setProperty('--attz','1');
+       pg=arcadeAttEl('arcpage'); pg.textContent=''; arcadeAttHow(pg); pg.style.display='block';
+       ap=d.querySelector('.attpress'); if(!ap) return 'SKIP: no prompt';
+       fs=parseFloat(getComputedStyle(ap).fontSize);
+       if(fs<23.9||fs>24.1) res='the card prompt draws at '+fs+'px, not the 24px step';
+       return res;
+     } finally {
+       try{ pg.textContent=''; pg.style.display='none'; d.style.display=wasDisp; d.setAttribute('data-attz',''); if(oz) d.style.setProperty('--attz',oz); else d.style.removeProperty('--attz'); if(typeof attZ==='function') attZ(d); }catch(_f){}
+     }
+   }},
   {v:'31.72',what:'the what is new card is stamped within 0.15 of the build and leads with the new news shown whole',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';

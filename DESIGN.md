@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.73 - PARTY CARD PROMPT IS 24PX, WITH A FOOTER RULE
+
+Co-op hunt while he was away. The critic scored the party cards 3 after v31.68: the press any key prompt is the primary action but draws at 20px, the size of the table text, and the card has no footer row. The prompt is now 24px with a 32px glyph, and a hairline above the footer row gives header, body, footer. Restyle only.
+
+MEASURED. Check 31.73 passes, and fails on v31.72.
 ## v31.72 - THE WHAT IS NEW CARD NAMES POLISH PASS 30
 
 Co-op hunt while he was away. The card was stamped v31.56 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.

@@ -1,0 +1,1 @@
+| PARTY CARD PROMPT IS 24PX, WITH A FOOTER RULE | v31.73 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 31.73 passes, fails on v31.72 |
