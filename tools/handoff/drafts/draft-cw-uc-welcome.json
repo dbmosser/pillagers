@@ -1,0 +1,12 @@
+{
+    "title":  "WELCOME PACK: ONE LINE INTRO",
+    "why":  "Critic b-31 on the welcome pack (02): the four sentence intro paragraph is an explaining sentence over the pack list. Shortened under his Q8, reason in changes.md.",
+    "now":  "The welcome pack intro is one short line.",
+    "edits":  [
+                  {
+                      "anchor":  "\u003cdiv class=\"msub\"\u003eA few things to play with before your first climb, straight into your stash: a green gun and a blue one, heals, plates and grenades. Nothing here is bought. It is yours for turning up. Take it, or close this and go without; it is offered once.\u003c/div\u003e",
+                      "replacement":  "\u003cdiv class=\"msub\"\u003efree, once. take it or go without.\u003c/div\u003e"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the welcome pack intro is one short line, not a four sentence paragraph\u0027,\n   run:function(){\n     var m=document.getElementById(\u0027welcomemodal\u0027), el=m\u0026\u0026m.querySelector(\u0027.msub\u0027), t;\n     if(!el) return \u0027no welcome pack intro\u0027;\n     t=String(el.textContent||\u0027\u0027);\n     if(t.length\u003e60) return \u0027the welcome pack intro is \u0027+t.length+\u0027 characters\u0027;\n     if(/before your first climb|turning up/.test(t)) return \u0027the old intro paragraph is still there\u0027;\n     return null; }},"
+}

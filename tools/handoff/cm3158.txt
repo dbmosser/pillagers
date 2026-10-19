@@ -1,0 +1,7 @@
+v31.58: haul reveal: plain empty slots, balanced rows
+
+A tile not yet shown is a plain grey slot. The haul strip wraps in even rows.
+
+Check 31.58. Fails on v31.57.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

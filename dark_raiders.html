@@ -1465,6 +1465,9 @@ html.party #slotpanel, html.party #titlesub, html.party #titlestart, html.party 
   #root .ocwin .haulit[data-r="rare"]{ border-bottom-color:var(--r-rare) !important; }
   #root .ocwin .haulit[data-r="elite"]{ border-bottom-color:var(--r-elite) !important; }
   #root .ocwin .haulit[data-r="gold"]{ border-bottom-color:var(--r-gold) !important; }
+  /* v28.xx (cw-endslots), the critic on 76 (3 of 5, P0): "nine empty boxes with coloured bottom bars above the revealed items". The rarity rules just above (same weight, later) beat the .hid rule, so a slot not yet shown gave away its rarity. A hidden slot is now a plain grey slot, and the strip wraps balanced (7 and 6, not 9 and 3). */
+  #root .ocwin .haulit.hid[data-r]{ border-bottom-color:var(--ui-line) !important; }
+  #root .ocwin .haulstrip{ text-wrap:balance; }
   /* v28.xx (cw-endcard-hero): the critic, second pass on the Extracted and KIA cards (2 of 5): "no hero line, the HUD still bleeds through the scrim,
      the feedback chip is a third competing control with an amber plus". The haul total is the hero now: 56px, bone, no tracking, 16px above and 24px
      below. The scrim is near solid (.94) so the HUD cannot read through. The feedback prompt is a quiet 16px text link in tx-2 with no box and no amber. */
@@ -2889,7 +2892,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.57';
+var VER='31.58';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -49528,7 +49531,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.57: Racks page is one centred column, the codex is four columns, stash plates are bigger. Check 31.57 fails on v31.56',
+  now:'v31.58: A tile not yet shown is a plain grey slot. The haul strip wraps in even rows. Check 31.58 fails on v31.57',
   next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

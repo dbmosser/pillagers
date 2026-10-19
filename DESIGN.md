@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.58 - HAUL REVEAL: PLAIN EMPTY SLOTS, BALANCED ROWS
+
+Co-op hunt while he was away. The critic scored the haul reveal 3 with a P0: empty boxes with coloured bars above the revealed items. The rarity rules out-weighed the hidden rule, so unrevealed slots showed their rarity; and the strip wrapped 9 and 3.
+
+MEASURED. Check 31.58 passes, and fails on v31.57.
 ## v31.57 - UNDERCROFT: RACKS COLUMN, CODEX FOUR COLUMNS, STASH TYPE
 
 Co-op hunt while he was away. Critic b-31 on the Undercroft screens (racks 14 at 1, codex 65 at 2, stash 04 at 2): buttons 1316px wide in a 1700px card, hint lines 14px, the codex a top-left grid with a dead lower half, 12px plates on the stash. One centred 672px racks column at 16px, a centred four column codex, 14px stash plates, two filler lines gone (reasons in changes.md).

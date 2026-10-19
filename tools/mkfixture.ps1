@@ -6101,6 +6101,31 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.58',what:'a haul tile not yet shown is a plain grey slot with no rarity bar, and the strip wraps balanced (the critic on 76: nine empty boxes with coloured bars)',
+   run:function(){
+     if(!(window.__deploy&&window.__endRaid&&window.__state&&window.__P)) return 'SKIP: this build cannot end a raid';
+     var bad=[], P2=__P(), keepAE=P2.autoExport, oc=document.getElementById('outcome'), g, st, its, h, cs, line, hi;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       P2.autoExport=false;
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); g.bag.push('core','core','scrap','wire','cell');
+       __endRaid('extract');
+       if(!oc.classList.contains('on')) return 'the extracted card did not open';
+       st=oc.querySelector('.haulstrip'); its=st?st.querySelectorAll('.haulit'):[];
+       if(its.length<2) return 'the haul strip has '+its.length+' tiles in the check';
+       h=its[0]; h.classList.add('hid');
+       cs=getComputedStyle(h); line=getComputedStyle(document.documentElement).getPropertyValue('--ui-line').trim();
+       hi=document.createElement('span'); hi.style.color=line; document.body.appendChild(hi); line=getComputedStyle(hi).color; hi.remove();
+       if(cs.borderBottomColor!==line) bad.push('a tile not yet shown has a '+cs.borderBottomColor+' bar, not the plain slot colour '+line);
+       if(getComputedStyle(st).textWrap!=='balance') bad.push('the haul strip does not wrap balanced (text-wrap '+getComputedStyle(st).textWrap+')');
+       h.classList.remove('hid');
+       return bad.length?bad.join('; '):null;
+     } finally {
+       P2.autoExport=keepAE;
+       try{ oc.classList.remove('on'); }catch(_e){}
+       __topClear(); try{ __cleanProfile(); }catch(_e2){}
+     } }},
   {v:'31.57',what:'racks page is one centred 672px column, codex grid is four centred columns, the stash swap note is gone',
    run:function(){
      var bad=[], el, cs, mf, i;
