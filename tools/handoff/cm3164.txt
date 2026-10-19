@@ -1,0 +1,7 @@
+v31.64: no raiders on screen: the ai ones are pillager bots
+
+The AI humans are now called pillager bots everywhere on screen, and raider is gone.
+
+Check 31.64. Fails on v31.63.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

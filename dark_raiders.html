@@ -2915,7 +2915,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.63';
+var VER='31.64';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5444,7 +5444,8 @@ function crawlerLatchPlace(e,b){
   }
   return false;
 }
-var UNITPLURAL={sentry:'sentries',crawler:'crawlers',raider:'pillagers',snitch:'criers',listener:'listeners'};
+// v31.xx (cw-vocab-bots), HIS ORDER 2026-10-18: "get rid of the conept of praiders -- there are players, who are pillagers, then there are pillager bots". A player is a pillager; the AI ones are pillager bots; raider never shows. Words only: kind:'raider' and CFG.nRaider are code names and stay.
+var UNITPLURAL={sentry:'sentries',crawler:'crawlers',raider:'pillager bots',snitch:'criers',listener:'listeners'};
 // The most a kill contract may ever ask for, v5.58. 70 percent of the supply on
 // the WORST map, so the contract survives being carried to any map on the board.
 // Measured supply, worst map: sentry 16, crawler 25, raider 7, crier 3.
@@ -5452,12 +5453,12 @@ var KILLCAP={sentry:11,crawler:17,raider:4,snitch:2};
 // The singular was built from the kind string itself, which is an internal id and
 // is not always the name the player knows the thing by. Since v2.97 exactly one
 // of them differs, and that is precisely the case a bare kind string gets wrong.
-var UNITNAME={sentry:'sentry',crawler:'crawler',raider:'pillager',snitch:'crier',listener:'listener'};
+var UNITNAME={sentry:'sentry',crawler:'crawler',raider:'pillager bot',snitch:'crier',listener:'listener'};
 // v22.xx, the raid text rewrite (R49): NEVER-WORDS OUT OF RAID TEXT. The internal kinds (snitch, choir, stray, botwreck) leaked
 // onto the screen: a ping on a Crier read SNITCH, a dead Crier was labelled SNITCH DOWN, a machine wreck was SEARCH BOTWRECK and
 // the Peddler cache was PEDLAR STOCK. KINDWORD is the one table from a kind to the word the player knows (his vocabulary); the
 // kinds stay in the code. A machine is DESTROYED and a person ELIMINATED, never DOWN, which is the word for a knocked-down body.
-var KINDWORD={sentry:'SENTRY',crawler:'CRAWLER',raider:'PILLAGER',snitch:'CRIER',listener:'LISTENER',choir:'PILLBOX',warden:'WARDEN',
+var KINDWORD={sentry:'SENTRY',crawler:'CRAWLER',raider:'PILLAGER BOT',snitch:'CRIER',listener:'LISTENER',choir:'PILLBOX',warden:'WARDEN',
   bulwark:'BULWARK',howler:'HOWLER',stray:'SURVIVOR',peddler:'THE PEDDLER'};
 function kindWord(k){ return KINDWORD[k]||String(k||'').toUpperCase(); }
 function killWord(e){ return (e&&(e.kind==='raider'||e.kind==='stray'||e.kind==='peddler'))?' ELIMINATED':' DESTROYED'; }
@@ -14563,8 +14564,8 @@ function notoName(n){
 function notoBite(n){
   n=n||0;
   // v11.68: the stall never shuts (pedOpen, his v8.28 ruling); this said it did.
-  if(n>=2) return 'Word has spread. Hires cost more and pillagers trust you less.';
-  return 'Hires cost more and pillagers trust you less.';
+  if(n>=2) return 'Word has spread. Hires cost more and pillager bots trust you less.';
+  return 'Hires cost more and pillager bots trust you less.';
 }
 function mkPeddler(x,y,map){
   var pool=PED_STOCK.slice(),stock=[],q,ik;
@@ -18812,7 +18813,7 @@ function padLegendBuild(){
     ['MOVE',[['L STICK','move, analog'],[n(10),'sprint'],[n(1),'crouch'],[n(0),'dodge roll']]],
     ['FIGHT',[['R STICK','aim'],[n(7),'fire / use selected'],[n(6)+' / '+n(11),'focus aim, hold / toggle'],[(dl==='D-LEFT'&&dr==='D-RIGHT')?'D-LEFT/RIGHT':(dl+' / '+dr),'aim distance'],[n(2),'reload']]],
     ['GEAR',[[n(4)+'/'+n(5)+' tap','change tactical belt slot'],[n(4)+'/'+n(5)+' hold','zoom out / in'],[n(13),'item wheel (hold), revive when down'],[n(8),'backpack']]],
-    ['WORLD',[[n(2),'search / open / call for extraction'],[n(3),'search in a ring; hold to finish a pillager'],[n(12),'ping (twice: danger); hold: map'],[n(9),'pause']]],
+    ['WORLD',[[n(2),'search / open / call for extraction'],[n(3),'search in a ring; hold to finish a pillager bot'],[n(12),'ping (twice: danger); hold: map'],[n(9),'pause']]],
     ['TEAM',[[n(3),'backpack open: drop an item for a teammate'],[n(12),'ping, twice for danger']]]
   ];
 }
@@ -20215,7 +20216,7 @@ function explodeFrag(f){
   // exported with killer 'other'. The thrower is carried on the frag now, and
   // the blast position goes with it so the v4.28 direction ring points at it.
   var _fMine=!f.by;
-  var _fName=_fMine?(f.nm||'YOUR OWN CHARGE'):((f.by.name||'A PILLAGER')+"'S CHARGE");
+  var _fName=_fMine?(f.nm||'YOUR OWN CHARGE'):((f.by.name||'A PILLAGER BOT')+"'S CHARGE");
   // v13.14, HIS TELEMETRY: your own charge is not an unidentified source. It was
   // filed as other, the bucket for something the game cannot name, while the
   // very next line names it exactly. So the death card said YOUR OWN CHARGE and
@@ -26323,7 +26324,7 @@ function tickRaiderWaves(dt){
   G.ents.push(NR);
   G.roster.push({ref:NR,name:NR.name,crew:NR.crew,val:0,out:false});
   G.waveN++;
-  if(!G.sim) say('PILLAGER REINFORCEMENTS','warn');   // v22.xx (tr3fixc): the shooter voice
+  if(!G.sim) say('PILLAGER BOT REINFORCEMENTS','warn');   // v22.xx (tr3fixc): the shooter voice
 }
 var XALARM_GAP=1.8;   // v27.xx (xalarm): seconds between throbs of the extraction alarm
 function tickExtractPoints(dt){
@@ -29243,7 +29244,7 @@ if(e.state==='possum'){
           // be picked back up and a man who cannot.
           // v23.17, parked by the raid text audit of 2026-10-09: ONLY A FALL YOU COULD SEE. Machines down pillagers anywhere on the map, and this
           // label printed through walls, telling him where a man lay; the kill label below has asked canSee since it shipped.
-          if(G.player&&canSee(G.player.x,G.player.y,G.player.face,e.x,e.y,G.vseg)) label(e.x,e.y-16,(e.name||'PILLAGER')+' DOWNED','#ffc04a',0,true);
+          if(G.player&&canSee(G.player.x,G.player.y,G.player.face,e.x,e.y,G.vseg)) label(e.x,e.y-16,(e.name||'PILLAGER BOT')+' DOWNED','#ffc04a',0,true);
           // v15.29, sound audit finding: A PILLAGER GOING DOWN SOUNDS WHERE HE FALLS. The hit sound here was played with no
           // distance and no pan, which blip plays at full volume and centred: the very sound damagePlayer makes when you are
           // hit. Machines fight pillagers anywhere on the map (machVsRaider), so a sentry dropping one 2000 units away played
@@ -30208,7 +30209,7 @@ var _rdS=G.shells[_rdi];
         var pd2=dist(e,p);
         if(!e.merc&&!e.friendlyPC&&(pd2<180||(CFG.provokeReal===0?e.hitT>0:e.pHitT>0))){
           e.hostile=true;
-          if(!G.sim) say('PILLAGER TURNED HOSTILE','warn',{sub:e.name});   // v22.32, the raid text rewrite (R09): a threat is an alert headline in the shooter voice (his order of 2026-10-09)   // v22.xx (tr3fixc): the shooter voice
+          if(!G.sim) say('PILLAGER BOT TURNED HOSTILE','warn',{sub:e.name});   // v22.32, the raid text rewrite (R09): a threat is an alert headline in the shooter voice (his order of 2026-10-09)   // v22.xx (tr3fixc): the shooter voice
         } else {
           if(!e.metSaid&&!G.sim){
             e.metSaid=1;
@@ -30929,7 +30930,7 @@ e.lootT=(e.lootT||0)+dt;
             // v22.89 (tr7fixa), the review of raid text batch 7: HIS ORDER (2026-10-09), a raid line is a short caps callout of at most 34
             // characters. A pillager calling near you said NAME called extraction. as a sentence; it is PILLAGER CALLED EXTRACTION with
             // his name and the ring as the detail (the name stays out of the headline: the longest tag, 20 letters, would take it past 34).
-            if(!G.sim&&chatNear(z.x,z.y)) say('PILLAGER CALLED EXTRACTION','info',{sub:String(e.name)+', Extraction '+extLetter(z)});   // v22.83 (R35): only near or in sight
+            if(!G.sim&&chatNear(z.x,z.y)) say('PILLAGER BOT CALLED EXTRACTION','info',{sub:String(e.name)+', Extraction '+extLetter(z)});   // v22.83 (R35): only near or in sight
           }
         }
         // v8.25, audit: only through a door that opens. The guard above gates
@@ -31640,7 +31641,7 @@ var TERMS=[
   {id:'blackout',name:'BLACKOUT PROTOCOL',pay:0.25,
    desc:'Every lamp on the map stays dark.'},
   {id:'patrols', name:'HEAVY PATROLS',pay:0.30,
-   desc:'40% more machines, pillagers and criers.'},
+   desc:'40% more machines, pillager bots and criers.'},
   // v8.19, audit: computed, not quoted. The old line named 400 and 600 seconds
   // from a raid clock retired at cfgv 15; the real pair is ~356 and 540, and a
   // hand-typed number here has now been wrong for six versions.
@@ -31659,7 +31660,7 @@ var TERMS=[
   // for no change at all. If safeSlots ever goes back to 1, this term comes back
   // with it.
   {id:'known',   name:'THEY KNOW YOU',pay:0.30,
-   desc:'Every pillager is hostile and already searching for you.'},
+   desc:'Every pillager bot is hostile and already searching for you.'},
   {id:'silence', name:'SILENT RUNNING',pay:0.30,
    desc:'One extra Listener. All Listeners hear 50% farther.'}
 ];
@@ -33482,7 +33483,7 @@ function finishSim(res){
   if(timerD) L.push('Timer expiry deaths: '+timerD+' ('+Math.round(timerD/n*100)+'% of raids). If high, the map is too big for the clock.');
   // v6.10: closestExtract accumulates raw world units, so this read ten times high.
   if(closeN) L.push('Avg distance from extract at death: '+metres(closeS/closeN)+'m (closest approach)');
-  L.push('Downs: '+downs+'  |  Self-revives: '+revs+'  |  AI pillagers extracted: '+rExt);
+  L.push('Downs: '+downs+'  |  Self-revives: '+revs+'  |  Pillager bots extracted: '+rExt);
   L.push('Beacon calls: '+bCall+'  |  Missed landings (not in the ring): '+bMiss);
   haulBandLines(res,'Survival by value carried at the moment the raid ended:').forEach(function(s){L.push(s);});
   L.push('');
@@ -41302,7 +41303,7 @@ hudPanel(bx,by,bw,bh,undefined,1);   // v18.13: the one HUD panel
       // v14.12, HUD audit: the time he actually has, the bleed clock or his health at the bleed pace, whichever runs out first.
       var _rvRate=raiderDownHp()/RAIDER_DOWN_T;
       var _rvLeft=Math.min(Math.max(0,G.nearDown.downT||0),(_rvRate>0)?Math.max(0,G.nearDown.hp||0)/_rvRate:1e9);
-      hudPrompt('['+keyLabel('KeyE','E')+'] REVIVE '+String(G.nearDown.name||'PILLAGER').toUpperCase()+
+      hudPrompt('['+keyLabel('KeyE','E')+'] REVIVE '+String(G.nearDown.name||'PILLAGER BOT').toUpperCase()+
         '  \u00b7  '+_rvLeft.toFixed(0)+'s',ds3.x,ds3.y);   // v22.66 (R24): one prompt style
       ctx.textAlign='left';
       if(_hsR) ctx.restore();
@@ -42794,8 +42795,8 @@ var LEGEND_MINI_PAD=[
 var SOUNDKEY=[
   [SNDCOL.robot.move, 'machine moving'],
   [SNDCOL.robot.fire, 'machine firing'],
-  [SNDCOL.raider.move,'pillager moving'],
-  [SNDCOL.raider.fire,'pillager firing'],
+  [SNDCOL.raider.move,'pillager bot moving'],
+  [SNDCOL.raider.fire,'pillager bot firing'],
   [SNDCOL.env.move,   'the world'],
   // His question, answered where it is asked. The ring is never his own noise,
   // and a thing he kills outright never takes the step that would have made one.
@@ -42807,7 +42808,7 @@ var LEGEND_PAD=[
   ['MOVE',[['L STICK','move, analog'],['LS CLICK','sprint'],['B','crouch'],['A','dodge roll']]],
   ['FIGHT',[['R STICK','aim'],['RT','fire / use selected'],['LT / RS CLICK','focus aim, hold / toggle'],['D-LEFT/RIGHT','aim distance'],['X','reload']]],
   ['GEAR',[['LB/RB tap','change tactical belt slot'],['LB/RB hold','zoom out / in'],['D-DOWN','item wheel (hold), revive when down'],['VIEW','backpack']]],
-  ['WORLD',[['X','search / open / call for extraction'],['Y','search in a ring; hold to finish a pillager'],['DPAD UP','ping (twice: danger); hold: map'],['MENU','pause']]],
+  ['WORLD',[['X','search / open / call for extraction'],['Y','search in a ring; hold to finish a pillager bot'],['DPAD UP','ping (twice: danger); hold: map'],['MENU','pause']]],
   // v20.76, from the whole-game bug hunt of 2026-10-08 (H46): THE PING IS D-UP ON A CONTROLLER. This row said LB + RB, but both
   // bumpers together walk the belt and zoom and have not pinged since v16.46 moved the ping to D-UP, so the row taught a button
   // that does nothing. It names D-UP now, the same button the WORLD row above names.
@@ -43408,7 +43409,7 @@ function hudPanel(x,y,w,h,a,plain){
   hudPanel(PADX-8,y0-LH(13),LW,boxH,undefined,1);   // v18.13: the one HUD panel
   ctx.font=FS(TYPE.micro);
   ctx.fillStyle='#ffc04a';
-  ctx.fillText('CURRENT PILLAGERS  '+live,PADX,y0-LH(2));
+  ctx.fillText('CURRENT PILLAGER BOTS  '+live,PADX,y0-LH(2));
   HUDBOX.raiders={x:PADX-8,y:y0-LH(13),w:LW,h:boxH,
     tg:{x:PADX-8+LW-LH(20),y:y0-LH(13),w:LH(20),h:LH(16)}};
   ctx.textAlign='right'; ctx.fillStyle='#8a96a1';
@@ -43516,7 +43517,7 @@ function raidStatusDraw(){
   ctx.fillStyle='rgba(74,82,87,.9)'; ctx.fillRect(bx,y0+headH-U(4),PW-pad*2,Math.max(1,Math.round(k)));
   // the board
   if(hasR){
-    rsText('CURRENT PILLAGERS  '+RSTAT.live,bx,by+U(14),'#ffc04a',fM);
+    rsText('CURRENT PILLAGER BOTS  '+RSTAT.live,bx,by+U(14),'#ffc04a',fM);
     yy=by+U(14)+U(18);
     for(i=0;i<nR;i++){
       w=rows[i];
@@ -46059,7 +46060,7 @@ var SLIDERS=[
   ['extractWait','Extract inbound wait (s)',8,60,1,1],
   ['nSentry','Sentries',0,40,1,0],
   ['nCrawler','Crawlers',0,60,1,0],
-  ['nRaider','AI pillagers',0,20,1,0],
+  ['nRaider','Pillager bots',0,20,1,0],
   ['nSnitch','Criers',0,12,1,0],
   ['eDmg','Enemy damage x',0.5,2,0.05,1],
   ['eHp','Enemy health x',0.5,2,0.05,0],
@@ -46080,7 +46081,7 @@ var SLIDERS=[
   // v8.34: the loadPen row is gone. There is no cost of a heavy bag to tune.
   ['machAmmo','Ammo back from a killed sentry',0,1,0.1,0],
   ['ammoTell','Show ammo boxes below this reserve',0,200,5,1],
-  ['raiderExtract','Seconds a pillager must hold the ring',3,30,1,1],
+  ['raiderExtract','Seconds a pillager bot must hold the ring',3,30,1,1],
   ['simGreed','Sim bot greed (bag wt)',10,140,2,1],
   ['simRaids','Sim raid count',10,80,5,1],
   // THE THREE DIALS I KEPT TELLING HIM WERE HERE, v2.68. Three changelog entries
@@ -46090,13 +46091,13 @@ var SLIDERS=[
   // gameplay-facing dials join the list as 0/1 toggles. Heals and feuds read
   // their dial live; windows are cut at map build, so that one is NEXT RAID.
   ['healOverTime','Heals take time (0 instant)',0,1,1,1],
-  ['raiderFeud','Pillager crews feud (0 truce)',0,1,1,1],
+  ['raiderFeud','Pillager bot crews feud (0 truce)',0,1,1,1],
   ['windows','Buildings have windows',0,1,1,0],
   // v7.02, his review of this console. The dials the game grew since the table was last
   // touched: elites, the vent lockout, the population floor, water, Superhot, lightning.
   ['eliteRate','Elite rate (of spawns)',0,0.3,0.01,0],
   ['overheatLock','Vent stun lockout (s)',0,15,0.5,1],
-  ['raiderFloorN','Min pillagers alive',0,10,1,1],
+  ['raiderFloorN','Min pillager bots alive',0,10,1,1],
   ['wadeSpd','Speed in water x',0.1,1,0.02,1],
 
   ['strikeFind','Lightning fuses loot (chance)',0,0.5,0.02,1]
@@ -49408,7 +49409,7 @@ function applyGhost(){
 function slotCore(){
   if(P.intel){ say('A core is already slotted for your next raid.'); return; }
   var ix=P.stash.indexOf('core');
-  if(ix<0){ say('No Data Core in your stash. Find them in rare containers or on elite pillagers.'); return; }
+  if(ix<0){ say('No Data Core in your stash. Find them in rare containers or on elite pillager bots.'); return; }
   // v15.53, rack audit finding: SLOT A DATA CORE SAYS WHEN IT TAKES A PACKED CORE OUT OF THE BACKPACK. Packing leaves an item
   // in the stash, so a core packed for the next ascent still lit this button, and a bare splice took a core out of the stash
   // whether or not a loose one was left. With every core he held packed, the backpack lost its core with no word: the kit was
@@ -49491,13 +49492,13 @@ var ROADMAP=[
   ['DONE','DECIDED on his delegation: hard maps stay hard. The extract spread is character, not a bug.'],
   ['NEXT','DECIDED: MOVE while it lands. The beacon banner now teaches it; deeper coaching to follow if the telemetry does not move.'],
   ['DONE','DECIDED: FOLDED. Level is the one number; proficiency lives on only as the Net carried out stat card.'],
-  ['DONE','DECIDED and SHIPPED at v7.29: a pillager walking out tries a revive for a crewmate near his path.'],
+  ['DONE','DECIDED and SHIPPED at v7.29: a pillager bot walking out tries a revive for a crewmate near his path.'],
   ['DONE','DECIDED, then found ALREADY TRUE: rigs have survived death since v5.77 (proven in the fixture). The 318c-a-raid premise was stale. Plates stay the consumable half.'],
   ['DONE','DECIDED and SHIPPED at v7.27: dying pays half for real. Measured 210 against 105 on identical runs.'],
 ['DONE','THE BULWARK: a walking slab that eats rounds from the front, soft spine behind'],
   ['DONE','Conduct contracts: walk out clean, kill nothing, be gone in three minutes'],
   ['DONE','Streets off the grid: the blocks are no longer all the same length'],
-  ['DONE','Pillagers play like people: they roll, aim, crouch over crates, and bolt for the extraction'],
+  ['DONE','Pillager bots play like people: they roll, aim, crouch over crates, and bolt for the extraction'],
   ['DONE','Everyone with eyes steps out of the Howler ring, your merc included'],
   ['DONE','The surface is silent: raid music cut entirely, the radio plays only in the Undercroft'],
   ['DONE','Warning rings glow through the dark, the cursor shouts reload and ammo'],
@@ -49512,10 +49513,10 @@ var ROADMAP=[
   ['DONE','A spawn floor of 115 metres, with new far manholes so GREYWATER kept its variety'],
   ['DONE','A faint 16-bit radio in the Undercroft with a three-state toggle'],
   ['DONE','Tuning that finally persists between sessions, broken silently since v1.59'],
-  ['DONE','Plain-language raid settings: pillagers, machines, damage, length, loot, heat'],
+  ['DONE','Plain-language raid settings: pillager bots, machines, damage, length, loot, heat'],
   ['DONE','A first-time briefing you can turn off, and a conditions box that states real numbers'],
-  ['DONE','Pillagers that equip what they loot, heal, throw, and arrive in waves'],
-  ['DONE','One status verb for you and for every pillager on the board'],
+  ['DONE','Pillager bots that equip what they loot, heal, throw, and arrive in waves'],
+  ['DONE','One status verb for you and for every pillager bot on the board'],
   ['DONE','A magazine ring on the crosshair and five voices for the extraction'],
   ['DONE','Reputation names its own source, and the shop names what it unlocks next'],
   ['DONE','Buildings weathered by four hundred years of nobody maintaining anything'],
@@ -49537,7 +49538,7 @@ var ROADMAP=[
   ['DONE','Weak points: the vent is on its back, so you have to flank'],
   ['DONE','Armour in three tiers, readable on the silhouette'],
   ['DONE','Contracts that pay in gear, in three tiers, not only credits'],
-  ['DONE','Bushes you can hide in, and raiders who hide in them too'],
+  ['DONE','Bushes you can hide in, and pillager bots who hide in them too'],
   ['DONE','Ten rewards on the progress board, claimed in order and yours to keep'],
   ['DONE','COLD STORAGE, a third map built with no open ground in it'],
   ['DONE','Room acoustics, your own footsteps, and a stinger when something sees you'],
@@ -49554,8 +49555,8 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.63: The settings section tabs are a left rail beside the rows, with send play data last in the rail. Check 31.63 fails on v31.62',
-  next:'His ruling on the pillagers: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
+  now:'v31.64: The AI humans are now called pillager bots everywhere on screen, and raider is gone. Check 31.64 fails on v31.63',
+  next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
 // he has never ranked keep code order and sink BELOW the ones he has, because a
@@ -49731,7 +49732,7 @@ var VENDOR_LINES={
        'Everything here works. Cannot say the same for you.',
        'Buy the plates. You always regret skipping the plates.'],
   work:['Bring me junk, I bring you gear. That is the arrangement.',
-        'Half the pillagers down here walk past scrap. Their loss.',
+        'Half the pillager bots down here walk past scrap. Their loss.',
         'You break it up there, I put it back together.'],
   gamble:['Gamble with Wirt. No refunds, no complaints.',   // v10.41, his words
           'No refunds, no complaints, no telling you first.',
@@ -50125,7 +50126,7 @@ function renderMercDetail(rows){
   var rec=idRec(ID.id),cost=mercCost(ID.id),hired=(P.merc===ID.id);
   var stand=rec.kills>0?('You killed him '+rec.kills+' time'+(rec.kills>1?'s':'')+'.')
     :(rec.standing>0?'He owes you one.':(rec.deaths>0?'He died on your job.':'No history between you.'));
-  var h='<div class="vpills"><span class="vpill">PILLAGER</span>'+
+  var h='<div class="vpills"><span class="vpill">PILLAGER BOT</span>'+
     (hired?'<span class="vpill r" style="background:#2f6f4e">HIRED</span>':
       (cost===null?'<span class="vpill r" style="background:#8a3423">GRUDGE</span>':''))+
     '</div><h4 style="color:'+ID.coat+'">'+escHtml(ID.tag)+'</h4>'+
@@ -52077,7 +52078,7 @@ var ACHS=[
   {id:'ghost',     n:'GHOST',           d:'Extract without ever being spotted.'},
   {id:'ten',       n:'BODY COUNT',      d:'Kill 10 or more in one raid.'},
   {id:'comeback',  n:'COMEBACK',        d:'Go down in a raid and still extract.'},
-  {id:'pill25',    n:'PILLAGER HUNTER', d:'Kill 25 pillagers in all.'},
+  {id:'pill25',    n:'PILLAGER HUNTER', d:'Kill 25 pillager bots in all.'},
   {id:'mach100',   n:'MACHINE BREAKER', d:'Kill 100 machines in all.'},
   {id:'party',     n:'PARTY OF TWO',    d:'Extract from a raid your party went up on together.'},
   {id:'vet25',     n:'VETERAN',         d:'Finish 25 runs.'},
@@ -52186,13 +52187,13 @@ function achStatsDraw(g){
     var _bits=[];
     if(_n<=0){
       _bits.push('Nobody out there has a problem with you.');
-      _bits.push('You earn it by attacking someone who was not a threat: the Peddler, an unarmed survivor, or a pillager who had not fought you.');
+      _bits.push('You earn it by attacking someone who was not a threat: the Peddler, an unarmed survivor, or a pillager bot who had not fought you.');
     } else {
       // v8.28, his ruling: the Peddler trades whatever you have done, so the
       // card no longer threatens a closure that cannot happen.
       _bits.push('Hiring costs +'+Math.round(_n*15)+'%.');
       // The parley cost is capped at three points, so say the true number.
-      _bits.push('Pillagers need '+(2+clamp(Math.round(_n),0,3))+
+      _bits.push('Pillager bots need '+(2+clamp(Math.round(_n),0,3))+
                  ' tries to stand down instead of 2.');
       var _toGo=4-((P.notExt||0)%4);
       _bits.push(_toGo+' more clean extraction'+(_toGo===1?'':'s')+
@@ -59545,7 +59546,7 @@ function flowDraw(c,p){
 var GOAL_TAG=61;
 var GOALS={
   kill10:{t:'10 KILLS',n:10,chip:200}, crate6:{t:'6 CRATES',n:6,chip:200}, wave3:{t:'3 WAVES',n:3,chip:250}, air1:{t:'AIR STRIKE',n:1,chip:300},
-  vault:{t:'OPEN A VAULT',n:1,chip:400}, pill3:{t:'3 PILLAGERS',n:3,chip:400}, elite:{t:'KILL AN ELITE',n:1,chip:400}, ward:{t:'DOWN A WARDEN',n:1,chip:500}
+  vault:{t:'OPEN A VAULT',n:1,chip:400}, pill3:{t:'3 PILLAGER BOTS',n:3,chip:400}, elite:{t:'KILL AN ELITE',n:1,chip:400}, ward:{t:'DOWN A WARDEN',n:1,chip:500}
 };
 var GOAL_IDS=['kill10','crate6','wave3','air1','vault','pill3','elite','ward'];
 function flowKill(k,el,boss){
@@ -60095,7 +60096,7 @@ EVENTS.convoy={name:'MACHINE CONVOY',sub:'ARMOURED TRAIN',warn:20,dur:170,r:240,
 // score at once (DEMO score, CAREER raid score); if something else killed him nothing is paid. After 150 s on the hunt he slips away. Made on a side stream
 // of the event, so the seeded stream and the CAREER save are untouched. DEMO and CAREER are the same.
 var BOUNTY={pay:1500};
-EVENTS.bounty={name:'BOUNTY PILLAGER',sub:'HE HUNTS YOU',warn:15,dur:150,r:220,fade:4,col:'#ff5a4a',
+EVENTS.bounty={name:'BOUNTY PILLAGER BOT',sub:'HE HUNTS YOU',warn:15,dur:150,r:220,fade:4,col:'#ff5a4a',
   mx:function(ev){ var e=ev.d.e; return (ev.ph!=='warn'&&e&&e.hp>0)?e.x:ev.x; },
   my:function(ev){ var e=ev.d.e; return (ev.ph!=='warn'&&e&&e.hp>0)?e.y:ev.y; },
   pick:function(ev){
@@ -60131,7 +60132,7 @@ EVENTS.bounty={name:'BOUNTY PILLAGER',sub:'HE HUNTS YOU',warn:15,dur:150,r:220,f
     down=!(e.hp>0)||e.finished||G.ents.indexOf(e)<0;   // v27.43 (rvw1, cloud review 17): a DOWNED hunter can get up, so he is still on the hunt
     if(down){
       ev.d.over=1;
-      if(e.hp<=0&&(e.byPlayer===true||(e.bySeat|0)>0)){ flowChip(BOUNTY.pay,'BOUNTY CLAIMED','BOUNTY PILLAGER'); ev.d.won=1; try{ blip('bountyPaid'); }catch(_bp){} }   // paid for a kill of the party (player 2 too), never for a death nobody caused (fire, debris, a barrel)
+      if(e.hp<=0&&(e.byPlayer===true||(e.bySeat|0)>0)){ flowChip(BOUNTY.pay,'BOUNTY CLAIMED','BOUNTY PILLAGER BOT'); ev.d.won=1; try{ blip('bountyPaid'); }catch(_bp){} }   // paid for a kill of the party (player 2 too), never for a death nobody caused (fire, debris, a barrel)
       else { try{ say('BOUNTY GONE','info',{sub:(e.hp<=0)?'NOT YOUR KILL':'HE GOT AWAY'}); }catch(_bg){} }
       return;
     }
@@ -66108,7 +66109,7 @@ var GAMEOPTS=[
      {n:'STANDARD', cfg:{rumbleK:1}},
      {n:'STRONG',   cfg:{rumbleK:1.5}}
    ], def:1},
-  {k:'raiders', label:'Other pillagers',
+  {k:'raiders', label:'Pillager bots',
    hint:'Human-shaped rivals looting the same map. They fight each other and the machines as well as you.',
    opts:[
      // v11.70: the waves live here, with the pillagers, on every option; the

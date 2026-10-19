@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.64 - NO RAIDERS ON SCREEN: THE AI ONES ARE PILLAGER BOTS
+
+Co-op hunt while he was away. His order 2026-10-18: get rid of the concept of raiders; players are pillagers and the AI ones are pillager bots. Every string a player reads that meant an AI pillager now says pillager bot(s): the settings rows and option, the board title, the sound key, the callouts, the contract words, the run report line, the hints and the bush note. Code names (kind raider, CFG.nRaider, saves) are unchanged.
+
+MEASURED. Check 31.64 passes, and fails on v31.63.
 ## v31.63 - SETTINGS TABS AS A LEFT RAIL
 
 Co-op hunt while he was away. Critic c-31 rounds: Settings is a 960 column floating in a wide card with a tiny tab strip; a 288px rail of 56px tabs fills the card and reads better.

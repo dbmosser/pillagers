@@ -41,18 +41,32 @@
  "06-terms": {
   "score": 2,
   "pass": false,
-  "verdict": "A tidy dark modal that obeys the palette, but every element sits at the same grey weight, the type is far below the 16/20px floor, and an explaining paragraph plus a duplicate toast clutter it, so it reads as a generic template and not a polished game screen.",
-  "pic": "tools/handoff/console/notes/shots/b-31-c1/06-terms-1080.jpg",
+  "verdict": "the terms window sits in the right 90% card with an x, but the content is a small, gray, low-contrast column floating in a huge empty card with no focus state, no primary action and a misaligned footer.",
+  "findings": [
+   "P0 whole card / content block: top-align a 56px header row (title left at 32px, x at right) and widen the list to the card's inner width, or scale rows to 80px high with 20px names. Fill the card instead of centring a 520px stack.",
+   "P0 row text and sign buttons: names 20px tx-1 f-cond 600; descriptions 16px tx-2; bonus as 24px lime (--acc) f-cond 700 right-aligned; sign buttons 96x44 with a 2px lime border on the focused row and a raised fill (--ui-raised) on that row. Show a visible focus state on the first row by default.",
+   "P1 footer: 'nothing signed...' line, divider and 'sign nothing' button: align the divider, status and button to the list edges (x=431 to 1489). Put 'sign nothing' bottom-right in a 72px footer row, 24px from the list. Make the status line 16px tx-2 and put the one bright element on the main action.",
+   "P1 intro paragraph: cut to one short line (e.g. 'sign for worse conditions, earn more if you extract') at 16px with a measure under 70 characters, or delete it.",
+   "P1 title 'the terms': set the title to 32px f-cond 700 tx-1, left-aligned in a 56px header row with the x at the same baseline; drop the underline or make it a 36px x 2px lime tab."
+  ],
+  "pic": "tools/handoff/console/notes/shots/b-31-f2/06-terms-1080.jpg",
   "task": "b-31-ui-undercroft",
-  "when": "2026-10-18T09:56"
+  "when": "2026-10-19T00:28"
  },
  "07-party-coop": {
   "score": 2,
   "pass": false,
-  "verdict": "The party card is a dark centred modal that follows the guide's panel and sentence-case rules, but it is a wall of small explaining text with a centred title, no hero or primary action, a bottom-text Close button and a misplaced Join button, so it reads as a debug dialog rather than a polished menu.",
-  "pic": "tools/handoff/console/notes/shots/b-31-after2/07-party-coop-1080.jpg",
+  "verdict": "the f2 card now reads as a proper 90% window with an x, but the content is a small, dense text block floating in an empty slab, with weak buttons, no focus state and a toast overlapping the card edge.",
+  "findings": [
+   "P0 top-left of the f1 shot (0,0 to 686x278): remove the orphan panel, or confirm it is the career hud. render the party card at 90% width and height (about 1728x972, centred) in every state, as f2 does.",
+   "P1 whole card content (title, copy, buttons): align the title to the left at the 32px title size in a 56px header row with the x on the same baseline. put the body in a column about 720px wide on the left and a raised detail pane on the right, or centre the block vertically with 48px padding.",
+   "P1 intro paragraph, trading paragraph, join hint: cut to one line of 16px at most, for example 'up to 4 pillagers, one raid'. move the trading how-to to a tooltip or the tutorial. never go below 16px for anything read.",
+   "P1 host a party / join a party buttons: make host a party the primary button with an --acc fill and --acc-ink text, 48px tall, 20px type. make join a ghost button. line up the left edges at x=431. put the code input and join on one row, with a lime focus ring on the focused control.",
+   "P1 invite code input (564,596 to 1489,655): make it a 48px high field, about 480px wide, with the placeholder 'invite code' centred vertically at 20px. put join a party directly to its right with an 8px gap."
+  ],
+  "pic": "tools/handoff/console/notes/shots/b-31-f2/07-party-coop-1080.jpg",
   "task": "b-31-ui-undercroft",
-  "when": "2026-10-18T09:49"
+  "when": "2026-10-19T00:29"
  },
  "08-shop": {
   "score": 2,
@@ -111,17 +125,17 @@
  "14-mainframe-racks": {
   "score": 2,
   "pass": false,
-  "verdict": "a dark window frame in the right style, but the racks tab is a narrow column of dead grey buttons and explanatory paragraphs floating in a huge empty card, with a dev-note sentence shown to players and a mix of capital letters.",
+  "verdict": "nothing from the last review was applied: the racks tab is still one narrow column of grey buttons and explaining paragraphs, with a joke line ('wild idea claude came up with') left on screen and a large dead area to the right and below.",
   "findings": [
-   "P0 import a friend paragraph (bottom of the column): delete the sentence. Replace it with a 16px tx-2 label of 5 words or fewer ('import a friend's run report') or drop the text, and put the details in a tooltip.",
-   "P0 whole racks tab layout: make two columns with a 24px gap. Left: a panel with the rack grid and a 56px hero '0 / 10' count. Right: a raised detail pane with costs as a table. Left-align to the 118px margin or centre the whole block.",
-   "P1 build a rack, fold 10 racks, slot a data core buttons: make build a rack the one lime-filled primary (--acc fill, --acc-ink text, 20px). Keep the disabled ones as tx-2 text at 4.5:1 or better with a --ui-line-hi border. Show a 2px lime focus bar on the focused row.",
-   "P1 capital letters: '0 of 10 racks' text, '(0 held)' text, '900', '0 xp', header numbers: audit the strings. Use 'the map (m)' or the key glyph in a keycap chip so no loose single letters read as typos.",
-   "P1 description paragraphs under each button (13-14px body): turn costs into a row of ingredient chips ('scrap 0/12', 'wire 0/9', 'cell 0/6', 'board 0/6'), red where short, at 16px label size. Delete the sentences that restate the button."
+   "P0 import a friend paragraph, bottom of the column: delete the paragraph. Use a 16px tx-2 label of 5 words or fewer ('import a friend's run report') or no text. Put the detail in a tooltip.",
+   "P0 whole racks tab layout: two columns with a 24px gap. Left: a panel with the 10-slot rack grid at 32px tall and a 56px hero '0 / 10'. Right: a --ui-raised detail pane listing costs as a table. Left-align both to the 118px margin.",
+   "P1 build a rack / fold 10 racks / slot a data core buttons: make 'build a rack' the one --acc fill with --acc-ink 20px text. Keep the disabled buttons at tx-2, 4.5:1 or better, with a --ui-line-hi border. Add a 2px lime focus bar on the focused row. Make 'import a friend' secondary.",
+   "P1 description paragraphs under each button (13-14px body): delete the sentences. Replace the cost line with a row of 16px chips ('scrap 0/12', 'wire 0/9', 'cell 0/6', 'board 0/6'), red where short.",
+   "P1 '0 of 10 racks' count and rack slots: use a 56px f-cond 800 tx-1 '0 / 10' as the hero. Make the slots 40x16 --ui-panel fills with --ui-line-hi borders, lime when filled. Drop the teal."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-31-f1/14-mainframe-racks-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/b-31-f2/14-mainframe-racks-1080.jpg",
   "task": "b-31-ui-undercroft",
-  "when": "2026-10-19T00:17"
+  "when": "2026-10-19T00:29"
  },
  "16-bar-last-pour": {
   "score": 2,
@@ -147,19 +161,19 @@
   "when": "2026-10-18T06:16"
  },
  "18-settings-hub": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The new settings screen is visually identical to the old one: the narrow 960px column still floats in a card with empty flanks, the 'send play data' link still sits in the tab strip, and the long description still dominates the bottom, so none of the earlier advice was applied.",
+  "verdict": "the left category nav and list-plus-controls layout fix the biggest structural problem from last time, but the settings card is still off-center with dead space, the audio rows bleed into the raid list, and the description block is still a paragraph of explaining text.",
   "findings": [
-   "P0 overall card composition (card x 25-1895, content x 481-1439): Add a 280px left category nav (tabs stacked, 56px rows, lime bar on the active one) at x=49. Put the list in the middle at about 700px. Put a 480px detail pane on the right, and drop the bottom description block.",
-   "P0 description block (x 481-1439, y 793-995): Cut the copy to one line of 16px tx-2, 90 characters at most, or move it into a right-hand detail pane. Leave 24px padding under the text and keep it 24px clear of the footer rule at y=995.",
-   "P1 value controls (chevrons x=923 and x=1175, value x=1049): Right-align the group to the row padding (x≈1415) with a 240px value column. Use 24px chevrons in tx-2 and light them lime only on the focused row. Show the chevrons on the other rows at 40% opacity or hide them.",
-   "P1 list bottom (y~775-793): Snap scrolling to whole 56px rows. Add a 24px fade mask at the bottom edge. Start the scrollbar below the tab strip at y=166 as a 4px track in --ui-line-hi.",
-   "P1 tab strip (y=140) and 'send play data' (x~1300-1416): Use 20px tabs, 48px high, with 24px side padding. Add LB/RB glyphs at the strip ends. Move 'send play data' into the footer as a ghost button or into the accessibility tab."
+   "P0 description block (x 417-1545, y 830-955): Cut the copy to one line of 16px tx-2, 90 characters at most (e.g. 'click any word to rewrite it. f2 toggles.'). Drop the repeated heading, or move the text into a 480px right-hand detail pane. Put 24px between the text and the footer rule.",
+   "P0 card composition (nav x 338, list right edge x 1582, header x 49, close x 1847): Use one content frame, x=49 to x=1871. Put the nav at x=49 (280px wide), the list from x=345 to x=1871, and run the description and footer rules across the same frame. Or add a 480px detail pane at the right to use the width.",
+   "P1 list rows (y 120-780): Show only the active tab's rows. Add a 16px lime-free section label if groups are needed. Snap the scroll to whole 56px rows and add a 24px bottom fade mask.",
+   "P1 value controls (x 1050-1337, rows 56px): Remove the border from the idle steppers. Right-align the stepper to the row padding (x≈1550) with a 240px value column. Use 24px chevrons in tx-2 on idle rows and in lime only on the focused row. Fill the focused row with --ui-raised.",
+   "P1 nav (x 338-602, y 118-570): Set the nav labels at 20px f-cond 600, with tx-1 on the active row and tx-2 on the others. Use 56px rows. Move 'send play data' into the footer as a ghost button, or into the accessibility tab."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-31z-after2/18-settings-hub-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/c-31ac-after/18-settings-hub-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T23:07"
+  "when": "2026-10-19T00:29"
  },
  "19-raid-hud-drop-first-raid": {
   "score": 2,
@@ -650,17 +664,17 @@
  "72-settings-sec-display": {
   "score": 3,
   "pass": false,
-  "verdict": "the focus row now has a lime outline, but the card is still a narrow 960px column floating in a mostly empty 90% card, with tiny row text, a clipped last row and arrows crowded in the middle.",
+  "verdict": "the left tab rail and boxed value steppers fix the old cramped tab row and floating arrows, but the content block is still a narrow island in a huge card, the labels are small, and the scroll thumb and last-row clipping are the same as before.",
   "findings": [
-   "P1 overall layout: card vs content column: widen the list to about 1400px, or move the six tabs into a 280px left rail aligned to x=48 with the list filling the rest. Raise row labels to 20px.",
-   "P1 row layout: label, arrows and value: put the value control in a fixed column at the right edge (arrows at x≈1200 and x≈1400), or set a 200px value column right after the labels. Make arrows 20px or larger with a 44px hit area, and dim idle arrows to tx-2.",
-   "P1 bottom of the list, 'sprint zoom-out' row: make the list height a multiple of 66px (10 rows = 660px) so no row is cut off, or add a 24px fade mask to the panel colour. Make the scroll thumb 6px wide in tx-2.",
-   "P2 focused row 'render resolution': keep the outline, drop the redundant 4px bar or the outline (pick one), and raise the focused value to 22-24px.",
-   "P2 tab bar: set inactive tabs to tx-2 at 4.5:1 or better, with 24px gaps. Separate 'send play data' with a 1px divider or move it into the list. Add small lb and rb glyphs at each end of the tab row."
+   "P1 overall layout: settings block inside the card: align the rail to x=48 with a 280px width and let the list fill to x≈1870, so the stepper column sits at about x=1300-1600. If the block stays centred, keep the card margins symmetric and stack the description beneath the list.",
+   "P1 bottom of the list: 'show fps' row: set the list viewport height to a multiple of 56px (11 rows = 616px) or add a 24px fade mask to the panel colour. Snap the scroll to whole rows.",
+   "P1 row labels and tab rail text: raise row labels and rail items to 20px, set idle rail items to tx-2 at 4.5:1 or better, and put the rail at 56px pitch with 24px left padding.",
+   "P2 focused row 'render resolution': keep one signal: a raised fill (--ui-raised) plus the 3px lime left bar, and drop the full outline. Border the focused stepper in lime. Keep the value at 22-24px.",
+   "P2 stepper boxes: drop the borders on idle rows and show the box only on the focused row, or use a 1px --ui-line border. Make the chevrons 20px with a 44px hit area and dim idle ones to tx-2."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-31w-after2/72-settings-sec-display-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/c-31ac-after/72-settings-sec-display-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-18T23:54"
+  "when": "2026-10-19T00:29"
  },
  "74-settings-change-pad-buttons": {
   "score": 2,
