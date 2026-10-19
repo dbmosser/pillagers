@@ -1,0 +1,5 @@
+## v31.65 - SETTINGS FILL THE CARD WITH A DETAIL PANE
+
+Co-op hunt while he was away. Critic c-31 rounds: Settings block floats in dead space and the description is the loudest block; fill the card and move the description to a right pane.
+
+MEASURED. Check 31.65 passes, and fails on v31.64.

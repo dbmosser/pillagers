@@ -1,0 +1,7 @@
+v31.65: settings fill the card with a detail pane
+
+Settings fills the card, with the setting detail in a pane at the right of the rows.
+
+Check 31.65. Fails on v31.64.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

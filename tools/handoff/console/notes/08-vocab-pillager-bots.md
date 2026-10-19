@@ -1,29 +1,35 @@
-# 08-vocab-pillager-bots (lane a)
+# 08-vocab-pillager-bots (lane a) — SHIPPED v31.64 (fa4c356e), cw-vocab-bots
 
-Plan: one ship, key cw-vocab-bots, script S/mk-cw-vocab-bots.ps1. Text-only edits (anchors are literal strings).
-Fixture retargets (under lock, then fixq): checks that read old text: line ~5724 (/^CURRENT PILLAGERS/), ~30214, ~40207 (nB), ~42071 (PILLAGER CALLED), ~84569 (sound key words), ~92465, ~47918 (death card PILLAGER).
+Fixture retargets committed first (6fd7de35): board-title regex, nB in 23.35, extraction callout line, sound-key need list, board header skip. All tolerant of old and new wording.
 
-## Strings to change (game file) before -> after
-- UNITPLURAL raider 'pillagers' -> 'pillager bots'; UNITNAME raider 'pillager' -> 'pillager bot'; KINDWORD raider 'PILLAGER' -> 'PILLAGER BOT'
-- hire note 'Word has spread. Hires cost more and pillagers trust you less.' (both copies) -> pillager bots
-- legend rows (two copies) 'hold to finish a pillager' -> 'pillager bot'
-- callouts PILLAGER REINFORCEMENTS / TURNED HOSTILE / CALLED EXTRACTION -> PILLAGER BOT ...
-- fallback label (e.name||'PILLAGER')+' DOWNED' and REVIVE fallback -> 'PILLAGER BOT'; 'A PILLAGER' charge fallback -> 'A PILLAGER BOT'
-- TERMS descs '40% more machines, pillagers and criers.' / 'Every pillager is hostile ...' -> pillager bots
-- run report '|  AI pillagers extracted: ' -> '|  Pillager bots extracted: '
-- sound key 'pillager moving' / 'pillager firing' -> 'pillager bot ...'
-- board titles CURRENT PILLAGERS (2 places) -> CURRENT PILLAGER BOTS
-- SLIDERS: 'AI pillagers' -> 'Pillager bots'; 'Seconds a pillager must hold the ring' -> 'pillager bot'; 'Pillager crews feud (0 truce)' -> 'Pillager bot crews feud (0 truce)'; 'Min pillagers alive' -> 'Min pillager bots alive'
-- GAMEOPTS label 'Other pillagers' -> 'Pillager bots'
-- 'No Data Core ... elite pillagers.' -> elite pillager bots; imported friend text 'a pillager wearing their name' -> 'a pillager bot wearing'
-- ROADMAP lines (DONE ones hidden, NEXT one shown), bush hint 'raiders who hide in them too' -> 'pillager bots'
-- peddler line 'Half the pillagers down here...' -> pillager bots
-- hire card tag 'PILLAGER' -> 'PILLAGER BOT'; ach desc 'Kill 25 pillagers' -> 'pillager bots'; notoriety hints (52177, 52183); contract '3 PILLAGERS' -> '3 PILLAGER BOTS'; EVENTS.bounty name 'BOUNTY PILLAGER' -> 'BOUNTY PILLAGER BOT'
+## Strings changed (before -> after)
+- UNITPLURAL.raider 'pillagers' -> 'pillager bots'; UNITNAME.raider 'pillager' -> 'pillager bot'; KINDWORD.raider 'PILLAGER' -> 'PILLAGER BOT'
+- 'Word has spread. Hires cost more and pillagers trust you less.' (+ the shorter one) -> pillager bots
+- keys legend 'search in a ring; hold to finish a pillager' (kbd + pad) -> '... pillager bot'
+- 'A PILLAGER' (thrown charge kill-feed name) -> 'A PILLAGER BOT'
+- callouts: PILLAGER REINFORCEMENTS / TURNED HOSTILE / CALLED EXTRACTION -> PILLAGER BOT ...
+- label ' DOWNED' fallback and revive prompt fallback: 'PILLAGER' -> 'PILLAGER BOT' (bot name fallback only; the teammate prompt at netSeatName is a real player and stays 'PILLAGER')
+- heat terms: '40% more machines, pillagers and criers.' / 'Every pillager is hostile...' -> pillager bots
+- run report: '|  AI pillagers extracted: ' -> '|  Pillager bots extracted: '
+- sound key: 'pillager moving/firing' -> 'pillager bot moving/firing'
+- board: 'CURRENT PILLAGERS  ' (two draws) -> 'CURRENT PILLAGER BOTS  '
+- settings: 'AI pillagers' -> 'Pillager bots'; 'Seconds a pillager must hold the ring' -> '... pillager bot ...'; 'Pillager crews feud (0 truce)' -> 'Pillager bot crews feud (0 truce)'; 'Min pillagers alive' -> 'Min pillager bots alive'
+- game option label 'Other pillagers' -> 'Pillager bots'
+- 'No Data Core...elite pillagers.' -> elite pillager bots
+- roadmap: bush hint ('raiders who hide' -> 'pillager bots who hide'), 'Pillagers play like people', 'Plain-language raid settings: pillagers', 'Pillagers that equip', 'every pillager on the board', 'a pillager walking out tries a revive', 'His ruling on the pillagers' -> pillager bot(s)
+- 'Half the pillagers down here walk past scrap' -> pillager bots
+- viewer chip <span class=vpill>PILLAGER</span> -> PILLAGER BOT
+- achievement 'Kill 25 pillagers in all.' -> pillager bots; contract '3 PILLAGERS' -> '3 PILLAGER BOTS'
+- heat tip 'a pillager who had not fought you' -> pillager bot; 'Pillagers need ...' -> 'Pillager bots need ...'
+- bounty event 'BOUNTY PILLAGER' (name and claim chip) -> 'BOUNTY PILLAGER BOT'
 
-## Left alone (list for coordinator)
-- ach name 'PILLAGER HUNTER' (kept; reads fine either way)
-- 'a pillager walking out will step past ...' dev poll text map (line ~5157, dev-only)
-- SPK_INFO 'BOUNTY PILLAGER: ...' sound-editor labels (dev tool)
-- 'how to play: Beware of hostile robots and fellow pillagers' and 'hostile robots' not in the build any more (grep finds none)
-- setraid armour name; history WHATSNEW entries; comments
-- player names / seat fallback 'PILLAGER' (those are real players: right)
+## Left alone (his edited lines = keys in TXSHIP; changing the key text would drop his wording) — for the coordinator
+- TXSHIP key 'Beware of hostile robots and fellow pillagers.' (his value: 'Loot all the things. Beware of hostile robots and fellow pillagers.') — means AI ones; his line, untouched.
+- TXSHIP key 'A friend sends you their exported run report... a pillager wearing their name...' (his value keeps 'a pillager wearing their name') — means a bot hire; untouched.
+- TXSHIP key 'Nobody out there has a problem with you... a pillager who had not raised a hand to you.' — untouched.
+- map line at ~5157 'A pillager walking out will step past a downed crewmate...' (his edited override) — untouched.
+- feedback tag chips 'Pillagers felt human' / 'Pillagers felt dumb' — his tags, the pillager camera is named for the second; untouched. They mean the AI ones; ask him if he wants 'pillager bots felt ...'.
+- armour set 'raider' (setraid) — gear name, untouched as ordered.
+- dev sound lab labels 'BOUNTY PILLAGER: announce / bounty paid' (SPK_INFO) — dev screen, not changed.
+- dated history patch notes — unchanged as ordered.
+- Not seen: any other 'raider' on screen; the grep of quoted strings found only the bush hint.

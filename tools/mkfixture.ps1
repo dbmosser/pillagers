@@ -6101,6 +6101,20 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.65',what:'Settings detail pane sits at the right of the rows and the block fills the card',
+   run:function(){
+     var bad=[], l, d, w, c, padWas=document.body.classList.contains('padon');
+     __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     try{
+       openSettings('display');
+       l=document.getElementById('setlist').getBoundingClientRect(); d=document.getElementById('setdetail').getBoundingClientRect();
+       w=document.getElementById('setwrap').getBoundingClientRect(); c=document.getElementById('settingsmodal').getBoundingClientRect();
+       if(getComputedStyle(document.getElementById('setwrap')).flexDirection!=='row') bad.push('setwrap not a row');
+       if(d.width>0 && d.left<l.right-2) bad.push('detail left '+Math.round(d.left)+' is under the list right '+Math.round(l.right));
+       if(w.width<c.width*0.8) bad.push('block '+Math.round(w.width)+' of card '+Math.round(c.width));
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ var q=document.getElementById('settingsmodal'); if(q) q.classList.remove('on'); }catch(_k){} try{ __topClear(); }catch(_c){} document.body.classList.toggle('padon',padWas); }
+     return bad.length?bad.join('; '):null; }},
   {v:'31.64',what:'his order 2026-10-18 (no raider on screen; the AI ones are pillager bots): the settings rows, the pillager bots option, the board title, the sound key, the contract words, the callouts and the bush hint say pillager bot(s) and none of them says raider',
    run:function(){
      var bad=[], i, s, src, rx=/\braiders?\b/i, g=null, draws, head=false, old=false, want, txt;
