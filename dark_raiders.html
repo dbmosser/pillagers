@@ -1519,7 +1519,12 @@ html.party #slotpanel, html.party #titlesub, html.party #titlestart, html.party 
   /* v28.xx (cw-abhero), the critic on the Abandoned card (2 of 5, P0): "there is no 56px hero line, the key message is a 22px sentence in the same weight as the title and stats". The loss is the 56px figure with a 16px label under it, the same shape as the Killed card. The sentence stays in the card as hidden text (the checks read it). The XP line is 16px. Words unchanged. */
   #root .ocnote.ocsr{ display:none; }
   #root #oc_manifest span[style*="var(--amber)"]{ font-size:16px; line-height:1.4; }
-  /* vNN.xx, UI CLEANUP uic4 (his 2026-10-14 note, "ui and player messaging just isn't as clean as it should be", from the 1080p shots of the
+  /* v28.xx (cw-endflat), the critic on 38, 60 and 77 (3 and 2 of 5): "the badges and the challenge pill are boxed chips that read as buttons, the feedback link is a fourth control". His Q43 (the card has an X). A chip is now a flat 16px tx-2 name with a middle dot between names and no box; the contract line gets a green tick. The words are unchanged. */
+  #root .ocachs{ gap:4px 8px; margin:24px 0 8px; }
+  #root .ocach, #root .ocach.ocok{ padding:0; background:transparent; border:0; border-radius:0; font-size:16px; line-height:1.4; color:var(--tx-2); }
+  #root .ocach:not(:last-child)::after{ content:'\00b7'; margin-left:8px; color:var(--ui-line-hi); }
+  #root .ocach.ocok::before{ content:'\2713'; margin-right:8px; color:var(--ok); }
+  #root #confirmabandon small{ display:block; margin-top:4px; font-size:16px; font-weight:400; letter-spacing:.04em; line-height:1.2; color:var(--tx-2); }  /* vNN.xx, UI CLEANUP uic4 (his 2026-10-14 note, "ui and player messaging just isn't as clean as it should be", from the 1080p shots of the
      map select screen and the Undercroft floor): THE ANSWER LINE STAYS OFF THE BUTTONS. The line sat 38 px up in the middle of the screen
      whatever was open, so it landed on ASCEND TO THIS SECTOR (the whole bottom of the map select screen is that one button) and, on the
      floor, on the middle cells of the tactical belt (TROPHY EARNED over gun key 4). On the map select screen it rides under the heading
@@ -1938,7 +1943,7 @@ body:has(#hub.on) #hubtoast{ bottom:calc(5vh + 26px); }
 #root #pausex{ position:absolute; z-index:2; top:calc(50% - var(--pbh, 50vh) / 2 + var(--sp-3)); right:calc(50% - var(--pw) / 2); width:var(--sp-5); height:var(--sp-5); min-width:0 !important; min-height:0 !important; padding:0 !important; font-size:0 !important; line-height:1; display:flex; align-items:center; justify-content:center; }
 #root #pausex::after{ content:''; --xc:var(--tx-1); width:var(--sp-3); height:var(--sp-3); background:linear-gradient(45deg, transparent 44%, var(--xc) 44% 56%, transparent 56%), linear-gradient(-45deg, transparent 44%, var(--xc) 44% 56%, transparent 56%); }
 #root #pausex:hover::after{ --xc:var(--acc); }
-#root #pausebox.asking #pausex{ display:none; }
+/* v28.xx (cw-endflat), the critic on 59 (3 of 5): "no close control". Armed, the pause box keeps its X: it is the Keep playing twin (it clicks resume, which disarms), so it adds no new way out. */
 #root #setlist .row.dshow:not(.setjump){ background:var(--ui-raised); box-shadow:inset 3px 0 0 var(--acc); }
 #root #setlist .row.dshow:not(.setjump) > button{ border-color:var(--ui-line-hi); background:var(--ui-void); color:var(--acc); }
 #root #keyslist{ padding-bottom:var(--sp-4); -webkit-mask-image:linear-gradient(to bottom, var(--ui-void) calc(100% - var(--sp-4)), transparent); mask-image:linear-gradient(to bottom, var(--ui-void) calc(100% - var(--sp-4)), transparent); }
@@ -2973,7 +2978,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.77';
+var VER='31.78';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -49614,7 +49619,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.77: The run over card has a small score label over the big figure, a zero score is dim, the penalty is amber, and the rules line up. Check 31.77 fails on v31.76',
+  now:'v31.78: Chips are flat names with dots. The contract line has a tick. The armed abandon confirm keeps its X and shows its cost on its own line. Check 31.78 fails on v31.77',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -64142,8 +64147,8 @@ document.getElementById('abandonbtn').onclick=function(){
     // button that was about to take nothing from him.
     var _ac=Math.min(abandonRepCost(_el),(P.xp||0));
     // v23.22 (arcade3): an arcade raid costs no XP, so its confirm quotes none
-    cb.textContent=(G&&G.arcade)?'YES, ABANDON THIS RUN':(_el>60)?('YES, ABANDON THIS RUN ('+(_ac>0?('costs '+_ac+' XP'):'no XP to lose')+')')
-                           :'YES, ABANDON THIS RUN (free this early)';
+    /* v28.xx (cw-endflat), the critic on 59: "an explaining parenthetical on the danger button". Q8, reason logged in notes/ui/changes.md: the cost is its own quiet 16px line under the button words, not a bracket inside them. */
+    cb.innerHTML=(G&&G.arcade)?'YES, ABANDON THIS RUN':'YES, ABANDON THIS RUN <small>'+((_el>60)?(_ac>0?('costs '+_ac+' XP'):'no XP to lose'):'free this early')+'</small>';
     return;
   }
   // second press on the same button is the NO: disarm and go back.

@@ -6101,6 +6101,45 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.78',what:'an end card chip is a flat name with no box, the contract line has a tick, the armed abandon confirm keeps its X and puts its cost on its own line (the critic on 38, 59, 60)',
+   run:function(){
+     if(!(window.__deploy&&window.__endRaid&&window.__state&&window.__P)) return 'SKIP: this build cannot end a raid';
+     var bad=[], P2=__P(), keepAE=P2.autoExport, oc=document.getElementById('outcome'), man, c1, c2, cs, pb, abtn, cb, px, sm, wasShown;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       P2.autoExport=false;
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       __state().bag.push('core','scrap');
+       __endRaid('extract');
+       if(!oc.classList.contains('on')) return 'the extracted card did not open';
+       man=document.getElementById('oc_manifest');
+       c1=document.createElement('span'); c1.className='ocach'; c1.textContent='first out';
+       c2=document.createElement('span'); c2.className='ocach ocok'; c2.textContent='untouched';
+       man.appendChild(c1); man.appendChild(c2);
+       cs=getComputedStyle(c1);
+       if(parseFloat(cs.borderTopWidth)>0||parseFloat(cs.borderLeftWidth)>0) bad.push('a chip still has a '+cs.borderTopWidth+' box');
+       if(cs.backgroundColor!=='rgba(0, 0, 0, 0)'&&cs.backgroundColor!=='transparent') bad.push('a chip still has a fill '+cs.backgroundColor);
+       if(String(getComputedStyle(c2,'::before').content).indexOf('\u2713')<0) bad.push('the contract chip has no tick');
+       man.removeChild(c1); man.removeChild(c2);
+       oc.classList.remove('on');
+       abtn=document.getElementById('abandonbtn'); cb=document.getElementById('confirmabandon'); pb=document.getElementById('pausebox'); px=document.getElementById('pausex');
+       if(!abtn||!cb||!pb||!px) return 'the pause box has no abandon, confirm or X';
+       wasShown=cb.style.display;
+       if(cb.style.display!=='none') abtn.click();
+       abtn.click();
+       if(!pb.classList.contains('asking')) bad.push('the confirm did not arm');
+       if(getComputedStyle(px).display==='none') bad.push('the armed confirm has no X');
+       if(/\(/.test(cb.textContent)) bad.push('the confirm still has a bracket: '+cb.textContent.trim());
+       sm=cb.querySelector('small');
+       if(!sm) bad.push('the confirm has no cost line'); else if(!/xp|free/i.test(sm.textContent)) bad.push('the cost line reads '+sm.textContent);
+       if(!/^YES, ABANDON THIS RUN/i.test(cb.textContent.trim())) bad.push('the confirm reads '+cb.textContent.trim());
+       abtn.click(); cb.style.display=wasShown||'none';
+       return bad.length?bad.join('; '):null;
+     } finally {
+       P2.autoExport=keepAE;
+       try{ oc.classList.remove('on'); }catch(_e){}
+       __topClear(); try{ __cleanProfile(); }catch(_e2){}
+     } }},
   {v:'31.77',what:'the run over card: the score word is a 16px label over the 56px figure, a zero score is dimmed, the penalty is warn amber, and the footer rule is inset to the card padding (critic on 55: score 3 of 5)',
    run:function(){
      if(typeof arcadeOverSync!=='function'||typeof ARCADE!=='object'||typeof arcadeEnter!=='function'||typeof arcadeAttStart!=='function') return 'SKIP: no RUN OVER card in this build';

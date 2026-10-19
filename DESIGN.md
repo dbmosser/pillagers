@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.78 - END CARDS: FLAT CHIPS, ABANDON CONFIRM X AND COST LINE
+
+Co-op hunt while he was away. The critic scored 38, 60 and 77 down for boxed chips that read as buttons, and 59 for no X and a bracket on the danger button.
+
+MEASURED. Check 31.78 passes, and fails on v31.77.
 ## v31.77 - RUN OVER CARD: SCORE LABEL, DIM ZERO, WARN PENALTY, INSET RULE
 
 Co-op hunt while he was away. The critic scored the run over card 3 after v31.73 and the board 2: the hero is one flat line with the score word as big as the figure, a zero score shines at full brightness, the footer rule runs wider than the stats rule above it, the penalty has no warning colour, and the empty line is centred while every row is left. Restyle only: the text is the same.

@@ -1,0 +1,20 @@
+{
+    "title":  "A DOWNED PARTNER GETS A CLEAR ALERT AND A PULSING ARROW",
+    "why":  "His answer 2.72 a: when your partner goes down, a clear alert sound plays and the edge arrow pointing at them pulses. The old sound was a low thud where he fell, silent past 1400 units, and the arrow only turned red. Now a two-note alert plays at the same loudness wherever he is, and the red arrow beats between full size and one and a half times, twice a second.",
+    "now":  "When your partner goes down you hear a clear two-note alert, and the arrow pointing at them pulses.",
+    "edits":  [
+                  {
+                      "anchor":  "function sndDowned(mine,wx,wy){",
+                      "replacement":  "// v31.xx (cw-matedown), HIS ANSWER 2.72 a (2026-10-18): \"when your partner goes down, a clear alert sound plays and the edge arrow pointing at them pulses\".\n// The old sound for a downed partner was the low thud placed where he fell, silent past 1400 units. This is a plain two-note alert, the same\n// loudness wherever he is, played with it. The arrow pulse is a scale between 1 and 1.5, two beats a second, only while he is down.\nfunction mateArrowPulse(dn,ms){\n  if(!dn) return 1;\n  return 1+0.25*(1+Math.sin((+ms||0)/1000*Math.PI*4));\n}\nfunction sndMateAlert(){\n  var a, out, t, i, o, og, f=[880,660,880,660], at;\n  if(G\u0026\u0026G.sim) return false;\n  if(typeof NET===\u0027object\u0027\u0026\u0026NET\u0026\u0026NET.specTick) return false;\n  a=ac(); if(!a) return false;\n  out=sndBus(\u0027sting\u0027); if(!out) return false;\n  t=a.currentTime;\n  try{\n    for(i=0;i\u003cf.length;i++){\n      at=t+i*0.16;\n      o=a.createOscillator(); og=a.createGain(); o.type=\u0027triangle\u0027; o.frequency.setValueAtTime(f[i],at);\n      og.gain.setValueAtTime(0.0001,at); og.gain.exponentialRampToValueAtTime(0.2,at+0.012); og.gain.exponentialRampToValueAtTime(0.0001,at+0.14);\n      o.connect(og); og.connect(out); o.start(at); o.stop(at+0.16);\n    }\n  }catch(err){ return false; }\n  SND_DOWN.alert=(SND_DOWN.alert|0)+1;\n  return true;\n}\nfunction sndDowned(mine,wx,wy){"
+                  },
+                  {
+                      "anchor":  "try{ sndDowned(0,x,y); }catch(_dn){}",
+                      "replacement":  "try{ sndDowned(0,x,y); }catch(_dn){} try{ sndMateAlert(); }catch(_mq){}"
+                  },
+                  {
+                      "anchor":  "ctx.save(); ctx.translate(ax,ay); ctx.rotate(a); if(r\u003e1) ctx.scale(r,r);",
+                      "replacement":  "ctx.save(); ctx.translate(ax,ay); ctx.rotate(a); if(r\u003e1) ctx.scale(r,r); if(g.dn){ var _mp=mateArrowPulse(1,(typeof performance!==\u0027undefined\u0027\u0026\u0026performance.now)?performance.now():Date.now()); ctx.scale(_mp,_mp); }   // v31.xx (cw-matedown): the arrow of a downed partner pulses"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a downed partner sounds a clear alert and his edge arrow pulses (his 2.72 a)\u0027,\n   run:function(){\n     if(typeof mateArrowPulse!==\u0027function\u0027||typeof sndMateAlert!==\u0027function\u0027) return \u0027no partner alert sound and no arrow pulse (mateArrowPulse, sndMateAlert missing)\u0027;\n     var a=mateArrowPulse(1,0), b=mateArrowPulse(1,125), c=mateArrowPulse(0,125), lo=9, hi=0, i, v;\n     for(i=0;i\u003c500;i++){ v=mateArrowPulse(1,i*2); if(v\u003clo) lo=v; if(v\u003ehi) hi=v; }\n     if(c!==1) return \u0027an arrow of a partner who is up pulses\u0027;\n     if(a===b) return \u0027the downed arrow does not change over time\u0027;\n     if(lo\u003c0.99||hi\u003e1.51||hi-lo\u003c0.4) return \u0027the pulse range is wrong: \u0027+lo+\u0027 to \u0027+hi;\n     if(String(netOnState).indexOf(\u0027sndMateAlert\u0027)\u003c0) return \u0027the partner down word does not play the alert\u0027;\n     if(String(netMateArrow).indexOf(\u0027mateArrowPulse\u0027)\u003c0) return \u0027the edge arrow does not use the pulse\u0027;\n     var r=sndMateAlert(); if(r!==true\u0026\u0026r!==false) return \u0027the alert did not return a result\u0027;\n     return null;\n   }},"
+}

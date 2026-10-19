@@ -4,7 +4,7 @@
 // The lockdown lives in this file: the tools below can read anything, write only the worker's own files, and run only the
 // project's ship and test scripts (ALLOW_CMD). Called by tools/console-worker.sh with CW_* variables and ANTHROPIC_API_KEY
 // (read from his Windows variable, never printed). Prints one JSON line: result, total_cost_usd, terminal_reason, subtype.
-import { readFileSync, writeFileSync, readdirSync, statSync, mkdirSync } from 'fs';
+import { readFileSync, writeFileSync, readdirSync, statSync, mkdirSync, appendFileSync } from 'fs';
 import { resolve, dirname, join } from 'path';
 import { spawnSync } from 'child_process';
 const e = process.env;
@@ -80,8 +80,10 @@ function useTool(name, a) {
         return 'REFUSED: only jpg or png files in the notes, shots or ui-refs folders';
       const buf = readFileSync(norm(a.path)); if (buf.length > 3.7e6) return 'TOO BIG: ' + buf.length + ' bytes; use the 1080 shot';
       return [{ type: 'text', text: a.path }, { type: 'image', source: { type: 'base64', media_type: /png$/.test(x) ? 'image/png' : /webp$/.test(x) ? 'image/webp' : 'image/jpeg', data: buf.toString('base64') } }]; }
-    if (name === 'run') { const c = String(a.command).trim().replace(/\\/g, '/');
-      if (!ALLOW_CMD.some(re => re.test(c))) return 'REFUSED: not an allowed command. See the exact forms in your rules.';
+    if (name === 'run') { const c = String(a.command).trim().replace(/\\/g, '/').replace(/\s*\|\s*(tail|head)( -n)? -?\d+\s*$/, '').replace(/\s+2>&1$/, '');
+      if (!ALLOW_CMD.some(re => re.test(c))) { try { appendFileSync(R + '/tools/handoff/console/log/refused.txt', new Date().toISOString().slice(0, 16) + ' ' + e.CW_TASK + ' lane ' + (e.CW_LANE || 'a') + ': ' + c.slice(0, 400) + '\n'); } catch {}
+        const pn = 9360 + Math.max(1, ' abc'.indexOf(e.CW_LANE || 'a'));
+        return 'REFUSED: not an allowed command (logged for the coordinator). The camera, exactly, nothing else on the line: powershell -NoProfile -ExecutionPolicy Bypass -File tools/uishots.ps1 -Screens 01,45 -Out tools/handoff/console/notes/shots/NAME -Res 1080 -Port ' + pn + ' (your lane\'s port is ' + pn + '; -Res may be 1080, 4k or 1080,4k; no quotes, no -Url, no pipes). The critic: node tools/console-sdk/critic.mjs tools/handoff/console/notes/shots/NAME/01-title-mode-menu-1080.jpg (1 to 4 pictures under tools/handoff). Every other form is in your rules.'; }
       // 10-17 16:30: a helper took the lock with lock.sh, then ran fixq.sh without HELD=1, and fixq waited 46 minutes for the
       // lock its own helper held, blocking every ship. The loop now remembers a lock it took and adds HELD=1 itself.
       const c2 = (heldLock && /\/fixq\.sh /.test(c) && !/^HELD=1 /.test(c)) ? 'HELD=1 ' + c : c;

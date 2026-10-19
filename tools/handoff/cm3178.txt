@@ -1,0 +1,7 @@
+v31.78: end cards: flat chips, abandon confirm x and cost line
+
+Chips are flat names with dots. The contract line has a tick. The armed abandon confirm keeps its X and shows its cost on its own line.
+
+Check 31.78. Fails on v31.77.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
