@@ -1,11 +1,11 @@
-# llm-night.ps1 : overnight work for the local model (Ollama, qwen2.5-coder:32b on his RX 7900 XTX). Free: no Claude usage.
+# llm-night.ps1 : overnight work for the local model (Ollama, qwen3.8:27b since 10-19, was qwen2.5-coder:32b, on his RX 7900 XTX). Free: no Claude usage.
 # His request 2026-10-13: "i mean I am about to leave it on all night, just like i do every night -- can't we do something with that?!?"
 # Writes reports to tools\handoff\llm-night\ ; Claude reads the short summaries in the morning and verifies the top hits.
 #   1. leftovers.txt  : exact grep for names and words of systems he removed (deterministic, instant)
 #   2. text-audit.md  : every player-facing string, checked by the model against his text and key rules
 #   3. code-sweep.md  : the game file in 300-line chunks, checked by the model for likely bugs
 # Read-only on the game. Safe to rerun; each report is rewritten.
-param([string]$Model='qwen2.5-coder:32b',[int]$Chunk=200,[int]$Batch=30,[switch]$SkipCode,[string]$Since='')
+param([string]$Model='qwen3.8:27b',[int]$Chunk=200,[int]$Batch=30,[switch]$SkipCode,[string]$Since='')
 $ErrorActionPreference='Continue'
 $R='C:\claudecode\dark raiders'; $G=Join-Path $R 'dark_raiders.html'; $O=Join-Path $R 'tools\handoff\llm-night'
 New-Item -ItemType Directory -Force $O | Out-Null
@@ -13,7 +13,7 @@ $lines=[IO.File]::ReadAllLines($G)
 $api='http://127.0.0.1:11434/api/generate'
 function Ask([string]$prompt,[int]$max=500){
   # 2026-10-13: the first run let the model ramble (no cap): one batch took 30 min. Cap the answer and keep the context small.
-  $body=@{ model=$Model; prompt=$prompt; stream=$false; options=@{ temperature=0.1; num_ctx=8192; num_predict=$max; repeat_penalty=1.15 } } | ConvertTo-Json -Depth 4
+  $body=@{ model=$Model; prompt=$prompt; stream=$false; think=$false; options=@{ temperature=0.1; num_ctx=8192; num_predict=$max; repeat_penalty=1.15 } } | ConvertTo-Json -Depth 4
   for($t=0;$t -lt 2;$t++){
     try{ $r=Invoke-RestMethod -Uri $api -Method Post -Body $body -ContentType 'application/json' -TimeoutSec 900
          "$(Get-Date -Format 'HH:mm:ss') answer $($r.eval_count) tok in $([math]::Round($r.eval_duration/1e9,1)) s, prompt $($r.prompt_eval_count) tok" | Add-Content $log

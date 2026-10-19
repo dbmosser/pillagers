@@ -51,3 +51,27 @@ Coordinator action required before another task retry: restore the shared 9346 g
 
 The lane/coordinator must recover its shared gate Chrome on 9346 outside this sandbox, then retry cw-cx-stashraid. The recovery command from the task rules is: powershell -NoProfile -ExecutionPolicy Bypass -File tools/cdp.ps1 -Start -Port 9346 (run from the real repo). This worker cannot run it: the CODEX ADDENDUM prohibits Chrome and localhost access. Please recover the gate before returning this task to Codex again. Existing fixture retargets, forge photographs/critic and both-window verification remain outstanding as recorded in earlier notes. No new owner question or code defect.
 
+
+--- codex run 2026-10-19 11:21 ---
+2026-10-19 - post-ship continuation: cw-cx-stashraid shipped as v31.83, commit 0092c92c. Read the ship log: check 31.83 PASS / PASS; verifySafe passed at entities 85/374 and containers 165/593. The prior browser infrastructure blocker is resolved. Do not reship the game key.
+
+Opened both screen-05 photographs. Cash packing is removed and other packing remains. The critic scored 2; its P1 requests are row resizing/filler and changing the no-data-core cell. The task explicitly forbids pre-raid restyling, with a redesign already pending. Logged this conflict once in questions-new.md and left the layout alone. Remaining P2 findings are also pre-existing page layout work. This is a scope exception, not a claimed numerical pass.
+
+Prepared fixture-retarget.json with four exact replacements for older versions 29.26, 28.94, 26.21 and 26.25. The replacements preserve unrelated pack, gun stats, issued flag, callout, gun card, sound, element, mouse, pad and Escape coverage; they now use the stash and assert unchanged score. prepare-fixture-retarget.js found each old check exactly once and compiled all four replacement checks. No tracked fixture edit was made and these changes still need the coordinator's locked check/commit procedure.
+
+Prepared forge-camera-recipes.json for the existing project camera, containing the existing pre-raid recipe and forge prompt, MK III picker and after-only MK II gun card recipes. It supplies the existing prelude and can be selected with the camera's -Recipes argument, avoiding a shared catalog edit. prepare-forge-camera.js compiled all staging/expect functions. The recipes still need to run in the lane. Instructions and before/after staging are in verification-handoff.md.
+
+Shipping and the new gameplay check are complete. Remaining: run/commit the fixture updates, capture and critic-check the forge prompt/picker, and verify each real player window uses its own save in demo and career with a picture from each. No Chrome, localhost, network, agents, game edits or fixture edits were used in this sandbox. Keep the existing keys.txt unchanged.
+
+
+--- codex run 2026-10-19 11:22 ---
+2026-10-19 - continuation after the post-ship handoff: confirmed master remains v31.83 and cw-cx-stashraid is shipped with check 31.83 PASS / PASS and unchanged verifySafe fingerprint. The real fixture still contains the old v28.94 cash-stepper and v26.21 score-funded assertions; only the screen-05 photographs exist in the task after folder. No result from applying fixture-retarget.json, the forge camera recipes, or real two-window verification has arrived. All required handoff files remain intact in the task folder, with exact steps in verification-handoff.md. No further game change is justified and no duplicate owner question was added. Please have the lane/coordinator execute that handoff before another Codex continuation: this sandbox cannot take the ship lock, edit the real fixture, run Chrome or access localhost. The outstanding work is external verification, not an unshipped game change.
+
+
+--- codex run 2026-10-19 11:22 ---
+2026-10-19 - continuation: confirmed commit 0092c92c (v31.83) is shipped and the ship log records check 31.83 PASS / PASS plus the unchanged map fingerprint. No new failure or external verification result has arrived. The real fixture still has the superseded cash-stepper and score-funded forge checks, and only screen 05 exists in the after photographs. The fixture replacements, forge camera recipes, and instructions remain ready in verification-handoff.md. No further game change is needed. Lane/coordinator execution of that handoff is required before another useful Codex continuation; this sandbox cannot take the ship lock, start Chrome, or contact localhost. Kept the shipped key unchanged; no duplicate questions or tests.
+
+
+--- codex run 2026-10-19 11:23 ---
+2026-10-19 - continuation: no external verification results have changed since the last handoff. v31.83 is shipped. The real fixture still has old checks 28.94 and 26.21; the after folder still contains only screen 05. All remaining actions require the lane/coordinator, using verification-handoff.md, fixture-retarget.json and forge-camera-recipes.json already prepared here. No additional game patch or sandbox test is justified. Do not reship cw-cx-stashraid. Please execute the pending external steps before another automatic continuation.
+

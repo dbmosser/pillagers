@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.84 - CONTROLLER LAYOUT PRESETS
+
+Co-op hunt while he was away. His 2026-10-19 order: familiar controller layouts, always twin stick, with lefty swapping sticks.
+
+MEASURED. Check 31.84 passes, and fails on v31.83.
 ## v31.83 - RAID PURCHASES USE THE STASH
 
 Co-op hunt while he was away. His order 2026-10-19: any money spent in a raid comes from credits stash, with no cash to take in, and the forge upgrades MK II instantly.

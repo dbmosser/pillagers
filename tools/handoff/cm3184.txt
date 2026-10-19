@@ -1,0 +1,7 @@
+v31.84: controller layout presets
+
+Six controller layouts with a live labelled pad, individual rebinds and lefty sticks.
+
+Check 31.84. Fails on v31.83.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

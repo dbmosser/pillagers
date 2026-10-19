@@ -1,1 +1,1 @@
-10-19 11:13 gate: shipping cw-cx-stashraid (o-01-stash-pays-in-raid, codex)
+10-19 12:40 gate: shipping cw-cx-padpresets (o-05-pad-presets, codex)

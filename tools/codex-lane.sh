@@ -290,6 +290,13 @@ ship_key(){
     printf '%s\n' "$pf" | grep -q '^PREFLIGHT PASS' && break
     if printf '%s\n' "$pf" | grep -qiE 'uncommitted changes|stamped v[0-9.]+, .*behind'; then
       say "gate: waiting for another worker ($k, $name)"; sleep 240; continue; fi
+    # 2026-10-19 (o-04 burned 5 runs): the preflight Chrome ($PFPORT) not answering is the lane's problem, not Codex's. Restart it and
+    # try again; if it still will not answer, put the job back without spending a Codex run.
+    if printf '%s
+' "$pf" | grep -qiE 'Unable to connect to the remote server|actively refused|json/version'; then
+      if [ $i -lt 4 ]; then log "preflight browser $PFPORT not answering ($k), restarting it"; closepf; sleep 3
+        powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/cdp.ps1" -Start -Port $PFPORT -Profile "$(cygpath -w "$TEMP")\pillagers-cdp$PFPORT" >/dev/null 2>&1; sleep 3; continue; fi
+      say "gate: preflight browser $PFPORT will not answer ($name); the job waits, no run spent"; return 2; fi
     appendfb "PREFLIGHT FAILED for $k. Fix .codex-work/$name/mk-$k.ps1 (or its check) and finish again. The gate said:
 $(printf '%s\n' "$pf" | tail -8)"; return 1
   done

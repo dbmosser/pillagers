@@ -1,0 +1,5 @@
+## v31.84 - CONTROLLER LAYOUT PRESETS
+
+Co-op hunt while he was away. His 2026-10-19 order: familiar controller layouts, always twin stick, with lefty swapping sticks.
+
+MEASURED. Check 31.84 passes, and fails on v31.83.

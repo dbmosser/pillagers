@@ -33,10 +33,17 @@
  "05-sector-page": {
   "score": 2,
   "pass": false,
-  "verdict": "A full-bleed form slab with a huge empty brown banner, an unreadable tiny map, wrapped steppers and explanatory sentences everywhere, so it ignores the modal, header, type-scale and close-button rules and looks like a debug panel, not a shippable pre-raid screen.",
-  "pic": "tools/handoff/console/notes/shots/b-31-after2/05-sector-page-1080.jpg",
-  "task": "b-31-ui-undercroft",
-  "when": "2026-10-18T09:49"
+  "verdict": "removing the cash stepper left a half-empty row and an orphaned grey item, and the panel's old problems (a dense stat sentence over a big patch of empty black space) are still untouched.",
+  "findings": [
+   "P1 pack grid, second row (bandage / burst carbine (field) / compact smg (field) / no data core): stretch the 4 remaining cells to the same total width as row 1 (4 equal cells minus 3x 24px gaps) so both rows terminate at the same x, or add a filler stat cell to row 2.",
+   "P1 pack grid, \"no data core\" cell: either give it the same disabled -/0/0/+/max shape as the other cells so the grid stays uniform, or pull it out of the item grid into a one-line \"locked: data core\" footnote under the grid.",
+   "P2 \"cold storage / ascending here\" info panel: split the stats into 3-4 short label/value chips at fs-label (16px) with the numbers bumped to fs-body (20px) for hierarchy, per the style guide's stat-chip intent, and either shrink the panel or use the freed space for a zone list.",
+   "P2 tooltip \"the welcome pack is in your stash.\" top center: anchor it with a pointer to the stash/pack control it refers to, or convert it to a dismissible banner row inside the card body.",
+   "P2 pack row, \"pack all\" / \"clear\" buttons: right-align pack all/clear in their own small group with extra gap (sp-3, 24px) separating them from the item cells, or box them in a thin divider."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-01-stash-pays-in-raid-after/05-sector-page-1080.jpg",
+  "task": "o-01-stash-pays-in-raid",
+  "when": "2026-10-19T15:17"
  },
  "06-terms": {
   "score": 2,

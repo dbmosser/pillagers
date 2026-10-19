@@ -14,3 +14,5 @@
 - Read the code first. Some of these are already in the game: confirm each one with a check, and do not rebuild it.
 - Ship in small pieces, one ship per item or a few related ones. Each ship needs a check that fails on the old build, and the fingerprint must hold. For 2-player items, it is done only when you have seen it work in both windows, with a picture from each (his 2.86 a).
 - Write in plain language, with no explaining sentences on screen. All lower case.
+
+Coordinator note 2026-10-19: moved to the ChatGPT lane as o-06 (the Claude helpers are pacing). For the crowbar on RS click, also follow section "J6" of tools/handoff/pad-research/best-practices.md: ignore RS while the bag, map, wheel, stall or forge is open; remove the RS focus toggle (LT hold stays); freeze the aim angle for about 80 ms around the click, because pressing a stick nudges it; check that a held RS never swings faster than the melee cooldown.

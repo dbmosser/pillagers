@@ -67,7 +67,10 @@ function PickModel {
 }
 
 function AskOllama([string]$text,[string]$m){
-  $body=@{ model=$m; stream=$false; messages=@(@{ role='user'; content=$text }); options=@{ temperature=0.1; num_ctx=32768; num_predict=4096 } } | ConvertTo-Json -Depth 5
+  $req=@{ model=$m; stream=$false; messages=@(@{ role='user'; content=$text }); options=@{ temperature=0.1; num_ctx=32768; num_predict=4096 } }
+  # qwen3.x is a thinking model: without think=false it spends the whole 4096-token budget thinking and returns an empty answer (10-19)
+  if($m -like 'qwen3*'){ $req.think=$false }
+  $body=$req | ConvertTo-Json -Depth 5
   try {
     $r=Invoke-RestMethod -Uri "$api/api/chat" -Method Post -Body ([Text.Encoding]::UTF8.GetBytes($body)) -ContentType 'application/json; charset=utf-8' -TimeoutSec ($TimeoutMin*60)
     Log "answer $($r.eval_count) tok in $([math]::Round($r.eval_duration/1e9,1)) s, prompt $($r.prompt_eval_count) tok, model $m"

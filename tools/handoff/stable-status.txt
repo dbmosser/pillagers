@@ -1,10 +1,10 @@
 Latest stable: v29.09 (2026-10-18 10:23)
-Checked: 2026-10-19 10:53
+Checked: 2026-10-19 11:54
 Play address: http://localhost:8802/stable.html
 Result: no change
 
 Newest test runs, newest first:
-  corpus-1019-0129  v31.82  failing 114, new 96  robots 1039 min/0 problems  -> 96 check(s) newly failing, e.g. v31.71 Settings focus row has the bar and no ring, the detai | v31.67 Keys table spans the card and settings steppers box o
+  corpus-1019-0129  v31.82  failing 114, new 96  robots 1098 min/0 problems  -> 96 check(s) newly failing, e.g. v31.71 Settings focus row has the bar and no ring, the detai | v31.67 Keys table spans the card and settings steppers box o
   corpus-1018-2124  v31.79  failing 113, new 95  robots 233 min/0 problems  -> 95 check(s) newly failing, e.g. v31.71 Settings focus row has the bar and no ring, the detai | v31.67 Keys table spans the card and settings steppers box o
   corpus-1018-1720  v31.06  failing 85, new 72  robots 0 min/0 problems  -> 72 check(s) newly failing, e.g. v30.12 the arcade controls card has a How to play title, end | v30.10 the controls card on the arcade drop is the how to pl
   corpus-1018-0647  v29.90  failing 58, new 44  robots 0 min/0 problems  -> 44 check(s) newly failing, e.g. v29.75 Settings: each stepper is right-aligned in its row, t | v29.72 Settings: the stepper sits within 400px of its name a

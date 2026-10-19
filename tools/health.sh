@@ -39,7 +39,7 @@ else echo "chatgpt lane: idle (no o- job)"; fi
 # 7 Google bug checker
 if has 'ship-review\.ps1.*-Engine agy'; then echo "google checker: running ($(head -c 80 "$H/ship-review/status-agy.txt" 2>/dev/null | tr -d '\r\n'))"
 else if [ $FIX = 1 ]; then powershell -NoProfile -Command "Start-Process -FilePath powershell.exe -ArgumentList '-NoProfile','-ExecutionPolicy','Bypass','-File','\"C:\claudecode\dark raiders\tools\ship-review.ps1\"','-Engine','agy','-Loop','-EveryMin','20' -WindowStyle Hidden" && echo "google checker: was down, STARTED"; else prob "google checker not running"; fi; fi
-grep -h "^BUG" "$H/ship-review/findings.txt" 2>/dev/null | tail -3 | sed 's/^/  checker lead: /' | cut -c1-200
+grep -hE "BUG|CHECKED" "$H/ship-review/findings.txt" 2>/dev/null | tail -3 | sed 's/^/  checker lead: /' | cut -c1-200
 # 8 dashboard
 if up 8820 api; then echo "dashboard 8820: up"; else if [ $FIX = 1 ]; then powershell -NoProfile -Command "Start-Process -FilePath node -ArgumentList 'server.mjs' -WorkingDirectory 'C:\claudecode\dark raiders\tools\devdash' -WindowStyle Hidden"; echo "dashboard 8820: was down, STARTED"; else prob "dashboard down"; fi; fi
 # 9 RAM floor

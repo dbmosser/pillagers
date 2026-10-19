@@ -1,0 +1,5 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  20-raid-hud-drop                       staged       7.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  22-raid-map-open                       staged       8.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  33-raid-fight-alerts                   staged       9.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | 3 moved, hp 66
+  37-raid-extracting-countdown           staged      10.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
