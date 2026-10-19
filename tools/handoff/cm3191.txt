@@ -1,0 +1,7 @@
+v31.91: cryo barrel ice slide
+
+A cryo barrel now leaves a slick ice sheet under its frost fog: a pillager on it runs up to 1.2 times faster, steers slowly (a turn about takes a second), glides on with no input and is still stopped by walls, and neither the fog nor the cryo blast hurts him.
+
+Check 31.91. Fails on v31.90.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

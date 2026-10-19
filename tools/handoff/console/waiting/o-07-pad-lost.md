@@ -10,3 +10,10 @@ Today the disconnect box says "reconnect to resume" but nothing resumes. Build a
 Checks (each control must FAIL on the old build): stub getGamepads null for a slot, and the box shows within 2 frames; the stub
 returns the pad, and the box says "press a"; a stub A press closes it and play resumes; the two-window case with one pad lost.
 TASK DONE when shipped and the checks pass; TASK PARTIAL with what is left.
+
+Lane note 2026-10-19 18:59: shipped cw-cx-padlost and parked: only lane-side steps are left. Codex's last words:
+Shipped in v31.90. Check 31.90 passes and fails on v31.89.
+
+Prepared stronger two-window camera recipes and `camera-run-request.json`; the installed runner skips recipe files.
+
+TASK PARTIAL: coordinator must run the supplied camera command and return pictures and critic results.

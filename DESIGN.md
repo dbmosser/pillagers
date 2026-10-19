@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.91 - CRYO BARREL ICE SLIDE
+
+Co-op hunt while he was away. His order (2026-10-19): "Player should slide across cold patches made by ice barrels, with limited direction change, like players feet are ice, ala Fortnite. Ice should not hurt player". The frost fog hurt the player 2 every half second and the cryo blast up to 20; both now do the player nothing (the bodies keep every effect), and the fog leaves an ice sheet: on it the walk keeps momentum, steers slowly and glides, the leftover momentum is gone in under 0.3 s off it, and walls still stop him. The fog radius (96) and life (5 s) are unchanged. The sheet is its own item in the draw order under the bodies, because the fog cloud is sorted over them.
+
+MEASURED. Check 31.91 passes, and fails on v31.90.
 ## v31.90 - PAD LOST AND PRESS A
 
 Co-op hunt while he was away. J8: a pad gap was only handled by a focus dependent event, the box promised a resume it did not perform, and another pad could take its slot.

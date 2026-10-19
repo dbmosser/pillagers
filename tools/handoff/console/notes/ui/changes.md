@@ -136,3 +136,5 @@
 
 2026-10-19 | o-07-pad-lost | raid pause and partner HUD | existing pause title becomes pad lost, then press a; existing partner HUD plate says p1 pad lost or p2 pad lost; no sizes or spacing changed | before: recovery states unavailable on v31.89 | after: pending lane camera-recipes.json pictures j8-p1-pad-lost, j8-p2-pad-lost, j8-p1-press-a, j8-p2-press-a, j8-p1-sees-p2-lost, j8-p2-sees-p1-lost
 
+2026-10-19 | o-07-pad-lost | shipped v31.90 recovery box and partner loss tag | picture path clarification, no further visible change | before: unavailable recovery state on v31.89 | after requested: tools/handoff/console/notes/shots/o-07-pad-lost-after/j8-p1-pad-lost-1080.jpg, j8-p2-pad-lost-1080.jpg, j8-p1-press-a-1080.jpg, j8-p2-press-a-1080.jpg, j8-p1-sees-p2-lost-1080.jpg, j8-p2-sees-p1-lost-1080.jpg; camera not yet run
+
