@@ -1,0 +1,5 @@
+## v31.97 - WHAT IS NEW CARD: NOTES SHOW WHOLE AGAIN, THREE OF THEM
+
+Co-op hunt while he was away. The critic read the clause cut notes as broken (no full stop, cut mid thought).
+
+MEASURED. Check 31.97 passes, and fails on v31.96.

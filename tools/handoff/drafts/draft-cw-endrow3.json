@@ -1,0 +1,12 @@
+{
+    "title":  "WHAT IS NEW CARD: NOTES SHOW WHOLE AGAIN, THREE OF THEM",
+    "why":  "The critic read the clause cut notes as broken (no full stop, cut mid thought).",
+    "now":  "The what is new card shows its three newest notes whole, at most two lines each.",
+    "edits":  [
+                  {
+                      "anchor":  "  if(t.length\u003c=60) return t;\n  // v28.xx (cw-endrow2): the headline alone read \"polish pass 31.\" with nothing after it, so the first clause of what follows comes too (cut at a comma or \"and\", never mid word).\n  var rest=t.slice(i+2), c=rest.search(/,| and /);\n  if(c\u003c0||c\u003e44) c=Math.min(rest.length,44), rest=rest.slice(0,c).replace(/\\s+\\S*$/,\u0027\u0027);\n  else rest=rest.slice(0,c);\n  return t.slice(0,i+1)+(rest?\u0027 \u0027+rest:\u0027\u0027);}",
+                      "replacement":  "  // v28.xx (cw-endrow3), the critic on 40 (2 of 5, P0): \"every note stops mid thought with no full stop, a truncation regression\". The cut at the first clause read as broken. Each of the three notes shows whole again (the usual wnShort length), so the card is three notes of at most two lines, no cut sentences.\n  return wnShort(t);}"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the what is new card shows each of its three notes whole (the same text wnShort gives), never cut at a clause (the critic on 40)\u0027,\n   run:function(){\n     if(typeof wnHead!==\u0027function\u0027||typeof wnList!==\u0027function\u0027||typeof wnShort!==\u0027function\u0027) return \u0027SKIP: no what is new helpers in this build\u0027;\n     var bad=[], L2=wnList(), k, a, b;\n     for(k=0;k\u003cMath.min(3,L2.length);k++){ a=wnHead(L2[k]); b=wnShort(L2[k]); if(a!==b) bad.push(\u0027note \u0027+(k+1)+\u0027 is cut to \"\u0027+a+\u0027\" not the whole \"\u0027+b+\u0027\"\u0027); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

@@ -15,7 +15,8 @@
 # If the main PC ever says it cannot find the VM, copy the one line this script prints under "ONLY IF THE MAIN PC CANNOT FIND THIS VM" and run it
 # on the main PC.
 #
-# It never reads or prints a key or password. Exit codes: 0 done, 1 could not work out the VM address.
+# It never reads or prints a key or password. It refuses to run on the MAIN PC (computer JUL26, or any PC with the Hyper-V service): there it
+# prints one line, writes nothing (no file, no folder, no log) and exits 2. Exit codes: 0 done, 1 could not work out the VM address, 2 wrong machine.
 # ASCII only. Windows PowerShell 5.1.
 param(
   [string]$OutFile = 'C:\PillagersMove\kit\vm-address.txt',
@@ -86,6 +87,17 @@ function Test-TcpOpen([string]$Addr, [int]$Port) {
   } catch { return $false } finally { try { $c.Close() } catch { } }
 }
 
+function Test-MainPc {
+  # Returns the reason when this looks like the main PC, else ''.
+  if ($env:COMPUTERNAME -ieq 'JUL26') { return 'the computer name is JUL26' }
+  try { if (Get-Service -Name 'vmms' -ErrorAction SilentlyContinue) { return 'the Hyper-V management service (vmms) runs here' } } catch { }
+  return ''
+}
+$mainWhy = Test-MainPc
+if ($mainWhy) {
+  Write-Host ('vm-address-report: this looks like the MAIN PC (' + $mainWhy + '). This script is for the VM only. Nothing was written.')
+  exit 2
+}
 Start-Log
 $name = $env:COMPUTERNAME
 $net = Get-VmNetwork

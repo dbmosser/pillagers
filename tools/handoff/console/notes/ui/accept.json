@@ -314,17 +314,16 @@
  "40-whats-new-card": {
   "score": 2,
   "pass": false,
-  "verdict": "readable and on-palette but the card ignores the guide's own window spec for this exact screen and buries the player in five paragraphs of changelog prose.",
+  "verdict": "the x button and accent tab are a step up, but every patch note now cuts off mid-sentence with no punctuation, so the one card whose job is to inform the player reads as broken.",
   "findings": [
-   "P0 the whats-new card, centred modal: resize the card to 90% width per the Window spec, add the standard x-close glyph top-right corner like other windows (settings, shop, codex)",
-   "P1 body, 5 numbered paragraphs under the title: cut each line to a single short phrase (5-8 words), drop connecting clauses like 'and the needed-item glow says why', use a bullet glyph or icon per line instead of numerals to feel like a game HUD element not a document",
-   "P1 card interior, all 5 list paragraphs: bold only the lead phrase of each line (e.g. 'polish pass 31.' in fs-body 600) and drop the rest to tx-2, matching the guide's 'boldness in one place' rule applied per-row",
-   "P2 top-right HUD, '900 credits': render as '$900' and '$960' / '$0' per the settled money-vs-score rule, even if this corner is otherwise parked for the cw-trcol task",
-   "P2 card vs. background hub buttons ('wirt the gambler', 'enter raid!', 'the mainframe'): drop background tile opacity further or increase scrim to the guide's --scrim .80 value if not already applied; the card title should be the only bold element in view"
+   "P0 card body, lines 1-3: stop cutting the string; either show the full sentence or truncate at a word boundary and append an ellipsis, then re-screenshot to confirm no mid-word/mid-clause breaks remain.",
+   "P0 card frame vs background menu: resize the what's-new card to 90% width per the Window spec, matching settings/stash/shop treatment, or if a small card is intentional for this one card, amend the guide's Window list to exclude it instead of leaving the mismatch.",
+   "P1 dismiss controls, bottom of card: keep the x (matches the Q43 window rule) and 'got it' (the one primary action); drop the 'press enter or walk to dismiss' caption or fold it into a 14px fine-print legend under the button instead of running it as a third, equally-weighted option.",
+   "P2 note count, items 4 and 5: confirm whether notes 4-5 were intentionally cut for this build; if the list can run long, add a scroll affordance inside the 90%-width card rather than silently truncating entries."
   ],
-  "pic": "tools/handoff/console/notes/shots/13-q1/40-whats-new-card-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/13-s1/40-whats-new-card-1080.jpg",
   "task": "manual",
-  "when": "2026-10-19T23:11"
+  "when": "2026-10-19T23:23"
  },
  "45-arcade-attract-board": {
   "score": 3,
@@ -495,17 +494,17 @@
  "77-haul-reveal-done": {
   "score": 3,
   "pass": false,
-  "verdict": "a clean, mostly on-system extracted card with a good hero number and one lime action, but the hero is undersized and tx-2 text is too small and dim, the card is nowhere near the 90% window rule, and too many small centred lines compete before the haul.",
+  "verdict": "solid materials (real icons, correct color tokens, correct $ and lowercase rules) but four competing bold elements and nine stacked center-aligned blocks leave no single focal point and read as a generic dense modal rather than a confident extraction reveal.",
   "findings": [
-   "P1 stacked text above the loot grid (subtitle, xp line, two 'recovered to the armoury' lines): merge the first two into one 16px tx-2 line and drop 'never spotted'. Turn the two recovered lines into one row with a small ok-green glyph and the item names ('burst carbine, compact smg'). Add 24px of space before the loot grid.",
-   "P1 haul value '$7,620' and the 'extracted' title: set the haul to 56px f-cond 800 tx-1 and the title to 32px. Cut the gap under the haul to 24px. Keep teal for the title only.",
-   "P1 muted text: xp line, stat labels (containers/kills/accuracy/time), tags row, 'how did that run feel +', '+7 more': set every label to 16px f-cond 600 +.04em in --tx-2 (#aaa498). Brighten the tag row to tx-1 at 16px. Make '+7 more' a 16px chip of 56px width, aligned to the tile baseline.",
-   "P1 card size and frame: either document this as a result-dialog exception in the guide, or widen the card and use a two-column layout (loot grid left, haul and stats right). Use a --ui-line-hi border.",
-   "P2 loot grid, two rows: use a fixed 6-column grid with 68px tiles and 8px gaps, left-aligned inside the card padding. Put '+7 more' as a 7th tile in the grid. Keep rarity bars only at 3px."
+   "P0 whole card: 'extracted' title, haul '$7,620', the two bold 'recovered to the armoury' lines, and the lime CTA text: drop to one hero: keep --fs-hero 56px bold only on the $7,620 haul number, set 'extracted' to --fs-title 32px at tx-1 weight 700 (not full teal fill-bold), and set the two recovery lines to --fs-body 20px tx-2 regular, not bold",
+   "P1 the two checkmark lines, 'extract with a haul worth $1,600 or more' / 'extract without using a single heal': left-align inside a bordered row, cut to a condensed label ('haul $1,600+', 'no heals used') at --fs-label 16px next to the check glyph, remove 'extract' repeated in both",
+   "P1 item grid, rows of icons ending in '+7 more' (img1) / '+11 more' (img2): either show a full scrollable grid inside a bordered sub-panel (match the ARC Raiders CONTAINER/BACKPACK panel pattern with its own header) or drop to a single row of the 4-5 highest value items plus a 'view all' as a real control, not trailing grey text",
+   "P1 entire card body (title block, xp, 2 challenges, 2 recovery lines, item grid, haul, stat row, tag row, feedback prompt, button): wrap 'containers/kills/accuracy/time' in one --ui-raised panel and the challenge checks in another, each with a 1px --ui-line-hi border and --sp-2 padding, so the eye reads 3-4 panels instead of 9 loose text rows",
+   "P2 every line in the card: title, subtitle, challenges, stat labels, tag row: keep the card centered on screen but left-align the text content inside each panel/row, per the --f-cond 'scan' intent in the type tokens"
   ],
-  "pic": "tools/handoff/console/notes/shots/13-p3/77-haul-reveal-done-1080.jpg",
-  "task": "13-ui-end-cards",
-  "when": "2026-10-19T01:23"
+  "pic": "tools/handoff/console/notes/shots/13-s1/77-haul-reveal-done-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-19T23:25"
  },
  "63-arcade-operator-new-party-armed": {
   "score": 3,

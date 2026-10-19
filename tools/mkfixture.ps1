@@ -6101,6 +6101,12 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.97',what:'the what is new card shows each of its three notes whole (the same text wnShort gives), never cut at a clause (the critic on 40)',
+   run:function(){
+     if(typeof wnHead!=='function'||typeof wnList!=='function'||typeof wnShort!=='function') return 'SKIP: no what is new helpers in this build';
+     var bad=[], L2=wnList(), k, a, b;
+     for(k=0;k<Math.min(3,L2.length);k++){ a=wnHead(L2[k]); b=wnShort(L2[k]); if(a!==b) bad.push('note '+(k+1)+' is cut to "'+a+'" not the whole "'+b+'"'); }
+     return bad.length?bad.join('; '):null; }},
   {v:'31.96',what:'the what is new card note lines say more than the bare headline (no line is just "polish pass 31.") and the X sits above the title rule (the critic on 40)',
    run:function(){
      if(!(window.__hubEnter)) return 'SKIP: this fixture cannot open the floor';

@@ -142,3 +142,5 @@
 
 2026-10-19 | o-09-pad-name-entry | title career name, player 1 and player 2 | added pre-filled 16-letter pad picker using the arcade controls, 32px letters, 24px gaps, 48px controls; stash brand now shows the saved name instead of generic PILLAGERS so ownership is visible without an extra row | before: new picker, no old screen | after: lane camera recipes j4-p1-name-picker, j4-p2-name-picker, j4-p1-named-stash, j4-p2-named-stash (paths pending)
 
+2026-10-19 | o-10-pad-floor-bag | 41-hub-backpack-pad | Enabled pad highlight, pickup/place, floor drop and close; the existing empty pad hint row now lists dpad, a, y and b. No owner-written line was removed. Before: unavailable for custom recipe; after: lane camera output for 41-hub-backpack-pad.
+

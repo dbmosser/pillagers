@@ -223,7 +223,11 @@ function Save-InstallState {
 # ------------------------------------------------------------------ what the relay will be told
 $relayPorts = $DefaultPorts
 if ($Ports) { $relayPorts = $Ports.Trim() }
-$isTestRelay = ($relayPorts -ne $DefaultPorts)
+# A relay is a TEST relay only when NONE of the ports it listens on is one of the real ones (8802 or 8799), whatever order or spelling -Ports uses
+# (so 8799,8802 or 8802:8802 are real relays and get the host-stopped.txt check). $isDefaultSpec is true only for exactly the normal setting.
+$realListen = @(Get-ListenPorts $DefaultPorts)
+$isTestRelay = (@(Get-ListenPorts $relayPorts | Where-Object { $realListen -contains $_ }).Count -eq 0)
+$isDefaultSpec = ($relayPorts -eq $DefaultPorts)
 
 # ------------------------------------------------------------------ the actions
 function Invoke-Status {
@@ -397,7 +401,7 @@ function Invoke-StartRelay {
 function Invoke-Install {
   Write-Mig '=== PLAY RELAY: INSTALL ===' 'STEP'
   if ($DryRun) { Write-Mig '(dry run: nothing will be changed)' 'DRY' }
-  if ($isTestRelay -or $VmHost) { Write-Mig '-Install always installs the normal relay (ports 8802,8799, the usual way of finding the VM). Use -Start -Ports ... for a test.' 'FAIL'; return 2 }
+  if ((-not $isDefaultSpec) -or $VmHost) { Write-Mig '-Install always installs the normal relay (ports 8802,8799, the usual way of finding the VM). Use -Start -Ports ... for a test.' 'FAIL'; return 2 }
   if (-not (Test-HostProfileOk)) { return 1 }
   if (-not (Find-Node)) { Write-Mig 'Node.js was not found; the relay needs it.' 'FAIL'; return 1 }
   foreach ($f in @($RelayJs, $StartVbs)) { if (-not (Test-Path -LiteralPath $f)) { Write-Mig ('A file of the kit is missing: ' + $f) 'FAIL'; return 1 } }

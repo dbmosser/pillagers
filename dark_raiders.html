@@ -2999,7 +2999,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.96';
+var VER='31.97';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3043,12 +3043,8 @@ var WNX=null;   // v28.xx (cw-endrow): the card's X and Got it boxes in canvas p
 function wnHead(s){
   var t=String(s||''), i=t.indexOf('. ');
   if(i<0) return wnShort(t);
-  if(t.length<=60) return t;
-  // v28.xx (cw-endrow2): the headline alone read "polish pass 31." with nothing after it, so the first clause of what follows comes too (cut at a comma or "and", never mid word).
-  var rest=t.slice(i+2), c=rest.search(/,| and /);
-  if(c<0||c>44) c=Math.min(rest.length,44), rest=rest.slice(0,c).replace(/\s+\S*$/,'');
-  else rest=rest.slice(0,c);
-  return t.slice(0,i+1)+(rest?' '+rest:'');}
+  // v28.xx (cw-endrow3), the critic on 40 (2 of 5, P0): "every note stops mid thought with no full stop, a truncation regression". The cut at the first clause read as broken. Each of the three notes shows whole again (the usual wnShort length), so the card is three notes of at most two lines, no cut sentences.
+  return wnShort(t);}
 var WNSEEN=1;   // v27.xx (wnbutton), HIS ANSWER 37: the card no longer shows by itself on the floor (it was 0 until you walked off it); WHAT'S NEW in the pause box shows the notes. Left at 0 by a check, the old card still draws.          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -50161,7 +50157,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.96: Each note line keeps its first clause after the headline. The X is smaller and sits above the title rule. Check 31.96 fails on v31.95',
+  now:'v31.97: The what is new card shows its three newest notes whole, at most two lines each. Check 31.97 fails on v31.96',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

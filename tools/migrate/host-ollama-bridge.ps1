@@ -17,7 +17,8 @@
 #   -Undo        removes the rule, puts OLLAMA_HOST back, restarts Ollama so it listens on this PC only again
 #   -DryRun      prints what -Install / -Undo WOULD do and changes nothing
 #   -NoRestart   do not stop / start Ollama; you quit it from the tray and start it from the Start menu yourself
-#   -Yes         do not ask the YES question (it is also skipped by -DryRun)
+#                There is no -Yes (if given it is ignored): the YES question must be typed by a person at the keyboard; a script that pipes YES in is
+#                refused (exit 2). -DryRun asks nothing because it changes nothing.
 #
 # WHY 0.0.0.0 AND NOT "ONLY 127.0.0.1 AND 192.168.160.1": Ollama's OLLAMA_HOST takes ONE address (its code does not split a list, checked in
 # the Ollama source and docs on 2026-10-19). Binding only 192.168.160.1 would cut off every tool on this PC that calls 127.0.0.1:11434
@@ -46,8 +47,7 @@ param(
   [switch]$Undo,
   [switch]$Status,
   [switch]$DryRun,
-  [switch]$NoRestart,
-  [switch]$Yes
+  [switch]$NoRestart
 )
 $ErrorActionPreference = 'Continue'
 if (-not $PSScriptRoot) { Write-Host 'Please run this from its file, not pasted into a window.'; exit 1 }
@@ -296,11 +296,20 @@ function Save-BridgeState {
 }
 $st = Read-BridgeState
 
+$script:ConfirmRedirected = $false
 function Confirm-Plain {
   param([string]$Question)
-  if ($Yes -or $DryRun) { return $true }
+  if ($DryRun) { return $true }
+  # the question must be answered by a person: a script that pipes "YES" into this window is refused (nothing is changed)
+  $redirected = $false
+  try { $redirected = [Console]::IsInputRedirected } catch { }
+  if ($redirected) {
+    Write-Mig 'This question must be answered by a person typing at the keyboard; the input here is redirected (piped or scripted), so it counts as NO.' 'FAIL'
+    $script:ConfirmRedirected = $true
+    return $false
+  }
   $a = Read-Host ($Question + ' Type YES to go on, anything else to cancel')
-  return ($a -eq 'YES')
+  return ($a -ceq 'YES')
 }
 
 # ------------------------------------------------------------------ is a process running as administrator? (so Ollama is never left running elevated)
@@ -683,7 +692,7 @@ if ($mode -eq 'Install') {
   else { Write-Mig 'The firewall is on for Domain, Private and Public and blocks inbound by default (good).' 'OK' }
   Write-MigBlank
   Show-Warning -Sw $swi
-  if (-not (Confirm-Plain 'Do you want to go on?')) { Write-Mig 'Cancelled. Nothing was changed.' 'INFO'; Exit-Mig 0 }
+  if (-not (Confirm-Plain 'Do you want to go on?')) { Write-Mig 'Cancelled. Nothing was changed.' 'INFO'; Exit-Mig $(if ($script:ConfirmRedirected) { 2 } else { 0 }) }
   $okRule = Step-Rule -Sw $swi
   if (-not $okRule) { Write-Mig 'Stopping here because the firewall rule could not be made (Ollama is not changed).' 'FAIL'; Exit-Mig 1 }
   $okEnv = Step-SetEnv

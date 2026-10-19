@@ -26,8 +26,9 @@ How to read this guide:
 | 6 | IN THE VM | Your sign-ins and keys (only you can do these) | 15-20 min |
 | 7 | both | Test the Xbox pads | 10-20 min |
 | S1-S7 | both | SWITCH-OVER DAY: stop Pillagers on the main PC, final push, start it in the VM, paste the first message to Claude | 1.5-2.5 hours |
+| K1-K8 | both | KEEPING IT ALL WORKING: the local AI bridge, the VM's settings and keys, the pad route, auto-start and auto-sign-in, the must-pass lists, the party fallback | about 1.5 hours in all, spread over the days |
 
-Steps 1 to 7 can be done over a day or two, any time, while Pillagers keeps working on the main PC. Switch-over day is the only moment that matters. Pick a day when you are not in the middle of something. Do it by Mon 10/26 if you can, so the pad route is proven well before the Fri 10/30 party.
+Steps 1 to 7 can be done over a day or two, any time, while Pillagers keeps working on the main PC. Switch-over day is the only moment that matters. Pick a day when you are not in the middle of something. Do it by Mon 10/26 if you can, so the pad route is proven well before the Fri 10/30 party. Part 3 (K1-K8, after the switch-over steps) says which pieces to set up before S2 and which after.
 
 ---
 
@@ -232,11 +233,13 @@ The health stage printed a SIGN-IN CHECKLIST. It lists what is missing without e
 2. **Claude desktop app** - open Claude from the Start menu and sign in. Not essential for the helpers.
 3. **ChatGPT / Codex** - type `codex`, choose **Sign in with ChatGPT**. Never choose the API key option.
 4. **Google checker (agy)** - type `agy` and sign in with your Google account. (If `agy` is not found, run `& "$env:LOCALAPPDATA\agy\bin\agy.exe"`.)
-5. **GitHub** - run this once; a sign-in window opens (Git Credential Manager); choose to sign in with your browser:
+5. **GitHub** - the repository is public, so downloading from it (`git fetch`) never asks you to sign in, and a fetch proves nothing about signing in. The sign-in window (Git Credential Manager) opens the first time something is SENT to GitHub. To do it now without sending anything, run this once and choose to sign in with your browser; it talks to GitHub the way a push does, so the window opens, but it uploads nothing:
 
 ```powershell
-git -C "C:\claudecode\dark raiders" fetch origin
+git -C "C:\claudecode\dark raiders" push --dry-run origin master
 ```
+
+If no window opens, nothing is wrong: the first real ship asks. `vm-verify.ps1` (K7) tells you whether a GitHub sign-in is stored, by name only.
 
 6. **API keys** - only if you use them. Run this yourself; the key you paste stays hidden and is saved under a PILLAGERS_ name. Claude never sees it:
 
@@ -245,7 +248,7 @@ powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\ai-ke
 powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\ai-keys.ps1" gemini
 ```
 
-The first command only shows which keys are set. The second asks for the Gemini key; other names are `openai`, `xai`, `openrouter`. The helpers on your Anthropic Console credit also look for a key named `PILLAGERS_API_KEY` (and `PILLAGERS_ADMIN_KEY` for the cost report) that ai-keys.ps1 does not store. If you still use those helpers, add them yourself: Start menu, type `environment variables`, open "Edit environment variables for your account", click New. Never use the names ANTHROPIC_API_KEY, OPENAI_API_KEY or CODEX_API_KEY; they make tools bill by the token instead of using your sign-in, and the health check warns if they exist.
+The first command only shows which keys are set. The second asks for the Gemini key; other names are `openai`, `xai`, `openrouter`, and for your Anthropic Console account `console` (your normal Console API key, saved as `PILLAGERS_API_KEY`, used by the Console helper lanes) and `admin` (your Anthropic Admin key, saved as `PILLAGERS_ADMIN_KEY`, used by the real-spend cost report). The two Anthropic slots cannot be swapped by mistake: the script looks at the start of what you paste (never shows it) and refuses the wrong kind. See K3. Never use the names ANTHROPIC_API_KEY, OPENAI_API_KEY or CODEX_API_KEY; they make tools bill by the token instead of using your sign-in, and the health check warns if they exist.
 
 If a helper says it is waiting for a key right after you saved it, sign out of the VM and in again once.
 
@@ -259,8 +262,8 @@ The test:
 
 The options, best first:
 
-1. **RECOMMENDED - play in the MAIN PC's own Chrome while the game runs in the VM.** The pads stay plugged into the main PC and work exactly as they do today, with your real graphics card, sound and 4K screen. A tiny forwarder program on the main PC makes `http://localhost:8802/dark_raiders.html` on the main PC show the game that runs in the VM (it forwards ports 8802 and 8799). On the party night nothing changes for you: Chrome, localhost, click the demo. The cost: Claude in the VM builds the forwarder for you on switch-over day (say "build the pad route"), and the VM needs one firewall allow-rule that lets only the main PC reach those two ports. That rule is yours to approve (see "What stays yours"). Nothing uses the old 8802 server on the main PC any more, because host-stop turns it off.
-2. **Fallback for the Fri 10/30 party - play on the main PC from a fresh copy.** Ask Claude in the VM the day before to push everything to GitHub; on the main PC pull it and start only the game server (the helpers stay off). This is the plain version of the same night and needs no tricks. Do NOT use `host-stop.ps1 -Undo` for this once the VM has started working; that turns the helpers back on too.
+1. **RECOMMENDED - play in the MAIN PC's own Chrome while the game runs in the VM.** The pads stay plugged into the main PC and work exactly as they do today, with your real graphics card, sound and 4K screen. A tiny forwarder program on the main PC makes `http://localhost:8802/dark_raiders.html` on the main PC show the game that runs in the VM (it forwards ports 8802 and 8799). On the party night nothing changes for you: Chrome, localhost, click the demo. It is already built (`play-relay.mjs` and `host-play-relay.ps1` for the main PC, `vm-pad-route-firewall.ps1` for the VM); K4 and K5 in Part 3 say how to set it up and test it. The cost: the VM needs one firewall allow-rule that lets only the main PC reach those two ports. That rule is yours to approve and run (see "What stays yours"). Nothing uses the old 8802 server on the main PC any more, because host-stop turns it off.
+2. **Fallback for the Fri 10/30 party - play on the main PC from a frozen copy.** After the Thu 10/29 lock, `party-host-copy.ps1` (K8) downloads the final version from GitHub into its own folder on the main PC and serves only the game and the run-report collector, at the same address. The VM can be off and the relay is not needed. This is the plain version of the same night and needs no tricks. Do NOT use `host-stop.ps1 -Undo` for this once the VM has started working; that turns the helpers back on too.
 3. **Pass the pad's USB into the VM** with usbipd-win on the main PC and usbip-win2 inside the VM. It is reported to work for some pads and is shaky on Windows client Hyper-V. Only try it if you want to play inside the VM window itself.
 4. **RdpGamepad, or streaming the VM's picture (Sunshine plus Moonlight, or Parsec).** Adds delay, needs the graphics share working perfectly, and is a lot of fuss for a party. Not recommended.
 
@@ -349,13 +352,192 @@ notepad C:\PillagersMove\kit\VM-CLAUDE-FIRST-MESSAGE.md
 
 3. Paste it into the Claude Code window and press Enter.
 4. Claude will confirm it is on the VM and not on the main PC, read the memory and handoff, run the health sweep and fix what it finds, re-arm its 30-minute check-in, and tell you in plain words what is running and what is yours to do. If it says a sign-in is missing, that is Step 6.
-5. For the pad route, tell it: "build the pad route". It writes out the one firewall rule it proposes and the command that removes it again, for the VM only. Claude does not run any firewall command. Read the text; if you agree, you run it yourself in an administrator PowerShell in the VM (0C).
+5. For the pad route nothing has to be built any more: the relay and the firewall-rule script already exist (K4 and K5 in Part 3). Claude does not run any firewall command. If you have not done K4 yet, you run `vm-pad-route-firewall.ps1` yourself in an administrator PowerShell in the VM (0C); it prints the one rule and the command that removes it again before it asks you to type YES.
+6. Claude runs `vm-verify.ps1` (K7) on its first pass and works through every FAIL line it prints. The lines marked WAIT are yours or come later; it tells you which.
 
 ### S7 - From now on [BOTH]
 - Work on Pillagers only inside the VM. Open Claude Code from the desktop shortcut there.
 - On the main PC, do not start Pillagers helpers, the runner, ships or the old servers. Do not run `party-start`. The main PC is for your work Claude Code and for playing.
 - The memory notes and handoff in the VM are now the live copy. The copy on the main PC is frozen.
 - Only one machine ever ships to GitHub. That is now the VM.
+
+---
+
+## PART 3 - Keeping everything working after the move
+
+Moving the files is only half of it. On the main PC four things were free because everything shared one computer: the local AI on the graphics card, the settings and keys, playing with the Xbox pads, and "it is simply on". With Pillagers in the VM each of them needs one small, visible piece. All the pieces are built and checked; none of them runs by itself, and none is done for you without you seeing it.
+
+Two of them change a firewall (K1 on the main PC, K4 in the VM). Those are scripts YOU run in an administrator window. Each prints the exact change first, waits for you to type `YES` yourself (a script that tries to type it for you is refused), and has an undo. Claude never runs them, and it never changes Defender, UAC, SmartScreen, Windows Update or BitLocker. A password is typed only by you, only into Windows' own Autologon window (K6).
+
+| # | Where | What | When |
+|---|---|---|---|
+| K1 | MAIN PC, administrator | Let the VM use the main PC's Ollama (the local AI) | any time after Step 1; before S2 is best |
+| K2 | IN THE VM, normal | The VM's own settings: where the Ollama is, Claude on the PATH | after K1 (before it, it just says "waiting") |
+| K3 | IN THE VM, normal | Keys that do not travel: the Console key and the Admin key | with Step 6 |
+| K4 | IN THE VM, administrator | Pad route, the VM's half: one firewall rule | before you test the pads (Step 7) |
+| K5 | MAIN PC, normal | Pad route, the main PC's half: the relay and its shortcuts | try early on a test port; install after S2 |
+| K6 | both | The VM comes back by itself: auto-start and auto sign-in | after Step 5 |
+| K7 | both | The must-pass lists: `vm-verify.ps1` and `host-verify.ps1` | before S2, after S5, and whenever something feels off |
+| K8 | MAIN PC, normal | The party fallback: a frozen copy of the game on the main PC | prepare after the Thu 10/29 lock |
+
+The scripts named here sit in `C:\PillagersMove\kit` inside the VM and in `C:\claudecode\dark raiders\tools\migrate` on the main PC. If one is missing in the VM, run the Step 1 command again: when the VM's settings already match, it only sends the kit again.
+
+### K1 - Let the VM use the main PC's Ollama [MAIN PC, administrator window]  (5 minutes)
+What it is for: Ollama is the local AI on your graphics card that the audit helpers (`ship-review.ps1`, `llm-night.ps1`, the Dev Console) ask. It lives on the main PC. The VM can only reach it over the Hyper-V "Default Switch" network, and Ollama normally answers only the PC it runs on.
+
+What `host-ollama-bridge.ps1 -Install` does, three things:
+1. Adds ONE inbound firewall rule named "Pillagers Ollama for VM": TCP 11434, only from the Default Switch network (192.168.160.0/20 today, read from the live switch), only on that network card, only for `ollama.exe`.
+2. Sets YOUR user variable `OLLAMA_HOST` to `0.0.0.0:11434`. What was there before is remembered, and `-Undo` puts it back. (Ollama takes only one address, and binding just the switch address would cut off the tools on this PC that use 127.0.0.1.)
+3. Stops Ollama and starts it again as you (not as administrator) so it picks the setting up. `-NoRestart` leaves that to you.
+
+What it exposes, plainly: Ollama has no password. Afterwards anything inside a VM on this PC's Default Switch can ask your Ollama for its model list and use your graphics card. Computers on your Wi-Fi, home network or VPN cannot, as long as the Windows Firewall does its job. That is why `-Install` first READS the firewall and REFUSES (nothing is changed, exit code 2) when: the firewall is off or cannot be read for Domain, Private or Public; any profile lets inbound connections in by default; another enabled rule already lets other computers reach `ollama.exe` or port 11434; or the Default Switch network card cannot be found (start the VM once, or open Hyper-V Manager, then try again).
+
+Look first (a normal window is enough; nothing changes):
+
+```powershell
+powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\migrate\host-ollama-bridge.ps1" -Status
+powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\migrate\host-ollama-bridge.ps1" -Install -DryRun
+```
+
+Then for real, in the administrator window. It prints the rule and the warning above and waits: type `YES` and press Enter yourself (there is no switch that answers for you):
+
+```powershell
+powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\migrate\host-ollama-bridge.ps1" -Install
+```
+
+You should see: OK lines, then "answers on the Default Switch address". If Windows shows "Allow Ollama on networks?", do NOT tick Private or Public (that would let your Wi-Fi in); close the window without allowing. Pressing Cancel there can make Windows add a BLOCK rule for Ollama, which beats the allow rule; `-Status` lists such a rule and prints the exact command that removes it.
+
+To undo: the same command with `-Undo` (removes the rule, puts `OLLAMA_HOST` back, restarts Ollama so it listens on this PC only again). Your other tools that call 127.0.0.1:11434 keep working the whole time.
+
+### K2 - The VM's own settings [IN THE VM, normal window]  (2 minutes)
+No administrator window needed: it changes only YOUR user settings in the VM. Four small steps, safe to repeat:
+1. Sets your user variable `PILLAGERS_OLLAMA_URL` to `http://192.168.160.1:11434` (the main PC's Ollama). The helpers read it; without it they look for an Ollama inside the VM, which does not exist. Only a private address is accepted. If the switch network ever changed, it reads the right address from the VM's default gateway and says so (`-HostIp` forces one).
+2. Adds the Claude Code folder to your user PATH, so `claude` works in any new window. The old PATH value is written to the log before it changes.
+3. Prints the NAMES (never the values) of helper keys still missing, and the command that asks you for each.
+4. Asks the main PC's Ollama for its model list (3 seconds at most) and prints PASS, or "waiting for host-ollama-bridge.ps1" when K1 is not done yet.
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\PillagersMove\kit\vm-user-settings.ps1" -DryRun
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\PillagersMove\kit\vm-user-settings.ps1"
+```
+
+Exit code 0 = done and PASS, 2 = done but the main PC is not answering yet (do K1, then run it again), 1 = could not do it. Programs that were already running keep the old values; the runner restarts its lanes every 15 minutes, so open a new PowerShell window or sign out of the VM and in again to be sure. It refuses to run on the main PC (it has the Hyper-V service), and the dry run and the main-PC case write no log.
+
+### K3 - Keys that do not travel [IN THE VM, normal window]  (3 minutes, only if you use those helpers)
+Keys never travel with the files; you type them again in the VM. The two Anthropic ones now have their own slots in `ai-keys.ps1`. Run each yourself; what you paste stays hidden, and Claude never sees it:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\ai-keys.ps1" console
+powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\ai-keys.ps1" admin
+```
+
+- `console`: your normal Anthropic Console API key, saved as `PILLAGERS_API_KEY`. The Console helper lanes use it.
+- `admin`: your Anthropic ADMIN key, saved as `PILLAGERS_ADMIN_KEY`. Only the real-spend cost report uses it.
+- The script refuses the wrong kind in each slot (it looks only at the start of what you paste, never shows it). A key typed on the command line instead of pasted at the prompt is refused and not echoed back; if that was a real key, make a new one at the provider, because the old one is now visible in that window.
+- Never ANTHROPIC_API_KEY, OPENAI_API_KEY or CODEX_API_KEY: `vm-verify.ps1` fails if they exist.
+
+### K4 - Pad route, the VM's half: one firewall rule [IN THE VM, administrator window]  (3 minutes; you run it)
+Why: the relay on the main PC (K5) connects to ports 8802 (the game) and 8799 (run reports) inside the VM, and the VM's firewall blocks inbound connections by default.
+
+What `vm-pad-route-firewall.ps1` adds: ONE inbound rule named "Pillagers pad route": allow, TCP, ports 8802 and 8799 only, from the main PC's address ONLY (normally 192.168.160.1), all network profiles. Nothing is opened to "Any". It takes the main PC's address from the VM's default gateway, but only when that gateway is on the Hyper-V Default Switch (192.168.160.0/20, or an adapter whose DNS suffix is `mshome.net`). If the gateway is anything else (a router on a bridged network), it refuses and asks you to give the address yourself with `-HostAddress`. It refuses to run on the main PC and writes nothing there.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File C:\PillagersMove\kit\vm-pad-route-firewall.ps1 -Status
+powershell -ExecutionPolicy Bypass -File C:\PillagersMove\kit\vm-pad-route-firewall.ps1 -DryRun
+powershell -ExecutionPolicy Bypass -File C:\PillagersMove\kit\vm-pad-route-firewall.ps1
+```
+
+The first two change nothing. The third prints the exact `New-NetFirewallRule` command and the command that removes it, then waits for you to type `YES`. You should see "The rule is in place" and what Windows reads back. A log is written only when the firewall really changes. If the main PC's Default Switch address changes (it can after a reboot), run it again; it replaces the rule. To undo: run it with `-Undo`, or `Remove-NetFirewallRule -DisplayName 'Pillagers pad route'`.
+
+Optional, normal window: `vm-address-report.ps1` shows the VM's address and the name the main PC uses to find it (`VM_Oct2026.mshome.net`), and whether the rule is there. Only if the main PC says it cannot find the VM, copy the one line it prints under "ONLY IF THE MAIN PC CANNOT FIND THIS VM" and run it on the main PC.
+
+### K5 - Pad route, the main PC's half: the relay [MAIN PC, normal window]  (10 minutes)
+What it is: `host-play-relay.ps1` runs `play-relay.mjs`, a small Node program (no administrator needed) that makes `http://localhost:8802/dark_raiders.html` and port 8799 on this PC show the game that runs in the VM. It listens on 127.0.0.1 only, so nothing on the network can reach it, and it passes the connection through without reading it. Chrome on the main PC then sees the game at "localhost", which the browser treats as a safe page, so the Xbox pads work as they do today (a plain VM address would not).
+
+Look first (changes nothing):
+
+```powershell
+powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\migrate\host-play-relay.ps1" -Status
+```
+
+Try it BEFORE the switch-over without touching your own running server (needs K4 done and the VM's servers running). It listens on a different port here and forwards to the VM's real one:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\migrate\host-play-relay.ps1" -Start -Ports 18802:8802
+```
+
+Open `http://localhost:18802/dark_raiders.html` in Chrome (the browser treats that as a different site, so it has its own saved data), plug in both pads, play. Stop the test with `-Stop`.
+
+After S2 (the main PC stopped), make it permanent:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\migrate\host-play-relay.ps1" -Install
+```
+
+It puts a Startup shortcut "Play relay (VM)" (the relay then starts at every logon) and a desktop shortcut "Pillagers play" that opens the game address in Chrome, and starts the relay now. It refuses until `host-stopped.txt` is valid and ports 8802 and 8799 on this PC are free, so it can never take over your own server while Pillagers still runs here. The same marker check applies to any relay that would listen on 8802 or 8799, however `-Ports` is written; only a test on other ports skips it. At logon the shortcut does nothing unless the marker says stopped. `-Uninstall` stops the relay and removes exactly those two shortcuts. Do not use `-Force` to get around the marker.
+
+You should see: "The relay is running ... localhost:8802 -> VM port 8802" and "The VM is at ..." (found by its name). If the game page says "the vm is not answering", the VM is off or the K4 rule is missing. Test with both pads and both players before the party: pad 1 is player 2 and pad 2 is player 1, as in the game.
+
+### K6 - The VM comes back by itself [BOTH]  (15 minutes, once)
+Two halves:
+
+**The VM starts when the main PC starts [MAIN PC].** Step 1's `host-vm-boost.ps1` sets the VM's Automatic Start Action to "Start" with a 60 second delay, and its stop action to a clean shutdown with this PC. If you ever see `host-verify.ps1` complain about it, run the Step 1 command again, or in Hyper-V Manager: right-click the VM, Settings, Management, Automatic Start Action, "Always start this virtual machine automatically", delay 60 seconds.
+
+**The VM signs itself in [IN THE VM, normal window].** The runner, the servers, headless Chrome and the Console lanes all live in your signed-in Windows session in the VM. After ANY restart (a Windows Update, a power cut, the main PC rebooting) Windows stops at the sign-in screen and nothing runs until somebody types the password. `vm-autologon.ps1` fixes that with Microsoft's own Sysinternals Autologon tool:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\PillagersMove\kit\vm-autologon.ps1 -DryRun
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\PillagersMove\kit\vm-autologon.ps1
+```
+
+The first line changes nothing. The second asks you to type `YES` before it downloads Autologon (only if it is not installed; the program must carry a valid Microsoft signature or the script refuses to open it), then opens Autologon in ITS OWN window. Windows asks permission: click Yes. YOU type the VM user's password into Autologon's Password box and click Enable. The script only waits for that window to close; it cannot see the box, never asks for, stores or logs the password, and Claude never does this step. Afterwards it reads three Windows settings to confirm.
+
+Then test it once, watching: Start menu, Power, Restart. Do not type anything at the sign-in screen. The desktop should appear on its own within about 5 minutes. Wait about 2 minutes more and run `vm-verify.ps1` (K7): "signs in by itself" must be PASS, the servers must answer, and the runner heartbeat is fresh again within about 25 minutes.
+
+Things that block it, which the script checks and reports but never changes: the Windows setting "only allow Windows Hello sign-in for Microsoft accounts on this device" (switch it off in Settings, Accounts, Sign-in options), a legal notice shown before sign-in, and holding Shift while the VM boots. If you change the Windows password later, run it again with `-Reconfigure`.
+
+The weak point, said plainly: Windows keeps the password encrypted, but an administrator inside the VM can still read it, and the VM's sign-in screen no longer stops anyone who reaches the VM's console. That console is reachable only through Hyper-V Manager on the main PC, and the VM already holds your Claude, GitHub and Console sign-ins, so little is added. If that is not acceptable, run `vm-autologon.ps1 -Undo` and sign in by hand after every restart.
+
+Optional, `-ResumeClaude`: also puts a shortcut in the VM's Startup folder that reopens the coordinator Claude Code after each sign-in (it continues the last conversation). The shortcut is only made once `host-stopped.txt` is valid, and the message it types first makes Claude check the marker again and start nothing when it is not valid, so it can never start a second shipper while the main PC still runs Pillagers. Use it after S4. Without it you open Claude Code from the desktop shortcut after a restart; the runner and the lanes keep working either way.
+
+### K7 - The must-pass lists: vm-verify and host-verify [BOTH]  (2 minutes each)
+Two read-only checks, one inside the VM and one on the main PC. Each prints one line per item and ends with a count and one verdict line. Neither starts, stops or changes anything; the only thing they write is their own log.
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\PillagersMove\kit\vm-verify.ps1
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\migrate\host-verify.ps1"
+```
+
+The first runs in the VM, the second on the main PC; both in a normal window. Add `-DryRun` to list the checks without testing, `-NoNetwork` to skip the GitHub and Ollama requests.
+
+- **PASS**: right. **FAIL**: wrong; the `fix:` line under it says how. **WAIT**: not wrong yet; it is a step that is yours, or that cannot happen until an earlier step is done (a sign-in, a key, the switch-over itself). **WARN**: worth a look, not a failure (the graphics card and the pad-route pieces).
+- Exit code: 0 = no FAIL and no WAIT, 1 = at least one FAIL, 2 = no FAIL but something is WAIT.
+
+The rule for using them:
+1. **Before S2 (stopping the main PC)**: run `vm-verify.ps1` in the VM. Everything that can be true by now must be PASS: the tools, the keys, git and the GitHub sign-in, the servers, the Ollama request, the disk and memory. The lines that depend on the switch-over (the marker, the runner heartbeat, the last ship) show WAIT; that is fine. Any FAIL means do not stop the main PC yet: fix it first (the fix line says whether it is Claude's job or yours).
+2. Also before S2, run `host-verify.ps1` on the main PC. The VM line, the Ollama bridge lines and (once K5 is done) the pad-route lines should be PASS. The lines about "no Pillagers program runs on this PC", "the scheduled tasks are off" and the marker will FAIL or WAIT, because Pillagers still runs here. That is exactly what S2 turns around.
+3. **After S5**: run both again. Both must end with no FAIL and no WAIT.
+4. From then on the VM's Claude runs `vm-verify.ps1` at every check-in and works through every FAIL line by itself. You run `host-verify.ps1` after anything that touches the main PC (a Windows update, a restart).
+
+A normal window is often not allowed to read Hyper-V; `host-verify.ps1` then says WAIT for the VM lines and tells you how to read them (an administrator window, or Hyper-V Manager). It sends a request only to the relay itself, never to your own play server or collector.
+
+### K8 - The party fallback: a frozen copy on the main PC [MAIN PC, normal window]  (1-2 minutes to prepare)
+Why: if anything about the VM or the relay is in doubt on Fri 10/30, the party must not depend on it. `party-host-copy.ps1` keeps a frozen copy of the game in its own folder on the main PC (`C:\claudecode\pillagers-party`) and serves it at the same address, `http://localhost:8802/dark_raiders.html`, with the run-report collector on 8799. It needs nothing from the VM: no relay, no running VM, and no internet once the copy is prepared. It never touches `C:\claudecode\dark raiders`.
+
+When: after the Thu 10/29 lock, once Claude in the VM has pushed the final version and told you the tag or commit. A rehearsal a few days earlier is a good habit: prepare, start, play, stop.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\migrate\party-host-copy.ps1" -Status
+powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\migrate\party-host-copy.ps1" -Prepare
+powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\migrate\party-host-copy.ps1" -Start
+powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\migrate\party-host-copy.ps1" -Stop
+```
+
+- `-Status` looks only. It asks the game port a question only while the copy's own servers are running.
+- `-Prepare` needs the internet (about a minute) and no login: it downloads only the game file and the two small servers from the public GitHub repository. `-Ref` picks a tag or a full 40-character commit instead of the newest; `-Full` takes the whole history (about 800 MB). Run it again later to bring the copy forward; it only fast-forwards and refuses to overwrite edits. It accepts only `https://github.com/...` addresses, refuses any Pillagers working folder as the copy folder, and updates only a git folder it made itself.
+- `-Start` stops the play relay if it runs, then serves the copy. It will not stop your own servers (host-stop.ps1 did that at S2) and refuses if something else already uses 8802 or 8799. Open `http://localhost:8802/dark_raiders.html` in Chrome as usual; `/stable.html` shows the same frozen build.
+- `-Stop` stops those two servers; add `-RestartRelay` to get the VM route back afterwards.
+- While the copy is served, do not run `host-stop.ps1` or `party-stop.ps1`: they recognise `tools\serve.ps1` in a command line and would stop it. And do not use `host-stop.ps1 -Undo` for the party; that turns the helpers back on too.
 
 ---
 
@@ -410,7 +592,8 @@ Claude and the scripts never do these for you:
 - **Sign-ins**: Claude Code, Claude desktop, ChatGPT/Codex, Google (agy), GitHub (Step 6). The scripts only check whether a login file exists, never what is in it.
 - **Keys**: you type them yourself with `tools\ai-keys.ps1` (hidden input). Claude never sees, prints, copies or logs one, and neither do the move scripts. Do not paste a key into any chat.
 - **The Defender exclusion (optional, off by default)**: `-DefenderExclusion` tells Microsoft Defender to skip `C:\claudecode`. It makes tests faster but means a file there is no longer scanned. If you want it, run in the VM: `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\vm-setup.ps1 -Only perf -DefenderExclusion`.
-- **Any firewall change**: none of the move scripts change the firewall, and Claude does not run a firewall command either. The only change planned is the one for the pad route, and it should be the narrowest possible: let only the main PC reach ports 8802 and 8799 inside the VM (never the main PC itself). Claude writes out the rule text and the command that removes it; you read it and, if you agree, run it yourself in an administrator PowerShell in the VM.
+- **Any firewall change**: `vm-setup.ps1`, `host-vm-boost.ps1` and the other move scripts never change the firewall, and Claude does not run a firewall command either. Only two small scripts do, and only when YOU run them in an administrator window: `vm-pad-route-firewall.ps1` in the VM (K4: one rule that lets only the main PC reach ports 8802 and 8799 inside the VM) and `host-ollama-bridge.ps1` on the main PC (K1: one rule that lets only the Default Switch network reach Ollama's port 11434). Each prints the exact change and the command that removes it, waits for you to type `YES` yourself, and refuses to be answered by a script.
+- **Your Windows password for automatic sign-in**: you type it only into the Autologon window that `vm-autologon.ps1` opens (K6). The script cannot see it, and nothing logs it.
 - **Licence agreements for the installed programs**: you accept them yourself by adding `-AcceptLicences` to the apps stage (Step 4 heads-up). Without it nothing is installed. The same goes for the winget source terms in the look export (`-AcceptSourceAgreements`).
 - **The old personal files in the public repository**: `start2.bin`, `wallpaper.jpg` and `host-settings.json` are tracked by git and already public (Step 1B). Whether to stop tracking them (one `git rm --cached` command the scripts print) is your call; the scripts never change the git index.
 - **Windows updates on the main PC**: yours to decide. If you update the main PC, update the VM to the same build afterwards.
@@ -442,6 +625,16 @@ First: a FAIL line always says what went wrong in plain words. Fix that, then ru
 | host-stop: NOT FINISHED, no marker | Something is still running or locked | Read the line above it, run host-stop again |
 | health: lines starting PROBLEM | Something in Pillagers needs fixing | That is Claude's job: it fixes these by itself after the first message (S6) |
 | Any key variable warning (OPENAI_API_KEY, CODEX_API_KEY, ANTHROPIC_API_KEY set) | A key under a standard name would bill by the token | Remove that variable in Edit environment variables (Step 6). The scripts never set or remove it for you |
+| host-ollama-bridge -Install: "REFUSED" (firewall off, unreadable, allows inbound by default, another rule opens Ollama, or no Default Switch card) | The bridge relies on the Windows Firewall to keep your Wi-Fi out, so it will not run when the firewall cannot be trusted | Read the line it prints; fix that (switch the firewall on, remove the other rule with the command it prints, start the VM once so the Default Switch card exists), then run it again. Nothing was changed |
+| host-ollama-bridge -Status: a BLOCK rule for Ollama | Windows added it when "Allow Ollama on networks?" was cancelled; a block beats the allow rule | Run the removal command that -Status prints, then check again |
+| vm-user-settings: "waiting for host-ollama-bridge.ps1" (exit code 2) | K1 is not done on the main PC yet | Do K1, then run vm-user-settings again |
+| vm-pad-route-firewall: "default gateway ... does not look like the Hyper-V Default Switch" | The VM's gateway is a router, not the main PC, so the script will not let it in | Give the main PC's address yourself: `-HostAddress 192.168.160.1` (on the main PC `Get-NetIPAddress -InterfaceAlias "vEthernet (Default Switch)" -AddressFamily IPv4` shows it) |
+| vm-pad-route-firewall, vm-address-report or vm-user-settings: "this looks like the MAIN PC" | You ran a VM script on the main PC | Nothing was changed or written. Run it inside the VM |
+| Any script: "must be answered by a person typing at the keyboard" | Something tried to answer the YES question for you | Run it in a normal window of your own and type YES yourself |
+| host-play-relay -Start/-Install: "Not starting the relay on the real ports" | The main PC is not marked as switched over (no valid host-stopped.txt), or 8802/8799 are in use | Do S2 (host-stop), then -Install. To try the route earlier use `-Start -Ports 18802:8802` |
+| Game page says "the vm is not answering" | The VM is off, its servers are not running, or the K4 rule is missing | `host-play-relay.ps1 -Status`, then `vm-pad-route-firewall.ps1 -Status` in the VM, then `vm-verify.ps1` |
+| Windows in the VM stops at the sign-in screen after a restart | Automatic sign-in is not on, or something blocks it | `vm-autologon.ps1 -Status` (K6) names the blocker |
+| party-host-copy: refuses the folder or the address | The copy folder is a Pillagers working folder or a git folder it did not make, or the address is not https://github.com/... | Use the default `-Dir` and `-RepoUrl`, or pick an empty folder of your own |
 | Anything else | | Open the log named on the last line, copy the last 30 lines, and paste them to the Pillagers Claude Code (the VM one once switched, otherwise the one on the main PC) with the words "this step failed" |
 
 Still stuck, or the VM looks wrong? Stop. Nothing has been deleted from the main PC, and `host-vm-boost.ps1 -Undo` plus `host-stop.ps1 -Undo` put things back.
@@ -496,12 +689,38 @@ powershell -ExecutionPolicy Bypass -File C:\PillagersMove\unpack-session.ps1 -Dr
 powershell -ExecutionPolicy Bypass -File C:\PillagersMove\unpack-session.ps1
 ```
 
+[MAIN PC, Part 3: the local AI bridge in an administrator window, the rest in a normal window]
+
+```powershell
+powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\migrate\host-ollama-bridge.ps1" -Status
+powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\migrate\host-ollama-bridge.ps1" -Install -DryRun
+powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\migrate\host-ollama-bridge.ps1" -Install
+powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\migrate\host-play-relay.ps1" -Status
+powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\migrate\host-play-relay.ps1" -Start -Ports 18802:8802
+powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\migrate\host-play-relay.ps1" -Install
+powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\migrate\host-verify.ps1"
+powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\migrate\party-host-copy.ps1" -Status
+```
+
+[IN THE VM, Part 3: the firewall rule in an administrator window, the rest in a normal window]
+
+```powershell
+powershell -ExecutionPolicy Bypass -File C:\PillagersMove\kit\vm-pad-route-firewall.ps1 -DryRun
+powershell -ExecutionPolicy Bypass -File C:\PillagersMove\kit\vm-pad-route-firewall.ps1
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\PillagersMove\kit\vm-user-settings.ps1
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\PillagersMove\kit\vm-autologon.ps1
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\PillagersMove\kit\vm-verify.ps1
+powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\ai-keys.ps1" console
+```
+
 Rollback [MAIN PC]:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\migrate\host-vm-boost.ps1" -Undo
 powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\migrate\host-stop.ps1" -Undo
 ```
+
+Rollback of the Part 3 pieces (each one is separate): the local AI bridge `host-ollama-bridge.ps1 -Undo` [MAIN PC, administrator]; the pad route `host-play-relay.ps1 -Uninstall` [MAIN PC] and `vm-pad-route-firewall.ps1 -Undo` [VM, administrator]; automatic sign-in `vm-autologon.ps1 -Undo` [VM]; the party copy `party-host-copy.ps1 -Stop` and then delete its folder `C:\claudecode\pillagers-party` yourself.
 
 Where things live:
 - The kit (scripts and this guide) on the main PC: `C:\claudecode\dark raiders\tools\migrate`. Inside the VM: `C:\PillagersMove\kit`.
@@ -510,5 +729,6 @@ Where things live:
 - The look-and-feel export on the main PC: `C:\Users\User1\AppData\Local\PillagersMove\settings` (outside the game folder, on purpose). Inside the VM it lands in the kit folder.
 - Inside the VM: undo files and replaced-file backups `C:\PillagersMove\undo` (including `gpu-orig` and `unpack-<time>`), reports `C:\PillagersMove\state` (`repo-baseline.json`, `extra-files.txt`), runner guard `C:\PillagersMove\launchers`.
 - Logs: main PC `C:\claudecode\dark raiders\tools\migrate\logs`; VM `C:\PillagersMove\kit\logs`.
+- Part 3 on the main PC: the relay's own log and status are in the kit folder `tools\migrate\logs` and `tools\migrate\state`; the party copy lives in `C:\claudecode\pillagers-party` (its own folder, outside the Pillagers repository). The VM's address, if the main PC ever needs it by hand, is written by `vm-address-report.ps1` to `C:\PillagersMove\kit\vm-address.txt` inside the VM.
 - The "main PC is stopped" marker: `host-stopped.txt` in the kit folder (and a reminder inside `.git`).
 - Inside the VM the game lives at the same address as before: `C:\claudecode\dark raiders`.

@@ -1,0 +1,7 @@
+v31.97: what is new card: notes show whole again, three of them
+
+The what is new card shows its three newest notes whole, at most two lines each.
+
+Check 31.97. Fails on v31.96.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

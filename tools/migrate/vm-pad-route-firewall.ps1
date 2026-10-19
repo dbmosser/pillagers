@@ -22,7 +22,7 @@
 #                  192.168.160.0/20, or any network whose adapter has the DNS suffix mshome.net). Any other gateway (a router on a bridged network)
 #                  is NOT used: the script stops and asks you to give the address with -HostAddress. Must be a private address. If the main PC's
 #                  Default Switch address ever changes (after a reboot), run this again.
-# There is no -Yes: the YES question must be answered by a person typing at the keyboard (a script that pipes "YES" in is refused).
+# There is no -Yes (if given it is ignored): the YES question must be answered by a person typing at the keyboard (a script that pipes "YES" in is refused).
 # This script refuses to run on the main PC (computer JUL26, or any PC with the Hyper-V service): it is for the VM only. On the main PC it writes nothing.
 # (the script may sit in C:\claudecode\dark raiders\tools\migrate\ as well; it does not matter where it is run from)
 # Log: C:\PillagersMove\kit\logs\vm-pad-route-firewall-<time>.log, written only when the firewall is really changed or removed (never for
