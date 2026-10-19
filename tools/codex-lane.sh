@@ -288,12 +288,15 @@ ship_key(){
   for i in 1 2 3 4; do
     pf=$(cd "$R" && timeout $(( $(cap PREFLIGHT_MIN 25) * 60 )) bash "$X/work/preflight-o.sh" o "$k" 2>&1 | tail -12 | cut -c1-700); echo "$pf" > "$X/log/$name-$k.preflight.txt"
     printf '%s\n' "$pf" | grep -q '^PREFLIGHT PASS' && break
-    if printf '%s\n' "$pf" | grep -qiE 'uncommitted changes|stamped v[0-9.]+, .*behind'; then
+    # 2026-10-19: a stale what is new card is nobody's job, so waiting for "another worker" slept two hours. Ship the refresh, retry.
+    if printf '%s\n' "$pf" | grep -qiE 'stamped v[0-9.]+, .*behind'; then
+      say "gate: the what is new card is stale, shipping a card refresh first ($k, $name)"
+      bash "$R/tools/handoff/shipkit/cardrefresh.sh" "$S" >> "$X/log/cardrefresh.txt" 2>&1; sleep 30; continue; fi
+    if printf '%s\n' "$pf" | grep -qiE 'uncommitted changes'; then
       say "gate: waiting for another worker ($k, $name)"; sleep 240; continue; fi
     # 2026-10-19 (o-04 burned 5 runs): the preflight Chrome ($PFPORT) not answering is the lane's problem, not Codex's. Restart it and
     # try again; if it still will not answer, put the job back without spending a Codex run.
-    if printf '%s
-' "$pf" | grep -qiE 'Unable to connect to the remote server|actively refused|json/version'; then
+    if printf '%s\n' "$pf" | grep -qiE 'Unable to connect to the remote server|actively refused|json/version'; then
       if [ $i -lt 4 ]; then log "preflight browser $PFPORT not answering ($k), restarting it"; closepf; sleep 3
         powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/cdp.ps1" -Start -Port $PFPORT -Profile "$(cygpath -w "$TEMP")\pillagers-cdp$PFPORT" >/dev/null 2>&1; sleep 3; continue; fi
       say "gate: preflight browser $PFPORT will not answer ($name); the job waits, no run spent"; return 2; fi
@@ -309,7 +312,7 @@ $(printf '%s\n' "$pf" | tail -8)"; return 1
     out=$(timeout 7500 bash "$S/shipq.sh" "$k" 2>&1 | tail -14 | cut -c1-700); echo "$out" > "$X/log/$name-$k.ship.txt"
     printf '%s\n' "$out" | grep -q '^SHIPPED' && { echo "$k" >> "$LS/shipped.txt"; SHIPPED_NOW+=("$k"); log "$name shipped $k: $(printf '%s\n' "$out" | grep '^SHIPPED' | head -1)"; return 0; }
     if printf '%s\n' "$out" | grep -qi 'uncommitted changes'; then sleep 90; continue; fi
-    if printf '%s\n' "$out" | grep -qiE 'stamped v[0-9.]+, .*behind'; then sleep 240; continue; fi
+    if printf '%s\n' "$out" | grep -qiE 'stamped v[0-9.]+, .*behind'; then bash "$R/tools/handoff/shipkit/cardrefresh.sh" "$S" >> "$X/log/cardrefresh.txt" 2>&1; sleep 30; continue; fi
     break
   done
   if printf '%s\n' "$out" | grep -qiE 'uncommitted changes|stamped v[0-9.]+, .*behind'; then say "gate: $k waits on another worker's change ($name)"; return 2; fi

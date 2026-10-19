@@ -1,0 +1,7 @@
+v31.89: x reloads in a fight
+
+A fresh X press reloads in combat when rounds can be loaded. Revives still work.
+
+Check 31.89. Fails on v31.88.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.89 - X RELOADS IN A FIGHT
+
+Co-op hunt while he was away. His 3.10 b: X stays reload and search and reload wins while a fight is on.
+
+MEASURED. Check 31.89 passes, and fails on v31.88.
 ## v31.88 - THE WHAT IS NEW CARD NAMES POLISH PASS 31
 
 Co-op hunt while he was away. The card was stamped v31.72 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.

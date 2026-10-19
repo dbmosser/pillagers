@@ -13,3 +13,5 @@ What each does: shipq.sh queues one draft through the gate (it calls tools/hando
 shared lock (unlock refuses a running owner's lock); fixq.sh commits an edit to tools/mkfixture.ps1 and rebuilds the fixture (HELD=1 when you
 already hold the lock); preflight-i.sh runs a draft on a private lane before shipping; genP.sh makes a What's New card draft; runchk.sh runs chosen
 checks; corpq.sh runs the whole corpus; clearstale.sh clears a lock whose owner died over 30 minutes ago; governor.sh paces the helpers.
+
+cardrefresh.sh [S] (2026-10-19): ships the next POLISH PASS what is new card refresh when WHATSNEW_VER trails VER by 0.10 or more (the card check fails past 0.15). codex-lane.sh calls it when a preflight or ship says the card is stamped behind; its template is mk-cw-cardP31.ps1 here.

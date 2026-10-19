@@ -39,6 +39,10 @@ else echo "chatgpt lane: idle (no o- job)"; fi
 # 7 Google bug checker
 if has 'ship-review\.ps1.*-Engine agy'; then echo "google checker: running ($(head -c 80 "$H/ship-review/status-agy.txt" 2>/dev/null | tr -d '\r\n'))"
 else if [ $FIX = 1 ]; then powershell -NoProfile -Command "Start-Process -FilePath powershell.exe -ArgumentList '-NoProfile','-ExecutionPolicy','Bypass','-File','\"C:\claudecode\dark raiders\tools\ship-review.ps1\"','-Engine','agy','-Loop','-EveryMin','20' -WindowStyle Hidden" && echo "google checker: was down, STARTED"; else prob "google checker not running"; fi; fi
+# 7b the local AI reviewer (Ollama). 10-19: nothing restarted it, so it sat idle all afternoon. It rests by itself in his PC hours and
+# when the PC has under 11 GB free (the model takes about 4 GB of the PC's memory even on the graphics card).
+if has 'ship-review\.ps1.*-Engine ollama'; then echo "local AI reviewer: running ($(head -c 90 "$H/ship-review/status-ollama.txt" 2>/dev/null | tr -d '\r\n'))"
+else if [ $FIX = 1 ]; then powershell -NoProfile -Command "Start-Process -FilePath powershell.exe -ArgumentList '-NoProfile','-ExecutionPolicy','Bypass','-File','\"C:\claudecode\dark raiders\tools\ship-review.ps1\"','-Engine','ollama','-Loop','-EveryMin','20' -WindowStyle Hidden" && echo "local AI reviewer: was down, STARTED"; else prob "local AI reviewer not running"; fi; fi
 grep -hE "BUG|CHECKED" "$H/ship-review/findings.txt" 2>/dev/null | tail -3 | sed 's/^/  checker lead: /' | cut -c1-200
 # 8 dashboard
 if up 8820 api; then echo "dashboard 8820: up"; else if [ $FIX = 1 ]; then powershell -NoProfile -Command "Start-Process -FilePath node -ArgumentList 'server.mjs' -WorkingDirectory 'C:\claudecode\dark raiders\tools\devdash' -WindowStyle Hidden"; echo "dashboard 8820: was down, STARTED"; else prob "dashboard down"; fi; fi

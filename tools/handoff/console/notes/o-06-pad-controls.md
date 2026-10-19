@@ -47,3 +47,19 @@ Remaining work belongs to the lane/coordinator: refresh the card using the previ
 --- codex run 2026-10-19 17:38 ---
 2026-10-19, run 4: no external progress since run 3. Current source remains v31.87 (c721a3ca); cw-cx-rsmelee is the only shipped key. Latest cw-cx-xfight preflight still fails only on the stale v31.72 card versus draft v31.88. No o-06 pictures exist in the shared shots folder. The existing card-refresh request and camera-run-request.json already state the required lane actions. All pending scripts, keys, fixture retarget and six camera recipes remain handed over; nothing new was needed or regenerated. Do not resume this job until the Claude lane refreshes the card and the coordinator runs the supplied camera command. Hardware aim measurements remain uncollected. No game, fixture, runner or shipping file was changed this run.
 
+
+--- codex run 2026-10-19 18:08 ---
+2026-10-19, run 5 from v31.88: the lane has now shipped af4b1cbb, refreshing the Whats New card to v31.88. The previous stale-card blocker is cleared. Right-stick melee remains the only shipped task key (c721a3ca). Do not ship it again.
+
+Regenerated all five pending drafts against v31.88; each mk printed written. verify-pending.js composed all 19 edits uniquely and parsed the resulting game script and all five checks. No tracked source or fixture was edited. Browser checks and the seed fingerprint remain lane work.
+
+Updated camera-run-request.json to remove the obsolete card-refresh prerequisite. The installed runner still has no -Recipes path, so the coordinator still needs to run the supplied project-camera command after the five pending ships. Existing six recipes cover the visible controls and both connected windows. Return report notes, pictures and critic findings before calling the task done. Physical pad numbers remain uncollected; the existing probe reports them only if Chrome exposes hardware. No unsupported aim tuning was added.
+
+Ready for lane: preflight and ship cw-cx-xfight, cw-cx-copygun, cw-cx-drygun, cw-cx-padstatus and cw-cx-xboxonly, then run the six-scene camera request and critic. Existing fixture-retarget.json is unchanged; the lane should skip edits it already applied by hash.
+
+--- codex run 2026-10-19 18:36 ---
+2026-10-19, run 6 from v31.88: no new ship, camera result or gate attempt has occurred since run 5. Confirmed main source history still ends at af4b1cbb. The lane state lists only cw-cx-rsmelee as shipped; the latest xfight preflight log is still the obsolete 16:10 stale-card failure, predating the v31.88 card refresh. Do not treat that old result as a current blocker or ask Codex to fix it again.
+
+Re-ran verify-pending.js: five checks and the composed game script parse; all 19 pending edits still have unique anchors. Existing mk scripts, keys.txt, fixture-retarget.json and six camera recipes are ready and unchanged. No source or fixture edits made. No browser test, screenshot, critic result or physical pad measurement is claimed.
+
+Next actions belong to the lane/coordinator: resume preflight and shipping at cw-cx-xfight, then the other four pending keys; run camera-run-request.json after shipping, including the two live connected windows; return gate results, report and critic findings. The supplied recipe request remains necessary because this installed runner only handles shots.txt. Park this job until those lane steps produce a result; another unchanged Codex run cannot perform them inside this sandbox.

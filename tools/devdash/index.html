@@ -31,11 +31,11 @@ main{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1
 <div id="crew"></div></section>
 
 <section class="card"><h2>YOUR CLAUDE PLAN THIS WEEK</h2>
-<div class="what">Your Max plan's weekly usage, the same number as Claude's /usage. The goal is 85% by the weekly reset, spread evenly; the dashed line is where an even pace puts you right now. Whenever you are above it, the helpers on your plan pause by themselves.</div>
+<div class="what">Your Max plan's weekly usage, the same number as Claude's /usage. Pacing is off since 10-19 (your order): the helpers use it as fast as the work needs, never faster. The dashed line is an even pace, for reference.</div>
 <div id="plan"></div></section>
 
 <section class="card"><h2>CLAUDE HELPERS</h2>
-<div class="what">Claude workers that write fixes for the game on their own, one job each at a time. Since the Console credits ran out (10-18) they run on your Claude plan, and only while your week is on pace.</div>
+<div class="what">Claude workers that write fixes for the game on their own, one job each at a time. Since the Console credits ran out (10-18) they run on your Claude plan, whenever the 5-hour window and the memory allow.</div>
 <div id="lanes"></div></section>
 
 <section class="card"><h2>OTHER AI SERVICES</h2>
@@ -117,7 +117,8 @@ function planHtml(p){
   g+='<line x1="'+x(now)+'" x2="'+x(now)+'" y1="6" y2="'+y(0)+'" stroke="#6fb3ff" stroke-opacity=".45"/><circle cx="'+x(now)+'" cy="'+y(p.wk)+'" r="5" fill="#f0a83a"/></svg>';
   return '<span class="stat"><b>'+p.wk+'%</b>used this week</span><span class="stat"><b>'+p.line+'%</b>even pace right now</span><span class="stat"><b'+(c==='r'?' class="warn"':'')+'>'+(gap>0?'+':'')+gap+'</b>points '+(gap>0?'ahead of pace':'under pace')+'</span>'+g+
     '<div class="small" style="margin-bottom:6px"><span style="color:#f0a83a">&#9644;</span> your usage &nbsp; <span>- - -</span> even pace to '+p.target+'% &nbsp; <span style="color:#ff6b5e">&#9644;</span> the 100% limit</div>'+
-    row(c,null,gap>0?'<b>Ahead of pace.</b> The helpers on your plan are paused. Back on pace around <b>'+when(p.catchUp)+'</b> if nothing else runs.':'<b>On pace.</b> About <b>'+p.perDay+'%</b> a day is left to spend until the reset.')+
+    (p.pace===false?row('g',null,'<b>Pacing is off</b> (your order, 10-19). The helpers run whenever the 5-hour window and the PC\'s memory allow; the dashed line is for reference only.'):
+    row(c,null,gap>0?'<b>Ahead of pace.</b> The helpers on your plan are paused. Back on pace around <b>'+when(p.catchUp)+'</b> if nothing else runs.':'<b>On pace.</b> About <b>'+p.perDay+'%</b> a day is left to spend until the reset.'))+
     row(p.ses>=p.sesMax?'a':'d',null,'<b>5-hour window:</b> '+p.ses+'% used (the helpers stop at '+p.sesMax+'%)')+
     row('d',null,'Resets <b>'+when(p.reset)+'</b> &middot; reading taken '+ago(p.ageS)+' &middot; goal '+p.target+'% by the reset');
 }

@@ -18,7 +18,9 @@
 #   ... -Loop -EveryMin 20                                                                     keeps going
 #   ... -Engine gemini                                                                         Google instead of the local model
 param([ValidateSet('ollama','agy','gemini')][string]$Engine='ollama',[int]$Max=6,[int]$First=3,[string]$Model='',[switch]$Loop,
-      [int]$EveryMin=20,[int]$TimeoutMin=15,[string]$QuietHours='6-9,13-16,19-22')
+      [int]$EveryMin=20,[int]$TimeoutMin=15,[string]$QuietHours='6-9,13-16,19-22',[int]$MinFreeGB=11)
+# 2026-10-19: MinFreeGB. qwen3.8:27b runs 100% on the graphics card, yet loading it took 4 GB of the PC's own memory (measured:
+# 4.4 GB free before, 0.4 GB after). The PC must keep 6 GB free (it hard-froze before), so the local model loads only with 11 GB free.
 $ErrorActionPreference='Continue'
 $R='C:\claudecode\dark raiders'; $O=Join-Path $R 'tools\handoff\ship-review'; $RV=Join-Path $O 'reviews'
 New-Item -ItemType Directory -Force $RV | Out-Null
@@ -26,7 +28,7 @@ $log=Join-Path $O 'run.log'; $last=Join-Path $O "last-reviewed-$Engine.txt"; $fo
 $utf8=New-Object Text.UTF8Encoding($false)
 $node=(Get-Command node -ErrorAction SilentlyContinue).Source
 $gem=if($node){ Join-Path (Split-Path $node) 'node_modules\@google\gemini-cli\bundle\gemini.js' } else { '' }
-$api='http://127.0.0.1:11434'
+$api=$env:PILLAGERS_OLLAMA_URL; if(-not $api){ $api=[Environment]::GetEnvironmentVariable('PILLAGERS_OLLAMA_URL','User') }; if("$api".Trim() -match '^https?://[^\s/]+/*$'){ $api="$api".Trim().TrimEnd('/') } else { $api='http://127.0.0.1:11434' }   # PILLAGERS_OLLAMA_URL (set in the VM) points at the main PC's Ollama; not set = this PC
 $agy=Join-Path $env:LOCALAPPDATA 'agy\bin\agy.exe'
 function Log([string]$m){ "$(Get-Date -Format 'MM-dd HH:mm:ss') [$Engine] $m" | Add-Content $log }
 function Status([string]$state,[string]$m){ [IO.File]::WriteAllText($stat, "$((Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')) $Engine $state $m`n", $utf8) }
@@ -135,6 +137,8 @@ function RunOnce {
   $m=''
   if($Engine -eq 'ollama'){
     if(Quiet){ Status 'resting' "his usual PC hours ($QuietHours), so the graphics card stays free for him"; return }
+    $freeGB=[int]((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1MB)
+    if($api -match '^https?://(127\.0\.0\.1|localhost)(:|/|$)' -and $freeGB -lt $MinFreeGB){ Status 'resting' "waiting for memory: $freeGB GB free, the local AI loads at $MinFreeGB (it takes about 4 GB)"; return }
     $m=PickModel; if(-not $m){ Status 'broken' 'the local AI (Ollama) is not running or has no model'; return }
   } elseif($Engine -eq 'agy'){ if(-not (Test-Path $agy)){ Status 'broken' 'Antigravity is not installed'; return } }
   elseif(-not (Test-Path $gem)){ Status 'broken' 'the Gemini program is not installed (npm install -g @google/gemini-cli)'; return }

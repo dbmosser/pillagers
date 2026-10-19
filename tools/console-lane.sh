@@ -91,6 +91,14 @@ case ",$(cap CLI_ALWAYS "")," in *",$L,"*) ENGINE=cli; ALWAYS=1;; esac
 awk -v s="$mspent" -v t="$TOTAL" 'BEGIN{exit !(s+0>=t+0)}' && ENGINE=cli
 if [ $ENGINE = cli ]; then
   [ "$(cap CLI 1)" = 0 ] && { echo "$(date '+%m-%d %H:%M') Console money used up for $month; the Claude Code engine is off (CLI=0)" > "$C/status-$L.txt"; exit 0; }
+  # 10-19, his "Is that going to work if Claude isn't signed in on this pc?": this PC is about to be signed in to his WORK account. A
+  # helper runs only when Claude Code here is signed in to his Pillagers account (sha256 of its email in PLAN_ACCOUNT_SHA; the repo is
+  # public, so never the address itself). Otherwise it stays off rather than bill the wrong account.
+  want=$(cap PLAN_ACCOUNT_SHA "")
+  if [ -n "$want" ]; then
+    em=$(cd "$R" && MSYS_NO_PATHCONV=1 env -u ANTHROPIC_API_KEY timeout 60 claude auth status 2>/dev/null | grep -o '"email": *"[^"]*"' | sed 's/.*"\([^"]*\)"$/\1/' | tr 'A-Z' 'a-z')
+    [ "$(printf '%s' "$em" | sha256sum | cut -c1-64)" = "$want" ] || { echo "$(date '+%m-%d %H:%M') helpers off: Claude Code on this machine is not signed in to your Pillagers account${em:+ (it is signed in to another one)}; $name kept" > "$C/status-$L.txt"; exit 0; }
+  fi
   nl=$(cap CLI_LANES 1)
   if [ $ALWAYS = 0 ] && { { [ "$nl" -lt 2 ] && [ "$L" != a ]; } || { [ "$nl" -lt 3 ] && [ "$L" = c ]; }; }; then
     echo "$(date '+%m-%d %H:%M') resting: Console money used up, $nl helper(s) run on your plan" > "$C/status-$L.txt"; exit 0; fi
@@ -107,8 +115,14 @@ if [ $ENGINE = cli ]; then
   WR=$(date -d "$(cap WEEK_RESET 2026-10-25T05:00:00Z)" +%s); nw=$(date +%s); while [ "$nw" -ge "$WR" ]; do WR=$((WR+604800)); done
   line=$(awk -v r="$WR" -v n="$nw" -v t="$(cap PLAN_TARGET 85)" 'BEGIN{printf "%.1f", (1-(r-n)/604800)*t}')
   boost=0; case ",$(cap CLI_BOOST ""),," in *",$L,"*) boost=5;; esac
-  if awk -v w="$wk" -v l="$line" -v b="$boost" 'BEGIN{exit !(w+b>=l)}' || [ "$ses" -ge "$(cap PLAN_SESSION_MAX 75)" ]; then
-    echo "$(date '+%m-%d %H:%M') pacing your plan: week $wk% used (the 85% line is at $line% now), 5-hour window $ses%" > "$C/status-$L.txt"; exit 0; fi
+  # 10-19 18:30, his "forget about the pacing rule ... I don't care if you blow my usage quicker than the reset" and "I just don't want to
+  # spend more tokens bc we are moving faster": PLAN_PACE=0 drops the weekly line (helpers run whenever they can); the 5-hour stop stays
+  # so a helper never locks the chat out, and a helper starts only with RAM_FLOOR_GB+1 free (each one adds about 1 GB).
+  if { [ "$(cap PLAN_PACE 1)" != 0 ] && awk -v w="$wk" -v l="$line" -v b="$boost" 'BEGIN{exit !(w+b>=l)}'; } || [ "$ses" -ge "$(cap PLAN_SESSION_MAX 75)" ]; then
+    if [ "$(cap PLAN_PACE 1)" = 0 ]; then echo "$(date '+%m-%d %H:%M') resting: the 5-hour window is at $ses% (helpers stop at $(cap PLAN_SESSION_MAX 75)%); week $wk% used" > "$C/status-$L.txt"
+    else echo "$(date '+%m-%d %H:%M') pacing your plan: week $wk% used (the 85% line is at $line% now), 5-hour window $ses%" > "$C/status-$L.txt"; fi; exit 0; fi
+  rf=$(( $(cap RAM_FLOOR_GB 6) + 1 )); g=$(powershell -NoProfile -Command "[int]((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1MB)" 2>/dev/null | tr -dc '0-9')
+  [ "${g:-0}" -lt "$rf" ] && { echo "$(date '+%m-%d %H:%M') waiting for RAM: ${g:-0} GB free, a helper starts at $rf; $name kept" > "$C/status-$L.txt"; exit 0; }
   echo "$(date '+%m-%d %H:%M') running $name on Claude Code (your plan: week $wk% of the $line% line, 5-hour $ses%)" > "$C/status-$L.txt"
   st=$(date +%s)
   ( cd "$R" && env -u ANTHROPIC_API_KEY claude -p "Your task id is $name. Your lane is $L. You run in Claude Code: run every command with the Bash tool (never the PowerShell tool), use Read (it also shows pictures; it replaces view_image), Grep, Glob, Write, Edit and Bash, with each Bash command typed exactly in a form your rules list. $(cat "$t")" \

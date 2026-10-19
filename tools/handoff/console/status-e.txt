@@ -1,1 +1,1 @@
-10-19 10:03 pacing your plan: week 28% used (the 85% line is at 16.7% now), 5-hour window 4%
+10-19 18:40 waiting for RAM: 4 GB free, a helper starts at 7; 12-ui-party-screens kept

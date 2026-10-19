@@ -48,7 +48,7 @@ function plan() {
   const start = reset - 7 * 864e5, line = (Date.now() - start) / (7 * 864e5) * target;
   const hist = tail(PL, 3000).map(l => l.split(' ').map(Number)).filter(h => h[0] * 1000 >= start && !isNaN(h[2])).map(h => [h[0] * 1000, h[2]]);
   if (isNaN(wk)) return { wk: null };
-  return { ses, wk, ageS, target, sesMax, reset, start, line: +line.toFixed(1), catchUp: wk > line ? start + (wk / target) * 7 * 864e5 : null,
+  return { ses, wk, ageS, target, sesMax, pace: String(caps.PLAN_PACE ?? '1').trim() !== '0', reset, start, line: +line.toFixed(1), catchUp: wk > line ? start + (wk / target) * 7 * 864e5 : null,
     perDay: +((target - wk) / Math.max(0.1, (reset - Date.now()) / 864e5)).toFixed(1), hist };
 }
 let cpuPrev = os.cpus(), cpu = 0;
