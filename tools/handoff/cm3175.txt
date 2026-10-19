@@ -1,0 +1,7 @@
+v31.75: settings and keys lists fade out, full height detail pane
+
+The settings and keys lists fade out over the last 24px, the settings detail pane is as tall as the list, the pause report field and small buttons match the rest.
+
+Check 31.75. Fails on v31.74.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.75 - SETTINGS AND KEYS LISTS FADE OUT, FULL HEIGHT DETAIL PANE
+
+Co-op hunt while he was away. Critic c-31 rounds (settings 72 = 3, keys 32 = 3, pause box 25 = 3): lists clipped mid row at the footer, detail pane a short box over empty space, report field fill and labels off.
+
+MEASURED. Check 31.75 passes, and fails on v31.74.
 ## v31.74 - CORNER READOUT ONE QUIET LABEL STYLE
 
 Co-op hunt while he was away. Critic: the credits, xp, stash and bag readout used four treatments. Labels and the stash and bag figures now share one style (16px, 600, second text colour, 0.04em).
