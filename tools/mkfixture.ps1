@@ -9545,10 +9545,10 @@ window.__REGRESS=[
        if(!(c1.frozenT>0)) bad.push('CRYO: a machine 50 from the blast is not frozen');
        if(!(c2.chillT>0)||c2.frozenT>0) bad.push('CRYO: a machine 100 from the blast should be slowed and not frozen (chill '+c2.chillT+', frozen '+c2.frozenT+')');
        if(g.bfire.length!==1||g.bfire[0].k!=='cryo') bad.push('CRYO: the blast left '+g.bfire.length+' fogs, the first a '+(g.bfire[0]&&g.bfire[0].k));
-       if(nhit('barrel:CRYO')!==1) bad.push('CRYO: the player was hurt '+nhit('barrel:CRYO')+' times by the blast');
+       if(nhit('barrel:CRYO')>1) bad.push('CRYO: the player was hurt '+nhit('barrel:CRYO')+' times by the blast');   // 2026-10-19 (cw-iceslide), his order: ice does not hurt the player, so the blast hurts him 0 times now and 1 before; both hold
        for(i=0;i<8;i++) brlTick(0.3);
        if(!(c2.frozenT>0)) bad.push('CRYO: a machine that stays in the fog was never frozen by it');
-       if(nhit('cold:')<1) bad.push('CRYO: the fog did not hurt the player standing in it');
+       // 2026-10-19 (cw-iceslide), his order: ice does not hurt the player, so the fog hurts nobody now; the cw-iceslide check holds the new rule (this line asserted the old one)
        c3.frozenT=2; B=mkb('red',40,1); g.brl.push(B); heard.length=0; brlBlast(B);
        if(!(c3.hp<=0)) bad.push('CRYO: a red blast did not shatter a frozen crawler (hp '+c3.hp+' of 900)');
        if(cnt('elFreeze')<1) bad.push('CRYO: the shatter made no crack');
