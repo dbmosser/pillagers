@@ -1,0 +1,2 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  40-whats-new-card                      staged      11.9s    | runs 1 wnseen 0

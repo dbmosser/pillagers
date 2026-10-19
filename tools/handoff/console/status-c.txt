@@ -1,1 +1,1 @@
-10-19 19:27 waiting for RAM: 5 GB free, a helper starts at 7; c-02-raid-hud-redesign kept
+10-19 19:37 waiting for RAM: 6 GB free, a helper starts at 7; c-02-raid-hud-redesign kept

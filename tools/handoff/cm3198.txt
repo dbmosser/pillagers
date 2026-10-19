@@ -1,0 +1,7 @@
+v31.98: floor backpack on a pad
+
+D-pad moves, A picks up and places, Y drops on the floor, and B closes the Undercroft backpack.
+
+Check 31.98. Fails on v31.97.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

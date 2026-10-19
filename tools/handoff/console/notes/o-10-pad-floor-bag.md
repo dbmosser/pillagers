@@ -7,3 +7,9 @@ The existing 15.59 check forbids the obsolete D-pad-left drop hint, not D-pad mo
 
 Local verification: the mk script prints written; all three anchors match once; the patched inline game script and the regression check parse in Node; the mk script is ASCII. Two camera recipes stage the actual stub-pad highlight and a held shotgun over belt key 5.
 
+
+--- codex run 2026-10-19 19:40 ---
+2026-10-19 continuation: cw-cx-floorbag is still absent from v31.97. Rebuilt its draft against this checkout: all four anchors match exactly once, the patched game and check parse in Node, and the mk script is ASCII. No runtime check, preflight or ship ran in this sandbox.
+Added one necessary shared-helper fix: bagPadAct now supplies client coordinates for its synthetic mouse press. The player 2 mouse handler otherwise replaces the highlighted tile coordinates with the event default (0,0), so player 2 misses the tile. Added a regression assertion for that player 2 mouse path. Real mouse handling and pad ownership rules are unchanged.
+Updated the two camera recipes to exercise player 1 and player 2 roles in their respective window URLs. Player 1 reads stub pad index 1, player 2 reads index 0. Both recipes perform View, A pickup, D-pad movement and A placement, and throw if the shotgun was not assigned to belt key 5. The player 2 picture then holds that gun again. These recipes use isolated test pads and no peer connection; they verify each window role, not live item transfer between peers. Both recipe scripts parse locally.
+Lane next steps: preflight and ship cw-cx-floorbag from keys.txt; run the behavior check on old and patched builds; photograph both recipes and return the critic results. View already opens on the old build, so it is a regression assertion; the navigation, pickup, placement, drop and close assertions distinguish old from patched behavior. Fixture retarget is not needed. The visible hint stays in the existing row. No game file was edited.

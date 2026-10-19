@@ -1,6 +1,8 @@
 # End cards (task 13-ui-end-cards), run of 2026-10-18 evening
 Shipped: v31.52 cw-endx (X on end cards, copy report off the cards, check 10.74 retargeted), v31.58 cw-endslots (haul reveal slots).
 Critic after: 76 = 3 (was 2/3), 40 = 2. 35, 38, 59, 60, 77 not re-scored after the X.
+## Run of 2026-10-19 (lane f)
+Shipped v31.94 cw-endrow, v31.96 cw-endrow2, v31.97 cw-endrow3: haul strip one row (max 8 + count), what is new card X + lime tab + 3 notes. Critic: 40 = 3 (was 2), 77 = 3 (unchanged; wants one hero, panels, left align: layout redesign, not done), 76 mid-reveal = 2 on a frame where the checked objective sits beside a mid-count haul (staging artefact). 35, 38, 59, 60 not re-scored this run (38 = 3 earlier). Remaining critic notes on 40 (card 37 percent wide, three close paths, X contrast) are small or against Q43 dialogs-are-720px; 3 is the finish line for this card.
 ## Still open (critic findings, none reverse a ruling)
 - 76/77: haul slots should be one row of 64px tiles, items reveal in place, "+n more" inside the row.
 - 38/60/77: challenge pill -> flat line with tick; merge two "recovered to the armoury" lines into one 16px line; tags as one tx-2 line "a · b · c" with no boxes; xp line is under 16px.

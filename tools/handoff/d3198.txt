@@ -1,0 +1,5 @@
+## v31.98 - FLOOR BACKPACK ON A PAD
+
+Co-op hunt while he was away. View opened the Undercroft backpack but its pad buttons still went to stations. J5 requires the same bag controls as a raid.
+
+MEASURED. Check 31.98 passes, and fails on v31.97.
