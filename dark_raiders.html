@@ -2018,7 +2018,23 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
 #root #settingsmodal #setwrap{ max-width:none; flex-direction:row; gap:var(--sp-4); }
 #root #settingsmodal #setwrap > #setlist{ flex:1 1 0; min-width:0; min-height:0; }
 #root #settingsmodal #setdetail{ flex:0 0 calc(var(--sp-5) * 10); max-width:none; margin:0; align-self:flex-start; }
-#root #settingsmodal #setdetail .sdh{ font-size:var(--fs-label); color:var(--tx-2); }
+/* v31.xx (cw-pset15) critic on Settings 72 (3), Pad buttons 74 (3) and Raid pause box 25 (3): "the focus state stacks a 1px lime outline, a 3px left bar, a raised fill, a lime value and lime chevrons", "the pane is a title and one 16px line floating in a huge empty column", "four identical full width 56px outline buttons stack with equal weight", "abandon run floats 76px below the last button", "the X is the heaviest element in the header". Now: a focused settings row keeps the raised fill and the 4px lime bar only (no ring, no box round the value); label column 336px so the value sits near its label; the rows are one 1008px column and the detail pane takes the rest with a 32px title, 20px text and a line frame; the pause box keeps resume and settings as full rows, puts feedback and what is new side by side as 40px quiet buttons (the report box and feedback button stay, Q61), and abandon stays a quiet red link at 40px (an older check wants no box); the three X buttons lose their border until hovered. Q43 keeps the near full screen card. */
+#root #settingsmodal #setlist .row:not(.setjump):hover, #root #settingsmodal #setlist .row:not(.setjump):focus-within, #root #settingsmodal #setlist .row.dshow:not(.setjump), #root #settingsmodal #setlist .row:not(.setjump):has(.padfocus){ background:var(--ui-raised); box-shadow:inset 4px 0 0 var(--acc), inset 0 -1px 0 var(--ui-line-hi); }
+#root #settingsmodal #setlist .row:not(.setjump):hover > button, #root #settingsmodal #setlist .row:not(.setjump):focus-within > button, #root #settingsmodal #setlist .row.dshow:not(.setjump) > button, #root #settingsmodal #setlist .row > button.padfocus{ border-color:transparent; background:transparent; }
+#root #settingsmodal #setlist .row:not(.setjump) > div:first-child{ flex:0 0 calc(var(--sp-5) * 7) !important; }
+#root #settingsmodal #setwrap > #setlist{ flex:0 1 calc(var(--sp-5) * 21); }
+#root #settingsmodal #setwrap > #setdetail{ flex:1 1 0; min-width:0; box-sizing:border-box; padding:var(--sp-3); border:1px solid var(--ui-line-hi); border-top:3px solid var(--acc); min-height:calc(var(--sp-5) * 5); }
+#root #settingsmodal #setdetail .sdk{ font-size:var(--fs-title); font-weight:700; }
+#root #settingsmodal #setdetail .sdh{ font-size:var(--fs-body); color:var(--tx-2); }
+#root #settingsmodal #setlist::-webkit-scrollbar{ width:8px; }
+#root #settingsmodal #setlist::-webkit-scrollbar-thumb{ background:var(--ui-line-hi); border-radius:4px; }
+#root #keysmodal #keyslist button.padfocus{ outline:2px solid var(--acc); outline-offset:2px; color:var(--acc); }
+#root #pausebox > div:has(> #resumebtn){ flex-direction:row; flex-wrap:wrap; align-content:flex-start; }
+#root #pausebox > div:has(> #resumebtn) > *{ flex:0 0 100%; }
+#root #pausebox > div:has(> #resumebtn) > #fbbtn, #root #pausebox > div:has(> #resumebtn) > #wnbtn{ flex:1 1 0; min-height:var(--btn-h-xs); font-size:var(--fs-label); color:var(--tx-2); border-color:var(--ui-line); }
+#root #pausebox:not(.asking) > div:has(> #resumebtn) > #abandonbtn, #root #pausebox:not(.asking) > div:has(> #resumebtn) > #arcendbtn, #root #pausebox:not(.asking) > div:has(> #resumebtn) > #charselbtn{ min-height:var(--btn-h-xs); margin-top:var(--sp-2); }
+#root #pausex, #root #settingsmodal #closesettings, #root #keysmodal #closekeys{ border-color:transparent; }
+#root #pausex:hover, #root #pausex:focus-visible, #root #settingsmodal #closesettings:hover, #root #settingsmodal #closesettings:focus-visible, #root #keysmodal #closekeys:hover, #root #keysmodal #closekeys:focus-visible{ border-color:var(--ui-line-hi); }
 /* v28.xx (cw-uc-racks) b-31 step 7, the Undercroft on the shared look (style guide: one reading column, 16px type floor, no filler lines). The racks page ran 1316px wide buttons across a 1700px card (his "one grid" rule gave way to the centred card, Q7 and Q43) with 14px grey-amber hint lines: now one 672px column centred in the card, buttons 48px high, status and hint lines 16px in the second text colour, and the line under the tab name that only repeated it is gone (Q8, reason in changes.md). The codex was an auto-fill grid hugging the top left: now four columns, 1344px at most, centred, 16px rarity and kills lines. The stash setup plates (gun keys, item wheel) and their reset buttons were 12px: 14px now, and the one-line swap note under them is gone (Q70 no tutorial prompts, Q8). */
 #root #opane_mf > *{ box-sizing:border-box; width:100%; max-width:calc(var(--sp-5) * 14); margin-left:auto; margin-right:auto; }
 #root #opane_mf .msub{ display:none; }
@@ -2936,7 +2952,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.70';
+var VER='31.71';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -49576,7 +49592,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.70: Gun key names are 16px and the stash header has no build stamp. Check 31.70 fails on v31.69',
+  now:'v31.71: Settings focus is a bar only, the detail pane is a framed wide pane, the pause box shows feedback and whats new side by side and abandon as a quiet button. Check 31.71 fails on v31.70',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

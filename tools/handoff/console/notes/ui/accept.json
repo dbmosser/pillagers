@@ -18,17 +18,17 @@
  "04-stash-terminal": {
   "score": 2,
   "pass": false,
-  "verdict": "the stash card still reads as a crowded debug terminal: the only changes are slightly larger type and a fixed '$0 going up', while the version stamp, help paragraphs, lime banners and clipped backpack are all still there.",
+  "verdict": "the card now fills the screen with an x in the corner, but the earlier advice was mostly not followed: the stash is still a dense console with a wall of small mono text, two help lines, a lime freebie bar and a toast, and no single thing the eye lands on first.",
   "findings": [
-   "P0 card header (version stamp, xp line, credits row): delete the version stamp and the xp line. set 'stash' at 32px f-cond 700 tx-1, 24px from the card's left edge, with '13 held' at 20px tx-2 beside it. show credits as one 56px hero number or a single 20px stat. dim the backdrop title under the .80 scrim.",
-   "P0 bottom half: legend, two help paragraphs, freebie bar, toast: delete both help paragraphs. cut the freebie text to 'issued gear: pistol, 2 bandages, frag, plate'. keep the legend as one 14px footer line. move the toast to top-centre and auto-dismiss after 3s.",
-   "P0 lime accents: first-raid banner, freebie bar, gun key digits, '$0 going up': use lime only for 'take the freebie kit' as a filled --acc button, 56px high with --acc-ink text, right aligned. make the first-raid banner a tx-2 line with no border, or remove it. set key digits and body text to tx-1.",
-   "P1 right column: backpack, tactical belt, gun keys, item wheel: show the backpack as two full rows with no clip. use one 56px cell on an 8px gap for belt, gun keys and wheel. delete the 'guns' caption. move gun keys and wheel into a tab or drawer, or a single 2-column block aligned to the pane's 24px padding.",
-   "P1 type sizes throughout: every read label at least 16px f-cond 600 with +.04em tracking. section headers at 20px f-cond 700 tx-1. limit f-mono to table numbers."
+   "P0 card header (pillagers / the undercroft subtitle, credits row, backdrop title): delete 'pillagers' and the subtitle. set 'stash' at 32px f-cond 700 tx-1, 24px from the left edge. show credits as one 56px f-cond 800 hero or a single 20px stat, and drop xp and bag to a 16px tx-2 line. raise the scrim to .80 so the backdrop title is hidden.",
+   "P0 bottom half: key legend, 'hover an item and press j' line, freebie bar, toast: delete the j hint and the first-raid sentence. shorten the freebie to 'issued gear: pistol, 2 bandages, frag, plate'. keep the legend as one 14px footer line. move the toast to top-centre and dismiss it after 3s. remove the empty row at y≈870.",
+   "P0 lime accents: first-raid banner, freebie bar, gun key digits, stash tab, loadout title: make 'take the freebie kit' a filled --acc button, 56px high, --acc-ink text, 20px f-cond 700, right aligned. remove the banner border and the olive bar fill (use --ui-panel). set the gun key digits and labels to tx-1.",
+   "P1 right column: backpack, tactical belt, gun keys, item wheel: show the backpack as two full rows with no clip. use one 56px cell on an 8px gap for belt, gun keys and wheel. delete the 'guns' caption. move gun keys and wheel to a tab, or a 2-column block aligned to the 24px padding. align reset to the right edge at 16px.",
+   "P1 type throughout: use f-cond 600 at 16px minimum with +.04em tracking, section headers 20px f-cond 700 tx-1. keep f-mono only for table numbers. fix the tab row height to 56px."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-31-f4/04-stash-terminal-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/b-31-f6/04-stash-terminal-1080.jpg",
   "task": "b-31-ui-undercroft",
-  "when": "2026-10-19T00:38"
+  "when": "2026-10-19T00:54"
  },
  "05-sector-page": {
   "score": 2,
@@ -71,17 +71,17 @@
  "08-shop": {
   "score": 2,
   "pass": false,
-  "verdict": "the subtitle is gone and the panels now run to the bottom with the buy button pinned, but the grid is still tiny tiles floating in a huge empty panel, the joke pill sits inside the card, and the header and footer are still not to spec.",
+  "verdict": "the tiles now have icons and the layout is tidier, but most of the earlier advice was not followed: the grid is still a third full with a dead lower half, the flavour pill still sits on the panel edge, and the header still has the currency clutter and a crowded close button.",
   "findings": [
-   "P0 grid panel, x 119-1307, y 190-1002: use a 6-column grid of tiles that stretch to fill the width (about 190px square) with 8px gutters. group them under small section labels (medical, ammo, gear) to fill the panel. close the detail pane gap by adding a 160px item art or icon at the top, or by moving the price block up under the stats.",
-   "P0 pill 'everything here works. cannot say the same for you.' (x 767-1153, y 975-1012): delete it. add the 72px footer row (y 952-1024) with a ghost 'back' button (56px high, B glyph) on the left and the 14px legend on the right. shorten both panels to end at y~940.",
-   "P1 header, x 1574-1807, y 67-125: keep one currency block: '900' at 20px tx-1 with 'credits' at 16px tx-2. move xp, stash and bag to the footer legend. put 24px between the block and the 48x48 X, and add the B glyph. title the window 'shop' at 32/700.",
-   "P1 tabs and double rule, x 119-1801, y 124-190: tabs at 20px f-cond 600 with 24px side padding, 48px high, a 3px lime underline, and one divider only. put the strip on the title row or directly under it, and drop the second rule.",
-   "P1 tile prices, x 284-1285, y 215-230: make prices tx-2 at 16px. use danger red for unaffordable prices only. show 'sold out' as a 16px tx-2 label with the tile at 40% opacity. keep lime for the focused tile border and the buy button."
+   "P0 grid panel, x 119-1307, y 190-1002: use a 6-column grid of tiles that stretch to the panel width (about 190px square, 8px gutters). add small section labels (medical, ammo, gear) at 16px tx-2 to fill the space. or end the panel at the last row.",
+   "P0 flavour pill 'everything here works. cannot say the same for you.', x 767-1153, y 975-1012: delete it. add the 72px footer row (y 952-1024) with a ghost 'back' button (B glyph) on the left and the 14px key legend on the right.",
+   "P1 header right, x 1414-1807, y 67-115: keep one block: '900' at 20px tx-1 and 'credits' at 16px tx-2. move xp, stash and bag to the footer legend. leave 24px between the block and the 48x48 x.",
+   "P1 title, x 119-335, y 82-110: title it 'shop' at 32px f-cond 700. let the tabs carry craft and hire.",
+   "P1 tabs, x 119-290, y 145-180: set tabs at 20px f-cond 600 with 24px side padding and 48px height. a 3px lime underline, one divider only, and the strip on the title row or directly under it."
   ],
-  "pic": "tools/handoff/console/notes/shots/04-r4-after/08-shop-1080.jpg",
-  "task": "04-style-guide-update",
-  "when": "2026-10-18T21:56"
+  "pic": "tools/handoff/console/notes/shots/b-31-f6/08-shop-1080.jpg",
+  "task": "b-31-ui-undercroft",
+  "when": "2026-10-19T00:54"
  },
  "09-craft": {
   "score": 2,
@@ -125,17 +125,17 @@
  "14-mainframe-racks": {
   "score": 2,
   "pass": false,
-  "verdict": "nothing from the last review was applied: the racks tab is still one narrow column of grey buttons and explaining paragraphs, with a joke line ('wild idea claude came up with') left on screen and a large dead area to the right and below.",
+  "verdict": "the mainframe racks tab still has the old layout of one narrow column of grey buttons with explaining paragraphs, a huge empty right half, and a dev-joke sentence about claude that must go.",
   "findings": [
-   "P0 import a friend paragraph, bottom of the column: delete the paragraph. Use a 16px tx-2 label of 5 words or fewer ('import a friend's run report') or no text. Put the detail in a tooltip.",
-   "P0 whole racks tab layout: two columns with a 24px gap. Left: a panel with the 10-slot rack grid at 32px tall and a 56px hero '0 / 10'. Right: a --ui-raised detail pane listing costs as a table. Left-align both to the 118px margin.",
-   "P1 build a rack / fold 10 racks / slot a data core buttons: make 'build a rack' the one --acc fill with --acc-ink 20px text. Keep the disabled buttons at tx-2, 4.5:1 or better, with a --ui-line-hi border. Add a 2px lime focus bar on the focused row. Make 'import a friend' secondary.",
-   "P1 description paragraphs under each button (13-14px body): delete the sentences. Replace the cost line with a row of 16px chips ('scrap 0/12', 'wire 0/9', 'cell 0/6', 'board 0/6'), red where short.",
-   "P1 '0 of 10 racks' count and rack slots: use a 56px f-cond 800 tx-1 '0 / 10' as the hero. Make the slots 40x16 --ui-panel fills with --ui-line-hi borders, lime when filled. Drop the teal."
+   "P0 import a friend paragraph, bottom of column: delete it. Leave at most a 16px tx-2 label of 5 words or fewer ('import a run report') and move the detail to a tooltip.",
+   "P0 whole racks tab layout: two columns with a 24px gap, both starting at the 118px margin. Left panel: rack grid and the three actions. Right --ui-raised detail pane: costs as a table with held/needed per material.",
+   "P0 description paragraphs under build a rack, fold, slot a data core: delete the sentences. Show costs as 16px chips ('scrap 0/12', 'wire 0/9', 'cell 0/6', 'board 0/6'), red where short. Move the data-core detail to a tooltip.",
+   "P1 build a rack / fold / slot a data core buttons: make 'build a rack' the one --acc fill with --acc-ink 20px text. Disabled buttons get tx-2 text at 4.5:1 or better and a --ui-line-hi border. Make 'import a friend' secondary. Add a 2px lime focus bar on the focused row.",
+   "P1 '0 of 10 racks' count and rack slots, top of column: set a 56px f-cond 800 tx-1 '0 / 10' as the hero. Make the slots 40x16 --ui-panel fills with --ui-line-hi borders, lime when filled. Drop the teal. Leave 24px below the tab rule."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-31-f2/14-mainframe-racks-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/b-31-f6/14-mainframe-racks-1080.jpg",
   "task": "b-31-ui-undercroft",
-  "when": "2026-10-19T00:29"
+  "when": "2026-10-19T00:54"
  },
  "16-bar-last-pour": {
   "score": 2,
@@ -369,17 +369,17 @@
  "65-codex": {
   "score": 2,
   "pass": false,
-  "verdict": "it is a clean dark card with a working x, but the grid fills only the top half of a huge empty window, the rows have uneven heights and no focus state, and the header is a mess of three different number styles.",
+  "verdict": "The codex is still a small, cramped grid of mismatched tiles floating in the top half of an otherwise empty card, with the same unreadable header stats and no visible focus state, so the earlier advice was not followed.",
   "findings": [
-   "P0 codex grid and the empty lower half of the card (y 530-950): Scale the tiles to fill the card: 4 columns spanning the 24px-padded content width (about 1680px), row height about 160px with a 96px weapon icon, so the 4 rows reach about y 900. Or add a detail pane on the right (--ui-raised) that shows the selected weapon in large size.",
-   "P1 tile rows 1-4 (heights about 86, 86, 82, 82 px): Fix every tile at one size (for example 322x96, exactly 16px gap on an 8px grid) and anchor the text block at the same top offset. Show 'kills 0' or leave the line blank so 2-line and 3-line tiles align.",
-   "P1 header right side: '48,250 credits  212,000 xp  stash 8,405 bag 0': Remove the stats from this window, or make it one consistent pair style: 20px tx-1 value plus 16px tx-2 label, with the same 24px gap. Show money as '$48,250', and the bag line in the same style.",
-   "P1 tile text: rarity and category lines, 'not found' tiles: Minimum 16px with +.04em. Keep the locked rarity text at full rarity colour, or switch it to --tx-2 (#aaa498). Keep the rarity colour only on the 3px left bar.",
-   "P1 selection and focus state: Give the focused tile a 2px --acc border plus a --ui-raised fill. Make the 'new' badge 16px text with 8px padding inset 8px from the edge, or use a small lime dot."
+   "P0 grid and empty lower card (y 530-950): Stretch the tiles to the content width (about 1680px, 4 columns, 16px gap) and make each row about 160px tall with a 96px icon, so the grid reaches about y 900. Or add a right-hand --ui-raised detail pane showing the selected weapon large. Dock the toast to a fixed corner of the screen, outside the card.",
+   "P1 tile sizes (rows about 86, 86, 82, 82px tall; row y starts 143, 245, 347, 444): Fix every tile at one size (e.g. 322x96) with a 16px gap. Anchor the name at the same top offset (16px). Print 'kills 0' or a blank third line on every tile so the lines align.",
+   "P1 header right: '48,250 credits 212,000 xp stash 8,405 bag 0': Remove the stats from this window. If they stay, show '$48,250' as a 20px tx-1 value with a 16px tx-2 label, with the same 24px gap for every pair, and leave 32px before the X.",
+   "P1 tile text: rarity/category lines and 'not found' tiles: Set the minimum text size to 16px with +.04em. Render the locked tile category in --tx-2 (#aaa498) and keep rarity colour only on the 3px left bar. Raise the locked silhouette to about 30% brightness.",
+   "P1 selection / focus: Focused tile: 2px --acc border plus --ui-raised fill, with a 4px scale bounce. Idle tiles: --ui-panel fill with a 1px --ui-line-hi border."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-31-f1/65-codex-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/b-31-f6/65-codex-1080.jpg",
   "task": "b-31-ui-undercroft",
-  "when": "2026-10-19T00:17"
+  "when": "2026-10-19T00:54"
  },
  "66-trophy-case": {
   "score": 2,

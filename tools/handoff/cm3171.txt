@@ -1,0 +1,7 @@
+v31.71: settings focus, detail pane and pause box rows
+
+Settings focus is a bar only, the detail pane is a framed wide pane, the pause box shows feedback and whats new side by side and abandon as a quiet button.
+
+Check 31.71. Fails on v31.70.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

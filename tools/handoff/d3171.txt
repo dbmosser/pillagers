@@ -1,0 +1,5 @@
+## v31.71 - SETTINGS FOCUS, DETAIL PANE AND PAUSE BOX ROWS
+
+Co-op hunt while he was away. Critic c-31 rounds (settings 72 = 3, pad buttons 74 = 3, pause box 25 = 3): focus row stacks four lime signals, detail pane is a dead column, pause buttons all equal weight, abandon floats, X is heavy.
+
+MEASURED. Check 31.71 passes, and fails on v31.70.
