@@ -1,0 +1,7 @@
+v31.96: what is new card: note lines say more than the headline, x above the title rule
+
+Each note line keeps its first clause after the headline. The X is smaller and sits above the title rule.
+
+Check 31.96. Fails on v31.95.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

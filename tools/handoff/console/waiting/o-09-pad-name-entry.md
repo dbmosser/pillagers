@@ -8,3 +8,8 @@ The career name box cannot be reached with a pad today. Build and test as sectio
 Checks (each control must FAIL on the old build): a stub pad creates a new save with a typed name; the name shows in the stash
 and survives a reload; pad focus never lands on a text field that has no pad route.
 TASK DONE when shipped and the checks pass; TASK PARTIAL with what is left.
+
+Lane note 2026-10-19 19:21: shipped cw-cx-padname and parked: only lane-side steps are left. Codex's last words:
+Shipped in v31.95; check 31.95 passed both fixture gates. Added an explicit camera request because the lane skipped the custom recipes.
+
+TASK PARTIAL: coordinator must capture both windows and return pictures and critic results.

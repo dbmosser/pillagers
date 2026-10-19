@@ -14,3 +14,11 @@ The gate check drives pollPad with a stub navigator.getGamepads. It tests held-b
 
 Handed over keys.txt and four camera recipes: letter picker and named stash on both player 1 and player 2 pages. Browser gates, shipping, pictures at 1080p and 4K, and critic review remain the lane work. The finish line is critic 3 for these screens, with any P0/P1 fixed. No fixture retarget is expected; the existing new-save name check still sees newNameKeep in the real button handler.
 
+
+--- codex run 2026-10-19 19:21 ---
+2026-10-19, continuation on v31.95: cw-cx-padname shipped in commit 5bd7d66b. Read the lane logs: preflight printed PREFLIGHT PASS, and the ship log says fixture.html check 31.95: PASS / PASS. No further game code is needed based on those results.
+
+There are no J4 photographs, camera reports or critic results in the main notes/shots folder or accept.json. The installed tools/codex-lane.sh lines 322-400 only run the camera for shots.txt after a fresh ship; they do not handle camera-recipes.json. This explains the missing review. The existing four recipes cannot be selected through -Screens because the new card is not in the shared screen catalog.
+
+Added camera-run-request.json with the exact project camera command, resolution pair 1080/4k, port 9364, expected files and critic instructions. The coordinator must run it outside the sandbox and return the four scenes and critic findings. This is the only remaining work; do not re-ship cw-cx-padname. The current camera recipes and keys.txt are unchanged. No tracked files were edited in this continuation.
+

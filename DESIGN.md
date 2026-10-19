@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.96 - WHAT IS NEW CARD: NOTE LINES SAY MORE THAN THE HEADLINE, X ABOVE THE TITLE RULE
+
+Co-op hunt while he was away. After the last ship the card read polish pass 31. with nothing after it, and its X ran across the title rule.
+
+MEASURED. Check 31.96 passes, and fails on v31.95.
 ## v31.95 - PAD CAREER NAME
 
 Co-op hunt while he was away. J4: the career name field had no pad route and other text fields trapped pad focus.

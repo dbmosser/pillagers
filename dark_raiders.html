@@ -2999,7 +2999,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.95';
+var VER='31.96';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3044,8 +3044,11 @@ function wnHead(s){
   var t=String(s||''), i=t.indexOf('. ');
   if(i<0) return wnShort(t);
   if(t.length<=60) return t;
-  return t.slice(0,i+1);
-}
+  // v28.xx (cw-endrow2): the headline alone read "polish pass 31." with nothing after it, so the first clause of what follows comes too (cut at a comma or "and", never mid word).
+  var rest=t.slice(i+2), c=rest.search(/,| and /);
+  if(c<0||c>44) c=Math.min(rest.length,44), rest=rest.slice(0,c).replace(/\s+\S*$/,'');
+  else rest=rest.slice(0,c);
+  return t.slice(0,i+1)+(rest?' '+rest:'');}
 var WNSEEN=1;   // v27.xx (wnbutton), HIS ANSWER 37: the card no longer shows by itself on the floor (it was 0 until you walked off it); WHAT'S NEW in the pause box shows the notes. Left at 0 by a check, the old card still draws.          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
   'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
@@ -48287,7 +48290,7 @@ function drawHubHUD(ox,oy){
     ctx.fillStyle=UIC.ui_line_hi; ctx.fillRect(wnX+LH(22),wnY+LH(44),wnW-LH(44),1);
     // v28.xx (cw-endrow), the critic on 40: "no X, no accent tab" (Q43: a card gets an X; the guide: a 3px lime tab). The X is the same job as Got it.
     ctx.fillStyle=UIC.acc; ctx.fillRect(wnX,wnY,LH(3),wnH);
-    var _wxs=LH(40), _wxx=wnX+wnW-LH(14)-_wxs, _wxy=wnY+LH(14);
+    var _wxs=LH(32), _wxx=wnX+wnW-LH(14)-_wxs, _wxy=wnY+LH(10);   // v28.xx (cw-endrow2): the X (32 to 42 down) ends above the title rule (44 down); it ran across the rule at 40
     ctx.strokeStyle=UIC.ui_line_hi; ctx.strokeRect(_wxx+0.5,_wxy+0.5,_wxs-1,_wxs-1);
     ctx.textAlign='center'; ctx.font=FS(TYPE.title); ctx.fillStyle=UIC.tx_1; ctx.fillText('\u00d7',_wxx+_wxs/2,_wxy+_wxs*0.72); ctx.textAlign='left';
     WNX={x:_wxx*_wnr,y:_wxy*_wnr,w:_wxs*_wnr,h:_wxs*_wnr};    ctx.textAlign='left';
@@ -50158,7 +50161,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.95: Name a career save with the pad: up or down for a letter, A next, B back, Menu done. The stash shows the saved name. Check 31.95 fails on v31.94',
+  now:'v31.96: Each note line keeps its first clause after the headline. The X is smaller and sits above the title rule. Check 31.96 fails on v31.95',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

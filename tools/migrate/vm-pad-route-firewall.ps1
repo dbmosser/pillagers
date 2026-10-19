@@ -18,36 +18,45 @@
 #   powershell -ExecutionPolicy Bypass -File C:\PillagersMove\kit\vm-pad-route-firewall.ps1 -Undo      removes the rule again
 #   -Status        only show whether the rule is there and what it says (changes nothing)
 #   -Ports LIST    default 8802,8799. Whole numbers 1024-65535, at most 8.
-#   -HostAddress A the main PC's address. Default: the VM's default gateway (on the Default Switch that IS the main PC), or 192.168.160.1 when
-#                  the VM has none. Must be a private address. If the main PC's Default Switch address ever changes (after a reboot), run this again.
-#   -Yes           do not ask (still prints everything)
+#   -HostAddress A the main PC's address. Default: the VM's default gateway, but ONLY when that gateway is on the Hyper-V Default Switch (the usual
+#                  192.168.160.0/20, or any network whose adapter has the DNS suffix mshome.net). Any other gateway (a router on a bridged network)
+#                  is NOT used: the script stops and asks you to give the address with -HostAddress. Must be a private address. If the main PC's
+#                  Default Switch address ever changes (after a reboot), run this again.
+# There is no -Yes: the YES question must be answered by a person typing at the keyboard (a script that pipes "YES" in is refused).
+# This script refuses to run on the main PC (computer JUL26, or any PC with the Hyper-V service): it is for the VM only. On the main PC it writes nothing.
 # (the script may sit in C:\claudecode\dark raiders\tools\migrate\ as well; it does not matter where it is run from)
-# Log: C:\PillagersMove\kit\logs\vm-pad-route-firewall-<time>.log   Exit codes: 0 done / nothing to do, 1 error, 2 refused or cancelled, 3 needs an administrator window.
+# Log: C:\PillagersMove\kit\logs\vm-pad-route-firewall-<time>.log, written only when the firewall is really changed or removed (never for
+# -Status, -DryRun or a refusal).   Exit codes: 0 done / nothing to do, 1 error, 2 refused or cancelled, 3 needs an administrator window.
 # ASCII only. Windows PowerShell 5.1.
 param(
   [switch]$DryRun,
   [switch]$Undo,
   [switch]$Status,
   [string]$Ports = '8802,8799',
-  [string]$HostAddress = '',
-  [switch]$Yes
+  [string]$HostAddress = ''
 )
 $ErrorActionPreference = 'Stop'
 $RuleName = 'Pillagers pad route'
 $RuleDesc = 'Lets the main PC reach the Pillagers game and run-report ports in this VM (pad route).'
 $LogDir   = 'C:\PillagersMove\kit\logs'
 $script:Log = ''
+$script:Buffer = New-Object System.Collections.ArrayList
 
 function Start-Log {
+  # called only just before the firewall is really changed; the lines printed so far are written first
+  if ($script:Log) { return }
   try {
     if (-not (Test-Path -LiteralPath $LogDir)) { New-Item -ItemType Directory -Force -Path $LogDir | Out-Null }
     $script:Log = Join-Path $LogDir ('vm-pad-route-firewall-' + (Get-Date -Format 'yyyyMMdd-HHmmss') + '.log')
     Set-Content -LiteralPath $script:Log -Value ('# vm-pad-route-firewall started ' + (Get-Date -Format 's') + ' on ' + $env:COMPUTERNAME + ' as ' + $env:USERNAME) -Encoding ASCII
+    foreach ($l in $script:Buffer) { Add-Content -LiteralPath $script:Log -Value $l -Encoding ASCII }
   } catch { $script:Log = '' }
 }
 function Say([string]$Text, [string]$Color) {
   if ($Color) { Write-Host $Text -ForegroundColor $Color } else { Write-Host $Text }
-  if ($script:Log) { try { Add-Content -LiteralPath $script:Log -Value ((Get-Date -Format 'HH:mm:ss') + ' ' + $Text) -Encoding ASCII } catch { } }
+  $line = (Get-Date -Format 'HH:mm:ss') + ' ' + $Text
+  if ($script:Log) { try { Add-Content -LiteralPath $script:Log -Value $line -Encoding ASCII } catch { } }
+  else { [void]$script:Buffer.Add($line) }
 }
 function Ok([string]$t)   { Say ('OK    ' + $t) 'Green' }
 function Info([string]$t) { Say ('      ' + $t) '' }
@@ -89,15 +98,31 @@ function ConvertTo-PortList([string]$Text) {
   return , @($out)
 }
 
+function Test-MainPc {
+  # Returns the reason when this looks like the main PC (so nothing may be done here), else ''.
+  if ($env:COMPUTERNAME -ieq 'JUL26') { return 'the computer name is JUL26' }
+  try { if (Get-Service -Name 'vmms' -ErrorAction SilentlyContinue) { return 'the Hyper-V management service (vmms) runs here' } } catch { }
+  return ''
+}
+
+function Test-InDefaultSwitchRange([string]$Ip) {
+  # the usual Default Switch network of this main PC: 192.168.160.0/20 = 192.168.160.0 - 192.168.175.255
+  return ($Ip -match '^192\.168\.(16\d|17[0-5])\.\d{1,3}$')
+}
+
 function Get-VmGateway {
-  # On the Default Switch the VM's default gateway is the main PC. Returns '' when the VM has none.
+  # On the Default Switch the VM's default gateway is the main PC. Returns $null when the VM has none, else Address + Suffix of the adapter.
   try {
     $r = Get-NetRoute -AddressFamily IPv4 -DestinationPrefix '0.0.0.0/0' -ErrorAction Stop |
       Where-Object { $_.NextHop -and $_.NextHop -ne '0.0.0.0' } |
       Sort-Object { [int]$_.RouteMetric + [int]$_.InterfaceMetric } | Select-Object -First 1
-    if ($r) { return [string]$r.NextHop }
+    if ($r) {
+      $suffix = ''
+      try { $dc = Get-DnsClient -InterfaceIndex ([int]$r.InterfaceIndex) -ErrorAction Stop; if ($dc) { $suffix = [string]$dc.ConnectionSpecificSuffix } } catch { }
+      return [pscustomobject]@{ Address = [string]$r.NextHop; Suffix = $suffix }
+    }
   } catch { }
-  return ''
+  return $null
 }
 
 function Get-RuleFacts {
@@ -122,7 +147,13 @@ function Show-Facts($facts) {
   }
 }
 
-Start-Log
+# wrong-machine guard: this is the VM's script. On the main PC it prints this and stops, before anything is written (no log, no folder).
+$mainWhy = Test-MainPc
+if ($mainWhy) {
+  Write-Host ('FAIL  This looks like the MAIN PC (' + $mainWhy + '). This script is for the VM only; it changes the firewall of the machine it runs on. Nothing was done and nothing was written.') -ForegroundColor Red
+  Write-Host '      Run it inside the VM (guide step 0C). Nothing here needs it.'
+  exit 2
+}
 Say ''
 Say '=== PILLAGERS PAD ROUTE: VM FIREWALL RULE ===' 'Cyan'
 if ($Status) { Say '(status only: nothing is changed)' 'DarkGray' }
@@ -134,19 +165,34 @@ $portList = ConvertTo-PortList $Ports
 if (-not $portList) { Bad ('-Ports "' + $Ports + '" is not valid. Use for example 8802,8799 (whole numbers 1024-65535, at most 8, no repeats).'); exit 2 }
 $portsText = ($portList -join ',')
 
-# the main PC's address as the VM sees it
+# the main PC's address as the VM sees it (not needed to look at or to remove the rule)
 $hostAddr = $HostAddress.Trim()
 $hostNote = 'given with -HostAddress'
-if (-not $hostAddr) {
-  $gw = Get-VmGateway
-  if ($gw -and (Test-PrivateIPv4 $gw)) { $hostAddr = $gw; $hostNote = 'the VM''s default gateway = the main PC on the Default Switch' }
-  else {
-    $hostAddr = '192.168.160.1'
-    $hostNote = 'the usual Default Switch address of the main PC (the VM has no usable default gateway to ask)'
-    if ($gw) { Warn ('The default gateway (' + $gw + ') is not a private address, so it is not used.') }
+$addrProblem = ''
+if (-not $Undo) {
+  if (-not $hostAddr) {
+    # The default gateway is the main PC ONLY on the Hyper-V Default Switch. On a bridged or other network it is a router, which must never be
+    # allowed in. So the gateway is used only when it is in the usual Default Switch range or its adapter has the Default Switch DNS suffix.
+    $gw = Get-VmGateway
+    if ($gw -and (Test-PrivateIPv4 $gw.Address) -and ((Test-InDefaultSwitchRange $gw.Address) -or ($gw.Suffix -ieq 'mshome.net'))) {
+      $hostAddr = $gw.Address; $hostNote = 'the VM''s default gateway = the main PC on the Default Switch'
+    } elseif ($gw) {
+      $addrProblem = 'The VM''s default gateway is ' + $gw.Address + ', which does not look like the Hyper-V Default Switch (not in 192.168.160.0/20, and the adapter''s DNS suffix "' + $gw.Suffix + '" is not mshome.net). It may be a router, so it is NOT used.'
+    } else {
+      $addrProblem = 'The VM has no default gateway, so the main PC''s address cannot be worked out.'
+    }
+  } elseif (-not (Test-PrivateIPv4 $hostAddr)) {
+    $addrProblem = 'The main PC address "' + $hostAddr + '" is not a private IPv4 address (10.x, 172.16-31.x, 192.168.x).'
+  } elseif ($hostAddr -match '\.(0|255)$') {
+    $addrProblem = 'The main PC address "' + $hostAddr + '" ends in .0 or .255, which is a network or broadcast address, not a PC.'
+  }
+  if ($addrProblem -and -not $Status) {
+    Bad ($addrProblem + ' Refusing; nothing was changed.')
+    Info 'Say which address the main PC has and run this again with it, for example:   -HostAddress 192.168.160.1'
+    Info '(on the main PC:  Get-NetIPAddress -InterfaceAlias "vEthernet (Default Switch)" -AddressFamily IPv4  shows it)'
+    exit 2
   }
 }
-if (-not (Test-PrivateIPv4 $hostAddr)) { Bad ('The main PC address "' + $hostAddr + '" is not a private IPv4 address (10.x, 172.16-31.x, 192.168.x). Refusing.'); exit 2 }
 
 $facts = @()
 try { $facts = @(Get-RuleFacts) } catch { Warn ('Could not read the firewall rules: ' + $_.Exception.Message) }
@@ -154,8 +200,9 @@ try { $facts = @(Get-RuleFacts) } catch { Warn ('Could not read the firewall rul
 if ($Status) {
   if ($facts.Count -eq 0) { Info ('The rule "' + $RuleName + '" does not exist (nothing from the main PC can reach the VM''s game ports).') }
   else { Show-Facts $facts }
-  Info ('The main PC would be: ' + $hostAddr + ' (' + $hostNote + ')')
-  if ($facts.Count -gt 0 -and $facts[0].RemoteAddress -ne $hostAddr) { Warn ('The rule allows ' + $facts[0].RemoteAddress + ' but the main PC is now ' + $hostAddr + '. Run this script again (administrator) to update the rule.') }
+  if ($addrProblem) { Warn $addrProblem; Info 'To add the rule you will have to give the address with -HostAddress.' }
+  else { Info ('The main PC would be: ' + $hostAddr + ' (' + $hostNote + ')') }
+  if (-not $addrProblem -and $facts.Count -gt 0 -and $facts[0].RemoteAddress -ne $hostAddr) { Warn ('The rule allows ' + $facts[0].RemoteAddress + ' but the main PC is now ' + $hostAddr + '. Run this script again (administrator) to update the rule.') }
   Say ''
   Show-LogPath
   exit 0
@@ -169,6 +216,7 @@ if ($Undo) {
   Show-Facts $facts
   if ($DryRun) { Dry ('remove ' + $facts.Count + ' rule(s)'); Show-LogPath; exit 0 }
   if (-not (Test-IsAdmin)) { Bad 'This needs an administrator window (guide step 0C). Close this window, open "Windows PowerShell" with Run as administrator, run the same line again.'; exit 3 }
+  Start-Log
   try {
     Remove-NetFirewallRule -DisplayName $RuleName -ErrorAction Stop
     Ok 'The rule is removed. The main PC can no longer reach the VM''s game ports (the pad route will show "the vm is not answering").'
@@ -208,10 +256,13 @@ if ($DryRun) {
   exit 0
 }
 if (-not (Test-IsAdmin)) { Bad 'This needs an administrator window (guide step 0C). Close this window, open "Windows PowerShell" with Run as administrator, run the same line again.'; exit 3 }
-if (-not $Yes) {
-  $a = Read-Host 'Type YES (in capitals) to make this firewall change, anything else cancels'
-  if ($a -cne 'YES') { Say 'Cancelled. Nothing was changed.' ''; exit 2 }
-}
+# the question must be answered by a person: a script that pipes "YES" into this window is refused
+$redirected = $false
+try { $redirected = [Console]::IsInputRedirected } catch { }
+if ($redirected) { Bad 'This question must be answered by a person typing at the keyboard; the input here is redirected (piped or scripted). Nothing was changed.'; exit 2 }
+$a = Read-Host 'Type YES (in capitals) to make this firewall change, anything else cancels'
+if ($a -cne 'YES') { Say 'Cancelled. Nothing was changed.' ''; exit 2 }
+Start-Log
 try {
   if ($facts.Count -gt 0) { Remove-NetFirewallRule -DisplayName $RuleName -ErrorAction Stop; Info 'old rule removed' }
   [void](New-NetFirewallRule -DisplayName $RuleName -Description $RuleDesc -Direction Inbound -Action Allow -Protocol TCP -LocalPort $portList -RemoteAddress $hostAddr -Profile Any -ErrorAction Stop)
