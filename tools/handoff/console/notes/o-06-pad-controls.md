@@ -24,3 +24,26 @@ camera-recipes.json supplies four pictures: pad-controls-pause, pad-controls-ful
 
 Remaining lane work: run retarget checks, preflight and ship all six keys; return the four pictures and critic findings. Finish line is 4 for raid/pause and 3 for the controller editor. These are single-window pictures, so they do not satisfy his two-window condition. Use the project's two-window rig to verify RS melee, LT hold, X priority, View tap/hold and exhausted-gun switching in both live windows, with a picture from each; verify first pad is P2 and second is P1. Physical pad numbers for 2.30 and the J6 newcomer accidental-click trial are not available from this unattended sandbox. Do not invent either measurement. If the camera probe exposes hardware, return those numbers before deciding any aim tuning.
 
+
+--- codex run 2026-10-19 16:39 ---
+2026-10-19, run 2 from v31.87: read the lane logs because the fresh task prompt contained no gate result. cw-cx-rsmelee shipped in c721a3ca. Its fixture check 31.87 passed and verifySafe passed with entities 85/374 and containers 165/593. No pictures or critic result were returned; do not count the visible change or the two-window requirement as accepted yet.
+
+cw-cx-xfight preflight stopped on the older card-stamp check, not on a pad-control regression: REGRESS 31.72, card v31.72 is 0.16 behind the draft v31.88. Per the Codex addendum, wrote questions-new.md asking the Claude lane to refresh and ship the card with the next unused genP number. Do not weaken or retarget this card freshness check.
+
+Regenerated the five pending drafts against current v31.87: every mk printed written. verify-pending.js checks all pending edits in ship order and parses their checks and the resulting game script without running them. Browser checks, shipping, pictures, critic review and live two-window verification remain with the lane after the card refresh. Existing keys.txt, fixture-retarget.json and camera-recipes.json are preserved for that continuation. No game or fixture edits made in this run.
+
+
+--- codex run 2026-10-19 17:10 ---
+2026-10-19, run 3 from v31.87: cw-cx-rsmelee is still the only shipped task key. The latest xfight preflight log still reports only the stale card gate (31.72 card versus draft 31.88); the already-recorded Claude-lane card request remains open. No game change or fixture retarget was made this run, and the card check was not weakened.
+
+Found why this task has received no pictures: the installed tools/codex-lane.sh only calls the stock -Screens camera path, never -Recipes. The same runner limitation was already logged by o-04-camera-closer, so no duplicate owner question was added. Added camera-run-request.json with the exact six-scene project camera command, prerequisites, expected files, critic finish lines and required report contents. It is a coordinator handoff, not an executable mk script and not an instruction for sandbox Codex to start Chrome.
+
+Extended camera-recipes.json from four to six scenes with pad-controls-pair-p1 and pad-controls-pair-p2. They reuse the camera job real popup pairing pattern, launch connected CAREER windows, keep NET.same and the actual pad router, and exercise synthetic Xbox devices in both windows. They check default pad order (first is P2, second is P1), exclusion of the other pad, RS click and cooldown, modal blocking and 80 ms aim hold, LT hold/release, X combat priority and held choice, View tap/hold/release, and exhausted-gun switching through updatePlayer. Both recipes finish with goals/status displayed and require the other real pillager to be visible. The report returns the assertions for both roles. Browser execution has not happened; do not count recipe syntax as two-window proof. These synthetic pads do not supply physical pad measurements.
+
+All five pending mk scripts printed written again. verify-pending.js composed 19 unique edits and parsed the resulting game script and five draft checks. prepare-pair-camera.js parsed the new paired camera bodies; stage-pad-pair.js is the generated standalone helper for review. No tracked files changed.
+
+Remaining work belongs to the lane/coordinator: refresh the card using the previously requested Claude path, ship the pending keys, run camera-run-request.json command (or repair recipe support), return report, all six pictures and critic findings. The physical pad probe and any hardware tuning decision still depend on actual readings. Keep this job waiting on that lane work instead of spending repeated Codex runs on the unchanged stale-card result.
+
+--- codex run 2026-10-19 17:38 ---
+2026-10-19, run 4: no external progress since run 3. Current source remains v31.87 (c721a3ca); cw-cx-rsmelee is the only shipped key. Latest cw-cx-xfight preflight still fails only on the stale v31.72 card versus draft v31.88. No o-06 pictures exist in the shared shots folder. The existing card-refresh request and camera-run-request.json already state the required lane actions. All pending scripts, keys, fixture retarget and six camera recipes remain handed over; nothing new was needed or regenerated. Do not resume this job until the Claude lane refreshes the card and the coordinator runs the supplied camera command. Hardware aim measurements remain uncollected. No game, fixture, runner or shipping file was changed this run.
+

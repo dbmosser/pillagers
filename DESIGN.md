@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v31.88 - THE WHAT IS NEW CARD NAMES POLISH PASS 31
+
+Co-op hunt while he was away. The card was stamped v31.72 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
+
+MEASURED. Check 31.88 passes, and fails on v31.87.
 ## v31.87 - RIGHT STICK CROWBAR
 
 Co-op hunt while he was away. His 3.11 b and J6: RS swings the crowbar and LT holds focus aim.

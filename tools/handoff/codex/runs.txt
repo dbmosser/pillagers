@@ -38,3 +38,6 @@
 2026-10-19 13:45 o-04b-stick-math 34s usage-limit (not counted) back 2026-10-19 15:04
 2026-10-19 15:08 o-04b-stick-math 36s ok DONE in=162685 out=1337 run=2
 2026-10-19 15:51 o-06-pad-controls 853s ok PARTIAL in=5008879 out=41450 run=1
+2026-10-19 16:39 o-06-pad-controls 89s ok PARTIAL in=454750 out=3792 run=2
+2026-10-19 17:10 o-06-pad-controls 185s ok PARTIAL in=891160 out=8992 run=3
+2026-10-19 17:38 o-06-pad-controls 43s ok PARTIAL in=201939 out=1578 run=4

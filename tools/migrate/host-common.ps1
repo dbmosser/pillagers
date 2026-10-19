@@ -16,6 +16,8 @@ $script:GitBash      = 'C:\Program Files\Git\bin\bash.exe'
 $script:StateDir     = [System.IO.Path]::Combine($PSScriptRoot, 'state')
 # Big staging files (driver zip, tar archives) live OUTSIDE the repository folder, so a ship (git add -A) can never commit them.
 $script:HostStage    = 'C:\Users\User1\AppData\Local\PillagersMove\out'
+# The personal look-and-feel export (wallpaper picture, Start layout, settings dump, app list) is written OUTSIDE the repository too.
+$script:SettingsStage = 'C:\Users\User1\AppData\Local\PillagersMove\settings'
 $script:MigLog       = ''
 
 # ------------------------------------------------------------------ logging
@@ -182,10 +184,15 @@ function Test-SecretFileName {
   # True for file names that are credential files by name. These are never packed.
   param([string]$Path)
   $n = [System.IO.Path]::GetFileName($Path).ToLowerInvariant()
-  $bad = @('auth.json', '.credentials.json', 'credentials.json', '.claude.json', '.git-credentials', '.netrc', '.npmrc', 'butler_creds', 'id_rsa', 'id_rsa.pub', 'id_ed25519', 'id_ed25519.pub', 'login data', 'cookies', 'local state')
+  $bad = @('auth.json', '.credentials.json', 'credentials.json', '.claude.json', '.git-credentials', '.netrc', '.npmrc', '.pypirc', 'butler_creds', 'id_rsa', 'id_rsa.pub', 'id_ed25519', 'id_ed25519.pub', 'id_ecdsa', 'id_ecdsa.pub', 'id_dsa', 'id_dsa.pub', 'login data', 'cookies', 'local state', 'oauth_creds.json', 'google_accounts.json', 'hosts.yml', 'token.json', 'tokens.json', 'secrets.json', 'secret.json')
   if ($bad -contains $n) { return $true }
+  # login files of the tools (agy, gemini, codex, gh, claude) by a looser shape: anything called *credential*, *oauth* or *token*.json
+  if ($n -match '^\.?(credentials?|oauth[_\-]?creds?)([_\-.].*)?$') { return $true }
+  if ($n -match '(^|[_\-.])(access|refresh|auth|api|bearer)[_\-]?tokens?\.(json|txt|yml|yaml)$') { return $true }
+  # Google service-account key files (service-account.json, my-project-service_account-1234.json, ...)
+  if ($n -match 'service[_\-]?account[^/\\]*\.json$') { return $true }
   $ext = [System.IO.Path]::GetExtension($n)
-  if (@('.pem', '.pfx', '.p12', '.ppk', '.key') -contains $ext) { return $true }
+  if (@('.pem', '.pfx', '.p12', '.ppk', '.key', '.kdbx', '.jks', '.keystore', '.gpg', '.pgp') -contains $ext) { return $true }
   return $false
 }
 
@@ -238,12 +245,60 @@ function Get-GitDir {
 # ------------------------------------------------------------------ processes
 function Get-ProcSnap { return @(Get-CimInstance -ClassName Win32_Process -ErrorAction SilentlyContinue) }
 
+function Get-AncestorPids {
+  # The process ids of this window and every process that started it (parent, grandparent, ...). They must never be stopped by this kit:
+  # if a helper run (or the runner) is what started this window, stopping it would stop the script half way.
+  param([object[]]$Snap)
+  $set = New-Object 'System.Collections.Generic.HashSet[int]'
+  $byId = @{}
+  foreach ($p in $Snap) { $byId[[int]$p.ProcessId] = $p }
+  $cur = [int]$PID
+  $guard = 0
+  while ($cur -gt 0 -and $guard -lt 60) {
+    if (-not $set.Add($cur)) { break }
+    if (-not $byId.ContainsKey($cur)) { break }
+    $cur = [int]$byId[$cur].ParentProcessId
+    $guard++
+  }
+  return , $set
+}
+
 function Select-Proc {
   param([object[]]$Snap, [string[]]$Names, [string]$Rx)
-  $me = $PID
+  $skip = Get-AncestorPids $Snap
   return @($Snap | Where-Object {
-      $_.ProcessId -ne $me -and $_.CommandLine -and ($Names -contains $_.Name) -and ($_.CommandLine -match $Rx)
+      (-not $skip.Contains([int]$_.ProcessId)) -and $_.CommandLine -and ($Names -contains $_.Name) -and ($_.CommandLine -match $Rx)
     })
+}
+
+function Select-HelperProc {
+  # The helper runs (Claude, Codex or Gemini working on a job). Stricter than Select-Proc, because the owner's OWN Claude Code window is a
+  # claude.exe too and its command line can carry long text that mentions the same file names:
+  #   - a claude.exe only counts when it runs in print mode (-p / --print), which is how every helper job is started; his interactive window never does
+  #   - this window and every process that started it are never matched (see Get-AncestorPids)
+  param([object[]]$Snap)
+  $skip = Get-AncestorPids $Snap
+  return @($Snap | Where-Object {
+      if ($skip.Contains([int]$_.ProcessId)) { return $false }
+      if (-not $_.CommandLine) { return $false }
+      if ($_.Name -eq 'node.exe') { return ($_.CommandLine -match $script:RxHelper) }
+      if ($_.Name -eq 'claude.exe') { return (($_.CommandLine -match $script:RxHelper) -and ($_.CommandLine -match '(^|\s)(-p|--print)(\s|$)')) }
+      return $false
+    })
+}
+
+function Get-AncestorJobNames {
+  # Names of Pillagers background jobs that this window was started from (empty = a normal window). Used to warn, never to stop.
+  param([object[]]$Snap)
+  $skip = Get-AncestorPids $Snap
+  $rxAll = '(' + $script:RxRunner + ')|(' + $script:RxLane + ')|(' + $script:RxHelper + ')|(' + $script:RxShip + ')'
+  $names = @()
+  foreach ($p in $Snap) {
+    if ([int]$p.ProcessId -eq [int]$PID) { continue }
+    if (-not $skip.Contains([int]$p.ProcessId)) { continue }
+    if ($p.CommandLine -and ($p.Name -in @('bash.exe', 'node.exe', 'claude.exe', 'powershell.exe', 'pwsh.exe')) -and ($p.CommandLine -match $rxAll)) { $names += $p.Name }
+  }
+  return @($names)
 }
 
 # Command-line shapes of the Pillagers background jobs (same shapes tools\party-stop.ps1 uses, plus the Codex lane).
@@ -320,6 +375,41 @@ function Read-KeyValueFile {
 }
 
 function Get-MarkerPath { return (Join-Path $script:MigRoot $script:MarkerName) }
+
+function Get-MarkerCheck {
+  # SHA-256 (hex, lower case) over the marker's content lines: every non-empty line except the check= line itself, trimmed, joined with LF.
+  # It catches a marker that was edited by hand, cut short, or glued together from two runs. It is NOT a password: anyone could recompute it.
+  # vm-setup.ps1 has its own copy of this rule (it cannot load this file); keep the two the same.
+  param([string[]]$Lines)
+  $keep = @()
+  foreach ($l in $Lines) {
+    $t = ([string]$l).Trim()
+    if (-not $t) { continue }
+    if ($t -match '^check\s*=') { continue }
+    $keep += $t
+  }
+  $bytes = [System.Text.Encoding]::ASCII.GetBytes(($keep -join "`n"))
+  $sha = [System.Security.Cryptography.SHA256]::Create()
+  try { $h = $sha.ComputeHash($bytes) } finally { $sha.Dispose() }
+  return (($h | ForEach-Object { $_.ToString('x2') }) -join '')
+}
+
+# What a Pillagers task or startup shortcut runs: a path inside this repository (or the Codex working copy) or one of the repository's own start scripts.
+$script:RepoTaskRx = '(?i)claudecode[\\/]dark raiders|Desktop[\\/]dark raiders|pillagers-codex|runner-start\.vbs|party-start|start-servers'
+
+function Get-PillagersTasks {
+  # The scheduled tasks that start THIS Pillagers repository. A task counts only when its name mentions Pillagers or Dark Raiders AND what it runs
+  # points into this repository (or the Codex working copy). A same-named task of another project (the 3D game) is left alone, with a warning.
+  param([switch]$Report)
+  $out = @()
+  foreach ($t in @(Get-ScheduledTask -ErrorAction SilentlyContinue | Where-Object { $_.TaskName -match '(?i)pillagers|dark.?raiders' })) {
+    $txt = ''
+    try { foreach ($a in @($t.Actions)) { $txt += ' ' + [string]$a.Execute + ' ' + [string]$a.Arguments + ' ' + [string]$a.WorkingDirectory } } catch { }
+    if ($txt -match $script:RepoTaskRx) { $out += $t }
+    elseif ($Report) { Write-Mig ('task "' + $t.TaskName + '" has a Pillagers-like name but does not start this repository, so it is left alone. If it is yours to stop, switch it off by hand.') 'WARN' }
+  }
+  return @($out)
+}
 
 # ------------------------------------------------------------------ GPU facts (read-only, no admin needed)
 function Get-HostBuildString {
@@ -473,15 +563,43 @@ function Copy-ToGuest {
   return $false
 }
 
+$script:SettingsFileRx = '^(host-settings\.json|host-apps\.json|start-layout\.json|start2\.bin|wallpaper\.[A-Za-z0-9]+)$'
+
+function Get-SettingsExportInfo {
+  # Where the look-and-feel export is. The exporter writes into $script:SettingsStage (outside the repository); a copy inside the kit folder is an old one.
+  $r = [ordered]@{ Exists = $false; Legacy = $false; Path = ''; AgeDays = -1 }
+  $new = Join-Path $script:SettingsStage 'host-settings.json'
+  $old = Join-Path $script:MigRoot 'host-settings.json'
+  if (Test-Path -LiteralPath $new) { $r.Exists = $true; $r.Path = $new }
+  elseif (Test-Path -LiteralPath $old) { $r.Exists = $true; $r.Legacy = $true; $r.Path = $old }
+  if ($r.Exists) { try { $r.AgeDays = [int]((Get-Date) - (Get-Item -LiteralPath $r.Path).LastWriteTime).TotalDays } catch { } }
+  return [pscustomobject]$r
+}
+
 function Get-KitFiles {
-  # Every file in the kit folder except the host-only folders and the marker (the marker is pushed on purpose, separately).
+  # Every file in the kit folder except the host-only folders and the marker (the marker is pushed on purpose, separately),
+  # plus the look-and-feel export from the settings folder outside the repository (it lands flat in kit\ in the VM, as before).
   $root = $script:MigRoot.TrimEnd('\')
   $out = @()
+  $seen = @{}
+  # A fresh export in the settings folder replaces EVERY look-and-feel file in the kit folder: an old tracked wallpaper.jpg next to a solid-colour
+  # export would otherwise be sent too and shown in the VM as if it were the current desktop.
+  $haveStaged = (Test-Path -LiteralPath (Join-Path $script:SettingsStage 'host-settings.json'))
+  if (Test-Path -LiteralPath $script:SettingsStage) {
+    foreach ($f in (Get-ChildItem -LiteralPath $script:SettingsStage -File -Force -ErrorAction SilentlyContinue)) {
+      if ($f.Name -notmatch $script:SettingsFileRx) { continue }
+      if (Test-SecretFileName $f.FullName) { continue }
+      $seen[$f.Name.ToLowerInvariant()] = $true
+      $out += [pscustomobject]@{ Full = $f.FullName; Rel = $f.Name; Size = $f.Length }
+    }
+  }
   foreach ($f in (Get-ChildItem -LiteralPath $root -Recurse -File -Force -ErrorAction SilentlyContinue)) {
     $rel = $f.FullName.Substring($root.Length + 1)
     if ($rel -match '^(logs|state|out)\\') { continue }
     if ($rel -ieq $script:MarkerName) { continue }
-    if ($rel -match '\.(tmp|lock)$') { continue }
+    if ($rel -match '\.(tmp|lock|zip|tar|disabled)$' -or $rel -match '\.bak(-|$|\.)') { continue }
+    if ($seen.ContainsKey($rel.ToLowerInvariant())) { continue }
+    if ($haveStaged -and ($rel -match $script:SettingsFileRx)) { continue }
     if (Test-SecretFileName $f.FullName) { continue }
     $out += [pscustomobject]@{ Full = $f.FullName; Rel = $rel; Size = $f.Length }
   }
@@ -492,6 +610,10 @@ function Send-KitToGuest {
   # Copies the kit into C:\PillagersMove\kit in the VM, plus a kit-manifest.json with a sha256 for every file.
   param([string]$VMName, [string]$StageDir)
   $files = @(Get-KitFiles)
+  $si = Get-SettingsExportInfo
+  if (-not $si.Exists) { Write-Mig 'No look-and-feel export found (host-settings.json). The VM would keep Windows defaults for the look. Run host-settings-export.ps1 (host-vm-boost.ps1 does it for you) and push again.' 'WARN' }
+  elseif ($si.Legacy) { Write-Mig 'The look-and-feel export is an old copy inside the repository folder. Run host-settings-export.ps1 again: it now writes outside the repository.' 'WARN' }
+  elseif ($si.AgeDays -gt 14) { Write-Mig ('The look-and-feel export is ' + $si.AgeDays + ' days old. Run host-settings-export.ps1 again if you changed your Windows look since.') 'INFO' }
   if (-not (Test-Path -LiteralPath $StageDir)) { New-Item -ItemType Directory -Force -Path $StageDir | Out-Null }
   $entries = @()
   foreach ($f in $files) {
@@ -512,43 +634,102 @@ function Send-KitToGuest {
   return ($bad -eq 0)
 }
 
+function Test-KitPathIgnored {
+  # True when git (any .gitignore or .git/info/exclude) would leave this repo-relative path out of "git add -A". Read-only.
+  param([string]$RelPath)
+  $git = Get-GitExe
+  if (-not $git) { return $false }
+  $old = $ErrorActionPreference
+  $ErrorActionPreference = 'Continue'
+  $rc = 1
+  try { & $git -C $script:RepoRoot check-ignore -q -- $RelPath 2>$null | Out-Null; $rc = $LASTEXITCODE } catch { $rc = 1 } finally { $ErrorActionPreference = $old }
+  return ($rc -eq 0)
+}
+
 function Ensure-KitExcluded {
-  # Keeps tools/migrate/ (wallpaper, Start layout, logs) out of every ship: one line in .git/info/exclude (that file is never committed).
+  # Keeps the kit's generated and personal files (the 120+ MB session pack, driver zip, logs, state, the host-stopped marker) out of every ship.
+  # A ship runs "git add -A", which would commit and push every new file under tools/migrate to the PUBLIC repository dbmosser/pillagers.
+  # 1. First line of defence: tools/migrate/.gitignore. It travels with the kit and needs nothing to be run. This function only CHECKS that it works.
+  # 2. When a probe path is still not ignored (the .gitignore is missing), it adds NARROW lines to .git/info/exclude (a file that is never committed).
+  #    It no longer adds the broad "tools/migrate/" line, so edits to the kit scripts themselves are not hidden.
+  # 3. It warns about personal files that are ALREADY tracked (ignore rules do not apply to tracked files) and prints the one command that would
+  #    stop tracking them. It never runs git add, git rm or any command that changes the repository index.
   param([switch]$DryRun)
-  $exclude = (Get-GitDir) + '\info\exclude'
+  $ok = $true
+  $probes = @('tools/migrate/out/probe.zip', 'tools/migrate/out/pillagers-session-pack.zip', 'tools/migrate/logs/probe.log', 'tools/migrate/state/probe.json', 'tools/migrate/host-stopped.txt', 'tools/migrate/gpu-pack-manifest.json', 'tools/migrate/kit-manifest.json')
   try {
-    $has = $false
-    if (Test-Path -LiteralPath $exclude) { $has = [bool](Select-String -LiteralPath $exclude -Pattern '^tools/migrate/?\s*$' -Quiet) }
-    if ($has) { Write-Mig 'tools/migrate/ is already kept out of the repository (.git/info/exclude)' 'SKIP'; return $true }
-    if ($DryRun) { Write-Mig 'would add tools/migrate/ to .git/info/exclude (so no ship ever commits the kit)' 'DRY'; return $true }
-    [System.IO.File]::AppendAllText($exclude, "`n# 2026-10-19 VM move kit (wallpaper, Start layout, logs): never commit`ntools/migrate/`n", [System.Text.Encoding]::ASCII)
-    Write-Mig 'added tools/migrate/ to .git/info/exclude (so no ship ever commits the kit)' 'OK'
-    return $true
-  } catch { Write-Mig ('could not edit .git/info/exclude: ' + $_.Exception.Message) 'WARN'; return $false }
+    $open = @($probes | Where-Object { -not (Test-KitPathIgnored $_) })
+    if ($open.Count -eq 0) {
+      Write-Mig 'git already leaves the kit''s generated files out of every ship (tools/migrate/.gitignore)' 'SKIP'
+    } else {
+      $exclude = (Get-GitDir) + '\info\exclude'
+      $want = @('tools/migrate/out/', 'tools/migrate/logs/', 'tools/migrate/state/', 'tools/migrate/host-stopped.txt', 'tools/migrate/gpu-pack-manifest.json', 'tools/migrate/kit-manifest.json', 'tools/migrate/*.zip')
+      $have = @()
+      if (Test-Path -LiteralPath $exclude) { $have = @(Get-Content -LiteralPath $exclude -ErrorAction SilentlyContinue | ForEach-Object { ([string]$_).Trim() }) }
+      $add = @($want | Where-Object { $have -notcontains $_ })
+      if ($DryRun) { Write-Mig ('would add ' + $add.Count + ' narrow line(s) to .git/info/exclude (tools/migrate/.gitignore is missing or incomplete)') 'DRY' }
+      elseif ($add.Count -gt 0) {
+        $dir = Split-Path -Path $exclude -Parent
+        if (-not (Test-Path -LiteralPath $dir)) { New-Item -ItemType Directory -Force -Path $dir | Out-Null }
+        [System.IO.File]::AppendAllText($exclude, ("`n# VM move kit: generated files, never commit`n" + ($add -join "`n") + "`n"), [System.Text.Encoding]::ASCII)
+        Write-Mig ('added ' + $add.Count + ' narrow line(s) to .git/info/exclude (tools/migrate/.gitignore is missing or incomplete)') 'OK'
+      }
+      if (-not $DryRun) {
+        $still = @($probes | Where-Object { -not (Test-KitPathIgnored $_) })
+        if ($still.Count -gt 0) { Write-Mig ('STILL NOT IGNORED by git: ' + ($still -join ', ') + '. A ship could commit these. Do not ship until this is fixed.') 'FAIL'; $ok = $false }
+      }
+    }
+    # Personal files that are already tracked (an earlier exporter run was shipped): ignore rules cannot hide them.
+    $tracked = @(Invoke-GitRaw @('ls-files', '--', 'tools/migrate') | Where-Object { $_ })
+    $bad = @($tracked | Where-Object { ([string]$_) -match '^tools/migrate/(start2\.bin|wallpaper\.[A-Za-z0-9]+|host-settings\.json|host-apps\.json|start-layout\.json|host-stopped\.txt|gpu-pack-manifest\.json|kit-manifest\.json|pillagers-runner-task\.xml|(out|logs|state)/.*)$' })
+    if ($bad.Count -gt 0) {
+      Write-Mig ('These personal or generated kit files are ALREADY tracked by git, so ignore rules do not stop a ship from committing changes to them: ' + (($bad | ForEach-Object { ([string]$_).Replace('tools/migrate/', '') }) -join ', ')) 'WARN'
+      Write-Mig 'They are also already in the public history on GitHub. To stop tracking them from now on (the files stay on your disk), run this once yourself; the next ship then commits the removal:' 'WARN'
+      Write-Mig ('   git -C "' + $script:RepoRoot + '" rm --cached -- ' + (($bad | ForEach-Object { '"' + [string]$_ + '"' }) -join ' ')) 'WARN'
+      Write-Mig 'This kit never runs that command for you. The new look-and-feel exports are written outside the repository, so they no longer touch these tracked copies.' 'INFO'
+    }
+    return $ok
+  } catch { Write-Mig ('could not check what git ignores: ' + $_.Exception.Message) 'WARN'; return $false }
 }
 
 # ------------------------------------------------------------------ host stopped check, VM disk, runner task export
 function Test-HostStopped {
   # True when host-stopped.txt exists, says status=stopped, belongs to this PC and this git HEAD, and nothing of Pillagers runs here any more.
+  # Strict on purpose: a marker with a blank status, no computer, no 40-character gitHead, no shipLockClear=yes or a wrong check= line is refused.
   $why = New-Object System.Collections.Generic.List[string]
   $kv = @{}
   $mp = Get-MarkerPath
   if (-not (Test-Path -LiteralPath $mp)) { $why.Add('host-stopped.txt does not exist (run host-stop.ps1 first)') }
   else {
     $kv = Read-KeyValueFile $mp
-    if ($kv['status'] -ne 'stopped') { $why.Add('host-stopped.txt says status=' + $kv['status']) }
-    if ($kv['computer'] -and ($kv['computer'] -ine $env:COMPUTERNAME)) { $why.Add('host-stopped.txt was written on another PC (' + $kv['computer'] + ')') }
+    if ($kv['status'] -ne 'stopped') { $why.Add('host-stopped.txt says status="' + $kv['status'] + '" (it must say stopped)') }
+    if (-not $kv['computer']) { $why.Add('host-stopped.txt has no computer= line') }
+    elseif ($kv['computer'] -ine $env:COMPUTERNAME) { $why.Add('host-stopped.txt was written on another PC (' + $kv['computer'] + ')') }
+    if ($kv['shipLockClear'] -ne 'yes') { $why.Add('host-stopped.txt does not say shipLockClear=yes') }
+    if (-not $kv['check']) { $why.Add('host-stopped.txt has no check= line (an older host-stop.ps1 wrote it): run host-stop.ps1 again') }
+    else {
+      $mlines = @(Get-Content -LiteralPath $mp -ErrorAction SilentlyContinue)
+      if ($kv['check'] -ne (Get-MarkerCheck $mlines)) { $why.Add('host-stopped.txt check= does not match its content (edited by hand or cut short): run host-stop.ps1 again') }
+    }
     $repo = Get-RepoState
-    if ($repo.Ok -and $kv['gitHead'] -and ($kv['gitHead'] -ne $repo.Head)) {
-      $why.Add('the repository moved since the stop (HEAD is now ' + $repo.Head.Substring(0, 8) + ', the marker says ' + $kv['gitHead'].Substring(0, [Math]::Min(8, $kv['gitHead'].Length)) + ')')
+    if (-not ($kv['gitHead'] -match '^[0-9a-f]{40}$')) { $why.Add('host-stopped.txt has no valid gitHead=') }
+    elseif (-not $repo.Ok) { $why.Add('the repository state could not be read, so the marker cannot be compared with it') }
+    elseif ($kv['gitHead'] -ne $repo.Head) {
+      $why.Add('the repository moved since the stop (HEAD is now ' + $repo.Head.Substring(0, 8) + ', the marker says ' + $kv['gitHead'].Substring(0, 8) + ')')
     }
   }
   $snap = Get-ProcSnap
   if ((Select-Proc $snap @('bash.exe') $script:RxRunner).Count -gt 0) { $why.Add('the runner (nightly.sh) is running again') }
   if ((Select-Proc $snap @('bash.exe') $script:RxLane).Count -gt 0) { $why.Add('a helper lane is running again') }
+  if ((Select-HelperProc $snap).Count -gt 0) { $why.Add('a helper run (Claude, Codex or Gemini on a job) is running again') }
   if ((Select-Proc $snap @('bash.exe', 'powershell.exe') $script:RxShip).Count -gt 0) { $why.Add('a ship is running') }
+  if ((Select-Proc $snap @('powershell.exe', 'pwsh.exe') $script:RxFuzz).Count -gt 0) { $why.Add('the crash-hunting robot (fuzz.ps1) is running again') }
+  if ((Select-Proc $snap @('bash.exe') $script:RxCorpus).Count -gt 0) { $why.Add('the full test run (corpus) is running again') }
   $lk = Get-ShipLock
   if ($lk.Exists) { $why.Add('the ship lock is held (' + $lk.Owner + ')') }
+  try {
+    foreach ($t in @(Get-PillagersTasks | Where-Object { $_.State -ne 'Disabled' })) { $why.Add('the scheduled task "' + $t.TaskName + '" is switched on again (it could start the runner)') }
+  } catch { }
   return [pscustomobject]@{ Ok = ($why.Count -eq 0); Why = $why.ToArray(); Marker = $kv }
 }
 

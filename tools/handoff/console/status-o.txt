@@ -1,1 +1,1 @@
-10-19 15:52 gate: shipping cw-cx-rsmelee (o-06-pad-controls, codex)
+10-19 17:43 waiting for RAM: 4 GB free, need 6 (o-06-pad-controls)

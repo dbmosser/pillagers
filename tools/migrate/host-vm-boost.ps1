@@ -8,10 +8,16 @@
 #   -NoGpu                RAM and processors only, no GPU share (checkpoints are left alone; use this if the GPU share gives trouble)
 #   -GpuPercent N         share of the GPU for the VM, 10 to 100 (default 80)
 #   -HighMmioGB N         address space reserved for the GPU, 16 to 128 (default 32; try 48 if Device Manager in the VM says code 12)
-#   -Undo                 take the GPU share away and put the VM back as it was before the first boost (8 GB and 4 processors if unknown)
+#   -Undo                 take the GPU share away and put the VM back as it was before the first boost (8 GB and 4 processors if unknown;
+#                         it also puts back the automatic-start setting that was recorded, Hyper-V's default "restart if it was running" if unknown)
 #   -DryRun               only print what would change
-#   -RemoveCheckpoints    allow this script to delete the VM's checkpoints (a GPU share does not work with checkpoints)
-#   -BackupVhdx           copy the VM disk to a .vhdx next to it before changing things (a rollback point, since checkpoints are off)
+#   -RemoveCheckpoints    allow this script to delete the VM's checkpoints (a GPU share does not work with checkpoints). Before anything is deleted,
+#                         the whole VM is exported (with its checkpoints) to a folder next to its disk, so a roll-back stays possible
+#   -SkipExportBackup     with -RemoveCheckpoints: do NOT export first (the checkpoints are then gone for good)
+#   -BackupVhdx           after the changes, copy the VM disk to a .vhdx next to it (a rollback point of the new state, since checkpoints are off)
+#   -ForcePowerOff        only if Windows in the VM does not shut down in time: cut the power. Off by default (it loses unsaved work and can damage the disk);
+#                         without it the script stops and tells you to shut the VM down yourself
+#   -AcceptSourceAgreements  passed on to host-settings-export.ps1 (winget source terms); off by default
 #   -RebuildDriver        build the GPU driver pack again even if the host driver did not change
 #   -ResendDriver         send the GPU driver pack to the VM again even if the same pack was sent before
 #   -SkipSettingsExport   do not run host-settings-export.ps1 first
@@ -21,8 +27,11 @@
 #
 # Order: build the driver pack (the VM is not touched yet) -> read this PC look-and-feel settings -> shut the VM down cleanly ->
 # set CPU/RAM/checkpoints/stop action -> GPU share -> start the VM and wait for it -> send the kit and the driver pack to C:\PillagersMove.
+# It also sets "Automatic Start Action = Start" with a 60 second delay, so the VM (and with it the runner and helpers) starts by itself whenever this PC
+# boots. That is a host-side setting Hyper-V accepts while the VM runs, so it never shuts the VM down just for this; if Hyper-V refuses it, the script
+# says so (WARN) and tells you the Hyper-V Manager click path instead of stopping.
 # It never changes Defender, firewall, UAC, BitLocker or other security settings. On this PC it changes only the VM's Hyper-V settings and
-# its own files (the kit folder, the staging folder outside the repository, and one line in .git/info/exclude).
+# its own files (the kit folder, the staging folders outside the repository, and - only if tools\migrate\.gitignore is missing - narrow lines in .git/info/exclude).
 # Safe to repeat: when everything already matches, the VM is not shut down.
 # Exit codes: 0 done, 2 stopped or something did not arrive (read the last FAIL line), 3 needs an administrator window, 1 error.
 # ASCII only. Works in Windows PowerShell 5.1 and PowerShell 7.
@@ -36,6 +45,9 @@ param(
   [switch]$Undo,
   [switch]$DryRun,
   [switch]$RemoveCheckpoints,
+  [switch]$SkipExportBackup,
+  [switch]$ForcePowerOff,
+  [switch]$AcceptSourceAgreements,
   [switch]$BackupVhdx,
   [switch]$RebuildDriver,
   [switch]$ResendDriver,
@@ -60,7 +72,7 @@ $guestZip = $script:GuestStage + '\payload\gpu-driver.zip'
 $t0 = Get-Date
 
 Write-MigBlank
-if ($Undo) { Write-Mig '=== VM BOOST: UNDO (take the GPU share away, back to 8 GB and 4 processors) ===' 'STEP' } else { Write-Mig '=== VM BOOST: more CPU, RAM and GPU for the Pillagers VM ===' 'STEP' }
+if ($Undo) { Write-Mig '=== VM BOOST: UNDO (take the GPU share away, put the VM back as it was before the boost) ===' 'STEP' } else { Write-Mig '=== VM BOOST: more CPU, RAM and GPU for the Pillagers VM ===' 'STEP' }
 if ($DryRun) { Write-Mig '(dry run: nothing is changed, built or sent)' 'DRY' }
 
 # ------------------------------------------------------------------ checks
@@ -82,6 +94,7 @@ catch {
   try { Write-Mig ('VMs here: ' + ((Get-VM | ForEach-Object { $_.Name }) -join ', ')) 'INFO' } catch { }
   Exit-Mig 1
 }
+$vmWasRunning = ($vm.State -eq 'Running')
 
 # ------------------------------------------------------------------ helpers
 function Get-HostAvailMB {
@@ -96,9 +109,20 @@ function Scale-U64 {
   return [uint64][math]::Floor([decimal]$Base * [decimal]$Fraction)
 }
 
+function Test-Near {
+  # True when two GPU share numbers agree within 1 percent (Windows may round what it was given, and the VM must not be shut down again for that).
+  param($A, $B)
+  try {
+    $x = [decimal][uint64]$A
+    $y = [decimal][uint64]$B
+    return ([math]::Abs($x - $y) -le ($y / 100))
+  } catch { return $false }
+}
+
 function Stop-VMClean {
-  # Shuts the VM down through Windows (no power cut). Only if Windows does not answer in time is the power cut, and it says so.
-  param([string]$Name, [int]$TimeoutSec)
+  # Shuts the VM down through Windows. The power is cut ONLY when -AllowPowerCut was asked for (script switch -ForcePowerOff); a power cut loses
+  # unsaved work inside the VM and can damage its disk. Without it, a VM that does not shut down in time makes the script stop (return $false).
+  param([string]$Name, [int]$TimeoutSec, [switch]$AllowPowerCut)
   $v = Get-VM -Name $Name
   if ($v.State -eq 'Off') { Write-Mig 'The VM is already off.' 'SKIP'; return $true }
   if ($v.State -eq 'Paused') { try { Resume-VM -Name $Name -ErrorAction Stop } catch { } }
@@ -115,7 +139,12 @@ function Stop-VMClean {
     if ($v.State -eq 'Off') { Write-Mig 'The VM is off.' 'OK'; return $true }
     Start-Sleep -Seconds 3
   }
-  Write-Mig ('Windows in the VM did not shut down within ' + $TimeoutSec + ' seconds. Cutting the power now (like holding the power button). Unsaved work inside the VM is lost.') 'WARN'
+  if (-not $AllowPowerCut) {
+    Write-Mig ('Windows in the VM did not shut down within ' + $TimeoutSec + ' seconds. The power was NOT cut (that loses unsaved work and can damage the VM disk).') 'FAIL'
+    Write-Mig 'Sign in to the VM and shut it down yourself, then run this again; or wait longer with -ShutdownTimeoutSec 600; or, only if you accept the risk, add -ForcePowerOff.' 'FAIL'
+    return $false
+  }
+  Write-Mig ('Windows in the VM did not shut down within ' + $TimeoutSec + ' seconds. Cutting the power now because you passed -ForcePowerOff (like holding the power button). Unsaved work inside the VM is lost.') 'WARN'
   try { Stop-VM -Name $Name -TurnOff -Force -ErrorAction Stop } catch { Write-Mig ('power cut failed: ' + $_.Exception.Message) 'FAIL'; return $false }
   $t = Get-Date
   while (((Get-Date) - $t).TotalSeconds -lt 60) {
@@ -207,6 +236,21 @@ function Add-ZipFile {
   finally { if ($null -ne $fs) { $fs.Dispose() } }
 }
 
+function Get-VmChainBytes {
+  # Size on disk of a virtual disk and all of its parents (a VM with checkpoints keeps its data in a chain of .avhdx files).
+  param([string]$Path)
+  $sum = [int64]0
+  $cur = $Path
+  $guard = 0
+  while ($cur -and ($guard -lt 20)) {
+    $guard++
+    try { $v = Get-VHD -Path $cur -ErrorAction Stop } catch { break }
+    $sum += [int64]$v.FileSize
+    $cur = [string]$v.ParentPath
+  }
+  return $sum
+}
+
 function Wait-ForMerge {
   param([string]$Name, [int]$TimeoutSec = 900)
   $t = Get-Date
@@ -221,7 +265,7 @@ function Wait-ForMerge {
 
 # ------------------------------------------------------------------ UNDO
 if ($Undo) {
-  $rMem = 8; $rCpu = 4; $rLow = 128MB; $rHigh = 512MB; $rCp = 'Production'; $rStop = 'ShutDown'; $rDyn = $false
+  $rMem = 8; $rCpu = 4; $rLow = 128MB; $rHigh = 512MB; $rCp = 'Production'; $rStop = 'ShutDown'; $rDyn = $false; $rStart = 'StartIfRunning'; $rStartDelay = 0
   if (Test-Path -LiteralPath $beforePath) {
     try {
       $b = Get-Content -LiteralPath $beforePath -Raw | ConvertFrom-Json
@@ -231,25 +275,26 @@ if ($Undo) {
       if ([int64]$b.HighMmio -gt 0) { $rHigh = [uint64]$b.HighMmio }
       if ($b.Checkpoint) { $rCp = [string]$b.Checkpoint }
       if ($b.Stop) { $rStop = [string]$b.Stop }
+      if (@('Nothing', 'StartIfRunning', 'Start') -contains [string]$b.StartAction) { $rStart = [string]$b.StartAction; $rStartDelay = [int]$b.StartDelay }
       if ($b.Dynamic) { $rDyn = $true }
       Write-Mig ('restoring the values recorded before the first boost (' + $b.time + ')') 'INFO'
     } catch { Write-Mig 'vm-before.json could not be read; using 8 GB and 4 processors' 'WARN' }
   } else { Write-Mig 'no earlier record; using the defaults 8 GB and 4 processors' 'INFO' }
-  Write-Mig ('target: ' + $rMem + ' GB fixed RAM, ' + $rCpu + ' processors, no GPU share, checkpoints ' + $rCp + ', stop action ' + $rStop) 'INFO'
+  Write-Mig ('target: ' + $rMem + ' GB fixed RAM, ' + $rCpu + ' processors, no GPU share, checkpoints ' + $rCp + ', stop action ' + $rStop + ', automatic start ' + $rStart + ' (delay ' + $rStartDelay + ' s)') 'INFO'
   $adapters = @(Get-VMGpuPartitionAdapter -VMName $VMName -ErrorAction SilentlyContinue)
   $wasRunning = ($vm.State -eq 'Running')
   if ($DryRun) {
     Write-Mig ('would shut the VM down, remove ' + $adapters.Count + ' GPU share(s), set RAM/CPU/MMIO/checkpoint values, and start it again: ' + $wasRunning) 'DRY'
     Exit-Mig 0
   }
-  if (-not (Stop-VMClean -Name $VMName -TimeoutSec $ShutdownTimeoutSec)) { Exit-Mig 2 }
+  if (-not (Stop-VMClean -Name $VMName -TimeoutSec $ShutdownTimeoutSec -AllowPowerCut:$ForcePowerOff)) { Exit-Mig 2 }
   $guard = 0
   while ((@(Get-VMGpuPartitionAdapter -VMName $VMName -ErrorAction SilentlyContinue).Count -gt 0) -and ($guard -lt 4)) {
     $guard++
     try { Remove-VMGpuPartitionAdapter -VMName $VMName -ErrorAction Stop; Write-Mig 'GPU share removed' 'OK' } catch { Write-Mig ('could not remove the GPU share: ' + $_.Exception.Message) 'FAIL'; break }
   }
   try {
-    Set-VM -Name $VMName -GuestControlledCacheTypes $false -LowMemoryMappedIoSpace $rLow -HighMemoryMappedIoSpace $rHigh -CheckpointType $rCp -AutomaticStopAction $rStop -ErrorAction Stop
+    Set-VM -Name $VMName -GuestControlledCacheTypes $false -LowMemoryMappedIoSpace $rLow -HighMemoryMappedIoSpace $rHigh -CheckpointType $rCp -AutomaticStopAction $rStop -AutomaticStartAction $rStart -AutomaticStartDelay $rStartDelay -ErrorAction Stop
     Set-VMMemory -VMName $VMName -DynamicMemoryEnabled $rDyn -StartupBytes ([int64]($rMem * 1GB)) -ErrorAction Stop
     Set-VMProcessor -VMName $VMName -Count $rCpu -ErrorAction Stop
     Write-Mig ('VM settings restored: ' + $rMem + ' GB' + $(if ($rDyn) { ' (dynamic)' } else { '' }) + ', ' + $rCpu + ' processors') 'OK'
@@ -271,7 +316,6 @@ Write-MigBlank
 Write-Mig 'Step 1: what is there now' 'STEP'
 $logical = 16
 try { $logical = [int](Get-CimInstance -ClassName Win32_ComputerSystem -ErrorAction Stop).NumberOfLogicalProcessors } catch { }
-$vmMem = Get-VMMemory -VMName $VMName
 $adapters = @(Get-VMGpuPartitionAdapter -VMName $VMName -ErrorAction SilentlyContinue)
 $snaps = @(Get-VMSnapshot -VMName $VMName -ErrorAction SilentlyContinue)
 Write-Mig ('VM ' + $VMName + ': ' + $vm.State + ', RAM ' + [math]::Round($vm.MemoryStartup / 1GB, 1) + ' GB' + $(if ($vm.DynamicMemoryEnabled) { ' (dynamic)' } else { ' (fixed)' }) + ', ' + $vm.ProcessorCount + ' processors, checkpoints ' + $vm.CheckpointType + ', ' + $snaps.Count + ' existing checkpoint(s), ' + $adapters.Count + ' GPU share(s)') 'INFO'
@@ -282,10 +326,22 @@ if ((-not (Test-Path -LiteralPath $beforePath)) -and (-not $DryRun)) {
   $before = [ordered]@{
     time = (Get-Date).ToString('s'); Vm = $VMName; MemoryStartup = [int64]$vm.MemoryStartup; Dynamic = [bool]$vm.DynamicMemoryEnabled
     Cpu = [int]$vm.ProcessorCount; Checkpoint = [string]$vm.CheckpointType; Stop = [string]$vm.AutomaticStopAction
+    StartAction = [string]$vm.AutomaticStartAction; StartDelay = [int]$vm.AutomaticStartDelay
     GuestControlledCacheTypes = [bool]$vm.GuestControlledCacheTypes; LowMmio = [int64]$vm.LowMemoryMappedIoSpace; HighMmio = [int64]$vm.HighMemoryMappedIoSpace
   }
   Write-AsciiFile -Path $beforePath -Text ($before | ConvertTo-Json)
   Write-Mig 'saved the VM settings as they were (state\vm-before.json) for -Undo' 'OK'
+} elseif ((Test-Path -LiteralPath $beforePath) -and (-not $DryRun)) {
+  # an older record has no automatic-start values: add today's, but only while this script has not set "Start" itself yet (else the old value is lost)
+  try {
+    $bj = Get-Content -LiteralPath $beforePath -Raw | ConvertFrom-Json
+    if ((-not $bj.StartAction) -and ([string]$vm.AutomaticStartAction -ne 'Start')) {
+      $bj | Add-Member -NotePropertyName 'StartAction' -NotePropertyValue ([string]$vm.AutomaticStartAction) -Force
+      $bj | Add-Member -NotePropertyName 'StartDelay' -NotePropertyValue ([int]$vm.AutomaticStartDelay) -Force
+      Write-AsciiFile -Path $beforePath -Text ($bj | ConvertTo-Json)
+      Write-Mig 'added the automatic-start setting to the saved VM settings (state\vm-before.json)' 'OK'
+    }
+  } catch { Write-Mig 'could not add the automatic-start setting to state\vm-before.json; -Undo will use the Hyper-V default for it' 'WARN' }
 }
 
 # memory plan with the guard: this PC must keep 6 GB free (+0.5 GB overhead)
@@ -319,6 +375,8 @@ if ($memGB -lt 16) { Write-Mig 'Inside the VM the runner waits for 6 GB of free 
 $facts = $null
 $vramV = [uint64]0; $encV = [uint64]0; $decV = [uint64]0; $compV = [uint64]0
 $hostGpus = @()
+$gpuPath = ''
+$gpuCount = 0
 $packInfo = $null
 $packReuse = $false
 if (-not $NoGpu) {
@@ -328,11 +386,12 @@ if (-not $NoGpu) {
   $facts = Get-GpuHostFacts
   if (-not $facts.Ok) { Write-Mig ('GPU not usable for sharing: ' + $facts.Error) 'FAIL'; Write-Mig 'Run again with -NoGpu to boost CPU and RAM only.' 'INFO'; Exit-Mig 2 }
   Write-Mig ('GPU: ' + $facts.Gpu + ', driver ' + $facts.Driver + ' (' + $facts.DriverDate + '), package folder ' + $facts.Package) 'INFO'
-  try { $hostGpus = @(Get-VMHostPartitionableGpu -ErrorAction Stop) } catch { Write-Mig ('Get-VMHostPartitionableGpu failed: ' + $_.Exception.Message) 'FAIL'; Exit-Mig 2 }
-  $amd = $hostGpus | Where-Object { $_.Name -match 'VEN_1002' } | Select-Object -First 1
-  if (-not $amd) { Write-Mig 'The AMD GPU is not listed as shareable on this PC.' 'FAIL'; Write-Mig 'Run again with -NoGpu to boost CPU and RAM only.' 'INFO'; Exit-Mig 2 }
-  $cim = Get-CimInstance -Namespace 'root\virtualization\v2' -ClassName Msvm_PartitionableGpu -ErrorAction SilentlyContinue | Where-Object { $_.Name -match 'VEN_1002' } | Select-Object -First 1
-  if (-not $cim) { Write-Mig 'Could not read the GPU share limits (Msvm_PartitionableGpu).' 'FAIL'; Exit-Mig 2 }
+  try { $hostGpus = @(Get-VMHostPartitionableGpu -ErrorAction Stop) } catch { Write-Mig ('Get-VMHostPartitionableGpu did not answer (' + $_.Exception.Message + '); using the Windows management data instead') 'WARN' }
+  $allCim = @(Get-CimInstance -Namespace 'root\virtualization\v2' -ClassName Msvm_PartitionableGpu -ErrorAction SilentlyContinue)
+  $cim = $allCim | Where-Object { $_.Name -match 'VEN_1002' } | Select-Object -First 1
+  if (-not $cim) { Write-Mig 'The AMD GPU is not listed as shareable on this PC (Msvm_PartitionableGpu has no entry for vendor 1002).' 'FAIL'; Write-Mig 'Run again with -NoGpu to boost CPU and RAM only.' 'INFO'; Exit-Mig 2 }
+  $gpuPath = [string]$cim.Name
+  $gpuCount = [Math]::Max($hostGpus.Count, $allCim.Count)
   $fr = $GpuPercent / 100.0
   # whole-card values as Windows reports them; if one is missing, use the well-known whole-card numbers (1000000000, and the largest number for encode)
   $baseVram = [uint64]1000000000; $baseEnc = [uint64]::MaxValue; $baseDec = [uint64]1000000000; $baseComp = [uint64]1000000000
@@ -382,6 +441,9 @@ if ($vm.DynamicMemoryEnabled -or ([int64]$vm.MemoryStartup -ne ([int64]$memGB * 
 if ([int]$vm.ProcessorCount -ne $cpu) { $changes.Add('processors: ' + $vm.ProcessorCount + ' -> ' + $cpu); $needOff = $true }
 if ([string]$vm.AutomaticStopAction -ne 'ShutDown') { $changes.Add('when this PC shuts down: ' + $vm.AutomaticStopAction + ' -> ShutDown (the VM is shut down cleanly)') }
 if ($vm.AutomaticCheckpointsEnabled) { $changes.Add('automatic checkpoints: on -> off') }
+# the VM starts by itself when this PC boots; Hyper-V accepts this while the VM runs, so it does not set $needOff
+$startChange = 'when this PC starts: ' + $vm.AutomaticStartAction + ' -> Start (the VM starts by itself, 60 seconds after this PC boots)'
+if (([string]$vm.AutomaticStartAction -ne 'Start') -or ([int]$vm.AutomaticStartDelay -ne 60)) { $changes.Add($startChange) }
 $gsi = Get-VMIntegrationService -VMName $VMName -Name 'Guest Service Interface' -ErrorAction SilentlyContinue
 if ($gsi -and -not $gsi.Enabled) { $changes.Add('file-copy channel (Guest Service Interface): off -> on') }
 if (-not $NoGpu) {
@@ -391,7 +453,7 @@ if (-not $NoGpu) {
   if ([int64]$vm.HighMemoryMappedIoSpace -ne ([int64]$HighMmioGB * 1GB)) { $changes.Add('high MMIO: ' + [math]::Round($vm.HighMemoryMappedIoSpace / 1GB, 2) + ' GB -> ' + $HighMmioGB + ' GB'); $needOff = $true }
   $ad = $adapters | Select-Object -First 1
   if (-not $ad) { $changes.Add('GPU share: none -> ' + $GpuPercent + ' percent of the Radeon'); $needOff = $true }
-  elseif (([uint64]$ad.MaxPartitionVRAM -ne $vramV) -or ([uint64]$ad.MinPartitionVRAM -ne $vramV) -or ([uint64]$ad.OptimalPartitionVRAM -ne $vramV) -or ([uint64]$ad.MaxPartitionCompute -ne $compV) -or ([uint64]$ad.MaxPartitionEncode -ne $encV) -or ([uint64]$ad.MaxPartitionDecode -ne $decV)) {
+  elseif (-not ((Test-Near $ad.MaxPartitionVRAM $vramV) -and (Test-Near $ad.MinPartitionVRAM $vramV) -and (Test-Near $ad.OptimalPartitionVRAM $vramV) -and (Test-Near $ad.MaxPartitionCompute $compV) -and (Test-Near $ad.MaxPartitionEncode $encV) -and (Test-Near $ad.MaxPartitionDecode $decV))) {
     $changes.Add('GPU share values -> ' + $GpuPercent + ' percent'); $needOff = $true
   }
   if ($snaps.Count -gt 0) { $needOff = $true }
@@ -403,12 +465,12 @@ if ($snaps.Count -gt 0) {
   if (-not $NoGpu) {
     if (-not $RemoveCheckpoints) {
       Write-Mig 'A GPU share does not work while the VM has checkpoints. Nothing was changed.' 'FAIL'
-      Write-Mig 'Either add -RemoveCheckpoints (deletes them and merges their changes into the disk; you can no longer roll back to them), or use -NoGpu.' 'FAIL'
-      Write-Mig 'Tip: add -BackupVhdx too, to keep a copy of the disk as the rollback point.' 'INFO'
+      Write-Mig 'Either add -RemoveCheckpoints (merges the checkpoints into the disk; the script first exports the whole VM to a backup folder next to its disk, so you can still roll back), or use -NoGpu.' 'FAIL'
       Exit-Mig 2
     }
     $changes.Add('delete ' + $snaps.Count + ' checkpoint(s)')
-    Write-Mig ('   delete ' + $snaps.Count + ' checkpoint(s) (you asked with -RemoveCheckpoints)') 'WARN'
+    if ($SkipExportBackup) { Write-Mig ('   delete ' + $snaps.Count + ' checkpoint(s) for good, with NO backup (-RemoveCheckpoints -SkipExportBackup)') 'WARN' }
+    else { Write-Mig ('   export the whole VM as a backup, then delete ' + $snaps.Count + ' checkpoint(s) (you asked with -RemoveCheckpoints)') 'WARN' }
   }
 }
 if ($BackupVhdx) { Write-Mig '   copy the VM disk to a backup .vhdx before changing it' 'INFO' }
@@ -432,7 +494,9 @@ if (-not $SkipSettingsExport) {
   Write-Mig 'Step 4: read this PC look-and-feel settings (read-only)' 'STEP'
   $ex = Join-Path $PSScriptRoot 'host-settings-export.ps1'
   if (Test-Path -LiteralPath $ex) {
-    $out = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $ex 2>&1
+    $exArgs = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $ex)
+    if ($AcceptSourceAgreements) { $exArgs += '-AcceptSourceAgreements' }
+    $out = & powershell.exe @exArgs 2>&1
     foreach ($l in @($out)) { Write-Mig ('   ' + [string]$l) 'INFO' }
   } else { Write-Mig 'host-settings-export.ps1 is missing, skipped' 'WARN' }
 }
@@ -441,8 +505,23 @@ $applied = New-Object System.Collections.Generic.List[string]
 if ($needOff -or $BackupVhdx -or ($snaps.Count -gt 0 -and -not $NoGpu)) {
   Write-MigBlank
   Write-Mig 'Step 5: shut the VM down and change it' 'STEP'
-  if (-not (Stop-VMClean -Name $VMName -TimeoutSec $ShutdownTimeoutSec)) { Exit-Mig 2 }
+  if (-not (Stop-VMClean -Name $VMName -TimeoutSec $ShutdownTimeoutSec -AllowPowerCut:$ForcePowerOff)) { Exit-Mig 2 }
   if (($snaps.Count -gt 0) -and -not $NoGpu) {
+    if (-not $SkipExportBackup) {
+      # Deleting checkpoints merges them into the disk for good. Export the whole VM FIRST (with its checkpoints), so a roll-back is still possible.
+      $di0 = Get-VmDiskInfo -VMName $VMName
+      if (-not $di0.Ok) { Write-Mig ('could not read the VM disk, so no backup could be made: ' + $di0.Error + ' Nothing was deleted.') 'FAIL'; Exit-Mig 2 }
+      $chainBytes = Get-VmChainBytes -Path $di0.Path
+      $exportRoot = (Split-Path -Path $di0.Path -Parent) + '\export-before-checkpoint-removal-' + (Get-Date -Format 'yyyyMMdd-HHmm')
+      $needExp = $chainBytes + 20GB
+      if (($di0.HostVolumeFree -ge 0) -and ($di0.HostVolumeFree -lt $needExp)) {
+        Write-Mig ('Not enough room for the backup export: need ' + (Format-Bytes $needExp) + ', have ' + (Format-Bytes $di0.HostVolumeFree) + '. Nothing was deleted. Free some room, or add -SkipExportBackup if you do not want a rollback copy.') 'FAIL'
+        Exit-Mig 2
+      }
+      Write-Mig ('exporting the whole VM (with its checkpoints, ' + (Format-Bytes $chainBytes) + ') to ' + $exportRoot + ' before deleting anything ... (several minutes)') 'INFO'
+      try { Export-VM -Name $VMName -Path $exportRoot -ErrorAction Stop; Write-Mig ('backup export done. To roll back later: Hyper-V Manager > Import Virtual Machine > ' + $exportRoot + '\' + $VMName + '. Delete the folder when you no longer need it.') 'OK'; $applied.Add('backup export: ' + $exportRoot) }
+      catch { Write-Mig ('the backup export failed: ' + $_.Exception.Message + ' Nothing was deleted.') 'FAIL'; Exit-Mig 2 }
+    } else { Write-Mig '-SkipExportBackup: no rollback copy is made; the checkpoints are deleted for good.' 'WARN' }
     Write-Mig 'deleting checkpoints and waiting for the merge (can take several minutes) ...' 'INFO'
     try {
       # remove each top-level checkpoint together with its children (removing a child first would make the later removal fail)
@@ -479,11 +558,22 @@ try {
   Enable-VMIntegrationService -VMName $VMName -Name 'Guest Service Interface' -ErrorAction Stop
   Write-Mig 'file-copy channel (Guest Service Interface) is on' 'OK'
 } catch { Write-Mig ('a VM setting failed: ' + $_.Exception.Message) 'FAIL'; Exit-Mig 2 }
+# automatic start (works with the VM running or off): a refusal only warns, nothing else in this script depends on it
+if ($changes.Contains($startChange)) {
+  try {
+    Set-VM -Name $VMName -AutomaticStartAction Start -AutomaticStartDelay 60 -ErrorAction Stop
+    Write-Mig 'automatic start: the VM starts by itself 60 seconds after this PC boots' 'OK'
+  } catch {
+    [void]$changes.Remove($startChange)
+    Write-Mig ('Hyper-V did not accept the automatic start: ' + $_.Exception.Message) 'WARN'
+    Write-Mig 'Set it by hand: Hyper-V Manager > right-click the VM > Settings > Management > Automatic Start Action > "Always start this virtual machine automatically", delay 60 seconds. (Or shut the VM down and run this script again.)' 'WARN'
+  }
+}
 
 if ((-not $NoGpu) -and $isOff) {
   try {
     if (@(Get-VMGpuPartitionAdapter -VMName $VMName -ErrorAction SilentlyContinue).Count -eq 0) {
-      if ($hostGpus.Count -gt 1) { Add-VMGpuPartitionAdapter -VMName $VMName -InstancePath $amd.Name -ErrorAction Stop }
+      if ($gpuCount -gt 1) { Add-VMGpuPartitionAdapter -VMName $VMName -InstancePath $gpuPath -ErrorAction Stop }
       else { Add-VMGpuPartitionAdapter -VMName $VMName -ErrorAction Stop }
       Write-Mig 'GPU share added to the VM' 'OK'
     }
@@ -508,7 +598,14 @@ Write-MigBlank
 Write-Mig 'Step 6: start the VM and wait for it' 'STEP'
 $vm = Get-VM -Name $VMName
 if ($vm.State -ne 'Running') {
-  try { Start-VM -Name $VMName -ErrorAction Stop | Out-Null; Write-Mig 'VM started' 'OK' } catch { Write-Mig ('could not start the VM: ' + $_.Exception.Message) 'FAIL'; Exit-Mig 2 }
+  if ($vmWasRunning -or (-not $NoPush)) {
+    try { Start-VM -Name $VMName -ErrorAction Stop | Out-Null; Write-Mig 'VM started' 'OK' }
+    catch {
+      Write-Mig ('could not start the VM: ' + $_.Exception.Message) 'FAIL'
+      if (-not $NoGpu) { Write-Mig 'If the GPU share is the reason (event log: Hyper-V-Worker), run again with -NoGpu or -Undo. Nothing on this PC besides the VM was changed.' 'INFO' }
+      Exit-Mig 2
+    }
+  } else { Write-Mig 'The VM was off before and -NoPush was given, so it stays off.' 'SKIP' }
 }
 $ready = $false
 if ($NoPush) { Write-Mig '-NoPush: not waiting for Windows, nothing is sent' 'SKIP' }
@@ -597,6 +694,7 @@ Write-Mig ('   2. Update Windows in the VM until its build matches this PC (buil
 Write-Mig '   3. Open an administrator PowerShell in the VM and run:  powershell -ExecutionPolicy Bypass -File C:\PillagersMove\kit\vm-setup.ps1' 'INFO'
 Write-Mig '   4. Check the Radeon: Device Manager shows it without a warning, and dxdiag lists it. If it fails here: host-vm-boost.ps1 -Undo (or -NoGpu).' 'INFO'
 Write-Mig '   5. Then on this PC: host-push-files.ps1 (files), later host-stop.ps1 and host-push-files.ps1 -Final.' 'INFO'
+Write-Mig '   6. So the runner comes back after this PC restarts with nobody signing in: run vm-autologon.ps1 once in the VM (you type the password into its window), and vm-verify.ps1 to check everything.' 'INFO'
 Write-Mig 'Still unproven on this exact PC: the GPU share, Xbox pads inside the VM, and fast graphics in the VM window. Test them early; the party on 10/30 can play on this PC.' 'WARN'
 if ((-not $NoPush) -and ((-not $kitOk) -or ((-not $NoGpu) -and (-not $zipOk)))) { Exit-Mig 2 }
 Exit-Mig 0

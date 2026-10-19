@@ -12,6 +12,8 @@ HOW TO RUN (inside the VM, in an ELEVATED Windows PowerShell 5.1 window, signed 
   powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\vm-setup.ps1                 (do everything)
   powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\vm-setup.ps1 -Only gpu,apps  (only some stages)
   powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\vm-setup.ps1 -Skip gpu       (everything except some stages)
+  powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\vm-setup.ps1 -Only apps -AcceptLicences   (installs programs: see -AcceptLicences)
+  powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\vm-setup.ps1 -UndoGpu       (put back the Windows files the GPU stage replaced)
 
 STAGES (always run in this order): preflight, gpu, apps, debloat, look, perf, files, services, health
   Every stage prints START, then ends with DONE, SKIP or FAIL and the reason. Running it again is safe.
@@ -28,10 +30,19 @@ SWITCHES
   -DisableSysMain      perf: stop the SysMain (Superfetch) service (off by default, evidence is mixed)
   -RdpHardwareGraphics gpu: turn on "use hardware graphics for Remote Desktop sessions" (off by default, untested)
   -NoRunner      services: create the "Pillagers runner" task but leave it switched OFF
+  -AcceptLicences apps: YOU accept the licence terms of the programs and of the winget package sources. Without this switch the apps
+                 stage installs nothing (it only tells you what it would install). With it, the script passes winget's accept flags
+                 for you. Read the list printed by -DryRun first.
+  -UndoGpu       put back the original Windows files the gpu stage replaced (from C:\PillagersMove\undo\gpu-orig), then ask for a restart.
   -KitDir path   where the kit folder is (default: the folder this script is in)
 
-WHAT -Force OVERRIDES: the "host not stopped" stop in services, the "not a VM" stop, the "different user" stop, the
-  "VM repo has its own unsent work" stop, "already done" memory for gpu and files, files without a manifest, and a disk-space warning.
+WHAT -Force OVERRIDES: the "host not stopped" stop in services (marker, copied files not complete / not final / not at the marker commit),
+  the "not a VM" stop, the "different user" stop, the "VM repo changed since the last unpack" stop, "already done" memory for gpu and
+  files, files without a manifest, and a disk-space warning. It never overrides the secret-file refusal.
+
+THE RUNNER GUARD: the "Pillagers runner" task does not start the runner directly. It runs C:\PillagersMove\launchers\runner-guard.ps1, which
+  starts tools\runner-start.vbs only while C:\PillagersMove\kit\host-stopped.txt is a valid "stopped" marker (same checks as here). If the
+  main PC is switched back on (host-stop.ps1 -Undo sends a "revoked" marker) the guard stops starting the runner at the next 15-minute tick.
 
 WHAT IT READS (in the VM; every item is optional unless a stage says otherwise)
   C:\PillagersMove\kit\    host-settings.json, start2.bin, wallpaper.*, host-apps.json, keep-apps.txt (extra app names to keep),
@@ -58,6 +69,8 @@ param(
   [switch]$DisableSysMain,
   [switch]$RdpHardwareGraphics,
   [switch]$NoRunner,
+  [switch]$AcceptLicences,
+  [switch]$UndoGpu,
   [string]$KitDir = ''
 )
 
@@ -68,7 +81,7 @@ try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::
 # ----------------------------------------------------------------------------------------------------------------------
 # constants (mirrors of the main PC: the VM keeps the files at the SAME absolute paths)
 # ----------------------------------------------------------------------------------------------------------------------
-$script:ScriptVersion = 'vm-setup 1.0 (2026-10-19)'
+$script:ScriptVersion = 'vm-setup 1.1 (2026-10-19)'
 $script:AllStages = @('preflight', 'gpu', 'apps', 'debloat', 'look', 'perf', 'files', 'services', 'health')
 $script:HostComputer = 'JUL26'
 $script:RepoRoot = 'C:\claudecode\dark raiders'
@@ -87,6 +100,10 @@ $script:GeminiVersion = '0.64.0'
 $script:RunnerTask = 'Pillagers runner'
 $script:DevTask = 'Pillagers dev services'
 $script:MinFreeRamNote = 6
+# winget accept flags are passed only when the owner typed -AcceptLicences
+$script:AcceptPkg = @()
+if ($AcceptLicences) { $script:AcceptPkg = @('--accept-package-agreements', '--accept-source-agreements') }
+$script:FilesFailed = $false
 
 # kit and staging folders (the host push puts the kit in C:\PillagersMove\kit and archives in C:\PillagersMove\payload)
 $script:Kit = $KitDir
@@ -302,6 +319,8 @@ public static class PilNative {
   public static extern bool SystemParametersInfo(uint action, uint param, string value, uint flags);
   [DllImport("user32.dll", SetLastError = true)]
   public static extern bool SystemParametersInfo(uint action, uint param, int[] value, uint flags);
+  [DllImport("user32.dll", SetLastError = true)]
+  public static extern bool SetSysColors(int cElements, int[] lpaElements, int[] lpaRgbValues);
   [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
   public static extern IntPtr SendMessageTimeout(IntPtr hWnd, uint msg, UIntPtr wParam, string lParam, uint flags, uint timeout, out UIntPtr result);
 }
@@ -667,7 +686,7 @@ function Stage-preflight {
   elseif (Test-Path -LiteralPath $gd) { Say 'payload: gpu-driver folder is here' }
   else { Say 'payload: no GPU driver pack (the gpu stage will skip)' }
   if ($man.Found) {
-    Say ('payload: manifest.json lists ' + @($man.Entries).Count + ' archive(s)')
+    Say ('payload: manifest.json lists ' + @($man.Entries).Count + ' archive(s); ' + $(if ($man.Final) { 'it is the FINAL copy' } else { 'it is a first-pass copy (not final)' }) + $(if ($man.GitHead) { ', main PC commit ' + $man.GitHead.Substring(0, [math]::Min(12, $man.GitHead.Length)) } else { '' }))
     foreach ($e in $man.Entries) { Say ('   ' + $e.Name + '  ' + (Fmt-GB ([double]$e.Size))) }
   } else { Say 'payload: no manifest.json (the files stage will stop without it unless -Force)' }
 
@@ -727,6 +746,117 @@ function Test-RadeonWorking($list) {
 function Copy-TreeRobo([string]$src, [string]$dst) {
   $r = Run-Proc -File 'robocopy.exe' -ArgLine ((Q $src) + ' ' + (Q $dst) + ' /E /R:1 /W:1 /NFL /NDL /NJH /NP /XJ') -TimeoutSec 3600
   return $r
+}
+
+# ---- GPU safety net: the original of every Windows file the pack replaces is saved first, so -UndoGpu can put it back
+$script:GpuOrigDir = Join-Path $script:UndoDir 'gpu-orig'
+
+function Get-GpuOrigRecord {
+  $o = [pscustomobject]@{ Saved = @(); Added = @(); Packages = @() }
+  $j = Read-JsonFile (Join-Path $script:GpuOrigDir 'gpu-orig.json')
+  if ($j) {
+    $o.Saved = @($j.Saved | Where-Object { $_ })
+    $o.Added = @($j.Added | Where-Object { $_ })
+    $o.Packages = @($j.Packages | Where-Object { $_ })
+  }
+  return $o
+}
+
+# copies the original of each file the pack would replace to undo\gpu-orig\<System32|SysWOW64>\<same path>. A file saved on an earlier run is
+# never saved again (so the copy stays the TRUE original). Files the pack adds (nothing there before) are listed as Added.
+# Returns the number of originals that could NOT be saved (the caller must then copy nothing).
+function Backup-GpuOriginals([string]$sysSrc, [string]$wowSrc, [string[]]$pkgNames) {
+  $root = $script:GpuOrigDir
+  Ensure-Dir $root
+  $rec = Get-GpuOrigRecord
+  $saved = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
+  $added = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
+  $pk = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
+  foreach ($x in $rec.Saved) { [void]$saved.Add([string]$x) }
+  foreach ($x in $rec.Added) { [void]$added.Add([string]$x) }
+  foreach ($x in $rec.Packages) { [void]$pk.Add([string]$x) }
+  foreach ($x in @($pkgNames)) { if ($x) { [void]$pk.Add([string]$x) } }
+  $nSaved = 0; $nAdded = 0; $nFail = 0
+  $log = New-Object System.Collections.ArrayList
+  [void]$log.Add('gpu-orig log ' + (Get-Date).ToString('s'))
+  foreach ($pair in @(@('System32', $sysSrc, (Join-Path $env:SystemRoot 'System32')), @('SysWOW64', $wowSrc, (Join-Path $env:SystemRoot 'SysWOW64')))) {
+    if (-not $pair[1] -or -not (Test-Path -LiteralPath $pair[1])) { continue }
+    $srcRoot = (Get-Item -LiteralPath $pair[1]).FullName.TrimEnd('\')
+    foreach ($f in @(Get-ChildItem -LiteralPath $srcRoot -Recurse -File -Force -ErrorAction SilentlyContinue)) {
+      $rel = $f.FullName.Substring($srcRoot.Length + 1)
+      $key = $pair[0] + '\' + $rel
+      if ($saved.Contains($key) -or $added.Contains($key)) { continue }
+      $dst = Join-Path $pair[2] $rel
+      if (Test-Path -LiteralPath $dst -PathType Leaf) {
+        $bk = Join-Path $root $key
+        try {
+          Ensure-Dir (Split-Path -Parent $bk)
+          Copy-Item -LiteralPath $dst -Destination $bk -Force -ErrorAction Stop
+          [void]$saved.Add($key); $nSaved++; [void]$log.Add('saved original: ' + $key)
+        } catch { $nFail++; [void]$log.Add('COULD NOT SAVE: ' + $key + ' - ' + $_.Exception.Message) }
+      } else { [void]$added.Add($key); $nAdded++; [void]$log.Add('new file (nothing there before): ' + $key) }
+    }
+  }
+  Write-JsonFile (Join-Path $root 'gpu-orig.json') ([pscustomobject]@{ Written = (Get-Date).ToString('s'); Saved = [string[]]@($saved | Sort-Object); Added = [string[]]@($added | Sort-Object); Packages = [string[]]@($pk | Sort-Object) })
+  try { [System.IO.File]::AppendAllText((Join-Path $root 'gpu-orig.log'), (($log -join "`r`n") + "`r`n"), [System.Text.Encoding]::ASCII) } catch { }
+  Say ('GPU originals: ' + $nSaved + ' saved now, ' + $nAdded + ' new files noted, ' + $nFail + ' could not be saved (list: ' + (Join-Path $root 'gpu-orig.log') + ')')
+  return $nFail
+}
+
+function Test-GpuKeySafe([string]$key) {
+  return ($key -match '^(System32|SysWOW64)\\[^:*?"<>|]+$' -and $key -notmatch '(^|\\)\.\.(\\|$)')
+}
+
+function Invoke-UndoGpu {
+  Blank
+  Hd 'undo of the gpu stage (-UndoGpu)'
+  $root = $script:GpuOrigDir
+  $rec = Get-GpuOrigRecord
+  if ($rec.Saved.Count -eq 0 -and $rec.Added.Count -eq 0 -and $rec.Packages.Count -eq 0 -and -not (Test-Path -LiteralPath (Join-Path $root 'System32'))) {
+    Warn ('there is no record to undo (' + (Join-Path $root 'gpu-orig.json') + ' is missing or empty). Nothing was changed.')
+    return 1
+  }
+  Say ('record: ' + $rec.Saved.Count + ' original file(s) to put back, ' + $rec.Added.Count + ' file(s) the pack added, ' + $rec.Packages.Count + ' driver package folder(s)')
+  $fail = 0
+  $win = $env:SystemRoot
+  foreach ($key in $rec.Saved) {
+    if (-not (Test-GpuKeySafe ([string]$key))) { Warn ('skipped an unsafe name in the record: ' + $key); $fail++; continue }
+    $bk = Join-Path $root $key
+    $dst = Join-Path $win $key
+    if (-not (Test-Path -LiteralPath $bk -PathType Leaf)) { Warn ('the saved original is missing: ' + $key); $fail++; continue }
+    if (-not (Do-Change ('put back the original ' + $key) { Copy-Item -LiteralPath $bk -Destination $dst -Force -ErrorAction Stop })) { $fail++ }
+  }
+  $fr = Join-Path $win 'System32\HostDriverStore\FileRepository'
+  foreach ($pn in $rec.Packages) {
+    if ([string]$pn -notmatch '^[A-Za-z0-9_.\-]+\.inf_amd64_[0-9a-fA-F]+$') { Warn ('skipped a driver folder name that looks wrong: ' + $pn); continue }
+    $pd = Join-Path $fr $pn
+    if (Test-Path -LiteralPath $pd) { if (-not (Do-Change ('remove the driver folder the pack added: ' + $pn) { Remove-Item -LiteralPath $pd -Recurse -Force -ErrorAction Stop })) { $fail++ } }
+  }
+  foreach ($key in $rec.Added) {
+    if (-not (Test-GpuKeySafe ([string]$key))) { continue }
+    if ($key -like 'System32\HostDriverStore\FileRepository\*') { continue }   # inside a package folder: handled above
+    $dst = Join-Path $win $key
+    if (Test-Path -LiteralPath $dst -PathType Leaf) { if (-not (Do-Change ('remove the file the pack added: ' + $key) { Remove-Item -LiteralPath $dst -Force -ErrorAction Stop })) { $fail++ } }
+  }
+  $movedRoot = Join-Path $root 'System32\HostDriverStore\FileRepository'
+  if (Test-Path -LiteralPath $movedRoot) {
+    foreach ($d in @(Get-ChildItem -LiteralPath $movedRoot -Directory -ErrorAction SilentlyContinue)) {
+      $to = Join-Path $fr $d.Name
+      if (Test-Path -LiteralPath $to) { Say ('driver folder ' + $d.Name + ' is already back'); continue }
+      if (-not (Do-Change ('move the original driver folder back: ' + $d.Name) { Move-Item -LiteralPath $d.FullName -Destination $to -Force -ErrorAction Stop })) { $fail++ }
+    }
+  }
+  if (-not $script:DryRun) {
+    Remove-Item -LiteralPath (Join-Path $script:StateDir 'gpu-installed.json') -Force -ErrorAction SilentlyContinue
+    if ($fail -eq 0 -and (Test-Path -LiteralPath $root)) {
+      $done = $root + '-undone-' + (Get-Date -Format 'yyyyMMdd-HHmmss')
+      try { Rename-Item -LiteralPath $root -NewName (Split-Path -Leaf $done) -ErrorAction Stop; Say ('the record was kept as ' + $done) } catch { }
+    }
+  }
+  Add-Restart 'the original Windows graphics files were put back; restart the VM'
+  if ($fail -gt 0) { Warn ($fail + ' step(s) did not work (files in use are the usual reason). Restart the VM and run -UndoGpu again; the record is kept.'); return 1 }
+  Good 'GPU files are back to what they were before the gpu stage. Restart the VM. (To remove the GPU adapter itself, use host-vm-boost.ps1 on the main PC.)'
+  return 0
 }
 
 function Stage-gpu {
@@ -807,7 +937,8 @@ function Stage-gpu {
   $tmp = Join-Path $script:WorkDir 'gpu-pack'
   if ($script:DryRun) {
     Dry ('unpack ' + $(if ($kind -eq 'zip') { 'gpu-driver.zip' } else { 'the gpu-driver folder' }) + ' and copy System32 and SysWOW64 files into C:\Windows (including HostDriverStore\FileRepository)')
-    Dry 'delete older u0*.inf_amd64_* folders in the VM HostDriverStore so only the new AMD driver is there'
+    Dry ('save the original of every Windows file the pack replaces to ' + $script:GpuOrigDir + ' first (undo: vm-setup.ps1 -UndoGpu)')
+    Dry 'move older u0*.inf_amd64_* folders in the VM HostDriverStore into that undo folder, so only the new AMD driver is there'
     Dry 'ask for a restart afterwards'
     return (ResDone '(dry run) would copy the AMD driver pack and ask for a restart')
   }
@@ -831,10 +962,24 @@ function Stage-gpu {
   if (-not $hasInf) { return (ResFail 'the pack does not contain System32\HostDriverStore\FileRepository\<driver>.inf_amd64_...\*.inf, so it is not a GPU driver pack.') }
   Say ('the pack holds driver package: ' + (($pkgs | ForEach-Object { $_.Name }) -join ', '))
 
+  # save the originals BEFORE anything is replaced; if one cannot be saved, nothing is copied
+  $wowSave = Join-Path $tmp 'SysWOW64'
+  $saveFails = Backup-GpuOriginals $sysSrc $wowSave @($pkgs | ForEach-Object { $_.Name })
+  if ($saveFails -gt 0) {
+    if ($kind -eq 'zip') { Remove-Item -LiteralPath $tmp -Recurse -Force -ErrorAction SilentlyContinue }
+    return (ResFail ($saveFails + ' original Windows file(s) could not be saved to ' + $script:GpuOrigDir + ', so NOTHING was replaced. Free some space or close what uses them, then run the gpu stage again.'))
+  }
   $hds = Join-Path $env:SystemRoot 'System32\HostDriverStore\FileRepository'
   if (Test-Path -LiteralPath $hds) {
+    $ourPkgs = @((Get-GpuOrigRecord).Packages)
     foreach ($old in @(Get-ChildItem -LiteralPath $hds -Directory -Filter 'u0*.inf_amd64_*' -ErrorAction SilentlyContinue)) {
-      Do-Change ('remove the older driver folder ' + $old.Name) { Remove-Item -LiteralPath $old.FullName -Recurse -Force -ErrorAction Stop } | Out-Null
+      $bk = Join-Path $script:GpuOrigDir ('System32\HostDriverStore\FileRepository\' + $old.Name)
+      if (($ourPkgs -contains $old.Name) -or (Test-Path -LiteralPath $bk)) {
+        # a copy from an earlier run of this pack (or already saved): just replace it
+        Do-Change ('remove the earlier copy of the driver folder ' + $old.Name + ' (it came from the pack; the original is saved)') { Remove-Item -LiteralPath $old.FullName -Recurse -Force -ErrorAction Stop } | Out-Null
+      } else {
+        Do-Change ('move the older driver folder ' + $old.Name + ' into ' + $script:GpuOrigDir) { Ensure-Dir (Split-Path -Parent $bk); Move-Item -LiteralPath $old.FullName -Destination $bk -Force -ErrorAction Stop } | Out-Null
+      }
     }
   }
   $copyFail = $false
@@ -876,12 +1021,14 @@ function Get-WingetExe {
 }
 function Test-WingetHas([string]$id) {
   if (-not $script:Winget) { return $false }
-  $r = Run-Proc -File $script:Winget -ArgLine ('list --id ' + $id + ' --exact --source winget --accept-source-agreements --disable-interactivity') -TimeoutSec 180
+  $srcAccept = ''
+  if ($script:AcceptPkg.Count -gt 0) { $srcAccept = ' --accept-source-agreements' }
+  $r = Run-Proc -File $script:Winget -ArgLine ('list --id ' + $id + ' --exact --source winget' + $srcAccept + ' --disable-interactivity') -TimeoutSec 180
   if ($r.ExitCode -ne 0) { return $false }
   return (@($r.Lines | Where-Object { $_ -match [regex]::Escape($id) }).Count -gt 0)
 }
 function Install-WingetApp($app) {
-  $base = @('install', '--id', $app.Id, '--exact', '--source', 'winget', '--silent', '--accept-package-agreements', '--accept-source-agreements', '--disable-interactivity')
+  $base = @('install', '--id', $app.Id, '--exact', '--source', 'winget', '--silent') + @($script:AcceptPkg) + @('--disable-interactivity')
   $full = @($base)
   if ($app.Version) { $full += @('--version', $app.Version) }
   if ($app.Scope) { $full += @('--scope', $app.Scope) }
@@ -940,18 +1087,26 @@ function Get-InstalledNpmVersion([string]$nodeDir, [string]$rel) {
 }
 
 function Stage-apps {
+  # ---- licence gate: accepting licence terms is the owner's act, so winget's accept flags are passed only with -AcceptLicences
+  Blank
+  Say 'LICENCES: this stage installs programs with the Windows Package Manager (winget) and with the official installers of'
+  Say 'Claude Code and Google agy. Each program has its own licence, and the winget package sources have terms of use.'
+  Say 'It installs (when missing): Git for Windows, Node.js LTS, Google Chrome, Python 3.12, PowerShell 7 (MSI), 7-Zip, the Claude desktop app,'
+  Say 'Claude Code (official installer), Codex CLI and Gemini CLI (npm, pinned to the main PC versions), and Google agy (official installer).'
+  Blank
+  if ($script:AcceptPkg.Count -eq 0) {
+    if (-not $script:DryRun) {
+      Warn 'REFUSED: nothing was installed, because you did not type -AcceptLicences. Read the list above, and the licences if you want to, then run:'
+      Warn '   powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\vm-setup.ps1 -Only apps -AcceptLicences'
+      return (ResSkip 'no programs installed: add -AcceptLicences to the command to accept the programs'' licences yourself (dry run first if you want to see the list).')
+    }
+    Say '(dry run) a real run needs -AcceptLicences before it installs anything.'
+  } else { Say 'You typed -AcceptLicences, so winget is told that you accept those licences and package-source terms.' }
   if (-not $script:Online) {
     # one more try: preflight may have been skipped
     $script:Online = ((Test-Url 'https://cdn.winget.microsoft.com') -or (Test-Url 'https://registry.npmjs.org'))
   }
   if (-not $script:Online -and -not $script:DryRun) { return (ResFail 'the VM has no internet, so nothing can be downloaded. Check the VM network (Default Switch) and run: vm-setup.ps1 -Only apps') }
-
-  Blank
-  Say 'NOTICE: the next step installs programs with the Windows Package Manager (winget) and the official installers of'
-  Say 'Claude Code and Google agy. Each program has its own licence and the package sources have terms. By running this script'
-  Say 'you accept them on your own behalf (the script passes the accept flags for you). Press Ctrl+C within 8 seconds to stop.'
-  Blank
-  if (-not $script:DryRun) { Start-Sleep -Seconds 8 }
 
   # winget itself
   $script:Winget = Get-WingetExe
@@ -1028,7 +1183,7 @@ function Stage-apps {
     }
     if (-not (Test-Path -LiteralPath $claudeExe) -and $script:Winget) {
       Warn 'The official installer did not leave claude.exe where the dev console expects it. Trying winget (Anthropic.ClaudeCode) as a second way.'
-      $r = Run-Proc -File $script:Winget -ArgLine 'install --id Anthropic.ClaudeCode --exact --source winget --silent --accept-package-agreements --accept-source-agreements --disable-interactivity' -TimeoutSec 900
+      $r = Run-Proc -File $script:Winget -ArgLine ('install --id Anthropic.ClaudeCode --exact --source winget --silent ' + ($script:AcceptPkg -join ' ') + ' --disable-interactivity') -TimeoutSec 900
       Show-Tail $r.Lines 5
     }
     Add-UserPath (Join-Path $script:VmProfile '.local\bin')
@@ -1075,7 +1230,7 @@ function Stage-apps {
     }
     if (-not (Test-Path -LiteralPath $agyExe) -and $script:Winget) {
       Warn 'The agy installer did not leave agy.exe in the expected place. Trying winget (Google.AntigravityCLI).'
-      $r = Run-Proc -File $script:Winget -ArgLine 'install --id Google.AntigravityCLI --exact --source winget --silent --accept-package-agreements --accept-source-agreements --disable-interactivity' -TimeoutSec 900
+      $r = Run-Proc -File $script:Winget -ArgLine ('install --id Google.AntigravityCLI --exact --source winget --silent ' + ($script:AcceptPkg -join ' ') + ' --disable-interactivity') -TimeoutSec 900
       Show-Tail $r.Lines 5
     }
     Update-SessionPath
@@ -1303,7 +1458,7 @@ function Stage-debloat {
 # STAGE look : copy the main PC look-and-feel (host-settings.json, wallpaper, start2.bin, language, time zone)
 # ======================================================================================================================
 function Test-LookKeyAllowed([string]$p) {
-  return ($p -match '(?i)^HKCU:\\(Software\\Microsoft\\Windows\\CurrentVersion\\(Themes\\Personalize|Explorer\\(Accent|Advanced|CabinetState)|Search)|Software\\Microsoft\\Windows\\DWM|Control Panel\\(Desktop|Mouse|Keyboard|International|Cursors|Colors|Accessibility))')
+  return ($p -match '(?i)^HKCU:\\(Software\\Microsoft\\Windows\\CurrentVersion\\(Themes\\Personalize|Explorer\\(Accent|Advanced|CabinetState|Wallpapers|VisualEffects)|Search)|Software\\Microsoft\\Windows\\DWM|Control Panel\\(Desktop|Mouse|Keyboard|International|Cursors|Colors|Accessibility))')
 }
 function Get-CfgValue($cfg, [string]$keyPath, [string]$name) {
   try {
@@ -1311,6 +1466,51 @@ function Get-CfgValue($cfg, [string]$keyPath, [string]$name) {
     if ($prop) { $vp = $prop.Value.PSObject.Properties | Where-Object { $_.Name -ieq $name } | Select-Object -First 1; if ($vp) { return $vp.Value } }
   } catch { }
   return $null
+}
+
+function Get-CfgKind($cfg, [string]$keyPath, [string]$name) {
+  # the exporter (v3) records the real registry value kind of each value in "registryKinds"; '' when it did not
+  try {
+    if ($null -eq $cfg.registryKinds) { return '' }
+    $prop = $cfg.registryKinds.PSObject.Properties | Where-Object { $_.Name -ieq $keyPath } | Select-Object -First 1
+    if ($prop) { $vp = $prop.Value.PSObject.Properties | Where-Object { $_.Name -ieq $name } | Select-Object -First 1; if ($vp) { return [string]$vp.Value } }
+  } catch { }
+  return ''
+}
+
+# writes every allowed value of one section ("registry" or "registryExtra") of host-settings.json, using the recorded kind
+function Apply-CfgRegistry($cfg, [string]$section) {
+  $sec = $null
+  $sp = $cfg.PSObject.Properties | Where-Object { $_.Name -ieq $section } | Select-Object -First 1
+  if ($sp) { $sec = $sp.Value }
+  if ($null -eq $sec) { return }
+  foreach ($prop in $sec.PSObject.Properties) {
+    $keyPath = [string]$prop.Name
+    if ($keyPath -match 'StuckRects3') { Say ('skipping ' + $keyPath + ' (it holds the 4K screen geometry of the main PC)'); continue }
+    if (-not (Test-LookKeyAllowed $keyPath)) { Warn ('skipping ' + $keyPath + ' (not a look-and-feel key this script is allowed to write)'); continue }
+    foreach ($v in $prop.Value.PSObject.Properties) {
+      $n = [string]$v.Name
+      $val = $v.Value
+      if ($n -eq 'LocaleName' -or $n -eq '(default)') { continue }
+      if ($null -eq $val) { continue }
+      $kind = Get-CfgKind $cfg $keyPath $n
+      if ($val -is [pscustomobject] -and $val.PSObject.Properties['bin']) {
+        $bytes = [Convert]::FromBase64String([string]$val.bin)
+        RegX $keyPath $n $bytes 'Binary' 'copied from the main PC'
+      } elseif ($kind -eq 'String' -or $kind -eq 'ExpandString') {
+        RegX $keyPath $n ([string]$val) $kind 'copied from the main PC'
+      } elseif ($kind -eq 'DWord' -or $kind -eq 'QWord') {
+        RegX $keyPath $n ([int64]$val) $kind 'copied from the main PC'
+      } elseif ($kind -eq '') {
+        # an older export without kinds: guess from the JSON type
+        if ($val -is [string]) { RegX $keyPath $n $val 'String' 'copied from the main PC' }
+        elseif ($val -is [bool]) { RegX $keyPath $n ([int]$val) 'DWord' 'copied from the main PC' }
+        else { RegX $keyPath $n ([int64]$val) 'DWord' 'copied from the main PC' }
+      } else {
+        Say ('skipping ' + $keyPath + '\' + $n + ' (value kind ' + $kind + ' is not copied by this script)')
+      }
+    }
+  }
 }
 
 function Stage-look {
@@ -1322,28 +1522,9 @@ function Stage-look {
   Say ('settings from ' + [string]$cfg.computer + ', exported ' + [string]$cfg.exported)
   $changed = $false
 
-  # ---- registry look
-  foreach ($prop in $cfg.registry.PSObject.Properties) {
-    $keyPath = [string]$prop.Name
-    if ($keyPath -match 'StuckRects3') { Say ('skipping ' + $keyPath + ' (it holds the 4K screen geometry of the main PC)'); continue }
-    if (-not (Test-LookKeyAllowed $keyPath)) { Warn ('skipping ' + $keyPath + ' (not a look-and-feel key this script is allowed to write)'); continue }
-    foreach ($v in $prop.Value.PSObject.Properties) {
-      $n = [string]$v.Name
-      $val = $v.Value
-      if ($n -eq 'LocaleName' -or $n -eq '(default)') { continue }
-      if ($null -eq $val) { continue }
-      if ($val -is [pscustomobject] -and $val.PSObject.Properties['bin']) {
-        $bytes = [Convert]::FromBase64String([string]$val.bin)
-        RegX $keyPath $n $bytes 'Binary' 'copied from the main PC'
-      } elseif ($val -is [string]) {
-        RegX $keyPath $n $val 'String' 'copied from the main PC'
-      } elseif ($val -is [bool]) {
-        RegX $keyPath $n ([int]$val) 'DWord' 'copied from the main PC'
-      } else {
-        RegX $keyPath $n ([int64]$val) 'DWord' 'copied from the main PC'
-      }
-    }
-  }
+  # ---- registry look (registry = the main look keys, registryExtra = visual-effects mode and wallpaper type)
+  Apply-CfgRegistry $cfg 'registry'
+  Apply-CfgRegistry $cfg 'registryExtra'
   if ($script:RegSet -gt 0) { $changed = $true }
   Say ($script:RegSet.ToString() + ' look setting(s) ' + $(if ($script:DryRun) { 'would change' } else { 'changed' }) + ', ' + $script:RegSame + ' already matched, ' + $script:RegFail + ' failed')
 
@@ -1386,10 +1567,35 @@ function Stage-look {
     if ($LeanVisuals) { Dry 'switch window and menu animations off (-LeanVisuals)' }
   }
 
-  # ---- wallpaper
-  $wpName = [string]$cfg.wallpaper
-  if (-not $wpName) { $found = @(Get-ChildItem -LiteralPath $script:Kit -Filter 'wallpaper.*' -File -ErrorAction SilentlyContinue | Select-Object -First 1); if ($found.Count -gt 0) { $wpName = $found[0].Name } }
-  if ($wpName) {
+  # ---- wallpaper: the exporter says whether the main PC shows a picture or a solid colour (wallpaperMode)
+  $wpMode = ([string]$cfg.wallpaperMode).ToLowerInvariant()
+  $wpName = ''
+  if ($wpMode -eq 'picture' -or $wpMode -eq 'slideshow-or-spotlight') {
+    $wpName = [string]$cfg.wallpaper
+    if (-not $wpName) { $found = @(Get-ChildItem -LiteralPath $script:Kit -Filter 'wallpaper.*' -File -ErrorAction SilentlyContinue | Select-Object -First 1); if ($found.Count -gt 0) { $wpName = $found[0].Name } }
+  }
+  if ($wpMode -eq 'solid') {
+    $bg = ([string]$cfg.backgroundColor).Trim()
+    if ($bg -notmatch '^\d{1,3} \d{1,3} \d{1,3}$') { $bg = '' }
+    $beforeWp = $script:RegSet
+    RegX 'HKCU:\Control Panel\Desktop' 'WallPaper' '' 'String' 'the main PC desktop is a solid colour, not a picture'
+    if ($bg) { RegX 'HKCU:\Control Panel\Colors' 'Background' $bg 'String' 'desktop colour of the main PC' } else { Warn 'wallpaper: the export has no valid desktop colour, so the colour was left as it is' }
+    RegX 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Wallpapers' 'BackgroundType' 1 'DWord' 'background type: solid colour'
+    if ($script:RegSet -gt $beforeWp) {
+      $changed = $true
+      if (-not $script:DryRun) {
+        try {
+          Initialize-Native
+          [void][PilNative]::SystemParametersInfo(20, 0, '', 3)
+          if ($bg) { $pp = $bg -split ' '; $col = [int]$pp[0] + 256 * [int]$pp[1] + 65536 * [int]$pp[2]; [void][PilNative]::SetSysColors(1, [int[]]@(1), [int[]]@($col)) }
+          Say ('wallpaper: solid colour ' + $bg + ' (as on the main PC); a picture set earlier is gone from the desktop')
+        } catch { Warn ('could not apply the solid desktop colour live (a sign-out will do it) - ' + $_.Exception.Message) }
+      }
+    } else { Say 'wallpaper: already the solid colour of the main PC' }
+  } elseif ($wpMode -ne 'picture' -and $wpMode -ne 'slideshow-or-spotlight') {
+    Warn 'wallpaper: host-settings.json is an older export (it has no wallpaperMode), so the wallpaper is left alone. Run host-settings-export.ps1 on the main PC and push the kit again. (Any wallpaper.* file in the kit is ignored on purpose; it can be an old picture.)'
+  } elseif ($wpName) {
+    if ($wpMode -ne 'picture') { Say 'wallpaper: the main PC uses a slideshow or Spotlight; one still picture is set here instead' }
     $src = Join-Path $script:Kit $wpName
     if (Test-Path -LiteralPath $src) {
       $dst = Join-Path $script:VmProfile ('Pictures\pillagers-wallpaper' + [IO.Path]::GetExtension($src))
@@ -1423,17 +1629,28 @@ function Stage-look {
   if ($cul) {
     if ((Get-Culture).Name -eq $cul) { Say ('region format: already ' + $cul) }
     else { if (Do-Change ('set the region format to ' + $cul) { Set-Culture -CultureInfo $cul -ErrorAction Stop }) { $intlChanged = $true } }
-    try {
-      if ((Get-WinSystemLocale).Name -ne $cul) {
-        if (Do-Change ('set the system locale to ' + $cul + ' (needs a restart)') { Set-WinSystemLocale -SystemLocale $cul -ErrorAction Stop }) { $intlChanged = $true; Add-Restart 'the system locale was changed' }
-      }
-    } catch { }
-    if ($cul -eq 'en-US') {
-      try {
-        if ((Get-WinHomeLocation).GeoId -ne 244) { $null = Do-Change 'set the home location to United States' { Set-WinHomeLocation -GeoId 244 -ErrorAction Stop } }
-      } catch { }
-    }
   }
+  # system locale (needs a restart): the main PC value from the export, else the region format
+  $sysLoc = [string]$cfg.systemLocale
+  if (-not $sysLoc) { $sysLoc = $cul }
+  if ($sysLoc) {
+    try {
+      if ((Get-WinSystemLocale).Name -ne $sysLoc) {
+        if (Do-Change ('set the system locale to ' + $sysLoc + ' (needs a restart)') { Set-WinSystemLocale -SystemLocale $sysLoc -ErrorAction Stop }) { $intlChanged = $true; Add-Restart 'the system locale was changed' }
+      } else { Say ('system locale: already ' + $sysLoc) }
+    } catch { }
+  }
+  # home location (GeoId) as on the main PC
+  $geo = 0
+  if ($null -ne $cfg.geoId -and ([string]$cfg.geoId) -match '^\d+$') { $geo = [int]$cfg.geoId }
+  if ($geo -le 0 -and $cul -eq 'en-US') { $geo = 244 }
+  if ($geo -gt 0) {
+    try {
+      if ((Get-WinHomeLocation).GeoId -ne $geo) { $null = Do-Change ('set the home location (GeoId ' + $geo + ') as on the main PC') { Set-WinHomeLocation -GeoId $geo -ErrorAction Stop } }
+      else { Say ('home location: already GeoId ' + $geo) }
+    } catch { }
+  }
+  Say 'not copied on purpose: the main PC power plan text (the perf stage sets the power plan) and start-layout.json (Windows 11 reads start2.bin, below)'
   $langs = @($cfg.languages | Where-Object { $_ })
   if ($langs.Count -gt 0) {
     $haveTags = @()
@@ -1611,6 +1828,7 @@ function Stage-perf {
 # payload manifest (the exact manifest.json layout was not fixed in advance, so this reads several spellings)
 # ======================================================================================================================
 $script:Abort = $false
+$script:AbortKeepHealth = $false
 $script:Selected = @()
 
 function ConvertTo-ManifestEntry($o, [string]$keyName) {
@@ -1631,14 +1849,31 @@ function ConvertTo-ManifestEntry($o, [string]$keyName) {
   $target = 'C:\'
   $tv = Get-Prop $o @('target', 'targetRoot', 'target_root', 'root', 'extractTo', 'extract_to', 'dest', 'destination', 'extractRoot')
   if ($tv) { $target = [string]$tv }
-  return [pscustomobject]@{ Name = $name; Path = (Join-Path $script:Payload $name); Size = $size; Sha = $sha; Target = $target }
+  $opt = $false
+  $ov = Get-Prop $o @('optional')
+  if ($null -ne $ov) { $opt = ([string]$ov -match '^(true|1|yes)$') }
+  $grp = [string](Get-Prop $o @('group'))
+  return [pscustomobject]@{ Name = $name; Path = (Join-Path $script:Payload $name); Size = $size; Sha = $sha; Target = $target; Optional = $opt; Group = $grp }
 }
 
 function Get-PayloadManifest {
-  $res = [pscustomobject]@{ Found = $false; Entries = @(); Path = (Join-Path $script:Payload 'manifest.json'); Problem = '' }
+  $res = [pscustomobject]@{ Found = $false; Entries = @(); Path = (Join-Path $script:Payload 'manifest.json'); Problem = ''; Final = $false; GitHead = ''; Created = ''; RepoFileList = ''; RepoFileListSha = '' }
   if (-not (Test-Path -LiteralPath $res.Path)) { return $res }
   $j = Read-JsonFile $res.Path
   if ($null -eq $j) { $res.Problem = 'manifest.json could not be read'; return $res }
+  if ($j -isnot [System.Array]) {
+    # written by host-push-files.ps1: final = built by a -Final run, gitHead = the commit the copied repo was at
+    $fv = Get-Prop $j @('final')
+    if ($null -ne $fv) { $res.Final = ([string]$fv -match '^(true|1|yes)$') }
+    $gv = Get-Prop $j @('gitHead')
+    if ($gv) { $res.GitHead = ([string]$gv).Trim().ToLowerInvariant() }
+    $cv = Get-Prop $j @('created')
+    if ($cv) { $res.Created = [string]$cv }
+    $rlv = Get-Prop $j @('repoFileList')
+    if ($rlv) { $res.RepoFileList = ([string]$rlv) -replace '[\\/:]', '' }
+    $rsv = Get-Prop $j @('repoFileListSha256')
+    if ($rsv) { $res.RepoFileListSha = ([string]$rsv).ToLowerInvariant() }
+  }
   $raw = New-Object System.Collections.ArrayList
   if ($j -is [System.Array]) {
     foreach ($o in $j) { [void]$raw.Add((ConvertTo-ManifestEntry $o '')) }
@@ -1671,36 +1906,66 @@ function Get-PayloadManifest {
   return $res
 }
 
+function Get-MarkerCheck([string[]]$Lines) {
+  # Same rule as Get-MarkerCheck in host-common.ps1 (this script cannot load that file; keep the two identical):
+  # SHA-256 (lower-case hex) over every non-empty line except the check= line, each trimmed, joined with LF.
+  $keep = New-Object System.Collections.ArrayList
+  foreach ($l in $Lines) {
+    $t = ([string]$l).Trim()
+    if (-not $t) { continue }
+    if ($t -match '^check\s*=') { continue }
+    [void]$keep.Add($t)
+  }
+  $bytes = [System.Text.Encoding]::ASCII.GetBytes(($keep -join "`n"))
+  $sha = [System.Security.Cryptography.SHA256]::Create()
+  try { $h = $sha.ComputeHash($bytes) } finally { $sha.Dispose() }
+  return (($h | ForEach-Object { $_.ToString('x2') }) -join '')
+}
+
 function Get-MarkerInfo {
-  # host-stopped.txt is written by host-stop.ps1 as key=value lines (status, computer, time, gitHead, shipLockClear, unpushedCommits, ...).
-  $o = [pscustomobject]@{ Exists = $false; Stopped = $false; Text = ''; Status = ''; Head = ''; ShipLockClear = $null; Computer = ''; Time = ''; Unpushed = ''; Changed = ''; GpuPack = '' }
+  # host-stopped.txt is written by host-stop.ps1 as key=value lines (status, computer, time, gitHead, shipLockClear, unpushedCommits, ..., check).
+  # STRICT: Stopped is $true only when ALL of these hold: status is exactly "stopped", computer is present and is not this VM,
+  # gitHead is a full 40-character commit id, shipLockClear is yes, the check= line matches the other lines, and no key appears twice.
+  # A marker that is missing, cut short, edited by hand, glued together from two runs, or in an older format is NOT stopped; Why says what is wrong.
+  $o = [pscustomobject]@{ Exists = $false; Stopped = $false; Text = ''; Status = ''; Head = ''; ShipLockClear = $null; Computer = ''; Time = ''; Unpushed = ''; Changed = ''; GpuPack = ''; Why = @() }
   $f = Join-Path $script:Kit 'host-stopped.txt'
-  if (-not (Test-Path -LiteralPath $f)) { return $o }
+  if (-not (Test-Path -LiteralPath $f)) { $o.Why = @('host-stopped.txt does not exist in the kit folder'); return $o }
   $o.Exists = $true
   $t = ''
   try { $t = [System.IO.File]::ReadAllText($f) } catch { }
   $o.Text = $t
+  $why = New-Object System.Collections.ArrayList
+  if (-not $t.Trim()) { [void]$why.Add('host-stopped.txt is empty') }
   $kv = @{}
-  foreach ($l in ($t -split "`r?`n")) {
-    if ($l -match '^\s*([A-Za-z][A-Za-z0-9_ -]*?)\s*[:=]\s*(.*?)\s*$') {
-      $k = ($Matches[1] -replace '[\s_-]', '').ToLowerInvariant()
-      if (-not $kv.ContainsKey($k)) { $kv[$k] = $Matches[2] }
+  $dupes = New-Object System.Collections.ArrayList
+  $allLines = @($t -split "`r?`n")
+  foreach ($l in $allLines) {
+    if ($l -match '^\s*([A-Za-z][A-Za-z0-9]*)\s*=\s*(.*?)\s*$') {
+      $k = $Matches[1].ToLowerInvariant()
+      if ($kv.ContainsKey($k)) { if ($dupes -notcontains $k) { [void]$dupes.Add($k) } } else { $kv[$k] = $Matches[2] }
     }
   }
-  if ($kv.ContainsKey('status')) { $o.Status = $kv['status'].ToLowerInvariant() }
-  foreach ($hk in @('githead', 'head')) { if ($kv.ContainsKey($hk) -and $kv[$hk] -match '^[0-9a-fA-F]{7,40}$') { $o.Head = $kv[$hk].ToLowerInvariant(); break } }
-  if (-not $o.Head -and $t -match '(?i)\b([0-9a-f]{40})\b') { $o.Head = $Matches[1].ToLowerInvariant() }
+  if ($dupes.Count -gt 0) { [void]$why.Add('these lines appear twice (a file glued together from two runs?): ' + ($dupes -join ', ')) }
+  if ($kv.ContainsKey('status')) { $o.Status = $kv['status'].ToLowerInvariant() } else { $o.Status = 'unknown' }
+  if ($kv.ContainsKey('githead') -and $kv['githead'] -match '^[0-9a-fA-F]{40}$') { $o.Head = $kv['githead'].ToLowerInvariant() }
   if ($kv.ContainsKey('shiplockclear')) {
     $v = $kv['shiplockclear'].ToLowerInvariant()
-    if ($v -match '^(yes|true|1|ok|clear)$') { $o.ShipLockClear = $true } elseif ($v -match '^(no|false|0)$') { $o.ShipLockClear = $false }
+    if ($v -eq 'yes') { $o.ShipLockClear = $true } elseif ($v -eq 'no') { $o.ShipLockClear = $false }
   }
-  if ($kv.ContainsKey('computer')) { $o.Computer = $kv['computer'] } elseif ($kv.ContainsKey('computername')) { $o.Computer = $kv['computername'] }
+  if ($kv.ContainsKey('computer')) { $o.Computer = $kv['computer'] }
   if ($kv.ContainsKey('time')) { $o.Time = $kv['time'] }
   if ($kv.ContainsKey('unpushedcommits')) { $o.Unpushed = $kv['unpushedcommits'] }
   if ($kv.ContainsKey('changedfiles')) { $o.Changed = $kv['changedfiles'] }
   if ($kv.ContainsKey('gpupack')) { $o.GpuPack = $kv['gpupack'] }
-  # a marker with no status line (older format) counts as stopped; "revoked" means the main PC is running again
-  $o.Stopped = ($o.Status -eq 'stopped' -or $o.Status -eq '')
+  if ($o.Status -ne 'stopped') { [void]$why.Add('the status line says "' + $o.Status + '" (it must say exactly stopped)') }
+  if (-not $o.Computer) { [void]$why.Add('there is no computer= line') }
+  elseif ($o.Computer -ieq $env:COMPUTERNAME) { [void]$why.Add('the marker names THIS computer (' + $o.Computer + '); it must come from the main PC') }
+  if (-not $o.Head) { [void]$why.Add('there is no full 40-character gitHead= line') }
+  if ($o.ShipLockClear -ne $true) { [void]$why.Add('the marker does not say shipLockClear=yes') }
+  if (-not $kv.ContainsKey('check')) { [void]$why.Add('there is no check= line (older host-stop.ps1, or the file was cut short): run host-stop.ps1 again and push again') }
+  elseif ($kv['check'].ToLowerInvariant() -ne (Get-MarkerCheck $allLines)) { [void]$why.Add('the check= line does not match the other lines (edited by hand, cut short, or copied half-written)') }
+  $o.Why = $why.ToArray()
+  $o.Stopped = ($why.Count -eq 0)
   return $o
 }
 
@@ -1708,7 +1973,8 @@ function Show-MarkerFacts {
   $mk = Get-MarkerInfo
   if (-not $mk.Exists) { return }
   Say ('host-stopped.txt: status ' + $(if ($mk.Status) { $mk.Status } else { '(none)' }) + $(if ($mk.Computer) { ', written on ' + $mk.Computer } else { '' }) + $(if ($mk.Time) { ' at ' + $mk.Time } else { '' }))
-  if (-not $mk.Stopped) { Warn 'The marker says the main PC is RUNNING AGAIN (status revoked). The services stage will refuse until the host is stopped again and the kit is pushed again.' }
+  if ($mk.Status -eq 'revoked') { Warn 'The marker says the main PC is RUNNING AGAIN (status revoked). The services stage will refuse until the host is stopped again and the kit is pushed again.' }
+  elseif (-not $mk.Stopped) { foreach ($w in @($mk.Why)) { Warn ('host-stopped.txt is not accepted: ' + $w) } }
   if ($mk.Head) { Say ('   main PC repo commit at stop: ' + $mk.Head.Substring(0, [math]::Min(12, $mk.Head.Length))) }
   if ($mk.Unpushed -match '^\d+$' -and [int]$mk.Unpushed -gt 0) { Say ('   ' + $mk.Unpushed + ' commit(s) were not on GitHub yet; they travel inside the copied .git') }
   if ($mk.Changed -match '^\d+$' -and [int]$mk.Changed -gt 0) { Say ('   ' + $mk.Changed + ' changed file(s) in the working tree at stop; they travel in the copied files') }
@@ -1813,8 +2079,13 @@ $script:SecretStrict = '(^|/)(' + (@(
   '\.aws/(credentials|config)',
   '\.azure/.*',
   '\.npmrc',
+  '\.pypirc',
   '\.netrc',
   '_netrc',
+  'oauth[_-]?creds?[^/]*',
+  'google_accounts\.json',
+  '[^/]*service[_-]?account[^/]*\.json',
+  '[^/]*\.(p12|pfx|ppk|kdbx|jks|keystore|gpg|pgp)',
   '\.docker/config\.json',
   '\.kube/config',
   'butler_creds',
@@ -1831,6 +2102,7 @@ $script:SecretLoose = '(^|/)(' + (@(
   '\.env(\.(?!example$|sample$|template$|dist$)[^/]*)?',
   'ai-keys[^/]*\.(json|txt|env|dat|xml|ini|cfg|key|clixml)',
   '(secrets?|credentials?|auth|passwords?)\.(json|ya?ml|txt|ini|env|dat|xml|clixml)',
+  '(access|refresh|auth|api|bearer)?[_-]?tokens?\.(json|ya?ml|txt)',
   '[^/]*(api[-_]?key|apikey)[^/]*\.(txt|json|env|key|dat|ini|xml|clixml|ya?ml)',
   '[^/]*\.(pfx|p12|ppk|kdbx|pem|key)'
 ) -join '|') + ')$'
@@ -1900,6 +2172,143 @@ function Get-RepoDirtyCount {
   $r = Invoke-Git -GitArgs @('-C', $script:RepoRoot, 'status', '--porcelain') -TimeoutSec 180
   if ($r.ExitCode -ne 0) { return -1 }
   return @($r.Lines).Count
+}
+
+# A short fingerprint of the VM repo: HEAD plus a SHA-256 of "git status --porcelain" (sorted). Ok is $false when git cannot read the repo.
+function Get-RepoFingerprint {
+  $r = [pscustomobject]@{ Ok = $false; Head = ''; StatusSha = ''; Count = -1 }
+  if (-not (Test-Path -LiteralPath (Join-Path $script:RepoRoot '.git'))) { return $r }
+  if (-not (Find-GitExe)) { return $r }
+  $h = Invoke-Git -GitArgs @('-C', $script:RepoRoot, 'rev-parse', 'HEAD') -TimeoutSec 60
+  if ($h.ExitCode -ne 0) { return $r }
+  $st = Invoke-Git -GitArgs @('-C', $script:RepoRoot, 'status', '--porcelain') -TimeoutSec 600
+  if ($st.ExitCode -ne 0 -or $st.TimedOut) { return $r }
+  $lines = @($st.Lines | Where-Object { $_ -match '^[ MADRCUT?!]{2} ' } | Sort-Object)
+  $bytes = [System.Text.Encoding]::ASCII.GetBytes(($lines -join "`n"))
+  $sha = [System.Security.Cryptography.SHA256]::Create()
+  try { $hash = $sha.ComputeHash($bytes) } finally { $sha.Dispose() }
+  $r.Head = ([string]($h.Lines | Select-Object -First 1)).Trim().ToLowerInvariant()
+  $r.StatusSha = (($hash | ForEach-Object { $_.ToString('x2') }) -join '')
+  $r.Count = $lines.Count
+  $r.Ok = ($r.Head -match '^[0-9a-f]{40}$')
+  return $r
+}
+
+function Short-Id([string]$s) { if ($s.Length -gt 12) { return $s.Substring(0, 12) }; return $s }
+function Get-RepoBaselinePath { return (Join-Path $script:StateDir 'repo-baseline.json') }
+
+# remembers what the repo looked like right after THIS script unpacked into it; the next unpack compares against it
+function Save-RepoBaseline([string]$why) {
+  if ($script:DryRun) { return }
+  $fp = Get-RepoFingerprint
+  Write-JsonFile (Get-RepoBaselinePath) ([pscustomobject]@{ Ok = $fp.Ok; Head = $fp.Head; StatusSha = $fp.StatusSha; Count = $fp.Count; Written = (Get-Date).ToString('s'); Why = $why })
+  if ($fp.Ok) { Say ('remembered the VM repo as unpacked: commit ' + $fp.Head.Substring(0, 12) + ', ' + $fp.Count + ' changed file(s). The next unpack is allowed only while the repo is still exactly like this.') }
+  else { Warn 'git could not read the VM repo after unpacking, so the next unpack has nothing exact to compare with.' }
+}
+
+# Is it safe to unpack the repo archives over the repo that is already in the VM? Decided ONCE per run, before this run touches the repo,
+# and reused for every repo archive (repo-01, repo-02, git, ...), so a later archive can never extract over a repo the first one refused.
+# Rule: allowed when the repo is exactly as this script left it last time (same HEAD, same changed-file list), or when it has no changes at all and
+# this script never unpacked into it. Otherwise the VM holds its own work and nothing is overwritten.
+$script:RepoVerdict = $null
+$script:RepoForceWarned = $false
+function Get-RepoVerdict {
+  if ($null -ne $script:RepoVerdict) { return $script:RepoVerdict }
+  $v = [pscustomobject]@{ Allowed = $false; Why = '' }
+  $cur = Get-RepoFingerprint
+  $base = Read-JsonFile (Get-RepoBaselinePath)
+  if ($base) {
+    if ($cur.Ok -and [bool]$base.Ok) {
+      if (($cur.Head -eq [string]$base.Head) -and ($cur.StatusSha -eq [string]$base.StatusSha)) { $v.Allowed = $true; $v.Why = 'the VM repo is exactly as the last unpack left it' }
+      else {
+        $parts = @()
+        if ($cur.Head -ne [string]$base.Head) { $parts += ('its commit changed (' + ([string]$base.Head).Substring(0, 12) + ' -> ' + $cur.Head.Substring(0, 12) + '): commits were made in the VM') }
+        if ($cur.StatusSha -ne [string]$base.StatusSha) { $parts += ('its list of changed files is different (' + [string]$base.Count + ' at the last unpack, ' + $cur.Count + ' now): files were edited, added or deleted in the VM') }
+        $v.Why = 'the VM repo is no longer as the last unpack left it - ' + ($parts -join '; ')
+      }
+    } elseif ((-not $cur.Ok) -and (-not [bool]$base.Ok)) { $v.Allowed = $true; $v.Why = 'git could not read the repo at the last unpack either (a half copy), so there is nothing of yours to lose' }
+    elseif ($cur.Ok -and $cur.Count -eq 0) { $v.Allowed = $true; $v.Why = 'the VM repo has no changes' }
+    else { $v.Why = 'git can no longer read the VM repo (it could at the last unpack), or it could not then and has changes now' }
+  } else {
+    if ($cur.Ok -and $cur.Count -eq 0) { $v.Allowed = $true; $v.Why = 'the VM repo has no changes and this script never unpacked into it' }
+    elseif ($cur.Ok) { $v.Why = 'the VM repo has ' + $cur.Count + ' changed or new file(s) and this script has not unpacked into it before, so they are somebody''s own work' }
+    else { $v.Why = 'there is a repo folder in the VM that git cannot read, and this script has not unpacked into it before' }
+  }
+  $script:RepoVerdict = $v
+  return $v
+}
+
+# Everything that must be true before the runner, helpers or the scheduled runner task may start (services stage, and the live mode of the health sweep).
+function Test-ServicesAllowed {
+  $why = New-Object System.Collections.ArrayList
+  $mk = Get-MarkerInfo
+  if (-not $mk.Exists) { [void]$why.Add('host-stopped.txt is not in ' + $script:Kit + ' (host-stop.ps1 on the main PC writes it and host-push-files.ps1 -Final sends it)') }
+  elseif ($mk.Status -eq 'revoked') { [void]$why.Add('host-stopped.txt says the main PC Pillagers is running again (status revoked)') }
+  elseif (-not $mk.Stopped) { foreach ($w in @($mk.Why)) { [void]$why.Add('host-stopped.txt is not accepted: ' + $w) } }
+  if ($script:FilesFailed) { [void]$why.Add('the files stage failed in this run, so the copied files may be half-unpacked') }
+  $man = Get-PayloadManifest
+  if (-not $man.Found) { [void]$why.Add('payload\manifest.json is missing or unreadable, so nobody can say which copy of the files is in the VM') }
+  else {
+    if (-not $man.Final) { [void]$why.Add('the copied files are a FIRST-PASS copy (manifest.json says final=false). On the main PC run host-stop.ps1, then host-push-files.ps1 -Final; then here: vm-setup.ps1 -Only files,services,health') }
+    if ($mk.Head -and $man.GitHead -and ($man.GitHead -ne $mk.Head)) { [void]$why.Add('the copied files were built at commit ' + (Short-Id $man.GitHead) + ' but host-stopped.txt names ' + $mk.Head.Substring(0, 12) + ' (the files and the marker come from different moments; push again with -Final)') }
+    $state = Read-JsonFile (Join-Path $script:StateDir 'files-done.json')
+    foreach ($e in @($man.Entries)) {
+      if ($e.Name -like 'gpu-driver*') { continue }
+      if ($e.Optional) { continue }
+      $rec = $null
+      if ($state) { $rec = $state.PSObject.Properties | Where-Object { $_.Name -ieq $e.Name } | Select-Object -First 1 }
+      if (-not $rec) { [void]$why.Add('the archive ' + $e.Name + ' has not been unpacked yet (run: vm-setup.ps1 -Only files)'); continue }
+      if (-not $e.Sha) { [void]$why.Add($e.Name + ' has no fingerprint in the manifest, so "unpacked and unchanged" cannot be shown'); continue }
+      if ([string]$rec.Value.Sha -ne $e.Sha) { [void]$why.Add($e.Name + ' was unpacked from a different copy than the one in the payload now (run: vm-setup.ps1 -Only files)') }
+    }
+  }
+  if ($mk.Head) {
+    $h = Invoke-Git -GitArgs @('-C', $script:RepoRoot, 'rev-parse', 'HEAD') -TimeoutSec 60
+    if ($h.ExitCode -ne 0) { [void]$why.Add('git cannot read the VM repo at ' + $script:RepoRoot) }
+    else {
+      $hv = ([string]($h.Lines | Select-Object -First 1)).Trim().ToLowerInvariant()
+      if ($hv -ne $mk.Head) {
+        $anc = Invoke-Git -GitArgs @('-C', $script:RepoRoot, 'merge-base', '--is-ancestor', $mk.Head, 'HEAD') -TimeoutSec 60
+        if ($anc.ExitCode -ne 0) { [void]$why.Add('the VM repo is at commit ' + $hv.Substring(0, [math]::Min(12, $hv.Length)) + ', which does not include the commit in host-stopped.txt (' + $mk.Head.Substring(0, 12) + '). The wrong or an old copy of the repo is in the VM.') }
+      }
+    }
+  }
+  return [pscustomobject]@{ Ok = ($why.Count -eq 0); Why = $why.ToArray() }
+}
+
+# Reports (never deletes) files in the VM repo that the FINAL copy from the main PC does not contain: leftovers from the first pass,
+# or files made in the VM. The list is payload\repo-files.txt (written by host-push-files.ps1); the answer goes to state\extra-files.txt.
+$script:RxLeftOut = '^(tools/migrate/(logs/|state/|out/|host-stopped\.txt$|host-apps\.json$|gpu-pack-manifest\.json$|kit-manifest\.json$|pillagers-runner-task\.xml$|start-layout\.json$)|tools/handoff/console/lane-[^/]+\.lock(/|$)|tools/handoff/console/pick\.lock(/|$)|tools/handoff/console/STOP$|tools/handoff/codex/STOP$|tools/handoff/stable\.freeze$|tools/handoff/(nightly/)?runner\.heartbeat$|\.claude/scheduled_tasks\.(lock|json)$)|(^|/)node_modules/|\.pid$|(^|/)\.git/'
+function Report-ExtraFiles($man) {
+  if (-not $man.Found -or -not $man.Final) { return }
+  if (-not $man.RepoFileList) { Say 'leftover-file report: skipped (the manifest has no file list; the main PC push is from an older host-push-files.ps1)'; return }
+  $lf = Join-Path $script:Payload $man.RepoFileList
+  if (-not (Test-Path -LiteralPath $lf)) { Warn ('leftover-file report: skipped (' + $lf + ' was not copied)'); return }
+  if ($man.RepoFileListSha) {
+    $hh = ''
+    try { $hh = Get-FileSha256 $lf } catch { }
+    if ($hh -ne $man.RepoFileListSha) { Warn 'leftover-file report: skipped (the file list does not match its fingerprint)'; return }
+  }
+  $want = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
+  foreach ($l in [System.IO.File]::ReadAllLines($lf)) { $t = $l.Trim(); if ($t) { [void]$want.Add($t) } }
+  $a = Invoke-Git -GitArgs @('-C', $script:RepoRoot, 'ls-files', '-c', '-o', '--exclude-standard') -TimeoutSec 900
+  $d = Invoke-Git -GitArgs @('-C', $script:RepoRoot, 'ls-files', '-d') -TimeoutSec 900
+  if ($a.ExitCode -ne 0 -or $d.ExitCode -ne 0) { Warn 'leftover-file report: skipped (git could not list the VM repo files)'; return }
+  $gone = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
+  foreach ($l in @($d.Lines)) { [void]$gone.Add([string]$l) }
+  $extras = New-Object System.Collections.ArrayList
+  foreach ($l in @($a.Lines)) {
+    $f = [string]$l
+    if ($gone.Contains($f) -or $want.Contains($f)) { continue }
+    if ($f -match $script:RxLeftOut) { continue }
+    [void]$extras.Add($f)
+  }
+  $outFile = Join-Path $script:StateDir 'extra-files.txt'
+  try { [System.IO.File]::WriteAllLines($outFile, [string[]]$extras.ToArray(), [System.Text.Encoding]::ASCII) } catch { }
+  if ($extras.Count -eq 0) { Good ('leftover-file report: the VM repo has no file that is missing from the final copy (' + $want.Count + ' files listed by the main PC)'); return }
+  Warn ('leftover-file report: ' + $extras.Count + ' file(s) in the VM repo are NOT in the final copy from the main PC (left over from the first pass, or made in the VM). Nothing was deleted. Full list: ' + $outFile)
+  foreach ($f in @($extras | Select-Object -First 25)) { Say ('     extra: ' + $f) }
+  Say '   Look at them. Delete the ones you do not want BEFORE the first ship, because a ship commits everything it finds (git add -A).'
 }
 
 function Ensure-GitSafe {
@@ -2009,6 +2418,8 @@ function Stage-files {
   $stateMap = [ordered]@{}
   if ($state) { foreach ($p in $state.PSObject.Properties) { $stateMap[$p.Name] = $p.Value } }
   $marker = Get-MarkerInfo
+  $script:RepoVerdict = $null
+  $script:RepoForceWarned = $false
 
   $okList = New-Object System.Collections.ArrayList
   $skipList = New-Object System.Collections.ArrayList
@@ -2016,8 +2427,13 @@ function Stage-files {
   $secretsTotal = 0
   $repoTouched = $false
   $repoPreexisting = (Test-Path -LiteralPath (Join-Path $script:RepoRoot '.git'))
-  $repoGuardDone = $false
+  $repoAttempted = $false
+  if ($repoPreexisting) { Ensure-GitSafe }
   Initialize-ScanType
+  if ($script:DryRun -and $repoPreexisting) {
+    $rv0 = Get-RepoVerdict
+    if ($rv0.Allowed) { Dry ('the repo already in the VM would be overwritten by the repo archives: ' + $rv0.Why) } else { Warn ('a real run would REFUSE to unpack the repo archives: ' + $rv0.Why) }
+  }
 
   foreach ($e in $entries) {
     Blank
@@ -2054,7 +2470,7 @@ function Stage-files {
 
     if ($script:DryRun) {
       Dry ('check the fingerprint of ' + $e.Name + ($(if ($e.Sha) { '' } else { ' (the manifest has none, so size only)' })))
-      Dry ('list its members, refuse paths outside C:\claudecode and C:\Users\User1, leave out any secret-looking file names, and unpack with tar.exe to C:\')
+      Dry ('list its members, refuse paths outside C:\claudecode and C:\Users\User1, leave out any secret-looking file names, and unpack with tar.exe to C:\'); if ($e.Name -match '(?i)repo|git') { Dry ('if a repo archive lands on an existing repo: clear the read-only flag inside ' + $script:RepoRoot + '\.git (attrib -R) first, and refuse when the VM repo has its own unsent work') }
       [void]$okList.Add($e.Name); continue
     }
 
@@ -2094,19 +2510,36 @@ function Stage-files {
       [System.IO.File]::WriteAllLines($exclFile, [string[]]$lines, (New-Object System.Text.UTF8Encoding($false)))
     }
 
-    # the VM repo must not hold work that this archive would overwrite
+    # the VM repo must not hold work that this archive would overwrite. The verdict is made once (Get-RepoVerdict) and applies to EVERY
+    # archive that writes into C:\claudecode\dark raiders (repo-01, repo-02, git, builds, ...), so a later archive can never extract over a repo
+    # that the first one refused.
     if ($scan.RepoCount -gt 0) { $repoTouched = $true }
-    if ($scan.MainRepoCount -gt 0 -and $repoPreexisting -and -not $repoGuardDone) {
-      $repoGuardDone = $true
-      $dirty = Get-RepoDirtyCount
-      if ($dirty -gt 0 -and -not $Force) {
-        Bad ('The repo already in the VM (' + $script:RepoRoot + ') has ' + $dirty + ' changed or new file(s) (git status). Unpacking would overwrite changes. Commit or push that work first, or use -Force to overwrite anyway.')
-        if ($exclFile) { Remove-Item -LiteralPath $exclFile -Force -ErrorAction SilentlyContinue }
-        [void]$failList.Add($e.Name + ': VM repo has its own unsent work'); continue
+    if ($scan.MainRepoCount -gt 0 -and $repoPreexisting) {
+      $rv = Get-RepoVerdict
+      if (-not $rv.Allowed) {
+        if (-not $Force) {
+          Bad ('REFUSED to unpack ' + $e.Name + ': ' + $rv.Why + '.')
+          Say '   Nothing in the repo was overwritten. If you have work in the VM repo that you want to keep, commit and push it first. If the changes are only test runs or nothing you need, run again with -Force to overwrite them.'
+          if ($exclFile) { Remove-Item -LiteralPath $exclFile -Force -ErrorAction SilentlyContinue }
+          [void]$failList.Add($e.Name + ': VM repo changed since the last unpack')
+          continue
+        }
+        if (-not $script:RepoForceWarned) { Warn ('-Force: unpacking over the VM repo although ' + $rv.Why); $script:RepoForceWarned = $true }
       }
     }
 
     # unpack
+    if ($scan.MainRepoCount -gt 0) {
+      $repoAttempted = $true
+      # git keeps its pack and object files read-only, and tar cannot replace a read-only file ("Could not unlink"): clear the flag first
+      $gitDirNow = Join-Path $script:RepoRoot '.git'
+      if (Test-Path -LiteralPath $gitDirNow -PathType Container) {
+        $null = Do-Change ('clear the read-only flag on the files inside ' + $gitDirNow + ' so the new copy can replace them (a minute or two)') {
+          $ar = Run-Proc -File 'attrib.exe' -ArgLine ('-R ' + (Q ($gitDirNow + '\*')) + ' /S /D') -TimeoutSec 1800
+          if ($ar.ExitCode -ne 0) { throw ('attrib returned ' + $ar.ExitCode + ' ' + (($ar.Lines | Select-Object -First 1))) }
+        }
+      }
+    }
     $ok = $true
     $why = ''
     $warnLines = @()
@@ -2130,7 +2563,8 @@ function Stage-files {
       $x = Run-ProcBeat -File $tar -ArgLine $line -TimeoutSec 14400 -Label ('unpacking ' + $e.Name)
       if ($x.TimedOut) { $ok = $false; $why = 'unpacking took longer than 4 hours and was stopped'; break }
       if ($x.ExitCode -ne 0) {
-        $real = @($x.Lines | Where-Object { $_ -notmatch "(?i)can't restore (time|mode|owner|extended)|utime|chmod|not supported|time stamp" })
+        # object and pack files of .git are named after their content, so one that is already there (and cannot be replaced) is the same file
+        $real = @($x.Lines | Where-Object { $_ -notmatch "(?i)can't restore (time|mode|owner|extended)|utime|chmod|not supported|time stamp" -and $_ -notmatch '(?i)\.git/objects/.*unlink' -and $_ -notmatch '(?i)unlink.*\.git/objects/' })
         if ($real.Count -gt 0) { $ok = $false; $why = 'tar returned ' + $x.ExitCode; Show-Tail $real 8; break }
         $warnLines += $x.Lines
         Warn ('tar returned ' + $x.ExitCode + ' but only about file times/modes (' + @($x.Lines).Count + ' message(s)); treated as fine')
@@ -2166,6 +2600,7 @@ function Stage-files {
     Copy-ClaudeMemory
     Ensure-Dir (Map-ToReal $script:Scratch)
     Test-RemoteHasEmbeddedLogin
+    if ($repoAttempted) { Save-RepoBaseline 'right after the files stage unpacked the repo archives' }
     if (Test-Path -LiteralPath $script:RepoRoot) {
       $head = Invoke-Git -GitArgs @('-C', $script:RepoRoot, 'rev-parse', 'HEAD') -TimeoutSec 60
       $hv = ''
@@ -2173,11 +2608,20 @@ function Stage-files {
       if ($hv) {
         Say ('repo HEAD in the VM: ' + $hv.Substring(0, [math]::Min(12, $hv.Length)))
         if ($marker.Head) {
-          if ($hv.StartsWith($marker.Head) -or $marker.Head.StartsWith($hv)) { Good 'the VM repo is at the same commit the main PC had when it was stopped' }
-          else { Warn ('the VM repo HEAD (' + $hv.Substring(0, 12) + ') differs from the commit in host-stopped.txt (' + $marker.Head.Substring(0, [math]::Min(12, $marker.Head.Length)) + '). Normal only if you committed in the VM since.') }
+          if ($hv -eq $marker.Head) { Good 'the VM repo is at the same commit the main PC had when it was stopped' }
+          else {
+            $anc = Invoke-Git -GitArgs @('-C', $script:RepoRoot, 'merge-base', '--is-ancestor', $marker.Head, 'HEAD') -TimeoutSec 60
+            if ($anc.ExitCode -eq 0) { Say ('the VM repo is AHEAD of the commit in host-stopped.txt (' + $marker.Head.Substring(0, 12) + '): commits were made in the VM since; fine') }
+            elseif ($man.Final -and $marker.Stopped) {
+              Bad ('the VM repo HEAD (' + $hv.Substring(0, 12) + ') is NOT the commit in host-stopped.txt (' + $marker.Head.Substring(0, 12) + ') and does not contain it. The final copy did not land completely; run: vm-setup.ps1 -Only files -Force (after checking nothing of yours is in the VM repo).')
+              [void]$failList.Add('VM repo HEAD is not the commit named in host-stopped.txt')
+            }
+            else { Warn ('the VM repo HEAD (' + $hv.Substring(0, 12) + ') differs from the commit in host-stopped.txt (' + $marker.Head.Substring(0, [math]::Min(12, $marker.Head.Length)) + '). Expected until the final copy has been pushed.') }
+          }
         }
         $dc = Get-RepoDirtyCount
         if ($dc -ge 0) { Say ('changed files in the VM repo right now: ' + $dc) }
+        Report-ExtraFiles $man
       } else { Warn 'git cannot read the VM repo HEAD (see the lines above).' }
     }
     foreach ($must in @('dark_raiders.html', 'tools\nightly.sh', 'tools\health.sh', 'tools\start-servers.ps1')) {
@@ -2248,6 +2692,14 @@ function Set-PilShortcut([string]$Path, [string]$Target, [string]$ArgLine, [stri
 }
 
 function Clear-StaleLocks {
+  # Old runtime markers that came over with the files. The SHIP LOCK is never deleted by this script: tools\handoff\shipkit\clearstale.sh is the
+  # only way to clear it (it tells an owner that is still alive from one that is gone). Nothing here is touched unless host-stopped.txt is a valid
+  # "stopped" marker that says the ship lock was clear on the main PC.
+  $mk = Get-MarkerInfo
+  if (-not ($mk.Stopped -and $mk.ShipLockClear -eq $true)) {
+    if (-not $Force) { Say 'old lock files and the heartbeat are left alone: host-stopped.txt does not say the main PC stopped cleanly with the ship lock clear'; return }
+    Warn 'clearing old lock files although the marker is not valid, only because of -Force'
+  }
   $busy = @()
   try {
     $busy = @(Get-CimInstance Win32_Process -ErrorAction Stop | Where-Object { $_.CommandLine -and ($_.CommandLine -match 'nightly\.sh|console-lane\.sh|console-worker\.sh|corpq\.sh|corpus-slices\.sh|shipq\.sh|shipone\.sh|codex-lane\.sh|fixq\.sh') })
@@ -2255,8 +2707,35 @@ function Clear-StaleLocks {
   if ($busy.Count -gt 0) { Say ('helpers are already running here (' + $busy.Count + ' process(es)); old lock files are left alone'); return }
   $h = Join-Path $script:RepoRoot 'tools\handoff'
   $sc = Map-ToReal $script:Scratch
+
+  # ---- the ship lock: look at it, and let clearstale.sh judge it
+  $lk = Join-Path $sc 'shipq.lock'
+  $ow = Join-Path $sc 'shipq.owner'
+  if (Test-Path -LiteralPath $lk) {
+    $ageMin = -1
+    try { $ageMin = [int]((Get-Date) - (Get-Item -LiteralPath $lk -Force).LastWriteTime).TotalMinutes } catch { }
+    $ownerTxt = ''
+    if (Test-Path -LiteralPath $ow) { try { $ownerTxt = ([System.IO.File]::ReadAllText($ow)).Trim() } catch { } }
+    Say ('ship lock found: ' + $lk + '   age ' + $ageMin + ' min   owner file: ' + $(if ($ownerTxt) { $ownerTxt } else { '(none)' }))
+    if ($script:DryRun) { Dry 'ask tools\handoff\shipkit\clearstale.sh about that lock (it clears it only when the owner is gone); the lock folder itself is never deleted by this script' }
+    else {
+      $cs = Join-Path $sc 'clearstale.sh'
+      if (-not (Test-Path -LiteralPath $cs)) { $cs = Join-Path $h 'shipkit\clearstale.sh' }
+      $bashX = Find-BashExe
+      if (-not $bashX -or -not (Test-Path -LiteralPath $cs)) { Warn 'the ship lock was left in place: Git bash or clearstale.sh was not found, and the lock is never deleted by hand' }
+      else {
+        $r = Run-Proc -File $bashX -ArgLine (Q ($cs -replace '\\', '/')) -TimeoutSec 120
+        $ans = (@($r.Lines | Select-Object -First 3)) -join ' / '
+        if ($r.ExitCode -eq 0) { Say ('clearstale.sh says: ' + $ans) }
+        elseif ($r.ExitCode -eq 1) { Warn ('the ship lock is HELD and was left alone. clearstale.sh says: ' + $ans + '   The runner will wait for it; if it never frees, ask for help instead of deleting the folder.') }
+        else { Warn ('clearstale.sh could not clear the ship lock (code ' + $r.ExitCode + '): ' + $ans + '   It was left in place.') }
+      }
+    }
+  } else { Say 'no ship lock to clear' }
+
+  # ---- the other runtime markers that came over with the files
   $targets = New-Object System.Collections.ArrayList
-  foreach ($p in @((Join-Path $h 'nightly\runner.heartbeat'), (Join-Path $sc 'shipq.lock'), (Join-Path $sc 'shipq.owner'), (Join-Path $sc 'corpus.lock'), (Join-Path $h 'console\pick.lock'))) { [void]$targets.Add($p) }
+  foreach ($p in @((Join-Path $h 'nightly\runner.heartbeat'), (Join-Path $sc 'corpus.lock'), (Join-Path $h 'console\pick.lock'))) { [void]$targets.Add($p) }
   $cd = Join-Path $h 'console'
   if (Test-Path -LiteralPath $cd) { foreach ($d in @(Get-ChildItem -LiteralPath $cd -Filter 'lane-*.lock' -Force -ErrorAction SilentlyContinue)) { [void]$targets.Add($d.FullName) } }
   $n = 0
@@ -2307,23 +2786,15 @@ function Get-HeartbeatAge {
 
 function Stage-services {
   $marker = Get-MarkerInfo
-  if (-not $marker.Exists) {
+  if ($marker.Exists) { Show-MarkerFacts }
+  $gate = Test-ServicesAllowed
+  if (-not $gate.Ok) {
+    foreach ($w in $gate.Why) { Warn ('REFUSED: ' + $w) }
     if (-not $Force) {
-      Warn ('REFUSED: ' + (Join-Path $script:Kit 'host-stopped.txt') + ' is not here. That file is written by host-stop.ps1 on the main PC when its runner, helpers and tasks are switched off. Two copies of the runner would fight over the same GitHub repo, ship queue and plan usage.')
-      return (ResSkip 'the main PC is not marked as stopped (no host-stopped.txt). On the main PC run host-stop.ps1, push the kit again, then run: vm-setup.ps1 -Only services   (or add -Force if you know the main PC is stopped).')
+      return (ResSkip ('the runner and helpers were NOT set up or started: ' + @($gate.Why).Count + ' check(s) failed (listed above). Two copies must never run, and the VM must start from the final copy of the files. Fix what is listed, then run: vm-setup.ps1 -Only files,services,health   (-Force overrides, at your own risk).'))
     }
-    Warn 'No host-stopped.txt, continuing only because of -Force. Make sure the main PC runner and helpers are really off.'
-  } else {
-    Show-MarkerFacts
-    if (-not $marker.Stopped) {
-      if (-not $Force) { return (ResSkip ('REFUSED: host-stopped.txt says status=' + $marker.Status + ', meaning the main PC Pillagers is running again. Two copies must never run. Run host-stop.ps1 on the main PC again, push the kit again, then re-run: vm-setup.ps1 -Only services   (-Force overrides).')) }
-      Warn 'The marker says the main PC is running again; continuing only because of -Force.'
-    }
-    if ($marker.ShipLockClear -eq $false) {
-      if (-not $Force) { return (ResSkip 'host-stopped.txt says the ship lock was NOT clear when the main PC stopped. Finish or clear that ship on the main PC, run host-stop.ps1 again, push the kit, and re-run. (-Force overrides.)') }
-      Warn 'The marker says the ship lock was not clear; continuing because of -Force.'
-    }
-  }
+    Warn 'Continuing only because of -Force. Make sure the main PC runner and helpers are really off, and that the files in the VM are the final ones.'
+  } else { Good 'start check passed: the main PC is marked stopped, the copied files are the final ones, fully unpacked, and the repo is at the marker commit' }
 
   $problems = New-Object System.Collections.ArrayList
   if (-not (Test-Path -LiteralPath (Join-Path $script:RepoRoot 'tools\nightly.sh'))) { [void]$problems.Add('the repo is not at ' + $script:RepoRoot + ' (run the files stage)') }
@@ -2359,6 +2830,64 @@ If Not ok Then
 End If
 '@
   $devVbs = Write-LauncherFile 'dev-services.vbs' $vbs
+
+  # ---- the runner guard: the "Pillagers runner" task starts THIS, not the runner. It starts the runner only while host-stopped.txt is a valid
+  # "stopped" marker, so switching the main PC back on (host-stop.ps1 -Undo sends a "revoked" marker) stops the VM runner at the next tick.
+  $guard = @'
+# runner-guard.ps1 : written by vm-setup.ps1. The "Pillagers runner" task runs this (through runner-guard.vbs) every 15 minutes.
+# It starts the runner (tools\runner-start.vbs) ONLY while C:\PillagersMove\kit\host-stopped.txt is a valid "stopped" marker from the main PC.
+# Otherwise it does nothing and writes one line to runner-guard.log. It never changes the marker. To pause the runner by hand, create the
+# file C:\PillagersMove\launchers\RUNNER-OFF.txt (delete it to let the runner start again).
+$ErrorActionPreference = 'Continue'
+$here = 'C:\PillagersMove\launchers'
+$log = Join-Path $here 'runner-guard.log'
+function Log([string]$t) {
+  try {
+    if ((Test-Path -LiteralPath $log) -and ((Get-Item -LiteralPath $log).Length -gt 200000)) { Move-Item -LiteralPath $log -Destination ($log + '.old') -Force }
+    Add-Content -LiteralPath $log -Value ((Get-Date).ToString('s') + ' ' + $t)
+  } catch { }
+}
+function Get-Check([string[]]$Lines) {
+  $keep = @()
+  foreach ($l in $Lines) { $t = ([string]$l).Trim(); if (-not $t) { continue }; if ($t -match '^check\s*=') { continue }; $keep += $t }
+  $bytes = [System.Text.Encoding]::ASCII.GetBytes(($keep -join "`n"))
+  $sha = [System.Security.Cryptography.SHA256]::Create()
+  try { $h = $sha.ComputeHash($bytes) } finally { $sha.Dispose() }
+  return (($h | ForEach-Object { $_.ToString('x2') }) -join '')
+}
+$why = @()
+if (Test-Path -LiteralPath (Join-Path $here 'RUNNER-OFF.txt')) { $why += 'RUNNER-OFF.txt exists' }
+$f = 'C:\PillagersMove\kit\host-stopped.txt'
+if (-not (Test-Path -LiteralPath $f)) { $why += 'there is no host-stopped.txt' }
+else {
+  $lines = @()
+  try { $lines = @(Get-Content -LiteralPath $f -ErrorAction Stop) } catch { $why += 'host-stopped.txt cannot be read' }
+  $kv = @{}
+  foreach ($l in $lines) {
+    if ($l -match '^\s*([A-Za-z][A-Za-z0-9]*)\s*=\s*(.*?)\s*$') {
+      $k = $Matches[1].ToLowerInvariant()
+      if ($kv.ContainsKey($k)) { $why += ('the line ' + $k + ' appears twice') } else { $kv[$k] = $Matches[2] }
+    }
+  }
+  if ($kv['status'] -ne 'stopped') { $why += ('status is "' + $kv['status'] + '"') }
+  if (-not $kv['computer']) { $why += 'no computer line' } elseif ($kv['computer'] -ieq $env:COMPUTERNAME) { $why += 'the marker names this computer' }
+  if ($kv['githead'] -notmatch '^[0-9a-fA-F]{40}$') { $why += 'no full gitHead' }
+  if ($kv['shiplockclear'] -ne 'yes') { $why += 'shipLockClear is not yes' }
+  if (-not $kv['check']) { $why += 'no check line' } elseif ($kv['check'].ToLowerInvariant() -ne (Get-Check $lines)) { $why += 'check line does not match' }
+}
+if ($why.Count -gt 0) { Log ('runner NOT started: ' + ($why -join '; ')); exit 0 }
+$vbs = 'C:\claudecode\dark raiders\tools\runner-start.vbs'
+if (-not (Test-Path -LiteralPath $vbs)) { Log 'runner NOT started: tools\runner-start.vbs is missing'; exit 0 }
+Start-Process -FilePath 'wscript.exe' -ArgumentList ('"' + $vbs + '"') -WindowStyle Hidden
+exit 0
+'@
+  $null = Write-LauncherFile 'runner-guard.ps1' $guard
+  $guardVbsText = @'
+' runner-guard.vbs : written by vm-setup.ps1. Runs runner-guard.ps1 without a window (the "Pillagers runner" task starts this).
+Set sh = CreateObject("WScript.Shell")
+sh.Run "powershell.exe -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File ""C:\PillagersMove\launchers\runner-guard.ps1""", 0, False
+'@
+  $guardVbs = Write-LauncherFile 'runner-guard.vbs' $guardVbsText
   $out = Join-Path $script:WorkDir 'health-out.txt'
   $done = Join-Path $script:WorkDir 'health-done.txt'
   $cmd = '@echo off' + "`r`n" + 'rem written by vm-setup.ps1: runs the Pillagers health sweep and saves what it printed' + "`r`n"
@@ -2369,14 +2898,14 @@ End If
 
   # ---- scheduled tasks
   $start = (Get-Date).ToString('s')
-  $runnerArgs = '"' + $script:RepoRoot + '\tools\runner-start.vbs"'
+  $runnerArgs = '"' + $guardVbs + '"'
   $existing = Get-ScheduledTask -TaskName $script:RunnerTask -ErrorAction SilentlyContinue
   $runnerOk = $false
   if ($existing) { try { $runnerOk = ($existing.Actions[0].Execute -ieq 'wscript.exe' -and $existing.Actions[0].Arguments -eq $runnerArgs) } catch { } }
   if ($runnerOk) { Say ('scheduled task "' + $script:RunnerTask + '": already set up (state ' + $existing.State + ')') }
   else {
     $trig = '<TimeTrigger><Repetition><Interval>PT15M</Interval></Repetition><StartBoundary>' + $start + '</StartBoundary><Enabled>true</Enabled></TimeTrigger>'
-    $xml = Build-TaskXml -Desc 'PILLAGERS always-on runner: starts tools\nightly.sh hidden every 15 min; a live copy makes the new one exit. Created by vm-setup.ps1 (same as the main PC task).' -TriggerXml $trig -Cmd 'wscript.exe' -CmdArgs $runnerArgs -Enabled (-not $NoRunner) -Limit 'PT5M'
+    $xml = Build-TaskXml -Desc 'PILLAGERS always-on runner: every 15 min runner-guard.ps1 starts tools\nightly.sh hidden (a live copy makes the new one exit) - but only while host-stopped.txt says the main PC is stopped. Created by vm-setup.ps1.' -TriggerXml $trig -Cmd 'wscript.exe' -CmdArgs $runnerArgs -Enabled (-not $NoRunner) -Limit 'PT5M'
     $null = Do-Change ('create the scheduled task "' + $script:RunnerTask + '" (every 15 minutes' + $(if ($NoRunner) { ', created OFF because of -NoRunner' } else { '' }) + ')') { Register-ScheduledTask -TaskName $script:RunnerTask -Xml $xml -Force -ErrorAction Stop | Out-Null }
   }
   if ($NoRunner -and $runnerOk -and $existing.State -ne 'Disabled') {
@@ -2438,7 +2967,7 @@ End If
     $rt = Get-ScheduledTask -TaskName $script:RunnerTask -ErrorAction SilentlyContinue
     if ($rt -and $rt.State -eq 'Disabled') { Warn ('the task "' + $script:RunnerTask + '" is switched off (an earlier party-stop or -NoRunner). Switch it on with: Enable-ScheduledTask -TaskName "' + $script:RunnerTask + '"'); $hbNote = 'runner task is disabled' }
     else {
-      Say 'starting the runner (tools\runner-start.vbs through its task) ...'
+      Say 'starting the runner (tools\runner-start.vbs through its guard and its task) ...'
       try { Start-ScheduledTask -TaskName $script:RunnerTask -ErrorAction Stop } catch { Warn ('could not start the runner task - ' + $_.Exception.Message) }
       $ok = $false
       for ($i = 0; $i -lt 30; $i++) {
@@ -2447,7 +2976,7 @@ End If
         if ($age -ge 0 -and $age -lt 120) { $ok = $true; break }
       }
       if ($ok) { Good 'the runner is alive (fresh heartbeat). It starts the robots, helpers and test runs by itself within about 5 minutes.'; $hbNote = 'runner alive' }
-      else { Warn 'no fresh runner heartbeat after 90 seconds. Look at tools\handoff\nightly\nightly.log, and make sure Git bash and node work in a normal window.'; $hbNote = 'runner heartbeat not seen' }
+      else { Warn 'no fresh runner heartbeat after 90 seconds. Look at C:\PillagersMove\launchers\runner-guard.log (it says why the guard did not start the runner), then tools\handoff\nightly\nightly.log, and make sure Git bash and node work in a normal window.'; $hbNote = 'runner heartbeat not seen' }
     }
   }
   if ($upList.Count -lt 2) { return (ResFail ('tasks and launchers are set up, but only ' + $upList.Count + ' server(s) answered. ' + $hbNote)) }
@@ -2538,9 +3067,9 @@ function Stage-health {
 
   # ---- the Pillagers health sweep
   Blank
-  $marker = Get-MarkerInfo
+  $gate = Test-ServicesAllowed
   $mode = ''
-  if ((-not $marker.Exists -or -not $marker.Stopped) -and -not $Force) { $mode = '--dry' }
+  if (-not $gate.Ok -and -not $Force) { $mode = '--dry'; foreach ($w in $gate.Why) { Say ('   report-only mode, because: ' + $w) } }
   $sweepProblems = -1
   $sweepNote = ''
   if (-not (Test-Path -LiteralPath (Join-Path $script:RepoRoot 'tools\health.sh')) -or -not (Find-BashExe)) {
@@ -2557,7 +3086,7 @@ function Stage-health {
       $cmd = '@echo off' + "`r`n" + 'if exist "' + $done + '" del "' + $done + '"' + "`r`n" + '"' + (Find-BashExe) + '" "/c/claudecode/dark raiders/tools/health.sh" %1 > "' + $out + '" 2>&1' + "`r`n" + 'echo done> "' + $done + '"' + "`r`n"
       [System.IO.File]::WriteAllText($healthCmd, $cmd, [System.Text.Encoding]::ASCII)
     }
-    if ($mode -eq '--dry') { Say 'The main PC is not marked as stopped, so the sweep runs in report-only mode (health.sh --dry): it will not start anything.' }
+    if ($mode -eq '--dry') { Say 'The start check did not pass (see above), so the sweep runs in report-only mode (health.sh --dry): it will not start anything.' }
     Remove-Item -LiteralPath $out, $done -Force -ErrorAction SilentlyContinue
     $tn = 'Pillagers health once'
     $xml = Build-TaskXml -Desc 'One-shot Pillagers health sweep. Created and deleted by vm-setup.ps1.' -TriggerXml '' -Cmd $healthCmd -CmdArgs $mode -Enabled $true -Limit 'PT15M'
@@ -2604,7 +3133,7 @@ function Stage-health {
   Say ('   GitHub stored sign-in'.PadRight(37) + $(if ($gh) { 'present' } else { 'none yet' }).PadRight(20) + '(checked by name only)')
   Say 'Also in the VM: open Chrome, go to chrome://gpu, and check Canvas and WebGL say Hardware accelerated.'
 
-  if ($missingReq.Count -gt 0) { return (ResFail ('missing tools: ' + ($missingReq -join ', ') + '. Run vm-setup.ps1 -Only apps')) }
+  if ($missingReq.Count -gt 0) { return (ResFail ('missing tools: ' + ($missingReq -join ', ') + '. Run vm-setup.ps1 -Only apps -AcceptLicences')) }
   if ($script:DryRun) { return (ResDone '(dry run) tools checked; the health sweep was not run') }
   return (ResDone ('all required tools are there; ' + $(if ($sweepNote) { $sweepNote } else { 'health sweep not run' }) + '; sign-ins are yours to do (list above)'))
 }
@@ -2614,6 +3143,15 @@ function Stage-health {
 # ======================================================================================================================
 function Invoke-Main {
   if (-not (Initialize-Context)) { return 1 }
+  if ($UndoGpu) {
+    Ensure-Dir $script:StateDir
+    Ensure-Dir $script:UndoDir
+    Ensure-Dir $script:WorkDir
+    $rcU = Invoke-UndoGpu
+    if ($script:RestartReasons.Count -gt 0) { Blank; Write-Log 'WARN' 'RESTART THE VM now (this script never restarts it for you).' 'Yellow' }
+    Say ('log file: ' + $script:LogFile)
+    return $rcU
+  }
   $stages = Resolve-StageList
   if ($null -eq $stages) { return 2 }
   $script:Selected = @($stages)
@@ -2627,7 +3165,7 @@ function Invoke-Main {
 
   foreach ($s in $script:AllStages) {
     if ($script:Selected -notcontains $s) { continue }
-    if ($script:Abort) {
+    if ($script:Abort -and -not ($script:AbortKeepHealth -and $s -eq 'health')) {
       $script:CurStage = $s
       [void]$script:Results.Add([pscustomobject]@{ Stage = $s; Status = 'SKIP'; Reason = 'an earlier stage stopped the run'; Seconds = 0 })
       Write-Log 'SKIP' 'SKIP: an earlier stage stopped the run' 'Yellow'
@@ -2655,6 +3193,13 @@ function Invoke-Main {
     if ($res.Status -eq 'SKIP') { $col = 'Yellow' } elseif ($res.Status -eq 'FAIL') { $col = 'Red' }
     Write-Log $res.Status ($res.Status + ': ' + $res.Reason + $warnTxt + '  [' + $secs + ' s]') $col
     [void]$script:Results.Add([pscustomobject]@{ Stage = $s; Status = $res.Status; Reason = $res.Reason; Seconds = $secs })
+    if ($s -eq 'files' -and $res.Status -eq 'FAIL') {
+      # a half-unpacked tree must never be started: services stops, the health sweep still runs (report-only)
+      $script:FilesFailed = $true
+      $script:Abort = $true
+      $script:AbortKeepHealth = $true
+      Write-Log 'WARN' 'The files stage failed, so the services stage will not start anything. The health stage still runs, in report-only mode.' 'Yellow'
+    }
   }
 
   # ---- summary

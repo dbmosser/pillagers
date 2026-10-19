@@ -1,16 +1,28 @@
 # host-settings-export.ps1 : reads this PC's look-and-feel so vm-setup.ps1 can copy it into the VM.
-# Read-only for Windows settings: it changes nothing here. It only writes files next to itself:
+# Read-only for Windows settings: it changes nothing here. It writes its files OUTSIDE the repository, into -OutDir
+# (default C:\Users\User1\AppData\Local\PillagersMove\settings), so a ship (git add -A) can never publish your desktop picture or app list:
 #   host-settings.json  (look-and-feel values, with the registry value kinds)    wallpaper.*  (only when the desktop shows a picture)
 #   start2.bin + start-layout.json (Start menu pins, best effort)               host-apps.json (installed programs, from winget)
-#   logs\host-settings-export-<time>.log
+# and a log in this folder: logs\host-settings-export-<time>.log
 # Run:  powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\migrate\host-settings-export.ps1"
+#   -DryRun                  only say what it would read and write (nothing is copied, written or asked of winget)
+#   -OutDir PATH             where the export goes (host-push-files.ps1 and host-vm-boost.ps1 look in the default place)
+#   -AcceptSourceAgreements  pass --accept-source-agreements to winget. Off by default: that flag accepts the package sources' terms for you, so only
+#                            add it yourself if winget says it needs them. Without it the program list falls back to the Store app names.
 # Needs no administrator window. Safe to repeat.
 # ASCII only (Windows PowerShell 5.1 in a fresh VM reads scripts as ANSI). Works in Windows PowerShell 5.1 and PowerShell 7.
 # v2 2026-10-19: more visual-effect keys, value kinds, solid-color desktop detected (the old export shipped a stale picture),
 #                winget output is shown instead of hidden, Start layout export, locale facts.
+# v3 2026-10-19: output moved out of the repository, -DryRun, winget agreements no longer accepted silently.
+param(
+  [string]$OutDir = 'C:\Users\User1\AppData\Local\PillagersMove\settings',
+  [switch]$DryRun,
+  [switch]$AcceptSourceAgreements
+)
 $ErrorActionPreference = 'Continue'
 $dir = $PSScriptRoot
 if (-not $dir) { Write-Host 'Please run this from its file, not pasted into a window.'; exit 1 }
+$outDir = $OutDir.TrimEnd('\')
 
 # ---------------------------------------------------------------- log
 $logDir = Join-Path $dir 'logs'
@@ -25,6 +37,12 @@ function Say([string]$text, [string]$level = 'INFO') {
   if ($level -eq 'OK') { $color = 'Green' } elseif ($level -eq 'WARN') { $color = 'Yellow' } elseif ($level -eq 'FAIL') { $color = 'Red' }
   Write-Host ($level.PadRight(5) + ' ' + $text) -ForegroundColor $color
   if ($log) { try { Add-Content -LiteralPath $log -Value ((Get-Date -Format 'HH:mm:ss') + ' [' + $level + '] ' + $text) -Encoding ASCII } catch { } }
+}
+if ($DryRun) { Say '(dry run: nothing is copied, written or asked of winget)' 'WARN' }
+Say ('the export goes to ' + $outDir + ' (outside the repository)')
+if (-not $DryRun) {
+  try { if (-not (Test-Path -LiteralPath $outDir)) { New-Item -ItemType Directory -Force -Path $outDir | Out-Null } }
+  catch { Say ('cannot create the export folder: ' + $_.Exception.Message) 'FAIL'; exit 1 }
 }
 
 # ---------------------------------------------------------------- registry reading (values + kinds)
@@ -94,37 +112,55 @@ if (($bgType -eq 1) -and (-not $wp)) {
   # Solid color: Windows keeps the LAST picture in TranscodedWallpaper, so copying it would send a stale picture.
   $wpMode = 'solid'
   Say ('the desktop is a solid color (background type 1, color "' + $bgColor + '"), not a picture. No wallpaper file is exported.') 'OK'
-  foreach ($old in @(Get-ChildItem -LiteralPath $dir -Filter 'wallpaper.*' -File -ErrorAction SilentlyContinue)) {
-    try { Remove-Item -LiteralPath $old.FullName -Force -ErrorAction Stop; Say ('removed the old ' + $old.Name + ' from the kit (it was the last picture, not the current desktop)') 'WARN' } catch { Say ('could not remove the old ' + $old.Name + ': ' + $_.Exception.Message) 'WARN' }
+  # Only this export's own folder is cleaned. Old copies inside the repository folder are not touched here (they are tracked by git);
+  # host-push-files.ps1 skips them when this export exists, and vm-setup.ps1 obeys wallpaperMode=solid.
+  foreach ($old in @(Get-ChildItem -LiteralPath $outDir -Filter 'wallpaper.*' -File -ErrorAction SilentlyContinue)) {
+    if ($DryRun) { Say ('would remove the old ' + $old.Name + ' from the export folder (it was the last picture, not the current desktop)') 'WARN'; continue }
+    try { Remove-Item -LiteralPath $old.FullName -Force -ErrorAction Stop; Say ('removed the old ' + $old.Name + ' from the export folder (it was the last picture, not the current desktop)') 'WARN' } catch { Say ('could not remove the old ' + $old.Name + ': ' + $_.Exception.Message) 'WARN' }
   }
 }
 elseif ($wp -and (Test-Path -LiteralPath $wp)) {
   $wpMode = 'picture'
   $wpOut = 'wallpaper' + [IO.Path]::GetExtension($wp)
-  Copy-Item -LiteralPath $wp -Destination (Join-Path $dir $wpOut) -Force
-  Say ('wallpaper picture copied: ' + $wpOut) 'OK'
+  if ($DryRun) { Say ('would copy the wallpaper picture as ' + $wpOut) 'OK' }
+  else {
+    # a different picture type from an earlier export must not linger next to the new one
+    foreach ($old in @(Get-ChildItem -LiteralPath $outDir -Filter 'wallpaper.*' -File -ErrorAction SilentlyContinue)) { if ($old.Name -ine $wpOut) { try { Remove-Item -LiteralPath $old.FullName -Force -ErrorAction Stop } catch { } } }
+    Copy-Item -LiteralPath $wp -Destination (Join-Path $outDir $wpOut) -Force
+    Say ('wallpaper picture copied: ' + $wpOut) 'OK'
+  }
 }
 elseif (Test-Path -LiteralPath $transcoded) {
   $wpMode = 'picture'
   if ($bgType -eq 2 -or $bgType -eq 3) { $wpMode = 'slideshow-or-spotlight' }
   $wpOut = 'wallpaper.jpg'
-  Copy-Item -LiteralPath $transcoded -Destination (Join-Path $dir $wpOut) -Force
-  Say ('wallpaper copied from the current-picture cache (mode ' + $wpMode + ')') 'OK'
+  if ($DryRun) { Say ('would copy the current-picture cache as wallpaper.jpg (mode ' + $wpMode + ')') 'OK' }
+  else {
+    foreach ($old in @(Get-ChildItem -LiteralPath $outDir -Filter 'wallpaper.*' -File -ErrorAction SilentlyContinue)) { if ($old.Name -ine $wpOut) { try { Remove-Item -LiteralPath $old.FullName -Force -ErrorAction Stop } catch { } } }
+    Copy-Item -LiteralPath $transcoded -Destination (Join-Path $outDir $wpOut) -Force
+    Say ('wallpaper copied from the current-picture cache (mode ' + $wpMode + ')') 'OK'
+  }
 }
 else { Say 'no wallpaper found' 'WARN' }
 
 # ---------------------------------------------------------------- Start menu
 $start2 = Join-Path $env:LOCALAPPDATA 'Packages\Microsoft.Windows.StartMenuExperienceHost_cw5n1h2txyewy\LocalState\start2.bin'
-if (Test-Path -LiteralPath $start2) { Copy-Item -LiteralPath $start2 -Destination (Join-Path $dir 'start2.bin') -Force; Say 'Start menu layout file start2.bin copied' 'OK' }
+if (Test-Path -LiteralPath $start2) {
+  if ($DryRun) { Say 'would copy the Start menu layout file start2.bin' 'OK' }
+  else { Copy-Item -LiteralPath $start2 -Destination (Join-Path $outDir 'start2.bin') -Force; Say 'Start menu layout file start2.bin copied' 'OK' }
+}
 else { Say 'start2.bin not found (the Start menu has never been customised?)' 'WARN' }
 $startLayout = $null
-try {
-  if (Get-Command Export-StartLayout -ErrorAction SilentlyContinue) {
-    $slPath = Join-Path $dir 'start-layout.json'
-    Export-StartLayout -Path $slPath -ErrorAction Stop
-    if (Test-Path -LiteralPath $slPath) { $startLayout = 'start-layout.json'; Say 'Start layout also exported as start-layout.json (format UNVERIFIED on this Windows build)' 'OK' }
-  }
-} catch { Say ('Export-StartLayout did not work: ' + $_.Exception.Message + ' (not needed; start2.bin is the main copy)') 'WARN' }
+if ($DryRun) { Say 'would try Export-StartLayout to start-layout.json (best effort)' 'OK' }
+else {
+  try {
+    if (Get-Command Export-StartLayout -ErrorAction SilentlyContinue) {
+      $slPath = Join-Path $outDir 'start-layout.json'
+      Export-StartLayout -Path $slPath -ErrorAction Stop
+      if (Test-Path -LiteralPath $slPath) { $startLayout = 'start-layout.json'; Say 'Start layout also exported as start-layout.json (format UNVERIFIED on this Windows build)' 'OK' }
+    }
+  } catch { Say ('Export-StartLayout did not work: ' + $_.Exception.Message + ' (not needed; start2.bin is the main copy)') 'WARN' }
+}
 
 # ---------------------------------------------------------------- taskbar pins
 $pins = @()
@@ -155,7 +191,7 @@ try { $osText = (Get-CimInstance Win32_OperatingSystem).Caption + ' ' + [Environ
 # ---------------------------------------------------------------- write host-settings.json
 $out = [ordered]@{
   exported        = (Get-Date).ToString('s')
-  exporter        = 'host-settings-export v2 2026-10-19'
+  exporter        = 'host-settings-export v3 2026-10-19'
   computer        = $env:COMPUTERNAME
   os              = $osText
   timeZone        = (Get-TimeZone).Id
@@ -176,20 +212,26 @@ $out = [ordered]@{
 }
 $json = $out | ConvertTo-Json -Depth 8
 $json = [regex]::Replace($json, '[^\x00-\x7F]', { param($m) ('\u' + ([int][char]$m.Value).ToString('x4')) })
-Set-Content -LiteralPath (Join-Path $dir 'host-settings.json') -Value $json -Encoding ASCII
-Say 'wrote host-settings.json' 'OK'
+if ($DryRun) { Say ('would write host-settings.json (' + $json.Length + ' characters)') 'OK' }
+else {
+  Set-Content -LiteralPath (Join-Path $outDir 'host-settings.json') -Value $json -Encoding ASCII
+  Say 'wrote host-settings.json' 'OK'
+}
 
 # ---------------------------------------------------------------- installed programs (winget), shown instead of hidden
-$appsPath = Join-Path $dir 'host-apps.json'
+$appsPath = Join-Path $outDir 'host-apps.json'
 $wingetOk = $false
 $wg = Get-Command winget -ErrorAction SilentlyContinue
-if (-not $wg) { Say 'winget was not found on this PC, so the program list will come from the installed Store apps instead' 'WARN' }
+if ($DryRun) { Say 'would ask winget for the list of installed programs and write host-apps.json (Store app names if winget cannot)' 'OK' }
+elseif (-not $wg) { Say 'winget was not found on this PC, so the program list will come from the installed Store apps instead' 'WARN' }
 else {
   Say 'asking winget for the list of installed programs (up to 3 minutes) ...'
   $so = [IO.Path]::GetTempFileName(); $se = [IO.Path]::GetTempFileName()
   $code = -1
+  $wgArgs = 'export -o "' + $appsPath + '" --disable-interactivity'
+  if ($AcceptSourceAgreements) { $wgArgs += ' --accept-source-agreements'; Say 'winget source agreements are accepted because you passed -AcceptSourceAgreements' 'WARN' }
   try {
-    $p = Start-Process -FilePath $wg.Source -ArgumentList ('export -o "' + $appsPath + '" --accept-source-agreements --disable-interactivity') -NoNewWindow -PassThru -RedirectStandardOutput $so -RedirectStandardError $se
+    $p = Start-Process -FilePath $wg.Source -ArgumentList $wgArgs -NoNewWindow -PassThru -RedirectStandardOutput $so -RedirectStandardError $se
     $null = $p.Handle
     if ($p.WaitForExit(180000)) { $code = $p.ExitCode } else { try { $p.Kill() } catch { }; Say 'winget did not finish in 3 minutes and was stopped' 'WARN' }
   } catch { Say ('could not start winget: ' + $_.Exception.Message) 'WARN' }
@@ -203,9 +245,12 @@ else {
     try { Remove-Item -LiteralPath $f -Force -ErrorAction SilentlyContinue } catch { }
   }
   if (($code -eq 0) -and (Test-Path -LiteralPath $appsPath)) { $wingetOk = $true; Say 'wrote host-apps.json' 'OK' }
-  else { Say ('winget export did not produce host-apps.json (exit code ' + $code + ')') 'WARN' }
+  else {
+    Say ('winget export did not produce host-apps.json (exit code ' + $code + ')') 'WARN'
+    if (-not $AcceptSourceAgreements) { Say 'If winget above says it needs you to accept the source terms, read them and run this script again with -AcceptSourceAgreements. Until then the Store app names are used.' 'WARN' }
+  }
 }
-if (-not $wingetOk) {
+if ((-not $wingetOk) -and (-not $DryRun)) {
   # Fallback: the Store app names of this PC, in the same shape (Sources / Packages / PackageIdentifier) so vm-setup.ps1 can read it.
   try {
     $names = @(Get-AppxPackage -ErrorAction Stop | Where-Object { -not $_.IsFramework } | ForEach-Object { [string]$_.Name } | Sort-Object -Unique)
@@ -216,5 +261,6 @@ if (-not $wingetOk) {
   } catch { Say ('could not list the Store apps either: ' + $_.Exception.Message) 'WARN' }
 }
 
-Say ('done: host-settings.json, wallpaperMode=' + $wpMode + ', wallpaper=' + $wpOut + ', pins=' + $pins.Count + ', start2=' + (Test-Path -LiteralPath (Join-Path $dir 'start2.bin')) + ', host-apps=' + (Test-Path -LiteralPath $appsPath)) 'OK'
+if ($DryRun) { Say ('dry run finished: nothing was written. wallpaperMode would be ' + $wpMode + ', wallpaper ' + $wpOut + ', pins ' + $pins.Count) 'OK' }
+else { Say ('done: host-settings.json, wallpaperMode=' + $wpMode + ', wallpaper=' + $wpOut + ', pins=' + $pins.Count + ', start2=' + (Test-Path -LiteralPath (Join-Path $outDir 'start2.bin')) + ', host-apps=' + (Test-Path -LiteralPath $appsPath) + ', folder ' + $outDir) 'OK' }
 if ($log) { Write-Host ('      log file: ' + $log) -ForegroundColor DarkGray }

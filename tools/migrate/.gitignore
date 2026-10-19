@@ -1,0 +1,22 @@
+# tools/migrate/.gitignore : keeps the VM-move kit's generated and personal files out of every ship (a ship runs "git add -A").
+# This file only hides files git does NOT track yet. Files that are already tracked stay tracked (see Ensure-KitExcluded in host-common.ps1).
+# Big staging files, logs and state never belong in the repository (GitHub refuses files over 100 MB).
+/out/
+/logs/
+/state/
+/host-stopped.txt
+/gpu-pack-manifest.json
+/kit-manifest.json
+/pillagers-runner-task.xml
+# personal look-and-feel exports (desktop picture, Start layout, settings dump): the exporter writes them outside the repository now
+/host-apps.json
+/start-layout.json
+/host-settings.json
+/start2.bin
+/wallpaper.*
+*.zip
+*.tar
+*.bak
+*.bak-*
+*.disabled
+*.tmp

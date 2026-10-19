@@ -8,8 +8,9 @@
 #   -IncludeTranscripts   also send the Claude session transcripts (so /resume works in the VM; about 3.4 GB)
 #   -Groups a,b           only these groups: memory, userfiles, scratch, repo, git, codexwork, builds, builds-old, transcripts
 #   -NoPush               build the archives on this PC only (they are kept in the staging folder)
-#   -PushOnly             do not rebuild; send what is already in the staging folder
-#   -NoKit                do not send the kit folder (tools\migrate) again
+#   -PushOnly             do not rebuild; send what is already in the staging folder. It re-checks every archive's size AND sha256, and with -Final
+#                         it also refuses a set that was not built by a -Final run, at the marker's git HEAD, after the marker was written
+#   -NoKit                do not send the kit folder (tools\migrate) again. The look-and-feel export is sent from its own folder outside the repository
 #   -CleanStaging         delete the staged archives after a successful send
 #   -ChunkMB N            largest archive size, default 1024 (a few big files stay whole)
 #   -MinHostFreeGB / -MinGuestFreeGB   safety room that must stay free on this PC and inside the VM (defaults 20 and 10)
@@ -119,8 +120,10 @@ if ($Groups.Count -gt 0) {
 }
 
 $script:BinExt = @('.png', '.jpg', '.jpeg', '.gif', '.webp', '.ico', '.bmp', '.mp3', '.ogg', '.wav', '.mp4', '.webm', '.woff', '.woff2', '.ttf', '.otf', '.zip', '.gz', '.tar', '.7z', '.exe', '.dll', '.pack', '.idx', '.bundle', '.sqlite', '.lnk', '.bin')
-# repo files that are live state of THIS PC or belong to the kit: never sent
-$rxRepoLeftOut = '^(tools/migrate/|tools/handoff/console/lane-[^/]+\.lock(/|$)|tools/handoff/console/pick\.lock(/|$)|tools/handoff/console/STOP$|tools/handoff/codex/STOP$|tools/handoff/stable\.freeze$|tools/handoff/(nightly/)?runner\.heartbeat$|\.claude/scheduled_tasks\.(lock|json)$)|(^|/)node_modules/|\.pid$|(^|/)\.git/'
+# repo files that are live state of THIS PC or belong to the kit: never sent.
+# The kit scripts themselves (tools/migrate/*.ps1, host-settings.json, start2.bin) were swept into git by an earlier ship (commit c721a3ca), so they travel
+# with the repo; otherwise the VM would show them as deleted and its first ship would delete them from master. Only generated files are left out.
+$rxRepoLeftOut = '^(tools/migrate/(logs/|state/|out/|host-stopped\.txt$|host-apps\.json$|gpu-pack-manifest\.json$|kit-manifest\.json$|pillagers-runner-task\.xml$|start-layout\.json$)|tools/handoff/console/lane-[^/]+\.lock(/|$)|tools/handoff/console/pick\.lock(/|$)|tools/handoff/console/STOP$|tools/handoff/codex/STOP$|tools/handoff/stable\.freeze$|tools/handoff/(nightly/)?runner\.heartbeat$|\.claude/scheduled_tasks\.(lock|json)$)|(^|/)node_modules/|\.pid$|(^|/)\.git/'
 # git-ignored files that are still worth sending
 $rxIgnoredWanted = '^(\.claude/(settings\.local\.json|dark_raiders_run[^/]*\.txt)|dark_raiders_run[^/]*\.txt|stable\.html|exports/feedback-.*)$'
 
@@ -290,7 +293,7 @@ function Get-SetsGit {
   $skip = '(?i)\\\.git\\(PILLAGERS_MOVED_TO_VM\.txt|index\.lock|gc\.pid)$|\.lock$|\\objects\\pack\\tmp_[^\\]*$'
   $files = @(Get-TreeFiles -Root $gd -IncludeDirs $true -SkipFileRegex $skip)
   # objects and logs are history (public on GitHub); everything else in .git (config, hooks, info) is checked for keys
-  return @(@{ Base = 'C:\'; Files = $files; Scan = 'full'; Generic = $false; ScanSkip = '(?i)\\\.git\\(objects|logs)\\' })
+  return @(@{ Base = 'C:\'; Files = $files; Scan = 'full'; Generic = $true; ScanSkip = '(?i)\\\.git\\(objects|logs)\\' })
 }
 
 function Get-SetsCodexWork {
@@ -316,7 +319,7 @@ function Get-SetsBuilds {
 function Get-SetsTranscripts {
   $root = $script:HostProfile + '\.claude\projects\C--Users-User1-Desktop-dark-raiders'
   $files = @(Get-TreeFiles -Root $root -SkipDirFull @(($root + '\memory')))
-  return @(@{ Base = 'C:\'; Files = $files; Scan = 'full'; Generic = $false; ScanSkip = '' })
+  return @(@{ Base = 'C:\'; Files = $files; Scan = 'full'; Generic = $true; ScanSkip = '' })
 }
 
 function Get-GroupSets {
@@ -422,12 +425,26 @@ if ($PushOnly) {
   Write-Mig 'Using the archives already staged on this PC' 'STEP'
   if (-not (Test-Path -LiteralPath $stagedManifest)) { Write-Mig ('no staged manifest at ' + $stagedManifest + '. Run without -PushOnly first.') 'FAIL'; Exit-Mig 2 }
   $mj = Get-Content -LiteralPath $stagedManifest -Raw | ConvertFrom-Json
+  # A staged set only fits a -Final push when it was built by a -Final run, at the git HEAD the marker names, after host-stop wrote the marker.
+  # (Otherwise a first-pass set, built while Pillagers still ran here, could be sent as if it were the final copy.)
+  if ($Final) {
+    if (-not [bool]$mj.final) { Write-Mig 'The staged archives come from a first pass (not -Final), built while Pillagers still ran here. Build them again: host-push-files.ps1 -Final (without -PushOnly).' 'FAIL'; Exit-Mig 2 }
+    if ($repoState.Ok -and ([string]$mj.gitHead -ne $repoState.Head)) { Write-Mig ('The staged archives were built at git ' + ([string]$mj.gitHead).Substring(0, [Math]::Min(8, ([string]$mj.gitHead).Length)) + ' but HEAD is now ' + $repoState.Head.Substring(0, 8) + '. Build them again: host-push-files.ps1 -Final (without -PushOnly).') 'FAIL'; Exit-Mig 2 }
+    $mk = Read-KeyValueFile (Get-MarkerPath)
+    $mkTime = $null
+    if ($mk['time']) { $mkTime = $mk['time'] -as [datetime] }
+    $builtTime = $mj.created -as [datetime]
+    if ($mkTime -and $builtTime -and ($builtTime -lt $mkTime)) { Write-Mig 'The staged archives are older than host-stopped.txt, so they may miss the last changes. Build them again: host-push-files.ps1 -Final (without -PushOnly).' 'FAIL'; Exit-Mig 2 }
+  }
   foreach ($a in @($mj.archives)) {
     if ([string]$a.group -eq 'gpu') { continue }   # the driver pack is sent by host-vm-boost.ps1 and re-added to the manifest below
     $p = Join-Path $payloadDir $a.file
     if (-not (Test-Path -LiteralPath $p)) { Write-Mig ('staged archive is missing: ' + $a.file) 'FAIL'; Exit-Mig 2 }
     $len = (Get-Item -LiteralPath $p).Length
     if ($len -ne [int64]$a.size) { Write-Mig ('staged archive changed size: ' + $a.file) 'FAIL'; Exit-Mig 2 }
+    # same size is not enough: check the fingerprint too, so a damaged or swapped archive is never sent
+    $hNow = (Get-FileHash -LiteralPath $p -Algorithm SHA256).Hash.ToLowerInvariant()
+    if ($hNow -ne ([string]$a.sha256).ToLowerInvariant()) { Write-Mig ('staged archive does not match its fingerprint (sha256): ' + $a.file + '. Build the archives again without -PushOnly.') 'FAIL'; Exit-Mig 2 }
     $archives.Add($a)
     $totalBytes += [int64]$a.size
   }
@@ -440,6 +457,7 @@ else {
   Write-Mig ('Step 1: find the files (' + $selected.Count + ' groups)') 'STEP'
   Write-Mig ('groups: ' + (($selected | ForEach-Object { $_.Id }) -join ', ')) 'INFO'
   if (-not $Final) { Write-Mig 'First pass: Pillagers still runs on this PC, so the repository copy is a moving target. Run this again with -Final after host-stop.ps1.' 'WARN' }
+  [void](Ensure-KitExcluded -DryRun:$DryRun)
   $plan = New-Object System.Collections.Generic.List[object]
   $summary = New-Object System.Collections.Generic.List[object]
   foreach ($g in $selected) {
@@ -572,6 +590,31 @@ else {
     Write-Mig ('   done in ' + [int]$sw.Elapsed.TotalSeconds + ' s, sha256 ' + $hash.Substring(0, 12) + '...') 'OK'
   }
   if ($archives.Count -eq 0) { Write-Mig 'There was nothing to pack.' 'FAIL'; Exit-Mig 2 }
+  # The authoritative list of repository files in THIS copy (paths only, relative to the repository). After a first pass and a -Final pass the VM can
+  # then report files it still has from the first pass (or made itself) that are not in the final copy. Nothing is ever deleted from that list.
+  $repoListName = ''
+  $repoListSha = ''
+  $repoListCount = 0
+  $repoListFile = Join-Path $payloadDir 'repo-files.txt'
+  Remove-Item -LiteralPath $repoListFile -Force -ErrorAction SilentlyContinue
+  if (@($plan | Where-Object { $_.Group -eq 'repo' }).Count -gt 0) {
+    try {
+      $prefix = 'claudecode/dark raiders/'
+      $sbL = New-Object System.Text.StringBuilder
+      foreach ($pt in $plan) {
+        if (@('repo', 'builds', 'builds-old') -notcontains [string]$pt.Group) { continue }
+        foreach ($f in $pt.Files) {
+          if ($f.IsDir) { continue }
+          $rl = ([string]$f.Rel).Replace('\', '/')
+          if ($rl.StartsWith($prefix, [System.StringComparison]::OrdinalIgnoreCase)) { [void]$sbL.Append($rl.Substring($prefix.Length)).Append("`n"); $repoListCount++ }
+        }
+      }
+      Write-AsciiFile -Path $repoListFile -Text $sbL.ToString()
+      $repoListName = 'repo-files.txt'
+      $repoListSha = (Get-FileHash -LiteralPath $repoListFile -Algorithm SHA256).Hash.ToLowerInvariant()
+      Write-Mig ('wrote the list of ' + $repoListCount + ' repository files in this copy (repo-files.txt; the VM uses it to report leftovers)') 'OK'
+    } catch { Write-Mig ('could not write repo-files.txt (' + $_.Exception.Message + '); the VM will skip the leftover-file report') 'WARN'; $repoListName = '' }
+  }
   $skippedOut = @($script:Skipped.ToArray() | ForEach-Object { [ordered]@{ group = $_.group; path = $_.path; reason = $_.reason } })
   $manifestObj = [ordered]@{
     schema = 1
@@ -583,6 +626,9 @@ else {
     extract = 'tar.exe -xf <file> -C C:\   (check sha256 first; names inside are relative to C:\; extract in ascending order)'
     guestPayload = $guestPayload
     archives = $archives.ToArray()
+    repoFileList = $repoListName
+    repoFileListSha256 = $repoListSha
+    repoFileCount = $repoListCount
     skipped = $skippedOut
     leftOutLiveStateCount = $script:LeftOut
   }
@@ -618,7 +664,7 @@ if ($gsi -and -not $gsi.Enabled) {
 if (-not (Wait-GuestReady -VMName $VMName)) { Write-Mig 'The VM is not ready for file copies. Nothing was sent. Sign in to the VM, wait a minute, and run this again with -PushOnly.' 'FAIL'; Exit-Mig 2 }
 
 if (-not $NoKit) {
-  Write-Mig 'sending the kit folder (scripts, settings, wallpaper) ...' 'INFO'
+  Write-Mig 'sending the kit folder (scripts) and the look-and-feel export (settings, wallpaper, Start layout) ...' 'INFO'
   [void](Ensure-KitExcluded)
   [void](Export-RunnerTaskXml)
   $kitStage = Join-Path $script:HostStage 'kitstage'
@@ -641,6 +687,15 @@ foreach ($a in $archives) {
 if ($failed) {
   Write-Mig ('Stopped after ' + $sent + ' of ' + $archives.Count + ' archives. Nothing else was sent (no manifest, no marker). Fix the problem and run again with -PushOnly.') 'FAIL'
   Exit-Mig 2
+}
+if ([string]$manifestObj.repoFileList) {
+  $rfSrc = Join-Path $payloadDir ([string]$manifestObj.repoFileList)
+  if (Test-Path -LiteralPath $rfSrc) {
+    $rfNow = (Get-FileHash -LiteralPath $rfSrc -Algorithm SHA256).Hash.ToLowerInvariant()
+    if ($rfNow -ne ([string]$manifestObj.repoFileListSha256).ToLowerInvariant()) { Write-Mig 'repo-files.txt does not match its fingerprint in the manifest. Build again without -PushOnly.' 'FAIL'; Exit-Mig 2 }
+    if (Copy-ToGuest -VMName $VMName -Source $rfSrc -GuestPath ($guestPayload + '\' + [string]$manifestObj.repoFileList)) { Write-Mig 'sent repo-files.txt (the list of repository files in this copy)' 'OK' }
+    else { Write-Mig 'repo-files.txt did not arrive. Run again with -PushOnly.' 'FAIL'; Exit-Mig 2 }
+  } else { Write-Mig 'repo-files.txt is not staged any more, so the VM will skip its leftover-file report.' 'WARN' }
 }
 if (-not (Copy-ToGuest -VMName $VMName -Source $stagedManifest -GuestPath ($guestPayload + '\manifest.json'))) { Write-Mig 'The manifest did not arrive. Run again with -PushOnly.' 'FAIL'; Exit-Mig 2 }
 Write-Mig ('sent manifest.json (' + $archives.Count + ' archives) to ' + $guestPayload) 'OK'

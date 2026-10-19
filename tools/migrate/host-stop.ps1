@@ -3,19 +3,24 @@
 # Run it from a normal PowerShell window (an administrator window is only needed to switch off the scheduled task, if Windows says "Access is denied"):
 #   powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\migrate\host-stop.ps1"
 #   -DryRun            only print what it WOULD do (changes nothing)
-#   -Undo              switch everything back on (uses tools\party-start.ps1 for the restart)
-#   -WaitMinutes N     how long helpers and ships may finish by themselves before the helpers are stopped (default 20)
+#   -Undo              switch everything back on (uses tools\party-start.ps1 for the restart). Asks you to type RESUME (-Yes does not skip that).
+#   -WaitMinutes N     how long helpers and ships may finish by themselves (default 20). A ship that is STILL running after that is never
+#                      interrupted: the script stops there (exit 2), touches nothing more, and is safe to run again later.
 #   -LockWaitMinutes N how long to wait for the ship lock to clear (default 30)
 #   -ClearStale        if the ship lock is still there after that, ask the official tool (clearstale.sh) whether it is stale
-#   -KeepPlayServers   leave the play server (:8802) and the collector (:8799) running
+#   -KeepPlayServers   leave the play server (:8802) and the collector (:8799) running (see the note on 8802 below)
 #   -StopOllama        also stop Ollama (it is left alone by default)
-#   -Yes               do not ask for confirmation
+#   -Yes               do not ask for confirmation (also skips the "someone is connected to :8802" question)
 #   -VMName NAME       the VM (used only to tell it the host is running again, on -Undo)
 #
-# What it never touches: your normal Chrome, the Claude desktop app and any Claude Code session of yours, Ollama (unless asked),
+# What it never touches: your normal Chrome, the Claude desktop app and any Claude Code session of yours (a helper run is only recognised
+# when it runs in print mode, and this window and whatever started it are never stopped), Ollama (unless asked),
 # Windows settings, security settings. It only stops Pillagers background work and writes the marker file the VM checks.
+# The play server (:8802) is stopped on purpose by default: on party night the main PC's Chrome reaches the VM's game through :8802 here.
+# If someone is connected to :8802 or :8799 right now, the script asks first.
+# Scheduled tasks and startup shortcuts are only switched off when what they run points into this repository.
 # Order: stop signs, scheduled task + startup shortcut, runner, wait for helpers and the ship lock, helpers/lanes/robots, test browsers
-# and servers, check, marker (host-stopped.txt in this folder).
+# and servers, check, marker (host-stopped.txt in this folder, with a check= line the VM verifies).
 # Exit codes: 0 stopped (marker written), 2 not everything stopped (no marker), 3 needs an administrator window, 1 error.
 # ASCII only. Works in Windows PowerShell 5.1 and PowerShell 7.
 param(
@@ -84,17 +89,32 @@ function Confirm-Plain {
   return ($a -eq 'YES')
 }
 
-function Get-StartupLinks {
-  $out = @()
-  if (-not (Test-Path -LiteralPath $startupDir)) { return @() }
-  foreach ($f in (Get-ChildItem -LiteralPath $startupDir -File -Force -ErrorAction SilentlyContinue)) {
-    if ($f.Name -match '(?i)pillagers|dark.?raiders') { $out += $f }
-  }
-  return @($out)
+function Confirm-Typed {
+  # Always asks, even with -Yes (only -DryRun skips it). Used where a wrong answer could leave two machines shipping at once.
+  param([string]$Question, [string]$Word)
+  if ($DryRun) { return $true }
+  $a = Read-Host ($Question + ' Type ' + $Word + ' (in capitals) to go on, anything else to cancel')
+  return ($a -ceq $Word)
 }
 
-function Get-PillagersTasks {
-  return @(Get-ScheduledTask -ErrorAction SilentlyContinue | Where-Object { $_.TaskName -match '(?i)pillagers|dark.?raiders' })
+function Get-StartupLinks {
+  # Startup shortcuts that start THIS repository: the name mentions Pillagers or Dark Raiders AND the shortcut points into the repository.
+  # A shortcut whose target cannot be read is counted (stopping it is reversible with -Undo).
+  param([switch]$Report)
+  $out = @()
+  if (-not (Test-Path -LiteralPath $startupDir)) { return @() }
+  $sh = $null
+  try { $sh = New-Object -ComObject WScript.Shell } catch { }
+  foreach ($f in (Get-ChildItem -LiteralPath $startupDir -File -Force -ErrorAction SilentlyContinue)) {
+    if ($f.Name -notmatch '(?i)pillagers|dark.?raiders') { continue }
+    $txt = ''
+    if ($sh -and $f.Extension -ieq '.lnk') {
+      try { $lnk = $sh.CreateShortcut($f.FullName); $txt = [string]$lnk.TargetPath + ' ' + [string]$lnk.Arguments + ' ' + [string]$lnk.WorkingDirectory } catch { }
+    }
+    if ((-not $txt.Trim()) -or ($txt -match $script:RepoTaskRx)) { $out += $f }
+    elseif ($Report) { Write-Mig ('startup shortcut "' + $f.Name + '" has a Pillagers-like name but does not start this repository, so it is left alone.') 'WARN' }
+  }
+  return @($out)
 }
 
 # ------------------------------------------------------------------ UNDO
@@ -104,12 +124,27 @@ if ($Undo) {
   if ($DryRun) { Write-Mig '(dry run: nothing will be changed)' 'DRY' }
   Write-Mig 'WARNING: two machines must never ship Pillagers at the same time. Do this only if the VM has NOT started its runner or helpers.' 'WARN'
   if ($st['markerPushedToVm']) { Write-Mig 'The VM was told the host was stopped. After this undo, do not start the runner in the VM.' 'WARN' }
-  if (-not (Confirm-Plain 'Switch Pillagers back on here?')) { Write-Mig 'Cancelled. Nothing changed.' 'INFO'; Exit-Mig 0 }
+  $undoVmRunning = $false
+  $revokeOk = $false
+  try {
+    $vmNow = Get-VM -Name $VMName -ErrorAction Stop
+    if ($vmNow.State -eq 'Running') { $undoVmRunning = $true; Write-Mig ('The VM "' + $VMName + '" is RUNNING right now. If its runner or helpers are on, switching this PC on as well makes two shippers. Check inside the VM first.') 'WARN' }
+  } catch { }
+  if (-not (Confirm-Typed 'Switch Pillagers back on here? (-Yes does not skip this question.)' 'RESUME')) { Write-Mig 'Cancelled. Nothing changed.' 'INFO'; Exit-Mig 0 }
 
   Write-Mig 'Step 1: scheduled tasks' 'STEP'
   $names = @($st['disabledTasks'])
+  $enableUnrecorded = $false
   if ($names.Count -eq 0) {
-    foreach ($t in (Get-PillagersTasks)) { if ($t.State -eq 'Disabled') { $names += $t.TaskName } }
+    # No record of what this script switched off. Tasks that are off now may have been off long before (your own choice), so never switch them on silently.
+    $offNow = @(Get-PillagersTasks -Report | Where-Object { $_.State -eq 'Disabled' })
+    if ($offNow.Count -gt 0) {
+      Write-Mig ('There is no record of what this script switched off. These Pillagers tasks are off now: ' + (($offNow | ForEach-Object { $_.TaskName }) -join ', ')) 'WARN'
+      if (Confirm-Typed 'They may have been off before this script ran. Switch them all on?' 'ENABLE') {
+        $enableUnrecorded = $true
+        foreach ($t in $offNow) { $names += $t.TaskName }
+      } else { Write-Mig 'left off. Switch on any you want by hand in Task Scheduler.' 'SKIP' }
+    }
   }
   foreach ($n in $names) {
     $t = Get-PillagersTasks | Where-Object { $_.TaskName -eq $n } | Select-Object -First 1
@@ -128,6 +163,9 @@ if ($Undo) {
   }
   foreach ($f in (Get-ChildItem -LiteralPath $startupDir -File -Force -ErrorAction SilentlyContinue | Where-Object { $_.Name -match '(?i)(pillagers|dark.?raiders).*\.lnk\.disabled$' })) {
     $back = $f.FullName.Substring(0, $f.FullName.Length - '.disabled'.Length)
+    $recorded = $false
+    foreach ($r in @($st['renamedStartup'])) { if ($r.to -and ($r.to -ieq $f.FullName)) { $recorded = $true } }
+    if (-not $recorded -and -not $enableUnrecorded) { Write-Mig ('left off (not switched off by this script): ' + $f.Name) 'SKIP'; continue }
     if (-not (Test-Path -LiteralPath $back)) {
       if ($DryRun) { Write-Mig ('would rename back: ' + $f.Name) 'DRY' }
       else { try { Move-Item -LiteralPath $f.FullName -Destination $back -Force -ErrorAction Stop; Write-Mig ('restored ' + $back) 'OK' } catch { } }
@@ -156,7 +194,7 @@ if ($Undo) {
       else {
         $tmp = Join-Path $env:TEMP 'host-stopped.txt'
         Write-AsciiFile -Path $tmp -Text ("PILLAGERS HOST RUNNING AGAIN`nstatus=revoked`ncomputer=" + $env:COMPUTERNAME + "`ntime=" + (Get-Date).ToString('s') + "`nNote=the host Pillagers is switched back on; the VM must not run the runner or helpers.`n")
-        if (Copy-ToGuest -VMName $VMName -Source $tmp -GuestPath ($script:GuestStage + '\kit\host-stopped.txt')) { Write-Mig 'The VM now holds a "revoked" marker.' 'OK' }
+        if (Copy-ToGuest -VMName $VMName -Source $tmp -GuestPath ($script:GuestStage + '\kit\host-stopped.txt')) { $revokeOk = $true; Write-Mig 'The VM now holds a "revoked" marker (its runner guard stops starting the runner at the next 15-minute tick).' 'OK' }
         else { Write-Mig ('Could not reach the VM. Delete ' + $script:GuestStage + '\kit\host-stopped.txt inside the VM.') 'WARN' }
         Remove-Item -LiteralPath $tmp -Force -ErrorAction SilentlyContinue
       }
@@ -167,6 +205,9 @@ if ($Undo) {
   $ps = $R + '\tools\party-start.ps1'
   if (-not (Test-Path -LiteralPath $ps)) { Write-Mig ('party-start.ps1 is missing: ' + $ps + '. Start the servers with tools\start-servers.ps1 and the runner with tools\runner-start.vbs.') 'WARN' }
   elseif ($DryRun) { Write-Mig 'would run tools\party-start.ps1' 'DRY' }
+  elseif ($undoVmRunning -and -not $revokeOk -and -not (Confirm-Typed 'The VM is RUNNING and was NOT told to stop (the "revoked" marker did not arrive). Starting Pillagers here now could make TWO shippers. Start it anyway?' 'START ANYWAY')) {
+    Write-Mig 'Pillagers was NOT started on this PC. First stop the runner inside the VM (Disable-ScheduledTask -TaskName "Pillagers runner") and delete C:\PillagersMove\kit\host-stopped.txt there; then start it here with tools\party-start.ps1.' 'WARN'
+  }
   else {
     $out = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $ps 2>&1
     foreach ($l in @($out)) { Write-Mig ('   ' + [string]$l) 'INFO' }
@@ -175,7 +216,7 @@ if ($Undo) {
   Write-MigBlank
   if ($needAdmin) { Write-Mig 'Some steps need an administrator window. Right-click PowerShell, "Run as administrator", and run this again with -Undo.' 'WARN'; Exit-Mig 3 }
   Write-Mig 'Undo finished. The robots, helpers and tests come back by themselves within about 10 minutes.' 'DONE'
-  Write-Mig '.git\info\exclude still lists tools/migrate/ (on purpose, so your wallpaper and Start layout are never committed).' 'INFO'
+  Write-Mig 'tools\migrate\.gitignore stays in place (on purpose, so the move kit''s big and personal files are never committed by a ship).' 'INFO'
   Exit-Mig 0
 }
 
@@ -193,6 +234,11 @@ if (-not (Confirm-Plain 'Stop Pillagers on this PC now?')) { Write-Mig 'Cancelle
 $snap = Get-ProcSnap
 $git = Get-GitExe
 if (-not $git) { Write-Mig 'git.exe was not found, so the repository state cannot be recorded.' 'FAIL'; Exit-Mig 1 }
+$ancJobs = @(Get-AncestorJobNames $snap)
+if ($ancJobs.Count -gt 0) {
+  Write-Mig ('This window was started by a Pillagers job (' + ($ancJobs -join ', ') + '). That job is left running (stopping it would stop this script), so the final check will fail.') 'WARN'
+  Write-Mig 'Open a normal PowerShell window from your own desktop (not from a helper or the runner) and run this again.' 'WARN'
+}
 
 # ---- step 1: stop signs
 Write-MigBlank
@@ -213,7 +259,7 @@ Save-StopState
 # ---- step 2: scheduled task and startup shortcut
 Write-MigBlank
 Write-Mig 'Step 2 of 8: switch off the scheduled task and the startup shortcut' 'STEP'
-$tasks = @(Get-PillagersTasks)
+$tasks = @(Get-PillagersTasks -Report)
 if ($tasks.Count -eq 0) { Write-Mig 'no Pillagers scheduled task found' 'SKIP' }
 foreach ($t in $tasks) {
   if ($t.State -eq 'Disabled') { Write-Mig ('task "' + $t.TaskName + '" is already off') 'SKIP'; continue }
@@ -228,7 +274,7 @@ foreach ($t in $tasks) {
     $needAdmin = $true
   }
 }
-foreach ($f in (Get-StartupLinks)) {
+foreach ($f in (Get-StartupLinks -Report)) {
   if ($f.Name -match '\.disabled$') { continue }
   if ($f.Extension -ine '.lnk') { continue }
   $to = $f.FullName + '.disabled'
@@ -252,7 +298,7 @@ Write-MigBlank
 Write-Mig ('Step 4 of 8: let helpers and any ship finish by themselves (up to ' + $WaitMinutes + ' minutes)') 'STEP'
 if ($DryRun) {
   $snap = Get-ProcSnap
-  $nh = (Select-Proc $snap @('node.exe', 'claude.exe') $script:RxHelper).Count
+  $nh = (Select-HelperProc $snap).Count
   $ns = (Select-Proc $snap @('bash.exe', 'powershell.exe') $script:RxShip).Count
   $lk = Get-ShipLock
   Write-Mig ('now: ' + $nh + ' helper run(s), ' + $ns + ' ship process(es), ship lock ' + $(if ($lk.Exists) { 'HELD (' + $lk.Owner + ')' } else { 'clear' })) 'DRY'
@@ -260,11 +306,24 @@ if ($DryRun) {
   $deadline = (Get-Date).AddMinutes($WaitMinutes)
   while ($true) {
     $snap = Get-ProcSnap
-    $nh = (Select-Proc $snap @('node.exe', 'claude.exe') $script:RxHelper).Count
+    $nh = (Select-HelperProc $snap).Count
     $ns = (Select-Proc $snap @('bash.exe', 'powershell.exe') $script:RxShip).Count
     $lk = Get-ShipLock
     if ($nh -eq 0 -and $ns -eq 0 -and -not $lk.Exists) { Write-Mig 'no helper is working, no ship is running, the ship lock is clear' 'OK'; break }
-    if ((Get-Date) -gt $deadline) { Write-Mig ('time is up: ' + $nh + ' helper run(s) and ' + $ns + ' ship process(es) still going; helpers will be stopped, ships are never stopped') 'WARN'; break }
+    if ((Get-Date) -gt $deadline) {
+      if (($ns -gt 0) -or ($lk.Exists -and -not $ClearStale)) {
+        # A ship is mid-way (or holds the ship lock). Stopping its helpers, test browsers or servers now could leave the public repository half updated.
+        # Stop here and change nothing more. (With -ClearStale a held lock with no ship process is left to step 7 and the official clearstale.sh.)
+        Save-StopState
+        Write-MigBlank
+        Write-Mig ('time is up and a ship is STILL going (' + $ns + ' process(es), ship lock ' + $(if ($lk.Exists) { 'HELD by "' + $lk.Owner + '"' } else { 'clear' }) + '). It is never interrupted, and nothing else was stopped after this point.') 'FAIL'
+        Write-Mig 'Already done: stop signs are up, the scheduled task and startup shortcut are off, the runner is stopped. No marker was written, so the VM will refuse to start.' 'FAIL'
+        Write-Mig 'Wait for the ship to finish (look at tools\handoff\console for its status), then run this script again. It is safe to repeat. Add -WaitMinutes 60 to wait longer.' 'FAIL'
+        Exit-Mig 2
+      }
+      Write-Mig ('time is up: ' + $nh + ' helper run(s) still going and no ship is running; the helpers will be stopped now') 'WARN'
+      break
+    }
     $left = [int](($deadline - (Get-Date)).TotalMinutes)
     Write-Mig ('waiting: ' + $nh + ' helper run(s), ' + $ns + ' ship process(es), ship lock ' + $(if ($lk.Exists) { 'held' } else { 'clear' }) + ' (' + $left + ' min left)') 'INFO'
     Start-Sleep -Seconds 30
@@ -275,17 +334,25 @@ if ($DryRun) {
 Write-MigBlank
 Write-Mig 'Step 5 of 8: stop helpers, lanes, robots, the full test run and reviewers' 'STEP'
 $snap = Get-ProcSnap
-[void](Stop-ProcList -Procs (Select-Proc $snap @('node.exe', 'claude.exe') $script:RxHelper) -What 'helper runs (Claude, Codex or Gemini working on a job)' -DryRun:$DryRun)
+[void](Stop-ProcList -Procs (Select-HelperProc $snap) -What 'helper runs (Claude, Codex or Gemini working on a job)' -DryRun:$DryRun)
 [void](Stop-ProcList -Procs (Select-Proc $snap @('bash.exe') $script:RxLane) -What 'helper lanes (console-lane.sh, codex-lane.sh)' -DryRun:$DryRun)
-if (-not $DryRun) {
-  Start-Sleep -Seconds 2
-  Get-ChildItem -LiteralPath $C -Directory -Filter 'lane-*.lock' -ErrorAction SilentlyContinue | ForEach-Object { Remove-Item -LiteralPath $_.FullName -Recurse -Force -ErrorAction SilentlyContinue }
-  Remove-Item -LiteralPath ($C + '\pick.lock') -Recurse -Force -ErrorAction SilentlyContinue
-  Write-Mig 'old lane locks removed' 'OK'
-}
 [void](Stop-ProcList -Procs (Select-Proc $snap @('powershell.exe', 'pwsh.exe') $script:RxFuzz) -What 'crash-hunting robots (fuzz.ps1)' -DryRun:$DryRun)
 [void](Stop-ProcList -Procs (Select-Proc $snap @('bash.exe') $script:RxCorpus) -What 'full test run (corpus)' -DryRun:$DryRun)
-if (-not $DryRun) { Remove-Item -LiteralPath ($script:ScratchPad + '\corpus.lock') -Recurse -Force -ErrorAction SilentlyContinue }
+if (-not $DryRun) {
+  # Leftover lock folders are removed only when nothing that could own them is running any more. The pid inside a lane lock is a Git-Bash pid,
+  # not a Windows pid, so "is that pid alive?" cannot be asked; the process command lines are the only reliable test.
+  Start-Sleep -Seconds 3
+  $snapL = Get-ProcSnap
+  $laneLeft = (Select-Proc $snapL @('bash.exe') $script:RxLane).Count + (Select-HelperProc $snapL).Count
+  $corpLeft = (Select-Proc $snapL @('bash.exe') $script:RxCorpus).Count
+  if ($laneLeft -eq 0) {
+    Get-ChildItem -LiteralPath $C -Directory -Filter 'lane-*.lock' -ErrorAction SilentlyContinue | ForEach-Object { Remove-Item -LiteralPath $_.FullName -Recurse -Force -ErrorAction SilentlyContinue }
+    Remove-Item -LiteralPath ($C + '\pick.lock') -Recurse -Force -ErrorAction SilentlyContinue
+    Write-Mig 'old lane locks removed (no lane or helper is running)' 'OK'
+  } else { Write-Mig ([string]$laneLeft + ' lane or helper process(es) are still running, so the lane locks were left in place') 'WARN' }
+  if ($corpLeft -eq 0) { Remove-Item -LiteralPath ($script:ScratchPad + '\corpus.lock') -Recurse -Force -ErrorAction SilentlyContinue }
+  else { Write-Mig 'the full test run is still going, so corpus.lock was left in place' 'WARN' }
+}
 [void](Stop-ProcList -Procs (Select-Proc $snap @('powershell.exe', 'pwsh.exe', 'bash.exe') $script:RxReview) -What 'reviewers and nightly jobs (ship-review, llm-night, review-nightly, itch-daily, stable)' -DryRun:$DryRun)
 if ($StopOllama) {
   $ol = @($snap | Where-Object { $_.Name -match '^(ollama|ollama app|ollama_llama_server)\.exe$' })
@@ -298,6 +365,18 @@ Write-MigBlank
 Write-Mig 'Step 6 of 8: stop the hidden test browsers and the servers' 'STEP'
 Start-Sleep -Seconds 1
 $snap = Get-ProcSnap
+if (-not $KeepPlayServers) {
+  # The play server (:8802) is stopped on purpose (the party route later needs that port on this PC), but never under somebody's hands.
+  $playConns = 0
+  try { $playConns = @(Get-NetTCPConnection -State Established -LocalPort 8802, 8799 -ErrorAction Stop).Count } catch { }
+  if ($playConns -gt 0) {
+    Write-Mig ($playConns.ToString() + ' connection(s) are open to the play server (:8802) or the collector (:8799) right now - a browser tab, a party screen or a test is using them.') 'WARN'
+    if (-not (Confirm-Plain 'Stop the play server and collector anyway?')) {
+      $KeepPlayServers = $true
+      Write-Mig 'Kept running (as if -KeepPlayServers). Stop them yourself before the party route, which needs port 8802 on this PC.' 'INFO'
+    }
+  }
+}
 [void](Stop-ProcList -Procs (Get-TestChromes $snap) -What 'hidden test Chromes (ports 93xx / pillagers-cdp profiles; your own Chrome is not matched)' -Tree -DryRun:$DryRun)
 function Get-ServerProcsToStop {
   param([object[]]$Snap)
@@ -358,7 +437,7 @@ $snap = Get-ProcSnap
 $rows = [ordered]@{}
 $rows['runner (nightly.sh)']         = (Select-Proc $snap @('bash.exe') $script:RxRunner).Count
 $rows['helper lanes']                = (Select-Proc $snap @('bash.exe') $script:RxLane).Count
-$rows['helper runs']                 = (Select-Proc $snap @('node.exe', 'claude.exe') $script:RxHelper).Count
+$rows['helper runs']                 = (Select-HelperProc $snap).Count
 $rows['ships in progress']           = (Select-Proc $snap @('bash.exe', 'powershell.exe') $script:RxShip).Count
 $rows['robots (fuzz)']               = (Select-Proc $snap @('powershell.exe', 'pwsh.exe') $script:RxFuzz).Count
 $rows['full test run']               = (Select-Proc $snap @('bash.exe') $script:RxCorpus).Count
@@ -376,6 +455,7 @@ $lk = Get-ShipLock
 if ($lk.Exists) { Write-Mig ('SHIP LOCK HELD ' + $lk.Owner) $(if ($DryRun) { 'DRY' } else { 'FAIL' }); $allOk = $false } else { Write-Mig 'ship lock is clear' 'OK' }
 $tasksNow = @(Get-PillagersTasks)
 $taskOn = @($tasksNow | Where-Object { $_.State -ne 'Disabled' })
+if ($ancJobs.Count -gt 0) { Write-Mig ('STILL RUNNING  the Pillagers job that started this window (' + ($ancJobs -join ', ') + ')') $(if ($DryRun) { 'DRY' } else { 'FAIL' }); $allOk = $false }
 if ($taskOn.Count -gt 0) { Write-Mig ('SCHEDULED TASK STILL ON: ' + (($taskOn | ForEach-Object { $_.TaskName }) -join ', ')) $(if ($DryRun) { 'DRY' } else { 'FAIL' }); $allOk = $false } else { Write-Mig 'scheduled task is off (or there is none)' 'OK' }
 foreach ($p in @(($C + '\STOP'), ($X + '\STOP'), ($H + '\stable.freeze'))) {
   if (-not (Test-Path -LiteralPath $p)) { if (-not $DryRun) { Write-Mig ('stop sign missing: ' + $p) 'FAIL'; $allOk = $false } }
@@ -402,7 +482,7 @@ if ($drift) { Write-Mig ('GPU driver pack: ' + $drift) 'WARN' } else { Write-Mig
 Write-MigBlank
 Write-Mig 'Step 8 of 8: marker for the VM' 'STEP'
 if ($DryRun) {
-  Write-Mig ('would write ' + $markerPath + ' (and .git\PILLAGERS_MOVED_TO_VM.txt) when every line above says STOPPED') 'DRY'
+  Write-Mig ('would write ' + $markerPath + ' (with a check= line, and .git\PILLAGERS_MOVED_TO_VM.txt) when every line above says STOPPED') 'DRY'
   Exit-Mig 0
 }
 if (-not $allOk) {
@@ -433,7 +513,12 @@ $lines = @(
   ('gpuPack=' + $(if ($drift) { $drift } else { 'ok' })),
   'note=The VM may start the runner and helpers only while this file says status=stopped.'
 )
-Write-AsciiFile -Path $markerPath -Text (($lines -join "`n") + "`n")
+# check= is a SHA-256 over every line above (see Get-MarkerCheck in host-common.ps1). The VM refuses a marker whose check does not match,
+# so a hand-edited, half-written or glued-together file cannot unlock the runner. Written to a temp name first, then renamed in one step.
+$lines += ('check=' + (Get-MarkerCheck $lines))
+$markerTmp = $markerPath + '.tmp'
+Write-AsciiFile -Path $markerTmp -Text (($lines -join "`n") + "`n")
+Move-Item -LiteralPath $markerTmp -Destination $markerPath -Force
 Write-Mig ('wrote ' + $markerPath) 'OK'
 try {
   $gm = (Get-GitDir) + '\PILLAGERS_MOVED_TO_VM.txt'
