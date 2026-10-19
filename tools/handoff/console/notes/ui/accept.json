@@ -18,17 +18,17 @@
  "04-stash-terminal": {
   "score": 2,
   "pass": false,
-  "verdict": "the stash window still reads as a dense debug panel: no real title, a version stamp, two help paragraphs, a lime banner, a freebie bar and a toast all compete, and the earlier advice has not been applied.",
+  "verdict": "the stash card still reads as a crowded debug terminal: the only changes are slightly larger type and a fixed '$0 going up', while the version stamp, help paragraphs, lime banners and clipped backpack are all still there.",
   "findings": [
-   "P0 card header (version stamp, xp line, credits row): delete the version stamp and the xp line. add 'stash' at 32px f-cond 700 tx-1, 24px from the card's left edge, with '13 held' at 20px tx-2 beside it. put credits as one 56px hero number or a single 20px stat. dim the backdrop title under the .80 scrim.",
-   "P0 bottom half: legend, two help paragraphs, freebie bar, toast: delete both help paragraphs. cut the freebie text to 'issued gear: pistol, 2 bandages, frag, plate' with no joke. keep the legend as one 14px footer line. move the toast to top-centre and dismiss it after 3s.",
-   "P0 lime accents: first-raid banner, freebie bar border and label, 'take the freebie kit', gun key numbers: use lime only for 'take the freebie kit' as a filled --acc button, 56px high with --acc-ink text, bottom-right. make the first-raid banner a tx-2 line with no border, or remove it. set the key digits and body text to tx-1.",
-   "P1 type sizes throughout: set every read label to at least 16px f-cond 600 with +.04em tracking. set section headers (stash, loadout, backpack, tactical belt) to 20px f-cond 700 tx-1. limit f-mono to table numbers.",
-   "P1 right column: backpack, tactical belt, gun keys, item wheel: use one 56px cell on an 8px gap for belt, gun keys and wheel. show the backpack as two full rows with no clip. delete 'oc going up' and 'guns'. move gun keys and wheel into a tab or drawer, or a single 2-column block aligned to the pane's 24px padding."
+   "P0 card header (version stamp, xp line, credits row): delete the version stamp and the xp line. set 'stash' at 32px f-cond 700 tx-1, 24px from the card's left edge, with '13 held' at 20px tx-2 beside it. show credits as one 56px hero number or a single 20px stat. dim the backdrop title under the .80 scrim.",
+   "P0 bottom half: legend, two help paragraphs, freebie bar, toast: delete both help paragraphs. cut the freebie text to 'issued gear: pistol, 2 bandages, frag, plate'. keep the legend as one 14px footer line. move the toast to top-centre and auto-dismiss after 3s.",
+   "P0 lime accents: first-raid banner, freebie bar, gun key digits, '$0 going up': use lime only for 'take the freebie kit' as a filled --acc button, 56px high with --acc-ink text, right aligned. make the first-raid banner a tx-2 line with no border, or remove it. set key digits and body text to tx-1.",
+   "P1 right column: backpack, tactical belt, gun keys, item wheel: show the backpack as two full rows with no clip. use one 56px cell on an 8px gap for belt, gun keys and wheel. delete the 'guns' caption. move gun keys and wheel into a tab or drawer, or a single 2-column block aligned to the pane's 24px padding.",
+   "P1 type sizes throughout: every read label at least 16px f-cond 600 with +.04em tracking. section headers at 20px f-cond 700 tx-1. limit f-mono to table numbers."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-31-f1/04-stash-terminal-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/b-31-f4/04-stash-terminal-1080.jpg",
   "task": "b-31-ui-undercroft",
-  "when": "2026-10-19T00:16"
+  "when": "2026-10-19T00:38"
  },
  "05-sector-page": {
   "score": 2,

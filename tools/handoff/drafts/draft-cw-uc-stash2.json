@@ -1,0 +1,40 @@
+{
+    "title":  "STASH LOSES ITS EXPLAINING SENTENCES",
+    "why":  "Q8: the stash help row carried a recipes sentence and a sell sentence, the sell button had a three sentence note under it, and the freebie bar and first raid pointer ran long. Short lines now; reasons are in notes/ui/changes.md.",
+    "now":  "The stash help row, sell note and freebie bar are short.",
+    "edits":  [
+                  {
+                      "anchor":  "      \u0027PARTS are eaten by recipes and racks; SALVAGE is safe to sell. \u0027+",
+                      "replacement":  "      \u0027\u0027+   /* v28.xx (cw-uc-stash2): Q8, the parts line was an explaining sentence on the stash help row (reason in notes/ui/changes.md) */"
+                  },
+                  {
+                      "anchor":  "      \u0027The sell button clears junk and loose salvage.\u003c/span\u003e\u0027;",
+                      "replacement":  "      \u0027\u003c/span\u003e\u0027;"
+                  },
+                  {
+                      "anchor":  "Right-click an item (Y on a controller) and pick Drop on the floor to hand it to ",
+                      "replacement":  "Drop on the floor for "
+                  },
+                  {
+                      "anchor":  "\u0027; they walk to it and press E. \u0027",
+                      "replacement":  "\u0027. \u0027"
+                  },
+                  {
+                      "anchor":  "  var _sh=document.getElementById(\u0027sellhint\u0027);",
+                      "replacement":  "  var _sh=document.getElementById(\u0027sellhint\u0027);\n  if(_sh) _sh.style.display=\u0027none\u0027;   /* v28.xx (cw-uc-stash2): Q8, the sell note was a three sentence paragraph under the sell button (reason in notes/ui/changes.md) */"
+                  },
+                  {
+                      "anchor":  "\u003eFIRST RAID: drag a gun and two heals in here, then go up at ENTER RAID!\u003c/div\u003e",
+                      "replacement":  "\u003eFIRST RAID: drag a gun and two heals in, then ENTER RAID\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "\u0027\u003cspan\u003e\u0027+(on?\u0027Taking the freebie kit. \u0027+escHtml(freeKitText())+(P.kitSaved?\u0027 Your own loadout is saved for when you switch back.\u0027:\u0027\u0027):",
+                      "replacement":  "\u0027\u003cspan\u003e\u0027+(on?\u0027In use: \u0027+escHtml(freeKitText()):"
+                  },
+                  {
+                      "anchor":  "      \u0027Go up with issued gear instead of your own. \u0027+escHtml(freeKitText()))+\u0027\u003c/span\u003e\u0027+",
+                      "replacement":  "      escHtml(freeKitText()))+\u0027\u003c/span\u003e\u0027+"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the stash help row, sell note and freebie bar lost their explaining sentences (Q8): no recipes line, no sell note, no go up with issued gear\u0027,\n   run:function(){\n     if(!window.__hubEnter||!window.__station) return \u0027SKIP: this fixture cannot walk the Undercroft\u0027;\n     var bad=[], sh, dt, fk, src=[].slice.call(document.scripts).map(function(s){ return s.textContent||\u0027\u0027; }).join(\u0027\\n\u0027);\n     try{\n       __topClear(); __runPrep(); __cleanProfile(); __wnseen(1);\n       __hubEnter(); __station(\u0027term\u0027,\u0027KeyE\u0027);\n       sh=document.getElementById(\u0027sellhint\u0027); dt=document.getElementById(\u0027stashdetail\u0027);\n       if(!sh||getComputedStyle(sh).display!==\u0027none\u0027) bad.push(\u0027the sell note still shows\u0027);\n       if(!dt||/recipes|clears junk/i.test(dt.textContent)) bad.push(\u0027the help row still explains: \u0027+(dt\u0026\u0026dt.textContent));\n       fk=document.getElementById(\u0027hubfreekit\u0027);\n       if(typeof renderFreeKit===\u0027function\u0027){ renderFreeKit(); if(!fk||/instead of your own|saved for when/i.test(fk.textContent)) bad.push(\u0027the freebie bar still explains: \u0027+(fk\u0026\u0026fk.textContent)); }\n     }catch(x){ bad.push(\u0027threw: \u0027+(x\u0026\u0026x.message||x)); }\n     finally{ try{ var hb=document.getElementById(\u0027hub\u0027); if(hb) hb.classList.remove(\u0027on\u0027); }catch(_h){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

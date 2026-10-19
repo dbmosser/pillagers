@@ -1,0 +1,5 @@
+## v31.67 - SETTINGS STEPPERS AND KEYS TABLE POLISH
+
+Co-op hunt while he was away. Critic c-31 rounds: every stepper boxed (my own mistake in pset12), key section names look like row labels, keys table off to one side.
+
+MEASURED. Check 31.67 passes, and fails on v31.66.

@@ -6101,6 +6101,27 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'31.67',what:'Keys table spans the card and settings steppers box only the row in focus',
+   run:function(){
+     var bad=[], kl, kc, bt, rows, i, idle=0, padWas=document.body.classList.contains('padon');
+     __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     try{
+       openSettings('display');
+       bt=document.querySelectorAll('#setlist .row:not(.setjump) > button'); 
+       for(i=0;i<bt.length;i++){ if(bt[i].matches(':hover')||bt[i].parentNode.matches(':focus-within')||bt[i].classList.contains('padfocus')) continue; if(getComputedStyle(bt[i]).borderTopColor!=='rgba(0, 0, 0, 0)') idle++; }
+       if(idle>0) bad.push(idle+' idle steppers still boxed');
+       document.getElementById('settingsmodal').classList.remove('on');
+       keysOpen();
+       kl=document.getElementById('keyslist'); kc=document.getElementById('keysmodal');
+       if(!kl||!kc) bad.push('no keys window');
+       else{
+         var w=kl.getBoundingClientRect().width, cw=kc.getBoundingClientRect().width;
+         if(w<cw*0.8) bad.push('keys list '+Math.round(w)+' of card '+Math.round(cw));
+         var ks=kl.querySelector('.keysec'); if(ks && getComputedStyle(ks).boxShadow==='none') bad.push('section has no accent tab');
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ ['settingsmodal','keysmodal'].forEach(function(n){ var q=document.getElementById(n); if(q) q.classList.remove('on'); }); }catch(_k){} try{ __topClear(); }catch(_c){} document.body.classList.toggle('padon',padWas); }
+     return bad.length?bad.join('; '):null; }},
   {v:'31.66',what:'the stash labels and hint lines are at the 16px floor (17.4px before the 0.92 scale) and the loadout head says $ going up, not the old c',
    run:function(){
      if(!(window.__hubEnter&&window.__showScreen)) return 'SKIP: this fixture cannot walk the Undercroft';

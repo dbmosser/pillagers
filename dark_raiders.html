@@ -2006,7 +2006,11 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
 #root #settingsmodal #setlist .setjump button.on{ background:var(--ui-raised); color:var(--tx-1); border-left-color:var(--acc) !important; }
 #root #settingsmodal #setlist .setjump button[data-go]{ margin-top:var(--sp-3); }
 #root #settingsmodal #setdetail{ margin-left:var(--sp-5); }
-#root #settingsmodal #setlist .row > button[id^="go_"]{ border-color:var(--ui-line-hi); }
+/* v31.xx (cw-pset14) critic on Settings 72 after cw-pset13 (3): "twelve identical 1px-bordered boxes make a dense grid of chrome... on idle rows drop the box border and show the box only on the focused row" (cw-pset12 had put a border on every stepper by mistake; removed), and on Pad buttons 74 (2): "headers are the same size and weight as the row labels", "dead 190px strip on the left, scrollbar floats at x1673". Now: steppers show their box on the row in focus only, the section names in Keys get a 3px accent tab and the 16px label size, and the Keys table spans the whole card (two column pairs with a 48px gutter) with an 8px scroll thumb at the card edge. Q43 keeps the near full screen card. */
+#root #settingsmodal #setlist .row:not(:hover):not(:focus-within) > button:not(.padfocus){ border-color:transparent; background:transparent; }
+#root #settingsmodal #setdetail{ border-top:3px solid var(--acc); }
+#root #keysmodal #keyslist, #root #keysmodal #keysnote{ max-width:none; column-gap:var(--sp-5); }
+#root #keysmodal #keyslist .keysec{ font-size:var(--fs-label); color:var(--tx-2); letter-spacing:.08em; padding-left:var(--sp-2); box-shadow:inset 3px 0 0 var(--acc); }
 /* v31.xx (cw-pset13) critic on Settings 18/72 after cw-pset12 (both 3): "the rail plus list is about 1245px wide and floats in a 1870px card, 300px of dead space each side... use one content frame, x=49 to x=1871... or add a 480px detail pane at the right", "the description is the loudest block in the lower third". Now: the settings block fills the card (rail at the left margin), the detail pane is a 480px column on the right beside the rows, and its sentence drops to the 16px label size in tx-2. Q43 keeps the near full screen card. */
 #root #settingsmodal #setwrap{ max-width:none; flex-direction:row; gap:var(--sp-4); }
 #root #settingsmodal #setwrap > #setlist{ flex:1 1 0; min-width:0; min-height:0; }
@@ -2926,7 +2930,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.66';
+var VER='31.67';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -49566,7 +49570,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.66: The stash text is 16px or more and the loadout head says $ going up. Check 31.66 fails on v31.65',
+  now:'v31.67: Settings box only the focused stepper; the key bindings table spans the card with accent section tabs. Check 31.67 fails on v31.66',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
