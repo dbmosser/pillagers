@@ -2999,7 +2999,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='31.99';
+var VER='32.00';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18187,7 +18187,7 @@ function padMenu(pressed){
   // or a window opened over it, with an item picked up left the ghost on the screen and the next mouse release anywhere
   // dropped a stale item, the v8.14 hole again. No panel, or a different panel on top, lets a pad grab go before anything else.
   if(GRAB&&GRAB.pad&&(!md||(PAD.focusMd&&md!==PAD.focusMd))) grabEnd();
-  if(!md){ if(PAD.focus){ padSetFocus(null); PAD.focus=null; } return false; }
+  if(!md){ PAD.mDdir=0; PAD.mDmd=null; PAD.mrepAt=null; if(PAD.focus){ padSetFocus(null); PAD.focus=null; } return false; } // v28.xx (cw-cx-menurepeat): a closed menu releases its repeat timers.
   var list=padFocusables(md);
   if(!list.length) return true;
   // v14.26: the title opens on ENTER THE UNDERCROFT, not on GO FULLSCREEN above it.
@@ -18220,17 +18220,24 @@ function padMenu(pressed){
     padSetFocus(list[_pfi]);
   }
   function tap(nn){ var now=pressed(nn), was=PAD.prev[nn]; PAD.prev[nn]=now; return now&&!was; }
-  var mv=null;
-  if(tap(12)) mv=[0,-1]; else if(tap(13)) mv=[0,1];
-  else if(tap(14)) mv=[-1,0]; else if(tap(15)) mv=[1,0];
-  // The left stick works too, on a repeat timer so one push is one step.
-  var ls=padStick(PAD.ax?PAD.ax[0]||0:0,PAD.ax?PAD.ax[1]||0:0), lx=ls.x, ly=ls.y; // v28.xx (cw-cx-stickmath): menu stepping reads the physical left stick as a pair.
-  // v20.77, from the whole-game bug hunt of 2026-10-08 (H47): THE STICK REPEAT IN A MENU RUNS ON THE CLOCK. It took 1/60 off a
-  // timer once per drawn frame, so it stepped every 12 frames: a fifth of a second at 60 Hz, but 83 ms at 144 Hz and 50 ms at
-  // 240 Hz, where one quick flick moved the highlight two or three places, and 0.4 s with the frame cap at 30. It now waits a
-  // fifth of a second of real time between steps at any frame rate, as the D-UP and bumper holds already do.
-  var _mnow=netPadNow();
-  if(!mv&&(Math.abs(lx)>0.6||Math.abs(ly)>0.6)&&!(PAD.mrepAt!=null&&_mnow-PAD.mrepAt<0.195)){
+  // v28.xx (cw-cx-menurepeat): J10, D-pad steps immediately, then after 0.4 s and every 0.1 s held.
+  var mv=null, _mnow=netPadNow(), _md=0;
+  for(var _mi=12;_mi<=15;_mi++){ var _mh=!!pressed(_mi); PAD.prev[_mi]=_mh; if(_mh&&!_md) _md=_mi; }
+  if(_md){
+    if(_md!==PAD.mDdir||md!==PAD.mDmd){
+      mv=_md===12?[0,-1]:_md===13?[0,1]:_md===14?[-1,0]:[1,0];
+      PAD.mDAt=_mnow+0.4;
+    }else if(_mnow+1e-9>=PAD.mDAt){
+      mv=_md===12?[0,-1]:_md===13?[0,1]:_md===14?[-1,0]:[1,0];
+      PAD.mDAt=_mnow+0.1;
+    }
+  }else PAD.mDAt=null;
+  PAD.mDdir=_md; PAD.mDmd=md;
+  // v28.xx (cw-cx-menurepeat): J10, half physical travel at every deadzone and sensitivity; the radial deadzone still rejects drift.
+  var _mx=PAD.ax?PAD.ax[0]||0:0, _my=PAD.ax?PAD.ax[1]||0:0;
+  var ls=padStick(_mx,_my), lx=ls.x, ly=ls.y, _mpush=Math.hypot(_mx,_my)>Math.max(0.5,padDz());
+  if(!_mpush) PAD.mrepAt=null;
+  if(!_md&&_mpush&&!(PAD.mrepAt!=null&&_mnow-PAD.mrepAt<0.195)){
     mv=(Math.abs(lx)>Math.abs(ly))?[lx>0?1:-1,0]:[0,ly>0?1:-1];
     PAD.mrepAt=_mnow;
   }
@@ -50190,7 +50197,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v31.99: RT and LT press above 0.35 and release below 0.25, holding steady between those points. Check 31.99 fails on v31.98',
+  now:'v32.00: Menus respond at half stick travel. Hold the D-pad to repeat after 0.4 seconds, then every 0.1 seconds. Check 32.00 fails on v31.99',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

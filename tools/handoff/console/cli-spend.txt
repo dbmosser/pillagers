@@ -82,3 +82,6 @@
 2026-10-19 0.0000 o-10-pad-floor-bag
 2026-10-19 0.0000 o-10-pad-floor-bag
 2026-10-19 0.0000 o-11-trigger-hysteresis
+2026-10-19 0.0000 o-11-trigger-hysteresis
+2026-10-19 0.0000 o-12-menu-stick-repeat
+2026-10-19 0.0000 o-12-menu-stick-repeat

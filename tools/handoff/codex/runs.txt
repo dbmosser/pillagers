@@ -54,3 +54,6 @@
 2026-10-19 19:40 o-10-pad-floor-bag 169s ok PARTIAL in=856546 out=7694 run=2
 2026-10-19 19:44 o-10-pad-floor-bag 70s ok PARTIAL in=1560248 out=10563 run=3
 2026-10-19 19:46 o-11-trigger-hysteresis 145s ok PARTIAL in=874571 out=8021 run=1
+2026-10-19 19:48 o-11-trigger-hysteresis 12s ok DONE in=1070130 out=8449 run=2
+2026-10-19 19:51 o-12-menu-stick-repeat 141s ok PARTIAL in=338068 out=7644 run=1
+2026-10-19 19:51 o-12-menu-stick-repeat 32s ok PARTIAL in=482315 out=9334 run=2

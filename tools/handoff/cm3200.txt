@@ -1,0 +1,7 @@
+v32.00: menu stick and d-pad repeat
+
+Menus respond at half stick travel. Hold the D-pad to repeat after 0.4 seconds, then every 0.1 seconds.
+
+Check 32.00. Fails on v31.99.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

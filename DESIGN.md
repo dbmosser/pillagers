@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.00 - MENU STICK AND D-PAD REPEAT
+
+Co-op hunt while he was away. J10: large deadzones needed nearly full stick travel to navigate, and holding the D-pad only stepped once.
+
+MEASURED. Check 32.00 passes, and fails on v31.99.
 ## v31.99 - STEADY PAD TRIGGERS
 
 Co-op hunt while he was away. J9: trigger travel near 0.35 releases and presses again, firing a semi-auto twice during one pull.

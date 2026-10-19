@@ -1,0 +1,13 @@
+
+--- codex run 2026-10-19 19:51 ---
+2026-10-19: Prepared cw-cx-menurepeat for J10. All game edits are inside padMenu; gameplay stick math and gameplay button handling stay unchanged.
+Menus accept physical stick travel above 0.5, outside the configured radial deadzone. This keeps the same half-stick threshold across LARGE (0.32), HUGE (0.4), and sensitivity settings. A fixed post-deadzone threshold of 0.35 would still reject raw 0.52 at HUGE, so menu activation uses physical travel while the existing radial stick vector supplies direction. Existing 0.195-second stick repeats remain; release clears their timer for an immediate new push.
+Held D-pad input steps immediately, waits 0.4 seconds, then repeats every 0.1 seconds. Release, direction changes, different panels, and leaving menus reset the hold. D-pad input takes priority over the stick and all four direction states are recorded each poll.
+The regression uses real padStep and padSetFocus on staged buttons with stubbed modal lookup, focusable list, button input, axes, and clock. It checks raw 0.52 at LARGE/HUGE and sensitivity 0.75/1/1.5, drift rejection, 1.2-second D-down holds at 30/60/144/240 Hz, the initial delay, release, all four single taps and fresh second taps, and stick release/re-press. Old code fails both raw 0.52 cases and the held D-pad count; single-tap behavior already works on the old build and is preserved.
+No screen layout or player text changes, so no camera or critic is needed. No old fixture retarget is needed: check 20.77 still receives the same 0.195-second continuous stick repeats.
+Sandbox validation: mk script prints written; both anchors match exactly once within padMenu; the patched game inline script and the regression check compile; the mk script is ASCII. Runtime regression, preflight, and shipping remain for lane o.
+
+
+--- codex run 2026-10-19 19:51 ---
+2026-10-19 follow-up: Preflight rejected only the left D-pad tap assertions. The test used narrow inline-block buttons containing different-length text, so wrapped text and baseline alignment could make the geometrically nearest button differ from the adjacent array entry. Replaced the test layout with fixed absolute coordinates spaced 30 pixels apart, with one row for horizontal taps and one column for vertical taps. Layout is set before focus, and test buttons disable transforms and transitions so text and focus animation cannot move their geometry. The test still uses the real padStep and padSetFocus. No game code changed in this follow-up. Rebuilt the draft and reran the local anchor/ASCII/JavaScript syntax checks; runtime preflight and shipping remain with lane o.
+
