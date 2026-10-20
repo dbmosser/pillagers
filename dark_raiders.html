@@ -3238,7 +3238,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.99';
+var VER='33.00';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3733,6 +3733,11 @@ var XF_ROWS=[
   ['xfGold','golden enemy','one golden enemy a raid','w'],
   ['xfHold','strongholds','fenced compounds','w'],
   ['xfPwr','power-ups','kills drop power-ups','w'],
+  ['xfRoles','pillager roles','roles by gun and rig','w'],
+  ['xfSupp','suppression','heavy fire pins a pillager','w'],
+  ['xfFeud','machines vs pillagers','they fight on sight','w'],
+  ['xfAffix','elite affixes','shielded, fast, volatile, mender','w'],
+  ['xfOvPh','overseer phases','crawler calls and a laser sweep','w'],
   // XF_ROWS_END
 ];
 var XF_KEYS=[], XF_WORLD=[], XF={}, SETSUB='';
@@ -14355,7 +14360,7 @@ function mercEngage(e,dt){
 // the nearest hostile raider it CAN see as a target.
 function machHuntRaider(e,dt){
   if(!CFG.machVsRaider||!e||e.downed) return false;
-  if(e.kind!=='sentry'&&e.kind!=='crawler'&&e.kind!=='bulwark'&&!(e.kind==='warden'&&!e.boss)) return false;   // v26.xx (ai23): and a plain Warden or a Bulwark
+  if(e.kind!=='sentry'&&e.kind!=='crawler'&&!(xf('xfFeud')&&(e.kind==='bulwark'||(e.kind==='warden'&&!e.boss)))) return false;   // v26.xx (ai23): and a plain Warden or a Bulwark; v32.xx (cw-expmenu2): only while machines vs pillagers is on
   // v8.48, audit: SIGHT, not reach. e.rng is a sight range for a sentry (340) and
   // a BITE REACH for a crawler (26), and using it as the acquisition radius meant
   // a crawler could only target a pillager already touching it - so it never
@@ -24829,6 +24834,7 @@ function raiderHash(e){
 }
 function raiderRole(e){
   var w, h;
+  if(!xf('xfRoles')) return null;   // v32.xx (cw-expmenu2): switched off, a pillager has no role
   if(!e||e.kind!=='raider'||e.merc||e.friendlyPC||e.ghost) return null;
   if(e.prole&&PROLE[e.prole]) return e.prole;
   // v28.xx (cw-roletwin), CLOUD HUNT 2026-10-15: a rarity twin (shotgun_v and the rest) has its own id, so the tests below missed it
@@ -24936,6 +24942,7 @@ function drawRoleMark0(e){
 // The state is on the host (a linked window sees the duck through a flag bit). No random number is drawn: it is counting and a timer.
 var SUPP_R=70, SUPP_N=4, SUPP_WIN=1.8, SUPP_PIN=2.6;
 function suppHit(en){
+  if(!xf('xfSupp')) return false;   // v32.xx (cw-expmenu2): switched off, rounds past a pillager pin nobody
   if(!en||en.kind!=='raider'||en.merc||en.friendlyPC||en.hostile===false||en.downed||en.finished||!(en.hp>0)) return false;
   en.supp=(en.supp||0)+1; en.suppT=SUPP_WIN;
   if(en.supp>=SUPP_N){ en.pinT=SUPP_PIN; en.supp=0; return true; }
@@ -24949,6 +24956,7 @@ function suppHit(en){
 // party), and (2) a plain Warden or a Bulwark that cannot see you hunts a pillager in sight (machHuntRaider). THE OVERSEER is left
 // alone (it walks home), and so are the Snitch, the Peddler and the Survivor. No decoy, no noise needed: contact is enough.
 function machFoe(o){
+  if(!xf('xfFeud')) return false;   // v32.xx (cw-expmenu2): switched off, a pillager does not pick a machine as a foe
   return !!o&&o.kind!=='raider'&&o.kind!=='snitch'&&o.kind!=='peddler'&&o.kind!=='stray'&&!o.neutral&&!o.boss&&!o.downed&&!o.finished&&o.hp>0;
 }
 // v26.xx (ai24), HIS YES (2026-10-14, suggestion 24): THE OVERSEER'S PHASES. It was one long health bar with a cannon. Now it has three
@@ -24993,6 +25001,7 @@ function overseerSummon(e){
 }
 function overseerTick(e,p,sees,dt){
   var ph, i, pl, pls, L, dx, dy, al, pp;
+  if(!xf('xfOvPh')) return false;   // v32.xx (cw-expmenu2): switched off, the overseer is one long health bar with a cannon
   if(!e||!e.boss||!(e.hp>0)) return false;
   ph=overseerPhaseOf(e);
   if(!e.phase) e.phase=1;
@@ -25060,6 +25069,7 @@ var AFFIX={
 var AFFIX_KEYS=['shield','boom','fast','mend'], AFFIX_BOOM_R=130, AFFIX_MEND_R=260;
 function affixApply(e,ix){
   var k;
+  if(!xf('xfAffix')) return null;   // v32.xx (cw-expmenu2): switched off, an elite machine is a plain elite
   if(!e||e.kind==='raider'||e.boss||e.affix||!e.elite) return null;
   k=AFFIX_KEYS[((Math.floor(ix)%4)+4)%4];
   e.affix=k;
@@ -32433,7 +32443,7 @@ function updateBullets(dt){
                      WEAK SPOT label per pellet, eight stacked words in one frame that also pushed the loot names out of the 40-label
                      list. The label now shows at most once per target every 0.5 s (en.weakLblT); the damage, the spark, the clank, the
                      hit tick and the count of weak hits stay per pellet. */
-                  if(!(en.weakLblT>(G.t||0)-0.5)){ en.weakLblT=(G.t||0); label(en.x,en.y-Math.round(en.r*1.3),weakTxt(WK.mult*((en.boss&&en.overheat>0)?1.5:1)),WK.c,0,true); }   /* v21.64, HIS NOTE (2026-10-09): OPTIC 2X read as a scope, not a weak point; it says WEAK SPOT, in the weak point colour */
+                  if(!(en.weakLblT>(G.t||0)-0.5)){ en.weakLblT=(G.t||0); label(en.x,en.y-Math.round(en.r*1.3),weakTxt(WK.mult*((xf('xfOvPh')&&en.boss&&en.overheat>0)?1.5:1)),WK.c,0,true); }   /* v21.64, HIS NOTE (2026-10-09): OPTIC 2X read as a scope, not a weak point; it says WEAK SPOT, in the weak point colour */
                   spark(b.x,b.y,WK.c,26,340);
                   sfx('clank',b.x,b.y,'metal');
                   G.tel.weakHits=(G.tel.weakHits||0)+1;
@@ -32490,7 +32500,7 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
                   edmg*=1.5; _backShot=true; if(_nar) _nar=1.5;
                 }
               }
-              if(en.boss&&en.overheat>0){ edmg*=1.5; if(!WK&&!G.sim&&!(en.weakLblT>(G.t||0)-0.5)){ en.weakLblT=(G.t||0); label(en.x,en.y-Math.round(en.r*1.3),weakTxt(1.5),'#ffc04a',0,true); } }   // v27.xx (weakx): and the exposed core says its multiplier too   // v26.xx (ai24): the Overseer core is exposed while it vents
+              if(xf('xfOvPh')&&en.boss&&en.overheat>0){ edmg*=1.5; if(!WK&&!G.sim&&!(en.weakLblT>(G.t||0)-0.5)){ en.weakLblT=(G.t||0); label(en.x,en.y-Math.round(en.r*1.3),weakTxt(1.5),'#ffc04a',0,true); } }   // v27.xx (weakx): and the exposed core says its multiplier too   // v26.xx (ai24): the Overseer core is exposed while it vents
               if(b.el==='acid'&&ELEM_MACH[en.kind]) edmg*=1.25;   // v23.xx (forge6): ACID, a quarter more into a machine; player 2's window sends the real number
               if(NET.on&&netEntsPeer()) netShotSend(en,edmg,Math.atan2(b.vy,b.vx),WK,_nar,b.el,1,b.dmg>=HITSTOP_DMG); else en.hp-=affixSoak(en,edmg); /*v28.xx (cw-hitstoprule), CLOUD HUNT 2026-10-15: player 2 round says if it is heavy by the same raw number the host own round uses*/   // v15.80: on a linked window the host runs this body, so the round is a request to the host with the damage worked out here   // v28.xx (cw-blastshield), CLOUD HUNT 2026-10-15: player 2 round is marked for the shield soak
               en.hitT=.16; hitStopOn(en,b.dmg);   // v26.xx (feel10): a heavy round stops the body for a beat
@@ -51163,7 +51173,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.99: Settings has an experimental page with on/off rows for run goals, golden enemy, strongholds and power-ups. Check 32.99 fails on v32.98',
+  now:'v33.00: The experimental page switches pillager roles, suppression, machines vs pillagers, elite affixes and the overseer phases. Check 33.00 fails on v32.99',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -68234,13 +68244,14 @@ function renderSettingsInner(host){
       (_dflt?'':';color:var(--amber)')+'">'+(_gs?_gs.n:'CUSTOM')+'</button></div>';
   }
   if(SETSUB==='exp'){ expPage(host,_SEC); return; }   // v32.xx (cw-expmenu1): the experimental page replaces the list until back
+  _SEC['THE RAID']=(_SEC['THE RAID']||'')+expRowHtml();   // v32.xx (cw-expmenu2): the open row ends THE RAID, where the features it switches are
   // v16.50, stability: Settings opens in a raid since v16.45, and three of its buttons do not belong there. PICK FILE opens a
   // file window a controller cannot shut, and a restore or its UNDO reloads the window, which drops a teammate out of the party
   // and loses the run. In a raid they are greyed out; in the Undercroft they work as before.
   var _rOff=((typeof G!=='undefined'&&G&&!G.over&&!G.sim)||(typeof NET==='object'&&NET&&NET.on&&NET.specG))?' disabled':'';   // v16.64: and while the host runs the raid for his party
   // v28.xx (cw-cx-dailysave): the existing restore row cycles file and the three daily copies; mouse and pad use the same button.
   var _dailyChoices=dailySaveChoices(), _dailyAt=-1;
-  host.innerHTML=setSecsHtml(_SEC,{CONTROLS:keysRowHtml(),CONTROLLER:padRowHtml(),ACCESSIBILITY:expRowHtml()})+kidHeadHtml()+kidRowHtml()+afRowHtml()+kbRowHtml()+   // v17.71: the kid menu
+  host.innerHTML=setSecsHtml(_SEC,{CONTROLS:keysRowHtml(),CONTROLLER:padRowHtml()})+kidHeadHtml()+kidRowHtml()+afRowHtml()+kbRowHtml()+   // v17.71: the kid menu
     '<div class="row" data-mv="DISPLAY"><div style="flex:1"><b>Text size</b><div class="hint">Scales every string on every canvas and in every panel.</div></div>'+
     '<button id="set_text" style="padding:6px 12px">'+Math.round(uiScale()*100)+'%</button></div>'+
     // v8.77: MUS_THEMES holds FIVE and musPick draws uniformly from all of them.

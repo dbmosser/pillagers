@@ -223,3 +223,7 @@
 
 2026-10-20 | o-15-hide-coming-later-row | 01 title | hide the disabled server co-op row and its coming later tag per his 2.R6 b; preserve wiring and other title rows | before/after: lane shot 01-title-mode-menu-1080.jpg (paths pending lane capture).
 
+2026-10-20 | o-15-hide-coming-later-row | 01 title | verified shipped v32.98 hides server co-op and its tag; critic 3/5 | before: C:/claudecode/dark raiders/tools/handoff/console/notes/shots/o-15-hide-coming-later-row-before/01-title-mode-menu-1080.jpg | after: C:/claudecode/dark raiders/tools/handoff/console/notes/shots/o-15-hide-coming-later-row-after/01-title-mode-menu-1080.jpg
+
+2026-10-20 | o-16-golden-callout-names | golden kill callout, host and linked window | Replaced golden enemy down with the specific kind; raider reads golden pillager bot down; kept search the hoard. Reason: his answer 3.84 b and his pillager bot words rule. Before: generic callout in v32.99 (no recipe before capture). After: lane camera-recipes.json views golden-sentry-host, golden-sentry-linked, golden-raider-host and golden-raider-linked; picture paths pending lane capture.
+

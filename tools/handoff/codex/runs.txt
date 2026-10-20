@@ -127,3 +127,5 @@
 2026-10-20 14:17 o-14-daily-save-backup 346s ok PARTIAL in=6778977 out=53152 run=5
 2026-10-20 14:40 o-14-daily-save-backup 268s ok PARTIAL in=7358533 out=56072 run=6
 2026-10-20 14:42 o-15-hide-coming-later-row 122s ok PARTIAL in=346234 out=5554 run=1
+2026-10-20 14:49 o-15-hide-coming-later-row 26s ok DONE in=496036 out=6593 run=2
+2026-10-20 14:52 o-16-golden-callout-names 198s ok PARTIAL in=500595 out=8617 run=1

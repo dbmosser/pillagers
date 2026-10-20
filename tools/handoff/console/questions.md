@@ -43,3 +43,5 @@ Moved 10-19 night to tools/handoff/console/alarms.md (helper fix F18). This file
 2026-10-20 coordinator (backlog sweep): your 10-19 answer said keep everything made here, but the game still has 36 free recorded sounds (reloads, heals, blasts) that went in on your own 10-12 and 10-15 orders. Keep them, or replace them with made-here sounds after the party? Pick shown: keep them.
 
 2026-10-20 (59-demo-run-reports): screen recordings of demo runs: record each run on the main PC (costs some frame rate), or only run reports for now? Pick shown: only run reports for now.
+
+2026-10-20 (61-experimental-menu): may I add a camera screen "79-settings-experimental" to tools/handoff/shots/ui-screens-js.json? It opens settings from the hub (same as 18), then runs SETSUB='exp'; renderSettings(); so the new experimental page can be shot at 1080 and 4K. Taken: use screen 73 (accessibility chip, which holds the open row) for now and shoot the page only if the screen is added.

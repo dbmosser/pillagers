@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.00 - EXPERIMENTAL: FIVE MORE SWITCHES (PILLAGER ROLES, SUPPRESSION, MACHINES VS PILLAGERS, ELITE AFFIXES, OVERSEER PHASES)
+
+Co-op hunt while he was away. The experimental page gets its next five switches, all on by default. Off, a pillager has no role, rounds past him pin nobody, machines and pillagers do not pick each other as foes (a Bulwark or plain Warden stops hunting pillagers), an elite machine is a plain elite and the Overseer is one long health bar with a cannon. A switch is read when the raid starts. The open row also moves from the head of ACCESSIBILITY to the end of THE RAID, next to the rows it affects.
+
+MEASURED. Check 33.00 passes, and fails on v32.99.
 ## v32.99 - SETTINGS: AN EXPERIMENTAL MENU WITH THE FIRST FOUR SWITCHES
 
 Co-op hunt while he was away. His order (round 3, 2.R4 b): a separate menu, opened from Settings, that switches the newer features on and off. Settings has one new row, experimental, that opens a page in the same layout with an on/off row per feature and a back button; esc and B back out of the page before they close Settings. Every switch starts on, so with nothing touched the game is exactly as before. A switch is read once when the raid starts and held for the raid, and in a party the host switches rule for both windows. This first build brings the menu and four switches: run goals, golden enemy, strongholds and power-ups. The other features follow in small builds.

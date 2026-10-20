@@ -504,3 +504,6 @@
 2026-10-20 0.2816927000000001 58b-corpus-harness-reds
 2026-10-20 0.0000 o-14-daily-save-backup
 2026-10-20 0.0000 o-15-hide-coming-later-row
+2026-10-20 0.1431 critic-o-15-hide-coming-later-row
+2026-10-20 0.0000 o-15-hide-coming-later-row
+2026-10-20 0.0000 o-16-golden-callout-names

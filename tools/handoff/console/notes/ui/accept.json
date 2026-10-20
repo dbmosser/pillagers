@@ -812,17 +812,17 @@
  "01-title-mode-menu": {
   "score": 3,
   "pass": false,
-  "verdict": "The column menu is clean and the lime focus bar reads well, but the orange gradient title breaks the palette, the 5-mode list is cluttered, and the save block is crowded and tiny.",
+  "verdict": "Removing the dead 'coming later' row gives a cleaner, more confident column, but the screen is still a generic stack of five equal-weight rows and small type, with a gold pixel-art wordmark that clashes with the lime accent.",
   "findings": [
-   "P1 title wordmark 'pillagers': Flatten the title to --tx-1 (#efe9dc), f-cond 800, 56px hero size, no gradient, no shadow. Keep lime only on the focused row.",
-   "P1 mode list (5 rows): Cut the 'coming later' row, merge the arcade demos into one row or order the list by purpose. Max 3 or 4 rows, 56px pitch.",
-   "P1 saves block (saves label, pillager new row, name field, change name, create a new save): Drop the save row text to tx-1 with only a 3px lime left tab for focus. Put change name and create a new save behind one 'manage saves' row, or on a second line at 16px minimum. Use 24px between the mode list and saves.",
-   "P1 'coming later' disabled row: Remove it. If it stays, label text is --tx-2 at least and the tag is 16px.",
-   "P2 tagline 'ascend. pillage. extract.': Set it at 16px with +.04em tracking in --tx-2, 16px under the title and 32px above the list."
+   "P1 title wordmark vs lime accent: Make the wordmark tx-1 (#efe9dc) with no orange gradient, or tone it down so the lime '1 player' bar is the only hot element. Lose the heavy drop shadow.",
+   "P1 menu stack: 4 mode buttons + saves block: Order as 1 player, 2 player co-op, then the arcade pair. Add a 24px gap or 1px --ui-line divider between the modes and the saves block. Give the saves block its own panel (--ui-panel, 1px --ui-line-hi, 24px padding).",
+   "P1 background: Add a centred scrim of --scrim at 80% behind the 560px column, or darken and blur the backdrop a further 40%.",
+   "P2 saves label and rows: Use 16px labels in --tx-2, make the save row 48px, and keep lime for the single focus bar (use a 3px left accent tab and tx-1 text on the selected save). Make 'change name' and 'create a new save' 16px, same height as the input, with a clear idle border.",
+   "P2 bottom key legend and version stamp: Keep the legend at 16px in --tx-2 at a consistent 48px margin. Render the version in 14px f-body 500 --tx-2 at a 5% margin."
   ],
-  "pic": "tools/handoff/console/notes/shots/00-demoplain-after/01-title-mode-menu-1080.jpg",
-  "task": "manual",
-  "when": "2026-10-20T01:43"
+  "pic": "tools/handoff/console/notes/shots/o-15-hide-coming-later-row-after/01-title-mode-menu-1080.jpg",
+  "task": "o-15-hide-coming-later-row",
+  "when": "2026-10-20T18:48"
  },
  "44-title-from-character-select": {
   "score": 2,

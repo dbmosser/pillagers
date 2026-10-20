@@ -1,0 +1,7 @@
+v33.00: experimental: five more switches (pillager roles, suppression, machines vs pillagers, elite affixes, overseer phases)
+
+The experimental page switches pillager roles, suppression, machines vs pillagers, elite affixes and the overseer phases.
+
+Check 33.00. Fails on v32.99.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
