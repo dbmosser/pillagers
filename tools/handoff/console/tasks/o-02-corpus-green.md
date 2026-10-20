@@ -86,3 +86,8 @@ v22.16 the lift sector map draws each extraction ring where the raid puts it, an
 v21.84 a wrapped line draws his words: the CONDITIONS panel and the sector map zone names split his rewording, not the original -> (then SKIP: the staged zone name Zq yard was not drawn on one line, drawn ["zq yard"])
 v21.66 his note: the single shot guns hit harder, so they keep up with the automatics -> threw: TypeError: Cannot read properties of undefined (reading 'dmg')     at sus (http://localhost:8806/fxcorpus.html?slice1200=1:119346:33)     at htt
 v20.95 the sector maps on the lift page are drawn at the screen resolution: with the menus at twice size each map holds twice its page size in pixels, keeps its 420 page width, and is drawn out to its far corner -> sector 0 map is 960 wide 
+
+## SCOPE CHANGE 10-20 10:30 (coordinator): your 22 only
+The Claude lanes finished 49, 50 and 51 and were idle, so the 56 old reds (every v32.83 line not in the -new file) went to them as
+52-corpus-reds-a, 53-corpus-reds-b and 54-corpus-reds-c. Do not touch those. This job is now only "Your first 22" above: TASK DONE when
+each of the 22 is green on HEAD or explained in notes (21.66 and 20.95 are still open there).
