@@ -69,3 +69,4 @@
 2026-10-19 22:25 o-07-pad-lost 29s ok PARTIAL in=94398 out=1077 run=7
 2026-10-19 22:53 o-03-map-popups-wait 37s ok PARTIAL in=130233 out=1299 run=1
 2026-10-19 22:54 o-03-map-popups-wait 34s ok PARTIAL in=255223 out=2903 run=2
+2026-10-20 00:25 o-01-stash-pays-in-raid 90s ok PARTIAL in=296543 out=3503 run=6

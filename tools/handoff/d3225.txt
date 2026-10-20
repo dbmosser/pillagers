@@ -1,0 +1,5 @@
+## v32.25 - THE FEED HIDES BEHIND THE OPEN MAP
+
+Co-op hunt while he was away. The critic on screen 22 named toasts sitting on top of the open map. The bottom left feed is not drawn while the map is open and returns when it closes.
+
+MEASURED. Check 32.25 passes, and fails on v32.24.

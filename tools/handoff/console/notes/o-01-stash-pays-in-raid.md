@@ -75,3 +75,10 @@ Shipping and the new gameplay check are complete. Remaining: run/commit the fixt
 --- codex run 2026-10-19 11:23 ---
 2026-10-19 - continuation: no external verification results have changed since the last handoff. v31.83 is shipped. The real fixture still has old checks 28.94 and 26.21; the after folder still contains only screen 05. All remaining actions require the lane/coordinator, using verification-handoff.md, fixture-retarget.json and forge-camera-recipes.json already prepared here. No additional game patch or sandbox test is justified. Do not reship cw-cx-stashraid. Please execute the pending external steps before another automatic continuation.
 
+
+--- codex run 2026-10-20 00:25 ---
+2026-10-20 - fixed the lane-reported fixture retarget failures on v32.24. Checks 26.21 and 26.25 assumed g.cs already existed; the default demo raid can leave it undefined. Both replacements now save the original g.cs, create a separate complete score fixture before any score writes, and restore the original object during cleanup. This also avoids mutating an existing career score object. The game change cw-cx-stashraid remains shipped and must not ship again.
+
+Regenerated fixture-retarget.json from the current fixture with why, keys and run fields required by the lane. All four replacements are retained; only the two failing checks needed staging changes. validate-retarget.js confirms each anchor occurs once in both the workspace and real current fixtures, all replacements parse, the handoff is ASCII, and both score staging blocks work with missing and existing score state while preserving the original object for cleanup. No tracked game or fixture file was edited. Browser checks cannot run in this sandbox.
+
+Lane work remaining: apply and run the corrected retarget under its lock, then photograph and critic-check the existing forge-camera-recipes.json. No new game key or visible change was added this run. Previously recorded two-window verification remains outstanding unless already completed outside this task's supplied results.

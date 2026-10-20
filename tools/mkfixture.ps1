@@ -6101,6 +6101,31 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.25',what:'the bottom left feed is not drawn over the open map: with a line in the feed and the map open, no feed row is laid out',
+   run:function(){
+     if(typeof __frame!=='function') return 'SKIP: no frame helper';
+     var g=null, before=-1, during=-1, after=-1;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:['bandage','medkit','gun_rifle'],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player) return 'SKIP: no raid';
+       g.legendOn=0; g.mapFirst=false; g.mapOpen=false;
+       say('FEED MAP PROBE','info');
+       __frame(0.016); __frame(0.016);
+       before=FEEDBOX.rows.length;
+       if(!before) return 'control failed: the feed drew no row with the map shut';
+       g.mapOpen=true; __frame(0.016); __frame(0.016);
+       during=FEEDBOX.rows.length;
+       g.mapOpen=false; __frame(0.016); __frame(0.016);
+       after=FEEDBOX.rows.length;
+       if(during) return 'the feed drew '+during+' rows over the open map';
+       if(!after) return 'the feed did not come back after the map closed';
+       return null;
+     } finally {
+       try{ var g2=__state(); if(g2){ g2.mapOpen=false; } }catch(_e){}
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     } }},
   {v:'32.24',what:'the fire chip above the belt is not lime filled: the keycap behind the word fire is not the accent colour',
    run:function(){
      if(typeof __frame!=='function') return 'SKIP: no frame helper';

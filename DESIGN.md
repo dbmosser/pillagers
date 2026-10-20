@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.25 - THE FEED HIDES BEHIND THE OPEN MAP
+
+Co-op hunt while he was away. The critic on screen 22 named toasts sitting on top of the open map. The bottom left feed is not drawn while the map is open and returns when it closes.
+
+MEASURED. Check 32.25 passes, and fails on v32.24.
 ## v32.24 - THE FIRE CHIP IS GREY, NOT LIME
 
 Co-op hunt while he was away. The critic named a second lime fill on the fire chip above the belt, beside the lime selected slot. The belt caption keycaps are a quiet grey chip now.

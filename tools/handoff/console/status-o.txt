@@ -1,1 +1,1 @@
-10-20 00:19 gate waiting on another worker; o-01-stash-pays-in-raid kept (codex)
+10-20 00:29 waiting for RAM: 2 GB free, need 3 (o-01-stash-pays-in-raid)

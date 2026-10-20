@@ -185,10 +185,17 @@
  "19-raid-hud-drop-first-raid": {
   "score": 2,
   "pass": false,
-  "verdict": "The raid HUD is functional but cluttered: five or six competing text panels, a keybind cheat sheet that stays open, duplicated tooltips and tiny dense type leave no clear focal point and no consistent panel language.",
-  "pic": "tools/handoff/console/notes/shots/all/19-raid-hud-drop-first-raid-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:16"
+  "verdict": "The HUD has a sound layout, but it is crowded with at least seven competing blocks, nothing sets the hero number apart, the panel and type styles disagree, and the text is full of typos.",
+  "findings": [
+   "P0 top-right career column, run info panel, bot list, tips and toasts: Find out whether this is the font fallback or the lowercase transform. Use Barlow with a distinct dotted i. Raise the body text to 20px. Proof every string on screen.",
+   "P0 overall composition: Hide the controls list after about 10s or show it only on F1. Remove both explaining toasts. Cut the run info text to short chips. Show at most 3 contextual elements at once.",
+   "P1 top-right column: credits, xp, stash, backpack, minimap, run info: Use 8px gaps everywhere, including above and below the minimap. Give the minimap a 1px --ui-line-hi border and a 4px radius. Fix the black strip on the right side. Set the stat width to about 220px so labels and values read as pairs, and keep a 24px margin from the edge.",
+   "P1 bottom-right ammo card (scav pistol 12 / 24): Keep the 56px 800-weight '12' and make '/ 24' tx-2 at 20px. Drop the gun name to 20px f-cond 600, upright. Move the 'b / i backpack' hint to 16px tx-2 on the belt row. Remove the ghost silhouette, or draw it at 100% so it reads.",
+   "P1 top-left bot list, and the run info, controls and toast panels: Use one panel: --ui-panel at 90%, 1px --ui-line-hi border, 4px radius, 16px padding, a 16px f-cond 600 tx-2 header with a chevron on every collapsible. Use tx-1 for names and keep colour only for the player marker."
+  ],
+  "pic": "tools/handoff/console/notes/shots/c-02-r19/19-raid-hud-drop-first-raid-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-20T04:25"
  },
  "21-raid-hud-calm": {
   "score": 2,
@@ -206,19 +213,19 @@
   "when": "2026-10-20T04:16"
  },
  "22-raid-map-open": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "the camera change left this map overlay untouched, and the screen still reads as a crowded placeholder map with a toast bleeding outside the window.",
+  "verdict": "it reads as a proper centred card with an x, a quiet header and a clean contracts list, but the map labels collide with each other and with the geometry, and the 'running slowly' toast leaks onto the card and the screen edge.",
   "findings": [
-   "P0 bottom-left, 'codex entry · scav pistol · common' and 'contract item nearby' toast rows: clamp toast x-origin to card-left + 24px padding (style guide's panel padding), or move the toast to a layer that clips to the window card rect",
-   "P1 right edge cluster, 'strongbox'/'cache' icons (~1030-1060,353-470) next to 'extract b' and its own up-arrow extract icon (~1050,551): space icon anchors at least 48px apart (--sp-5) or move the strongbox box up/left so it has clear air from the extract-b cluster",
-   "P1 top strip, 'cache' box top-right corner (~1028,185-255): give the top-right cache box 16px internal padding between its two icons, and move 'foreman office · locked' label left by ~24px so it clears the box border",
-   "P1 whole map canvas: give locked/special rooms a distinct fill tint (e.g. --ui-raised for lootable rooms, a 1px --warn border on locked doors) so room type is visible without reading the label",
-   "P1 map pin icon set (cache dot-circle, peddler dot, strongbox ring-cluster, warning triangle, encampment diamond, extract arrow-circle): redraw all pins from one glyph family (same stroke width, same base shape e.g. circle badge) and vary only fill color by rarity/hazard per the token list"
+   "P0 bottom-left, outside the card at x 15-310, y 745-795: hide raid toasts while the map is open, or anchor them at x=48 outside the card. Show 'running slowly' once, in the header status area next to 'dawn · clear'.",
+   "P1 map labels (extract a/b/c, hot ground, packing floor, chill row, the forge, seal 0%): two label sizes only (16px names, 14px sub-lines). Give every label a 2px --ui-void outline or a 60% void plate. Raise the room names to --tx-2 or brighter. Nudge colliding labels at least 12px away from icons and from each other.",
+   "P1 map frame and hierarchy: remove the inner double border and use one 1px --ui-line-hi. Make the player marker 32px with a lime ring. Dim the 'hot ground' fill to 12% opacity. Narrow contracts to about 30% of the card.",
+   "P1 contracts panel, rows: drop the '0 of 8 done' counter or move it into the header. Make the bars 4px tall with a visible --ui-line-hi track. Show '$' in --tx-1. Group the rows into 4 visible plus a scroll, or reduce row height from 85px to 64px.",
+   "P2 header: align the baselines of title and subtitle. Put 'dawn · clear' at 16px --tx-2. Keep only the corner x and let the footer legend show 'm' as a small key hint, not a second 'close' action."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-04-camera-closer-after/22-raid-map-open-1080.jpg",
-  "task": "o-04-camera-closer",
-  "when": "2026-10-19T17:17"
+  "pic": "tools/handoff/console/notes/shots/c-02-r19/22-raid-map-open-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-20T04:25"
  },
  "23-raid-backpack-open": {
   "score": 2,
@@ -441,17 +448,17 @@
  "61-raid-wheel-open": {
   "score": 3,
   "pass": false,
-  "verdict": "The wheel is a strong focal point with a clear lime focus wedge, but the HUD around it is crowded and inconsistent in type, accent and panel style, and some of its text is too small or has too little contrast.",
+  "verdict": "The wheel itself is a strong, readable radial with a clear focus wedge. The HUD around it is a pile of mismatched type, colours and panel styles, and the wheel's own fills and outline break the single-accent rule.",
   "findings": [
-   "P1 wheel focus wedge: Fill the selected wedge with --ui-raised (#1e2225). Keep a 3px --acc edge on the outer arc only. Remove the olive fill and the green arc on the focused slice.",
-   "P1 wheel rim arcs and empty slots: Use one rim colour: --ui-line-hi at 2px, with the focused slice in --acc. Dim empty slots to 50 percent opacity but keep the label at --tx-2 (at least 4.5:1). Make the x0 badge --danger text on --ui-panel.",
-   "P1 HUD panels, top-right and left: Use one panel style: fill --ui-panel, 1px --ui-line-hi, 4px radius, 16px padding. Use --tx-1 for headers and --tx-2 for rows at 16px minimum. Cut run info to the two contract lines that matter and drop the rest. Use lime only for the focus or the one active objective.",
-   "P1 centre hub: Make the hub name 32px f-cond 700 in --tx-1, the sub-line 16px --tx-2, and drop the lime on it. Reduce the slot labels to 20px --tx-2 so the selection stands out. Give the arrow 8px clearance from the hub ring.",
-   "P2 weapon hotbar and prompt: Raise the slot numbers to 16px --tx-2. Use one focus border in --acc and give all other slots a --ui-line-hi border. Show rarity as a 3px bar at the bottom of the slot, not as a full border."
+   "P1 wheel focus wedge: Fill the focused slice with --ui-raised plus a 4px --acc outer edge and a 2px --acc inner edge. Or use a flat --acc at 15% alpha. Drop the olive tint, and move the green rim to the idle state only.",
+   "P1 wheel ring, green arcs: Remove it, or make it one uniform 2px --ui-line-hi ring. If it is a cooldown or stock gauge, draw it as a visible per-slice 3px bar under the label.",
+   "P1 wheel item labels: Set slice labels to 20px/600 in --tx-2 for idle slices and --tx-1 for the focused slice. Make count badges neutral --ui-raised chips with --tx-1 text at 16px, and lime only on the focused slice. Make the centre name 32px.",
+   "P1 depleted slices (decoy beacon, tripwire mine x0): Keep the dimmed labels at --tx-2 at 60% opacity (at least 4.5:1) and use a red 'x0' in --danger. Inset labels 12px from the slice edges.",
+   "P1 HUD consistency: credits/xp/stash/backpack, run info, bots list: One panel recipe: --ui-panel at 90%, 1px --ui-line-hi, 4px radius, 16px padding, titles in --tx-2 at 16px. Fix the wrapped line by trimming the copy, e.g. 'search 2 containers 0/2'. Dim or fade the HUD corners to about 40% while the wheel is open."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-30n-after/61-raid-wheel-open-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/c-02-r19/61-raid-wheel-open-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T02:16"
+  "when": "2026-10-20T04:26"
  },
  "58-coop-player2-window-title": {
   "score": 3,
@@ -486,17 +493,17 @@
  "37-raid-extracting-countdown": {
   "score": 2,
   "pass": false,
-  "verdict": "the closer camera pushed the top-right enemy nametag and its alert icon into an overlapping, partly clipped mess, and nothing about the raid hud's clutter or hierarchy was otherwise fixed.",
+  "verdict": "The extraction countdown is the main thing the player needs here, and it is buried: it appears as a tiny teal chip and a small 'extract b inbound 16s' line, while the screen is crowded with a controls cheat-sheet, a loot feed, a contracts panel and a full career column.",
   "findings": [
-   "P0 top-right corner, enemy nametag over afk_in_the_bushes: keep a fixed 4-6px vertical gap between the alert icon and the nametag regardless of camera distance, or anchor the icon to the sprite's screen position independent of zoom so it never overlaps the label",
-   "P1 same nametag, right edge of the play area: clamp world-space nametags to stay at least 24px inside the game viewport edge (viewport width minus hud-panel width), same margin rule as the --sp-2 16px token",
-   "P1 same corner, the enemy sprite itself: keep a minimum screen-space margin (one tile height) between any rendered actor and the top/side viewport edges, or ease the zoom back where an actor would cross that margin",
-   "P2 whole screen, both before and after: per the style guide's one-panel-fill rule, consolidate the left-side legend stack and the bot leaderboard into a single --ui-panel block instead of two stacked boxes with different fills",
-   "P2 loot tags near the minimap (induction coil / titanium cell / medkit): add the --sp-1 8px gap used elsewhere between world labels and fixed hud panels"
+   "P0 extraction countdown: top-centre chip 'extraction 1m' and mid-bottom 'extract b inbound 16s': Show one extract timer at 56px, weight 800, in --extract teal, centred about 120px below the top edge. Put the 'extract b inbound' label at 16px above it. Remove the second line and the '1m' chip. Make the hostiles warning 20px --danger directly under the timer.",
+   "P0 bottom-left controls cheat-sheet ('wasd move ... f1 full list'): Hide it during extraction or collapse it to a single 14px 'f1 controls' hint in the footer. If it stays, use --fs-label 16px, --tx-2 at 4.5:1 contrast, and a solid --ui-panel fill.",
+   "P1 right column: credits/xp/stash/backpack, minimap, run info, loot feed, weapon card: Align the whole column to one left edge and one 48px right margin, with 8px gaps. Drop xp and stash during a raid, or merge them into one 'backpack $4,310' line. Give the loot chips the same width as the panels.",
+   "P1 run info panel and left pillager list: Use a single panel header style: 16px f-cond 600 +.04em in --tx-2 with a 2px top tab in --acc. Set contract rows at 16px with 24px padding and a 28px row height. Show only the active contract and give each a progress count right-aligned.",
+   "P1 capital letters on screen: Take 'chill row cache' down to 20px --tx-1 with a 3px rarity bar, or show it only when the player is within 3 tiles. Remove the ghost 'running slowly' duplicate (it also appears in the left feed) or give it an 8px-offset single spawn."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-04-camera-closer-after/37-raid-extracting-countdown-1080.jpg",
-  "task": "o-04-camera-closer",
-  "when": "2026-10-19T17:19"
+  "pic": "tools/handoff/console/notes/shots/c-02-r19/37-raid-extracting-countdown-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-20T04:24"
  },
  "77-haul-reveal-done": {
   "score": 3,
@@ -874,19 +881,19 @@
   "when": "2026-10-18T22:51"
  },
  "36-raid-low-health": {
-  "score": 3,
+  "score": 2,
   "pass": false,
-  "verdict": "The edge vignette is a real improvement on the old full-screen purple wash, which hid the scene and read as a tint rather than a warning. The raid HUD around it is still crowded, low-contrast and inconsistent, and that holds this screen at a 3.",
+  "verdict": "The low-health state reads clearly from the red vignette and the hp bar, but the HUD around it is cluttered: panels differ in style, text sizes are mixed, there are several overlapping layers, and it looks like a debug overlay more than a shipped raid HUD.",
   "findings": [
-   "P1 hp bar bottom-left: Fill the bar --danger #e5482f at 18% width. Make the number 32px (--fs-title) and pulse the frame 1Hz between --danger and --ui-line-hi. Put the label at 16px --tx-2 above the number.",
-   "P1 edge vignette: Make the vignette radial and symmetric: transparent to 62% radius, then rgba(229,72,47,.45) at the corners. Draw it under the HUD layer so panels keep their own fill. Cap alpha at 0.45.",
-   "P1 top-right career column and run info: Shrink the career rows to 16px labels in --tx-2 with a 20px --tx-1 value, drop the per-row panel fills and use one 8px-padded panel. Give run info 16px rows and 24px padding. Fade both to 60% opacity while hp is below 25%.",
-   "P1 center-left controls cheat sheet: Hide it while hp is below 30% or in combat. Otherwise anchor it to the bottom-left at 14px --tx-2, and dismiss it after the first raid.",
-   "P2 toast stack, left side (codex entry and running slowly): Show each message once. Use one toast style: --ui-panel fill, a 3px left tab in --warn for warnings and --acc for info, 16px text, 8px gap."
+   "P0 top-right career stack (credits, xp, stash, backpack) plus minimap and run info: Cut the stack to two compact items (backpack value and one more) of about 24px height each, or move them into the tab or inventory view. Rename 'credits' to a '$' value. Drop the repeat of the 2,170 figure. Right-align to a 5% margin (96px) and use 8px gaps.",
+   "P0 centre-bottom controls cheat sheet (wasd / ctrl / lmb ... f1 full list): Show it only for the first run or on hold of f1. Remove it from the default raid view. If it stays, cut it to 4 essentials at 16px with tx-1 keys and tx-2 actions.",
+   "P1 hp bar and stamina bar (bottom-left): Make the hp bar 12px taller with one flat style. Use a danger fill (#e5482f) over a dark track, a 56px hero number, and a pulse below 25 hp. Make stamina a thin 6px bar, and drop the 'standing' tag or turn it into a small glyph. Align the three to the left 48px margin.",
+   "P1 panel styling across the screen (pillager bots list, run info, key list, ammo card, hotbar): Use one panel: --ui-panel at 90%, a 1px --ui-line-hi border, a 4px radius and 16px padding. Titles use tx-2 at 16px. Reserve the lime accent for focus and the main action. Turn the amber callouts into warn-coloured text or plain tx-1.",
+   "P1 scattered callouts (extract 152m, running slowly x2, codex entry, concealed · in cover): Show a status callout once, in one slot (a 24px strip under the timer). Use one pill style at 16px and 8px padding. Put toasts in a single stack at bottom-left. Fix the clipping of 'concealed · in cover' with a 48px right margin and remove the ghost text. Keep the timer at the 56px hero size with a dark backing."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-30p-after/36-raid-low-health-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/c-02-r19/36-raid-low-health-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T02:26"
+  "when": "2026-10-20T04:24"
  },
  "51-arcade-alert-reinforcements": {
   "score": 2,
@@ -906,16 +913,16 @@
  "78-raid-pause-box-full-kit": {
   "score": 3,
   "pass": false,
-  "verdict": "a clean, readable pause card with a clear lime primary action and a red abandon, but it is a narrow, generic stack of identical buttons with a stray text box, not the near-full-screen centred card the guide calls for, and the scrim leaves the HUD behind it as muddy noise.",
+  "verdict": "A clean, calm column menu with one lime primary and a quiet red abandon, so the hierarchy reads, but it is a small generic dialog that ignores the card rule and leaves the bottom of the panel and the type scale unresolved.",
   "findings": [
-   "P1 report a problem field: Group 'report a problem' and 'feedback' together as one row, or make it a 56px secondary button that opens a text box. If it stays an input, add a 1px --ui-line-hi border plus a label, raise the placeholder to --tx-2 (4.5:1 minimum), and centre it vertically.",
-   "P1 whole card (720-1200 x 238-842): If pause counts as a dialog, document it as an exception in the guide. Otherwise widen it, for example into a two-column layout with the run summary on one side (time, loot, objectives) and the buttons on the other.",
-   "P1 background scrim: Set the scrim to rgba(6,7,8,.80) flat and blur the backdrop by 6-8px, or hide the HUD while the pause card is open.",
-   "P2 button stack: Show focus as a 3px lime left bar plus a --ui-raised fill on the focused row. Keep lime fill only for the primary. Move feedback and what's new into a quieter row of two 16px text links, and add a key hint (esc, or the pad button) to resume.",
-   "P2 title row: Align the accent tab to x=760 or put it flush on the card's left edge. Shrink the X to 40px with a --ui-line-hi border and a --tx-2 glyph, and bring it to full --tx-1 only on focus."
+   "P1 whole card: Keep it a compact modal but make it deliberate: widen to 560px, sit it on the 8px grid, add the 3px lime left tab to the panel, and put a one-line run status in the header (time, $ in bag) so the pause shows something. Or leave it small and record it as the one allowed exception in the guide.",
+   "P1 button type sizes: Set all button text to 20px f-cond 600 (feedback and what's new at least 16px). Make the half-width buttons 56px tall like the full-width ones, not 48px.",
+   "P1 button group hierarchy: Merge feedback and report a problem into one 'report' control, or put feedback and what's new together as a quiet footer pair at 16px. Keep exactly two full-width buttons under resume: settings and one other.",
+   "P2 abandon run: Give it a 56px outline button with a 1px danger border (rgba of #e5482f at 60%) and danger text at 20px. Keep it 32px below the group. Lighten the red slightly to #ee5a40 for 4.5:1.",
+   "P2 vertical spacing: Use a 16px gap between all buttons, a 32px gap before abandon, and 24px bottom padding so the card ends 24px below abandon."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-30h-after/78-raid-pause-box-full-kit-1080.jpg",
-  "task": "b-30-ui-hud",
-  "when": "2026-10-18T22:56"
+  "pic": "tools/handoff/console/notes/shots/c-02-r19/78-raid-pause-box-full-kit-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-20T04:25"
  }
 }

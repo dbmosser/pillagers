@@ -1,0 +1,7 @@
+v32.25: the feed hides behind the open map
+
+With the map open the bottom left feed is hidden; shut the map and the lines are back.
+
+Check 32.25. Fails on v32.24.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

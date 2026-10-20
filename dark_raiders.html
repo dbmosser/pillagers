@@ -3023,7 +3023,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.24';
+var VER='32.25';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21836,6 +21836,7 @@ function feedDraw(){
   var F=G&&G.fd, R, rs, fL, pad, gs, oa, y, yt, x, w, i, n, ln, al, e, pr, j, tx, yb, tw0;
   FEEDBOX.on=0; FEEDBOX.rows=[];
   if(!G||G.sim||!G.player||G.over) return 0;
+  if(G.mapOpen) return 0;   // v28.xx (cw-feedmap), the critic on screen 22 (2026-10-19): toasts ("running slowly", codex entry) sat on top of the open map. The feed waits behind the map and is back when it closes.
   R=feedRect(); FEEDBOX.x=R.x; FEEDBOX.y=R.y; FEEDBOX.w=R.w; FEEDBOX.h=R.h; FEEDBOX.on=1;   // the zone is kept whether or not a line is up
   if(!F||!F.lines.length) return 0;
   rs=Math.max(1,hudRes()); fL=hudFS(TYPE.label); pad=Math.round(LH(7)*rs); gs=Math.round(R.fp*0.95); oa=ctx.globalAlpha;
@@ -50238,7 +50239,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.24: The fire chip above the belt is grey with light text; lime is only on the selected slot. Check 32.24 fails on v32.23',
+  now:'v32.25: With the map open the bottom left feed is hidden; shut the map and the lines are back. Check 32.25 fails on v32.24',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
