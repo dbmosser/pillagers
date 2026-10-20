@@ -1,0 +1,18 @@
+26.54: PASS
+26.59: PASS
+26.97: PASS
+27.00: PASS
+27.56: PASS
+27.75: THE RAID: the head sat -230 px from the top of the list; null: no section head
+27.79: ONE: the 4th round of a spammed Marksman Rifle has 1.69 times the first round spread, not 2 or more
+27.80: PASS
+27.83: PASS
+27.91: PASS
+28.06: PASS
+29.11: PASS
+29.14: PASS
+29.30: PASS
+29.31: PASS
+29.32: PASS
+29.39: PASS
+ALL DONE

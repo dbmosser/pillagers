@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.87 - TITLE TAGLINE USES THE SPACING TOKENS
+
+Co-op hunt while he was away. The title tagline margin was typed as raw pixels in the shared style block, which breaks the one-token rule. It now uses the same two steps as tokens. No change on screen.
+
+MEASURED. Check 32.87 passes, and fails on v32.86.
 ## v32.86 - AIR STRIKE CLEARS THE HELD ITEM
 
 Co-op hunt while he was away. The current corpus shows the air-strike plate overlapping the held-item panel at 1080p in both roles. Placement did not consider that panel.

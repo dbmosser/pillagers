@@ -1,1 +1,1 @@
-10-20 10:39 gate: shipping cw-cx-airhandclear (o-02-corpus-green, codex)
+10-20 10:56 retarget: waiting for another ship to finish with tools/mkfixture.ps1 (o-02-corpus-green)

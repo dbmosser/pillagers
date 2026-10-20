@@ -1,0 +1,3 @@
+27.75: null: no section head
+27.79: ONE: a Marksman Rifle paced at 1.3 s has 2.04 times the first round spread on its 4th, not 1.2 or less
+ALL DONE

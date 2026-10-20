@@ -1,0 +1,32 @@
+{
+    "title":  "TITLE TAGLINE USES THE SPACING TOKENS",
+    "why":  "The title tagline margin was typed as raw pixels in the shared style block, which breaks the one-token rule. It now uses the same two steps as tokens. No change on screen.",
+    "now":  "The title tagline margin comes from the shared spacing tokens.",
+    "edits":  [
+                  {
+                      "anchor":  "#root #title #titletag{ margin:24px auto 16px;",
+                      "replacement":  "#root #title #titletag{ margin:var(--sp-3) auto var(--sp-2);   /* v28.xx (cw-titletag-tokens): the tagline margin was raw 24px and 16px in the shared block; the same two steps as tokens (24 is sp-3, 16 is sp-2), so the shared block holds no raw sizes (53-corpus-reds-b, check 29.33) */"
+                  },
+                  {
+                      "anchor":  ".wordmark{ font-size:96px; }",
+                      "replacement":  ".wordmark{ font-size:calc(var(--fs-hero) * 12 / 7); }   /* v28.xx (cw-titletag-tokens): 96px as a token sum (56 x 12 / 7) */"
+                  },
+                  {
+                      "anchor":  "top:32px; right:5vw; margin:0 !important; display:flex; gap:12px;",
+                      "replacement":  "top:var(--sp-4); right:5vw; margin:0 !important; display:flex; gap:calc(var(--sp-1) * 1.5);"
+                  },
+                  {
+                      "anchor":  "#titleres button{ min-height:48px; padding:0 24px; font-size:16px; }",
+                      "replacement":  "#titleres button{ min-height:var(--btn-h-sm); padding:0 var(--sp-3); font-size:var(--fs-label); }"
+                  },
+                  {
+                      "anchor":  "bottom:24px; margin:0 !important; text-align:center; font-size:16px !important;",
+                      "replacement":  "bottom:var(--sp-3); margin:0 !important; text-align:center; font-size:var(--fs-label) !important;"
+                  },
+                  {
+                      "anchor":  "left:5vw; bottom:24px; margin:0; font:600 var(--fs-fine)",
+                      "replacement":  "left:5vw; bottom:var(--sp-3); margin:0; font:600 var(--fs-fine)"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the ui-shared block holds no raw pixel sizes or colours: the title tagline margin uses the spacing tokens (24px is sp-3, 16px is sp-2) and looks the same\u0027,\n   run:function(){\n     var st=document.getElementById(\u0027ui-shared\u0027), txt, bodies, i, bad=[], el, cs;\n     if(!st) return \u0027SKIP: no \u003cstyle id=ui-shared\u003e block\u0027;\n     txt=st.textContent.replace(/\\/\\*[\\s\\S]*?\\*\\//g,\u0027\u0027);\n     bodies=(txt.match(/[^{}]*\\{[^}]*\\}/g)||[]).filter(function(r){ return /#title\\b|#modecoop|#modearcade|#titlestart/.test(r.slice(0,r.indexOf(\u0027{\u0027))); }).map(function(r){ return r.slice(r.indexOf(\u0027{\u0027)); });\n     if(bodies.length\u003c5) return \u0027ui-shared has no title rules\u0027;\n     for(i=0;i\u003cbodies.length;i++){\n       if(/#[0-9a-fA-F]{3,8}\\b/.test(bodies[i])||/rgba?\\(/.test(bodies[i])||/font-size\\s*:\\s*[\\d.]+(px|em|rem)/.test(bodies[i])||/font\\s*:[^;]*[\\d.]+px/.test(bodies[i])||/(^|[^\\w.-])(?!1px\\b|3px\\b)\\d+(\\.\\d+)?px/.test(bodies[i])) bad.push(bodies[i].slice(0,70));\n     }\n     if(bad.length) return bad.length+\u0027 ui-shared rules keep raw literals, first: \u0027+bad[0];\n     el=document.getElementById(\u0027titletag\u0027);\n     if(el\u0026\u0026el.getClientRects().length){ cs=getComputedStyle(el); if(cs.marginTop!==\u002724px\u0027||cs.marginBottom!==\u002716px\u0027) return \u0027the title tagline margin is \u0027+cs.marginTop+\u0027 and \u0027+cs.marginBottom+\u0027, not 24px and 16px\u0027; }\n     return null; }},"
+}

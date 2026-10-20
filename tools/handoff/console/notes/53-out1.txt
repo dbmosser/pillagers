@@ -1,0 +1,20 @@
+26.54: ONE: the jump bar is sticky at top 0px, not sticky flush to the top; ONE: scrolled, the jump bar sits 2.7px below the top of the list, where row text shows over it; THREE: the KID MODE head is 16px
+26.59: a dmr pillager is "rush", not "mark"; a whisper pillager is "rush", not "mark"; a rusher and a marksman of one identity wear the same coat
+26.97: THREE: the codex lists 16 guns, not every one; FIVE: the raid scan missed a Marksman Rifle in the backpack
+27.00: FIVE: the glow changed only 0 pixels around the box
+27.56: the What is New card is a flat rectangle, not the HUD plate
+27.75: THE RAID: the head sat -230 px from the top of the list; null: no section head
+27.79: ONE: the first Marksman round measured 0.0000
+27.80: ONE: no reset flash came in 6.4 s after a Marksman round; ONE: 0 reset flashes for one round, not 1; TWO: 0 flashes after the spam ended, not 1; THREE: no ring was drawn at the cursor
+27.83: ONE: the V was not drawn as a keycap
+27.91: the player marker on the big map is not neon green (26 fills, none #39ff14)
+28.06: armed, the box shows confirmabandon, abandonbtn, pausex and not just YES and NO
+28.20: names cut on the plates at the default menu size: PISTOL 50>35, RIFLE 40>35, CARBINE 61>35, SHOTGUN 66>35, SNIPER 51>35, ENERGY 56>35, ROCKET 56>35, STIM 34>33, MEDKIT 53>33, SMOKE 48>33, BANDAGE 65>33, FRAG 37>33, DECOY 46>33, ARMOUR 58>33, TRIPWIRE 69>33
+29.11: MACHINE ALERT is drawn as machine alert
+29.14: outside #root the text, tooltip and placeholder read: press any key|drag onto another key|type your note
+29.30: the title key line does not say F1 controls
+29.31: the backpack cue was not drawn
+29.32: CREATE A NEW SAVE reads "create a new save"
+29.33: ui-shared still has raw literals: { margin:24px auto 16px; text-align:center; font:600 var(--fs-body)/1.
+29.39: section chip is not a text tab with a 3px underline: bottom 0px top 0px style none
+ALL DONE

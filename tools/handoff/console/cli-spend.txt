@@ -466,3 +466,6 @@
 2026-10-20 1.0570061000000002 54-corpus-reds-c
 2026-10-20 0.0000 o-02-corpus-green
 2026-10-20 0.0000 o-02-corpus-green
+2026-10-20 2.3018329999999994 52-corpus-reds-a
+2026-10-20 0.1741 critic-o-02-corpus-green
+2026-10-20 0.0000 o-02-corpus-green

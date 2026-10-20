@@ -1,0 +1,7 @@
+v32.87: title tagline uses the spacing tokens
+
+The title tagline margin comes from the shared spacing tokens.
+
+Check 32.87. Fails on v32.86.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
