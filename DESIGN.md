@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.27 - MAP NOTICES WAIT THEIR TURN
+
+Co-op hunt while he was away. Codex entries, weather turns and corner notices covered the sector map. The locked-room caches lost or stacked labels. His 3.13 a requires amber for player 1 and cyan for player 2.
+
+MEASURED. Check 32.27 passes, and fails on v32.26.
 ## v32.26 - PAUSE BOX BUTTONS ALL 56PX
 
 Co-op hunt while he was away. Critic on the pause box (3): four button heights make the column ragged and the small pair reads small. All buttons go to 56px with the 20px label.

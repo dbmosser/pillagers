@@ -1,0 +1,7 @@
+v32.27: map notices wait their turn
+
+Notices keep their time and wait in order until the map closes. Each cache and strongbox has a separate label attached to its icon. Map seats match their rings.
+
+Check 32.27. Fails on v32.26.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

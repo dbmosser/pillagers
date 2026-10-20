@@ -1,0 +1,12 @@
+{
+    "title":  "PAUSE REPORT BOX 56PX",
+    "why":  "Critic on the pause box (3): the report a problem box is 48px while every other button is 56px. It goes to 56px.",
+    "now":  "The pause report box is 56px high.",
+    "edits":  [
+                  {
+                      "anchor":  "#root #pausebox #pausefb{ height:var(--btn-h-sm); padding-top:calc((var(--btn-h-sm) - 28px) / 2); padding-bottom:0; background:transparent; border-color:var(--ui-line); }",
+                      "replacement":  "#root #pausebox #pausefb{ height:var(--btn-h-sm); padding-top:calc((var(--btn-h-sm) - 28px) / 2); padding-bottom:0; background:transparent; border-color:var(--ui-line); }\n/* v28.xx (cw-pausefb56) critic on Pause box 25 (3, P1): \"report a problem is about 48px while the rest are 56px, the stack rhythm is broken\". Now the report box is 56px like every other pause button. */\n#root #pausebox #pausefb{ height:var(--btn-h); padding-top:calc((var(--btn-h) - 28px) / 2); }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the pause report box is 56px like the other pause buttons\u0027,\n   run:function(){\n     var css=\u0027\u0027; for(var i=0;i\u003cdocument.styleSheets.length;i++){ try{ var rs=document.styleSheets[i].cssRules; for(var j=0;j\u003crs.length;j++){ css+=rs[j].cssText; } }catch(e){} }\n     if(!/#pausefb\\s*\\{[^}]*padding-top: calc\\(\\(var\\(--btn-h\\) - 28px\\) \\/ 2\\)/.test(css)) return \u0027the report box is not 56px high\u0027;\n     return null; }},"
+}

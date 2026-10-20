@@ -238,17 +238,17 @@
  "25-raid-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, calm pause card with one clear lime primary and a correct X and title, but the controls shrink through three different heights and the sub-tier buttons read as an afterthought.",
+  "verdict": "The pause card is clean and calm, with one lime action and a red abandon. It is small on a 1080 screen and the button stack is uneven, so it passes as polished but not as AAA.",
   "findings": [
-   "P1 report a problem button vs settings button: Make settings and report a problem the same height (56px), or give report a problem the same 48px as feedback and what's new so there are exactly two tiers: 56 for primary and settings, 48 for the rest. Keep the gap at 16px.",
-   "P1 feedback / what's new row: Set the label to 16px minimum (f-cond 600, +.04em). Use 20px if the height stays at 48px. Keep both buttons at 192px wide.",
-   "P1 abandon run: Give it a 48px-high ghost button with a 1px danger border (or at least a 48px focus box) and 24px spacing above it. Keep the red text and add a divider line above it.",
-   "P2 Card layout and padding: Set the padding to 24px all round (fs-sp-3) and use the same 24px before abandon run. Trim the card's bottom padding so the bottom margin equals the top margin.",
-   "P2 Card header: Make the X 40x40 with a 1px --ui-line-hi border on hover or focus. Brighten the accent tab to full --acc at 3px high. Keep the title at 32px/700."
+   "P1 button stack: settings, report a problem, feedback, what's new: Make every button 56px with 20px f-cond 600 text, and use a uniform 16px gap. Make report a problem 56px, or merge it into a single row with feedback.",
+   "P1 card size and scale: Keep the card narrow as a menu column (a pause box is a reasonable exception), but make the buttons 56px with 20px text. Add a left-aligned column layout or a 560px width so it reads as a deliberate menu and not a small dialog.",
+   "P1 hierarchy: title vs resume run: Drop the title weight to 700 at 32px in tx-1, or make it tx-2. Leave the lime resume run as the only loud element.",
+   "P2 abandon run: Set it at 20px, add a 1px danger-colour outline at 56px height, and cut the gap to 24px. On pad focus, fill with a danger tint.",
+   "P2 empty bottom padding: Set the padding to 24px on all sides, use 16px between buttons and 24px before abandon run, so the card shrinks to about 460px."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-31u-after/25-raid-pause-box-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/c-31w-after/25-raid-pause-box-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T03:23"
+  "when": "2026-10-20T04:48"
  },
  "26-settings-from-pause-top": {
   "score": 3,

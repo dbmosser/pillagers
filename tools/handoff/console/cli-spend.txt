@@ -217,3 +217,4 @@
 2026-10-20 0.1845 critic-manual
 2026-10-20 0.1756 critic-manual
 2026-10-20 0.17719169999999998 17-party-easy-mode
+2026-10-20 0.1575 critic-manual
