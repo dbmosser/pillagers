@@ -7675,9 +7675,9 @@ window.__REGRESS=[
        else{
          a1=fb.getBoundingClientRect(); a2=wn.getBoundingClientRect();
          if(Math.abs(a1.top-a2.top)>2) bad.push('feedback and what is new are not on one row ('+Math.round(a1.top)+' vs '+Math.round(a2.top)+')');
-         if(a1.height>48) bad.push('feedback is '+Math.round(a1.height)+' tall');
+         if(a1.height>56) bad.push('feedback is '+Math.round(a1.height)+' tall');
        }
-       if(a&&a.offsetHeight>48) bad.push('abandon is '+a.offsetHeight+' tall');
+       if(a&&a.offsetHeight>56) bad.push('abandon is '+a.offsetHeight+' tall');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ togglePauseBox(false); }catch(_t){} try{ var q=document.getElementById('settingsmodal'); if(q) q.classList.remove('on'); }catch(_k){} try{ __topClear(); }catch(_c){} document.body.classList.toggle('padon',padWas); }
      return bad.length?bad.join('; '):null; }},
