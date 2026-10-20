@@ -6101,6 +6101,13 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.09',what:'the pad picture marks each control with a dot and keeps lime off the key names (critic: lime was decoration on 20 labels)',
+   run:function(){
+     if(typeof padPictureHtml!=='function') return 'SKIP: no pad picture';
+     var h=padPictureHtml();
+     if(h.indexOf('<tspan fill="var(--acc')>=0) return 'key names are still lime';
+     if((h.match(/<circle cx="\d+" cy="\d+" r="5"/g)||[]).length<16) return 'the leaders have no dots';
+     return null; }},
   {v:'32.08',what:'pause box small buttons and the abandon link are at least 48px high',
    run:function(){
      var css=''; for(var i=0;i<document.styleSheets.length;i++){ try{ var rs=document.styleSheets[i].cssRules; for(var j=0;j<rs.length;j++){ css+=rs[j].cssText; } }catch(e){} }

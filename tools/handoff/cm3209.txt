@@ -1,0 +1,7 @@
+v32.09: pad picture leaders are cleaner
+
+The pad picture has tidier leader lines with dots and calmer key names.
+
+Check 32.09. Fails on v32.08.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

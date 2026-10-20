@@ -1,1 +1,1 @@
-10-19 23:05 b-30-ui-hud: failed, $0.19659970000000002
+10-19 23:15 waiting for RAM: 3 GB free, a helper starts at 4; b-31-ui-undercroft kept

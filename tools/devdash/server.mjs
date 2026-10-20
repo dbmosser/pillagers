@@ -148,3 +148,36 @@ http.createServer((q, s) => {
   }
   s.writeHead(200, { 'content-type': 'text/html; charset=utf-8' }); s.end(PAGE());
 }).listen(8820, '127.0.0.1');
+
+// 10-19 night, his words: "i cant see what all the helpers ... are doing in real time unless i ask you, thats why i wanted the dashboard to
+// update in real time". This server is localhost-only inside the VM and the main PC cannot reach it, so every 30 s a self-contained copy (the
+// page above with its data inside, no server needed) goes to the main PC's bridge share folder as pillagers-dashboard.html, through the host
+// bridge's existing share-put job (tools/bridge/hostctl.mjs). The copy reloads itself every 30 s and says so when the VM stops sending.
+// Never a key in the page: data() reads only status files, logs and git.
+const SNAP_NAME = 'pillagers-dashboard.html', SNAP_TMP = os.tmpdir() + '/pillagers-dashboard-snap.html', SNAP_LOG = os.tmpdir() + '/pillagers-dashboard-push.log';
+const SNAP_TAIL = "tick();(function(){var age=Math.round((Date.now()-window.__SNAP.snapAt)/1000);" +
+  "if(age>120)$('upd').innerHTML='<span class=\"warn\">No news from the VM for '+Math.round(age/60)+' min (it may be restarting); this page keeps trying</span>';" +
+  "try{var y=sessionStorage.getItem('dashY');if(y)scrollTo(0,+y);}catch(e){}" +
+  "setTimeout(function(){try{sessionStorage.setItem('dashY',String(scrollY));}catch(e){}location.reload();},30000);})();";
+let snapBusy = false, snapErrAt = 0;
+function snapshot() {
+  const d = data(); d.snapAt = Date.now();
+  return PAGE()
+    .replace("d=await (await fetch('/api',{cache:'no-store'})).json();", 'd=window.__SNAP;')
+    .replace('tick(); setInterval(tick,5000);', SNAP_TAIL)
+    .replace("(every 5 seconds)", "(sent from the VM every 30 seconds)")
+    .replace('href="/report"', 'href="#"')
+    .replace('<script>', '<script>window.__SNAP=' + JSON.stringify(d).replace(/</g, '\u003c') + ';</script><script>');
+}
+function pushSnap() {
+  if (snapBusy) return; snapBusy = true;
+  try { writeFileSync(SNAP_TMP, snapshot()); } catch (e) { snapBusy = false; return; }
+  execFile(process.execPath, [R + '/tools/bridge/hostctl.mjs', 'share-put', 'name=' + SNAP_NAME, '--file', SNAP_TMP], { timeout: 20000, windowsHide: true }, (err, out, errOut) => {
+    snapBusy = false;
+    if ((err || !/"ok":\s*true/.test(String(out))) && Date.now() - snapErrAt > 600000) {
+      snapErrAt = Date.now();
+      try { appendFileSync(SNAP_LOG, new Date().toISOString() + ' push failed: ' + String((err && err.message) || out || errOut).replace(/\s+/g, ' ').slice(0, 300) + '\n'); } catch {}
+    }
+  });
+}
+setTimeout(pushSnap, 3000); setInterval(pushSnap, 30000);

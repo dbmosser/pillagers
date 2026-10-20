@@ -3006,7 +3006,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.08';
+var VER='32.09';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19155,7 +19155,7 @@ function padPictureLabel(button){
 }
 function padPictureHtml(){
   var m=padMapArr(), swap=P.padSticks==='swap', h, i, b, label;
-  var left=[[6,64,342,222],[4,120,334,254],[10,232,354,332],[8,288,440,302],[12,400,408,385],[14,456,386,408],[13,512,408,431],[15,568,430,408]];
+  var left=[[6,64,342,222],[4,120,334,254],[8,232,440,302],[10,288,354,332],[12,400,408,385],[14,456,386,408],[15,512,430,408],[13,568,408,431]];   // v28.xx (cw-padpic) critic on Pad buttons 74 (2): "leader lines cross each other". The left labels now run in the same top to bottom order as their controls, so those leaders no longer cross.
   var right=[[7,64,618,222],[5,120,626,254],[3,176,624,310],[2,232,600,334],[1,288,648,334],[0,344,624,358],[9,400,520,302],[11,568,526,422]];
   h='<figure class="padpicture"><svg viewBox="0 0 960 640" role="img" aria-label="controller layout">'+
     '<path d="M332 238 Q308 228 288 290 L244 464 Q236 516 280 524 Q300 528 324 494 L376 444 L584 444 L636 494 Q660 528 680 524 Q724 516 716 464 L672 290 Q652 228 628 238 L570 216 L390 216 Z" fill="var(--ui-panel,#16191b)" stroke="var(--ui-line-hi,#4a5257)" stroke-width="4"/>'+
@@ -19168,8 +19168,9 @@ function padPictureHtml(){
   function tag(button,y,x,py,isRight){
     var tx=isRight?944:16, edge=isRight?714:246, end=isRight?728:232;
     return '<path d="M'+x+' '+py+' L'+edge+' '+(y-8)+' H'+end+'" fill="none" stroke="var(--ui-line-hi,#4a5257)" stroke-width="2"/>'+
+      '<circle cx="'+x+'" cy="'+py+'" r="5" fill="var(--ui-line-hi,#4a5257)"/>'+
       '<text data-pad-button="'+button+'" x="'+tx+'" y="'+y+'" text-anchor="'+(isRight?'end':'start')+'">'+
-      '<tspan fill="var(--acc,#e6ff3d)">'+PAD_BTN[button].toLowerCase()+'</tspan><tspan dx="10">'+padPictureLabel(button)+'</tspan></text>';
+      '<tspan fill="var(--tx-2,#aaa498)">'+PAD_BTN[button].toLowerCase()+'</tspan><tspan dx="10">'+padPictureLabel(button)+'</tspan></text>';
   }
   h+='<g font-family="Barlow Condensed,Bahnschrift,Arial,sans-serif" font-size="26" font-weight="600" fill="var(--tx-1,#efe9dc)">';
   for(i=0;i<left.length;i++){ b=left[i]; h+=tag(b[0],b[1],b[2],b[3],false); }
@@ -50205,7 +50206,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.08: The pause box buttons are 48px high and the abandon link has room. Check 32.08 fails on v32.07',
+  now:'v32.09: The pad picture has tidier leader lines with dots and calmer key names. Check 32.09 fails on v32.08',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

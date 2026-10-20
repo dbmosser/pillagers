@@ -1,0 +1,5 @@
+## v32.09 - PAD PICTURE LEADERS ARE CLEANER
+
+Co-op hunt while he was away. Critic on the pad buttons window (2): leader lines cross and every key name is lime. Left labels now follow the control order, each leader ends in a dot, key names are grey.
+
+MEASURED. Check 32.09 passes, and fails on v32.08.

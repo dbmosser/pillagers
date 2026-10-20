@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.09 - PAD PICTURE LEADERS ARE CLEANER
+
+Co-op hunt while he was away. Critic on the pad buttons window (2): leader lines cross and every key name is lime. Left labels now follow the control order, each leader ends in a dot, key names are grey.
+
+MEASURED. Check 32.09 passes, and fails on v32.08.
 ## v32.08 - PAUSE BOX BUTTONS SHARE ONE LOOK
 
 Co-op hunt while he was away. Critic on the pause boxes (3): too many button styles and a small abandon link. The small pair and the abandon link grow to 48px.

@@ -1,1 +1,24 @@
 
+NONE
+This is an HTML snippet for a web page, likely part of a game or application. It includes several elements and styles that are used to create the user interface (UI) components such as buttons, text areas, modals, and other interactive elements.
+
+Here's a breakdown of some key parts:
+
+1. **CSS Styles**:
+   - The `<style>` tag contains CSS rules for various elements on the page.
+   - These styles define things like font sizes, colors, button padding, grid layouts, and more to ensure consistent styling across different sections of the UI.
+
+2. **Canvas Elements**:
+   - Two canvas elements (`<canvas id="cv"></canvas>` and `<canvas id="hcv"></canvas>`) are used for rendering graphics or animations within the web page.
+   - These might be used for game visuals, charts, or other graphical content.
+
+3. **Pause Box**:
+   - A pause box is defined with an ID of `pausebox`, which contains various buttons and text elements related to pausing a game session.
+   - This includes options like resuming the run, accessing settings, viewing the leaderboard, providing feedback, and abandoning the run.
+
+4. **Feedback Modal**:
+   - A modal window for feedback is defined with an ID of `fbmodal`.
+   - It contains a text area for users to type their feedback, an image element (`<img id="fbshot">`) that likely captures a screenshot of the current screen, and
+NONE
+NONE
+NONE
