@@ -23,3 +23,5 @@ COORDINATOR 10-20 13:54: the full run on v32.90 (tools/handoff/corpus-fails-v32.
 v20.01, v20.11, v28.12, v28.13, v28.16. They likely share this cause (the head scale reaching the body). Run each alone before and after
 your fix; each ends FIXED SINCE, fixed by your ship, or judged as job 58 judges (REAL / STALE retarget that keeps the intent / HARNESS),
 one line each in your notes. Never weaken a check to make it pass.
+
+COORDINATOR 10-20 19:59: taken by the coordinator (helpers are held by RAM); it ships from here.
