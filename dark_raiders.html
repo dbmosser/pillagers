@@ -3003,7 +3003,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.05';
+var VER='32.06';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -41164,8 +41164,11 @@ function drawHUD(){
     // v9.69, HIS NOTE: "red flashing for low health should slow down 2x when not
     // in combat". It ran at one rate forever, a cycle every 1.05 seconds, as
     // urgent standing alone in a corridor as with three machines on him.
-    ctx.fillStyle='rgba(200,30,20,'+(.10+.09*Math.sin(G.t*hpFlashRate()))+')';
-    ctx.fillRect(0,0,W,H);
+    // v32.xx (cw-lowhpedge): the critic on the low health shot (screen 36, P0): a screen-edge vignette. The flat red wash covered the whole picture, so the middle
+    // of the fight went red too; it is now clear in the middle and red at the edges, same pulse, same rate.
+    var _lv=ctx.createRadialGradient(W/2,H/2,H*.38,W/2,H/2,Math.max(W,H)*.62), _la=.30+.16*Math.sin(G.t*hpFlashRate());
+    _lv.addColorStop(0,'rgba(200,30,20,0)'); _lv.addColorStop(1,'rgba(200,30,20,'+_la.toFixed(3)+')');
+    ctx.fillStyle=_lv; ctx.fillRect(0,0,W,H);
   }
   if(p.hitFlash>0){ ctx.fillStyle='rgba(255,40,30,'+(p.hitFlash*.5)+')'; ctx.fillRect(0,0,W,H); }
   // SPEC 9.4: looking down glass should LOOK like it. A vignette that closes in
@@ -50199,7 +50202,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.05: The two slow-frame toasts show only their headline. Check 32.05 fails on v32.04',
+  now:'v32.06: Under 32 health the screen edges pulse red and the middle stays clear. Check 32.06 fails on v32.05',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

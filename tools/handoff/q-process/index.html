@@ -1,0 +1,275 @@
+<title>Pillagers Process Questions</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600&display=swap">
+<style>
+/* Layout: the same review bench as the menu survey. A sticky bar carries progress, a "not answered" filter and the groups;
+   each question is one row: the question big, what it is about in grey, then its choices as a stacked list of tap targets. */
+:root{
+  --bg:#eceeef; --panel:#f8f9f9; --line:#d3d8db; --fg:#15191c; --muted:#5a6268; --accent:#1d6a8f;
+  --accent-soft:rgba(29,106,143,.12); --ok:#2f7a4b; --warn-bg:#fbf3dc; --warn-line:#e2c873; --warn-fg:#5b4a12;
+  --f-display:"Barlow Condensed","Arial Narrow","Segoe UI",system-ui,sans-serif;
+  --f-body:"Barlow","Segoe UI",system-ui,-apple-system,sans-serif;
+  --r:6px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#111416; --panel:#181c1f; --line:#2a3034; --fg:#e8e6e1; --muted:#979a98; --accent:#7cc0e0;
+  --accent-soft:rgba(124,192,224,.14); --ok:#7fc79a; --warn-bg:#2a2414; --warn-line:#6b5a24; --warn-fg:#e9d9a4; color-scheme:dark; } }
+:root[data-theme="dark"]{
+  --bg:#111416; --panel:#181c1f; --line:#2a3034; --fg:#e8e6e1; --muted:#979a98; --accent:#7cc0e0;
+  --accent-soft:rgba(124,192,224,.14); --ok:#7fc79a; --warn-bg:#2a2414; --warn-line:#6b5a24; --warn-fg:#e9d9a4; color-scheme:dark; }
+body{ background:var(--bg); color:var(--fg); font:400 17px/1.5 var(--f-body); }
+*{ box-sizing:border-box; }
+.wrap{ max-width:1040px; margin:0 auto; padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); }
+h1,h2,h3{ font-family:var(--f-display); text-wrap:balance; margin:0; }
+button{ font:inherit; color:inherit; }
+a{ color:var(--accent); }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+header.top{ padding-block:40px 20px; }
+header.top h1{ font-size:clamp(34px, 5vw, 52px); font-weight:800; line-height:1.02; }
+header.top .lede{ max-width:68ch; margin:12px 0 0; color:var(--muted); }
+header.top .lede b{ color:var(--fg); font-weight:600; }
+.note{ margin:14px 0 0; padding:10px 14px; border-radius:var(--r); border:1px solid var(--line); background:var(--panel); color:var(--muted); font-size:15px; max-width:80ch; }
+
+.bar{ position:sticky; top:env(safe-area-inset-top, 0px); z-index:20; background:color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter:blur(8px); border-bottom:1px solid var(--line); }
+.bar .wrap{ display:flex; flex-wrap:wrap; align-items:center; gap:8px 16px; padding-block:10px; }
+.prog{ display:flex; align-items:center; gap:10px; font-variant-numeric:tabular-nums; font-weight:600; white-space:nowrap; }
+.meter{ width:120px; height:6px; border-radius:3px; background:var(--line); overflow:hidden; }
+.meter i{ display:block; height:100%; width:0; background:var(--accent); transition:width .3s; }
+.filt{ display:inline-flex; border:1px solid var(--line); border-radius:999px; overflow:hidden; background:var(--panel); }
+.filt button{ border:0; background:transparent; padding:6px 12px; font-size:14px; font-weight:600; cursor:pointer; color:var(--muted); }
+.filt button[aria-pressed="true"]{ background:var(--accent); color:var(--panel); }
+.save{ margin-left:auto; font-size:14px; color:var(--muted); }
+.groups{ display:flex; gap:6px; width:100%; overflow-x:auto; scrollbar-width:thin; padding-bottom:2px; }
+.groups a{ flex:none; text-decoration:none; color:var(--fg); font:600 14px/1 var(--f-body); padding:7px 10px; border:1px solid var(--line); border-radius:999px; background:var(--panel); white-space:nowrap; }
+.groups a b{ font:700 13px/1 var(--f-display); color:var(--muted); letter-spacing:.06em; margin-right:5px; }
+.groups a span{ color:var(--muted); font-variant-numeric:tabular-nums; margin-left:5px; }
+.groups a.done span{ color:var(--ok); }
+
+section.round{ padding-top:36px; }
+section.round > h2{ font-size:clamp(30px, 4vw, 40px); font-weight:800; }
+section.round > p{ margin:6px 0 0; color:var(--muted); max-width:70ch; }
+section.group{ padding-top:24px; }
+section.group > h3{ font-size:22px; font-weight:700; letter-spacing:.01em; color:var(--muted); padding-bottom:10px; border-bottom:1px solid var(--line); }
+section.group[hidden], article.q[hidden]{ display:none; }
+
+article.q{ padding-block:26px; border-bottom:1px solid var(--line); scroll-margin-top:110px; display:grid; grid-template-columns:64px minmax(0,1fr); gap:0 14px; }
+article.q.flash{ animation:flash 1.4s ease-out; }
+@keyframes flash{ 0%{ background:var(--accent-soft); } 100%{ background:transparent; } }
+.qid{ font:700 17px/1.6 var(--f-display); color:var(--muted); letter-spacing:.04em; font-variant-numeric:tabular-nums; }
+.qbody{ min-width:0; display:flex; flex-direction:column; gap:8px; }
+.qbody h4{ font:700 clamp(23px, 2.6vw, 28px)/1.15 var(--f-display); margin:0; text-wrap:balance; }
+.ctx{ margin:0; color:var(--muted); max-width:74ch; }
+.fix{ margin:2px 0 0; padding:10px 14px; border-radius:var(--r); border:1px solid var(--warn-line); background:var(--warn-bg); color:var(--warn-fg); font-size:15.5px; max-width:78ch; }
+.fix b{ font-weight:700; }
+.fix a{ color:inherit; font-weight:600; }
+.opts{ display:flex; flex-direction:column; gap:8px; margin-top:6px; }
+.opt{ display:grid; grid-template-columns:36px minmax(0,1fr) auto; align-items:start; gap:12px; text-align:left; padding:11px 14px; border-radius:var(--r); border:1px solid var(--line); background:var(--panel); cursor:pointer; transition:border-color .15s, box-shadow .15s; }
+.opt:hover{ border-color:color-mix(in srgb, var(--accent) 50%, var(--line)); }
+.opt .k{ width:30px; height:30px; border-radius:50%; border:2px solid var(--muted); display:grid; place-items:center; font:800 18px/1 var(--f-display); color:var(--muted); text-transform:lowercase; }
+.opt .t{ padding-top:3px; }
+.opt .mine{ font-size:12.5px; font-weight:600; padding:3px 8px; border-radius:4px; background:var(--accent-soft); color:var(--accent); white-space:nowrap; margin-top:3px; }
+.opt[aria-checked="true"]{ border-color:var(--accent); box-shadow:0 0 0 2px var(--accent); }
+.opt[aria-checked="true"] .k{ background:var(--accent); border-color:var(--accent); color:var(--panel); }
+.opt.none .t{ color:var(--muted); font-weight:600; }
+.opt.none[aria-checked="true"] .t{ color:var(--fg); }
+.why{ margin:4px 0 0; font-size:15px; color:var(--muted); max-width:78ch; }
+.why b{ color:var(--fg); }
+textarea{ width:100%; min-height:52px; resize:vertical; font:400 16px/1.45 var(--f-body); color:var(--fg); background:var(--panel); border:1px solid var(--line); border-radius:var(--r); padding:10px 12px; }
+textarea::placeholder{ color:var(--muted); }
+.state{ font-size:14px; color:var(--muted); }
+.state.answered{ color:var(--ok); font-weight:600; }
+
+.empty{ padding:40px 0; color:var(--muted); }
+footer{ padding-block:36px 60px; display:flex; flex-wrap:wrap; gap:14px; align-items:center; color:var(--muted); font-size:15px; }
+.btn{ font-weight:600; padding:10px 16px; border-radius:var(--r); border:1px solid var(--accent); color:var(--accent); background:transparent; cursor:pointer; }
+.btn:hover{ background:var(--accent-soft); }
+.copied{ color:var(--ok); }
+@media (max-width:640px){
+  article.q{ grid-template-columns:1fr; }
+  .qid{ line-height:1.2; margin-bottom:4px; }
+  .opt{ grid-template-columns:32px minmax(0,1fr); }
+  .opt .mine{ grid-column:2; justify-self:start; margin-top:0; }
+  .meter{ width:64px; }
+  .save{ font-size:13px; }
+}
+@media (prefers-reduced-motion: reduce){ *{ transition:none !important; animation:none !important; } }
+</style>
+
+<header class="top"><div class="wrap">
+  <h1>100 questions about how we work</h1>
+  <p class="lede">100 questions in 10 groups of 10. <b>Click a letter to answer, and click it again to undo.</b> Every pick saves by itself, and I read them from here. Answer in any order and in parts, on the PC or your phone. Skip any you like: for anything you skip I go with my pick. The box under each one takes your own words.</p>
+  <p class="note" id="offline" hidden>Your answers are saved in this browser only, because the shared store is not available in this view. When you are done, click "Copy my answers" at the bottom and paste them to me in chat.</p>
+</div></header>
+
+<nav class="bar" aria-label="Progress and groups"><div class="wrap">
+  <div class="prog"><span id="pcount">0 answered</span><span class="meter"><i id="pbar"></i></span></div>
+  <div class="filt" role="group" aria-label="Which questions to show"><button type="button" id="fAll" aria-pressed="true">All</button><button type="button" id="fOpen" aria-pressed="false">Not answered yet</button></div>
+  <span class="save" id="savestate">Loading your saved answers</span>
+  <div class="groups" id="groups"></div>
+</div></nav>
+
+<main class="wrap" id="main"></main>
+<p class="wrap empty" id="allDone" hidden>Every question here has an answer. Switch back to "All" to see them.</p>
+
+<footer class="wrap">
+  <button class="btn" id="copy" type="button">Copy my answers</button>
+  <span id="copymsg">Copies every pick and comment as plain text, ready to paste into chat.</span>
+</footer>
+<textarea id="copybuf" aria-hidden="true" tabindex="-1" style="position:fixed;left:-9999px;top:0;width:10px;height:10px"></textarea>
+
+<script type="application/json" id="data">{"rounds":[{"key":"p","short":"P","title":"How we work","intro":"Asked on the night of 10/19, after the move into the VM, because you asked for questions that would make the work faster or better. Nothing here repeats an answer you already gave.","groups":[{"heading":"How you hear from me","questions":[{"id":"p-1","label":"1","about":"","question":"When you sit down after time away, what should my first message give you?","options":[{"key":"a","text":"Three lines: what shipped, what broke, what needs you"},{"key":"b","text":"A full report, area by area"},{"key":"c","text":"Only what needs you"}],"pick":"a","why":"fastest to read; details on request.","fix":""},{"id":"p-2","label":"2","about":"On a phone I keep lines shorter and put links where they open on the phone.","question":"Where do you mostly read my messages?","options":[{"key":"a","text":"At the PC"},{"key":"b","text":"On my phone"},{"key":"c","text":"Both"}],"pick":"c","why":"I keep them phone-short either way.","fix":""},{"id":"p-3","label":"3","about":"For example a sign-in, or a step only you can do that is holding work up.","question":"Should I send your phone a notification when something truly needs you?","options":[{"key":"a","text":"Yes, only for those"},{"key":"b","text":"Yes, and also when a big update ships"},{"key":"c","text":"No notifications"}],"pick":"a","why":"a ping only when waiting would cost hours.","fix":""},{"id":"p-4","label":"4","about":"Last night the helpers shipped 4 updates in 30 minutes.","question":"When many small updates ship overnight, how should the report list them?","options":[{"key":"a","text":"Grouped by area (raid HUD, party screens, pads), one line each"},{"key":"b","text":"Only the 3 to 5 that matter to you"},{"key":"c","text":"Every update, one line each"}],"pick":"b","why":"bottom line first.","fix":""},{"id":"p-5","label":"5","about":"","question":"Do you want before and after pictures in reports?","options":[{"key":"a","text":"Yes, for anything you can see that changed"},{"key":"b","text":"Only when I want your opinion"},{"key":"c","text":"No, I look in the game"}],"pick":"b","why":"pictures cost your time; I send them when your eye decides something.","fix":""},{"id":"p-6","label":"6","about":"","question":"How do you like to answer questions?","options":[{"key":"a","text":"Click pages like this one"},{"key":"b","text":"In chat"},{"key":"c","text":"Picture surveys for anything visual, click pages for the rest"}],"pick":"c","why":"you said the picture surveys worked well.","fix":""},{"id":"p-7","label":"7","about":"","question":"How many questions at once is right?","options":[{"key":"a","text":"10 to 20"},{"key":"b","text":"Up to 50"},{"key":"c","text":"100 is fine"}],"pick":"a","why":"small rounds get answered sooner.","fix":""},{"id":"p-8","label":"8","about":"","question":"How often should a question page reach you?","options":[{"key":"a","text":"One page a week"},{"key":"b","text":"Every 2 or 3 days"},{"key":"c","text":"Only when a decision is truly stuck"}],"pick":"b","why":"often enough that nothing waits long.","fix":""},{"id":"p-9","label":"9","about":"","question":"When something I said I would do slips, how do you want to hear it?","options":[{"key":"a","text":"In the next report, one line with the new plan"},{"key":"b","text":"Right away"},{"key":"c","text":"Only if it touches the party"}],"pick":"a","why":"","fix":""},{"id":"p-10","label":"10","about":"","question":"Is the \"Next:\" line at the end of my messages working for you?","options":[{"key":"a","text":"Yes, keep it as is"},{"key":"b","text":"Make it say only what you need to do, or \"nothing for you\""},{"key":"c","text":"Make it list my next 2 or 3 steps"}],"pick":"a","why":"","fix":""}]},{"heading":"Your playtests","questions":[{"id":"p-11","label":"11","about":"Pillagers no longer runs on the main PC. The main PC copy (the party plan) works for weekday play too: your pads, your graphics card, the same address as before.","question":"Where will you play new builds during the week?","options":[{"key":"a","text":"The main PC copy, refreshed when I say a build is worth playing"},{"key":"b","text":"Inside the VM window, keyboard and mouse"},{"key":"c","text":"Both"}],"pick":"a","why":"it is the real party setup, so every test is also a rehearsal.","fix":""},{"id":"p-12","label":"12","about":"","question":"How often do you expect to play a new build before 10/30?","options":[{"key":"a","text":"Every day"},{"key":"b","text":"Every 2 or 3 days"},{"key":"c","text":"Once or twice"}],"pick":"b","why":"","fix":""},{"id":"p-13","label":"13","about":"","question":"How long is a typical play session?","options":[{"key":"a","text":"Under 20 minutes"},{"key":"b","text":"20 to 60 minutes"},{"key":"c","text":"Over an hour"}],"pick":"b","why":"","fix":""},{"id":"p-14","label":"14","about":"The copy saves them on the main PC. The main PC link can only run jobs you approved; fetching your notes would be a new one, and picking a here is that approval.","question":"How should your in-game notes and run reports reach me now?","options":[{"key":"a","text":"Add a \"fetch my notes\" job to the main PC link"},{"key":"b","text":"I drop them in the shared folder myself"},{"key":"c","text":"I paste them in chat"}],"pick":"a","why":"no work for you after each session.","fix":""},{"id":"p-15","label":"15","about":"3 to 5 things to look at, in plain words.","question":"With each build worth playing, do you want a short \"try this\" list?","options":[{"key":"a","text":"Yes"},{"key":"b","text":"No, I play blind and tell you what I notice"},{"key":"c","text":"Only for big changes"}],"pick":"a","why":"","fix":""},{"id":"p-16","label":"16","about":"Fun, clear, annoying, broken: a few taps instead of typing.","question":"After a session, would a 1-minute click page of feel questions help?","options":[{"key":"a","text":"Yes"},{"key":"b","text":"No, I type my own notes"},{"key":"c","text":"Only after the rehearsal and the party"}],"pick":"a","why":"","fix":""},{"id":"p-17","label":"17","about":"A note taken in the game lands with the exact moment and screen, which is the fastest path to a fix.","question":"Do you use the in-game note key while playing?","options":[{"key":"a","text":"Yes, often"},{"key":"b","text":"Sometimes"},{"key":"c","text":"Rarely, I forget it exists"}],"pick":"b","why":"","fix":""},{"id":"p-18","label":"18","about":"","question":"When you find a bug, what is easiest for you?","options":[{"key":"a","text":"The in-game note key"},{"key":"b","text":"A phone photo of the screen, sent in chat"},{"key":"c","text":"Describing it in chat"}],"pick":"a","why":"","fix":""},{"id":"p-19","label":"19","about":"","question":"When you and your son disagree about something in the game, whose call wins?","options":[{"key":"a","text":"Mine"},{"key":"b","text":"His on fun and clarity, mine on everything else"},{"key":"c","text":"We tell you case by case"}],"pick":"b","why":"he is the kind of player the party is for.","fix":""},{"id":"p-20","label":"20","about":"Windows can record the screen with Win + Alt + R.","question":"If something feels off but is hard to describe, could you record a short clip?","options":[{"key":"a","text":"Yes"},{"key":"b","text":"No"},{"key":"c","text":"Only for big problems"}],"pick":"c","why":"","fix":""}]},{"heading":"What I decide on my own","questions":[{"id":"p-21","label":"21","about":"","question":"If a feature keeps breaking and is not in your orders, may I switch it off until after the party and tell you after?","options":[{"key":"a","text":"Yes"},{"key":"b","text":"Ask me first"},{"key":"c","text":"Never switch anything off"}],"pick":"a","why":"a steady party matters more.","fix":""},{"id":"p-22","label":"22","about":"","question":"When the screen judge and your style guide disagree, which wins?","options":[{"key":"a","text":"The style guide (your rules)"},{"key":"b","text":"The judge's score"},{"key":"c","text":"Show me both with pictures"}],"pick":"a","why":"","fix":""},{"id":"p-23","label":"23","about":"For example Kenney, OpenGameArt or Freesound.","question":"May I use free art, sound and music with open licences, with credits listed?","options":[{"key":"a","text":"Yes"},{"key":"b","text":"Only as placeholders until something better"},{"key":"c","text":"No, keep it all made here"}],"pick":"a","why":"","fix":""},{"id":"p-24","label":"24","about":"I would never buy anything myself; you decide each one.","question":"If a paid tool or service would clearly speed things up, do you want the pitch?","options":[{"key":"a","text":"Yes, any time it clearly pays off"},{"key":"b","text":"Only under about $20 a month"},{"key":"c","text":"No paid extras"}],"pick":"a","why":"","fix":""},{"id":"p-25","label":"25","about":"","question":"When your notes are unclear, what should I do?","options":[{"key":"a","text":"Take my best guess, ship it, tell you how I read it"},{"key":"b","text":"Ask first and wait"},{"key":"c","text":"Guess now and ask in the next round"}],"pick":"c","why":"no waiting, and you can still correct me.","fix":""},{"id":"p-26","label":"26","about":"Spacing, contrast, text that clips: small fixes, never new features.","question":"When a helper finishes early, may it start polish that is not on your list?","options":[{"key":"a","text":"Yes, polish is always welcome"},{"key":"b","text":"Only fixes the screen judge asked for"},{"key":"c","text":"No, wait for orders"}],"pick":"b","why":"judge findings are evidence, not invention.","fix":""},{"id":"p-27","label":"27","about":"","question":"May I reword on-screen text (still lower case and short) when clarity calls for it?","options":[{"key":"a","text":"Yes"},{"key":"b","text":"Only labels, not the names of things"},{"key":"c","text":"Ask first"}],"pick":"b","why":"","fix":""},{"id":"p-28","label":"28","about":"","question":"If a change from your notes makes something else worse, what do you want?","options":[{"key":"a","text":"I keep the better of the two and tell you"},{"key":"b","text":"Undo it and ask"},{"key":"c","text":"Ship both and you choose"}],"pick":"a","why":"","fix":""},{"id":"p-29","label":"29","about":"","question":"May I cut a step guests do not need (for example a confirm screen) to make the party flow faster?","options":[{"key":"a","text":"Yes, tell me after"},{"key":"b","text":"Show me first"},{"key":"c","text":"No"}],"pick":"b","why":"it changes what guests see, so you see it first.","fix":""},{"id":"p-30","label":"30","about":"","question":"When two of your older answers clash, how should I settle it?","options":[{"key":"a","text":"The newest answer wins"},{"key":"b","text":"Ask you once, quoting both"},{"key":"c","text":"Whichever fits the party best"}],"pick":"a","why":"","fix":""}]},{"heading":"Your plans and the helpers","questions":[{"id":"p-31","label":"31","about":"Your work, or the other two Pillagers projects. The helpers stop at 85% of each 5-hour window today.","question":"Do you use this same Claude plan for other things?","options":[{"key":"a","text":"Yes, a lot"},{"key":"b","text":"A little"},{"key":"c","text":"No, Pillagers has it to itself"}],"pick":"b","why":"","fix":""},{"id":"p-32","label":"32","about":"","question":"While you are at the PC, how much of each 5-hour window should the helpers leave for you?","options":[{"key":"a","text":"15% (as now)"},{"key":"b","text":"30%"},{"key":"c","text":"50%"}],"pick":"a","why":"","fix":""},{"id":"p-33","label":"33","about":"","question":"And while you are away or asleep?","options":[{"key":"a","text":"Let them use up to 95%"},{"key":"b","text":"Keep the 85% stop"},{"key":"c","text":"The same as when I am here"}],"pick":"a","why":"nothing else needs it at night.","fix":""},{"id":"p-34","label":"34","about":"","question":"Your Console credit resets to $200 on Nov 1. What should it go to first?","options":[{"key":"a","text":"More helper runs right away"},{"key":"b","text":"The screen judge (keeps your plan free for helpers)"},{"key":"c","text":"Spread it evenly through Thanksgiving"}],"pick":"c","why":"the release crunch will want some left.","fix":""},{"id":"p-35","label":"35","about":"Plan usage this week and Console spend.","question":"Do you want a cost line in each morning report?","options":[{"key":"a","text":"Yes, one line"},{"key":"b","text":"Only when something is unusual"},{"key":"c","text":"No"}],"pick":"b","why":"","fix":""},{"id":"p-36","label":"36","about":"It costs no Claude usage.","question":"ChatGPT (Codex) does one helper's work on your ChatGPT plan. Does that plan have room to use harder?","options":[{"key":"a","text":"Yes, push it"},{"key":"b","text":"Keep it as now"},{"key":"c","text":"I need it for other things, use it less"}],"pick":"a","why":"","fix":""},{"id":"p-37","label":"37","about":"Only a pitch with real numbers; nothing is bought without you.","question":"Would you pay for a second plan or seat if it clearly doubled the helpers?","options":[{"key":"a","text":"Yes, pitch it"},{"key":"b","text":"Maybe after the party"},{"key":"c","text":"No"}],"pick":"b","why":"","fix":""},{"id":"p-38","label":"38","about":"","question":"The local AI rests during your usual PC hours (6-9, 1-4, 7-10) so your graphics card stays free. Still right now the main PC is your work PC?","options":[{"key":"a","text":"Yes"},{"key":"b","text":"It may run any time unless I am gaming"},{"key":"c","text":"Change the hours (write them)"}],"pick":"a","why":"","fix":""},{"id":"p-39","label":"39","about":"The VM borrows most of the graphics card. If you game, I would pause the VM's camera work while you play.","question":"Do you play other games on the main PC?","options":[{"key":"a","text":"Yes, often"},{"key":"b","text":"Sometimes"},{"key":"c","text":"Rarely"}],"pick":"b","why":"","fix":""},{"id":"p-40","label":"40","about":"Release prep means things like the store page and the feedback collector, never game features after the 10/26 cutoff.","question":"Until 10/30, should helpers work only on the party, or also on release prep in the background?","options":[{"key":"a","text":"Party only"},{"key":"b","text":"Mostly party, a little release prep"},{"key":"c","text":"Whatever is next on the list"}],"pick":"b","why":"","fix":""}]},{"heading":"The VM and the main PC","questions":[{"id":"p-41","label":"41","about":"My half-hourly check-ins live in that window. When it closes they stop until you say \"check in\".","question":"Will you leave the Claude window in the VM open all the time?","options":[{"key":"a","text":"Yes"},{"key":"b","text":"Mostly, I sometimes close it"},{"key":"c","text":"I close it when I am done"}],"pick":"a","why":"","fix":""},{"id":"p-42","label":"42","about":"The VM now signs back in by itself, but an update mid-ship can still cost an hour.","question":"Windows updates in the VM can restart it at a bad moment. What do you want?","options":[{"key":"a","text":"Pause VM updates until after 10/30 (you click it)"},{"key":"b","text":"Leave them on"},{"key":"c","text":"Install them only when I am around"}],"pick":"a","why":"","fix":""},{"id":"p-43","label":"43","about":"","question":"Same for the main PC around the party?","options":[{"key":"a","text":"Pause updates until after 10/30"},{"key":"b","text":"Leave them on"},{"key":"c","text":"I will handle it"}],"pick":"a","why":"an update on party night would hurt most.","fix":""},{"id":"p-44","label":"44","about":"The main PC has 32 GB. With 64 GB the VM could have about 24 GB: every helper and the robot at once.","question":"More memory is the biggest speed-up: today only 1 or 2 of the 3 helpers fit, and the crash robot keeps waiting. Which would you consider?","options":[{"key":"a","text":"Close programs on the main PC so the VM can have 12 GB"},{"key":"b","text":"Add memory to the main PC (I can price it)"},{"key":"c","text":"Neither, keep 10 GB"}],"pick":"b","why":"the one change that frees everything else.","fix":""},{"id":"p-45","label":"45","about":"Only if I can make it safe; you would approve the setup once.","question":"Would you be OK with the VM taking more memory only at night, back to normal by morning?","options":[{"key":"a","text":"Yes"},{"key":"b","text":"No, keep it fixed"}],"pick":"a","why":"","fix":""},{"id":"p-46","label":"46","about":"When the main PC is off, the VM is off too.","question":"Does the main PC stay on all the time?","options":[{"key":"a","text":"It runs 24/7"},{"key":"b","text":"I restart it now and then"},{"key":"c","text":"I shut it down at night"}],"pick":"a","why":"","fix":""},{"id":"p-47","label":"47","about":"A Hyper-V checkpoint, set up once on the main PC. GitHub already keeps the game; this would keep the VM setup itself.","question":"Should the VM keep a weekly safety snapshot you can roll back to?","options":[{"key":"a","text":"Yes, set it up"},{"key":"b","text":"No, GitHub is enough"}],"pick":"a","why":"","fix":""},{"id":"p-48","label":"48","about":"","question":"If the VM breaks badly before the party, what is the plan?","options":[{"key":"a","text":"The main PC copy for the party, fix the VM after"},{"key":"b","text":"Rebuild the VM right away"},{"key":"c","text":"Bring Pillagers back to the main PC"}],"pick":"a","why":"","fix":""},{"id":"p-49","label":"49","about":"Fewer helpers and no camera work, so nothing competes with your game.","question":"While you play the copy on the main PC, should the VM go light?","options":[{"key":"a","text":"Yes"},{"key":"b","text":"No, it does not bother me"}],"pick":"a","why":"","fix":""},{"id":"p-50","label":"50","about":"The party runs on the main PC; the VM shares its graphics card and processor.","question":"On rehearsal and party night, should the VM stop all work?","options":[{"key":"a","text":"Yes, pause everything that evening"},{"key":"b","text":"Keep it light"},{"key":"c","text":"Keep it running"}],"pick":"a","why":"zero risk of a stutter from my side.","fix":""}]},{"heading":"Quality and the look","questions":[{"id":"p-51","label":"51","about":"A click page with pictures, 1 to 5. Your scores teach the screen judge your taste.","question":"Would you grade a few screens yourself now and then?","options":[{"key":"a","text":"Yes, weekly"},{"key":"b","text":"Yes, only before the party"},{"key":"c","text":"No, trust the judge"}],"pick":"a","why":"","fix":""},{"id":"p-52","label":"52","about":"","question":"Besides ARC Raiders and Fortnite menus, which games should the judge measure against?","options":[{"key":"a","text":"Keep those two"},{"key":"b","text":"Add Zero Sievert"},{"key":"c","text":"Add others (name them)"}],"pick":"b","why":"you named it as part of the feel.","fix":""},{"id":"p-53","label":"53","about":"","question":"For a new screen design, do you want to pick from mockups first?","options":[{"key":"a","text":"Yes, 2 or 3 mockups for every new screen"},{"key":"b","text":"Only for big screens (title, pre-raid, HUD)"},{"key":"c","text":"No, build it and show me"}],"pick":"b","why":"","fix":""},{"id":"p-54","label":"54","about":"","question":"When the judge scores low a screen you like, what should happen?","options":[{"key":"a","text":"Your taste wins, keep it"},{"key":"b","text":"Improve it anyway"},{"key":"c","text":"Ask me with pictures"}],"pick":"c","why":"","fix":""},{"id":"p-55","label":"55","about":"","question":"Where do you judge the look: the TV or your monitor?","options":[{"key":"a","text":"The TV"},{"key":"b","text":"The monitor"},{"key":"c","text":"Both"}],"pick":"a","why":"the party is on the TVs.","fix":""},{"id":"p-56","label":"56","about":"","question":"Should helpers also polish the Career screens, or only the party screens until 10/30?","options":[{"key":"a","text":"Party screens only"},{"key":"b","text":"Both"},{"key":"c","text":"Party first, Career after 10/26"}],"pick":"c","why":"","fix":""},{"id":"p-57","label":"57","about":"","question":"I cannot hear. How should sound changes be checked?","options":[{"key":"a","text":"You listen to a short list after each sound update"},{"key":"b","text":"Trust the loudness checks"},{"key":"c","text":"Hold sound changes until after the party"}],"pick":"a","why":"","fix":""},{"id":"p-58","label":"58","about":"It ties a bug report to the exact build.","question":"Should the game show a small version number during the party?","options":[{"key":"a","text":"Yes, small, in a corner"},{"key":"b","text":"No, hide it at the party"},{"key":"c","text":"Only inside a menu"}],"pick":"c","why":"","fix":""},{"id":"p-59","label":"59","about":"","question":"Options like bigger text or colourblind-friendly markers: when?","options":[{"key":"a","text":"Before Thanksgiving"},{"key":"b","text":"Later"},{"key":"c","text":"Not needed"}],"pick":"b","why":"","fix":""},{"id":"p-60","label":"60","about":"","question":"When the judge passes a screen, should helpers stop touching it?","options":[{"key":"a","text":"Yes, freeze it unless you complain"},{"key":"b","text":"Keep polishing if time allows"},{"key":"c","text":"Freeze it only after you approve it"}],"pick":"a","why":"","fix":""}]},{"heading":"Party night","questions":[{"id":"p-61","label":"61","about":"","question":"About how many guests will play?","options":[{"key":"a","text":"Under 6"},{"key":"b","text":"6 to 12"},{"key":"c","text":"More than 12"}],"pick":"b","why":"","fix":""},{"id":"p-62","label":"62","about":"","question":"Should the board be cleared after the rehearsal so the party starts fresh?","options":[{"key":"a","text":"Yes"},{"key":"b","text":"No, rehearsal scores are the ones to beat"}],"pick":"a","why":"","fix":""},{"id":"p-63","label":"63","about":"","question":"Who are the guests mostly?","options":[{"key":"a","text":"Kids"},{"key":"b","text":"Adults who game"},{"key":"c","text":"Adults who rarely game"},{"key":"d","text":"A real mix"}],"pick":"d","why":"","fix":""},{"id":"p-64","label":"64","about":"","question":"What would make the night a success to you?","options":[{"key":"a","text":"People keep coming back to play"},{"key":"b","text":"Nobody needs help to start"},{"key":"c","text":"No crash or stutter all night"},{"key":"d","text":"Honest feedback"}],"pick":"a","why":"","fix":""},{"id":"p-65","label":"65","about":"","question":"Will you host the game most of the night, or should it run itself?","options":[{"key":"a","text":"I host it"},{"key":"b","text":"It runs itself, I check in now and then"},{"key":"c","text":"Someone else hosts"}],"pick":"b","why":"","fix":""},{"id":"p-66","label":"66","about":"Run reports hold no personal details; they show where guests died, quit or got stuck.","question":"May the party save each run's report on the main PC for me?","options":[{"key":"a","text":"Yes"},{"key":"b","text":"Yes, and screen recordings too"},{"key":"c","text":"No recording"}],"pick":"a","why":"","fix":""},{"id":"p-67","label":"67","about":"","question":"After the party, how do you want to tell me what happened?","options":[{"key":"a","text":"A click page of questions I write from the run reports"},{"key":"b","text":"Tell me in chat in your own words"},{"key":"c","text":"Both"}],"pick":"c","why":"","fix":""},{"id":"p-68","label":"68","about":"","question":"Who plays at the rehearsal on Wed 10/28?","options":[{"key":"a","text":"Me alone with two pads"},{"key":"b","text":"Me and my son"},{"key":"c","text":"The whole family"}],"pick":"b","why":"","fix":""},{"id":"p-69","label":"69","about":"The copy folder can keep the previous good build as a spare.","question":"If something breaks mid-party, what is the plan?","options":[{"key":"a","text":"Restart the game and carry on"},{"key":"b","text":"Switch to the spare build"},{"key":"c","text":"Stop the game"}],"pick":"b","why":"","fix":""},{"id":"p-70","label":"70","about":"","question":"Will both TVs and pads be set up for the rehearsal, so it is the real setup?","options":[{"key":"a","text":"Yes"},{"key":"b","text":"No, the rehearsal is on my desk"},{"key":"c","text":"Not sure yet"}],"pick":"a","why":"","fix":""}]},{"heading":"The Thanksgiving release","questions":[{"id":"p-71","label":"71","about":"itch.io can go live the same day. Steam needs a $100 fee, a store page up some weeks ahead and a review.","question":"Where should the release live?","options":[{"key":"a","text":"itch.io"},{"key":"b","text":"itch.io now, Steam later"},{"key":"c","text":"Steam at Thanksgiving"}],"pick":"b","why":"","fix":""},{"id":"p-72","label":"72","about":"","question":"Price?","options":[{"key":"a","text":"Free"},{"key":"b","text":"Pay what you want"},{"key":"c","text":"A fixed price (write it)"}],"pick":"b","why":"","fix":""},{"id":"p-73","label":"73","about":"","question":"Who plays between the party and Thanksgiving?","options":[{"key":"a","text":"Friends and family, private link"},{"key":"b","text":"A public page right away"},{"key":"c","text":"No one until release"}],"pick":"a","why":"","fix":""},{"id":"p-74","label":"74","about":"About 15 minutes with my steps.","question":"The feedback collector (friends' run reports reach me automatically) still waits on a free Cloudflare setup on your side. Do it before friends play?","options":[{"key":"a","text":"Yes, walk me through it"},{"key":"b","text":"Later"},{"key":"c","text":"Skip it, friends send files by hand"}],"pick":"a","why":"","fix":""},{"id":"p-75","label":"75","about":"","question":"The store page text: who writes it?","options":[{"key":"a","text":"I write a tagline and page, you pick"},{"key":"b","text":"You write it"},{"key":"c","text":"Keep it bare"}],"pick":"a","why":"","fix":""},{"id":"p-76","label":"76","about":"You ruled that the couch mode leads the release.","question":"Should the release include Career mode, or only the 2-player couch mode?","options":[{"key":"a","text":"Both, couch mode up front"},{"key":"b","text":"Couch mode first, Career later"},{"key":"c","text":"Career first"}],"pick":"a","why":"","fix":""},{"id":"p-77","label":"77","about":"","question":"A trailer or moving picture for the page?","options":[{"key":"a","text":"Yes, the helpers make one from game captures"},{"key":"b","text":"No"},{"key":"c","text":"I will make it"}],"pick":"a","why":"","fix":""},{"id":"p-78","label":"78","about":"","question":"Do you want a public devlog (short posts as we go)?","options":[{"key":"a","text":"Yes, I post what you draft"},{"key":"b","text":"No"}],"pick":"b","why":"","fix":""},{"id":"p-79","label":"79","about":"","question":"Should saves move between computers (an export and import code)?","options":[{"key":"a","text":"Yes, before release"},{"key":"b","text":"Later"},{"key":"c","text":"No"}],"pick":"b","why":"","fix":""},{"id":"p-80","label":"80","about":"","question":"After Thanksgiving, what comes next?","options":[{"key":"a","text":"More content (maps, weapons, enemies)"},{"key":"b","text":"Online co-op"},{"key":"c","text":"Polish only, then rest"}],"pick":"a","why":"","fix":""}]},{"heading":"Making me faster","questions":[{"id":"p-81","label":"81","about":"","question":"Many small updates a day, or one build a day worth playing?","options":[{"key":"a","text":"Many small (as now)"},{"key":"b","text":"Fewer, bigger updates"},{"key":"c","text":"Small updates, plus one \"worth playing\" build a day"}],"pick":"c","why":"","fix":""},{"id":"p-82","label":"82","about":"","question":"When I need a decision, do you want my recommendation first?","options":[{"key":"a","text":"Yes, my pick first (as now)"},{"key":"b","text":"No, show the options without a pick"}],"pick":"a","why":"","fix":""},{"id":"p-83","label":"83","about":"","question":"Do you want a weekly plain-words summary: what got better, what is next?","options":[{"key":"a","text":"Yes, on Sundays"},{"key":"b","text":"No"}],"pick":"a","why":"Sunday is your busiest day at the PC.","fix":""},{"id":"p-84","label":"84","about":"","question":"Are there times you want no messages from me?","options":[{"key":"a","text":"No, any time"},{"key":"b","text":"Quiet on weekends"},{"key":"c","text":"Quiet in the evenings"}],"pick":"a","why":"","fix":""},{"id":"p-85","label":"85","about":"","question":"When one of your rules costs a lot of time for little gain, may I propose dropping it?","options":[{"key":"a","text":"Yes, in a question round"},{"key":"b","text":"No, the rules stand"}],"pick":"a","why":"","fix":""},{"id":"p-86","label":"86","about":"Like tonight's list: one place that always shows what is waiting on you.","question":"Would a small page listing only your open steps help?","options":[{"key":"a","text":"Yes"},{"key":"b","text":"No, the chat is enough"}],"pick":"a","why":"","fix":""},{"id":"p-87","label":"87","about":"The party copy downloads from it without a sign-in.","question":"The game's GitHub page is public. Keep it public after release?","options":[{"key":"a","text":"Yes"},{"key":"b","text":"Make it private before release"}],"pick":"a","why":"","fix":""},{"id":"p-88","label":"88","about":"","question":"Should I put the rehearsal (Wed 10/28), the lock (Thu 10/29) and the party (Fri 10/30) on your Google Calendar?","options":[{"key":"a","text":"Yes"},{"key":"b","text":"No"}],"pick":"a","why":"","fix":""},{"id":"p-89","label":"89","about":"","question":"Would you like the morning report by email too?","options":[{"key":"a","text":"Yes, to me"},{"key":"b","text":"No, chat is enough"}],"pick":"b","why":"","fix":""},{"id":"p-90","label":"90","about":"","question":"Do you keep game ideas anywhere I should read?","options":[{"key":"a","text":"Yes, in Notion"},{"key":"b","text":"Yes, in Google Docs or Drive"},{"key":"c","text":"No, they come to you in chat"}],"pick":"c","why":"","fix":""}]},{"heading":"The bigger picture","questions":[{"id":"p-91","label":"91","about":"","question":"What frustrates you most about how we work today?","options":[{"key":"a","text":"Chasing problems I should have caught"},{"key":"b","text":"Too much reading"},{"key":"c","text":"Too many questions"},{"key":"d","text":"Progress I cannot see"}],"pick":"","why":"only you know this one.","fix":""},{"id":"p-92","label":"92","about":"","question":"What do you want more of?","options":[{"key":"a","text":"Visible game changes"},{"key":"b","text":"Fewer interruptions"},{"key":"c","text":"Clearer explanations"},{"key":"d","text":"More pictures"}],"pick":"","why":"only you know this one.","fix":""},{"id":"p-93","label":"93","about":"","question":"How do you judge progress day to day?","options":[{"key":"a","text":"What I see when I play"},{"key":"b","text":"The report"},{"key":"c","text":"The number of updates"}],"pick":"a","why":"","fix":""},{"id":"p-94","label":"94","about":"","question":"When can I call something done?","options":[{"key":"a","text":"It passed the tests and the pictures"},{"key":"b","text":"You played it"},{"key":"c","text":"A friend played it"}],"pick":"a","why":"you play the important ones anyway.","fix":""},{"id":"p-95","label":"95","about":"","question":"Close to the party, what is your default for a risky change?","options":[{"key":"a","text":"Leave it until after the party"},{"key":"b","text":"Change it if the tests pass"},{"key":"c","text":"Ask me"}],"pick":"a","why":"","fix":""},{"id":"p-96","label":"96","about":"","question":"Should I keep a page of ideas the helpers and I have, for you to pick from after the party?","options":[{"key":"a","text":"Yes, one page with pictures"},{"key":"b","text":"No, only my ideas count"}],"pick":"a","why":"","fix":""},{"id":"p-97","label":"97","about":"","question":"Would a fixed weekly \"play with me\" slot help, with a build and questions ready for it?","options":[{"key":"a","text":"Yes, Sunday afternoon"},{"key":"b","text":"Yes, another time (write it)"},{"key":"c","text":"No"}],"pick":"a","why":"Sunday afternoon is your busiest time at the PC.","fix":""},{"id":"p-98","label":"98","about":"","question":"How much do you want to know about how the helpers work?","options":[{"key":"a","text":"Nothing, results only"},{"key":"b","text":"A little, in plain words"},{"key":"c","text":"A lot"}],"pick":"a","why":"","fix":""},{"id":"p-99","label":"99","about":"","question":"Is there anything I do today that you want me to stop?","options":[{"key":"a","text":"No"},{"key":"b","text":"Yes (write it)"}],"pick":"","why":"only you know this one.","fix":""},{"id":"p-100","label":"100","about":"","question":"Anything you wish I had asked?","options":[{"key":"a","text":"No"},{"key":"b","text":"Yes (write it)"}],"pick":"","why":"","fix":""}]}]}]}</script>
+<script>
+(function(){
+  var D = JSON.parse(document.getElementById('data').textContent);
+  var R = D.rounds, Q = [], byId = {};
+  R.forEach(function(r){ r.groups.forEach(function(g){ g.questions.forEach(function(q){ q.round = r; Q.push(q); byId[q.id] = q; }); }); });
+  var A = {};            // id -> {pick, note}
+  var db = null, local = false, pending = {}, timers = {};
+  var LSK = 'pillagers-open-questions-r2r3';
+  function el(t, c, txt){ var e = document.createElement(t); if(c) e.className = c; if(txt != null) e.textContent = txt; return e; }
+  // text with [[id]] tokens becomes text plus links to those questions
+  function rich(parent, s){
+    String(s || '').split(/(\[\[[^\]]+\]\])/).forEach(function(part){
+      var m = /^\[\[([^\]|]+)(?:\|([^\]]+))?\]\]$/.exec(part);
+      if(m && byId[m[1]]){ var a = el('a', null, m[2] || byId[m[1]].label); a.href = '#' + m[1]; a.addEventListener('click', function(e){ e.preventDefault(); jump(m[1]); }); parent.appendChild(a); }
+      else parent.appendChild(document.createTextNode(part));
+    });
+  }
+  function jump(id){
+    var art = document.getElementById(id); if(!art) return;
+    if(art.hidden || art.parentNode.hidden){ setFilter(false); }
+    art.scrollIntoView({behavior:'smooth', block:'start'}); art.classList.remove('flash'); void art.offsetWidth; art.classList.add('flash');
+  }
+
+  // ---- build
+  var main = document.getElementById('main'), groupsNav = document.getElementById('groups');
+  R.forEach(function(r){
+    var rs = el('section', 'round'); rs.id = 'round-' + r.key;
+    rs.appendChild(el('h2', null, r.title));
+    if(r.intro){ var p = el('p'); rich(p, r.intro); rs.appendChild(p); }
+    main.appendChild(rs);
+    r.groups.forEach(function(g, gi){
+      var gs = el('section', 'group'); gs.id = 'g-' + r.key + '-' + gi; gs.dataset.g = gs.id;
+      gs.appendChild(el('h3', null, g.heading));
+      rs.appendChild(gs);
+      var a = el('a'); a.href = '#' + gs.id; a.dataset.g = gs.id; a.appendChild(el('b', null, r.short)); a.appendChild(document.createTextNode(g.heading)); a.appendChild(el('span'));
+      a.addEventListener('click', function(e){ e.preventDefault(); gs.scrollIntoView({behavior:'smooth', block:'start'}); });
+      groupsNav.appendChild(a);
+      g.questions.forEach(function(q){
+        q.gid = gs.id;
+        var art = el('article', 'q'); art.id = q.id;
+        art.appendChild(el('div', 'qid', q.label));
+        var b = el('div', 'qbody');
+        b.appendChild(el('h4', null, q.question));
+        if(q.about){ var c = el('p', 'ctx'); rich(c, q.about); b.appendChild(c); }
+        if(q.fix){ var f = el('p', 'fix'); f.appendChild(el('b', null, 'Read this first. ')); rich(f, q.fix); b.appendChild(f); }
+        var opts = el('div', 'opts'); opts.setAttribute('role', 'radiogroup'); opts.setAttribute('aria-label', q.label + ' choices');
+        q.options.concat([{key:'none', text:'None of these (say what in the box)'}]).forEach(function(o){
+          var bt = el('button', 'opt' + (o.key === 'none' ? ' none' : '')); bt.type = 'button'; bt.setAttribute('role', 'radio'); bt.setAttribute('aria-checked', 'false'); bt.dataset.k = o.key;
+          bt.appendChild(el('span', 'k', o.key === 'none' ? '–' : o.key));
+          bt.appendChild(el('span', 't', o.text));
+          if(q.pick === o.key) bt.appendChild(el('span', 'mine', 'my pick'));
+          bt.addEventListener('click', function(){ choose(q.id, (A[q.id] || {}).pick === o.key ? '' : o.key); });
+          opts.appendChild(bt);
+        });
+        b.appendChild(opts);
+        if(q.pick){ var w = el('p', 'why'); w.appendChild(el('b', null, 'My pick: ' + q.pick + (q.why ? ', because ' : '.'))); if(q.why) w.appendChild(document.createTextNode(q.why)); b.appendChild(w); }
+        var ta = el('textarea'); ta.id = 'note-' + q.id; ta.placeholder = 'Your own words (optional)'; ta.setAttribute('aria-label', 'Your own words for ' + q.label);
+        ta.addEventListener('input', function(){ setNote(q.id, ta.value); });
+        b.appendChild(ta);
+        var st = el('div', 'state', 'Not answered yet (skipping it means I go with my pick)'); st.id = 'st-' + q.id; b.appendChild(st);
+        art.appendChild(b);
+        gs.appendChild(art);
+      });
+    });
+  });
+
+  // ---- state on screen
+  function done(id){ var a = A[id] || {}; return !!(a.pick || (a.note || '').trim()); }
+  function textOf(q, k){ var o = q.options.filter(function(x){ return x.key === k; })[0]; return o ? o.text : k; }
+  function paint(id){
+    var a = A[id] || {}, q = byId[id], art = document.getElementById(id); if(!art) return;
+    art.querySelectorAll('.opt').forEach(function(bt){ bt.setAttribute('aria-checked', a.pick === bt.dataset.k ? 'true' : 'false'); });
+    var ta = document.getElementById('note-' + id); if(document.activeElement !== ta && ta.value !== (a.note || '')) ta.value = a.note || '';
+    var st = document.getElementById('st-' + id), d = done(id);
+    st.className = 'state' + (d ? ' answered' : '');
+    st.textContent = !d ? 'Not answered yet (skipping it means I go with my pick)' : a.pick === 'none' ? 'Answered: none of these' : a.pick ? 'Answered: ' + a.pick + (((a.note || '').trim()) ? ', with a comment' : '') : 'Answered with a comment';
+  }
+  function totals(){
+    var n = 0, per = {};
+    Q.forEach(function(q){ var d = done(q.id); if(d) n++; per[q.gid] = per[q.gid] || [0, 0]; per[q.gid][1]++; if(d) per[q.gid][0]++; });
+    document.getElementById('pcount').textContent = n + ' of ' + Q.length + ' answered';
+    document.getElementById('pbar').style.width = (100 * n / Q.length) + '%';
+    groupsNav.querySelectorAll('a').forEach(function(a){ var p = per[a.dataset.g] || [0, 0]; a.querySelector('span').textContent = p[0] + '/' + p[1]; a.classList.toggle('done', p[0] === p[1]); });
+  }
+  function paintAll(){ Q.forEach(function(q){ paint(q.id); }); totals(); }
+
+  // ---- filter: applied when the button is pressed, so a question does not vanish while you answer it
+  var onlyOpen = false;
+  function setFilter(open){
+    onlyOpen = open;
+    document.getElementById('fAll').setAttribute('aria-pressed', open ? 'false' : 'true');
+    document.getElementById('fOpen').setAttribute('aria-pressed', open ? 'true' : 'false');
+    var shown = 0;
+    document.querySelectorAll('section.group').forEach(function(gs){
+      var any = false;
+      gs.querySelectorAll('article.q').forEach(function(art){ var h = open && done(art.id); art.hidden = h; if(!h){ any = true; shown++; } });
+      gs.hidden = !any;
+    });
+    document.querySelectorAll('section.round').forEach(function(rs){ rs.hidden = !rs.querySelector('section.group:not([hidden])'); });
+    groupsNav.querySelectorAll('a').forEach(function(a){ var gs = document.getElementById(a.dataset.g); a.hidden = gs.hidden; });
+    document.getElementById('allDone').hidden = shown > 0;
+  }
+  document.getElementById('fAll').addEventListener('click', function(){ setFilter(false); });
+  document.getElementById('fOpen').addEventListener('click', function(){ setFilter(true); window.scrollTo({top: document.getElementById('main').offsetTop - 80, behavior:'smooth'}); });
+
+  // ---- saving: one write at a time per question, comments after a pause
+  var saveEl = document.getElementById('savestate');
+  function choose(id, k){ A[id] = A[id] || {}; A[id].pick = k; paint(id); totals(); persist(id); }
+  function setNote(id, v){ A[id] = A[id] || {}; A[id].note = v; totals(); clearTimeout(timers[id]); timers[id] = setTimeout(function(){ timers[id] = null; paint(id); persist(id); }, 900); }
+  function keepLocal(){ try{ localStorage.setItem(LSK, JSON.stringify(A)); }catch(e){} }
+  function persist(id){
+    keepLocal();
+    if(local || !db){ saveEl.textContent = 'Saved in this browser'; return; }
+    pending[id] = (pending[id] || Promise.resolve()).then(function(){
+      var a = A[id] || {}; saveEl.textContent = 'Saving';
+      return db.collection('answers').doc(id).set({ pick: a.pick || '', note: a.note || '', at: new Date().toISOString() })
+        .then(function(){ saveEl.textContent = 'All answers saved'; })
+        .catch(function(e){ saveEl.textContent = 'Could not save (' + ((e && e.code) || 'error') + '). Your answers are kept in this browser; use Copy my answers.'; });
+    });
+  }
+  try{ var saved = JSON.parse(localStorage.getItem(LSK) || '{}'); if(saved && typeof saved === 'object') A = saved; }catch(e){}
+  paintAll();
+  var started = false;
+  function goLocal(){ if(started) return; started = true; local = true; document.getElementById('offline').hidden = false; saveEl.textContent = 'Saving in this browser'; }
+  var useP = (window.claude && typeof window.claude.use === 'function') ? window.claude.use('db') : Promise.resolve(null);
+  useP.then(function(d){
+    if(!d){ goLocal(); return; }
+    started = true; db = d;
+    db.collection('answers').onSnapshot(function(snap){
+      snap.docs.forEach(function(doc){ if(!byId[doc.id]) return; var v = doc.data() || {}; if(!timers[doc.id]) A[doc.id] = { pick: v.pick || '', note: v.note || '' }; });
+      paintAll(); keepLocal();
+      if(saveEl.textContent.indexOf('Loading') === 0) saveEl.textContent = snap.size ? 'Your saved answers are loaded' : 'Picks save by themselves';
+    }, function(e){ saveEl.textContent = 'Live saving stopped (' + ((e && e.code) || 'error') + '). New picks stay in this browser.'; local = true; });
+  }, function(){ goLocal(); });
+  setTimeout(function(){ if(!started) goLocal(); }, 11000);
+
+  // ---- copy as text, in the "12b" form he already uses
+  document.getElementById('copy').addEventListener('click', function(){
+    var lines = ['My answers (open questions, rounds 2 and 3):'], n = 0, lastR = null;
+    Q.forEach(function(q){ var a = A[q.id] || {}, note = (a.note || '').trim().replace(/\s+/g, ' '); if(!a.pick && !note) return;
+      if(q.round !== lastR){ lastR = q.round; lines.push(''); lines.push(q.round.title + ':'); }
+      n++; lines.push(q.label + (a.pick === 'none' ? ' none of these' : (a.pick || '')) + (note ? ': ' + note : '')); });
+    var txt = lines.join('\n'), msg = document.getElementById('copymsg');
+    if(!n){ msg.textContent = 'Nothing answered yet.'; msg.className = ''; return; }
+    function fallback(){ var b = document.getElementById('copybuf'); b.value = txt; b.select(); try{ document.execCommand('copy'); msg.textContent = 'Copied ' + n + ' answers.'; }catch(e){ msg.textContent = 'Select and copy this: ' + txt; } msg.className = 'copied'; }
+    if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(function(){ msg.textContent = 'Copied ' + n + ' answers. Paste them to me in chat.'; msg.className = 'copied'; }, fallback);
+    else fallback();
+  });
+
+  if(location.hash && byId[location.hash.slice(1)]) setTimeout(function(){ jump(location.hash.slice(1)); }, 50);
+})();
+</script>

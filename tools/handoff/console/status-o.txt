@@ -1,1 +1,1 @@
-10-19 22:15 waiting for RAM: 3 GB free, need 6 (o-07-pad-lost)
+10-19 22:24 running o-07-pad-lost (codex, run 7 of 5)

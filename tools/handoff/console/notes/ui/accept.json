@@ -439,12 +439,19 @@
   "when": "2026-10-19T01:37"
  },
  "61-raid-wheel-open": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The wheel itself has a clear gold focus segment, but it is buried under a controls cheat-sheet that overlaps it, a minimap and contracts list that clip, and a dozen competing HUD panels with inconsistent type and no shared panel style.",
-  "pic": "tools/handoff/console/notes/shots/all/61-raid-wheel-open-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:22"
+  "verdict": "The wheel is a strong focal point with a clear lime focus wedge, but the HUD around it is crowded and inconsistent in type, accent and panel style, and some of its text is too small or has too little contrast.",
+  "findings": [
+   "P1 wheel focus wedge: Fill the selected wedge with --ui-raised (#1e2225). Keep a 3px --acc edge on the outer arc only. Remove the olive fill and the green arc on the focused slice.",
+   "P1 wheel rim arcs and empty slots: Use one rim colour: --ui-line-hi at 2px, with the focused slice in --acc. Dim empty slots to 50 percent opacity but keep the label at --tx-2 (at least 4.5:1). Make the x0 badge --danger text on --ui-panel.",
+   "P1 HUD panels, top-right and left: Use one panel style: fill --ui-panel, 1px --ui-line-hi, 4px radius, 16px padding. Use --tx-1 for headers and --tx-2 for rows at 16px minimum. Cut run info to the two contract lines that matter and drop the rest. Use lime only for the focus or the one active objective.",
+   "P1 centre hub: Make the hub name 32px f-cond 700 in --tx-1, the sub-line 16px --tx-2, and drop the lime on it. Reduce the slot labels to 20px --tx-2 so the selection stands out. Give the arrow 8px clearance from the hub ring.",
+   "P2 weapon hotbar and prompt: Raise the slot numbers to 16px --tx-2. Use one focus border in --acc and give all other slots a --ui-line-hi border. Show rarity as a 3px bar at the bottom of the slot, not as a full border."
+  ],
+  "pic": "tools/handoff/console/notes/shots/b-30n-after/61-raid-wheel-open-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-20T02:16"
  },
  "58-coop-player2-window-title": {
   "score": 3,

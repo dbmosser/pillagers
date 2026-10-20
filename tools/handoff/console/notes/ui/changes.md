@@ -148,3 +148,7 @@
 2026-10-19 | o-10-pad-floor-bag | Undercroft floor backpack | Existing pad hint row now names D-pad move, A pick up or place, Y drop, B close; pad highlight and held item use the raid bag helpers. Before: no recipe picture available. After: pending lane pictures 41-hub-backpack-pad-p1 and 41-hub-backpack-pad-p2-held from camera-recipes.json.
 
 2026-10-19 | b-31-ui-undercroft | 65-codex | v32.02 tiles fill the card (150px+ rows, art 96px, name 24px, tags 18px). Before shots/b-31-h1/65-codex-1080.jpg, after shots/b-31-i1/65-codex-1080.jpg. Critic 2 to 3.
+
+2026-10-19 | b-30-ui-hud | 61-raid-wheel-open | v32.03 the controls list is no longer drawn over the item wheel. Before shots/b-30m-before, after shots/b-30n-after/61-raid-wheel-open-1080.jpg. Critic 2 to 3.
+
+2026-10-19 | b-30-ui-hud | 22-raid-map-open | v32.05 the toasts RESOLUTION STEPPED DOWN and RUNNING SLOWLY are headlines only. Old text: detail "settings: auto resolution" / "settings: render resolution, effects". New text: none. Reason: the critic read the detail as an explaining line over the map, and no explaining text belongs on screen. After shots/b-30n-after/22-raid-map-open-1080.jpg.

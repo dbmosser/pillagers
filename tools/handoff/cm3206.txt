@@ -1,0 +1,7 @@
+v32.06: low health red is an edge vignette
+
+Under 32 health the screen edges pulse red and the middle stays clear.
+
+Check 32.06. Fails on v32.05.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

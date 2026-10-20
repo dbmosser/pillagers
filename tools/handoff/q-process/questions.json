@@ -1,0 +1,2258 @@
+[
+ {
+  "id": "p-1",
+  "label": "1",
+  "group": "How you hear from me",
+  "question": "When you sit down after time away, what should my first message give you?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Three lines: what shipped, what broke, what needs you"
+   },
+   {
+    "key": "b",
+    "text": "A full report, area by area"
+   },
+   {
+    "key": "c",
+    "text": "Only what needs you"
+   }
+  ],
+  "pick": "a",
+  "why": "fastest to read; details on request."
+ },
+ {
+  "id": "p-2",
+  "label": "2",
+  "group": "How you hear from me",
+  "question": "Where do you mostly read my messages?",
+  "about": "On a phone I keep lines shorter and put links where they open on the phone.",
+  "options": [
+   {
+    "key": "a",
+    "text": "At the PC"
+   },
+   {
+    "key": "b",
+    "text": "On my phone"
+   },
+   {
+    "key": "c",
+    "text": "Both"
+   }
+  ],
+  "pick": "c",
+  "why": "I keep them phone-short either way."
+ },
+ {
+  "id": "p-3",
+  "label": "3",
+  "group": "How you hear from me",
+  "question": "Should I send your phone a notification when something truly needs you?",
+  "about": "For example a sign-in, or a step only you can do that is holding work up.",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes, only for those"
+   },
+   {
+    "key": "b",
+    "text": "Yes, and also when a big update ships"
+   },
+   {
+    "key": "c",
+    "text": "No notifications"
+   }
+  ],
+  "pick": "a",
+  "why": "a ping only when waiting would cost hours."
+ },
+ {
+  "id": "p-4",
+  "label": "4",
+  "group": "How you hear from me",
+  "question": "When many small updates ship overnight, how should the report list them?",
+  "about": "Last night the helpers shipped 4 updates in 30 minutes.",
+  "options": [
+   {
+    "key": "a",
+    "text": "Grouped by area (raid HUD, party screens, pads), one line each"
+   },
+   {
+    "key": "b",
+    "text": "Only the 3 to 5 that matter to you"
+   },
+   {
+    "key": "c",
+    "text": "Every update, one line each"
+   }
+  ],
+  "pick": "b",
+  "why": "bottom line first."
+ },
+ {
+  "id": "p-5",
+  "label": "5",
+  "group": "How you hear from me",
+  "question": "Do you want before and after pictures in reports?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes, for anything you can see that changed"
+   },
+   {
+    "key": "b",
+    "text": "Only when I want your opinion"
+   },
+   {
+    "key": "c",
+    "text": "No, I look in the game"
+   }
+  ],
+  "pick": "b",
+  "why": "pictures cost your time; I send them when your eye decides something."
+ },
+ {
+  "id": "p-6",
+  "label": "6",
+  "group": "How you hear from me",
+  "question": "How do you like to answer questions?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Click pages like this one"
+   },
+   {
+    "key": "b",
+    "text": "In chat"
+   },
+   {
+    "key": "c",
+    "text": "Picture surveys for anything visual, click pages for the rest"
+   }
+  ],
+  "pick": "c",
+  "why": "you said the picture surveys worked well."
+ },
+ {
+  "id": "p-7",
+  "label": "7",
+  "group": "How you hear from me",
+  "question": "How many questions at once is right?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "10 to 20"
+   },
+   {
+    "key": "b",
+    "text": "Up to 50"
+   },
+   {
+    "key": "c",
+    "text": "100 is fine"
+   }
+  ],
+  "pick": "a",
+  "why": "small rounds get answered sooner."
+ },
+ {
+  "id": "p-8",
+  "label": "8",
+  "group": "How you hear from me",
+  "question": "How often should a question page reach you?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "One page a week"
+   },
+   {
+    "key": "b",
+    "text": "Every 2 or 3 days"
+   },
+   {
+    "key": "c",
+    "text": "Only when a decision is truly stuck"
+   }
+  ],
+  "pick": "b",
+  "why": "often enough that nothing waits long."
+ },
+ {
+  "id": "p-9",
+  "label": "9",
+  "group": "How you hear from me",
+  "question": "When something I said I would do slips, how do you want to hear it?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "In the next report, one line with the new plan"
+   },
+   {
+    "key": "b",
+    "text": "Right away"
+   },
+   {
+    "key": "c",
+    "text": "Only if it touches the party"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-10",
+  "label": "10",
+  "group": "How you hear from me",
+  "question": "Is the \"Next:\" line at the end of my messages working for you?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes, keep it as is"
+   },
+   {
+    "key": "b",
+    "text": "Make it say only what you need to do, or \"nothing for you\""
+   },
+   {
+    "key": "c",
+    "text": "Make it list my next 2 or 3 steps"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-11",
+  "label": "11",
+  "group": "Your playtests",
+  "question": "Where will you play new builds during the week?",
+  "about": "Pillagers no longer runs on the main PC. The main PC copy (the party plan) works for weekday play too: your pads, your graphics card, the same address as before.",
+  "options": [
+   {
+    "key": "a",
+    "text": "The main PC copy, refreshed when I say a build is worth playing"
+   },
+   {
+    "key": "b",
+    "text": "Inside the VM window, keyboard and mouse"
+   },
+   {
+    "key": "c",
+    "text": "Both"
+   }
+  ],
+  "pick": "a",
+  "why": "it is the real party setup, so every test is also a rehearsal."
+ },
+ {
+  "id": "p-12",
+  "label": "12",
+  "group": "Your playtests",
+  "question": "How often do you expect to play a new build before 10/30?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Every day"
+   },
+   {
+    "key": "b",
+    "text": "Every 2 or 3 days"
+   },
+   {
+    "key": "c",
+    "text": "Once or twice"
+   }
+  ],
+  "pick": "b",
+  "why": ""
+ },
+ {
+  "id": "p-13",
+  "label": "13",
+  "group": "Your playtests",
+  "question": "How long is a typical play session?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Under 20 minutes"
+   },
+   {
+    "key": "b",
+    "text": "20 to 60 minutes"
+   },
+   {
+    "key": "c",
+    "text": "Over an hour"
+   }
+  ],
+  "pick": "b",
+  "why": ""
+ },
+ {
+  "id": "p-14",
+  "label": "14",
+  "group": "Your playtests",
+  "question": "How should your in-game notes and run reports reach me now?",
+  "about": "The copy saves them on the main PC. The main PC link can only run jobs you approved; fetching your notes would be a new one, and picking a here is that approval.",
+  "options": [
+   {
+    "key": "a",
+    "text": "Add a \"fetch my notes\" job to the main PC link"
+   },
+   {
+    "key": "b",
+    "text": "I drop them in the shared folder myself"
+   },
+   {
+    "key": "c",
+    "text": "I paste them in chat"
+   }
+  ],
+  "pick": "a",
+  "why": "no work for you after each session."
+ },
+ {
+  "id": "p-15",
+  "label": "15",
+  "group": "Your playtests",
+  "question": "With each build worth playing, do you want a short \"try this\" list?",
+  "about": "3 to 5 things to look at, in plain words.",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes"
+   },
+   {
+    "key": "b",
+    "text": "No, I play blind and tell you what I notice"
+   },
+   {
+    "key": "c",
+    "text": "Only for big changes"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-16",
+  "label": "16",
+  "group": "Your playtests",
+  "question": "After a session, would a 1-minute click page of feel questions help?",
+  "about": "Fun, clear, annoying, broken: a few taps instead of typing.",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes"
+   },
+   {
+    "key": "b",
+    "text": "No, I type my own notes"
+   },
+   {
+    "key": "c",
+    "text": "Only after the rehearsal and the party"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-17",
+  "label": "17",
+  "group": "Your playtests",
+  "question": "Do you use the in-game note key while playing?",
+  "about": "A note taken in the game lands with the exact moment and screen, which is the fastest path to a fix.",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes, often"
+   },
+   {
+    "key": "b",
+    "text": "Sometimes"
+   },
+   {
+    "key": "c",
+    "text": "Rarely, I forget it exists"
+   }
+  ],
+  "pick": "b",
+  "why": ""
+ },
+ {
+  "id": "p-18",
+  "label": "18",
+  "group": "Your playtests",
+  "question": "When you find a bug, what is easiest for you?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "The in-game note key"
+   },
+   {
+    "key": "b",
+    "text": "A phone photo of the screen, sent in chat"
+   },
+   {
+    "key": "c",
+    "text": "Describing it in chat"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-19",
+  "label": "19",
+  "group": "Your playtests",
+  "question": "When you and your son disagree about something in the game, whose call wins?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Mine"
+   },
+   {
+    "key": "b",
+    "text": "His on fun and clarity, mine on everything else"
+   },
+   {
+    "key": "c",
+    "text": "We tell you case by case"
+   }
+  ],
+  "pick": "b",
+  "why": "he is the kind of player the party is for."
+ },
+ {
+  "id": "p-20",
+  "label": "20",
+  "group": "Your playtests",
+  "question": "If something feels off but is hard to describe, could you record a short clip?",
+  "about": "Windows can record the screen with Win + Alt + R.",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes"
+   },
+   {
+    "key": "b",
+    "text": "No"
+   },
+   {
+    "key": "c",
+    "text": "Only for big problems"
+   }
+  ],
+  "pick": "c",
+  "why": ""
+ },
+ {
+  "id": "p-21",
+  "label": "21",
+  "group": "What I decide on my own",
+  "question": "If a feature keeps breaking and is not in your orders, may I switch it off until after the party and tell you after?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes"
+   },
+   {
+    "key": "b",
+    "text": "Ask me first"
+   },
+   {
+    "key": "c",
+    "text": "Never switch anything off"
+   }
+  ],
+  "pick": "a",
+  "why": "a steady party matters more."
+ },
+ {
+  "id": "p-22",
+  "label": "22",
+  "group": "What I decide on my own",
+  "question": "When the screen judge and your style guide disagree, which wins?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "The style guide (your rules)"
+   },
+   {
+    "key": "b",
+    "text": "The judge's score"
+   },
+   {
+    "key": "c",
+    "text": "Show me both with pictures"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-23",
+  "label": "23",
+  "group": "What I decide on my own",
+  "question": "May I use free art, sound and music with open licences, with credits listed?",
+  "about": "For example Kenney, OpenGameArt or Freesound.",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes"
+   },
+   {
+    "key": "b",
+    "text": "Only as placeholders until something better"
+   },
+   {
+    "key": "c",
+    "text": "No, keep it all made here"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-24",
+  "label": "24",
+  "group": "What I decide on my own",
+  "question": "If a paid tool or service would clearly speed things up, do you want the pitch?",
+  "about": "I would never buy anything myself; you decide each one.",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes, any time it clearly pays off"
+   },
+   {
+    "key": "b",
+    "text": "Only under about $20 a month"
+   },
+   {
+    "key": "c",
+    "text": "No paid extras"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-25",
+  "label": "25",
+  "group": "What I decide on my own",
+  "question": "When your notes are unclear, what should I do?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Take my best guess, ship it, tell you how I read it"
+   },
+   {
+    "key": "b",
+    "text": "Ask first and wait"
+   },
+   {
+    "key": "c",
+    "text": "Guess now and ask in the next round"
+   }
+  ],
+  "pick": "c",
+  "why": "no waiting, and you can still correct me."
+ },
+ {
+  "id": "p-26",
+  "label": "26",
+  "group": "What I decide on my own",
+  "question": "When a helper finishes early, may it start polish that is not on your list?",
+  "about": "Spacing, contrast, text that clips: small fixes, never new features.",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes, polish is always welcome"
+   },
+   {
+    "key": "b",
+    "text": "Only fixes the screen judge asked for"
+   },
+   {
+    "key": "c",
+    "text": "No, wait for orders"
+   }
+  ],
+  "pick": "b",
+  "why": "judge findings are evidence, not invention."
+ },
+ {
+  "id": "p-27",
+  "label": "27",
+  "group": "What I decide on my own",
+  "question": "May I reword on-screen text (still lower case and short) when clarity calls for it?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes"
+   },
+   {
+    "key": "b",
+    "text": "Only labels, not the names of things"
+   },
+   {
+    "key": "c",
+    "text": "Ask first"
+   }
+  ],
+  "pick": "b",
+  "why": ""
+ },
+ {
+  "id": "p-28",
+  "label": "28",
+  "group": "What I decide on my own",
+  "question": "If a change from your notes makes something else worse, what do you want?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "I keep the better of the two and tell you"
+   },
+   {
+    "key": "b",
+    "text": "Undo it and ask"
+   },
+   {
+    "key": "c",
+    "text": "Ship both and you choose"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-29",
+  "label": "29",
+  "group": "What I decide on my own",
+  "question": "May I cut a step guests do not need (for example a confirm screen) to make the party flow faster?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes, tell me after"
+   },
+   {
+    "key": "b",
+    "text": "Show me first"
+   },
+   {
+    "key": "c",
+    "text": "No"
+   }
+  ],
+  "pick": "b",
+  "why": "it changes what guests see, so you see it first."
+ },
+ {
+  "id": "p-30",
+  "label": "30",
+  "group": "What I decide on my own",
+  "question": "When two of your older answers clash, how should I settle it?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "The newest answer wins"
+   },
+   {
+    "key": "b",
+    "text": "Ask you once, quoting both"
+   },
+   {
+    "key": "c",
+    "text": "Whichever fits the party best"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-31",
+  "label": "31",
+  "group": "Your plans and the helpers",
+  "question": "Do you use this same Claude plan for other things?",
+  "about": "Your work, or the other two Pillagers projects. The helpers stop at 85% of each 5-hour window today.",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes, a lot"
+   },
+   {
+    "key": "b",
+    "text": "A little"
+   },
+   {
+    "key": "c",
+    "text": "No, Pillagers has it to itself"
+   }
+  ],
+  "pick": "b",
+  "why": ""
+ },
+ {
+  "id": "p-32",
+  "label": "32",
+  "group": "Your plans and the helpers",
+  "question": "While you are at the PC, how much of each 5-hour window should the helpers leave for you?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "15% (as now)"
+   },
+   {
+    "key": "b",
+    "text": "30%"
+   },
+   {
+    "key": "c",
+    "text": "50%"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-33",
+  "label": "33",
+  "group": "Your plans and the helpers",
+  "question": "And while you are away or asleep?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Let them use up to 95%"
+   },
+   {
+    "key": "b",
+    "text": "Keep the 85% stop"
+   },
+   {
+    "key": "c",
+    "text": "The same as when I am here"
+   }
+  ],
+  "pick": "a",
+  "why": "nothing else needs it at night."
+ },
+ {
+  "id": "p-34",
+  "label": "34",
+  "group": "Your plans and the helpers",
+  "question": "Your Console credit resets to $200 on Nov 1. What should it go to first?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "More helper runs right away"
+   },
+   {
+    "key": "b",
+    "text": "The screen judge (keeps your plan free for helpers)"
+   },
+   {
+    "key": "c",
+    "text": "Spread it evenly through Thanksgiving"
+   }
+  ],
+  "pick": "c",
+  "why": "the release crunch will want some left."
+ },
+ {
+  "id": "p-35",
+  "label": "35",
+  "group": "Your plans and the helpers",
+  "question": "Do you want a cost line in each morning report?",
+  "about": "Plan usage this week and Console spend.",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes, one line"
+   },
+   {
+    "key": "b",
+    "text": "Only when something is unusual"
+   },
+   {
+    "key": "c",
+    "text": "No"
+   }
+  ],
+  "pick": "b",
+  "why": ""
+ },
+ {
+  "id": "p-36",
+  "label": "36",
+  "group": "Your plans and the helpers",
+  "question": "ChatGPT (Codex) does one helper's work on your ChatGPT plan. Does that plan have room to use harder?",
+  "about": "It costs no Claude usage.",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes, push it"
+   },
+   {
+    "key": "b",
+    "text": "Keep it as now"
+   },
+   {
+    "key": "c",
+    "text": "I need it for other things, use it less"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-37",
+  "label": "37",
+  "group": "Your plans and the helpers",
+  "question": "Would you pay for a second plan or seat if it clearly doubled the helpers?",
+  "about": "Only a pitch with real numbers; nothing is bought without you.",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes, pitch it"
+   },
+   {
+    "key": "b",
+    "text": "Maybe after the party"
+   },
+   {
+    "key": "c",
+    "text": "No"
+   }
+  ],
+  "pick": "b",
+  "why": ""
+ },
+ {
+  "id": "p-38",
+  "label": "38",
+  "group": "Your plans and the helpers",
+  "question": "The local AI rests during your usual PC hours (6-9, 1-4, 7-10) so your graphics card stays free. Still right now the main PC is your work PC?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes"
+   },
+   {
+    "key": "b",
+    "text": "It may run any time unless I am gaming"
+   },
+   {
+    "key": "c",
+    "text": "Change the hours (write them)"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-39",
+  "label": "39",
+  "group": "Your plans and the helpers",
+  "question": "Do you play other games on the main PC?",
+  "about": "The VM borrows most of the graphics card. If you game, I would pause the VM's camera work while you play.",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes, often"
+   },
+   {
+    "key": "b",
+    "text": "Sometimes"
+   },
+   {
+    "key": "c",
+    "text": "Rarely"
+   }
+  ],
+  "pick": "b",
+  "why": ""
+ },
+ {
+  "id": "p-40",
+  "label": "40",
+  "group": "Your plans and the helpers",
+  "question": "Until 10/30, should helpers work only on the party, or also on release prep in the background?",
+  "about": "Release prep means things like the store page and the feedback collector, never game features after the 10/26 cutoff.",
+  "options": [
+   {
+    "key": "a",
+    "text": "Party only"
+   },
+   {
+    "key": "b",
+    "text": "Mostly party, a little release prep"
+   },
+   {
+    "key": "c",
+    "text": "Whatever is next on the list"
+   }
+  ],
+  "pick": "b",
+  "why": ""
+ },
+ {
+  "id": "p-41",
+  "label": "41",
+  "group": "The VM and the main PC",
+  "question": "Will you leave the Claude window in the VM open all the time?",
+  "about": "My half-hourly check-ins live in that window. When it closes they stop until you say \"check in\".",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes"
+   },
+   {
+    "key": "b",
+    "text": "Mostly, I sometimes close it"
+   },
+   {
+    "key": "c",
+    "text": "I close it when I am done"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-42",
+  "label": "42",
+  "group": "The VM and the main PC",
+  "question": "Windows updates in the VM can restart it at a bad moment. What do you want?",
+  "about": "The VM now signs back in by itself, but an update mid-ship can still cost an hour.",
+  "options": [
+   {
+    "key": "a",
+    "text": "Pause VM updates until after 10/30 (you click it)"
+   },
+   {
+    "key": "b",
+    "text": "Leave them on"
+   },
+   {
+    "key": "c",
+    "text": "Install them only when I am around"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-43",
+  "label": "43",
+  "group": "The VM and the main PC",
+  "question": "Same for the main PC around the party?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Pause updates until after 10/30"
+   },
+   {
+    "key": "b",
+    "text": "Leave them on"
+   },
+   {
+    "key": "c",
+    "text": "I will handle it"
+   }
+  ],
+  "pick": "a",
+  "why": "an update on party night would hurt most."
+ },
+ {
+  "id": "p-44",
+  "label": "44",
+  "group": "The VM and the main PC",
+  "question": "More memory is the biggest speed-up: today only 1 or 2 of the 3 helpers fit, and the crash robot keeps waiting. Which would you consider?",
+  "about": "The main PC has 32 GB. With 64 GB the VM could have about 24 GB: every helper and the robot at once.",
+  "options": [
+   {
+    "key": "a",
+    "text": "Close programs on the main PC so the VM can have 12 GB"
+   },
+   {
+    "key": "b",
+    "text": "Add memory to the main PC (I can price it)"
+   },
+   {
+    "key": "c",
+    "text": "Neither, keep 10 GB"
+   }
+  ],
+  "pick": "b",
+  "why": "the one change that frees everything else."
+ },
+ {
+  "id": "p-45",
+  "label": "45",
+  "group": "The VM and the main PC",
+  "question": "Would you be OK with the VM taking more memory only at night, back to normal by morning?",
+  "about": "Only if I can make it safe; you would approve the setup once.",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes"
+   },
+   {
+    "key": "b",
+    "text": "No, keep it fixed"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-46",
+  "label": "46",
+  "group": "The VM and the main PC",
+  "question": "Does the main PC stay on all the time?",
+  "about": "When the main PC is off, the VM is off too.",
+  "options": [
+   {
+    "key": "a",
+    "text": "It runs 24/7"
+   },
+   {
+    "key": "b",
+    "text": "I restart it now and then"
+   },
+   {
+    "key": "c",
+    "text": "I shut it down at night"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-47",
+  "label": "47",
+  "group": "The VM and the main PC",
+  "question": "Should the VM keep a weekly safety snapshot you can roll back to?",
+  "about": "A Hyper-V checkpoint, set up once on the main PC. GitHub already keeps the game; this would keep the VM setup itself.",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes, set it up"
+   },
+   {
+    "key": "b",
+    "text": "No, GitHub is enough"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-48",
+  "label": "48",
+  "group": "The VM and the main PC",
+  "question": "If the VM breaks badly before the party, what is the plan?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "The main PC copy for the party, fix the VM after"
+   },
+   {
+    "key": "b",
+    "text": "Rebuild the VM right away"
+   },
+   {
+    "key": "c",
+    "text": "Bring Pillagers back to the main PC"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-49",
+  "label": "49",
+  "group": "The VM and the main PC",
+  "question": "While you play the copy on the main PC, should the VM go light?",
+  "about": "Fewer helpers and no camera work, so nothing competes with your game.",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes"
+   },
+   {
+    "key": "b",
+    "text": "No, it does not bother me"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-50",
+  "label": "50",
+  "group": "The VM and the main PC",
+  "question": "On rehearsal and party night, should the VM stop all work?",
+  "about": "The party runs on the main PC; the VM shares its graphics card and processor.",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes, pause everything that evening"
+   },
+   {
+    "key": "b",
+    "text": "Keep it light"
+   },
+   {
+    "key": "c",
+    "text": "Keep it running"
+   }
+  ],
+  "pick": "a",
+  "why": "zero risk of a stutter from my side."
+ },
+ {
+  "id": "p-51",
+  "label": "51",
+  "group": "Quality and the look",
+  "question": "Would you grade a few screens yourself now and then?",
+  "about": "A click page with pictures, 1 to 5. Your scores teach the screen judge your taste.",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes, weekly"
+   },
+   {
+    "key": "b",
+    "text": "Yes, only before the party"
+   },
+   {
+    "key": "c",
+    "text": "No, trust the judge"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-52",
+  "label": "52",
+  "group": "Quality and the look",
+  "question": "Besides ARC Raiders and Fortnite menus, which games should the judge measure against?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Keep those two"
+   },
+   {
+    "key": "b",
+    "text": "Add Zero Sievert"
+   },
+   {
+    "key": "c",
+    "text": "Add others (name them)"
+   }
+  ],
+  "pick": "b",
+  "why": "you named it as part of the feel."
+ },
+ {
+  "id": "p-53",
+  "label": "53",
+  "group": "Quality and the look",
+  "question": "For a new screen design, do you want to pick from mockups first?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes, 2 or 3 mockups for every new screen"
+   },
+   {
+    "key": "b",
+    "text": "Only for big screens (title, pre-raid, HUD)"
+   },
+   {
+    "key": "c",
+    "text": "No, build it and show me"
+   }
+  ],
+  "pick": "b",
+  "why": ""
+ },
+ {
+  "id": "p-54",
+  "label": "54",
+  "group": "Quality and the look",
+  "question": "When the judge scores low a screen you like, what should happen?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Your taste wins, keep it"
+   },
+   {
+    "key": "b",
+    "text": "Improve it anyway"
+   },
+   {
+    "key": "c",
+    "text": "Ask me with pictures"
+   }
+  ],
+  "pick": "c",
+  "why": ""
+ },
+ {
+  "id": "p-55",
+  "label": "55",
+  "group": "Quality and the look",
+  "question": "Where do you judge the look: the TV or your monitor?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "The TV"
+   },
+   {
+    "key": "b",
+    "text": "The monitor"
+   },
+   {
+    "key": "c",
+    "text": "Both"
+   }
+  ],
+  "pick": "a",
+  "why": "the party is on the TVs."
+ },
+ {
+  "id": "p-56",
+  "label": "56",
+  "group": "Quality and the look",
+  "question": "Should helpers also polish the Career screens, or only the party screens until 10/30?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Party screens only"
+   },
+   {
+    "key": "b",
+    "text": "Both"
+   },
+   {
+    "key": "c",
+    "text": "Party first, Career after 10/26"
+   }
+  ],
+  "pick": "c",
+  "why": ""
+ },
+ {
+  "id": "p-57",
+  "label": "57",
+  "group": "Quality and the look",
+  "question": "I cannot hear. How should sound changes be checked?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "You listen to a short list after each sound update"
+   },
+   {
+    "key": "b",
+    "text": "Trust the loudness checks"
+   },
+   {
+    "key": "c",
+    "text": "Hold sound changes until after the party"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-58",
+  "label": "58",
+  "group": "Quality and the look",
+  "question": "Should the game show a small version number during the party?",
+  "about": "It ties a bug report to the exact build.",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes, small, in a corner"
+   },
+   {
+    "key": "b",
+    "text": "No, hide it at the party"
+   },
+   {
+    "key": "c",
+    "text": "Only inside a menu"
+   }
+  ],
+  "pick": "c",
+  "why": ""
+ },
+ {
+  "id": "p-59",
+  "label": "59",
+  "group": "Quality and the look",
+  "question": "Options like bigger text or colourblind-friendly markers: when?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Before Thanksgiving"
+   },
+   {
+    "key": "b",
+    "text": "Later"
+   },
+   {
+    "key": "c",
+    "text": "Not needed"
+   }
+  ],
+  "pick": "b",
+  "why": ""
+ },
+ {
+  "id": "p-60",
+  "label": "60",
+  "group": "Quality and the look",
+  "question": "When the judge passes a screen, should helpers stop touching it?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes, freeze it unless you complain"
+   },
+   {
+    "key": "b",
+    "text": "Keep polishing if time allows"
+   },
+   {
+    "key": "c",
+    "text": "Freeze it only after you approve it"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-61",
+  "label": "61",
+  "group": "Party night",
+  "question": "About how many guests will play?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Under 6"
+   },
+   {
+    "key": "b",
+    "text": "6 to 12"
+   },
+   {
+    "key": "c",
+    "text": "More than 12"
+   }
+  ],
+  "pick": "b",
+  "why": ""
+ },
+ {
+  "id": "p-62",
+  "label": "62",
+  "group": "Party night",
+  "question": "Should the board be cleared after the rehearsal so the party starts fresh?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes"
+   },
+   {
+    "key": "b",
+    "text": "No, rehearsal scores are the ones to beat"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-63",
+  "label": "63",
+  "group": "Party night",
+  "question": "Who are the guests mostly?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Kids"
+   },
+   {
+    "key": "b",
+    "text": "Adults who game"
+   },
+   {
+    "key": "c",
+    "text": "Adults who rarely game"
+   },
+   {
+    "key": "d",
+    "text": "A real mix"
+   }
+  ],
+  "pick": "d",
+  "why": ""
+ },
+ {
+  "id": "p-64",
+  "label": "64",
+  "group": "Party night",
+  "question": "What would make the night a success to you?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "People keep coming back to play"
+   },
+   {
+    "key": "b",
+    "text": "Nobody needs help to start"
+   },
+   {
+    "key": "c",
+    "text": "No crash or stutter all night"
+   },
+   {
+    "key": "d",
+    "text": "Honest feedback"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-65",
+  "label": "65",
+  "group": "Party night",
+  "question": "Will you host the game most of the night, or should it run itself?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "I host it"
+   },
+   {
+    "key": "b",
+    "text": "It runs itself, I check in now and then"
+   },
+   {
+    "key": "c",
+    "text": "Someone else hosts"
+   }
+  ],
+  "pick": "b",
+  "why": ""
+ },
+ {
+  "id": "p-66",
+  "label": "66",
+  "group": "Party night",
+  "question": "May the party save each run's report on the main PC for me?",
+  "about": "Run reports hold no personal details; they show where guests died, quit or got stuck.",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes"
+   },
+   {
+    "key": "b",
+    "text": "Yes, and screen recordings too"
+   },
+   {
+    "key": "c",
+    "text": "No recording"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-67",
+  "label": "67",
+  "group": "Party night",
+  "question": "After the party, how do you want to tell me what happened?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "A click page of questions I write from the run reports"
+   },
+   {
+    "key": "b",
+    "text": "Tell me in chat in your own words"
+   },
+   {
+    "key": "c",
+    "text": "Both"
+   }
+  ],
+  "pick": "c",
+  "why": ""
+ },
+ {
+  "id": "p-68",
+  "label": "68",
+  "group": "Party night",
+  "question": "Who plays at the rehearsal on Wed 10/28?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Me alone with two pads"
+   },
+   {
+    "key": "b",
+    "text": "Me and my son"
+   },
+   {
+    "key": "c",
+    "text": "The whole family"
+   }
+  ],
+  "pick": "b",
+  "why": ""
+ },
+ {
+  "id": "p-69",
+  "label": "69",
+  "group": "Party night",
+  "question": "If something breaks mid-party, what is the plan?",
+  "about": "The copy folder can keep the previous good build as a spare.",
+  "options": [
+   {
+    "key": "a",
+    "text": "Restart the game and carry on"
+   },
+   {
+    "key": "b",
+    "text": "Switch to the spare build"
+   },
+   {
+    "key": "c",
+    "text": "Stop the game"
+   }
+  ],
+  "pick": "b",
+  "why": ""
+ },
+ {
+  "id": "p-70",
+  "label": "70",
+  "group": "Party night",
+  "question": "Will both TVs and pads be set up for the rehearsal, so it is the real setup?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes"
+   },
+   {
+    "key": "b",
+    "text": "No, the rehearsal is on my desk"
+   },
+   {
+    "key": "c",
+    "text": "Not sure yet"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-71",
+  "label": "71",
+  "group": "The Thanksgiving release",
+  "question": "Where should the release live?",
+  "about": "itch.io can go live the same day. Steam needs a $100 fee, a store page up some weeks ahead and a review.",
+  "options": [
+   {
+    "key": "a",
+    "text": "itch.io"
+   },
+   {
+    "key": "b",
+    "text": "itch.io now, Steam later"
+   },
+   {
+    "key": "c",
+    "text": "Steam at Thanksgiving"
+   }
+  ],
+  "pick": "b",
+  "why": ""
+ },
+ {
+  "id": "p-72",
+  "label": "72",
+  "group": "The Thanksgiving release",
+  "question": "Price?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Free"
+   },
+   {
+    "key": "b",
+    "text": "Pay what you want"
+   },
+   {
+    "key": "c",
+    "text": "A fixed price (write it)"
+   }
+  ],
+  "pick": "b",
+  "why": ""
+ },
+ {
+  "id": "p-73",
+  "label": "73",
+  "group": "The Thanksgiving release",
+  "question": "Who plays between the party and Thanksgiving?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Friends and family, private link"
+   },
+   {
+    "key": "b",
+    "text": "A public page right away"
+   },
+   {
+    "key": "c",
+    "text": "No one until release"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-74",
+  "label": "74",
+  "group": "The Thanksgiving release",
+  "question": "The feedback collector (friends' run reports reach me automatically) still waits on a free Cloudflare setup on your side. Do it before friends play?",
+  "about": "About 15 minutes with my steps.",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes, walk me through it"
+   },
+   {
+    "key": "b",
+    "text": "Later"
+   },
+   {
+    "key": "c",
+    "text": "Skip it, friends send files by hand"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-75",
+  "label": "75",
+  "group": "The Thanksgiving release",
+  "question": "The store page text: who writes it?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "I write a tagline and page, you pick"
+   },
+   {
+    "key": "b",
+    "text": "You write it"
+   },
+   {
+    "key": "c",
+    "text": "Keep it bare"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-76",
+  "label": "76",
+  "group": "The Thanksgiving release",
+  "question": "Should the release include Career mode, or only the 2-player couch mode?",
+  "about": "You ruled that the couch mode leads the release.",
+  "options": [
+   {
+    "key": "a",
+    "text": "Both, couch mode up front"
+   },
+   {
+    "key": "b",
+    "text": "Couch mode first, Career later"
+   },
+   {
+    "key": "c",
+    "text": "Career first"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-77",
+  "label": "77",
+  "group": "The Thanksgiving release",
+  "question": "A trailer or moving picture for the page?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes, the helpers make one from game captures"
+   },
+   {
+    "key": "b",
+    "text": "No"
+   },
+   {
+    "key": "c",
+    "text": "I will make it"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-78",
+  "label": "78",
+  "group": "The Thanksgiving release",
+  "question": "Do you want a public devlog (short posts as we go)?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes, I post what you draft"
+   },
+   {
+    "key": "b",
+    "text": "No"
+   }
+  ],
+  "pick": "b",
+  "why": ""
+ },
+ {
+  "id": "p-79",
+  "label": "79",
+  "group": "The Thanksgiving release",
+  "question": "Should saves move between computers (an export and import code)?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes, before release"
+   },
+   {
+    "key": "b",
+    "text": "Later"
+   },
+   {
+    "key": "c",
+    "text": "No"
+   }
+  ],
+  "pick": "b",
+  "why": ""
+ },
+ {
+  "id": "p-80",
+  "label": "80",
+  "group": "The Thanksgiving release",
+  "question": "After Thanksgiving, what comes next?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "More content (maps, weapons, enemies)"
+   },
+   {
+    "key": "b",
+    "text": "Online co-op"
+   },
+   {
+    "key": "c",
+    "text": "Polish only, then rest"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-81",
+  "label": "81",
+  "group": "Making me faster",
+  "question": "Many small updates a day, or one build a day worth playing?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Many small (as now)"
+   },
+   {
+    "key": "b",
+    "text": "Fewer, bigger updates"
+   },
+   {
+    "key": "c",
+    "text": "Small updates, plus one \"worth playing\" build a day"
+   }
+  ],
+  "pick": "c",
+  "why": ""
+ },
+ {
+  "id": "p-82",
+  "label": "82",
+  "group": "Making me faster",
+  "question": "When I need a decision, do you want my recommendation first?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes, my pick first (as now)"
+   },
+   {
+    "key": "b",
+    "text": "No, show the options without a pick"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-83",
+  "label": "83",
+  "group": "Making me faster",
+  "question": "Do you want a weekly plain-words summary: what got better, what is next?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes, on Sundays"
+   },
+   {
+    "key": "b",
+    "text": "No"
+   }
+  ],
+  "pick": "a",
+  "why": "Sunday is your busiest day at the PC."
+ },
+ {
+  "id": "p-84",
+  "label": "84",
+  "group": "Making me faster",
+  "question": "Are there times you want no messages from me?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "No, any time"
+   },
+   {
+    "key": "b",
+    "text": "Quiet on weekends"
+   },
+   {
+    "key": "c",
+    "text": "Quiet in the evenings"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-85",
+  "label": "85",
+  "group": "Making me faster",
+  "question": "When one of your rules costs a lot of time for little gain, may I propose dropping it?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes, in a question round"
+   },
+   {
+    "key": "b",
+    "text": "No, the rules stand"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-86",
+  "label": "86",
+  "group": "Making me faster",
+  "question": "Would a small page listing only your open steps help?",
+  "about": "Like tonight's list: one place that always shows what is waiting on you.",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes"
+   },
+   {
+    "key": "b",
+    "text": "No, the chat is enough"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-87",
+  "label": "87",
+  "group": "Making me faster",
+  "question": "The game's GitHub page is public. Keep it public after release?",
+  "about": "The party copy downloads from it without a sign-in.",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes"
+   },
+   {
+    "key": "b",
+    "text": "Make it private before release"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-88",
+  "label": "88",
+  "group": "Making me faster",
+  "question": "Should I put the rehearsal (Wed 10/28), the lock (Thu 10/29) and the party (Fri 10/30) on your Google Calendar?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes"
+   },
+   {
+    "key": "b",
+    "text": "No"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-89",
+  "label": "89",
+  "group": "Making me faster",
+  "question": "Would you like the morning report by email too?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes, to me"
+   },
+   {
+    "key": "b",
+    "text": "No, chat is enough"
+   }
+  ],
+  "pick": "b",
+  "why": ""
+ },
+ {
+  "id": "p-90",
+  "label": "90",
+  "group": "Making me faster",
+  "question": "Do you keep game ideas anywhere I should read?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes, in Notion"
+   },
+   {
+    "key": "b",
+    "text": "Yes, in Google Docs or Drive"
+   },
+   {
+    "key": "c",
+    "text": "No, they come to you in chat"
+   }
+  ],
+  "pick": "c",
+  "why": ""
+ },
+ {
+  "id": "p-91",
+  "label": "91",
+  "group": "The bigger picture",
+  "question": "What frustrates you most about how we work today?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Chasing problems I should have caught"
+   },
+   {
+    "key": "b",
+    "text": "Too much reading"
+   },
+   {
+    "key": "c",
+    "text": "Too many questions"
+   },
+   {
+    "key": "d",
+    "text": "Progress I cannot see"
+   }
+  ],
+  "pick": "",
+  "why": "only you know this one."
+ },
+ {
+  "id": "p-92",
+  "label": "92",
+  "group": "The bigger picture",
+  "question": "What do you want more of?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Visible game changes"
+   },
+   {
+    "key": "b",
+    "text": "Fewer interruptions"
+   },
+   {
+    "key": "c",
+    "text": "Clearer explanations"
+   },
+   {
+    "key": "d",
+    "text": "More pictures"
+   }
+  ],
+  "pick": "",
+  "why": "only you know this one."
+ },
+ {
+  "id": "p-93",
+  "label": "93",
+  "group": "The bigger picture",
+  "question": "How do you judge progress day to day?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "What I see when I play"
+   },
+   {
+    "key": "b",
+    "text": "The report"
+   },
+   {
+    "key": "c",
+    "text": "The number of updates"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-94",
+  "label": "94",
+  "group": "The bigger picture",
+  "question": "When can I call something done?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "It passed the tests and the pictures"
+   },
+   {
+    "key": "b",
+    "text": "You played it"
+   },
+   {
+    "key": "c",
+    "text": "A friend played it"
+   }
+  ],
+  "pick": "a",
+  "why": "you play the important ones anyway."
+ },
+ {
+  "id": "p-95",
+  "label": "95",
+  "group": "The bigger picture",
+  "question": "Close to the party, what is your default for a risky change?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Leave it until after the party"
+   },
+   {
+    "key": "b",
+    "text": "Change it if the tests pass"
+   },
+   {
+    "key": "c",
+    "text": "Ask me"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-96",
+  "label": "96",
+  "group": "The bigger picture",
+  "question": "Should I keep a page of ideas the helpers and I have, for you to pick from after the party?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes, one page with pictures"
+   },
+   {
+    "key": "b",
+    "text": "No, only my ideas count"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-97",
+  "label": "97",
+  "group": "The bigger picture",
+  "question": "Would a fixed weekly \"play with me\" slot help, with a build and questions ready for it?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Yes, Sunday afternoon"
+   },
+   {
+    "key": "b",
+    "text": "Yes, another time (write it)"
+   },
+   {
+    "key": "c",
+    "text": "No"
+   }
+  ],
+  "pick": "a",
+  "why": "Sunday afternoon is your busiest time at the PC."
+ },
+ {
+  "id": "p-98",
+  "label": "98",
+  "group": "The bigger picture",
+  "question": "How much do you want to know about how the helpers work?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "Nothing, results only"
+   },
+   {
+    "key": "b",
+    "text": "A little, in plain words"
+   },
+   {
+    "key": "c",
+    "text": "A lot"
+   }
+  ],
+  "pick": "a",
+  "why": ""
+ },
+ {
+  "id": "p-99",
+  "label": "99",
+  "group": "The bigger picture",
+  "question": "Is there anything I do today that you want me to stop?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "No"
+   },
+   {
+    "key": "b",
+    "text": "Yes (write it)"
+   }
+  ],
+  "pick": "",
+  "why": "only you know this one."
+ },
+ {
+  "id": "p-100",
+  "label": "100",
+  "group": "The bigger picture",
+  "question": "Anything you wish I had asked?",
+  "about": "",
+  "options": [
+   {
+    "key": "a",
+    "text": "No"
+   },
+   {
+    "key": "b",
+    "text": "Yes (write it)"
+   }
+  ],
+  "pick": "",
+  "why": ""
+ }
+]

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.06 - LOW HEALTH RED IS AN EDGE VIGNETTE
+
+Co-op hunt while he was away. UI critic, screen 36: low health should read as a screen-edge vignette. The old flat red wash tinted the whole picture including the fight in the middle.
+
+MEASURED. Check 32.06 passes, and fails on v32.05.
 ## v32.05 - SLOW FRAME TOASTS ARE HEADLINES ONLY
 
 Co-op hunt while he was away. UI critic, screen 22: the detail lines under RESOLUTION STEPPED DOWN and RUNNING SLOWLY read as explaining text over the map. Both toasts are now the headline alone.
