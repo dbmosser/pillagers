@@ -6101,6 +6101,14 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.35',what:'the extract inbound countdown line is drawn in the big-number size, not the callout size (critic 37)',
+   run:function(){
+     if(typeof extBanFont!=='function') return 'the extract banner has no font function (extBanFont)';
+     var a=parseFloat((/([\d.]+)px/).exec(extBanFont(12))[1]), b=parseFloat((/([\d.]+)px/).exec(extBanFont(0))[1]);
+     if(a<=b*1.5) return 'inbound line '+a+'px is not clearly bigger than the landed line '+b+'px';
+     if(String(drawHUD).indexOf('extBanFont(G.beaconT)')<0) return 'drawHUD does not use extBanFont';
+     return null;
+   }},
   {v:'32.34',what:'the idle loop cycles through three variations of the piece in turn (his 2.70 c)',
    run:function(){
      var T, B, p0, leads=[], i, st, pass, adv, seen=[], bad=[], key, sorted;

@@ -1,1 +1,1 @@
-10-20 01:02 running 19-party-audio on Claude Code (your plan: week 54% of the 24.3% line, 5-hour 8%)
+10-20 01:12 waiting for RAM: 2 GB free, a helper starts at 3; 19-party-audio kept

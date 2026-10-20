@@ -1,0 +1,7 @@
+v32.35: the extract inbound countdown is the big number size
+
+While extraction is inbound the countdown line is drawn at the big number size.
+
+Check 32.35. Fails on v32.34.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

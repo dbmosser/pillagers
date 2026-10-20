@@ -1,0 +1,9 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  05-sector-page                         staged       7.4s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | sectormodal
+  stashraid-forge-prompt                 NOT STAGED   8.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | expect failed: U.raid()&&!!__state().nearForge&&!__state().forgeUI&&__P().credits===10000&&__state().cs.s===0 -> expect threw: TypeError: Cannot read properties of undefined (reading 's')
+  stashraid-forge-elements               NOT STAGED   8.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot set properties of undefined (setting 's')
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html:161232:33), <anonymous>:1:67)
+    at window.__gx (http://localhost:8808/fixture.html:164124:33)
+    at <anonymous>:4:1
+    at async <anonymous>:1:21
+  stashraid-forge-gun-card               NOT STAGED   8.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | expect failed: U.raid()&&!__state().forgeUI&&__state().player.wep.fk===1&&__P().credits===7500&&__state().cs.s===0&&!!__state().gunCard -> expect threw: TypeError: Cannot read properties of undefined (reading 's')

@@ -3028,7 +3028,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.34';
+var VER='32.35';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12045,6 +12045,8 @@ function beltCapFS(bw){ var a=beltFS(bw,0.12), b=hudFS(TYPE.label), pa=parseFloa
 // v19.22, seen on the 4K raid screenshot (2026-10-08): a HUD font grown with the screen (hudRes), for the few raid labels drawn
 // straight in screen pixels that stayed their 1080p size at 4K.
 function hudFS(spec){ var f=FS(spec), r=Math.max(1,(typeof hudRes==='function')?hudRes():1); return (r===1)?f:f.replace((/([\d.]+)px/),function(m0,n0){ return (parseFloat(n0)*r).toFixed(1)+'px'; }); }
+// v32.xx (cw-extbig), the critic on screen 37: the extract countdown was one of three small cues and no hero. While the ship is inbound the line takes the big-number size (TYPE.huge), the same type as the ammo hero; once it lands it is the callout size again.
+function extBanFont(t){ return hudFS((t>0)?TYPE.huge:TYPE.head); }
 // v21.82, THE RAID TEXT REWRITE (R03): ONE LOOK. His order of 2026-10-09 is that the raid text reads like a shooter HUD, and a
 // shooter HUD has one look: a few colours that each mean one thing, text that reads on any ground, and plates that fit their
 // words. HUDC is that palette (text, dim, danger the only red, warn, extract for extraction only, gain, ally for every teammate
@@ -42743,7 +42745,7 @@ ctx.restore();
   if(G.beaconT!==null&&!G.over){
     var inRing=dist(p,G.active)<G.active.r;
     var _exL=extLetter(G.active);
-    ctx.font=hudFS(TYPE.head); ctx.textAlign='center';
+    ctx.font=extBanFont(G.beaconT); ctx.textAlign='center';   // v32.xx (cw-extbig)
     var holding=G.beaconT<=0&&G.shipHold!==null&&G.shipHold!==undefined;
     ctx.fillStyle=holding?(inRing?'#4de3d0':'#ff5a4a'):(inRing?'#4de3d0':'#ffc04a');
     // v8.68 named this window for him rather than calling it OPEN. v11.74, his
@@ -50389,7 +50391,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.34: The title and idle music changes its tune placement every pass through three variations. Check 32.34 fails on v32.33',
+  now:'v32.35: While extraction is inbound the countdown line is drawn at the big number size. Check 32.35 fails on v32.34',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
