@@ -51911,10 +51911,8 @@ window.__REGRESS=[
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        if(!G||G.over||!G.player) return 'SKIP: staging: no raid';
        shut();
-       // RS clicked once on a pad in the raid, the way a hand does it: down, then up.
-       PAD.adsTog=false; PAD.adsT=0;
-       poll(-1); poll(-1); poll(11); poll(-1);
-       if(!PAD.adsTog||!G.player.ads) return 'SKIP: staging: an RS click did not turn focus aim on here (toggle '+PAD.adsTog+', aim '+G.player.ads+')';
+       // v28.xx (cw-cx-rsmelee): RS is crowbar now. Seed the legacy flag directly to keep testing cleanup on both builds.
+       PAD.adsTog=true; PAD.adsT=0; G.player.ads=true;
        // The raid ends with focus aim still on, and the pad keeps polling under the end-of-raid card.
        G.player.downed=false; __endRaid('extract');
        oc=document.getElementById('outcome');
@@ -53090,12 +53088,17 @@ window.__REGRESS=[
      try{
        navigator.getGamepads=function(){ pad.timestamp++; return [pad,null,null,null]; };
        pollPad(); pollPad();
-       if(PAD.brand!=='ps') return 'SKIP: the pad was not read as a PlayStation pad';
-       h=String(keysLegendHtml());
-       if(h.indexOf('>X</b>')>=0||h.indexOf('>A</b>')>=0) bad.push('the pause key line still names X and A');
-       if(h.indexOf('SQUARE')<0) bad.push('the pause key line does not name SQUARE');
-       row=document.getElementById('invkeybarpad');
-       if(row&&(row.textContent.indexOf('CROSS')<0||/(^|\s)A(\s|$)/.test(row.textContent))) bad.push('the stash pad row still names A ('+row.textContent.replace(/\s+/g,' ').trim().slice(0,60)+')');
+       // v28.xx (cw-cx-xboxonly): keep both the older make selection and the Xbox-only party choice covered.
+       h=String(keysLegendHtml()); row=document.getElementById('invkeybarpad');
+       if(PAD.brand==='xbox'){
+         if(/SQUARE|CROSS|L2|R2/.test(h)) bad.push('Xbox pause glyphs show another make');
+         if(row&&/CROSS|CIRCLE/.test(row.textContent)) bad.push('Xbox stash glyphs show another make');
+       }else{
+         if(PAD.brand!=='ps') bad.push('the pad selected no recognized glyph family');
+         if(h.indexOf('>X</b>')>=0||h.indexOf('>A</b>')>=0) bad.push('the pause key line still names X and A');
+         if(h.indexOf('SQUARE')<0) bad.push('the pause key line does not name SQUARE');
+         if(row&&(row.textContent.indexOf('CROSS')<0||/(^|\s)A(\s|$)/.test(row.textContent))) bad.push('the stash pad row still names A ('+row.textContent.replace(/\s+/g,' ').trim().slice(0,60)+')');
+       }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ navigator.getGamepads=function(){ return [null,null,null,null]; }; try{ pollPad(); }catch(_p){} if(had) navigator.getGamepads=og; else delete navigator.getGamepads; PAD.on=on0; PAD.brand=b0; try{ if(typeof padBodyCls==='function') padBodyCls(); }catch(_b){} }
      return bad.length?bad.join('; '):null; }},
@@ -57269,7 +57272,7 @@ window.__REGRESS=[
      if(typeof padB!=='function'||typeof padBrandOf!=='function') return 'every prompt names Xbox buttons whatever pad is plugged in';
      var bad=[], b0=PAD.brand, on0=PAD.on, st0=state, s;
      try{
-       if(padBrandOf({id:'Wireless Controller (STANDARD GAMEPAD Vendor: 054c Product: 09cc)'})!=='ps') bad.push('a DualShock id was not read as PlayStation');
+       if(['ps','xbox'].indexOf(padBrandOf({id:'Wireless Controller (STANDARD GAMEPAD Vendor: 054c Product: 09cc)'}))<0) bad.push('a DualShock id did not select a recognized glyph family'); // v28.xx (cw-cx-xboxonly): accept the old automatic make or his Xbox-only choice; the new check requires Xbox.
        if(padBrandOf({id:'Xbox 360 Controller (XInput STANDARD GAMEPAD)'})!=='xbox') bad.push('an Xbox id was not read as Xbox');
        PAD.brand='ps'; PAD.on=true; state='raid';
        s=keyLabel('KeyE','E'); if(s!=='SQUARE') bad.push('on a PlayStation pad the X prompt reads '+s);
