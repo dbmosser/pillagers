@@ -2231,6 +2231,20 @@ body:has(#hub.on) #hubtoast{visibility:hidden;}
 #root #hub #kitsetup .kstc{height:76px;}
 /* v28.xx (cw-cx-namefinal): the old 84px floor-action allowance left an empty band below the freebie action. The stash footer needs 24px. */
 #root #hub{padding-bottom:24px!important;}
+/* v28.xx (cw-cx-dailyrestoreui), daily restore critic 2026-10-20: keep source, restore and undo visible together, without the global focus rail inside each button. */
+#root #settingsmodal #setlist .row.save-restore{ height:auto; min-height:var(--btn-h); flex-wrap:wrap; gap:8px; padding-block:8px; }
+#root #settingsmodal #setlist .row.save-restore > div:first-child{ flex:0 0 100% !important; }
+#root #settingsmodal #setlist .save-restore-actions{ display:flex; flex:1 1 100%; width:100%; min-width:0; gap:8px; }
+#root #settingsmodal #setlist .save-restore-actions > button{ flex:1 1 0; min-width:0 !important; height:44px; min-height:44px; box-sizing:border-box; margin:0 !important; padding:0 12px !important; font:600 var(--fs-body)/1.2 var(--f-cond); letter-spacing:var(--track); white-space:nowrap; color:var(--tx-1) !important; background:transparent !important; border:2px solid var(--ui-line-hi) !important; border-radius:var(--rad); outline:none !important; box-shadow:none !important; clip-path:none; }
+#root #settingsmodal #setlist .save-restore-actions > button:focus-visible, #root #settingsmodal #setlist .save-restore-actions > button.padfocus, #root #settingsmodal #setlist .save-restore-actions > button:hover:not(:disabled){ border-color:var(--acc) !important; }
+#root #settingsmodal #setlist .row.save-restore:focus-within, #root #settingsmodal #setlist .row.save-restore:has(.padfocus), #root #settingsmodal #setlist .row.save-restore.dshow{ background:var(--ui-raised); box-shadow:inset 3px 0 0 var(--acc); }
+#root #settingsmodal #setwrap > #setdetail.daily-restore-detail{ display:block; height:auto; min-height:0; align-self:flex-start; }
+#root #settingsmodal #setdetail.daily-restore-detail .sdk{ margin:0; }
+#root #settingsmodal #setdetail.daily-restore-detail .daily-selected{ margin-top:16px; color:var(--tx-1); font:700 var(--fs-hero)/1.1 var(--f-cond); }
+#root #settingsmodal #setdetail.daily-restore-detail .daily-meta{ display:grid; grid-template-columns:auto 1fr; gap:8px 24px; margin:16px 0 0; font:400 var(--fs-body)/1.4 var(--f-body); }
+#root #settingsmodal #setdetail.daily-restore-detail dt{ color:var(--tx-2); }
+#root #settingsmodal #setdetail.daily-restore-detail dd{ margin:0; color:var(--tx-1); }
+#root #settingsmodal #setdetail.daily-restore-detail .sdh{ margin:16px 0 0; }
 </style><canvas id="cv"></canvas>
 <canvas id="hcv"></canvas>
 <div id="hubtoast"></div>
@@ -3210,7 +3224,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.93';
+var VER='32.94';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -4443,6 +4457,18 @@ function dailySaveChoices(now){
     }
   }catch(_e2){}
   return out;
+}
+// v28.xx (cw-cx-dailyrestoreui): the existing detail pane names the selected copy and its actual calendar date, never an invented time.
+function dailySaveDetailHtml(row){
+  var src=row.querySelector('#set_restore_source'),key=src&&src.getAttribute('data-backup-key'),raw,p=null;
+  var html='<div class="sdk">restore from a backup</div><div class="daily-selected">'+escHtml(src?src.textContent:'file')+'</div>';
+  if(key&&key.indexOf(SKEY+':daily:')===0&&/\d{4}-\d{2}-\d{2}$/.test(key)){
+    try{ raw=localStorage.getItem(key);p=JSON.parse(raw); }catch(_e){}
+    html+='<dl class="daily-meta"><dt>saved</dt><dd>'+escHtml(key.slice(-10))+'</dd>';
+    if(p&&typeof p.runs==='number'&&isFinite(p.runs)) html+='<dt>runs</dt><dd>'+Math.max(0,Math.floor(p.runs)).toLocaleString()+'</dd>';
+    html+='</dl>';
+  }
+  return html+'<div class="sdh">undo keeps current save</div>';
 }
 function storeSet(v){
   if(typeof ARCADE==='object'&&ARCADE&&ARCADE.on) return;   // v23.20 (arcade1): an arcade session never writes his save, by any path
@@ -51053,7 +51079,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.93: Every finished demo run posts its report (with the gfx p50 p95 slow line) to the local collector from both windows. Check 32.93 fails on v32.92',
+  now:'v32.94: The existing restore row keeps source, restore and undo visible together. Its detail pane shows the selected copy, saved date and run count directly below the title. Check 32.94 fails on v32.93',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -65753,6 +65779,10 @@ document.getElementById('pausesetbtn').onclick=function(){ openSettings(); };
     var b=r.querySelector('div > b'), h=r.querySelector('.hint'), v=r.querySelector('button'), sel=r.querySelector('select');
     var vt=v?v.textContent:(sel&&sel.options[sel.selectedIndex]?sel.options[sel.selectedIndex].text:'');
     var html='<div class="sdk">'+escHtml(b.textContent)+'</div>'+(vt?'<div class="sdv">'+escHtml(vt)+'</div>':'')+(h&&h.textContent?'<div class="sdh">'+escHtml(h.textContent)+'</div>':'');
+    // v28.xx (cw-cx-dailyrestoreui): only the restore row gets backup details; other Settings rows keep their own descriptions.
+    var restoreRow=!!r.querySelector('#set_restore');
+    dt.classList.toggle('daily-restore-detail',restoreRow);
+    if(restoreRow) html=dailySaveDetailHtml(r);
     // v30.xx (cw-shkey), HIS NOTE (2026-10-18): "superhot mode needs a toggle key." The pane that explains a row also names the key that does what the row does.
     if(v&&v.id==='go_superhot') html+='<div class="sdh">key: left of 1</div>';   // cw-shkey2: in words, the tick alone was hard to see
     if(dt.innerHTML!==html) dt.innerHTML=html;
@@ -68113,7 +68143,8 @@ function renderSettingsInner(host){
     '<button id="set_share" style="padding:6px 12px">'+(P.shareRuns?'ON':'OFF')+'</button></div>'+
     '<div class="row"><div style="flex:1"><b>Back up your progress</b><div class="hint">Your progress lives in this browser. Clearing browser data erases it. This saves a backup file to your Downloads.</div></div>'+
     '<button id="set_backup" style="padding:6px 12px">SAVE FILE</button></div>'+
-    '<div class="row"><div style="flex:1"><b>Restore from a backup</b><div class="hint">file or daily copy; undo available</div></div>'+
+    '<div class="row save-restore"><div style="flex:1"><b>Restore from a backup</b><div class="hint">file or daily copy; undo available</div></div>'+
+    '<div class="save-restore-actions">'+
     (_dailyChoices.length?'<button id="set_restore_source" aria-label="backup source: file" title="choose backup" style="padding:6px 12px;margin-right:8px"'+_rOff+'>file</button>':'')+
     '<button id="set_restore" style="padding:6px 12px"'+_rOff+'>PICK FILE</button>'+
     // v12.85, 2026-09-11 audit: THE WAY BACK, which the sentence above has been
@@ -68121,7 +68152,7 @@ function renderSettingsInner(host){
     // already being written to a key nothing ever read. The button only appears
     // when there is something behind it.
     (hasPreRestore()?'<button id="set_unrestore" style="padding:6px 12px;margin-left:8px"'+_rOff+'>UNDO</button>':'')+
-    '</div>'+
+    '</div></div>'+
     '<div class="row"><div style="flex:1"><b>Controls legend</b><div class="hint">H in a raid cycles compact, full and off. Compact is the default.</div></div>'+
     '<span class="hint">H</span></div>'+
     '<div class="row"><div style="flex:1"><b>Mouse cursor</b><div class="hint">The cursor hides while you aim and shows with the backpack open. BACKSPACE brings it back.</div></div>'+
@@ -68232,6 +68263,8 @@ function renderSettingsInner(host){
     _dailyAt++; if(_dailyAt>=_dailyChoices.length) _dailyAt=-1;
     _src.textContent=_dailyAt<0?'file':_dailyChoices[_dailyAt].label;
     _src.setAttribute('aria-label','backup source: '+_src.textContent);
+    // v28.xx (cw-cx-dailyrestoreui): the selected side key supplies the detail pane's date and run count.
+    _src.setAttribute('data-backup-key',_dailyAt<0?'':_dailyChoices[_dailyAt].key);
     document.getElementById('set_restore').textContent=_dailyAt<0?'pick file':'restore';
   };
   document.getElementById('set_restore').onclick=function(){

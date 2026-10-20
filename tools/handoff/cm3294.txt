@@ -1,0 +1,7 @@
+v32.94: daily restore controls fit
+
+The existing restore row keeps source, restore and undo visible together. Its detail pane shows the selected copy, saved date and run count directly below the title.
+
+Check 32.94. Fails on v32.93.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

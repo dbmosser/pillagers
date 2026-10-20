@@ -1,1 +1,1 @@
-10-20 14:04 waiting for RAM: 2 GB free, need 3 (o-14-daily-save-backup)
+10-20 14:08 gate: shipping cw-cx-dailyrestoreui (o-14-daily-save-backup, codex)

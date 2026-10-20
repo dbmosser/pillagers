@@ -41,3 +41,5 @@ Moved 10-19 night to tools/handoff/console/alarms.md (helper fix F18). This file
 2026-10-20 o-11-pad-card-fixes critic scope exception: both pictures scored 3. Skipped requests to rebuild the selector and focus style, change diagram/legend sizes or remove them, change other labels and rows, and restyle the footer because this task explicitly orders: Change nothing else on the card (sizes, words, order and colours stay as v32.55 shipped them). Both requested overlap fixes are shipped, measured and pictured. No new decision needed for this task.
 
 2026-10-20 coordinator (backlog sweep): your 10-19 answer said keep everything made here, but the game still has 36 free recorded sounds (reloads, heals, blasts) that went in on your own 10-12 and 10-15 orders. Keep them, or replace them with made-here sounds after the party? Pick shown: keep them.
+
+2026-10-20 (59-demo-run-reports): screen recordings of demo runs: record each run on the main PC (costs some frame rate), or only run reports for now? Pick shown: only run reports for now.

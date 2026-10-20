@@ -1,0 +1,5 @@
+## v32.94 - DAILY RESTORE CONTROLS FIT
+
+Co-op hunt while he was away. The daily restore picture revealed that three full-width controls overflowed the value column. The critic also found stacked focus marks and backup details floating far below the title.
+
+MEASURED. Check 32.94 passes, and fails on v32.93.

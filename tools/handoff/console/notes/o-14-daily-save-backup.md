@@ -38,3 +38,13 @@
 - Correct recipe round 2 fixture save measured 11,310 UTF-16 bytes; three copies total 33,930 value bytes, before keys. This is a zero-run fixture profile, not the requested real long-career measurement. The previously recorded coordinator measurement handoff remains open.
 - General Settings top-edge clipping, hidden section labels and unrelated control-style findings belong to the Settings screen owner. This task repairs the overflow and focus problems it introduced, and the restore-specific detail pane. It does not redesign other Settings rows.
 
+
+--- codex run 2026-10-20 14:07 ---
+2026-10-20, preflight correction for cw-cx-dailyrestoreui against v32.93.
+
+- Preflight rejected the UI check twice. Its failures were all three controls reported as clipped/small and the source's combined focus assertion. It did not report row overflow, overlap, covered click centres, missing details or bad detail spacing.
+- Found two incorrect scale assumptions in the check. menuScale uses min(W/1920,H/1080) below 1080p, so the 1888x977 gate renders 44 CSS px as 39.8 viewport px. My combined clipping assertion incorrectly required 40 viewport px. Chromium also snaps borders to device pixels under CSS zoom, making computed borderTopWidth equal to exactly 2 an invalid requirement.
+- Corrected only the pending key's check. Minimum target size now uses CSS dimensions normalized by the Settings modal's actual zoom, with a 43px height floor for the intended 44px controls. Clipping remains a separate unchanged viewport-boundary check. Focus still must have no shadow and no outline; it must have a visible solid border, without insisting on an exact computed fractional width. Error messages now distinguish small controls, clipping, shadow/outline and missing borders.
+- No layout changes or feature changes were made in this correction. The old build still fails on clipped restore/undo hit targets, stacked focus effects and absent copy details. The test continues to check real geometry, actual elementFromPoint hit targets, overlap, source/date details and the file choice.
+- Regenerated the draft successfully against v32.93: five unique anchors, edited game JavaScript and check parse, ASCII script. Hand back the same key for another lane preflight, followed by shipping and the recipe picture if it passes.
+
