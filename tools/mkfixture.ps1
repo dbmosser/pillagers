@@ -57606,6 +57606,7 @@ window.__REGRESS=[
      var bad=[], mi, M, cv2, c2, boxes, i, j, A, B, n=0;
      for(mi=0;mi<FIXED_MAPS.length;mi++){
        M=FIXED_MAPS[mi]; if(!M||!M.zones) continue;
+       if(typeof mapOffered==='function'&&!mapOffered(M)) continue;   // 2026-10-20: a sector he froze (THE COLD MILE, Cold Storage only) has no card, so its preview is never shown; its two clashes are in alarms.md for when it comes back
        cv2=document.createElement('canvas'); cv2.width=960; cv2.height=Math.round(960*M.h/M.w); c2=cv2.getContext('2d'); boxes=[];
        c2.fillText=function(s,x,y){ var m=CanvasRenderingContext2D.prototype.measureText.call(this,String(s)), fsz=parseFloat((/([\d.]+)px/.exec(String(this.font))||[0,11])[1])||11;   /* 2026-10-20: the browser writes a bold font as "700 20px", so the old parse read the weight (700) as the size; read the number before px */ boxes.push({s:String(s),l:x-m.width/2,r:x+m.width/2,t:y-fsz*0.8,b:y+fsz*0.2}); return CanvasRenderingContext2D.prototype.fillText.apply(this,arguments); };
        try{ sectorPreviewDraw(cv2,M); }catch(e){ bad.push(M.name+' threw: '+(e&&e.message||e)); continue; }
