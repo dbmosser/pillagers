@@ -1,0 +1,5 @@
+## v32.81 - BACKPACK TILES SHARE ONE BORDER, RARITY IS A BAR
+
+Co-op hunt while he was away. The critic held the backpack at 3 of 5 (target 4): tiles had different coloured borders and tinted fills so focus and rarity read alike, and about 60 px of dead panel sat under the hints. Every tile now has the same 1px line, rarity is a 3px bar at the foot, and the footer is shorter.
+
+MEASURED. Check 32.81 passes, and fails on v32.80.

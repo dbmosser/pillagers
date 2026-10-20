@@ -1,0 +1,20 @@
+{
+    "title":  "BACKPACK TILES SHARE ONE BORDER, RARITY IS A BAR",
+    "why":  "The critic held the backpack at 3 of 5 (target 4): tiles had different coloured borders and tinted fills so focus and rarity read alike, and about 60 px of dead panel sat under the hints. Every tile now has the same 1px line, rarity is a 3px bar at the foot, and the footer is shorter.",
+    "now":  "Backpack tiles have one border colour with a rarity bar, and the panel is trimmed to its content.",
+    "edits":  [
+                  {
+                      "anchor":  "var hh=LH(244)*BZ+rows",
+                      "replacement":  "var hh=LH(226)*BZ+rows"
+                  },
+                  {
+                      "anchor":  "if(_bf){ ctx.fillStyle=_bf; ctx.fillRect(tx,ty,TILE,TILE); }",
+                      "replacement":  "if(it){ ctx.fillStyle=RCOL[dispR(stacks[si].key)]||\u0027#4a5257\u0027; ctx.fillRect(tx+1,ty+TILE-4,TILE-2,3); }   // v28.xx (cw-bagpolish3), the critic (2026-10-20): every tile gets the same 1px line and rarity is only a 3 px bar at the foot (style guide: rarity as a bar), not a tinted fill and a coloured border"
+                  },
+                  {
+                      "anchor":  "(RCOL[it?dispR(stacks[si].key):null]||\u0027#4a5257\u0027);",
+                      "replacement":  "\u0027#4a5257\u0027;"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027backpack tiles share one idle border colour (rarity is a bar) and the panel keeps no more than 50 px of dead strip\u0027,\n   run:function(){\n     var g, bp, f, maxY=0, bad=[], PR=CanvasRenderingContext2D.prototype, of=PR.fillText, os=PR.strokeRect;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[\u0027gun_carbine\u0027,\u0027medkit\u0027,\u0027bandage\u0027,\u0027bandage\u0027,\u0027plate\u0027,\u0027frag\u0027,\u0027smoke\u0027],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player) return \u0027SKIP: no raid\u0027;\n       g.ents.length=0; g.player.iv=99; g.bagOpen=true;\n       for(f=0;f\u003c8;f++) __loop(performance.now()+f*16.7);\n       bp=g.bagPanel; if(!bp) return \u0027the backpack panel was not drawn\u0027;\n       var cells=g.bagCells||[], sel=g.bagSel||0;\n       PR.fillText=function(s){\n         if(String(s).trim()\u0026\u0026arguments[1]\u003e=bp.x\u0026\u0026arguments[1]\u003c=bp.x+bp.w\u0026\u0026arguments[2]\u003e=bp.y\u0026\u0026arguments[2]\u003c=bp.y+bp.h\u0026\u0026arguments[2]\u003emaxY) maxY=arguments[2];\n         return of.apply(this,arguments);\n       };\n       PR.strokeRect=function(x,y,w,h){\n         var i, c; for(i=0;i\u003ccells.length;i++){ c=cells[i]; if(c.stackIx!==sel\u0026\u0026Math.abs(c.x+.5-x)\u003c1\u0026\u0026Math.abs(c.y+.5-y)\u003c1\u0026\u0026Math.abs(c.w-1-w)\u003c1\u0026\u0026String(this.strokeStyle).toLowerCase()!==\u0027#4a5257\u0027) bad.push(String(this.strokeStyle)); }\n         return os.apply(this,arguments);\n       };\n       for(f=0;f\u003c2;f++) __loop(performance.now()+f*16.7);\n       PR.fillText=of; PR.strokeRect=os;\n       if(cells.length\u003c2) return \u0027the backpack drew \u0027+cells.length+\u0027 tiles\u0027;\n       if(bad.length) return \u0027an idle backpack tile has a coloured border: \u0027+bad.join(\u0027,\u0027);\n       if(bp.y+bp.h-maxY\u003e50) return \u0027the backpack panel has \u0027+Math.round(bp.y+bp.h-maxY)+\u0027 px of dead panel under its last line\u0027;\n       return null;\n     } finally {\n       PR.fillText=of; PR.strokeRect=os;\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}

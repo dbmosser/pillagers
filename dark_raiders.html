@@ -3203,7 +3203,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.80';
+var VER='32.81';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -46331,7 +46331,7 @@ function drawBag(){
   var rowsMax=Math.max(2,Math.floor((H-LH(560)*BZ)/(TILE+GAP)));
   var rows=Math.min(rowsAll,rowsMax);
   var _dn=stacks.length?Math.min(6,itemRows(stacks[clamp(G.bagSel||0,0,stacks.length-1)].key).length):0;   // v28.xx (cw-bagpolish): the footer is as tall as the selected item's rows
-  var hh=LH(244)*BZ+rows*(TILE+GAP)+_dn*LH(18)*BZ;
+  var hh=LH(226)*BZ+rows*(TILE+GAP)+_dn*LH(18)*BZ;
   hh=Math.min(hh,H-70*BZ);
   // v8.51, audit: reserve the belt's REAL footprint. v8.94: and MEASURE it
   // rather than assert it. LH(70)+LH(14) is 131px at every resolution, because
@@ -46427,8 +46427,8 @@ function drawBag(){
       ctx.fillStyle=(si===sel)?'#262b30':(hov?'#1e2225':'#16191b');
       ctx.fillRect(tx,ty,TILE,TILE);
       var _bf=rfill(it?dispR(stacks[si].key):null);
-      if(_bf){ ctx.fillStyle=_bf; ctx.fillRect(tx,ty,TILE,TILE); }
-      ctx.strokeStyle=(si===sel&&!G.bagBelt)?'#e6ff3d':(RCOL[it?dispR(stacks[si].key):null]||'#4a5257');   // v16.79, his order: the gold ring is on the belt row while the highlight is there
+      if(it){ ctx.fillStyle=RCOL[dispR(stacks[si].key)]||'#4a5257'; ctx.fillRect(tx+1,ty+TILE-4,TILE-2,3); }   // v28.xx (cw-bagpolish3), the critic (2026-10-20): every tile gets the same 1px line and rarity is only a 3 px bar at the foot (style guide: rarity as a bar), not a tinted fill and a coloured border
+      ctx.strokeStyle=(si===sel&&!G.bagBelt)?'#e6ff3d':'#4a5257';   // v16.79, his order: the gold ring is on the belt row while the highlight is there
       ctx.lineWidth=(si===sel)?3:1.2;
       ctx.strokeRect(tx+.5,ty+.5,TILE-1,TILE-1);
       if(G.need&&G.need[st.key]>0){ ctx.save(); ctx.strokeStyle='#ffd452'; ctx.lineWidth=Math.max(2,LH(2)*BZ); ctx.globalAlpha=.75+.25*Math.sin((+G.t||0)*4); ctx.strokeRect(tx+2,ty+2,TILE-4,TILE-4); ctx.restore(); }   // v26.xx (career3): an item a contract needs
@@ -50927,7 +50927,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.80: The raid backpack has no dead strip at the bottom and its detail rows read as one line. Check 32.80 fails on v32.79',
+  now:'v32.81: Backpack tiles have one border colour with a rarity bar, and the panel is trimmed to its content. Check 32.81 fails on v32.80',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

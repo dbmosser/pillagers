@@ -1,0 +1,7 @@
+v32.81: backpack tiles share one border, rarity is a bar
+
+Backpack tiles have one border colour with a rarity bar, and the panel is trimmed to its content.
+
+Check 32.81. Fails on v32.80.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -265,17 +265,17 @@
  "23-raid-backpack-open": {
   "score": 3,
   "pass": false,
-  "verdict": "The backpack is now a narrower panel with bigger, brighter text and a lime focus ring, but it is still half empty with a floating gap in the detail row, a dead lower third, and the panel sits over the belt and the player.",
+  "verdict": "The new backpack is a tighter, calmer panel with a lime focus box and no amber noise, but it is still a flat text list with a large dead bottom third, a capital 'I' and no real inventory-grid feel.",
   "findings": [
-   "P1 detail pane, 'use' and 'armor' row: Put the label and value on one baseline with a 16px gap, or make it a two-column grid with a 120px label column. Set the footer hints in --fs-fine 14px --tx-2 and pin them to the panel bottom.",
-   "P1 panel body, y 860-920: Size the panel to its content (cut about 80px of height), or draw empty slot outlines for the remaining capacity (e.g. 12 slots at 84px) so the grid reads as a backpack.",
-   "P1 hierarchy, title versus selection: Set the title to a calm 32px --tx-1 700. Set the selected item name at 20px with a --acc 3px left tab. Show '12 / 24' in --tx-2 or --acc, not amber (the amber is --warn only).",
-   "P2 panel framing: Add a 1px --ui-line-hi border, a 4px radius and an opaque 90% --ui-panel fill. Raise 'b or i to close' to 16px --tx-2.",
-   "P2 placement: Keep a 24px gap above the belt (panel bottom at about y=895) and nudge it to the left third so the centre of the map stays visible."
+   "P1 stat line under the scav pistol: 'integrity 100/100': Lower-case the string to 'integrity 100/100' and remove whatever capitalising path was added in v32.80.",
+   "P1 whole panel, bottom third (y 870-920): Crop the panel height to content (bottom padding 24px). Or fill the space with a 4x3 grid of empty slots at 84px, which is the Diablo IV grid the style guide asks for.",
+   "P1 item row (3 tiles at 84px) and detail block: Make the capacity '12 / 24' a 32px f-cond 700 title with a thin 4px fill bar under it. Add 3px rarity bars to the tile bottoms. Raise the selected item name to 24-32px tx-1.",
+   "P2 detail pane: 'use ........ armor' row and the hint line: Draw keys as 24px outlined key caps (z, arrows). Put the label and value in a two-column row with a 16px gap. Cut the hint line down to 'z drop' and 'drag to belt'.",
+   "P2 panel chrome: Add a 1px #4a5257 border, a 36x2px lime top tab and an x button at top right. Put a rgba(6,7,8,.8) scrim behind the card."
   ],
-  "pic": "tools/handoff/console/notes/shots/45-after/23-raid-backpack-open-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/45-after2/23-raid-backpack-open-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T10:24"
+  "when": "2026-10-20T10:30"
  },
  "25-raid-pause-box": {
   "score": 3,

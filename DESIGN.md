@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.81 - BACKPACK TILES SHARE ONE BORDER, RARITY IS A BAR
+
+Co-op hunt while he was away. The critic held the backpack at 3 of 5 (target 4): tiles had different coloured borders and tinted fills so focus and rarity read alike, and about 60 px of dead panel sat under the hints. Every tile now has the same 1px line, rarity is a 3px bar at the foot, and the footer is shorter.
+
+MEASURED. Check 32.81 passes, and fails on v32.80.
 ## v32.80 - THE RAID BACKPACK LOSES ITS DEAD STRIP AND FLOATING VALUES
 
 Co-op hunt while he was away. The critic scored the compact backpack 3 of 5 (target 4): the detail value floated far from its label, about 90 px of dead panel sat under the hints, and the title outshone the selected item. The value column is closer, the footer is shorter, the title is the item-name size and the ammo count is white instead of amber.
