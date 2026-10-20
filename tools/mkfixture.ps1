@@ -13352,6 +13352,8 @@ window.__REGRESS=[
      function pd(ix,down){ var bts=[], j; for(j=0;j<17;j++) bts.push({pressed:j===down,value:(j===down)?1:0,touched:j===down}); return {connected:true,id:'probe pad '+ix,index:ix,mapping:'standard',timestamp:1,axes:[0,0,0,0],buttons:bts}; }
      function side(same){ NET.same=same; NET.pair=PAIR; NET.mode='coop'; NET.padIx=-1; NET.padOther=-1; NET.padFwd=null; NET.padWas=null; NET.padTs={}; NET.padLiveAt=netPadNow(); posts.length=0; }
      function played(same,gps){   // the real path: the arcade entry, then pollPad reads navigator.getGamepads as a window in a pair does
+       // v28.xx (cw-cx-corpus02): separate window cases cannot inherit another window local loss tracker.
+       PAD.lossRaid=null; PAD.lossIx=-1; PAD.lost=null;
        list=gps; side(same); arcadePadsIn(same); delete PAD.ix; PAD.on=false; NET.padLiveAt=netPadNow(); pollPad();
        return (PAD.on&&typeof PAD.ix==='number')?PAD.ix:-1; }
      function handed(){ var j, o=null; for(j=0;j<posts.length;j++) if(posts[j]&&posts[j].t==='pad') o=posts[j]; return o; }
@@ -23227,8 +23229,17 @@ window.__REGRESS=[
          if(!m||!list||!m.classList.contains('on')){ bad.push('the '+(pad?'pad':'keys')+' window did not open'); return; }
          var cols=String(getComputedStyle(list).gridTemplateColumns||'none').split(' ').filter(function(x){ return x&&x!=='none'; }).length;
          var rows=list.querySelectorAll('.row'), lb=list.getBoundingClientRect(), a=rows[0], b=rows[1];
-         if(cols!==2) bad.push('the '+(pad?'pad':'keys')+' list has '+cols+' column(s)');
-         else if(a&&b){ var ra=a.getBoundingClientRect(), rb=b.getBoundingClientRect(); if(!(rb.left-ra.left>300)||Math.abs(rb.top-ra.top)>8) bad.push('the first two rows of the '+(pad?'pad':'keys')+' list are not side by side'); }
+         // v28.xx (cw-cx-corpus02): the newer pad page pairs the action list with its live diagram.
+         if(pad&&m.classList.contains('padlayouts')){
+           var grid=list.querySelector('.padeditgrid'), actions=list.querySelector('.padactions'), picture=list.querySelector('.padpicture');
+           if(!grid||!actions||!picture||!list.querySelector('#padlayout')) bad.push('the pad page is missing its picker, actions or diagram');
+           else {
+             var ar=actions.getBoundingClientRect(), pr=picture.getBoundingClientRect(), gr=grid.getBoundingClientRect();
+             if(!(ar.width>0&&pr.width>0)||pr.left<ar.right-2||pr.right>gr.right+2||Math.abs(ar.top-pr.top)>8) bad.push('the pad actions and diagram are not separate side-by-side columns');
+             if(pr.width<ar.width*0.6) bad.push('the diagram leaves the right column unused');
+           }
+         }else if(cols!==2) bad.push('the '+(pad?'pad':'keys')+' list has '+cols+' column(s)');
+         else if(!(pad&&m.classList.contains('padlayouts'))&&a&&b){ var ra=a.getBoundingClientRect(), rb=b.getBoundingClientRect(); if(!(rb.left-ra.left>300)||Math.abs(rb.top-ra.top)>8) bad.push('the first two rows of the '+(pad?'pad':'keys')+' list are not side by side'); }
          if(!(lb.width>1.4*1100*(parseFloat(m.style.zoom)||1)*0.95-10)&&lb.width<1200*(parseFloat(m.style.zoom)||1)) bad.push('the '+(pad?'pad':'keys')+' list is only '+Math.round(lb.width)+' px wide');
        });
        return bad.length?bad.join('; '):null;
@@ -23687,9 +23698,9 @@ window.__REGRESS=[
      var bad=[], g, p, all, rd, X0, Y0, dx=0, dy=0, ok=false, k, ux, uy, i, oCrawl, gp, hadOwn=Object.prototype.hasOwnProperty.call(navigator,'getGamepads'), kNG=navigator.getGamepads, kPAD={on:PAD.on,aiming:PAD.aiming,curOwn:PAD.curOwn,brand:PAD.brand,aimA:PAD.aimA}, oMelee, lab, row;
      function mkpad(down){ var bt=[], q, d; for(q=0;q<17;q++){ d=down.indexOf(q)>=0; bt.push({pressed:d,value:d?1:0}); } return {connected:true,id:'Xbox Wireless Controller',index:0,axes:[0,0,0,0],buttons:bt,mapping:'standard'}; }
      function frame(down){ gp=mkpad(down); navigator.getGamepads=function(){ return [gp]; }; pollPad(); g.t+=0.016; __sim(0.016); }
-     function down(){ rd.x=X0+dx*30; rd.y=Y0+dy*30; rd.hp=40; rd.maxhp=100; rd.downed=1; rd.finished=0; rd.downT=14; rd.hostile=true; rd.state='down'; rd.getUpOn=1; rd.getUpIn=3; rd.getUp=0; rd.byPlayer=false; rd.crawlTo=null; rd.reviveT=0; }
+     function down(){ if(g.ents.indexOf(rd)<0) g.ents.push(rd); rd.x=X0+dx*30; rd.y=Y0+dy*30; rd.hp=40; rd.maxhp=100; rd.downed=1; rd.finished=0; rd.downT=14; rd.hostile=true; rd.state='down'; rd.getUpOn=1; rd.getUpIn=3; rd.getUp=0; rd.byPlayer=false; rd.crawlTo=null; rd.reviveT=0; }
      try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||g.over||!g.player) return 'SKIP: no live raid';
        if(g.sim) return 'SKIP: the fixture raid is a sim raid';
        p=g.player; all=g.ents.slice(); X0=p.x; Y0=p.y; oCrawl=CFG.raiderCrawl; p.iv=99; oMelee=p.meleeAt;
@@ -23714,14 +23725,18 @@ window.__REGRESS=[
        frame([]);
        if(!(rd.hp>0)) bad.push('THREE: holding Y near a standing pillager hurt him');
        if(p.meleeAt!==undefined) bad.push('THREE: Y swung the crowbar');
-       // FOUR: the prompt names the button as bound
-       PAD.on=true;
-       lab=keyLabel('KeyV','V');
-       if(lab!=='Y') bad.push('FOUR: on a pad the finisher is named '+lab+', not Y');
+       // v28.xx (cw-cx-corpus02): inspect the finisher renderer; generic V now names the RS crowbar.
+       down(); g.finE=rd; g.finT=0; g.nearContainer=null; g.nearPad=null;
+       var originalPrompt=hudPrompt, prompts=[];
+       try{
+         hudPrompt=function(s){ prompts.push(String(s).toUpperCase()); return originalPrompt.apply(this,arguments); };
+         PAD.on=true; drawFinisher(ctx,p);
+         if(!prompts.some(function(s){ return /^HOLD \[Y\] FINISH$/.test(s); })) bad.push('FOUR: the actual pad finisher prompt does not name Y ('+prompts.join('; ')+')');
+         prompts=[]; PAD.on=false; drawFinisher(ctx,p);
+         if(!prompts.some(function(s){ return /^HOLD \[V\] FINISH$/.test(s); })) bad.push('FOUR: the actual keyboard finisher prompt does not name V ('+prompts.join('; ')+')');
+       }finally{ hudPrompt=originalPrompt; }
        row=''; for(i=0;i<PAD_ACTS.length;i++) if(PAD_ACTS[i][0]===3) row=String(PAD_ACTS[i][1]);
-       if(row.indexOf('finish')<0) bad.push('FOUR: the CHANGE PAD BUTTONS row for Y says "'+row+'"');
-       PAD.on=false;
-       if(keyLabel('KeyV','V')!=='V') bad.push('FOUR: with no pad the finisher is named '+keyLabel('KeyV','V')+', not V');
+       if(row.indexOf('finish')<0) bad.push('FOUR: the pad Y action does not name finish');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        try{ if(hadOwn) navigator.getGamepads=kNG; else delete navigator.getGamepads; }catch(_n){}
@@ -28875,7 +28890,7 @@ window.__REGRESS=[
      var bad=[], g=null, p=null, md=document.getElementById('settingsmodal'), was=md&&md.classList.contains('on'), km=document.getElementById('keysmodal'), kmWas=km&&km.classList.contains('on'),
          kPM=JSON.stringify(P.padmap||{}), kPV=P.padmapV, hadOwn=Object.prototype.hasOwnProperty.call(navigator,'getGamepads'), kNG=navigator.getGamepads, kRK=raidKey, rec=[], gp, i, el, h, LEG0,
          kPAD={on:PAD.on,aimA:PAD.aimA,reach:PAD.reach,aiming:PAD.aiming,curOwn:PAD.curOwn,brand:PAD.brand}, kPB={waiting:PADB.waiting,armed:PADB.armed,note:PADB.note}, kKP=KEYS.pad;
-     function secOf(id){ var e=document.getElementById(id), s=e&&e.closest('.row'), b; while(s){ if(/opacity:\s*\.7/.test(s.getAttribute('style')||'')){ b=s.querySelector('b'); return b?b.textContent:''; } s=s.previousElementSibling; } return ''; }
+     function secOf(id){ var e=document.getElementById(id), s=e&&e.closest('.row'), b; while(s){ if(/opacity:\s*\.7/.test(s.getAttribute('style')||'')){ b=s.querySelector('b'); return b?String(b.textContent).toUpperCase():''; } s=s.previousElementSibling; } return ''; }
      function mkpad(down){ var bt=[], q, d; for(q=0;q<17;q++){ d=down.indexOf(q)>=0; bt.push({pressed:d,value:d?1:0}); } return {connected:true,id:'Xbox Wireless Controller',index:0,axes:[0,0,0,0],buttons:bt,mapping:'standard'}; }
      function poll(down){ gp=mkpad(down); navigator.getGamepads=function(){ return [gp]; }; pollPad(); }
      function legRow(sec,txt){ var a, b; for(a=0;a<LEGEND_PAD.length;a++) if(LEGEND_PAD[a][0]===sec) for(b=0;b<LEGEND_PAD[a][1].length;b++) if(LEGEND_PAD[a][1][b][1]===txt) return LEGEND_PAD[a][1][b][0]; return null; }
@@ -28892,7 +28907,7 @@ window.__REGRESS=[
        el=document.getElementById('set_pad'); if(!el) bad.push('ONE: Settings has no CHANGE PAD BUTTONS button');
        else {
          if(secOf('set_pad')!=='CONTROLLER') bad.push('ONE: the pad button sits under '+secOf('set_pad')+', not CONTROLLER');
-         if(el.textContent!=='CHANGE PAD BUTTONS') bad.push('ONE: the button reads '+el.textContent);
+         if(String(el.textContent).toUpperCase()!=='CHANGE PAD BUTTONS') bad.push('ONE: the button reads '+el.textContent);
          el.click(); km=document.getElementById('keysmodal');
          if(!km||!km.classList.contains('on')||!KEYS.pad) bad.push('ONE: the button did not open the window in pad mode');
          else {
@@ -28906,8 +28921,8 @@ window.__REGRESS=[
            var stickL=document.querySelector('#keyslist [data-pad-stick="left"]'), stickR=document.querySelector('#keyslist [data-pad-stick="right"]');
            if(stickL||stickR){ if(!stickL||!stickR||stickL.textContent!=='move'||stickR.textContent!=='aim') bad.push('ONE: default stick drawing has incorrect jobs'); }
            else if(h.indexOf('L STICK')<0) bad.push('ONE: the pad window lacks its default stick labels');
-           el=document.querySelector('#keyslist .keybtn[data-k="7"]'); if(!el||el.textContent!=='RT') bad.push('ONE: fire reads '+(el?el.textContent:'nothing')+' by default, not RT');
-           el=document.querySelector('#keyslist .keybtn[data-k="0"]'); if(!el||el.textContent!=='A') bad.push('ONE: dodge roll reads '+(el?el.textContent:'nothing')+' by default, not A');
+           el=document.querySelector('#keyslist .keybtn[data-k="7"]'); if(!el||String(el.textContent).toUpperCase()!=='RT') bad.push('ONE: fire reads '+(el?el.textContent:'nothing')+' by default, not RT');
+           el=document.querySelector('#keyslist .keybtn[data-k="0"]'); if(!el||String(el.textContent).toUpperCase()!=='A') bad.push('ONE: dodge roll reads '+(el?el.textContent:'nothing')+' by default, not A');
          }
          km=document.getElementById('keysmodal'); if(km) km.classList.remove('on'); PADB.waiting=null;
        }
@@ -28933,14 +28948,14 @@ window.__REGRESS=[
        if(!el) bad.push('FIVE: no REBIND for the next gun action');
        else {
          el.click(); if(PADB.waiting!==5) bad.push('FIVE: REBIND did not wait');
-         if(!/PRESS A BUTTON/.test((document.querySelector('#keyslist .keybtn[data-k="5"]')||{}).textContent||'')) bad.push('FIVE: the row does not read PRESS A BUTTON');
+         if(!/PRESS A BUTTON/i.test((document.querySelector('#keyslist .keybtn[data-k="5"]')||{}).textContent||'')) bad.push('FIVE: the row does not read PRESS A BUTTON');
          rec.length=0; poll([3]); if(PADB.waiting!==5||padMapArr()[5]!==5) bad.push('FIVE: a button held from the click bound before it was let go');
          poll([]); poll([2]);
          if(padMapArr()[5]!==2||padMapArr()[2]!==5) bad.push('FIVE: the press did not bind and swap ('+padMapArr()[5]+','+padMapArr()[2]+')');
          if(PADB.waiting!==null) bad.push('FIVE: still waiting after the press');
          if(rec.length) bad.push('FIVE: the press that bound also acted ('+rec.join(',')+')');
          if(!PADB.note||PADB.note.t!=='clash') bad.push('FIVE: the clash was not reported');
-         el=document.querySelector('#keyslist .keybtn[data-k="5"]'); if(!el||el.textContent!=='X') bad.push('FIVE: the row reads '+(el?el.textContent:'nothing')+' after the bind');
+         el=document.querySelector('#keyslist .keybtn[data-k="5"]'); if(!el||String(el.textContent).toUpperCase()!=='X') bad.push('FIVE: the row reads '+(el?el.textContent:'nothing')+' after the bind');
          poll([]);
        }
        if(km) km.classList.remove('on'); PADB.waiting=null;
@@ -29010,7 +29025,7 @@ window.__REGRESS=[
      if(typeof padDz!=='function'||typeof padSens!=='function'||typeof padInv!=='function'||typeof rumbleK!=='function') return 'Settings has no stick or vibration rows';
      var bad=[], g=null, p=null, md=document.getElementById('settingsmodal'), was=md&&md.classList.contains('on'), kGO=P.gameOpts, kTU=P.tuned, kS=CFG.padSens, kD=CFG.padDz, kI=CFG.padInvY, kR=CFG.rumbleK, kRu=CFG.rumble,
          kPAD={on:PAD.on,aimA:PAD.aimA,reach:PAD.reach,aiming:PAD.aiming,curOwn:PAD.curOwn}, kRG=RUMBLE.gp, kRUA=RUMBLE.usedAt, kGW=window.Gamepad, rows, rr, sn, j, rec=[], gp, a0, a1, b0, hadOwn=Object.prototype.hasOwnProperty.call(navigator,'getGamepads'), kNG=navigator.getGamepads, el;
-     function secOf(id){ var e=document.getElementById(id), s=e&&e.closest('.row'), b; while(s){ if(/opacity:\s*\.7/.test(s.getAttribute('style')||'')){ b=s.querySelector('b'); return b?b.textContent:''; } s=s.previousElementSibling; } return ''; }
+     function secOf(id){ var e=document.getElementById(id), s=e&&e.closest('.row'), b; while(s){ if(/opacity:\s*\.7/.test(s.getAttribute('style')||'')){ b=s.querySelector('b'); return b?String(b.textContent).toUpperCase():''; } s=s.previousElementSibling; } return ''; }
      function rowOf(z){ for(var y=0;y<rows.length;y++) if(rows[y].k===z) return rows[y]; return null; }
      function near(v,w){ return Math.abs(v-w)<1e-9; }
      function mkpad(ax){ var bt=[], i; for(i=0;i<17;i++) bt.push({pressed:false,value:0}); return {connected:true,id:'Xbox Wireless Controller',index:0,axes:ax,buttons:bt,mapping:'standard',vibrationActuator:{playEffect:function(t,o){ rec.push(o); return Promise.resolve(); }}}; }
@@ -29039,12 +29054,14 @@ window.__REGRESS=[
        renderSettings(); if(!document.getElementById('go_rumbleK')) bad.push('ONE: the vibration row is not drawn where the browser can vibrate a pad');
        md.classList.remove('on');
        // TWO: the stick maths
+       // v28.xx (cw-cx-corpus02): J2 introduced the radial helper and its 0.06 outer deadzone.
+       var outer=(typeof padStick==='function')?0.06:0;
        CFG.padDz=0.22; CFG.padSens=1;
-       if(padAxis(0.2)!==0||!near(padAxis(0.5),(0.5-0.22)/0.78)||!near(padAxis(-1),-1)) bad.push('TWO: control: the default stick reads '+padAxis(0.2)+', '+padAxis(0.5)+', '+padAxis(-1));
-       CFG.padDz=0.4; if(padAxis(0.3)!==0||!near(padAxis(0.5),(0.5-0.4)/0.6)) bad.push('TWO: a deadzone of 0.4 reads '+padAxis(0.3)+' and '+padAxis(0.5));
+       if(padAxis(0.2)!==0||!near(padAxis(0.5),(0.5-0.22)/(0.78-outer))||!near(padAxis(-1),-1)) bad.push('TWO: control: the default stick reads '+padAxis(0.2)+', '+padAxis(0.5)+', '+padAxis(-1));
+       CFG.padDz=0.4; if(padAxis(0.3)!==0||!near(padAxis(0.5),(0.5-0.4)/(0.6-outer))) bad.push('TWO: a deadzone of 0.4 reads '+padAxis(0.3)+' and '+padAxis(0.5));
        CFG.padDz=0.12; if(!(padAxis(0.2)>0)) bad.push('TWO: a deadzone of 0.12 still reads a 0.2 stick as nothing');
-       CFG.padDz=0.22; CFG.padSens=1.5; if(!near(padAxis(0.5),Math.min(1,1.5*(0.5-0.22)/0.78))||padAxis(1)!==1||padAxis(0.2)!==0) bad.push('TWO: a sensitivity of 1.5 reads '+padAxis(0.5));
-       CFG.padSens=0.75; if(!near(padAxis(0.5),0.75*(0.5-0.22)/0.78)||!near(padAxis(1),0.75)) bad.push('TWO: a sensitivity of 0.75 reads '+padAxis(0.5)+' and '+padAxis(1));
+       CFG.padDz=0.22; CFG.padSens=1.5; if(!near(padAxis(0.5),Math.min(1,1.5*(0.5-0.22)/(0.78-outer)))||padAxis(1)!==1||padAxis(0.2)!==0) bad.push('TWO: a sensitivity of 1.5 reads '+padAxis(0.5));
+       CFG.padSens=0.75; if(!near(padAxis(0.5),0.75*(0.5-0.22)/(0.78-outer))||!near(padAxis(1),Math.min(1,0.75*0.78/(0.78-outer)))) bad.push('TWO: a sensitivity of 0.75 reads '+padAxis(0.5)+' and '+padAxis(1));
        CFG.padSens=1;
        // THREE: a real poll: the aim stick pushed up, with and without the invert
        gp=mkpad([0,0,0,-1]); navigator.getGamepads=function(){ return [gp]; };
@@ -60262,7 +60279,8 @@ window.__REGRESS=[
        if(r!==P1||to()!=='pad 0') bad.push('control: at the start player 1 is not on the second controller and player 2 on the first (player 1 plays '+nm(r)+', player 2 handed '+to()+')');
        r=tick(gone0);
        if(r!==P1) bad.push('the player 2 controller dropped and player 1 lost his own controller (he plays '+nm(r)+')');
-       if(handed().length) bad.push('the player 2 controller dropped and player 1 handed his own controller to the player 2 window ('+to()+')');
+       // v28.xx (cw-cx-corpus02): the loss protocol may send an empty sample, never the surviving live pad.
+       if(handed().some(function(m){ return m.ix>=0||(m.p&&m.p.length)||(m.v&&m.v.length)||(m.a&&m.a.length); })) bad.push('the player 2 controller dropped and player 1 handed live input to the player 2 window ('+to()+')');
        r=tick(both);
        if(r!==P1||to()!=='pad 0') bad.push('the player 2 controller came back and the sides are not as before (player 1 plays '+nm(r)+', player 2 handed '+to()+')');
        // TWO, the player 2 window in front: its controller drops, and it must not take the player 1 controller.
@@ -61432,8 +61450,8 @@ window.__REGRESS=[
   {v:'17.00',what:'a controller X is a new press after a pad gap or after another screen had the pad, and X pressed during a roll onto a box chooses when the roll ends: each time, X held beside a box in reach holds E and searches instead of holding the reload key from before',
    run:function(){
      if(typeof pollPad!=='function'||typeof updatePlayer!=='function'||typeof padRelease!=='function'||typeof PAD==='undefined'||typeof NET!=='object'||!NET||!window.__deploy||!window.__endRaid) return 'SKIP: this fixture cannot stage a controller raid';
-     var NGA=navigator.getGamepads, oSay=say, keepN={on:NET.on,same:NET.same}, k0=keys, padKeep=null, m0={x:mouse.x,y:mouse.y,down:mouse.down,init:mouse.init}, bad=[], dn=false, none=false, p=null, ct=null, c, z, q, ok, kk;
-     function pad(){ if(none) return []; var b=[],n; for(n=0;n<17;n++) b.push({pressed:(n===2&&dn),value:(n===2&&dn)?1:0,touched:(n===2&&dn)}); return [{connected:true,id:'check pad',index:0,mapping:'standard',timestamp:Date.now(),buttons:b,axes:[0,0,0,0]}]; }
+     var NGA=navigator.getGamepads, oSay=say, keepN={on:NET.on,same:NET.same}, k0=keys, padKeep=null, m0={x:mouse.x,y:mouse.y,down:mouse.down,init:mouse.init}, bad=[], dn=false, confirmA=false, none=false, p=null, ct=null, c, z, q, ok, kk;
+     function pad(){ if(none) return []; var b=[],n; for(n=0;n<17;n++) b.push({pressed:((n===2&&dn)||(n===0&&confirmA)),value:((n===2&&dn)||(n===0&&confirmA))?1:0,touched:((n===2&&dn)||(n===0&&confirmA))}); return [{connected:true,id:'check pad',index:0,mapping:'standard',timestamp:Date.now(),buttons:b,axes:[0,0,0,0]}]; }
      function poll(d){ dn=!!d; pollPad(); }
      function held(){ return ((keys['KeyR']?'R ':'')+(keys['KeyE']?'E ':'')+(keys[__padSrchKey()]?'X':'')).trim()||'nothing'; }
      try{
@@ -61458,6 +61476,12 @@ window.__REGRESS=[
        poll(true);
        if(!keys['KeyR']||keys['KeyE']) return 'SKIP: staging: X with nothing in reach did not hold R here ('+held()+')';
        none=true; poll(false); none=false;
+       // v28.xx (cw-cx-corpus02): finish the newer pad-lost recovery before making the next X press.
+       if(PAD.lost){
+         if(!pauseOpen||keys.KeyR||keys.KeyE) bad.push('the pad gap did not pause and release input');
+         poll(false); confirmA=true; poll(false); confirmA=false; poll(false);
+         if(PAD.lost||pauseOpen) bad.push('same-slot A did not resume after the pad gap');
+       }
        G.nearContainer=ct; poll(true);
        if(!keys['KeyE']||keys['KeyR']) bad.push('after a pad gap, X pressed again beside a box held '+held()+', not E: the press was not seen as new');
        poll(false);
@@ -62571,15 +62595,16 @@ window.__REGRESS=[
        if(!(hp0-p.hp>0.5&&hp0-p.hp<2)) bad.push('a 20 point hit at 1/20 took '+(hp0-p.hp).toFixed(2)+' health, not about 1');
      } finally { netKidMul=oKM; NET.role=kR; NET.on=kOn; try{ if(oG) voxGrunt=oG; __endRaid('abandon'); __topClear(); }catch(e){} }
      return bad.length?bad.join('; '):null; }},
-  {v:'16.72',what:'his controller layout: A rolls, B crouches, RT fires (never under the open backpack), LT and an RS click toggle focus aim, D-LEFT and D-RIGHT set the aim distance, X loots beside a box and reloads otherwise, Y holds the ring search, and the prompts name those buttons',
+  {v:'16.72',what:'his controller layout: A rolls, B crouches, RT fires (never under the open backpack), LT holds focus aim and RS clicks strike with the crowbar, D-LEFT and D-RIGHT set the aim distance, X loots beside a box and reloads otherwise, Y holds the ring search, and the prompts name those buttons',
    run:function(){
      if(typeof pollPad!=='function'||typeof raidKey!=='function'||!window.__deploy||!window.__endRaid) return 'SKIP: this build has no controller raid path';
-     var NGA=navigator.getGamepads, oRK=raidKey, bad=[], taps=[], down={}, val={}, r0, r1, k0=null;
+     var NGA=navigator.getGamepads, oRK=raidKey, oMS=meleeStrike, meleeCalls=0, bad=[], taps=[], down={}, val={}, r0, r1, k0=null;
      function pad(){ var b=[],q; for(q=0;q<17;q++) b.push({pressed:!!down[q],value:(val[q]!==undefined?val[q]:(down[q]?1:0)),touched:!!down[q]}); return [{connected:true,id:'check pad',index:0,mapping:'standard',timestamp:Date.now(),buttons:b,axes:[0,0,0,0]}]; }
      function poll(){ pollPad(); }
      function tap(q){ down={}; val={}; poll(); down[q]=1; poll(); down={}; poll(); }
      try{
-       __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       G.ents=[]; G.nearForge=null; G.nearStray=null; G.nearSeal=null;
        k0=keys; keys={};
        navigator.getGamepads=pad;
        raidKey=function(code){ taps.push(code); return oRK.apply(null,arguments); };
@@ -62610,10 +62635,12 @@ window.__REGRESS=[
        down={2:1}; poll(); poll();
        if(!keys['KeyE']||keys['KeyR']) bad.push('X held beside a box did not search it');
        down={}; poll(); G.nearContainer=null;
-       var ads0=!!PAD.adsTog; tap(11);
-       if(!!PAD.adsTog===ads0||!(G.player&&G.player.ads)) bad.push('RS click did not toggle focus aim on');
+       // v28.xx (cw-cx-corpus02): his 3.11 b changed RS to melee; LT remains tested above.
+       meleeStrike=function(){ meleeCalls++; return oMS.apply(this,arguments); };
+       tap(11);
+       if(meleeCalls!==1||PAD.adsTog) bad.push('RS did not dispatch one melee strike without toggling focus');
        tap(11); poll();
-       if(PAD.adsTog) bad.push('a second RS click did not toggle focus aim off');
+       if(meleeCalls!==2||PAD.adsTog) bad.push('the next RS press did not dispatch exactly one more melee strike');
        if(typeof zoomTarget==='function'&&typeof hotbarSlots==='function'&&hotbarSlots().length>1){
          var z0=zoomTarget(), h0=hotSel(), tN=performance.now();
          down={5:1}; for(i=0;i<2000000&&performance.now()-tN<350;i++) poll();   // pollPad is fast: the hold is timed, not counted
@@ -62627,7 +62654,7 @@ window.__REGRESS=[
        if(mouse.down) bad.push('RT fired under the open backpack');
        down={}; val={}; poll(); G.bagOpen=false;
        if(typeof keyLabel==='function'){ var _po=PAD.on; PAD.on=true; if(keyLabel('Space')!=='A'||keyLabel('ControlLeft')!=='B'||keyLabel('KeyG')!=='RT'||keyLabel('KeyR')!=='X'||keyLabel('KeyX')!==((typeof xCallKey==='function')?'X':'Y')) bad.push('the prompts name '+keyLabel('Space')+' for the roll, '+keyLabel('ControlLeft')+' for crouch, '+keyLabel('KeyG')+' for use, '+keyLabel('KeyR')+' for reload and '+keyLabel('KeyX')+' for the ring search'); PAD.on=_po; }
-     } finally { navigator.getGamepads=NGA; raidKey=oRK; try{ down={}; val={}; mouse.down=false; if(G&&G.player) G.player.ads=false; keys=k0||{}; G.crouchTog=false; __endRaid('abandon'); __topClear(); }catch(e){} }
+     } finally { navigator.getGamepads=NGA; raidKey=oRK; meleeStrike=oMS; try{ down={}; val={}; mouse.down=false; if(G&&G.player) G.player.ads=false; keys=k0||{}; G.crouchTog=false; __endRaid('abandon'); __topClear(); }catch(e){} }
      return bad.length?bad.join('; '):null; }},
   {v:'16.71',what:'the what is new card is current again: within fifteen builds, and its STEADIER CO-OP line carries the rest of the stability pass',
    run:function(){
@@ -66508,7 +66535,7 @@ window.__REGRESS=[
      var g=function(id){ return document.getElementById(id); };
      function ls(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
      function skip(m){ return bad.length?(bad.join('; ')+' (then SKIP: '+m+')'):('SKIP: '+m); }
-     function txt(el){ return String((el&&el.textContent)||'').replace(/\s+/g,' ').replace(/^ | $/g,''); }
+     function txt(el){ return String((el&&el.textContent)||'').replace(/\s+/g,' ').replace(/^ | $/g,'').toUpperCase(); }
      function shown(el){ return !!el&&el.style.display!=='none'; }
      function js(o){ return JSON.stringify(o); }
      function closeAll(){ [].forEach.call(document.querySelectorAll('.modal.on'),function(m){ m.classList.remove('on'); }); }
@@ -66645,7 +66672,7 @@ window.__REGRESS=[
        netSameOnMsg({t:'padpick',pair:PAIR,ix:1}); ch.posted=[]; frame();
        if(!last('pad')||last('pad').ix!==1) bad.push('player 2 picking controller 2 is not handed it ('+js(last('pad'))+')');
        // The host not in front: nothing goes out, its own read is not played, and a state handed over by player 2 is.
-       hf.v=false; ch.posted=[]; NET.padOther=-1;
+       hf.v=false; ch.posted=[]; NET.padOther=-1; NET.padLiveAt=-1e9; // v28.xx (cw-cx-corpus02): a background window with no fresh data, not merely unfocused.
        frame();
        if(posts('pad').length) bad.push('the host not in front handed over a state');
        if(PAD.on||keys.KeyF) bad.push('the host not in front plays its own read (on '+PAD.on+', F '+!!keys.KeyF+')');
@@ -66665,7 +66692,7 @@ window.__REGRESS=[
 
        // THREE: PLAYER 2. Not in front: its own read is ignored, the state handed over drives the reader and the keys it holds
        // are the ones the buttons handed over hold. In front: its own pad wins and the host is handed its pad.
-       NET.same='p2'; NET.padIx=-1; NET.padOther=-1; NET.padFwd=null; ch.posted=[]; hf.v=false;
+       NET.same='p2'; NET.padIx=-1; NET.padOther=-1; NET.padFwd=null; ch.posted=[]; hf.v=false; NET.padLiveAt=-1e9;
        var OWN=pad(0,[2],[-0.7,0,0,0]);
        pads([OWN]);
        frame();
@@ -66676,7 +66703,8 @@ window.__REGRESS=[
        if(!PAD.on) bad.push('player 2 not in front does not play the state handed over');
        if(!keys.KeyE||!keys.KeyF||keys.KeyR) bad.push('the buttons handed over do not hold their keys (E '+!!keys.KeyE+', F '+!!keys.KeyF+'), or the own pad X holds R ('+!!keys.KeyR+')');
        if(!PAD.prev[0]||!PAD.prev[3]||PAD.prev[2]) bad.push('the reader shows buttons '+downs()+' down, not 0 and 3 handed over');
-       if(!same(PAD.ax,[0.6,-0.4,0,0])||Math.abs(PAD.mx-padAxis(0.6))>1e-6||Math.abs(PAD.my-padAxis(-0.4))>1e-6) bad.push('the sticks handed over did not reach the pad fields (ax '+js(PAD.ax)+', mx '+PAD.mx+', my '+PAD.my+')');
+       var expectedMove=typeof padStick==='function'?padStick(0.6,-0.4):{x:padAxis(0.6),y:padAxis(-0.4)};
+       if(!same(PAD.ax,[0.6,-0.4,0,0])||Math.abs(PAD.mx-expectedMove.x)>1e-6||Math.abs(PAD.my-expectedMove.y)>1e-6) bad.push('the sticks handed over did not reach the pad fields (ax '+js(PAD.ax)+', mx '+PAD.mx+', my '+PAD.my+')');
        if(posts('pad').length) bad.push('player 2 not in front handed a state to the host');
        if(netSameOnMsg(fwd(0,0,[0]))!=='padown') bad.push('player 2 kept a state from the host own pad');
        if(netSameOnMsg({t:'pad',pair:'zqxotherpair',ix:1,own:0,p:[1],v:[1],a:[0,0,0,0]})!=='ignored') bad.push('player 2 kept a state from another pair');
@@ -66698,7 +66726,7 @@ window.__REGRESS=[
        if(!keys.KeyR||keys.KeyE||!last('pad')||last('pad').ix!==0) bad.push('player 2 that picked controller 2 does not play it and hand the host controller 1 (R '+!!keys.KeyR+', handed '+js(last('pad'))+')');
        netPadSet(0); ch.posted=[]; frame();
        if(!keys.KeyR||PAD.prev[4]||!last('pad')||last('pad').ix!==0) bad.push('player 2 picking the host controller 1 was given it: down '+downs()+', handed '+js(last('pad')));
-       netPadSet(1); hf.v=false; pads([OWN]); ch.posted=[];
+       netPadSet(1); hf.v=false; pads([OWN]); ch.posted=[]; NET.padLiveAt=-1e9;
        if(netSameOnMsg(fwd(0,-1,[0]))!=='padnot') bad.push('player 2 that picked controller 2 kept a state from controller 1');
        if(netSameOnMsg(fwd(1,0,[0]))!=='pad') bad.push('control: player 2 that picked controller 2 refused a state from it');
        frame();
