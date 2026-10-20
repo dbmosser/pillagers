@@ -10,7 +10,7 @@ cd "$R" || exit 1
 [ -z "$(git status --porcelain tools/mkfixture.ps1)" ] && { echo "NOTHING TO COMMIT in tools/mkfixture.ps1"; exit 1; }
 git add tools/mkfixture.ps1 && git commit -q -m "fixture: $M
 
-Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>" || { echo "COMMIT FAILED"; exit 1; }
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" || { echo "COMMIT FAILED"; exit 1; }
 echo "committed $(git log -1 --format=%h)"
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/mkfixture.ps1 2>&1 | tail -2
 rm -rf "$TEMP/pillagers-dry/"dry*
