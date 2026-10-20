@@ -364,3 +364,5 @@
 2026-10-20 0.1566 critic-o-09-pad-name-entry
 2026-10-20 0.0000 o-09-pad-name-entry
 2026-10-20 0.0000 o-09-pad-name-entry
+2026-10-20 1.6523853 42-art-pillager-bots
+2026-10-20 0.14217939999999998 41-art-player-states

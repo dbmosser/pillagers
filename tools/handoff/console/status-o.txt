@@ -1,1 +1,1 @@
-10-20 04:05 waiting for RAM: 2 GB free, need 3 (o-09-pad-name-entry)
+10-20 04:07 gate: shipping cw-cx-padnameview (o-09-pad-name-entry, codex)

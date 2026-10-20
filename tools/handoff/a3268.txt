@@ -1,0 +1,1 @@
+| PAD NAME PICKER READABILITY | v32.68 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 32.68 passes, fails on v32.67 |

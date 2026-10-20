@@ -1,0 +1,5 @@
+## v32.68 - PAD NAME PICKER READABILITY
+
+Co-op hunt while he was away. The J4 critic found small control hints, weak letter focus and a competing title focus in both windows.
+
+MEASURED. Check 32.68 passes, and fails on v32.67.

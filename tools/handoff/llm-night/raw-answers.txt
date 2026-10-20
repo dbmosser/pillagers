@@ -1,21 +1,9 @@
 
-It looks like you've provided a large block of CSS code that appears to be part of a web page or application, possibly related to some kind of game interface. The CSS styles are designed to modify the appearance and behavior of various elements on the page.
-
-Here's a summary of what I can see from this CSS:
-
-1. **General Styles**:
-   - Various variables (`--ui-line`, `--acc`, etc.) are defined for colors, sizes, and other styling properties.
-   - General styles for buttons, text, and containers are set up to maintain consistency across the interface.
-
-2. **Specific Element Styles**:
-   - The CSS targets specific elements by their IDs or classes (e.g., `#settingsmodal`, `.row:not(.setjump)`, etc.) and applies custom styles to them.
-   - For example, hover effects for buttons are defined, as well as focus states that change the appearance of elements when they receive focus.
-
-3. **Responsive Design**:
-   - The CSS uses media queries (e.g., `@media screen and (max-width: 1024px)`) to adjust styles based on the screen size.
-   - Flexbox is used extensively for layout, allowing elements to be aligned and sized responsively.
-
-4. **Custom Styles for Specific Features**:
-   - There are specific styles for features like settings panels (`#settingsmodal`), pause boxes (`#pausebox`), and codex modals (`#cod
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
 NONE
 NONE

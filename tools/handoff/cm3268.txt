@@ -1,0 +1,7 @@
+v32.68: pad name picker readability
+
+The pad name card has larger controls, a boxed letter with arrows and one footer. The title stays hidden while naming.
+
+Check 32.68. Fails on v32.67.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

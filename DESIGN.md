@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.68 - PAD NAME PICKER READABILITY
+
+Co-op hunt while he was away. The J4 critic found small control hints, weak letter focus and a competing title focus in both windows.
+
+MEASURED. Check 32.68 passes, and fails on v32.67.
 ## v32.67 - PILLAGER BOTS: RED COATS, GOLD BODY, NOTICE TELL, FALL
 
 Co-op hunt while he was away. His art survey picks: every hostile pillager bot wears the same dark red coat with the angry brows and shows its role through gear only (hires keep their own colours); the golden enemy has a solid gold body with a shine sweeping across it; a bot that notices you keeps the red mark and also hops, flares red eyes and tightens its brows for 0.45 s; a bot that dies tips over flat as itself and fades. Drawing only: no random draw and nothing the sim reads.
