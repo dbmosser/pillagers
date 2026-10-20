@@ -1,0 +1,7 @@
+v32.74: pause glyphs follow pad loss
+
+A lost pad releases its prompt style immediately. Same-slot A recovery stays intact.
+
+Check 32.74. Fails on v32.73.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

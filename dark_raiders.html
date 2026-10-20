@@ -3199,7 +3199,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.73';
+var VER='32.74';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18647,6 +18647,7 @@ function padLostStart(ix){
   PAD.lossRaid=G; PAD.lossIx=ix;
   if(!PAD.lost||PAD.lost.raid!==G) PAD.lost={raid:G,ix:ix,ready:false};
   padRelease(); PAD.on=false; PAD.mx=0; PAD.my=0; PAD.aiming=false;
+  try{ padBodyCls(); }catch(_plb){} /* v28.xx (cw-cx-padlostlegend): release the pad prompt style when polling detects loss, including an open pause box. */
   PAD.prev=[]; PAD.mSpent=null; PAD.prevMap=null;
   if(!pauseOpen) togglePauseBox(true);
   var h=document.querySelector('#pausebox h3'); if(h) h.textContent='pad lost';
@@ -50890,7 +50891,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.73: A press lands with a thump, and a score counts up with hits and lands with a heavier one. Check 32.73 fails on v32.72',
+  now:'v32.74: A lost pad releases its prompt style immediately. Same-slot A recovery stays intact. Check 32.74 fails on v32.73',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

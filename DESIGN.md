@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.74 - PAUSE GLYPHS FOLLOW PAD LOSS
+
+Co-op hunt while he was away. Polling released the lost pad but returned before refreshing an open pause legend.
+
+MEASURED. Check 32.74 passes, and fails on v32.73.
 ## v32.73 - PUNCHY HITS ON CONFIRM AND ON THE SCORE COUNT
 
 Co-op hunt while he was away. His answer Q48: menus get soft ticks, punchy hits on confirm and score. The confirm click had no weight and the score count-ups on the run over card and the career end card were silent. A press now has a short low thump under the click, a counting score plays a hit a step (one every 70 ms, pitch climbing) and one heavier landing hit, and a skip plays only the landing. Sound only.

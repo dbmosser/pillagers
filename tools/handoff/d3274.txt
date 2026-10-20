@@ -1,0 +1,5 @@
+## v32.74 - PAUSE GLYPHS FOLLOW PAD LOSS
+
+Co-op hunt while he was away. Polling released the lost pad but returned before refreshing an open pause legend.
+
+MEASURED. Check 32.74 passes, and fails on v32.73.
