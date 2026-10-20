@@ -1,1 +1,1 @@
-10-19 23:49 waiting for RAM: 2 GB free, a helper starts at 4; 17-party-easy-mode kept
+10-19 23:54 waiting for RAM: 2 GB free, a helper starts at 4; 17-party-easy-mode kept

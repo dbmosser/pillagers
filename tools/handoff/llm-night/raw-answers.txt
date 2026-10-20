@@ -1,16 +1,13 @@
 
-This HTML snippet appears to be part of a web page or application related to some kind of gaming experience, likely an online multiplayer game. The content includes several elements that are typical in such interfaces:
+This is a snippet of HTML code for a web page that appears to be part of a video game interface or dashboard. It includes several elements such as:
 
-1. **Canvas Elements**: Two canvas elements (`<canvas id="cv"></canvas>` and `<canvas id="hcv"></canvas>`) are present, which are commonly used for rendering graphics or animations in web applications.
+- Two canvas elements (`<canvas id="cv"></canvas>` and `<canvas id="hcv"></canvas>`) which are likely used for rendering graphics.
+- A pause menu (`<div class="pausebox" id="pausebox">`) that appears when the game is paused, containing buttons for resuming the run, settings, leaderboard, feedback, etc.
+- Feedback modal (`<div class="modal" id="fbmodal">`) which allows users to provide feedback by typing a note and taking a screenshot of the current screen.
+- What's New modal (`<div class="modal" id="wnmodal">`) that displays recent updates or changes in the game.
+- Leaderboard modal (`<div class="modal" id="lbmodal">`) for viewing player rankings.
+- Outcome card (`<div class="outcome" id="outcome">`) which appears after a run is completed, showing results and allowing users to log their experience.
 
-2. **Pause Box**: A pause menu is defined with various buttons and text elements. This includes options to resume the game, access settings, view a leaderboard, provide feedback, see what's new, return to character selection, abandon the run, or end the run (for arcade mode).
-
-3. **Feedback Modal**: A modal window for providing feedback (`<div class="modal" id="fbmodal">`) includes an image of the current screen and a text area for notes.
-
-4. **What's New Modal**: Another modal window (`<div class="modal" id="wnmodal">`) displays information about new features or updates in the game.
-
-5. **Leaderboard Modal**: A leaderboard modal (`<div class="modal" id="lbmodal">`) shows player rankings, presumably for a career mode or similar persistent gameplay experience.
-
-6. **Outcome Card**: An outcome card (`<div class="outcome" id="outcome">`) is included, which appears to display information about the end of a game run, such as extracted items, party members'
+The CSS styles are embedded within `<style>` tags at the beginning of the snippet. They define various layout properties such as font sizes, colors, margins, padding, and grid layouts for different elements on the page.
 NONE
 NONE

@@ -1,0 +1,5 @@
+## v32.19 - Racks column centred in the card
+
+Co-op hunt while he was away. UI step 7 (restyle only). Critic on the racks tab: the column sat at left of centre with the right 40 percent empty.
+
+MEASURED. Check 32.19 passes, and fails on v32.18.

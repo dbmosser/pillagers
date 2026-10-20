@@ -2107,6 +2107,8 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
 #root #hub .toprow .brand{ font-size:32px !important; }
 /* v28.xx (cw-uc-racksquiet) b-31 step 7, critic on 14 (P0 "every action has a 1-3 line explaining paragraph"): the array and data core explainer lines are hidden; the rack cost line stays (it is information) and so does his import line. */
 #root #mfarrayhint, #root #mfslothint{ display:none !important; }
+/* v28.xx (cw-uc-rackscentre) b-31 step 7, critic on 14 (P1 "the 670px column sits left of centre in a 1720px card"): the racks pane takes the full card width so the 672px column is centred under the tabs. Looks only. */
+#root #opane_mf{ width:100% !important; max-width:none !important; box-sizing:border-box; }
 #root #kitsetup .kst span, #root #kitsetup .kstc span, #root #kitsetup .ksreset{ font-size:var(--fs-label); }
 /* v28.xx (cw-uc-stash3) b-31 step 7, critic on 04 (P1 "key names inside gun keys and wheel about 11px bold... under the 16px floor", P0 "the version stamp is the title area"): the gun key and item wheel names, the section captions and the reset buttons go from 14px to the 16px label size, names lose their letter spacing so shotgun and carbine still fit; the build stamp beside PILLAGERS is hidden in the Undercroft (it stays in the F1 and settings pages). */
 #root #kitsetup .kst span{ letter-spacing:0; }
@@ -3016,7 +3018,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.18';
+var VER='32.19';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -50225,7 +50227,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.18: The racks tab loses two explaining paragraphs. Check 32.18 fails on v32.17',
+  now:'v32.19: The racks column sits in the middle of the card. Check 32.19 fails on v32.18',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

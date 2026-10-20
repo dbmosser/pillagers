@@ -1,0 +1,7 @@
+v32.19: racks column centred in the card
+
+The racks column sits in the middle of the card.
+
+Check 32.19. Fails on v32.18.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

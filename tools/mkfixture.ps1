@@ -6101,6 +6101,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.19',what:'the racks column is centred in the card, not left of centre',
+   run:function(){
+     if(!(window.__hubEnter&&window.__station)) return 'SKIP: this fixture cannot open the Mainframe';
+     if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so nothing renders';
+     var bad=[], pane, bt, r, cx, mid;
+     try{
+       __topClear(); __runPrep(); __cleanProfile(); if(window.__wnseen) __wnseen(1);
+       var t=document.getElementById('title'); if(t) t.classList.remove('on');
+       __hubEnter(); __station('mf','KeyF');
+       pane=document.getElementById('opane_mf'); bt=document.getElementById('mfbuild');
+       if(!pane||!bt||!(pane.getBoundingClientRect().width>0)) return 'SKIP: the RACKS page did not open';
+       r=bt.getBoundingClientRect(); cx=r.left+r.width/2; mid=window.innerWidth/2;
+       if(Math.abs(cx-mid)>40) bad.push('the build button centre is at '+Math.round(cx)+', the window middle is '+Math.round(mid));
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ [].slice.call(document.querySelectorAll('.modal.on')).forEach(function(x){ x.classList.remove('on'); }); }catch(_m){} __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'32.18',what:'the racks tab hides the array and data core explainer lines',
    run:function(){
      var bad=[];

@@ -76,19 +76,19 @@
   "when": "2026-10-19T00:29"
  },
  "08-shop": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "the tiles now have icons and the layout is tidier, but most of the earlier advice was not followed: the grid is still a third full with a dead lower half, the flavour pill still sits on the panel edge, and the header still has the currency clutter and a crowded close button.",
+  "verdict": "The shop is a clean, consistent dark card with one lime action and a clear focus tile, but half the grid area is empty, the detail pane has a big dead gap, and the header and footer details are sloppy.",
   "findings": [
-   "P0 grid panel, x 119-1307, y 190-1002: use a 6-column grid of tiles that stretch to the panel width (about 190px square, 8px gutters). add small section labels (medical, ammo, gear) at 16px tx-2 to fill the space. or end the panel at the last row.",
-   "P0 flavour pill 'everything here works. cannot say the same for you.', x 767-1153, y 975-1012: delete it. add the 72px footer row (y 952-1024) with a ghost 'back' button (B glyph) on the left and the 14px key legend on the right.",
-   "P1 header right, x 1414-1807, y 67-115: keep one block: '900' at 20px tx-1 and 'credits' at 16px tx-2. move xp, stash and bag to the footer legend. leave 24px between the block and the 48x48 x.",
-   "P1 title, x 119-335, y 82-110: title it 'shop' at 32px f-cond 700. let the tabs carry craft and hire.",
-   "P1 tabs, x 119-290, y 145-180: set tabs at 20px f-cond 600 with 24px side padding and 48px height. a 3px lime underline, one divider only, and the strip on the title row or directly under it."
+   "P1 item grid, rows 3 and up (y 590-1000): Make tiles bigger (about 220x210 with a 72px icon) so 9 items fill about 70% of the height. Or shrink the panel to fit its content. Add category filters in the left column only if they are needed.",
+   "P1 detail pane, y 480-770: Add a large item icon (about 160px) under the title and move the price block up. Or put the stats in a 2-column block at 20px and anchor the price block 24px below it.",
+   "P1 header, top right (900 credits, 0 xp, stash 3,750 bag 0): Show money as '$900' in the same style as the price. Make stash and bag two matching label-over-value pairs with 32px gaps. Drop xp from the shop if it does nothing here. Leave 24px before the X.",
+   "P1 bottom toast 'everything here works. cannot say the same for you.': Delete the line. If a hint line must stay, use 14px f-body tx-2 in the footer row, left-aligned inside the card, with no box.",
+   "P2 item tiles, price tags: Set all prices to 16px f-cond 600 tx-1. Use --danger for prices the player cannot afford and drop the lime from prices. Keep lime for the focus border only."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-31-f6/08-shop-1080.jpg",
-  "task": "b-31-ui-undercroft",
-  "when": "2026-10-19T00:54"
+  "pic": "tools/handoff/console/notes/shots/b-31-j4/08-shop-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-20T03:52"
  },
  "09-craft": {
   "score": 2,
@@ -132,17 +132,17 @@
  "14-mainframe-racks": {
   "score": 2,
   "pass": false,
-  "verdict": "The window frame, title, tabs and x are consistent with the card style, but the racks tab inside it is a narrow stack of identical bars and explaining paragraphs, with a placeholder dev sentence ('some wild idea claude came up with') shown to the player.",
+  "verdict": "The racks tab is a narrow column of identical grey buttons in the left-centre of a huge empty card. Dev-note copy about 'some wild idea claude came up with' is still on screen, and no hero element or primary action stands out.",
   "findings": [
-   "P0 import a friend helper text, bottom of the column: Delete the sentence. Keep at most a 3-word label such as 'import a friend'. Drop the helper paragraph or cut it to 'friend's run report'.",
-   "P0 racks tab body: 4 helper paragraphs (cost, fold, data core, import): Remove the 'ten racks become one array' and 'spend a data core...' sentences. Turn the cost line into a chip row with icon and count: 12 scrap, 9 wire, 6 cell, 6 board, each in tx-1 at 16px, red when short. Put a short tooltip on focus for the rest.",
-   "P1 hierarchy of the racks column (x 442-1113): Make 'build a rack' the single lime-filled primary button (--acc, ink text, 20px, 56px tall). Make the others secondary outlines. Show '0/10' as a 56px hero number with taller 24px pips. Keep disabled buttons at 4.5:1 text with a dashed or dimmed border.",
-   "P1 layout of the whole card: Use a two-column layout: a left column of rack tiles in a 5x2 grid (each 96px, with an empty/built state) and a right detail panel in --ui-raised holding the actions. Or centre one 720px column. Align to the 24px padding of the card.",
-   "P1 colour use: teal '0 of 10 racks', yellow tab underline, welcome toast: Make the counter tx-1 with an --acc fill on the built pips. Use only tx-1 and tx-2 for text. Disabled text is tx-2 at 60% opacity, no lower."
+   "P0 import-a-friend paragraph, under the friend's name field: Delete the whole paragraph. If a hint is needed, use a 16px tx-2 label of 4 words or fewer, such as 'import a friend's run'.",
+   "P1 build-a-rack cost paragraph: Replace it with a 4-row cost table in a --ui-raised pane: icon, name, 'have/need' in f-cond 20px, with --danger on the short rows. Remove the sentence.",
+   "P1 whole card body below y=600 and the right 40% of the card: Make two columns at 24px gutters. On the left, the rack grid as a 5x2 block of 96px tiles. On the right, a --ui-raised detail pane holding the cost table and the build button. Or centre one 720px column at x=600.",
+   "P1 build a rack / fold 10 racks / slot a data core buttons: Make 'build a rack' the one primary: lime --acc fill, --acc-ink text, 20px f-cond 700, height 56px. Keep the others as outline buttons at --tx-1 20px. Disabled buttons drop to 40% opacity with the cost shown in --danger. Make 'import a friend' a quiet secondary.",
+   "P1 rack progress strip, '0 of 10 racks': Make the pips 24px tall with a --ui-raised fill and filled pips in --acc. Set the count as a 56px hero '0/10' in tx-1. Remove the teal."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-31-j1/14-mainframe-racks-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/b-31-j4/14-mainframe-racks-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T03:47"
+  "when": "2026-10-20T03:52"
  },
  "16-bar-last-pour": {
   "score": 2,

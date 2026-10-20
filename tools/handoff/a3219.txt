@@ -1,0 +1,1 @@
+| Racks column centred in the card | v32.19 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 32.19 passes, fails on v32.18 |

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.19 - Racks column centred in the card
+
+Co-op hunt while he was away. UI step 7 (restyle only). Critic on the racks tab: the column sat at left of centre with the right 40 percent empty.
+
+MEASURED. Check 32.19 passes, and fails on v32.18.
 ## v32.18 - Racks tab: explainer lines hidden
 
 Co-op hunt while he was away. UI step 7 (restyle only). Critic on the racks tab: a 1 to 3 line paragraph under each button is clutter. Q8 allows it with the reason logged.

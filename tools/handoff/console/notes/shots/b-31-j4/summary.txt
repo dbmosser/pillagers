@@ -1,0 +1,9 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  14-mainframe-racks                     staged       7.3s    | opmodal
+  05-sector-page                         staged       7.0s    | sectormodal
+  06-terms                               staged       7.0s    | termsmodal
+  07-party-coop                          staged       7.0s    | partymodal
+  08-shop                                staged       7.2s    | tradermodal
+  09-craft                               staged       7.2s    | tradermodal
+  10-hire                                staged       7.2s    | tradermodal
+  11-wirt-gambler                        staged       7.0s    | gamblemodal

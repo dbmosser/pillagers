@@ -1,0 +1,12 @@
+{
+    "title":  "Racks column centred in the card",
+    "why":  "UI step 7 (restyle only). Critic on the racks tab: the column sat at left of centre with the right 40 percent empty.",
+    "now":  "The racks column sits in the middle of the card.",
+    "edits":  [
+                  {
+                      "anchor":  "#root #mfarrayhint, #root #mfslothint{ display:none !important; }",
+                      "replacement":  "#root #mfarrayhint, #root #mfslothint{ display:none !important; }\n/* v28.xx (cw-uc-rackscentre) b-31 step 7, critic on 14 (P1 \"the 670px column sits left of centre in a 1720px card\"): the racks pane takes the full card width so the 672px column is centred under the tabs. Looks only. */\n#root #opane_mf{ width:100% !important; max-width:none !important; box-sizing:border-box; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the racks column is centred in the card, not left of centre\u0027,\n   run:function(){\n     if(!(window.__hubEnter\u0026\u0026window.__station)) return \u0027SKIP: this fixture cannot open the Mainframe\u0027;\n     if(window.__vpAlive\u0026\u0026!__vpAlive()) return \u0027SKIP: the pane has no layout, so nothing renders\u0027;\n     var bad=[], pane, bt, r, cx, mid;\n     try{\n       __topClear(); __runPrep(); __cleanProfile(); if(window.__wnseen) __wnseen(1);\n       var t=document.getElementById(\u0027title\u0027); if(t) t.classList.remove(\u0027on\u0027);\n       __hubEnter(); __station(\u0027mf\u0027,\u0027KeyF\u0027);\n       pane=document.getElementById(\u0027opane_mf\u0027); bt=document.getElementById(\u0027mfbuild\u0027);\n       if(!pane||!bt||!(pane.getBoundingClientRect().width\u003e0)) return \u0027SKIP: the RACKS page did not open\u0027;\n       r=bt.getBoundingClientRect(); cx=r.left+r.width/2; mid=window.innerWidth/2;\n       if(Math.abs(cx-mid)\u003e40) bad.push(\u0027the build button centre is at \u0027+Math.round(cx)+\u0027, the window middle is \u0027+Math.round(mid));\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ [].slice.call(document.querySelectorAll(\u0027.modal.on\u0027)).forEach(function(x){ x.classList.remove(\u0027on\u0027); }); }catch(_m){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
