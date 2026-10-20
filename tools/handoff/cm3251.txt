@@ -1,0 +1,7 @@
+v32.51: pre-raid: quieter warning, one gun chip, taller pack rows and bigger steppers, softer map labels
+
+The pre-raid page is calmer: one gun line, a quiet no armour row, taller pack rows with bigger plus and minus buttons, and softer map labels.
+
+Check 32.51. Fails on v32.50.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

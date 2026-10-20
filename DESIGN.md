@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.51 - PRE-RAID: QUIETER WARNING, ONE GUN CHIP, TALLER PACK ROWS AND BIGGER STEPPERS, SOFTER MAP LABELS
+
+Co-op hunt while he was away. The critic scored the shipped design A page 3 and named: a dead gap in the kit column, two confusing gun chips, an amber warning bar as loud as the ascend plate, loud outlined map labels with cramped keyed room tags, small steppers and a stray saves as you go line. Rows grow to 46 px, steppers to 36 px, the warning loses its fill, the gun chips merge, the keyed room names sit beside their rooms, and the panel double frame goes.
+
+MEASURED. Check 32.51 passes, and fails on v32.50.
 ## v32.50 - Corner readout: $ money, no credits label
 
 Co-op hunt while he was away. UI step 7. Critic scored 10, 11, 15 at 2; P1 on all: the header strip says credits where the style is $. Q59.

@@ -1,28 +1,33 @@
 
-This CSS code snippet appears to be styling various elements within a web application, likely related to some kind of game or interactive experience. Here's a breakdown of the key styles and their purposes:
-
-### General Styles
-
-- **Modals**: The `.modal` class is styled with a radial gradient background and padding. It also includes an `h3` element for titles.
-  
-  ```css
-  #root .modal {
-    background:radial-gradient(1200px 700px at 50% -10%, rgba(170,164,152,.12), transparent 60%), rgba(17,19,21,.95);
-    padding:26px 32px;
-  }
-  
-  #root .modal h3 {
-    font-size:22px; letter-spacing:.04em; text-transform:uppercase; color:var(--amber); margin:0 0 14px;
-    padding-bottom:12px; border-bottom:1px solid rgba(170,164,152,.22);
-  }
-  ```
-
-- **Subtitles and Paragraphs**: The `.msub` class is used for subtitles or secondary text within modals.
-
-  ```css
-  #root .msub {
-    font-size:15px; line-height:1.5; color:var(--ash); max-width
 NONE
+It looks like you've provided a snippet of CSS code that appears to be part of a larger stylesheet for a web application or game interface. The comments in the code suggest that these styles are related to various UI elements and changes made based on user feedback or design critiques.
+
+Here's a breakdown of some key parts of the CSS:
+
+1. **Close Button (`#oc_x`)**:
+   - Positioned absolutely at the top right corner of its container.
+   - Uses a custom close icon (Unicode character `\00d7`).
+   - Changes color and border on hover or focus.
+
+2. **Copy Button (`#oc_copy`)**:
+   - Hidden by default with `display: none !important;`.
+
+3. **Haul Items**:
+   - `.haulit`: Represents individual items in a haul.
+   - `.hid`: Applies styles to hidden items, making them semi-transparent and adjusting the border color.
+   - Animations for item reveal (`@keyframes haulsettle`).
+
+4. **Outcome Card Layout**:
+   - Adjusts the layout of various sections like totals, stats, achievements, and loss details.
+
+5. **Tiles and Icons**:
+   - `.octile`: Represents individual tiles in a grid.
+   - Contains an image and possibly additional text or icons.
+
+6. **Feedback and Achievements**:
+   - Styles for feedback prompts (`#oc_btn`) and achievement badges (`#root .ocach`).
+
+7. **General UI
 NONE
 NONE
 NONE

@@ -1,0 +1,21 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  74-pad-pillagers                       NOT STAGED   4.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: (intermediate value)(intermediate value)(...) is not a function
+    at <anonymous>:3:1
+    at <anonymous>:107:225
+    at <anonymous>:107:301
+  74-pad-call-of-duty                    NOT STAGED   4.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: (intermediate value)(intermediate value)(...) is not a function
+    at <anonymous>:3:1
+    at <anonymous>:107:225
+    at <anonymous>:107:301
+  74-pad-lefty                           NOT STAGED   4.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: (intermediate value)(intermediate value)(...) is not a function
+    at <anonymous>:3:1
+    at <anonymous>:107:225
+    at <anonymous>:107:301
+  74-pad-player-1                        NOT STAGED   4.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: (intermediate value)(intermediate value)(...) is not a function
+    at <anonymous>:3:1
+    at <anonymous>:107:75
+    at <anonymous>:107:151
+  74-pad-player-2                        NOT STAGED   4.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: (intermediate value)(intermediate value)(...) is not a function
+    at <anonymous>:3:1
+    at <anonymous>:107:73
+    at <anonymous>:107:149

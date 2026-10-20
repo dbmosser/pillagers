@@ -2555,7 +2555,7 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
   #sectormodal .srseat{ display:inline-flex; align-items:center; gap:10px; height:40px; padding:0 16px; border:1px solid var(--ui-line-hi); background:var(--ui-raised); border-radius:4px; font:600 20px var(--f-cond); letter-spacing:.02em; }
   #sectormodal .srseat i{ width:12px; height:12px; border-radius:50%; }
   #srbody{ flex:1 1 auto; min-height:0; display:flex; gap:16px; }
-  #srmap{ flex:2 1 0; min-width:0; min-height:0; display:grid; grid-template-columns:minmax(0,1fr) 184px; grid-template-rows:40px minmax(0,1fr); column-gap:16px; padding:0 12px 10px; background:var(--ui-panel); border:1px solid var(--ui-line); border-radius:4px; }
+  #srmap{ flex:2 1 0; min-width:0; min-height:0; display:grid; grid-template-columns:minmax(0,1fr) 184px; grid-template-rows:40px minmax(0,1fr); column-gap:16px; padding:0 12px 10px; background:var(--ui-panel); border:0; border-radius:4px; }
   #root #sectormodal #sectorlist, #root #sectormodal .sectorpick{ display:contents !important; }
   #sectormodal .srmh{ grid-column:1/-1; grid-row:1; display:flex; align-items:center; gap:16px; margin:0 -12px; padding:0 12px; border-bottom:1px solid var(--ui-line); }
   #sectormodal .srmh b{ font:700 32px/1 var(--f-cond); letter-spacing:.03em; color:var(--tx-1); }
@@ -2580,7 +2580,7 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
   #sectormodal .srkr{ height:34px; display:flex; align-items:center; gap:12px; font:600 20px var(--f-cond); }
   #sectormodal .srkr svg{ width:28px; height:28px; flex:none; }
   #sectormodal .srkr em{ margin-left:auto; font:500 16px var(--f-body); font-style:normal; color:var(--tx-2); }
-  #srkitcol{ flex:1 1 0; min-width:0; max-width:400px; min-height:0; display:flex; flex-direction:column; gap:10px; padding:10px 12px; background:var(--ui-panel); border:1px solid var(--ui-line); border-radius:4px; }
+  #srkitcol{ flex:1 1 0; min-width:0; max-width:400px; min-height:0; display:flex; flex-direction:column; gap:10px; padding:10px 12px; background:var(--ui-panel); border:0; border-radius:4px; }
   #sectorkitpick{ flex:none; display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:0 !important; }
   #root #sectormodal .kitb{ height:52px; display:grid; grid-template-columns:22px minmax(0,1fr); column-gap:8px; align-content:center; align-items:center; padding:0 8px; background:var(--ui-raised); border:1px solid var(--ui-line-hi); border-radius:4px; color:var(--tx-1); text-align:left; white-space:nowrap; overflow:hidden; }
   #sectormodal .kitb .srrd{ grid-row:1/3; }
@@ -2593,15 +2593,16 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
   #sectormodal .srph i{ flex:1; }
   #root #sectormodal .pkb{ height:36px; min-width:0; padding:0 14px; background:var(--ui-raised); border:1px solid var(--ui-line-hi); border-radius:4px; color:var(--tx-1); font:600 20px var(--f-cond); }
   #sectormodal .srplist{ flex:1 1 auto; min-height:0; overflow-y:auto; }
-  #sectormodal .srprow{ height:38px; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--ui-line); white-space:nowrap; }
+  #sectormodal .srprow{ height:46px; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--ui-line); white-space:nowrap; }
   #sectormodal .srprow.g{ margin-top:6px; }
   #sectormodal .srprow .rar{ width:4px; height:24px; flex:none; }
   #sectormodal .srprow svg{ width:24px; height:24px; flex:none; fill:none; stroke:var(--tx-2); stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
   #sectormodal .srprow .nm{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; font:600 20px var(--f-cond); color:var(--tx-2); }
   #sectormodal .srprow.on .nm{ color:var(--tx-1); }
-  #sectormodal .srprow .held{ min-width:26px; font:500 16px var(--f-body); color:var(--tx-2); }
+  #sectormodal .srprow .held{ min-width:26px; font:500 16px var(--f-body); color:#c9c5bb; }
+  #sectormodal .srprow:has(.padfocus){ background:var(--ui-raised); box-shadow:inset 3px 0 0 var(--srseat); }
   #sectormodal .srprow .st{ display:flex; align-items:center; }
-  #root #sectormodal .srprow .st .srm, #root #sectormodal .srprow .st button{ width:34px; height:30px; min-width:0; padding:0; display:grid; place-items:center; background:var(--ui-raised); border:1px solid var(--ui-line-hi); border-radius:0; color:var(--tx-1); font:700 20px var(--f-cond); cursor:pointer; }
+  #root #sectormodal .srprow .st .srm, #root #sectormodal .srprow .st button{ width:36px; height:36px; min-width:0; padding:0; display:grid; place-items:center; background:var(--ui-raised); border:1px solid var(--ui-line-hi); border-radius:0; color:var(--tx-1); font:700 20px var(--f-cond); cursor:pointer; }
   #sectormodal .srprow .st b{ width:30px; text-align:center; font:700 20px var(--f-cond); cursor:pointer; }
   #root #sectormodal .srprow .dis{ color:var(--tx-3); }
   #root #sectormodal button.srcore{ width:100%; height:40px; margin-top:6px; padding:0; background:none; border:0; border-bottom:1px solid var(--ui-line); border-radius:0; justify-content:flex-start; color:var(--tx-1); font:600 20px var(--f-cond); }
@@ -2615,11 +2616,11 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
   #sectormodal .gc{ flex:1 1 0; min-width:0; height:36px; display:flex; align-items:center; gap:8px; padding:0 12px; background:var(--ui-raised); border:1px solid var(--ui-line-hi); border-radius:4px; white-space:nowrap; overflow:hidden; }
   #sectormodal .gc i{ font:400 16px var(--f-body); font-style:normal; color:var(--tx-2); }
   #sectormodal .gc b{ font:700 20px var(--f-cond); }
-  #sectormodal .wn{ flex:1 1 100%; height:36px; display:flex; align-items:center; gap:10px; padding:0 12px; border:1px solid var(--warn); background:rgba(245,183,59,.12); border-radius:4px; color:var(--warn); white-space:nowrap; overflow:hidden; }
+  #sectormodal .wn{ flex:1 1 100%; height:36px; display:flex; align-items:center; gap:10px; padding:0 12px; border:1px solid var(--ui-line-hi); background:none; border-radius:4px; color:var(--warn); white-space:nowrap; overflow:hidden; }
   #sectormodal .wn svg{ width:24px; height:24px; flex:none; fill:none; stroke:var(--warn); stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
   #sectormodal .wn b{ font:700 20px var(--f-cond); }
   #sectormodal .wn i{ margin-left:auto; font:400 16px var(--f-body); font-style:normal; color:var(--tx-2); }
-  #sectormodal .srplate{ flex:none; height:72px; padding:3px; background:var(--srseat); border-radius:6px; }
+  #sectormodal .srplate{ flex:none; height:72px; padding:0; background:none; }
   #root #sectormodal #sectordeploy{ width:100%; height:100%; display:flex; align-items:center; justify-content:space-between; padding:0 24px 0 30px; background:var(--acc); color:var(--acc-ink); border:0; border-radius:4px; font:800 52px/1 var(--f-cond); letter-spacing:.05em; }
   #root #sectormodal #sectordeploy:hover{ background:var(--acc-hover); }
   #sectormodal .srsr{ display:none; }
@@ -3152,7 +3153,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.50';
+var VER='32.51';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -50523,7 +50524,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.50: The top right readout shows  and no longer the word credits. Check 32.50 fails on v32.49',
+  now:'v32.51: The pre-raid page is calmer: one gun line, a quiet no armour row, taller pack rows with bigger plus and minus buttons, and softer map labels. Check 32.51 fails on v32.50',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -65632,7 +65633,7 @@ function sectorPreviewDraw(cv,M){
   var EX=(M.extracts&&M.buildings)?extractsOutside(M.extracts,M.buildings,M.w,M.h):(M.extracts||null);   // v22.16 (K27): the rings where the raid puts them
   c.setTransform(1,0,0,1,0,0); c.clearRect(0,0,cv.width,cv.height);
   if(_sk) c.setTransform(cv.width/W0,0,0,cv.height/H0,0,0);
-  function put(s,x,y){ c.lineJoin='round'; c.lineWidth=3; c.strokeStyle='rgba(8,18,28,.9)'; c.strokeText(String(s).toLowerCase(),x,y); c.fillText(s,x,y); }
+  function put(s,x,y){ c.lineJoin='round'; c.lineWidth=2; c.strokeStyle='rgba(8,18,28,.6)'; c.strokeText(String(s).toLowerCase(),x,y); c.fillText(s,x,y); }
   c.fillStyle='#0c1a28'; c.fillRect(ox,oy,M.w*sc,M.h*sc);
   c.strokeStyle='#2f5e86'; c.lineWidth=2; c.setLineDash([12,7]); c.strokeRect(ox+4,oy+4,M.w*sc-8,M.h*sc-8); c.setLineDash([]);
   if(M.zones) for(i=0;i<M.zones.length;i++){ z=M.zones[i]; if(typeof z.x!=='number') continue;
@@ -65643,13 +65644,11 @@ function sectorPreviewDraw(cv,M){
   if(M.locked) for(i=0;i<M.locked.length;i++){ b=M.locked[i]; if(!b||typeof b.x!=='number'||!b.w) continue;
     c.fillStyle='#1a1228'; c.fillRect(ox+b.x*sc,oy+b.y*sc,b.w*sc,b.h*sc);
     c.strokeStyle='#a866e0'; c.lineWidth=2; c.setLineDash([7,4]); c.strokeRect(ox+b.x*sc+1,oy+b.y*sc+1,b.w*sc-2,b.h*sc-2); c.setLineDash([]);
-    c.font='600 16px '+FF; c.textAlign='center'; c.fillStyle='#dcc3f4';
-    a1=TX(String(b.name||'')); L=a1.split(' '); a2=L.length>1?L.slice(1).join(' '):''; a1=L[0];
-    put(a1,ox+(b.x+b.w/2)*sc,oy+(b.y+b.h/2)*sc-(a2?2:-6)); if(a2) put(a2,ox+(b.x+b.w/2)*sc,oy+(b.y+b.h/2)*sc+16); n++; }
+    c.font='600 16px '+FF; c.textAlign='right'; c.fillStyle='#dcc3f4'; put(TX(String(b.name||'')),ox+b.x*sc-8,oy+(b.y+b.h/2)*sc+5); n++; }
   if(M.zones) for(i=0;i<M.zones.length;i++){ z=M.zones[i]; if(typeof z.x!=='number'||!z.name) continue;
     // v18.69: a name shrinks to fit its zone and breaks onto two lines at a space; v19.97: and keeps clear of an extraction ring
     (function(){
-      var zw=Math.max(10,z.w*sc-6), fs=20, cx=ox+(z.x+z.w/2)*sc, cy=oy+(z.y+z.h/2)*sc, nm=TX(String(z.name)), ws, k, a1, a2, best=-1, bw=1e9, w1, w2;
+      var zw=Math.max(10,z.w*sc-6), fs=18, cx=ox+(z.x+z.w/2)*sc, cy=oy+(z.y+z.h/2)*sc, nm=TX(String(z.name)), ws, k, a1, a2, best=-1, bw=1e9, w1, w2;
       c.fillStyle='#e6f1fb'; c.textAlign='center';
       function hits(y,hh,hw){ var j,e2,rx,ry,r2,nx,ny; if(!EX) return false; for(j=0;j<EX.length;j++){ e2=EX[j]; if(!e2) continue; rx=ox+e2.x*sc; ry=oy+e2.y*sc; r2=R+2; nx=Math.max(cx-hw,Math.min(rx,cx+hw)); ny=Math.max(y-hh,Math.min(ry,y+hh)); if((nx-rx)*(nx-rx)+(ny-ry)*(ny-ry)<r2*r2) return true; } return false; }
       function place(hh,hw){ var top=oy+z.y*sc+hh+1, bot=oy+(z.y+z.h)*sc-hh-1, cand=[cy], j, e2, ry, r2, k, y, best=null; if(EX) for(j=0;j<EX.length;j++){ e2=EX[j]; if(!e2) continue; ry=oy+e2.y*sc; r2=R+2; cand.push(ry-r2-hh-1,ry+r2+hh+1); } for(k=0;k<cand.length;k++){ y=cand[k]; if(y<top||y>bot||hits(y,hh,hw)) continue; if(best===null||Math.abs(y-cy)<Math.abs(best-cy)) best=y; } return best===null?cy:best; }
@@ -65700,8 +65699,7 @@ function srHints(){
   if(!el) return;
   g=function(s){ return '<i class="pg">'+escHtml(padB(s))+'</i>'; }; k=function(s){ return '<i class="kc">'+s+'</i>'; };
   el.innerHTML='<span class="srk"><span class="hn">'+k('ESC')+'CLOSE</span><span class="hn">'+k('ENTER')+'ASCEND</span><span class="hn">'+k('CLICK')+'PICK</span></span>'+
-    '<span class="srp"><span class="hn">'+g('A')+'ASCEND</span><span class="hn">'+g('B')+'CLOSE</span><span class="hn">'+g('X')+'PACK ALL</span><span class="hn">'+g('Y')+'CLEAR</span><span class="hn"><i class="pg">'+escHtml(padB('LB'))+'</i><i class="pg">'+escHtml(padB('RB'))+'</i>PANEL</span></span>'+
-    '<span class="sv">SAVES AS YOU GO</span>';
+    '<span class="srp"><span class="hn">'+g('A')+'ASCEND</span><span class="hn">'+g('B')+'CLOSE</span><span class="hn">'+g('X')+'PACK ALL</span><span class="hn">'+g('Y')+'CLEAR</span><span class="hn"><i class="pg">'+escHtml(padB('LB'))+'</i><i class="pg">'+escHtml(padB('RB'))+'</i>PANEL</span></span>';
   if(pg) pg.textContent=padB('A');
 }
 function srChrome(){
@@ -65891,16 +65889,16 @@ function syncSectorKit(){
   try{ w=(P.equipped&&P.equipped!=='fists')?WEAPONS[P.equipped]:null; }catch(_gw){ w=null; }
   if(w) w=hubForged(w);   // v23.xx (forge13): going up with the Auto Rifle MK III
   // v12.75: this says what actually happens: with nothing equipped the raid issues a scav pistol into gun 1 and leaves gun 2 empty.
-  var line='<div class="srsum">'+chip('gun',w?escHtml(w.name):'a scav pistol');
+  var _og=!w&&(P.stash||[]).some(function(k){ var it=ITEMS[k]; return it&&it.use==='gun'&&it.gk&&WEAPONS[it.gk]; });
+  var line='<div class="srsum"><span class="gc" style="flex-basis:100%"><i>gun</i><b>'+(w?escHtml(w.name):'a scav pistol')+'</b>'+(_og?'<i style="margin-left:auto">own gun in stash</i>':'')+'</span>';
   // v14.67: and his own gun 2, whenever it is his own gun and not the gun in slot 1
   var _s2=P.equippedSec;
   if(_s2&&_s2!=='none'&&_s2!=='fists'&&WEAPONS[_s2]&&(P.weapons||[]).indexOf(_s2)>=0&&_s2!==P.equipped) line+=chip('gun 2',escHtml(WEAPONS[_s2].name));
   // v13.31: a gun waiting in the stash with nothing equipped is said in one chip
-  if(!w&&(P.stash||[]).some(function(k){ var it=ITEMS[k]; return it&&it.use==='gun'&&it.gk&&WEAPONS[it.gk]; })) line+=chip('','NO GUN EQUIPPED');
   // v10.13, his answer 7: the armour warning lives here, on the way up, and only when it is true: a packed armour item takes it away
   var armed=false;
   try{ packList().forEach(function(k){ if(ITEMS[k].use==='armor'&&packedCount(k)>0) armed=true; }); }catch(_rh){}
-  if(!armed) line+='<span class="wn"><svg viewBox="0 0 24 24"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17v.5"/></svg><b>NO ARMOUR EQUIPPED</b><i>EQUIP PLATES</i></span>';
+  if(!armed) line+='<span class="wn"><svg viewBox="0 0 24 24"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17v.5"/></svg><b>NO ARMOUR EQUIPPED</b></span>';
   el.innerHTML=line+'</div>';
 }
 // v32.45 (cw-preraid-a): THE PAD FLOW. Focus opens on ascend, so a normal ascent is one press. LB and RB jump between the conditions, the kit tiles and the pack; the d-pad moves up and down inside each one
