@@ -15,7 +15,8 @@ p2=link_7s_join_9s), so the camera path is at fault, not the game. Single-seat p
 2. Then: find why the camera cannot stage the player 2 side of a real pair. Is it the recipes (o-08 found netslot=B with p2=1 disables
    NETP2) or uishots' second-window handling? Compare with how tools/fuzz.ps1 pairs. Make one real-pair player 2 picture stage (demo raid
    and hub).
-3. Then rerun the two-window checks that went to his playtest sheet if cheap (o-01 stash pays per window).
+3. Then rerun the two-window checks that went to his playtest sheet if cheap (o-01 stash pays per window), and take the two
+   pictures job 62 waits on (waiting/62-share-drop-ping.md: a dropped item pings the teammate, v32.97), then move 62 to done/.
 Why it matters: job 62 (share by drop) and any 2-player change before the lock is done only with a picture from each window (2.86 a).
 Party risk: low (tooling only).
 Done when: o-07 and o-08 are in done/, and one real-pair player 2 picture stages.

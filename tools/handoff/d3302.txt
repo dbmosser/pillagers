@@ -1,0 +1,5 @@
+## v33.02 - EXPERIMENTAL: FIVE MORE SWITCHES (WARDEN ARMOUR, EXPLOSIVE BARRELS, WAVES GROW, AIM LANES, SEARCH RINGS)
+
+Co-op hunt while he was away. The experimental page gets five more switches, all on by default and read when the raid starts. Off: a plain Warden takes full damage from the front, the raid places no explosive barrels, the wave tier follows the score alone, no machine paints its aim and the howler shell circle does not fill, and a searcher gives up at its first point with no scan cone.
+
+MEASURED. Check 33.02 passes, and fails on v33.01.

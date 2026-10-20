@@ -3238,7 +3238,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.01';
+var VER='33.02';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3746,6 +3746,11 @@ var XF_ROWS=[
   ['xfEvBounty','event: bounty pillager bot','a marked boss hunts you','w'],
   ['xfEvCool','event: coolant rupture','a district fogs over','w'],
   ['xfEvRamp','event: overseer rampage','the overseer sweeps the map','w'],
+  ['xfWarden','warden armour','a warden soaks hits from the front','w'],
+  ['xfBarrel','explosive barrels','red barrels that chain','w'],
+  ['xfRamp','waves grow','waves grow the longer you stay','w'],
+  ['xfTell','aim lanes','a machine paints its aim','w'],
+  ['xfSearch','search rings','searchers widen their rings','w'],
   // XF_ROWS_END
 ];
 var XF_KEYS=[], XF_WORLD=[], XF={}, SETSUB='';
@@ -20628,6 +20633,7 @@ function brlOk(g,x,y){
 }
 function brlPlace(g){
   g.brl=[];
+  if(!xf('xfBarrel')) return;   // v32.xx (cw-expmenu4): switched off, the raid places no barrels
   if(!g||g.sim||!g.map||!Array.isArray(g.containers)) return;
   sideStream(g.seed,BRL_TAG,function(){
     var c, t, s, q, k, j, a, d, x, y;
@@ -25267,6 +25273,7 @@ function searching(e){
 }
 function searchCone(e){
   var L, sight, reach, half, chid, t;
+  if(!xf('xfSearch')) return null;   // v32.xx (cw-expmenu4): switched off, no scan cone
   if(!searching(e)) return null;
   if(e.kind!=='raider'&&e.kind!=='sentry'&&e.kind!=='crawler'&&e.kind!=='bulwark'&&e.kind!=='listener') return null;
   L=(e.net||(NET.on&&netEntsPeer()))?1:Math.max(0,Math.min(SEARCH_MAXL,e.searchLvl|0));   // v28.40 (cloud-coop-search-cones-built), CLOUD HUNT 2026-10-15: player 2 own built bodies draw the middle ring a linked window draws, as the bodies the host sends do
@@ -25278,6 +25285,7 @@ function searchCone(e){
   return {x:e.x,y:e.y,face:e.face+Math.sin(t*2.2+e.x*0.01)*0.3,half:half,reach:reach,lvl:L};
 }
 function searchAdvance(e){
+  if(!xf('xfSearch')) return false;   // v32.xx (cw-expmenu4): switched off, a searcher gives up at the first point
   var L=e.searchLvl|0;
   if(L>=SEARCH_MAXL) return false;
   e.searchLvl=L+1; e.srchBest=undefined; e.srchT=0;
@@ -31569,8 +31577,8 @@ var _rpx=e.x,_rpy=e.y;                       // v3.95: where he was before he mo
           // twenty lines.
           var _shx=_gx,_shy=_gy;
           var _sd=dist(e,{x:_shx,y:_shy});
-          if(_sd>40&&_srch){ if(_sd<(e.srchBest===undefined?1e9:e.srchBest)-6){ e.srchBest=_sd; e.srchT=0; } else e.srchT=(e.srchT||0)+dt; }   // v26.xx (ai26): a point he cannot get nearer to for 1.5 s counts as reached
-          if(_sd>40&&!(_srch&&(e.srchT||0)>1.5)) navSeek(e,_shx,_shy,e.spd*.9,dt);
+          if(_sd>40&&_srch&&xf('xfSearch')){ if(_sd<(e.srchBest===undefined?1e9:e.srchBest)-6){ e.srchBest=_sd; e.srchT=0; } else e.srchT=(e.srchT||0)+dt; }   // v26.xx (ai26): a point he cannot get nearer to for 1.5 s counts as reached
+          if(_sd>40&&!(_srch&&xf('xfSearch')&&(e.srchT||0)>1.5)) navSeek(e,_shx,_shy,e.spd*.9,dt);
           else if(!(_srch&&searchAdvance(e))) e.alert=0;   // v26.xx (ai26): on arriving he searches the next, wider ring before he gives up
         }
         else if(d<e.rng*raiderRtf(e)) moveToward(e,e.x-(p.x-e.x),e.y-(p.y-e.y),e.spd*.7,dt);
@@ -32458,7 +32466,7 @@ function updateBullets(dt){
                   G.tel.weakHits=(G.tel.weakHits||0)+1;
                   G.hitMark={t:0,life:.15,kill:false,weak:true};   // v23.9x (hitmark): the marker line below keeps this weak mark now
                 }
-} else if((en.kind==='bulwark'||(en.kind==='warden'&&!en.boss))&&(function(){   // v26.xx (ai28): and a plain Warden
+} else if((en.kind==='bulwark'||(xf('xfWarden')&&en.kind==='warden'&&!en.boss))&&(function(){   // v26.xx (ai28): and a plain Warden
                 // THE SHIELD. A round is soaked when it arrives inside the
                 // front arc, measured from the bullet's own travel direction
                 // against the machine's facing, so it is about where YOU are,
@@ -37284,6 +37292,7 @@ function drawChoirS(e){
 // machine the player can see (the same rule as the scan cones). No random numbers: nothing for the seeded stream or the cosmetic stream.
 function telegraphLane(e){
   var tot, f, a, ux, uy, reach, t, p, d;
+  if(!xf('xfTell')) return null;   // v32.xx (cw-expmenu4): switched off, no machine paints its aim
   if(!e||!(e.hp>0)||e.windup===undefined||e.windup===null) return null;
   if(e.kind==='sentry') tot=0.4; else if(e.kind==='warden') tot=0.7; else return null;
   if(!(e.rng>0)||!isFinite(e.face)||!isFinite(e.x)||!isFinite(e.y)) return null;
@@ -39048,9 +39057,11 @@ var SHD=G.shells[i];
     wc.fillStyle='rgba(255,70,40,'+(0.04+0.12*_sf).toFixed(3)+')';
     // v28.54 (cloud-feel-howler-circle), CLOUD HUNT 2026-10-15: the circle was drawn squashed to 0.6 of its height, but the world is drawn
     // true to scale and the shell hurts everyone within its reach in every direction, so men north or south of it were hit outside it. Now round.
-    wc.beginPath(); wc.ellipse(SHD.tx,SHD.ty,RR3*_sf,RR3*_sf,0,0,6.2832); wc.fill();
-    wc.strokeStyle='rgba(255,90,60,.14)'; wc.lineWidth=1;
-    wc.beginPath(); wc.ellipse(SHD.tx,SHD.ty,RR3,RR3,0,0,6.2832); wc.stroke();
+    if(xf('xfTell')){   // v32.xx (cw-expmenu4): the landing circle fills and its full size is marked only while aim lanes are on
+      wc.beginPath(); wc.ellipse(SHD.tx,SHD.ty,RR3*_sf,RR3*_sf,0,0,6.2832); wc.fill();
+      wc.strokeStyle='rgba(255,90,60,.14)'; wc.lineWidth=1;
+      wc.beginPath(); wc.ellipse(SHD.tx,SHD.ty,RR3,RR3,0,0,6.2832); wc.stroke();
+    }
     wc.strokeStyle='rgba(255,90,60,'+(0.25+0.45*_sf).toFixed(3)+')';
     wc.lineWidth=2;
     wc.beginPath(); wc.ellipse(SHD.tx,SHD.ty,RR3*_sf,RR3*_sf,0,0,6.2832); wc.stroke();
@@ -51182,7 +51193,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.01: The experimental page switches style medals, team combo, fuel fires and the five raid events. Check 33.01 fails on v33.00',
+  now:'v33.02: The experimental page switches warden armour, explosive barrels, waves grow, aim lanes and search rings. Check 33.02 fails on v33.01',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -60946,7 +60957,7 @@ function waveIdent(id){ return String(id||'').indexOf('_cw')>=0; }
 // pillagers from minute 4, the first body of each pack an elite from minute 8); the score still lifts it higher, to the same 8. DEMO and CAREER
 // run this one tick, so both ramp alike. Gentle on purpose: the clock floor stops at 4.
 function waveTier(score){
-  var st=Math.max(0,Math.min(8,Math.floor((+score||0)/4000))), tt=Math.max(0,Math.min(4,Math.floor((+elapsed()||0)/120)));
+  var st=Math.max(0,Math.min(8,Math.floor((+score||0)/4000))), tt=xf('xfRamp')?Math.max(0,Math.min(4,Math.floor((+elapsed()||0)/120))):0;   // v32.xx (cw-expmenu4): switched off, the tier is the score alone
   return Math.max(st,tt);
 }
 function arcadeWaveTick(dt){

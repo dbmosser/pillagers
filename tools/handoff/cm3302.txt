@@ -1,0 +1,7 @@
+v33.02: experimental: five more switches (warden armour, explosive barrels, waves grow, aim lanes, search rings)
+
+The experimental page switches warden armour, explosive barrels, waves grow, aim lanes and search rings.
+
+Check 33.02. Fails on v33.01.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
