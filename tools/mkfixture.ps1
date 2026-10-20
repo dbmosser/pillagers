@@ -6101,6 +6101,32 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.78',what:'the raid backpack is a compact panel (not a wide slab) whose text is never under the 16 px label size',
+   run:function(){
+     var g, bp, f, small=[], PR=CanvasRenderingContext2D.prototype, of=PR.fillText;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:['gun_carbine','medkit','bandage','bandage','plate','frag','smoke'],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player) return 'SKIP: no raid';
+       g.ents.length=0; g.player.iv=99; g.bagOpen=true;
+       for(f=0;f<8;f++) __loop(performance.now()+f*16.7);
+       bp=g.bagPanel; if(!bp) return 'the backpack panel was not drawn';
+       if(bp.w>innerWidth*0.5) return 'the backpack is a wide slab: '+Math.round(bp.w)+' px of '+innerWidth;
+       if((g.bagCols||0)>8) return 'the backpack grid is '+g.bagCols+' tiles wide';
+       PR.fillText=function(s){
+         var px=parseFloat(String(this.font).match(/([\d.]+)px/)[1]);
+         if(String(s).trim()&&arguments[1]>=bp.x&&arguments[1]<=bp.x+bp.w&&arguments[2]>=bp.y&&arguments[2]<=bp.y+bp.h&&px<15.5) small.push(String(s).slice(0,24)+'@'+px);
+         return of.apply(this,arguments);
+       };
+       for(f=0;f<2;f++) __loop(performance.now()+f*16.7);
+       PR.fillText=of;
+       if(small.length) return 'backpack text under the 16 px floor: '+small.slice(0,4).join(' | ');
+       return null;
+     } finally {
+       PR.fillText=of;
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     } }},
   {v:'32.77',what:'the trophy case is two full rows of four with no orphan card, every card can take focus and shows a lime ring, and the money readout is hidden while it is open',
    run:function(){
      var q, cards, tops=[], i, cols=0, ring, cs, tr, now=Date.now(), n;

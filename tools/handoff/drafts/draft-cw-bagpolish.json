@@ -1,0 +1,116 @@
+{
+    "title":  "THE RAID BACKPACK IS A COMPACT PANEL WITH READABLE TEXT",
+    "why":  "The critic scored the raid backpack 2 of 5: a wide mostly empty slab, tiny low contrast text, three lonely slots. Now an 8 wide grid of 72 px tiles so the panel hugs its items, all text at the 16 px label size in the guide greys, a screen size white title, a lime selection ring, no lime tab, and hints that wrap. Layout and look only.",
+    "now":  "The raid backpack is a compact panel with larger tiles and readable text.",
+    "edits":  [
+                  {
+                      "anchor":  "  var BZ=hudRes(), bFS=function(s){ var f=FS(s);",
+                      "replacement":  "  // v28.xx (cw-bagpolish), the critic scored the raid backpack 2 of 5 (2026-10-18, again 2026-10-20: \"a wide, mostly empty dark slab with tiny, low contrast text and three lonely item slots ... looks like a debug panel\"; the guide floor for read text is 16 px and tx-2 #aaa498). Look and layout only: the grid is 8 tiles wide (54 unit tiles, 8 unit gaps, units follow the text size) so the panel hugs its items instead of spanning 60 percent of the screen, every line of text is the label size (micro now draws as label) in tx-1 or tx-2, the title is the screen title size in tx-1, the selected tile and its ring are lime (the one accent), the lime tab is gone, and the key hints wrap onto a second line instead of running off. What the backpack holds and how items move are untouched.\n  var BZ=hudRes(), bFS=function(s){ var f=FS(s===TYPE.micro?TYPE.label:s);"
+                  },
+                  {
+                      "anchor":  "  var TILE=LH(58)*BZ,GAP=LH(7)*BZ,MARG=LH(30)*BZ;",
+                      "replacement":  "  var TILE=LH(54)*BZ,GAP=LH(8)*BZ,MARG=LH(24)*BZ;"
+                  },
+                  {
+                      "anchor":  "(W*0.66-MARG*2+GAP)/(TILE+GAP)),5,12); G.bagCols=COLS;",
+                      "replacement":  "(W*0.66-MARG*2+GAP)/(TILE+GAP)),6,8); G.bagCols=COLS;"
+                  },
+                  {
+                      "anchor":  "Math.floor((H-LH(300)*BZ)/(TILE+GAP)));",
+                      "replacement":  "Math.floor((H-LH(560)*BZ)/(TILE+GAP)));"
+                  },
+                  {
+                      "anchor":  "  var hh=LH(150)*BZ+rows*(TILE+GAP)+LH(64)*BZ;",
+                      "replacement":  "  var _dn=stacks.length?Math.min(6,itemRows(stacks[clamp(G.bagSel||0,0,stacks.length-1)].key).length):0;   // v28.xx (cw-bagpolish): the footer is as tall as the selected item\u0027s rows\n  var hh=LH(262)*BZ+rows*(TILE+GAP)+_dn*LH(18)*BZ;"
+                  },
+                  {
+                      "anchor":  "G===hubBagG)?1:0.96);",
+                      "replacement":  "G===hubBagG)?1:0.96,1);"
+                  },
+                  {
+                      "anchor":  "  var cy=y+LH(19)*BZ;\n  ctx.font=bFS(TYPE.head); ctx.fillStyle=\u0027#ffc04a\u0027;",
+                      "replacement":  "  var cy=y+LH(30)*BZ;\n  ctx.font=bFS(TYPE.title); ctx.fillStyle=\u0027#efe9dc\u0027;"
+                  },
+                  {
+                      "anchor":  "ctx.font=bFS(TYPE.micro); ctx.fillStyle=\u0027#6b7783\u0027; ctx.textAlign=\u0027right\u0027;",
+                      "replacement":  "ctx.font=bFS(TYPE.micro); ctx.fillStyle=\u0027#aaa498\u0027; ctx.textAlign=\u0027right\u0027;"
+                  },
+                  {
+                      "anchor":  "  cy+=LH(16)*BZ;\n  ctx.font=bFS(TYPE.micro); ctx.fillStyle=\u0027#6b7783\u0027;\n  ctx.fillText(\u0027EQUIPPED\u0027,x+11,cy);\n  cy+=LH(15)*BZ;",
+                      "replacement":  "  cy+=LH(22)*BZ;\n  ctx.font=bFS(TYPE.micro); ctx.fillStyle=\u0027#aaa498\u0027;\n  ctx.fillText(\u0027EQUIPPED\u0027,x+11,cy);\n  cy+=LH(24)*BZ;"
+                  },
+                  {
+                      "anchor":  "  cy+=LH(14)*BZ;\n  ctx.font=bFS(TYPE.micro); ctx.fillStyle=\u0027#6b7783\u0027;\n  ctx.fillText(\u0027DMG \u0027",
+                      "replacement":  "  cy+=LH(22)*BZ;\n  ctx.font=bFS(TYPE.micro); ctx.fillStyle=\u0027#aaa498\u0027;\n  ctx.fillText(\u0027DMG \u0027"
+                  },
+                  {
+                      "anchor":  "  cy+=LH(16)*BZ;\n  // v8.78: this counted",
+                      "replacement":  "  cy+=LH(20)*BZ;\n  // v8.78: this counted"
+                  },
+                  {
+                      "anchor":  "ctx.fillStyle=(si===sel)?\u0027rgba(52,60,84,.9)\u0027:(hov?\u0027rgba(34,42,58,.9)\u0027:\u0027rgba(18,24,34,.9)\u0027);",
+                      "replacement":  "ctx.fillStyle=(si===sel)?\u0027#262b30\u0027:(hov?\u0027#1e2225\u0027:\u0027#16191b\u0027);"
+                  },
+                  {
+                      "anchor":  "ctx.strokeStyle=(si===sel\u0026\u0026!G.bagBelt)?\u0027#ffc04a\u0027:(RCOL[it?dispR(stacks[si].key):null]||\u0027rgba(90,102,116,.6)\u0027);",
+                      "replacement":  "ctx.strokeStyle=(si===sel\u0026\u0026!G.bagBelt)?\u0027#e6ff3d\u0027:(RCOL[it?dispR(stacks[si].key):null]||\u0027#4a5257\u0027);"
+                  },
+                  {
+                      "anchor":  "ctx.lineWidth=(si===sel)?2:1.2;",
+                      "replacement":  "ctx.lineWidth=(si===sel)?3:1.2;"
+                  },
+                  {
+                      "anchor":  "ctx.font=bFS(TYPE.micro); ctx.fillStyle=\u0027#9aa8d0\u0027; ctx.textAlign=\u0027center\u0027;",
+                      "replacement":  "ctx.font=bFS(TYPE.micro); ctx.fillStyle=\u0027#aaa498\u0027; ctx.textAlign=\u0027center\u0027;"
+                  },
+                  {
+                      "anchor":  "var hintY=Math.min(gridBot+LH(20)*BZ,y+hh-LH(24)*BZ);",
+                      "replacement":  "var hintY=Math.min(gridBot+LH(34)*BZ,y+hh-LH(24)*BZ);"
+                  },
+                  {
+                      "anchor":  "    ctx.font=bFS(TYPE.label);\n    ctx.fillStyle=RCOL[sit?dispR(sst.key):null]||\u0027#cdd6dd\u0027;",
+                      "replacement":  "    ctx.font=bFS(TYPE.head);\n    ctx.fillStyle=\u0027#efe9dc\u0027;"
+                  },
+                  {
+                      "anchor":  "    ctx.textAlign=\u0027right\u0027; ctx.fillStyle=\u0027#ffc04a\u0027;\n    // v15.95",
+                      "replacement":  "    ctx.textAlign=\u0027right\u0027; ctx.font=bFS(TYPE.label); ctx.fillStyle=\u0027#aaa498\u0027;\n    // v15.95"
+                  },
+                  {
+                      "anchor":  "    ctx.font=bFS(TYPE.micro); ctx.fillStyle=\u0027#9aa8d0\u0027;\n    var isGun",
+                      "replacement":  "    ctx.font=bFS(TYPE.micro); ctx.fillStyle=\u0027#aaa498\u0027;\n    var isGun"
+                  },
+                  {
+                      "anchor":  "_ry=hintY+LH(13)*BZ;",
+                      "replacement":  "_ry=hintY+LH(24)*BZ;"
+                  },
+                  {
+                      "anchor":  "ctx.fillStyle=\u0027rgba(154,168,208,.55)\u0027;",
+                      "replacement":  "ctx.fillStyle=\u0027#aaa498\u0027;"
+                  },
+                  {
+                      "anchor":  "      ctx.fillStyle=\u0027#cdd6dd\u0027;\n      ctx.fillText(String(_rw[_rr][1]),x+11+LH(74)*BZ,_ry);\n      _ry+=LH(11)*BZ;",
+                      "replacement":  "      ctx.fillStyle=\u0027#efe9dc\u0027;\n      ctx.fillText(String(_rw[_rr][1]),x+11+LH(100)*BZ,_ry);\n      _ry+=LH(18)*BZ;"
+                  },
+                  {
+                      "anchor":  "    ctx.fillStyle=\u0027#9aa8d0\u0027;\n    // v15.59",
+                      "replacement":  "    ctx.fillStyle=\u0027#aaa498\u0027;\n    // v15.59"
+                  },
+                  {
+                      "anchor":  "ctx.fillText((state===\u0027hub\u0027)?(padOn()?padB(\u0027DPAD move",
+                      "replacement":  "bagHintDraw((state===\u0027hub\u0027)?(padOn()?padB(\u0027DPAD move"
+                  },
+                  {
+                      "anchor":  "),x+11,_ry+LH(3)*BZ);",
+                      "replacement":  "),x+11,_ry+LH(6)*BZ,PW-22);   // v28.xx (cw-bagpolish): the hints wrap to the panel width"
+                  },
+                  {
+                      "anchor":  "    ctx.font=bFS(TYPE.label); ctx.fillStyle=\u0027#6b7783\u0027;\n    ctx.fillText(\u0027Backpack is empty.\u0027",
+                      "replacement":  "    ctx.font=bFS(TYPE.label); ctx.fillStyle=\u0027#aaa498\u0027;\n    ctx.fillText(\u0027Backpack is empty.\u0027"
+                  },
+                  {
+                      "anchor":  "function drawBag(){",
+                      "replacement":  "// v28.xx (cw-bagpolish): the backpack key hints flow onto as many lines as the panel width needs (the parts are split where the text has three spaces)\nfunction bagHintDraw(s,x,y,maxW){\n  var parts=String(s).split(\u0027   \u0027), line=\u0027\u0027, ln=0, i, t, lh=LH(18)*Math.max(1,hudRes());\n  for(i=0;i\u003cparts.length;i++){\n    t=line?line+\u0027   \u0027+parts[i]:parts[i];\n    if(line\u0026\u0026ctx.measureText(t).width\u003emaxW){ ctx.fillText(line,x,y+ln*lh); ln++; line=parts[i]; } else line=t;\n  }\n  if(line) ctx.fillText(line,x,y+ln*lh);\n  return ln+1;\n}\nfunction drawBag(){"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the raid backpack is a compact panel (not a wide slab) whose text is never under the 16 px label size\u0027,\n   run:function(){\n     var g, bp, f, small=[], PR=CanvasRenderingContext2D.prototype, of=PR.fillText;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[\u0027gun_carbine\u0027,\u0027medkit\u0027,\u0027bandage\u0027,\u0027bandage\u0027,\u0027plate\u0027,\u0027frag\u0027,\u0027smoke\u0027],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player) return \u0027SKIP: no raid\u0027;\n       g.ents.length=0; g.player.iv=99; g.bagOpen=true;\n       for(f=0;f\u003c8;f++) __loop(performance.now()+f*16.7);\n       bp=g.bagPanel; if(!bp) return \u0027the backpack panel was not drawn\u0027;\n       if(bp.w\u003einnerWidth*0.5) return \u0027the backpack is a wide slab: \u0027+Math.round(bp.w)+\u0027 px of \u0027+innerWidth;\n       if((g.bagCols||0)\u003e8) return \u0027the backpack grid is \u0027+g.bagCols+\u0027 tiles wide\u0027;\n       PR.fillText=function(s){\n         var px=parseFloat(String(this.font).match(/([\\d.]+)px/)[1]);\n         if(String(s).trim()\u0026\u0026arguments[1]\u003e=bp.x\u0026\u0026arguments[1]\u003c=bp.x+bp.w\u0026\u0026arguments[2]\u003e=bp.y\u0026\u0026arguments[2]\u003c=bp.y+bp.h\u0026\u0026px\u003c15.5) small.push(String(s).slice(0,24)+\u0027@\u0027+px);\n         return of.apply(this,arguments);\n       };\n       for(f=0;f\u003c2;f++) __loop(performance.now()+f*16.7);\n       PR.fillText=of;\n       if(small.length) return \u0027backpack text under the 16 px floor: \u0027+small.slice(0,4).join(\u0027 | \u0027);\n       return null;\n     } finally {\n       PR.fillText=of;\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}

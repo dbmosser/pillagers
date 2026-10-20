@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.78 - THE RAID BACKPACK IS A COMPACT PANEL WITH READABLE TEXT
+
+Co-op hunt while he was away. The critic scored the raid backpack 2 of 5: a wide mostly empty slab, tiny low contrast text, three lonely slots. Now an 8 wide grid of 72 px tiles so the panel hugs its items, all text at the 16 px label size in the guide greys, a screen size white title, a lime selection ring, no lime tab, and hints that wrap. Layout and look only.
+
+MEASURED. Check 32.78 passes, and fails on v32.77.
 ## v32.77 - THE TROPHY CASE FILLS ITS CARD WITH A FOCUS RING
 
 Co-op hunt while he was away. The critic scored the trophy case 2 of 5: two thirds empty, one card orphaned on row two, no focus, crude header stats and gradient tiles with tiny dim text. Now four equal columns (two full rows), flat bigger cards with 16 px minimum text, a lime focus ring on a card that Tab or the pad reaches, and no money readout over the case.

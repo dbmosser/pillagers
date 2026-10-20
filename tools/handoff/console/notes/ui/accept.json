@@ -458,12 +458,19 @@
   "when": "2026-10-20T02:04"
  },
  "66-trophy-case": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The trophy cards are tidy individually, but the screen is two-thirds empty, the grid orphans a single card on row two, nothing shows focus, and the header stats and toast are crude.",
-  "pic": "tools/handoff/console/notes/shots/all/66-trophy-case-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:21"
+  "verdict": "The card now fills its space with a clean 4x2 grid, a single close button and no top-bar clutter, so it is a real improvement. The tiles are still flat and empty, though, and nothing shows which one has focus or which are earned.",
+  "findings": [
+   "P1 tile grid, all 8 tiles: Focus the first tile in the capture. Give it a 2px --acc border, a --ui-raised fill, and a 3px --acc tab on the left edge. Verify that the ring stays inside the 24px gutter.",
+   "P1 tiles, content block: Make the tile about 400x300 and centre the content with 24px padding, or enlarge the trophy to about 120px. Put the freed height into a 56px hero icon or a larger name at 32px.",
+   "P1 tile state, earned vs locked: Restore a 3px bottom bar in the tier colour (bronze, silver, --r-gold) on earned tiles, and a --ui-line bar on locked ones. Dim the locked name to --tx-2 at 60% and keep the 'locked' tag.",
+   "P2 tile text, secondary lines: Set the description to 20px --tx-2 (#aaa498). Set the date to 16px --tx-2. Keep 'locked' at 16px, not 14px.",
+   "P2 header row: Keep the stats out, but set '6 of 8' in 20px --tx-2 after the title so the title carries the weight. Make sure the title is 32px/700 and the same size on every window."
+  ],
+  "pic": "tools/handoff/console/notes/shots/45-after/66-trophy-case-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-20T10:18"
  },
  "62-arcade-operator-menu": {
   "score": 3,

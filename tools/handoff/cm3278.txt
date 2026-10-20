@@ -1,0 +1,7 @@
+v32.78: the raid backpack is a compact panel with readable text
+
+The raid backpack is a compact panel with larger tiles and readable text.
+
+Check 32.78. Fails on v32.77.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
