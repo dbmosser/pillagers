@@ -57560,7 +57560,7 @@ window.__REGRESS=[
        c2.fillText=function(s,x,y){ var m=CanvasRenderingContext2D.prototype.measureText.call(this,String(s)), fsz=parseFloat(String(this.font).replace(/^[^0-9]*/,''))||11; boxes.push({s:String(s),l:x-m.width/2,r:x+m.width/2,t:y-fsz*0.8,b:y+fsz*0.2}); return CanvasRenderingContext2D.prototype.fillText.apply(this,arguments); };
        try{ sectorPreviewDraw(cv2,M); }catch(e){ bad.push(M.name+' threw: '+(e&&e.message||e)); continue; }
        for(i=0;i<boxes.length;i++) for(j=i+1;j<boxes.length;j++){ A=boxes[i]; B=boxes[j]; n++;
-         if(A.l<B.r-1&&B.l<A.r-1&&A.t<B.b-1&&B.t<A.b-1) bad.push(M.name+': '+A.s+' prints into '+B.s); }
+         if(A.l<B.r-1&&B.l<A.r-1&&A.t<B.b-1&&B.t<A.b-1) bad.push(M.name+': '+A.s+' ['+Math.round(A.l)+','+Math.round(A.t)+','+Math.round(A.r)+','+Math.round(A.b)+'] prints into '+B.s+' ['+Math.round(B.l)+','+Math.round(B.t)+','+Math.round(B.r)+','+Math.round(B.b)+']'); }
      }
      if(!n) return 'SKIP: no zone names were drawn';
      return bad.length?bad.slice(0,4).join('; '):null; }},
