@@ -93478,8 +93478,9 @@ window.__REGRESS=[
        // Where he actually draws: his world position less the camera, which
        // leads him. Measured at 1026,900 on a 1920x1080 frame, head at 865.
        var sx=Math.round(p.x-(g.camX||0)), sy=Math.round(p.y-(g.camY||0));
-       sx=Math.max(40,Math.min(cvs.width-40,sx)); sy=Math.max(90,Math.min(cvs.height-20,sy));
-       return wctx.getImageData(sx-40,sy-90,80,110).data;
+       /* v32.64 (cw-figlook): the figure is 1.25 times as big and the head 1.2 times on top, so the hat now reaches past 90 px above the feet; the window is 80x170 */
+       sx=Math.max(40,Math.min(cvs.width-40,sx)); sy=Math.max(170,Math.min(cvs.height-20,sy));
+       return wctx.getImageData(sx-40,sy-170,80,190).data;
      }
      function diff(a,b){ var d=0; for(var i=0;i<a.length;i+=4) if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])>40) d++; return d; }
      P2.cosHat='none'; var bare=headPixels();
