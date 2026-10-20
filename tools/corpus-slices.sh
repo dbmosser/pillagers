@@ -27,7 +27,7 @@ while [ $A -lt $END ]; do
   done
   if [ $done_ = 1 ]; then
     # 2026-10-08: this read once answered TIMEOUT (a late timer still busy on the page) and the slice's result was lost; try 3 times.
-    res=""; for try_ in 1 2 3; do res=$(CDP -Match "$TAG=1" -TimeoutSec 150 -Expr "(function(){ var r=__PROG.res; return '['+$A+','+$B+') '+r.summary+(r.fail.length?' || '+r.fail.map(function(f){ return String(f).slice(0,240); }).join(' || '):''); })()"); case "$res" in \[*) break;; esac; sleep 20; done
+    res=""; for try_ in 1 2 3; do res=$(CDP -Match "$TAG=1" -TimeoutSec 150 -Expr "(function(){ var r=__PROG.res; return '['+$A+','+$B+') '+r.summary+(r.fail.length?' || '+r.fail.map(function(f){ return String(f).split(String.fromCharCode(13)).join(' ').split(String.fromCharCode(10)).join(' ').slice(0,240); }).join(' || '):''); })()"); case "$res" in \[*) break;; esac; sleep 20; done
     echo "${res:-[$A,$B) result could not be read}" >> "$OUT"
     NEXT=$B
   else
