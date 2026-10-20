@@ -1182,11 +1182,12 @@ function Stage-apps {
       $r = Run-Proc -File $script:Winget -ArgLine ('install --id Anthropic.ClaudeCode --exact --source winget --silent ' + ($script:AcceptPkg -join ' ') + ' --disable-interactivity') -TimeoutSec 900
       Show-Tail $r.Lines 5
     }
-    Add-UserPath (Join-Path $script:VmProfile '.local\bin')
     Update-SessionPath
     if (Test-Path -LiteralPath $claudeExe) { Good 'Claude Code installed' }
     else { Bad 'Claude Code is not installed'; [void]$failed.Add('Claude Code') }
   }
+  # also when it was already installed: the claude command only works if .local\bin is in your PATH
+  Add-UserPath (Join-Path $script:VmProfile '.local\bin')
 
   # npm globals at the exact main-PC versions, placed beside node.exe (the lane scripts look there)
   $npmList = @(
@@ -3014,6 +3015,9 @@ function Stage-health {
   }
   $claudeExe = Join-Path $script:VmProfile '.local\bin\claude.exe'
   if (Test-Path -LiteralPath $claudeExe) { $v = Run-Proc -File $claudeExe -ArgLine '--version' -TimeoutSec 60; & $row 'Claude Code' 'ok' (Get-FirstLine $v.Lines) } else { & $row 'Claude Code' 'MISSING' '~\.local\bin\claude.exe'; [void]$missingReq.Add('Claude Code') }
+  $lb = Split-Path -Parent $claudeExe
+  $upc = [string][Environment]::GetEnvironmentVariable('Path', 'User')
+  if ((Test-Path -LiteralPath $claudeExe) -and -not @($upc -split ';' | Where-Object { $_.TrimEnd('\') -ieq $lb }).Count) { Warn ('the claude command will not be found: ' + $lb + ' is not in your user PATH; run the apps stage again (it adds it).') }
   $cd = Join-Path $env:LOCALAPPDATA 'AnthropicClaude\claude.exe'
   $cdApp = @(Get-AppxPackage -Name '*Claude*' -ErrorAction SilentlyContinue | Where-Object { $_.Publisher -match 'Anthropic' })
   if ((Test-Path -LiteralPath $cd) -or $cdApp.Count -gt 0) { & $row 'Claude desktop app' 'ok' '' } else { & $row 'Claude desktop app' 'MISSING' 'not essential for the helpers' }
