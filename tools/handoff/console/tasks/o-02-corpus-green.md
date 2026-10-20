@@ -91,3 +91,10 @@ v20.95 the sector maps on the lift page are drawn at the screen resolution: with
 The Claude lanes finished 49, 50 and 51 and were idle, so the 56 old reds (every v32.83 line not in the -new file) went to them as
 52-corpus-reds-a, 53-corpus-reds-b and 54-corpus-reds-c. Do not touch those. This job is now only "Your first 22" above: TASK DONE when
 each of the 22 is green on HEAD or explained in notes (21.66 and 20.95 are still open there).
+
+## RE-QUEUED 10-20 11:15 AS ROUND 4 (coordinator): finish your last batch
+Round 3 used its 5 runs with steady progress (fixture commits 47df977e and e1ac1f77). What is left of your 22 is your own NEXT:
+trial and commit the four-anchor batch 4 (20.95, 21.66, 27.36; prepare-round3-batch4.js), then run the two updated camera recipes.
+Then TASK DONE when each of your 22 is green on HEAD or explained in notes (the SCOPE CHANGE block above wins over "a fresh full run
+with ten or fewer"; the coordinator watches the full run). Do not touch 52 to 55: 55-retarget-repairs is fixing loosened retargets,
+including your 31.71 (the "detail pane is wide" assertion) and 27.20 (TX lower-cases before the all-caps test), so leave those two.
