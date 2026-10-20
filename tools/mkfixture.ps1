@@ -1914,15 +1914,19 @@ window.__REGRESS=[
      var g=__state(); if(!g) return 'no raid';
      g.ents.length=0; g.player.iv=99;
      var sl=__belt.slots();
-     if(!(sl[0]&&sl[0].kind==='gun'&&sl[1]&&sl[1].kind==='gun'))
-       return 'the first two slots are not both guns, so this check is testing nothing';
+     if(sl.filter(function(x){ return x&&x.kind==='gun'&&!x.vacant; }).length<2)
+       return 'fewer than two guns on the bar, so this check is testing nothing';
      var hand0=g.player.wep&&g.player.wep.id, sec0=g.player.sec&&g.player.sec.id;
      if(!sec0) return 'no second gun was stowed, so the swap cannot be tested';
-     __belt.set(1);
+     // v32.83 retarget (50-corpus-old-a): with nine gun keys the two guns sit on whichever gun keys gunKeysSettle gave them, so the keys are found by what they show
+     var secIx=-1, handIx=-1;
+     sl.forEach(function(x,i){ if(x&&x.kind==='gun'&&!x.vacant){ if(x.inHand) handIx=i; else if(x.icon===sec0) secIx=i; } });
+     if(secIx<0||handIx<0) return 'no key shows the stowed gun and the gun in hand, so the swap cannot be tested';
+     __belt.set(secIx);
      for(var f=0;f<6;f++) __loop(performance.now()+f*16.7);
      var s1=__state();
      if((s1.player.wep&&s1.player.wep.id)!==sec0) return 'picking the stowed gun did not bring it up (hand '+hand0+', stowed '+sec0+', hand now '+(s1.player.wep&&s1.player.wep.id)+', sel '+__belt.sel()+', slots '+__belt.slots().slice(0,3).map(function(x){ return x.k+'/'+x.kind+'/'+x.icon+(x.inHand?'/hand':'')+(x.vacant?'/vacant':''); }).join(' ; ')+')';
-     __belt.set(0);
+     __belt.set(handIx);
      for(var f2=0;f2<6;f2++) __loop(performance.now()+f2*16.7);
      var s2=__state();
      if((s2.player.wep&&s2.player.wep.id)!==hand0) return 'picking the first gun back did not restore it';
@@ -3927,7 +3931,8 @@ window.__REGRESS=[
            if(xx<minX)minX=xx; if(xx>maxX)maxX=xx; if(yy<minY)minY=yy; if(yy>maxY)maxY=yy; }
        }
        return {mapW:Math.round(WW*sc), mapH:Math.round(WH*sc),
-               tw:maxX<0?0:Math.round((maxX-minX+1)/kk), th:maxY<0?0:Math.round((maxY-minY+1)/kk)};
+               tw:maxX<0?0:Math.round((maxX-minX+1)/kk), th:maxY<0?0:Math.round((maxY-minY+1)/kk),
+               dbg:[kk,hc.width,Math.round(cd.x),Math.round(cd.p),Math.round(cd.y),Math.round(cd.hh),x0,w,y0,hgt,minX,maxX,minY,maxY].join(',')};
      }
      var a=mapText(1920,1080), b=mapText(3840,2160);
      __forceSize(1920,1080);
@@ -3941,7 +3946,7 @@ window.__REGRESS=[
      // CONTROL 1: 1080p must not have moved. This was a 4K complaint and he has a
      // working layout there.
      /* ui1 (his order #50): the game font is Barlow Condensed now, narrower than Rubik was: the same heading measures 237 wide at 1080p where it measured 326; the height is unchanged */
-     bad.push('DIAG 1080p '+a.tw+'x'+a.th+' 4k '+b.tw+'x'+b.th);
+     bad.push('DIAG 1080p '+a.tw+'x'+a.th+' 4k '+b.tw+'x'+b.th+' dbg '+a.dbg);
      if(a.th<12||a.th>30||a.tw<60)
        bad.push('control: the 1080p map heading changed to '+a.tw+'x'+a.th+', it was 326x16 (237x16 in Barlow Condensed)');
      // CONTROL 2, AND IT IS THE ONE THAT MATTERS. The map scales its text by
@@ -3997,7 +4002,6 @@ window.__REGRESS=[
      // resolutions while the map itself grew 2.15x.
      if(fg<1.7) bad.push('the map frame reaches '+a.reach+'px out at 1080p and '+b.reach+'px at 4K, only '+fg.toFixed(2)+'x, on a map that grew '+mg.toFixed(2)+'x');
      // CONTROL 1: 1080p unchanged. It was 4 pixels before this build and after it.
-     bad.push('DIAG reach 1080p '+a.reach+' 4k '+b.reach);
      if(Math.abs(a.reach-1)>0.6) bad.push('control: the 1080p frame reaches '+a.reach+'px, it is a 1 px line since cw-mapstyle (was 4)');
      // CONTROL 2: the markers must scale too, not just the frame, or half the
      // chrome is still stuck at 1080p. Read off the source of the one function
