@@ -6101,6 +6101,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.50',what:'corner readout shows $ money, not the word credits',
+   run:function(){
+     var bad=[];
+     try{
+       var el=document.getElementById('topright'); if(!el) return 'SKIP: no corner readout';
+       var c0=P.credits; P.credits=4321; _trLast=null;
+       try{ syncTopRight(); }catch(_s){}
+       var t=(el.textContent||'');
+       if(!t) return 'SKIP: corner empty (demo)';
+       if(/credits/i.test(t)) bad.push('still says credits: '+t);
+       if(t.indexOf('$4,321')!==0) bad.push('no $4,321 first: '+t);
+       if(!el.querySelector('.trgap')||el.querySelector('.trgap').getBoundingClientRect().width<20) bad.push('no 24px gap');
+       P.credits=c0; _trLast=null; try{ syncTopRight(); }catch(_s2){}
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     return bad.length?bad.join('; '):null; }},
   {v:'32.49',what:'pad controls match their legend, 20px keycaps, complete list rows and lefty labels',
    run:function(){
      var saved=P, oldSave=saveProfile, oldPad=KEYS.pad, km, bad=[], i, j;

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.50 - Corner readout: $ money, no credits label
+
+Co-op hunt while he was away. UI step 7. Critic scored 10, 11, 15 at 2; P1 on all: the header strip says credits where the style is $. Q59.
+
+MEASURED. Check 32.50 passes, and fails on v32.49.
 ## v32.49 - PAD LAYOUT READABILITY
 
 Co-op hunt while he was away. The critic found crossed controller leaders, small key names and half a row at the list edge.

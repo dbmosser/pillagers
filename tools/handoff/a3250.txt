@@ -1,0 +1,1 @@
+| Corner readout: $ money, no credits label | v32.50 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 32.50 passes, fails on v32.49 |

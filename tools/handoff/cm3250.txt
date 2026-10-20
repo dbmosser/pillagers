@@ -1,0 +1,7 @@
+v32.50: corner readout: $ money, no credits label
+
+The top right readout shows $900 and no longer the word credits.
+
+Check 32.50. Fails on v32.49.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

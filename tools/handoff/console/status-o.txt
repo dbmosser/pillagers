@@ -1,1 +1,1 @@
-10-20 02:12 gate: shipping cw-cx-padlegend (o-05-pad-presets, codex)
+10-20 02:15 waiting for RAM: 2 GB free, need 3 (o-05-pad-presets)

@@ -1,0 +1,5 @@
+## v32.50 - Corner readout: $ money, no credits label
+
+Co-op hunt while he was away. UI step 7. Critic scored 10, 11, 15 at 2; P1 on all: the header strip says credits where the style is $. Q59.
+
+MEASURED. Check 32.50 passes, and fails on v32.49.

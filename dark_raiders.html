@@ -650,6 +650,8 @@
   #topright small, #topright .trsub{ font-size:16px; font-weight:600; letter-spacing:.04em; color:var(--tx-2); }
   #topright small{ margin-left:8px; margin-right:24px; }
   #topright small:nth-last-child(2){ margin-right:24px; }
+  /* v28.xx (cw-uc-trdollar) b-31 step 7, critic on 10, 11, 15 (P1 "900 credits mixes $ and credits"): the corner readout says $900 (his Q59: $ for money), no credits label, 24px before the xp pair. */
+  #topright .trgap{ display:inline-block; width:24px; }
   body.trcol #topright{ clip-path:inset(50%); }   /* v30.xx (cw-trcol), HIS ORDER (2026-10-18): in a raid the credits, xp, stash and bag are rows of the HUD column drawn on the canvas, so the page text is clipped away there (it keeps its box, for whatever reads it) */
   .toprow{ padding-right:560px; }   /* v11.52: the stash screen's top row keeps clear of the corner readout, so CLOSE stays reachable; v11.78: the readout is twice as wide; v12.25: the readout carries the window zoom now, up to 1.3 times wider again at 1080p */
   #credits{ display:none; }         /* v11.52: the corner readout replaces the stash screen's own credits figure */
@@ -3150,7 +3152,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.49';
+var VER='32.50';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5121,7 +5123,7 @@ function syncTopRight(){
   _trLast=s;
   if(s==='demo'){ el.innerHTML=''; return; }
   TRV.c=c; TRV.x=x; TRV.sv=sv.toLocaleString(); TRV.bv=bv.toLocaleString();   // v30.xx (cw-trcol): the same figures as text, for the rows the raid HUD draws
-  el.innerHTML=c+' <small>CREDITS</small> '+x+' <small>XP</small> <span class="trsub">STASH '+sv.toLocaleString()+' BAG '+bv.toLocaleString()+'</span>';   // v28.xx (cw-stashbag): spaces, so the text reads right when copied
+  el.innerHTML='$'+c+'<span class="trgap"></span>'+x+' <small>XP</small> <span class="trsub">STASH '+sv.toLocaleString()+' BAG '+bv.toLocaleString()+'</span>';   // v28.xx (cw-stashbag): spaces, so the text reads right when copied
 }
 // v17.24, co-op hunt 2026-09-28: TWO TABS ON ONE SAVE. Each tab reads the save once, at boot, and every save writes its whole
 // profile over the key, so with the game open in two tabs the tab holding the older copy wiped what the other had banked (an
@@ -50521,7 +50523,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.49: Named controller controls, aligned action legends, larger keycaps and complete scrolling rows. Check 32.49 fails on v32.48',
+  now:'v32.50: The top right readout shows  and no longer the word credits. Check 32.50 fails on v32.49',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -769,17 +769,17 @@
  "74-settings-change-pad-buttons": {
   "score": 3,
   "pass": false,
-  "verdict": "The pad picture is now calmer: leader lines end on dots on the actual buttons and the lime on every label is gone. But the left rows and the picture are still two competing lists, and the screen has no clear first read or focus state.",
+  "verdict": "The controller diagram and layout picker make this a real pad screen and fix the cramped two-column table, but the tiny labels, the clipped scrolling list, and the dead space under the panels keep it below polished.",
   "findings": [
-   "P1 left list, binding column: Set chip text to 16px f-cond 600 in tx-1. Make the chips 56px wide by 40px tall with a 1px --ui-line-hi border. Show the focused row with a --ui-raised fill and a 3px lime left bar, and the focused chip with a lime border.",
-   "P1 controller diagram, button labels: Set prefixes to --tx-2 (#aaa498) at 18px or larger, and actions to tx-1. Make leader lines 1.5px --ui-line-hi. Make the dots 6px solid tx-1. Use lime only for the one hovered or focused binding, not for all of them.",
-   "P1 the screen as a whole: Make the list the editor and the picture a read-only legend, or split the screen 40/60 and drop the picture's labels to 16px. Add a 24px fade or bottom padding so the last row is never sliced. Tighten the layout row from about 96px to 64px.",
-   "P2 picture, left label stack: Order the left labels top to bottom by the controller part they point to (lt, lb, view, ls, d-pad). Space them on a 56px rhythm with leader endpoints aligned to each label's centre line.",
-   "P2 category headers 'move' / 'fight': Set headers to 16px f-cond 700 in tx-2 with a 1px divider above them. Drop the lime bar, or keep it only on the active section."
+   "P1 controller diagram and legend (right pane): Scale the diagram to about 1.5x so it spans about 600px wide. Set the legend key chips and the pad button labels to 16px min in --tx-1 or --tx-2 at 4.5:1 contrast. Raise the legend rows from 35px to 40px pitch.",
+   "P1 left action list (move/fight scroll column): Extend both panes down to y~925 (about 90px more, so 2 extra rows are visible) or make the list rows 48px. Add a 3px lime focus bar plus a --ui-raised fill on the focused row. Fade the bottom edge so the cut looks intentional.",
+   "P1 layout picker (row at y 123-173): Label 16px --tx-2 with +.04em tracking. Make the arrows 24px, hit area 48px, and the name 20px/600. Add a count such as '1/6' at 16px. The focused state gets a lime 2px border.",
+   "P2 left list vs right pane alignment: Give both the same panel treatment (--ui-panel fill, 1px --ui-line-hi, 4px radius, 24px padding) with tops at y=222 and bottoms at the same y.",
+   "P2 section labels (move, fight) in the list: Set the labels to 16px --tx-2 uppercase-free with +.04em tracking, and bring back a 3px lime left tab at 24px tall. Add 16px above each header."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-31t-after/74-settings-change-pad-buttons-1080.jpg",
-  "task": "manual",
-  "when": "2026-10-20T03:18"
+  "pic": "tools/handoff/console/notes/shots/o-05-pad-presets-after/74-settings-change-pad-buttons-1080.jpg",
+  "task": "o-05-pad-presets",
+  "when": "2026-10-20T06:15"
  },
  "01-title-mode-menu": {
   "score": 3,
