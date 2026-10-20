@@ -1,0 +1,5 @@
+## v32.33 - MAP LOOT TAGS TAKE A BACK SEAT
+
+Co-op hunt while he was away. The critic still found loot labels too loud and contract bars stopped before the common right edge.
+
+MEASURED. Check 32.33 passes, and fails on v32.32.

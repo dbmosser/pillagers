@@ -1,0 +1,7 @@
+v32.33: map loot tags take a back seat
+
+Loot tags use medium muted type, wider spacing and shorter halos. Nearby tags lose tiny leaders. Contract bars reach the same edge as status and rewards.
+
+Check 32.33. Fails on v32.32.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

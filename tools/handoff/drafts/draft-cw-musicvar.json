@@ -1,0 +1,20 @@
+{
+    "title":  "THE TITLE MUSIC PLAYS THREE VARIATIONS IN TURN",
+    "why":  "His round 2 answer 2.70 c: the idle loop should use three variations of the piece in turn. THE ASCENT now plays as written, then with the tune half a bar later in each bar, then a quarter bar later, and round again. Same notes and chords, so it stays one piece.",
+    "now":  "The title and idle music changes its tune placement every pass through three variations.",
+    "edits":  [
+                  {
+                      "anchor":  "function musNote(a,t,step){\n",
+                      "replacement":  "// v28.xx (cw-musicvar), HIS ANSWER 2.70 c (the idle loop over a long night): \"use three variations of the piece in turn\". THE ASCENT plays its\n// eight bars three ways, one after the other: as written, then with the tune started half a bar later in each bar, then a quarter bar later.\n// Same notes, same chords, same kit, so it is still the one piece; only where the tune lands moves. MUS.pass is 0, 1, 2 and round again.\nfunction musVarShift(pass){ return [0,8,4][(((pass|0)%3)+3)%3]; }\nfunction musLeadAt(T,B,si){ return (T\u0026\u0026T.title)?B.lead[(si+musVarShift(MUS.pass))%16]:B.lead[si]; }\n// the step after this one, and the pass it belongs to: the pass moves on each time the eight bars come round\nfunction musAdvance(step,len,pass,T){\n  var s=(step+1)%len, p=pass|0;\n  if(s===0\u0026\u0026T\u0026\u0026T.title) p=(p+1)%3;\n  return {step:s,pass:p};\n}\nfunction musNote(a,t,step){\n"
+                  },
+                  {
+                      "anchor":  "  var m=B.lead[si];\n",
+                      "replacement":  "  var m=musLeadAt(T,B,si);   // v28.xx (cw-musicvar): the tune of this pass\n"
+                  },
+                  {
+                      "anchor":  "    MUS.step=(MUS.step+1)%_len;\n",
+                      "replacement":  "    var _adv=musAdvance(MUS.step,_len,MUS.pass,T); MUS.step=_adv.step; MUS.pass=_adv.pass;   // v28.xx (cw-musicvar): three variations in turn\n"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the idle loop cycles through three variations of the piece in turn (his 2.70 c)\u0027,\n   run:function(){\n     var T, B, p0, leads=[], i, st, pass, adv, seen=[], bad=[], key, sorted;\n     if(typeof musAdvance!==\u0027function\u0027||typeof musLeadAt!==\u0027function\u0027) return \u0027the title piece has no variations (no musAdvance or musLeadAt)\u0027;\n     T=THEME_TITLE; B=T.bars[0]; p0=MUS.pass;\n     try{\n       for(i=0;i\u003c3;i++){ MUS.pass=i; leads.push(T.bars[0].lead.map(function(_x,si){ return musLeadAt(T,B,si); }).join(\u0027,\u0027)); }\n       if(leads[0]===leads[1]||leads[1]===leads[2]||leads[0]===leads[2]) bad.push(\u0027the three passes play the same tune\u0027);\n       sorted=leads.map(function(s){ return s.split(\u0027,\u0027).sort().join(\u0027,\u0027); });\n       if(sorted[0]!==sorted[1]||sorted[1]!==sorted[2]) bad.push(\u0027a variation plays other notes than the piece\u0027);\n       st=0; pass=0; seen.push(pass);\n       for(i=0;i\u003cT.bars.length*16*4;i++){ adv=musAdvance(st,T.bars.length*16,pass,T); st=adv.step; pass=adv.pass; if(st===0) seen.push(pass); }\n       if(seen.join(\u0027\u0027)!==\u002701201\u0027) bad.push(\u0027the passes go \u0027+seen.join(\u0027\u0027)+\u0027, not 0 1 2 0 1\u0027);\n       MUS.pass=0; if(musLeadAt(T,B,0)!==74) bad.push(\u0027pass 0 is no longer the piece as written\u0027);\n       return bad.length?bad.join(\u0027; \u0027):null;\n     } finally { MUS.pass=p0; } }},"
+}

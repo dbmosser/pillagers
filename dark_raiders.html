@@ -3028,7 +3028,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.32';
+var VER='32.33';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -46134,15 +46134,15 @@ function mapContractsDraw(cd,rows){
       txt=row.pay?('$'+row.pay.toLocaleString()):'';
       ctx.font=rewFont; wRew=txt?hudRawW(txt):0;
       ctx.font=cntFont; wCnt=Math.max(hudRawW('holding'),hudRawW('broken'),hudRawW('99/99'));
-      mid=two?(ry+pitch*0.34):(ry+pitch*0.40); mid2=ry+pitch*0.74;
+      mid=two?(ry+pitch*0.30):(ry+pitch*0.40); mid2=ry+pitch*0.82;   // v28.xx (cw-cx-mapquiet-o03): status sits above a full-width track.
       maxW=c.w-2*q-(wRew?(wRew+q):0)-(two?0:(wCnt+q));
       ctx.font=nameFont; ctx.fillStyle=row.done?UIC.ok:UIC.tx_2; ctx.textAlign='left'; ctx.fillText(mapFit(row.name,maxW),c.x+q,mid);
       if(txt){ ctx.font=rewFont; ctx.fillStyle=UIC.tx_2; ctx.textAlign='right'; ctx.fillText(txt,c.x+c.w-q,mid); ctx.textAlign='left'; }
       if(two){
-        barW=c.w-2*q-wCnt-Math.round(12*u);
+        barW=c.w-2*q;   // v28.xx (cw-cx-mapquiet-o03): one right edge for reward, status and track.
         ctx.fillStyle=UIC.ui_line_hi; ctx.fillRect(c.x+q,mid2-bh/2,barW,bh);
         if(fr>0){ ctx.fillStyle=fcol; ctx.fillRect(c.x+q,mid2-bh/2,barW*fr,bh); }
-        ctx.font=cntFont; ctx.fillStyle=cc; ctx.textAlign='right'; ctx.fillText(cnt,c.x+c.w-q,mid2); ctx.textAlign='left';
+        ctx.font=cntFont; ctx.fillStyle=cc; ctx.textAlign='right'; ctx.fillText(cnt,c.x+c.w-q,ry+pitch*0.60); ctx.textAlign='left';
       } else {
         ctx.font=cntFont; ctx.fillStyle=cc; ctx.textAlign='right'; ctx.fillText(cnt,c.x+c.w-q-(wRew?(wRew+q):0),mid); ctx.textAlign='left';
         barW=c.w-2*q; ctx.fillStyle=UIC.ui_line_hi; ctx.fillRect(c.x+q,ry+pitch-bh-Math.round(2*z),barW,bh);
@@ -46214,9 +46214,12 @@ function mapLabelReset(){ _mapLbl.length=0; MAPICONS.length=0; }
 function mapLabel(txt,x,y,col,font,markY){
   // v28.xx (cw-cx-sectorhold-o03): each cache keeps its label and exact icon anchor; the final placer owns spacing, not the old duplicate suppressor.
   if(typeof markY==='number'){
-    var saveTag=MAPTAG; MAPTAG={x:x,y:markY,m:ctx.getTransform()};
-    ctx.font=font||hudFS(TYPE.label); ctx.textAlign='center'; ctx.fillStyle=mapLabelCol(col);
-    try{ ctx.fillText(txt,x,y); }finally{ MAPTAG=saveTag; ctx.textAlign='left'; } return;
+    // v28.xx (cw-cx-mapquiet-o03): loot is secondary to exits and rooms, with the guide 16px floor and a lighter halo.
+    var saveTag=MAPTAG, saveHalo=_mapHalo, zs=Math.max(1,hudRes()), tf=hudFS(TYPE.label).replace(/^600 /,'500 ');
+    tf=tf.replace(/([\d.]+)px/,function(a,n){ return Math.max(16*zs,parseFloat(n)).toFixed(1)+'px'; });
+    MAPTAG={x:x,y:markY,m:ctx.getTransform()}; _mapHalo=2*zs;
+    ctx.font=tf; ctx.textAlign='center'; ctx.fillStyle=UIC.tx_2;
+    try{ ctx.fillText(txt,x,y); }finally{ MAPTAG=saveTag; _mapHalo=saveHalo; ctx.textAlign='left'; } return;
   }
   col=mapLabelCol(col);   // v31.xx (cw-mapstyle): the old tag colours are the style guide tokens now
   // v19.63, seen on the 4K map scan (2026-10-08): every other word on the sector map grows with the screen, but these marker tags
@@ -46293,8 +46296,8 @@ function mapPlaceLabels(Q,hdrY,fn){
   /* v31.xx (cw-mapstyle3): the mark a tag is anchored to (the tag sits just above it) is no obstacle for that tag, so the tag keeps its place at the mark and is not pushed off it (the critic: labels float away from their icons) */
   var _mz=(typeof hudRes==='function')?hudRes():1;
   G2.forEach(function(g){ var L0=g.items[0], sx=L0.x*L0.m.a+L0.m.e, sy=L0.y*L0.m.d+L0.m.f, q, I; g.own=[]; for(q=0;q<MAPICONS.length;q++){ I=MAPICONS[q]; if(sx>=I.l&&sx<=I.r&&sy>=I.t-30*_mz&&sy<=(I.t+I.b)/2) g.own.push(q); } });
-  function hits(a,ic,own){ var _ax=12*_mz, _ay=12*_mz; for(var h=0;h<placed.length;h++){ var b=placed[h]; if(a.l<b.r+_ax&&b.l<a.r+_ax&&a.t<b.b+_ay&&b.t<a.b+_ay) return true; }   /* v31.xx (cw-mapstyle3): a tag keeps a third of its height of air from a tag beside it (blast freezer, locked touched strongbox) */
-    if(ic) for(var h2=0;h2<MAPICONS.length;h2++){ if(own&&own.indexOf(h2)>=0) continue; var b2=MAPICONS[h2]; if(a.l<b2.r+5&&b2.l<a.r+5&&a.t<b2.b+5&&b2.t<a.b+5) return true; }   // v31.xx (cw-mapstyle): a label never sits on a mark
+  function hits(a,ic,own){ var _ax=16*_mz, _ay=16*_mz; for(var h=0;h<placed.length;h++){ var b=placed[h]; if(a.l<b.r+_ax&&b.l<a.r+_ax&&a.t<b.b+_ay&&b.t<a.b+_ay) return true; }   /* v31.xx (cw-mapstyle3): a tag keeps a third of its height of air from a tag beside it (blast freezer, locked touched strongbox) */
+    if(ic) for(var h2=0;h2<MAPICONS.length;h2++){ if(own&&own.indexOf(h2)>=0) continue; var b2=MAPICONS[h2]; if(a.l<b2.r+12*_mz&&b2.l<a.r+12*_mz&&a.t<b2.b+12*_mz&&b2.t<a.b+12*_mz) return true; }   // v31.xx (cw-mapstyle): a label never sits on a mark
     return false; }
   // v19.31, seen on the 4K map screenshot (2026-10-08): a label moved off a clash could be moved anywhere, so RECEIVING APRON went up
   // past the SECTOR MAP line and half off the top of the screen. A moved label now stays on the screen and below the header line.
@@ -46309,18 +46312,18 @@ function mapPlaceLabels(Q,hdrY,fn){
     if(g.items[0].mark){
       var M0=g.items[0].mark, px=M0.x*M0.m.a+M0.m.e, py=M0.y*M0.m.d+M0.m.f,
           midX=(g.r.l+g.r.r)/2, midY=(g.r.t+g.r.b)/2, sideY=py-midY,
-          leftX=px-20*_mz-g.r.r, rightX=px+20*_mz-g.r.l, pitch=gh+12*_mz, clusterL=px-15*_mz, clusterR=px+15*_mz,
+          leftX=px-20*_mz-g.r.r, rightX=px+20*_mz-g.r.l, pitch=gh+16*_mz, clusterL=px-15*_mz, clusterR=px+15*_mz,
           clusterMarks=[{l:clusterL,t:py-15*_mz,r:clusterR,b:py+15*_mz}];
       MAPICONS.forEach(function(I){ if(Math.abs((I.l+I.r)/2-px)<=45*_mz&&Math.abs((I.t+I.b)/2-py)<=45*_mz){ clusterL=Math.min(clusterL,I.l); clusterR=Math.max(clusterR,I.r); clusterMarks.push(I); } });
-      var clusterLeft=clusterL-6*_mz-g.r.r, clusterRight=clusterR+6*_mz-g.r.l;
+      var clusterLeft=clusterL-12*_mz-g.r.r, clusterRight=clusterR+12*_mz-g.r.l;
       tries=[[0,0],[leftX,sideY],[rightX,sideY],[px-midX,py-20*_mz-g.r.b],[px-midX,py+20*_mz-g.r.t]];
       tries.push([clusterLeft,sideY],[clusterRight,sideY]);
       for(var row=1;row<=8;row++){
         tries.push([leftX,sideY-row*pitch],[rightX,sideY-row*pitch],[leftX,sideY+row*pitch],[rightX,sideY+row*pitch],[clusterLeft,sideY-row*pitch],[clusterRight,sideY-row*pitch],[clusterLeft,sideY+row*pitch],[clusterRight,sideY+row*pitch],[0,-row*pitch],[0,row*pitch]);
       }
       // v28.xx (cw-cx-sectorhold-o03): include exact clearances around nearby labels and icons; whole-row jumps can miss a usable gap of only a few pixels.
-      var localX=[0,leftX,rightX,clusterLeft,clusterRight,_bL-g.r.l,_bW-g.r.r], localY=[0,sideY], xpad=12*_mz, ypad=12*_mz;
-      clusterMarks.forEach(function(I){ localX.push(I.l-6*_mz-g.r.r,I.r+6*_mz-g.r.l); localY.push(I.t-6*_mz-g.r.b,I.b+6*_mz-g.r.t); });
+      var localX=[0,leftX,rightX,clusterLeft,clusterRight,_bL-g.r.l,_bW-g.r.r], localY=[0,sideY], xpad=16*_mz, ypad=16*_mz;
+      clusterMarks.forEach(function(I){ localX.push(I.l-12*_mz-g.r.r,I.r+12*_mz-g.r.l); localY.push(I.t-12*_mz-g.r.b,I.b+12*_mz-g.r.t); });
       placed.forEach(function(B){ if(Math.abs((B.l+B.r)/2-px)<gw+80*_mz&&Math.abs((B.t+B.b)/2-py)<gh+80*_mz){ localX.push(B.l-xpad-g.r.r,B.r+xpad-g.r.l); localY.push(B.t-ypad-g.r.b,B.b+ypad-g.r.t); } });
       localX.forEach(function(x){ localY.forEach(function(y){ if(g.r.l+x>=_bL&&g.r.r+x<=_bW&&g.r.t+y>=_bT&&g.r.b+y<=_bH) tries.push([x,y]); }); });
       // v28.xx (cw-cx-sectorhold-o03): stay next to the marker group first, then minimize movement; the connector still identifies this tag's exact icon.
@@ -46330,7 +46333,7 @@ function mapPlaceLabels(Q,hdrY,fn){
     for(var _pass=0;_pass<(g.items[0].mark?1:2)&&!ok;_pass++) for(k=0;k<tries.length&&!ok;k++){ dx=tries[k][0]; dy=tries[k][1]; r={l:g.r.l+dx,t:g.r.t+dy,r:g.r.r+dx,b:g.r.b+dy}; if(r.t<_bT||r.b>_bH||r.l<_bL||r.r>_bW) continue; if(!hits(r,_pass===0,(!g.items[0].mark&&dy<=0)?g.own:null)){ ok=true; g.dx=dx; g.dy=dy; placed.push(r); out.push(g); } }   // v31.xx (cw-mapstyle): first clear of the marks too, then clear of the other labels only
     // v28.xx (cw-cx-sectorhold-o03): exhaust the map for an anchored tag instead of deliberately painting it across another label.
     if(!ok&&g.items[0].mark){
-      var best=null, score=Infinity, step=gh+12*_mz;
+      var best=null, score=Infinity, step=gh+16*_mz;
       for(var yy=_bT;yy+gh<=_bH;yy+=step) for(var xx=_bL;xx+gw<=_bW;xx+=8*_mz){
         var box={l:xx,t:yy,r:xx+gw,b:yy+gh}, dist2=Math.pow(xx-g.r.l,2)+Math.pow(yy-g.r.t,2);
         if(dist2<score&&!hits(box,true,null)){ best=box; score=dist2; }
@@ -46347,7 +46350,7 @@ function mapPlaceLabels(Q,hdrY,fn){
     if(L.mark&&(Math.abs(g.dx||0)>1||Math.abs(g.dy||0)>1)){
       var B=mapLabelRect(L,g.dx,g.dy), M=L.mark, ax=M.x*M.m.a+M.m.e, ay=M.y*M.m.d+M.m.f,
           ex=clamp(ax,B.l,B.r), ey=clamp(ay,B.t,B.b), vx=ex-ax, vy=ey-ay, len=Math.sqrt(vx*vx+vy*vy), cut=8*_mz;
-      if(len>cut+2){ ctx.save(); ctx.setTransform(1,0,0,1,0,0); ctx.strokeStyle=UIC.tx_2; ctx.lineWidth=Math.max(1,_mz); ctx.beginPath(); ctx.moveTo(ax+vx*cut/len,ay+vy*cut/len); ctx.lineTo(ex,ey); ctx.stroke(); ctx.restore(); }
+      if(len>cut+20*_mz){ ctx.save(); ctx.setTransform(1,0,0,1,0,0); ctx.strokeStyle=UIC.tx_2; ctx.lineWidth=Math.max(1,_mz); ctx.beginPath(); ctx.moveTo(ax+vx*cut/len,ay+vy*cut/len); ctx.lineTo(ex,ey); ctx.stroke(); ctx.restore(); }   // v28.xx (cw-cx-mapquiet-o03): nearby tags need no tiny leader; longer leaders retain exact ownership.
     }
     if(L.h>0){ try{ ctx.lineJoin='round'; ctx.lineWidth=L.h; ctx.strokeStyle='rgba(11,12,13,.88)'; ctx.strokeText((typeof TX==='function')?TX(String(L.s)):String(L.s),L.x+(g.dx||0)/(L.m.a||1),L.y+(g.dy||0)/(L.m.d||1)); }catch(_hl){} }   // v31.xx (cw-mapstyle): the halo
     (fn||CanvasRenderingContext2D.prototype.fillText).call(ctx,L.s,L.x+(g.dx||0)/(L.m.a||1),L.y+(g.dy||0)/(L.m.d||1));
@@ -50375,7 +50378,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.32: A master limiter caps every sound, the rain is a third quieter, and the demo lowers blasts and guns. Check 32.32 fails on v32.31',
+  now:'v32.33: Loot tags use medium muted type, wider spacing and shorter halos. Nearby tags lose tiny leaders. Contract bars reach the same edge as status and rewards. Check 32.33 fails on v32.32',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

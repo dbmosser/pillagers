@@ -1,0 +1,16 @@
+{
+    "title":  "THE EXTRACT INBOUND COUNTDOWN IS THE BIG NUMBER SIZE",
+    "why":  "Critic on screen 37: the extraction state was three small cues with no hero, the timer about 28px. The inbound line now takes the big-number size (39px at 1080p) with its words unchanged.",
+    "now":  "While extraction is inbound the countdown line is drawn at the big number size.",
+    "edits":  [
+                  {
+                      "anchor":  "function hudFS(spec){ var f=FS(spec), r=Math.max(1,(typeof hudRes===\u0027function\u0027)?hudRes():1); return (r===1)?f:f.replace((/([\\d.]+)px/),function(m0,n0){ return (parseFloat(n0)*r).toFixed(1)+\u0027px\u0027; }); }\n",
+                      "replacement":  "function hudFS(spec){ var f=FS(spec), r=Math.max(1,(typeof hudRes===\u0027function\u0027)?hudRes():1); return (r===1)?f:f.replace((/([\\d.]+)px/),function(m0,n0){ return (parseFloat(n0)*r).toFixed(1)+\u0027px\u0027; }); }\n// v32.xx (cw-extbig), the critic on screen 37: the extract countdown was one of three small cues and no hero. While the ship is inbound the line takes the big-number size (TYPE.huge), the same type as the ammo hero; once it lands it is the callout size again.\nfunction extBanFont(t){ return hudFS((t\u003e0)?TYPE.huge:TYPE.head); }\n"
+                  },
+                  {
+                      "anchor":  "    ctx.font=hudFS(TYPE.head); ctx.textAlign=\u0027center\u0027;\n    var holding=G.beaconT\u003c=0\u0026\u0026G.shipHold!==null\u0026\u0026G.shipHold!==undefined;\n",
+                      "replacement":  "    ctx.font=extBanFont(G.beaconT); ctx.textAlign=\u0027center\u0027;   // v32.xx (cw-extbig)\n    var holding=G.beaconT\u003c=0\u0026\u0026G.shipHold!==null\u0026\u0026G.shipHold!==undefined;\n"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the extract inbound countdown line is drawn in the big-number size, not the callout size (critic 37)\u0027,\n   run:function(){\n     if(typeof extBanFont!==\u0027function\u0027) return \u0027the extract banner has no font function (extBanFont)\u0027;\n     var a=parseFloat((/([\\d.]+)px/).exec(extBanFont(12))[1]), b=parseFloat((/([\\d.]+)px/).exec(extBanFont(0))[1]);\n     if(a\u003c=b*1.5) return \u0027inbound line \u0027+a+\u0027px is not clearly bigger than the landed line \u0027+b+\u0027px\u0027;\n     if(String(drawHUD).indexOf(\u0027extBanFont(G.beaconT)\u0027)\u003c0) return \u0027drawHUD does not use extBanFont\u0027;\n     return null;\n   }},"
+}

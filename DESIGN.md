@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.33 - MAP LOOT TAGS TAKE A BACK SEAT
+
+Co-op hunt while he was away. The critic still found loot labels too loud and contract bars stopped before the common right edge.
+
+MEASURED. Check 32.33 passes, and fails on v32.32.
 ## v32.32 - A HARD CAP ON LOUD SOUND
 
 Co-op hunt while he was away. His round 2 orders: put a hard cap on loud sounds (2.12), rain about a third quieter (2.69 b), lower only the loudest sounds a few decibels in the demo (2.12 b). The menu and stinger sounds skipped the old limiter and the music ran straight to the speakers; now everything ends in one master limiter at -2 dB. Rain is 0.030 instead of 0.045. In the demo blasts play 3 dB down and guns 2 dB down.
