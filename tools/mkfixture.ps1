@@ -6137,7 +6137,7 @@ window.__REGRESS=[
        if(!padNameStart(pin))return 'career name picker did not open';
        var card=PADNAME.card,hint=card.querySelector('.pnhint'),cur=card.querySelector('.pnl .cur'),hs=getComputedStyle(hint),cs=getComputedStyle(cur),ps=getComputedStyle(card.querySelector('.pnl'));
        if(parseFloat(hs.fontSize)<16)bad.push('pad controls below 16px');
-       if(!hint.querySelector('.pad-a')||!hint.querySelector('.pad-b')||!hint.querySelector('svg[aria-label="menu"]'))bad.push('pad button pictures missing');
+       if(!hint.querySelector('.pad-a')||!hint.querySelector('.pad-b')||!card.querySelector('svg[aria-label="menu"]'))bad.push('pad button pictures missing');
        if(!card.querySelector('footer .pnhint'))bad.push('controls are outside the footer');
        // v28.xx (cw-cx-padnameview): Chrome snaps borders to pixels under menu zoom; compare the real letter with the required border at the same zoom.
        var borderProbe=document.createElement('i');borderProbe.style.cssText='position:absolute;visibility:hidden;pointer-events:none;border:2px solid var(--acc);border-bottom-width:3px';card.appendChild(borderProbe);
