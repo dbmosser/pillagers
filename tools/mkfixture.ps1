@@ -23105,7 +23105,7 @@ window.__REGRESS=[
        p=g.player; all=g.ents.slice(); g.ents=[]; oWep=p.wep; oAmmo=p.ammo; p.iv=99;
        // ONE: spamming the Marksman Rifle opens the spread, patience closes it
        w=cloneObj(WEAPONS.sniper); p.wep=w; p.ammo=w.mag;   // 53-corpus-reds-b: the Marksman Rifle is gone (cw-gunsgone, his Q69); the Longshot (BLM add 1.0, the widest single shot) stands in for it
-       a=volley(w,0.68,4); b=volley(w,1.3,4);
+       a=volley(w,0.68,4); b=volley(w,2.5,4);   // 53-corpus-reds-b: the Longshot closes at 0.7 a second after 0.2 s, so a beat of patience for it is 2.5 s (the Marksman Rifle's was 1.3 s)
        if(!(a[0]>0.005)) bad.push('ONE: the first Marksman round measured '+a[0].toFixed(4));
        else {
          if(!(a[3]>=a[0]*2)) bad.push('ONE: the 4th round of a spammed Marksman Rifle has '+(a[3]/a[0]).toFixed(2)+' times the first round spread, not 2 or more');
@@ -23257,7 +23257,8 @@ window.__REGRESS=[
        bs=host.querySelectorAll('.setjump button');
        if(bs.length<3) return 'SKIP: only '+bs.length+' section chips drawn';
        for(i=0;i<bs.length;i++){
-         b=bs[i]; n=b.getAttribute('data-sec'); h=document.getElementById(setSecId(n));
+         b=bs[i]; n=b.getAttribute('data-sec'); if(!n) continue;   // 53-corpus-reds-b: the rail holds one data-go button (opens a page) that is not a section chip
+         h=document.getElementById(setSecId(n));
          if(!h){ bad.push(n+': no section head'); continue; }
          host.scrollTop=0; b.click();
          bar=host.querySelector('.setjump');
