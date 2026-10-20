@@ -1,0 +1,16 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  camera-career-p1                       staged      11.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"mode":"career","seat":1,"fresh":[{"target":1.3,"eased":1.3,"arcade":false},{"target":1.3,"eased":1.3,"arcade":false}],"arrows":[{"x":1865,"y":559.97088,"w":1918,"h":1078},{"x":44,"y":259.22663457681506,"w":766,"h":518}],"visible":[1,1],"network":[{"on":true,"role":"host","seat":0,"roster":[{"seat"
+  camera-career-p2                       NOT STAGED   5.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host did not link the existing p2 window: p2raid
+    at stageCameraPair (<anonymous>:35:38)
+    at async <anonymous>:118:8
+    at async <anonymous>:1:21
+  camera-demo-p1                         NOT STAGED  32.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not enter a raid
+    at until (<anonymous>:11:11)
+    at async stageCameraPair (<anonymous>:55:3)
+    at async <anonymous>:118:8
+    at async <anonymous>:1:21
+  camera-demo-p2                         NOT STAGED  31.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at until (<anonymous>:11:11)
+    at async stageCameraPair (<anonymous>:40:3)
+    at async <anonymous>:118:8
+    at async <anonymous>:1:21

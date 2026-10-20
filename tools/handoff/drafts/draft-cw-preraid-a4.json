@@ -1,0 +1,44 @@
+{
+    "title":  "PRE-RAID: SHARP MAP NAMES, A QUIET SELECTED STATE, ROWS THAT FILL THE PACK, A SMALLER ASCEND PLATE",
+    "why":  "The second critic pass (still 3) said the lime accent appeared in five places at the same strength, the map labels were blurry and oversized, the pack rows left a dead gap and spaced unevenly, and the warning outline fought the ascend plate. The canvas is drawn at 960 so labels are crisp at their real size, selected chips are a raised fill with a 3px lime bar, the plate is 60 px, the ascending here tag and the warning lose their outlines, and pack rows stretch to fill the list with even pitch.",
+    "now":  "The pre-raid page has crisp map names, calmer selected chips, an evenly spaced pack and a smaller ascend button.",
+    "edits":  [
+                  {
+                      "anchor":  "width=\"640\" height=\"\u0027+Math.round(640*M.h/M.w)+\u0027\"",
+                      "replacement":  "width=\"960\" height=\"\u0027+Math.round(960*M.h/M.w)+\u0027\""
+                  },
+                  {
+                      "anchor":  "#root #sectormodal .srchip.on, #root #sectormodal .kitb.on{ background:rgba(230,255,61,.16); border-color:var(--acc); box-shadow:inset 0 0 0 1px var(--acc); color:var(--tx-1); }",
+                      "replacement":  "#root #sectormodal .srchip.on, #root #sectormodal .kitb.on{ background:var(--ui-hover); border-color:var(--ui-line-hi); box-shadow:inset 3px 0 0 var(--acc); color:var(--tx-1); }"
+                  },
+                  {
+                      "anchor":  "#sectormodal .srprow{ height:46px; display:flex;",
+                      "replacement":  "#sectormodal .srprow{ flex:1 0 46px; max-height:58px; display:flex;"
+                  },
+                  {
+                      "anchor":  "#sectormodal .srprow.g{ margin-top:6px; }",
+                      "replacement":  "#sectormodal .srprow.g{ margin-top:0; border-top:1px solid var(--ui-line-hi); }"
+                  },
+                  {
+                      "anchor":  "#sectormodal .srplist{ flex:1 1 auto; min-height:0; overflow-y:auto; }",
+                      "replacement":  "#sectormodal .srplist{ flex:1 1 auto; min-height:0; overflow-y:auto; display:flex; flex-direction:column; }"
+                  },
+                  {
+                      "anchor":  "#sectormodal .srplate{ flex:none; height:72px;",
+                      "replacement":  "#sectormodal .srplate{ flex:none; height:60px;"
+                  },
+                  {
+                      "anchor":  "font:800 52px/1 var(--f-cond); letter-spacing:.05em; }",
+                      "replacement":  "font:800 44px/1 var(--f-cond); letter-spacing:.05em; }"
+                  },
+                  {
+                      "anchor":  "border:1px solid var(--ui-line-hi); background:none; border-radius:4px; color:var(--warn);",
+                      "replacement":  "border:0; background:none; border-radius:0; color:var(--warn);"
+                  },
+                  {
+                      "anchor":  "border:1px solid var(--acc); background:rgba(230,255,61,.16); border-radius:4px; font:600 20px var(--f-cond); color:var(--tx-1); }",
+                      "replacement":  "border:1px solid var(--ui-line-hi); background:none; border-radius:4px; font:600 20px var(--f-cond); color:var(--tx-1); }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the pre-raid page second pass: the map canvas is drawn at 960 so its names are sharp, the selected chip is a quiet fill with a left bar and not a lime outline, and the ascend plate is 60 px\u0027,\n   run:function(){\n     if(!(window.__hubEnter\u0026\u0026window.__P\u0026\u0026window.__applyLoaded)||typeof renderSector!==\u0027function\u0027) return \u0027SKIP: no pre-raid page\u0027;\n     var bad=[], snap=null, q, sm=document.getElementById(\u0027sectormodal\u0027), cv, d, on, bc;\n     function shut(){ var mo=document.querySelectorAll(\u0027.modal.on\u0027); for(var j=0;j\u003cmo.length;j++) mo[j].classList.remove(\u0027on\u0027); }\n     try{\n       snap=JSON.parse(JSON.stringify(__P()));\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       q=__P(); q.freeKit=0; q.kitPick=\u0027mine\u0027; q.stash=[\u0027medkit\u0027]; q.kit=[]; q.cond=\u0027day\u0027;\n       __hubEnter(); shut(); renderSector(); openModal(\u0027sectormodal\u0027);\n       cv=sm.querySelector(\u0027canvas.secprev\u0027); d=document.getElementById(\u0027sectordeploy\u0027); on=document.getElementById(\u0027condday\u0027);\n       if(!cv||!d||!on) return \u0027the pre-raid page is not drawn\u0027;\n       if(cv._lw!==960) bad.push(\u0027the map canvas is drawn at \u0027+cv._lw+\u0027 wide, not 960\u0027);\n       if(parseFloat(getComputedStyle(d).height)\u003e62) bad.push(\u0027the ascend plate is \u0027+getComputedStyle(d).height+\u0027 high, not 60\u0027);\n       bc=getComputedStyle(on).borderTopColor;\n       if(bc===\u0027rgb(230, 255, 61)\u0027) bad.push(\u0027the selected day chip still has a full lime outline\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ shut(); }catch(_s){} try{ if(snap) __applyLoaded(snap); }catch(_a){} try{ __cleanProfile(); }catch(_c){} __topClear(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

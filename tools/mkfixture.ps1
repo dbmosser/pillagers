@@ -6101,6 +6101,25 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.52',what:'the pre-raid page second pass: the map canvas is drawn at 960 so its names are sharp, the selected chip is a quiet fill with a left bar and not a lime outline, and the ascend plate is 60 px',
+   run:function(){
+     if(!(window.__hubEnter&&window.__P&&window.__applyLoaded)||typeof renderSector!=='function') return 'SKIP: no pre-raid page';
+     var bad=[], snap=null, q, sm=document.getElementById('sectormodal'), cv, d, on, bc;
+     function shut(){ var mo=document.querySelectorAll('.modal.on'); for(var j=0;j<mo.length;j++) mo[j].classList.remove('on'); }
+     try{
+       snap=JSON.parse(JSON.stringify(__P()));
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       q=__P(); q.freeKit=0; q.kitPick='mine'; q.stash=['medkit']; q.kit=[]; q.cond='day';
+       __hubEnter(); shut(); renderSector(); openModal('sectormodal');
+       cv=sm.querySelector('canvas.secprev'); d=document.getElementById('sectordeploy'); on=document.getElementById('condday');
+       if(!cv||!d||!on) return 'the pre-raid page is not drawn';
+       if(cv._lw!==960) bad.push('the map canvas is drawn at '+cv._lw+' wide, not 960');
+       if(parseFloat(getComputedStyle(d).height)>62) bad.push('the ascend plate is '+getComputedStyle(d).height+' high, not 60');
+       bc=getComputedStyle(on).borderTopColor;
+       if(bc==='rgb(230, 255, 61)') bad.push('the selected day chip still has a full lime outline');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ shut(); }catch(_s){} try{ if(snap) __applyLoaded(snap); }catch(_a){} try{ __cleanProfile(); }catch(_c){} __topClear(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'32.51',what:'the pre-raid page fixes from the critic: pack rows are 46 px with 36 px steppers, one gun chip, a quiet no armour row with no amber fill, and no saves as you go line',
    run:function(){
      if(!(window.__hubEnter&&window.__P&&window.__applyLoaded)||typeof renderSector!=='function') return 'SKIP: no pre-raid page';

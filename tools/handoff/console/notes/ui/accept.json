@@ -33,17 +33,17 @@
  "05-sector-page": {
   "score": 3,
   "pass": false,
-  "verdict": "A big step up: the map leads, kit and conditions are grouped, and ascend is one clear lime action. It still has a dead gap in the kit column, an amber warning that competes with the main button, and tiny labels.",
+  "verdict": "The new version is cleaner than the old one: the 'no gun equipped' chip and the 'equip plates' clutter are gone, the map labels no longer sit on top of the room markers, and the pack rows are taller. It still reads as a competent dark tool panel rather than a polished AAA pre-raid screen, because the lime ascend slab, the lime-outlined selected cards and the lime selected rows all compete.",
   "findings": [
-   "P1 kit column, between the data core row and the gun / warning / ascend stack: Anchor the gun, warning and ascend stack directly under the pack list (8px gap), or grow the pack rows from ~38px to ~48px so the list fills to about y=770 and the gap is under 24px.",
-   "P1 gun chips ('gun a scav pistol' / 'no gun equipped') and the amber 'no armour equipped' bar: Merge the two gun chips into one 'gun: scav pistol' row. Turn the warning into a 16px --warn glyph plus the words 'no armour' on a --ui-panel row with no amber fill or border. Drop 'equip plates'.",
-   "P1 map labels ('the long dock', 'packing floor', 'chill row'): Set map zone labels to 20px --tx-2 at 70% with no stroke. Dim the map fill to about 60% saturation. Give the purple room tags 8px padding and place them clear of the tile edges.",
-   "P1 kit and pack typography, and the 'kit' / 'pack' / 'conditions' / 'surface' / 'weather' labels: Section labels 16px --tx-2 at the 4.5:1 floor. Row names 20px. Lift the '/n' max counts to --tx-2. Keep the stepper numbers 20px tx-1.",
-   "P2 pack stepper rows (- 0 +): Make the stepper buttons 40px square with 8px between them. Colour the stripe by item category or remove it. Give the focused row a --ui-raised fill with a 2px lime left bar."
+   "P1 hierarchy: ascend button vs. selected cards: Make selected cards a quiet fill (--ui-raised) with a 3px lime left bar and a lime check, not a full lime outline. Keep the solid lime fill only for ascend, and cut its height from about 72px to 56px.",
+   "P1 map panel (the left two-thirds): Drop the zone labels to the 16px label size at tx-2 with a 1px dark halo, not a blur. Move 'blast freezer' so it clears the boxes (right-align it above its marker). Desaturate the map fill toward --ui-panel so only the exit rings (teal) and the keyed-room markers (purple) stand out.",
+   "P1 kit column, pack rows: Use one row pitch (48px) for every row. Make steppers 36x36 with a 20px glyph. Give the count tx-1 at weight 700 and grey out the '-' at 0. Use the dead space for a bigger pack summary, or move the gun and armour rows up so the footer is not isolated.",
+   "P1 footer chips (gun, armour warning, ascend): Make the warning a small 16px glyph plus text in --warn with no fill and no border, set inline above ascend. Raise 'own gun in stash' to 16px and tx-2 at 4.5:1 or better. Add 16px of clearance between the warning and the ascend slab.",
+   "P2 conditions column (surface, weather): Set the headers to 16px at tx-2, +.04em, and drop the extra 'conditions' parent label. Raise the modifier text to 16px and tx-2. Widen the column from about 184px to 220px by narrowing the map slightly."
   ],
-  "pic": "tools/handoff/console/notes/shots/22-after2/05-sector-page-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/22-after3/05-sector-page-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T06:10"
+  "when": "2026-10-20T06:18"
  },
  "06-terms": {
   "score": 3,
@@ -979,17 +979,17 @@
  "74-pad-pillagers": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, consistent dark card with a clear title, a lime selector and an x, but the leader lines are tangled, the key chips are tiny and the list is clipped, so it reads as a debug sheet rather than a polished AAA menu.",
+  "verdict": "the title screen reads clearly, with a calm column menu and one lime primary button, but the amber gradient wordmark ignores the lime accent and flat guide, the menu is crowded with five modes and a saves block, and the key hints, version stamp and chips are tiny and dim.",
   "findings": [
-   "P0 controller diagram, leader lines: Use orthogonal leaders (horizontal, then a single 45 degree kink) with each one ending on its own dot. Give each button one unique anchor point and sort the label order top to bottom to match the anchor order, so no lines cross. Put the 'move' and 'aim' labels exactly on the stick centres, or label them from the side like the other buttons.",
-   "P1 left list, binding chips: Set chip text to 20px f-cond 700 in tx-1 inside a 64x40 chip. Pull the chip to a fixed column about 240px from the name, or add a 1px --ui-line row divider. Highlight the focused row with --ui-raised fill and a 3px lime left bar.",
-   "P1 left list, bottom edge and scrollbar: Snap the list height to a whole number of rows (row pitch 58px) or add a 24px bottom fade. Make the scrollbar 6px wide in --ui-line-hi with a visible thumb, and show 'more' only through the thumb. Align the list and diagram panel bottoms exactly.",
-   "P1 diagram labels, left and right columns: Use one fixed 58px row pitch for both columns. Collapse the empty slots by ordering the labels to follow the layout of the controller, and use a single muted prefix style in tx-2 at 16px with the action in tx-1 at 20px.",
-   "P2 header and layout selector: Put 'layout' directly left of the selector, or make the selector a 360x48 segmented control. Make the arrows 48x48 with a lime border when focused. Keep the preset name at 20px."
+   "P1 pillagers wordmark: make the wordmark flat --tx-1 #efe9dc (or a flat lime if it is the only lime on the screen), drop the gradient and shadow, and tone the 1 player button down to a quieter focus bar. Keep the title at 56px f-cond 800.",
+   "P1 mode list (5 buttons): delete the 'coming later' row. Group the modes into two blocks with a 24px gap between them (play: 1 player, 2 player co-op; demo: 2 player arcade, 1 player arcade). Make the idle rows 20px tx-1 on --ui-panel with a 1px --ui-line-hi border and --rad 4px.",
+   "P1 saves block (y 720-832): put a 32px gap above the saves block and set the label at 16px tx-2. Give the input a --ui-raised fill with no button chrome. Make 'create a new save' the only bordered action and demote 'change name' to a text link. The selected save name in tx-1, with lime only as a 3px left bar.",
+   "P2 focus state on '1 player': use one focus style everywhere: a --ui-raised fill, a 3px lime left bar, and tx-1 text. Keep the filled lime only for the single primary CTA.",
+   "P2 bottom key hints (wasd move, mouse aim ...): set the label at 16px minimum in --tx-2 (#aaa498, at least 4.5:1). Make the keycaps outline-only, 1px --ui-line-hi with tx-1 text. Align the legend and the version to the same 48px bottom margin."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-05-pad-presets-recipes-1/74-pad-pillagers-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-05-pad-presets-recipes-2/74-pad-pillagers-1080.jpg",
   "task": "o-05-pad-presets",
-  "when": "2026-10-20T05:53"
+  "when": "2026-10-20T06:17"
  },
  "13-mainframe-rewards": {
   "score": 2,
@@ -1020,5 +1020,35 @@
   "pic": "tools/handoff/console/notes/shots/b-31-n1/15-mainframe-stats-1080.jpg",
   "task": "manual",
   "when": "2026-10-20T06:11"
+ },
+ "74-pad-player-1": {
+  "score": 3,
+  "pass": false,
+  "verdict": "A clean, calm column menu with a clear lime focus bar and a strong title. The orange-gold title clashes with the lime accent, the lower half crowds, and the labels run too small and low in contrast for a couch.",
+  "findings": [
+   "P1 title 'pillagers': Fill the title flat --tx-1 (#efe9dc) with no gradient and no shadow, f-cond 800, around 72px. Leave lime for the focused 1 player bar only. If a brand colour is wanted, use a 3px lime underline 48px wide beneath it.",
+   "P1 menu list, rows 2 to 5: Delete the 'coming later' row. Drop '(same machine)' from the label. Group the two arcade demos under one 'arcade demo' row that asks 1 or 2 players, or separate them with a 24px gap and a 16px muted 'demo' label. Keep 4 rows at most.",
+   "P1 saves block (y 720-835): Pick one focus style: filled --acc with --acc-ink, or a 2px --acc left bar with --ui-raised fill. Raise the 'saves' label to 16px --tx-2 and put 32px above it. Give the field and buttons 16px gaps. Collapse 'change name' and 'create a new save' behind one 'new save' button that opens the name field.",
+   "P1 muted text (saves label, save stats, 'coming later' row, version stamp): Set these to 16px minimum at --tx-2 #aaa498. Make the stats --tx-1 at 16px. Set the disabled row to --tx-2 at 60% opacity, with the label kept at 16px.",
+   "P2 footer key legend (y 1042): Show the live device's hints: 'a select', 'b back', 'dpad move' on pad. Drop the in-raid hints (aim, fire, search) from the menu. Set caps at 16px --tx-1 on --ui-raised with a 1px --ui-line-hi border and --rad 4px."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-05-pad-presets-recipes-2/74-pad-player-1-1080.jpg",
+  "task": "o-05-pad-presets",
+  "when": "2026-10-20T06:18"
+ },
+ "74-pad-player-2": {
+  "score": 3,
+  "pass": false,
+  "verdict": "A clean centred column with a clear lime primary button, but the glossy gradient wordmark, the tiny muted secondary text and the busy blurred backdrop keep it short of polished.",
+  "findings": [
+   "P1 pillagers wordmark: Make the wordmark flat --tx-1 (or flat --acc), with no gradient or shadow, at 56px f-cond 800. Keep the lime fill only on the button. If the orange stays as the brand mark, state that exception in the guide.",
+   "P1 saves list, name field and button row: Raise row text to 20px f-cond 600 and set the label to 16px --tx-2 (at least #aaa498). Make the buttons 48px tall, not about 40px. Drop the separate 'player 2 window' line, or fold it into the 'keyboard' chip at 16px.",
+   "P1 background hub scene: Use --scrim at .80 plus a blur of about 8px over the whole scene, or a flat --ui-void vignette. Remove any sprites within 200px of the central column.",
+   "P2 top-right buttons (go fullscreen, settings): Use one idle button style: 1px --ui-line-hi border, 4px radius, 16px text, 40px height, 24px from the edges. Restyle the 'keyboard' chip to match, in --tx-2 text, not green.",
+   "P2 bottom key legend: Set the labels to 16px --tx-2 with 4.5:1 contrast. Make the key chips a single 1px --ui-line-hi outline with --tx-1 text, no white fill. Keep at most 3 entries, for example move, fire and controls."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-05-pad-presets-recipes-2/74-pad-player-2-1080.jpg",
+  "task": "o-05-pad-presets",
+  "when": "2026-10-20T06:18"
  }
 }

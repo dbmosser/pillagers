@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.52 - PRE-RAID: SHARP MAP NAMES, A QUIET SELECTED STATE, ROWS THAT FILL THE PACK, A SMALLER ASCEND PLATE
+
+Co-op hunt while he was away. The second critic pass (still 3) said the lime accent appeared in five places at the same strength, the map labels were blurry and oversized, the pack rows left a dead gap and spaced unevenly, and the warning outline fought the ascend plate. The canvas is drawn at 960 so labels are crisp at their real size, selected chips are a raised fill with a 3px lime bar, the plate is 60 px, the ascending here tag and the warning lose their outlines, and pack rows stretch to fill the list with even pitch.
+
+MEASURED. Check 32.52 passes, and fails on v32.51.
 ## v32.51 - PRE-RAID: QUIETER WARNING, ONE GUN CHIP, TALLER PACK ROWS AND BIGGER STEPPERS, SOFTER MAP LABELS
 
 Co-op hunt while he was away. The critic scored the shipped design A page 3 and named: a dead gap in the kit column, two confusing gun chips, an amber warning bar as loud as the ascend plate, loud outlined map labels with cramped keyed room tags, small steppers and a stray saves as you go line. Rows grow to 46 px, steppers to 36 px, the warning loses its fill, the gun chips merge, the keyed room names sit beside their rooms, and the panel double frame goes.

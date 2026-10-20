@@ -1,0 +1,7 @@
+v32.52: pre-raid: sharp map names, a quiet selected state, rows that fill the pack, a smaller ascend plate
+
+The pre-raid page has crisp map names, calmer selected chips, an evenly spaced pack and a smaller ascend button.
+
+Check 32.52. Fails on v32.51.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

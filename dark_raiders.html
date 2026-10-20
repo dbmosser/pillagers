@@ -2559,7 +2559,7 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
   #root #sectormodal #sectorlist, #root #sectormodal .sectorpick{ display:contents !important; }
   #sectormodal .srmh{ grid-column:1/-1; grid-row:1; display:flex; align-items:center; gap:16px; margin:0 -12px; padding:0 12px; border-bottom:1px solid var(--ui-line); }
   #sectormodal .srmh b{ font:700 32px/1 var(--f-cond); letter-spacing:.03em; color:var(--tx-1); }
-  #sectormodal .srtag{ display:inline-flex; align-items:center; gap:8px; height:36px; padding:0 14px 0 10px; border:1px solid var(--acc); background:rgba(230,255,61,.16); border-radius:4px; font:600 20px var(--f-cond); color:var(--tx-1); }
+  #sectormodal .srtag{ display:inline-flex; align-items:center; gap:8px; height:36px; padding:0 14px 0 10px; border:1px solid var(--ui-line-hi); background:none; border-radius:4px; font:600 20px var(--f-cond); color:var(--tx-1); }
   #sectormodal .srtag svg{ width:20px; height:20px; fill:none; stroke:var(--acc); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
   #sectormodal .srst{ margin-left:auto; font:500 20px var(--f-cond); letter-spacing:.02em; color:var(--tx-2); white-space:nowrap; }
   #sectormodal .srcv{ grid-column:1; grid-row:2; position:relative; min-height:0; margin-top:12px; background:#0c1a28; border:1px solid #1d3a55; border-radius:4px; overflow:hidden; }
@@ -2569,7 +2569,7 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
   #sectormodal .srstack{ display:flex; flex-direction:column; gap:3px; margin-bottom:10px; }
   #root #sectormodal .srchip{ width:100%; height:36px; display:flex; align-items:center; gap:10px; padding:0 10px; background:var(--ui-raised); border:1px solid var(--ui-line-hi); border-radius:4px; color:var(--tx-1); font:600 20px var(--f-cond); letter-spacing:.02em; text-align:left; text-transform:lowercase; }
   #sectormodal .srchip em{ margin-left:auto; font:500 16px var(--f-body); font-style:normal; color:var(--tx-2); }
-  #root #sectormodal .srchip.on, #root #sectormodal .kitb.on{ background:rgba(230,255,61,.16); border-color:var(--acc); box-shadow:inset 0 0 0 1px var(--acc); color:var(--tx-1); }
+  #root #sectormodal .srchip.on, #root #sectormodal .kitb.on{ background:var(--ui-hover); border-color:var(--ui-line-hi); box-shadow:inset 3px 0 0 var(--acc); color:var(--tx-1); }
   #root #sectormodal .srchip:disabled{ opacity:1; color:var(--tx-2) !important; }
   #root #sectormodal .srchip.on:disabled{ color:var(--tx-1) !important; border-color:var(--acc) !important; }
   #sectormodal .srrd{ width:22px; height:22px; flex:none; border-radius:50%; border:2px solid #55524c; position:relative; }
@@ -2592,9 +2592,9 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
   #sectormodal .srph span{ font:500 16px var(--f-body); color:var(--tx-2); }
   #sectormodal .srph i{ flex:1; }
   #root #sectormodal .pkb{ height:36px; min-width:0; padding:0 14px; background:var(--ui-raised); border:1px solid var(--ui-line-hi); border-radius:4px; color:var(--tx-1); font:600 20px var(--f-cond); }
-  #sectormodal .srplist{ flex:1 1 auto; min-height:0; overflow-y:auto; }
-  #sectormodal .srprow{ height:46px; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--ui-line); white-space:nowrap; }
-  #sectormodal .srprow.g{ margin-top:6px; }
+  #sectormodal .srplist{ flex:1 1 auto; min-height:0; overflow-y:auto; display:flex; flex-direction:column; }
+  #sectormodal .srprow{ flex:1 0 46px; max-height:58px; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--ui-line); white-space:nowrap; }
+  #sectormodal .srprow.g{ margin-top:0; border-top:1px solid var(--ui-line-hi); }
   #sectormodal .srprow .rar{ width:4px; height:24px; flex:none; }
   #sectormodal .srprow svg{ width:24px; height:24px; flex:none; fill:none; stroke:var(--tx-2); stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
   #sectormodal .srprow .nm{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; font:600 20px var(--f-cond); color:var(--tx-2); }
@@ -2616,12 +2616,12 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
   #sectormodal .gc{ flex:1 1 0; min-width:0; height:36px; display:flex; align-items:center; gap:8px; padding:0 12px; background:var(--ui-raised); border:1px solid var(--ui-line-hi); border-radius:4px; white-space:nowrap; overflow:hidden; }
   #sectormodal .gc i{ font:400 16px var(--f-body); font-style:normal; color:var(--tx-2); }
   #sectormodal .gc b{ font:700 20px var(--f-cond); }
-  #sectormodal .wn{ flex:1 1 100%; height:36px; display:flex; align-items:center; gap:10px; padding:0 12px; border:1px solid var(--ui-line-hi); background:none; border-radius:4px; color:var(--warn); white-space:nowrap; overflow:hidden; }
+  #sectormodal .wn{ flex:1 1 100%; height:36px; display:flex; align-items:center; gap:10px; padding:0 12px; border:0; background:none; border-radius:0; color:var(--warn); white-space:nowrap; overflow:hidden; }
   #sectormodal .wn svg{ width:24px; height:24px; flex:none; fill:none; stroke:var(--warn); stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
   #sectormodal .wn b{ font:700 20px var(--f-cond); }
   #sectormodal .wn i{ margin-left:auto; font:400 16px var(--f-body); font-style:normal; color:var(--tx-2); }
-  #sectormodal .srplate{ flex:none; height:72px; padding:0; background:none; }
-  #root #sectormodal #sectordeploy{ width:100%; height:100%; display:flex; align-items:center; justify-content:space-between; padding:0 24px 0 30px; background:var(--acc); color:var(--acc-ink); border:0; border-radius:4px; font:800 52px/1 var(--f-cond); letter-spacing:.05em; }
+  #sectormodal .srplate{ flex:none; height:60px; padding:0; background:none; }
+  #root #sectormodal #sectordeploy{ width:100%; height:100%; display:flex; align-items:center; justify-content:space-between; padding:0 24px 0 30px; background:var(--acc); color:var(--acc-ink); border:0; border-radius:4px; font:800 44px/1 var(--f-cond); letter-spacing:.05em; }
   #root #sectormodal #sectordeploy:hover{ background:var(--acc-hover); }
   #sectormodal .srsr{ display:none; }
   #sectormodal .srplk{ display:flex; align-items:center; gap:8px; }
@@ -3153,7 +3153,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.51';
+var VER='32.52';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -50524,7 +50524,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.51: The pre-raid page is calmer: one gun line, a quiet no armour row, taller pack rows with bigger plus and minus buttons, and softer map labels. Check 32.51 fails on v32.50',
+  now:'v32.52: The pre-raid page has crisp map names, calmer selected chips, an evenly spaced pack and a smaller ascend button. Check 32.52 fails on v32.51',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -65726,7 +65726,7 @@ function renderSector(){
        '<div class="srmh"><b>'+M.name+'</b>'+
        (sel?'<span class="srtag"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>ASCENDING HERE</span>':'')+
        '<span class="srst">'+facts.join('  &middot;  ')+'</span></div>'+
-       '<div class="srcv"><canvas class="secprev" data-map="'+i+'" width="640" height="'+Math.round(640*M.h/M.w)+'"></canvas></div></div>';
+       '<div class="srcv"><canvas class="secprev" data-map="'+i+'" width="960" height="'+Math.round(960*M.h/M.w)+'"></canvas></div></div>';
   }
   host.innerHTML=h;
   try{ sectorPreviews(host); }catch(_sv){}   // v17.79: the sector maps
