@@ -14,10 +14,12 @@
 #      browser) means he is playing: the VM is held to -GameCpuPct (30) percent of its processors, and gaming.txt in the share tells the VM to
 #      start nothing new. Ten minutes after the last game sighting the VM gets its full processors back.
 #   6. (10-20 10:00, his "i am experiencing some glitching and slowdowns on the main PC -- is there a way to reduce load when I am at the PC?")
-#      the same minute check also asks Windows how long the keyboard and mouse have been idle on this PC (quser, read only). Used in the last
+#      the same minute check also reads how long the keyboard and mouse have been idle on this PC. Used in the last
 #      -AtPcIdleMin (10) minutes means he is at the PC: the VM is held to -AtPcCpuPct (50) percent of its processors, and gaming.txt says atpc=1
 #      so the VM starts no long job that draws on the graphics card (the full test run, the robots, the local AI). A game still means 30.
 #      Away (idle 10 minutes or more): all processors again. If Windows gives no idle time, the old game-only rule stays.
+#      The idle time comes from "VM keyboard idle watch", a hidden task that runs as him (only his own session can read the time of his last
+#      key or mouse input) and writes input-idle.txt every 30 seconds; without it, quser (read only), where "none" counts as unknown.
 #      The weekly checkpoint task is no longer made while the VM has checkpoints switched off (the graphics card share needs that).
 # Up: the VM gets more memory while it runs (Hyper-V runtime memory resize, no restart), up to -MaxGB, always leaving -KeepFreeGB free on this PC.
 # Down: the VM goes back to its daytime size (the size it had when -Install ran, normally 10 GB). Nothing else on the VM changes.
@@ -28,10 +30,10 @@
 #   -Status      show what is set up (read only)       -DryRun   with -Install, -Up, -Snapshot or -GameCheck: only say what would happen
 #   -Up / -Down / -Snapshot / -GameCheck  what the tasks run
 #   -MaxGB N (default 16)  -KeepFreeGB N (default 4)  -VMName NAME (default Pillagers_Oct26)  -KeepSnapshots N (2)  -Gpu3DPct N (15)  -GameCpuPct N (30)
-#   -AtPcCpuPct N (50)  -AtPcIdleMin N (10)
+#   -AtPcCpuPct N (50)  -AtPcIdleMin N (10)  -IdleWatch  what the idle watch task runs (a loop, as him)
 # Exit codes: 0 done, 2 refused or nothing could be done (see the log line), 3 needs an administrator window. ASCII only. PowerShell 5.1 and 7.
 param(
-  [switch]$Install, [switch]$Undo, [switch]$Status, [switch]$DryRun, [switch]$Up, [switch]$Down, [switch]$Snapshot, [switch]$GameCheck,
+  [switch]$Install, [switch]$Undo, [switch]$Status, [switch]$DryRun, [switch]$Up, [switch]$Down, [switch]$Snapshot, [switch]$GameCheck, [switch]$IdleWatch,
   [string]$VMName = 'Pillagers_Oct26', [int]$MaxGB = 16, [int]$KeepFreeGB = 4, [int]$DayGB = 0,
   [int]$KeepSnapshots = 2, [int]$Gpu3DPct = 15, [int]$GameCpuPct = 30, [int]$AtPcCpuPct = 50, [int]$AtPcIdleMin = 10,
   [string]$BaseDir = ''
@@ -42,9 +44,10 @@ $Share = Join-Path $BaseDir 'share'
 $Log = Join-Path $Share 'night-memory.log'
 $Copy = Join-Path $BaseDir 'night-memory.ps1'
 $StateFile = Join-Path $BaseDir 'night-memory-state.txt'
-$TaskUp = 'VM night memory up'; $TaskDown = 'VM night memory down'; $TaskSnap = 'VM weekly snapshot'; $TaskGame = 'VM light while gaming'
+$TaskUp = 'VM night memory up'; $TaskDown = 'VM night memory down'; $TaskSnap = 'VM weekly snapshot'; $TaskGame = 'VM light while gaming'; $TaskIdle = 'VM keyboard idle watch'
 $LinkName = 'Pillagers Dev (live).url'
 $GameFile = Join-Path $Share 'gaming.txt'; $GameSeen = Join-Path $BaseDir 'gaming-last-seen.txt'; $SnapPrefix = 'Pillagers weekly '
+$IdleFile = Join-Path $BaseDir 'input-idle.txt'
 
 function Say([string]$msg, [string]$kind = 'INFO') { Write-Host ('{0,-5} {1}' -f $kind, $msg) }
 function LogLine([string]$msg) {
@@ -107,16 +110,36 @@ if ($Snapshot) {
   exit 0
 }
 
+# ------------------------------------------------------------------ -IdleWatch : how long since he last used the keyboard or mouse
+# 10-20 (review of the at-the-PC mode): quser often shows "none" for the screen session at the PC itself, so the SYSTEM check alone could not
+# tell whether he is there. Only his own session can read the time of his last key or mouse input, so this runs hidden as him (the
+# "VM keyboard idle watch" task, at logon) and writes input-idle.txt every 30 seconds: "yyyy-MM-dd HH:mm:ss SECONDS". Read only otherwise.
+if ($IdleWatch) {
+  Add-Type -TypeDefinition 'using System; using System.Runtime.InteropServices; public static class PillagersIdle { [StructLayout(LayoutKind.Sequential)] struct LII { public uint cbSize; public uint dwTime; } [DllImport("user32.dll")] static extern bool GetLastInputInfo(ref LII p); public static long Seconds() { LII l = new LII(); l.cbSize = 8; if (!GetLastInputInfo(ref l)) { return -1; } return (long)(unchecked((uint)Environment.TickCount - l.dwTime) / 1000); } }'
+  $tmp = $IdleFile + '.tmp'
+  while ($true) {
+    try { Set-Content -Path $tmp -Value ((Get-Date).ToString('yyyy-MM-dd HH:mm:ss') + ' ' + [PillagersIdle]::Seconds()) -Encoding ASCII; Move-Item -LiteralPath $tmp -Destination $IdleFile -Force } catch { }
+    Start-Sleep -Seconds 30
+  }
+}
+
 # ------------------------------------------------------------------ -GameCheck : the VM goes light while he plays (his 49 a and 38 b)
+$IdleSrc = ''
 function ConsoleIdleMin {
-  # How long the keyboard and mouse at this PC have been idle, in minutes, from quser (read only; works from the SYSTEM task).
-  # Its IDLE TIME is "none" or "." (under a minute), "5" (minutes), "1:05" (hours:minutes) or "2+03:04" (days+hours:minutes).
-  # -1 when there is no active console session or the line cannot be read.
+  # How long the keyboard and mouse at this PC have been idle, in minutes. First from input-idle.txt (the idle watch task, under 3 minutes
+  # old), else from quser (read only; works from the SYSTEM task): its IDLE TIME is "." (under a minute), "5" (minutes), "1:05"
+  # (hours:minutes) or "2+03:04" (days+hours:minutes); "none" means it keeps no time for that session, so it counts as unknown.
+  # -1 when nothing gives a time.
+  try {
+    $p = @((Get-Content -LiteralPath $IdleFile -TotalCount 1 -ErrorAction Stop).Trim() -split '\s+')
+    $at = [datetime]::ParseExact($p[0] + ' ' + $p[1], 'yyyy-MM-dd HH:mm:ss', $null)
+    if ($p.Count -ge 3 -and [math]::Abs(((Get-Date) - $at).TotalMinutes) -lt 3 -and [long]$p[2] -ge 0) { $script:IdleSrc = 'watch'; return [int][math]::Floor([long]$p[2] / 60) }
+  } catch { }
   try {
     foreach ($l in @(& (Join-Path $env:SystemRoot 'System32\quser.exe') 2>$null)) {
       if ([string]$l -notmatch '\sconsole\s+\d+\s+Active\s+(\S+)\s') { continue }
-      $t = $Matches[1]
-      if ($t -eq 'none' -or $t -eq '.') { return 0 }
+      $t = $Matches[1]; $script:IdleSrc = 'quser'
+      if ($t -eq '.') { return 0 }
       if ($t -match '^(\d+)\+(\d+):(\d+)$') { return [int]$Matches[1] * 1440 + [int]$Matches[2] * 60 + [int]$Matches[3] }
       if ($t -match '^(\d+):(\d+)$') { return [int]$Matches[1] * 60 + [int]$Matches[2] }
       if ($t -match '^\d+$') { return [int]$t }
@@ -140,7 +163,7 @@ if ($GameCheck) {
       if (-not $n -or $n -match '^(dwm|vmwp|vmmem|vmcompute|vmconnect|mstsc|msrdc|csrss|System|Idle|audiodg)$') { continue }
       if ($avg -gt $pct) { $pct = [int]$avg; $hit = $n }
     }
-  } catch { LogLine ('game check: cannot read the graphics card counters: ' + ($_.Exception.Message -replace '\s+', ' ')); exit 2 }
+  } catch { LogLine ('game check: cannot read the graphics card counters: ' + ($_.Exception.Message -replace '\s+', ' ')); $hit = ''; $pct = 0 }   # 10-20: go on, so the idle check, gaming.txt and the processor limit still run
   $now = Get-Date; $last = $null
   if ($hit) { $last = $now; Set-Content -Path $GameSeen -Value $now.ToString('yyyy-MM-dd HH:mm:ss') -Encoding ASCII }
   else { try { $last = [datetime]::ParseExact((Get-Content $GameSeen -Raw -ErrorAction Stop).Trim(), 'yyyy-MM-dd HH:mm:ss', $null) } catch { } }
@@ -153,7 +176,7 @@ if ($GameCheck) {
   if ($DryRun) { Say ('graphics card: ' + $(if ($hit) { $hit + ' at ' + $pct + '% 3D' } else { 'no program at ' + $Gpu3DPct + '% 3D or more' }) + '; playing: ' + $gaming + '; idle: ' + $(if ($idle -ge 0) { [string]$idle + ' min' } else { 'unknown' }) + '; the VM would be held to ' + $want + '%') 'DRY'; exit 0 }
   try { if (-not (Test-Path $Share)) { New-Item -ItemType Directory -Force -Path $Share | Out-Null }
         $lines = @(('gaming=' + $(if ($gaming) { '1' } else { '0' })), ('checked=' + $now.ToString('yyyy-MM-dd HH:mm:ss')),
-          ('last=' + $(if ($last) { $last.ToString('yyyy-MM-dd HH:mm:ss') } else { '' })), ('what=' + $(if ($hit) { $hit + ' ' + $pct + '%' } else { '' })), ('idle=' + $idle))
+          ('last=' + $(if ($last) { $last.ToString('yyyy-MM-dd HH:mm:ss') } else { '' })), ('what=' + $(if ($hit) { $hit + ' ' + $pct + '%' } else { '' })), ('idle=' + $idle), ('idlefrom=' + $IdleSrc))
         if ($idle -ge 0) { $lines += ('atpc=' + $(if ($atpc) { '1' } else { '0' })) }
         Set-Content -Path $GameFile -Encoding ASCII -Value $lines } catch { }
   $vm = GetVm
@@ -171,7 +194,7 @@ if ($Status -or -not ($Install -or $Undo)) {
   $vm = GetVm
   Say ('VM ' + $VMName + ': ' + $(if ($vm) { $vm.State.ToString() + ', ' + [math]::Round($vm.MemoryStartup / 1GB, 1) + ' GB set, ' + [math]::Round($vm.MemoryAssigned / 1GB, 1) + ' GB in use' + $(if ($vm.DynamicMemoryEnabled) { ' (dynamic)' } else { ' (fixed)' }) } else { 'not found (or this window has no Hyper-V rights)' }))
   Say ('this PC: ' + (HostFreeGB) + ' GB free; daytime VM size ' + (ReadDayGB) + ' GB')
-  foreach ($n in $TaskUp, $TaskDown, $TaskSnap, $TaskGame) { $t = Get-ScheduledTask -TaskName $n -ErrorAction SilentlyContinue; Say ($n + ': ' + $(if ($t) { $t.State } else { 'not set up' })) $(if ($t) { 'OK' } else { 'INFO' }) }
+  foreach ($n in $TaskUp, $TaskDown, $TaskSnap, $TaskGame, $TaskIdle) { $t = Get-ScheduledTask -TaskName $n -ErrorAction SilentlyContinue; Say ($n + ': ' + $(if ($t) { $t.State } else { 'not set up' })) $(if ($t) { 'OK' } else { 'INFO' }) }
   if ($vm) { try { Say ('VM processors: held to ' + (Get-VMProcessor -VMName $VMName -ErrorAction Stop).Maximum + '% (100 = all)') } catch { } }
   if (Test-Path $GameFile) { Say ('game check: ' + ((Get-Content $GameFile -ErrorAction SilentlyContinue) -join '; ')) }
   $snaps = @(OurSnapshots); Say ('weekly checkpoints: ' + $(if ($snaps.Count) { ($snaps | ForEach-Object { $_.Name }) -join ', ' } else { 'none yet' }))
@@ -184,11 +207,11 @@ $desktop = [Environment]::GetFolderPath('Desktop')
 
 # ------------------------------------------------------------------ -Undo
 if ($Undo) {
-  foreach ($n in $TaskUp, $TaskDown, $TaskSnap, $TaskGame) { if (Get-ScheduledTask -TaskName $n -ErrorAction SilentlyContinue) { Unregister-ScheduledTask -TaskName $n -Confirm:$false; Say ('removed task ' + $n) 'OK' } }
+  foreach ($n in $TaskUp, $TaskDown, $TaskSnap, $TaskGame, $TaskIdle) { if (Get-ScheduledTask -TaskName $n -ErrorAction SilentlyContinue) { Stop-ScheduledTask -TaskName $n -ErrorAction SilentlyContinue; Unregister-ScheduledTask -TaskName $n -Confirm:$false; Say ('removed task ' + $n) 'OK' } }
   $vm = GetVm; $day = ReadDayGB
   if ($vm -and [int][math]::Round($vm.MemoryStartup / 1GB) -gt $day) { try { Set-VMMemory -VMName $VMName -StartupBytes ([int64]$day * 1GB) -ErrorAction Stop; Say ('VM back to ' + $day + ' GB') 'OK' } catch { Say ('could not set the VM back to ' + $day + ' GB now: ' + $_.Exception.Message) 'WARN' } }
   if ($vm) { try { if ((Get-VMProcessor -VMName $VMName -ErrorAction Stop).Maximum -lt 100) { Set-VMProcessor -VMName $VMName -Maximum 100 -ErrorAction Stop; Say 'VM has all its processors again' 'OK' } } catch { Say ('could not lift the processor limit: ' + $_.Exception.Message) 'WARN' } }
-  foreach ($f in $Copy, $StateFile, $GameFile, $GameSeen, (Join-Path $desktop $LinkName)) { if (Test-Path $f) { Remove-Item $f -Force; Say ('removed ' + $f) 'OK' } }
+  foreach ($f in $Copy, $StateFile, $GameFile, $GameSeen, $IdleFile, (Join-Path $desktop $LinkName)) { if (Test-Path $f) { Remove-Item $f -Force; Say ('removed ' + $f) 'OK' } }
   $snaps = @(OurSnapshots); if ($snaps.Count) { Say ('the weekly checkpoints stay as a safety copy (' + (($snaps | ForEach-Object { $_.Name }) -join ', ') + '); Hyper-V Manager can delete them') }
   LogLine 'undo: tasks removed, VM back to its day size and all its processors'; exit 0
 }
@@ -203,7 +226,7 @@ Say ('VM ' + $VMName + ': ' + $day + ' GB by day. At 23:00 it gets up to ' + $Ma
 $noCk = ([string]$vm.CheckpointType -eq 'Disabled')   # 10-20: the graphics card share needs checkpoints off, and then every weekly try failed
 if (-not $noCk) { Say ('Every Sunday at 05:00 it makes a safety checkpoint of the VM (keeps the newest ' + $KeepSnapshots + ').') }
 Say ('Every minute it checks for a game: while one works the graphics card, the VM is held to ' + $GameCpuPct + '% of its processors and starts nothing new. While you use this PC (keyboard or mouse in the last ' + $AtPcIdleMin + ' minutes) it is held to ' + $AtPcCpuPct + '% and starts no long job; when you are away it gets them all.')
-if ($DryRun) { Say ('would copy this script to ' + $Copy + ', make the tasks "' + $TaskUp + '" (23:00), "' + $TaskDown + '" (06:00, every 15 min until 08:00), "' + $TaskSnap + '" (Sunday 05:00) and "' + $TaskGame + '" (every minute) as SYSTEM, make the first checkpoint, and put "' + $LinkName + '" on the desktop') 'DRY'; exit 0 }
+if ($DryRun) { Say ('would copy this script to ' + $Copy + ', make the tasks "' + $TaskUp + '" (23:00), "' + $TaskDown + '" (06:00, every 15 min until 08:00), "' + $TaskSnap + '" (Sunday 05:00) and "' + $TaskGame + '" (every minute) as SYSTEM, "' + $TaskIdle + '" (hidden, as you, from logon), make the first checkpoint, and put "' + $LinkName + '" on the desktop') 'DRY'; exit 0 }
 New-Item -ItemType Directory -Force -Path $Share | Out-Null
 Copy-Item -LiteralPath $PSCommandPath -Destination $Copy -Force
 Set-Content -Path $StateFile -Value ('dayGB=' + $day) -Encoding ASCII
@@ -234,6 +257,17 @@ try {
   Register-ScheduledTask -TaskName $TaskGame -Action (New-ScheduledTaskAction -Execute $ps -Argument ($common + ' -GameCheck')) -Trigger $gt -Principal $principal -Settings $gset -Force -ErrorAction Stop | Out-Null
   Say ('task made: "' + $TaskGame + '" every minute') 'OK'
 } catch { Say ('Windows refused the game check task: ' + $_.Exception.Message) 'WARN' }
+try {
+  # as him, not SYSTEM: only his own session can read when he last used the keyboard or mouse. One hidden PowerShell loop; the 5-minute
+  # trigger only restarts it if it ever stops (IgnoreNew skips it while it runs).
+  $me = [Security.Principal.WindowsIdentity]::GetCurrent().Name
+  $iset = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -MultipleInstances IgnoreNew -ExecutionTimeLimit (New-TimeSpan -Seconds 0)
+  $it = @((New-ScheduledTaskTrigger -AtLogOn -User $me), (New-ScheduledTaskTrigger -Once -At ((Get-Date).AddMinutes(1)) -RepetitionInterval (New-TimeSpan -Minutes 5) -RepetitionDuration (New-TimeSpan -Days 3650)))
+  $ia = New-ScheduledTaskAction -Execute $ps -Argument ('-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "' + $Copy + '" -BaseDir "' + $BaseDir + '" -IdleWatch')
+  Register-ScheduledTask -TaskName $TaskIdle -Action $ia -Trigger $it -Principal (New-ScheduledTaskPrincipal -UserId $me -LogonType Interactive -RunLevel Limited) -Settings $iset -Force -ErrorAction Stop | Out-Null
+  Stop-ScheduledTask -TaskName $TaskIdle -ErrorAction SilentlyContinue; Start-ScheduledTask -TaskName $TaskIdle -ErrorAction SilentlyContinue
+  Say ('task made: "' + $TaskIdle + '" (hidden, as ' + $me + '): it notes when the keyboard or mouse was last used') 'OK'
+} catch { Say ('Windows refused the idle watch task (the at-the-PC mode then relies on quser): ' + $_.Exception.Message) 'WARN' }
 if (-not $noCk) {
   Say 'Making the first safety checkpoint of the VM (a few seconds to a minute)...'
   & $ps -NoProfile -ExecutionPolicy Bypass -File $Copy -VMName $VMName -BaseDir $BaseDir -KeepSnapshots $KeepSnapshots -Snapshot
