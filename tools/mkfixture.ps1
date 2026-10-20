@@ -6101,6 +6101,27 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.14',what:'the f1 controls hint sits on a plate: a plate fill is drawn right before the words',
+   run:function(){
+     if(typeof __frame!=='function') return 'SKIP: no frame helper';
+     var PR=CanvasRenderingContext2D.prototype, of=PR.fillText, ofl=PR.fill, pn=(function(){ var c=document.createElement('canvas').getContext('2d'); c.fillStyle=HUDC.plate; return String(c.fillStyle); })(), g=null, seen=0, plated=0, lastFill=false;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player) return 'SKIP: no raid';
+       g.legendOn=0;
+       PR.fill=function(){ lastFill=(String(this.fillStyle)===pn); return ofl.apply(this,arguments); };
+       PR.fillText=function(s){ var t=String(s).toLowerCase(); if(/controls$/.test(t)&&/f1/.test(t)){ seen++; if(lastFill) plated++; } lastFill=false; return of.apply(this,arguments); };
+       __frame(); __frame();
+       PR.fillText=of; PR.fill=ofl;
+       if(!seen) return 'SKIP: no f1 controls hint drawn';
+       if(plated<seen) return 'the f1 controls hint is bare text, drawn with no plate under it ('+plated+' of '+seen+')';
+       return null;
+     } finally {
+       PR.fillText=of; PR.fill=ofl;
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     } }},
   {v:'32.13',what:'the gun name on the gun card is smaller than the head size, so the ammo figure is the hero',
    run:function(){
      if(typeof __frame!=='function') return 'SKIP: no frame helper';

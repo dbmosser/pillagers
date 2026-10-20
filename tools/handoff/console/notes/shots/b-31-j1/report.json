@@ -1,0 +1,5 @@
+{"generated":"2026-10-19T23:37:49","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":27,"screens":[
+{"name":"03-hub-floor","screen":"Undercroft hub floor with station labels, belt and toast","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"03-hub-floor-1080.jpg","lint":""}},
+{"name":"04-stash-terminal","screen":"THE STASH: stash grid, loadout backpack, tactical belt, sell row, freebie kit","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"04-stash-terminal-1080.jpg","lint":""}},
+{"name":"14-mainframe-racks","screen":"Mainframe: racks","1080":{"staged":true,"note":"opmodal","viewport":"1920x1080","shot":"14-mainframe-racks-1080.jpg","lint":""}}
+]}

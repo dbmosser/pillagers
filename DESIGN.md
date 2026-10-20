@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.14 - THE F1 CONTROLS HINT HAS A PLATE
+
+Co-op hunt while he was away. The critic named the f1 controls hint as dim grey text over a busy map with no plate. It now sits on the HUD plate in the quiet grey text colour.
+
+MEASURED. Check 32.14 passes, and fails on v32.13.
 ## v32.13 - THE GUN NAME IS THE QUIET LINE OVER THE AMMO
 
 Co-op hunt while he was away. The critic said the gun name was as heavy as the ammo number. The name is now the label size in the grey text colour, so the big ammo figure is the one hero.

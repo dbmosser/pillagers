@@ -341,19 +341,19 @@
   "when": "2026-10-18T22:04"
  },
  "50-arcade-hud-live": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The raid HUD is readable but has no shared system: the bottom-left, hotbar and ammo panels each use a different frame, bar and type size, and the minimap, goals and extract tag are cluttered, so it still looks like a template pass.",
+  "verdict": "The new HUD fixes the floating stamina word and the bare extract line, so the corners are tidier. It is still a stack of mismatched boxes, with a weak top-right column, a loose gun-name line, and a bare 'f controls' hint that is hard to read.",
   "findings": [
-   "P0 top-right minimap and run info stack: Frame minimap and run info as one panel P (fill #16191b at 90%, 1px #4a5257 border, 4px radius, 24px padding). Leave a 16px gap between them. Make the minimap fill dark grey with a 16px 'n'. Make 'run goals' 16px tx-2 and the goal lines 20px tx-1 with 8px row spacing. Put the +sp values in a right-aligned lime column. Move run info to the 5% margin and drop the collapse caret.",
-   "P0 bottom-left status stack (standing, armour, stamina, hp): Use one bar component: 14px tall, #1e2225 track, 1px #2e3337 border, 4px radius, 8px gap. Labels go in a left column at 16px tx-2 and numbers go right-aligned at 20px tx-1. Make hp the only bold bar (56px hero or a 24px fill). Show armour as a thin blue bar and stamina as a thin teal bar. Turn 'standing' into a 16px chip with 24px padding, using the same panel style.",
-   "P1 bottom-right ammo panel: Use 4px radius with no chamfer. Set the weapon name to 16px tx-2 and keep the 56px 800 number. Make '/ 360' 24px tx-2. Align the panel bottom to the hotbar bottom (y=1054) and the right edge to 1824. Make its height match the hotbar (about 104px).",
-   "P1 hotbar and its tooltip tab: Show focus as one cue only: a 2px lime border and raised fill #1e2225. Show rarity as a 3px bar along the bottom of the slot, in the rarity colour. Raise the empty-slot icon contrast above 4.5:1. Set the slot numbers to 16px tx-2. Fold the tooltip into a panel P with a 16px gap above the bar and a 16px key hint. Keep lime for the focus border only.",
-   "P1 top-centre score card and 'extract 148m': Move 'extract 148m' into the score card as a third line, or into its own chip (panel fill, 16px #47d8c6 text, 8px padding) 16px below the card. Offset the card 24px from the top. Show the timer as a 32px 700 figure and 'score' as a 16px label."
+   "P1 top-right run info card: Drop one heading. Use panel fill #16191b at 90%, a 1px #4a5257 border and a 4px radius. Put 24px padding on all sides, and indent the goal lines 16px consistently. Make the chevron at least 16px with a 40px hit area.",
+   "P1 hierarchy, bottom row: Use lime #e6ff3d only for the selected slot border and the one primary highlight. Move the 'fire' and 'use' hints to a 16px fine line, or drop the lime fill on 'fire'. Keep the ammo number as the one hero.",
+   "P1 top-left 'f1 controls': Put it on the same plate (panel at 80%, 8px radius 4, 8px/16px padding) and use #aaa498 at 16px. Remove the stray '<' or attach it to the plate.",
+   "P2 extract plate (new): Merge the score, timer and extract line into one panel with 8px row gaps. Give the plate the same 4px radius and a 1px border. Put the marker inside the panel or 16px away.",
+   "P2 stamina bar (new): Use #efe9dc text at 16px with a 1px dark shadow, or an ink text on a light fill. Make all three bars the same 28px height and 8px gap. Give each a distinct label colour."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-02-r15/50-arcade-hud-live-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/c-02-r16-after/50-arcade-hud-live-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T01:49"
+  "when": "2026-10-20T03:35"
  },
  "52-arcade-run-over": {
   "score": 3,

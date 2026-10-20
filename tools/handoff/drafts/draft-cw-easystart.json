@@ -1,0 +1,16 @@
+{
+    "title":  "DEMO RUN START ASKS EASY OR NORMAL",
+    "why":  "His answer 2.28 c: in the demo each player chooses easy or normal before the run starts. Today the card only came after the second death.",
+    "now":  "Each demo run starts with the easy or normal card in that players window.",
+    "edits":  [
+                  {
+                      "anchor":  "  startRaid();\n  return !!(G\u0026\u0026G.arcade);\n}\n",
+                      "replacement":  "  startRaid();\n  try{ easyStartAsk(); }catch(_esa){}   // v28.xx (cw-easystart), HIS ANSWER (2026-10-18, 2.28 c): in the demo each player chooses easy or normal as a run starts\n  return !!(G\u0026\u0026G.arcade);\n}\n"
+                  },
+                  {
+                      "anchor":  "function easyAnswer(yes){\n",
+                      "replacement":  "// v28.xx (cw-easystart), HIS ANSWER (2026-10-18, 2.28 c): \"in the demo only, each player chooses easy or normal before their run starts\". Every new demo run starts normal and puts the\n// same card up in that window (Y or A easy, N or B normal); the offer after the second death (2.90 b) stays for anyone who said no.\nfunction easyStartAsk(){\n  if(typeof ARCADE!==\u0027object\u0027||!ARCADE||!ARCADE.on||ARCADE.solo) return false;\n  ARCADE.easy=0; ARCADE.easyAsked=0; ARCADE.easyAsk={at:Date.now()};\n  return true;\n}\nfunction easyAnswer(yes){\n"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a new demo run puts the easy or normal card up for that player, and starts on normal (his 2.28 c)\u0027,\n   run:function(){\n     if(typeof easyStartAsk!==\u0027function\u0027) return \u0027no easyStartAsk\u0027;\n     if(String(arcadeDeploy).indexOf(\u0027easyStartAsk\u0027)\u003c0) return \u0027arcadeDeploy does not ask\u0027;\n     var on0=ARCADE.on, so0=ARCADE.solo, e0=ARCADE.easy, a0=ARCADE.easyAsk, k0=ARCADE.easyAsked, r;\n     try{\n       ARCADE.on=1; ARCADE.solo=0; ARCADE.easy=1; ARCADE.easyAsk=null; ARCADE.easyAsked=1;\n       r=easyStartAsk();\n       if(!r||!ARCADE.easyAsk) return \u0027no card after a new run\u0027;\n       if(ARCADE.easy) return \u0027the new run did not start on normal\u0027;\n       ARCADE.on=0; ARCADE.easyAsk=null;\n       if(easyStartAsk()||ARCADE.easyAsk) return \u0027card shown outside the demo\u0027;\n       return null;\n     } finally { ARCADE.on=on0; ARCADE.solo=so0; ARCADE.easy=e0; ARCADE.easyAsk=a0; ARCADE.easyAsked=k0; } }},"
+}

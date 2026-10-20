@@ -1,0 +1,12 @@
+{
+    "title":  "THE F1 CONTROLS HINT HAS A PLATE",
+    "why":  "The critic named the f1 controls hint as dim grey text over a busy map with no plate. It now sits on the HUD plate in the quiet grey text colour.",
+    "now":  "The f1 controls hint is on a plate and reads on any ground.",
+    "edits":  [
+                  {
+                      "anchor":  "ctx.fillText(legendKeys(\u0027F1\u0027)+\u0027  controls\u0027,14,_hy);",
+                      "replacement":  "{ var _f1t=legendKeys(\u0027F1\u0027)+\u0027  controls\u0027, _f1w=Math.round(ctx.measureText(_f1t).width+LH(16)); /* v28.xx (cw-f1plate), the critic (2026-10-19): the f1 controls hint is dim grey over a busy map with no plate. It sits on the HUD plate in the quiet grey text colour. */ hudPlate(8,Math.round(_hy-LH(14)),_f1w,LH(22),null,HUDC.plate); ctx.fillStyle=UIC.tx_2; ctx.fillText(_f1t,16,_hy); }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the f1 controls hint sits on a plate: a plate fill is drawn right before the words\u0027,\n   run:function(){\n     if(typeof __frame!==\u0027function\u0027) return \u0027SKIP: no frame helper\u0027;\n     var PR=CanvasRenderingContext2D.prototype, of=PR.fillText, ofl=PR.fill, pn=(function(){ var c=document.createElement(\u0027canvas\u0027).getContext(\u00272d\u0027); c.fillStyle=HUDC.plate; return String(c.fillStyle); })(), g=null, seen=0, plated=0, lastFill=false;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player) return \u0027SKIP: no raid\u0027;\n       g.legendOn=0;\n       PR.fill=function(){ lastFill=(String(this.fillStyle)===pn); return ofl.apply(this,arguments); };\n       PR.fillText=function(s){ var t=String(s).toLowerCase(); if(/controls$/.test(t)\u0026\u0026/f1/.test(t)){ seen++; if(lastFill) plated++; } lastFill=false; return of.apply(this,arguments); };\n       __frame(); __frame();\n       PR.fillText=of; PR.fill=ofl;\n       if(!seen) return \u0027SKIP: no f1 controls hint drawn\u0027;\n       if(plated\u003cseen) return \u0027the f1 controls hint is bare text, drawn with no plate under it (\u0027+plated+\u0027 of \u0027+seen+\u0027)\u0027;\n       return null;\n     } finally {\n       PR.fillText=of; PR.fill=ofl;\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}

@@ -68,6 +68,13 @@ while true; do
   if [ "$(get backup_day)" != "$(date +%F)" ]; then put backup_day "$(date +%F)"; bash "$R/tools/itch-daily.sh" >> "$LOG" 2>&1; fi
   ram=$(freegb); [ -z "$ram" ] && ram=0
   rf=$(grep -m1 "^RAM_FLOOR_GB=" "$R/tools/handoff/console/caps.txt" 2>/dev/null | cut -d= -f2 | tr -dc "0-9"); rf=${rf:-6}
+  # 10-19 night: the main PC lends this VM extra memory from 23:00 and takes it back from 06:00 (tools/migrate/host-night-memory.ps1, his answer
+  # 45 a). From 05:30 to 06:30, while the VM holds more than its 10 GB day size, start nothing new, so running work ends and the memory can go back.
+  hm=$((10#$(date +%H%M)))
+  if [ "$hm" -ge 530 ] && [ "$hm" -lt 630 ]; then
+    tg=$(powershell -NoProfile -Command "[int]((Get-CimInstance Win32_OperatingSystem).TotalVisibleMemorySize/1MB)" 2>/dev/null | tr -dc '0-9')
+    [ "${tg:-0}" -gt 10 ] && ram=0
+  fi
   if [ "$ram" -ge "$rf" ]; then
     # (1) the fuzzer, back to back
     #     10-19 VM: it gets the same floor (its own default of 5 GB made every run in the 10 GB VM quit at once with "low RAM")

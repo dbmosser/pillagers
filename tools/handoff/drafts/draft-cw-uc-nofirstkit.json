@@ -1,0 +1,12 @@
+{
+    "title":  "Stash first-raid strip is gone",
+    "why":  "UI step 7 (restyle only). The critic named the lime first-raid strip as an explaining sentence in the stash bottom stack; Q8 lets it go with the reason logged.",
+    "now":  "The stash no longer shows the first-raid tip strip.",
+    "edits":  [
+                  {
+                      "anchor":  "#root #codexmodal .cxt .cxnew{ font-size:16px; }",
+                      "replacement":  "#root #codexmodal .cxt .cxnew{ font-size:16px; }\n/* v28.xx (cw-uc-nofirstkit) b-31 step 7, critic on 04 (P0 \"bottom stack\", delete the lime first-raid strip, an explaining sentence; Q8). The strip stays in the page but never shows. */\n#root #hub #firstkit{ display:none !important; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the stash first-raid strip never shows\u0027,\n   run:function(){\n     var bad=[];\n     try{\n       var f=document.getElementById(\u0027firstkit\u0027);\n       if(!f) bad.push(\u0027no firstkit node\u0027); else {\n         f.style.display=\u0027\u0027;\n         if(getComputedStyle(f).display!==\u0027none\u0027) bad.push(\u0027first-raid strip displays as \u0027+getComputedStyle(f).display); }\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

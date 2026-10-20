@@ -1,0 +1,7 @@
+v32.14: the f1 controls hint has a plate
+
+The f1 controls hint is on a plate and reads on any ground.
+
+Check 32.14. Fails on v32.13.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
