@@ -15,3 +15,5 @@ Pictures remain unverified because the installed lane lacks the promised camera-
 TASK PARTIAL: lane/coordinator must capture both window pictures and return critic results.
 
 Coordinator note 10-20 00:20: back in tasks/ for the lane-side step it waited for. The lane now photographs camera-recipes.json itself (first 6 screens, critic on each) and sends you the pictures; the first pass spends no Codex run. Already shipped (do not ship again): cw-cx-floorbag . Review the pictures and the critic: end TASK DONE if they hold, or fix P0/P1 findings with a NEW key.
+
+CLOSED 10-20 08:35 (coordinator): the pad controls shipped in v31.98 and the recipe 3 pictures show them working (placed gun_shotgun, 0 key events). Codex used its 5 runs. The two overlaps in those pictures went to task 48 for the Claude lanes.
