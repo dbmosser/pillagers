@@ -93467,28 +93467,27 @@ window.__REGRESS=[
      var keep={runs:P2.runs,ext:P2.ext,kills:P2.kills,spClaimed:P2.spClaimed,xpLevel:P2.xpLevel};
      P2.runs=999; P2.ext=999; P2.kills={warden:9}; P2.xpLevel=99;
      P2.spClaimed=[]; for(var sc=0;sc<((typeof SEASON_TIERS!=='undefined')?SEASON_TIERS.length:0);sc++) P2.spClaimed.push(sc);
-     function unearn(){ P2.runs=keep.runs; P2.ext=keep.ext; P2.kills=keep.kills; P2.spClaimed=keep.spClaimed; P2.xpLevel=keep.xpLevel; }
+     var keepAll=P2.cosAll; P2.cosAll=true;   /* v32.83 (49-corpus-figure-art): the wardrobe's own unlock-all switch, as 28.16 uses; the earn values above no longer unlock every hat */
+     function unearn(){ if(keepAll===undefined) delete P2.cosAll; else P2.cosAll=keepAll; P2.runs=keep.runs; P2.ext=keep.ext; P2.kills=keep.kills; P2.spClaimed=keep.spClaimed; P2.xpLevel=keep.xpLevel; }
      // The head of the operator sprite, read off the world canvas after a real
      // frame. Each headgear must change those pixels against Bare; on v9.99
      // the four new ids fell through every branch and drew nothing.
      var cvs=(window.__canvases&&__canvases().world)||document.getElementById('cv');
      var wctx=cvs.getContext('2d');
      function headPixels(){
-       for(var f=0;f<3;f++) __frame(0.016);
-       // Where he actually draws: his world position less the camera, which
-       // leads him. Measured at 1026,900 on a 1920x1080 frame, head at 865.
-       var sx=Math.round(p.x-(g.camX||0)), sy=Math.round(p.y-(g.camY||0));
-       /* v32.64 (cw-figlook): the figure is 1.25 times as big and the head 1.2 times on top, so the hat now reaches past 90 px above the feet; the window is 80x170 */
-       /* the hero sits near the middle of the frame (the camera follows him), and world units are not screen pixels once the game zooms, so look at a wide middle window */
-       return wctx.getImageData(Math.max(0,Math.round(cvs.width/2)-160),Math.max(0,Math.round(cvs.height/2)-260),320,360).data;
+       /* v32.83 (49-corpus-figure-art): paint the hero figure (hero:1, so the hat comes off the wardrobe rack) on its own canvas, the way 28.16 does; the live frame no longer lands where a fixed window looks */
+       var cv2=document.createElement('canvas'), x2, kw=wc;
+       cv2.width=240; cv2.height=240; x2=cv2.getContext('2d'); wc=x2;
+       try{ x2.translate(120,200); x2.scale(3,3); drawOp(0,0,0,0,'#242832',0,0,'none',0,{hero:1,own:{wep:null}}); } finally { wc=kw; }
+       return x2.getImageData(0,0,240,240).data;
      }
      function diff(a,b){ var d=0; for(var i=0;i<a.length;i+=4) if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])>40) d++; return d; }
-     P2.cosHat='none'; var bare=headPixels();
+     P2.cosHat='none'; var bare=headPixels(), bare2=headPixels(), noise=diff(bare,bare2);
      var hats=COSMETICS.filter(function(c){ return c.kind==='hat'&&c.id!=='none'; }), flat=[], drawn=0;
      for(var i=0;i<hats.length;i++){
        P2.cosHat=hats[i].id;
        var px=headPixels(), d=diff(px,bare);
-       if(d<6) flat.push(hats[i].id+' ('+d+' px)'); else drawn++;
+       if(d<noise+6) flat.push(hats[i].id+' ('+d+' px, noise '+noise+')'); else drawn++;
      }
      P2.cosHat=keepHat; unearn();
      if(!drawn) return 'SKIP: no headgear changed the sprite at all, so the hero is not where this check looks';
