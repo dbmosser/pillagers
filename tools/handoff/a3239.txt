@@ -1,0 +1,1 @@
+| CALLING AN EXTRACTION FOLDS THE CONTROLS LIST | v32.39 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 32.39 passes, fails on v32.38 |

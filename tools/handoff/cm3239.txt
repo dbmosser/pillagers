@@ -1,0 +1,7 @@
+v32.39: calling an extraction folds the controls list
+
+The compact controls list folds once when an extraction is called.
+
+Check 32.39. Fails on v32.38.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

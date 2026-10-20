@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.39 - CALLING AN EXTRACTION FOLDS THE CONTROLS LIST
+
+Co-op hunt while he was away. Critic on screen 37: the compact controls list sat across the big extract countdown. It now folds once when an extraction is called (F1 opens it again).
+
+MEASURED. Check 32.39 passes, and fails on v32.38.
 ## v32.38 - THE WHAT IS NEW CARD NAMES POLISH PASS 35
 
 Co-op hunt while he was away. The card was stamped v32.37 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.

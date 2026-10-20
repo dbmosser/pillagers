@@ -6101,6 +6101,27 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.39',what:'calling an extraction folds the compact controls list so it cannot cover the countdown (critic 37)',
+   run:function(){
+     if(typeof legendAuto!=='function') return 'no legendAuto';
+     if(!window.__deploy||!window.__endRaid) return 'SKIP: no raid in this fixture';
+     var bad=[], r0=P.runs, oSay=say, g=null;
+     try{
+       say=function(){};
+       P.runs=0; __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over) return 'SKIP: staging: no raid';
+       g.legendOn=1; g.legendAutoDone=false; g.legendExtDone=false; g.beaconT=null; legendAuto(5);
+       if(g.legendOn!==1) bad.push('folded with no extraction called');
+       g.beaconT=12; legendAuto(5);
+       if(g.legendOn!==0) bad.push('still open with an extraction called');
+       g.legendOn=1; legendAuto(6);
+       if(g.legendOn!==1) bad.push('folded a second time (F1 open must stay open)');
+       g.beaconT=null;
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ say=oSay; P.runs=r0; try{ if(G&&!G.over) __endRaid('abandon'); __topClear(); }catch(_c){} }
+     return bad.length?bad.join('; '):null;
+   }},
   {v:'32.38',what:'the what is new card is stamped within 0.15 of the build and leads with the new news shown whole',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';

@@ -1,0 +1,21 @@
+{
+  "note": "coordinator 10-20: the easy or normal card in the demo (2.28 c) and the career offer after three deaths in a row (2.90 b), for task 17-party-easy-mode's pictures (his 2.86 a). One window each; the demo card is forced on in a 1 player demo (easyStartAsk skips solo runs).",
+  "screens": [
+    {
+      "name": "17-demo-easy-card",
+      "screen": "Demo run start: the easy or normal card (Y or A easy, N or B normal)",
+      "before": "click #modearcade1; KeyK to drop; wait 3 s; ARCADE.solo=0 and easyStartAsk(); wait 1 s",
+      "query": "",
+      "expect": "__gx('easyLive()')",
+      "js": "U.click('#modearcade1'); await U.wait(2500); await U.key('KeyK'); await U.wait(3000); if(!U.raid()) return 'SKIP: the arcade drop did not start a raid'; __gx('ARCADE.solo=0; easyStartAsk()'); await U.wait(1000);"
+    },
+    {
+      "name": "17-career-easy-card",
+      "screen": "Career raid after three deaths in a row: the Forgiving offer card",
+      "before": "career deploy (seed 4242, map 0); P.dieRun=3, CFG.eDmg=1; easyCareerAsk(G); wait 1 s",
+      "query": "",
+      "expect": "__gx('easyLive()&&!!G.carAsk')",
+      "js": "U.dep({kit:[],seed:4242,mapIx:0}); await U.wait(2500); __gx('P.dieRun=3; CFG.eDmg=1; easyCareerAsk(G)'); await U.wait(1000);"
+    }
+  ]
+}

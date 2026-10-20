@@ -1,1 +1,1 @@
-10-20 01:18 19-party-audio: done, $0.1321164
+10-20 01:23 waiting for RAM: 2 GB free, a helper starts at 3; 20-party-rig-perf kept

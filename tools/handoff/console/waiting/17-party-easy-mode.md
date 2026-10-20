@@ -10,3 +10,5 @@
 - Read the code first. Some of these are already in the game: confirm each one with a check, and do not rebuild it.
 - Ship in small pieces, one ship per item or a few related ones. Each ship needs a check that fails on the old build, and the fingerprint must hold. For 2-player items, it is done only when you have seen it work in both windows, with a picture from each (his 2.86 a).
 - Write in plain language, with no explaining sentences on screen. All lower case.
+
+Coordinator note 10-20 01:30 (in the VM): every build of this job shipped (3.16 b v32.07, 2.28 c v32.15, 2.90 b v32.23, 2.47 c v32.31). Only the pictures were left, and the camera had no stage for the two cards; the coordinator wrote one (tools/handoff/shots/easy-cards-recipes.json: 17-demo-easy-card, 17-career-easy-card) and photographs them into notes/shots/17-easy-cards/ when memory allows. Parked in waiting/ (no more helper runs); the coordinator closes it after looking at the pictures.
