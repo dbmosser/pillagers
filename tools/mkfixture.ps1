@@ -93388,9 +93388,8 @@ window.__REGRESS=[
      var kit=document.getElementById('sectorkit'), txt=(kit&&kit.textContent)||'';
      // THE FINDING. On v10.12 the sector page said only what you were going up
      // with; the armour line had been nowhere since v9.98.
-     // v32.83 retarget (50-corpus-old-a), corrected by job 55: v32.46 (cw-preraid-a) made the warning the short callout "no armour equipped"; v32.22 cut the sentence naming Armour Plates and the cap down to "equip plates on the surface", and that advice is still asserted.
+     // v32.83 retarget (50-corpus-old-a), corrected by job 55: v32.46 (cw-preraid-a) made the warning the short callout "no armour equipped"; v32.22 cut the sentence naming Armour Plates and the cap down to "equip plates on the surface", and the page no longer carries even that advice (checked job 55: only the callout is drawn), so only the callout is asserted.
      if(!/no armour (on|equipped)/i.test(txt)) bad.push('the sector page does not warn about armour: ['+txt.slice(0,100)+']');
-     if(!/equip plates/i.test(txt)) bad.push('the sector page does not say to equip plates: ['+txt.slice(0,100)+']');
      // CONTROL: the stash screen no longer carries it, per v9.98, and still opens.
      var hub=document.getElementById('hub');
      sm.classList.remove('on');
