@@ -1,1 +1,1 @@
-10-20 09:00 running 48-hub-bag-pad-overlaps on Claude Code (your plan: week 58% of the 28.3% line, 5-hour 10%)
+10-20 09:56 running 51-corpus-old-b on Claude Code (your plan: week 58% of the 28.8% line, 5-hour 2%)

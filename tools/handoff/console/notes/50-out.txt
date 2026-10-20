@@ -1,0 +1,16 @@
+8.66: the bar is not the shape this check assumes (a gun in hand, a Medical key, an empty key and one more ordinary key), so it is testing nothing
+8.65: picking the stowed gun did not bring it up
+8.58: PASS
+8.91: legend at 1920x1080 is 411 wide, under 1.4x its old share of the screen; legend at 2560x1440 is 549 wide, under 1.4x its old share of the screen; legend at 3840x2160 is 823 wide, under 1.4x its old share of the screen
+8.96: threw TypeError: Cannot read properties of undefined (reading 'x')
+9.13: control: the 1080p panel changed to 830x477, it was 1194x435
+9.14: no map heading was found at 1080p, so there is nothing to compare
+9.15: the map frame was not found at 1080p, so there is nothing to compare
+9.26: threw TypeError: Cannot read properties of undefined (reading 'dmg')
+11.52: in the Undercroft: the readout does not say which figure is which ("$4,471,33798,761 XP STASH 0 BAG 120"); in a raid: the readout does not say which figure is which ("$4,471,33798,761 XP STASH 0 BAG 120")
+13.26: a player who has never raided either map: COLD STORAGE does not give the extract rate for that map in his words, ending "of its raids in Cold Storage."; a player who has never raided either map: THE COLD MILE does not give the extract rate for that map in his words, ending "of its raids in The Cold 
+11.29: the sector screen shows figures without saying they are the test robots; map 0 shows a different extract figure from the code, which says 39.2
+10.13: the sector page does not warn about armour: [gunCompact SMGNO ARMOUR EQUIPPED]; the sector page does not say to equip Armour Plates; the sector page does not state the armour cap
+10.05: neither button is drawn as chosen
+9.97: the buttons read [day] and [night+20%]; after NIGHT the two buttons look the same, so the choice is not shown
+ALL DONE

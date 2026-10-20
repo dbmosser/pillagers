@@ -57,6 +57,11 @@ summary(){
 }
 echo "$(date '+%m-%d %H:%M') always-on runner started (pid $$)" >> "$LOG"
 llm_ok(){   # see (3) below
+  # 10-20 10:00, his note "i am experiencing some glitching and slowdowns on the main PC -- is there a way to reduce load when I am at the
+  # PC?": the model loads onto his graphics card (about 9 GB), so it runs only while he is away. atp is set in the loop from gaming.txt:
+  # 1 = he used the main PC in the last 10 minutes, 0 = away, empty = the main PC's check does not say yet (then night only, 23:00 to 07:00).
+  if [ "$atp" = 1 ] || [ "$isg" = 1 ]; then return 1; fi
+  if [ -z "$atp" ]; then local h; h=$((10#$(date +%H))); { [ "$h" -ge 23 ] || [ "$h" -lt 7 ]; } || return 1; fi
   local u; u=$(powershell -NoProfile -Command "[Environment]::GetEnvironmentVariable('PILLAGERS_OLLAMA_URL','User')" 2>/dev/null | tr -d '\r')
   if [ -z "$u" ]; then [ "$ram" -ge 20 ]; return; fi
   curl -s -m 5 "$u/api/tags" 2>/dev/null | grep -q '"models"' || return 1
@@ -84,6 +89,15 @@ while true; do
     ck=$(printf '%s\n' "$gm" | sed -n 's/^checked=//p' | head -1); cks=$(date -d "$ck" +%s 2>/dev/null || echo 0)
     [ $(( $(date +%s) - cks )) -lt 600 ] && isg=1
   fi
+  # 10-20 10:00 (his "reduce load when I am at the PC"): the check also writes atpc=1 when the main PC had keyboard or mouse input in the last
+  # 10 minutes. Then the long jobs that draw on his graphics card (the full test run's browser, the robots) and the local AI start nothing
+  # new; the helpers go on (the main PC holds the VM to -AtPcCpuPct of its processors). A stale or missing line leaves atp empty.
+  atp=$(printf '%s\n' "$gm" | sed -n 's/^atpc=//p' | head -1 | tr -dc '01')
+  if [ -n "$atp" ]; then ck=$(printf '%s\n' "$gm" | sed -n 's/^checked=//p' | head -1); cks=$(date -d "$ck" +%s 2>/dev/null || echo 0)
+    [ $(( $(date +%s) - cks )) -lt 600 ] || atp=""; fi
+  if [ "$atp" = 1 ] && [ $isg = 0 ]; then
+    ram=0; [ "$(get atpc)" = 1 ] || { put atpc 1; echo "$(date +%H:%M) he is at the main PC: no new full test run, robots or local AI" >> "$LOG"; }
+  elif [ "$(get atpc)" = 1 ] && [ "$atp" != 1 ]; then put atpc 0; echo "$(date +%H:%M) he left the main PC: long jobs may start again" >> "$LOG"; fi
   if [ $isg = 1 ]; then
     ram=0; [ "$(get gaming)" = 1 ] || { put gaming 1; echo "$(date +%H:%M) he is playing on the main PC ($(printf '%s\n' "$gm" | sed -n 's/^what=//p' | head -1)): nothing new starts" >> "$LOG"; }
   elif [ "$(get gaming)" = 1 ]; then put gaming 0; echo "$(date +%H:%M) he stopped playing: new work starts again" >> "$LOG"; fi

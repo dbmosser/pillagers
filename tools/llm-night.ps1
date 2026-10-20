@@ -92,4 +92,8 @@ for($s=0;$s -lt $lines.Count;$s+=$Chunk){
   "$(Get-Date -Format 'HH:mm') code chunk $([int]($s/$Chunk)+1) of $([math]::Ceiling($lines.Count/$Chunk))" | Add-Content $log
 }
 }
+# 10-20 (his "glitching and slowdowns on the main PC"): the model sits on his graphics card for 5 minutes after the last answer unless told
+# otherwise. Hand the memory back at once (keep_alive 0 unloads it; asks nothing of the model).
+try{ Invoke-RestMethod -Uri $api -Method Post -Body (@{ model=$Model; keep_alive=0 } | ConvertTo-Json) -ContentType 'application/json' -TimeoutSec 60 | Out-Null
+     "$(Get-Date -Format 'HH:mm') model unloaded from the main PC's graphics card" | Add-Content $log }catch{}
 "$(Get-Date -Format 'MM-dd HH:mm') done" | Add-Content $log

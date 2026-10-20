@@ -1,0 +1,12 @@
+19.64: the CACHE tag was moved down to y 339, onto its marker, with room beside it
+19.10: the use bar panel (bottom 749) runs into the EXTRACT INBOUND line (top 733)
+18.78: termsmodal text lines are capped at 1400px; barmodal text lines are capped at 1400px
+18.69: COLD STORAGE: blast freezer prints into foreman office; COLD STORAGE: blast freezer prints into chill row; COLD STORAGE: blast freezer prints into exit b; COLD STORAGE: foreman office prints into chill row
+18.25: the stash idle text does not say how to hand an item over while linked
+18.03: the fog sheet is thin behind him (alpha 36 against 0 where he stands)
+18.01: a minute of slow frames stopped at 0.75, not at Low; the canvas did not shrink (1886 to 1414)
+17.82: the zone names are not 11 px
+16.65: the PARTY window does not say the party ascends into the same raid
+16.13: with a tally of 5 and 30 runs of the replaced character left in the log the card reads "COLD STORAGEASCENDING HERE420 x 340 m ú 5 zones ú 2 keyed rooms ú 3 ex"
+15.86: the sector page lays out 2 sector cards and 0 of them are in reach of the pad, while NIGHT on the same page is; the highlight put on the card for THE COLD MILE would not stay there: one idle poll moved it to "night+20%"; with the highlight put on the card for THE COLD MILE, A left the ascent set for
+ALL DONE

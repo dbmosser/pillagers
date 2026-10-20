@@ -1,0 +1,4 @@
+8.65: PASS
+9.14: DIAG 1080p 171x34 4k 343x69 dbg 1,1920,96,29,54,77,125,518,54,77,1,171,25,58; control: the 1080p map heading changed to 171x34, it was 326x16 (237x16 in Barlow Condensed)
+9.15: PASS
+ALL DONE

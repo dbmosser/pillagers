@@ -1,0 +1,12 @@
+19.64: PASS
+19.10: the use bar panel (bottom 749) runs into the EXTRACT INBOUND line (top 733)
+18.78: PASS
+18.69: COLD STORAGE: blast freezer prints into foreman office; COLD STORAGE: blast freezer prints into exit b; COLD STORAGE: foreman office prints into exit b; COLD STORAGE: the long dock prints into exit c
+18.25: PASS
+18.03: PASS
+18.01: PASS
+17.82: PASS
+16.65: PASS
+16.13: PASS
+15.86: SKIP: v32.45 design A draws the one offered sector as a header and a map with no card box (display:contents), so a pad has no second card to pick; alarm logged 2026-10-20
+ALL DONE

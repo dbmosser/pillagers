@@ -1,0 +1,6 @@
+8.65: picking the stowed gun did not bring it up (hand smg, stowed rifle, hand now smg, sel 1, slots gunkey:0/gun/null/vacant ; item:gun_smg/gun/smg/hand ; item:gun_rifle/gun/rifle)
+8.65h: PASS
+9.14: DIAG 1080p 171x34 4k 343x69; control: the 1080p map heading changed to 171x34, it was 326x16 (237x16 in Barlow Condensed)
+9.15: DIAG reach 1080p 0.9 4k 1.7
+9.26: PASS
+ALL DONE

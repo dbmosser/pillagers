@@ -1,0 +1,2 @@
+18.69: COLD STORAGE: blast freezer [838,-174,919,426] prints into foreman office [818,-392,912,208]; COLD STORAGE: blast freezer [838,-174,919,426] prints into exit b [901,-37,937,563]; COLD STORAGE: foreman office [818,-392,912,208] prints into exit b [901,-37,937,563]; COLD STORAGE: the long dock [431,80
+ALL DONE

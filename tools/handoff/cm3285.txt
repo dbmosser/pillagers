@@ -1,0 +1,7 @@
+v32.85: the use bar clears the countdown plate
+
+While extraction is inbound the use bar stands above the countdown plate, not across it.
+
+Check 32.85. Fails on v32.84.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

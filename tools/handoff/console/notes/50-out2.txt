@@ -1,0 +1,16 @@
+8.66: PASS
+8.65: picking the stowed gun did not bring it up (hand smg, stowed fists, hand now smg, sel 1, slots gunB/gun/fists ; item:gun_smg/gun/smg/hand ; gunkey:2/gun/null/vacant)
+8.58: PASS
+8.91: PASS
+8.96: PASS
+9.13: PASS
+9.14: DIAG 1080p 171x34 4k 343x69; control: the 1080p map heading changed to 171x34, it was 326x16 (237x16 in Barlow Condensed)
+9.15: DIAG reach 1080p 0.9 4k 1.7
+9.26: SKIP: a round landed, which is the v9.25 case, not this one
+11.52: PASS
+13.26: PASS
+11.29: PASS
+10.13: PASS
+10.05: PASS
+9.97: PASS
+ALL DONE
