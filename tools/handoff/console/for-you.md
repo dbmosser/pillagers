@@ -1,1 +1,1 @@
-One step on the MAIN PC (about a minute): press Windows+R, paste %LOCALAPPDATA%\PillagersBridge\share\night-memory-setup.cmd and press Enter, then click Yes. Then while you use the main PC the VM takes half its processors and starts no big test run, robot or local AI on your graphics card; when you step away for 10 minutes it gets everything back.
+Nothing for you to do right now. (10-20 12:20: the main PC setup is done and working.)
