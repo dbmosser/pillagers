@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.44 - AUTO RESOLUTION STOPS AT 75 PERCENT
+
+Co-op hunt while he was away. His answer 2.44 b: the quality ladder may drop effects, but never picture sharpness below 75 percent. The auto step used to go down to 50 percent. Now it stops at 75 percent, in steps of 5.
+
+MEASURED. Check 32.44 passes, and fails on v32.43.
 ## v32.43 - CLEAR FORGE CHOICES AND RECEIPT
 
 Co-op hunt while he was away. The forge needed separation from the raid HUD, readable effect words and a receipt with a stable home.

@@ -40,3 +40,8 @@ TASK DONE when shipped and the checks pass; TASK PARTIAL with what is left.
 Coordinator note 10-20 00:20: back in tasks/ for the lane-side step it waited for. The lane now photographs camera-recipes.json itself (first 6 screens, critic on each) and sends you the pictures; the first pass spends no Codex run. Already shipped (do not ship again): cw-cx-stashraid . Review the pictures and the critic: end TASK DONE if they hold, or fix P0/P1 findings with a NEW key.
 
 Coordinator note 10-20 00:58 (in the VM): back in tasks/ for the picture step only (your run count was reset once). Done already: cw-cx-stashraid shipped, and your fixture retarget is applied (633e412e, checks 26.21 26.25 28.94 29.26 31.83 all PASS). The lane's recipe round 1 staged 05-sector-page, but the three forge screens threw "Cannot set properties of undefined (setting 's')": the recipe set G.cs.s=0 in a career raid, where G.cs does not exist. The coordinator changed it to if(G.cs)G.cs.s=0; in forge-camera-recipes.json and prepare-forge-camera.js (backups *.bak-1020). The lane photographs them again on its first pass (no Codex run spent). Then review the pictures and the critic: end TASK DONE if they hold, or fix P0/P1 findings with a NEW key.
+
+Lane note 2026-10-20 01:43: shipped cw-cx-stashraid cw-cx-forgeread cw-cx-forgefinish and parked: only lane-side steps are left. Codex's last words:
+All changes shipped in v32.43. Checks pass; forge views scored 3/3/3 with no lint findings.
+
+TASK PARTIAL: coordinator must verify independent stash payments in both real player windows and provide a picture from each.

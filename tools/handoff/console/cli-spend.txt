@@ -254,3 +254,12 @@
 2026-10-20 0.1542 critic-manual
 2026-10-20 0.3183193999999999 c-02-raid-hud-redesign
 2026-10-20 0.1606862 c-02-raid-hud-redesign
+2026-10-20 0.1666 critic-o-01-stash-pays-in-raid
+2026-10-20 0.1556 critic-o-01-stash-pays-in-raid
+2026-10-20 0.1563 critic-o-01-stash-pays-in-raid
+2026-10-20 0.1607 critic-o-01-stash-pays-in-raid
+2026-10-20 0.0000 o-01-stash-pays-in-raid
+2026-10-20 0.1579 critic-o-04-camera-closer
+2026-10-20 0.1608 critic-o-04-camera-closer
+2026-10-20 0.1604 critic-o-04-camera-closer
+2026-10-20 0.1582 critic-o-04-camera-closer

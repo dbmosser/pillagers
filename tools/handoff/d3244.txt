@@ -1,0 +1,5 @@
+## v32.44 - AUTO RESOLUTION STOPS AT 75 PERCENT
+
+Co-op hunt while he was away. His answer 2.44 b: the quality ladder may drop effects, but never picture sharpness below 75 percent. The auto step used to go down to 50 percent. Now it stops at 75 percent, in steps of 5.
+
+MEASURED. Check 32.44 passes, and fails on v32.43.

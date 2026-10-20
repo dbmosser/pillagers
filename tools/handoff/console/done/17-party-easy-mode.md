@@ -12,3 +12,5 @@
 - Write in plain language, with no explaining sentences on screen. All lower case.
 
 Coordinator note 10-20 01:30 (in the VM): every build of this job shipped (3.16 b v32.07, 2.28 c v32.15, 2.90 b v32.23, 2.47 c v32.31). Only the pictures were left, and the camera had no stage for the two cards; the coordinator wrote one (tools/handoff/shots/easy-cards-recipes.json: 17-demo-easy-card, 17-career-easy-card) and photographs them into notes/shots/17-easy-cards/ when memory allows. Parked in waiting/ (no more helper runs); the coordinator closes it after looking at the pictures.
+
+Coordinator note 10-20 01:45: CLOSED as done. Pictures in notes/shots/17-easy-cards/ (lint 0 on both): the demo card and the career card both show "want easy mode?" with "y yes . n no . 11" (it shows "a yes . b no" when a pad was used last). Two polish points for a later UI pass, not blocking: the answer line is the micro type size in a big mostly empty card (hard to read from a couch), and the card covers the lower top callout ("stronghold . 2 on the map").

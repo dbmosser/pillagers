@@ -1,0 +1,12 @@
+{
+    "title":  "AUTO RESOLUTION STOPS AT 75 PERCENT",
+    "why":  "His answer 2.44 b: the quality ladder may drop effects, but never picture sharpness below 75 percent. The auto step used to go down to 50 percent. Now it stops at 75 percent, in steps of 5.",
+    "now":  "Auto resolution never drops the picture under 75 percent.",
+    "edits":  [
+                  {
+                      "anchor":  "bounce:0,upAt:0,said:0,min:0.5,step:0.1,moves:0,q:0,qa:0};",
+                      "replacement":  "bounce:0,upAt:0,said:0,min:0.75,step:0.05,moves:0,q:0,qa:0};   // v32.xx (cw-drsfloor), HIS ANSWER 2.44 b (round 2): the quality ladder may drop effects but never picture sharpness below 75 percent. Floor 0.5 to 0.75; step 0.1 to 0.05 so the auto step still has rungs to use"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027auto resolution never steps the picture below 75 percent (his 2.44 b)\u0027,\n   run:function(){\n     if(typeof drsTick!==\u0027function\u0027||typeof DRS!==\u0027object\u0027) return \u0027SKIP: no drsTick\u0027;\n     var sv={scale:DRS.scale,ema:DRS.ema,slowT:DRS.slowT,fastT:DRS.fastT,last:DRS.last,bounce:DRS.bounce,upAt:DRS.upAt,said:DRS.said,moves:DRS.moves,q:DRS.q}, sa=CFG.gfxAuto, lo=1, i, t=100000;\n     try{\n       CFG.gfxAuto=1; DRS.scale=1; DRS.ema=0; DRS.slowT=0; DRS.fastT=0; DRS.last=0; DRS.q=3; DRS.said=1;\n       for(i=0;i\u003c4000;i++){ t+=40; drsTick(40,t); if(DRS.scale\u003clo) lo=DRS.scale; }\n     } finally { for(var k in sv) DRS[k]=sv[k]; CFG.gfxAuto=sa; }\n     if(lo\u003e=1-1e-6) return \u0027the ladder never stepped the scale (check is blind)\u0027;\n     if(lo\u003c0.75-1e-6) return \u0027auto resolution fell to \u0027+lo+\u0027, under 0.75\u0027;\n     return null; }},"
+}

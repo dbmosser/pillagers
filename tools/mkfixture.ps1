@@ -6101,6 +6101,17 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.44',what:'auto resolution never steps the picture below 75 percent (his 2.44 b)',
+   run:function(){
+     if(typeof drsTick!=='function'||typeof DRS!=='object') return 'SKIP: no drsTick';
+     var sv={scale:DRS.scale,ema:DRS.ema,slowT:DRS.slowT,fastT:DRS.fastT,last:DRS.last,bounce:DRS.bounce,upAt:DRS.upAt,said:DRS.said,moves:DRS.moves,q:DRS.q}, sa=CFG.gfxAuto, lo=1, i, t=100000;
+     try{
+       CFG.gfxAuto=1; DRS.scale=1; DRS.ema=0; DRS.slowT=0; DRS.fastT=0; DRS.last=0; DRS.q=3; DRS.said=1;
+       for(i=0;i<4000;i++){ t+=40; drsTick(40,t); if(DRS.scale<lo) lo=DRS.scale; }
+     } finally { for(var k in sv) DRS[k]=sv[k]; CFG.gfxAuto=sa; }
+     if(lo>=1-1e-6) return 'the ladder never stepped the scale (check is blind)';
+     if(lo<0.75-1e-6) return 'auto resolution fell to '+lo+', under 0.75';
+     return null; }},
   {v:'32.43',what:'forge choices have a full-screen scrim, one close target, readable effects, neutral current tier and dollar prices; purchase receipt has readable cost and docks above the hotbar',
    run:function(){
      if(typeof gunCardMetrics!=='function')return 'forge finish not installed';

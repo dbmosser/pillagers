@@ -3041,7 +3041,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.43';
+var VER='32.44';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -34172,7 +34172,7 @@ var RES_APPLIED, CAP_LAST=0;
 // frame gap against the frame budget (the Frame cap when one is set, 60 a second otherwise). Only real frames count: the worker
 // ticks of a covered window (v17.73) and hidden pages are left out at the call. The first step down says so once, so a
 // softer picture is never a mystery. The Render resolution row is a ceiling: Auto only ever goes below it.
-var DRS={scale:1,applied:1,ema:0,slowT:0,fastT:0,last:0,bounce:0,upAt:0,said:0,min:0.5,step:0.1,moves:0,q:0,qa:0};
+var DRS={scale:1,applied:1,ema:0,slowT:0,fastT:0,last:0,bounce:0,upAt:0,said:0,min:0.75,step:0.05,moves:0,q:0,qa:0};   // v32.xx (cw-drsfloor), HIS ANSWER 2.44 b (round 2): the quality ladder may drop effects but never picture sharpness below 75 percent. Floor 0.5 to 0.75; step 0.1 to 0.05 so the auto step still has rungs to use
 // v23.xx (gfx6), HIS ORDER (2026-10-12) on the graphics program: "add ALL of this stuff", item 11, and his answer 21 (b): 60 frames
 // a second also on a mid laptop at 1080p. THE QUALITY LADDER. Auto resolution had one lever: a slow stretch made the whole world
 // softer, while the costly extras kept drawing at full price. Now a slow stretch sheds the extras first, one rung a second, and
@@ -50391,7 +50391,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.43: The element picker has a scrim, one close control and readable choices. Upgrade receipts dock above the hotbar. Check 32.43 fails on v32.42',
+  now:'v32.44: Auto resolution never drops the picture under 75 percent. Check 32.44 fails on v32.43',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

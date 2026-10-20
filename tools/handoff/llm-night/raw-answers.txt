@@ -1,27 +1,9 @@
 
-This CSS code snippet appears to be styling for a web application, likely a game or interactive software with a dark theme. Here's a breakdown of the key elements and styles:
-
-1. **Color Variables**: The code uses CSS variables like `--bone`, `--ash`, `--amber`, etc., which are defined elsewhere in the stylesheet. These variables represent different colors used throughout the application.
-
-2. **Typography**:
-   - Fonts are set using custom properties (`var(--f-body)`) and specific font sizes.
-   - Text styles include uppercase transformations, letter spacing adjustments, and line heights for readability.
-
-3. **Layout and Grids**:
-   - The use of CSS Grid (e.g., `grid-template-columns:repeat(auto-fit,minmax(150px,1fr))`) allows for responsive layouts that adjust based on screen size.
-   - Flexbox is used in several places to align items within containers.
-
-4. **Buttons and Inputs**:
-   - Buttons have rounded corners, padding, and hover effects with background color changes and shadows.
-   - Input fields have dark backgrounds with a focus ring effect when active.
-
-5. **Modals and Windows**:
-   - Modals are styled with radial gradients for a glass-like appearance.
-   - Headers within modals use uppercase text and specific font sizes.
-
-6. **Specific Components**:
-   - The "run card" (`#ocwin`) has a gradient background, shadow effects, and hover animations.
-
+NONE
+NONE
+NONE
+NONE
+NONE
 NONE
 NONE
 NONE

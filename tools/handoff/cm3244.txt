@@ -1,0 +1,7 @@
+v32.44: auto resolution stops at 75 percent
+
+Auto resolution never drops the picture under 75 percent.
+
+Check 32.44. Fails on v32.43.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

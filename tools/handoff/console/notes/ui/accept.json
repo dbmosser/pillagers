@@ -33,17 +33,17 @@
  "05-sector-page": {
   "score": 2,
   "pass": false,
-  "verdict": "The new version is a little cleaner (the cash stepper and the explaining sentences about each setting are gone), but the screen is still a cramped form: a huge empty hero panel on top, a dozen small boxed controls below, and a pale-blue map that clashes with the palette.",
+  "verdict": "The new version drops the cash stepper and the three explaining sentences, so it is a little cleaner, but the screen is still a dense wall of identical bordered controls with a large dead area in the sector panel and a main button that outshouts everything.",
   "findings": [
-   "P0 cold storage hero panel (y 140-560): Cut the panel to about 240px, or put the loadout summary and the weather/surface choices inside it. Fill with --ui-panel/--ui-raised (#16191b/#1e2225). Remove the empty 50px strip below the panel. Enlarge the map to fill the right half, or drop the panel's wasted height.",
-   "P1 stat line under the title (y 213): Delete the test-robot clause. Show 3 short stat tags at 16px --tx-2, for example '5 zones', '2 keyed rooms', 'never raided'.",
-   "P1 pack / kit / weather / surface rows (y 570-840): Group into two cards on the 8px grid. Make the selected option a lime-filled chip with --acc-ink text and the rest quiet --tx-2 text. Put steppers in a fixed 4-column grid with 48px-high targets. Raise the row labels to 16px --tx-2 at a consistent baseline.",
-   "P1 going-up-with box (y 850-945): Use --warn (#f5b73b) with a small glyph for the armour warning, limited to 2-3 words ('no armour'). Cut 'your gun is in your stash. equip it first.' to a tag like 'gun in stash'. Keep the --acc colour only for the focus state and the main button.",
-   "P1 map thumbnail (x 1366-1784, y 150-490): Re-tint the map to --ui-raised with --ui-line-hi room outlines. Raise the zone labels to at least 14px (or hide them until hover). Add a 16px 'extract' legend in --extract. Use the 1px --ui-line-hi border and 4px radius."
+   "P0 sector card (cold storage), left half and the strip under it: Shrink the card to the map's height (~340px) and delete the empty strip below it. Fill the left side with 3 stat rows at fs-label 16 (size, zones, keyed rooms) as label/value pairs. Use --ui-panel with a 3px lime tab, not olive.",
+   "P0 pack section, two rows (y 735-835): Make the stepper tiles 160x64px in a fixed 4-column grid, aligned to the label column. Show the count at fs-body 20 in tx-1, the name at 16 in tx-2, and a single - / + pair. Remove the per-item 'max' (keep one 'pack all'). Drop the outer border per item.",
+   "P1 surface, weather and kit button rows: Idle buttons: --ui-line-hi border, tx-1 text, no lime. Selected: --acc fill with --acc-ink text. Keep a lime focus ring for pad focus only.",
+   "P1 'going up with' box: Reduce it to two compact chips: 'loadout: scav pistol' in tx-1 and '! no armour' in --warn (amber) at 16px. Delete the gun instruction and put the equip hint on the stash screen.",
+   "P1 'ascend to this sector' button: Use a 480x64px button centred or right-aligned, with the label at fs-title 32 in --acc-ink, and 24px of space above it. Keep one lime fill on the whole screen."
   ],
   "pic": "tools/handoff/console/notes/shots/o-01-stash-pays-in-raid-after/05-sector-page-1080.jpg",
   "task": "o-01-stash-pays-in-raid",
-  "when": "2026-10-20T05:27"
+  "when": "2026-10-20T05:40"
  },
  "06-terms": {
   "score": 3,

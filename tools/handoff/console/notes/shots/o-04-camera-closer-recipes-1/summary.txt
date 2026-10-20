@@ -1,0 +1,17 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  camera-career-p1                       NOT STAGED   4.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host did not open a real player 2 window: blocked
+    at stageCameraPair (<anonymous>:18:36)
+    at <anonymous>:118:14
+    at async <anonymous>:1:21
+  camera-career-p2                       NOT STAGED   4.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host popup blocked
+    at stageCameraPair (<anonymous>:23:22)
+    at <anonymous>:118:14
+    at async <anonymous>:1:21
+  camera-demo-p1                         NOT STAGED   4.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host did not open a real player 2 window: blocked
+    at stageCameraPair (<anonymous>:18:36)
+    at <anonymous>:118:14
+    at async <anonymous>:1:21
+  camera-demo-p2                         NOT STAGED   4.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host popup blocked
+    at stageCameraPair (<anonymous>:23:22)
+    at <anonymous>:118:14
+    at async <anonymous>:1:21
