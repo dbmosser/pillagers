@@ -10492,7 +10492,9 @@ window.__REGRESS=[
        }
        if(a&&a.offsetHeight>56.5) bad.push('abandon is '+a.offsetHeight+' menu pixels tall');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ try{ togglePauseBox(false); }catch(_t){} try{ var q=document.getElementById('settingsmodal'); if(q) q.classList.remove('on'); }catch(_k){} try{ __topClear(); }catch(_c){} document.body.classList.toggle('padon',padWas); }
+     // 10-20 (job 58b): end the raid this check deployed. Left live, it kept every Settings action button disabled (the _rOff rule),
+     // and a disabled button is boxed, so v31.67 read '1 idle steppers still boxed' (the Tuning console OPEN) after it in the full run.
+     finally{ try{ togglePauseBox(false); }catch(_t){} try{ var q=document.getElementById('settingsmodal'); if(q) q.classList.remove('on'); }catch(_k){} try{ __endRaid('abandon'); }catch(_e){} try{ __topClear(); }catch(_c){} document.body.classList.toggle('padon',padWas); }
      return bad.length?bad.join('; '):null; }},
   {v:'31.70',what:'the stash gun key and item wheel names are at the 16px label size and the build stamp is gone from the stash header',
    run:function(){
