@@ -1,1 +1,1 @@
-10-20 01:28 waiting for RAM: 2 GB free, a helper starts at 3; 20-party-rig-perf kept
+10-20 01:39 waiting: another helper is just starting (memory check again in a few minutes); 20-party-rig-perf kept

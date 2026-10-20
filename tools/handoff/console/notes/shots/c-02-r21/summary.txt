@@ -1,0 +1,8 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  19-raid-hud-drop-first-raid            staged       7.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  21-raid-hud-calm                       staged      14.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  36-raid-low-health                     staged       7.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  37-raid-extracting-countdown           staged      10.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  50-arcade-hud-live                     staged      21.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  61-raid-wheel-open                     staged       8.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  78-raid-pause-box-full-kit             staged       8.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0

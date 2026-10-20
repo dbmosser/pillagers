@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.43 - CLEAR FORGE CHOICES AND RECEIPT
+
+Co-op hunt while he was away. The forge needed separation from the raid HUD, readable effect words and a receipt with a stable home.
+
+MEASURED. Check 32.43 passes, and fails on v32.42.
 ## v32.42 - Terms: lead with the bonus
 
 Co-op hunt while he was away. UI step 7 (restyle only). Critic on 06 still 2: no focal point, explaining intro. Intro hidden under Q8 (logged in changes.md).

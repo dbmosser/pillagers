@@ -246,3 +246,11 @@
 2026-10-20 0.1601 critic-o-01-stash-pays-in-raid
 2026-10-20 0.1603 critic-o-01-stash-pays-in-raid
 2026-10-20 0.1592 critic-manual
+2026-10-20 0.1588 critic-manual
+2026-10-20 0.4704285000000001 b-31-ui-undercroft
+2026-10-20 0.0000 o-01-stash-pays-in-raid
+2026-10-20 0.1572 critic-manual
+2026-10-20 0.1526 critic-manual
+2026-10-20 0.1542 critic-manual
+2026-10-20 0.3183193999999999 c-02-raid-hud-redesign
+2026-10-20 0.1606862 c-02-raid-hud-redesign

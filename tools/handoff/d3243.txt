@@ -1,0 +1,5 @@
+## v32.43 - CLEAR FORGE CHOICES AND RECEIPT
+
+Co-op hunt while he was away. The forge needed separation from the raid HUD, readable effect words and a receipt with a stable home.
+
+MEASURED. Check 32.43 passes, and fails on v32.42.

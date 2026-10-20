@@ -1,0 +1,7 @@
+v32.43: clear forge choices and receipt
+
+The element picker has a scrim, one close control and readable choices. Upgrade receipts dock above the hotbar.
+
+Check 32.43. Fails on v32.42.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
