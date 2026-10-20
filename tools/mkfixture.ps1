@@ -17293,6 +17293,13 @@ window.__REGRESS=[
      }
      if(bad.length) return 'ui-shared still has raw literals: '+bad[0];
      if(!bodies.length||txt.indexOf('#title')<0) return 'ui-shared has no title rules';
+     // job 57 (audit): the block wide scan for colour and font-size literals is back (his 10-18 one shared look). Today's offenders are pinned as known debt; the list may only shrink, so any NEW literal fails. Follow-up token pass: move these rules onto tokens and empty the list
+     var DEBT=['#root #hub','#root #settingsmodal,#root #keysmodal','#root #pausebox #pausefb','#root #settingsmodal #setlist,#root #keysmodal #keyslist','#root #codexmodal .cxt .cxn','#root #codexmodal .cxt .cxr,#root #codexmodal .cxt .cxk','#root #codexmodal .cxt .cxnew','#root #hub .toprow .brand','#root #hub #hotplanwrap span,#root #hubfreekit b,#root #hubfreekit span,#root #hub [style*="font-size:13px"]','#root #hub #stashtabs .invtab','#root #hub .toprow #stashname,#root #hub .toprow .stashsep','#root #hub #hubfreekit .fkbox>b','#root #hub #hubfreekit .fkbtn','#root #hub #invkeybarpad div,#root #hub #invkeybarpad kbd','#root #hub #kitsetup .kst span,#root #hub #kitsetup .kstc span,#root #hub #kitsetup .ksreset','#root #hub #hotplanwrap [data-plan] span','#root #hub .lohead,#root #hub .loslab,#root #hub #stashtabs .invtab'], DEBT_N=0;
+     function scanLit(css){ var rs=css.match(/[^{}]*\{[^}]*\}/g)||[], out=[], n=0, j, sel, body, m; for(j=0;j<rs.length;j++){ sel=rs[j].slice(0,rs[j].indexOf('{')).replace(/\s*,\s*/g,',').replace(/\s+/g,' ').trim(); body=rs[j].slice(rs[j].indexOf('{')); m=body.match(/#[0-9a-fA-F]{3,8}\b|rgba?\(|font-size\s*:\s*[\d.]+(px|em|rem)|font\s*:[^;]*[\d.]+px/g); if(m){ n+=m.length; out.push(sel); } } return {sels:out,n:n}; }
+     d=scanLit(txt); e=d.sels.filter(function(s){ return DEBT.indexOf(s)<0; });
+     if(e.length) return 'ui-shared has a NEW raw colour or font-size literal in: '+e[0].slice(0,120);
+     if(d.n>DEBT_N) return 'ui-shared has '+d.n+' raw colour or font-size literals, the pinned debt is '+DEBT_N+'; the list may only shrink';
+     if(scanLit(txt+' #root #zz57 .q{ color:#fff; }').sels.indexOf('#root #zz57 .q')<0) return 'the block wide literal scan cannot see a new literal';
      e=document.getElementById('modecoop'); if(!e) return 'no mode row';
      if(getComputedStyle(e).fontSize!=='20px') return 'mode row font is '+getComputedStyle(e).fontSize+', not the 20px body size';
      if(getComputedStyle(e).borderTopLeftRadius!=='4px') return 'mode row radius is '+getComputedStyle(e).borderTopLeftRadius+', not 4px';
@@ -17327,10 +17334,15 @@ window.__REGRESS=[
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||!g.player||g.over) return 'SKIP: no live raid';
        g.bagOpen=false; g.mapOpen=false;
-       proto.fillText=function(t,x,y){ if(/backpack/i.test(String(t))&&this.textAlign!=='center') hit=String(this.fillStyle).toLowerCase(); return o.apply(this,arguments); };
+       // job 57 (audit): match the cue by its own text ("B / I  BACKPACK", "<pad button>  BACKPACK") and keep the FIRST match. The corner column row label 'backpack' (trRow, left aligned, #aaa498) is drawn later in drawHUD and overwrote the read, so an amber cue passed
+       proto.fillText=function(t,x,y){ if(hit===null&&/\S\s+backpack$/i.test(String(t))&&this.textAlign==='left') hit=String(this.fillStyle).toLowerCase(); return o.apply(this,arguments); };
        hit=null; __frame(0.001);
        if(hit===null) bad.push('the backpack cue was not drawn');
        else if(hit!=='#aaa498') bad.push('the backpack cue is '+hit+', not quiet grey');
+       // job 57 mutation test: turn the real cue amber on its way to the canvas; the detector must then see amber (it cannot see past the later corner label any more)
+       proto.fillText=function(t,x,y){ var s0=this.fillStyle; if(/\S\s+backpack$/i.test(String(t))&&this.textAlign==='left') this.fillStyle='#ffc04a'; if(hit===null&&/\S\s+backpack$/i.test(String(t))&&this.textAlign==='left') hit=String(this.fillStyle).toLowerCase(); var r=o.apply(this,arguments); this.fillStyle=s0; return r; };
+       hit=null; __frame(0.001);
+       if(hit!=='#ffc04a') bad.push('the cue colour test cannot fail: an amber cue read as '+hit);
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ proto.fillText=o; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
@@ -23351,7 +23363,7 @@ window.__REGRESS=[
   {v:'27.75',what:'cloud-menus-settings-jump-zoom: under the menu zoom a big screen gets, each Settings section chip puts its section at the top of the list and lights its own chip',
    run:function(){
      if(typeof openSettings!=='function'||typeof setSecJump!=='function'||typeof setSecId!=='function'||typeof SETSEC==='undefined') return 'SKIP: this fixture has no Settings section chips';
-     var bad=[], md=document.getElementById('settingsmodal'), host=null, oz, bs, bar, zf, i, b, n, h, off, on, wasOn;
+     var bad=[], md=document.getElementById('settingsmodal'), host=null, oz, bs, bar, zf, i, b, n, h, off, on, wasOn, tested=0;
      if(!md) return 'SKIP: no Settings window';
      oz=md.style.zoom; wasOn=md.classList.contains('on');
      try{
@@ -23366,7 +23378,9 @@ window.__REGRESS=[
        bs=host.querySelectorAll('.setjump button');
        if(bs.length<3) return 'SKIP: only '+bs.length+' section chips drawn';
        for(i=0;i<bs.length;i++){
-         b=bs[i]; n=b.getAttribute('data-sec'); if(!n) continue;   // 53-corpus-reds-b: the rail holds one data-go button (opens a page) that is not a section chip
+         b=bs[i]; if(b.hasAttribute('data-go')) continue;   // 53-corpus-reds-b: the rail holds one data-go button (opens a page) that is not a section chip; job 57: only that one is skipped, a chip that lost its data-sec fails below
+         n=b.getAttribute('data-sec'); tested++;
+         if(!n){ bad.push('a section chip has no data-sec'); continue; }
          h=document.getElementById(setSecId(n));
          if(!h){ bad.push(n+': no section head'); continue; }
          host.scrollTop=0; b.click();
@@ -23384,6 +23398,7 @@ window.__REGRESS=[
        try{ md.classList.remove('on'); if(wasOn) md.classList.add('on'); }catch(_m){}
        try{ __topClear(); }catch(_c){}
      }
+     if(host&&tested<3) bad.push('only '+tested+' section chips were tested');   // job 57
      return bad.length?bad.slice(0,8).join('; '):null; }},
   {v:'27.74',what:'the what is new card is stamped within 0.15 of the build and leads with the new news shown whole',
    run:function(){
@@ -23914,13 +23929,16 @@ window.__REGRESS=[
        G=null; keys={}; __showScreen('hub'); __hubEnter();
        hudPanel=function(x,y,w,h,a){ seen.push({w:w,h:h,a:(a===undefined?0.88:a)}); return hp.apply(this,arguments); };
        proto.fillText=function(t){ if(String(t).indexOf('NEW IN v')===0) said=true; return oft.apply(this,arguments); };
-       proto.fillRect=function(x,y,w,h){ frs.push({w:w,h:h,s:String(this.fillStyle).toLowerCase()}); return ofr.apply(this,arguments); };
+       proto.fillRect=function(x,y,w,h){ if(this===ctx) frs.push({w:w,h:h,s:String(this.fillStyle).toLowerCase(),a:this.globalAlpha}); return ofr.apply(this,arguments); };
        __wnseen(0); __hubFrame(0.016);
        proto.fillText=oft; proto.fillRect=ofr;
        if(!said) return 'SKIP: the card was not drawn here';
        // 53-corpus-reds-b: cw-wnew40 (critic on screen 40) made the card a flat panel (UIC.ui_panel, a six digit colour with no alpha) on its own scrim, no longer a hudPanel; solid still means a card sized rectangle in an opaque colour
-       wide=frs.filter(function(s){ return s.w>=400&&s.h>=120&&/^#[0-9a-f]{6}$/.test(s.s); });
+       // job 57 (audit): only the HUD canvas counts (the floor's own full screen fill is on another canvas), full screen rects are left out the way 29.90 does, and the card must be at full alpha, so a card at globalAlpha .94 fails again
+       var hr57=Math.max(1,(typeof hudRes==='function')?hudRes():1), ww57=W/hr57, hh57=H/hr57;
+       wide=frs.filter(function(s){ return s.w>=400&&s.w<0.95*ww57&&s.h>=120&&s.h<0.95*hh57&&/^#[0-9a-f]{6}$/.test(s.s); });
        if(!wide.length) bad.push('the What is New card is not a solid plate (no card sized rectangle in an opaque colour)');
+       wide.forEach(function(s){ if(s.a<0.99) bad.push('the What is New card plate is '+Math.round(s.w)+'x'+Math.round(s.h)+' at '+Math.round(s.a*100)+' percent, not solid'); });
        seen.length=0; __wnseen(1);
        __hubBagSet(true); drawHubBag(); __hubBagSet(false);
        wide=seen.filter(function(s){ return s.w>=600&&s.h>=120; });
@@ -29515,10 +29533,12 @@ window.__REGRESS=[
        md.classList.add('on'); renderSettings();
        host.style.maxHeight='300px'; host.style.overflowY='auto'; host.scrollTop=0;
        bar=host.querySelector('.setjump'); if(!bar) return 'there is no jump bar';
-       cs=getComputedStyle(bar); if(cs.position!=='sticky'||(cs.top!=='-3px'&&cs.top!=='0px')) bad.push('ONE: the jump bar is '+cs.position+' at top '+cs.top+', not sticky flush to the top');
+       // job 57 (audit): top 0 and the 4px gap are fine only for the rail (it stands beside the list, so no row text can pass under it); a full width strip must keep top -3px and the 1.6px bound (the v26.53 bug was a strip at top 0)
+       var strip=bar.getBoundingClientRect().width>host.getBoundingClientRect().width*0.6;
+       cs=getComputedStyle(bar); if(cs.position!=='sticky'||(cs.top!=='-3px'&&(strip||cs.top!=='0px'))) bad.push('ONE: the jump bar is '+cs.position+' at top '+cs.top+', not sticky flush to the top');
        if(host.getClientRects().length&&host.scrollHeight>host.clientHeight+500){
          host.scrollTop=400;
-         if(Math.abs(bar.getBoundingClientRect().top-(host.getBoundingClientRect().top+host.clientTop))>4) bad.push('ONE: scrolled, the jump bar sits '+(bar.getBoundingClientRect().top-host.getBoundingClientRect().top-host.clientTop).toFixed(1)+'px below the top of the list, where row text shows over it');
+         if(Math.abs(bar.getBoundingClientRect().top-(host.getBoundingClientRect().top+host.clientTop))>(strip?1.6:4)) bad.push('ONE: scrolled, the jump bar sits '+(bar.getBoundingClientRect().top-host.getBoundingClientRect().top-host.clientTop).toFixed(1)+'px below the top of the list, where row text shows over it');
          // TWO: the chip of the section in view
          cur=setSecSpy(host); if(!cur) bad.push('TWO: no section in view at 400');
          setSecJump(host,'CONTROLS'); cur=setSecSpy(host);
@@ -39423,7 +39443,7 @@ window.__REGRESS=[
        if(!(at(11.5,-21)[3]>200)) bad.push('Broad: no wide shoulder at 11.5');
        paint({build:'curved'},'none');
        if(!(at(6.9,-21)[3]>200)) bad.push('Curved: no shoulder at 6.9');
-       /* v32.64 (cw-figlook, a05 B: vest 1.12): the vest is drawn bigger, so Curved ink now reaches about 10.5 at the shoulder row. The cap code is unchanged, so compare the outer edge of Curved with Lean's instead of a fixed 9.6 */
+       /* v32.64 (cw-figlook): the caps are drawn inside the FIG_HEAD (1.2) head scale about (hx2, ty-22), so compare the outer edge of Curved with Lean's (job 57: the old vest reason was refuted) */
        function edgeU(){ var u, e=0; for(u=0;u<=15;u+=0.1) if(at(u,-21)[3]>200) e=u; return e; }
        var eCur=edgeU(), eLean;
        paint({build:'lean'},'none'); eLean=edgeU();
@@ -52415,11 +52435,11 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ [].slice.call(document.querySelectorAll('.modal.on')).forEach(function(x){ x.classList.remove('on'); }); }catch(_m){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'20.95',what:'the sector maps on the lift page are drawn at the screen resolution: with the menus at twice size each map holds twice its page size in pixels, keeps its 420 page width, and is drawn out to its far corner',
+  {v:'20.95',what:'the sector maps on the lift page are drawn at the screen resolution: with the menus at twice size each map holds twice its page size in pixels, keeps its page width (960 on design A, 420 before), and is drawn out to its far corner',
    run:function(){
      if(typeof sectorPreviewDraw!=='function'||typeof renderSector!=='function'||typeof menuScale!=='function') return 'SKIP: this build has no sector maps';
      if(!document.getElementById('sectorlist')||typeof FIXED_MAPS==='undefined') return 'SKIP: no sector page in this fixture';
-     var mapWidth=document.getElementById('srkitcol')?960:420;
+     var mapWidth=document.getElementById('srkitcol')?960:420;   // job 57: 960 is the design A page map width from v32.52 (fc62cf6f); v32.46 (cw-preraid-a) added the page (#srkitcol); 420 before it
      var bad=[], oMS=menuScale, cvs, i, cv, cw, ch, k, px;
      try{
        __topClear(); __runPrep();
