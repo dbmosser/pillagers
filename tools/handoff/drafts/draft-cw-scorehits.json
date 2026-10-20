@@ -1,0 +1,64 @@
+{
+    "title":  "PUNCHY HITS ON CONFIRM AND ON THE SCORE COUNT",
+    "why":  "His answer Q48: menus get soft ticks, punchy hits on confirm and score. The confirm click had no weight and the score count-ups on the run over card and the career end card were silent. A press now has a short low thump under the click, a counting score plays a hit a step (one every 70 ms, pitch climbing) and one heavier landing hit, and a skip plays only the landing. Sound only.",
+    "now":  "A press lands with a thump, and a score counts up with hits and lands with a heavier one.",
+    "edits":  [
+                  {
+                      "anchor":  "ok:{ty:\u0027triangle\u0027,f1:520,f2:780,d:0.09,v:0.05},",
+                      "replacement":  "ok:{ty:\u0027triangle\u0027,f1:520,f2:780,d:0.09,v:0.05,body:{f1:140,f2:68,d:0.11,v:0.07}},"
+                  },
+                  {
+                      "anchor":  "close:{ty:\u0027sine\u0027,f1:840,f2:420,d:0.1,v:0.035}};",
+                      "replacement":  "close:{ty:\u0027sine\u0027,f1:840,f2:420,d:0.1,v:0.035},\n  hit:{ty:\u0027triangle\u0027,f1:760,f2:720,d:0.035,v:0.026},land:{ty:\u0027triangle\u0027,f1:300,f2:150,d:0.16,v:0.06,body:{f1:110,f2:52,d:0.18,v:0.075}}};   // v32.xx (cw-scorehits): the score count\u0027s step hit and its landing"
+                  },
+                  {
+                      "anchor":  "function uiSndPick(kind,t,lastAt,n){",
+                      "replacement":  "function uiSndPick(kind,t,lastAt,n,pp){"
+                  },
+                  {
+                      "anchor":  "gap=(kind===\u0027move\u0027)?0.04:0.03;",
+                      "replacement":  "gap=(kind===\u0027move\u0027)?0.04:((kind===\u0027hit\u0027||kind===\u0027land\u0027)?0:0.03);   // v32.xx (cw-scorehits): the score hits are paced by sndScoreHit, not by this guard"
+                  },
+                  {
+                      "anchor":  "v=(kind===\u0027move\u0027)?(n%4):0; p=(kind===\u0027move\u0027)?UI_TICK_P[v]:1;",
+                      "replacement":  "v=(kind===\u0027move\u0027)?(n%4):0; p=(kind===\u0027move\u0027)?UI_TICK_P[v]:1; if(pp\u003e0) p=pp;"
+                  },
+                  {
+                      "anchor":  "return {kind:kind,ty:K.ty,f1:K.f1*p,f2:K.f2*p,d:K.d,v:K.v,variant:v,pitch:p};",
+                      "replacement":  "return {kind:kind,ty:K.ty,f1:K.f1*p,f2:K.f2*p,d:K.d,v:K.v,variant:v,pitch:p,body:K.body||null};   // v32.xx (cw-scorehits): body is the low thump layer under the click"
+                  },
+                  {
+                      "anchor":  "function sndUi(kind){",
+                      "replacement":  "function sndUi(kind,pp){"
+                  },
+                  {
+                      "anchor":  "  a=ac(); if(!a) return false;\n  out=sndBus(\u0027ui\u0027); if(!out) return false;\n  t=a.currentTime;\n  K=uiSndPick(kind,t,SND_UI_AT,SND_UI_N); if(!K) return false;",
+                      "replacement":  "  a=ac(); out=a?sndBus(\u0027ui\u0027):null;\n  if((!a||!out)\u0026\u0026kind!==\u0027hit\u0027\u0026\u0026kind!==\u0027land\u0027) return false;   // v32.xx (cw-scorehits): the score hits are logged even with no audio, so they can be tested\n  t=a?a.currentTime:0;\n  K=uiSndPick(kind,t,SND_UI_AT,SND_UI_N,pp); if(!K) return false;"
+                  },
+                  {
+                      "anchor":  "if(SND_UI_LOG.length\u003e200) SND_UI_LOG.shift(); }catch(_ul){}",
+                      "replacement":  "if(SND_UI_LOG.length\u003e200) SND_UI_LOG.shift(); }catch(_ul){}\n  if(!a||!out) return false;"
+                  },
+                  {
+                      "anchor":  "o.connect(g); g.connect(out); o.start(t); o.stop(t+K.d+0.02);",
+                      "replacement":  "o.connect(g); g.connect(out); o.start(t); o.stop(t+K.d+0.02);\n    if(K.body){ var o2=a.createOscillator(), g2=a.createGain(); o2.type=\u0027sine\u0027; o2.frequency.setValueAtTime(K.body.f1,t); o2.frequency.exponentialRampToValueAtTime(K.body.f2,t+K.body.d);\n      g2.gain.setValueAtTime(0.0001,t); g2.gain.exponentialRampToValueAtTime(K.body.v,t+0.006); g2.gain.exponentialRampToValueAtTime(0.0001,t+K.body.d);\n      o2.connect(g2); g2.connect(out); o2.start(t); o2.stop(t+K.body.d+0.02); }   // v32.xx (cw-scorehits): a short low thump under the click so a press lands"
+                  },
+                  {
+                      "anchor":  "try{ document.addEventListener(\u0027click\u0027,sndUiClick,true); }catch(_uc){}",
+                      "replacement":  "try{ document.addEventListener(\u0027click\u0027,sndUiClick,true); }catch(_uc){}\n// v32.xx (cw-scorehits), HIS ANSWER Q48 (\"soft ticks, punchy hits on confirm and score\"): a score figure that counts up plays one short hit per changed step\n// (at most one every 70 ms, the pitch climbing a little as it goes), then one heavier landing hit when it reaches the final figure. st is the owner\u0027s own\n// {done,v} (the run over card keeps it on ARCADE.over, a ledger figure on its element), so a rebuilt card never restarts or doubles them. A figure of 0 is silent.\n// Sound only: no seeded draw, no game state.\nvar SCORE_HIT_AT=0, SCORE_LAND_AT=0;\nfunction sndScoreHit(st,k,v,to){\n  var now=Date.now();\n  if(!st||!(to\u003e0)) return false;\n  if(k\u003c1){\n    if(!(v\u003e0)||v===st.v||now-SCORE_HIT_AT\u003c70) return false;\n    st.v=v; SCORE_HIT_AT=now;\n    return sndUi(\u0027hit\u0027,1+0.5*k);\n  }\n  if(st.done) return false;\n  st.done=1;\n  if(now-SCORE_LAND_AT\u003c120) return false;   // several figures landing together make one landing\n  SCORE_LAND_AT=now;\n  return sndUi(\u0027land\u0027);\n}"
+                  },
+                  {
+                      "anchor":  "  el._lbIv=setInterval(function(){\n    var k=clamp((Date.now()-t0)/(durMs||900),0,1);\n    if(!el.isConnected){ clearInterval(el._lbIv); return; }\n    el.textContent=pre+lbFmt(el,Math.round((to|0)*(1-Math.pow(1-k,3))));\n    if(k\u003e=1) clearInterval(el._lbIv);\n  },40);",
+                      "replacement":  "  el._lbSt={done:0,v:0};   // v32.xx (cw-scorehits): this figure\u0027s own hit state\n  el._lbIv=setInterval(function(){\n    var k=clamp((Date.now()-t0)/(durMs||900),0,1), v=Math.round((to|0)*(1-Math.pow(1-k,3)));\n    if(!el.isConnected){ clearInterval(el._lbIv); return; }\n    el.textContent=pre+lbFmt(el,v);\n    if(Date.now()\u003e=t0){ try{ sndScoreHit(el._lbSt,k,v,to|0); }catch(_sh){} }   // v32.xx (cw-scorehits): a hit a step, a landing at the end\n    if(k\u003e=1) clearInterval(el._lbIv);\n  },40);"
+                  },
+                  {
+                      "anchor":  "for(i=0;i\u003cels.length;i++){ el=els[i]; if(el._lbIv) clearInterval(el._lbIv); el.textContent=(el.getAttribute(\u0027data-pre\u0027)||\u0027\u0027)+lbFmt(el,+el.getAttribute(\u0027data-to\u0027)||0); }",
+                      "replacement":  "for(i=0;i\u003cels.length;i++){ el=els[i]; if(el._lbIv) clearInterval(el._lbIv); el.textContent=(el.getAttribute(\u0027data-pre\u0027)||\u0027\u0027)+lbFmt(el,+el.getAttribute(\u0027data-to\u0027)||0);\n    if(el._lbSt\u0026\u0026!el._lbSt.done){ try{ sndScoreHit(el._lbSt,1,+el.getAttribute(\u0027data-to\u0027)||0,+el.getAttribute(\u0027data-to\u0027)||0); }catch(_sh){} } }   // v32.xx (cw-scorehits): a press that skips plays only the landing hit"
+                  },
+                  {
+                      "anchor":  "  c.setAttribute(\u0027data-cu\u0027,k\u003c1?\u00271\u0027:\u00270\u0027);",
+                      "replacement":  "  c.setAttribute(\u0027data-cu\u0027,k\u003c1?\u00271\u0027:\u00270\u0027);\n  try{ if(!o.shSt) o.shSt={done:0,v:0}; sndScoreHit(o.shSt,k,v,+o.team||0); }catch(_sh){}   // v32.xx (cw-scorehits): tied to ARCADE.over.at like the count itself, so a rebuilt card never restarts the hits"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a press has a low body under the click, and a score count-up plays a hit a step and one landing hit (his Q48: punchy hits on confirm and score)\u0027,\n   run:function(){\n     if(typeof uiSndPick!==\u0027function\u0027||typeof SND_UI_LOG===\u0027undefined\u0027||typeof arcadeOverCount!==\u0027function\u0027) return \u0027SKIP: no UI sound helpers\u0027;\n     var realNow=Date.now, realSI=window.setInterval, T=0, T0=0, o, c, el, n, hits, lands, res=null, p, host, e2, cb, e1, cbs;\n     function cnt(kind){ var i, k=0; for(i=0;i\u003cSND_UI_LOG.length;i++) if(SND_UI_LOG[i].kind===kind) k++; return k; }\n     function card(team){ var d=document.createElement(\u0027div\u0027), s=document.createElement(\u0027div\u0027); s.className=\u0027aos\u0027; s.textContent=\u0027TEAM SCORE \u0027+arcadeCr(team); d.appendChild(s); return d; }\n     function reset(){ SND_UI_LOG.length=0; SCORE_HIT_AT=0; SCORE_LAND_AT=0; }\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       p=uiSndPick(\u0027ok\u0027,10,-1,0);\n       if(!p||!p.body||!(p.body.f1\u003c=200)||!(p.body.d\u003c=0.12)) return \u0027the ok sound has no low body under the click (\u0027+JSON.stringify(p\u0026\u0026p.body)+\u0027)\u0027;\n       if(uiSndPick(\u0027back\u0027,10,-1,0).body||uiSndPick(\u0027deny\u0027,10,-1,0).body) return \u0027back or deny got a body\u0027;\n       // 1: a run over card with a team score counts up with hits and one landing\n       reset(); T0=realNow.call(Date); Date.now=function(){ return T; };\n       o={at:T0,team:4321}; c=card(4321);\n       for(T=T0;T\u003c=T0+2000;T+=16) arcadeOverCount(c,o);\n       hits=cnt(\u0027hit\u0027); lands=cnt(\u0027land\u0027);\n       if(hits\u003c8||hits\u003e25) return \u0027the run over count-up logged \u0027+hits+\u0027 score hits, not 8 to 25\u0027;\n       if(lands!==1) return \u0027the run over count-up logged \u0027+lands+\u0027 landing hits, not 1\u0027;\n       for(T=T0+2000;T\u003c=T0+4000;T+=500) arcadeOverCount(c,o);   // the card is rebuilt or re-synced after the count: nothing plays again\n       if(cnt(\u0027hit\u0027)!==hits||cnt(\u0027land\u0027)!==1) return \u0027a re-synced card played the hits again\u0027;\n       // 2: a skip to the final score plays only the landing hit\n       reset(); o={at:T0-9000,team:4321}; c=card(4321); T=T0+100;\n       for(n=0;n\u003c5;n++){ T+=16; arcadeOverCount(c,o); }\n       if(cnt(\u0027hit\u0027)!==0||cnt(\u0027land\u0027)!==1) return \u0027a skipped count logged \u0027+cnt(\u0027hit\u0027)+\u0027 hits and \u0027+cnt(\u0027land\u0027)+\u0027 landings, not 0 and 1\u0027;\n       // 3: a score of 0 is silent\n       reset(); o={at:T0,team:0}; c=card(0);\n       for(T=T0;T\u003c=T0+2000;T+=16) arcadeOverCount(c,o);\n       if(SND_UI_LOG.length) return \u0027a score of 0 played \u0027+SND_UI_LOG.length+\u0027 sounds\u0027;\n       // 4: a ledger figure on the career end card counts with hits, and a skip lands once\n       Date.now=realNow; reset();\n       host=document.createElement(\u0027div\u0027); document.body.appendChild(host);\n       e1=document.createElement(\u0027span\u0027); e1.setAttribute(\u0027data-to\u0027,\u00273000\u0027); host.appendChild(e1);\n       cbs=[]; window.setInterval=function(f){ cbs.push(f); return 77; };\n       T0=realNow.call(Date); T=T0; Date.now=function(){ return T; };\n       lbCountStart(e1,3000,0,900);\n       window.setInterval=realSI;\n       for(T=T0;T\u003c=T0+1200;T+=40) cbs[0]();\n       if(cnt(\u0027hit\u0027)\u003c5) return \u0027the career ledger count-up logged only \u0027+cnt(\u0027hit\u0027)+\u0027 hits\u0027;\n       if(cnt(\u0027land\u0027)!==1) return \u0027the career ledger count-up logged \u0027+cnt(\u0027land\u0027)+\u0027 landings, not 1\u0027;\n       reset(); e2=document.createElement(\u0027span\u0027); e2.setAttribute(\u0027data-to\u0027,\u00273000\u0027); host.appendChild(e2);\n       window.setInterval=function(f){ return 78; }; T=T0+5000; lbCountStart(e2,3000,0,900); window.setInterval=realSI;\n       e1.parentNode.removeChild(e1);\n       lbCountEnd(host);\n       if(cnt(\u0027hit\u0027)!==0||cnt(\u0027land\u0027)!==1) return \u0027a skipped ledger count logged \u0027+cnt(\u0027hit\u0027)+\u0027 hits and \u0027+cnt(\u0027land\u0027)+\u0027 landings, not 0 and 1\u0027;\n       return null;\n     } finally {\n       Date.now=realNow; window.setInterval=realSI;\n       try{ if(host\u0026\u0026host.parentNode) host.parentNode.removeChild(host); }catch(_h){}\n       try{ SCORE_HIT_AT=0; SCORE_LAND_AT=0; SND_UI_LOG.length=0; }catch(_r){}\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}

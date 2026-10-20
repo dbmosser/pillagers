@@ -1,1 +1,1 @@
-10-20 05:11 waiting: another helper is just starting (memory check again in a few minutes); c-31-ui-pause-settings kept
+10-20 05:16 c-31-ui-pause-settings: failed, $0.174387

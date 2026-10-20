@@ -1,1 +1,1 @@
-10-20 05:05 running 43-art-machines-world on Claude Code (your plan: week 57% of the 26.4% line, 5-hour 1%)
+10-20 05:16 waiting for RAM: 2 GB free, a helper starts at 3; 43-art-machines-world kept

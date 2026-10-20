@@ -1,1 +1,1 @@
-10-20 05:11 waiting for RAM: 2 GB free, need 3 (o-02-corpus-green)
+10-20 05:17 retarget: trying o-02-corpus-green's fixture edit on a trial copy (9 checks)

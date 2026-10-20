@@ -42,5 +42,8 @@ Settings screens 18, 26, 32, 68, 70, 72, 74, 75 are at 3 (finish line 3 for non-
 ## 2026-10-20 run 2 (lane c, VM): try 6 of 6 on the pause box
 Shipped v32.66 (cw-pausegap): end run one gap under the stack, lime focus bar and raised fill on idle pause buttons, brighter header divider. Pictures: shots/c-31y-before (old), shots/c-31y-after. Critic on 49: 3, "better_than_before: yes". Remaining P1s are the 480 dialog (Q43 says dialog) and "merge report/feedback/what's new into a ghost row" (Q61 allows moving; not done). Rule 2.83 b: 6 tries used on the pause box, stopping. Best two versions: c-31x-after (v32.28) and c-31y-after (v32.66, best). Settings screens at 3 are done (his 3.51 a: 3 is enough for non-pause screens).
 
+## 2026-10-20 run 4 (lane c)
+No new work. Pause box 25/42/49 stays at 3 after 6 tries (rule 2.83 b); best is c-31y-after (v32.66). Other screens at 3 = done (3.51 a).
+
 ## 2026-10-20 run 3 (lane c)
 No new work. Pause box (25, 42, 49) stays at 3 after 6 tries (rule 2.83 b); best is c-31y-after (v32.66), then c-31x-after (v32.28). Settings screens are at 3 = done for non-pause screens (3.51 a). Open for a later pass after the party: merge report, feedback and what's new into one ghost row (Q61 allows moving).

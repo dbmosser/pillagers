@@ -373,3 +373,6 @@
 2026-10-20 0.0000 o-09-pad-name-entry
 2026-10-20 0.0000 o-02-corpus-green
 2026-10-20 0.0000 o-02-corpus-green
+2026-10-20 0.945342 43-art-machines-world
+2026-10-20 0.174387 c-31-ui-pause-settings
+2026-10-20 0.0000 o-02-corpus-green

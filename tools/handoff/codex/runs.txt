@@ -93,3 +93,4 @@
 2026-10-20 04:22 o-09-pad-name-entry 398s ok PARTIAL in=3942635 out=40019 run=5
 2026-10-20 04:49 o-02-corpus-green 611s ok PARTIAL in=2164121 out=19945 run=1
 2026-10-20 04:51 o-02-corpus-green 113s ok PARTIAL in=3072716 out=22960 run=2
+2026-10-20 05:17 o-02-corpus-green 201s ok PARTIAL in=4137859 out=30254 run=3
