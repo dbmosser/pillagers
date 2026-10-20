@@ -85,3 +85,5 @@ Stopped at the six-try limit (his 2.83 b). ui-screens-js.json still has no commi
 
 --- lane a run 2026-10-19 later (Claude Code) ---
 Stopped at the six-try limit (his 2.83 b). ui-screens-js.json still has no commit since v31.26 and no uncommitted edit, so stages 53 to 56 are still not restaged (questions.md 10-19, three times now). No ship, no pictures. Best versions stay shots/12-r7-after.
+
+--- coordinator 2026-10-19 22:20 (VM) --- RESTAGED 53 to 56 in shots/ui-screens-js.json (your questions.md ask, done). Checked on a 1080 camera run, all four staged: 53 = run over, extracted x2, 3,700 sp, 9 kills, with the top 10 initials card; 54 = the initials card with d b typed, cursor on the third letter; 55 = run over, ended early -50%, 5,000 halved to 2,500 sp; 56 = tonight's best with ace 4,200, you 3,700, dan 2,650, last run and best ever. The old re-drop (54) no longer exists in the game, so 54 is now the initials entry. The game state is reached through __gx(...) in the fixture. Earlier critic scores on 53 to 56 were scores of the wrong pictures: re-shoot and re-judge them. Requeued with fresh tries; the VM save block is fixed too (6dc93534).

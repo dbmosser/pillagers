@@ -1,0 +1,7 @@
+v32.04: the what is new card names polish pass 32
+
+The what is new card names polish pass 32.
+
+Check 32.04. Fails on v32.03.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,16 @@
+{
+    "title":  "SLOW FRAME TOASTS ARE HEADLINES ONLY",
+    "why":  "UI critic, screen 22: the detail lines under RESOLUTION STEPPED DOWN and RUNNING SLOWLY read as explaining text over the map. Both toasts are now the headline alone.",
+    "now":  "The two slow-frame toasts show only their headline.",
+    "edits":  [
+                  {
+                      "anchor":  "sayWhenFree(\u0027RESOLUTION STEPPED DOWN\u0027,\u0027sys\u0027,{sub:\u0027Settings: Auto resolution\u0027});",
+                      "replacement":  "sayWhenFree(\u0027RESOLUTION STEPPED DOWN\u0027,\u0027sys\u0027); /* v32.xx (cw-systoastbare): no detail line, the critic (screen 22) read it as an explaining sentence over the map. Old text: sub \u0027Settings: Auto resolution\u0027. Reason: a system toast is a headline only */"
+                  },
+                  {
+                      "anchor":  "sayWhenFree(\u0027RUNNING SLOWLY\u0027,\u0027sys\u0027,{sub:\u0027Settings: Render resolution, Effects\u0027});",
+                      "replacement":  "sayWhenFree(\u0027RUNNING SLOWLY\u0027,\u0027sys\u0027); /* v32.xx (cw-systoastbare): no detail line, same reason. Old text: sub \u0027Settings: Render resolution, Effects\u0027 */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the slow-frame system toasts (resolution stepped down, running slowly) are headlines only, with no detail line\u0027,\n   run:function(){\n     if(typeof drsTick!==\u0027function\u0027||typeof perfNote!==\u0027function\u0027||typeof DRS===\u0027undefined\u0027||typeof PERF===\u0027undefined\u0027) return \u0027SKIP: no frame notes here\u0027;\n     var bad=[], oSwf=sayWhenFree, lines=[], c0=CFG.gfxAuto, s0=CFG.gfxScale, f0=CFG.fpsCap, d0=JSON.stringify(DRS), w0=PERF.win, ps0=PERF.said, i, t=0, t0;\n     try{\n       sayWhenFree=function(m,k,o){ lines.push({m:String(m),sub:(o\u0026\u0026o.sub)?String(o.sub):\u0027\u0027}); };\n       CFG.gfxAuto=1; CFG.gfxScale=1; CFG.fpsCap=0; DRS.scale=1; DRS.ema=0; DRS.slowT=0; DRS.fastT=0; DRS.last=0; DRS.bounce=0; DRS.upAt=0; DRS.said=0;\n       lines.length=0; for(i=0;i\u003c200;i++){ t+=40; drsTick(40,t); }\n       if(!lines.length) return \u0027SKIP: staging: no resolution step line\u0027;\n       if(lines[0].sub) bad.push(\u0027the resolution step still has the detail \u0027+JSON.stringify(lines[0].sub));\n       PERF.win=[]; PERF.said=0; t0=performance.now()-9000; for(i=0;i\u003c120;i++) PERF.win.push([t0+i*75,40]);\n       lines.length=0; perfNote(40);\n       if(!lines.length) return \u0027SKIP: staging: no running slowly line\u0027;\n       if(lines[0].sub) bad.push(\u0027running slowly still has the detail \u0027+JSON.stringify(lines[0].sub));\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ sayWhenFree=oSwf; CFG.gfxAuto=c0; CFG.gfxScale=s0; CFG.fpsCap=f0; try{ var o=JSON.parse(d0); for(var k in o) DRS[k]=o[k]; }catch(_e){} PERF.win=w0; PERF.said=ps0; }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
