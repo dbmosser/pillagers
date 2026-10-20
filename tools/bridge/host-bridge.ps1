@@ -49,6 +49,11 @@ function Switch-Net {
   try { Get-NetIPAddress -AddressFamily IPv4 -ErrorAction Stop | Where-Object { $_.InterfaceAlias -like '*Default Switch*' } | Select-Object -First 1 } catch { $null }
 }
 function Agent-Proc {
+  # Prefer the process that actually holds the listen port (reliable even when the command line cannot be read); fall back to a command-line match.
+  try {
+    $c = Get-NetTCPConnection -LocalPort $Port -State Listen -ErrorAction Stop | Select-Object -First 1
+    if ($c) { $p = Get-CimInstance Win32_Process -Filter ("ProcessId=" + $c.OwningProcess) -ErrorAction SilentlyContinue; if ($p -and $p.Name -eq 'node.exe') { return $p } }
+  } catch { }
   Get-CimInstance Win32_Process -Filter "Name='node.exe'" -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -match 'host-agent\.mjs' }
 }
 
