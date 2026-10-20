@@ -1,0 +1,36 @@
+{
+    "title":  "PRE-RAID POLISH: NO CUT OFF CHIPS, WIDER KIT COLUMN, SHARPER MAP NAMES",
+    "why":  "Pictures of the shipped design A page showed the no armour chip text and the kit sublines cut at the box edge, and the map names small at 4K. The kit column is 440 wide, the chip line is shorter, the map canvas is drawn at 640 so its names read bigger, and the outline on map text is thinner.",
+    "now":  "The pre-raid page chips fit their boxes and the map names read larger.",
+    "edits":  [
+                  {
+                      "anchor":  "column-gap:10px; align-content:center; align-items:center; padding:0 12px; background:var(--ui-raised);",
+                      "replacement":  "column-gap:8px; align-content:center; align-items:center; padding:0 8px; background:var(--ui-raised);"
+                  },
+                  {
+                      "anchor":  "#sectormodal .srsr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }",
+                      "replacement":  "#sectormodal .srsr{ display:none; }"
+                  },
+                  {
+                      "anchor":  "\u003ci\u003eEQUIP PLATES ON THE SURFACE\u003c/i\u003e",
+                      "replacement":  "\u003ci\u003eEQUIP PLATES\u003c/i\u003e"
+                  },
+                  {
+                      "anchor":  "c.lineWidth=4; c.strokeStyle=\u0027rgba(8,18,28,.9)\u0027",
+                      "replacement":  "c.lineWidth=3; c.strokeStyle=\u0027rgba(8,18,28,.9)\u0027"
+                  },
+                  {
+                      "anchor":  "width=\"840\" height=\"\u0027+Math.round(840*M.h/M.w)+\u0027\"",
+                      "replacement":  "width=\"640\" height=\"\u0027+Math.round(640*M.h/M.w)+\u0027\""
+                  },
+                  {
+                      "anchor":  "width:34px; height:32px; min-width:0; padding:0; display:grid;",
+                      "replacement":  "width:34px; height:30px; min-width:0; padding:0; display:grid;"
+                  },
+                  {
+                      "anchor":  "grid-template-columns:minmax(0,1fr) 200px;",
+                      "replacement":  "grid-template-columns:minmax(0,1fr) 184px;"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the pre-raid going-up chips are not cut off: the no armour chip and the kit tile sublines fit their boxes\u0027,\n   run:function(){\n     if(!(window.__hubEnter\u0026\u0026window.__P\u0026\u0026window.__applyLoaded)||typeof renderSector!==\u0027function\u0027) return \u0027SKIP: no pre-raid page\u0027;\n     var bad=[], snap=null, q, sm=document.getElementById(\u0027sectormodal\u0027), els, i;\n     function shut(){ var mo=document.querySelectorAll(\u0027.modal.on\u0027); for(var j=0;j\u003cmo.length;j++) mo[j].classList.remove(\u0027on\u0027); }\n     try{\n       snap=JSON.parse(JSON.stringify(__P()));\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       q=__P(); q.freeKit=0; q.kitPick=\u0027mine\u0027; q.stash=[\u0027medkit\u0027]; q.kit=[];\n       __hubEnter(); shut(); renderSector(); openModal(\u0027sectormodal\u0027);\n       els=sm.querySelectorAll(\u0027#sectorkit .wn, #sectorkit .gc, #sectorkitpick .kitb\u0027);\n       if(!els.length) return \u0027the pre-raid chips are not drawn\u0027;\n       for(i=0;i\u003cels.length;i++) if(els[i].scrollWidth\u003eels[i].clientWidth+1) bad.push(\u0027a pre-raid chip is cut: \u0027+String(els[i].textContent).trim().slice(0,40)+\u0027 (\u0027+els[i].scrollWidth+\u0027 in \u0027+els[i].clientWidth+\u0027)\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ shut(); }catch(_s){} try{ if(snap) __applyLoaded(snap); }catch(_a){} try{ __cleanProfile(); }catch(_c){} __topClear(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

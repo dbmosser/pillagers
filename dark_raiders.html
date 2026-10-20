@@ -870,6 +870,15 @@
 #root #barmodal .row .hint{ font-size:16px; }
 #root #barmodal .row .vl{ color:#e8e2d4; }
 #root #barmodal .row button:not(:disabled):not(:hover):not(:focus){ background:transparent; color:#e6ff3d; border:1px solid #e6ff3d; }
+/* v28.xx (cw-uc-rewbar2) b-31 step 7, critic on 13 (list stops 285px short of the card edge) and 16 (a 1060x185 list in a 1700 card, 20px names, 15px blurbs): rewards fill the card width; bar content 1400 wide with 120px rows, 72px icons, 28px names, 18px blurbs, 32px prices, 200x56 buttons. */
+#root #opane_rew{ max-width:none !important; }
+#root #barmodal .msub, #root #barmodal .plist{ max-width:1400px !important; width:100%; }
+#root #barmodal .plist .row{ min-height:120px !important; }
+#root #barmodal .row img{ width:72px !important; height:72px !important; }
+#root #barmodal .plist .row b{ font-size:28px !important; }
+#root #barmodal .row .hint{ font-size:18px; }
+#root #barmodal .plist .row .vl{ font-size:32px !important; font-family:var(--f-cond,inherit); font-weight:800; }
+#root #barmodal button[data-bz]{ min-width:200px !important; min-height:56px !important; font-size:20px !important; }
   /* v15.76, HIS ORDER OF 2026-09-25 (multiplayer, build 3): THE MODE MENU ON THE TITLE. Five rows, one under the other and all
      centred, so a controller stepping down the column lands on the next row and not on a control off to one side. A greyed
      row keeps its note beside it, out of the flow, so the row itself stays centred with the others. */
@@ -3134,7 +3143,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.46';
+var VER='32.47';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -50492,7 +50501,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.46: The pre-raid page is rebuilt: a big ice blue map of cold storage with its zones, exits and keyed rooms, conditions beside it, and the kit, pack and ascend button in a column on the right. On a pad you press A once to go up. Check 32.46 fails on v32.45',
+  now:'v32.47: The rewards list runs the full card width; the last pour rows and buttons are bigger. Check 32.47 fails on v32.46',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

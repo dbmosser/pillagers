@@ -1,0 +1,7 @@
+v32.47: rewards fill the card, bar rows bigger
+
+The rewards list runs the full card width; the last pour rows and buttons are bigger.
+
+Check 32.47. Fails on v32.46.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,5 @@
+## v32.47 - Rewards fill the card, bar rows bigger
+
+Co-op hunt while he was away. UI step 7 (restyle only). Critic on 13 and 16 still 2 (better yes): dead right strip on rewards, a small list in a big bar card.
+
+MEASURED. Check 32.47 passes, and fails on v32.46.

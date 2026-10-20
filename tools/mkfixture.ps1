@@ -6101,6 +6101,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.47',what:'rewards list fills the card, bar rows scaled up (1400 wide, 120px rows, 56px buttons)',
+   run:function(){
+     var bad=[];
+     try{
+       var rw=document.getElementById('opane_rew');
+       if(getComputedStyle(rw).maxWidth!=='none') bad.push('rew maxw '+getComputedStyle(rw).maxWidth);
+       var pl=document.querySelector('#barmodal .plist');
+       if(getComputedStyle(pl).maxWidth!=='1400px') bad.push('bar plist maxw '+getComputedStyle(pl).maxWidth);
+       renderBar();
+       var rowEl=document.querySelector('#barlist .row');
+       if(!rowEl||parseFloat(getComputedStyle(rowEl).minHeight)<120) bad.push('bar row minh');
+       var bt=document.querySelector('#barlist [data-bz]');
+       if(!bt||parseFloat(getComputedStyle(bt).minHeight)<56) bad.push('bar button minh');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     return bad.length?bad.join('; '):null; }},
   {v:'32.46',what:'the pre-raid page is design A, map first (his pick 2026-10-19): an ice blue map at least 800 px wide at 1080p drawn from the real map, one A press ascends with fresh pad focus, LB and RB jump between the conditions, the kit tiles and the pack, no cash control, every old control is still there, and the ascend plate stays on the card with the biggest pack a save can hold',
    run:function(){
      if(!(window.__hubEnter&&window.__P&&window.__applyLoaded)) return 'SKIP: this fixture cannot reach the pre-raid page';

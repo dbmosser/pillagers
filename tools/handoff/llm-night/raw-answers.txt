@@ -1,1 +1,45 @@
 
+NONE
+This is a CSS stylesheet for a web application or game interface. It contains styles for various elements such as modals, buttons, input fields, and other UI components. The design appears to be modern and sleek with a focus on readability and user experience.
+
+Here are some key points about the stylesheet:
+
+1. **Modals**: 
+   - Modals have a radial gradient background with soft lighting effects.
+   - Headers within modals use uppercase letters for emphasis.
+   - Subtext is styled with specific font sizes and colors.
+
+2. **Buttons**:
+   - Buttons have rounded corners, padding, and hover/active states that change their appearance.
+   - There's a special "deploy" button style with gradient background and shadow effects.
+
+3. **Input Fields**:
+   - Input fields are styled with dark backgrounds and subtle borders.
+   - They gain focus rings when active.
+
+4. **Lists and Grids**:
+   - Lists have consistent padding, border styles, and hover effects for rows.
+   - Grid layouts (like `#statgrid`) use CSS grid to create responsive card-like structures.
+
+5. **Typography**:
+   - Font sizes are specified for various elements like headers, subtext, and buttons.
+   - Colors are defined using custom properties (`var(--color-name)`) which likely correspond to a color palette in the application.
+
+6. **Scrollbars**:
+   - Custom styles are applied to scrollbars for consistency across different browsers.
+
+7. **Specific
+NONE
+NONE
+NONE
+NONE
+LINE 18401: try/catch that swallows a whole per-frame draw or update.
+LINE 18457: calls clamp without checking if W and H are defined, which could lead to NaN values reaching canvas calls (arc, createRadialGradient, drawImage, fillText positions).
+LINE 18463: calls clamp without checking if x and y are defined, which could lead to NaN values reaching canvas calls (arc, createRadialGradient, drawImage, fillText positions).
+LINE 18502: property access on a value that can be null or undefined in per-frame code without a guard (PAD.held[c]).
+LINE 18569: property access on a value that can be null or undefined in per-frame code without a guard (G&&!G.over&&!G.sim&&state==='raid').
+NONE
+NONE
+NONE
+NONE
+NONE

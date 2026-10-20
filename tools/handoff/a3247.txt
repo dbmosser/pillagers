@@ -1,0 +1,1 @@
+| Rewards fill the card, bar rows bigger | v32.47 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 32.47 passes, fails on v32.46 |
