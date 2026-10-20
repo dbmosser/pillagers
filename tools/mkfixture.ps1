@@ -30196,7 +30196,7 @@ window.__REGRESS=[
        // TWO: the jump bar scrolls to a section
        chip=null; el=host.querySelectorAll('.setjump button');
        if(el.length<5) bad.push('TWO: the jump bar has '+el.length+' chips');
-       for(i=0;i<el.length;i++){ if(!document.getElementById('setsec_'+el[i].getAttribute('data-sec').replace(/ /g,'_'))) bad.push('TWO: the chip '+el[i].textContent+' has no section'); if(el[i].getAttribute('data-sec')==='AUDIO') chip=el[i]; }
+       for(i=0;i<el.length;i++){ if(!el[i].getAttribute('data-sec')) continue;   /* v32.84 retarget (52-corpus-reds-a): the jump bar also holds a data-go button that is no section chip */ if(!document.getElementById('setsec_'+el[i].getAttribute('data-sec').replace(/ /g,'_'))) bad.push('TWO: the chip '+el[i].textContent+' has no section'); if(el[i].getAttribute('data-sec')==='AUDIO') chip=el[i]; }
        mh=host.style.maxHeight; ov=host.style.overflowY; host.style.maxHeight='300px'; host.style.overflowY='auto'; host.scrollTop=0;
        if(chip&&host.getClientRects().length&&host.scrollHeight>host.clientHeight+500){
          chip.click(); bar=host.querySelector('.setjump'); off=document.getElementById('setsec_AUDIO').getBoundingClientRect().top-host.getBoundingClientRect().top-bar.getBoundingClientRect().height;
@@ -30828,15 +30828,15 @@ window.__REGRESS=[
        srand(9); mkPeddler(300,200,null); a=RNGS; RV_PCT=0; srand(9); mkPeddler(300,200,null); b=RNGS; RV_PCT=pct0;
        if(a!==b) bad.push('a stall with the twins on draws a different count of numbers from one with them off');
        // FOUR: Wirt. A table of two guns only, 120 pulls: about one in five is a twin, each pull still draws one number.
-       srand(4); rollTable([['gun_smg',1],['gun_dmr',1]]); a=RNGS; srand(4); rr(); b=RNGS;
+       srand(4); rollTable([['gun_smg',1],['gun_carbine',1]]); a=RNGS; srand(4); rr(); b=RNGS;   // v32.84 retarget (52-corpus-reds-a): gun_carbine stands in for the gone Marksman Rifle (cw-gunsgone)
        if(a!==b) bad.push('rollTable draws more or fewer than the one number it always drew');
        if(!gb||typeof gb.onclick!=='function') bad.push('SKIP: no gamble button here');
        else {
          renderGamble=function(){}; renderHub=function(){}; saveProfile=function(){};
-         GAMBLE_POOL.length=0; GAMBLE_POOL.push(['gun_smg',1],['gun_dmr',1]);
+         GAMBLE_POOL.length=0; GAMBLE_POOL.push(['gun_smg',1],['gun_carbine',1]);
          P2.stash=[]; P2.credits=1e12; srand(1999); cnt=0; n=120;
          for(i=0;i<n;i++) gb.onclick();
-         a=0; for(i=0;i<P2.stash.length;i++){ if(P2.stash[i]==='gun_smg_v'||P2.stash[i]==='gun_dmr_v') cnt++; else if(P2.stash[i]==='gun_smg'||P2.stash[i]==='gun_dmr') a++; }
+         a=0; for(i=0;i<P2.stash.length;i++){ if(P2.stash[i]==='gun_smg_v'||P2.stash[i]==='gun_carbine_v') cnt++; else if(P2.stash[i]==='gun_smg'||P2.stash[i]==='gun_carbine') a++; }
          if(a+cnt!==n) bad.push('120 gambles left '+(a+cnt)+' guns in the stash');
          if(cnt<8||cnt>45) bad.push('Wirt gave the twin '+cnt+' times in '+n+' gambles (about 24 expected)');
        }
@@ -31057,7 +31057,7 @@ window.__REGRESS=[
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&window.__topClear&&window.__runPrep&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile&&window.__applyLoaded)||typeof rollFieldGun!=='function'||typeof openContainer!=='function'||typeof dropItem!=='function'||typeof drawGun!=='function'||typeof gunCompare!=='function'||typeof beltGunLow!=='function') return 'SKIP: this fixture cannot deploy, roll, drop and equip a gun';
      if(typeof RV_OF==='undefined'||typeof VARIANT_DMG==='undefined'||typeof gunBase!=='function') return 'guns have no rarity variants (RV_OF, VARIANT_DMG, gunBase)';
-     var bad=[], RN=['common','uncommon','rare','elite','gold'], SRC=['smg','magnum','carbine','shotgun','rifle','lmg','dmr','whisper'], NONE=['pistol','sniper','lance'];
+     var bad=[], RN=['common','uncommon','rare','elite','gold'], SRC=['smg','magnum','carbine','shotgun','rifle','lmg'], NONE=['pistol','sniper','lance'];   /* v32.84 retarget (52-corpus-reds-a): the Marksman Rifle and Whisper are gone (cw-gunsgone, his Q69) */
      var SAME=['rof','reload','mag','spread','rng','noise','pellets','burst','auto','optic','tint','name'];
      var P2=__P(), i, j, k, b, v, vi, ib, iv, cnt, hi, mm, nb, nv, nx, n, g, p, q, ct, o, ok, ix, snap=null, s0=RNGS, r0=RSEED, pend0=pendSeed;
      function gunsHeld(){
@@ -31094,7 +31094,7 @@ window.__REGRESS=[
        for(i=0;i<NONE.length;i++) if(RV_OF[NONE[i]]) bad.push((WEAPONS[NONE[i]]?WEAPONS[NONE[i]].name:NONE[i])+' has a rarity variant');
        if(gunRarity('smg')!=='uncommon'||gunRarity(RV_OF.smg)!=='rare') bad.push('the Compact SMG is not green with a blue twin ('+gunRarity('smg')+', '+gunRarity(RV_OF.smg)+')');
        if(gunRarity('magnum')!=='rare'||gunRarity(RV_OF.magnum)!=='elite') bad.push('the Magnum is not blue with a purple twin');
-       if(gunRarity('dmr')!=='elite'||gunRarity(RV_OF.dmr)!=='gold') bad.push('the Marksman Rifle is not purple with a gold twin');
+       if(gunRarity('lmg')!=='rare'||gunRarity(RV_OF.lmg)!=='elite') bad.push('the Support MG is not blue with a purple twin ('+gunRarity('lmg')+', '+gunRarity(RV_OF.lmg)+')');   // v32.84 retarget (52-corpus-reds-a): stands in for the gone Marksman Rifle line
        // TWO: the roll. 400 finds of each model: about one in five is the twin, none is two steps up, a twin is the model with 1.25 times the damage.
        srand(424242);
        for(i=0;i<SRC.length;i++){
@@ -34031,7 +34031,7 @@ window.__REGRESS=[
      var bad=[], k, g, p, oW, oA, z0, r, W_, vals=[];
      for(k in WEAPONS){ W_=WEAPONS[k]; if(W_&&W_.optic!==undefined){ vals.push(W_.optic); if(!(W_.optic>=2)) bad.push(k+' has a '+W_.optic+'x scope, under 2x'); } }
      if(vals.indexOf(1.25)>=0) bad.push('a 1.25x scope remains');
-     if(!(WEAPONS.rifle.optic===2&&WEAPONS.lance&&WEAPONS.lance.optic===2.5&&WEAPONS.dmr.optic===3&&WEAPONS.sniper.optic===4)) bad.push('the scope table is not 2, 2.5, 3, 4 on the Auto Rifle, the Lance, the Marksman Rifle and the Longshot');
+     if(!(WEAPONS.rifle.optic===2&&WEAPONS.lance&&WEAPONS.lance.optic===2.5&&WEAPONS.sniper.optic===4)) bad.push('the scope table is not 2, 2.5, 4 on the Auto Rifle, the Lance and the Longshot');   // v32.84 retarget (52-corpus-reds-a): the 3x scope was the Marksman Rifle, gone since cw-gunsgone (his Q69)
      function run(n){ for(var j=0;j<n;j++) __frame(0.05); }
      function aim(w){ p.wep=w; p.ads=false; run(30); z0=ZOOM(); p.ads=true; run(30); r=ZOOM()/z0; p.ads=false; return r; }
      try{
@@ -34723,11 +34723,11 @@ window.__REGRESS=[
        // FOUR: a forged gun carried out in the backpack
        base(); saveProfile();
        if(!up()) return bad.length?bad.join('; '):'SKIP: no fourth raid';
-       g.bag.push('gun_dmr'); gunQPush(forgeApply(WEAPONS.dmr,1));
+       g.bag.push('gun_sniper'); gunQPush(forgeApply(WEAPONS.sniper,1));   // v32.84 retarget (52-corpus-reds-a): the Marksman Rifle is gone (cw-gunsgone, his Q69); the Longshot is the backpack gun
        p.downed=false; p.hp=100;
        __endRaid('extract');
-       f=__P().forged&&__P().forged.dmr;
-       if(__P().weapons.indexOf('dmr')<0) bad.push('control: the backpack Marksman Rifle did not reach the armoury');
+       f=__P().forged&&__P().forged.sniper;
+       if(__P().weapons.indexOf('sniper')<0) bad.push('control: the backpack Longshot did not reach the armoury');
        if(!f||f.fk!==1) bad.push('a MK II carried out in the backpack was not kept ('+JSON.stringify(f||null)+')');
        // FIVE: a bad saved record is dropped on load
        q=JSON.parse(JSON.stringify(__P()));
@@ -37291,7 +37291,8 @@ window.__REGRESS=[
      var bad=[], g=null, p=null, E0=null, M=[], i, k, n, v=null, v1=null, pt, lo, hi, per, lv={}, pr={}, kMS={}, kPause=false, faked=false, oSfx=sfx, own=false, heard=[], r0, S, f, NS=[1,3,6];
      for(k in MSIREN) kMS[k]=MSIREN[k];
      function stage(cnt){ var j, q; g.t+=6; for(j=0;j<M.length;j++){ M[j].state=(j<cnt)?'chase':'patrol'; M[j].alert=(j<cnt)?2:0; } g.ents=M.slice(); for(q=0;q<45;q++){ for(j=0;j<cnt;j++) M[j].sirenSeeT=g.t; tickMachSiren(1/60); } return MSIREN.v; }   // v25.xx (sirentune): machines that SEE him for 0.6 s, and a clock that clears the 5 s cooldown between stagings (45 ticks of 1/60 s)
-     function parts(){ var r={tone:null,lfo:null,dep:null}, j, m; for(j=0;j<OSC.length;j++) for(m=0;m<MADE.length;m++) if(MADE[m].kind==='gain'&&MADE[m].outs.indexOf(OSC[j].frequency)>=0){ r.tone=OSC[j]; r.dep=MADE[m]; } if(r.dep) for(j=0;j<OSC.length;j++) if(OSC[j].outs.indexOf(r.dep)>=0) r.lfo=OSC[j]; return r; }
+     function parts(){ var s=MSIREN.v; return s?{tone:s.o,lfo:s.lfo,dep:s.dep}:{tone:null,lfo:null,dep:null}; }   // v32.84 retarget (52-corpus-reds-a): the siren voice is MSIREN.v (tone, slow oscillator, depth gain); other oscillators in the fake context are the LOCKED ON alert cue, not a second siren
+     function extraSiren(){ var s=MSIREN.v, mb=sndBus('mach'); return OSC.filter(function(o){ return s&&o!==s.o&&o!==s.lfo&&reach(o,mb); }).length; }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0);
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
@@ -37307,7 +37308,7 @@ window.__REGRESS=[
          n=NS[i]; v=stage(n);
          if(!v){ bad.push('with '+n+' machines on him no siren plays'); continue; }
          if(!v1) v1=v; else if(v!==v1) bad.push('with '+n+' machines on him the siren is a new voice, not the same one');
-         if(OSC.length>2) bad.push('with '+n+' machines on him '+OSC.length+' oscillators run, more than one siren voice');
+         if(extraSiren()) bad.push('with '+n+' machines on him '+extraSiren()+' more oscillators reach the machine bus, more than one siren voice');
          pt=parts();
          if(!pt.tone||!pt.lfo||!pt.dep){ bad.push('the siren does not wail: no tone swept by a slow oscillator ('+OSC.length+' oscillators)'); continue; }
          lo=pt.tone.frequency.value-Math.abs(pt.dep.gain.value); hi=pt.tone.frequency.value+Math.abs(pt.dep.gain.value);
@@ -37427,6 +37428,7 @@ window.__REGRESS=[
        for(i=q.length-1;i>=0;i--){ var b=q[i].querySelector('div > b'), h=q[i].querySelector('.hint'); if(b&&h&&h.textContent&&!/opacity:\s*\.7/.test(q[i].getAttribute('style')||'')){ r=q[i]; break; } }
        if(!r) return 'SKIP: no settings row with a description';
        nm=r.querySelector('div > b').textContent;
+       r.scrollIntoView({block:'center'});   // v32.84 retarget (52-corpus-reds-a): cw-setvis names only a row in view, so the staged row is scrolled into view first
        r.querySelector('div > b').dispatchEvent(new MouseEvent('mouseover',{bubbles:true}));
        if(window.__setDetailSync) window.__setDetailSync();
        if(dt.textContent.indexOf(nm)<0) bad.push('the detail pane does not show the row under the mouse ('+nm+')');
@@ -37812,7 +37814,7 @@ window.__REGRESS=[
      try{
        keysOpen(); l=document.getElementById('keyslist');
        if(!l) return 'SKIP: the Keys window did not build';
-       if(!(parseFloat(getComputedStyle(l).maxWidth)<=1500)) bad.push('the Keys list has no width cap ('+getComputedStyle(l).maxWidth+')');   // v28.82 (corpus-fix): 1500px, two columns, since v26.38 (css overrides 1100)
+       if(!(parseFloat(getComputedStyle(l).maxWidth)<=1500||l.offsetWidth<=1500)) bad.push('the Keys list has no width cap ('+getComputedStyle(l).maxWidth+', '+l.offsetWidth+' wide)');   // v32.84 retarget (52-corpus-reds-a): the card width caps the list now (max-width none), so the measured width counts   // v28.82 (corpus-fix): 1500px, two columns, since v26.38 (css overrides 1100)
        b=l.querySelector('.row b'); k=l.querySelector('.keybtn');
        if(b){ s=getComputedStyle(b); if(s.textTransform==='uppercase'||!(parseFloat(s.fontSize)>=17)) bad.push('an action name is '+s.fontSize+' '+s.textTransform); }   /* v30.xx (00-fix-new-reds): his rule 2026-10-18, never all caps */
        if(k){ s=getComputedStyle(k); if(!(parseFloat(s.borderBottomWidth)>parseFloat(s.borderTopWidth))) bad.push('a key is a flat box, not a keycap'); }
@@ -38406,7 +38408,7 @@ window.__REGRESS=[
        if(!hr||!(hr.height>0)) return 'SKIP: the stash has no CLOSE to line up with';
        line=Math.abs((tr.top+tr.bottom)/2-(hr.top+hr.bottom)/2)/(((typeof menuScale==='function')&&menuScale())||1);
        if(!(tr.height>0)) bad.push('the answer line has no box');
-       else if(line>6) bad.push('the answer line is '+Math.round(line)+'px off the level of CLOSE in the footer');
+       else if(getComputedStyle(t).visibility!=='hidden'&&line>6) bad.push('the answer line is '+Math.round(line)+'px off the level of CLOSE in the footer');   // v32.84 retarget (52-corpus-reds-a): cw-cx-namestashview hides the answer line while the stash is open (style guide: no toasts over a window) and CLOSE is the top right X; a shown line must still be level
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ __topClear(); }catch(_c){} }
      return bad.length?bad.join('; '):null; }},
@@ -39558,8 +39560,9 @@ window.__REGRESS=[
          hudPrompt('[E] SEARCH',400,300);
        } finally { ctx.restore(); }
        if(fills.indexOf('[E] SEARCH')<0) bad.push('the whole line is no longer filled once ('+JSON.stringify(fills).slice(0,100)+')');
-       if(fills.indexOf('E')<0) bad.push('the key letter E was not drawn on a key of its own');
-       if(fills.indexOf('[E]')>=0) bad.push('the bracketed key is still printed over the line');
+       var fl=fills.map(function(f){ return f.toLowerCase(); });   // v32.84 retarget (52-corpus-reds-a): all on-screen text is lower case (his 10-18 order), so the keycap letter is drawn as e
+       if(fl.indexOf('e')<0) bad.push('the key letter E was not drawn on a key of its own');
+       if(fl.indexOf('[e]')>=0) bad.push('the bracketed key is still printed over the line');
        if(!clips) bad.push('the [E] is not cut out of the line');
        if(oRR){ key=rr.filter(function(q){ return q[0]>=k0-1&&q[0]<k1&&q[0]+q[2]<=k1+1; });
          if(!key.length) bad.push('no key shape in the room [E] had ('+Math.round(k0)+' to '+Math.round(k1)+'; shapes '+JSON.stringify(rr.map(function(q){ return q.map(Math.round); })).slice(0,100)+')'); }
@@ -39725,8 +39728,9 @@ window.__REGRESS=[
          z=parseFloat(m.style.zoom)||1;
          if(c[3]){ cs=getComputedStyle(m,'::before'); fr={right:mr.left+mr.width/2+parseFloat(cs.width)*z/2, bottom:mr.top+mr.height/2+parseFloat(cs.height)*z/2}; }
          else fr={right:mr.right, bottom:mr.bottom};
-         if(fr.right-br.right>48*z) bad.push(c[0]+': CLOSE is '+Math.round(fr.right-br.right)+' px in from the right edge of its frame');
-         if(fr.bottom-br.bottom>96*z) bad.push(c[0]+': CLOSE is '+Math.round(fr.bottom-br.bottom)+' px up from the foot of its frame');
+         // v32.84 retarget (52-corpus-reds-a): the style guide (v31.02, one close style) moved CLOSE from the footer to a top right X, so it must sit in the top right of its frame
+         if(fr.right-br.right>130*z) bad.push(c[0]+': CLOSE is '+Math.round(fr.right-br.right)+' px in from the right edge of its frame');
+         if(br.top-(fr.bottom-(c[3]?parseFloat(cs.height)*z:mr.height))>130*z) bad.push(c[0]+': CLOSE is '+Math.round(br.top-(fr.bottom-(c[3]?parseFloat(cs.height)*z:mr.height)))+' px down from the top of its frame');
          if(br.right>fr.right+1||br.bottom>fr.bottom+1) bad.push(c[0]+': CLOSE hangs out of its frame');
          if(!c[3]) tops.push(br.top);
          n++;
@@ -41114,7 +41118,9 @@ window.__REGRESS=[
          for(c=el.firstChild;c;c=c.nextSibling) if(c.nodeType===3&&c.nodeValue.trim()){ has=true; break; }
          if(!has||!el.getClientRects().length) return;
          s=getComputedStyle(el); if(s.visibility==='hidden'||s.display==='none') return;
-         fs=parseFloat(s.fontSize); ls=parseFloat(s.letterSpacing)||0; n++;
+         fs=parseFloat(s.fontSize); ls=parseFloat(s.letterSpacing)||0;
+         if(!(fs>0)) return;   // v32.84 retarget (52-corpus-reds-a): CLOSE is an icon X now (font-size 0, the glyph is a ::after drawn shape), no text paints
+         n++;
          if(ls/fs>cap||fs<12.9) worst.push((el.id?'#'+el.id:el.tagName.toLowerCase())+' "'+el.textContent.trim().slice(0,18)+'" '+fs+'px tracked '+(ls/fs).toFixed(2)+'em');
        });
        if(worst.length) bad.push(tag+': '+worst.slice(0,4).join(', ')+(worst.length>4?' and '+(worst.length-4)+' more':''));
@@ -41259,8 +41265,8 @@ window.__REGRESS=[
   {v:'23.81',what:'the what is new card never lists the same line twice (the Tripwire Mine line went in twice)',
    run:function(){
      if(typeof WHATSNEW==='undefined') return 'SKIP: this build has no what is new card';
-     var seen={}, bad=[], i, s;
-     for(i=0;i<WHATSNEW.length;i++){ s=String(WHATSNEW[i]); if(seen[s]) bad.push('line '+i+' repeats line '+seen[s].i+': '+s.slice(0,40)); else seen[s]={i:i}; }
+     var seen={}, bad=[], i, s, L=(typeof wnList==='function')?wnList():WHATSNEW;   // v32.84 retarget (52-corpus-reds-a): the card shows wnList (cw-wnded keeps one Polish pass line); the raw list keeps the repeats on purpose
+     for(i=0;i<L.length;i++){ s=String(L[i]); if(seen[s]) bad.push('line '+i+' repeats line '+seen[s].i+': '+s.slice(0,40)); else seen[s]={i:i}; }
      if(String(WHATSNEW[0]).indexOf('THIS IS AN'+' ALPHA')!==0) bad.push('the card no longer opens with the alpha line');
      return bad.length?bad.join('; '):null; }},
   {v:'23.80',what:'his #17 and answer 34: the backpack shows the gun stat card for the gun under the mouse, or the selected gun, against the gun in hand',
@@ -42969,7 +42975,8 @@ window.__REGRESS=[
        vis=visBtns(); ids=vis.map(function(x){ return x.id; }).sort().join(',');
        // retargeted 2026-10-13 (demosettings): the DEMO box also offers SETTINGS now (pausesetbtn), with or without FEEDBACK
        // v28.82 retarget (corpus-fix 23.44): the box also carries WHAT'S NEW (wnbtn) and LEADERBOARD (lbbtn) now; the two choices are the same
-       if(ids.split(',').filter(function(x){ return !/^(fbbtn|pausesetbtn|wnbtn|lbbtn)$/.test(x); }).join(',')!=='arcendbtn,resumebtn') bad.push('the arcade pause box shows '+ids+', not only RESUME and END RUN (and FEEDBACK, his answer 38)');
+       // v32.84 retarget (52-corpus-reds-a): pausex is the top right X of the box (a second RESUME, same job), so it is not a third choice
+       if(ids.split(',').filter(function(x){ return !/^(fbbtn|pausesetbtn|wnbtn|lbbtn|pausex)$/.test(x); }).join(',')!=='arcendbtn,resumebtn') bad.push('the arcade pause box shows '+ids+', not only RESUME and END RUN (and FEEDBACK, his answer 38)');
        nm=el('resumebtn')?el('resumebtn').textContent:'';
        if(nm!=='RESUME') bad.push('the arcade resume button reads '+nm);
        for(i=0;i<vis.length;i++){
@@ -43087,7 +43094,7 @@ window.__REGRESS=[
   {v:'23.42',what:'arcade19, his order 2026-10-11: the controls card, arcadeCardRows gives 8 rows with a keyboard and a pad label, the HOW TO PLAY page draws them, the card shows MOVE at the left while shielded and is gone after the shield drops plus 5 s of frames, and a normal raid never draws it',
    run:function(){
      var bad=[], g=null, g2=null, rows, i, nm, pg, txt, br=null, ownB=false, tr, mv, sg, t0, f, base, pr, nMove='MO'+'VE', nSw='SWITCH '+'GUN';
-     function find(list,s){ var j; for(j=0;j<list.length;j++) if(list[j].t===s) return list[j]; return null; }
+     function find(list,s){ var j; for(j=0;j<list.length;j++) if(String(list[j].t).toUpperCase()===s) return list[j]; return null; }
      function frame(ts){ return __textTrace(function(){ __loop(ts); }); }
      try{
        __topClear(); __runPrep();
@@ -43111,11 +43118,12 @@ window.__REGRESS=[
        if(!g||!g.player||!g.player.arcSh) return bad.length?bad.join('; '):'SKIP: the arcade drop is not shielded';
        base=performance.now()+1000;
        tr=frame(base); mv=find(tr,nMove); sg=find(tr,nSw);
-       if(!mv||!sg) bad.push('no controls card (MOVE and SWITCH GUN) on a shielded drop');
-       else if(!(mv.x<hcv.width*0.45)) bad.push('the controls card MOVE sits at x '+Math.round(mv.x)+', not at the left');
+       // v32.84 retarget (52-corpus-reds-a): his Q70 (v30.50 cw-notutor) removed the controls card from the raid, the rows stay on the how to play page and F1. So the card must NEVER draw (arcadeCardOn is 0), shielded or not.
+       if(mv||sg) bad.push('the controls card is drawn on a shielded drop, his Q70 removed it');
+       if(typeof arcadeCardOn==='function'&&arcadeCardOn()) bad.push('arcadeCardOn is on for a shielded drop');
        arcadeShieldOff(); t0=+g.t||0;
        tr=frame(base+100);
-       if(!find(tr,nMove)) bad.push('the card is gone at once when the shield drops');
+       if(find(tr,nMove)) bad.push('the controls card is drawn when the shield drops');
        for(f=2;f<=110&&__state()===g&&!g.over;f++) __loop(base+f*100);
        if(__state()!==g||g.over) bad.push('the arcade raid ended during the frames');
        else if(g.player.arcSh) return bad.length?bad.join('; '):'SKIP: the player was shielded again (a respawn) during the frames';
@@ -43817,7 +43825,7 @@ window.__REGRESS=[
        wc.fillText=function(s){ seen.push(String(s)); return ft.apply(this,arguments); };
        for(f=0;f<3;f++) __loop(performance.now()+f*16.7);
        delete wc.fillText; own=false;
-       if(seen.length){ for(i=0;i<seen.length;i++) if(seen[i].indexOf(nS)===0) tagged=true; if(!tagged) bad.push('no SHIELD tag drawn on the shielded player'); }
+       if(seen.length){ for(i=0;i<seen.length;i++) if(seen[i].toUpperCase().indexOf(nS)===0) tagged=true;   /* v32.84 retarget (52-corpus-reds-a): cw-notutor (Q70) names the tag Shield, lower cased on screen */ if(!tagged) bad.push('no SHIELD tag drawn on the shielded player'); }
        if(__state()!==g||g.over) bad.push('the arcade raid ended');
        else {
          if(p.arcSh!==1) bad.push('standing still dropped the shield');
@@ -45525,8 +45533,9 @@ window.__REGRESS=[
        tr=__textTrace(function(){ try{ drawHUD(); }catch(_h){} });
        for(i=0;i<tr.length;i++){
          s=String(tr[i].t);
-         if(s===String(st.name).toUpperCase()) ttl=true;
-         if(s.length>=8&&String(st.text).indexOf(s)>=0&&s!==String(st.text)){
+         s=s.toLowerCase();   // v32.84 retarget (52-corpus-reds-a): every drawn word is lower case (his 10-18 order), so the trace is read lower case
+         if(s===String(st.name).toLowerCase()) ttl=true;
+         if(s.length>=8&&String(st.text).toLowerCase().indexOf(s)>=0&&s!==String(st.text).toLowerCase()){
            got+=s.length; lines++;
            if(tr[i].align==='left'&&(tr[i].x<0||tr[i].x+tr[i].w>W+1)) out++;
          }
@@ -45543,7 +45552,7 @@ window.__REGRESS=[
        if(g.lore) bad.push('400 away the story card was still up');
        else {
          tr=__textTrace(function(){ try{ drawHUD(); }catch(_h2){} });
-         for(i=0;i<tr.length;i++){ s=String(tr[i].t); if(s.length>=8&&String(st.text).indexOf(s)>=0){ bad.push('400 away the story was still drawn'); break; } }
+         for(i=0;i<tr.length;i++){ s=String(tr[i].t).toLowerCase(); if(s.length>=8&&String(st.text).toLowerCase().indexOf(s)>=0){ bad.push('400 away the story was still drawn'); break; } }
        }
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{
@@ -50912,7 +50921,8 @@ window.__REGRESS=[
        if(!/gradient/.test(sp.backgroundImage)) bad.push('PRESS ANY KEY has no band behind it');
        if(!/gradient/.test(sn.backgroundImage)) bad.push('PILLAGERS has no band behind it');
        var r=p.getBoundingClientRect();
-       if(r.bottom>innerHeight*0.88) bad.push('PRESS ANY KEY sits on the recorded belt row ('+Math.round(r.bottom)+' of '+innerHeight+')');
+       // v32.84 retarget (52-corpus-reds-a): cw-party-att (his order 2026-10-18, party screens) pins PRESS ANY KEY at 8 percent from the bottom on every page, on the dark band checked above, so the old 0.88 line cannot hold; it must still sit inside the screen and above the last 4 percent
+       if(r.bottom>innerHeight*0.96) bad.push('PRESS ANY KEY sits on the bottom edge ('+Math.round(r.bottom)+' of '+innerHeight+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ d.style.display=was; }
      return bad.length?bad.join('; '):null; }},
