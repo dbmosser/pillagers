@@ -1,0 +1,7 @@
+v32.91: reduced flashing starts on
+
+New saves and the demo start with reduced flashing. Existing choices stay. Blast lights and lightning share a three-per-second visual limit when on.
+
+Check 32.91. Fails on v32.90.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.91 - REDUCED FLASHING STARTS ON
+
+Co-op hunt while he was away. His 2.61 asks for a Settings switch on by default, with at most about three bright flashes a second.
+
+MEASURED. Check 32.91 passes, and fails on v32.90.
 ## v32.90 - CLOSE PLACE
 
 Co-op hunt while he was away. Audit of check 24.21: the close X sat 24px (Settings) and 8px (stash) under its frame, the other windows 12px. One close place, one height.

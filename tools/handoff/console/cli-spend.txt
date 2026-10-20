@@ -479,3 +479,8 @@
 2026-10-20 0.0000 o-02-corpus-green
 2026-10-20 0.0000 53-corpus-reds-b
 2026-10-20 0.1588 critic-53-corpus-reds-b
+2026-10-20 1.6314515999999997 55-retarget-repairs
+2026-10-20 0.1479 critic-manual
+2026-10-20 0.37646179999999996 56-stash-names-after
+2026-10-20 1.0102312 57-retarget-repairs-2
+2026-10-20 0.0000 o-13-reduced-flashing-default

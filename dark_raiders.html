@@ -3210,7 +3210,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.90';
+var VER='32.91';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -4331,7 +4331,8 @@ function itemWanted(k){
 // to day is stamped inside loadProfile only, so a profile created since then
 // still met it undefined on its second load and had NIGHT silently overwritten.
 // Once per profile, which is the shape that reads as a broken button.
-var P={credits:900,stash:[],weapons:['pistol'],equipped:'fists',runs:0,ext:0,died:0,best:0,dayMigrated:1,
+// v28.xx (cw-cx-flashdefault), his 2.61: "Yes, as a Settings switch that is on by default". New saves keep the new choice on reload.
+var P={credits:900,stash:[],weapons:['pistol'],equipped:'fists',runs:0,ext:0,died:0,best:0,dayMigrated:1,gameOpts:{flashRed:1},
   padPreset:'pillagers',padSticks:'', // v28.xx (cw-cx-padpresets): layouts belong to each profile.
   // v12.43, 2026-09-08 first-hour audit: THE OTHER MIGRATIONS ARE BORN SET TOO,
   // for the same reason dayMigrated is above and pname is below. A migration
@@ -5328,6 +5329,9 @@ function applyLoadedProfile(r){
         if(d&&typeof d.credits==='number'){ P=d; if(P.keymapV!==2){ P.keymap={}; P.keymapV=2; } try{ if(typeof KEYS==='object'&&KEYS) KEYS.inv=null; }catch(_kv){}   // v25.xx (keyremap): the key translation is rebuilt from the loaded map, and a map from before the swap is dropped once
 if(!P.log)P.log=[]; if(!P.contracts)P.contracts=[]; if(!P.pack)P.pack=0; if(!P.hotAssign)P.hotAssign={};
 padPresetLoad(); // v28.xx (cw-cx-padpresets): legacy profiles keep their button map, with standard sticks.
+// v28.xx (cw-cx-flashdefault): existing saves keep their choice, including the old implicit off. Profile fields only; the save key stays the same.
+if(!P.gameOpts||typeof P.gameOpts!=='object') P.gameOpts={};
+if(!Object.prototype.hasOwnProperty.call(P.gameOpts,'flashRed')) P.gameOpts.flashRed=(P.cfg&&P.cfg.flashRed===1)?1:0;
 if(typeof P.pname!=='string'||!P.pname)P.pname='PILLAGER';   // v7.64: named at the title screen; v7.85: typed
 if(!P.arrays)P.arrays=0;   // v6.76: folded racks. Additive, so old saves just have none.
 // v12.35, his order: the safe pocket is gone. Both fields are cleared off any
@@ -10667,8 +10671,8 @@ function strikeTick(dt){
     if(S.t>0) continue;
     // THE BOLT. Everything below happens once, on the frame it lands.
     G.strikes.splice(i,1);
-    if(S.rm){ G.lightning=0.34; if(!G.sim) sfxHere('alarm',S.x,S.y); continue; }   // v16.06: a host bolt on a linked window: the flash and the crack only; the host lands the hit (netAreaHitPeers)
-    G.lightning=0.34;                       // the flash the renderer has always had
+    if(S.rm){ lightningFlash(); if(!G.sim) sfxHere('alarm',S.x,S.y); continue; }   // v16.06: a host bolt on a linked window: the flash and the crack only; the host lands the hit (netAreaHitPeers) // v28.xx (cw-cx-flashdefault): the peer bolt uses the same visual limiter.
+    lightningFlash(); // v28.xx (cw-cx-flashdefault): the local bolt uses the same visual limiter.
     var d=dist(p,S);
     if(!G.sim) sfxHere('alarm',S.x,S.y);   // v20.40 (H52): each window cracks its own bolt
     ping(S.x,S.y,900,false,false,'env','fire');
@@ -22397,8 +22401,19 @@ function spark(x,y,col,n,spread){
 }
 // Short-lived light sources. Muzzle flashes, explosions and the beacon all punch
 // real holes in the darkness overlay instead of only tinting the sprite.
+// v28.xx (cw-cx-flashdefault), his 2.61: at most about three bright flashes a second. Blasts and bolts share one visual budget per raid.
+function brightFlashOk(){
+  if(CFG.flashRed!==1||G.sim) return true;
+  var t=performance.now();
+  if(typeof G._brightFlashAt==='number'&&t-G._brightFlashAt<334) return false;
+  G._brightFlashAt=t;
+  return true;
+}
+// v28.xx (cw-cx-flashdefault): keep the real lightning timer for bot sight, damage and sound; limit only the sheet and fog lift.
+function lightningFlash(){ G.lightning=0.34; G._flashBolt=brightFlashOk(); }
+function lightningVisual(){ return CFG.flashRed===1&&!G._flashBolt?0:(G.lightning||0); }
 function flash(x,y,r,col,life){
-  if(G.sim) return;
+  if(G.sim||!brightFlashOk()) return;
   G.flashes.push({x:x,y:y,r:r*(CFG.flashRed===1?0.6:1),c:col||'#ffc27a',t:0,life:(life||.14)*(CFG.flashRed===1?0.7:1)});   // v26.xx (settings9): REDUCED FLASHING, a smaller and shorter light
   if(G.flashes.length>60) G.flashes.shift();
 }
@@ -40282,7 +40297,7 @@ var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
   // v6.87, his note: a strike shows you the whole map for a moment, inside or out. The
   // fog sheet is what hides things, so the flash lifts the sheet rather than merely
   // brightening the picture over the top of it.
-  var _flash=clamp((G.lightning||0)/0.34,0,1)*flashK();   // v26.xx (settings9): REDUCED FLASHING lifts the fog less in a bolt
+  var _flash=clamp(lightningVisual()/0.34,0,1)*flashK(); // v28.xx (cw-cx-flashdefault): a suppressed bolt cannot brighten the fog.
   if(_flash>0) _lift+=_flash*0.52;
   fx2.fillStyle=fogFillStyle(isDay(),BR,_lift,_flash);   // v32.xx (cw-machfx) a31 B: lighter fog
 // v4.35 HIS NOTE, three times now: night is too dark and jarring. The
@@ -40533,7 +40548,8 @@ wc.drawImage(fogC,0,0,W,H);   // v18.03: stretched back over the frame
   if(G.lightning>0) G.lightning=Math.max(0,G.lightning-dt);
   if(WX.lightning){
     // Render layer, never reached headless. Same reason as the puff roll above.
-    if(G.lightning>0){
+    // v28.xx (cw-cx-flashdefault): suppressed bolts keep their gameplay timer but draw no sheet.
+    if(lightningVisual()>0){
       // a hard flash that shows the whole street for a moment: it lifts the fog sheet
       // for you (above), and updateEnts reads it: they see you FLASH_SEE times farther while it is up (v16.03, his order)
       var lf=G.lightning>0.26?(0.34-G.lightning)/0.08:G.lightning/0.26;
@@ -44371,7 +44387,9 @@ function tickNuke(dt){
       // v8.54, audit: with a colour. Without one the read assigns undefined to
       // fillStyle, which the canvas ignores, so the bloom came out in whatever the
       // previous pass left set - a district lamp colour.
-      G.flashes.push({x:bx,y:by,r:rnd(180,340)*(CFG.flashRed===1?0.6:1),t:0,life:0.5*(CFG.flashRed===1?0.7:1),c:'#ffd6a0'});   // v27.67 (cloud-menus-nuke-reduced-flash), CLOUD HUNT 2026-10-15: these blooms skip flash(), so REDUCED FLASHING never shrank them; same factors as flash(), same rnd draw
+      // v28.xx (cw-cx-flashdefault): barrage blooms share the flash budget; always take the radius draw so the raid seed stays unchanged.
+      var _nr=rnd(180,340);
+      if(brightFlashOk()) G.flashes.push({x:bx,y:by,r:_nr*(CFG.flashRed===1?0.6:1),t:0,life:0.5*(CFG.flashRed===1?0.7:1),c:'#ffd6a0'});
       G.shake=Math.min(30,(G.shake||0)+7);
       try{ sfx('boom',bx,by); }catch(e){}
     }
@@ -50952,7 +50970,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.90: Settings and the stash put the close X 12px under their frame top, like the shop. Check 32.90 fails on v32.89',
+  now:'v32.91: New saves and the demo start with reduced flashing. Existing choices stay. Blast lights and lightning share a three-per-second visual limit when on. Check 32.91 fails on v32.90',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -59820,11 +59838,15 @@ function arcadeSandboxIn(role){
   try{ sb=JSON.parse(js); }catch(_sp){ sb=null; }
   if(!sb||typeof sb!=='object') return false;
   for(k in ARCADE_SBX) if(Object.prototype.hasOwnProperty.call(ARCADE_SBX,k)) sb[k]=JSON.parse(JSON.stringify(ARCADE_SBX[k]));
+  // v28.xx (cw-cx-flashdefault), his 3.15: the demo starts on its own reduced flashing choice, even when the career save chose off.
+  sb.gameOpts=sb.gameOpts||{}; sb.gameOpts.flashRed=1;
+  if(sb.tuned) delete sb.tuned.flashRed;
   ARCADE.role=(role==='p2')?'p2':'host';
   sb.pname=(ARCADE.role==='p2')?'PLAYER 2':'PLAYER 1';
   ARCADE.cfgAll=arcadeCfgCopy(CFG);   // v23.27 (arcfixb)
   ARCADE.realJs=js; ARCADE.on=1;
   netUpPutP(JSON.stringify(sb));
+  CFG.flashRed=1; // v28.xx (cw-cx-flashdefault): the demo setting takes effect in either window at entry.
   try{ KEYS.inv=null; keysInv(); }catch(_ki){}
   try{ applyMenuZoom(); }catch(_tz){}   // v28.xx (cw-tvtext): the TV size takes hold at once
   return true;
@@ -67613,12 +67635,13 @@ var GAMEOPTS=[
   // tones down the bright flashes: the light of a blast, a shot or the Forge (smaller and shorter, flash()), the muzzle flashes drawn on the gun and the
   // machine, the lightning that lights the whole street, and half of every burst of sparks, the Forge's included. Cosmetic only: what lightning
   // shows to the machines, the damage and the sound are untouched.
+  // v28.xx (cw-cx-flashdefault), his 2.61: reduced flashing starts on for new pillagers.
   {k:'flashRed', label:'REDUCED FLASHING', sec:'ACCESSIBILITY',
    hint:'Tones down the bright flashes: blasts, muzzle flashes, lightning and forge sparks.',
    opts:[
      {n:'OFF', cfg:{flashRed:0}},
      {n:'ON',  cfg:{flashRed:1}}
-   ], def:0},
+   ], def:1},
   {k:'rumble', label:'Controller rumble',
    hint:'Each player controller buzzes when that player is hit, goes down or is near a blast, with a light tick when firing. A controller nobody is using stays still.',
    opts:[

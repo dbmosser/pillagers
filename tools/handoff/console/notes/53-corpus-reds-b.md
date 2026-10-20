@@ -35,3 +35,4 @@ Important sequence: ship the game key first, then return the result and pictures
 
 Requested screen 04 before/after and critic. The existing task notes explain the other 18 checks. Remaining work is the game gate, visual review and the v28.20 geometry retarget after ship.
 
+53: moved to done/ by the coordinator 10-20 11:58; its last piece (28.20 after v32.89) is job 56
