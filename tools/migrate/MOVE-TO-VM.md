@@ -212,7 +212,7 @@ Optional switches (all off unless you add them; add them to the same command):
 - `-NoRunner` creates the "Pillagers runner" task but leaves it switched off.
 - `-IncludeOptionalApps` also removes Phone Link, Sticky Notes, Mail and Calendar, Quick Assist and similar.
 - `-LeanVisuals` switches off window and menu animations.
-- `-DefenderExclusion` tells Defender not to scan `C:\claudecode`. That makes tests faster, but it is a real security trade-off, so it is off by default and your call (see "What stays yours").
+- (10-19: the old `-DefenderExclusion` switch was removed. The script never touches Defender; antivirus settings stay yours.)
 
 ### Step 5 - Restart the VM for the graphics card, then check it [IN THE VM]
 1. Start menu, Power, **Restart** (not Shut down). 3-5 minutes. Sign in again.

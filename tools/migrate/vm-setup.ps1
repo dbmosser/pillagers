@@ -23,8 +23,6 @@ SWITCHES
   -Only a,b      run just these stages           -Skip a,b     run all except these
   -DryRun        show what WOULD happen, change nothing (same as -WhatIf)
   -Force         override the safety stops (see below). It never overrides the secret-file refusal.
-  -DefenderExclusion   OPTIONAL SECURITY TRADE-OFF, OFF BY DEFAULT: tells Microsoft Defender to skip scanning C:\claudecode
-                 (the only security-related switch in this script). Without it Defender is never touched.
   -IncludeOptionalApps  debloat: also remove Phone Link, Sticky Notes, Mail/Calendar, Quick Assist, etc.
   -LeanVisuals   look: also switch off window and menu animations
   -DisableSysMain      perf: stop the SysMain (Superfetch) service (off by default, evidence is mixed)
@@ -52,7 +50,7 @@ WHAT IT WRITES
   C:\PillagersMove\kit\logs\vm-setup-<yyyyMMdd-HHmmss>.log   C:\PillagersMove\undo\   C:\PillagersMove\state\   C:\PillagersMove\launchers\
   C:\PillagersMove\work\ (scratch; safe to delete)   scheduled tasks "Pillagers runner" and "Pillagers dev services"   desktop shortcuts
 
-NEVER TOUCHED (hard rule): Microsoft Defender settings (unless -DefenderExclusion), the firewall, UAC, SmartScreen,
+NEVER TOUCHED (hard rule): Microsoft Defender settings (no exclusion, no switch for one), the firewall, UAC, SmartScreen,
   Windows Update, BitLocker, Credential Guard / VBS. No secret value (API key, token, password, login file) is read,
   printed, copied or logged. Keys and sign-ins are entered by you afterwards (see the checklist at the end).
   This script is ASCII only and runs on Windows PowerShell 5.1.
@@ -63,7 +61,6 @@ param(
   [string[]]$Skip = @(),
   [Alias('WhatIf')][switch]$DryRun,
   [switch]$Force,
-  [switch]$DefenderExclusion,
   [switch]$IncludeOptionalApps,
   [switch]$LeanVisuals,
   [switch]$DisableSysMain,
@@ -719,7 +716,6 @@ function Stage-preflight {
     if ($script:Selected -contains $s) { $mark = ' > ' }
     Say ($mark + $s.PadRight(10) + $desc[$s])
   }
-  if ($DefenderExclusion) { Warn 'OPTIONAL SECURITY TRADE-OFF requested: -DefenderExclusion will tell Defender to skip C:\claudecode (perf stage).' }
   if ($script:DryRun) { Say 'DRY RUN: nothing below will change anything.' }
   return (ResDone ('checks finished, ' + $script:StageWarn + ' warning(s)'))
 }
@@ -1805,18 +1801,8 @@ function Stage-perf {
     if ($r.ExitCode -eq 0) { Say ('search index: ' + $script:DevRoot + ' marked not content indexed; classic search mode does not index it anyway') } else { Warn 'could not mark C:\claudecode as not indexed' }
   }
 
-  # Defender: ONLY with the switch
-  if ($DefenderExclusion) {
-    Warn 'OPTIONAL SECURITY TRADE-OFF (you asked with -DefenderExclusion): Microsoft Defender will stop scanning C:\claudecode. Malware placed there would not be caught.'
-    $has = $false
-    try { $has = (@((Get-MpPreference -ErrorAction Stop).ExclusionPath) -contains $script:DevRoot) } catch { }
-    if ($has) { Say 'Defender exclusion for C:\claudecode is already there' }
-    else {
-      $ok = Do-Change 'add a Defender exclusion for C:\claudecode only' { Add-MpPreference -ExclusionPath $script:DevRoot -ErrorAction Stop }
-      if ($ok) { [void]$script:UndoOther.Add('Defender exclusion added for C:\claudecode. To undo: Remove-MpPreference -ExclusionPath C:\claudecode') }
-      else { Warn 'Defender refused (Tamper Protection or a policy may block it). Nothing was changed.' }
-    }
-  } else { Say 'Defender: not touched (no exclusion). It stays fully on.' }
+  # Defender is never touched by this script (antivirus settings are the owner's own decision).
+  Say 'Defender: not touched. It stays fully on.'
 
   Save-Undo 'perf'
   if ($script:DryRun) { return (ResDone '(dry run) listed the performance changes') }
