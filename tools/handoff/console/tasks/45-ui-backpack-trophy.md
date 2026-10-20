@@ -25,3 +25,12 @@ Checks (each must FAIL on the old build): measured layout facts you fixed (for e
 1080p, a focus ring box on the focused trophy, backpack text at or above the style guide's minimum size).
 Pictures: camera-recipes.json with both screens at 1080p, then the critic.
 TASK DONE when each screen reaches its target from the critic (never your own grade); TASK PARTIAL with what is left.
+
+## RE-QUEUED 10-20 07:10 (coordinator): backpack only, with his answer
+HIS ANSWER (10-20 07:10) to the scrim question: "Small to medium". The raid backpack stays a panel over the live world: no scrim, no
+full-screen card, no x card. It may grow from small to a medium size (about a third to half of the screen width at 1080p) if
+that makes the items easier to read. His taste beats the critic (54): ignore the critic's ask for the 90 percent card.
+The trophy case is done (v32.77, critic 3). Do not touch it.
+Start from the better of v32.79 (critic 3) and v32.81 (critic 2), per his rule 28, and say which you kept.
+Vetoes stand: no empty slot outlines that read as a bag limit, no weight, no HEAVY / LOADED / LIGHT line.
+Finish line for this round: the backpack is small to medium as he said, critic 3 or better. At most 2 runs, then keep the best.

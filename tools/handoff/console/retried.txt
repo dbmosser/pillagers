@@ -15,3 +15,5 @@ c-02-raid-hud-redesign
 o-07-pad-lost
 o-08-pad-owner
 o-02-corpus-green
+45-ui-backpack-trophy
+45-ui-backpack-trophy
