@@ -3946,9 +3946,9 @@ window.__REGRESS=[
      // CONTROL 1: 1080p must not have moved. This was a 4K complaint and he has a
      // working layout there.
      /* ui1 (his order #50): the game font is Barlow Condensed now, narrower than Rubik was: the same heading measures 237 wide at 1080p where it measured 326; the height is unchanged */
-     bad.push('DIAG 1080p '+a.tw+'x'+a.th+' 4k '+b.tw+'x'+b.th+' dbg '+a.dbg);
-     if(a.th<12||a.th>30||a.tw<60)
-       bad.push('control: the 1080p map heading changed to '+a.tw+'x'+a.th+', it was 326x16 (237x16 in Barlow Condensed)');
+     // v32.83 baseline (50-corpus-old-a): the card header text at 1080p measures 171x34 (the sector name, light text); a 20 percent band keeps the control honest without freezing the font.
+     if(Math.abs(a.tw-171)>35||Math.abs(a.th-34)>7)
+       bad.push('control: the 1080p map heading changed to '+a.tw+'x'+a.th+', it is 171x34 since the card header (cw-mapstyle; it was 326x16 amber text above the frame)');
      // CONTROL 2, AND IT IS THE ONE THAT MATTERS. The map scales its text by
      // handing FS a modified spec. If that ever leaks into the global font cache,
      // every panel in the game inherits a 4K font at 1080p. So: draw the map at
