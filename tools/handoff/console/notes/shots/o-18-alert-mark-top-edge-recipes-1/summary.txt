@@ -1,0 +1,4 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  alert-top-question                     NOT STAGED   7.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | SKIP: middle-view bot name or mark was not visible
+  alert-top-bang                         NOT STAGED   7.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | SKIP: middle-view bot name or mark was not visible
+  alert-middle-control                   NOT STAGED   7.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | SKIP: middle-view bot name or mark was not visible

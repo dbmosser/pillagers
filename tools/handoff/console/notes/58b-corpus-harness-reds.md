@@ -46,3 +46,18 @@ Next run (needs cdp on port 9351): __regressBg(120, idx31.67+1) first, then bise
 - 300 (v31.04): the smallest failing window is `279:300` and no single check or pair in it breaks it alone, so it is a combination
   or build-up inside 279 to 299. Bisect inside that window by dropping checks (e.g. 279:290,291:300,300).
 - Lane a and the coordinator share tools/fxpina.html (the pin); the coordinator stops using it now, the job is yours.
+
+## Lane a run 10-20 (evening): ALL FIVE FIXED (commits 32221c82 by another worker, 45094ab9, 735976e0). Staging only, no assertion touched.
+Reproduced each in its slice with slicechk.sh (lane a Chrome), bisected on a pinned copy, fixed, then ran the four whole slices on the shipped fixture:
+120:240, 240:360, 840:960, 1200:1320 (v33.12): v31.67, v31.04, v30.91, v24.38, v20.89 all PASS.
+- v31.67: leaker v31.71 (it deployed a raid and never ended it; the live raid disabled Settings buttons, which draw boxed). Fix: v31.71 ends its raid in finally (32221c82).
+  Proof it can still fail: shipped v33.09 fixture `180:236,236` and `232,236` FAIL, same on the fixed draft PASS; a boxed idle stepper still pushes the message.
+- v31.04 and v30.91: leaker v31.21 (and any of ~140 checks) that restore ctx.fillText with ctx.fillText=saved. That leaves an OWN property that hides
+  the PR.fillText recorders of later checks ("F1 list does not mention Superhot", "did not draw +0.50s"). Fix: __ctxHeal() in __runPrep drops an own ctx method equal
+  to the prototype's function. Proof: before the fix `284,301` FAIL, after `240:360 draft` shows neither red; a check whose text is really not drawn still fails (the recorder just sees it).
+- v24.38: leaker 25.30 (search sounds) filled/changed the wall sprite store so the sprite baked by v24.38 was not one the mark painter found ("121.6 to 121.6").
+  Fix: v24.38 empties WALLSPR first (staging). Proof: `881,973` FAIL before; PASS after; the mark pixel check still compares l0-l1<12, so a painter that does not mark still fails it.
+- v20.89: leakers v21.03 and v21.06 (and other 4K checks): they end with __forceSize(1920,1080), leaving the canvas larger than the gate window, so the shop grid reached the answer line.
+  Fix: __forceSize remembers the first styles, __runPrep restores them (and 21.03 restores its own). Proof: `1306,1323` FAIL before, `1250:1340 draft` PASS after; a tile under the line still pushes the message.
+Open (not mine, pass-alone fails, logged in alarms.md): v31.59 (row height 51,96) and v25.53 fail ALONE on v33.12; v32.77 flaky.
+Lesson: slicechk "pin" always pins the SHIPPED fixture, never a draft; places shift by one per ship, so use find: after every ship.

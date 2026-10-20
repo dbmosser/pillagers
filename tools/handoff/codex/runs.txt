@@ -138,3 +138,15 @@
 2026-10-20 16:30 o-17-pad-layout-selector 81s ok PARTIAL in=1706744 out=16980 run=4
 2026-10-20 16:52 o-17-pad-layout-selector 38s ok DONE in=2127057 out=18366 run=5
 2026-10-20 16:56 o-18-alert-mark-top-edge 270s ok PARTIAL in=805999 out=11646 run=1
+2026-10-20 17:09 o-18-alert-mark-top-edge 106s ok PARTIAL in=1293093 out=16408 run=2
+2026-10-20 17:15 o-18-alert-mark-top-edge 62s ok DONE in=1590046 out=18631 run=3
+2026-10-20 17:16 o-19-duplicate-check-ids 109s ok PARTIAL in=295442 out=4461 run=1
+2026-10-20 17:18 o-19-duplicate-check-ids 66s ok PARTIAL in=550392 out=6782 run=2
+2026-10-20 17:20 o-19-duplicate-check-ids 88s ok PARTIAL in=752971 out=10912 run=3
+2026-10-20 17:21 o-19-duplicate-check-ids 54s ok PARTIAL in=918612 out=13144 run=4
+2026-10-20 17:22 o-19-duplicate-check-ids 31s ok PARTIAL in=1093268 out=14302 run=5
+2026-10-20 17:22 o-19-duplicate-check-ids 28s ok PARTIAL in=99973 out=1309 run=1
+2026-10-20 17:23 o-19-duplicate-check-ids 23s ok PARTIAL in=189369 out=2321 run=2
+2026-10-20 17:24 o-19-duplicate-check-ids 57s ok PARTIAL in=100960 out=1440 run=3
+2026-10-20 17:25 o-19-duplicate-check-ids 24s ok PARTIAL in=188468 out=2261 run=4
+2026-10-20 17:26 o-19-duplicate-check-ids 66s ok PARTIAL in=195339 out=2261 run=5

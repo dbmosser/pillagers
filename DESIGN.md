@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.13 - THE WHAT IS NEW CARD NAMES THE EXPERIMENTAL PAGE
+
+Co-op hunt while he was away. The card was stamped v33.04 and the stamp may not trail the build by more than 0.15. Its new line names the experimental page in settings, the biggest change since.
+
+MEASURED. Check 33.13 passes, and fails on v33.12.
 ## v33.12 - ALERT MARK CLEARS TOP EDGE NAME
 
 Co-op hunt while he was away. Clamping a bot alert mark to the top edge put it over the bot name.

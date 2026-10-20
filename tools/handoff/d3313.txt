@@ -1,0 +1,5 @@
+## v33.13 - THE WHAT IS NEW CARD NAMES THE EXPERIMENTAL PAGE
+
+Co-op hunt while he was away. The card was stamped v33.04 and the stamp may not trail the build by more than 0.15. Its new line names the experimental page in settings, the biggest change since.
+
+MEASURED. Check 33.13 passes, and fails on v33.12.

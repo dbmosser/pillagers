@@ -1,0 +1,7 @@
+v33.13: the what is new card names the experimental page
+
+The what is new card names the experimental page.
+
+Check 33.13. Fails on v33.12.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
