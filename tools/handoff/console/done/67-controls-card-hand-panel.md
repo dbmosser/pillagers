@@ -21,3 +21,5 @@ otherwise leave it until after 10/30.
 TASK DONE when shipped, the check passes and the pictures show both panels whole; TASK PARTIAL with what is left.
 
 COORDINATOR 10-20 18:53: taken by the coordinator (helpers are held by RAM); it ships from here.
+
+COORDINATOR 10-20 19:05: DONE. Shipped v33.15 (583d4a0c). The new check passes in career and the demo at 1080p and 4K, and the list drops back onto the vitals when the item is put away. Pictures in notes/shots/67-controls-card-hand-panel-after: p1 and p2 both show the list ending above the bandage panel with the name and readying line whole (before: o-02-corpus-green-recipes-4). The F1 full list was left as is: it is the deliberate centred overlay, opened on purpose, not the compact card.
