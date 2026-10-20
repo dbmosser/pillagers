@@ -6156,7 +6156,7 @@ window.__REGRESS=[
            var L=T.source; if(!L||!L.mark){ bad.push('loot tag has no own anchor'); return; }
            var M=L.mark, p={x:M.x*M.m.a+M.m.e,y:M.y*M.m.d+M.m.f}, I={l:p.x-8*z,r:p.x+8*z,t:p.y-8*z,b:p.y+8*z};
            if(gap(T.box,I)>100*z) bad.push('loot tag more than 100px from its own icon at '+H+'p');
-           var original=mapLabelRect(L,0,0); if((Math.abs(original.l-T.box.l)>z||Math.abs(original.t-T.box.t)>z)&&gap(T.box,I)>2*z&&!hasPoint(p)) bad.push('displaced loot tag lacks a leader at its own icon');
+           var original=mapLabelRect(L,0,0), leaderLen=Math.sqrt(Math.pow(p.x-clamp(p.x,T.box.l,T.box.r),2)+Math.pow(p.y-clamp(p.y,T.box.t,T.box.b),2)); if((Math.abs(original.l-T.box.l)>z||Math.abs(original.t-T.box.t)>z)&&leaderLen>28*z&&!hasPoint(p)) bad.push('displaced loot tag lacks a leader at its own icon');
          });
          if(tracks.length!==mapContractRows().length) bad.push('not every contract has a track');
          if(tracks.length&&tracks.some(function(t){ return Math.abs(t.x-tracks[0].x)>z||Math.abs(t.w-tracks[0].w)>z; })) bad.push('contract tracks have ragged edges');
