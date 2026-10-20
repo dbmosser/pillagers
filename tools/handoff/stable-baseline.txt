@@ -75,7 +75,7 @@ v28.13 the body layer: a vest rack and a shoulder rack that change the chest and
 v28.16 the head layer: six new headgears that change the head shape at raid size
 v28.48 cloud-coop-teammate-shield-bubble: a SHIELD BUBBLE power-up is seen round
 v28.68 his order 2026-10-15 (crawlers too fast): a crawler moves at 120 units a
-v9.03 an emptied belt slot is actually drawn darker, not just marked empty
+v9.03h an emptied belt slot is actually drawn darker, not just marked empty
 v9.03 spending the last of a belted item leaves the slot dark and empty, never a
 v9.19 the names on screen are his names, not the ones I reached for
 v9.31 an item can be taken back off the belt during a raid, and a click on its o
