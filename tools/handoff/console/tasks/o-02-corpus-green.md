@@ -37,3 +37,12 @@ one is explained in notes. Otherwise TASK PARTIAL with the count left; the coord
 The 03:51 full run on v32.66 was stopped at 05:02: it crawled (66 of the first 120 checks in 65 min, about 10x slower than the
 v32.16 run) while its page grew to 1.9 GB and every helper waited on memory. There is no v32.66 list. Work from
 tools/handoff/corpus-fails-v32.16.txt and its -new file, checking each on HEAD first as the block above says.
+
+## RE-QUEUED 10-20 06:05 (coordinator): round 2, fresh thread
+Why: it used its 5 runs while still making steady progress (a long list is expected to take several rounds), not because it was stuck.
+Done so far (keep, do not redo): fixture commits 544cba9f (ten stale or mis-staged checks) and fe9c6c5a (15 checks: 9.74 9.76
+10.17 10.19 10.21 10.32 10.33 10.34 10.35 10.36 10.39 10.41 10.45 10.46 10.47, all PASS on the lane trial), plus cw-cx-padlostlegend.
+Your full state is in tools/handoff/console/notes/o-02-corpus-green.md: read it first; this is a fresh thread with no memory of round 1.
+Next: continue the v32.16 list from the next unresolved entries (10.64, 10.73, 10.92, 10.96 and on), 15 or fewer per batch, each
+checked on HEAD first. Stay on old checks: pad screen pictures belong to o-07, o-10 and o-11, not to this job.
+There is still no list newer than v32.16: the 03:51 full run was stopped (the shadow store crawl, task 00-perf-shadow-store).
