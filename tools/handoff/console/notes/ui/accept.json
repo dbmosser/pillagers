@@ -33,17 +33,17 @@
  "05-sector-page": {
   "score": 3,
   "pass": false,
-  "verdict": "the selected states are quieter, the pack rows fill the column and the ascend plate is smaller, but the map labels are now too small to read from a couch and the right column still has too many type sizes and stacked boxes.",
+  "verdict": "The pre-raid card is clean, and the lime ascend button is the clear primary action. But the map labels still sit on top of the building blocks, the right column is dense, and the title is weak next to the map.",
   "findings": [
-   "P1 map labels (exit a/b/c, foreman office, blast freezer, the long dock): set every map label to at least 16px f-cond 600 with a 2px dark halo. Put the exit labels 8px clear of the ring. Move 'blast freezer', 'chill row' and 'the long dock' to empty floor so they do not cross block edges.",
-   "P1 right column, kit and pack area: limit it to the 20px / 16px / 14px scale. Bring the caps to 16px tx-2 or put them next to the count as '0 / 2'. Use one stripe colour, or none. Keep a stripe only where it carries rarity.",
-   "P1 selected state across kit, surface and weather: selected row: --ui-raised fill, 3px lime left bar, lime check. Focused row: 2px lime outline on the whole row. Keep the two states visibly different and check that the pad focus shows.",
-   "P1 hierarchy, ascend button and warning: give the warning a 4px --warn left bar on the same row style as the gun row, or merge the two into one 'gun / armour' block with 16px dividers. Leave 16px of space above ascend.",
-   "P2 right column, vertical rhythm: use an even 16px between blocks. Give the checkbox a 24px hit box in the panel border colour with a lime check when on."
+   "P1 map labels (chill row, the long dock, blast freezer, foreman office): Move labels into clear floor space or use a 6px dark pill (#0b0c0d at 80%) behind each one. Use one colour (tx-1) for every label. Keep zone names at 20px and exit names at 16px, and do not let any label overlap a block.",
+   "P1 right column (kit, pack, 7 stepper rows, data core, gun, warning, ascend): Fold the data core row into the gun chip row, or drop it when there is no core. Make the stepper buttons 44x44. Increase row spacing to 8px in the 16px rhythm. Make the quantity number 24px tx-1 so the pack count is easy to read.",
+   "P1 title bar 'pre-raid' and map header 'cold storage': Make the window title 32px f-cond 700 and the sector name 20px with an accent tab. Cut the facts line to '5 zones · 3 exits'. Make 'ascending here' a quiet 16px label with no outlined chip.",
+   "P2 conditions column (surface, weather): Put the column in a --ui-panel with a 1px line-hi border and 16px padding. Make the percent modifiers tx-1 at 16px or use a warn-coloured glyph. Make 'conditions' the single heading, with 16px labels for the groups. Show selected as a 3px lime left bar and keep the lime ring for pad focus only.",
+   "P2 map panel: Tint the map toward --ui-raised and use --ui-line-hi for room edges. Fill the blocks with --ui-void at 60% and a 1px line. Keep teal only for exits, as the guide says."
   ],
-  "pic": "tools/handoff/console/notes/shots/22-after4/05-sector-page-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/22-after5/05-sector-page-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T06:22"
+  "when": "2026-10-20T06:26"
  },
  "06-terms": {
   "score": 3,

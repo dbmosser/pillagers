@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.54 - THE WHAT IS NEW CARD NAMES POLISH PASS 36
+
+Co-op hunt while he was away. The card was stamped v32.38 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
+
+MEASURED. Check 32.54 passes, and fails on v32.53.
 ## v32.53 - PRE-RAID MAP: ZONE NAMES 20 PX, EXIT AND KEYED ROOM NAMES 18 PX
 
 Co-op hunt while he was away. After the map canvas was drawn at its real size the critic found the names too small to read from a couch. The zone names go to 20 px (shrinking to 14 to fit), the exit and keyed room names to 18 px.

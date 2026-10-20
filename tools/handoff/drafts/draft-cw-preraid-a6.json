@@ -1,0 +1,40 @@
+{
+    "title":  "PRE-RAID: LABELS ON A DARK PILL, A BIGGER WINDOW TITLE, A QUIETER ARMOUR ROW AND BIGGER STEPPERS",
+    "why":  "The critic still scored the page 3 after five passes and named: map labels reading as overlapping the room blocks, the sector name outranking the window title, the armour warning as heavy as item names, ascend shown twice, and small steppers. Labels get a dark pill, the title is 32 px over a 24 px sector name, the warning is 16 px with a bar, the footer drops its ascend hint and steppers are 44 px.",
+    "now":  "The pre-raid page labels are easier to read, the title is bigger than the map name, and the plus and minus buttons are bigger.",
+    "edits":  [
+                  {
+                      "anchor":  "function put(s,x,y){ c.lineJoin=\u0027round\u0027; c.lineWidth=2; c.strokeStyle=\u0027rgba(8,18,28,.6)\u0027; c.strokeText(String(s).toLowerCase(),x,y); c.fillText(s,x,y); }",
+                      "replacement":  "function put(s,x,y){ var tw=c.measureText(String(s)).width, tx=(c.textAlign===\u0027right\u0027)?x-tw:((c.textAlign===\u0027center\u0027)?x-tw/2:x), fh=parseInt((c.font.match(/(\\d+)px/)||[0,16])[1],10), f0=c.fillStyle; c.fillStyle=\u0027rgba(11,12,13,.78)\u0027; c.fillRect(tx-5,y-fh+2,tw+10,fh+5); c.fillStyle=f0; c.fillText(s,x,y); }"
+                  },
+                  {
+                      "anchor":  "c.font=\u0027600 18px \u0027+FF; c.textAlign=\u0027right\u0027; c.fillStyle=\u0027#dcc3f4\u0027;",
+                      "replacement":  "c.font=\u0027600 18px \u0027+FF; c.textAlign=\u0027right\u0027; c.fillStyle=\u0027#e6f1fb\u0027;"
+                  },
+                  {
+                      "anchor":  "#root #sectormodal h3{ align-items:center; gap:16px; padding-bottom:8px; margin-bottom:10px; }",
+                      "replacement":  "#root #sectormodal h3{ align-items:center; gap:16px; padding-bottom:8px; margin-bottom:10px; font-size:32px; }"
+                  },
+                  {
+                      "anchor":  "#sectormodal .srmh b{ font:700 32px/1 var(--f-cond);",
+                      "replacement":  "#sectormodal .srmh b{ font:700 24px/1 var(--f-cond);"
+                  },
+                  {
+                      "anchor":  "\u003cspan class=\"hn\"\u003e\u0027+k(\u0027ENTER\u0027)+\u0027ASCEND\u003c/span\u003e",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "#sectormodal .wn b{ font:700 20px var(--f-cond); }",
+                      "replacement":  "#sectormodal .wn b{ font:500 16px var(--f-cond); }"
+                  },
+                  {
+                      "anchor":  "border:0; background:none; border-radius:0; color:var(--warn);",
+                      "replacement":  "border:0; border-left:3px solid var(--warn); background:none; border-radius:0; color:var(--warn);"
+                  },
+                  {
+                      "anchor":  "width:36px; height:36px; min-width:0; padding:0; display:grid;",
+                      "replacement":  "width:44px; height:44px; min-width:0; padding:0; display:grid;"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the pre-raid page sixth pass: map labels sit on a dark pill, the window title is 32 px and bigger than the sector name, the footer lists ascend once, and the no armour row is 16 px with a warn bar\u0027,\n   run:function(){\n     if(!(window.__hubEnter\u0026\u0026window.__P\u0026\u0026window.__applyLoaded)||typeof renderSector!==\u0027function\u0027) return \u0027SKIP: no pre-raid page\u0027;\n     var bad=[], snap=null, q, sm=document.getElementById(\u0027sectormodal\u0027), h3, nm, wb, h, st;\n     function shut(){ var mo=document.querySelectorAll(\u0027.modal.on\u0027); for(var j=0;j\u003cmo.length;j++) mo[j].classList.remove(\u0027on\u0027); }\n     try{\n       snap=JSON.parse(JSON.stringify(__P()));\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       q=__P(); q.freeKit=0; q.kitPick=\u0027mine\u0027; q.stash=[\u0027medkit\u0027]; q.kit=[]; q.equipped=\u0027fists\u0027;\n       __hubEnter(); shut(); renderSector(); openModal(\u0027sectormodal\u0027);\n       h3=sm.querySelector(\u0027h3\u0027); nm=sm.querySelector(\u0027.srmh b\u0027); wb=sm.querySelector(\u0027#sectorkit .wn b\u0027); h=document.getElementById(\u0027srhints\u0027); st=sm.querySelector(\u0027.srprow .st button\u0027);\n       if(!h3||!nm||!wb||!h||!st) return \u0027the pre-raid page is not drawn\u0027;\n       if(!(parseFloat(getComputedStyle(h3).fontSize)\u003eparseFloat(getComputedStyle(nm).fontSize))) bad.push(\u0027the window title (\u0027+getComputedStyle(h3).fontSize+\u0027) is not bigger than the sector name (\u0027+getComputedStyle(nm).fontSize+\u0027)\u0027);\n       if(parseFloat(getComputedStyle(wb).fontSize)\u003e17) bad.push(\u0027the no armour words are \u0027+getComputedStyle(wb).fontSize);\n       if(/ascend/i.test(h.querySelector(\u0027.srk\u0027).textContent)) bad.push(\u0027the key footer still lists ascend, which the plate already shows\u0027);\n       if(parseFloat(getComputedStyle(st).height)\u003c43) bad.push(\u0027a stepper is \u0027+getComputedStyle(st).height+\u0027 high, not 44\u0027);\n       if(String(sectorPreviewDraw).indexOf(\u0027rgba(11,12,13,.78)\u0027)\u003c0) bad.push(\u0027map labels have no dark pill\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ shut(); }catch(_s){} try{ if(snap) __applyLoaded(snap); }catch(_a){} try{ __cleanProfile(); }catch(_c){} __topClear(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
