@@ -70,9 +70,18 @@ retry(){ ls "$C/failed/"*.md 2>/dev/null | sort | while read -r f; do n=$(basena
   grep -qxF "$n" "$C/retried.txt" 2>/dev/null && continue; echo "$n" >> "$C/retried.txt"
   awk -v n="$n" '$3==n{$3=n"-r2"} {print}' "$C/spend.txt" > "$C/spend.$L.tmp" && mv "$C/spend.$L.tmp" "$C/spend.txt"
   mv "$f" "$C/tasks/" 2>/dev/null && echo "$C/tasks/$n.md"; break; done; }
+# 10-19 night (b-30 spent its last two runs, 12 and 18 seconds, only to say it waited on c-02, then went to failed/): a run that ends
+# TASK WAITING: OTHER-TASK-ID parks the job in blocked/ and does not count as a try (its spend line says NAME-wait). It comes back to
+# tasks/ once no list or lane holds the other job any more, or after BLOCK_MAX_H hours. release() runs at every pick, RAM or not.
+stag(){ grep -q 'TASK WAITING: *[a-z0-9]' "$out" 2>/dev/null && ! grep -q 'TASK DONE' "$out" && echo "$name-wait" || echo "$name"; }
+release(){ local f n on age; for f in "$C/blocked/"*.md; do [ -f "$f" ] || continue; n=$(basename "$f" .md); on=$(tr -d '\r\n ' < "$C/blocked/$n.on" 2>/dev/null)
+  age=$(( ( $(date +%s) - $(stat -c %Y "$f") ) / 3600 ))
+  if [ -n "$on" ] && [ "$age" -lt "$(cap BLOCK_MAX_H 6)" ] && { ls "$C/tasks/"*"$on"*.md >/dev/null 2>&1 || printf '%s\n' "$busy" | grep -qF -- "$on"; }; then continue; fi
+  mv "$f" "$C/tasks/" && rm -f "$C/blocked/$n.on" && echo "$(date '+%m-%d %H:%M') $n: back in tasks/ (it waited on ${on:-nothing named}, ${age} h)" >> "$C/runs.log"; done; }
 # 10-18 08:10: two lanes picked the same job in the same second; picking is now one lane at a time (pick.lock, stale after 60 s)
 for i in $(seq 1 30); do mkdir "$C/pick.lock" 2>/dev/null && break; [ -n "$(find "$C/pick.lock" -maxdepth 0 -mmin +1 2>/dev/null)" ] && rm -rf "$C/pick.lock"; sleep 2; done
 busy=$(for d in "$C"/lane-*.lock; do [ "$d" = "$LK" ] && continue; cat "$d/task" 2>/dev/null; echo; done)
+release
 if [ "$L" = a ]; then t=$(ls "$C/tasks/"[0-9]*.md 2>/dev/null | sort | free); else t=$(ls "$C/tasks/$L-"*.md 2>/dev/null | sort | free); fi
 [ -z "$t" ] && t=$(ls "$C/tasks/"*.md 2>/dev/null | sort | free)
 [ -z "$t" ] && t=$(retry)
@@ -138,7 +147,7 @@ if [ $ENGINE = cli ]; then
     if grep -qi 'authenticate\|oauth\|not logged in\|/login' "$out"; then w="waiting for you to sign in to Claude Code once (terminal: claude, then /login)"
     elif grep -qi 'limit' "$out"; then w="your plan's usage limit is reached; waiting"; else w="Claude Code run ended before any work (see $(basename "$out"))"; fi
     echo "$(date '+%m-%d %H:%M') $w; $name kept" | tee -a "$C/runs.log" > "$C/status-$L.txt"; exit 0; fi
-  echo "$today $cost $name" >> "$C/cli-spend.txt"
+  echo "$today $cost $(stag)" >> "$C/cli-spend.txt"
 else
 k=$(powershell -NoProfile -Command "[Environment]::GetEnvironmentVariable('PILLAGERS_API_KEY','User')" 2>/dev/null | tr -d '\r\n')
 [ -z "$k" ] && { echo "$(date '+%m-%d %H:%M') waiting for his key (Windows user variable PILLAGERS_API_KEY)" > "$C/status-$L.txt"; exit 0; }
@@ -160,10 +169,12 @@ cost=$(grep -o '"total_cost_usd":[0-9.eE+-]*' "$out" | tail -1 | cut -d: -f2); c
 if grep -q '"terminal_reason":"api_error"' "$out" && awk -v c="$cost" 'BEGIN{exit !(c+0==0)}'; then
   grep -qi 'credit' "$out" && echo "$month" > "$C/console-empty"   # the next run switches to Claude Code
   echo "$(date '+%m-%d %H:%M') API error before any work (check the key and the Console credits); $name kept" | tee -a "$C/runs.log" > "$C/status-$L.txt"; exit 0; fi
-echo "$today $cost $name" >> "$C/spend.txt"
+echo "$today $cost $(stag)" >> "$C/spend.txt"
 fi
 n=$(cat "$C/spend.txt" "$C/cli-spend.txt" 2>/dev/null | grep -c " $name$")
-if grep -q 'TASK DONE' "$out"; then mv "$t" "$C/done/"; r=done
+wo=$(grep -o 'TASK WAITING: *[a-z0-9][a-z0-9-]\{2,60\}' "$out" | tail -1 | sed 's/^TASK WAITING: *//')
+if [ -n "$wo" ] && ! grep -q 'TASK DONE' "$out"; then mkdir -p "$C/blocked"; mv "$t" "$C/blocked/" && touch "$C/blocked/$name.md" && echo "$wo" > "$C/blocked/$name.on"; r="waiting on $wo, parked in blocked/ (not counted as a try)"
+elif grep -q 'TASK DONE' "$out"; then mv "$t" "$C/done/"; r=done
 elif [ "$n" -ge "$(cap MAXRUNS 3)" ]; then mv "$t" "$C/failed/"; r=failed
 else r="partial (run $n of $(cap MAXRUNS 3))"; fi
 echo "$(date '+%m-%d %H:%M') $name: $r, \$$cost" | tee -a "$C/runs.log" > "$C/status-$L.txt"

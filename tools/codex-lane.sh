@@ -262,7 +262,8 @@ tokens(){ local t p
   p=$(grep 'rate_limits' "$JSONL" 2>/dev/null | tail -1 | grep -o '"used_percent": *[0-9.]*' | grep -o '[0-9.]*$' | tr '\n' '/' | sed 's|/$||')   # best effort: only if Codex reports its limits
   echo "$t${p:+ limit_pct=$p}"; }
 claim_of(){ local l; l=$(rd "$LAST" 2>/dev/null | grep -v '^[[:space:]]*$' | tail -1 | sed 's/[*`_ ]//g' | tr 'a-z' 'A-Z')
-  case "$l" in TASKDONE|TASKDONE.) echo DONE;; TASKPARTIAL*) echo PARTIAL;; *) echo NONE;; esac; }
+  case "$l" in TASKDONE|TASKDONE.) echo DONE;; TASKPARTIAL*) echo PARTIAL;; TASKWAITING*) echo WAITING;; *) echo NONE;; esac; }
+waiting_on(){ rd "$LAST" 2>/dev/null | grep -v '^[[:space:]]*$' | tail -1 | grep -o 'TASK WAITING: *[a-z0-9][a-z0-9-]\{2,60\}' | sed 's/^TASK WAITING: *//'; }
 
 # ---- the gate for one key. returns 0 shipped, 1 Codex must fix (fb has why), 2 not Codex's fault (wait / lane problem)
 lint_mk(){ local f=$1 k=$2 bad
@@ -469,8 +470,9 @@ while [ "$it" -lt "$left" ]; do
   esac
   rm -f "$X/fails.txt"
   # a counted run: work was done (or the run hit its time cut)
-  echo "$today 0.0000 $name" >> "$C/cli-spend.txt"
-  claim=$(claim_of); lastclaim=$claim
+  claim=$(claim_of); lastclaim=$claim; wo=""; [ "$claim" = WAITING ] && wo=$(waiting_on)
+  # 10-19 night: a run that ends TASK WAITING: OTHER-TASK-ID is not a try (spend line NAME-wait); the job parks in blocked/ below
+  if [ -n "$wo" ]; then echo "$today 0.0000 $name-wait" >> "$C/cli-spend.txt"; else echo "$today 0.0000 $name" >> "$C/cli-spend.txt"; fi
   echo "$(date '+%F %H:%M') $name ${dt}s $CLASS $claim $(tokens) run=$((n0+it))" >> "$X/runs.txt"
   git -C "$W" status --porcelain -uno 2>/dev/null | head -5 > "$X/log/$name-edits-in-copy.txt"
   harvest
@@ -496,6 +498,7 @@ while [ "$it" -lt "$left" ]; do
   [ $gate = 0 ] && [ $rtg != 0 ] && gate=$rtg
   [ ${#SHIPPED_NOW[@]} -gt 0 ] && appendfb "Shipped: ${SHIPPED_NOW[*]} (game now v$(grep -m1 "^var VER='" "$R/dark_raiders.html" 2>/dev/null | sed "s/var VER='\([0-9]*\.[0-9]*\)'.*/\1/"))."
   if [ $gate = 2 ]; then r="waiting"; break; fi          # not Codex's fault: leave the job and try later
+  if [ -n "$wo" ] && [ $gate = 0 ]; then r="blocked"; break; fi   # Codex says the rest waits on another task: park it, spend no more runs
   if [ $gate = 0 ]; then
     need=0
     if [ ${#SHIPPED_NOW[@]} -gt 0 ] && [ -n "$sc" ] && [ "$picrounds" -lt "$PICMAX" ]; then
@@ -530,6 +533,9 @@ case "$r" in
     { echo; echo "Lane note $(date '+%F %H:%M'): shipped $(tr '
 ' ' ' < "$LS/shipped.txt" 2>/dev/null)and parked: only lane-side steps are left. Codex's last words:"; tail -c 700 "$LAST" 2>/dev/null; echo; } >> "$C/waiting/$(basename "$t")"
     echo "$(date '+%m-%d %H:%M') $name: shipped, parked in waiting/ (lane-side steps left), codex" | tee -a "$C/runs.log" > "$C/status-$L.txt";;
+  blocked)   # 10-19 night: TASK WAITING: the console lanes' release() puts it back in tasks/ once the other task is gone (or after BLOCK_MAX_H)
+    final="waiting on $wo"; mkdir -p "$C/blocked"; mv "$t" "$C/blocked/" && touch "$C/blocked/$(basename "$t")" && echo "$wo" > "$C/blocked/$name.on"
+    echo "$(date '+%m-%d %H:%M') $name: waiting on $wo, parked in blocked/ (not counted as a try), codex" | tee -a "$C/runs.log" > "$C/status-$L.txt";;
   limit|login|crash|stopped|waiting)   # the job stays where it is; the status line was written where it happened
     final="$r"; echo "$(date '+%m-%d %H:%M') $name: codex $r; kept (runs so far: $n of $MAXR)" >> "$C/runs.log"
     [ "$r" = waiting ] && { echo "${lastclaim:-NONE}" > "$LS/waiting.txt"; say "gate waiting on another worker; $name kept (codex)"; };;

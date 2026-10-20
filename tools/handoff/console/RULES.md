@@ -179,7 +179,10 @@ actually look good". So for any change a player can see:
 - A question for him: append it to tools\handoff\console\questions.md, take the best choice, and carry on.
 - An alarm or handoff for the coordinator (a check to retarget, Chrome or the gate down, a camera stage that is wrong): append it to
   tools\handoff\console\alarms.md, never to questions.md (that file is for questions to him only), and carry on.
-- End your final message with exactly one line: TASK DONE, or TASK PARTIAL: what remains.
+- End your final message with exactly one line: TASK DONE, or TASK PARTIAL: what remains, or TASK WAITING: TASKID what for.
+  TASK WAITING is only for when everything left of your task waits on another task that is still open (TASKID is its file name in
+  tools\handoff\console\tasks without .md, for example c-02-raid-hud-redesign). That run does not count as a try: your job parks in
+  blocked\ and comes back by itself when that task is finished. Never use it for a question to him (take the best choice) or to skip work.
 
 - WORDS (his order 10-18 PM): on screen a player is a "pillager", the AI humans are "pillager bots", and "raider" never shows. Code names (kind raider, CFG.nRaider) stay as they are.
 

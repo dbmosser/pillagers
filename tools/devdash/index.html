@@ -82,6 +82,7 @@ function laneLine(s){
   if(m=/pacing your plan: week (\d+)% used \(the 85% line is at ([\d.]+)%/.exec(s)) return ['a','Resting: your Claude week is at '+m[1]+'%, ahead of the even pace ('+m[2]+'% by now). It starts again when the week is back on pace'];
   if(/Console money used up/.test(s)) return ['d','Resting: the Console credit is used up, so only the helpers on your plan run'];
   if(/pacing/.test(s)){ m=/\$([\d.]+) allowed by now \(\$([\d.]+) for today/.exec(s); return ['a','Resting so the money lasts until Halloween'+(m?' (today\'s share is $'+m[2]+')':'')]; }
+  if(m=/(\S+): waiting on (\S+), parked/.exec(s)) return ['d','Parked: '+job(m[1])+' waits for '+job(m[2])+' to finish, then comes back by itself'];
   if(m=/(\S+): done/.exec(s)) return ['g','Just finished: '+job(m[1])];
   if(m=/(\S+): partial/.exec(s)) return ['a','Stopped partway on: '+job(m[1])+'. It picks up where it left off next time'];
   if(m=/(\S+): failed/.exec(s)) return ['r','Gave up on: '+job(m[1])+' after 3 tries. Claude will look at it'];
@@ -162,7 +163,7 @@ async function tick(){
   const rp=d.report; $('rep').textContent=rp?('Latest report ('+rp.name.replace(/\.html$/,'').slice(5)+')'):'Latest report (none yet)'; $('upd').textContent='Updated '+d.now+' (every 5 seconds)';
   $('lanes').innerHTML=(d.stopFile?row('r',null,'<b>All helpers are paused</b> because the STOP file is in tools/handoff/console. Delete it to restart them.'):'')+
     d.lanes.filter(l=>l.lane!=='o').map(l=>{const [c,t]=laneLine(l.status);return row(c,null,'<b>'+LANE[l.lane]+'</b>: '+esc(t)+'<div class="small">Next up: '+([...new Set(l.queue.map(job))].slice(0,3).map(esc).join(' / ')||'nothing')+(l.queue.length>3?' ... ('+l.queue.length+' jobs waiting)':'')+'</div>');}).join('')+
-    '<div class="small" style="margin-top:8px">Jobs finished: '+d.done+(d.failed.length?' &middot; <span class="warn">Gave up: '+d.failed.length+'</span>':'')+'</div>';
+    '<div class="small" style="margin-top:8px">Jobs finished: '+d.done+(d.failed.length?' &middot; <span class="warn">Gave up: '+d.failed.length+'</span>':'')+((d.blocked||[]).length?' &middot; Parked until another job finishes: '+d.blocked.map(b=>esc(job(b.job))).join(', '):'')+'</div>';
   const s=d.spend, pct=Math.min(100,Math.round(100*s.all/s.total)), tp=Math.min(100,Math.round(100*s.today/Math.max(.01,s.share)));
   $('money').innerHTML='<span class="stat"><b>$'+s.today.toFixed(2)+'</b>spent today</span><span class="stat"><b>$'+Math.max(0,s.total-s.all).toFixed(2)+'</b>left to spend'+(s.real?' (exact, from Console)':' (estimate)')+'</span>'+
     '<div class="small">Whole budget: $'+s.all.toFixed(2)+' of $'+s.total+' used</div><div class="bar"><i style="width:'+pct+'%"></i></div>';

@@ -85,6 +85,8 @@ lines still binds you. Only the TOOLS and the SHIPPING steps differ. Your task i
      RETARGET_MAX_CHECKS (30) checks per file: split bigger ones.
    - If the file is refused or a check fails, the reason comes back in your next message, the lane has put tools/mkfixture.ps1 back and
      committed nothing: fix the file and end again. When it works the lane tells you the commit and the checks it ran.
+   If everything left of your task waits on another task that is still open, end with TASK WAITING: TASKID (its file name in tasks
+   without .md) instead of TASK PARTIAL: that run is not a try, the job parks and comes back by itself when that task is finished.
    What's New card refreshes (genP.sh) still need a Claude lane: write them in questions-new.md and end with TASK PARTIAL naming it.
 
 ## Pictures (UI and art work)
