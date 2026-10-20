@@ -94,7 +94,7 @@ S = C:\Users\User1\AppData\Local\Temp\claude\C--Users-User1-Desktop-dark-raiders
    and to run single checks read S\runchk.sh first (it needs the lock: bash "S/lock.sh" then bash "S/unlock.sh").
 
 ## Your permissions are an exact list (anything else is refused, so do not try it)
-- read_file, grep and list_dir anywhere. write_file and edit_file only: S\mk-cw-*, tools\handoff\console\notes\**, tools\handoff\console\questions.md,
+- read_file, grep and list_dir anywhere. write_file and edit_file only: S\mk-cw-*, tools\handoff\console\notes\**, tools\handoff\console\questions.md, tools\handoff\console\alarms.md,
   and Edit on tools\mkfixture.ps1. Put any list or output files you need in tools\handoff\console\notes\.
 - run, with the command typed EXACTLY in these forms (forward slashes, no quotes around the script path):
   bash C:/Users/User1/AppData/Local/Temp/claude/C--Users-User1-Desktop-dark-raiders/8a09e991-b4f4-4b23-b10f-ded92e837fc3/scratchpad/shipq.sh cw-KEY
@@ -165,6 +165,8 @@ actually look good". So for any change a player can see:
 - Your task file name is your task id. Keep notes in tools\handoff\console\notes\TASKID.md as you go, and read them first:
   a later run of the same task continues from them.
 - A question for him: append it to tools\handoff\console\questions.md, take the best choice, and carry on.
+- An alarm or handoff for the coordinator (a check to retarget, Chrome or the gate down, a camera stage that is wrong): append it to
+  tools\handoff\console\alarms.md, never to questions.md (that file is for questions to him only), and carry on.
 - End your final message with exactly one line: TASK DONE, or TASK PARTIAL: what remains.
 
 - WORDS (his order 10-18 PM): on screen a player is a "pillager", the AI humans are "pillager bots", and "raider" never shows. Code names (kind raider, CFG.nRaider) stay as they are.

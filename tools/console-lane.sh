@@ -19,7 +19,8 @@ L=${1:-a}   # 10-17 LANES (his "max out ... the claude console resources"): one 
 LK="$C/lane-$L.lock"   # one worker per lane: a lock folder holding the pid (Git Bash pids do not show in Windows process lists)
 # 10-18 06:10: CLI_ALWAYS lanes (e.g. e) always run on Claude Code on his plan, beside the Console lanes (his weekly usage was at 1%
 # with the week 4% gone). The runner starts only a, b and c, so each of those starts any CLI_ALWAYS lane that is not running.
-for x in $(grep -m1 "^CLI_ALWAYS=" "$C/caps.txt" 2>/dev/null | cut -d= -f2 | tr "," "  "); do
+for x in $(grep -m1 "^CLI_ALWAYS=" "$C/caps.txt" 2>/dev/null | cut -d= -f2 | tr ",
+" "  "); do
   [ "$x" = "$L" ] || [ -d "$C/lane-$x.lock" ] || (bash "$0" "$x" > /dev/null 2>&1 &); done
 if ! mkdir "$LK" 2>/dev/null; then p=$(cat "$LK/pid" 2>/dev/null); [ -n "$p" ] && kill -0 "$p" 2>/dev/null && exit 0; rm -rf "$LK"; mkdir "$LK" 2>/dev/null || exit 0; fi
 echo $$ > "$LK/pid"; trap 'rm -rf "$LK"' EXIT
@@ -34,6 +35,7 @@ ALLOW=( "Read" "Grep" "Glob"
   "Write($PS/mk-cw-*)" "Edit($PS/mk-cw-*)" "Write($PV/mk-cw-*)" "Edit($PV/mk-cw-*)"
   "Write($PR/tools/handoff/console/notes/**)" "Edit($PR/tools/handoff/console/notes/**)"
   "Write($PR/tools/handoff/console/questions.md)" "Edit($PR/tools/handoff/console/questions.md)"
+  "Write($PR/tools/handoff/console/alarms.md)" "Edit($PR/tools/handoff/console/alarms.md)"
   "Edit($PR/tools/mkfixture.ps1)"
   "Bash(bash $S/shipq.sh cw-*)" "Bash(bash $S/shipdraft.sh *)" "Bash(bash $S/fixq.sh *)" "Bash(bash $S/genP.sh *)"
   "Bash(bash $S/runchk.sh *)" "Bash(bash $S/lock.sh)" "Bash(bash $S/unlock.sh)" "Bash(bash $S/clearstale.sh)"

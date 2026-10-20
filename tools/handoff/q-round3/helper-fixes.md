@@ -57,3 +57,11 @@ B. Game fixes the helpers can just finish
 45. S3-helper | Critic score notes: screens 21 and 50 scored 2, the title 3 (v30.59 to v30.69); target 4 on party screens (see question 55). Keep the score file current. | console/notes/ui/accept.json.
 
 Count of fix lines in this file: 45.
+
+STATUS 10-19 night (coordinator, in the VM):
+- DONE 17 F18: helper alarms moved to tools/handoff/console/alarms.md; questions.md holds questions to him only; RULES.md, RULES-codex.md, console-lane.sh and codex-lane.sh now send alarms there.
+- DONE 19: the local-LLM memory already marks the 22:00 to 07:00 window obsolete.
+- DONE 21, 22: the named memory notes carry UPDATE 10-18 lines; the index marks the two old entries as history; cw-nomult and cw-rocket were already in memory, cw-downgain added.
+- DONE 23: the edited-line memory note now carries his Q8 answer.
+- DONE 24 G1a: the b-31 and c-31 re-queue blocks state the Q7, Q8, Q43, Q59 rulings; lane e is off in the VM.
+- MOOT 32 G10: the party is the frozen copy on the main PC (party-host-copy.ps1), not the party shortcut.

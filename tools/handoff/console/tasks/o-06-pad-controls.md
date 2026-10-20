@@ -16,3 +16,8 @@
 - Write in plain language, with no explaining sentences on screen. All lower case.
 
 Coordinator note 2026-10-19: moved to the ChatGPT lane as o-06 (the Claude helpers are pacing). For the crowbar on RS click, also follow section "J6" of tools/handoff/pad-research/best-practices.md: ignore RS while the bag, map, wheel, stall or forge is open; remove the RS focus toggle (LT hold stays); freeze the aim angle for about 80 ms around the click, because pressing a stick nudges it; check that a held RS never swings faster than the melee cooldown.
+
+## RE-QUEUED 10-19 22:45 (coordinator, in the VM)
+- Done for you: your fixture-retarget.json is applied and committed (bc26ed4c, under the ship lock, fixture rebuilt). On the current build 17.78 and 20.44 PASS. 19.86 is red, but it was already red in the 15:31 corpus with the same message (the stash pad row shows a/y with a PlayStation pad, and the check looks for upper-case CROSS while all player text is lower case). Your new xboxonly key decides that path; do not chase 19.86 separately.
+- Your run count was reset. What is left is lane work, not new code: preflight and ship cw-cx-copygun (the repaired one), cw-cx-drygun, cw-cx-padstatus and cw-cx-xboxonly, in that order. If a gate fails, read the gate log and fix that key only.
+- Pictures: the lane runner has no recipe camera path yet. Leave camera-run-request.json in place; the coordinator takes the pictures after the keys ship. Put any alarm for the coordinator in alarms-new.md (new file, see RULES-codex.md), not in questions-new.md.

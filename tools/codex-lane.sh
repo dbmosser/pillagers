@@ -223,7 +223,7 @@ appendfb(){ fb="${fb}${fb:+
 }$1"; }
 append_new(){ [ -s "$1" ] || return 0; mkdir -p "$(dirname "$2")"; { [ -n "$3" ] && { echo; echo "$3"; }; rd "$1"; echo; } >> "$2"; : > "$1"; }
 harvest(){ append_new "$WD/notes-new.md" "$C/notes/$name.md" "--- codex run $(date '+%F %H:%M') ---"
-  append_new "$WD/questions-new.md" "$C/questions.md" ""; append_new "$WD/changes-new.md" "$C/notes/ui/changes.md" ""; }
+  append_new "$WD/questions-new.md" "$C/questions.md" ""; append_new "$WD/alarms-new.md" "$C/alarms.md" ""; append_new "$WD/changes-new.md" "$C/notes/ui/changes.md" ""; }
 keys_list(){ [ -f "$WD/keys.txt" ] && rd "$WD/keys.txt" | sed 's/#.*//; s/^[ \t]*//; s/[ \t]*$//' | grep -v '^$' | head -6; }
 screens_list(){ [ -f "$WD/shots.txt" ] && rd "$WD/shots.txt" | head -1 | tr -d ' \t' | grep -E '^[0-9A-Za-z,_-]{1,120}$'; }
 

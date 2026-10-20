@@ -110,12 +110,14 @@ lines still binds you. Only the TOOLS and the SHIPPING steps differ. Your task i
 - keys.txt .............. the keys to ship, in order
 - notes-new.md .......... what you learned and did THIS run, plain language (the lane appends it to the task's notes file; do not
                           repeat old notes; a later run of the task reads the full notes file in @MAIN@ first)
-- questions-new.md ...... questions for him, same rules as questions.md (the lane appends them; take the best choice and carry on)
+- questions-new.md ...... questions for him ONLY, same rules as questions.md (the lane appends them; take the best choice and carry on)
+- alarms-new.md ......... alarms and handoffs for the coordinator (a check to retarget, Chrome or the gate down, a camera stage
+                          that is wrong); the lane appends them to tools/handoff/console/alarms.md. Never put these in questions-new.md.
 - changes-new.md ........ one line per visible change for notes/ui/changes.md: date, task, screen, what changed, picture paths
 - shots.txt ............. screens to photograph (see Pictures)
 - camera-recipes.json ... screens that need their own recipes (see Pictures)
 - fixture-retarget.json . edits to tools/mkfixture.ps1 that the lane applies under the lock (step 5)
-The lane empties notes-new.md, questions-new.md and changes-new.md after it copies them, so each run writes only new text.
+The lane empties notes-new.md, questions-new.md, alarms-new.md and changes-new.md after it copies them, so each run writes only new text.
 
 ## Your ending (the lane reads your LAST message)
 - The very last line of your final message is exactly `TASK DONE` or `TASK PARTIAL: what remains` and nothing else on that line.
