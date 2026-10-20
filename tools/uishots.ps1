@@ -22,9 +22,10 @@
 #   -LintOpts  a JS object literal passed to __uiLint, e.g. "{minPx:14}"
 #   -NoLint    shots only
 #   -Merge     keep the other screens already in <Out>\report.json and replace only the ones run now (rerun one screen of a baseline)
+#   -NoPopupBlock  let the throwaway camera browser open a second window (two-window pictures); "popups": true in the recipe file does the same
 param([string]$Screens='all',[string]$Out='',[string]$Res='1080,4k',[int]$Port=9339,
       [string]$Url='http://localhost:8808/fixture.html',[int]$Boot=3500,[int]$Quality=85,[switch]$NoLint,[switch]$Merge,
-      [string]$Recipes='',[string]$LintJs='',[string]$LintOpts='{}')
+      [string]$Recipes='',[string]$LintJs='',[string]$LintOpts='{}',[switch]$NoPopupBlock)
 $ErrorActionPreference='Stop'
 $Root=Split-Path $PSScriptRoot -Parent
 if(-not $Recipes){ $Recipes=Join-Path $Root 'tools\handoff\shots\ui-screens-js.json' }
@@ -119,6 +120,9 @@ function ChromeStart([int]$w,[int]$h){
   $a='--headless=new --window-size='+$w+','+$h+' --force-device-scale-factor=1 --remote-debugging-port='+$Port+
      ' --user-data-dir="'+$ChromeProfile+'" --no-first-run --no-default-browser-check --disable-background-timer-throttling'+
      ' --disable-renderer-backgrounding --disable-backgrounding-occluded-windows --autoplay-policy=no-user-gesture-required about:blank'
+  # 10-20: two-window pictures (player 1 and player 2) open the second window with window.open, which a headless camera blocks
+  # (no user gesture). -NoPopupBlock, or "popups": true in the recipe file, lets this throwaway camera browser open it.
+  if($NoPopupBlock -or ($spec -and $spec.popups)){ $a=$a.Replace(' about:blank',' --disable-popup-blocking about:blank') }
   $script:proc=Start-Process -FilePath $exe -ArgumentList $a -PassThru
   for($i=0;$i -lt 60;$i++){ try{ Invoke-RestMethod "http://127.0.0.1:$Port/json/version" -TimeoutSec 2 | Out-Null; return }catch{ Start-Sleep -Milliseconds 250 } }
   throw "Chrome did not start on $Port"
