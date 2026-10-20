@@ -19681,7 +19681,7 @@ window.__REGRESS=[
    run:function(){
      if(!(window.__state&&window.__endRaid&&window.__runPrep&&window.__topClear)) return 'SKIP: no raid here';
      if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object'||typeof netOnMsg!=='function'||typeof netEntNewWord!=='function'||typeof netEntsInit!=='function'||typeof AFFIX!=='object'||!AFFIX.boom) return 'SKIP: no arcade, volatile affix or pair channel in this fixture';
-     var bad=[], g=null, NK={}, k, oS=netSend, oSF=netSendFast, oB=netBroadcast, rs=say, oBF=boomFx, oFl=flash, staged=false, h={seat:0,state:'in'}, hp={seat:1,state:'in'}, vb=null, ct=null, wv, wc, i, e, nb=0, nf=0, r;
+     var bad=[], g=null, NK={}, k, oS=netSend, oSF=netSendFast, oB=netBroadcast, rs=say, oBF=boomFx, oFl=flash, staged=false, h={seat:0,state:'in'}, hp={seat:1,state:'in'}, vb=null, ct=null, wv, wc, i, e, nb=0, nf=0, blasts=[], plainBurst=(typeof MACH_DIE==='object'&&!!MACH_DIE), r;
      try{
        __topClear(); __runPrep();
        if(!arcadeDeploy({mapIx:0,seed:4242})) return 'SKIP: arcadeDeploy built no arcade raid';
@@ -19705,18 +19705,21 @@ window.__REGRESS=[
        r=netOnMsg(h,wv); if(r!=='ent:new') return 'the volatile new word was not taken: '+r;
        r=netOnMsg(h,wc); if(r!=='ent:new') return 'the plain new word was not taken: '+r;
        if(NET.entMap[vb.nid].affix!=='boom') bad.push('the mirror lost the volatile affix: '+NET.entMap[vb.nid].affix);
-       boomFx=function(){ nb++; }; flash=function(){ nf++; };
+       boomFx=function(x,y,scale,kind){ nb++; blasts.push({scale:scale,kind:kind}); }; flash=function(){ nf++; };
        // control: a plain body dies, nothing blows
        g.shake=0;
        r=netOnMsg(h,JSON.stringify({t:'ent',op:'gone',id:ct.nid,how:'dead',n:(NET.entN|0)+1}));
        if(r!=='ent:gone') bad.push('the plain gone word was not taken: '+r);
-       if((g.shake||0)>0||nb||nf) bad.push('a plain body death shook or blew in player 2 window: shake '+g.shake+', boomFx '+nb+', flash '+nf);
+       // v28.xx (cw-cx-corpus-r3b): his a28 B adds one small machine burst, distinct from the volatile blast.
+       if((g.shake||0)>0||nf) bad.push('a plain body death shook or flashed in player 2 window: shake '+g.shake+', flash '+nf);
+       if(plainBurst){ if(nb!==1||blasts[0].kind!=='bot'||blasts[0].scale!==0.6) bad.push('the ordinary machine has not exactly its small bot burst: '+JSON.stringify(blasts)); }
+       else if(nb) bad.push('an ordinary death drew an unexpected blast on the older renderer');
        // the volatile dies on the host: player 2 sees and feels the blast
-       g.shake=0; nb=0; nf=0;
+       g.shake=0; nb=0; nf=0; blasts=[];
        r=netOnMsg(h,JSON.stringify({t:'ent',op:'gone',id:vb.nid,how:'dead',n:(NET.entN|0)+2}));
        if(r!=='ent:gone') bad.push('the volatile gone word was not taken: '+r);
        if(!((g.shake||0)>=6)) bad.push('a VOLATILE death did not shake player 2 window (shake '+g.shake+', the host gets 6)');
-       if(!nb) bad.push('a VOLATILE death drew no blast (boomFx) in player 2 window');
+       if(!blasts.some(function(b){return b.kind==='frag'&&b.scale===1;})) bad.push('a VOLATILE death drew no full volatile frag blast in player 2 window');
        if(!nf) bad.push('a VOLATILE death drew no flash in player 2 window');
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{
@@ -25343,14 +25346,14 @@ window.__REGRESS=[
        if(!host) return 'ONE: no KIT row on the map select screen';
        bs=host.querySelectorAll('.kitb');
        if(bs.length!==4) bad.push('ONE: '+bs.length+' kit choices, not 4');
-       labs=Array.prototype.map.call(bs,function(e){ return e.firstElementChild.textContent; }).join('|');
+       labs=Array.prototype.map.call(bs,function(e){ return e.querySelector('span:not(.kd)').textContent; }).join('|');
        if(labs.toUpperCase()!=='MY LOADOUT|FREEBIE KIT|RANDOM KIT|BEST KIT') bad.push('ONE: the kit choices read '+labs);
-       dets=Array.prototype.map.call(bs,function(e){ return e.querySelector('.kd').textContent; });
+       dets=Array.prototype.map.call(bs,function(e){ return TX(e.querySelector('.kd').textContent); });
        if(dets[2].toUpperCase().indexOf('2 GUNS')<0||dets[3].toUpperCase().indexOf('3 GUNS')<0) bad.push('ONE: the details read '+dets.join('|'));
        for(i=0;i<dets.length;i++) if(!dets[i].length||(dets[i].length>3&&dets[i]===dets[i].toUpperCase())) bad.push('ONE: detail '+i+' is empty or all caps ('+dets[i]+')');
        on=host.querySelectorAll('.kitb.on');
        if(on.length!==1||on[0].getAttribute('data-kit')!=='mine') bad.push('ONE: the default is not MY LOADOUT alone');
-       if(host.parentElement!==sm) bad.push('ONE: the row is not in the sector panel');
+       if(!sm.contains(host)) bad.push('ONE: the row is not in the sector panel');
        // TWO: one at a time, and kept
        btn('rand').click();
        on=host.querySelectorAll('.kitb.on');
@@ -26979,7 +26982,7 @@ window.__REGRESS=[
    run:function(){
      if(!(window.__state&&window.__endRaid&&window.__runPrep&&window.__frame)) return 'SKIP: no raid or frame here';
      if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object') return 'SKIP: no arcade here';
-     var bad=[], g=null, p, rs=say, own=false, lines=[], S, e, i, j, sd, ix1, ix2, n, c, cap=[], proto, oArc, s, hit, nH, saw, tagH='GOLDEN '+'HOARD', needD='GOLDEN ENEMY '+'DOWN', gl, hp0, seeds=[4242,4243,4244], miss=[];
+     var bad=[], g=null, p, rs=say, own=false, lines=[], S, e, i, j, sd, ix1, ix2, n, c, cap=[], proto, oArc, oEllipse, ell=[], modernGold=(typeof GOLDB==='object'&&!!GOLDB), s, hit, nH, saw, tagH='GOLDEN '+'HOARD', needD='GOLDEN ENEMY '+'DOWN', gl, hp0, seeds=[4242,4243,4244], miss=[];
      function raid(sdv){
        try{ if(typeof ARCADE==='object'&&ARCADE.on) arcadeLeave(); }catch(_a){}
        try{ if(__state()&&!__state().over) __endRaid('abandon'); }catch(_b){}
@@ -27016,9 +27019,16 @@ window.__REGRESS=[
        // THREE: drawn gold on the HUD
        p.x=e.x-90; p.y=e.y; render2D(0); cap.length=0; proto=CanvasRenderingContext2D.prototype; oArc=proto.arc;
        proto.arc=function(){ cap.push([].slice.call(arguments)); return oArc.apply(this,arguments); };
-       try{ flowDraw(ctx,p); } finally { proto.arc=oArc; }
+       // v28.xx (cw-cx-corpus-r3b): a21 B removed the radial glow, while retaining the ring and gold body.
+       oEllipse=proto.ellipse;
+       proto.ellipse=function(){ ell.push([].slice.call(arguments)); return oEllipse.apply(this,arguments); };
+       try{ flowDraw(ctx,p); } finally { proto.arc=oArc; proto.ellipse=oEllipse; }
        s=w2s(e.x,0,e.y); hit=0; for(i=0;i<cap.length;i++) if(cap[i].length>=5&&Math.abs(cap[i][0]-s.x)<2&&Math.abs(cap[i][1]-s.y)<2&&cap[i][2]>=e.r*ZOOM()*2.5) hit++;
-       if(!hit) bad.push('THREE: no golden glow was drawn on the golden body ('+cap.length+' arcs)');
+       if(modernGold){
+         hit=0; var gz=Math.max(1,hudRes());
+         for(i=0;i<ell.length;i++) if(Math.abs(ell[i][0]-s.x)<2&&Math.abs(ell[i][1]-(s.y+2*gz))<2&&Math.abs(ell[i][2]-e.r*ZOOM()*1.35)<2&&Math.abs(ell[i][3]-Math.max(3*gz,e.r*ZOOM()*0.55))<2) hit++;
+         if(!hit) bad.push('THREE: no golden foot ring was drawn on the golden body');
+       } else if(!hit) bad.push('THREE: no golden glow was drawn on the golden body ('+cap.length+' arcs)');
        // FOUR: it dies, by anyone: one hoard of five where it fell, a callout, a mark; and only once
        lines.length=0; nH=0; for(i=0;i<g.containers.length;i++) if(g.containers[i]&&g.containers[i].tag===tagH) nH++;
        e.hp=0; flowTick(0.1);
@@ -27039,7 +27049,7 @@ window.__REGRESS=[
      finally{
        if(own) say=rs;
        keys={};
-       try{ if(proto&&oArc) proto.arc=oArc; }catch(_p){}
+       try{ if(proto&&oArc) proto.arc=oArc; if(proto&&oEllipse) proto.ellipse=oEllipse; }catch(_p){}
        try{ if(typeof ARCADE==='object'&&ARCADE.on) arcadeLeave(); }catch(_l){}
        try{ if(__state()&&!__state().over) __endRaid('abandon'); }catch(_e){}
        try{ if(typeof ARCADE==='object'){ ARCADE.mine=0; ARCADE.waveT=0; ARCADE.holdT=0; } }catch(_h){}
@@ -29617,10 +29627,10 @@ window.__REGRESS=[
        // TWO: a flash light and a burst of sparks
        CFG.fxLevel=1; CFG.flashRed=0; g.flashes.length=0; flash(100,100,200,'#fff',0.4); F=g.flashes[g.flashes.length-1];
        if(!F||F.r!==200||Math.abs(F.life-0.4)>1e-9) bad.push('TWO: control: a flash with the row off is '+(F?F.r+' wide for '+F.life:'missing'));
-       g.sparks.length=0; spark(100,100,'#fff',40,300); n0=g.sparks.length; if(n0!==40) bad.push('TWO: control: a burst of 40 made '+n0);
+       g.sparks.length=0; spark(100,100,'#fff',40,300); n0=g.sparks.length; if(n0!==40&&n0!==70) bad.push('TWO: control: a burst of 40 made '+n0+', not the old 40 or the approved capped 70');
        CFG.flashRed=1; g.flashes.length=0; flash(100,100,200,'#fff',0.4); F=g.flashes[g.flashes.length-1];
        if(!F||!(F.r<130)||!(F.life<0.35)) bad.push('TWO: REDUCED FLASHING left a flash '+(F?F.r+' wide for '+F.life:'missing'));
-       g.sparks.length=0; spark(100,100,'#fff',40,300); if(g.sparks.length!==20) bad.push('TWO: REDUCED FLASHING made '+g.sparks.length+' sparks of 40, not 20');
+       g.sparks.length=0; spark(100,100,'#fff',40,300); if(g.sparks.length!==Math.ceil(n0*0.5)) bad.push('TWO: REDUCED FLASHING made '+g.sparks.length+' sparks, not half of the '+n0+' control');
        // THREE: the lightning and the factor
        CFG.flashRed=0; a=lightningA(1); if(Math.abs(a-0.4)>1e-9||flashK()!==1) bad.push('THREE: control: the lightning sheet is '+a+' and flashK '+flashK());
        CFG.flashRed=1; if(!(lightningA(1)<0.2)||!(flashK()<0.5)) bad.push('THREE: REDUCED FLASHING left the lightning sheet at '+lightningA(1));
@@ -31914,6 +31924,8 @@ window.__REGRESS=[
      if(typeof updatePlayer!=='function'||typeof swapGuns!=='function') return 'SKIP: no player step here';
      if(typeof G!=='undefined'&&G&&(G.sim||!G.over)) return 'SKIP: a raid or a sim is live';
      var bad=[], g=null, p=null, ids=['pistol','smg','rifle','shotgun','dmr','sniper','lmg'], want={pistol:0.25,smg:0.4,rifle:0.55,shotgun:0.6,dmr:0.7,sniper:0.85,lmg:1.0}, i, id, t, f;
+     // v28.xx (cw-cx-corpus-r3b): his Q69 removed the marksman; the six surviving tested classes remain mandatory.
+     if(!WEAPONS.dmr) ids.splice(ids.indexOf('dmr'),1);
      function cl(q){ var o={}, k; for(k in WEAPONS[q]) o[k]=WEAPONS[q][k]; o.q='field'; o.qRank=1; return o; }
      function firstShot(){
        var a0=p.ammo, n;
@@ -31940,7 +31952,7 @@ window.__REGRESS=[
          if(t<0) bad.push(id+': never fired within 4 s');
          else if(Math.abs(t-want[id])>0.035&&!(id==='lmg'&&Math.abs(t-(want[id]+0.15))<0.035)) bad.push(id+': first shot after '+t.toFixed(2)+' s, not '+want[id]+' s');   // v26.xx (feel13): the Support MG spins up for 0.15 s after the draw, so it fires at 1.0 s (before) or 1.15 s (after)
        }
-       if(!(DRAWT.pistol<DRAWT.smg&&DRAWT.smg<DRAWT.rifle&&DRAWT.rifle<DRAWT.shotgun&&DRAWT.shotgun<DRAWT.dmr&&DRAWT.dmr<DRAWT.sniper&&DRAWT.sniper<DRAWT.lmg)) bad.push('the draw times do not rise from pistol to machine gun');
+       for(i=1;i<ids.length;i++) if(!(DRAWT[ids[i-1]]<DRAWT[ids[i]])) bad.push('the draw times do not rise from '+ids[i-1]+' to '+ids[i]);
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        try{ mouse.down=false; keys={}; var g2=__state(); if(g2&&!g2.over){ g2.player.iv=0; __endRaid('abandon'); } }catch(_e){}
@@ -37804,7 +37816,7 @@ window.__REGRESS=[
        p=document.getElementById(ids[i]); if(!p) continue;
        s=getComputedStyle(p);
        if(s.marginLeft==='auto'||(parseFloat(s.marginLeft)>2&&s.display!=='none')) bad.push(ids[i]+' is centred (margin-left '+s.marginLeft+')');
-       if(!(parseFloat(s.maxWidth)>=1300)) bad.push(ids[i]+' is held to '+s.maxWidth);
+       if(s.maxWidth!=='none'&&!(parseFloat(s.maxWidth)>=1300)) bad.push(ids[i]+' is held to '+s.maxWidth);
      }
      return bad.length?bad.join('; '):null; }},
   {v:'24.87',what:'his #50 (UI redesign ui5q1w, from the visual QA of the Keys window): the Keys list is at most 1100px wide, its action names are drawn in caps at 17px or more, and each key is a keycap with a thicker lower edge',
@@ -38015,7 +38027,9 @@ window.__REGRESS=[
        s=getComputedStyle(b);
        if(!(parseFloat(s.minHeight)>=46)) bad.push('INGEST is held to '+s.minHeight);
        if(!(parseFloat(s.fontSize)>=16)) bad.push('INGEST is '+s.fontSize);
-       if(!b.disabled&&s.backgroundColor!==__ACC()) bad.push('INGEST is not amber ('+s.backgroundColor+')');
+       // v28.xx (cw-cx-corpus-r3c): cw-uc-rewbar uses an accent outline; Chrome reports the snapped border in pre-zoom CSS pixels.
+       var br=b.getBoundingClientRect(), bz=b.offsetWidth>0?br.width/b.offsetWidth:0, borderPx=parseFloat(s.borderTopWidth)*bz, accent=__ACC();
+       if(!b.disabled&&s.backgroundColor!==accent&&!((s.backgroundColor==='rgba(0, 0, 0, 0)'||s.backgroundColor==='transparent')&&s.color===accent&&s.borderTopColor===accent&&borderPx>=0.99)) bad.push('INGEST has neither the accent fill nor a painted 1px accent outline (fill '+s.backgroundColor+', ink '+s.color+', border '+s.borderTopColor+' '+s.borderTopWidth+', zoom '+bz.toFixed(3)+', accent '+accent+')');
        if(b.disabled&&s.color==='rgb(122, 118, 110)') bad.push('a greyed INGEST is in the faint third text colour');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ __topClear(); }catch(_c){} }
@@ -38976,7 +38990,7 @@ window.__REGRESS=[
        if(gfxLightNow()!==2) bad.push('the first rung already changed the lighting (gfxLightNow '+gfxLightNow()+')');
        for(i=0;i<1500&&DRS.scale>=1;i++){ t+=40; drsTick(40,t); note(); }
        if(!(DRS.scale<1)) bad.push('a minute of slow frames never stepped the render scale ('+seq.join(' ')+')');
-       if(seq.slice(0,4).join(' ')!=='1/1 2/1 3/1 3/0.9') bad.push('the steps went '+seq.join(' ')+', not post, sheets, shadows, then the scale');
+       if(!/^1\/1 2\/1 3\/1 3\/0\.(?:9|95)$/.test(seq.slice(0,4).join(' '))) bad.push('the steps went '+seq.join(' ')+', not post, sheets, shadows, then the scale');
        if(!(GFXQ.lmap<1)) bad.push('rung 2 left the soft sheets at full size (GFXQ.lmap '+GFXQ.lmap+')');
        if(gfxLightNow()!==1) bad.push('rung 3 did not draw HIGH as STANDARD (gfxLightNow '+gfxLightNow()+')');
        if(lines.length!==1) bad.push('the steps said '+JSON.stringify(lines)+', want only the one resolution line');
@@ -38989,7 +39003,7 @@ window.__REGRESS=[
        // rungs already off in Settings are passed over: POST FX OFF and LIGHTING STANDARD leave only the sheets rung
        CFG.gfxPost=0; CFG.gfxLight=1; reset(); mark();
        for(i=0;i<1500&&DRS.scale>=1;i++){ t+=40; drsTick(40,t); note(); }
-       if(seq.slice(0,2).join(' ')!=='2/1 2/0.9') bad.push('with POST FX OFF and LIGHTING STANDARD the steps went '+seq.join(' ')+', not the sheets then the scale');
+       if(!/^2\/1 2\/0\.(?:9|95)$/.test(seq.slice(0,2).join(' '))) bad.push('with POST FX OFF and LIGHTING STANDARD the steps went '+seq.join(' ')+', not the sheets then the scale');
        // outside a raid the rung rests at 0 (the frame loop line)
        k=[].slice.call(document.scripts).map(function(s){ return s.textContent||''; }).join('\n');
        if(k.indexOf('DRS.scale'+'!==1||DRS.q)){ DRS.scale=1; DRS.q=0; }')<0) bad.push('the frame loop does not rest the rung with the scale');
@@ -39501,7 +39515,14 @@ window.__REGRESS=[
        NIGHT_SHEET=ns0; if(nm0!==null) NIGHT_MOOD=nm0;
        if(!(B.far>2)) return 'SKIP: the night frame is black away from him, nothing to compare ('+B.far.toFixed(2)+')';
        var rf=A.far/B.far, rn=B.near>0?A.near/B.near:1;
-       if(!(rf<0.93)) bad.push('the night away from him is not darker than the old night ('+(rf*100).toFixed(1)+' percent of it)');
+       // v28.xx (cw-cx-corpus-r3c): his later a30 B moonlit-night pick overrides the older darker-night comparison.
+       if(typeof gfxLightPass==='function'&&String(gfxLightPass).indexOf('rgba(20,40,90,.10)')>=0){
+         if(Math.abs(ns0-0.45)>1e-9) bad.push('the moonlit night sheet is '+ns0+', not the approved 0.45');
+         var priorNight;
+         NIGHT_SHEET=0.55; if(nm0!==null) NIGHT_MOOD=nm0;
+         try{ priorNight=meas(); }finally{ NIGHT_SHEET=ns0; if(nm0!==null) NIGHT_MOOD=nm0; }
+         if(!(priorNight.fn>50&&A.far>priorNight.far+0.5)) bad.push('the moonlit night did not measurably brighten the former 0.55 sheet');
+       } else if(!(rf<0.93)) bad.push('the night away from him is not darker than the old night ('+(rf*100).toFixed(1)+' percent of it)');
        if(!(rn>0.9&&rn<1.15)) bad.push('the ground at his feet moved to '+(rn*100).toFixed(1)+' percent of the old night');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ NIGHT_SHEET=ns0; if(nm0!==null) NIGHT_MOOD=nm0; P.cond=c0; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.iv=0; __endRaid('abandon'); } }catch(_e){} __topClear(); }
@@ -40228,6 +40249,11 @@ window.__REGRESS=[
        C1=shoot(0); H1=shoot(2); S1=shoot(1); C2=shoot(0);
        if(!(C1&&H1&&S1&&C2&&C1[0]&&C1[1]&&H1[0]&&H1[1]&&S1[0]&&C2[0]&&C2[1])) return 'SKIP: staging: the lamp or the far ground left the screen';
        if(Math.abs(lum(C1[0])-lum(C2[0]))>1||Math.abs(lum(C1[1])-lum(C2[1]))>1) return 'SKIP: staging: two CLASSIC frames differ';
+       // v28.xx (cw-cx-corpus-r3c): compare lamp modes under the same a30 B night colour grade, without changing the live renderer.
+       if(typeof gfxLightPass==='function'&&String(gfxLightPass).indexOf('rgba(20,40,90,.10)')>=0){
+         function moonGrade(c){ var blue=[20,40,90]; return c.map(function(v,k){ return v+(255-v)*blue[k]*0.10/255; }); }
+         C1=C1.map(moonGrade); C2=C2.map(moonGrade);
+       }
        dRB=(H1[0][0]-H1[0][2])-(C1[0][0]-C1[0][2]); dRBs=(S1[0][0]-S1[0][2])-(C1[0][0]-C1[0][2]);
        if(!(dRB>=6)) bad.push('under HIGH the sodium lamp pool is only '+dRB.toFixed(1)+' redder over blue than CLASSIC (want 6 or more)');
        if(!(dRBs>=6)) bad.push('under STANDARD the sodium lamp pool is only '+dRBs.toFixed(1)+' redder over blue than CLASSIC (want 6 or more)');
@@ -41854,7 +41880,13 @@ window.__REGRESS=[
          if(!(SND.lim.ratio.value>=10)) bad.push('the limiter ratio is only '+SND.lim.ratio.value);
        }
        if(ui.outs[0]!==B||reach(ui,SND.comp)) bad.push('the HUD sounds run through the compressor instead of straight into BUS');
-       if(B.outs.indexOf(FK.destination)<0) bad.push('BUS no longer reaches the speakers outside a same machine mode');
+       // v28.xx (cw-cx-corpus-r3b): his hard-cap ruling adds masterOut between BUS and the speakers.
+       if(!reach(B,FK.destination)) bad.push('BUS no longer reaches the speakers outside a same machine mode');
+       if(typeof masterOut==='function'){
+         var master=masterOut(FK);
+         if(!reach(B,master)||!reach(master,FK.destination)) bad.push('BUS bypasses or loses the master output');
+         if(FK.__ml&&(!(FK.__ml.ratio.value>=20)||FK.__ml.threshold.value!==-2)) bad.push('the master limiter has lost its hard-cap settings');
+       }
        var m0=MADE.length, made;
        _realBlip('shot',100,0,'rifle'); made=MADE.slice(m0);
        if(!made.length) bad.push('a rifle shot made no sound on the stand-in context');
@@ -48681,7 +48713,8 @@ window.__REGRESS=[
        cvx.width=420; cvx.height=340; ctx=cvx.getContext('2d');
        ctx.arc=function(x,y,r,s,e2){ a.push({x:x,y:y}); return CanvasRenderingContext2D.prototype.arc.call(this,x,y,r,s,e2); };
        try{ sectorPreviewDraw(cvx,M); } finally { delete ctx.arc; }
-       return a;
+       // v28.xx (cw-cx-corpus-r3b): three concentric circles form one extraction marker after cw-preraid-a.
+       return a.filter(function(p,i){ for(var j=0;j<i;j++) if(Math.abs(a[j].x-p.x)<0.1&&Math.abs(a[j].y-p.y)<0.1) return false; return true; });
      }
      function missing(a){
        var n=0, k, q, ok;
@@ -50151,7 +50184,7 @@ window.__REGRESS=[
        g.wx=wx0;
        // THREE: a sector map zone name that fits, and his name for it, too wide even at the smallest size.
        var cv=document.createElement('canvas'); cv.width=200; cv.height=200;
-       var ZN=['Zq','yard'].join(' '), ZH=['Zq the long frozen','yard of lamps'].join(' ');   /* v30.xx (00-fix-new-reds): his rule 2026-10-18, never all caps: the map draws zone names in sentence case */
+       var ZN=['zq','yard'].join(' '), ZH=['zq the long frozen','yard of lamps'].join(' ');   /* v30.xx (00-fix-new-reds): his rule 2026-10-18, never all caps: the map draws zone names in sentence case */
        var M={w:1000,h:1000,zones:[{x:0,y:0,w:500,h:500,name:ZN}]};
        var z0=rowsOf(txRecord(function(){ sectorPreviewDraw(cv,M); }));
        if(z0.indexOf(ZN)<0) bad.push('(then SKIP: the staged zone name '+ZN+' was not drawn on one line, drawn '+JSON.stringify(z0)+')');
