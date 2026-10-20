@@ -23104,7 +23104,7 @@ window.__REGRESS=[
        if(g.sim) return 'SKIP: the fixture raid is a sim raid';
        p=g.player; all=g.ents.slice(); g.ents=[]; oWep=p.wep; oAmmo=p.ammo; p.iv=99;
        // ONE: spamming the Marksman Rifle opens the spread, patience closes it
-       w=cloneObj(WEAPONS.magnum); p.wep=w; p.ammo=w.mag;   // 53-corpus-reds-b: the Marksman Rifle is gone (cw-gunsgone, his Q69); the Magnum stands in as the slow single shot
+       w=cloneObj(WEAPONS.sniper); p.wep=w; p.ammo=w.mag;   // 53-corpus-reds-b: the Marksman Rifle is gone (cw-gunsgone, his Q69); the Longshot (BLM add 1.0, the widest single shot) stands in for it
        a=volley(w,0.68,4); b=volley(w,1.3,4);
        if(!(a[0]>0.005)) bad.push('ONE: the first Marksman round measured '+a[0].toFixed(4));
        else {
@@ -23261,7 +23261,7 @@ window.__REGRESS=[
          if(!h){ bad.push(n+': no section head'); continue; }
          host.scrollTop=0; b.click();
          bar=host.querySelector('.setjump');
-         off=Math.round(h.getBoundingClientRect().top-host.getBoundingClientRect().top-((bar&&bar.getBoundingClientRect().width>host.getBoundingClientRect().width*0.6)?bar.getBoundingClientRect().height:0));   // 53-corpus-reds-b: the Settings rail (screens 25-32) stands beside the list, not over it, so only a bar as wide as the list takes room off the top
+         off=!h.getClientRects().length?Math.round(host.scrollTop):Math.round(h.getBoundingClientRect().top-host.getBoundingClientRect().top-((bar&&bar.getBoundingClientRect().width>host.getBoundingClientRect().width*0.6)?bar.getBoundingClientRect().height:0));   // 53-corpus-reds-b: the Settings rail (screens 25-32) stands beside the list, not over it, so only a bar as wide as the list takes room off the top; and the rail hides the first section head (THE RAID, display none), so its chip must leave the list at the very top (scrollTop 0)
          on=host.querySelector('.setjump button.on');
          if(Math.abs(off)>2) bad.push(n+': the head sat '+off+' px from the top of the list');
          if(!on||on.getAttribute('data-sec')!==n) bad.push(n+': the chip lit was '+(on?on.getAttribute('data-sec'):'none'));
