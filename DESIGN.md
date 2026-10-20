@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.09 - PAD LAYOUT SELECTOR CLEARANCE
+
+Co-op hunt while he was away. The previous arrow overlaps the focused layout name and stacked focus frames obscure the selector.
+
+MEASURED. Check 33.09 passes, and fails on v33.08.
 ## v33.08 - ONE GOLDEN DEATH CALLOUT
 
 Co-op hunt while he was away. The critic found the same golden kill callout at the top and in the feed. Use the existing feed skip option to show one copy in each window.

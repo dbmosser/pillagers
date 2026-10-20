@@ -1,0 +1,7 @@
+v33.09: pad layout selector clearance
+
+Layout arrows, name and count stay in one clear row with one outline on the focused button.
+
+Check 33.09. Fails on v33.08.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

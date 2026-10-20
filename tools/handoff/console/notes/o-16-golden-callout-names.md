@@ -28,3 +28,17 @@ The new check stages sentry and raider deaths on both paths, renders the real HU
 
 Other critic findings concern the unchanged raid HUD, including its currency column, status bars, hotbar and panel styles. This task is a specific golden-name change, not a raid HUD redesign. The mandated four career currency rows must not be removed or merged on critic advice.
 
+
+--- codex run 2026-10-20 15:40 ---
+2026-10-20 final review: cw-cx-goldnames shipped in v33.07; cw-cx-goldonce shipped in v33.08. Both keys remain in keys.txt. The current fixture contains their checks as 33.07 and 33.08; the lane reported successful ships through its gates. The three older retargeted checks were committed as 9c4d34c4 and passed before shipping.
+
+Inspected all four attached round-3 pictures. Both host and linked paths show golden sentry down or golden pillager bot down once, with search the hoard. The extra bottom-left copy is gone. Camera staging confirms one text draw, zero matching feed rows, and zero lint issues in each view. These are separate staged host/receiver views, not a connected two-window session.
+
+Review stop rule: after the two follow-ups (correcting staging, then removing the duplicate), the critic score remains 2 for all four full raid images. Applying the rule to record what is stuck and move on. This is not a critic pass. Remaining findings include the existing raid panels, currency column, ghost panel under the roster, hotbar and status bars, plus the callout's inherited 18.7px styling and hierarchy under the timer. The duplicate was fixed. Do not delete search the hoard or shorten pillager bot; those critic suggestions conflict with this task. No broader HUD redesign or timing change is included.
+
+Preserved the two best available versions for comparison:
+- v33.07, correct names with the duplicate: tools/handoff/console/notes/shots/o-16-golden-callout-names-recipes-2/golden-sentry-host-1080.jpg and golden-sentry-linked-1080.jpg; golden-raider-host-1080.jpg and golden-raider-linked-1080.jpg in the same directory.
+- v33.08, final chosen version with one callout: tools/handoff/console/notes/shots/o-16-golden-callout-names-recipes-3/golden-sentry-host-1080.jpg and golden-sentry-linked-1080.jpg; golden-raider-host-1080.jpg and golden-raider-linked-1080.jpg in the same directory.
+
+The requested specific-name behavior and regression checks are shipped. No further lane work is requested for this task.
+

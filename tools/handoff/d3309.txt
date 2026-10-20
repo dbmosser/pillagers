@@ -1,0 +1,5 @@
+## v33.09 - PAD LAYOUT SELECTOR CLEARANCE
+
+Co-op hunt while he was away. The previous arrow overlaps the focused layout name and stacked focus frames obscure the selector.
+
+MEASURED. Check 33.09 passes, and fails on v33.08.

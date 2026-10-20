@@ -231,3 +231,6 @@
 
 2026-10-20 | o-16-golden-callout-names | golden death callout | cw-cx-goldonce removes the duplicate feed copy in both windows using the existing feed-skip option; the top callout keeps the specific kind and search the hoard. Before: tools/handoff/console/notes/shots/o-16-golden-callout-names-recipes-2/golden-{sentry,raider}-{host,linked}-1080.jpg. After: lane round-3 capture pending.
 
+2026-10-20 | o-16-golden-callout-names | golden death callout, both paths | Final v33.08 pictures confirm one specific-name callout with search the hoard. Before: tools/handoff/console/notes/shots/o-16-golden-callout-names-recipes-2/golden-{sentry,raider}-{host,linked}-1080.jpg. After: tools/handoff/console/notes/shots/o-16-golden-callout-names-recipes-3/golden-{sentry,raider}-{host,linked}-1080.jpg. Four successful stages, zero lint issues; full HUD critic remains 2 after two follow-ups, recorded under the stop rule.
+
+2026-10-20 | o-17-pad-layout-selector | 74-pad-* | Selector: 0px to 16px gaps; one 3px focus outline with 3px offset; remove stacked group/halo/moving ring only in picker. Diagram, legend and list unchanged. Before: tools/handoff/console/notes/shots/o-11-pad-card-fixes-recipes-1/74-pad-pillagers-1080.jpg and 74-pad-call-of-duty-1080.jpg. After: pending lane camera-recipes capture for all six layouts.

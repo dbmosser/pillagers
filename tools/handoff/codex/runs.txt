@@ -131,3 +131,6 @@
 2026-10-20 14:52 o-16-golden-callout-names 198s ok PARTIAL in=500595 out=8617 run=1
 2026-10-20 15:26 o-16-golden-callout-names 133s ok PARTIAL in=1215791 out=12990 run=2
 2026-10-20 15:30 o-16-golden-callout-names 122s ok PARTIAL in=1860293 out=17730 run=3
+2026-10-20 15:40 o-16-golden-callout-names 43s ok DONE in=2239596 out=19256 run=4
+2026-10-20 15:43 o-17-pad-layout-selector 174s ok PARTIAL in=584947 out=7770 run=1
+2026-10-20 15:44 o-17-pad-layout-selector 38s ok PARTIAL in=887558 out=9213 run=2
