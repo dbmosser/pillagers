@@ -1,0 +1,7 @@
+v32.73: punchy hits on confirm and on the score count
+
+A press lands with a thump, and a score counts up with hits and lands with a heavier one.
+
+Check 32.73. Fails on v32.72.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
