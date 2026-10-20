@@ -141,3 +141,5 @@ Retain its output and require browser up on 9359 before retrying cw-cx-camera130
 
 2026-10-20 o-02-corpus-green: the previously logged 19.87 pause-legend candidate has a concrete one-edit game fix, cw-cx-padlostlegend, plus a new polling-loss/recovery check and two solo pause camera states. The old 19.87 assertion is retained. Please return the current full-run list when available; none newer than v32.16 is present here.
 
+2026-10-20 o-02-corpus-green: camera round 1 missed both pause states because recipes referenced private game variables outside the game closure. Corrected camera-recipes.json uses exported APIs and the real P key; both recipes pass an API-only local stand-in. Please rerun as round 2. The shipped pad-loss fix remains unchanged; round-1 plain-raid images and scores do not verify it. Latest available completed failure list is still v32.16; return the newer corpus list when ready.
+

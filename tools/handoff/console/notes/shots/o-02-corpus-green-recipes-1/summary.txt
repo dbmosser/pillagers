@@ -1,0 +1,7 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  pad-lost-open-pause                    NOT STAGED   5.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: mouse is not defined
+    at <anonymous>:9:37
+    at async <anonymous>:1:21
+  pad-ready-open-pause                   NOT STAGED   4.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: mouse is not defined
+    at <anonymous>:9:37
+    at async <anonymous>:1:21

@@ -1,0 +1,7 @@
+v32.75: ground shadows keep their sprites across scales
+
+Ground shadows no longer repaint their sprites every frame; raids with many bodies and boxes run smoother.
+
+Check 32.75. Fails on v32.74.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

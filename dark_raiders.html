@@ -3199,7 +3199,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.74';
+var VER='32.75';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -34640,8 +34640,9 @@ function shadowE(x,y,rx,ry,a){
   var ss, k, e, R, cv2, c2;
   if(CFG.wallBake!==0&&rx>0&&ry>0&&rx<400&&ry<400&&typeof wallSpriteScale==='function'){
     ss=(function(){ try{ var _m=wc.getTransform(); return Math.max(1,Math.min(4,Math.ceil(Math.hypot(_m.a,_m.b)/adsZf()-0.05))); }catch(_t){ return wallSpriteScale(); } })();   // v18.76: without the scope zoom   // v18.48: the scale of the canvas being drawn on
-    if(SHADSPR.ss!==ss){ SHADSPR.m={}; SHADSPR.n=0; SHADSPR.ss=ss; }
-    R=[Math.round(rx),Math.round(ry),Math.round(a*100)]; k=R.join(',');
+    // v28.xx (cw-shadowstore): the store used to empty whenever the sprite scale changed, and the world (ss 1) and the bigger figures (ss 2)
+    // changed it twice a frame, so every shadow painted a new canvas every frame. ss is part of the key now; the 300 cap stays.
+    R=[Math.round(rx),Math.round(ry),Math.round(a*100)]; k=ss+':'+R.join(',');
     e=SHADSPR.m[k];
     if(!e&&R[0]>0&&R[1]>0){
       if(SHADSPR.n>300){ SHADSPR.m={}; SHADSPR.n=0; }
@@ -50891,7 +50892,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.74: A lost pad releases its prompt style immediately. Same-slot A recovery stays intact. Check 32.74 fails on v32.73',
+  now:'v32.75: Ground shadows no longer repaint their sprites every frame; raids with many bodies and boxes run smoother. Check 32.75 fails on v32.74',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
