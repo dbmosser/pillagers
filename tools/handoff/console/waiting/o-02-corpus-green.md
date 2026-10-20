@@ -53,3 +53,4 @@ started 07:25 on v32.82 and ends about 11:30; working on from the two-day-old v3
 not show. The coordinator moves this back to tasks/ with the new list (round 3, fresh thread) when that run ends.
 
 Coordinator 10-20 08:40: the 07:25 run was stopped (the corpus page piled up loop chains; fixed in the fixture at 2235ddae). The fresh full run is now corpus-1020-0828 on a588d210; requeue this as round 3 with its list when it finishes.
+Coordinator 10-20 08:45: slice 0 now takes about 5.5 min (was 59). Its summary line is lost every run: a failure with a stack trace is several lines and the CDP read keeps only the last. After this run ends, fix tools/corpus-slices.sh line 30 (flatten whitespace in each fail) and rerun slice 0 alone before building the round 3 list.
