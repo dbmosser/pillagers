@@ -1,0 +1,7 @@
+v32.18: racks tab: explainer lines hidden
+
+The racks tab loses two explaining paragraphs.
+
+Check 32.18. Fails on v32.17.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

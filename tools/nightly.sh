@@ -51,6 +51,7 @@ summary(){
     echo "## Fuzz"; if [ -f "$R/tools/handoff/fuzz/fuzz.log" ]; then grep -E 'FUZZ END|problems=[1-9]' "$R/tools/handoff/fuzz/fuzz.log" | tail -10; else echo "no fuzzer yet"; fi; echo
     echo "## Local LLM"; tail -2 "$L/run.log" 2>/dev/null
     echo "text-audit hits: $(grep -c '^L' "$L/text-audit.md" 2>/dev/null)"; grep '^L' "$L/text-audit.md" 2>/dev/null | head -15
+    echo "hits kept today: $(grep -c '^L' "$L/found-$d.md" 2>/dev/null) in $L/found-$d.md"
     echo "code-sweep hits: $(grep -c '^LINE' "$L/code-sweep.md" 2>/dev/null)"; grep '^LINE' "$L/code-sweep.md" 2>/dev/null | head -15
   } > "$f"
 }
@@ -101,7 +102,10 @@ while true; do
     if [ "$(get llm_head)" != "$head" ] && [ "$(running 'llm-night\.ps1')" = "0" ] && llm_ok; then
       since=$(get llm_head); put llm_head "$head"
       echo "$(date +%H:%M) llm audits start, since ${since:-whole file}" >> "$LOG"
-      (powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/llm-night.ps1" -Model qwen2.5-coder:14b ${since:+-Since $since} > /dev/null 2>&1; echo "$(date +%H:%M) llm audits done" >> "$LOG") &
+      (powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/llm-night.ps1" -Model qwen2.5-coder:14b ${since:+-Since $since} > /dev/null 2>&1
+        # 10-19 night: each run rewrites text-audit.md and code-sweep.md, so the hits of the run before were lost; keep the day's list
+        { echo "## $(date +%H:%M) since ${since:-whole file}"; grep '^L' "$R/tools/handoff/llm-night/text-audit.md"; grep '^LINE' "$R/tools/handoff/llm-night/code-sweep.md"; } >> "$R/tools/handoff/llm-night/found-$(date +%F).md" 2>/dev/null
+        echo "$(date +%H:%M) llm audits done" >> "$LOG") &
     fi
     # (5) 2026-10-17, his "yes, build the unattended worker that spends my Console credits": the Console worker
     #     (tools/console-worker.sh) runs one Claude task at a time on his Console credits; it waits quietly until his key is saved

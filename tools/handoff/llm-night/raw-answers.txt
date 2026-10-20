@@ -1,40 +1,16 @@
 
-The provided HTML and CSS code snippet appears to be part of a web application or game interface, specifically related to the pause menu and outcome screen. Here's a breakdown of its key components:
+This HTML snippet appears to be part of a web page or application related to some kind of gaming experience, likely an online multiplayer game. The content includes several elements that are typical in such interfaces:
 
-### Pause Menu (`#pausebox`)
+1. **Canvas Elements**: Two canvas elements (`<canvas id="cv"></canvas>` and `<canvas id="hcv"></canvas>`) are present, which are commonly used for rendering graphics or animations in web applications.
 
-- **Structure**:
-  - The pause box is centered on the screen with various buttons for different actions like resuming the run, settings, leaderboard, feedback, etc.
-  
-- **Styling**:
-  - Uses CSS variables for font sizes and colors to maintain a consistent theme.
-  - Buttons have specific padding, border color, and text color styles.
+2. **Pause Box**: A pause menu is defined with various buttons and text elements. This includes options to resume the game, access settings, view a leaderboard, provide feedback, see what's new, return to character selection, abandon the run, or end the run (for arcade mode).
 
-### Feedback Modal (`#fbmodal`)
+3. **Feedback Modal**: A modal window for providing feedback (`<div class="modal" id="fbmodal">`) includes an image of the current screen and a text area for notes.
 
-- **Structure**:
-  - A modal window that appears over the pause menu when the feedback button is clicked.
-  - Contains an image of the current screen, a textarea for notes, and buttons to save or close the modal.
+4. **What's New Modal**: Another modal window (`<div class="modal" id="wnmodal">`) displays information about new features or updates in the game.
 
-- **Styling**:
-  - Similar to other modals, it uses CSS variables for consistent styling.
-  
-### What's New Modal (`#wnmodal`)
+5. **Leaderboard Modal**: A leaderboard modal (`<div class="modal" id="lbmodal">`) shows player rankings, presumably for a career mode or similar persistent gameplay experience.
 
-- **Structure**:
-  - A modal window that lists new features or updates when the "What's New" button is clicked.
-  - Contains a list of items and a close button.
-
-- **Styling**:
-  - Uses CSS variables for consistent styling.
-
-### Leaderboard Modal (`#lbmodal`)
-
-- **Structure**:
-  - A modal window displaying the leaderboard, which can be accessed from the pause menu or run card.
-
-NONE
-NONE
-NONE
+6. **Outcome Card**: An outcome card (`<div class="outcome" id="outcome">`) is included, which appears to display information about the end of a game run, such as extracted items, party members'
 NONE
 NONE

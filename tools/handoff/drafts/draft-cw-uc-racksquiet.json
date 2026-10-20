@@ -1,0 +1,12 @@
+{
+    "title":  "Racks tab: explainer lines hidden",
+    "why":  "UI step 7 (restyle only). Critic on the racks tab: a 1 to 3 line paragraph under each button is clutter. Q8 allows it with the reason logged.",
+    "now":  "The racks tab loses two explaining paragraphs.",
+    "edits":  [
+                  {
+                      "anchor":  "#root #hub .toprow .brand{ font-size:32px !important; }",
+                      "replacement":  "#root #hub .toprow .brand{ font-size:32px !important; }\n/* v28.xx (cw-uc-racksquiet) b-31 step 7, critic on 14 (P0 \"every action has a 1-3 line explaining paragraph\"): the array and data core explainer lines are hidden; the rack cost line stays (it is information) and so does his import line. */\n#root #mfarrayhint, #root #mfslothint{ display:none !important; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the racks tab hides the array and data core explainer lines\u0027,\n   run:function(){\n     var bad=[];\n     try{\n       [\u0027mfarrayhint\u0027,\u0027mfslothint\u0027].forEach(function(id){\n         var e=document.getElementById(id);\n         if(!e) bad.push(\u0027no \u0027+id); else if(getComputedStyle(e).display!==\u0027none\u0027) bad.push(id+\u0027 displays\u0027); });\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

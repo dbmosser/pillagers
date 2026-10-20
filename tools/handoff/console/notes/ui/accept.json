@@ -16,19 +16,19 @@
   "when": "2026-10-18T09:48"
  },
  "04-stash-terminal": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The first-raid explainer strip is gone and the backpack grid now fills the freed space, but the stash is still a dense, flat screen with no focal point and several stacked sentence and banner rows.",
+  "verdict": "The title is now a clear 32px header and the subtitle clutter is gone, but the screen is still a dense tool dump with weak hierarchy, a stacked footer, and leftover template-style hint rows.",
   "findings": [
-   "P0 bottom stack: freebie kit banner, welcome pack toast, hint line: Delete the toast box, or fold it into a single 32px status row. Remove the junk hint sentence and show it only on hover. Make the freebie kit one 56px row with a filled lime 'take the freebie kit' button (acc-ink text, 20px) at the right. Cut the row's description to 'scav pistol + 2 bandages + frag + plate'.",
-   "P0 whole card, hierarchy: Give the card one focal point: either a lime filled primary button at bottom-right at 20px/700, or the loadout header as the star with a 3px accent tab. Drop the header numbers to --fs-label and keep only '900' at 32px.",
-   "P1 header (credits, xp, stash 3,750 bag 0) and title block: Set the title 'the stash' at 32px/700 tx-1. Delete the subtitle line. Show money as '$900' and value as '$3,750' with 16px tx-2 labels above the numbers. Use 24px gaps between stats. Remove the em-dashes.",
-   "P1 tab row, search and sort/armory/trophies group: Make the tab underline 3px lime and the active tab text lime. Shrink the search field to about 280px. Move armory and trophies into 36px outlined buttons with a 1px --ui-line-hi border at the far right, and keep sort as a dropdown chip.",
-   "P1 right pane: tactical belt, gun keys, item wheel: Lift chip text to 16px and chip height to 44px. Delete the 'guns' orphan caption, or make it a 16px section label aligned left. Use one cell style (1px --ui-line-hi border, --ui-raised fill) for backpack and belt. Align every reset button to the same 28px height and put each at its section header's right edge."
+   "P1 bottom strip: freebie kit bar, welcome toast, hint rows: Remove the toast. Merge the legend and junk hint into one 14px footer row. Make 'take the freebie kit' a filled --acc button, 20px text, 48px tall, with a --acc-ink label. Keep the bar on --ui-panel with only a 3px left accent tab.",
+   "P1 hierarchy across the whole card: Make credits the single 56px hero in --acc. Set xp and stash/bag in 16px --tx-2 with 24px gaps. Move sort, armory and trophies into a separate right-aligned group, apart from the filter tabs.",
+   "P1 type sizes: section labels, gun keys, item wheel, tactical belt: Set all read text to at least 16px f-cond 600, with section headers in one consistent 16px style. Delete the orphan 'guns' caption or move it into the belt header. Raise the gun key rows to 48px tall with 16px names.",
+   "P2 header block, top-left and top-right: Align the title and stats on one baseline. Put 24px between the header and the tab row. Dim the backdrop scrim to .80 so the hub title does not show. Draw the X at 40px with a --ui-line-hi border and a --tx-2 glyph.",
+   "P2 stash grid: Use a --ui-line border for every slot with a 3px bottom rarity bar only. Show 6 by 5 empty slots so the grid reads as inventory. Put counts in 16px --tx-1."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-31-j2/04-stash-terminal-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/b-31-j3/04-stash-terminal-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T03:43"
+  "when": "2026-10-20T03:47"
  },
  "05-sector-page": {
   "score": 2,
@@ -132,17 +132,17 @@
  "14-mainframe-racks": {
   "score": 2,
   "pass": false,
-  "verdict": "the mainframe racks tab still has the old layout of one narrow column of grey buttons with explaining paragraphs, a huge empty right half, and a dev-joke sentence about claude that must go.",
+  "verdict": "The window frame, title, tabs and x are consistent with the card style, but the racks tab inside it is a narrow stack of identical bars and explaining paragraphs, with a placeholder dev sentence ('some wild idea claude came up with') shown to the player.",
   "findings": [
-   "P0 import a friend paragraph, bottom of column: delete it. Leave at most a 16px tx-2 label of 5 words or fewer ('import a run report') and move the detail to a tooltip.",
-   "P0 whole racks tab layout: two columns with a 24px gap, both starting at the 118px margin. Left panel: rack grid and the three actions. Right --ui-raised detail pane: costs as a table with held/needed per material.",
-   "P0 description paragraphs under build a rack, fold, slot a data core: delete the sentences. Show costs as 16px chips ('scrap 0/12', 'wire 0/9', 'cell 0/6', 'board 0/6'), red where short. Move the data-core detail to a tooltip.",
-   "P1 build a rack / fold / slot a data core buttons: make 'build a rack' the one --acc fill with --acc-ink 20px text. Disabled buttons get tx-2 text at 4.5:1 or better and a --ui-line-hi border. Make 'import a friend' secondary. Add a 2px lime focus bar on the focused row.",
-   "P1 '0 of 10 racks' count and rack slots, top of column: set a 56px f-cond 800 tx-1 '0 / 10' as the hero. Make the slots 40x16 --ui-panel fills with --ui-line-hi borders, lime when filled. Drop the teal. Leave 24px below the tab rule."
+   "P0 import a friend helper text, bottom of the column: Delete the sentence. Keep at most a 3-word label such as 'import a friend'. Drop the helper paragraph or cut it to 'friend's run report'.",
+   "P0 racks tab body: 4 helper paragraphs (cost, fold, data core, import): Remove the 'ten racks become one array' and 'spend a data core...' sentences. Turn the cost line into a chip row with icon and count: 12 scrap, 9 wire, 6 cell, 6 board, each in tx-1 at 16px, red when short. Put a short tooltip on focus for the rest.",
+   "P1 hierarchy of the racks column (x 442-1113): Make 'build a rack' the single lime-filled primary button (--acc, ink text, 20px, 56px tall). Make the others secondary outlines. Show '0/10' as a 56px hero number with taller 24px pips. Keep disabled buttons at 4.5:1 text with a dashed or dimmed border.",
+   "P1 layout of the whole card: Use a two-column layout: a left column of rack tiles in a 5x2 grid (each 96px, with an empty/built state) and a right detail panel in --ui-raised holding the actions. Or centre one 720px column. Align to the 24px padding of the card.",
+   "P1 colour use: teal '0 of 10 racks', yellow tab underline, welcome toast: Make the counter tx-1 with an --acc fill on the built pips. Use only tx-1 and tx-2 for text. Disabled text is tx-2 at 60% opacity, no lower."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-31-f6/14-mainframe-racks-1080.jpg",
-  "task": "b-31-ui-undercroft",
-  "when": "2026-10-19T00:54"
+  "pic": "tools/handoff/console/notes/shots/b-31-j1/14-mainframe-racks-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-20T03:47"
  },
  "16-bar-last-pour": {
   "score": 2,

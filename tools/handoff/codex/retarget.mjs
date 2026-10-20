@@ -2,6 +2,7 @@
 // It only reads files and prints lines; the lane (bash) does the locking, the rebuild, the checks and the commit.
 //   node retarget.mjs plan JSON MK APPLIED [OUT]   validate the edit file against tools/mkfixture.ps1, write the result to OUT
 //   node retarget.mjs jscheck HTML                 syntax check of the inline scripts of a built fixture
+//   node retarget.mjs keys JSON                    the keys the edit file names (one line, space separated; empty if none or unreadable)
 // plan prints lines "KEY value": STATUS ok|nothing|refused, MSG (why refused), WHY, FILEHASH, KEYS, EDIT, EDITHASH, DEL, RUN, RUNHOW.
 // exit 0 for ok / nothing, 1 for refused.
 import fs from 'node:fs';
@@ -159,4 +160,5 @@ function jscheck(htmlPath) {
 const [cmd, a, b, c, d] = process.argv.slice(2);
 if (cmd === 'plan' && a && b && c) plan(a, b, c, d);
 else if (cmd === 'jscheck' && a) jscheck(a);
-else { process.stderr.write('usage: node retarget.mjs plan JSON MK APPLIED [OUT] | jscheck HTML\n'); process.exit(2); }
+else if (cmd === 'keys' && a) { let k = []; try { const j = JSON.parse(readLoose(a)); if (Array.isArray(j.keys)) k = j.keys.filter((x) => typeof x === 'string' && KEYRE.test(x)); } catch (e) { /* the plan refuses it */ } process.stdout.write(k.join(' ') + '\n'); }
+else { process.stderr.write('usage: node retarget.mjs plan JSON MK APPLIED [OUT] | jscheck HTML | keys JSON\n'); process.exit(2); }

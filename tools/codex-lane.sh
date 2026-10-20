@@ -145,7 +145,7 @@ if [ "$MODE" = run ]; then
   echo $$ > "$LK/pid"
   closepf(){ if curl -s -m 2 "http://127.0.0.1:$PFPORT/json/version" >/dev/null 2>&1; then
       powershell -NoProfile -Command "Get-CimInstance Win32_Process -Filter \"Name='chrome.exe'\" | Where-Object { \$_.CommandLine -match 'remote-debugging-port=$PFPORT( |\$)' -and \$_.CommandLine -match 'pillagers-cdp$PFPORT' } | ForEach-Object { Stop-Process -Id \$_.ProcessId -Force }" >/dev/null 2>&1; fi; }
-  trap 'rm -rf "$LK"; closepf' EXIT
+  trap 'rm -rf "$LK"; closepf; if [ -n "$RT_LOCKED" ]; then [ -n "$RT_BAK" ] && cp "$RT_BAK" "$R/tools/mkfixture.ps1"; rt_unlock; fi' EXIT
 fi
 
 # ---------------------------------------------------------------- pick a job: o-*.md first, else any free job (console-lane.sh's free()/busy/retry)
@@ -319,6 +319,94 @@ $(printf '%s\n' "$pf" | tail -8)"; return 1
   appendfb "The ship gate STOPPED $k (nothing shipped). Fix it and finish again; keep the same key. The gate said:
 $(printf '%s\n' "$out" | tail -9)"; return 1; }
 
+# ---- Codex's fixture-retarget.json (RULES-codex.md step 5). 2026-10-19 night: the rules promised this step but the lane never had it, so
+#      o-03 and o-06 handed over retargets only the coordinator could apply. Trial first, lock last: the edited copy builds a trial fixture
+#      from the committed game and its checks run in the lane's own Chrome ($PFPORT) with no lock held; only a passing file takes the ship
+#      lock, and then only to copy, commit and rebuild. Sets RT_HOLD (keys that wait; * = all of them) and RT_DONE (the commit).
+#      returns 0 nothing to do or applied, 1 Codex must fix it (fb has why), 2 not Codex's fault (its keys wait, no run spent on it)
+RT_LOCKED=""; RT_BAK=""; RT_PAGE="fx0rt-codex.html"
+rt_unlock(){ bash "$S/unlock.sh" >> "$LS/retarget-lock.txt" 2>&1; RT_LOCKED=""; }
+rt_checks(){  # rt_checks LIST OUT : each check in LIST once on the trial fixture in Chrome $PFPORT, 25 per tab. 0 ran, 2 browser trouble
+  local l=$1 o=$2 vs chunk js tag id i=0 n sec; sec=$(cap RETARGET_RUN_SEC 330); : > "$o"; mapfile -t vs < "$l"; n=${#vs[@]}
+  curl -s -m 3 "http://127.0.0.1:$PFPORT/json/version" >/dev/null 2>&1 || { powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/cdp.ps1" -Start -Port $PFPORT -Profile "$(cygpath -w "$TEMP")\pillagers-cdp$PFPORT" >/dev/null 2>&1; sleep 3; }
+  curl -s -m 3 "http://127.0.0.1:$PFPORT/json/version" >/dev/null 2>&1 || return 2
+  while [ $i -lt $n ]; do
+    chunk=("${vs[@]:$i:25}"); js=$(printf "'%s'," "${chunk[@]}"); tag="rt$i$$"
+    id=$(powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/cdp.ps1" -Port $PFPORT -Open "http://localhost:8806/$RT_PAGE?$tag=1" 2>/dev/null | tr -d '\r' | awk '/^opened/{print $2}')
+    [ -n "$id" ] || return 2
+    sleep 20
+    timeout $((sec + 60)) powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/cdp.ps1" -Port $PFPORT -Match "$tag=1" -TimeoutSec "$sec" -Expr "(function(){ var vs=[${js%,}], out=[]; vs.forEach(function(V){ var t=__REGRESS.find(function(x){return x.v===V}); if(!t){ out.push(V+': NO CHECK'); return; } var r; try{ __runPrep(); __topClear(); r=t.run(); }catch(e){ r='threw '+e; } out.push(V+': '+(r?String(r).slice(0,300):'PASS')); }); return out.join('\n'); })()" 2>/dev/null | tr -d '\r' >> "$o"
+    curl -s -m 5 "http://127.0.0.1:$PFPORT/json/close/$id" >/dev/null 2>&1
+    i=$((i+25))
+  done
+  echo "ALL DONE" >> "$o"; return 0; }
+apply_retarget(){
+  local js="$WD/fixture-retarget.json" ap="$LS/retarget-applied.txt" out="$LS/mkfixture-retarget.ps1" game="$LS/game-head.html"
+  local lst="$LS/retarget-run.txt" res="$LS/retarget-result.txt" trial="$R/tools/$RT_PAGE" pl st run why n h0 h1 bad miss v c tries=0
+  RT_HOLD=""; RT_DONE=""
+  [ -f "$js" ] || return 0
+  touch "$ap"
+  # the keys that wait if this fails (none listed: all of them wait)
+  RT_HOLD=$(node "$X/retarget.mjs" keys "$js" 2>/dev/null | tr -d '\r')
+  [ -z "$RT_HOLD" ] && RT_HOLD="*"
+  while :; do
+    tries=$((tries+1))
+    [ -n "$(git -C "$R" status --porcelain tools/mkfixture.ps1)" ] && { say "retarget: tools/mkfixture.ps1 is being edited by another worker; $name's keys wait"; return 2; }
+    h0=$(git -C "$R" hash-object tools/mkfixture.ps1)
+    pl=$(node "$X/retarget.mjs" plan "$js" "$R/tools/mkfixture.ps1" "$ap" "$out" 2>&1); echo "$pl" > "$LS/retarget-plan.txt"
+    st=$(printf '%s\n' "$pl" | sed -n 's/^STATUS //p' | head -1)
+    case "$st" in
+      nothing) RT_HOLD=""; return 0;;
+      ok) ;;
+      refused) appendfb "The lane REFUSED fixture-retarget.json: tools/mkfixture.ps1 is unchanged and nothing was committed. Fix the file and end again:
+$(printf '%s\n' "$pl" | sed -n 's/^MSG /- /p' | head -8)"; return 1;;
+      *) log "retarget plan failed for $name: $(printf '%s' "$pl" | tail -3 | tr '\n' ' ' | cut -c1-300)"; say "retarget: the lane's planner failed ($name); its keys wait"; return 2;;
+    esac
+    run=$(printf '%s\n' "$pl" | sed -n 's/^RUN //p' | head -1); why=$(printf '%s\n' "$pl" | sed -n 's/^WHY //p' | head -1)
+    n=$(printf '%s\n' $run | grep -c .)
+    if [ "$n" -gt "$(cap RETARGET_MAX_CHECKS 30)" ]; then appendfb "fixture-retarget.json would run $n checks; the most per file is $(cap RETARGET_MAX_CHECKS 30). Keep the first part in the file, end again, and send the rest in a later file."; return 1; fi
+    # 1. the trial: the edited copy builds a fixture from the committed game; the checks run there (no lock, the lane's own Chrome)
+    ramwait || { say "retarget: waiting for RAM ($name)"; return 2; }
+    say "retarget: trying $name's fixture edit on a trial copy ($n checks)"
+    git -C "$R" show HEAD:dark_raiders.html > "$game" 2>/dev/null || { say "retarget: could not read the committed game ($name); its keys wait"; return 2; }
+    rm -f "$trial"
+    ( cd "$R" && timeout 900 powershell -NoProfile -ExecutionPolicy Bypass -File "$(cygpath -w "$out")" -Src "$(cygpath -w "$game")" -Dst "$(cygpath -w "$trial")" ) > "$LS/retarget-build.txt" 2>&1
+    if [ ! -s "$trial" ]; then appendfb "The edited tools/mkfixture.ps1 did not build a fixture (nothing was committed). PowerShell said:
+$(tail -6 "$LS/retarget-build.txt" | cut -c1-300)"; return 1; fi
+    bad=$(node "$X/retarget.mjs" jscheck "$trial" 2>&1)
+    if ! printf '%s\n' "$bad" | grep -q '^JS ok'; then rm -f "$trial"; appendfb "The edited fixture does not compile (nothing was committed): $(printf '%s' "$bad" | cut -c1-400)"; return 1; fi
+    if [ "$n" -gt 0 ]; then
+      printf '%s\n' $run > "$lst"
+      rt_checks "$lst" "$res" || { rm -f "$trial"; say "retarget: the lane's browser $PFPORT will not answer ($name); its keys wait, no run spent"; return 2; }
+      miss=""; for v in $run; do grep -q "^$v: " "$res" || miss="$miss $v"; done
+      if [ -n "$miss" ]; then rm -f "$trial"; log "retarget checks for $name came back incomplete (no answer for$miss)"; say "retarget: the trial checks did not all answer ($name); its keys wait"; return 2; fi
+      bad=$(grep -vE '^[0-9]+\.[0-9]+: PASS$|^ALL DONE$|^$' "$res" | head -8 | cut -c1-300)
+      if [ -n "$bad" ]; then rm -f "$trial"; appendfb "A retargeted check FAILED on a trial build of the current game (v$(gamever)): tools/mkfixture.ps1 is unchanged and nothing was committed. Make it hold on the old AND the new build, then end again:
+$bad"; return 1; fi
+    fi
+    rm -f "$trial"
+    # 2. the lock, only to copy, commit and rebuild; if the fixture file moved while the trial ran, plan and try once more
+    bash "$S/lock.sh" "codex-retarget-$name" > "$LS/retarget-lock.txt" 2>&1
+    grep -q '^LOCKED' "$LS/retarget-lock.txt" || { say "retarget: the ship lock did not come free ($name); its keys wait"; return 2; }
+    RT_LOCKED=1
+    h1=$(git -C "$R" hash-object tools/mkfixture.ps1)
+    if [ "$h1" != "$h0" ] || [ -n "$(git -C "$R" status --porcelain tools/mkfixture.ps1)" ]; then
+      rt_unlock; [ $tries -lt 2 ] && continue
+      say "retarget: tools/mkfixture.ps1 keeps changing under $name; its keys wait"; return 2; fi
+    RT_BAK="$LS/mkfixture-before.ps1"; cp "$R/tools/mkfixture.ps1" "$RT_BAK"; cp "$out" "$R/tools/mkfixture.ps1"
+    if ! git -C "$R" commit -q -m "fixture: codex retarget for $name: $(printf '%s' "$why" | cut -c1-80)" -- tools/mkfixture.ps1 > "$LS/retarget-commit.txt" 2>&1; then
+      cp "$RT_BAK" "$R/tools/mkfixture.ps1"; RT_BAK=""; rt_unlock
+      log "retarget commit failed for $name: $(tail -3 "$LS/retarget-commit.txt" | tr '\n' ' ' | cut -c1-300)"; say "retarget: the commit failed ($name); its keys wait"; return 2; fi
+    RT_BAK=""; c=$(git -C "$R" log -1 --format=%h)
+    ( cd "$R" && timeout 900 powershell -NoProfile -ExecutionPolicy Bypass -File tools/mkfixture.ps1 ) > "$LS/retarget-rebuild.txt" 2>&1
+    rm -rf "$TEMP/pillagers-dry/"dry*
+    rt_unlock
+    { printf '%s\n' "$pl" | sed -n 's/^FILEHASH /file /p'; printf '%s\n' "$pl" | sed -n 's/^EDITHASH /edit /p'; } >> "$ap"
+    RT_HOLD=""; RT_DONE="$c"; log "$name retarget applied in $c (checks: ${run:-none})"
+    appendfb "Your fixture-retarget.json is in: commit $c.${run:+ Checks $run passed on a trial build of v$(gamever) first.}"
+    return 0
+  done; }
+
 # ---- pictures and critic (the lane does these: Codex has no Chrome)
 shoot(){  # shoot before|after SCREENS
   local sfx=$1 sc=$2 out="tools/handoff/console/notes/shots/$name-$1"
@@ -349,6 +437,13 @@ while [ "$it" -lt "$left" ]; do
   if [ -f "$C/STOP" ] || [ -f "$X/STOP" ]; then say "paused (STOP file); $name kept"; r="stopped"; break; fi
   wt_refresh || { say "needs you: the codex worktree cannot be refreshed (see $X/log/wt.err); $name kept"; r="stopped"; break; }
   mkdir -p "$WD"
+  # 2026-10-19 night: a job that ended "waiting" (the gate or the retarget could not run, not Codex's fault) used to spend a fresh Codex
+  # run on its next pick before the lane even retried. Now the first pass retries the gate with the files as they are, and runs no Codex.
+  GO=""
+  if [ "$it" = 1 ] && [ -s "$LS/waiting.txt" ]; then
+  GO=1; it=0; claim=$(cat "$LS/waiting.txt"); lastclaim=$claim; rm -f "$LS/waiting.txt"; CLASS=ok
+  log "$name: gate-only pass (it waited last time), no codex run"; say "gate: retrying $name's waiting keys (no codex run)"
+  else
   pfile="$X/log/$name-prompt-$it.txt"; mode=fresh; imgs=("${PICS[@]}"); PICS=(); sc=""
   if [ -n "$tid" ] && [ "$it" -gt 1 ]; then mode=resume; { echo "The workspace was refreshed to the newest master (game v$(gamever)). Your files in .codex-work/$name/ are as you left them."; printf '%s\n' "$fb"; echo; echo "Continue. End with the line TASK DONE or TASK PARTIAL: what remains."; } > "$pfile"
   else prompt_fresh "$fb" > "$pfile"; fi
@@ -379,18 +474,26 @@ while [ "$it" -lt "$left" ]; do
   echo "$(date '+%F %H:%M') $name ${dt}s $CLASS $claim $(tokens) run=$((n0+it))" >> "$X/runs.txt"
   git -C "$W" status --porcelain -uno 2>/dev/null | head -5 > "$X/log/$name-edits-in-copy.txt"
   harvest
+  fi
   fb=""; SHIPPED_NOW=(); gate=0; keys=$(keys_list); sc=$(screens_list)
   [ "$CLASS" = timeout ] && appendfb "Your last run was cut after $(cap RUN_MIN 45) minutes. Whatever is in .codex-work/$name was kept. Finish in fewer steps."
+  rtg=0; RT_HOLD=""; RT_DONE=""
+  [ -f "$WD/fixture-retarget.json" ] && { apply_retarget; rtg=$?; }
   if [ -n "$keys" ]; then
     first_unshipped=$(for k in $keys; do grep -qxF "$k" "$LS/shipped.txt" || { echo "$k"; break; }; done)
     # BEFORE pictures: once, before the first ship of this job
     if [ -n "$sc" ] && [ -n "$first_unshipped" ] && [ ! -d "$R/tools/handoff/console/notes/shots/$name-before" ]; then shoot before "$sc" || appendfb "(The lane could not take the BEFORE pictures: see log/$name-before.camera.txt.)"; fi
     for k in $keys; do
+      if [ $rtg != 0 ] && { [ "$RT_HOLD" = "*" ] || printf '%s\n' $RT_HOLD | grep -qxF "$k"; }; then continue; fi
       ship_key "$k"; g=$?
       [ $g = 0 ] && continue
       gate=$g; break
     done
   fi
+  if [ $rtg != 0 ] && [ -n "$keys" ]; then
+    held=$(for k in $keys; do grep -qxF "$k" "$LS/shipped.txt" && continue; { [ "$RT_HOLD" = "*" ] || printf '%s\n' $RT_HOLD | grep -qxF "$k"; } && echo "$k"; done | tr '\n' ' ')
+    [ -n "$held" ] && appendfb "Not shipped yet, they wait on the fixture retarget: $held"; fi
+  [ $gate = 0 ] && [ $rtg != 0 ] && gate=$rtg
   [ ${#SHIPPED_NOW[@]} -gt 0 ] && appendfb "Shipped: ${SHIPPED_NOW[*]} (game now v$(grep -m1 "^var VER='" "$R/dark_raiders.html" 2>/dev/null | sed "s/var VER='\([0-9]*\.[0-9]*\)'.*/\1/"))."
   if [ $gate = 2 ]; then r="waiting"; break; fi          # not Codex's fault: leave the job and try later
   if [ $gate = 0 ]; then
@@ -406,7 +509,7 @@ $CRITTXT"
     if [ "$claim" = DONE ] && [ $need = 0 ]; then r=done; break; fi
     if [ "$claim" = DONE ] && [ $need = 1 ]; then appendfb "You said TASK DONE, but the critic is below $OKSC on a screen with P0/P1 findings. Fix them (new key) unless a finding would reverse one of his rulings or the finish lines in RULES.md say this screen is good enough; then end with TASK DONE."; idle=0
     else
-      [ ${#SHIPPED_NOW[@]} -eq 0 ] && idle=$((idle+1)) || idle=0
+      if [ -n "$GO" ] || [ ${#SHIPPED_NOW[@]} -gt 0 ] || [ -n "$RT_DONE" ]; then idle=0; else idle=$((idle+1)); fi
       # 2026-10-19 (o-01 and o-04 each spent 3 runs asking the lane for pictures and fixture edits after they shipped): once this job has
       # shipped, a run that ships nothing and drafts no new key means only lane-side steps are left. Park it in waiting/, spend no more runs.
       if [ "$idle" -ge 1 ] && [ -s "$LS/shipped.txt" ] && [ "$keys" = "$prevkeys" ]; then r="parked"; break; fi
@@ -429,7 +532,7 @@ case "$r" in
     echo "$(date '+%m-%d %H:%M') $name: shipped, parked in waiting/ (lane-side steps left), codex" | tee -a "$C/runs.log" > "$C/status-$L.txt";;
   limit|login|crash|stopped|waiting)   # the job stays where it is; the status line was written where it happened
     final="$r"; echo "$(date '+%m-%d %H:%M') $name: codex $r; kept (runs so far: $n of $MAXR)" >> "$C/runs.log"
-    [ "$r" = waiting ] && say "gate waiting on another worker; $name kept (codex)";;
+    [ "$r" = waiting ] && { echo "${lastclaim:-NONE}" > "$LS/waiting.txt"; say "gate waiting on another worker; $name kept (codex)"; };;
   *)
     if [ "$r" = done ]; then mv "$t" "$C/done/"; final=done
     elif [ "$n" -ge "$MAXR" ]; then mv "$t" "$C/failed/"; final=failed

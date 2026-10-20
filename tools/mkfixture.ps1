@@ -6101,6 +6101,15 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.18',what:'the racks tab hides the array and data core explainer lines',
+   run:function(){
+     var bad=[];
+     try{
+       ['mfarrayhint','mfslothint'].forEach(function(id){
+         var e=document.getElementById(id);
+         if(!e) bad.push('no '+id); else if(getComputedStyle(e).display!=='none') bad.push(id+' displays'); });
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     return bad.length?bad.join('; '):null; }},
   {v:'32.17',what:'the stash header has no dash subtitle and a 32px title',
    run:function(){
      var bad=[];
