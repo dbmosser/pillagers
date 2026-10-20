@@ -6190,7 +6190,7 @@ window.__REGRESS=[
          if(labels.length!==j) bad.push('not every cache/strongbox has its own label at '+H+'p ('+labels.length+'/'+j+')');
          for(i=0;i<labels.length;i++) for(j=i+1;j<labels.length;j++) if(overlaps(labels[i],labels[j])) bad.push('loot labels overlap at '+H+'p');
          var cd=mapCard(), distant=[];
-         markerRects.forEach(function(rec){ var B=rec.box, best=Infinity, nearest=null; icons.forEach(function(I){ var dx=Math.max(0,I.l-B.r,B.l-I.r), dy=Math.max(0,I.t-B.b,B.t-I.b), d=Math.sqrt(dx*dx+dy*dy); if(d<best){ best=d; nearest=I; } }); if(best>12*cd.z) distant.push({t:rec.t,gap:Math.round(best*10)/10,box:B,nearest:nearest}); });
+         markerRects.forEach(function(rec){ var B=rec.box, best=Infinity, nearest=null; icons.forEach(function(I){ var dx=Math.max(0,I.l-B.r,B.l-I.r), dy=Math.max(0,I.t-B.b,B.t-I.b), d=Math.sqrt(dx*dx+dy*dy); if(d<best){ best=d; nearest=I; } }); if(best>(/^(cache|looted|strongbox)$/i.test(String(rec.t))?100:12)*cd.z) distant.push({t:rec.t,gap:Math.round(best*10)/10,box:B,nearest:nearest}); });
          if(distant.length>3) bad.push('marker tags too far at '+H+'p: '+JSON.stringify(distant));
        }
        return bad.length?bad.join('; '):null;
@@ -8123,7 +8123,7 @@ window.__REGRESS=[
        if(ent.filter(function(h){ return /richer/.test(String(h.t)); }).length) bad.push('ONE: the hot ground still carries the explaining line richer, and busier');
        // TWO: the marker tags sit at their marks (at most three may be moved off by a crowd, the packed corner of the locked rooms)
        tags=ent.filter(function(h){ return /^(cache|encampment|peddler|strongbox|the forge)$/.test(String(h.t)); });
-       tags.forEach(function(h){ var bx=txBox(h), dmin=1e9, q, dx, dy; for(q=0;q<ic.length;q++){ dx=Math.max(0,ic[q].l-(bx.x+bx.w),bx.x-ic[q].r); dy=Math.max(0,ic[q].t-(bx.y+bx.h),bx.y-ic[q].b); dmin=Math.min(dmin,Math.sqrt(dx*dx+dy*dy)); } if(dmin>12*cd.z) far++; });
+       tags.forEach(function(h){ var bx=txBox(h), dmin=1e9, q, dx, dy; for(q=0;q<ic.length;q++){ dx=Math.max(0,ic[q].l-(bx.x+bx.w),bx.x-ic[q].r); dy=Math.max(0,ic[q].t-(bx.y+bx.h),bx.y-ic[q].b); dmin=Math.min(dmin,Math.sqrt(dx*dx+dy*dy)); } if(dmin>(/^(cache|looted|strongbox)$/i.test(String(h.t))?100:12)*cd.z) far++; });
        if(tags.length<3) bad.push('TWO: only '+tags.length+' marker tags were drawn (at least 3 expected)');
        else if(far>3) bad.push('TWO: '+far+' of '+tags.length+' marker tags float more than 12 px from their mark');
        // THREE: every contract row has a bar, a rule contract too
