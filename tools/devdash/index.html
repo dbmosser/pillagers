@@ -55,7 +55,7 @@ main{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1
 <div id="commits"></div></section>
 
 <section class="card"><h2>YOUR PC</h2>
-<div class="what">How hard your computer is working on the game right now. It always keeps at least 6 GB of memory free for you.</div>
+<div class="what">How hard the work computer (the VM) is working on the game right now. Your main PC always keeps at least 4 GB of memory free for you, and while you use it the VM gets half its processors and starts no big test runs.</div>
 <div id="pc"></div></section>
 
 <section class="card"><h2>BACKGROUND RUNNER</h2>
@@ -153,7 +153,8 @@ function crewHtml(d){
   o+=svcRow(d.lockOwner?'b':'d','Quality check line',d.lockOwner?'testing a change now':'nobody in line');
   o+=svcRow(p.fuzz.length?'g':'d','Crash-hunting robots',p.fuzz.length?p.fuzz.length+' playing the game now':'none running');
   o+=svcRow(alive?'g':'r','Background runner',alive?'running (backups, test re-runs, starting the helpers)':'<span class="warn">not running</span>');
-  o+=svcRow(d.questions.length?'a':'d','Waiting on you',d.questions.length?d.questions.length+' question'+(d.questions.length>1?'s':'')+' (see QUESTIONS FOR YOU)':'nothing');
+  { const qn=(d.questions||[]).filter(q=>String(q).trim()&&!/^nothing for you/i.test(String(q).trim())).length;  // the "nothing for you" line is not a question
+  o+=svcRow(qn?'a':'d','Waiting on you',qn?qn+' question'+(qn>1?'s':'')+' (see QUESTIONS FOR YOU)':'nothing'); }
   return o;
 }
 async function tick(){
