@@ -1,12 +1,12 @@
 # START HERE
 
-## CURRENT (refreshed 2026-10-20 14:15, game at v32.90). Read this block. EVERYTHING BELOW IT IS HISTORY (2026-09-05 to 09-13) and is stale.
+## CURRENT (refreshed 2026-10-20 13:58, game at v32.90). Read this block. EVERYTHING BELOW IT IS HISTORY (2026-09-05 to 09-13) and is stale.
 
 The game is PILLAGERS (old name Dark Raiders; the file is still dark_raiders.html). In the old text below, "Daniel" means the owner: say "the owner" or "he". He plays and gives orders; he is not a coder. His answers are binding.
 
 **Direction and dates (his answers of 10-18 and 10-19):** work toward the THANKSGIVING RELEASE, Thu 11/26 on itch.io (pay what you want; friends and family on a private link first). The 2-player party on Fri 10/30 is a simple sideshow: open the game and click the 2 player arcade demo (10-19 order). New features until Mon 10/26; after that nothing brand new, everything else up to the lock (3.37 c). The party version locks Thu 10/29 evening; after the lock only urgent fixes, reported afterwards (2.81 c). Release work goes on after the party. Party night runs from the frozen copy on the MAIN PC (party-host-copy.ps1), with no pad route into the VM (his 10-19 22:45 decision; the vm-verify pad-route WARN is expected).
 
-**State (checked 10-20 14:15):**
+**State (checked 10-20 13:58):**
 - All development runs in the VM "Pillagers_Oct26" (hostname VM_Oct2026, 10 GB by day, up to 16 GB at night). Never run anything Pillagers on the main PC JUL26 (host-stopped.txt).
 - Newest ship v32.90. Stable is still v29.09. The full run on v32.90 (corpus-1020-1250) has 11 failing checks, down from 89: tools/handoff/corpus-fails-v32.90.txt. Jobs 58 (six of them) and 68 (five body-drawing ones) sort them; then coord-02 in tools/handoff/console/staging-1020 writes the known-red list and runs 30 robot minutes so stable can move.
 - The queue: jobs 58 to 70 (Claude lanes a, b, c) and o-14 to o-19 (ChatGPT lane o), from the 10-20 backlog sweep. The rest of the sweep (stretch, after-party and coordinator jobs) waits in tools/handoff/console/staging-1020 (README there: the ranked list and the plan-week checkpoints).

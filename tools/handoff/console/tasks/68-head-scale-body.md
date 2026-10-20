@@ -19,7 +19,7 @@ only if the before and after pictures show nothing else moved; otherwise leave i
 
 TASK DONE when shipped with the check and the picture pair; TASK PARTIAL with what is left.
 
-COORDINATOR 10-20 14:00: the full run on v32.90 (tools/handoff/corpus-fails-v32.90.txt) has five red body-drawing checks that are yours:
+COORDINATOR 10-20 13:54: the full run on v32.90 (tools/handoff/corpus-fails-v32.90.txt) has five red body-drawing checks that are yours:
 v20.01, v20.11, v28.12, v28.13, v28.16. They likely share this cause (the head scale reaching the body). Run each alone before and after
 your fix; each ends FIXED SINCE, fixed by your ship, or judged as job 58 judges (REAL / STALE retarget that keeps the intent / HARNESS),
 one line each in your notes. Never weaken a check to make it pass.
