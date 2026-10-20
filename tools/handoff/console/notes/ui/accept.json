@@ -10,10 +10,17 @@
  "03-hub-floor": {
   "score": 2,
   "pass": false,
-  "verdict": "The hub floor is a readable playground but not a polished AAA screen: station labels are oversized and equal-weight, there is no clear primary action, and the corner text, test-build joke caption and cramped footer ignore the style guide.",
-  "pic": "tools/handoff/console/notes/shots/b-31-after2/03-hub-floor-1080.jpg",
-  "task": "b-31-ui-undercroft",
-  "when": "2026-10-18T09:48"
+  "verdict": "The hub reads as a prototype: tiny top corners, station labels all shouting at the same size, a stray glitch caption and amber still used as the accent, so it neither follows the guide nor shows what to do first.",
+  "findings": [
+   "P0 top-right currency strip: Replace credits with '$900' and xp with 'sp'. Put the career items in one vertical 1x1 list (cw-trcol). Set every value at 20px f-cond 600 in tx-1 and every label at 16px in tx-2. Put the list in a --ui-panel at 90% with a 1px --ui-line-hi border, 24px padding and the 4px radius.",
+   "P0 '***experimental feature may glitch***' under 'the last pour': Delete the caption. If a warning is needed, use a 16px '--warn' glyph plus one word, 'beta', inside the station label plate, not free-floating text.",
+   "P1 station labels (wirt the gambler, enter raid!, the mainframe, shop craft and hire, settings, the last pour, the stash, fashion): Set labels to 20px f-cond 600 on a --ui-panel plate with 8px/16px padding. Make 'enter raid' the one hero: 32px f-cond 800, a lime --acc underline or 3px left tab, and no '!'. Shorten 'shop, craft, and hire' to 'trader'. Move plates so they never cover sprites.",
+   "P1 top-left title block 'the undercroft / 12 items in stash · 0 runs': Set 'the undercroft' to 32px f-cond 700 in tx-1 and the subline to 16px tx-2. Place them at 5% margins (about 96px by 54px) inside a panel. Use amber only for warnings. 'stash' counts are already in the top right, so drop the duplicate 'items in stash'.",
+   "P1 bottom hint pill ('the welcome pack is in your stash.' / 'wasd walk · shift jog · e use station'): Shorten the toast to 'welcome pack in stash' at 20px. Show the hints as 16px keycap chips (w a s d, shift, e) that swap to pad glyphs when a pad is in use. Leave at least 16px between pill and hotbar, and place the pill at 5% from the bottom."
+  ],
+  "pic": "tools/handoff/console/notes/shots/b-31-n1/03-hub-floor-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-20T06:39"
  },
  "04-stash-terminal": {
   "score": 3,
@@ -181,27 +188,34 @@
   "when": "2026-10-20T06:09"
  },
  "17-fashion-mirror": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "A competent dark-panel template with a clear two-column layout, but the grid is a wall of near-identical tiles, the operator preview is dwarfed, and the header, footer and list clip or crowd, so it reads as a debug inventory and not a Fortnite-grade fashion screen.",
-  "pic": "tools/handoff/console/notes/shots/all/17-fashion-mirror-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:16"
+  "verdict": "it is a consistent centred card with an x, a tidy tab row and a clear grid, but the eye has no single focal point, there are two items with the same fill and the supporting type is too small and dim for a couch.",
+  "findings": [
+   "P1 tile grid, 'worn' bare and crop tiles: worn: --ui-raised fill, 3px lime left bar and a small lime 'worn' tag. Pad focus: 2px --acc outline plus a 4px glow, never the same fill as worn.",
+   "P1 header and left column, no hero: make the operator preview the hero by lighting its backdrop and raising it to ~380px. Set the panel headings to --tx-1 at 20px 600. Reserve lime for the selected tab, the worn tile and focus. Set the title to 32px.",
+   "P1 tile sublabels (unlock hints) and category labels 'headgear' and 'hairstyle': raise the hints to 16px --tx-2 (4.5:1 or better). Raise the category labels to 16px with +.04em tracking. Move the hint to a 2-line area under the name, with a darker scrim behind it.",
+   "P1 left list (outfit, build, skin, hair...): make the preview shorter (~300px) so all rows fit, or turn the list into a 2-column grid of 48px chips. Rows are 48px with a 20px value and a 16px label. Remove the inner scrollbar.",
+   "P2 top-right currency row: show '$900' as the only hero-weight number (--fs-body 700). Make xp and stash 16px --tx-2 with the same number-to-label gap. Put 24px between groups and 32px before the x. Drop 'credits'."
+  ],
+  "pic": "tools/handoff/console/notes/shots/b-31-n1/17-fashion-mirror-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-20T06:38"
  },
  "18-settings-hub": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, consistent dark card with a clear lime focus bar and an X, but the page is flat: titles are small, the detail pane is mostly empty with a wall-of-text explanation, and the audio rows are not grouped under their own tab.",
+  "verdict": "A clean, consistent card with a clear lime focus row and an X in the corner, but the detail pane is a dead void with a stranded paragraph, the rows run past the card edge in one flat tone, and the page has the wrong scroll and focus cues.",
   "findings": [
-   "P1 right detail pane: Cut the description to one short callout of 12 words or fewer, set at 20px tx-1 directly under the 32px title (8px gap). Or drop the pane to a narrower 360px column and give the freed width to the rows.",
-   "P1 center list, the raid tab: Move the volume rows to the audio tab only. If a group stays, add a 16px tx-2 label row ('audio') with a 1px --ui-line rule and 24px space above it.",
-   "P1 screen title and header: Set the title to 32px f-cond 700, in a 56px header row with a 1px --ui-line-hi divider. Remove the orphan 30px lime tick at x=28,y=26, or turn it into a deliberate 3px-by-36px tab on the title.",
-   "P1 setting value cells (the < value > steppers): Pull the value column in to a 220px block right-aligned at x~1020. Show the chevrons only on the focused row (the rest tx-2 at 40%). Or make each row a single flat value with the arrows on focus.",
-   "P2 left tab column: Use 20px f-cond 600 at 64px row height, add a 1px divider above 'send play data', and anchor it to the bottom of the column."
+   "P1 right detail pane: Cut the paragraph to a short callout of 8 words or fewer, set at 20px tx-1 directly under the title with a 16px gap. Or show a control preview or the current value as a 56px hero number. Do not leave 350px of void between them.",
+   "P1 left category rail: Make the rail 20px f-cond 600. Give the selected row a full --ui-raised fill with a 4px lime left bar and tx-1 text. Idle rows get tx-2 at 4.5:1 or better. Pin 'send play data' to the bottom of the rail with a 1px divider above it.",
+   "P1 settings list (rows): Add a 16px tx-2 section label ('the raid', 'audio') with a 1px --ui-line rule above each group. Raise row names to 20px tx-1 at 85%. Widen the scrollbar to 8px in --ui-line-hi. Show only the active category's rows, since the rail already selects it.",
+   "P1 value steppers (< value >): Move the stepper cluster to right-align at the row edge, about 220px wide. Make the arrows 24px with a 40px hit area. Keep the label, value and arrows in the same 56px row. Show idle arrows at tx-2 and focused ones in lime.",
+   "P2 card frame, header and footer: Remove the stray lime tick or turn it into a proper 36px top tab on the card. Set the title to 32px f-cond 700 with 24px padding. Make the footer hint name the live device key or button, and drop it if the X already covers close."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-31s-after/18-settings-hub-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/b-31-n1/18-settings-hub-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T03:02"
+  "when": "2026-10-20T06:38"
  },
  "19-raid-hud-drop-first-raid": {
   "score": 2,
@@ -512,19 +526,19 @@
   "when": "2026-10-19T01:38"
  },
  "37-raid-extracting-countdown": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The extraction banner is the one clear focal point, but the HUD around it is crowded and inconsistent, with too many competing boxes, mixed type styles, and a pickup stack and ammo card that look unfinished.",
+  "verdict": "The hostiles line now sits on a dark plate and reads cleanly, but the HUD is still a pile of mismatched widgets with dense, tiny text and a weak hero.",
   "findings": [
-   "P1 top-right career column and run info panel: Shrink them to 40px rows. Hide zero values, or fold the four into one 2-line block with tx-2 labels at 16px and tx-1 numbers at 20px. Keep a single 1px --ui-line-hi border and 4px radius.",
-   "P1 HUD overall: top-left scoreboard, left pickup stack, right pickup stack, top-centre toast, centre toast: Delete the centre toast sentence. Keep only the left pill. Cap the pickup stacks at 3 rows and drop the world labels once the pill shows. Cut the 'codex entry' and 'running slowly' lines out of the stack.",
-   "P1 extract b inbound 15s banner (bottom centre): Give the banner a 1px teal border, --ui-panel at 90%, and 16px of padding. Leave a 16px gap, then put 'hostiles closing in' at 16px on its own chip. Move the weapon prompt into the ammo card.",
-   "P1 scoreboard panel, top-left ('current pillager bots 3'): Title in tx-2 16px. Rows at 16px minimum with 8px row padding. Remove the ghost tab under the panel. Use the same panel P as the right column. Use lime only for your own row.",
-   "P2 type system across the HUD: Restrict to the guide's five sizes. Make hp 20px 700 and stamina 16px 600, both inset 8px. Set 'b / i backpack' to 16px tx-2."
+   "P1 extract banner and plate stack, bottom centre: Use one column 8px apart. Make the hostiles plate the same width as the banner (about 468px), or fold it into the banner as a second row. Move the key-hint strip 8px lower, or fold it into the hotbar.",
+   "P1 extract b inbound 15s banner: Make '15s' the hero at 56px weight 800 in tx-1 or extract teal, and set 'extract b inbound' at 20px tx-2. Add a 3px teal left bar, and put a thin progress bar under the number.",
+   "P1 top-right career column, minimap and run info: Remove the right dead strip of the minimap or centre the map in it. Set the gap between all stacked blocks to a uniform 8px. Left-align the contract lines on one indent. Move the pickup chips 8px away from run info.",
+   "P2 run info contracts text: Give the panel 16px right padding and truncate or shorten the names to 'sump 0/2'. Make the counts tx-2 and the contract names tx-1. Use one consistent hanging indent of 16px.",
+   "P2 left pickup stack, contract item nearby chip: Use one chip style with a single 3px left rarity bar. Keep amber only for the glyph, with tx-1 text. Fix the stack gap at 8px."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-02-r21/37-raid-extracting-countdown-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/c-02-r23-after/37-raid-extracting-countdown-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T05:37"
+  "when": "2026-10-20T06:37"
  },
  "77-haul-reveal-done": {
   "score": 3,

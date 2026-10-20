@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.59 - THE HOSTILES PLATE MATCHES THE EXTRACT BANNER WIDTH
+
+Co-op hunt while he was away. Critic on screen 37: the hostiles closing in plate was a narrower pill touching the countdown plate. It now takes the banner width and sits 8 px under it.
+
+MEASURED. Check 32.59 passes, and fails on v32.58.
 ## v32.58 - THE HOSTILES CLOSING IN LINE STANDS ON A PLATE
 
 Co-op hunt while he was away. Critic on screen 37: the red hostiles closing in line under the extract countdown had no plate and sat loose on the floor. It now has the same flat HUD plate as the countdown.

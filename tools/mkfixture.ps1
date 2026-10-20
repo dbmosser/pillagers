@@ -6101,6 +6101,18 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.59',what:'the hostiles plate is as wide as the banner above it with a gap under the banner (critic 37)',
+   run:function(){
+     if(typeof extRowPlate!=='function') return 'no extRowPlate';
+     var s='1 HOSTILE CLOSING IN', r, f=ctx.font;
+     ctx.save(); ctx.font=hudFS(TYPE.label);
+     try{ r=extRowPlate(s,960,900,1,600); }finally{ ctx.restore(); ctx.font=f; }
+     if(!r||Math.round(r.w)<600) return 'the plate ignores the banner width: '+(r&&r.w);
+     var src=String(drawHUD);
+     if(src.indexOf('_exBelt-LH(62)')<0) return 'the banner did not move up for the gap';
+     if(src.indexOf('extRowPlate(_exH,W/2,_exRow,_exR,_exBW)')<0) return 'drawHUD does not pass the banner width';
+     return null;
+   }},
   {v:'32.58',what:'the hostiles closing in line stands on a plate measured to its words (critic 37)',
    run:function(){
      if(typeof extRowPlate!=='function') return 'the hostiles line has no plate function (extRowPlate)';

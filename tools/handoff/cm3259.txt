@@ -1,0 +1,7 @@
+v32.59: the hostiles plate matches the extract banner width
+
+The hostiles closing in plate is as wide as the extract countdown plate, with a gap between them.
+
+Check 32.59. Fails on v32.58.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

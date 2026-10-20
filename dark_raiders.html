@@ -3169,7 +3169,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.58';
+var VER='32.59';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12195,8 +12195,9 @@ function hudFS(spec){ var f=FS(spec), r=Math.max(1,(typeof hudRes==='function')?
 // v32.xx (cw-extbig), the critic on screen 37: the extract countdown was one of three small cues and no hero. While the ship is inbound the line takes the big-number size (TYPE.huge), the same type as the ammo hero; once it lands it is the callout size again.
 function extBanFont(t){ return hudFS((t>0)?TYPE.huge:TYPE.head); }
 // v32.xx (cw-hostplate), the critic on screen 37: the red "hostiles closing in" line under the countdown sat loose on the floor with no plate. It stands on the same flat HUD plate as the countdown, measured to its words.
-function extRowPlate(s,x,y,R){
-  var w=hudRawW(s)+LH(24)*R, h=LH(26)*R, px=Math.round(x-w/2), py=Math.round(y-LH(19)*R);
+function extRowPlate(s,x,y,R,minW){
+  // v32.xx (cw-hostcol), the critic on screen 37: the plate was a narrower pill touching the banner. It takes the banner width (minW) and sits 8 px under it, one column.
+  var w=Math.max(hudRawW(s)+LH(24)*R,minW||0), h=LH(22)*R, px=Math.round(x-w/2), py=Math.round(y-LH(16)*R);
   hudPanel(px,py,w,h,0.9,true);
   return {x:px,y:py,w:w,h:h};
 }
@@ -42899,7 +42900,8 @@ ctx.restore();
   // grew, so HOLD E TO CALL FOR EXTRACTION and the inbound banner were small print. Their words and their gaps grow with the screen.
   var _exR=Math.max(1,(typeof hudRes==='function')?hudRes():1);
   var _exRow=_exBelt-LH(26)*_exR;   // the arrow, the distance, the converging count
-  var _exBan=_exBelt-LH(48)*_exR;   // the headline above it
+  var _exBan=_exBelt-LH(62)*_exR;   // the headline above it; v32.xx (cw-hostcol) 14 px higher so the hostiles plate has an 8 px gap under it
+  var _exBW=0;   // width of the banner plate, shared with the hostiles plate under it
   if(G.beaconT!==null&&!G.over){
     var inRing=dist(p,G.active)<G.active.r;
     var _exL=extLetter(G.active);
@@ -42910,7 +42912,7 @@ ctx.restore();
     // note: that name read as something happening elsewhere, so it tells him to
     // move instead, in the words he gave for the ring badge at v11.54.
     var _exS=holding?extractNowLine(_exL,G.shipHold):('EXTRACT '+_exL+' INBOUND  '+Math.ceil(G.beaconT)+'s');
-    if(!holding) extBanPlate(_exS,W/2,_exBan,_exR);   // v32.xx (cw-extscrim)
+    if(!holding) _exBW=extBanPlate(_exS,W/2,_exBan,_exR).w;   // v32.xx (cw-extscrim)
     hudText(_exS,W/2,_exBan);   // v16.30, his word: inbound
     // v6.41, his note: no bar. The line above it is already a countdown in seconds.
     if(!inRing){
@@ -42935,7 +42937,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
         ctx.font=hudFS(TYPE.label);
         ctx.fillStyle=inbound>4?'#ff5a4a':'#ffc04a';
         var _exH=inbound+(inbound===1?' HOSTILE':' HOSTILES')+' CLOSING IN';
-        extRowPlate(_exH,W/2,_exRow,_exR);   // v32.xx (cw-hostplate)
+        extRowPlate(_exH,W/2,_exRow,_exR,_exBW);   // v32.xx (cw-hostplate), cw-hostcol
         hudText(_exH,W/2,_exRow);   // v22.xx (tr8fixa): a caps callout under EXTRACT A INBOUND (INBOUND stays his word for the craft)
       }
     }
@@ -50551,7 +50553,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.58: While extraction is inbound the hostiles closing in line has a flat dark plate behind it. Check 32.58 fails on v32.57',
+  now:'v32.59: The hostiles closing in plate is as wide as the extract countdown plate, with a gap between them. Check 32.59 fails on v32.58',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,24 @@
+{
+    "title":  "THE HOSTILES PLATE MATCHES THE EXTRACT BANNER WIDTH",
+    "why":  "Critic on screen 37: the hostiles closing in plate was a narrower pill touching the countdown plate. It now takes the banner width and sits 8 px under it.",
+    "now":  "The hostiles closing in plate is as wide as the extract countdown plate, with a gap between them.",
+    "edits":  [
+                  {
+                      "anchor":  "function extRowPlate(s,x,y,R){\n  var w=hudRawW(s)+LH(24)*R, h=LH(26)*R, px=Math.round(x-w/2), py=Math.round(y-LH(19)*R);\n  hudPanel(px,py,w,h,0.9,true);\n  return {x:px,y:py,w:w,h:h};\n}\n",
+                      "replacement":  "function extRowPlate(s,x,y,R,minW){\n  // v32.xx (cw-hostcol), the critic on screen 37: the plate was a narrower pill touching the banner. It takes the banner width (minW) and sits 8 px under it, one column.\n  var w=Math.max(hudRawW(s)+LH(24)*R,minW||0), h=LH(22)*R, px=Math.round(x-w/2), py=Math.round(y-LH(16)*R);\n  hudPanel(px,py,w,h,0.9,true);\n  return {x:px,y:py,w:w,h:h};\n}\n"
+                  },
+                  {
+                      "anchor":  "  var _exBan=_exBelt-LH(48)*_exR;   // the headline above it\n",
+                      "replacement":  "  var _exBan=_exBelt-LH(62)*_exR;   // the headline above it; v32.xx (cw-hostcol) 14 px higher so the hostiles plate has an 8 px gap under it\n  var _exBW=0;   // width of the banner plate, shared with the hostiles plate under it\n"
+                  },
+                  {
+                      "anchor":  "    if(!holding) extBanPlate(_exS,W/2,_exBan,_exR);   // v32.xx (cw-extscrim)\n",
+                      "replacement":  "    if(!holding) _exBW=extBanPlate(_exS,W/2,_exBan,_exR).w;   // v32.xx (cw-extscrim)\n"
+                  },
+                  {
+                      "anchor":  "        extRowPlate(_exH,W/2,_exRow,_exR);   // v32.xx (cw-hostplate)\n",
+                      "replacement":  "        extRowPlate(_exH,W/2,_exRow,_exR,_exBW);   // v32.xx (cw-hostplate), cw-hostcol\n"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the hostiles plate is as wide as the banner above it with a gap under the banner (critic 37)\u0027,\n   run:function(){\n     if(typeof extRowPlate!==\u0027function\u0027) return \u0027no extRowPlate\u0027;\n     var s=\u00271 HOSTILE CLOSING IN\u0027, r, f=ctx.font;\n     ctx.save(); ctx.font=hudFS(TYPE.label);\n     try{ r=extRowPlate(s,960,900,1,600); }finally{ ctx.restore(); ctx.font=f; }\n     if(!r||Math.round(r.w)\u003c600) return \u0027the plate ignores the banner width: \u0027+(r\u0026\u0026r.w);\n     var src=String(drawHUD);\n     if(src.indexOf(\u0027_exBelt-LH(62)\u0027)\u003c0) return \u0027the banner did not move up for the gap\u0027;\n     if(src.indexOf(\u0027extRowPlate(_exH,W/2,_exRow,_exR,_exBW)\u0027)\u003c0) return \u0027drawHUD does not pass the banner width\u0027;\n     return null;\n   }},"
+}
