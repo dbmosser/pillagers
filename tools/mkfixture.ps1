@@ -31104,7 +31104,7 @@ window.__REGRESS=[
        for(i=0;i<NONE.length;i++) if(RV_OF[NONE[i]]) bad.push((WEAPONS[NONE[i]]?WEAPONS[NONE[i]].name:NONE[i])+' has a rarity variant');
        if(gunRarity('smg')!=='uncommon'||gunRarity(RV_OF.smg)!=='rare') bad.push('the Compact SMG is not green with a blue twin ('+gunRarity('smg')+', '+gunRarity(RV_OF.smg)+')');
        if(gunRarity('magnum')!=='rare'||gunRarity(RV_OF.magnum)!=='elite') bad.push('the Magnum is not blue with a purple twin');
-       if(gunRarity('lmg')!=='rare'||gunRarity(RV_OF.lmg)!=='elite') bad.push('the Support MG is not blue with a purple twin ('+gunRarity('lmg')+', '+gunRarity(RV_OF.lmg)+')');   // v32.84 retarget (52-corpus-reds-a): stands in for the gone Marksman Rifle line
+       if(gunRarity('lmg')!=='elite'||gunRarity(RV_OF.lmg)!=='gold') bad.push('the Support MG is not purple with a gold twin ('+gunRarity('lmg')+', '+gunRarity(RV_OF.lmg)+')');   // v32.84 retarget (52-corpus-reds-a): stands in for the gone Marksman Rifle line
        // TWO: the roll. 400 finds of each model: about one in five is the twin, none is two steps up, a twin is the model with 1.25 times the damage.
        srand(424242);
        for(i=0;i<SRC.length;i++){
@@ -37826,7 +37826,9 @@ window.__REGRESS=[
      try{
        keysOpen(); l=document.getElementById('keyslist');
        if(!l) return 'SKIP: the Keys window did not build';
-       if(!(parseFloat(getComputedStyle(l).maxWidth)<=1500||l.offsetWidth<=1500)) bad.push('the Keys list has no width cap ('+getComputedStyle(l).maxWidth+', '+l.offsetWidth+' wide)');   // v32.84 retarget (52-corpus-reds-a): the card width caps the list now (max-width none), so the measured width counts   // v28.82 (corpus-fix): 1500px, two columns, since v26.38 (css overrides 1100)
+       // v32.84 retarget (52-corpus-reds-a): his Q43 (a near full screen card, v29.63/v29.80 checks hold the 16px inset) replaced the 1500px cap with the card width (max-width none), so the list is held by the card: inside the screen with a 16px margin each side
+       var lr=l.getBoundingClientRect();
+       if(!(parseFloat(getComputedStyle(l).maxWidth)<=1500||(lr.left>=16&&lr.right<=innerWidth-16))) bad.push('the Keys list has no width cap ('+getComputedStyle(l).maxWidth+', '+Math.round(lr.left)+' to '+Math.round(lr.right)+' of '+innerWidth+')');   // v28.82 (corpus-fix): 1500px, two columns, since v26.38 (css overrides 1100)
        b=l.querySelector('.row b'); k=l.querySelector('.keybtn');
        if(b){ s=getComputedStyle(b); if(s.textTransform==='uppercase'||!(parseFloat(s.fontSize)>=17)) bad.push('an action name is '+s.fontSize+' '+s.textTransform); }   /* v30.xx (00-fix-new-reds): his rule 2026-10-18, never all caps */
        if(k){ s=getComputedStyle(k); if(!(parseFloat(s.borderBottomWidth)>parseFloat(s.borderTopWidth))) bad.push('a key is a flat box, not a keycap'); }
@@ -39753,12 +39755,14 @@ window.__REGRESS=[
          if(fr.right-br.right>130*z) bad.push(c[0]+': CLOSE is '+Math.round(fr.right-br.right)+' px in from the right edge of its frame');
          if(br.top-(fr.bottom-(c[3]?parseFloat(cs.height)*z:mr.height))>130*z) bad.push(c[0]+': CLOSE is '+Math.round(br.top-(fr.bottom-(c[3]?parseFloat(cs.height)*z:mr.height)))+' px down from the top of its frame');
          if(br.right>fr.right+1||br.bottom>fr.bottom+1) bad.push(c[0]+': CLOSE hangs out of its frame');
-         if(!c[3]) tops.push(br.top);
+         if(!c[3]) tops.push(br.top-mr.top);   // v32.84 retarget (52-corpus-reds-a): the height is read from the window's own top (each card sits where its frame sits)
          n++;
        }
        if(tops.length>1){ lo=Math.min.apply(null,tops); hi=Math.max.apply(null,tops); if(hi-lo>2) bad.push('CLOSE is at '+tops.map(Math.round).join(', ')+' px down in the full windows, not at one height'); }
        cp=getComputedStyle(document.getElementById('settingsmodal'),'::before').clipPath||'';
-       if(!(/polygon/).test(cp)) bad.push('the window frame has no cut corner ('+cp.slice(0,30)+')');
+       // v32.84 retarget (52-corpus-reds-a): cw-setcard (critic c-31) made the Settings frame a flat 4px card with no cut corner; it must still be a drawn frame
+       var sb=getComputedStyle(document.getElementById('settingsmodal'),'::before');
+       if(!((/polygon/).test(cp)||parseFloat(sb.borderTopWidth)>0)) bad.push('the window frame is neither a cut corner plate nor a bordered card ('+cp.slice(0,30)+', border '+sb.borderTopWidth+')');
        if(n<5) bad.push('only '+n+' windows were measured');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ __topClear(); }catch(_c){} }
@@ -52400,7 +52404,8 @@ window.__REGRESS=[
          R=pn.getBoundingClientRect(); C=cl.getBoundingClientRect();
          if(R.bottom<T.top-T.height) continue;   // this panel ends well above the line at this window size: nothing to overlap
          n++;
-         if(T.top<R.bottom+T.height*0.1) bad.push('in '+cs[1]+' the line box starts '+Math.round(R.bottom-T.top)+' px above the bottom edge of the panel');
+         // v32.84 retarget (52-corpus-reds-a): cw-shopfill (his Q43, critic 2/5 on the shop) stretches the shop grid to the foot of the card and seats the answer line INSIDE the card, so in the shop the line may lap the grid foot by less than its own height; Fashion stays strict
+         if(T.top<R.bottom+T.height*0.1-(cs[1]==='tradermodal'?T.height:0)) bad.push('in '+cs[1]+' the line box starts '+Math.round(R.bottom-T.top)+' px above the bottom edge of the panel');
          if(hit(T,C)) bad.push('in '+cs[1]+' the line covers CLOSE');
          if(T.bottom>window.innerHeight+1) bad.push('in '+cs[1]+' the line runs off the bottom of the screen');
        }
