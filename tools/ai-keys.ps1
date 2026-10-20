@@ -11,8 +11,11 @@
 #                                                                           (the Console helper lanes: console-lane.sh, console-worker.sh, review-nightly.sh, console-sdk\critic.mjs)
 #   powershell -ExecutionPolicy Bypass -File tools\ai-keys.ps1 admin        your Anthropic ADMIN key -> PILLAGERS_ADMIN_KEY
 #                                                                           (the real-spend cost report: console-sdk\balance.mjs). Never ANTHROPIC_API_KEY.
+# Added 2026-10-20 (his 10-15 order: push the game to itch once a day as a backup):
+#   powershell -ExecutionPolicy Bypass -File tools\ai-keys.ps1 itch         your itch.io API key (itch.io, Settings, API keys) -> BUTLER_API_KEY
+#                                                                           (ship.sh and itch-daily.sh hand it to butler only; itch uploads are free, so the standard name is safe)
 param([string]$Service='',[switch]$Remove)
-$names=[ordered]@{ gemini='PILLAGERS_GEMINI_KEY'; openai='PILLAGERS_OPENAI_KEY'; xai='PILLAGERS_XAI_KEY'; openrouter='PILLAGERS_OPENROUTER_KEY'; console='PILLAGERS_API_KEY'; admin='PILLAGERS_ADMIN_KEY' }
+$names=[ordered]@{ gemini='PILLAGERS_GEMINI_KEY'; openai='PILLAGERS_OPENAI_KEY'; xai='PILLAGERS_XAI_KEY'; openrouter='PILLAGERS_OPENROUTER_KEY'; console='PILLAGERS_API_KEY'; admin='PILLAGERS_ADMIN_KEY'; itch='BUTLER_API_KEY' }
 function Show {
   ''; 'AI service keys on this PC (the keys themselves are never shown):'
   foreach($k in $names.Keys){ $v=[Environment]::GetEnvironmentVariable($names[$k],'User'); '  {0,-11} {1}' -f $k, $(if($v){'set'}else{'not set'}) }
@@ -20,7 +23,7 @@ function Show {
   ''
 }
 $Service=$Service.ToLower()
-if(-not $Service){ Show; 'To add one: powershell -ExecutionPolicy Bypass -File tools\ai-keys.ps1 gemini   (or openai, xai, openrouter, console, admin)'; return }
+if(-not $Service){ Show; 'To add one: powershell -ExecutionPolicy Bypass -File tools\ai-keys.ps1 gemini   (or openai, xai, openrouter, console, admin, itch)'; return }
 if(-not $names.Contains($Service)){
   # never print the argument back: if a key was pasted here by mistake it must not be echoed again
   if($Service.Length -gt 20 -or $Service -like 'sk-*' -or $Service -like 'aiza*'){ 'That looks like a key, not a service word. Never put a key on the command line: it stays in this window and in its history. Nothing was saved.'; 'If it was a real key, close this window and make a new key at the provider (the old one is now exposed). Then run the script with just a service word and paste the key when it asks.'; "Service words: $($names.Keys -join ', ')"; return }

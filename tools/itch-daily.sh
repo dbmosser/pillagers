@@ -15,6 +15,6 @@ B=/c/Users/User1/bin/butler.exe
 have=$("$B" status "$ITCH_TARGET" 2>/dev/null | grep -o -E "v[0-9]+\.[0-9]+" | tail -1)
 if [ "$have" = "v$ver" ]; then echo "$(date +%m-%d\ %H:%M) daily: itch up to date (v$ver)"; exit 0; fi
 cp dark_raiders.html tools/publish/index.html
-powershell -NoProfile -ExecutionPolicy Bypass -Command "Compress-Archive -Force -Path 'C:\claudecode\dark raiders\tools\publish\index.html' -DestinationPath 'C:\claudecode\dark raiders\tools\publish\pillagers-web.zip'" >/dev/null 2>&1
+powershell -NoProfile -ExecutionPolicy Bypass -File "C:/claudecode/dark raiders/tools/itch-zip.ps1" >/dev/null 2>&1 || { echo "$(date '+%m-%d %H:%M') daily: itch zip did not build, not pushed"; exit 0; }
 "$B" push tools/publish/pillagers-web.zip "$ITCH_TARGET" --userversion "v$ver" 2>&1 | tail -1
 echo "$(date +%m-%d\ %H:%M) daily: itch was $have, pushed v$ver"

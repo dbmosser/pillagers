@@ -64,7 +64,7 @@ Known: some rooms have a sliver of floor behind furniture you cannot reach.
 That is cosmetic. Tell us about anything else.
 
 ## Fonts (2026-10-12)
-The game embeds Barlow Condensed, Barlow and IBM Plex Mono (SIL Open Font License 1.1). The itch zip must carry tools/fonts/OFL-Barlow.txt, OFL-BarlowCondensed.txt and OFL-IBMPlexMono.txt beside the game.
+The game embeds Barlow Condensed, Barlow, IBM Plex Mono, Titan One and Rubik (SIL Open Font License 1.1). The itch zip must carry tools/fonts/OFL-*.txt (all five) beside the game; since 10-20 tools/itch-zip.ps1 packs them, and the sound licences, for every ship and the daily push. The Titan One and Rubik copyright lines were read from the fonts embedded in the game.
 
 ## Sounds (2026-10-12)
 The game embeds 23 CC0 sound recordings (SFXBANK: Kenney, and zer0_sol, SpringySpringo, BMacZero, OwlishMedia and AntumDeluge on OpenGameArt). The itch zip must carry tools/sounds/LICENCES.txt and the four kenney_*_License.txt files beside the game, the way it carries the font licences.

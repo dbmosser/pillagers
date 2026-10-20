@@ -20,7 +20,8 @@ case "$1" in
     # is the name that survives.
     # 2026-10-09: AND THE ATTRACT CLIP (v21.17). An attract.mp4 or attract.webm beside the game is copied next to index.html and goes
     # in the zip, so the title shows his gameplay to anyone who plays the itch build. With no clip the zip is index.html alone, as before.
-    powershell -NoProfile -ExecutionPolicy Bypass -Command "\$d='C:\claudecode\dark raiders'; \$p=@(\"\$d\tools\publish\index.html\"); foreach(\$f in @('attract.mp4','attract.webm')){ if(Test-Path \"\$d\\\$f\"){ Copy-Item -Force \"\$d\\\$f\" \"\$d\tools\publish\\\$f\"; \$p+=\"\$d\tools\publish\\\$f\" } }; Compress-Archive -Force -Path \$p -DestinationPath \"\$d\tools\publish\pillagers-web.zip\""
+    # 10-20: tools/itch-zip.ps1 builds the zip (game, attract clip, and the font and sound licence files tools/PUBLISH.md requires)
+    ZIPBAD=""; powershell -NoProfile -ExecutionPolicy Bypass -File "C:/claudecode/dark raiders/tools/itch-zip.ps1" || ZIPBAD=1
     # THE ITCH PUSH, and it does nothing until he has set it up. butler is itch's
     # own uploader; it is not installed here and needs an API key only he can make.
     # The guard means this line is inert today and live the moment
@@ -36,7 +37,9 @@ case "$1" in
     BUTLER_CMD=""
     if [ -x "$BUTLER_EXE" ]; then BUTLER_CMD="$BUTLER_EXE"
     elif command -v butler >/dev/null 2>&1; then BUTLER_CMD="butler"; fi
-    if [ -n "$BUTLER_CMD" ] && [ -n "$BUTLER_API_KEY" ] && [ -n "$ITCH_TARGET" ]; then
+    if [ -n "$ZIPBAD" ]; then
+      echo "itch: not pushed (the zip did not build)"
+    elif [ -n "$BUTLER_CMD" ] && [ -n "$BUTLER_API_KEY" ] && [ -n "$ITCH_TARGET" ]; then
       echo "itch: pushing $ITCH_TARGET"
       "$BUTLER_CMD" push tools/publish/pillagers-web.zip "$ITCH_TARGET" --userversion "v$(vstr $T)" 2>&1 | tail -2
     else
