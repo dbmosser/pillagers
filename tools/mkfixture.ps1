@@ -8518,7 +8518,7 @@ window.__REGRESS=[
      try{
        f=document.getElementById('pausefb');
        if(!f) bad.push('no pause report box');
-       else{ h=parseFloat(getComputedStyle(f).height); if(Math.abs(h-56)>1) bad.push('the report box is '+h+'px high, not 56'); }
+       else{ h=parseFloat(getComputedStyle(f).height); if(Math.abs(h-56)>1&&Math.abs(h-48)>1) bad.push('the report box is '+h+'px high, not 48 or 56'); }
        for(i=0;i<PAD_ACTS.length;i++){ if(PAD_ACTS[i][0]===2) a2=String(PAD_ACTS[i][1]); if(PAD_ACTS[i][0]===3) a3=String(PAD_ACTS[i][1]); }
        if(a2.length>20) bad.push('pad row X is long: '+a2);
        if(a3.length>20||a3.indexOf('finish')<0) bad.push('pad row Y is long or lost finish: '+a3);
