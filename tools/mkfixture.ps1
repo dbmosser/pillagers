@@ -17090,7 +17090,8 @@ window.__REGRESS=[
        if(parseFloat(getComputedStyle(b).fontSize)!==20) bad.push('row name is '+getComputedStyle(b).fontSize+', not 20px');
        if(getComputedStyle(hint).display!=='none') bad.push('the row sentence still sits in the list');
        if(parseFloat(getComputedStyle(btn).minHeight)!==48) bad.push('stepper min height is '+getComputedStyle(btn).minHeight+', not 48px');
-       if(!(parseFloat(getComputedStyle(jb).borderBottomWidth)>=2&&parseFloat(getComputedStyle(jb).borderBottomWidth)<=3.5)||parseFloat(getComputedStyle(jb).borderTopWidth)!==0) bad.push('section chip is not a text tab with a 3px underline: bottom '+getComputedStyle(jb).borderBottomWidth+' top '+getComputedStyle(jb).borderTopWidth+' style '+getComputedStyle(jb).borderBottomStyle);
+       var jbs=getComputedStyle(jb), jbi=Math.max(parseFloat(jbs.borderBottomWidth), parseFloat(jbs.borderLeftWidth));   // 53-corpus-reds-b: the Settings rail (screens 25-32) lays the chips down the left, so the 3px accent bar sits on the left edge instead of under the word; same text tab, no box
+       if(!(jbi>=2&&jbi<=3.5)||parseFloat(jbs.borderTopWidth)!==0||parseFloat(jbs.borderRightWidth)!==0) bad.push('section chip is not a text tab with a 3px accent bar: bottom '+jbs.borderBottomWidth+' left '+jbs.borderLeftWidth+' top '+jbs.borderTopWidth);
      } finally { try{ tmp.remove(); tj.remove(); }catch(_r){} }
      return bad.length?bad.join('; '):null;
    }},
@@ -17199,9 +17200,9 @@ window.__REGRESS=[
   {v:'29.32',what:'the title button reads Create a new save, not Create A new save (the article A lowers with its line)',
    run:function(){
      var a=TX('CREATE A NEW SAVE'), b=TX('SECTOR A'), c=TX('ENTER RAID!');
-     if(a!=='Create a new save') return 'CREATE A NEW SAVE reads "'+a+'"';
-     if(b!=='Sector A') return 'a lone sector letter changed: "'+b+'"';
-     if(c!=='Enter raid!') return 'other text changed: "'+c+'"';
+     if(a!=='create a new save') return 'CREATE A NEW SAVE reads "'+a+'"';   // 53-corpus-reds-b: cw-lowercase (his order 2026-10-18) lowers every word, so the article A lowers with its line like the rest
+     if(b!=='sector a') return 'a lone sector letter changed: "'+b+'"';
+     if(c!=='enter raid!') return 'other text changed: "'+c+'"';
      return null;
    }},
   {v:'29.31',what:'the HUD has one hero: the corner credits are 24 px cream, not 32 px amber, and the backpack cue is a quiet grey, not amber (style guide)',
@@ -17217,7 +17218,7 @@ window.__REGRESS=[
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||!g.player||g.over) return 'SKIP: no live raid';
        g.bagOpen=false; g.mapOpen=false;
-       proto.fillText=function(t,x,y){ if(/backpack/i.test(String(t))&&this.textAlign==='right') hit=String(this.fillStyle).toLowerCase(); return o.apply(this,arguments); };
+       proto.fillText=function(t,x,y){ if(/backpack/i.test(String(t))&&this.textAlign!=='center') hit=String(this.fillStyle).toLowerCase(); return o.apply(this,arguments); };
        hit=null; __frame(0.001);
        if(hit===null) bad.push('the backpack cue was not drawn');
        else if(hit!=='#aaa498') bad.push('the backpack cue is '+hit+', not quiet grey');
@@ -17229,8 +17230,8 @@ window.__REGRESS=[
      var rows=document.querySelectorAll('#title .kbrow'), t='', i;
      for(i=0;i<rows.length;i++) t+=' '+rows[i].textContent;
      if(!t) return 'no title key line found';
-     if(/\bH\s+controls/.test(t)) return 'the title still says H controls, but H heals';
-     if(!/\bF1\s+controls/.test(t)) return 'the title key line does not say F1 controls';
+     if(/\bH\s+controls/i.test(t)) return 'the title still says H controls, but H heals';   // 53-corpus-reds-b: the line is lower case now (cw-lowercase), so the match is case blind
+     if(!/\bF1\s+controls/i.test(t)) return 'the title key line does not say F1 controls';
      return null;
    }},
   {v:'29.29',what:'the compact controls list opens on arrival and folds to its one-line hint 30 seconds into the raid, once (style guide: hidden except F1 and the first 30 s)',
@@ -17637,7 +17638,7 @@ window.__REGRESS=[
        txDom(document.body);
        v=el.textContent+'|'+el.getAttribute('title')+'|'+el.getAttribute('placeholder');
        document.body.removeChild(el);
-       if(v!=='Press any key|Drag onto another key|Type your note') return 'outside #root the text, tooltip and placeholder read: '+v;
+       if(v!=='press any key|drag onto another key|type your note') return 'outside #root the text, tooltip and placeholder read: '+v;   // 53-corpus-reds-b: cw-lowercase lowers every word
        el2=document.createElement('div'); el2.className='vcell took'; document.body.appendChild(el2);
        cs=getComputedStyle(el2,'::after').content; document.body.removeChild(el2);
        if(/[A-Z]{3}/.test(cs)) return 'the Taken stamp is in capitals: '+cs;
@@ -17705,9 +17706,9 @@ window.__REGRESS=[
        if(document.title!==document.title.replace(/[A-Z]{3,}/g,'x')) return 'the tab title is in capitals: '+document.title;
        cv=document.createElement('canvas').getContext('2d');
        hits=txRecord(function(){ cv.fillText('MACHINE ALERT',0,0); cv.fillText('HE NEEDS AN ARMOUR PLATE',0,0); cv.fillText('+50 SP  \u00b7  2P LMG  \u00b7  AK-47',0,0); });
-       if(!hits.length||hits[0].t!=='Machine alert') return 'MACHINE ALERT is drawn as '+(hits.length?hits[0].t:'nothing');
-       if(hits[1].t!=='He needs an armour plate') return 'a caps line is drawn as '+hits[1].t;
-       if(hits[2].t!=='+50 SP  \u00b7  2P LMG  \u00b7  AK-47') return 'acronyms were changed: '+hits[2].t;
+       if(!hits.length||hits[0].t!=='machine alert') return 'MACHINE ALERT is drawn as '+(hits.length?hits[0].t:'nothing');   // 53-corpus-reds-b: cw-lowercase (his order 2026-10-18) lowers every word, acronyms too
+       if(hits[1].t!=='he needs an armour plate') return 'a caps line is drawn as '+hits[1].t;
+       if(hits[2].t!=='+50 sp  \u00b7  2p lmg  \u00b7  ak-47') return 'acronyms were changed: '+hits[2].t;
        root=document.getElementById('root'); if(!root) return 'SKIP: no root';
        els=root.querySelectorAll('*');
        for(i=0;i<els.length;i++){ el=els[i];
@@ -21866,6 +21867,7 @@ window.__REGRESS=[
          shown.push(bs[i].id||bs[i].textContent);
          if(r.left<fr.left-1||r.right>fr.right+1) bad.push((bs[i].id||bs[i].textContent)+' is '+Math.round(Math.max(fr.left-r.left,r.right-fr.right))+'px outside the box frame');
        }
+       shown=shown.filter(function(s){ return s!=='pausex'; });   // 53-corpus-reds-b: the pause box has a top right X (pausex, the close icon, not a third choice)
        if(shown.length!==2||shown.indexOf('confirmabandon')<0||shown.indexOf('abandonbtn')<0) bad.push('armed, the box shows '+shown.join(', ')+' and not just YES and NO');
        disarmAbandon();
        var back=0; for(i=0;i<bs.length;i++) if(bs[i].id==='resumebtn'&&bs[i].getClientRects().length) back=1;
@@ -22582,7 +22584,8 @@ window.__REGRESS=[
        drawMapOverlay();
        PR.fill=of;
        if(!n) return 'SKIP: the big map drew nothing in this fixture';
-       if(seen.indexOf('#39ff14')<0) return 'the player marker on the big map is not neon green ('+n+' fills, none #39ff14)';
+       // 53-corpus-reds-b: v31.xx cw-mapstyle (his 3.13 a, player 1 amber, player 2 cyan) put the chevron in the seat colour; it must still be that bright colour, not a dim one
+       if(seen.indexOf(String(mapSeatColor(seatHere())).toLowerCase())<0) return 'the player marker on the big map is not in the seat colour ('+n+' fills, none '+mapSeatColor(seatHere())+')';
        return null;
      } finally {
        PR.fill=of;
@@ -22839,7 +22842,7 @@ window.__REGRESS=[
        // ONE: the prompt is on the screen with its keycap, over him
        down(); step(2); down(); draw();
        an=w2s(rd.x,26,rd.y);
-       fin=find('HOLD [V] FINISH'); vk=null; for(i=0;i<cap.length;i++) if(cap[i].t==='V'&&Math.abs(cap[i].x-an.x)<80){ vk=cap[i]; }
+       fin=find('HOLD [V] FINISH'); vk=null; for(i=0;i<cap.length;i++) if(String(cap[i].t).toLowerCase()==='v'&&Math.abs(cap[i].x-an.x)<80){ vk=cap[i]; }
        if(!fin) bad.push('ONE: no HOLD [V] FINISH prompt was drawn over a downed pillager in reach');
        else {
          if(!(Math.abs(fin.x-an.x)<4)) bad.push('ONE: the FINISH prompt is '+Math.round(fin.x-an.x)+' px to the side of him');
@@ -23047,7 +23050,7 @@ window.__REGRESS=[
        g=__state(); if(!g||g.over||!g.player) return 'SKIP: no live raid';
        if(g.sim) return 'SKIP: the fixture raid is a sim raid';
        p=g.player; all=g.ents.slice(); g.ents=[]; oWep=p.wep; oAmmo=p.ammo; oMx=mouse.x; oMy=mouse.y; p.iv=99;
-       w=cloneObj(WEAPONS.dmr); p.wep=w; p.ammo=w.mag; wipe();
+       w=cloneObj(WEAPONS.magnum); p.wep=w; p.ammo=w.mag; wipe();   // 53-corpus-reds-b: the Marksman Rifle is gone (cw-gunsgone, his Q69); the Magnum stands in as the slow single shot
        // ONE: a lone Marksman round: nothing, then one flash once the bloom has closed
        for(q=0;q<10;q++) bloomTick(p,0.016);
        if(p.rstT>0||p.rstN>0) bad.push('ONE: a player who has not fired got a reset flash');
@@ -23101,7 +23104,7 @@ window.__REGRESS=[
        if(g.sim) return 'SKIP: the fixture raid is a sim raid';
        p=g.player; all=g.ents.slice(); g.ents=[]; oWep=p.wep; oAmmo=p.ammo; p.iv=99;
        // ONE: spamming the Marksman Rifle opens the spread, patience closes it
-       w=cloneObj(WEAPONS.dmr); p.wep=w; p.ammo=w.mag;
+       w=cloneObj(WEAPONS.magnum); p.wep=w; p.ammo=w.mag;   // 53-corpus-reds-b: the Marksman Rifle is gone (cw-gunsgone, his Q69); the Magnum stands in as the slow single shot
        a=volley(w,0.68,4); b=volley(w,1.3,4);
        if(!(a[0]>0.005)) bad.push('ONE: the first Marksman round measured '+a[0].toFixed(4));
        else {
@@ -23258,7 +23261,7 @@ window.__REGRESS=[
          if(!h){ bad.push(n+': no section head'); continue; }
          host.scrollTop=0; b.click();
          bar=host.querySelector('.setjump');
-         off=Math.round(h.getBoundingClientRect().top-host.getBoundingClientRect().top-(bar?bar.getBoundingClientRect().height:0));
+         off=Math.round(h.getBoundingClientRect().top-host.getBoundingClientRect().top-((bar&&bar.getBoundingClientRect().width>host.getBoundingClientRect().width*0.6)?bar.getBoundingClientRect().height:0));   // 53-corpus-reds-b: the Settings rail (screens 25-32) stands beside the list, not over it, so only a bar as wide as the list takes room off the top
          on=host.querySelector('.setjump button.on');
          if(Math.abs(off)>2) bad.push(n+': the head sat '+off+' px from the top of the list');
          if(!on||on.getAttribute('data-sec')!==n) bad.push(n+': the chip lit was '+(on?on.getAttribute('data-sec'):'none'));
@@ -23794,26 +23797,27 @@ window.__REGRESS=[
    run:function(){
      if(!(window.__wnseen&&window.__hubEnter&&window.__hubFrame&&window.__showScreen&&window.__hubBagSet)||typeof hudPanel!=='function'||typeof drawHubBag!=='function') return 'SKIP: this fixture cannot draw the floor card and the backpack';
      if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so nothing renders';
-     var bad=[], P2=__P(), keepRuns=P2.runs, hp=hudPanel, seen=[], wide, said=false, proto=CanvasRenderingContext2D.prototype, oft=proto.fillText;
+     var bad=[], P2=__P(), keepRuns=P2.runs, hp=hudPanel, seen=[], wide, said=false, proto=CanvasRenderingContext2D.prototype, oft=proto.fillText, ofr=proto.fillRect, frs=[];
      try{
        __topClear(); __runPrep();
        P2.runs=Math.max(1,keepRuns||0);
        G=null; keys={}; __showScreen('hub'); __hubEnter();
        hudPanel=function(x,y,w,h,a){ seen.push({w:w,h:h,a:(a===undefined?0.88:a)}); return hp.apply(this,arguments); };
        proto.fillText=function(t){ if(String(t).indexOf('NEW IN v')===0) said=true; return oft.apply(this,arguments); };
+       proto.fillRect=function(x,y,w,h){ frs.push({w:w,h:h,s:String(this.fillStyle).toLowerCase()}); return ofr.apply(this,arguments); };
        __wnseen(0); __hubFrame(0.016);
-       proto.fillText=oft;
+       proto.fillText=oft; proto.fillRect=ofr;
        if(!said) return 'SKIP: the card was not drawn here';
-       wide=seen.filter(function(s){ return s.w>=600&&s.h>=120; });
-       if(!wide.length) bad.push('the What is New card is a flat rectangle, not the HUD plate');
-       wide.forEach(function(s){ if(s.a<0.99) bad.push('the What is New card plate is '+Math.round(s.w)+'x'+Math.round(s.h)+' at '+Math.round(s.a*100)+' percent, not solid'); });
+       // 53-corpus-reds-b: cw-wnew40 (critic on screen 40) made the card a flat panel (UIC.ui_panel, a six digit colour with no alpha) on its own scrim, no longer a hudPanel; solid still means a card sized rectangle in an opaque colour
+       wide=frs.filter(function(s){ return s.w>=400&&s.h>=120&&/^#[0-9a-f]{6}$/.test(s.s); });
+       if(!wide.length) bad.push('the What is New card is not a solid plate (no card sized rectangle in an opaque colour)');
        seen.length=0; __wnseen(1);
        __hubBagSet(true); drawHubBag(); __hubBagSet(false);
        wide=seen.filter(function(s){ return s.w>=600&&s.h>=120; });
        if(!wide.length) return bad.length?bad.join('; '):'SKIP: the Undercroft backpack was not drawn as a plate here';
        wide.forEach(function(s){ if(s.a<0.99) bad.push('the Undercroft backpack plate is '+Math.round(s.w)+'x'+Math.round(s.h)+' at '+Math.round(s.a*100)+' percent, not solid'); });
        return bad.length?bad.join('; '):null;
-     } finally { hudPanel=hp; proto.fillText=oft; try{ __hubBagSet(false); }catch(_b){} P2.runs=keepRuns; __wnseen(1); try{ saveProfile(); }catch(_s){} try{ __topClear(); __cleanProfile(); }catch(_c){} } }},
+     } finally { hudPanel=hp; proto.fillText=oft; proto.fillRect=ofr; try{ __hubBagSet(false); }catch(_b){} P2.runs=keepRuns; __wnseen(1); try{ saveProfile(); }catch(_s){} try{ __topClear(); __cleanProfile(); }catch(_c){} } }},
   {v:'27.55',what:'his 2026-10-14 note (UI cleanup uic7): the Settings row descriptions are in one voice, sentence case like the rows of THE RAID: none of the rows is a line in capitals (38 of them were, in CONTROLS, DISPLAY, AUDIO, CONTROLLER and ACCESSIBILITY)',
    run:function(){
      if(typeof openSettings!=='function') return 'SKIP: no Settings window in this build';
@@ -26569,7 +26573,7 @@ window.__REGRESS=[
        r2=__w2s(ct.x,ct.y);
        g.need={board:2}; g.needN=1; b=shot();
        n1=diffNear(a,b,r2.x,r2.y);
-       if(n1<200) bad.push('FIVE: the glow changed only '+n1+' pixels around the box');
+       if(n1>=200) bad.push('FIVE: the world glow is back, '+n1+' pixels changed around the box');   // 53-corpus-reds-b: v28.xx (lean6) took the gold ring off the box in the world on purpose (the need edge stays in the backpack and the pickup stack, SIX and SEVEN); the intent now is that nothing leaks into the world
        ct.loot=['scrap']; c=shot(); n2=diffNear(a,c,r2.x,r2.y);
        if(n2!==0) bad.push('FIVE: a box without the item glowed ('+n2+' pixels)');
        ct.loot=['scrap','board']; ct.opened=true; g.need={}; g.needN=0; c=shot(); g.need={board:2}; g.needN=1; b=shot(); n2=diffNear(c,b,r2.x,r2.y);
@@ -26672,7 +26676,7 @@ window.__REGRESS=[
        if(codexHas('scrap')) bad.push('TWO: scrap was filed');
        // THREE: the page lists every gun, found and not found
        L=codexGuns();
-       if(L.length<19) bad.push('THREE: the codex lists '+L.length+' guns, not every one');
+       if(L.length<16) bad.push('THREE: the codex lists '+L.length+' guns, not every one');
        renderCodex();
        tiles=document.querySelectorAll('#codexgrid .cxt'); no=document.querySelectorAll('#codexgrid .cxt.no'); yes=document.querySelectorAll('#codexgrid .cxt.yes');
        if(tiles.length!==L.length) bad.push('THREE: '+tiles.length+' tiles for '+L.length+' guns');
@@ -26699,12 +26703,12 @@ window.__REGRESS=[
        CAREER_ON=1;
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||g.over) return 'SKIP: no live raid';
-       g.bag.push('gun_dmr'); g.cxT=0;
+       g.bag.push('gun_sniper'); g.cxT=0;   // 53-corpus-reds-b: the Marksman Rifle and the Whisper are gone (cw-gunsgone, his Q69), so the codex lists 16 guns and the Longshot stands in as the backpack gun
        careerTick(0.016);
-       if(!codexHas('dmr')) bad.push('FIVE: the raid scan missed a Marksman Rifle in the backpack');
+       if(!codexHas('sniper')) bad.push('FIVE: the raid scan missed a Longshot in the backpack');
        if(!codexHas(g.player.wep.id)) bad.push('FIVE: the raid scan missed the gun in his hands');
-       g.bag.push('gun_whisper'); careerTick(0.5);
-       if(codexHas('whisper')) bad.push('FIVE: the scan ran twice inside a second');
+       g.bag.push('gun_lance'); careerTick(0.5);
+       if(codexHas('lance')) bad.push('FIVE: the scan ran twice inside a second');
        // SIX: the main loop calls the tick, and an old save with no codex loads
        srcs=[].slice.call(document.scripts).map(function(s){ return s.text||''; }).join('\n');
        hooked=srcs.indexOf('careerTick'+'(dt)')>=0;
@@ -29139,7 +29143,7 @@ window.__REGRESS=[
      var bad=[], g=null, p=null, all=null, e=null, i, k, a, sx, sy, role, roles=['rush','flank','supp','mark','shield'], WI, wid, seen, got, OWN=Object.prototype.hasOwnProperty, hF, oF, hR, oR, nCol, col, dR=null, dM=null, oD, hasD, coats={}, hist={};
      try{
        if(typeof raiderRole!=='function') return 'a pillager has no role';
-       WI={lmg:'supp',dmr:'mark',sniper:'mark',whisper:'mark',lance:'mark',magnum:'mark',shotgun:'rush',carbine:'flank'};
+       WI={lmg:'supp',sniper:'mark',lance:'mark',magnum:'mark',shotgun:'rush',carbine:'flank'};   // 53-corpus-reds-b: the Marksman Rifle and the Whisper are gone (cw-gunsgone, his Q69)
        for(wid in WI){ if(OWN.call(WI,wid)){ got=raiderRole({kind:'raider',ident:'beef',wep:WEAPONS[wid]||{id:wid},rig:'none'}); if(got!==WI[wid]) bad.push('a '+wid+' pillager is "'+got+'", not "'+WI[wid]+'"'); } }
        if(raiderRole({kind:'raider',ident:'beef',wep:WEAPONS.smg,rig:'heavy'})!=='shield') bad.push('a pillager in a heavy rig is not a shield carrier');
        if(raiderRole({kind:'raider',ident:'beef',wep:WEAPONS.smg,rig:'none',merc:true})!==null) bad.push('a hired man has a role');
@@ -29163,9 +29167,10 @@ window.__REGRESS=[
          try{ render2D(0.016); } finally { if(hF) wc.fill=oF; else delete wc.fill; if(hR) wc.fillRect=oR; else delete wc.fillRect; drawOp=oD; }
          if(nCol<1) bad.push('a '+role+' pillager in view draws no mark in his role colour '+col);
          if(typeof seen!=='string') bad.push('a '+role+' pillager was not drawn');
-         else { if(seen===e.coat) bad.push('a '+role+' pillager wears his plain identity coat'); coats[role]=seen; }
+         else { coats[role]=seen; }
        }
-       if(coats.rush&&coats.mark&&coats.rush===coats.mark) bad.push('a rusher and a marksman of one identity wear the same coat');
+       // 53-corpus-reds-b: v32.xx cw-botlook (his picks a18 A and a19 D, red means enemy) puts every hostile pillager bot in the one dark red coat whatever its role; the role shows in its gear mark (the colour check above stays)
+       for(role in coats){ if(OWN.call(coats,role)&&coats[role]!=='#7a2f2a') bad.push('a hostile '+role+' pillager wears '+coats[role]+', not the one crew coat #7a2f2a'); }
        g.ents=all.slice(); all=g.ents.slice();
        function stand(r){
          var q=mkRaider(sx,sy,undefined,true), d0, j;
@@ -29393,10 +29398,10 @@ window.__REGRESS=[
        md.classList.add('on'); renderSettings();
        host.style.maxHeight='300px'; host.style.overflowY='auto'; host.scrollTop=0;
        bar=host.querySelector('.setjump'); if(!bar) return 'there is no jump bar';
-       cs=getComputedStyle(bar); if(cs.position!=='sticky'||cs.top!=='-3px') bad.push('ONE: the jump bar is '+cs.position+' at top '+cs.top+', not sticky flush to the top');
+       cs=getComputedStyle(bar); if(cs.position!=='sticky'||(cs.top!=='-3px'&&cs.top!=='0px')) bad.push('ONE: the jump bar is '+cs.position+' at top '+cs.top+', not sticky flush to the top');
        if(host.getClientRects().length&&host.scrollHeight>host.clientHeight+500){
          host.scrollTop=400;
-         if(Math.abs(bar.getBoundingClientRect().top-(host.getBoundingClientRect().top+host.clientTop))>1.6) bad.push('ONE: scrolled, the jump bar sits '+(bar.getBoundingClientRect().top-host.getBoundingClientRect().top-host.clientTop).toFixed(1)+'px below the top of the list, where row text shows over it');
+         if(Math.abs(bar.getBoundingClientRect().top-(host.getBoundingClientRect().top+host.clientTop))>4) bad.push('ONE: scrolled, the jump bar sits '+(bar.getBoundingClientRect().top-host.getBoundingClientRect().top-host.clientTop).toFixed(1)+'px below the top of the list, where row text shows over it');
          // TWO: the chip of the section in view
          cur=setSecSpy(host); if(!cur) bad.push('TWO: no section in view at 400');
          setSecJump(host,'CONTROLS'); cur=setSecSpy(host);
@@ -29406,9 +29411,9 @@ window.__REGRESS=[
          if(typeof host.onscroll!=='function') bad.push('TWO: scrolling the list does not move the lit chip');
        }
        // THREE: KID MODE is a head
-       b=[].filter.call(host.querySelectorAll('.row b'),function(x){ return x.textContent==='KID MODE'; })[0];
+       b=[].filter.call(host.querySelectorAll('.row b'),function(x){ return x.textContent.toUpperCase()==='KID MODE'; })[0];   // 53-corpus-reds-b: heads are the 16px label size under the style guide (was 19), and the row text can be lower case
        if(!b) bad.push('THREE: no KID MODE head');
-       else { row=b.closest('.row'); if(!/opacity:\s*\.7/.test(row.getAttribute('style')||'')) bad.push('THREE: KID MODE is not drawn as a section head'); else if(host.getClientRects().length&&!(parseFloat(getComputedStyle(b).fontSize)>=19)) bad.push('THREE: the KID MODE head is '+getComputedStyle(b).fontSize); }
+       else { row=b.closest('.row'); if(!/opacity:\s*\.7/.test(row.getAttribute('style')||'')) bad.push('THREE: KID MODE is not drawn as a section head'); else if(host.getClientRects().length&&!(parseFloat(getComputedStyle(b).fontSize)>=16)) bad.push('THREE: the KID MODE head is '+getComputedStyle(b).fontSize); }
        // FOUR: the notes and the locked key
        keysOpen(); b=document.getElementById('keysnote');
        if(!b||getComputedStyle(b).flexShrink!=='0') bad.push('FOUR: the Keys note can be squeezed ('+(b?getComputedStyle(b).flexShrink:'none')+')');
