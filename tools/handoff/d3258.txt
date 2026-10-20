@@ -1,0 +1,5 @@
+## v32.58 - THE HOSTILES CLOSING IN LINE STANDS ON A PLATE
+
+Co-op hunt while he was away. Critic on screen 37: the red hostiles closing in line under the extract countdown had no plate and sat loose on the floor. It now has the same flat HUD plate as the countdown.
+
+MEASURED. Check 32.58 passes, and fails on v32.57.

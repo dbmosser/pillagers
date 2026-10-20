@@ -1,0 +1,7 @@
+v32.58: the hostiles closing in line stands on a plate
+
+While extraction is inbound the hostiles closing in line has a flat dark plate behind it.
+
+Check 32.58. Fails on v32.57.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

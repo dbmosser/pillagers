@@ -33,17 +33,17 @@
  "05-sector-page": {
   "score": 3,
   "pass": false,
-  "verdict": "The pre-raid card is clean, and the lime ascend button is the clear primary action. But the map labels still sit on top of the building blocks, the right column is dense, and the title is weak next to the map.",
+  "verdict": "The pre-raid card has a clear hero (the lime ascend button) and a consistent dark card with an X, but it is dense: the map is a pile of unlabeled dark boxes, the kit column is crowded with small text, and several key labels sit at or below the 16px floor.",
   "findings": [
-   "P1 map labels (chill row, the long dock, blast freezer, foreman office): Move labels into clear floor space or use a 6px dark pill (#0b0c0d at 80%) behind each one. Use one colour (tx-1) for every label. Keep zone names at 20px and exit names at 16px, and do not let any label overlap a block.",
-   "P1 right column (kit, pack, 7 stepper rows, data core, gun, warning, ascend): Fold the data core row into the gun chip row, or drop it when there is no core. Make the stepper buttons 44x44. Increase row spacing to 8px in the 16px rhythm. Make the quantity number 24px tx-1 so the pack count is easy to read.",
-   "P1 title bar 'pre-raid' and map header 'cold storage': Make the window title 32px f-cond 700 and the sector name 20px with an accent tab. Cut the facts line to '5 zones · 3 exits'. Make 'ascending here' a quiet 16px label with no outlined chip.",
-   "P2 conditions column (surface, weather): Put the column in a --ui-panel with a 1px line-hi border and 16px padding. Make the percent modifiers tx-1 at 16px or use a warn-coloured glyph. Make 'conditions' the single heading, with 16px labels for the groups. Show selected as a 3px lime left bar and keep the lime ring for pad focus only.",
-   "P2 map panel: Tint the map toward --ui-raised and use --ui-line-hi for room edges. Fill the blocks with --ui-void at 60% and a 1px line. Keep teal only for exits, as the guide says."
+   "P1 kit column warning row: Use 16px f-cond 600 in --warn, put it in a 32px row with 8px padding, keep the 3px warn bar, and make the triangle glyph 20px. Reverse the shrink made in this pass.",
+   "P1 kit column, item rows: Drop the stepper borders to a 1px --ui-line and make the '-' and '+' buttons 36x36 with 20px glyphs. Raise the caps to 16px --tx-2. Merge the gun row and data core row into one 'extras' group with a 24px gap above it.",
+   "P1 map panel: Offset zone labels so they never overlap props (min 8px clearance), cut the rings to 24px with a 2px stroke, and take the dashed purple key rooms down to 60% alpha. Make zone names 18px in --tx-1 with no pill.",
+   "P2 conditions column (surface, weather): Use a 24px gutter on each side. Set section labels to 16px --tx-2. Choose one selected signal, the lime bar plus the check, and drop the fill change. Move the +10% modifiers to --tx-2 and 16px.",
+   "P2 title and header rows: Keep the window title at 32px and make the sector name 20px f-cond 600 beside it. Move the stats line to 16px --tx-2 under the sector name. Drop the pill border and show just the lime check and the word."
   ],
-  "pic": "tools/handoff/console/notes/shots/22-after5/05-sector-page-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/22-after6/05-sector-page-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T06:26"
+  "when": "2026-10-20T06:36"
  },
  "06-terms": {
   "score": 3,
@@ -962,34 +962,34 @@
   "when": "2026-10-20T06:34"
  },
  "74-pad-lefty": {
-  "score": 3,
+  "score": 2,
   "pass": false,
-  "verdict": "A clean, lower-case title screen with a clear lime primary action and a calm column. It still has a gold-gradient title that fights the lime accent, and the lower half is cramped and low in contrast.",
+  "verdict": "The window is clean and readable, but the layout selector is visibly broken (focus box overlaps the arrows and the 6 / 6 counter), the controller diagram has mislabelled and colliding buttons, and the same bindings are listed twice.",
   "findings": [
-   "P1 title wordmark 'pillagers': Make the wordmark flat --tx-1 (#efe9dc) at 56px f-cond 800, with no gradient and no shadow. Keep lime only on the focused '1 player' button. Or keep a gold treatment only as a flat 3px bar under the title.",
-   "P1 saves block (saves label, pillager new row, name input, change name, create a new save): Set the 'saves' label to 16px --tx-2 with +.04em tracking and put 24px of space above it. Give the selected save row a 3px lime left bar and a --ui-raised fill instead of a full lime border and lime text. Move 'change name' and 'create a new save' to 16px quiet buttons with the same 1px --ui-line-hi border. Make the input 48px tall to match the rows.",
-   "P1 menu button column: Drop the '(same machine)' and '(server)' parentheticals, or move them to a 16px --tx-2 second line. Order the rows by use and add a 24px gap between the main modes and the demos. Hide the 'coming later' row, or lift its text to at least 4.5:1 (#aaa498) with the chip at 16px.",
-   "P2 bottom key legend (wasd move, mouse aim, lmb fire, e search, f1 controls): Raise the labels to 16px --tx-2 (at least 4.5:1) and the key caps to 16px f-cond 700. Keep 24px between pairs. The legend must reflect the active pad preset (lefty), not wasd.",
-   "P2 top-right 'go fullscreen' and 'settings' buttons: Fold fullscreen into settings. Make the button text 16px. Align the left and right insets to the same 48px margin so v0.0880 and the top-right cluster share a margin."
+   "P0 layout selector, top left (arrows, 'lefty' focus box, '6 / 6'): Make the selector one 56px-high control: [‹] [lefty, centred] [›], with a 1px --ui-line-hi border. Draw focus as a single 2px --acc outline around the whole control, or around the arrow that is focused. Move the counter out of the box, to the right of the control at 16px --tx-2, or drop it. Keep 16px padding so nothing touches the border.",
+   "P1 controller diagram, d-pad and sticks: Enlarge the diagram about 1.3x. Use a d-pad cross about 100px wide with 16px label chips inside each arm, or put the labels outside the arms with leader lines. Keep at least 12px between any two labels. Place the left stick at the upper left and the d-pad below it, with a clear 24px gap.",
+   "P1 left list vs diagram vs bottom table: Keep two things: the list (editable) and the diagram. Delete the bottom table, or fold it into the diagram as label chips with action names. That frees about 330px of height, so the left list can show every row without scrolling, at the 56px row height the guide specifies.",
+   "P1 left list, key chips and row text: Set row names to 20px f-cond 600 --tx-1. Set section headers to 16px --tx-2 with +.08em tracking and 16px of space above them. Make the chips 56x32 with a 1px --ui-line-hi border and --tx-1 text. Use --acc fill only on the focused row. Use 56px rows.",
+   "P1 footer, bottom right ('a rebind b back') and 'reset to defaults': Draw the legend as two chips with the live pad glyphs, [a] rebind [b] back, at 16px --tx-1 on the chips and --tx-2 on the labels, 16px gap. Put them in a 72px footer row with a 1px --ui-line divider above it. Make 'reset to defaults' a 40px ghost button in that row, using the same border and type as the other buttons."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-05-pad-presets-recipes-2/74-pad-lefty-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-05-pad-presets-recipes-3/74-pad-lefty-1080.jpg",
   "task": "o-05-pad-presets",
-  "when": "2026-10-20T06:17"
+  "when": "2026-10-20T06:35"
  },
  "74-pad-pillagers": {
-  "score": 3,
+  "score": 2,
   "pass": false,
-  "verdict": "the title screen reads clearly, with a calm column menu and one lime primary button, but the amber gradient wordmark ignores the lime accent and flat guide, the menu is crowded with five modes and a saves block, and the key hints, version stamp and chips are tiny and dim.",
+  "verdict": "the layout is organised and all lower case, but the layout selector is visibly broken, the controller diagram is cramped and overlapping, and the screen is dense and uniformly grey with no clear focal point.",
   "findings": [
-   "P1 pillagers wordmark: make the wordmark flat --tx-1 #efe9dc (or a flat lime if it is the only lime on the screen), drop the gradient and shadow, and tone the 1 player button down to a quieter focus bar. Keep the title at 56px f-cond 800.",
-   "P1 mode list (5 buttons): delete the 'coming later' row. Group the modes into two blocks with a 24px gap between them (play: 1 player, 2 player co-op; demo: 2 player arcade, 1 player arcade). Make the idle rows 20px tx-1 on --ui-panel with a 1px --ui-line-hi border and --rad 4px.",
-   "P1 saves block (y 720-832): put a 32px gap above the saves block and set the label at 16px tx-2. Give the input a --ui-raised fill with no button chrome. Make 'create a new save' the only bordered action and demote 'change name' to a text link. The selected save name in tx-1, with lime only as a 3px left bar.",
-   "P2 focus state on '1 player': use one focus style everywhere: a --ui-raised fill, a 3px lime left bar, and tx-1 text. Keep the filled lime only for the single primary CTA.",
-   "P2 bottom key hints (wasd move, mouse aim ...): set the label at 16px minimum in --tx-2 (#aaa498, at least 4.5:1). Make the keycaps outline-only, 1px --ui-line-hi with tx-1 text. Align the legend and the version to the same 48px bottom margin."
+   "P0 layout selector (top left, 'pillagers 1/6'): Make the selector one 48px-tall control with ‹ and › cells of 48x48 and a centred value cell. Put the lime 2px focus outline around the whole control. Move the counter to the right of the value with 16px padding, outside the outline. Remove the white bar.",
+   "P0 controller diagram (d-pad cluster, 'move ls' stick, 'aim rs' stick): Put d-pad labels on leader lines outside the pad, or use a clean plus shape with 16px glyphs. Space labels at least 8px apart. Enlarge the stick circles to 72px and lay out 'move' and 'ls' on one line. Raise the silhouette stroke to --ui-line-hi.",
+   "P1 whole screen, hierarchy: Keep the diagram as the hero and drop the lower two-column summary, or drop the diagram labels and keep only the summary. The left list stays as the only editable control. If both stay, set the summary to --tx-2 at 16px so the diagram reads first.",
+   "P1 left rebind list: Set row names to 20px f-cond 600 in --tx-1 and section headers to 16px in --tx-2 with +.04em tracking and 16px extra top margin. Give the scrollbar a 12px track. Show the focused row with an --ui-raised fill and a 3px lime left bar. Align the list's bottom edge to a full row.",
+   "P1 footer hint 'a rebind b back': Render the hints as key chips ('a' then 'rebind', 'b' then 'back') at 18px, --tx-1 for keys and --tx-2 for actions, with 24px between pairs. Align the footer baseline with the reset button in a 72px footer row."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-05-pad-presets-recipes-2/74-pad-pillagers-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-05-pad-presets-recipes-3/74-pad-pillagers-1080.jpg",
   "task": "o-05-pad-presets",
-  "when": "2026-10-20T06:17"
+  "when": "2026-10-20T06:35"
  },
  "13-mainframe-rewards": {
   "score": 2,
@@ -1024,31 +1024,31 @@
  "74-pad-player-1": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, calm column menu with a clear lime focus bar and a strong title. The orange-gold title clashes with the lime accent, the lower half crowds, and the labels run too small and low in contrast for a couch.",
+  "verdict": "A clean, centred column menu with a clear lime primary action and a strong wordmark. The wordmark's orange gradient, the weak secondary type and the cluttered footer keep it from reading as polished.",
   "findings": [
-   "P1 title 'pillagers': Fill the title flat --tx-1 (#efe9dc) with no gradient and no shadow, f-cond 800, around 72px. Leave lime for the focused 1 player bar only. If a brand colour is wanted, use a 3px lime underline 48px wide beneath it.",
-   "P1 menu list, rows 2 to 5: Delete the 'coming later' row. Drop '(same machine)' from the label. Group the two arcade demos under one 'arcade demo' row that asks 1 or 2 players, or separate them with a 24px gap and a 16px muted 'demo' label. Keep 4 rows at most.",
-   "P1 saves block (y 720-835): Pick one focus style: filled --acc with --acc-ink, or a 2px --acc left bar with --ui-raised fill. Raise the 'saves' label to 16px --tx-2 and put 32px above it. Give the field and buttons 16px gaps. Collapse 'change name' and 'create a new save' behind one 'new save' button that opens the name field.",
-   "P1 muted text (saves label, save stats, 'coming later' row, version stamp): Set these to 16px minimum at --tx-2 #aaa498. Make the stats --tx-1 at 16px. Set the disabled row to --tx-2 at 60% opacity, with the label kept at 16px.",
-   "P2 footer key legend (y 1042): Show the live device's hints: 'a select', 'b back', 'dpad move' on pad. Drop the in-raid hints (aim, fire, search) from the menu. Set caps at 16px --tx-1 on --ui-raised with a 1px --ui-line-hi border and --rad 4px."
+   "P1 title wordmark 'pillagers': Fill the wordmark flat --tx-1 (#efe9dc), or flat lime, at 800 weight. Remove the gradient and shadow. Leave the lime fill for '1 player' alone.",
+   "P1 menu column, 5 mode buttons: Drop the 'coming later' row (or move it below saves as a 14px footnote). Shorten the labels to '2 player co-op' and 'arcade demo', and move the parentheses to a 16px --tx-2 sub-label. Put a 24px gap between the play group and the demo group. The disabled row needs at least 4.5:1.",
+   "P1 saves block: Make the 'saves' label 16px --tx-1 at 70 percent with +.04em tracking. Use --ui-raised with a 3px lime left bar for the selected row, not a full lime outline. Give the controls row the same 48px height as the rows above, and the input a 1px --ui-line-hi border with an explicit placeholder style.",
+   "P2 footer key legend: Show the live pad prompt (a / move, b / back) when a pad is the active device. Raise key caps and labels to 16px, and set labels in --tx-2 at at least 4.5:1.",
+   "P2 top-right buttons 'go fullscreen' / 'settings': Use the idle button border --ui-line-hi, the same 4px radius and a 48px height to match the menu rows. Add them to the pad focus order, or hide 'go fullscreen' on pad."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-05-pad-presets-recipes-2/74-pad-player-1-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-05-pad-presets-recipes-3/74-pad-player-1-1080.jpg",
   "task": "o-05-pad-presets",
-  "when": "2026-10-20T06:18"
+  "when": "2026-10-20T06:36"
  },
  "74-pad-player-2": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean centred column with a clear lime primary button, but the glossy gradient wordmark, the tiny muted secondary text and the busy blurred backdrop keep it short of polished.",
+  "verdict": "The title screen has a clear hierarchy, with a gradient logo and one lime call to action. The small text, the save block and the amber logo that clashes with the lime accent keep it from reading as polished.",
   "findings": [
-   "P1 pillagers wordmark: Make the wordmark flat --tx-1 (or flat --acc), with no gradient or shadow, at 56px f-cond 800. Keep the lime fill only on the button. If the orange stays as the brand mark, state that exception in the guide.",
-   "P1 saves list, name field and button row: Raise row text to 20px f-cond 600 and set the label to 16px --tx-2 (at least #aaa498). Make the buttons 48px tall, not about 40px. Drop the separate 'player 2 window' line, or fold it into the 'keyboard' chip at 16px.",
-   "P1 background hub scene: Use --scrim at .80 plus a blur of about 8px over the whole scene, or a flat --ui-void vignette. Remove any sprites within 200px of the central column.",
-   "P2 top-right buttons (go fullscreen, settings): Use one idle button style: 1px --ui-line-hi border, 4px radius, 16px text, 40px height, 24px from the edges. Restyle the 'keyboard' chip to match, in --tx-2 text, not green.",
-   "P2 bottom key legend: Set the labels to 16px --tx-2 with 4.5:1 contrast. Make the key chips a single 1px --ui-line-hi outline with --tx-1 text, no white fill. Keep at most 3 entries, for example move, fire and controls."
+   "P1 title logo 'pillagers': Make the logo flat --tx-1 (#efe9dc) with no gradient and no glow, at about 96px weight 800. Let the lime button be the one hot element. If the logo keeps colour, use one flat tone that is clearly not near the lime.",
+   "P1 saves block: 'saves' label, save row, name input and buttons: Use one 56px row of the --ui-raised panel for the selected save. Put 'change name' and 'create a new save' as quiet text buttons on one 40px row, 16px below, aligned to the same 558px edges. Give the input a --ui-raised fill with a 1px --ui-line-hi border. Use a 16px label with 16px of space below it.",
+   "P1 small text: 'player 2 window', tagline, 'saves' label, version: Set 'player 2 window' and 'saves' to 16px --tx-2 (#aaa498). Set the tagline to 20px --tx-1 at 80% opacity. Put the version stamp at 14px, aligned to the 5% margin (96px), with the same baseline as the key legend.",
+   "P1 top-left 'keyboard' badge and top-right 'go fullscreen' and 'settings': Inset all three corner items to a 48px margin. Give the badge the standard --ui-line-hi border and tx-2 text, with a 16px label. Make 'go fullscreen' and 'settings' quiet (--ui-line border, tx-2 text) until focused. On this screen the teal is the extract colour and should not be used for the badge.",
+   "P2 key legend at bottom: Cut the legend to 'f1 controls' only, since the full list lives on the controls screen. If it stays, use a muted --ui-line-hi cap outline and tx-2 text, and 16px labels."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-05-pad-presets-recipes-2/74-pad-player-2-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-05-pad-presets-recipes-3/74-pad-player-2-1080.jpg",
   "task": "o-05-pad-presets",
-  "when": "2026-10-20T06:18"
+  "when": "2026-10-20T06:36"
  }
 }

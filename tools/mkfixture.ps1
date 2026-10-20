@@ -6101,6 +6101,17 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.58',what:'the hostiles closing in line stands on a plate measured to its words (critic 37)',
+   run:function(){
+     if(typeof extRowPlate!=='function') return 'the hostiles line has no plate function (extRowPlate)';
+     var s='9 HOSTILES CLOSING IN', r, f=ctx.font;
+     ctx.save(); ctx.font=hudFS(TYPE.label);
+     try{ r=extRowPlate(s,960,900,1); }finally{ ctx.restore(); ctx.font=f; }
+     if(!r||!(r.w>0)) return 'extRowPlate gave no rectangle';
+     if(r.x>960-hudRawW(s)/2||r.x+r.w<960+hudRawW(s)/2) return 'the plate does not cover the words';
+     if(String(drawHUD).indexOf('extRowPlate(')<0) return 'drawHUD does not draw the plate';
+     return null;
+   }},
   {v:'32.57',what:'the pre-raid page sixth pass: map labels sit on a dark pill, the window title is 32 px and bigger than the sector name, the footer lists ascend once, and the no armour row is 16 px with a warn bar',
    run:function(){
      if(!(window.__hubEnter&&window.__P&&window.__applyLoaded)||typeof renderSector!=='function') return 'SKIP: no pre-raid page';

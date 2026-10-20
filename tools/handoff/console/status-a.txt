@@ -1,1 +1,1 @@
-10-20 01:48 running 22-ui-preraid-map-first on Claude Code (your plan: week 55% of the 24.7% line, 5-hour 10%)
+10-20 02:36 waiting for RAM: 2 GB free, a helper starts at 3; 22-ui-preraid-map-first kept

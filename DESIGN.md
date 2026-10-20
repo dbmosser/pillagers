@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.58 - THE HOSTILES CLOSING IN LINE STANDS ON A PLATE
+
+Co-op hunt while he was away. Critic on screen 37: the red hostiles closing in line under the extract countdown had no plate and sat loose on the floor. It now has the same flat HUD plate as the countdown.
+
+MEASURED. Check 32.58 passes, and fails on v32.57.
 ## v32.57 - PRE-RAID: LABELS ON A DARK PILL, A BIGGER WINDOW TITLE, A QUIETER ARMOUR ROW AND BIGGER STEPPERS
 
 Co-op hunt while he was away. The critic still scored the page 3 after five passes and named: map labels reading as overlapping the room blocks, the sector name outranking the window title, the armour warning as heavy as item names, ascend shown twice, and small steppers. Labels get a dark pill, the title is 32 px over a 24 px sector name, the warning is 16 px with a bar, the footer drops its ascend hint and steppers are 44 px.
