@@ -1,0 +1,16 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  j8-p1-pad-lost                         staged      14.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"mode":"demo","seat":1,"realPair":[{"on":true,"role":"host","seat":0,"roster":[{"seat":0,"pid":"bd48368c","name":"PILLAGER","host":true},{"seat":1,"pid":"266805ba","name":"PLAYER 2","host":false}],"status":"PLAYER 2 joined your party.","err":"","made":1,"codeLen":1189,"links":1},{"on":true,"role":"
+  j8-p2-sees-p1-lost                     NOT STAGED  30.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at stagePadLostPair (<anonymous>:162:11)
+    at async <anonymous>:166:8
+    at async <anonymous>:1:21
+  j8-p2-pad-lost                         NOT STAGED  30.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at stagePadLostPair (<anonymous>:162:11)
+    at async <anonymous>:166:8
+    at async <anonymous>:1:21
+  j8-p1-sees-p2-lost                     NOT STAGED   9.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | expect failed: !!window.__j8Camera&&window.__j8Camera.report.controls.length===4&&window.__j8Camera.report.initialVisible.every(function(n){return n>0;})&&U.raid()&&!U.on('#pausebox')&&NET.padPeerLost -> expect threw: ReferenceError: NET is not defined ({"mode":"demo","seat":1,"realPair":[{"on":true
+  j8-p1-press-a                          staged      10.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"mode":"demo","seat":1,"realPair":[{"on":true,"role":"host","seat":0,"roster":[{"seat":0,"pid":"63eb75e2","name":"PILLAGER","host":true},{"seat":1,"pid":"9c5dfac4","name":"PLAYER 2","host":false}],"status":"PLAYER 2 joined your party.","err":"","made":1,"codeLen":1185,"links":1},{"on":true,"role":"
+  j8-p2-press-a                          NOT STAGED  30.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at stagePadLostPair (<anonymous>:162:11)
+    at async <anonymous>:166:8
+    at async <anonymous>:1:21

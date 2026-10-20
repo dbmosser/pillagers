@@ -1,0 +1,7 @@
+v32.77: the trophy case fills its card with a focus ring
+
+The trophy case is two full rows of big cards, the focused card has a lime ring and the top right money readout is out of the way.
+
+Check 32.77. Fails on v32.76.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

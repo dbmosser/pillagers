@@ -1,0 +1,5 @@
+## v32.77 - THE TROPHY CASE FILLS ITS CARD WITH A FOCUS RING
+
+Co-op hunt while he was away. The critic scored the trophy case 2 of 5: two thirds empty, one card orphaned on row two, no focus, crude header stats and gradient tiles with tiny dim text. Now four equal columns (two full rows), flat bigger cards with 16 px minimum text, a lime focus ring on a card that Tab or the pad reaches, and no money readout over the case.
+
+MEASURED. Check 32.77 passes, and fails on v32.76.
