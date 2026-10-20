@@ -18592,7 +18592,9 @@ window.__REGRESS=[
        else{
          if(sx/sw<1.0) bad.push('the shadow centre is '+(sx/sw).toFixed(2)+' px from the feet, not cast right (want 1.0 or more)');
          if(mx<11.8) bad.push('the shadow reaches only '+mx.toFixed(1)+' px right (want 11.8 or more)');
-         if(mn<-10.6) bad.push('the shadow reaches '+mn.toFixed(1)+' px left (want no further than -10.6)');
+         /* v32.64 (cw-figlook, his art survey: a bigger darker shadow): the left edge may now reach -12.0; the cast still leans right, so the right reach must beat the left by 0.6 */
+         if(mn<-12.0) bad.push('the shadow reaches '+mn.toFixed(1)+' px left (want no further than -12.0)');
+         if(mx<-mn+0.6) bad.push('the shadow reaches '+mx.toFixed(1)+' px right but '+(-mn).toFixed(1)+' left, so it is not cast right');
        }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ wc=kw; shadowE=ks; }
@@ -39172,7 +39174,7 @@ window.__REGRESS=[
        if(!(at(11.5,-21)[3]>200)) bad.push('Broad: no wide shoulder at 11.5');
        paint({build:'curved'},'none');
        if(!(at(6.9,-21)[3]>200)) bad.push('Curved: no shoulder at 6.9');
-       if(at(9.6,-21)[3]>40) bad.push('Curved: the shoulders are as wide as Lean, she lost her narrow shoulders');
+       if(at(9.6,-21)[3]>40) bad.push('Curved: the shoulders are as wide as Lean, she lost her narrow shoulders (pixel '+Array.prototype.join.call(at(9.6,-21),',')+'; alpha along the row '+[7,8,9,10,11,12,13].map(function(u){ return u+':'+at(u,-21)[3]; }).join(' ')+')');
        if(!(at(-4.5,-18.0)[3]>200)) bad.push('Curved: the chest is gone');
        paint({team:'foe',build:'lean',bulk:2},'none');
        if(hue(-14.5,-8.5,'foe')<8) bad.push('armour 2: no team stripe on the steel pauldron');
@@ -39319,7 +39321,9 @@ window.__REGRESS=[
      x.setTransform(1,0,0,1,0,0); x.clearRect(0,0,480,480); x.setTransform(6,0,0,6,240,400); wc=x;
      try{ drawOp(0,0,1.57,0,'#d8a13a',0,0,'none',0,{moving:false,sprint:false,ads:false,hurt:0,outfit:'outpeddler'}); }catch(er2){ bad.push('threw: '+(er2&&er2.message||er2)); } finally{ wc=w0; x.setTransform(1,0,0,1,0,0); }
      d=x.getImageData(0,0,480,480).data;
-     var brim=wid(-36.6), head=wid(-30);
+     /* v32.64 (cw-figlook): the head is drawn 1.2 times as big about its centre, so the brow row moved up; take the widest row in the hat band */
+     var brim=0, head=wid(-30), bu, bw;
+     for(bu=-46;bu<=-33;bu+=0.5){ bw=wid(bu); if(bw>brim) brim=bw; }
      if(brim<22) bad.push('no wide hat brim: the widest row at the brow is '+brim.toFixed(1)+' (want 22 or more; the head is '+head.toFixed(1)+')');
      if(top<0||(400-top)/6<15+48) bad.push('no pack frame rising over his head (top of the figure '+(top<0?'none':((400-top)/6-15).toFixed(1))+' above his feet)');
      if(typeof OUTFITS!=='undefined'&&!OUTFITS.outpeddler) bad.push('no outpeddler outfit');
@@ -57944,7 +57948,8 @@ window.__REGRESS=[
        cv2.width=300; cv2.height=300; wc=cv2.getContext('2d'); wc.setTransform(3,0,0,3,0,0);
        SHADSPR.m={}; SHADSPR.n=0; SHADSPR.ss=0;
        shadowE(40,40,20,8,0.3);
-       if(SHADSPR.ss!==3) bad.push('a shadow on a canvas scaled 3 was stamped at '+SHADSPR.ss);
+       /* v28.xx (cw-shadowstore): SHADSPR.ss is gone; the scale is the prefix of the store key now ('3:rx,ry,a') */
+       if(!SHADSPR.m['3:'+Math.round(20)+',8,30']) bad.push('a shadow on a canvas scaled 3 was not stamped at 3 (keys '+Object.keys(SHADSPR.m).join('|')+')');
        src=onCtxRestored.toString();
        ['WALLSPR','VEGSPR','SHADSPR','ICONSPR'].forEach(function(k){ if(src.indexOf(k)<0) bad.push('a restored canvas keeps the old '+k); });
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
