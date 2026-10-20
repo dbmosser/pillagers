@@ -6101,6 +6101,25 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.11',what:'the stamina word is drawn inside its bar (left of the bar end), not past the right end',
+   run:function(){
+     if(typeof __frame!=='function') return 'SKIP: no frame helper';
+     var PR=CanvasRenderingContext2D.prototype, of=PR.fillText, g=null, xs=[];
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player) return 'SKIP: no raid';
+       PR.fillText=function(s,x){ var t=String(s).toUpperCase(); if(t==='STAMINA'||t==='WINDED') xs.push(x); return of.apply(this,arguments); };
+       __frame(); __frame();
+       PR.fillText=of;
+       if(!xs.length) return 'the stamina word was not drawn';
+       for(var i=0;i<xs.length;i++) if(xs[i]>=16+300) return 'the stamina word is drawn past the end of its bar (x '+xs[i]+')';
+       return null;
+     } finally {
+       PR.fillText=of;
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     } }},
   {v:'32.10',what:'the pause box report a problem field is on the 48px small tier',
    run:function(){
      var bad=null, f, padWas=document.body.classList.contains('padon');

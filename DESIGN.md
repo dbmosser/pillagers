@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.11 - THE STAMINA WORD IS INSIDE ITS BAR
+
+Co-op hunt while he was away. The critic named three bar styles bottom left: armour and health carry their words inside the bar, stamina carried its word past the right end. It is inside the bar now, in the armour word face, on a slightly darker fill so it reads.
+
+MEASURED. Check 32.11 passes, and fails on v32.10.
 ## v32.10 - PAUSE BOX REPORT FIELD IS A SMALL ROW
 
 Co-op hunt while he was away. Critic on the pause box (3): every row looks the same, so no rank. The report field drops to 48px on a clear fill and the title is 32px. Q61 keeps the field.

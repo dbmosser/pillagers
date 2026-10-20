@@ -231,17 +231,17 @@
  "25-raid-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, lower-case, single-accent pause card with a clear first read (resume run), but it is still a small generic stack. The new version only makes the small buttons match the others and shifts the card up 12px; the weak points are untouched.",
+  "verdict": "A clean, calm pause card with one clear lime primary and a correct X and title, but the controls shrink through three different heights and the sub-tier buttons read as an afterthought.",
   "findings": [
-   "P1 card size and window rule: Keep this small card only if it is declared the one compact modal exception in the guide. Otherwise raise the scrim from about .8 to .9 or more so the faint HUD text stops competing. The text above and below the card is smudged and reads as a rendering defect.",
-   "P1 button hierarchy, rows 2 to 5: Keep settings full width. Move report a problem, feedback and what's new into one row of three 16px label buttons, or drop them to tx-2 text links. That frees about 56px of height and cuts the stack from 6 rows to 3.",
-   "P1 abandon run: Give it a 1px --danger border at 48px height, or a ghost button with the same radius. Set the gap above it to 24px, and place it clearly apart from the safe actions.",
-   "P2 title row: Set the title to 32px/700. Make the lime tab 3px by 36px at full --acc, or remove it. Make the X 24px in tx-1 with a 40px hit box. Drop the divider to --ui-line.",
-   "P2 focus and pad state: Show a 2px --acc border plus a --ui-raised fill for focus on the secondary buttons. Keep the solid fill for the main action only when it is not focused, or put a 3px focus bar at the left edge of the row."
+   "P1 report a problem button vs settings button: Make settings and report a problem the same height (56px), or give report a problem the same 48px as feedback and what's new so there are exactly two tiers: 56 for primary and settings, 48 for the rest. Keep the gap at 16px.",
+   "P1 feedback / what's new row: Set the label to 16px minimum (f-cond 600, +.04em). Use 20px if the height stays at 48px. Keep both buttons at 192px wide.",
+   "P1 abandon run: Give it a 48px-high ghost button with a 1px danger border (or at least a 48px focus box) and 24px spacing above it. Keep the red text and add a divider line above it.",
+   "P2 Card layout and padding: Set the padding to 24px all round (fs-sp-3) and use the same 24px before abandon run. Trim the card's bottom padding so the bottom margin equals the top margin.",
+   "P2 Card header: Make the X 40x40 with a 1px --ui-line-hi border on hover or focus. Brighten the accent tab to full --acc at 3px high. Keep the title at 32px/700."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-31t-after/25-raid-pause-box-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/c-31u-after/25-raid-pause-box-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T03:17"
+  "when": "2026-10-20T03:23"
  },
  "26-settings-from-pause-top": {
   "score": 3,

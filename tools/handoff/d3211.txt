@@ -1,0 +1,5 @@
+## v32.11 - THE STAMINA WORD IS INSIDE ITS BAR
+
+Co-op hunt while he was away. The critic named three bar styles bottom left: armour and health carry their words inside the bar, stamina carried its word past the right end. It is inside the bar now, in the armour word face, on a slightly darker fill so it reads.
+
+MEASURED. Check 32.11 passes, and fails on v32.10.

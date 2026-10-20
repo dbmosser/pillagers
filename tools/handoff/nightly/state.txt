@@ -9,4 +9,4 @@ corpus_file=C:/Users/User1/AppData/Local/Temp/claude/C--Users-User1-Desktop-dark
 corpus_t=1792453020
 summary_t=1792464292
 stable_t=1792466133
-llm_head=4ba00570
+llm_head=da6f1215

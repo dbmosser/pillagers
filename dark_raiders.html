@@ -3009,7 +3009,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.10';
+var VER='32.11';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -42453,15 +42453,19 @@ if(p.armor>0){
     ctx.font=_apf; ctx.fillStyle='#FFF6DC';
     ctx.fillText('ARMOUR  '+Math.round(p.armor),24,(_apx>_apm)?Math.round(by-50+8+_apm*0.36):by-37);   /* v28.xx (cw-barheight): follows the bar */
   }
-  var _stc=p.stamLock?'#ff5a4a':(p.stam<35?'#ffc04a':'#8fb5c8');
+  var _stc=p.stamLock?'#c8452f':(p.stam<35?'#c98a1e':'#4f86a8');   // v28.xx (cw-stamlabel), the critic (2026-10-19): 'the stamina label sits outside its bar'. The fills are one step darker so the cream word reads inside the bar, the way the armour word does.
   var _lowDim=(p.hp>0&&p.hp/p.maxhp<0.25&&!p.stamLock);   // v28.xx (cw-lowhp2), the critic: stamina out-shouts a nearly dead health bar, so under a quarter health it steps back
   if(_lowDim) ctx.globalAlpha=0.45;
   bar(16,by-29,HBW,16,p.stam/100,_stc);   /* v28.xx (cw-barheight): 16 high like the armour bar, same bottom edge as before */   /* v28.xx (cw-barsame): same width as the health bar */
   ctx.globalAlpha=1;  // v18.40, THE STYLING PASS IN THE RAID (2026-10-04): THE STAMINA WORD SITS BESIDE ITS BAR. It was dark text inside a 12 unit bar
   // in a face taller than the bar, so it spilled over the top edge and read as a smudge. It sits just past the bar's end now, in
   // the bar's own colour, and WINDED still replaces it when the bar locks.
-  ctx.font=FS(TYPE.micro); ctx.fillStyle=_stc;
-  ctx.fillText(p.stamLock?'WINDED':'STAMINA',16+HBW+8,by-17);   /* v28.xx (cw-barheight): centred on the taller bar */   /* v28.xx (cw-barsame): the word follows the longer bar */
+  // v28.xx (cw-stamlabel), the critic (2026-10-19): 'stamina label outside its bar; three bar styles'. The word is inside the bar, left, in the armour word's face and colour, with a dark halo for the empty end.
+  var _spf=FS(TYPE.label), _spx=parseFloat((/([\d.]+)px/.exec(_spf)||[0,13])[1]), _spm=16*1.08;
+  if(_spx>_spm) _spf=_spf.replace(/[\d.]+px/,(Math.round(_spm*10)/10)+'px');
+  ctx.save(); ctx.font=_spf; ctx.fillStyle='#FFF6DC'; ctx.shadowColor='rgba(0,0,0,.85)'; ctx.shadowBlur=3;
+  ctx.fillText(p.stamLock?'WINDED':'STAMINA',24,(_spx>_spm)?Math.round(by-29+8+_spm*0.36):by-16);
+  ctx.restore();   /* v28.xx (cw-barheight): centred on the taller bar */   /* v28.xx (cw-barsame): the word follows the longer bar */
   ctx.restore();                          // v8.08: end of the corner scale
   ctx.restore();
   // v19.07, FROM THE REVIEW OF 2026-10-07 (found checking the status icons against the teammate HUD): THE CO-OP HUD DRAWS WHERE
@@ -50209,7 +50213,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.10: The pause box report field is smaller and the title is bigger. Check 32.10 fails on v32.09',
+  now:'v32.11: The stamina word sits inside its bar like armour and health. Check 32.11 fails on v32.10',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

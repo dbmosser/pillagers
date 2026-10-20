@@ -1,0 +1,16 @@
+{
+    "title":  "THE STAMINA WORD IS INSIDE ITS BAR",
+    "why":  "The critic named three bar styles bottom left: armour and health carry their words inside the bar, stamina carried its word past the right end. It is inside the bar now, in the armour word face, on a slightly darker fill so it reads.",
+    "now":  "The stamina word sits inside its bar like armour and health.",
+    "edits":  [
+                  {
+                      "anchor":  "  var _stc=p.stamLock?\u0027#ff5a4a\u0027:(p.stam\u003c35?\u0027#ffc04a\u0027:\u0027#8fb5c8\u0027);",
+                      "replacement":  "  var _stc=p.stamLock?\u0027#c8452f\u0027:(p.stam\u003c35?\u0027#c98a1e\u0027:\u0027#4f86a8\u0027);   // v28.xx (cw-stamlabel), the critic (2026-10-19): \u0027the stamina label sits outside its bar\u0027. The fills are one step darker so the cream word reads inside the bar, the way the armour word does."
+                  },
+                  {
+                      "anchor":  "  ctx.font=FS(TYPE.micro); ctx.fillStyle=_stc;\n  ctx.fillText(p.stamLock?\u0027WINDED\u0027:\u0027STAMINA\u0027,16+HBW+8,by-17);",
+                      "replacement":  "  // v28.xx (cw-stamlabel), the critic (2026-10-19): \u0027stamina label outside its bar; three bar styles\u0027. The word is inside the bar, left, in the armour word\u0027s face and colour, with a dark halo for the empty end.\n  var _spf=FS(TYPE.label), _spx=parseFloat((/([\\d.]+)px/.exec(_spf)||[0,13])[1]), _spm=16*1.08;\n  if(_spx\u003e_spm) _spf=_spf.replace(/[\\d.]+px/,(Math.round(_spm*10)/10)+\u0027px\u0027);\n  ctx.save(); ctx.font=_spf; ctx.fillStyle=\u0027#FFF6DC\u0027; ctx.shadowColor=\u0027rgba(0,0,0,.85)\u0027; ctx.shadowBlur=3;\n  ctx.fillText(p.stamLock?\u0027WINDED\u0027:\u0027STAMINA\u0027,24,(_spx\u003e_spm)?Math.round(by-29+8+_spm*0.36):by-16);\n  ctx.restore();"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the stamina word is drawn inside its bar (left of the bar end), not past the right end\u0027,\n   run:function(){\n     if(typeof __frame!==\u0027function\u0027) return \u0027SKIP: no frame helper\u0027;\n     var PR=CanvasRenderingContext2D.prototype, of=PR.fillText, g=null, xs=[];\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player) return \u0027SKIP: no raid\u0027;\n       PR.fillText=function(s,x){ var t=String(s).toUpperCase(); if(t===\u0027STAMINA\u0027||t===\u0027WINDED\u0027) xs.push(x); return of.apply(this,arguments); };\n       __frame(); __frame();\n       PR.fillText=of;\n       if(!xs.length) return \u0027the stamina word was not drawn\u0027;\n       for(var i=0;i\u003cxs.length;i++) if(xs[i]\u003e=16+300) return \u0027the stamina word is drawn past the end of its bar (x \u0027+xs[i]+\u0027)\u0027;\n       return null;\n     } finally {\n       PR.fillText=of;\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}
