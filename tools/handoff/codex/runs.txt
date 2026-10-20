@@ -86,3 +86,7 @@
 2026-10-20 02:49 o-06-pad-controls 173s ok PARTIAL in=1812210 out=13885 run=4
 2026-10-20 03:08 o-06-pad-controls 309s ok PARTIAL in=4086885 out=23237 run=5
 2026-10-20 03:25 o-07-pad-lost 110s ok PARTIAL in=463278 out=4494 run=8
+2026-10-20 03:40 o-08-pad-owner 93s ok PARTIAL in=294558 out=2581 run=4
+2026-10-20 03:45 o-08-pad-owner 100s ok PARTIAL in=850553 out=5192 run=5
+2026-10-20 04:00 o-09-pad-name-entry 592s ok PARTIAL in=1699020 out=21154 run=3
+2026-10-20 04:05 o-09-pad-name-entry 128s ok PARTIAL in=2417815 out=25027 run=4

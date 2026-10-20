@@ -1,0 +1,5 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  j4-p1-name-picker                      staged       5.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  j4-p2-name-picker                      staged       5.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  j4-p1-named-stash                      staged       7.7s  total   3: clip 0 off 0 small 3 contrast 0 font 0 overlap 0 focus 0
+  j4-p2-named-stash                      staged       7.5s  total   3: clip 0 off 0 small 3 contrast 0 font 0 overlap 0 focus 0

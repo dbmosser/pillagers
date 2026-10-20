@@ -1,0 +1,5 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  j7-hub-p1-pad-owner                    NOT STAGED 123.3s    | the fixture did not load
+  j7-hub-p2-pad-owner                    NOT STAGED 122.9s    | the fixture did not load
+  j7-raid-p1-pad-owner                   NOT STAGED 123.1s    | the fixture did not load
+  j7-raid-p2-pad-owner                   NOT STAGED 122.6s    | the fixture did not load

@@ -12,4 +12,5 @@
 - Check cw-figlook reads the transform height of a drawOp at identity for lean, broad and curved. Gate passed, fingerprint unchanged.
 - Pictures: notes/shots/40-figlook-before and 40-figlook-after (03 hub floor, 33 fight, 57 party). Figure clearly bigger, shadow bigger, hub plates clear.
 - NOT DONE: hit areas untouched, but I did not check whether shots pass through the drawn edge: watch in playtest. No two-window picture of the mate plate and bar. Frame time not measured.
+- Run of 2026-10-20 (later, lane a): re-read the after picture 33 (raid fight): figure, head, shadow all look right, no new defects. Open for playtest only: shots at the drawn edge, mate plate in a 2 window picture, frame time at 4K. No change shipped this run.
 - Gotcha: uishots for lane a uses port 9361; preflight Chrome holds 9351.

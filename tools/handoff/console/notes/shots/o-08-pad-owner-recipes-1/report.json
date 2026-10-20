@@ -1,0 +1,6 @@
+{"generated":"2026-10-20T03:38:58","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\codex\\work\\o-08-pad-owner\\recipes.json","seconds":499,"screens":[
+{"name":"j7-hub-p1-pad-owner","screen":"j7-hub-p1-pad-owner","1080":{"staged":false,"note":"the fixture did not load","viewport":"","shot":"","lint":""}},
+{"name":"j7-hub-p2-pad-owner","screen":"j7-hub-p2-pad-owner","1080":{"staged":false,"note":"the fixture did not load","viewport":"","shot":"","lint":""}},
+{"name":"j7-raid-p1-pad-owner","screen":"j7-raid-p1-pad-owner","1080":{"staged":false,"note":"the fixture did not load","viewport":"","shot":"","lint":""}},
+{"name":"j7-raid-p2-pad-owner","screen":"j7-raid-p2-pad-owner","1080":{"staged":false,"note":"the fixture did not load","viewport":"","shot":"","lint":""}}
+]}

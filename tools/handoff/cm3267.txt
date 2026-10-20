@@ -1,0 +1,7 @@
+v32.67: pillager bots: red coats, gold body, notice tell, fall
+
+Enemy pillager bots all wear dark red, the golden one is solid gold with a shine, bots hop and flare red eyes when they spot you, and they fall over flat when they die.
+
+Check 32.67. Fails on v32.66.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

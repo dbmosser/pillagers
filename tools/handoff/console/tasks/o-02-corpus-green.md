@@ -21,3 +21,14 @@ catch the bug the check was written for.
 
 TASK DONE when a fresh full run (the runner starts one on each new HEAD) shows 10 or fewer failing checks and every remaining
 one is explained in notes. Otherwise TASK PARTIAL with the count left; the coordinator puts the job back.
+
+## RE-QUEUED 10-20 03:55 (coordinator, in the VM). Read first; where it disagrees with the text above, this block wins.
+- The fresh list: tools/handoff/corpus-fails-v32.16.txt (corpus-1019-2343, commit 1b8dc30b, v32.16, every slice finished, 132 failing).
+  Compared with the v31.82 list: 108 are still red, 6 are fixed, and 24 are NEW since v31.82. The 24 new ones are listed in
+  tools/handoff/corpus-fails-v32.16-new.txt: triage those FIRST (a ship of 10-19 night most likely broke or changed them, and
+  some may be REAL regressions), then the rest oldest version first.
+- The game has moved on since (HEAD is v32.66): before deciding, run the check on the current fixture; the lane's retarget trial
+  runs your listed checks on the committed game anyway, so a check that already passes on HEAD is "FIXED SINCE", not a retarget.
+- The lane applies fixture-retarget.json itself now (RULES-codex.md step 5): a trial copy first, then the commit under the lock.
+  Keep batches to 15 checks or fewer per file (RETARGET_MAX_CHECKS is 30).
+- A new full run started 03:51 on v32.66 (ends about 08:00); the coordinator will add its list when it finishes.

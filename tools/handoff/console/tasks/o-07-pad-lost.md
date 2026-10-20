@@ -19,3 +19,5 @@ Prepared stronger two-window camera recipes and `camera-run-request.json`; the i
 TASK PARTIAL: coordinator must run the supplied camera command and return pictures and critic results.
 
 Coordinator note 10-20 00:20: back in tasks/ for the lane-side step it waited for. The lane now photographs camera-recipes.json itself (first 6 screens, critic on each) and sends you the pictures; the first pass spends no Codex run. Already shipped (do not ship again): cw-cx-padlost cw-cx-o07-padreturn . Review the pictures and the critic: end TASK DONE if they hold, or fix P0/P1 findings with a NEW key.
+
+Coordinator note 10-20 04:00 (in the VM): back in tasks/ once (run count reset) for the picture step only; your game fix is shipped. The camera now opens the second window (uishots -NoPopupBlock, or "popups": true in your recipe file), and on 02:20 a career pair linked in it (o-04, player 2 joined). The lane photographs your corrected recipes on its first pass (no Codex run). Then review: TASK DONE if they show the fix; if a pair still does not link in the camera, say so in one line and end TASK DONE, the two-window look goes to his playtest list.

@@ -1,23 +1,21 @@
 
-NONE
-NONE
-NONE
-It looks like you've provided a snippet of JavaScript code that appears to be part of a larger application, possibly related to rendering or drawing game characters and objects. The code defines several functions for handling different aspects of character appearance and behavior in what seems to be a 2D game environment.
+It looks like you've provided a large block of CSS code that appears to be part of a web page or application, possibly related to some kind of game interface. The CSS styles are designed to modify the appearance and behavior of various elements on the page.
 
-Here's a breakdown of some key parts:
+Here's a summary of what I can see from this CSS:
 
-1. **`gunBake(id,fk,el,rc,S)`**: This function is responsible for preparing the visual elements (like textures or colors) needed to render a gun based on its type (`id`), flash status (`fk`), elemental effect (`el`), rarity color (`rc`), and scale factor (`S`). It returns an object containing canvas context information.
+1. **General Styles**:
+   - Various variables (`--ui-line`, `--acc`, etc.) are defined for colors, sizes, and other styling properties.
+   - General styles for buttons, text, and containers are set up to maintain consistency across the interface.
 
-2. **`gunHeldOn(st,mode)`**: This function checks if the player is holding a weapon in any mode other than 'none', 'crouchnone', or 'fist'.
+2. **Specific Element Styles**:
+   - The CSS targets specific elements by their IDs or classes (e.g., `#settingsmodal`, `.row:not(.setjump)`, etc.) and applies custom styles to them.
+   - For example, hover effects for buttons are defined, as well as focus states that change the appearance of elements when they receive focus.
 
-3. **`gunHeld(px,ty,face,fl,st,coat,bld,pc,ads,sprint,rl,muzzle)`**: This function handles rendering of a held gun on the screen. It takes various parameters such as position (`px`, `ty`), facing direction (`face`), flash level (`fl`), player state (`st`), coat color (`coat`), build type (`bld`), prone status (`pc`), aiming down sights (`ads`), sprinting status (`sprint`), reload progress (`rl
-NONE
-NONE
-NONE
-LINE 39421: calls or reads of names from removed systems (wallSprite)
-LINE 39458: possible NaN or undefined values reaching canvas calls (arc, createRadialGradient, drawImage, fillText positions) - p.face could be undefined
-LINE 39467: a try/catch that swallows a whole per-frame draw or update
-LINE 39501: property access on a value that can be null or undefined in per-frame code without a guard (e2.kind)
-LINE 39582: a try/catch that swallows a whole per-frame draw or update
+3. **Responsive Design**:
+   - The CSS uses media queries (e.g., `@media screen and (max-width: 1024px)`) to adjust styles based on the screen size.
+   - Flexbox is used extensively for layout, allowing elements to be aligned and sized responsively.
+
+4. **Custom Styles for Specific Features**:
+   - There are specific styles for features like settings panels (`#settingsmodal`), pause boxes (`#pausebox`), and codex modals (`#cod
 NONE
 NONE

@@ -1,0 +1,19 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  j7-hub-p1-pad-owner                    NOT STAGED   4.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host did not open p2
+    at stageOwner (<anonymous>:13:53)
+    at <anonymous>:104:14
+    at async <anonymous>:1:21
+  j7-hub-p2-pad-owner                    NOT STAGED  29.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host did not boot
+    at until (<anonymous>:7:11)
+    at async stageOwner (<anonymous>:18:5)
+    at async <anonymous>:104:8
+    at async <anonymous>:1:21
+  j7-raid-p1-pad-owner                   NOT STAGED   4.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host did not open p2
+    at stageOwner (<anonymous>:13:53)
+    at <anonymous>:104:14
+    at async <anonymous>:1:21
+  j7-raid-p2-pad-owner                   NOT STAGED  29.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host did not boot
+    at until (<anonymous>:7:11)
+    at async stageOwner (<anonymous>:18:5)
+    at async <anonymous>:104:8
+    at async <anonymous>:1:21

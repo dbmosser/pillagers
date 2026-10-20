@@ -618,17 +618,17 @@
  "49-arcade-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, calm column menu with one clear primary action, but it breaks the all-lower-case rule, uses the old amber instead of the lime accent, and has no visible focus state or close button.",
+  "verdict": "A clean, consistent pause card with one lime primary action. The end-run gap and the card padding are tighter than before, but the card is small and generic, and it breaks the rule that windows are a big centred card.",
   "findings": [
-   "P0 title and all four button labels, plus the footer hint: Lower-case every string: 'raid paused', 'resume', 'settings', 'feedback', 'what's new', 'end run', 'esc resume'. Remove any code that capitalises them.",
-   "P0 Resume button fill: Fill Resume with --acc #e6ff3d and set its text to --acc-ink #11150a. Recolour the corner tab to --acc. Add hover #f0ff7a and pressed #c8e22c.",
-   "P1 whole card: Add a 32px X in the top-right at 16px inset, with a 1px --ui-line-hi border and a lime focus ring. Keep it quiet, in tx-2.",
-   "P1 Settings, Feedback, What's new buttons: Use one focus style for every row: a 2px --acc border, a --ui-raised fill and a 4px lime bar on the left edge. Keep the filled lime fill for the primary action only.",
-   "P1 'End run' button: Increase the gap to 48px and drop the button height to 48px. Use a text-only danger button in --danger, or keep the outline but add a confirm step."
+   "P1 whole card: Either declare the pause box an exempt compact dialog in the guide, or add identity to it: a 14px version stamp at the bottom, the run's timer or sp in the header, and a 3px lime tab on the left edge instead of the tiny 36px top tick.",
+   "P1 button stack, resume vs others: Keep resume and settings as full-width 56px buttons. Merge report, feedback and what's new into one row of three 16px ghost buttons with no border, or into the footer legend, so only two heavy buttons remain.",
+   "P2 end run: Give it a 48px-high hit area with a 1px --danger border at 40% opacity, and a full red fill on focus. Keep the 24px gap above it so it stays separated from the other buttons.",
+   "P2 header tick and divider: Make the tick 3px x 48px at full --acc, or delete it. Align the X's centre to the title's cap-height centre (they are about 2px off).",
+   "P2 focus state: Focused buttons get a 2px --acc border and a --ui-raised fill. Resume keeps its fill and adds a 2px outer ring when it is not the focused item."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-31s-after/49-arcade-pause-box-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/c-31y-after/49-arcade-pause-box-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T02:59"
+  "when": "2026-10-20T07:31"
  },
  "56-arcade-attract-board-scored": {
   "score": 3,

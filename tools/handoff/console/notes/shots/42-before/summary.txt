@@ -1,0 +1,2 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  33-raid-fight-alerts                   staged       9.2s    | 3 moved, hp 100

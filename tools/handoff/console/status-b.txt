@@ -1,1 +1,1 @@
-10-20 03:30 waiting: another helper is just starting (memory check again in a few minutes); 41-art-player-states kept
+10-20 03:51 running 42-art-pillager-bots on Claude Code (your plan: week 56% of the 25.7% line, 5-hour 18%)

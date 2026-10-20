@@ -38,3 +38,9 @@ Plan cw-pause56: all pause buttons 56px with the 20px label (CSS only), fixture 
 Shipped v32.26 (cw-pause56: all pause buttons 56px, 20px label) and v32.28 (cw-pausefb56: report box 56px). Fixtures 31.71 and 32.10 retargeted to allow 56. Pictures: shots/c-31v-before (old), c-31w-after, c-31x-after.
 Critic after: 25 = 3 ("better_than_before: yes" after v32.26, "same" after v32.28). It keeps naming the 480 card (Q43 says the pause box is a 480 dialog), abandon as a boxed button (an older check forbids a box), no pad focus state in stills, secondary fill hue, no esc legend (hidden on purpose, line ~1875), scrim. Pause box tries used: 5 of 6. Stuck; best version is the current build (c-31x-after). 42 and 49 share the same CSS (not re-scored).
 Settings screens 18, 26, 32, 68, 70, 72, 74, 75 are at 3 (finish line 3 for non-pause screens, his 3.51 a). 27-31, 69, 71, 73 are scroll and section shots of the same card as 68 (shown fine by eye).
+
+## 2026-10-20 run 2 (lane c, VM): try 6 of 6 on the pause box
+Shipped v32.66 (cw-pausegap): end run one gap under the stack, lime focus bar and raised fill on idle pause buttons, brighter header divider. Pictures: shots/c-31y-before (old), shots/c-31y-after. Critic on 49: 3, "better_than_before: yes". Remaining P1s are the 480 dialog (Q43 says dialog) and "merge report/feedback/what's new into a ghost row" (Q61 allows moving; not done). Rule 2.83 b: 6 tries used on the pause box, stopping. Best two versions: c-31x-after (v32.28) and c-31y-after (v32.66, best). Settings screens at 3 are done (his 3.51 a: 3 is enough for non-pause screens).
+
+## 2026-10-20 run 3 (lane c)
+No new work. Pause box (25, 42, 49) stays at 3 after 6 tries (rule 2.83 b); best is c-31y-after (v32.66), then c-31x-after (v32.28). Settings screens are at 3 = done for non-pause screens (3.51 a). Open for a later pass after the party: merge report, feedback and what's new into one ghost row (Q61 allows moving).

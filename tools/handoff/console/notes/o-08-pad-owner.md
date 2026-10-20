@@ -34,3 +34,27 @@ The remaining work is pictures of both real windows and critic review. No J7 pic
 
 Added camera-run-request.json with the exact project camera command for the coordinator, output paths, and critic instructions. Updated the four recipes so the final visible tag comes from actual stub-pad loss and reclaim, followed by physical A confirmation, instead of clearing the claim variable to trigger a tag. The ordinary two-second expiry is retained. Camera scripts and predicates parse locally. No browser or localhost was used in the sandbox. Lane/coordinator must run the supplied camera command and return the four pictures, staging results, and critic scores. The game and check are shipped; the required visual evidence is still pending.
 
+
+--- codex run 2026-10-20 03:40 ---
+2026-10-20 - Corrected the camera recipes after round 1 failed to load the fixture.
+
+The camera uses Url + query without inserting a question mark (tools/uishots.ps1, line 212). All four recipes omitted that mark, requesting a nonexistent filename such as fixture.htmlnetslot=A. Failure happened before any staging code ran; there are no pictures or critic scores to review.
+
+Added the leading ? to all four queries in prepare.js and regenerated camera-recipes.json. Added URL validation for the actual concatenation used by the camera: every result must keep /fixture.html as its path, select the expected netslot, and set p2=1 only for the p2 scenes. Updated the old coordinator request to reflect the lane's automatic recipe support.
+
+Local validation passes on v32.66: original and drafted inline game scripts parse, the shipped check parses, text-spy cleanup verification passes, and all four recipes and their predicates parse with correct URLs. No game changes, new ship key, or fixture retarget are needed. cw-cx-padowner remains shipped as v31.93 / 63465daf; do not ship it again.
+
+Remaining lane work: rerun the corrected four recipes, return staged pictures from p1 and p2 in both the hub and raid, and run the critic. This sandbox cannot run Chrome or the camera. Do not count round 1 as visual acceptance; all four scenes failed before staging.
+
+
+--- codex run 2026-10-20 03:45 ---
+2026-10-20 - Round 2 reached the fixture but popup blocking prevented both-window staging.
+
+Reviewed all four attached pictures. They show the title menu, not the hub or raid ownership tag. The camera reports host did not open p2 for p1 scenes and host did not boot for p2 scenes. These pictures are not acceptance evidence for J7. The critic's title-menu findings do not describe the changed pad feedback; no unrelated title restyle is included.
+
+The current tools/uishots.ps1 supports a recipe-level popups flag (lines 25 and 125), which adds --disable-popup-blocking only to its throwaway camera Chrome. Added popups:true to prepare.js and regenerated camera-recipes.json. The existing question-mark URL fix is retained. Added local validation requiring popup permission in these two-window recipes. The camera can now open the actual partner window through the game code; the recipes still require the real roster handshake and all six pad trials before capture.
+
+Local validation passed: four recipe scripts and predicates parse, all URL routes select the expected p1/p2 saves, and popup permission is enabled. The existing shipped game scripts and J7 check still parse. No new game change, key or fixture retarget is needed. cw-cx-padowner remains shipped as v31.93 / 63465daf; do not ship it again.
+
+Remaining lane work: run recipe round 3 with the updated file and return staged hub/raid pictures from both windows and their critic results. This sandbox cannot run the camera. A failed staging picture must not count as visual acceptance.
+
