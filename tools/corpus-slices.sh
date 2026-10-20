@@ -26,8 +26,10 @@ while [ $A -lt $END ]; do
     [ $still -ge 8 ] && break
   done
   if [ $done_ = 1 ]; then
+    # 10-20 (coord-09, o-02's alarm): a long description no longer cuts off the reason: the id and the text after the last ' -> ' are
+    # always kept, only the description between them is shortened.
     # 2026-10-08: this read once answered TIMEOUT (a late timer still busy on the page) and the slice's result was lost; try 3 times.
-    res=""; for try_ in 1 2 3; do res=$(CDP -Match "$TAG=1" -TimeoutSec 150 -Expr "(function(){ var r=__PROG.res; return '['+$A+','+$B+') '+r.summary+(r.fail.length?' || '+r.fail.map(function(f){ return String(f).split(String.fromCharCode(13)).join(' ').split(String.fromCharCode(10)).join(' ').slice(0,240); }).join(' || '):''); })()"); case "$res" in \[*) break;; esac; sleep 20; done
+    res=""; for try_ in 1 2 3; do res=$(CDP -Match "$TAG=1" -TimeoutSec 150 -Expr "(function(){ var r=__PROG.res; return '['+$A+','+$B+') '+r.summary+(r.fail.length?' || '+r.fail.map(function(f){ var s=String(f).split(String.fromCharCode(13)).join(' ').split(String.fromCharCode(10)).join(' '), k=s.lastIndexOf(' -> '); if(k<0) return s.slice(0,240); var h=s.slice(0,k); return (h.length>140?h.slice(0,140)+'...':h)+s.slice(k,k+400); }).join(' || '):''); })()"); case "$res" in \[*) break;; esac; sleep 20; done
     echo "${res:-[$A,$B) result could not be read}" >> "$OUT"
     NEXT=$B
   else

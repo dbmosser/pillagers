@@ -13,3 +13,8 @@ mid-description with no " -> " reason (114 lines, 74 with a reason, per the skep
 2. Check it on the next corpus list: every red line shows a reason.
 Party risk: none (test tooling).
 Done when: the next corpus list has a " -> " reason on every red line. Small: one line of code.
+
+COORDINATOR 10-20 16:23: step 1 done (no full run was going; swapped in as a new file, so a running bash would keep the old copy).
+A failure line now keeps "vNN.NN", at most 140 characters of description (then "..."), and " -> " with up to 400 characters of reason.
+stable.mjs keys a check on its first 80 characters, which are unchanged, so old and new runs still match. Step 2 is left: read the
+next corpus list and confirm every red line has a reason, then rename this file done-coord-09.
