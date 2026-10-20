@@ -352,6 +352,8 @@ apply_retarget(){
   [ -z "$RT_HOLD" ] && RT_HOLD="*"
   while :; do
     tries=$((tries+1))
+    # 10-20 00:25: o-01 lost three passes in a row (00:09, 00:14, 00:19) to ships that had mkfixture.ps1 open; wait up to 5 minutes for them
+    for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15; do [ -z "$(git -C "$R" status --porcelain tools/mkfixture.ps1)" ] && break; say "retarget: waiting for another ship to finish with tools/mkfixture.ps1 ($name)"; sleep 20; done
     [ -n "$(git -C "$R" status --porcelain tools/mkfixture.ps1)" ] && { say "retarget: tools/mkfixture.ps1 is being edited by another worker; $name's keys wait"; return 2; }
     h0=$(git -C "$R" hash-object tools/mkfixture.ps1)
     pl=$(node "$X/retarget.mjs" plan "$js" "$R/tools/mkfixture.ps1" "$ap" "$out" 2>&1); echo "$pl" > "$LS/retarget-plan.txt"
