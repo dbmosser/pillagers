@@ -844,6 +844,13 @@
 #root #partymodal .msub, #root #partymodal .hint, #root #termsmodal .msub{ font-size:18px; line-height:1.4; }
 #root #partymodal textarea{ font-size:16px; }
 #root #termsmodal .plist{ font-size:18px; }   /* v16.91: the game font, as every text box (his v11.09 rule) */
+/* v28.xx (cw-uc-termsbig) b-31 step 7, critic on 06 (small dim list in a big empty card): rows 76px, names 20px, lines 16px, sign buttons 104x48, content 1400px wide. */
+#root #termsmodal .msub, #root #termsmodal .plist, #root #termsmodal #termstotal, #root #termsmodal.modal > .ui-foot{ max-width:1400px !important; width:100%; }
+#root #termsmodal .plist .row{ min-height:76px; padding:0 20px; }
+#root #termsmodal .plist .nm b{ font-size:20px; }
+#root #termsmodal .plist .nm div{ font-size:16px !important; }
+#root #termsmodal .plist .vl{ font-size:20px; }
+#root #termsmodal .plist button{ min-width:104px; min-height:48px; font-size:18px; }
   /* v15.76, HIS ORDER OF 2026-09-25 (multiplayer, build 3): THE MODE MENU ON THE TITLE. Five rows, one under the other and all
      centred, so a controller stepping down the column lands on the next row and not on a control off to one side. A greyed
      row keeps its note beside it, out of the flow, so the row itself stays centred with the others. */
@@ -2330,7 +2337,7 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
 
 <div class="modal" id="termsmodal">
   <h3>The Terms</h3>
-  <div class="msub">Sign for worse conditions and Meridian pays better. Every one of these is a real handicap, it applies the moment you deploy, and the bonus is paid only if you walk out. Die under your own terms and you have simply made a bad day worse.</div>
+  <div class="msub">Sign for worse conditions. Walk out to get paid more.</div>
   <div class="plist" id="termslist" style="border:1px solid var(--steel-hi)"></div>
   <div id="termstotal" style="margin-top:10px;font-weight:700"></div>
   <div style="display:flex;gap:8px;margin-top:10px">
@@ -3028,7 +3035,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.40';
+var VER='32.41';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -50408,7 +50415,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.40: The forge action and dollar price use full HUD font sizes. The gun card names the upgrade cost. Check 32.40 fails on v32.39',
+  now:'v32.41: The terms page has a one line intro, bigger rows and bigger sign buttons. Check 32.41 fails on v32.40',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

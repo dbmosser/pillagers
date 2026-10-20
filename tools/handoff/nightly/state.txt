@@ -8,5 +8,5 @@ corpus_file=C:/Users/User1/AppData/Local/Temp/claude/C--Users-User1-Desktop-dark
 corpus_t=1792467825
 backup_day=2026-10-20
 summary_t=1792471869
-llm_head=e323de09
 stable_t=1792473794
+llm_head=900aa6ac

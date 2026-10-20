@@ -1,0 +1,7 @@
+v32.41: terms: bigger rows and short intro
+
+The terms page has a one line intro, bigger rows and bigger sign buttons.
+
+Check 32.41. Fails on v32.40.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

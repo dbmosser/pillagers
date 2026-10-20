@@ -1,0 +1,1 @@
+| Terms: bigger rows and short intro | v32.41 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 32.41 passes, fails on v32.40 |

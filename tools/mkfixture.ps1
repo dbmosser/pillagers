@@ -6101,6 +6101,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.41',what:'terms intro is one short line, rows 76px, names 20px, sign buttons 104x48',
+   run:function(){
+     var bad=[];
+     try{
+       var tm=document.getElementById('termsmodal'), m=tm&&tm.querySelector('.msub');
+       if(!m||m.textContent.length>70) bad.push('terms intro long: '+(m&&m.textContent.length));
+       renderTerms();
+       var row=tm.querySelector('#termslist .row'), b=row&&row.querySelector('b'), bt=row&&row.querySelector('button'), d=row&&row.querySelector('.nm div');
+       if(!row) bad.push('no row');
+       else{
+         if(getComputedStyle(row).minHeight!=='76px') bad.push('row min '+getComputedStyle(row).minHeight);
+         if(parseFloat(getComputedStyle(b).fontSize)<20) bad.push('name '+getComputedStyle(b).fontSize);
+         if(parseFloat(getComputedStyle(d).fontSize)<16) bad.push('line '+getComputedStyle(d).fontSize);
+         if(getComputedStyle(bt).minWidth!=='104px') bad.push('btn minw '+getComputedStyle(bt).minWidth);
+       }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     return bad.length?bad.join('; '):null; }},
   {v:'32.40',what:'forge action and dollar price draw at full HUD font sizes; upgrade card labels the cost and stash spending leaves score whole',
    run:function(){
      if(typeof drawForgePrompt!=='function') return 'forge still has the shrunken prompt';

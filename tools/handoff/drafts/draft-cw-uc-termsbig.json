@@ -1,0 +1,16 @@
+{
+    "title":  "Terms: bigger rows and short intro",
+    "why":  "UI step 7 (restyle only). Critic scored 06 at 2: small dim list in an empty card. Intro shortened under Q8 (logged in changes.md).",
+    "now":  "The terms page has a one line intro, bigger rows and bigger sign buttons.",
+    "edits":  [
+                  {
+                      "anchor":  "\u003cdiv class=\"msub\"\u003eSign for worse conditions and Meridian pays better. Every one of these is a real handicap, it applies the moment you deploy, and the bonus is paid only if you walk out. Die under your own terms and you have simply made a bad day worse.\u003c/div\u003e",
+                      "replacement":  "\u003cdiv class=\"msub\"\u003eSign for worse conditions. Walk out to get paid more.\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "#root #termsmodal .plist{ font-size:18px; }   /* v16.91: the game font, as every text box (his v11.09 rule) */",
+                      "replacement":  "#root #termsmodal .plist{ font-size:18px; }   /* v16.91: the game font, as every text box (his v11.09 rule) */\n/* v28.xx (cw-uc-termsbig) b-31 step 7, critic on 06 (small dim list in a big empty card): rows 76px, names 20px, lines 16px, sign buttons 104x48, content 1400px wide. */\n#root #termsmodal .msub, #root #termsmodal .plist, #root #termsmodal #termstotal, #root #termsmodal.modal \u003e .ui-foot{ max-width:1400px !important; width:100%; }\n#root #termsmodal .plist .row{ min-height:76px; padding:0 20px; }\n#root #termsmodal .plist .nm b{ font-size:20px; }\n#root #termsmodal .plist .nm div{ font-size:16px !important; }\n#root #termsmodal .plist .vl{ font-size:20px; }\n#root #termsmodal .plist button{ min-width:104px; min-height:48px; font-size:18px; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027terms intro is one short line, rows 76px, names 20px, sign buttons 104x48\u0027,\n   run:function(){\n     var bad=[];\n     try{\n       var tm=document.getElementById(\u0027termsmodal\u0027), m=tm\u0026\u0026tm.querySelector(\u0027.msub\u0027);\n       if(!m||m.textContent.length\u003e70) bad.push(\u0027terms intro long: \u0027+(m\u0026\u0026m.textContent.length));\n       renderTerms();\n       var row=tm.querySelector(\u0027#termslist .row\u0027), b=row\u0026\u0026row.querySelector(\u0027b\u0027), bt=row\u0026\u0026row.querySelector(\u0027button\u0027), d=row\u0026\u0026row.querySelector(\u0027.nm div\u0027);\n       if(!row) bad.push(\u0027no row\u0027);\n       else{\n         if(getComputedStyle(row).minHeight!==\u002776px\u0027) bad.push(\u0027row min \u0027+getComputedStyle(row).minHeight);\n         if(parseFloat(getComputedStyle(b).fontSize)\u003c20) bad.push(\u0027name \u0027+getComputedStyle(b).fontSize);\n         if(parseFloat(getComputedStyle(d).fontSize)\u003c16) bad.push(\u0027line \u0027+getComputedStyle(d).fontSize);\n         if(getComputedStyle(bt).minWidth!==\u0027104px\u0027) bad.push(\u0027btn minw \u0027+getComputedStyle(bt).minWidth);\n       }\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

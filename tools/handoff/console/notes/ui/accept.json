@@ -33,17 +33,17 @@
  "05-sector-page": {
   "score": 2,
   "pass": false,
-  "verdict": "the card shell, x and lime cta follow the guide, but the screen is a crowded settings form with a dead sector panel, a toast on the title bar and several text sizes below the 16px floor.",
+  "verdict": "The new version is a little cleaner (the cash stepper and the explaining sentences about each setting are gone), but the screen is still a cramped form: a huge empty hero panel on top, a dozen small boxed controls below, and a pale-blue map that clashes with the palette.",
   "findings": [
-   "P0 sector panel (cold storage): Make the panel --ui-panel with a 3px lime left tab. Put the sector name at 32px and a 56px stat (such as '39% extract') under it. Cut the stats line down to 3 short chips. Desaturate the map to the --ui-raised family, with 16px labels at tx-2. Set the panel height to its content (about 240px) and delete the empty strip below it.",
-   "P0 option rows (surface, weather, kit, pack): Use tx-1 text on idle buttons and --ui-line-hi borders. For the selected state, use a lime fill with --acc-ink text. Set labels in a fixed 96px column at 16px tx-2. Use 40px-high buttons with 8px gaps. Group surface and weather into one segmented control each.",
-   "P1 pack steppers (medkit ... compact smg, no data core): Use a 2-column grid of 48px rows (name left, '- 0 +' right, label 16px/20px). Drop the per-item 'max' since 'pack all' exists. Hide items with none available. Align all columns to the 8px grid.",
-   "P1 going-up-with summary box: Cut it to chips: 'scav pistol' plus a --warn glyph with 'no armour' and a --danger glyph with 'no gun'. Use 16px tx-1 for text. Leave lime for the cta only.",
-   "P1 top toast 'the welcome pack is in your stash.': Drop it. If a toast stays, put it at the bottom-centre at 16px, 24px above the card edge, on --scrim. Keep it out of the header."
+   "P0 cold storage hero panel (y 140-560): Cut the panel to about 240px, or put the loadout summary and the weather/surface choices inside it. Fill with --ui-panel/--ui-raised (#16191b/#1e2225). Remove the empty 50px strip below the panel. Enlarge the map to fill the right half, or drop the panel's wasted height.",
+   "P1 stat line under the title (y 213): Delete the test-robot clause. Show 3 short stat tags at 16px --tx-2, for example '5 zones', '2 keyed rooms', 'never raided'.",
+   "P1 pack / kit / weather / surface rows (y 570-840): Group into two cards on the 8px grid. Make the selected option a lime-filled chip with --acc-ink text and the rest quiet --tx-2 text. Put steppers in a fixed 4-column grid with 48px-high targets. Raise the row labels to 16px --tx-2 at a consistent baseline.",
+   "P1 going-up-with box (y 850-945): Use --warn (#f5b73b) with a small glyph for the armour warning, limited to 2-3 words ('no armour'). Cut 'your gun is in your stash. equip it first.' to a tag like 'gun in stash'. Keep the --acc colour only for the focus state and the main button.",
+   "P1 map thumbnail (x 1366-1784, y 150-490): Re-tint the map to --ui-raised with --ui-line-hi room outlines. Raise the zone labels to at least 14px (or hide them until hover). Add a 16px 'extract' legend in --extract. Use the 1px --ui-line-hi border and 4px radius."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-01-stash-pays-in-raid-recipes-2/05-sector-page-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-01-stash-pays-in-raid-after/05-sector-page-1080.jpg",
   "task": "o-01-stash-pays-in-raid",
-  "when": "2026-10-20T05:12"
+  "when": "2026-10-20T05:27"
  },
  "06-terms": {
   "score": 2,
