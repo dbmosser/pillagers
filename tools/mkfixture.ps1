@@ -39815,7 +39815,7 @@ window.__REGRESS=[
    run:function(){
      if(!(window.__station&&window.__hubEnter)) return 'SKIP: this fixture cannot walk the Undercroft';
      var bad=[], cases=[['trader','tradermodal','closetrader',0],['mf','opmodal','closeop',0],['dev','settingsmodal','closesettings',0],['mirror','appearmodal','closeappear',0],
-       ['term','hub','stashclose',0],['gamble','gamblemodal','closegamble',1],['bar','barmodal','closebar',1]], tops=[], i, c, r, m, b, mr, br, z, cs, fr, n=0, lo, hi, cp;
+       ['term','hub','stashclose',0],['gamble','gamblemodal','closegamble',1],['bar','barmodal','closebar',1]], tops=[], i, c, r, m, b, mr, br, z, cs, fr, ft, bs, n=0, lo, hi, cp;
      try{
        for(i=0;i<cases.length;i++){
          c=cases[i]; __topClear(); __hubEnter();
@@ -39825,17 +39825,17 @@ window.__REGRESS=[
          mr=m.getBoundingClientRect(); br=b.getBoundingClientRect();
          if(!(br.width>0&&br.height>0)){ bad.push(c[0]+': CLOSE is not shown'); continue; }
          z=parseFloat(m.style.zoom)||1;
-         if(c[3]){ cs=getComputedStyle(m,'::before'); fr={right:mr.left+mr.width/2+parseFloat(cs.width)*z/2, bottom:mr.top+mr.height/2+parseFloat(cs.height)*z/2}; }
-         else fr={right:mr.right, bottom:mr.bottom};
-         // v32.84 retarget (52-corpus-reds-a): the style guide (v31.02, one close style) moved CLOSE from the footer to a top right X, so it must sit in the top right of its frame
-         if(fr.right-br.right>130*z) bad.push(c[0]+': CLOSE is '+Math.round(fr.right-br.right)+' px in from the right edge of its frame');
-         if(br.top-(fr.bottom-(c[3]?parseFloat(cs.height)*z:mr.height))>130*z) bad.push(c[0]+': CLOSE is '+Math.round(br.top-(fr.bottom-(c[3]?parseFloat(cs.height)*z:mr.height)))+' px down from the top of its frame');
+         // v32.84 retarget, repaired by job 55: the style guide (v31.02, one close style) moved CLOSE from the footer to a top right X. It is measured against the DRAWN frame: the card's ::before inset for the full windows (the modal box is the whole screen), the box itself for the stash (#hub is the frame) and the centred ::before for the small cards
+         if(c[3]){ cs=getComputedStyle(m,'::before'); fr={right:mr.left+mr.width/2+parseFloat(cs.width)*z/2, bottom:mr.top+mr.height/2+parseFloat(cs.height)*z/2}; ft=fr.bottom-parseFloat(cs.height)*z; }
+         else if(c[0]==='term'){ fr={right:mr.right, bottom:mr.bottom}; ft=mr.top; }
+         else { bs=getComputedStyle(m,'::before'); ft=mr.top+(parseFloat(bs.top)||0)*z; fr={right:mr.right-(parseFloat(bs.right)||0)*z, bottom:mr.bottom}; }
+         if(fr.right-br.right>48*z) bad.push(c[0]+': CLOSE is '+Math.round(fr.right-br.right)+' px in from the right edge of its frame');
+         if(br.top-ft>56*z) bad.push(c[0]+': CLOSE is '+Math.round(br.top-ft)+' px down from the top of its frame, not in the 56px header row');
          if(br.right>fr.right+1||br.bottom>fr.bottom+1) bad.push(c[0]+': CLOSE hangs out of its frame');
-         if(!c[3]&&c[0]!=='term') tops.push(br.top-mr.top);   // v32.84 retarget (52-corpus-reds-a): the height is read from the window's own top (each card sits where its frame sits); the stash is the full screen floor page with its own corner X (top 8px), it is held to the top band below, not to the cards' height
-         if(c[0]==='term'&&br.top-mr.top>60*z) bad.push('term: CLOSE is '+Math.round(br.top-mr.top)+' px down, not in the top band');
+         if(!c[3]) tops.push(br.top-ft);   // job 55: the full windows and the stash share one height below their own frame top
          n++;
        }
-       if(tops.length>1){ lo=Math.min.apply(null,tops); hi=Math.max.apply(null,tops); if(hi-lo>14) bad.push('CLOSE is at '+tops.map(Math.round).join(', ')+' px down in the full windows, not at one height'); }
+       if(tops.length>1){ lo=Math.min.apply(null,tops); hi=Math.max.apply(null,tops); if(hi-lo>2) bad.push('CLOSE is at '+tops.map(Math.round).join(', ')+' px down inside its frame in the full windows and the stash, not at one height'); }
        cp=getComputedStyle(document.getElementById('settingsmodal'),'::before').clipPath||'';
        // v32.84 retarget (52-corpus-reds-a): cw-setcard (critic c-31) made the Settings frame a flat 4px card with no cut corner; it must still be a drawn frame
        var sb=getComputedStyle(document.getElementById('settingsmodal'),'::before');
