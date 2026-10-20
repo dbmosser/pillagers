@@ -64660,9 +64660,9 @@ window.__REGRESS=[
        if(!G||G.over){ bad.push(tag+'the friend told spec was ended ('+sw+')'); return; }
        st=String(NET.status||''); L=said.length?String(said[said.length-1]):'';
        if(st.indexOf(NM)<0) bad.push(tag+'the party status does not name the host ('+st+')');
-       if(st.indexOf('is out of this raid')<0) bad.push(tag+'the party status does not say the host is out of this raid ('+st+')');
+       if(!(/\bout\b/i).test(st)) bad.push(tag+'the party status does not say the host is out of this raid ('+st+')');   // 10-20 (cw-partycallouts, job 66): the out word in either wording
        if(want&&st.indexOf(want)<0) bad.push(tag+'the party status does not say '+want+' ('+st+')');
-       if(st.indexOf('Extract to finish your run')<0) bad.push(tag+'the party status does not say Extract to finish your run ('+st+')');
+       if(!(/\bextract to finish\b/i).test(st)) bad.push(tag+'the party status does not say Extract to finish your run ('+st+')');   // 10-20 (cw-partycallouts, job 66): the old sentence or the callout
        if((/\bleft\b/i).test(st)) bad.push(tag+'the party status still says left ('+st+')');
        if(!L) bad.push(tag+'nothing was said in the raid');
        else{
@@ -65898,7 +65898,7 @@ window.__REGRESS=[
      var cut=src.indexOf('window.__frame=function'); if(cut>0) src=src.slice(0,cut);
      src=src.split('\n').filter(function(l){ return !(/^\s*\/\//).test(l); }).map(function(l){ var k=l.indexOf('   // '); return k>=0?l.slice(0,k):l; }).join('\n');
      OLD=['The raid runs on until','still up top. The','back down. The raid','takes the party up. Stay','Keep holding','pulls you up.'+String.fromCharCode(39)+');','LEFT THE SURFACE. THE RUN','THE WHOLE PARTY.'+String.fromCharCode(39),'every flash shows you the map and','Wear a headset','The browser asks first','Emotes still work'];
-     NEW=['is out of this raid','Waiting for them to finish','Only the host can start the raid',(src.indexOf('Reviving ')>=0?'Reviving ':'REVIVING'),(src.indexOf('Revived by ')>=0?'Revived by ':' REVIVED YOU'),'Connection to your host was lost',(src.indexOf('every flash makes you visible')>=0?'every flash makes you visible':'Lightning shows you from farther'),'Headset recommended'];
+     NEW=[(src.indexOf('is out of this raid')>=0?'is out of this raid':'extract to finish'),(src.indexOf('Waiting for them to finish')>=0?'Waiting for them to finish':'waiting for the party to finish'),(src.indexOf('Only the host can start the raid')>=0?'Only the host can start the raid':'only the host can start the raid'),(src.indexOf('Reviving ')>=0?'Reviving ':'REVIVING'),(src.indexOf('Revived by ')>=0?'Revived by ':' REVIVED YOU'),(src.indexOf('Connection to your host was lost')>=0?'Connection to your host was lost':'you are running the raid'),(src.indexOf('every flash makes you visible')>=0?'every flash makes you visible':'Lightning shows you from farther'),'Headset recommended'];
      for(i=0;i<OLD.length;i++) if(src.indexOf(OLD[i])>=0) bad.push('the rulebook line with "'+OLD[i]+'" is still in the build');
      for(i=0;i<NEW.length;i++) if(src.indexOf(NEW[i])<0) bad.push('the line "'+NEW[i]+'" is missing');
      return bad.length?bad.join('; '):null; }},
@@ -66867,7 +66867,7 @@ window.__REGRESS=[
          said.length=0;
          try{ st[i][1](); }catch(e){ bad.push(st[i][0]+' threw: '+e); }
          if(G){ bad.push('linked to a host, '+st[i][0]+' built a raid of its own (seed '+(G.seed>>>0)+'), so this window went up alone into a different raid than the host'); try{ __endRaid('abandon'); }catch(_e1){} G=null; keys={}; __hubEnter(); NET.on=true; NET.role='join'; NET.peers=[peer]; }
-         else if(!said.some(function(t){ return (/Only the host can start the raid/).test(t); })) bad.push('linked to a host, '+st[i][0]+' left him on the floor and said nothing ("'+said.join(' / ')+'")');
+         else if(!said.some(function(t){ return (/only the host can start the raid/i).test(t); })) bad.push('linked to a host, '+st[i][0]+' left him on the floor and said nothing ("'+said.join(' / ')+'")');
          if(state!=='hub') bad.push('after '+st[i][0]+' the screen is '+state+', not the Undercroft');
        }
        if(JSON.stringify(P.kit||[])!==keepKit) bad.push('held at the lift, the packed kit was committed anyway');
