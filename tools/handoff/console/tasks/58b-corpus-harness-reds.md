@@ -11,7 +11,7 @@ fixture.html?sliceA=1 and calls __regressBg(A,B)). The five reds and their slice
   v20.89 in [1200,1320)   v24.38 in [840,960)   v30.91 and v31.04 in [240,360)   v31.67 in [120,240)
 (Slice index = position in __REGRESS; find each check's index with __REGRESS.findIndex on its description, not its id: ids repeat.)
 
-1. Reproduce each with the slice tool (added 10-20 15:00 for this job; the first run could not drive a Chrome). It runs checks in
+1. Reproduce each with the slice tool (added 10-20 14:56 for this job; the first run could not drive a Chrome). It runs checks in
    order in one fresh page, as the full run does, on YOUR lane's own Chrome (never 9344 or 8802):
      bash <scratchpad>/slicechk.sh <lane> find:TEXT          the place of a check (search its description; ids repeat)
      bash <scratchpad>/slicechk.sh <lane> 120:229            places 120 to 228 in order (A:B is [A,B)), then the failures
@@ -20,7 +20,7 @@ fixture.html?sliceA=1 and calls __regressBg(A,B)). The five reds and their slice
    (<scratchpad> is the same folder as shipq.sh.) Start with sliceStart:redIndex+1. If it does not go red, run the whole slice.
    Write in notes whether it reproduced. ADD pin AS THE LAST WORD WHEN YOU BISECT (slicechk.sh <lane> 120:229 pin): every ship
    rebuilds the fixture and moves every place by one; pin freezes a copy (unpin when done). The coordinator's bisect is in the notes.
-   COORDINATOR 10-20 15:45: slicechk.sh is now on your allowed list. Six reds were one leak and are FIXED (7fda5220: the v32.70 pad
+   COORDINATOR 10-20 15:38: slicechk.sh is now on your allowed list. Six reds were one leak and are FIXED (7fda5220: the v32.70 pad
    name check left an own ctx.fillText that hid later checks' PR.fillText recorders). Still yours: v31.67 (it stays red after that
    fix), v20.89, v24.38, v30.91, v31.04.
 2. Bisect the checks before it in the same slice until you find the one that leaves state behind (a profile or setting written, a timer

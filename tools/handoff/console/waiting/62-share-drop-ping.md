@@ -21,6 +21,6 @@ It is a FEATURE: ship by Mon 10/26, otherwise it waits until after 10/30. Party 
 
 TASK DONE when shipped, the checks pass and both windows' pictures show the ping; TASK PARTIAL with what is left.
 
-COORDINATOR 10-20 15:00: shipped as v32.97 (3172e3e5, check 32.97 green). Only the picture from each window (his 2.86 a) is left, and a
+COORDINATOR 10-20 14:57: shipped as v32.97 (3172e3e5, check 32.97 green). Only the picture from each window (his 2.86 a) is left, and a
 helper cannot take it until the camera stages player 2 of a real pair, so the job waits here, not in tasks/ (a rerun would only spend a
 run saying the same). coord-08 step 3 takes the two pictures once the camera works, then this moves to done/.
