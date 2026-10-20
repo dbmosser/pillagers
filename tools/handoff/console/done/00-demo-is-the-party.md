@@ -31,3 +31,6 @@ Checks (the control must FAIL on the old build):
 
 Pictures: the title, and a demo raid's sector map in both windows (camera port: your lane's).
 TASK DONE when shipped and the checks pass; TASK PARTIAL with what is left.
+
+## CLOSED 10-19 23:05 (coordinator): DONE
+- The order shipped (v32.01: the party is the plain demo). The party now runs from a frozen copy on the main PC with no ?party page (his 10-19 choice), so the leftover ?party=1 and two-window pictures are moot. His process answer 40: the party is a sideshow; no more party polish.

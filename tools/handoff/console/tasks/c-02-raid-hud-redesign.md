@@ -12,3 +12,8 @@ TASK DONE when every listed screen scores 4 or more from the critic, or TASK PAR
 - Why your camera and critic were refused: the command did not match the one exact form (most likely a different port, e.g. 9352, or extra bits on the line). It is fixed now: a trailing "2>&1" or "| tail -N" is allowed, and a refused command now tells you the exact form with your lane's port. Lane a uses -Port 9361, b 9362, c 9363. Take pictures and run the critic again.
 - His new finish line (3.51 a): critic 4 for the raid, waiting, pause and run-over screens, and 3 for the rest. Screens already at 3 that are not one of those four are done.
 - Renamed c-02 so lane c runs it beside c-31 (lane a has the party jobs). Your run count was reset. Start from your notes and do not redo shipped work.
+
+## RE-QUEUED 10-19 23:05 (coordinator, in the VM)
+- Both blockers of runs 10 to 15 are fixed: writing your mk-cw-*.ps1 into the scratchpad works again in the VM (fixed 10-19 evening; helpers have shipped v32.02 to v32.06 since), and the critic runs on his Claude plan (no key needed).
+- Start from RUN 15 in notes\02-raid-hud-redesign.md: its critic P0/P1 list (minimap and run info glued; three bar styles bottom-left, stamina label outside its bar, hp not the hero; ammo name as heavy as the number) is your work list. Fix them in that order, one key each, then re-shoot and re-judge.
+- His 10-19 answers: the judge now measures against Halo Reach, Halo 4, Destiny 2, Diablo IV, Call of Duty, ARC Raiders and Fortnite; his taste beats the judge; the style guide beats the judge. Lane b's b-30-ui-hud waits on you, so this job comes first. Your run count was reset.

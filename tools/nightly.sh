@@ -72,7 +72,9 @@ while true; do
     # (1) the fuzzer, back to back
     #     10-19 VM: it gets the same floor (its own default of 5 GB made every run in the 10 GB VM quit at once with "low RAM")
     fa=$(running 'fuzz\.ps1'); fb=$(running 'fuzz\.ps1.*9332')   # an empty count means the check failed: start nothing
-    if [ -n "$fa" ] && [ -n "$fb" ] && [ -f "$R/tools/fuzz.ps1" ] && [ $((fa - fb)) -le 0 ]; then
+    #     10-19 night: the helpers come first. A fuzzer starts only with the floor + 2 GB free, so a helper (it starts at floor + 1) still
+    #     fits after it; at the floor alone the back-to-back fuzzer held the 10 GB VM and all three helpers waited all night.
+    if [ -n "$fa" ] && [ -n "$fb" ] && [ -f "$R/tools/fuzz.ps1" ] && [ $((fa - fb)) -le 0 ] && [ "$ram" -ge $((rf + 2)) ]; then
       echo "$(date +%H:%M) fuzz start at $head" >> "$LOG"
       (powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/fuzz.ps1" -Minutes 120 -IgnoreFlag -MinFreeGB "$rf" > /dev/null 2>&1; echo "$(date +%H:%M) fuzz done" >> "$LOG") &
     fi
