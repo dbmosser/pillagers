@@ -29769,7 +29769,7 @@ window.__REGRESS=[
        __topClear();
      }
      return bad.length?bad.slice(0,8).join('; '):null; }},
-  {v:'26.50',what:'settings9, his order 2026-10-14: ACCESSIBILITY has REDUCED FLASHING (off by default): on, a flash light is smaller and shorter, a burst has half the sparks, the lightning sheet is dimmer, and the muzzle flash drawn on the gun is dimmer; off is the game as it was',
+  {v:'26.50',what:'settings9: ACCESSIBILITY has REDUCED FLASHING: the approved default matches its row, on makes lights smaller and shorter, halves sparks and dims lightning and muzzles; off is unchanged',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame&&window.__opts&&window.__opts.apply&&window.__opts.cycle&&window.__opts.rows)) return 'SKIP: this fixture cannot deploy, draw or reach the Settings rows';
      if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so nothing can be drawn';
@@ -29791,11 +29791,11 @@ window.__REGRESS=[
        rr=null; for(j=0;j<rows.length;j++) if(rows[j].k==='flashRed') rr=rows[j];
        if(!rr) bad.push('ONE: Settings has no flashRed row');
        else {
-         if(CFG.flashRed!==0) bad.push('ONE: a fresh profile has flashRed '+CFG.flashRed+', not 0');
+         if(CFG.flashRed!==rr.opts[rr.def].cfg.flashRed) bad.push('ONE: fresh flashing differs from the row default');
          if(gameOptLive('flashRed')!==rr.def) bad.push('ONE: the row reads CUSTOM on a fresh profile');
          if(secOf('go_flashRed')!=='ACCESSIBILITY') bad.push('ONE: the row sits under '+secOf('go_flashRed')+', not ACCESSIBILITY');
          sn=[CFG.flashRed]; for(j=1;j<3;j++){ __opts.cycle('flashRed'); sn.push(CFG.flashRed); }
-         if(sn.join(',')!=='0,1,0') bad.push('ONE: clicking steps it '+sn.join(' > ')+', not 0 > 1 > 0');
+         if(sn.join(',')!==[rr.def,1-rr.def,rr.def].join(',')) bad.push('ONE: clicking does not toggle from the row default: '+sn.join(' > '));
          if(typeof P.gameOpts.flashRed!=='number') bad.push('ONE: the pick was not saved');
        }
        P.gameOpts={}; __opts.apply(); md.classList.remove('on');
