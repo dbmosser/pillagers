@@ -137,6 +137,10 @@ if [ $ENGINE = cli ]; then
     else echo "$(date '+%m-%d %H:%M') pacing your plan: week $wk% used (the 85% line is at $line% now), 5-hour window $ses%" > "$C/status-$L.txt"; fi; exit 0; fi
   rf=$(( $(cap RAM_FLOOR_GB 6) + 1 )); g=$(powershell -NoProfile -Command "[int]((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1MB)" 2>/dev/null | tr -dc '0-9')
   [ "${g:-0}" -lt "$rf" ] && { echo "$(date '+%m-%d %H:%M') waiting for RAM: ${g:-0} GB free, a helper starts at $rf; $name kept" > "$C/status-$L.txt"; exit 0; }
+  # 10-20 00:10: lanes a and b both saw 3 GB free in the same second and both started (2.2 GB left). A new helper's memory shows only
+  # after a minute or two, so one lane starts at a time: start.lock holds the others back for 2 minutes, then anyone may clear it.
+  [ -n "$(find "$C/start.lock" -maxdepth 0 -mmin +2 2>/dev/null)" ] && rm -rf "$C/start.lock"
+  mkdir "$C/start.lock" 2>/dev/null || { echo "$(date '+%m-%d %H:%M') waiting: another helper is just starting (memory check again in a few minutes); $name kept" > "$C/status-$L.txt"; exit 0; }
   echo "$(date '+%m-%d %H:%M') running $name on Claude Code (your plan: week $wk% of the $line% line, 5-hour $ses%)" > "$C/status-$L.txt"
   st=$(date +%s)
   ( cd "$R" && env -u ANTHROPIC_API_KEY claude -p "Your task id is $name. Your lane is $L. You run in Claude Code: run every command with the Bash tool (never the PowerShell tool), use Read (it also shows pictures; it replaces view_image), Grep, Glob, Write, Edit and Bash, with each Bash command typed exactly in a form your rules list. $(cat "$t")" \
