@@ -1,0 +1,16 @@
+{
+    "title":  "THE HOSTILES CLOSING IN LINE STANDS ON A PLATE",
+    "why":  "Critic on screen 37: the red hostiles closing in line under the extract countdown had no plate and sat loose on the floor. It now has the same flat HUD plate as the countdown.",
+    "now":  "While extraction is inbound the hostiles closing in line has a flat dark plate behind it.",
+    "edits":  [
+                  {
+                      "anchor":  "function extBanFont(t){ return hudFS((t\u003e0)?TYPE.huge:TYPE.head); }\n",
+                      "replacement":  "function extBanFont(t){ return hudFS((t\u003e0)?TYPE.huge:TYPE.head); }\n// v32.xx (cw-hostplate), the critic on screen 37: the red \"hostiles closing in\" line under the countdown sat loose on the floor with no plate. It stands on the same flat HUD plate as the countdown, measured to its words.\nfunction extRowPlate(s,x,y,R){\n  var w=hudRawW(s)+LH(24)*R, h=LH(26)*R, px=Math.round(x-w/2), py=Math.round(y-LH(19)*R);\n  hudPanel(px,py,w,h,0.9,true);\n  return {x:px,y:py,w:w,h:h};\n}\n"
+                  },
+                  {
+                      "anchor":  "        hudText(inbound+(inbound===1?\u0027 HOSTILE\u0027:\u0027 HOSTILES\u0027)+\u0027 CLOSING IN\u0027,W/2,_exRow);   // v22.xx (tr8fixa): a caps callout under EXTRACT A INBOUND (INBOUND stays his word for the craft)\n",
+                      "replacement":  "        var _exH=inbound+(inbound===1?\u0027 HOSTILE\u0027:\u0027 HOSTILES\u0027)+\u0027 CLOSING IN\u0027;\n        extRowPlate(_exH,W/2,_exRow,_exR);   // v32.xx (cw-hostplate)\n        hudText(_exH,W/2,_exRow);   // v22.xx (tr8fixa): a caps callout under EXTRACT A INBOUND (INBOUND stays his word for the craft)\n"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the hostiles closing in line stands on a plate measured to its words (critic 37)\u0027,\n   run:function(){\n     if(typeof extRowPlate!==\u0027function\u0027) return \u0027the hostiles line has no plate function (extRowPlate)\u0027;\n     var s=\u00279 HOSTILES CLOSING IN\u0027, r, f=ctx.font;\n     ctx.save(); ctx.font=hudFS(TYPE.label);\n     try{ r=extRowPlate(s,960,900,1); }finally{ ctx.restore(); ctx.font=f; }\n     if(!r||!(r.w\u003e0)) return \u0027extRowPlate gave no rectangle\u0027;\n     if(r.x\u003e960-hudRawW(s)/2||r.x+r.w\u003c960+hudRawW(s)/2) return \u0027the plate does not cover the words\u0027;\n     if(String(drawHUD).indexOf(\u0027extRowPlate(\u0027)\u003c0) return \u0027drawHUD does not draw the plate\u0027;\n     return null;\n   }},"
+}

@@ -1,0 +1,7 @@
+v32.57: pre-raid: labels on a dark pill, a bigger window title, a quieter armour row and bigger steppers
+
+The pre-raid page labels are easier to read, the title is bigger than the map name, and the plus and minus buttons are bigger.
+
+Check 32.57. Fails on v32.56.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

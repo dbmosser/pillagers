@@ -947,19 +947,19 @@
   "when": "2026-10-20T04:25"
  },
  "74-pad-call-of-duty": {
-  "score": 3,
+  "score": 2,
   "pass": false,
-  "verdict": "Reads as a clean modern title menu with a clear lime primary button, but the amber gradient logo clashes with the lime accent, the small text is below the guide's size floor, and a stack of five near-identical options plus a saves block makes it crowded and generic.",
+  "verdict": "The window has the right structure, with a title, an x, a list on the left and a pad diagram on the right. The craft is broken, though: the layout selector overlaps its own counter, the diagram labels collide, and the same bindings appear three times.",
   "findings": [
-   "P1 title logo 'pillagers': Make the logo flat --tx-1 (#efe9dc) at 800 weight, or flat lime. Remove the gradient and shadow. Keep the lime fill on the 1 player button as the only hot element.",
-   "P1 mode list (5 buttons): Remove the 'coming later' row and its badge. Group 'arcade demo' items under one 'party' row, or show them as a smaller secondary pair. Keep 3 rows max at the 20px/56px size.",
-   "P1 saves block (y 715-835): Raise the gap above the saves label to 32px. Make the selected save use --ui-raised fill with a 3px lime left bar, not a full lime border and lime text. Use 16px text minimum and 16px gaps between the field and buttons. Better, move name and new-save into a settings or sub-screen.",
-   "P1 bottom key legend and corner buttons: Set legend and version text to a minimum of 16px in --tx-2 (#aaa498, 4.5:1). Better, drop the legend from the title and show it only in 'how to play'. Make the top-right buttons 20px text with 48px height.",
-   "P2 tagline 'ascend. pillage. extract.': Set it to 20px --tx-1 at 600 weight, or remove it. Add 24px spacing to the logo and 32px to the first button."
+   "P0 layout selector row (top left): Rebuild the selector as a fixed 56px-tall row: a 56x56 left arrow, a centred name at 24px, a right arrow, and the counter in tx-2 placed after the right arrow. The focus ring should be a 2px lime outline on the whole control that doesn't overlap the counter. Remove the stray cursor bar.",
+   "P0 pad diagram, d-pad and sticks: Draw the d-pad as one 120px cross with a single arrow glyph per arm, and put the text labels in the right-hand list. Make the sticks 90px circles with a single 20px label. Space the face buttons 44px apart. Raise the controller outline to --ui-line-hi and give the body a --ui-raised fill.",
+   "P1 right pane, bindings table: Keep the diagram with short labels on the buttons, and either drop the table or drop the left list. If the table stays, use 20px tx-1 values and a 16px tx-2 key column, and remove the divider rule.",
+   "P1 left list: Show 8 rows at 56px with 20px text. Use a raised chip, 72x36, with 20px tx-1 text. Brighten the group labels to tx-2 at 16px with a 24px top gap. Shorten the parentheses, for example 'prev gun' with a 'hold: zoom' chip.",
+   "P1 footer: Show hints as key chips: [a] rebind  [b] back, at 16px with tx-1 keys and tx-2 verbs, in a 72px footer row. Shorten the button to 'reset' with a 48px tall focus ring."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-05-pad-presets-recipes-2/74-pad-call-of-duty-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-05-pad-presets-recipes-3/74-pad-call-of-duty-1080.jpg",
   "task": "o-05-pad-presets",
-  "when": "2026-10-20T06:17"
+  "when": "2026-10-20T06:34"
  },
  "74-pad-lefty": {
   "score": 3,

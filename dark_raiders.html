@@ -2567,14 +2567,14 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
   <!-- v32.45 (cw-preraid-a), HIS PICK (2026-10-19), verbatim: "por-raid redesing -- i pick A, but give the map some different color so it breaks up the monotny/overwhelmingness of the screen". Design A, MAP FIRST: the map takes the left two thirds with the conditions list beside it, the right column holds the kit, the pack, the going-up chips and the ascend plate. -->
   <style>
   #sectormodal{ --srseat:#ffb02e; text-transform:lowercase; }
-  #root #sectormodal h3{ align-items:center; gap:16px; padding-bottom:8px; margin-bottom:10px; }
+  #root #sectormodal h3{ align-items:center; gap:16px; padding-bottom:8px; margin-bottom:10px; font-size:32px; }
   #sectormodal .srseat{ display:inline-flex; align-items:center; gap:10px; height:40px; padding:0 16px; border:1px solid var(--ui-line-hi); background:var(--ui-raised); border-radius:4px; font:600 20px var(--f-cond); letter-spacing:.02em; }
   #sectormodal .srseat i{ width:12px; height:12px; border-radius:50%; }
   #srbody{ flex:1 1 auto; min-height:0; display:flex; gap:16px; }
   #srmap{ flex:2 1 0; min-width:0; min-height:0; display:grid; grid-template-columns:minmax(0,1fr) 184px; grid-template-rows:40px minmax(0,1fr); column-gap:16px; padding:0 12px 10px; background:var(--ui-panel); border:0; border-radius:4px; }
   #root #sectormodal #sectorlist, #root #sectormodal .sectorpick{ display:contents !important; }
   #sectormodal .srmh{ grid-column:1/-1; grid-row:1; display:flex; align-items:center; gap:16px; margin:0 -12px; padding:0 12px; border-bottom:1px solid var(--ui-line); }
-  #sectormodal .srmh b{ font:700 32px/1 var(--f-cond); letter-spacing:.03em; color:var(--tx-1); }
+  #sectormodal .srmh b{ font:700 24px/1 var(--f-cond); letter-spacing:.03em; color:var(--tx-1); }
   #sectormodal .srtag{ display:inline-flex; align-items:center; gap:8px; height:36px; padding:0 14px 0 10px; border:1px solid var(--ui-line-hi); background:none; border-radius:4px; font:600 20px var(--f-cond); color:var(--tx-1); }
   #sectormodal .srtag svg{ width:20px; height:20px; fill:none; stroke:var(--acc); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
   #sectormodal .srst{ margin-left:auto; font:500 20px var(--f-cond); letter-spacing:.02em; color:var(--tx-2); white-space:nowrap; }
@@ -2618,7 +2618,7 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
   #sectormodal .srprow .held{ min-width:26px; font:500 16px var(--f-body); color:#c9c5bb; }
   #sectormodal .srprow:has(.padfocus){ background:var(--ui-raised); box-shadow:inset 3px 0 0 var(--srseat); }
   #sectormodal .srprow .st{ display:flex; align-items:center; }
-  #root #sectormodal .srprow .st .srm, #root #sectormodal .srprow .st button{ width:36px; height:36px; min-width:0; padding:0; display:grid; place-items:center; background:var(--ui-raised); border:1px solid var(--ui-line-hi); border-radius:0; color:var(--tx-1); font:700 20px var(--f-cond); cursor:pointer; }
+  #root #sectormodal .srprow .st .srm, #root #sectormodal .srprow .st button{ width:44px; height:44px; min-width:0; padding:0; display:grid; place-items:center; background:var(--ui-raised); border:1px solid var(--ui-line-hi); border-radius:0; color:var(--tx-1); font:700 20px var(--f-cond); cursor:pointer; }
   #sectormodal .srprow .st b{ width:30px; text-align:center; font:700 20px var(--f-cond); cursor:pointer; }
   #root #sectormodal .srprow .dis{ color:var(--tx-3); }
   #root #sectormodal button.srcore{ width:100%; height:40px; margin-top:6px; padding:0; background:none; border:0; border-bottom:1px solid var(--ui-line); border-radius:0; justify-content:flex-start; color:var(--tx-1); font:600 20px var(--f-cond); }
@@ -2632,9 +2632,9 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
   #sectormodal .gc{ flex:1 1 0; min-width:0; height:36px; display:flex; align-items:center; gap:8px; padding:0 12px; background:var(--ui-raised); border:1px solid var(--ui-line-hi); border-radius:4px; white-space:nowrap; overflow:hidden; }
   #sectormodal .gc i{ font:400 16px var(--f-body); font-style:normal; color:var(--tx-2); }
   #sectormodal .gc b{ font:700 20px var(--f-cond); }
-  #sectormodal .wn{ flex:1 1 100%; height:36px; display:flex; align-items:center; gap:10px; padding:0 12px; border:0; background:none; border-radius:0; color:var(--warn); white-space:nowrap; overflow:hidden; }
+  #sectormodal .wn{ flex:1 1 100%; height:36px; display:flex; align-items:center; gap:10px; padding:0 12px; border:0; border-left:3px solid var(--warn); background:none; border-radius:0; color:var(--warn); white-space:nowrap; overflow:hidden; }
   #sectormodal .wn svg{ width:24px; height:24px; flex:none; fill:none; stroke:var(--warn); stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
-  #sectormodal .wn b{ font:700 20px var(--f-cond); }
+  #sectormodal .wn b{ font:500 16px var(--f-cond); }
   #sectormodal .wn i{ margin-left:auto; font:400 16px var(--f-body); font-style:normal; color:var(--tx-2); }
   #sectormodal .srplate{ flex:none; height:60px; padding:0; background:none; }
   #root #sectormodal #sectordeploy{ width:100%; height:100%; display:flex; align-items:center; justify-content:space-between; padding:0 24px 0 30px; background:var(--acc); color:var(--acc-ink); border:0; border-radius:4px; font:800 44px/1 var(--f-cond); letter-spacing:.05em; }
@@ -3169,7 +3169,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.56';
+var VER='32.57';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -50543,7 +50543,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.56: The what is new card names polish pass 37. Check 32.56 fails on v32.55',
+  now:'v32.57: The pre-raid page labels are easier to read, the title is bigger than the map name, and the plus and minus buttons are bigger. Check 32.57 fails on v32.56',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -65652,7 +65652,7 @@ function sectorPreviewDraw(cv,M){
   var EX=(M.extracts&&M.buildings)?extractsOutside(M.extracts,M.buildings,M.w,M.h):(M.extracts||null);   // v22.16 (K27): the rings where the raid puts them
   c.setTransform(1,0,0,1,0,0); c.clearRect(0,0,cv.width,cv.height);
   if(_sk) c.setTransform(cv.width/W0,0,0,cv.height/H0,0,0);
-  function put(s,x,y){ c.lineJoin='round'; c.lineWidth=2; c.strokeStyle='rgba(8,18,28,.6)'; c.strokeText(String(s).toLowerCase(),x,y); c.fillText(s,x,y); }
+  function put(s,x,y){ var tw=c.measureText(String(s)).width, tx=(c.textAlign==='right')?x-tw:((c.textAlign==='center')?x-tw/2:x), fh=parseInt((c.font.match(/(\d+)px/)||[0,16])[1],10), f0=c.fillStyle; c.fillStyle='rgba(11,12,13,.78)'; c.fillRect(tx-5,y-fh+2,tw+10,fh+5); c.fillStyle=f0; c.fillText(s,x,y); }
   c.fillStyle='#0c1a28'; c.fillRect(ox,oy,M.w*sc,M.h*sc);
   c.strokeStyle='#2f5e86'; c.lineWidth=2; c.setLineDash([12,7]); c.strokeRect(ox+4,oy+4,M.w*sc-8,M.h*sc-8); c.setLineDash([]);
   if(M.zones) for(i=0;i<M.zones.length;i++){ z=M.zones[i]; if(typeof z.x!=='number') continue;
@@ -65663,7 +65663,7 @@ function sectorPreviewDraw(cv,M){
   if(M.locked) for(i=0;i<M.locked.length;i++){ b=M.locked[i]; if(!b||typeof b.x!=='number'||!b.w) continue;
     c.fillStyle='#1a1228'; c.fillRect(ox+b.x*sc,oy+b.y*sc,b.w*sc,b.h*sc);
     c.strokeStyle='#a866e0'; c.lineWidth=2; c.setLineDash([7,4]); c.strokeRect(ox+b.x*sc+1,oy+b.y*sc+1,b.w*sc-2,b.h*sc-2); c.setLineDash([]);
-    c.font='600 18px '+FF; c.textAlign='right'; c.fillStyle='#dcc3f4'; put(TX(String(b.name||'')),ox+b.x*sc-8,oy+(b.y+b.h/2)*sc+5); n++; }
+    c.font='600 18px '+FF; c.textAlign='right'; c.fillStyle='#e6f1fb'; put(TX(String(b.name||'')),ox+b.x*sc-8,oy+(b.y+b.h/2)*sc+5); n++; }
   if(M.zones) for(i=0;i<M.zones.length;i++){ z=M.zones[i]; if(typeof z.x!=='number'||!z.name) continue;
     // v18.69: a name shrinks to fit its zone and breaks onto two lines at a space; v19.97: and keeps clear of an extraction ring
     (function(){
@@ -65717,7 +65717,7 @@ function srHints(){
   var el=document.getElementById('srhints'), pg=document.getElementById('srplg'), g, k;
   if(!el) return;
   g=function(s){ return '<i class="pg">'+escHtml(padB(s))+'</i>'; }; k=function(s){ return '<i class="kc">'+s+'</i>'; };
-  el.innerHTML='<span class="srk"><span class="hn">'+k('ESC')+'CLOSE</span><span class="hn">'+k('ENTER')+'ASCEND</span><span class="hn">'+k('CLICK')+'PICK</span></span>'+
+  el.innerHTML='<span class="srk"><span class="hn">'+k('ESC')+'CLOSE</span><span class="hn">'+k('CLICK')+'PICK</span></span>'+
     '<span class="srp"><span class="hn">'+g('A')+'ASCEND</span><span class="hn">'+g('B')+'CLOSE</span><span class="hn">'+g('X')+'PACK ALL</span><span class="hn">'+g('Y')+'CLEAR</span><span class="hn"><i class="pg">'+escHtml(padB('LB'))+'</i><i class="pg">'+escHtml(padB('RB'))+'</i>PANEL</span></span>';
   if(pg) pg.textContent=padB('A');
 }

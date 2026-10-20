@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.57 - PRE-RAID: LABELS ON A DARK PILL, A BIGGER WINDOW TITLE, A QUIETER ARMOUR ROW AND BIGGER STEPPERS
+
+Co-op hunt while he was away. The critic still scored the page 3 after five passes and named: map labels reading as overlapping the room blocks, the sector name outranking the window title, the armour warning as heavy as item names, ascend shown twice, and small steppers. Labels get a dark pill, the title is 32 px over a 24 px sector name, the warning is 16 px with a bar, the footer drops its ascend hint and steppers are 44 px.
+
+MEASURED. Check 32.57 passes, and fails on v32.56.
 ## v32.56 - THE WHAT IS NEW CARD NAMES POLISH PASS 37
 
 Co-op hunt while he was away. The card was stamped v32.54 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.

@@ -1,1 +1,54 @@
 
+This CSS code snippet appears to be styling various elements of a user interface, likely for an application or website related to some kind of game or interactive experience. The styles are primarily focused on the appearance and behavior of end cards or outcome windows that display information about player performance, hauls (rewards), achievements, and other statistics.
+
+Here's a breakdown of key components:
+
+1. **End Card Container (`#root .ocwin`)**:
+   - Styled with a blurred background to create a scrim effect.
+   - Has a maximum width of 720px and padding for content.
+   - Uses border-radius and box-shadow for rounded corners and subtle shadow.
+
+2. **Header (`#root .ocwin .fbhead`)**:
+   - Contains an icon that toggles between '+' and '-' to indicate open/close state.
+   - Styled with font size, color, and padding.
+
+3. **Haul Tiles (`#root .ocwin .haulit`)**:
+   - Represent individual items in the haul.
+   - Have a border-bottom color based on rarity (common, uncommon, rare, elite, gold).
+   - Use animations for reveal effects when new tiles appear.
+
+4. **Total Haul Display (`#root .haultot`)**:
+   - Large font size and bold styling to emphasize total haul value.
+
+5. **Statistics Section (`#root .ocstat`)**:
+   - Displays statistics in a grid format with labels and values.
+   -
+NONE
+It looks like you've provided a list of updates or changes to a video game, likely related to its mechanics, user interface, and gameplay experience. Here's a summary of some key points:
+
+1. **Welcome Pack**: Players are instructed to drag specific items (a gun and two heals) into their loadout before entering the raid.
+
+2. **Settings and Controls**:
+   - Master, Music, and Effects volume can be adjusted.
+   - Key bindings can be customized for actions.
+   - A "Kid Mode" section is available for player 2 to return after death.
+
+3. **Teammate Interaction**:
+   - Players are informed when their teammate joins or leaves the raid.
+   - The map marker shows the walls already blown open if a teammate joins late.
+
+4. **Trading and Drop-in Mechanics**:
+   - Players can trade items with teammates using T or Y keys.
+   - A teammate in the Undercroft can join an ongoing raid.
+   - An open trade offer stays on screen when a player rejoins.
+
+5. **Gameplay Enhancements**:
+   - The Overseer guards the middle of every map.
+   - The stash has search and call for extraction options.
+   - Every player chooses a kit upon ascending from the sector page.
+   - Pinging spots or enemies is possible using D-UP, N, or the middle mouse button.
+
+6. **Stability and Co-op Improvements**:
+   - A teammate reading their run card
+NONE
+NONE
