@@ -3023,7 +3023,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.23';
+var VER='32.24';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -40384,7 +40384,7 @@ function drawBuzzFx(){
         _ks.forEach(function(q){ q.x=_x0+hudRawW(_T.slice(0,q.i)); q.w=hudRawW(q.s); ctx.rect(q.x,_y-_a-_bcF,q.w,_a+_bcF*2); });
         ctx.clip('evenodd');
         try{ ctx.fillText(_bcT,W/2,_y); } finally { ctx.restore(); }
-        _ks.forEach(function(q){ hudKey(q.s.slice(1,-1),q.x,_y,_a,q.w); });
+        _ks.forEach(function(q){ hudKey(q.s.slice(1,-1),q.x,_y,_a,q.w,{fill:'#3b434b',ink:UIC.tx_1}); });   // v28.xx (cw-firechip), the critic (2026-10-20): the fire chip had a lime fill beside the lime selected slot, two lime fills. The belt caption keycaps are a quiet grey chip now; lime stays on the selected slot.
         ctx.textAlign='center';
       })();
       ctx.textAlign='left';
@@ -50238,7 +50238,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.23: Three deaths in a row in Career, then the next raid shows the easy yes or no card. Yes gives 30 percent less damage and a free medkit for that raid. Check 32.23 fails on v32.22',
+  now:'v32.24: The fire chip above the belt is grey with light text; lime is only on the selected slot. Check 32.24 fails on v32.23',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

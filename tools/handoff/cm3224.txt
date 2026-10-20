@@ -1,0 +1,7 @@
+v32.24: the fire chip is grey, not lime
+
+The fire chip above the belt is grey with light text; lime is only on the selected slot.
+
+Check 32.24. Fails on v32.23.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

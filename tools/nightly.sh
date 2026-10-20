@@ -76,6 +76,17 @@ while true; do
     tg=$(powershell -NoProfile -Command "[int]((Get-CimInstance Win32_OperatingSystem).TotalVisibleMemorySize/1MB)" 2>/dev/null | tr -dc '0-9')
     [ "${tg:-0}" -gt 10 ] && ram=0
   fi
+  # 10-20 night, his 49 a ("while I play, the VM goes light") and 38 b ("the local AI may run any time unless I am gaming"): the main PC's
+  # "VM light while gaming" task (tools/migrate/host-night-memory.ps1 -GameCheck) writes gaming.txt to the bridge share every minute. While it
+  # says gaming=1 and is under 10 minutes old, start nothing new (running work goes on; the main PC also holds the VM to 30% of its processors).
+  gm=$(timeout 25 node "$R/tools/bridge/hostctl.mjs" share-get name=gaming.txt 2>/dev/null | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{try{const j=JSON.parse(s);if(j.ok&&j.base64)process.stdout.write(Buffer.from(j.base64,'base64').toString())}catch(e){}})" 2>/dev/null | tr -d '\r'); isg=0
+  if printf '%s\n' "$gm" | grep -q '^gaming=1'; then
+    ck=$(printf '%s\n' "$gm" | sed -n 's/^checked=//p' | head -1); cks=$(date -d "$ck" +%s 2>/dev/null || echo 0)
+    [ $(( $(date +%s) - cks )) -lt 600 ] && isg=1
+  fi
+  if [ $isg = 1 ]; then
+    ram=0; [ "$(get gaming)" = 1 ] || { put gaming 1; echo "$(date +%H:%M) he is playing on the main PC ($(printf '%s\n' "$gm" | sed -n 's/^what=//p' | head -1)): nothing new starts" >> "$LOG"; }
+  elif [ "$(get gaming)" = 1 ]; then put gaming 0; echo "$(date +%H:%M) he stopped playing: new work starts again" >> "$LOG"; fi
   if [ "$ram" -ge "$rf" ]; then
     # (1) the fuzzer, back to back
     #     10-19 VM: it gets the same floor (its own default of 5 GB made every run in the 10 GB VM quit at once with "low RAM")

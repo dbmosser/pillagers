@@ -1,0 +1,12 @@
+{
+    "title":  "THE FIRE CHIP IS GREY, NOT LIME",
+    "why":  "The critic named a second lime fill on the fire chip above the belt, beside the lime selected slot. The belt caption keycaps are a quiet grey chip now.",
+    "now":  "The fire chip above the belt is grey with light text; lime is only on the selected slot.",
+    "edits":  [
+                  {
+                      "anchor":  "_ks.forEach(function(q){ hudKey(q.s.slice(1,-1),q.x,_y,_a,q.w); });",
+                      "replacement":  "_ks.forEach(function(q){ hudKey(q.s.slice(1,-1),q.x,_y,_a,q.w,{fill:\u0027#3b434b\u0027,ink:UIC.tx_1}); });   // v28.xx (cw-firechip), the critic (2026-10-20): the fire chip had a lime fill beside the lime selected slot, two lime fills. The belt caption keycaps are a quiet grey chip now; lime stays on the selected slot."
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the fire chip above the belt is not lime filled: the keycap behind the word fire is not the accent colour\u0027,\n   run:function(){\n     if(typeof __frame!==\u0027function\u0027) return \u0027SKIP: no frame helper\u0027;\n     var PR=CanvasRenderingContext2D.prototype, of=PR.fillText, ofl=PR.fill, ac=(function(){ var c=document.createElement(\u0027canvas\u0027).getContext(\u00272d\u0027); c.fillStyle=UIC.acc; return String(c.fillStyle); })(), g=null, seen=0, lime=0, lastFill=\u0027\u0027;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[\u0027bandage\u0027,\u0027medkit\u0027,\u0027gun_rifle\u0027],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player) return \u0027SKIP: no raid\u0027;\n       g.legendOn=0;\n       PR.fill=function(){ lastFill=String(this.fillStyle); return ofl.apply(this,arguments); };\n       PR.fillText=function(s){ if(String(s).toLowerCase()===\u0027fire\u0027){ seen++; if(lastFill===ac) lime++; } return of.apply(this,arguments); };\n       __frame(); __frame();\n       PR.fillText=of; PR.fill=ofl;\n       if(!seen) return \u0027the fire keycap was never drawn\u0027;\n       if(lime) return \u0027the fire chip is filled with the lime accent (\u0027+lime+\u0027 of \u0027+seen+\u0027)\u0027;\n       return null;\n     } finally {\n       PR.fillText=of; PR.fill=ofl;\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}

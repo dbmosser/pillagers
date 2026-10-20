@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.24 - THE FIRE CHIP IS GREY, NOT LIME
+
+Co-op hunt while he was away. The critic named a second lime fill on the fire chip above the belt, beside the lime selected slot. The belt caption keycaps are a quiet grey chip now.
+
+MEASURED. Check 32.24 passes, and fails on v32.23.
 ## v32.23 - CAREER OFFERS EASY AFTER THREE DEATHS
 
 Co-op hunt while he was away. His answer 2.90 b: Career offers Forgiving on a card after a few deaths, the same offer as the demo.

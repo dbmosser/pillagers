@@ -1,1 +1,1 @@
-10-20 00:05 running b-31-ui-undercroft on Claude Code (your plan: week 54% of the 23.8% line, 5-hour 4%)
+10-20 00:19 waiting for RAM: 2 GB free, a helper starts at 3; b-31-ui-undercroft kept

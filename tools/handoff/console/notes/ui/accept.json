@@ -193,17 +193,17 @@
  "21-raid-hud-calm": {
   "score": 2,
   "pass": false,
-  "verdict": "The raid hud has a strong ammo block and a readable hotbar, but the screen has about five different panel treatments, three competing amber and lime accents, a permanent controls cheat sheet and loud top-right stat boxes, so it looks stacked together rather than designed.",
+  "verdict": "The HUD has working pieces (hotbar, ammo hero number, vertical top-right column), but it is crowded, it ignores the style guide's five type sizes and one-accent rule, and the bottom-left and bottom-centre read as unfinished next to the polished ammo card.",
   "findings": [
-   "P0 top-right career column (credits, xp, stash, backpack) at x1600-1900, y20-195: Keep only credits and backpack, in one panel 220x72 with 16px tx-2 labels and 20px tx-1 numbers at 70% fill. Drop xp and stash from the raid hud. Delete the duplicate '5 items $1,770' line in the ammo card.",
-   "P1 bottom-centre controls cheat sheet, x495-900, y697-865: Remove it from the calm state. Show it only on first-run or while f1 is held. If it stays, cut it to 4 rows at 16px with a --ui-panel fill.",
-   "P1 panel and border consistency: leaderboard (left), run info (right), career boxes, ammo card, key legend, toasts: Use one hud panel component: fill #16191b at 85%, 1px #4a5257 border, radius 4px, 16px padding, optional 2px lime top tab on the star panel only (ammo). Apply it to all six.",
-   "P1 accent colour use: 'current pillager bots' title and 'concealed · in cover' in amber, 'fire' chip in lime, ammo tab in lime, extract 152m in teal, hp in green, backpack row bright white: Make the leaderboard title tx-2 at 16px. Draw 'concealed' in tx-1 with a small --ok glyph. Keep lime only for the focused hotbar slot and the primary prompt. Make the 'fire' chip a tx-1 outline at 16px.",
-   "P1 hotbar tooltip 'scav pistol fire use' at x885-1040, y932-953: Remove the tooltip in the calm state, or move it up 8px and set 16px text with no fill. Show it only on slot change."
+   "P0 bottom-centre controls cheat sheet (wasd/ctrl/lmb... f1 full list): Hide it by default after the first raid, or collapse it to one line ('f1 controls') at 16px. If it must stay, shrink it to 6 essential rows, 16px, tx-2 at 4.5:1 or better, with the key in tx-1 and the action in tx-2, and align it to the 48px margin, not centred over the hotbar.",
+   "P1 top-right career column (credits, xp, stash, backpack), minimap and run info: Merge credits, xp, stash and backpack into one panel with 40px rows and 1px --ui-line dividers, values right-aligned in f-cond 600 at 20px. Give the minimap the same 1px --ui-line-hi border and --rad 4px. Redo run info as label (16px tx-2) over value (20px tx-1) rows with one left indent, and put a lime tick or progress pip on each contract.",
+   "P1 bottom-right ammo card and hotbar: Set the backpack hint to 16px tx-2. Align the ammo card bottom to the hotbar bottom (both at 1080 minus 32px). Slot numbers go to 16px. Raise empty-slot icons to about 50% opacity. Drop the lime fill on 'fire'; use a tx-1 text pill, and keep lime for the selected slot only.",
+   "P1 bottom-left status stack (standing, stamina, hp 100): Put both bars on one 8px-grid column, 320px wide and 24px tall, with a 1px border and --ui-panel backing. Labels sit at 16px in tx-1, left-aligned and vertically centred in the bar, with the value right-aligned. Make the stamina fill a desaturated --extract teal or tx-2. Keep HP as the only strong colour and use --ok green on it. Fix the left margin to 48px, in line with the other corner margins.",
+   "P1 top-left scoreboard 'current pillager bots 3': Header text in tx-2 at 16px. Set the margin to 48px (the 5% rule). Highlight the 'you' row with a 3px lime left tab and raised fill. Use the same panel P (1px --ui-line-hi, 4px radius, 24px padding) as the other blocks."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-02-r15/21-raid-hud-calm-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/c-02-r18/21-raid-hud-calm-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T01:49"
+  "when": "2026-10-20T04:16"
  },
  "22-raid-map-open": {
   "score": 2,

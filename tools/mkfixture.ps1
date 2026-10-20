@@ -6101,6 +6101,27 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.24',what:'the fire chip above the belt is not lime filled: the keycap behind the word fire is not the accent colour',
+   run:function(){
+     if(typeof __frame!=='function') return 'SKIP: no frame helper';
+     var PR=CanvasRenderingContext2D.prototype, of=PR.fillText, ofl=PR.fill, ac=(function(){ var c=document.createElement('canvas').getContext('2d'); c.fillStyle=UIC.acc; return String(c.fillStyle); })(), g=null, seen=0, lime=0, lastFill='';
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:['bandage','medkit','gun_rifle'],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player) return 'SKIP: no raid';
+       g.legendOn=0;
+       PR.fill=function(){ lastFill=String(this.fillStyle); return ofl.apply(this,arguments); };
+       PR.fillText=function(s){ if(String(s).toLowerCase()==='fire'){ seen++; if(lastFill===ac) lime++; } return of.apply(this,arguments); };
+       __frame(); __frame();
+       PR.fillText=of; PR.fill=ofl;
+       if(!seen) return 'the fire keycap was never drawn';
+       if(lime) return 'the fire chip is filled with the lime accent ('+lime+' of '+seen+')';
+       return null;
+     } finally {
+       PR.fillText=of; PR.fill=ofl;
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     } }},
   {v:'32.23',what:'career offers the easy card after three deaths in a row, once, and yes cuts damage 30 percent (his 2.90 b)',
    run:function(){
      if(typeof easyCareerAsk!=='function') return 'no easyCareerAsk';

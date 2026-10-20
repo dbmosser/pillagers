@@ -196,3 +196,6 @@
 2026-10-20 0.1602 critic-manual
 2026-10-20 0.1599 critic-manual
 2026-10-20 0.1621 critic-manual
+2026-10-20 0.7911484 17-party-easy-mode
+2026-10-20 0.6031902000000001 b-31-ui-undercroft
+2026-10-20 0.1584 critic-manual
