@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.08 - ONE GOLDEN DEATH CALLOUT
+
+Co-op hunt while he was away. The critic found the same golden kill callout at the top and in the feed. Use the existing feed skip option to show one copy in each window.
+
+MEASURED. Check 33.08 passes, and fails on v33.07.
 ## v33.07 - GOLDEN KILL NAMES
 
 Co-op hunt while he was away. His answer 3.84 b requires the specific golden kind. His words rule calls a raider a pillager bot. Both windows need the same line.

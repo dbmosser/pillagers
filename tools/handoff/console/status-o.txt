@@ -1,1 +1,1 @@
-10-20 15:19 gate: shipping cw-cx-goldnames (o-16-golden-callout-names, codex)
+10-20 15:31 gate: shipping cw-cx-goldonce (o-16-golden-callout-names, codex)

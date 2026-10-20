@@ -6140,6 +6140,34 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'33.08',what:'golden sentry and pillager bot death callouts draw once in both windows and keep search the hoard (critic duplicate finding)',
+   run:function(){
+     var g=null, oPeer=flowPeer, own=Object.prototype.hasOwnProperty.call(XF,'xfGold'), gold0=XF.xfGold,
+         kinds=['sentry','raider'], names=['golden sentry down','golden pillager bot down'], i, side, trace, hits, want;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over||!g.player) return 'staging: no raid';
+       flowPeer=function(){ return false; }; XF.xfGold=1;
+       g.mapFirst=false; g.mapOpen=false; g.bagOpen=false; g.paused=false; g.legendOn=0;
+       for(i=0;i<kinds.length;i++) for(side=0;side<2;side++){
+         g.msg=''; g.msgT=0; g.feed=[]; g.msgQ=[]; g.alert=null; g.msgLog=[]; g.fd=null;
+         g.mapPop={q:[],wait:0,replay:0,open:false,at:0}; g.flow=g.flow||{};
+         if(side===0){
+           g.flow.gold={ref:{kind:kinds[i],hp:0,x:g.player.x+100,y:g.player.y},dead:0}; goldTick(0.01);
+         }else{
+           g.flow.gold={ref:null,dead:0}; goldNetTake([0,1,g.player.x+100,g.player.y,kinds[i]]);
+         }
+         feedTick(0.3); trace=__textTrace(function(){ __frame(0.016); }); want=names[i];
+         hits=trace.filter(function(r){ return r.t.toLowerCase().indexOf(want)>=0; });
+         if(hits.length!==1) return (side?'linked ':'host ')+want+' drawn '+hits.length+' times';
+         if(hits[0].t.toLowerCase().indexOf('search the hoard')<0) return 'missing search the hoard';
+       }
+       return null;
+     } finally {
+       flowPeer=oPeer; if(own) XF.xfGold=gold0; else delete XF.xfGold;
+       try{ __endRaid('abandon'); }catch(_e){} __topClear();
+     } }},
   {v:'33.07',what:'golden kills name all six kinds, including sentry and pillager bot, with the same callout in the linked window (his 3.84 b)',
    run:function(){
      if(typeof goldDownName!=='function') return 'no specific golden death name helper';

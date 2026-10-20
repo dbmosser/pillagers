@@ -1,0 +1,13 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  golden-sentry-host                     NOT STAGED   5.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: flowPeer is not defined
+    at <anonymous>:1:2563
+    at async <anonymous>:1:21
+  golden-sentry-linked                   NOT STAGED   5.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: goldNetTake is not defined
+    at <anonymous>:1:2584
+    at async <anonymous>:1:21
+  golden-raider-host                     NOT STAGED   5.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: flowPeer is not defined
+    at <anonymous>:1:2563
+    at async <anonymous>:1:21
+  golden-raider-linked                   NOT STAGED   5.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: goldNetTake is not defined
+    at <anonymous>:1:2584
+    at async <anonymous>:1:21

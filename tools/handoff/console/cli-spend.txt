@@ -509,3 +509,13 @@
 2026-10-20 0.0000 o-16-golden-callout-names
 2026-10-20 4.379035500000002 61-experimental-menu
 2026-10-20 0.16187120000000002 58b-corpus-harness-reds
+2026-10-20 0.1367 critic-o-16-golden-callout-names
+2026-10-20 0.1392 critic-o-16-golden-callout-names
+2026-10-20 0.1395 critic-o-16-golden-callout-names
+2026-10-20 0.1354 critic-o-16-golden-callout-names
+2026-10-20 0.0000 o-16-golden-callout-names
+2026-10-20 0.1390 critic-o-16-golden-callout-names
+2026-10-20 0.1363 critic-o-16-golden-callout-names
+2026-10-20 0.1337 critic-o-16-golden-callout-names
+2026-10-20 0.1362 critic-o-16-golden-callout-names
+2026-10-20 0.0000 o-16-golden-callout-names

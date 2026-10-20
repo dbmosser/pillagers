@@ -1,0 +1,5 @@
+## v33.08 - ONE GOLDEN DEATH CALLOUT
+
+Co-op hunt while he was away. The critic found the same golden kill callout at the top and in the feed. Use the existing feed skip option to show one copy in each window.
+
+MEASURED. Check 33.08 passes, and fails on v33.07.

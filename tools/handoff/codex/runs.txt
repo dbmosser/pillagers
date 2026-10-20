@@ -129,3 +129,5 @@
 2026-10-20 14:42 o-15-hide-coming-later-row 122s ok PARTIAL in=346234 out=5554 run=1
 2026-10-20 14:49 o-15-hide-coming-later-row 26s ok DONE in=496036 out=6593 run=2
 2026-10-20 14:52 o-16-golden-callout-names 198s ok PARTIAL in=500595 out=8617 run=1
+2026-10-20 15:26 o-16-golden-callout-names 133s ok PARTIAL in=1215791 out=12990 run=2
+2026-10-20 15:30 o-16-golden-callout-names 122s ok PARTIAL in=1860293 out=17730 run=3

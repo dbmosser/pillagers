@@ -227,3 +227,7 @@
 
 2026-10-20 | o-16-golden-callout-names | golden kill callout, host and linked window | Replaced golden enemy down with the specific kind; raider reads golden pillager bot down; kept search the hoard. Reason: his answer 3.84 b and his pillager bot words rule. Before: generic callout in v32.99 (no recipe before capture). After: lane camera-recipes.json views golden-sentry-host, golden-sentry-linked, golden-raider-host and golden-raider-linked; picture paths pending lane capture.
 
+2026-10-20 | o-16-golden-callout-names | golden kill callout | Shipped in v33.07. Round-1 paths tools/handoff/console/notes/shots/o-16-golden-callout-names-recipes-1/golden-{sentry,raider}-{host,linked}-1080.jpg did not stage the callout; corrected camera recipes request replacement pictures. No further player-visible change this run.
+
+2026-10-20 | o-16-golden-callout-names | golden death callout | cw-cx-goldonce removes the duplicate feed copy in both windows using the existing feed-skip option; the top callout keeps the specific kind and search the hoard. Before: tools/handoff/console/notes/shots/o-16-golden-callout-names-recipes-2/golden-{sentry,raider}-{host,linked}-1080.jpg. After: lane round-3 capture pending.
+
