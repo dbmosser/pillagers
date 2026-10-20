@@ -1,0 +1,7 @@
+v32.22: party, sector, terms: short lines, bigger type
+
+The party and sector pages lose their explaining sentences and the party and terms text is larger.
+
+Check 32.22. Fails on v32.21.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

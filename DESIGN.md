@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.22 - Party, sector, terms: short lines, bigger type
+
+Co-op hunt while he was away. UI step 7 (restyle only). Critic scored 05, 06, 07 at 2 for explaining paragraphs and 13px text. Q8 allows shortening with the reason logged.
+
+MEASURED. Check 32.22 passes, and fails on v32.21.
 ## v32.21 - THE WHAT IS NEW CARD NAMES POLISH PASS 33
 
 Co-op hunt while he was away. The card was stamped v32.20 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.

@@ -6101,6 +6101,20 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.22',what:'party intro is one short line, sector hint lines hidden, party text 18px',
+   run:function(){
+     var bad=[];
+     try{
+       var pm=document.getElementById('partymodal'), m=pm&&pm.querySelector('.msub');
+       if(!m||m.textContent.length>60) bad.push('party intro long: '+(m&&m.textContent.length));
+       var t=document.getElementById('partytrade');
+       if(!t||t.textContent.length>80) bad.push('trade line long');
+       ['condhint','wxhint'].forEach(function(id){ var e=document.getElementById(id);
+         if(!e) bad.push('no '+id); else if(getComputedStyle(e).display!=='none') bad.push(id+' displays'); });
+       var fs=m?parseFloat(getComputedStyle(m).fontSize):0;
+       if(fs<18) bad.push('party msub '+fs+'px');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     return bad.length?bad.join('; '):null; }},
   {v:'32.21',what:'the what is new card is stamped within 0.15 of the build and leads with the new news shown whole',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';
