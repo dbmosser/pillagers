@@ -175,6 +175,7 @@ window.__reportProbe=function(runs){
 // distorts anything measured about what fits on screen. This forces the canvas
 // to a stated size so readings are representative.
 window.__forceSize=function(w,h){
+  if(!window.__sz0) window.__sz0=[cv.style.width,cv.style.height,hcv.style.width,hcv.style.height];   // 10-20 (job 58b): the canvas styles as first found, so __runPrep can put them back
   cv.style.width=w+'px'; cv.style.height=h+'px';
   hcv.style.width=w+'px'; hcv.style.height=h+'px';
   resize();
@@ -40466,6 +40467,7 @@ window.__REGRESS=[
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||g.over||!g.map) return 'SKIP: staging: no raid';
        CFG.wallBake=1; GFX.bypass=0;
+       WALLSPR.m={}; WALLSPR.n=0;   // 10-20 (job 58b): start from an empty sprite store, so the sprite baked below is one the mark painter can find
        for(i=0;i<g.map.walls.length;i++){ q=g.map.walls[i];
          if(q.tree||q.ruin||q.wreck||q.furn||q.win||q.door||q.ledge||q.lm||q.lockWall||q.noDes) continue;
          if(q.w>=80&&q.w<=1000&&q.h<=80&&(q.lift||26)>=14){ w=q; break; } }
@@ -53354,7 +53356,7 @@ window.__REGRESS=[
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame&&window.__forceSize)) return 'SKIP: this fixture cannot deploy and draw';
      if(typeof drawMapOverlay!=='function') return 'SKIP: no map here';
-     var bad=[], g, oFT=ctx.fillText, oMO=drawMapOverlay, rec=[], on=false, i, a, b, n=0;
+     var bad=[], g, oFT=ctx.fillText, oMO=drawMapOverlay, rec=[], on=false, i, a, b, n=0, sz0=[cv.style.width,cv.style.height,hcv.style.width,hcv.style.height];
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __forceSize(3840,2160); if(!(W>3000)) return 'SKIP: the canvas would not go to 4K';
@@ -53373,7 +53375,7 @@ window.__REGRESS=[
        }
        if(!n) return 'SKIP: no extraction name was drawn on the map';
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; drawMapOverlay=oMO; try{ __forceSize(1920,1080); }catch(_f){} try{ var g2=__state(); if(g2){ g2.mapOpen=false; if(!g2.over){ g2.player.downed=false; __endRaid('abandon'); } } }catch(_e){} __topClear(); __cleanProfile(); }
+     finally{ delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; drawMapOverlay=oMO; try{ /* 10-20 (job 58b): put the canvas styles back as found, not at 1920x1080, which left every later menu laid out larger than the gate window and v20.89 read a shop tile under its answer line */ cv.style.width=sz0[0]; cv.style.height=sz0[1]; hcv.style.width=sz0[2]; hcv.style.height=sz0[3]; resize(); }catch(_f){} try{ var g2=__state(); if(g2){ g2.mapOpen=false; if(!g2.over){ g2.player.downed=false; __endRaid('abandon'); } } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.slice(0,3).join('; '):null; }},
   {v:'21.02',what:'a finished contract row is as tall as the rest: the progress line holding CLAIM is the same height as a progress line without it',
    run:function(){
@@ -99001,6 +99003,7 @@ window.__topClear=function(){
 // And the ruler is pinned and the saved profile cleaned before the corpus runs,
 // rather than inheriting whatever the last hand probe in this tab left behind.
 window.__runPrep=function(){
+  try{ if(window.__sz0&&(cv.style.width!==__sz0[0]||cv.style.height!==__sz0[1]||hcv.style.width!==__sz0[2]||hcv.style.height!==__sz0[3])){ cv.style.width=__sz0[0]; cv.style.height=__sz0[1]; hcv.style.width=__sz0[2]; hcv.style.height=__sz0[3]; resize(); } }catch(e){}   // 10-20 (job 58b): ten or so checks (21.03, 21.06 ...) end with __forceSize(1920,1080), so the next menu laid out larger than the gate window (v20.89 read a shop tile under its answer line)
   try{ if(window.__ctxHeal) __ctxHeal(); }catch(e){}   // 10-20 (job 58b): every check starts here, so a canvas method an earlier check left as an own property is dropped first
   try{ if(window.__pinDPR) __pinDPR(1); }catch(e){}
   try{ var _bt=document.getElementById('title'); if(_bt) _bt.classList.remove('on'); }catch(e){}   // v12.06: the boot title is dismissed, as a player does before the floor
