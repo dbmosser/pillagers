@@ -3169,7 +3169,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.60';
+var VER='32.61';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -27611,6 +27611,24 @@ function selfRevive(){
 
 // ================================================================ player update
 var DT_LAST=0.016;
+// v28.xx (cw-cx-drygun): his 2.58 b: an exhausted gun yields to the next loaded gun, with its name.
+function autoEmptyGun(){
+  var p=G&&G.player;
+  if(!p||G.sim||G.over||G.paused||G.bagOpen||G.mapOpen||G.wheel||G.trade||G.forgeUI||G.searching||p.hand||p.downed||p.dying||p.roll>0||p.reloading>0||p.cooking||!p.wep||p.wep.mag<=0||p.ammo>0||rlHave(p)) return false;
+  var sl=hotbarSlots(), start=heldGunCell(sl), i, n, o, q, rounds, id=p.wep.id;
+  if(start<0||G.hot!==start) return false;
+  for(n=1;n<GUNKEYS;n++){
+    i=(start+n)%GUNKEYS; o=gunKeyOcc(sl[i]);
+    if(!o||o.gk===id||o.w.mag<=0) continue;
+    if(o.where==='sec') rounds=p.secAmmo||0;
+    else if(o.where==='bag'){ q=G.stowAmmo&&G.stowAmmo[o.gk]; rounds=q&&q.length?Math.min(o.w.mag,Math.max(0,q[0]|0)):Math.ceil(o.w.mag/2); }
+    else continue;
+    if(rounds<=0&&(p.reserve||0)<rktCost(o.w)) continue;
+    setHot(i);
+    if(p.wep.id!==id){ if(o.where!=='bag') say(String(p.wep.name||p.wep.id).toLowerCase(),'info'); return true; }   // v28.xx (cw-cx-drygun): a backpack draw already names the equipped gun once.
+  }
+  return false;
+}
 function updatePlayer(dt){
   var p=G.player,T=G.tel;
   fogMark();
@@ -27987,6 +28005,7 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
   T.closestExtract=Math.min(T.closestExtract,closestRingDist(p));   // v8.58: the nearest OPEN ring, not the targeted one
 
   tickReload(dt);   // v13.83: also run from the roll branch, so a roll does not freeze it
+  autoEmptyGun();   // v28.xx (cw-cx-drygun): the gun yields even when the trigger is released.
   if(keys['KeyR']&&p.reloading<=0&&!p.hand&&p.ammo<p.wep.mag&&rlHave(p)){ p.reloading=p.wep.reload*buzzSlow(); T.reloads++; if(!G.sim) reloadFoley(p); }   // v10.56; v25.52 (his reload order): the magazine out, then the steps
   // HOLDING THE TRIGGER ON AN EMPTY MAGAZINE RELOADS IT, v5.44, his note. The
   // bot has done this since it was written; the player had to let go and press
@@ -50561,7 +50580,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.60: A better copy upgrades the gun in hand immediately in DEMO and CAREER. Check 32.60 fails on v32.59',
+  now:'v32.61: An exhausted gun switches to the next loaded gun on the belt with a short gun-name callout. Check 32.61 fails on v32.60',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

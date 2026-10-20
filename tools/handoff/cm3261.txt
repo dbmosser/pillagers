@@ -1,0 +1,7 @@
+v32.61: next loaded gun
+
+An exhausted gun switches to the next loaded gun on the belt with a short gun-name callout.
+
+Check 32.61. Fails on v32.60.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

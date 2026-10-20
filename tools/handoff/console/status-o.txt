@@ -1,1 +1,1 @@
-10-20 02:44 gate: shipping cw-cx-heldcopy-o06 (o-06-pad-controls, codex)
+10-20 02:49 gate: shipping cw-cx-drygun (o-06-pad-controls, codex)

@@ -27,6 +27,9 @@ Status: shipped in 6 passes (v32.46, .48, .51, .52, .53, .57). Critic stuck at 3
 ## Run of 10-20 (lane b)
 Re-checked: shipped v32.46 to v32.57, six tries used (his 2.83 b), critic 3 = finish line for non-raid screens (3.51 a). No further ship. Optional next: 16px/600 warning row, merge gun and core rows, map labels 8px off props.
 
+## Run of 10-20 (lane a)
+Read the notes: all shipped (v32.46 to v32.57), six tries used (2.83 b), critic 3 meets the 3.51 a finish line for non-raid screens. No further work.
+
 ## Left to do
 - 2-player pictures from both windows were not taken (the camera stages one window).
 - Old checks likely red in the corpus, for coordinator to retarget (see alarms.md).

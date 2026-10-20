@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.61 - NEXT LOADED GUN
+
+Co-op hunt while he was away. His 2.58 b: a gun with no ammo switches to the next gun that has some and names it.
+
+MEASURED. Check 32.61 passes, and fails on v32.60.
 ## v32.60 - BETTER COPY IN HAND
 
 Co-op hunt while he was away. His 3.18 c keeps immediate upgrades. DEMO and belt routing rejected same-model finds before comparing quality.

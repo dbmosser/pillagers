@@ -1,0 +1,5 @@
+## v32.61 - NEXT LOADED GUN
+
+Co-op hunt while he was away. His 2.58 b: a gun with no ammo switches to the next gun that has some and names it.
+
+MEASURED. Check 32.61 passes, and fails on v32.60.
