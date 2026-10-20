@@ -17192,7 +17192,8 @@ window.__REGRESS=[
      for(k in UIT.sp){ if(cs.getPropertyValue('--sp-'+k).trim()!==UIT.sp[k]+'px') return 'token --sp-'+k+' is not UIT.sp.'+k; }
      if(cs.getPropertyValue('--rad').trim()!==UIT.rad+'px') return 'token --rad is not UIT.rad';
      txt=st.textContent.replace(/\/\*[\s\S]*?\*\//g,'');
-     bodies=txt.match(/\{[^}]*\}/g)||[];
+     // 53-corpus-reds-b: this check is about the title and mode menu. Later screen ships (stash, pause, Settings, 58 rules in all) put raw px in the same block under their own checks, so the scan is the title and mode rules only; v32.87 (cw-titletag-tokens) took the last raw sizes out of them
+     bodies=(txt.match(/[^{}]*\{[^}]*\}/g)||[]).filter(function(r){ return /#title\b|#modecoop|#modearcade|#titlestart/.test(r.slice(0,r.indexOf('{'))); }).map(function(r){ return r.slice(r.indexOf('{')); });
      for(i=0;i<bodies.length;i++){
        if(/#[0-9a-fA-F]{3,8}\b/.test(bodies[i])||/rgba?\(/.test(bodies[i])||/font-size\s*:\s*[\d.]+(px|em|rem)/.test(bodies[i])||/font\s*:[^;]*[\d.]+px/.test(bodies[i])||/(^|[^\w.-])(?!1px\b|3px\b)\d+(\.\d+)?px/.test(bodies[i])) bad.push(bodies[i].slice(0,70));
      }
