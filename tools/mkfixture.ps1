@@ -6140,6 +6140,31 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.90',what:'job 55: the close X sits the same distance under its frame top in Settings, the shop and the stash (one close place, v31.02)',
+   run:function(){
+     if(!(window.__station&&window.__hubEnter)||typeof openSettings!=='function') return 'SKIP: this fixture cannot walk the Undercroft';
+     var bad=[], got=[], m, b, mr, br, z, bs, ft, r;
+     try{
+       __topClear(); openSettings('display');
+       m=document.getElementById('settingsmodal'); b=document.getElementById('closesettings');
+       if(!m||!b||!m.classList.contains('on')) return 'SKIP: Settings did not open';
+       mr=m.getBoundingClientRect(); br=b.getBoundingClientRect(); z=parseFloat(m.style.zoom)||1; bs=getComputedStyle(m,'::before');
+       got.push(['settings',(br.top-(mr.top+(parseFloat(bs.top)||0)*z))/z]);
+       __topClear(); __hubEnter(); r=__station('trader','KeyE');
+       m=document.getElementById('tradermodal'); b=document.getElementById('closetrader');
+       if(!m||!b||!m.classList.contains('on')) return 'SKIP: the shop did not open';
+       mr=m.getBoundingClientRect(); br=b.getBoundingClientRect(); z=parseFloat(m.style.zoom)||1; bs=getComputedStyle(m,'::before');
+       got.push(['shop',(br.top-(mr.top+(parseFloat(bs.top)||0)*z))/z]);
+       __topClear(); __hubEnter(); r=__station('term','KeyE');
+       m=document.getElementById('hub'); b=document.getElementById('stashclose');
+       if(!m||!b||!m.classList.contains('on')) return 'SKIP: the stash did not open';
+       mr=m.getBoundingClientRect(); br=b.getBoundingClientRect(); z=parseFloat(m.style.zoom)||1;
+       got.push(['stash',(br.top-mr.top)/z]);
+       var lo=Math.min.apply(null,got.map(function(g){return g[1];})), hi=Math.max.apply(null,got.map(function(g){return g[1];}));
+       if(hi-lo>2) bad.push('the close X sits at different heights under its frame: '+got.map(function(g){ return g[0]+' '+Math.round(g[1]); }).join(', '));
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ __topClear(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'32.89',what:'stash setup: all 17 gun key and wheel names fit below their pictures at menu zoom 1 and 1.3, with readable labels and no picture overlap',
    run:function(){
      if(!(window.__P&&window.__applyLoaded&&window.__hubEnter&&window.__menuZoom&&window.__forceSize)) return 'SKIP: no stash layout harness';

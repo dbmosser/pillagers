@@ -1994,7 +1994,7 @@ body:has(#settingsmodal.on) #hubtoast, body:has(#keysmodal.on) #hubtoast{ bottom
 body:has(#settingsmodal.on) #hubtoast, body:has(#keysmodal.on) #hubtoast{ visibility:hidden; }
 /* v28.xx (cw-closex), his Q43 (2026-10-18): windows are "a centred card with an X in the corner". Settings, Keys and the pause card had the X; the shop, codex, trophies, fashion, mainframe, gamble, bar, terms, party and the stash still ended in a CLOSE button at the bottom right. Now each one's CLOSE is the same 48 px X at the top right of the frame (the same button, so B, Esc and the controller still find it by its word); a footer that held only CLOSE shrinks to nothing, and the credits readout steps left of the X. Style guide: one close place, the corner. */
 #root .modal.ui-win:not(#settingsmodal):not(#welcomemodal) > .ui-foot > .ui-back, #root #hub #stashclose{ position:absolute; top:22px; right:22px; bottom:auto; z-index:5; width:var(--sp-5); height:var(--sp-5); min-width:0 !important; min-height:0 !important; padding:0 !important; margin:0 !important; font-size:0 !important; line-height:1; display:flex; align-items:center; justify-content:center; background:transparent; border-color:var(--ui-line-hi); }
-#root #hub #stashclose{ top:8px; }
+#root #hub #stashclose{ top:12px; }
 #root .modal.ui-win:not(#settingsmodal):not(#welcomemodal) > .ui-foot > .ui-back::after, #root #hub #stashclose::after{ content:''; --xc:var(--tx-2); width:var(--sp-3); height:var(--sp-3); background:linear-gradient(45deg, transparent 44%, var(--xc) 44% 56%, transparent 56%), linear-gradient(-45deg, transparent 44%, var(--xc) 44% 56%, transparent 56%); }
 #root .modal.ui-win:not(#settingsmodal):not(#welcomemodal) > .ui-foot > .ui-back:hover::after, #root .modal.ui-win:not(#settingsmodal):not(#welcomemodal) > .ui-foot > .ui-back:focus-visible::after, #root #hub #stashclose:hover::after, #root #hub #stashclose:focus-visible::after{ --xc:var(--tx-1); }
 #root .modal.ui-win:not(#settingsmodal):not(#welcomemodal) > .ui-foot:not(:has(> button:not(.ui-back):not([style*="display: none"]):not([style*="display:none"]))){ border-top:0; padding:0; height:0; min-height:0; }
@@ -2016,7 +2016,8 @@ body:has(#hub.on) #hubtoast{ bottom:calc(5vh + 26px); }
    screen and squeezed the list to a sliver. The later cw-cardwide rule overrode it with a plain margin, so the share is dead; it is gone here so nothing can bring it back. */
 #root #settingsmodal, #root #keysmodal{ --py:var(--sp-5); padding-top:var(--py); padding-bottom:var(--py); }
 #root #settingsmodal::before, #root #keysmodal::before{ inset-block:calc(var(--py) - var(--sp-3)); }
-#root #settingsmodal #closesettings, #root #keysmodal #closekeys{ top:var(--py); }
+/* v28.xx (cw-closeplace) job 55 audit of check 24.21: the Settings X sat 24px under its frame and the stash X 8px, the shop, Mainframe and fashion X 12px. v31.02 says one close place: the corner. Now every full window puts the X 12px under its frame top. */
+#root #settingsmodal #closesettings, #root #keysmodal #closekeys{ top:calc(var(--py) - var(--sp-3) + 12px); }
 #root #settingsmodal #settabs{ top:calc(var(--py) + var(--sp-1)); }
 /* v28.xx (cw-cardwide), his Q43 (2026-10-18): windows are "a centred card with an X in the corner that takes up NEARLY THE WHOLE screen". The earlier critic rounds (cw-setnear2, cw-setheight) shrank Settings and Keys to 720 x 720; his word is later and wins (Q7). Now the card is the screen less 48 px each side and top and bottom, the frame sits 24 px outside that, the X stays in the card corner, and the rows keep one 960 wide column in the middle so a label never sits far from its stepper. */
 #root #settingsmodal, #root #keysmodal{ --cw:calc(100% - var(--sp-5) * 2); --py:var(--sp-5); }
@@ -3209,7 +3210,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.89';
+var VER='32.90';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -50951,7 +50952,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.89: Gun key and wheel names sit below their pictures and keep the same compass and key order. Check 32.89 fails on v32.88',
+  now:'v32.90: Settings and the stash put the close X 12px under their frame top, like the shop. Check 32.90 fails on v32.89',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

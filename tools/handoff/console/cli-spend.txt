@@ -478,3 +478,4 @@
 2026-10-20 0.1580896 53-corpus-reds-b
 2026-10-20 0.0000 o-02-corpus-green
 2026-10-20 0.0000 53-corpus-reds-b
+2026-10-20 0.1588 critic-53-corpus-reds-b

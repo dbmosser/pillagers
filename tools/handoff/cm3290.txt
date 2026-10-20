@@ -1,0 +1,7 @@
+v32.90: close place
+
+Settings and the stash put the close X 12px under their frame top, like the shop.
+
+Check 32.90. Fails on v32.89.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -25,17 +25,17 @@
  "04-stash-terminal": {
   "score": 3,
   "pass": false,
-  "verdict": "The title is now a clear 32px header and the subtitle clutter is gone, but the screen is still a dense tool dump with weak hierarchy, a stacked footer, and leftover template-style hint rows.",
+  "verdict": "The new slot tiles with the icon above a centred name read better and the labels are bigger, but the header is still busy, the footer bar is weak, and the screen has a lot of tiny text and dead space.",
   "findings": [
-   "P1 bottom strip: freebie kit bar, welcome toast, hint rows: Remove the toast. Merge the legend and junk hint into one 14px footer row. Make 'take the freebie kit' a filled --acc button, 20px text, 48px tall, with a --acc-ink label. Keep the bar on --ui-panel with only a 3px left accent tab.",
-   "P1 hierarchy across the whole card: Make credits the single 56px hero in --acc. Set xp and stash/bag in 16px --tx-2 with 24px gaps. Move sort, armory and trophies into a separate right-aligned group, apart from the filter tabs.",
-   "P1 type sizes: section labels, gun keys, item wheel, tactical belt: Set all read text to at least 16px f-cond 600, with section headers in one consistent 16px style. Delete the orphan 'guns' caption or move it into the belt header. Raise the gun key rows to 48px tall with 16px names.",
-   "P2 header block, top-left and top-right: Align the title and stats on one baseline. Put 24px between the header and the tab row. Dim the backdrop scrim to .80 so the hub title does not show. Draw the X at 40px with a --ui-line-hi border and a --tx-2 glyph.",
-   "P2 stash grid: Use a --ui-line border for every slot with a 3px bottom rarity bar only. Show 6 by 5 empty slots so the grid reads as inventory. Put counts in 16px --tx-1."
+   "P1 gun keys and item wheel tiles, bottom right: Make the icon 32px, set 8px padding inside the tile, and move the key number to a 16px label chip inset 8px from the corner. Make 'wheel' a non-tile caption in tx-2, or remove it.",
+   "P1 tactical belt and gun keys stack: Use a 24px gap between sections. Dim the empty belt numerals to tx-2 at 16px. Use the same tile border and radius as the gun-key tiles.",
+   "P1 header row, top right: Show one hero stat, $900 at 32px. Show xp and stash as 16px tx-2 labels with 24px gaps, and split 'bag' from 'stash'. Remove the gradient behind the header.",
+   "P1 tab and filter row: Move armory and trophies into a separate right-aligned group with a divider. Make the active tab tx-1 with a 3px lime underline. Shorten the search box to about 240px.",
+   "P2 stash grid left pane: Draw empty slots as dashed cells to fill the pane, as the backpack does. Apply a uniform 3px rarity bar at the bottom of each tile."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-31-j3/04-stash-terminal-1080.jpg",
-  "task": "manual",
-  "when": "2026-10-20T03:47"
+  "pic": "tools/handoff/console/notes/shots/53-corpus-reds-b-after/04-stash-terminal-1080.jpg",
+  "task": "53-corpus-reds-b",
+  "when": "2026-10-20T15:29"
  },
  "05-sector-page": {
   "score": 3,

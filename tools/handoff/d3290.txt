@@ -1,0 +1,5 @@
+## v32.90 - CLOSE PLACE
+
+Co-op hunt while he was away. Audit of check 24.21: the close X sat 24px (Settings) and 8px (stash) under its frame, the other windows 12px. One close place, one height.
+
+MEASURED. Check 32.90 passes, and fails on v32.89.

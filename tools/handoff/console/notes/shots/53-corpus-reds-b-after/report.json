@@ -1,0 +1,3 @@
+{"generated":"2026-10-20T11:28:58","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":15,"screens":[
+{"name":"04-stash-terminal","screen":"THE STASH: stash grid, loadout backpack, tactical belt, sell row, freebie kit","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"04-stash-terminal-1080.jpg","lint":{"issues":[],"stats":{"viewport":"1920x1080","scaleTo1080":1,"texts":85,"controls":16,"focusProbed":3,"canvasText":"out of scope: canvas-drawn text (raid HUD, world tags, map labels) is not in the DOM; judge it from the shot","counts":{"clip":0,"offscreen":0,"small":0,"contrast":0,"font":0,"overlap":0,"focus":0,"total":0},"covered":3}}}}
+]}
