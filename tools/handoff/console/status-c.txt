@@ -1,1 +1,1 @@
-10-20 01:44 waiting: another helper is just starting (memory check again in a few minutes); c-02-raid-hud-redesign kept
+10-20 02:00 waiting for RAM: 2 GB free, a helper starts at 3; c-02-raid-hud-redesign kept

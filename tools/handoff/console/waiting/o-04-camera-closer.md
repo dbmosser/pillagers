@@ -15,3 +15,5 @@
 Coordinator note 2026-10-19 13:45: SHIPPED v31.85 (camera 1.3). Left, lane-side only: run .codex-work/o-04-camera-closer/camera-run-request.json (both-window pictures, 4K frame times). Do not rebuild.
 
 Coordinator note 10-20 00:20: back in tasks/ for the lane-side step it waited for. The lane now photographs camera-recipes.json itself (first 6 screens, critic on each) and sends you the pictures; the first pass spends no Codex run. Already shipped (do not ship again): cw-cx-camera130 . Review the pictures and the critic: end TASK DONE if they hold, or fix P0/P1 findings with a NEW key.
+
+Coordinator note 10-20 02:00: the shipped camera change needs only its two-window pictures. Codex found the camera browser blocks the second window (window.open without a gesture). uishots.ps1 now has -NoPopupBlock; the coordinator runs camera-recipes.json with it (out: notes/shots/o-04-camera-closer-pair) and closes the job after looking at the pictures. Parked in waiting/ (no Codex runs).

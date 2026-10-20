@@ -26,3 +26,5 @@ Still yours: the follow-up pass on the screens 02 has finished, the critic on th
 Coordinator note 10-19 23:59: the runs of 22:55 and 23:05 only waited on c-02 and no longer count as tries (3 of 5 used). Parked in blocked/ on c-02-raid-hud-redesign: it comes back by itself when c-02 is finished. Next run: re-shoot the 15 HUD screens after c-02 and fix the P0/P1 findings that are not on c-02's list.
 
 Coordinator note 10-20 01:00: c-02-raid-hud-redesign (the raid screen redesign on the same screens) ran out of tries at 00:31 and is parked until you end, so you own the raid HUD screens now. Read notes\02-raid-hud-redesign.md and notes\ui\changes.md for what it shipped (up to v32.25). Its open list: 37 one big extract timer (old banner checks need a retarget first), 61 the wheel's muddy focus wedge, 78 mixed 14px and 18px button text. Critic last: 19, 21, 36, 37 at 2; 50 and 22 at 3.
+
+Coordinator note 10-20 01:55: CLOSED, superseded by c-02-raid-hud-redesign (same raid screens; it is back in tasks/ and running). Shipped here tonight: v32.35 cw-extbig, v32.36 cw-extscrim, v32.39 cw-extlegend, v32.38 cw-cardP35. Its open list moved to c-02.

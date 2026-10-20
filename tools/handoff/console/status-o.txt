@@ -1,1 +1,1 @@
-10-20 01:46 running o-04-camera-closer (codex, run 6 of 5)
+10-20 02:01 waiting for RAM: 2 GB free, need 3 (o-05-pad-presets)

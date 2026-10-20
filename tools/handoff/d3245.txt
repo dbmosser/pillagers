@@ -1,0 +1,5 @@
+## v32.45 - Rewards and bar: one focus, fewer lines
+
+Co-op hunt while he was away. UI step 7 (restyle only). Critic on 13 and 16 was 2: no hierarchy, explaining and flavour lines, two competing lime buttons. Lines hidden under Q8 (logged in changes.md).
+
+MEASURED. Check 32.45 passes, and fails on v32.44.

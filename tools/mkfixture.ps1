@@ -6101,6 +6101,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.45',what:'rewards intro hidden and bar 28px, bar flavour and wallet lines hidden, ingest ghost when idle',
+   run:function(){
+     var bad=[];
+     try{
+       var rw=document.getElementById('opane_rew'), m=rw.querySelector(':scope > .msub:not(#roadmaphead)');
+       if(m&&getComputedStyle(m).display!=='none') bad.push('rewards intro shows');
+       if(getComputedStyle(document.getElementById('seasonbar')).height!=='28px') bad.push('bar h '+getComputedStyle(document.getElementById('seasonbar')).height);
+       if(getComputedStyle(rw).maxWidth!=='1400px') bad.push('rew maxw '+getComputedStyle(rw).maxWidth);
+       if(getComputedStyle(document.getElementById('bar_line')).display!=='none') bad.push('bar_line shows');
+       if(getComputedStyle(document.getElementById('wallet_bar')).display!=='none') bad.push('wallet_bar shows');
+       renderBar();
+       var bt=document.querySelector('#barlist [data-bz]');
+       if(bt&&!bt.disabled){ var bg=getComputedStyle(bt).backgroundColor; if(bg!=='rgba(0, 0, 0, 0)') bad.push('ingest filled '+bg); }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     return bad.length?bad.join('; '):null; }},
   {v:'32.44',what:'auto resolution never steps the picture below 75 percent (his 2.44 b)',
    run:function(){
      if(typeof drsTick!=='function'||typeof DRS!=='object') return 'SKIP: no drsTick';

@@ -857,6 +857,19 @@
 #root #termsmodal .plist .nm{ color:#e8e2d4 !important; }
 #root #termsmodal .plist .nm div{ color:#aaa498 !important; }
 #root #termsmodal #termsclear{ min-width:200px; min-height:48px; font-size:18px; }
+/* v28.xx (cw-uc-rewbar) b-31 step 7, critic on 13 rewards (2: no hierarchy, intro sentence, 13px bar, dead right column) and 16 bar (2: two lime buttons, flavour line, duplicate money line): rewards intro hidden, xp label 24px, bar 28px with 16px count, list 1400px wide with 64px rows; bar and craft lose the duplicate "you hold" line, the bar loses its flavour line, ingest buttons are ghost until hovered or focused, prices light instead of lime. */
+#root #opane_rew{ max-width:1400px !important; }
+#root #opane_rew > .msub:not(#roadmaphead){ display:none !important; }
+#root #seasonhead{ font-size:24px !important; font-weight:800; letter-spacing:.08em !important; color:#e8e2d4 !important; padding-bottom:4px !important; }
+#root #seasonbar{ height:28px !important; }
+#root #seasontext{ font-size:16px !important; line-height:28px !important; }
+#root #seasonclaimall{ width:auto !important; padding:10px 28px !important; align-self:flex-end; }
+#root #seasonlist .row{ min-height:64px; font-size:20px; }
+#root #seasonlist .row .vl{ color:var(--ash); }
+#root #wallet_work, #root #wallet_merc, #root #wallet_bar, #root #bar_line{ display:none !important; }
+#root #barmodal .row .hint{ font-size:16px; }
+#root #barmodal .row .vl{ color:#e8e2d4; }
+#root #barmodal .row button:not(:disabled):not(:hover):not(:focus){ background:transparent; color:#e6ff3d; border:1px solid #e6ff3d; }
   /* v15.76, HIS ORDER OF 2026-09-25 (multiplayer, build 3): THE MODE MENU ON THE TITLE. Five rows, one under the other and all
      centred, so a controller stepping down the column lands on the next row and not on a control off to one side. A greyed
      row keeps its note beside it, out of the flow, so the row itself stays centred with the others. */
@@ -3041,7 +3054,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.44';
+var VER='32.45';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -50391,7 +50404,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.44: Auto resolution never drops the picture under 75 percent. Check 32.44 fails on v32.43',
+  now:'v32.45: The rewards page loses its intro and gets a bigger bar; the bar page loses two lines and its buttons go ghost until selected. Check 32.45 fails on v32.44',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

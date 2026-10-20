@@ -1,0 +1,11 @@
+{"generated":"2026-10-20T01:56:39","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":70,"screens":[
+{"name":"03-hub-floor","screen":"Undercroft hub floor with station labels, belt and toast","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"03-hub-floor-1080.jpg","lint":""}},
+{"name":"09-craft","screen":"Trader: CRAFT tab","1080":{"staged":true,"note":"tradermodal","viewport":"1920x1080","shot":"09-craft-1080.jpg","lint":""}},
+{"name":"10-hire","screen":"Trader: HIRE tab","1080":{"staged":true,"note":"tradermodal","viewport":"1920x1080","shot":"10-hire-1080.jpg","lint":""}},
+{"name":"11-wirt-gambler","screen":"Wirt the Gambler modal","1080":{"staged":true,"note":"gamblemodal","viewport":"1920x1080","shot":"11-wirt-gambler-1080.jpg","lint":""}},
+{"name":"13-mainframe-rewards","screen":"Mainframe: rewards","1080":{"staged":true,"note":"opmodal","viewport":"1920x1080","shot":"13-mainframe-rewards-1080.jpg","lint":""}},
+{"name":"15-mainframe-stats","screen":"Mainframe: your stats","1080":{"staged":true,"note":"opmodal","viewport":"1920x1080","shot":"15-mainframe-stats-1080.jpg","lint":""}},
+{"name":"16-bar-last-pour","screen":"The Last Pour bar modal","1080":{"staged":true,"note":"barmodal","viewport":"1920x1080","shot":"16-bar-last-pour-1080.jpg","lint":""}},
+{"name":"17-fashion-mirror","screen":"FASHION / appearance (BUILD/character look) modal","1080":{"staged":true,"note":"appearmodal","viewport":"1920x1080","shot":"17-fashion-mirror-1080.jpg","lint":""}},
+{"name":"18-settings-hub","screen":"Settings from the hub station, top of DISPLAY tab","1080":{"staged":true,"note":"settingsmodal","viewport":"1920x1080","shot":"18-settings-hub-1080.jpg","lint":""}}
+]}

@@ -1,0 +1,3 @@
+{"generated":"2026-10-20T01:49:14","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":27,"screens":[
+{"name":"05-sector-page","screen":"Sector page WHERE ARE YOU GOING? (maps, surface, weather, going-up summary)","1080":{"staged":true,"note":"sectormodal","viewport":"1920x1080","shot":"05-sector-page-1080.jpg","lint":""},"4k":{"staged":true,"note":"sectormodal","viewport":"3840x2160","shot":"05-sector-page-4k.jpg","lint":""}}
+]}

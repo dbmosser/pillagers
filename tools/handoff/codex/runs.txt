@@ -77,3 +77,5 @@
 2026-10-20 01:22 o-01-stash-pays-in-raid 80s ok PARTIAL in=2239896 out=16636 run=2
 2026-10-20 01:36 o-01-stash-pays-in-raid 458s ok PARTIAL in=5171257 out=36022 run=3
 2026-10-20 01:43 o-01-stash-pays-in-raid 97s ok PARTIAL in=5855339 out=39690 run=4
+2026-10-20 01:48 o-04-camera-closer 140s ok PARTIAL in=571246 out=5532 run=6
+2026-10-20 01:59 o-05-pad-presets 365s ok PARTIAL in=1455112 out=21001 run=6

@@ -91,12 +91,19 @@
   "when": "2026-10-20T03:52"
  },
  "09-craft": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The craft grid is clean and readable, but the screen is a top-heavy template with a dead lower half, a cream detail card that clashes with the dark UI, and a header that collides and shows redundant currency.",
-  "pic": "tools/handoff/console/notes/shots/all/09-craft-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:14"
+  "verdict": "A clean, consistent dark card with a clear focus tile and a visible close x, but half the card is empty, the header money readouts are cluttered and contradictory, and the hold-to-craft button and the footer tip are weak.",
+  "findings": [
+   "P1 item grid / left panel: Make tiles fill the panel (for example 4 columns of about 260x200 tiles, or 6 columns with 240px tall tiles), or shrink the panel to fit its content and use the freed height for a larger detail pane with a 96px item preview.",
+   "P1 header top-right currency strip: Keep one money readout, '$900', at 20px f-cond 700 in tx-1. Drop the duplicate 'you hold' line. Show stash and bag as 16px tx-2 labels. Leave 24px between the strip and the x. Remove xp from this window.",
+   "P1 hold to craft button: When it cannot be done, show a --ui-line-hi 1px outline with tx-2 text at 4.5:1 or better, and add a 16px --danger 'need 3 scrap metal'. When it can be done, use a --acc fill with --acc-ink text, 56px tall, at the 20px size.",
+   "P1 bottom tooltip 'half the pillager bots down here walk past scrap. their loss.': Delete it. If a hint is kept, put it in the footer at 14px tx-2, 24px from the card edge, with no box.",
+   "P2 tab row and 'you hold' line: Set tabs at 20px f-cond 600 with a 3px --acc underline on the active one, and a 48px row height. Remove the 'you hold' row, which also gives the grid back about 30px."
+  ],
+  "pic": "tools/handoff/console/notes/shots/b-31-n1/09-craft-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-20T05:57"
  },
  "10-hire": {
   "score": 2,
@@ -147,17 +154,17 @@
  "16-bar-last-pour": {
   "score": 2,
   "pass": false,
-  "verdict": "a full-size card that is mostly empty, with a small off-centre content block, a title that is too small and doesn't align with the content below it, and two identical lime buttons competing for attention, so it reads as a template rather than a bar menu.",
+  "verdict": "A small, flat list floating in a huge empty card, with two identical lime buttons fighting the title for attention, a header that says \"credits\" where the guide says \"$\", and explaining or joke sentences on screen.",
   "findings": [
-   "P1 whole card composition: Anchor a 56px header row at the top of the card with the title at left, 32px f-cond 700, 24px padding. Make the list fill the card width, with 72px rows and 16px gaps. Or move the content block up so it starts about 120px below the header.",
-   "P1 title 'the last pour' (y≈390): Left-align the title to x=431 and set it at 32px f-cond 700 in tx-1. Remove the short underline, or make it a 2px, 36px-wide accent tab. Add 24px between the title and the body copy.",
-   "P1 ingest buttons x2 and the $300/$520 prices: Make the prices tx-1 at 20px. Make the idle buttons outline-only (1px line-hi, tx-1). Fill the focused row's button with lime. Add a --ui-raised row fill and a 3px lime left bar on the focused row.",
-   "P1 descriptions and 'things are about to get real.': Delete 'things are about to get real.' and 'you hold $900' since the header already shows the balance. Keep one short effect line per row at 16px in tx-2 (at least 4.5:1). Cut the long blotter sentence to about 6 words.",
-   "P2 top-right currency strip: Show '$900' with a 16px label, and use one size and weight for every item. Put 24px between items and a 1px divider before the stash/bag group. Show stash and bag as 'stash $3,750' and 'bag 0' at 16px, in tx-2 on --ui-panel."
+   "P0 whole card: Either shrink the card to fit (about 1100x520, centred) or fill it: a 56px header row with the title left-aligned and the X right, a 2-column layout with a detail pane (item art 160px, effect, price) on the right, and a footer legend row 72px high. Do not leave the list floating at mid-height.",
+   "P0 ingest buttons: Idle rows get a ghost button (1px --ui-line-hi border, tx-1 text). Only the focused row gets the lime fill. Prices go to tx-1 (not lime). With pad focus, the focused row also gets a --ui-raised fill and a 3px left accent bar.",
+   "P1 copy: \"things are about to get real.\" and the item blurbs: Delete \"things are about to get real.\". Cut item blurbs to a 2-4 word effect tag in 16px tx-2 (e.g. \"+speed, blur\"). Keep \"you hold $900\" but move it into the header or the footer as a label.",
+   "P1 header top-right: \"900 credits  0 xp  stash 3,750 bag 0\": Show \"$900\" once, as a 20px f-cond number with a 16px tx-2 label, then 24px gaps between stats. Put a 1px --ui-line divider between groups and 24px between the last group and the X. Drop the duplicate \"you hold $900\" line.",
+   "P1 title \"the last pour\": Move the title into the header row top-left at 32px f-cond 700, aligned to the card's 24px padding, on the same baseline as the X. Align \"you hold\" and the list to the same left edge."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-31-f2/16-bar-last-pour-1080.jpg",
-  "task": "b-31-ui-undercroft",
-  "when": "2026-10-19T00:27"
+  "pic": "tools/handoff/console/notes/shots/b-31-n1/16-bar-last-pour-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-20T05:57"
  },
  "17-fashion-mirror": {
   "score": 2,
@@ -924,5 +931,65 @@
   "pic": "tools/handoff/console/notes/shots/c-02-r19/78-raid-pause-box-full-kit-1080.jpg",
   "task": "manual",
   "when": "2026-10-20T04:25"
+ },
+ "74-pad-call-of-duty": {
+  "score": 3,
+  "pass": false,
+  "verdict": "A clean, consistent dark card with the right title, x and lime focus, but the pad diagram has crossed leader lines and detached labels, the row list is cut off mid-row, and nothing carries clear hierarchy beyond the title.",
+  "findings": [
+   "P1 controller diagram, lines from labels to buttons: Draw one straight, horizontal-then-angled leader per label with no crossings. Put the label rows at the same y as their button, or number the buttons. End each line in a 6px dot ON its button. Reduce line weight to 1px at --ui-line-hi, and dim the unfocused lines to 40%.",
+   "P1 left list, bottom row 'help / finish': Snap the scroll to whole rows (58px pitch) or fade the bottom 24px into --ui-panel. Make the scroll thumb 4px wide in --ui-line-hi, brighter when focused. Stop the clip at a row boundary.",
+   "P1 diagram labels, both columns: Set both to --fs-body 20px. Button name in --tx-2 at 16px with +.04em tracking, action in --tx-1 at 20px / 600. Align the button names to a fixed 56px column so the actions start on one edge.",
+   "P2 layout row, top right: Make the arrows 56x48 with 24px chevrons. Group the control as one bordered unit with a 1px --ui-line-hi border. Add a 'n / 8' counter in --tx-2 16px under or beside the name. Move the 'layout' label closer or add the preset name as the section title.",
+   "P2 left list, section headers 'move' and 'fight': Raise to 16px / 600 in --tx-2 with +.04em. Align the bar to the row's left edge. Use --ui-line-hi for static section bars and keep lime only for the focused row."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-05-pad-presets-recipes-1/74-pad-call-of-duty-1080.jpg",
+  "task": "o-05-pad-presets",
+  "when": "2026-10-20T05:52"
+ },
+ "74-pad-lefty": {
+  "score": 3,
+  "pass": false,
+  "verdict": "The card has a clean frame, a clear title, a corner x and the right palette, but the controller diagram is wrong: its leader lines cross each other and miss their buttons, and the left list has clipped rows and tiny type.",
+  "findings": [
+   "P0 controller diagram, leader lines: Draw each leader as an elbow line: horizontal from the label to x=1140 (left) or x=1590 (right), then straight to the node. Order the labels top to bottom in the same order as their nodes so no lines cross. Space the face-button nodes 20px apart. Give each of the four face-button labels its own line, coloured by its button (y, x, b, a). Reorder the label stack on the right to match the abxy layout.",
+   "P1 left list, bottom row (help / finish) and scroll area: Fade or clip the list at a row boundary, with the viewport height a multiple of the row pitch (58px). Add a 24px fade at the bottom edge. Widen the scrollbar to 8px with --ui-line-hi. Narrow the list column to about 520px, or put a 1px --ui-line leader between name and chip, so the eye can follow across each row.",
+   "P1 left list, key chips and section labels: Set chip text to 16px f-cond 700 in tx-1. Reserve lime for the focused row's chip and a 2px lime left bar on that row. Set section labels to 16px tx-2 with .04em spacing. Make the chips 56x40 with a --ui-line-hi border. Add a visible focus row (--ui-raised fill and a lime bar) so the pad cursor has a target.",
+   "P1 diagram labels, left and right columns: Use a fixed 59px pitch with a slot for every button, and leave empty slots on purpose in the same place on both sides. Set button tag to 16px tx-2 and action to 20px tx-1, one size on both columns. Draw the two sticks in a different tone from the buttons ('aim' and 'move' read as buttons).",
+   "P2 header row, layout selector: Move the selector into the title row, next to the title or in line with the close x, and delete the 'layout' row. Make the arrows 56x48 with a 20px glyph. Make 'lefty' tx-1 and use lime only for the focused arrow. That frees about 100px, and all rows then fit without clipping."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-05-pad-presets-recipes-1/74-pad-lefty-1080.jpg",
+  "task": "o-05-pad-presets",
+  "when": "2026-10-20T05:52"
+ },
+ "74-pad-pillagers": {
+  "score": 3,
+  "pass": false,
+  "verdict": "A clean, consistent dark card with a clear title, a lime selector and an x, but the leader lines are tangled, the key chips are tiny and the list is clipped, so it reads as a debug sheet rather than a polished AAA menu.",
+  "findings": [
+   "P0 controller diagram, leader lines: Use orthogonal leaders (horizontal, then a single 45 degree kink) with each one ending on its own dot. Give each button one unique anchor point and sort the label order top to bottom to match the anchor order, so no lines cross. Put the 'move' and 'aim' labels exactly on the stick centres, or label them from the side like the other buttons.",
+   "P1 left list, binding chips: Set chip text to 20px f-cond 700 in tx-1 inside a 64x40 chip. Pull the chip to a fixed column about 240px from the name, or add a 1px --ui-line row divider. Highlight the focused row with --ui-raised fill and a 3px lime left bar.",
+   "P1 left list, bottom edge and scrollbar: Snap the list height to a whole number of rows (row pitch 58px) or add a 24px bottom fade. Make the scrollbar 6px wide in --ui-line-hi with a visible thumb, and show 'more' only through the thumb. Align the list and diagram panel bottoms exactly.",
+   "P1 diagram labels, left and right columns: Use one fixed 58px row pitch for both columns. Collapse the empty slots by ordering the labels to follow the layout of the controller, and use a single muted prefix style in tx-2 at 16px with the action in tx-1 at 20px.",
+   "P2 header and layout selector: Put 'layout' directly left of the selector, or make the selector a 360x48 segmented control. Make the arrows 48x48 with a lime border when focused. Keep the preset name at 20px."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-05-pad-presets-recipes-1/74-pad-pillagers-1080.jpg",
+  "task": "o-05-pad-presets",
+  "when": "2026-10-20T05:53"
+ },
+ "13-mainframe-rewards": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The window shell (centred card, title, x, tabs) follows the guide, but the rewards body is a small-type, unfocused list with no hero, no focus or claim state, and a dead column on the right, so it reads like a debug table instead of a season-pass screen.",
+  "findings": [
+   "P0 rewards body, whole screen: Add one hero: current xp at 56px f-cond 800 tx-1 on the left. Make the bar 12px tall with a lime fill, and put '0 / 1,200,000' in 16px tx-2 below it. Highlight only the next unclaimed row (raised fill + 3px lime left bar). Drop the lime on the other rows' 'to go' text and use tx-2.",
+   "P0 rewards list, right column x 1310-1415: Remove the boxed number column. Keep a single right-aligned value at 20px: the threshold in tx-2, or a claim button on claimable rows only (lime fill, acc-ink text). Show locked rows with a lock glyph instead.",
+   "P1 intro line 'this is like a season pass, more stuff to do.' (y 224): Delete the sentence. Delete the lone 'xp' label, or make it the 16px label of the hero number. Leave 24px between the tab rule (y 189) and the first content.",
+   "P1 list rows, 1-11: Rows 64px with a 40px reward icon tile on the left. Reward name 20px tx-1 f-cond 600. Drop the 'n.' prefixes, or show them as a 16px tx-2 tier number in a fixed 48px column. Make the scrollbar 6px lime-grey on the card edge, and snap the list to a whole row so none is half cut.",
+   "P1 layout, right 25% of the card (x 1440-1800): Use the full 1680px content width, or put a 400px detail pane (--ui-raised) on the right showing the next reward large. Turn 'nothing ready to claim' into a 16px tx-2 inline status at the right of the bar, not a bordered strip."
+  ],
+  "pic": "tools/handoff/console/notes/shots/b-31-n1/13-mainframe-rewards-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-20T05:57"
  }
 }

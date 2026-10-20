@@ -1,0 +1,7 @@
+v32.45: rewards and bar: one focus, fewer lines
+
+The rewards page loses its intro and gets a bigger bar; the bar page loses two lines and its buttons go ghost until selected.
+
+Check 32.45. Fails on v32.44.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
