@@ -77,3 +77,5 @@ Still open as of 2026-10-18 evening (checked against this table and git log; no 
 - Check shipq.log lines by time, not by the key alone: an old STOP line for the same key matches a plain grep.
 - Preflight can fail with "parse check ERROR" or "regex matched 0 times: var VER" when another ship is committing at the same moment;
   rerun when git status of dark_raiders.html is clean.
+
+- 10-20 (coordinator): check in his next real two-window play, not checkable in the headless camera: each player's stash pays for a forge buy in a raid on its own (o-01, v32.40 to v32.43), and the closer camera (o-04) in both windows.

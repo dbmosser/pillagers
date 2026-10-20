@@ -86,3 +86,21 @@ camera-recipes.json retains the three requested presets and adds player 1 and pl
 
 Remaining lane work: retarget 32.09, preflight and ship cw-cx-padlegend, return five recipe pictures and critic results (target 4), and the camera staging report for the two-window/menu-path assertions. Do not ship cw-cx-padpresets again; it is retained in keys.txt only because the lane skips shipped keys. If the paired scenes cannot open or navigate, return the exact camera error so the fixture recipes can be repaired.
 
+
+--- codex run 2026-10-20 02:23 ---
+2026-10-20, o-05-pad-presets, follow-up on shipped v32.49 (workspace v32.51).
+
+cw-cx-padlegend shipped as v32.49. Its three-anchor change and browser check passed. Retarget 32.09 was applied as 57a0120b. I opened the actual after picture from the standard screen-74 camera. The critic scored it 3 and found the controller/legend text small, the list short, and the picker weak. The list does end on a whole row in that picture; the passed check measures that. A shared Keys-list padding and mask still consumed space below this pad-specific layout.
+
+Prepared new key cw-cx-padscale. All sixteen action labels now use HTML at 20px Barlow, with 40px legend rows, rather than scaling inside the SVG. The controller outline has 25 percent more horizontal spread, a tightly fitted viewBox and physical labels at 20px Barlow, with sticks at 24px. The rebind rows are 48px instead of 56px, section names 20px, and the pad-only list clears its inherited bottom padding and mask. The existing focused-row marker remains. The picker has a 16px spaced layout label, 32px chevrons, and a 16px count beside its unchanged name button. Custom shows a dash for the count. No mappings, stick rules, action names or gameplay values changed.
+
+The recipe-round-2 pictures are all NOT STAGED and show the title. The common error was my missing semicolon between the existing prelude IIFE and the added pair helper IIFE. Fixed the boundary explicitly and prefixed the helper with a semicolon as well. I ran the combined prelude in Node with both a fresh and an existing window.__uis; both install the helper successfully. This catches the actual runtime concatenation error that the earlier syntax-only check missed. I did not apply the title-screen critic findings to this task, since those photographs never reached its screen.
+
+The three preset recipes now keep an idle stubbed Xbox pad connected and focus the layout picker for the photograph, so the actual pad focus and footer are visible. The two paired-window recipes retain all prior menu-path, separate-save and BroadcastChannel assertions; these have not executed in Chrome yet because the prelude failed first. The camera must report their results before claiming two-window completion.
+
+Local validation: the new mk script prints written. Four sequential anchors match exactly once; resulting full game scripts and drafted browser check parse. All six layouts produce sixteen named nodes and matching HTML legend entries with correct actions and lefty stick words; preset counts 1 through 6 and custom count pass. All lane output is ASCII. The new drafted browser check measures HTML legend size and pitch, all mappings and counts, complete 48px scrolling rows and removal of inherited padding/mask. The old build lacks the HTML legend, so it fails this check.
+
+fixture-retarget.json now contains only the new 32.49 retarget for cw-cx-padscale: it accepts uniform 56px or 48px rows, with viewport height an exact multiple of whichever pitch is present. All other assertions remain. The old 32.49 build still passes it before shipping; the new 48px build then passes it too.
+
+Lane work: retarget 32.49, preflight and ship cw-cx-padscale, photograph the repaired five-scene recipe file (round 3), and return the actual pad screen critic results plus the paired-window staging strings or exact exception. The target remains critic 4. Both earlier keys stay in keys.txt for the shipped-key skip, and must not ship again.
+

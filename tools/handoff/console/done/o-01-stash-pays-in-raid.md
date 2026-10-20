@@ -45,3 +45,5 @@ Lane note 2026-10-20 01:43: shipped cw-cx-stashraid cw-cx-forgeread cw-cx-forgef
 All changes shipped in v32.43. Checks pass; forge views scored 3/3/3 with no lint findings.
 
 TASK PARTIAL: coordinator must verify independent stash payments in both real player windows and provide a picture from each.
+
+Coordinator note 10-20 02:25: CLOSED as done. Shipped cw-cx-stashraid, v32.40 cw-cx-forgeread, v32.43 cw-cx-forgefinish; fixture retarget 633e412e (5 checks PASS); forge views 3/3/3, lint 0. Its last ask (each player's stash pays on its own, a picture from each real window) needs the two windows linked inside one headless camera, which does not link (o-04 showed the same at 02:20): it goes on the 2-player test sheet for his next two-window playtest instead.

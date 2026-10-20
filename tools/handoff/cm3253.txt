@@ -1,0 +1,7 @@
+v32.53: pre-raid map: zone names 20 px, exit and keyed room names 18 px
+
+The map names on the pre-raid page are bigger and easier to read.
+
+Check 32.53. Fails on v32.52.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -33,17 +33,17 @@
  "05-sector-page": {
   "score": 3,
   "pass": false,
-  "verdict": "The new version is cleaner than the old one: the 'no gun equipped' chip and the 'equip plates' clutter are gone, the map labels no longer sit on top of the room markers, and the pack rows are taller. It still reads as a competent dark tool panel rather than a polished AAA pre-raid screen, because the lime ascend slab, the lime-outlined selected cards and the lime selected rows all compete.",
+  "verdict": "the selected states are quieter, the pack rows fill the column and the ascend plate is smaller, but the map labels are now too small to read from a couch and the right column still has too many type sizes and stacked boxes.",
   "findings": [
-   "P1 hierarchy: ascend button vs. selected cards: Make selected cards a quiet fill (--ui-raised) with a 3px lime left bar and a lime check, not a full lime outline. Keep the solid lime fill only for ascend, and cut its height from about 72px to 56px.",
-   "P1 map panel (the left two-thirds): Drop the zone labels to the 16px label size at tx-2 with a 1px dark halo, not a blur. Move 'blast freezer' so it clears the boxes (right-align it above its marker). Desaturate the map fill toward --ui-panel so only the exit rings (teal) and the keyed-room markers (purple) stand out.",
-   "P1 kit column, pack rows: Use one row pitch (48px) for every row. Make steppers 36x36 with a 20px glyph. Give the count tx-1 at weight 700 and grey out the '-' at 0. Use the dead space for a bigger pack summary, or move the gun and armour rows up so the footer is not isolated.",
-   "P1 footer chips (gun, armour warning, ascend): Make the warning a small 16px glyph plus text in --warn with no fill and no border, set inline above ascend. Raise 'own gun in stash' to 16px and tx-2 at 4.5:1 or better. Add 16px of clearance between the warning and the ascend slab.",
-   "P2 conditions column (surface, weather): Set the headers to 16px at tx-2, +.04em, and drop the extra 'conditions' parent label. Raise the modifier text to 16px and tx-2. Widen the column from about 184px to 220px by narrowing the map slightly."
+   "P1 map labels (exit a/b/c, foreman office, blast freezer, the long dock): set every map label to at least 16px f-cond 600 with a 2px dark halo. Put the exit labels 8px clear of the ring. Move 'blast freezer', 'chill row' and 'the long dock' to empty floor so they do not cross block edges.",
+   "P1 right column, kit and pack area: limit it to the 20px / 16px / 14px scale. Bring the caps to 16px tx-2 or put them next to the count as '0 / 2'. Use one stripe colour, or none. Keep a stripe only where it carries rarity.",
+   "P1 selected state across kit, surface and weather: selected row: --ui-raised fill, 3px lime left bar, lime check. Focused row: 2px lime outline on the whole row. Keep the two states visibly different and check that the pad focus shows.",
+   "P1 hierarchy, ascend button and warning: give the warning a 4px --warn left bar on the same row style as the gun row, or merge the two into one 'gun / armour' block with 16px dividers. Leave 16px of space above ascend.",
+   "P2 right column, vertical rhythm: use an even 16px between blocks. Give the checkbox a 24px hit box in the panel border colour with a lime check when on."
   ],
-  "pic": "tools/handoff/console/notes/shots/22-after3/05-sector-page-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/22-after4/05-sector-page-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T06:18"
+  "when": "2026-10-20T06:22"
  },
  "06-terms": {
   "score": 3,

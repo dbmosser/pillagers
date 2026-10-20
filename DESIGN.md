@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.53 - PRE-RAID MAP: ZONE NAMES 20 PX, EXIT AND KEYED ROOM NAMES 18 PX
+
+Co-op hunt while he was away. After the map canvas was drawn at its real size the critic found the names too small to read from a couch. The zone names go to 20 px (shrinking to 14 to fit), the exit and keyed room names to 18 px.
+
+MEASURED. Check 32.53 passes, and fails on v32.52.
 ## v32.52 - PRE-RAID: SHARP MAP NAMES, A QUIET SELECTED STATE, ROWS THAT FILL THE PACK, A SMALLER ASCEND PLATE
 
 Co-op hunt while he was away. The second critic pass (still 3) said the lime accent appeared in five places at the same strength, the map labels were blurry and oversized, the pack rows left a dead gap and spaced unevenly, and the warning outline fought the ascend plate. The canvas is drawn at 960 so labels are crisp at their real size, selected chips are a raised fill with a 3px lime bar, the plate is 60 px, the ascending here tag and the warning lose their outlines, and pack rows stretch to fill the list with even pitch.

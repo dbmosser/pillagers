@@ -1,1 +1,1 @@
-10-20 02:18 running o-05-pad-presets (codex, run 7 of 5)
+10-20 02:24 gate: shipping cw-cx-padscale (o-05-pad-presets, codex)

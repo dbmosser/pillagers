@@ -6101,6 +6101,15 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.53',what:'the pre-raid map draws its zone names at 20 px, shrinking to no less than 14, and its exit and keyed room names at 18',
+   run:function(){
+     if(typeof sectorPreviewDraw!=='function') return 'SKIP: no sector map';
+     var s=String(sectorPreviewDraw), bad=[];
+     if(s.indexOf('fs=20,')<0) bad.push('zone names do not start at 20 px');
+     if(s.indexOf('fs>14&&')<0) bad.push('zone names can shrink below 14 px');
+     if(s.indexOf("'600 18px '+FF; c.textAlign='center'")<0) bad.push('exit names are not 18 px');
+     if(s.indexOf("'600 18px '+FF; c.textAlign='right'")<0) bad.push('keyed room names are not 18 px');
+     return bad.length?bad.join('; '):null; }},
   {v:'32.52',what:'the pre-raid page second pass: the map canvas is drawn at 960 so its names are sharp, the selected chip is a quiet fill with a left bar and not a lime outline, and the ascend plate is 60 px',
    run:function(){
      if(!(window.__hubEnter&&window.__P&&window.__applyLoaded)||typeof renderSector!=='function') return 'SKIP: no pre-raid page';

@@ -1,0 +1,24 @@
+{
+    "title":  "PRE-RAID MAP: ZONE NAMES 20 PX, EXIT AND KEYED ROOM NAMES 18 PX",
+    "why":  "After the map canvas was drawn at its real size the critic found the names too small to read from a couch. The zone names go to 20 px (shrinking to 14 to fit), the exit and keyed room names to 18 px.",
+    "now":  "The map names on the pre-raid page are bigger and easier to read.",
+    "edits":  [
+                  {
+                      "anchor":  "fs=18, cx=ox+(z.x+z.w/2)*sc",
+                      "replacement":  "fs=20, cx=ox+(z.x+z.w/2)*sc"
+                  },
+                  {
+                      "anchor":  "while(fs\u003e12\u0026\u0026c.measureText(nm).width\u003ezw)",
+                      "replacement":  "while(fs\u003e14\u0026\u0026c.measureText(nm).width\u003ezw)"
+                  },
+                  {
+                      "anchor":  "c.font=\u0027600 16px \u0027+FF; c.textAlign=\u0027center\u0027; c.fillStyle=\u0027#47d8c6\u0027;",
+                      "replacement":  "c.font=\u0027600 18px \u0027+FF; c.textAlign=\u0027center\u0027; c.fillStyle=\u0027#47d8c6\u0027;"
+                  },
+                  {
+                      "anchor":  "c.font=\u0027600 16px \u0027+FF; c.textAlign=\u0027right\u0027; c.fillStyle=\u0027#dcc3f4\u0027;",
+                      "replacement":  "c.font=\u0027600 18px \u0027+FF; c.textAlign=\u0027right\u0027; c.fillStyle=\u0027#dcc3f4\u0027;"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the pre-raid map draws its zone names at 20 px, shrinking to no less than 14, and its exit and keyed room names at 18\u0027,\n   run:function(){\n     if(typeof sectorPreviewDraw!==\u0027function\u0027) return \u0027SKIP: no sector map\u0027;\n     var s=String(sectorPreviewDraw), bad=[];\n     if(s.indexOf(\u0027fs=20,\u0027)\u003c0) bad.push(\u0027zone names do not start at 20 px\u0027);\n     if(s.indexOf(\u0027fs\u003e14\u0026\u0026\u0027)\u003c0) bad.push(\u0027zone names can shrink below 14 px\u0027);\n     if(s.indexOf(\"\u0027600 18px \u0027+FF; c.textAlign=\u0027center\u0027\")\u003c0) bad.push(\u0027exit names are not 18 px\u0027);\n     if(s.indexOf(\"\u0027600 18px \u0027+FF; c.textAlign=\u0027right\u0027\")\u003c0) bad.push(\u0027keyed room names are not 18 px\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

@@ -1,0 +1,5 @@
+## v32.53 - PRE-RAID MAP: ZONE NAMES 20 PX, EXIT AND KEYED ROOM NAMES 18 PX
+
+Co-op hunt while he was away. After the map canvas was drawn at its real size the critic found the names too small to read from a couch. The zone names go to 20 px (shrinking to 14 to fit), the exit and keyed room names to 18 px.
+
+MEASURED. Check 32.53 passes, and fails on v32.52.

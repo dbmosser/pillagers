@@ -293,3 +293,5 @@
 2026-10-20 0.1501 critic-o-05-pad-presets
 2026-10-20 0.1485 critic-o-05-pad-presets
 2026-10-20 0.1649 critic-manual
+2026-10-20 0.1599 critic-manual
+2026-10-20 0.0000 o-05-pad-presets
