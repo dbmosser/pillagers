@@ -132,7 +132,7 @@ actually look good". So for any change a player can see:
   panels, buttons, headers and close/back placement on EVERY screen. Clutter is a defect. Readable from a couch at 1080p.
 - NEVER GRADE YOUR OWN SCREEN (agents praise their own work). After shipping, run the critic on the new picture, with the old
   one first if you have it: node tools/console-sdk/critic.mjs tools/handoff/console/notes/shots/TASKID-before/NAME-1080.jpg tools/handoff/console/notes/shots/TASKID-after/NAME-1080.jpg
-  (a path with "before" in it is the old version; 1-4 pictures; about 4 cents). It answers with a score 1-5 and P0/P1/P2
+  (a path with "before" in it is the old version; 1-4 pictures; since 10-19 it runs on his Claude plan, not Console credit, and takes a minute or two). It answers with a score 1-5 and P0/P1/P2
   findings, and records the score in notes/ui/accept.json. Fix every P0 and P1 it names (ship a follow-up) and run it again.
   A screen is done at 4 or more. After two follow-ups that do not raise the score, write what is stuck in your notes and move on.
 - His finish line (Q6): 4 or more from the critic on EVERY screen.

@@ -2,7 +2,7 @@
 // an agent praises its own mediocre design work, and a separate skeptical judge with a rubric works better. So the helper that
 // changed a screen never grades it: it runs
 //   node tools/console-sdk/critic.mjs PIC [PIC ...]      (1-4 jpg/png; a path containing "before" is the old version)
-// One API call on his Console credits (key read from his Windows user variable, never printed), about 2 cents. Prints JSON
+// Since 10-19 one Claude Code run on his plan (CRITIC_ENGINE=api in caps.txt: one API call on his Console credits instead). Prints JSON
 // {score, better_than_before, verdict, findings:[{sev, where, what, fix}]}, records scores in notes/ui/accept.json and the cost in spend.txt.
 import { readFileSync, writeFileSync, existsSync, appendFileSync, mkdirSync } from 'fs';
 import { spawnSync } from 'child_process';
@@ -10,7 +10,6 @@ const R = 'C:/claudecode/dark raiders', C = R + '/tools/handoff/console', U = C 
 const pics = process.argv.slice(2);
 const ok = p => /^tools\/handoff\/(console\/notes|shots|ui-refs)\/[A-Za-z0-9_./-]+\.(jpe?g|png)$/i.test(p) && !p.includes('..') && existsSync(R + '/' + p);
 if (!pics.length || pics.length > 4 || !pics.every(ok)) { console.log('USAGE: node tools/console-sdk/critic.mjs PIC [PIC ...] (1-4 existing jpg/png under tools/handoff/console/notes, shots or ui-refs)'); process.exit(1); }
-const key = spawnSync('powershell', ['-NoProfile', '-Command', "[Environment]::GetEnvironmentVariable('PILLAGERS_API_KEY','User')"], { encoding: 'utf8', windowsHide: true }).stdout.trim();
 const caps = {}; try { readFileSync(C + '/caps.txt', 'utf8').split(/\r?\n/).forEach(l => { const m = /^(\w+)=(.*)$/.exec(l.trim()); if (m) caps[m[1]] = m[2]; }); } catch {}
 const guide = existsSync(U + '/style-guide.md') ? readFileSync(U + '/style-guide.md', 'utf8').slice(0, 8000) : '(no style guide yet: judge against the rubric alone)';
 const sys = `You are a skeptical senior UI art director at a AAA studio reviewing screenshots of PILLAGERS, a top-down 2.5D extraction
@@ -35,14 +34,20 @@ if (before.length) content.push({ type: 'text', text: 'Your previous review of t
 pics.forEach((p, i) => { const b = readFileSync(R + '/' + p); content.push({ type: 'text', text: 'Image ' + (i + 1) + ' (' + (/before/i.test(p) ? 'OLD version' : 'NEW version') + '): ' + p });
   content.push({ type: 'image', source: { type: 'base64', media_type: /png$/i.test(p) ? 'image/png' : 'image/jpeg', data: b.toString('base64') } }); });
 content.push({ type: 'text', text: 'Review the NEW version' + (pics.some(p => /before/i.test(p)) ? ' and compare it with the OLD one.' : '.') });
-const H = { 'x-api-key': key, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' };
-if (caps.WORKSPACE_ID) H['anthropic-workspace-id'] = caps.WORKSPACE_ID;
-const res = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: H, body: JSON.stringify({ model: caps.MODEL || 'claude-sonnet-5-5', max_tokens: 3000, system: sys, messages: [{ role: 'user', content }] }) });
-const j = await res.json().catch(() => ({}));
+// 10-19 his order, verbatim: "Move the screen judge onto my Claude plan instead of Console credit". The plan is the default now;
+// CRITIC_ENGINE=api in caps.txt goes back to the Console key (and still falls back to the plan when the credit is gone).
+const viaApi = caps.CRITIC_ENGINE === 'api';
+let res = { ok: false, status: 0 }, j = {};
+if (viaApi) {
+  const key = spawnSync('powershell', ['-NoProfile', '-Command', "[Environment]::GetEnvironmentVariable('PILLAGERS_API_KEY','User')"], { encoding: 'utf8', windowsHide: true }).stdout.trim();
+  const H = { 'x-api-key': key, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' };
+  if (caps.WORKSPACE_ID) H['anthropic-workspace-id'] = caps.WORKSPACE_ID;
+  res = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: H, body: JSON.stringify({ model: caps.MODEL || 'claude-sonnet-5-5', max_tokens: 3000, system: sys, messages: [{ role: 'user', content }] }) });
+  j = await res.json().catch(() => ({})); }
 let cost = 0, txt = '', book = C + '/spend.txt';
 if (res.ok) { const u = j.usage || {}; cost = ((u.input_tokens || 0) * 1.71 + (u.output_tokens || 0) * 8.54) / 1e6;
   txt = (j.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n'); }
-else if (/credit/i.test(String(j.error && j.error.message))) {
+else if (!viaApi || /credit/i.test(String(j.error && j.error.message))) {
   // 10-18: when the month's Console credit is gone, the same review runs once through Claude Code on his plan (Read shows pictures)
   const exe = existsSync(process.env.USERPROFILE + '/.local/bin/claude.exe') ? process.env.USERPROFILE + '/.local/bin/claude.exe' : 'claude';
   const env = { ...process.env }; delete env.ANTHROPIC_API_KEY;

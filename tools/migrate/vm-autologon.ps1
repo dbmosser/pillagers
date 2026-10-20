@@ -237,7 +237,7 @@ function Get-WinlogonFacts {
   try {
     $p = [Microsoft.Win32.Registry]::LocalMachine.OpenSubKey('SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System')
     if ($null -ne $p) {
-      if ([string]$p.GetValue('legalnoticecaption') -or [string]$p.GetValue('legalnoticetext')) { $o.LegalNotice = $true }
+      if (([string]$p.GetValue('legalnoticecaption')).Trim([char]0,' ') -or ([string]$p.GetValue('legalnoticetext')).Trim([char]0,' ')) { $o.LegalNotice = $true }
     }
   } catch { } finally { if ($null -ne $p) { try { $p.Close() } catch { } } }
   return $o

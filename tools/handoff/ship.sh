@@ -12,6 +12,7 @@ case "$1" in
     T=$2; CM=$3
     rm -f tools/prev*.html tools/fx[0-9]*.html
     powershell -NoProfile -ExecutionPolicy Bypass -File tools/archive-build.ps1 2>&1 | tail -1
+    mkdir -p tools/publish   # 10-19: the folder is gitignored, so a fresh copy (the VM) had none and set -e stopped the commit
     cp dark_raiders.html tools/publish/index.html
     # ONE ZIP, NOT TWO. This built dark_raiders_web.zip and pillagers-web.zip
     # byte-for-byte identical on every commit: 750 KB of duplicate, and the docs

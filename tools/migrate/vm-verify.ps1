@@ -304,7 +304,7 @@ function Get-AutologonFacts {
   try {
     # a sign-in "legal notice" waits for a click before any sign-in, automatic or not (the text is policy text, not a secret; only whether it is set is kept)
     $pk = [Microsoft.Win32.Registry]::LocalMachine.OpenSubKey('SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System')
-    if ($null -ne $pk) { if ([string]$pk.GetValue('legalnoticecaption') -or [string]$pk.GetValue('legalnoticetext')) { $o.LegalNotice = $true }; $pk.Close() }
+    if ($null -ne $pk) { if (([string]$pk.GetValue('legalnoticecaption')).Trim([char]0,' ') -or ([string]$pk.GetValue('legalnoticetext')).Trim([char]0,' ')) { $o.LegalNotice = $true }; $pk.Close() }
   } catch { }
   return $o
 }
@@ -807,6 +807,14 @@ function Check-AlwaysOn {
     }
   } elseif ($auto -eq '1') {
     Add-Result 'FAIL' 'the VM signs in by itself after a restart (Autologon)' ('automatic sign-in is on, but for "' + $defUser + '", not for ' + $env:USERNAME) 'Run vm-autologon.ps1 as the user the helpers should run as.'
+  } elseif ($(try { $lu = Get-LocalUser -Name $env:USERNAME -ErrorAction Stop; (-not $lu.PasswordRequired) -and (-not $lu.PasswordLastSet) } catch { $false })) {
+    # 10-19: the VM's local account has NO password, so Autologon refuses ("does not support NULL passwords") and is not needed:
+    # Windows signs a password-less local account in by itself. Only a sign-in legal notice stops that (it waits for a click).
+    if ([bool]$af.LegalNotice) {
+      Add-Result 'WAIT' 'the VM signs in by itself after a restart (Autologon)' 'your account has no password, so Windows would sign in by itself, but a sign-in legal notice is set and waits for a click' 'Remove the sign-in legal notice (Local Security Policy > Local Policies > Security Options > empty "Interactive logon: Message text..." and "Interactive logon: Message title..."), then restart the VM once while you watch.'
+    } else {
+      Add-Result 'PASS' 'the VM signs in by itself after a restart (Autologon)' 'your account has no password and no sign-in notice is set, so Windows signs in by itself (Autologon not needed); confirm it on the next restart'
+    }
   } else {
     $fx = 'YOU run, inside the VM: powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\PillagersMove\kit\vm-autologon.ps1   (it opens Sysinternals Autologon; you type the password into ITS window, the script never sees it).'
     if ($null -ne $hello -and [int]$hello -ne 0) { $fx += ' First switch OFF Settings > Accounts > Sign-in options > "For improved security, only allow Windows Hello sign-in for Microsoft accounts on this device".' }
@@ -876,7 +884,10 @@ function Check-Resources {
   if ($os) {
     $freeGB = [math]::Round($os.FreePhysicalMemory / 1MB, 1)
     $totGB = [math]::Round($os.TotalVisibleMemorySize / 1MB, 1)
+    # 10-19: under the floor while the helpers and robots are the ones using it is normal work, not a fault (new jobs just wait)
+    $busy = @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -match 'console-lane\.sh|codex-lane\.sh|fuzz\.ps1' }).Count
     if ($freeGB -ge $script:MinFreeRamGB) { Add-Result 'PASS' 'free memory (RAM)' ([string]$freeGB + ' GB free of ' + $totGB + ' GB (the runner starts no new job under ' + $script:MinFreeRamGB + ' GB free)') }
+    elseif ($busy -gt 0 -and $freeGB -ge 1.5) { Add-Result 'PASS' 'free memory (RAM)' ([string]$freeGB + ' GB free of ' + $totGB + ' GB: the running helpers and robots use the rest (' + $busy + ' process(es)); new jobs wait until ' + $script:MinFreeRamGB + ' GB are free') }
     else { Add-Result 'FAIL' 'free memory (RAM)' ([string]$freeGB + ' GB free of ' + $totGB + ' GB; the runner starts no new job under ' + $script:MinFreeRamGB + ' GB free') 'Close programs you are not using inside the VM (the floor is RAM_FLOOR_GB in tools\handoff\console\caps.txt). If it stays low with nothing open, give the VM more memory on the main PC: host-vm-boost.ps1 -MemoryGB 14 (the main PC must keep 6 GB free).' }
   } else { Add-Result 'FAIL' 'free memory (RAM)' 'could not read memory figures' 'Run the checklist again; if it repeats tell Claude in the VM.' }
 

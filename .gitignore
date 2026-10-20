@@ -38,3 +38,4 @@ tools/handoff/fpf[a-z].ps1
 tools/handoff/art-survey/game/
 tools/handoff/art-survey/mock/*.png
 tools/handoff/art-survey/mock/_lc_*.html
+.claude/settings.local.json
