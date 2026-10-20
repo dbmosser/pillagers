@@ -26,9 +26,12 @@ echo $$ > "$LK/pid"; trap 'rm -rf "$LK"' EXIT
 S="C:/Users/User1/AppData/Local/Temp/claude/C--Users-User1-Desktop-dark-raiders/8a09e991-b4f4-4b23-b10f-ded92e837fc3/scratchpad"
 M="C:/Users/User1/.claude/projects/C--Users-User1-Desktop-dark-raiders/memory"
 PS="//c/Users/User1/AppData/Local/Temp/claude/C--Users-User1-Desktop-dark-raiders/8a09e991-b4f4-4b23-b10f-ded92e837fc3/scratchpad"
+# 10-19 VM: C:/Users/User1 is a junction to the VM own profile and Claude Code checks a write against the resolved path, so every
+# mk-cw-* write was refused ("permission not granted") until the same rules also name that real path (on the main PC it is the same path).
+PV="/$(cygpath -u "${USERPROFILE:-C:/Users/User1}" 2>/dev/null)${PS#//c/Users/User1}"
 PR="//c/claudecode/dark raiders"
 ALLOW=( "Read" "Grep" "Glob"
-  "Write($PS/mk-cw-*)" "Edit($PS/mk-cw-*)"
+  "Write($PS/mk-cw-*)" "Edit($PS/mk-cw-*)" "Write($PV/mk-cw-*)" "Edit($PV/mk-cw-*)"
   "Write($PR/tools/handoff/console/notes/**)" "Edit($PR/tools/handoff/console/notes/**)"
   "Write($PR/tools/handoff/console/questions.md)" "Edit($PR/tools/handoff/console/questions.md)"
   "Edit($PR/tools/mkfixture.ps1)"
