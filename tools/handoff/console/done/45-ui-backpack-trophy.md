@@ -34,3 +34,8 @@ The trophy case is done (v32.77, critic 3). Do not touch it.
 Start from the better of v32.79 (critic 3) and v32.81 (critic 2), per his rule 28, and say which you kept.
 Vetoes stand: no empty slot outlines that read as a bag limit, no weight, no HEAVY / LOADED / LIGHT line.
 Finish line for this round: the backpack is small to medium as he said, critic 3 or better. At most 2 runs, then keep the best.
+
+## CLOSED 10-20 07:30 (coordinator)
+Done by his answer "small to medium": v32.81 kept, the raid backpack is a live panel about 43 percent of the screen width at 1080p,
+no scrim, no card. The critic swings 2 to 3 and its remaining asks are vetoed or ruled out by him (54: his taste beats the critic).
+Trophy case done in v32.77 (critic 3).
