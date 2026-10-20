@@ -1,0 +1,5 @@
+## v32.10 - PAUSE BOX REPORT FIELD IS A SMALL ROW
+
+Co-op hunt while he was away. Critic on the pause box (3): every row looks the same, so no rank. The report field drops to 48px on a clear fill and the title is 32px. Q61 keeps the field.
+
+MEASURED. Check 32.10 passes, and fails on v32.09.

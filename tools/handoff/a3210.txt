@@ -1,0 +1,1 @@
+| PAUSE BOX REPORT FIELD IS A SMALL ROW | v32.10 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 32.10 passes, fails on v32.09 |

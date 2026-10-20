@@ -1,0 +1,12 @@
+{
+    "title":  "PAUSE BOX REPORT FIELD IS A SMALL ROW",
+    "why":  "Critic on the pause box (3): every row looks the same, so no rank. The report field drops to 48px on a clear fill and the title is 32px. Q61 keeps the field.",
+    "now":  "The pause box report field is smaller and the title is bigger.",
+    "edits":  [
+                  {
+                      "anchor":  "#charselbtn{ min-height:var(--btn-h-sm); margin-top:var(--sp-3); }",
+                      "replacement":  "#charselbtn{ min-height:var(--btn-h-sm); margin-top:var(--sp-3); }\n/* v28.xx (cw-pausefb2) critic on Pause box 25 (3 after cw-pausebtn): \"settings, report a problem, feedback and what is new look identical, so the order of importance is flat\", \"the title is about 28px against 32px\", \"the divider is a fairly bright line\". Now: the report a problem field drops to the 48px small tier on a clear fill with the quiet line border (it is a field, not a main row; Q61 keeps it), the title is 32px and the header divider takes the quiet line colour. */\n#root #pausebox #pausefb{ height:var(--btn-h-sm); padding-top:calc((var(--btn-h-sm) - 28px) / 2); padding-bottom:0; background:transparent; border-color:var(--ui-line); }\n#root #pausebox \u003e h3{ font-size:var(--fs-title); border-bottom-color:var(--ui-line); }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the pause box report a problem field is on the 48px small tier\u0027,\n   run:function(){\n     var bad=null, f, padWas=document.body.classList.contains(\u0027padon\u0027);\n     __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n     try{\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       if(!__state()||__state().over) return \u0027SKIP: no live raid\u0027;\n       togglePauseBox(true); pauseFrameFit();\n       f=document.getElementById(\u0027pausefb\u0027);\n       if(!f||!f.offsetWidth) return \u0027SKIP: no report field\u0027;\n       if(f.offsetHeight\u003e48) bad=\u0027the report field is \u0027+f.offsetHeight+\u0027 tall\u0027;\n     }catch(e){ bad=\u0027threw: \u0027+(e\u0026\u0026e.message||e); }\n     finally{ try{ togglePauseBox(false); }catch(_t){} try{ __topClear(); }catch(_c){} document.body.classList.toggle(\u0027padon\u0027,padWas); }\n     return bad; }},"
+}

@@ -231,17 +231,17 @@
  "25-raid-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, calm pause card with a clear lime primary action and a proper title and x, but it is a small generic stack of buttons with inconsistent sizes, no visible pad focus and weak identity.",
+  "verdict": "A clean, lower-case, single-accent pause card with a clear first read (resume run), but it is still a small generic stack. The new version only makes the small buttons match the others and shifts the card up 12px; the weak points are untouched.",
   "findings": [
-   "P1 button stack (settings, report a problem, feedback, what's new): Make every secondary button the same 56px height, the same --ui-raised fill and the same 1px --ui-line-hi border. Fold feedback, what's new and report a problem into one row of three 16px tertiary buttons, or drop them to a quiet footer row. Keep only resume (lime) and settings as full-width.",
-   "P1 focus state: Give the focused row a 3px lime left bar plus a --ui-raised fill and a 2px lime outline. Make the primary button's fill differ from its focused state (add a 2px tx-1 outer ring when focused).",
-   "P1 abandon run: Draw it as a full-width 48px button with a 1px --danger border and --danger text at 20px f-cond 600. Put 24px of spacing above it and a divider line.",
-   "P2 card chrome and title: Make the accent tab 3px by 48px --acc. Draw the x at 40px with a 1px --ui-line-hi box and tx-1 stroke. Add one quiet --fs-label row under the title in tx-2 with raid time and carried $ so the pause screen is useful, not generic.",
-   "P2 spacing rhythm: Use an 8px grid with 16px between buttons, 32px before abandon, and 24px padding. Set the small button labels to 16px f-cond 600."
+   "P1 card size and window rule: Keep this small card only if it is declared the one compact modal exception in the guide. Otherwise raise the scrim from about .8 to .9 or more so the faint HUD text stops competing. The text above and below the card is smudged and reads as a rendering defect.",
+   "P1 button hierarchy, rows 2 to 5: Keep settings full width. Move report a problem, feedback and what's new into one row of three 16px label buttons, or drop them to tx-2 text links. That frees about 56px of height and cuts the stack from 6 rows to 3.",
+   "P1 abandon run: Give it a 1px --danger border at 48px height, or a ghost button with the same radius. Set the gap above it to 24px, and place it clearly apart from the safe actions.",
+   "P2 title row: Set the title to 32px/700. Make the lime tab 3px by 36px at full --acc, or remove it. Make the X 24px in tx-1 with a 40px hit box. Drop the divider to --ui-line.",
+   "P2 focus and pad state: Show a 2px --acc border plus a --ui-raised fill for focus on the secondary buttons. Keep the solid fill for the main action only when it is not focused, or put a 3px focus bar at the left edge of the row."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-31s-after/25-raid-pause-box-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/c-31t-after/25-raid-pause-box-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T03:01"
+  "when": "2026-10-20T03:17"
  },
  "26-settings-from-pause-top": {
   "score": 3,
@@ -739,19 +739,19 @@
   "when": "2026-10-19T01:10"
  },
  "74-settings-change-pad-buttons": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The window follows the card-with-X pattern, but the controller diagram is a tangle of crossing leader lines, the lime accent is spread over every key label, and the left list is clipped, so the eye has nowhere to land.",
+  "verdict": "The pad picture is now calmer: leader lines end on dots on the actual buttons and the lime on every label is gone. But the left rows and the picture are still two competing lists, and the screen has no clear first read or focus state.",
   "findings": [
-   "P0 controller diagram, leader lines: Use orthogonal leaders: a horizontal line from each label to a 6px dot on its control, with no crossings. Sort the labels top to bottom in the same order as the controls on the pad. Make the leaders 1.5px in --ui-line-hi. Move the 'move' and 'aim' circles onto the stick positions and draw the sticks at the real offset.",
-   "P1 diagram labels: Set key names to --tx-2 at 16px/600 and the action text to --tx-1 at 20px. Keep lime only for the focused row or the selected layout. Use one 56px row pitch with a fixed 8px grid.",
-   "P1 left list, bottom edge: Fade or clip the list at a row boundary with a 24px gradient mask. Make the scrollbar 6px wide in --ui-line-hi. Give the focused row a --ui-raised fill with a 3px lime left bar and a visible key chip outline.",
-   "P1 left list, section headers and row text: Headers at 16px/600 +.04em in --tx-2. Row names at 20px/600 in --tx-1. Align the 3px bar to the header text height.",
-   "P1 key chips in the left list: Make the chips 72x40 with 18px text in --tx-1 on --ui-raised. Cut the row width to about 480px, or add a 1px row divider in --ui-line to guide the eye."
+   "P1 left list, binding column: Set chip text to 16px f-cond 600 in tx-1. Make the chips 56px wide by 40px tall with a 1px --ui-line-hi border. Show the focused row with a --ui-raised fill and a 3px lime left bar, and the focused chip with a lime border.",
+   "P1 controller diagram, button labels: Set prefixes to --tx-2 (#aaa498) at 18px or larger, and actions to tx-1. Make leader lines 1.5px --ui-line-hi. Make the dots 6px solid tx-1. Use lime only for the one hovered or focused binding, not for all of them.",
+   "P1 the screen as a whole: Make the list the editor and the picture a read-only legend, or split the screen 40/60 and drop the picture's labels to 16px. Add a 24px fade or bottom padding so the last row is never sliced. Tighten the layout row from about 96px to 64px.",
+   "P2 picture, left label stack: Order the left labels top to bottom by the controller part they point to (lt, lb, view, ls, d-pad). Space them on a 56px rhythm with leader endpoints aligned to each label's centre line.",
+   "P2 category headers 'move' / 'fight': Set headers to 16px f-cond 700 in tx-2 with a 1px divider above them. Drop the lime bar, or keep it only on the active section."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-31s-after/74-settings-change-pad-buttons-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/c-31t-after/74-settings-change-pad-buttons-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T03:01"
+  "when": "2026-10-20T03:18"
  },
  "01-title-mode-menu": {
   "score": 3,

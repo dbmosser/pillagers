@@ -6101,6 +6101,20 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.10',what:'the pause box report a problem field is on the 48px small tier',
+   run:function(){
+     var bad=null, f, padWas=document.body.classList.contains('padon');
+     __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     try{
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       if(!__state()||__state().over) return 'SKIP: no live raid';
+       togglePauseBox(true); pauseFrameFit();
+       f=document.getElementById('pausefb');
+       if(!f||!f.offsetWidth) return 'SKIP: no report field';
+       if(f.offsetHeight>48) bad='the report field is '+f.offsetHeight+' tall';
+     }catch(e){ bad='threw: '+(e&&e.message||e); }
+     finally{ try{ togglePauseBox(false); }catch(_t){} try{ __topClear(); }catch(_c){} document.body.classList.toggle('padon',padWas); }
+     return bad; }},
   {v:'32.09',what:'the pad picture marks each control with a dot and keeps lime off the key names (critic: lime was decoration on 20 labels)',
    run:function(){
      if(typeof padPictureHtml!=='function') return 'SKIP: no pad picture';

@@ -2082,6 +2082,9 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
 /* v28.xx (cw-pausebtn) critic on Pause box 25/42/49 (3): "five button styles", "report a problem gets as much emphasis as settings", "the abandon link has no hit area", "small button labels about 14px". Now: report a problem, settings, feedback and what is new share one 48px outline look, the small pair reads at 16px, and abandon is a 48px quiet red link with room above it. Q61 keeps all of them. */
 #root #pausebox > div:has(> #resumebtn) > #fbbtn, #root #pausebox > div:has(> #resumebtn) > #wnbtn{ min-height:var(--btn-h-sm); font-size:var(--fs-label); background:var(--ui-panel); border-color:var(--ui-line-hi); }
 #root #pausebox:not(.asking) > div:has(> #resumebtn) > #abandonbtn, #root #pausebox:not(.asking) > div:has(> #resumebtn) > #arcendbtn, #root #pausebox:not(.asking) > div:has(> #resumebtn) > #charselbtn{ min-height:var(--btn-h-sm); margin-top:var(--sp-3); }
+/* v28.xx (cw-pausefb2) critic on Pause box 25 (3 after cw-pausebtn): "settings, report a problem, feedback and what is new look identical, so the order of importance is flat", "the title is about 28px against 32px", "the divider is a fairly bright line". Now: the report a problem field drops to the 48px small tier on a clear fill with the quiet line border (it is a field, not a main row; Q61 keeps it), the title is 32px and the header divider takes the quiet line colour. */
+#root #pausebox #pausefb{ height:var(--btn-h-sm); padding-top:calc((var(--btn-h-sm) - 28px) / 2); padding-bottom:0; background:transparent; border-color:var(--ui-line); }
+#root #pausebox > h3{ font-size:var(--fs-title); border-bottom-color:var(--ui-line); }
 /* v28.xx (cw-uc-racks) b-31 step 7, the Undercroft on the shared look (style guide: one reading column, 16px type floor, no filler lines). The racks page ran 1316px wide buttons across a 1700px card (his "one grid" rule gave way to the centred card, Q7 and Q43) with 14px grey-amber hint lines: now one 672px column centred in the card, buttons 48px high, status and hint lines 16px in the second text colour, and the line under the tab name that only repeated it is gone (Q8, reason in changes.md). The codex was an auto-fill grid hugging the top left: now four columns, 1344px at most, centred, 16px rarity and kills lines. The stash setup plates (gun keys, item wheel) and their reset buttons were 12px: 14px now, and the one-line swap note under them is gone (Q70 no tutorial prompts, Q8). */
 #root #opane_mf > *{ box-sizing:border-box; width:100%; max-width:calc(var(--sp-5) * 14); margin-left:auto; margin-right:auto; }
 #root #opane_mf .msub{ display:none; }
@@ -3006,7 +3009,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.09';
+var VER='32.10';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -50206,7 +50209,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.09: The pad picture has tidier leader lines with dots and calmer key names. Check 32.09 fails on v32.08',
+  now:'v32.10: The pause box report field is smaller and the title is bigger. Check 32.10 fails on v32.09',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

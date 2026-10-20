@@ -1,0 +1,7 @@
+v32.10: pause box report field is a small row
+
+The pause box report field is smaller and the title is bigger.
+
+Check 32.10. Fails on v32.09.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
