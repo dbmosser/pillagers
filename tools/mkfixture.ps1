@@ -2877,6 +2877,7 @@ window.__REGRESS=[
      if(!__hubEnter()) return 'could not reach the Undercroft floor';
      var P=__P();
      P.kit=['gun_rifle','plate','servo','scrap','bandage'];   // v32.83 retarget (50-corpus-old-a): the belt takes guns only (wheel4), so the dragged item is a gun
+     P.weapons=['smg']; P.equipped='smg'; P.equippedSec='none';   // the rifle in the kit is not one he already holds, whatever an earlier check left on the profile
      P.hotAssign={};
      var K=__keysRef(); for(var k in K) delete K[k];
      __hubBag(false);
