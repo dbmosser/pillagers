@@ -91051,20 +91051,26 @@ window.__REGRESS=[
   {v:'10.47',what:'three pairs of sneakers are on the boots rack, each drawn with its own sole on the sprite and the figure',
    run:function(){
      var bad=[];
+     try{
      if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
      if(typeof COSMETICS==='undefined'||typeof BOOTCOL==='undefined') return 'SKIP: no boots rack in this build';
      var want=['sneakchi','sneakcon','sneakbred'], missing=want.filter(function(id){ var c=cosFind(id); return !c||c.kind!=='boots'; });
      // THE FINDING. On v10.46 the boots rack had five pairs of boots and no sneakers.
      if(missing.length) return 'the boots rack is missing '+missing.join(', ');
      want.forEach(function(id){ var c=cosFind(id); if(c.how==='always'||String(c.how).indexOf('buy:')===0) bad.push(id+' is not earned'); if(!BOOTCOL[id]||!BOOTCOL[id][2]) bad.push(id+' has no sole colour'); });
-     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __runPrep(); __topClear(); __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
      __deploy({kit:[],safe:null,mapIx:0,seed:4242});
      var g=__state(); if(!g) return 'SKIP: no raid';
      var p=g.player; g.ents.length=0; p.hp=100000; p.maxhp=100000;
      var P2=__P(); var keep={runs:P2.runs,ext:P2.ext,xpLevel:P2.xpLevel,cosBoots:P2.cosBoots};
      P2.runs=999; P2.ext=999; P2.xpLevel=99;
      var cvs=(window.__canvases&&__canvases().world)||document.getElementById('cv'), wctx=cvs.getContext('2d');
-     function feet(){ for(var f=0;f<3;f++) __frame(0.016); var sx=Math.round(p.x-(g.camX||0)), sy=Math.round(p.y-(g.camY||0)); sx=Math.max(16,Math.min(cvs.width-16,sx)); sy=Math.max(16,Math.min(cvs.height-6,sy)); return wctx.getImageData(sx-16,sy-16,32,22).data; }
+     // v28.xx (cw-cx-corpus03): isolate the real hero renderer; the obsolete camera crop sampled empty world pixels.
+     function feet(){
+       var shot=__opShot({hero:1,own:p,armor:0},0,2);
+       if(!shot||shot.thrown) throw new Error('sprite capture: '+(shot&&shot.thrown||'no canvas'));
+       return wctx.getImageData(Math.round(shot.cx+(-40)*shot.z),Math.round(shot.cy+(-30)*shot.z),Math.round(80*shot.z),Math.round(45*shot.z)).data;
+     }
      function pale(px){ var n=0; for(var i=0;i<px.length;i+=4) if(px[i+3]>40&&px[i]>200&&px[i+1]>196&&px[i+2]>185) n++; return n; }
      function red(px){ var n=0; for(var i=0;i<px.length;i+=4) if(px[i+3]>40&&px[i]>130&&px[i]>px[i+1]*2.2&&px[i]>px[i+2]*2.2) n++; return n; }
      function diff(a,b){ var d=0; for(var i=0;i<a.length;i+=4) if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])>40) d++; return d; }
@@ -91085,17 +91091,19 @@ window.__REGRESS=[
      if(pale(blk2)>pale(blk)+2) bad.push('control: black boots grew a sole');
      if(typeof avatarHTML==='function'&&/avboots[^>]*border-bottom/.test(avatarHTML())) bad.push('control: the figure draws a sole under black boots');
      for(var k in keep) P2[k]=keep[k];
-     return bad.length?bad.join('; '):null; }},
+     return bad.length?bad.join('; '):null;
+     }finally{ try{ var active=__state(); if(active&&!active.over) __endRaid('abandon'); }catch(_e){} __topClear(); __cleanProfile(); } }},
   {v:'10.46',what:'the number 23 jersey is on the clothing rack, red with black panels and a numeral on the sprite',
    run:function(){
      var bad=[];
+     try{
      if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
      if(typeof COSMETICS==='undefined'||typeof FITCOL==='undefined') return 'SKIP: no clothing rack in this build';
      var c=cosFind('jersey');
      // THE FINDING. On v10.45 the clothing rack had eleven plain colours and no jersey.
      if(!c||c.kind!=='fit') return 'the clothing rack has no jersey';
      if(c.how==='always'||String(c.how).indexOf('buy:')===0) bad.push('the jersey is not earned');
-     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __runPrep(); __topClear(); __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
      __deploy({kit:[],safe:null,mapIx:0,seed:4242});
      var g=__state(); if(!g) return 'SKIP: no raid';
      // v11.14: noon in fog, by name, which is the light the three floors below
@@ -91111,7 +91119,12 @@ window.__REGRESS=[
      var P2=__P(); var keep={runs:P2.runs,ext:P2.ext,xpLevel:P2.xpLevel,cosFit:P2.cosFit};
      P2.runs=999; P2.ext=999; P2.xpLevel=99;
      var cvs=(window.__canvases&&__canvases().world)||document.getElementById('cv'), wctx=cvs.getContext('2d');
-     function torso(){ for(var f=0;f<3;f++) __frame(0.016); var sx=Math.round(p.x-(g.camX||0)), sy=Math.round(p.y-(g.camY||0)); sx=Math.max(20,Math.min(cvs.width-20,sx)); sy=Math.max(40,Math.min(cvs.height-4,sy)); return wctx.getImageData(sx-20,sy-40,40,36).data; }
+     // v28.xx (cw-cx-corpus03): isolate the real hero renderer; the obsolete camera crop sampled empty world pixels.
+     function torso(){
+       var shot=__opShot({hero:1,own:p,armor:0},0,2);
+       if(!shot||shot.thrown) throw new Error('sprite capture: '+(shot&&shot.thrown||'no canvas'));
+       return wctx.getImageData(Math.round(shot.cx+(-32)*shot.z),Math.round(shot.cy+(-48)*shot.z),Math.round(64*shot.z),Math.round(42*shot.z)).data;
+     }
      function cnt(px,fn){ var n=0; for(var i=0;i<px.length;i+=4) if(px[i+3]>40&&fn(px[i],px[i+1],px[i+2])) n++; return n; }
      // The raid is lit dark: white lands near 209 on the canvas and black above 30,
      // so pale and ink are read as bright-and-unsaturated and as dim, against slate.
@@ -91134,24 +91147,31 @@ window.__REGRESS=[
      if(cnt(sl2,isPale)>cnt(sl,isPale)+2) bad.push('control: slate grew a numeral');
      if(typeof avatarHTML==='function'&&avatarHTML().indexOf('avnum')>=0) bad.push('control: the figure shows a number on slate');
      for(var k in keep) P2[k]=keep[k];
-     return bad.length?bad.join('; '):null; }},
+     return bad.length?bad.join('; '):null;
+     }finally{ try{ var active=__state(); if(active&&!active.over) __endRaid('abandon'); }catch(_e){} __topClear(); __cleanProfile(); } }},
   {v:'10.45',what:'the Spartan helmet and the ghost mask are on the headgear rack, drawn on the sprite, covering the face',
    run:function(){
      var bad=[];
+     try{
      if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
      if(typeof COSMETICS==='undefined'||typeof cosSwatch!=='function') return 'SKIP: no racks in this build';
      var want=['spartan','ghostmask'], have=want.filter(function(id){ return !!cosFind(id)&&cosFind(id).kind==='hat'; });
      // THE FINDING. On v10.44 neither was on the racks.
      if(have.length<2) return 'the headgear rack is missing '+want.filter(function(id){ return have.indexOf(id)<0; }).join(', ');
      want.forEach(function(id){ var c=cosFind(id); if(String(c.how).indexOf('buy:')===0||c.how==='always') bad.push(id+' is not earned'); });
-     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __runPrep(); __topClear(); __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
      __deploy({kit:[],safe:null,mapIx:0,seed:4242});
      var g=__state(); if(!g) return 'SKIP: no raid';
      var p=g.player; g.ents.length=0; p.hp=100000; p.maxhp=100000;
      var P2=__P(); var keep={runs:P2.runs,ext:P2.ext,kills:P2.kills,xpLevel:P2.xpLevel,cosHat:P2.cosHat,cosBeard:P2.cosBeard,cosFace:P2.cosFace};
      P2.runs=999; P2.ext=999; P2.kills={warden:9}; P2.xpLevel=99;
      var cvs=(window.__canvases&&__canvases().world)||document.getElementById('cv'), wctx=cvs.getContext('2d');
-     function head(){ for(var f=0;f<3;f++) __frame(0.016); var sx=Math.round(p.x-(g.camX||0)), sy=Math.round(p.y-(g.camY||0)); sx=Math.max(40,Math.min(cvs.width-40,sx)); sy=Math.max(90,Math.min(cvs.height-20,sy)); return wctx.getImageData(sx-40,sy-90,80,110).data; }
+     // v28.xx (cw-cx-corpus03): isolate the real hero renderer; the obsolete camera crop sampled empty world pixels.
+     function head(){
+       var shot=__opShot({hero:1,own:p,armor:0},0,2);
+       if(!shot||shot.thrown) throw new Error('sprite capture: '+(shot&&shot.thrown||'no canvas'));
+       return wctx.getImageData(Math.round(shot.cx+(-50)*shot.z),Math.round(shot.cy+(-90)*shot.z),Math.round(100*shot.z),Math.round(110*shot.z)).data;
+     }
      function diff(a,b){ var d=0; for(var i=0;i<a.length;i+=4) if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])>40) d++; return d; }
      function greenish(px){ var n=0; for(var i=0;i<px.length;i+=4) if(px[i+3]>40&&px[i+1]>px[i]+20&&px[i+1]>px[i+2]+20) n++; return n; }
      // The raid is lit dark, so white never reads above 215 on the canvas; pale is
@@ -91179,7 +91199,8 @@ window.__REGRESS=[
      P2.cosBeard='clean'; P2.cosHat='visor'; var vs=head();
      if(diff(vs,bare)<6) bad.push('control: the visor no longer draws');
      for(var k in keep) P2[k]=keep[k];
-     return bad.length?bad.join('; '):null; }},
+     return bad.length?bad.join('; '):null;
+     }finally{ try{ var active=__state(); if(active&&!active.over) __endRaid('abandon'); }catch(_e){} __topClear(); __cleanProfile(); } }},
   {v:'10.44',what:'the full controls list is centred, on the screen and clear of the conditions panel at 1080p, 1440p and 4K',
    run:function(){
      var bad=[];
@@ -91304,7 +91325,11 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'10.41',what:'his words, first batch, read back off the screens: the pause box, the downed line, the abandon button, the Depot and Wirt',
    run:function(){
-     var bad=[];
+     var bad=[], oldPadOn=padOn;
+     try{
+     __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     padOn=function(){ return false; }; keysLegendApply();
      function txt(id){ var el=document.getElementById(id); return el?(el.textContent||'').replace(/\s+/g,' ').trim():null; }
      function has(id,re,name){ var t=txt(id); if(t===null){ bad.push(name+' is not in the page'); return; } if(!re.test(t)) bad.push(name+' reads "'+t.slice(0,70)+'"'); }
      // THE FINDING. On v10.40 the pause box still said RUN PAUSED.
@@ -91312,11 +91337,11 @@ window.__REGRESS=[
      var pbt=pb?(pb.textContent||'').replace(/\s+/g,' '):'';
      if(!pb) return 'SKIP: no pause box in this build';
      if(!/RAID PAUSED/i.test(pbt)) return 'the pause box does not say RAID PAUSED, it says "'+pbt.slice(0,40)+'"';
-     if(!/E interact/.test(pbt)&&!/E search \/ use/.test(pbt)) bad.push('the pause box controls line does not say E interact');   /* keyswap v25.67: E is search / use, X is extraction */
+     if(!/E interact/i.test(pbt)&&!/E search \/ use/i.test(pbt)) bad.push('the pause box controls line does not say E interact');   /* keyswap v25.67: E is search / use, X is extraction */
      if(!/CTRL \/ C crouch toggle/i.test(pbt)) bad.push('the pause box does not say CTRL / C crouch toggle');
-     if(!/Please provide feedback/.test(pbt)) bad.push('the pause box feedback line is not his');
+     if(!/Please provide feedback/i.test(pbt)) bad.push('the pause box feedback line is not his');
      has('pausebleed',/YOU ARE DOWNED\./i,'the downed line');
-     has('pausebleed',/You can extract while downed/,'the downed line');
+     has('pausebleed',/You can extract while downed/i,'the downed line');
      // The claim in that line, that extraction while downed is permitted, was
      // read off the extraction prompt table (his run 44) rather than driven here.
      // THE CONFIRM BUTTON IS WRITTEN AT CLICK TIME, with the XP cost; the markup
@@ -91335,22 +91360,23 @@ window.__REGRESS=[
      }
      // THE DEPOT AND WIRT. Wirt's line is drawn from a pool by renderGamble, so
      // the pool must hold his sentence and the drawn line must come from the pool.
-     var dep=Array.prototype.filter.call(document.querySelectorAll('.msub'),function(d){ return (/Cosmetics do not impact game mechanics\./).test(d.textContent); }).length;
+     var dep=Array.prototype.filter.call(document.querySelectorAll('.msub'),function(d){ return (/Cosmetics do not impact game mechanics\./i).test(d.textContent); }).length;
      if(!dep) bad.push('the Depot does not say cosmetics do not impact game mechanics');
      if(typeof VENDOR_LINES==='undefined'||!VENDOR_LINES.gamble||!VENDOR_LINES.gamble.some(function(l){ return l==='Gamble with Wirt. No refunds, no complaints.'; })) bad.push('Wirt\'s pool of lines does not hold "Gamble with Wirt. No refunds, no complaints."');
      try{ if(typeof renderGamble==='function') renderGamble(); }catch(_rg){}
      var gl=document.getElementById('gamble_line');
      if(!gl) bad.push('Wirt has no line');
-     else if(typeof VENDOR_LINES!=='undefined'&&VENDOR_LINES.gamble&&VENDOR_LINES.gamble.indexOf(gl.textContent.trim())<0) bad.push('Wirt says "'+gl.textContent.trim()+'", which is not in his pool');
+     else if(typeof VENDOR_LINES!=='undefined'&&VENDOR_LINES.gamble&&VENDOR_LINES.gamble.map(function(l){return String(l).toLowerCase();}).indexOf(gl.textContent.trim().toLowerCase())<0) bad.push('Wirt says "'+gl.textContent.trim()+'", which is not in his pool');
      var gb=document.getElementById('gamblebtn');
      // v15.05: the button prints its price with a thousands separator (Gamble $2,500), which /2500/ does not match.
      if(gb&&!/2\D?500/.test(gb.textContent)) bad.push('the gamble button reads "'+gb.textContent+'" and the price is 2,500');
      // CONTROL: the three lines he sent back empty are untouched.
      var sn=document.getElementById('termsclear');
-     if(!sn||sn.textContent.trim()!=='Sign nothing') bad.push('control: the Sign nothing button changed, and that row came back empty');
+     if(!sn||sn.textContent.trim().toLowerCase()!=='sign nothing') bad.push('control: the Sign nothing button changed, and that row came back empty');
      var pn=document.getElementById('pausenote');
      if(!pn||!/crier marked me/.test(pn.getAttribute('placeholder')||'')) bad.push('control: the feedback placeholder changed, and that row came back empty');
-     return bad.length?bad.join('; '):null; }},
+     return bad.length?bad.join('; '):null;
+     }finally{ padOn=oldPadOn; try{ __endRaid('abandon'); }catch(_e){} __topClear(); __cleanProfile(); try{ keysLegendApply(); }catch(_k){} } }},
   {v:'10.40',what:'no building on THE COLD MILE holds a room bigger than a player that nothing can reach, on five seeds, and the guard sees one when it is there',
    run:function(){
      var bad=[];
@@ -91466,8 +91492,8 @@ window.__REGRESS=[
        maybeShareAsk();
        if(!md.classList.contains('on')) bad.push('not asked although an address exists');
        var txt=(md.textContent||'').replace(/\s+/g,' ');
-       if(!/Downloads/.test(txt)) bad.push('the question does not say where a report goes if they say no');
-       if(!/Settings/.test(txt)) bad.push('the question does not say it can be changed in Settings');
+       if(!/Downloads/i.test(txt)) bad.push('the question does not say where a report goes if they say no');
+       if(!/Settings/i.test(txt)) bad.push('the question does not say it can be changed in Settings');
        var yes=document.getElementById('shareyes'), no=document.getElementById('shareno');
        if(!yes||!no) bad.push('the window lacks its YES or its CLOSE');
        if(no&&no.textContent.trim().toUpperCase()!=='CLOSE') bad.push('the way out reads "'+no.textContent.trim()+'" and not CLOSE');
@@ -91503,8 +91529,8 @@ window.__REGRESS=[
          var h2=rowText();
          if(!/no upload address/.test(h2)) bad.push('with no address the Settings row claims to send: "'+h2.slice(0,90)+'"');
        }
-       // AND THE CARD SAYS THE QUESTION EXISTS, so a friend who closed it knows where to find it.
-       if(window.__words&&typeof __words.whatsnew==='function'){ var wl=__words.whatsnew().lines||[]; if(!wl.some(function(l){ return (/RUN REPORTS MAY BE SENT/).test(l); })) bad.push('the WHAT IS NEW card does not say the question exists'); }
+       // v28.xx (cw-cx-corpus03): rotating release notes no longer advertise this old feature; Settings remains its permanent route.
+       if(!document.getElementById('set_share')) bad.push('the permanent Settings sharing control is missing');
        // CONTROL: the welcome pack window is still there.
        if(!document.getElementById('welcomemodal')) bad.push('control: the welcome pack window is gone');
      } finally {
@@ -91582,6 +91608,7 @@ window.__REGRESS=[
   {v:'10.36',what:'TATTOO is a fourteenth rack: five inks on the sprite face and neck and the figure, with a swatch',
    run:function(){
      var bad=[];
+     try{
      if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
      if(typeof COSMETICS==='undefined'||typeof cosSwatch!=='function') return 'SKIP: no racks in this build';
      var tats=COSMETICS.filter(function(c){ return c.kind==='tattoo'; });
@@ -91590,14 +91617,19 @@ window.__REGRESS=[
      if(!tats.some(function(c){ return c.how==='always'; })) bad.push('no tattoo entry is owned from the start');
      if(tats.some(function(c){ return String(c.how).indexOf('buy:')===0; })) bad.push('a tattoo costs credits, against his answer 16');
      if(!COSKEY.tattoo||!COSDEF.tattoo) bad.push('the profile has no tattoo key or default');
-     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __runPrep(); __topClear(); __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
      __deploy({kit:[],safe:null,mapIx:0,seed:4242});
      var g=__state(); if(!g) return 'SKIP: no raid';
      var p=g.player; g.ents.length=0; p.hp=100000; p.maxhp=100000;
      var P2=__P(); var keep={runs:P2.runs,ext:P2.ext,kills:P2.kills,xpLevel:P2.xpLevel,cosTattoo:P2.cosTattoo,cosHat:P2.cosHat,cosBeard:P2.cosBeard};
      P2.runs=999; P2.ext=999; P2.kills={warden:9}; P2.xpLevel=99; P2.cosHat='none'; P2.cosBeard='clean';
      var cvs=(window.__canvases&&__canvases().world)||document.getElementById('cv'), wctx=cvs.getContext('2d');
-     function head(){ for(var f=0;f<3;f++) __frame(0.016); var sx=Math.round(p.x-(g.camX||0)), sy=Math.round(p.y-(g.camY||0)); sx=Math.max(40,Math.min(cvs.width-40,sx)); sy=Math.max(90,Math.min(cvs.height-20,sy)); return wctx.getImageData(sx-40,sy-90,80,110).data; }
+     // v28.xx (cw-cx-corpus03): isolate the real hero renderer; the obsolete camera crop sampled empty world pixels.
+     function head(){
+       var shot=__opShot({hero:1,own:p,armor:0},0,2);
+       if(!shot||shot.thrown) throw new Error('sprite capture: '+(shot&&shot.thrown||'no canvas'));
+       return wctx.getImageData(Math.round(shot.cx+(-50)*shot.z),Math.round(shot.cy+(-90)*shot.z),Math.round(100*shot.z),Math.round(110*shot.z)).data;
+     }
      function diff(a,b){ var d=0; for(var i=0;i<a.length;i+=4) if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])>30) d++; return d; }
      P2.cosTattoo='tatnone'; var none=head(), flat=[];
      tats.forEach(function(c){ if(c.id==='tatnone') return; P2.cosTattoo=c.id; if(diff(head(),none)<2) flat.push(c.id); });
@@ -91615,10 +91647,12 @@ window.__REGRESS=[
      if(raiders.length&&raiders.some(function(e){ return !e.tattoo||!cosFind(e.tattoo); })) bad.push('control: a pillager has no tattoo entry from the rack');
      var kinds={}; COSMETICS.forEach(function(c){ kinds[c.kind]=1; });
      if(Object.keys(kinds).length<14) bad.push('control: only '+Object.keys(kinds).length+' racks, his eight new ones plus six make fourteen');
-     return bad.length?bad.join('; '):null; }},
+     return bad.length?bad.join('; '):null;
+     }finally{ try{ var active=__state(); if(active&&!active.over) __endRaid('abandon'); }catch(_e){} __topClear(); __cleanProfile(); } }},
   {v:'10.35',what:'PATCH is a thirteenth rack: five marks on the sprite chest and the figure, painted swatches',
    run:function(){
      var bad=[];
+     try{
      if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
      if(typeof COSMETICS==='undefined'||typeof cosSwatch!=='function') return 'SKIP: no racks in this build';
      var patches=COSMETICS.filter(function(c){ return c.kind==='patch'; });
@@ -91627,7 +91661,7 @@ window.__REGRESS=[
      if(!patches.some(function(c){ return c.how==='always'; })) bad.push('no patch entry is owned from the start');
      if(patches.some(function(c){ return String(c.how).indexOf('buy:')===0; })) bad.push('a patch costs credits, against his answer 16');
      if(!COSKEY.patch||!COSDEF.patch) bad.push('the profile has no patch key or default');
-     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __runPrep(); __topClear(); __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
      __deploy({kit:[],safe:null,mapIx:0,seed:4242});
      var g=__state(); if(!g) return 'SKIP: no raid';
      var p=g.player; g.ents.length=0; p.hp=100000; p.maxhp=100000; p.armor=0;
@@ -91635,7 +91669,12 @@ window.__REGRESS=[
      // Every gate a patch can hang on, including the play-style ones that came later.
      P2.runs=999; P2.ext=999; P2.kills={warden:9,crawler:60}; P2.xpLevel=99; P2.nightExt=9; P2.bestStreak=9;
      var cvs=(window.__canvases&&__canvases().world)||document.getElementById('cv'), wctx=cvs.getContext('2d');
-     function body(){ for(var f=0;f<3;f++) __frame(0.016); var sx=Math.round(p.x-(g.camX||0)), sy=Math.round(p.y-(g.camY||0)); sx=Math.max(50,Math.min(cvs.width-50,sx)); sy=Math.max(60,Math.min(cvs.height-20,sy)); return wctx.getImageData(sx-50,sy-60,100,80).data; }
+     // v28.xx (cw-cx-corpus03): isolate the real hero renderer; the obsolete camera crop sampled empty world pixels.
+     function body(){
+       var shot=__opShot({hero:1,own:p,armor:0},0,2);
+       if(!shot||shot.thrown) throw new Error('sprite capture: '+(shot&&shot.thrown||'no canvas'));
+       return wctx.getImageData(Math.round(shot.cx+(-60)*shot.z),Math.round(shot.cy+(-70)*shot.z),Math.round(120*shot.z),Math.round(100*shot.z)).data;
+     }
      function diff(a,b){ var d=0; for(var i=0;i<a.length;i+=4) if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])>30) d++; return d; }
      P2.cosPatch='patchnone'; var none=body(), flat=[];
      patches.forEach(function(c){ if(c.id==='patchnone') return; P2.cosPatch=c.id; if(diff(body(),none)<3) flat.push(c.id); });
@@ -91650,10 +91689,12 @@ window.__REGRESS=[
      if(g.ents.length!==85||g.containers.length!==165) bad.push('control: the seed fingerprint moved to '+g.ents.length+'/'+g.containers.length);
      var raiders=g.ents.filter(function(e){ return e.kind==='raider'; });
      if(raiders.length&&raiders.some(function(e){ return !e.patch||!cosFind(e.patch); })) bad.push('control: a pillager has no patch entry from the rack');
-     return bad.length?bad.join('; '):null; }},
+     return bad.length?bad.join('; '):null;
+     }finally{ try{ var active=__state(); if(active&&!active.over) __endRaid('abandon'); }catch(_e){} __topClear(); __cleanProfile(); } }},
   {v:'10.34',what:'BACKPACK colour is a twelfth rack: five packs on the sprite back and a strap on the figure',
    run:function(){
      var bad=[];
+     try{
      if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
      if(typeof COSMETICS==='undefined'||typeof cosSwatch!=='function') return 'SKIP: no racks in this build';
      var packs=COSMETICS.filter(function(c){ return c.kind==='pack'; });
@@ -91663,14 +91704,19 @@ window.__REGRESS=[
      if(packs.some(function(c){ return String(c.how).indexOf('buy:')===0; })) bad.push('a pack costs credits, against his answer 16');
      if(!COSKEY.pack||!COSDEF.pack) bad.push('the profile has no pack key or default');
      if(typeof PACKCOL==='undefined'||packs.some(function(c){ return !PACKCOL[c.id]; })) bad.push('a pack has no colour');
-     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __runPrep(); __topClear(); __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
      __deploy({kit:[],safe:null,mapIx:0,seed:4242});
      var g=__state(); if(!g) return 'SKIP: no raid';
      var p=g.player; g.ents.length=0; p.hp=100000; p.maxhp=100000;
      var P2=__P(); var keep={runs:P2.runs,ext:P2.ext,kills:P2.kills,xpLevel:P2.xpLevel,cosPack:P2.cosPack};
      P2.runs=999; P2.ext=999; P2.kills={warden:9}; P2.xpLevel=99;
      var cvs=(window.__canvases&&__canvases().world)||document.getElementById('cv'), wctx=cvs.getContext('2d');
-     function body(){ for(var f=0;f<3;f++) __frame(0.016); var sx=Math.round(p.x-(g.camX||0)), sy=Math.round(p.y-(g.camY||0)); sx=Math.max(50,Math.min(cvs.width-50,sx)); sy=Math.max(60,Math.min(cvs.height-20,sy)); return wctx.getImageData(sx-50,sy-60,100,80).data; }
+     // v28.xx (cw-cx-corpus03): isolate the real hero renderer; the obsolete camera crop sampled empty world pixels.
+     function body(){
+       var shot=__opShot({hero:1,own:p,armor:0},0,2);
+       if(!shot||shot.thrown) throw new Error('sprite capture: '+(shot&&shot.thrown||'no canvas'));
+       return wctx.getImageData(Math.round(shot.cx+(-60)*shot.z),Math.round(shot.cy+(-70)*shot.z),Math.round(120*shot.z),Math.round(100*shot.z)).data;
+     }
      function diff(a,b){ var d=0; for(var i=0;i<a.length;i+=4) if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])>30) d++; return d; }
      P2.cosPack='packbrown'; var brown=body(), flat=[];
      packs.forEach(function(c){ if(c.id==='packbrown') return; P2.cosPack=c.id; if(diff(body(),brown)<4) flat.push(c.id); });
@@ -91686,10 +91732,12 @@ window.__REGRESS=[
      if(g.ents.length!==85||g.containers.length!==165) bad.push('control: the seed fingerprint moved to '+g.ents.length+'/'+g.containers.length);
      var raiders=g.ents.filter(function(e){ return e.kind==='raider'; });
      if(raiders.length&&raiders.some(function(e){ return !e.pack||!PACKCOL[e.pack]; })) bad.push('control: a pillager has no pack from the rack');
-     return bad.length?bad.join('; '):null; }},
+     return bad.length?bad.join('; '):null;
+     }finally{ try{ var active=__state(); if(active&&!active.over) __endRaid('abandon'); }catch(_e){} __topClear(); __cleanProfile(); } }},
   {v:'10.33',what:'GLOVES is an eleventh rack, and bare hands take the skin colour on the sprite',
    run:function(){
      var bad=[];
+     try{
      if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
      if(typeof COSMETICS==='undefined'||typeof cosSwatch!=='function') return 'SKIP: no racks in this build';
      var gloves=COSMETICS.filter(function(c){ return c.kind==='gloves'; });
@@ -91698,7 +91746,7 @@ window.__REGRESS=[
      if(!gloves.some(function(c){ return c.how==='always'; })) bad.push('no hands are owned from the start');
      if(gloves.some(function(c){ return String(c.how).indexOf('buy:')===0; })) bad.push('a pair of gloves costs credits, against his answer 16');
      if(!COSKEY.gloves||!COSDEF.gloves) bad.push('the profile has no gloves key or default');
-     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __runPrep(); __topClear(); __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
      __deploy({kit:[],safe:null,mapIx:0,seed:4242});
      var g=__state(); if(!g) return 'SKIP: no raid';
      var p=g.player; g.ents.length=0; p.hp=100000; p.maxhp=100000;
@@ -91706,7 +91754,12 @@ window.__REGRESS=[
      P2.runs=999; P2.ext=999; P2.kills={warden:9}; P2.xpLevel=99;
      var cvs=(window.__canvases&&__canvases().world)||document.getElementById('cv'), wctx=cvs.getContext('2d');
      // the whole sprite, since the hands ride the aim
-     function body(){ for(var f=0;f<3;f++) __frame(0.016); var sx=Math.round(p.x-(g.camX||0)), sy=Math.round(p.y-(g.camY||0)); sx=Math.max(50,Math.min(cvs.width-50,sx)); sy=Math.max(60,Math.min(cvs.height-20,sy)); return wctx.getImageData(sx-50,sy-60,100,80).data; }
+     // v28.xx (cw-cx-corpus03): isolate the real hero renderer; the obsolete camera crop sampled empty world pixels.
+     function body(){
+       var shot=__opShot({hero:1,own:p,armor:0},0,2);
+       if(!shot||shot.thrown) throw new Error('sprite capture: '+(shot&&shot.thrown||'no canvas'));
+       return wctx.getImageData(Math.round(shot.cx+(-60)*shot.z),Math.round(shot.cy+(-70)*shot.z),Math.round(120*shot.z),Math.round(100*shot.z)).data;
+     }
      function diff(a,b){ var d=0; for(var i=0;i<a.length;i+=4) if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])>30) d++; return d; }
      P2.cosGloves='barehands'; P2.cosSkin='fair'; var bare=body(), flat=[];
      gloves.forEach(function(c){ if(c.id==='barehands') return; P2.cosGloves=c.id; if(diff(body(),bare)<3) flat.push(c.id); });
@@ -91725,10 +91778,12 @@ window.__REGRESS=[
      if(g.ents.length!==85||g.containers.length!==165) bad.push('control: the seed fingerprint moved to '+g.ents.length+'/'+g.containers.length);
      var raiders=g.ents.filter(function(e){ return e.kind==='raider'; });
      if(raiders.length&&raiders.some(function(e){ return !e.gloves||!cosFind(e.gloves); })) bad.push('control: a pillager has no gloves entry from the rack');
-     return bad.length?bad.join('; '):null; }},
+     return bad.length?bad.join('; '):null;
+     }finally{ try{ var active=__state(); if(active&&!active.over) __endRaid('abandon'); }catch(_e){} __topClear(); __cleanProfile(); } }},
   {v:'10.32',what:'BOOTS is a tenth rack: five pairs on the sprite feet and the figure, with a swatch, and the pillagers wear them',
    run:function(){
      var bad=[];
+     try{
      if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
      if(typeof COSMETICS==='undefined'||typeof cosSwatch!=='function') return 'SKIP: no racks in this build';
      var boots=COSMETICS.filter(function(c){ return c.kind==='boots'; });
@@ -91738,7 +91793,7 @@ window.__REGRESS=[
      if(boots.some(function(c){ return String(c.how).indexOf('buy:')===0; })) bad.push('a pair of boots costs credits, against his answer 16');
      if(!COSKEY.boots||!COSDEF.boots) bad.push('the profile has no boots key or default');
      if(typeof BOOTCOL==='undefined'||boots.some(function(c){ return !BOOTCOL[c.id]; })) bad.push('a pair of boots has no colour');
-     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __runPrep(); __topClear(); __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
      __deploy({kit:[],safe:null,mapIx:0,seed:4242});
      var g=__state(); if(!g) return 'SKIP: no raid';
      var p=g.player; g.ents.length=0; p.hp=100000; p.maxhp=100000;
@@ -91746,7 +91801,12 @@ window.__REGRESS=[
      P2.runs=999; P2.ext=999; P2.kills={warden:9}; P2.xpLevel=99;
      var cvs=(window.__canvases&&__canvases().world)||document.getElementById('cv'), wctx=cvs.getContext('2d');
      // the feet: the sprite's soles land on his y, so read a box around it
-     function feet(){ for(var f=0;f<3;f++) __frame(0.016); var sx=Math.round(p.x-(g.camX||0)), sy=Math.round(p.y-(g.camY||0)); sx=Math.max(30,Math.min(cvs.width-30,sx)); sy=Math.max(30,Math.min(cvs.height-10,sy)); return wctx.getImageData(sx-30,sy-24,60,30).data; }
+     // v28.xx (cw-cx-corpus03): isolate the real hero renderer; the obsolete camera crop sampled empty world pixels.
+     function feet(){
+       var shot=__opShot({hero:1,own:p,armor:0},0,2);
+       if(!shot||shot.thrown) throw new Error('sprite capture: '+(shot&&shot.thrown||'no canvas'));
+       return wctx.getImageData(Math.round(shot.cx+(-40)*shot.z),Math.round(shot.cy+(-30)*shot.z),Math.round(80*shot.z),Math.round(45*shot.z)).data;
+     }
      function diff(a,b){ var d=0; for(var i=0;i<a.length;i+=4) if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])>30) d++; return d; }
      P2.cosBoots='bootblack'; var black=feet(), flat=[];
      boots.forEach(function(c){ if(c.id==='bootblack') return; P2.cosBoots=c.id; if(diff(feet(),black)<6) flat.push(c.id); });
@@ -91762,7 +91822,8 @@ window.__REGRESS=[
      if(g.ents.length!==85||g.containers.length!==165) bad.push('control: the seed fingerprint moved to '+g.ents.length+'/'+g.containers.length);
      var raiders=g.ents.filter(function(e){ return e.kind==='raider'; });
      if(raiders.length&&raiders.some(function(e){ return !e.boots||!BOOTCOL[e.boots]; })) bad.push('control: a pillager has no boots from the rack');
-     return bad.length?bad.join('; '):null; }},
+     return bad.length?bad.join('; '):null;
+     }finally{ try{ var active=__state(); if(active&&!active.over) __endRaid('abandon'); }catch(_e){} __topClear(); __cleanProfile(); } }},
   {v:'10.31',what:'the Blotter melts the frame on clocks rolled with the dose, so two doses never warp alike and one dose never holds still',
    run:function(){
      var bad=[];
@@ -92120,6 +92181,7 @@ window.__REGRESS=[
   {v:'10.21',what:'FACE is a ninth rack: six faces drawn on the sprite and the figure, with a swatch, and the pillagers wear them',
    run:function(){
      var bad=[];
+     try{
      if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
      if(typeof COSMETICS==='undefined'||typeof cosSwatch!=='function') return 'SKIP: no racks in this build';
      var faces=COSMETICS.filter(function(c){ return c.kind==='face'; });
@@ -92128,14 +92190,19 @@ window.__REGRESS=[
      if(!faces.some(function(c){ return c.how==='always'; })) bad.push('no face is owned from the start');
      if(faces.some(function(c){ return String(c.how).indexOf('buy:')===0; })) bad.push('a face costs credits, against his answer 16');
      if(!COSKEY.face||!COSDEF.face) bad.push('the profile has no face key or default');
-     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __runPrep(); __topClear(); __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
      __deploy({kit:[],safe:null,mapIx:0,seed:4242});
      var g=__state(); if(!g) return 'SKIP: no raid';
      var p=g.player; g.ents.length=0; p.hp=100000; p.maxhp=100000;
      var P2=__P(); var keep={runs:P2.runs,ext:P2.ext,kills:P2.kills,cosFace:P2.cosFace,cosHat:P2.cosHat,cosBeard:P2.cosBeard};
      P2.runs=999; P2.ext=999; P2.kills={warden:9}; P2.cosHat='none'; P2.cosBeard='clean';   // a beard left worn by an earlier check hid mud and freckles
      var cvs=(window.__canvases&&__canvases().world)||document.getElementById('cv'), wctx=cvs.getContext('2d');
-     function head(){ for(var f=0;f<3;f++) __frame(0.016); var sx=Math.round(p.x-(g.camX||0)), sy=Math.round(p.y-(g.camY||0)); sx=Math.max(40,Math.min(cvs.width-40,sx)); sy=Math.max(90,Math.min(cvs.height-20,sy)); return wctx.getImageData(sx-40,sy-90,80,110).data; }
+     // v28.xx (cw-cx-corpus03): isolate the real hero renderer; the obsolete camera crop sampled empty world pixels.
+     function head(){
+       var shot=__opShot({hero:1,own:p,armor:0},0,2);
+       if(!shot||shot.thrown) throw new Error('sprite capture: '+(shot&&shot.thrown||'no canvas'));
+       return wctx.getImageData(Math.round(shot.cx+(-50)*shot.z),Math.round(shot.cy+(-90)*shot.z),Math.round(100*shot.z),Math.round(110*shot.z)).data;
+     }
      function diff(a,b){ var d=0; for(var i=0;i<a.length;i+=4) if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])>30) d++; return d; }
      P2.cosFace='faceplain'; var plain=head(), flat=[];
      faces.forEach(function(c){ if(c.id==='faceplain') return; P2.cosFace=c.id; if(diff(head(),plain)<3) flat.push(c.id); });
@@ -92150,7 +92217,8 @@ window.__REGRESS=[
      if(g.ents.length!==85||g.containers.length!==165) bad.push('control: the seed fingerprint moved to '+g.ents.length+'/'+g.containers.length);
      var raiders=g.ents.filter(function(e){ return e.kind==='raider'; });
      if(raiders.length&&raiders.some(function(e){ return !e.faceMark||!cosFind(e.faceMark)||cosFind(e.faceMark).kind!=='face'; })) bad.push('control: a pillager has no face from the rack');
-     return bad.length?bad.join('; '):null; }},
+     return bad.length?bad.join('; '):null;
+     }finally{ try{ var active=__state(); if(active&&!active.over) __endRaid('abandon'); }catch(_e){} __topClear(); __cleanProfile(); } }},
   {v:'10.20',what:'the OS pointer is the resize arrow over a panel corner, the move cross over its bar, the hand over its glyph',
    run:function(){
      var bad=[];
@@ -92187,6 +92255,7 @@ window.__REGRESS=[
   {v:'10.19',what:'EYES is an eighth rack: six colours in the iris on the sprite and the figure, with a swatch',
    run:function(){
      var bad=[];
+     try{
      if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
      if(typeof COSMETICS==='undefined'||typeof cosSwatch!=='function') return 'SKIP: no racks in this build';
      var eyes=COSMETICS.filter(function(c){ return c.kind==='eyes'; });
@@ -92197,14 +92266,19 @@ window.__REGRESS=[
      if(!COSKEY.eyes||!COSDEF.eyes) bad.push('the profile has no eyes key or default');
      if(typeof EYECOL==='undefined'||eyes.some(function(c){ return !EYECOL[c.id]; })) bad.push('an eye colour has no colour');
      // Drawn on the sprite: each colour changes the eye pixels against Brown.
-     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __runPrep(); __topClear(); __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
      __deploy({kit:[],safe:null,mapIx:0,seed:4242});
      var g=__state(); if(!g) return 'SKIP: no raid';
      var p=g.player; g.ents.length=0; p.hp=100000; p.maxhp=100000;
      var P2=__P(); var keep={runs:P2.runs,ext:P2.ext,kills:P2.kills,xpLevel:P2.xpLevel,cosEyes:P2.cosEyes,cosHat:P2.cosHat};
      P2.runs=999; P2.ext=999; P2.kills={warden:9}; P2.xpLevel=99; P2.cosHat='none';
      var cvs=(window.__canvases&&__canvases().world)||document.getElementById('cv'), wctx=cvs.getContext('2d');
-     function head(){ for(var f=0;f<3;f++) __frame(0.016); var sx=Math.round(p.x-(g.camX||0)), sy=Math.round(p.y-(g.camY||0)); sx=Math.max(40,Math.min(cvs.width-40,sx)); sy=Math.max(90,Math.min(cvs.height-20,sy)); return wctx.getImageData(sx-40,sy-90,80,110).data; }
+     // v28.xx (cw-cx-corpus03): isolate the real hero renderer; the obsolete camera crop sampled empty world pixels.
+     function head(){
+       var shot=__opShot({hero:1,own:p,armor:0},0,2);
+       if(!shot||shot.thrown) throw new Error('sprite capture: '+(shot&&shot.thrown||'no canvas'));
+       return wctx.getImageData(Math.round(shot.cx+(-50)*shot.z),Math.round(shot.cy+(-90)*shot.z),Math.round(100*shot.z),Math.round(110*shot.z)).data;
+     }
      function diff(a,b){ var d=0; for(var i=0;i<a.length;i+=4) if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])>30) d++; return d; }
      P2.cosEyes='eyebrown'; var brown=head(), flat=[];
      eyes.forEach(function(c){ if(c.id==='eyebrown') return; P2.cosEyes=c.id; if(diff(head(),brown)<2) flat.push(c.id); });
@@ -92220,7 +92294,8 @@ window.__REGRESS=[
      if(g.ents.length!==85||g.containers.length!==165) bad.push('control: the seed fingerprint moved to '+g.ents.length+'/'+g.containers.length);
      var raiders=g.ents.filter(function(e){ return e.kind==='raider'; });
      if(raiders.length&&raiders.some(function(e){ return !e.eyes; })) bad.push('control: a pillager has no eyes');
-     return bad.length?bad.join('; '):null; }},
+     return bad.length?bad.join('; '):null;
+     }finally{ try{ var active=__state(); if(active&&!active.over) __endRaid('abandon'); }catch(_e){} __topClear(); __cleanProfile(); } }},
   {v:'10.18',what:'pillagers dress from the racks, varied, without spending a seeded roll',
    run:function(){
      var bad=[];
@@ -92257,6 +92332,7 @@ window.__REGRESS=[
   {v:'10.17',what:'BEARD is a seventh rack: five beards, drawn on the sprite and the figure, with a slot and a swatch',
    run:function(){
      var bad=[];
+     try{
      if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
      if(typeof COSMETICS==='undefined'||typeof cosSwatch!=='function') return 'SKIP: no racks in this build';
      var beards=COSMETICS.filter(function(c){ return c.kind==='beard'; });
@@ -92266,14 +92342,19 @@ window.__REGRESS=[
      if(beards.some(function(c){ return String(c.how).indexOf('buy:')===0; })) bad.push('a beard costs credits, against his answer 16');
      if(!COSKEY.beard||!COSDEF.beard) bad.push('the profile has no beard key or default');
      // Drawn on the sprite: each beard changes the head pixels against Clean.
-     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     __runPrep(); __topClear(); __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
      __deploy({kit:[],safe:null,mapIx:0,seed:4242});
      var g=__state(); if(!g) return 'SKIP: no raid';
      var p=g.player; g.ents.length=0; p.hp=100000; p.maxhp=100000;
      var P2=__P(); var keep={runs:P2.runs,ext:P2.ext,kills:P2.kills,cosBeard:P2.cosBeard,cosHat:P2.cosHat};
      P2.runs=999; P2.ext=999; P2.kills={warden:9}; P2.cosHat='none';
      var cvs=(window.__canvases&&__canvases().world)||document.getElementById('cv'), wctx=cvs.getContext('2d');
-     function head(){ for(var f=0;f<3;f++) __frame(0.016); var sx=Math.round(p.x-(g.camX||0)), sy=Math.round(p.y-(g.camY||0)); sx=Math.max(40,Math.min(cvs.width-40,sx)); sy=Math.max(90,Math.min(cvs.height-20,sy)); return wctx.getImageData(sx-40,sy-90,80,110).data; }
+     // v28.xx (cw-cx-corpus03): isolate the real hero renderer; the obsolete camera crop sampled empty world pixels.
+     function head(){
+       var shot=__opShot({hero:1,own:p,armor:0},0,2);
+       if(!shot||shot.thrown) throw new Error('sprite capture: '+(shot&&shot.thrown||'no canvas'));
+       return wctx.getImageData(Math.round(shot.cx+(-50)*shot.z),Math.round(shot.cy+(-90)*shot.z),Math.round(100*shot.z),Math.round(110*shot.z)).data;
+     }
      function diff(a,b){ var d=0; for(var i=0;i<a.length;i+=4) if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])>40) d++; return d; }
      P2.cosBeard='clean'; var clean=head(), flat=[];
      beards.forEach(function(c){ if(c.id==='clean') return; P2.cosBeard=c.id; if(diff(head(),clean)<4) flat.push(c.id); });
@@ -92289,7 +92370,8 @@ window.__REGRESS=[
      if(qm.length) bad.push('beards with no swatch: '+qm.join(', '));
      // CONTROL: the other six racks are still there and still sized.
      if(COSMETICS.filter(function(c){ return c.kind==='hat'; }).length<10) bad.push('control: the headgear rack shrank');
-     return bad.length?bad.join('; '):null; }},
+     return bad.length?bad.join('; '):null;
+     }finally{ try{ var active=__state(); if(active&&!active.over) __endRaid('abandon'); }catch(_e){} __topClear(); __cleanProfile(); } }},
   {v:'10.16',what:'SURPRISE ME dresses the operator from every rack, and three LOOKS keep and wear an outfit',
    run:function(){
      var bad=[];
@@ -94548,6 +94630,7 @@ window.__REGRESS=[
   {v:'9.76',what:'an edit only follows a line to others of the same shape when that shape has a word in it',
    run:function(){
      var bad=[];
+     try{
      if(!window.__tx) return 'SKIP: this build has no text engine to drive';
      if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
      __pinDPR(1); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -94563,11 +94646,11 @@ window.__REGRESS=[
      if(bare.length<6)
        return 'SKIP: only '+bare.length+' bare numbers are drawn, too few to say anything';
      var one=bare[0];
-     __tx.set(one,'Zqxword');   /* v30.xx (00-fix-new-reds): never all caps (2026-10-18): the probe is sentence case so what is drawn is what was set */
+     __tx.set(one,'zqxword');   /* v30.xx (00-fix-new-reds): never all caps (2026-10-18): the probe is sentence case so what is drawn is what was set */
      var after=drawn();
      var hitCount=0, bareLeft=0;
      for(i=0;i<after.length;i++){
-       if(after[i]==='Zqxword') hitCount++;
+       if(after[i]==='zqxword') hitCount++;
        if(/^\d+$/.test(after[i])) bareLeft++;
      }
      var sameValue=0; for(i=0;i<bare.length;i++) if(bare[i]===one) sameValue++;
@@ -94590,11 +94673,11 @@ window.__REGRESS=[
      for(i=0;i<before.length;i++) if(/^extract \d+m$/i.test(before[i])){ target=before[i]; break; }   /* v30.xx (00-fix-new-reds): never all caps (2026-10-18): drawn as Extract 120m */
      if(!target) return bad.length?bad.join('; '):'SKIP: no lettered numbered line was drawn to test with';
      target='EXTRACT '+target.replace(/^extract /i,'');   /* the edit is keyed by the line as the game writes it (the case is fixed after the lookup) */
-     __tx.set(target,'Zqx ring '+target.replace(/^extract /i,''));
+     __tx.set(target,'zqx ring '+target.replace(/^extract /i,''));
      p.x+=40; p.y+=40;
      for(var f2=0;f2<3;f2++) __loop(performance.now()+1000+f2*16.7);
      var trav=null, moved=drawn();
-     for(i=0;i<moved.length;i++) if(/^Zqx ring \d+m$/.test(moved[i])){ trav=moved[i]; break; }
+     for(i=0;i<moved.length;i++) if(/^zqx ring \d+m$/.test(moved[i])){ trav=moved[i]; break; }
      __tx.set(target,'');
      if(!trav)
        bad.push('control: a line with a word in it stopped travelling, so the shape match is off rather than narrowed');
@@ -94617,7 +94700,8 @@ window.__REGRESS=[
        if(stale!=='7')
          bad.push('control: a stale shape is still rewriting bare numbers, "7" came back as "'+stale+'"');
      } else bad.push('control: this build cannot be asked whether it prunes a stale shape');
-     return bad.length?bad.join('; '):null; }},
+     return bad.length?bad.join('; '):null;
+     }finally{ try{ var active=__state(); if(active&&!active.over) __endRaid('abandon'); }catch(_e){} __topClear(); __cleanProfile(); } }},
   {v:'9.75',what:'an edit survives the number in the line changing, and carries the number through',
    run:function(){
      var bad=[];
@@ -94694,6 +94778,7 @@ window.__REGRESS=[
   {v:'9.74',what:'every line of text can be clicked and typed over, on the canvas and in the menus',
    run:function(){
      var bad=[];
+     try{
      if(!window.__tx) return 'SKIP: this build has no text engine to drive';
      if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
      __pinDPR(1); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -94721,7 +94806,7 @@ window.__REGRESS=[
      // THE FINDING, PART ONE: an override must reach the canvas. This is the
      // whole feature, and it is asserted on what fillText actually painted
      // rather than on the map having a key in it.
-     var want='Zqx edited '+pick.o.length;   /* v30.xx (00-fix-new-reds): his rule 2026-10-18, never all caps: a probe in caps is drawn in sentence case, so the probe is written that way */
+     var want='zqx edited '+pick.o.length;   /* v30.xx (00-fix-new-reds): his rule 2026-10-18, never all caps: a probe in caps is drawn in sentence case, so the probe is written that way */
      __tx.set(pick.o,want);
      var after=__tx.record(function(){ __frame(0.016); });
      var found=0, still=0;
@@ -94776,21 +94861,22 @@ window.__REGRESS=[
      // game are still out of his reach.
      if(document.getElementById('root')){
        var probe=document.createElement('div');
-       probe.textContent='Zqx original line';   /* v30.xx (00-fix-new-reds): never all caps (2026-10-18): the probes are sentence case so what is drawn is what was set */
+       probe.textContent='zqx original line';   /* v30.xx (00-fix-new-reds): never all caps (2026-10-18): the probes are sentence case so what is drawn is what was set */
        document.getElementById('root').appendChild(probe);
-       __tx.set('Zqx original line','Zqx his words');
+       __tx.set('zqx original line','zqx his words');
        __tx.dom(document.getElementById('root'));
        var got=probe.textContent;
-       __tx.set('Zqx original line','');
+       __tx.set('zqx original line','');
        __tx.dom(document.getElementById('root'));
        var back2=probe.textContent;
        if(probe.parentNode) probe.parentNode.removeChild(probe);
-       if(got!=='Zqx his words')
+       if(got!=='zqx his words')
          bad.push('a panel line did not take the edit, it still reads "'+got+'"');
-       if(back2!=='Zqx original line')
+       if(back2!=='zqx original line')
          bad.push('control: clearing the edit left the panel reading "'+back2+'" rather than the original');
      }
-     return bad.length?bad.join('; '):null; }},
+     return bad.length?bad.join('; '):null;
+     }finally{ try{ var active=__state(); if(active&&!active.over) __endRaid('abandon'); }catch(_e){} __topClear(); __cleanProfile(); } }},
   {v:'9.73',what:'a locked room is not a fault, so a building keeps its interior for having one',
    run:function(){
      var bad=[];
