@@ -28167,7 +28167,11 @@ window.__REGRESS=[
            for(i=0;i<16;i++) if(!document.querySelector('#keyslist .rebind[data-k="'+i+'"]')) bad.push('ONE: no row for action '+i);
            if(!document.getElementById('keysreset')) bad.push('ONE: no RESET TO DEFAULTS');
            h=(document.getElementById('keyslist').textContent||'');
-           if(h.indexOf('MOVE')<0||h.indexOf('FIGHT')<0||h.indexOf('GEAR')<0||h.indexOf('L STICK')<0) bad.push('ONE: the pad window lacks its sections and locked sticks');
+           // v28.xx (cw-cx-padpresets): both the former locked list and the live stick drawing show the default twin-stick jobs.
+           if(!/move/i.test(h)||!/fight/i.test(h)||!/gear/i.test(h)) bad.push('ONE: the pad window lacks its sections');
+           var stickL=document.querySelector('#keyslist [data-pad-stick="left"]'), stickR=document.querySelector('#keyslist [data-pad-stick="right"]');
+           if(stickL||stickR){ if(!stickL||!stickR||stickL.textContent!=='move'||stickR.textContent!=='aim') bad.push('ONE: default stick drawing has incorrect jobs'); }
+           else if(h.indexOf('L STICK')<0) bad.push('ONE: the pad window lacks its default stick labels');
            el=document.querySelector('#keyslist .keybtn[data-k="7"]'); if(!el||el.textContent!=='RT') bad.push('ONE: fire reads '+(el?el.textContent:'nothing')+' by default, not RT');
            el=document.querySelector('#keyslist .keybtn[data-k="0"]'); if(!el||el.textContent!=='A') bad.push('ONE: dodge roll reads '+(el?el.textContent:'nothing')+' by default, not A');
          }
