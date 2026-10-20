@@ -1,0 +1,7 @@
+v32.93: a demo run saves its run report
+
+Every finished demo run posts its report (with the gfx p50 p95 slow line) to the local collector from both windows.
+
+Check 32.93. Fails on v32.92.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

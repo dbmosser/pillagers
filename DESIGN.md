@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.93 - A DEMO RUN SAVES ITS RUN REPORT
+
+Co-op hunt while he was away. His answer 66 (save each party run report) and 2.92 (the game logs everything automatically). A finished demo run wrote nothing, so stutter on the two TVs left no numbers. Each window now posts its run report, tagged demo and seat p1 or p2, to the local collector after the RUN OVER card is up. No Downloads file, no banner, nothing off localhost.
+
+MEASURED. Check 32.93 passes, and fails on v32.92.
 ## v32.92 - DAILY SAVE BACKUPS
 
 Co-op hunt while he was away. His Tech answer of 2026-10-12 asks for an automatic daily save backup. Keep three raw dated copies per save slot and reuse the Settings restore row and undo.

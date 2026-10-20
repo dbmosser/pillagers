@@ -486,3 +486,8 @@
 2026-10-20 0.0000 o-13-reduced-flashing-default
 2026-10-20 0.0000 o-13-reduced-flashing-default
 2026-10-20 0.0000 o-14-daily-save-backup
+2026-10-20 0.1645 critic-o-14-daily-save-backup
+2026-10-20 0.1315 critic-o-14-daily-save-backup
+2026-10-20 0.0000 o-14-daily-save-backup
+2026-10-20 0.1327 critic-o-14-daily-save-backup
+2026-10-20 0.0000 o-14-daily-save-backup

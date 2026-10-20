@@ -215,3 +215,5 @@
 
 2026-10-20 | o-14-daily-save-backup | Settings existing restore row (30) | Added a source button cycling file and up to three dated daily copies; reused restore and undo; changed the file-only hint to 'file or daily copy; undo available' because it now accepts both sources. | before: lane standard 30-settings-scroll-2400 before shot | after: lane camera-recipes 30-settings-daily-restore-1080.jpg (paths pending lane capture)
 
+2026-10-20 | o-14-daily-save-backup | Settings restore row (30) | Grouped source, restore and undo below the label with 44px controls and 8px gaps so all remain visible; removed stacked focus marks; put the selected copy, actual date and runs below the detail title. Reworded help to 'undo keeps current save' because the selected daily source needs clear undo context. | before: C:/claudecode/dark raiders/tools/handoff/console/notes/shots/o-14-daily-save-backup-recipes-2/30-settings-daily-restore-1080.jpg | after: lane recipe round 3 path pending
+

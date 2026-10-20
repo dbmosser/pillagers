@@ -1,0 +1,3 @@
+{"generated":"2026-10-20T13:55:40","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":17,"screens":[
+{"name":"30-settings-scroll-2400","screen":"Settings list bottom (save file, restore, tuning, dev box)","1080":{"staged":true,"note":"scrollTop 2400.4453125 of 2869","viewport":"1920x1080","shot":"30-settings-scroll-2400-1080.jpg","lint":{"issues":[],"stats":{"viewport":"1920x1080","scaleTo1080":1,"texts":42,"controls":24,"focusProbed":3,"canvasText":"out of scope: canvas-drawn text (raid HUD, world tags, map labels) is not in the DOM; judge it from the shot","counts":{"clip":0,"offscreen":0,"small":0,"contrast":0,"font":0,"overlap":0,"focus":0,"total":0},"covered":7}}}}
+]}

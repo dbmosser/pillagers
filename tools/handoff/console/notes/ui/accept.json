@@ -1108,5 +1108,35 @@
   "pic": "tools/handoff/console/notes/shots/o-10-pad-floor-bag-recipes-3/41-hub-backpack-pad-p2-held-1080.jpg",
   "task": "o-10-pad-floor-bag",
   "when": "2026-10-20T12:06"
+ },
+ "30-settings-scroll-2400": {
+  "score": 3,
+  "pass": false,
+  "verdict": "The two screenshots look identical, so the daily-backup change added nothing visible here; this is a competent but still plain dark settings list with a big empty detail pane.",
+  "findings": [
+   "P1 detail pane (right): Put the description directly under the title (24px gap). Cut it to 3 to 5 words, or shrink the pane to about 480px and give the list the width. Show the current value and the default there instead.",
+   "P1 list rows, value column: Use one row height (56px) and one control type. Show on/off rows as a toggle pill, or use the same arrows. Replace the uneven gaps with a 16px section label.",
+   "P1 list, bottom edge and scrollbar: Fade or mask the list edges over a 24px band, or snap the scroll to whole rows. Make the scrollbar 8px in --ui-line-hi.",
+   "P1 row text and values: Set labels to --tx-1 at 20px. Keep values at 20px/700, and use lime for a non-default value only. Make the focused row's fill --ui-raised with a 4px lime bar.",
+   "P2 left nav: Divide the nav into groups with a 1px --ui-line rule and a 16px label. Give the selected tab a 4px lime bar plus --ui-raised fill, and set tab text to 20px."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-14-daily-save-backup-after/30-settings-scroll-2400-1080.jpg",
+  "task": "o-14-daily-save-backup",
+  "when": "2026-10-20T17:55"
+ },
+ "30-settings-daily-restore": {
+  "score": 3,
+  "pass": false,
+  "verdict": "The card is clean and readable and the lime focus is clear, but the detail pane is mostly empty, the list is cropped at the top, and the value column mixes controls with bare text.",
+  "findings": [
+   "P1 right detail pane: Put the description 16px under the title (y≈200). Show 2 to 3 label/value lines such as 'backup: yesterday' and 'saved: 10-19 22:14', with a hero or tx-1 value at 56px. Anchor the action hint at the bottom.",
+   "P1 list top edge / scroll: Add 8px top padding to the list. Align labels to the row's vertical centre (row height 56). Add 16px muted group headers (display, players, data). Remove the horizontal bar. Make the scroll thumb 6px in --ui-line-hi.",
+   "P1 restore from a backup row, 'yesterday' button: Keep one signal: the 3px lime left bar plus a --ui-raised fill. Make the value button a 2px lime border inset 6px from the row edges and drop the inner white bar. Use tx-1 text, with lime only on the border.",
+   "P2 value column, mixed control types: Use one pattern. Toggles get chevrons or a pill. Actions (save file, restore, open) get a 1px --ui-line-hi bordered button of the same size as 'locked'. Raise the key hints h and bksp to 16px, right-aligned in a keycap box.",
+   "P2 left tab list: Use even 64px tab spacing, or add a labelled group break. Make the selected tab text tx-1 with a 3px lime bar (already there) and a --ui-raised fill at full width. Add a 16px gap between the tab column and the list."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-14-daily-save-backup-recipes-2/30-settings-daily-restore-1080.jpg",
+  "task": "o-14-daily-save-backup",
+  "when": "2026-10-20T17:59"
  }
 }
