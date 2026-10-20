@@ -1,0 +1,7 @@
+v32.40: readable forge prices
+
+The forge action and dollar price use full HUD font sizes. The gun card names the upgrade cost.
+
+Check 32.40. Fails on v32.39.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

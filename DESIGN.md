@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.40 - READABLE FORGE PRICES
+
+Co-op hunt while he was away. The forge price and action were tiny, and the upgrade card debit needed a clear cost label.
+
+MEASURED. Check 32.40 passes, and fails on v32.39.
 ## v32.39 - CALLING AN EXTRACTION FOLDS THE CONTROLS LIST
 
 Co-op hunt while he was away. Critic on screen 37: the compact controls list sat across the big extract countdown. It now folds once when an extraction is called (F1 opens it again).

@@ -491,19 +491,19 @@
   "when": "2026-10-19T01:38"
  },
  "37-raid-extracting-countdown": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The plate behind the extract countdown is the right idea, but the key-hint card sits on top of it and cuts the headline in half, and the right column and bottom-left stack are still crowded.",
+  "verdict": "The extract countdown is now the clear hero, on a plate with a large cyan number, and the controls list is folded away. The screen is still crowded with competing toasts, a clipped panel, and two bottom-centre texts that don't match the new size.",
   "findings": [
-   "P0 bottom centre, 'extract b inbound 15s' against the controls cheat-sheet (wasd/ctrl list, x 495-900): Hide the key-hint card while extracting, or cap its right edge at x=700. Render the countdown plate above all HUD cards (z-order). Centre the plate at x=960 with 24px padding and keep the 56px hero size.",
-   "P1 screenshot 2, right column 'run info' contracts box: Size the panel to its content (min-height 16px per row, 24px padding) and keep an 8px gap to the pickup chips. Use one left indent for all rows. Use tx-2 for open objectives and --ok only for finished ones.",
-   "P1 top-right career column (credits / xp / stash / backpack): Shrink each row to a 40px quiet strip with tx-2 labels at 16px and numbers in tx-1 f-cond. Hide zero-value rows during a raid. Leave a 16px gap before the minimap.",
-   "P1 hierarchy, whole HUD during extraction: Keep one extraction message: the bottom hero countdown on an opaque --ui-panel plate with a 3px --extract top tab. Drop or dim the top chip. Cut the 'chill row cache' label to tx-2 at 16px.",
-   "P1 bottom-left, pickup chips and 'codex entry' / 'contract item nearby': Use one chip style: --ui-panel at 90%, 3px rarity bar on the left, 20px f-cond text, 8px gap between chips. Keep a 24px gap above the 'standing' tag. Keep hp and stamina as the only coloured bars in that corner."
+   "P1 extract inbound plate, bottom centre: Use the panel style: --ui-panel at 90%, 1px --ui-line-hi border, 4px radius, and a 3px --extract tab on the left edge. Set the number at 56px f-cond 800. Make the label 16px tx-2 and the number the only large element. Keep 16px or more of padding on all sides. Give the red hostile line 8px of gap and a panel background, or fold it into the plate as a second row.",
+   "P1 top-left, under the current pillager bots panel: Remove the folded handle, or anchor it as a full 28px tab that does not overlap the bots panel. Leave at least 8px of gap between the two panels and never let one panel cover another.",
+   "P1 top-centre toast 'contract item nearby · gold glow marks the box': Delete the sentence and keep one chip. Remove the 'gold glow marks the box' tail. If a toast must show, keep it to 3 words, 16px, and place it away from the extraction cluster.",
+   "P1 left chip stack (codex entry, running slowly, medkit, titanium cell, induction coil, contract item nearby): Show at most 3 chips during extraction and fade out the chips that don't matter. Use 16px text and an 8px gap between chips. Make sure only rarity or warning colours appear on the left bar.",
+   "P2 top-right career HUD (credits, xp, stash, backpack): Narrow the rows to about 220px. Keep the label in tx-2 and the value in tx-1 at 20px. Leave 16px between the list and the minimap."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-30s-after/37-raid-extracting-countdown-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/b-30t-after/37-raid-extracting-countdown-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T05:17"
+  "when": "2026-10-20T05:25"
  },
  "77-haul-reveal-done": {
   "score": 3,

@@ -167,4 +167,6 @@
 
 2026-10-20 | o-03-map-popups-wait | 22 sector map | cw-cx-mapquiet-o03: loot type 500/tx-2 with 16px floor, halo 5 to 2px, label clearance 12 to 16px, icon clearance 5 to 12px, omit leader segments <=20px; status above full-width contract tracks | before: tools/handoff/console/notes/shots/o-03-map-popups-wait-after/22-raid-map-open-1080.jpg (v32.30 round two; archive requested) | after: lane round-three screen 22 at 1080p/4K pending
 
+2026-10-20 | b-30-ui-hud | 37 raid extracting | cw-extbig, cw-extscrim, cw-extlegend: inbound extract line 19.5 to 39px on a flat plate; the compact controls list folds once when an extraction is called | before: tools/handoff/console/notes/shots/b-30q-before/37-raid-extracting-countdown-1080.jpg | after: tools/handoff/console/notes/shots/b-30t-after/37-raid-extracting-countdown-1080.jpg
+
 2026-10-20 | o-01-stash-pays-in-raid | forge prompt and purchase gun card | action/price 11.7/9.4px to 19.5/15.6px; affordable price uses primary text, accent lime; receipt footer now cost $2,500 because the old debit label was ambiguous | before: tools/handoff/console/notes/shots/o-01-stash-pays-in-raid-recipes-2/stashraid-forge-prompt-1080.jpg and stashraid-forge-gun-card-1080.jpg | after: pending lane recipe round 3
