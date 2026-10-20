@@ -3204,7 +3204,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.83';
+var VER='32.84';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -46266,7 +46266,7 @@ function drawHubBag(){
   var old=G;
   // The ghost goes LAST and inside the swap, so it rides over the panel and the
   // belt exactly as it does in a raid and reads the Undercroft bag's own drag.
-  try{ G=hubBagG; drawBag(); drawBelt(); try{ beltHoverHud(); }catch(_bhv){} drawDragGhost(); }   // v24.xx (belthover1): and over the Undercroft backpack
+  try{ G=hubBagG; drawBag(); drawBelt(); try{ if(padOn()) BELTHOV.box=null; else beltHoverHud(); }catch(_bhv){} drawDragGhost(); }   // v32.xx (cw-bagpadcards): on a pad the floor backpack shows the focused cell's card only, never a belt card as well   // v24.xx (belthover1): and over the Undercroft backpack
   catch(_hb){}
   finally{ G=old; }
 }
@@ -46356,7 +46356,7 @@ function drawBag(){
   // v8.94: recorded as it is drawn, like G.hotCells. Without this the only way
   // to ask where the panel is was to repeat its placement maths somewhere else,
   // which is exactly how its belt reserve drifted out of date for three builds.
-  G.bagPanel={x:x,y:y,w:PW,h:hh};
+  G.bagPanel={x:x,y:y,w:PW,h:hh}; G.bagCardBox=null; G.bagHead=null; G.bagFoot=null;   // v32.xx (cw-bagpadcards): the card, header row and footer hint boxes, recorded as drawn
   hudPanel(x,y,PW,hh,(typeof hubBagG!=='undefined'&&G===hubBagG)?1:0.96,1);   // v18.13: the one HUD panel   // v27.xx (uic8): solid in the Undercroft, where the station signs read through it; in a raid the world still shows through
   // v21.39, from the 4K visual pass of 2026-10-09 (W-D1): THE BACKPACK WORDS LINE UP WITH THE GRID. Every line of text in this panel
   // sat 11 pixels in from the panel edge at every screen size, while the tiles start a margin in (MARG, which grows with the screen),
@@ -46377,7 +46377,7 @@ function drawBag(){
   // first; on a narrow panel the offer is said shorter. Solo and in the Undercroft the line is as it was.
   var _bh=padOn()?((state==='hub')?padB('VIEW to close'):padB('A pick up or place   B close')):'B or I to close', _bo;
   if(state!=='hub'&&typeof NET==='object'&&NET&&NET.on){ _bo=(padOn()?padB('Y'):'Z')+' drop for teammate   '; _bh=_bo+_bh; if(ctx.measureText(_bh).width>PW-LH(130)*BZ) _bh=(padOn()?padB('Y'):'Z')+' drop   '+_bh.slice(_bo.length); }
-  ctx.fillText(_bh,x+PW-11,cy); ctx.textAlign='left';   // v16.79, his order: in a raid a pad packs with A and backs out on B; on the floor A does nothing to the backpack and VIEW still closes it
+  ctx.fillText(_bh,x+PW-11,cy); ctx.textAlign='left'; var _hdrB=cy+LH(8)*BZ; G.bagHead={x:G.bagPanel.x,y:G.bagPanel.y,w:G.bagPanel.w,h:_hdrB-G.bagPanel.y+2};   // v32.xx (cw-bagpadcards): the header row, title to divider   // v16.79, his order: in a raid a pad packs with A and backs out on B; on the floor A does nothing to the backpack and VIEW still closes it
   cy+=LH(8)*BZ;
   ctx.strokeStyle='#232b35'; ctx.beginPath(); ctx.moveTo(x+11,cy); ctx.lineTo(x+PW-11,cy); ctx.stroke();
 
@@ -46496,6 +46496,7 @@ function drawBag(){
     // a new player to equip his gun. With a controller the line named the D-pad, and the floor branch of the pad poll reads no
     // D-pad. Only the mouse drag onto the tactical belt works on the floor, so on the floor the line names only that, and with a
     // controller it names nothing. state is 'raid' in a raid, so the raid hint is untouched. No number and no seeded draw moved.
+    G.bagFoot={x:x+11,y:_ry+LH(6)*BZ-LH(14)*BZ,w:PW-22,h:LH(18)*BZ*2};   // v32.xx (cw-bagpadcards): the footer hint row (room for two lines)
     bagHintDraw((state==='hub')?(padOn()?padB('DPAD move   A pick up or place   Y drop   B close'):'drag to tactical belt') // v28.xx (cw-cx-floorbag): J5 controls in the existing hint row.
       // v20.79, from the whole-game bug hunt of 2026-10-08 (H49): THE PAD WORDS GO THROUGH padB, so a PlayStation pad reads CROSS and
       // CIRCLE here, as the header of this same panel already did.
@@ -46515,8 +46516,13 @@ function drawBag(){
       _gcIt=_gcK&&ITEMS[_gcK];
       if(_gcIt&&_gcIt.gk&&WEAPONS[_gcIt.gk]){
         _gcW=(typeof gunQPeek==='function'&&gunQPeek(_gcIt.gk))||WEAPONS[_gcIt.gk];
-        _gcX=(W-(x+PW)>=_gcFw+LH(16)*_gcRs)?(x+PW+LH(8)*_gcRs+_gcFw):(x+PW-11);
-        gunCardDraw(gunCompare(_gcW,p.wep),_gcX,Math.round(y+LH(40)*BZ)+Math.round(msgPx(hudFS(TYPE.label))*15),1,'IN BACKPACK');
+        // v32.xx (cw-bagpadcards), the o-10 pictures (2026-10-20): the card was placed by a guessed width (352 px) while it is 440 px wide, so it sat 86 px over the panel and covered "view to close". It is placed by its real size: beside the panel, top level with it; with no room beside, inside the panel's right edge below the header row and above the footer hint.
+        var _gcCmp=gunCompare(_gcW,p.wep), _gcSz=gunCardSize(_gcCmp,'IN BACKPACK'), _gcBp=G.bagPanel, _gcM=Math.round(LH(8)*_gcRs), _gcT;
+        _gcX=_gcBp.x+_gcBp.w+_gcM+_gcSz.w;
+        if(_gcX<=W-_gcM) _gcT=Math.max(_gcM,Math.min(_gcBp.y,H-_gcM-_gcSz.h));
+        else { _gcX=_gcBp.x+_gcBp.w-_gcM; _gcT=Math.round(_hdrB+_gcM); }
+        gunCardDraw(_gcCmp,_gcX,_gcT+_gcSz.h,1,'IN BACKPACK');
+        G.bagCardBox={x:_gcX-_gcSz.w,y:_gcT,w:_gcSz.w,h:_gcSz.h};
       }
     }catch(_gcE){}
   } else {
@@ -50931,7 +50937,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.83: The layout counter and d-right label sit clear of the lines around them. Check 32.83 fails on v32.82',
+  now:'v32.84: One item card beside the open floor backpack, clear of its header and hint row; the keyboard chip clear of the title. Check 32.84 fails on v32.83',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -56063,6 +56069,8 @@ function kbMarkSet(on){
     e.style.cssText='position:fixed;left:10px;top:6px;z-index:60;pointer-events:none;font:700 16px/1 system-ui,Segoe UI,Arial,sans-serif;letter-spacing:1px;text-transform:none;color:#7fc4a0;background:rgba(6,9,13,.72);border:1px solid rgba(127,196,160,.6);border-radius:4px;padding:4px 8px;display:none';
     document.body.appendChild(e);
   }
+  // v32.xx (cw-bagpadcards): in the Undercroft the chip sits top centre, clear of the location title at the top left.
+  try{ var _kh=(typeof state!=='undefined'&&state==='hub'); e.style.left=_kh?'50%':'10px'; e.style.transform=_kh?'translateX(-50%)':'none'; }catch(_kp){}
   e.style.display=on?'block':'none';
   return !!on;
 }

@@ -1,0 +1,7 @@
+v32.84: floor backpack cards on a pad
+
+One item card beside the open floor backpack, clear of its header and hint row; the keyboard chip clear of the title.
+
+Check 32.84. Fails on v32.83.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

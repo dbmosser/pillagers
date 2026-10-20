@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.84 - FLOOR BACKPACK CARDS ON A PAD
+
+Co-op hunt while he was away. The o-10 pictures: on a pad the Undercroft backpack showed two item cards over its own edges (the focused cell card covered view to close, a belt card covered the details and the footer hint), and the keyboard chip sat on the location title. The card was placed by a guessed width; it is now placed by its real size beside the panel, the belt hover card is off while a pad drives, and the chip sits top centre in the Undercroft.
+
+MEASURED. Check 32.84 passes, and fails on v32.83.
 ## v32.83 - PAD CARD CLEARANCES
 
 Co-op hunt while he was away. The layout counter touches the focus ring and d-right touches the controller outline.
