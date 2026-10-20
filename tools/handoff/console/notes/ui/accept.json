@@ -769,17 +769,17 @@
  "74-settings-change-pad-buttons": {
   "score": 3,
   "pass": false,
-  "verdict": "The controller diagram and layout picker make this a real pad screen and fix the cramped two-column table, but the tiny labels, the clipped scrolling list, and the dead space under the panels keep it below polished.",
+  "verdict": "The layout switcher and controller diagram give the screen a real hero and a purpose, but the pad drawing is crude with overlapping labels, the list is cramped and cut off, and the small text is too dim for a couch.",
   "findings": [
-   "P1 controller diagram and legend (right pane): Scale the diagram to about 1.5x so it spans about 600px wide. Set the legend key chips and the pad button labels to 16px min in --tx-1 or --tx-2 at 4.5:1 contrast. Raise the legend rows from 35px to 40px pitch.",
-   "P1 left action list (move/fight scroll column): Extend both panes down to y~925 (about 90px more, so 2 extra rows are visible) or make the list rows 48px. Add a 3px lime focus bar plus a --ui-raised fill on the focused row. Fade the bottom edge so the cut looks intentional.",
-   "P1 layout picker (row at y 123-173): Label 16px --tx-2 with +.04em tracking. Make the arrows 24px, hit area 48px, and the name 20px/600. Add a count such as '1/6' at 16px. The focused state gets a lime 2px border.",
-   "P2 left list vs right pane alignment: Give both the same panel treatment (--ui-panel fill, 1px --ui-line-hi, 4px radius, 24px padding) with tops at y=222 and bottoms at the same y.",
-   "P2 section labels (move, fight) in the list: Set the labels to 16px --tx-2 uppercase-free with +.04em tracking, and bring back a 3px lime left tab at 24px tall. Add 16px above each header."
+   "P0 controller diagram, d-pad cluster and face buttons: Redraw the d-pad as a 96px cross with every label inside its arm (16px, centred). Make face buttons 40px circles on a 64px diamond. Keep stick labels in one line style, 20px. Give lb/lt/rb/rt matching 8px gaps. Draw the pad outline at about 60% line brightness (--ui-line-hi) so the labels read above it.",
+   "P1 left list pane (bottom rows and scrollbar): End the list on a whole row: pad the bottom by 8px and fade the last 24px. Restore the 3px accent tab on the group headers or bump them to tx-1 at 16px with +.04em. Show one focused row in --ui-raised with a lime 3px left bar so pad focus is visible.",
+   "P1 bottom-right legend table (lt/rt/lb/rb/view/...): Drop the table or the left list's duplicate role. If the table stays, raise the button names to tx-1 at 16px 600, set the action at 20px, and give the rows a 1px --ui-line divider. Align the column starts to the diagram's centre. Better: put the action text next to each diagram label as callouts and delete the table.",
+   "P1 layout selector (top-left): Make the box 48px high with arrows centred vertically (align to the 20px text centre). Render '1/6' in tx-2 and the preset name in tx-1 at 20px 700. Give the focused state a 2px lime border. Raise the label to 16px tx-2 at the 4.5:1 floor.",
+   "P2 header and divider rows: Centre the diagram in the pane (centre x of about 1232 against its current 1232? Measure it: the pad is at x 900-1565, so its centre is 1232, but the pane centre is 1232, which is fine). The real fix is to scale the diagram up 15% to fill the pane, and make the 24px gaps between rule, selector and content equal."
   ],
   "pic": "tools/handoff/console/notes/shots/o-05-pad-presets-after/74-settings-change-pad-buttons-1080.jpg",
   "task": "o-05-pad-presets",
-  "when": "2026-10-20T06:15"
+  "when": "2026-10-20T06:31"
  },
  "01-title-mode-menu": {
   "score": 3,
