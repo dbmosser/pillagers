@@ -1,0 +1,2 @@
+24.21: CLOSE is at 11, 11, 22, 11, 8 px down inside its frame in the full windows and the stash, not at one height
+ALL DONE

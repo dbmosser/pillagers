@@ -1,1 +1,1 @@
-10-20 11:23 gate: the what is new card is stale, shipping a card refresh first (cw-cx-kitnamesfit, 53-corpus-reds-b)
+10-20 11:26 gate: shipping cw-cx-kitnamesfit (53-corpus-reds-b, codex)

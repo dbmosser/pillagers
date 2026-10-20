@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.89 - STASH SETUP NAMES FIT
+
+Co-op hunt while he was away. The 20px gun key and wheel names are clipped beside their pictures. Each name needs the full tile width.
+
+MEASURED. Check 32.89 passes, and fails on v32.88.
 ## v32.88 - THE WHAT IS NEW CARD NAMES POLISH PASS 39
 
 Co-op hunt while he was away. The card was stamped v32.72 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.

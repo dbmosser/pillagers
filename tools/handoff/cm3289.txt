@@ -1,0 +1,7 @@
+v32.89: stash setup names fit
+
+Gun key and wheel names sit below their pictures and keep the same compass and key order.
+
+Check 32.89. Fails on v32.88.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

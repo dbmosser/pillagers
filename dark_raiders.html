@@ -2222,7 +2222,12 @@ body:has(#hub.on) #hubtoast{visibility:hidden;}
 #root #hub #hotplanwrap [data-plan] span{font:600 18px/1.2 var(--f-cond)!important;letter-spacing:.04em;color:var(--tx-2)!important;}
 #root #hub .lohead,#root #hub .loslab,#root #hub #stashtabs .invtab{font-size:20px!important;letter-spacing:.04em;color:var(--tx-2);}
 #root #hub #kitsetup .kst span,#root #hub #kitsetup .kstc span,#root #hub #kitsetup .ksreset{font-size:20px!important;}
-#root #hub #kitsetup .kst{min-height:48px;}
+/* v28.xx (cw-cx-kitnamesfit): v28.20 found clipped 20px names. Keep the nine-key grid and wheel compass; give each name its own row below the picture. */
+#root #hub #kitsetup .kst{position:relative;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:40px 24px;gap:4px;height:76px;min-height:76px;padding:3px 1px;}
+#root #hub #kitsetup .kst .ic{grid-column:1;grid-row:1;justify-self:center;align-self:center;}
+#root #hub #kitsetup .kst span{grid-column:1;grid-row:2;display:block;width:100%;line-height:24px;text-align:center;}
+#root #hub #kitsetup .kst b{position:absolute;top:4px;left:4px;}
+#root #hub #kitsetup .kstc{height:76px;}
 /* v28.xx (cw-cx-namefinal): the old 84px floor-action allowance left an empty band below the freebie action. The stash footer needs 24px. */
 #root #hub{padding-bottom:24px!important;}
 </style><canvas id="cv"></canvas>
@@ -3204,7 +3209,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.88';
+var VER='32.89';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -50946,7 +50951,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.88: The what is new card names polish pass 39. Check 32.88 fails on v32.87',
+  now:'v32.89: Gun key and wheel names sit below their pictures and keep the same compass and key order. Check 32.89 fails on v32.88',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
