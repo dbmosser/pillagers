@@ -11,9 +11,14 @@ fixture.html?sliceA=1 and calls __regressBg(A,B)). The five reds and their slice
   v20.89 in [1200,1320)   v24.38 in [840,960)   v30.91 and v31.04 in [240,360)   v31.67 in [120,240)
 (Slice index = position in __REGRESS; find each check's index with __REGRESS.findIndex on its description, not its id: ids repeat.)
 
-1. Reproduce each on YOUR lane's preflight Chrome (never 9344, the runner's corpus Chrome, and never 8802): open
-   http://localhost:8806/fixture.html?h58b=1 with tools/cdp.ps1 -Port <your lane port>, run __regressBg(sliceStart, redIndex+1), read
-   window.__PROG.res. If it does not go red, run the whole slice. Write in notes whether it reproduced.
+1. Reproduce each with the slice tool (added 10-20 15:00 for this job; the first run could not drive a Chrome). It runs checks in
+   order in one fresh page, as the full run does, on YOUR lane's own Chrome (never 9344 or 8802):
+     bash <scratchpad>/slicechk.sh <lane> find:TEXT          the place of a check (search its description; ids repeat)
+     bash <scratchpad>/slicechk.sh <lane> 120:229            places 120 to 228 in order (A:B is [A,B)), then the failures
+     bash <scratchpad>/slicechk.sh <lane> 120:150,228        a range, then one check: this is how you bisect
+     bash <scratchpad>/slicechk.sh <lane> 120:150,228 draft  the same on a fixture built from your UNCOMMITTED mkfixture.ps1 edit
+   (<scratchpad> is the same folder as shipq.sh.) Start with sliceStart:redIndex+1. If it does not go red, run the whole slice.
+   Write in notes whether it reproduced. The coordinator already ran v31.67 (place 228): see the notes file.
 2. Bisect the checks before it in the same slice until you find the one that leaves state behind (a profile or setting written, a timer
    or listener left running, a screen left open, a global flag, the zoom, the sandbox, a stubbed function not restored).
 3. Fix the STAGING, never the assertion: the leaking check cleans up after itself (try/finally restores what it changed), or the red

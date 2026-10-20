@@ -1,0 +1,7 @@
+v33.01: experimental: eight more switches (style medals, team combo, fuel fires, five raid events)
+
+The experimental page switches style medals, team combo, fuel fires and the five raid events.
+
+Check 33.01. Fails on v33.00.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

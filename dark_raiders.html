@@ -3238,7 +3238,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.00';
+var VER='33.01';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3738,6 +3738,14 @@ var XF_ROWS=[
   ['xfFeud','machines vs pillagers','they fight on sight','w'],
   ['xfAffix','elite affixes','shielded, fast, volatile, mender','w'],
   ['xfOvPh','overseer phases','crawler calls and a laser sweep','w'],
+  ['xfStyle','style medals','medals and the combo ring','w'],
+  ['xfTeam','team combo','2 player team multiplier','w'],
+  ['xfFire','fuel fires','two fuel fires a raid','w'],
+  ['xfEvDebris','event: orbital debris','debris falls in a ring','w'],
+  ['xfEvConvoy','event: machine convoy','an armoured train crosses','w'],
+  ['xfEvBounty','event: bounty pillager bot','a marked boss hunts you','w'],
+  ['xfEvCool','event: coolant rupture','a district fogs over','w'],
+  ['xfEvRamp','event: overseer rampage','the overseer sweeps the map','w'],
   // XF_ROWS_END
 ];
 var XF_KEYS=[], XF_WORLD=[], XF={}, SETSUB='';
@@ -3745,6 +3753,7 @@ var XF_KEYS=[], XF_WORLD=[], XF={}, SETSUB='';
 function xfSnap(){ var i, k; XF={}; for(i=0;i<XF_WORLD.length;i++){ k=XF_WORLD[i]; XF[k]=(CFG&&CFG[k]===0)?0:1; } return XF; }
 function xf(k){ return XF[k]!==0; }                      // a WORLD switch, as this raid was started with it (all on before any raid)
 function xfL(k){ return !(CFG&&CFG[k]===0); }            // a LOCAL switch, this window, now
+var XF_EV={debris:'xfEvDebris',convoy:'xfEvConvoy',bounty:'xfEvBounty',cool:'xfEvCool',rampage:'xfEvRamp'};   // v32.xx (cw-expmenu3): the raid events, by id
 function expRowHtml(){
   return '<div class="row"><div style="flex:1"><b>experimental</b><div class="hint">newer features on or off</div></div><button id="exp_open" style="padding:6px 12px;min-width:92px">open</button></div>';
 }
@@ -51173,7 +51182,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.00: The experimental page switches pillager roles, suppression, machines vs pillagers, elite affixes and the overseer phases. Check 33.00 fails on v32.99',
+  now:'v33.01: The experimental page switches style medals, team combo, fuel fires and the five raid events. Check 33.01 fails on v33.00',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -61357,7 +61366,7 @@ function fireNear(o,rad){
 }
 function fireTick(dt){
   var S=flowS(), F, i, f, t=G.t||0, p=G.player, e, a, r, any=0, pl, hit, d, peer=flowPeer();
-  if(!peer){   // v27.04 (coop1): a linked player 2 window plans and lights nothing, the fires are the host's (flowNetTake)
+  if(!peer&&xf('xfFire')){   // v32.xx (cw-expmenu3): switched off, no fuel fire is planned; the fires the debris event lights still burn;   // v27.04 (coop1): a linked player 2 window plans and lights nothing, the fires are the host's (flowNetTake)
     if(!S.fplan) firePlan(S);
     for(i=0;i<S.fplan.length;i++) if(!S.fplan[i].on&&t>=S.fplan[i].at){ S.fplan[i].on=1; fireAdd(S.fplan[i].x,S.fplan[i].y,FIRE.r,FIRE.life,'fuel',FIRE.warn); }
   }
@@ -61483,7 +61492,7 @@ var EVENTS={};
 function evS(){ var S=flowS(); if(!S.ev) S.ev={plan:null,live:[],n:0,wrecks:[]}; return S.ev; }
 function evEligible(){
   var out=[], i, d;
-  for(i=0;i<EV_IDS.length;i++){ d=EVENTS[EV_IDS[i]]; if(d&&(!d.ok||d.ok())) out.push(EV_IDS[i]); }
+  for(i=0;i<EV_IDS.length;i++){ d=EVENTS[EV_IDS[i]]; if(d&&(!d.ok||d.ok())&&xf(XF_EV[EV_IDS[i]])) out.push(EV_IDS[i]); }
   return out;
 }
 function evPlan(E){
@@ -63250,6 +63259,7 @@ var STY_TIER_SND=[null,null,
 // a kill was credited (the DEMO door and the CAREER door, the host and a partner each their own). e is the body, when there is one.
 function styleKill(k,el,boss,x,y,e){
   var S, t, p, d, fresh, bl, paid=0;
+  if(!xf('xfStyle')) return 0;   // v32.xx (cw-expmenu3): switched off, no style medals are paid
   if(!G||G.sim||G.over||!G.player||!(G.arcade||G.career)) return 0;
   S=styS(); t=+G.t||0; p=G.player; S.calmK++;
   if(!isFinite(x)||!isFinite(y)){ x=p.x; y=p.y; }
@@ -63272,7 +63282,7 @@ function styleTick(p,dt){
   S=styS(); t=+G.t||0; hp=(+p.hp||0)+(+p.armor||0);
   if(S.hp0>=0&&hp<S.hp0-0.001){ S.calmAt=t+STY.calmT; S.calmK=0; }
   S.hp0=hp;
-  if(t>=S.calmAt){
+  if(xf('xfStyle')&&t>=S.calmAt){   // v32.xx (cw-expmenu3): the untouched medal is a style medal
     if(S.calmK>0&&!p.downed&&!p.dying) styMedal('UNTOUCHED',STY.calm,p.x,p.y-30);
     S.calmAt+=STY.calmT; if(S.calmAt<=t) S.calmAt=t+STY.calmT;
     S.calmK=0;
@@ -63417,7 +63427,7 @@ function styleDraw(c,p,rx,ry){
   r=(8+7+4+10)*z*xs+bloomPx(p)*z*xs;
   s=styStreak();
   c.save();
-  if(s&&s.n>=2&&t>=s.t&&t-s.t<ARCADE_STREAK_GAP){
+  if(xf('xfStyle')&&s&&s.n>=2&&t>=s.t&&t-s.t<ARCADE_STREAK_GAP){
     f=1-(t-s.t)/ARCADE_STREAK_GAP; mx=arcadeStreakX(s.n);
     // v28.21 (partyp3): the ring is bold, it carries its multiplier on a plate, it pulses when the chain grows and hurries when it is about to run out
     var gp=Math.max(0,1-(t-s.t)/STYR.pulse), lo=(f<STYR.low), fl=lo?(0.6+0.4*Math.sin(t*STYR.hz)):1, hot=lo?Math.min(1,(STYR.low-f)/STYR.low):0, cb, cs;
@@ -63754,6 +63764,7 @@ var TEAM={win:2,r:520,pts:40,max:5};
 var TEAM_SND=[[0,659,659,0.1,'triangle',0.05],[0.06,988,988,0.1,'triangle',0.05],[0.12,1319,1319,0.3,'triangle',0.05],[0,330,330,0.3,'sine',0.03]];
 function teamKill(x,y){
   var now=Date.now(), mk, T, n, p, paid=0, lk=0;
+  if(!xf('xfTeam')) return 0;   // v32.xx (cw-expmenu3): switched off, no team combo and no kill word to the partner
   if(typeof ARCADE!=='object'||!ARCADE.on||ARCADE.solo||!G||!G.arcade||G.sim||G.over||!G.player) return 0;
   p=G.player; if(!isFinite(x)||!isFinite(y)){ x=p.x; y=p.y; }
   mk=ARCADE.mk;
@@ -63770,6 +63781,7 @@ function teamKill(x,y){
 // the partner's kill word: remembered as the kill the next kill here may pair with (used when it was itself the second of a pair)
 function arcadeTeamTake(m){
   var now=Date.now();
+  if(!xf('xfTeam')) return 'ignored';   // v32.xx (cw-expmenu3)
   if(!ARCADE.on||ARCADE.solo) return 'ignored';
   if(!isFinite(+m.x)||!isFinite(+m.y)) return 'bad';
   ARCADE.mk={x:+m.x,y:+m.y,at:now,used:m.lk?1:0};
@@ -63779,6 +63791,7 @@ function arcadeTeamTake(m){
 // the TEAM ring at the cursor (rx, ry), outside the personal combo ring
 function teamDraw(c,p,rx,ry){
   var T, f, z, xs, r, col='95,245,228';
+  if(!xf('xfTeam')) return;   // v32.xx (cw-expmenu3)
   if(!G||G.sim||!G.arcade||typeof ARCADE!=='object'||!ARCADE.on||ARCADE.solo||!isFinite(rx)||!isFinite(ry)) return;
   T=ARCADE.team; if(!T||!(T.n>=1)) return;
   f=1-(Date.now()-T.at)/(TEAM.win*1000); if(!(f>0)) return;

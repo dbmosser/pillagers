@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.01 - EXPERIMENTAL: EIGHT MORE SWITCHES (STYLE MEDALS, TEAM COMBO, FUEL FIRES, FIVE RAID EVENTS)
+
+Co-op hunt while he was away. The experimental page gets eight more switches, all on by default and read when the raid starts. Off: no style medals and no combo ring, no team combo, no fuel fires planned (the fires the debris event lights keep burning), and each of the five raid events (orbital debris, machine convoy, bounty pillager bot, coolant rupture, overseer rampage) leaves the plan, so with all five off a raid has no event.
+
+MEASURED. Check 33.01 passes, and fails on v33.00.
 ## v33.00 - EXPERIMENTAL: FIVE MORE SWITCHES (PILLAGER ROLES, SUPPRESSION, MACHINES VS PILLAGERS, ELITE AFFIXES, OVERSEER PHASES)
 
 Co-op hunt while he was away. The experimental page gets its next five switches, all on by default. Off, a pillager has no role, rounds past him pin nobody, machines and pillagers do not pick each other as foes (a Bulwark or plain Warden stops hunting pillagers), an elite machine is a plain elite and the Overseer is one long health bar with a cannon. A switch is read when the raid starts. The open row also moves from the head of ACCESSIBILITY to the end of THE RAID, next to the rows it affects.
