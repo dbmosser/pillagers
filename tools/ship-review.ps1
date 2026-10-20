@@ -7,7 +7,8 @@
 # products, and Google may no longer serve free keys in Gemini CLI.
 # Engines:
 #   ollama (default) : the local model on his RX 7900 XTX, qwen3.8:27b when it is installed, else qwen2.5-coder:32b.
-#                      Skipped in his usual PC hours (-QuietHours) so it never costs him frame rate.
+#                      Rests while he is at the main PC or playing (the runner state), and by day (-QuietHours) when that is not
+#                      known, so it never costs him frame rate. It unloads the model after every round.
 #   agy              : Google's Antigravity CLI (the replacement for Gemini CLI since 2026-06-18) in its read-only plan
 #                      mode, on the free tier after his one-time sign-in (run agy once: %LOCALAPPDATA%\agy\bin\agy.exe).
 #                      Free-tier limits are weekly and unpublished; it rests when it hits them.
@@ -18,7 +19,7 @@
 #   ... -Loop -EveryMin 20                                                                     keeps going
 #   ... -Engine gemini                                                                         Google instead of the local model
 param([ValidateSet('ollama','agy','gemini')][string]$Engine='ollama',[int]$Max=6,[int]$First=3,[string]$Model='',[switch]$Loop,
-      [int]$EveryMin=20,[int]$TimeoutMin=15,[string]$QuietHours='6-9,13-16,19-22',[int]$MinFreeGB=11)
+      [int]$EveryMin=20,[int]$TimeoutMin=15,[string]$QuietHours='7-23',[int]$MinFreeGB=11)
 # 2026-10-19: MinFreeGB. qwen3.8:27b runs 100% on the graphics card, yet loading it took 4 GB of the PC's own memory (measured:
 # 4.4 GB free before, 0.4 GB after). The PC must keep 6 GB free (it hard-froze before), so the local model loads only with 11 GB free.
 $ErrorActionPreference='Continue'
@@ -36,6 +37,21 @@ function Quiet {
   $h=(Get-Date).Hour
   foreach($span in ($QuietHours -split ',')){ $p=$span -split '-'; if($p.Count -eq 2 -and $h -ge [int]$p[0] -and $h -lt [int]$p[1]){ return $true } }
   return $false
+}
+# 10-20 10:00, his "glitching and slowdowns on the main PC ... reduce load when I am at the PC": the local model fills his graphics card
+# (it ran at 09:52, outside the quiet hours, while he sat at the PC), so it also rests while the runner's state says he is at the PC or
+# playing (tools/nightly.sh puts atpc and gaming there from the main PC's gaming.txt), and it unloads the model after every round.
+# Presence: '1' = he is at the main PC or playing, '0' = away (and the runner is alive), '' = not known: then the day hours rest.
+function Presence {
+  $hb=Join-Path $R 'tools\handoff\nightly\runner.heartbeat'
+  try { $l=@(Get-Content (Join-Path $R 'tools\handoff\nightly\state.txt') -ErrorAction Stop) } catch { return '' }
+  if(@($l | Where-Object { $_ -match '^(atpc|gaming)=1\s*$' }).Count){ return '1' }
+  $alive=(Test-Path $hb) -and (((Get-Date)-(Get-Item $hb).LastWriteTime).TotalMinutes -lt 15)
+  if($alive -and @($l | Where-Object { $_ -match '^atpc=0\s*$' }).Count){ return '0' }
+  return ''
+}
+function Unload([string]$m){
+  try { Invoke-RestMethod -Uri "$api/api/generate" -Method Post -Body (@{ model=$m; keep_alive=0 } | ConvertTo-Json) -ContentType 'application/json' -TimeoutSec 60 | Out-Null; Log "unloaded $m from the graphics card" } catch { Log "unload of $m failed: $($_.Exception.Message)" }
 }
 
 $rules=@'
@@ -136,7 +152,9 @@ function ReviewOne([string]$sha,[string]$m){
 function RunOnce {
   $m=''
   if($Engine -eq 'ollama'){
-    if(Quiet){ Status 'resting' "his usual PC hours ($QuietHours), so the graphics card stays free for him"; return }
+    $pr=Presence
+    if($pr -eq '1'){ Status 'resting' 'he is at the main PC, so the graphics card stays free for him'; return }
+    if($pr -ne '0' -and (Quiet)){ Status 'resting' "day hours ($QuietHours) and it cannot tell if he is at the main PC, so the graphics card stays free for him"; return }
     $freeGB=[int]((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1MB)
     if($api -match '^https?://(127\.0\.0\.1|localhost)(:|/|$)' -and $freeGB -lt $MinFreeGB){ Status 'resting' "waiting for memory: $freeGB GB free, the local AI loads at $MinFreeGB (it takes about 4 GB)"; return }
     $m=PickModel; if(-not $m){ Status 'broken' 'the local AI (Ollama) is not running or has no model'; return }
@@ -147,13 +165,16 @@ function RunOnce {
   $list=if($from){ @(git -C $R rev-list --reverse "$from..$head") } else { @(git -C $R rev-list --reverse -n $First $head) }
   if(-not $list.Count){ Status 'ok' 'up to date'; return }
   $n=0
-  foreach($s in $list){
-    if($n -ge $Max){ break }
-    $r=ReviewOne $s $m
-    if($r -eq 'stop'){ return }
-    if($r -eq 'retry'){ Status 'ok' 'one review failed; it tries again next round'; return }
-    [IO.File]::WriteAllText($last, "$s`n", $utf8); $n++
-  }
+  try {
+    foreach($s in $list){
+      if($n -ge $Max){ break }
+      if($m -and (Presence) -eq '1'){ Status 'resting' 'he sat down at the main PC; the rest waits'; return }
+      $r=ReviewOne $s $m
+      if($r -eq 'stop'){ return }
+      if($r -eq 'retry'){ Status 'ok' 'one review failed; it tries again next round'; return }
+      [IO.File]::WriteAllText($last, "$s`n", $utf8); $n++
+    }
+  } finally { if($m){ Unload $m } }
   $left=$list.Count-$n
   Status 'ok' ("reviewed $n new ship(s)" + $(if($left -gt 0){", $left waiting"}else{''}))
 }

@@ -90,14 +90,19 @@ while true; do
     [ $(( $(date +%s) - cks )) -lt 600 ] && isg=1
   fi
   # 10-20 10:00 (his "reduce load when I am at the PC"): the check also writes atpc=1 when the main PC had keyboard or mouse input in the last
-  # 10 minutes. Then the long jobs that draw on his graphics card (the full test run's browser, the robots) and the local AI start nothing
-  # new; the helpers go on (the main PC holds the VM to -AtPcCpuPct of its processors). A stale or missing line leaves atp empty.
-  atp=$(printf '%s\n' "$gm" | sed -n 's/^atpc=//p' | head -1 | tr -dc '01')
-  if [ -n "$atp" ]; then ck=$(printf '%s\n' "$gm" | sed -n 's/^checked=//p' | head -1); cks=$(date -d "$ck" +%s 2>/dev/null || echo 0)
-    [ $(( $(date +%s) - cks )) -lt 600 ] || atp=""; fi
-  if [ "$atp" = 1 ] && [ $isg = 0 ]; then
-    ram=0; [ "$(get atpc)" = 1 ] || { put atpc 1; echo "$(date +%H:%M) he is at the main PC: no new full test run, robots or local AI" >> "$LOG"; }
-  elif [ "$(get atpc)" = 1 ] && [ "$atp" != 1 ]; then put atpc 0; echo "$(date +%H:%M) he left the main PC: long jobs may start again" >> "$LOG"; fi
+  # 10 minutes (atpc=0 when it had none). Then the long jobs that draw on his graphics card (the full test run's browser, the robots) and
+  # the local AI start nothing new (atq=1); the helpers go on (the main PC holds the VM to -AtPcCpuPct of its processors). One failed read
+  # keeps the last answer for 15 minutes; a stale or missing line after that leaves atp empty (not known). state.txt keeps atpc as 1, 0 or ?
+  # for tools/ship-review.ps1.
+  atp=""; ck=$(printf '%s\n' "$gm" | sed -n 's/^checked=//p' | head -1); cks=$(date -d "$ck" +%s 2>/dev/null || echo 0)
+  [ $(( $(date +%s) - cks )) -lt 600 ] && atp=$(printf '%s\n' "$gm" | sed -n 's/^atpc=//p' | head -1 | tr -dc '01')
+  if [ -n "$atp" ]; then put atpc_t "$(date +%s)"
+  else pt=$(get atpc_t); [ $(( $(date +%s) - ${pt:-0} )) -lt 900 ] && atp=$(get atpc | tr -dc '01'); fi
+  atq=0; [ "$atp" = 1 ] && atq=1
+  pv=$(get atpc); nv=${atp:-?}
+  if [ "$pv" != "$nv" ]; then put atpc "$nv"
+    [ "$nv" = 1 ] && echo "$(date +%H:%M) he is at the main PC: no new full test run, robots or local AI" >> "$LOG"
+    [ "$pv" = 1 ] && echo "$(date +%H:%M) he left the main PC (or it cannot tell): long jobs may start again" >> "$LOG"; fi
   if [ $isg = 1 ]; then
     ram=0; [ "$(get gaming)" = 1 ] || { put gaming 1; echo "$(date +%H:%M) he is playing on the main PC ($(printf '%s\n' "$gm" | sed -n 's/^what=//p' | head -1)): nothing new starts" >> "$LOG"; }
   elif [ "$(get gaming)" = 1 ]; then put gaming 0; echo "$(date +%H:%M) he stopped playing: new work starts again" >> "$LOG"; fi
@@ -110,7 +115,7 @@ while true; do
     #     10-20 05:58: that still let the fuzzer take the memory a waiting helper needed (4 GB free, about 1.2 GB taken, 2.8 left), so it
     #     also waits while any helper status says it is waiting for RAM.
     hw=$(grep -ls "waiting for RAM" "$R"/tools/handoff/console/status-*.txt 2>/dev/null | wc -l)
-    if [ -n "$fa" ] && [ -n "$fb" ] && [ -f "$R/tools/fuzz.ps1" ] && [ $((fa - fb)) -le 0 ] && [ "$ram" -ge $((rf + 2)) ] && [ "${hw:-0}" -eq 0 ]; then
+    if [ "$atq" = 0 ] && [ -n "$fa" ] && [ -n "$fb" ] && [ -f "$R/tools/fuzz.ps1" ] && [ $((fa - fb)) -le 0 ] && [ "$ram" -ge $((rf + 2)) ] && [ "${hw:-0}" -eq 0 ]; then
       echo "$(date +%H:%M) fuzz start at $head" >> "$LOG"
       (powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/fuzz.ps1" -Minutes 120 -IgnoreFlag -MinFreeGB "$rf" > /dev/null 2>&1; echo "$(date +%H:%M) fuzz done" >> "$LOG") &
     fi
@@ -118,7 +123,7 @@ while true; do
     #     longer waits for 45 min without a ship nor holds the ship lock (3.5 hours on 10-17): corpq.sh tests a frozen fixture copy.
     cl="$S/corpus.lock"; [ -d "$cl" ] && [ $(( $(date +%s) - $(stat -c %Y "$cl") )) -gt 21600 ] && rmdir "$cl" 2>/dev/null
     ct=$(get corpus_t); [ -z "$ct" ] && ct=0
-    if [ "$(get corpus_head)" != "$head" ] && [ $(( $(date +%s) - ct )) -ge 14400 ] && mkdir "$cl" 2>/dev/null; then
+    if [ "$atq" = 0 ] && [ "$(get corpus_head)" != "$head" ] && [ $(( $(date +%s) - ct )) -ge 14400 ] && mkdir "$cl" 2>/dev/null; then
       out="$S/corpus-$(date +%m%d-%H%M).txt"; put corpus_head "$head"; put corpus_file "$out"; put corpus_t "$(date +%s)"; echo "$head" > "$out.head"
       echo "$(date +%H:%M) corpus start at $head" >> "$LOG"
       (bash "$S/corpq.sh" "$out" > /dev/null 2>&1; rmdir "$cl" 2>/dev/null; echo "$(date +%H:%M) corpus done" >> "$LOG"; summary) &
@@ -152,7 +157,7 @@ while true; do
     fi
     # (6) 10-17: a second fuzzer on its own Chrome (9332) with its own seeds, beside the first (9331)
     f2=$(running 'fuzz\.ps1.*9332')
-    if [ -f "$R/tools/fuzz.ps1" ] && [ "$f2" = "0" ] && [ "$ram" -ge $((rf+2)) ]; then
+    if [ "$atq" = 0 ] && [ -f "$R/tools/fuzz.ps1" ] && [ "$f2" = "0" ] && [ "$ram" -ge $((rf+2)) ]; then
       # 10-18: on the corpus copy of the game (tools/fxcorpus.html, under 12 hours old) so the full test set and the robots meet on one version
       fxarg=""; [ -n "$(find "$R/tools/fxcorpus.html" -mmin -720 2>/dev/null)" ] && fxarg="-Fixture fxcorpus.html"
       echo "$(date +%H:%M) fuzz2 start at $head${fxarg:+ on the corpus copy}" >> "$LOG"
