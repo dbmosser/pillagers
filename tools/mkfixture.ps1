@@ -3964,8 +3964,8 @@ window.__REGRESS=[
      // CONTROL 1: 1080p must not have moved. This was a 4K complaint and he has a
      // working layout there.
      /* ui1 (his order #50): the game font is Barlow Condensed now, narrower than Rubik was: the same heading measures 237 wide at 1080p where it measured 326; the height is unchanged */
-     // v32.83 baseline (50-corpus-old-a): the card header text at 1080p measures 171x34 (the sector name, light text); a 20 percent band keeps the control honest without freezing the font.
-     if(Math.abs(a.tw-171)>35||Math.abs(a.th-34)>7)
+     // v32.83 baseline (50-corpus-old-a): the card header text at 1080p measures 171x34 (the sector name, light text); job 55 (audit): the band is back to the old proportions (about 7.6 percent wide, 4 px tall); cw-mapstyle changed which text is measured, not how exact this control must be.
+     if(Math.abs(a.tw-171)>13||Math.abs(a.th-34)>4)
        bad.push('control: the 1080p map heading changed to '+a.tw+'x'+a.th+', it is 171x34 since the card header (cw-mapstyle; it was 326x16 amber text above the frame)');
      // CONTROL 2, AND IT IS THE ONE THAT MATTERS. The map scales its text by
      // handing FS a modified spec. If that ever leaks into the global font cache,
@@ -9453,6 +9453,10 @@ window.__REGRESS=[
              var lr=list.getBoundingClientRect(), wr=wrap.getBoundingClientRect(), ws=getComputedStyle(wrap), gap=parseFloat(ws.columnGap)||0, right=wr.right-(parseFloat(ws.paddingRight)||0)*z, left=lr.right+gap*z, available=right-left;
              if(!(available>0)) bad.push('the detail pane has no available column');
              if(dw.left<left-2*z||Math.abs(dw.right-right)>2*z||dw.width<Math.min(500*z,available)-2*z) bad.push('detail pane does not fill its available column ('+Math.round(dw.width)+' of '+Math.round(available)+')');
+             // job 55 (audit): the list is held at its 1008 menu-pixel column whenever the wrap has room for it, and the pane takes the whole rest; a list that grows (the v31.70 flex 1 layout) or a wide list that starves the pane fails
+             var zl=lr.width/z, inner=(wr.width-(parseFloat(ws.paddingLeft)||0)*z-(parseFloat(ws.paddingRight)||0)*z)/z;
+             if(inner-gap>1008+48&&Math.abs(zl-1008)>2) bad.push('the settings list is '+Math.round(zl)+' menu pixels, not the 1008 column');
+             if(Math.abs(dw.width/z-(inner-gap-zl))>2) bad.push('the detail pane is '+Math.round(dw.width/z)+' menu pixels, not the whole rest ('+Math.round(inner-gap-zl)+')');
            }
          } else if(dw.width/z<=500) bad.push('detail pane is '+Math.round(dw.width/z)+' menu pixels wide');
        }
@@ -10136,7 +10140,7 @@ window.__REGRESS=[
        else if(zp) bad.push('TWO: '+zp+' zone names are as big as a callout head ('+hp+' px), not a size under the extraction names');
        if(zfs.length&&Math.max.apply(null,zfs.map(hex2))>0.70) bad.push('TWO: a zone name is drawn at more than 70 percent ('+zfs[0]+')');
        // THREE: contract names all in the main text colour (a finished one too), the reward smaller than the name
-       // v28.xx (cw-cx-corpus-r3a): cw-cx-mapquiet-o03 deliberately quieted open names and uses success colour for completed names.
+       // v28.xx (cw-cx-corpus-r3a), corrected by job 55: v32.30 (cw-cx-mapspace-o03, 3b975f77) deliberately quieted open names, uses success colour for completed names and sized the reward to the label type; the gate marker cw-cx-mapquiet-o03 is present on every build that has them.
        if(String(doneFs).toLowerCase()!==String(quiet?UIC.ok:UIC.tx_1).toLowerCase()) bad.push('THREE: the finished contract name has the wrong colour ('+doneFs+')');
        if(quiet&&String(nameFs).toLowerCase()!==String(UIC.tx_2).toLowerCase()) bad.push('THREE: the open contract name is not in the secondary text colour ('+nameFs+')');
        nm=ent.filter(function(h){ return /^destroy crawlers$/.test(String(h.t)); })[0]; rw=ent.filter(function(h){ return /^\$4.321$/.test(String(h.t)); })[0];
@@ -16797,7 +16801,7 @@ window.__REGRESS=[
      try{
        rs=document.getElementById('resumebtn'); ab=document.getElementById('abandonbtn'); pk=document.getElementById('pausekeys'); box=rs&&rs.parentNode;
        if(!box||!ab||!pk) return 'no pause buttons or key line';
-       cs=getComputedStyle(box);   /* v32.xx (cw-pausefbrow, 54-corpus-reds-c): the stack is a wrapping row whose main buttons take a full line each (feedback and what is new share one), so a column means a column or full-line basis */
+       cs=getComputedStyle(box);   /* v32.xx (cw-pset15 v31.71 made the wrapping row, cw-pausegap v32.66 dropped the abandon margin; job 55 corrected the label): the stack is a wrapping row whose main buttons take a full line each (feedback and what is new share one), so a column means a column or full-line basis */
        if(!(cs.flexDirection==='column'||(cs.flexWrap!=='nowrap'&&getComputedStyle(rs).flexBasis==='100%'&&getComputedStyle(ab).flexBasis==='100%'))) bad.push('the pause buttons are not one column ('+cs.flexDirection+' '+cs.flexWrap+')');
        for(i=0;i<ids.length;i++){ b=document.getElementById(ids[i]); if(!b) continue; s=getComputedStyle(b);
          if(parseFloat(s.minHeight)!==56) bad.push(ids[i]+' is held to '+s.minHeight+', not 56px');
@@ -25496,9 +25500,11 @@ window.__REGRESS=[
        if(bs.length!==4) bad.push('ONE: '+bs.length+' kit choices, not 4');
        labs=Array.prototype.map.call(bs,function(e){ return e.querySelector('span:not(.kd)').textContent; }).join('|');
        if(labs.toUpperCase()!=='MY LOADOUT|FREEBIE KIT|RANDOM KIT|BEST KIT') bad.push('ONE: the kit choices read '+labs);
-       dets=Array.prototype.map.call(bs,function(e){ return TX(e.querySelector('.kd').textContent); });
+       // job 55 (audit): the text door is run on the row and the raw text is read back, so a door that misses these spans leaves caps on screen and fails (the old TX() wrap lowered the text first and could never fail)
+       try{ txDom(host); }catch(_td){ bad.push('ONE: the text door threw on the kit row'); }
+       dets=Array.prototype.map.call(bs,function(e){ return e.querySelector('.kd').textContent; });
        if(dets[2].toUpperCase().indexOf('2 GUNS')<0||dets[3].toUpperCase().indexOf('3 GUNS')<0) bad.push('ONE: the details read '+dets.join('|'));
-       for(i=0;i<dets.length;i++) if(!dets[i].length||(dets[i].length>3&&dets[i]===dets[i].toUpperCase())) bad.push('ONE: detail '+i+' is empty or all caps ('+dets[i]+')');
+       for(i=0;i<dets.length;i++) if(!dets[i].length||dets[i]!==dets[i].toLowerCase()) bad.push('ONE: detail '+i+' is empty or shows capital letters ('+dets[i]+')');
        on=host.querySelectorAll('.kitb.on');
        if(on.length!==1||on[0].getAttribute('data-kit')!=='mine') bad.push('ONE: the default is not MY LOADOUT alone');
        if(!sm.contains(host)) bad.push('ONE: the row is not in the sector panel');
@@ -30354,8 +30360,11 @@ window.__REGRESS=[
        for(k in q){ if(!document.getElementById(k)){ bad.push('ONE: Settings draws no '+k); continue; } if(secOf(k)!==q[k]) bad.push('ONE: '+k+' sits under '+secOf(k)+', not '+q[k]); }
        // TWO: the jump bar scrolls to a section
        chip=null; el=host.querySelectorAll('.setjump button');
+       // job 55 (audit): only the data-go button is skipped (v32.84 retarget: it is no section chip); a section chip that lost its data-sec now fails, only data-sec chips count toward the 5, and no AUDIO chip fails
+       el=[].filter.call(el,function(b){ return !b.hasAttribute('data-go'); });
        if(el.length<5) bad.push('TWO: the jump bar has '+el.length+' chips');
-       for(i=0;i<el.length;i++){ if(!el[i].getAttribute('data-sec')) continue;   /* v32.84 retarget (52-corpus-reds-a): the jump bar also holds a data-go button that is no section chip */ if(!document.getElementById('setsec_'+el[i].getAttribute('data-sec').replace(/ /g,'_'))) bad.push('TWO: the chip '+el[i].textContent+' has no section'); if(el[i].getAttribute('data-sec')==='AUDIO') chip=el[i]; }
+       for(i=0;i<el.length;i++){ if(!el[i].getAttribute('data-sec')){ bad.push('TWO: the chip '+el[i].textContent+' has no data-sec'); continue; } if(!document.getElementById('setsec_'+el[i].getAttribute('data-sec').replace(/ /g,'_'))) bad.push('TWO: the chip '+el[i].textContent+' has no section'); if(el[i].getAttribute('data-sec')==='AUDIO') chip=el[i]; }
+       if(!chip) bad.push('TWO: the jump bar has no AUDIO chip');
        mh=host.style.maxHeight; ov=host.style.overflowY; host.style.maxHeight='300px'; host.style.overflowY='auto'; host.scrollTop=0;
        if(chip&&host.getClientRects().length&&host.scrollHeight>host.clientHeight+500){
          chip.click(); bar=host.querySelector('.setjump'); off=document.getElementById('setsec_AUDIO').getBoundingClientRect().top-host.getBoundingClientRect().top-bar.getBoundingClientRect().height;
@@ -37472,6 +37481,8 @@ window.__REGRESS=[
          if(extraSiren()) bad.push('with '+n+' machines on him '+extraSiren()+' more oscillators reach the machine bus, more than one siren voice');
          pt=parts();
          if(!pt.tone||!pt.lfo||!pt.dep){ bad.push('the siren does not wail: no tone swept by a slow oscillator ('+OSC.length+' oscillators)'); continue; }
+         // job 55 (audit): the wiring is tested again, so a siren whose slow oscillator is not connected to the tone pitch (a steady hum) fails
+         if(pt.lfo.outs.indexOf(pt.dep)<0||pt.dep.outs.indexOf(pt.tone.frequency)<0){ bad.push('the siren does not wail: no tone swept by a slow oscillator (the slow oscillator does not drive the tone pitch)'); continue; }
          lo=pt.tone.frequency.value-Math.abs(pt.dep.gain.value); hi=pt.tone.frequency.value+Math.abs(pt.dep.gain.value);
          if(!(lo>=200&&hi<=400)) bad.push('with '+n+' on him the siren sweeps '+Math.round(lo)+' to '+Math.round(hi)+' Hz, outside 200 to 400');
          if(!(hi-lo>=40)) bad.push('the siren hardly moves ('+Math.round(lo)+' to '+Math.round(hi)+' Hz): a hum, not a wail');
@@ -39416,7 +39427,13 @@ window.__REGRESS=[
        function edgeU(){ var u, e=0; for(u=0;u<=15;u+=0.1) if(at(u,-21)[3]>200) e=u; return e; }
        var eCur=edgeU(), eLean;
        paint({build:'lean'},'none'); eLean=edgeU();
-       if(eCur>eLean-0.6) bad.push('Curved: the shoulders are as wide as Lean (edge '+eCur.toFixed(1)+' against '+eLean.toFixed(1)+'), she lost her narrow shoulders');
+       if(eCur>eLean-1.8) bad.push('Curved: the shoulders are as wide as Lean (edge '+eCur.toFixed(1)+' against '+eLean.toFixed(1)+'), she lost her narrow shoulders');
+       /* job 55 (audit): the fixed 9.6 probe is back at the head scale. The caps are drawn inside the v32.64 FIG_HEAD (1.2) head scale, not the vest, so Curved ends at about 11.0 and Lean at about 13.7 here; a Curved cap wider than 9.6 unscaled (11.52) fails, and Lean must still reach it */
+       var pk=9.6*((typeof FIG_HEAD==='number')?FIG_HEAD:1);
+       paint({build:'curved'},'none');
+       if(at(pk,-21)[3]>40) bad.push('Curved: the shoulders reach '+pk.toFixed(2)+' like Lean, she lost her narrow shoulders (alpha '+at(pk,-21)[3]+')');
+       paint({build:'lean'},'none');
+       if(!(at(pk,-21)[3]>200)) bad.push('Lean: no shoulder at '+pk.toFixed(2));
        paint({build:'curved'},'none');
        if(!(at(-4.5,-18.0)[3]>200)) bad.push('Curved: the chest is gone');
        paint({team:'foe',build:'lean',bulk:2},'none');
@@ -52559,7 +52576,9 @@ window.__REGRESS=[
          if(R.bottom<T.top-T.height) continue;   // this panel ends well above the line at this window size: nothing to overlap
          n++;
          // v32.84 retarget (52-corpus-reds-a): cw-shopfill (his Q43, critic 2/5 on the shop) stretches the shop grid to the foot of the card and seats the answer line INSIDE the card, so in the shop the line may lap the grid foot by less than its own height; Fashion stays strict
-         if(T.top<R.bottom+T.height*0.1-(cs[1]==='tradermodal'?T.height:0)) bad.push('in '+cs[1]+' the line box starts '+Math.round(R.bottom-T.top)+' px above the bottom edge of the panel');
+         // job 55 (audit): in the shop the line may lap the empty foot of the panel, but never a visible tile or button in it (that was the bug this check was written for)
+         if(cs[1]==='tradermodal'){ var ti=pn.querySelectorAll('.vcell, button'), tj, tr; for(tj=0;tj<ti.length;tj++){ if(!(ti[tj].offsetWidth>0&&ti[tj].offsetHeight>0)) continue; tr=ti[tj].getBoundingClientRect(); if(hit(T,tr)){ bad.push('in '+cs[1]+' the line covers a shop tile or button ('+(ti[tj].textContent||'').trim().slice(0,20)+')'); break; } } }
+         else if(T.top<R.bottom+T.height*0.1) bad.push('in '+cs[1]+' the line box starts '+Math.round(R.bottom-T.top)+' px above the bottom edge of the panel');
          if(hit(T,C)) bad.push('in '+cs[1]+' the line covers CLOSE');
          if(T.bottom>window.innerHeight+1) bad.push('in '+cs[1]+' the line runs off the bottom of the screen');
        }
@@ -55707,12 +55726,12 @@ window.__REGRESS=[
      function lab(s,x,y){ x2.font='bold 14px sans-serif'; return {s:s,x:x,y:y,font:x2.font,fs:'#fff',ta:'center',tb:'alphabetic',ga:1,m:new DOMMatrix([1,0,0,1,0,0]),fp:14,w:x2.measureText(s).width}; }
      try{
        ctx=x2;
-       if(typeof MAPBOX!=='undefined') MAPBOX=null; mapPlaceLabels([lab('SECTOR MAP',100,30),lab('CACHE',400,304),lab('ZQX LOCKED',325,300),lab('ZQY LOCKED',325,268)],30,function(s,x,y){ got[String(s)]={x:x,y:y}; }); if(typeof MAPBOX!=='undefined') MAPBOX=mb0;
+       if(typeof MAPBOX!=='undefined') MAPBOX=null; mapPlaceLabels([lab('SECTOR MAP',100,30),lab('CACHE',400,304),lab('ZQX LOCKED',325,300),lab('ZQY LOCKED',325,268)],30,function(s,x,y){ got[String(s)]={x:x,y:y}; });
        m=got['CACHE'];
        if(!m) return 'SKIP: the CACHE tag was dropped';
        if(m.y>304+1) bad.push('the CACHE tag was moved down to y '+Math.round(m.y)+', onto its marker, with room beside it');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ ctx=keep; }
+     finally{ ctx=keep; if(typeof MAPBOX!=='undefined') MAPBOX=mb0; }   // job 55 (audit): MAPBOX comes back even when the placer throws
      return bad.length?bad.join('; '):null; }},
   {v:'19.63',what:'the sector map marker tags grow at 4K: a locked room or CACHE tag is drawn about twice its 1080p size on a 4K screen',
    run:function(){
@@ -58227,7 +58246,7 @@ window.__REGRESS=[
        cv2.width=300; cv2.height=300; wc=cv2.getContext('2d'); wc.setTransform(3,0,0,3,0,0);
        SHADSPR.m={}; SHADSPR.n=0; SHADSPR.ss=0;
        shadowE(40,40,20,8,0.3);
-       /* v28.xx (cw-shadowstore): SHADSPR.ss is gone; the scale is the prefix of the store key now ('3:rx,ry,a') */
+       /* v32.75 (cw-shadowstore): SHADSPR.ss is gone; the scale is the prefix of the store key now ('3:rx,ry,a') */
        if(!SHADSPR.m['3:'+Math.round(20)+',8,30']) bad.push('a shadow on a canvas scaled 3 was not stamped at 3 (keys '+Object.keys(SHADSPR.m).join('|')+')');
        src=onCtxRestored.toString();
        ['WALLSPR','VEGSPR','SHADSPR','ICONSPR'].forEach(function(k){ if(src.indexOf(k)<0) bad.push('a restored canvas keeps the old '+k); });
@@ -59536,7 +59555,7 @@ window.__REGRESS=[
        rows=document.querySelectorAll('#sectorlist .sectorpick');
        if(!rows.length) return 'SKIP: staging: no sector rows';
        for(i=0;i<rows.length;i++){ cv=rows[i].querySelector('canvas.secprev'); if(!cv) continue; r=rows[i].getBoundingClientRect(); c=cv.getBoundingClientRect(); if(c.bottom>r.bottom+1) bad.push('sector '+i+' map spills '+Math.round(c.bottom-r.bottom)+' px below its row'); }
-       if(!(/fs=20[^0-9]/).test(String(sectorPreviewDraw))) bad.push('the zone names are not 20 px');   // retargeted 2026-10-20 (v32.45, his pick of design A; v32.53): a name starts at 20 px (fs=20) on the 960 px map and shrinks to fit its zone, down to 14
+       if(!(/fs=20[^0-9]/).test(String(sectorPreviewDraw))) bad.push('the zone names are not 20 px');   // retargeted 2026-10-20 (v32.46 cw-preraid-a, his pick of design A; the 960 map is v32.52): a name starts at 20 px (fs=20) on the 960 px map and shrinks to fit its zone, down to 14
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      return bad.length?bad.join('; '):null; }},
   {v:'17.81',what:'the full controls legend (H twice) names a PlayStation pad in its own words: CIRCLE crouch, CROSS dodge roll',
@@ -64701,7 +64720,7 @@ window.__REGRESS=[
        // THE TALLY
        for(i=0;i<30;i++) L.push({mapName:N0,outcome:'extract',_committed:1});
        P.log=L; P.mapRunN={}; P.mapRunN[N0]=5;
-       if(/\b30 runs\b|\b60 runs\b/.test(card(0))) bad.push('with a tally of 5 and 30 runs of the replaced character left in the log the card reads "'+card(0).slice(0,70)+'"');   // retargeted 2026-10-20 (v32.45, his Q8): the card no longer prints "you: n runs here"; it must still never show the replaced character runs
+       if(/\b30 runs\b|\b60 runs\b/.test(card(0))) bad.push('with a tally of 5 and 30 runs of the replaced character left in the log the card reads "'+card(0).slice(0,70)+'"');   // retargeted 2026-10-20 (v32.46 cw-preraid-a, his Q8): the card no longer prints "you: n runs here"; it must still never show the replaced character runs
        var o=JSON.parse(js(restoreMake())); delete o.mr;
        P.log=L.slice(); P.mapRunN={}; P.mapRunN[N0]=30;
        restoreApply(o);
@@ -66242,7 +66261,8 @@ window.__REGRESS=[
        if(padOpenModal()!==sm) return 'SKIP: the sector page is not the panel on top here';
        var c0=cards();
        if(c0.length<2) return 'SKIP: the sector page laid out '+c0.length+' sector cards here, not two';
-       if(getComputedStyle(c0[0]).display==='contents') return 'SKIP: v32.45 design A draws the one offered sector as a header and a map with no card box (display:contents), so a pad has no second card to pick; alarm logged 2026-10-20';
+       // job 55 (audit): the SKIP holds only while the second sector is really frozen on his order (v32.46 cw-preraid-a, design A: no card box). When it is offered for real, the assertions below run and fail on a boxless card.
+       if(FZ&&getComputedStyle(c0[0]).display==='contents') return 'SKIP: the second sector is frozen on his order and design A (v32.46) draws the one offered sector with no card box (display:contents); lifted only by this check';
        padWith(-1); pollPad();
        if(!PAD.on) return 'SKIP: the faked controller did not register here';
        var L=padFocusables(sm);
@@ -79100,7 +79120,7 @@ window.__REGRESS=[
        try{ __topClear(); }catch(_c){}
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'13.26',what:'the map screen shows every player the sector line he rewrote: the test robot extract rate in that map, without first contact, containers or median haul, whether or not that player has raided there (his baked edits matched only his own run counts)',
+  {v:'13.26',what:'the map screen shows every player the same sector line, with the map's real facts and without first contact, containers or median haul, whether or not that player has raided there (his baked edits matched only his own run counts)',
    run:function(){
      if(typeof renderSector!=='function'||typeof FIXED_MAPS==='undefined'||typeof SECTOR_MEAS==='undefined') return 'SKIP: this fixture cannot draw the map screen';
      var host=document.getElementById('sectorlist'); if(!host) return 'SKIP: there is no map list to draw into';
@@ -79115,7 +79135,7 @@ window.__REGRESS=[
          if(MS.ext===undefined) continue;
          if(t.indexOf('first contact ~')>=0||t.indexOf('median haul')>=0||t.indexOf('containers a raid')>=0)
            bad.push(label+': '+nm+' still shows first contact, containers or median haul, the three figures he cut from this line');
-         // v32.83 retarget (50-corpus-old-a): v32.45 (cw-preraid-a) cut the test robot rate from the sector row (his Q8 reason: a dev figure a guest cannot use). The row now carries the map's real facts; what this check keeps is that every player sees the same line, raided or not.
+         // v32.83 retarget (50-corpus-old-a): v32.46 (cw-preraid-a) cut the test robot rate from the sector row (his Q8 reason: a dev figure a guest cannot use). The row now carries the map's real facts; what this check keeps is that every player sees the same line, raided or not.
          if(t.indexOf(' zones')<0||t.indexOf(' exits')<0||!/ m /.test(t+' '))
            bad.push(label+': '+nm+' does not show the real map facts (size in metres, zones, exits): "'+t.slice(0,160)+'"');
          if(SEEN13[i]===undefined) SEEN13[i]=t;
@@ -87370,7 +87390,7 @@ window.__REGRESS=[
        if(SM&&SM.length>=2){
          for(var mi=0;mi<2;mi++){
            if(typeof mapOffered==='function'&&typeof FIXED_MAPS!=='undefined'&&FIXED_MAPS[mi]&&!mapOffered(FIXED_MAPS[mi])) continue;   /* feat0b (v23.6x): a frozen map has no card on the sector page, so its figure is not shown */
-           if(/extracts \d/.test(st)&&st.indexOf('extracts '+SM[mi].ext+'%')<0) bad.push(   /* v32.83 retarget (50-corpus-old-a): v32.45 cut the test robot line from the sector page; a figure that is shown must still be the code's and owned */'map '+mi+' shows a different extract figure from the code, which says '+SM[mi].ext);
+           if(/extracts \d/.test(st)&&st.indexOf('extracts '+SM[mi].ext+'%')<0) bad.push(   /* v32.83 retarget (50-corpus-old-a): v32.46 cut the test robot line from the sector page; a figure that is shown must still be the code's and owned */'map '+mi+' shows a different extract figure from the code, which says '+SM[mi].ext);
            // r1326: first contact is no longer printed on this line; his edit cut it and v13.26 shows his wording to everyone.
          }
          // CONTROL: the figures are not the v8.01 ones any more.
@@ -93368,8 +93388,9 @@ window.__REGRESS=[
      var kit=document.getElementById('sectorkit'), txt=(kit&&kit.textContent)||'';
      // THE FINDING. On v10.12 the sector page said only what you were going up
      // with; the armour line had been nowhere since v9.98.
-     // v32.83 retarget (50-corpus-old-a): v32.45 (cw-preraid-a) made the warning the short callout "no armour equipped" (short callouts, never an explaining sentence); the sentence naming Armour Plates and the cap is cut.
+     // v32.83 retarget (50-corpus-old-a), corrected by job 55: v32.46 (cw-preraid-a) made the warning the short callout "no armour equipped"; v32.22 cut the sentence naming Armour Plates and the cap down to "equip plates on the surface", and that advice is still asserted.
      if(!/no armour (on|equipped)/i.test(txt)) bad.push('the sector page does not warn about armour: ['+txt.slice(0,100)+']');
+     if(!/equip plates/i.test(txt)) bad.push('the sector page does not say to equip plates: ['+txt.slice(0,100)+']');
      // CONTROL: the stash screen no longer carries it, per v9.98, and still opens.
      var hub=document.getElementById('hub');
      sm.classList.remove('on');
@@ -93633,7 +93654,7 @@ window.__REGRESS=[
      // THE FINDING. On v10.04 the page opened still set to night.
      if(P2.cond!=='day') bad.push('the sector page opened with the surface at '+P2.cond+', not day');
      var d=document.getElementById('condday'), nt=document.getElementById('condnight');
-     // v32.83 retarget (50-corpus-old-a): v32.45 draws the chosen chip as a fill with a check, not a border colour, so the look is border, fill and text colour together.
+     // v32.83 retarget (50-corpus-old-a): v32.46 draws the chosen chip as a fill with a check, not a border colour, so the look is border, fill and text colour together.
      if(d&&nt&&(function(a,b){ var A=getComputedStyle(a),B=getComputedStyle(b); return A.borderColor===B.borderColor&&A.backgroundColor===B.backgroundColor&&A.color===B.color; })(d,nt)) bad.push('neither button is drawn as chosen');
      // CONTROL: choosing NIGHT on the page still sticks for this ascent.
      if(nt){ nt.click(); if(P2.cond!=='night') bad.push('control: NIGHT on the page no longer takes'); }
@@ -93914,7 +93935,7 @@ window.__REGRESS=[
      nt.click();
      if(P2.cond!=='night') bad.push('clicking NIGHT left the surface at '+P2.cond);
      if(typeof isDay==='function'&&isDay()) bad.push('after NIGHT the game still says it is day');
-     var lookOf=function(e){ var s=getComputedStyle(e); return s.borderColor+'|'+s.backgroundColor+'|'+s.color; }, nc=lookOf(nt), dc=lookOf(d);   // v32.83 retarget (50-corpus-old-a): the chosen chip is a fill (v32.45), not only a border
+     var lookOf=function(e){ var s=getComputedStyle(e); return s.borderColor+'|'+s.backgroundColor+'|'+s.color; }, nc=lookOf(nt), dc=lookOf(d);   // v32.83 retarget (50-corpus-old-a): the chosen chip is a fill (v32.46), not only a border
      if(nc===dc) bad.push('after NIGHT the two buttons look the same, so the choice is not shown');
      d.click();
      if(P2.cond!=='day') bad.push('clicking DAY left the surface at '+P2.cond);
