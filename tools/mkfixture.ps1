@@ -98972,17 +98972,24 @@ window.__topClear=function(){
 // And the ruler is pinned and the saved profile cleaned before the corpus runs,
 // rather than inheriting whatever the last hand probe in this tab left behind.
 window.__runPrep=function(){
+  try{ if(window.__ctxHeal) __ctxHeal(); }catch(e){}   // 10-20 (job 58b): every check starts here, so a canvas method an earlier check left as an own property is dropped first
   try{ if(window.__pinDPR) __pinDPR(1); }catch(e){}
   try{ var _bt=document.getElementById('title'); if(_bt) _bt.classList.remove('on'); }catch(e){}   // v12.06: the boot title is dismissed, as a player does before the floor
   try{ if(window.__cleanProfile) __cleanProfile(); }catch(e){}
   try{ if(typeof INDEV==='object'&&INDEV) INDEV.legacy=true; }catch(e){}   // v30.xx (cw-glyphs): older checks set PAD.on by hand and mean "show the pad prompts"; the last-input rule has its own check, which turns this off
+};
+// 10-20 (job 58b): about 140 checks save ctx.fillText (the PROTOTYPE's function) and put it back with ctx.fillText=saved, which leaves an
+// OWN property on ctx that hides the PR.fillText recorders of every later check ("never drawn", v31.04, v30.91 ...). Between checks, drop any
+// own ctx method that is only the prototype's own function again; a real stub (a different function) is left alone.
+window.__ctxHeal=function(){
+  try{ var pr=CanvasRenderingContext2D.prototype; Object.keys(ctx).forEach(function(k){ if(typeof ctx[k]==='function'&&Object.prototype.hasOwnProperty.call(pr,k)&&ctx[k]===pr[k]) delete ctx[k]; }); }catch(e){}
 };
 window.__regress=function(){
   var res={pass:true,checked:0,fail:[],skipped:[],cleared:0};
   __runPrep();
   for(var i=0;i<__REGRESS.length;i++){
     var t=__REGRESS[i], r=null;
-    res.cleared+=__topClear();
+    res.cleared+=__topClear(); __ctxHeal();
     res.checked++;
     try{ r=t.run(); }catch(e){ r='threw: '+e; }
     // A check that cannot run says so instead of condemning the build. Before
@@ -99015,7 +99022,7 @@ window.__regressBg=function(a,b){
       __PROG.res=res; __PROG.finished=true; return;
     }
     var t=__REGRESS[i], r=null;
-    res.cleared+=__topClear();
+    res.cleared+=__topClear(); __ctxHeal();
     __PROG.cur='v'+t.v; res.checked++;
     try{ console.log('REGRESS start '+i+' v'+t.v); }catch(_lg){}   // r1340b: the last line names a check that never returns
     try{ r=t.run(); }catch(e){ r='threw: '+(e&&e.stack||e); }
