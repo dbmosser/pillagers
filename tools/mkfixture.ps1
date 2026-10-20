@@ -6174,7 +6174,7 @@ window.__REGRESS=[
        var rw=document.getElementById('opane_rew'), m=rw.querySelector(':scope > .msub:not(#roadmaphead)');
        if(m&&getComputedStyle(m).display!=='none') bad.push('rewards intro shows');
        if(getComputedStyle(document.getElementById('seasonbar')).height!=='28px') bad.push('bar h '+getComputedStyle(document.getElementById('seasonbar')).height);
-       if(getComputedStyle(rw).maxWidth!=='1400px') bad.push('rew maxw '+getComputedStyle(rw).maxWidth);
+       if(getComputedStyle(rw).maxWidth!=='none') bad.push('rew maxw '+getComputedStyle(rw).maxWidth);
        if(getComputedStyle(document.getElementById('bar_line')).display!=='none') bad.push('bar_line shows');
        if(getComputedStyle(document.getElementById('wallet_bar')).display!=='none') bad.push('wallet_bar shows');
        renderBar();
