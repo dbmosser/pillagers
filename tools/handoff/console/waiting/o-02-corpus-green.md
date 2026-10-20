@@ -46,3 +46,8 @@ Your full state is in tools/handoff/console/notes/o-02-corpus-green.md: read it 
 Next: continue the v32.16 list from the next unresolved entries (10.64, 10.73, 10.92, 10.96 and on), 15 or fewer per batch, each
 checked on HEAD first. Stay on old checks: pad screen pictures belong to o-07, o-10 and o-11, not to this job.
 There is still no list newer than v32.16: the 03:51 full run was stopped (the shadow store crawl, task 00-perf-shadow-store).
+
+## PARKED 10-20 07:58 (coordinator): waits for the fresh full run
+Round 2 used its 5 runs with steady progress (fixture commits 1c23909e, 957b28f1, d712c0d1 on top of round 1). A fresh full run
+started 07:25 on v32.82 and ends about 11:30; working on from the two-day-old v32.16 list now would retarget checks the new list may
+not show. The coordinator moves this back to tasks/ with the new list (round 3, fresh thread) when that run ends.

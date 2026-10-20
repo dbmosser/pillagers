@@ -3,3 +3,4 @@
 - o-02-corpus-green.md (parked 10-19 night): it waits for the full test run that started 23:43 on 1b8dc30b (ends about 03:15). Then the coordinator writes the new failure list (tools/handoff/corpus-fails-vNN.NN.txt), points the job at it and moves it back to tasks/. Without a fresh list Codex would triage the 10-19 list, which ships have since changed. BACK IN tasks/ 10-20 03:55 with corpus-fails-v32.16.txt.
 - 17-party-easy-mode.md (parked 10-20 01:30): all four builds shipped; only the two card pictures are left, taken by the coordinator (easy-cards-recipes.json). Close it after looking at them. CLOSED 01:45 (done/).
 - o-04-camera-closer.md (parked 10-20 02:00): shipped; only its two-window pictures are left, taken by the coordinator with uishots -NoPopupBlock. CLOSED 02:25 (done/).
+- o-02-corpus-green (10-20 07:58): waits for the full run that started 07:25 (ends about 11:30); the coordinator requeues it with the new list.
