@@ -14,3 +14,8 @@
 - Take before and after pictures of the same scene at 1080. Look at them (Read shows pictures) and fix what looks wrong. The critic (tools/console-sdk/critic.mjs) is for screens and is optional here.
 - One ship per task through the queue, with a check that fails on the old build. The fingerprint must not change: these are drawing changes only, so add no random rolls to the map build or spawns.
 - Frame cost: 60 fps at 4K is the bar. Measure the frame time before and after with two players on screen, and note both numbers.
+
+## CLOSED 10-20 06:01 (coordinator)
+Done: all six picks shipped in v32.71 (cw-machfx), gate and fingerprint held. Runs 2 and 3 found nothing left and shipped nothing.
+The two-player frame time was not measured (no camera stage); the shadow store fix (00-perf-shadow-store) covers the frame cost.
+The charge ring, the blast and the moonlit night are for his next playtest look.

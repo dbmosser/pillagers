@@ -93,7 +93,10 @@ while true; do
     fa=$(running 'fuzz\.ps1'); fb=$(running 'fuzz\.ps1.*9332')   # an empty count means the check failed: start nothing
     #     10-19 night: the helpers come first. A fuzzer starts only with the floor + 2 GB free, so a helper (it starts at floor + 1) still
     #     fits after it; at the floor alone the back-to-back fuzzer held the 10 GB VM and all three helpers waited all night.
-    if [ -n "$fa" ] && [ -n "$fb" ] && [ -f "$R/tools/fuzz.ps1" ] && [ $((fa - fb)) -le 0 ] && [ "$ram" -ge $((rf + 2)) ]; then
+    #     10-20 05:58: that still let the fuzzer take the memory a waiting helper needed (4 GB free, about 1.2 GB taken, 2.8 left), so it
+    #     also waits while any helper status says it is waiting for RAM.
+    hw=$(grep -ls "waiting for RAM" "$R"/tools/handoff/console/status-*.txt 2>/dev/null | wc -l)
+    if [ -n "$fa" ] && [ -n "$fb" ] && [ -f "$R/tools/fuzz.ps1" ] && [ $((fa - fb)) -le 0 ] && [ "$ram" -ge $((rf + 2)) ] && [ "${hw:-0}" -eq 0 ]; then
       echo "$(date +%H:%M) fuzz start at $head" >> "$LOG"
       (powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/fuzz.ps1" -Minutes 120 -IgnoreFlag -MinFreeGB "$rf" > /dev/null 2>&1; echo "$(date +%H:%M) fuzz done" >> "$LOG") &
     fi
