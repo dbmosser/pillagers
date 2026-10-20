@@ -11898,10 +11898,11 @@ window.__REGRESS=[
        for(k=0;k<n&&k<pl.length;k++){
          p=pl[k]; lab=null; val=null;
          for(a=0;a<r.t.length;a++){ q=r.t[a]; if(q.x>=p.x0-1&&q.x<=p.x1+1&&q.y>=p.y0&&q.y<=p.y1+1){ if(q.al==='left'&&!lab) lab=q; else if(q.al==='right'&&!val) val=q; } }
-         if(!lab||lab.d!==labs[k]) bad.push(tag+': row '+(k+1)+' says "'+(lab?lab.d:'')+'" and not "'+labs[k]+'"');
+         // 10-20 (coordinator, cw-raiddollar): since v33.14 the money row is the figure alone ($900, his Q59), so its label may be empty
+         if(!lab||(lab.d!==labs[k]&&!(k===0&&labs[k]==='credits'&&lab.d===''))) bad.push(tag+': row '+(k+1)+' says "'+(lab?lab.d:'')+'" and not "'+labs[k]+'"');
          else px.push(lab.px);
          if(!val) bad.push(tag+': row '+(k+1)+' ('+labs[k]+') has no figure at its right edge');
-         else { px.push(val.px); vx.push(val.x); if(wallet&&k===0&&val.d!==(4471337).toLocaleString()) bad.push(tag+': the credits row says "'+val.d+'", not '+(4471337).toLocaleString()); if(wallet&&k===1&&val.d!==(98761).toLocaleString()) bad.push(tag+': the xp row says "'+val.d+'", not '+(98761).toLocaleString()); }
+         else { px.push(val.px); vx.push(val.x); if(wallet&&k===0&&val.d!==(4471337).toLocaleString()&&val.d!=='$'+(4471337).toLocaleString()) bad.push(tag+': the credits row says "'+val.d+'", not '+(4471337).toLocaleString()); if(wallet&&k===1&&val.d!==(98761).toLocaleString()) bad.push(tag+': the xp row says "'+val.d+'", not '+(98761).toLocaleString()); }
        }
        for(a=1;a<vx.length;a++) if(Math.abs(vx[a]-vx[0])>1) bad.push(tag+': the figures do not share one right edge ('+vx[0].toFixed(0)+' and '+vx[a].toFixed(0)+')');
        for(a=0;a<px.length;a++) if(Math.abs(px[a]-px[0])>0.3||(ref&&Math.abs(px[a]-ref.px)>0.3)) { bad.push(tag+': the rows use more than one type size ('+px[0].toFixed(1)+' and '+px[a].toFixed(1)+(ref?', the run info title '+ref.px.toFixed(1):'')+')'); break; }
@@ -19924,14 +19925,15 @@ window.__REGRESS=[
        G=null; keys={}; __showScreen('hub'); __hubEnter();
        p.stash=[k,k,k]; ev=3*ival(k);
        t=txt();
-       if(t.indexOf('STASH '+ev.toLocaleString())<0) bad.push('on the floor the readout does not show STASH '+ev.toLocaleString()+' ("'+t+'")');
-       if(!/BAG 0\b/.test(t)) bad.push('on the floor the readout does not show BAG 0 ("'+t+'")');
+       // 10-20 (coordinator, cw-raiddollar): since v33.14 the values carry $ (his Q59); either form holds
+       if(t.indexOf('STASH '+ev.toLocaleString())<0&&t.indexOf('STASH $'+ev.toLocaleString())<0) bad.push('on the floor the readout does not show STASH '+ev.toLocaleString()+' ("'+t+'")');
+       if(!/BAG \$?0\b/.test(t)) bad.push('on the floor the readout does not show BAG 0 ("'+t+'")');
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||!g.player||g.over) return 'SKIP: no live raid';
        p=__P(); p.stash=[k,k,k]; g.bag.push(k,k); eb=bagValue(); if(!(eb>=20)) return 'SKIP: the bag has no value';
        t=txt();
-       if(t.indexOf('BAG '+eb.toLocaleString())<0) bad.push('in a raid the readout does not show BAG '+eb.toLocaleString()+' ("'+t+'")');
-       if(t.indexOf('STASH '+ev.toLocaleString())<0) bad.push('in a raid the readout does not show STASH '+ev.toLocaleString()+' ("'+t+'")');
+       if(t.indexOf('BAG '+eb.toLocaleString())<0&&t.indexOf('BAG $'+eb.toLocaleString())<0) bad.push('in a raid the readout does not show BAG '+eb.toLocaleString()+' ("'+t+'")');
+       if(t.indexOf('STASH '+ev.toLocaleString())<0&&t.indexOf('STASH $'+ev.toLocaleString())<0) bad.push('in a raid the readout does not show STASH '+ev.toLocaleString()+' ("'+t+'")');
        if(!(topRightBottom()>el.getBoundingClientRect().bottom+8)) bad.push('the lines under the readout are not cleared by topRightBottom');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){} try{ p.stash=keep; }catch(_k){} __topClear(); __cleanProfile(); }
