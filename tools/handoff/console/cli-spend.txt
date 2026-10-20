@@ -179,3 +179,4 @@
 2026-10-19 0.1565 critic-manual
 2026-10-19 1.2930481000000005 c-31-ui-pause-settings
 2026-10-19 0.1604 critic-manual
+2026-10-19 1.1100537 c-02-raid-hud-redesign

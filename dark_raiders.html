@@ -3009,7 +3009,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.14';
+var VER='32.15';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -50218,7 +50218,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.14: The f1 controls hint is on a plate and reads on any ground. Check 32.14 fails on v32.13',
+  now:'v32.15: Each demo run starts with the easy or normal card in that players window. Check 32.15 fails on v32.14',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -59650,6 +59650,7 @@ function arcadeDeploy(o){
   if(ARCADE.role!=='p2') ARCADE.run={id:arcadeRunId()};   // v23.29 (arcade8): the host owns the run id
   try{ arcadeLook(); }catch(_alk){}   // v27.xx (randchar): a new character every run
   startRaid();
+  try{ easyStartAsk(); }catch(_esa){}   // v28.xx (cw-easystart), HIS ANSWER (2026-10-18, 2.28 c): in the demo each player chooses easy or normal as a run starts
   return !!(G&&G.arcade);
 }
 // Stop an arcade raid with nothing settled: no run, no card, no save. Mirrors the instant quit teardown in endRaid.
@@ -63966,6 +63967,13 @@ function easyAskMaybe(why){
   if(typeof ARCADE!=='object'||!ARCADE||!ARCADE.on||ARCADE.solo||ARCADE.easyAsked||ARCADE.easy||why==='bench') return false;
   if((ARCADE.deaths|0)<2||(ARCADE.ext|0)>0) return false;
   ARCADE.easyAsked=1; ARCADE.easyAsk={at:Date.now()};
+  return true;
+}
+// v28.xx (cw-easystart), HIS ANSWER (2026-10-18, 2.28 c): "in the demo only, each player chooses easy or normal before their run starts". Every new demo run starts normal and puts the
+// same card up in that window (Y or A easy, N or B normal); the offer after the second death (2.90 b) stays for anyone who said no.
+function easyStartAsk(){
+  if(typeof ARCADE!=='object'||!ARCADE||!ARCADE.on||ARCADE.solo) return false;
+  ARCADE.easy=0; ARCADE.easyAsked=0; ARCADE.easyAsk={at:Date.now()};
   return true;
 }
 function easyAnswer(yes){

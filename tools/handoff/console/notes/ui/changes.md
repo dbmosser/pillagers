@@ -155,3 +155,4 @@
 
 2026-10-19 | b-30-ui-hud | 22-raid-map-open | v32.05 the toasts RESOLUTION STEPPED DOWN and RUNNING SLOWLY are headlines only. Old text: detail "settings: auto resolution" / "settings: render resolution, effects". New text: none. Reason: the critic read the detail as an explaining line over the map, and no explaining text belongs on screen. After shots/b-30n-after/22-raid-map-open-1080.jpg.
 2026-10-19 | b-30-ui-hud | screen 36 low health | flat red wash replaced by a red screen-edge vignette (centre clear, same pulse) | tools/handoff/console/notes/shots/b-30o-before/36-raid-low-health-1080.jpg -> b-30p-after/36-raid-low-health-1080.jpg (critic 2 -> 3)
+- 2026-10-19 c-02 raid hud (screens 21, 50): stamina word inside its bar; extract distance line on a plate; gun name smaller and grey over the hero ammo; f1 controls hint on a plate. Before tools/handoff/console/notes/shots/c-02-r16-before, after tools/handoff/console/notes/shots/c-02-r16-after.

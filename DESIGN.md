@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.15 - DEMO RUN START ASKS EASY OR NORMAL
+
+Co-op hunt while he was away. His answer 2.28 c: in the demo each player chooses easy or normal before the run starts. Today the card only came after the second death.
+
+MEASURED. Check 32.15 passes, and fails on v32.14.
 ## v32.14 - THE F1 CONTROLS HINT HAS A PLATE
 
 Co-op hunt while he was away. The critic named the f1 controls hint as dim grey text over a busy map with no plate. It now sits on the HUD plate in the quiet grey text colour.

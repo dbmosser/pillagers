@@ -1,0 +1,7 @@
+v32.15: demo run start asks easy or normal
+
+Each demo run starts with the easy or normal card in that players window.
+
+Check 32.15. Fails on v32.14.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

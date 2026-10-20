@@ -1,0 +1,1 @@
+| DEMO RUN START ASKS EASY OR NORMAL | v32.15 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 32.15 passes, fails on v32.14 |

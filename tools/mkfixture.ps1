@@ -6101,6 +6101,20 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.15',what:'a new demo run puts the easy or normal card up for that player, and starts on normal (his 2.28 c)',
+   run:function(){
+     if(typeof easyStartAsk!=='function') return 'no easyStartAsk';
+     if(String(arcadeDeploy).indexOf('easyStartAsk')<0) return 'arcadeDeploy does not ask';
+     var on0=ARCADE.on, so0=ARCADE.solo, e0=ARCADE.easy, a0=ARCADE.easyAsk, k0=ARCADE.easyAsked, r;
+     try{
+       ARCADE.on=1; ARCADE.solo=0; ARCADE.easy=1; ARCADE.easyAsk=null; ARCADE.easyAsked=1;
+       r=easyStartAsk();
+       if(!r||!ARCADE.easyAsk) return 'no card after a new run';
+       if(ARCADE.easy) return 'the new run did not start on normal';
+       ARCADE.on=0; ARCADE.easyAsk=null;
+       if(easyStartAsk()||ARCADE.easyAsk) return 'card shown outside the demo';
+       return null;
+     } finally { ARCADE.on=on0; ARCADE.solo=so0; ARCADE.easy=e0; ARCADE.easyAsk=a0; ARCADE.easyAsked=k0; } }},
   {v:'32.14',what:'the f1 controls hint sits on a plate: a plate fill is drawn right before the words',
    run:function(){
      if(typeof __frame!=='function') return 'SKIP: no frame helper';
