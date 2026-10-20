@@ -1234,6 +1234,8 @@ function Stage-apps {
     else { Warn 'agy is not at the expected path (ship-review.ps1 looks for %LOCALAPPDATA%\agy\bin\agy.exe). Install it by hand from the Antigravity page.'; [void]$failed.Add('agy') }
   }
 
+  # the Claude and agy installers above can put their own folder in front, so put node first again last
+  if ($script:NodeDir) { Set-FirstUserPath $script:NodeDir }
   if (-not $script:DryRun) { Send-SettingChange 'Environment' }
   Add-Restart 'new programs were added to PATH; sign out and in (or restart) once so every window sees them'
   $summary = ($installed.Count.ToString() + ' installed, ' + $already.Count + ' already there')
