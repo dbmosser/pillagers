@@ -1,1 +1,1 @@
-10-20 18:25 waiting for RAM: 2 GB free, a helper starts at 3; 64-audio-picks kept
+10-20 18:56 waiting for RAM: 1 GB free, a helper starts at 3; 64-audio-picks kept

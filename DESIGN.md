@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.15 - THE CONTROLS LIST STEPS ABOVE THE ITEM IN HAND
+
+Co-op hunt while he was away. The o-02 picture alarm: with a bandage in hand the compact controls list covered the top of the item-in-hand panel (its name and readying line), in the career raid and the demo.
+
+MEASURED. Check 33.15 passes, and fails on v33.14.
 ## v33.14 - MONEY IN THE RAID CORNER READS $
 
 Co-op hunt while he was away. His rule (Q59): $ for money. In a raid the corner column still read credits 900, and the stash and backpack values had no $, while the Undercroft line already read $900.

@@ -3247,7 +3247,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.14';
+var VER='33.15';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -43836,6 +43836,13 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
       if(LEGMW>0) _lgZ=Math.max(0.9,Math.min(LEGZ0,((W*0.47-_lgX)/LEGMW)/(_lgR*_lgU)));
       HUDZ.legend=_lgZ; _legFX=Math.round(_lgX-6*_lgZ*_lgR*_lgU);
     } else HUDZ.legend=LEGZ0;
+    // v33.xx (cw-handclear), the o-02 alarm (10-20): "the controls card overlaps the top of the bandage-in-hand panel". While an item is in
+    // hand and the compact list (where it stood last frame, with his drag) reaches over the panel's columns, its bottom stands on the
+    // panel's top edge instead of the vitals, so both stay whole; it drops back onto the vitals when the item is put away.
+    if(G.legendOn===1&&_legBase&&typeof handPlateBox==='function'){
+      var _hpb=handPlateBox(), _hpo=hudOff('legend'), _hpx=_legBase.x+(_hpo.dx||0);
+      if(_hpb&&_hpx<_hpb.x+_hpb.w&&_hpx+_legBase.w>_hpb.x) _legTarget=Math.min(_legTarget,_hpb.y-LH(8)-(_hpo.dy||0));
+    }
     var _legUB=(typeof _legAnchorY==='number'&&_legAnchorY>0)?_legAnchorY:_legTarget;
     var _legShift=_legTarget-_legUB;
     // v9.83: AND HIS DRAG RIDES ON TOP OF THE ANCHOR. The anchor above forces
@@ -51222,7 +51229,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.14: In a raid the corner reads  with no credits word, and the stash and backpack values read $ there and in the Undercroft. Check 33.14 fails on v33.13',
+  now:'v33.15: While an item is in hand the controls list stands just above its panel, so both are whole; it drops back when the item is put away. Check 33.15 fails on v33.14',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

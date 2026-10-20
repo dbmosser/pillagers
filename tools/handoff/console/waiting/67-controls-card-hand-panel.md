@@ -19,3 +19,5 @@ Party risk: low to medium (raid HUD layout; guests see the list in their first r
 otherwise leave it until after 10/30.
 
 TASK DONE when shipped, the check passes and the pictures show both panels whole; TASK PARTIAL with what is left.
+
+COORDINATOR 10-20 18:53: taken by the coordinator (helpers are held by RAM); it ships from here.
