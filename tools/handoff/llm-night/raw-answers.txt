@@ -1,13 +1,20 @@
 
-This is a snippet of HTML code for a web page that appears to be part of a video game interface or dashboard. It includes several elements such as:
+The provided HTML snippet appears to be part of a web application or game interface, likely for a browser-based game. It includes various elements such as CSS styles, canvas elements, divs for different UI components, and buttons for user interactions.
 
-- Two canvas elements (`<canvas id="cv"></canvas>` and `<canvas id="hcv"></canvas>`) which are likely used for rendering graphics.
-- A pause menu (`<div class="pausebox" id="pausebox">`) that appears when the game is paused, containing buttons for resuming the run, settings, leaderboard, feedback, etc.
-- Feedback modal (`<div class="modal" id="fbmodal">`) which allows users to provide feedback by typing a note and taking a screenshot of the current screen.
-- What's New modal (`<div class="modal" id="wnmodal">`) that displays recent updates or changes in the game.
-- Leaderboard modal (`<div class="modal" id="lbmodal">`) for viewing player rankings.
-- Outcome card (`<div class="outcome" id="outcome">`) which appears after a run is completed, showing results and allowing users to log their experience.
+Here's a breakdown of the key parts:
 
-The CSS styles are embedded within `<style>` tags at the beginning of the snippet. They define various layout properties such as font sizes, colors, margins, padding, and grid layouts for different elements on the page.
+1. **CSS Styles**:
+   - The `<style>` tag contains numerous CSS rules that define the appearance and behavior of various elements in the application.
+   - These include styles for buttons, text sizes, grid layouts, and other UI components like modals and pause boxes.
+
+2. **Canvas Elements**:
+   - Two canvas elements (`<canvas id="cv"></canvas>` and `<canvas id="hcv"></canvas>`) are present. These are likely used for rendering game graphics or visual effects.
+
+3. **Pause Box**:
+   - A div with the class `pausebox` is defined, which contains various buttons and text areas for user interactions during a paused state in the game.
+   - Buttons include options to resume the run, open settings, view the leaderboard, provide feedback, see what's new, return to character selection, abandon the run, or end the run.
+
+4. **Feedback Modal**:
+   - A modal with the id `fbmodal` is defined for providing feedback. It includes a text area for notes and an image element (`<img id="fbshot" alt="" style="max-width:min(560px,90%);max-height
 NONE
 NONE

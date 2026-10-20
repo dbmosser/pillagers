@@ -1,6 +1,5 @@
 summary_head=c728a3ef
 fuzz_head=d1f6e0a2
-backup_day=2026-10-19
 review_day=2026-10-19
 report_am=2026-10-19
 report_pm=2026-10-19
@@ -9,4 +8,5 @@ corpus_head=1b8dc30b
 corpus_file=C:/Users/User1/AppData/Local/Temp/claude/C--Users-User1-Desktop-dark-raiders/8a09e991-b4f4-4b23-b10f-ded92e837fc3/scratchpad/corpus-1019-2343.txt
 corpus_t=1792467825
 summary_t=1792468159
-llm_head=5e88ba80
+llm_head=cc57de8c
+backup_day=2026-10-20

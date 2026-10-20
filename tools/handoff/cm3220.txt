@@ -1,0 +1,7 @@
+v32.20: the what is new card names polish pass 30
+
+The what is new card names polish pass 30.
+
+Check 32.20. Fails on v32.19.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

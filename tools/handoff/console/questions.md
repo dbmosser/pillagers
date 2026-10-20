@@ -28,3 +28,4 @@ Moved 10-19 night to tools/handoff/console/alarms.md (helper fix F18). This file
 - Walk the Undercroft before the drop (your H1 answer), or start the instant someone presses (your 3.4 and 3.6)? For now: the instant start.
 - A few lines you wrote yourself still call the bots "pillagers" (how to play: "beware of hostile robots and fellow pillagers"; the feedback tags "pillagers felt human" and "pillagers felt dumb"). Change them to "pillager bots"?
 - One armour set in the stash is named "raider". Keep the name, or rename it?
+- b-31 (racks 14): the import-a-friend line 'this is some wild idea claude came up with...' is your own edit, but the critic marks it P0 (dev chatter that names the AI) on the racks tab. Delete it, or keep it? Kept for now.

@@ -1,0 +1,28 @@
+{
+    "title":  "Party, sector, terms: short lines, bigger type",
+    "why":  "UI step 7 (restyle only). Critic scored 05, 06, 07 at 2 for explaining paragraphs and 13px text. Q8 allows shortening with the reason logged.",
+    "now":  "The party and sector pages lose their explaining sentences and the party and terms text is larger.",
+    "edits":  [
+                  {
+                      "anchor":  "\u003cdiv class=\"msub\"\u003eUp to four pillagers, linked by invite code. The others in your party walk the Undercroft floor with you, with their names over their heads, and when the host takes the party up, everyone ascends into the same raid.\u003c/div\u003e",
+                      "replacement":  "\u003cdiv class=\"msub\"\u003eUp to four pillagers, one invite code.\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "\u003eTRADING. Up top: open the backpack, pick the item and press Z (Y on a controller) to drop it at your feet; your teammate searches the pile like any box. In the Undercroft: right-click a stash item (Y on a controller) and choose Drop on the floor; your teammate walks to the crate and presses E (A on a controller).\u003c/div\u003e",
+                      "replacement":  "\u003eTrade: drop it on the floor, your teammate picks it up.\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "line+=\u0027\u003cdiv style=\"margin-top:5px\"\u003eYour own gun is in your stash. Close this and choose Equip as your gun on it to take it up.\u003c/div\u003e\u0027;",
+                      "replacement":  "line+=\u0027\u003cdiv style=\"margin-top:5px\"\u003eYour gun is in your stash. Equip it first.\u003c/div\u003e\u0027;"
+                  },
+                  {
+                      "anchor":  "\u0027\u003cdiv style=\"margin-top:5px;color:var(--amber)\"\u003eYou ascend with \u003cb\u003eno armour on\u003c/b\u003e. Equip Armour Plates on the \u0027+\n      \u0027surface. Each absorbs \u0027+Math.round(RG.absorb*100)+\u0027% of every hit until it is gone, up to a cap of \u0027+cap+\u0027.\u003c/div\u003e\u0027;",
+                      "replacement":  "\u0027\u003cdiv style=\"margin-top:5px;color:var(--amber)\"\u003eYou ascend with \u003cb\u003eno armour on\u003c/b\u003e. Equip plates on the surface.\u003c/div\u003e\u0027;"
+                  },
+                  {
+                      "anchor":  "  #partymodal textarea{ font-size:13px; word-break:break-all; }",
+                      "replacement":  "  #partymodal textarea{ font-size:13px; word-break:break-all; }\n/* v28.xx (cw-uc-lines) b-31 step 7, critic on 05/06/07 (explaining paragraphs, 13px text in an empty card): sector surface and weather hint lines hidden, party and terms text scaled to 18px. */\n#root #condhint, #root #wxhint{ display:none !important; }\n#root #partymodal .msub, #root #partymodal .hint, #root #termsmodal .msub{ font-size:18px; line-height:1.4; }\n#root #partymodal textarea{ font-size:16px; }\n#root #termsmodal .plist{ font-size:18px; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027party intro is one short line, sector hint lines hidden, party text 18px\u0027,\n   run:function(){\n     var bad=[];\n     try{\n       var pm=document.getElementById(\u0027partymodal\u0027), m=pm\u0026\u0026pm.querySelector(\u0027.msub\u0027);\n       if(!m||m.textContent.length\u003e60) bad.push(\u0027party intro long: \u0027+(m\u0026\u0026m.textContent.length));\n       var t=document.getElementById(\u0027partytrade\u0027);\n       if(!t||t.textContent.length\u003e80) bad.push(\u0027trade line long\u0027);\n       [\u0027condhint\u0027,\u0027wxhint\u0027].forEach(function(id){ var e=document.getElementById(id);\n         if(!e) bad.push(\u0027no \u0027+id); else if(getComputedStyle(e).display!==\u0027none\u0027) bad.push(id+\u0027 displays\u0027); });\n       var fs=m?parseFloat(getComputedStyle(m).fontSize):0;\n       if(fs\u003c18) bad.push(\u0027party msub \u0027+fs+\u0027px\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

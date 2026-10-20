@@ -1,0 +1,44 @@
+{
+    "title":  "CAREER OFFERS EASY AFTER THREE DEATHS",
+    "why":  "His answer 2.90 b: Career offers Forgiving on a card after a few deaths, the same offer as the demo.",
+    "now":  "Three deaths in a row in Career, then the next raid shows the easy yes or no card. Yes gives 30 percent less damage and a free medkit for that raid.",
+    "edits":  [
+                  {
+                      "anchor":  "function easyDmgMul(){ return (typeof ARCADE===\u0027object\u0027\u0026\u0026ARCADE\u0026\u0026ARCADE.easy\u0026\u0026G\u0026\u0026G.arcade)?EASY_MUL:1; }",
+                      "replacement":  "function easyDmgMul(){ return ((typeof ARCADE===\u0027object\u0027\u0026\u0026ARCADE\u0026\u0026ARCADE.easy\u0026\u0026G\u0026\u0026G.arcade)||(G\u0026\u0026G.easyC\u0026\u0026!G.arcade))?EASY_MUL:1; }   // v28.xx (cw-easycareer): and a career raid where he said yes to the offer"
+                  },
+                  {
+                      "anchor":  "function easyLive(){ return !!(typeof ARCADE===\u0027object\u0027\u0026\u0026ARCADE\u0026\u0026ARCADE.on\u0026\u0026ARCADE.easyAsk\u0026\u0026G\u0026\u0026G.arcade\u0026\u0026!G.over\u0026\u0026!G.sim); }",
+                      "replacement":  "function easyLive(){ return !!(typeof ARCADE===\u0027object\u0027\u0026\u0026ARCADE\u0026\u0026ARCADE.easyAsk\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!G.sim\u0026\u0026((ARCADE.on\u0026\u0026G.arcade)||(G.carAsk\u0026\u0026!G.arcade))); }   // v28.xx (cw-easycareer): the card also lives in a career raid that asked"
+                  },
+                  {
+                      "anchor":  "    ARCADE.easy=1; try{ say(\u0027Easy mode on\u0027,\u0027info\u0027); }catch(_es){}\n",
+                      "replacement":  "    if(G\u0026\u0026G.carAsk\u0026\u0026!G.arcade) G.easyC=1; else ARCADE.easy=1;   // v28.xx (cw-easycareer): a career yes lives on this raid, the demo yes on the run\n    try{ say(\u0027Easy mode on\u0027,\u0027info\u0027); }catch(_es){}"
+                  },
+                  {
+                      "anchor":  "function easyAnswer(yes){\n",
+                      "replacement":  "// v28.xx (cw-easycareer), HIS ANSWER (2026-10-18, 2.90 b): \"Career offers Forgiving on a card after a few deaths, the same offer as the demo.\" The profile counts deaths in a row\n// (P.dieRun, an extraction clears it); on the third the next career raid puts the same yes or no card up (Y or A, N or B), asked once per streak.\n// Yes is the same 30 percent less damage and free medkit for that raid. Not asked in the demo, and not when Forgiving is already on in Settings.\nfunction easyCareerNote(how){\n  if(!P||(typeof ARCADE===\u0027object\u0027\u0026\u0026ARCADE\u0026\u0026ARCADE.on)) return;\n  P.dieRun=(how===\u0027dead\u0027)?((P.dieRun|0)+1):((how===\u0027extract\u0027)?0:(P.dieRun|0));\n}\nfunction easyCareerAsk(g){\n  if(!g||g.sim||g.arcade||!P||(typeof ARCADE===\u0027object\u0027\u0026\u0026ARCADE\u0026\u0026ARCADE.on)||typeof ARCADE!==\u0027object\u0027||!ARCADE) return false;\n  if((P.dieRun|0)\u003c3||!(CFG.eDmg\u003e=1)) return false;\n  P.dieRun=0; g.carAsk=1; ARCADE.easyAsk={at:Date.now()};\n  return true;\n}\nfunction easyAnswer(yes){\n"
+                  },
+                  {
+                      "anchor":  "  G.over=how;\n  if(NET.on\u0026\u0026!G.sim){ try{ netScoreSend",
+                      "replacement":  "  G.over=how;\n  if(!G.sim){ try{ easyCareerNote(how); }catch(_ecn){} }   // v28.xx (cw-easycareer): deaths in a row, for the career easy offer\n  if(NET.on\u0026\u0026!G.sim){ try{ netScoreSend"
+                  },
+                  {
+                      "anchor":  "  else if(G\u0026\u0026!G.sim\u0026\u0026CAREER_ON) careerPostBuild(G);   // v24.xx (feat0h1): every other raid from the Undercroft is a CAREER raid   // v23.21 (arcade2): an arcade raid is this same build made endless, with a random kit (the arcade section)",
+                      "replacement":  "  else if(G\u0026\u0026!G.sim\u0026\u0026CAREER_ON) careerPostBuild(G);   // v24.xx (feat0h1): every other raid from the Undercroft is a CAREER raid   // v23.21 (arcade2): an arcade raid is this same build made endless, with a random kit (the arcade section)\n  if(G\u0026\u0026!G.sim\u0026\u0026!G.arcade){ try{ easyCareerAsk(G); }catch(_eca){} }   // v28.xx (cw-easycareer): the career easy offer after a few deaths"
+                  },
+                  {
+                      "anchor":  "    if(typeof ARCADE===\u0027object\u0027\u0026\u0026ARCADE\u0026\u0026ARCADE.on){ try{ arcadeKeyAtt(e); }catch(_ak){} return; }   // v23.24 (arcade5): in the arcade a press drops the host in",
+                      "replacement":  "    if(typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026G.carAsk\u0026\u0026easyLive()){ try{ if(easyKey(e)) return; }catch(_eck){} }   // v28.xx (cw-easycareer): Y or N answers the career easy card\n    if(typeof ARCADE===\u0027object\u0027\u0026\u0026ARCADE\u0026\u0026ARCADE.on){ try{ arcadeKeyAtt(e); }catch(_ak){} return; }   // v23.24 (arcade5): in the arcade a press drops the host in"
+                  },
+                  {
+                      "anchor":  "  if(typeof ARCADE===\u0027object\u0027\u0026\u0026ARCADE\u0026\u0026ARCADE.on\u0026\u0026easyLive()){\n",
+                      "replacement":  "  if(typeof ARCADE===\u0027object\u0027\u0026\u0026ARCADE\u0026\u0026easyLive()){   // v28.xx (cw-easycareer): the demo and a career raid that asked\n"
+                  },
+                  {
+                      "anchor":  "  if(G.arcade){ try{ arcadeHud(); }catch(_ahd){} }   // v23.23 (arcade4): the arcade layer, the EXTRACTED! banner",
+                      "replacement":  "  if(G.arcade){ try{ arcadeHud(); }catch(_ahd){} }   // v23.23 (arcade4): the arcade layer, the EXTRACTED! banner\n  if(G.carAsk\u0026\u0026!G.arcade){ try{ easyHud(); }catch(_ehc){} }   // v28.xx (cw-easycareer): the career easy card"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027career offers the easy card after three deaths in a row, once, and yes cuts damage 30 percent (his 2.90 b)\u0027,\n   run:function(){\n     if(typeof easyCareerAsk!==\u0027function\u0027) return \u0027no easyCareerAsk\u0027;\n     var on0=ARCADE.on, ea0=ARCADE.easyAsk, dr0=P.dieRun, g0=G, d0=CFG.eDmg, g={}, i, m;\n     try{\n       ARCADE.on=0; CFG.eDmg=1; ARCADE.easyAsk=null; P.dieRun=0;\n       for(i=0;i\u003c3;i++) easyCareerNote(\u0027dead\u0027);\n       if(P.dieRun!==3) return \u0027deaths not counted: \u0027+P.dieRun;\n       if(!easyCareerAsk(g)||!g.carAsk||!ARCADE.easyAsk) return \u0027no card on the third death\u0027;\n       if(P.dieRun!==0) return \u0027streak not reset after asking\u0027;\n       if(easyCareerAsk({})) return \u0027asked again with no new deaths\u0027;\n       P.dieRun=2; easyCareerNote(\u0027extract\u0027); if(P.dieRun!==0) return \u0027extraction did not clear the streak\u0027;\n       P.dieRun=3; CFG.eDmg=0.7; if(easyCareerAsk({})) return \u0027asked while Forgiving already on\u0027;\n       CFG.eDmg=1; ARCADE.on=1; if(easyCareerAsk({})) return \u0027asked in the demo\u0027;\n       ARCADE.on=0; P.dieRun=3; if(easyCareerAsk({sim:1})) return \u0027asked in a sim\u0027;\n       G={carAsk:1,bag:[],over:0,sim:0,arcade:0}; ARCADE.easyAsk={at:Date.now()};\n       if(!easyLive()) return \u0027card not live in a career raid\u0027;\n       easyAnswer(true);\n       if(!G.easyC) return \u0027yes did not set easy\u0027;\n       m=easyDmgMul(); if(Math.abs(m-0.7)\u003e1e-9) return \u0027damage x\u0027+m;\n       if(G.bag.indexOf(\u0027medkit\u0027)\u003c0) return \u0027no free medkit\u0027;\n       G.easyC=0; if(easyDmgMul()!==1) return \u0027no cut without a yes\u0027;\n       return null;\n     } finally { ARCADE.on=on0; ARCADE.easyAsk=ea0; P.dieRun=dr0; G=g0; CFG.eDmg=d0; } }},"
+}
