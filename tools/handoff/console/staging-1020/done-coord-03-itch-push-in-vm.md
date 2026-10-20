@@ -23,4 +23,4 @@ the VM. tools/publish/pillagers-web.zip (10-20 11:30) holds only index.html (pla
 Party risk: low (tools and his account only).
 Done when: an itch push has run from the VM and the zip lists the licence files.
 
-DONE 10-20 13:50 (coordinator, 85fd178d): butler was already reachable (C:\Users\User1 is a junction to the VM profile). ITCH_TARGET set in the VM. tools/itch-zip.ps1 now builds the zip for ship.sh and itch-daily.sh with all 10 licence files at the top level; Titan One and Rubik OFL texts added (copyright lines read from the embedded fonts). ai-keys.ps1 has an itch slot. Left: his key (for-you.md), then the next ship logs "itch: pushing". RULES.md line 98 goes with coord-05.
+DONE 10-20 13:28 (coordinator, 85fd178d): butler was already reachable (C:\Users\User1 is a junction to the VM profile). ITCH_TARGET set in the VM. tools/itch-zip.ps1 now builds the zip for ship.sh and itch-daily.sh with all 10 licence files at the top level; Titan One and Rubik OFL texts added (copyright lines read from the embedded fonts). ai-keys.ps1 has an itch slot. Left: his key (for-you.md), then the next ship logs "itch: pushing". RULES.md line 98 goes with coord-05.
