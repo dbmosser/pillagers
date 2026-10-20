@@ -20280,7 +20280,7 @@ window.__REGRESS=[
        for(i=0;i<3;i++) flowTick(0.1);
        hoards=g.containers.filter(function(c){ return c&&c.tag==='GOLDEN HOARD'; }).length;
        if(lines.indexOf('STRONGHOLD CLEARED')>=0||g.flow.sh.sites[0].clear) bad.push('the takeover paid STRONGHOLD CLEARED for a garrison nobody fought (score '+ARCADE.mine+')');
-       if(lines.indexOf('GOLDEN ENEMY DOWN')>=0||hoards>0) bad.push('the takeover dropped '+hoards+' golden hoard for a golden enemy nobody killed');
+       if(lines.some(function(m){ return /^golden .+ down$/i.test(m); })||hoards>0) bad.push('the takeover dropped '+hoards+' golden hoard for a golden enemy nobody killed');
        return bad.length?bad.join('; '):null;
      }catch(x){ return 'threw: '+(x&&x.stack||x); }
      finally{ if(own) say=rs; netSend=oS; netSendFast=oSF; if(staged){ for(k in NET) if(!(k in NK)) delete NET[k]; for(k in NK) NET[k]=NK[k]; } if(oMine!==undefined) ARCADE.mine=oMine; try{ __endRaid('abandon'); }catch(_e){} try{ __topClear(); }catch(_t){} }
@@ -26619,7 +26619,7 @@ window.__REGRESS=[
        if(!HG.dead) return 'SKIP: staging: the host did not see the golden enemy fall';
        lines.length=0; sendTake();
        if(!g.flow.gold||!g.flow.gold.dead) bad.push('THREE: the golden enemy fell on the host and not for player 2');
-       if(!lines.some(function(m){ return /^GOLDEN ENEMY DOWN/.test(m); })) bad.push('THREE: player 2 was not told GOLDEN ENEMY DOWN ('+lines.join(' / ')+')');
+       if(!lines.some(function(m){ return m.split('|')[0].toLowerCase()===(typeof goldDownName==='function'?goldDownName(ref.kind):'golden enemy down'); })) bad.push('THREE: player 2 was not told the golden death name ('+lines.join(' / ')+')');
        if(g.flow.clue&&!g.flow.clue.done) bad.push('THREE: the hunt is not over for player 2');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
@@ -28105,7 +28105,7 @@ window.__REGRESS=[
          if(c.loot.length<5) bad.push('FOUR: the hoard holds '+c.loot.length);
          if(Math.hypot(c.x-e.x,c.y-e.y)>40) bad.push('FOUR: the hoard is '+Math.round(Math.hypot(c.x-e.x,c.y-e.y))+' from where it fell');
        }
-       saw=0; for(i=0;i<lines.length;i++) if(lines[i].indexOf(needD)>=0) saw=1;
+       saw=0; for(i=0;i<lines.length;i++) if(lines[i].toLowerCase().indexOf((typeof goldDownName==='function'?goldDownName(e.kind):needD.toLowerCase())+'|')===0) saw=1;
        if(!saw) bad.push('FOUR: no GOLDEN ENEMY DOWN callout');
        i=flowMarks(); n=0; for(j=0;j<i.length;j++) if(i[j].kind==='loot'&&String(i[j].txt)===tagH) n++;
        if(n!==1) bad.push('FOUR: '+n+' hoard marks');
