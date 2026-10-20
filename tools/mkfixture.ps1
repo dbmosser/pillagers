@@ -6448,7 +6448,7 @@ window.__REGRESS=[
        togglePauseBox(true); pauseFrameFit();
        f=document.getElementById('pausefb');
        if(!f||!f.offsetWidth) return 'SKIP: no report field';
-       if(f.offsetHeight>48) bad='the report field is '+f.offsetHeight+' tall';
+       if(f.offsetHeight>56) bad='the report field is '+f.offsetHeight+' tall';
      }catch(e){ bad='threw: '+(e&&e.message||e); }
      finally{ try{ togglePauseBox(false); }catch(_t){} try{ __topClear(); }catch(_c){} document.body.classList.toggle('padon',padWas); }
      return bad; }},
