@@ -6101,6 +6101,14 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.29',what:'the picked item-wheel wedge is a raised neutral grey, not the warm olive fill (critic 61)',
+   run:function(){
+     if(typeof wheelFill!=='function') return 'the wheel wedge fill has no function (wheelFill)';
+     var a=wheelFill(true,true), n=wheelFill(false,false), pr=function(s){ var m=/rgba\((\d+),(\d+),(\d+)/.exec(s); return [+m[1],+m[2],+m[3]]; }, c=pr(a[0]), d=pr(n[0]);
+     if(c[0]-c[2]>12) return 'the picked wedge is still warm: '+a[0];
+     if(c[0]<=d[0]+12) return 'the picked wedge is not raised above the idle ones';
+     return null;
+   }},
   {v:'32.28',what:'the pause report box is 56px like the other pause buttons',
    run:function(){
      var css=''; for(var i=0;i<document.styleSheets.length;i++){ try{ var rs=document.styleSheets[i].cssRules; for(var j=0;j<rs.length;j++){ css+=rs[j].cssText; } }catch(e){} }

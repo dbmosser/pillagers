@@ -1,0 +1,7 @@
+v32.29: the picked wheel wedge is raised grey, not olive
+
+The item wheel picked wedge is a raised neutral grey with the accent edge, no olive fill.
+
+Check 32.29. Fails on v32.28.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,1 +1,1 @@
-10-20 00:35 running c-31-ui-pause-settings on Claude Code (your plan: week 54% of the 24.1% line, 5-hour 7%)
+10-20 00:54 waiting for RAM: 2 GB free, a helper starts at 3; c-31-ui-pause-settings kept

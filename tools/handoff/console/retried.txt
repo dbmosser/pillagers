@@ -10,3 +10,5 @@ b-30-ui-hud
 o-03-map-popups-wait
 o-06-pad-controls
 b-31-ui-undercroft
+o-01-stash-pays-in-raid
+c-02-raid-hud-redesign

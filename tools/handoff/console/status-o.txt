@@ -1,1 +1,1 @@
-10-20 00:50 running o-03-map-popups-wait (codex, run 4 of 5)
+10-20 00:55 waiting for RAM: 2 GB free, need 3 (o-03-map-popups-wait)

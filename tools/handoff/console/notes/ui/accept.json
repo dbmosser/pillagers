@@ -238,17 +238,17 @@
  "25-raid-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "The pause card is clean and calm, with one lime action and a red abandon. It is small on a 1080 screen and the button stack is uneven, so it passes as polished but not as AAA.",
+  "verdict": "A clean, calm pause card with a clear lime primary action and an X in the corner, but it is a small 480px box on a 1920 screen, with a mismatched button stack and a dead gap above a tiny abandon link.",
   "findings": [
-   "P1 button stack: settings, report a problem, feedback, what's new: Make every button 56px with 20px f-cond 600 text, and use a uniform 16px gap. Make report a problem 56px, or merge it into a single row with feedback.",
-   "P1 card size and scale: Keep the card narrow as a menu column (a pause box is a reasonable exception), but make the buttons 56px with 20px text. Add a left-aligned column layout or a 560px width so it reads as a deliberate menu and not a small dialog.",
-   "P1 hierarchy: title vs resume run: Drop the title weight to 700 at 32px in tx-1, or make it tx-2. Leave the lime resume run as the only loud element.",
-   "P2 abandon run: Set it at 20px, add a 1px danger-colour outline at 56px height, and cut the gap to 24px. On pad focus, fill with a danger tint.",
-   "P2 empty bottom padding: Set the padding to 24px on all sides, use 16px between buttons and 24px before abandon run, so the card shrinks to about 460px."
+   "P1 card size vs window rule: Keep it as a compact pause menu if that is the intent, but then state that exception in the guide. Otherwise widen it to about 640px and add a hero title at 32px.",
+   "P1 button stack: Make every button 56px with 16px gaps. Make report a problem, feedback and what's new share one equal row of three, or stack all of them at full width.",
+   "P1 abandon run: Make it a 56px outlined button with a 1px --danger border and --danger text at 20px. Place it 24px below the secondary rows, or lower it into a footer row.",
+   "P2 header: Give the X a 48px square hit area with a --ui-line-hi border on focus. Make the tab 3px high and fully --acc.",
+   "P2 secondary button fills: Use one idle fill, transparent or --ui-bg, with a --ui-line-hi border on every non-primary button."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-31w-after/25-raid-pause-box-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/c-31x-after/25-raid-pause-box-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T04:48"
+  "when": "2026-10-20T04:54"
  },
  "26-settings-from-pause-top": {
   "score": 3,

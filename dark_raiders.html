@@ -3028,7 +3028,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.28';
+var VER='32.29';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -23003,6 +23003,13 @@ function wheelBlurb(k){
 }
 // v26.xx (wheelcenter): the same wheel, drawn on the middle of the screen at wheelGeom's size. The backdrop is a light vignette round the ring
 // (it fades to nothing by twice the radius), so the world and what is coming stay in view; the hint line sits above the ring, clear of the belt.
+// v32.xx (cw-wheelwedge), the critic on screen 61: the picked wedge was a muddy olive fill with a lime border, a second colour system. It is now a raised neutral grey
+// (lighter than the idle wedges) and the accent shows only as the edge and the inner arc.
+function wheelFill(on,hv){
+  if(on) return ['rgba(62,67,72,.97)','rgba(44,48,52,.97)'];
+  if(hv) return ['rgba(44,48,52,.92)','rgba(28,31,34,.92)'];
+  return ['rgba(34,38,41,.92)','rgba(20,23,25,.92)'];
+}
 function drawWheel(){
   var w=G&&G.wheel, p=G&&G.player, m, gm, R, ri, sc, sk, j, seg, ac, a0, a1, gap, ro, k, it, cx, cy, fade, rm, ix, iy, sz, rim, on, hv, ok, gr, i, sel, nm, tw, bx, by, hk, lift, ph, ca, ck, chord, kk;
   if(!w||!w.list||!w.list.length||!p) return;
@@ -23025,9 +23032,7 @@ function drawWheel(){
     ro=on?R+lift:R;
     ctx.beginPath(); ctx.arc(cx,cy,ro,a0,a1); ctx.arc(cx,cy,ri,a1,a0,true); ctx.closePath();
     gr=ctx.createRadialGradient(cx,cy,ri,cx,cy,ro);
-    if(on){ gr.addColorStop(0,'rgba(86,66,26,.96)'); gr.addColorStop(1,'rgba(52,40,16,.96)'); }
-    else if(hv){ gr.addColorStop(0,'rgba(44,48,52,.92)'); gr.addColorStop(1,'rgba(28,31,34,.92)'); }
-    else { gr.addColorStop(0,'rgba(34,38,41,.92)'); gr.addColorStop(1,'rgba(20,23,25,.92)'); }
+    gr.addColorStop(0,wheelFill(on,hv)[0]); gr.addColorStop(1,wheelFill(on,hv)[1]);   // v32.xx (cw-wheelwedge)
     ctx.fillStyle=gr; ctx.fill();
     ctx.lineWidth=(on?LH(2.5):LH(1.5))*Math.min(sk,2); ctx.strokeStyle=on?UIC.acc:UIC.ui_line_hi; ctx.stroke();
     rim=null; try{ rim=RCOL[dispR(k)]; }catch(_rc){}
@@ -50340,7 +50345,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.28: The pause report box is 56px high. Check 32.28 fails on v32.27',
+  now:'v32.29: The item wheel picked wedge is a raised neutral grey with the accent edge, no olive fill. Check 32.29 fails on v32.28',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

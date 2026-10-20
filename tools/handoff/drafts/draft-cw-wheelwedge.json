@@ -1,0 +1,16 @@
+{
+    "title":  "THE PICKED WHEEL WEDGE IS RAISED GREY, NOT OLIVE",
+    "why":  "Critic on screen 61: the picked wedge was a muddy olive fill with a lime border, a second colour system. It is now a lighter neutral grey and the accent shows only as the edge.",
+    "now":  "The item wheel picked wedge is a raised neutral grey with the accent edge, no olive fill.",
+    "edits":  [
+                  {
+                      "anchor":  "function drawWheel(){\n",
+                      "replacement":  "// v32.xx (cw-wheelwedge), the critic on screen 61: the picked wedge was a muddy olive fill with a lime border, a second colour system. It is now a raised neutral grey\n// (lighter than the idle wedges) and the accent shows only as the edge and the inner arc.\nfunction wheelFill(on,hv){\n  if(on) return [\u0027rgba(62,67,72,.97)\u0027,\u0027rgba(44,48,52,.97)\u0027];\n  if(hv) return [\u0027rgba(44,48,52,.92)\u0027,\u0027rgba(28,31,34,.92)\u0027];\n  return [\u0027rgba(34,38,41,.92)\u0027,\u0027rgba(20,23,25,.92)\u0027];\n}\nfunction drawWheel(){\n"
+                  },
+                  {
+                      "anchor":  "    if(on){ gr.addColorStop(0,\u0027rgba(86,66,26,.96)\u0027); gr.addColorStop(1,\u0027rgba(52,40,16,.96)\u0027); }\n    else if(hv){ gr.addColorStop(0,\u0027rgba(44,48,52,.92)\u0027); gr.addColorStop(1,\u0027rgba(28,31,34,.92)\u0027); }\n    else { gr.addColorStop(0,\u0027rgba(34,38,41,.92)\u0027); gr.addColorStop(1,\u0027rgba(20,23,25,.92)\u0027); }\n",
+                      "replacement":  "    gr.addColorStop(0,wheelFill(on,hv)[0]); gr.addColorStop(1,wheelFill(on,hv)[1]);   // v32.xx (cw-wheelwedge)\n"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the picked item-wheel wedge is a raised neutral grey, not the warm olive fill (critic 61)\u0027,\n   run:function(){\n     if(typeof wheelFill!==\u0027function\u0027) return \u0027the wheel wedge fill has no function (wheelFill)\u0027;\n     var a=wheelFill(true,true), n=wheelFill(false,false), pr=function(s){ var m=/rgba\\((\\d+),(\\d+),(\\d+)/.exec(s); return [+m[1],+m[2],+m[3]]; }, c=pr(a[0]), d=pr(n[0]);\n     if(c[0]-c[2]\u003e12) return \u0027the picked wedge is still warm: \u0027+a[0];\n     if(c[0]\u003c=d[0]+12) return \u0027the picked wedge is not raised above the idle ones\u0027;\n     return null;\n   }},"
+}
