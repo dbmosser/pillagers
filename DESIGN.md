@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.03 - EXPERIMENTAL: TWO MORE SWITCHES (RAID DIRECTOR, AIR STRIKE)
+
+Co-op hunt while he was away. The experimental page gets the raid director and the air strike, on by default and read when the raid starts. Off, the wave clock runs at its fixed rate with no breather and no ambush pack (the director keeps counting waves, so the 3 waves goal still works) and packs may land on an extraction ring; the air strike has no meter, G does nothing, the bumper chord keeps the belt and zoom, player 2 charges nothing and the air strike goal leaves the goal pool.
+
+MEASURED. Check 33.03 passes, and fails on v33.02.
 ## v33.02 - EXPERIMENTAL: FIVE MORE SWITCHES (WARDEN ARMOUR, EXPLOSIVE BARRELS, WAVES GROW, AIM LANES, SEARCH RINGS)
 
 Co-op hunt while he was away. The experimental page gets five more switches, all on by default and read when the raid starts. Off: a plain Warden takes full damage from the front, the raid places no explosive barrels, the wave tier follows the score alone, no machine paints its aim and the howler shell circle does not fill, and a searcher gives up at its first point with no scan cone.

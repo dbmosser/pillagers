@@ -3238,7 +3238,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.02';
+var VER='33.03';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3751,6 +3751,8 @@ var XF_ROWS=[
   ['xfRamp','waves grow','waves grow the longer you stay','w'],
   ['xfTell','aim lanes','a machine paints its aim','w'],
   ['xfSearch','search rings','searchers widen their rings','w'],
+  ['xfDir','raid director','waves ease off and ambush','w'],
+  ['xfAir','air strike','damage charges an air strike','w'],
   // XF_ROWS_END
 ];
 var XF_KEYS=[], XF_WORLD=[], XF={}, SETSUB='';
@@ -19338,7 +19340,7 @@ function pollPad(){
     if(_rbN&&!PAD.prev[5]){ PAD.rbAt=_bnow; PAD.rbHeld=0; }
     // v27.25 (coop7): BOTH BUMPERS TOGETHER ARM THE AIR STRIKE. It was a keyboard key (G) and the keyboard is player 1's, so a player on a controller (player 2) could fill the
     // meter and never spend it. The two bumpers pressed within 0.3 s of each other are a chord: they arm it (or cancel the aim), and neither walks the belt or zooms.
-    if(_lbN&&_rbN&&(!PAD.prev[4]||!PAD.prev[5])&&!PAD.airChord&&PAD.lbAt!=null&&PAD.rbAt!=null&&Math.abs(PAD.lbAt-PAD.rbAt)<0.3&&typeof flowOn==='function'&&flowOn()){
+    if(_lbN&&_rbN&&(!PAD.prev[4]||!PAD.prev[5])&&!PAD.airChord&&PAD.lbAt!=null&&PAD.rbAt!=null&&Math.abs(PAD.lbAt-PAD.rbAt)<0.3&&typeof flowOn==='function'&&flowOn()&&xf('xfAir')){   // v32.xx (cw-expmenu5): switched off, the bumpers keep their own jobs
       PAD.airChord=1; PAD.lbHeld=1; PAD.rbHeld=1; PAD.lbAt=null; PAD.rbAt=null;
       try{ airKey(); }catch(_pak){}
     }
@@ -51193,7 +51195,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.02: The experimental page switches warden armour, explosive barrels, waves grow, aim lanes and search rings. Check 33.02 fails on v33.01',
+  now:'v33.03: The experimental page switches the raid director and the air strike. Check 33.03 fails on v33.02',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -60894,7 +60896,7 @@ function arcadeWaveOk(men,q,x,y,lo,hi){
   var j, d;
   if(!(x>30&&y>30&&x<WORLD_W-30&&y<WORLD_H-30)) return false;
   if(!spotFree(G.map,x,y,22)||!navReachable(G.map,x,y)||shutRoomAt(G.map,x,y)) return false;
-  if(flowZoneNear(x,y,DIR.ring)) return false;   // v26.xx (flow1): the Director never lands a pack on an extraction ring
+  if(xf('xfDir')&&flowZoneNear(x,y,DIR.ring)) return false;   // v26.xx (flow1); v32.xx (cw-expmenu5): the ring rule came with the director: the Director never lands a pack on an extraction ring
   if(fireAt(x,y,60)) return false;   // v26.xx (flow4): and never in a fire
   if(shAt(x,y,40)) return false;   // v26.xx (flow11): nor inside a stronghold
   d=dist({x:x,y:y},q); if(d<lo||d>hi) return false;
@@ -61025,6 +61027,7 @@ function flowDir(dt){
   var S=flowS(), p=G.player, D=S.dir, i, e, fight=0, lost, hp=(+p.hp>0)?+p.hp:0;
   dt=(dt>0)?dt:0;
   if(!D) D=S.dir={st:0,hp:hp,quiet:0,ph:'build',phT:0,waves:0,amb:0,lastAmb:-999,pace:1};
+  if(!xf('xfDir')){ D.ph='build'; D.pace=1; return D; }   // v32.xx (cw-expmenu5): switched off, the wave clock runs at its fixed rate (D stays, the 3 waves goal reads D.waves)
   lost=Math.max(0,(+D.hp||0)-hp); D.hp=hp;
   D.st=(+D.st||0)+lost/Math.max(40,+p.maxhp||100)*2.2;
   for(i=0;i<G.ents.length;i++){
@@ -61041,6 +61044,7 @@ function flowDir(dt){
   return D;
 }
 function flowAmbushOk(D,q){
+  if(!xf('xfDir')) return false;   // v32.xx (cw-expmenu5): switched off, no ambush pack
   var t=G.t||0;
   if(!D||!q||D.ph!=='build'||(+D.quiet||0)<DIR.quiet||(D.waves|0)<2||t<DIR.after||t-(+D.lastAmb||-999)<DIR.gap) return false;
   return !flowZoneNear(q.x,q.y,DIR.ringAmb);
@@ -61081,6 +61085,7 @@ function airClamp(x,y){
 }
 function airScan(){
   var A=airS(), i, e, h, drop;
+  if(!xf('xfAir')) return;   // v32.xx (cw-expmenu5): switched off, no meter
   if(flowPeer()) return;   // v27.19 (coop6): a linked window's meter is charged by the damage it sends the host (airCharge, in netShotSend), not by watching bodies it does not run
   for(i=0;i<G.ents.length;i++){
     e=G.ents[i]; if(!e) continue;
@@ -61094,6 +61099,7 @@ function airScan(){
 }
 function airKey(){
   var A=airS(), p=G&&G.player;
+  if(!xf('xfAir')) return false;   // v32.xx (cw-expmenu5): switched off, G does nothing
   if(!flowOn()||G.paused||!p||p.downed||p.dying||p.specOut) return false;
   if(A.aim){ A.aim=0; return true; }
   if(!airReady()){ say('AIR STRIKE '+Math.floor(100*A.m/AIR.need)+'%','info',{sub:'DEAL DAMAGE TO CHARGE'}); return false; }
@@ -61243,6 +61249,7 @@ function flowKill(k,el,boss){
 function goalsMake(S){
   var pool=GOAL_IDS.slice(), ids=[], ix;
   if(!(G.map&&G.map.locked&&G.map.locked.length)){ ix=pool.indexOf('vault'); if(ix>=0) pool.splice(ix,1); }
+  if(!xf('xfAir')){ ix=pool.indexOf('air1'); if(ix>=0) pool.splice(ix,1); }   // v32.xx (cw-expmenu5): the air strike goal can never be met with the strike off
   sideStream((G.seed>>>0)||1,GOAL_TAG,function(){
     var k;
     while(ids.length<3&&pool.length){ k=Math.floor(rr()*pool.length); ids.push(pool.splice(k,1)[0]); }
@@ -62707,6 +62714,7 @@ function flowNetWord(peer,m){
     return 'gone';
   }
   if(m.k==='air'){
+    if(!xf('xfAir')) return 'off';   // v32.xx (cw-expmenu5)
     if(!flowOn()||!isFinite(+m.x)||!isFinite(+m.y)||!isFinite(+m.a)) return 'bad';
     if(typeof netUpShared!=='function'||!netUpShared()) return 'off';
     airStrikeFx(clamp(+m.x,0,WORLD_W),clamp(+m.y,0,WORLD_H),+m.a,m.s|0);
@@ -62803,6 +62811,7 @@ function goldNetTake(a){
 // the damage is dealt by the window that called it, on the bodies it runs or asks the host to hurt.
 function airCharge(e,dmg){
   var A, add;
+  if(!xf('xfAir')) return 0;   // v32.xx (cw-expmenu5): switched off, player 2 charges nothing
   if(!flowOn()||!airSide(e)||!(+dmg>0)) return 0;
   A=airS(); if(A.blast) return 0;
   add=Math.min(+dmg,(+e.hp>0)?+e.hp:0); if(!(add>0)) return 0;

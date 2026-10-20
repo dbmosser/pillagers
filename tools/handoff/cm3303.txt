@@ -1,0 +1,7 @@
+v33.03: experimental: two more switches (raid director, air strike)
+
+The experimental page switches the raid director and the air strike.
+
+Check 33.03. Fails on v33.02.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
