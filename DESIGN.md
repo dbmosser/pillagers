@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.46 - PRE-RAID PAGE REBUILT AS DESIGN A, MAP FIRST: AN ICE BLUE MAP, CONDITIONS BESIDE IT, KIT AND PACK AND ASCEND PLATE IN THE RIGHT COLUMN, ONE PRESS ON A PAD
+
+Co-op hunt while he was away. His pick of 2026-10-19: "por-raid redesing -- i pick A, but give the map some different color so it breaks up the monotny/overwhelmingness of the screen". The old page was a debug panel (critic 2): a small grey map in a brown banner, five rows of equal weight, a full-width bar to ascend and about 41 pad stops. The map now takes two thirds of the page in ice blue drawn from the real map data, the conditions list sits beside it with xp badges, the right column holds the kit tiles, a grouped pack with one stepper per row, the going-up chips and a big ascend plate, and the pad opens on ascend with LB and RB jumping between panels.
+
+MEASURED. Check 32.46 passes, and fails on v32.45.
 ## v32.45 - Rewards and bar: one focus, fewer lines
 
 Co-op hunt while he was away. UI step 7 (restyle only). Critic on 13 and 16 was 2: no hierarchy, explaining and flavour lines, two competing lime buttons. Lines hidden under Q8 (logged in changes.md).

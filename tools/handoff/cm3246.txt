@@ -1,0 +1,7 @@
+v32.46: pre-raid page rebuilt as design a, map first: an ice blue map, conditions beside it, kit and pack and ascend plate in the right column, one press on a pad
+
+The pre-raid page is rebuilt: a big ice blue map of cold storage with its zones, exits and keyed rooms, conditions beside it, and the kit, pack and ascend button in a column on the right. On a pad you press A once to go up.
+
+Check 32.46. Fails on v32.45.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
