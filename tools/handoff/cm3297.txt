@@ -1,0 +1,7 @@
+v32.97: a dropped item pings your teammate
+
+A dropped item shows as a ping with its name on the teammate map, minimap and in the world until someone takes it.
+
+Check 32.97. Fails on v32.96.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

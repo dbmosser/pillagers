@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.97 - A DROPPED ITEM PINGS YOUR TEAMMATE
+
+Co-op hunt while he was away. His pick 48 (drop an item with an auto-ping so the teammate sees it). In a two player raid an item dropped by either window now puts the ordinary ping on the other window, on its map, minimap and in the world. It clears when the pile is taken or after the normal ping time. Solo is unchanged.
+
+MEASURED. Check 32.97 passes, and fails on v32.96.
 ## v32.96 - A FAULT THAT KEEPS REPEATING RELOADS THE GAME INTO THE TITLE WITH A SHORT NOTE
 
 Co-op hunt while he was away. His answer (Tech): a crash reloads into the title with a note. One error never kills the frame loop, so the trigger is the same fault repeating every frame for 5 seconds. The run report keeps the crash, the last good save is not overwritten, the page reloads and the title says restarted after an error, then fades. One error, a short burst, a hidden page and the test pages never reload.

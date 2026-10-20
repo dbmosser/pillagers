@@ -1,1 +1,1 @@
-10-20 14:19 running 60-crash-reloads-title on Claude Code (your plan: week 64% of the 31.0% line, 5-hour 27%)
+10-20 14:25 waiting for RAM: 2 GB free, a helper starts at 3; 61-experimental-menu kept

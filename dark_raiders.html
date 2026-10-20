@@ -3238,7 +3238,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.96';
+var VER='32.97';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -24162,6 +24162,7 @@ function netPileTake(peer,m){
   c.time=0.6; c.dropped=1; c.dropBy=peer.seat; if(m.ib) c.issuedB=1; c.dropPid=(peer.pid||'');   // v21.95 (K5): who dropped it, so a word about it can wait for his next link
   if(G.vseg&&!losClear(x,y,c.x,c.y,G.vseg)){ c.x=x; c.y=y; }
   G.containers.push(c);
+  netPileShare(peer.seat,k,c.x,c.y);   // v32.xx (cw-droppings): the other window of the party gets the pile ping
   return 'pile';
 }
 // v23.xx, THE FORGE (2026-10-12), forge11: A FORGED GUN DROPPED IS STILL FORGED. A gun in the backpack is a key plus a copy in
@@ -24223,6 +24224,8 @@ function dropItem(idx){
     if(G.bandSeen!==undefined) G.bandSeen--;
   }
   G.containers.push(c);
+  // v32.xx (cw-droppings), planner draft 2026-10-20 (his pick 48, "drop an item with an auto-ping so the teammate sees it"): the host's drop pings the teammate.
+  if(!G.sim&&typeof NET==='object'&&NET&&NET.on&&NET.role==='host'&&typeof netUpShared==='function'&&netUpShared()) netPileShare(NET.seat,key,c.x,c.y);
   // v21.95, from the whole-game bug hunt of 2026-10-08 (K5): A HOST'S ARMOURY GUN DROPPED WITH A TEAMMATE UP TOP COMES OFF HIS SAVED
   // LIST. The party can search the pile, and if this window closed before the teammate took the gun (closed by mistake, F5, a crash),
   // the teammate picked up the raid and banked it while the reload put it back in this armoury: one gun in two saves. It comes off
@@ -51131,7 +51134,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.96: If the same error repeats for 5 seconds the game restarts into the title and says restarted after an error. Check 32.96 fails on v32.95',
+  now:'v32.97: A dropped item shows as a ping with its name on the teammate map, minimap and in the world until someone takes it. Check 32.97 fails on v32.96',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -58127,16 +58130,16 @@ function netPingTake(peer,m){
   if(typeof m.x!=='number'||typeof m.y!=='number'||!isFinite(m.x)||!isFinite(m.y)) return 'bad';
   if(NET.role==='host') s=peer.seat; else { s=(m.s===undefined)?0:m.s; if(typeof s!=='number'||s!==(s|0)) return 'bad'; }
   if(s===NET.seat) return 'ignored';
-  var o={x:clamp(m.x,-9000,NET_UP_MAX),y:clamp(m.y,-9000,NET_UP_MAX),w:netClean(m.w,24),dg:m.dg?1:0};
+  var o={x:clamp(m.x,-9000,NET_UP_MAX),y:clamp(m.y,-9000,NET_UP_MAX),w:netClean(m.w,24),dg:m.dg?1:0,pl:m.pl?1:0};   // v32.xx (cw-droppings): pl marks a pile ping
   if(typeof m.id==='number') o.id=m.id|0;
-  if(NET.role==='host'){ var i; for(i=0;i<NET.peers.length;i++) if(NET.peers[i]!==peer&&NET.peers[i].state==='in') netSend(NET.peers[i],{t:'png',s:s,x:o.x,y:o.y,w:o.w,id:o.id,dg:o.dg}); }
+  if(NET.role==='host'){ var i; for(i=0;i<NET.peers.length;i++) if(NET.peers[i]!==peer&&NET.peers[i].state==='in') netSend(NET.peers[i],{t:'png',s:s,x:o.x,y:o.y,w:o.w,id:o.id,dg:o.dg,pl:o.pl}); }
   netPingPush(s,o);
   return 'png';
 }
 function netPingPush(s,o){
   if(!NET.pings) NET.pings=[];
   if(o.dg){ var _pi; for(_pi=NET.pings.length-1;_pi>=0;_pi--) if(NET.pings[_pi].s===s&&Math.abs(NET.pings[_pi].x-o.x)<2&&Math.abs(NET.pings[_pi].y-o.y)<2) NET.pings.splice(_pi,1); }
-  NET.pings.push({s:s,x:o.x,y:o.y,w:o.w||'',id:o.id,dg:o.dg?1:0,at:Date.now()});
+  NET.pings.push({s:s,x:o.x,y:o.y,w:o.w||'',id:o.id,dg:o.dg?1:0,pl:o.pl?1:0,at:Date.now()});
   if(NET.pings.length>6) NET.pings.shift();
   try{ if(typeof G!=='undefined'&&G&&!G.sim) blip('pick'); }catch(_bp){}
   return NET.pings.length;
@@ -58147,7 +58150,32 @@ function netPingPush(s,o){
 // so at 4K they were half the size of the HUD around them, and the distances read 120M. Their words are now hudFS, their shapes,
 // line widths, gaps and edge margins grow by the screen factor, and the distances end in a small m. The Crier marker is not drawn
 // over the open backpack. At 1080p only the unit letter changes.
+// v32.xx (cw-droppings), planner draft 2026-10-20 (his pick 48): A DROPPED ITEM PINGS THE TEAMMATE. The host makes every pile, so it is the one place that
+// knows a pile was made: it sends the ordinary ping word (png, the v16.43 ping and its look) marked pl, with the item name, to every window of the party but
+// the one that dropped it, and keeps the ping itself when the dropper was a guest. The dropper gets none, and solo gets none. Returns how many windows got it.
+function netPileShare(seat,key,x,y){
+  var i, pe, m, n=0, it=(typeof ITEMS==='object'&&ITEMS)?ITEMS[key]:null;
+  if(typeof NET!=='object'||!NET||!NET.on||NET.role!=='host'||!it||typeof G==='undefined'||!G||G.sim||!isFinite(x)||!isFinite(y)) return 0;
+  m={t:'png',s:seat,x:Math.round(x),y:Math.round(y),w:netClean(it.name,24),pl:1};
+  for(i=0;i<NET.peers.length;i++){ pe=NET.peers[i]; if(pe.state!=='in'||pe.seat===seat) continue; if(netSend(pe,m)) n++; }
+  if(seat!==NET.seat){ netPingPush(seat,{x:m.x,y:m.y,w:m.w,pl:1}); n++; }
+  return n;
+}
+// A pile ping ends when its pile is taken (the box is opened, on every window) or after the normal ping time, whichever is first. The first 1.5 s are
+// left alone so a window still waiting for the host box word does not clear it.
+function netPilePrune(){
+  var i, j, p, c, live, now=Date.now();
+  if(!NET.pings||typeof G==='undefined'||!G||!G.containers) return 0;
+  for(i=NET.pings.length-1;i>=0;i--){
+    p=NET.pings[i]; if(!p.pl||now-p.at<1500) continue;
+    live=false;
+    for(j=0;j<G.containers.length&&!live;j++){ c=G.containers[j]; if(c.dropped&&!c.opened&&Math.abs(c.x-p.x)<8&&Math.abs(c.y-p.y)<8) live=true; }
+    if(!live) NET.pings.splice(i,1);
+  }
+  return NET.pings.length;
+}
 function netPingDraw(){
+  netPilePrune();   // v32.xx (cw-droppings)
   var r=Math.max(1,(typeof hudRes==='function')?hudRes():1), i, p, now=Date.now(), s, M=LH(30)*r, e, nm, lbl, x, y, n=0, c;
   netWpDraw();   // v16.46: the party's map markers, in the world
   if(!NET.pings||!NET.pings.length) return 0;
