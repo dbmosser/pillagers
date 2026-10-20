@@ -151,7 +151,9 @@ try {
     if (-not (Copy-Snapshot -Src $it.Full -Dst $snap)) { [void]$leftOut.Add([pscustomobject]@{ Name = $it.Entry; Why = 'could not be read (left out)' }); Write-Mig ('left out: ' + $it.Entry + ' (could not be read)') 'WARN'; continue }
     $ext = [System.IO.Path]::GetExtension($it.Entry).ToLowerInvariant()
     $generic = ($binExt -notcontains $ext)
-    $kinds = @(Find-SecretKindsInFile -Path $snap -Generic $generic)
+    # the function returns its list wrapped (return ,$arr); @() around it would make every file count as 1 hit
+    $kinds = Find-SecretKindsInFile -Path $snap -Generic $generic
+    if ($null -eq $kinds) { $kinds = @() }
     if ($kinds.Count -gt 0) {
       $why = 'looks like it holds a key or password: ' + ($kinds -join ', ')
       if ($kinds -contains 'unreadable') { $why = 'could not be scanned (left out)' }
