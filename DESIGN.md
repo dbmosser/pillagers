@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.55 - PAD LAYOUT TEXT AT COUCH SIZE
+
+Co-op hunt while he was away. The critic found small SVG labels, an oversized bottom gap and a layout picker without a count.
+
+MEASURED. Check 32.55 passes, and fails on v32.54.
 ## v32.54 - THE WHAT IS NEW CARD NAMES POLISH PASS 36
 
 Co-op hunt while he was away. The card was stamped v32.38 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.

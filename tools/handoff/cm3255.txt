@@ -1,0 +1,7 @@
+v32.55: pad layout text at couch size
+
+A larger controller, an unscaled 20px action legend, 48px rebind rows and a preset count.
+
+Check 32.55. Fails on v32.54.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

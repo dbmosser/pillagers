@@ -1,0 +1,5 @@
+## v32.55 - PAD LAYOUT TEXT AT COUCH SIZE
+
+Co-op hunt while he was away. The critic found small SVG labels, an oversized bottom gap and a layout picker without a count.
+
+MEASURED. Check 32.55 passes, and fails on v32.54.
