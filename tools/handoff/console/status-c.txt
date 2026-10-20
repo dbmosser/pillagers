@@ -1,1 +1,1 @@
-10-20 15:42 waiting for RAM: 2 GB free, a helper starts at 3; 63-seed-of-the-day kept
+10-20 16:07 waiting for RAM: 1 GB free, a helper starts at 3; 63-seed-of-the-day kept

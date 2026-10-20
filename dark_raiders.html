@@ -1490,7 +1490,10 @@
   #root #keysmodal.padlayouts .padlayoutrow{padding-bottom:16px;}
   #root #keysmodal.padlayouts .padlayoutrow > b{font:600 16px var(--f-body);letter-spacing:.04em;color:var(--tx-2);}
   #root #keysmodal.padlayouts .padlayoutpick button{font-family:var(--f-body);}
-  #root #keysmodal.padlayouts #padlayoutprev,#root #keysmodal.padlayouts #padlayoutnext{font-size:32px;}
+  /* v28.xx (cw-cx-padselectorfinish): critic 74: box both arrow targets, centre their glyphs, and put the count after the next arrow so the stepper is symmetric. */
+  #root #keysmodal.padlayouts #padlayoutprev,#root #keysmodal.padlayouts #padlayoutnext{display:inline-flex;align-items:center;justify-content:center;flex:0 0 56px;width:56px;height:48px;box-sizing:border-box;padding:0;border:1px solid var(--ui-line-hi);font-size:40px;line-height:1;}
+  #root #keysmodal.padlayouts .padlayoutpick .padlayoutcount{order:1;margin-left:8px;font-size:20px;line-height:1.2;}
+  #root #keysmodal.padlayouts .padlayoutrow > b{font-size:18px;}
   /* v28.xx (cw-cx-padselector): one local outline for keys and pad; the group frame, shadow halo and moving ring must not stack. */
   #root #keysmodal.padlayouts .padlayoutpick button{box-shadow:none!important;}
   #root #keysmodal.padlayouts .padlayoutpick button:is(.padfocus,:focus-visible){outline:3px solid var(--acc)!important;outline-offset:3px!important;box-shadow:none!important;}
@@ -3241,7 +3244,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.09';
+var VER='33.10';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -51205,7 +51208,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.09: Layout arrows, name and count stay in one clear row with one outline on the focused button. Check 33.09 fails on v33.08',
+  now:'v33.10: Boxed arrows flank the layout name evenly, followed by the larger count. Check 33.10 fails on v33.09',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

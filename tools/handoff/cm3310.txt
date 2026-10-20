@@ -1,0 +1,7 @@
+v33.10: pad selector grouping
+
+Boxed arrows flank the layout name evenly, followed by the larger count.
+
+Check 33.10. Fails on v33.09.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

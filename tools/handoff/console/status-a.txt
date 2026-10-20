@@ -1,1 +1,1 @@
-10-20 15:42 waiting for RAM: 2 GB free, a helper starts at 3; 58b-corpus-harness-reds kept
+10-20 15:46 running 58b-corpus-harness-reds on Claude Code (your plan: week 65% of the 31.8% line, 5-hour 4%)

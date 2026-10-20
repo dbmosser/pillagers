@@ -29,3 +29,6 @@ Not tested by a check: the pad chord guard (xfAir), flowNetWord 'air' guard, the
 ## Pictures and critic: NOT DONE
 The camera has no screen for the experimental page (adding one needs his OK, question logged in questions.md). Only the open row was shot (shots/61-experimental-menu-after1/73-settings-sec-accessibility-1080.jpg, taken before the row moved to THE RAID).
 Left: add screen 79 (SETSUB='exp'; renderSettings()), shoot 1080 and 4K, run the critic (finish line 3).
+
+## Run 10-20 evening
+Shot screen 68 (the raid section) at 1080: shots/61-experimental-menu-after2/68-settings-sec-the-raid-1080.jpg. The "experimental / open" row sits at the end of THE RAID, matches the other rows, lint 0 issues. The sub-page itself still cannot be shot: screen 79 needs his OK (question already in questions.md, not asked again). When allowed: add 79 (open settings as screen 18 does, then SETSUB='exp'; renderSettings()), shoot 1080 and 4K, run the critic (finish line 3).
