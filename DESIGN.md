@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.63 - XBOX BUTTON PICTURES
+
+Co-op hunt while he was away. His 2.35 a: the party shows Xbox button pictures only.
+
+MEASURED. Check 32.63 passes, and fails on v32.62.
 ## v32.62 - PAD GOALS AND STATUS
 
 Co-op hunt while he was away. His 3.21 a: goals and raid status together. Every ordinary Xbox button already has a job so View uses tap and hold.

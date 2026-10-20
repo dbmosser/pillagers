@@ -1,0 +1,5 @@
+## v32.63 - XBOX BUTTON PICTURES
+
+Co-op hunt while he was away. His 2.35 a: the party shows Xbox button pictures only.
+
+MEASURED. Check 32.63 passes, and fails on v32.62.

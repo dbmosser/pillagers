@@ -1,0 +1,7 @@
+v32.63: xbox button pictures
+
+All live controllers use Xbox button pictures, in both windows.
+
+Check 32.63. Fails on v32.62.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
