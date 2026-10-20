@@ -15609,13 +15609,13 @@ window.__REGRESS=[
        try{ __cleanProfile(); }catch(_e){}
        __topClear();
      } }},
-  {v:'29.26',what:'the pre-raid pack row puts PACK ALL and CLEAR right after the PACK label, not beside the cash chip',
+  {v:'29.26',what:'the pre-raid pack row puts PACK ALL and CLEAR right after the PACK label, and both leave stash credits unchanged',
    run:function(){
      if(typeof syncSectorPack!=='function') return 'SKIP: no pack row';
      var host, b, bs, i, last;
      try{
        __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       P.stash=['bandage','bandage','smoke','core']; P.kit=[]; P.freeKit=0; P.kitPick='mine'; P.intel=0; P.credits=1000; P.takeCash=null;
+       P.stash=['bandage','bandage','smoke','core']; P.kit=[]; P.freeKit=0; P.kitPick='mine'; P.intel=0; P.credits=1000;
        renderSector();
        host=document.getElementById('sectorpack');
        if(!host||host.style.display==='none') return 'the pack row is not shown';
@@ -15624,11 +15624,12 @@ window.__REGRESS=[
        if(!bs[1]||bs[1].getAttribute('data-pa')!=='none') return 'the second pack button is not the clear button';
        if(!/pack all/i.test(bs[0].textContent)||!/clear/i.test(bs[1].textContent)) return 'the whole-pack buttons are not named pack all and clear ('+bs[0].textContent+', '+bs[1].textContent+')';
        last=bs[bs.length-1];
-       if(last.getAttribute('data-pa')) return 'a whole-pack button still ends the row, beside the cash chip';
+       if(last.getAttribute('data-pa')) return 'a whole-pack button still ends the row, after the item controls';
+       if(host.querySelector('[data-cash],[data-cashchip]')) return 'a retired cash control remains';
        bs[0].click();
-       if(P.takeCash!==null||packedCount('bandage')!==2) return 'pack all did not pack the bandages';
+       if(P.credits!==1000||packedCount('bandage')!==2) return 'pack all did not pack the bandages';
        host=document.getElementById('sectorpack'); host.querySelector('[data-pa="none"]').click();
-       if(P.takeCash!==0||packedCount('bandage')!==0) return 'clear did not empty the pack';
+       if(P.credits!==1000||packedCount('bandage')!==0) return 'clear did not empty the pack';
        return null;
      } finally {
        try{ __cleanProfile(); }catch(_e){}
@@ -16666,46 +16667,32 @@ window.__REGRESS=[
      }
      return bad.length?bad.join(' | '):null;
    }},
-  {v:'28.94',what:'the PRE-RAID page picks how much cash to take and the stall sells no more than that (his order: quickly pick how much cash and how many of each wheel item to take)',
+  {v:'28.94',what:'old cash saves load, the pre-raid pack row has no cash control, and MY LOADOUT stall purchases use the stash without a carried cash cap',
    run:function(){
-     if(typeof cashStep!=='function') return 'there is no cash pick on the PRE-RAID page (no cashStep)';
-     var g, host, b, p, keepCr, bad=[], cr0=0;
+     if(!(window.__applyLoaded&&window.__deploy&&window.__state&&window.__endRaid)) return 'missing save or raid hooks';
+     var keep=JSON.stringify(P), g, host, p;
      try{
        __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       // A. the chip
-       P.stash=['bandage']; P.kit=[]; P.freeKit=0; P.kitPick='mine'; P.intel=0; P.credits=1000; P.takeCash=null;
-       renderSector();
-       host=document.getElementById('sectorpack');
-       b=host&&host.querySelector('[data-cash="-1"]');
-       if(!b) return 'the pack row has no cash minus button';
-       b.click();
-       if(P.takeCash!==900) return 'one minus on 1000 credits left takeCash '+P.takeCash+', not 900';
-       host=document.getElementById('sectorpack'); host.querySelector('[data-cash="1"]').click();
-       if(P.takeCash!==null) return 'plus back up to the bank did not read ALL ('+P.takeCash+')';
-       host=document.getElementById('sectorpack'); host.querySelector('[data-cash="-1"]').click(); host=document.getElementById('sectorpack'); host.querySelector('[data-cash="all"]').click();
-       if(P.takeCash!==null) return 'MAX did not read ALL';
-       // B. the stall
-       P.credits=5000; P.takeCashRaid=300;
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       g=__state(); if(!g||g.over||g.sim||!g.player) return 'SKIP: staging: no live raid';
-       if(g.cash!==300) return 'a raid that took 300 credits has cash '+g.cash;
-       p=g.player; g.ents.length=0; p.downed=false; g.bag=[]; g.pick=[]; g.msgLog=[];
-       g.trade={x:p.x,y:p.y,stock:[{k:'scrap',price:400,sold:false}]};
-       pedBuy(0);
-       if(g.trade.stock[0].sold||P.credits!==5000) return 'a 400 credit buy went through on 300 cash (credits '+P.credits+')';
-       g.trade={x:p.x,y:p.y,stock:[{k:'scrap',price:250,sold:false}]};
-       pedBuy(0);
-       if(!g.trade.stock[0].sold||P.credits!==4750) return 'a 250 credit buy on 300 cash did not go through (credits '+P.credits+')';
-       if(g.cash!==50) return 'cash on him after the 250 buy is '+g.cash+', not 50';
-       // C. no pick, no cap
-       P.takeCashRaid=null; P.credits=5000;
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       g=__state(); if(g.cash!=null) return 'a raid with no cash pick has a cash cap '+g.cash;
+       P.stash=['bandage']; P.kit=[]; P.freeKit=0; P.kitPick='mine'; P.intel=0; P.credits=5000; P.takeCash=300; P.takeCashRaid=300;
+       __applyLoaded(JSON.parse(JSON.stringify(P)));
+       if(P.credits!==5000||'takeCash' in P||'takeCashRaid' in P) return 'old cash save did not migrate without changing its stash';
+       renderSector(); host=document.getElementById('sectorpack');
+       if(!host||host.style.display==='none') return 'no MY LOADOUT pack row';
+       if(host.querySelector('[data-cash],[data-cashchip]')) return 'the retired cash control remains';
+       if(!host.querySelector('[data-pk="bandage"]')) return 'item packing disappeared';
+       __topClear(); P.takeCash=300; P.takeCashRaid=300; P.dropKit=[]; P.kitChosen=0; P.mapIx=0; pendSeed=4242;
+       document.getElementById('sectordeploy').click();
+       g=__state(); if(!g||g.over||g.sim||!g.player) return 'MY LOADOUT did not ascend into a live raid';
+       if(g.cash!=null) return 'deploy created a carried cash cap';
+       p=g.player; g.ents=[]; p.downed=false; g.bag=[]; g.pick=[]; g.msgLog=[];
+       g.trade={x:p.x,y:p.y,stock:[{k:'scrap',price:400,sold:false}]}; pedBuy(0);
+       if(!g.trade.stock[0].sold||P.credits!==4600) return 'a 400 purchase failed to charge the 5000 stash above the old 300 cash cap';
+       g.trade={x:p.x,y:p.y,stock:[{k:'scrap',price:5000,sold:false}]}; pedBuy(0);
+       if(g.trade.stock[0].sold||P.credits!==4600) return 'the stall sold beyond the remaining stash';
        return null;
      } finally {
-       try{ P.takeCash=null; P.takeCashRaid=null; }catch(_e0){}
-       try{ __cleanProfile(); }catch(_e){}
-       try{ __topClear(); }catch(_e2){}
+       try{ if(g&&!g.over) __endRaid('abandon'); }catch(_e){}
+       __topClear(); __applyLoaded(JSON.parse(keep)); saveProfile();
      } }},
   {v:'28.93',what:'cloud-coop-p2-mimic-seen: when player 2 opens a mimic crate, the crawler goes for player 2, his window says MIMIC and shakes, and the host window does not',
    run:function(){
@@ -29520,24 +29507,24 @@ window.__REGRESS=[
        try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
      }
      return bad.length?bad.slice(0,4).join('; '):null; }},
-  {v:'26.25',what:'his order (2026-10-12, a pack-a-punch with elements) and his question (2026-10-14): at the Forge a MK II gun is offered MK III with FIRE, SHOCK, CRYO or ACID for 6000 score by key, mouse and pad; a MK III gun is at the top; too little score says NEED',
+  {v:'26.25',what:'his order (2026-10-12, a pack-a-punch with elements) and his question (2026-10-14): at the Forge a MK II gun is offered MK III with FIRE, SHOCK, CRYO or ACID for 6000 stash credits by key, mouse and pad; a MK III gun is at the top; too little stash says NEED',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__sim)||typeof raidKey!=='function'||typeof render2D!=='function') return 'SKIP: no raid here';
-     var bad=[], g, p, f, said=[], blips=[], realSay=say, realBlip=blip, hadCs, ex, hadOwn, realPads, held={}, cl, U, c2, b;
-     function setScore(v){ if(g.arcade) ARCADE.mine=v; else { g.cs=g.cs||{s:0,k:0,streak:null,waveT:0,waveN:0}; g.cs.s=v; } }
-     function getScore(){ return g.arcade?(ARCADE.mine|0):(g.cs?(g.cs.s|0):0); }
+     var keep=JSON.stringify(P), oldMine=ARCADE.mine, oldSame=NET.same, bad=[], g, p, f, said=[], blips=[], realSay=say, realBlip=blip, hadCs, ex, hadOwn, realPads, held={}, cl, U, c2, b;
+     function setBank(v){ P.credits=v; }
+     function getBank(){ return P.credits; }
      function press(code){ raidKey(code,false,null); keys[code]=false; }
      function tick(nf){ for(var j=0;j<nf;j++) __sim(0.05); }
      function mk2(id){ return forgeApply(Object.assign({},WEAPONS[id||'rifle']),1); }
-     function openAt(gun,score){ g.forgeUI=null; p.wep=gun; p.ammo=10; setScore(score); said.length=0; blips.length=0; keys.KeyE=true; tick(6); keys.KeyE=false; tick(2); }
+     function openAt(gun,score){ g.forgeUI=null; p.wep=gun; p.ammo=10; setBank(score); said.length=0; blips.length=0; keys.KeyE=true; tick(6); keys.KeyE=false; tick(2); }
      function pads(){ var a=[],j; for(j=0;j<17;j++) a.push({pressed:!!held[j],value:held[j]?1:0}); return [{connected:true,id:'Xbox Controller',index:0,buttons:a,axes:[0,0,0,0],mapping:'standard'}]; }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||g.over) return 'SKIP: no live raid';
        p=g.player; f=g.forge; if(!f) return 'the raid has no Forge';
-       ex=g.ents; g.ents=[]; hadCs=g.cs;
-       say=function(m,k,o){ said.push(String(m)); }; blip=function(t){ blips.push(String(t)); };
+       ex=g.ents; g.ents=[]; hadCs=g.cs; g.cs={s:1234,k:0,streak:null,waveT:0,waveN:0,b:{kill:1234}}; ARCADE.mine=4321; NET.same=false; PAD.on=false; PAD.prev=[]; PAD.held={};
+       say=function(m,k,o){ said.push(String(m).toUpperCase()); }; blip=function(t){ blips.push(String(t)); };
        for(var kk in keys) keys[kk]=false;
        p.hp=100000; p.iv=99; p.downed=false; p.x=f.x; p.y=f.y; p.vx=0; p.vy=0; p.reloading=0; p.jam=0;
        // 1. a MK II gun with 7000: E opens four choices, 3 buys CRYO, MK III, 6000 off
@@ -29552,7 +29539,7 @@ window.__REGRESS=[
            if(p.wep.tint!==ELEM.cryo.c) bad.push('the MK III tracer is not the element colour');
            if(p.wep.name!=='Auto Rifle MK III') bad.push('the MK III rifle is called '+p.wep.name);
          }
-         if(getScore()!==1000) bad.push('the score is '+getScore()+' after a 6000 upgrade of 7000');
+         if(getBank()!==1000) bad.push('the stash is '+getBank()+' after a 6000 upgrade of 7000');
          if(said.indexOf('GUN UPGRADED')<0) bad.push('no GUN UPGRADED line');
          if(blips.indexOf('forge')<0||blips.indexOf('elCryo')<0) bad.push('no Forge and element sound ('+blips.join(',')+')');
        }
@@ -29562,7 +29549,7 @@ window.__REGRESS=[
        // 3. too little for the MK III
        openAt(mk2(),5000);
        if(g.forgeUI||(said.indexOf('NEED $6,000')<0&&said.indexOf('NEED 6,000 SP')<0)) bad.push('5000 for a MK III did not say NEED $6,000 ('+JSON.stringify(said.slice(0,3))+')');
-       if(getScore()!==5000||p.wep.fk!==1) bad.push('too little score still changed the gun or the score');
+       if(getBank()!==5000||p.wep.fk!==1) bad.push('too little stash still changed the gun or the stash');
        // 4. FIRE rounds: the fired round carries the element
        openAt(mk2('rifle'),6500); if(g.forgeUI) press('Digit1'); tick(2);
        if(!p.wep||p.wep.el!=='fire') bad.push('key 1 did not make a FIRE gun');
@@ -29590,14 +29577,15 @@ window.__REGRESS=[
        } else bad.push('the panel did not open for the pad test');
        // 7. ESC closes the element panel with no charge
        openAt(mk2(),8000);
-       if(g.forgeUI){ press('Escape'); tick(1); if(g.forgeUI||getScore()!==8000||p.wep.fk!==1) bad.push('ESC did not close the element panel with no charge'); } else bad.push('the panel did not open for the ESC test');
+       if(g.forgeUI){ press('Escape'); tick(1); if(g.forgeUI||getBank()!==8000||p.wep.fk!==1) bad.push('ESC did not close the element panel with no charge'); } else bad.push('the panel did not open for the ESC test');
+       if(g.cs.s!==1234||g.cs.b.kill!==1234||g.cs.b.forge||ARCADE.mine!==4321) bad.push('element purchases changed raid score or its ledger');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        say=realSay; blip=realBlip;
        try{ if(typeof PAD==='object'&&PAD){ PAD.on=false; PAD.prev=[]; PAD.held={}; } }catch(_pd){}
        for(var k2 in keys) keys[k2]=false;
        try{ if(g){ if(ex) g.ents=ex; g.forgeUI=null; g.cs=hadCs; } var g2=__state(); if(g2&&!g2.over){ g2.player.hp=100; g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
-       __topClear();
+       NET.same=oldSame; ARCADE.mine=oldMine; __topClear(); __applyLoaded(JSON.parse(keep)); saveProfile();
      }
      return bad.length?bad.join('; '):null; }},
   {v:'26.24',what:'wheel3, his order: a wheel pick takes the item out (the gun is put away), a fresh pull of the trigger uses ONE (a grenade is cooked and thrown on release, a bandage starts its wind-up), then the gun comes back by itself with its draw time and cannot fire until the trigger is let go and pulled again; a gun key or the wheel again puts the item away',
@@ -29943,12 +29931,12 @@ window.__REGRESS=[
        __topClear(); try{ __cleanProfile(); }catch(_cp){}
      }
      return bad.length?bad.slice(0,8).join('; '):null; }},
-  {v:'26.21',what:'his question (2026-10-14, where is the Forge): E at the station opens the panel, picking MK II turns the gun in hand into its MK II and takes the cost from the raid score; too little score says NEED; no gun says so',
+  {v:'26.21',what:'stash funds the forge: one E buys MK II, insufficient stash denies, fists deny, MK III Escape does not charge, and demo score stays whole',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__sim)||typeof raidKey!=='function') return 'SKIP: no raid here';
-     var bad=[], g, p, f, i, said=[], blips=[], realSay=say, realBlip=blip, w0, sc0, a0, car, cs0, hadCs, saveArc, saveMine, ex;
-     function setScore(v){ if(g.arcade) ARCADE.mine=v; else { g.cs=g.cs||{s:0,k:0,streak:null,waveT:0,waveN:0}; g.cs.s=v; } }
-     function getScore(){ return g.arcade?(ARCADE.mine|0):(g.cs?(g.cs.s|0):0); }
+     var keep=JSON.stringify(P), bad=[], g, p, f, i, said=[], blips=[], realSay=say, realBlip=blip, w0, sc0, a0, car, cs0, hadCs, saveArc, saveMine, ex;
+     function setBank(v){ P.credits=v; }
+     function getBank(){ return P.credits; }
      function press(code){ raidKey(code,false,null); keys[code]=false; }
      function tick(nf){ for(var j=0;j<nf;j++) __sim(0.05); }
      try{
@@ -29956,25 +29944,24 @@ window.__REGRESS=[
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||g.over) return 'SKIP: no live raid';
        p=g.player; f=g.forge; if(!f) return 'the raid has no Forge';
-       ex=g.ents; g.ents=[]; hadCs=g.cs; cs0=g.cs?g.cs.s:0;
-       say=function(m,k,o){ said.push(String(m)); }; blip=function(t){ blips.push(String(t)); };
+       ex=g.ents; g.ents=[]; hadCs=g.cs; g.cs={s:9000,k:0,streak:null,waveT:0,waveN:0,b:{kill:9000}};
+       say=function(m,k,o){ said.push(String(m).toUpperCase()); }; blip=function(t){ blips.push(String(t)); };
        for(var kk in keys) keys[kk]=false;
        p.hp=100000; p.iv=99; p.downed=false; p.x=f.x; p.y=f.y; p.vx=0; p.vy=0;
        car=Object.assign({},WEAPONS.rifle); p.wep=car; p.ammo=10; p.wepIssued=true; p.reloading=0; p.jam=0;
-       // 1. too little score: a clear line, nothing opens, nothing changes
-       setScore(1000); keys.KeyE=true; tick(6); keys.KeyE=false; tick(2);
-       if(g.forgeUI) bad.push('the panel opened with 1000 score');
-       if(said.indexOf('NEED $2,500')<0&&said.indexOf('NEED 2,500 SP')<0) bad.push('too little score said '+JSON.stringify(said.slice(0,4))+' not NEED $2,500');
-       if(p.wep.fk||getScore()!==1000) bad.push('too little score still changed the gun or the score');
+       // v28.xx (cw-cx-stashraid): a rich raid score cannot pay for a poor stash.
+       setBank(1000); keys.KeyE=true; tick(6); keys.KeyE=false; tick(2);
+       if(g.forgeUI) bad.push('the panel opened with 1000 stash credits');
+       if(said.indexOf('NEED $2,500')<0&&said.indexOf('NEED 2,500 SP')<0) bad.push('too little stash said '+JSON.stringify(said.slice(0,4))+' not NEED $2,500');
+       if(p.wep.fk||getBank()!==1000||g.cs.s!==9000||g.cs.b.kill!==9000||g.cs.b.forge) bad.push('too little stash still changed the gun or the stash');
        // 2. no gun: says so
-       said.length=0; p.wep=WEAPONS.fists; setScore(9000); keys.KeyE=true; tick(6); keys.KeyE=false; tick(2);
+       said.length=0; p.wep=WEAPONS.fists; setBank(9000); keys.KeyE=true; tick(6); keys.KeyE=false; tick(2);
        if(g.forgeUI||said.indexOf('NO GUN IN HAND')<0) bad.push('fists did not say NO GUN IN HAND ('+JSON.stringify(said.slice(0,3))+')');
-       // 3. enough score: E opens the panel, 1 buys MK II
-       said.length=0; blips.length=0; car=Object.assign({},WEAPONS.rifle); p.wep=car; p.ammo=10; p.wepIssued=true; setScore(3000);
+       // v28.xx (cw-cx-stashraid): one E spends 2500 stash credits at zero raid score.
+       said.length=0; blips.length=0; car=Object.assign({},WEAPONS.rifle); p.wep=car; p.ammo=10; p.wepIssued=true; setBank(10000); g.cs.s=0; g.cs.b={kill:0};
        keys.KeyE=true; tick(6); keys.KeyE=false; tick(2);
-       if(!g.forgeUI){ bad.push('E at the Forge with 3000 score opened no panel'); }
-       else {
-         press('Digit1'); tick(2);
+       {
+         if(g.forgeUI) bad.push('one E left an unwanted MK II confirmation panel');
          if(g.forgeUI) bad.push('the panel stayed open after the purchase');
          if(!p.wep||p.wep.fk!==1) bad.push('the gun in hand is not MK II (fk '+(p.wep&&p.wep.fk)+')');
          else {
@@ -29982,7 +29969,7 @@ window.__REGRESS=[
            if(p.wep.name!=='Auto Rifle MK II') bad.push('the MK II rifle is called '+p.wep.name);
            if(p.wepIssued) bad.push('a forged loaner is still marked issued');
          }
-         if(getScore()!==500) bad.push('the score is '+getScore()+' after a 2500 upgrade of 3000');
+         if(getBank()!==7500||g.cs.s!==0||g.cs.b.kill!==0||g.cs.b.forge) bad.push('MK II did not charge only the stash');
          if(said.indexOf('GUN UPGRADED')<0) bad.push('no GUN UPGRADED line ('+JSON.stringify(said.slice(0,5))+')');
          if(blips.indexOf('forge')<0) bad.push('the Forge made no sound');
          if(!g.gunCard||!g.gunCard.w||g.gunCard.w.fk!==1) bad.push('no gun card for the new gun');
@@ -29990,19 +29977,19 @@ window.__REGRESS=[
        }
        // 4. a MK II gun is at the top of what the bench offers in this build or asks for an element: either way no second MK II charge
        // 5. ESC closes with no charge
-       p.wep=Object.assign({},WEAPONS.smg); p.ammo=10; setScore(5000); keys.KeyE=true; tick(6); keys.KeyE=false; tick(2);
+       p.wep=forgeApply(Object.assign({},WEAPONS.smg),1); p.ammo=10; setBank(8000); keys.KeyE=true; tick(6); keys.KeyE=false; tick(2);
        if(!g.forgeUI) bad.push('the panel did not open for the SMG');
-       else { press('Escape'); tick(1); if(g.forgeUI) bad.push('ESC left the panel open'); if(getScore()!==5000||p.wep.fk) bad.push('ESC charged or changed the gun'); }
-       // 6. the same in the DEMO wallet
+       else { press('Escape'); tick(1); if(g.forgeUI) bad.push('ESC left the panel open'); if(getBank()!==8000||p.wep.fk!==1) bad.push('ESC charged or changed the gun'); }
+       // v28.xx (cw-cx-stashraid): demo uses stash money and leaves score whole.
        saveArc=g.arcade; saveMine=ARCADE.mine;
-       try{ g.arcade=true; ARCADE.mine=3000; if(forgeScore()!==3000) bad.push('the DEMO wallet reads '+forgeScore()); if(!forgeSpend(2500)||ARCADE.mine!==500) bad.push('the DEMO wallet did not pay'); if(forgeSpend(1000)) bad.push('the DEMO wallet paid with too little'); }
+       try{ g.arcade=true; ARCADE.mine=3000; P.credits=10000; if(forgeScore()!==10000) bad.push('demo forge does not read the stash'); if(!forgeSpend(2500)||P.credits!==7500||ARCADE.mine!==3000) bad.push('demo forge did not charge only the stash'); P.credits=1000; if(forgeSpend(2500)||P.credits!==1000||ARCADE.mine!==3000) bad.push('demo forge paid from score with too little stash'); }
        finally { g.arcade=saveArc; ARCADE.mine=saveMine; }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        say=realSay; blip=realBlip;
        for(var k2 in keys) keys[k2]=false;
        try{ if(g){ if(ex) g.ents=ex; g.forgeUI=null; g.cs=hadCs; } var g2=__state(); if(g2&&!g2.over){ g2.player.hp=100; g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
-       __topClear();
+       __topClear(); __applyLoaded(JSON.parse(keep)); saveProfile();
      }
      return bad.length?bad.join('; '):null; }},
   {v:'26.20',what:'his question (2026-10-14, where is the Forge): every raid has the Forge station at a clear reachable spot near its aisle, drawn in the world and marked on the minimap and the sector map',
