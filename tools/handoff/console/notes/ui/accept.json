@@ -31,19 +31,19 @@
   "when": "2026-10-20T03:47"
  },
  "05-sector-page": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The new version drops the cash stepper and the three explaining sentences, so it is a little cleaner, but the screen is still a dense wall of identical bordered controls with a large dead area in the sector panel and a main button that outshouts everything.",
+  "verdict": "A big step up: the map leads, kit and conditions are grouped, and ascend is one clear lime action. It still has a dead gap in the kit column, an amber warning that competes with the main button, and tiny labels.",
   "findings": [
-   "P0 sector card (cold storage), left half and the strip under it: Shrink the card to the map's height (~340px) and delete the empty strip below it. Fill the left side with 3 stat rows at fs-label 16 (size, zones, keyed rooms) as label/value pairs. Use --ui-panel with a 3px lime tab, not olive.",
-   "P0 pack section, two rows (y 735-835): Make the stepper tiles 160x64px in a fixed 4-column grid, aligned to the label column. Show the count at fs-body 20 in tx-1, the name at 16 in tx-2, and a single - / + pair. Remove the per-item 'max' (keep one 'pack all'). Drop the outer border per item.",
-   "P1 surface, weather and kit button rows: Idle buttons: --ui-line-hi border, tx-1 text, no lime. Selected: --acc fill with --acc-ink text. Keep a lime focus ring for pad focus only.",
-   "P1 'going up with' box: Reduce it to two compact chips: 'loadout: scav pistol' in tx-1 and '! no armour' in --warn (amber) at 16px. Delete the gun instruction and put the equip hint on the stash screen.",
-   "P1 'ascend to this sector' button: Use a 480x64px button centred or right-aligned, with the label at fs-title 32 in --acc-ink, and 24px of space above it. Keep one lime fill on the whole screen."
+   "P1 kit column, between the data core row and the gun / warning / ascend stack: Anchor the gun, warning and ascend stack directly under the pack list (8px gap), or grow the pack rows from ~38px to ~48px so the list fills to about y=770 and the gap is under 24px.",
+   "P1 gun chips ('gun a scav pistol' / 'no gun equipped') and the amber 'no armour equipped' bar: Merge the two gun chips into one 'gun: scav pistol' row. Turn the warning into a 16px --warn glyph plus the words 'no armour' on a --ui-panel row with no amber fill or border. Drop 'equip plates'.",
+   "P1 map labels ('the long dock', 'packing floor', 'chill row'): Set map zone labels to 20px --tx-2 at 70% with no stroke. Dim the map fill to about 60% saturation. Give the purple room tags 8px padding and place them clear of the tile edges.",
+   "P1 kit and pack typography, and the 'kit' / 'pack' / 'conditions' / 'surface' / 'weather' labels: Section labels 16px --tx-2 at the 4.5:1 floor. Row names 20px. Lift the '/n' max counts to --tx-2. Keep the stepper numbers 20px tx-1.",
+   "P2 pack stepper rows (- 0 +): Make the stepper buttons 40px square with 8px between them. Colour the stripe by item category or remove it. Give the focused row a --ui-raised fill with a 2px lime left bar."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-01-stash-pays-in-raid-after/05-sector-page-1080.jpg",
-  "task": "o-01-stash-pays-in-raid",
-  "when": "2026-10-20T05:40"
+  "pic": "tools/handoff/console/notes/shots/22-after2/05-sector-page-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-20T06:10"
  },
  "06-terms": {
   "score": 3,
@@ -108,18 +108,32 @@
  "10-hire": {
   "score": 2,
   "pass": false,
-  "verdict": "A tidy but generic grid, undermined by a loud red glitch banner that outranks everything, a washed-out cream detail panel with a disabled-looking Hire button, and duplicated currency and price data.",
-  "pic": "tools/handoff/console/notes/shots/all/10-hire-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:14"
+  "verdict": "A tidy centred card with a clear grid, but a loud red warning banner, a contradictory '$' and 'credits' header, a dead hire button, a clipped grid and a stray toast stop it looking polished.",
+  "findings": [
+   "P0 banner under the tabs: Delete the banner. If a warning is truly needed, use a 16px --warn amber 'experimental' tag next to the tab. Set the detail name to --tx-1 at 32px/700.",
+   "P0 detail pane: hire button: Enabled: --acc fill, --acc-ink text, 56px tall, 20px/700. Disabled: 1px --ui-line-hi outline, --tx-2 text, plus a short --danger 'need $29,100 more' line above it. Keep the $30,000 price at --fs-hero 56px.",
+   "P1 header currency strip, top right: Use one pattern: '$900' in 20px/700 tx-1 with 16px tx-2 labels 'stash' and 'bag' as separate items at 24px gaps. Drop the 'credits' word. Remove the duplicate 'you hold $900' row.",
+   "P1 hire grid: price on every tile: Remove the per-tile price (it already shows in the detail pane). Raise names to 16px tx-1. Focused tile: --ui-raised fill, 2px --acc border, 3px --acc bottom tab. No olive tint.",
+   "P1 grid bottom edge: Size the scroll viewport to whole rows (3 rows of 194px plus 16px gaps). Or add a 32px bottom fade to --ui-panel. Style the scrollbar as a 4px --ui-line-hi thumb."
+  ],
+  "pic": "tools/handoff/console/notes/shots/b-31-n1/10-hire-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-20T06:10"
  },
  "11-wirt-gambler": {
   "score": 2,
   "pass": false,
-  "verdict": "A tidy but generic dark modal with no focal point: the title, two competing boxes and a pile of explanatory text all sit at similar weight, and the buttons look disabled and have no visible pad focus.",
-  "pic": "tools/handoff/console/notes/shots/all/11-wirt-gambler-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:15"
+  "verdict": "A small content cluster floats in a huge empty 90% card with two explaining sentences and a duplicated 'limited time offer' label, so it reads as a debug dialog and not a gambler's den.",
+  "findings": [
+   "P0 whole card: Anchor a 56px header row: title 32px f-cond 700 at the top-left (x=24), close x on the right. Widen the content to about 1100px, or split it into two columns: the gamble on the left (hero roll area) and the offer on the right. Fill the vertical space with a 56px hero result readout.",
+   "P0 intro lines (current credits..., wirt has wares...): Delete both lines. The credits live in the header strip only, and the per-roll cost lives on the button only.",
+   "P1 limited time offer panel: Remove the blue duplicate heading. Put the item name in tx-1 20px 600, with its rarity as a 3px bar on the icon. Use a 1px --ui-line-hi border; keep lime only on the focused row. Put the timer at 16px tx-2 on the right of the label row ('4:00'). Drop the 'with armour plate, frag charge, medkit' sentence for 16px chips.",
+   "P1 gamble button and buy button: Make 'gamble $2,500' the single main button: 56px high, 20px f-cond 700, centred, with an accent fill when affordable and a --ui-raised disabled fill. Move the shortfall to a 16px --danger line under or beside the button ('need $1,600 more'), not a boxed chip. Give 'buy' the same height (48px) and make it secondary. Add a 2px lime focus outline.",
+   "P1 the gamble panel (nothing rolled yet box): Remove the inner border, so the panel is one --ui-panel with a 1px --ui-line-hi border. Show an empty 96px reveal slot in a --ui-raised fill with a 20px 'roll to reveal' line. Set all labels to a 16px minimum."
+  ],
+  "pic": "tools/handoff/console/notes/shots/b-31-n1/11-wirt-gambler-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-20T06:10"
  },
  "12-mainframe-contracts": {
   "score": 2,
@@ -991,5 +1005,20 @@
   "pic": "tools/handoff/console/notes/shots/b-31-n3/13-mainframe-rewards-1080.jpg",
   "task": "manual",
   "when": "2026-10-20T06:08"
+ },
+ "15-mainframe-stats": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The mainframe stats tab is a dense dump of nearly 20 equal-weight tiles and small text with no hero number, so the eye has nowhere to land, and it carries explaining sentences, lime italic text and a toast that overlaps the card edge.",
+  "findings": [
+   "P0 whole tab, stat tiles and notoriety banner: Pick one hero (extract rate, or net lifetime earnings) at 56px f-cond 800 in tx-1. Cut the other tiles to 6 with a 32px value and 16px tx-2 label. Hide tiles that have no data yet, or merge them into one 'no runs yet' line.",
+   "P0 tile captions, notoriety line, achievement descriptions: Delete the sentences. Keep short labels of at most 3 words. Put the notoriety rule in a hover or focus tooltip. Raise all read text to at least 16px.",
+   "P1 'your stats 0 runs' heading, row of dashes in 'last 10: –': Set the heading in tx-1, 20px f-cond 600, upright. Make the dashes tx-2. Leave lime for the tab underline and the focused item only.",
+   "P1 achievements list: Use a 4-column grid of 72px tiles with a lock glyph in place of the word 'locked'. Show the name at 20px and the requirement at 16px tx-2. Add a 3px progress bar and drop the 'achievements 0 of 12' letterspaced label in favour of a 20px '0 / 12'.",
+   "P1 tile grid, rows 1 and 3: Use a strict 6-column grid with 16px gutters, spanning the full 1680px content width. Make the tiles equal height, 96px. Shorten labels such as 'containers per run' so they stay on one line."
+  ],
+  "pic": "tools/handoff/console/notes/shots/b-31-n1/15-mainframe-stats-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-20T06:11"
  }
 }

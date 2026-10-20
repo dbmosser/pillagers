@@ -1,0 +1,64 @@
+{
+    "title":  "PRE-RAID: QUIETER WARNING, ONE GUN CHIP, TALLER PACK ROWS AND BIGGER STEPPERS, SOFTER MAP LABELS",
+    "why":  "The critic scored the shipped design A page 3 and named: a dead gap in the kit column, two confusing gun chips, an amber warning bar as loud as the ascend plate, loud outlined map labels with cramped keyed room tags, small steppers and a stray saves as you go line. Rows grow to 46 px, steppers to 36 px, the warning loses its fill, the gun chips merge, the keyed room names sit beside their rooms, and the panel double frame goes.",
+    "now":  "The pre-raid page is calmer: one gun line, a quiet no armour row, taller pack rows with bigger plus and minus buttons, and softer map labels.",
+    "edits":  [
+                  {
+                      "anchor":  "#sectormodal .srprow{ height:38px;",
+                      "replacement":  "#sectormodal .srprow{ height:46px;"
+                  },
+                  {
+                      "anchor":  "width:34px; height:30px; min-width:0; padding:0; display:grid;",
+                      "replacement":  "width:36px; height:36px; min-width:0; padding:0; display:grid;"
+                  },
+                  {
+                      "anchor":  "#sectormodal .srprow .held{ min-width:26px; font:500 16px var(--f-body); color:var(--tx-2); }",
+                      "replacement":  "#sectormodal .srprow .held{ min-width:26px; font:500 16px var(--f-body); color:#c9c5bb; }\n  #sectormodal .srprow:has(.padfocus){ background:var(--ui-raised); box-shadow:inset 3px 0 0 var(--srseat); }"
+                  },
+                  {
+                      "anchor":  "border:1px solid var(--warn); background:rgba(245,183,59,.12); border-radius:4px; color:var(--warn);",
+                      "replacement":  "border:1px solid var(--ui-line-hi); background:none; border-radius:4px; color:var(--warn);"
+                  },
+                  {
+                      "anchor":  "\u003cb\u003eNO ARMOUR EQUIPPED\u003c/b\u003e\u003ci\u003eEQUIP PLATES\u003c/i\u003e",
+                      "replacement":  "\u003cb\u003eNO ARMOUR EQUIPPED\u003c/b\u003e"
+                  },
+                  {
+                      "anchor":  "var line=\u0027\u003cdiv class=\"srsum\"\u003e\u0027+chip(\u0027gun\u0027,w?escHtml(w.name):\u0027a scav pistol\u0027);",
+                      "replacement":  "var _og=!w\u0026\u0026(P.stash||[]).some(function(k){ var it=ITEMS[k]; return it\u0026\u0026it.use===\u0027gun\u0027\u0026\u0026it.gk\u0026\u0026WEAPONS[it.gk]; });\n  var line=\u0027\u003cdiv class=\"srsum\"\u003e\u003cspan class=\"gc\" style=\"flex-basis:100%\"\u003e\u003ci\u003egun\u003c/i\u003e\u003cb\u003e\u0027+(w?escHtml(w.name):\u0027a scav pistol\u0027)+\u0027\u003c/b\u003e\u0027+(_og?\u0027\u003ci style=\"margin-left:auto\"\u003eown gun in stash\u003c/i\u003e\u0027:\u0027\u0027)+\u0027\u003c/span\u003e\u0027;"
+                  },
+                  {
+                      "anchor":  "\n  if(!w\u0026\u0026(P.stash||[]).some(function(k){ var it=ITEMS[k]; return it\u0026\u0026it.use===\u0027gun\u0027\u0026\u0026it.gk\u0026\u0026WEAPONS[it.gk]; })) line+=chip(\u0027\u0027,\u0027NO GUN EQUIPPED\u0027);",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "+\n    \u0027\u003cspan class=\"sv\"\u003eSAVES AS YOU GO\u003c/span\u003e\u0027;",
+                      "replacement":  ";"
+                  },
+                  {
+                      "anchor":  "#sectormodal .srplate{ flex:none; height:72px; padding:3px; background:var(--srseat); border-radius:6px; }",
+                      "replacement":  "#sectormodal .srplate{ flex:none; height:72px; padding:0; background:none; }"
+                  },
+                  {
+                      "anchor":  "padding:0 12px 10px; background:var(--ui-panel); border:1px solid var(--ui-line);",
+                      "replacement":  "padding:0 12px 10px; background:var(--ui-panel); border:0;"
+                  },
+                  {
+                      "anchor":  "padding:10px 12px; background:var(--ui-panel); border:1px solid var(--ui-line);",
+                      "replacement":  "padding:10px 12px; background:var(--ui-panel); border:0;"
+                  },
+                  {
+                      "anchor":  "fs=20, cx=ox+(z.x+z.w/2)*sc",
+                      "replacement":  "fs=18, cx=ox+(z.x+z.w/2)*sc"
+                  },
+                  {
+                      "anchor":  "c.lineWidth=3; c.strokeStyle=\u0027rgba(8,18,28,.9)\u0027",
+                      "replacement":  "c.lineWidth=2; c.strokeStyle=\u0027rgba(8,18,28,.6)\u0027"
+                  },
+                  {
+                      "anchor":  "c.font=\u0027600 16px \u0027+FF; c.textAlign=\u0027center\u0027; c.fillStyle=\u0027#dcc3f4\u0027;\n    a1=TX(String(b.name||\u0027\u0027)); L=a1.split(\u0027 \u0027); a2=L.length\u003e1?L.slice(1).join(\u0027 \u0027):\u0027\u0027; a1=L[0];\n    put(a1,ox+(b.x+b.w/2)*sc,oy+(b.y+b.h/2)*sc-(a2?2:-6)); if(a2) put(a2,ox+(b.x+b.w/2)*sc,oy+(b.y+b.h/2)*sc+16); n++; }",
+                      "replacement":  "c.font=\u0027600 16px \u0027+FF; c.textAlign=\u0027right\u0027; c.fillStyle=\u0027#dcc3f4\u0027; put(TX(String(b.name||\u0027\u0027)),ox+b.x*sc-8,oy+(b.y+b.h/2)*sc+5); n++; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the pre-raid page fixes from the critic: pack rows are 46 px with 36 px steppers, one gun chip, a quiet no armour row with no amber fill, and no saves as you go line\u0027,\n   run:function(){\n     if(!(window.__hubEnter\u0026\u0026window.__P\u0026\u0026window.__applyLoaded)||typeof renderSector!==\u0027function\u0027) return \u0027SKIP: no pre-raid page\u0027;\n     var bad=[], snap=null, q, sm=document.getElementById(\u0027sectormodal\u0027), row, wn, st, h;\n     function shut(){ var mo=document.querySelectorAll(\u0027.modal.on\u0027); for(var j=0;j\u003cmo.length;j++) mo[j].classList.remove(\u0027on\u0027); }\n     try{\n       snap=JSON.parse(JSON.stringify(__P()));\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       q=__P(); q.freeKit=0; q.kitPick=\u0027mine\u0027; q.stash=[\u0027medkit\u0027]; q.kit=[]; q.equipped=\u0027fists\u0027;\n       __hubEnter(); shut(); renderSector(); openModal(\u0027sectormodal\u0027);\n       row=sm.querySelector(\u0027.srprow[data-pk]\u0027); wn=sm.querySelector(\u0027#sectorkit .wn\u0027); st=sm.querySelector(\u0027.srprow .st button\u0027);\n       if(!row||!wn||!st) return \u0027the pre-raid rows or the armour row are not drawn\u0027;\n       if(parseFloat(getComputedStyle(row).height)\u003c45) bad.push(\u0027a pack row is \u0027+getComputedStyle(row).height+\u0027 high, not 46\u0027);\n       if(parseFloat(getComputedStyle(st).height)\u003c35) bad.push(\u0027a stepper is \u0027+getComputedStyle(st).height+\u0027 high, not 36\u0027);\n       if(!/rgba\\(0, 0, 0, 0\\)|transparent/.test(getComputedStyle(wn).backgroundColor)) bad.push(\u0027the no armour row still has a fill \u0027+getComputedStyle(wn).backgroundColor);\n       if(sm.querySelectorAll(\u0027#sectorkit .gc\u0027).length!==1) bad.push(\u0027the going up line has \u0027+sm.querySelectorAll(\u0027#sectorkit .gc\u0027).length+\u0027 chips, not one\u0027);\n       h=document.getElementById(\u0027srhints\u0027); if(h\u0026\u0026/saves as you go/i.test(h.textContent)) bad.push(\u0027saves as you go is still on the page\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ shut(); }catch(_s){} try{ if(snap) __applyLoaded(snap); }catch(_a){} try{ __cleanProfile(); }catch(_c){} __topClear(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

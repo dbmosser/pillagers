@@ -1,0 +1,16 @@
+{
+    "title":  "Corner readout: $ money, no credits label",
+    "why":  "UI step 7. Critic scored 10, 11, 15 at 2; P1 on all: the header strip says credits where the style is $. Q59.",
+    "now":  "The top right readout shows $900 and no longer the word credits.",
+    "edits":  [
+                  {
+                      "anchor":  "  el.innerHTML=c+\u0027 \u003csmall\u003eCREDITS\u003c/small\u003e \u0027+x+\u0027 \u003csmall\u003eXP\u003c/small\u003e \u003cspan class=\"trsub\"\u003e",
+                      "replacement":  "  el.innerHTML=\u0027$\u0027+c+\u0027\u003cspan class=\"trgap\"\u003e\u003c/span\u003e\u0027+x+\u0027 \u003csmall\u003eXP\u003c/small\u003e \u003cspan class=\"trsub\"\u003e"
+                  },
+                  {
+                      "anchor":  "  #topright small:nth-last-child(2){ margin-right:24px; }",
+                      "replacement":  "  #topright small:nth-last-child(2){ margin-right:24px; }\n  /* v28.xx (cw-uc-trdollar) b-31 step 7, critic on 10, 11, 15 (P1 \"900 credits mixes $ and credits\"): the corner readout says $900 (his Q59: $ for money), no credits label, 24px before the xp pair. */\n  #topright .trgap{ display:inline-block; width:24px; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027corner readout shows $ money, not the word credits\u0027,\n   run:function(){\n     var bad=[];\n     try{\n       var el=document.getElementById(\u0027topright\u0027); if(!el) return \u0027SKIP: no corner readout\u0027;\n       var c0=P.credits; P.credits=4321; _trLast=null;\n       try{ syncTopRight(); }catch(_s){}\n       var t=(el.textContent||\u0027\u0027);\n       if(!t) return \u0027SKIP: corner empty (demo)\u0027;\n       if(/credits/i.test(t)) bad.push(\u0027still says credits: \u0027+t);\n       if(t.indexOf(\u0027$4,321\u0027)!==0) bad.push(\u0027no $4,321 first: \u0027+t);\n       if(!el.querySelector(\u0027.trgap\u0027)||el.querySelector(\u0027.trgap\u0027).getBoundingClientRect().width\u003c20) bad.push(\u0027no 24px gap\u0027);\n       P.credits=c0; _trLast=null; try{ syncTopRight(); }catch(_s2){}\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

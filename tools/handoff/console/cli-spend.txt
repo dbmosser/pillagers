@@ -281,3 +281,7 @@
 2026-10-20 0.1618 critic-manual
 2026-10-20 0.1612 critic-manual
 2026-10-20 1.1043106999999999 b-31-ui-undercroft
+2026-10-20 0.1481 critic-manual
+2026-10-20 0.1496 critic-manual
+2026-10-20 0.1605 critic-manual
+2026-10-20 0.1497 critic-manual

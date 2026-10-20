@@ -6101,6 +6101,35 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.49',what:'pad controls match their legend, 20px keycaps, complete list rows and lefty labels',
+   run:function(){
+     var saved=P, oldSave=saveProfile, oldPad=KEYS.pad, km, bad=[], i, j;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       P=JSON.parse(JSON.stringify(P)); saveProfile=function(){};
+       keysOpen(true); km=document.getElementById('keysmodal'); padListFit();
+       for(j=0;j<3;j++){
+         padPresetApply([0,1,5][j]); padListFit();
+         for(i=0;i<16;i++){
+           var node=km.querySelector('[data-pad-node="'+i+'"]'), label=km.querySelector('[data-pad-button="'+i+'"]');
+           if(!node||node.textContent!==PAD_BTN[i].toLowerCase()) bad.push('unnamed controller node '+i);
+           if(!label||label.textContent.indexOf(padPictureLabel(i))<0) bad.push('wrong legend '+i);
+         }
+         if(km.querySelector('[data-pad-stick="left"]').textContent!==([0,1,5][j]===5?'aim':'move')) bad.push('stick label');
+       }
+       var sc=km.querySelector('.padactions'), rows=sc.querySelectorAll('.row,.keysec'), cap=sc.querySelector('.keybtn');
+       if(sc.clientHeight<56||sc.clientHeight%56!==0) bad.push('viewport cuts a row');
+       for(i=0;i<rows.length;i++) if(rows[i].offsetHeight!==56) bad.push('row pitch '+i);
+       if(parseFloat(getComputedStyle(cap).fontSize)<20) bad.push('keycap under 20px');
+       if(parseFloat(getComputedStyle(sc.querySelector('.keysec')).fontSize)<16) bad.push('section under 16px');
+       padSetFocus(cap);
+       if(getComputedStyle(cap.parentNode).boxShadow==='none') bad.push('focused row has no marker');
+       return bad.length?bad.join('; '):null;
+     }finally{
+       if(km) km.classList.remove('on'); PAD.focus=null; PAD.focusMd=null; KEYS.pad=oldPad;
+       try{__endRaid('abandon');}catch(e){} __topClear(); P=saved; saveProfile=oldSave;
+     }
+   }},
   {v:'32.48',what:'the pre-raid going-up chips are not cut off: the no armour chip and the kit tile sublines fit their boxes',
    run:function(){
      if(!(window.__hubEnter&&window.__P&&window.__applyLoaded)||typeof renderSector!=='function') return 'SKIP: no pre-raid page';

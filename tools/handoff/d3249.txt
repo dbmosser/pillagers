@@ -1,0 +1,5 @@
+## v32.49 - PAD LAYOUT READABILITY
+
+Co-op hunt while he was away. The critic found crossed controller leaders, small key names and half a row at the list edge.
+
+MEASURED. Check 32.49 passes, and fails on v32.48.

@@ -1,0 +1,7 @@
+v32.49: pad layout readability
+
+Named controller controls, aligned action legends, larger keycaps and complete scrolling rows.
+
+Check 32.49. Fails on v32.48.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
