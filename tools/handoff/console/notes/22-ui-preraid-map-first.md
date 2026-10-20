@@ -24,6 +24,9 @@ Status: shipped in 6 passes (v32.46, .48, .51, .52, .53, .57). Critic stuck at 3
 - P2 selected state has three signals; hint footer lacks ascend (I removed it on purpose, the plate already shows it; pad prompt lives in the plate).
 - Skipped (would reverse his ruling): "tint the map to neutral grey". He asked for the map in a different colour to break up the monotony (10-19).
 
+## Run of 10-20 (lane b)
+Re-checked: shipped v32.46 to v32.57, six tries used (his 2.83 b), critic 3 = finish line for non-raid screens (3.51 a). No further ship. Optional next: 16px/600 warning row, merge gun and core rows, map labels 8px off props.
+
 ## Left to do
 - 2-player pictures from both windows were not taken (the camera stages one window).
 - Old checks likely red in the corpus, for coordinator to retarget (see alarms.md).

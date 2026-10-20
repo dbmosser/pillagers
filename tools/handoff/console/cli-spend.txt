@@ -311,3 +311,10 @@
 2026-10-20 0.1492 critic-manual
 2026-10-20 0.1534 critic-manual
 2026-10-20 0.30383950000000004 b-31-ui-undercroft
+2026-10-20 0.1800221 22-ui-preraid-map-first
+2026-10-20 0.1633 critic-manual
+2026-10-20 0.6184004999999998 c-02-raid-hud-redesign
+2026-10-20 0.0000 o-06-pad-controls
+2026-10-20 0.1466 critic-manual
+2026-10-20 0.1549 critic-manual
+2026-10-20 0.2583438 c-02-raid-hud-redesign

@@ -1,1 +1,1 @@
-10-20 02:32 running c-02-raid-hud-redesign on Claude Code (your plan: week 55% of the 25.1% line, 5-hour 14%)
+10-20 02:45 waiting: another helper is just starting (memory check again in a few minutes); c-02-raid-hud-redesign kept

@@ -2,34 +2,4 @@
 NONE
 NONE
 NONE
-It looks like you've provided a detailed list of changes or updates to a video game, likely related to its mechanics, user interface, and gameplay experience. Here's a summary of some key points:
-
-1. **Welcome Pack**: Players are instructed to drag specific items (a gun and two heals) into their loadout before entering the raid.
-
-2. **Settings and Controls**:
-   - Master, Music, and Effects volume can be adjusted.
-   - Key bindings can be customized for actions.
-   - A "Kid Mode" section is available for player 2 to return after death.
-
-3. **Teammate Features**:
-   - Players are informed when their teammate joins or leaves the raid.
-   - The map marker shows walls already blown open if a teammate joins late.
-   - An open trade offer remains on screen while in the Undercroft.
-
-4. **Trading and Drop-in Mechanics**:
-   - Items can be traded with teammates using T or Y keys.
-   - A teammate can join an ongoing raid from the Undercroft.
-   - The Overseer guards the middle of every map.
-
-5. **Stash and Sector Page**:
-   - Players choose a kit when ascending from the sector page.
-   - Pinging spots or enemies for the party is possible using D-UP, N, or the middle mouse button.
-   - A cursor can be moved on the map with the right stick to place markers.
-
-6. **Gameplay Improvements**:
-   -
-NONE
-NONE
-NONE
-NONE
 NONE

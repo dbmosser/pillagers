@@ -528,17 +528,17 @@
  "37-raid-extracting-countdown": {
   "score": 3,
   "pass": false,
-  "verdict": "The hostiles line now sits on a dark plate and reads cleanly, but the HUD is still a pile of mismatched widgets with dense, tiny text and a weak hero.",
+  "verdict": "The extract banner now leads the screen, but the rest of the HUD is crowded and uses too many type sizes, panel styles and accent colours.",
   "findings": [
-   "P1 extract banner and plate stack, bottom centre: Use one column 8px apart. Make the hostiles plate the same width as the banner (about 468px), or fold it into the banner as a second row. Move the key-hint strip 8px lower, or fold it into the hotbar.",
-   "P1 extract b inbound 15s banner: Make '15s' the hero at 56px weight 800 in tx-1 or extract teal, and set 'extract b inbound' at 20px tx-2. Add a 3px teal left bar, and put a thin progress bar under the number.",
-   "P1 top-right career column, minimap and run info: Remove the right dead strip of the minimap or centre the map in it. Set the gap between all stacked blocks to a uniform 8px. Left-align the contract lines on one indent. Move the pickup chips 8px away from run info.",
-   "P2 run info contracts text: Give the panel 16px right padding and truncate or shorten the names to 'sump 0/2'. Make the counts tx-2 and the contract names tx-1. Use one consistent hanging indent of 16px.",
-   "P2 left pickup stack, contract item nearby chip: Use one chip style with a single 3px left rarity bar. Keep amber only for the glyph, with tx-1 text. Fix the stack gap at 8px."
+   "P1 top-right career stack (credits, xp, stash, backpack), minimap and run info: Collapse the stack to the 1 by 1 list of the cw-trcol order, with every row 40px high and 16px labels in tx-2. Drop xp and stash during a raid. Show money as '$900'. Give the run info rows 20px body text, 8px padding and a 24px panel inset.",
+   "P1 top-left 'current pillager bots' panel: Fix the panel height so the last row has 8px padding and no overflow. Make the header tx-2 at 16px. Set the rows to 16px and show the values as '4,310 sp'. Use the shared 1px --ui-line-hi border and 4px radius.",
+   "P1 centre bottom: extract banner, hostiles bar, weapon prompt and hotbar: Add a 16px gap between the banner and the hostiles bar. Raise the hostiles text to 18-20px at weight 700. Move the key hint to 16px, sitting 8px above the hotbar with a 12px margin. Remove the heavy outline from the banner plate.",
+   "P1 left feed: codex entry, running slowly, medkit, titanium cell, induction coil, contract item nearby: Cap the feed at 3 rows and merge the loot pickups into a count. Delete the centre explanation sentence, or shorten it to 'contract item nearby'. Fade ghost text out within 1.5s.",
+   "P1 ammo and weapon panel bottom right: Align the labels to a 24px inset on a shared baseline grid. Keep 56px for 12 and 20px for '/ 24' in tx-2 at 4.5:1 or better. Remove the faded silhouette or raise it to 40% opacity."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-02-r23-after/37-raid-extracting-countdown-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/c-02-r24/37-raid-extracting-countdown-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T06:37"
+  "when": "2026-10-20T06:44"
  },
  "77-haul-reveal-done": {
   "score": 3,
@@ -948,17 +948,17 @@
  "78-raid-pause-box-full-kit": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, calm column menu with one lime primary and a quiet red abandon, so the hierarchy reads, but it is a small generic dialog that ignores the card rule and leaves the bottom of the panel and the type scale unresolved.",
+  "verdict": "A clean, calm column menu with one clear lime primary action and a red abandon, but it is a small box on a very dark screen, with no pad focus state shown and no run info.",
   "findings": [
-   "P1 whole card: Keep it a compact modal but make it deliberate: widen to 560px, sit it on the 8px grid, add the 3px lime left tab to the panel, and put a one-line run status in the header (time, $ in bag) so the pause shows something. Or leave it small and record it as the one allowed exception in the guide.",
-   "P1 button type sizes: Set all button text to 20px f-cond 600 (feedback and what's new at least 16px). Make the half-width buttons 56px tall like the full-width ones, not 48px.",
-   "P1 button group hierarchy: Merge feedback and report a problem into one 'report' control, or put feedback and what's new together as a quiet footer pair at 16px. Keep exactly two full-width buttons under resume: settings and one other.",
-   "P2 abandon run: Give it a 56px outline button with a 1px danger border (rgba of #e5482f at 60%) and danger text at 20px. Keep it 32px below the group. Lighten the red slightly to #ee5a40 for 4.5:1.",
-   "P2 vertical spacing: Use a 16px gap between all buttons, a 32px gap before abandon, and 24px bottom padding so the card ends 24px below abandon."
+   "P1 whole card: Either make this one deliberate exception to the 90% rule and record it in the guide, or add one quiet context row under the title in tx-2 at 16px (for example raid time and $ carried). Dim the backdrop to --scrim .80 so the HUD ghost looks intentional.",
+   "P1 button stack: Keep the column for resume, settings and abandon. Fold the three rare items into one row of 16px text links in tx-2 under a 1px --ui-line divider, or make them one row of three equal ghost buttons at 40px height.",
+   "P1 abandon run: Make it a 56px outlined button with a --danger border and text, with the same 16px gap as the other rows. Equalise the card padding to 40px on all sides. Lift the red slightly, to about #f0583f, to clear 4.5:1.",
+   "P2 title row: Align the tab to the title's left edge (x=760) or drop it. Raise the divider to --ui-line-hi. Make the X hit area 44px with a hover or focus fill.",
+   "P2 resume run: Set the label to 22px 700. Add a 16px key hint on the right (for example the pad button glyph or esc) in --acc-ink so the live prompt is visible."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-02-r19/78-raid-pause-box-full-kit-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/c-02-r24/78-raid-pause-box-full-kit-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T04:25"
+  "when": "2026-10-20T06:44"
  },
  "74-pad-call-of-duty": {
   "score": 2,

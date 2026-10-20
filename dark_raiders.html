@@ -3169,7 +3169,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.59';
+var VER='32.60';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -25904,7 +25904,7 @@ function gunClassUpgrade(ct,key,itm,found){
   var gk=itm.gk, h;
   if(!G||G.sim||G.hubFloor||!found||!gunClassOf(gk)) return null;
   h=gunClassHeld(hotbarSlots(),gunClassOf(gk));
-  if(!h||h.o.gk===gk||!beltGunLow(h.o.w,found)) return null;
+  if(!h||!beltGunLow(h.o.w,found)) return null;   // v28.xx (cw-cx-heldcopy-o06): his 3.18 c: a better copy swaps in at once, including the same model in DEMO.
   G.bag.push(key);
   if(ct&&ct.dropped) gunQTrim(gk,gunQCount(gk)-1); else gunQPush(found);
   autoBelt(key,1,{found:found,dropped:!!(ct&&ct.dropped)});
@@ -26056,6 +26056,14 @@ function autoBelt(key,quiet,xo){   // v25.xx (belt1): xo = {found:the rolled gun
   if(!G||G.sim||G.over) return;
   var it=ITEMS[key]; if(!it) return;
   if(beltClassOf(key)!=='gun') return;   // v26.xx (wheel4): the belt takes guns only; a throwable, a heal, a stim or a plate waits for the wheel
+  // v28.xx (cw-cx-heldcopy-o06): his 3.18 c: a better same-model find uses the class swap before duplicate guards.
+  if(xo&&xo.found&&it.use==='gun'&&it.gk&&!G.hubFloor){
+    var _copySlots=hotbarSlots(), _copyHeld=gunClassHeld(_copySlots,gunClassOf(it.gk));
+    if(_copyHeld&&_copyHeld.o.gk===it.gk&&beltGunLow(_copyHeld.o.w,xo.found)){
+      G.hotAssign=G.hotAssign||{};
+      return gunClassPlace(key,quiet,_copySlots,xo);
+    }
+  }
   // v8.04, audit: a duplicate of the gun in your HANDS never takes a slot.
   // The equipped-gun overlay would render your live gun on the pinned cell
   // and the dedupe pass would blank slot 1 or 2 under you mid-fight.
@@ -50553,7 +50561,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.59: The hostiles closing in plate is as wide as the extract countdown plate, with a gap between them. Check 32.59 fails on v32.58',
+  now:'v32.60: A better copy upgrades the gun in hand immediately in DEMO and CAREER. Check 32.60 fails on v32.59',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

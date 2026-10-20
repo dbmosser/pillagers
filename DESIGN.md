@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.60 - BETTER COPY IN HAND
+
+Co-op hunt while he was away. His 3.18 c keeps immediate upgrades. DEMO and belt routing rejected same-model finds before comparing quality.
+
+MEASURED. Check 32.60 passes, and fails on v32.59.
 ## v32.59 - THE HOSTILES PLATE MATCHES THE EXTRACT BANNER WIDTH
 
 Co-op hunt while he was away. Critic on screen 37: the hostiles closing in plate was a narrower pill touching the countdown plate. It now takes the banner width and sits 8 px under it.

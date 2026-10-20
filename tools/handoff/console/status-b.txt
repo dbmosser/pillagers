@@ -1,1 +1,1 @@
-10-20 02:39 running 22-ui-preraid-map-first on Claude Code (your plan: week 56% of the 25.1% line, 5-hour 14%)
+10-20 02:43 waiting: another helper is just starting (memory check again in a few minutes); 40-art-player-look kept

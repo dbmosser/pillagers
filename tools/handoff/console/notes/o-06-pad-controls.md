@@ -103,3 +103,10 @@ No new gate failure or camera result was supplied. Left the existing six-scene c
 Regenerated all four drafts on v32.58; each printed written. All 18 edits compose with unique anchors; the resulting game script and all four checks parse. The isolated actual gun-routing test still shows both upgrades rejected on baseline and accepted in the draft, with rounds/key/displaced copy preserved and worse copies refused. No tracked files were edited.
 
 The lane must now preflight and ship the renamed key followed by the other three. Coordinator camera-run-request.json remains ready for the six pictures, paired-window role reports and critic results after shipping. No browser gate or visual acceptance is claimed.
+
+--- codex run 2026-10-20 02:43 ---
+2026-10-20 continuation from v32.59: repaired the failing new-build check for cw-cx-heldcopy-o06. Its setup deployed kit:['gun_rifle'], leaving a packed rifle in the bag, then manually gave the player another rifle in hand. A correct replacement therefore left two rifles in the bag, while the check required one. The production edits were not the source of this failure.
+
+The check now deploys an empty kit and explicitly stages an empty bag, empty quality/ammo queues, an unissued field rifle in hand and empty second hand, with swapped=false. It still requires exactly one displaced rifle, and now also requires its original damage and quality in the real stowQ. The upgrade, rounds, key, worse-copy refusal, CAREER and Magnum assertions remain.
+
+Regenerated the repaired draft; its anchors are unique on v32.59. All 18 pending edits compose and the resulting game script and four checks parse. Extended smoke-copy-routing.js to use the real gun quality queue functions. It reproduces two bag copies from the former packed-kit setup and one with preserved quality from the clean setup, while still requiring baseline rejection and draft upgrades in both routes. This is isolated evidence; the lane must rerun the browser preflight twice and shipping gate. No tracked game or fixture file changed.

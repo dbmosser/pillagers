@@ -1,0 +1,7 @@
+v32.60: better copy in hand
+
+A better copy upgrades the gun in hand immediately in DEMO and CAREER.
+
+Check 32.60. Fails on v32.59.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
