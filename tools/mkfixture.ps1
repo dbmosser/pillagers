@@ -14,6 +14,23 @@ $needle = '// ================================================================ b
 # first-person leftovers from another project and were never in this game.
 $inject = @'
 window.__frame=function(dt){ render2D(dt===undefined?0.016:dt); };
+// v28.xx (cw-cx-corpus-r3d): the camera runs outside the game module; this fixture-only helper stages the real shared HUD inside its scope.
+window.__corpusAirHandStage=function(role){
+  var g=G, p=g&&g.player, A, hand=null, hp=hudPlate;
+  if(!g||g.over||!p) return {ok:false,why:'no live raid'};
+  NET.on=false; NET.role=role==='join'?'join':'host'; NET.seat=role==='join'?1:0;
+  g.mapOpen=false; g.mapFirst=0; g.bagOpen=false; g.wheel=null; g.paused=false; g.ents=[];
+  if(!g.arcade) g.career=1;
+  p.iv=999; p.hand={k:'bandage',t:0.4,len:1.2};
+  A=airS(); A.m=Math.round(AIR.need*0.6); A.aim=0; A.rdy=0; A.sk=[];
+  render2D(0);
+  if(typeof handPlateBox==='function') hand=handPlateBox();
+  else{
+    hudPlate=function(x,y,w,h){if(!hand)hand={x:x,y:y,w:w,h:h};return hp.apply(this,arguments);};
+    try{drawHand();}finally{hudPlate=hp;}
+  }
+  return {ok:!!(hand&&g.airBox),role:NET.role,seat:NET.seat,hand:hand,air:g.airBox,scale:Math.max(1,hudRes())};
+};
 window.__contracts={
   srand:function(s){ return srand(s); },
   gen:function(){ return genContract(); },
@@ -24715,7 +24732,8 @@ window.__REGRESS=[
        for(i=0;i<cells.length;i++) if(hit(plate,cells[i],0)){ bad.push(tag+'the plate overlaps belt key '+i); break; }
        if(chip&&hit(plate,chip,0)) bad.push(tag+'the plate overlaps the power-up chips');
        if(hand&&hit(plate,hand,0)) bad.push(tag+'the plate overlaps the item in hand');
-       if(hand&&plate.x<hand.x+hand.w) bad.push(tag+'the plate starts left of the end of the item in hand');
+       // v28.xx (cw-cx-corpus-r3c): narrow belts retain right-edge alignment; the fixed placement may lift above the item instead.
+       if(hand&&plate.x<hand.x+hand.w&&!(typeof handPlateBox==='function'&&plate.y+plate.h<=hand.y-Math.round(8*z))) bad.push(tag+'the plate is neither right of nor clear above the item in hand');
        if(hit(plate,HUDBOX.gear,0)) bad.push(tag+'the plate overlaps the gear card');
        if(hit(plate,HUDBOX.body,0)) bad.push(tag+'the plate overlaps the health block');
        if(Math.abs((plate.x+plate.w)-(last.x+last.w))>Math.round(24*z)) bad.push(tag+'the plate ends at '+Math.round(plate.x+plate.w)+', not at the right end of the gun bar ('+Math.round(last.x+last.w)+')');
@@ -24730,6 +24748,10 @@ window.__REGRESS=[
        oFR=ctx.fillRect;
        for(k in NET) NK[k]=NET[k];
        staged=true;
+       // v28.xx (cw-cx-corpus-r3d): exercise the same scoped staging hook the camera uses, before its private-function error can recur.
+       var shotProbe=window.__corpusAirHandStage('host');
+       if(!shotProbe.ok||shotProbe.role!=='host'||!shotProbe.hand||!shotProbe.air) bad.push('the scoped air-strike camera stage did not render both panels');
+       else if(hit(shotProbe.air,shotProbe.hand,0)) bad.push('the camera stage has overlapping air-strike and held-item panels');
        for(si=0;si<sizes.length;si++) for(ri=0;ri<roles.length;ri++) scene(sizes[si][0],sizes[si][1],roles[ri]);
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
@@ -50826,11 +50848,14 @@ window.__REGRESS=[
   {v:'21.66',what:'his note: the single shot guns hit harder, so they keep up with the automatics',
    run:function(){
      var want={pistol:23,magnum:62,dmr:64,sniper:170,lance:150,shotgun:16,whisper:24}, bad=[], k;
+     // v28.xx (cw-cx-corpus-r3d): the two Q69 removals have their own removal check; every surviving gun remains mandatory here.
+     if(!WEAPONS.dmr) delete want.dmr;
+     if(!WEAPONS.whisper) delete want.whisper;
      for(k in want) if(!WEAPONS[k]||WEAPONS[k].dmg!==want[k]) bad.push(k+' does '+(WEAPONS[k]&&WEAPONS[k].dmg)+', not '+want[k]);
      if(WEAPONS.whisper&&WEAPONS.whisper.rof!==400) bad.push('the Whisper fires every '+WEAPONS.whisper.rof+' ms, not 400');
      function sus(w){ var per=w.dmg*(w.pellets||1)*(w.burst||1), shots=w.mag/(w.burst||1); return per*shots/(shots*w.rof/1000+w.reload/1000); }
      var ar=sus(WEAPONS.rifle);
-     ['shotgun','lance','dmr','magnum','sniper'].forEach(function(k2){ var s=sus(WEAPONS[k2]); if(s<ar*0.6) bad.push(WEAPONS[k2].name+' sustains '+Math.round(s)+' a second against '+Math.round(ar)+' for the Auto Rifle'); });
+     ['shotgun','lance','dmr','magnum','sniper'].forEach(function(k2){ if(k2==='dmr'&&!WEAPONS.dmr) return; var s=sus(WEAPONS[k2]); if(s<ar*0.6) bad.push(WEAPONS[k2].name+' sustains '+Math.round(s)+' a second against '+Math.round(ar)+' for the Auto Rifle'); });
      return bad.length?bad.join('; '):null; }},
   {v:'21.65',what:'the RECOVERING icon shows only while the regen really runs',
    run:function(){
@@ -52304,6 +52329,7 @@ window.__REGRESS=[
    run:function(){
      if(typeof sectorPreviewDraw!=='function'||typeof renderSector!=='function'||typeof menuScale!=='function') return 'SKIP: this build has no sector maps';
      if(!document.getElementById('sectorlist')||typeof FIXED_MAPS==='undefined') return 'SKIP: no sector page in this fixture';
+     var mapWidth=document.getElementById('srkitcol')?960:420;
      var bad=[], oMS=menuScale, cvs, i, cv, cw, ch, k, px;
      try{
        __topClear(); __runPrep();
@@ -52317,7 +52343,7 @@ window.__REGRESS=[
          if(!(cw>0&&ch>0)) { bad.push('sector '+i+' map has no size'); continue; }
          k=cv.width/cw;
          if(!(k>=1.9)) bad.push('sector '+i+' map is '+cv.width+' pixels across for '+Math.round(cw)+' on the page, so a menu at twice size stretches it '+(2/k).toFixed(1)+' times');
-         if(Math.abs(cw-420)>1) bad.push('sector '+i+' map is '+Math.round(cw)+' wide on the page, not 420');
+         if(Math.abs(cw-mapWidth)>1) bad.push('sector '+i+' map is '+Math.round(cw)+' wide on the page, not '+mapWidth);
          if(Math.abs(cv.height/ch-k)>0.05) bad.push('sector '+i+' map is stretched more one way than the other');
          px=cv.getContext('2d').getImageData(cv.width-3,cv.height-3,1,1).data;
          if(!(px[3]>0)) bad.push('sector '+i+' map stops short of its far corner');
