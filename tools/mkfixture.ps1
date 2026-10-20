@@ -2149,7 +2149,7 @@ window.__REGRESS=[
      try{ __ui.sector(); }catch(e){ return 'renderSector threw: '+e; }
      var t=(document.getElementById('sectormodal').textContent||'').replace(/\s+/g,' ');
      if(/\d+ by \d+ hectares/.test(t)) return 'the board still prints a dimension in hectares';
-     if(!/\d+ by \d+ metres/.test(t)) return 'no metre dimension on the board at all';
+     if(!/\d+ by \d+ metres|\d+ x \d+ m\b/.test(t)) return 'no metre dimension on the board at all';
      return null; }},
   {v:'8.58',what:'no message promises something the game does not do',
    run:function(){
