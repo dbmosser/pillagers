@@ -39174,7 +39174,12 @@ window.__REGRESS=[
        if(!(at(11.5,-21)[3]>200)) bad.push('Broad: no wide shoulder at 11.5');
        paint({build:'curved'},'none');
        if(!(at(6.9,-21)[3]>200)) bad.push('Curved: no shoulder at 6.9');
-       if(at(9.6,-21)[3]>40) bad.push('Curved: the shoulders are as wide as Lean, she lost her narrow shoulders (pixel '+Array.prototype.join.call(at(9.6,-21),',')+'; alpha along the row '+[7,8,9,10,11,12,13].map(function(u){ return u+':'+at(u,-21)[3]; }).join(' ')+')');
+       /* v32.64 (cw-figlook, a05 B: vest 1.12): the vest is drawn bigger, so Curved ink now reaches about 10.5 at the shoulder row. The cap code is unchanged, so compare the outer edge of Curved with Lean's instead of a fixed 9.6 */
+       function edgeU(){ var u, e=0; for(u=0;u<=15;u+=0.1) if(at(u,-21)[3]>200) e=u; return e; }
+       var eCur=edgeU(), eLean;
+       paint({build:'lean'},'none'); eLean=edgeU();
+       if(eCur>eLean-0.6) bad.push('Curved: the shoulders are as wide as Lean (edge '+eCur.toFixed(1)+' against '+eLean.toFixed(1)+'), she lost her narrow shoulders');
+       paint({build:'curved'},'none');
        if(!(at(-4.5,-18.0)[3]>200)) bad.push('Curved: the chest is gone');
        paint({team:'foe',build:'lean',bulk:2},'none');
        if(hue(-14.5,-8.5,'foe')<8) bad.push('armour 2: no team stripe on the steel pauldron');
