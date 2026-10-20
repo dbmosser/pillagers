@@ -39,6 +39,7 @@ ALLOW=( "Read" "Grep" "Glob"
   "Edit($PR/tools/mkfixture.ps1)"
   "Bash(bash $S/shipq.sh cw-*)" "Bash(bash $S/shipdraft.sh *)" "Bash(bash $S/fixq.sh *)" "Bash(bash $S/genP.sh *)"
   "Bash(bash $S/runchk.sh *)" "Bash(bash $S/lock.sh)" "Bash(bash $S/unlock.sh)" "Bash(bash $S/clearstale.sh)"
+  "Bash(bash $S/slicechk.sh *)"   # 10-20 (job 58b): checks run in order in one page on the lane's own Chrome, to find a check that leaks state
   "Bash(powershell -NoProfile -ExecutionPolicy Bypass -File $S/mk-cw-*)"
   "Bash(powershell -NoProfile -ExecutionPolicy Bypass -File tools/cdp.ps1 -Start -Port 9346)"
   "Bash(git status:*)" "Bash(git log:*)" "Bash(git diff:*)" "Bash(git show:*)"

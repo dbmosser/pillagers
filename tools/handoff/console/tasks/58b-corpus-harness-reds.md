@@ -18,7 +18,11 @@ fixture.html?sliceA=1 and calls __regressBg(A,B)). The five reds and their slice
      bash <scratchpad>/slicechk.sh <lane> 120:150,228        a range, then one check: this is how you bisect
      bash <scratchpad>/slicechk.sh <lane> 120:150,228 draft  the same on a fixture built from your UNCOMMITTED mkfixture.ps1 edit
    (<scratchpad> is the same folder as shipq.sh.) Start with sliceStart:redIndex+1. If it does not go red, run the whole slice.
-   Write in notes whether it reproduced. The coordinator already ran v31.67 (place 228): see the notes file.
+   Write in notes whether it reproduced. ADD pin AS THE LAST WORD WHEN YOU BISECT (slicechk.sh <lane> 120:229 pin): every ship
+   rebuilds the fixture and moves every place by one; pin freezes a copy (unpin when done). The coordinator's bisect is in the notes.
+   COORDINATOR 10-20 15:45: slicechk.sh is now on your allowed list. Six reds were one leak and are FIXED (7fda5220: the v32.70 pad
+   name check left an own ctx.fillText that hid later checks' PR.fillText recorders). Still yours: v31.67 (it stays red after that
+   fix), v20.89, v24.38, v30.91, v31.04.
 2. Bisect the checks before it in the same slice until you find the one that leaves state behind (a profile or setting written, a timer
    or listener left running, a screen left open, a global flag, the zoom, the sandbox, a stubbed function not restored).
 3. Fix the STAGING, never the assertion: the leaking check cleans up after itself (try/finally restores what it changed), or the red
