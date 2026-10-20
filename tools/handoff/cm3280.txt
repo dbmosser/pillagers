@@ -1,0 +1,7 @@
+v32.80: the raid backpack loses its dead strip and floating values
+
+The raid backpack has no dead strip at the bottom and its detail rows read as one line.
+
+Check 32.80. Fails on v32.79.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

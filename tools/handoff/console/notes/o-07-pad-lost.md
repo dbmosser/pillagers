@@ -122,3 +122,14 @@ All four automatic camera rounds are used. Do not manufacture a fifth automatic 
 Remaining review: previous exact-heading, 480px pause width and Q61 feedback-control exclusions remain logged; do not repeat those questions. The actual peer HUD picture also has valid P1 findings about competing top notices, join-toast/hint overlap, minimap/run-info spacing and the lower-left status cluster. They are recorded in remaining-review.md and are not waived. The unrelated title-screen critiques came from failed guest staging. Completion still needs the new ship/gate, coordinator verification in both pictured windows, and follow-up on the remaining valid UI findings. Park until the lane/coordinator returns new evidence instead of rerunning unchanged camera inputs.
 
 Keep these prior versions for review: round 3 j8-p1-pad-lost (critic 3; generic enabled resume) and round 4 j8-p1-pad-lost / j8-p1-press-a (critic 3; correct reconnect/press-a states but disabled-label contrast defect). Round 4 j8-p1-sees-p2-lost is useful real peer-tag evidence despite its predicate exception. None is a score-4 acceptance.
+
+--- codex run 2026-10-20 06:28 ---
+2026-10-20, continued from v32.79.
+
+Confirmed cw-cx-o07-padcontrast shipped. a3279.txt and cm3279.txt record check 32.79 passing and failing on v32.78. All three game changes are integrated; no additional game patch or fixture retarget is ready or required for the J8 controls. Keep the shipped key in keys.txt for the lane to skip.
+
+No new picture or coordinator-check directory exists: only automatic rounds 1 through 4 are present. Both the missing player 2 picture evidence and post-contrast critic review remain outstanding. The prior runtime evidence for both slots still stands, but it does not replace the missing pictures. Remaining valid peer-HUD P1 findings are preserved in remaining-review.md, not waived.
+
+Updated camera-run-request.json, its generator metadata and remaining-review.md to record the completed contrast ship and remove the stale instruction to ship it first. The recipe file itself was not changed, and no fifth automatic round was requested. The coordinator already has the complete corrected recipe handoff and exact project camera command; run it only within the coordinator authorized verification process and return the report, pictures and critic findings. Codex cannot start Chrome or the camera under the addendum, and the automatic allowance is explicitly exhausted.
+
+Park this job until that external verification arrives. Do not rerun Codex solely because the last message says PARTIAL, reship an integrated patch, or treat failed title-menu staging pictures as player 2 acceptance. Remaining work is coordinator verification and resolving valid review findings after that evidence.

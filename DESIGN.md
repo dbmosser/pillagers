@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.80 - THE RAID BACKPACK LOSES ITS DEAD STRIP AND FLOATING VALUES
+
+Co-op hunt while he was away. The critic scored the compact backpack 3 of 5 (target 4): the detail value floated far from its label, about 90 px of dead panel sat under the hints, and the title outshone the selected item. The value column is closer, the footer is shorter, the title is the item-name size and the ammo count is white instead of amber.
+
+MEASURED. Check 32.80 passes, and fails on v32.79.
 ## v32.79 - PAD RECONNECT CONTRAST
 
 Co-op hunt while he was away. The disabled reconnect action inherited grey text on lime. The critic found low contrast and faint HUD text behind the disconnect card.

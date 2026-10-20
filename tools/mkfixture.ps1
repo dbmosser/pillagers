@@ -6101,6 +6101,29 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.80',what:'the raid backpack panel has no dead strip below its last line of text',
+   run:function(){
+     var g, bp, f, maxY=0, PR=CanvasRenderingContext2D.prototype, of=PR.fillText;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:['gun_carbine','medkit','bandage','bandage','plate','frag','smoke'],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player) return 'SKIP: no raid';
+       g.ents.length=0; g.player.iv=99; g.bagOpen=true;
+       for(f=0;f<8;f++) __loop(performance.now()+f*16.7);
+       bp=g.bagPanel; if(!bp) return 'the backpack panel was not drawn';
+       PR.fillText=function(s){
+         if(String(s).trim()&&arguments[1]>=bp.x&&arguments[1]<=bp.x+bp.w&&arguments[2]>=bp.y&&arguments[2]<=bp.y+bp.h&&arguments[2]>maxY) maxY=arguments[2];
+         return of.apply(this,arguments);
+       };
+       for(f=0;f<2;f++) __loop(performance.now()+f*16.7);
+       PR.fillText=of;
+       if(bp.y+bp.h-maxY>76) return 'the backpack panel has '+Math.round(bp.y+bp.h-maxY)+' px of dead panel under its last line';
+       return null;
+     } finally {
+       PR.fillText=of;
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     } }},
   {v:'32.79',what:'J8 disabled reconnect has at least 7:1 text contrast and full opacity; only the loss overlay hides the faint HUD and unrelated toast; A restores the regular pause style',
    run:function(){
      var bad=[], pk=Object.assign({},PAD), b=document.getElementById('resumebtn'), box=document.getElementById('pausebox'), text=b.textContent, disabled=b.disabled, focus=b.classList.contains('padfocus'), toast=document.getElementById('hubtoast'), toastStyle=toast?toast.style.cssText:'';

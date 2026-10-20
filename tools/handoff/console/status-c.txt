@@ -1,1 +1,1 @@
-10-20 06:22 no tasks left
+10-20 06:28 waiting for RAM: 2 GB free, a helper starts at 3; 46-check-invite-and-pad-items kept

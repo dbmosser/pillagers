@@ -3203,7 +3203,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.79';
+var VER='32.80';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -46331,7 +46331,7 @@ function drawBag(){
   var rowsMax=Math.max(2,Math.floor((H-LH(560)*BZ)/(TILE+GAP)));
   var rows=Math.min(rowsAll,rowsMax);
   var _dn=stacks.length?Math.min(6,itemRows(stacks[clamp(G.bagSel||0,0,stacks.length-1)].key).length):0;   // v28.xx (cw-bagpolish): the footer is as tall as the selected item's rows
-  var hh=LH(262)*BZ+rows*(TILE+GAP)+_dn*LH(18)*BZ;
+  var hh=LH(244)*BZ+rows*(TILE+GAP)+_dn*LH(18)*BZ;
   hh=Math.min(hh,H-70*BZ);
   // v8.51, audit: reserve the belt's REAL footprint. v8.94: and MEASURE it
   // rather than assert it. LH(70)+LH(14) is 131px at every resolution, because
@@ -46363,7 +46363,7 @@ function drawBag(){
   var _tm=Math.max(0,(gx-x)-11); x+=_tm; PW-=2*_tm;
 
   var cy=y+LH(30)*BZ;
-  ctx.font=bFS(TYPE.title); ctx.fillStyle='#efe9dc';
+  ctx.font=bFS(TYPE.head); ctx.fillStyle='#efe9dc';   // v28.xx (cw-bagpolish2), the critic: the title outshone the selected item, so it is the item-name size
   // v8.94, his note: BACKPACK, not INVENTORY. His vocabulary: I opens the
   // BACKPACK, and inventory means the backpack plus the belt together.
   ctx.fillText('BACKPACK',x+11,cy);
@@ -46386,7 +46386,7 @@ function drawBag(){
   ctx.font=bFS(TYPE.head); ctx.fillStyle='#cdd6dd';
   ctx.fillText(p.wep.name,x+11+LH(38)*BZ,cy);
   ctx.font=bFS(TYPE.label); ctx.textAlign='right';
-  ctx.fillStyle=p.wep.mag===0?'#8a96a1':(p.ammo===0?'#ff5a4a':'#ffc04a');
+  ctx.fillStyle=p.wep.mag===0?'#8a96a1':(p.ammo===0?'#ff5a4a':'#efe9dc');
   ctx.fillText(p.wep.mag===0?'MELEE':(p.ammo+' / '+rsvShow(p)),x+PW-11,cy);
   ctx.textAlign='left';
   cy+=LH(22)*BZ;
@@ -46480,7 +46480,7 @@ function drawBag(){
       ctx.fillStyle='#aaa498';
       ctx.fillText(_rw[_rr][0],x+11,_ry);
       ctx.fillStyle='#efe9dc';
-      ctx.fillText(String(_rw[_rr][1]),x+11+LH(100)*BZ,_ry);
+      ctx.fillText(String(_rw[_rr][1]),x+11+LH(64)*BZ,_ry);   // v28.xx (cw-bagpolish2), the critic: the value of a detail row floated far from its label, so the value column is closer, and the footer was 90 px of dead panel below the hints, so it is shorter
       _ry+=LH(18)*BZ;
     }
     ctx.fillStyle='#aaa498';
@@ -50927,7 +50927,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.79: Reconnect uses dark ink at full opacity while disabled. Only the disconnect overlay has an opaque backdrop and hides unrelated page toasts. Recovery restores the ordinary pause appearance. Check 32.79 fails on v32.78',
+  now:'v32.80: The raid backpack has no dead strip at the bottom and its detail rows read as one line. Check 32.80 fails on v32.79',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

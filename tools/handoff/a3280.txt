@@ -1,0 +1,1 @@
+| THE RAID BACKPACK LOSES ITS DEAD STRIP AND FLOATING VALUES | v32.80 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 32.80 passes, fails on v32.79 |
