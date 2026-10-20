@@ -1110,19 +1110,19 @@
   "when": "2026-10-20T12:06"
  },
  "30-settings-scroll-2400": {
-  "score": 3,
+  "score": 2,
   "pass": false,
-  "verdict": "The settings card is clean and consistent with the guide, but the two screenshots are visually identical except for a slightly shorter scrollbar thumb, so the daily-backup change isn't visible here, and the right pane is still mostly empty.",
+  "verdict": "The only change is a new 'saves and tools' tab in the left rail. The screen still has a huge dead detail pane, a list cut off at both edges, and low-contrast type, so it reads as a generic form and not a polished menu.",
   "findings": [
-   "P1 detail pane (right, x1088-1870): Anchor the description 16px under the title, or make the pane narrower (about 520px). Better, put a live preview of the setting there (fps counter, crosshair, text size sample). Keep one lime element: the focus bar or the pane top line, not both.",
-   "P1 verification of the changed feature: Re-shoot at the scroll position that shows the backup and restore rows. Check the row's buttons fit within the 1046px list width and have visible focus.",
-   "P1 list bottom edge (y≈965-995): Add a 24px fade mask to the bottom of the list or snap the scroll to row boundaries. Make the thumb 6px in --ui-line-hi with 8px padding from the edge.",
-   "P2 setting rows, value and arrow columns: Draw the arrows at 20px, 8px from the value, in --tx-2 (lime on focus). Give the toggle rows a pill or a switch with a visible on/off state, or the same arrow pattern.",
-   "P2 row spacing and group gaps: Use a fixed 56px pitch plus a 32px gap with a 16px label (display / accessibility / party) at each group start. Raise divider contrast to --ui-line."
+   "P1 right detail pane: Shrink the pane to about 480px wide and give the rest to the list, or put a real preview in it (crosshair or minimap sample). Delete the explaining sentence. If any text stays, put it directly under the title at 16px tx-2, not floating mid-pane.",
+   "P1 row list top and bottom edges: Snap scroll to whole rows, or add a 24px fade mask at both ends. Make the scrollbar 6px wide in --ui-line-hi, brightening to --acc on focus. Add small section headers (16px tx-2) in place of the unexplained gaps.",
+   "P1 left tab rail: Group the tabs with a 1px --ui-line divider and a 24px gap, with 'send play data' as a footer item of the rail. Give the active tab a --ui-raised fill, a 3px --acc bar and tx-1 text. Use identical row height and padding for every tab.",
+   "P1 value columns (all rows): Right-align the value block at 200px wide, with chevrons 8px from the value. Give every toggle row the same chevron control, or a 44x24 pill switch, so one control type does one job. Use --acc for 'on' only.",
+   "P2 row labels and values: Raise idle labels to tx-1 at 85% and values to tx-1 at 100%. Make the chevrons 20px and give them a 40px hit area. Make dividers 1px --ui-line at 100% rather than the current near-invisible line."
   ],
   "pic": "tools/handoff/console/notes/shots/o-14-daily-save-backup-after/30-settings-scroll-2400-1080.jpg",
   "task": "o-14-daily-save-backup",
-  "when": "2026-10-20T18:11"
+  "when": "2026-10-20T18:20"
  },
  "30-settings-daily-restore": {
   "score": 3,

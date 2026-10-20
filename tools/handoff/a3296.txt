@@ -1,0 +1,1 @@
+| A FAULT THAT KEEPS REPEATING RELOADS THE GAME INTO THE TITLE WITH A SHORT NOTE | v32.96 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 32.96 passes, fails on v32.95 |

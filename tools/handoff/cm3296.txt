@@ -1,0 +1,7 @@
+v32.96: a fault that keeps repeating reloads the game into the title with a short note
+
+If the same error repeats for 5 seconds the game restarts into the title and says restarted after an error.
+
+Check 32.96. Fails on v32.95.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

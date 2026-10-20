@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.96 - A FAULT THAT KEEPS REPEATING RELOADS THE GAME INTO THE TITLE WITH A SHORT NOTE
+
+Co-op hunt while he was away. His answer (Tech): a crash reloads into the title with a note. One error never kills the frame loop, so the trigger is the same fault repeating every frame for 5 seconds. The run report keeps the crash, the last good save is not overwritten, the page reloads and the title says restarted after an error, then fades. One error, a short burst, a hidden page and the test pages never reload.
+
+MEASURED. Check 32.96 passes, and fails on v32.95.
 ## v32.95 - DAILY RESTORE ACTION AND SECTION
 
 Co-op hunt while he was away. The critic found equal-weight restore controls, an ambiguous undo hint and a display section marker while the save row was focused. Give the existing save section its missing navigation entry and make restore the primary action.
