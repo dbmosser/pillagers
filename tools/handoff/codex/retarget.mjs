@@ -11,7 +11,7 @@ import vm from 'node:vm';
 
 const sha = (s) => crypto.createHash('sha256').update(s, 'utf8').digest('hex');
 const nl = (s) => s.replace(/\r\n/g, '\n');
-const VRE = /\{\s*v\s*:\s*['"](\d+\.\d+)['"]/g;      // a check starts {v:'31.09',what:...
+const VRE = /\{\s*v\s*:\s*['"](\d+\.\d+[a-z]*)['"]/g;      // a check starts {v:'31.09',what:...
 const KEYRE = /^cw-cx-[a-z0-9][a-z0-9-]{1,40}$/;
 const NUL = String.fromCharCode(0);
 const LINEEND = new RegExp('\\r\\n|[\\r\\n' + String.fromCharCode(0x2028, 0x2029) + ']');   // V8 counts U+2028 and U+2029 as line ends too
@@ -59,7 +59,7 @@ function plan(jsonPath, mkPath, appliedPath, outPath) {
   const extra = [];   // optional "run": ["31.83", ...] = more checks to run besides the ones in the replacements (for example the new ship check)
   if (j.run !== undefined) {
     if (!Array.isArray(j.run)) errs.push('"run" must be a list of check versions like "31.83"');
-    else for (const v of j.run) { if (typeof v === 'string' && /^\d+\.\d+$/.test(v)) extra.push(v); else errs.push('"run" has ' + show(String(v)) + ', which is not a check version like 31.83'); }
+    else for (const v of j.run) { if (typeof v === 'string' && /^\d+\.\d+[a-z]*$/.test(v)) extra.push(v); else errs.push('"run" has ' + show(String(v)) + ', which is not a check version like 31.83'); }
   }
   if (errs.length) refuse(errs);
 

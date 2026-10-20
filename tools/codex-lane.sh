@@ -344,7 +344,7 @@ rt_checks(){  # rt_checks LIST OUT : each check in LIST once on the trial fixtur
   echo "ALL DONE" >> "$o"; return 0; }
 apply_retarget(){
   local js="$WD/fixture-retarget.json" ap="$LS/retarget-applied.txt" out="$LS/mkfixture-retarget.ps1" game="$LS/game-head.html"
-  local lst="$LS/retarget-run.txt" res="$LS/retarget-result.txt" trial="$R/tools/$RT_PAGE" pl st run why n h0 h1 bad miss v c tries=0
+  local lst="$LS/retarget-run.txt" res="$LS/retarget-result.txt" trial="$R/tools/$RT_PAGE" pl st run why n h0 h1 bad miss v c pat tries=0
   RT_HOLD=""; RT_DONE=""
   [ -f "$js" ] || return 0
   touch "$ap"
@@ -384,7 +384,11 @@ $(tail -6 "$LS/retarget-build.txt" | cut -c1-300)"; return 1; fi
       rt_checks "$lst" "$res" || { rm -f "$trial"; say "retarget: the lane's browser $PFPORT will not answer ($name); its keys wait, no run spent"; return 2; }
       miss=""; for v in $run; do grep -q "^$v: " "$res" || miss="$miss $v"; done
       if [ -n "$miss" ]; then rm -f "$trial"; log "retarget checks for $name came back incomplete (no answer for$miss)"; say "retarget: the trial checks did not all answer ($name); its keys wait"; return 2; fi
-      bad=$(grep -vE '^[0-9]+\.[0-9]+: PASS$|^ALL DONE$|^$' "$res" | head -8 | cut -c1-300)
+      # 10-20 (o-19): a check id may carry a letter (8.58h), and a check that answers 'SKIP: ' (a retired feature, a pane limit) counts as
+      # held, but only when the edit adds no 'SKIP: ' text of its own, so a retarget can never turn a red check into a skip.
+      pat='^[0-9]+\.[0-9]+[a-z]*: PASS$|^ALL DONE$|^$'
+      [ "$(grep -o 'SKIP: ' "$out" | wc -l)" -le "$(grep -o 'SKIP: ' "$R/tools/mkfixture.ps1" | wc -l)" ] && pat='^[0-9]+\.[0-9]+[a-z]*: (PASS$|SKIP: )|^ALL DONE$|^$'
+      bad=$(grep -vE "$pat" "$res" | head -8 | cut -c1-300)
       if [ -n "$bad" ]; then rm -f "$trial"; appendfb "A retargeted check FAILED on a trial build of the current game (v$(gamever)): tools/mkfixture.ps1 is unchanged and nothing was committed. Make it hold on the old AND the new build, then end again:
 $bad"; return 1; fi
     fi
