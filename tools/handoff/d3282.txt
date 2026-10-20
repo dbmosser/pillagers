@@ -1,0 +1,5 @@
+## v32.82 - INVITE CODE KEEPS ITS CASE
+
+Co-op hunt while he was away. The lower case door must never touch the party code tag, and the paste box must name it as it looks. Guard also covers pad reach for the plate and the air strike.
+
+MEASURED. Check 32.82 passes, and fails on v32.81.

@@ -263,19 +263,19 @@
   "when": "2026-10-20T05:09"
  },
  "23-raid-backpack-open": {
-  "score": 3,
+  "score": 2,
   "pass": false,
-  "verdict": "The new backpack is a tighter, calmer panel with a lime focus box and no amber noise, but it is still a flat text list with a large dead bottom third, a capital 'I' and no real inventory-grid feel.",
+  "verdict": "The tile bars and the packed panel are tidier than the earlier shot, but the backpack is still a small, flat, mostly empty box. It is far from the near-full-screen centred card with an X that he ordered, and the item grid is undersized and under-hierarchised.",
   "findings": [
-   "P1 stat line under the scav pistol: 'integrity 100/100': Lower-case the string to 'integrity 100/100' and remove whatever capitalising path was added in v32.80.",
-   "P1 whole panel, bottom third (y 870-920): Crop the panel height to content (bottom padding 24px). Or fill the space with a 4x3 grid of empty slots at 84px, which is the Diablo IV grid the style guide asks for.",
-   "P1 item row (3 tiles at 84px) and detail block: Make the capacity '12 / 24' a 32px f-cond 700 title with a thin 4px fill bar under it. Add 3px rarity bars to the tile bottoms. Raise the selected item name to 24-32px tx-1.",
-   "P2 detail pane: 'use ........ armor' row and the hint line: Draw keys as 24px outlined key caps (z, arrows). Put the label and value in a two-column row with a 16px gap. Cut the hint line down to 'z drop' and 'drag to belt'.",
-   "P2 panel chrome: Add a 1px #4a5257 border, a 36x2px lime top tab and an x button at top right. Put a rgba(6,7,8,.8) scrim behind the card."
+   "P0 backpack panel as a whole: Make it a centred card about 90% wide (1728x~970). Put a 40px X button top-right with a pad focus state. Drop the text hint to a 14px footer legend. Leave 24px clear above the hotbar, or hide the hotbar while the card is open.",
+   "P0 item tiles row (3 tiles at ~86px): Draw a fixed grid of 8 columns by N rows at 96px tiles with 8px gaps, with empty slots outlined in --ui-line. Make the rarity bar 3px full width. Put counts at 16px bold with a dark chip behind them.",
+   "P1 type hierarchy inside the panel: Set the title to 32px f-cond 700. Set the selected item name to 20px tx-1. Put the stat values in tx-1 and the stat labels in tx-2 at 16px. Make '12 / 24' the one 56px hero number, or leave it as quiet 20px text. Do not do both.",
+   "P1 selected-item detail ('armour plate' block): Make the detail a --ui-raised pane with 24px padding. Lay out label and value in two aligned columns with a 120px label width. Move the hints to a 14px footer legend using key chips. Trim the bottom padding to 24px.",
+   "P1 panel chrome and separators: Use fill --ui-panel at 94% and a 1px --ui-line-hi border. Add a 3px --acc tab on the left edge of the title. Darken the scrim behind the card to 80% with the scrim token. Make the focus ring 2px --acc plus a 4px outer glow."
   ],
-  "pic": "tools/handoff/console/notes/shots/45-after2/23-raid-backpack-open-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/45-after4/23-raid-backpack-open-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T10:30"
+  "when": "2026-10-20T10:39"
  },
  "25-raid-pause-box": {
   "score": 3,
@@ -467,17 +467,17 @@
  "66-trophy-case": {
   "score": 3,
   "pass": false,
-  "verdict": "The card now fills its space with a clean 4x2 grid, a single close button and no top-bar clutter, so it is a real improvement. The tiles are still flat and empty, though, and nothing shows which one has focus or which are earned.",
+  "verdict": "A clean, consistent dark card with a clear x and a readable grid, but the tiles are big and empty, the title is small, and unlocked and locked states barely differ in hierarchy.",
   "findings": [
-   "P1 tile grid, all 8 tiles: Focus the first tile in the capture. Give it a 2px --acc border, a --ui-raised fill, and a 3px --acc tab on the left edge. Verify that the ring stays inside the 24px gutter.",
-   "P1 tiles, content block: Make the tile about 400x300 and centre the content with 24px padding, or enlarge the trophy to about 120px. Put the freed height into a 56px hero icon or a larger name at 32px.",
-   "P1 tile state, earned vs locked: Restore a 3px bottom bar in the tier colour (bronze, silver, --r-gold) on earned tiles, and a --ui-line bar on locked ones. Dim the locked name to --tx-2 at 60% and keep the 'locked' tag.",
-   "P2 tile text, secondary lines: Set the description to 20px --tx-2 (#aaa498). Set the date to 16px --tx-2. Keep 'locked' at 16px, not 14px.",
-   "P2 header row: Keep the stats out, but set '6 of 8' in 20px --tx-2 after the title so the title carries the weight. Make sure the title is 32px/700 and the same size on every window."
+   "P1 header title 'trophy case · 6 of 8': Make the title 32px f-cond 700 in tx-1. Move '6 of 8' to the right of the header, next to the x, in tx-2 at 20px, or make it the one 56px hero count. Pad the header to 24px.",
+   "P1 all 8 tiles: Cut the tile height to about 260px and use a 4x2 grid with a 24px gap. Scale the icon to about 96px. Alternatively use 6 columns of smaller tiles so the card is not mostly void. Fill earned tiles with --ui-raised and keep locked tiles on --ui-panel.",
+   "P1 locked tiles (full armory, overseer down): Draw locked icons as a 2px outline in --ui-line-hi (#4a5257), not a dark fill. Keep the locked name and description at tx-2 or brighter (4.5:1 minimum). Replace the 'locked' tag with a 16px tx-2 label.",
+   "P1 trophy tier colours: Make all earned icons one neutral tone (tx-1 at 70%). Put a 3px top bar in the tier colour on each tile, as the rarity bars do elsewhere. Use lime only for focus.",
+   "P2 tile text sizes: Set the name to 20px tx-1 (600), the description to 16px tx-2 and the date to 16px tx-2 at 60% opacity. Add 8px of spacing between them, and put the date at the bottom edge of the tile."
   ],
-  "pic": "tools/handoff/console/notes/shots/45-after/66-trophy-case-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/45-after4/66-trophy-case-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T10:18"
+  "when": "2026-10-20T10:39"
  },
  "62-arcade-operator-menu": {
   "score": 3,

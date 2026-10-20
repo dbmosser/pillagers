@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.82 - INVITE CODE KEEPS ITS CASE
+
+Co-op hunt while he was away. The lower case door must never touch the party code tag, and the paste box must name it as it looks. Guard also covers pad reach for the plate and the air strike.
+
+MEASURED. Check 32.82 passes, and fails on v32.81.
 ## v32.81 - BACKPACK TILES SHARE ONE BORDER, RARITY IS A BAR
 
 Co-op hunt while he was away. The critic held the backpack at 3 of 5 (target 4): tiles had different coloured borders and tinted fills so focus and rarity read alike, and about 60 px of dead panel sat under the hints. Every tile now has the same 1px line, rarity is a 3px bar at the foot, and the footer is shorter.
