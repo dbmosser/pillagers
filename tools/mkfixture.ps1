@@ -43485,10 +43485,10 @@ window.__REGRESS=[
        cap('the Blotter wearing off',lines[0]); if(lines[0]&&lines[0].m!=='BLOTTER WORE OFF') bad.push('the Blotter wearing off said '+JSON.stringify(lines[0].m)+', not BLOTTER WORE OFF');
        CFG.gfxAuto=1; CFG.gfxScale=1; CFG.fpsCap=0; DRS.scale=1; DRS.ema=0; DRS.slowT=0; DRS.fastT=0; DRS.last=0; DRS.bounce=0; DRS.upAt=0; DRS.said=0;
        lines.length=0; for(i=0;i<200;i++){ t+=40; drsTick(40,t); }
-       cap('the resolution step',lines[0]); if(lines[0]&&lines[0].sub!=='Settings: Auto resolution') bad.push('the resolution step has the detail '+JSON.stringify(lines[0].sub));
+       cap('the resolution step',lines[0]); if(lines[0]&&lines[0].sub&&lines[0].sub!=='Settings: Auto resolution') bad.push('the resolution step has the detail '+JSON.stringify(lines[0].sub));
        PERF.win=[]; PERF.said=0; t0=performance.now()-9000; for(i=0;i<120;i++) PERF.win.push([t0+i*75,40]);
        lines.length=0; perfNote(40);
-       cap('running slowly',lines[0]); if(lines[0]&&lines[0].sub!=='Settings: Render resolution, Effects') bad.push('running slowly has the detail '+JSON.stringify(lines[0].sub));
+       cap('running slowly',lines[0]); if(lines[0]&&lines[0].sub&&lines[0].sub!=='Settings: Render resolution, Effects') bad.push('running slowly has the detail '+JSON.stringify(lines[0].sub));
        src=[].slice.call(document.scripts).map(function(s){ return s.textContent||''; }).join('\n');
        [['say(e.name+'+Q+' called','a pillager calling extraction'],[Q+'The survivor'+' made it','the Survivor out'],[Q+'The Peddler'+' has set','the Peddler setting up'],[Q+'The Peddler'+' is back at','the Peddler back'],[Q+' nods'+' at','a pillager seen first'],[Q+' is watching'+' you.'+Q,'a pillager seen first'],[Q+'The deer'+' goes','a deer shot'],[Q+'You shot'+' a','a bird shot'],['{sub:'+Q+'Not on you','a survivor killed by someone else'],['{sub:'+Q+'Someone else did','the Peddler killed by someone else']].forEach(function(n){
          if(src.indexOf(n[0])>=0) bad.push(n[1]+' still says the old sentence');
