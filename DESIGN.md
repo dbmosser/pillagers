@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.17 - Stash header: title 32px, no subtitle
+
+Co-op hunt while he was away. UI step 7 (restyle only). Critic on the stash: tiny grey title and a dash-separated subtitle that repeats the xp.
+
+MEASURED. Check 32.17 passes, and fails on v32.16.
 ## v32.16 - Stash first-raid strip is gone
 
 Co-op hunt while he was away. UI step 7 (restyle only). The critic named the lime first-raid strip as an explaining sentence in the stash bottom stack; Q8 lets it go with the reason logged.

@@ -1,0 +1,12 @@
+{
+    "title":  "Stash header: title 32px, no subtitle",
+    "why":  "UI step 7 (restyle only). Critic on the stash: tiny grey title and a dash-separated subtitle that repeats the xp.",
+    "now":  "The stash header shows a bigger title and no subtitle line.",
+    "edits":  [
+                  {
+                      "anchor":  "#root #hub #firstkit{ display:none !important; }",
+                      "replacement":  "#root #hub #firstkit{ display:none !important; }\n/* v28.xx (cw-uc-stashhead) b-31 step 7, critic on 04 (P1 \"subtitle repeats the xp, dashes banned\"; \"title is a tiny grey word\"): the stash subtitle line is hidden, the title is 32px; the xp still shows in the header stats. Looks only. */\n#root #hub .toprow .brand + div{ display:none !important; }\n#root #hub .toprow .brand{ font-size:32px !important; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the stash header has no dash subtitle and a 32px title\u0027,\n   run:function(){\n     var bad=[];\n     try{\n       var b=document.querySelector(\u0027#hub .toprow .brand\u0027), s=b\u0026\u0026b.nextElementSibling;\n       if(!b) bad.push(\u0027no brand\u0027); else {\n         if(parseFloat(getComputedStyle(b).fontSize)\u003c31.5) bad.push(\u0027title is \u0027+getComputedStyle(b).fontSize);\n         if(s\u0026\u0026getComputedStyle(s).display!==\u0027none\u0027) bad.push(\u0027subtitle displays\u0027); }\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

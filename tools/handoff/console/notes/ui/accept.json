@@ -18,17 +18,17 @@
  "04-stash-terminal": {
   "score": 2,
   "pass": false,
-  "verdict": "The stash window is a dense, crowded admin panel with no hero. About ten competing text strips, tiny type and several different panel styles keep it from reading as a card from one design system.",
+  "verdict": "The first-raid explainer strip is gone and the backpack grid now fills the freed space, but the stash is still a dense, flat screen with no focal point and several stacked sentence and banner rows.",
   "findings": [
-   "P0 whole window hierarchy: Make the stash grid the hero: 96px tiles filling the pane, with the empty space either filled by empty slot outlines or the pane cut down to the grid. Cut the loadout column to backpack plus belt. Move gun keys and the item wheel into their own tab or a pad-bound page.",
-   "P0 bottom stack: key legend, hint line, freebie kit banner, welcome pack toast: Delete the junk hint and the welcome toast. Cut the freebie banner to 'freebie kit' plus one lime button. Keep one footer row of key hints at 14px. Likewise delete the lime-bordered tutorial strip 'first raid: drag a gun...' (an explaining sentence).",
-   "P1 header row, top-left and top-right: One 32px title 'stash'. Show money as '$900' in tx-1 at 20px, with xp and bag capacity as 16px tx-2 labels on an 8px grid. Drop the subtitle. Hide or move the background hub label so it is not clipped.",
-   "P1 type scale across the card: Use only the 5 token sizes, with a 16px minimum for anything read. Move sort, armory and trophies out of the tab row into a header menu or a second row. Use the same letter-spacing (+.04em) for every label.",
-   "P1 gun keys and item wheel block (bottom right): Give cells 48px of height and a 16px label. Align the reset buttons to the section headers on the same baseline, drop the 'wheel' filler cell, and show a lime 2px border on the focused cell."
+   "P0 bottom stack: freebie kit banner, welcome pack toast, hint line: Delete the toast box, or fold it into a single 32px status row. Remove the junk hint sentence and show it only on hover. Make the freebie kit one 56px row with a filled lime 'take the freebie kit' button (acc-ink text, 20px) at the right. Cut the row's description to 'scav pistol + 2 bandages + frag + plate'.",
+   "P0 whole card, hierarchy: Give the card one focal point: either a lime filled primary button at bottom-right at 20px/700, or the loadout header as the star with a 3px accent tab. Drop the header numbers to --fs-label and keep only '900' at 32px.",
+   "P1 header (credits, xp, stash 3,750 bag 0) and title block: Set the title 'the stash' at 32px/700 tx-1. Delete the subtitle line. Show money as '$900' and value as '$3,750' with 16px tx-2 labels above the numbers. Use 24px gaps between stats. Remove the em-dashes.",
+   "P1 tab row, search and sort/armory/trophies group: Make the tab underline 3px lime and the active tab text lime. Shrink the search field to about 280px. Move armory and trophies into 36px outlined buttons with a 1px --ui-line-hi border at the far right, and keep sort as a dropdown chip.",
+   "P1 right pane: tactical belt, gun keys, item wheel: Lift chip text to 16px and chip height to 44px. Delete the 'guns' orphan caption, or make it a 16px section label aligned left. Use one cell style (1px --ui-line-hi border, --ui-raised fill) for backpack and belt. Align every reset button to the same 28px height and put each at its section header's right edge."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-31-g1/04-stash-terminal-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/b-31-j2/04-stash-terminal-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T01:46"
+  "when": "2026-10-20T03:43"
  },
  "05-sector-page": {
   "score": 2,

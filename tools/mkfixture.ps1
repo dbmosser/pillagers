@@ -6101,6 +6101,16 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.17',what:'the stash header has no dash subtitle and a 32px title',
+   run:function(){
+     var bad=[];
+     try{
+       var b=document.querySelector('#hub .toprow .brand'), s=b&&b.nextElementSibling;
+       if(!b) bad.push('no brand'); else {
+         if(parseFloat(getComputedStyle(b).fontSize)<31.5) bad.push('title is '+getComputedStyle(b).fontSize);
+         if(s&&getComputedStyle(s).display!=='none') bad.push('subtitle displays'); }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     return bad.length?bad.join('; '):null; }},
   {v:'32.16',what:'the stash first-raid strip never shows',
    run:function(){
      var bad=[];

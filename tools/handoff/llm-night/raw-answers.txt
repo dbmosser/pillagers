@@ -1,4 +1,39 @@
 
+The provided HTML and CSS code snippet appears to be part of a web application or game interface, specifically related to the pause menu and outcome screen. Here's a breakdown of its key components:
+
+### Pause Menu (`#pausebox`)
+
+- **Structure**:
+  - The pause box is centered on the screen with various buttons for different actions like resuming the run, settings, leaderboard, feedback, etc.
+  
+- **Styling**:
+  - Uses CSS variables for font sizes and colors to maintain a consistent theme.
+  - Buttons have specific padding, border color, and text color styles.
+
+### Feedback Modal (`#fbmodal`)
+
+- **Structure**:
+  - A modal window that appears over the pause menu when the feedback button is clicked.
+  - Contains an image of the current screen, a textarea for notes, and buttons to save or close the modal.
+
+- **Styling**:
+  - Similar to other modals, it uses CSS variables for consistent styling.
+  
+### What's New Modal (`#wnmodal`)
+
+- **Structure**:
+  - A modal window that lists new features or updates when the "What's New" button is clicked.
+  - Contains a list of items and a close button.
+
+- **Styling**:
+  - Uses CSS variables for consistent styling.
+
+### Leaderboard Modal (`#lbmodal`)
+
+- **Structure**:
+  - A modal window displaying the leaderboard, which can be accessed from the pause menu or run card.
+
+NONE
 NONE
 NONE
 NONE

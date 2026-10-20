@@ -1,0 +1,7 @@
+v32.17: stash header: title 32px, no subtitle
+
+The stash header shows a bigger title and no subtitle line.
+
+Check 32.17. Fails on v32.16.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
