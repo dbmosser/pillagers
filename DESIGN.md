@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.99 - SETTINGS: AN EXPERIMENTAL MENU WITH THE FIRST FOUR SWITCHES
+
+Co-op hunt while he was away. His order (round 3, 2.R4 b): a separate menu, opened from Settings, that switches the newer features on and off. Settings has one new row, experimental, that opens a page in the same layout with an on/off row per feature and a back button; esc and B back out of the page before they close Settings. Every switch starts on, so with nothing touched the game is exactly as before. A switch is read once when the raid starts and held for the raid, and in a party the host switches rule for both windows. This first build brings the menu and four switches: run goals, golden enemy, strongholds and power-ups. The other features follow in small builds.
+
+MEASURED. Check 32.99 passes, and fails on v32.98.
 ## v32.98 - HIDE UNAVAILABLE SERVER CO-OP
 
 Co-op hunt while he was away. His 2.R6 b: hide server co-op completely until it works. The host still showed the disabled row and coming later tag.

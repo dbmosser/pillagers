@@ -1,0 +1,7 @@
+v32.99: settings: an experimental menu with the first four switches
+
+Settings has an experimental page with on/off rows for run goals, golden enemy, strongholds and power-ups.
+
+Check 32.99. Fails on v32.98.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

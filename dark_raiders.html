@@ -3238,7 +3238,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.98';
+var VER='32.99';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3721,6 +3721,34 @@ var PRESETS={
 var CFG={};
 function cloneObj(o){ var r={},k; for(k in o) r[k]=o[k]; return r; }
 function applyCfg(base,over){ CFG=cloneObj(base); if(over){ for(var k in over) if(k in DEF) CFG[k]=over[k]; } }
+// v32.xx (cw-expmenu1), HIS ORDER (2026-10-14: "create an experimental settings menu inside settings where I can turn new features on and off"; round 3, 2.R4 b:
+// "make it a separate menu accessible from settings"). Settings has one row, experimental, that opens its own page with an on/off row per newer feature. Every
+// switch is ON by default, so a profile that never opens it plays exactly as before. Each key is a DEF key, so the host's off switches ride in the raid word
+// (netUpCfgDiff) and a linked window builds and plays the raid under them. A WORLD switch ('w') is read from XF, a snapshot startRaid takes before the raid is
+// built, never from CFG during a raid: a change made mid raid starts with the next raid. A LOCAL switch ('l') is read live from CFG. A row is listed only when
+// its guard is in the build: add the row above XF_ROWS_END and the guard where the feature starts.
+var XF_ROWS=[
+  // [key, label, hint, scope]
+  ['xfGoals','run goals','three goals a raid','w'],
+  ['xfGold','golden enemy','one golden enemy a raid','w'],
+  ['xfHold','strongholds','fenced compounds','w'],
+  ['xfPwr','power-ups','kills drop power-ups','w'],
+  // XF_ROWS_END
+];
+var XF_KEYS=[], XF_WORLD=[], XF={}, SETSUB='';
+(function(){ var i; for(i=0;i<XF_ROWS.length;i++){ XF_KEYS.push(XF_ROWS[i][0]); DEF[XF_ROWS[i][0]]=1; if(XF_ROWS[i][3]==='w') XF_WORLD.push(XF_ROWS[i][0]); } })();
+function xfSnap(){ var i, k; XF={}; for(i=0;i<XF_WORLD.length;i++){ k=XF_WORLD[i]; XF[k]=(CFG&&CFG[k]===0)?0:1; } return XF; }
+function xf(k){ return XF[k]!==0; }                      // a WORLD switch, as this raid was started with it (all on before any raid)
+function xfL(k){ return !(CFG&&CFG[k]===0); }            // a LOCAL switch, this window, now
+function expRowHtml(){
+  return '<div class="row"><div style="flex:1"><b>experimental</b><div class="hint">newer features on or off</div></div><button id="exp_open" style="padding:6px 12px;min-width:92px">open</button></div>';
+}
+function expPage(host,S){
+  var i, eb;
+  host.innerHTML='<div class="row"><div style="flex:1"><b>experimental</b><div class="hint">starts next raid</div></div><button id="exp_back" style="padding:6px 12px;min-width:92px">back</button></div>'+(S.EXPERIMENTAL||'');
+  eb=document.getElementById('exp_back'); if(eb) eb.onclick=function(){ SETSUB=''; renderSettings(); };
+  for(i=0;i<GAMEOPTS.length;i++) if(GAMEOPTS[i].sec==='EXPERIMENTAL') (function(k){ var b=document.getElementById('go_'+k); if(b) b.onclick=function(){ cycleGameOpt(k); renderSettings(); }; })(GAMEOPTS[i].k);
+}
 applyCfg(DEF,null); CFG.preset='B';
 // SPEC 9.4: A SCOPE SHOULD LET YOU SEE FURTHER, NOT ONLY HIT HARDER. In a game
 // built on not being able to see, range on a weapon card is nearly meaningless:
@@ -16965,6 +16993,7 @@ drawMapOverlay=function(){ _mapFirstDraw0(); try{ if(G&&G.mapFirst&&!G.over) map
 // same for the opening map and the map the player opens himself, so there is nothing to wrap.
 function startRaid(){
   if(netGuestHeld()) return false;   // v15.91: in a party only the host takes the lift; a guest goes up on the host word (the net section)
+  xfSnap();   // v32.xx (cw-expmenu1): the experimental switches this raid is built and played with (on a linked window the host's, netUpStart has them in CFG)
   // v21.96, from the whole-game bug hunt of 2026-10-08 (K6): THE RECORD OF PILED GUNS IS KEPT FOR THE RAID HE JOINS AGAIN. A new raid
   // wiped the whole record (v21.44), so a guest who dropped his armoury gun, abandoned (the gun went home) and pressed JOIN THE RAID IN
   // PROGRESS lost it while the pile still lay in the host's raid: the host taking the gun took nothing out of his armoury, and his own
@@ -51134,7 +51163,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.98: The title hides the server co-op row and tag in every window. Keyboard and pad keep skipping it. Check 32.98 fails on v32.97',
+  now:'v32.99: Settings has an experimental page with on/off rows for run goals, golden enemy, strongholds and power-ups. Check 32.99 fails on v32.98',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -61216,6 +61245,7 @@ function flowChip(n,head,sub){
 function goalsTick(dt){
   var S=flowS(), i, gl, v;
   if(flowPeer()) return;   // v27.27 (coop8): a linked player 2 window counts nothing and pays no chip, the goals are the host (goalsNetTake)
+  if(!xf('xfGoals')) return;   // v32.xx (cw-expmenu1): switched off, the raid makes and pays no goals
   if(!S.goals) goalsMake(S);
   for(i=0;i<S.goals.length;i++){
     gl=S.goals[i]; if(gl.done) continue;
@@ -62138,6 +62168,7 @@ function shLeash(s){
 }
 function shTick(dt){
   var SS=shS(), i, k, s, p=G.player, near, alive, p2;
+  if(!xf('xfHold')) return;   // v32.xx (cw-expmenu1): switched off, no stronghold is laid out
   if(flowPeer()){ shPeerTick(dt); return; }   // v27.46 (coop4): a linked player 2 window lays out and fills no stronghold, it keeps the host ones (shNetTake)
   if(!SS.sites){
     if((G.t||0)<3) return;
@@ -62290,6 +62321,7 @@ function goldDrop(x,y){
 function goldTick(dt){
   var S=goldS(), p=G.player, ix, e;
   if(flowPeer()) return;   // v27.18 (coop5): a linked player 2 window gilds nothing, the golden enemy is the host one (goldNetTake)
+  if(!xf('xfGold')) return;   // v32.xx (cw-expmenu1): switched off, no body is gilded
   if(!S.ref&&!S.dead){
     if((G.t||0)<3) return;
     S.tried=(S.tried||0)+dt; if(S.tried<1&&S.tries) return;
@@ -63448,6 +63480,7 @@ function pwrDrop(kd,x,y){
 // a kill was credited: maybe a drop where he fell (e is the body, when there is one)
 function pwrKill(k,el,boss,x,y,e){
   var S, t, n, ch, roll=1, wr=0, tot=0, i, kd=null, p;
+  if(!xf('xfPwr')) return 0;   // v32.xx (cw-expmenu1): switched off, kills drop nothing
   if(!G||G.sim||G.over||!G.player||!(G.arcade||G.career)) return 0;
   S=pwrS(); t=+G.t||0; p=G.player; n=S.kn++; S.since++;
   sideStream(((((G.seed>>>0)^Math.imul(n+1,0x85EBCA6B))>>>0)||1),PWR.tag,function(){ roll=rr(); wr=rr(); });
@@ -67977,7 +68010,14 @@ hint:'Damage taken from everything on the surface. Standard is how the game has 
      {n:'Light',    cfg:{siegeVol:0.6}}
    ], def:2}
 ];
-// v10.28: which option the LIVE dials match, or -1 when a slider has put them
+// v32.xx (cw-expmenu1): the experimental rows, one per XF_ROWS line, on first. They are not in SETSEC, so the main page never draws them; expPage does.
+(function(){
+  var i, r, on, off;
+  for(i=0;i<XF_ROWS.length;i++){
+    r=XF_ROWS[i]; on={}; off={}; on[r[0]]=1; off[r[0]]=0;
+    GAMEOPTS.push({k:r[0],label:r[1],sec:'EXPERIMENTAL',hint:r[2],opts:[{n:'on',cfg:on},{n:'off',cfg:off}],def:0});
+  }
+})();// v10.28: which option the LIVE dials match, or -1 when a slider has put them
 // somewhere no option names. The rows show this; the stored choice is the
 // fallback when nothing has been tuned by hand.
 function gameOptLive(k){
@@ -68193,13 +68233,14 @@ function renderSettingsInner(host){
       '<button id="go_'+_gr.k+'" style="padding:6px 12px;min-width:92px'+
       (_dflt?'':';color:var(--amber)')+'">'+(_gs?_gs.n:'CUSTOM')+'</button></div>';
   }
+  if(SETSUB==='exp'){ expPage(host,_SEC); return; }   // v32.xx (cw-expmenu1): the experimental page replaces the list until back
   // v16.50, stability: Settings opens in a raid since v16.45, and three of its buttons do not belong there. PICK FILE opens a
   // file window a controller cannot shut, and a restore or its UNDO reloads the window, which drops a teammate out of the party
   // and loses the run. In a raid they are greyed out; in the Undercroft they work as before.
   var _rOff=((typeof G!=='undefined'&&G&&!G.over&&!G.sim)||(typeof NET==='object'&&NET&&NET.on&&NET.specG))?' disabled':'';   // v16.64: and while the host runs the raid for his party
   // v28.xx (cw-cx-dailysave): the existing restore row cycles file and the three daily copies; mouse and pad use the same button.
   var _dailyChoices=dailySaveChoices(), _dailyAt=-1;
-  host.innerHTML=setSecsHtml(_SEC,{CONTROLS:keysRowHtml(),CONTROLLER:padRowHtml()})+kidHeadHtml()+kidRowHtml()+afRowHtml()+kbRowHtml()+   // v17.71: the kid menu
+  host.innerHTML=setSecsHtml(_SEC,{CONTROLS:keysRowHtml(),CONTROLLER:padRowHtml(),ACCESSIBILITY:expRowHtml()})+kidHeadHtml()+kidRowHtml()+afRowHtml()+kbRowHtml()+   // v17.71: the kid menu
     '<div class="row" data-mv="DISPLAY"><div style="flex:1"><b>Text size</b><div class="hint">Scales every string on every canvas and in every panel.</div></div>'+
     '<button id="set_text" style="padding:6px 12px">'+Math.round(uiScale()*100)+'%</button></div>'+
     // v8.77: MUS_THEMES holds FIVE and musPick draws uniformly from all of them.
@@ -68378,6 +68419,8 @@ function renderSettingsInner(host){
       if(b) b.onclick=function(){ var _rs0=CFG.raidSec; cycleGameOpt(k); gameOptRaidNow(_rs0); renderSettings(); };   // v16.45: a raid in hand changes at once
     })(GAMEOPTS[_gh].k);
   }
+  var _eo=document.getElementById('exp_open');   // v32.xx (cw-expmenu1)
+  if(_eo) _eo.onclick=function(){ SETSUB='exp'; renderSettings(); try{ document.getElementById('setlist').scrollTop=0; }catch(_es){} };
 
 }
 // v8.20, audit: the flag hid the station and the rows and left the door. Hidden
@@ -68394,6 +68437,7 @@ document.getElementById('closedev').onclick=function(){
 };
 
 document.getElementById('closesettings').onclick=function(){
+  if(SETSUB){ SETSUB=''; renderSettings(); return; }   // v32.xx (cw-expmenu1): esc and B leave the experimental page first
   document.getElementById('settingsmodal').classList.remove('on');
 };
 // The terminal copies of these two are GONE at v2.98, so their handlers have to
@@ -68958,6 +69002,7 @@ function openSettings(tab){
     var _wl=document.getElementById('wipelog');
     if(_wl){ delete _wl.dataset.armed; _wl.textContent='Clear recorder'; }
   }catch(_wx){}
+  if(!_smOn) SETSUB='';   // v32.xx (cw-expmenu1)
   try{ renderSettings(); }catch(e){}
   try{ document.getElementById('exporttext').value=buildExport(); }catch(e){}
   var T=[['display','GAME'],['rec','SEND PLAY DATA']];   // v28.xx (cw-settab), c-30 menu map: the first Settings tab was called DISPLAY but holds every section (the raid, audio, controls, controller, display, accessibility), so Display sat inside Display. It is the game tab now; the Display section keeps its name.

@@ -1,1 +1,1 @@
-10-20 14:44 gate: shipping cw-cx-hidecoopsrv (o-15-hide-coming-later-row, codex)
+10-20 14:47 waiting for RAM: 2 GB free, need 3 (o-15-hide-coming-later-row)
