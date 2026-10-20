@@ -1,0 +1,21 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  pad-controls-pause                     NOT STAGED  10.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: NET is not defined
+    at <anonymous>:18:63
+    at async <anonymous>:1:21
+  pad-controls-full-list                 NOT STAGED   9.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: NET is not defined
+    at <anonymous>:3:63
+    at async <anonymous>:1:21
+  pad-controls-goals-status              NOT STAGED   5.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: NET is not defined
+    at <anonymous>:5:63
+    at async <anonymous>:1:21
+  pad-controls-layout                    NOT STAGED   8.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: NET is not defined
+    at <anonymous>:3:63
+    at async <anonymous>:1:21
+  pad-controls-pair-p1                   NOT STAGED   4.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host did not open a real player 2 window: blocked
+    at stagePadPair (<anonymous>:18:36)
+    at <anonymous>:76:14
+    at async <anonymous>:1:21
+  pad-controls-pair-p2                   NOT STAGED   4.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host popup blocked
+    at stagePadPair (<anonymous>:23:22)
+    at <anonymous>:76:14
+    at async <anonymous>:1:21

@@ -1,0 +1,7 @@
+v32.64: the human figures are bigger and shaped
+
+Every pillager, you, your mate and the hires are drawn bigger with their own build height, plates and bars sit over the bigger head, and the mate has a health bar under the name.
+
+Check 32.64. Fails on v32.63.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -3169,7 +3169,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.63';
+var VER='32.64';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -24573,6 +24573,12 @@ function roleAnchor(e){
   return {x:e.x+lean,ty:e.y-bob+lift,fl:fl};
 }
 function drawRoleMark(e){
+  if(!figOn()) return drawRoleMark0(e);
+  var k=figBuildK(e&&e.build);   // v32.64 (cw-figlook): the role mark rides the shoulders, so it is scaled with the body
+  wc.save(); wc.translate(e.x,e.y); wc.scale(FIG_SCALE*k[0],FIG_SCALE*k[1]); wc.translate(-e.x,-e.y);
+  try{ return drawRoleMark0(e); } finally { wc.restore(); }
+}
+function drawRoleMark0(e){
   var r=raiderRole(e), c, cd, ch, a, cx, ty, fl, sw, k, px, wv, t, i, bx;
   if(!r||e.downed||e.hp<=0||e.state==='down'||e.roll>0) return;
   c=PROLE[r].c; cd=darkHex(c,.35); ch=litHex(c,.35); a=roleAnchor(e); cx=a.x; ty=a.ty; fl=a.fl;
@@ -35559,7 +35565,21 @@ function gunHeld(px,ty,face,fl,st,coat,bld,pc,ads,sprint,rl,muzzle){
     wc.globalAlpha=1;
   }
 }
+// v32.64 (cw-figlook), HIS PICKS on the art survey (a01 D, a02 B, a04 C, a05 B, a09 B): THE HUMAN FIGURES. The whole figure is drawn FIG_SCALE (1.25)
+// times as big about its feet at every human draw site (you, your mate, the pillager bots, the hires, the survivor), with a build height on top
+// (lean 0.92 wide by 1.08 tall, broad 1.1 by 0.96, curved 1 by 1). Shadow, seat ring and gun scale with the body. Hit areas are untouched.
+// FIG_SCALE is the one number to dial back. Previews (a small canvas swapped into wc) stay as they were. FIG_UP lifts the plates and bars
+// over the bigger head.
+var FIG_SCALE=1.25, FIG_UP=19, FIG_HEAD=1.2, FIG_PACK=1.3, FIG_VEST=1.12, FIG_PATCH=1.6;
+function figBuildK(b){ return (b==='broad')?[1.1,0.96]:((b==='curved')?[1,1]:[0.92,1.08]); }
+function figOn(){ return !!(typeof wc!=='undefined'&&wc&&((typeof cv!=='undefined'&&wc.canvas===cv)||RIM.on===1)); }
 function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
+  if(!figOn()) return drawOp0(x,y,face,ph,coat,pk,muzzle,mode,iv,st);
+  var k=figBuildK(st&&st.hero?cosWorn('build'):((st&&st.build)||'lean'));
+  wc.save(); wc.translate(x,y); wc.scale(FIG_SCALE*k[0],FIG_SCALE*k[1]); wc.translate(-x,-y);
+  try{ return drawOp0(x,y,face,ph,coat,pk,muzzle,mode,iv,st); } finally { wc.restore(); }
+}
+function drawOp0(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   // v28.04 (cosm1): THE SLEEVE FOLLOWS THE CLOTHES. Your own gun arm was always navy while everyone else wore their clothing colour; the hero
   // sleeve is now the clothing colour too, or the scheme primary, so the biggest shape on the body shows what you wear.
   var _SCH=schemeOf(st);
@@ -35568,8 +35588,8 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   var fl=Math.cos(face)<0?-1:1;
   // v28.xx (cw-castshadow), art build step (char-art-build-brief): "a soft cast shadow". Light is top-left, so the body shadow sits a little right and
   // down of the feet and a small second lobe trails off toward the far side. Both are cached stamps, two drawImage calls, no new path fills.
-  shadowE(x+1.5,y+1.5,10,4,.34);
-  shadowE(x+6,y+2.5,6.5,2.5,.18);
+  shadowE(x+1.5,y+2,12.5,5,.5);   // v32.64 (cw-figlook), a09 B: a bigger, darker shadow
+  shadowE(x+7,y+3,8,3,.28);
   var _SEAT=seatMarkOf(st);   // v28.09 (cosm2): -1 when no party is on, else this body seat
   if(_SEAT>=0) drawSeatRing(x,y,_SEAT);
   // Both of these return before the body is drawn, so without their own contour
@@ -35696,6 +35716,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   var _GH=gunHeldOn(st,mode), _GB=_GH&&Math.sin(face)<-0.3;
   if(_GB) gunHeld(x+leanX,ty,face,fl,st,coat,_BLD,_PC,ads,sprint,rl,muzzle);  var pw=6+pk*5;
   if(!(OUTF&&OUTF.nopack)){   // v23.xx (spr21): the Survivor has no pack
+  wc.save(); wc.translate(x-fl*9+leanX,ty-16.5); wc.scale(FIG_PACK,FIG_PACK); wc.translate(-(x-fl*9+leanX),-(ty-16.5));   // v32.64 (cw-figlook), a05 B: the pack 1.3
   wc.fillStyle=INK; rrF(x-fl*9-pw/2+leanX-1,ty-22,pw+2,11,3);
   var _PKID=st.hero?cosWorn('pack'):(st.pack||'packbrown');   // v28.12 (cosm5)
   var _PKC=PACKCOL[_PKID]||PACKCOL.packbrown;   // v10.34
@@ -35710,6 +35731,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     wc.fillStyle='#cfd5db'; wc.fillRect(_pkx-0.9,ty-16.6,1.8,1.5);
   }
   if(/^pack(roll|radio|fuel|frame)$/.test(_PKID)) drawPackExtra(_PKID,x-fl*9+leanX,ty,fl,pw,_SCH);   // v28.12 (cosm5)   // v28.04 (cosm1): the accent flap
+  wc.restore();
   }
   if(!_BLD){
   if(_PC){ wc.fillStyle=INK; rrF(x-6.6+leanX,ty-23,13.2,13,4); wc.fillStyle=cc; rrF(x-5.6+leanX,ty-22,11.2,11,3); }   // v23.xx (spr16): Lean is slimmer
@@ -35733,7 +35755,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   if(_PC){
     drawRigPC(_BLD||'lean',x+leanX,ty,cc,_JG.c,_JG.h,!!(OUTF&&OUTF.norig),_SCH);
     var _VID=OUTF?'vestplate':(st.hero?cosWorn('vest'):(st.vest||'vestplate'));   // v28.13 (cosm4)
-    if(_VID!=='vestplate'&&!(OUTF&&OUTF.norig)) drawVest(_VID,_BLD,x+leanX,ty,cc,_SCH,fl);   // v23.xx (spr15): the plate carrier, not stripes
+    if(_VID!=='vestplate'&&!(OUTF&&OUTF.norig)) { wc.save(); wc.translate(x+leanX,ty-17); wc.scale(FIG_VEST,FIG_VEST); wc.translate(-(x+leanX),-(ty-17)); drawVest(_VID,_BLD,x+leanX,ty,cc,_SCH,fl); wc.restore(); }   // v32.64 (cw-figlook), a05 B: the vest 1.12   // v23.xx (spr15): the plate carrier, not stripes
   }
   else {
   wc.fillStyle='rgba(16,21,27,.85)';
@@ -35822,7 +35844,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   // the armour, because a patch goes on the plate carrier. Measured: the gun
   // arm covers the chest on its own side from the second row down, and a
   // patch there showed one row of itself.
-  (function(){ var _pid=OUTF?'patchnone':(st.hero?cosWorn('patch'):(st.patch||'patchnone')); if(_pid&&_pid!=='patchnone') drawPatch(wc,_pid,x-fl*3.6-1.8+leanX,ty-21.8,3.6); })();
+  (function(){ var _pid=OUTF?'patchnone':(st.hero?cosWorn('patch'):(st.patch||'patchnone')); if(_pid&&_pid!=='patchnone') drawPatch(wc,_pid,x-fl*3.6+leanX-FIG_PATCH*1.8,ty-20-FIG_PATCH*1.8,3.6*FIG_PATCH); /* v32.64 (cw-figlook), a05 B: the chest patch 1.6 about its centre */ })();
   if(st.hurt>0){
     wc.globalCompositeOperation='lighter';
     wc.fillStyle='rgba(255,70,56,'+clamp(st.hurt*2,0,.8)+')';
@@ -35837,6 +35859,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   // animation cost. Head grew from 12x10 to 15x13, about 38 percent of the
   // figure, and the old anonymous visor strip is gone.
   var hx2=x+leanX;
+  wc.save(); wc.translate(hx2,ty-22); wc.scale(FIG_HEAD,FIG_HEAD); wc.translate(-hx2,-(ty-22));   // v32.64 (cw-figlook), a01 D: the mascot head, hats and hair with it
   var HERO=!!st.hero;
   // WHAT SHE IS WEARING. Cosmetic only: these lines pick three colours and a
   // hat id, and nothing downstream of them touches a number.
@@ -36318,7 +36341,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     }
   })();
   var _PDS=OUTF?'padsnone':(st.hero?cosWorn('pads'):(st.pads||'padsnone'));   // v28.13 (cosm4)
-  if(_PDS!=='padsnone'&&(st.bulk||0)<2) drawPads(_PDS,_BLD,x+leanX,ty,fl,_SCH);
+  if(_PDS!=='padsnone'&&(st.bulk||0)<2) { wc.save(); wc.translate(x+leanX,ty-17); wc.scale(FIG_VEST,FIG_VEST); wc.translate(-(x+leanX),-(ty-17)); drawPads(_PDS,_BLD,x+leanX,ty,fl,_SCH); wc.restore(); }   // v32.64 (cw-figlook), a05 B: the pauldrons 1.12
   // HEALING, ABOVE HER HEAD, v5.44, his note. A shrinking arc and the seconds
   // remaining, drawn where he is already looking rather than in the corner.
   // v19.00, his note (2026-10-07): "like maybe the green circle heal happens open on the left instead of above the player's head".
@@ -36343,6 +36366,7 @@ function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   wc.fillStyle=(_BLD==='curved'&&!(OUTF&&/^(skeleton|robot|trooper)$/.test(OUTF.mark))&&!/^(mask|spartan|ghostmask|gasmask)$/.test(HAT))?'#c25a6c':'#8a5c46';   /* v20.15, code review: nor over a mask or helmet worn as a hat */   // v20.05: not on a skull, a robot or a helmet   // v20.01: Curved, a rose mouth
   if(st.hurt>0) wc.fillRect(hx2-2,ty-25.6,4,1.6);
   else wc.fillRect(hx2-1.5,ty-25.2,3,1);
+  wc.restore();   // v32.64 (cw-figlook): end of the scaled head
 
   // ---- arms and weapon, rotated to the aim direction
   var _HANDC=handColour(st);                    // v10.33: skin, or the gloves
@@ -36484,6 +36508,7 @@ function spriteTop(e){
   if(e.kind==='snitch') return 34*(e.r/SNITCH_R0);
   if(e.kind==='choir') return 44;
   if(e.kind==='warden') return 52;
+  if(e.kind==='raider'||e.kind==='stray') return 40+FIG_UP;   // v32.64 (cw-figlook): the bigger figure and head, so plates and marks ride higher
   return 40;   // humans grew a real head at v1.07
 }
 // The Warden: drawn half again taller than anything else on the field, one
@@ -39493,7 +39518,7 @@ var SHD=G.shells[i];
   for(_pbi=0;_pbi<2;_pbi++) if(_pbs[_pbi]){
     var _pb=_pbs[_pbi];
     var _pf=clamp(_pb.t/_pb.max,0,1);
-    var _py=p.y-68-((_pbi&&p.prep)?13:0);   // v18.75: a size bigger (was 48 by 8), with the HUD bar (drawUseBar) as well
+    var _py=p.y-68-FIG_UP-((_pbi&&p.prep)?13:0);   // v32.64 (cw-figlook): over the bigger head   // v18.75: a size bigger (was 48 by 8), with the HUD bar (drawUseBar) as well
     wc.fillStyle='rgba(6,9,13,.85)';
     wc.fillRect(p.x-32,_py,64,11);
     wc.strokeStyle='rgba(255,255,255,.22)'; wc.lineWidth=1;
@@ -50587,7 +50612,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.63: All live controllers use Xbox button pictures, in both windows. Check 32.63 fails on v32.62',
+  now:'v32.64: Every pillager, you, your mate and the hires are drawn bigger with their own build height, plates and bars sit over the bigger head, and the mate has a health bar under the name. Check 32.64 fails on v32.63',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -55291,8 +55316,8 @@ function netDrawTags(S,ox,oy){
       g=NET.floor[i]; if(!netShown(g)) continue;
       nm=netSeatName(g.seat)||'PILLAGER';
       tw=wc.measureText(nm).width;
-      wc.fillStyle='rgba(6,9,13,.86)'; wc.fillRect(g.x-tw/2-4,g.y-62,tw+8,13);
-      wc.fillStyle='#ffc04a'; wc.fillText(nm,g.x,g.y-52);
+      wc.fillStyle='rgba(6,9,13,.86)'; wc.fillRect(g.x-tw/2-4,g.y-62-FIG_UP,tw+8,13);   // v32.64 (cw-figlook): over the bigger head
+      wc.fillStyle='#ffc04a'; wc.fillText(nm,g.x,g.y-52-FIG_UP);
       n++;
     }
   }catch(e){}
@@ -55393,8 +55418,8 @@ function netMateTag(S,ox,oy){
     wc.scale(S,S); wc.translate(-ox,-oy);
     wc.textAlign='center'; wc.font=FS(TYPE.micro);
     tw=wc.measureText(nm).width;
-    wc.fillStyle='rgba(6,9,13,.86)'; wc.fillRect(g.x-tw/2-4,g.y-62,tw+8,13);
-    wc.fillStyle='#ffc04a'; wc.fillText(nm,g.x,g.y-52);
+    wc.fillStyle='rgba(6,9,13,.86)'; wc.fillRect(g.x-tw/2-4,g.y-62-FIG_UP,tw+8,13);   // v32.64 (cw-figlook): over the bigger head
+    wc.fillStyle='#ffc04a'; wc.fillText(nm,g.x,g.y-52-FIG_UP);
   }catch(e){}
   wc.textAlign='left';
   wc.restore();
@@ -56601,8 +56626,15 @@ function netUpDrawOne(g){
   if(lift>0){ try{ wc.restore(); }catch(e2){} }
 }
 // Their names over their heads, drawn in the world beside the pillager nameplates.
+// v32.64 (cw-figlook), a10 D: a 36x3 health bar under the mate name, green above half, amber to a quarter, red below, 1 px black outline.
+function netUpBar(g,U){
+  var w=36, f=(g.mh>0)?clamp((g.hp||0)/g.mh,0,1):0, bx=Math.round(g.x-w/2), by=Math.round(g.y-62-U+15);
+  wc.fillStyle='#000000'; wc.fillRect(bx-1,by-1,w+2,5);
+  wc.fillStyle='#14171a'; wc.fillRect(bx,by,w,3);
+  wc.fillStyle=f>0.5?'#5fae6f':(f>0.25?'#d0a13c':'#c8452f'); wc.fillRect(bx,by,Math.round(w*f),3);
+}
 function netUpTags(){
-  var i, g, nm, tw, n=0;
+  var i, g, nm, tw, n=0, U=FIG_UP+3;   // v32.64 (cw-figlook): U lifts the plate over the bigger head and makes room for the bar
   if(!NET.on||typeof G==='undefined'||!G) return 0;
   try{
     wc.font=FS(TYPE.micro);
@@ -56610,18 +56642,18 @@ function netUpTags(){
       g=NET.up[i]; if(!netUpShown(g)) continue;
       nm=netSeatName(g.seat)||'PILLAGER';
       tw=wc.measureText(nm).width;
-      if(wlUnder(g.x-tw/2-4,g.y-(g.dn?77:62),tw+8,g.dn?28:13)){ n++; continue; }   // v31.xx (cw-trcol2): nor a party name (and its DOWN plate) over the corner column or the score plate
-      wc.fillStyle='rgba(6,9,13,.86)'; wc.fillRect(g.x-tw/2-4,g.y-62,tw+8,13);
+      if(wlUnder(g.x-tw/2-4,g.y-(g.dn?77:62)-U,tw+8,(g.dn?28:13)+8)){ n++; continue; }   // v31.xx (cw-trcol2): nor a party name (and its DOWN plate) over the corner column or the score plate
+      wc.fillStyle='rgba(6,9,13,.86)'; wc.fillRect(g.x-tw/2-4,g.y-62-U,tw+8,13); netUpBar(g,U);
       // v22.70, the raid text rewrite (R27): ONE TEAMMATE COLOUR. His name over his head was amber, the colour of keys and of your own
       // Waypoint, while his row on the left, his map mark and his Waypoint were ally blue; his edge arrow was amber too and his ping
       // cyan, close to the extraction colour. A teammate is now HUDC.ally wherever he is named or marked, and danger red while he is down.
-      wc.fillStyle=g.dn?HUDC.danger:HUDC.ally; wc.fillText(nm,g.x-tw/2,g.y-52);
+      wc.fillStyle=g.dn?HUDC.danger:HUDC.ally; wc.fillText(nm,g.x-tw/2,g.y-52-U);
       // v22.68, the raid text rewrite (R26): a teammate who is down says so over his head, DOWN and the seconds his word says he
       // has left, in danger red on a danger plate above his name, seen from anywhere on screen. Read from his word, never written.
       if(g.dn){
         var dl='DOWN'+((g.dt>0)?('  \u00b7  '+g.dt+'s'):''), dw=wc.measureText(dl).width;
-        wc.fillStyle='rgba(40,8,6,.86)'; wc.fillRect(g.x-dw/2-4,g.y-77,dw+8,13);
-        wc.fillStyle='#ff5a4a'; wc.fillText(dl,g.x-dw/2,g.y-67);
+        wc.fillStyle='rgba(40,8,6,.86)'; wc.fillRect(g.x-dw/2-4,g.y-77-U,dw+8,13);
+        wc.fillStyle='#ff5a4a'; wc.fillText(dl,g.x-dw/2,g.y-67-U);
       }
       n++;
     }

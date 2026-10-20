@@ -321,3 +321,15 @@
 2026-10-20 0.0000 o-06-pad-controls
 2026-10-20 0.3121645 22-ui-preraid-map-first
 2026-10-20 0.1735837 c-02-raid-hud-redesign
+2026-10-20 0.1504 critic-o-06-pad-controls
+2026-10-20 0.1504 critic-o-06-pad-controls
+2026-10-20 0.1516 critic-o-06-pad-controls
+2026-10-20 0.1499 critic-o-06-pad-controls
+2026-10-20 0.1463 critic-o-06-pad-controls
+2026-10-20 0.1468 critic-o-06-pad-controls
+2026-10-20 0.0000 o-06-pad-controls
+2026-10-20 0.1492 critic-o-06-pad-controls
+2026-10-20 0.1506 critic-o-06-pad-controls
+2026-10-20 0.1510 critic-o-06-pad-controls
+2026-10-20 0.1546 critic-o-06-pad-controls
+2026-10-20 0.1501 critic-o-06-pad-controls

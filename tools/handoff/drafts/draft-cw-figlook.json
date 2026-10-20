@@ -1,0 +1,88 @@
+{
+    "title":  "THE HUMAN FIGURES ARE BIGGER AND SHAPED",
+    "why":  "His art survey picks: a01 D the head 1.2, a02 B the whole figure 1.25 about the feet, a04 C build heights (lean 0.92 by 1.08, broad 1.1 by 0.96), a05 B pack 1.3 and vest, pauldron and patch bigger, a09 B a bigger darker shadow, a10 D the mate plate with a 36x3 health bar. Hit areas do not change.",
+    "now":  "Every pillager, you, your mate and the hires are drawn bigger with their own build height, plates and bars sit over the bigger head, and the mate has a health bar under the name.",
+    "edits":  [
+                  {
+                      "anchor":  "function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){\n",
+                      "replacement":  "// v32.64 (cw-figlook), HIS PICKS on the art survey (a01 D, a02 B, a04 C, a05 B, a09 B): THE HUMAN FIGURES. The whole figure is drawn FIG_SCALE (1.25)\n// times as big about its feet at every human draw site (you, your mate, the pillager bots, the hires, the survivor), with a build height on top\n// (lean 0.92 wide by 1.08 tall, broad 1.1 by 0.96, curved 1 by 1). Shadow, seat ring and gun scale with the body. Hit areas are untouched.\n// FIG_SCALE is the one number to dial back. Previews (a small canvas swapped into wc) stay as they were. FIG_UP lifts the plates and bars\n// over the bigger head.\nvar FIG_SCALE=1.25, FIG_UP=19, FIG_HEAD=1.2, FIG_PACK=1.3, FIG_VEST=1.12, FIG_PATCH=1.6;\nfunction figBuildK(b){ return (b===\u0027broad\u0027)?[1.1,0.96]:((b===\u0027curved\u0027)?[1,1]:[0.92,1.08]); }\nfunction figOn(){ return !!(typeof wc!==\u0027undefined\u0027\u0026\u0026wc\u0026\u0026((typeof cv!==\u0027undefined\u0027\u0026\u0026wc.canvas===cv)||RIM.on===1)); }\nfunction drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){\n  if(!figOn()) return drawOp0(x,y,face,ph,coat,pk,muzzle,mode,iv,st);\n  var k=figBuildK(st\u0026\u0026st.hero?cosWorn(\u0027build\u0027):((st\u0026\u0026st.build)||\u0027lean\u0027));\n  wc.save(); wc.translate(x,y); wc.scale(FIG_SCALE*k[0],FIG_SCALE*k[1]); wc.translate(-x,-y);\n  try{ return drawOp0(x,y,face,ph,coat,pk,muzzle,mode,iv,st); } finally { wc.restore(); }\n}\nfunction drawOp0(x,y,face,ph,coat,pk,muzzle,mode,iv,st){\n"
+                  },
+                  {
+                      "anchor":  "  shadowE(x+1.5,y+1.5,10,4,.34);\n  shadowE(x+6,y+2.5,6.5,2.5,.18);\n",
+                      "replacement":  "  shadowE(x+1.5,y+2,12.5,5,.5);   // v32.64 (cw-figlook), a09 B: a bigger, darker shadow\n  shadowE(x+7,y+3,8,3,.28);\n"
+                  },
+                  {
+                      "anchor":  "  var hx2=x+leanX;\n  var HERO=!!st.hero;\n",
+                      "replacement":  "  var hx2=x+leanX;\n  wc.save(); wc.translate(hx2,ty-22); wc.scale(FIG_HEAD,FIG_HEAD); wc.translate(-hx2,-(ty-22));   // v32.64 (cw-figlook), a01 D: the mascot head, hats and hair with it\n  var HERO=!!st.hero;\n"
+                  },
+                  {
+                      "anchor":  "  else wc.fillRect(hx2-1.5,ty-25.2,3,1);\n",
+                      "replacement":  "  else wc.fillRect(hx2-1.5,ty-25.2,3,1);\n  wc.restore();   // v32.64 (cw-figlook): end of the scaled head\n"
+                  },
+                  {
+                      "anchor":  "  if(!(OUTF\u0026\u0026OUTF.nopack)){   // v23.xx (spr21): the Survivor has no pack\n",
+                      "replacement":  "  if(!(OUTF\u0026\u0026OUTF.nopack)){   // v23.xx (spr21): the Survivor has no pack\n  wc.save(); wc.translate(x-fl*9+leanX,ty-16.5); wc.scale(FIG_PACK,FIG_PACK); wc.translate(-(x-fl*9+leanX),-(ty-16.5));   // v32.64 (cw-figlook), a05 B: the pack 1.3\n"
+                  },
+                  {
+                      "anchor":  "  }\n  if(!_BLD){\n  if(_PC){ wc.fillStyle=INK; rrF(x-6.6+leanX",
+                      "replacement":  "  wc.restore();\n  }\n  if(!_BLD){\n  if(_PC){ wc.fillStyle=INK; rrF(x-6.6+leanX"
+                  },
+                  {
+                      "anchor":  "drawVest(_VID,_BLD,x+leanX,ty,cc,_SCH,fl);",
+                      "replacement":  "{ wc.save(); wc.translate(x+leanX,ty-17); wc.scale(FIG_VEST,FIG_VEST); wc.translate(-(x+leanX),-(ty-17)); drawVest(_VID,_BLD,x+leanX,ty,cc,_SCH,fl); wc.restore(); }   // v32.64 (cw-figlook), a05 B: the vest 1.12"
+                  },
+                  {
+                      "anchor":  "drawPads(_PDS,_BLD,x+leanX,ty,fl,_SCH);",
+                      "replacement":  "{ wc.save(); wc.translate(x+leanX,ty-17); wc.scale(FIG_VEST,FIG_VEST); wc.translate(-(x+leanX),-(ty-17)); drawPads(_PDS,_BLD,x+leanX,ty,fl,_SCH); wc.restore(); }   // v32.64 (cw-figlook), a05 B: the pauldrons 1.12"
+                  },
+                  {
+                      "anchor":  "drawPatch(wc,_pid,x-fl*3.6-1.8+leanX,ty-21.8,3.6);",
+                      "replacement":  "drawPatch(wc,_pid,x-fl*3.6+leanX-FIG_PATCH*1.8,ty-20-FIG_PATCH*1.8,3.6*FIG_PATCH); /* v32.64 (cw-figlook), a05 B: the chest patch 1.6 about its centre */"
+                  },
+                  {
+                      "anchor":  "function drawRoleMark(e){\n",
+                      "replacement":  "function drawRoleMark(e){\n  if(!figOn()) return drawRoleMark0(e);\n  var k=figBuildK(e\u0026\u0026e.build);   // v32.64 (cw-figlook): the role mark rides the shoulders, so it is scaled with the body\n  wc.save(); wc.translate(e.x,e.y); wc.scale(FIG_SCALE*k[0],FIG_SCALE*k[1]); wc.translate(-e.x,-e.y);\n  try{ return drawRoleMark0(e); } finally { wc.restore(); }\n}\nfunction drawRoleMark0(e){\n"
+                  },
+                  {
+                      "anchor":  "  return 40;   // humans grew a real head at v1.07\n",
+                      "replacement":  "  if(e.kind===\u0027raider\u0027||e.kind===\u0027stray\u0027) return 40+FIG_UP;   // v32.64 (cw-figlook): the bigger figure and head, so plates and marks ride higher\n  return 40;   // humans grew a real head at v1.07\n"
+                  },
+                  {
+                      "anchor":  "var _py=p.y-68-((_pbi\u0026\u0026p.prep)?13:0);",
+                      "replacement":  "var _py=p.y-68-FIG_UP-((_pbi\u0026\u0026p.prep)?13:0);   // v32.64 (cw-figlook): over the bigger head"
+                  },
+                  {
+                      "anchor":  "      wc.fillStyle=\u0027rgba(6,9,13,.86)\u0027; wc.fillRect(g.x-tw/2-4,g.y-62,tw+8,13);\n      wc.fillStyle=\u0027#ffc04a\u0027; wc.fillText(nm,g.x,g.y-52);\n",
+                      "replacement":  "      wc.fillStyle=\u0027rgba(6,9,13,.86)\u0027; wc.fillRect(g.x-tw/2-4,g.y-62-FIG_UP,tw+8,13);   // v32.64 (cw-figlook): over the bigger head\n      wc.fillStyle=\u0027#ffc04a\u0027; wc.fillText(nm,g.x,g.y-52-FIG_UP);\n"
+                  },
+                  {
+                      "anchor":  "    wc.fillStyle=\u0027rgba(6,9,13,.86)\u0027; wc.fillRect(g.x-tw/2-4,g.y-62,tw+8,13);\n    wc.fillStyle=\u0027#ffc04a\u0027; wc.fillText(nm,g.x,g.y-52);\n",
+                      "replacement":  "    wc.fillStyle=\u0027rgba(6,9,13,.86)\u0027; wc.fillRect(g.x-tw/2-4,g.y-62-FIG_UP,tw+8,13);   // v32.64 (cw-figlook): over the bigger head\n    wc.fillStyle=\u0027#ffc04a\u0027; wc.fillText(nm,g.x,g.y-52-FIG_UP);\n"
+                  },
+                  {
+                      "anchor":  "function netUpTags(){\n  var i, g, nm, tw, n=0;\n",
+                      "replacement":  "// v32.64 (cw-figlook), a10 D: a 36x3 health bar under the mate name, green above half, amber to a quarter, red below, 1 px black outline.\nfunction netUpBar(g,U){\n  var w=36, f=(g.mh\u003e0)?clamp((g.hp||0)/g.mh,0,1):0, bx=Math.round(g.x-w/2), by=Math.round(g.y-62-U+15);\n  wc.fillStyle=\u0027#000000\u0027; wc.fillRect(bx-1,by-1,w+2,5);\n  wc.fillStyle=\u0027#14171a\u0027; wc.fillRect(bx,by,w,3);\n  wc.fillStyle=f\u003e0.5?\u0027#5fae6f\u0027:(f\u003e0.25?\u0027#d0a13c\u0027:\u0027#c8452f\u0027); wc.fillRect(bx,by,Math.round(w*f),3);\n}\nfunction netUpTags(){\n  var i, g, nm, tw, n=0, U=FIG_UP+3;   // v32.64 (cw-figlook): U lifts the plate over the bigger head and makes room for the bar\n"
+                  },
+                  {
+                      "anchor":  "wlUnder(g.x-tw/2-4,g.y-(g.dn?77:62),tw+8,g.dn?28:13)",
+                      "replacement":  "wlUnder(g.x-tw/2-4,g.y-(g.dn?77:62)-U,tw+8,(g.dn?28:13)+8)"
+                  },
+                  {
+                      "anchor":  "wc.fillStyle=\u0027rgba(6,9,13,.86)\u0027; wc.fillRect(g.x-tw/2-4,g.y-62,tw+8,13);\n      // v22.70, the raid text rewrite (R27)",
+                      "replacement":  "wc.fillStyle=\u0027rgba(6,9,13,.86)\u0027; wc.fillRect(g.x-tw/2-4,g.y-62-U,tw+8,13); netUpBar(g,U);\n      // v22.70, the raid text rewrite (R27)"
+                  },
+                  {
+                      "anchor":  "wc.fillText(nm,g.x-tw/2,g.y-52);\n      // v22.68",
+                      "replacement":  "wc.fillText(nm,g.x-tw/2,g.y-52-U);\n      // v22.68"
+                  },
+                  {
+                      "anchor":  "wc.fillRect(g.x-dw/2-4,g.y-77,dw+8,13);",
+                      "replacement":  "wc.fillRect(g.x-dw/2-4,g.y-77-U,dw+8,13);"
+                  },
+                  {
+                      "anchor":  "wc.fillText(dl,g.x-dw/2,g.y-67);",
+                      "replacement":  "wc.fillText(dl,g.x-dw/2,g.y-67-U);"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the human figures are drawn bigger (HIS art picks a01 D, a02 B, a04 C, a05 B, a09 B, a10 D): 1.25 about the feet with the build height, head 1.2, pack 1.3, a mate health bar\u0027,\n   run:function(){\n     var PR=CanvasRenderingContext2D.prototype, of=PR.fillRect, ff=PR.fill, mn={}, mx={}, rec, k, i, sc, b, hv, e1;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       if(!__state()||!__state().player) return \u0027SKIP: no raid\u0027;\n       if(typeof FIG_SCALE===\u0027undefined\u0027||typeof drawOp0!==\u0027function\u0027) return \u0027the figures have no FIG_SCALE and no scaled draw\u0027;\n       rec=function(){ try{ if(this.canvas===cv\u0026\u0026(/drawOp0/).test(String(new Error().stack))){ var d=this.getTransform().d; if(!(b in mn)||d\u003cmn[b]) mn[b]=d; if(!(b in mx)||d\u003emx[b]) mx[b]=d; } }catch(_r){} };\n       PR.fillRect=function(){ rec.apply(this,arguments); return of.apply(this,arguments); };\n       PR.fill=function(){ rec.apply(this,arguments); return ff.apply(this,arguments); };\n       hv={lean:[0.92,1.08],broad:[1.1,0.96],curved:[1,1]};\n       for(b in hv){\n         wc.save(); wc.setTransform(1,0,0,1,0,0);\n         drawOp(100,100,0,0,\u0027#242832\u0027,1,0,\u0027none\u0027,0,{hero:0,build:b,moving:false,sprint:false,ads:false,hurt:0,rl:0,own:{wep:null}});\n         wc.restore();\n       }\n       PR.fillRect=of; PR.fill=ff;\n       for(b in hv){\n         if(!(b in mn)) return \u0027the \u0027+b+\u0027 figure drew nothing\u0027;\n         if(Math.abs(mn[b]-1.25*hv[b][1])\u003e0.01) return \u0027the \u0027+b+\u0027 body is drawn at \u0027+mn[b].toFixed(3)+\u0027 tall, not 1.25 times its build height \u0027+hv[b][1];\n         if(mx[b]\u003c1.25*hv[b][1]*1.2-0.01) return \u0027the \u0027+b+\u0027 head/pack is not drawn bigger than the body: \u0027+mx[b].toFixed(3);\n       }\n       if(!(spriteTop({kind:\u0027raider\u0027,r:11})\u003e=40+FIG_UP)) return \u0027the pillager plate does not rise over the bigger head\u0027;\n       return null;\n     } finally {\n       PR.fillRect=of; PR.fill=ff;\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}

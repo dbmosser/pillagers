@@ -1,0 +1,4 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  03-hub-floor                           staged       6.5s  
+  33-raid-fight-alerts                   staged       9.2s    | 3 moved, hp 100
+  57-title-2p-coop-picked                staged       8.4s  
