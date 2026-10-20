@@ -1,1 +1,1 @@
-10-20 02:07 waiting for RAM: 2 GB free, need 3 (o-05-pad-presets)
+10-20 02:09 gate waiting on another worker; o-05-pad-presets kept (codex)

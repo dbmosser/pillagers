@@ -154,17 +154,17 @@
  "16-bar-last-pour": {
   "score": 2,
   "pass": false,
-  "verdict": "The second image is the better of the two: it has one calm list and no filled-lime wall, but it is still a tiny two-row list floating in an empty 90% card, with weak hierarchy, a stray toast and unequal type sizes.",
+  "verdict": "The bar list is bigger and easier to read than before, but it is still two rows floating in a huge empty card, with no focused row, a stray toast over the card edge, and wallet text that is too small.",
   "findings": [
-   "P0 whole card: Put the title in a 56px header row at the top left of the card with a 1px --ui-line divider under it. Make the list the left column at 60% width and add a raised detail pane on the right with the selected drink's large icon, name and effect. Or shrink the card to about 1100x560 for a two-item window.",
-   "P0 ingest buttons: Give the focused row a --ui-raised fill and a 3px lime left bar. Make only that row's button a filled --acc with --acc-ink text, 48px high. Leave the other row's button an outlined --ui-line-hi.",
-   "P1 row text: Cut each description to 4 words or fewer, for example 'xp boost 10 min'. Set it at --fs-label 16px in tx-2. Set the name at 20px/600 in tx-1. Set the price at 20px/700 in tx-1 with a --ok or --danger tint when it is affordable or not.",
-   "P1 top-right currency strip: Use '$900', then 'xp 0', then 'stash $3,750', each a separate chip with 16px labels and 24px gaps. Drop 'bag 0'. Keep 16px of clearance to the 48px X button.",
-   "P1 toast 'the welcome pack is in your stash.': Move it to 24px above the card bottom, inside the safe area, or drop it from this screen. If it stays, shorten it to 'welcome pack in stash' and give it a --ui-panel fill with no border straddling the frame."
+   "P0 whole card, 98-1822 x 56-1024: Put the title top-left in the 56px header row at 32px, on the same line as the wallet and close. Fill the body: a left column of 3-4 drinks as 96px rows, and a right raised detail pane (--ui-raised) with the selected drink's icon at 96px, its effect in one short line, and the price. Or shrink the card to about 60% width when there are only 2 items.",
+   "P0 liquor and blotter rows: Give the focused row a --ui-raised fill and a 3px lime bar on its left edge. Only the focused row's ingest becomes a filled lime button (--acc fill, --acc-ink text, 48px high). Make the other rows' buttons idle (--ui-line-hi border, tx-1 text).",
+   "P1 top-right wallet: '900 credits  0 xp  stash 3,750 bag 0': Show only '$900', and drop xp and stash from the bar. Set it at 20px f-cond 700 with a 16px tx-2 label. Put 24px gaps between items and align the baseline with the X. If stash and bag are needed, use 16px with a 1px divider.",
+   "P1 row text: description lines: Replace each with a 3-5 word effect, e.g. 'speed up, blur vision', and put the duration in a 16px tag. Cap the description at 40ch. Use tx-2 at 4.5:1 or better.",
+   "P1 price '$300' / '$520' beside ingest: Set the price at 20px f-cond 600 tx-1 in a fixed 96px right-aligned column. Make the button label 20px 700 with 24px side padding. Turn the price red (--danger) when the player cannot afford it, and disable that row's button."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-31-n2/16-bar-last-pour-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/b-31-n3/16-bar-last-pour-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T06:03"
+  "when": "2026-10-20T06:09"
  },
  "17-fashion-mirror": {
   "score": 2,
@@ -980,16 +980,16 @@
  "13-mainframe-rewards": {
   "score": 2,
   "pass": false,
-  "verdict": "The second shot fixes the tiny lime 'xp' label and the explaining sentence, but the screen is still a flat spreadsheet list with weak hierarchy, a dead right third, and a tiny grey claim state.",
+  "verdict": "The list now fills the card and the dead right gutter is gone, but it is still a flat wall of identical rows with an empty xp bar, no hero element, no rarity or reward-type cues, and a toast sitting on the card's bottom border.",
   "findings": [
-   "P0 whole card, right 20% (x 1520-1800): Either widen the list to the full card width (x 119 to 1801), or fill the right column with a 400px detail pane in --ui-raised. The pane would hold the next reward's name, its 56px hero 'to go' number, and the claim button.",
-   "P0 reward rows (right side: 'to go' text and boxed number): Drop the duplicate number. Show one right-aligned column, '7,200 to go', in --tx-2 at 16px. Make the first claimable row a lime-filled 'claim' button (40px high, --acc-ink text). Give each row a 48px reward tile with a 3px rarity bar on the left, and use tx-1 20px for the reward name.",
-   "P1 'xp' heading and progress bar (y 195-257): Replace the heading with a hero line: 'level 0' or '0 / 1,200,000' at 56px f-cond 800. Under it, a 12px progress bar with a lime fill on an --ui-line track. Delete the duplicate 'xp' heading.",
-   "P1 'nothing ready to claim' (x 1304-1515, y 268-308): Make it a full-width 48px button row under the bar. Disabled, it uses --ui-raised with tx-2 20px text. When a claim is ready it turns --acc with --acc-ink text and gets pad focus, in the same row slot.",
-   "P1 tab row and focus ('rewards' tab, list rows): Use a 3px --acc underline, 20px tab text, and tx-1 on the active tab. Give the focused row an --ui-raised fill with a 3px --acc left bar. Add LB and RB glyphs at the tab row ends for pad users."
+   "P1 xp bar: Make the bar 12px tall with a --ui-raised track and a lime fill. Add a milestone tick at each reward threshold. Show the current xp at 56px f-cond 800 on the left of the bar, with '/ 1,200,000' in tx-2 16px at the right end, and remove the centred text.",
+   "P1 reward rows 1-11: Highlight the first unclaimed row: --ui-raised fill, a 3px lime left bar, name in tx-1 at 20px/600. Dim the other rows to tx-2. Add a 40px item icon tile at the left of each row, plus a 3px rarity bar on tiles for the better rewards.",
+   "P1 right end of each row ('N to go' and the boxed number): Keep one value only: the threshold in tx-1 16px f-cond, with '7,200 to go' in tx-2 beneath it. Drop the boxed cell, or make it a real 'claim' button that is lime-filled when claimable and hidden otherwise.",
+   "P1 'nothing ready to claim' button, top right of the list: Move it to a sticky footer row (72px) at the right of the card. Show a lime-filled 'claim' button (48px tall, --acc-ink text) when something is ready, and a disabled 'claim' in --ui-line-hi when not. Drop the sentence.",
+   "P2 list bottom edge and toast: Add a 72px footer row inside the card so the list ends above it. Place toasts at 24px above the card bottom or outside the card. Shorten the toast to 'welcome pack in stash'. Fade the list's last 24px and widen the scroll thumb to 6px."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-31-n2/13-mainframe-rewards-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/b-31-n3/13-mainframe-rewards-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T06:02"
+  "when": "2026-10-20T06:08"
  }
 }

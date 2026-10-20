@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.48 - PRE-RAID POLISH: NO CUT OFF CHIPS, WIDER KIT COLUMN, SHARPER MAP NAMES
+
+Co-op hunt while he was away. Pictures of the shipped design A page showed the no armour chip text and the kit sublines cut at the box edge, and the map names small at 4K. The kit column is 440 wide, the chip line is shorter, the map canvas is drawn at 640 so its names read bigger, and the outline on map text is thinner.
+
+MEASURED. Check 32.48 passes, and fails on v32.47.
 ## v32.47 - Rewards fill the card, bar rows bigger
 
 Co-op hunt while he was away. UI step 7 (restyle only). Critic on 13 and 16 still 2 (better yes): dead right strip on rewards, a small list in a big bar card.

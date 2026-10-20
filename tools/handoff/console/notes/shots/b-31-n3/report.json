@@ -1,0 +1,4 @@
+{"generated":"2026-10-20T02:08:33","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":21,"screens":[
+{"name":"13-mainframe-rewards","screen":"Mainframe: rewards","1080":{"staged":true,"note":"opmodal","viewport":"1920x1080","shot":"13-mainframe-rewards-1080.jpg","lint":""}},
+{"name":"16-bar-last-pour","screen":"The Last Pour bar modal","1080":{"staged":true,"note":"barmodal","viewport":"1920x1080","shot":"16-bar-last-pour-1080.jpg","lint":""}}
+]}

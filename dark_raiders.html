@@ -2546,7 +2546,7 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
   #sectormodal .srseat{ display:inline-flex; align-items:center; gap:10px; height:40px; padding:0 16px; border:1px solid var(--ui-line-hi); background:var(--ui-raised); border-radius:4px; font:600 20px var(--f-cond); letter-spacing:.02em; }
   #sectormodal .srseat i{ width:12px; height:12px; border-radius:50%; }
   #srbody{ flex:1 1 auto; min-height:0; display:flex; gap:16px; }
-  #srmap{ flex:2 1 0; min-width:0; min-height:0; display:grid; grid-template-columns:minmax(0,1fr) 200px; grid-template-rows:40px minmax(0,1fr); column-gap:16px; padding:0 12px 10px; background:var(--ui-panel); border:1px solid var(--ui-line); border-radius:4px; }
+  #srmap{ flex:2 1 0; min-width:0; min-height:0; display:grid; grid-template-columns:minmax(0,1fr) 184px; grid-template-rows:40px minmax(0,1fr); column-gap:16px; padding:0 12px 10px; background:var(--ui-panel); border:1px solid var(--ui-line); border-radius:4px; }
   #root #sectormodal #sectorlist, #root #sectormodal .sectorpick{ display:contents !important; }
   #sectormodal .srmh{ grid-column:1/-1; grid-row:1; display:flex; align-items:center; gap:16px; margin:0 -12px; padding:0 12px; border-bottom:1px solid var(--ui-line); }
   #sectormodal .srmh b{ font:700 32px/1 var(--f-cond); letter-spacing:.03em; color:var(--tx-1); }
@@ -2573,7 +2573,7 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
   #sectormodal .srkr em{ margin-left:auto; font:500 16px var(--f-body); font-style:normal; color:var(--tx-2); }
   #srkitcol{ flex:1 1 0; min-width:0; max-width:400px; min-height:0; display:flex; flex-direction:column; gap:10px; padding:10px 12px; background:var(--ui-panel); border:1px solid var(--ui-line); border-radius:4px; }
   #sectorkitpick{ flex:none; display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:0 !important; }
-  #root #sectormodal .kitb{ height:52px; display:grid; grid-template-columns:22px minmax(0,1fr); column-gap:10px; align-content:center; align-items:center; padding:0 12px; background:var(--ui-raised); border:1px solid var(--ui-line-hi); border-radius:4px; color:var(--tx-1); text-align:left; white-space:nowrap; overflow:hidden; }
+  #root #sectormodal .kitb{ height:52px; display:grid; grid-template-columns:22px minmax(0,1fr); column-gap:8px; align-content:center; align-items:center; padding:0 8px; background:var(--ui-raised); border:1px solid var(--ui-line-hi); border-radius:4px; color:var(--tx-1); text-align:left; white-space:nowrap; overflow:hidden; }
   #sectormodal .kitb .srrd{ grid-row:1/3; }
   #sectormodal .kitb span{ font:600 20px/1.1 var(--f-cond); }
   #root #sectormodal .kitb .kd{ font:400 16px/1.1 var(--f-body); letter-spacing:0; opacity:1; color:var(--tx-2); }
@@ -2592,7 +2592,7 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
   #sectormodal .srprow.on .nm{ color:var(--tx-1); }
   #sectormodal .srprow .held{ min-width:26px; font:500 16px var(--f-body); color:var(--tx-2); }
   #sectormodal .srprow .st{ display:flex; align-items:center; }
-  #root #sectormodal .srprow .st .srm, #root #sectormodal .srprow .st button{ width:34px; height:32px; min-width:0; padding:0; display:grid; place-items:center; background:var(--ui-raised); border:1px solid var(--ui-line-hi); border-radius:0; color:var(--tx-1); font:700 20px var(--f-cond); cursor:pointer; }
+  #root #sectormodal .srprow .st .srm, #root #sectormodal .srprow .st button{ width:34px; height:30px; min-width:0; padding:0; display:grid; place-items:center; background:var(--ui-raised); border:1px solid var(--ui-line-hi); border-radius:0; color:var(--tx-1); font:700 20px var(--f-cond); cursor:pointer; }
   #sectormodal .srprow .st b{ width:30px; text-align:center; font:700 20px var(--f-cond); cursor:pointer; }
   #root #sectormodal .srprow .dis{ color:var(--tx-3); }
   #root #sectormodal button.srcore{ width:100%; height:40px; margin-top:6px; padding:0; background:none; border:0; border-bottom:1px solid var(--ui-line); border-radius:0; justify-content:flex-start; color:var(--tx-1); font:600 20px var(--f-cond); }
@@ -2613,7 +2613,7 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
   #sectormodal .srplate{ flex:none; height:72px; padding:3px; background:var(--srseat); border-radius:6px; }
   #root #sectormodal #sectordeploy{ width:100%; height:100%; display:flex; align-items:center; justify-content:space-between; padding:0 24px 0 30px; background:var(--acc); color:var(--acc-ink); border:0; border-radius:4px; font:800 52px/1 var(--f-cond); letter-spacing:.05em; }
   #root #sectormodal #sectordeploy:hover{ background:var(--acc-hover); }
-  #sectormodal .srsr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+  #sectormodal .srsr{ display:none; }
   #sectormodal .srplk{ display:flex; align-items:center; gap:8px; }
   #srhints{ flex:none; height:32px; display:flex; align-items:center; gap:24px; margin-top:4px; border-top:1px solid var(--ui-line); font:500 20px var(--f-cond); color:var(--tx-2); }
   #srhints .srk, #srhints .srp{ display:flex; align-items:center; gap:24px; }
@@ -3143,7 +3143,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.47';
+var VER='32.48';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -50501,7 +50501,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.47: The rewards list runs the full card width; the last pour rows and buttons are bigger. Check 32.47 fails on v32.46',
+  now:'v32.48: The pre-raid page chips fit their boxes and the map names read larger. Check 32.48 fails on v32.47',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -65610,7 +65610,7 @@ function sectorPreviewDraw(cv,M){
   var EX=(M.extracts&&M.buildings)?extractsOutside(M.extracts,M.buildings,M.w,M.h):(M.extracts||null);   // v22.16 (K27): the rings where the raid puts them
   c.setTransform(1,0,0,1,0,0); c.clearRect(0,0,cv.width,cv.height);
   if(_sk) c.setTransform(cv.width/W0,0,0,cv.height/H0,0,0);
-  function put(s,x,y){ c.lineJoin='round'; c.lineWidth=4; c.strokeStyle='rgba(8,18,28,.9)'; c.strokeText(String(s).toLowerCase(),x,y); c.fillText(s,x,y); }
+  function put(s,x,y){ c.lineJoin='round'; c.lineWidth=3; c.strokeStyle='rgba(8,18,28,.9)'; c.strokeText(String(s).toLowerCase(),x,y); c.fillText(s,x,y); }
   c.fillStyle='#0c1a28'; c.fillRect(ox,oy,M.w*sc,M.h*sc);
   c.strokeStyle='#2f5e86'; c.lineWidth=2; c.setLineDash([12,7]); c.strokeRect(ox+4,oy+4,M.w*sc-8,M.h*sc-8); c.setLineDash([]);
   if(M.zones) for(i=0;i<M.zones.length;i++){ z=M.zones[i]; if(typeof z.x!=='number') continue;
@@ -65706,7 +65706,7 @@ function renderSector(){
        '<div class="srmh"><b>'+M.name+'</b>'+
        (sel?'<span class="srtag"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>ASCENDING HERE</span>':'')+
        '<span class="srst">'+facts.join('  &middot;  ')+'</span></div>'+
-       '<div class="srcv"><canvas class="secprev" data-map="'+i+'" width="840" height="'+Math.round(840*M.h/M.w)+'"></canvas></div></div>';
+       '<div class="srcv"><canvas class="secprev" data-map="'+i+'" width="640" height="'+Math.round(640*M.h/M.w)+'"></canvas></div></div>';
   }
   host.innerHTML=h;
   try{ sectorPreviews(host); }catch(_sv){}   // v17.79: the sector maps
@@ -65878,7 +65878,7 @@ function syncSectorKit(){
   // v10.13, his answer 7: the armour warning lives here, on the way up, and only when it is true: a packed armour item takes it away
   var armed=false;
   try{ packList().forEach(function(k){ if(ITEMS[k].use==='armor'&&packedCount(k)>0) armed=true; }); }catch(_rh){}
-  if(!armed) line+='<span class="wn"><svg viewBox="0 0 24 24"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17v.5"/></svg><b>NO ARMOUR EQUIPPED</b><i>EQUIP PLATES ON THE SURFACE</i></span>';
+  if(!armed) line+='<span class="wn"><svg viewBox="0 0 24 24"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17v.5"/></svg><b>NO ARMOUR EQUIPPED</b><i>EQUIP PLATES</i></span>';
   el.innerHTML=line+'</div>';
 }
 // v32.45 (cw-preraid-a): THE PAD FLOW. Focus opens on ascend, so a normal ascent is one press. LB and RB jump between the conditions, the kit tiles and the pack; the d-pad moves up and down inside each one

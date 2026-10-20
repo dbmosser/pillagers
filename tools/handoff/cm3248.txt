@@ -1,0 +1,7 @@
+v32.48: pre-raid polish: no cut off chips, wider kit column, sharper map names
+
+The pre-raid page chips fit their boxes and the map names read larger.
+
+Check 32.48. Fails on v32.47.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
