@@ -69,7 +69,8 @@ free(){ while read -r f; do [ -n "$f" ] || continue; printf '%s\n' "$busy" | gre
 retry(){ ls "$C/failed/"*.md 2>/dev/null | sort | while read -r f; do n=$(basename "$f" .md)
   case "$n" in o-*) continue;; esac   # 10-20 04:25: o-* jobs are the Codex lane's (tools/codex-lane.sh); a Claude lane never retries or picks them
   grep -qxF "$n" "$C/retried.txt" 2>/dev/null && continue; echo "$n" >> "$C/retried.txt"
-  awk -v n="$n" '$3==n{$3=n"-r2"} {print}' "$C/spend.txt" > "$C/spend.$L.tmp" && mv "$C/spend.$L.tmp" "$C/spend.txt"
+  # 10-20: runs are counted in spend.txt AND cli-spend.txt (the plan runs), so rename in both; renaming spend.txt alone gave a retried job 1 run, not 5
+  for sf in spend.txt cli-spend.txt; do awk -v n="$n" '$3==n{$3=n"-r2"} {print}' "$C/$sf" > "$C/$sf.$L.tmp" && mv "$C/$sf.$L.tmp" "$C/$sf"; done
   mv "$f" "$C/tasks/" 2>/dev/null && echo "$C/tasks/$n.md"; break; done; }
 # 10-19 night (b-30 spent its last two runs, 12 and 18 seconds, only to say it waited on c-02, then went to failed/): a run that ends
 # TASK WAITING: OTHER-TASK-ID parks the job in blocked/ and does not count as a try (its spend line says NAME-wait). It comes back to

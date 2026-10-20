@@ -152,7 +152,8 @@ fi
 busy=""; free(){ while read -r f; do [ -n "$f" ] || continue; printf '%s\n' "$busy" | grep -qxF "$(basename "$f")" || { echo "$f"; return; }; done; }
 retry(){ ls "$C/failed/"*.md 2>/dev/null | sort | while read -r f; do n=$(basename "$f" .md)
   grep -qxF "$n" "$C/retried.txt" 2>/dev/null && continue; echo "$n" >> "$C/retried.txt"
-  awk -v n="$n" '$3==n{$3=n"-r2"} {print}' "$C/spend.txt" > "$C/spend.$L.tmp" && mv "$C/spend.$L.tmp" "$C/spend.txt"
+  # 10-20: runs are counted in spend.txt AND cli-spend.txt (the plan runs), so rename in both; renaming spend.txt alone gave a retried job 1 run, not 5
+  for sf in spend.txt cli-spend.txt; do awk -v n="$n" '$3==n{$3=n"-r2"} {print}' "$C/$sf" > "$C/$sf.$L.tmp" && mv "$C/$sf.$L.tmp" "$C/$sf"; done
   mv "$f" "$C/tasks/" 2>/dev/null && echo "$C/tasks/$n.md"; break; done; }
 if [ "$MODE" = run ]; then
   for i in $(seq 1 30); do mkdir "$C/pick.lock" 2>/dev/null && break; [ -n "$(find "$C/pick.lock" -maxdepth 0 -mmin +1 2>/dev/null)" ] && rm -rf "$C/pick.lock"; sleep 2; done
