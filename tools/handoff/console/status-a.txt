@@ -1,1 +1,1 @@
-10-20 00:46 17-party-easy-mode: partial (run 4 of 5), $0.17719169999999998
+10-20 00:51 waiting: another helper is just starting (memory check again in a few minutes); 17-party-easy-mode kept

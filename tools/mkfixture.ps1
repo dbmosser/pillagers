@@ -6101,6 +6101,11 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.28',what:'the pause report box is 56px like the other pause buttons',
+   run:function(){
+     var css=''; for(var i=0;i<document.styleSheets.length;i++){ try{ var rs=document.styleSheets[i].cssRules; for(var j=0;j<rs.length;j++){ css+=rs[j].cssText; } }catch(e){} }
+     if(!/#pausefb\s*\{[^}]*padding-top: calc\(\(var\(--btn-h\) - 28px\) \/ 2\)/.test(css)) return 'the report box is not 56px high';
+     return null; }},
   {v:'32.27',what:'cw-cx-sectorhold-o03: codex, weather and page notices wait off the map without losing lifetime, replay in order, loot tags do not overlap, and seats use amber/cyan',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__drawHUD&&typeof txRecord==='function')) return 'SKIP: this fixture cannot draw a raid';

@@ -215,17 +215,17 @@
  "22-raid-map-open": {
   "score": 3,
   "pass": false,
-  "verdict": "it reads as a proper centred card with an x, a quiet header and a clean contracts list, but the map labels collide with each other and with the geometry, and the 'running slowly' toast leaks onto the card and the screen edge.",
+  "verdict": "The codex popup no longer sits on the map, which is a real fix, but the map labels now pile up in two spots, the contract rows lose their rhythm, and the screen is otherwise the same competent but plain card as before.",
   "findings": [
-   "P0 bottom-left, outside the card at x 15-310, y 745-795: hide raid toasts while the map is open, or anchor them at x=48 outside the card. Show 'running slowly' once, in the header status area next to 'dawn · clear'.",
-   "P1 map labels (extract a/b/c, hot ground, packing floor, chill row, the forge, seal 0%): two label sizes only (16px names, 14px sub-lines). Give every label a 2px --ui-void outline or a 60% void plate. Raise the room names to --tx-2 or brighter. Nudge colliding labels at least 12px away from icons and from each other.",
-   "P1 map frame and hierarchy: remove the inner double border and use one 1px --ui-line-hi. Make the player marker 32px with a lime ring. Dim the 'hot ground' fill to 12% opacity. Narrow contracts to about 30% of the card.",
-   "P1 contracts panel, rows: drop the '0 of 8 done' counter or move it into the header. Make the bars 4px tall with a visible --ui-line-hi track. Show '$' in --tx-1. Group the rows into 4 visible plus a scroll, or reduce row height from 85px to 64px.",
-   "P2 header: align the baselines of title and subtitle. Put 'dawn · clear' at 16px --tx-2. Keep only the corner x and let the footer legend show 'm' as a small key hint, not a second 'close' action."
+   "P1 map, top-right strongbox cluster (~x 970-1060, y 195-265): Merge co-located markers into one label with a count ('3 caches'). Or fan out leader lines at 16px vertical spacing, with the label text fully clear of the 56px icon box.",
+   "P1 map, strongbox / blast freezer cluster (~x 940-1075, y 360-475): Collapse to one 'strongbox +4' pin. Or cap visible labels per 120px cell at 2 and show the rest only on hover or focus. Keep 12px minimum gap between label boxes.",
+   "P1 hierarchy, contracts panel vs map: Mark the tracked contract with a 3px --acc left bar and tx-1 name, and dim the rest to tx-2. Show only the top 3-4 rows, or drop the row dividers' weight.",
+   "P2 contracts panel, 'no heals' row: Give every row the same right-aligned status slot (fixed 56px width) and run all bars to the same x. Put 'holding' in --ok green so it reads as a state.",
+   "P2 map, player arrow (~220,312): Don't change player marker colours until he answers r3-13. Revert to the old arrow colour, or keep one token for it on every screen."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-02-r19/22-raid-map-open-1080.jpg",
-  "task": "manual",
-  "when": "2026-10-20T04:25"
+  "pic": "tools/handoff/console/notes/shots/o-03-map-popups-wait-after/22-raid-map-open-1080.jpg",
+  "task": "o-03-map-popups-wait",
+  "when": "2026-10-20T04:50"
  },
  "23-raid-backpack-open": {
   "score": 2,

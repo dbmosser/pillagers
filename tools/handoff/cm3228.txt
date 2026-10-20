@@ -1,0 +1,7 @@
+v32.28: pause report box 56px
+
+The pause report box is 56px high.
+
+Check 32.28. Fails on v32.27.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
