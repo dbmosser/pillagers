@@ -19,8 +19,9 @@ Do them in this order:
 How: plan each edit before you take the lock (bash S/lock.sh, edit tools/mkfixture.ps1, runchk.sh on the checks you touched, then
 HELD=1 bash S/fixq.sh "MESSAGE", bash S/unlock.sh; short holds). Each restored assertion must still PASS on the current game, and
 must FAIL on a build with the bug it guards (say how you know, for example by the audit's worked example). If a restored assertion
-fails on the current game, that is a REAL bug: fix the game, do not loosen the check again. Do not touch o-02's 22 while it runs, or
-53-corpus-reds-b's checks while that job is still in tasks/.
+fails on the current game, that is a REAL bug: fix the game, do not loosen the check again. 31.71 and 27.20 are in o-02's 22 but are
+yours (o-02 was told to leave them); do not touch o-02's other checks while it runs, or 53-corpus-reds-b's checks while that job is
+still in tasks/.
 Write one line per finding in tools/handoff/console/notes/55-retarget-repairs.md: check, FIXED / REAL (game fix vNN.NN) / NOT A PROBLEM, reason.
 
 TASK DONE when every finding in the audit file has a line in your notes; TASK PARTIAL with the ones left.
