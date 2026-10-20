@@ -1907,6 +1907,7 @@ window.__REGRESS=[
   {v:'8.65',what:'the two gun slots swap weapons and never fire one',
    run:function(){
      var P=__P(); P.weapons=['smg','rifle']; P.hotAssign={};
+     P.equipped='smg'; P.equippedSec='rifle';   // v32.83 retarget (50-corpus-old-a): a deploy brings only the two EQUIPPED guns (the owned list alone leaves the second hand empty)
      __resetCfg(); __pinDefaults(0);
      var d=__deploy({kit:['bandage'],safe:null,mapIx:0,seed:4242});
      if(d.error) return d.error;
@@ -1927,7 +1928,7 @@ window.__REGRESS=[
      if((s2.player.wep&&s2.player.wep.id)!==hand0) return 'picking the first gun back did not restore it';
      if(s2.tel.shots>0) return 'a belt key FIRED the gun; it must only change weapon';
      return null; }},
-  {v:'8.65',what:'the heal and plate slots spend the right item',
+  {v:'8.65h',what:'the heal and plate slots spend the right item',
    run:function(){
      var P=__P(); P.weapons=['smg']; P.hotAssign={};
      __resetCfg(); __pinDefaults(0);
@@ -3915,8 +3916,9 @@ window.__REGRESS=[
        __mapOverlay();
        // v32.83 retarget (50-corpus-old-a): the heading is the sector name in the card header now (cw-mapstyle, light text 24.6 px at 1080p), no longer amber text above the frame; read the left third of the header row.
        var cd=mapProj().card;
-       var x0=Math.max(0,Math.round(cd.x+cd.p)), w=Math.max(8,Math.min(Math.round(cd.w*0.3),W2-x0));
-       var y0=Math.max(0,Math.round(cd.y)), hgt=Math.max(8,Math.min(H2-y0,Math.round(cd.hh)));
+       var kk=hc.width/W2;   // the HUD canvas may carry more pixels than the CSS size; every rect is scaled by it and the result scaled back
+       var x0=Math.max(0,Math.round((cd.x+cd.p)*kk)), w=Math.max(8,Math.min(Math.round(cd.w*0.3*kk),hc.width-x0));
+       var y0=Math.max(0,Math.round(cd.y*kk)), hgt=Math.max(8,Math.min(hc.height-y0,Math.round(cd.hh*kk)));
        var d=hc.getContext('2d').getImageData(x0,y0,w,hgt).data;
        var minX=1e9,maxX=-1,minY=1e9,maxY=-1;
        for(var yy=0;yy<hgt;yy++) for(var xx=0;xx<w;xx++){
@@ -3925,7 +3927,7 @@ window.__REGRESS=[
            if(xx<minX)minX=xx; if(xx>maxX)maxX=xx; if(yy<minY)minY=yy; if(yy>maxY)maxY=yy; }
        }
        return {mapW:Math.round(WW*sc), mapH:Math.round(WH*sc),
-               tw:maxX<0?0:(maxX-minX+1), th:maxY<0?0:(maxY-minY+1)};
+               tw:maxX<0?0:Math.round((maxX-minX+1)/kk), th:maxY<0?0:Math.round((maxY-minY+1)/kk)};
      }
      var a=mapText(1920,1080), b=mapText(3840,2160);
      __forceSize(1920,1080);
@@ -3978,14 +3980,14 @@ window.__REGRESS=[
        var pad=70, sc=Math.min((W2-pad*2)/WW,(H2-pad*2)/WH);
        var ox=(W2-WW*sc)/2, oy=(H2-WH*sc)/2;
        // v32.83 retarget (50-corpus-old-a): the frame is a neutral 1 px line (ui_line_hi, cw-mapstyle) over the card colour, not a blue one; read how thick it is as coverage of the line colour in the strip left of the map, which is also proof against anti-aliasing.
-       var MP=mapProj(), y=Math.round(MP.oy+WORLD_H*MP.sc/2), x0=Math.max(0,Math.round(MP.ox)-16), w=Math.min(16,W2-x0);
+       var MP=mapProj(), kk=document.getElementById('hcv').width/W2, y=Math.round((MP.oy+WORLD_H*MP.sc/2)*kk), x0=Math.max(0,Math.round(MP.ox*kk)-Math.round(16*kk)), w=Math.round(16*kk);
        var d=document.getElementById('hcv').getContext('2d').getImageData(x0,y,w,1).data;
        var cv1=document.createElement('canvas'); cv1.width=cv1.height=1; var cx1=cv1.getContext('2d');
        cx1.fillStyle=UIC.ui_line_hi; cx1.fillRect(0,0,1,1); var q1=cx1.getImageData(0,0,1,1).data;
        var span=Math.abs(q1[0]-d[0])+Math.abs(q1[1]-d[1])+Math.abs(q1[2]-d[2]), far=0;
        if(span>12) for(var x=0;x<w;x++){ var i=x*4;
          far+=Math.min(1,(Math.abs(d[i]-d[0])+Math.abs(d[i+1]-d[1])+Math.abs(d[i+2]-d[2]))/span); }
-       return {reach:Math.round(far*10)/10, scale:sc};
+       return {reach:Math.round(far/kk*10)/10, scale:sc};
      }
      var a=frameReach(1920,1080), b=frameReach(3840,2160);
      __forceSize(1920,1080);
@@ -4575,7 +4577,7 @@ window.__REGRESS=[
        g.ents=[tgt]; p.iv=99; p.hp=p.maxhp;
        // Semi automatic on purpose, pulsed, so this is a handful of aimed shots
        // going past him rather than a wall of noise.
-       var gun=__gun.roll('pistol');   // v32.83 retarget (50-corpus-old-a): the Marksman Rifle (dmr) is gone (cw-gunsgone); the pistol is the semi automatic stand-in
+       var gun=__gun.roll('pistol'); gun.spread=0.01; gun.rng=520;   /* the old Marksman was a tight, long semi auto; the near miss geometry below is exact only with a tight spread */   // v32.83 retarget (50-corpus-old-a): the Marksman Rifle (dmr) is gone (cw-gunsgone); the pistol is the semi automatic stand-in
        for(var kk in gun) p.wep[kk]=gun[kk];
        p.ammo=gun.mag; p.jam=0;
        // He must survive, so a round that does land can be reported rather than
