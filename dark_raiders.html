@@ -1954,6 +1954,10 @@ body #attract .arcpage .apn{ text-align:left; }
 #root #settingsmodal #closesettings::after, #root #keysmodal #closekeys::after{ content:''; --xc:var(--tx-1); width:var(--sp-3); height:var(--sp-3); background:linear-gradient(45deg, transparent 44%, var(--xc) 44% 56%, transparent 56%), linear-gradient(-45deg, transparent 44%, var(--xc) 44% 56%, transparent 56%); }
 #root #settingsmodal #closesettings:hover::after, #root #keysmodal #closekeys:hover::after{ --xc:var(--acc); }
 #root #pausebox{ --pw:calc(var(--sp-1) * 50); }
+/* v28.xx (cw-cx-o07-padcontrast): critic P0, disabled reconnect keeps dark ink on lime; P1, no faint HUD behind this card. */
+#root #pausebox.padlost{ background:var(--ui-void) !important; }
+#root #pausebox.padlost #resumebtn:disabled{ opacity:1 !important; color:var(--acc-ink) !important; background:var(--acc) !important; border-color:var(--acc) !important; font-weight:700; }
+body:has(#pausebox.padlost.on) #hubtoast{ display:none !important; }
 #root #pausebox > div:has(> #resumebtn){ width:var(--pw); }
 body:not(.padon) #root #pausebox::before{ width:min(calc(var(--pw) + var(--sp-5) + var(--sp-4)),calc(100% - var(--sp-4))) !important; }
 
@@ -3199,7 +3203,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.78';
+var VER='32.79';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18646,6 +18650,8 @@ function padXMode(mateDown){
 function padLostUi(on,ready){
   if(!on&&!PAD.lossUi) return;
   var b=document.getElementById('resumebtn'); if(!b) return;
+  // v28.xx (cw-cx-o07-padcontrast): scope the contrast and opaque backdrop to this interruption.
+  var box=document.getElementById('pausebox'); if(box) box.classList.toggle('padlost',!!on);
   if(on){
     if(!PAD.lossUi) PAD.lossUi={text:b.textContent,disabled:b.disabled};
     b.textContent=ready?'resume':'reconnect'; b.disabled=!ready;
@@ -50921,7 +50927,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.78: The raid backpack is a compact panel with larger tiles and readable text. Check 32.78 fails on v32.77',
+  now:'v32.79: Reconnect uses dark ink at full opacity while disabled. Only the disconnect overlay has an opaque backdrop and hides unrelated page toasts. Recovery restores the ordinary pause appearance. Check 32.79 fails on v32.78',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

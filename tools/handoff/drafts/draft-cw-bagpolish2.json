@@ -1,0 +1,24 @@
+{
+    "title":  "THE RAID BACKPACK LOSES ITS DEAD STRIP AND FLOATING VALUES",
+    "why":  "The critic scored the compact backpack 3 of 5 (target 4): the detail value floated far from its label, about 90 px of dead panel sat under the hints, and the title outshone the selected item. The value column is closer, the footer is shorter, the title is the item-name size and the ammo count is white instead of amber.",
+    "now":  "The raid backpack has no dead strip at the bottom and its detail rows read as one line.",
+    "edits":  [
+                  {
+                      "anchor":  "var hh=LH(262)*BZ+rows",
+                      "replacement":  "var hh=LH(244)*BZ+rows"
+                  },
+                  {
+                      "anchor":  "x+11+LH(100)*BZ,_ry);",
+                      "replacement":  "x+11+LH(64)*BZ,_ry);   // v28.xx (cw-bagpolish2), the critic: the value of a detail row floated far from its label, so the value column is closer, and the footer was 90 px of dead panel below the hints, so it is shorter"
+                  },
+                  {
+                      "anchor":  "ctx.font=bFS(TYPE.title); ctx.fillStyle=\u0027#efe9dc\u0027;",
+                      "replacement":  "ctx.font=bFS(TYPE.head); ctx.fillStyle=\u0027#efe9dc\u0027;   // v28.xx (cw-bagpolish2), the critic: the title outshone the selected item, so it is the item-name size"
+                  },
+                  {
+                      "anchor":  "(p.ammo===0?\u0027#ff5a4a\u0027:\u0027#ffc04a\u0027)",
+                      "replacement":  "(p.ammo===0?\u0027#ff5a4a\u0027:\u0027#efe9dc\u0027)"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the raid backpack panel has no dead strip below its last line of text\u0027,\n   run:function(){\n     var g, bp, f, maxY=0, PR=CanvasRenderingContext2D.prototype, of=PR.fillText;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[\u0027gun_carbine\u0027,\u0027medkit\u0027,\u0027bandage\u0027,\u0027bandage\u0027,\u0027plate\u0027,\u0027frag\u0027,\u0027smoke\u0027],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player) return \u0027SKIP: no raid\u0027;\n       g.ents.length=0; g.player.iv=99; g.bagOpen=true;\n       for(f=0;f\u003c8;f++) __loop(performance.now()+f*16.7);\n       bp=g.bagPanel; if(!bp) return \u0027the backpack panel was not drawn\u0027;\n       PR.fillText=function(s){\n         if(String(s).trim()\u0026\u0026arguments[1]\u003e=bp.x\u0026\u0026arguments[1]\u003c=bp.x+bp.w\u0026\u0026arguments[2]\u003e=bp.y\u0026\u0026arguments[2]\u003c=bp.y+bp.h\u0026\u0026arguments[2]\u003emaxY) maxY=arguments[2];\n         return of.apply(this,arguments);\n       };\n       for(f=0;f\u003c2;f++) __loop(performance.now()+f*16.7);\n       PR.fillText=of;\n       if(bp.y+bp.h-maxY\u003e76) return \u0027the backpack panel has \u0027+Math.round(bp.y+bp.h-maxY)+\u0027 px of dead panel under its last line\u0027;\n       return null;\n     } finally {\n       PR.fillText=of;\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}

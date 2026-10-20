@@ -1,0 +1,5 @@
+## v32.79 - PAD RECONNECT CONTRAST
+
+Co-op hunt while he was away. The disabled reconnect action inherited grey text on lime. The critic found low contrast and faint HUD text behind the disconnect card.
+
+MEASURED. Check 32.79 passes, and fails on v32.78.

@@ -263,12 +263,19 @@
   "when": "2026-10-20T05:09"
  },
  "23-raid-backpack-open": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The backpack is a wide, mostly empty dark slab with tiny, low-contrast text and three lonely item slots, and it sits in a HUD cluttered with competing text blocks, so it looks like a debug panel rather than a AAA inventory.",
-  "pic": "tools/handoff/console/notes/shots/all/23-raid-backpack-open-1080.jpg",
-  "task": "10-ui-look-book",
-  "when": "2026-10-18T06:17"
+  "verdict": "The backpack is now a narrower panel with bigger, brighter text and a lime focus ring, but it is still half empty with a floating gap in the detail row, a dead lower third, and the panel sits over the belt and the player.",
+  "findings": [
+   "P1 detail pane, 'use' and 'armor' row: Put the label and value on one baseline with a 16px gap, or make it a two-column grid with a 120px label column. Set the footer hints in --fs-fine 14px --tx-2 and pin them to the panel bottom.",
+   "P1 panel body, y 860-920: Size the panel to its content (cut about 80px of height), or draw empty slot outlines for the remaining capacity (e.g. 12 slots at 84px) so the grid reads as a backpack.",
+   "P1 hierarchy, title versus selection: Set the title to a calm 32px --tx-1 700. Set the selected item name at 20px with a --acc 3px left tab. Show '12 / 24' in --tx-2 or --acc, not amber (the amber is --warn only).",
+   "P2 panel framing: Add a 1px --ui-line-hi border, a 4px radius and an opaque 90% --ui-panel fill. Raise 'b or i to close' to 16px --tx-2.",
+   "P2 placement: Keep a 24px gap above the belt (panel bottom at about y=895) and nudge it to the left third so the centre of the map stays visible."
+  ],
+  "pic": "tools/handoff/console/notes/shots/45-after/23-raid-backpack-open-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-20T10:24"
  },
  "25-raid-pause-box": {
   "score": 3,

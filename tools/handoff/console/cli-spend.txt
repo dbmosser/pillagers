@@ -404,3 +404,5 @@
 2026-10-20 0.1514 critic-o-07-pad-lost
 2026-10-20 0.1572 critic-manual
 2026-10-20 0.15227290000000002 00-perf-shadow-store
+2026-10-20 0.0000 o-07-pad-lost
+2026-10-20 0.1570 critic-manual

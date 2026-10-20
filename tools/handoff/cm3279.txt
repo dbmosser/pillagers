@@ -1,0 +1,7 @@
+v32.79: pad reconnect contrast
+
+Reconnect uses dark ink at full opacity while disabled. Only the disconnect overlay has an opaque backdrop and hides unrelated page toasts. Recovery restores the ordinary pause appearance.
+
+Check 32.79. Fails on v32.78.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

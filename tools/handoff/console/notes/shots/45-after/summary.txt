@@ -1,2 +1,2 @@
 == 1080 : window 1952x1183, viewport 1920x1080
-  66-trophy-case                         staged       6.3s    | trophymodal
+  23-raid-backpack-open                  staged       9.0s  
