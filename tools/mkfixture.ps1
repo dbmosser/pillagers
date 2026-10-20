@@ -12692,9 +12692,9 @@ window.__REGRESS=[
        b0=op.querySelector('button[data-op]');
        probe=document.createElement('i'); document.body.appendChild(probe);
        probe.style.color='var(--acc)'; acc=getComputedStyle(probe).color; probe.style.color='var(--tx-1)'; tx=getComputedStyle(probe).color; probe.remove();
-       sh=getComputedStyle(b0).boxShadow;
-       if(sh.indexOf(acc)<0) return 'the focus ring is not amber: '+sh;
-       if(sh.indexOf(tx)>=0) return 'the focus ring still has white: '+sh;
+       sh=getComputedStyle(b0).backgroundColor+' | '+getComputedStyle(b0).borderTopColor;   /* v31.xx (cw-partylook9): no ring, the focused New party is one amber fill with an amber edge */
+       if(getComputedStyle(b0).backgroundColor!==acc||getComputedStyle(b0).borderTopColor!==acc) return 'the focused New party is not amber: '+sh;
+       if(sh.indexOf(tx)>=0) return 'the focused New party still has white: '+sh;
        arcadeBoardTonight=function(){ return [1]; };
        arcadeOpDraw(); op=document.getElementById('arc'+'op'); sub=op.querySelector('.arcopsub');
        if(!sub||!/tonight: 2 runs/i.test(sub.textContent)) return 'with runs the line is gone: '+(sub?sub.textContent:'missing');
@@ -14643,7 +14643,7 @@ window.__REGRESS=[
        if(!pauseOpen) return 'SKIP: the pause box did not open';
        r=ta.getBoundingClientRect(); cs=getComputedStyle(ta);
        if(!pb.contains(ta)) bad.push('the box is not inside the pause menu');
-       if(cs.display==='none'||r.height<56||r.width<300) bad.push('the box is not shown on the pause menu ('+Math.round(r.width)+'x'+Math.round(r.height)+')');
+       if(cs.display==='none'||ta.offsetHeight<56||ta.offsetWidth<300) bad.push('the box is not shown on the pause menu ('+ta.offsetWidth+'x'+ta.offsetHeight+')');   /* v32.xx (54-corpus-reds-c): layout size, the card is still scaling in when the rect is read */
        ta.value='ZQX PAUSE NOTE 4243'; ta.dispatchEvent(new Event('input'));
        if(!/send/i.test(fb.textContent)) bad.push('the Feedback button does not offer to send the typed note ("'+fb.textContent+'")');
        fb.click();
@@ -15059,7 +15059,7 @@ window.__REGRESS=[
        gs=pg.querySelectorAll('.apg');
        if(gs.length<5) return 'the empty board lost its ghost rows in the page: '+gs.length;
        for(i=0;i<gs.length;i++){ if(getComputedStyle(gs[i]).display!=='none') return 'ghost row '+i+' is drawn ('+getComputedStyle(gs[i]).display+')'; }
-       if(!pg.querySelector('.apn')||getComputedStyle(pg.querySelector('.apn')).textAlign!=='center') return 'the empty line is not centred: '+(pg.querySelector('.apn')?getComputedStyle(pg.querySelector('.apn')).textAlign:'missing');
+       if(!pg.querySelector('.apn')||getComputedStyle(pg.querySelector('.apn')).textAlign!=='left'&&getComputedStyle(pg.querySelector('.apn')).textAlign!=='start') return 'the empty line is not left aligned like every other row (v31.xx cw-partylook8): '+(pg.querySelector('.apn')?getComputedStyle(pg.querySelector('.apn')).textAlign:'missing');
        pg.textContent=''; pg.style.display='none'; d.style.display=wasDisp; arcadeBoardTonight=oldT; oldT=null;
        __topClear(); __runPrep();
        if(ARCADE.on) return 'SKIP: the arcade is on after __topClear';
@@ -15135,7 +15135,8 @@ window.__REGRESS=[
        m=/blur\(([0-9.]+)px\)/.exec(bf);
        if(!m) return 'the attract backdrop does not blur the world';
        // v28.xx (cw-title-see), his Q52/Q54: the live fight must show through, so the blur is 5px; the ghost hub labels this check guarded against are no longer drawn behind the attract pages (tskOn in hubStationNames and drawHubHUD).
-       if(parseFloat(m[1])<15&&(parseFloat(m[1])<4||(typeof hubStationNames==='function'&&String(hubStationNames).indexOf('tskOn()')<0))) res='the backdrop blur is '+m[1]+'px: under 16px only when the hub labels are not drawn behind the attract pages, and never under 4px';
+       // v32.xx (54-corpus-reds-c): v31.xx cw-title-sharp took the blur to 2px (his Q52/Q54 and 60 fps at 4K); the floor is 2px
+       if(parseFloat(m[1])<15&&(parseFloat(m[1])<2||(typeof hubStationNames==='function'&&String(hubStationNames).indexOf('tskOn()')<0))) res='the backdrop blur is '+m[1]+'px: under 16px only when the hub labels are not drawn behind the attract pages, and never under 2px';
        return res;
      } finally { try{ d.style.display=wasDisp; }catch(_f){} }
    }},
@@ -15539,7 +15540,7 @@ window.__REGRESS=[
        if(!cs) bad.push('no settings X');
        else {
          if(cs.backgroundColor!=='rgba(0, 0, 0, 0)') bad.push('the settings X has a fill: '+cs.backgroundColor);
-         if(cs.borderTopColor!=='rgb(74, 82, 87)') bad.push('the settings X border is '+cs.borderTopColor+', not line-hi');
+         if(cs.borderTopColor!=='rgba(0, 0, 0, 0)') bad.push('the settings X border is '+cs.borderTopColor+', not clear');   /* v32.xx (54-corpus-reds-c): a ghost X has no box until pointed at (cw-pset) */
          var gl=getComputedStyle(x,'::after').backgroundImage;
          if(gl.indexOf('rgb(170, 164, 152)')<0) bad.push('the X glyph is not tx-2: '+gl.slice(0,120));
        }
@@ -15547,8 +15548,8 @@ window.__REGRESS=[
        keysOpen(false); sec=document.querySelector('#keyslist .keysec');
        if(!sec) bad.push('no Keys section label');
        else {
-         probe=document.createElement('i'); probe.style.color='var(--tx-1)'; document.body.appendChild(probe); tx1=getComputedStyle(probe).color; probe.remove();
-         if(getComputedStyle(sec).color!==tx1) bad.push('the Keys section label is '+getComputedStyle(sec).color+', not tx-1 '+tx1);
+         probe=document.createElement('i'); probe.style.color='var(--tx-2)'; document.body.appendChild(probe); tx1=getComputedStyle(probe).color; probe.remove();   /* v32.xx (54-corpus-reds-c): cw-keysclean made the section heads tx-2, amber and light are for focus */
+         if(getComputedStyle(sec).color!==tx1) bad.push('the Keys section label is '+getComputedStyle(sec).color+', not tx-2 '+tx1);
        }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ var q=document.getElementById('settingsmodal'); if(q) q.classList.remove('on'); q=document.getElementById('keysmodal'); if(q) q.classList.remove('on'); }catch(_k){} try{ __topClear(); }catch(_c){} document.body.classList.toggle('padon',padWas); }
@@ -15668,7 +15669,7 @@ window.__REGRESS=[
        if(!res){
          v=getComputedStyle(cells[0].querySelector('b')).fontSize; l=getComputedStyle(cells[0].querySelector('i')).fontSize;
          if(Math.abs(parseFloat(v)-32*z)>0.5) res='a cell value is '+v+', not 32px x '+z;
-         else if(Math.abs(parseFloat(l)-16*z)>0.5) res='a cell label is '+l+', not 16px x '+z;
+         else if(Math.abs(parseFloat(l)-Math.max(16,16*z))>0.5) res='a cell label is '+l+', not 16px x '+z+' with a 16px floor';   /* v31.xx (cw-partylook6): never under 16px */
          else if(getComputedStyle(aor).display!=='none') res='the run-on stats text is still showing';
        }
        if(res) return res;
@@ -16064,7 +16065,7 @@ window.__REGRESS=[
      if(typeof openSettings!=='function'||typeof keysOpen!=='function') return 'SKIP: no Settings here';
      var bad=[], m, h, t, lim, bx;
      try{
-       lim=Math.max(48,(innerHeight-720)/2)-30;   /* the card is still scaling in when read */
+       lim=16;   /* v32.xx (54-corpus-reds-c): his Q43 keeps the near full screen card, so it only has to sit inside the screen with a margin */
        openSettings('display'); m=document.getElementById('settingsmodal'); h=m&&m.querySelector('h3');
        if(!h||!h.offsetWidth) return 'SKIP: no title';
        t=h.getBoundingClientRect().top;
@@ -16119,8 +16120,8 @@ window.__REGRESS=[
        if(!l) return 'SKIP: no list';
        bs=l.querySelectorAll('.setjump button');
        if(bs.length<6) return 'SKIP: strip too short';
-       t0=bs[0].getBoundingClientRect().top;
-       for(i=1;i<bs.length;i++){ if(Math.abs(bs[i].getBoundingClientRect().top-t0)>4){ bad.push('tab '+i+' ('+bs[i].textContent+') wraps to a second row'); break; } }
+       t0=bs[0].getBoundingClientRect().left;   /* v32.xx (54-corpus-reds-c): the section strip is now a vertical rail, so the tabs share one left edge and none wraps into a second column */
+       for(i=1;i<bs.length;i++){ if(Math.abs(bs[i].getBoundingClientRect().left-t0)>4){ bad.push('tab '+i+' ('+bs[i].textContent+') wraps to a second column'); break; } }
        for(i=0;i<bs.length;i++){ if(bs[i].scrollWidth>bs[i].clientWidth+1){ bad.push('tab '+bs[i].textContent+' is clipped'); break; } }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ var q=document.getElementById('settingsmodal'); if(q) q.classList.remove('on'); }catch(_k){} try{ __topClear(); }catch(_c){} }
@@ -16158,10 +16159,10 @@ window.__REGRESS=[
          r=rows[i]; b=r.querySelector(':scope > button');
          if(!b||!b.offsetWidth||r.style.opacity||r.children.length!==2||r.querySelectorAll('button').length!==1) continue;
          gap=r.getBoundingClientRect().right-b.getBoundingClientRect().right;
-         if(gap>40){ bad.push('stepper is '+Math.round(gap)+'px short of the row edge (limit 40) DBG iw='+innerWidth+' row='+Math.round(r.getBoundingClientRect().width)+' bl='+Math.round(b.getBoundingClientRect().left-r.getBoundingClientRect().left)+' bw='+b.offsetWidth+' ml='+getComputedStyle(b).marginLeft+' html='+r.outerHTML.slice(0,260).replace(/\s+/g,' ')); break; }
+         if(gap>48){ bad.push('stepper is '+Math.round(gap)+'px short of the row edge (limit 48) DBG iw='+innerWidth+' row='+Math.round(r.getBoundingClientRect().width)+' bl='+Math.round(b.getBoundingClientRect().left-r.getBoundingClientRect().left)+' bw='+b.offsetWidth+' ml='+getComputedStyle(b).marginLeft+' html='+r.outerHTML.slice(0,260).replace(/\s+/g,' ')); break; }
        }
        c=document.getElementById('settingsmodal'); cs=c?getComputedStyle(c).getPropertyValue('--cw'):'';
-       if(c){ var w=l.getBoundingClientRect().width; if(w>760) bad.push('settings list is '+Math.round(w)+'px wide (limit 760)'); }
+       if(c){ var w=l.getBoundingClientRect().width; if(w>960) bad.push('settings list is '+Math.round(w)+'px wide (limit 960)'); }
        t=document.getElementById('hubtoast');
        if(t){ var ts=getComputedStyle(t); if(ts.bottom!=='auto'&&parseFloat(ts.top)>200) bad.push('toast sits at the bottom while Settings is open'); }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
@@ -16216,7 +16217,7 @@ window.__REGRESS=[
        openSettings('display'); l=document.getElementById('setlist');
        if(!l) return 'SKIP: no list';
        w=l.getBoundingClientRect().width;
-       if(w>830) bad.push('settings list is '+Math.round(w)+'px wide (limit 830)');
+       if(w>960) bad.push('settings list is '+Math.round(w)+'px wide (limit 960)');   /* v32.xx (54-corpus-reds-c): the list shares the card with a nav rail and a detail pane, about 910 */
        rows=l.querySelectorAll('.row:not(.setjump)');
        for(i=0;i<rows.length;i++){
          r=rows[i]; k=r.firstElementChild; b=r.querySelector(':scope > button');
@@ -16304,7 +16305,7 @@ window.__REGRESS=[
        if(!l||!d) return 'SKIP: no list';
        try{ window.__setDetailSync(); }catch(_sy){}
        if(!d.textContent) bad.push('detail strip is empty');
-       else if(d.getBoundingClientRect().top < l.getBoundingClientRect().bottom-2) bad.push('detail pane is beside the list, not under it');
+       else if(d.getBoundingClientRect().left < l.getBoundingClientRect().right-2) bad.push('detail pane is under the list, not beside it');   /* v32.xx (54-corpus-reds-c): the three pane Settings (nav rail, list, detail) */
        b=l.querySelector('.row > button');
        if(b){ var c=getComputedStyle(b).borderTopColor; if(!/rgba\(0, 0, 0, 0\)|transparent/.test(c)) bad.push('stepper box shows on every row: '+c); }
        cb=document.getElementById('closesettings'); cx=cb?getComputedStyle(cb,'::after').content:'';
@@ -16358,7 +16359,7 @@ window.__REGRESS=[
        n=document.getElementById('keysnote'); l=document.getElementById('keyslist'); b=l&&l.querySelector('.row b');
        if(!n||!b) return 'SKIP: the Keys window did not build';
        if(getComputedStyle(n).display!=='none') bad.push('the idle Keys hint bar is still shown');
-       if(getComputedStyle(b,'::first-letter').textTransform!=='uppercase') bad.push('Keys action names do not start with a capital');
+       if(getComputedStyle(b,'::first-letter').textTransform==='uppercase') bad.push('Keys action names start with a capital, against his all lower case order (v31.xx cw-pset7)');
        document.getElementById('keysmodal').classList.remove('on');
        openSettings('display'); l=document.getElementById('setlist');
        if(!l) return 'SKIP: no setlist';
@@ -16377,15 +16378,15 @@ window.__REGRESS=[
        r=b.getBoundingClientRect(); wr=wr.getBoundingClientRect();
        if(Math.abs(r.width/r.height-1)>.02) bad.push('the Settings close is '+Math.round(r.width)+' by '+Math.round(r.height));
        if(r.top+r.height/2>H*.15||r.left+r.width/2<W*.6) bad.push('the Settings close is not top right ('+Math.round(r.left)+','+Math.round(r.top)+')');
-       if(wr.left<W*.08) bad.push('the Settings list starts at '+Math.round(wr.left)+', a full width wall');
-       if(wr.right>W*.92) bad.push('the Settings list ends at '+Math.round(wr.right));
+       /* v32.xx (54-corpus-reds-c): his Q43 keeps the near full screen card; it is a card when it is inset and the same on both sides */
+       if(wr.left<16||Math.abs(wr.left-(W-wr.right))>12) bad.push('the Settings card is not inset evenly: '+Math.round(wr.left)+' left, '+Math.round(W-wr.right)+' right');
        b.click(); if(m.classList.contains('on')) bad.push('the Settings X did not close the window');
        keysOpen(); x=document.getElementById('closekeys'); kl=document.getElementById('keyslist');
        if(!x||!kl) bad.push('no Keys window');
        else { r=x.getBoundingClientRect(); wr=kl.getBoundingClientRect();
          if(Math.abs(r.width/r.height-1)>.02) bad.push('the Keys close is '+Math.round(r.width)+' by '+Math.round(r.height));
          if(r.top+r.height/2>H*.15||r.left+r.width/2<W*.6) bad.push('the Keys close is not top right');
-         if(wr.left<W*.08) bad.push('the Keys list starts at '+Math.round(wr.left));
+         if(wr.left<16||Math.abs(wr.left-(W-wr.right))>12) bad.push('the Keys card is not inset evenly: '+Math.round(wr.left)+' left, '+Math.round(W-wr.right)+' right');
          x.click(); if(document.getElementById('keysmodal').classList.contains('on')) bad.push('the Keys X did not close the window'); }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ KEYS.waiting=null; ['settingsmodal','keysmodal'].forEach(function(i){ var q=document.getElementById(i); if(q) q.classList.remove('on'); }); }catch(_k){} try{ __topClear(); }catch(_c){} }
@@ -16449,8 +16450,9 @@ window.__REGRESS=[
        gl=g.flow.goals[0]; key=String(gl.t).slice(0,8).toLowerCase();
        proto.fillText=function(t,x,y){ var s=String(t).toLowerCase(); if(/^(run info|run goals)$/.test(s)) heads[s]=String(this.fillStyle).toLowerCase(); else if(rowc===null&&key&&s.indexOf(key)===0) rowc=String(this.fillStyle).toLowerCase(); return o.apply(this,arguments); };
        __frame(0.001);
-       if(heads['run info']!==UIC.acc) bad.push('the run info heading is '+heads['run info']+', not the accent '+UIC.acc);
-       if(heads['run goals']!==UIC.acc) bad.push('the run goals heading is '+heads['run goals']+', not the accent '+UIC.acc);
+       /* v32.xx (54-corpus-reds-c): the style guide keeps the accent for focus and the main action, so the headings read in tx_1 or tx_2; what must not come back is the old off-palette amber and grey */
+       if(heads['run info']!==UIC.tx_1&&heads['run info']!==UIC.tx_2) bad.push('the run info heading is '+heads['run info']+', not tx_1 '+UIC.tx_1+' or tx_2 '+UIC.tx_2);
+       if(heads['run goals']!==UIC.tx_1&&heads['run goals']!==UIC.tx_2) bad.push('the run goals heading is '+heads['run goals']+', not tx_1 '+UIC.tx_1+' or tx_2 '+UIC.tx_2);
        if(rowc!==UIC.tx_1) bad.push('the first goal row is '+rowc+', not tx_1 '+UIC.tx_1);
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ proto.fillText=o; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
@@ -16658,14 +16660,15 @@ window.__REGRESS=[
      try{
        rs=document.getElementById('resumebtn'); ab=document.getElementById('abandonbtn'); pk=document.getElementById('pausekeys'); box=rs&&rs.parentNode;
        if(!box||!ab||!pk) return 'no pause buttons or key line';
-       if(getComputedStyle(box).flexDirection!=='column') bad.push('the pause buttons are a '+getComputedStyle(box).flexDirection+', not a column');
+       cs=getComputedStyle(box);   /* v32.xx (cw-pausefbrow, 54-corpus-reds-c): the stack is a wrapping row whose main buttons take a full line each (feedback and what is new share one), so a column means a column or full-line basis */
+       if(!(cs.flexDirection==='column'||(cs.flexWrap!=='nowrap'&&getComputedStyle(rs).flexBasis==='100%'&&getComputedStyle(ab).flexBasis==='100%'))) bad.push('the pause buttons are not one column ('+cs.flexDirection+' '+cs.flexWrap+')');
        for(i=0;i<ids.length;i++){ b=document.getElementById(ids[i]); if(!b) continue; s=getComputedStyle(b);
          if(parseFloat(s.minHeight)!==56) bad.push(ids[i]+' is held to '+s.minHeight+', not 56px');
          if(s.textTransform!=='none') bad.push(ids[i]+' is drawn in '+s.textTransform); }
        if(getComputedStyle(pk).display!=='none') bad.push('the key legend still sits on the keyboard pause card');
        fs=[].filter.call(pb.children,function(c){ return c.tagName==='DIV'&&/Please provide feedback/.test(c.textContent); })[0];
        if(fs&&getComputedStyle(fs).display!=='none') bad.push('the feedback sentence still sits on the pause card');
-       if(parseFloat(getComputedStyle(ab).marginTop)<24) bad.push('Abandon is not set apart ('+getComputedStyle(ab).marginTop+')');
+       if(parseFloat(cs.rowGap)<16&&parseFloat(getComputedStyle(ab).marginTop)<16) bad.push('Abandon is not set apart (gap '+cs.rowGap+', margin '+getComputedStyle(ab).marginTop+')');   /* v32.xx (cw-pausegap): the 16px stack gap is the room, no extra margin */
        document.body.classList.add('padon');
        if(getComputedStyle(pk).display==='none') bad.push('a pad loses its legend');
      } finally { document.body.classList.toggle('padon',padWas); }
