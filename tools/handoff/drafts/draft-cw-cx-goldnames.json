@@ -1,0 +1,40 @@
+{
+    "title":  "GOLDEN KILL NAMES",
+    "why":  "His answer 3.84 b requires the specific golden kind. His words rule calls a raider a pillager bot. Both windows need the same line.",
+    "now":  "Golden kill callouts name the fallen kind in both windows and keep search the hoard.",
+    "edits":  [
+                  {
+                      "anchor":  "function goldDrop(x,y){",
+                      "replacement":  "// v28.xx (cw-cx-goldnames), HIS ANSWER 3.84 b: \"Always the specific name\"; raider is pillager bot under his words rule.\nfunction goldDownName(kind){ return \u0027golden \u0027+(kind===\u0027raider\u0027?\u0027pillager bot\u0027:(GOLD.kinds[kind]?kind:\u0027enemy\u0027))+\u0027 down\u0027; }\nfunction goldDrop(x,y,kind){"
+                  },
+                  {
+                      "anchor":  "  try{ say(\u0027GOLDEN ENEMY DOWN\u0027,\u0027obj\u0027,{sub:\u0027SEARCH THE HOARD\u0027}); }catch(_gs){}",
+                      "replacement":  "  try{ say(goldDownName(kind),\u0027obj\u0027,{sub:\u0027SEARCH THE HOARD\u0027}); }catch(_gs){}"
+                  },
+                  {
+                      "anchor":  "  if(e\u0026\u0026!S.dead\u0026\u0026(!(e.hp\u003e0)||G.ents.indexOf(e)\u003c0)){ S.dead=1; S.dx=e.x; S.dy=e.y; goldDrop(e.x,e.y); }",
+                      "replacement":  "  // v28.xx (cw-cx-goldnames): retain the kind after the body is removed, for both windows.\n  if(e\u0026\u0026!S.dead\u0026\u0026(!(e.hp\u003e0)||G.ents.indexOf(e)\u003c0)){ S.dead=1; S.dx=e.x; S.dy=e.y; S.kind=e.kind; goldDrop(e.x,e.y,e.kind); }"
+                  },
+                  {
+                      "anchor":  "  if(S.dead) return [0,1,Math.round(+S.dx||0),Math.round(+S.dy||0)];",
+                      "replacement":  "  // v28.xx (cw-cx-goldnames): the death word carries the kind even when the linked window never saw the body.\n  if(S.dead) return [0,1,Math.round(+S.dx||0),Math.round(+S.dy||0),S.kind||(S.ref\u0026\u0026S.ref.kind)||\u0027\u0027];"
+                  },
+                  {
+                      "anchor":  "      S.dead=1; S.dx=+a[2]||0; S.dy=+a[3]||0;",
+                      "replacement":  "      // v28.xx (cw-cx-goldnames): accept older four-field words using the mirrored body when available.\n      S.dead=1; S.dx=+a[2]||0; S.dy=+a[3]||0; S.kind=GOLD.kinds[a[4]]?a[4]:(S.ref\u0026\u0026S.ref.kind)||\u0027enemy\u0027;"
+                  },
+                  {
+                      "anchor":  "      try{ spark(S.dx,S.dy,\u0027#ffc72e\u0027,30,320); flash(S.dx,S.dy,260,\u0027#ffc72e\u0027,.5); say(\u0027GOLDEN ENEMY DOWN\u0027,\u0027obj\u0027,{sub:\u0027SEARCH THE HOARD\u0027}); }catch(_gd){}",
+                      "replacement":  "      try{ spark(S.dx,S.dy,\u0027#ffc72e\u0027,30,320); flash(S.dx,S.dy,260,\u0027#ffc72e\u0027,.5); say(goldDownName(S.kind),\u0027obj\u0027,{sub:\u0027SEARCH THE HOARD\u0027}); }catch(_gd){}"
+                  },
+                  {
+                      "anchor":  "// GOLDEN ENEMY DOWN in the alert. If nothing qualifies at 3 s it looks again every second. DEMO and CAREER are the same.",
+                      "replacement":  "// v28.xx (cw-cx-goldnames): the specific golden kind down in the alert. If nothing qualifies at 3 s it looks again every second. DEMO and CAREER are the same."
+                  },
+                  {
+                      "anchor":  "// (t fl, k clue), which marks it taken for everyone and shrinks the circle; so either of them can find the golden enemy. When it falls, GOLDEN ENEMY DOWN is said in both windows and the",
+                      "replacement":  "// v28.xx (cw-cx-goldnames): (t fl, k clue) marks it taken for everyone and shrinks the circle; when the golden enemy falls, the specific kind down is said in both windows and the"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027golden kills name all six kinds, including sentry and pillager bot, with the same callout in the linked window (his 3.84 b)\u0027,\n   run:function(){\n     if(typeof goldDownName!==\u0027function\u0027) return \u0027no specific golden death name helper\u0027;\n     var g=null, oSay=say, oPeer=flowPeer, goldOwn=Object.prototype.hasOwnProperty.call(XF,\u0027xfGold\u0027), gold0=XF.xfGold,\n         kinds=[\u0027sentry\u0027,\u0027raider\u0027,\u0027crawler\u0027,\u0027bulwark\u0027,\u0027howler\u0027,\u0027listener\u0027], names=[\u0027sentry\u0027,\u0027pillager bot\u0027,\u0027crawler\u0027,\u0027bulwark\u0027,\u0027howler\u0027,\u0027listener\u0027], lines=[], i, want, e, n, w;\n     function heard(want){ return lines.length===1\u0026\u0026lines[0].m===want\u0026\u0026lines[0].k===\u0027obj\u0027\u0026\u0026lines[0].sub===\u0027SEARCH THE HOARD\u0027; }\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||g.over||!g.player) return \u0027staging: no raid\u0027;\n       flowPeer=function(){ return false; }; XF.xfGold=1;\n       say=function(m,k,o){ lines.push({m:m,k:k,sub:o\u0026\u0026o.sub}); };\n       for(i=0;i\u003ckinds.length;i++){\n         want=\u0027golden \u0027+names[i]+\u0027 down\u0027;\n         if(goldDownName(kinds[i])!==want) return kinds[i]+\u0027 name is \u0027+goldDownName(kinds[i]);\n         e={kind:kinds[i],hp:0,x:g.player.x+100,y:g.player.y};\n         g.flow=g.flow||{}; g.flow.gold={ref:e,dead:0}; lines.length=0; n=g.containers.length;\n         goldTick(0.01);\n         if(!heard(want)) return \u0027host \u0027+kinds[i]+\u0027: \u0027+JSON.stringify(lines);\n         if(g.containers.length!==n+1) return \u0027host hoard count for \u0027+kinds[i];\n         goldTick(0.01); if(lines.length!==1||g.containers.length!==n+1) return \u0027host repeats death for \u0027+kinds[i];\n         w=JSON.parse(JSON.stringify(goldNetOut()));\n         if(w[4]!==kinds[i]) return \u0027death word lost \u0027+kinds[i];\n         g.flow.gold={ref:null,dead:0}; lines.length=0; n=g.containers.length;\n         goldNetTake(w);\n         if(!heard(want)) return \u0027linked window without a body \u0027+kinds[i]+\u0027: \u0027+JSON.stringify(lines);\n         goldNetTake(w);\n         if(lines.length!==1||g.containers.length!==n) return \u0027linked window repeats death or creates a hoard\u0027;\n       }\n       g.flow.gold={ref:{kind:\u0027raider\u0027},dead:0}; lines.length=0;\n       goldNetTake([0,1,100,200]);\n       if(!heard(\u0027golden pillager bot down\u0027)) return \u0027older word lost the mirrored kind\u0027;\n       return null;\n     } finally {\n       say=oSay; flowPeer=oPeer; if(goldOwn) XF.xfGold=gold0; else delete XF.xfGold;\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){} __topClear();\n     } }},"
+}

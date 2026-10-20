@@ -39,3 +39,5 @@ tools/handoff/art-survey/game/
 tools/handoff/art-survey/mock/*.png
 tools/handoff/art-survey/mock/_lc_*.html
 .claude/settings.local.json
+tools/fxslice*.html
+tools/fxpin*.html

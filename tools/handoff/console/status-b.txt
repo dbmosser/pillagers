@@ -1,1 +1,1 @@
-10-20 14:40 running 61-experimental-menu on Claude Code (your plan: week 65% of the 31.2% line, 5-hour 1%)
+10-20 15:16 waiting for RAM: 2 GB free, a helper starts at 3; 61-experimental-menu kept

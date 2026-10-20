@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.07 - GOLDEN KILL NAMES
+
+Co-op hunt while he was away. His answer 3.84 b requires the specific golden kind. His words rule calls a raider a pillager bot. Both windows need the same line.
+
+MEASURED. Check 33.07 passes, and fails on v33.06.
 ## v33.06 - EXPERIMENTAL: THE LAST SWITCH (PARTY SEED)
 
 Co-op hunt while he was away. The experimental page gets its last switch, the party seed, on by default and read live on the machine that starts the run. Off, a party record locks no seed, no sector and no code, so every demo run builds its own raid, and the operator card stops naming a seed (the armed note ends at clears tonights best, the cleared note says board cleared).

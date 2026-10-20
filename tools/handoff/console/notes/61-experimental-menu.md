@@ -19,5 +19,13 @@ No second control: none of these has a Settings row already (dmgNumbers is the d
 - shots/61-experimental-menu-after1/73-settings-sec-accessibility-1080.jpg: the open row (was lead of accessibility; moving it to the end of the raid section).
 - The sub-page itself cannot be shot until screen 79 is allowed (question in questions.md).
 
-## Left
-(see end of file, updated each ship)
+## STATUS 10-20 (end of run): all 28 switches shipped
+Ships: v32.99 menu + goals, gold, strongholds, power-ups. v33.00 roles, suppression, machines vs pillagers, elite affixes, overseer phases (and the open row moved to the end of THE RAID). v33.01 style medals, team combo, fuel fires, five raid events. v33.02 warden armour, barrels, waves grow, aim lanes, search rings. v33.03 raid director, air strike. v33.04 what is new card (polish pass 40, only because the stamp went stale). v33.05 needed-item glow, haul reveal, shop re-roll (local). v33.06 party seed (local).
+Dropped as gone: golden clue hunt, mimic crates, lockdown alarm (30 minus 3 = 27, plus the five events counted one by one = 28 rows).
+Each ship: preflight pass, gate pass, fingerprint ents 85/374, containers 165/593 with all switches on.
+Fingerprint with switches off: the affix check proves the body count of seed 4242 is unchanged with affixes off; barrels go in G.brl (not ents or containers). No other switch touches map building (the map says the rest run after buildRaid). A single all-off fingerprint check was not written (a check needs a game change to ship in).
+Not tested by a check: the pad chord guard (xfAir), flowNetWord 'air' guard, the overheat 1.5x line (xfOvPh), the stuck-rule lines (xfSearch). All are one-condition edits next to guarded code.
+
+## Pictures and critic: NOT DONE
+The camera has no screen for the experimental page (adding one needs his OK, question logged in questions.md). Only the open row was shot (shots/61-experimental-menu-after1/73-settings-sec-accessibility-1080.jpg, taken before the row moved to THE RAID).
+Left: add screen 79 (SETSUB='exp'; renderSettings()), shoot 1080 and 4K, run the critic (finish line 3).

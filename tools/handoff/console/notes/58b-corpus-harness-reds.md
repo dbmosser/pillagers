@@ -1,5 +1,7 @@
 # 58b-corpus-harness-reds (lane a, 2026-10-20)
 
+Lane b run 10-20: BLOCKED again. slicechk.sh is refused for this worker (not on the allowed command list), so no slice can be reproduced or bisected. Nothing changed, no fix guessed. Alarm written.
+
 Status: NOT reproduced, nothing changed. Reason: this run may not call tools/cdp.ps1 with -Port 9351 -Open/-Match/-Expr (only -Start -Port 9346 is allowed), and runchk.sh runs each check alone after __runPrep, which is exactly the way these five already pass. A leak from earlier checks in a slice cannot be seen that way. No fix guessed (task step 5). Alarm written in alarms.md.
 
 Static clues only (not proof):

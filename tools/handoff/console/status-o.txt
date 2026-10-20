@@ -1,1 +1,1 @@
-10-20 15:13 waiting for RAM: 2 GB free, need 3 (o-16-golden-callout-names)
+10-20 15:19 gate: shipping cw-cx-goldnames (o-16-golden-callout-names, codex)
