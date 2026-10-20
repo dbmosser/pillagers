@@ -3238,7 +3238,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.05';
+var VER='33.06';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3757,6 +3757,7 @@ var XF_ROWS=[
   ['xfNeed','needed-item glow','a box with a contract item glows','l'],
   ['xfHaul','haul reveal','the haul comes up item by item','l'],
   ['xfShop','shop re-roll','two of four extras in stock','l'],
+  ['xfSeed','party seed','new party locks one seed','l'],
   // XF_ROWS_END
 ];
 var XF_KEYS=[], XF_WORLD=[], XF={}, SETSUB='';
@@ -51201,7 +51202,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.05: The experimental page switches the needed-item glow, the haul reveal and the shop re-roll. Check 33.05 fails on v33.04',
+  now:'v33.06: The experimental page switches the party seed. Check 33.06 fails on v33.05',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -64318,7 +64319,7 @@ var ARCOP=null;   // {el, ix, arm, note}
 // A seed passed to arcadeDeploy still wins. The board page and the operator card say it is a SEEDED NIGHT, with a four letter code for the seed.
 function arcadePartyRec(){ var o=null, s; try{ s=localStorage.getItem(ARCADE_PARTY_KEY); if(s) o=(s.charAt(0)==='{')?JSON.parse(s):{t:+s||0}; }catch(_pr){ o=null; } return (o&&typeof o==='object')?o:{t:0}; }
 function arcadePartyAt(){ return +arcadePartyRec().t||0; }
-function arcadePartySeed(){ var o=arcadePartyRec(), s=(+o.s)>>>0; return (s&&(+o.t||0)>0)?s:0; }   // v27.xx (board20): the seed lasts until the next NEW PARTY, as the board does
+function arcadePartySeed(){ if(!xfL('xfSeed')) return 0; var o=arcadePartyRec(), s=(+o.s)>>>0; return (s&&(+o.t||0)>0)?s:0; }   // v27.xx (board20): the seed lasts until the next NEW PARTY, as the board does
 function arcadePartyMap(){ var o=arcadePartyRec(); return (arcadePartySeed()&&typeof o.m==='number'&&o.m>=0&&o.m<FIXED_MAPS.length)?(o.m|0):-1; }
 function arcadePartyCode(){ var s=arcadePartySeed(); return s?s.toString(36).toUpperCase().slice(-4):''; }
 // v28.xx (cw-partykit), his answer Q67 (2026-10-18): THE KIT IS THE SAME ALL NIGHT. The random kit (a gun in hand from ARCADE_GUNS1, a different one stowed
@@ -64430,9 +64431,9 @@ function arcadeOpPick(ix){
   var r=arcadeOpRows()[ix]; if(!r) return false;
   ARCOP.ix=ix;
   if(r.id==='party'){
-    if(!ARCOP.arm){ ARCOP.arm=1; ARCOP.note='Clears tonight\u2019s best  \u00b7  New seed'; arcadeOpDraw(); return true; }
+    if(!ARCOP.arm){ ARCOP.arm=1; ARCOP.note='Clears tonight\u2019s best'+(xfL('xfSeed')?'  \u00b7  New seed':''); arcadeOpDraw(); return true; }
     ARCOP.arm=0;
-    ARCOP.note=arcadeNewParty()?'Board cleared  \u00b7  Seed '+arcadePartyCode():'Could not clear the board';
+    ARCOP.note=arcadeNewParty()?'Board cleared'+(arcadePartyCode()?'  \u00b7  Seed '+arcadePartyCode():''):'Could not clear the board';
     try{ sfx('pick'); }catch(_sp){}
     arcadeOpDraw(); return true;
   }

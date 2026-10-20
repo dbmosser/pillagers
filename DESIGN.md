@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.06 - EXPERIMENTAL: THE LAST SWITCH (PARTY SEED)
+
+Co-op hunt while he was away. The experimental page gets its last switch, the party seed, on by default and read live on the machine that starts the run. Off, a party record locks no seed, no sector and no code, so every demo run builds its own raid, and the operator card stops naming a seed (the armed note ends at clears tonights best, the cleared note says board cleared).
+
+MEASURED. Check 33.06 passes, and fails on v33.05.
 ## v33.05 - EXPERIMENTAL: THREE MORE SWITCHES (NEEDED-ITEM GLOW, HAUL REVEAL, SHOP RE-ROLL)
 
 Co-op hunt while he was away. The experimental page gets three display switches, on by default and read live in each window (they only change that window). Off: no box glows gold for an item a contract needs, the haul on the extracted card shows at once instead of one item at a time, and the shop stocks all four extras instead of two.

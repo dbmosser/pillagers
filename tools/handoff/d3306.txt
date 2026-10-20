@@ -1,0 +1,5 @@
+## v33.06 - EXPERIMENTAL: THE LAST SWITCH (PARTY SEED)
+
+Co-op hunt while he was away. The experimental page gets its last switch, the party seed, on by default and read live on the machine that starts the run. Off, a party record locks no seed, no sector and no code, so every demo run builds its own raid, and the operator card stops naming a seed (the armed note ends at clears tonights best, the cleared note says board cleared).
+
+MEASURED. Check 33.06 passes, and fails on v33.05.

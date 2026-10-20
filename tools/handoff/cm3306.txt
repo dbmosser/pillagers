@@ -1,0 +1,7 @@
+v33.06: experimental: the last switch (party seed)
+
+The experimental page switches the party seed.
+
+Check 33.06. Fails on v33.05.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
