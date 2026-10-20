@@ -19,3 +19,5 @@ still asks about player 2 "press A", which shipped as v31.28.
 5. Remove answered questions from questions.md.
 Party risk: none (text for helpers only).
 Done when: a helper reading RULES.md top to bottom meets no contradicting date or rule.
+
+DONE 10-20 14:20 (coordinator): RULES.md now states the release-first direction and the 3.37 c / 2.81 c date rules once at the top, the switch rule (his process answer 21 b: ask him first; new switches default on), the itch line, and the plan billing. questions.md: two answered questions moved to "Resolved 10-20". START-HERE CURRENT refreshed (v32.90, 11 reds, the queue, VM memory, pacing off, itch, the memory folder sync). The User1 memory path in RULES.md resolves in the VM and holds the newest notes.

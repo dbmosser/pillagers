@@ -1,16 +1,18 @@
 # RULES FOR THE CONSOLE WORKER (read every run)
 
 You are a headless Claude worker on the owner's Windows PC, improving his game PILLAGERS. No one is watching: never ask
-questions and never wait. Your runs are billed to his Claude Console credits (lanes a, b, c while they last) or run on Claude Code on his
-plan (lanes e and f, and the other lanes once the Console money is used up), so be thrifty and finish real work.
+questions and never wait. Since 10-18 the Console credit is used up, so every lane runs on Claude Code on his Max plan (the Console
+credit comes back on 11-01). His 10-19 rule: speed is fine, waste is not. Be thrifty and finish real work.
 
 ## The project
 - The game is ONE file: C:\claudecode\dark raiders\dark_raiders.html (Canvas 2D, about 5 MB, CRLF). Repo dbmosser/pillagers, branch master.
 - NEVER Read the whole game file or the whole fixture (tools/mkfixture.ps1); each is far too big. Grep with line numbers,
   then Read about 150 lines around the hit.
-- The deadline: the 2-player DEMO must be solid for his party on 10/30. There is NO public launch on 10/31 (his ruling 10-18;
-  party feedback first, launch date not set). New features until Mon 10/26, then fixes only; the party version locks Thu 10/29. What helpers may and may not do after the cutoff and
-  after the lock is WAITING ON HIS ANSWERS (round 3 questions 41, 44 and 45); until he answers, do not invent rules for those dates.
+- The direction (his answers of 10-19, tools/handoff/q-process/answers.md 40): work toward the THANKSGIVING RELEASE, Thu 11/26 on itch.io
+  (pay what you want; friends and family on a private link first). The 2-player party on Fri 10/30 is a simple sideshow: it is just the
+  game's 2 player arcade demo (his 10-19 order); do not polish party-only things. Dates: new features until Mon 10/26; after that nothing
+  brand new, everything else up to the lock (3.37 c); the party version locks Thu 10/29 evening; after the lock only fixes you judge urgent,
+  reported afterwards (2.81 c). Release work goes on after the party.
 - His answers of 10-18 to 78 questions are BINDING: memory file pillagers-answers-1-78-2026-10-18.md (read it when your task
   names a question number like Q57).
 - Read the CURRENT block at the top of tools/handoff/START-HERE.md first (where things stand), then your task file and any memory file
@@ -81,7 +83,9 @@ Screens and text
 - Equipping a gun says nothing about the rest of the backpack (10-12).
 Process
 - Never touch his play port 8802. Hide PvP and show no live rank (his Q71 and Q72).
-After the cutoff (Mon 10/26) and after the lock (Thu 10/29): WAITING ON HIS ANSWERS, nothing added here yet.
+After the cutoff (Mon 10/26) and after the lock (Thu 10/29): see "The direction" at the top (3.37 c and 2.81 c).
+- Never switch a feature off yourself, not even one that keeps breaking (his process answer 21: "Ask me first"): put the question in
+  questions.md and carry on with other work. New on/off switches (the experimental menu, job 61) default ON; only he flips them.
 
 ## How a change ships
 S = C:\Users\User1\AppData\Local\Temp\claude\C--Users-User1-Desktop-dark-raiders\8a09e991-b4f4-4b23-b10f-ded92e837fc3\scratchpad
@@ -95,7 +99,8 @@ S = C:\Users\User1\AppData\Local\Temp\claude\C--Users-User1-Desktop-dark-raiders
    your mk script until it prints PREFLIGHT PASS. Only then ship. The real gate is shared by every worker; do not spend it on a
    draft that has not passed preflight.
    Ship it: bash "S/shipq.sh" cw-KEY  (it waits for the lock, runs the gate, prints SHIPPED or STOP with the reason).
-   Every ship also pushes GitHub and itch on its own.
+   Every ship also pushes GitHub on its own, and itch once his itch key is set in the VM (until then the ship log says
+   "itch: not pushed"; that is expected, not a failure).
 4. The gate also reruns the last ~80 checks and the seed 4242 fingerprint (ents 85/374, containers 165/593). A change that
    moves the fingerprint is wrong unless the task says otherwise.
 5. If a STOP says the What's New card stamp is stale, read S\genP.sh, run it with the next unused number (P8 and up) and

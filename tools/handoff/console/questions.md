@@ -4,13 +4,15 @@
 - The two URGENT ship-queue notes (gen-draft failed since v30.69, and .git/index.lock left by v30.64) are stale: ships have run cleanly through v31.16, and there is no index.lock.
 
 ## Open (asked in chat 10-18)
-- The title's mode list has two "coming later" online rows in the middle of the rows that work. Move them to the bottom, or hide them? (c-30-ui-menu-map)
 - The empty scoreboard (before anyone has played) shows five faint placeholder rows. Keep them, or show one line such as "No scores yet"? (12-ui-party-screens)
 - In the 2 player arcade demo the Undercroft is only a blurred picture behind the party screen (nobody walks there; a press drops straight into a raid), so the two players cannot see each other in it. In the 2 player co-op (same machine) mode they walk the Undercroft and now see each other (v30.84). Should the arcade demo also let the two walk the Undercroft before the drop, or keep the straight drop? I changed nothing there. (cw-p1p2)
 - In the 2 player arcade demo each window plays on a copy of its OWN save, and the sandbox keeps the HUD layout and the kid damage setting of that save (your 10-11 order). If your save has a custom HUD layout or kid mode on, the two TVs differ from each other (player 2 is a fresh save). Should the demo put BOTH windows on the default HUD layout and normal damage, so the two TVs always match? I changed nothing. (cw-p1p2)
-- The player 2 attract and run over card say "Player 2: press A" while player 1 says "Press any key" (or button). Lane g set that on purpose (player 2 is the pad window), but player 2 now has its own keys since v30.68. Should player 2 read the device it last used like player 1 does? I changed nothing. (cw-p1p2, for the glyphs lane)
 - The shop shows a rotating trader line in a pill ("Everything here works. Cannot say the same for you.", from VENDOR_LINES, SPEC 3.1). Q45 wants straight copy, no jokes. Keep the vendor voice lines, or drop them from the shop card? I changed nothing. (04-style-guide-update)
 - The sector map in the demo shows no contracts and no run goals (the demo has no contracts, and your Q56 keeps the run goals in the demo HUD). Should the demo map carry the run goals as a column like the career map carries the contracts? I did not invent a panel. (cw-mapstyle)
+
+## Resolved 10-20 (coordinator)
+- The "coming later" online rows on the title: his round 2 answer R6 b, hide them completely until they work (job o-15).
+- "Player 2: press A": v31.28 made the player 2 prompt follow the device player 2 used last.
 
 ## Resolved by his answers of 10-18 (memory pillagers-answers-1-78-2026-10-18.md); helpers act on these
 - HUD (b-30): ammo becomes prominent and the whole raid HUD is redesigned (Q57); the career top-right becomes ONE row with nothing removed (Q58 a); $ for money, including the bag line, haul values, prices and the pillagers board; SP only for score (Q59 a); Run info shows the 3 closest contracts, and ALL contracts go on the map screen (Q1). The work is now task 02-raid-hud-redesign.

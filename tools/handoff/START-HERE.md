@@ -1,16 +1,19 @@
 # START HERE
 
-## CURRENT (refreshed 2026-10-18 evening, game at v31.23). Read this block. EVERYTHING BELOW IT IS HISTORY (2026-09-05 to 09-13) and is stale.
+## CURRENT (refreshed 2026-10-20 14:15, game at v32.90). Read this block. EVERYTHING BELOW IT IS HISTORY (2026-09-05 to 09-13) and is stale.
 
 The game is PILLAGERS (old name Dark Raiders; the file is still dark_raiders.html). In the old text below, "Daniel" means the owner: say "the owner" or "he". He plays and gives orders; he is not a coder. His answers are binding.
 
-**Deadlines (his rulings of 10-18, questions 13-16):** the 2-player party demo is Fri 10/30. New features until Mon 10/26, then fixes only. The party build locks Thu 10/29 evening. He stops everything himself on 10/30. There is NO public launch on 10/31 (party feedback first, launch date not set). What helpers may do after the cutoff and after the lock is WAITING ON HIS ANSWERS (round 3 questions 41, 44 and 45).
+**Direction and dates (his answers of 10-18 and 10-19):** work toward the THANKSGIVING RELEASE, Thu 11/26 on itch.io (pay what you want; friends and family on a private link first). The 2-player party on Fri 10/30 is a simple sideshow: open the game and click the 2 player arcade demo (10-19 order). New features until Mon 10/26; after that nothing brand new, everything else up to the lock (3.37 c). The party version locks Thu 10/29 evening; after the lock only urgent fixes, reported afterwards (2.81 c). Release work goes on after the party. Party night runs from the frozen copy on the MAIN PC (party-host-copy.ps1), with no pad route into the VM (his 10-19 22:45 decision; the vm-verify pad-route WARN is expected).
 
-**State (checked 10-18 18:15):**
-- Newest ship v31.23 (`var VER` in dark_raiders.html moves with every ship; ships ran all day, v29.x to v31.x on 10-18). The ship queue is healthy.
-- Latest STABLE build: v29.09 (promoted 10-18 10:23, played at http://localhost:8802/stable.html). Nothing newer is promoted yet: the redesigned screens made old tests red, and the known-red list that would allow it does not exist yet (helper-fixes item 16, question 44). Read tools/handoff/stable-status.txt.
-- Test runs: the corpus (full regression run) at most every 4 hours on a new HEAD, two robot fuzzers, hourly stable check. All started by tools/nightly.sh (its header is current).
-- Weekly usage resets Sun 10-25 05:00Z. Helpers are paced so the week lasts to the reset (memory pillagers-hard-pacing-rule.md says "Sat 10-25": that is wrong).
+**State (checked 10-20 14:15):**
+- All development runs in the VM "Pillagers_Oct26" (hostname VM_Oct2026, 10 GB by day, up to 16 GB at night). Never run anything Pillagers on the main PC JUL26 (host-stopped.txt).
+- Newest ship v32.90. Stable is still v29.09. The full run on v32.90 (corpus-1020-1250) has 11 failing checks, down from 89: tools/handoff/corpus-fails-v32.90.txt. Jobs 58 (six of them) and 68 (five body-drawing ones) sort them; then coord-02 in tools/handoff/console/staging-1020 writes the known-red list and runs 30 robot minutes so stable can move.
+- The queue: jobs 58 to 70 (Claude lanes a, b, c) and o-14 to o-19 (ChatGPT lane o), from the 10-20 backlog sweep. The rest of the sweep (stretch, after-party and coordinator jobs) waits in tools/handoff/console/staging-1020 (README there: the ranked list and the plan-week checkpoints).
+- Memory is the limit in the VM: a helper starts only with about 3 GB free, and the full test run blocks them while it runs. At-the-PC mode (10-20): while he uses the main PC the VM gets half its processors and starts no full test run, robots or local AI.
+- Pacing is off (his 10-19 rule): speed is fine, waste is not. Helpers run on his Max plan (the Console credit is used up until 11-01).
+- itch: ships skip itch until he enters his itch key (ai-keys.ps1 itch); ITCH_TARGET is set and tools/itch-zip.ps1 packs the licence files.
+- Memory notes: the live folder is C:/Users/VM Oct26/.claude/projects/C--claudecode-dark-raiders/memory; on 10-20 it was synced from the newer C--Users-User1-Desktop-dark-raiders copy (13 notes). Both now match.
 
 **Who works (live view: tools/handoff/console/status-LANE.txt; rules: tools/handoff/console/RULES.md, "Lanes"):**
 - Lanes a, b, c are helper lanes that tools/nightly.sh starts; e and f run on Claude Code on his plan; d, g, h are session agents the coordinator starts. Job lists: tools/handoff/console/tasks (waiting), done, failed. Snapshot at 18:15 (the tasks folder is the live list): a was on 02-raid-hud-redesign, c on 04-style-guide-update, b on 03-title-and-backdrop (3 of 5 tries used), and five screen jobs sat in failed/ waiting to be re-queued (helper-fixes item 08); a 2-player bug-fix job (09-2p-bugfix-from-real-test) was added after that (item 09).
