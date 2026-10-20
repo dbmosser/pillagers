@@ -6101,6 +6101,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.05',what:'the slow-frame system toasts (resolution stepped down, running slowly) are headlines only, with no detail line',
+   run:function(){
+     if(typeof drsTick!=='function'||typeof perfNote!=='function'||typeof DRS==='undefined'||typeof PERF==='undefined') return 'SKIP: no frame notes here';
+     var bad=[], oSwf=sayWhenFree, lines=[], c0=CFG.gfxAuto, s0=CFG.gfxScale, f0=CFG.fpsCap, d0=JSON.stringify(DRS), w0=PERF.win, ps0=PERF.said, i, t=0, t0;
+     try{
+       sayWhenFree=function(m,k,o){ lines.push({m:String(m),sub:(o&&o.sub)?String(o.sub):''}); };
+       CFG.gfxAuto=1; CFG.gfxScale=1; CFG.fpsCap=0; DRS.scale=1; DRS.ema=0; DRS.slowT=0; DRS.fastT=0; DRS.last=0; DRS.bounce=0; DRS.upAt=0; DRS.said=0;
+       lines.length=0; for(i=0;i<200;i++){ t+=40; drsTick(40,t); }
+       if(!lines.length) return 'SKIP: staging: no resolution step line';
+       if(lines[0].sub) bad.push('the resolution step still has the detail '+JSON.stringify(lines[0].sub));
+       PERF.win=[]; PERF.said=0; t0=performance.now()-9000; for(i=0;i<120;i++) PERF.win.push([t0+i*75,40]);
+       lines.length=0; perfNote(40);
+       if(!lines.length) return 'SKIP: staging: no running slowly line';
+       if(lines[0].sub) bad.push('running slowly still has the detail '+JSON.stringify(lines[0].sub));
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ sayWhenFree=oSwf; CFG.gfxAuto=c0; CFG.gfxScale=s0; CFG.fpsCap=f0; try{ var o=JSON.parse(d0); for(var k in o) DRS[k]=o[k]; }catch(_e){} PERF.win=w0; PERF.said=ps0; }
+     return bad.length?bad.join('; '):null; }},
   {v:'32.04',what:'the what is new card is stamped within 0.15 of the build and leads with the new news shown whole',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';

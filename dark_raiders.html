@@ -3003,7 +3003,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.04';
+var VER='32.05';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -34087,7 +34087,7 @@ function drsTick(gapMs,now){
     DRS.scale=Math.max(DRS.min,Math.round((DRS.scale-DRS.step)*100)/100); DRS.slowT=0; DRS.moves++;
     if(DRS.upAt&&now-DRS.upAt<20000) DRS.bounce=Math.min(4,DRS.bounce+1);
     DRS.last=now;
-    if(!DRS.said){ DRS.said=1; try{ sayWhenFree('RESOLUTION STEPPED DOWN','sys',{sub:'Settings: Auto resolution'}); }catch(_ds){} }   // v22.xx (R36): a system row in caps   // v22.89 (tr7fixa): a short detail, not a sentence
+    if(!DRS.said){ DRS.said=1; try{ sayWhenFree('RESOLUTION STEPPED DOWN','sys'); /* v32.xx (cw-systoastbare): no detail line, the critic (screen 22) read it as an explaining sentence over the map. Old text: sub 'Settings: Auto resolution'. Reason: a system toast is a headline only */ }catch(_ds){} }   // v22.xx (R36): a system row in caps   // v22.89 (tr7fixa): a short detail, not a sentence
     return true;
   }
   if(DRS.fastT>8000*(1+DRS.bounce)&&DRS.scale<1-1e-6&&now-DRS.last>8000){
@@ -48834,7 +48834,7 @@ function perfNote(gapMs){
   while(PERF.win.length&&now-PERF.win[0][0]>10000) PERF.win.shift();
   if(PERF.said||PERF.win.length<60) return false;
   for(i=0;i<PERF.win.length;i++) if(PERF.win[i][1]>25) slow++;
-  if(slow*2>PERF.win.length){ PERF.said=1; try{ sayWhenFree('RUNNING SLOWLY','sys',{sub:'Settings: Render resolution, Effects'}); }catch(_ps){} return true; }   // v22.xx (R36): a system row in caps   // v22.89 (tr7fixa): a short detail, not a sentence
+  if(slow*2>PERF.win.length){ PERF.said=1; try{ sayWhenFree('RUNNING SLOWLY','sys'); /* v32.xx (cw-systoastbare): no detail line, same reason. Old text: sub 'Settings: Render resolution, Effects' */ }catch(_ps){} return true; }   // v22.xx (R36): a system row in caps   // v22.89 (tr7fixa): a short detail, not a sentence
   return false;
 }
 // v23.xx (gfx1), HIS ORDER 2026-10-12 ("add ALL of this stuff", the graphics program): FRAME TELEMETRY. Nobody had measured a frame at
@@ -50199,7 +50199,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.04: The what is new card names polish pass 32. Check 32.04 fails on v32.03',
+  now:'v32.05: The two slow-frame toasts show only their headline. Check 32.05 fails on v32.04',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

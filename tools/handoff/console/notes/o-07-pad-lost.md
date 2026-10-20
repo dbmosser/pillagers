@@ -59,3 +59,12 @@ Updated the six camera recipes to run the actual two-player demo rather than car
 Regenerated camera-recipes.json, stage-pad-lost-pair.js and camera-run-request.json. Local validation: current inline game JavaScript, draft regression check, six scene scripts and predicates all parse; mk script remains ASCII. No browser execution occurred. The changed recipe file is ready for the next lane camera round.
 
 No task camera output directory or critic result exists in the shared repo. The installed tools/codex-lane.sh still ignores camera-recipes.json and only photographs after a fresh ship. Coordinator: run the exact command in camera-run-request.json, return report.json, all six pictures and critic findings. Completion still needs that real two-window runtime and visual evidence; sandbox rules prohibit starting the camera here. Do not create another game ship merely to trigger pictures.
+
+--- codex run 2026-10-19 22:14 ---
+2026-10-19, continued from v32.04.
+
+The current game still contains the shipped J8 polling and A recovery implementation. Shared gate records a3190.txt and cm3190.txt still record check 31.90 passing and failing on v31.89. No additional game change is needed; do not reapply the renamed pre-ship patch.
+
+No task picture directory, report or critic findings have arrived. The installed tools/codex-lane.sh still only photographs after a fresh ship and has no camera-recipes support. The existing camera-run-request.json already contains the exact project camera command and all six expected picture paths. This sandbox cannot start Chrome or the camera under the Codex addendum.
+
+Coordinator action remaining: execute that existing camera request, return report.json, the six pictures and critic findings. Then address any failed staging or P0/P1 findings. No new camera round or game ship was manufactured just to retrigger the runner. Park this job until camera results arrive; unchanged files cannot resolve the external runner mismatch.

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.05 - SLOW FRAME TOASTS ARE HEADLINES ONLY
+
+Co-op hunt while he was away. UI critic, screen 22: the detail lines under RESOLUTION STEPPED DOWN and RUNNING SLOWLY read as explaining text over the map. Both toasts are now the headline alone.
+
+MEASURED. Check 32.05 passes, and fails on v32.04.
 ## v32.04 - THE WHAT IS NEW CARD NAMES POLISH PASS 32
 
 Co-op hunt while he was away. The card was stamped v31.88 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.

@@ -1,1 +1,1 @@
-10-19 22:04 gate waiting on another worker; o-07-pad-lost kept (codex)
+10-19 22:15 waiting for RAM: 3 GB free, need 6 (o-07-pad-lost)
