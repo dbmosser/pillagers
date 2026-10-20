@@ -1,1 +1,1 @@
-10-20 15:02 gate waiting on another worker; o-16-golden-callout-names kept (codex)
+10-20 15:08 waiting for RAM: 2 GB free, need 3 (o-16-golden-callout-names)

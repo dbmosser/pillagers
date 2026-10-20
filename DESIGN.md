@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.04 - THE WHAT IS NEW CARD NAMES POLISH PASS 40
+
+Co-op hunt while he was away. The card was stamped v32.88 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
+
+MEASURED. Check 33.04 passes, and fails on v33.03.
 ## v33.03 - EXPERIMENTAL: TWO MORE SWITCHES (RAID DIRECTOR, AIR STRIKE)
 
 Co-op hunt while he was away. The experimental page gets the raid director and the air strike, on by default and read when the raid starts. Off, the wave clock runs at its fixed rate with no breather and no ambush pack (the director keeps counting waves, so the 3 waves goal still works) and packs may land on an extraction ring; the air strike has no meter, G does nothing, the bumper chord keeps the belt and zoom, player 2 charges nothing and the air strike goal leaves the goal pool.

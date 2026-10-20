@@ -1,0 +1,7 @@
+v33.04: the what is new card names polish pass 40
+
+The what is new card names polish pass 40.
+
+Check 33.04. Fails on v33.03.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
