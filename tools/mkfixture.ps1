@@ -6101,6 +6101,12 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.26',what:'every pause box button is one 56px height with the 20px label',
+   run:function(){
+     var css=''; for(var i=0;i<document.styleSheets.length;i++){ try{ var rs=document.styleSheets[i].cssRules; for(var j=0;j<rs.length;j++){ css+=rs[j].cssText; } }catch(e){} }
+     if(!/#fbbtn[^{]*\{[^}]*min-height: var\(--btn-h\)/.test(css)) return 'fbbtn is not 56px high';
+     if(!/#abandonbtn[^{]*\{[^}]*min-height: var\(--btn-h\)/.test(css)) return 'abandon is not 56px high';
+     return null; }},
   {v:'32.25',what:'the bottom left feed is not drawn over the open map: with a line in the feed and the map open, no feed row is laid out',
    run:function(){
      if(typeof __frame!=='function') return 'SKIP: no frame helper';

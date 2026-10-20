@@ -1,0 +1,7 @@
+v32.26: pause box buttons all 56px
+
+Every pause box button is one 56px height.
+
+Check 32.26. Fails on v32.25.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

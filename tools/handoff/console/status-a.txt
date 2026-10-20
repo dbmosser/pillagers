@@ -1,1 +1,1 @@
-10-20 00:29 waiting for RAM: 2 GB free, a helper starts at 3; 17-party-easy-mode kept
+10-20 00:46 17-party-easy-mode: partial (run 4 of 5), $0.17719169999999998

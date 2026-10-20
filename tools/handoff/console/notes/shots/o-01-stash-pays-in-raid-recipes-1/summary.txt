@@ -1,0 +1,17 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  05-sector-page                         staged       7.3s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | sectormodal
+  stashraid-forge-prompt                 NOT STAGED   7.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot set properties of undefined (setting 's')
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html:160838:33), <anonymous>:1:318)
+    at window.__gx (http://localhost:8808/fixture.html:163725:33)
+    at <anonymous>:2:1
+    at async <anonymous>:1:21
+  stashraid-forge-elements               NOT STAGED   7.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot set properties of undefined (setting 's')
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html:160838:33), <anonymous>:1:318)
+    at window.__gx (http://localhost:8808/fixture.html:163725:33)
+    at <anonymous>:2:1
+    at async <anonymous>:1:21
+  stashraid-forge-gun-card               NOT STAGED   7.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot set properties of undefined (setting 's')
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html:160838:33), <anonymous>:1:318)
+    at window.__gx (http://localhost:8808/fixture.html:163725:33)
+    at <anonymous>:2:1
+    at async <anonymous>:1:21

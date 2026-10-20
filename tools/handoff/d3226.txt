@@ -1,0 +1,5 @@
+## v32.26 - PAUSE BOX BUTTONS ALL 56PX
+
+Co-op hunt while he was away. Critic on the pause box (3): four button heights make the column ragged and the small pair reads small. All buttons go to 56px with the 20px label.
+
+MEASURED. Check 32.26 passes, and fails on v32.25.

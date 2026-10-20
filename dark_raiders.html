@@ -2087,6 +2087,9 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
 /* v28.xx (cw-pausebtn) critic on Pause box 25/42/49 (3): "five button styles", "report a problem gets as much emphasis as settings", "the abandon link has no hit area", "small button labels about 14px". Now: report a problem, settings, feedback and what is new share one 48px outline look, the small pair reads at 16px, and abandon is a 48px quiet red link with room above it. Q61 keeps all of them. */
 #root #pausebox > div:has(> #resumebtn) > #fbbtn, #root #pausebox > div:has(> #resumebtn) > #wnbtn{ min-height:var(--btn-h-sm); font-size:var(--fs-label); background:var(--ui-panel); border-color:var(--ui-line-hi); }
 #root #pausebox:not(.asking) > div:has(> #resumebtn) > #abandonbtn, #root #pausebox:not(.asking) > div:has(> #resumebtn) > #arcendbtn, #root #pausebox:not(.asking) > div:has(> #resumebtn) > #charselbtn{ min-height:var(--btn-h-sm); margin-top:var(--sp-3); }
+/* v28.xx (cw-pause56) critic on Pause box 25 (3, P1): "heights are 56, 56, 48 and 48, the 4 sizes make the column ragged" and "button text about 14px". Now every pause button is one 56px height with the 20px body label; feedback and what is new stay side by side (Q61 keeps them). */
+#root #pausebox > div:has(> #resumebtn) > #fbbtn, #root #pausebox > div:has(> #resumebtn) > #wnbtn{ min-height:var(--btn-h); font-size:var(--fs-body); }
+#root #pausebox:not(.asking) > div:has(> #resumebtn) > #abandonbtn, #root #pausebox:not(.asking) > div:has(> #resumebtn) > #arcendbtn, #root #pausebox:not(.asking) > div:has(> #resumebtn) > #charselbtn{ min-height:var(--btn-h); font-size:var(--fs-body); }
 /* v28.xx (cw-pausefb2) critic on Pause box 25 (3 after cw-pausebtn): "settings, report a problem, feedback and what is new look identical, so the order of importance is flat", "the title is about 28px against 32px", "the divider is a fairly bright line". Now: the report a problem field drops to the 48px small tier on a clear fill with the quiet line border (it is a field, not a main row; Q61 keeps it), the title is 32px and the header divider takes the quiet line colour. */
 #root #pausebox #pausefb{ height:var(--btn-h-sm); padding-top:calc((var(--btn-h-sm) - 28px) / 2); padding-bottom:0; background:transparent; border-color:var(--ui-line); }
 #root #pausebox > h3{ font-size:var(--fs-title); border-bottom-color:var(--ui-line); }
@@ -3023,7 +3026,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.25';
+var VER='32.26';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -50239,7 +50242,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.25: With the map open the bottom left feed is hidden; shut the map and the lines are back. Check 32.25 fails on v32.24',
+  now:'v32.26: Every pause box button is one 56px height. Check 32.26 fails on v32.25',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

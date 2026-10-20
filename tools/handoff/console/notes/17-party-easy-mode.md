@@ -15,3 +15,5 @@ Run 2026-10-20 (lane a):
 - 2.90 b shipped v32.23 (cw-easycareer). Career counts deaths in a row (P.dieRun, extraction clears it, additive field, storage key unchanged). On the third, the next career raid shows the SAME y/n card (no new design, so no mockups). Yes: G.easyC = 30 percent less damage plus free medkit for that raid. Asked once per streak, not when Forgiving is already on in Settings. The Settings switch for career is the existing Forgiving step in "how hard they hit".
 - Flags for task 15 (2.47 c): demo = ARCADE.easy (per run), career raid = G.easyC. Board is demo only, so ARCADE.easy is the one to read.
 - Not done: two-window pictures of the start card and career card (the camera has no stage for them). Needs a shots json entry; ask coordinator.
+
+Run 2026-10-20 b (lane a): nothing new built. Task 15 (board tag, 30 percent points cut) has no notes or tasks file yet, so there is nothing to make agree; it should read ARCADE.easy (demo only). Two-window pictures still need a uishots stage for the start card and career card.

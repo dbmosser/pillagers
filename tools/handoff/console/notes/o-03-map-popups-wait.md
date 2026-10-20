@@ -105,3 +105,14 @@ Remaining coordinator work from the re-queue: both-window map evidence and the m
 Regenerated draft-cw-cx-sectorhold-o03.json against refreshed v32.06: written; all 20 anchors apply exactly once; game JavaScript and regression check parse. Local crowded-room exercise retains all labels without overlap and within 12 px of their own icons. Null-renderer recorder and actual-feed text checks also pass. Production behavior is unchanged from the prior patch; these local results do not establish browser preflight or shipping success.
 
 Lane next action: preflight and ship cw-cx-sectorhold-o03, then return the gate result and fingerprint. shots.txt remains screen 22 for the requested map pictures and critic. Outstanding coordinator picture work from the re-queue (both real player windows and 4K before evidence) still applies. No new visible change this run.
+
+--- codex run 2026-10-20 00:37 ---
+2026-10-20, fixed preflight REGRESS 32.25 in cw-cx-sectorhold-o03 against refreshed v32.25.
+
+The older check is correct and unchanged. The patch removes the open-map _lanes call, which also means feedDraw no longer runs its normal FEEDBOX reset. Previous closed-map rows therefore remained in FEEDBOX even though no feed pixels were drawn. The open-map branch now clears FEEDBOX.on and FEEDBOX.rows before drawing the map. Actual feed entries and their clock are untouched, so notices still retain their content and lifetime.
+
+Added a closed/open/closed draw sequence to this key's regression check. It requires feed layout with the map shut, no active layout or rows while open, and restored rows after closing. The existing codex-on-map staging and notice order/lifetime assertions remain.
+
+Local validation: script prints written; all 20 anchors apply once; game JavaScript and regression check parse. The local exercise runs the actual map-branch replacement: the prior draft retains stale rows, while the fixed branch clears them and preserves feed entries and clock. Crowded-room, null-renderer recorder and actual-feed formatting exercises still pass. No fixture retarget is needed for 32.25. No tracked files were edited.
+
+keys.txt still lists cw-cx-sectorhold-o03. Lane next: rerun preflight, ship, verify fingerprint, photograph screen 22 at requested resolutions, and return critic result. Coordinator's real two-window evidence and missing before-4K evidence remain outstanding. Browser gates and pictures cannot run in this sandbox.

@@ -33,17 +33,17 @@
  "05-sector-page": {
   "score": 2,
   "pass": false,
-  "verdict": "The copy is shorter (two explainer lines trimmed, two hint captions removed), but the screen is still a dense, lopsided form: a huge empty hero panel above cramped control rows, with a toast covering the title bar and three competing lime elements.",
+  "verdict": "the pre-raid card works as a form, but a toast collides with the title row, the hero panel is mostly empty, the controls are a wall of same-weight outlined chips, and sentences clutter the bottom, so it reads as a debug page and not a polished menu.",
   "findings": [
-   "P0 top centre, over the card header: Move it out of the card, to a 48px safe-area margin at the bottom or top of the screen. Auto-hide it after 2s. Cut it to 'welcome pack in stash'.",
-   "P1 cold storage hero panel (y 140-560): Shrink the panel to the map's height, about 240px, with the map at 320px wide. Use flat --ui-panel with no gradient. Delete the empty strip. Use the freed 180px to give the controls 24px row gaps.",
-   "P1 hero panel title and stats line: Title in tx-1 at 32px/700. Make the tag a 16px label. Break the stats into 3 label/value pairs at 16px: '5 zones', '2 keyed rooms', '14.3 ha'. Delete the robot sentence and 'you have never raided here'.",
-   "P1 kit and pack button rows: Idle options get tx-1 text on a --ui-line-hi border. Only the selected option gets a lime border or fill. Lay out the pack as a fixed 4-column grid of equal cells, 16px gutters, steppers 40px tall. Remove the per-item 'max' (keep pack all) and drop the 'no data core' chip when it is disabled.",
-   "P1 bottom info box: Show 'going up with: scav pistol' as one 20px line. Show the no-armour warning as a short --warn word with a glyph ('no armour'). Remove the stash sentence. Drop the border and put it in a flat strip."
+   "P0 top of card, toast 'the welcome pack is in your stash.': move the toast to a fixed slot 24px below the card (or bottom-centre above the cta). Drop the full stop and shorten to 'welcome pack in stash'. Never let it cross the 56px header row.",
+   "P0 cold storage hero panel (y 140-560): use --ui-panel fill and drop the olive tint. Cut the panel to about 280px. Put the map left at about 40% width with 14px minimum labels. Put the stats on the right as 3 label/number pairs (size 'hectares', 'zones', 'keyed rooms') in 20px tx-1 with 16px tx-2 labels. Delete the 'test robot extracts 39.2%' line. Remove the empty strip under the panel.",
+   "P1 controls block (surface, weather, kit, pack rows): idle chips: tx-1 text on --ui-panel with a 1px --ui-line-hi border. Selected chip: filled --acc with --acc-ink text. Row labels 16px f-cond 600 tx-2 in a fixed 120px column. Row height 48px with 8px gaps.",
+   "P1 pack steppers (medkit, smoke canister, frag charge, armour plate, bandage, burst carbine, compact smg, no data core): use a fixed 4-column grid of equal 280px cells (name left, '- 0 +' right, '/2' as 16px tx-2). Drop the per-item 'max' buttons (keep 'pack all' and 'clear'). Hide empty entries such as 'no data core'. Align both pack rows under the row-label column.",
+   "P1 summary box 'going up with / your gun is in your stash. equip it first. / you ascend with no armour equipped. equip plates on the surface.': turn this into 2 short chips: '--warn' glyph plus 'no gun equipped' and '--warn' glyph plus 'no armour'. Keep 'going up with' as a 16px tx-2 label over a 20px tx-1 value. Delete the instruction sentences."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-31-k1/05-sector-page-1080.jpg",
-  "task": "manual",
-  "when": "2026-10-20T04:14"
+  "pic": "tools/handoff/console/notes/shots/o-01-stash-pays-in-raid-recipes-1/05-sector-page-1080.jpg",
+  "task": "o-01-stash-pays-in-raid",
+  "when": "2026-10-20T04:32"
  },
  "06-terms": {
   "score": 2,

@@ -31,3 +31,7 @@ Scores (fresh pictures c-31s-before): 25=3, 18=3, 74=2. NOTE: the critic invents
 Shipped: v32.08 (cw-pausebtn, 48px small tier), v32.09 (cw-padpic, pad picture), v32.10 (cw-pausefb2, report field 48px, title 32px). Retargeted checks 31.71 (<=48) and 31.36 (48 or 56).
 After: 74 = 3 (done). 25 stays 3 after two pause passes (shots c-31t-after, c-31u-after). Its remaining P1s are generic: no pad focus state shown in stills, abandon floats about 64px below with no box (an older check forbids a box), feedback and what's new labels still read about 14px (the fs-label rule seems to lose to another rule), the card is a 480 dialog (Q43). 18 = 3 (done). Not scored this run: 26-32, 42, 49, 68-73, 75.
 Next: find why the feedback and what's new labels render about 14px, one more pass on 25/42/49 (pause box tries used: 3 of 6), then score 26-32, 68-73, 75 and fix anything under 3.
+
+## 2026-10-20 run (lane c, VM)
+Fresh pictures c-31v-before. Critic: 25 = 3 (P1: four button heights, small pair label), 68 = 3 (done, not a pause screen). 26,32,70,72,74,75,18 already 3 (done). 27-31, 69, 71, 73 are settings scroll/section shots like 68, same card.
+Plan cw-pause56: all pause buttons 56px with the 20px label (CSS only), fixture 31.71 retargeted from 48 to 56. HELD=1 form of fixq.sh is refused by permissions, so fixq ran plain after lock.sh (it waits for my own lock to expire).

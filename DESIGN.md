@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.26 - PAUSE BOX BUTTONS ALL 56PX
+
+Co-op hunt while he was away. Critic on the pause box (3): four button heights make the column ragged and the small pair reads small. All buttons go to 56px with the 20px label.
+
+MEASURED. Check 32.26 passes, and fails on v32.25.
 ## v32.25 - THE FEED HIDES BEHIND THE OPEN MAP
 
 Co-op hunt while he was away. The critic on screen 22 named toasts sitting on top of the open map. The bottom left feed is not drawn while the map is open and returns when it closes.

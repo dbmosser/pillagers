@@ -1,0 +1,12 @@
+{
+    "title":  "PAUSE BOX BUTTONS ALL 56PX",
+    "why":  "Critic on the pause box (3): four button heights make the column ragged and the small pair reads small. All buttons go to 56px with the 20px label.",
+    "now":  "Every pause box button is one 56px height.",
+    "edits":  [
+                  {
+                      "anchor":  "#root #pausebox:not(.asking) \u003e div:has(\u003e #resumebtn) \u003e #abandonbtn, #root #pausebox:not(.asking) \u003e div:has(\u003e #resumebtn) \u003e #arcendbtn, #root #pausebox:not(.asking) \u003e div:has(\u003e #resumebtn) \u003e #charselbtn{ min-height:var(--btn-h-sm); margin-top:var(--sp-3); }",
+                      "replacement":  "#root #pausebox:not(.asking) \u003e div:has(\u003e #resumebtn) \u003e #abandonbtn, #root #pausebox:not(.asking) \u003e div:has(\u003e #resumebtn) \u003e #arcendbtn, #root #pausebox:not(.asking) \u003e div:has(\u003e #resumebtn) \u003e #charselbtn{ min-height:var(--btn-h-sm); margin-top:var(--sp-3); }\n/* v28.xx (cw-pause56) critic on Pause box 25 (3, P1): \"heights are 56, 56, 48 and 48, the 4 sizes make the column ragged\" and \"button text about 14px\". Now every pause button is one 56px height with the 20px body label; feedback and what is new stay side by side (Q61 keeps them). */\n#root #pausebox \u003e div:has(\u003e #resumebtn) \u003e #fbbtn, #root #pausebox \u003e div:has(\u003e #resumebtn) \u003e #wnbtn{ min-height:var(--btn-h); font-size:var(--fs-body); }\n#root #pausebox:not(.asking) \u003e div:has(\u003e #resumebtn) \u003e #abandonbtn, #root #pausebox:not(.asking) \u003e div:has(\u003e #resumebtn) \u003e #arcendbtn, #root #pausebox:not(.asking) \u003e div:has(\u003e #resumebtn) \u003e #charselbtn{ min-height:var(--btn-h); font-size:var(--fs-body); }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027every pause box button is one 56px height with the 20px label\u0027,\n   run:function(){\n     var css=\u0027\u0027; for(var i=0;i\u003cdocument.styleSheets.length;i++){ try{ var rs=document.styleSheets[i].cssRules; for(var j=0;j\u003crs.length;j++){ css+=rs[j].cssText; } }catch(e){} }\n     if(!/#fbbtn[^{]*\\{[^}]*min-height: var\\(--btn-h\\)/.test(css)) return \u0027fbbtn is not 56px high\u0027;\n     if(!/#abandonbtn[^{]*\\{[^}]*min-height: var\\(--btn-h\\)/.test(css)) return \u0027abandon is not 56px high\u0027;\n     return null; }},"
+}

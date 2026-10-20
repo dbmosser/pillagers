@@ -208,3 +208,12 @@
 2026-10-20 0.0000 o-01-stash-pays-in-raid
 2026-10-20 0.1504 critic-manual
 2026-10-20 0.3157052 c-02-raid-hud-redesign
+2026-10-20 0.5668094 c-02-raid-hud-redesign
+2026-10-20 0.2954 critic-o-01-stash-pays-in-raid
+2026-10-20 0.1575 critic-o-01-stash-pays-in-raid
+2026-10-20 0.1552 critic-o-01-stash-pays-in-raid
+2026-10-20 0.1616 critic-o-01-stash-pays-in-raid
+2026-10-20 0.0000 o-03-map-popups-wait
+2026-10-20 0.1845 critic-manual
+2026-10-20 0.1756 critic-manual
+2026-10-20 0.17719169999999998 17-party-easy-mode
