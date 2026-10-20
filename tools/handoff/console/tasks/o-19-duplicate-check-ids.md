@@ -19,3 +19,7 @@ red in tools/handoff/corpus-fails-v32.83.txt line 5.
 Party risk: none (fixture only). If job 58 is open, it may be judging one of these ids: the renames do not change what any check does.
 
 TASK DONE when the retarget is applied and every check id in tools/mkfixture.ps1 is unique; TASK PARTIAL with what is left.
+
+COORDINATOR 10-20 14:30: job 58 retargeted the SECOND v8.58 (the sector board "reads in metres", fixture commit a0223cae) but could not run
+it alone, because runchk.sh runs only the first 8.58. After your renames, run that check alone by its new id on HEAD and write the result
+(pass or fail, with the reason) in your notes.
