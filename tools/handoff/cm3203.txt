@@ -1,0 +1,7 @@
+v32.03: no controls list over the item wheel
+
+The controls list hides while the item wheel is open.
+
+Check 32.03. Fails on v32.02.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -401,19 +401,19 @@
   "when": "2026-10-19T01:28"
  },
  "65-codex": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The window shell is right (centred card with an x), but the grid fills only the top half of the card, leaving a large empty void. The type is small and the headline numbers are crowded, so it looks unfinished.",
+  "verdict": "The tiles now fill the card and the empty void is gone, but the grid is still a narrow column of tiny gun icons in oversized boxes, and a toast sits on top of the bottom row.",
   "findings": [
-   "P0 card body below the grid (y 530 to 950): Fill the card. Make tiles about 150px tall (the weapon art at 96px or more), use a 4-column grid spanning the full 1672px inner width (24px gutters), and add a detail pane for the focused gun. Or scroll and centre the grid vertically.",
-   "P1 tile text (rarity and type lines, kills): Raise the tile name to 20px and the tag lines to 16px minimum. Use tx-2 (#aaa498) for locked text. Brighten the rare and elite tag text, or make the rarity bar 3px. Make the gun art 64px or larger.",
-   "P1 header right cluster: '48,250 credits  212,000 xp  stash 8,405 bag 0': Remove xp and the stash/bag figures from this window. If money stays, show it as '$48,250' at 20px in tx-1, right-aligned with 24px from the x. Keep one stat style.",
-   "P1 focus and selection state: Focused tile: fill --ui-raised, 2px --acc border (or a 3px lime left bar replacing the rarity bar), with a 90ms bounce. Show the focus in the screenshot.",
-   "P1 toast 'trophy earned · motherlode' at the bottom centre (850-1070, 962-1000): Move the toast to the screen edge outside the card, or suppress it while a window is open. If kept, use panel fill, a 3px accent tab, and 16px text, anchored at the 5% margin."
+   "P0 bottom centre toast 'trophy earned · motherlode': Move toasts to a fixed zone above the card or at the top (y≈24, outside the card), or end the grid at y≤940 and reserve a 56px footer row for toasts. Never draw it over content.",
+   "P1 tile content and icon size: Scale the icon to about 140px, centred in the tile's upper half or filling the left 45%, with the name and tags beside or below it. Use a rarity glow behind found guns. Silhouettes on locked tiles need about 25% more brightness.",
+   "P1 vertical alignment inside tiles: Anchor the name baseline at a fixed offset (tile top + 32px). Reserve the kills row for every found gun, or show a muted 'kills 0'. Give the new badge 8px inset and 16px type.",
+   "P1 grid layout in the card: Run the grid from the card padding (x=119 to x=1801), with 24px gutters (8px grid), which gives about 410px tiles. Or add a left filter rail (rarity, class) so the width is used.",
+   "P1 locked tiles 'not found': Show only the rarity bar and a class name on locked tiles, drop the 'not found' repetition, and lift the rarity text to full --r-* colours at 16px minimum."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-31-g1/65-codex-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/b-31-i1/65-codex-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T01:46"
+  "when": "2026-10-20T02:04"
  },
  "66-trophy-case": {
   "score": 2,

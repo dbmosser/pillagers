@@ -420,35 +420,35 @@
                     },
                     {
                         "name":  "53-arcade-extracted-bonus-initials",
-                        "screen":  "Arcade EXTRACTED! bonus card + EXTRACT IN PROGRESS callout + TOP 10 initials card",
+                        "screen":  "Arcade RUN OVER card of an extraction (extracted x2, a real score and kills) with the top 10 initials card on it (restaged 10-19: the game's own extract end, a staged score)",
                         "before":  "KeyK to drop; wait 3 s; __endRaid(\u0027extract\u0027), the game\u0027s own extract ending (10-18: the old beacon hold never finished an extraction, so the shot was a mid-extract raid HUD); wait 3 s",
                         "query":  "",
-                        "expect":  "U.on(\u0027#attract\u0027)||U.on(\u0027#outcome\u0027)",
-                        "js":  "U.click(\u0027#modearcade1\u0027); await U.wait(2500); await U.key(\u0027KeyK\u0027); await U.wait(3000); if(!U.raid()) return \u0027SKIP: the arcade drop did not start a raid\u0027; __endRaid(\u0027extract\u0027); await U.wait(3000); return U.modal();"
+                        "expect":  "(function(){ var c=document.querySelector('#attract .arcover'); return !!(c&&U.on(c)&&/extracted x2/i.test(c.textContent)&&__gx('!!ARCADE.ini&&!!ARCADE.over&&!!ARCADE.over.p1&&ARCADE.over.p1.s===3700')); })()",
+                        "js":  "U.click('#modearcade1'); await U.wait(2500); await U.key('KeyK'); await U.wait(3000); if(!U.raid()) return 'SKIP: the arcade drop did not start a raid'; __gx('ARCADE.mine=1850; ARCADE.kills=9'); __endRaid('extract'); await U.wait(4500); return U.modal();"
                     },
                     {
                         "name":  "54-arcade-initials-redrop",
-                        "screen":  "Arcade initials card after re-drop (SHIELD MOVE TO START)",
+                        "screen":  "Arcade initials card mid-entry on the RUN OVER card (two of three letters typed, the cursor on the third) (restaged 10-19: the old re-drop is gone from the game)",
                         "before":  "wait 3 s more",
                         "query":  "",
-                        "expect":  "true",
-                        "js":  "U.click(\u0027#modearcade1\u0027); await U.wait(2500); await U.key(\u0027KeyK\u0027); await U.wait(4000); await U.hold(\u0027KeyW\u0027,1200); var g=__state(), p=g.player, z=g.active; if(!z) return \u0027SKIP: no active extraction point\u0027; p.x=z.x; p.y=z.y; z.beaconT=2; g.beaconT=2; U.down(\u0027KeyE\u0027); await U.wait(7000); return U.modal();"
+                        "expect":  "(function(){ var c=document.querySelector('#attract .arcover'); return !!(c&&U.on(c)&&__gx(\"!!ARCADE.ini&&ARCADE.ini.pos===2&&ARCADE.ini.l.slice(0,2).join('')==='DB'\")); })()",
+                        "js":  "U.click('#modearcade1'); await U.wait(2500); await U.key('KeyK'); await U.wait(3000); if(!U.raid()) return 'SKIP: the arcade drop did not start a raid'; __gx('ARCADE.mine=1850; ARCADE.kills=9'); __endRaid('extract'); await U.wait(3000); if(!__gx('ARCADE.ini')) return 'SKIP: no initials card'; await U.key('KeyD'); await U.wait(250); await U.key('KeyB'); await U.wait(1200); return U.modal();"
                     },
                     {
                         "name":  "55-arcade-run-over-scored",
-                        "screen":  "Arcade RUN OVER card with $2,500",
+                        "screen":  "Arcade RUN OVER card of a run ended early from the pause menu (ended early -50%, a 5,000 score halved to 2,500) (restaged 10-19: a staged score)",
                         "before":  "keyup KeyE, Enter; then KeyP and click #arcendbtn; wait 2.5 s",
                         "query":  "",
-                        "expect":  "U.on(\u0027#outcome\u0027)||U.on(\u0027#attract\u0027)",
-                        "js":  "U.click(\u0027#modearcade1\u0027); await U.wait(2500); await U.key(\u0027KeyK\u0027); await U.wait(4000); await U.hold(\u0027KeyW\u0027,1200); var g=__state(), p=g.player, z=g.active; if(!z) return \u0027SKIP: no active extraction point\u0027; p.x=z.x; p.y=z.y; z.beaconT=2; g.beaconT=2; U.down(\u0027KeyE\u0027); await U.wait(7000); U.up(\u0027KeyE\u0027); await U.key(\u0027Enter\u0027); await U.wait(500); await U.key(\u0027KeyP\u0027); await U.wait(600); U.click(\u0027#arcendbtn\u0027); await U.wait(400); if(U.on(\u0027#pausebox\u0027)) U.click(\u0027#arcendbtn\u0027); await U.wait(2500); return U.modal();"
+                        "expect":  "(function(){ var c=document.querySelector('#attract .arcover'); return !!(c&&U.on(c)&&/ended early/i.test(c.textContent)&&__gx('!!ARCADE.over&&!!ARCADE.over.p1&&ARCADE.over.p1.s===2500')); })()",
+                        "js":  "U.click('#modearcade1'); await U.wait(2500); await U.key('KeyK'); await U.wait(3000); if(!U.raid()) return 'SKIP: the arcade drop did not start a raid'; __gx('ARCADE.mine=5000; ARCADE.kills=12'); await U.key('KeyP'); await U.wait(600); U.click('#arcendbtn'); await U.wait(400); if(U.on('#pausebox')) U.click('#arcendbtn'); await U.wait(4500); return U.modal();"
                     },
                     {
                         "name":  "56-arcade-attract-board-scored",
-                        "screen":  "Arcade attract TONIGHT\u0027S BEST with one row (???), LAST RUN, BEST EVER",
+                        "screen":  "Arcade attract TONIGHT'S BEST with three scored rows (two earlier runs and this run, initials typed), LAST RUN, BEST EVER (restaged 10-19: two rows written to the board first)",
                         "before":  "poll until #attract .arcpage data-ph==\u0027board\u0027 (about 2 s)",
                         "query":  "",
-                        "expect":  "U.on(\u0027#attract\u0027)\u0026\u0026(document.querySelector(\u0027#attract [data-ph]\u0027)||{}).getAttribute(\u0027data-ph\u0027)===\u0027board\u0027",
-                        "js":  "U.click(\u0027#modearcade1\u0027); await U.wait(2500); await U.key(\u0027KeyK\u0027); await U.wait(4000); await U.hold(\u0027KeyW\u0027,1200); var g=__state(), p=g.player, z=g.active; if(!z) return \u0027SKIP: no active extraction point\u0027; p.x=z.x; p.y=z.y; z.beaconT=2; g.beaconT=2; U.down(\u0027KeyE\u0027); await U.wait(7000); U.up(\u0027KeyE\u0027); await U.key(\u0027Enter\u0027); await U.wait(500); await U.key(\u0027KeyP\u0027); await U.wait(600); U.click(\u0027#arcendbtn\u0027); await U.wait(400); if(U.on(\u0027#pausebox\u0027)) U.click(\u0027#arcendbtn\u0027); await U.wait(2500); await U.until(function(){ var pg=document.querySelector(\u0027#attract [data-ph]\u0027); return pg\u0026\u0026pg.getAttribute(\u0027data-ph\u0027)===\u0027board\u0027\u0026\u0026U.on(\u0027#attract\u0027); },20000); await U.wait(800);"
+                        "expect":  "U.on('#attract')&&(document.querySelector('#attract [data-ph]')||{}).getAttribute('data-ph')==='board'&&__gx('arcadeBoardTonight().length')>=3",
+                        "js":  "U.click('#modearcade1'); await U.wait(2500); await U.key('KeyK'); await U.wait(3000); if(!U.raid()) return 'SKIP: the arcade drop did not start a raid'; var now=Date.now(); localStorage.setItem(__gx('ARCADE_BOARD_KEY'),JSON.stringify({v:1,rows:[{run:'shot56-a',i:'ACE',s:4200,x:2,k:14,t:now-2000,m:1,u:'cr'},{run:'shot56-b',i:'DAN',s:2650,x:1,k:8,t:now-1000,m:1,u:'cr'}]})); __gx('ARCADE.mine=1850; ARCADE.kills=9'); __endRaid('extract'); await U.wait(3000); if(__gx('ARCADE.ini')){ await U.key('KeyY'); await U.wait(200); await U.key('KeyO'); await U.wait(200); await U.key('KeyU'); await U.wait(400); if(__gx('ARCADE.ini')) await U.key('Enter'); } await U.until(function(){ var pg=document.querySelector('#attract [data-ph]'); return pg&&pg.getAttribute('data-ph')==='board'&&U.on('#attract'); },25000); await U.wait(800);"
                     },
                     {
                         "name":  "57-title-2p-coop-picked",

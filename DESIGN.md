@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.03 - NO CONTROLS LIST OVER THE ITEM WHEEL
+
+Co-op hunt while he was away. UI critic, screen 61: the controls list was drawn over the item wheel. The backpack already steps the list aside; the wheel now does too.
+
+MEASURED. Check 32.03 passes, and fails on v32.02.
 ## v32.02 - Codex tiles fill the card
 
 Co-op hunt while he was away. UI step 7 (restyle only). The codex card was 40 percent empty under 16 small tiles; the tiles now share the card height with bigger art and 18px to 24px text.

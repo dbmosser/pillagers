@@ -46,3 +46,5 @@ Ready change (not written, no permission): cw-uc-codexfill = CSS after the codex
 ## Run 17 (lane b, 10-19): camera works (shots/b-31-h1: 04, 14, 65). No ship: Write to S\mk-cw-* is REFUSED again (User1 scratchpad path), so no mk script could be made. Same block as run 16.
 Codex (65) still 40 percent empty under 16 small tiles; stash (04) still has the stacked bottom strips (junk hint, freebie kit, welcome toast, first-raid strip).
 Ready to use: the whole mk script is saved as notes/b-31-codexfill-mk.ps1.txt (copy to S\mk-cw-uc-codexfill.ps1 and preflight). A worker that can write S should do it. The coordinator should fix the Write permission for lane b (S\mk-cw-*).
+
+## Run 19 (lane b, 10-19): scratchpad Write works now. SHIPPED v32.02 cw-uc-codexfill (codex tiles fill card). Critic 65: 2 to 3 (meets the 3 finish line for non-core screens). Left in the critic list: toast over bottom row (staging toast, not a real overlap), art 140px, unify header stats. Shots b-31-i1. Next: shoot 04 stash and 14 racks, 03/05-13 unjudged; stash bottom strips (junk hint, freebie kit, first-raid strip) still to hide. Not judged: 03, 05-13, 15-18, 39, 41-44, 66, 67.

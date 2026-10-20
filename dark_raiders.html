@@ -3003,7 +3003,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.02';
+var VER='32.03';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -44241,7 +44241,7 @@ function drawLegend(fz){   // v20.74 (H40): fz is the zoom the full list is draw
   // v18.86, seen on the 4K raid screenshot (2026-10-07): with the backpack open the controls legend ran under its left edge and its
   // second column showed through the panel (SHIFT, SPAC.., melee, backpack). The backpack carries its own key line, so the legend
   // steps aside while it is open and comes back when it closes.
-  if(G&&G.bagOpen&&!G.over) return;
+  if(G&&(G.bagOpen||G.wheel)&&!G.over) return;   // v32.xx (cw-wheelnolegend): the critic saw the controls list drawn over the item wheel (screen 61); like the backpack, the wheel steps the list aside
   var HOl=hudOff('legend');
   // The collapse click and the H key are two doors to the same room: c forces
   // the one-line hint whatever mode H last chose, and clicking it reopens.
@@ -50198,7 +50198,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.02: The armory codex fills its card with larger tiles and bigger text. Check 32.02 fails on v32.01',
+  now:'v32.03: The controls list hides while the item wheel is open. Check 32.03 fails on v32.02',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

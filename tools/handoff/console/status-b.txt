@@ -1,1 +1,1 @@
-10-19 21:55 running b-31-ui-undercroft on Claude Code (your plan: week 52% of the 22.7% line, 5-hour 18%)
+10-19 22:05 running b-30-ui-hud on Claude Code (your plan: week 52% of the 22.8% line, 5-hour 19%)

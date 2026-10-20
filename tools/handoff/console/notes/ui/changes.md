@@ -146,3 +146,5 @@
 2026-10-19 | o-10-pad-floor-bag | 41-hub-backpack-pad | Enabled pad highlight, pickup/place, floor drop and close; the existing empty pad hint row now lists dpad, a, y and b. No owner-written line was removed. Before: unavailable for custom recipe; after: lane camera output for 41-hub-backpack-pad.
 
 2026-10-19 | o-10-pad-floor-bag | Undercroft floor backpack | Existing pad hint row now names D-pad move, A pick up or place, Y drop, B close; pad highlight and held item use the raid bag helpers. Before: no recipe picture available. After: pending lane pictures 41-hub-backpack-pad-p1 and 41-hub-backpack-pad-p2-held from camera-recipes.json.
+
+2026-10-19 | b-31-ui-undercroft | 65-codex | v32.02 tiles fill the card (150px+ rows, art 96px, name 24px, tags 18px). Before shots/b-31-h1/65-codex-1080.jpg, after shots/b-31-i1/65-codex-1080.jpg. Critic 2 to 3.
