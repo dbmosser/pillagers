@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.76 - PAD RECONNECT ACTION
+
+Co-op hunt while he was away. The disconnect card offered an enabled resume action while the pad was absent. The critic found this misleading.
+
+MEASURED. Check 32.76 passes, and fails on v32.75.
 ## v32.75 - GROUND SHADOWS KEEP THEIR SPRITES ACROSS SCALES
 
 Co-op hunt while he was away. The ground shadow store emptied itself whenever the sprite scale changed. The world and the bigger figures use different scales, so it emptied twice a frame and every shadow painted a new canvas every frame: slow frames, garbage collection and memory growth that crawled the full test run. The scale is now part of the key.

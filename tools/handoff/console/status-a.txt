@@ -1,1 +1,1 @@
-10-20 06:00 running 00-perf-shadow-store on Claude Code (your plan: week 57% of the 26.8% line, 5-hour 3%)
+10-20 06:11 waiting: another helper is just starting (memory check again in a few minutes); 00-perf-shadow-store kept

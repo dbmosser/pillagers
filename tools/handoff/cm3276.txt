@@ -1,0 +1,7 @@
+v32.76: pad reconnect action
+
+The existing action says reconnect and stays disabled until the reserved pad returns. A resumes as before and restores the normal pause action. The returned pad also permits a click on that same action.
+
+Check 32.76. Fails on v32.75.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

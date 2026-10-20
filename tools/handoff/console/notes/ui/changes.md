@@ -196,3 +196,4 @@
 
 2026-10-20 | o-02-corpus-green | existing pad-loss pause | v32.74 cw-cx-padlostlegend shipped; camera round 1 at tools/handoff/console/notes/shots/o-02-corpus-green-recipes-1/pad-lost-open-pause-1080.jpg and pad-ready-open-pause-1080.jpg is invalid (no pause staged); corrected round 2 requested, no additional UI change.
 
+2026-10-20 | o-07-pad-lost | j8 pad lost / press a, both windows | Existing primary action: resume becomes disabled reconnect while its reserved pad is absent, then enabled resume on return; normal pause action restored after recovery. Reason for replacing the old label: an absent pad cannot resume, so reconnect names the required action. | before: tools/handoff/console/notes/shots/o-07-pad-lost-recipes-3/j8-p1-pad-lost-1080.jpg | after: tools/handoff/console/notes/shots/o-07-pad-lost-recipes-4/j8-p1-pad-lost-1080.jpg and j8-p2-pad-lost-1080.jpg (pending lane camera)

@@ -6101,6 +6101,33 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.76',what:'J8 disconnect action says reconnect and cannot resume an absent pad; returning pad enables resume and A restores the normal action',
+   run:function(){
+     var bad=[], pk=Object.assign({},PAD), b=document.getElementById('resumebtn'), text=b.textContent, disabled=b.disabled;
+     function ck(ok,s){if(!ok)bad.push(s);}
+     try{
+       __runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();
+       __deploy({kit:['gun_rifle'],safe:null,mapIx:0,seed:4242});__topClear();
+       if(pauseOpen)togglePauseBox(false);
+       padLostStart(0);
+       var normal=PAD.lossUi&&PAD.lossUi.text;
+       ck(pauseOpen&&G.paused&&b.disabled&&b.textContent==='reconnect','lost pad still offers resume');
+       b.onclick();ck(pauseOpen&&G.paused&&!!PAD.lost,'absent pad resumed by click');
+       var gp={connected:true,index:0,id:'J8 action',axes:[0,0,0,0],buttons:[{pressed:false,value:0}]};
+       padLostPoll(gp);
+       ck(pauseOpen&&!b.disabled&&b.textContent==='resume'&&document.querySelector('#pausebox h3').textContent==='press a','return did not enable the action');
+       gp.buttons[0]={pressed:true,value:1};padLostPoll(gp);
+       ck(!pauseOpen&&!G.paused&&!PAD.lost&&!b.disabled&&b.textContent===normal,'A did not restore the normal action');
+       gp.buttons[0]={pressed:false,value:0};padLostStart(0);padLostPoll(gp);b.onclick();
+       ck(!pauseOpen&&!G.paused&&!PAD.lost&&!b.disabled,'returned pad resume click did not close cleanly');
+       return bad.length?bad.join('; '):null;
+     }finally{
+       if(typeof padLostUi==='function')padLostUi(false,false);
+       try{__endRaid('abandon');}catch(e){}__topClear();
+       Object.keys(PAD).forEach(function(k){delete PAD[k];});Object.assign(PAD,pk);
+       b.textContent=text;b.disabled=disabled;
+     }
+   }},
   {v:'32.75',what:'the shadow store keeps its sprites when the sprite scale changes between world and figures, so frames paint no new shadow canvases',
    run:function(){
      if(typeof shadowE!=='function'||typeof SHADSPR==='undefined') return 'no shadow store';

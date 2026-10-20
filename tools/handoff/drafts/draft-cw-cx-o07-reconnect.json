@@ -1,0 +1,32 @@
+{
+    "title":  "PAD RECONNECT ACTION",
+    "why":  "The disconnect card offered an enabled resume action while the pad was absent. The critic found this misleading.",
+    "now":  "The existing action says reconnect and stays disabled until the reserved pad returns. A resumes as before and restores the normal pause action. The returned pad also permits a click on that same action.",
+    "edits":  [
+                  {
+                      "anchor":  "function padLostStart(ix){",
+                      "replacement":  "// v28.xx (cw-cx-o07-reconnect): J8 and the disconnect critic: the existing action says reconnect while its pad is absent.\nfunction padLostUi(on,ready){\n  if(!on\u0026\u0026!PAD.lossUi) return;\n  var b=document.getElementById(\u0027resumebtn\u0027); if(!b) return;\n  if(on){\n    if(!PAD.lossUi) PAD.lossUi={text:b.textContent,disabled:b.disabled};\n    b.textContent=ready?\u0027resume\u0027:\u0027reconnect\u0027; b.disabled=!ready;\n  }else{\n    var kept=PAD.lossUi; PAD.lossUi=null;\n    if(kept){ b.textContent=kept.text; b.disabled=kept.disabled; }\n  }\n}\nfunction padLostStart(ix){"
+                  },
+                  {
+                      "anchor":  "  var h=document.querySelector(\u0027#pausebox h3\u0027); if(h) h.textContent=\u0027pad lost\u0027;",
+                      "replacement":  "  var h=document.querySelector(\u0027#pausebox h3\u0027); if(h) h.textContent=\u0027pad lost\u0027;\n  padLostUi(true,false);"
+                  },
+                  {
+                      "anchor":  "  if(!live||PAD.lossRaid!==G){ PAD.lost=null; lost=null; PAD.lossRaid=live?G:null; PAD.lossIx=-1; }",
+                      "replacement":  "  if(!live||PAD.lossRaid!==G){ padLostUi(false,false); PAD.lost=null; lost=null; PAD.lossRaid=live?G:null; PAD.lossIx=-1; }"
+                  },
+                  {
+                      "anchor":  "  var h=document.querySelector(\u0027#pausebox h3\u0027); if(h) h.textContent=ready?\u0027press a\u0027:\u0027pad lost\u0027;",
+                      "replacement":  "  var h=document.querySelector(\u0027#pausebox h3\u0027); if(h) h.textContent=ready?\u0027press a\u0027:\u0027pad lost\u0027;\n  padLostUi(true,ready);"
+                  },
+                  {
+                      "anchor":  "    indevPadTick(gp); padBodyCls(); togglePauseBox(false);",
+                      "replacement":  "    padLostUi(false,false); indevPadTick(gp); padBodyCls(); togglePauseBox(false);"
+                  },
+                  {
+                      "anchor":  "document.getElementById(\u0027resumebtn\u0027).onclick=function(){",
+                      "replacement":  "document.getElementById(\u0027resumebtn\u0027).onclick=function(){\n  // v28.xx (cw-cx-o07-reconnect): one existing resume action, available only after the reserved pad returns.\n  if(PAD.lost){ if(!PAD.lost.ready) return; PAD.lost=null; padLostUi(false,false); }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027J8 disconnect action says reconnect and cannot resume an absent pad; returning pad enables resume and A restores the normal action\u0027,\n   run:function(){\n     var bad=[], pk=Object.assign({},PAD), b=document.getElementById(\u0027resumebtn\u0027), text=b.textContent, disabled=b.disabled;\n     function ck(ok,s){if(!ok)bad.push(s);}\n     try{\n       __runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();\n       __deploy({kit:[\u0027gun_rifle\u0027],safe:null,mapIx:0,seed:4242});__topClear();\n       if(pauseOpen)togglePauseBox(false);\n       padLostStart(0);\n       var normal=PAD.lossUi\u0026\u0026PAD.lossUi.text;\n       ck(pauseOpen\u0026\u0026G.paused\u0026\u0026b.disabled\u0026\u0026b.textContent===\u0027reconnect\u0027,\u0027lost pad still offers resume\u0027);\n       b.onclick();ck(pauseOpen\u0026\u0026G.paused\u0026\u0026!!PAD.lost,\u0027absent pad resumed by click\u0027);\n       var gp={connected:true,index:0,id:\u0027J8 action\u0027,axes:[0,0,0,0],buttons:[{pressed:false,value:0}]};\n       padLostPoll(gp);\n       ck(pauseOpen\u0026\u0026!b.disabled\u0026\u0026b.textContent===\u0027resume\u0027\u0026\u0026document.querySelector(\u0027#pausebox h3\u0027).textContent===\u0027press a\u0027,\u0027return did not enable the action\u0027);\n       gp.buttons[0]={pressed:true,value:1};padLostPoll(gp);\n       ck(!pauseOpen\u0026\u0026!G.paused\u0026\u0026!PAD.lost\u0026\u0026!b.disabled\u0026\u0026b.textContent===normal,\u0027A did not restore the normal action\u0027);\n       gp.buttons[0]={pressed:false,value:0};padLostStart(0);padLostPoll(gp);b.onclick();\n       ck(!pauseOpen\u0026\u0026!G.paused\u0026\u0026!PAD.lost\u0026\u0026!b.disabled,\u0027returned pad resume click did not close cleanly\u0027);\n       return bad.length?bad.join(\u0027; \u0027):null;\n     }finally{\n       if(typeof padLostUi===\u0027function\u0027)padLostUi(false,false);\n       try{__endRaid(\u0027abandon\u0027);}catch(e){}__topClear();\n       Object.keys(PAD).forEach(function(k){delete PAD[k];});Object.assign(PAD,pk);\n       b.textContent=text;b.disabled=disabled;\n     }\n   }},"
+}

@@ -1,0 +1,5 @@
+## v32.76 - PAD RECONNECT ACTION
+
+Co-op hunt while he was away. The disconnect card offered an enabled resume action while the pad was absent. The critic found this misleading.
+
+MEASURED. Check 32.76 passes, and fails on v32.75.
