@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.83 - PAD CARD CLEARANCES
+
+Co-op hunt while he was away. The layout counter touches the focus ring and d-right touches the controller outline.
+
+MEASURED. Check 32.83 passes, and fails on v32.82.
 ## v32.82 - INVITE CODE KEEPS ITS CASE
 
 Co-op hunt while he was away. The lower case door must never touch the party code tag, and the paste box must name it as it looks. Guard also covers pad reach for the plate and the air strike.

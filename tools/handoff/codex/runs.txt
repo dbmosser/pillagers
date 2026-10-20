@@ -102,3 +102,11 @@
 2026-10-20 06:37 o-02-corpus-green 535s ok PARTIAL in=2036979 out=17324 run=1
 2026-10-20 06:50 o-02-corpus-green 718s ok PARTIAL in=6577201 out=42821 run=2
 2026-10-20 06:53 o-02-corpus-green 181s ok PARTIAL in=8029069 out=49228 run=3
+2026-10-20 07:09 o-02-corpus-green 877s ok PARTIAL in=15767882 out=79386 run=4
+2026-10-20 07:11 o-02-corpus-green 126s usage-limit (not counted) back 2026-10-20 07:38
+2026-10-20 07:44 o-02-corpus-green 165s ok PARTIAL in=729834 out=5600 run=5
+2026-10-20 07:54 o-08-pad-owner 145s ok PARTIAL in=1752825 out=9943 run=1
+2026-10-20 07:58 o-09-pad-name-entry 102s ok DONE in=4638334 out=43384 run=6
+2026-10-20 08:01 o-10-pad-floor-bag 142s ok PARTIAL in=585617 out=3988 run=4
+2026-10-20 08:05 o-10-pad-floor-bag 129s ok PARTIAL in=1140158 out=8862 run=5
+2026-10-20 08:11 o-11-pad-card-fixes 254s ok PARTIAL in=474479 out=8145 run=1

@@ -1,0 +1,7 @@
+v32.83: pad card clearances
+
+The layout counter and d-right label sit clear of the lines around them.
+
+Check 32.83. Fails on v32.82.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

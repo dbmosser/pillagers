@@ -1,0 +1,9 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  41-hub-backpack-pad-p1                 NOT STAGED  12.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: A pickup failed
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html?mode=coop&pair=j5floor:163291:33), <anonymous>:6:303)
+    at async <anonymous>:1:2281
+    at async <anonymous>:1:21
+  41-hub-backpack-pad-p2-held            NOT STAGED  12.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: A pickup failed
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html?p2=1&mode=coop&pair=j5floor:163291:33), <anonymous>:6:303)
+    at async <anonymous>:1:2281
+    at async <anonymous>:1:21

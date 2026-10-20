@@ -19,3 +19,8 @@ TASK PARTIAL: coordinator must run the camera recipes and return pictures and cr
 Coordinator note 10-20 00:20: back in tasks/ for the lane-side step it waited for. The lane now photographs camera-recipes.json itself (first 6 screens, critic on each) and sends you the pictures; the first pass spends no Codex run. Already shipped (do not ship again): cw-cx-padowner . Review the pictures and the critic: end TASK DONE if they hold, or fix P0/P1 findings with a NEW key.
 
 Coordinator note 10-20 04:00 (in the VM): back in tasks/ once (run count reset) for the picture step only; your game fix is shipped. The camera now opens the second window (uishots -NoPopupBlock, or "popups": true in your recipe file), and on 02:20 a career pair linked in it (o-04, player 2 joined). The lane photographs your corrected recipes on its first pass (no Codex run). Then review: TASK DONE if they show the fix; if a pair still does not link in the camera, say so in one line and end TASK DONE, the two-window look goes to his playtest list.
+
+Lane note 2026-10-20 07:54: shipped cw-cx-padowner and parked: only lane-side steps are left. Codex's last words:
+P1 hub and raid captures pass all six pad trials. Fixed the p2 recipe error: `netslot=B` disabled the p2 role. Corrected recipes validate locally; the four-round camera allowance is exhausted.
+
+TASK PARTIAL: coordinator must resolve missing p2 pictures and outstanding critic findings.

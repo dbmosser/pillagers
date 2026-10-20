@@ -58,3 +58,19 @@ Local validation passed: four recipe scripts and predicates parse, all URL route
 
 Remaining lane work: run recipe round 3 with the updated file and return staged hub/raid pictures from both windows and their critic results. This sandbox cannot run the camera. A failed staging picture must not count as visual acceptance.
 
+
+--- codex run 2026-10-20 07:54 ---
+2026-10-20 - Round 4 provides p1 pictures and both-window functional evidence; p2 pictures remain missing.
+
+Reviewed the four attached pictures and parsed the saved report. Hub p1 and raid p1 staged successfully. Both reports contain six successful cold/late connection trials, A=p2/B=p1, correct ownership tags in both actual windows, and A reconnect without a B pulse. Final pulses are p1 index 1 and p2 index 0, both dual-rumble, 250 ms, strength 0.6. The amber p1 tag is visible beside the local pillager in both successful pictures. This is synthetic-pad evidence, not a hardware rumble test.
+
+The p2 pictures show the title and failed staging, so they do not prove the cyan tag is visible. Root cause: startup declares NETP2=!NETSLOT&&netP2Of(location.search). Our p2 query included netslot=B, which explicitly wins over p2=1 and prevents automatic p2 boot. Removed netslot=B from the p2 recipes; they now use the normal p2 save path. Host recipes retain netslot=A. No game code change is needed.
+
+Added a local check that evaluates the actual netSlotOf/netP2Of functions and NETSLOT/NETP2 startup declarations from the game. It reproduces the old query selecting NETP2=false and verifies both corrected p2 queries select true and both host queries select false. All four scripts and predicates parse, popup support remains enabled, and URL validation passes on v32.82. Existing shipped game scripts and the J7 fixture check also parse.
+
+The critic scored the staged hub p1 and raid p1 pictures 2. Findings concern existing HUD layout, the device chip/title collision, control legend, currency column, contracts and ammo panel. None identifies a defect in the new ownership tag. Full-screen visual acceptance is still unmet. Failed p2 title shots are not J7 acceptance evidence. Logged the remaining camera and HUD review work to the coordinator; no unrelated HUD restyle was added to this pad task.
+
+Evidence: tools/handoff/console/notes/shots/o-08-pad-owner-recipes-4/report.json and j7-hub-p1-pad-owner-1080.jpg, j7-raid-p1-pad-owner-1080.jpg in the same folder. cw-cx-padowner remains shipped as v31.93 / 63465daf. Do not ship it again.
+
+All four automatic camera rounds have been used. Corrected recipes are ready, but this worker cannot take more pictures or lift that limit. Remaining work belongs to the coordinator: resolve p2 visual verification and the outstanding full-screen critic findings. Do not mark J7 visually complete yet.
+

@@ -1,0 +1,7 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  41-hub-backpack-pad-p1                 NOT STAGED   4.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: NET is not defined
+    at <anonymous>:1:2274
+    at async <anonymous>:1:21
+  41-hub-backpack-pad-p2-held            NOT STAGED   4.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: NET is not defined
+    at <anonymous>:1:2274
+    at async <anonymous>:1:21

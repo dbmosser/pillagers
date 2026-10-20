@@ -1,0 +1,5 @@
+## v32.83 - PAD CARD CLEARANCES
+
+Co-op hunt while he was away. The layout counter touches the focus ring and d-right touches the controller outline.
+
+MEASURED. Check 32.83 passes, and fails on v32.82.

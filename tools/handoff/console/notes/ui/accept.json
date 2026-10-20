@@ -265,17 +265,17 @@
  "23-raid-backpack-open": {
   "score": 2,
   "pass": false,
-  "verdict": "The tile bars and the packed panel are tidier than the earlier shot, but the backpack is still a small, flat, mostly empty box. It is far from the near-full-screen centred card with an X that he ordered, and the item grid is undersized and under-hierarchised.",
+  "verdict": "The backpack is a flat, dark and quiet card with a good lime focus tile, but it is a small, under-filled box with weak hierarchy, a tiny 3-item grid and a loose type scale, so it reads as a debug panel and not as a Diablo/ARC inventory.",
   "findings": [
-   "P0 backpack panel as a whole: Make it a centred card about 90% wide (1728x~970). Put a 40px X button top-right with a pad focus state. Drop the text hint to a 14px footer legend. Leave 24px clear above the hotbar, or hide the hotbar while the card is open.",
-   "P0 item tiles row (3 tiles at ~86px): Draw a fixed grid of 8 columns by N rows at 96px tiles with 8px gaps, with empty slots outlined in --ui-line. Make the rarity bar 3px full width. Put counts at 16px bold with a dark chip behind them.",
-   "P1 type hierarchy inside the panel: Set the title to 32px f-cond 700. Set the selected item name to 20px tx-1. Put the stat values in tx-1 and the stat labels in tx-2 at 16px. Make '12 / 24' the one 56px hero number, or leave it as quiet 20px text. Do not do both.",
-   "P1 selected-item detail ('armour plate' block): Make the detail a --ui-raised pane with 24px padding. Lay out label and value in two aligned columns with a 120px label width. Move the hints to a 14px footer legend using key chips. Trim the bottom padding to 24px.",
-   "P1 panel chrome and separators: Use fill --ui-panel at 94% and a 1px --ui-line-hi border. Add a 3px --acc tab on the left edge of the title. Darken the scrim behind the card to 80% with the scrim token. Make the focus ring 2px --acc plus a 4px outer glow."
+   "P0 backpack card, item grid (y 670-755): Draw a fixed grid of empty slots (e.g. 8x4 at 88px tiles, 8px gap, --ui-line border, --ui-bg fill), with items sitting in it and a 3px rarity bar on the bottom edge. Put the capacity ('3 / 24') in the header at 16px tx-2.",
+   "P0 whole card: Title to 32px f-cond 700. Make the selected item's name 32px (title) and its stats 16px tx-2. Drop the second name size. Keep lime only on the focused tile.",
+   "P1 stat and hint rows (y 605-640, 850-890): Show stats as label (tx-2, 16px) over value (tx-1, 20px) pairs in a 4-column row with 24px gutters. Show hints as key-cap chips at 16px ('arrows' 'z' 'drag') with 8px gaps. Fix the armour/armor spelling to one form.",
+   "P1 card frame and placement (546-1374 x 450-923): Make it a card at about 70% of the width, anchored 24px above the hotbar, or a full 90% window. Put a 32px X button in the top-right corner, with 'b' as a key-cap hint beside it at 16px.",
+   "P1 section spacing and dividers: Use an 8px grid: 24px card padding all round, 24px between sections, 1px --ui-line-hi dividers. Make the equipped block its own --ui-raised panel with the weapon icon at 64px and not 40px."
   ],
-  "pic": "tools/handoff/console/notes/shots/45-after4/23-raid-backpack-open-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/45-after5/23-raid-backpack-open-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T10:39"
+  "when": "2026-10-20T11:05"
  },
  "25-raid-pause-box": {
   "score": 3,
@@ -1078,5 +1078,35 @@
   "pic": "tools/handoff/console/notes/shots/o-05-pad-presets-recipes-3/74-pad-player-2-1080.jpg",
   "task": "o-05-pad-presets",
   "when": "2026-10-20T06:36"
+ },
+ "41-hub-backpack-pad-p1": {
+  "score": 1,
+  "pass": false,
+  "verdict": "The backpack window is broken: two stale hover tooltips cover its content, the card is not the near-full-screen centred card with an X, and text collides with the hub labels, so it is not shippable.",
+  "findings": [
+   "P0 backpack card, lower half and right side: Show one tooltip at most, anchored to the focused cell and clamped inside the card. Clear tooltip state when focus changes or the window opens. Put the stats in a fixed detail pane at the card's right 40% (--ui-raised, 24px padding) instead of floating tooltips.",
+   "P0 backpack card frame (546-1374, 310-922): Make the card 1728x972 centred, with a --ui-panel fill at 96% over a --scrim at .80 across the whole screen. Add a 56px header holding the title at 32px, with a 40px x button at the top right. Add a 72px footer with the key hints at 16px.",
+   "P0 top right of the card, 'view to close' (1250-1340,348): Replace it with an x at the top right and a footer hint, 'b close' drawn in 16px --tx-2. Make sure no tooltip layer sits on the header.",
+   "P1 hierarchy inside the card: Set the title to 32px f-cond 700. Make the equipped weapon the hero at 56px, or make a 5-column grid of 96px cells with rarity bars (a Diablo style grid). Use lime only on the focused cell and on nothing else.",
+   "P1 hub labels behind the card ('shop, craft, and hir', 'experimental feature may glitch***'): Dim or blur the hub with the .80 scrim whenever a window is open. Delete the glitch line, or put it in the 14px footer of the relevant window. Fix the label to 'shop, craft, hire' and clamp it to its sign width."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-10-pad-floor-bag-recipes-3/41-hub-backpack-pad-p1-1080.jpg",
+  "task": "o-10-pad-floor-bag",
+  "when": "2026-10-20T12:06"
+ },
+ "41-hub-backpack-pad-p2-held": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The backpack is a small, cramped dark panel on top of a busy hub. The compare pane collides with it, there is no title bar or close x, and the hub's own signs and a hotbar label show through, so it looks unfinished.",
+  "findings": [
+   "P0 backpack panel, top-right ('view to close') and compare pane at x1260-1697: Dock the compare pane flush against the backpack card with a 16px gap, or put both in one 90% centred card with the compare pane as a right column. Give the close hint its own 56px header row, right-aligned, with nothing over it. Use '[x]' or 'b close' only once.",
+   "P0 whole screen: backpack panel (545-1375 x 308-923) against the hub: Use a 90% width, 90% height centred card with a 1px --ui-line-hi border and an x in the top-right corner. Put a rgba(6,7,8,.80) scrim behind it so the hub signs drop out. Hide the hub's world labels while a window is open.",
+   "P1 backpack panel hierarchy: Make the title 32px f-cond 700 in a header row. Enlarge the item tiles to 96px with a lime 2px focus border on the held tile. Make the item name 20px tx-1 and the labels 16px tx-2 at 4.5:1 or better. Add 1px --ui-line row dividers to the stat list.",
+   "P1 top-left corner: Move the badge to 5% margin (96px, 54px) or remove it, and show the correct device ('pad') there. Set the stash line to 14px minimum with 24px padding. Give the hub title its own space.",
+   "P1 compare pane 'auto rifle': Use the standard detail pane (--ui-raised, 1px --ui-line-hi, --rad 4px). Keep the 3px bar only in rarity blue (--r-rare). Show 'upgrade' as a short +delta in --ok beside each number. Use 16px labels, 20px values, and a 24px column gap."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-10-pad-floor-bag-recipes-3/41-hub-backpack-pad-p2-held-1080.jpg",
+  "task": "o-10-pad-floor-bag",
+  "when": "2026-10-20T12:06"
  }
 }
