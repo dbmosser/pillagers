@@ -71,4 +71,4 @@ STATUS 10-19 night (coordinator, in the VM):
   32 (party.cfg URL_OPTIONS=1), 35 (ascending in n), 36 (no "Keys 1 to 4" line), 37 (v31.29 cw-nobagfull), 39 (fuzz pad on slot 0).
 - Overruled: 34. His 10-19 order (cw-cx-stashraid) makes the forge pay from the stash in $, so "$2,500" is right.
 - Queued: 30 as task 44-ui-score-hits. New: 45-ui-backpack-trophy (career screens 23 and 66, no owner, answer 56).
-- Still open: 25, 29 (raid screen 21 and 50 scores), 31 (#6 and #11 wait on him), 41 to 45.
+- Still open: 29 (raid screens 19, 21, 33 at 2 and 50 at 3; c-02 used its 6 tries), 31 (#6 and #11 wait on him), 42, 44, 45. 25 done (v31.10, v31.31, v31.62 cards at 90 percent). 41 and 43 queued as task 46.
