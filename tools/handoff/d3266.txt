@@ -1,0 +1,5 @@
+## v32.66 - PAUSE BOX END RUN GAP, FOCUS BAR, DIVIDER
+
+Co-op hunt while he was away. Critic on the pause box (3): end run floats too far below, idle buttons show no focus, divider too faint.
+
+MEASURED. Check 32.66 passes, and fails on v32.65.

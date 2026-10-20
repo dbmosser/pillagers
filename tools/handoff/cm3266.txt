@@ -1,0 +1,7 @@
+v32.66: pause box end run gap, focus bar, divider
+
+End run sits one gap under the stack, buttons show a lime focus bar, divider is brighter.
+
+Check 32.66. Fails on v32.65.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

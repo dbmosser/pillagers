@@ -1,0 +1,8 @@
+{"generated":"2026-10-20T03:23:38","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\codex\\work\\o-07-pad-lost\\recipes.json","seconds":747,"screens":[
+{"name":"j8-p1-pad-lost","screen":"j8-p1-pad-lost","1080":{"staged":false,"note":"the fixture did not load","viewport":"","shot":"","lint":""}},
+{"name":"j8-p2-sees-p1-lost","screen":"j8-p2-sees-p1-lost","1080":{"staged":false,"note":"the fixture did not load","viewport":"","shot":"","lint":""}},
+{"name":"j8-p2-pad-lost","screen":"j8-p2-pad-lost","1080":{"staged":false,"note":"the fixture did not load","viewport":"","shot":"","lint":""}},
+{"name":"j8-p1-sees-p2-lost","screen":"j8-p1-sees-p2-lost","1080":{"staged":false,"note":"the fixture did not load","viewport":"","shot":"","lint":""}},
+{"name":"j8-p1-press-a","screen":"j8-p1-press-a","1080":{"staged":false,"note":"the fixture did not load","viewport":"","shot":"","lint":""}},
+{"name":"j8-p2-press-a","screen":"j8-p2-press-a","1080":{"staged":false,"note":"the fixture did not load","viewport":"","shot":"","lint":""}}
+]}

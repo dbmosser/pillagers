@@ -77,3 +77,14 @@ Verified the shipped J8 implementation remains in the current game. Shared a3190
 No task picture directory or critic results have arrived. tools/codex-lane.sh still ignores camera-recipes.json and photographs only after a fresh ship. The existing camera-run-request.json remains the complete coordinator handoff, including the exact project command, port 9364, six expected pictures, report and critic requirement. No new camera round was requested and no duplicate ship was created.
 
 Park until the lane/coordinator runs that request outside the sandbox and returns results. Remaining work is the two-window runtime/picture evidence, critic review and any resulting fixes. Re-running Codex on unchanged inputs cannot complete the external camera step.
+
+--- codex run 2026-10-20 03:25 ---
+2026-10-20, continued from v32.65 after camera round 1.
+
+Diagnosed all six fixture-load failures. tools/uishots.ps1 appends each recipe query directly to the fixture URL. My recipes omitted the leading ?, producing paths such as /fixture.htmlnetslot=A instead of /fixture.html?netslot=A. This failed before any scene script ran; round 1 proves no game behavior.
+
+Fixed both seat queries in prepare-pair-camera.js and regenerated camera-recipes.json. Added popups:true, the camera-supported option needed to open the real second game window. Added generator validation of the final fixture path, seat and netslot query. Updated camera-run-request.json to remove the outdated runner-blocker claim: the current lane now supports recipe rounds.
+
+Local verification: all six URLs preserve /fixture.html and select the correct seat; popup flag is enabled; generator, six scene scripts and predicates parse. Current inline game script and regression check parse. The existing J8 implementation remains integrated; no new game patch or fixture retarget is needed. The game file was not edited.
+
+Ready for camera round 2 using the changed recipes. Return staging notes, pictures and critic findings. Remaining work is actual two-window runtime and visual verification, then any resulting fixes. These remain synthetic pad tests, not physical cable tests. Do not reapply the original shipped game patch.

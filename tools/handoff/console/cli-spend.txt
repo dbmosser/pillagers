@@ -334,3 +334,12 @@
 2026-10-20 0.1546 critic-o-06-pad-controls
 2026-10-20 0.1501 critic-o-06-pad-controls
 2026-10-20 1.5518026 40-art-player-look
+2026-10-20 2.5388059 41-art-player-states
+2026-10-20 0.0000 o-07-pad-lost
+2026-10-20 0.1787 critic-manual
+2026-10-20 0.1524 critic-o-07-pad-lost
+2026-10-20 0.1516 critic-o-07-pad-lost
+2026-10-20 0.1484 critic-o-07-pad-lost
+2026-10-20 0.1524 critic-o-07-pad-lost
+2026-10-20 0.1532 critic-o-07-pad-lost
+2026-10-20 0.1526 critic-o-07-pad-lost

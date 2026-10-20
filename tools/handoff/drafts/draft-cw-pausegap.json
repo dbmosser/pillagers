@@ -1,0 +1,12 @@
+{
+    "title":  "PAUSE BOX END RUN GAP, FOCUS BAR, DIVIDER",
+    "why":  "Critic on the pause box (3): end run floats too far below, idle buttons show no focus, divider too faint.",
+    "now":  "End run sits one gap under the stack, buttons show a lime focus bar, divider is brighter.",
+    "edits":  [
+                  {
+                      "anchor":  "#root #pausebox #pausefb{ height:var(--btn-h); padding-top:calc((var(--btn-h) - 28px) / 2); }",
+                      "replacement":  "#root #pausebox #pausefb{ height:var(--btn-h); padding-top:calc((var(--btn-h) - 28px) / 2); }\n/* v28.xx (cw-pausegap) critic on Pause box 49 (3, P1/P2): \"end run floats about 70px below the stack\", \"focus on any other row is not shown\", \"the header divider is very faint\". Now end run sits one 16px gap under the stack (no extra margin), idle buttons show a 3px lime bar and raised fill on focus (pad and keys), and the divider takes the brighter line colour. */\n#root #pausebox:not(.asking) \u003e div:has(\u003e #resumebtn) \u003e #abandonbtn, #root #pausebox:not(.asking) \u003e div:has(\u003e #resumebtn) \u003e #arcendbtn, #root #pausebox:not(.asking) \u003e div:has(\u003e #resumebtn) \u003e #charselbtn{ margin-top:0; }\n#root #pausebox \u003e div:has(\u003e #resumebtn) \u003e button:not(#resumebtn):focus-visible{ box-shadow:inset 3px 0 0 var(--acc); background:var(--ui-raised); }\n#root #pausebox \u003e h3{ border-bottom-color:var(--ui-line-hi); }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027pause box end run has no extra top margin and the divider uses the bright line\u0027,\n   run:function(){\n     var css=\u0027\u0027; for(var i=0;i\u003cdocument.styleSheets.length;i++){ try{ var rs=document.styleSheets[i].cssRules; for(var j=0;j\u003crs.length;j++){ css+=rs[j].cssText; } }catch(e){} }\n     if(!/#abandonbtn[^{]*\\{[^}]*margin-top: 0(px)?;/.test(css)) return \u0027end run still has a top margin\u0027;\n     if(!/#pausebox \u003e h3[^{]*\\{[^}]*border-bottom-color: var\\(--ui-line-hi\\)/.test(css)) return \u0027divider is not the bright line\u0027;\n     return null; }},"
+}

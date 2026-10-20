@@ -1,0 +1,22 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  j8-p1-pad-lost                         staged      13.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"mode":"demo","seat":1,"realPair":[{"on":true,"role":"host","seat":0,"roster":[{"seat":0,"pid":"81ec3ad1","name":"PILLAGER","host":true},{"seat":1,"pid":"9ae99026","name":"PLAYER 2","host":false}],"status":"PLAYER 2 joined your party.","err":"","made":1,"codeLen":1193,"links":1},{"on":true,"role":"
+  j8-p2-sees-p1-lost                     NOT STAGED   5.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host did not link the existing p2 window: p2raid
+    at stagePadLostPair (<anonymous>:35:38)
+    at async <anonymous>:139:8
+    at async <anonymous>:1:21
+  j8-p2-pad-lost                         NOT STAGED   5.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host did not link the existing p2 window: p2raid
+    at stagePadLostPair (<anonymous>:35:38)
+    at async <anonymous>:139:8
+    at async <anonymous>:1:21
+  j8-p1-sees-p2-lost                     NOT STAGED   4.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host did not open a real player 2 window: p2raid
+    at stagePadLostPair (<anonymous>:18:36)
+    at <anonymous>:139:14
+    at async <anonymous>:1:21
+  j8-p1-press-a                          NOT STAGED   4.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host did not open a real player 2 window: p2raid
+    at stagePadLostPair (<anonymous>:18:36)
+    at <anonymous>:139:14
+    at async <anonymous>:1:21
+  j8-p2-press-a                          NOT STAGED   5.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host did not link the existing p2 window: p2raid
+    at stagePadLostPair (<anonymous>:35:38)
+    at async <anonymous>:139:8
+    at async <anonymous>:1:21

@@ -1,0 +1,1 @@
+| PAUSE BOX END RUN GAP, FOCUS BAR, DIVIDER | v32.66 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 32.66 passes, fails on v32.65 |

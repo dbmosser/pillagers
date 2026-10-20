@@ -1,1 +1,1 @@
-10-20 03:04 running 41-art-player-states on Claude Code (your plan: week 56% of the 25.3% line, 5-hour 15%)
+10-20 03:30 waiting: another helper is just starting (memory check again in a few minutes); 41-art-player-states kept

@@ -6101,6 +6101,12 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.66',what:'pause box end run has no extra top margin and the divider uses the bright line',
+   run:function(){
+     var css=''; for(var i=0;i<document.styleSheets.length;i++){ try{ var rs=document.styleSheets[i].cssRules; for(var j=0;j<rs.length;j++){ css+=rs[j].cssText; } }catch(e){} }
+     if(!/#abandonbtn[^{]*\{[^}]*margin-top: 0(px)?;/.test(css)) return 'end run still has a top margin';
+     if(!/#pausebox > h3[^{]*\{[^}]*border-bottom-color: var\(--ui-line-hi\)/.test(css)) return 'divider is not the bright line';
+     return null; }},
   {v:'32.65',what:'players in action (his art picks a11 to a16): bouncy walk, white flash then red with a recoil, red outline and stains at low health, kneeling downed body with a red ring, the fall that turns to light, the dotted aim line and the rare gun laser',
    run:function(){
      var g, keepWc, keepT, keepDB, cv, cx, p, base, i, d, d0, d1, t0, t1, n, ang, best, red, white, ok, spy, cnt, ofn, rate, WP;

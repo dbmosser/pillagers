@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.66 - PAUSE BOX END RUN GAP, FOCUS BAR, DIVIDER
+
+Co-op hunt while he was away. Critic on the pause box (3): end run floats too far below, idle buttons show no focus, divider too faint.
+
+MEASURED. Check 32.66 passes, and fails on v32.65.
 ## v32.65 - PLAYERS IN ACTION: BOUNCY WALK, HIT FLASH, LOW HEALTH, KNEELING DOWNED, FALL TO LIGHT, AIM LINE
 
 Co-op hunt while he was away. His picks from the art survey (a11 B, a12 B, a13 D, a14 B, a15 B, a16 B): a bouncier walk and sprint with a little squash and stretch; a hit flashes the whole body white for 66 ms, then red, with a small recoil; at low health the body gets stains and drips and its outline pulses red; a downed player kneels with the gun on the ground inside a pulsing red ring; a player who dies drops flat and breaks into rising points of light; a faint dotted line runs from the gun toward the crosshair, and the two top rarity tiers and the golden gun show a red laser while the sights are held. Drawing only: no random draw and nothing the sim reads.

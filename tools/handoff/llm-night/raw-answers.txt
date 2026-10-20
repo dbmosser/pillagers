@@ -1,23 +1,23 @@
 
 NONE
 NONE
-It looks like you've provided a snippet of JavaScript code that appears to be part of a larger application, possibly related to rendering graphics or animations for a game or interactive web page. The code defines several functions and variables that seem to handle the drawing and positioning of various elements such as weapons, characters, and other graphical components.
+NONE
+It looks like you've provided a snippet of JavaScript code that appears to be part of a larger application, possibly related to rendering or drawing game characters and objects. The code defines several functions for handling different aspects of character appearance and behavior in what seems to be a 2D game environment.
 
-Here's a breakdown of some key parts of the code:
+Here's a breakdown of some key parts:
 
-1. **gunBake Function**: This function appears to be responsible for creating a cached image (canvas) of a gun based on its definition (`GUNDEF`) and other parameters like `fk` (fire mode), `el` (element type), and `rc` (rarity color). It uses the canvas API to draw the gun's parts, such as the grip, barrel, and any special effects.
+1. **`gunBake(id,fk,el,rc,S)`**: This function is responsible for preparing the visual elements (like textures or colors) needed to render a gun based on its type (`id`), flash status (`fk`), elemental effect (`el`), rarity color (`rc`), and scale factor (`S`). It returns an object containing canvas context information.
 
-2. **gunHeld Function**: This function handles rendering a held gun based on various parameters like position (`px`, `ty`), facing direction (`face`), fire mode (`fk`), element type (`el`), and other attributes of the character holding the gun (like build type, coat color, etc.). It uses transformations to rotate and scale the gun image appropriately.
+2. **`gunHeldOn(st,mode)`**: This function checks if the player is holding a weapon in any mode other than 'none', 'crouchnone', or 'fist'.
 
-3. **drawOp Function**: This function is responsible for drawing a character or object on the canvas. It first checks if the canvas context `wc` is available and then applies scaling based on the character's build type. It calls another function `drawOp0` to perform the actual drawing.
-
-4
+3. **`gunHeld(px,ty,face,fl,st,coat,bld,pc,ads,sprint,rl,muzzle)`**: This function handles rendering of a held gun on the screen. It takes various parameters such as position (`px`, `ty`), facing direction (`face`), flash level (`fl`), player state (`st`), coat color (`coat`), build type (`bld`), prone status (`pc`), aiming down sights (`ads`), sprinting status (`sprint`), reload progress (`rl
 NONE
 NONE
 NONE
-NONE
-NONE
-NONE
-NONE
+LINE 39421: calls or reads of names from removed systems (wallSprite)
+LINE 39458: possible NaN or undefined values reaching canvas calls (arc, createRadialGradient, drawImage, fillText positions) - p.face could be undefined
+LINE 39467: a try/catch that swallows a whole per-frame draw or update
+LINE 39501: property access on a value that can be null or undefined in per-frame code without a guard (e2.kind)
+LINE 39582: a try/catch that swallows a whole per-frame draw or update
 NONE
 NONE

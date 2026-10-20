@@ -1,1 +1,1 @@
-10-20 03:11 pictures: recipe round 1 for o-07-pad-lost (screens j8-p1-pad-lost,j8-p2-sees-p1-lost,j8-p2-pad-lost,j8-p1-sees-p2-lost,j8-p1-press-a,j8-p2-press-a, camera 9364)
+10-20 03:30 pictures: recipe round 1 for o-08-pad-owner (screens j7-hub-p1-pad-owner,j7-hub-p2-pad-owner,j7-raid-p1-pad-owner,j7-raid-p2-pad-owner, camera 9364)
