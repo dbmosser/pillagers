@@ -21307,7 +21307,7 @@ window.__REGRESS=[
        for(i=0;i<t.length;i++){
          sp=t[i].querySelector('span'); if(!sp) continue;
          if(sp.scrollWidth>sp.clientWidth) cut.push(String(sp.textContent)+' '+sp.scrollWidth+'>'+sp.clientWidth);
-         ic=t[i].querySelector('.ic'); if(ic){ a=ic.getBoundingClientRect(); b=sp.getBoundingClientRect(); if(a.right>b.left+0.5) ov.push(String(sp.textContent)); }
+         ic=t[i].querySelector('.ic'); if(ic){ a=ic.getBoundingClientRect(); b=sp.getBoundingClientRect(); if(a.right>b.left+0.5&&a.left<b.right-0.5&&a.bottom>b.top+0.5&&a.top<b.bottom-0.5) ov.push(String(sp.textContent)); }
        }
        if(cut.length) bad.push('names cut on the plates at the default menu size: '+cut.join(', '));
        if(ov.length) bad.push('the picture overlaps the name on: '+ov.join(', '));
