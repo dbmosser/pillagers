@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.37 - THE WHAT IS NEW CARD NAMES POLISH PASS 34
+
+Co-op hunt while he was away. The card was stamped v32.21 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
+
+MEASURED. Check 32.37 passes, and fails on v32.36.
 ## v32.36 - THE EXTRACT INBOUND COUNTDOWN STANDS ON A PLATE
 
 Co-op hunt while he was away. Critic on screen 37 (3 after the big size): the hero countdown sat on a busy floor with only a thin outline, weak contrast. It now has one flat HUD plate measured to its words.

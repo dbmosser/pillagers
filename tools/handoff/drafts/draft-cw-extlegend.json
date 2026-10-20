@@ -1,0 +1,12 @@
+{
+    "title":  "CALLING AN EXTRACTION FOLDS THE CONTROLS LIST",
+    "why":  "Critic on screen 37: the compact controls list sat across the big extract countdown. It now folds once when an extraction is called (F1 opens it again).",
+    "now":  "The compact controls list folds once when an extraction is called.",
+    "edits":  [
+                  {
+                      "anchor":  "  if(!G||G.legendAutoDone||sec\u003c30) return false;\n",
+                      "replacement":  "  // v32.xx (cw-extlegend), the critic on screen 37: the controls list sat across the extract countdown. The compact list folds the moment an extraction is called (once; F1 opens it again).\n  if(G\u0026\u0026!G.legendExtDone\u0026\u0026G.beaconT!==null\u0026\u0026G.beaconT!==undefined){ G.legendExtDone=true; G.legendAutoDone=true; if(G.legendOn===1){ G.legendOn=0; return true; } return false; }\n  if(!G||G.legendAutoDone||sec\u003c30) return false;\n"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027calling an extraction folds the compact controls list so it cannot cover the countdown (critic 37)\u0027,\n   run:function(){\n     if(typeof legendAuto!==\u0027function\u0027) return \u0027no legendAuto\u0027;\n     if(!window.__deploy||!window.__endRaid) return \u0027SKIP: no raid in this fixture\u0027;\n     var bad=[], r0=P.runs, oSay=say, g=null;\n     try{\n       say=function(){};\n       P.runs=0; __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||g.over) return \u0027SKIP: staging: no raid\u0027;\n       g.legendOn=1; g.legendAutoDone=false; g.legendExtDone=false; g.beaconT=null; legendAuto(5);\n       if(g.legendOn!==1) bad.push(\u0027folded with no extraction called\u0027);\n       g.beaconT=12; legendAuto(5);\n       if(g.legendOn!==0) bad.push(\u0027still open with an extraction called\u0027);\n       g.legendOn=1; legendAuto(6);\n       if(g.legendOn!==1) bad.push(\u0027folded a second time (F1 open must stay open)\u0027);\n       g.beaconT=null;\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ say=oSay; P.runs=r0; try{ if(G\u0026\u0026!G.over) __endRaid(\u0027abandon\u0027); __topClear(); }catch(_c){} }\n     return bad.length?bad.join(\u0027; \u0027):null;\n   }},"
+}

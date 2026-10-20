@@ -1,0 +1,20 @@
+{
+    "title":  "READABLE FORGE PRICES",
+    "why":  "The forge price and action were tiny, and the upgrade card debit needed a clear cost label.",
+    "now":  "The forge action and dollar price use full HUD font sizes. The gun card names the upgrade cost.",
+    "edits":  [
+                  {
+                      "anchor":  "function forgeOpen(){",
+                      "replacement":  "// v28.xx (cw-cx-forgeread): the forge uses the guide\u0027s full head and label sizes, with a quiet dollar price.\nfunction drawForgePrompt(x,y){\n  var info=forgePromptInfo();\n  return hudPromptDraw(info.line,x,y,{sub:info.sub,subCol:info.short?UIC.danger:UIC.tx_1,accent:info.short?UIC.danger:UIC.acc});\n}\nfunction forgeOpen(){"
+                  },
+                  {
+                      "anchor":  "    hudPrompt(_fi.line,_fpp.x,_fpp.y,{sub:_fi.sub,subCol:_fi.short?UIC.danger:UIC.acc,accent:_fi.short?UIC.danger:FORGE_GOLD});",
+                      "replacement":  "    drawForgePrompt(_fpp.x,_fpp.y);"
+                  },
+                  {
+                      "anchor":  "  G.gunCard={gk:nw.id,w:nw,vs:w,route:tag+\u0027  -\u0027+forgeMoney(o.cost),t0:G.t||0};",
+                      "replacement":  "  G.gunCard={gk:nw.id,w:nw,vs:w,route:\u0027cost \u0027+forgeMoney(o.cost),t0:G.t||0};   // v28.xx (cw-cx-forgeread): name the debit as the upgrade cost."
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027forge action and dollar price draw at full HUD font sizes; upgrade card labels the cost and stash spending leaves score whole\u0027,\n   run:function(){\n     if(typeof drawForgePrompt!==\u0027function\u0027) return \u0027forge still has the shrunken prompt\u0027;\n     var keep=JSON.stringify(P), oldMine=ARCADE.mine, g, realFill=ctx.fillText, realPrompt=hudPrompt, hits=[], shrunk=false;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state();\n       if(!g||g.over||!g.player||!g.forge) return \u0027no live forge\u0027;\n       g.ents=[]; g.player.wep=Object.assign({},WEAPONS.rifle); g.player.downed=false;\n       P.credits=10000; g.cs={s:0,k:0,b:{}}; ARCADE.mine=0;\n       hudPrompt=function(s){ if(/upgrade/i.test(String(s))) shrunk=true; return realPrompt.apply(this,arguments); };\n       ctx.fillText=function(t){ hits.push({t:String(t).toLowerCase(),font:ctx.font,col:ctx.fillStyle}); return realFill.apply(this,arguments); };\n       ctx.save(); try{ drawForgePrompt(400,300); }finally{ ctx.restore(); }\n       var action=hits.filter(function(h){return /upgrade/.test(h.t);})[0], price=hits.filter(function(h){return h.t===\u0027$2,500\u0027;})[0];\n       if(shrunk||!action||!price) return \u0027full forge action or dollar price did not draw\u0027;\n       if(Math.abs(msgPx(action.font)-msgPx(FS(TYPE.head)))\u003e0.1||Math.abs(msgPx(price.font)-msgPx(FS(TYPE.label)))\u003e0.1) return \u0027forge fonts differ from full HUD head and label\u0027;\n       var probe=document.createElement(\u0027canvas\u0027).getContext(\u00272d\u0027); probe.fillStyle=UIC.tx_1;\n       if(price.col!==probe.fillStyle) return \u0027affordable forge price is not primary text\u0027;\n       ctx.fillText=realFill; hudPrompt=realPrompt;\n       if(!forgeOpen()||g.forgeUI||g.player.wep.fk!==1||P.credits!==7500) return \u0027instant stash purchase changed\u0027;\n       if(!g.gunCard||g.gunCard.route!==\u0027cost $2,500\u0027) return \u0027gun card does not clearly label the dollar cost\u0027;\n       if(g.cs.s!==0||ARCADE.mine!==0) return \u0027forge changed raid score\u0027;\n       return null;\n     } finally {\n       ctx.fillText=realFill; hudPrompt=realPrompt;\n       try{ if(g\u0026\u0026!g.over) __endRaid(\u0027abandon\u0027); }catch(_e){}\n       ARCADE.mine=oldMine; __topClear(); __applyLoaded(JSON.parse(keep)); saveProfile();\n     } }},"
+}

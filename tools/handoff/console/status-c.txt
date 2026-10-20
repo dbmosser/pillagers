@@ -1,1 +1,1 @@
-10-20 01:12 waiting for RAM: 2 GB free, a helper starts at 3; c-31-ui-pause-settings kept
+10-20 01:18 waiting: another helper is just starting (memory check again in a few minutes); c-31-ui-pause-settings kept
