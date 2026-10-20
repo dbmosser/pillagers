@@ -1,0 +1,5 @@
+## v32.42 - Terms: lead with the bonus
+
+Co-op hunt while he was away. UI step 7 (restyle only). Critic on 06 still 2: no focal point, explaining intro. Intro hidden under Q8 (logged in changes.md).
+
+MEASURED. Check 32.42 passes, and fails on v32.41.

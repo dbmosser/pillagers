@@ -1,0 +1,12 @@
+{
+    "title":  "Terms: lead with the bonus",
+    "why":  "UI step 7 (restyle only). Critic on 06 still 2: no focal point, explaining intro. Intro hidden under Q8 (logged in changes.md).",
+    "now":  "The terms page hides its intro line and shows the bonus big in amber.",
+    "edits":  [
+                  {
+                      "anchor":  "#root #termsmodal .plist button{ min-width:104px; min-height:48px; font-size:18px; }",
+                      "replacement":  "#root #termsmodal .plist button{ min-width:104px; min-height:48px; font-size:18px; }\n/* v28.xx (cw-uc-termsbig2) b-31 step 7, critic on 06 (no focal point, intro sentence, 14px lines): intro hidden, bonus 32px amber so the reward reads first, names bright, sign nothing 200x48. */\n#root #termsmodal .msub{ display:none !important; }\n#root #termsmodal .plist .vl{ font-size:32px; font-weight:800; font-family:var(--f-cond,inherit); min-width:110px; text-align:right; }\n#root #termsmodal .plist .nm{ color:#e8e2d4 !important; }\n#root #termsmodal .plist .nm div{ color:#aaa498 !important; }\n#root #termsmodal #termsclear{ min-width:200px; min-height:48px; font-size:18px; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027terms intro hidden, bonus figure 32px, sign nothing 200x48\u0027,\n   run:function(){\n     var bad=[];\n     try{\n       var tm=document.getElementById(\u0027termsmodal\u0027), m=tm.querySelector(\u0027.msub\u0027);\n       if(getComputedStyle(m).display!==\u0027none\u0027) bad.push(\u0027intro shows\u0027);\n       renderTerms();\n       var vl=tm.querySelector(\u0027#termslist .vl\u0027);\n       if(!vl||parseFloat(getComputedStyle(vl).fontSize)\u003c32) bad.push(\u0027bonus \u0027+(vl\u0026\u0026getComputedStyle(vl).fontSize));\n       var c=document.getElementById(\u0027termsclear\u0027);\n       if(getComputedStyle(c).minWidth!==\u0027200px\u0027) bad.push(\u0027clear minw \u0027+getComputedStyle(c).minWidth);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

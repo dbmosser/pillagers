@@ -6101,6 +6101,19 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.42',what:'terms intro hidden, bonus figure 32px, sign nothing 200x48',
+   run:function(){
+     var bad=[];
+     try{
+       var tm=document.getElementById('termsmodal'), m=tm.querySelector('.msub');
+       if(getComputedStyle(m).display!=='none') bad.push('intro shows');
+       renderTerms();
+       var vl=tm.querySelector('#termslist .vl');
+       if(!vl||parseFloat(getComputedStyle(vl).fontSize)<32) bad.push('bonus '+(vl&&getComputedStyle(vl).fontSize));
+       var c=document.getElementById('termsclear');
+       if(getComputedStyle(c).minWidth!=='200px') bad.push('clear minw '+getComputedStyle(c).minWidth);
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     return bad.length?bad.join('; '):null; }},
   {v:'32.41',what:'terms intro is one short line, rows 76px, names 20px, sign buttons 104x48',
    run:function(){
      var bad=[];

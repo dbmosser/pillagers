@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.42 - Terms: lead with the bonus
+
+Co-op hunt while he was away. UI step 7 (restyle only). Critic on 06 still 2: no focal point, explaining intro. Intro hidden under Q8 (logged in changes.md).
+
+MEASURED. Check 32.42 passes, and fails on v32.41.
 ## v32.41 - Terms: bigger rows and short intro
 
 Co-op hunt while he was away. UI step 7 (restyle only). Critic scored 06 at 2: small dim list in an empty card. Intro shortened under Q8 (logged in changes.md).

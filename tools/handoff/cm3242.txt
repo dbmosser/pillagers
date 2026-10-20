@@ -1,0 +1,7 @@
+v32.42: terms: lead with the bonus
+
+The terms page hides its intro line and shows the bonus big in amber.
+
+Check 32.42. Fails on v32.41.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

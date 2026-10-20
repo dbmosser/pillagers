@@ -245,3 +245,4 @@
 2026-10-20 0.1587 critic-o-01-stash-pays-in-raid
 2026-10-20 0.1601 critic-o-01-stash-pays-in-raid
 2026-10-20 0.1603 critic-o-01-stash-pays-in-raid
+2026-10-20 0.1592 critic-manual

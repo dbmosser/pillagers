@@ -48,17 +48,17 @@
  "06-terms": {
   "score": 2,
   "pass": false,
-  "verdict": "The terms card is still a small, dim column floating in an empty 90% card, with an explaining paragraph, 14px grey row text and a misaligned footer. The intro paragraph grew slightly, but none of the hierarchy, contrast or alignment problems from before were fixed.",
+  "verdict": "The terms screen is cleaner than before, with bigger rows and a shorter intro, but it is still a flat grey list. No element leads the eye, no accent colour is used, and the content is a small block floating in a huge empty card.",
   "findings": [
-   "P0 whole card: Fill the card: title top-left at 32px in the 56px header row, rows 72px tall on a 24px grid, column 1400px wide. Or build a two-column layout with the terms list on the left and a detail or payout pane (--ui-raised) on the right.",
-   "P0 intro paragraph: Delete it. Replace with a 16px label such as 'bonus paid on extract only', or drop it entirely. The row descriptions already explain each term.",
-   "P1 rows: name and description: Names 20px f-cond 600 tx-1. Descriptions 16px tx-2. Reward '+25%' at 32px f-cond 700 in --acc, or --ok. Row height 72px.",
-   "P1 sign buttons and sign nothing: Buttons 96x48 with 20px text. Give the focused row a --ui-raised fill plus a 3px --acc left bar, and make the focused button an --acc fill with --acc-ink text. Signed rows should show --ok 'signed'.",
-   "P1 footer: 'nothing signed' line, divider, sign nothing: Put everything on the list's 431 to 1489 edges. Use 24px between the list and the footer. Put the status line at 16px tx-2 on the left and 'sign nothing' at the right edge on the same baseline, or make it a quiet text button."
+   "P0 whole card, hierarchy: Give the focused row a --ui-raised fill, a 3px lime left bar and a lime 2px button border. Make the +25% figure f-cond 800 in tx-1 (hero-sized, 32px) so the reward is the first thing read. Make 'sign' lime-filled only on the focused row.",
+   "P1 card layout, vertical: Pin the title at the card's top with a 56px header row (title left, x right). Start the list 24px below it. Either grow the rows to 88px or put a short summary strip underneath (signed count, total bonus) so the block fills the card.",
+   "P1 intro line and footer text: Delete the intro. Show a status chip such as 'nothing signed' in the header, or '+55% if you walk out' in lime when something is signed. Remove the sentence footer.",
+   "P1 row descriptions and button text: Set descriptions to 16px f-body in at least #aaa498. Set row names to 20px 700 in tx-1. Make the 'sign' labels 20px 700. Cut the long descriptions to short callouts, for example 'raid clock -33%'.",
+   "P1 sign nothing button and footer rule: Make it a 48px-high secondary button with a standard width of about 200px. Put it in a 72px footer row, right-aligned with the sign column, using the same style as the other footers."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-31-k1/06-terms-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/b-31-m1/06-terms-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T04:14"
+  "when": "2026-10-20T05:30"
  },
  "07-party-coop": {
   "score": 2,
