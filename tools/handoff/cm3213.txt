@@ -1,0 +1,7 @@
+v32.13: the gun name is the quiet line over the ammo
+
+The gun name on the card is smaller and quieter than the ammo.
+
+Check 32.13. Fails on v32.12.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,12 @@
+{
+    "title":  "THE GUN NAME IS THE QUIET LINE OVER THE AMMO",
+    "why":  "The critic said the gun name was as heavy as the ammo number. The name is now the label size in the grey text colour, so the big ammo figure is the one hero.",
+    "now":  "The gun name on the card is smaller and quieter than the ammo.",
+    "edits":  [
+                  {
+                      "anchor":  "  ctx.font=FS(TYPE.head); ctx.fillStyle=_heldGun?\u0027#cdd6dd\u0027:(_HH.c||\u0027#cdd6dd\u0027);",
+                      "replacement":  "  // v28.xx (cw-ammoname), the critic (2026-10-19): \u0027ammo name as heavy as the number\u0027. A gun\u0027s name is the quiet line over the hero ammo figure: the label size in the grey, not the head size in the bright white.\n  ctx.font=_heldGun?FS(TYPE.label):FS(TYPE.head); ctx.fillStyle=_heldGun?UIC.tx_2:(_HH.c||\u0027#cdd6dd\u0027);"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the gun name on the gun card is smaller than the head size, so the ammo figure is the hero\u0027,\n   run:function(){\n     if(typeof __frame!==\u0027function\u0027) return \u0027SKIP: no frame helper\u0027;\n     var PR=CanvasRenderingContext2D.prototype, of=PR.fillText, g=null, fs=[], nm=\u0027\u0027, px=function(f){ var m=/([\\d.]+)px/.exec(String(f)); return m?+m[1]:0; };\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player||!g.player.wep) return \u0027SKIP: no raid\u0027;\n       nm=String(g.player.wep.name).toLowerCase();\n       PR.fillText=function(s){ if(String(s).toLowerCase()===nm\u0026\u0026this.textAlign===\u0027right\u0027) fs.push(px(this.font)); return of.apply(this,arguments); };\n       __frame(); __frame();\n       PR.fillText=of;\n       if(!fs.length) return \u0027SKIP: the gun name was not drawn on the card\u0027;\n       var head=px(FS(TYPE.head));\n       for(var i=0;i\u003cfs.length;i++) if(fs[i]\u003e=head-0.01) return \u0027the gun name is drawn at \u0027+fs[i]+\u0027px, the head size, as heavy as the ammo figure\u0027;\n       return null;\n     } finally {\n       PR.fillText=of;\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}

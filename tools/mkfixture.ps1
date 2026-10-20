@@ -6101,6 +6101,27 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.13',what:'the gun name on the gun card is smaller than the head size, so the ammo figure is the hero',
+   run:function(){
+     if(typeof __frame!=='function') return 'SKIP: no frame helper';
+     var PR=CanvasRenderingContext2D.prototype, of=PR.fillText, g=null, fs=[], nm='', px=function(f){ var m=/([\d.]+)px/.exec(String(f)); return m?+m[1]:0; };
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player||!g.player.wep) return 'SKIP: no raid';
+       nm=String(g.player.wep.name).toLowerCase();
+       PR.fillText=function(s){ if(String(s).toLowerCase()===nm&&this.textAlign==='right') fs.push(px(this.font)); return of.apply(this,arguments); };
+       __frame(); __frame();
+       PR.fillText=of;
+       if(!fs.length) return 'SKIP: the gun name was not drawn on the card';
+       var head=px(FS(TYPE.head));
+       for(var i=0;i<fs.length;i++) if(fs[i]>=head-0.01) return 'the gun name is drawn at '+fs[i]+'px, the head size, as heavy as the ammo figure';
+       return null;
+     } finally {
+       PR.fillText=of;
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     } }},
   {v:'32.12',what:'the extract distance line sits on a plate: a plate fill is drawn right before the words',
    run:function(){
      if(typeof __frame!=='function') return 'SKIP: no frame helper';
