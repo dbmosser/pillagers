@@ -48,4 +48,12 @@ grep -hE "BUG|CHECKED" "$H/ship-review/findings.txt" 2>/dev/null | tail -3 | sed
 if up 8820 api; then echo "dashboard 8820: up"; else if [ $FIX = 1 ]; then powershell -NoProfile -Command "Start-Process -FilePath node -ArgumentList 'server.mjs' -WorkingDirectory 'C:\claudecode\dark raiders\tools\devdash' -WindowStyle Hidden"; echo "dashboard 8820: was down, STARTED"; else prob "dashboard down"; fi; fi
 # 9 RAM floor
 fm=$(powershell -NoProfile -Command "[int]((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1MB)" 2>/dev/null | tr -d '\r'); echo "free RAM: ${fm} GB"; rf=$(grep -m1 "^RAM_FLOOR_GB=" "$C/caps.txt" 2>/dev/null | cut -d= -f2 | tr -dc "0-9"); rf=${rf:-6}; [ "${fm:-9}" -lt "$rf" ] && prob "free RAM ${fm} GB is under the ${rf} GB floor (RAM_FLOOR_GB in console/caps.txt)"
+# 10 the saved build scripts (tools/pipeline-scratch, his 10-20 "save the 12 build scripts into the GitHub project"). The scratchpad copies
+# are the live ones: copy any that changed, never one that looks like it holds a key, and flag the copy so the coordinator commits it.
+PSC="$R/tools/pipeline-scratch"; ch=""
+for f in "$PSC"/*.sh "$PSC"/*.ps1; do b=${f##*/}; [ -f "$SP/$b" ] || continue; cmp -s "$f" "$SP/$b" && continue
+  if grep -Eq 'sk-[A-Za-z0-9_-]{20}|AIza[0-9A-Za-z_-]{30}|gh[po]_[0-9A-Za-z]{30}|xox[abp]-[0-9A-Za-z-]{10}' "$SP/$b"; then prob "the live $b looks like it holds a key: not copied"; continue; fi
+  [ $FIX = 1 ] && cp "$SP/$b" "$f"; ch="$ch $b"; done
+[ -n "$ch" ] && echo "saved build scripts:$ch $([ $FIX = 1 ] && echo 'refreshed' || echo 'differ')"
+[ -n "$(git status --porcelain -- tools/pipeline-scratch 2>/dev/null)" ] && prob "the saved build scripts in tools/pipeline-scratch are not committed"
 echo "== $P problem(s)"
