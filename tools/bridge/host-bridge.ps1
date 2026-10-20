@@ -28,6 +28,9 @@ param(
 )
 $ErrorActionPreference = 'Continue'
 $RuleName = 'Pillagers bridge for VM'
+# The logon shortcut must NOT say "Pillagers" or "Dark Raiders": host-stop.ps1 switches off every Startup shortcut with such a name that points
+# into the repository, and the bridge has to keep running on this PC after the switch-over (the VM uses it). Same trick as "Play relay (VM)".
+$LinkName = 'Host bridge (VM).lnk'
 $here = $PSScriptRoot
 $agent = Join-Path $here 'host-agent.mjs'
 $logDir = Join-Path $env:LOCALAPPDATA 'PillagersBridge\logs'
@@ -92,8 +95,12 @@ if ($Stop -or $Uninstall) {
   if ($p) { $p | ForEach-Object { try { Stop-Process -Id $_.ProcessId -Force; Say ('stopped the agent (pid ' + $_.ProcessId + ')') 'DONE' } catch { Say ('could not stop pid ' + $_.ProcessId + ': ' + $_.Exception.Message) 'WARN' } } }
   else { Say 'the agent was not running.' 'INFO' }
   if ($Uninstall) {
-    $lnk = Join-Path ([Environment]::GetFolderPath('Startup')) 'Pillagers bridge.lnk'
-    if (Test-Path -LiteralPath $lnk) { Remove-Item -LiteralPath $lnk -Force; Say ('removed the Startup shortcut: ' + $lnk) 'DONE' } else { Say 'no Startup shortcut to remove.' 'INFO' }
+    $gone = 0
+    foreach ($n in @($LinkName, 'Pillagers bridge.lnk')) {
+      $lnk = Join-Path ([Environment]::GetFolderPath('Startup')) $n
+      foreach ($q in @($lnk, ($lnk + '.disabled'))) { if (Test-Path -LiteralPath $q) { Remove-Item -LiteralPath $q -Force; Say ('removed the Startup shortcut: ' + $q) 'DONE'; $gone++ } }
+    }
+    if ($gone -eq 0) { Say 'no Startup shortcut to remove.' 'INFO' }
   }
   if (-not $Start) { exit 0 }
 }
@@ -124,7 +131,11 @@ if (-not $haveKey) { Say 'No shared key yet. Run setup-key.ps1 first (no adminis
 
 if ($Install) {
   $startup = [Environment]::GetFolderPath('Startup')
-  $lnk = Join-Path $startup 'Pillagers bridge.lnk'
+  $lnk = Join-Path $startup $LinkName
+  # an older install used the name "Pillagers bridge.lnk", which host-stop.ps1 switches off; move it to the new name
+  foreach ($old in @((Join-Path $startup 'Pillagers bridge.lnk'), (Join-Path $startup 'Pillagers bridge.lnk.disabled'))) {
+    if (Test-Path -LiteralPath $old) { Remove-Item -LiteralPath $old -Force; Say ('removed the old-name shortcut: ' + $old) 'OK' }
+  }
   $vbs = Join-Path $here 'start-agent-hidden.vbs'
   $vbsBody = 'Set s = CreateObject("WScript.Shell") : s.Run "' + ($node -replace '"', '""') + ' ""' + ($agent -replace '"', '""') + '"" --port ' + $Port + '", 0, False'
   Set-Content -LiteralPath $vbs -Value $vbsBody -Encoding Ascii
