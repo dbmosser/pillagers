@@ -533,7 +533,11 @@ window.__hb=function(){ return HB; };
 // whole live-raid frame path exist only inside loop() and a hidden pane never
 // fires its rAF. Each call arms one more rAF, which is exactly the loop
 // resuming normally if the pane ever becomes visible, so this is safe to drive.
-window.__loop=function(ts){ loop(ts); };
+// 2026-10-20 (coordinator): it was not safe. The corpus Chrome is headless, where a page counts as visible and every armed rAF
+// fires and re-arms itself, so each stepped frame left one more endless loop chain behind. By the end of a slice thousands ran
+// per animation frame (about 490 loop calls a second measured) and each check waited about 37 s for its turn. A stepped frame
+// now arms no frame of its own; the page keeps the one chain it booted with, as in real play. Other rAF requests pass through.
+window.__loop=function(ts){ var r=window.requestAnimationFrame; window.requestAnimationFrame=function(cb){ return (cb===loop)?0:r.call(window,cb); }; try{ loop(ts); } finally{ window.requestAnimationFrame=r; } };
 // 2026-10-12 (gfx1), the graphics program helpers (tools/handoff/research/graphics-design-2026-10-12.md, section 3).
 // __gfxCount(ctxs,names,fn): counts canvas calls while fn runs, with OWN-PROPERTY stubs on each context (never the prototype, which
 // older checks capture), all deleted in finally. Also counts full-screen passes (a fillRect or drawImage covering 90 percent or more
