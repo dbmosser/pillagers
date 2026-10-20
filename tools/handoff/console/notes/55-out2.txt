@@ -1,0 +1,18 @@
+24.21: PASS
+25.01: PASS
+31.71: PASS
+24.37: PASS
+15.86: SKIP: the second sector is frozen on his order and design A (v32.46) draws the one offered sector with no card box (display:contents); lifted only by this check
+20.89: PASS
+26.38: PASS
+19.64: PASS
+9.14: PASS
+10.13: the sector page does not say to equip plates: [gunCompact SMGNO ARMOUR EQUIPPED]
+27.20: PASS
+13.26: PASS
+16.13: PASS
+18.69: PASS
+31.48: PASS
+18.48: PASS
+29.55: PASS
+ALL DONE
