@@ -2100,6 +2100,8 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
 #root #codexmodal .cxt .cxn{ font-size:24px; }
 #root #codexmodal .cxt .cxr, #root #codexmodal .cxt .cxk{ font-size:18px; }
 #root #codexmodal .cxt .cxnew{ font-size:16px; }
+/* v28.xx (cw-uc-nofirstkit) b-31 step 7, critic on 04 (P0 "bottom stack", delete the lime first-raid strip, an explaining sentence; Q8). The strip stays in the page but never shows. */
+#root #hub #firstkit{ display:none !important; }
 #root #kitsetup .kst span, #root #kitsetup .kstc span, #root #kitsetup .ksreset{ font-size:var(--fs-label); }
 /* v28.xx (cw-uc-stash3) b-31 step 7, critic on 04 (P1 "key names inside gun keys and wheel about 11px bold... under the 16px floor", P0 "the version stamp is the title area"): the gun key and item wheel names, the section captions and the reset buttons go from 14px to the 16px label size, names lose their letter spacing so shotgun and carbine still fit; the build stamp beside PILLAGERS is hidden in the Undercroft (it stays in the F1 and settings pages). */
 #root #kitsetup .kst span{ letter-spacing:0; }
@@ -3009,7 +3011,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.15';
+var VER='32.16';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -50218,7 +50220,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.15: Each demo run starts with the easy or normal card in that players window. Check 32.15 fails on v32.14',
+  now:'v32.16: The stash no longer shows the first-raid tip strip. Check 32.16 fails on v32.15',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

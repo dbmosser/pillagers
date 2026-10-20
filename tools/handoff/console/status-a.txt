@@ -1,1 +1,1 @@
-10-19 23:37 running 17-party-easy-mode on Claude Code (your plan: week 53% of the 23.6% line, 5-hour 2%)
+10-19 23:41 waiting for RAM: 3 GB free, a helper starts at 4; 17-party-easy-mode kept

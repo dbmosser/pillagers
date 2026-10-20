@@ -6101,6 +6101,16 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.16',what:'the stash first-raid strip never shows',
+   run:function(){
+     var bad=[];
+     try{
+       var f=document.getElementById('firstkit');
+       if(!f) bad.push('no firstkit node'); else {
+         f.style.display='';
+         if(getComputedStyle(f).display!=='none') bad.push('first-raid strip displays as '+getComputedStyle(f).display); }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     return bad.length?bad.join('; '):null; }},
   {v:'32.15',what:'a new demo run puts the easy or normal card up for that player, and starts on normal (his 2.28 c)',
    run:function(){
      if(typeof easyStartAsk!=='function') return 'no easyStartAsk';

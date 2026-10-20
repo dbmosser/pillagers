@@ -1,0 +1,5 @@
+## v32.16 - Stash first-raid strip is gone
+
+Co-op hunt while he was away. UI step 7 (restyle only). The critic named the lime first-raid strip as an explaining sentence in the stash bottom stack; Q8 lets it go with the reason logged.
+
+MEASURED. Check 32.16 passes, and fails on v32.15.

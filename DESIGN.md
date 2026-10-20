@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.16 - Stash first-raid strip is gone
+
+Co-op hunt while he was away. UI step 7 (restyle only). The critic named the lime first-raid strip as an explaining sentence in the stash bottom stack; Q8 lets it go with the reason logged.
+
+MEASURED. Check 32.16 passes, and fails on v32.15.
 ## v32.15 - DEMO RUN START ASKS EASY OR NORMAL
 
 Co-op hunt while he was away. His answer 2.28 c: in the demo each player chooses easy or normal before the run starts. Today the card only came after the second death.
