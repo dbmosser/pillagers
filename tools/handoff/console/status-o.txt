@@ -1,1 +1,1 @@
-10-20 04:23 gate: shipping cw-cx-namefinal (o-09-pad-name-entry, codex)
+10-20 05:11 waiting for RAM: 2 GB free, need 3 (o-02-corpus-green)

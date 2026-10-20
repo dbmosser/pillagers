@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.71 - MACHINES AND EFFECTS: HIS ART PICKS
+
+Co-op hunt while he was away. His art survey picks: a27 B charging ring before a machine shot, a28 B small blast and chunks when a machine dies, a30 B moonlit blue night, a31 B lighter fog, a34 B chunkier sparks and blood, a35 B blast 60 percent bigger with a bigger scorch. Drawing only: the damage radius does not change and the ring never draws past it.
+
+MEASURED. Check 32.71 passes, and fails on v32.70.
 ## v32.70 - PAD NAME LETTERS AND STASH CLARITY
 
 Co-op hunt while he was away. The J4 critic still found small name letters, repeated done hints, floor text behind the stash and an orphan belt caption.

@@ -371,3 +371,5 @@
 2026-10-20 0.1438 critic-o-09-pad-name-entry
 2026-10-20 0.1481 critic-o-09-pad-name-entry
 2026-10-20 0.0000 o-09-pad-name-entry
+2026-10-20 0.0000 o-02-corpus-green
+2026-10-20 0.0000 o-02-corpus-green

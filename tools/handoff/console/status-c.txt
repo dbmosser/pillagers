@@ -1,1 +1,1 @@
-10-20 04:23 no tasks left
+10-20 05:11 waiting: another helper is just starting (memory check again in a few minutes); c-31-ui-pause-settings kept

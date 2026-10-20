@@ -1,0 +1,7 @@
+v32.71: machines and effects: his art picks
+
+Machines charge a shrinking red ring, die in a small blast with chunks, nights are moonlit blue, fog is lighter, hit sparks are chunkier and explosions are 60 percent bigger.
+
+Check 32.71. Fails on v32.70.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -32,3 +32,8 @@ one is explained in notes. Otherwise TASK PARTIAL with the count left; the coord
 - The lane applies fixture-retarget.json itself now (RULES-codex.md step 5): a trial copy first, then the commit under the lock.
   Keep batches to 15 checks or fewer per file (RETARGET_MAX_CHECKS is 30).
 - A new full run started 03:51 on v32.66 (ends about 08:00); the coordinator will add its list when it finishes.
+
+## NOTE 10-20 05:15 (coordinator)
+The 03:51 full run on v32.66 was stopped at 05:02: it crawled (66 of the first 120 checks in 65 min, about 10x slower than the
+v32.16 run) while its page grew to 1.9 GB and every helper waited on memory. There is no v32.66 list. Work from
+tools/handoff/corpus-fails-v32.16.txt and its -new file, checking each on HEAD first as the block above says.

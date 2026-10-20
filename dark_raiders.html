@@ -3199,7 +3199,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.70';
+var VER='32.71';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20343,7 +20343,7 @@ function tripDraw(Z,ox,oy){
 function gfxBlastScar(x,y,size,onRoof){
   var k=(size>0)?size:1, n=0;
   if(onRoof||G.sim||!G.ground) return 0;
-  if(scarStamp('scorch',x,y,{r:26*k})) n++;
+  if(scarStamp('scorch',x,y,{r:26*k*1.6})) n++;   // v32.xx (cw-machfx) a35 B: the scorch grows with the blast (look only)
   if(scarStamp('crack',x,y,{r:34*k})) n++;
   if(scarStamp('debris',x,y,{r:30*k})) n++;
   return n;
@@ -20549,7 +20549,7 @@ function brlBlast(B){
   if(!G.sim){
     spark(x,y,'#ff8a3a',40,380); spark(x,y,'#fff0c0',14,220); decal(x,y,'#141210',fxn(26,36));
     G.puffs.push({x:x,y:y,t:0,life:.7,c:'#ff7a3a',r:64}); G.puffs.push({x:x,y:y-12,t:0,life:1.4,c:'#3a3430',r:56});
-    try{ boomFx(x,y,1.2,'frag'); }catch(_bfx){}
+    try{ boomFx(x,y,1.2,'frag',R); }catch(_bfx){}
     try{ gfxBlastScar(x,y,1,false); }catch(_gbs){}
   }
   G.shake=Math.max(G.shake,sd<300?10:(sd<800?5:2));
@@ -22321,12 +22321,13 @@ var BLOOD_SPRAY='#b3241b', BLOOD_MIST='#7a1612', BLOOD_DROP='#5c1310';
 function bloodFx(x,y,sx,sy,amt){
   if(typeof G==='undefined'||!G||G.sim||!isFinite(x)||!isFinite(y)) return;
   var k=Math.max(0.4,Math.min(1,(+amt||10)/30)), a=(isFinite(sx)&&isFinite(sy))?Math.atan2(y-sy,x-sx):fxn(0,6.283), d;
-  spark(x,y,BLOOD_SPRAY,Math.round(3+4*k),150);
-  G.puffs.push({x:x+Math.cos(a)*4,y:y+Math.sin(a)*3,t:0,life:.22,c:BLOOD_MIST,r:5+4*k});
-  if(fxr()<0.55){ d=fxn(6,14); decal(x+Math.cos(a)*d,y+16+Math.sin(a)*d*0.5,BLOOD_DROP,fxn(2.2,4)*(0.7+0.5*k)); }
+  spark(x,y,BLOOD_SPRAY,5,150);   // v32.xx (cw-machfx) a34 B: five droplets, a puff of radius 7+5k and a 4 px floor drop
+  G.puffs.push({x:x+Math.cos(a)*4,y:y+Math.sin(a)*3,t:0,life:.22,c:BLOOD_MIST,r:7+5*k});
+  if(fxr()<0.55){ d=fxn(6,14); decal(x+Math.cos(a)*d,y+16+Math.sin(a)*d*0.5,BLOOD_DROP,fxn(3.4,4.6)*(0.7+0.5*k)); }
 }
 function spark(x,y,col,n,spread){
   if(G.sim) return;
+  if(col!==BLOOD_SPRAY) n=Math.min(70,Math.ceil(n*1.8));   // v32.xx (cw-machfx) a34 B (his pick): chunkier hit sparks, 1.8 times the count (blood keeps its own count)
   if(CFG.fxLevel===0) n=Math.ceil(n/3);   // v17.43: his pick 28, reduced effects
   if(CFG.flashRed===1) n=Math.ceil(n*0.5);   // v26.xx (settings9): REDUCED FLASHING, half the sparks of every burst
   // v7.69: cosmetic draws come from the cosmetic stream. Live play used to
@@ -35283,7 +35284,7 @@ function cosWorn(kind){
 // 11% darker and the streets away from him and the lamps more; the lamps cut through the dark harder at night (0.95 of their
 // strength, was 0.85), so they read as pools of light in a darker city; and his own lamp is a little stronger at night (0.62, was 0.5), so
 // the ground at his feet stays readable. NIGHT_MOOD 0 is the old night. The brightness dial still lifts it for anyone who wants it lighter. Day is untouched.
-var DAY_SHEET=0.13, NIGHT_SHEET=0.55, NIGHT_MOOD=1;
+var DAY_SHEET=0.13, NIGHT_SHEET=0.45, NIGHT_MOOD=1;   // v32.xx (cw-machfx) a30 B (his pick): moonlit blue night, sheet .55 to .45 in rgba(10,20,60), fog .50 to .42 below
 var DRAW_LIFT_MAX=30;
 function drawLift(v){ return (isFinite(v)&&v>0)?Math.min(v,DRAW_LIFT_MAX):0; }
 // v20.01, HIS ORDER (2026-10-08): "build should change your charcter -- curved should be clearly female with larger breasts/buttocks".
@@ -36758,6 +36759,7 @@ function deathAnimAdd(e){
   G.deathAnims.push({x:e.x,y:e.y,r:Math.max(8,Math.min(48,e.r||14)),face:+e.face||0,c:DEATH_COL[e.kind]||'#555c64',t0:G.t||0,kind:e.kind||''});
   try{ raiderFallSnap(G.deathAnims[G.deathAnims.length-1],e); }catch(_rfs){}   // v32.xx (cw-botlook) a23 B
   try{ gfxOnDeath(G.deathAnims[G.deathAnims.length-1]); }catch(_god){}
+  try{ machineBlast(G.deathAnims[G.deathAnims.length-1]); }catch(_mbl){}   // v32.xx (cw-machfx) a28 B
   return G.deathAnims.length;
 }
 function drawDeathAnims(){
@@ -37045,16 +37047,36 @@ function telegraphLane(e){
   t=Math.min(t,reach);
   return {x1:e.x+ux*e.r*0.7,y1:e.y+uy*e.r*0.7,x2:e.x+ux*t,y2:e.y+uy*t,ux:ux,uy:uy,len:t,f:f,w:(e.kind==='warden')?(e.boss?12:8):4};
 }
+// v32.xx (cw-machfx) a27 B (his pick): the lens glow is replaced by a CHARGING RING at the muzzle. It shrinks from 26 to 8 px over the windup,
+// 3 px #ff3b30 at alpha .4 to .95, and a 6 px white core flashes in the last 3 frames (0.05 s). Drawn only.
+function windupRingR(wf){ return 26-18*clamp(wf,0,1); }
 function drawWindupGlow(e,gx,gy){
   if(e.windup===undefined||e.windup===null) return;
-  var wf=1-e.windup/(e.kind==='warden'?0.7:0.4);
-  wc.globalCompositeOperation='lighter';
-  wc.fillStyle='#ff3b30';
-  wc.globalAlpha=.25+.6*wf;
-  wc.beginPath(); wc.arc(gx,gy,3+9*wf,0,6.2832); wc.fill();
-  wc.globalAlpha=.18*wf;
-  wc.beginPath(); wc.arc(gx,gy,12+22*wf,0,6.2832); wc.fill();
-  wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
+  var wf=clamp(1-e.windup/(e.kind==='warden'?0.7:0.4),0,1);
+  wc.save();
+  wc.globalCompositeOperation='source-over';
+  wc.strokeStyle='#ff3b30'; wc.globalAlpha=.4+.55*wf; wc.lineWidth=3;
+  wc.beginPath(); wc.arc(gx,gy,windupRingR(wf),0,6.2832); wc.stroke();
+  if(e.windup<=0.05){ wc.globalAlpha=1; wc.fillStyle='#ffffff'; wc.beginPath(); wc.arc(gx,gy,3,0,6.2832); wc.fill(); }
+  wc.restore();
+}
+// v32.xx (cw-machfx) a31 B (his pick): lighter fog, day .46 to .30 and night .60 to .42. Enemies are still only drawn where you can see them.
+function fogFillStyle(day,BR,lift,flash){
+  return day?('rgba(58,46,38,'+clamp(.30-(BR-1)*.06-lift,.14,.38)+')')
+            :('rgba(4,7,26,'+clamp(.42-(BR-1)*.09-flash*0.46,.04,.90)+')');
+}
+// v32.xx (cw-machfx) a35 B (his pick): the blast ring never draws past the real damage radius (dmgR, 190 as the frag default).
+var BOOM_DMGR=190;
+function boomRingR(b,k){ return Math.min((b.s0||b.s)*(20+160*k),b.dmgR||BOOM_DMGR); }
+// v32.xx (cw-machfx) a28 B (his pick): a machine dies in a small blast and smoke (boomFx 0.6, kind bot) plus five metal chunks in its own colours
+// flying about 24 px over 0.4 s. Pillager bots (raider) keep their own fall. Drawn only, cosmetic stream.
+var MACH_DIE={sentry:1,crawler:1,warden:1,choir:1,howler:1,bulwark:1,listener:1,snitch:1};
+function machineBlast(a){
+  var i, ang, sp;
+  if(!a||!MACH_DIE[a.kind]||typeof G==='undefined'||!G||G.sim||!G.sparks) return 0;
+  try{ boomFx(a.x,a.y,0.6,'bot'); }catch(_mb){}
+  for(i=0;i<5;i++){ ang=fxn(0,6.2832); sp=60*fxn(0.8,1.2); G.sparks.push({x:a.x,y:a.y,vx:Math.cos(ang)*sp,vy:Math.sin(ang)*sp,t:0,life:.4,c:a.c,nc:1,z:2.6}); }
+  return 5;
 }
 // v23.xx (spr2), HIS ORDER (2026-10-12): "improve the sprites of all characters, bots, etc -- spend time on that -- make them
 // all look better", gritty and grounded like ARC Raiders (his answer 20 "a"), silhouettes first (answer 24 "b"). The sprite
@@ -39920,7 +39942,9 @@ var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
   for(i=0;i<G.sparks.length;i++){
     var sp=G.sparks[i];
     wc.globalAlpha=clamp(1-sp.t/sp.life,0,1);
-    wc.fillStyle=sp.c; wc.fillRect(sp.x-1.2,sp.y-9,2.4,2.4);
+    var _sz=sp.z||3.4;   // v32.xx (cw-machfx) a34 B: 3.4 px sparks with a white-yellow core (#ffe9a8); blood and metal chunks have no core
+    wc.fillStyle=sp.c; wc.fillRect(sp.x-_sz/2,sp.y-7.8-_sz/2,_sz,_sz);
+    if(sp.c!==BLOOD_SPRAY&&!sp.nc){ wc.fillStyle='#ffe9a8'; wc.fillRect(sp.x-0.8,sp.y-8.6,1.6,1.6); }
   }
   wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
   try{ drawDeathAnims(); }catch(_dda){}   // v17.47: his pick 29
@@ -40014,7 +40038,7 @@ var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
   // measured. 0.30 is the value that lands it near 45 percent: still obviously
   // night, still lamp-lit rather than flat, and legible. DAY_SHEET is untouched.
   lx2.fillStyle=isDay()?('rgba(22,28,54,'+clamp(DAY_SHEET/BR,.02,.2)+')')
-                       :('rgba(7,7,26,'+clamp(NIGHT_SHEET/BR,.05,.82)+')');
+                       :('rgba(10,20,60,'+clamp(NIGHT_SHEET/BR,.05,.82)+')');
   lx2.fillRect(0,0,W,H);
   // From here the light layer works in WORLD coordinates, matched to the world
   // canvas, so every light below uses its own position and radius directly and
@@ -40194,7 +40218,7 @@ var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
   // brightening the picture over the top of it.
   var _flash=clamp((G.lightning||0)/0.34,0,1)*flashK();   // v26.xx (settings9): REDUCED FLASHING lifts the fog less in a bolt
   if(_flash>0) _lift+=_flash*0.52;
-  fx2.fillStyle=isDay()?('rgba(58,46,38,'+clamp(.46-(BR-1)*.06-_lift,.22,.54)+')')
+  fx2.fillStyle=fogFillStyle(isDay(),BR,_lift,_flash);   // v32.xx (cw-machfx) a31 B: lighter fog
 // v4.35 HIS NOTE, three times now: night is too dark and jarring. The
                        // wash drops from a .87 ceiling to about .80 at his
                        // brightness, with a touch more blue, so unlit shapes
@@ -40205,7 +40229,7 @@ var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
                        // clamp comes down with it so the brightness dial can
                        // still reach a genuinely dark night for anyone who
                        // wants one.
-                       :('rgba(4,7,26,'+clamp(.60-(BR-1)*.09-_flash*0.46,.04,.90)+')');
+                       // v32.xx (cw-machfx) a31 B: the night fog (rgba(4,7,26), now .42) moved into fogFillStyle
   fx2.fillRect(0,0,W,H);
   // the fog cutouts are all world shapes, so the fog layer takes the world
   // transform exactly as the light layer does
@@ -49754,7 +49778,7 @@ function gfxLightPass(dt,BR,o){
   if(LMAP.c.height!==lh) LMAP.c.height=lh;
   x=LMAP.x;
   a=day?clamp(DAY_SHEET/BR,.02,.2):clamp(NIGHT_SHEET/BR,.05,.82);   // the CLASSIC sheet's strength
-  S=day?[22,28,54]:[7,7,26];                                       // and its colour
+  S=day?[22,28,54]:[10,20,60];                                       // and its colour
   function put(spr,X,Y,R,al){
     if(!(R>0)||!(al>0)) return;
     x.globalAlpha=Math.min(1,al); x.drawImage(spr,X-R,Y-R,R*2,R*2);
@@ -49806,6 +49830,7 @@ function gfxLightPass(dt,BR,o){
     sp=day?[13,9,4]:[5,3,11];
     wc.fillStyle='rgb('+Math.round(S[0]*a+sp[0])+','+Math.round(S[1]*a+sp[1])+','+Math.round(S[2]*a+sp[2])+')';
     wc.fillRect(0,0,W,H);
+    if(!day){ wc.globalCompositeOperation='screen'; wc.fillStyle='rgba(20,40,90,.10)'; wc.fillRect(0,0,W,H); wc.globalCompositeOperation='lighter'; }   // v32.xx (cw-machfx) a30 B: a cool screen fill over the world at night
     TD=tod();
     if(day&&TD.add){ wc.globalAlpha=TD.addA; wc.fillStyle=TD.add; wc.fillRect(0,0,W,H); wc.globalAlpha=1; }
     if(day&&TD.dim){ prevOp=wc.globalCompositeOperation; wc.globalCompositeOperation='source-over'; wc.fillStyle=TD.dim; wc.fillRect(0,0,W,H); wc.globalCompositeOperation=prevOp; }
@@ -50108,11 +50133,11 @@ function gfxESprites(){
   x.fillStyle=gr; x.fillRect(0,0,64,64); m.smoke=c;
   return m;
 }
-function boomFx(x,y,size,kind){
+function boomFx(x,y,size,kind,dmgR){
   if(!gfxHook('boom')) return false;
   x=+x; y=+y; if(!isFinite(x)||!isFinite(y)) return false;
-  var s=clamp(+size||1,0.3,2.5), thin=(CFG.fxLevel===0), i, n, a, vz, cs=['#2b2723','#38322b','#4a4036','#221f1c','#57504a'];
-  var b={g:G,x:x,y:y,s:s,kind:String(kind||''),t0:G.t||0,deb:[],smoke:[]};
+  var s0=clamp(+size||1,0.3,2.5), s=(String(kind||'')==='bot')?s0:clamp(s0*1.6,0.3,2.5), thin=(CFG.fxLevel===0), i, n, a, vz, cs=['#2b2723','#38322b','#4a4036','#221f1c','#57504a'];
+  var b={g:G,x:x,y:y,s:s,s0:s0,dmgR:+dmgR||BOOM_DMGR,kind:String(kind||''),t0:G.t||0,deb:[],smoke:[]};
   n=thin?5:clamp(Math.round(8+4*s),8,16);
   for(i=0;i<n;i++){
     a=fxn(0,6.2832); vz=fxn(80,200);
@@ -50159,7 +50184,7 @@ function gfxBoomDraw(){
         n+=3;
       }
       if(t<0.22){
-        k=t/0.22; R=b.s*(20+100*k);
+        k=t/0.22; R=boomRingR(b,k);   // v32.xx (cw-machfx) a35 B: ring R=20+160k, capped at the damage radius
         wc.globalCompositeOperation='source-over'; wc.globalAlpha=0.5*(1-k); wc.strokeStyle='#ffe2b8'; wc.lineWidth=1+3*(1-k);
         wc.beginPath(); wc.ellipse(b.x,b.y,R,R*0.58,0,0,6.2832); wc.stroke(); n++;
       }
@@ -50840,7 +50865,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.70: Larger letters keep all sixteen name positions. Menu shares the done button, the stash hides floor text, and the belt spans its pane. Check 32.70 fails on v32.69',
+  now:'v32.71: Machines charge a shrinking red ring, die in a small blast with chunks, nights are moonlit blue, fog is lighter, hit sparks are chunkier and explosions are 60 percent bigger. Check 32.71 fails on v32.70',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -60731,7 +60756,7 @@ function airBlast(st,i){
   var q=st.pts[i], p=G.player, R=AIR.R, j, e, de, dm;
   sfx('airBoom',q.x,q.y,i);   // v27.94 (snd3): one of six blasts, each at its own pitch (the blast number rides as wid)
   spark(q.x,q.y,'#ffcf7a',26,320); flash(q.x,q.y,260,'#ffb267',.4);
-  try{ boomFx(q.x,q.y,1.2,'frag'); }catch(_ab){}
+  try{ boomFx(q.x,q.y,1.2,'frag',R); }catch(_ab){}
   try{ gfxBlastScar(q.x,q.y,1,false); }catch(_as){}
   G.shake=Math.max(G.shake||0,Math.max(2,7-dist(p,q)/150));
   if(st.fx) return;   // v27.19 (coop6): a strike called in the other window: the rings, the blasts and the shake here, its damage is dealt there
@@ -61227,7 +61252,7 @@ function debrisImpact(ev,pt){
   var p=G.player, R=72, j, e, de, d;
   sfx('debrisLand',pt.x,pt.y);   // v27.82 (snd2): the debris blast has its own sound (recorded crunch, sub drop, metal crash), the same ring and range as boom
   spark(pt.x,pt.y,'#ffcf7a',30,340); flash(pt.x,pt.y,300,'#ffb267',.5);
-  try{ boomFx(pt.x,pt.y,1.4,'frag'); }catch(_de){}
+  try{ boomFx(pt.x,pt.y,1.4,'frag',R); }catch(_de){}
   try{ gfxBlastScar(pt.x,pt.y,1.3,false); }catch(_ds){}
   G.shake=Math.max(G.shake||0,Math.max(3,9-dist(p,pt)/120));
   d=Math.hypot(p.x-pt.x,p.y-pt.y);
@@ -62262,7 +62287,7 @@ function debrisImpactPeer(pt){
   var p=G.player, R=72, d;
   sfx('debrisLand',pt.x,pt.y);   // v27.82 (snd2): and in the linked window
   spark(pt.x,pt.y,'#ffcf7a',30,340); flash(pt.x,pt.y,300,'#ffb267',.5);
-  try{ boomFx(pt.x,pt.y,1.4,'frag'); }catch(_de){}
+  try{ boomFx(pt.x,pt.y,1.4,'frag',R); }catch(_de){}
   try{ gfxBlastScar(pt.x,pt.y,1.3,false); }catch(_ds){}
   G.shake=Math.max(G.shake||0,Math.max(3,9-dist(p,pt)/120));
   d=Math.hypot(p.x-pt.x,p.y-pt.y);
