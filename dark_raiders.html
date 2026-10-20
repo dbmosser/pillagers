@@ -3247,7 +3247,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.11';
+var VER='33.12';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -37006,6 +37006,14 @@ function drawOpB(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
 // Every machine sprite is drawn from a scale derived off its collision radius,
 // so visual bulk and the simulation can never drift apart.
 var SENTRY_R0=22,CRAWLER_R0=15,SNITCH_R0=11;
+// v28.xx (cw-cx-alerttop): his 2026-10-09 order: the alert mark sits clear over the name. When its HUD baseline is clamped down, move the whole nameplate down by the same screen distance.
+function alertTopShift(e){
+  if(e.state!=='investigate'&&e.state!=='chase'&&e.state!=='alarm') return 0;
+  if(e.kind==='snitch'&&e.state==='alarm'&&e.wind!==undefined&&e.wind!==null) return 0;
+  var z=ZOOM(), ph=Math.ceil(msgPx(FS(TYPE.micro))*1.35);
+  var s=w2s(e.x,(spriteTop(e)+8+ph-3)*z+LH(4)*Math.max(1,hudRes()),e.y);
+  return Math.max(0,Math.round(msgPx(hudFS(TYPE.head))+LH(2))-s.y);
+}
 function spriteTop(e){
   if(e.kind==='sentry') return 46*(e.r/SENTRY_R0);
   if(e.kind==='crawler') return 24*(e.r/CRAWLER_R0);
@@ -40071,7 +40079,7 @@ var SHD=G.shells[i];
   for(i=0;i<VIS.length;i++){
     var ne=VIS[i];
     if(!ne.name) continue;
-    var lift=spriteTop(ne)+8;
+    var lift=spriteTop(ne)+8-alertTopShift(ne)/ZOOM();   // v28.xx (cw-cx-alerttop): the plate, crew block and health pip step down together only at the top edge
     var hostile=ne.kind==='raider';
     // a raider bolting for the beacon is worth calling out: it is a race now
 if(ne.kind==='listener'&&ne.state==='dormant') continue;
@@ -51211,7 +51219,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.11: All selector buttons share idle edges and height, with neutral name text and a brighter count. Check 33.11 fails on v33.10',
+  now:'v33.12: At the top edge the bot nameplate steps down with its alert mark. Away from the edge their positions stay the same. Check 33.12 fails on v33.11',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

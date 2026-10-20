@@ -542,3 +542,11 @@
 2026-10-20 0.1422 critic-o-17-pad-layout-selector
 2026-10-20 0.1406 critic-o-17-pad-layout-selector
 2026-10-20 0.0000 o-17-pad-layout-selector
+2026-10-20 0.1343 critic-o-17-pad-layout-selector
+2026-10-20 0.1373 critic-o-17-pad-layout-selector
+2026-10-20 0.1355 critic-o-17-pad-layout-selector
+2026-10-20 0.1344 critic-o-17-pad-layout-selector
+2026-10-20 0.1352 critic-o-17-pad-layout-selector
+2026-10-20 0.1350 critic-o-17-pad-layout-selector
+2026-10-20 0.0000 o-17-pad-layout-selector
+2026-10-20 0.0000 o-18-alert-mark-top-edge

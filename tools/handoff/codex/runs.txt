@@ -136,3 +136,5 @@
 2026-10-20 15:44 o-17-pad-layout-selector 38s ok PARTIAL in=887558 out=9213 run=2
 2026-10-20 16:04 o-17-pad-layout-selector 91s ok PARTIAL in=1242965 out=13369 run=3
 2026-10-20 16:30 o-17-pad-layout-selector 81s ok PARTIAL in=1706744 out=16980 run=4
+2026-10-20 16:52 o-17-pad-layout-selector 38s ok DONE in=2127057 out=18366 run=5
+2026-10-20 16:56 o-18-alert-mark-top-edge 270s ok PARTIAL in=805999 out=11646 run=1

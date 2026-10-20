@@ -1,0 +1,5 @@
+## v33.12 - ALERT MARK CLEARS TOP EDGE NAME
+
+Co-op hunt while he was away. Clamping a bot alert mark to the top edge put it over the bot name.
+
+MEASURED. Check 33.12 passes, and fails on v33.11.
