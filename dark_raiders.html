@@ -1470,7 +1470,10 @@
   #root #keysmodal.padlayouts .padlayoutpick{display:flex;gap:16px;align-items:center;padding:0 8px;border:1px solid transparent;border-radius:4px;flex:none;}
   #root #keysmodal.padlayouts .padlayoutpick button{height:48px;min-width:56px;font:600 24px var(--f-cond);border:0;}
   #root #keysmodal.padlayouts #padlayout{min-width:240px;color:var(--tx-1);font-size:20px;}
-  #root #keysmodal.padlayouts #padlayout.padfocus{color:var(--acc);}
+  /* v28.xx (cw-cx-padselectorstyle): critic 74: match the idle name/arrow edges; lime belongs to the single focus outline. */
+  #root #keysmodal.padlayouts .padlayoutpick button{border-radius:4px;}
+  #root #keysmodal.padlayouts #padlayout,#root #keysmodal.padlayouts #padlayout.padfocus{height:48px;box-sizing:border-box;border:1px solid var(--ui-line-hi);color:var(--tx-1);}
+  #root #keysmodal.padlayouts .padlayoutrow .padlayoutpick .padlayoutcount{margin-left:0;color:var(--tx-1);}
   #root #keysmodal.padlayouts .padeditgrid{display:grid;grid-template-columns:minmax(360px,520px) minmax(0,1fr);gap:32px;min-height:0;flex:1;align-items:start;}
   #root #keysmodal.padlayouts .padactions{overflow-y:auto;min-height:0;padding-right:16px;box-sizing:border-box;scroll-snap-type:y mandatory;scrollbar-width:auto;scrollbar-color:var(--ui-line-hi) var(--ui-panel);}
   #root #keysmodal.padlayouts .padactions::-webkit-scrollbar{width:8px;}
@@ -3244,7 +3247,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.10';
+var VER='33.11';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -51208,7 +51211,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.10: Boxed arrows flank the layout name evenly, followed by the larger count. Check 33.10 fails on v33.09',
+  now:'v33.11: All selector buttons share idle edges and height, with neutral name text and a brighter count. Check 33.11 fails on v33.10',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

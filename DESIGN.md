@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.11 - PAD SELECTOR CONSISTENT EDGES
+
+Co-op hunt while he was away. The critic found mixed selector borders and a dim detached counter.
+
+MEASURED. Check 33.11 passes, and fails on v33.10.
 ## v33.10 - PAD SELECTOR GROUPING
 
 Co-op hunt while he was away. The critic found loose arrows and a small count beside the focused name.

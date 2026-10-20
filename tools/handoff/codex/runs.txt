@@ -135,3 +135,4 @@
 2026-10-20 15:43 o-17-pad-layout-selector 174s ok PARTIAL in=584947 out=7770 run=1
 2026-10-20 15:44 o-17-pad-layout-selector 38s ok PARTIAL in=887558 out=9213 run=2
 2026-10-20 16:04 o-17-pad-layout-selector 91s ok PARTIAL in=1242965 out=13369 run=3
+2026-10-20 16:30 o-17-pad-layout-selector 81s ok PARTIAL in=1706744 out=16980 run=4
