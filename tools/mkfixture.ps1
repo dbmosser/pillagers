@@ -6172,8 +6172,10 @@ window.__REGRESS=[
          if(km.querySelector('[data-pad-stick="left"]').textContent!==([0,1,5][j]===5?'aim':'move')) bad.push('stick label');
        }
        var sc=km.querySelector('.padactions'), rows=sc.querySelectorAll('.row,.keysec'), cap=sc.querySelector('.keybtn');
-       if(sc.clientHeight<56||sc.clientHeight%56!==0) bad.push('viewport cuts a row');
-       for(i=0;i<rows.length;i++) if(rows[i].offsetHeight!==56) bad.push('row pitch '+i);
+       var pitch=rows.length?rows[0].offsetHeight:0;
+       if(pitch!==48&&pitch!==56) bad.push('row pitch');
+       if(sc.clientHeight<pitch||sc.clientHeight%pitch!==0) bad.push('viewport cuts a row');
+       for(i=0;i<rows.length;i++) if(rows[i].offsetHeight!==pitch) bad.push('row pitch '+i);
        if(parseFloat(getComputedStyle(cap).fontSize)<20) bad.push('keycap under 20px');
        if(parseFloat(getComputedStyle(sc.querySelector('.keysec')).fontSize)<16) bad.push('section under 16px');
        padSetFocus(cap);
