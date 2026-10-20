@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.92 - DAILY SAVE BACKUPS
+
+Co-op hunt while he was away. His Tech answer of 2026-10-12 asks for an automatic daily save backup. Keep three raw dated copies per save slot and reuse the Settings restore row and undo.
+
+MEASURED. Check 32.92 passes, and fails on v32.91.
 ## v32.91 - REDUCED FLASHING STARTS ON
 
 Co-op hunt while he was away. His 2.61 asks for a Settings switch on by default, with at most about three bright flashes a second.

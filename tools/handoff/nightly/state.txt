@@ -11,5 +11,5 @@ corpus_file=C:/Users/User1/AppData/Local/Temp/claude/C--Users-User1-Desktop-dark
 corpus_t=1792515038
 stable_t=1792515365
 summary_t=1792517255
-atpc_t=1792517558
-llm_head=d39865c6
+llm_head=50fb1362
+atpc_t=1792518826

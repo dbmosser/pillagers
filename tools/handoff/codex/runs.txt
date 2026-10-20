@@ -119,3 +119,5 @@
 2026-10-20 11:18 o-02-corpus-green 140s ok DONE in=606176 out=4668 run=1
 2026-10-20 11:21 53-corpus-reds-b 181s ok PARTIAL in=426108 out=6304 run=6
 2026-10-20 13:27 o-13-reduced-flashing-default 335s ok PARTIAL in=900153 out=12725 run=1
+2026-10-20 13:36 o-13-reduced-flashing-default 22s ok DONE in=1121786 out=13219 run=2
+2026-10-20 13:45 o-14-daily-save-backup 490s ok PARTIAL in=1497846 out=19749 run=1

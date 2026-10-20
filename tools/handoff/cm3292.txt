@@ -1,0 +1,7 @@
+v32.92: daily save backups
+
+Each career save keeps up to three daily copies. Settings restores a daily copy or a file with undo. Full storage quietly skips copies and leaves room for the main save.
+
+Check 32.92. Fails on v32.91.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

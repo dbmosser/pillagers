@@ -16,3 +16,7 @@ Local validation passed: mk prints written; all 11 edit anchors match exactly on
 
 TV watch: blasts and lightning may look softer on his TVs. During rapid blasts or storm effects, bright lights should be spaced out with reduced flashing on. Off should look and repeat as before. Confirm that lightning still lands and sounds normally, and that leaving the demo returns to the career choice.
 
+
+--- codex run 2026-10-20 13:36 ---
+2026-10-20 completion: lane shipped cw-cx-flashdefault as game v32.91 (50fb1362). Fixture retarget bcaac697 passed checks 26.50 and 27.67 on the v32.90 trial build before shipping. Verified the refreshed master contains the profile migration, new default, shared limiter, both lightning paths, barrage limiter and demo override. The shipped fixture includes the v32.91 regression check. No further changes or pictures are required by this task. TV watch remains: blasts and lightning may look softer with reduced flashing on.
+

@@ -213,3 +213,5 @@
 - 2026-10-20 | 56-stash-names-after | stash setup (screen 04) | v32.89 (Codex): gun key and item wheel tiles 48 to 76 px, each name under its picture across the full tile (names were cut at zoom 1.3). No wording change. before notes/shots/55-closeplace-after/04-stash-terminal-1080.jpg, after notes/shots/56-after/04-stash-terminal-1080.jpg (and -4k). critic 2 for the whole screen, the tile block's remaining finding is density, left for the stash redesign
 2026-10-20 | o-13-reduced-flashing-default | reduced flashing / demo | new profiles and demo start on; existing choices stay; blast lights and lightning share a 334 ms visual limiter while on | before/after pictures: none requested (flashes do not photograph well)
 
+2026-10-20 | o-14-daily-save-backup | Settings existing restore row (30) | Added a source button cycling file and up to three dated daily copies; reused restore and undo; changed the file-only hint to 'file or daily copy; undo available' because it now accepts both sources. | before: lane standard 30-settings-scroll-2400 before shot | after: lane camera-recipes 30-settings-daily-restore-1080.jpg (paths pending lane capture)
+
