@@ -35,3 +35,14 @@ Next run (needs cdp on port 9351): __regressBg(120, idx31.67+1) first, then bise
   the text they look for is really not drawn (that is exactly what the hidden recorder looked like), so they can still go red.
 - Whole slice on the fixed draft: `120:240 draft` leaves only v31.67 (place 236 on v33.08: "1 idle steppers still boxed").
 - Lesson for any check: to restore a canvas method, delete the own property; never assign the saved prototype function back.
+
+## Coordinator 10-20 16:16: v31.67 FIXED too (32221c82); places for the last four (fixture v33.09)
+- v31.67: v31.71 deployed a raid and never ended it; with a raid live every Settings action button is disabled (_rOff) and a
+  disabled button is boxed, so the Tuning console OPEN counted as an idle boxed stepper. v31.71's finally now calls
+  __endRaid('abandon'). Assertion unchanged; it still fails when idle steppers are boxed (a style boxing every row button: 61).
+  Places 120 to 239 in order now all PASS.
+- Reproduced on v33.09 (places): v31.04 = 300 and v30.91 = 313 both FAIL in `259:314`; v24.38 = 972 FAILS in `859:973`;
+  v20.89 = 1321 not run yet (try `1219:1322`).
+- 300 (v31.04): the smallest failing window is `279:300` and no single check or pair in it breaks it alone, so it is a combination
+  or build-up inside 279 to 299. Bisect inside that window by dropping checks (e.g. 279:290,291:300,300).
+- Lane a and the coordinator share tools/fxpina.html (the pin); the coordinator stops using it now, the job is yours.
