@@ -206,6 +206,8 @@ if ($GameCheck) {
         $lines = @(('gaming=' + $(if ($gaming) { '1' } else { '0' })), ('checked=' + $now.ToString('yyyy-MM-dd HH:mm:ss')),
           ('last=' + $(if ($last) { $last.ToString('yyyy-MM-dd HH:mm:ss') } else { '' })), ('what=' + $(if ($hit) { $hit + ' ' + $pct + '%' } else { '' })), ('idle=' + $idle), ('idlefrom=' + $IdleSrc))
         if ($idle -ge 0) { $lines += ('atpc=' + $(if ($atpc) { '1' } else { '0' })) }
+        # 10-20 evening: tells the VM this copy has the note copying (item 7), so it never has to ask him whether the setup was run again
+        $lines += ('notes=' + $(if (Test-Path -LiteralPath $NotesSrc) { 'on, ' + @(Get-ChildItem -LiteralPath $NotesSrc -File -ErrorAction SilentlyContinue | Where-Object { $_.Name -like 'feedback-*' -or $_.Name -like 'run-*' }).Count + ' notes and run reports in ' + $NotesSrc } else { 'on, ' + $NotesSrc + ' is not there' }))
         Set-Content -Path $GameFile -Encoding ASCII -Value $lines } catch { }
   MirrorNotes
   $vm = GetVm

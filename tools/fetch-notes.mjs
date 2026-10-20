@@ -49,7 +49,14 @@ for (const f of notes) {
     got.push(name);
   } catch (e) { bad.push(name + ': ' + String(e.message || e).split('\n')[0].slice(0, 100)); }
 }
-const line = `last fetch ${stamp()}, ${got.length} new${got.length ? ' (' + got.join(', ').slice(0, 300) + ')' : ''}, ${notes.length} on the main PC side` +
+// 10-20 evening: the main PC's minute check writes notes=... into gaming.txt only once he has run the setup with the note copying,
+// so this says whether the copying is live without asking him
+let side = 'main PC copying: unknown';
+if ((list.files || []).some((f) => f.name === 'gaming.txt')) {
+  try { const g = host('share-get', 'name=gaming.txt'); const m = /^notes=(.*)$/m.exec(Buffer.from(g.base64 || '', 'base64').toString('utf8'));
+    side = m ? 'main PC copying: ' + m[1].trim().slice(0, 120) : 'main PC copying: NOT LIVE (its setup was not run again after 10-20 17:00)'; } catch { }
+}
+const line = `last fetch ${stamp()}, ${got.length} new${got.length ? ' (' + got.join(', ').slice(0, 300) + ')' : ''}, ${notes.length} on the main PC side, ${side}` +
   (bad.length ? `; could not take ${bad.length}: ${bad.join('; ').slice(0, 300)}` : '');
 fs.writeFileSync(STATUS, line + '\n');
 if (got.length || bad.length) console.log(`${stamp().slice(6)} notes from the main PC: ${got.length} new${got.length ? ' (' + got.join(', ').slice(0, 200) + ')' : ''}${bad.length ? ', ' + bad.length + ' failed' : ''}`);
