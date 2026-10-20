@@ -9693,7 +9693,7 @@ window.__REGRESS=[
      if(typeof MAPFIRST!=='object'||typeof mapFirstGo!=='function'||typeof mapFirstStep!=='function'||typeof mapFirstPeers!=='function') return 'no map first screen in this build (MAPFIRST is missing)';
      if(!(window.__loop&&window.__state&&window.__endRaid&&window.__hubEnter&&window.__station&&window.__topClear&&window.__runPrep&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile)) return 'SKIP: this fixture cannot walk from the Undercroft into a raid';
      var bad=[], g=null, p=null, i, k, r, s0, s1, tl0, sh0, mv, txt, peer, peerB, box=[], boxB=[], w, nm, gp=null, NK={}, padK={}, pk, hasGp=Object.prototype.hasOwnProperty.call(navigator,'getGamepads'), oGp=navigator.getGamepads,
-         oSay=say, oParty=PARTY, oSkip=MAPFIRST.skip, oDev=INDEV.dev, oLeg=INDEV.legacy, oMd=mouse.down, alive=(typeof __vpAlive!=='function')||__vpAlive(), got;
+         oSay=say, oSkip=MAPFIRST.skip, oDev=INDEV.dev, oLeg=INDEV.legacy, oMd=mouse.down, alive=(typeof __vpAlive!=='function')||__vpAlive(), got;
      for(pk in PAD) if(Object.prototype.hasOwnProperty.call(PAD,pk)) padK[pk]=PAD[pk];
      var rumK={}, rk; for(rk in RUMBLE) if(Object.prototype.hasOwnProperty.call(RUMBLE,rk)) rumK[rk]=RUMBLE[rk];   // a pad press stamps RUMBLE.usedAt, which the arcade idle clock reads: put it back
      for(k in NET) NK[k]=NET[k];
@@ -9807,20 +9807,10 @@ window.__REGRESS=[
          if(!has(txt,/click to set a waypoint/)) bad.push('SEVEN: the waypoint hint is gone from the map the player opens himself');
          g.mapOpen=false;
        }
-       where='six'; // SIX: the party arcade lets go by itself after 20 s; a plain raid and a career party never do
-       rearm(); g.arcade=1; PARTY=true;
-       for(i=0;i<19;i++) mapFirstStep(1);
-       if(!g.mapFirst) bad.push('SIX: the party arcade let go of the map before 20 s');
-       mapFirstStep(0.4); if(!g.mapFirst) bad.push('SIX: the party arcade let go of the map before 20 s (19.9)');
-       mapFirstStep(0.4);
-       if(g.mapFirst||g.paused) bad.push('SIX: the party arcade did not let go of the map by itself after 20 s');
-       rearm(); g.arcade=1; PARTY=false;
-       for(i=0;i<40;i++) mapFirstStep(1);
-       if(!g.mapFirst) bad.push('SIX: without the party flag the map let go by itself');
-       rearm(); g.arcade=0; PARTY=true;
+       where='six'; // SIX: a career raid never lets go of the map by itself (v32.xx cw-cx-demoplain: the demo auto start moved to that ship's own check)
+       rearm(); g.arcade=0;
        for(i=0;i<40;i++) mapFirstStep(1);
        if(!g.mapFirst) bad.push('SIX: a career raid let go of the map by itself');
-       g.arcade=0; PARTY=oParty;
        where='five'; // FIVE: two windows. The clock starts when both have pressed
        rearm(); stage();
        netOnState(peer,word(1,0));
@@ -9880,7 +9870,7 @@ window.__REGRESS=[
        if(!g.mapFirst) bad.push('FIVE: a late joiner was let into a raid whose host is still on the map');
        return bad.length?bad.join('; '):null;
      } finally {
-       padOff(); say=oSay; PARTY=oParty; MAPFIRST.skip=oSkip; INDEV.dev=oDev; INDEV.legacy=oLeg; mouse.down=oMd; keys={};
+       padOff(); say=oSay; MAPFIRST.skip=oSkip; INDEV.dev=oDev; INDEV.legacy=oLeg; mouse.down=oMd; keys={};
        try{ for(k in NET) if(!(k in NK)) delete NET[k]; for(k in NK) NET[k]=NK[k]; }catch(_n){}
        try{ if(G&&G.arcade) G.arcade=0; }catch(_ga){}
        try{ if(G&&!G.over) __endRaid('abandon'); }catch(_e){}
@@ -11152,7 +11142,7 @@ window.__REGRESS=[
    }},
   {v:'30.79',what:'party launch mode (his Q28): ?party=1&pair=CODE skips the title, enters the arcade as the host on that pair and opens no window',
    run:function(){
-     if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'this build has no party launch mode (?party=1)';     var R={chans:[],opens:0,reloads:0,navs:[],joins:[]}, oOpen=window.open, oBC=window.BroadcastChannel, hadBC=('BroadcastChannel' in window), oH=netHost, oJ=netJoin, oStart=NET.start, oRel=partyReload, oNav=partyNav, oParty=PARTY, tl=document.getElementById('title'), tDisp=tl?tl.style.display:'', sv=null, bad=[];
+     if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'SKIP: the party launch mode was retired (cw-cx-demoplain)';     var R={chans:[],opens:0,reloads:0,navs:[],joins:[]}, oOpen=window.open, oBC=window.BroadcastChannel, hadBC=('BroadcastChannel' in window), oH=netHost, oJ=netJoin, oStart=NET.start, oRel=partyReload, oNav=partyNav, oParty=PARTY, tl=document.getElementById('title'), tDisp=tl?tl.style.display:'', sv=null, bad=[];
      function BC(n){ this.posted=[]; R.chans.push(this); }
      BC.prototype.postMessage=function(m){ this.posted.push(m); };
      BC.prototype.close=function(){};
@@ -11177,7 +11167,7 @@ window.__REGRESS=[
      }
      function sent(t){ var c=NET.bc, n=0, i; if(c&&c.posted) for(i=0;i<c.posted.length;i++) if(c.posted[i]&&c.posted[i].t===t) n++; return n; }
      function guard(){
-       if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'this build has no party launch mode (?party=1)';
+       if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'SKIP: the party launch mode was retired (cw-cx-demoplain)';
        if(ARCADE.on) return 'SKIP: the arcade is on';
        if(NET.on) return 'SKIP: a party link is up in the fixture';
        return null;
@@ -11202,7 +11192,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'30.79', what:'party launch mode (his Q28): the ?p2=1&arc=1&party=1 window never shows its title, shows the arcade attract at once and takes the host offer',
    run:function(){
-     if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'this build has no party launch mode (?party=1)';     var R={chans:[],opens:0,reloads:0,navs:[],joins:[]}, oOpen=window.open, oBC=window.BroadcastChannel, hadBC=('BroadcastChannel' in window), oH=netHost, oJ=netJoin, oStart=NET.start, oRel=partyReload, oNav=partyNav, oParty=PARTY, tl=document.getElementById('title'), tDisp=tl?tl.style.display:'', sv=null, bad=[];
+     if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'SKIP: the party launch mode was retired (cw-cx-demoplain)';     var R={chans:[],opens:0,reloads:0,navs:[],joins:[]}, oOpen=window.open, oBC=window.BroadcastChannel, hadBC=('BroadcastChannel' in window), oH=netHost, oJ=netJoin, oStart=NET.start, oRel=partyReload, oNav=partyNav, oParty=PARTY, tl=document.getElementById('title'), tDisp=tl?tl.style.display:'', sv=null, bad=[];
      function BC(n){ this.posted=[]; R.chans.push(this); }
      BC.prototype.postMessage=function(m){ this.posted.push(m); };
      BC.prototype.close=function(){};
@@ -11227,7 +11217,7 @@ window.__REGRESS=[
      }
      function sent(t){ var c=NET.bc, n=0, i; if(c&&c.posted) for(i=0;i<c.posted.length;i++) if(c.posted[i]&&c.posted[i].t===t) n++; return n; }
      function guard(){
-       if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'this build has no party launch mode (?party=1)';
+       if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'SKIP: the party launch mode was retired (cw-cx-demoplain)';
        if(ARCADE.on) return 'SKIP: the arcade is on';
        if(NET.on) return 'SKIP: a party link is up in the fixture';
        return null;
@@ -11251,7 +11241,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'30.79', what:'party launch mode (his Q28): after the HOST reloads, player 2 answers hostup with ready and the pair links again, and the host repeats hostup only while nobody is linked',
    run:function(){
-     if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'this build has no party launch mode (?party=1)';     var R={chans:[],opens:0,reloads:0,navs:[],joins:[]}, oOpen=window.open, oBC=window.BroadcastChannel, hadBC=('BroadcastChannel' in window), oH=netHost, oJ=netJoin, oStart=NET.start, oRel=partyReload, oNav=partyNav, oParty=PARTY, tl=document.getElementById('title'), tDisp=tl?tl.style.display:'', sv=null, bad=[];
+     if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'SKIP: the party launch mode was retired (cw-cx-demoplain)';     var R={chans:[],opens:0,reloads:0,navs:[],joins:[]}, oOpen=window.open, oBC=window.BroadcastChannel, hadBC=('BroadcastChannel' in window), oH=netHost, oJ=netJoin, oStart=NET.start, oRel=partyReload, oNav=partyNav, oParty=PARTY, tl=document.getElementById('title'), tDisp=tl?tl.style.display:'', sv=null, bad=[];
      function BC(n){ this.posted=[]; R.chans.push(this); }
      BC.prototype.postMessage=function(m){ this.posted.push(m); };
      BC.prototype.close=function(){};
@@ -11276,7 +11266,7 @@ window.__REGRESS=[
      }
      function sent(t){ var c=NET.bc, n=0, i; if(c&&c.posted) for(i=0;i<c.posted.length;i++) if(c.posted[i]&&c.posted[i].t===t) n++; return n; }
      function guard(){
-       if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'this build has no party launch mode (?party=1)';
+       if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'SKIP: the party launch mode was retired (cw-cx-demoplain)';
        if(ARCADE.on) return 'SKIP: the arcade is on';
        if(NET.on) return 'SKIP: a party link is up in the fixture';
        return null;
@@ -11311,7 +11301,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'30.79', what:'party launch mode (his Q28): leaving the arcade for any reason but EXIT DEMO reloads into the party and the title rows stay hidden; EXIT DEMO goes to the plain address',
    run:function(){
-     if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'this build has no party launch mode (?party=1)';     var R={chans:[],opens:0,reloads:0,navs:[],joins:[]}, oOpen=window.open, oBC=window.BroadcastChannel, hadBC=('BroadcastChannel' in window), oH=netHost, oJ=netJoin, oStart=NET.start, oRel=partyReload, oNav=partyNav, oParty=PARTY, tl=document.getElementById('title'), tDisp=tl?tl.style.display:'', sv=null, bad=[];
+     if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'SKIP: the party launch mode was retired (cw-cx-demoplain)';     var R={chans:[],opens:0,reloads:0,navs:[],joins:[]}, oOpen=window.open, oBC=window.BroadcastChannel, hadBC=('BroadcastChannel' in window), oH=netHost, oJ=netJoin, oStart=NET.start, oRel=partyReload, oNav=partyNav, oParty=PARTY, tl=document.getElementById('title'), tDisp=tl?tl.style.display:'', sv=null, bad=[];
      function BC(n){ this.posted=[]; R.chans.push(this); }
      BC.prototype.postMessage=function(m){ this.posted.push(m); };
      BC.prototype.close=function(){};
@@ -11336,7 +11326,7 @@ window.__REGRESS=[
      }
      function sent(t){ var c=NET.bc, n=0, i; if(c&&c.posted) for(i=0;i<c.posted.length;i++) if(c.posted[i]&&c.posted[i].t===t) n++; return n; }
      function guard(){
-       if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'this build has no party launch mode (?party=1)';
+       if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'SKIP: the party launch mode was retired (cw-cx-demoplain)';
        if(ARCADE.on) return 'SKIP: the arcade is on';
        if(NET.on) return 'SKIP: a party link is up in the fixture';
        return null;
@@ -11373,7 +11363,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'30.79', what:'party launch mode (his Q28): without ?party=1 nothing changes: no boot, no reload on leave, EXIT DEMO leaves in place',
    run:function(){
-     if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'this build has no party launch mode (?party=1)';     var R={chans:[],opens:0,reloads:0,navs:[],joins:[]}, oOpen=window.open, oBC=window.BroadcastChannel, hadBC=('BroadcastChannel' in window), oH=netHost, oJ=netJoin, oStart=NET.start, oRel=partyReload, oNav=partyNav, oParty=PARTY, tl=document.getElementById('title'), tDisp=tl?tl.style.display:'', sv=null, bad=[];
+     if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'SKIP: the party launch mode was retired (cw-cx-demoplain)';     var R={chans:[],opens:0,reloads:0,navs:[],joins:[]}, oOpen=window.open, oBC=window.BroadcastChannel, hadBC=('BroadcastChannel' in window), oH=netHost, oJ=netJoin, oStart=NET.start, oRel=partyReload, oNav=partyNav, oParty=PARTY, tl=document.getElementById('title'), tDisp=tl?tl.style.display:'', sv=null, bad=[];
      function BC(n){ this.posted=[]; R.chans.push(this); }
      BC.prototype.postMessage=function(m){ this.posted.push(m); };
      BC.prototype.close=function(){};
@@ -11398,7 +11388,7 @@ window.__REGRESS=[
      }
      function sent(t){ var c=NET.bc, n=0, i; if(c&&c.posted) for(i=0;i<c.posted.length;i++) if(c.posted[i]&&c.posted[i].t===t) n++; return n; }
      function guard(){
-       if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'this build has no party launch mode (?party=1)';
+       if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'SKIP: the party launch mode was retired (cw-cx-demoplain)';
        if(ARCADE.on) return 'SKIP: the arcade is on';
        if(NET.on) return 'SKIP: a party link is up in the fixture';
        return null;
@@ -11424,7 +11414,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'30.79', what:'party launch mode (his Q28): stale player 2 marks (p2raid and p2live set 10 s ago by a killed window) do not stop a party boot from entering the arcade, and the marks are cleared',
    run:function(){
-     if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'this build has no party launch mode (?party=1)';     var R={chans:[],opens:0,reloads:0,navs:[],joins:[]}, oOpen=window.open, oBC=window.BroadcastChannel, hadBC=('BroadcastChannel' in window), oH=netHost, oJ=netJoin, oStart=NET.start, oRel=partyReload, oNav=partyNav, oParty=PARTY, tl=document.getElementById('title'), tDisp=tl?tl.style.display:'', sv=null, bad=[];
+     if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'SKIP: the party launch mode was retired (cw-cx-demoplain)';     var R={chans:[],opens:0,reloads:0,navs:[],joins:[]}, oOpen=window.open, oBC=window.BroadcastChannel, hadBC=('BroadcastChannel' in window), oH=netHost, oJ=netJoin, oStart=NET.start, oRel=partyReload, oNav=partyNav, oParty=PARTY, tl=document.getElementById('title'), tDisp=tl?tl.style.display:'', sv=null, bad=[];
      function BC(n){ this.posted=[]; R.chans.push(this); }
      BC.prototype.postMessage=function(m){ this.posted.push(m); };
      BC.prototype.close=function(){};
@@ -11449,7 +11439,7 @@ window.__REGRESS=[
      }
      function sent(t){ var c=NET.bc, n=0, i; if(c&&c.posted) for(i=0;i<c.posted.length;i++) if(c.posted[i]&&c.posted[i].t===t) n++; return n; }
      function guard(){
-       if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'this build has no party launch mode (?party=1)';
+       if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'SKIP: the party launch mode was retired (cw-cx-demoplain)';
        if(ARCADE.on) return 'SKIP: the arcade is on';
        if(NET.on) return 'SKIP: a party link is up in the fixture';
        return null;
