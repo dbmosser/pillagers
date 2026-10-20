@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.86 - AIR STRIKE CLEARS THE HELD ITEM
+
+Co-op hunt while he was away. The current corpus shows the air-strike plate overlapping the held-item panel at 1080p in both roles. Placement did not consider that panel.
+
+MEASURED. Check 32.86 passes, and fails on v32.85.
 ## v32.85 - THE USE BAR CLEARS THE COUNTDOWN PLATE
 
 Co-op hunt while he was away. Old check 19.10 found it: since the countdown moved to a plate (v32.35, v32.36, v32.58) the bandage bar printed across the EXTRACT INBOUND line. The bar now sits 34 px higher, 8 px under the plate.

@@ -3204,7 +3204,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.85';
+var VER='32.86';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -23278,11 +23278,19 @@ function wheelPick(k){
   return handTake(k);
 }
 // The item in hand, over the belt: its picture and name, the pull-out filling, then the trigger and what it does.
+// v28.xx (cw-cx-airhandclear): the held-item panel is also an obstacle for the air-strike plate; share its actual bounds with drawing.
+function handPlateBox(){
+  var p=G&&G.player, h=p&&p.hand, c0, bw, bh;
+  if(!h||!ITEMS[h.k]||G.wheel) return null;
+  c0=(G.hotCells&&G.hotCells[0])?G.hotCells[0].y:H-LH(130);
+  bw=LH(250); bh=LH(46);
+  return {x:Math.round(W/2-bw/2),y:Math.round(c0-bh-LH(26)),w:bw,h:bh};
+}
 function drawHand(){
   var p=G&&G.player, h=p&&p.hand, it, bw, bh, x, y, c0, fl, st, vb;
   if(!h||!ITEMS[h.k]||G.wheel) return;
-  it=ITEMS[h.k]; c0=(G.hotCells&&G.hotCells[0])?G.hotCells[0].y:H-LH(130);
-  bw=LH(250); bh=LH(46); x=Math.round(W/2-bw/2); y=Math.round(c0-bh-LH(26));
+  it=ITEMS[h.k]; var hb=handPlateBox(); if(!hb) return;
+  bw=hb.w; bh=hb.h; x=hb.x; y=hb.y;
   ctx.save();
   hudPlate(x,y,bw,bh,UIC.acc,HUDC.plate);
   drawIconSprite(ctx,h.k,x+LH(30),y+bh/2,LH(34));
@@ -50937,7 +50945,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.85: While extraction is inbound the use bar stands above the countdown plate, not across it. Check 32.85 fails on v32.84',
+  now:'v32.86: The air-strike plate lifts above an item in hand when the belt is too narrow to clear it sideways. Its right edge stays aligned with the belt. Check 32.86 fails on v32.85',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -62586,12 +62594,13 @@ function airPlateAt(bw,bh,z){
   for(i=0;i<hc.length;i++) top=Math.min(top,hc[i].y);
   x=Math.round(L.x+L.w-bw);
   y=Math.round(top-64*z-g8-bh);
-  E=[HUDBOX.gear,(typeof EDGEBOX==='object'&&EDGEBOX)?EDGEBOX.pick:null,(typeof EDGEBOX==='object'&&EDGEBOX)?EDGEBOX.gun:null,(typeof EDGEBOX==='object'&&EDGEBOX)?EDGEBOX.feed:null];
-  for(tries=0;tries<4;tries++){
+  E=[HUDBOX.gear,handPlateBox(),(typeof EDGEBOX==='object'&&EDGEBOX)?EDGEBOX.pick:null,(typeof EDGEBOX==='object'&&EDGEBOX)?EDGEBOX.gun:null,(typeof EDGEBOX==='object'&&EDGEBOX)?EDGEBOX.feed:null];
+  // v28.xx (cw-cx-airhandclear): a narrow belt may need a vertical clearance above the held-item panel.
+  for(tries=0;tries<E.length+1;tries++){
     hit=null;
     for(i=0;i<E.length;i++){ o=E[i]; if(o&&o.w>0&&o.h>0&&x<o.x+o.w+g8&&x+bw>o.x-g8&&y<o.y+o.h+g8&&y+bh>o.y-g8){ hit=o; break; } }
     if(!hit) break;
-    y=Math.round(hit.y-g8-bh);
+    y=Math.floor(hit.y-g8-bh);
   }
   return {x:clamp(x,g8,Math.max(g8,W-bw-g8)),y:Math.max(g8,y)};
 }

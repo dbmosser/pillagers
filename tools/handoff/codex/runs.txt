@@ -112,3 +112,6 @@
 2026-10-20 08:11 o-11-pad-card-fixes 254s ok PARTIAL in=474479 out=8145 run=1
 2026-10-20 08:28 o-11-pad-card-fixes 63s ok DONE in=790015 out=10171 run=2
 2026-10-20 09:57 o-02-corpus-green 576s ok PARTIAL in=2733940 out=17445 run=1
+2026-10-20 10:15 o-02-corpus-green 636s ok PARTIAL in=7619248 out=38348 run=2
+2026-10-20 10:31 o-02-corpus-green 918s ok PARTIAL in=12869052 out=70084 run=3
+2026-10-20 10:35 o-02-corpus-green 203s ok PARTIAL in=15334834 out=76872 run=4

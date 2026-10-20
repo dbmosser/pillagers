@@ -1,0 +1,5 @@
+## v32.86 - AIR STRIKE CLEARS THE HELD ITEM
+
+Co-op hunt while he was away. The current corpus shows the air-strike plate overlapping the held-item panel at 1080p in both roles. Placement did not consider that panel.
+
+MEASURED. Check 32.86 passes, and fails on v32.85.

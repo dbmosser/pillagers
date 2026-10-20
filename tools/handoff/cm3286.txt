@@ -1,0 +1,7 @@
+v32.86: air strike clears the held item
+
+The air-strike plate lifts above an item in hand when the belt is too narrow to clear it sideways. Its right edge stays aligned with the belt.
+
+Check 32.86. Fails on v32.85.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

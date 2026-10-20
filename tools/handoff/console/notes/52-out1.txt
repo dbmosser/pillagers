@@ -1,0 +1,20 @@
+20.89: in tradermodal the line box starts 27 px above the bottom edge of the panel
+21.53: PRESS ANY KEY sits on the recorded belt row (899 of 977)
+22.88: the story body was drawn on one line, not wrapped; only 23 of 192 story characters were drawn
+23.30: no SHIELD tag drawn on the shielded player
+23.42: no controls card (MOVE and SWITCH GUN) on a shielded drop; the card is gone at once when the shield drops
+23.44: the arcade pause box shows arcendbtn,fbbtn,pausesetbtn,pausex,resumebtn,wnbtn, not only RESUME and END RUN (and FEEDBACK, his answer 38)
+23.81: line 10 repeats line 7: POLISH PASS 30. More fixes to the screen; line 20 repeats line 18: POLISH PASS 20. More fixes to the screen; line 26 repeats line 24: POLISH PASS 15. More fixes to the screen
+23.85: Settings: #closesettings "close" 0px tracked NaNem
+24.21: trader: CLOSE is 100 px in from the right edge of its frame; trader: CLOSE is 877 px up from the foot of its frame; mf: CLOSE is 100 px in from the right edge of its frame; mf: CLOSE is 877 px up from the foot of its frame; dev: CLOSE is 888 px up from the foot of its frame; mirror: CLOSE is 100 px 
+24.27: the key letter E was not drawn on a key of its own
+24.65: the answer line is 911px off the level of CLOSE in the footer
+24.87: the Keys list has no width cap (none)
+24.98: the detail pane does not show the row under the mouse (Dev cheat box); the detail pane does not carry the description
+25.01: with 1 machines on him 4 oscillators run, more than one siren voice; with 3 machines on him 4 oscillators run, more than one siren voice; with 6 machines on him 4 oscillators run, more than one siren voice
+25.57: control: the backpack Marksman Rifle did not reach the armoury; a MK II carried out in the backpack was not kept (null)
+25.70: threw TypeError: Cannot read properties of undefined (reading 'optic')
+26.26: dmr has no rarity variant; whisper has no rarity variant; the Marksman Rifle is not purple with a gold twin; threw: Cannot read properties of undefined (reading 'dmg')
+26.30: threw: Cannot read properties of undefined (reading 'r')
+26.38: threw: Cannot read properties of null (reading 'replace')
+ALL DONE

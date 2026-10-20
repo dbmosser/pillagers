@@ -1,0 +1,19 @@
+29.55: the pause buttons are a row, not a column; Abandon is not set apart (0px)
+29.61: the run info heading is #efe9dc, not the accent #e6ff3d; the run goals heading is #aaa498, not the accent #e6ff3d
+29.63: the Settings list starts at 44, a full width wall; the Settings list ends at 1844; the Keys list starts at 44
+29.64: Keys action names do not start with a capital
+29.67: detail pane is beside the list, not under it
+29.72: settings list is 910px wide (limit 830)
+29.75: stepper is 41px short of the row edge (limit 40) DBG iw=1888 row=641 bl=340 bw=288 ml=0px html=<div class="row"><div style="flex:1"><b>Edit the words</b><div class="hint">Turns every line of text in the game into something you can click and type over. Click a word anywhere, in a menu or on the scree
+29.77: tab 1 (AUDIO) wraps to a second row
+29.80: Settings title sits at 44px (needs 99); Settings list ends at 899px, past the card; Keys title sits at 44px (needs 99)
+29.94: a cell label is 16px, not 16px x 0.903
+29.98: the settings X border is rgba(0, 0, 0, 0), not line-hi; the Keys section label is rgb(170, 164, 152), not tx-1 rgb(239, 233, 220)
+30.20: the backdrop blur is 2px: under 16px only when the hub labels are not drawn behind the attract pages, and never under 4px
+30.24: the empty line is not centred: left
+30.37: the box is not shown on the pause menu (361x51)
+30.91: PASS
+30.97: the focus ring is not amber: none
+31.04: PASS
+31.67: PASS
+ALL DONE

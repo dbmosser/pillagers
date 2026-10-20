@@ -1,0 +1,5 @@
+20.89: PASS
+24.21: CLOSE is at 55, 55, 43, 55, 8 px down in the full windows, not at one height
+24.87: PASS
+26.26: PASS
+ALL DONE

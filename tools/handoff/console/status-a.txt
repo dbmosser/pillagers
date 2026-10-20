@@ -1,1 +1,1 @@
-10-20 09:56 running 51-corpus-old-b on Claude Code (your plan: week 58% of the 28.8% line, 5-hour 2%)
+10-20 10:29 waiting: another helper is just starting (memory check again in a few minutes); 53-corpus-reds-b kept

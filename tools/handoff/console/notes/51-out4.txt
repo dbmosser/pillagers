@@ -1,0 +1,12 @@
+19.64: PASS
+19.10: PASS
+18.78: PASS
+18.69: THE COLD MILE: bond room [176,45,244,63] prints into receiving apron [179,57,293,77]; THE COLD MILE: blast vault [871,173,937,191] prints into blastline [853,166,915,186]
+18.25: PASS
+18.03: PASS
+18.01: PASS
+17.82: PASS
+16.65: PASS
+16.13: PASS
+15.86: SKIP: v32.45 design A draws the one offered sector as a header and a map with no card box (display:contents), so a pad has no second card to pick; alarm logged 2026-10-20
+ALL DONE

@@ -1,1 +1,1 @@
-10-20 10:03 no tasks left
+10-20 10:29 running 52-corpus-reds-a on Claude Code (your plan: week 59% of the 29.1% line, 5-hour 6%)

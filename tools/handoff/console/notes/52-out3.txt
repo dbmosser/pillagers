@@ -1,0 +1,20 @@
+20.89: in tradermodal the line box starts 27 px above the bottom edge of the panel
+21.53: PASS
+22.88: PASS
+23.30: PASS
+23.42: PASS
+23.44: PASS
+23.81: PASS
+23.85: PASS
+24.21: CLOSE is at 56, 56, 44, 56, 49 px down in the full windows, not at one height; the window frame has no cut corner (none)
+24.27: PASS
+24.65: PASS
+24.87: the Keys list has no width cap (none, 1993 wide)
+24.98: PASS
+25.01: PASS
+25.57: PASS
+25.70: PASS
+26.26: the Support MG is not blue with a purple twin (elite, gold)
+26.30: PASS
+26.38: PASS
+ALL DONE
