@@ -20,3 +20,5 @@ with a check that FAILS on the old build. If it links fine, change nothing in th
 
 Report in tools/handoff/console/notes/47-check-demo-link-offline.md: offline seconds (3 tries), control seconds, raid result.
 TASK DONE with the numbers (and the ship, if one was needed); TASK PARTIAL with what is left.
+
+CLOSED 10-20 09:00 (coordinator): measured by the coordinator (see notes/47-check-demo-link-offline.md): offline links in about 5 s, no game change. Residual: no network at all means no link.

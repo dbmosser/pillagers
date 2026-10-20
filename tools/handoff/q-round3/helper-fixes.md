@@ -73,3 +73,4 @@ STATUS 10-19 night (coordinator, in the VM):
 - Queued: 30 as task 44-ui-score-hits. New: 45-ui-backpack-trophy (career screens 23 and 66, no owner, answer 56).
 - Still open: 29 (raid screens 19, 21, 33 at 2 and 50 at 3; c-02 used its 6 tries), 31 (#6 and #11 wait on him), 42, 44, 45. 25 done (v31.10, v31.31, v31.62 cards at 90 percent). 41 and 43 queued as task 46.
 - 10-20 08:05 coordinator: 42 queued as task 47 (offline demo link test). 44 waits for the party lock (Thu 10/29), since stable is still 29.09 and the sheet's line on it is still true. 45 stays a standing note.
+- 10-20 09:00 coordinator: 42 done. The demo links offline in about 5 s (3 tries; 5.5 to 7 s with internet). With no network at all it does not link: keep the PC on wifi or a cable at the party. Add that line to the sheet at the lock (item 44).

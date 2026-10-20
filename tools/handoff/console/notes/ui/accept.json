@@ -975,19 +975,19 @@
   "when": "2026-10-20T06:44"
  },
  "74-pad-call-of-duty": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The window has the right structure, with a title, an x, a list on the left and a pad diagram on the right. The craft is broken, though: the layout selector overlaps its own counter, the diagram labels collide, and the same bindings appear three times.",
+  "verdict": "A tidy, consistent full-card window with a clear title and X, but the layout selector is broken and the controller diagram is cluttered, so it reads as a clean utility screen and not a polished one.",
   "findings": [
-   "P0 layout selector row (top left): Rebuild the selector as a fixed 56px-tall row: a 56x56 left arrow, a centred name at 24px, a right arrow, and the counter in tx-2 placed after the right arrow. The focus ring should be a 2px lime outline on the whole control that doesn't overlap the counter. Remove the stray cursor bar.",
-   "P0 pad diagram, d-pad and sticks: Draw the d-pad as one 120px cross with a single arrow glyph per arm, and put the text labels in the right-hand list. Make the sticks 90px circles with a single 20px label. Space the face buttons 44px apart. Raise the controller outline to --ui-line-hi and give the body a --ui-raised fill.",
-   "P1 right pane, bindings table: Keep the diagram with short labels on the buttons, and either drop the table or drop the left list. If the table stays, use 20px tx-1 values and a 16px tx-2 key column, and remove the divider rule.",
-   "P1 left list: Show 8 rows at 56px with 20px text. Use a raised chip, 72x36, with 20px tx-1 text. Brighten the group labels to tx-2 at 16px with a 24px top gap. Shorten the parentheses, for example 'prev gun' with a 'hold: zoom' chip.",
-   "P1 footer: Show hints as key chips: [a] rebind  [b] back, at 16px with tx-1 keys and tx-2 verbs, in a 72px footer row. Shorten the button to 'reset' with a 48px tall focus ring."
+   "P0 layout selector (top left, 120-545 x 123-178): Rebuild it as one 48px-high row: [‹] 220px name cell [›], with '2 / 6' placed outside, 16px right of the › button. Draw the focus as a single 2px lime outline on the whole control, with no inner box and no glow. Keep 16px padding inside the cell.",
+   "P1 controller diagram (d-pad and d-right label): Draw the d-pad as a 56px cross with one 16px label outside each arm, and no boxes. Give every label the same 16px style, drop 'd-right' as a loose floater, and keep 16px clearance from the sticks. Better still, cut either the diagram or the legend, since the left list already holds the full mapping.",
+   "P1 hierarchy, whole screen: Make the diagram the star, scaled up about 1.3x and centred in its pane, and keep the legend at 16px tx-2. Show the selected row in the left list with a 3px lime left bar. Leave the rest of the list quiet.",
+   "P1 left binding list: Add a 24px bottom fade on the list. Make the scrollbar 6px, tx-2 at 60%. Put 24px of space above each group label, and set the labels to tx-2 at 16px with +.04em tracking. Shorten the names to 'previous gun' and 'next gun', and move the hold action into a second key chip.",
+   "P1 footer hint (bottom right, 'a rebind b back'): Set it at 16px with each key as a 24px chip: [a] rebind [b] back, with 16px between the pairs. Align it to the baseline of 'reset to defaults'."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-05-pad-presets-recipes-3/74-pad-call-of-duty-1080.jpg",
-  "task": "o-05-pad-presets",
-  "when": "2026-10-20T06:34"
+  "pic": "tools/handoff/console/notes/shots/o-11-pad-card-fixes-recipes-1/74-pad-call-of-duty-1080.jpg",
+  "task": "o-11-pad-card-fixes",
+  "when": "2026-10-20T12:27"
  },
  "74-pad-lefty": {
   "score": 2,
@@ -1005,19 +1005,19 @@
   "when": "2026-10-20T06:35"
  },
  "74-pad-pillagers": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "the layout is organised and all lower case, but the layout selector is visibly broken, the controller diagram is cramped and overlapping, and the screen is dense and uniformly grey with no clear focal point.",
+  "verdict": "A clean, consistent dark card with a clear title and X, but the layout selector's focus box is malformed, the pad diagram has overlapping labels, and the same bindings appear three times.",
   "findings": [
-   "P0 layout selector (top left, 'pillagers 1/6'): Make the selector one 48px-tall control with ‹ and › cells of 48x48 and a centred value cell. Put the lime 2px focus outline around the whole control. Move the counter to the right of the value with 16px padding, outside the outline. Remove the white bar.",
-   "P0 controller diagram (d-pad cluster, 'move ls' stick, 'aim rs' stick): Put d-pad labels on leader lines outside the pad, or use a clean plus shape with 16px glyphs. Space labels at least 8px apart. Enlarge the stick circles to 72px and lay out 'move' and 'ls' on one line. Raise the silhouette stroke to --ui-line-hi.",
-   "P1 whole screen, hierarchy: Keep the diagram as the hero and drop the lower two-column summary, or drop the diagram labels and keep only the summary. The left list stays as the only editable control. If both stay, set the summary to --tx-2 at 16px so the diagram reads first.",
-   "P1 left rebind list: Set row names to 20px f-cond 600 in --tx-1 and section headers to 16px in --tx-2 with +.04em tracking and 16px extra top margin. Give the scrollbar a 12px track. Show the focused row with an --ui-raised fill and a 3px lime left bar. Align the list's bottom edge to a full row.",
-   "P1 footer hint 'a rebind b back': Render the hints as key chips ('a' then 'rebind', 'b' then 'back') at 18px, --tx-1 for keys and --tx-2 for actions, with 24px between pairs. Align the footer baseline with the reset button in a 72px footer row."
+   "P0 layout selector (pillagers 1/6): Make the control one 48px-high bar with the arrows inside it. Draw focus as a 2px --acc border with no glow, 4px radius, and no caret. Put '1 / 6' to the right of the arrow, 16px from it, clear of the box.",
+   "P1 controller diagram (d-pad, d-right, d-down labels): Put every label in the same 4px-radius chip with 8px padding at 16px. Move the d-pad labels out to the left of the pad with leader lines, 16px clear of the cross. Remove the overlaps.",
+   "P1 whole card: left list, diagram, bottom legend: Delete the bottom legend, or the diagram's text labels. Keep the diagram with short chips only and the left list as the rebind list. Give the diagram panel the space the legend freed.",
+   "P1 left list (rows, scrollbar, section headers): Set section headers to 16px, +.04em, tx-2, with 24px space above. Set rows to 20px on 48px pitch. Show a focused row as --ui-raised with a 3px lime left bar. Raise the scrollbar thumb contrast to --ui-line-hi.",
+   "P2 footer 'a rebind b back' and 'reset to defaults': Render the hints as chips: [a] rebind  [b] back, at 16px, tx-1 key and tx-2 label, aligned on the same baseline as the reset button. Align the reset button's left edge with the list column."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-05-pad-presets-recipes-3/74-pad-pillagers-1080.jpg",
-  "task": "o-05-pad-presets",
-  "when": "2026-10-20T06:35"
+  "pic": "tools/handoff/console/notes/shots/o-11-pad-card-fixes-recipes-1/74-pad-pillagers-1080.jpg",
+  "task": "o-11-pad-card-fixes",
+  "when": "2026-10-20T12:27"
  },
  "13-mainframe-rewards": {
   "score": 2,
