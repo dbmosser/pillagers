@@ -79120,7 +79120,7 @@ window.__REGRESS=[
        try{ __topClear(); }catch(_c){}
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'13.26',what:'the map screen shows every player the same sector line, with the map's real facts and without first contact, containers or median haul, whether or not that player has raided there (his baked edits matched only his own run counts)',
+  {v:'13.26',what:'the map screen shows every player the same sector line, with the real map facts and without first contact, containers or median haul, whether or not that player has raided there (his baked edits matched only his own run counts)',
    run:function(){
      if(typeof renderSector!=='function'||typeof FIXED_MAPS==='undefined'||typeof SECTOR_MEAS==='undefined') return 'SKIP: this fixture cannot draw the map screen';
      var host=document.getElementById('sectorlist'); if(!host) return 'SKIP: there is no map list to draw into';
