@@ -10852,7 +10852,8 @@ window.__REGRESS=[
        }
        try{ document.getElementById('keysmodal').classList.remove('on'); }catch(_k){}
        openSettings('display');
-       rows=document.querySelectorAll('#setlist .row:not(.setjump)');
+       // 10-20 (coordinator): the daily restore row puts its buttons under its label on purpose (cw-cx-dailyrestorefinish), so it is the one row left out
+       rows=document.querySelectorAll('#setlist .row:not(.setjump):not(.save-restore)');
        if(rows.length<4) bad.push('too few settings rows');
        for(i=0;i<rows.length;i++){ if(rows[i].offsetHeight>0) hs[Math.round(rows[i].getBoundingClientRect().height)]=1; }
        for(i in hs) ks++;
