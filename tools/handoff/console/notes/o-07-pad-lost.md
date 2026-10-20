@@ -48,3 +48,14 @@ Verified: PowerShell script parses; the mk script is ASCII; the draft check and 
 
 Still missing: the supplied two-window camera run and critic results. The installed runner ignores camera-recipes.json. The coordinator must run camera-run-request.json outside this sandbox and return the six pictures, report and critic findings. No fresh ship is needed to obtain that evidence. Check 31.90 is already recorded as passing after the original ship and failing on v31.89.
 
+
+--- codex run 2026-10-19 21:54 ---
+2026-10-19, continued from v32.01.
+
+The shipped J8 implementation remains present. Existing gate records still show check 31.90 passing and failing on v31.89. No new game ship or fixture edit is needed. The renamed key cw-cx-o07-padreturn refers to the already integrated cw-cx-padlost / 42137018 change; do not apply the old patch a second time.
+
+Updated the six camera recipes to run the actual two-player demo rather than career. Fixed the demo staging branch: arcadeJoinAsk is host-only, so the guest now calls arcadePadAtt(true,true), which sets its request state and sends arcjoin through the real channel. This fixes a camera helper, not game behavior. The generator now uses its own standalone staging helper instead of another task folder, so the handoff survives other job cleanup.
+
+Regenerated camera-recipes.json, stage-pad-lost-pair.js and camera-run-request.json. Local validation: current inline game JavaScript, draft regression check, six scene scripts and predicates all parse; mk script remains ASCII. No browser execution occurred. The changed recipe file is ready for the next lane camera round.
+
+No task camera output directory or critic result exists in the shared repo. The installed tools/codex-lane.sh still ignores camera-recipes.json and only photographs after a fresh ship. Coordinator: run the exact command in camera-run-request.json, return report.json, all six pictures and critic findings. Completion still needs that real two-window runtime and visual evidence; sandbox rules prohibit starting the camera here. Do not create another game ship merely to trigger pictures.

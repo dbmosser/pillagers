@@ -72,3 +72,16 @@ Task remains partial: all 12 active screens are below this task finish line in t
 --- lane e run 2026-10-19 (Claude Code) ---
 Stopped at the six-try limit (his 2.83 b); no new ship, no new pictures. Best versions stay the v31.82 pictures in shots/12-r7-after (table above).
 What would actually move scores, and is not a restyle: the camera stages for 54 (old beacon path, should use __endRaid like 53), 55 (zero score), 56 (empty board) and 53 do not show the states named. Those stages live in tools/handoff/shots/ui-screens-js.json, which workers change only by asking in questions.md (asked below). Until they are fixed the critic scores for those four are scores of the wrong picture.
+
+--- lane a run 2026-10-19 (Claude Code, v32.01) ---
+Stopped at the six-try limit (his 2.83 b). No ship, no game change. Took new before pictures (shots/12-r8-before: 46 52 55 56 62 64) and ran the critic on 52 and 46 at v32.01: 52 = 2, 46 = 3. Same flips as before (it asked for the hero in tx-1 on 52 while earlier runs dimmed the zero; it now asks to REMOVE the x on 46 while Q43 wants an X; it asks for 90 percent cards on small result cards, which would leave 52 hollow). Camera stages for 53 to 56 are still the old ones (asked in questions.md 10-19), so those four scores are of the wrong picture.
+Best versions stay the v31.82 pictures in shots/12-r7-after. Still open and safe: 52 hero tx-1 even at zero, drop the 'score' label, 'ended early' under the hero in warn.
+
+--- lane a run 2026-10-19 late (Claude Code) ---
+Stopped at the six-try limit (his 2.83 b). Camera stages for 53 to 56 are still not restaged (ui-screens-js.json has no commit since v31.26; asked in questions.md 10-19). No ship, no pictures. Best versions stay shots/12-r7-after. A next run is useful only after those four stages show their named states.
+
+--- lane a run 2026-10-19 night (Claude Code) ---
+Stopped at the six-try limit (his 2.83 b). ui-screens-js.json still has no commit since v31.26, so stages 53 to 56 still show the wrong state (asked in questions.md 10-19, twice). No ship, no pictures. Best versions stay shots/12-r7-after. A next run is useful only after those four stages are restaged.
+
+--- lane a run 2026-10-19 later (Claude Code) ---
+Stopped at the six-try limit (his 2.83 b). ui-screens-js.json still has no commit since v31.26 and no uncommitted edit, so stages 53 to 56 are still not restaged (questions.md 10-19, three times now). No ship, no pictures. Best versions stay shots/12-r7-after.

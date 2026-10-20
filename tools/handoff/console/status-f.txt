@@ -1,1 +1,1 @@
-10-19 21:19 running 13-ui-end-cards on Claude Code (your plan: week 51% of the 22.4% line, 5-hour 13%)
+10-19 21:54 off in the 10 GB VM (CLI_ALWAYS is empty in caps.txt); lanes a, b and c take its jobs

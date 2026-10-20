@@ -34,3 +34,15 @@ His answers of 10-18 (memory pillagers-answers-1-78-2026-10-18.md) settle all th
 ## Run 15 (lane b): SHIPPED v31.76 cw-uc-statrows (detail stat rows 16px, dark rule). uishots and critic are REFUSED again, so no new pictures or scores. Latest pictures are shots/b-31-f6 (04, 08, 12, 14, 65). Shop tile grid already fills (auto-fill 1fr), codex 4 centred columns and racks 672px are in. Left blind: stash (04) still has stale header chrome, xp line, lime first-raid box; critic said 04 wants those gone. Not judged: 03, 05-11, 13, 15-18, 39, 41-44, 66, 67.
 ## Run 12 (lane b, evening): no ship. uishots.ps1 and critic.mjs are REFUSED by this lane's run list again (checked: the uishots command was refused), so there are no new pictures or scores. Racks (v31.57), codex grid, welcome intro (v31.60) are already in. Remaining and still blind: stash 16px type floor, shop stat rows / tile grid fill / header currency / price colours. Blind CSS on those would be guesses. Next run needs a lane that can run uishots (port 9352) and critic.
 See the RE-QUEUED block at the end of the task file. (Lane e ran this job too; it has no notes file of its own, so this is its note.)
+
+## Run 16 (lane b, 10-19): camera and critic WORK now (port 9362). No ship: Write to S\mk-cw-* was refused (both the User1 and the VM Oct26 scratchpad paths), so no mk script could be made.
+New pictures: shots/b-31-g1 (04, 08, 12, 14, 65). Critic: 04 = 2, 65 = 2 (08, 12, 14 not run).
+65 codex: shell right; P0 card 40 percent empty; P1 14px tag text, small art, header xp/stash cluster, toast over card, no focus state.
+04 stash: P0 nothing leads (hero grid), four stacked bottom strips (junk hint, freebie banner, welcome toast, first-raid strip); P1 header subtitle, type scale, mixed border styles (rarity should be a 3px bar).
+Ready change (not written, no permission): cw-uc-codexfill = CSS after the codex .cxr line: .cxgrid grid-auto-rows:minmax(150px,1fr); align-content:stretch; gap var(--sp-3); .cxi 96px; img 88px; .cxn 24px; .cxr/.cxk 18px; .cxnew 16px text. Check: open with codexOpen() (not openCodex), tile height >=149, .cxn 24px, .cxi width 96px.
+
+## Run 18 (lane b, 10-19): Write to S\mk-cw-* REFUSED again (User1 scratchpad path, permission not granted). No ship. The mk script is ready at notes/b-31-codexfill-mk.ps1.txt; a worker with scratchpad write access must copy it to S\mk-cw-uc-codexfill.ps1, preflight b cw-uc-codexfill, then ship. Coordinator: fix lane b Write permission. Not judged: 03, 05-13, 15-18, 39, 41-44, 66, 67.
+
+## Run 17 (lane b, 10-19): camera works (shots/b-31-h1: 04, 14, 65). No ship: Write to S\mk-cw-* is REFUSED again (User1 scratchpad path), so no mk script could be made. Same block as run 16.
+Codex (65) still 40 percent empty under 16 small tiles; stash (04) still has the stacked bottom strips (junk hint, freebie kit, welcome toast, first-raid strip).
+Ready to use: the whole mk script is saved as notes/b-31-codexfill-mk.ps1.txt (copy to S\mk-cw-uc-codexfill.ps1 and preflight). A worker that can write S should do it. The coordinator should fix the Write permission for lane b (S\mk-cw-*).

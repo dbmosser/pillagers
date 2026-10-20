@@ -11,3 +11,6 @@ Pictures: shots/c-31ab-before (start), c-31ag-after (end). Critic scores at the 
 5. Stray 36x2 lime tick at the card top-left on every window: critic reads it as a glitch. Find which rule draws it (a ::before on .modal and the pause box) and make it a deliberate 3x36 tab or remove it. One shared rule, so one ship.
 6. Left rail: idle items 20px tx-2, send play data as a divided utility link.
 Not looked at this run: 26-31, 49, 68-71, 73 individual scores (they share the settings CSS, expect the same findings as 72).
+- 2026-10-19 run 5 (lane c, VM): BLOCKED again. Write of mk-cw-pausebtn.ps1 refused at the VM scratchpad path. Nothing shipped. Script fully drafted (see run 4 plan; css anchor now html line 2081; fbbtn/wnbtn/abandon min-height btn-h-sm, margin-top sp-3; check scans document.styleSheets for the btn-h-sm rules). Needs the write permission on the VM scratchpad path.
+
+--- coordinator 2026-10-19 22:00 (VM) --- Requeued with fresh tries. The VM save block is FIXED (6dc93534): mk-cw-* writes to the scratchpad work again (the lane rules now also name the VM real path). v32.01 (the plain party demo) was committed and pushed by the coordinator at 21:4x; tools/publish exists. Carry on from your plan.

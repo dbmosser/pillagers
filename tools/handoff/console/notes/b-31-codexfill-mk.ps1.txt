@@ -1,0 +1,37 @@
+$g=[IO.File]::ReadAllText($(if($env:MK_SRC){$env:MK_SRC}else{'C:\claudecode\dark raiders\dark_raiders.html'}))
+function L([string]$rx){ $m=[regex]::Matches($g,$rx); if($m.Count -ne 1){ throw "anchor $rx matched $($m.Count)" }; return $m[0].Value.Replace("`r",'') }
+$a1=L "#root #codexmodal \.cxt \.cxr, #root #codexmodal \.cxt \.cxk\{ font-size:var\(--fs-label\); \}"
+$css=@'
+
+/* v28.xx (cw-uc-codexfill) b-31 step 7, critic on 65 (P0 "card 40 percent empty", P1 "14px tag text, small art"): the 16 tiles stretch to fill the card (rows share the height, 150px at least), art 96px, name 24px, rarity and kills 18px, new tag 16px. Looks only. */
+#root #codexmodal .cxgrid{ grid-auto-rows:minmax(150px, 1fr); align-content:stretch; gap:var(--sp-3); }
+#root #codexmodal .cxt .cxi{ width:96px; height:96px; }
+#root #codexmodal .cxt .cxi img{ width:88px; height:88px; }
+#root #codexmodal .cxt .cxn{ font-size:24px; }
+#root #codexmodal .cxt .cxr, #root #codexmodal .cxt .cxk{ font-size:18px; }
+#root #codexmodal .cxt .cxnew{ font-size:16px; }
+'@.Replace("`r",'')
+$r1=$a1+$css.TrimEnd("`n")
+$chk=@'
+  {v:'VER',what:'the codex tiles fill the card: 150px tall tiles, 24px names, 96px art',
+   run:function(){
+     var bad=[];
+     try{
+       codexOpen();
+       var t=document.querySelector('#codexmodal .cxt'), n=t&&t.querySelector('.cxn'), i=t&&t.querySelector('.cxi');
+       if(!t) bad.push('no tile'); else {
+         if(t.getBoundingClientRect().height<149) bad.push('tile is '+Math.round(t.getBoundingClientRect().height)+'px tall');
+         if(parseFloat(getComputedStyle(n).fontSize)<23.5) bad.push('name is '+getComputedStyle(n).fontSize);
+         if(Math.round(i.getBoundingClientRect().width)<96) bad.push('art box is '+Math.round(i.getBoundingClientRect().width)+'px wide'); }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     return bad.length?bad.join('; '):null; }},
+'@.Replace("`r",'')
+$d=[ordered]@{
+  title='Codex tiles fill the card'
+  why='UI step 7 (restyle only). The codex card was 40 percent empty under 16 small tiles; the tiles now share the card height with bigger art and 18px to 24px text.'
+  now='The armory codex fills its card with larger tiles and bigger text.'
+  edits=@( [ordered]@{ anchor=$a1; replacement=$r1 } )
+  check=$chk
+}
+[IO.File]::WriteAllText('C:\claudecode\dark raiders\tools\handoff\drafts\draft-cw-uc-codexfill.json',($d | ConvertTo-Json -Depth 6),(New-Object Text.UTF8Encoding $false))
+'written'

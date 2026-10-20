@@ -6101,6 +6101,18 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.02',what:'the codex tiles fill the card: 150px tall tiles, 24px names, 96px art',
+   run:function(){
+     var bad=[];
+     try{
+       codexOpen();
+       var t=document.querySelector('#codexmodal .cxt'), n=t&&t.querySelector('.cxn'), i=t&&t.querySelector('.cxi');
+       if(!t) bad.push('no tile'); else {
+         if(t.offsetHeight<149) bad.push('tile is '+t.offsetHeight+'px tall');
+         if(parseFloat(getComputedStyle(n).fontSize)<23.5) bad.push('name is '+getComputedStyle(n).fontSize);
+         if(i.offsetWidth<96) bad.push('art box is '+i.offsetWidth+'px wide'); }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     return bad.length?bad.join('; '):null; }},
   {v:'32.01',what:'cw-cx-demoplain: a demo selected on the normal title starts its opening map automatically, demo F2 and F8 require Ctrl, career keeps plain F2 and F8, and the retired party launch functions are absent',
    run:function(){
      if(!DEV_LOCAL) return 'SKIP: local tools are disabled on this origin';

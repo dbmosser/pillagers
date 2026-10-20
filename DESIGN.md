@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.02 - Codex tiles fill the card
+
+Co-op hunt while he was away. UI step 7 (restyle only). The codex card was 40 percent empty under 16 small tiles; the tiles now share the card height with bigger art and 18px to 24px text.
+
+MEASURED. Check 32.02 passes, and fails on v32.01.
 ## v32.01 - THE PARTY IS THE PLAIN DEMO
 
 Co-op hunt while he was away. His order of 2026-10-19: open localhost and click the demo. The separate party address mode is retired.

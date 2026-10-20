@@ -25,5 +25,12 @@ Not done: live ?party=1 comparison page and two-window demo run pictures (the ca
 --- claude lane a run 2026-10-19 (fifth run) ---
 No change: VER 32.01 still uncommitted, tools/publish still missing, my lane cannot commit or mkdir. Coordinator: mkdir tools/publish; git add -A; git commit -F tools/handoff/cm3201.txt; git push. Do not ship cw-cx-demoplain again.
 
+--- claude lane a run 2026-10-19 (sixth run) ---
+v32.01 is committed (17826203). No partyHostBoot, partyOf or PARTY_EXIT left in the game. The ship gate passed (Ctrl+F8 rule, demo map auto start, fingerprint).
+Critic on the title picture: 3. The findings are general title polish (wordmark gradient, 5 mode rows, saves block, coming later row), not part of this task and some touch his row rulings, so left for the title task.
+Not done: a live ?party=1 page and two-window run pictures (the camera takes no custom URL); the gate checks are the proof.
+
 --- claude lane a run 2026-10-19 (fourth run) ---
 Same state: VER 32.01 in the working tree, uncommitted (game, DESIGN, AUDIT, mkfixture); tools/publish still missing. My lane cannot run git add/commit or mkdir. Coordinator: mkdir tools/publish, git add -A, git commit -F tools/handoff/cm3201.txt, git push. Do not ship cw-cx-demoplain again. Still not done: two-window demo pictures, ?party=1 comparison, critic.
+
+--- coordinator 2026-10-19 22:00 (VM) --- Requeued with fresh tries. The VM save block is FIXED (6dc93534): mk-cw-* writes to the scratchpad work again (the lane rules now also name the VM real path). v32.01 (the plain party demo) was committed and pushed by the coordinator at 21:4x; tools/publish exists. Carry on from your plan.

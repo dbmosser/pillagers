@@ -1,0 +1,7 @@
+v32.02: codex tiles fill the card
+
+The armory codex fills its card with larger tiles and bigger text.
+
+Check 32.02. Fails on v32.01.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -18,17 +18,17 @@
  "04-stash-terminal": {
   "score": 2,
   "pass": false,
-  "verdict": "the card now fills the screen with an x in the corner, but the earlier advice was mostly not followed: the stash is still a dense console with a wall of small mono text, two help lines, a lime freebie bar and a toast, and no single thing the eye lands on first.",
+  "verdict": "The stash window is a dense, crowded admin panel with no hero. About ten competing text strips, tiny type and several different panel styles keep it from reading as a card from one design system.",
   "findings": [
-   "P0 card header (pillagers / the undercroft subtitle, credits row, backdrop title): delete 'pillagers' and the subtitle. set 'stash' at 32px f-cond 700 tx-1, 24px from the left edge. show credits as one 56px f-cond 800 hero or a single 20px stat, and drop xp and bag to a 16px tx-2 line. raise the scrim to .80 so the backdrop title is hidden.",
-   "P0 bottom half: key legend, 'hover an item and press j' line, freebie bar, toast: delete the j hint and the first-raid sentence. shorten the freebie to 'issued gear: pistol, 2 bandages, frag, plate'. keep the legend as one 14px footer line. move the toast to top-centre and dismiss it after 3s. remove the empty row at y≈870.",
-   "P0 lime accents: first-raid banner, freebie bar, gun key digits, stash tab, loadout title: make 'take the freebie kit' a filled --acc button, 56px high, --acc-ink text, 20px f-cond 700, right aligned. remove the banner border and the olive bar fill (use --ui-panel). set the gun key digits and labels to tx-1.",
-   "P1 right column: backpack, tactical belt, gun keys, item wheel: show the backpack as two full rows with no clip. use one 56px cell on an 8px gap for belt, gun keys and wheel. delete the 'guns' caption. move gun keys and wheel to a tab, or a 2-column block aligned to the 24px padding. align reset to the right edge at 16px.",
-   "P1 type throughout: use f-cond 600 at 16px minimum with +.04em tracking, section headers 20px f-cond 700 tx-1. keep f-mono only for table numbers. fix the tab row height to 56px."
+   "P0 whole window hierarchy: Make the stash grid the hero: 96px tiles filling the pane, with the empty space either filled by empty slot outlines or the pane cut down to the grid. Cut the loadout column to backpack plus belt. Move gun keys and the item wheel into their own tab or a pad-bound page.",
+   "P0 bottom stack: key legend, hint line, freebie kit banner, welcome pack toast: Delete the junk hint and the welcome toast. Cut the freebie banner to 'freebie kit' plus one lime button. Keep one footer row of key hints at 14px. Likewise delete the lime-bordered tutorial strip 'first raid: drag a gun...' (an explaining sentence).",
+   "P1 header row, top-left and top-right: One 32px title 'stash'. Show money as '$900' in tx-1 at 20px, with xp and bag capacity as 16px tx-2 labels on an 8px grid. Drop the subtitle. Hide or move the background hub label so it is not clipped.",
+   "P1 type scale across the card: Use only the 5 token sizes, with a 16px minimum for anything read. Move sort, armory and trophies out of the tab row into a header menu or a second row. Use the same letter-spacing (+.04em) for every label.",
+   "P1 gun keys and item wheel block (bottom right): Give cells 48px of height and a 16px label. Align the reset buttons to the section headers on the same baseline, drop the 'wheel' filler cell, and show a lime 2px border on the focused cell."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-31-f6/04-stash-terminal-1080.jpg",
-  "task": "b-31-ui-undercroft",
-  "when": "2026-10-19T00:54"
+  "pic": "tools/handoff/console/notes/shots/b-31-g1/04-stash-terminal-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-20T01:46"
  },
  "05-sector-page": {
   "score": 2,
@@ -193,17 +193,17 @@
  "21-raid-hud-calm": {
   "score": 2,
   "pass": false,
-  "verdict": "The new version is lower case, the ammo panel has a real hierarchy and the career HUD is a tidy list, but the HUD is still a pile of unrelated boxes: the cheat sheet is still always on, the minimap and run info are bulky, the zone label is clipped behind the stats, and the type is tiny.",
+  "verdict": "The raid hud has a strong ammo block and a readable hotbar, but the screen has about five different panel treatments, three competing amber and lime accents, a permanent controls cheat sheet and loud top-right stat boxes, so it looks stacked together rather than designed.",
   "findings": [
-   "P0 controls cheat sheet (bottom centre, x492-902, y697-867): Hide it by default and show a single 'f1 controls' chip (16px tx-2) for the first 30s only. If it stays, use 16px text, 24px padding, an --ui-panel fill and a 1px --ui-line-hi border, with keys in tx-1 and actions in tx-2. Remove the grip glyph.",
-   "P0 right column (x1582-1902, y18-695): Merge the four rows into one panel with 16px tx-2 labels and right-aligned 20px tx-1 numbers, 8px row gap, 24px inset. Move the zone label under the minimap or into the top-centre HUD. Shrink the minimap to about 240px, with a 1px --ui-line-hi border and 4px radius, inset 48px from the screen edge.",
-   "P1 run info panel (x1583-1902, y533-695) and extraction chip (y702-725): Give all section heads the same 16px tx-2 style, with the title at tx-1 and 20px. Use a hanging indent for wrapped contract lines, or truncate them with an ellipsis. Dock the extract chip 8px under the panel, flush to the same left edge. Inset the whole column 48px from the right edge.",
-   "P1 ammo panel (x1578-1910, y893-1052) and status tag (x1720-1905, y803-832): Put the 'b backpack' hint at 16px tx-2 in the bottom row, with the item count and value as a single 16px tx-2 right-aligned line. Make the status tag a tx-1 text on --ui-panel with a 1px --ui-line-hi border and no amber. Keep 8px clearance above the panel and 48px from the right and bottom edges.",
-   "P1 current pillagers list (top left, x10-390, y152-258): Show it on tab only, or at 40% opacity. Use an --ui-panel fill, a 1px --ui-line-hi border, a 4px radius, 24px padding and a 28px row pitch. Make the title tx-1 at 16px, and mark your own row with the accent. Inset it 48px from the edge."
+   "P0 top-right career column (credits, xp, stash, backpack) at x1600-1900, y20-195: Keep only credits and backpack, in one panel 220x72 with 16px tx-2 labels and 20px tx-1 numbers at 70% fill. Drop xp and stash from the raid hud. Delete the duplicate '5 items $1,770' line in the ammo card.",
+   "P1 bottom-centre controls cheat sheet, x495-900, y697-865: Remove it from the calm state. Show it only on first-run or while f1 is held. If it stays, cut it to 4 rows at 16px with a --ui-panel fill.",
+   "P1 panel and border consistency: leaderboard (left), run info (right), career boxes, ammo card, key legend, toasts: Use one hud panel component: fill #16191b at 85%, 1px #4a5257 border, radius 4px, 16px padding, optional 2px lime top tab on the star panel only (ammo). Apply it to all six.",
+   "P1 accent colour use: 'current pillager bots' title and 'concealed · in cover' in amber, 'fire' chip in lime, ammo tab in lime, extract 152m in teal, hp in green, backpack row bright white: Make the leaderboard title tx-2 at 16px. Draw 'concealed' in tx-1 with a small --ok glyph. Keep lime only for the focused hotbar slot and the primary prompt. Make the 'fire' chip a tx-1 outline at 16px.",
+   "P1 hotbar tooltip 'scav pistol fire use' at x885-1040, y932-953: Remove the tooltip in the calm state, or move it up 8px and set 16px text with no fill. Show it only on slot change."
   ],
-  "pic": "tools/handoff/console/notes/shots/02-after10/21-raid-hud-calm-1080.jpg",
-  "task": "02-raid-hud-redesign",
-  "when": "2026-10-18T22:57"
+  "pic": "tools/handoff/console/notes/shots/c-02-r15/21-raid-hud-calm-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-20T01:49"
  },
  "22-raid-map-open": {
   "score": 2,
@@ -341,19 +341,19 @@
   "when": "2026-10-18T22:04"
  },
  "50-arcade-hud-live": {
-  "score": 3,
+  "score": 2,
   "pass": false,
-  "verdict": "lower case and a few small cleanups are the only real gains; the HUD still sits in the screen corners with no safe-zone inset, and none of the earlier P0/P1 layout fixes (labels clear of the hotbar, flat vitals, one active hotbar slot, one run-goals title) were applied.",
+  "verdict": "The raid HUD is readable but has no shared system: the bottom-left, hotbar and ammo panels each use a different frame, bar and type size, and the minimap, goals and extract tag are cluttered, so it still looks like a template pass.",
   "findings": [
-   "P0 bottom-left vitals and hotbar (x≈24-535, y≈965-1068): Fix the bars at 360px wide (x=96-456), flat 10px, on --ui-line tracks. Set hp to --ok, stamina to --acc, armour to tx-2. Put 16px labels and values left of or above the bars. Start the hotbar at x≥570 with 24px clear. Inset the block 96px from the left and 54px from the bottom.",
-   "P0 top-left, 'f1 controls' (x≈22-135, y≈155-180) and the green terrain patch behind it: Make it a 16px tx-2 legend at x=96, y=1026 on a --scrim chip, or delete it. Keep every world label at x≥96.",
-   "P1 right 'run info / run goals' panel (x≈1582-1900, y≈348-495): Delete 'run info'. Use one 20px tx-1 'run goals' title with 16px tx-2 rows on a 32px pitch and right-aligned sp values. Add 24px padding, a 1px --ui-line-hi border, and a 16px gap under the minimap. Make the caret a 48px close target.",
-   "P1 hotbar (x≈570-1555, y≈950-1060) and tooltip (x≈870-1050, y≈925-950): Give only the active slot a 2px --acc border on --ui-raised. Give all others a 1px --ui-line border with no tint. Drop the tooltip chip, or make it a 16px tx-2 legend. Set slot numbers and counts at 16px.",
-   "P1 bottom-right ammo panel (x≈1578-1910, y≈870-1020): Inset the panel to x=1824 (96px margin). Use a --ui-panel fill at 90% and a 1px --ui-line-hi border. Make the name 20px tx-2 and keep 56px 800 for the 60. Make the lime tab 2px by 36px at the top."
+   "P0 top-right minimap and run info stack: Frame minimap and run info as one panel P (fill #16191b at 90%, 1px #4a5257 border, 4px radius, 24px padding). Leave a 16px gap between them. Make the minimap fill dark grey with a 16px 'n'. Make 'run goals' 16px tx-2 and the goal lines 20px tx-1 with 8px row spacing. Put the +sp values in a right-aligned lime column. Move run info to the 5% margin and drop the collapse caret.",
+   "P0 bottom-left status stack (standing, armour, stamina, hp): Use one bar component: 14px tall, #1e2225 track, 1px #2e3337 border, 4px radius, 8px gap. Labels go in a left column at 16px tx-2 and numbers go right-aligned at 20px tx-1. Make hp the only bold bar (56px hero or a 24px fill). Show armour as a thin blue bar and stamina as a thin teal bar. Turn 'standing' into a 16px chip with 24px padding, using the same panel style.",
+   "P1 bottom-right ammo panel: Use 4px radius with no chamfer. Set the weapon name to 16px tx-2 and keep the 56px 800 number. Make '/ 360' 24px tx-2. Align the panel bottom to the hotbar bottom (y=1054) and the right edge to 1824. Make its height match the hotbar (about 104px).",
+   "P1 hotbar and its tooltip tab: Show focus as one cue only: a 2px lime border and raised fill #1e2225. Show rarity as a 3px bar along the bottom of the slot, in the rarity colour. Raise the empty-slot icon contrast above 4.5:1. Set the slot numbers to 16px tx-2. Fold the tooltip into a panel P with a 16px gap above the bar and a 16px key hint. Keep lime for the focus border only.",
+   "P1 top-centre score card and 'extract 148m': Move 'extract 148m' into the score card as a third line, or into its own chip (panel fill, 16px #47d8c6 text, 8px padding) 16px below the card. Offset the card 24px from the top. Show the timer as a 32px 700 figure and 'score' as a 16px label."
   ],
-  "pic": "tools/handoff/console/notes/shots/02-after10/50-arcade-hud-live-1080.jpg",
-  "task": "02-raid-hud-redesign",
-  "when": "2026-10-18T22:57"
+  "pic": "tools/handoff/console/notes/shots/c-02-r15/50-arcade-hud-live-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-20T01:49"
  },
  "52-arcade-run-over": {
   "score": 3,
@@ -403,17 +403,17 @@
  "65-codex": {
   "score": 2,
   "pass": false,
-  "verdict": "The codex is still a small, cramped grid of mismatched tiles floating in the top half of an otherwise empty card, with the same unreadable header stats and no visible focus state, so the earlier advice was not followed.",
+  "verdict": "The window shell is right (centred card with an x), but the grid fills only the top half of the card, leaving a large empty void. The type is small and the headline numbers are crowded, so it looks unfinished.",
   "findings": [
-   "P0 grid and empty lower card (y 530-950): Stretch the tiles to the content width (about 1680px, 4 columns, 16px gap) and make each row about 160px tall with a 96px icon, so the grid reaches about y 900. Or add a right-hand --ui-raised detail pane showing the selected weapon large. Dock the toast to a fixed corner of the screen, outside the card.",
-   "P1 tile sizes (rows about 86, 86, 82, 82px tall; row y starts 143, 245, 347, 444): Fix every tile at one size (e.g. 322x96) with a 16px gap. Anchor the name at the same top offset (16px). Print 'kills 0' or a blank third line on every tile so the lines align.",
-   "P1 header right: '48,250 credits 212,000 xp stash 8,405 bag 0': Remove the stats from this window. If they stay, show '$48,250' as a 20px tx-1 value with a 16px tx-2 label, with the same 24px gap for every pair, and leave 32px before the X.",
-   "P1 tile text: rarity/category lines and 'not found' tiles: Set the minimum text size to 16px with +.04em. Render the locked tile category in --tx-2 (#aaa498) and keep rarity colour only on the 3px left bar. Raise the locked silhouette to about 30% brightness.",
-   "P1 selection / focus: Focused tile: 2px --acc border plus --ui-raised fill, with a 4px scale bounce. Idle tiles: --ui-panel fill with a 1px --ui-line-hi border."
+   "P0 card body below the grid (y 530 to 950): Fill the card. Make tiles about 150px tall (the weapon art at 96px or more), use a 4-column grid spanning the full 1672px inner width (24px gutters), and add a detail pane for the focused gun. Or scroll and centre the grid vertically.",
+   "P1 tile text (rarity and type lines, kills): Raise the tile name to 20px and the tag lines to 16px minimum. Use tx-2 (#aaa498) for locked text. Brighten the rare and elite tag text, or make the rarity bar 3px. Make the gun art 64px or larger.",
+   "P1 header right cluster: '48,250 credits  212,000 xp  stash 8,405 bag 0': Remove xp and the stash/bag figures from this window. If money stays, show it as '$48,250' at 20px in tx-1, right-aligned with 24px from the x. Keep one stat style.",
+   "P1 focus and selection state: Focused tile: fill --ui-raised, 2px --acc border (or a 3px lime left bar replacing the rarity bar), with a 90ms bounce. Show the focus in the screenshot.",
+   "P1 toast 'trophy earned · motherlode' at the bottom centre (850-1070, 962-1000): Move the toast to the screen edge outside the card, or suppress it while a window is open. If kept, use panel fill, a 3px accent tab, and 16px text, anchored at the 5% margin."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-31-f6/65-codex-1080.jpg",
-  "task": "b-31-ui-undercroft",
-  "when": "2026-10-19T00:54"
+  "pic": "tools/handoff/console/notes/shots/b-31-g1/65-codex-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-20T01:46"
  },
  "66-trophy-case": {
   "score": 2,
@@ -749,17 +749,17 @@
  "01-title-mode-menu": {
   "score": 3,
   "pass": false,
-  "verdict": "The saves block now lines up with the 558px mode stack and the name field reads in lower case, but the screen still has too many stacked controls, the amber gradient logo clashes with the lime accent, and none of the earlier structural fixes (logo, tagline, server row, top-right buttons) were made.",
+  "verdict": "The column menu is clean and the lime focus bar reads well, but the orange gradient title breaks the palette, the 5-mode list is cluttered, and the save block is crowded and tiny.",
   "findings": [
-   "P1 mode stack, x 681-1239, y 413-693: Delete the server row and the tag. Collapse the two demos into one 'demos' row that opens a sub-list. Fill unfocused rows with --ui-panel and a 1px --ui-line-hi border. Make the focus state a 3px lime left bar on --ui-raised, with a pad 'A' glyph. Keep the 56px row pitch.",
-   "P1 logo, x 800-1120, y 265-345: Make the logo flat --tx-1 #efe9dc at about 96px with a 2px dark offset. Delete the tagline or set it at 20px --tx-2. Leave 48px of space between the logo and the stack.",
-   "P1 saves block, x 681-1239, y 715-833: Collapse to one 48px row: 'pillager new · 0 raids · $900 · 0 xp', with the name in tx-1 and the stats in tx-2 at 20px, no lime outline, and no 'saves' label. Add a ghost 'switch save' button. Move name entry and 'create a new save' into a 'new save' modal.",
-   "P1 name field and buttons, x 681-1239, y 794-831: Remove from the title screen. If it stays, use a 48px high field with a 20px tx-2 'name' label, ghost buttons at 20px text, and a 2px lime focus border.",
-   "P1 top-right buttons, x 1611-1823, y 33-80: Keep only 'settings', as a 48px ghost button with 20px text and a --ui-line-hi border, anchored at x 96 from the right edge and y 48. Move fullscreen into settings."
+   "P1 title wordmark 'pillagers': Flatten the title to --tx-1 (#efe9dc), f-cond 800, 56px hero size, no gradient, no shadow. Keep lime only on the focused row.",
+   "P1 mode list (5 rows): Cut the 'coming later' row, merge the arcade demos into one row or order the list by purpose. Max 3 or 4 rows, 56px pitch.",
+   "P1 saves block (saves label, pillager new row, name field, change name, create a new save): Drop the save row text to tx-1 with only a 3px lime left tab for focus. Put change name and create a new save behind one 'manage saves' row, or on a second line at 16px minimum. Use 24px between the mode list and saves.",
+   "P1 'coming later' disabled row: Remove it. If it stays, label text is --tx-2 at least and the tag is 16px.",
+   "P2 tagline 'ascend. pillage. extract.': Set it at 16px with +.04em tracking in --tx-2, 16px under the title and 32px above the list."
   ],
-  "pic": "tools/handoff/console/notes/shots/03-r6-after/01-title-mode-menu-1080.jpg",
-  "task": "03-title-and-backdrop",
-  "when": "2026-10-18T20:46"
+  "pic": "tools/handoff/console/notes/shots/00-demoplain-after/01-title-mode-menu-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-20T01:43"
  },
  "44-title-from-character-select": {
   "score": 2,

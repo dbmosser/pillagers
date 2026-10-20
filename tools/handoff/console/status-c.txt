@@ -1,1 +1,1 @@
-10-19 21:40 c-31-ui-pause-settings: partial (run 4 of 5), $0.2642158
+10-19 22:03 waiting for RAM: 3 GB free, a helper starts at 4; c-31-ui-pause-settings kept

@@ -1,0 +1,12 @@
+{
+    "title":  "Codex tiles fill the card",
+    "why":  "UI step 7 (restyle only). The codex card was 40 percent empty under 16 small tiles; the tiles now share the card height with bigger art and 18px to 24px text.",
+    "now":  "The armory codex fills its card with larger tiles and bigger text.",
+    "edits":  [
+                  {
+                      "anchor":  "#root #codexmodal .cxt .cxr, #root #codexmodal .cxt .cxk{ font-size:var(--fs-label); }",
+                      "replacement":  "#root #codexmodal .cxt .cxr, #root #codexmodal .cxt .cxk{ font-size:var(--fs-label); }\n/* v28.xx (cw-uc-codexfill) b-31 step 7, critic on 65 (P0 \"card 40 percent empty\", P1 \"14px tag text, small art\"): the 16 tiles stretch to fill the card (rows share the height, 150px at least), art 96px, name 24px, rarity and kills 18px, new tag 16px. Looks only. */\n#root #codexmodal .cxgrid{ grid-auto-rows:minmax(150px, 1fr); align-content:stretch; gap:var(--sp-3); }\n#root #codexmodal .cxt .cxi{ width:96px; height:96px; }\n#root #codexmodal .cxt .cxi img{ width:88px; height:88px; }\n#root #codexmodal .cxt .cxn{ font-size:24px; }\n#root #codexmodal .cxt .cxr, #root #codexmodal .cxt .cxk{ font-size:18px; }\n#root #codexmodal .cxt .cxnew{ font-size:16px; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the codex tiles fill the card: 150px tall tiles, 24px names, 96px art\u0027,\n   run:function(){\n     var bad=[];\n     try{\n       codexOpen();\n       var t=document.querySelector(\u0027#codexmodal .cxt\u0027), n=t\u0026\u0026t.querySelector(\u0027.cxn\u0027), i=t\u0026\u0026t.querySelector(\u0027.cxi\u0027);\n       if(!t) bad.push(\u0027no tile\u0027); else {\n         if(t.offsetHeight\u003c149) bad.push(\u0027tile is \u0027+t.offsetHeight+\u0027px tall\u0027);\n         if(parseFloat(getComputedStyle(n).fontSize)\u003c23.5) bad.push(\u0027name is \u0027+getComputedStyle(n).fontSize);\n         if(i.offsetWidth\u003c96) bad.push(\u0027art box is \u0027+i.offsetWidth+\u0027px wide\u0027); }\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

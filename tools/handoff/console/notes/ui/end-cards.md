@@ -9,3 +9,6 @@ Shipped v31.94 cw-endrow, v31.96 cw-endrow2, v31.97 cw-endrow3: haul strip one r
 - 38: X is 47px, inset 16px, border line-hi, 40px per guide (guide says 48: decide).
 - 40 (what is new card): 5 paragraphs of 2 lines. Cut to 3 one-line bullets; version as hero; body f-body 400 20px; 3px lime tab; dim the background harder and hide toast/controls hint behind it.
 - 59 (abandon confirm) not looked at again.
+
+## Run of 2026-10-19 late (lane c, Claude Code)
+No ship. The camera command was refused in this session (uishots.ps1 not reachable from the allowed command form), so no new pictures or critic scores. Last scores: 35=3, 38=3, 40=3, 59=3, 77=3, 60=2 (v31.80 cw-endx2 not re-shot), 76=2 (staging artefact). Ten or more tries so far: per the 6-try rule, stop. Best pictures: shots/13-p3 (60, 38, 77), shots/13-t1 (40). Open: card 40 at 90 percent width (against Q43, dialogs are 720px: skipped), drop the got it button on 40.
