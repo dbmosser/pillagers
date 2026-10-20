@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.98 - HIDE UNAVAILABLE SERVER CO-OP
+
+Co-op hunt while he was away. His 2.R6 b: hide server co-op completely until it works. The host still showed the disabled row and coming later tag.
+
+MEASURED. Check 32.98 passes, and fails on v32.97.
 ## v32.97 - A DROPPED ITEM PINGS YOUR TEAMMATE
 
 Co-op hunt while he was away. His pick 48 (drop an item with an auto-ping so the teammate sees it). In a two player raid an item dropped by either window now puts the ordinary ping on the other window, on its map, minimap and in the world. It clears when the pile is taken or after the normal ping time. Solo is unchanged.

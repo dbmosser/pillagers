@@ -219,3 +219,7 @@
 
 2026-10-20 | o-14-daily-save-backup | Settings save rows (30) | Restore is the 56px lime primary; source has chevrons and undo stays secondary; added the missing nav entry for the existing saves and tools section; reduced day text 56px to 20px, date to 32px, hid zero-run stats, clarified 'undo last restore', and made h/bksp keycaps 16px. | before: C:/claudecode/dark raiders/tools/handoff/console/notes/shots/o-14-daily-save-backup-recipes-3/30-settings-daily-restore-1080.jpg | after: lane recipe round 4 pending
 
+2026-10-20 | o-14-daily-save-backup | Settings restore row (30), final shipped v32.95 | Final photo confirms source, restore, undo, correct saves section and keycaps; critic 3, zero lint. | before: C:/claudecode/dark raiders/tools/handoff/console/notes/shots/o-14-daily-save-backup-recipes-3/30-settings-daily-restore-1080.jpg | after: C:/claudecode/dark raiders/tools/handoff/console/notes/shots/o-14-daily-save-backup-recipes-4/30-settings-daily-restore-1080.jpg
+
+2026-10-20 | o-15-hide-coming-later-row | 01 title | hide the disabled server co-op row and its coming later tag per his 2.R6 b; preserve wiring and other title rows | before/after: lane shot 01-title-mode-menu-1080.jpg (paths pending lane capture).
+

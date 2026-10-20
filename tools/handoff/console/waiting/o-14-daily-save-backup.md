@@ -24,3 +24,8 @@ try once more, then skip the backup quietly (the main save always wins). A check
 It is a FEATURE: ship by Mon 10/26. Party risk: low (a side key only).
 
 TASK DONE when shipped and the checks pass; TASK PARTIAL with what is left.
+
+Lane note 2026-10-20 14:40: shipped cw-cx-dailysave cw-cx-dailyrestoreui cw-cx-dailyrestorefinish and parked: only lane-side steps are left. Codex's last words:
+All changes shipped and passed the shipping checks. Settings meets its critic score of 3, with zero camera lint issues.
+
+TASK PARTIAL: coordinator must record the real long-career save size from its next run report; code and visual work are complete.

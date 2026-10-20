@@ -1,0 +1,7 @@
+v32.98: hide unavailable server co-op
+
+The title hides the server co-op row and tag in every window. Keyboard and pad keep skipping it.
+
+Check 32.98. Fails on v32.97.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

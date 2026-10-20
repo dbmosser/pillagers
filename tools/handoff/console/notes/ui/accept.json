@@ -1127,16 +1127,16 @@
  "30-settings-daily-restore": {
   "score": 3,
   "pass": false,
-  "verdict": "It's a clean, consistent dark settings card with a clear lime focus on the restore row. But the tab rail shows the wrong tab, the right pane is mostly empty, and the list has uneven spacing and tiny, dim hints.",
+  "verdict": "The restore row now fits and the lime restore button is the clear primary action, but the detail pane is sparse and the scroll position, the key chips and the row rhythm are untidy.",
   "findings": [
-   "P1 left tab rail vs content: Move the colour-blind, flashing, player 2, backup and dev rows under the tabs they belong to, or rename the tabs to match. Keep the highlighted tab and its rows in agreement.",
-   "P1 right detail pane (x1088-1870, y115-408): Have the pane fill its card (the full height, or at least 70%). Move 'restore' and 'undo' into it as the clear primary actions, with 'restore' as a lime-filled 56px-high button. Show the date as the hero, and hide the runs row when the value is 0.",
-   "P1 'restore from a backup' row (y630-720): Use one row pattern. Put the backup picker (a ‹ yesterday › stepper) in the control column like the other rows. Make 'restore' the filled lime primary and 'undo' a quiet secondary. Pair the 'undo keeps current save' hint with the button.",
-   "P1 value column: 'controls legend: h', 'mouse cursor: bksp': Set them to 16px at tx-2 or brighter and centre them at x857. Draw them as keycap chips such as [h] and [bksp].",
-   "P2 settings rows, vertical rhythm: Use a fixed 56px row. Add a 16px section label and a divider for real groups. Pull the chevrons to 24px either side of the value and enlarge them to 20px."
+   "P1 right detail pane: Show the date in the 56px hero style (800 weight, tx-1) with 'saved' as a 16px tx-2 label above it. Drop the duplicate 'yesterday' and the 'undo last restore' line. Either add a real consequence line such as 'replaces current progress' in 16px --warn, or shrink the pane to fit its content.",
+   "P1 restore from a backup row (focused): Keep the row at a single height with the label at left and the controls at right, like 'back up your progress'. Use lime fill only for the focused control. Give 'restore' a --danger outline or a confirm step, and make 'undo' a ghost button. Match all three controls to one 44px height and 4px radius.",
+   "P1 settings list, column x=354..1040: Use one row height of 56px. Give every toggle the same chevron control. Give actions an outlined button look. Use group dividers of 24px only between sections, and add small group labels at 16px tx-2 if the groups are needed.",
+   "P2 left tab list: Set all tabs to 56px rows. Make the selected tab a --ui-raised fill with a 3px lime bar and tx-1 text. Remove the stray tick on the card frame, or use it as the panel's accent tab on the detail pane.",
+   "P2 scroll area, right edge x=1050: Use a 6px scrollbar thumb in --ui-line-hi, show it only when the list scrolls, and remove the bottom fade where there is nothing below."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-14-daily-save-backup-recipes-3/30-settings-daily-restore-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-14-daily-save-backup-recipes-4/30-settings-daily-restore-1080.jpg",
   "task": "o-14-daily-save-backup",
-  "when": "2026-10-20T18:11"
+  "when": "2026-10-20T18:35"
  }
 }

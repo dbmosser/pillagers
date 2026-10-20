@@ -2812,7 +2812,7 @@ body:has(#hub.on) #hubtoast{visibility:hidden;}
       <button class="deploy ghost moderow" id="modecoop" data-mode="coop">2 PLAYER CO-OP (SAME MACHINE)</button>
       <button class="deploy ghost moderow" id="modearcade" data-mode="arcade">2 PLAYER ARCADE DEMO</button>
       <button class="deploy ghost moderow" id="modearcade1" data-mode="arcade1">1 PLAYER ARCADE DEMO</button>
-      <div class="modelater"><button class="deploy ghost moderow" id="modecoopsrv" data-mode="coopsrv" disabled>2 PLAYER CO-OP (SERVER)</button><span>coming later</span></div>
+      <div class="modelater" style="display:none"><button class="deploy ghost moderow" id="modecoopsrv" data-mode="coopsrv" disabled>2 PLAYER CO-OP (SERVER)</button><span>coming later</span></div><!-- v28.xx (cw-cx-hidecoopsrv), his 2.R6 b: "Hide it completely until it works". Keep the row wired; hide its tag too, in every window. -->
       <button class="deploy ghost moderow" id="modepvp" data-mode="pvp" style="display:none">2 PLAYER PVP (SAME MACHINE)</button><!-- v28.xx (cw-nopvp), his answer Q72 (2026-10-18): "Hide PvP". The row stays in the page so netTitleInit still wires it; it is not shown and the arrows skip it -->
       <div class="modelater" style="display:none"><button class="deploy ghost moderow" id="modepvpsrv" data-mode="pvpsrv" disabled>PVP (SERVER)</button><span>coming later</span></div>
       <!-- vNN.xx (ui5q1c, his #50): the note and RETRY are one alert card; netModeMsg shows and hides it with the note -->
@@ -3238,7 +3238,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.97';
+var VER='32.98';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -51134,7 +51134,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.97: A dropped item shows as a ping with its name on the teammate map, minimap and in the world until someone takes it. Check 32.97 fails on v32.96',
+  now:'v32.98: The title hides the server co-op row and tag in every window. Keyboard and pad keep skipping it. Check 32.98 fails on v32.97',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
