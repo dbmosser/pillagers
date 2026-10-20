@@ -68,6 +68,9 @@ $script:RunnerTask = 'Pillagers runner'
 $script:DevTask = 'Pillagers dev services'
 $script:HostNodeMajor = 24
 $script:MinFreeRamGB = 6
+# 10-19: the same floor the runner and the lanes use (RAM_FLOOR_GB in console\caps.txt; 3 in the 10 GB VM, 6 is the main PC's)
+try { $m = Select-String -Path (Join-Path $script:RepoRoot 'tools\handoff\console\caps.txt') -Pattern '^RAM_FLOOR_GB=(\d+)' -ErrorAction Stop | Select-Object -First 1
+  if ($m) { $script:MinFreeRamGB = [int]$m.Matches[0].Groups[1].Value } } catch { }
 $script:MinFreeDiskGB = 15
 $script:HeartbeatMaxMin = 20
 $script:ShipMaxMin = 180
@@ -874,7 +877,7 @@ function Check-Resources {
     $freeGB = [math]::Round($os.FreePhysicalMemory / 1MB, 1)
     $totGB = [math]::Round($os.TotalVisibleMemorySize / 1MB, 1)
     if ($freeGB -ge $script:MinFreeRamGB) { Add-Result 'PASS' 'free memory (RAM)' ([string]$freeGB + ' GB free of ' + $totGB + ' GB (the runner starts no new job under ' + $script:MinFreeRamGB + ' GB free)') }
-    else { Add-Result 'FAIL' 'free memory (RAM)' ([string]$freeGB + ' GB free of ' + $totGB + ' GB; the runner starts no new job under ' + $script:MinFreeRamGB + ' GB free') 'Close programs you are not using inside the VM. If it stays low with nothing open, give the VM more memory on the main PC: host-vm-boost.ps1 -MemoryGB 14 (the main PC must keep 6 GB free).' }
+    else { Add-Result 'FAIL' 'free memory (RAM)' ([string]$freeGB + ' GB free of ' + $totGB + ' GB; the runner starts no new job under ' + $script:MinFreeRamGB + ' GB free') 'Close programs you are not using inside the VM (the floor is RAM_FLOOR_GB in tools\handoff\console\caps.txt). If it stays low with nothing open, give the VM more memory on the main PC: host-vm-boost.ps1 -MemoryGB 14 (the main PC must keep 6 GB free).' }
   } else { Add-Result 'FAIL' 'free memory (RAM)' 'could not read memory figures' 'Run the checklist again; if it repeats tell Claude in the VM.' }
 
   $vc = @()

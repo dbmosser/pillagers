@@ -25,7 +25,8 @@
 #       session agents that only borrow a preflight Chrome. Status is in tools/handoff/console/status-LANE.txt; a STOP file in
 #       tools/handoff/console pauses all lanes;
 #   (6) a second fuzzer on Chrome 9332 (8+ GB free) and (7) once a day after 03:00 the review of the day's commits (tools/review-nightly.sh).
-# - No new job starts while free RAM is under 6 GB (his floor).
+# - No new job starts while free RAM is under RAM_FLOOR_GB in tools/handoff/console/caps.txt (default 6 = his floor on the 32 GB main PC;
+#   10-19 in the 10 GB VM it is 3, because Windows and the Claude app alone hold free RAM under 6 there and nothing could ever start).
 # - Every hour it writes tools/handoff/nightly/<date>.md, which Claude reads instead of the raw logs.
 # - ONE COPY: a heartbeat file younger than 10 min means another copy is alive, so this one exits. A Windows scheduled task
 #   (tools/runner-start.vbs, every 15 min; task "Pillagers runner", seen Enabled on 10-18) starts it again if it ever dies, with or
@@ -59,7 +60,8 @@ while true; do
   head=$(git -C "$R" rev-parse --short HEAD 2>/dev/null)
   if [ "$(get backup_day)" != "$(date +%F)" ]; then put backup_day "$(date +%F)"; bash "$R/tools/itch-daily.sh" >> "$LOG" 2>&1; fi
   ram=$(freegb); [ -z "$ram" ] && ram=0
-  if [ "$ram" -ge 6 ]; then
+  rf=$(grep -m1 "^RAM_FLOOR_GB=" "$R/tools/handoff/console/caps.txt" 2>/dev/null | cut -d= -f2 | tr -dc "0-9"); rf=${rf:-6}
+  if [ "$ram" -ge "$rf" ]; then
     # (1) the fuzzer, back to back
     fa=$(running 'fuzz\.ps1'); fb=$(running 'fuzz\.ps1.*9332')   # an empty count means the check failed: start nothing
     if [ -n "$fa" ] && [ -n "$fb" ] && [ -f "$R/tools/fuzz.ps1" ] && [ $((fa - fb)) -le 0 ]; then
@@ -93,7 +95,7 @@ while true; do
     done
     # (6) 10-17: a second fuzzer on its own Chrome (9332) with its own seeds, beside the first (9331)
     f2=$(running 'fuzz\.ps1.*9332')
-    if [ -f "$R/tools/fuzz.ps1" ] && [ "$f2" = "0" ] && [ "$ram" -ge 8 ]; then
+    if [ -f "$R/tools/fuzz.ps1" ] && [ "$f2" = "0" ] && [ "$ram" -ge $((rf+2)) ]; then
       # 10-18: on the corpus copy of the game (tools/fxcorpus.html, under 12 hours old) so the full test set and the robots meet on one version
       fxarg=""; [ -n "$(find "$R/tools/fxcorpus.html" -mmin -720 2>/dev/null)" ] && fxarg="-Fixture fxcorpus.html"
       echo "$(date +%H:%M) fuzz2 start at $head${fxarg:+ on the corpus copy}" >> "$LOG"
