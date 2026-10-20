@@ -65,3 +65,10 @@ STATUS 10-19 night (coordinator, in the VM):
 - DONE 23: the edited-line memory note now carries his Q8 answer.
 - DONE 24 G1a: the b-31 and c-31 re-queue blocks state the Q7, Q8, Q43, Q59 rulings; lane e is off in the VM.
 - MOOT 32 G10: the party is the frozen copy on the main PC (party-host-copy.ps1), not the party shortcut.
+
+## Status 2026-10-20 04:50 (coordinator, checked against the game and git log)
+- Done: 26 (v31.41 map card lists every contract), 27 (v31.32 one column corner, v32.50 $ money), 28 ('menu' halves the demo score),
+  32 (party.cfg URL_OPTIONS=1), 35 (ascending in n), 36 (no "Keys 1 to 4" line), 37 (v31.29 cw-nobagfull), 39 (fuzz pad on slot 0).
+- Overruled: 34. His 10-19 order (cw-cx-stashraid) makes the forge pay from the stash in $, so "$2,500" is right.
+- Queued: 30 as task 44-ui-score-hits. New: 45-ui-backpack-trophy (career screens 23 and 66, no owner, answer 56).
+- Still open: 25, 29 (raid screen 21 and 50 scores), 31 (#6 and #11 wait on him), 41 to 45.
