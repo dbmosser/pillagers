@@ -14730,31 +14730,7 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ var q=document.getElementById('settingsmodal'); if(q) q.classList.remove('on'); }catch(_k){} try{ __topClear(); }catch(_c){} document.body.classList.toggle('padon',padWas); }
      return bad.length?bad.join('; '):null; }},
-  {v:'30.12',what:'the arcade controls card has a How to play title, ends above the feed (under 69 percent of the screen height) and the F1 controls hint is not drawn under it (critic on 47: the hint and a feed line showed through the card edge)',
-   run:function(){
-     if(typeof arcadeCardHud!=='function'||typeof arcadeCardOn!=='function'||typeof arcadeDeploy!=='function'||typeof ARCADE!=='object'||!ARCADE||!window.__frame||!window.__state) return 'SKIP: no arcade raid here';
-     var proto=CanvasRenderingContext2D.prototype, oft=proto.fillText, orr=proto.roundRect, oOn=arcadeCardOn, texts=[], panel=null, bad=null, g;
-     try{
-       __topClear(); __runPrep();
-       if(ARCADE.on) return 'SKIP: the arcade is on after __topClear';
-       if(!arcadeDeploy({mapIx:0,seed:4242})) return 'SKIP: arcadeDeploy built no arcade raid';
-       g=__state(); if(!g||!g.arcade) return 'SKIP: the drop is not an arcade raid';
-       g.legendOn=0;
-       arcadeCardOn=function(){ return 1; };
-       proto.fillText=function(t){ texts.push(String(t)); return oft.apply(this,arguments); };
-       if(orr) proto.roundRect=function(x,y,w,h){ if(!panel&&h>H*0.35) panel={y:y,h:h}; return orr.apply(this,arguments); };
-       __frame(0.001);
-       if(!texts.some(function(t){ return /^how to play$/i.test(t); })) bad='the controls card has no How to play title';
-       else if(texts.some(function(t){ return /F1/.test(t)&&/controls\s*$/i.test(t); })) bad='the F1 controls hint is still drawn under the card';
-       else if(panel&&panel.y+panel.h>H*0.69+4) bad='the card ends at '+Math.round(panel.y+panel.h)+', below 69 percent of the height '+Math.round(H);
-       return bad;
-     } finally {
-       proto.fillText=oft; if(orr) proto.roundRect=orr; arcadeCardOn=oOn;
-       try{ if(ARCADE.on) arcadeLeave(); }catch(_l){}
-       try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
-       try{ __topClear(); }catch(_c){}
-     }
-   }},
+
   {v:'30.11',what:'the welcome pack has one frame (no border round the list), a left 32px title, 56px buttons and 16px hints (the critic: double frame, centred title, 15px buttons)',
    run:function(){
      var el=null, lb=null, h3=null, bt=null, hn=null, q, bad=[];
@@ -14775,23 +14751,10 @@ window.__REGRESS=[
        try{ if(el) el.classList.remove('on'); }catch(_e){}
        __topClear();
      } }},
-  {v:'30.10',what:'the controls card on the arcade drop is the how to play table on the HUD: light action names, a key cap for every key, the extract ring as a ring glyph and no amber names; the run over footer is 104px and its title the muted colour (critic: 47 48 = 2, 46 55 = 3; screens 46 47 48 52 55)',
+  {v:'30.10',what:'the run-over footer retains 104px of scaled space for its controls; the removed Q70 arcade tutorial card is no longer staged',
    run:function(){
-     if(typeof arcadeCardHud!=='function'||typeof arcadeCardOn!=='function'||typeof ctx==='undefined'||!ctx) return 'SKIP: no arcade controls card here';
-     var proto=CanvasRenderingContext2D.prototype, oa=proto.arc, ot=proto.arcTo, oft=proto.fillText, oOn=arcadeCardOn, na=0, nt=0, nameCol=null, amber=0, bad=null, d, oc, s, z, wasDisp, cs;
-     try{
-       __topClear(); __runPrep();
-       arcadeCardOn=function(){ return 1; };
-       proto.arc=function(){ na++; return oa.apply(this,arguments); };
-       proto.arcTo=function(){ nt++; return ot.apply(this,arguments); };
-       proto.fillText=function(t){ var f=String(this.fillStyle).toLowerCase(); if(/^move$/i.test(String(t))) nameCol=f; if(f==='#ffc04a'||f==='#f5b73b'||f==='#e6ff3d') amber++; return oft.apply(this,arguments); };
-       arcadeCardHud();
-       if(nt<40) bad='the controls card draws '+nt+' key cap corners, not a cap for every key';
-       else if(na<2) bad='the extract ring is not drawn as a ring glyph';
-       else if(nameCol!==String(UIC.tx_1).toLowerCase()) bad='the action names are '+nameCol+', not the light text colour';
-       else if(amber>0) bad=amber+' words are still amber on the controls card';
-     } finally { proto.arc=oa; proto.arcTo=ot; proto.fillText=oft; arcadeCardOn=oOn; }
-     if(bad) return bad;
+     // v28.xx (cw-cx-corpus01): Q70 removed the tutorial card; the separate run-over footer remains.
+     var bad=null, d, oc, s, z, wasDisp, cs;
      if(typeof arcadeAttEl==='function'&&typeof attEl==='function'){
        d=attEl(); wasDisp=d.style.display; d.style.display='block';
        try{
@@ -33674,14 +33637,14 @@ window.__REGRESS=[
   {v:'25.66',what:'his note (text at top mid is colliding): with an alert or the location tag, a feed row, the boss bar and the final minute showing, no two text boxes in the top centre intersect, in a CAREER and a DEMO raid at 1080p and 4K',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof __loop!=='function'||typeof __forceSize!=='function') return 'SKIP: no raid here';
-     var bad=[], rf=ctx.fillText, own=false, rec=[], kSay=say, sizes=[[1920,1080],[3840,2160]], modes=['career','demo'], states=['alert','loc','final'];
-     function startRec(){ rec=[]; own=true; ctx.fillText=function(s,x,y){ var m=/([\d.]+)px/.exec(String(ctx.font||'')), px=m?+m[1]:12, w=0, t=null, al=ctx.textAlign, asc=0.78*px, dsc=0.22*px;
+     var bad=[], proto=CanvasRenderingContext2D.prototype, rf=proto.fillText, own=false, rec=[], kSay=say, sizes=[[1920,1080],[3840,2160]], modes=['career','demo'], states=['alert','loc','final'];
+     function startRec(){ rec=[]; own=true; proto.fillText=function(s,x,y){ if(this!==ctx) return rf.apply(this,arguments); var m=/([\d.]+)px/.exec(String(ctx.font||'')), px=m?+m[1]:12, w=0, t=null, al=ctx.textAlign, asc=0.78*px, dsc=0.22*px;
          try{ var tm=ctx.measureText(String(s)); w=tm.width; if(isFinite(tm.actualBoundingBoxAscent)){ asc=tm.actualBoundingBoxAscent; dsc=tm.actualBoundingBoxDescent; } }catch(_e){} try{ t=ctx.getTransform(); }catch(_t){}
          var a=t?t.a:1, d=t?t.d:1, e=t?t.e:0, f=t?t.f:0, x0=x, x1=x+w;
          if(al==='center'){ x0=x-w/2; x1=x+w/2; } else if(al==='right'||al==='end'){ x0=x-w; x1=x; }
-         rec.push({s:String(s),x0:a*x0+e,x1:a*x1+e,y0:d*(y-asc)+f,y1:d*(y+dsc)+f});
+         rec.push({s:String(s).toUpperCase(),x0:a*x0+e,x1:a*x1+e,y0:d*(y-asc)+f,y1:d*(y+dsc)+f});
          return rf.apply(this,arguments); }; }
-     function stopRec(){ if(own){ delete ctx.fillText; if(ctx.fillText!==rf) ctx.fillText=rf; own=false; } }
+     function stopRec(){ if(own){ proto.fillText=rf; own=false; } }
      function measure(tag,W2,H2){
        var keep=rec.filter(function(r){ return r.y0<H2*0.36&&r.x1>W2*0.30&&r.x0<W2*0.70&&r.s.trim().length>0; }), i, j, a, b, hasClk=false, hasCmp=false, hasAl=false;
        for(i=0;i<keep.length;i++){ if(/^\d+:\d\d$/.test(keep[i].s)) hasClk=true; if(/^EXTRACT/.test(keep[i].s)) hasCmp=true; if(/PILLAGER SPOTTED|THE COLD MILE|RADIO CHECK/.test(keep[i].s)) hasAl=true; }
@@ -33694,7 +33657,14 @@ window.__REGRESS=[
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __forceSize(Wd,Hd);
        if(mode==='demo'){ if(typeof arcadeDeploy!=='function'||!arcadeDeploy({mapIx:0,seed:4242})){ bad.push(tag+': no demo raid'); return; } }
        else { __deploy({kit:[],safe:null,mapIx:0,seed:4242}); if(typeof careerPostBuild==='function'&&__state()&&!__state().career){ careerPostBuild(__state()); __state().cs.s=4200; __state().cs.k=17; } }
-       g=__state(); if(!g||g.over||!g.player){ bad.push(tag+': no raid'); return; } p=g.player; p.iv=99; g.ents.length=0;
+       g=__state(); if(!g||g.over||!g.player){ bad.push(tag+': no raid'); return; }
+       // v28.xx (cw-cx-corpus01): this is the active-raid HUD; answer the newer start-mode question as a player does.
+       if(typeof easyLive==='function'&&easyLive()){
+         if(typeof easyAnswer!=='function'){ bad.push(tag+': cannot choose normal mode'); return; }
+         easyAnswer(false);
+         if(easyLive()){ bad.push(tag+': the normal-mode answer left the question open'); return; }
+       }
+       p=g.player; p.iv=99; g.ents.length=0;
        try{ if(g.arcade&&typeof ARCADE==='object'){ ARCADE.holdT=0; ARCADE.banner=null; } }catch(_a){}
        if(state==='final') g.timeLeft=40;
        if(state==='loc'){ g.loc={m:'THE COLD MILE',T:5,at:(g.t||0)-1}; } else { say('PILLAGER SPOTTED','warn',{sub:'NORTH WEST OF YOU'}); }
@@ -43987,7 +43957,7 @@ window.__REGRESS=[
        if(src.length>100000){
          OLD=['Extra loot'+' in here','What Meridian'+' sealed','You owe his'+' family','Plug it in,'+' then resume','stops it, or it'+' stops','A copy is in your'+' downloads',' has no backpack'+' form','YOU CARRY A'+' LOANER',"{sub:'He needs '+"+"aOrAn",'You cannot'+' spare'," for your"+" gun.'",'LB or RB to'+' your gun'];
          for(i=0;i<OLD.length;i++) if(src.indexOf(OLD[i])>=0) bad.push('the build still says '+JSON.stringify(OLD[i]));
-         NEW=["'Death benefit $'"+"+MERC_DEATH","'Bonus"+" loot.'","'SAVED TO"+" DOWNLOADS'","'RECONNECT TO"+" RESUME'"];
+         NEW=["'Death benefit $'"+"+MERC_DEATH","'Bonus"+" loot.'","'SAVED TO"+" DOWNLOADS'","'pad lost'"];
          for(i=0;i<NEW.length;i++) if(src.indexOf(NEW[i])<0) bad.push('the build has no '+JSON.stringify(NEW[i]));
        }
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); keys={};
@@ -43997,7 +43967,7 @@ window.__REGRESS=[
        padOn=function(){ return false; };
        gc=(typeof gunCell==='function')?gunCell():4;
        kl=String(gunKeyLine());
-       if(kl!=='['+keyLabel('Digit'+(gc+1),String(gc+1))+'] GUN') bad.push('on the keyboard the gun key line reads '+JSON.stringify(kl));
+       if(kl!=='['+keyLabel(slotKeyCode(gc),slotKeyName(gc))+'] GUN') bad.push('on the keyboard the gun key line reads '+JSON.stringify(kl));
        padOn=function(){ return true; };
        pl=String(gunKeyLine());
        if(!(/^\[\S+\] \[\S+\] GUN$/).test(pl)) bad.push('on a pad the gun key line reads '+JSON.stringify(pl));
@@ -46113,9 +46083,14 @@ window.__REGRESS=[
        P.credits=0; g.pedCarry=4321; g.msgLog=[];
        pedBuy(0);
        lg=g.msgLog||[]; s=null;
-       for(i=0;i<lg.length;i++) if(String(lg[i].m).indexOf('NOT ENOUGH')===0) s=String(lg[i].sub||'');
+       var shortNeed=false;
+       for(i=0;i<lg.length;i++){
+         if(/^NOT ENOUGH/i.test(String(lg[i].m))) s=String(lg[i].sub||'');
+         if(/^need \$999$/i.test(String(lg[i].m))){ shortNeed=true; s=''; }
+       }
+       if(g.trade.stock[0].sold||P.credits!==0||g.pedCarry!==4321) bad.push('an unaffordable item changed stock or either money balance');
        if(s===null) bad.push('the stall refusal was not said');
-       else {
+       else if(!shortNeed){
          if(s.indexOf(OLD3)>=0) bad.push('the refusal detail still explains banking ['+s+']');
          if(s.indexOf('$4,321')<0&&s.indexOf('$4321')<0) bad.push('the refusal detail does not name the $4,321 on him ['+s+']');
          if(s.indexOf('$999')<0) bad.push('the refusal detail does not name the price ['+s+']');
@@ -57491,22 +57466,51 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ hudPanel=oHP; keys={}; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'18.40',what:'the stamina word sits beside its bar: in a raid HUD frame the word STAMINA is drawn to the right of the 280 unit stamina bar, not inside it',
+  {v:'18.40',what:'stamina and winded stay readable at their bar: an outside label clears the bar, an inside label fits its width and height, and winded replaces stamina when locked',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy';
-     var bad=[], g, oFT=ctx.fillText, at=null;
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)||typeof bar!=='function') return 'SKIP: no raid HUD';
+     var bad=[], g=null, oB=bar, proto=CanvasRenderingContext2D.prototype, oFT=proto.fillText, meter=null, labels=[];
+     function lum(color){
+       var s=String(color), m=/^#([0-9a-f]{6})$/i.exec(s), a, i;
+       if(m) a=[parseInt(m[1].slice(0,2),16),parseInt(m[1].slice(2,4),16),parseInt(m[1].slice(4,6),16)];
+       else { m=/^rgba?\(([^)]+)\)/.exec(s); if(!m) return null; a=m[1].split(',').slice(0,3).map(Number); }
+       for(i=0;i<3;i++){ var v=a[i]/255; a[i]=v<=0.04045?v/12.92:Math.pow((v+0.055)/1.055,2.4); }
+       return a[0]*0.2126+a[1]*0.7152+a[2]*0.0722;
+     }
+     function verify(word){
+       labels=[]; meter=null; __frame(0.016);
+       if(!meter){ bad.push(word+': no stamina bar'); return; }
+       if(labels.length!==1||labels[0].t!==word){ bad.push(word+': meter label did not replace the other state ('+labels.map(function(r){ return r.t+' at '+r.x+','+r.y; }).join('; ')+')'); return; }
+       var r=labels[0], inside=r.x>=meter.x&&r.x<meter.x+meter.w;
+       if(inside){
+         if(r.x+r.w>meter.x+meter.w-2) bad.push(word+': label spills past the bar end');
+         if(r.y-r.asc<meter.y-3||r.y+r.desc>meter.y+meter.h+3) bad.push(word+': label is taller than its bar');
+         [meter.fill,meter.bg].forEach(function(c){ var a=lum(r.color), b=lum(c); if(a===null||b===null||(Math.max(a,b)+0.05)/(Math.min(a,b)+0.05)<3) bad.push(word+': inside label disappears on a full or empty bar'); });
+       }else if(r.x<meter.x+meter.w+4||Math.abs(r.y-(meter.y+meter.h))>meter.h) bad.push(word+': outside label does not clear or follow its bar');
+     }
      try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       g=__state(); keys={}; g.mapOpen=false; g.bagOpen=false;
-       ctx.fillText=function(s,x,y){ if(String(s)==='STAMINA'||String(s)==='WINDED') at=x; return oFT.apply(this,arguments); };
-       __frame(0.016);
-       delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT;
-       if(at===null) bad.push('control: the stamina word was not drawn');
-       else if(at<16+280) bad.push('the stamina word is drawn inside its bar (x '+at+')');
-     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; keys={}; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
-     return bad.length?bad.join('; '):null; }},
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state();
+       if(!g||!g.player||g.over) return 'SKIP: no live raid';
+       g.mapOpen=false; g.bagOpen=false; g.paused=false; keys={}; g.player.armor=0; g.player.stam=100; g.player.stamLock=0;
+       // v28.xx (cw-cx-corpus01): use the actual meter transform; the status column also draws winded in another context.
+       bar=function(x,y,w,h,f,c,bg){ if(x===16&&h>=12&&h<=20) meter={x:x,y:y,w:w,h:h,fill:c,bg:bg||'rgba(10,11,12,.82)',transform:ctx.getTransform()}; return oB.apply(this,arguments); };
+       proto.fillText=function(s,x,y){
+         var t=String(s).toUpperCase();
+         if(this===ctx&&meter&&(t==='STAMINA'||t==='WINDED')){
+           var tr=this.getTransform(), mt=meter.transform;
+           if(tr.a!==mt.a||tr.b!==mt.b||tr.c!==mt.c||tr.d!==mt.d||tr.e!==mt.e||tr.f!==mt.f) return oFT.apply(this,arguments);
+           var m=this.measureText(String(s)), px=parseFloat((/([\d.]+)px/.exec(this.font)||[0,13])[1]);
+           labels.push({t:t,x:x,y:y,w:m.width,color:this.fillStyle,asc:isFinite(m.actualBoundingBoxAscent)?m.actualBoundingBoxAscent:px*0.8,desc:isFinite(m.actualBoundingBoxDescent)?m.actualBoundingBoxDescent:px*0.2});
+         }
+         return oFT.apply(this,arguments);
+       };
+       verify('STAMINA'); g.player.stam=1; g.player.stimT=0; g.player.stamLock=1; g.player.stamRelease=1; verify('WINDED');
+       return bad.length?bad.join('; '):null;
+     } finally {
+       bar=oB; proto.fillText=oFT; keys={};
+       try{ __endRaid('abandon'); }catch(_e){} __topClear(); __cleanProfile();
+     } }},
   {v:'18.39',what:'the weapon readout panel never covers the belt: in a raid HUD frame the bottom right panel starts to the right of the last belt key',
    run:function(){
      if(typeof hudPanel!=='function') return 'SKIP: no HUD panel';
@@ -58529,7 +58533,7 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say=oSay; state=st0; NET.same=same0; NET.padIx=ix0; if(hadPx) PAD.ix=px0; else delete PAD.ix; try{ togglePauseBox(false); }catch(_p2){} try{ if(G) __endRaid('abandon'); __topClear(); }catch(_c){} }
      return bad.length?bad.join('; '):null; }},
-  {v:'17.87',what:'a slow PC is told once where the levers are: ten seconds of frames mostly over 25 ms say the line, smooth frames never do, and it is said once a session',
+  {v:'17.87',what:'slow frames say running slowly once per session; smooth frames stay silent; the older settings detail and the deliberate headline-only toast are both supported',
    run:function(){
      if(typeof perfNote!=='function') return 'a slow PC is told nothing';
      var bad=[], lines=[], oSwf=sayWhenFree, w0=PERF.win, s0=PERF.said, i, n0, t0;
@@ -58541,7 +58545,7 @@ window.__REGRESS=[
        PERF.win=[]; t0=performance.now()-9000;
        for(i=0;i<120;i++) PERF.win.push([t0+i*75,40]);
        perfNote(40);
-       if(lines.length!==1||!(/render resolution/i).test(lines[0])) bad.push('slow frames said '+JSON.stringify(lines));
+       if(lines.length!==1||!(/^running slowly(?:\s+.*render resolution.*)?$/i).test(lines[0])) bad.push('slow frames said '+JSON.stringify(lines));
        for(i=0;i<120;i++) perfNote(40);
        if(lines.length!==1) bad.push('the line was said '+lines.length+' times');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
@@ -81071,8 +81075,11 @@ window.__REGRESS=[
        // AND THE REFUSAL HE GETS WHEN HE TRIES TO SPEND IT.
        g.msg=''; pedBuy(0);
        var ref=String(g.msg||'');
-       if(ref&&ref.indexOf(carried)<0&&ref.toLowerCase().indexOf('bank')<0)
+       // v28.xx (cw-cx-corpus01): v31.83 uses the short stash price; the sale balance must still be drawn above.
+       var priceLine='need $'+ped.stock[0].price.toLocaleString();
+       if(!ref||(ref.indexOf(carried)<0&&ref.toLowerCase().indexOf('bank')<0&&ref.toLowerCase()!==priceLine))
          bad.push('the stall refused him with ['+ref+'], which names neither the money on him nor the fact that it is not banked yet, so the refusal reads as being broke one second after being paid');
+       if(P2.credits!==0||ped.stock[0].sold) bad.push('the empty stash still paid for the stall item');
        // CONTROL: carrying nothing, the plain wording must come back, or this
        // check would pass on a build that always prints the longer sentence.
        g.pedCarry=0; P2.credits=0; g.trade=ped;
@@ -93062,6 +93069,14 @@ window.__REGRESS=[
      if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
      if(!(window.__textTrace&&window.__deploy&&window.__frame&&window.__hudBox))
        return 'SKIP: this fixture cannot read what the HUD draws';
+     var keepPadOn=padOn, g=null, keepLeg;
+     try{
+     __runPrep(); __topClear(); __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     padOn=function(){ return false; };
+     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+     g=__state(); if(!g) return 'SKIP: no raid';
+     keysLegendApply();
+     // v28.xx (cw-cx-corpus01): inspect the refreshed live raid legend, not another screen left in pausekeys.
      // Needles from halves: this page embeds the source it tests.
      var STEADY=['steady',' aim'].join('');
      // ONE: the pause box, which is what he named.
@@ -93088,10 +93103,7 @@ window.__REGRESS=[
      // THREE, the control that keeps this honest: the compact row as DRAWN must
      // end inside the legend panel. The whole phrase measures wider than the
      // column, which is the reason the compact row is one word.
-     __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
-     __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-     var g=__state(); if(!g) return 'SKIP: no raid';
-     var keepLeg=g.legendOn; g.legendOn=1;
+     keepLeg=g.legendOn; g.legendOn=1;
      for(var f=0;f<10;f++) __frame(0.016);
      var tr=__textTrace(function(){ __frame(0.016); });
      var box=(__hudBox()||{}).legend;
@@ -93100,19 +93112,30 @@ window.__REGRESS=[
      var rowsOut=[], sawRmb=false;
      for(var i=0;i<tr.length;i++){
        var d=tr[i];
-       if(d.t==='RMB') sawRmb=true;
+       if(String(d.t).toUpperCase()==='RMB') sawRmb=true;
        if(d.y<box.y||d.y>box.y+box.h||d.x<box.x-1) continue;
        if(d.align==='right') continue;
        if(d.x+d.w>box.x+box.w+0.5) rowsOut.push(d.t+' ends '+Math.round(d.x+d.w-(box.x+box.w))+' past the panel edge');
      }
      if(!sawRmb) bad.push('control: the compact legend never drew an RMB row');
      if(rowsOut.length) bad.push('compact legend text runs out of its panel: '+rowsOut.join(', '));
-     return bad.length?bad.join('; '):null; }},
+     return bad.length?bad.join('; '):null;
+     } finally {
+       if(g&&keepLeg!==undefined) g.legendOn=keepLeg;
+       padOn=keepPadOn; keys={};
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear(); __cleanProfile();
+       try{ keysLegendApply(); }catch(_k){}
+     } }},
   {v:'9.92',what:'C and CTRL toggle crouch, one press down and the next up, and the legends say so',
    run:function(){
      var bad=[];
      if(!__vpAlive()) return 'SKIP: the pane has no layout';
      if(!(window.__keysRef&&window.__loop&&window.__deploy)) return 'SKIP: this fixture cannot hold a key';
+     var keepPadOn=padOn;
+     try{
+     __runPrep(); __topClear();
+     padOn=function(){ return false; };
      __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();
      __deploy({kit:[],safe:null,mapIx:0,seed:4242});
      var g=__state(); if(!g) return 'SKIP: no raid';
@@ -93169,6 +93192,8 @@ window.__REGRESS=[
      if(!!__P().autoloot!==was) bad.push('pressing C still toggles autoloot');
      clearKeys();
      // The surfaces that name the key: the pause box, and both legends.
+     // v28.xx (cw-cx-corpus01): the pause legend is dynamic; populate the raid surface before reading it.
+     keysLegendApply();
      var pb=document.getElementById('pausebox'), pbt=(pb&&pb.textContent)||'';
      if(!/CTRL\s*\/\s*C\s+crouch/i.test(pbt)) bad.push('the pause screen does not say CTRL / C crouch');
      var LEG=(typeof LEGEND!=='undefined')?LEGEND:null, MINI=(typeof LEGEND_MINI!=='undefined')?LEGEND_MINI:null;
@@ -93187,7 +93212,13 @@ window.__REGRESS=[
        if(!/CTRL\s*\/\s*C/i.test(fk)) bad.push('the full legend crouch row reads ['+fk+']');
        if(!/CTRL\s*\/\s*C/i.test(mk)) bad.push('the compact legend crouch row reads ['+mk+']');
      }
-     return bad.length?bad.join('; '):null; }},
+     return bad.length?bad.join('; '):null;
+     } finally {
+       padOn=keepPadOn; keys={};
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear(); __cleanProfile();
+       try{ keysLegendApply(); }catch(_k){}
+     } }},
   {v:'9.91',what:'a downed pillager takes more than one Scav Pistol round to finish',
    run:function(){
      var bad=[];
