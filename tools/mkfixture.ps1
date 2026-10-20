@@ -8310,19 +8310,19 @@ window.__REGRESS=[
        if(rows.length<4) bad.push('SIX: with the 1.5 text size only '+rows.length+' of 5 contract rows are drawn');
        for(i=0;i<rows.length;i++){ if(rows[i].y>cd.col.y+cd.col.h+1) bad.push('SIX: contract row '+rows[i].t+' runs out of the column at the 1.5 text size'); if(i>0&&Math.abs(rows[i].y-rows[i-1].y)<(rows[i].h||10)*0.7) bad.push('SIX: two contract rows overlap at the 1.5 text size'); }
        if(hadUs) P.uiScale=us0; else delete P.uiScale; W=w0; H=h0;
-       // SEVEN: you are here: lime for a solo raid and player 1, the ally blue for player 2, a number only in a two player game
+       // v28.xx (cw-cx-mapwait): accept old map colours before the ship and seat colours after; the new check requires amber/cyan.
        function chevron(seat){ var f=[], j; seatHere=function(){ return seat; }; proto.fill=function(){ f.push(String(this.fillStyle).toLowerCase()); return oFill.apply(this,arguments); };
          try{ ent=ents(function(){ drawMapOverlay(); }); } finally { proto.fill=oFill; seatHere=oSeat; }
          return {fills:f,txt:strs(ent)}; }
        got=chevron(-1);
-       if(got.fills.indexOf(String(UIC.acc).toLowerCase())<0) bad.push('SEVEN: a solo raid does not mark you in the lime accent');
+       if(got.fills.indexOf(String(UIC.acc).toLowerCase())<0&&got.fills.indexOf(String(SEATCOL[0]).toLowerCase())<0) bad.push('SEVEN: a solo raid has neither its old accent nor its seat colour');
        if(got.fills.indexOf('#39ff14')>=0) bad.push('SEVEN: the old neon green marker is still drawn');
        if(has(got.txt,/^[12]$/)) bad.push('SEVEN: a solo raid shows a player number on the marker');
        got=chevron(1);
-       if(got.fills.indexOf(String(UIC.ally).toLowerCase())<0) bad.push('SEVEN: player 2 is not marked in the ally colour');
+       if(got.fills.indexOf(String(UIC.ally).toLowerCase())<0&&got.fills.indexOf(String(SEATCOL[1]).toLowerCase())<0) bad.push('SEVEN: player 2 has neither its old ally colour nor its seat colour');
        if(!has(got.txt,/^2$/)) bad.push('SEVEN: player 2 has no number 2 on the marker');
        got=chevron(0);
-       if(got.fills.indexOf(String(UIC.acc).toLowerCase())<0||!has(got.txt,/^1$/)) bad.push('SEVEN: player 1 in a two player game is not the lime marker with a number 1');
+       if((got.fills.indexOf(String(UIC.acc).toLowerCase())<0&&got.fills.indexOf(String(SEATCOL[0]).toLowerCase())<0)||!has(got.txt,/^1$/)) bad.push('SEVEN: player 1 lacks its old accent or seat colour, or its number 1');
        return bad.length?bad.join('; '):null;
      } finally {
        proto.fill=oFill; proto.fillText=oFT; proto.strokeText=oST; mapIcon=oMI; seatHere=oSeat; W=w0; H=h0;
@@ -43602,38 +43602,27 @@ window.__REGRESS=[
        __topClear();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'22.87',what:'a line said with the map open draws over it: with the sector map open, an info line and an alert are drawn after the SECTOR MAP header, over the map, not under its backing; with the map shut they are still drawn',
+  {v:'22.87',what:'with the sector map shut, an info line and an alert still draw; map-open holding and replay are covered by cw-cx-mapwait',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__textTrace)) return 'SKIP: this fixture cannot deploy or trace';
-     if(typeof drawMapOverlay!=='function'||typeof drawHUD!=='function') return 'SKIP: no sector map here';
-     var bad=[], g, tr, i, ih=-1, il=-1, ia=-1, NL='ZQ MAP '+'LINE', NA='ZQ MAP '+'ALERT', HD='SECTOR '+'MAP';
+     if(typeof drawHUD!=='function') return 'SKIP: no raid HUD here';
+     var bad=[], g, tr, NL='ZQ MAP LINE', NA='ZQ MAP ALERT';
+     function shown(rows,text){ return rows.some(function(r){ return String(r.t).toLowerCase().indexOf(text.toLowerCase())>=0; }); }
      try{
-       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||g.over||!g.player) return 'SKIP: staging: no raid';
+       g.mapFirst=0; g.mapOpen=false; g.bagOpen=false; g.paused=false;
        g.msgT=0; g.msg=''; g.feed=[]; g.msgQ=[]; g.msgQM=[]; g.alert=null; g.alertQ=[]; g.loc=null;
-       g.mapOpen=true; g.bagOpen=false;
+       // v28.xx (cw-cx-mapwait): keep the shared closed-map control. Open-map draw ordering was deliberately replaced by holding notices.
        say(NL); say(NA,'warn');
-       g.alert&&(g.alert.at=(g.t||0)-1);
+       if(g.alert) g.alert.at=(g.t||0)-1;
        tr=__textTrace(function(){ drawHUD(); });
-       for(i=0;i<tr.length;i++){
-         if(ih<0&&tr[i].t===HD) ih=i;
-         if(String(tr[i].t).indexOf(NL)>=0) il=i;
-         if(String(tr[i].t).indexOf(NA)>=0) ia=i;
-       }
-       if(ih<0) return 'SKIP: staging: the open map drew no '+HD+' header';
-       if(il<0) bad.push('with the map open the info line was not drawn at all');
-       else if(il<ih) bad.push('with the map open the info line was drawn before the map (under its backing), at '+il+' against the header at '+ih);
-       if(ia<0) bad.push('with the map open the alert was not drawn at all');
-       else if(ia<ih) bad.push('with the map open the alert was drawn before the map (under its backing), at '+ia+' against the header at '+ih);
-       // CONTROL: the map shut, the band is still drawn.
-       g.mapOpen=false; il=-1;
-       tr=__textTrace(function(){ drawHUD(); });
-       for(i=0;i<tr.length;i++) if(String(tr[i].t).indexOf(NL)>=0) il=i;
-       if(il<0) bad.push('control: with the map shut the info line was not drawn');
+       if(!shown(tr,NL)) bad.push('with the map shut the info line was not drawn');
+       if(!shown(tr,NA)) bad.push('with the map shut the alert was not drawn');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{
-       try{ var g2=__state(); if(g2){ g2.mapOpen=false; g2.msgT=0; g2.msg=''; g2.feed=[]; g2.msgQ=[]; g2.msgQM=[]; g2.alert=null; g2.alertQ=[]; g2.pick=[]; } if(g2&&!g2.over){ g2.player.downed=false; g2.player.iv=0; __endRaid('abandon'); } }catch(_e){}
+       try{ var g2=__state(); if(g2){ g2.mapFirst=0; g2.mapOpen=false; g2.msgT=0; g2.msg=''; g2.feed=[]; g2.msgQ=[]; g2.msgQM=[]; g2.alert=null; g2.alertQ=[]; g2.pick=[]; } if(g2&&!g2.over){ g2.player.downed=false; g2.player.iv=0; __endRaid('abandon'); } }catch(_e){}
        __topClear();
      }
      return bad.length?bad.join('; '):null; }},
