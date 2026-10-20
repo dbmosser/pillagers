@@ -1,8 +1,10 @@
 58-corpus-reds-v32-90 : sort the reds of the first full run on v32.90, so a build newer than v29.09 can become stable (planner draft 2026-10-20)
 effort: high
 
-STAGING NOTE (coordinator, remove when moving to tasks/): move this into tasks/ ONLY after corpus-1020-1250 (started 12:50 on 91a66a3d,
-v32.90, about 3.5 hours) has finished and you have written tools/handoff/corpus-fails-v32.90.txt. Pairs with coord-02 (known-red file, robots).
+COORDINATOR 10-20 14:00: corpus-1020-1250 finished at 13:52 with 11 failing checks (down from 89); the list is
+tools/handoff/corpus-fails-v32.90.txt. Yours are the SIX not about how bodies are drawn: v8.58, v20.89, v24.38, v30.91, v31.04, v31.67.
+Leave v20.01, v20.11, v28.12, v28.13 and v28.16 (Curved/Lean bodies, plates, packs, racks, headgear) to job 68 (head scale on the body),
+which owns them; if 68 is in done/ when you finish, run those five alone too and add a line each.
 Source: q-round3/answers.md 3.40: "b: The newest version that passed all the tests"; helper-fixes.md item 16: "Create the known-red tests list".
 Not done (planner, 10-20): ls tools/handoff/stable-known-red.txt -> "No such file"; stable-status.txt "Latest stable: v29.09 (2026-10-18 10:23)",
 "Result: no change" (checked 12:56); the newest finished run is corpus-1020-0828 on v32.83 (failing 101); jobs 52 to 57 retargeted after it.
