@@ -1,0 +1,5 @@
+## v32.12 - THE EXTRACT DISTANCE LINE HAS A PLATE
+
+Co-op hunt while he was away. The critic named the extract distance line at the top centre as bare teal text with no plate while the score block above it has one. It now sits on the same HUD plate.
+
+MEASURED. Check 32.12 passes, and fails on v32.11.

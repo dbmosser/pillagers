@@ -1,0 +1,7 @@
+v32.12: the extract distance line has a plate
+
+The extract distance sits on a plate like the score.
+
+Check 32.12. Fails on v32.11.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

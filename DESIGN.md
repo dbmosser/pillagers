@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.12 - THE EXTRACT DISTANCE LINE HAS A PLATE
+
+Co-op hunt while he was away. The critic named the extract distance line at the top centre as bare teal text with no plate while the score block above it has one. It now sits on the same HUD plate.
+
+MEASURED. Check 32.12 passes, and fails on v32.11.
 ## v32.11 - THE STAMINA WORD IS INSIDE ITS BAR
 
 Co-op hunt while he was away. The critic named three bar styles bottom left: armour and health carry their words inside the bar, stamina carried its word past the right end. It is inside the bar now, in the armour word face, on a slightly darker fill so it reads.
