@@ -22,3 +22,5 @@ run reports of job 59 land in the same folder on the night.
    collector on :8799 up, is autoExport posting, or is it falling back to his Downloads folder? Fix it or report it in one line.
 Party risk: low (tools only, no game change).
 Done when: a note from the copy reaches the VM's exports/ by itself, and the dashboard shows the last fetch.
+
+COORDINATOR 10-20 13:35: premise checked. The main PC relay holds 8802 and 8799 (host-verify items 3 and 4) but answers 502: the VM has no "Pillagers pad route" rule, so the main PC cannot reach the VM game or collector at all. Once he adds the rule (for-you.md), notes and run reports flow to the VM collector by themselves. What stays of this job: the party-night copy's exports only (fetch after 10/30).
