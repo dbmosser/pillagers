@@ -99,6 +99,10 @@ while true; do
   if [ -n "$atp" ]; then put atpc_t "$(date +%s)"
   else pt=$(get atpc_t); [ $(( $(date +%s) - ${pt:-0} )) -lt 900 ] && atp=$(get atpc | tr -dc '01'); fi
   atq=0; [ "$atp" = 1 ] && atq=1
+  # (1b) 10-20 (coord-01, his process answer 14 a "Add a fetch my notes job to the main PC link"): every 5 minutes, his notes and run
+  # reports from the party copy he plays on the main PC come into exports/ (the main PC puts them in the bridge share as pcnote-NAME;
+  # tools/fetch-notes.mjs takes the new ones with share-get). Status: tools/handoff/notes-fetch.txt.
+  nt=$(get notes_t); if [ $(( $(date +%s) - ${nt:-0} )) -ge 300 ] && [ -f "$R/tools/fetch-notes.mjs" ]; then put notes_t "$(date +%s)"; (timeout 600 node "$R/tools/fetch-notes.mjs" >> "$LOG" 2>&1) & fi
   pv=$(get atpc); nv=${atp:-?}
   if [ "$pv" != "$nv" ]; then put atpc "$nv"
     [ "$nv" = 1 ] && echo "$(date +%H:%M) he is at the main PC: no new full test run, robots or local AI" >> "$LOG"

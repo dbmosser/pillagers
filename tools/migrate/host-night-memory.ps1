@@ -21,6 +21,11 @@
 #      The idle time comes from "VM keyboard idle watch", a hidden task that runs as him (only his own session can read the time of his last
 #      key or mouse input) and writes input-idle.txt every 30 seconds; without it, quser (read only), where "none" counts as unknown.
 #      The weekly checkpoint task is no longer made while the VM has checkpoints switched off (the graphics card share needs that).
+#   7. (10-20, his process answer 14 a "Add a fetch my notes job to the main PC link") the same minute check copies each NEW note he saves
+#      in the game (feedback-*.txt and .png) and each run report (run-*.txt) from the party copy's exports folder (-NotesSrc, default
+#      C:\claudecode\pillagers-party\exports) into the bridge share as pcnote-NAME, once (notes-mirrored.txt keeps the names), so the VM
+#      can fetch them (tools/fetch-notes.mjs). It only reads the copy, never writes into it; files over 11 MB or older than 14 days stay out,
+#      and pcnote- files leave the share after 3 days (the VM has them by then).
 # Up: the VM gets more memory while it runs (Hyper-V runtime memory resize, no restart), up to -MaxGB, always leaving -KeepFreeGB free on this PC.
 # Down: the VM goes back to its daytime size (the size it had when -Install ran, normally 10 GB). Nothing else on the VM changes.
 # It never changes Defender, the firewall, UAC, Windows Update or any other security setting, and never starts or stops the VM.
@@ -30,13 +35,13 @@
 #   -Status      show what is set up (read only)       -DryRun   with -Install, -Up, -Snapshot or -GameCheck: only say what would happen
 #   -Up / -Down / -Snapshot / -GameCheck  what the tasks run
 #   -MaxGB N (default 16)  -KeepFreeGB N (default 4)  -VMName NAME (default Pillagers_Oct26)  -KeepSnapshots N (2)  -Gpu3DPct N (15)  -GameCpuPct N (30)
-#   -AtPcCpuPct N (50)  -AtPcIdleMin N (10)  -IdleWatch  what the idle watch task runs (a loop, as him)
+#   -AtPcCpuPct N (50)  -AtPcIdleMin N (10)  -IdleWatch  what the idle watch task runs (a loop, as him)  -NotesSrc PATH (the copy's exports)
 # Exit codes: 0 done, 2 refused or nothing could be done (see the log line), 3 needs an administrator window. ASCII only. PowerShell 5.1 and 7.
 param(
   [switch]$Install, [switch]$Undo, [switch]$Status, [switch]$DryRun, [switch]$Up, [switch]$Down, [switch]$Snapshot, [switch]$GameCheck, [switch]$IdleWatch,
   [string]$VMName = 'Pillagers_Oct26', [int]$MaxGB = 16, [int]$KeepFreeGB = 4, [int]$DayGB = 0,
   [int]$KeepSnapshots = 2, [int]$Gpu3DPct = 15, [int]$GameCpuPct = 30, [int]$AtPcCpuPct = 50, [int]$AtPcIdleMin = 10,
-  [string]$BaseDir = ''
+  [string]$BaseDir = '', [string]$NotesSrc = 'C:\claudecode\pillagers-party\exports'
 )
 $ErrorActionPreference = 'Continue'
 if (-not $BaseDir) { $BaseDir = Join-Path $env:LOCALAPPDATA 'PillagersBridge' }
@@ -123,6 +128,29 @@ if ($IdleWatch) {
   }
 }
 
+# ------------------------------------------------------------------ his notes for the VM (item 7 above, his process answer 14 a)
+function MirrorNotes {
+  try {
+    if (-not (Test-Path -LiteralPath $NotesSrc)) { return }
+    if (-not (Test-Path $Share)) { New-Item -ItemType Directory -Force -Path $Share | Out-Null }
+    $seenFile = Join-Path $BaseDir 'notes-mirrored.txt'; $seen = @{}
+    if (Test-Path -LiteralPath $seenFile) { foreach ($l in @(Get-Content -LiteralPath $seenFile -ErrorAction SilentlyContinue)) { if ($l) { $seen[$l.Trim()] = 1 } } }
+    $now = Get-Date; $n = 0
+    foreach ($f in @(Get-ChildItem -LiteralPath $NotesSrc -File -ErrorAction SilentlyContinue)) {
+      if ($f.Name -notmatch '^(feedback-[A-Za-z0-9._-]+[.](txt|png)|run-[A-Za-z0-9._-]+[.]txt)$' -or $f.Name.Length -gt 110) { continue }
+      if ($seen.ContainsKey($f.Name) -or $f.Length -gt 11MB -or $f.LastWriteTime -lt $now.AddDays(-14)) { continue }
+      if (($now - $f.LastWriteTime).TotalSeconds -lt 20) { continue }   # the game may still be writing it; next minute
+      $dst = Join-Path $Share ('pcnote-' + $f.Name)
+      Copy-Item -LiteralPath $f.FullName -Destination ($dst + '.part') -Force -ErrorAction Stop
+      Move-Item -LiteralPath ($dst + '.part') -Destination $dst -Force -ErrorAction Stop
+      try { (Get-Item -LiteralPath $dst).CreationTime = $now } catch { }
+      Add-Content -LiteralPath $seenFile -Value $f.Name -Encoding ASCII; $n++
+    }
+    foreach ($o in @(Get-ChildItem -LiteralPath $Share -File -Filter 'pcnote-*' -ErrorAction SilentlyContinue)) { if ($o.CreationTime -lt $now.AddDays(-3)) { Remove-Item -LiteralPath $o.FullName -Force -ErrorAction SilentlyContinue } }
+    if ($n) { LogLine ('notes: ' + $n + ' new note(s) or run report(s) from the party copy put in the share for the VM') }
+  } catch { LogLine ('notes: could not copy: ' + ($_.Exception.Message -replace '\s+', ' ')) }
+}
+
 # ------------------------------------------------------------------ -GameCheck : the VM goes light while he plays (his 49 a and 38 b)
 $IdleSrc = ''
 function ConsoleIdleMin {
@@ -179,6 +207,7 @@ if ($GameCheck) {
           ('last=' + $(if ($last) { $last.ToString('yyyy-MM-dd HH:mm:ss') } else { '' })), ('what=' + $(if ($hit) { $hit + ' ' + $pct + '%' } else { '' })), ('idle=' + $idle), ('idlefrom=' + $IdleSrc))
         if ($idle -ge 0) { $lines += ('atpc=' + $(if ($atpc) { '1' } else { '0' })) }
         Set-Content -Path $GameFile -Encoding ASCII -Value $lines } catch { }
+  MirrorNotes
   $vm = GetVm
   if ($vm -and $vm.State -eq 'Running') {
     try {
@@ -197,6 +226,7 @@ if ($Status -or -not ($Install -or $Undo)) {
   foreach ($n in $TaskUp, $TaskDown, $TaskSnap, $TaskGame, $TaskIdle) { $t = Get-ScheduledTask -TaskName $n -ErrorAction SilentlyContinue; Say ($n + ': ' + $(if ($t) { $t.State } else { 'not set up' })) $(if ($t) { 'OK' } else { 'INFO' }) }
   if ($vm) { try { Say ('VM processors: held to ' + (Get-VMProcessor -VMName $VMName -ErrorAction Stop).Maximum + '% (100 = all)') } catch { } }
   if (Test-Path $GameFile) { Say ('game check: ' + ((Get-Content $GameFile -ErrorAction SilentlyContinue) -join '; ')) }
+  $nm = Join-Path $BaseDir 'notes-mirrored.txt'; Say ('notes for the VM: ' + $(if (Test-Path -LiteralPath $NotesSrc) { 'reading ' + $NotesSrc } else { $NotesSrc + ' is not there yet' }) + '; ' + $(if (Test-Path -LiteralPath $nm) { @(Get-Content -LiteralPath $nm).Count } else { 0 }) + ' sent so far')
   $snaps = @(OurSnapshots); Say ('weekly checkpoints: ' + $(if ($snaps.Count) { ($snaps | ForEach-Object { $_.Name }) -join ', ' } else { 'none yet' }))
   if (Test-Path $Log) { Say 'last night-memory lines:'; Get-Content $Log -Tail 6 | ForEach-Object { Say $_ } }
   if (-not ($Install -or $Undo)) { exit 0 }
@@ -220,7 +250,9 @@ if ($Undo) {
 $vm = GetVm
 if (-not $vm) { Say ('No VM named ' + $VMName + ' on this PC.') 'FAIL'; exit 2 }
 if ($vm.DynamicMemoryEnabled) { Say 'The VM uses dynamic memory; this setup only works with fixed memory. Nothing changed.' 'FAIL'; exit 2 }
-$day = if ($DayGB -gt 0) { $DayGB } else { [int][math]::Round($vm.MemoryStartup / 1GB) }
+# 10-20: running the setup again keeps the day size it recorded the first time; read from the VM, a run between 23:00 and 06:00 would
+# have recorded the night size (up to -MaxGB) as the day size.
+$day = if ($DayGB -gt 0) { $DayGB } elseif (Test-Path $StateFile) { ReadDayGB } else { [int][math]::Round($vm.MemoryStartup / 1GB) }
 $free = HostFreeGB; $tonight = [int][math]::Min($MaxGB, [math]::Floor($day + $free - $KeepFreeGB))
 Say ('VM ' + $VMName + ': ' + $day + ' GB by day. At 23:00 it gets up to ' + $MaxGB + ' GB (as much as fits while this PC keeps ' + $KeepFreeGB + ' GB free; right now that would be ' + [math]::Max($day, $tonight) + ' GB), and at 06:00 it goes back to ' + $day + ' GB.')
 $noCk = ([string]$vm.CheckpointType -eq 'Disabled')   # 10-20: the graphics card share needs checkpoints off, and then every weekly try failed

@@ -41,3 +41,5 @@ tools/handoff/art-survey/mock/_lc_*.html
 .claude/settings.local.json
 tools/fxslice*.html
 tools/fxpin*.html
+exports/*NOT-REAL-bridge-test*
+tools/handoff/notes-fetch.txt
