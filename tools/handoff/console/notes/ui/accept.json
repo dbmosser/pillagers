@@ -33,47 +33,47 @@
  "05-sector-page": {
   "score": 2,
   "pass": false,
-  "verdict": "The screen is a dense settings form. The giant CTA is the only clear hierarchy, the sector hero card wastes its space, and explainer sentences and sub-minimum type clutter it.",
+  "verdict": "The copy is shorter (two explainer lines trimmed, two hint captions removed), but the screen is still a dense, lopsided form: a huge empty hero panel above cramped control rows, with a toast covering the title bar and three competing lime elements.",
   "findings": [
-   "P0 bottom info box (going up with / armour warning): Delete both sentences. Keep a one-line chip row such as 'loadout: scav pistol' and a small ok/warn glyph 'no armour' in --warn 16px. Body text in tx-1/tx-2, never lime.",
-   "P0 sector card (cold storage), 120-1800 x 140-508: Fix the card height to the map (about 340px) and remove the extra strip at 508-558. Fill the card with --ui-panel and a 3px lime left tab. Put 3 to 4 stat chips (hectares, zones, keyed rooms) at 20px/16px in the empty area. Drop the 'test robot extracts 39.2%' line and the 'you have never raided here' line. Make the title 32px tx-1.",
-   "P1 options and pack rows (surface, weather, kit, pack): Use one chip height of 48px and one gap of 8px. Put every row label at 16px tx-2 in a 120px column. Remove the helper sentences. Use tx-1 text on idle chips, and give only the selected chip a lime border or fill. Put the pack steppers into a tidy 3-column grid instead of a wrapping strip.",
-   "P1 kit tiles (my loadout, freebie kit, random kit, best kit): Remove the second lines, or keep one at 16px tx-2 if it is real data. Make the kit tiles a 4-up equal-width row so they read as one choice.",
-   "P1 toast 'the welcome pack is in your stash.' overlapping the header at top centre: Put it at 5% from the top, outside the card, and shorten it to 'welcome pack in stash'. Or move it to the stash screen."
+   "P0 top centre, over the card header: Move it out of the card, to a 48px safe-area margin at the bottom or top of the screen. Auto-hide it after 2s. Cut it to 'welcome pack in stash'.",
+   "P1 cold storage hero panel (y 140-560): Shrink the panel to the map's height, about 240px, with the map at 320px wide. Use flat --ui-panel with no gradient. Delete the empty strip. Use the freed 180px to give the controls 24px row gaps.",
+   "P1 hero panel title and stats line: Title in tx-1 at 32px/700. Make the tag a 16px label. Break the stats into 3 label/value pairs at 16px: '5 zones', '2 keyed rooms', '14.3 ha'. Delete the robot sentence and 'you have never raided here'.",
+   "P1 kit and pack button rows: Idle options get tx-1 text on a --ui-line-hi border. Only the selected option gets a lime border or fill. Lay out the pack as a fixed 4-column grid of equal cells, 16px gutters, steppers 40px tall. Remove the per-item 'max' (keep pack all) and drop the 'no data core' chip when it is disabled.",
+   "P1 bottom info box: Show 'going up with: scav pistol' as one 20px line. Show the no-armour warning as a short --warn word with a glyph ('no armour'). Remove the stash sentence. Drop the border and put it in a flat strip."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-31-j4/05-sector-page-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/b-31-k1/05-sector-page-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T03:56"
+  "when": "2026-10-20T04:14"
  },
  "06-terms": {
   "score": 2,
   "pass": false,
-  "verdict": "A small, dim, all-grey list floats in the middle of a mostly empty 90% card, with no accent or focus, an explaining paragraph, and misaligned footer elements, so it reads as a debug dialog and not a polished menu.",
+  "verdict": "The terms card is still a small, dim column floating in an empty 90% card, with an explaining paragraph, 14px grey row text and a misaligned footer. The intro paragraph grew slightly, but none of the hierarchy, contrast or alignment problems from before were fixed.",
   "findings": [
-   "P0 whole card, hierarchy: Left-align the title at 32px f-cond 700 in the header row (y~56+24) next to the x. Widen the list to the card's inner width, minus 48px padding. Fill the card or shrink it to fit. Make the bonus percentage the loud element at 20px 700, in --acc or --ok. Give the focused row a --ui-raised fill with a 3px lime left bar.",
-   "P0 intro paragraph (y 348-371): Delete it. Replace it with a one-line label such as 'worse terms, better pay', or put 'pays more if you extract' in a small tag. Keep each row description to 16px tx-2 at most.",
-   "P1 footer: 'nothing signed' line, divider, 'sign nothing' button (y 730-806): Align everything to one 431px left edge, or the 48px card padding. Use 24px between the list and the status line. Put the status on the left and 'sign nothing' on the right in a 72px footer row, and make it the same size as the row buttons. Remove the stray divider or make it span the full card.",
-   "P1 row 'sign' buttons: Draw the focused row with a lime 3px bar and a --ui-raised fill, and the focused button in lime fill with --acc-ink text. Raise the button to 96x44 at 20px. A signed row shows an --ok 'signed' chip.",
-   "P1 row text sizes and contrast: Names 20px f-cond 600 tx-1. Descriptions 16px tx-2 (>=4.5:1), cut to a few words ('lamps off', '+40% patrols', 'raid 356s'). Percentages 20px 700 in lime or --ok. Raise row height to 72px."
+   "P0 whole card: Fill the card: title top-left at 32px in the 56px header row, rows 72px tall on a 24px grid, column 1400px wide. Or build a two-column layout with the terms list on the left and a detail or payout pane (--ui-raised) on the right.",
+   "P0 intro paragraph: Delete it. Replace with a 16px label such as 'bonus paid on extract only', or drop it entirely. The row descriptions already explain each term.",
+   "P1 rows: name and description: Names 20px f-cond 600 tx-1. Descriptions 16px tx-2. Reward '+25%' at 32px f-cond 700 in --acc, or --ok. Row height 72px.",
+   "P1 sign buttons and sign nothing: Buttons 96x48 with 20px text. Give the focused row a --ui-raised fill plus a 3px --acc left bar, and make the focused button an --acc fill with --acc-ink text. Signed rows should show --ok 'signed'.",
+   "P1 footer: 'nothing signed' line, divider, sign nothing: Put everything on the list's 431 to 1489 edges. Use 24px between the list and the footer. Put the status line at 16px tx-2 on the left and 'sign nothing' at the right edge on the same baseline, or make it a quiet text button."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-31-j4/06-terms-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/b-31-k1/06-terms-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T03:57"
+  "when": "2026-10-20T04:14"
  },
  "07-party-coop": {
   "score": 2,
   "pass": false,
-  "verdict": "A huge empty card with a small, centred cluster of explaining paragraphs, tiny grey text and weak default-looking buttons: no hierarchy, no primary action, and none of the 90 percent window's space is used.",
+  "verdict": "The copy is shorter and the type is bigger, but the screen is still a small column of text floating in a nearly empty 90 percent card, with no clear main action and no focus state.",
   "findings": [
-   "P0 description, trading and hint paragraphs: Delete the trading paragraph and the lore paragraph. Keep one short label such as 'up to 4 pillagers'. Show the status line ('not in a party') in tx-2 at 20px. Move trading help to a tooltip or the codex.",
-   "P0 host a party / join a party buttons: Make 'host a party' a lime (--acc) filled button 56px high with --acc-ink text at 20px. Make 'join' a secondary outline of equal height, placed inline at the right end of the code field. Align the left edges to a 24px grid and show a 3px lime focus bar.",
-   "P1 overall card layout: Add a 56px header row with the title left-aligned at 32px next to the X. Place the host panel and the join panel side by side, each a --ui-panel with a 1px --ui-line-hi border, 24px padding and a 3px accent tab. Or shrink the card to about 60 percent of the screen width.",
-   "P1 party title: Left-align the title in the 56px header row at 32px weight 700. Remove the underline tick.",
-   "P1 invite code input: Add a 16px label 'invite code' above the field. Make the field 56px high with a --ui-raised fill and a 1px --ui-line-hi border, and use the placeholder 'paste code' at 20px. Make the border lime when focused."
+   "P0 whole card, content block at y 380-690: Lay out two columns inside the card. Put a 48px-padded header row at the top with the title left-aligned at 32px and the x on the right. Below it, put a 4-slot party roster on the left and the host and join actions on the right. Alternatively shrink the card to about 60 percent width for this small window.",
+   "P0 host a party and join a party buttons, y 575-690: Make host a party a lime --acc fill with --acc-ink text, 48px high and at least 200px wide, with 20px f-cond 700 text. Keep join a party as a quiet outlined button. Draw a visible focus bar on the pad-selected button.",
+   "P1 lime status line 'not in a party...' (y 490): Set it in tx-2 at 20px, or replace it with a short status such as 'no party', paired with a small ok or warn glyph. Reserve lime for the host a party button.",
+   "P1 join field (564,575 to 1489,643) and join a party button: Put host a party on its own row. Put the join field and join a party button on a second row, with the field 48px high and the button at its right, both with identical heights and top edges. Use 16px gaps between rows.",
+   "P1 intro, hint and trade lines (y 453-598): Cut the trade line and the pty1o hint. Reduce the field to a short label 'invite code' at 16px. Keep one line, 'up to four pillagers', at 20px tx-2. Use a consistent 24px gap between blocks."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-31-j4/07-party-coop-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/b-31-k1/07-party-coop-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T03:57"
+  "when": "2026-10-20T04:13"
  },
  "08-shop": {
   "score": 3,

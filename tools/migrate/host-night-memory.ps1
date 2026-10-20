@@ -6,19 +6,27 @@
 #   1. copies this file to %LOCALAPPDATA%\PillagersBridge\night-memory.ps1 (outside the repository, so the main PC's safety checks ignore it);
 #   2. makes two scheduled tasks that run as SYSTEM: "VM night memory up" every day at 23:00 and "VM night memory down" every day at 06:00
 #      (repeated every 15 minutes until 08:00, in case the VM cannot hand all of it back at once);
-#   3. puts "Pillagers Dev (live)" on his desktop: the dashboard copy the VM sends every 30 seconds into the bridge share folder.
+#   3. puts "Pillagers Dev (live)" on his desktop: the dashboard copy the VM sends every 30 seconds into the bridge share folder;
+#   4. (10-20, his 47 a "weekly safety snapshot") "VM weekly snapshot": every Sunday at 05:00 a Hyper-V checkpoint named "Pillagers weekly DATE",
+#      keeping the newest -KeepSnapshots (2); the first one is made at install;
+#   5. (10-20, his 49 a "while I play, the VM goes light" and 38 b "the local AI may run any time unless I am gaming") "VM light while gaming":
+#      every minute it looks at how hard each program works the graphics card. A program at -Gpu3DPct (15) or more (a game, or the game in a
+#      browser) means he is playing: the VM is held to -GameCpuPct (30) percent of its processors, and gaming.txt in the share tells the VM to
+#      start nothing new. Ten minutes after the last game sighting the VM gets its full processors back.
 # Up: the VM gets more memory while it runs (Hyper-V runtime memory resize, no restart), up to -MaxGB, always leaving -KeepFreeGB free on this PC.
 # Down: the VM goes back to its daytime size (the size it had when -Install ran, normally 10 GB). Nothing else on the VM changes.
 # It never changes Defender, the firewall, UAC, Windows Update or any other security setting, and never starts or stops the VM.
 # Every run writes a line to the bridge share folder (night-memory.log) so the VM can read how the night went.
 #
 #   -Install     set it up (needs administrator)       -Undo     remove the tasks, the copy and the shortcut; VM back to its day size
-#   -Status      show what is set up (read only)       -DryRun   with -Install or -Up: only say what would happen
-#   -Up / -Down  what the tasks run                    -MaxGB N (default 16)  -KeepFreeGB N (default 4)  -VMName NAME (default Pillagers_Oct26)
+#   -Status      show what is set up (read only)       -DryRun   with -Install, -Up, -Snapshot or -GameCheck: only say what would happen
+#   -Up / -Down / -Snapshot / -GameCheck  what the tasks run
+#   -MaxGB N (default 16)  -KeepFreeGB N (default 4)  -VMName NAME (default Pillagers_Oct26)  -KeepSnapshots N (2)  -Gpu3DPct N (15)  -GameCpuPct N (30)
 # Exit codes: 0 done, 2 refused or nothing could be done (see the log line), 3 needs an administrator window. ASCII only. PowerShell 5.1 and 7.
 param(
-  [switch]$Install, [switch]$Undo, [switch]$Status, [switch]$DryRun, [switch]$Up, [switch]$Down,
+  [switch]$Install, [switch]$Undo, [switch]$Status, [switch]$DryRun, [switch]$Up, [switch]$Down, [switch]$Snapshot, [switch]$GameCheck,
   [string]$VMName = 'Pillagers_Oct26', [int]$MaxGB = 16, [int]$KeepFreeGB = 4, [int]$DayGB = 0,
+  [int]$KeepSnapshots = 2, [int]$Gpu3DPct = 15, [int]$GameCpuPct = 30,
   [string]$BaseDir = ''
 )
 $ErrorActionPreference = 'Continue'
@@ -27,8 +35,9 @@ $Share = Join-Path $BaseDir 'share'
 $Log = Join-Path $Share 'night-memory.log'
 $Copy = Join-Path $BaseDir 'night-memory.ps1'
 $StateFile = Join-Path $BaseDir 'night-memory-state.txt'
-$TaskUp = 'VM night memory up'; $TaskDown = 'VM night memory down'
+$TaskUp = 'VM night memory up'; $TaskDown = 'VM night memory down'; $TaskSnap = 'VM weekly snapshot'; $TaskGame = 'VM light while gaming'
 $LinkName = 'Pillagers Dev (live).url'
+$GameFile = Join-Path $Share 'gaming.txt'; $GameSeen = Join-Path $BaseDir 'gaming-last-seen.txt'; $SnapPrefix = 'Pillagers weekly '
 
 function Say([string]$msg, [string]$kind = 'INFO') { Write-Host ('{0,-5} {1}' -f $kind, $msg) }
 function LogLine([string]$msg) {
@@ -72,6 +81,57 @@ if ($Down) {
     Start-Sleep -Seconds 30; $vm = GetVm; $asg2 = [math]::Round($vm.MemoryAssigned / 1GB, 1)
     LogLine ('down: VM ' + $cur + ' -> ' + $day + ' GB (assigned now ' + $asg2 + ' GB' + $(if ($asg2 -gt $day + 0.5) { '; the VM is still giving it back, the next try is in 15 minutes' } else { '' }) + ')'); exit 0
   } catch { LogLine ('down: Hyper-V refused ' + $day + ' GB (tries again in 15 minutes): ' + ($_.Exception.Message -replace '\s+', ' ')); exit 2 }
+}
+
+# ------------------------------------------------------------------ -Snapshot : the weekly safety checkpoint (his 47 a)
+function OurSnapshots { return @(Get-VMSnapshot -VMName $VMName -ErrorAction SilentlyContinue | Where-Object { $_.Name -like ($SnapPrefix + '*') } | Sort-Object CreationTime -Descending) }
+if ($Snapshot) {
+  $vm = GetVm
+  if (-not $vm) { LogLine ('snapshot: no VM named ' + $VMName + '; nothing done'); exit 2 }
+  $name = $SnapPrefix + (Get-Date -Format 'yyyy-MM-dd')
+  if ($DryRun) { Say ('would make the checkpoint "' + $name + '" and keep the newest ' + $KeepSnapshots + ' (there are ' + (OurSnapshots).Count + ' now)') 'DRY'; exit 0 }
+  try { Checkpoint-VM -Name $VMName -SnapshotName $name -ErrorAction Stop }
+  catch { LogLine ('snapshot: Hyper-V refused the checkpoint: ' + ($_.Exception.Message -replace '\s+', ' ')); exit 2 }
+  LogLine ('snapshot: made "' + $name + '"')
+  foreach ($s in @(OurSnapshots | Select-Object -Skip $KeepSnapshots)) {
+    try { Remove-VMSnapshot -VMSnapshot $s -ErrorAction Stop; LogLine ('snapshot: removed the old checkpoint "' + $s.Name + '" (Hyper-V merges it in the background)') }
+    catch { LogLine ('snapshot: could not remove "' + $s.Name + '": ' + ($_.Exception.Message -replace '\s+', ' ')) }
+  }
+  exit 0
+}
+
+# ------------------------------------------------------------------ -GameCheck : the VM goes light while he plays (his 49 a and 38 b)
+if ($GameCheck) {
+  $hit = ''; $pct = 0
+  try {
+    $sets = Get-Counter -Counter '\GPU Engine(*engtype_3D)\Utilization Percentage' -SampleInterval 1 -MaxSamples 5 -ErrorAction Stop
+    $by = @{}
+    foreach ($set in $sets) { foreach ($c in $set.CounterSamples) { if ($c.InstanceName -match 'pid_(\d+)_') { $p = [int]$Matches[1]; $by[$p] = [double]$by[$p] + $c.CookedValue } } }
+    foreach ($p in @($by.Keys)) {
+      $avg = $by[$p] / 5
+      if ($avg -lt $Gpu3DPct) { continue }
+      $n = ''; try { $n = (Get-Process -Id $p -ErrorAction Stop).ProcessName } catch { }
+      if (-not $n -or $n -match '^(dwm|vmwp|vmmem|vmcompute|csrss|System|Idle|audiodg)$') { continue }
+      if ($avg -gt $pct) { $pct = [int]$avg; $hit = $n }
+    }
+  } catch { LogLine ('game check: cannot read the graphics card counters: ' + ($_.Exception.Message -replace '\s+', ' ')); exit 2 }
+  $now = Get-Date; $last = $null
+  if ($hit) { $last = $now; Set-Content -Path $GameSeen -Value $now.ToString('yyyy-MM-dd HH:mm:ss') -Encoding ASCII }
+  else { try { $last = [datetime]::ParseExact((Get-Content $GameSeen -Raw -ErrorAction Stop).Trim(), 'yyyy-MM-dd HH:mm:ss', $null) } catch { } }
+  $gaming = ($last -ne $null) -and (($now - $last).TotalMinutes -lt 10)
+  if ($DryRun) { Say ('graphics card: ' + $(if ($hit) { $hit + ' at ' + $pct + '% 3D' } else { 'no program at ' + $Gpu3DPct + '% 3D or more' }) + '; playing: ' + $gaming) 'DRY'; exit 0 }
+  try { if (-not (Test-Path $Share)) { New-Item -ItemType Directory -Force -Path $Share | Out-Null }
+        Set-Content -Path $GameFile -Encoding ASCII -Value @(('gaming=' + $(if ($gaming) { '1' } else { '0' })), ('checked=' + $now.ToString('yyyy-MM-dd HH:mm:ss')),
+          ('last=' + $(if ($last) { $last.ToString('yyyy-MM-dd HH:mm:ss') } else { '' })), ('what=' + $(if ($hit) { $hit + ' ' + $pct + '%' } else { '' }))) } catch { }
+  $vm = GetVm
+  if ($vm -and $vm.State -eq 'Running') {
+    try {
+      $cap = (Get-VMProcessor -VMName $VMName -ErrorAction Stop).Maximum
+      if ($gaming -and $cap -gt $GameCpuPct) { Set-VMProcessor -VMName $VMName -Maximum $GameCpuPct -ErrorAction Stop; LogLine ('game check: ' + $hit + ' works the graphics card (' + $pct + '% 3D): the VM is held to ' + $GameCpuPct + '% of its processors') }
+      elseif (-not $gaming -and $cap -lt 100) { Set-VMProcessor -VMName $VMName -Maximum 100 -ErrorAction Stop; LogLine 'game check: no game for 10 minutes: the VM has its full processors again' }
+    } catch { LogLine ('game check: Hyper-V refused the processor limit: ' + ($_.Exception.Message -replace '\s+', ' ')) }
+  }
+  exit 0
 }
 
 # ------------------------------------------------------------------ -Status

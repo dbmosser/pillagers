@@ -1,0 +1,7 @@
+v32.23: career offers easy after three deaths
+
+Three deaths in a row in Career, then the next raid shows the easy yes or no card. Yes gives 30 percent less damage and a free medkit for that raid.
+
+Check 32.23. Fails on v32.22.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

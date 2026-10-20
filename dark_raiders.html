@@ -3023,7 +3023,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.22';
+var VER='32.23';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16634,6 +16634,7 @@ function startRaid(){
   if(_gpBack.length&&G&&!G.sim){ G.spliced=G.spliced||[]; for(var _gpi=0;_gpi<_gpBack.length;_gpi++) if(G.spliced.indexOf(_gpBack[_gpi])<0) G.spliced.push(_gpBack[_gpi]); }   // v21.96 (K6): the gun in the pile is this raid's to bring home on an abandon
   if(ARCADE&&ARCADE.on&&G&&!G.sim) arcadePostBuild(G);
   else if(G&&!G.sim&&CAREER_ON) careerPostBuild(G);   // v24.xx (feat0h1): every other raid from the Undercroft is a CAREER raid   // v23.21 (arcade2): an arcade raid is this same build made endless, with a random kit (the arcade section)
+  if(G&&!G.sim&&!G.arcade){ try{ easyCareerAsk(G); }catch(_eca){} }   // v28.xx (cw-easycareer): the career easy offer after a few deaths
   if(G&&!G.sim){ try{ brlPlace(G); }catch(_bpl){ G.brl=[]; } }   // v27.xx (barrels): the explosive barrels, on their own side stream
   try{ gunKeysSettle({deploy:1}); }catch(_gks){}   // v21.83: the guns in his hands take the gun keys the belt shows them on
   try{ classKeysSettle({deploy:1}); }catch(_cks){}   // v25.xx (belt3): and what the throwable, medical and armour keys show is pinned for the raid
@@ -18587,7 +18588,7 @@ function pollPad(){
   // physical button, the raid reads the logical one, so with fire moved onto A the A on RESUME RUN or ASCEND fired a real shot, B rolled and
   // MENU crouched. Every button held while a menu owns the pad is noted here; the raid ignores it until it is let go.
   // v28.xx (cw-easymode): the easy mode question takes A (yes) or B (no) on this window pad; the press is spent, the rest of the pad plays on
-  if(typeof ARCADE==='object'&&ARCADE&&ARCADE.on&&easyLive()){
+  if(typeof ARCADE==='object'&&ARCADE&&easyLive()){   // v28.xx (cw-easycareer): the demo and a career raid that asked
     var _enw=[], _ei;
     for(_ei=0;_ei<bt.length;_ei++) if(pressed(_ei)&&!PAD.prev[_ei]) _enw.push(_ei);
     try{ easyPad(_enw); }catch(_epd){}
@@ -32688,6 +32689,7 @@ function endRaid(how){
   if(G&&G.arcade&&!G.sim&&how==='dead'&&raidClockOn()&&(G.nuking||G.timeLeft<=0)){ G.arcEnd='burn'; return; }
   if(G&&G.arcade&&!G.sim){ if(how==='dead') return arcadeDied(); if(how==='extract') return arcadeExtractEnd(); if(how==='abandon') return arcadeRaidStop('quit'); }
   G.over=how;
+  if(!G.sim){ try{ easyCareerNote(how); }catch(_ecn){} }   // v28.xx (cw-easycareer): deaths in a row, for the career easy offer
   if(NET.on&&!G.sim){ try{ netScoreSend(how); }catch(_nss){} }   // v17.39: his pick 5, the score word goes before the out word
   if(NET.on&&!G.sim){ try{ if(!netSpecStart(how)) netUpEnd(how); }catch(_ue){} }   // v15.79: the party is told this raid ended; v16.14: unless the host spectates for the party still up top
   G.drag=null;   // v14.56: a drag held as the raid ends ends with it
@@ -43049,6 +43051,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
     if(HUDBOX.raiders) HUDBOX.raiders=hudZoomRect('raiders',0,0,HUDBOX.raiders);
   }
   if(G.arcade){ try{ arcadeHud(); }catch(_ahd){} }   // v23.23 (arcade4): the arcade layer, the EXTRACTED! banner
+  if(G.carAsk&&!G.arcade){ try{ easyHud(); }catch(_ehc){} }   // v28.xx (cw-easycareer): the career easy card
   RSTAT.on=0; if(keys['AltLeft']&&!G.mapOpen&&!G.bagOpen&&!G.trade){ try{ raidStatusDraw(); }catch(_rsd){} } RSTAT.rows=null;   // v25.xx (altstatus): hold ALT, the raid status over everything else
   // v8.93: the resize grips. Every panel that can be scaled gets three short
   // diagonal strokes in its bottom right corner, which is the shape every window
@@ -48530,6 +48533,7 @@ function attTick(){
 }
 ['keydown','mousedown','wheel','touchstart'].forEach(function(evn){
   try{ window.addEventListener(evn,function(e){
+    if(typeof G!=='undefined'&&G&&G.carAsk&&easyLive()){ try{ if(easyKey(e)) return; }catch(_eck){} }   // v28.xx (cw-easycareer): Y or N answers the career easy card
     if(typeof ARCADE==='object'&&ARCADE&&ARCADE.on){ try{ arcadeKeyAtt(e); }catch(_ak){} return; }   // v23.24 (arcade5): in the arcade a press drops the host in
     if(ATT.on){ try{ e.preventDefault(); e.stopImmediatePropagation(); }catch(_x){} }   // the press that stops the clip does nothing else
     attPoke();
@@ -50234,7 +50238,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.22: The party and sector pages lose their explaining sentences and the party and terms text is larger. Check 32.22 fails on v32.21',
+  now:'v32.23: Three deaths in a row in Career, then the next raid shows the easy yes or no card. Yes gives 30 percent less damage and a free medkit for that raid. Check 32.23 fails on v32.22',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -63977,8 +63981,8 @@ function arcadeIniExtract(){
 // pad A or B, no answer in 12 s is a no. Yes takes a third off the damage he takes (EASY_MUL, the Forgiving setting). The card never stops play: only
 // its own keys and buttons are taken. Nothing changes until he says yes, so a normal raid and the seed 4242 fingerprint are untouched.
 var EASY_MUL=0.7, EASY_MS=12000;
-function easyDmgMul(){ return (typeof ARCADE==='object'&&ARCADE&&ARCADE.easy&&G&&G.arcade)?EASY_MUL:1; }
-function easyLive(){ return !!(typeof ARCADE==='object'&&ARCADE&&ARCADE.on&&ARCADE.easyAsk&&G&&G.arcade&&!G.over&&!G.sim); }
+function easyDmgMul(){ return ((typeof ARCADE==='object'&&ARCADE&&ARCADE.easy&&G&&G.arcade)||(G&&G.easyC&&!G.arcade))?EASY_MUL:1; }   // v28.xx (cw-easycareer): and a career raid where he said yes to the offer
+function easyLive(){ return !!(typeof ARCADE==='object'&&ARCADE&&ARCADE.easyAsk&&G&&!G.over&&!G.sim&&((ARCADE.on&&G.arcade)||(G.carAsk&&!G.arcade))); }   // v28.xx (cw-easycareer): the card also lives in a career raid that asked
 function easyAskMaybe(why){
   if(typeof ARCADE!=='object'||!ARCADE||!ARCADE.on||ARCADE.solo||ARCADE.easyAsked||ARCADE.easy||why==='bench') return false;
   if((ARCADE.deaths|0)<2||(ARCADE.ext|0)>0) return false;
@@ -63992,12 +63996,25 @@ function easyStartAsk(){
   ARCADE.easy=0; ARCADE.easyAsked=0; ARCADE.easyAsk={at:Date.now()};
   return true;
 }
+// v28.xx (cw-easycareer), HIS ANSWER (2026-10-18, 2.90 b): "Career offers Forgiving on a card after a few deaths, the same offer as the demo." The profile counts deaths in a row
+// (P.dieRun, an extraction clears it); on the third the next career raid puts the same yes or no card up (Y or A, N or B), asked once per streak.
+// Yes is the same 30 percent less damage and free medkit for that raid. Not asked in the demo, and not when Forgiving is already on in Settings.
+function easyCareerNote(how){
+  if(!P||(typeof ARCADE==='object'&&ARCADE&&ARCADE.on)) return;
+  P.dieRun=(how==='dead')?((P.dieRun|0)+1):((how==='extract')?0:(P.dieRun|0));
+}
+function easyCareerAsk(g){
+  if(!g||g.sim||g.arcade||!P||(typeof ARCADE==='object'&&ARCADE&&ARCADE.on)||typeof ARCADE!=='object'||!ARCADE) return false;
+  if((P.dieRun|0)<3||!(CFG.eDmg>=1)) return false;
+  P.dieRun=0; g.carAsk=1; ARCADE.easyAsk={at:Date.now()};
+  return true;
+}
 function easyAnswer(yes){
   if(!ARCADE||!ARCADE.easyAsk) return false;
   ARCADE.easyAsk=null;
   if(yes){
-    ARCADE.easy=1; try{ say('Easy mode on','info'); }catch(_es){}
-    // v28.xx (cw-easymed), HIS ANSWER (2026-10-18, 3.16 b): when a guest says yes to easier, "30 percent less damage, plus a free medkit". The damage cut was already in (EASY_MUL); the medkit goes in the bag now
+    if(G&&G.carAsk&&!G.arcade) G.easyC=1; else ARCADE.easy=1;   // v28.xx (cw-easycareer): a career yes lives on this raid, the demo yes on the run
+    try{ say('Easy mode on','info'); }catch(_es){}    // v28.xx (cw-easymed), HIS ANSWER (2026-10-18, 3.16 b): when a guest says yes to easier, "30 percent less damage, plus a free medkit". The damage cut was already in (EASY_MUL); the medkit goes in the bag now
     try{ if(G&&Array.isArray(G.bag)) G.bag.push('medkit'); }catch(_em){}
   }
   return true;

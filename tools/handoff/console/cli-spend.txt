@@ -193,3 +193,6 @@
 2026-10-19 0.9865834000000001 b-31-ui-undercroft-r2
 2026-10-20 0.1543 critic-manual
 2026-10-20 0.4583296 c-02-raid-hud-redesign
+2026-10-20 0.1602 critic-manual
+2026-10-20 0.1599 critic-manual
+2026-10-20 0.1621 critic-manual

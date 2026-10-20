@@ -1,0 +1,5 @@
+## v32.23 - CAREER OFFERS EASY AFTER THREE DEATHS
+
+Co-op hunt while he was away. His answer 2.90 b: Career offers Forgiving on a card after a few deaths, the same offer as the demo.
+
+MEASURED. Check 32.23 passes, and fails on v32.22.
