@@ -1,0 +1,5 @@
+## v32.31 - EASY RUN: BOARD POINTS CUT 30 PERCENT AND TAGGED
+
+Co-op hunt while he was away. His answer 2.47 c: an easy run appears on the board with the points cut by 30 percent and tagged. Nothing read the easy flag for the board yet.
+
+MEASURED. Check 32.31 passes, and fails on v32.30.

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.31 - EASY RUN: BOARD POINTS CUT 30 PERCENT AND TAGGED
+
+Co-op hunt while he was away. His answer 2.47 c: an easy run appears on the board with the points cut by 30 percent and tagged. Nothing read the easy flag for the board yet.
+
+MEASURED. Check 32.31 passes, and fails on v32.30.
 ## v32.30 - MAP LABELS HAVE ROOM
 
 Co-op hunt while he was away. The map critic found dense cache labels and contract rows competing with the map.

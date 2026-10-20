@@ -215,17 +215,17 @@
  "22-raid-map-open": {
   "score": 3,
   "pass": false,
-  "verdict": "The codex popup no longer sits on the map, which is a real fix, but the map labels now pile up in two spots, the contract rows lose their rhythm, and the screen is otherwise the same competent but plain card as before.",
+  "verdict": "The window shell is clean and consistent, but the map is more crowded than before: the new label spreading puts cache tags in stacks and leader lines around the two strongbox clusters, and the map still reads as a cluttered pile of tags instead of one clear picture.",
   "findings": [
-   "P1 map, top-right strongbox cluster (~x 970-1060, y 195-265): Merge co-located markers into one label with a count ('3 caches'). Or fan out leader lines at 16px vertical spacing, with the label text fully clear of the 56px icon box.",
-   "P1 map, strongbox / blast freezer cluster (~x 940-1075, y 360-475): Collapse to one 'strongbox +4' pin. Or cap visible labels per 120px cell at 2 and show the rest only on hover or focus. Keep 12px minimum gap between label boxes.",
-   "P1 hierarchy, contracts panel vs map: Mark the tracked contract with a 3px --acc left bar and tx-1 name, and dim the rest to tx-2. Show only the top 3-4 rows, or drop the row dividers' weight.",
-   "P2 contracts panel, 'no heals' row: Give every row the same right-aligned status slot (fixed 56px width) and run all bars to the same x. Put 'holding' in --ok green so it reads as a state.",
-   "P2 map, player arrow (~220,312): Don't change player marker colours until he answers r3-13. Revert to the old arrow colour, or keep one token for it on every screen."
+   "P1 map, top-right strongbox cluster (about x1000-1060, y190-290): Merge co-located containers into one marker with a count ('cache x3'). If they stay separate, spread them at least 16px apart and drop the leader lines under 20px. Show one label per cluster.",
+   "P1 map, right-middle strongbox cluster (about x890-1070, y375-560): Cap labels per cluster at 2 and show the rest as a '+3' chip. Keep at least 12px of clear space around the extract rings and the room name labels. Render the loot tags at 14px with the tx-2 colour, so extraction and room names stay the loudest.",
+   "P1 map, label hierarchy: Set tier 1 (extract a/b/c, player arrow) at 20px, tier 2 (hazards) at 16px, tier 3 (cache, room names) at 14px in tx-2. Keep tx-1 and bold for extracts only.",
+   "P1 contracts list, right panel: Show the top 3 contracts in tx-1 with an accent progress bar and fade the rest, or add a --acc tab to the first row. Extend the bar to x1742 so it lines up with the price and count. Align the header padding to the 24px row padding.",
+   "P2 map frame vs contracts panel: Give both the --ui-panel fill, a 1px --ui-line-hi border and --rad 4px. Drop the thick bevel on the map frame, or give the map the --ui-void fill with the same 1px border."
   ],
   "pic": "tools/handoff/console/notes/shots/o-03-map-popups-wait-after/22-raid-map-open-1080.jpg",
   "task": "o-03-map-popups-wait",
-  "when": "2026-10-20T04:50"
+  "when": "2026-10-20T05:00"
  },
  "23-raid-backpack-open": {
   "score": 2,

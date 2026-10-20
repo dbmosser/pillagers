@@ -6101,6 +6101,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.31',what:'an easy run is cut 30 percent on the board and tagged easy (his 2.47 c)',
+   run:function(){
+     if(typeof arcadeBoardCut!=='function') return 'no arcadeBoardCut';
+     if(arcadeBoardCut(1000,1)!==700||arcadeBoardCut(1000,0)!==1000) return 'cut is not 30 percent';
+     if(arcadeBoardTag({e:1}).toLowerCase().indexOf('easy')<0||arcadeBoardTag({e:0})!=='') return 'tag wrong';
+     if(String(arcadeBoardPut).indexOf('arcadeBoardCut')<0) return 'the board row is not cut';
+     if(String(arcadeAttBoard).indexOf('arcadeBoardTag')<0) return 'the board does not show the tag';
+     var d=arcadeBoardDedupe([{run:'q',s:5,x:0,k:0,t:1,e:1}]);
+     if(!d[0]||d[0].e!==1) return 'dedupe drops the tag';
+     var k0=localStorage.getItem(ARCADE_BOARD_KEY), l;
+     try{
+       localStorage.setItem(ARCADE_BOARD_KEY,JSON.stringify({v:1,rows:[{run:'zq',i:'AAA',s:70,x:1,k:1,t:Date.now(),m:2,e:1,u:'cr'}]}));
+       l=arcadeBoardLoad();
+       if(!l[0]||l[0].e!==1) return 'load drops the tag';
+       return null;
+     } finally { if(k0==null) localStorage.removeItem(ARCADE_BOARD_KEY); else localStorage.setItem(ARCADE_BOARD_KEY,k0); } }},
   {v:'32.30',what:'cw-cx-mapspace-o03: every cache and strongbox retains an individual tag with 12px label clearance and its own leader, while contract tracks align',
    run:function(){
      var bad=[], g, ow=W, oh=H, os=MAPFIRST.skip, op=mapPlaceLabels, oi=mapIcon, PR=CanvasRenderingContext2D.prototype, of=PR.fillText, ofr=PR.fillRect, ost=PR.stroke, om=PR.moveTo, ol=PR.lineTo,

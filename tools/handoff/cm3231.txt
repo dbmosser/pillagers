@@ -1,0 +1,7 @@
+v32.31: easy run: board points cut 30 percent and tagged
+
+An easy demo run writes its board row at 70 percent of the score with an easy tag next to the initials.
+
+Check 32.31. Fails on v32.30.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

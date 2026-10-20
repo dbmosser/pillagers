@@ -3028,7 +3028,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.30';
+var VER='32.31';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -50347,7 +50347,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.30: Individual cache and strongbox labels have twelve scaled pixels of clearance. Their leaders stay attached to their own icons. Contract tracks align and secondary rows are quieter. Check 32.30 fails on v32.29',
+  now:'v32.31: An easy demo run writes its board row at 70 percent of the score with an easy tag next to the initials. Check 32.31 fails on v32.30',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -63173,7 +63173,7 @@ function arcadeAttBoard(pg){
   if(!rows.length){ arcadeAttLine(pg,'apn','NO SCORES YET'); for(i=0;i<5;i++) arcadeAttLine(pg,'apg',(i+1)+'.  ---','--'); }   /* v29.93 (cw-partykeys) critic 56 (2 of 5): an empty board was a card holding one line. Five ghost rows give it its shape */
   var cols=null, c1=null, c2=null;
   if(rows.length>10){ cols=document.createElement('div'); cols.className='apcols'; c1=document.createElement('div'); c1.className='apcol'; c2=document.createElement('div'); c2.className='apcol'; cols.appendChild(c1); cols.appendChild(c2); pg.appendChild(cols); }   // v27.xx (board20): ten rows a column
-  for(i=0;i<rows.length&&i<ARCADE_BOARD.top;i++){ r=rows[i]||{}; arcadeAttLine(cols?(i<10?c1:c2):pg,'apr'+((id&&r.run===id)?' hl':''),(i+1)+'.  '+String(r.i||'???').slice(0,3).toUpperCase()+((r.m!==1&&r.i2)?' \u00b7 '+String(r.i2).slice(0,3).toUpperCase():''),arcadeCr(r.s)); }   // v23.56 (arcade31): in credits
+  for(i=0;i<rows.length&&i<ARCADE_BOARD.top;i++){ r=rows[i]||{}; arcadeAttLine(cols?(i<10?c1:c2):pg,'apr'+((id&&r.run===id)?' hl':''),(i+1)+'.  '+String(r.i||'???').slice(0,3).toUpperCase()+((r.m!==1&&r.i2)?' \u00b7 '+String(r.i2).slice(0,3).toUpperCase():'')+arcadeBoardTag(r),arcadeCr(r.s)); }   // v23.56 (arcade31): in credits; v28.xx (cw-easyboard): and the easy tag
   if(o&&(+o.team||0)>0) arcadeAttLine(pg,'apb','LAST RUN '+arcadeCr(o.team));
   if(best>0) arcadeAttLine(pg,'apb','BEST EVER '+arcadeCr(best));
 }
@@ -63858,7 +63858,7 @@ function arcadeBoardLoad(){
   for(i=0;i<r.length;i++){
     x=r[i]; if(!x||typeof x.run!=='string'||!x.run) continue;
     if(x.u!=='cr'){ dr++; continue; }   // v23.57 (arcade32): a row from the old scale
-    out.push({run:x.run.slice(0,40),i:(typeof x.i==='string')?x.i.slice(0,3).toUpperCase():'',i2:(typeof x.i2==='string')?x.i2.slice(0,3).toUpperCase():'',s:Math.max(0,Math.round(+x.s||0)),x:Math.max(0,x.x|0),k:Math.max(0,x.k|0),t:+x.t||0,m:(x.m===1)?1:2,u:'cr'});   // v23.54 (arcade30): the mode, an old row is 2 player; v23.57 (arcade32): the scale tag
+    out.push({run:x.run.slice(0,40),i:(typeof x.i==='string')?x.i.slice(0,3).toUpperCase():'',i2:(typeof x.i2==='string')?x.i2.slice(0,3).toUpperCase():'',s:Math.max(0,Math.round(+x.s||0)),x:Math.max(0,x.x|0),k:Math.max(0,x.k|0),t:+x.t||0,m:(x.m===1)?1:2,e:x.e?1:0,u:'cr'});   // v28.xx (cw-easyboard): the easy tag survives a load; v23.54 (arcade30): the mode, an old row is 2 player; v23.57 (arcade32): the scale tag
   }
   if(dr){ try{ arcadeBoardSave(out); }catch(_bc){} }   // v23.57 (arcade32): saved back clean once
   return out;
@@ -63868,10 +63868,10 @@ function arcadeBoardDedupe(r){
   var m={}, out=[], i, x, o;
   for(i=0;i<r.length;i++){
     x=r[i]; o=Object.prototype.hasOwnProperty.call(m,x.run)?m[x.run]:null;
-    if(!o){ o=m[x.run]={run:x.run,i:x.i||'',i2:x.i2||'',s:x.s,x:x.x,k:x.k,t:x.t,m:(x.m===1)?1:2,u:'cr'}; out.push(o); continue; }   // v23.57 (arcade32): every saved row carries the credits tag
+    if(!o){ o=m[x.run]={run:x.run,i:x.i||'',i2:x.i2||'',s:x.s,x:x.x,k:x.k,t:x.t,m:(x.m===1)?1:2,e:x.e?1:0,u:'cr'}; out.push(o); continue; }   // v23.57 (arcade32): every saved row carries the credits tag
     if(!o.i&&x.i) o.i=x.i;
     if(!o.i2&&x.i2) o.i2=x.i2;   // v28.xx (cw-iniplayer), his Q62: player 2 has initials of its own
-    if(x.s>o.s||(x.s===o.s&&x.t>o.t)){ o.s=x.s; o.x=x.x; o.k=x.k; o.t=x.t; }
+    if(x.s>o.s||(x.s===o.s&&x.t>o.t)){ o.s=x.s; o.x=x.x; o.k=x.k; o.t=x.t; o.e=x.e?1:0; }
   }
   return out;
 }
@@ -63899,14 +63899,18 @@ function arcadeBoardTonight(now,md){
 }
 function arcadeBoardBest(md){ md=(md===1||md===2)?md:arcadeBoardMode(); var r=arcadeBoardLoad(), b=0, i; for(i=0;i<r.length;i++) if(arcadeBoardIn(r[i],md)&&r[i].s>b) b=r[i].s; return b; }   // v23.54 (arcade30): the best of the mode in play
 function arcadeBoardAuth(){ return !!(ARCADE.on&&(ARCADE.role==='host'||(G&&G.netWasJoin))); }
+// v28.xx (cw-easyboard), HIS ANSWER (2026-10-18, 2.47 c): "the points are cut by 30 percent and tagged". The flag is ARCADE.easy (the host window); same 0.7 as the damage cut (3.16 b).
+function arcadeBoardEasy(){ return (typeof ARCADE==='object'&&ARCADE&&ARCADE.easy)?1:0; }
+function arcadeBoardCut(s,e){ return e?Math.round((+s||0)*(typeof EASY_MUL==='number'?EASY_MUL:0.7)):s; }
+function arcadeBoardTag(r){ return (r&&r.e)?' \u00b7 easy':''; }
 // the run row, written in place under the run id. Returns whether it was written.
 function arcadeBoardPut(){
   if(!arcadeBoardAuth()||!ARCADE.run||!ARCADE.run.id) return false;
-  var id=ARCADE.run.id, s=arcadeTeam(), r, i, ini='', ini2='';
+  var id=ARCADE.run.id, ez=arcadeBoardEasy(), s=arcadeBoardCut(arcadeTeam(),ez), r, i, ini='', ini2='';   // v28.xx (cw-easyboard), HIS ANSWER (2026-10-18, 2.47 c): an easy run is cut 30 percent and tagged
   if(!(s>0)) return false;
   r=arcadeBoardLoad();
-  for(i=r.length-1;i>=0;i--) if(r[i].run===id){ if(!ini&&r[i].i) ini=r[i].i; if(!ini2&&r[i].i2) ini2=r[i].i2; if(r[i].s>s) s=r[i].s; r.splice(i,1); }
-  r.push({run:id,i:ini,i2:ini2,s:s,x:Math.max(0,(ARCADE.ext|0)+(ARCADE.mateX|0)),k:Math.max(0,(ARCADE.kills|0)+(ARCADE.mateK|0)),t:Date.now(),m:arcadeBoardMode(),u:'cr'});   // v23.54 (arcade30): tagged with its mode; v23.57 (arcade32): and the credits scale
+  for(i=r.length-1;i>=0;i--) if(r[i].run===id){ if(!ini&&r[i].i) ini=r[i].i; if(!ini2&&r[i].i2) ini2=r[i].i2; if(r[i].s>s&&(r[i].e?1:0)===ez) s=r[i].s; r.splice(i,1); }
+  r.push({run:id,i:ini,i2:ini2,s:s,x:Math.max(0,(ARCADE.ext|0)+(ARCADE.mateX|0)),k:Math.max(0,(ARCADE.kills|0)+(ARCADE.mateK|0)),t:Date.now(),m:arcadeBoardMode(),e:ez,u:'cr'});   // v23.54 (arcade30): tagged with its mode; v23.57 (arcade32): and the credits scale
   return arcadeBoardSave(r);
 }
 // the run is in tonights top 10 and has no initials yet
