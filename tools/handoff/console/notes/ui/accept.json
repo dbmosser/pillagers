@@ -491,19 +491,19 @@
   "when": "2026-10-19T01:38"
  },
  "37-raid-extracting-countdown": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The extraction countdown is the main thing the player needs here, and it is buried: it appears as a tiny teal chip and a small 'extract b inbound 16s' line, while the screen is crowded with a controls cheat-sheet, a loot feed, a contracts panel and a full career column.",
+  "verdict": "The extract countdown is now the loudest thing on screen, as a hero number should be, but it is clipped by the controls legend and sits on a busy floor with no backing, and the rest of the HUD is still a pile of mismatched boxes.",
   "findings": [
-   "P0 extraction countdown: top-centre chip 'extraction 1m' and mid-bottom 'extract b inbound 16s': Show one extract timer at 56px, weight 800, in --extract teal, centred about 120px below the top edge. Put the 'extract b inbound' label at 16px above it. Remove the second line and the '1m' chip. Make the hostiles warning 20px --danger directly under the timer.",
-   "P0 bottom-left controls cheat-sheet ('wasd move ... f1 full list'): Hide it during extraction or collapse it to a single 14px 'f1 controls' hint in the footer. If it stays, use --fs-label 16px, --tx-2 at 4.5:1 contrast, and a solid --ui-panel fill.",
-   "P1 right column: credits/xp/stash/backpack, minimap, run info, loot feed, weapon card: Align the whole column to one left edge and one 48px right margin, with 8px gaps. Drop xp and stash during a raid, or merge them into one 'backpack $4,310' line. Give the loot chips the same width as the panels.",
-   "P1 run info panel and left pillager list: Use a single panel header style: 16px f-cond 600 +.04em in --tx-2 with a 2px top tab in --acc. Set contract rows at 16px with 24px padding and a 28px row height. Show only the active contract and give each a progress count right-aligned.",
-   "P1 capital letters on screen: Take 'chill row cache' down to 20px --tx-1 with a 3px rarity bar, or show it only when the player is within 3 tiles. Remove the ghost 'running slowly' duplicate (it also appears in the left feed) or give it an 8px-offset single spawn."
+   "P0 extract b inbound 15s, bottom centre (~y 868): Move the legend out of the centre column, or hide it while an extract is active. Centre the countdown at y≈820 and keep 24px clear of the legend (x>940 or legend collapsed). Put 16px between it and the hostiles line, and keep the legend from overlapping any hero element.",
+   "P1 extract countdown text: Use the 56px hero size for the number '15s' only (f-cond 800), --extract teal. Put 'extract b' at 20px tx-1 beside or above it. Add a scrim pill (rgba(6,7,8,.8), 4px radius, 16px padding) behind the group.",
+   "P1 '9 hostiles closing in' directly under the countdown: Give it a danger-red chip with a dark fill, 16px, 8px below the hero. Or make it part of the same extract card. Keep 24px between it and the hint strip.",
+   "P1 top-right career column, bottom-left pickup chips, run info panel: Use one panel recipe: --ui-panel at 90%, 1px --ui-line-hi border, 4px radius, 16px padding. Headings use 16px tx-2. Lime appears only for the main action. Drop the amber heading in the pillager list.",
+   "P1 controls legend panel (wasd, ctrl / c ...), centre-left: Collapse it by default during a raid, or dock it to the bottom-left corner with a max height of ~180px. Raise the verb text to --tx-2 at 16px minimum."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-02-r19/37-raid-extracting-countdown-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/b-30r-after/37-raid-extracting-countdown-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T04:24"
+  "when": "2026-10-20T05:13"
  },
  "77-haul-reveal-done": {
   "score": 3,

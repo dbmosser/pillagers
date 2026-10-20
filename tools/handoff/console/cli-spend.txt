@@ -232,3 +232,6 @@
 2026-10-20 0.7654743 19-party-audio
 2026-10-20 0.1570 critic-o-01-stash-pays-in-raid
 2026-10-20 0.1611 critic-o-01-stash-pays-in-raid
+2026-10-20 0.1577 critic-o-01-stash-pays-in-raid
+2026-10-20 0.1585 critic-o-01-stash-pays-in-raid
+2026-10-20 0.1605 critic-manual

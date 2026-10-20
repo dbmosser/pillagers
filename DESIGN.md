@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.36 - THE EXTRACT INBOUND COUNTDOWN STANDS ON A PLATE
+
+Co-op hunt while he was away. Critic on screen 37 (3 after the big size): the hero countdown sat on a busy floor with only a thin outline, weak contrast. It now has one flat HUD plate measured to its words.
+
+MEASURED. Check 32.36 passes, and fails on v32.35.
 ## v32.35 - THE EXTRACT INBOUND COUNTDOWN IS THE BIG NUMBER SIZE
 
 Co-op hunt while he was away. Critic on screen 37: the extraction state was three small cues with no hero, the timer about 28px. The inbound line now takes the big-number size (39px at 1080p) with its words unchanged.

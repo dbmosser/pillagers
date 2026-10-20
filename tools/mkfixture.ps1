@@ -6101,6 +6101,17 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.36',what:'the extract inbound countdown stands on a plate measured to its words (critic 37)',
+   run:function(){
+     if(typeof extBanPlate!=='function') return 'the extract banner has no plate function (extBanPlate)';
+     var s='EXTRACT B INBOUND  15s', r, f=ctx.font;
+     ctx.save(); ctx.font=extBanFont(15);
+     try{ r=extBanPlate(s,960,900,1); }finally{ ctx.restore(); ctx.font=f; }
+     if(!r||!(r.w>0)) return 'extBanPlate gave no rectangle';
+     if(r.x>960-hudRawW(s)/2||r.x+r.w<960+hudRawW(s)/2) return 'the plate does not cover the words';
+     if(String(drawHUD).indexOf('extBanPlate(')<0) return 'drawHUD does not draw the plate';
+     return null;
+   }},
   {v:'32.35',what:'the extract inbound countdown line is drawn in the big-number size, not the callout size (critic 37)',
    run:function(){
      if(typeof extBanFont!=='function') return 'the extract banner has no font function (extBanFont)';

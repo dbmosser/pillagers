@@ -1,0 +1,7 @@
+v32.36: the extract inbound countdown stands on a plate
+
+While extraction is inbound the big countdown line has a flat dark plate behind it.
+
+Check 32.36. Fails on v32.35.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
