@@ -89,3 +89,19 @@ Picture gap confirmed on disk: o-03-map-popups-wait-before contains only 22-raid
 Both-window evidence remains required. The existing cw-mapstyle-recipes.json recipe 66-map-open-p2 only overrides seatHere and is NOT a real linked player-2 window. Use the lane test scripts to capture a real linked map from each seat if available; do not label the simulated recipe as two-window verification. The existing recipes can still supply supplementary close inspection of marker colours.
 
 Pending lane work: fixture checks, preflight/ship, fingerprint, missing before-4K picture, after pictures, both-window evidence and critic acceptance. No owner decision is needed for fixture maintenance.
+
+--- codex run 2026-10-19 22:53 ---
+2026-10-19, resumed after coordinator re-queue. Confirmed fixture-maintenance commit 863ad9c8 is in the current worktree history. The coordinator reports checks 31.41 and 22.87 pass; no further fixture changes are requested.
+
+The existing cw-cx-mapwait production patch and regression check are unchanged. Regenerated its draft against this refreshed worktree: script prints written, all 20 anchors apply exactly once, game JavaScript and check parse. The local crowded-room exercise retains every label without overlap (own-icon gaps 0.4, 9.0 and 5.0 px), the null-renderer recorder captures all three loot labels, and the codex assertion matches actual feed formatting. These are local checks, not browser preflight results.
+
+keys.txt still contains cw-cx-mapwait and shots.txt still contains 22. Lane next action: preflight and ship that key, return the gate and fingerprint results, then photograph the map and run the critic. Do not reapply already committed fixture edits. No new production or visible changes this run.
+
+Remaining coordinator work from the re-queue: both-window map evidence and the missing 4K before picture. Existing recipe 66-map-open-p2 simulates a seat and does not prove two linked windows. Keep the requested after shots at 1080p and 4K and return the critic result. This sandbox cannot run Chrome, preflight or shipping.
+
+--- codex run 2026-10-19 22:54 ---
+2026-10-19, renamed the colliding ship key cw-cx-mapwait to cw-cx-sectorhold-o03 at the lane request. keys.txt, the mk filename, its code comments/check references, its output draft filename and the local validator now use the new key. Removed the old mk/draft filenames by renaming them. The already-applied fixture-retarget request now lists the new dependent key; its edit contents remain unchanged so their applied hashes remain valid. Fixture maintenance was already committed as 863ad9c8; no repeat maintenance is needed.
+
+Regenerated draft-cw-cx-sectorhold-o03.json against refreshed v32.06: written; all 20 anchors apply exactly once; game JavaScript and regression check parse. Local crowded-room exercise retains all labels without overlap and within 12 px of their own icons. Null-renderer recorder and actual-feed text checks also pass. Production behavior is unchanged from the prior patch; these local results do not establish browser preflight or shipping success.
+
+Lane next action: preflight and ship cw-cx-sectorhold-o03, then return the gate result and fingerprint. shots.txt remains screen 22 for the requested map pictures and critic. Outstanding coordinator picture work from the re-queue (both real player windows and 4K before evidence) still applies. No new visible change this run.

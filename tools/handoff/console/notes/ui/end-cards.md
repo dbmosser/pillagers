@@ -12,3 +12,8 @@ Shipped v31.94 cw-endrow, v31.96 cw-endrow2, v31.97 cw-endrow3: haul strip one r
 
 ## Run of 2026-10-19 late (lane c, Claude Code)
 No ship. The camera command was refused in this session (uishots.ps1 not reachable from the allowed command form), so no new pictures or critic scores. Last scores: 35=3, 38=3, 40=3, 59=3, 77=3, 60=2 (v31.80 cw-endx2 not re-shot), 76=2 (staging artefact). Ten or more tries so far: per the 6-try rule, stop. Best pictures: shots/13-p3 (60, 38, 77), shots/13-t1 (40). Open: card 40 at 90 percent width (against Q43, dialogs are 720px: skipped), drop the got it button on 40.
+
+## Run of 2026-10-19 night (lane a, Claude Code)
+Camera works again (shots/13-r5-before: 35 38 40 59 60 76 77, no lint issues on any). Critic on 35 = 3 (same). Its P1s: title and hero both red (one hero), the xp line "(50% penalty for failure to extract)" is an explaining sentence, X plus "log run and return" are two exits (X stays: Q43 wants it on a dialog). Stat labels are already 16px in css (.ocstat span); the critic misreads them.
+No ship: past the 6-try limit (10+ tries on this task, his 2.83 b). The one safe edit left (xp line to "+65 xp, 50% penalty") changes game text near line 32918 and the check at mkfixture 85025, and will not lift 35 off 3 alone. Best versions stay shots/13-p3 (60, 38, 77) and shots/13-t1 (40); newest all-seven set is shots/13-r5-before.
+Safe next ships if a run is spent on it: xp line shortened (dead and abandon), title tx-1 with a danger tab, survey link to a footer legend.

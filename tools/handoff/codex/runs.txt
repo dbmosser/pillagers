@@ -66,3 +66,6 @@
 2026-10-19 21:26 o-07-pad-lost 74s ok PARTIAL in=329400 out=5109 run=4
 2026-10-19 21:54 o-07-pad-lost 90s ok PARTIAL in=450293 out=3352 run=5
 2026-10-19 22:14 o-07-pad-lost 40s ok PARTIAL in=124399 out=1375 run=6
+2026-10-19 22:25 o-07-pad-lost 29s ok PARTIAL in=94398 out=1077 run=7
+2026-10-19 22:53 o-03-map-popups-wait 37s ok PARTIAL in=130233 out=1299 run=1
+2026-10-19 22:54 o-03-map-popups-wait 34s ok PARTIAL in=255223 out=2903 run=2

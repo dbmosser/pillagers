@@ -1,20 +1,10 @@
 == 1080 : window 1952x1183, viewport 1920x1080
-  18-settings-hub                        staged       7.5s    | settingsmodal
-  25-raid-pause-box                      staged       9.1s  
-  26-settings-from-pause-top             staged       9.3s  
-  27-settings-scroll-600                 staged       9.8s  
-  28-settings-scroll-1200                staged       9.7s  
-  29-settings-scroll-1800                staged       9.7s  
-  30-settings-scroll-2400                staged       9.6s    | scrollTop 2400.4453125 of 4051
-  31-settings-send-play-data             staged      10.0s  
-  32-keys-window                         staged      10.7s  
-  42-hub-pause-box                       staged      11.9s  
-  49-arcade-pause-box                    staged      12.9s  
-  68-settings-sec-the-raid               staged       7.8s    | settingsmodal
-  69-settings-sec-audio                  staged       7.8s    | settingsmodal
-  70-settings-sec-controls               staged       7.8s    | settingsmodal
-  71-settings-sec-controller             staged       7.8s    | settingsmodal
-  72-settings-sec-display                staged       7.8s    | settingsmodal
-  73-settings-sec-accessibility          staged       7.8s    | settingsmodal
-  74-settings-change-pad-buttons         staged       8.1s    | keysmodal
-  75-settings-pad-rebind-waiting         staged       8.6s    | keysmodal
+  18-settings-hub                        staged       7.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | settingsmodal
+  25-raid-pause-box                      staged       8.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  26-settings-from-pause-top             staged       9.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  32-keys-window                         staged      10.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  42-hub-pause-box                       staged      11.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  49-arcade-pause-box                    staged      13.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  72-settings-sec-display                staged       7.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | settingsmodal
+  74-settings-change-pad-buttons         staged       8.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | keysmodal
+  75-settings-pad-rebind-waiting         staged       8.7s  total   2: clip 2 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | keysmodal

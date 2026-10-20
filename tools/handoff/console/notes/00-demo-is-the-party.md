@@ -30,6 +30,9 @@ v32.01 is committed (17826203). No partyHostBoot, partyOf or PARTY_EXIT left in 
 Critic on the title picture: 3. The findings are general title polish (wordmark gradient, 5 mode rows, saves block, coming later row), not part of this task and some touch his row rulings, so left for the title task.
 Not done: a live ?party=1 page and two-window run pictures (the camera takes no custom URL); the gate checks are the proof.
 
+--- claude lane a run 2026-10-19 (seventh run) ---
+Rechecked: v32.01 is in master (now VER 32.06). No partyHostBoot, partyOf, PARTY_EXIT, partyReload or partyNav left; the cw-cx-demoplain check is in mkfixture. Old party-launch checks SKIP (kept, nothing left to test); cw-mapfirst step six is career-only. Gate passed Ctrl+F8 rule, demo map auto start, fingerprint 85/374 and 165/593. Not done: live ?party=1 page and two-window run pictures (camera takes no custom URL). Title critic 3: general title polish, left to the title task.
+
 --- claude lane a run 2026-10-19 (fourth run) ---
 Same state: VER 32.01 in the working tree, uncommitted (game, DESIGN, AUDIT, mkfixture); tools/publish still missing. My lane cannot run git add/commit or mkdir. Coordinator: mkdir tools/publish, git add -A, git commit -F tools/handoff/cm3201.txt, git push. Do not ship cw-cx-demoplain again. Still not done: two-window demo pictures, ?party=1 comparison, critic.
 

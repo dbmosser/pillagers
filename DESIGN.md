@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.07 - EASY MODE YES GIVES A FREE MEDKIT
+
+Co-op hunt while he was away. His answer 3.16 b: when a guest says yes to easier, it is 30 percent less damage plus a free medkit. The damage cut was already in; the free medkit was missing.
+
+MEASURED. Check 32.07 passes, and fails on v32.06.
 ## v32.06 - LOW HEALTH RED IS AN EDGE VIGNETTE
 
 Co-op hunt while he was away. UI critic, screen 36: low health should read as a screen-edge vignette. The old flat red wash tinted the whole picture including the fight in the middle.

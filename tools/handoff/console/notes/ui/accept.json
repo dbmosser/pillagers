@@ -170,17 +170,17 @@
  "18-settings-hub": {
   "score": 3,
   "pass": false,
-  "verdict": "the left category nav and list-plus-controls layout fix the biggest structural problem from last time, but the settings card is still off-center with dead space, the audio rows bleed into the raid list, and the description block is still a paragraph of explaining text.",
+  "verdict": "A clean, consistent dark card with a clear lime focus bar and an X, but the page is flat: titles are small, the detail pane is mostly empty with a wall-of-text explanation, and the audio rows are not grouped under their own tab.",
   "findings": [
-   "P0 description block (x 417-1545, y 830-955): Cut the copy to one line of 16px tx-2, 90 characters at most (e.g. 'click any word to rewrite it. f2 toggles.'). Drop the repeated heading, or move the text into a 480px right-hand detail pane. Put 24px between the text and the footer rule.",
-   "P0 card composition (nav x 338, list right edge x 1582, header x 49, close x 1847): Use one content frame, x=49 to x=1871. Put the nav at x=49 (280px wide), the list from x=345 to x=1871, and run the description and footer rules across the same frame. Or add a 480px detail pane at the right to use the width.",
-   "P1 list rows (y 120-780): Show only the active tab's rows. Add a 16px lime-free section label if groups are needed. Snap the scroll to whole 56px rows and add a 24px bottom fade mask.",
-   "P1 value controls (x 1050-1337, rows 56px): Remove the border from the idle steppers. Right-align the stepper to the row padding (x≈1550) with a 240px value column. Use 24px chevrons in tx-2 on idle rows and in lime only on the focused row. Fill the focused row with --ui-raised.",
-   "P1 nav (x 338-602, y 118-570): Set the nav labels at 20px f-cond 600, with tx-1 on the active row and tx-2 on the others. Use 56px rows. Move 'send play data' into the footer as a ghost button, or into the accessibility tab."
+   "P1 right detail pane: Cut the description to one short callout of 12 words or fewer, set at 20px tx-1 directly under the 32px title (8px gap). Or drop the pane to a narrower 360px column and give the freed width to the rows.",
+   "P1 center list, the raid tab: Move the volume rows to the audio tab only. If a group stays, add a 16px tx-2 label row ('audio') with a 1px --ui-line rule and 24px space above it.",
+   "P1 screen title and header: Set the title to 32px f-cond 700, in a 56px header row with a 1px --ui-line-hi divider. Remove the orphan 30px lime tick at x=28,y=26, or turn it into a deliberate 3px-by-36px tab on the title.",
+   "P1 setting value cells (the < value > steppers): Pull the value column in to a 220px block right-aligned at x~1020. Show the chevrons only on the focused row (the rest tx-2 at 40%). Or make each row a single flat value with the arrows on focus.",
+   "P2 left tab column: Use 20px f-cond 600 at 64px row height, add a 1px divider above 'send play data', and anchor it to the bottom of the column."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-31ac-after/18-settings-hub-1080.jpg",
-  "task": "c-31-ui-pause-settings",
-  "when": "2026-10-19T00:29"
+  "pic": "tools/handoff/console/notes/shots/c-31s-after/18-settings-hub-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-20T03:02"
  },
  "19-raid-hud-drop-first-raid": {
   "score": 2,
@@ -231,17 +231,17 @@
  "25-raid-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "The pause card is cleaner and the hierarchy is clearer (lime resume run, quiet secondary buttons, a red abandon run link), but the button stack has four different treatments and the footer is cramped, so it still reads as a decent template and not polished AAA.",
+  "verdict": "A clean, calm pause card with a clear lime primary action and a proper title and x, but it is a small generic stack of buttons with inconsistent sizes, no visible pad focus and weak identity.",
   "findings": [
-   "P1 button stack (settings, report a problem, feedback, what's new): Give settings the same --ui-panel fill and 1px --ui-line-hi border as every other secondary button. Make report a problem, feedback and what's new one row of three 40px buttons about 125px wide with 8px gaps, so only resume run and settings stay at 56px.",
-   "P1 abandon run: Add a 1px --ui-line divider in a 24px gap above it. Make it a 40px full-width button with a 1px --danger border at 50% opacity and 18-20px --danger text. Draw a 2px --danger focus outline, and put a confirm step behind it.",
-   "P1 focus state: Draw focus as a 2px --acc outline with a 2px offset plus a --ui-raised fill on whichever button has it. Keep lime fill only for the primary action when it is not focused.",
-   "P2 feedback and what's new labels: Set it to 16px f-cond 600 with +.04em tracking in --tx-1, in buttons 40px tall. If the three do not fit in one row at 16px, drop one.",
-   "P2 accent tab, top-left of card (x≈720-756, y≈306): Make it 3px by 36px --acc and align it to x=760 on the top edge, or remove it."
+   "P1 button stack (settings, report a problem, feedback, what's new): Make every secondary button the same 56px height, the same --ui-raised fill and the same 1px --ui-line-hi border. Fold feedback, what's new and report a problem into one row of three 16px tertiary buttons, or drop them to a quiet footer row. Keep only resume (lime) and settings as full-width.",
+   "P1 focus state: Give the focused row a 3px lime left bar plus a --ui-raised fill and a 2px lime outline. Make the primary button's fill differ from its focused state (add a 2px tx-1 outer ring when focused).",
+   "P1 abandon run: Draw it as a full-width 48px button with a 1px --danger border and --danger text at 20px f-cond 600. Put 24px of spacing above it and a divider line.",
+   "P2 card chrome and title: Make the accent tab 3px by 48px --acc. Draw the x at 40px with a 1px --ui-line-hi box and tx-1 stroke. Add one quiet --fs-label row under the title in tx-2 with raid time and carried $ so the pause screen is useful, not generic.",
+   "P2 spacing rhythm: Use an 8px grid with 16px between buttons, 32px before abandon, and 24px padding. Set the small button labels to 16px f-cond 600."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-31ag-after/25-raid-pause-box-1080.jpg",
-  "task": "c-31-ui-pause-settings",
-  "when": "2026-10-19T01:10"
+  "pic": "tools/handoff/console/notes/shots/c-31s-after/25-raid-pause-box-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-20T03:01"
  },
  "26-settings-from-pause-top": {
   "score": 3,
@@ -576,17 +576,17 @@
  "49-arcade-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "The card is clean and consistent with the guide (one amber primary, ghost stack, red End run, X top-right), but it is still a plain button list with a tiny 400px-wide footprint, an unlit focus state, and a backdrop where the HUD and the How to play overlay still ghost through.",
+  "verdict": "A clean, calm column menu with one clear primary action, but it breaks the all-lower-case rule, uses the old amber instead of the lime accent, and has no visible focus state or close button.",
   "findings": [
-   "P1 Backdrop (both shots): Hide the HUD and the How to play overlay while paused. Bake the world once at 55% brightness under rgba(6,7,8,.80). Remove the leftover SP, ammo and objective ghosts.",
-   "P1 Footer hint 'Esc Resume' (image 1, bottom right): Delete it, as image 2 did, and keep the card at about 516px high. If it stays, use a 28px cap around 'Esc' with 'Resume' at 16px f-cond 600 tx-2, and swap to the B glyph on pad.",
-   "P1 Button stack focus state: Focused ghost row: 2px --acc border, --ui-raised fill, 3px left --acc bar. On End run the focus border is --danger. Capture one shot with focus on Settings and one on End run.",
-   "P1 Card scale and button type: Widen the card to 520px. Set button text to 20px f-cond 700 and the title to 32px. Keep the 56px buttons and give Resume a small pad glyph or icon on its left to add identity.",
-   "P2 End run button: Lighten the text to about #ef5a42 for at least 4.5:1 and keep the 1px --danger border. Keep the 48px gap above it."
+   "P0 title and all four button labels, plus the footer hint: Lower-case every string: 'raid paused', 'resume', 'settings', 'feedback', 'what's new', 'end run', 'esc resume'. Remove any code that capitalises them.",
+   "P0 Resume button fill: Fill Resume with --acc #e6ff3d and set its text to --acc-ink #11150a. Recolour the corner tab to --acc. Add hover #f0ff7a and pressed #c8e22c.",
+   "P1 whole card: Add a 32px X in the top-right at 16px inset, with a 1px --ui-line-hi border and a lime focus ring. Keep it quiet, in tx-2.",
+   "P1 Settings, Feedback, What's new buttons: Use one focus style for every row: a 2px --acc border, a --ui-raised fill and a 4px lime bar on the left edge. Keep the filled lime fill for the primary action only.",
+   "P1 'End run' button: Increase the gap to 48px and drop the button height to 48px. Use a text-only danger button in --danger, or keep the outline but add a confirm step."
   ],
-  "pic": "tools/handoff/console/notes/shots/12-j2/49-arcade-pause-box-1080.jpg",
-  "task": "12-ui-party-screens",
-  "when": "2026-10-18T14:26"
+  "pic": "tools/handoff/console/notes/shots/c-31s-after/49-arcade-pause-box-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-20T02:59"
  },
  "56-arcade-attract-board-scored": {
   "score": 3,
@@ -741,17 +741,17 @@
  "74-settings-change-pad-buttons": {
   "score": 2,
   "pass": false,
-  "verdict": "the new pad diagram is a good identity idea but it is executed with so much lime text and duplicate information that it reads busier and less disciplined than the plain list it replaced.",
+  "verdict": "The window follows the card-with-X pattern, but the controller diagram is a tangle of crossing leader lines, the lime accent is spread over every key label, and the left list is clipped, so the eye has nowhere to land.",
   "findings": [
-   "P0 right diagram panel, all ~16 button-code labels (lt, lb, ls, view, d-up, d-left, d-right, d-down, rt, rb, y, x, b, a, menu, rs): set all diagram button codes to --tx-1 (cream) by default; reserve --acc for only the currently-focused/hovered binding, or drop accent from the diagram entirely since the left list already uses plain text",
-   "P0 whole screen: left list (move/fight sections) vs right diagram: pick one source of truth: either drop the text list and let the diagram be the full reference, or keep the list and cut the diagram to only the handful of bindings that benefit from a picture (move/aim sticks)",
-   "P1 left column, compare to old screenshot: restore the two-binding-per-row layout in the list column (or remove the redundant list per the finding above) so all five sections fit in the visible area at 1080p",
-   "P1 diagram, lead lines from labels to controller sketch: route each lead line with a single bend and at least 8px of separation from any other line; none should cross a circle it doesn't belong to",
-   "P2 diagram, 'move'/'aim' circle text and the thin grey lead-lines: set circle labels to --tx-2 minimum (#aaa498) and thicken lead-lines to 1.5px"
+   "P0 controller diagram, leader lines: Use orthogonal leaders: a horizontal line from each label to a 6px dot on its control, with no crossings. Sort the labels top to bottom in the same order as the controls on the pad. Make the leaders 1.5px in --ui-line-hi. Move the 'move' and 'aim' circles onto the stick positions and draw the sticks at the real offset.",
+   "P1 diagram labels: Set key names to --tx-2 at 16px/600 and the action text to --tx-1 at 20px. Keep lime only for the focused row or the selected layout. Use one 56px row pitch with a fixed 8px grid.",
+   "P1 left list, bottom edge: Fade or clip the list at a row boundary with a 24px gradient mask. Make the scrollbar 6px wide in --ui-line-hi. Give the focused row a --ui-raised fill with a 3px lime left bar and a visible key chip outline.",
+   "P1 left list, section headers and row text: Headers at 16px/600 +.04em in --tx-2. Row names at 20px/600 in --tx-1. Align the 3px bar to the header text height.",
+   "P1 key chips in the left list: Make the chips 72x40 with 18px text in --tx-1 on --ui-raised. Cut the row width to about 480px, or add a 1px row divider in --ui-line to guide the eye."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-05-pad-presets-after/74-settings-change-pad-buttons-1080.jpg",
-  "task": "o-05-pad-presets",
-  "when": "2026-10-19T16:43"
+  "pic": "tools/handoff/console/notes/shots/c-31s-after/74-settings-change-pad-buttons-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-20T03:01"
  },
  "01-title-mode-menu": {
   "score": 3,
@@ -874,19 +874,19 @@
   "when": "2026-10-18T22:51"
  },
  "36-raid-low-health": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "the low-health state is still not urgent: hp 18 sits on an empty black bar with only a thin red outline added, while the clipped career stack, the cluttered key legend and the inconsistent hud panels are all unchanged.",
+  "verdict": "The edge vignette is a real improvement on the old full-screen purple wash, which hid the scene and read as a tint rather than a warning. The raid HUD around it is still crowded, low-contrast and inconsistent, and that holds this screen at a 3.",
   "findings": [
-   "P0 hp bar, bottom left: fill 18% of the bar with --danger #e5482f at 20px tall, pulse it at 1.2s, add a 20% red edge vignette, and set 'hp 18' at 32px tx-1 above the bar with 8px clearance and no tab.",
-   "P1 top-right career stack (credits, xp, stash, backpack): move the cache text out of this column or clip it to its row with 16px of clearance. Narrow the rows to about 240px with 8px gaps, hide zero-value rows, and drop the duplicate backpack value. Give the minimap a 1px --ui-line-hi border.",
-   "P1 key legend, bottom centre: hide it after 30s or collapse it to a single 16px 'f1 keys' hint. If it stays, set the text to 16px, use --tx-2 or lighter for actions, and align the columns on an 8px grid.",
-   "P1 hud panels (pillagers list, run info, ammo card, extraction chip, concealed chip): use one panel P (--ui-panel 90%, 1px --ui-line-hi, 4px radius, 16px padding). Set titles to 16px tx-1 with no amber, body 16px minimum, and use lime only for focus. Give contract rows 8px spacing and 16px right padding.",
-   "P1 toasts, top centre and left: show one toast at a time, not both. Cut it to 'contract item nearby' at 16px and drop the explanation. Remove the duplicate bottom-left chip. Use one toast style with a 1px --ui-line-hi border."
+   "P1 hp bar bottom-left: Fill the bar --danger #e5482f at 18% width. Make the number 32px (--fs-title) and pulse the frame 1Hz between --danger and --ui-line-hi. Put the label at 16px --tx-2 above the number.",
+   "P1 edge vignette: Make the vignette radial and symmetric: transparent to 62% radius, then rgba(229,72,47,.45) at the corners. Draw it under the HUD layer so panels keep their own fill. Cap alpha at 0.45.",
+   "P1 top-right career column and run info: Shrink the career rows to 16px labels in --tx-2 with a 20px --tx-1 value, drop the per-row panel fills and use one 8px-padded panel. Give run info 16px rows and 24px padding. Fade both to 60% opacity while hp is below 25%.",
+   "P1 center-left controls cheat sheet: Hide it while hp is below 30% or in combat. Otherwise anchor it to the bottom-left at 14px --tx-2, and dismiss it after the first raid.",
+   "P2 toast stack, left side (codex entry and running slowly): Show each message once. Use one toast style: --ui-panel fill, a 3px left tab in --warn for warnings and --acc for info, 16px text, 8px gap."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-30j-after2/36-raid-low-health-1080.jpg",
-  "task": "b-30-ui-hud",
-  "when": "2026-10-18T23:34"
+  "pic": "tools/handoff/console/notes/shots/b-30p-after/36-raid-low-health-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-20T02:26"
  },
  "51-arcade-alert-reinforcements": {
   "score": 2,

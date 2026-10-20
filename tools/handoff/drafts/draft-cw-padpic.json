@@ -1,0 +1,20 @@
+{
+    "title":  "PAD PICTURE LEADERS ARE CLEANER",
+    "why":  "Critic on the pad buttons window (2): leader lines cross and every key name is lime. Left labels now follow the control order, each leader ends in a dot, key names are grey.",
+    "now":  "The pad picture has tidier leader lines with dots and calmer key names.",
+    "edits":  [
+                  {
+                      "anchor":  "var left=[[6,64,342,222],[4,120,334,254],[10,232,354,332],[8,288,440,302],[12,400,408,385],[14,456,386,408],[13,512,408,431],[15,568,430,408]];",
+                      "replacement":  "var left=[[6,64,342,222],[4,120,334,254],[8,232,440,302],[10,288,354,332],[12,400,408,385],[14,456,386,408],[15,512,430,408],[13,568,408,431]];   // v28.xx (cw-padpic) critic on Pad buttons 74 (2): \"leader lines cross each other\". The left labels now run in the same top to bottom order as their controls, so those leaders no longer cross."
+                  },
+                  {
+                      "anchor":  "\u0027\u003cpath d=\"M\u0027+x+\u0027 \u0027+py+\u0027 L\u0027+edge+\u0027 \u0027+(y-8)+\u0027 H\u0027+end+\u0027\" fill=\"none\" stroke=\"var(--ui-line-hi,#4a5257)\" stroke-width=\"2\"/\u003e\u0027+",
+                      "replacement":  "\u0027\u003cpath d=\"M\u0027+x+\u0027 \u0027+py+\u0027 L\u0027+edge+\u0027 \u0027+(y-8)+\u0027 H\u0027+end+\u0027\" fill=\"none\" stroke=\"var(--ui-line-hi,#4a5257)\" stroke-width=\"2\"/\u003e\u0027+\n      \u0027\u003ccircle cx=\"\u0027+x+\u0027\" cy=\"\u0027+py+\u0027\" r=\"5\" fill=\"var(--ui-line-hi,#4a5257)\"/\u003e\u0027+"
+                  },
+                  {
+                      "anchor":  "\u0027\u003ctspan fill=\"var(--acc,#e6ff3d)\"\u003e\u0027+PAD_BTN[button].toLowerCase()+\u0027\u003c/tspan\u003e",
+                      "replacement":  "\u0027\u003ctspan fill=\"var(--tx-2,#aaa498)\"\u003e\u0027+PAD_BTN[button].toLowerCase()+\u0027\u003c/tspan\u003e"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the pad picture marks each control with a dot and keeps lime off the key names (critic: lime was decoration on 20 labels)\u0027,\n   run:function(){\n     if(typeof padPictureHtml!==\u0027function\u0027) return \u0027SKIP: no pad picture\u0027;\n     var h=padPictureHtml();\n     if(h.indexOf(\u0027\u003ctspan fill=\"var(--acc\u0027)\u003e=0) return \u0027key names are still lime\u0027;\n     if((h.match(/\u003ccircle cx=\"\\d+\" cy=\"\\d+\" r=\"5\"/g)||[]).length\u003c16) return \u0027the leaders have no dots\u0027;\n     return null; }},"
+}

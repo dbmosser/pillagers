@@ -68,3 +68,12 @@ The current game still contains the shipped J8 polling and A recovery implementa
 No task picture directory, report or critic findings have arrived. The installed tools/codex-lane.sh still only photographs after a fresh ship and has no camera-recipes support. The existing camera-run-request.json already contains the exact project camera command and all six expected picture paths. This sandbox cannot start Chrome or the camera under the Codex addendum.
 
 Coordinator action remaining: execute that existing camera request, return report.json, the six pictures and critic findings. Then address any failed staging or P0/P1 findings. No new camera round or game ship was manufactured just to retrigger the runner. Park this job until camera results arrive; unchanged files cannot resolve the external runner mismatch.
+
+--- codex run 2026-10-19 22:25 ---
+2026-10-19, continued from v32.05.
+
+Verified the shipped J8 implementation remains in the current game. Shared a3190.txt and cm3190.txt record check 31.90 passing and failing on v31.89. No additional game patch or fixture retarget is needed. Do not reapply the renamed pre-ship patch.
+
+No task picture directory or critic results have arrived. tools/codex-lane.sh still ignores camera-recipes.json and photographs only after a fresh ship. The existing camera-run-request.json remains the complete coordinator handoff, including the exact project command, port 9364, six expected pictures, report and critic requirement. No new camera round was requested and no duplicate ship was created.
+
+Park until the lane/coordinator runs that request outside the sandbox and returns results. Remaining work is the two-window runtime/picture evidence, critic review and any resulting fixes. Re-running Codex on unchanged inputs cannot complete the external camera step.

@@ -1,1 +1,1 @@
-10-19 22:24 running o-07-pad-lost (codex, run 7 of 5)
+10-19 23:04 gate waiting on another worker; o-03-map-popups-wait kept (codex)

@@ -1,0 +1,8 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  35-kia-card                            staged      10.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  38-extracted-card                      staged       9.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  40-whats-new-card                      staged      11.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | runs 1 wnseen 0
+  59-raid-abandon-confirm                staged      11.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  60-abandoned-card                      staged      14.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  76-haul-reveal-mid                     staged       7.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  77-haul-reveal-done                    staged      12.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0

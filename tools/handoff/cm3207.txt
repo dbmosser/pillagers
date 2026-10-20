@@ -1,0 +1,7 @@
+v32.07: easy mode yes gives a free medkit
+
+Saying yes to easy mode now also puts a free medkit in your bag.
+
+Check 32.07. Fails on v32.06.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

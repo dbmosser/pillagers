@@ -152,3 +152,4 @@
 2026-10-19 | b-30-ui-hud | 61-raid-wheel-open | v32.03 the controls list is no longer drawn over the item wheel. Before shots/b-30m-before, after shots/b-30n-after/61-raid-wheel-open-1080.jpg. Critic 2 to 3.
 
 2026-10-19 | b-30-ui-hud | 22-raid-map-open | v32.05 the toasts RESOLUTION STEPPED DOWN and RUNNING SLOWLY are headlines only. Old text: detail "settings: auto resolution" / "settings: render resolution, effects". New text: none. Reason: the critic read the detail as an explaining line over the map, and no explaining text belongs on screen. After shots/b-30n-after/22-raid-map-open-1080.jpg.
+2026-10-19 | b-30-ui-hud | screen 36 low health | flat red wash replaced by a red screen-edge vignette (centre clear, same pulse) | tools/handoff/console/notes/shots/b-30o-before/36-raid-low-health-1080.jpg -> b-30p-after/36-raid-low-health-1080.jpg (critic 2 -> 3)
