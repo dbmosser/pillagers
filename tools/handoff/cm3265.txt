@@ -1,0 +1,7 @@
+v32.65: players in action: bouncy walk, hit flash, low health, kneeling downed, fall to light, aim line
+
+Bodies bounce, flash white then red when hit, show blood and a red outline at low health, kneel when downed, fall into light when dead, and every gun shows a dotted aim line (rare guns a red laser while aiming).
+
+Check 32.65. Fails on v32.64.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

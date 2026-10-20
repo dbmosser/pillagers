@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.65 - PLAYERS IN ACTION: BOUNCY WALK, HIT FLASH, LOW HEALTH, KNEELING DOWNED, FALL TO LIGHT, AIM LINE
+
+Co-op hunt while he was away. His picks from the art survey (a11 B, a12 B, a13 D, a14 B, a15 B, a16 B): a bouncier walk and sprint with a little squash and stretch; a hit flashes the whole body white for 66 ms, then red, with a small recoil; at low health the body gets stains and drips and its outline pulses red; a downed player kneels with the gun on the ground inside a pulsing red ring; a player who dies drops flat and breaks into rising points of light; a faint dotted line runs from the gun toward the crosshair, and the two top rarity tiers and the golden gun show a red laser while the sights are held. Drawing only: no random draw and nothing the sim reads.
+
+MEASURED. Check 32.65 passes, and fails on v32.64.
 ## v32.64 - THE HUMAN FIGURES ARE BIGGER AND SHAPED
 
 Co-op hunt while he was away. His art survey picks: a01 D the head 1.2, a02 B the whole figure 1.25 about the feet, a04 C build heights (lean 0.92 by 1.08, broad 1.1 by 0.96), a05 B pack 1.3 and vest, pauldron and patch bigger, a09 B a bigger darker shadow, a10 D the mate plate with a 36x3 health bar. Hit areas do not change.

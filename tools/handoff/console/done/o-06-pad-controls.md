@@ -23,3 +23,5 @@ Coordinator note 2026-10-19: moved to the ChatGPT lane as o-06 (the Claude helpe
 - Pictures: the lane runner has no recipe camera path yet. Leave camera-run-request.json in place; the coordinator takes the pictures after the keys ship. Put any alarm for the coordinator in alarms-new.md (new file, see RULES-codex.md), not in questions-new.md.
 
 Coordinator note 10-20 03:00: o-05 closed; one flaw it left on the same pad buttons card is yours to fix first: the layout picker's "2 / 6" counter sits under the focused layout name box (the lime focus ring covers the "2"), see notes/shots/o-05-pad-presets-recipes-3/74-pad-call-of-duty-1080.jpg. Also "d-right" on the pad drawing overlaps the line to the right stick.
+
+Coordinator note 10-20 03:30: CLOSED as done. Shipped v32.60 cw-cx-heldcopy-o06 (better copy in hand), v32.61 cw-cx-drygun (next loaded gun), v32.62 cw-cx-padstatus (pad goals and status), v32.63 cw-cx-xboxonly (xbox button pictures). Its corrected two-window pictures are the same pair-link problem as o-04 and o-05: his next two-window playtest checks them.

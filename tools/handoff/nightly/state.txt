@@ -8,5 +8,5 @@ corpus_t=1792467825
 backup_day=2026-10-20
 stable_t=1792477622
 summary_t=1792479539
-llm_head=c3e4d496
 review_day=2026-10-20
+llm_head=abf82a29
