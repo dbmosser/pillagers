@@ -1,0 +1,7 @@
+v32.30: map labels have room
+
+Individual cache and strongbox labels have twelve scaled pixels of clearance. Their leaders stay attached to their own icons. Contract tracks align and secondary rows are quieter.
+
+Check 32.30. Fails on v32.29.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

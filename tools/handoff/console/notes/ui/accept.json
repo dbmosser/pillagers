@@ -448,17 +448,17 @@
  "61-raid-wheel-open": {
   "score": 3,
   "pass": false,
-  "verdict": "The wheel itself is a strong, readable radial with a clear focus wedge. The HUD around it is a pile of mismatched type, colours and panel styles, and the wheel's own fills and outline break the single-accent rule.",
+  "verdict": "The picked wedge is now raised grey with a lime rim, so the selection reads cleanly and the olive mud is gone. The screen is still a busy raid HUD with mixed type sizes and a few small, low-contrast labels.",
   "findings": [
-   "P1 wheel focus wedge: Fill the focused slice with --ui-raised plus a 4px --acc outer edge and a 2px --acc inner edge. Or use a flat --acc at 15% alpha. Drop the olive tint, and move the green rim to the idle state only.",
-   "P1 wheel ring, green arcs: Remove it, or make it one uniform 2px --ui-line-hi ring. If it is a cooldown or stock gauge, draw it as a visible per-slice 3px bar under the label.",
-   "P1 wheel item labels: Set slice labels to 20px/600 in --tx-2 for idle slices and --tx-1 for the focused slice. Make count badges neutral --ui-raised chips with --tx-1 text at 16px, and lime only on the focused slice. Make the centre name 32px.",
-   "P1 depleted slices (decoy beacon, tripwire mine x0): Keep the dimmed labels at --tx-2 at 60% opacity (at least 4.5:1) and use a red 'x0' in --danger. Inset labels 12px from the slice edges.",
-   "P1 HUD consistency: credits/xp/stash/backpack, run info, bots list: One panel recipe: --ui-panel at 90%, 1px --ui-line-hi, 4px radius, 16px padding, titles in --tx-2 at 16px. Fix the wrapped line by trimming the copy, e.g. 'search 2 containers 0/2'. Dim or fade the HUD corners to about 40% while the wheel is open."
+   "P1 wheel selected wedge: Raise the picked fill to --ui-raised #1e2225 plus about 8% white. Make the rim 4px --acc. Drop the green ring tint on the picked wedge so only lime shows.",
+   "P1 HUD top-right career column and run info panel: Set run info rows to 16px/600 tx-1. Keep headers in tx-2. Space rows 8px apart. Give the panel a 3px left accent tab so it matches the other panels.",
+   "P1 wheel labels and counts: Add 12px inset padding on all label edges. Raise the dim state to at least 4.5:1 (tx-2 #aaa498 at 60%). Restyle the chips as 16px tx-1 on --ui-void with no lime fill, so lime stays on the selection.",
+   "P2 wheel centre hub: Set the name to 32px/700. Make the subtitle 16px tx-2. Centre the arrow with 16px clearance from the hub ring.",
+   "P2 mixed micro-labels (top-left bots list, status pills, hotbar hints): Use the 16px label token everywhere. Use one pill style: 4px radius, --ui-panel fill, 1px --ui-line-hi border. Keep lime only on the single key chip, and shrink that chip to 16px text."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-02-r19/61-raid-wheel-open-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/b-30q-after/61-raid-wheel-open-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T04:26"
+  "when": "2026-10-20T04:56"
  },
  "58-coop-player2-window-title": {
   "score": 3,

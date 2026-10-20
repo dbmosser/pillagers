@@ -1,1 +1,1 @@
-10-20 00:51 running b-30-ui-hud on Claude Code (your plan: week 54% of the 24.2% line, 5-hour 7%)
+10-20 00:57 waiting: another helper is just starting (memory check again in a few minutes); b-30-ui-hud kept

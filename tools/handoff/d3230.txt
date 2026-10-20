@@ -1,0 +1,5 @@
+## v32.30 - MAP LABELS HAVE ROOM
+
+Co-op hunt while he was away. The map critic found dense cache labels and contract rows competing with the map.
+
+MEASURED. Check 32.30 passes, and fails on v32.29.

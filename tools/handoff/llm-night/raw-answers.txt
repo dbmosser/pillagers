@@ -1,70 +1,32 @@
 
-This is a CSS code snippet that appears to be part of a larger stylesheet for a web application, likely related to some kind of game or interactive experience. The styles are primarily focused on styling elements within an element with the ID `#root`, which suggests this might be a single-page application (SPA) framework like React, Vue.js, or Angular.
+It looks like you've provided a snippet of HTML and CSS code for a web page or application interface, specifically related to a game's pause menu and feedback system. The code includes several elements such as buttons, text areas, and modals that are styled using CSS variables.
 
-Here's a breakdown of what each section does:
+Here’s a breakdown of the key components:
 
-1. **General Styles for #root and its Children:**
-   - The first few lines set up basic styles for elements within `#root`. For example:
-     ```css
-     #root{ font-family:var(--f-body); font-size:var(--fs-2); line-height:1.4; letter-spacing:.03em; color:var(--tx-1); }
-     ```
-   - This sets the default font family, size, line height, letter spacing, and text color for all elements inside `#root`.
+1. **Pause Menu (`#pausebox`)**:
+   - Contains various buttons for resuming the run, settings, leaderboard, feedback, etc.
+   - Includes a textarea for users to report problems directly from the pause menu.
+   - Has additional text and instructions for players.
 
-2. **Specific Styles for Different Sections:**
-   - The styles are then broken down into sections that target specific parts of the UI:
-     ```css
-     #root .ocstat{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:16px; }
-     ```
-   - This sets up a flexible container for elements with the class `.ocstat`, allowing them to wrap and maintain spacing between items.
-
-3. **Styling for Buttons and Links:**
-   - There are
-It looks like you've provided a snippet of HTML and CSS code for a web page, specifically related to a game interface. The content includes various elements such as buttons, text areas, and modals that are likely part of an in-game pause menu or settings screen.
-
-Here's a breakdown of some key parts:
-
-1. **Pause Box (`<div class="pausebox" id="pausebox">`)**:
-   - Contains the title "RAID PAUSED".
-   - Lists game controls with instructions.
-   - Includes buttons for resuming, opening settings, viewing the leaderboard, providing feedback, and abandoning the run.
-
-2. **Feedback Modal (`<div class="modal" id="fbmodal">`)**:
-   - Allows users to provide feedback by typing a note and taking a screenshot of the current screen.
+2. **Feedback Modal (`#fbmodal`)**:
+   - Allows users to provide detailed feedback by typing notes and taking screenshots of their current screen.
    - Contains buttons to save or close the modal.
 
-3. **What's New Modal (`<div class="modal" id="wnmodal">`)**:
-   - Displays new features or updates in the game.
-   - Includes a button to close the modal.
+3. **What's New Modal (`#wnmodal`)**:
+   - Displays recent updates or news about the game.
+   - Includes a list of new features, changes, etc., with a button to close the modal.
 
-4. **Leaderboard Modal (`<div class="modal" id="lbmodal">`)**:
-   - Shows the leaderboard for career progress.
-   - Contains a button to close the modal.
+4. **Leaderboard Modal (`#lbmodal`)**:
+   - Shows the leaderboard for career statistics.
+   - Contains buttons to close the modal.
 
-5. **Outcome Box (`<div class="outcome" id="outcome">`)**:
-   - Likely displays information about the outcome of a game run, such as extraction or failure.
-   -
-NONE
-NONE
-NONE
-NONE
-NONE
-NONE
-NONE
-LINE 46003: calls or reads of names from removed systems (UNITPLURAL, UNITNAME)
-LINE 46006: calls or reads of names from removed systems (ITEMS)
-LINE 46015: try/catch that swallows a whole per-frame draw or update
-LINE 46028: try/catch that swallows a whole per-frame draw or update
-LINE 46073: try/catch that swallows a whole per-frame draw or update
-NONE
-NONE
-LINE 46652: ctx.fillText(sm.helped?'SURVIVOR':'SURVIVOR (NEEDS)',smx,smy-11*_MZ); ctx.textAlign='left'; - Duplicate assignment of ctx.textAlign.
+5. **Outcome Card (`#outcome`)**:
+   - Displays information about the outcome of a game run (e.g., extracted, defeated).
+   - Includes details such as the manifest and party members involved.
 
-LINE 46703: for(var _tw=1;_tw<G.trail.length;_tw++) ctx.lineTo(ox+G.trail[_tw].x*sc,oy+G.trail[_tw].y*sc); - Possible NaN or undefined values reaching canvas calls (arc).
-
-LINE 46725: var _hgf=parseFloat(((/([\d.]+)px/).exec(String(ctx.font))||[0,11])[1])||11; - Potential issue with ctx.font being null or undefined.
-
-LINE 46739: if(_zHold) _fl=0.55+0.45*Math.sin(G.t*10); else if(_zAct) _fl=0.65+0.35*Math.sin(G.t*4); - Possible NaN or undefined values reaching canvas calls (arc).
-
-LINE 46789: var _pv=function(a,r){ return [_pmx+Math.cos(_pf+a)*r*_pmz, _pmy+Math.sin(_pf+a)*r*_pmz]; }; - Potential issue with Math.cos and Math.sin receiving NaN or undefined values
+### Key CSS Variables
+- `--btn-h`: Height of buttons.
+- `
+NONE
 NONE
 NONE

@@ -1,0 +1,40 @@
+{
+    "title":  "EASY RUN: BOARD POINTS CUT 30 PERCENT AND TAGGED",
+    "why":  "His answer 2.47 c: an easy run appears on the board with the points cut by 30 percent and tagged. Nothing read the easy flag for the board yet.",
+    "now":  "An easy demo run writes its board row at 70 percent of the score with an easy tag next to the initials.",
+    "edits":  [
+                  {
+                      "anchor":  "m:(x.m===1)?1:2,u:\u0027cr\u0027});   // v23.54 (arcade30): the mode, an old row",
+                      "replacement":  "m:(x.m===1)?1:2,e:x.e?1:0,u:\u0027cr\u0027});   // v28.xx (cw-easyboard): the easy tag survives a load; v23.54 (arcade30): the mode, an old row"
+                  },
+                  {
+                      "anchor":  "o=m[x.run]={run:x.run,i:x.i||\u0027\u0027,i2:x.i2||\u0027\u0027,s:x.s,x:x.x,k:x.k,t:x.t,m:(x.m===1)?1:2,u:\u0027cr\u0027};",
+                      "replacement":  "o=m[x.run]={run:x.run,i:x.i||\u0027\u0027,i2:x.i2||\u0027\u0027,s:x.s,x:x.x,k:x.k,t:x.t,m:(x.m===1)?1:2,e:x.e?1:0,u:\u0027cr\u0027};"
+                  },
+                  {
+                      "anchor":  "o.s=x.s; o.x=x.x; o.k=x.k; o.t=x.t; }",
+                      "replacement":  "o.s=x.s; o.x=x.x; o.k=x.k; o.t=x.t; o.e=x.e?1:0; }"
+                  },
+                  {
+                      "anchor":  "  var id=ARCADE.run.id, s=arcadeTeam(), r, i, ini=\u0027\u0027, ini2=\u0027\u0027;",
+                      "replacement":  "  var id=ARCADE.run.id, ez=arcadeBoardEasy(), s=arcadeBoardCut(arcadeTeam(),ez), r, i, ini=\u0027\u0027, ini2=\u0027\u0027;   // v28.xx (cw-easyboard), HIS ANSWER (2026-10-18, 2.47 c): an easy run is cut 30 percent and tagged"
+                  },
+                  {
+                      "anchor":  "if(r[i].s\u003es) s=r[i].s; r.splice(i,1); }",
+                      "replacement":  "if(r[i].s\u003es\u0026\u0026(r[i].e?1:0)===ez) s=r[i].s; r.splice(i,1); }"
+                  },
+                  {
+                      "anchor":  "m:arcadeBoardMode(),u:\u0027cr\u0027});   // v23.54 (arcade30): tagged with its mode;",
+                      "replacement":  "m:arcadeBoardMode(),e:ez,u:\u0027cr\u0027});   // v23.54 (arcade30): tagged with its mode;"
+                  },
+                  {
+                      "anchor":  "// the run row, written in place under the run id. Returns whether it was written.\nfunction arcadeBoardPut(){",
+                      "replacement":  "// v28.xx (cw-easyboard), HIS ANSWER (2026-10-18, 2.47 c): \"the points are cut by 30 percent and tagged\". The flag is ARCADE.easy (the host window); same 0.7 as the damage cut (3.16 b).\nfunction arcadeBoardEasy(){ return (typeof ARCADE===\u0027object\u0027\u0026\u0026ARCADE\u0026\u0026ARCADE.easy)?1:0; }\nfunction arcadeBoardCut(s,e){ return e?Math.round((+s||0)*(typeof EASY_MUL===\u0027number\u0027?EASY_MUL:0.7)):s; }\nfunction arcadeBoardTag(r){ return (r\u0026\u0026r.e)?\u0027 \\u00b7 easy\u0027:\u0027\u0027; }\n// the run row, written in place under the run id. Returns whether it was written.\nfunction arcadeBoardPut(){"
+                  },
+                  {
+                      "anchor":  "toUpperCase():\u0027\u0027),arcadeCr(r.s)); }   // v23.56 (arcade31): in credits",
+                      "replacement":  "toUpperCase():\u0027\u0027)+arcadeBoardTag(r),arcadeCr(r.s)); }   // v23.56 (arcade31): in credits; v28.xx (cw-easyboard): and the easy tag"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027an easy run is cut 30 percent on the board and tagged easy (his 2.47 c)\u0027,\n   run:function(){\n     if(typeof arcadeBoardCut!==\u0027function\u0027) return \u0027no arcadeBoardCut\u0027;\n     if(arcadeBoardCut(1000,1)!==700||arcadeBoardCut(1000,0)!==1000) return \u0027cut is not 30 percent\u0027;\n     if(arcadeBoardTag({e:1}).toLowerCase().indexOf(\u0027easy\u0027)\u003c0||arcadeBoardTag({e:0})!==\u0027\u0027) return \u0027tag wrong\u0027;\n     if(String(arcadeBoardPut).indexOf(\u0027arcadeBoardCut\u0027)\u003c0) return \u0027the board row is not cut\u0027;\n     if(String(arcadeAttBoard).indexOf(\u0027arcadeBoardTag\u0027)\u003c0) return \u0027the board does not show the tag\u0027;\n     var d=arcadeBoardDedupe([{run:\u0027q\u0027,s:5,x:0,k:0,t:1,e:1}]);\n     if(!d[0]||d[0].e!==1) return \u0027dedupe drops the tag\u0027;\n     var k0=localStorage.getItem(ARCADE_BOARD_KEY), l;\n     try{\n       localStorage.setItem(ARCADE_BOARD_KEY,JSON.stringify({v:1,rows:[{run:\u0027zq\u0027,i:\u0027AAA\u0027,s:70,x:1,k:1,t:Date.now(),m:2,e:1,u:\u0027cr\u0027}]}));\n       l=arcadeBoardLoad();\n       if(!l[0]||l[0].e!==1) return \u0027load drops the tag\u0027;\n       return null;\n     } finally { if(k0==null) localStorage.removeItem(ARCADE_BOARD_KEY); else localStorage.setItem(ARCADE_BOARD_KEY,k0); } }},"
+}

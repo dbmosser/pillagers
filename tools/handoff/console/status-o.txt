@@ -1,1 +1,1 @@
-10-20 00:55 waiting for RAM: 2 GB free, need 3 (o-03-map-popups-wait)
+10-20 00:58 gate: shipping cw-cx-mapspace-o03 (o-03-map-popups-wait, codex)

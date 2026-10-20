@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.30 - MAP LABELS HAVE ROOM
+
+Co-op hunt while he was away. The map critic found dense cache labels and contract rows competing with the map.
+
+MEASURED. Check 32.30 passes, and fails on v32.29.
 ## v32.29 - THE PICKED WHEEL WEDGE IS RAISED GREY, NOT OLIVE
 
 Co-op hunt while he was away. Critic on screen 61: the picked wedge was a muddy olive fill with a lime border, a second colour system. It is now a lighter neutral grey and the accent shows only as the edge.

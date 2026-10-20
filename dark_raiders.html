@@ -3028,7 +3028,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.29';
+var VER='32.30';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -46080,10 +46080,11 @@ function mapCardBack(cd){
 }
 // The contracts column: a dark pane, a title row, then one row per contract: the short name and the reward, and under it a progress bar with 3/5 (done in
 // green, a rule contract shows holding or broken). When the rows cannot all have two lines they share the height on one line each with a thin bar.
+// v28.xx (cw-cx-mapspace-o03): fixed status width aligns all tracks; secondary names keep the map first. No contract is hidden.
 function mapContractsDraw(cd,rows){
   var c=cd.col, z=cd.z, u=cd.u, q=Math.round(20*u), th=Math.round(52*u), r=Math.max(2,Math.round(4*z)), lw=Math.max(1,Math.round(z)), n=rows.length, nd=0, i, row, ry, pitch, two,
       y0, avail, nat=Math.round(76*u), mid, mid2, wRew, wCnt, maxW, barW, bh=Math.max(3,Math.round(4*z)), txt, cnt, cc, ch, fr, fcol,
-      nameFont=FSz('600 15.4px '+HUDF,z), cntFont=FSz(TYPE.label,z), rewFont=FSz('600 12px '+HUDF,z);
+      nameFont=FSz('600 15.4px '+HUDF,z), cntFont=FSz(TYPE.label,z), rewFont=FSz(TYPE.label,z);
   for(i=0;i<n;i++) if(rows[i].done) nd++;
   y0=c.y+th; avail=c.h-th-Math.round(8*u); pitch=Math.min(nat,Math.floor(avail/n));
   ch=Math.min(c.h,th+n*pitch+Math.round(8*u));
@@ -46099,15 +46100,15 @@ function mapContractsDraw(cd,rows){
     for(i=0;i<n;i++){
       row=rows[i]; ry=y0+i*pitch;
       cnt=row.done?'done':(row.rule?row.rule:(row.p+'/'+row.n));
-      cc=row.done?UIC.ok:((row.rule==='broken')?UIC.danger:((row.rule==='ready')?UIC.ok:UIC.tx_2));
+      cc=row.done?UIC.ok:((row.rule==='broken')?UIC.danger:((row.rule==='ready'||row.rule==='holding')?UIC.ok:UIC.tx_2));
       fr=row.rule?((row.rule==='holding'||row.rule==='open')?0:1):(row.p/row.n);   // a rule contract has the same bar: empty while it holds, full when it is ready or broken
       fcol=(row.done||row.rule==='ready')?UIC.ok:((row.rule==='broken')?UIC.danger:UIC.acc);
       txt=row.pay?('$'+row.pay.toLocaleString()):'';
       ctx.font=rewFont; wRew=txt?hudRawW(txt):0;
-      ctx.font=cntFont; wCnt=hudRawW(cnt);
+      ctx.font=cntFont; wCnt=Math.max(hudRawW('holding'),hudRawW('broken'),hudRawW('99/99'));
       mid=two?(ry+pitch*0.34):(ry+pitch*0.40); mid2=ry+pitch*0.74;
       maxW=c.w-2*q-(wRew?(wRew+q):0)-(two?0:(wCnt+q));
-      ctx.font=nameFont; ctx.fillStyle=UIC.tx_1; ctx.textAlign='left'; ctx.fillText(mapFit(row.name,maxW),c.x+q,mid);
+      ctx.font=nameFont; ctx.fillStyle=row.done?UIC.ok:UIC.tx_2; ctx.textAlign='left'; ctx.fillText(mapFit(row.name,maxW),c.x+q,mid);
       if(txt){ ctx.font=rewFont; ctx.fillStyle=UIC.tx_2; ctx.textAlign='right'; ctx.fillText(txt,c.x+c.w-q,mid); ctx.textAlign='left'; }
       if(two){
         barW=c.w-2*q-wCnt-Math.round(12*u);
@@ -46119,7 +46120,7 @@ function mapContractsDraw(cd,rows){
         barW=c.w-2*q; ctx.fillStyle=UIC.ui_line_hi; ctx.fillRect(c.x+q,ry+pitch-bh-Math.round(2*z),barW,bh);
         if(fr>0){ ctx.fillStyle=fcol; ctx.fillRect(c.x+q,ry+pitch-bh-Math.round(2*z),barW*fr,bh); }
       }
-      if(i<n-1&&two){ ctx.strokeStyle=UIC.ui_line; ctx.lineWidth=lw; ctx.beginPath(); ctx.moveTo(c.x+q,ry+pitch); ctx.lineTo(c.x+c.w-q,ry+pitch); ctx.stroke(); }
+      // v28.xx (cw-cx-mapspace-o03): one progress track per row supplies rhythm without an extra divider.
     }
   } finally { ctx.restore(); }
 }
@@ -46242,6 +46243,7 @@ function mapLabelRect(L,dx,dy){
   t=(L.tb==='middle')?y-fp/2:((L.tb==='top'||L.tb==='hanging')?y:y-fp*0.82);
   return {l:l*m.a+m.e+(dx||0), t:t*m.d+m.f+(dy||0), r:(l+w)*m.a+m.e+(dx||0), b:(t+fp*1.05)*m.d+m.f+(dy||0)};
 }
+// v28.xx (cw-cx-mapspace-o03): keep every loot tag; 12 scaled px of air separates labels, and leaders start at their own icon.
 function mapPlaceLabels(Q,hdrY,fn){
   var zn={}, i, j, G2=[], cur=null, placed=[], out=[], L, P0, k, tries, ok, dx, dy, r, rr, gh, gw;
   if(!Q.length) return 0;
@@ -46263,7 +46265,7 @@ function mapPlaceLabels(Q,hdrY,fn){
   /* v31.xx (cw-mapstyle3): the mark a tag is anchored to (the tag sits just above it) is no obstacle for that tag, so the tag keeps its place at the mark and is not pushed off it (the critic: labels float away from their icons) */
   var _mz=(typeof hudRes==='function')?hudRes():1;
   G2.forEach(function(g){ var L0=g.items[0], sx=L0.x*L0.m.a+L0.m.e, sy=L0.y*L0.m.d+L0.m.f, q, I; g.own=[]; for(q=0;q<MAPICONS.length;q++){ I=MAPICONS[q]; if(sx>=I.l&&sx<=I.r&&sy>=I.t-30*_mz&&sy<=(I.t+I.b)/2) g.own.push(q); } });
-  function hits(a,ic,own){ var _ax=Math.max(2,(a.b-a.t)*0.3); for(var h=0;h<placed.length;h++){ var b=placed[h]; if(a.l<b.r+_ax&&b.l<a.r+_ax&&a.t<b.b+1&&b.t<a.b+1) return true; }   /* v31.xx (cw-mapstyle3): a tag keeps a third of its height of air from a tag beside it (blast freezer, locked touched strongbox) */
+  function hits(a,ic,own){ var _ax=12*_mz, _ay=12*_mz; for(var h=0;h<placed.length;h++){ var b=placed[h]; if(a.l<b.r+_ax&&b.l<a.r+_ax&&a.t<b.b+_ay&&b.t<a.b+_ay) return true; }   /* v31.xx (cw-mapstyle3): a tag keeps a third of its height of air from a tag beside it (blast freezer, locked touched strongbox) */
     if(ic) for(var h2=0;h2<MAPICONS.length;h2++){ if(own&&own.indexOf(h2)>=0) continue; var b2=MAPICONS[h2]; if(a.l<b2.r+5&&b2.l<a.r+5&&a.t<b2.b+5&&b2.t<a.b+5) return true; }   // v31.xx (cw-mapstyle): a label never sits on a mark
     return false; }
   // v19.31, seen on the 4K map screenshot (2026-10-08): a label moved off a clash could be moved anywhere, so RECEIVING APRON went up
@@ -46279,7 +46281,7 @@ function mapPlaceLabels(Q,hdrY,fn){
     if(g.items[0].mark){
       var M0=g.items[0].mark, px=M0.x*M0.m.a+M0.m.e, py=M0.y*M0.m.d+M0.m.f,
           midX=(g.r.l+g.r.r)/2, midY=(g.r.t+g.r.b)/2, sideY=py-midY,
-          leftX=px-20*_mz-g.r.r, rightX=px+20*_mz-g.r.l, pitch=gh+4*_mz, clusterL=px-15*_mz, clusterR=px+15*_mz,
+          leftX=px-20*_mz-g.r.r, rightX=px+20*_mz-g.r.l, pitch=gh+12*_mz, clusterL=px-15*_mz, clusterR=px+15*_mz,
           clusterMarks=[{l:clusterL,t:py-15*_mz,r:clusterR,b:py+15*_mz}];
       MAPICONS.forEach(function(I){ if(Math.abs((I.l+I.r)/2-px)<=45*_mz&&Math.abs((I.t+I.b)/2-py)<=45*_mz){ clusterL=Math.min(clusterL,I.l); clusterR=Math.max(clusterR,I.r); clusterMarks.push(I); } });
       var clusterLeft=clusterL-6*_mz-g.r.r, clusterRight=clusterR+6*_mz-g.r.l;
@@ -46289,21 +46291,21 @@ function mapPlaceLabels(Q,hdrY,fn){
         tries.push([leftX,sideY-row*pitch],[rightX,sideY-row*pitch],[leftX,sideY+row*pitch],[rightX,sideY+row*pitch],[clusterLeft,sideY-row*pitch],[clusterRight,sideY-row*pitch],[clusterLeft,sideY+row*pitch],[clusterRight,sideY+row*pitch],[0,-row*pitch],[0,row*pitch]);
       }
       // v28.xx (cw-cx-sectorhold-o03): include exact clearances around nearby labels and icons; whole-row jumps can miss a usable gap of only a few pixels.
-      var localX=[0,leftX,rightX,clusterLeft,clusterRight,_bL-g.r.l,_bW-g.r.r], localY=[0,sideY], xpad=Math.max(8*_mz,gh*0.3+_mz), ypad=4*_mz;
+      var localX=[0,leftX,rightX,clusterLeft,clusterRight,_bL-g.r.l,_bW-g.r.r], localY=[0,sideY], xpad=12*_mz, ypad=12*_mz;
       clusterMarks.forEach(function(I){ localX.push(I.l-6*_mz-g.r.r,I.r+6*_mz-g.r.l); localY.push(I.t-6*_mz-g.r.b,I.b+6*_mz-g.r.t); });
       placed.forEach(function(B){ if(Math.abs((B.l+B.r)/2-px)<gw+80*_mz&&Math.abs((B.t+B.b)/2-py)<gh+80*_mz){ localX.push(B.l-xpad-g.r.r,B.r+xpad-g.r.l); localY.push(B.t-ypad-g.r.b,B.b+ypad-g.r.t); } });
       localX.forEach(function(x){ localY.forEach(function(y){ if(g.r.l+x>=_bL&&g.r.r+x<=_bW&&g.r.t+y>=_bT&&g.r.b+y<=_bH) tries.push([x,y]); }); });
       // v28.xx (cw-cx-sectorhold-o03): stay next to the marker group first, then minimize movement; the connector still identifies this tag's exact icon.
-      function nearScore(q){ var gap=Infinity; clusterMarks.forEach(function(I){ var dx=Math.max(0,I.l-(g.r.r+q[0]),g.r.l+q[0]-I.r), dy=Math.max(0,I.t-(g.r.b+q[1]),g.r.t+q[1]-I.b); gap=Math.min(gap,dx*dx+dy*dy); }); return gap*1000+q[0]*q[0]+q[1]*q[1]; }
+      function nearScore(q){ var I={l:px-8*_mz,r:px+8*_mz,t:py-8*_mz,b:py+8*_mz}, dx=Math.max(0,I.l-(g.r.r+q[0]),g.r.l+q[0]-I.r), dy=Math.max(0,I.t-(g.r.b+q[1]),g.r.t+q[1]-I.b); return (dx*dx+dy*dy)*1000+q[0]*q[0]+q[1]*q[1]; }
       tries.forEach(function(q){ q[2]=nearScore(q); }); tries.sort(function(a,b){ return a[2]-b[2]; });
     }
-    for(var _pass=0;_pass<2&&!ok;_pass++) for(k=0;k<tries.length&&!ok;k++){ dx=tries[k][0]; dy=tries[k][1]; r={l:g.r.l+dx,t:g.r.t+dy,r:g.r.r+dx,b:g.r.b+dy}; if(r.t<_bT||r.b>_bH||r.l<_bL||r.r>_bW) continue; if(!hits(r,_pass===0,dy<=0?g.own:null)){ ok=true; g.dx=dx; g.dy=dy; placed.push(r); out.push(g); } }   // v31.xx (cw-mapstyle): first clear of the marks too, then clear of the other labels only
+    for(var _pass=0;_pass<(g.items[0].mark?1:2)&&!ok;_pass++) for(k=0;k<tries.length&&!ok;k++){ dx=tries[k][0]; dy=tries[k][1]; r={l:g.r.l+dx,t:g.r.t+dy,r:g.r.r+dx,b:g.r.b+dy}; if(r.t<_bT||r.b>_bH||r.l<_bL||r.r>_bW) continue; if(!hits(r,_pass===0,(!g.items[0].mark&&dy<=0)?g.own:null)){ ok=true; g.dx=dx; g.dy=dy; placed.push(r); out.push(g); } }   // v31.xx (cw-mapstyle): first clear of the marks too, then clear of the other labels only
     // v28.xx (cw-cx-sectorhold-o03): exhaust the map for an anchored tag instead of deliberately painting it across another label.
     if(!ok&&g.items[0].mark){
-      var best=null, score=Infinity, step=gh+4*_mz;
+      var best=null, score=Infinity, step=gh+12*_mz;
       for(var yy=_bT;yy+gh<=_bH;yy+=step) for(var xx=_bL;xx+gw<=_bW;xx+=8*_mz){
         var box={l:xx,t:yy,r:xx+gw,b:yy+gh}, dist2=Math.pow(xx-g.r.l,2)+Math.pow(yy-g.r.t,2);
-        if(dist2<score&&!hits(box,false,null)){ best=box; score=dist2; }
+        if(dist2<score&&!hits(box,true,null)){ best=box; score=dist2; }
       }
       if(best){ g.dx=best.l-g.r.l; g.dy=best.t-g.r.t; placed.push(best); out.push(g); ok=true; }
     }
@@ -46316,7 +46318,7 @@ function mapPlaceLabels(Q,hdrY,fn){
     // v28.xx (cw-cx-sectorhold-o03): a displaced loot label stays visibly attached to its own icon, never a neighbouring cache.
     if(L.mark&&(Math.abs(g.dx||0)>1||Math.abs(g.dy||0)>1)){
       var B=mapLabelRect(L,g.dx,g.dy), M=L.mark, ax=M.x*M.m.a+M.m.e, ay=M.y*M.m.d+M.m.f,
-          ex=clamp(ax,B.l,B.r), ey=clamp(ay,B.t,B.b), vx=ex-ax, vy=ey-ay, len=Math.sqrt(vx*vx+vy*vy), cut=14*_mz;
+          ex=clamp(ax,B.l,B.r), ey=clamp(ay,B.t,B.b), vx=ex-ax, vy=ey-ay, len=Math.sqrt(vx*vx+vy*vy), cut=8*_mz;
       if(len>cut+2){ ctx.save(); ctx.setTransform(1,0,0,1,0,0); ctx.strokeStyle=UIC.tx_2; ctx.lineWidth=Math.max(1,_mz); ctx.beginPath(); ctx.moveTo(ax+vx*cut/len,ay+vy*cut/len); ctx.lineTo(ex,ey); ctx.stroke(); ctx.restore(); }
     }
     if(L.h>0){ try{ ctx.lineJoin='round'; ctx.lineWidth=L.h; ctx.strokeStyle='rgba(11,12,13,.88)'; ctx.strokeText((typeof TX==='function')?TX(String(L.s)):String(L.s),L.x+(g.dx||0)/(L.m.a||1),L.y+(g.dy||0)/(L.m.d||1)); }catch(_hl){} }   // v31.xx (cw-mapstyle): the halo
@@ -50345,7 +50347,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.29: The item wheel picked wedge is a raised neutral grey with the accent edge, no olive fill. Check 32.29 fails on v32.28',
+  now:'v32.30: Individual cache and strongbox labels have twelve scaled pixels of clearance. Their leaders stay attached to their own icons. Contract tracks align and secondary rows are quieter. Check 32.30 fails on v32.29',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
