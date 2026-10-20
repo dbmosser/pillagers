@@ -84,7 +84,7 @@ if ($Down) {
 }
 
 # ------------------------------------------------------------------ -Snapshot : the weekly safety checkpoint (his 47 a)
-function OurSnapshots { return @(Get-VMSnapshot -VMName $VMName -ErrorAction SilentlyContinue | Where-Object { $_.Name -like ($SnapPrefix + '*') } | Sort-Object CreationTime -Descending) }
+function OurSnapshots { try { return @(Get-VMSnapshot -VMName $VMName -ErrorAction Stop | Where-Object { $_.Name -like ($SnapPrefix + '*') } | Sort-Object CreationTime -Descending) } catch { return @() } }
 if ($Snapshot) {
   $vm = GetVm
   if (-not $vm) { LogLine ('snapshot: no VM named ' + $VMName + '; nothing done'); exit 2 }
@@ -111,7 +111,7 @@ if ($GameCheck) {
       $avg = $by[$p] / 5
       if ($avg -lt $Gpu3DPct) { continue }
       $n = ''; try { $n = (Get-Process -Id $p -ErrorAction Stop).ProcessName } catch { }
-      if (-not $n -or $n -match '^(dwm|vmwp|vmmem|vmcompute|csrss|System|Idle|audiodg)$') { continue }
+      if (-not $n -or $n -match '^(dwm|vmwp|vmmem|vmcompute|vmconnect|mstsc|msrdc|csrss|System|Idle|audiodg)$') { continue }
       if ($avg -gt $pct) { $pct = [int]$avg; $hit = $n }
     }
   } catch { LogLine ('game check: cannot read the graphics card counters: ' + ($_.Exception.Message -replace '\s+', ' ')); exit 2 }
@@ -139,7 +139,10 @@ if ($Status -or -not ($Install -or $Undo)) {
   $vm = GetVm
   Say ('VM ' + $VMName + ': ' + $(if ($vm) { $vm.State.ToString() + ', ' + [math]::Round($vm.MemoryStartup / 1GB, 1) + ' GB set, ' + [math]::Round($vm.MemoryAssigned / 1GB, 1) + ' GB in use' + $(if ($vm.DynamicMemoryEnabled) { ' (dynamic)' } else { ' (fixed)' }) } else { 'not found (or this window has no Hyper-V rights)' }))
   Say ('this PC: ' + (HostFreeGB) + ' GB free; daytime VM size ' + (ReadDayGB) + ' GB')
-  foreach ($n in $TaskUp, $TaskDown) { $t = Get-ScheduledTask -TaskName $n -ErrorAction SilentlyContinue; Say ($n + ': ' + $(if ($t) { $t.State } else { 'not set up' })) $(if ($t) { 'OK' } else { 'INFO' }) }
+  foreach ($n in $TaskUp, $TaskDown, $TaskSnap, $TaskGame) { $t = Get-ScheduledTask -TaskName $n -ErrorAction SilentlyContinue; Say ($n + ': ' + $(if ($t) { $t.State } else { 'not set up' })) $(if ($t) { 'OK' } else { 'INFO' }) }
+  if ($vm) { try { Say ('VM processors: held to ' + (Get-VMProcessor -VMName $VMName -ErrorAction Stop).Maximum + '% (100 = all)') } catch { } }
+  if (Test-Path $GameFile) { Say ('game check: ' + ((Get-Content $GameFile -ErrorAction SilentlyContinue) -join '; ')) }
+  $snaps = @(OurSnapshots); Say ('weekly checkpoints: ' + $(if ($snaps.Count) { ($snaps | ForEach-Object { $_.Name }) -join ', ' } else { 'none yet' }))
   if (Test-Path $Log) { Say 'last night-memory lines:'; Get-Content $Log -Tail 6 | ForEach-Object { Say $_ } }
   if (-not ($Install -or $Undo)) { exit 0 }
 }
@@ -149,11 +152,13 @@ $desktop = [Environment]::GetFolderPath('Desktop')
 
 # ------------------------------------------------------------------ -Undo
 if ($Undo) {
-  foreach ($n in $TaskUp, $TaskDown) { if (Get-ScheduledTask -TaskName $n -ErrorAction SilentlyContinue) { Unregister-ScheduledTask -TaskName $n -Confirm:$false; Say ('removed task ' + $n) 'OK' } }
+  foreach ($n in $TaskUp, $TaskDown, $TaskSnap, $TaskGame) { if (Get-ScheduledTask -TaskName $n -ErrorAction SilentlyContinue) { Unregister-ScheduledTask -TaskName $n -Confirm:$false; Say ('removed task ' + $n) 'OK' } }
   $vm = GetVm; $day = ReadDayGB
   if ($vm -and [int][math]::Round($vm.MemoryStartup / 1GB) -gt $day) { try { Set-VMMemory -VMName $VMName -StartupBytes ([int64]$day * 1GB) -ErrorAction Stop; Say ('VM back to ' + $day + ' GB') 'OK' } catch { Say ('could not set the VM back to ' + $day + ' GB now: ' + $_.Exception.Message) 'WARN' } }
-  foreach ($f in $Copy, $StateFile, (Join-Path $desktop $LinkName)) { if (Test-Path $f) { Remove-Item $f -Force; Say ('removed ' + $f) 'OK' } }
-  LogLine 'undo: tasks removed, VM back to its day size'; exit 0
+  if ($vm) { try { if ((Get-VMProcessor -VMName $VMName -ErrorAction Stop).Maximum -lt 100) { Set-VMProcessor -VMName $VMName -Maximum 100 -ErrorAction Stop; Say 'VM has all its processors again' 'OK' } } catch { Say ('could not lift the processor limit: ' + $_.Exception.Message) 'WARN' } }
+  foreach ($f in $Copy, $StateFile, $GameFile, $GameSeen, (Join-Path $desktop $LinkName)) { if (Test-Path $f) { Remove-Item $f -Force; Say ('removed ' + $f) 'OK' } }
+  $snaps = @(OurSnapshots); if ($snaps.Count) { Say ('the weekly checkpoints stay as a safety copy (' + (($snaps | ForEach-Object { $_.Name }) -join ', ') + '); Hyper-V Manager can delete them') }
+  LogLine 'undo: tasks removed, VM back to its day size and all its processors'; exit 0
 }
 
 # ------------------------------------------------------------------ -Install
@@ -163,12 +168,13 @@ if ($vm.DynamicMemoryEnabled) { Say 'The VM uses dynamic memory; this setup only
 $day = if ($DayGB -gt 0) { $DayGB } else { [int][math]::Round($vm.MemoryStartup / 1GB) }
 $free = HostFreeGB; $tonight = [int][math]::Min($MaxGB, [math]::Floor($day + $free - $KeepFreeGB))
 Say ('VM ' + $VMName + ': ' + $day + ' GB by day. At 23:00 it gets up to ' + $MaxGB + ' GB (as much as fits while this PC keeps ' + $KeepFreeGB + ' GB free; right now that would be ' + [math]::Max($day, $tonight) + ' GB), and at 06:00 it goes back to ' + $day + ' GB.')
-if ($DryRun) { Say ('would copy this script to ' + $Copy + ', make the tasks "' + $TaskUp + '" (23:00) and "' + $TaskDown + '" (06:00, every 15 min until 08:00) as SYSTEM, and put "' + $LinkName + '" on the desktop') 'DRY'; exit 0 }
+Say ('Every Sunday at 05:00 it makes a safety checkpoint of the VM (keeps the newest ' + $KeepSnapshots + '). Every minute it checks for a game: while one works the graphics card, the VM is held to ' + $GameCpuPct + '% of its processors and starts nothing new.')
+if ($DryRun) { Say ('would copy this script to ' + $Copy + ', make the tasks "' + $TaskUp + '" (23:00), "' + $TaskDown + '" (06:00, every 15 min until 08:00), "' + $TaskSnap + '" (Sunday 05:00) and "' + $TaskGame + '" (every minute) as SYSTEM, make the first checkpoint, and put "' + $LinkName + '" on the desktop') 'DRY'; exit 0 }
 New-Item -ItemType Directory -Force -Path $Share | Out-Null
 Copy-Item -LiteralPath $PSCommandPath -Destination $Copy -Force
 Set-Content -Path $StateFile -Value ('dayGB=' + $day) -Encoding ASCII
 $ps = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
-$common = '-NoProfile -ExecutionPolicy Bypass -File "' + $Copy + '" -VMName "' + $VMName + '" -MaxGB ' + $MaxGB + ' -KeepFreeGB ' + $KeepFreeGB + ' -DayGB ' + $day + ' -BaseDir "' + $BaseDir + '"'
+$common = '-NoProfile -ExecutionPolicy Bypass -File "' + $Copy + '" -VMName "' + $VMName + '" -MaxGB ' + $MaxGB + ' -KeepFreeGB ' + $KeepFreeGB + ' -DayGB ' + $day + ' -BaseDir "' + $BaseDir + '" -KeepSnapshots ' + $KeepSnapshots + ' -Gpu3DPct ' + $Gpu3DPct + ' -GameCpuPct ' + $GameCpuPct
 $principal = New-ScheduledTaskPrincipal -UserId 'SYSTEM' -LogonType ServiceAccount -RunLevel Highest
 $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -ExecutionTimeLimit (New-TimeSpan -Minutes 10)
 $tUp = New-ScheduledTaskTrigger -Daily -At '23:00'
@@ -180,6 +186,20 @@ try {
   $dt | Set-ScheduledTask -ErrorAction Stop | Out-Null
   Say ('tasks made: "' + $TaskUp + '" at 23:00 and "' + $TaskDown + '" at 06:00 (repeats every 15 minutes until 08:00)') 'OK'
 } catch { Say ('Windows refused the scheduled tasks: ' + $_.Exception.Message) 'FAIL'; exit 2 }
+try {
+  $sset = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -ExecutionTimeLimit (New-TimeSpan -Hours 2)
+  Register-ScheduledTask -TaskName $TaskSnap -Action (New-ScheduledTaskAction -Execute $ps -Argument ($common + ' -Snapshot')) -Trigger (New-ScheduledTaskTrigger -Weekly -DaysOfWeek Sunday -At '05:00') -Principal $principal -Settings $sset -Force -ErrorAction Stop | Out-Null
+  Say ('task made: "' + $TaskSnap + '" every Sunday at 05:00') 'OK'
+} catch { Say ('Windows refused the weekly checkpoint task: ' + $_.Exception.Message) 'WARN' }
+try {
+  $gset = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -MultipleInstances IgnoreNew -ExecutionTimeLimit (New-TimeSpan -Minutes 2)
+  $gt = New-ScheduledTaskTrigger -Once -At ((Get-Date).AddMinutes(1)) -RepetitionInterval (New-TimeSpan -Minutes 1) -RepetitionDuration (New-TimeSpan -Days 3650)
+  Register-ScheduledTask -TaskName $TaskGame -Action (New-ScheduledTaskAction -Execute $ps -Argument ($common + ' -GameCheck')) -Trigger $gt -Principal $principal -Settings $gset -Force -ErrorAction Stop | Out-Null
+  Say ('task made: "' + $TaskGame + '" every minute') 'OK'
+} catch { Say ('Windows refused the game check task: ' + $_.Exception.Message) 'WARN' }
+Say 'Making the first safety checkpoint of the VM (a few seconds to a minute)...'
+& $ps -NoProfile -ExecutionPolicy Bypass -File $Copy -VMName $VMName -BaseDir $BaseDir -KeepSnapshots $KeepSnapshots -Snapshot
+if (Test-Path $Log) { Get-Content $Log -Tail 1 | ForEach-Object { Say $_ } }
 try {
   $u = 'file:///' + ((Join-Path $Share 'pillagers-dashboard.html') -replace '\\', '/')
   Set-Content -Path (Join-Path $desktop $LinkName) -Value ("[InternetShortcut]`r`nURL=" + $u + "`r`n") -Encoding ASCII

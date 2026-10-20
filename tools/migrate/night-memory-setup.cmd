@@ -1,5 +1,5 @@
 @echo off
-rem night-memory-setup.cmd : double-click to set up the VM's night memory (Windows asks for administrator rights; click Yes).
+rem night-memory-setup.cmd : double-click to set up the VM's night memory, its weekly safety checkpoint and "light while gaming" (Windows asks for administrator rights; click Yes).
 rem "night-memory-setup.cmd undo" takes it all away again, "night-memory-setup.cmd status" only shows what is set up.
 set "ARG=-Install"
 if /i "%~1"=="undo" set "ARG=-Undo"
