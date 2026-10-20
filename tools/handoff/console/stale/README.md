@@ -1,0 +1,1 @@
+Stale copies of robot jobs, moved out of tasks/ on 10-19 23:58 by the coordinator. The move into the VM brought back the 12:16 copies of jobs that had since been parked in waiting/ (o-07 to o-10) or finished in done/ (o-11, o-12), and the lane spent two runs on the stale o-07. The live versions are in waiting/ and done/. Nothing reads this folder.
