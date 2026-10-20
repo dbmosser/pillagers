@@ -6101,6 +6101,33 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.69',what:'named stash heading, neutral freebie action, no idle keyboard sentence or toast over the open stash (J4 critic)',
+   run:function(){
+     if(!window.__hubEnter||!window.__station)return 'SKIP: this fixture cannot open the stash';
+     var bad=[],oldName=P.pname,oldText=document.getElementById('hubtoast').textContent,oldClass=document.getElementById('hubtoast').className;
+     try{
+       __runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();__wnseen(1);
+       __hubEnter();P.pname='nilo';__station('term','KeyE');renderHub();
+       var name=document.getElementById('stashname'),brand=name.closest('.brand'),detail=document.getElementById('stashdetail'),fk=document.querySelector('#hubfreekit .fkbox'),btn=fk&&fk.querySelector('button');
+       if(name.textContent!=='nilo'||!/^stash\s*\//i.test(brand.textContent))bad.push('stash heading does not identify the screen and save');
+       if(!/Barlow Condensed|Bahnschrift SemiCondensed|Arial Narrow/.test(getComputedStyle(name).fontFamily))bad.push('save name uses a different font');
+       if(detail.textContent.trim()||getComputedStyle(detail).display!=='none')bad.push('idle help sentence or empty detail strip remains');
+       if(!fk||getComputedStyle(fk.querySelector('span')).display!=='none')bad.push('freebie description still competes with the action');
+       // v28.xx (cw-cx-namestashview): the stash has menu zoom too; calibrate the required 3px border at that same scale.
+       if(fk){var borderProbe=document.createElement('i');borderProbe.style.cssText='position:absolute;visibility:hidden;pointer-events:none;border-left:3px solid var(--acc)';fk.appendChild(borderProbe);var want=getComputedStyle(borderProbe),actual=getComputedStyle(fk);
+         if(Math.abs(parseFloat(actual.borderLeftWidth)-parseFloat(want.borderLeftWidth))>0.01||actual.borderLeftStyle!=='solid'||actual.borderLeftColor!==want.borderLeftColor||actual.backgroundColor!=='rgb(22, 25, 27)')bad.push('freebie bar is not neutral with an accent tab: '+actual.borderLeftWidth+' expected '+want.borderLeftWidth);
+         borderProbe.remove();}
+       if(!btn||parseFloat(getComputedStyle(btn).minHeight)<48||getComputedStyle(btn).backgroundColor!=='rgb(230, 255, 61)')bad.push('freebie action is not a filled 48px button');
+       var toast=document.getElementById('hubtoast');toast.textContent='welcome pack';toast.classList.add('on');
+       if(getComputedStyle(toast).visibility!=='hidden')bad.push('toast competes with the open stash');
+       var cell=document.querySelector('#stashgrid .cell');
+       if(cell&&typeof cell.onmouseenter==='function'){cell.onmouseenter();if(!detail.textContent.trim()||getComputedStyle(detail).display==='none')bad.push('focused item details were lost');}
+       return bad.length?bad.join('; '):null;
+     }finally{
+       try{__endRaid('abandon');}catch(e){}__topClear();document.getElementById('hub').classList.remove('on');
+       P.pname=oldName;document.getElementById('hubtoast').textContent=oldText;document.getElementById('hubtoast').className=oldClass;
+     }
+   }},
   {v:'32.68',what:'career letter picker readable hints, boxed letter and arrows, single footer and isolated title focus (J4 critic)',
    run:function(){
      var pin=document.getElementById('pnamein'),top=document.getElementById('title'),root=document.getElementById('root'),tc=top.className,iv=pin.value,pk=Object.assign({},PAD),ik=Object.assign({},INDEV),bad=[];

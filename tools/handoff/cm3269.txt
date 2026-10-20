@@ -1,0 +1,7 @@
+v32.69: named stash readability
+
+The stash heading shows the save name in the shared font. One neutral freebie row keeps a filled action, and focused items keep their details.
+
+Check 32.69. Fails on v32.68.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

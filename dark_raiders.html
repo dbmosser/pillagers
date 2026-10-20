@@ -2194,6 +2194,19 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
 #root #hub #stashdetail span, #root #hub #sellhint, #root #hub #nextunlock, #root #hub #firstkit, #root #hub #sellall, #root #hub #stashsearch,
 #root #hub #hotplanwrap span, #root #hubfreekit b, #root #hubfreekit span, #root #hub [style*="font-size:13px"]{ font-size:17.4px !important; }
 #root #hub #stashtabs .invtab{ font-size:17.4px !important; }
+/* v28.xx (cw-cx-namestashview), J4 critic 10-20: the saved name uses the menu font, one neutral freebie row and a readable pad legend. No inventory control or slot is removed. */
+#root #hub .toprow .brand{font:700 34.8px/1.2 var(--f-cond)!important;letter-spacing:.04em;color:var(--tx-1)!important;display:flex;align-items:baseline;gap:16px;}
+#root #hub .toprow #stashname,#root #hub .toprow .stashsep{font:600 21.8px/1.2 var(--f-cond)!important;letter-spacing:.02em;color:var(--tx-2)!important;}
+#root #hub #stashdetail:empty,#root #hub #nextunlock:empty{display:none!important;}
+#root #hub .panel>div:has(>#sellall){border-top:0!important;padding:0!important;}
+#root #hub #hubfreekit .fkbox{background:var(--ui-panel)!important;border:1px solid var(--ui-line-hi)!important;border-left:3px solid var(--acc)!important;padding:12px 16px;margin:8px 0 0;gap:24px;}
+#root #hub #hubfreekit .fkbox>span{display:none!important;}
+#root #hub #hubfreekit .fkbox>b{font:600 21.8px/1.2 var(--f-cond)!important;color:var(--tx-1)!important;letter-spacing:.04em;flex:1;}
+#root #hub #hubfreekit .fkbtn{min-height:52.2px;padding:8px 24px;background:var(--acc)!important;color:var(--acc-ink)!important;border:0!important;font:600 21.8px/1.2 var(--f-cond)!important;}
+#root #hub #invkeybarpad div,#root #hub #invkeybarpad kbd{font-size:17.4px!important;letter-spacing:.02em;line-height:1.4;}
+#root #hub #kitsetup .kst span,#root #hub #kitsetup .kstc span,#root #hub #kitsetup .ksreset{font-size:18px!important;letter-spacing:0!important;}
+/* v28.xx (cw-cx-namestashview): the shared style guide keeps toast notices out of open windows, as Settings and Keys already do. */
+body:has(#hub.on) #hubtoast{visibility:hidden;}
 </style><canvas id="cv"></canvas>
 <canvas id="hcv"></canvas>
 <div id="hubtoast"></div>
@@ -2949,7 +2962,7 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
 <div class="screen" id="hub">
   <div class="toprow">
     <div>
-      <!-- v28.xx (cw-cx-padname), J4: the stash identifies the save by the name entered on the title. --><div class="brand"><span id="stashname">pillager</span> <span id="verlabel"></span></div>
+      <!-- v28.xx (cw-cx-namestashview), J4 critic: identify the screen and show the actual save name in the shared menu font. --><div class="brand">stash <span class="stashsep" aria-hidden="true">/</span> <span id="stashname">pillager</span> <span id="verlabel"></span></div>
       <div style="font-size:13px;color:var(--ash);letter-spacing:.14em;margin-top:4px">THE UNDERCROFT &mdash; THE STASH &mdash; XP <span id="reptop" style="color:var(--amber)">0</span> <span id="notoline"></span></div>
     </div>
     <div class="credits" id="credits">0<small>CREDITS</small></div>
@@ -3173,7 +3186,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.68';
+var VER='32.69';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -50804,7 +50817,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.68: The pad name card has larger controls, a boxed letter with arrows and one footer. The title stays hidden while naming. Check 32.68 fails on v32.67',
+  now:'v32.69: The stash heading shows the save name in the shared font. One neutral freebie row keeps a filled action, and focused items keep their details. Check 32.69 fails on v32.68',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -52793,9 +52806,7 @@ try{ renderFreeKit(); }catch(_fk){}
   });
   var detail=document.getElementById('stashdetail');
   function detailIdle(){
-    if(detail) detail.innerHTML='<span style="color:var(--tx-2)">'+((typeof netHubSeat==='function'&&netHubSeat()>=0)?('Drop on the floor for '+(netSeatName(netHubSeat())||'your teammate')+'. '):'')+'Hover an item and press J to tag it JUNK. '+
-      ''+   /* v28.xx (cw-uc-stash2): Q8, the parts line was an explaining sentence on the stash help row (reason in notes/ui/changes.md) */
-      '</span>';
+    if(detail)detail.textContent=''; // v28.xx (cw-cx-namestashview): Q8, the idle keyboard sentence duplicated the controls; focused item details still use this row.
   }
   detailIdle();
   // WHICH PLACE. STASH is the vault, INVENTORY is what you are taking up, and

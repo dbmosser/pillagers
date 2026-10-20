@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.69 - NAMED STASH READABILITY
+
+Co-op hunt while he was away. The J4 stash photographs exposed a missing screen label, an idle keyboard sentence and a competing freebie banner and toast.
+
+MEASURED. Check 32.69 passes, and fails on v32.68.
 ## v32.68 - PAD NAME PICKER READABILITY
 
 Co-op hunt while he was away. The J4 critic found small control hints, weak letter focus and a competing title focus in both windows.
