@@ -57307,7 +57307,10 @@ window.__REGRESS=[
          c=cells[i]; im=c.querySelector('img.ic'); lb=c.querySelector('.vlbl'); if(!im||!lb) continue;
          R=c.getBoundingClientRect(); I=im.getBoundingClientRect(); Lr=lb.getBoundingClientRect();
          if(R.width<20) continue; n++;
-         if(R.width>=160&&I.width<88) bad.push('tile '+i+': icon '+Math.round(I.width)+' across in a tile of '+Math.round(R.width));
+         // v28.xx (cw-cx-corpus05): compare menu units; getBoundingClientRect is already multiplied by the viewport's menu zoom.
+         var zoom=R.width/c.offsetWidth;
+         if(!(zoom>0)) bad.push('tile '+i+': the menu zoom is not measurable');
+         else if(c.offsetWidth>=160&&I.width/zoom<88) bad.push('tile '+i+': icon '+Math.round(I.width/zoom)+' menu pixels across in a tile of '+c.offsetWidth);
          if(I.bottom>R.bottom+1||Lr.bottom>R.bottom+1) bad.push('tile '+i+': the icon or its name runs out of the tile');
        }
        if(!n) return 'SKIP: no tile was measurable';
@@ -57859,8 +57862,14 @@ window.__REGRESS=[
        ctx=c; bar(10,10,180,30,1,'#5fae6f');
        dc=c.getImageData(100,25,1,1).data; dt=c.getImageData(100,12,1,1).data; d0=c.getImageData(10,10,1,1).data;
        if(Math.abs(dc[1]-0xae)>14) bad.push('the centre is not the fill colour ('+dc[0]+','+dc[1]+','+dc[2]+')');
-       if(!(dt[0]+dt[1]+dt[2]>dc[0]+dc[1]+dc[2]+20)) bad.push('the top of the fill is not lit');
+       // v28.xx (cw-cx-corpus05): v30.87 removed the gloss; flat fill and the earlier lit top both preserve the meter.
+       if(dt[0]+dt[1]+dt[2]<dc[0]+dc[1]+dc[2]-20) bad.push('the top of the fill is darker than its centre');
        if(d0[3]>120) bad.push('the corner is square (alpha '+d0[3]+')');
+       c.clearRect(0,0,200,60); bar(10,10,180,30,0.5,'#5fae6f');
+       var fill=c.getImageData(55,25,1,1).data, track=c.getImageData(145,25,1,1).data;
+       if(Math.abs(fill[1]-0xae)>14||track[1]>=fill[1]-40) bad.push('the half-full bar does not separate its fill from the empty track');
+       c.clearRect(0,0,200,60); bar(10,10,180,30,0,'#5fae6f');
+       if(c.getImageData(100,25,1,1).data[1]>100) bad.push('an empty bar still paints the fill');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ ctx=oc; }
      return bad.length?bad.join('; '):null; }},
@@ -57944,8 +57953,18 @@ window.__REGRESS=[
      t.className='tag'; t.textContent='x'; tw.appendChild(t);
      try{
        if(o&&!was) o.classList.add('on');
-       s=getComputedStyle(w); if(parseFloat(s.borderTopLeftRadius)<10) bad.push('the card corners are '+s.borderTopLeftRadius); if(!/rgba\(0, 0, 0/.test(s.boxShadow)) bad.push('the card has no drop shadow');
-       s=getComputedStyle(h); if(!s.textShadow||s.textShadow==='none') bad.push('the outcome word has no glow');
+       // v28.xx (cw-cx-corpus05): the style guide replaced the old glass shell in v29.52, with its own regression check.
+       var flat=Array.prototype.some.call(document.querySelectorAll('style'),function(el){return /cw-endcard-shell/.test(el.textContent||'');});
+       s=getComputedStyle(w);
+       if(flat){
+         if(parseFloat(s.borderTopLeftRadius)!==4) bad.push('the flat card corners are '+s.borderTopLeftRadius+', not 4px');
+         if(s.boxShadow!=='none'||s.backgroundImage!=='none') bad.push('the flat card has a shadow or gradient');
+       }else{
+         if(parseFloat(s.borderTopLeftRadius)<10) bad.push('the card corners are '+s.borderTopLeftRadius);
+         if(!/rgba\(0, 0, 0/.test(s.boxShadow)) bad.push('the card has no drop shadow');
+       }
+       s=getComputedStyle(h);
+       if(flat?s.textShadow!=='none':(!s.textShadow||s.textShadow==='none')) bad.push(flat?'the flat card title still glows':'the outcome word has no glow');
        var ui5=(typeof UIICON==='object'&&!!UIICON); // ui5 (his #50): square cut chips and a flat amber primary replace the pills and the gradient
        s=getComputedStyle(t); if(ui5?parseFloat(s.borderTopLeftRadius)>3:parseFloat(s.borderTopLeftRadius)<12) bad.push('the feel tags are '+(ui5?'rounded':'square')+' ('+s.borderTopLeftRadius+')');
        s=getComputedStyle(b); if(ui5?(s.backgroundColor!==__ACC()):!/gradient/.test(s.backgroundImage)) bad.push(ui5?'LOG RUN AND RETURN is not the amber primary ('+s.backgroundColor+')':'LOG RUN AND RETURN is flat');
@@ -58259,18 +58278,25 @@ window.__REGRESS=[
      if(!tRow||!/trad|offer|drop/.test(String(tRow[1]))) return 'the key list has no TEAM section with a Z row for trading';
      if(!yRow||!/trad|offer|drop/.test(String(yRow[1]))) bad.push('the pad list has no TEAM section with a Y row for trading');
      if(!kb) bad.push('the stash key bar has no offer line');
-     if(!pt||!/Offer|Drop/.test(pt.textContent)) bad.push('the Party window does not explain trading');
+     if(!pt||!/Offer|Drop/i.test(pt.textContent)) bad.push('the Party window does not explain trading');
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame&&window.__textTrace)) return bad.length?bad.join('; '):null;
+     // v28.xx (cw-cx-corpus05): the party feed can lower the legend zoom; compare its added rows in the same local units.
+     function legendHeight(){
+       var b=HUDBOX.legend, z=((typeof HUDZ==='object'&&HUDZ)?(HUDZ.legend||1):1)*
+         ((typeof hudRes==='function')?hudRes():1)*((typeof hudUserZ==='function')?hudUserZ('legend'):1);
+       if(!b||!(b.h>0)||!(z>0)) throw new Error('compact legend height or zoom is not measurable');
+       return b.h/z;
+     }
      on0=NET.on;
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); keys={}; g.mapOpen=false; g.legendOn=1;
-       NET.on=false; __frame(0.016); h0=HUDBOX.legend?HUDBOX.legend.h:0;
-       NET.on=true; lines=__textTrace(function(){ __frame(0.016); }); h1=HUDBOX.legend?HUDBOX.legend.h:0;
+       NET.on=false; __frame(0.016); h0=legendHeight();
+       NET.on=true; lines=__textTrace(function(){ __frame(0.016); }); h1=legendHeight();
        NET.on=on0;
        if(!lines.some(function(l){ return /trade|drop/.test(String(l.t||l)); })) bad.push('with a party on the compact legend draws no trade row');
-       if(!(h1>h0+4)) bad.push('the compact legend did not grow for the trade row ('+Math.round(h0)+' to '+Math.round(h1)+')');
+       if(!(h1>h0+4)) bad.push('the compact legend did not grow for the trade row in legend units ('+Math.round(h0)+' to '+Math.round(h1)+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ NET.on=on0; keys={}; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
@@ -63406,14 +63432,17 @@ window.__REGRESS=[
      if(src.indexOf('if(G&&!G.over&&G.mapOpen&&G.player&&(rx||ry||G.mapCur)){')<0) return 'the right stick does not move a map cursor';
      if(src.indexOf('if(G.mapOpen&&G.mapCur) netWpFromMap();')<0) return 'a D-UP tap does not place the marker at the map cursor';
      if(typeof netWpFromMap!=='function'||typeof mapProj!=='function') return 'no map marker path';
-     var kG=G, oS=say, oB=blip, r;
+     var kG=G, oS=say, oB=blip, r, outside, kNet=NET.on, mx=mouse.x, my=mouse.y;
      try{
        say=function(){}; blip=function(){};
-       var MP=mapProj(); G={waypoint:null};
+       // v28.xx (cw-cx-corpus05): mapProj depends on G; use the same state for projection and waypoint conversion.
+       NET.on=false; G={waypoint:null}; var MP=mapProj();
        mouse.x=MP.ox+100*MP.sc; mouse.y=MP.oy+200*MP.sc;
        r=netWpFromMap();
-     } finally { G=kG; say=oS; blip=oB; }
+       mouse.x=MP.ox-10; mouse.y=MP.oy-10; outside=netWpFromMap();
+     } finally { G=kG; NET.on=kNet; mouse.x=mx; mouse.y=my; say=oS; blip=oB; }
      if(!r||Math.abs(r.x-100)>2||Math.abs(r.y-200)>2) return 'the marker did not land under the map cursor ('+JSON.stringify(r)+')';
+     if(outside!==null) return 'control: a click outside the map placed a waypoint';
      return null; }},
   {v:'16.46',what:'map markers reach the party through the host and clear; a danger ping replaces the plain one; D-UP pings and holds for the map',
    run:function(){
@@ -63745,22 +63774,25 @@ window.__REGRESS=[
      var bad=[], keepN={on:NET.on,role:NET.role,peers:NET.peers,upSeed:NET.upSeed,seat:NET.seat,up:NET.up,roster:NET.roster}, keepSt=state, TS=11000, t0;
      function frames(n){ for(var i=0;i<n;i++){ TS+=16; __loop(TS); if(NET.up[1]) NET.up[1].age=0; } }
      try{
-       __resetCfg(); __pinDefaults(0); __startRaid({mapIx:0,seed:4242}); keys={}; state='raid'; G.sim=0; G.over=false; CFG.superhot=0;
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __startRaid({mapIx:0,seed:4242}); keys={}; state='raid'; G.sim=0; G.over=false; CFG.superhot=0;
        NET.on=true; NET.role='host'; NET.seat=0; NET.peers=[{state:'in',seat:1,name:'ZQX',timers:[],dc:{readyState:'open',send:function(){}}}]; NET.upSeed=G.seed>>>0; NET.up=[];
        NET.roster=[{seat:0,pid:'me',name:'HOST',host:true},{seat:1,pid:'zqxmate',name:'ZQX MATE'}];
-       G.paused=true; t0=G.t; frames(10);
+       // v28.xx (cw-cx-corpus05): syncPause derives this flag from the real pause box, including on the first frame.
+       togglePauseBox(true);
+       if(!G.paused||!pauseOpen) bad.push('control: the real raid pause box did not pause this player');
+       t0=G.t; frames(10);
        if(G.t!==t0) bad.push('paused with the teammate not up top, the world still ran');
        NET.up[1]={seat:1,x:G.player.x+300,y:G.player.y,f:0,tx:G.player.x+300,ty:G.player.y,tf:0,n:5,age:0,dn:0,sd:NET.upSeed>>>0,pz:0,sa:1};
        t0=G.t; frames(10);
        if(!(G.t>t0)) bad.push('control: paused with the teammate up top and playing, the world stopped for him');
-       G.paused=false; CFG.superhot=1; NET.up[1].sa=0;
+       togglePauseBox(false); CFG.superhot=1; NET.up[1].sa=0;
        t0=G.t; frames(10);
        if(G.t!==t0) bad.push('superhot with nobody acting: time still ran');
        NET.up[1].sa=1; t0=G.t; frames(10);
        if(!(G.t>t0)) bad.push('superhot with the teammate acting: time stood still');
      }
      finally{
-       try{ keys={}; if(G) G.paused=false; CFG.superhot=0; }catch(_k){}
+       try{ togglePauseBox(false); keys={}; if(G) G.paused=false; CFG.superhot=0; }catch(_k){}
        try{ NET.on=keepN.on; NET.role=keepN.role; NET.peers=keepN.peers||[]; NET.upSeed=keepN.upSeed; NET.seat=keepN.seat; NET.up=keepN.up||[]; NET.roster=keepN.roster||[]; }catch(_n){}
        try{ G=null; state=keepSt; }catch(_g){}
        try{ if(typeof state==='undefined'||state!=='hub') __hubEnter(); }catch(_he){}
@@ -63943,20 +63975,23 @@ window.__REGRESS=[
      var bad=[], keepN={on:NET.on,role:NET.role,peers:NET.peers,upSeed:NET.upSeed,seat:NET.seat,up:NET.up,roster:NET.roster}, keepSt=state, TS=7000, peer, t0, p;
      function frames(n){ for(var i=0;i<n;i++){ TS+=16; __loop(TS); if(NET.up[1]) NET.up[1].age=0; } }
      try{
-       __resetCfg(); __pinDefaults(0); __startRaid({mapIx:0,seed:4242}); keys={}; state='raid'; G.sim=0; G.over=false; CFG.superhot=0; p=G.player;
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __startRaid({mapIx:0,seed:4242}); keys={}; state='raid'; G.sim=0; G.over=false; CFG.superhot=0; p=G.player;
        NET.on=true; NET.role='host'; NET.seat=0; peer={state:'in',seat:1,name:'ZQX MATE',timers:[],dc:{readyState:'open',send:function(){}}}; NET.peers=[peer]; NET.upSeed=G.seed>>>0; NET.up=[];
        NET.roster=[{seat:0,pid:'me',name:'HOST',host:true},{seat:1,pid:'zqxmate',name:'ZQX MATE'}];
        netOnMsg(peer,JSON.stringify({t:'st',k:'r',sd:NET.upSeed>>>0,x:p.x+300,y:p.y,f:0,m:0,r:0,c:0,sp:0,dn:0,w:'',pz:1}));
        if(!NET.up[1]) return 'SKIP: the staged state word was not filed';
        if(NET.up[1].pz!==1) bad.push('the state word does not carry that the teammate is paused');
        NET.up[1].n=5; NET.up[1].age=0;
-       G.paused=true; t0=G.t; frames(10);
+       // v28.xx (cw-cx-corpus05): syncPause derives this flag from the real pause box, including on the first frame.
+       togglePauseBox(true);
+       if(!G.paused||!pauseOpen) bad.push('control: the real raid pause box did not pause this player');
+       t0=G.t; frames(10);
        if(G.t!==t0) bad.push('with the whole party paused the world still ran ('+t0+' to '+G.t+')');
        NET.up[1].pz=0; t0=G.t; frames(10);
        if(!(G.t>t0)) bad.push('control: with the teammate playing, the pause stopped the world for him');
      }
      finally{
-       try{ keys={}; if(G) G.paused=false; }catch(_k){}
+       try{ togglePauseBox(false); keys={}; if(G) G.paused=false; }catch(_k){}
        try{ NET.on=keepN.on; NET.role=keepN.role; NET.peers=keepN.peers||[]; NET.upSeed=keepN.upSeed; NET.seat=keepN.seat; NET.up=keepN.up||[]; NET.roster=keepN.roster||[]; }catch(_n){}
        try{ G=null; state=keepSt; }catch(_g){}
        try{ if(typeof state==='undefined'||state!=='hub') __hubEnter(); }catch(_he){}
@@ -67228,15 +67263,17 @@ window.__REGRESS=[
        // presses the highlighted row; a faked controller lands on 1 PLAYER, steps down to the co-op row and presses it with A;
        // B and ESC leave the title as it is.
        t.classList.add('on'); noFocus(); calls.start=0; opens=[]; chans=[];
+       // v28.xx (cw-cx-corpus05): Q72 hides PvP; keyboard navigation must skip that hidden row.
+       var hiddenPvp=!shown(g('modepvp'))||getComputedStyle(g('modepvp')).display==='none';
        keyOn('ArrowDown');
        if(PAD.focus!==g('modecoop')) bad.push('ArrowDown on the title did not move the highlight to the co-op row (it is on '+(PAD.focus?txt(PAD.focus):'nothing')+')');
        else if(!g('modecoop').classList.contains('padfocus')) bad.push('the highlighted row is not drawn highlighted');
        keyOn('ArrowDown');
-       if(PAD.focus!==g('modepvp')) bad.push('a second ArrowDown did not step past the greyed server row to the pvp row (it is on '+(PAD.focus?txt(PAD.focus):'nothing')+')');
+       if(PAD.focus!==g(hiddenPvp?'titlestart':'modepvp')) bad.push('a second ArrowDown did not skip the unavailable rows (it is on '+(PAD.focus?txt(PAD.focus):'nothing')+')');
        keyOn('ArrowDown');
-       if(PAD.focus!==g('titlestart')) bad.push('a third ArrowDown did not wrap to 1 PLAYER (it is on '+(PAD.focus?txt(PAD.focus):'nothing')+')');
+       if(PAD.focus!==g(hiddenPvp?'modecoop':'titlestart')) bad.push('a third ArrowDown did not wrap through the playable rows (it is on '+(PAD.focus?txt(PAD.focus):'nothing')+')');
        keyOn('ArrowUp');
-       if(PAD.focus!==g('modepvp')) bad.push('ArrowUp from 1 PLAYER did not wrap to the pvp row');
+       if(PAD.focus!==g(hiddenPvp?'titlestart':'modepvp')) bad.push('ArrowUp did not wrap through the visible playable rows');
        keyOn('KeyW');
        if(PAD.focus!==g('modecoop')) bad.push('W did not move the highlight up to the co-op row');
        keyOn('Enter');
@@ -78343,31 +78380,32 @@ window.__REGRESS=[
      var K=document.getElementById('sectorkit'); if(!K) return 'SKIP: this build has no sector kit box';
      if(!ITEMS.gun_smg||!WEAPONS.smg) return 'SKIP: this build has no stash gun item to stage';
      var bad=[];
-     var keep={equipped:P.equipped,equippedSec:P.equippedSec,weapons:(P.weapons||[]).slice(),stash:(P.stash||[]).slice(),kit:(P.kit||[]).slice(),freeKit:P.freeKit};
-     var needle=['Equip','as','your','gun'].join(' ');
+     var keep={equipped:P.equipped,equippedSec:P.equippedSec,weapons:(P.weapons||[]).slice(),stash:(P.stash||[]).slice(),kit:(P.kit||[]).slice(),freeKit:P.freeKit,kitPick:P.kitPick};
+     // v28.xx (cw-cx-corpus05): the later page uses one short own-gun chip instead of the old instruction.
+     var needle=/equip as your gun|own gun in stash/i;
      function boxText(){ try{ renderSector(); }catch(_s){} return String(K.textContent||''); }
      try{
        // ONE: nothing equipped, and a pack gun waiting in the stash.
-       P.freeKit=0; P.equipped='fists'; P.equippedSec='none'; P.weapons=['pistol']; P.kit=[]; P.stash=['gun_smg','bandage'];
+       P.freeKit=0; P.kitPick='mine'; P.equipped='fists'; P.equippedSec='none'; P.weapons=['pistol']; P.kit=[]; P.stash=['gun_smg','bandage'];
        var a=boxText();
        if(!a) return 'SKIP: the sector page drew an empty kit box';
-       if(a.indexOf(needle)<0)
+       if(!needle.test(a))
          bad.push('a player with nothing equipped and a gun of his own in his stash is told only that he goes up with an issued gun, on the last screen before the lift ['+a.slice(0,140)+']');
 
        // TWO: nothing equipped and no gun in the stash either.
        P.stash=['bandage'];
        var b=boxText();
-       if(b.indexOf(needle)>=0)
+       if(needle.test(b))
          bad.push('a player with no gun in his stash is told to equip one from it, so he goes looking for a gun that is not there');
 
        // THREE: a gun equipped, with another in the stash. He is not going up with a loaner.
        P.equipped='pistol'; P.stash=['gun_smg'];
        var c=boxText();
-       if(c.indexOf(needle)>=0)
+       if(needle.test(c))
          bad.push('a player who already has a gun equipped is told to equip one from his stash');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
-       try{ P.equipped=keep.equipped; P.equippedSec=keep.equippedSec; P.weapons=keep.weapons; P.stash=keep.stash; P.kit=keep.kit; P.freeKit=keep.freeKit; saveProfile(); }catch(_r){}
+       try{ P.equipped=keep.equipped; P.equippedSec=keep.equippedSec; P.weapons=keep.weapons; P.stash=keep.stash; P.kit=keep.kit; P.freeKit=keep.freeKit; if(keep.kitPick===undefined) delete P.kitPick; else P.kitPick=keep.kitPick; saveProfile(); }catch(_r){}
        try{ renderSector(); }catch(_rs){}
        try{ __topClear(); }catch(_c){}
      }
@@ -90466,7 +90504,7 @@ window.__REGRESS=[
    run:function(){
      var bad=[];
      if(!(window.__startRaid&&window.__loop&&window.__weapons&&window.__state&&window.__legends)) return 'SKIP: this build cannot drive a raid key';
-     __resetCfg();
+     __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
      __startRaid({seed:4242,mapIx:0});
      var G2=__state(); if(!G2||!G2.player) return 'no raid';
      var p=G2.player, W=__weapons();
@@ -90486,8 +90524,12 @@ window.__REGRESS=[
        // 1. HIS CASE: a gun in his hands, a body at arm's length, F must hurt it.
        G2.ents.length=0;
        p.wep=mk('rifle'); p.ammo=25; p.face=0; p.downed=false; p.roll=0;
-       var e={kind:'crawler',x:p.x+26,y:p.y,r:10,hp:100,maxhp:100,state:'idle',face:0};
-       G2.ents.push(e);
+       // v28.xx (cw-cx-corpus05): one crowbar swing now kills a crawler; every case needs a live target in the entity list.
+       function target(range){
+         var next={kind:'crawler',x:p.x+range,y:p.y,r:10,hp:100,maxhp:100,state:'idle',face:0};
+         G2.ents.length=0; G2.ents.push(next); return next;
+       }
+       var e=target(26);
        press(__meleeKey()); step(4);
        var hit=100-e.hp;
        if(hit<=0) bad.push('with a rifle in hand, F did not strike a body at arm\u0027s length');
@@ -90496,12 +90538,12 @@ window.__REGRESS=[
        // 3. Reach: a body across the room is not struck.
        // Put it back beside him each time: a live crawler drifts between presses,
        // and a check that forgets that measures the drift instead of the reach.
-       e.hp=100; e.x=p.x+300; e.y=p.y; p.face=0;
+       e=target(300); p.face=0;
        p.meleeAt=undefined;
        press(__meleeKey()); step(4);
        if(e.hp<100) bad.push('F struck a body 300 units away, which is not a melee reach');
        // 4. The cooldown holds: two presses in the same breath land one blow.
-       e.hp=100; e.x=p.x+26; e.y=p.y; p.face=0; p.meleeAt=undefined;
+       e=target(26); p.face=0; p.meleeAt=undefined;
        press(__meleeKey()); var one=100-e.hp;
        press(__meleeKey()); var two=100-e.hp;
        if(one<=0) bad.push('the cooldown case did not land its first blow');
@@ -90515,6 +90557,7 @@ window.__REGRESS=[
        if(K) for(var k2 in K) delete K[k2];
        p.wep=keep.wep; p.ammo=keep.ammo; p.face=keep.face; p.x=keep.x; p.y=keep.y;
        G2.ents.length=0; for(var i=0;i<keep.ents.length;i++) G2.ents.push(keep.ents[i]);
+       try{ __endRaid('abandon'); }catch(_end){} __topClear(); __cleanProfile();
      }
      return bad.length?bad.join('; '):null; }},
   {v:'10.63',what:'a Howler shell that lands on a building bursts on the roof and hurts nobody under it, while the same shell in the open still hurts and one fired from inside still hurts',
