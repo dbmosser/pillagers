@@ -1,0 +1,7 @@
+v33.14: money in the raid corner reads $
+
+In a raid the corner reads $900 with no credits word, and the stash and backpack values read $ there and in the Undercroft.
+
+Check 33.14. Fails on v33.13.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

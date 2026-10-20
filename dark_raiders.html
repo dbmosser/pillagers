@@ -3247,7 +3247,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.13';
+var VER='33.14';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5343,7 +5343,9 @@ function trColDraw(){
   if(nn&&TRV.nn!==nn){ TRV.nn=nn; TRV.ns=String(nn); }
   ctx.save(); hudZoomIn('cond',W,0);
   ctx.globalAlpha=1; ctx.font=FS(TYPE.label); ctx.textBaseline='alphabetic';
-  if(!trDemo()){ trRow(i++,'credits',TRV.c); trRow(i++,'xp',TRV.x); trRow(i++,'stash',TRV.sv); trRow(i++,'backpack',TRV.bv); }
+  // v33.xx (cw-raiddollar), his rule (Q59: "$ for money, SP for score"): the money row is the figure alone, $900 as in the Undercroft,
+  // and the stash and backpack rows are money too (item values), so they carry $. xp stays a plain number.
+  if(!trDemo()){ trRow(i++,'','$'+TRV.c); trRow(i++,'xp',TRV.x); trRow(i++,'stash','$'+TRV.sv); trRow(i++,'backpack','$'+TRV.bv); }
   if(nn) trRow(i++,'notes logged',TRV.ns);
   ctx.textAlign='left';
   ctx.restore();
@@ -5375,7 +5377,7 @@ function syncTopRight(){
   _trLast=s;
   if(s==='demo'){ el.innerHTML=''; return; }
   TRV.c=c; TRV.x=x; TRV.sv=sv.toLocaleString(); TRV.bv=bv.toLocaleString();   // v30.xx (cw-trcol): the same figures as text, for the rows the raid HUD draws
-  el.innerHTML='$'+c+'<span class="trgap"></span>'+x+' <small>XP</small> <span class="trsub">STASH '+sv.toLocaleString()+' BAG '+bv.toLocaleString()+'</span>';   // v28.xx (cw-stashbag): spaces, so the text reads right when copied
+  el.innerHTML='$'+c+'<span class="trgap"></span>'+x+' <small>XP</small> <span class="trsub">STASH $'+sv.toLocaleString()+' BAG $'+bv.toLocaleString()+'</span>';   // v33.xx (cw-raiddollar): his Q59, the stash and bag values are money   // v28.xx (cw-stashbag): spaces, so the text reads right when copied
 }
 // v17.24, co-op hunt 2026-09-28: TWO TABS ON ONE SAVE. Each tab reads the save once, at boot, and every save writes its whole
 // profile over the key, so with the game open in two tabs the tab holding the older copy wiped what the other had banked (an
@@ -51220,7 +51222,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.13: The what is new card names the experimental page. Check 33.13 fails on v33.12',
+  now:'v33.14: In a raid the corner reads  with no credits word, and the stash and backpack values read $ there and in the Undercroft. Check 33.14 fails on v33.13',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

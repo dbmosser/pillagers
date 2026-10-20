@@ -19,3 +19,5 @@ Pictures: raid HUD corner and hub at 1080 (look at them; this applies his rule, 
 Party risk: low (career only). Not a feature: may ship up to the Thu 10/29 lock.
 
 TASK DONE when shipped, the checks pass and the pictures show $; TASK PARTIAL with what is left.
+
+COORDINATOR 10-20 18:30: taken by the coordinator (helpers are held by RAM); it ships from here.

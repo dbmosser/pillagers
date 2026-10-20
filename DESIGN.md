@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.14 - MONEY IN THE RAID CORNER READS $
+
+Co-op hunt while he was away. His rule (Q59): $ for money. In a raid the corner column still read credits 900, and the stash and backpack values had no $, while the Undercroft line already read $900.
+
+MEASURED. Check 33.14 passes, and fails on v33.13.
 ## v33.13 - THE WHAT IS NEW CARD NAMES THE EXPERIMENTAL PAGE
 
 Co-op hunt while he was away. The card was stamped v33.04 and the stamp may not trail the build by more than 0.15. Its new line names the experimental page in settings, the biggest change since.
