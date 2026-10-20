@@ -1,0 +1,5 @@
+## v32.88 - THE WHAT IS NEW CARD NAMES POLISH PASS 39
+
+Co-op hunt while he was away. The card was stamped v32.72 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
+
+MEASURED. Check 32.88 passes, and fails on v32.87.

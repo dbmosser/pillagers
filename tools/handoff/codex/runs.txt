@@ -116,3 +116,5 @@
 2026-10-20 10:31 o-02-corpus-green 918s ok PARTIAL in=12869052 out=70084 run=3
 2026-10-20 10:35 o-02-corpus-green 203s ok PARTIAL in=15334834 out=76872 run=4
 2026-10-20 10:56 o-02-corpus-green 735s ok PARTIAL in=19003279 out=101450 run=5
+2026-10-20 11:18 o-02-corpus-green 140s ok DONE in=606176 out=4668 run=1
+2026-10-20 11:21 53-corpus-reds-b 181s ok PARTIAL in=426108 out=6304 run=6

@@ -385,3 +385,25 @@ Trial/commit this four-anchor batch, then run the updated two camera recipes for
 The coordinator has meanwhile assigned the other old reds through v29.39 to tasks 52-corpus-reds-a and 53-corpus-reds-b. Read their notes before touching those checks; 52 is done and 53 is currently in tasks. The remaining unassigned historical old reds to handle next, oldest first, are: 29.55 29.61 29.63 29.64 29.67 29.72 29.75 29.77 29.80 29.94 29.98 30.20 30.24 30.37 30.91 30.97 31.04 31.67. Do not assume they still fail: obtain current results first. Do not disturb tasks 49, 50, 51, 52 or 53.
 
 Last supplied complete corpus is still 113 failures at v32.83. No newer complete count was provided. TASK DONE requires a fresh full run with at most ten failures, each explained; camera failure and broad critic findings are not grounds to stop the remaining corpus work.
+
+--- codex run 2026-10-20 11:18 ---
+2026-10-20 - round 4 closure, workspace v32.87.
+
+The latest coordinator instructions limit this job to its 22 assigned new failures. The full corpus and tasks 52 to 55 belong to the coordinator and other lanes. No claim is made that the whole corpus is green.
+
+Confirmed the final four-anchor batch already landed in 4a47882d. The lane records in tools/handoff/codex/work/o-02-corpus-green/retarget-result.txt say 20.95: PASS, 21.66: PASS, 27.36: PASS, ALL DONE. Do not regenerate prepare-round3-batch4.js or apply fixture-retarget-after-airhand.json again. The existing fixture-retarget.json is already recorded as applied by the lane. No new game or fixture edits were needed this run.
+
+Final three decisions (now landed):
+20.95 STALE - approved v32.46 sector maps use exactly 960 logical pixels; the earlier page keeps 420. Backing resolution, equal-axis scale and painted far-corner assertions remain. Lane trial PASS.
+21.66 STALE - Q69 removed marksman and whisper. Every surviving weapon damage and sustained-damage assertion remains, including the original 60-percent floor. Lane trial PASS.
+27.36 REAL / HARNESS - shipped cw-cx-airhandclear fixes the real hand-panel overlap. The final retarget preserves collision and clearance assertions while allowing the new vertical fallback, and exercises the scoped camera helper. Lane trial PASS.
+
+All 22 assigned entries have a recorded decision and landed trial result or unchanged current-build pass: 31.71, 31.52, 31.48, 31.25, 30.51, 28.49, 27.36, 27.20, 26.92, 26.50, 26.16, 24.88, 24.79, 24.47, 24.38, 24.29, 24.07, 23.67, 22.16, 21.84, 21.66, 20.95. Earlier decisions remain in this task's notes. The coordinator explicitly assigned assertion repairs for 31.71 and 27.20 to 55-retarget-repairs; they were left untouched. This completion does not certify those assertions against that separate audit.
+
+Re-ran validate-round3-batch4.js successfully on current game functions. It validates the three complete replacements, original-check failures, negative mutations and both complete camera recipes outside module scope. This local run is additional evidence, not a browser or live-session claim.
+
+Both final camera recipes already ran at 10:59 in tools/handoff/console/notes/shots/o-02-corpus-green-recipes-4/. report.json says staged=true at 1920x1080 for corpus-air-hand-p1 and corpus-air-hand-p2. Opened and inspected BOTH JPGs this run: the actual bandage panel and air-strike meter are present and do not overlap in either role. These are isolated host/join renderer views, not live paired-window proof. The broader controls card overlaps the bandage panel in both pictures; the air-strike fix did not change that card. The earlier broad HUD findings are already handed to the coordinator, and the remaining visible overlap is recorded again with the correct staged picture paths.
+
+No final critic score was supplied or persisted for these custom picture names. Inspection of critic.mjs shows accept.json only records filenames matching a numeric NN-name prefix, so absence there does not prove the critic never ran. The lane's camrounds.txt is 4, its configured cap. Do not claim critic 4 or trigger another camera round. The coordinator can recover or rerun the critic on these EXISTING images outside this sandbox; no new image or design is needed. This is explicitly a review-evidence limitation, not a passing visual grade.
+
+The assigned 22-check scope is complete under the coordinator's latest completion rule (green on HEAD or explained). Remaining project-wide work: the coordinator's fresh full-run assessment, task 55's assertion audit, and the logged broader HUD/critic follow-up. No other lane checks were touched and no tracked source was edited directly.
