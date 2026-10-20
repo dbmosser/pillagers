@@ -7764,7 +7764,9 @@ window.__REGRESS=[
      } }},
   {v:'32.70',what:'large sixteen-letter pad name dialog, one Menu done action, named stash without floor HUD or orphan belt caption (J4 critic)',
    run:function(){
-     var pin=document.getElementById('pnamein'),iv=pin.value,it=pin.__typed,top=document.getElementById('title'),tc=top.className,pk=Object.assign({},PAD),ik=Object.assign({},INDEV),f=ctx.fillText,bad=[],seq=[];
+     var pin=document.getElementById('pnamein'),iv=pin.value,it=pin.__typed,top=document.getElementById('title'),tc=top.className,pk=Object.assign({},PAD),ik=Object.assign({},INDEV),f=ctx.fillText,fown=Object.prototype.hasOwnProperty.call(ctx,'fillText'),bad=[],seq=[];
+     // 10-20 (job 58b): put fillText back the way it was. Assigning f back left an OWN ctx.fillText that hid every later check's
+     // PR.fillText recorder, so five checks after this one read 'never drawn' in the full run (they pass alone).
      try{
        __runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();__wnseen(1);
        top.classList.add('on');PAD.on=true;INDEV.dev='pad';INDEV.legacy=false;pin.value='milo';
@@ -7777,7 +7779,7 @@ window.__REGRESS=[
        padNameOp('up');padNameOp('next');padNameOp('back');padNameOp('done');if(pin.value!=='nilo')bad.push('pad editing no longer keeps the typed name');
        __hubEnter();P.pname='nilo';__station('term','KeyE');renderHub();
        if(document.getElementById('stashname').textContent!=='nilo')bad.push('stash lost the entered name');
-       ctx.fillText=function(s){seq.push(String(s).toLowerCase());return f.apply(this,arguments);};drawHubHUD(0,0);ctx.fillText=f;
+       ctx.fillText=function(s){seq.push(String(s).toLowerCase());return f.apply(this,arguments);};drawHubHUD(0,0);if(fown)ctx.fillText=f;else delete ctx.fillText;
        if(seq.some(function(s){return s==='the undercroft'||/items? in stash/.test(s);}))bad.push('floor title or counters leak behind the stash');
        var row=document.querySelector('#hotplanwrap>div>div>div'),caption=row&&row.lastElementChild,slots=document.querySelectorAll('#hotplanwrap [data-plan]');
        if(slots.length!==9)bad.push('belt no longer has nine slots');
@@ -7787,7 +7789,7 @@ window.__REGRESS=[
        if(parseFloat(getComputedStyle(document.getElementById('hub')).paddingBottom)>24.1)bad.push('empty old floor-action footer remains');
        return bad.length?bad.join('; '):null;
      }finally{
-       ctx.fillText=f;if(PADNAME)padNameClose(false);try{__endRaid('abandon');}catch(e){}__topClear();document.getElementById('hub').classList.remove('on');pin.value=iv;pin.__typed=it;top.className=tc;
+       if(fown)ctx.fillText=f;else delete ctx.fillText;if(PADNAME)padNameClose(false);try{__endRaid('abandon');}catch(e){}__topClear();document.getElementById('hub').classList.remove('on');pin.value=iv;pin.__typed=it;top.className=tc;
        Object.keys(PAD).forEach(function(k){delete PAD[k];});Object.assign(PAD,pk);Object.keys(INDEV).forEach(function(k){delete INDEV[k];});Object.assign(INDEV,ik);
      }
    }},
