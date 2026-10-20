@@ -2079,6 +2079,9 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
 #root #settingsmodal #setwrap > #setdetail{ align-self:stretch; }
 #root #pausebox #pausefb{ border:1px solid var(--ui-line-hi); }
 #root #pausebox > div:has(> #resumebtn) > #fbbtn, #root #pausebox > div:has(> #resumebtn) > #wnbtn{ color:var(--tx-1); }
+/* v28.xx (cw-pausebtn) critic on Pause box 25/42/49 (3): "five button styles", "report a problem gets as much emphasis as settings", "the abandon link has no hit area", "small button labels about 14px". Now: report a problem, settings, feedback and what is new share one 48px outline look, the small pair reads at 16px, and abandon is a 48px quiet red link with room above it. Q61 keeps all of them. */
+#root #pausebox > div:has(> #resumebtn) > #fbbtn, #root #pausebox > div:has(> #resumebtn) > #wnbtn{ min-height:var(--btn-h-sm); font-size:var(--fs-label); background:var(--ui-panel); border-color:var(--ui-line-hi); }
+#root #pausebox:not(.asking) > div:has(> #resumebtn) > #abandonbtn, #root #pausebox:not(.asking) > div:has(> #resumebtn) > #arcendbtn, #root #pausebox:not(.asking) > div:has(> #resumebtn) > #charselbtn{ min-height:var(--btn-h-sm); margin-top:var(--sp-3); }
 /* v28.xx (cw-uc-racks) b-31 step 7, the Undercroft on the shared look (style guide: one reading column, 16px type floor, no filler lines). The racks page ran 1316px wide buttons across a 1700px card (his "one grid" rule gave way to the centred card, Q7 and Q43) with 14px grey-amber hint lines: now one 672px column centred in the card, buttons 48px high, status and hint lines 16px in the second text colour, and the line under the tab name that only repeated it is gone (Q8, reason in changes.md). The codex was an auto-fill grid hugging the top left: now four columns, 1344px at most, centred, 16px rarity and kills lines. The stash setup plates (gun keys, item wheel) and their reset buttons were 12px: 14px now, and the one-line swap note under them is gone (Q70 no tutorial prompts, Q8). */
 #root #opane_mf > *{ box-sizing:border-box; width:100%; max-width:calc(var(--sp-5) * 14); margin-left:auto; margin-right:auto; }
 #root #opane_mf .msub{ display:none; }
@@ -3003,7 +3006,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.07';
+var VER='32.08';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -50202,7 +50205,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.07: Saying yes to easy mode now also puts a free medkit in your bag. Check 32.07 fails on v32.06',
+  now:'v32.08: The pause box buttons are 48px high and the abandon link has room. Check 32.08 fails on v32.07',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.08 - PAUSE BOX BUTTONS SHARE ONE LOOK
+
+Co-op hunt while he was away. Critic on the pause boxes (3): too many button styles and a small abandon link. The small pair and the abandon link grow to 48px.
+
+MEASURED. Check 32.08 passes, and fails on v32.07.
 ## v32.07 - EASY MODE YES GIVES A FREE MEDKIT
 
 Co-op hunt while he was away. His answer 3.16 b: when a guest says yes to easier, it is 30 percent less damage plus a free medkit. The damage cut was already in; the free medkit was missing.

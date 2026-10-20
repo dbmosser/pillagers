@@ -1,0 +1,7 @@
+v32.08: pause box buttons share one look
+
+The pause box buttons are 48px high and the abandon link has room.
+
+Check 32.08. Fails on v32.07.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -6101,6 +6101,12 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.08',what:'pause box small buttons and the abandon link are at least 48px high',
+   run:function(){
+     var css=''; for(var i=0;i<document.styleSheets.length;i++){ try{ var rs=document.styleSheets[i].cssRules; for(var j=0;j<rs.length;j++){ css+=rs[j].cssText; } }catch(e){} }
+     if(!/#fbbtn[^{]*\{[^}]*min-height: var\(--btn-h-sm\)/.test(css)) return 'fbbtn is not 48px high';
+     if(!/#abandonbtn[^{]*\{[^}]*min-height: var\(--btn-h-sm\)/.test(css)) return 'abandon link is not 48px high';
+     return null; }},
   {v:'32.07',what:'saying yes to easy mode gives a free medkit; saying no gives nothing (his 3.16 b: 30 percent less damage, plus a free medkit)',
    run:function(){
      if(typeof easyAnswer!=='function') return 'no easyAnswer';
