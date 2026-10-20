@@ -51041,7 +51041,11 @@ window.__REGRESS=[
        z4=hudRes(); y4=grab(); m4=mapProj();
        if(y1===null||y4===null) return 'SKIP: the map header was not drawn';
        if(!(z4>1.5)) return 'SKIP: the screen factor did not grow at 4K';
-       if(Math.abs(y1-(m1.oy-10))>0.5) bad.push('at 1080p the header moved: its baseline is '+(m1.oy-y1).toFixed(1)+' above the map, not 10');
+       // v28.xx (cw-cx-corpus06): the new card header has its own row; it still must clear the map frame.
+       if(m1.card){
+         if(y1<m1.card.y||y1>m1.card.y+m1.card.hh) bad.push('at 1080p the title is outside the map header');
+         if(y1>m1.oy-8) bad.push('at 1080p the title does not clear the map frame by eight map units');
+       }else if(Math.abs(y1-(m1.oy-10))>0.5) bad.push('at 1080p the header moved: its baseline is '+(m1.oy-y1).toFixed(1)+' above the map, not 10');
        if(y4>m4.oy-8*z4) bad.push('at 4K the header baseline is '+(m4.oy-y4).toFixed(1)+' pixels above the map while the frame reaches '+(4.5*z4).toFixed(1)+' up, so the words stand on the frame');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; try{ cv.style.width='';cv.style.height='';hcv.style.width='';hcv.style.height=''; resize(); }catch(_f){} try{ var g2=__state(); if(g2){ g2.mapOpen=false; if(!g2.over){ g2.player.downed=false; __endRaid('abandon'); } } }catch(_e){} __topClear(); __cleanProfile(); }
@@ -51131,10 +51135,10 @@ window.__REGRESS=[
        P.log=[row('raider',1),row('raider',2),row('raider',3),row('warden',4)];
        renderStatCards(); v=killer();
        if(v===null) return 'SKIP: staging: no USUALLY KILLED BY card was drawn';
-       if(v!=='PILLAGER') bad.push('three deaths to pillagers read '+JSON.stringify(v)+' on the card, not PILLAGER');
+       if(!/^pillager(?: bot)?$/i.test(String(v))) bad.push('three deaths to pillagers read '+JSON.stringify(v)+' on the card, not PILLAGER');
        P.log=[row('warden',1),row('warden',2),row('raider',3)];
        renderStatCards(); v=killer();
-       if(v!=='WARDEN') bad.push('two deaths to the Warden read '+JSON.stringify(v)+' on the card, not WARDEN');
+       if(String(v).toLowerCase()!=='warden') bad.push('two deaths to the Warden read '+JSON.stringify(v)+' on the card, not WARDEN');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        P.log=log0;
@@ -51826,8 +51830,12 @@ window.__REGRESS=[
          return r; };
        try{ __frame(0.016); } finally { drawMapOverlay=oMO; }
        if(!px) return 'SKIP: the map pixel could not be read '+err;
-       off=Math.abs(px[0]-9)+Math.abs(px[1]-12)+Math.abs(px[2]-34);
-       if(off>1||px[3]<255) bad.push('a white mark under the open map reads '+px[0]+','+px[1]+','+px[2]+' (alpha '+px[3]+') through the backing, not the map colour 9,12,34');
+       // v28.xx (cw-cx-corpus06): the card scrim is the current void color; the opacity experiment is unchanged.
+       var hex=(typeof mapCard==='function'&&typeof UIC==='object')?UIC.ui_void:'#090c22', rgb=/^#([0-9a-f]{6})$/i.exec(hex);
+       if(!rgb) return 'the map backing color is not readable';
+       var color=parseInt(rgb[1],16), red=(color>>>16)&255, green=(color>>>8)&255, blue=color&255;
+       off=Math.abs(px[0]-red)+Math.abs(px[1]-green)+Math.abs(px[2]-blue);
+       if(off>1||px[3]<255) bad.push('a white mark under the open map reads '+px[0]+','+px[1]+','+px[2]+' (alpha '+px[3]+') through the backing, not the map colour '+red+','+green+','+blue);
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ drawMapOverlay=oMO; try{ var g2=__state(); if(g2){ g2.mapOpen=false; if(!g2.over){ g2.player.downed=false; __endRaid('abandon'); } } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
@@ -54268,8 +54276,10 @@ window.__REGRESS=[
        g=__state(); if(!g||!g.player||g.over) return 'SKIP: no live raid';
        __endRaid('dead');
        o=document.getElementById('outcome'); if(!o||!o.classList.contains('on')) return 'SKIP: no death card';
-       pics=[].slice.call(o.querySelectorAll('img')).filter(function(im){ return !im.closest('.haulstrip')&&/LOST/.test((im.parentElement&&im.parentElement.textContent)||''); });
-       if(!pics.length) return 'SKIP: no lost item pictures';
+       // v28.xx (cw-cx-corpus06): hidden report-copy images are not the player's loss tiles.
+       pics=[].slice.call(o.querySelectorAll('.octile img')).filter(function(im){return im.offsetWidth>0&&im.offsetHeight>0;});
+       if(!pics.length) pics=[].slice.call(o.querySelectorAll('img')).filter(function(im){ return im.offsetWidth>0&&im.offsetHeight>0&&!im.closest('.haulstrip')&&!im.closest('.ocsr')&&/lost/i.test((im.parentElement&&im.parentElement.textContent)||''); });
+       if(!pics.length) return 'the staged death card shows no visible lost item pictures';
        for(i=0;i<pics.length;i++){ w=pics[i].offsetWidth||parseFloat(pics[i].getAttribute('width'))||0; if(w<30){ bad.push('a lost item picture is '+w+' px'); break; } }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ __topClear(); __cleanProfile(); }
@@ -54307,7 +54317,13 @@ window.__REGRESS=[
        for(i=0;i<m.children.length;i++){ c=m.children[i]; if(c.offsetHeight>0){ t=Math.min(t,c.offsetTop); b=Math.max(b,c.offsetTop+c.offsetHeight); } }
        span=b-t; fh=parseFloat(getComputedStyle(m,'::before').height);
        if(!(span>0&&fh>0)) return 'SKIP: nothing laid out';
-       if(fh>span+170) bad.push('the frame is '+Math.round(fh)+' for '+Math.round(span)+' of content');
+       if(Array.prototype.some.call(document.querySelectorAll('style'),function(s){return /cw-cardmargin/.test(s.textContent||'');})){
+         // v28.xx (cw-cx-corpus06): the common window now fills 90 percent; its content must still stay inside that frame.
+         var css=getComputedStyle(m,'::before'), ft=parseFloat(css.top);
+         if(!isFinite(ft)||!isFinite(parseFloat(css.bottom))) bad.push('control: the bar frame insets are not measurable');
+         else if(Math.abs(ft-window.innerHeight*0.05)>2||Math.abs(parseFloat(css.bottom)-window.innerHeight*0.05)>2) bad.push('the bar frame does not keep its five percent vertical insets');
+         if(t<ft-1||b>ft+fh+1) bad.push('the bar content extends beyond its frame');
+       }else if(fh>span+170) bad.push('the frame is '+Math.round(fh)+' for '+Math.round(span)+' of content');
        if(fh<span) bad.push('the frame is shorter than its content');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ [].slice.call(document.querySelectorAll('.modal.on')).forEach(function(x){ x.classList.remove('on'); }); }catch(_m){} __topClear(); __cleanProfile(); }
@@ -54590,7 +54606,17 @@ window.__REGRESS=[
      if(!pm) return 'SKIP: no PARTY window here';
      on0=pm.classList.contains('on'); h0=pm.style.height; b0=pm.style.bottom;
      try{
-       pm.classList.add('on'); pm.style.bottom='auto'; pm.style.height='831px';
+       pm.classList.add('on');
+       // v28.xx (cw-cx-corpus06): Q43 replaced this fitted card with the common five-percent-inset window.
+       if(Array.prototype.some.call(document.querySelectorAll('style'),function(s){return /cw-cardmargin/.test(s.textContent||'');})){
+         var frame=getComputedStyle(pm,'::before'), tr=document.getElementById('topright'), ts=tr&&getComputedStyle(tr);
+         if(!isFinite(parseFloat(frame.top))||!isFinite(parseFloat(frame.bottom))) bad.push('control: the Party frame insets are not measurable');
+         else if(Math.abs(parseFloat(frame.top)-window.innerHeight*0.05)>2||Math.abs(parseFloat(frame.bottom)-window.innerHeight*0.05)>2) bad.push('the Party frame does not keep its five percent vertical insets');
+         if(!(parseFloat(frame.height)>0)) bad.push('control: the Party frame is not measurable');
+         if(!ts||(ts.visibility!=='hidden'&&ts.display!=='none')) bad.push('the Party frame still competes with visible currency');
+         return bad.length?bad.join('; '):null;
+       }
+       pm.style.bottom='auto'; pm.style.height='831px';
        fh=parseFloat(getComputedStyle(pm,'::before').height);
        if(!(fh>0)) return 'SKIP: the frame did not lay out';
        top=(pm.offsetHeight-fh)/2;
@@ -54689,12 +54715,27 @@ window.__REGRESS=[
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
      if(typeof togglePauseBox!=='function') return 'SKIP: no pause box here';
-     var bad=[], b=document.getElementById('pausebox'), x=document.createElement('div'), g, fw;
+     var bad=[], b=document.getElementById('pausebox'), x=document.createElement('div'), g, fw, pad0=PAD.on;
      if(!b) return 'SKIP: no pause box';
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||!g.player||g.over) return 'SKIP: no live raid';
+       // v28.xx (cw-cx-corpus06): the compact keyboard card is sized for its real controls, not an injected 960px test line.
+       if(Array.prototype.some.call(document.querySelectorAll('style'),function(el){return /cw-pausetidy/.test(el.textContent||'');})){
+         PAD.on=false; padBodyCls(); togglePauseBox(true);
+         fw=parseFloat(getComputedStyle(b,'::before').width);
+         if(!(fw>=479)) bad.push('the compact pause frame is narrower than 480 menu pixels');
+         var left=(b.offsetWidth-fw)/2, right=left+fw, count=0;
+         for(var j=0;j<b.children.length;j++){
+           var child=b.children[j], st=getComputedStyle(child);
+           if(child.id==='pausex'||st.display==='none'||st.visibility==='hidden'||!(child.offsetHeight>0)) continue;
+           count++;
+           if(child.offsetLeft<left-1||child.offsetLeft+child.offsetWidth>right+1) bad.push('the compact pause frame does not contain '+(child.id||child.tagName));
+         }
+         if(!count) bad.push('control: no pause content was measurable');
+         return bad.length?bad.join('; '):null;
+       }
        x.style.cssText='height:10px;width:960px;flex:0 0 auto'; x.id='zqpausewide'; b.appendChild(x);
        togglePauseBox(true);
        if(!b.offsetHeight) return 'SKIP: the box did not open';
@@ -54705,7 +54746,7 @@ window.__REGRESS=[
        togglePauseBox(true); fw=parseFloat(getComputedStyle(b,'::before').width); togglePauseBox(false);
        if(fw<779) bad.push('with nothing extra the frame narrowed to '+Math.round(fw)+' px');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ try{ if(x.parentNode) x.parentNode.removeChild(x); }catch(_x){} try{ if(pauseOpen) togglePauseBox(false); }catch(_t){} try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     finally{ PAD.on=pad0; try{ padBodyCls(); }catch(_pb){} try{ if(x.parentNode) x.parentNode.removeChild(x); }catch(_x){} try{ if(pauseOpen) togglePauseBox(false); }catch(_t){} try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
   {v:'19.93',what:'the collapsed controls hint names no keyboard key on a pad: with the pad on, H controls and H hide are not drawn, and with it off they are',
    run:function(){
@@ -54774,14 +54815,22 @@ window.__REGRESS=[
    run:function(){
      var tr=document.getElementById('topright'), pm=document.getElementById('partymodal'), tm=document.getElementById('tradermodal'), bad=[], z, a, pOn, tOn;
      if(!tr||!pm||!tm) return 'SKIP: no readout or windows here';
+     __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
      pOn=pm.classList.contains('on'); tOn=tm.classList.contains('on');
      try{
        [].slice.call(document.querySelectorAll('.modal.on')).forEach(function(x){ x.classList.add('zqwason'); x.classList.remove('on'); });
        z=parseFloat(tr.style.zoom)||1;
        pm.classList.add('on'); a=tr.getBoundingClientRect();
-       if(Math.abs(a.top/z-6)>2) bad.push('with the PARTY card open the readout moved to '+Math.round(a.top/z)+' px');
+       // v28.xx (cw-cx-corpus06): the later currency rule is explicit screen visibility, not the hidden box position.
+       var spends=Array.prototype.some.call(document.querySelectorAll('style'),function(s){return /THE CREDITS AND XP READOUT IS FOR/.test(s.textContent||'');});
+       if(spends){ if(getComputedStyle(tr).visibility!=='hidden'&&getComputedStyle(tr).display!=='none') bad.push('the Party card still shows currency'); }
+       else if(Math.abs(a.top/z-6)>2) bad.push('with the PARTY card open the readout moved to '+Math.round(a.top/z)+' px');
        pm.classList.remove('on'); tm.classList.add('on'); a=tr.getBoundingClientRect();
-       if(Math.abs(a.top/z-24)>2) bad.push('control: with the shop open the readout is at '+Math.round(a.top/z)+' px, not on the heading row');
+       if(Array.prototype.some.call(document.querySelectorAll('style'),function(s){return /cw-cardmargin/.test(s.textContent||'');})){
+         var c=tm.querySelector('.ui-back'), cr=c&&c.getBoundingClientRect(), st=getComputedStyle(tr);
+         if(st.visibility==='hidden'||st.display==='none') bad.push('control: shop currency is hidden');
+         if(!cr||!(cr.width>0)||a.right>cr.left-8*z||a.top<cr.top-2*z||a.bottom>cr.bottom+2*z) bad.push('control: shop currency does not fit beside the header close control');
+       }else if(Math.abs(a.top/z-24)>2) bad.push('control: with the shop open the readout is at '+Math.round(a.top/z)+' px, not on the heading row');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ pm.classList.toggle('on',pOn); tm.classList.toggle('on',tOn); [].slice.call(document.querySelectorAll('.zqwason')).forEach(function(x){ x.classList.remove('zqwason'); x.classList.add('on'); }); }
      return bad.length?bad.join('; '):null; }},
@@ -55036,6 +55085,16 @@ window.__REGRESS=[
      if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so nothing renders';
      var bad=[], tr=document.getElementById('topright'), m, h, a, b, t, d;
      if(!tr) return 'SKIP: no corner readout here';
+     // v28.xx (cw-cx-corpus06): the 90 percent card reserves its right header corner for the close X.
+     function headerFits(m,h,a){
+       var close=m.querySelector('.ui-back'), cr=close&&close.getBoundingClientRect(), hr=h.getBoundingClientRect(), rg=document.createRange(), tx, z=parseFloat(tr.style.zoom)||1;
+       if(!cr||!(cr.width>0&&cr.height>0&&a.width>0&&a.height>0)) return 'the header currency or close control is not measurable';
+       rg.selectNodeContents(h); tx=rg.getBoundingClientRect();
+       if(a.top<Math.min(hr.top,cr.top)-2*z||a.bottom>Math.max(hr.bottom,cr.bottom)+2*z) return 'the currency sits outside the heading row';
+       if(a.right>cr.left-8*z) return 'the currency does not leave eight menu pixels before the close control';
+       if(tx.width>0&&a.left<tx.right+8*z) return 'the currency overlaps the heading text';
+       return null;
+     }
      try{
        __topClear(); __runPrep(); __cleanProfile();
        t=document.getElementById('title'); if(t) t.classList.remove('on');
@@ -55045,7 +55104,8 @@ window.__REGRESS=[
        a=tr.getBoundingClientRect(); b=h.getBoundingClientRect();
        if(!(a.height>0&&b.width>0)) return 'SKIP: nothing laid out';
        d=a.right-b.right;
-       if(Math.abs(d)>a.height*0.1) bad.push('with the shop open the readout ends '+Math.round(d)+' px from the end of the heading line');
+       if(Array.prototype.some.call(document.querySelectorAll('style'),function(s){return /cw-cardmargin/.test(s.textContent||'');})){ var fit=headerFits(m,h,a); if(fit) bad.push(fit); }
+       else if(Math.abs(d)>a.height*0.1) bad.push('with the shop open the readout ends '+Math.round(d)+' px from the end of the heading line');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ if(m&&m.classList.contains('on')&&typeof closeTrader==='function') closeTrader(); }catch(_c){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
@@ -55055,6 +55115,16 @@ window.__REGRESS=[
      if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so nothing renders';
      var bad=[], tr=document.getElementById('topright'), m, h, a, b, t, z, d;
      if(!tr) return 'SKIP: no corner readout here';
+     // v28.xx (cw-cx-corpus06): the 90 percent card reserves its right header corner for the close X.
+     function headerFits(m,h,a){
+       var close=m.querySelector('.ui-back'), cr=close&&close.getBoundingClientRect(), hr=h.getBoundingClientRect(), rg=document.createRange(), tx, z=parseFloat(tr.style.zoom)||1;
+       if(!cr||!(cr.width>0&&cr.height>0&&a.width>0&&a.height>0)) return 'the header currency or close control is not measurable';
+       rg.selectNodeContents(h); tx=rg.getBoundingClientRect();
+       if(a.top<Math.min(hr.top,cr.top)-2*z||a.bottom>Math.max(hr.bottom,cr.bottom)+2*z) return 'the currency sits outside the heading row';
+       if(a.right>cr.left-8*z) return 'the currency does not leave eight menu pixels before the close control';
+       if(tx.width>0&&a.left<tx.right+8*z) return 'the currency overlaps the heading text';
+       return null;
+     }
      try{
        __topClear(); __runPrep(); __cleanProfile();
        t=document.getElementById('title'); if(t) t.classList.remove('on');
@@ -55064,7 +55134,8 @@ window.__REGRESS=[
        a=tr.getBoundingClientRect(); b=h.getBoundingClientRect();
        if(!(a.height>0&&b.height>0)) return 'SKIP: nothing laid out';
        d=Math.abs((a.top+a.bottom)/2-(b.top+b.bottom)/2);
-       if(d>a.height*0.2) bad.push('with the shop open the readout is '+Math.round(d)+' px off the heading row (readout '+Math.round(a.top)+'-'+Math.round(a.bottom)+', heading '+Math.round(b.top)+'-'+Math.round(b.bottom)+')');
+       if(Array.prototype.some.call(document.querySelectorAll('style'),function(s){return /cw-cardmargin/.test(s.textContent||'');})){ var fit=headerFits(m,h,a); if(fit) bad.push(fit); }
+       else if(d>a.height*0.2) bad.push('with the shop open the readout is '+Math.round(d)+' px off the heading row (readout '+Math.round(a.top)+'-'+Math.round(a.bottom)+', heading '+Math.round(b.top)+'-'+Math.round(b.bottom)+')');
        if(typeof closeTrader==='function') closeTrader(); else m.classList.remove('on');
        if(m.classList.contains('on')) return 'SKIP: the shop would not close';
        z=parseFloat(tr.style.zoom)||1; a=tr.getBoundingClientRect();
@@ -55791,6 +55862,8 @@ window.__REGRESS=[
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy and draw';
      var bad=[], g, tr=document.getElementById('topright'), proto=CanvasRenderingContext2D.prototype, o=proto.fillText, hit=null, wn, cssY, stubL, fs0=FS;
      if(!tr) return 'SKIP: no credits readout here';
+     var mapFont0=(typeof FSz==='function')?FSz:null;
+     var scaleHad=Object.prototype.hasOwnProperty.call(P,'uiScale'), scale0=P.uiScale;
      function grab(){ hit=null; __frame(0.001); return hit; }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -55798,21 +55871,42 @@ window.__REGRESS=[
        g=__state(); if(!g||!g.player||g.over) return 'SKIP: no live raid';
        g.ents.length=0; g.bagOpen=false; g.mapOpen=true; try{ if(typeof TRG==='object'&&TRG) TRG.hid=0; }catch(_th){} wn=g.wx&&g.wx.name;   // 2026-10-18 (cw-trcol): this check models the page readout (it stubs its box), so the page text counts as showing, whatever the last frame loop left
        if(!wn) return 'SKIP: no weather name';
-       FS=function(spec){ var f=fs0(spec); return String(f).replace((/([\d.]+)px/),function(m0,n0){ return (parseFloat(n0)*2).toFixed(1)+'px'; }); };
-       proto.fillText=function(t,x,y){ if(this.textAlign==='right'&&String(t).indexOf(wn)>=0&&this.canvas){ var m=this.getTransform(), r=this.canvas.getBoundingClientRect(), kk=r.width>0?r.width/this.canvas.width:1, fm=(/([\d.]+)px/).exec(String(this.font)); hit={x:(m.a*x+m.e)*kk+r.left,y:(m.d*y+m.f)*kk+r.top,fp:(fm?parseFloat(fm[1]):12)*m.d*kk}; } return o.apply(this,arguments); };
+       // v28.xx (cw-cx-corpus06): retain the old forced-font experiment only for the earlier map; the card uses the real text-size setting below.
+       if(typeof mapCard!=='function') FS=function(spec){ var f=fs0(spec); return String(f).replace((/([\d.]+)px/),function(m0,n0){ return (parseFloat(n0)*2).toFixed(1)+'px'; }); };
+       proto.fillText=function(t,x,y){ if(this.textAlign==='right'&&String(t).toLowerCase().indexOf(String(wn).toLowerCase())>=0&&this.canvas){ var m=this.getTransform(), r=this.canvas.getBoundingClientRect(), kk=r.width>0?r.width/this.canvas.width:1, fm=(/([\d.]+)px/).exec(String(this.font)); hit={x:(m.a*x+m.e)*kk+r.left,y:(m.d*y+m.f)*kk+r.top,fp:(fm?parseFloat(fm[1]):12)*m.d*kk}; } return o.apply(this,arguments); };
        if(!grab()) return 'SKIP: the conditions line was not drawn';
+       // v28.xx (cw-cx-corpus06): the card replaces the old overlapping wallet; its weather must still leave a readable gap.
+       if(typeof mapCard==='function'){
+         var normalFp=hit.fp;
+         // v28.xx (cw-cx-corpus06): FSz already calls FS. The largest real preset grows both type and its layout spacing once.
+         P.uiScale=(typeof UISCALES==='object'&&UISCALES.length)?Math.max.apply(Math,UISCALES):2;
+         syncTopRight();
+         var page=getComputedStyle(tr), draw0=trColDraw, calls=0, cd, rr, closeLeft, whyGap;
+         if(page.visibility!=='hidden'&&page.display!=='none') bad.push('the page currency still shows over the map card');
+         trColDraw=function(){calls++;return draw0.apply(this,arguments);};
+         try{ if(!grab()) bad.push('control: the map weather disappeared'); }finally{trColDraw=draw0;}
+         if(calls) bad.push('the canvas currency still draws over the map card');
+         if(hit){
+           if(!(hit.fp>normalFp*1.25)) bad.push('control: the largest map text preset did not visibly enlarge the weather');
+           cd=mapCard(); rr=document.getElementById('hcv').getBoundingClientRect(); closeLeft=rr.left+cd.xb.x*(rr.width/W);
+           if(closeLeft-hit.x<hit.fp*0.9) bad.push('the map weather does not leave a text-height gap before close');
+         }
+         return bad.length?bad.join('; '):null;
+       }
+
        cssY=hit.y; stubL=hit.x-20;
        tr.getBoundingClientRect=function(){ return {left:stubL,right:stubL+300,top:0,bottom:cssY+10,width:300,height:cssY+10,x:stubL,y:0}; };
        if(!grab()) return 'SKIP: the conditions line was not drawn the second time';
        if(stubL-hit.x<hit.fp*0.9) bad.push('the gap before the credits readout is '+Math.round(stubL-hit.x)+' px with '+Math.round(hit.fp)+' px text');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ FS=fs0; proto.fillText=o; try{ delete tr.getBoundingClientRect; }catch(_d){} try{ var g2=__state(); if(g2){ g2.mapOpen=false; if(!g2.over){ g2.player.downed=false; __endRaid('abandon'); } } }catch(_e){} __topClear(); __cleanProfile(); }
+     finally{ if(mapFont0) FSz=mapFont0; FS=fs0; proto.fillText=o; try{ delete tr.getBoundingClientRect; }catch(_d){} try{ var g2=__state(); if(g2){ g2.mapOpen=false; if(!g2.over){ g2.player.downed=false; __endRaid('abandon'); } } }catch(_e){} __topClear(); __cleanProfile(); if(scaleHad) P.uiScale=scale0; else delete P.uiScale; }
      return bad.length?bad.join('; '):null; }},
   {v:'19.32',what:'the map conditions line keeps clear of the credits readout: with the readout over the right end of the map header, the time and weather end left of it',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy and draw';
      var bad=[], g, tr=document.getElementById('topright'), proto=CanvasRenderingContext2D.prototype, o=proto.fillText, hit=null, wn, cvR, k, cssX, cssY, stubL;
      if(!tr) return 'SKIP: no credits readout here';
+     var mapFont0=(typeof FSz==='function')?FSz:null;
      function grab(){ hit=null; __frame(0.001); return hit; }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -55820,8 +55914,23 @@ window.__REGRESS=[
        g=__state(); if(!g||!g.player||g.over) return 'SKIP: no live raid';
        g.ents.length=0; g.bagOpen=false; g.mapOpen=true; try{ if(typeof TRG==='object'&&TRG) TRG.hid=0; }catch(_th){} wn=g.wx&&g.wx.name;   // 2026-10-18 (cw-trcol): this check models the page readout (it stubs its box), so the page text counts as showing, whatever the last frame loop left
        if(!wn) return 'SKIP: no weather name';
-       proto.fillText=function(t,x,y){ if(this.textAlign==='right'&&String(t).indexOf(wn)>=0&&this.canvas){ var m=this.getTransform(), r=this.canvas.getBoundingClientRect(), kk=r.width>0?r.width/this.canvas.width:1; hit={x:(m.a*x+m.e)*kk+r.left,y:(m.d*y+m.f)*kk+r.top}; } return o.apply(this,arguments); };
+       proto.fillText=function(t,x,y){ if(this.textAlign==='right'&&String(t).toLowerCase().indexOf(String(wn).toLowerCase())>=0&&this.canvas){ var m=this.getTransform(), r=this.canvas.getBoundingClientRect(), kk=r.width>0?r.width/this.canvas.width:1; hit={x:(m.a*x+m.e)*kk+r.left,y:(m.d*y+m.f)*kk+r.top}; } return o.apply(this,arguments); };
        if(!grab()) return 'SKIP: the conditions line was not drawn';
+       // v28.xx (cw-cx-corpus06): the card replaces the old overlapping wallet; its weather must still leave a readable gap.
+       if(typeof mapCard==='function'){
+         syncTopRight();
+         var page=getComputedStyle(tr), draw0=trColDraw, calls=0, cd, rr, closeLeft, whyGap;
+         if(page.visibility!=='hidden'&&page.display!=='none') bad.push('the page currency still shows over the map card');
+         trColDraw=function(){calls++;return draw0.apply(this,arguments);};
+         try{ if(!grab()) bad.push('control: the map weather disappeared'); }finally{trColDraw=draw0;}
+         if(calls) bad.push('the canvas currency still draws over the map card');
+         if(hit){
+           cd=mapCard(); rr=document.getElementById('hcv').getBoundingClientRect(); closeLeft=rr.left+cd.xb.x*(rr.width/W);
+           if(hit.x>closeLeft+1) bad.push('the map weather runs under the close control');
+         }
+         return bad.length?bad.join('; '):null;
+       }
+
        cssX=hit.x; cssY=hit.y; stubL=cssX-60;
        tr.getBoundingClientRect=function(){ return {left:stubL,right:stubL+300,top:0,bottom:cssY+10,width:300,height:cssY+10,x:stubL,y:0}; };
        if(!grab()) return 'SKIP: the conditions line was not drawn the second time';
