@@ -1,0 +1,5 @@
+## v33.05 - EXPERIMENTAL: THREE MORE SWITCHES (NEEDED-ITEM GLOW, HAUL REVEAL, SHOP RE-ROLL)
+
+Co-op hunt while he was away. The experimental page gets three display switches, on by default and read live in each window (they only change that window). Off: no box glows gold for an item a contract needs, the haul on the extracted card shows at once instead of one item at a time, and the shop stocks all four extras instead of two.
+
+MEASURED. Check 33.05 passes, and fails on v33.04.

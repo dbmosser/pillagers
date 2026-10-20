@@ -1,0 +1,1 @@
+| EXPERIMENTAL: THREE MORE SWITCHES (NEEDED-ITEM GLOW, HAUL REVEAL, SHOP RE-ROLL) | v33.05 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 33.05 passes, fails on v33.04 |

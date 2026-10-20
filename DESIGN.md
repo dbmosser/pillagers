@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.05 - EXPERIMENTAL: THREE MORE SWITCHES (NEEDED-ITEM GLOW, HAUL REVEAL, SHOP RE-ROLL)
+
+Co-op hunt while he was away. The experimental page gets three display switches, on by default and read live in each window (they only change that window). Off: no box glows gold for an item a contract needs, the haul on the extracted card shows at once instead of one item at a time, and the shop stocks all four extras instead of two.
+
+MEASURED. Check 33.05 passes, and fails on v33.04.
 ## v33.04 - THE WHAT IS NEW CARD NAMES POLISH PASS 40
 
 Co-op hunt while he was away. The card was stamped v32.88 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.
