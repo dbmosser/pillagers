@@ -1112,31 +1112,31 @@
  "30-settings-scroll-2400": {
   "score": 3,
   "pass": false,
-  "verdict": "The two screenshots look identical, so the daily-backup change added nothing visible here; this is a competent but still plain dark settings list with a big empty detail pane.",
+  "verdict": "The settings card is clean and consistent with the guide, but the two screenshots are visually identical except for a slightly shorter scrollbar thumb, so the daily-backup change isn't visible here, and the right pane is still mostly empty.",
   "findings": [
-   "P1 detail pane (right): Put the description directly under the title (24px gap). Cut it to 3 to 5 words, or shrink the pane to about 480px and give the list the width. Show the current value and the default there instead.",
-   "P1 list rows, value column: Use one row height (56px) and one control type. Show on/off rows as a toggle pill, or use the same arrows. Replace the uneven gaps with a 16px section label.",
-   "P1 list, bottom edge and scrollbar: Fade or mask the list edges over a 24px band, or snap the scroll to whole rows. Make the scrollbar 8px in --ui-line-hi.",
-   "P1 row text and values: Set labels to --tx-1 at 20px. Keep values at 20px/700, and use lime for a non-default value only. Make the focused row's fill --ui-raised with a 4px lime bar.",
-   "P2 left nav: Divide the nav into groups with a 1px --ui-line rule and a 16px label. Give the selected tab a 4px lime bar plus --ui-raised fill, and set tab text to 20px."
+   "P1 detail pane (right, x1088-1870): Anchor the description 16px under the title, or make the pane narrower (about 520px). Better, put a live preview of the setting there (fps counter, crosshair, text size sample). Keep one lime element: the focus bar or the pane top line, not both.",
+   "P1 verification of the changed feature: Re-shoot at the scroll position that shows the backup and restore rows. Check the row's buttons fit within the 1046px list width and have visible focus.",
+   "P1 list bottom edge (y≈965-995): Add a 24px fade mask to the bottom of the list or snap the scroll to row boundaries. Make the thumb 6px in --ui-line-hi with 8px padding from the edge.",
+   "P2 setting rows, value and arrow columns: Draw the arrows at 20px, 8px from the value, in --tx-2 (lime on focus). Give the toggle rows a pill or a switch with a visible on/off state, or the same arrow pattern.",
+   "P2 row spacing and group gaps: Use a fixed 56px pitch plus a 32px gap with a 16px label (display / accessibility / party) at each group start. Raise divider contrast to --ui-line."
   ],
   "pic": "tools/handoff/console/notes/shots/o-14-daily-save-backup-after/30-settings-scroll-2400-1080.jpg",
   "task": "o-14-daily-save-backup",
-  "when": "2026-10-20T17:55"
+  "when": "2026-10-20T18:11"
  },
  "30-settings-daily-restore": {
   "score": 3,
   "pass": false,
-  "verdict": "The card is clean and readable and the lime focus is clear, but the detail pane is mostly empty, the list is cropped at the top, and the value column mixes controls with bare text.",
+  "verdict": "It's a clean, consistent dark settings card with a clear lime focus on the restore row. But the tab rail shows the wrong tab, the right pane is mostly empty, and the list has uneven spacing and tiny, dim hints.",
   "findings": [
-   "P1 right detail pane: Put the description 16px under the title (y≈200). Show 2 to 3 label/value lines such as 'backup: yesterday' and 'saved: 10-19 22:14', with a hero or tx-1 value at 56px. Anchor the action hint at the bottom.",
-   "P1 list top edge / scroll: Add 8px top padding to the list. Align labels to the row's vertical centre (row height 56). Add 16px muted group headers (display, players, data). Remove the horizontal bar. Make the scroll thumb 6px in --ui-line-hi.",
-   "P1 restore from a backup row, 'yesterday' button: Keep one signal: the 3px lime left bar plus a --ui-raised fill. Make the value button a 2px lime border inset 6px from the row edges and drop the inner white bar. Use tx-1 text, with lime only on the border.",
-   "P2 value column, mixed control types: Use one pattern. Toggles get chevrons or a pill. Actions (save file, restore, open) get a 1px --ui-line-hi bordered button of the same size as 'locked'. Raise the key hints h and bksp to 16px, right-aligned in a keycap box.",
-   "P2 left tab list: Use even 64px tab spacing, or add a labelled group break. Make the selected tab text tx-1 with a 3px lime bar (already there) and a --ui-raised fill at full width. Add a 16px gap between the tab column and the list."
+   "P1 left tab rail vs content: Move the colour-blind, flashing, player 2, backup and dev rows under the tabs they belong to, or rename the tabs to match. Keep the highlighted tab and its rows in agreement.",
+   "P1 right detail pane (x1088-1870, y115-408): Have the pane fill its card (the full height, or at least 70%). Move 'restore' and 'undo' into it as the clear primary actions, with 'restore' as a lime-filled 56px-high button. Show the date as the hero, and hide the runs row when the value is 0.",
+   "P1 'restore from a backup' row (y630-720): Use one row pattern. Put the backup picker (a ‹ yesterday › stepper) in the control column like the other rows. Make 'restore' the filled lime primary and 'undo' a quiet secondary. Pair the 'undo keeps current save' hint with the button.",
+   "P1 value column: 'controls legend: h', 'mouse cursor: bksp': Set them to 16px at tx-2 or brighter and centre them at x857. Draw them as keycap chips such as [h] and [bksp].",
+   "P2 settings rows, vertical rhythm: Use a fixed 56px row. Add a 16px section label and a divider for real groups. Pull the chevrons to 24px either side of the value and enlarge them to 20px."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-14-daily-save-backup-recipes-2/30-settings-daily-restore-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-14-daily-save-backup-recipes-3/30-settings-daily-restore-1080.jpg",
   "task": "o-14-daily-save-backup",
-  "when": "2026-10-20T17:59"
+  "when": "2026-10-20T18:11"
  }
 }

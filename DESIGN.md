@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.95 - DAILY RESTORE ACTION AND SECTION
+
+Co-op hunt while he was away. The critic found equal-weight restore controls, an ambiguous undo hint and a display section marker while the save row was focused. Give the existing save section its missing navigation entry and make restore the primary action.
+
+MEASURED. Check 32.95 passes, and fails on v32.94.
 ## v32.94 - DAILY RESTORE CONTROLS FIT
 
 Co-op hunt while he was away. The daily restore picture revealed that three full-width controls overflowed the value column. The critic also found stacked focus marks and backup details floating far below the title.

@@ -1,0 +1,5 @@
+## v32.95 - DAILY RESTORE ACTION AND SECTION
+
+Co-op hunt while he was away. The critic found equal-weight restore controls, an ambiguous undo hint and a display section marker while the save row was focused. Give the existing save section its missing navigation entry and make restore the primary action.
+
+MEASURED. Check 32.95 passes, and fails on v32.94.

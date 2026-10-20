@@ -1,0 +1,7 @@
+v32.95: daily restore action and section
+
+Settings marks saves and tools while its restore row is focused. Restore is the primary action, undo stays secondary, dated details are compact, and the two nearby key hints are readable.
+
+Check 32.95. Fails on v32.94.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

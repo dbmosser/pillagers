@@ -217,3 +217,5 @@
 
 2026-10-20 | o-14-daily-save-backup | Settings restore row (30) | Grouped source, restore and undo below the label with 44px controls and 8px gaps so all remain visible; removed stacked focus marks; put the selected copy, actual date and runs below the detail title. Reworded help to 'undo keeps current save' because the selected daily source needs clear undo context. | before: C:/claudecode/dark raiders/tools/handoff/console/notes/shots/o-14-daily-save-backup-recipes-2/30-settings-daily-restore-1080.jpg | after: lane recipe round 3 path pending
 
+2026-10-20 | o-14-daily-save-backup | Settings save rows (30) | Restore is the 56px lime primary; source has chevrons and undo stays secondary; added the missing nav entry for the existing saves and tools section; reduced day text 56px to 20px, date to 32px, hid zero-run stats, clarified 'undo last restore', and made h/bksp keycaps 16px. | before: C:/claudecode/dark raiders/tools/handoff/console/notes/shots/o-14-daily-save-backup-recipes-3/30-settings-daily-restore-1080.jpg | after: lane recipe round 4 pending
+
