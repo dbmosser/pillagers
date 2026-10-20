@@ -1,1 +1,1 @@
-10-19 19:52 gate: shipping cw-cx-menurepeat (o-12-menu-stick-repeat, codex)
+10-19 21:36 gate waiting on another worker; o-07-pad-lost kept (codex)

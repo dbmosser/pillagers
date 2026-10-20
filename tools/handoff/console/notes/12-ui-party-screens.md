@@ -68,3 +68,7 @@ Current critic findings to retain, without another redesign attempt:
 Attract backdrop findings belong to task 03. No background changes are proposed here. No new player wording was changed, so there is no Q8 deletion reason or visible-change log entry this run. The existing ui/index.html Changes section already links the latest v31.82 operator change and its before/after pictures. No new entry is claimed.
 
 Task remains partial: all 12 active screens are below this task finish line in the saved records, and several intended states have not been demonstrated. Do not reset the six-try count merely because the lane changed.
+
+--- lane e run 2026-10-19 (Claude Code) ---
+Stopped at the six-try limit (his 2.83 b); no new ship, no new pictures. Best versions stay the v31.82 pictures in shots/12-r7-after (table above).
+What would actually move scores, and is not a restyle: the camera stages for 54 (old beacon path, should use __endRaid like 53), 55 (zero score), 56 (empty board) and 53 do not show the states named. Those stages live in tools/handoff/shots/ui-screens-js.json, which workers change only by asking in questions.md (asked below). Until they are fixed the critic scores for those four are scores of the wrong picture.

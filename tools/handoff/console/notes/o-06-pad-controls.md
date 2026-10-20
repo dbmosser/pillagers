@@ -63,3 +63,29 @@ Ready for lane: preflight and ship cw-cx-xfight, cw-cx-copygun, cw-cx-drygun, cw
 Re-ran verify-pending.js: five checks and the composed game script parse; all 19 pending edits still have unique anchors. Existing mk scripts, keys.txt, fixture-retarget.json and six camera recipes are ready and unchanged. No source or fixture edits made. No browser test, screenshot, critic result or physical pad measurement is claimed.
 
 Next actions belong to the lane/coordinator: resume preflight and shipping at cw-cx-xfight, then the other four pending keys; run camera-run-request.json after shipping, including the two live connected windows; return gate results, report and critic findings. The supplied recipe request remains necessary because this installed runner only handles shots.txt. Park this job until those lane steps produce a result; another unchanged Codex run cannot perform them inside this sandbox.
+
+--- codex run 2026-10-19 19:58 ---
+2026-10-19, run 7 from v32.00: RS melee remains shipped in c721a3ca. X fight priority also shipped, in 5f54c3e7 (v31.89); its preflight and ship logs pass. Four keys remain: copygun, drygun, padstatus and xboxonly. No task pictures or critic findings were returned.
+
+Read the actual copygun preflight failure: its new-build check twice reported that DEMO did not upgrade the held copy. The earlier fix removed the DEMO rejection, but autoBelt still returned at its duplicate guard, before comparing a better same-model find. Corrected mk-cw-cx-copygun.ps1 with a second edit: a better same-model find takes the existing gunClassPlace/gunClassSwapIn path before the duplicate guards. This also repairs the CAREER backpack pickup route. Worse copies still follow the existing behavior; no new gun keys or ammo rules added.
+
+Ran smoke-copy-routing.js, an isolated test that extracts the actual routing functions and supplies small dependency stubs. The v32.00 routing rejects both same-model upgrades; the composed draft upgrades them in DEMO and CAREER, preserves magazine rounds, key and displaced copy, and refuses worse copies. This is limited logic evidence, not the browser fixture or fingerprint gate. The unchanged draft browser check still covers DEMO, CAREER and Magnum replacing the Scav Pistol. The lane must rerun that failed gate before shipping.
+
+Regenerated all four pending drafts on v32.00; each printed written. verify-pending.js now skips the already shipped X key and composes all 18 pending edits uniquely. The composed game script and all four draft checks parse. All lane handoff scripts and JSON remain ASCII. No tracked file was changed.
+
+Updated camera-run-request.json to name the two shipped and four pending keys. Existing six recipes and fixture retarget remain ready. This installed runner still has no recipe camera path, so the coordinator needs to run the supplied project-camera request after shipping. Return six pictures, critic findings and both role reports. Physical pad readings, full browser checks and the seed fingerprint have not been collected in this sandbox. No unsupported aim tuning is claimed.
+
+--- codex run 2026-10-19 20:39 ---
+2026-10-19, run 8 from v32.00: no gate attempt or camera result since run 7. The latest copygun preflight is still the 18:48 failure, before the 19:58 better-copy routing repair. RS melee and X priority remain the two shipped keys; four repaired/prepared keys remain in keys.txt. No further code changes or repeated syntax tests are justified by this unchanged state.
+
+The lane/coordinator must retry the repaired copygun, ship drygun, padstatus and xboxonly, then run the existing six-scene camera request and critic. The project camera supports -Recipes; the installed lane runner still has no camera-recipes path. No task pictures exist in the shared shots folder. Both-window results and physical pad readings remain uncollected. All required handoff files already exist. Park this job until a new gate result, pictures or hardware readings arrive; do not spend another Codex run on the old failure.
+
+
+--- codex run 2026-10-19 21:24 ---
+2026-10-19, run 9 from v32.00: current game code contains RS melee and X fight priority, but this environment has empty lane shipped.txt and installed.txt files. Removed those two already-applied keys from keys.txt so the fresh lane state cannot try to apply them twice. Four keys remain, in order: copygun, drygun, padstatus, xboxonly. Existing mk files for the shipped keys are retained only as records.
+
+Regenerated the four pending drafts against this checkout; all printed written. verify-pending.js composed 18 unique edits and parsed the resulting game script and four checks. smoke-copy-routing.js again confirms the actual baseline routing rejects the upgrades and the draft routing upgrades both modes while preserving rounds/key/old copy and rejecting worse copies. This isolated test does not replace the browser gate or seed fingerprint.
+
+Checked fixture-retarget.json against the current fixture: all three old anchors occur exactly once, and none of their replacements is present. The retarget has NOT been applied in this environment; the coordinator must apply it under the lock and run 20.44, 17.78 and 19.86 before shipping. Do not assume the old machine lane state or earlier notes prove this checkout has the retarget. The installed runner still lacks fixture-retarget and recipe camera handling; use the already supplied handoff files through the coordinator.
+
+No browser gate result, task picture, critic result, paired-window result or physical pad measurement was supplied. The existing camera-run-request.json and six camera recipes remain ready. Remaining actions are lane/coordinator work: apply the retarget, ship the four pending keys, run the supplied six-scene camera command and critic, return both role reports and hardware probe readings. No tracked source or fixture edits were made. Do not repeatedly resume this job without those new results.

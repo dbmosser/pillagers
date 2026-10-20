@@ -30,3 +30,21 @@ Each new scene first checks BOTH pad-loss directions, with null and connected:fa
 
 Added camera-run-request.json with the exact authorized tools/uishots.ps1 command, port 9364, report/picture paths, and required critic score 4. Only the lane/coordinator can run it outside this sandbox. Return report.json, all six pictures and full critic findings. No code remains to ship; completion still needs this two-window visual proof and any resulting fixes. Park until that lane step supplies results instead of rerunning Codex on unchanged files.
 
+
+--- codex run 2026-10-19 21:25 ---
+2026-10-19, continued from v32.00.
+
+Read the previous task notes and the existing handoff. cw-cx-padlost remains shipped; the current game contains padLostStart and padLostPoll. The recorded gate evidence still says check 31.90 passes and fails on v31.89. No new game change or fixture retarget is needed.
+
+No o-07 camera output directory was found in the main repo. Both the workspace and main-repo tools/codex-lane.sh still lack camera-recipes handling and only take shots after a fresh ship. The six supplied real two-window recipes and camera-run-request.json remain the lane/coordinator handoff. The Codex addendum prohibits this sandbox from starting Chrome or the camera. Do not reship the game merely to trigger pictures. Completion still requires the coordinator to run the supplied camera command, return report.json, six pictures and critic findings, then fix any failures. This is the same external blocker as the prior run; park until those results arrive.
+
+
+--- codex run 2026-10-19 21:26 ---
+2026-10-19, key rename requested after refresh to v32.00.
+
+Renamed the submission key to cw-cx-o07-padreturn in keys.txt. Renamed mk-cw-cx-padlost.ps1 to mk-cw-cx-o07-padreturn.ps1 and drafts/draft-cw-cx-padlost.json to drafts/draft-cw-cx-o07-padreturn.json. Updated mk comments, its output filename, draft comments, and validator references. Both old filenames are gone. Camera request and its generator identify the new artifact key while preserving the original shipped commit as historical evidence.
+
+Verified: PowerShell script parses; the mk script is ASCII; the draft check and all six camera scripts and predicates parse. The current v32.00 game still includes the actual implementation from 42137018 / v31.90 under the original cw-cx-padlost comments. The validator confirms it is already shipped. This rename does not add a second implementation. The lane should recognize the renamed artifacts as the existing implementation; applying this original pre-v31.90 patch again to master would fail its old anchors and risk duplicate functions. The game file was not edited.
+
+Still missing: the supplied two-window camera run and critic results. The installed runner ignores camera-recipes.json. The coordinator must run camera-run-request.json outside this sandbox and return the six pictures, report and critic findings. No fresh ship is needed to obtain that evidence. Check 31.90 is already recorded as passing after the original ship and failing on v31.89.
+

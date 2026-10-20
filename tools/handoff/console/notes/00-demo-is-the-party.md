@@ -1,47 +1,29 @@
 
---- codex run 2026-10-19 11:02 ---
-2026-10-19, lane o, first run, base v31.82.
+--- codex run 2026-10-19 11:02 to 11:07 (earlier runs, kept short) ---
+Lane o prepared the draft cw-cx-demoplain (mk script in the scratchpad) and stopped because the older fixture checks still read PARTY. Details of the draft: it removes ?party=1 (parser, flag, CSS, boot, reload, nav, stale marks, title overrides), EXIT DEMO uses plain arcadeLeave, the demo map auto starts after MAPFIRST.auto, F2/F8 need Ctrl while the demo is on (demoKeysOn), labels and tag follow the demo.
 
-Prepared one ship: cw-cx-demoplain, listed in keys.txt. It removes the ?party=1 launch parser, flag, CSS, auto-boot, reload/navigation functions, stale-mark clearing and title overrides. EXIT DEMO uses ordinary arcadeLeave. The online party window, host/join flow, NET, pair and invite codes are unchanged. The existing hostup receiver is left in the online pair handler; only the retired launch-mode sender and timer are removed.
+--- claude lane a run 2026-10-19 21:15 to 21:35 ---
+1. Fixture retarget committed (8c7bf0ee), done under the lock:
+   - v30.79 "party launch mode" (six checks): kept in place but their guard now returns "SKIP: the party launch mode was retired" (nothing left to test; they SKIP instead of being deleted, to keep the edit small and safe).
+   - v31.37 cw-partykeys: its own guard (typeof PARTY undefined) already SKIPs once PARTY is gone; the new ship check owns the Ctrl rule now.
+   - v31.09 cw-mapfirst: removed oParty/PARTY arms; step SIX now only checks that a career raid never lets go of the map by itself. Demo auto start is owned by the new check.
+2. preflight a cw-cx-demoplain: PREFLIGHT PASS as v32.01.
+3. shipq.sh cw-cx-demoplain: printed SHIPPED v32.01, gate passed (fingerprint 85/374, 165/593 ok). BUT the commit step did not land: ship.sh commit printed "cp: cannot create tools/publish/index.html: No such file or directory" (the folder tools/publish does not exist in the VM), and no v32.01 commit exists. HEAD is still 29de0725. The working tree holds the shipped game (VER 32.01), DESIGN.md, AUDIT.md, tools/mkfixture.ps1 (the new check) and tools/handoff/cm3201.txt (the commit message), all UNCOMMITTED. My lane may not run git add/commit.
+   NEEDED (coordinator): in the repo, run `bash tools/handoff/ship.sh commit 3201 cm3201.txt` from tools/handoff after creating tools/publish (mkdir tools/publish), or just git add -A + git commit -F tools/handoff/cm3201.txt, then git push. Until then every other ship STOPs on "uncommitted changes". Do NOT ship cw-cx-demoplain again.
+4. Not done yet (after the commit): title picture, a ?party=1 comparison page, two-window demo run with a map picture from each window, critic on title and map.
 
-The normal demo now closes its opening sector map after MAPFIRST.auto (still 20 seconds). Career still waits for a press. F2 and F8 require Ctrl throughout the demo, including its attract and raid; career keeps the plain keys. The crouch undo stays intact. The existing editor tag, fixed-key labels and Settings hint follow the current demo state when rendered, rather than being fixed at page boot. No new controls, screens or player wording.
+--- claude lane a run 2026-10-19 (second run) ---
+Pictures taken (tools/handoff/console/notes/shots/00-demoplain-after/): title (01, normal title, no party override, lint 0), map (22), p2 window title (58). All look right.
+Still blocked: v32.01 is in the working tree but NOT committed (no tools/publish folder in the VM; my lane may not run git add/commit). Coordinator: mkdir tools/publish, then git add -A + git commit -F tools/handoff/cm3201.txt, then git push.
+Not done: the check results are only the shipq gate's (passed); no live two-window demo run picture and no ?party=1 comparison page picture; critic not run.
 
-Local verification: the mk script printed written; all 19 anchors matched exactly once and applied in memory; the resulting game script, new check and preserved map check parsed with Node vm.Script; all retired launch names and CSS were absent. Output files checked as ASCII. The tracked game and fixture were not edited. No browser, network, play port or ship scripts were used.
+--- claude lane a run 2026-10-19 (third run) ---
+Verified: the working tree game (VER 32.01) has no partyHostBoot, partyP2Boot, partyReload, PARTY_EXIT or partyOf left. cw-cx-demoplain is in the file.
+Still UNCOMMITTED: my lane cannot run git add/commit and tools/publish still does not exist in the VM. Coordinator: mkdir tools/publish, then git add -A and git commit -F tools/handoff/cm3201.txt, then git push. Do NOT ship cw-cx-demoplain again.
+Not done: live ?party=1 comparison page and two-window demo run pictures (the camera cannot take a custom URL). The gate's check run is the only proof of the Ctrl+F8 and map auto start rules.
 
-The new draft check exercises the normal title demo row, automatic map start just before and just after MAPFIRST.auto, F2 and F8 on the attract and in the raid, Ctrl chords and crouch restoration, key labels, EXIT DEMO and return to career F8. On the old build the launch functions are present, demo maps wait, and plain demo F8 starts a snip, so the control must fail. Browser execution remains for the lane; syntax checks do not prove those runtime results.
+--- claude lane a run 2026-10-19 (fifth run) ---
+No change: VER 32.01 still uncommitted, tools/publish still missing, my lane cannot commit or mkdir. Coordinator: mkdir tools/publish; git add -A; git commit -F tools/handoff/cm3201.txt; git push. Do not ship cw-cx-demoplain again.
 
-Fixture work is ready for a Claude lane under its ship lock: fixture-retarget.json contains three exact edits. Delete the six v30.79 launch checks, which only test the retired mode. Delete v31.37 cw-partykeys, replaced by this ship check. Preserve the rest of v31.09 cw-mapfirst, remove its saved PARTY variable and retired flag arms, and keep the career press check. The new ship check owns demo auto-start. This preserved check remains valid on the old build, so its fixture-only commit can precede the ship. prepare-fixture.ps1 regenerates that manifest against this worktree; it writes only the task output folder.
-
-Still required: apply/check/commit the fixture edits, preflight and ship cw-cx-demoplain, fresh-page comparison with ?party=1, pictures and critic for title and map, and a real two-window run from the plain title with one opening-map picture per player. shots.txt requests available catalog screens 01 and 22; screen 22 is a career-map staging and does not replace the required demo pair. questions-new.md records the lane work, with no owner decision requested.
-
-
---- codex run 2026-10-19 11:06 ---
-2026-10-19, lane o, preflight follow-up, base still v31.82.
-
-Confirmed the failure is the fixture prerequisite from the first run, not a failing new demo assertion. Preflight executes its new-check and control gates before recent checks; reaching REGRESS 31.09 means the new check passed twice on the draft and failed on the old build. The unchanged v31.09 check reads oParty=PARTY before its try block and later requires a demo with PARTY=false to keep waiting. Both are incompatible with the requested removal and plain-demo auto-start.
-
-The automated lane only installs mk scripts and runs preflight/shipping. It harvests questions-new.md but does not apply fixture-retarget.json. Therefore another identical retry cannot resolve this failure. I did not restore PARTY or alter runtime tests to hide the regression.
-
-Regenerated the fixture replacement manifest and repeated local anchor/syntax/ASCII checks. Added the fixture prerequisite to the mk script comment. Temporarily emptied keys.txt and retained cw-cx-demoplain in pending-keys.txt so the automated lane does not spend another gate attempt on the unchanged fixture. Restore that key after the Claude lane applies and commits the existing fixture handoff. No tracked files changed.
-
-The controlling instruction is Codex addendum, How a change ships, step 5: if an older check must be retargeted, write it in questions-new.md and end TASK PARTIAL naming it; a Claude lane does it. Remaining work: that fixture update, retry preflight/ship, and the requested title/query comparison and two-window demo pictures/critic.
-
-
---- codex run 2026-10-19 11:06 ---
-2026-10-19, lane o, resumed after fixture handoff. Confirmed the shared repository still has the unchanged v31.09 reference oParty=PARTY at tools/mkfixture.ps1:8790; master is still v31.82. The required Claude-lane fixture update has not landed. Local draft validation still passes (19 unique anchors, game/check syntax, ASCII). keys.txt remains empty, with cw-cx-demoplain retained in pending-keys.txt, to avoid another identical failed preflight. The existing questions.md handoff and fixture-retarget.json contain the required changes. No new question or duplicate gate attempt. Resume shipping after that fixture-only commit.
-
---- codex run 2026-10-19 11:07 ---
-2026-10-19, lane o, resumed with no new gate result or fixture commit supplied.
-
-The shared fixture still reads oSay=say, oParty=PARTY at tools/mkfixture.ps1:8790. The prepared fixture-retarget.json has not been applied, so the previously reported REGRESS 31.09 remains unresolved. No further code changes or repeated gate attempt are justified. keys.txt remains empty; pending-keys.txt retains cw-cx-demoplain. The existing questions.md handoff already specifies the exact fixture edits and required two-window/query checks, so no duplicate question was added.
-
-Next action belongs to the Claude lane under its ship lock, as required by Codex addendum shipping step 5: apply and commit fixture-retarget.json, then restore pending-keys.txt into keys.txt and retry cw-cx-demoplain. The task must not be requeued to Codex before that prerequisite changes. After shipping, the title/query comparison, both demo-window map pictures, automatic start in both windows, and critic results remain required.
-
-
---- codex run 2026-10-19 11:07 ---
-2026-10-19, lane o, continued after refresh to v31.82.
-
-Checked both the refreshed workspace and shared tools/mkfixture.ps1: line 8790 still reads oParty=PARTY. The required fixture update has not landed. No new gate result was supplied. The pending game draft and fixture-retarget.json remain ready; keys.txt stays empty to avoid the same known preflight failure. No new code change, duplicate question, or gate attempt.
-
-Required external action: a Claude lane applies and commits fixture-retarget.json under the ship lock (Codex addendum shipping step 5). Then restore cw-cx-demoplain to keys.txt, run preflight/ship, and complete the fresh-query title comparison and two-window demo map/run pictures with critic results. Codex can resume dependent work after that fixture update or a new lane result.
-
+--- claude lane a run 2026-10-19 (fourth run) ---
+Same state: VER 32.01 in the working tree, uncommitted (game, DESIGN, AUDIT, mkfixture); tools/publish still missing. My lane cannot run git add/commit or mkdir. Coordinator: mkdir tools/publish, git add -A, git commit -F tools/handoff/cm3201.txt, git push. Do not ship cw-cx-demoplain again. Still not done: two-window demo pictures, ?party=1 comparison, critic.

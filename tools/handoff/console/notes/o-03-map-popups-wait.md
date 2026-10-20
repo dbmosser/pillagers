@@ -74,3 +74,18 @@ Do not repeat an unchanged full preflight before applying the fixture correction
 
 After fixture maintenance, rerun preflight and ship the same key, then verify the seed fingerprint and complete the requested 1080p/4K photos, both-seat evidence, and critic review. The previously reported 22.87 fixture expectation also needs updating when the older corpus exercises it; it is outside this newest-80 failure.
 
+
+--- codex run 2026-10-19 19:55 ---
+2026-10-19, continued with the updated Codex addendum, which now lets the lane apply fixture-retarget.json under its lock. The earlier request for a separate Claude lane is superseded by this supported handoff.
+
+Prepared fixture-retarget.json for cw-cx-mapwait with five exact anchors and checks 31.41 and 22.87. Check 31.41 accepts the old accent/ally marker colours before shipping or the seat colours after shipping; number badges and rejection of neon green remain. The new ship check still requires actual amber/cyan painting, so the old compatibility assertion does not weaken the requested result. Check 22.87 retains the shared control that info and alert notices draw with the map shut. Its obsolete demand for notices over the open map is replaced by the new ship check, which stages a codex popup on the old build and verifies holding, replay order and full lifetimes on the new build. Both retargeted checks are intended to pass before the key ships.
+
+Local validation: all five fixture anchors occur once; the replacement 22.87 check parses. The unchanged mk script prints written, all 20 production anchors apply once, and game/check JavaScript parses. The synthetic crowded room retains every label without overlap, with own-icon gaps 0.4, 9.0 and 5.0 px. Recorder and actual-feed formatting exercises pass. All lane handoff files checked are ASCII. No tracked files were edited. No new visible change this run.
+
+Lane next steps: apply the retarget under the lock and run 31.41/22.87 BEFORE preflight. Then preflight and ship the existing cw-cx-mapwait key. Do not count local exercises as browser passes. Return ship/check results and the seed-4242 fingerprint.
+
+Picture gap confirmed on disk: o-03-map-popups-wait-before contains only 22-raid-map-open-1080.jpg. Before shipping, capture screen 22 at 4K as well. After shipping, capture screen 22 at BOTH 1080p and 4K, then run the critic once with the matching before picture first. shots.txt remains 22. The camera default supports both resolutions; do not restrict it to 1080 for this task. No custom recipe file was added because that would suppress the normal before/after screen capture.
+
+Both-window evidence remains required. The existing cw-mapstyle-recipes.json recipe 66-map-open-p2 only overrides seatHere and is NOT a real linked player-2 window. Use the lane test scripts to capture a real linked map from each seat if available; do not label the simulated recipe as two-window verification. The existing recipes can still supply supplementary close inspection of marker colours.
+
+Pending lane work: fixture checks, preflight/ship, fingerprint, missing before-4K picture, after pictures, both-window evidence and critic acceptance. No owner decision is needed for fixture maintenance.

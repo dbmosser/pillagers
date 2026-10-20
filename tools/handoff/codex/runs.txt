@@ -57,3 +57,10 @@
 2026-10-19 19:48 o-11-trigger-hysteresis 12s ok DONE in=1070130 out=8449 run=2
 2026-10-19 19:51 o-12-menu-stick-repeat 141s ok PARTIAL in=338068 out=7644 run=1
 2026-10-19 19:51 o-12-menu-stick-repeat 32s ok PARTIAL in=482315 out=9334 run=2
+2026-10-19 19:54 o-12-menu-stick-repeat 5s ok DONE in=532524 out=9400 run=3
+2026-10-19 19:55 o-03-map-popups-wait 85s ok PARTIAL in=397618 out=5611 run=6
+2026-10-19 19:58 o-06-pad-controls 145s ok PARTIAL in=851461 out=7154 run=7
+2026-10-19 20:39 o-06-pad-controls 38s ok PARTIAL in=222611 out=1877 run=8
+2026-10-19 21:24 o-06-pad-controls 94s ok PARTIAL in=333827 out=2931 run=9
+2026-10-19 21:25 o-07-pad-lost 52s ok PARTIAL in=134259 out=2065 run=3
+2026-10-19 21:26 o-07-pad-lost 74s ok PARTIAL in=329400 out=5109 run=4

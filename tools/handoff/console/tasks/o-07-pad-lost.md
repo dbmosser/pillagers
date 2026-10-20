@@ -1,0 +1,12 @@
+o-07-pad-lost : a pad that drops pauses cleanly and comes back on A (pad research J8, coordinator 2026-10-19)
+effort: medium
+
+Today the disconnect box says "reconnect to resume" but nothing resumes. Build and test as section "J8" of tools/handoff/pad-research/best-practices.md:
+- Detect a lost pad by polling (slot null or connected false), not only the event, which only the front window gets.
+- The box reads "pad lost" (lower case). When the same pad returns it reads "press a", and A resumes. That press is also what
+  Chrome needs before it shows the pad again.
+- In two windows, the other window shows a small "p1 pad lost" or "p2 pad lost" tag and keeps running.
+- The other pad never takes over the lost slot. The pad order rule stays: first pad = p2, second pad = p1.
+Checks (each control must FAIL on the old build): stub getGamepads null for a slot, and the box shows within 2 frames; the stub
+returns the pad, and the box says "press a"; a stub A press closes it and play resumes; the two-window case with one pad lost.
+TASK DONE when shipped and the checks pass; TASK PARTIAL with what is left.

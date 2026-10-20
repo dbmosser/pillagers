@@ -1,0 +1,7 @@
+v32.01: the party is the plain demo
+
+The normal title opens the demo. Its sector map starts automatically and its word editor and snip tools require Ctrl. Leaving the demo stays on the page.
+
+Check 32.01. Fails on v32.00.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

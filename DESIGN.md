@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.01 - THE PARTY IS THE PLAIN DEMO
+
+Co-op hunt while he was away. His order of 2026-10-19: open localhost and click the demo. The separate party address mode is retired.
+
+MEASURED. Check 32.01 passes, and fails on v32.00.
 ## v32.00 - MENU STICK AND D-PAD REPEAT
 
 Co-op hunt while he was away. J10: large deadzones needed nearly full stick travel to navigate, and holding the D-pad only stepped once.

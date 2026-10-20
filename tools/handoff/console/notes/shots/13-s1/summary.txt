@@ -1,3 +1,8 @@
-== 1080 : window 1956x1185, viewport 1920x1080
-  40-whats-new-card                      staged      11.9s    | runs 1 wnseen 0
-  77-haul-reveal-done                    staged      12.1s  
+== 1080 : window 1952x1183, viewport 1920x1080
+  35-kia-card                            NOT STAGED  65.5s    | ERROR Unable to connect to the remote server
+  38-extracted-card                      NOT STAGED   4.1s    | ERROR Unable to connect to the remote server
+  40-whats-new-card                      NOT STAGED   4.1s    | ERROR Unable to connect to the remote server
+  59-raid-abandon-confirm                NOT STAGED   4.1s    | ERROR Unable to connect to the remote server
+  60-abandoned-card                      NOT STAGED   4.1s    | ERROR Unable to connect to the remote server
+  76-haul-reveal-mid                     NOT STAGED   4.1s    | ERROR Unable to connect to the remote server
+  77-haul-reveal-done                    NOT STAGED   4.1s    | ERROR Unable to connect to the remote server
