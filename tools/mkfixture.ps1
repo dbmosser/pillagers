@@ -57557,7 +57557,7 @@ window.__REGRESS=[
      for(mi=0;mi<FIXED_MAPS.length;mi++){
        M=FIXED_MAPS[mi]; if(!M||!M.zones) continue;
        cv2=document.createElement('canvas'); cv2.width=960; cv2.height=Math.round(960*M.h/M.w); c2=cv2.getContext('2d'); boxes=[];
-       c2.fillText=function(s,x,y){ var m=CanvasRenderingContext2D.prototype.measureText.call(this,String(s)), fsz=parseFloat(String(this.font).replace(/^[^0-9]*/,''))||11; boxes.push({s:String(s),l:x-m.width/2,r:x+m.width/2,t:y-fsz*0.8,b:y+fsz*0.2}); return CanvasRenderingContext2D.prototype.fillText.apply(this,arguments); };
+       c2.fillText=function(s,x,y){ var m=CanvasRenderingContext2D.prototype.measureText.call(this,String(s)), fsz=parseFloat((/([\d.]+)px/.exec(String(this.font))||[0,11])[1])||11;   /* 2026-10-20: the browser writes a bold font as "700 20px", so the old parse read the weight (700) as the size; read the number before px */ boxes.push({s:String(s),l:x-m.width/2,r:x+m.width/2,t:y-fsz*0.8,b:y+fsz*0.2}); return CanvasRenderingContext2D.prototype.fillText.apply(this,arguments); };
        try{ sectorPreviewDraw(cv2,M); }catch(e){ bad.push(M.name+' threw: '+(e&&e.message||e)); continue; }
        for(i=0;i<boxes.length;i++) for(j=i+1;j<boxes.length;j++){ A=boxes[i]; B=boxes[j]; n++;
          if(A.l<B.r-1&&B.l<A.r-1&&A.t<B.b-1&&B.t<A.b-1) bad.push(M.name+': '+A.s+' ['+Math.round(A.l)+','+Math.round(A.t)+','+Math.round(A.r)+','+Math.round(A.b)+'] prints into '+B.s+' ['+Math.round(B.l)+','+Math.round(B.t)+','+Math.round(B.r)+','+Math.round(B.b)+']'); }
