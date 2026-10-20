@@ -1713,7 +1713,7 @@ window.__REGRESS=[
      ['sentry','warden','bulwark'].forEach(function(k){ if(__audio.stepSound(k)!=='stepHeavy') bad.push(k+' is not heavy'); });
      ['crawler','raider','snitch','listener','howler','choir'].forEach(function(k){ if(__audio.stepSound(k)!=='step') bad.push(k+' went heavy'); });
      return bad.length?bad.join('; '):null; }},
-  {v:'8.55',what:'roads never cross an authored wall',
+  {v:'8.55h',what:'roads never cross an authored wall',
    run:function(){
      var out=[];
      [0,1].forEach(function(mi){
@@ -2069,7 +2069,7 @@ window.__REGRESS=[
      var r3=b3.wear/b3.fired, r1=b1.wear/b1.fired;
      if(Math.abs(r3-r1)>0.05) return 'burst wears '+r3.toFixed(2)+' per round against '+r1.toFixed(2)+' for a single shot';
      return null; }},
-  {v:'8.60',what:'a machine playing dead can be killed while it does it',
+  {v:'8.60h',what:'a machine playing dead can be killed while it does it',
    run:function(){
      function go(kill){
        __resetCfg(); __pinDefaults(0); __startRaid({mapIx:0,seed:4242});
@@ -2108,7 +2108,7 @@ window.__REGRESS=[
      var a=go(false), b=go(true);
      if(b>a+1) return 'rolling left '+b.toFixed(1)+' of the heal unapplied against '+a.toFixed(1)+' standing still';
      return null; }},
-  {v:'8.59',what:'melee cannot swing through a wall',
+  {v:'8.59h',what:'melee cannot swing through a wall',
    run:function(){
      __resetCfg(); __pinDefaults(1); __startRaid({mapIx:1,seed:4242});
      var g=__state();
@@ -2145,14 +2145,14 @@ window.__REGRESS=[
        if(Math.abs(c-near)>2) out.push('mapIx '+mi+' reported '+Math.round(c)+', nearest open ring is '+Math.round(near));
      });
      return out.length?out.join('; '):null; }},
-  {v:'8.58',what:'the sector board reads in metres, not a tenfold hectare',
+  {v:'8.58h',what:'the sector board reads in metres, not a tenfold hectare',
    run:function(){
      try{ __ui.sector(); }catch(e){ return 'renderSector threw: '+e; }
      var t=(document.getElementById('sectormodal').textContent||'').replace(/\s+/g,' ');
      if(/\d+ by \d+ hectares/.test(t)) return 'the board still prints a dimension in hectares';
      if(!/\d+ by \d+ metres|\d+ x \d+ m\b/.test(t)) return 'no metre dimension on the board at all';
      return null; }},
-  {v:'8.58',what:'no message promises something the game does not do',
+  {v:'8.58i',what:'no message promises something the game does not do',
    run:function(){
      var bad=[];
      // Built at runtime on purpose. Written as literals, these needles appear in
@@ -3223,7 +3223,7 @@ window.__REGRESS=[
        if(gone.itemKey===absent) bad.push("control: a "+absent+" he is not carrying held its belt slot");
      }
      return bad.length?bad.join("; "):null; }},
-  {v:'9.03',what:'an emptied belt slot is actually drawn darker, not just marked empty',
+  {v:'9.03h',what:'an emptied belt slot is actually drawn darker, not just marked empty',
    run:function(){
      return 'SKIP: removed by his order (items on the belt; the bar is guns only, a spent item type shows dim in the wheel, checked by 26.33)';
      if(!__vpAlive()) return 'SKIP: the pane has no layout, the HUD canvas has no pixels to read';
@@ -14558,7 +14558,7 @@ window.__REGRESS=[
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{ rigOff(); __topClear(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'30.79', what:'party launch mode (his Q28): the ?p2=1&arc=1&party=1 window never shows its title, shows the arcade attract at once and takes the host offer',
+  {v:'30.79h', what:'party launch mode (his Q28): the ?p2=1&arc=1&party=1 window never shows its title, shows the arcade attract at once and takes the host offer',
    run:function(){
      if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'SKIP: the party launch mode was retired (cw-cx-demoplain)';     var R={chans:[],opens:0,reloads:0,navs:[],joins:[]}, oOpen=window.open, oBC=window.BroadcastChannel, hadBC=('BroadcastChannel' in window), oH=netHost, oJ=netJoin, oStart=NET.start, oRel=partyReload, oNav=partyNav, oParty=PARTY, tl=document.getElementById('title'), tDisp=tl?tl.style.display:'', sv=null, bad=[];
      function BC(n){ this.posted=[]; R.chans.push(this); }
@@ -14607,7 +14607,7 @@ window.__REGRESS=[
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{ rigOff(); __topClear(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'30.79', what:'party launch mode (his Q28): after the HOST reloads, player 2 answers hostup with ready and the pair links again, and the host repeats hostup only while nobody is linked',
+  {v:'30.79i', what:'party launch mode (his Q28): after the HOST reloads, player 2 answers hostup with ready and the pair links again, and the host repeats hostup only while nobody is linked',
    run:function(){
      if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'SKIP: the party launch mode was retired (cw-cx-demoplain)';     var R={chans:[],opens:0,reloads:0,navs:[],joins:[]}, oOpen=window.open, oBC=window.BroadcastChannel, hadBC=('BroadcastChannel' in window), oH=netHost, oJ=netJoin, oStart=NET.start, oRel=partyReload, oNav=partyNav, oParty=PARTY, tl=document.getElementById('title'), tDisp=tl?tl.style.display:'', sv=null, bad=[];
      function BC(n){ this.posted=[]; R.chans.push(this); }
@@ -14667,7 +14667,7 @@ window.__REGRESS=[
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{ NET.peers=[]; NET.role=null; rigOff(); __topClear(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'30.79', what:'party launch mode (his Q28): leaving the arcade for any reason but EXIT DEMO reloads into the party and the title rows stay hidden; EXIT DEMO goes to the plain address',
+  {v:'30.79j', what:'party launch mode (his Q28): leaving the arcade for any reason but EXIT DEMO reloads into the party and the title rows stay hidden; EXIT DEMO goes to the plain address',
    run:function(){
      if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'SKIP: the party launch mode was retired (cw-cx-demoplain)';     var R={chans:[],opens:0,reloads:0,navs:[],joins:[]}, oOpen=window.open, oBC=window.BroadcastChannel, hadBC=('BroadcastChannel' in window), oH=netHost, oJ=netJoin, oStart=NET.start, oRel=partyReload, oNav=partyNav, oParty=PARTY, tl=document.getElementById('title'), tDisp=tl?tl.style.display:'', sv=null, bad=[];
      function BC(n){ this.posted=[]; R.chans.push(this); }
@@ -14729,7 +14729,7 @@ window.__REGRESS=[
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{ rigOff(); __topClear(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'30.79', what:'party launch mode (his Q28): without ?party=1 nothing changes: no boot, no reload on leave, EXIT DEMO leaves in place',
+  {v:'30.79k', what:'party launch mode (his Q28): without ?party=1 nothing changes: no boot, no reload on leave, EXIT DEMO leaves in place',
    run:function(){
      if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'SKIP: the party launch mode was retired (cw-cx-demoplain)';     var R={chans:[],opens:0,reloads:0,navs:[],joins:[]}, oOpen=window.open, oBC=window.BroadcastChannel, hadBC=('BroadcastChannel' in window), oH=netHost, oJ=netJoin, oStart=NET.start, oRel=partyReload, oNav=partyNav, oParty=PARTY, tl=document.getElementById('title'), tDisp=tl?tl.style.display:'', sv=null, bad=[];
      function BC(n){ this.posted=[]; R.chans.push(this); }
@@ -14780,7 +14780,7 @@ window.__REGRESS=[
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{ rigOff(); __topClear(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'30.79', what:'party launch mode (his Q28): stale player 2 marks (p2raid and p2live set 10 s ago by a killed window) do not stop a party boot from entering the arcade, and the marks are cleared',
+  {v:'30.79l', what:'party launch mode (his Q28): stale player 2 marks (p2raid and p2live set 10 s ago by a killed window) do not stop a party boot from entering the arcade, and the marks are cleared',
    run:function(){
      if(typeof partyHostBoot!=='function'||typeof partyP2Boot!=='function'||typeof PARTY==='undefined') return 'SKIP: the party launch mode was retired (cw-cx-demoplain)';     var R={chans:[],opens:0,reloads:0,navs:[],joins:[]}, oOpen=window.open, oBC=window.BroadcastChannel, hadBC=('BroadcastChannel' in window), oH=netHost, oJ=netJoin, oStart=NET.start, oRel=partyReload, oNav=partyNav, oParty=PARTY, tl=document.getElementById('title'), tDisp=tl?tl.style.display:'', sv=null, bad=[];
      function BC(n){ this.posted=[]; R.chans.push(this); }
@@ -17838,7 +17838,7 @@ window.__REGRESS=[
        try{ __topClear(); }catch(_t){}
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'29.59',what:'one UI sound per event kind: the focus tick has 3 or more pitches within 3 percent and at most one per 40 ms, confirm, back, deny, open and close are five different sounds, and sndUi asks the picker',
+  {v:'29.59h',what:'one UI sound per event kind: the focus tick has 3 or more pitches within 3 percent and at most one per 40 ms, confirm, back, deny, open and close are five different sounds, and sndUi asks the picker',
    run:function(){
      if(typeof uiSndPick!=='function') return 'no sound picker (no uiSndPick): the which-sound decision cannot be tested';
      var bad=[], ps={}, st=-1, t=10, i, r, sig={}, ks=['ok','back','deny','open','close'], P={}, nn;
@@ -17854,7 +17854,7 @@ window.__REGRESS=[
      if(P.ok&&P.deny&&!(P.deny.f1<P.ok.f1&&P.deny.f2<=100)) bad.push('deny is not a dull low thud');
      if(String(sndUi).indexOf('uiSndPick(')<0) bad.push('sndUi does not use the picker');
      return bad.length?bad.join('; '):null; }},
-  {v:'29.59',what:'the Keys window has no separate Rebind box: the key cap is the control, and it waits for a press',
+  {v:'29.59i',what:'the Keys window has no separate Rebind box: the key cap is the control, and it waits for a press',
    run:function(){
      if(typeof keysOpen!=='function') return 'SKIP: no Keys window here';
      var bad=[], l, rb, kb, sec, s, wasWait;
@@ -66789,7 +66789,7 @@ window.__REGRESS=[
        try{ __cleanProfile(); }catch(_cp){}
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'15.91',what:'loot per player and the host leaving ends the run for everyone: at the build the host numbers its 165 containers in list order; a search request from one of the party on a box is granted with the count of the host list and told held to the others, a second request on the same box from another seat is refused as held while the first runs, a request from a seat filed far from the box is refused as far, the host own E on a box one of the party holds starts nothing and says who holds it while on a free box it starts (control), frames of the real loop run the search on the host and post the loot to the requesting seat in the order of the host list one stage at a time with the last word saying done, the box is told open to everyone with the seat that searched it and refuses every request after, the host own backpack, stash, credits and container tally gain nothing, a box holding a locked room key keeps the KEY mark test the sector map makes until one of the party pulls the key out and loses it before the box opens, a hold let go keeps its progress and frees the box and a second request resumes from that bar, a body the host made mid raid is numbered and told new on the next tick and told open and shut as it changes, a seat that comes up is told which boxes are open, the seeded stream never moves through the requests, the words and the ticks; CONTROL with the party off: nothing is numbered, a held E empties the box into the backpack from the local list and the net section holds no search; THE LINKED WINDOW up top on the host word numbers the same boxes, a held E on a box asks the host once and grants nothing from its own list, the bar stands until the host grants it and then fills from where the host has it and stops at the top with the box still shut and the backpack unchanged, a loot word puts the items in this window own backpack and the done word closes the box and counts it on this run, an open word marks a box searched so a held E starts nothing and asks nothing (control: before the word it asks), letting go tells the host, a held word keeps a held E off the box and a free word lets it ask, a shut word puts a searched box back, a new word makes a body the host made that a held E asks for, an all word marks open and held boxes, and the seeded stream never moves through the words; THE HOST LEAVING: an out word from another seat and a roster without it end nothing, an out word from seat 0 ends this raid as abandon through endRaid with the host left line on the run card and in the PARTY status, and up again on the same word a lost host link ends it the same way and the party is off (multiplayer phase 3 build 1)',
+  {v:'15.91h',what:'loot per player and the host leaving ends the run for everyone: at the build the host numbers its 165 containers in list order; a search request from one of the party on a box is granted with the count of the host list and told held to the others, a second request on the same box from another seat is refused as held while the first runs, a request from a seat filed far from the box is refused as far, the host own E on a box one of the party holds starts nothing and says who holds it while on a free box it starts (control), frames of the real loop run the search on the host and post the loot to the requesting seat in the order of the host list one stage at a time with the last word saying done, the box is told open to everyone with the seat that searched it and refuses every request after, the host own backpack, stash, credits and container tally gain nothing, a box holding a locked room key keeps the KEY mark test the sector map makes until one of the party pulls the key out and loses it before the box opens, a hold let go keeps its progress and frees the box and a second request resumes from that bar, a body the host made mid raid is numbered and told new on the next tick and told open and shut as it changes, a seat that comes up is told which boxes are open, the seeded stream never moves through the requests, the words and the ticks; CONTROL with the party off: nothing is numbered, a held E empties the box into the backpack from the local list and the net section holds no search; THE LINKED WINDOW up top on the host word numbers the same boxes, a held E on a box asks the host once and grants nothing from its own list, the bar stands until the host grants it and then fills from where the host has it and stops at the top with the box still shut and the backpack unchanged, a loot word puts the items in this window own backpack and the done word closes the box and counts it on this run, an open word marks a box searched so a held E starts nothing and asks nothing (control: before the word it asks), letting go tells the host, a held word keeps a held E off the box and a free word lets it ask, a shut word puts a searched box back, a new word makes a body the host made that a held E asks for, an all word marks open and held boxes, and the seeded stream never moves through the words; THE HOST LEAVING: an out word from another seat and a roster without it end nothing, an out word from seat 0 ends this raid as abandon through endRaid with the host left line on the run card and in the PARTY status, and up again on the same word a lost host link ends it the same way and the party is off (multiplayer phase 3 build 1)',
    run:function(){
      // THE SHARED CONTAINERS ARE THERE. Without them each window searches its own copy of every box, so the old build fails here rather than skips.
      if(typeof NET==='undefined'||!NET||typeof netSrchTake!=='function'||typeof netSrchTick!=='function'||typeof netContTick!=='function'||typeof netLootTake!=='function'||
