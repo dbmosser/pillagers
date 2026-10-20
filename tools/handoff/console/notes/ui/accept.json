@@ -215,17 +215,17 @@
  "22-raid-map-open": {
   "score": 3,
   "pass": false,
-  "verdict": "The window shell is clean and consistent, but the map is more crowded than before: the new label spreading puts cache tags in stacks and leader lines around the two strongbox clusters, and the map still reads as a cluttered pile of tags instead of one clear picture.",
+  "verdict": "The window shell (title left, x top-right, centred card, lime m close key) is consistent and clean. The map is still a crowd of tiny labels and the contracts column is a flat list of identical rows, so the eye has no clear first stop. The 'cache' labels now clump into leader-line tangles at the top-right and right-middle.",
   "findings": [
-   "P1 map, top-right strongbox cluster (about x1000-1060, y190-290): Merge co-located containers into one marker with a count ('cache x3'). If they stay separate, spread them at least 16px apart and drop the leader lines under 20px. Show one label per cluster.",
-   "P1 map, right-middle strongbox cluster (about x890-1070, y375-560): Cap labels per cluster at 2 and show the rest as a '+3' chip. Keep at least 12px of clear space around the extract rings and the room name labels. Render the loot tags at 14px with the tx-2 colour, so extraction and room names stay the loudest.",
-   "P1 map, label hierarchy: Set tier 1 (extract a/b/c, player arrow) at 20px, tier 2 (hazards) at 16px, tier 3 (cache, room names) at 14px in tx-2. Keep tx-1 and bold for extracts only.",
-   "P1 contracts list, right panel: Show the top 3 contracts in tx-1 with an accent progress bar and fade the rest, or add a --acc tab to the first row. Extend the bar to x1742 so it lines up with the price and count. Align the header padding to the 24px row padding.",
-   "P2 map frame vs contracts panel: Give both the --ui-panel fill, a 1px --ui-line-hi border and --rad 4px. Drop the thick bevel on the map frame, or give the map the --ui-void fill with the same 1px border."
+   "P1 map, strongbox/blast freezer cluster (x 920-1080, y 360-560): Merge duplicate-type tags into one label with a count, for example 'cache x4'. Keep one leader line per label. Keep the tag column at least 24px clear of the zone and extract labels. Drop the leader lines when the icon is within 40px.",
+   "P1 map, top-right (x 960-1060, y 180-290): Combine them into one 'cache x3' label. Put it outside the room rectangle at least 12px from the 'locked' label. Use 16px type.",
+   "P1 contracts panel, rows: Draw the progress bar as a 4px track in --ui-line with a --acc fill proportional to progress. Set reward text in --tx-1 and the name in --tx-1 at 20px. Give every row a count in the same slot ('0/1') so 'open' does not break the column.",
+   "P1 map labels, overall: Use three tiers: extract labels 20px --extract, point-of-interest labels 16px --tx-1, zone names 16px --tx-2 at 4.5:1 or better. Give POI labels a 1px dark text outline or a 60% --ui-void chip behind them.",
+   "P2 map, left edge (old image only; 'codex entry' toast): None needed. Confirm in a later capture that toasts never draw over the window card."
   ],
   "pic": "tools/handoff/console/notes/shots/o-03-map-popups-wait-after/22-raid-map-open-1080.jpg",
   "task": "o-03-map-popups-wait",
-  "when": "2026-10-20T05:00"
+  "when": "2026-10-20T05:09"
  },
  "23-raid-backpack-open": {
   "score": 2,

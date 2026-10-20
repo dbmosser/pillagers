@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.34 - THE TITLE MUSIC PLAYS THREE VARIATIONS IN TURN
+
+Co-op hunt while he was away. His round 2 answer 2.70 c: the idle loop should use three variations of the piece in turn. THE ASCENT now plays as written, then with the tune half a bar later in each bar, then a quarter bar later, and round again. Same notes and chords, so it stays one piece.
+
+MEASURED. Check 32.34 passes, and fails on v32.33.
 ## v32.33 - MAP LOOT TAGS TAKE A BACK SEAT
 
 Co-op hunt while he was away. The critic still found loot labels too loud and contract bars stopped before the common right edge.

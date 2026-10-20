@@ -1,0 +1,7 @@
+v32.34: the title music plays three variations in turn
+
+The title and idle music changes its tune placement every pass through three variations.
+
+Check 32.34. Fails on v32.33.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,5 @@
+## v32.34 - THE TITLE MUSIC PLAYS THREE VARIATIONS IN TURN
+
+Co-op hunt while he was away. His round 2 answer 2.70 c: the idle loop should use three variations of the piece in turn. THE ASCENT now plays as written, then with the tune half a bar later in each bar, then a quarter bar later, and round again. Same notes and chords, so it stays one piece.
+
+MEASURED. Check 32.34 passes, and fails on v32.33.

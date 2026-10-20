@@ -1,1 +1,1 @@
-10-20 01:06 gate: shipping cw-cx-mapquiet-o03 (o-03-map-popups-wait, codex)
+10-20 01:09 waiting for RAM: 2 GB free, need 3 (o-01-stash-pays-in-raid)

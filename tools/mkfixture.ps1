@@ -6101,6 +6101,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'32.34',what:'the idle loop cycles through three variations of the piece in turn (his 2.70 c)',
+   run:function(){
+     var T, B, p0, leads=[], i, st, pass, adv, seen=[], bad=[], key, sorted;
+     if(typeof musAdvance!=='function'||typeof musLeadAt!=='function') return 'the title piece has no variations (no musAdvance or musLeadAt)';
+     T=THEME_TITLE; B=T.bars[0]; p0=MUS.pass;
+     try{
+       for(i=0;i<3;i++){ MUS.pass=i; leads.push(T.bars[0].lead.map(function(_x,si){ return musLeadAt(T,B,si); }).join(',')); }
+       if(leads[0]===leads[1]||leads[1]===leads[2]||leads[0]===leads[2]) bad.push('the three passes play the same tune');
+       sorted=leads.map(function(s){ return s.split(',').sort().join(','); });
+       if(sorted[0]!==sorted[1]||sorted[1]!==sorted[2]) bad.push('a variation plays other notes than the piece');
+       st=0; pass=0; seen.push(pass);
+       for(i=0;i<T.bars.length*16*4;i++){ adv=musAdvance(st,T.bars.length*16,pass,T); st=adv.step; pass=adv.pass; if(st===0) seen.push(pass); }
+       if(seen.join('')!=='01201') bad.push('the passes go '+seen.join('')+', not 0 1 2 0 1');
+       MUS.pass=0; if(musLeadAt(T,B,0)!==74) bad.push('pass 0 is no longer the piece as written');
+       return bad.length?bad.join('; '):null;
+     } finally { MUS.pass=p0; } }},
   {v:'32.33',what:'cw-cx-mapquiet-o03: individual loot tags use muted medium type with 16px text clearance and 12px icon clearance, and contract tracks reach the common right edge below status',
    run:function(){
      var g, bad=[], ow=W, oh=H, os=MAPFIRST.skip, oldC=P.contracts, oldUS=P.uiScale, hadUS=Object.prototype.hasOwnProperty.call(P,'uiScale'), op=mapPlaceLabels, oi=mapIcon, PR=CanvasRenderingContext2D.prototype, of=PR.fillText, ofr=PR.fillRect,

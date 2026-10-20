@@ -3028,7 +3028,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.33';
+var VER='32.34';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -6626,7 +6626,7 @@ function tickMusic(){
   var _spb=musStepSec(T);
   while(MUS.next<a.currentTime+0.65){
     musNote(a,MUS.next,MUS.step);
-    MUS.step=(MUS.step+1)%_len;
+    var _adv=musAdvance(MUS.step,_len,MUS.pass,T); MUS.step=_adv.step; MUS.pass=_adv.pass;   // v28.xx (cw-musicvar): three variations in turn
     MUS.next+=_spb;
   }
 }
@@ -6642,6 +6642,17 @@ function musStepSec(T){
   // 76 is the slowest a sixteenth can go here before the tune stops joining up.
   if(CFG.musDark!==0&&s<0.197) s=0.197;
   return s;
+}
+// v28.xx (cw-musicvar), HIS ANSWER 2.70 c (the idle loop over a long night): "use three variations of the piece in turn". THE ASCENT plays its
+// eight bars three ways, one after the other: as written, then with the tune started half a bar later in each bar, then a quarter bar later.
+// Same notes, same chords, same kit, so it is still the one piece; only where the tune lands moves. MUS.pass is 0, 1, 2 and round again.
+function musVarShift(pass){ return [0,8,4][(((pass|0)%3)+3)%3]; }
+function musLeadAt(T,B,si){ return (T&&T.title)?B.lead[(si+musVarShift(MUS.pass))%16]:B.lead[si]; }
+// the step after this one, and the pass it belongs to: the pass moves on each time the eight bars come round
+function musAdvance(step,len,pass,T){
+  var s=(step+1)%len, p=pass|0;
+  if(s===0&&T&&T.title) p=(p+1)%3;
+  return {step:s,pass:p};
 }
 function musNote(a,t,step){
   var T=musTrk(), bi=(step/16)|0, si=step%16;
@@ -6676,7 +6687,7 @@ function musNote(a,t,step){
   }
   // LEAD: written, held, and doubled a breath late and a hair sharp so it has
   // some width instead of arriving as a single naked beep.
-  var m=B.lead[si];
+  var m=musLeadAt(T,B,si);   // v28.xx (cw-musicvar): the tune of this pass
   if(!m) return;
   // v9.87: an octave down. Every piece was written with its tune between 73 and
   // 76 on average and peaking at 81 to 84, which is a cheerful register whatever
@@ -50378,7 +50389,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.33: Loot tags use medium muted type, wider spacing and shorter halos. Nearby tags lose tiny leaders. Contract bars reach the same edge as status and rewards. Check 32.33 fails on v32.32',
+  now:'v32.34: The title and idle music changes its tune placement every pass through three variations. Check 32.34 fails on v32.33',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
