@@ -72900,7 +72900,7 @@ window.__REGRESS=[
      var bad=[], P0=__P(), keepTxt=null, label=null;
      function firstText(root){
        var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null,false), t;
-       while((t=w.nextNode())){ if(t.nodeValue&&t.nodeValue.replace(/\s+/g,'').length>2&&!(/\d/).test(t.nodeValue)) return t.nodeValue; }
+       while((t=w.nextNode())){ if(t.nodeValue&&t.nodeValue.replace(/\s+/g,'').length>2&&!(/\d/).test(t.nodeValue)) return (typeof t.__txo==='string')?t.__txo:t.nodeValue; }
        return null;
      }
      try{
@@ -79849,7 +79849,8 @@ window.__REGRESS=[
      var key=null, k;
      for(k in M) if(k.indexOf('No tab, no credit')===0){ key=k; break; }
      if(!key) return 'SKIP: he has no baked edit for the bar line, so there is nothing of his to lose';
-     var want=String(M[key]||'');
+     // v28.xx (cw-cx-corpus04): keep the owner's entire replacement, after the global lower-case door.
+     var want=String(M[key]||''); if(typeof ncFix==='function') want=ncFix(want);
      if(!want.replace(/\s+/g,'').length) return 'SKIP: his edit for that line is blank, so nothing visible is expected';
      var bad=[], P2=__P(), keepBuzz=(P2.buzz||[]).slice(), keepCr=P2.credits, keepTxt=P2.txt;
      try{
@@ -83625,8 +83626,8 @@ window.__REGRESS=[
          g.bag=['comp','servo'];
          g.player.downed=false; __endRaid('dead');
          var txt=''; try{ txt=((document.getElementById('outcome')||{}).innerText||'').replace(/\s+/g,' '); }catch(_t){}
-         if(txt.indexOf('KILLED IN ACTION')<0) bad.push('control: a death did not open the outcome card, so the payout path is not being measured');
-         if(txt.indexOf('LOST')<0) bad.push('control: the death card lists nothing as lost, so the ledger it shares with the pocket branch is not running');
+         if(!/killed in action/i.test(txt)) bad.push('control: a death did not open the outcome card, so the payout path is not being measured');
+         if(!/lost/i.test(txt)) bad.push('control: the death card lists nothing as lost, so the ledger it shares with the pocket branch is not running');
          if(/safe pocket/i.test(txt)) bad.push('the death card still says safe pocket');
        }
        // FOUR, AND THIS IS THE ONE A CARELESS DELETION BREAKS: the world container
@@ -85901,9 +85902,10 @@ window.__REGRESS=[
      var bad=[], prof;
      try{
        __topClear(); __cleanProfile(); prof=__P();
-       // DISTINCTIVE: three guns no fresh profile owns, the marksman rifle in hand,
+       // v28.xx (cw-cx-corpus04): Q69 removed dmr; test restore fidelity with three supported guns.
+       // DISTINCTIVE: three guns no fresh profile owns, the Compact SMG in hand,
        // the magnum second, and worn figures nothing rolls.
-       prof.weapons=['dmr','magnum','sniper']; prof.equipped='dmr'; prof.equippedSec='magnum'; prof.wear={dmr:137,magnum:41};
+       prof.weapons=['smg','magnum','sniper']; prof.equipped='smg'; prof.equippedSec='magnum'; prof.wear={smg:137,magnum:41};
        var code=restoreCode();
        if(!code) bad.push('no restore code was made');
        var o=code?restoreRead(code):null;
@@ -85914,14 +85916,14 @@ window.__REGRESS=[
          prof.weapons=['pistol']; prof.equipped='pistol'; prof.equippedSec='none'; prof.wear={};
          var ok=restoreApply(o);
          if(!ok) bad.push('control: the code was refused');
-         if((prof.weapons||[]).join(',')!=='dmr,magnum,sniper') bad.push('the guns came back as '+((prof.weapons||[]).join(',')||'nothing')+' and not dmr,magnum,sniper');
-         if(prof.equipped!=='dmr') bad.push('the gun in hand came back as '+prof.equipped+' and not dmr');
+         if((prof.weapons||[]).join(',')!=='smg,magnum,sniper') bad.push('the guns came back as '+((prof.weapons||[]).join(',')||'nothing')+' and not smg,magnum,sniper');
+         if(prof.equipped!=='smg') bad.push('the gun in hand came back as '+prof.equipped+' and not smg');
          if((prof.equippedSec||'none')!=='magnum') bad.push('the second slot came back as '+(prof.equippedSec||'none')+' and not magnum');
-         if(((prof.wear||{}).dmr|0)!==137) bad.push('the wear on the marksman rifle came back as '+((prof.wear||{}).dmr|0)+' and not 137');
+         if(((prof.wear||{}).smg|0)!==137) bad.push('the wear on the Compact SMG came back as '+((prof.wear||{}).smg|0)+' and not 137');
          // CONTROL: a gun the build does not know is dropped, not restored.
          o.g.w.push('zqxgun'); restoreApply(o);
          if((prof.weapons||[]).indexOf('zqxgun')>=0) bad.push('control: a gun this build does not have was restored into the armoury');
-         if((prof.weapons||[]).join(',')!=='dmr,magnum,sniper') bad.push('control: after the unknown gun the armoury reads '+(prof.weapons||[]).join(','));
+         if((prof.weapons||[]).join(',')!=='smg,magnum,sniper') bad.push('control: after the unknown gun the armoury reads '+(prof.weapons||[]).join(','));
        }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ __cleanProfile(); }
@@ -86328,13 +86330,15 @@ window.__REGRESS=[
      for(var k in o){ n++; if(k.indexOf('Take the lift up with whatever you dare carry')>=0) liftKey=k; }
      if(n<71) bad.push('only '+n+' edits are baked, expected his latest set of 71');
      if(!liftKey) bad.push('the new title-screen lift line he rewrote is not in the baked set');
-     else if(__tx.get(liftKey)!==o[liftKey]) bad.push('the new lift line does not render his wording through TX');
+     else if(__tx.get(liftKey)!==((typeof ncFix==='function')?ncFix(o[liftKey]):o[liftKey])) bad.push('the new lift line does not render his wording through TX');
      return bad.length?bad.join('; '):null; }},
   {v:'11.42',what:'his in-game text edits are baked in: TX rewrites his edited strings to his wording with the editor off, exact and number-pattern lines alike, and leaves unrelated text alone',
    run:function(){
      if(!(window.__tx&&__tx.get)) return 'SKIP: this build has no text engine to drive';
      var bad=[];
-     function chk(oldS,wantS){ var g=__tx.get(oldS); if(g!==wantS) bad.push('"'+oldS.slice(0,32)+'" did not become his wording (got "'+(''+g).slice(0,40)+'")'); }
+     // v28.xx (cw-cx-corpus04): the lower-case door applies after exact and pattern replacements.
+     function screen(s){ return (typeof ncFix==='function')?ncFix(s):s; }
+     function chk(oldS,wantS){ var g=__tx.get(oldS); wantS=screen(wantS); if(g!==wantS) bad.push('"'+oldS.slice(0,32)+'" did not become his wording (got "'+(''+g).slice(0,40)+'")'); }
      // exact edits, ASCII samples of the baked set
      chk('Human-shaped rivals looting the same map. They fight each other and the machines as well as you.','Make some friends.');
      chk('no armour on','no armour equipped');
@@ -86343,7 +86347,7 @@ window.__REGRESS=[
      // number-pattern edit driven with a DIFFERENT number, to prove the shape not the instance
      chk('Rainy. Harder going, so XP pays 2.5x.','XP multiplier = 2.5x');
      // an unedited line must pass through untouched
-     var u='This exact line was never one he edited.'; if(__tx.get(u)!==u) bad.push('an unedited line was rewritten (got "'+(''+__tx.get(u)).slice(0,40)+'")');
+     var u='This exact line was never one he edited.'; if(__tx.get(u)!==screen(u)) bad.push('an unedited line was rewritten (got "'+(''+__tx.get(u)).slice(0,40)+'")');
      // the shipped map is present and roughly complete
      if(__tx.ship){ var _n=0,_o=__tx.ship(); for(var _k in _o) _n++; if(_n<60) bad.push('only '+_n+' edits are baked, expected the full set (~67)'); }
      return bad.length?bad.join('; '):null; }},
@@ -86598,12 +86602,14 @@ window.__REGRESS=[
   {v:'11.33',what:'the player-facing word for the pack is BACKPACK, not bag: the title controls line, the empty-panel hint and the full-pack message; and none of the three old strings survives anywhere the player reads',
    run:function(){
      var bad=[];
-     // ONE: the title controls line, which a player reads on every load.
+     // v28.xx (cw-cx-corpus04): the title now sends players to F1 for backpack controls.
      var title=document.getElementById('title');
      if(!title) return 'SKIP: no title element in this document';
-     var tt=(title.textContent||'').replace(/\s+/g,' ');
-     if(tt.indexOf('I backpack')<0) bad.push('the title controls line does not say "I backpack": '+tt.slice(0,120));
-     if(tt.indexOf('TAB bag')>=0) bad.push('the title controls line still says "TAB bag"');
+     var tt=(title.textContent||'').replace(/\s+/g,' ').toLowerCase();
+     var full=window.__legends?__legends().full:null;
+     if(!full||!full.some(function(sec){ return Array.isArray(sec[1])&&sec[1].some(function(r){ return /\bi\b/i.test(String(r[0]))&&/backpack/i.test(String(r[1])); }); }))
+       bad.push('the full controls list does not pair I with backpack');
+     if(/tab\s+bag/i.test(tt)) bad.push('the title controls line still says TAB bag');
      // TWO: the old strings are gone from everywhere the player reads, source
      // included. The needles are assembled so this check does not match itself.
      var src=document.documentElement.innerHTML;
@@ -88559,6 +88565,8 @@ window.__REGRESS=[
      function shownBtns(){
        var out=[], all=pb.querySelectorAll('button');
        for(var i=0;i<all.length;i++){
+         // v28.xx (cw-cx-corpus04): the close X is a resume control, not a third navigation destination.
+         if(all[i].id==='pausex') continue;
          var st=window.getComputedStyle(all[i]);
          if(st.display==='none'||st.visibility==='hidden') continue;
          out.push({id:all[i].id,txt:(all[i].textContent||'').trim()});
@@ -88566,7 +88574,7 @@ window.__REGRESS=[
        return out;
      }
      try{
-       __runPrep(); __resetCfg(); __pinDefaults(0);
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0);
        // ON THE FLOOR. The raid has to be gone, or the box correctly decides it
        // is pausing a raid and shows the raid controls, and this would be
        // testing the wrong half.
@@ -88653,7 +88661,8 @@ window.__REGRESS=[
      } finally {
        try{ togglePauseBox(false); }catch(_e1){}
        try{ ti.classList.toggle('on',titleWas); }catch(_e2){}
-       try{ __resetCfg(); }catch(_e3){}
+       try{ __endRaid('abandon'); }catch(_end){}
+       try{ __topClear(); __resetCfg(); }catch(_e3){}
      }
      return bad.length?bad.join('; '):null; }},
   {v:'10.95',what:'every word drawn on the canvas is set in one family, the loot pop and the world labels included',
@@ -88937,6 +88946,12 @@ window.__REGRESS=[
      // away from the exact value. What comes back is the disc, in pixels.
      function read(px,py){
        var Pj=__mapShot(); if(!Pj) return null;
+       // v28.xx (cw-cx-corpus04): measure the chevron itself in its assigned seat color, not the separate badge.
+       var col=(typeof mapSeatColor==='function'&&typeof seatHere==='function')?mapSeatColor(seatHere()):'#39ff14';
+       var rgb=/^#([0-9a-f]{6})$/i.exec(col);
+       if(!rgb) throw new Error('unreadable map marker color '+col);
+       var cv=parseInt(rgb[1],16), rr=(cv>>>16)&255, gg=(cv>>>8)&255, bb=cv&255;
+       var mz=(typeof hudRes==='function')?hudRes():1;
        var cx=Math.round(Pj.ox+px*Pj.sc), cy=Math.round(Pj.oy+py*Pj.sc);
        var R=80;
        var x0=Math.max(0,cx-R), y0=Math.max(0,cy-R);
@@ -88946,7 +88961,8 @@ window.__REGRESS=[
        for(y=0;y<y1-y0;y++) for(x=0;x<w;x++){
          var i=(y*w+x)*4;
          // v28.xx retarget: his mapchev order 2026-10-15 made the marker a neon green chevron (#39ff14, 57 255 20), no longer a gold disc
-         if(d[i]===57&&d[i+1]===255&&d[i+2]===20&&d[i+3]>250){
+         if(typeof mapSeatBadge==='function'&&Math.hypot(x0+x-(Pj.ox+px*Pj.sc+17*mz),y0+y-(Pj.oy+py*Pj.sc-17*mz))<=10.5*mz) continue;
+         if(d[i]===rr&&d[i+1]===gg&&d[i+2]===bb&&d[i+3]>250){
            k++;
            var dd=Math.hypot(x0+x-cx,y0+y-cy); if(dd>far) far=dd;
          }
@@ -88960,7 +88976,7 @@ window.__REGRESS=[
        var pl=g.player;
        return {m:read(pl.x,pl.y),g:g,p:pl};
      }
-     __runPrep(); __resetCfg(); __pinDefaults(0);
+     __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __pinDPR(1);
      try{
        // 1. AT HIS OWN SCREEN SIZE IT IS NO LONGER A SPECK. Measured on v10.91
        //    the disc was 4 pixels of radius, about 50 exact-gold pixels; the
@@ -89002,7 +89018,7 @@ window.__REGRESS=[
          if(!moved||moved.n<100) bad.push('control: the marker did not follow the operator, it reads '+(moved?moved.n:'nothing')+' pixels at his new position');
          if(left&&left.n>40) bad.push('control: '+left.n+' gold pixels are still sitting where the operator used to be, so this check is counting something that is not him');
        }
-     } finally { __forceSize(1920,1080); }
+     } finally { try{ __endRaid('abandon'); }catch(_e){} __topClear(); __cleanProfile(); __forceSize(1920,1080); }
      return bad.length?bad.join('; '):null; }},
   {v:'10.91',what:'every panel resize grip has somewhere to drag to: a panel pinned to the right edge grips on its left, and the click, the cursor and the drawing all agree where it is',
    run:function(){
@@ -90064,8 +90080,13 @@ window.__REGRESS=[
        var intro=null;
        Array.prototype.forEach.call(col.children,function(d){
          if(/elites left you for dead/.test(d.textContent||'')) intro=d; });
-       if(!intro) bad.push('control: the opening sentence is not on the title screen any more, so its measure cannot be checked');
-       else{
+       // v28.xx (cw-cx-corpus04): Q51 replaced the story with one line; it still needs a readable measure.
+       if(!intro){
+         intro=document.getElementById('titletag');
+         if(!intro||!col.contains(intro)||!/^ascend\.\s*pillage\.\s*extract\.$/i.test((intro.textContent||'').trim()))
+           bad.push('control: neither the title story nor its approved one-line replacement is present');
+       }
+       if(intro){
          var ir=intro.getBoundingClientRect();
          if(ir.width>1100) bad.push('the opening sentence runs '+Math.round(ir.width)+' pixels wide, which is one long line rather than a readable measure');
          if(ir.width<400) bad.push('control: the opening sentence measures only '+Math.round(ir.width)+' pixels, so something else has gone wrong');
