@@ -1,0 +1,96 @@
+{
+    "title":  "THE 2-PLAYER PARTY LINES BECOME SHORT CALLOUTS",
+    "why":  "His rule (RULES: never an explaining sentence on screen; answer 27 lets us reword): the 2-player hub toasts and PARTY window lines were full sentences with a full stop, such as pillager joined your party",
+    "now":  "They read as short callouts with no full stop: pillager joined, waiting for player 2, party ascended, out until the next raid.",
+    "edits":  [
+                  {
+                      "anchor":  "      NET.status=peer.name+\u0027 joined your party.\u0027; NET.err=\u0027\u0027;",
+                      "replacement":  "      // v33.xx (cw-partycallouts), job 66 (RULES: never an explaining sentence on screen; his answer 27 lets us reword): every 2-player\n      // party line below, in the hub toast and the PARTY window, is a short lower-case callout with no full stop and no second sentence.\n      NET.status=peer.name+\u0027 joined\u0027; NET.err=\u0027\u0027;"
+                  },
+                  {
+                      "anchor":  "NET.status=(m.why===\u0027out\u0027)?\u0027You are out of this raid. You go up with your host next time.\u0027:\u0027Your host is not up top.\u0027;",
+                      "replacement":  "NET.status=(m.why===\u0027out\u0027)?\u0027out until the next raid\u0027:\u0027host not up top\u0027;"
+                  },
+                  {
+                      "anchor":  "NET.status=\u0027You are in the party hosted by \u0027+(hn||\u0027your host\u0027)+\u0027.\u0027;",
+                      "replacement":  "NET.status=\u0027in \u0027+(hn||\u0027your host\u0027)+\u0027\\\u0027s party\u0027;"
+                  },
+                  {
+                      "anchor":  "NET.status+=\u0027 They are in a raid now: go up at the lift to join it.\u0027;",
+                      "replacement":  "NET.status+=\u0027 \\u00b7 ascend at the lift to join\u0027;"
+                  },
+                  {
+                      "anchor":  "NET.status=peer.name+\u0027 left your party.\u0027;",
+                      "replacement":  "NET.status=peer.name+\u0027 left\u0027;"
+                  },
+                  {
+                      "anchor":  "netSay(\u0027Cannot ascend while your party is still in the raid.\u0027);",
+                      "replacement":  "netSay(\u0027cannot ascend \\u00b7 party still in the raid\u0027);"
+                  },
+                  {
+                      "anchor":  "netSay(\u0027You are out of this raid. You go up with your host next time.\u0027);",
+                      "replacement":  "netSay(\u0027out until the next raid\u0027);"
+                  },
+                  {
+                      "anchor":  "netSay(\u0027Your party is up top. Joining their raid in progress.\u0027);",
+                      "replacement":  "netSay(\u0027joining the raid in progress\u0027);"
+                  },
+                  {
+                      "anchor":  "netSay(\u0027Only the host can start the raid. You ascend with them.\u0027);",
+                      "replacement":  "netSay(\u0027only the host can start the raid\u0027);"
+                  },
+                  {
+                      "anchor":  "netSay(\u0027Your party went up without you: this window could not build the same surface. Open the PARTY window at the lift.\u0027);",
+                      "replacement":  "netSay(\u0027party ascended without you\u0027);"
+                  },
+                  {
+                      "anchor":  "NET.status=\u0027Your party ascended together.\u0027;",
+                      "replacement":  "NET.status=\u0027party ascended\u0027;"
+                  },
+                  {
+                      "anchor":  "NET.status=\u0027Asking to join the raid in progress.\u0027;",
+                      "replacement":  "NET.status=\u0027asking to join the raid\u0027;"
+                  },
+                  {
+                      "anchor":  "ln=(netSeatName(0)||\u0027The host\u0027)+\u0027 is out of this raid\u0027+(hw?\u0027 (\u0027+hw+\u0027)\u0027:\u0027\u0027)+\u0027. Extract to finish your run.\u0027;",
+                      "replacement":  "ln=(netSeatName(0)||\u0027the host\u0027)+\u0027 is out\u0027+(hw?\u0027 (\u0027+hw+\u0027)\u0027:\u0027\u0027)+\u0027 \\u00b7 extract to finish\u0027;"
+                  },
+                  {
+                      "anchor":  "{sub:(netSeatName(0)||\u0027The host\u0027)+\u0027 \u0027+((hw===\u0027killed\u0027)?\u0027was killed\u0027:hw?hw:\u0027is out\u0027)+\u0027. Extract to finish.\u0027,icon:\u0027party\u0027}",
+                      "replacement":  "{sub:(netSeatName(0)||\u0027the host\u0027)+\u0027 \u0027+((hw===\u0027killed\u0027)?\u0027was killed\u0027:hw?hw:\u0027is out\u0027)+\u0027 \\u00b7 extract to finish\u0027,icon:\u0027party\u0027}"
+                  },
+                  {
+                      "anchor":  "NET.status=nm+\u0027 could not go up with you: \u0027+netUpWhyText(m.why)+\u0027.\u0027;",
+                      "replacement":  "NET.status=nm+\u0027 did not ascend \\u00b7 \u0027+netUpWhyText(m.why);"
+                  },
+                  {
+                      "anchor":  "function netUpWhyText(w){\n  w=netClean(w,24);\n  if(w===\u0027surface\u0027) return \u0027it could not build the same surface\u0027;\n  if(w===\u0027up top already\u0027) return \u0027it was up top already\u0027;\n  if(w===\u0027on the title\u0027) return \u0027it was on the title\u0027;\n  if(w===\u0027still on the run card\u0027) return \u0027it was still on the run card\u0027;\n  return \u0027it could not go up\u0027;\n}",
+                      "replacement":  "// v33.xx (cw-partycallouts), job 66: the reason a teammate did not ascend, as the short end of a callout\nfunction netUpWhyText(w){\n  w=netClean(w,24);\n  if(w===\u0027surface\u0027) return \u0027map did not match\u0027;\n  if(w===\u0027up top already\u0027) return \u0027already up top\u0027;\n  if(w===\u0027on the title\u0027) return \u0027on the title\u0027;\n  if(w===\u0027still on the run card\u0027) return \u0027still on the run card\u0027;\n  return \u0027not ready\u0027;\n}"
+                  },
+                  {
+                      "anchor":  "NET.status=\u0027Your party is still in the raid. Waiting for them to finish.\u0027;",
+                      "replacement":  "NET.status=\u0027waiting for the party to finish\u0027;"
+                  },
+                  {
+                      "anchor":  "NET.status=\u0027Your party is back. Raid over.\u0027;",
+                      "replacement":  "NET.status=\u0027party back \\u00b7 raid over\u0027;"
+                  },
+                  {
+                      "anchor":  "NET.status=\u0027Waiting for your party to choose a kit.\u0027;",
+                      "replacement":  "NET.status=\u0027waiting for the party to pick a kit\u0027;"
+                  },
+                  {
+                      "anchor":  "NET.status=(why===\u0027out\u0027)?\u0027Your host is out of the raid. You are running it now.\u0027:\u0027Connection to your host was lost. You are running the raid now.\u0027;",
+                      "replacement":  "NET.status=(why===\u0027out\u0027)?\u0027host out \\u00b7 you are running the raid\u0027:\u0027host lost \\u00b7 you are running the raid\u0027;"
+                  },
+                  {
+                      "anchor":  "  if(!NET.role) netStartHost();\n  NET.status=\u0027Waiting for the player 2 window to link up.\u0027;",
+                      "replacement":  "  if(!NET.role) netStartHost();\n  NET.status=\u0027waiting for player 2\u0027;"
+                  },
+                  {
+                      "anchor":  "  netSamePost({t:\u0027offer\u0027,pair:NET.pair,mode:NET.mode,code:r.code});\n  NET.status=\u0027Waiting for the player 2 window to link up.\u0027;",
+                      "replacement":  "  netSamePost({t:\u0027offer\u0027,pair:NET.pair,mode:NET.mode,code:r.code});\n  NET.status=\u0027waiting for player 2\u0027;"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027cw-partycallouts, job 66 (RULES: never an explaining sentence on screen; his answer 27): every 2-player party status line, hub toast and teammate-out line is a short lower-case callout with no full stop and no second sentence\u0027,\n   run:function(){\n     var F={}, names=[\u0027netOnMsg0\u0027,\u0027netDrop\u0027,\u0027netSamePick\u0027,\u0027netSameHostDone\u0027,\u0027netGuestHeld\u0027,\u0027netUpStart\u0027,\u0027netLateAsk\u0027,\u0027netUpWord\u0027,\u0027netUpWhyText\u0027,\u0027netSpecStart\u0027,\u0027netSpecEnd\u0027,\u0027netKitGate\u0027,\u0027netHostGone\u0027];\n     var bad=[], i, k, src, m, re, lits, s, n=0, per, bare;\n     try{ F.netOnMsg0=netOnMsg0; F.netDrop=netDrop; F.netSamePick=netSamePick; F.netSameHostDone=netSameHostDone; F.netGuestHeld=netGuestHeld; F.netUpStart=netUpStart;\n          F.netLateAsk=netLateAsk; F.netUpWord=netUpWord; F.netUpWhyText=netUpWhyText; F.netSpecStart=netSpecStart; F.netSpecEnd=netSpecEnd; F.netKitGate=netKitGate; F.netHostGone=netHostGone; }\n     catch(e){ return \u0027SKIP: the party code is not in this build (\u0027+(e\u0026\u0026e.message||e)+\u0027)\u0027; }\n     for(i=0;i\u003cnames.length;i++){\n       if(typeof F[names[i]]!==\u0027function\u0027) return \u0027SKIP: no \u0027+names[i]+\u0027 here\u0027;\n       // the code alone: block comments and line comments go, so a note that quotes an old line is never read as a line\n       src=String(F[names[i]]).replace(/\\/\\*[\\s\\S]*?\\*\\//g,\u0027\u0027).replace(/(^|[\\s;{}])\\/\\/[^\\n]*/g,\u0027$1\u0027);\n       re=/(NET\\.status\\s*\\+?=|netSay\\(|\\bln\\s*=|\\breturn\\s+)([^;\\n]*)/g; per=0;\n       while((m=re.exec(src))){\n         if(m[1].indexOf(\u0027return\u0027)===0\u0026\u0026names[i]!==\u0027netUpWhyText\u0027) continue;\n         lits=m[2].match(/\u0027(?:[^\u0027\\\\]|\\\\.)*\u0027/g)||[];\n         for(k=0;k\u003clits.length;k++){\n           s=lits[k].slice(1,-1); bare=s.replace(/\\\\u[0-9a-fA-F]{4}/g,\u0027 \u0027);\n           if(!/[a-z]{2}/i.test(bare)) continue;\n           n++; per++;\n           if(/\\./.test(bare)) bad.push(names[i]+\u0027: \"\u0027+s+\u0027\" has a full stop\u0027);\n           else if(/[A-Z]/.test(bare)) bad.push(names[i]+\u0027: \"\u0027+s+\u0027\" is not lower case\u0027);\n         }\n       }\n       if(!per) bad.push(names[i]+\u0027: no party line found to read\u0027);\n     }\n     if(n\u003c25) bad.push(\u0027only \u0027+n+\u0027 party lines read, 25 or more expected\u0027);\n     if(typeof netUpWhyText===\u0027function\u0027){ s=netUpWhyText(\u0027on the title\u0027); if(!/title/.test(s)) bad.push(\u0027the on-the-title reason lost its word (\"\u0027+s+\u0027\")\u0027); }\n     return bad.length?bad.slice(0,8).join(\u0027; \u0027)+(bad.length\u003e8?\u0027 (+\u0027+(bad.length-8)+\u0027 more)\u0027:\u0027\u0027):null; }},"
+}

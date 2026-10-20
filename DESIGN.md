@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.16 - THE 2-PLAYER PARTY LINES BECOME SHORT CALLOUTS
+
+Co-op hunt while he was away. His rule (RULES: never an explaining sentence on screen; answer 27 lets us reword): the 2-player hub toasts and PARTY window lines were full sentences with a full stop, such as pillager joined your party
+
+MEASURED. Check 33.16 passes, and fails on v33.15.
 ## v33.15 - THE CONTROLS LIST STEPS ABOVE THE ITEM IN HAND
 
 Co-op hunt while he was away. The o-02 picture alarm: with a bandage in hand the compact controls list covered the top of the item-in-hand panel (its name and readying line), in the career raid and the demo.

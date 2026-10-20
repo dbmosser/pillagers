@@ -1,0 +1,5 @@
+## v33.16 - THE 2-PLAYER PARTY LINES BECOME SHORT CALLOUTS
+
+Co-op hunt while he was away. His rule (RULES: never an explaining sentence on screen; answer 27 lets us reword): the 2-player hub toasts and PARTY window lines were full sentences with a full stop, such as pillager joined your party
+
+MEASURED. Check 33.16 passes, and fails on v33.15.

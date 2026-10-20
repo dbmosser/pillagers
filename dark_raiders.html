@@ -3247,7 +3247,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.15';
+var VER='33.16';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -51229,7 +51229,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.15: While an item is in hand the controls list stands just above its panel, so both are whole; it drops back when the item is put away. Check 33.15 fails on v33.14',
+  now:'v33.16: They read as short callouts with no full stop: pillager joined, waiting for player 2, party ascended, out until the next raid. Check 33.16 fails on v33.15',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -55632,7 +55632,7 @@ function netWelcomeUp(){ return (NET.upWord&&typeof G!=='undefined'&&G&&!G.over&
   if(m.t==='hdrop') return netHubDropTake(peer,m);   // v18.28: a crate dropped or taken on the Undercroft floor
   if(m.t==='pile') return netPileTake(peer,m);   // v18.27: one of the party dropped an item; the host makes the pile
   if(m.t==='raidq') return netLateReply(peer);   // v17.46: his pick 3, a teammate asks to join late
-  if(m.t==='raidno'){ NET.hostSeed=0; NET.status=(m.why==='out')?'You are out of this raid. You go up with your host next time.':'Your host is not up top.'; netRefresh(); return 'raidno'; }   // v17.66: and the answer to one who died or extracted in it
+  if(m.t==='raidno'){ NET.hostSeed=0; NET.status=(m.why==='out')?'out until the next raid':'host not up top'; netRefresh(); return 'raidno'; }   // v17.66: and the answer to one who died or extracted in it
   if(m.t==='wd') return netWorldTake(peer,m);   // v16.06: the raid clock, the weather, the bolts and the rings, from the host
   if(m.t==='wdmg'||m.t==='wall') return netWallTake(peer,m);   // v17.36, co-op hunt 2026-09-28: a hit on a wall asked of the host, or a wall that fell, from the host
   if(m.t==='door') return netDoorTake(peer,m);   // v20.29 (H15): a door opened with its key, for the whole party
@@ -55673,7 +55673,9 @@ function netWelcomeUp(){ return (NET.upWord&&typeof G!=='undefined'&&G&&!G.over&
       try{ hubDropsTell(peer,false); }catch(_ht){}   // v18.58: and every crate on the floor, dropped before he linked
       try{ netGunOwedTell(peer); }catch(_go){}   // v21.95 (K5): and every word about a gun of his that waited for his link
       netBroadcast({t:'roster',roster:NET.roster});
-      NET.status=peer.name+' joined your party.'; NET.err='';
+      // v33.xx (cw-partycallouts), job 66 (RULES: never an explaining sentence on screen; his answer 27 lets us reword): every 2-player
+      // party line below, in the hub toast and the PARTY window, is a short lower-case callout with no full stop and no second sentence.
+      NET.status=peer.name+' joined'; NET.err='';
       netSay(NET.status);
       netRefresh();
       return 'welcome';
@@ -55691,9 +55693,9 @@ function netWelcomeUp(){ return (NET.upWord&&typeof G!=='undefined'&&G&&!G.over&
       for(i=0;i<NET.roster.length;i++) if(NET.roster[i].host&&NET.roster[i].pid) peer.pid=NET.roster[i].pid;   // v16.11, backcheck: the link to the host knows his id, so MUTE beside the host works
       hn='';
       for(i=0;i<NET.roster.length;i++) if(NET.roster[i].host) hn=NET.roster[i].name;
-      NET.reply=''; NET.err=''; NET.status='You are in the party hosted by '+(hn||'your host')+'.';
+      NET.reply=''; NET.err=''; NET.status='in '+(hn||'your host')+'\'s party';
       NET.hostSeed=0;   // v17.60: the welcome says whether the host is up; an old mark does not outlive it
-      if(typeof m.up==='number'&&m.up>0){ NET.hostSeed=m.up>>>0; NET.status+=' They are in a raid now: go up at the lift to join it.'; }   // v17.53: a teammate who links late can drop in
+      if(typeof m.up==='number'&&m.up>0){ NET.hostSeed=m.up>>>0; NET.status+=' \u00b7 ascend at the lift to join'; }   // v17.53: a teammate who links late can drop in
       try{ hubDropsTell(peer,true); }catch(_jt){}   // v18.58: and the host is told this window's own crates again
       netSay(NET.status);
       netRefresh();
@@ -55735,7 +55737,7 @@ function netDrop(peer,why){
       netBroadcast({t:'roster',roster:NET.roster});
       netSrchEndSeat(peer.seat);   // v15.91: a box he was searching is free again
       try{ if(typeof HB==='object'&&HB&&HB.drops) HB.drops=HB.drops.filter(function(q){ return q.by!==peer.seat; }); }catch(_hd){}   // v18.58: his crates leave the floor with him; they go home to his own stash (floorDropsRestore)
-      NET.status=peer.name+' left your party.';
+      NET.status=peer.name+' left';
       netSay(NET.status);
     } else if(why==='failed'||why==='timeout'||why==='silent'){
       NET.err='Could not connect. A router may be blocking the connection. Make a new invite code, or try another network.';
@@ -56141,7 +56143,7 @@ function netSamePick(mode,startFn){
   if(!w){ NET.p2win=null; netModeMsg('The browser blocked the second window. Allow popups for this page, then press RETRY.',true); return 'blocked'; }
   NET.p2win=w; NET.same='host'; NET.mode=mode; netModeMsg('');
   if(!NET.role) netStartHost();
-  NET.status='Waiting for the player 2 window to link up.';
+  NET.status='waiting for player 2';
   netSameChan();
   netPadInit();   // v15.77: this window's controller pick, kept from last time, and told to the player 2 window
   netSndInit();   // v15.78: this window's sound switch, kept from last time (the host defaults to on), applied and told to the player 2 window
@@ -56165,7 +56167,7 @@ function netSameHostDone(r){
   if(NET.same!=='host') return 'off';
   if(!r||r.err){ NET.err=(r&&r.err)||'Could not make the link to the player 2 window.'; netRefresh(); return 'err'; }
   netSamePost({t:'offer',pair:NET.pair,mode:NET.mode,code:r.code});
-  NET.status='Waiting for the player 2 window to link up.';
+  NET.status='waiting for player 2';
   netRefresh();
   return 'offer';
 }
@@ -56804,11 +56806,11 @@ function netUpAnnounce(g){
 // lift with a line that says so, before its kit is committed or a window shut, and goes up when the host word comes
 // (netUpStart sets NET.upHold, which this lets through). A guest whose link is gone is not in a party and ascends alone as ever.
 function netGuestHeld(){
-  if(typeof NET==='object'&&NET&&NET.specG){ netSay('Cannot ascend while your party is still in the raid.'); return true; }   // v16.14: a spectating host does not go up again
+  if(typeof NET==='object'&&NET&&NET.specG){ netSay('cannot ascend \u00b7 party still in the raid'); return true; }   // v16.14: a spectating host does not go up again
   if(typeof NET!=='object'||!NET||!NET.on||NET.role!=='join'||NET.upHold||!netInCount()) return false;
-  if(NET.hostSeed&&(NET.lateBan>>>0)===(NET.hostSeed>>>0)){ netSay('You are out of this raid. You go up with your host next time.'); return true; }   // v17.66, his ruling 2026-10-01
-  if(NET.hostSeed&&!(typeof G!=='undefined'&&G&&!G.over)){ netLateAsk(); netSay('Your party is up top. Joining their raid in progress.'); return true; }   // v17.51: the lift joins a raid in progress
-  netSay('Only the host can start the raid. You ascend with them.');
+  if(NET.hostSeed&&(NET.lateBan>>>0)===(NET.hostSeed>>>0)){ netSay('out until the next raid'); return true; }   // v17.66, his ruling 2026-10-01
+  if(NET.hostSeed&&!(typeof G!=='undefined'&&G&&!G.over)){ netLateAsk(); netSay('joining the raid in progress'); return true; }   // v17.51: the lift joins a raid in progress
+  netSay('only the host can start the raid');
   return true;
 }
 // v16.55, stability (co-op review): A TEAMMATE STILL ON THE RUN CARD GOES UP WITH THE PARTY. After every raid each window shows
@@ -56874,7 +56876,7 @@ function netUpStart(m){
     try{ saveProfile(); }catch(e3){}
     NET.err=threw?('This window could not build the surface your party went up to ('+threw+'), so it stays in the Undercroft.')
                  :('This window could not build the same surface as your host (the host built '+netUpFpText(hostFp)+'; this window built '+netUpFpText(fp)+'). Both copies need the same build and the same Settings dials. This window stays in the Undercroft.');
-    netSay('Your party went up without you: this window could not build the same surface. Open the PARTY window at the lift.');
+    netSay('party ascended without you');
     netBroadcast({t:'up',st:'no',why:'surface'});
     netRefresh();
     return 'mismatch';
@@ -56884,7 +56886,7 @@ function netUpStart(m){
   netContInit(G);   // v15.91: the same numbers the host gave the same containers; the host list is the truth from here on
   try{ saveProfile(); }catch(e4){}   // the kit that went up, the sector and the hour, under its own dials
   G.netUp=1;   // v17.22, co-op hunt 2026-09-28: this raid was built from the host word, with the host hire; this window own hire did not go up
-  NET.status='Your party ascended together.'; NET.err='';
+  NET.status='party ascended'; NET.err='';
   netBroadcast({t:'up',st:'in'});
   return 'up';
 }
@@ -56948,7 +56950,7 @@ function netLateAsk(){
   var q;
   if(!NET.on||NET.role!=='join') return false;
   q=netPeerOfSeat(0); if(!q) return false;
-  NET.status='Asking to join the raid in progress.'; netRefresh();
+  NET.status='asking to join the raid'; netRefresh();
   return netSend(q,{t:'raidq'});
 }
 function netLateBtn(){
@@ -57000,13 +57002,14 @@ function netLateBtn(){
   if(m.late&&typeof G!=='undefined'&&G&&!G.over){ try{ netLateApply(m); }catch(_la){} }   // v17.46: his pick 3, a late join
   return _lr;
 }
+// v33.xx (cw-partycallouts), job 66: the reason a teammate did not ascend, as the short end of a callout
 function netUpWhyText(w){
   w=netClean(w,24);
-  if(w==='surface') return 'it could not build the same surface';
-  if(w==='up top already') return 'it was up top already';
-  if(w==='on the title') return 'it was on the title';
-  if(w==='still on the run card') return 'it was still on the run card';
-  return 'it could not go up';
+  if(w==='surface') return 'map did not match';
+  if(w==='up top already') return 'already up top';
+  if(w==='on the title') return 'on the title';
+  if(w==='still on the run card') return 'still on the run card';
+  return 'not ready';
 }
 // A window went up (in), could not (no) or its raid ended (out): from a friend, on the host, filed under the seat of his link
 // and passed on to the others; or passed on by the host, on a friend, under the seat it names.
@@ -57045,16 +57048,16 @@ function netUpWord(peer,m){
   // how the word carries; nothing when it carries none), and Extract to finish your run. Nobody reads left.
   if(NET.role==='join'&&st==='spec'&&s===0){
     hw=netClean(m.how,12); hw=(hw==='dead')?'killed':(hw==='extract')?'extracted':(hw==='abandon')?'abandoned':'';
-    ln=(netSeatName(0)||'The host')+' is out of this raid'+(hw?' ('+hw+')':'')+'. Extract to finish your run.';
+    ln=(netSeatName(0)||'the host')+' is out'+(hw?' ('+hw+')':'')+' \u00b7 extract to finish';
     NET.status=ln; netRefresh();
-    try{ if(typeof G!=='undefined'&&G&&!G.over) say('HOST IS OUT','crit',{sub:(netSeatName(0)||'The host')+' '+((hw==='killed')?'was killed':hw?hw:'is out')+'. Extract to finish.',icon:'party'}); }catch(_sw){}   // v22.35 (R11): an alert, the name and how in the detail
+    try{ if(typeof G!=='undefined'&&G&&!G.over) say('HOST IS OUT','crit',{sub:(netSeatName(0)||'the host')+' '+((hw==='killed')?'was killed':hw?hw:'is out')+' \u00b7 extract to finish',icon:'party'}); }catch(_sw){}   // v22.35 (R11): an alert, the name and how in the detail
   }
   nm=netSeatName(s)||'PILLAGER';
   // v17.14, co-op hunt 2026-09-28: said in the raid too, as the spec word is, not only in a PARTY window that startRaid has just
   // shut: a host who went up alone was told nothing, and did not know his teammate had stayed below.
   // v17.63: a teammate whose raid ended is named in the raid of the others, as the host is (spec): killed, extracted or abandoned.
   // Before, the host was told nothing and found his teammate gone from the screen.
-  if(st==='out'&&s!==0&&typeof G!=='undefined'&&G&&!G.over&&!G.sim){ hw=netClean(m.how,12); hw=(hw==='dead')?'killed':(hw==='extract')?'extracted':(hw==='abandon')?'abandoned':''; try{ sayWhenFree((G.arcade&&hw==='abandoned')?'PLAYER 2 OUT':String(nm).toUpperCase()+((hw==='killed')?' DIED':(hw==='extracted')?' EXTRACTED':(hw==='abandoned')?' ABANDONED':' IS OUT'),'ally'); }catch(_so){} }  if(st==='no'){ NET.status=nm+' could not go up with you: '+netUpWhyText(m.why)+'.'; netRefresh(); try{ if(typeof G!=='undefined'&&G&&!G.over) sayWhenFree(NET.status); }catch(_sn){} }   /* v22.xx (R54): NAME EXTRACTED, a caps callout */   // v23.xx (tr9fixl): people lines fit 34 and a grudge never reads as friendly
+  if(st==='out'&&s!==0&&typeof G!=='undefined'&&G&&!G.over&&!G.sim){ hw=netClean(m.how,12); hw=(hw==='dead')?'killed':(hw==='extract')?'extracted':(hw==='abandon')?'abandoned':''; try{ sayWhenFree((G.arcade&&hw==='abandoned')?'PLAYER 2 OUT':String(nm).toUpperCase()+((hw==='killed')?' DIED':(hw==='extracted')?' EXTRACTED':(hw==='abandoned')?' ABANDONED':' IS OUT'),'ally'); }catch(_so){} }  if(st==='no'){ NET.status=nm+' did not ascend \u00b7 '+netUpWhyText(m.why); netRefresh(); try{ if(typeof G!=='undefined'&&G&&!G.over) sayWhenFree(NET.status); }catch(_sn){} }   /* v22.xx (R54): NAME EXTRACTED, a caps callout */   // v23.xx (tr9fixl): people lines fit 34 and a grudge never reads as friendly
   if(NET.role==='host'&&st==='out'&&(m.how==='dead'||m.how==='extract')&&NET.upWord&&!(m.how==='dead'&&kbOn())){ if(!NET.lateOut) NET.lateOut={}; NET.lateOut[s]=NET.upWord.seed>>>0; }   // v17.66, his ruling: that seat sits this raid out
   if(NET.role==='host'){
     out={t:'up',s:s,st:st}; if(typeof m.sd==='number') out.sd=m.sd>>>0; if(m.why!==undefined) out.why=netClean(m.why,24); if(m.how!==undefined) out.how=netClean(m.how,12);
@@ -58757,7 +58760,7 @@ function netSpecStart(how){
       ev.ph='end'; ev.et=0; }
   })((G.flow&&G.flow.ev&&G.flow.ev.live)||[]); }catch(_sev){}
   netBroadcast({t:'up',st:'spec',how:netClean(how,12)});
-  NET.status='Your party is still in the raid. Waiting for them to finish.';
+  NET.status='waiting for the party to finish';
   return true;
 }
 // v17.33, co-op hunt 2026-09-28: THE RINGS OF THE KEPT RAID RUN ON THE HOST. tickExtractPoints runs only in a raid frame, so once the
@@ -58866,7 +58869,7 @@ function netSpecEnd(){
   var keep=G, S=NET.specG, how=NET.specHow||'extract';
   NET.specG=null; NET.specHow=''; NET.specTick=false;
   G=S; try{ netUpEnd(how); }catch(e){} finally{ G=keep; }
-  NET.status='Your party is back. Raid over.';
+  NET.status='party back \u00b7 raid over';
   netRefresh();
   return 0;
 }
@@ -59454,7 +59457,7 @@ function netKitGate(f){
   for(i=0;i<NET.peers.length;i++){ q=NET.peers[i]; if(q.state==='in'&&netSend(q,{t:'kitask'})) n++; }
   if(!n) return f();
   NET.kitWait={f:f,need:n,got:0,tm:setTimeout(netKitGo,NET_KIT_WAIT*1000)};
-  NET.status='Waiting for your party to choose a kit.'; netRefresh();
+  NET.status='waiting for the party to pick a kit'; netRefresh();
   return 'wait';
 }
 function netKitGo(){
@@ -60089,7 +60092,7 @@ function netHostGone(why){
   else if((G.t||0)>=2) G.bossDone=1;
   if(G.flow&&G.flow.goals) for(_i=0;_i<G.flow.goals.length;_i++){ _e=G.flow.goals[_i]; if(_e&&!_e.done) _e.off=Math.max(0,(_e.v|0)-goalProg(_e.id,G.flow)); }   // v28.43 (cloud-coop-takeover-goals-kept), CLOUD HUNT 2026-10-15: the party goal progress the host sent is kept as an offset over this window's own count
   G.netLeft='';
-  NET.status=(why==='out')?'Your host is out of the raid. You are running it now.':'Connection to your host was lost. You are running the raid now.';
+  NET.status=(why==='out')?'host out \u00b7 you are running the raid':'host lost \u00b7 you are running the raid';
   try{ say((why==='out')?'HOST IS OUT':'HOST DISCONNECTED','crit',{sub:'You are hosting now',icon:'party'}); }catch(_hs){}   // v22.35 (R11): an alert at once   // v22.xx (tr3fixc): the shooter voice
   return true;
 }

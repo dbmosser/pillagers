@@ -1,0 +1,7 @@
+v33.16: the 2-player party lines become short callouts
+
+They read as short callouts with no full stop: pillager joined, waiting for player 2, party ascended, out until the next raid.
+
+Check 33.16. Fails on v33.15.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
