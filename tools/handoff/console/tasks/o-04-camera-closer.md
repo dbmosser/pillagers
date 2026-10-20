@@ -13,3 +13,5 @@
 - Frame cost: 60 fps at 4K is the bar. Measure the frame time before and after with two players on screen, and note both numbers.
 
 Coordinator note 2026-10-19 13:45: SHIPPED v31.85 (camera 1.3). Left, lane-side only: run .codex-work/o-04-camera-closer/camera-run-request.json (both-window pictures, 4K frame times). Do not rebuild.
+
+Coordinator note 10-20 00:20: back in tasks/ for the lane-side step it waited for. The lane now photographs camera-recipes.json itself (first 6 screens, critic on each) and sends you the pictures; the first pass spends no Codex run. Already shipped (do not ship again): cw-cx-camera130 . Review the pictures and the critic: end TASK DONE if they hold, or fix P0/P1 findings with a NEW key.

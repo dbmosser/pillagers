@@ -13,3 +13,5 @@ Lane note 2026-10-19 19:21: shipped cw-cx-padname and parked: only lane-side ste
 Shipped in v31.95; check 31.95 passed both fixture gates. Added an explicit camera request because the lane skipped the custom recipes.
 
 TASK PARTIAL: coordinator must capture both windows and return pictures and critic results.
+
+Coordinator note 10-20 00:20: back in tasks/ for the lane-side step it waited for. The lane now photographs camera-recipes.json itself (first 6 screens, critic on each) and sends you the pictures; the first pass spends no Codex run. Already shipped (do not ship again): cw-cx-padname . Review the pictures and the critic: end TASK DONE if they hold, or fix P0/P1 findings with a NEW key.

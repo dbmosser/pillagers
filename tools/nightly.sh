@@ -117,6 +117,11 @@ while true; do
         (bash "$R/tools/console-lane.sh" $ln > /dev/null 2>&1) &
       fi
     done
+    # (5b) 10-20 00:20: the Codex lane (tools/codex-lane.sh, lane o) had no starter in the VM; it ran only when started by hand and sat
+    #      idle from 23:04 on 10-19. It guards itself (the STOP files, its rest after a usage limit, its lock, the sign-in check).
+    if [ -f "$R/tools/codex-lane.sh" ] && [ "$(running 'codex-lane\.sh')" = "0" ]; then
+      (bash "$R/tools/codex-lane.sh" > /dev/null 2>&1) &
+    fi
     # (6) 10-17: a second fuzzer on its own Chrome (9332) with its own seeds, beside the first (9331)
     f2=$(running 'fuzz\.ps1.*9332')
     if [ -f "$R/tools/fuzz.ps1" ] && [ "$f2" = "0" ] && [ "$ram" -ge $((rf+2)) ]; then

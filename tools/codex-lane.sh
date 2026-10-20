@@ -429,6 +429,30 @@ $out
 "
   done; }
 
+# ---- camera-recipes.json (RULES-codex.md "Pictures"). 2026-10-20: the rules promised it but the lane never read the file, so o-04, o-05
+#      and o-07 to o-10 shipped and then sat in waiting/ asking for their two-window pictures. The first 6 screens of the file, no BEFORE.
+recipes_file(){ local f; for f in "$WD/camera-recipes.json" "$WD/"*camera-recipes.json; do [ -f "$f" ] && { echo "$f"; return; }; done; }
+shoot_recipes(){  # shoot_recipes FILE ROUND -> pictures in notes/shots/NAME-recipes-ROUND, the camera's words in log/NAME-recipes-ROUND.camera.txt
+  local out="tools/handoff/console/notes/shots/$name-recipes-$2" cl="$LS/recipes.json" names lg="$X/log/$name-recipes-$2.camera.txt"
+  rd "$1" > "$cl"
+  names=$(node -e "try{const j=JSON.parse(require('fs').readFileSync(process.argv[1],'utf8'));console.log((j.screens||[]).slice(0,6).map(x=>x&&x.name).filter(x=>typeof x==='string'&&/^[A-Za-z0-9_.-]{1,80}$/.test(x)).join(','))}catch(e){console.log('')}" "$cl" 2>/dev/null | tr -d '\r')
+  [ -n "$names" ] || { echo "the recipe file has no readable screens (JSON with a screens list, each with a name of letters, digits, dots, dashes)" > "$lg"; return 1; }
+  say "pictures: recipe round $2 for $name (screens $names, camera $CAM)"
+  ( cd "$R" && timeout 1500 powershell -NoProfile -ExecutionPolicy Bypass -File tools/uishots.ps1 -Recipes "$(cygpath -w "$cl")" -Screens "$names" -Out "$out" -Res 1080 -Port "$CAM" ) > "$lg" 2>&1
+  ls "$R/$out/"*-1080.jpg >/dev/null 2>&1; }
+critic_recipes(){  # critic_recipes ROUND : sets CRITWORST, CRITP, CRITTXT, PICS; each picture alone (a recipe screen has no BEFORE)
+  local a out sc; CRITWORST=9; CRITP=0; CRITTXT=""; PICS=()
+  for a in $(ls "$R/tools/handoff/console/notes/shots/$name-recipes-$1/"*-1080.jpg 2>/dev/null | head -6 | sed "s|^$R/||"); do
+    PICS+=("$R/$a")
+    out=$(cd "$R" && CW_TASK="$name" timeout 600 node tools/console-sdk/critic.mjs "$a" 2>&1 | head -c 3000)
+    sc=$(printf '%s' "$out" | grep -o '"score": *[0-9]' | head -1 | grep -o '[0-9]')
+    CRITP=$(( CRITP + $(printf '%s' "$out" | grep -oE '"sev": *"P[01]"' | wc -l) ))
+    [ -n "$sc" ] && [ "$sc" -gt 0 ] && [ "$sc" -lt "$CRITWORST" ] && CRITWORST=$sc
+    CRITTXT="${CRITTXT}critic on $(basename "$a") (score ${sc:-none}):
+$out
+"
+  done; }
+
 # ================================================================ the loop: codex -> harvest -> gate -> feedback
 say "running $name (codex, run $((n0+1)) of $MAXR)"
 log "start $name n0=$n0 left=$left"
@@ -442,11 +466,11 @@ while [ "$it" -lt "$left" ]; do
   # run on its next pick before the lane even retried. Now the first pass retries the gate with the files as they are, and runs no Codex.
   GO=""
   if [ "$it" = 1 ] && [ -s "$LS/waiting.txt" ]; then
-  GO=1; it=0; claim=$(cat "$LS/waiting.txt"); lastclaim=$claim; rm -f "$LS/waiting.txt"; CLASS=ok
+  GO=1; it=0; claim=$(cat "$LS/waiting.txt"); lastclaim=$claim; rm -f "$LS/waiting.txt"; CLASS=ok; tid=$(cat "$LS/thread.txt" 2>/dev/null); RESUME_NEXT=1
   log "$name: gate-only pass (it waited last time), no codex run"; say "gate: retrying $name's waiting keys (no codex run)"
   else
   pfile="$X/log/$name-prompt-$it.txt"; mode=fresh; imgs=("${PICS[@]}"); PICS=(); sc=""
-  if [ -n "$tid" ] && [ "$it" -gt 1 ]; then mode=resume; { echo "The workspace was refreshed to the newest master (game v$(gamever)). Your files in .codex-work/$name/ are as you left them."; printf '%s\n' "$fb"; echo; echo "Continue. End with the line TASK DONE or TASK PARTIAL: what remains."; } > "$pfile"
+  if [ -n "$tid" ] && { [ "$it" -gt 1 ] || [ -n "$RESUME_NEXT" ]; }; then RESUME_NEXT=""; mode=resume; { echo "The workspace was refreshed to the newest master (game v$(gamever)). Your files in .codex-work/$name/ are as you left them."; printf '%s\n' "$fb"; echo; echo "Continue. End with the line TASK DONE or TASK PARTIAL: what remains."; } > "$pfile"
   else prompt_fresh "$fb" > "$pfile"; fi
   [ "$mode" = fresh ] && imgs=()
   say "running $name (codex, run $((n0+it)) of $MAXR)"
@@ -509,10 +533,27 @@ $CRITTXT"
         [ "$CRITWORST" -lt "$OKSC" ] && [ "$CRITP" -gt 0 ] && need=1
       else appendfb "(The lane could not take the AFTER pictures: see log/$name-after.camera.txt.)"; fi
     fi
+    rfile=$(recipes_file); CAM_DONE=""
+    if [ -n "$rfile" ]; then
+      rver=$(grep -m1 "^var VER='" "$R/dark_raiders.html" 2>/dev/null | sed "s/var VER='\([0-9]*\.[0-9]*\)'.*/\1/")
+      rkey="$(rd "$rfile" | sha256sum | cut -c1-16) v$rver"; camr=$(cat "$LS/camrounds.txt" 2>/dev/null); camr=${camr:-0}
+      if [ "$rkey" != "$(cat "$LS/camkey.txt" 2>/dev/null)" ] && [ "$camr" -lt "$(cap CAMERA_ROUNDS 4)" ]; then   # a changed file or a new version
+        # short of memory: the job waits (no Codex run, no round used) and its next pick starts with the gate-only pass
+        ramwait || { say "pictures: waiting for RAM before $name's recipe round"; r="waiting"; break; }
+        camr=$((camr+1)); echo "$camr" > "$LS/camrounds.txt"; echo "$rkey" > "$LS/camkey.txt"; CAM_DONE=1
+        if shoot_recipes "$rfile" "$camr"; then critic_recipes "$camr"
+          appendfb "RECIPE PICTURES (round $camr of $(cap CAMERA_ROUNDS 4), $(basename "$rfile") on v$rver) are in $RW/tools/handoff/console/notes/shots/$name-recipes-$camr/ (the newest are attached; open them with your image viewer). The camera said:
+$(tail -c 1500 "$X/log/$name-recipes-$camr.camera.txt")
+CRITIC:
+$CRITTXT"
+          [ "$CRITWORST" -lt "$OKSC" ] && [ "$CRITP" -gt 0 ] && need=1
+        else appendfb "(The lane could not take the recipe pictures, round $camr. The camera said: $(tail -c 1200 "$X/log/$name-recipes-$camr.camera.txt"))"; fi
+      fi
+    fi
     if [ "$claim" = DONE ] && [ $need = 0 ]; then r=done; break; fi
     if [ "$claim" = DONE ] && [ $need = 1 ]; then appendfb "You said TASK DONE, but the critic is below $OKSC on a screen with P0/P1 findings. Fix them (new key) unless a finding would reverse one of his rulings or the finish lines in RULES.md say this screen is good enough; then end with TASK DONE."; idle=0
     else
-      if [ -n "$GO" ] || [ ${#SHIPPED_NOW[@]} -gt 0 ] || [ -n "$RT_DONE" ]; then idle=0; else idle=$((idle+1)); fi
+      if [ -n "$GO" ] || [ ${#SHIPPED_NOW[@]} -gt 0 ] || [ -n "$RT_DONE" ] || [ -n "$CAM_DONE" ]; then idle=0; else idle=$((idle+1)); fi
       # 2026-10-19 (o-01 and o-04 each spent 3 runs asking the lane for pictures and fixture edits after they shipped): once this job has
       # shipped, a run that ships nothing and drafts no new key means only lane-side steps are left. Park it in waiting/, spend no more runs.
       if [ "$idle" -ge 1 ] && [ -s "$LS/shipped.txt" ] && [ "$keys" = "$prevkeys" ]; then r="parked"; break; fi

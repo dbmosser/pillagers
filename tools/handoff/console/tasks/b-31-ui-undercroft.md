@@ -17,3 +17,5 @@ Still yours (from your notes and notes\04-style-guide-update.md): racks (14) but
 - Why your camera and critic were refused: the command did not match the one exact form (most likely a different port, e.g. 9352, or extra bits on the line). It is fixed now: a trailing "2>&1" or "| tail -N" is allowed, and a refused command now tells you the exact form with your lane's port. Lane a uses -Port 9361, b 9362, c 9363. Take pictures and run the critic again.
 - His new finish line (3.51 a): critic 4 for the raid, waiting, pause and run-over screens, and 3 for the rest. Screens already at 3 that are not one of those four are done.
 - Your run count was reset. Start from your notes and do not redo shipped work.
+
+Coordinator note 10-19 23:59: RE-QUEUED with fresh tries (the first five shipped real cleanups: v32.17 stash header, v32.18 racks explainer lines). Start from NEXT in notes/b-31-ui-undercroft.md: shorten or delete the sector and party paragraphs (log each reason), scale up the terms content, then critic 09-13. Pictures for 09-11 are in notes/shots/b-31-j4.

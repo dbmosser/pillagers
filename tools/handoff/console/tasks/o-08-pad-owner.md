@@ -15,3 +15,5 @@ Lane note 2026-10-19 19:09: shipped cw-cx-padowner and parked: only lane-side st
 `cw-cx-padowner` shipped in v31.93. Added the coordinator’s camera command and updated recipes for pictures from both windows.
 
 TASK PARTIAL: coordinator must run the camera recipes and return pictures and critic results.
+
+Coordinator note 10-20 00:20: back in tasks/ for the lane-side step it waited for. The lane now photographs camera-recipes.json itself (first 6 screens, critic on each) and sends you the pictures; the first pass spends no Codex run. Already shipped (do not ship again): cw-cx-padowner . Review the pictures and the critic: end TASK DONE if they hold, or fix P0/P1 findings with a NEW key.

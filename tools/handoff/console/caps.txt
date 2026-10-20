@@ -19,4 +19,7 @@ PLAN_SESSION_MAX=85
 WEEK_RESET=2026-10-25T05:00:00Z
 PLAN_PACE=0
 PLAN_ACCOUNT_SHA=12a1aafbabb92b0e1071c81a9da0b3f6ff9c80852a0e5c0edddcf4e4a1d60cde
-RAM_FLOOR_GB=3
+# 10-20 00:15: 2 (a helper starts at 3 GB free). At 3 the 10 GB VM ran NO helper while the 3.5-hour corpus ran (3.1 GB free, all
+# three lanes waiting for 4). His standing line is to stop a helper under 2 GB free, which one helper at 3 still respects.
+# Back to 3 once the VM gets more memory at night (tools/migrate/night-memory-setup.cmd on the main PC).
+RAM_FLOOR_GB=2

@@ -36,3 +36,5 @@ Note: the pre-raid page is about to be redesigned (his order 10-19, mockups pend
 it here; do not restyle the page.
 
 TASK DONE when shipped and the checks pass; TASK PARTIAL with what is left.
+
+Coordinator note 10-20 00:20: back in tasks/ for the lane-side step it waited for. The lane now photographs camera-recipes.json itself (first 6 screens, critic on each) and sends you the pictures; the first pass spends no Codex run. Already shipped (do not ship again): cw-cx-stashraid . Review the pictures and the critic: end TASK DONE if they hold, or fix P0/P1 findings with a NEW key.

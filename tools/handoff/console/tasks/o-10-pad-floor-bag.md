@@ -13,3 +13,5 @@ Shipped in v31.98. Preflight and behavior checks pass; the map fingerprint is un
 Pictures remain unverified because the installed lane lacks the promised camera-recipe support. Recorded the blocker and camera handoff.
 
 TASK PARTIAL: lane/coordinator must capture both window pictures and return critic results.
+
+Coordinator note 10-20 00:20: back in tasks/ for the lane-side step it waited for. The lane now photographs camera-recipes.json itself (first 6 screens, critic on each) and sends you the pictures; the first pass spends no Codex run. Already shipped (do not ship again): cw-cx-floorbag . Review the pictures and the critic: end TASK DONE if they hold, or fix P0/P1 findings with a NEW key.
