@@ -9276,13 +9276,27 @@ window.__REGRESS=[
   {v:'31.71',what:'Settings focus row has the bar and no ring, the detail pane is wide, and the pause box puts feedback and what is new side by side',
    run:function(){
      var bad=[], r, sh, d, fb, wn, a, a1, a2, padWas=document.body.classList.contains('padon');
+     function zoomOf(e){ var b=e.getBoundingClientRect(); return e.offsetWidth>0?b.width/e.offsetWidth:0; }
      __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
      try{
        openSettings('display');
        try{ window.__setDetailSync(); }catch(_s){}
        r=document.querySelector('#setlist .row.dshow'); d=document.getElementById('setdetail');
        if(!r) bad.push('no focus row'); else{ sh=getComputedStyle(r).boxShadow; if(/ 1px 0px 0px 0px inset|0px 0px 0px 1px inset/.test(sh)) bad.push('focus row has a ring: '+sh); }
-       if(!d||d.getBoundingClientRect().width<=500) bad.push('detail pane is '+(d?Math.round(d.getBoundingClientRect().width):0)+' wide');
+       // v28.xx (cw-cx-corpus-r3a): the pane takes the remainder beside the 1008 menu-pixel list, including below 1080p.
+       if(!d) bad.push('no detail pane');
+       else{
+         var dw=d.getBoundingClientRect(), list=document.getElementById('setlist'), wrap=document.getElementById('setwrap'), z=zoomOf(d), modern=/cw-pset15/.test([].map.call(document.querySelectorAll('style'),function(e){return e.textContent||'';}).join(''));
+         if(!(z>0&&dw.height>0)) bad.push('the detail pane has no measurable size');
+         else if(modern){
+           if(!list||!wrap) bad.push('the detail pane has no list or wrap');
+           else{
+             var lr=list.getBoundingClientRect(), wr=wrap.getBoundingClientRect(), ws=getComputedStyle(wrap), gap=parseFloat(ws.columnGap)||0, right=wr.right-(parseFloat(ws.paddingRight)||0)*z, left=lr.right+gap*z, available=right-left;
+             if(!(available>0)) bad.push('the detail pane has no available column');
+             if(dw.left<left-2*z||Math.abs(dw.right-right)>2*z||dw.width<Math.min(500*z,available)-2*z) bad.push('detail pane does not fill its available column ('+Math.round(dw.width)+' of '+Math.round(available)+')');
+           }
+         } else if(dw.width/z<=500) bad.push('detail pane is '+Math.round(dw.width/z)+' menu pixels wide');
+       }
        document.getElementById('settingsmodal').classList.remove('on');
        document.body.classList.remove('padon');
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
@@ -9293,9 +9307,12 @@ window.__REGRESS=[
        else{
          a1=fb.getBoundingClientRect(); a2=wn.getBoundingClientRect();
          if(Math.abs(a1.top-a2.top)>2) bad.push('feedback and what is new are not on one row ('+Math.round(a1.top)+' vs '+Math.round(a2.top)+')');
-         if(a1.height>56) bad.push('feedback is '+Math.round(a1.height)+' tall');
+         // v28.xx (cw-cx-corpus-r3a): cw-pause56 raised the pair and abandon to the common 56px tier; zoom is not a larger button.
+         var fz=zoomOf(fb), wz=zoomOf(wn);
+         if(!(fz>0&&wz>0)) bad.push('feedback or what is new has no measurable zoom');
+         else if(a1.height/fz>56.5||a2.height/wz>56.5) bad.push('feedback or what is new is taller than 56 menu pixels');
        }
-       if(a&&a.offsetHeight>56) bad.push('abandon is '+a.offsetHeight+' tall');
+       if(a&&a.offsetHeight>56.5) bad.push('abandon is '+a.offsetHeight+' menu pixels tall');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ togglePauseBox(false); }catch(_t){} try{ var q=document.getElementById('settingsmodal'); if(q) q.classList.remove('on'); }catch(_k){} try{ __topClear(); }catch(_c){} document.body.classList.toggle('padon',padWas); }
      return bad.length?bad.join('; '):null; }},
@@ -9711,8 +9728,13 @@ window.__REGRESS=[
        x=document.getElementById('oc_x'); w=oc.querySelector('.ocwin');
        if(!x) return 'the end card has no close X (oc_x)';
        xr=x.getBoundingClientRect(); wr=w.getBoundingClientRect();
-       if(xr.width<40||xr.height<40) bad.push('the X is '+Math.round(xr.width)+'x'+Math.round(xr.height)+', under the 48px button size (scaled)');
-       if(wr.right-xr.right>40||wr.right-xr.right<4||xr.top-wr.top>40||xr.top<wr.top) bad.push('the X is not in the top right corner of the card');
+       // v28.xx (cw-cx-corpus-r3a): menu zoom and the entrance transform affect every measured card pixel equally.
+       var z=w.offsetWidth>0?wr.width/w.offsetWidth:0;
+       if(!(z>0&&wr.height>0)) bad.push('the end card has no measurable zoom');
+       else{
+         if(xr.width/z<40||xr.height/z<40) bad.push('the X is under the 40 menu-pixel hit-area floor');
+         if((wr.right-xr.right)/z>40||(wr.right-xr.right)/z<4||(xr.top-wr.top)/z>40||xr.top<wr.top) bad.push('the X is not in the top right corner of the card');
+       }
        cp=document.getElementById('oc_copy');
        if(cp&&getComputedStyle(cp).display!=='none') bad.push('copy report is still on the end card');
        st=oc.querySelector('.haulstrip'); its=st?st.querySelectorAll('.haulit'):[];
@@ -9928,7 +9950,7 @@ window.__REGRESS=[
    run:function(){
      if(typeof mapCard!=='function'||typeof mapContractRows!=='function') return 'no map card in this build (mapCard or mapContractRows is missing)';
      if(!(window.__state&&window.__endRaid&&window.__deploy&&window.__topClear&&window.__runPrep&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile)) return 'SKIP: this fixture cannot deploy a raid';
-     var hp=parseFloat((/([\d.]+)px/).exec(FS(TYPE.head))[1]), bad=[], g=null, w0=W, h0=H, us0=P.uiScale, hadUs=Object.prototype.hasOwnProperty.call(P,'uiScale'), oSkip=MAPFIRST.skip, proto=CanvasRenderingContext2D.prototype, oFT=proto.fillText, cd, i, ent, zn, zfs=[], doneFs=null, wx, nm, rw, zp=0, inset, n=0, b, cx, cy, ow;
+     var hp=parseFloat((/([\d.]+)px/).exec(FS(TYPE.head))[1]), bad=[], g=null, w0=W, h0=H, us0=P.uiScale, hadUs=Object.prototype.hasOwnProperty.call(P,'uiScale'), oSkip=MAPFIRST.skip, proto=CanvasRenderingContext2D.prototype, oFT=proto.fillText, cd, i, ent, zn, zfs=[], doneFs=null, nameFs=null, quiet=(typeof mapContractsDraw==='function'&&/cw-cx-mapquiet-o03/.test(String(mapContractsDraw))), wx, nm, rw, zp=0, inset, n=0, b, cx, cy, ow;
      function hex2(s){ var m=/^rgba?\(([\d.]+),\s*([\d.]+),\s*([\d.]+)(?:,\s*([\d.]+))?\)$/.exec(String(s)); return m?(m[4]===undefined?1:+m[4]):1; }
      try{
        __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -9941,23 +9963,29 @@ window.__REGRESS=[
          {type:'conduct',ck:'clean',n:1,prog:0,reward:1234,desc:'Extract without using a single heal',tier:'std'}];
        if(hadUs) delete P.uiScale;
        W=1920; H=1080; g.mapOpen=true; g.mapFirst=0; cd=mapCard();
-       zn=((g.map&&g.map.zones)||[]).map(function(z){ return String(z.name||''); }).filter(function(s){ return s; });
-       proto.fillText=function(s){ var k=String(s); if(zn.indexOf(k)>=0) zfs.push(this.fillStyle); if(/^search crates$/i.test(k)) doneFs=this.fillStyle; return oFT.apply(this,arguments); };
+       hp=parseFloat((/([\d.]+)px/).exec(FS(TYPE.head))[1]);
+       zn=((g.map&&g.map.zones)||[]).map(function(z){ return String(z.name||'').toLowerCase(); }).filter(function(s){ return s; });
+       proto.fillText=function(s){ var k=String(s).toLowerCase(); if(/^destroy crawlers$/.test(k)) nameFs=this.fillStyle; if(zn.indexOf(k)>=0) zfs.push(this.fillStyle); if(/^search crates$/i.test(k)) doneFs=this.fillStyle; return oFT.apply(this,arguments); };
        try{ ent=txRecord(function(){ drawMapOverlay(); }); } finally { proto.fillText=oFT; }
        // ONE: the weather line
        wx=ent.filter(function(h){ return h.al==='right'&&h.y>=cd.y&&h.y<=cd.y+cd.hh&&String(h.t).indexOf(String(g.wx.name).toLowerCase())>=0; })[0];
        if(!wx) bad.push('ONE: no weather line in the header');
        else if(String(wx.t).indexOf('\u00b7')<0||/ {2}/.test(String(wx.t))) bad.push('ONE: the weather line is not hour, one separator, weather ('+JSON.stringify(wx.t)+')');
        // TWO: zone names are a size under the extraction names, not bold, quieter
-       ent.forEach(function(h){ if(zn.indexOf(String(h.o))>=0&&!(h.y<cd.y+cd.hh)){ n++; if(h.h>hp*0.95*cd.z) zp++; } });
+       ent.forEach(function(h){ if(zn.indexOf(String(h.o).toLowerCase())>=0&&!(h.y<cd.y+cd.hh)){ n++; if(h.h>hp*0.95*cd.z) zp++; } });
        if(n<3) bad.push('TWO: only '+n+' zone names were drawn');
        else if(zp) bad.push('TWO: '+zp+' zone names are as big as a callout head ('+hp+' px), not a size under the extraction names');
        if(zfs.length&&Math.max.apply(null,zfs.map(hex2))>0.70) bad.push('TWO: a zone name is drawn at more than 70 percent ('+zfs[0]+')');
        // THREE: contract names all in the main text colour (a finished one too), the reward smaller than the name
-       if(String(doneFs).toLowerCase()!==String(UIC.tx_1).toLowerCase()) bad.push('THREE: the finished contract name is not in the main text colour ('+doneFs+')');
+       // v28.xx (cw-cx-corpus-r3a): cw-cx-mapquiet-o03 deliberately quieted open names and uses success colour for completed names.
+       if(String(doneFs).toLowerCase()!==String(quiet?UIC.ok:UIC.tx_1).toLowerCase()) bad.push('THREE: the finished contract name has the wrong colour ('+doneFs+')');
+       if(quiet&&String(nameFs).toLowerCase()!==String(UIC.tx_2).toLowerCase()) bad.push('THREE: the open contract name is not in the secondary text colour ('+nameFs+')');
        nm=ent.filter(function(h){ return /^destroy crawlers$/.test(String(h.t)); })[0]; rw=ent.filter(function(h){ return /^\$4.321$/.test(String(h.t)); })[0];
        if(!nm||!rw) bad.push('THREE: the kill contract row or its reward is missing ('+(nm?'':'name ')+(rw?'':'reward')+')');
-       else if(!(nm.h-rw.h>=2*cd.z)) bad.push('THREE: the reward ('+rw.h.toFixed(1)+' px) is not smaller than the contract name ('+nm.h.toFixed(1)+' px)');
+       else if(quiet){
+         var namePx=parseFloat((/([\d.]+)px/).exec(FSz('600 15.4px '+HUDF,cd.z))[1]), rewardPx=parseFloat((/([\d.]+)px/).exec(FSz(TYPE.label,cd.z))[1]);
+         if(Math.abs(nm.h-namePx)>0.1||Math.abs(rw.h-rewardPx)>0.1) bad.push('THREE: contract type is not the approved name and label sizes ('+nm.h+'/'+rw.h+' expected '+namePx+'/'+rewardPx+')');
+       } else if(!(nm.h-rw.h>=2*cd.z)) bad.push('THREE: the reward ('+rw.h.toFixed(1)+' px) is not smaller than the contract name ('+nm.h.toFixed(1)+' px)');
        // FOUR: the close hint
        ow=ent.filter(function(h){ return /^close$/.test(String(h.t)); })[0];
        if(!ow) bad.push('FOUR: no close hint on the map opened in the raid');
@@ -10964,7 +10992,7 @@ window.__REGRESS=[
        r=el.getBoundingClientRect(); rs=sub.getBoundingClientRect();
        if(!(rs.height>0)) bad.push('the stash and bag part has no size');
        if(rs.bottom>r.bottom+2||rs.top<r.top-2) bad.push('the stash and bag part is outside the readout row (top '+Math.round(rs.top)+' bottom '+Math.round(rs.bottom)+' against '+Math.round(r.top)+'..'+Math.round(r.bottom)+')');
-       if(!/CREDITS/.test(el.textContent)||!/\bXP\b/.test(el.textContent)||!/STASH/.test(el.textContent)||!/BAG/.test(el.textContent)) bad.push('the one row lost a label ("'+el.textContent+'")');
+       if(!/(?:\$\s*[0-9]|[0-9][0-9,.]*\s+credits\b)/i.test(el.textContent)||!/\bXP\b/i.test(el.textContent)||!/STASH/i.test(el.textContent)||!/BAG/i.test(el.textContent)) bad.push('the one row lost a label ("'+el.textContent+'")');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
@@ -14323,7 +14351,7 @@ window.__REGRESS=[
      try{
        ARCADE.on=0; _trLast=''; syncTopRight(); t1=el.textContent;
        ARCADE.on=1; syncTopRight(); t2=el.textContent;
-       if(!/CREDITS/.test(t1)) return 'career shows no credits in the corner: '+t1;
+       if(!/(?:\$\s*[0-9]|[0-9][0-9,.]*\s+credits\b)/i.test(t1)) return 'career shows no credits in the corner: '+t1;
        if(t2!=='') return 'the demo still shows the corner readout: '+t2;
        return null;
      } finally { ARCADE.on=on0; _trLast=''; try{ syncTopRight(); }catch(_e){} } }},
