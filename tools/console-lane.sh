@@ -67,6 +67,7 @@ if [ "$(cap PACE 1)" != 0 ] && awk -v s="$spent" -v a="$allow" 'BEGIN{exit !(s+0
 busy=$(for d in "$C"/lane-*.lock; do [ "$d" = "$LK" ] && continue; cat "$d/task" 2>/dev/null; echo; done)
 free(){ while read -r f; do [ -n "$f" ] || continue; printf '%s\n' "$busy" | grep -qxF "$(basename "$f")" || { echo "$f"; return; }; done; }
 retry(){ ls "$C/failed/"*.md 2>/dev/null | sort | while read -r f; do n=$(basename "$f" .md)
+  case "$n" in o-*) continue;; esac   # 10-20 04:25: o-* jobs are the Codex lane's (tools/codex-lane.sh); a Claude lane never retries or picks them
   grep -qxF "$n" "$C/retried.txt" 2>/dev/null && continue; echo "$n" >> "$C/retried.txt"
   awk -v n="$n" '$3==n{$3=n"-r2"} {print}' "$C/spend.txt" > "$C/spend.$L.tmp" && mv "$C/spend.$L.tmp" "$C/spend.txt"
   mv "$f" "$C/tasks/" 2>/dev/null && echo "$C/tasks/$n.md"; break; done; }
@@ -83,7 +84,7 @@ for i in $(seq 1 30); do mkdir "$C/pick.lock" 2>/dev/null && break; [ -n "$(find
 busy=$(for d in "$C"/lane-*.lock; do [ "$d" = "$LK" ] && continue; cat "$d/task" 2>/dev/null; echo; done)
 release
 if [ "$L" = a ]; then t=$(ls "$C/tasks/"[0-9]*.md 2>/dev/null | sort | free); else t=$(ls "$C/tasks/$L-"*.md 2>/dev/null | sort | free); fi
-[ -z "$t" ] && t=$(ls "$C/tasks/"*.md 2>/dev/null | sort | free)
+[ -z "$t" ] && t=$(ls "$C/tasks/"*.md 2>/dev/null | grep -v "/o-[0-9][0-9]*-[^/]*.md$" | sort | free)   # 10-20 04:25: lane c picked o-02-corpus-green (a Codex job) once the queue ran short
 [ -z "$t" ] && t=$(retry)
 [ -n "$t" ] && basename "$t" > "$LK/task"; rm -rf "$C/pick.lock"
 [ -z "$t" ] && { echo "$(date '+%m-%d %H:%M') no tasks left" > "$C/status-$L.txt"; exit 0; }
