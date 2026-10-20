@@ -1,1 +1,1 @@
-10-20 02:49 22-ui-preraid-map-first: done, $0.3121645
+10-20 02:53 waiting for RAM: 2 GB free, a helper starts at 3; 40-art-player-look kept

@@ -9,4 +9,4 @@ corpus_t=1792467825
 backup_day=2026-10-20
 summary_t=1792475706
 stable_t=1792477622
-llm_head=b1cea5c6
+llm_head=332d29bf

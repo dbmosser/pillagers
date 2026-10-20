@@ -1,0 +1,7 @@
+v32.62: pad goals and status
+
+Tap View for the bag. Hold View for goals and raid status together.
+
+Check 32.62. Fails on v32.61.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

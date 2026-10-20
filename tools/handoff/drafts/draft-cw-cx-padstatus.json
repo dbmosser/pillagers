@@ -1,0 +1,60 @@
+{
+    "title":  "PAD GOALS AND STATUS",
+    "why":  "His 3.21 a: goals and raid status together. Every ordinary Xbox button already has a job so View uses tap and hold.",
+    "now":  "Tap View for the bag. Hold View for goals and raid status together.",
+    "edits":  [
+                  {
+                      "anchor":  "  8:\u0027KeyI\u0027,       // View   backpack. v13.44: TAB pauses and backs out now, so View taps I",
+                      "replacement":  "  8:\u0027KeyI\u0027,       // v28.xx (cw-cx-padstatus): View tap backpack / hold status is handled separately in the raid."
+                  },
+                  {
+                      "anchor":  "    var n=+k,now=pressed(n);",
+                      "replacement":  "    var n=+k,now=pressed(n); if(n===8) continue;   // v28.xx (cw-cx-padstatus): View waits for tap or hold."
+                  },
+                  {
+                      "anchor":  "  // triggers: RT fires, LT is steady aim. Both are analog, so a light pull is",
+                      "replacement":  "  // v28.xx (cw-cx-padstatus): his 3.21 a: goals and raid status together. View tap keeps the bag; hold uses ALT.\n  var _viewDown=pressed(8), _viewNow=netPadNow();\n  if(_viewDown\u0026\u0026!PAD.prev[8]){ PAD.viewAt=_viewNow; PAD.viewHeld=false; }\n  if(_viewDown\u0026\u0026PAD.viewAt!=null\u0026\u0026_viewNow-PAD.viewAt\u003e=0.25) PAD.viewHeld=true;\n  padHold(\u0027AltLeft\u0027,!!(_viewDown\u0026\u0026PAD.viewHeld\u0026\u0026!G.over\u0026\u0026!G.paused\u0026\u0026!G.mapOpen\u0026\u0026!G.bagOpen\u0026\u0026!G.wheel));\n  if(!_viewDown\u0026\u0026PAD.prev[8]\u0026\u0026PAD.viewAt!=null\u0026\u0026!PAD.viewHeld){ raidKey(\u0027KeyI\u0027,false,null); keys.KeyI=false; }\n  if(!_viewDown){ PAD.viewAt=null; PAD.viewHeld=false; }\n  // triggers: RT fires, LT is steady aim. Both are analog, so a light pull is"
+                  },
+                  {
+                      "anchor":  "  PAD.xWas=false; PAD.yGift=0;   // v22.19",
+                      "replacement":  "  PAD.xWas=false; PAD.yGift=0; PAD.viewAt=null; PAD.viewHeld=false;   // v28.xx (cw-cx-padstatus): a panel spends the View hold; v22.19"
+                  },
+                  {
+                      "anchor":  "ShiftLeft:\u0027LS\u0027,ControlLeft:\u0027B\u0027,KeyM:\u0027D-UP\u0027,KeyI:\u0027VIEW\u0027};",
+                      "replacement":  "ShiftLeft:\u0027LS\u0027,ControlLeft:\u0027B\u0027,KeyM:\u0027D-UP\u0027,KeyI:\u0027VIEW\u0027,AltLeft:\u0027VIEW\u0027};"
+                  },
+                  {
+                      "anchor":  "KeyM:12,KeyI:8,",
+                      "replacement":  "KeyM:12,KeyI:8,AltLeft:8,"
+                  },
+                  {
+                      "anchor":  "[8,\u0027backpack\u0027,\u0027GEAR\u0027]",
+                      "replacement":  "[8,\u0027backpack (tap), status (hold)\u0027,\u0027GEAR\u0027]"
+                  },
+                  {
+                      "anchor":  "[n(8),\u0027backpack\u0027]",
+                      "replacement":  "[n(8)+\u0027 tap\u0027,\u0027backpack\u0027],[n(8)+\u0027 hold\u0027,\u0027goals / raid status\u0027]"
+                  },
+                  {
+                      "anchor":  "[b(8),\u0027backpack\u0027]",
+                      "replacement":  "[b(8)+\u0027 tap\u0027,\u0027backpack\u0027],[b(8)+\u0027 hold\u0027,\u0027goals / status\u0027]"
+                  },
+                  {
+                      "anchor":  "[\u0027LB / RB\u0027,\u0027tactical belt\u0027],[\u0027VIEW\u0027,\u0027backpack\u0027]",
+                      "replacement":  "[\u0027LB / RB\u0027,\u0027tactical belt\u0027],[\u0027VIEW tap\u0027,\u0027backpack\u0027],[\u0027VIEW hold\u0027,\u0027goals / status\u0027]"
+                  },
+                  {
+                      "anchor":  "[\u0027D-DOWN\u0027,\u0027item wheel (hold), revive when down\u0027],[\u0027VIEW\u0027,\u0027backpack\u0027]",
+                      "replacement":  "[\u0027D-DOWN\u0027,\u0027item wheel (hold), revive when down\u0027],[\u0027VIEW tap\u0027,\u0027backpack\u0027],[\u0027VIEW hold\u0027,\u0027goals / raid status\u0027]"
+                  },
+                  {
+                      "anchor":  "\u0027focus\u0027,\u0027fire\u0027,\u0027backpack\u0027,\u0027pause\u0027",
+                      "replacement":  "\u0027focus\u0027,\u0027fire\u0027,\u0027bag / status\u0027,\u0027pause\u0027"
+                  },
+                  {
+                      "anchor":  "+\u0027HOLD \u0027+keyName(keysOf(\u0027AltLeft\u0027))",
+                      "replacement":  "+\u0027HOLD \u0027+keyLabel(\u0027AltLeft\u0027,keyName(keysOf(\u0027AltLeft\u0027)))"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027View tap opens and closes the bag; View hold opens goals with raid status, releases cleanly and never opens the bag\u0027,\n   run:function(){\n     var NG=navigator.getGamepads,own=Object.prototype.hasOwnProperty.call(navigator,\u0027getGamepads\u0027), PK=Object.assign({},PAD), ns=NET.same,pm=P.padmap,nf=netPadNow,pad,clock=100,g,draw=raidStatusDraw,draws=0;\n     function poll(down){var b=[];for(var i=0;i\u003c17;i++)b.push({pressed:down\u0026\u0026i===8,value:down\u0026\u0026i===8?1:0});pad={connected:true,index:0,id:\u0027Xbox check\u0027,mapping:\u0027standard\u0027,buttons:b,axes:[0,0,0,0]};pollPad();}\n     try{\n       __runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();NET.same=null;P.padmap=null;\n       __deploy({kit:[\u0027gun_rifle\u0027],safe:null,mapIx:0,seed:4242});g=__state();__topClear();g.mapFirst=false;g.mapOpen=false;g.bagOpen=false;g.paused=false;g.trade=null;g.forgeUI=null;g.wheel=null;\n       navigator.getGamepads=function(){return [pad];};netPadNow=function(){return clock;};PAD.announced=true;PAD.prev=[];PAD.viewAt=null;\n       poll(false);poll(true);clock+=0.1;poll(false);if(!g.bagOpen)return \u0027View tap did not open the bag\u0027;\n       poll(true);clock+=0.1;poll(false);if(g.bagOpen)return \u0027View tap did not close the bag\u0027;\n       poll(true);clock+=0.26;poll(true);if(!keys.AltLeft||g.bagOpen)return \u0027View hold did not open status without the bag\u0027;\n       g.arcade=true;g.flow={goals:[{id:\u0027fixture\u0027,t:\u0027test goal\u0027,n:3,v:1,chip:1,done:0}]};\n       raidStatusDraw=function(){draws++;return draw();};drawHUD();\n       if(!draws||!RSTAT.lines.some(function(s){return /test goal/i.test(s);}))return \u0027the held status did not show the goals together\u0027;\n       poll(false);if(keys.AltLeft||g.bagOpen)return \u0027View release left status or opened the bag\u0027;\n       keys.AltLeft=true;draws=0;drawHUD();if(!draws)return \u0027keyboard Alt no longer opens status\u0027;keys.AltLeft=false;\n       poll(true);clock+=0.3;poll(true);padRelease();if(keys.AltLeft)return \u0027a panel left status held\u0027;\n       return null;\n     }finally{\n       raidStatusDraw=draw;netPadNow=nf;try{padRelease();__endRaid(\u0027abandon\u0027);}catch(e){}__topClear();NET.same=ns;P.padmap=pm;\n       if(own)navigator.getGamepads=NG;else delete navigator.getGamepads;\n       Object.keys(PAD).forEach(function(k){delete PAD[k];});Object.assign(PAD,PK);PADB.sig=\u0027\u0027;padLabelsApply();\n     }\n   }},"
+}
