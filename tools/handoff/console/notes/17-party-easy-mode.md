@@ -17,3 +17,6 @@ Run 2026-10-20 (lane a):
 - Not done: two-window pictures of the start card and career card (the camera has no stage for them). Needs a shots json entry; ask coordinator.
 
 Run 2026-10-20 b (lane a): nothing new built. Task 15 (board tag, 30 percent points cut) has no notes or tasks file yet, so there is nothing to make agree; it should read ARCADE.easy (demo only). Two-window pictures still need a uishots stage for the start card and career card.
+
+Run 2026-10-20 c (lane a): 2.47 c shipped v32.31 (cw-easyboard). Task 15 had no file, so it is done here: an easy demo run (ARCADE.easy, host window) writes its board row at 0.7 of the score (EASY_MUL) with e:1, and the board shows "· easy" next to the initials. Load and dedupe keep the tag; the storage key is unchanged. Career has no board.
+Still not done: two-window pictures (2.86 a) of the start card and career card; the camera has no stage for them and ui-screens-js.json may only grow by asking in questions.md.

@@ -1,0 +1,7 @@
+v32.32: a hard cap on loud sound
+
+A master limiter caps every sound, the rain is a third quieter, and the demo lowers blasts and guns.
+
+Check 32.32. Fails on v32.31.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

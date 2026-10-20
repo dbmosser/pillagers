@@ -1,0 +1,56 @@
+{
+    "title":  "MAP LOOT TAGS TAKE A BACK SEAT",
+    "why":  "The critic still found loot labels too loud and contract bars stopped before the common right edge.",
+    "now":  "Loot tags use medium muted type, wider spacing and shorter halos. Nearby tags lose tiny leaders. Contract bars reach the same edge as status and rewards.",
+    "edits":  [
+                  {
+                      "anchor":  "  if(typeof markY===\u0027number\u0027){\n    var saveTag=MAPTAG; MAPTAG={x:x,y:markY,m:ctx.getTransform()};\n    ctx.font=font||hudFS(TYPE.label); ctx.textAlign=\u0027center\u0027; ctx.fillStyle=mapLabelCol(col);\n    try{ ctx.fillText(txt,x,y); }finally{ MAPTAG=saveTag; ctx.textAlign=\u0027left\u0027; } return;\n  }",
+                      "replacement":  "  if(typeof markY===\u0027number\u0027){\n    // v28.xx (cw-cx-mapquiet-o03): loot is secondary to exits and rooms, with the guide 16px floor and a lighter halo.\n    var saveTag=MAPTAG, saveHalo=_mapHalo, zs=Math.max(1,hudRes()), tf=hudFS(TYPE.label).replace(/^600 /,\u0027500 \u0027);\n    tf=tf.replace(/([\\d.]+)px/,function(a,n){ return Math.max(16*zs,parseFloat(n)).toFixed(1)+\u0027px\u0027; });\n    MAPTAG={x:x,y:markY,m:ctx.getTransform()}; _mapHalo=2*zs;\n    ctx.font=tf; ctx.textAlign=\u0027center\u0027; ctx.fillStyle=UIC.tx_2;\n    try{ ctx.fillText(txt,x,y); }finally{ MAPTAG=saveTag; _mapHalo=saveHalo; ctx.textAlign=\u0027left\u0027; } return;\n  }"
+                  },
+                  {
+                      "anchor":  "  function hits(a,ic,own){ var _ax=12*_mz, _ay=12*_mz; for(var h=0;h\u003cplaced.length;h++){ var b=placed[h]; if(a.l\u003cb.r+_ax\u0026\u0026b.l\u003ca.r+_ax\u0026\u0026a.t\u003cb.b+_ay\u0026\u0026b.t\u003ca.b+_ay) return true; }   /* v31.xx (cw-mapstyle3): a tag keeps a third of its height of air from a tag beside it (blast freezer, locked touched strongbox) */",
+                      "replacement":  "  function hits(a,ic,own){ var _ax=16*_mz, _ay=16*_mz; for(var h=0;h\u003cplaced.length;h++){ var b=placed[h]; if(a.l\u003cb.r+_ax\u0026\u0026b.l\u003ca.r+_ax\u0026\u0026a.t\u003cb.b+_ay\u0026\u0026b.t\u003ca.b+_ay) return true; }   /* v31.xx (cw-mapstyle3): a tag keeps a third of its height of air from a tag beside it (blast freezer, locked touched strongbox) */"
+                  },
+                  {
+                      "anchor":  "    if(ic) for(var h2=0;h2\u003cMAPICONS.length;h2++){ if(own\u0026\u0026own.indexOf(h2)\u003e=0) continue; var b2=MAPICONS[h2]; if(a.l\u003cb2.r+5\u0026\u0026b2.l\u003ca.r+5\u0026\u0026a.t\u003cb2.b+5\u0026\u0026b2.t\u003ca.b+5) return true; }   // v31.xx (cw-mapstyle): a label never sits on a mark",
+                      "replacement":  "    if(ic) for(var h2=0;h2\u003cMAPICONS.length;h2++){ if(own\u0026\u0026own.indexOf(h2)\u003e=0) continue; var b2=MAPICONS[h2]; if(a.l\u003cb2.r+12*_mz\u0026\u0026b2.l\u003ca.r+12*_mz\u0026\u0026a.t\u003cb2.b+12*_mz\u0026\u0026b2.t\u003ca.b+12*_mz) return true; }   // v31.xx (cw-mapstyle): a label never sits on a mark"
+                  },
+                  {
+                      "anchor":  "          leftX=px-20*_mz-g.r.r, rightX=px+20*_mz-g.r.l, pitch=gh+12*_mz, clusterL=px-15*_mz, clusterR=px+15*_mz,",
+                      "replacement":  "          leftX=px-20*_mz-g.r.r, rightX=px+20*_mz-g.r.l, pitch=gh+16*_mz, clusterL=px-15*_mz, clusterR=px+15*_mz,"
+                  },
+                  {
+                      "anchor":  "      var localX=[0,leftX,rightX,clusterLeft,clusterRight,_bL-g.r.l,_bW-g.r.r], localY=[0,sideY], xpad=12*_mz, ypad=12*_mz;",
+                      "replacement":  "      var localX=[0,leftX,rightX,clusterLeft,clusterRight,_bL-g.r.l,_bW-g.r.r], localY=[0,sideY], xpad=16*_mz, ypad=16*_mz;"
+                  },
+                  {
+                      "anchor":  "      var clusterLeft=clusterL-6*_mz-g.r.r, clusterRight=clusterR+6*_mz-g.r.l;",
+                      "replacement":  "      var clusterLeft=clusterL-12*_mz-g.r.r, clusterRight=clusterR+12*_mz-g.r.l;"
+                  },
+                  {
+                      "anchor":  "      clusterMarks.forEach(function(I){ localX.push(I.l-6*_mz-g.r.r,I.r+6*_mz-g.r.l); localY.push(I.t-6*_mz-g.r.b,I.b+6*_mz-g.r.t); });",
+                      "replacement":  "      clusterMarks.forEach(function(I){ localX.push(I.l-12*_mz-g.r.r,I.r+12*_mz-g.r.l); localY.push(I.t-12*_mz-g.r.b,I.b+12*_mz-g.r.t); });"
+                  },
+                  {
+                      "anchor":  "      var best=null, score=Infinity, step=gh+12*_mz;",
+                      "replacement":  "      var best=null, score=Infinity, step=gh+16*_mz;"
+                  },
+                  {
+                      "anchor":  "      if(len\u003ecut+2){ ctx.save(); ctx.setTransform(1,0,0,1,0,0); ctx.strokeStyle=UIC.tx_2; ctx.lineWidth=Math.max(1,_mz); ctx.beginPath(); ctx.moveTo(ax+vx*cut/len,ay+vy*cut/len); ctx.lineTo(ex,ey); ctx.stroke(); ctx.restore(); }",
+                      "replacement":  "      if(len\u003ecut+20*_mz){ ctx.save(); ctx.setTransform(1,0,0,1,0,0); ctx.strokeStyle=UIC.tx_2; ctx.lineWidth=Math.max(1,_mz); ctx.beginPath(); ctx.moveTo(ax+vx*cut/len,ay+vy*cut/len); ctx.lineTo(ex,ey); ctx.stroke(); ctx.restore(); }   // v28.xx (cw-cx-mapquiet-o03): nearby tags need no tiny leader; longer leaders retain exact ownership."
+                  },
+                  {
+                      "anchor":  "      mid=two?(ry+pitch*0.34):(ry+pitch*0.40); mid2=ry+pitch*0.74;",
+                      "replacement":  "      mid=two?(ry+pitch*0.30):(ry+pitch*0.40); mid2=ry+pitch*0.82;   // v28.xx (cw-cx-mapquiet-o03): status sits above a full-width track."
+                  },
+                  {
+                      "anchor":  "        barW=c.w-2*q-wCnt-Math.round(12*u);",
+                      "replacement":  "        barW=c.w-2*q;   // v28.xx (cw-cx-mapquiet-o03): one right edge for reward, status and track."
+                  },
+                  {
+                      "anchor":  "        ctx.font=cntFont; ctx.fillStyle=cc; ctx.textAlign=\u0027right\u0027; ctx.fillText(cnt,c.x+c.w-q,mid2); ctx.textAlign=\u0027left\u0027;",
+                      "replacement":  "        ctx.font=cntFont; ctx.fillStyle=cc; ctx.textAlign=\u0027right\u0027; ctx.fillText(cnt,c.x+c.w-q,ry+pitch*0.60); ctx.textAlign=\u0027left\u0027;"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027cw-cx-mapquiet-o03: individual loot tags use muted medium type with 16px text clearance and 12px icon clearance, and contract tracks reach the common right edge below status\u0027,\n   run:function(){\n     var g, bad=[], ow=W, oh=H, os=MAPFIRST.skip, oldC=P.contracts, oldUS=P.uiScale, hadUS=Object.prototype.hasOwnProperty.call(P,\u0027uiScale\u0027), op=mapPlaceLabels, oi=mapIcon, PR=CanvasRenderingContext2D.prototype, of=PR.fillText, ofr=PR.fillRect,\n         tags=[], all=[], icons=[], tracks=[], statuses=[], cd, z, pass, expected;\n     function box(s,x,y){var fp=+((/([\\d.]+)px/.exec(ctx.font)||[0,16])[1]);return mapLabelRect({x:x,y:y,w:ctx.measureText(typeof TX===\u0027function\u0027?TX(String(s)):String(s)).width,fp:fp,m:ctx.getTransform(),ta:ctx.textAlign,tb:ctx.textBaseline},0,0);}\n     function gap(a,b){return Math.sqrt(Math.pow(Math.max(0,a.l-b.r,b.l-a.r),2)+Math.pow(Math.max(0,a.t-b.b,b.t-a.b),2));}\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile(); MAPFIRST.skip=1; __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state();if(!g||!g.player||g.over)return \u0027SKIP: no raid\u0027;g.mapOpen=true;g.mapFirst=0;g.paused=false;g.bagOpen=false;keys={};mouse.down=false;delete P.uiScale;\n       P.contracts=[{type:\u0027conduct\u0027,ck:\u0027clean\u0027,n:1,prog:0,reward:450,desc:\u0027x\u0027,tier:\u0027std\u0027},{type:\u0027kill\u0027,tgt:\u0027crawler\u0027,n:5,prog:3,reward:450,desc:\u0027x\u0027,tier:\u0027std\u0027}];\n       mapIcon=function(x,y,r){var m=ctx.getTransform();icons.push({l:(x-r)*m.a+m.e,t:(y-r)*m.d+m.f,r:(x+r)*m.a+m.e,b:(y+r)*m.d+m.f});return oi.apply(this,arguments);};\n       mapPlaceLabels=function(Q,hdr,fn){return op(Q,hdr,function(s,x,y){var B=box(s,x,y);all.push(B);if(/^(cache|looted|strongbox)$/i.test(String(s)))tags.push({b:B,f:ctx.font,c:String(ctx.fillStyle).toLowerCase()});return (fn||of).call(ctx,s,x,y);});};\n       PR.fillRect=function(x,y,w,h){if(cd\u0026\u0026cd.col\u0026\u0026String(this.fillStyle).toLowerCase()===String(UIC.ui_line_hi).toLowerCase()\u0026\u0026h\u003e=2*z\u0026\u0026h\u003c=8*z\u0026\u0026x\u003e=cd.col.x-1\u0026\u0026y\u003e=cd.col.y\u0026\u0026y\u003ccd.col.y+cd.col.h)tracks.push({x:x,y:y,w:w,h:h});return ofr.apply(this,arguments);};\n       PR.fillText=function(s,x,y){if(cd\u0026\u0026cd.col\u0026\u0026/^(holding|broken|ready|done|\\d+\\/\\d+)$/i.test(String(s))\u0026\u0026Math.abs(x-(cd.col.x+cd.col.w-Math.round(20*cd.u)))\u003c=z)statuses.push({b:box(s,x,y),x:x});return of.apply(this,arguments);};\n       for(pass=0;pass\u003c2;pass++){\n         W=pass?3840:1920;H=pass?2160:1080;cd=mapCard();z=cd.z;tags=[];all=[];icons=[];tracks=[];statuses=[];__drawHUD();\n         expected=g.containers.filter(function(c){return !!c.cache;}).length+g.containers.filter(function(c){return c.strong\u0026\u0026!c.opened;}).length;\n         if(tags.length!==expected)bad.push(\u0027lost individual loot labels at \u0027+H+\u0027p\u0027);\n         tags.forEach(function(T){\n           if(T.c!==String(UIC.tx_2).toLowerCase()||!/^500 /.test(T.f))bad.push(\u0027loot tag is not medium tx-2\u0027);\n           if(+((/([\\d.]+)px/.exec(T.f)||[0,0])[1])\u003c15.9*z)bad.push(\u0027loot tag below 16px floor\u0027);\n           all.forEach(function(B){if(B!==T.b\u0026\u0026T.b.l\u003cB.r+15.5*z\u0026\u0026B.l\u003cT.b.r+15.5*z\u0026\u0026T.b.t\u003cB.b+15.5*z\u0026\u0026B.t\u003cT.b.b+15.5*z)bad.push(\u0027loot labels below 16px clearance at \u0027+H+\u0027p\u0027);});\n           icons.forEach(function(I){if(gap(T.b,I)\u003c11.5*z)bad.push(\u0027loot label crowds a map icon at \u0027+H+\u0027p\u0027);});\n         });\n         if(tracks.length!==mapContractRows().length||statuses.length!==tracks.length)bad.push(\u0027missing contract track or status\u0027);\n         tracks.forEach(function(T,i){var S=statuses[i];if(S\u0026\u0026(Math.abs(T.x+T.w-S.x)\u003ez||S.b.b\u003e=T.y-2*z))bad.push(\u0027track does not align below contract status\u0027);});\n       }\n       return bad.length?bad.join(\u0027; \u0027):null;\n     }finally{\n       mapPlaceLabels=op;mapIcon=oi;PR.fillText=of;PR.fillRect=ofr;W=ow;H=oh;MAPFIRST.skip=os;P.contracts=oldC;if(hadUS)P.uiScale=oldUS;else delete P.uiScale;keys={};mouse.down=false;\n       try{if(g){g.mapOpen=false;g.mapFirst=0;}__endRaid(\u0027abandon\u0027);}catch(e){}__topClear();__resetCfg();__cleanProfile();\n     }\n   }},"
+}

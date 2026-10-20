@@ -165,3 +165,5 @@
 2026-10-20 | o-03-map-popups-wait | 22 sector map | follow-up cw-cx-mapspace-o03: labels gain 12 scaled px clearance and own-icon leaders; contract names use tx-2, dividers removed, track status slots fixed, holding uses ok and payout uses label size | before: tools/handoff/console/notes/shots/o-03-map-popups-wait-after/22-raid-map-open-1080.jpg (v32.27 round one; archive before next capture) | after: lane follow-up screen 22 at 1080p and 4K pending
 2026-10-20 | b-30-ui-hud | 61 item wheel | picked wedge fill olive (86,66,26) to raised neutral grey (62,67,72), lime edge kept | before: shots/b-30q-before/61-raid-wheel-open-1080.jpg | after: shots/b-30q-after/61-raid-wheel-open-1080.jpg
 
+2026-10-20 | o-03-map-popups-wait | 22 sector map | cw-cx-mapquiet-o03: loot type 500/tx-2 with 16px floor, halo 5 to 2px, label clearance 12 to 16px, icon clearance 5 to 12px, omit leader segments <=20px; status above full-width contract tracks | before: tools/handoff/console/notes/shots/o-03-map-popups-wait-after/22-raid-map-open-1080.jpg (v32.30 round two; archive requested) | after: lane round-three screen 22 at 1080p/4K pending
+

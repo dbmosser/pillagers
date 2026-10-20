@@ -3028,7 +3028,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.31';
+var VER='32.32';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5989,6 +5989,7 @@ function volApply(){
   var m=volOf('volMaster'), f=volOf('volFx'), mu=volOf('volMusic'), key=m+'/'+f+'/'+mu, a;
   if(BUS&&BUS.gain){ try{ if(BUS.gain.value!==m*f) BUS.gain.value=m*f; }catch(_vb){} }
   try{ if(SND&&SND.bus&&SND.bus.ui&&SND.bus.ui.gain){ var _vu=volOf('volUi'); if(SND.bus.ui.gain.value!==_vu) SND.bus.ui.gain.value=_vu; } }catch(_vu2){}   // v26.xx (settings1): UI VOLUME is the HUD bus, which nothing ducks
+  try{ if(SND&&SND.bus){ ['imp','gun'].forEach(function(_tc){ var _tg=SND.bus[_tc]&&SND.bus[_tc].gain, _tv=sndDemoTrim(_tc); if(_tg&&_tg.value!==_tv) _tg.value=_tv; }); } }catch(_vt){}   // v28.xx (cw-masterlimit): the demo trim follows the mode
   try{ monoApply(); }catch(_vm2){}   // v26.xx (settings1): MONO AUDIO
   if(key!==VOL_LAST){
     VOL_LAST=key;
@@ -5997,6 +5998,33 @@ function volApply(){
     try{ if(typeof OUTM==='object'&&OUTM&&OUTM.g&&OUTM.g.gain&&typeof AC!=='undefined'&&AC&&OUTM.end>AC.currentTime) OUTM.g.gain.setTargetAtTime(OUTM.base*outLevel(),AC.currentTime,0.05); }catch(_vo){}
   }
   return key;
+}
+// v28.xx (cw-masterlimit), HIS WORDS (round 2, 2.12): "put a hard cap on loud sounds". THE MASTER LIMITER. Everything the game plays (the world
+// buses, the HUD and the stings through BUS, the music and the end pieces through the music gain) now ends in this one limiter on its way to
+// the speakers, always on: a fast compressor at -2 dB with a 20 to 1 ratio and no knee, so nothing can go past the ceiling. Where a context
+// has no compressor (the dry recorder of the fixture) the destination itself is returned, as before.
+function masterOut(a){
+  var Lm;
+  if(!a) return null;
+  if(a.__ml) return a.__ml;
+  try{
+    if(a.createDynamicsCompressor){
+      Lm=a.createDynamicsCompressor();
+      Lm.threshold.value=-2; Lm.knee.value=0; Lm.ratio.value=20; Lm.attack.value=0.001; Lm.release.value=0.08;
+      Lm.connect(a.destination); a.__ml=Lm; return Lm;
+    }
+  }catch(_ml){}
+  return a.destination;
+}
+// v28.xx (cw-masterlimit), HIS ANSWER 2.69 b (rain: "about a third quieter"): the rain voice rides 0.030 times the rain strength (it was 0.045).
+var RAIN_VOL=0.030;
+function rainLevel(r){ return (+r||0)*RAIN_VOL; }
+// v28.xx (cw-masterlimit), HIS ANSWER 2.12 b (party mode: "lower only the loudest sounds a few decibels (explosions, heavy guns, the boss)"):
+// in the demo the impact bus (blasts, hits) plays 3 dB down and the gun bus 2 dB down. Career is unchanged.
+function sndDemoTrim(cat){
+  var on=(typeof ARCADE==='object'&&ARCADE&&ARCADE.on);
+  if(!on) return 1;
+  return (cat==='imp')?0.708:((cat==='gun')?0.794:1);
 }
 function bus(){
   var a=ac(); if(!a) return null;
@@ -6039,7 +6067,7 @@ function sndBuild(a,B){
       S.trim=a.createGain(); S.trim.gain.value=0.5;
       S.world.connect(S.comp); S.comp.connect(S.lim); S.lim.connect(S.trim); S.trim.connect(B);
     } else S.world.connect(B);
-    for(i=0;i<SND_CATS.length;i++){ c=SND_CATS[i]; gn=a.createGain(); gn.gain.value=(c==='ui')?volOf('volUi'):1; gn.connect((c==='ui'||c==='sting')?B:S.world); S.bus[c]=gn; }
+    for(i=0;i<SND_CATS.length;i++){ c=SND_CATS[i]; gn=a.createGain(); gn.gain.value=(c==='ui')?volOf('volUi'):sndDemoTrim(c); gn.connect((c==='ui'||c==='sting')?B:S.world); S.bus[c]=gn; }
   }catch(e){ return null; }
   return S;
 }
@@ -7320,7 +7348,7 @@ function tickAmbience(dt,threat,alive,dread){
     A.lp.frequency.setTargetAtTime(200+900*threat,t,0.5);
     if(A.wg){
       var wxr=(typeof wx==='function'&&wx())?wx().rain||0:0;
-      A.wg.gain.setTargetAtTime(alive?wxr*0.045:0,t,1.2);
+      A.wg.gain.setTargetAtTime(alive?rainLevel(wxr):0,t,1.2);   // v28.xx (cw-masterlimit): a third quieter
     }
   }catch(e){}
 }
@@ -50347,7 +50375,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.31: An easy demo run writes its board row at 70 percent of the score with an easy tag next to the initials. Check 32.31 fails on v32.30',
+  now:'v32.32: A master limiter caps every sound, the rain is a third quieter, and the demo lowers blasts and guns. Check 32.32 fails on v32.31',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -55758,12 +55786,12 @@ function netMusPan(){
 }
 function netMusOut(a){
   if(!a) return null;
-  if(!NET.same) return a.destination;
+  if(!NET.same) return masterOut(a);   // v28.xx (cw-masterlimit): through the master limiter
   if(!NET.musG||NET.musAc!==a){
     try{ NET.musG=a.createGain(); NET.musG.gain.value=NET.sndOn?1:0; NET.musAc=a;
          // v21.22 (R5): through a panner of its own, centred while both players are on the floor (netMusPan)
-         NET.musP=null; try{ if(a.createStereoPanner){ NET.musP=a.createStereoPanner(); NET.musG.connect(NET.musP); NET.musP.connect(a.destination); } }catch(_mp){ NET.musP=null; }
-         if(!NET.musP) NET.musG.connect(a.destination);
+         NET.musP=null; try{ if(a.createStereoPanner){ NET.musP=a.createStereoPanner(); NET.musG.connect(NET.musP); NET.musP.connect(masterOut(a)); } }catch(_mp){ NET.musP=null; }
+         if(!NET.musP) NET.musG.connect(masterOut(a));
          netMusPan(); }
     catch(e){ NET.musG=null; NET.musAc=null; return netSndOut(a); }
   }
@@ -55771,14 +55799,14 @@ function netMusOut(a){
 }
 function netSndOut(a){
   if(!a) return null;
-  if(!NET.same) return a.destination;
+  if(!NET.same) return masterOut(a);   // v28.xx (cw-masterlimit): through the master limiter
   if(!NET.sndG||NET.sndAc!==a){
     try{ NET.sndG=a.createGain(); NET.sndG.gain.value=NET.sndOn?1:0; NET.sndAc=a;
          // v16.24: through a stereo panner, so SPLIT SPEAKERS can put player 1 on the left and player 2 on the right
-         NET.sndP=null; try{ if(a.createStereoPanner){ NET.sndP=a.createStereoPanner(); NET.sndG.connect(NET.sndP); NET.sndP.connect(a.destination); } }catch(_sp){ NET.sndP=null; }
-         if(!NET.sndP) NET.sndG.connect(a.destination);
+         NET.sndP=null; try{ if(a.createStereoPanner){ NET.sndP=a.createStereoPanner(); NET.sndG.connect(NET.sndP); NET.sndP.connect(masterOut(a)); } }catch(_sp){ NET.sndP=null; }
+         if(!NET.sndP) NET.sndG.connect(masterOut(a));
          netSndApply(); }
-    catch(e){ NET.sndG=null; NET.sndAc=null; return a.destination; }
+    catch(e){ NET.sndG=null; NET.sndAc=null; return masterOut(a); }
   }
   return NET.sndG;
 }

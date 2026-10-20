@@ -1,0 +1,52 @@
+{
+    "title":  "A HARD CAP ON LOUD SOUND",
+    "why":  "His round 2 orders: put a hard cap on loud sounds (2.12), rain about a third quieter (2.69 b), lower only the loudest sounds a few decibels in the demo (2.12 b). The menu and stinger sounds skipped the old limiter and the music ran straight to the speakers; now everything ends in one master limiter at -2 dB. Rain is 0.030 instead of 0.045. In the demo blasts play 3 dB down and guns 2 dB down.",
+    "now":  "A master limiter caps every sound, the rain is a third quieter, and the demo lowers blasts and guns.",
+    "edits":  [
+                  {
+                      "anchor":  "function bus(){\n",
+                      "replacement":  "// v28.xx (cw-masterlimit), HIS WORDS (round 2, 2.12): \"put a hard cap on loud sounds\". THE MASTER LIMITER. Everything the game plays (the world\n// buses, the HUD and the stings through BUS, the music and the end pieces through the music gain) now ends in this one limiter on its way to\n// the speakers, always on: a fast compressor at -2 dB with a 20 to 1 ratio and no knee, so nothing can go past the ceiling. Where a context\n// has no compressor (the dry recorder of the fixture) the destination itself is returned, as before.\nfunction masterOut(a){\n  var Lm;\n  if(!a) return null;\n  if(a.__ml) return a.__ml;\n  try{\n    if(a.createDynamicsCompressor){\n      Lm=a.createDynamicsCompressor();\n      Lm.threshold.value=-2; Lm.knee.value=0; Lm.ratio.value=20; Lm.attack.value=0.001; Lm.release.value=0.08;\n      Lm.connect(a.destination); a.__ml=Lm; return Lm;\n    }\n  }catch(_ml){}\n  return a.destination;\n}\n// v28.xx (cw-masterlimit), HIS ANSWER 2.69 b (rain: \"about a third quieter\"): the rain voice rides 0.030 times the rain strength (it was 0.045).\nvar RAIN_VOL=0.030;\nfunction rainLevel(r){ return (+r||0)*RAIN_VOL; }\n// v28.xx (cw-masterlimit), HIS ANSWER 2.12 b (party mode: \"lower only the loudest sounds a few decibels (explosions, heavy guns, the boss)\"):\n// in the demo the impact bus (blasts, hits) plays 3 dB down and the gun bus 2 dB down. Career is unchanged.\nfunction sndDemoTrim(cat){\n  var on=(typeof ARCADE===\u0027object\u0027\u0026\u0026ARCADE\u0026\u0026ARCADE.on);\n  if(!on) return 1;\n  return (cat===\u0027imp\u0027)?0.708:((cat===\u0027gun\u0027)?0.794:1);\n}\nfunction bus(){\n"
+                  },
+                  {
+                      "anchor":  "A.wg.gain.setTargetAtTime(alive?wxr*0.045:0,t,1.2);",
+                      "replacement":  "A.wg.gain.setTargetAtTime(alive?rainLevel(wxr):0,t,1.2);   // v28.xx (cw-masterlimit): a third quieter"
+                  },
+                  {
+                      "anchor":  "gn.gain.value=(c===\u0027ui\u0027)?volOf(\u0027volUi\u0027):1;",
+                      "replacement":  "gn.gain.value=(c===\u0027ui\u0027)?volOf(\u0027volUi\u0027):sndDemoTrim(c);"
+                  },
+                  {
+                      "anchor":  "  try{ monoApply(); }catch(_vm2){}   // v26.xx (settings1): MONO AUDIO\n",
+                      "replacement":  "  try{ if(SND\u0026\u0026SND.bus){ [\u0027imp\u0027,\u0027gun\u0027].forEach(function(_tc){ var _tg=SND.bus[_tc]\u0026\u0026SND.bus[_tc].gain, _tv=sndDemoTrim(_tc); if(_tg\u0026\u0026_tg.value!==_tv) _tg.value=_tv; }); } }catch(_vt){}   // v28.xx (cw-masterlimit): the demo trim follows the mode\n  try{ monoApply(); }catch(_vm2){}   // v26.xx (settings1): MONO AUDIO\n"
+                  },
+                  {
+                      "anchor":  "function netMusOut(a){\n  if(!a) return null;\n  if(!NET.same) return a.destination;\n",
+                      "replacement":  "function netMusOut(a){\n  if(!a) return null;\n  if(!NET.same) return masterOut(a);   // v28.xx (cw-masterlimit): through the master limiter\n"
+                  },
+                  {
+                      "anchor":  "NET.musG.connect(NET.musP); NET.musP.connect(a.destination);",
+                      "replacement":  "NET.musG.connect(NET.musP); NET.musP.connect(masterOut(a));"
+                  },
+                  {
+                      "anchor":  "if(!NET.musP) NET.musG.connect(a.destination);",
+                      "replacement":  "if(!NET.musP) NET.musG.connect(masterOut(a));"
+                  },
+                  {
+                      "anchor":  "function netSndOut(a){\n  if(!a) return null;\n  if(!NET.same) return a.destination;\n",
+                      "replacement":  "function netSndOut(a){\n  if(!a) return null;\n  if(!NET.same) return masterOut(a);   // v28.xx (cw-masterlimit): through the master limiter\n"
+                  },
+                  {
+                      "anchor":  "NET.sndG.connect(NET.sndP); NET.sndP.connect(a.destination);",
+                      "replacement":  "NET.sndG.connect(NET.sndP); NET.sndP.connect(masterOut(a));"
+                  },
+                  {
+                      "anchor":  "if(!NET.sndP) NET.sndG.connect(a.destination);",
+                      "replacement":  "if(!NET.sndP) NET.sndG.connect(masterOut(a));"
+                  },
+                  {
+                      "anchor":  "NET.sndG=null; NET.sndAc=null; return a.destination; }",
+                      "replacement":  "NET.sndG=null; NET.sndAc=null; return masterOut(a); }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a hard cap on loud sound: everything ends in a master limiter, the rain is a third quieter, and the demo lowers blasts and guns\u0027,\n   run:function(){\n     var a, same0, o, m, on0, bad=[];\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       if(typeof masterOut!==\u0027function\u0027) return \u0027there is no master limiter (no masterOut)\u0027;\n       if(typeof rainLevel!==\u0027function\u0027||typeof sndDemoTrim!==\u0027function\u0027) return \u0027no rainLevel or sndDemoTrim\u0027;\n       var dest={n:\u0027dest\u0027}, prm=function(){ return {value:0}; };\n       a={destination:dest, createDynamicsCompressor:function(){ var c={threshold:prm(),knee:prm(),ratio:prm(),attack:prm(),release:prm(),to:null}; c.connect=function(x){ c.to=x; }; return c; }};\n       same0=NET.same; NET.same=null;\n       try{ o=netSndOut(a); m=netMusOut(a); } finally { NET.same=same0; }\n       if(!o||o===a.destination||!o.threshold||o.ratio.value\u003c20||o.threshold.value\u003e-1) bad.push(\u0027the world sound does not end in a limiter\u0027);\n       if(o\u0026\u0026o.to!==dest) bad.push(\u0027the limiter does not feed the speakers\u0027);\n       if(m!==o) bad.push(\u0027the music does not end in the same limiter\u0027);\n       if(Math.abs(rainLevel(1)-0.030)\u003e0.0005) bad.push(\u0027rain at full strength is \u0027+rainLevel(1)+\u0027, not a third under 0.045\u0027);\n       on0=ARCADE.on;\n       try{ ARCADE.on=1; if(!(sndDemoTrim(\u0027imp\u0027)\u003c=0.75\u0026\u0026sndDemoTrim(\u0027gun\u0027)\u003c1\u0026\u0026sndDemoTrim(\u0027foley\u0027)===1)) bad.push(\u0027the demo does not lower blasts and guns\u0027); ARCADE.on=0; if(sndDemoTrim(\u0027imp\u0027)!==1) bad.push(\u0027career sound is lowered\u0027); }\n       finally { ARCADE.on=on0; }\n       return bad.length?bad.join(\u0027; \u0027):null;\n     } finally {\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}
