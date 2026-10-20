@@ -36,3 +36,10 @@ The setup now keeps the recorded day size when run again (run at night it would 
 Left: after his step, confirm a pcnote- file appears in share-list and reaches exports/ (step 3), and read whether run-*.txt reports
 come from the copy at all (step 4: if notes arrive but no run reports, the copy's collector or autoExport is the gap). Dashboard line not
 added (health.sh shows it).
+
+Status 10-20 17:40 (coordinator): his setup rerun took. The main PC's minute check now writes "notes=on" into gaming.txt, and
+tools/handoff/notes-fetch.txt shows "main PC copying: ...". It reads "C:\claudecode\pillagers-party\exports is not there": no note or run
+report has been saved in the party copy yet (the collector makes that folder on the first report). Step 3 is left: see the first real
+pcnote- file arrive. Step 4 answered: the copy's collector (party-host-copy.ps1 -Start) writes run-*.txt into that same folder, so they
+are mirrored too. Side fact: right now localhost:8802 on the main PC is the play relay answering 502 (the VM's pad route is his WAIT item);
+today's run-*.txt files in the VM's exports are test corpus reports (fxcorpus.html), not his. His last real note here is from 10-18.
