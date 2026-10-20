@@ -26,3 +26,7 @@ Then prove the test run speed: on the drafted fixture, __regressBg(0,120) finish
 No pictures needed (no visible change). In your notes, tell him what to watch in the next playtest: raids should feel smoother
 with many bodies and boxes on screen.
 TASK DONE when shipped and the checks pass; TASK PARTIAL with what is left.
+
+## COORDINATOR 10-20 06:30
+The fix shipped (v32.75, cw-shadowstore) with its check. The speed proof is mine: the next full test run starts on v32.75+ and its
+first slice time is the proof. Nothing is left for you: write TASK DONE and stop.
