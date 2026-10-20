@@ -1,3 +1,5 @@
+PARKED 2026-10-19 night by his process answer 40: "work towards thanksgiving release. I am tired of answering questions about the party, i feel like we are putting too much work into the party demo side, which is supposed to be a simple sideshow from the main game." Party-only polish yields to Career and release work. Do not resume unless he asks for it.
+
 UI STEP 3: THE PARTY DEMO SCREENS (his order 2026-10-18; the party is 10/30, these are what his guests see). Read
 notes\ui\style-guide.md, look-book.md and shared-style.md first. Notes: notes\ui\party-screens.md.
 Screens: 46, 47, 48, 49, 52, 53, 54, 55, 56, 58, 62, 63, 64. Move each onto the shared look and fix what look-book.md says,

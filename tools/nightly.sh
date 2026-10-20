@@ -55,6 +55,13 @@ summary(){
   } > "$f"
 }
 echo "$(date '+%m-%d %H:%M') always-on runner started (pid $$)" >> "$LOG"
+llm_ok(){   # see (3) below
+  local u; u=$(powershell -NoProfile -Command "[Environment]::GetEnvironmentVariable('PILLAGERS_OLLAMA_URL','User')" 2>/dev/null | tr -d '\r')
+  if [ -z "$u" ]; then [ "$ram" -ge 20 ]; return; fi
+  curl -s -m 5 "$u/api/tags" 2>/dev/null | grep -q '"models"' || return 1
+  local c; c=$(node "$R/tools/bridge/hostctl.mjs" stats 2>/dev/null | grep -o '"cpuLoadPct": *[0-9]*' | tr -dc '0-9')
+  [ -n "$c" ] && [ "$c" -lt 60 ]
+}
 while true; do
   date +%s > "$HB"
   head=$(git -C "$R" rev-parse --short HEAD 2>/dev/null)
@@ -78,8 +85,11 @@ while true; do
       echo "$(date +%H:%M) corpus start at $head" >> "$LOG"
       (bash "$S/corpq.sh" "$out" > /dev/null 2>&1; rmdir "$cl" 2>/dev/null; echo "$(date +%H:%M) corpus done" >> "$LOG"; summary) &
     fi
-    # (3) the local LLM, once per new HEAD, only with plenty of RAM
-    if [ "$(get llm_head)" != "$head" ] && [ "$ram" -ge 20 ] && [ "$(running 'llm-night\.ps1')" = "0" ]; then
+    # (3) the local LLM, once per new HEAD. 10-19 night, his process answer 38 b: "it may run any time unless I am gaming". In the VM
+    #     the model runs on the main PC's graphics card (PILLAGERS_OLLAMA_URL), so the VM's own RAM does not matter: it runs when that
+    #     Ollama answers and the main PC is not busy (CPU under 60%, a rough "not gaming" sign, read through the host bridge). Without
+    #     a remote Ollama it keeps the old rule (20+ GB free here, the model holds about 12 GB).
+    if [ "$(get llm_head)" != "$head" ] && [ "$(running 'llm-night\.ps1')" = "0" ] && llm_ok; then
       since=$(get llm_head); put llm_head "$head"
       echo "$(date +%H:%M) llm audits start, since ${since:-whole file}" >> "$LOG"
       (powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/llm-night.ps1" -Model qwen2.5-coder:14b ${since:+-Since $since} > /dev/null 2>&1; echo "$(date +%H:%M) llm audits done" >> "$LOG") &

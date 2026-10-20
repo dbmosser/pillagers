@@ -13,7 +13,8 @@ if (!pics.length || pics.length > 4 || !pics.every(ok)) { console.log('USAGE: no
 const caps = {}; try { readFileSync(C + '/caps.txt', 'utf8').split(/\r?\n/).forEach(l => { const m = /^(\w+)=(.*)$/.exec(l.trim()); if (m) caps[m[1]] = m[2]; }); } catch {}
 const guide = existsSync(U + '/style-guide.md') ? readFileSync(U + '/style-guide.md', 'utf8').slice(0, 8000) : '(no style guide yet: judge against the rubric alone)';
 const sys = `You are a skeptical senior UI art director at a AAA studio reviewing screenshots of PILLAGERS, a top-down 2.5D extraction
-shooter (the bar: ARC Raiders and Fortnite menus; the feel: ARC Raiders x Zero Sievert). The owner says the UI is the weakest part of
+shooter (the bar: the menus of his favourite games, ARC Raiders, Fortnite, Halo Reach, Halo 4, Destiny 2, Diablo IV and Call of Duty;
+the feel: ARC Raiders x Zero Sievert). The owner says the UI is the weakest part of
 the game and wants it to "actually look good", with style consistency across every menu. Your job is to find what is wrong, not to
 encourage. A 4 means a player would call it polished; most amateur game screens are a 2. Never give 5 unless it could ship in a AAA game.
 Rubric (weight): hierarchy, what the eye hits first and whether it should (3); consistency with the style guide and the other screens:

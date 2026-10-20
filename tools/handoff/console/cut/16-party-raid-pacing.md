@@ -1,3 +1,5 @@
+PARKED 2026-10-19 night by his process answer 40: "work towards thanksgiving release. I am tired of answering questions about the party, i feel like we are putting too much work into the party demo side, which is supposed to be a simple sideshow from the main game." Party-only polish yields to Career and release work. Do not resume unless he asks for it.
+
 # 16-party-raid-pacing : what a party raid feels like, minute by minute (his round 2 answers)
 
 - The party plays Cold Storage only. The other maps must not be reachable by players at all; lock them if any path still reaches one (2.67, 2.78).

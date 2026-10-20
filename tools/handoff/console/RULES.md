@@ -45,6 +45,18 @@ plan (lanes e and f, and the other lanes once the Console money is used up), so 
   a name typed on the title goes into a new save (cw-newsavename). Do not undo any of these.
 - Never start agents, workflows, cloud sessions or scheduled tasks.
 
+## His process answers of 10-19 night (binding; full list tools/handoff/q-process/answers.md)
+- Direction: the goal is the Thanksgiving release (Thu 11/26). The party demo is "a simple sideshow from the main game": no
+  party-only polish, and no party questions. Career screens get polished too, not only party screens (56).
+- Everything is made here: no outside art, sound or music, even with an open licence (23).
+- When you finish early you may polish (26), and you may keep polishing a screen the judge passed if time allows (60).
+- You may reword on-screen text when clarity calls for it (27), still lower case and short, logged in notes/ui/changes.md (Q8).
+- Never switch off a feature that keeps breaking: log it in alarms.md and the coordinator asks him (21).
+- If your change makes something else worse, keep the better of the two and say so in your notes (28). Newest answer wins (30).
+- His taste beats the judge, and the style guide beats the judge (54, 22). A brand NEW screen design needs 2 or 3 mockups he picks
+  from first (53): restyling an existing screen does not.
+- Risky changes wait until after the party (95). Version number: only inside a menu (58).
+
 ## Vetoes: his "never again" list (binding; never propose, build, restyle or bring back; only he can lift one)
 World and play
 - Hills and verticality: never (his 2026-08-30 order). Woods is NOT vetoed (his 10-02 correction). Raised decks, catwalks and ramps are gone (09-13).

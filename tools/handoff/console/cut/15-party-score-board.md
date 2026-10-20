@@ -1,3 +1,5 @@
+PARKED 2026-10-19 night by his process answer 40: "work towards thanksgiving release. I am tired of answering questions about the party, i feel like we are putting too much work into the party demo side, which is supposed to be a simple sideshow from the main game." Party-only polish yields to Career and release work. Do not resume unless he asks for it.
+
 # 15-party-score-board : score, board and run-over card (his round 2 and 3 answers)
 
 - 2.22 b: each player's own fate sets their multiplier (extracted: doubled; caught by the burn: halved). The partner's result never touches yours.

@@ -1,3 +1,5 @@
+PARKED 2026-10-19 night by his process answer 40: "work towards thanksgiving release. I am tired of answering questions about the party, i feel like we are putting too much work into the party demo side, which is supposed to be a simple sideshow from the main game." Party-only polish yields to Career and release work. Do not resume unless he asks for it.
+
 # 14-party-2p-flow : how two players share the party demo (his round 2 and 3 answers)
 
 - Window dies mid-run (2.1, 3.9): the other player carries on alone. The dead window reloads by itself, and the next demo run starts as a 2-player run again.
