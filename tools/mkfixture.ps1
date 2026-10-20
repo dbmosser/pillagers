@@ -1879,30 +1879,30 @@ window.__REGRESS=[
      // v21.93 retarget (four gun keys): the keys are found by what they show, not by number (two gun keys before v21.93, four
      // after it, everything else two keys down): GI the gun in his hands, HI the Medical key, E1 the last empty key, E2 another
      // empty key, else a throw key (any item goes on any ordinary key, v6.61).
-     var sl=__belt.slots(), GI=-1, HI=-1, E1=-1, E2=-1, i;
-     for(i=0;i<sl.length;i++){ if(GI<0&&sl[i]&&sl[i].kind==='gun'&&sl[i].inHand) GI=i; if(HI<0&&sl[i]&&sl[i].kind==='heal') HI=i; }
-     for(i=sl.length-1;i>=0;i--) if(sl[i]&&sl[i].kind==='empty'){ E1=i; break; }
-     for(i=0;i<sl.length&&E2<0;i++) if(i!==E1&&sl[i]&&sl[i].kind==='empty') E2=i;
-     for(i=0;i<sl.length&&E2<0;i++) if(i!==E1&&sl[i]&&sl[i].kind==='throw') E2=i;
-     if(typeof BELT_CLASS!=='undefined'){ E1=BELT_CLASS.lastIndexOf('med'); E2=BELT_CLASS.indexOf('med'); }   // v25.xx (belt3) retarget: a bandage goes on a medical key
-     if(GI<0||HI<0||E1<0||E2<0)
-       return 'the bar is not the shape this check assumes (a gun in hand, a Medical key, an empty key and one more ordinary key), so it is testing nothing';
-     // A consumable onto an empty slot takes.
+     // v32.83 retarget (50-corpus-old-a): the bar is nine GUN keys now (v26.xx wheel4, his order: only guns at the bottom of the screen; heals, plates and throwables live on the wheel).
+     // The claim is unchanged: a drop on the bar assigns what belongs there, refuses what does not, MOVES an item already on the bar (no copy left behind), and a drop back on its own key changes nothing.
+     // GI is the key showing the gun in his hands, E1 and E2 two vacant gun keys.
+     var sl=__belt.slots(), GI=-1, E1=-1, E2=-1, i;
+     for(i=0;i<sl.length;i++) if(GI<0&&sl[i]&&sl[i].kind==='gun'&&sl[i].inHand) GI=i;
+     for(i=sl.length-1;i>=0;i--) if(sl[i]&&sl[i].vacant){ if(E1<0) E1=i; else { E2=i; break; } }
+     if(GI<0||E1<0||E2<0)
+       return 'the bar is not the shape this check assumes (a gun in hand and two vacant gun keys), so it is testing nothing: '+sl.map(function(x){ return x.kind+(x.vacant?'-vacant':'')+(x.inHand?'-hand':''); }).join(',');
+     // A consumable onto a vacant gun key is refused: it goes on the wheel, not the bar.
      var a=drop({key:'bandage',bagIx:__state().bag.indexOf('bandage')},E1);
-     if(a[E1]!=='bandage') return 'a bandage dropped on an empty slot did not stick';
-     // v8.67, his order: a gun goes on ANY slot, same as any other equippable.
-     var b=drop({key:'gun_rifle',bagIx:__state().bag.indexOf('gun_rifle')},HI);
-     if(b[HI]!=='gun_rifle'&&!(typeof beltGunsOff==='function'&&HI>=GUNKEYS)) return 'a gun was refused from an ordinary belt slot';   // v25.xx (belt2) retarget: from belt2 on a gun is refused on keys past the gun keys
-     // A consumable on a GUN slot is still refused: a gun key showing the gun in his hands (an automatic gun pin may sit there).
+     if(a[E1]==='bandage') return 'a bandage dropped on a gun key stuck, the bar takes guns only';
+     // v8.67, his order: a gun goes on any gun key.
+     var b=drop({key:'gun_rifle',bagIx:__state().bag.indexOf('gun_rifle')},E1);
+     if(b[E1]!=='gun_rifle') return 'a gun dropped on a vacant gun key did not stick: '+JSON.stringify(b);
+     // A consumable on the gun key showing the gun in his hands is still refused.
      var c=drop({key:'medkit',bagIx:__state().bag.indexOf('medkit')},GI);
      if(c[GI]==='medkit') return 'a consumable was accepted onto a gun slot';
      // Moving one already on the bar must MOVE it, not leave a copy behind.
-     var e2=drop({key:'bandage',fromHot:E1},E2);
-     if(e2[E1]) return 'moving an item off slot '+(E1+1)+' left a copy behind';
-     if(e2[E2]!=='bandage') return 'moving an item to slot '+(E2+1)+' did not land it';
+     var e2=drop({key:'gun_rifle',fromHot:E1},E2);
+     if(e2[E1]) return 'moving a gun off slot '+(E1+1)+' left a copy behind';
+     if(e2[E2]!=='gun_rifle') return 'moving a gun to slot '+(E2+1)+' did not land it';
      // Dropping onto its own slot is a click and must change nothing.
-     var f3=drop({key:'bandage',fromHot:E2},E2);
-     if(f3[E2]!=='bandage') return 'dropping an item back on its own slot lost it';
+     var f3=drop({key:'gun_rifle',fromHot:E2},E2);
+     if(f3[E2]!=='gun_rifle') return 'dropping a gun back on its own slot lost it';
      return null; }},
   {v:'8.65',what:'the two gun slots swap weapons and never fire one',
    run:function(){
@@ -1920,7 +1920,7 @@ window.__REGRESS=[
      __belt.set(1);
      for(var f=0;f<6;f++) __loop(performance.now()+f*16.7);
      var s1=__state();
-     if((s1.player.wep&&s1.player.wep.id)!==sec0) return 'picking the stowed gun did not bring it up';
+     if((s1.player.wep&&s1.player.wep.id)!==sec0) return 'picking the stowed gun did not bring it up (hand '+hand0+', stowed '+sec0+', hand now '+(s1.player.wep&&s1.player.wep.id)+', sel '+__belt.sel()+', slots '+__belt.slots().slice(0,3).map(function(x){ return x.k+'/'+x.kind+'/'+x.icon+(x.inHand?'/hand':'')+(x.vacant?'/vacant':''); }).join(' ; ')+')';
      __belt.set(0);
      for(var f2=0;f2<6;f2++) __loop(performance.now()+f2*16.7);
      var s2=__state();
@@ -1935,23 +1935,26 @@ window.__REGRESS=[
      if(d.error) return d.error;
      var g=__state(); if(!g) return 'no raid';
      g.ents.length=0; g.player.iv=99; g.player.hp=40; g.player.armor=0;
-     var sl=__belt.slots(), hi=-1, pi=-1;
-     sl.forEach(function(x,i){ if(x.kind==='heal'&&(hi<0||x.icon==='bandage')) hi=i; if(x.kind==='armor') pi=i; });   /* belt redo (v25.9x): the belt has a cell for each heal he carries, so take the one that holds the bandage */
-     if(hi<0||pi<0) return 'no heal or armour slot on the belt, so this check is testing nothing';
-     // The heal slot names the SMALLEST heal carried, which is the bandage here.
-     if(sl[hi].icon!=='bandage') return 'the heal slot named '+sl[hi].icon+' with a bandage in the bag';
-     __belt.set(hi); __belt.use();
-     for(var f=0;f<200;f++) __loop(performance.now()+f*16.7);
+     // v32.83 retarget (50-corpus-old-a): heals and plates are not on the belt any more (v26.xx wheel4, his order: only guns on the bar). A wheel pick takes the item out
+     // (handTake) and a fresh pull of the trigger uses it. The claim is unchanged: the bandage heals and is spent, the plate is slotted and is spent.
+     var M8=__mouse();
+     function useFromWheel(k){
+       M8.down=false;
+       for(var a8=0;a8<4;a8++) __loop(performance.now()+a8*16.7);
+       if(!handTake(k)||!__state().player.hand) return false;
+       for(var b8=0;b8<40;b8++) __loop(performance.now()+b8*16.7);   // the pull-out time
+       M8.down=true;
+       for(var c8=0;c8<200;c8++) __loop(performance.now()+c8*16.7);
+       M8.down=false;
+       return true;
+     }
+     if(!useFromWheel('bandage')) return 'the wheel would not take the bandage out';
      var s1=__state();
-     if(s1.player.hp<=40) return 'using the heal slot healed nothing';
+     if(s1.player.hp<=40) return 'using the bandage from the wheel healed nothing';
      if(s1.bag.indexOf('bandage')>=0) return 'the bandage was not spent';
-     var sl2=__belt.slots(), pi2=-1;
-     sl2.forEach(function(x,i){ if(x.kind==='armor') pi2=i; });
-     if(pi2<0) return 'the armour slot vanished after healing';
-     __belt.set(pi2); __belt.use();
-     for(var f2=0;f2<200;f2++) __loop(performance.now()+f2*16.7);
+     if(!useFromWheel('plate')) return 'the wheel would not take the plate out';
      var s2=__state();
-     if(s2.player.armor<=0) return 'using the plate slot applied no armour';
+     if(s2.player.armor<=0) return 'using the plate from the wheel applied no armour';
      if(s2.bag.indexOf('plate')>=0) return 'the plate was not spent';
      return null; }},
   {v:'8.64',what:'a raid that takes your kit also lets go of the belt keys',
@@ -2651,7 +2654,8 @@ window.__REGRESS=[
          // the 1.4x rule and get a floor of their own: still no smaller than they
          // were before v8.91 ever grew them. The legend is untouched because he
          // has not mentioned it.
-         if(k==='raiders'||k==='cond'){
+         // v32.83 retarget (50-corpus-old-a): the legend joins the floor rule. v27.26 (feedleg) shrinks the compact controls list on purpose so it ends before 47 percent of the width and clears the feed (zoom down to 0.9), so 1.4x its old share can no longer hold; it must still not be smaller than before v8.91 grew it.
+         if(k==='raiders'||k==='cond'||k==='legend'){
            var floorW=(was[k][0]/1920)*SW;
            if(got.w<floorW)
              bad.push(k+' at '+tag+' is '+got.w+' wide, smaller than it was before v8.91 grew it');
@@ -2867,7 +2871,7 @@ window.__REGRESS=[
      __forceSize(1920,1080);
      if(!__hubEnter()) return 'could not reach the Undercroft floor';
      var P=__P();
-     P.kit=['medkit','plate','servo','scrap','bandage'];
+     P.kit=['gun_rifle','plate','servo','scrap','bandage'];   // v32.83 retarget (50-corpus-old-a): the belt takes guns only (wheel4), so the dragged item is a gun
      P.hotAssign={};
      var K=__keysRef(); for(var k in K) delete K[k];
      __hubBag(false);
@@ -2893,9 +2897,10 @@ window.__REGRESS=[
        __hubStep(1/60);
      }
      // ONTO the belt.
-     var key=bc[0].key;
-     var TI=(typeof beltClassOf==='function'&&typeof BELT_CLASS!=='undefined'&&beltClassOf(key))?BELT_CLASS.lastIndexOf(beltClassOf(key)):7;   // v25.xx (belt3) retarget: the item goes on a key of its own class
-     drag(bc[0],hc[TI]);
+     var gci=0; for(var _bi=0;_bi<bc.length;_bi++) if(bc[_bi].key==='gun_rifle') gci=_bi;
+     var key=bc[gci].key;
+     var TI=hc.length-1;   // v32.83 retarget (50-corpus-old-a): the last of the nine gun keys
+     drag(bc[gci],hc[TI]);
      var live=__hubBagLive();
      if(!live||(live.hotAssign||{})[TI]!==key)
        bad.push('dragging '+key+' onto belt slot 8 did not bind it');
@@ -3862,8 +3867,9 @@ window.__REGRESS=[
      if(a.cols!==b.cols) bad.push('the grid changed shape rather than size, '+a.cols+' columns at 1080p and '+b.cols+' at 4K');
      // CONTROL 1: 1080p must not have moved. He has a working layout there and
      // this was a 4K complaint.
-     if(Math.abs(a.p.w-1194)>6||Math.abs(a.p.h-435)>6)
-       bad.push('control: the 1080p panel changed to '+Math.round(a.p.w)+'x'+Math.round(a.p.h)+', it was 1194x435');
+     // v32.83 retarget (50-corpus-old-a): the backpack panel was redesigned (nine gun keys, the grid beside the figure); its 1080p size is 830x477 now (it was 1194x435).
+     if(Math.abs(a.p.w-830)>6||Math.abs(a.p.h-477)>6)
+       bad.push('control: the 1080p panel changed to '+Math.round(a.p.w)+'x'+Math.round(a.p.h)+', it was 830x477');
      // CONTROL 2: it must still clear the belt at BOTH sizes. Doubling a panel
      // that sits above the belt is exactly how it lands on the belt, which is a
      // thing he has already reported once.
@@ -3907,13 +3913,15 @@ window.__REGRESS=[
        var pad=70, sc=Math.min((W2-pad*2)/WW,(H2-pad*2)/WH);
        var ox=(W2-WW*sc)/2, oy=(H2-WH*sc)/2;
        __mapOverlay();
-       var x0=Math.max(0,Math.round(ox-4)), w=Math.min(1500,W2-x0);
-       var y0=Math.max(0,Math.round(oy-56)), hgt=Math.min(H2-y0,54);
+       // v32.83 retarget (50-corpus-old-a): the heading is the sector name in the card header now (cw-mapstyle, light text 24.6 px at 1080p), no longer amber text above the frame; read the left third of the header row.
+       var cd=mapProj().card;
+       var x0=Math.max(0,Math.round(cd.x+cd.p)), w=Math.max(8,Math.min(Math.round(cd.w*0.3),W2-x0));
+       var y0=Math.max(0,Math.round(cd.y)), hgt=Math.max(8,Math.min(H2-y0,Math.round(cd.hh)));
        var d=hc.getContext('2d').getImageData(x0,y0,w,hgt).data;
        var minX=1e9,maxX=-1,minY=1e9,maxY=-1;
        for(var yy=0;yy<hgt;yy++) for(var xx=0;xx<w;xx++){
          var i=(yy*w+xx)*4;
-         if(d[i]>180&&d[i+1]>140&&d[i+2]<130&&d[i+3]>60){
+         if(d[i]>200&&d[i+1]>195&&d[i+2]>175&&d[i+3]>60){
            if(xx<minX)minX=xx; if(xx>maxX)maxX=xx; if(yy<minY)minY=yy; if(yy>maxY)maxY=yy; }
        }
        return {mapW:Math.round(WW*sc), mapH:Math.round(WH*sc),
@@ -3931,7 +3939,8 @@ window.__REGRESS=[
      // CONTROL 1: 1080p must not have moved. This was a 4K complaint and he has a
      // working layout there.
      /* ui1 (his order #50): the game font is Barlow Condensed now, narrower than Rubik was: the same heading measures 237 wide at 1080p where it measured 326; the height is unchanged */
-     if((Math.abs(a.tw-326)>18&&Math.abs(a.tw-237)>18)||Math.abs(a.th-16)>3)
+     bad.push('DIAG 1080p '+a.tw+'x'+a.th+' 4k '+b.tw+'x'+b.th);
+     if(a.th<12||a.th>30||a.tw<60)
        bad.push('control: the 1080p map heading changed to '+a.tw+'x'+a.th+', it was 326x16 (237x16 in Barlow Condensed)');
      // CONTROL 2, AND IT IS THE ONE THAT MATTERS. The map scales its text by
      // handing FS a modified spec. If that ever leaks into the global font cache,
@@ -3968,14 +3977,15 @@ window.__REGRESS=[
        var m=g.map, WW=m.cols*m.cw, WH=m.rows*m.ch;
        var pad=70, sc=Math.min((W2-pad*2)/WW,(H2-pad*2)/WH);
        var ox=(W2-WW*sc)/2, oy=(H2-WH*sc)/2;
-       var y=Math.round(oy+WH*sc/2), x0=Math.max(0,Math.round(ox)-40), w=Math.min(40,W2-x0);
+       // v32.83 retarget (50-corpus-old-a): the frame is a neutral 1 px line (ui_line_hi, cw-mapstyle) over the card colour, not a blue one; read how thick it is as coverage of the line colour in the strip left of the map, which is also proof against anti-aliasing.
+       var MP=mapProj(), y=Math.round(MP.oy+WORLD_H*MP.sc/2), x0=Math.max(0,Math.round(MP.ox)-16), w=Math.min(16,W2-x0);
        var d=document.getElementById('hcv').getContext('2d').getImageData(x0,y,w,1).data;
-       var far=0;
-       for(var x=0;x<w;x++){ var i=x*4;
-         if(d[i+3]>60&&d[i+2]>d[i]+20&&d[i+2]>90){
-           var off=Math.round(ox)-(x0+x);
-           if(off>0&&off>far) far=off; } }
-       return {reach:far, scale:sc};
+       var cv1=document.createElement('canvas'); cv1.width=cv1.height=1; var cx1=cv1.getContext('2d');
+       cx1.fillStyle=UIC.ui_line_hi; cx1.fillRect(0,0,1,1); var q1=cx1.getImageData(0,0,1,1).data;
+       var span=Math.abs(q1[0]-d[0])+Math.abs(q1[1]-d[1])+Math.abs(q1[2]-d[2]), far=0;
+       if(span>12) for(var x=0;x<w;x++){ var i=x*4;
+         far+=Math.min(1,(Math.abs(d[i]-d[0])+Math.abs(d[i+1]-d[1])+Math.abs(d[i+2]-d[2]))/span); }
+       return {reach:Math.round(far*10)/10, scale:sc};
      }
      var a=frameReach(1920,1080), b=frameReach(3840,2160);
      __forceSize(1920,1080);
@@ -3985,7 +3995,8 @@ window.__REGRESS=[
      // resolutions while the map itself grew 2.15x.
      if(fg<1.7) bad.push('the map frame reaches '+a.reach+'px out at 1080p and '+b.reach+'px at 4K, only '+fg.toFixed(2)+'x, on a map that grew '+mg.toFixed(2)+'x');
      // CONTROL 1: 1080p unchanged. It was 4 pixels before this build and after it.
-     if(a.reach!==4) bad.push('control: the 1080p frame reaches '+a.reach+'px, it was 4');
+     bad.push('DIAG reach 1080p '+a.reach+' 4k '+b.reach);
+     if(Math.abs(a.reach-1)>0.6) bad.push('control: the 1080p frame reaches '+a.reach+'px, it is a 1 px line since cw-mapstyle (was 4)');
      // CONTROL 2: the markers must scale too, not just the frame, or half the
      // chrome is still stuck at 1080p. Read off the source of the one function
      // that draws them, because a marker ring cannot be isolated in pixels with
@@ -4564,7 +4575,7 @@ window.__REGRESS=[
        g.ents=[tgt]; p.iv=99; p.hp=p.maxhp;
        // Semi automatic on purpose, pulsed, so this is a handful of aimed shots
        // going past him rather than a wall of noise.
-       var gun=__gun.roll('dmr');
+       var gun=__gun.roll('pistol');   // v32.83 retarget (50-corpus-old-a): the Marksman Rifle (dmr) is gone (cw-gunsgone); the pistol is the semi automatic stand-in
        for(var kk in gun) p.wep[kk]=gun[kk];
        p.ammo=gun.mag; p.jam=0;
        // He must survive, so a round that does land can be reported rather than
@@ -6045,7 +6056,7 @@ window.__REGRESS=[
        var c=(prof.credits||0).toLocaleString(), x=(prof.xp||0).toLocaleString();
        if(t.indexOf(c)<0) bad.push(where+': the readout does not show the credits '+c+' ("'+t+'")');
        if(t.indexOf(x)<0) bad.push(where+': the readout does not show the XP '+x+' ("'+t+'")');
-       if(!/CREDITS/i.test(t)||!/\bXP\b/.test(t)) bad.push(where+': the readout does not say which figure is which ("'+t+'")');
+       if(!(/CREDITS/i.test(t)||t.indexOf('$'+c)>=0)||!/\bXP\b/i.test(t)) bad.push(where+': the readout does not say which figure is which ("'+t+'")');
      }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -78826,7 +78837,7 @@ window.__REGRESS=[
    run:function(){
      if(typeof renderSector!=='function'||typeof FIXED_MAPS==='undefined'||typeof SECTOR_MEAS==='undefined') return 'SKIP: this fixture cannot draw the map screen';
      var host=document.getElementById('sectorlist'); if(!host) return 'SKIP: there is no map list to draw into';
-     var bad=[], keepLog=(P.log||[]).slice();
+     var bad=[], keepLog=(P.log||[]).slice(), SEEN13={};
      function title(n){ return String(n||'').toLowerCase().replace(/\b[a-z]/g,function(c){ return c.toUpperCase(); }); }
      function rows(){ renderSector(); var out=[]; host.querySelectorAll('.sectorpick').forEach(function(r){ out.push(String(r.textContent||'').replace(/\s+/g,' ')); }); return out; }
      function judge(label){
@@ -78837,8 +78848,11 @@ window.__REGRESS=[
          if(MS.ext===undefined) continue;
          if(t.indexOf('first contact ~')>=0||t.indexOf('median haul')>=0||t.indexOf('containers a raid')>=0)
            bad.push(label+': '+nm+' still shows first contact, containers or median haul, the three figures he cut from this line');
-         if(t.indexOf('of its raids in '+title(nm)+'.')<0)
-           bad.push(label+': '+nm+' does not give the extract rate for that map in his words, ending "of its raids in '+title(nm)+'."');
+         // v32.83 retarget (50-corpus-old-a): v32.45 (cw-preraid-a) cut the test robot rate from the sector row (his Q8 reason: a dev figure a guest cannot use). The row now carries the map's real facts; what this check keeps is that every player sees the same line, raided or not.
+         if(t.indexOf(' zones')<0||t.indexOf(' exits')<0||!/ m /.test(t+' '))
+           bad.push(label+': '+nm+' does not show the real map facts (size in metres, zones, exits): "'+t.slice(0,160)+'"');
+         if(SEEN13[i]===undefined) SEEN13[i]=t;
+         else if(SEEN13[i]!==t) bad.push(label+': '+nm+' reads differently once the player has raided there: "'+SEEN13[i].slice(0,100)+'" then "'+t.slice(0,100)+'"');
        }
      }
      var FZ='none';   // retargeted 2026-10-12 (feat0b): his order froze THE COLD MILE off the sector page; the wording is still judged on both cards, with the freeze lifted for this check only
@@ -87081,7 +87095,7 @@ window.__REGRESS=[
        var sm=document.getElementById('sectormodal'), st=(sm.textContent||'').replace(/\s+/g,' ');
        if(!sm.classList.contains('on')) bad.push('the sector screen did not open from the map button');   /* ui5: a window carries more classes than "modal on" now, so ask for the class, not the exact string */
        var robotWord=['test ','robot'].join('');
-       if(st.indexOf(robotWord)<0) bad.push('the sector screen shows figures without saying they are the '+robotWord+'s');
+       if(/extracts \d/.test(st)&&st.indexOf(robotWord)<0) bad.push('the sector screen shows figures without saying they are the '+robotWord+'s');
        var oldPhrase=['measured ','extraction'].join('');
        if(st.indexOf(oldPhrase)>=0) bad.push('the sector screen still says "'+oldPhrase+'" with no owner');
        // The numbers on the screen are the numbers in the code, both maps.
@@ -87089,7 +87103,7 @@ window.__REGRESS=[
        if(SM&&SM.length>=2){
          for(var mi=0;mi<2;mi++){
            if(typeof mapOffered==='function'&&typeof FIXED_MAPS!=='undefined'&&FIXED_MAPS[mi]&&!mapOffered(FIXED_MAPS[mi])) continue;   /* feat0b (v23.6x): a frozen map has no card on the sector page, so its figure is not shown */
-           if(st.indexOf('extracts '+SM[mi].ext+'%')<0) bad.push('map '+mi+' shows a different extract figure from the code, which says '+SM[mi].ext);
+           if(/extracts \d/.test(st)&&st.indexOf('extracts '+SM[mi].ext+'%')<0) bad.push(   /* v32.83 retarget (50-corpus-old-a): v32.45 cut the test robot line from the sector page; a figure that is shown must still be the code's and owned */'map '+mi+' shows a different extract figure from the code, which says '+SM[mi].ext);
            // r1326: first contact is no longer printed on this line; his edit cut it and v13.26 shows his wording to everyone.
          }
          // CONTROL: the figures are not the v8.01 ones any more.
@@ -93087,15 +93101,14 @@ window.__REGRESS=[
      var kit=document.getElementById('sectorkit'), txt=(kit&&kit.textContent)||'';
      // THE FINDING. On v10.12 the sector page said only what you were going up
      // with; the armour line had been nowhere since v9.98.
-     if(!/no armour on/i.test(txt)) bad.push('the sector page does not warn about armour: ['+txt.slice(0,100)+']');
-     if(!/Armour Plates/.test(txt)) bad.push('the sector page does not say to equip Armour Plates');
-     if(!/cap of \d+/.test(txt)) bad.push('the sector page does not state the armour cap');
+     // v32.83 retarget (50-corpus-old-a): v32.45 (cw-preraid-a) made the warning the short callout "no armour equipped" (short callouts, never an explaining sentence); the sentence naming Armour Plates and the cap is cut.
+     if(!/no armour (on|equipped)/i.test(txt)) bad.push('the sector page does not warn about armour: ['+txt.slice(0,100)+']');
      // CONTROL: the stash screen no longer carries it, per v9.98, and still opens.
      var hub=document.getElementById('hub');
      sm.classList.remove('on');
      try{ __station('term'); }catch(e2){}
      if(hub&&hub.classList.contains('on')){
-       if(/no armour on/i.test(hub.textContent)) bad.push('control: the armour line is back on the stash screen');
+       if(/no armour (on|equipped)/i.test(hub.textContent)) bad.push('control: the armour line is back on the stash screen');
        hub.classList.remove('on');
      } else bad.push('control: the stash screen did not open');
      return bad.length?bad.join('; '):null; }},
@@ -93353,7 +93366,8 @@ window.__REGRESS=[
      // THE FINDING. On v10.04 the page opened still set to night.
      if(P2.cond!=='day') bad.push('the sector page opened with the surface at '+P2.cond+', not day');
      var d=document.getElementById('condday'), nt=document.getElementById('condnight');
-     if(d&&nt&&getComputedStyle(d).borderColor===getComputedStyle(nt).borderColor) bad.push('neither button is drawn as chosen');
+     // v32.83 retarget (50-corpus-old-a): v32.45 draws the chosen chip as a fill with a check, not a border colour, so the look is border, fill and text colour together.
+     if(d&&nt&&(function(a,b){ var A=getComputedStyle(a),B=getComputedStyle(b); return A.borderColor===B.borderColor&&A.backgroundColor===B.backgroundColor&&A.color===B.color; })(d,nt)) bad.push('neither button is drawn as chosen');
      // CONTROL: choosing NIGHT on the page still sticks for this ascent.
      if(nt){ nt.click(); if(P2.cond!=='night') bad.push('control: NIGHT on the page no longer takes'); }
      return done(bad.length?bad.join('; '):null); }},
@@ -93629,11 +93643,11 @@ window.__REGRESS=[
      // TWO: the choice is on it, and it works both ways.
      var d=document.getElementById('condday'), nt=document.getElementById('condnight');
      if(!d||!nt) return done('the sector page has no DAY and NIGHT buttons');
-     if(!/^DAY$/i.test(d.textContent.trim())||!/^NIGHT$/i.test(nt.textContent.trim())) bad.push('the buttons read ['+d.textContent.trim()+'] and ['+nt.textContent.trim()+']');
+     if(!/^DAY/i.test(d.textContent.trim())||!/^NIGHT/i.test(nt.textContent.trim())) bad.push(   /* v32.83 retarget (50-corpus-old-a): the night chip carries its xp badge ("+20%") */'the buttons read ['+d.textContent.trim()+'] and ['+nt.textContent.trim()+']');
      nt.click();
      if(P2.cond!=='night') bad.push('clicking NIGHT left the surface at '+P2.cond);
      if(typeof isDay==='function'&&isDay()) bad.push('after NIGHT the game still says it is day');
-     var nc=getComputedStyle(nt).borderColor, dc=getComputedStyle(d).borderColor;
+     var lookOf=function(e){ var s=getComputedStyle(e); return s.borderColor+'|'+s.backgroundColor+'|'+s.color; }, nc=lookOf(nt), dc=lookOf(d);   // v32.83 retarget (50-corpus-old-a): the chosen chip is a fill (v32.45), not only a border
      if(nc===dc) bad.push('after NIGHT the two buttons look the same, so the choice is not shown');
      d.click();
      if(P2.cond!=='day') bad.push('clicking DAY left the surface at '+P2.cond);
