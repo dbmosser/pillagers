@@ -1,0 +1,13 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  j4-p1-name-picker                      NOT STAGED   5.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: indevSet is not defined
+    at <anonymous>:9:1
+    at async <anonymous>:1:21
+  j4-p2-name-picker                      NOT STAGED   5.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: indevSet is not defined
+    at <anonymous>:9:1
+    at async <anonymous>:1:21
+  j4-p1-named-stash                      NOT STAGED   7.9s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: indevSet is not defined
+    at <anonymous>:10:1
+    at async <anonymous>:1:21
+  j4-p2-named-stash                      NOT STAGED   7.6s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: indevSet is not defined
+    at <anonymous>:10:1
+    at async <anonymous>:1:21

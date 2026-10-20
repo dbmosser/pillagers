@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v32.70 - PAD NAME LETTERS AND STASH CLARITY
+
+Co-op hunt while he was away. The J4 critic still found small name letters, repeated done hints, floor text behind the stash and an orphan belt caption.
+
+MEASURED. Check 32.70 passes, and fails on v32.69.
 ## v32.69 - NAMED STASH READABILITY
 
 Co-op hunt while he was away. The J4 stash photographs exposed a missing screen label, an idle keyboard sentence and a competing freebie banner and toast.

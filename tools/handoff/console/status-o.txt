@@ -1,1 +1,1 @@
-10-20 04:11 gate: shipping cw-cx-namestashview (o-09-pad-name-entry, codex)
+10-20 04:23 gate: shipping cw-cx-namefinal (o-09-pad-name-entry, codex)

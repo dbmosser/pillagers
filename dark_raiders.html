@@ -2207,6 +2207,19 @@ body.padon #root #keysmodal::after{ content:'A  Rebind      B  Back'; }
 #root #hub #kitsetup .kst span,#root #hub #kitsetup .kstc span,#root #hub #kitsetup .ksreset{font-size:18px!important;letter-spacing:0!important;}
 /* v28.xx (cw-cx-namestashview): the shared style guide keeps toast notices out of open windows, as Settings and Keys already do. */
 body:has(#hub.on) #hubtoast{visibility:hidden;}
+/* v28.xx (cw-cx-namefinal), J4 critic 10-20: the nine belt slots span their pane on one grid. The obsolete guns caption came from the removed group layout, not a separate feature. */
+#root #hub #hotplanwrap>div{padding:0!important;}
+#root #hub #hotplanwrap>div>div{gap:0!important;}
+#root #hub #hotplanwrap>div>div>div{flex:1;min-width:0;padding:0!important;background:transparent!important;}
+#root #hub #hotplanwrap>div>div>div>div:first-child{display:grid!important;grid-template-columns:repeat(9,minmax(0,1fr));gap:8px!important;width:100%;}
+#root #hub #hotplanwrap>div>div>div>div:last-child{display:none!important;}
+#root #hub #hotplanwrap [data-plan]{max-width:none!important;width:auto!important;border-color:var(--ui-line-hi)!important;}
+#root #hub #hotplanwrap [data-plan] span{font:600 18px/1.2 var(--f-cond)!important;letter-spacing:.04em;color:var(--tx-2)!important;}
+#root #hub .lohead,#root #hub .loslab,#root #hub #stashtabs .invtab{font-size:20px!important;letter-spacing:.04em;color:var(--tx-2);}
+#root #hub #kitsetup .kst span,#root #hub #kitsetup .kstc span,#root #hub #kitsetup .ksreset{font-size:20px!important;}
+#root #hub #kitsetup .kst{min-height:48px;}
+/* v28.xx (cw-cx-namefinal): the old 84px floor-action allowance left an empty band below the freebie action. The stash footer needs 24px. */
+#root #hub{padding-bottom:24px!important;}
 </style><canvas id="cv"></canvas>
 <canvas id="hcv"></canvas>
 <div id="hubtoast"></div>
@@ -3186,7 +3199,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='32.69';
+var VER='32.70';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18229,16 +18242,19 @@ function padNameClose(keep){
   if(keep){ n.input.value=n.l.join('').trim()||'pillager'; n.input.dispatchEvent(new Event('input',{bubbles:true})); }
   n.card.remove(); document.getElementById('root').classList.remove('padnaming'); padSetFocus(n.input); // v28.xx (cw-cx-padnameview): restore the title only after closing its letter picker.
 }
+// v28.xx (cw-cx-namefinal), J4 critic 10-20: Menu belongs inside the existing done action, rather than repeating it in the legend.
 function padNameDraw(){
   var n=PADNAME,row,i,s;
   if(!n)return;
-  row=n.card.querySelector('.pnl'); row.textContent='';
-  for(i=0;i<n.l.length;i++){ s=document.createElement('span'); s.textContent=n.l[i]===' '?'\u00a0':n.l[i]; if(i===n.pos)s.className='cur'; row.appendChild(s); }
-  // v28.xx (cw-cx-padnameview): short, readable groups use the same button caps as the other menus. All letters stay lower case.
+  row=n.card.querySelector('.pnl');row.textContent='';
+  for(i=0;i<n.l.length;i++){s=document.createElement('span');s.textContent=n.l[i]===' '?'\u00a0':n.l[i];if(i===n.pos)s.className='cur';row.appendChild(s);}
   n.dev=padOn();
-  var hint=n.card.querySelector('.pnhint');
-  if(n.dev) hint.innerHTML='<span class="pnhgroup"><span class="pnaxis" aria-label="up or down">&#8597;</span>letter</span><span class="pnhgroup"><span class="ui-key pad pad-a">a</span>next</span><span class="pnhgroup"><span class="ui-key pad pad-b">b</span>back</span><span class="pnhgroup"><svg class="pnmenu" viewBox="0 0 24 24" role="img" aria-label="menu"><circle cx="12" cy="12" r="10"/><path d="M7 8h10M7 12h10M7 16h10"/></svg>done</span>';
-  else hint.textContent=iniHint().toLowerCase();
+  var hint=n.card.querySelector('.pnhint'),done=n.card.querySelector('.pndone');
+  var menu='<svg class="pnmenu" viewBox="0 0 24 24" role="img" aria-label="menu"><circle cx="12" cy="12" r="10"/><path d="M7 8h10M7 12h10M7 16h10"/></svg>';
+  if(n.dev){
+    hint.innerHTML='<span class="pnhgroup"><span class="pnaxis" aria-label="up or down">&#8597;</span>letter</span><span class="pnhgroup"><span class="ui-key pad pad-a">a</span>next</span><span class="pnhgroup"><span class="ui-key pad pad-b">b</span>back</span>';
+    done.innerHTML=menu+'<span>done</span>';
+  }else{hint.textContent=iniHint().toLowerCase();done.textContent='done';}
 }
 function padNameOp(op){
   var n=PADNAME;
@@ -18271,6 +18287,13 @@ function padNameStart(input){
       '#root #padnamecard .pnaxis{display:inline-grid;place-items:center;width:32px;height:32px;color:var(--acc);font:600 24px/1 var(--f-cond)}#root #padnamecard .pnmenu{width:32px;height:32px;fill:none;stroke:var(--acc);stroke-width:1.5;flex:none}'+
       '#root #padnamecard .pndone{flex:none;min-height:48px;padding:8px 32px;background:var(--acc);color:var(--acc-ink);border:0;border-radius:var(--rad);font:600 var(--fs-body)/1 var(--f-cond)!important}'+
       '@media(max-width:700px){#root #padnamecard .pnbox{padding:16px}#root #padnamecard .pnl{gap:4px}#root #padnamecard footer{align-items:flex-start;gap:16px}#root #padnamecard .pnhint{gap:16px;font-size:16px!important}}';
+    // v28.xx (cw-cx-namefinal): a 56px name, 80px cells and 32px padding keep all sixteen letters readable; this is a dialog, not a window.
+    st.textContent+='#root #padnamecard{backdrop-filter:blur(6px)}#root #padnamecard .pnbox{width:min(1152px,92%);padding:32px}'+
+      '#root #padnamecard header{margin-bottom:32px}#root #padnamecard .pnl{padding:24px 0}#root #padnamecard .pnl span{height:80px;font:800 var(--fs-hero)/1 var(--f-cond)!important}'+
+      '#root #padnamecard .pnl .cur{box-shadow:inset 0 -3px var(--acc)}#root #padnamecard .pnl .cur:before,#root #padnamecard .pnl .cur:after{font-size:16px;line-height:16px}#root #padnamecard .pnl .cur:before{top:-24px}#root #padnamecard .pnl .cur:after{bottom:-24px}'+
+      '#root #padnamecard .ui-key{border-color:var(--ui-line-hi);color:var(--tx-1)}#root #padnamecard .pnaxis{color:var(--tx-2)}'+
+      '#root #padnamecard footer{border-color:var(--ui-line-hi)}#root #padnamecard .pndone{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:56px}#root #padnamecard .pndone .pnmenu{stroke:currentColor}#root #padnamecard .pndone>span{font:inherit;color:inherit}'+
+      '@media(max-width:700px){#root #padnamecard .pnbox{padding:16px}#root #padnamecard .pnl span{font-size:32px!important;height:56px}}';
     document.head.appendChild(st);
   }
   card=document.createElement('div'); card.id='padnamecard'; card.setAttribute('role','dialog'); card.setAttribute('aria-modal','true'); card.setAttribute('aria-labelledby','padnametitle');
@@ -48813,7 +48836,7 @@ function drawHubHUD(ox,oy){
   // corner behind it, so on the 4K screenshots the top half of THE UNDERCROFT showed above the frame line of the shop, Fashion and
   // the other windows, cut in half by it. It is not painted while a window is open and is back the frame it closes. The money
   // line under it sits behind the frame and is left as it was.
-  if(!hubWinOn()) ctx.fillText('THE UNDERCROFT',16,28);
+  if(!hubWinOn()&&!document.getElementById('hub').classList.contains('on')) ctx.fillText('THE UNDERCROFT',16,28); // v28.xx (cw-cx-namefinal): the stash is a window too; keep the floor heading behind it.
   ctx.shadowColor='transparent'; ctx.shadowBlur=0;
   ctx.restore();
   try{ drawHubGiftLine(); }catch(_hg){}   // v18.05: an open trade offer, on the floor
@@ -48824,7 +48847,7 @@ function drawHubHUD(ox,oy){
   // vNN.xx (ui5q1b, his #50, the Wirt shot): the money line is the floor's, like its heading (v20.88): not painted while a window is open
   // v27.xx, UI CLEANUP uic9 (his 2026-10-14 note, from the 1080p shot of the Undercroft): THE FLOOR SAYS ITS MONEY ONCE. The line under the heading printed credits and XP in 9 px
   // type, the same two numbers the corner readout shows at 32 px; it keeps the stash and the runs, and the readout keeps the money.
-  if(!hubWinOn()) ctx.fillText((
+  if(!hubWinOn()&&!document.getElementById('hub').classList.contains('on')) ctx.fillText(( // v28.xx (cw-cx-namefinal): keep the floor counters behind the stash too.
     '  ·  '+P.stash.length+' item'+(P.stash.length===1?'':'s')+' in stash  ·  '+P.runs+' run'+(P.runs===1?'':'s')).replace(/^\s+\S\s+/,''),16,44);   // v8.56: said "1 runs" beside a correctly pluralised stash count
   ctx.shadowColor='transparent'; ctx.shadowBlur=0;   // v18.62: the halo ends with the stats line
   ctx.restore();
@@ -50817,7 +50840,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v32.69: The stash heading shows the save name in the shared font. One neutral freebie row keeps a filled action, and focused items keep their details. Check 32.69 fails on v32.68',
+  now:'v32.70: Larger letters keep all sixteen name positions. Menu shares the done button, the stash hides floor text, and the belt spans its pane. Check 32.70 fails on v32.69',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -66912,7 +66935,10 @@ function renderFreeKit(){
     '</div>';
   var hosts=[document.getElementById('freekit'),document.getElementById('hubfreekit')];
   var any=false;
-  for(var hi=0;hi<hosts.length;hi++){ if(hosts[hi]){ hosts[hi].innerHTML=html; any=true; } }
+  for(var hi=0;hi<hosts.length;hi++){if(hosts[hi]){hosts[hi].innerHTML=html;any=true;
+    // v28.xx (cw-cx-namefinal): Q8, the stash strip already names the freebie kit; its existing action only needs take. The ascent check keeps its wording.
+    if(hosts[hi].id==='hubfreekit'&&!on){var take=hosts[hi].querySelector('.fkbtn');if(take)take.textContent='take';}
+  }}
   if(!any) return;
   var md=document.getElementById('stagemodal');
   if(md) md.classList[on?'add':'remove']('freekit');

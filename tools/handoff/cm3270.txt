@@ -1,0 +1,7 @@
+v32.70: pad name letters and stash clarity
+
+Larger letters keep all sixteen name positions. Menu shares the done button, the stash hides floor text, and the belt spans its pane.
+
+Check 32.70. Fails on v32.69.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

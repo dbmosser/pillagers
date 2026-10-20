@@ -1,0 +1,5 @@
+## v32.70 - PAD NAME LETTERS AND STASH CLARITY
+
+Co-op hunt while he was away. The J4 critic still found small name letters, repeated done hints, floor text behind the stash and an orphan belt caption.
+
+MEASURED. Check 32.70 passes, and fails on v32.69.
