@@ -6878,12 +6878,17 @@ window.__REGRESS=[
      }catch(e){ bad='threw: '+(e&&e.message||e); }
      finally{ try{ togglePauseBox(false); }catch(_t){} try{ __topClear(); }catch(_c){} document.body.classList.toggle('padon',padWas); }
      return bad; }},
-  {v:'32.09',what:'the pad picture marks each control with a dot and keeps lime off the key names (critic: lime was decoration on 20 labels)',
+  {v:'32.09',what:'the pad picture names or marks all physical controls and keeps lime off the key names',
    run:function(){
      if(typeof padPictureHtml!=='function') return 'SKIP: no pad picture';
      var h=padPictureHtml();
      if(h.indexOf('<tspan fill="var(--acc')>=0) return 'key names are still lime';
-     if((h.match(/<circle cx="\d+" cy="\d+" r="5"/g)||[]).length<16) return 'the leaders have no dots';
+     var el=document.createElement('div'); el.innerHTML=h;
+     var nodes=el.querySelectorAll('[data-pad-node]');
+     if(nodes.length){
+       if(nodes.length!==16) return 'physical control count';
+       for(var i=0;i<16;i++){ var n=el.querySelector('[data-pad-node="'+i+'"]'); if(!n||n.textContent!==PAD_BTN[i].toLowerCase()) return 'unnamed control '+i; }
+     }else if((h.match(/<circle cx="\d+" cy="\d+" r="5"/g)||[]).length<16) return 'unmarked physical controls';
      return null; }},
   {v:'32.08',what:'pause box small buttons and the abandon link are at least 48px high',
    run:function(){
