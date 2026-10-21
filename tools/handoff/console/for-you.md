@@ -5,6 +5,8 @@ powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\migra
 
 2. When it says done, paste this line and press Enter (it serves the copy):
 powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\migrate\party-host-copy.ps1" -Start
+   If it says port 8802 is already in use (your old play server came back), paste this line first, then step 2 again:
+powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\migrate\host-stop.ps1" -Yes
 
 3. Open http://localhost:8802/dark_raiders.html in Chrome. Your notes (the in-game note key) reach me on their own.
 
