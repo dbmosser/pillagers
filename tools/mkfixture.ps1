@@ -8425,8 +8425,8 @@ window.__REGRESS=[
        PR.fillRect=of; PR.fill=ff;
        for(b in hv){
          if(!(b in mn)) return 'the '+b+' figure drew nothing';
-         if(Math.abs(mn[b]-1.25*hv[b][1])>0.01) return 'the '+b+' body is drawn at '+mn[b].toFixed(3)+' tall, not 1.25 times its build height '+hv[b][1];
-         if(mx[b]<1.25*hv[b][1]*1.2-0.01) return 'the '+b+' head/pack is not drawn bigger than the body: '+mx[b].toFixed(3);
+         if(Math.abs(mn[b]-FIG_SCALE*hv[b][1])>0.01) return 'the '+b+' body is drawn at '+mn[b].toFixed(3)+' tall, not FIG_SCALE times its build height '+hv[b][1];   // v33.21 (cw-figback): was 1.25, FIG_SCALE went back to 1
+         if(mx[b]<FIG_SCALE*hv[b][1]*1.2-0.01) return 'the '+b+' head/pack is not drawn bigger than the body: '+mx[b].toFixed(3);
        }
        if(!(spriteTop({kind:'raider',r:11})>=40+FIG_UP)) return 'the pillager plate does not rise over the bigger head';
        return null;
