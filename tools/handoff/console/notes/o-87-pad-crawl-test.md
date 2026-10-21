@@ -28,3 +28,20 @@ The lane reported that the trial fixture failed only at outcome top/focus/fbhead
 
 Regenerated fixture-retarget.json from the corrected crawl source against the current unique 31.98 anchor. The known-debt list and all pad assertions are unchanged; no new gap was allowed. Local JavaScript syntax, ASCII, fixture-anchor and saveback-draft validations passed. cw-cx-saveback still waits on the lane running the corrected fixture and shipping its existing key. After it ships, the saves-delete:back exception still needs a new fixture retarget removing it, as recorded in the first-run notes.
 
+
+--- codex run 2026-10-21 00:53 ---
+2026-10-21, o-87-pad-crawl-test, third run on v33.40.
+
+The lane committed the crawl in d0f9587a after checks 31.98 and 87.01 passed against v33.38, and shipped cw-cx-saveback in 404651b1 (v33.40). Prepared a NEW fixture-retarget.json containing only the removal of the saves-delete:back waiver. This makes any return of the fixed B-back bug fail check 87.01. The optional keyboard-only fields remain pinned, including the actual stash-search exception used by the remove-one-debt control. The source copy in crawl-check.js matches this final form. The new retarget must now pass on current HEAD; it intentionally requires the already shipped saveback fix.
+
+Viewed the title after picture. The critic scored it 3, which meets the title finish line in the round 2-3 rules. It reports the same menu design before and after; this task changed B behavior, not title layout. Its logo, mode grouping and saves-layout P1 findings concern existing title presentation and are handed to the coordinator in alarms-new.md so they are not lost. This test task does not redesign the title or introduce a demo submenu. The owner requires the mode rows in their prescribed order and wording (net title code, v15.76 note); keep that when addressing the mode finding.
+
+Local validation: the old debt anchor occurs exactly once; the replacement is nonempty, ASCII and removes only that exception; the updated check source parses. Final lane action: apply the new retarget under the fixture lock and run 87.01, including its remove-one-debt control. No game key remains to ship for this task.
+
+
+--- codex run 2026-10-21 00:54 ---
+2026-10-21, o-87-pad-crawl-test, complete on v33.40.
+
+The lane committed the final debt removal in ad696be0 after check 87.01 passed against v33.40. The crawl now requires the shipped save-delete B-back fix; the old B failure is no longer waived. Its passing run includes the negative control: removing the observed stash-search exception must be rejected by the same gap filter. The optional keyboard-only field exceptions and the gap list remain documented in the earlier task notes.
+
+Completion evidence: initial crawl commit d0f9587a; B-back fix 404651b1 / v33.40; final fixture commit ad696be0; final check 87.01 passed per lane. The title picture received critic 3, meeting its applicable finish line. Existing title presentation findings were handed to the coordinator separately. All work required by this pad-crawl task is committed and verified; no game key or fixture change remains pending.

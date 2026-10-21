@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.41 - AIR STRIKE BAR SITS LOWER
+
+Co-op hunt while he was away. His note 10-20: the air strike bar floats far above the belt. A 64 px lift sat on top of the 8 px gap.
+
+MEASURED. Check 33.41 passes, and fails on v33.40.
 ## v33.40 - PAD BACK KEEPS THE SAVE
 
 Co-op hunt while he was away. The hub crawl found that B was swallowed by the title while the save delete confirmation was open.

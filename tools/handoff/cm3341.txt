@@ -1,0 +1,7 @@
+v33.41: air strike bar sits lower
+
+The air strike plate stands just over the belt at the right end, and still lifts only for a real obstacle like an item in hand.
+
+Check 33.41. Fails on v33.40.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -155,3 +155,5 @@
 2026-10-21 00:01 61-experimental-menu 527s ok PARTIAL in=5711454 out=58867 run=3
 2026-10-21 00:42 o-87-pad-crawl-test 645s ok PARTIAL in=2621630 out=24456 run=1
 2026-10-21 00:44 o-87-pad-crawl-test 54s ok PARTIAL in=3130723 out=26500 run=2
+2026-10-21 00:53 o-87-pad-crawl-test 192s ok PARTIAL in=4282294 out=33581 run=3
+2026-10-21 00:54 o-87-pad-crawl-test 17s ok DONE in=4592560 out=34142 run=4

@@ -812,17 +812,17 @@
  "01-title-mode-menu": {
   "score": 3,
   "pass": false,
-  "verdict": "Removing the dead 'coming later' row gives a cleaner, more confident column, but the screen is still a generic stack of five equal-weight rows and small type, with a gold pixel-art wordmark that clashes with the lime accent.",
+  "verdict": "the menu is a clean, readable column with a clear lime primary action, but the orange gradient logo breaks the lime accent system and the lower half is crowded, tiny and unbalanced; the only change from the old shot is the background crowd of characters moving.",
   "findings": [
-   "P1 title wordmark vs lime accent: Make the wordmark tx-1 (#efe9dc) with no orange gradient, or tone it down so the lime '1 player' bar is the only hot element. Lose the heavy drop shadow.",
-   "P1 menu stack: 4 mode buttons + saves block: Order as 1 player, 2 player co-op, then the arcade pair. Add a 24px gap or 1px --ui-line divider between the modes and the saves block. Give the saves block its own panel (--ui-panel, 1px --ui-line-hi, 24px padding).",
-   "P1 background: Add a centred scrim of --scrim at 80% behind the 560px column, or darken and blur the backdrop a further 40%.",
-   "P2 saves label and rows: Use 16px labels in --tx-2, make the save row 48px, and keep lime for the single focus bar (use a 3px left accent tab and tx-1 text on the selected save). Make 'change name' and 'create a new save' 16px, same height as the input, with a clear idle border.",
-   "P2 bottom key legend and version stamp: Keep the legend at 16px in --tx-2 at a consistent 48px margin. Render the version in 14px f-body 500 --tx-2 at a 5% margin."
+   "P1 title logo 'pillagers': Make the wordmark flat --tx-1 or --acc in f-cond 800 at 56px+ with no gradient and no shadow. Keep gold only as a 3px rarity bar. If the gradient art stays, treat it as art and drop the lime fill from the button below so the two never sit side by side.",
+   "P1 mode button stack (1 player, 2 player co-op, 2 player arcade demo, 1 player arcade demo): Group by intent: 1 player (primary, 56px tall), 2 player co-op as the second row, and move the two arcade demos into a smaller 'demo' row or into the settings card. Raise the idle border to --ui-line-hi #4a5257 and give the focus row a 4px lime left bar so it reads at couch distance.",
+   "P1 saves block (saves label, 'pillager new' row, name field, change name, create a new save): Raise the save row to 56px with a filled --ui-raised and a 3px lime left bar, and set the name in tx-1 at 20px. Put the three controls on one 40px-high row with one shared outline style, giving 'change name' and 'create a new save' the same fill and the same 8px gap. Give the input a 'name' placeholder in tx-2 at 16px.",
+   "P2 tagline 'ascend. pillage. extract.': Set it in f-cond 600 at 20px in --tx-2 (#aaa498) with 0.08em tracking, and put it 16px under the logo with 32px before the first button. Check it is 4.5:1 or better against the dimmed background.",
+   "P2 bottom key legend (wasd move, mouse aim, lmb fire, e search, f1 controls): Swap the keys for the pad glyphs when a pad is active. Use 16px labels in tx-2 and raise the key caps to tx-1 with a 1px --ui-line-hi outline, then put the version stamp on the same baseline at y=1040 and keep it at 14px."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-15-hide-coming-later-row-after/01-title-mode-menu-1080.jpg",
-  "task": "o-15-hide-coming-later-row",
-  "when": "2026-10-20T18:48"
+  "pic": "tools/handoff/console/notes/shots/o-87-pad-crawl-test-after/01-title-mode-menu-1080.jpg",
+  "task": "o-87-pad-crawl-test",
+  "when": "2026-10-21T04:50"
  },
  "44-title-from-character-select": {
   "score": 3,

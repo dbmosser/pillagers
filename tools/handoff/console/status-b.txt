@@ -1,1 +1,1 @@
-10-21 00:48 84-airstrike-bar-lower: partial (run 2 of 5), $0.3142681
+10-21 00:58 running 85-preraid-map-no-cache-labels on Claude Code (your plan: week 74% of the 36.4% line, 5-hour 2%)
