@@ -1,6 +1,6 @@
 #!/bin/bash
 # Usage: bash tools/corpus-slices.sh OUT.txt 0 N 120   (N = __REGRESS.length; corpus Chrome on 9344 via tools/cdp.ps1 -Start -Port 9344)
-# The corpus in slices, each in a fresh tab, so a long page never builds up and a hung check costs one slice, not the run.
+# The corpus in slices, each in a fresh tab (since 10-21 a fresh browser), so a long page never builds up and a hung check costs one slice, not the run.
 # 2026-10-08 05:35: a poll waits up to 150 s, because some checks run 70 s or more without yielding (v8.82, the sims) and a
 # 60 s poll landing inside them read as a hang. A check is called hung only after 5 polls in a row (about 22 min) get no number.
 # 2026-10-08 05:15 fix: only a NUMBER is progress. A hung page answers TIMEOUT, which the old loop took as progress and then
@@ -11,9 +11,19 @@ SD="$(dirname "$0")"
 OUT="$1"; A=${2:-0}; END=${3:-962}; STEP=${4:-120}
 CDP() { powershell -NoProfile -ExecutionPolicy Bypass -File tools/cdp.ps1 -Port 9344 "$@" 2>/dev/null | tail -1; }
 [ "$5" = append ] || : > "$OUT"
+FIRST=$A
 while [ $A -lt $END ]; do
   B=$((A+STEP)); [ $B -gt $END ] && B=$END
   TAG="slice$A"
+  # 10-21 (coordinator, coord-02): a fresh corpus Chrome for every slice after the first. A fresh tab is not enough: the browser's
+  # graphics process grows with every tab (2.8 GB over the 10-20 23:00 run) and took the VM out of virtual memory at 02:19, 03:25 and
+  # 04:12, and the robot hang it caused at 02:21 keeps v33.17 out of stable. A clean close is not a crash, so Chrome does not restart in
+  # its faster-growing crash mode. Same profile folder, so the storage the checks see is as before. CS_FRESH=0 keeps one browser.
+  if [ $A -gt $FIRST ] && [ "${CS_FRESH:-1}" = 1 ]; then
+    CDP -Close >/dev/null
+    for t_ in 1 2; do powershell -NoProfile -ExecutionPolicy Bypass -File tools/cdp.ps1 -Start -Port 9344 -Profile "${CS_PROFILE:-$TEMP/pillagers-cdp9344}" >/dev/null 2>&1
+      curl -s --max-time 3 http://127.0.0.1:9344/json/version >/dev/null && break; sleep 5; done
+  fi
   CDP -Open "http://localhost:8806/${FX:-fixture.html}?$TAG=1" >/dev/null; sleep 25
   CDP -Match "$TAG=1" -TimeoutSec 30 -Expr "(function(){ __regressBg($A,$B); return 'ok'; })()" >/dev/null
   last=0; still=0; busy=0; done_=0
