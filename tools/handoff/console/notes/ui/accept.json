@@ -5,7 +5,8 @@
   "verdict": "The e4 centred card is a real step toward the guide, but it still has an explaining paragraph, rarity-coloured names, a heavy 'Take the pack' button and a bare close button with no X; the e1 full-screen slab is the exact pattern the guide deletes.",
   "pic": "tools/handoff/console/notes/shots/b-31-e4/02-welcome-pack-1080.jpg",
   "task": "manual",
-  "when": "2026-10-18T13:00"
+  "when": "2026-10-18T13:00",
+  "need": 3
  },
  "03-hub-floor": {
   "score": 2,
@@ -20,7 +21,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/b-31-n1/03-hub-floor-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T06:39"
+  "when": "2026-10-20T06:39",
+  "need": 3
  },
  "04-stash-terminal": {
   "score": 2,
@@ -35,11 +37,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/56-after/04-stash-terminal-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T16:17"
+  "when": "2026-10-20T16:17",
+  "need": 3
  },
  "05-sector-page": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "The screen is cleanly structured, with a strong lime ascend CTA, a centred card with an X, and consistent lime focus rows. It is still crowded, and the three columns compete for attention. Several type sizes fall below the 16px floor, and the map is a flat blueprint that doesn't match the rest of the game.",
   "findings": [
    "P1 right kit column (pack list, steppers, data core row, gun row, warning): Cut the pack list to a scrollable block or collapse the zero-count rows. Give the steppers 40px square targets. Use one bar colour, or rarity colours only. Move the 'no data core' and 'own gun in stash' rows into a single 'extras' row. Group the kit tiles and the pack list with 24px between them.",
@@ -50,11 +53,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/63-after/05-sector-page-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T03:06"
+  "when": "2026-10-21T03:06",
+  "need": 3
  },
  "06-terms": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "The terms card now has a readable hierarchy, with bright row names, a bold bonus number and a larger 'sign nothing' button. It is still a flat grey list with no accent, no focus state and a lot of dead space, so it looks like a table and not a game menu.",
   "findings": [
    "P1 whole card, no focus or selection: Fill the focused row with --ui-raised and add a 3px --acc left bar. Make the focused sign button an --acc fill with --acc-ink text. Keep the idle buttons outlined in --ui-line-hi.",
@@ -65,7 +69,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/b-31-m2/06-terms-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T05:34"
+  "when": "2026-10-20T05:34",
+  "need": 3
  },
  "07-party-coop": {
   "score": 2,
@@ -80,11 +85,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/b-31-k1/07-party-coop-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T04:13"
+  "when": "2026-10-20T04:13",
+  "need": 3
  },
  "08-shop": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "The shop is a clean, consistent dark card with one lime action and a clear focus tile, but half the grid area is empty, the detail pane has a big dead gap, and the header and footer details are sloppy.",
   "findings": [
    "P1 item grid, rows 3 and up (y 590-1000): Make tiles bigger (about 220x210 with a 72px icon) so 9 items fill about 70% of the height. Or shrink the panel to fit its content. Add category filters in the left column only if they are needed.",
@@ -95,11 +101,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/b-31-j4/08-shop-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T03:52"
+  "when": "2026-10-20T03:52",
+  "need": 3
  },
  "09-craft": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "A clean, consistent dark card with a clear focus tile and a visible close x, but half the card is empty, the header money readouts are cluttered and contradictory, and the hold-to-craft button and the footer tip are weak.",
   "findings": [
    "P1 item grid / left panel: Make tiles fill the panel (for example 4 columns of about 260x200 tiles, or 6 columns with 240px tall tiles), or shrink the panel to fit its content and use the freed height for a larger detail pane with a 96px item preview.",
@@ -110,11 +117,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/b-31-n1/09-craft-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T05:57"
+  "when": "2026-10-20T05:57",
+  "need": 3
  },
  "10-hire": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "A clean dark card with a clear lime focus tile, but the red glitch banner shouts louder than anything else, the 30,000 price repeats on 24 tiles, and the detail pane is mostly empty with a dead hire button.",
   "findings": [
    "P1 banner under tabs: '***experimental feature may glitch***': Delete the asterisks. Make it a 16px tx-2 or --warn label, left-aligned, or put a small 'experimental' tag in the detail pane. Cut the letter-spacing to the .04em label spec and the height to 24px.",
@@ -125,7 +133,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/69-camera/10-hire-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T03:32"
+  "when": "2026-10-21T03:32",
+  "need": 3
  },
  "11-wirt-gambler": {
   "score": 2,
@@ -140,7 +149,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/69-camera/11-wirt-gambler-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T03:32"
+  "when": "2026-10-21T03:32",
+  "need": 3
  },
  "12-mainframe-contracts": {
   "score": 2,
@@ -155,7 +165,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/b-31-f2/12-mainframe-contracts-1080.jpg",
   "task": "b-31-ui-undercroft",
-  "when": "2026-10-19T00:28"
+  "when": "2026-10-19T00:28",
+  "need": 3
  },
  "14-mainframe-racks": {
   "score": 2,
@@ -170,7 +181,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/b-31-j5/14-mainframe-racks-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T03:56"
+  "when": "2026-10-20T03:56",
+  "need": 3
  },
  "16-bar-last-pour": {
   "score": 2,
@@ -185,11 +197,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/b-31-n3/16-bar-last-pour-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T06:09"
+  "when": "2026-10-20T06:09",
+  "need": 3
  },
  "17-fashion-mirror": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "it is a consistent centred card with an x, a tidy tab row and a clear grid, but the eye has no single focal point, there are two items with the same fill and the supporting type is too small and dim for a couch.",
   "findings": [
    "P1 tile grid, 'worn' bare and crop tiles: worn: --ui-raised fill, 3px lime left bar and a small lime 'worn' tag. Pad focus: 2px --acc outline plus a 4px glow, never the same fill as worn.",
@@ -200,11 +213,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/b-31-n1/17-fashion-mirror-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T06:38"
+  "when": "2026-10-20T06:38",
+  "need": 3
  },
  "18-settings-hub": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "A clean, consistent card with a clear lime focus row and an X in the corner, but the detail pane is a dead void with a stranded paragraph, the rows run past the card edge in one flat tone, and the page has the wrong scroll and focus cues.",
   "findings": [
    "P1 right detail pane: Cut the paragraph to a short callout of 8 words or fewer, set at 20px tx-1 directly under the title with a 16px gap. Or show a control preview or the current value as a 56px hero number. Do not leave 350px of void between them.",
@@ -215,7 +229,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/b-31-n1/18-settings-hub-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T06:38"
+  "when": "2026-10-20T06:38",
+  "need": 3
  },
  "19-raid-hud-drop-first-raid": {
   "score": 2,
@@ -230,7 +245,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/c-02-r19/19-raid-hud-drop-first-raid-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T04:25"
+  "when": "2026-10-20T04:25",
+  "need": 4
  },
  "21-raid-hud-calm": {
   "score": 2,
@@ -245,7 +261,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/83-after2/21-raid-hud-calm-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T04:48"
+  "when": "2026-10-21T04:48",
+  "need": 4
  },
  "22-raid-map-open": {
   "score": 3,
@@ -260,7 +277,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/o-03-map-popups-wait-after/22-raid-map-open-1080.jpg",
   "task": "o-03-map-popups-wait",
-  "when": "2026-10-20T05:09"
+  "when": "2026-10-20T05:09",
+  "need": 4
  },
  "23-raid-backpack-open": {
   "score": 2,
@@ -275,7 +293,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/45-after5/23-raid-backpack-open-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T11:05"
+  "when": "2026-10-20T11:05",
+  "need": 4
  },
  "25-raid-pause-box": {
   "score": 3,
@@ -290,11 +309,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/c-31x-after/25-raid-pause-box-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T04:54"
+  "when": "2026-10-20T04:54",
+  "need": 4
  },
  "26-settings-from-pause-top": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "The new settings window is a huge fix (the old one was a broken, empty header stuck at the bottom of a black screen), and it now reads as a real centred card with tabs, rows and focus. But the content is a narrow column with dead side space, the controls float far from their labels, and the bottom of the list and the footer are crowded and cut off.",
   "findings": [
    "P1 row controls (chevron, value, chevron): Right-align the stepper group to the row's right padding (16px). Or cap the row at 900px at 1080 so the label-to-control gap is under 400px. Make the chevrons about 24px with a 48px hit area.",
@@ -305,11 +325,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/cw-pausesets-after/26-settings-from-pause-top-4k.jpg",
   "task": "manual",
-  "when": "2026-10-18T21:10"
+  "when": "2026-10-18T21:10",
+  "need": 3
  },
  "32-keys-window": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "A clean, near-full-screen dark card with an x in the corner that matches the window rule, but a flat wall of same-weight rows, tiny section labels, a long gap between each action and its key, and a half-clipped row at the bottom keep it from looking polished.",
   "findings": [
    "P1 list bottom edge, rows 'controls list' / 'order your hire': Fade the list out over the last 24px with a gradient mask, or snap the scroll to whole rows and add 16px bottom padding. Make the scrollbar thumb 6px wide in --ui-line-hi, brightening on focus.",
@@ -320,7 +341,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/c-31af-after/32-keys-window-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-19T00:57"
+  "when": "2026-10-19T00:57",
+  "need": 3
  },
  "33-raid-fight-alerts": {
   "score": 2,
@@ -335,7 +357,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/o-04-camera-closer-after/33-raid-fight-alerts-1080.jpg",
   "task": "o-04-camera-closer",
-  "when": "2026-10-19T17:18"
+  "when": "2026-10-19T17:18",
+  "need": 4
  },
  "35-kia-card": {
   "score": 3,
@@ -343,7 +366,8 @@
   "verdict": "A clean, centred end card that mostly follows the shell (red title, one hero number, row of 4 stats, tile row, one primary), but the hero is a banned '$' figure, the secondary text is tiny and dim, and the item tiles are too small and confusingly placed above the number.",
   "pic": "tools/handoff/console/notes/shots/13-h1/35-kia-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-18T12:21"
+  "when": "2026-10-18T12:21",
+  "need": 4
  },
  "38-extracted-card": {
   "score": 3,
@@ -358,11 +382,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/13-q1/38-extracted-card-1080.jpg",
   "task": "manual",
-  "when": "2026-10-19T23:12"
+  "when": "2026-10-19T23:12",
+  "need": 4
  },
  "40-whats-new-card": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "cleaner than the five-note version but the card ignores the window spec's 90%-width rule and triples up on dismiss controls.",
   "findings": [
    "P1 whats-new card, 13-t1 shot: widen the card to 90% of viewport width (about 1728px at 1920x1080) per section 2 of the guide, reflow the three notes into the wider card instead of a narrow column",
@@ -372,11 +397,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/13-t1/40-whats-new-card-1080.jpg",
   "task": "manual",
-  "when": "2026-10-19T23:29"
+  "when": "2026-10-19T23:29",
+  "need": 3
  },
  "45-arcade-attract-board": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "The card is clean and all lower case, but it is unchanged from the last review: the empty body is centered, the prompt is a dim ring-and-text with no real focus state, and the small card is neither a proper dialog nor a window.",
   "findings": [
    "P1 'press any key' prompt, bottom-right of card (1065-1206 x 605-628): Make it a 56px-high primary button with fill #e6ff3d, text #11150a at 20px/700, min-width 200px, right-aligned 24px from the card edge. Or use tx-1 text with a 3px #e6ff3d underline and drop the ring.",
@@ -387,7 +413,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/03-r8after/45-arcade-attract-board-1080.jpg",
   "task": "03-title-and-backdrop",
-  "when": "2026-10-18T22:04"
+  "when": "2026-10-18T22:04",
+  "need": 3
  },
  "50-arcade-hud-live": {
   "score": 3,
@@ -402,7 +429,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/c-02-r21/50-arcade-hud-live-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T05:38"
+  "when": "2026-10-20T05:38",
+  "need": 4
  },
  "52-arcade-run-over": {
   "score": 3,
@@ -417,11 +445,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/12-r4-after2/52-arcade-run-over-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T23:33"
+  "when": "2026-10-18T23:33",
+  "need": 4
  },
  "57-title-2p-coop-picked": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "The title screen has a clean centred column and a clear focus bar, but the error banner steals the hierarchy, the buttons are thin and generic, and the menu leaves a lot of dead space.",
   "findings": [
    "P1 error banner between menu and saves: Shorten the message to 'popup blocked' with a 16px warn-amber glyph. Make retry a normal outlined button, or use the accent fill only while the banner is the sole action. Move the banner to a toast at the top or bottom so the column does not jump.",
@@ -432,7 +461,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/69-camera/57-title-2p-coop-picked-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T03:37"
+  "when": "2026-10-21T03:37",
+  "need": 3
  },
  "59-raid-abandon-confirm": {
   "score": 3,
@@ -447,11 +477,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/13-p4/59-raid-abandon-confirm-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-19T01:28"
+  "when": "2026-10-19T01:28",
+  "need": 4
  },
  "65-codex": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "The tiles now fill the card and the empty void is gone, but the grid is still a narrow column of tiny gun icons in oversized boxes, and a toast sits on top of the bottom row.",
   "findings": [
    "P0 bottom centre toast 'trophy earned · motherlode': Move toasts to a fixed zone above the card or at the top (y≈24, outside the card), or end the grid at y≤940 and reserve a 56px footer row for toasts. Never draw it over content.",
@@ -462,11 +493,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/b-31-i1/65-codex-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T02:04"
+  "when": "2026-10-20T02:04",
+  "need": 3
  },
  "66-trophy-case": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "A clean, consistent dark card with a clear x and a readable grid, but the tiles are big and empty, the title is small, and unlocked and locked states barely differ in hierarchy.",
   "findings": [
    "P1 header title 'trophy case · 6 of 8': Make the title 32px f-cond 700 in tx-1. Move '6 of 8' to the right of the header, next to the x, in tx-2 at 20px, or make it the one 56px hero count. Pad the header to 24px.",
@@ -477,11 +509,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/45-after4/66-trophy-case-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T10:39"
+  "when": "2026-10-20T10:39",
+  "need": 3
  },
  "62-arcade-operator-menu": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "The new version is slightly cleaner: the doubled outer ring on the focused row is gone and the close button is smaller. It is still a tiny generic dark card floating in an empty black screen, with no identity and a weak focus read.",
   "findings": [
    "P1 whole screen / backdrop: Show the attract frame or live world at about 55% brightness under rgba(6,7,8,.80). Add a faint marquee or scanline motif at 6-8% opacity behind the card.",
@@ -492,7 +525,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/12-r7-after/62-arcade-operator-menu-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-19T01:37"
+  "when": "2026-10-19T01:37",
+  "need": 3
  },
  "61-raid-wheel-open": {
   "score": 3,
@@ -507,11 +541,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/b-30q-after/61-raid-wheel-open-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T04:56"
+  "when": "2026-10-20T04:56",
+  "need": 4
  },
  "58-coop-player2-window-title": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "the clutter is gone and the lime button now leads the screen, but the amber gradient title competes with it, the lower block is cramped and the type is off-scale.",
   "findings": [
    "P1 title 'pillagers' (about 56px, amber gradient with drop shadow): Fill it flat --tx-1 #efe9dc with no gradient and no shadow, f-cond 800 at 56px. Leave lime to the button and the focused save row.",
@@ -522,11 +557,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/12d-after/58-coop-player2-window-title-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T21:25"
+  "when": "2026-10-18T21:25",
+  "need": 3
  },
  "46-arcade-attract-how-to-play": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "the how-to-play card is tidy and fully lower case, but the previous fixes were mostly not applied: the prompt is still white with a radio dot, the card is still narrow with small text, and the scrim is still too light, so it reads as a tidy table rather than something polished.",
   "findings": [
    "P1 footer prompt 'press any key' (x≈1166-1346, y≈838-870): Set the text to 20-24px f-cond 700 in --acc #e6ff3d, swap the radio dot for a 16px key glyph, and use a 72px footer row under the 1px --ui-line rule. Keep the right edge at x=1346.",
@@ -537,7 +573,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/12-r7-after/46-arcade-attract-how-to-play-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-19T01:38"
+  "when": "2026-10-19T01:38",
+  "need": 3
  },
  "37-raid-extracting-countdown": {
   "score": 3,
@@ -552,11 +589,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/c-02-r24/37-raid-extracting-countdown-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T06:44"
+  "when": "2026-10-20T06:44",
+  "need": 4
  },
  "77-haul-reveal-done": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "solid materials (real icons, correct color tokens, correct $ and lowercase rules) but four competing bold elements and nine stacked center-aligned blocks leave no single focal point and read as a generic dense modal rather than a confident extraction reveal.",
   "findings": [
    "P0 whole card: 'extracted' title, haul '$7,620', the two bold 'recovered to the armoury' lines, and the lime CTA text: drop to one hero: keep --fs-hero 56px bold only on the $7,620 haul number, set 'extracted' to --fs-title 32px at tx-1 weight 700 (not full teal fill-bold), and set the two recovery lines to --fs-body 20px tx-2 regular, not bold",
@@ -567,11 +605,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/13-s1/77-haul-reveal-done-1080.jpg",
   "task": "manual",
-  "when": "2026-10-19T23:25"
+  "when": "2026-10-19T23:25",
+  "need": 3
  },
  "63-arcade-operator-new-party-armed": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "The armed row now reads tx-1 on dark red with a thin lime focus edge and the close button is smaller, but the card still floats on a flat black void with a tiny helper line, so it is a cleaner template modal rather than a polished one.",
   "findings": [
    "P1 Backdrop: Render the live world behind it dimmed to about 55% under --scrim rgba(6,7,8,.80). Keep the card at a deliberate size, or bring it toward the 90% window spec.",
@@ -582,7 +621,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/12-r7-after/63-arcade-operator-new-party-armed-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-19T01:37"
+  "when": "2026-10-19T01:37",
+  "need": 3
  },
  "55-arcade-run-over-scored": {
   "score": 3,
@@ -597,7 +637,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/12-r7-after/55-arcade-run-over-scored-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-19T01:38"
+  "when": "2026-10-19T01:38",
+  "need": 4
  },
  "60-abandoned-card": {
   "score": 2,
@@ -612,7 +653,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/13-p3/60-abandoned-card-1080.jpg",
   "task": "13-ui-end-cards",
-  "when": "2026-10-19T01:22"
+  "when": "2026-10-19T01:22",
+  "need": 4
  },
  "42-hub-pause-box": {
   "score": 3,
@@ -627,7 +669,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/c-31ag-after/42-hub-pause-box-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-19T01:11"
+  "when": "2026-10-19T01:11",
+  "need": 4
  },
  "49-arcade-pause-box": {
   "score": 3,
@@ -642,11 +685,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/c-31y-after/49-arcade-pause-box-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T07:31"
+  "when": "2026-10-20T07:31",
+  "need": 4
  },
  "56-arcade-attract-board-scored": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "The card is now tidy, with a clear title, a divider and a footer row holding the 'press any key' chip, but it is a small, sparse box with an unnecessary X floating over a busy blurred scene.",
   "findings": [
    "P1 Card shell, 558x255 at (681,412): Enlarge to about 640x320 and use a 56px hero '0 sp' (f-cond 800, tx-1) or a 3-row placeholder list inside the body. Keep the 24px padding and the divider.",
@@ -657,7 +701,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/12-r7-after/56-arcade-attract-board-scored-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-19T01:38"
+  "when": "2026-10-19T01:38",
+  "need": 3
  },
  "47-arcade-drop-controls-card": {
   "score": 2,
@@ -672,7 +717,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/12d-after/47-arcade-drop-controls-card-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T21:25"
+  "when": "2026-10-18T21:25",
+  "need": 3
  },
  "48-arcade-hud-move-to-start": {
   "score": 2,
@@ -687,7 +733,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/12-h2/48-arcade-hud-move-to-start-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T13:49"
+  "when": "2026-10-18T13:49",
+  "need": 4
  },
  "53-arcade-extracted-bonus-initials": {
   "score": 2,
@@ -702,7 +749,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/12d-after/53-arcade-extracted-bonus-initials-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T21:25"
+  "when": "2026-10-18T21:25",
+  "need": 3
  },
  "54-arcade-initials-redrop": {
   "score": 2,
@@ -717,7 +765,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/12-h2/54-arcade-initials-redrop-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-18T13:50"
+  "when": "2026-10-18T13:50",
+  "need": 3
  },
  "64-arcade-board-seeded-night": {
   "score": 2,
@@ -732,11 +781,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/12-r7-after/64-arcade-board-seeded-night-1080.jpg",
   "task": "12-ui-party-screens",
-  "when": "2026-10-19T01:38"
+  "when": "2026-10-19T01:38",
+  "need": 3
  },
  "70-settings-sec-controls": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "The detail pane is now flat, but the settings card still has the same weaknesses as before: a narrow 960px column floating in a 1870px card, steppers stranded mid-row, tiny low-contrast tabs, and a list that is clipped mid-row.",
   "findings": [
    "P1 whole card: 960px column centred in a 1870px card, with about 450px of empty void on each side: Widen the list column to about 1400px, or add a 280px left rail for the tabs (the raid, audio, controls...) and give the rows the rest. Left-align the title with the column.",
@@ -747,7 +797,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/c-31y-after2/70-settings-sec-controls-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-19T00:17"
+  "when": "2026-10-19T00:17",
+  "need": 3
  },
  "76-haul-reveal-mid": {
   "score": 2,
@@ -762,11 +813,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/13-q1/76-haul-reveal-mid-1080.jpg",
   "task": "manual",
-  "when": "2026-10-19T23:10"
+  "when": "2026-10-19T23:10",
+  "need": 3
  },
  "75-settings-pad-rebind-waiting": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "the waiting chip now reads cleanly as the one lime thing (image 2 calms the banner to a raised fill with a thin lime tab), but the screen is still a flat wall of same-weight 16px text with a left-heavy offset layout, a faded half-row at the bottom, and a footer that strands 'esc close' in the corner.",
   "findings": [
    "P1 banner 'press a button for sprint · esc cancels': keep the image 2 treatment (--ui-raised fill) with a 3px --acc tab, set text to 20px tx-1, and cut it to 'press a button for sprint'. Move 'esc cancels' to the footer legend at 16px tx-2, and show 'b cancel' on pad.",
@@ -777,11 +829,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/c-31y-after2/75-settings-pad-rebind-waiting-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-19T00:16"
+  "when": "2026-10-19T00:16",
+  "need": 3
  },
  "72-settings-sec-display": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "the settings card is clean, consistent and all lower case, but the detail pane is a huge empty box, the stepper columns float mid-row, and the list is cut off at the bottom, so it still reads as a template options screen.",
   "findings": [
    "P1 right detail pane (x=1088-1870, y=116-994): Narrow the pane to about 420px and give the freed width to the list. Or keep it full height and add a 56px f-cond 800 hero readout of the current value ('full') in --acc under the 32px title. Put the description 24px below the title at 20px f-body tx-1 and top-align it.",
@@ -792,11 +845,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/c-31ag-after/72-settings-sec-display-1080.jpg",
   "task": "c-31-ui-pause-settings",
-  "when": "2026-10-19T01:10"
+  "when": "2026-10-19T01:10",
+  "need": 3
  },
  "74-settings-change-pad-buttons": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "The layout switcher and controller diagram give the screen a real hero and a purpose, but the pad drawing is crude with overlapping labels, the list is cramped and cut off, and the small text is too dim for a couch.",
   "findings": [
    "P0 controller diagram, d-pad cluster and face buttons: Redraw the d-pad as a 96px cross with every label inside its arm (16px, centred). Make face buttons 40px circles on a 64px diamond. Keep stick labels in one line style, 20px. Give lb/lt/rb/rt matching 8px gaps. Draw the pad outline at about 60% line brightness (--ui-line-hi) so the labels read above it.",
@@ -807,11 +861,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/o-05-pad-presets-after/74-settings-change-pad-buttons-1080.jpg",
   "task": "o-05-pad-presets",
-  "when": "2026-10-20T06:31"
+  "when": "2026-10-20T06:31",
+  "need": 3
  },
  "01-title-mode-menu": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "the menu is a clean, readable column with a clear lime primary action, but the orange gradient logo breaks the lime accent system and the lower half is crowded, tiny and unbalanced; the only change from the old shot is the background crowd of characters moving.",
   "findings": [
    "P1 title logo 'pillagers': Make the wordmark flat --tx-1 or --acc in f-cond 800 at 56px+ with no gradient and no shadow. Keep gold only as a 3px rarity bar. If the gradient art stays, treat it as art and drop the lime fill from the button below so the two never sit side by side.",
@@ -822,11 +877,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/o-87-pad-crawl-test-after/01-title-mode-menu-1080.jpg",
   "task": "o-87-pad-crawl-test",
-  "when": "2026-10-21T04:50"
+  "when": "2026-10-21T04:50",
+  "need": 3
  },
  "44-title-from-character-select": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "The title screen has a clear hierarchy, with a gold logo and a lime primary button, but it is crowded, a toast overlaps the key legend, and the logo's gold and the lime accent clash.",
   "findings": [
    "P0 bottom centre, trophy toast over key legend: Move the toast to the top-centre or bottom-right, at least 24px clear of the legend, with an opaque --ui-panel fill. Alternatively, raise the legend 48px, or hide it while a toast shows.",
@@ -837,7 +893,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/69-camera/44-title-from-character-select-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T03:36"
+  "when": "2026-10-21T03:36",
+  "need": 3
  },
  "90-legend-full": {
   "score": 2,
@@ -852,7 +909,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/cw-shkey-after/90-legend-full-1080.jpg",
   "task": "manual",
-  "when": "2026-10-18T21:09"
+  "when": "2026-10-18T21:09",
+  "need": 3
  },
  "92-settings-superhot-pane": {
   "score": 2,
@@ -867,7 +925,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/cw-shkey-after/92-settings-superhot-pane-1080.jpg",
   "task": "manual",
-  "when": "2026-10-18T21:10"
+  "when": "2026-10-18T21:10",
+  "need": 3
  },
  "60-mapfirst-1p": {
   "score": 4,
@@ -882,7 +941,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/cw-mapstyle-after3/60-mapfirst-1p-4k.jpg",
   "task": "manual",
-  "when": "2026-10-18T23:59"
+  "when": "2026-10-18T23:59",
+  "need": 3
  },
  "91-snip-panel-raid": {
   "score": 2,
@@ -897,7 +957,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/cw-snip2-after/91-snip-panel-raid-1080.jpg",
   "task": "manual",
-  "when": "2026-10-18T22:02"
+  "when": "2026-10-18T22:02",
+  "need": 4
  },
  "20-raid-hud-drop": {
   "score": 2,
@@ -912,7 +973,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/o-04-camera-closer-after/20-raid-hud-drop-1080.jpg",
   "task": "o-04-camera-closer",
-  "when": "2026-10-19T17:15"
+  "when": "2026-10-19T17:15",
+  "need": 4
  },
  "34-raid-downed-pickups": {
   "score": 2,
@@ -927,7 +989,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/b-30g-after/34-raid-downed-pickups-1080.jpg",
   "task": "b-30-ui-hud",
-  "when": "2026-10-18T22:51"
+  "when": "2026-10-18T22:51",
+  "need": 4
  },
  "36-raid-low-health": {
   "score": 2,
@@ -942,7 +1005,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/c-02-r19/36-raid-low-health-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T04:24"
+  "when": "2026-10-20T04:24",
+  "need": 4
  },
  "51-arcade-alert-reinforcements": {
   "score": 2,
@@ -957,7 +1021,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/b-30i-after/51-arcade-alert-reinforcements-1080.jpg",
   "task": "b-30-ui-hud",
-  "when": "2026-10-18T23:04"
+  "when": "2026-10-18T23:04",
+  "need": 3
  },
  "78-raid-pause-box-full-kit": {
   "score": 3,
@@ -972,11 +1037,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/c-02-r24/78-raid-pause-box-full-kit-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T06:44"
+  "when": "2026-10-20T06:44",
+  "need": 4
  },
  "74-pad-call-of-duty": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "A tidy, consistent dark card with a clear lime focus on the layout selector, but the controller diagram is sloppy (overlapping labels), the type is small and dim, and the screen shows the same bindings three times.",
   "findings": [
    "P1 controller diagram, d-pad cluster and d-right: Draw the d-pad as a 3x3 cross with 48px arms, one label per arm, all boxed the same. Put d-right in the right arm. Make every label 16px f-cond 600 with the same 1px --ui-line-hi box. Make the stick circles at least 64px so 'move' and 'ls' fit at 16px.",
@@ -987,11 +1053,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/o-17-pad-layout-selector-recipes-3/74-pad-call-of-duty-1080.jpg",
   "task": "o-17-pad-layout-selector",
-  "when": "2026-10-20T20:50"
+  "when": "2026-10-20T20:50",
+  "need": 3
  },
  "74-pad-lefty": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "A clean, consistent dark card with a clear title, a visible lime focus box and a working close x, but the controller diagram has overlapping labels and the screen repeats every binding twice, so the eye has no single place to land.",
   "findings": [
    "P0 controller diagram, d-pad cluster: Draw the d-pad as a 96px cross with the four labels in equal 28px pills set 12px outside each arm. Give d-right the same pill as the others. Nothing may touch the pad outline.",
@@ -1002,11 +1069,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/o-17-pad-layout-selector-recipes-3/74-pad-lefty-1080.jpg",
   "task": "o-17-pad-layout-selector",
-  "when": "2026-10-20T20:50"
+  "when": "2026-10-20T20:50",
+  "need": 3
  },
  "74-pad-pillagers": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "The pad buttons screen is now a clean full card with a lime focus on the layout selector, a controller diagram and a legend. The hierarchy is flat, the controller labels are cramped and overlap their outlines, and it duplicates the same information in three places.",
   "findings": [
    "P1 controller diagram, d-pad and stick labels: Draw the d-pad as a 96px cross with four arm labels centred inside the arms at 16px, and give d-right its own arm. Use one label size (16px) for every pad label. Make the face buttons 40px circles with 16px letters. Keep the 'move' and 'aim' captions the same size as the other labels.",
@@ -1017,7 +1085,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/o-17-pad-layout-selector-recipes-3/74-pad-pillagers-1080.jpg",
   "task": "o-17-pad-layout-selector",
-  "when": "2026-10-20T20:51"
+  "when": "2026-10-20T20:51",
+  "need": 3
  },
  "13-mainframe-rewards": {
   "score": 2,
@@ -1032,7 +1101,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/b-31-n3/13-mainframe-rewards-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T06:08"
+  "when": "2026-10-20T06:08",
+  "need": 3
  },
  "15-mainframe-stats": {
   "score": 2,
@@ -1047,11 +1117,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/69-camera/15-mainframe-stats-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T03:33"
+  "when": "2026-10-21T03:33",
+  "need": 3
  },
  "74-pad-player-1": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "A clean, centred column menu with a clear lime primary action and a strong wordmark. The wordmark's orange gradient, the weak secondary type and the cluttered footer keep it from reading as polished.",
   "findings": [
    "P1 title wordmark 'pillagers': Fill the wordmark flat --tx-1 (#efe9dc), or flat lime, at 800 weight. Remove the gradient and shadow. Leave the lime fill for '1 player' alone.",
@@ -1062,11 +1133,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/o-05-pad-presets-recipes-3/74-pad-player-1-1080.jpg",
   "task": "o-05-pad-presets",
-  "when": "2026-10-20T06:36"
+  "when": "2026-10-20T06:36",
+  "need": 3
  },
  "74-pad-player-2": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "The title screen has a clear hierarchy, with a gradient logo and one lime call to action. The small text, the save block and the amber logo that clashes with the lime accent keep it from reading as polished.",
   "findings": [
    "P1 title logo 'pillagers': Make the logo flat --tx-1 (#efe9dc) with no gradient and no glow, at about 96px weight 800. Let the lime button be the one hot element. If the logo keeps colour, use one flat tone that is clearly not near the lime.",
@@ -1077,7 +1149,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/o-05-pad-presets-recipes-3/74-pad-player-2-1080.jpg",
   "task": "o-05-pad-presets",
-  "when": "2026-10-20T06:36"
+  "when": "2026-10-20T06:36",
+  "need": 3
  },
  "41-hub-backpack-pad-p1": {
   "score": 2,
@@ -1092,7 +1165,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/48-after/41-hub-backpack-pad-p1-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T01:10"
+  "when": "2026-10-21T01:10",
+  "need": 3
  },
  "41-hub-backpack-pad-p2-held": {
   "score": 2,
@@ -1107,11 +1181,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/48-after/41-hub-backpack-pad-p2-held-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T01:10"
+  "when": "2026-10-21T01:10",
+  "need": 3
  },
  "30-settings-scroll-2400": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "A clean, consistent dark card with a clear lime focus row and an x in the corner, but the detail pane is mostly empty and uses an explaining sentence, and several small craft errors (clipped last row, uneven row gaps, tiny type) keep it from looking finished.",
   "findings": [
    "P1 right detail pane: Remove the sentence or shorten it to 3 to 5 words directly under the 32px title (8px gap). Use the pane for a value preview or a default-versus-current readout, or shrink the pane and give the list the width. Set any kept text in tx-2 at 20px, never dimmer than 4.5:1.",
@@ -1122,11 +1197,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/69-camera/30-settings-scroll-2400-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T03:34"
+  "when": "2026-10-21T03:34",
+  "need": 3
  },
  "30-settings-daily-restore": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "The restore row now fits and the lime restore button is the clear primary action, but the detail pane is sparse and the scroll position, the key chips and the row rhythm are untidy.",
   "findings": [
    "P1 right detail pane: Show the date in the 56px hero style (800 weight, tx-1) with 'saved' as a 16px tx-2 label above it. Drop the duplicate 'yesterday' and the 'undo last restore' line. Either add a real consequence line such as 'replaces current progress' in 16px --warn, or shrink the pane to fit its content.",
@@ -1137,7 +1213,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/o-14-daily-save-backup-recipes-4/30-settings-daily-restore-1080.jpg",
   "task": "o-14-daily-save-backup",
-  "when": "2026-10-20T18:35"
+  "when": "2026-10-20T18:35",
+  "need": 3
  },
  "74-pad-arc-raiders": {
   "score": 3,
@@ -1152,11 +1229,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/o-17-pad-layout-selector-recipes-3/74-pad-arc-raiders-1080.jpg",
   "task": "o-17-pad-layout-selector",
-  "when": "2026-10-20T20:49"
+  "when": "2026-10-20T20:49",
+  "need": 4
  },
  "74-pad-fortnite": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "A clean, consistent card with a clear selector, but the controller diagram is badly crowded and overlapping, and the page has no real hero, so a couch player won't find the layout at a glance.",
   "findings": [
    "P0 controller diagram, d-pad cluster (d-up/d-left/d-down/d-right): Redraw the d-pad as a 96px cross. Put the four labels in 16px chips outside each arm with 8px clearance, or put a single glyph inside each arm. Draw d-right level with d-left, not above it.",
@@ -1167,11 +1245,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/o-17-pad-layout-selector-recipes-3/74-pad-fortnite-1080.jpg",
   "task": "o-17-pad-layout-selector",
-  "when": "2026-10-20T20:50"
+  "when": "2026-10-20T20:50",
+  "need": 3
  },
  "74-pad-top-down": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "A clean, near-full-screen card with a clear focus ring on the layout selector, but the controller diagram is sloppy, the type is small and the footer is weak, so a couch player would not call it polished yet.",
   "findings": [
    "P1 controller diagram (d-pad and d-right label): Draw the d-pad cross as a 96px plus with the four labels centred in their arms at 16px, each at least 8px from the outline. Put d-right inside the right arm. Use one tag style (4px radius, 1px --ui-line-hi) for every callout. Move the sticks 16px inward from the shell edge.",
@@ -1182,7 +1261,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/o-17-pad-layout-selector-recipes-3/74-pad-top-down-1080.jpg",
   "task": "o-17-pad-layout-selector",
-  "when": "2026-10-20T20:51"
+  "when": "2026-10-20T20:51",
+  "need": 3
  },
  "79-experimental-top": {
   "score": 2,
@@ -1197,11 +1277,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/61-experimental-menu-recipes-2/79-experimental-top-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T04:18"
+  "when": "2026-10-21T04:18",
+  "need": 3
  },
  "28-settings-scroll-1200": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "A clean, consistent dark settings card with lime focus on the sprint row, but the list is a long scroll in which the controls, controller and display options all run together. The detail pane is mostly empty, and the sidebar's active tab is only lightly marked.",
   "findings": [
    "P1 controls list, rows from 'pad buttons' down to 'effects': Move controller and display rows under their own tabs. If they stay in one list, add 16px f-cond section labels in tx-2 with 24px spacing above each group, and make the scrollbar thumb 6px wide in --ui-line-hi.",
@@ -1212,7 +1293,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/69-camera/28-settings-scroll-1200-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T03:33"
+  "when": "2026-10-21T03:33",
+  "need": 3
  },
  "80-experimental-middle": {
   "score": 2,
@@ -1227,7 +1309,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/61-experimental-menu-recipes-2/80-experimental-middle-1080.jpg",
   "task": "61-experimental-menu",
-  "when": "2026-10-21T03:51"
+  "when": "2026-10-21T03:51",
+  "need": 3
  },
  "29-settings-scroll-1800": {
   "score": 2,
@@ -1242,7 +1325,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/69-camera/29-settings-scroll-1800-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T03:34"
+  "when": "2026-10-21T03:34",
+  "need": 3
  },
  "81-experimental-bottom": {
   "score": 2,
@@ -1257,7 +1341,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/61-experimental-menu-recipes-2/81-experimental-bottom-1080.jpg",
   "task": "61-experimental-menu",
-  "when": "2026-10-21T03:52"
+  "when": "2026-10-21T03:52",
+  "need": 3
  },
  "82-experimental-host": {
   "score": 2,
@@ -1272,7 +1357,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/61-experimental-menu-recipes-2/82-experimental-host-1080.jpg",
   "task": "61-experimental-menu",
-  "when": "2026-10-21T03:52"
+  "when": "2026-10-21T03:52",
+  "need": 3
  },
  "31-settings-send-play-data": {
   "score": 2,
@@ -1287,11 +1373,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/69-camera/31-settings-send-play-data-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T03:35"
+  "when": "2026-10-21T03:35",
+  "need": 3
  },
  "83-experimental-guest": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "A clean, consistent dark card with a clear lime focus row, but it is a flat list of 28 identical rows, the detail pane is mostly empty, and the focus control and sticky header are clumsy.",
   "findings": [
    "P1 left list, focus row 'needed-item glow': Keep one signal: the 3px lime left bar plus a --ui-raised row fill. Draw the value as one 1px lime-bordered pill (height 32) with 16px chevrons inside it. Remove the outer glow and the bracket.",
@@ -1302,7 +1389,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/61-experimental-menu-recipes-2/83-experimental-guest-1080.jpg",
   "task": "61-experimental-menu",
-  "when": "2026-10-21T03:53"
+  "when": "2026-10-21T03:53",
+  "need": 3
  },
  "39-hub-after-raid": {
   "score": 2,
@@ -1317,7 +1405,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/69-camera/39-hub-after-raid-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T03:35"
+  "when": "2026-10-21T03:35",
+  "need": 3
  },
  "41-hub-backpack": {
   "score": 2,
@@ -1332,11 +1421,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/69-camera/41-hub-backpack-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T03:35"
+  "when": "2026-10-21T03:35",
+  "need": 3
  },
  "43-stash-after-raid": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "A competent dark inventory card with a good lime take button and a clean x, but it is overloaded: three data zones plus a legend share one screen, the type is tiny and uniform, and the stash grid is mostly empty while the right column is crammed.",
   "findings": [
    "P1 right column, gun keys and item wheel (y 640-890): Give gun keys and item wheel their own tab or sub-pane, or shrink the empty backpack from 2 rows to 1 and give the freed 120px to the binds. Use 20px labels, 8px gaps and one reset per group in the header row.",
@@ -1347,11 +1437,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/69-camera/43-stash-after-raid-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T03:36"
+  "when": "2026-10-21T03:36",
+  "need": 3
  },
  "67-career-stash-stocked": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "This is a competent Diablo-style dark inventory card with a clear lime 'take' CTA and good rarity bars, but it is crowded and the type scale is inconsistent. The loadout pane is mostly empty while the footer is dense, and the 'take' bar competes with the header for attention.",
   "findings": [
    "P1 header, top right: Keep one hero figure ($48,250 at 32px f-cond 800). Move 'xp' to tx-2 at 16px. Delete 'stash $8,405 bag $0' and keep only '$0 going up' in the loadout pane.",
@@ -1362,11 +1453,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/69-camera/67-career-stash-stocked-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T03:37"
+  "when": "2026-10-21T03:37",
+  "need": 3
  },
  "68-settings-sec-the-raid": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "It is a clean, consistent card with a clear lime focus bar. But the detail pane is a large empty box with a paragraph at the bottom, the list is crowded and has no section headers, and two cell states look the same, so it is not yet polished.",
   "findings": [
    "P1 right detail pane: Anchor the title and body together at the top with a 16px gap. Cut the body to one short line of 20 words or fewer at fs-body 20px in tx-1. Or show the current value and a default marker, and drop the prose.",
@@ -1377,11 +1469,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/69-camera/68-settings-sec-the-raid-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T03:37"
+  "when": "2026-10-21T03:37",
+  "need": 3
  },
  "69-settings-sec-audio": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "A clean, consistent dark card with a clear lime focus, but the audio tab shows a list that runs on into controls and gameplay rows, and the detail pane is mostly empty.",
   "findings": [
    "P1 center list, below 'music': Show only audio rows under 'audio' (8 to 9 rows). Move keys and aim settings to 'controls'. If sections must share a tab, add a 16px f-cond tx-2 section label with a 1px --ui-line divider and 24px space above it.",
@@ -1392,11 +1485,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/69-camera/69-settings-sec-audio-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T03:38"
+  "when": "2026-10-21T03:38",
+  "need": 3
  },
  "71-settings-sec-controller": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "The shell is clean and on style guide (centred card, x top right, lime focus, all lower case), but the controller tab is cluttered with unrelated display rows, the detail pane is mostly empty, and text is small and dim for couch reading.",
   "findings": [
    "P1 middle list, rows after vibration strength: Show only the 5 pad rows here (pad buttons, rumble, sensitivity, deadzone, invert, vibration) and move the rest to display. If they must stay, add a 32px section header with a 1px --ui-line divider and a brighter 6px scrollbar.",
@@ -1407,7 +1501,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/69-camera/71-settings-sec-controller-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T03:38"
+  "when": "2026-10-21T03:38",
+  "need": 3
  },
  "73-settings-sec-accessibility": {
   "score": 2,
@@ -1422,7 +1517,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/69-camera/73-settings-sec-accessibility-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T03:39"
+  "when": "2026-10-21T03:39",
+  "need": 3
  },
  "27-settings-scroll-600": {
   "score": 2,
@@ -1437,11 +1533,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/69-camera/27-settings-scroll-600-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T03:40"
+  "when": "2026-10-21T03:40",
+  "need": 3
  },
  "j8-p1-pad-lost": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "Clean, consistent card with a clear lime primary and a proper title and x, but it is a generic pause-menu clone that carries no pad-lost context, and it has a bare black background, a stray top-tab, small type and an unevenly weighted button stack.",
   "findings": [
    "P1 whole screen / title: Add a 32px pad glyph (or a 'player 1' label in tx-2 at 16px) beside the title, and show the live prompt on the reconnect button (e.g. 'reconnect  [a]' at 16px, acc-ink).",
@@ -1452,7 +1549,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/o-07-pad-lost-coordinator-check/j8-p1-pad-lost-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T04:04"
+  "when": "2026-10-21T04:04",
+  "need": 3
  },
  "j8-p1-press-a": {
   "score": 2,
@@ -1467,7 +1565,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/o-07-pad-lost-coordinator-check/j8-p1-press-a-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T04:04"
+  "when": "2026-10-21T04:04",
+  "need": 3
  },
  "j8-p1-sees-p2-lost": {
   "score": 2,
@@ -1482,11 +1581,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/o-07-pad-lost-coordinator-check/j8-p1-sees-p2-lost-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T04:05"
+  "when": "2026-10-21T04:05",
+  "need": 3
  },
  "j8-p2-pad-lost": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "A clean, calm pause card with a clear lime primary and tidy lower-case type, but it reads as a generic pause menu: tiny in a black void, with no player context, no focus state, and chrome buttons that crowd out the pad-lost message.",
   "findings": [
    "P1 whole screen / card: Dim the live raid behind it with a --scrim rgba(6,7,8,.80) layer instead of pure black. Either widen the card toward the window rule, or keep it small as a modal and add a context line: a 'p2' tag (16px f-cond, tx-2) above the title, or 'pad lost' with a 56px hero glyph.",
@@ -1497,7 +1597,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/o-07-pad-lost-coordinator-check/j8-p2-pad-lost-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T04:05"
+  "when": "2026-10-21T04:05",
+  "need": 3
  },
  "j8-p2-press-a": {
   "score": 2,
@@ -1512,7 +1613,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/o-07-pad-lost-coordinator-check/j8-p2-press-a-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T04:06"
+  "when": "2026-10-21T04:06",
+  "need": 3
  },
  "j8-p2-sees-p1-lost": {
   "score": 2,
@@ -1527,7 +1629,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/o-07-pad-lost-coordinator-check/j8-p2-sees-p1-lost-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T04:06"
+  "when": "2026-10-21T04:06",
+  "need": 3
  },
  "j7-hub-p1-pad-owner": {
   "score": 2,
@@ -1542,7 +1645,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/o-08-pad-owner-after/j7-hub-p1-pad-owner-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T04:07"
+  "when": "2026-10-21T04:07",
+  "need": 3
  },
  "j7-hub-p2-pad-owner": {
   "score": 2,
@@ -1557,7 +1661,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/o-08-pad-owner-after/j7-hub-p2-pad-owner-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T04:07"
+  "when": "2026-10-21T04:07",
+  "need": 3
  },
  "j7-raid-p1-pad-owner": {
   "score": 2,
@@ -1572,7 +1677,8 @@
   ],
   "pic": "tools/handoff/console/notes/shots/o-08-pad-owner-after/j7-raid-p1-pad-owner-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T04:08"
+  "when": "2026-10-21T04:08",
+  "need": 4
  },
  "j7-raid-p2-pad-owner": {
   "score": 2,
@@ -1587,11 +1693,12 @@
   ],
   "pic": "tools/handoff/console/notes/shots/o-08-pad-owner-after/j7-raid-p2-pad-owner-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T04:08"
+  "when": "2026-10-21T04:08",
+  "need": 4
  },
  "79-settings-experimental": {
   "score": 3,
-  "pass": false,
+  "pass": true,
   "verdict": "The 61b version fixes the repeated chip and the double focus box, but 28 lime 'on' chips now outshout everything, and the actual focus is a faint row tint that is hard to see.",
   "findings": [
    "P0 every row's 'on' chip: Make the 'on' state quiet: tx-1 text on a transparent chip with a 1px --ui-line-hi border, or a small 8px lime dot plus 'on' in tx-1. Show 'off' in tx-2. Keep a lime fill only for the focused row's control.",
@@ -1602,6 +1709,23 @@
   ],
   "pic": "tools/handoff/console/notes/shots/61b-after/79-settings-experimental-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T04:35"
+  "when": "2026-10-21T04:35",
+  "need": 3
+ },
+ "stashraid-forge-elements": {
+  "score": 2,
+  "pass": false,
+  "need": 4,
+  "verdict": "A busy raid HUD where every corner has its own box style and type size, with no clear focus; the file name suggests a forge/elements screen but nothing forge-related is visible.",
+  "findings": [
+   "P0 whole screen vs. screenshot name (stashraid-forge-elements): Re-shoot with the forge/elements panel open. If it really is closed here, add the missing entry point and a visible prompt.",
+   "P0 bottom-center keys legend (x500-900, y697-860): Collapse it to 3-4 contextual hints or a single 'f1 keys' chip at the bottom-left, 16px minimum. Show the full table only on f1. Keep it out of the centre-bottom.",
+   "P1 top-right career column (credits, xp, stash, backpack): Use equal 40px rows with 8px gaps. Give the minimap the same 1px --ui-line-hi border and --rad 4. Make credits the only tx-1 row and the rest tx-2.",
+   "P1 panel consistency: pillager bots (top-left), run info (right), keys legend, ammo card (bottom-right): One panel component: 1px line-hi border, 16px padding, rad 4, a 16px tx-2 title and the chevron at the top-right in the same place. Set the contract text to 16px with 12px side padding. Replace the $ on the bots scoreboard with sp.",
+   "P1 bottom-right ammo card (scav pistol 12 / 24): Align the card's bottom edge to the hotbar's bottom edge at y=1058. Add 24px padding. Tie the tab to the card's left edge or the top-left corner."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-01-stash-pays-in-raid-recipes-1/stashraid-forge-elements-1080.jpg",
+  "task": "coord-10",
+  "when": "2026-10-21T05:00"
  }
 }

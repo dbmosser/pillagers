@@ -33,7 +33,7 @@ let prev = {}; try { prev = JSON.parse(readFileSync(U + '/accept.json', 'utf8'))
 // run-over screens, 3 for the rest.
 const shotName = p => { const m = /((?:\d\d|[a-z]\d+)-[a-z0-9-]+?)(-1080|-4k)?\.(jpe?g|png)$/i.exec(p); if (m) return m[1];
   const b = /([A-Za-z0-9_.-]+?)(-1080|-4k)?\.(jpe?g|png)$/i.exec(p); return b && b[1]; };
-const finishLine = k => { const s = k.toLowerCase(); if (/settings|after-raid|stashraid|whats-new/.test(s)) return 3;
+const finishLine = k => { const s = k.toLowerCase(); if (/settings|after-raid|whats-new/.test(s)) return 3;
   return /raid|hud|pause|run-over|kia-card|extracted-card|abandoned-card|wait/.test(s) ? 4 : 3; };
 const before = pics.filter(p => !/before/i.test(p)).map(shotName).filter(k => k && prev[k] && prev[k].findings);
 const content = [];
