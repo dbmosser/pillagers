@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.50 - DEFAULT CAMERA EXACTLY 1.0
+
+Co-op hunt while he was away. Pixel art pass job 86a, ship 0. The default camera lands at 1.0 so 1080p is pixel exact and 4K is exactly double. Inside the 1.0 to 1.05 range job 79 measured. A zoom he set himself stays his.
+
+MEASURED. Check 33.50 passes, and fails on v33.49.
 ## v33.49 - THREE SHORT REAL NEWS NOTES
 
 Co-op hunt while he was away. The Thanksgiving build needs a few useful notes instead of the alpha warning and repeated polish filler.

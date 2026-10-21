@@ -1,0 +1,4 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  31-settings-send-play-data             staged      10.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  38-extracted-card                      staged       9.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  40-whats-new-card                      staged      12.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | runs 1 wnseen 0

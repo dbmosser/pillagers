@@ -3280,7 +3280,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.49';
+var VER='33.50';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -34982,7 +34982,7 @@ var ZMIN=0.85,ZMAX=9.0;   // v8.79 set 0.85; v8.92 raised the ceiling from 3.0
 // ZT is the target the input sets, ZC is the eased value the renderer reads.
 // v28.xx (cw-cx-camera130), HIS PICK (2026-10-18, art survey a36 C): "30 percent closer". One default for both windows and every raid mode; a saved dial keeps its value.
 // v28.xx (cw-camfar105), HIS ORDER (2026-10-20 evening): "default camera needs to be further away from player", then with his picture: "this is a good distance for default camera". His picture shows a pillager 6.4 percent of the screen height; 1.3 drew it 7.9 percent, so the default is 1.05 (1.3 x 6.4 / 7.9). Reverses the 1.3 of v31.85; a zoom he set himself stays.
-var ZDEFAULT=1.05,ZT=ZDEFAULT,ZC=ZDEFAULT,zoomSaveT=0;
+var ZDEFAULT=1.0,ZT=ZDEFAULT,ZC=ZDEFAULT,zoomSaveT=0;   // v33.49 (cw-pixzoom): job 86a, the pixel art pass. 1.05 becomes exactly 1.0 so a 1080p screen is pixel exact (scale 1) and 4K is scale 2. A zoom he set himself stays his.
 function loadZoom(){ ZT=ZC=clamp(P.zoom||ZDEFAULT,ZMIN,ZMAX); }
 // v9.16: THE DIAL TIMES THE SCREEN. This returned the dial alone, so one world
 // unit was one screen pixel on every monitor and a 4K player saw 2.13x more
@@ -51405,7 +51405,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.49: Both news views show three short lowercase notes. The alpha warning and all polish filler entries are removed. Check 33.49 fails on v33.48',
+  now:'v33.50: The default camera is a touch further out (1.0 instead of 1.05). A saved zoom is unchanged. Check 33.50 fails on v33.49',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

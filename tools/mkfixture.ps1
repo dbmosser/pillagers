@@ -6145,6 +6145,18 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'33.50',what:'the default camera is exactly 1.0 (pixel exact at 1080p, scale 2 at 4K) and a saved zoom stays his',
+   run:function(){
+     if(typeof ZDEFAULT==='undefined'||typeof loadZoom!=='function') return 'SKIP: no default camera';
+     if(ZDEFAULT!==1) return 'the default camera is '+ZDEFAULT+', not 1';
+     var had=Object.prototype.hasOwnProperty.call(P,'zoom'), saved=P.zoom, oldZT=ZT, oldZC=ZC, bad=null;
+     try{
+       delete P.zoom; loadZoom();
+       if(ZT!==1||ZC!==1) bad='a fresh profile boots at '+ZT+'/'+ZC+', not 1';
+       P.zoom=1.3; loadZoom();
+       if(!bad&&(ZT!==1.3||ZC!==1.3)) bad='a saved zoom of 1.3 loaded as '+ZT;
+     } finally { if(had) P.zoom=saved; else delete P.zoom; ZT=oldZT; ZC=oldZC; }
+     return bad; }},
   {v:'33.49',what:'both what is new views show three short lowercase real notes without alpha or polish fillers',
    run:function(){
      var bad=[], list=document.getElementById('wnlist'), modal=document.getElementById('wnmodal'), cls, html, sub=document.getElementById('wnsub'), oldSub;

@@ -1,0 +1,7 @@
+v33.50: default camera exactly 1.0
+
+The default camera is a touch further out (1.0 instead of 1.05). A saved zoom is unchanged.
+
+Check 33.50. Fails on v33.49.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

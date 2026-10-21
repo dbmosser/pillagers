@@ -372,33 +372,34 @@
  "38-extracted-card": {
   "score": 3,
   "pass": false,
-  "verdict": "solid use of the palette and type scale but it ships two real couch-play gaps: no visible pad focus and unlabeled loot icons.",
+  "need": 4,
+  "verdict": "The only change is a new 'extract without using a single heal' challenge line that adds clutter and an explaining sentence, while the card's main problems (a tiny floating card, a weak hero, too many stacked small lines) are still there.",
   "findings": [
-   "P1 log run and return button, bottom of card: add a 2-3px --acc outline or --acc-hover fill on the default-focused button so pad focus is visible at 1080 from a couch.",
-   "P1 5-icon loot row under the objective text: add a 14px --fs-fine label or count badge (e.g. \"x2\") under or on each icon, matching the row-name convention used elsewhere in the guide.",
-   "P2 'burst carbine recovered to the armoury' line, directly under the checkmarked objective: either give it its own icon/glyph (e.g. a small armoury icon) or drop it to --fs-label/tx-2 weight so it stops competing with the real checkmarked objective.",
-   "P2 bottom border under icon 1 (blue) and icon 2 (green) in the loot row: apply the 3px rarity bar from the style guide to every item consistently, or remove it from all five if rarity isn't meaningful here.",
-   "P2 card frame, overall: either widen the card toward the guide's standard proportions or add a deliberate secondary element (a thin side rail, map thumbnail) to justify the negative space."
+   "P1 challenge line above 'burst carbine recovered': Cut the sentence to a short chip such as 'no heals', with the ✓ in --ok, and put it in the tag row with 'first out · untouched · ghost'. Or drop it from this card. If it stays as a line, give it 16px tx-2 and a 24px gap above and below, away from the recovered line.",
+   "P1 hierarchy: title vs haul number: Make the haul exactly 56px f-cond 800 tx-1. Drop the title to 32px/700, or tx-2 weight. Keep teal for the title only.",
+   "P1 top text stack: Merge 'out clean · never spotted' into the tag row. Keep one xp line at 16px. Put the recovered line at 20px tx-1 right above the item tiles. Keep the vertical gaps at 8/16/24 only.",
+   "P2 stats row and tag row: Raise the tags to 16px tx-2 (#aaa498). Move the feedback prompt to the footer legend at 14px, or make it a ghost button of the same width as the primary, with a 24px gap.",
+   "P2 spacing rhythm: Use 16px between related lines, 24px between groups and 32px above the button. Set the card padding to 24-32px all round."
   ],
-  "pic": "tools/handoff/console/notes/shots/13-q1/38-extracted-card-1080.jpg",
-  "task": "manual",
-  "when": "2026-10-19T23:12",
-  "need": 4
+  "pic": "tools/handoff/console/notes/shots/o-91-circle-only-text-after/38-extracted-card-1080.jpg",
+  "task": "o-91-circle-only-text",
+  "when": "2026-10-21T05:32"
  },
  "40-whats-new-card": {
   "score": 3,
   "pass": true,
-  "verdict": "cleaner than the five-note version but the card ignores the window spec's 90%-width rule and triples up on dismiss controls.",
+  "need": 3,
+  "verdict": "The card is much calmer: three short lines replace the paragraphs, so it reads in a second. It is still a small card with loose spacing, and it does not follow the near-full-screen window rule.",
   "findings": [
-   "P1 whats-new card, 13-t1 shot: widen the card to 90% of viewport width (about 1728px at 1920x1080) per section 2 of the guide, reflow the three notes into the wider card instead of a narrow column",
-   "P1 card footer, bottom-left and bottom-right: keep the corner x plus the single live prompt ('press enter or walk to dismiss'); drop the 'got it' fill button so there is one explicit close (x) and one ambient prompt, not three",
-   "P2 top-right corner of the card, the x glyph: draw the x in --tx-1 (#efe9dc) or --acc on hover/focus, not a dim grey, so it reads at 15:1 like the rest of the UI",
-   "P2 left edge accent tab: redraw the left tab at exactly 3px per the component spec so it reads as a tab, not a stripe"
+   "P1 whole card: Either make it a 90% card, or document a small-notice exception in the guide. Raise the scrim to rgba(6,7,8,.80), because the hub labels (wirt the gambler, shop craft and hire, the last pour) are still readable behind it.",
+   "P1 list rows 1-3: Drop the numerals. Use a 16px lime or tx-2 bullet or tick at the left. Keep the names in tx-1 at 20px 600 and tighten the row pitch to 40px. Tighten the card width to about 560px, or give each line a tx-2 sub-label.",
+   "P1 title row: Set the title to 32px 700 in tx-1. Make the version a tx-2 16px tag on the right, or put it below the title, so the eye hits the title and then the button.",
+   "P2 footer: Shorten to 'enter' or 'walk' at 16px tx-2 (#aaa498), or delete it, since the button and X already dismiss. Keep the hint lined up with the button's text baseline.",
+   "P2 x button and divider: Make the divider run the full inner width (24px padding) with --ui-line. Make the X 40px with a clear 8px focus ring so pad focus shows. Align its centre with the title's centre."
   ],
-  "pic": "tools/handoff/console/notes/shots/13-t1/40-whats-new-card-1080.jpg",
-  "task": "manual",
-  "when": "2026-10-19T23:29",
-  "need": 3
+  "pic": "tools/handoff/console/notes/shots/o-91-circle-only-text-after/40-whats-new-card-1080.jpg",
+  "task": "o-91-circle-only-text",
+  "when": "2026-10-21T05:32"
  },
  "45-arcade-attract-board": {
   "score": 3,
@@ -1363,18 +1364,18 @@
  "31-settings-send-play-data": {
   "score": 2,
   "pass": false,
-  "verdict": "The tab is a raw debug dump in a dark card: a wall of tiny config JSON with capitals and explaining text, no hero or primary action, and a cramped footer.",
+  "need": 3,
+  "verdict": "The two screens are identical except for the build stamp and install id, and the main fault, a raw debug dump filling the screen, is still there, so this does not read as a polished player-facing settings tab.",
   "findings": [
-   "P0 flight recorder text box (center): Show a 3-4 line summary (runs, extracted, version) at 16px --tx-2 in lower case. Put the full dump behind the copy button, or in a collapsed pane at 14px with --ui-raised fill and 24px padding. The copy action sends it, so it need not be displayed at all.",
-   "P0 copy to clipboard button: Make 'copy to clipboard' the one lime (--acc) filled button, 20px f-cond 700, 48px high, with --acc-ink text. Make 'clear recorder' a muted text button. Move 'clear recorder' away from the primary, or add a confirm step.",
-   "P1 left column (x 50-480) and layout: Align the content to the card's left padding (x=48) or centre a 960px column on the card axis. Set the 'settings' title to 32px f-cond 700 and align tabs on its baseline. Use the empty side for a short label and status, or drop the column.",
-   "P1 restore a character section (y 870-995): Make the label --tx-2 16px with 8px gap above the field. Use a 56px single-line input in --ui-raised with a 1px --ui-line-hi border. Put 'read code' inline at the right of the input, with 24px between the sections and 24px above the footer rule.",
-   "P1 tabs 'game' / 'send play data' (y 78): Set tabs to 20px f-cond 600 with 32px gaps. Inactive tabs --tx-2 at 4.5:1 or better, active --tx-1 with a 3px --acc underline across the full tab width, tabs vertically centred on the 56px header row."
+   "P0 flight recorder text box (center, y 115-800): Hide the dump behind a collapsed 'view details' row, or show a 3-line summary at 20px (version, install id, runs) in tx-1 and tx-2. Keep the full text only for 'copy to clipboard'. If the dump must stay visible, lower-case the strings it shows, set it at 16px with a 24px line height, and cap its height at 240px.",
+   "P1 primary action hierarchy (copy to clipboard, y 808-848): Make 'copy to clipboard' the one lime (--acc) filled button with --acc-ink text, 48px high and 20px type. Make 'clear recorder' a quiet outline in tx-2 that only turns danger red on focus or hover.",
+   "P1 restore a character block (y 870-995): Label at 16px tx-2 with 8px below it. Field 56px high with a --ui-line-hi border. 'read code' 16px below the field with 24px padding above the footer rule. Use tx-2 for the label, since lime is reserved for focus.",
+   "P1 left column (x 25-480) and overall layout: Left-align the content column to the title edge at x=48, or put a 240px left rail with the tabs stacked vertically (the Halo Reach column menu). Use --sp-4 (32px) gutters.",
+   "P2 tab row (y 66-98): Tabs at 20px f-cond 600, inactive in tx-2 #aaa498, active in tx-1 with a 3px lime underline sitting directly on the header rule. Pad each tab 16px horizontally."
   ],
-  "pic": "tools/handoff/console/notes/shots/69-camera/31-settings-send-play-data-1080.jpg",
-  "task": "manual",
-  "when": "2026-10-21T03:35",
-  "need": 3
+  "pic": "tools/handoff/console/notes/shots/o-91-circle-only-text-after/31-settings-send-play-data-1080.jpg",
+  "task": "o-91-circle-only-text",
+  "when": "2026-10-21T05:31"
  },
  "83-experimental-guest": {
   "score": 3,
