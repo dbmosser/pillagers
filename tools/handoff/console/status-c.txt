@@ -1,1 +1,1 @@
-10-21 03:14 86d-pix-walls-trees: partial (run 3 of 5), $0.2632763
+10-21 03:18 waiting: another helper is just starting (memory check again in a few minutes); 86d-pix-walls-trees kept

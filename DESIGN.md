@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.60 - THE PIXEL GROUND
+
+Co-op hunt while he was away. Job 86b: with the pixel look on, the floor is baked at one pixel per 2 world units from the same code (the seeded stream does not move), snapped to a 4 step ramp of each district hue with slab seams, strokes and grass teeth, and processed in 64 pixel tiles within a 4 ms frame budget (the earlier 256 pixel tile exceeded it on the VM). One quarter of the floor canvas memory, a stepped pixel look.
+
+MEASURED. Check 33.60 passes, and fails on v33.59.
 ## v33.59 - COUCH MODE WORKS INSIDE ITCH
 
 Co-op hunt while he was away. coord-06 on 2026-10-21: inside itch frame the two windows could not link, because a BroadcastChannel is partitioned between the frame and the popup. When the game is embedded the pair now talks over window.opener, with the same words and the same pair code; the top level path is untouched.

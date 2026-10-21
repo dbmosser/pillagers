@@ -1,0 +1,7 @@
+v33.60: the pixel ground
+
+With the pixel look on (the default), the ground is chunky pixel art in stepped district colours, and the first seconds of a raid finish baking it. With the look off, nothing changes.
+
+Check 33.60. Fails on v33.59.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
