@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.87 - OPENED PIXEL CONTAINERS
+
+Co-op hunt while he was away. The 86e picture critic found opened container bodies too dark against the scene. Raise pixel opacity by 16 percent while keeping the lifted lid, cache, footprint and hidden loot colours unchanged.
+
+MEASURED. Check 33.87 passes, and fails on v33.86.
 ## v33.86 - PIXEL PROPS FINISH
 
 Co-op hunt while he was away. Finish 86e: wildlife uses actor density, the story desk caches at scene density, and landmark labels join the sharp HUD world-text hand-off. Pixel-off wildlife keeps its original continuous painted poses.

@@ -1920,5 +1920,37 @@
   "pic": "tools/handoff/console/notes/shots/86c-pix-pillager-recipes-3/pix86c-native4k-1080.jpg",
   "task": "86c-pix-pillager",
   "when": "2026-10-21T10:37"
+ },
+ "86e-pixel-props-sheet": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "This is a debug contact sheet, not a player-facing screen. Judged as one, it is a low-contrast grid of tiny sprites with captions that are too small and that collide with the art, so a player could not read it from a couch.",
+  "findings": [
+   "P1 all captions on the 1x grid: Use Barlow Condensed 600 at 16px with +.04em tracking in --tx-2 (#aaa498). Put the sprite name on one line and drop the repeated '/ closed' and '/ open' by pairing each closed and open sprite under one name.",
+   "P1 body, sentry, bulwark, howler, peddler, choir and warden captions: Give each cell a fixed 96x96 sprite area with the sprite anchored to its bottom edge. Start the caption 8px below that area. Make the cell pitch at least 112px so the tall sprites (warden, choir, sentry) cannot reach the text.",
+   "P1 locker/open, safe/open, strongbox/open, box/open, listener, sentry/open: Put a --ui-panel (#16191b) tile with a 1px --ui-line-hi border behind each cell. Lift the shadow and rim values of open sprites by about 15 percent. Add the 3px rarity bar under crate, cache, jackpot and strongbox.",
+   "P1 1x grid hierarchy and scale: Draw all sprites at 2x minimum, as the lower 2x row already does. Group them under three 32px f-cond 700 headings: containers, bots, barrels. Use a 4-column grid with 24px gutters inside one centred 90 percent card.",
+   "P2 section titles 'props / closed + opened / 1x' and '2x': Use 32px f-cond 700 titles with 24px below. Fill the last row or centre it. Drop the 2x row, or make it a 'detail' panel with a --ui-raised fill."
+  ],
+  "pic": "tools/handoff/console/notes/shots/86e-pix-props-recipes-1/86e-pixel-props-sheet-1080.jpg",
+  "task": "86e-pix-props",
+  "when": "2026-10-21T13:08"
+ },
+ "86e-pixel-raid-street": {
+  "score": 2,
+  "pass": false,
+  "need": 4,
+  "verdict": "Readable pixel-art raid with a clean dark HUD, but the HUD panels disagree on size, weight and spacing, and the extra overlays (keys cheat sheet, codex toast, tooltip) crowd the lower half of the screen.",
+  "findings": [
+   "P1 center-bottom keys cheat sheet (wasd/ctrl list): Move it to a collapsed corner hint (one 16px line, 'f1 keys'), or auto-hide it after 10s. If it stays, anchor it left at the 5% margin, widen the line gap to 24px, make keys tx-1 600 and actions tx-2 at 16px.",
+   "P1 hud panels: top-left bots list, top-right cash and run info: Use one panel component: 16px 24px padding, 1px #4a5257 border, 4px radius, 20px row names and 16px labels, a 2px top tab on the star panel only. Keep 32px row pitch and tx-2 #aaa498 minimum. Build the top-right as a single vertical column with equal widths.",
+   "P1 bottom-right ammo panel: Make the fill 90% --ui-panel. Right-align every line to a 24px padding. Put the weapon name at 20px tx-2, the hero at 56px 800 tx-1, and the backpack line at 16px tx-2 on one baseline row. Remove the stray tick or turn it into the 3px left accent tab.",
+   "P1 bottom-left stance, stamina and hp bars: Put the three in one panel of 8px grid rows, use 16px labels outside the bars, and keep the number inside at 20px 600. Use hp = --ok and stamina = a neutral --ui-line-hi fill. Reserve the 800 weight for ammo only.",
+   "P2 hotbar tooltip 'scav pistol / fire / use' and the codex toast: Use one chip style (16px, 8px padding, --ui-panel fill, 1px line). Put 12px between the tooltip and the hotbar. Restyle the codex toast as a standard panel with the lime 3px left tab and place it under the top-left panel."
+  ],
+  "pic": "tools/handoff/console/notes/shots/86e-pix-props-recipes-1/86e-pixel-raid-street-1080.jpg",
+  "task": "86e-pix-props",
+  "when": "2026-10-21T13:09"
  }
 }

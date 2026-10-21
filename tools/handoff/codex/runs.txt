@@ -192,3 +192,4 @@
 2026-10-21 06:32 86c-pix-pillager 485s ok PARTIAL in=8469644 out=66926 run=4
 2026-10-21 06:41 86c-pix-pillager 194s ok DONE in=9902341 out=72973 run=5
 2026-10-21 08:58 86e-pix-props 697s ok PARTIAL in=2556475 out=20740 run=1
+2026-10-21 09:16 86e-pix-props 412s ok PARTIAL in=4124306 out=33650 run=2

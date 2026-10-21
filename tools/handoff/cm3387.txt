@@ -1,0 +1,7 @@
+v33.87: opened pixel containers
+
+Opened pixel containers are easier to read at a glance.
+
+Check 33.87. Fails on v33.86.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

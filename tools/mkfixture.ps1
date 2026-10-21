@@ -6148,6 +6148,32 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'33.87',what:'cw-cx-propsread: opened pixel containers blit at 72 percent opacity, closed ones stay opaque and vector mode retains 62 percent',
+   run:function(){
+     var cfg=CFG.xfPix, blit=pixBlit, wc0=wc, seen=[], bad=[], ct;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile(); CFG.xfPix=1;
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242}); keys={}; __frame(0);
+       wc0=wc;
+       pixBlit=function(){ seen.push(wc.globalAlpha); return blit.apply(this,arguments); };
+       ct={x:G.player.x,y:G.player.y,r:15,type:'crate',opened:true,loot:[],time:1,prog:0};
+       for(var i=0;i<3&&!seen.length;i++){ pixFrame(); drawContS(ct); }
+       if(!seen.length||Math.abs(seen[seen.length-1]-0.72)>0.001) bad.push('opened pixel alpha '+seen.join(','));
+       ct.opened=false; seen=[];
+       for(i=0;i<3&&!seen.length;i++){ pixFrame(); drawContS(ct); }
+       if(!seen.length||seen[seen.length-1]!==1) bad.push('closed pixel alpha '+seen.join(','));
+       pixBlit=blit; CFG.xfPix=0; ct.opened=true;
+       var own=Object.getOwnPropertyDescriptor(wc,'fillRect'), fill=wc.fillRect, alpha=[];
+       wc.fillRect=function(){ alpha.push(wc.globalAlpha); return fill.apply(this,arguments); };
+       try{ drawContS(ct); }finally{ if(own) Object.defineProperty(wc,'fillRect',own); else delete wc.fillRect; }
+       if(!alpha.some(function(a){ return Math.abs(a-0.62)<0.001; })) bad.push('vector open dim changed');
+       return bad.length?bad.join('; '):null;
+     } finally{
+       pixBlit=blit; wc=wc0;
+       try{ if(__state()&&!__state().over) __endRaid('abandon'); }catch(_e){}
+       keys={}; __resetCfg(); __topClear(); __cleanProfile(); CFG.xfPix=cfg;
+     }
+   }},
   {v:'33.86',what:'cw-cx-propsfinish: real landmark and wildlife painters cache at the required densities; 60 cached draws use one blit and no readback; strongbox, seal and forge labels use GFXWT',
    run:function(){
      if(typeof pixWrap!=='function') return 'no pixel adapter';
