@@ -1,0 +1,7 @@
+v33.71: the pixel barrels and the props sheet
+
+With the pixel look on, explosive barrels draw as crisp pixel sprites; the floor pulse, sparks and glow still move. A props sheet is added to the pixel bench page. With the look off nothing changes.
+
+Check 33.71. Fails on v33.70.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

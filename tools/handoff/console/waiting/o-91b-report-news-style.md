@@ -28,3 +28,8 @@ TASK PARTIAL: shared ship recovery is still required, followed by the deferred k
 REQUEUED 10-21 03:08 (coordinator): the stuck cw-pixground v33.57 is cleared (the tree is back at v33.56, and a late STOP now undoes itself), and cw-cx-o91b-windowlayout is back in keys.txt. Left: preflight and ship it, the 1080p and 4k pictures of both windows before and after, both critic scores at least 3.
 
 REQUEUED 10-21 04:45 (coordinator): the 03:43 run stopped only on the stale What's New stamp (preflight: REGRESS 33.46). v33.62 and v33.63 made the stamp current, so cw-cx-o91b-windowlayout can ship now. Left: preflight and ship it, the 1080p and 4k pictures of both windows before and after, both critic scores at least 3. Its earlier runs are renamed o-91b-report-news-style-r2, so it has its full runs again.
+
+Lane note 2026-10-21 05:11: shipped cw-cx-o91b-newsreport cw-cx-o91b-windowlayout cw-cx-o91b-finalspacing and parked: only lane-side steps are left. Codex's last words:
+All keys shipped through v33.70. Scores remain news 2, recorder 3. Two follow-ups did not improve them, so the required stop rule applies. Both versions and pictures are preserved in the notes; all four camera rounds produced only 1080p images.
+
+TASK PARTIAL: news remains below 3 and genuine 4K evidence is missing; coordinator follow-up is required.

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.71 - THE PIXEL BARRELS AND THE PROPS SHEET
+
+Co-op hunt while he was away. Job 86e ship 2: with the pixel look on the four barrel bodies (red, shock, acid, cryo) are one cached sprite per blink state through pixWrap, while the pulse on the floor, the lid glow, the idle sparks and the pools stay live. It also adds the props sheet to ?pixbench (containers, bodies, wrecks, barrels drawn by their real painters).
+
+MEASURED. Check 33.71 passes, and fails on v33.70.
 ## v33.70 - NEWS AND REPORT SPACING
 
 Co-op hunt while he was away. The news frame crosses the currency strip and its three notes lack an anchor. Restore sits too far from the small report preview.

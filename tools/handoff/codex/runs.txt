@@ -185,3 +185,4 @@
 2026-10-21 03:43 o-91b-report-news-style 94s ok PARTIAL in=191439 out=2576 run=6
 2026-10-21 04:43 o-91b-report-news-style 110s ok PARTIAL in=186499 out=2548 run=1
 2026-10-21 05:01 o-91b-report-news-style 293s ok PARTIAL in=776318 out=10655 run=2
+2026-10-21 05:11 o-91b-report-news-style 99s ok PARTIAL in=1199673 out=13345 run=3

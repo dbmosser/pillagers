@@ -23,3 +23,4 @@ o-19-duplicate-check-ids
 85-preraid-map-no-cache-labels
 o-91b-report-news-style
 86b-pix-ground
+86c-pix-pillager

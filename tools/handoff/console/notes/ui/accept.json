@@ -1733,33 +1733,33 @@
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "The card frame, title, and x follow the guide, but three one-line rows float in a mostly empty 90% card, and the career HUD overlaps the card's top edge, so it reads as an unfinished template.",
+  "verdict": "A near-empty full-screen card whose content is a stray hero line and three plain rows floating in dead space, with no real hierarchy, no readable release notes, and a hard-to-see close button.",
   "findings": [
-   "P0 top-right career HUD ($900, 0 xp, stash $3,750 bag $0): Dim or hide the HUD under any full-card window. Otherwise put the card's z-order above the HUD, or push the card top to 96px and keep the HUD out of it.",
-   "P0 card body, about 60% of the card (y 430-1020): Fill the card: make each entry a larger row (96px) with a 32px title and a one-line 20px tx-2 note on the right. Or put a 56px hero version number on the left and the list on the right. Or shrink the card to content height, but the guide says near full screen, so fill it.",
-   "P1 header, accent tab at top-left (x 122-158, y 56): Remove it, or draw it as a clean 3px by 36px tab inside the panel. The lime then stays only on focus and selected.",
-   "P1 'new in v0.0993' subline and list placement: Left-align the list to x=121, or centre the subline over the list. Raise the subline to 16px tx-2 with 24px spacing under the header rule.",
-   "P1 list rows: Drop the numerals and add a 16px tx-2 tag or category on the right of each row. Make the focused row use --ui-raised with a 4px lime bar and tx-1 text, and unfocused rows tx-2 at 20px 600."
+   "P0 card body, left column 'new in v0.0993': Remove it, or fold it into the title row as a 16px tx-2 tag ('v0.0993') right of 'what's new'. Start the list at y≈216 (title divider + 40px) and give it the full card width.",
+   "P0 whole card, 1726x926 with about 60% empty: Top-align the list at 216px, with rows 72px tall at 20px type and 16px gaps. Add a 16px tx-2 sub-line under each row (e.g. where to find it). If the card must stay 90%, fill with a latest-first list of older versions, grouped under 16px section labels.",
+   "P1 rows 1-3 (x 901-1799): Make rows non-interactive: drop the raised fill and lime bar, and use tx-1 20px text with line dividers. Or make them open a detail pane, with the focused row in --ui-raised and the detail in a pane on the left, replacing the hero. Drop the numerals and use a 6px lime dot or nothing.",
+   "P1 close button top-right (1751-1799, 121-169): Set the title to 32px/700. Make the x glyph 24px in tx-1 inside a 48px box with a 1px --ui-line-hi border and a 2px --acc focus ring. Add a 16px tx-2 'esc' hint left of it, or a live pad button glyph.",
+   "P1 card frame and background: Hide the career HUD while a window is open, or push the card down so it clears the HUD by 24px. Use --scrim at .80 and keep the 5% margin (96px) as the rule on all four sides."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-91b-report-news-style-recipes-3/91-public-news-window-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-91b-report-news-style-recipes-4/91-public-news-window-1080.jpg",
   "task": "o-91b-report-news-style",
-  "when": "2026-10-21T08:56"
+  "when": "2026-10-21T09:09"
  },
  "91-public-report-recorder": {
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "It is a clean, consistent settings card with a clear lime primary action, but the log box is cramped, a large empty gap splits the screen, and the title, tabs and section labels are weak.",
+  "verdict": "A clean, on-guide settings card with a clear lime main action, but the content is a narrow column floating in a huge empty field, the raw log dump dominates, and small text and sentences hurt it.",
   "findings": [
-   "P1 log textarea (y 183-302): Make the textarea fill the dead space: about 400px tall (y 183 to 600). Show 12 or more lines, add 16px padding, and move the action row to 24px below the box.",
-   "P1 empty band between the buttons and 'restore a character' (y 380-740): Grow the log box into this band (see above), or group the two sections with a 32px gap and centre the stack vertically. Do not leave a hole larger than any content block.",
-   "P1 restore helper line (y 816): Cut it to a short callout such as 'replaces your current save', in --warn at 16px f-cond 600. Drop the 'paste a restore code from the end of a run report (above)' wording.",
-   "P1 title and tab row (y 55-105): Align the tab baseline with the title. Put the tabs 32px after the title, set them at 20px f-cond 700, and make the idle tabs --tx-2 at 4.5:1 or better. Give the active tab a 3px lime bar.",
-   "P2 content column (x 411-1509): Either left-align the content column to the title's left edge, or set the whole card to a consistent 48px inset. Do not mix a centred column with an edge-aligned header and footer."
+   "P1 content column (x 411-1509, y 280-840): Start content at 24px under the header rule (y~130). Widen the column to about 1500px, or split it into two panes: log on the left, restore on the right. Keep the gaps on the 8px grid.",
+   "P1 log textarea (y 317-497): Set the dump to 16px tx-2 in the mono-for-data style. Use --ui-raised fill with a 1px --ui-line border, and mute the text. Or show a short summary (runs, extracted, build) and leave the full dump behind copy. Make the scrollbar 8px wide and visible.",
+   "P1 restore a character helper line (y 686): Cut it to a short label, e.g. 'paste restore code'. Move the replace warning into a short 16px --warn tag beside the read code button, e.g. 'replaces your save'. Use at least 16px and 4.5:1 contrast.",
+   "P1 button row (copy to clipboard, clear recorder, read code): Use one height of 56px and 24px side padding for all. Put clear recorder beside copy, or demote it to a quiet text-danger button. Make read code a lime or secondary button that sits flush right under the input, not floating left.",
+   "P2 header (settings title, tabs, x): Put tabs at 20px f-cond 600, 32px after the title. Raise inactive tabs to --tx-2 at 4.5:1 or better. Either make the 2px top tab clearly 36px wide with a real panel, or remove it."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-91b-report-news-style-recipes-3/91-public-report-recorder-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-91b-report-news-style-recipes-4/91-public-report-recorder-1080.jpg",
   "task": "o-91b-report-news-style",
-  "when": "2026-10-21T08:56"
+  "when": "2026-10-21T09:09"
  },
  "85-after-mapfirst": {
   "score": 3,
