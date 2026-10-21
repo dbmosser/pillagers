@@ -20,3 +20,5 @@ Cost: about 20 critic runs (about $3) and one lane run. Party risk: none (pictur
 TASK DONE when every listed screen has a fresh score and the table is written; TASK PARTIAL with the screens left.
 
 COORDINATOR 10-20 21:07: taken by the coordinator (helpers are held by RAM); it runs from here.
+
+DONE 10-20 23:55 (coordinator): all 18 pictured on HEAD at 1080 and scored; table in notes/69-critic-rescore-sweep.md; alarm line in alarms.md.

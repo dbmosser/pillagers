@@ -17,4 +17,7 @@ still shows "the undercroft" as small amber text over a tiny subline. No ship fr
 4. Critic finish line 3; about 2 tries are used (b-31 runs), so at most 4 more (2.83 b).
 Party risk: low (career hub only). Not a feature: may continue up to the lock.
 
-TASK DONE when 03 scores 3 or stops at 6 tries with its best two versions noted; TASK PARTIAL with what is left.
+Also 39-hub-after-raid (the same hub floor after a raid): 2 on the job 69 picture notes/shots/69-camera/39-hub-after-raid-1080.jpg (10-20 23:55);
+its top P0 is the equal-weight station labels. Score it with 03.
+
+TASK DONE when 03 and 39 each score 3 or stop at 6 tries with its best two versions noted; TASK PARTIAL with what is left.
