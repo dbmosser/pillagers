@@ -10379,7 +10379,7 @@ window.__REGRESS=[
      try{
        __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        delete P.zoom; loadZoom();
-       near(ZT,1.3,'fresh target'); near(ZC,1.3,'fresh eased camera');
+       near(ZT,1.05,'fresh target'); near(ZC,1.05,'fresh eased camera');
        if(Object.prototype.hasOwnProperty.call(P,'zoom')) bad.push('loading the default wrote over the profile');
        [0.85,1,2.15,9].forEach(function(z){
          P.zoom=z; loadZoom();
@@ -10391,15 +10391,15 @@ window.__REGRESS=[
          W=size[0]; H=size[1];
          delete P.zoom; loadZoom();
          var z=ZOOM(), res=hudRes();
-         near(z,1.3*res,'default world scale '+W);
-         near(W/z,1920/1.3,'world width '+W); near(H/z,1080/1.3,'world height '+W);
+         near(z,1.05*res,'default world scale '+W);
+         near(W/z,1920/1.05,'world width '+W); near(H/z,1080/1.05,'world height '+W);
          VX=G.camX=G.player.x-W/(2*z); VY=G.camY=G.player.y-H*0.54/z;
          var s=w2s(G.player.x,0,G.player.y);
          near(s.x,W/2,'pillager x '+W); near(s.y,H*0.54,'pillager y '+W);
          mouse.x=W*0.62; mouse.y=H*0.38;
          var mw=mouseWorld(), back=w2s(mw.x,0,mw.y);
          near(back.x,mouse.x,'pointer x '+W); near(back.y,mouse.y,'pointer y '+W);
-         near(__setZoom(1.3),z,'survey spec zoom '+W);
+         near(__setZoom(1.05),z,'survey spec zoom '+W);
        });
        return bad.length?bad.join('; '):null;
      } catch(err){
