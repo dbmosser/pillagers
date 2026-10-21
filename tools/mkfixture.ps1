@@ -6144,6 +6144,18 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'33.32',what:'one gunfire tail only: the v23.77 place tails (slaps indoors, a roll outside, soft in the woods, a ring in a vault, a hiss over water) are the space-aware gunfire; the second tail of v33.25 is gone',
+   run:function(){
+     var bad=[], src, L;
+     if(typeof gunLayers!=='function'||typeof gunTail!=='function') return 'the v23.77 gun tails are missing (no gunLayers)';
+     L=gunLayers(100,'inside'); if(L.tailKind!=='slap') bad.push('indoors is not a slap tail');
+     if(gunLayers(100,'woods').tailKind!=='soft'||gunLayers(100,'vault').tailKind!=='ring'||gunLayers(100,'open').tailKind!=='roll') bad.push('the place tails changed');
+     if(!(gunLayers(800,'open').thump>0)) bad.push('a far shot has lost its thump');
+     if(typeof sndGunTail==='function'||typeof gunTailSpec==='function'||typeof gunTailMake==='function') bad.push('the second gun tail (sndGunTail) is still there on top of gunTail');
+     src=String((typeof _realBlip==='function')?_realBlip:blip);
+     if(src.indexOf('sndGun'+'Tail(')>=0) bad.push('blip still adds the second tail');
+     return bad.length?bad.join('; '):null;
+   }},
   {v:'33.31',what:'his order 10-20: looting a gun raises no stat card (G.gunCard stays null, nothing drawn); the gun card itself still draws for the belt hover and backpack',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__textTrace)||typeof drawHUD!=='function'||typeof grantLoot!=='function'||typeof gunCardDraw!=='function'||typeof gunCompare!=='function') return 'SKIP: no raid or HUD here';

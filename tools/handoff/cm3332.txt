@@ -1,0 +1,7 @@
+v33.32: one gunfire tail: take out the duplicate
+
+Gunfire is back to its one tail per place (v23.77). The extra tail of the last build is gone.
+
+Check 33.32. Fails on v33.31.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
