@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.79 - THE WHAT IS NEW STAMP KEEPS UP
+
+Co-op hunt while he was away. The card was stamped v33.63 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.
+
+MEASURED. Check 33.79 passes, and fails on v33.78.
 ## v33.78 - THE PIXEL HURT STATES
 
 Co-op hunt while he was away. His picks a12 B (white then red hit with a recoil) and a13 D (red ink pulse, shoulders drop, stains at low health) from the art survey, and his 10-20 orders for the pixel art pass. Job 86g, ship 1: a hit and low health stay in the pixel body instead of falling back to the vector one.

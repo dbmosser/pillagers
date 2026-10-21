@@ -6148,6 +6148,17 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'33.79',what:'the what is new card is stamped with this build or later and still shows the three short lowercase real notes',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnList!=='function') return 'SKIP: this build has no what is new card';
+     if(parseFloat(WHATSNEW_VER)>33.79+0.001) return 'SKIP: the card has moved on, a later card check covers it';
+     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), lines=wnList(), i;
+     if(!(parseFloat(WHATSNEW_VER)>=33.79-0.001)) bad.push('the card is stamped v'+WHATSNEW_VER+', before v33.79');
+     if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
+     if(lines.length!==3) bad.push('the card shows '+lines.length+' notes, not three');
+     for(i=0;i<lines.length;i++){ if(String(lines[i])!==String(lines[i]).toLowerCase()||String(lines[i]).length>48) bad.push('note '+i+' is not short lowercase text'); }
+     if(/\balpha\b|polish pass/i.test(WHATSNEW.join('|'))) bad.push('the news has filler copy');
+     return bad.length?bad.join('; '):null; }},
   {v:'33.78',what:'cw-pixhurt (86g): with the pixel look on a hit is drawn in pixels as a white then red wash over the layer silhouettes only with a 1 px recoil, low health draws the red ink ring layers at a pulse alpha that moves within a second with the shoulders 1 px lower and the stains baked in, and the hit and the low health no longer fall back to the vector body',
    run:function(){
      if(typeof pixDrawOp!=='function'||typeof pxTint!=='function'||typeof pxRingRed!=='function'||typeof pxLayer!=='function') return 'no pixel hurt states (pxTint, pxRingRed, pxLayer)';
