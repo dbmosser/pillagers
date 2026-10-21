@@ -1,5 +1,5 @@
 coord-04-release-sheet : rewrite the itch release sheet to his answers 71-79, and tell him each date's one step (planner draft 2026-10-20)
-DONE 10-21 01:20 (coordinator): tools/PUBLISH.md rewritten to 71-79 (zip name pillagers-web.zip, 1920 x 1080, bare lower-case page text, the open itch-frame risk from coord-06); the three dated messages are in the START-HERE CURRENT block ("Dates to tell him").
+DONE 10-21 01:02 (coordinator): tools/PUBLISH.md rewritten to 71-79 (zip name pillagers-web.zip, 1920 x 1080, bare lower-case page text, the open itch-frame risk from coord-06); the three dated messages are in the START-HERE CURRENT block ("Dates to tell him").
 effort: low
 
 COORDINATOR ONLY (writing and his chat). Do not move into tasks/.
