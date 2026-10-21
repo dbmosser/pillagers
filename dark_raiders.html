@@ -3280,7 +3280,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.37';
+var VER='33.38';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5390,8 +5390,8 @@ function trGeo(){
   g.z=(HUDZ.cond||1)*hudRes()*hudUserZ('cond');
   if(!trDemo()) n=4;
   if(T&&T.notes&&T.notes.length) n++;
-  g.n=n; g.bw=trBW(); g.rh=16+LH(13); g.x=W-16-g.bw;
-  g.yE=Math.ceil((g.y0+(n?n*g.rh+(n-1)*g.gp+g.gp:0))*g.z);   // where the next item (the minimap) starts, in screen px: under the last row and one gap
+  g.n=(n+1)>>1; g.bw=trBW(); g.ls=LH(13)+3; g.rh=16+LH(13)+(g.n>0?g.n-1:0)*g.ls; g.x=W-16-g.bw;   // v33.xx (cw-cornercompact), HIS ORDER (2026-10-20): "this takes up way too much of the screen, figure out how to make it much more compact". The four plates are ONE plate now: figures in two columns on short lines (n is the lines, rh the plate's height), about a third of the old block
+  g.yE=Math.ceil((g.y0+(n?g.rh+g.gp:0))*g.z);   // where the next item (the minimap) starts, in screen px: under the last row and one gap
   return g;
 }
 // the column as one box for the things that keep clear of the corner (the extraction badge, the map header): from the first row to the minimap's bottom
@@ -5411,10 +5411,10 @@ function trPlate(x,y,w,h){
   ctx.strokeStyle='rgba(112,122,130,.95)'; ctx.lineWidth=1; ctx.stroke();
 }
 function trRow(i,lab,val){
-  var g=TRG, y=g.y0+i*(g.rh+g.gp), by=y+8+LH(8);   // the same baseline as the run info title: pad 8 and LH(8) under the plate's top
-  trPlate(g.x,y,g.bw,g.rh);
-  ctx.textAlign='left'; ctx.fillStyle=UIC.tx_2; ctx.fillText(lab,g.x+8,by);
-  ctx.textAlign='right'; ctx.fillStyle=UIC.tx_1; ctx.fillText(val,g.x+g.bw-8,by);
+  var g=TRG, y=g.y0, by=y+8+LH(8)+(i>>1)*g.ls, cw=(g.bw-28)/2, cx=g.x+8+(i&1)*(cw+12);   // v33.xx (cw-cornercompact): cell i sits on line i>>1, left or right half   // the same baseline as the run info title: pad 8 and LH(8) under the plate's top
+  if(i===0) trPlate(g.x,y,g.bw,g.rh);
+  ctx.textAlign='left'; ctx.fillStyle=UIC.tx_2; ctx.fillText(lab,cx,by);
+  ctx.textAlign='right'; ctx.fillStyle=UIC.tx_1; ctx.fillText(val,cx+cw,by);
 }
 // drawn last in drawHUD, so the rows stay over the sector map and the backpack the way the page text did
 function trColDraw(){
@@ -51448,7 +51448,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.37: The experimental page shows on as a lime chip and off as a dim one, with one focus mark and a readable footer. Check 33.37 fails on v33.36',
+  now:'v33.38: The raid corner shows money, xp, stash and backpack on two short lines in one plate instead of four tall plates. Check 33.38 fails on v33.37',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

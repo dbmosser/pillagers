@@ -1590,18 +1590,18 @@
   "when": "2026-10-21T04:08"
  },
  "79-settings-experimental": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "A clean dark card with a clear focus row, but it is a 28-row list of identical 'on' chips with no state contrast, a mostly empty detail pane, a spacing glitch, and tiny fine print, so it reads as a debug panel rather than a polished settings screen.",
+  "verdict": "The 61b version fixes the repeated chip and the double focus box, but 28 lime 'on' chips now outshout everything, and the actual focus is a faint row tint that is hard to see.",
   "findings": [
-   "P1 image 1, list between 'air strike' and 'golden enemy': Always draw the group headers, or remove the gap when headers are off. Use one header row of 32px at 16px tx-2 and a consistent 56px row pitch.",
-   "P1 toggle column, all rows: Draw on as an --acc-ink-on-lime 56x32 chip or a lime switch, and off as an outlined --tx-2 chip. Move the chips to the right edge with 24px padding, or make the whole row the toggle.",
-   "P1 right detail pane: Remove the duplicate chip. Use the pane for a short label such as 'starts next raid' at 20px tx-1, and shrink the pane, or give the list the extra width. Put the state in the title row as a lime word.",
-   "P1 focused row control (run goals): Keep one focus signal: the 3px lime bar plus the raised fill. Show the chevrons in plain lime with no frame, and delete the white bar. Keep the frame within the 56px row height.",
-   "P2 footer legend, bottom right: Set it at 16px minimum, tx-2 at 4.5:1, with 24px gaps between the pairs. Show the key or pad glyphs for the active device."
+   "P0 every row's 'on' chip: Make the 'on' state quiet: tx-1 text on a transparent chip with a 1px --ui-line-hi border, or a small 8px lime dot plus 'on' in tx-1. Show 'off' in tx-2. Keep a lime fill only for the focused row's control.",
+   "P0 focused row 'run goals': On the focused row, add a 2px --acc outline or a full-width 4px lime left bar. Raise the row fill to #262b2f and make the label 22px with tx-1 at 100%. Show the ‹ › arrows on the focused row only, in lime.",
+   "P1 chip column position: Right-align chips to the row's inner padding of 24px, which is x~1014. Use a fixed 56x32 chip so every row aligns to the same right edge.",
+   "P1 bottom row 'elite affixes': Use a clean 24px fade mask on the list, applied to the chip too, or clip the list at a row boundary. Make the scrollbar 6px wide in --ui-line-hi, and add a position indicator, e.g. '1 / 28' in the header in place of '28 features'.",
+   "P1 detail pane: Put the on/off state in the pane as a 56px hero word ('on' in lime, 'off' in tx-2) under the title, then the description at 20px. Raise 'starts next raid' to 16px tx-2. Pin it to the bottom of the pane as a note, or drop it."
   ],
-  "pic": "tools/handoff/console/notes/shots/61-experimental-menu-r3/79-settings-experimental-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/61b-after/79-settings-experimental-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T04:18"
+  "when": "2026-10-21T04:35"
  }
 }

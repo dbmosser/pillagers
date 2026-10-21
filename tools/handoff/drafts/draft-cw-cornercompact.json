@@ -1,0 +1,32 @@
+{
+    "title":  "RAID CORNER MONEY BLOCK IS COMPACT",
+    "why":  "His order: the raid corner takes way too much of the screen, make it much more compact. The four money plates become one short plate with two lines of figures, about a third of the height; the minimap and the panels under it move up with it.",
+    "now":  "The raid corner shows money, xp, stash and backpack on two short lines in one plate instead of four tall plates.",
+    "edits":  [
+                  {
+                      "anchor":  "g.n=n; g.bw=trBW(); g.rh=16+LH(13); g.x=W-16-g.bw;",
+                      "replacement":  "g.n=(n+1)\u003e\u003e1; g.bw=trBW(); g.ls=LH(13)+3; g.rh=16+LH(13)+(g.n\u003e0?g.n-1:0)*g.ls; g.x=W-16-g.bw;   // v33.xx (cw-cornercompact), HIS ORDER (2026-10-20): \"this takes up way too much of the screen, figure out how to make it much more compact\". The four plates are ONE plate now: figures in two columns on short lines (n is the lines, rh the plate\u0027s height), about a third of the old block"
+                  },
+                  {
+                      "anchor":  "g.yE=Math.ceil((g.y0+(n?n*g.rh+(n-1)*g.gp+g.gp:0))*g.z);",
+                      "replacement":  "g.yE=Math.ceil((g.y0+(n?g.rh+g.gp:0))*g.z);"
+                  },
+                  {
+                      "anchor":  "var g=TRG, y=g.y0+i*(g.rh+g.gp), by=y+8+LH(8);",
+                      "replacement":  "var g=TRG, y=g.y0, by=y+8+LH(8)+(i\u003e\u003e1)*g.ls, cw=(g.bw-28)/2, cx=g.x+8+(i\u00261)*(cw+12);   // v33.xx (cw-cornercompact): cell i sits on line i\u003e\u003e1, left or right half"
+                  },
+                  {
+                      "anchor":  "trPlate(g.x,y,g.bw,g.rh);",
+                      "replacement":  "if(i===0) trPlate(g.x,y,g.bw,g.rh);"
+                  },
+                  {
+                      "anchor":  "ctx.textAlign=\u0027left\u0027; ctx.fillStyle=UIC.tx_2; ctx.fillText(lab,g.x+8,by);",
+                      "replacement":  "ctx.textAlign=\u0027left\u0027; ctx.fillStyle=UIC.tx_2; ctx.fillText(lab,cx,by);"
+                  },
+                  {
+                      "anchor":  "ctx.textAlign=\u0027right\u0027; ctx.fillStyle=UIC.tx_1; ctx.fillText(val,g.x+g.bw-8,by);",
+                      "replacement":  "ctx.textAlign=\u0027right\u0027; ctx.fillStyle=UIC.tx_1; ctx.fillText(val,cx+cw,by);"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027cw-cornercompact, his order: the raid corner money block is one short plate (at most 40 percent of the four-row height) at 1080 and 4K, all four figures drawn, the minimap one gap under it\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__frame\u0026\u0026window.__forceSize\u0026\u0026window.__runPrep\u0026\u0026window.__topClear\u0026\u0026window.__endRaid\u0026\u0026window.__P)) return \u0027SKIP: this fixture cannot deploy and draw\u0027;\n     if(typeof trColDraw!==\u0027function\u0027||typeof trGeo!==\u0027function\u0027||typeof trDemo!==\u0027function\u0027) return \u0027SKIP: no corner rows here\u0027;\n     if(!window.innerWidth||!window.innerHeight) return \u0027SKIP: the pane is 0x0, nothing here can be measured\u0027;\n     var bad=[], proto=CanvasRenderingContext2D.prototype, oFt=proto.fillText, own=Object.prototype.hasOwnProperty.call(ctx,\u0027fillText\u0027), f0=ctx.fillText;\n     var sw=cv.style.width, sh=cv.style.height, hw=hcv.style.width, hh=hcv.style.height, sizes=[[1920,1080],[3840,2160]], k, g, gg, oldH, r, n, a, R, mb, keepC, keepX, p;\n     try{\n       for(k=0;k\u003csizes.length;k++){\n         __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n         p=__P(); keepC=p.credits; keepX=p.xp; p.credits=4321; p.xp=77;\n         __forceSize(sizes[k][0],sizes[k][1]);\n         __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n         g=__state(); if(!g||g.over||!g.player) return \u0027SKIP: no live raid\u0027;\n         if(trDemo()) return \u0027SKIP: this raid counts as the demo\u0027;\n         p=__P(); p.credits=4321; p.xp=77; g.tel.notes=[];\n         _trLast=\u0027\u0027; syncTopRight(); __frame(0.016);\n         gg=trGeo(); oldH=4*(16+LH(13))+3*gg.gp;\n         if(!(gg.rh\u003c=0.4*oldH)) bad.push(sizes[k][0]+\u0027: the block is \u0027+gg.rh+\u0027 tall, over 40 percent of the old \u0027+oldH);\n         r=[]; if(own) delete ctx.fillText;\n         proto.fillText=function(s){ if(this===ctx) r.push({s:String(s),al:this.textAlign}); return oFt.apply(this,arguments); };\n         try{ n=trColDraw(); } finally { proto.fillText=oFt; if(own) ctx.fillText=f0; }\n         if(!(n\u003e=4)) bad.push(sizes[k][0]+\u0027: the corner drew \u0027+n+\u0027 figures\u0027);\n         R=[]; for(a=0;a\u003cr.length;a++) if(r[a].al===\u0027right\u0027) R.push(r[a].s);\n         if(R[0]!==\u0027$\u0027+(4321).toLocaleString()||R[1]!==(77).toLocaleString()||!/^\\$[0-9]/.test(R[2]||\u0027\u0027)||!/^\\$[0-9]/.test(R[3]||\u0027\u0027)) bad.push(sizes[k][0]+\u0027: the four figures read \u0027+R.slice(0,4).join(\u0027 | \u0027));\n         __frame(0.016); mb=MMAP.box;\n         if(mb){ if(Math.abs(mb.y-Math.ceil((gg.y0+gg.rh+gg.gp)*gg.z))\u003e1) bad.push(sizes[k][0]+\u0027: the minimap top \u0027+mb.y+\u0027 is not one gap under the block\u0027); }\n         else bad.push(sizes[k][0]+\u0027: no minimap box to measure the gap\u0027);\n         try{ if(__state()\u0026\u0026!__state().over) __endRaid(\u0027abandon\u0027); }catch(_e){}\n         p=__P(); p.credits=keepC; p.xp=keepX;\n       }\n     }catch(x){ bad.push(\u0027threw: \u0027+(x\u0026\u0026x.message||x)); }\n     finally{\n       proto.fillText=oFt; if(own) ctx.fillText=f0;\n       try{ if(__state()\u0026\u0026!__state().over) __endRaid(\u0027abandon\u0027); }catch(_e){}\n       try{ cv.style.width=sw; cv.style.height=sh; hcv.style.width=hw; hcv.style.height=hh; resize(); }catch(_z){}\n       try{ var pf=__P(); pf.credits=keepC; pf.xp=keepX; }catch(_r){}\n       _trLast=\u0027\u0027; __topClear(); __cleanProfile();\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

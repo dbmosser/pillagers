@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.38 - RAID CORNER MONEY BLOCK IS COMPACT
+
+Co-op hunt while he was away. His order: the raid corner takes way too much of the screen, make it much more compact. The four money plates become one short plate with two lines of figures, about a third of the height; the minimap and the panels under it move up with it.
+
+MEASURED. Check 33.38 passes, and fails on v33.37.
 ## v33.37 - experimental page: lime on chip, dim off chip, one focus mark
 
 Co-op hunt while he was away. The critic scored the experimental page 2: on and off chips looked alike, the detail pane repeated the chip, focus was stacked four ways, the footer was 13px and the last row was cut. Now on is a lime chip and off a dim one, the detail pane drops the repeated chip, the lime row bar is the only focus mark, the footer is 16px and the list has 72px of bottom padding.

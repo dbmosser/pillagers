@@ -1,0 +1,5 @@
+## v33.38 - RAID CORNER MONEY BLOCK IS COMPACT
+
+Co-op hunt while he was away. His order: the raid corner takes way too much of the screen, make it much more compact. The four money plates become one short plate with two lines of figures, about a third of the height; the minimap and the panels under it move up with it.
+
+MEASURED. Check 33.38 passes, and fails on v33.37.

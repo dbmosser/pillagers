@@ -1,0 +1,7 @@
+v33.38: raid corner money block is compact
+
+The raid corner shows money, xp, stash and backpack on two short lines in one plate instead of four tall plates.
+
+Check 33.38. Fails on v33.37.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

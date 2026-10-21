@@ -639,3 +639,5 @@
 2026-10-21 0.3003118 81c-extract-siren-short
 2026-10-21 1.0069085 82-minimap-off-by-default
 2026-10-21 0.22243180000000004 82-minimap-off-by-default
+2026-10-21 0.1523 critic-manual
+2026-10-21 0.8291761 61b-experimental-page-polish
