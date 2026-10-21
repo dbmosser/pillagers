@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.52 - THE PIXEL LOOK MAP
+
+Co-op hunt while he was away. His orders of 2026-10-20 (22:50 and 23:05): 3 heads, 3 skins, 3 clothes with a pack, and 3 full sets that override the rest. Job 86a, ship 2: a read-side map from the 18 field look to the 12 pixel picks, with no profile write and no screen change.
+
+MEASURED. Check 33.52 passes, and fails on v33.51.
 ## v33.51 - THE PIXEL LOOK SWITCH AND KIT
 
 Co-op hunt while he was away. His orders of 2026-10-20 (22:45 to 23:05): the whole game goes pixel art. Job 86a, ship 1: one experimental row (pixel look, on by default, only he flips it), pixBlit, byte capped sprite caches with a build budget, the style test kit, the ramp tables and a ?pixbench page. Nothing draws differently yet.

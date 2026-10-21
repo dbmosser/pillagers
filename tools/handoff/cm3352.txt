@@ -1,0 +1,7 @@
+v33.52: the pixel look map
+
+The game can now work out a pillager pixel look (head, skin, clothes, set) from any saved look. Nothing on screen changes yet.
+
+Check 33.52. Fails on v33.51.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,5 @@
+## v33.52 - THE PIXEL LOOK MAP
+
+Co-op hunt while he was away. His orders of 2026-10-20 (22:50 and 23:05): 3 heads, 3 skins, 3 clothes with a pack, and 3 full sets that override the rest. Job 86a, ship 2: a read-side map from the 18 field look to the 12 pixel picks, with no profile write and no screen change.
+
+MEASURED. Check 33.52 passes, and fails on v33.51.

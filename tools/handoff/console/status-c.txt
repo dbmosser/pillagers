@@ -1,1 +1,1 @@
-10-21 01:40 waiting: another helper is just starting (memory check again in a few minutes); 86e-pix-props kept
+10-21 01:45 waiting: another helper is just starting (memory check again in a few minutes); 86f-pix-machines kept

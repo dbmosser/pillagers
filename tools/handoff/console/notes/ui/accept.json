@@ -1765,16 +1765,16 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "A clean, consistent card with a clear lime primary action and a tidy contracts column, but the map is cluttered with overlapping labels and glyphs, and the contracts rows are too small and too quiet to read from a couch.",
+  "verdict": "This is a clean, consistent card with a clear primary action and a readable map, but the map is crowded with overlapping labels, many type sizes and weak, dim zone names, and the contracts list reads as a flat wall.",
   "findings": [
-   "P1 map, the eastern block around extract b, the forge and chill row: Give every label a 6px dark plate at 80% --ui-void, or a 2px outline, so it separates from the line work. Offset extract labels 12px from their ring. Resolve the stacked glyphs in the two boxes into one icon each. Keep at least 8px between labels.",
-   "P1 map labels, overall: Use 16px f-cond 600 as the floor for every map label. Use tx-1 for place names and tx-2 for secondary text, with teal reserved for extracts and red for hostile. Add the dark plate from the first finding behind the grey labels so they hit 4.5:1.",
-   "P1 contracts panel rows: Put the payout on the name line in 20px tx-1 and the progress in a 4px bar under the name with the bar fill in --acc. Make the idle track --ui-line at 1px, not a thick grey bar. Raise the progress text to 16px. Give the rows 56px of height and show the 4 to 5 that matter, or add a scroll cue.",
-   "P2 header: Set 'sector map' and 'dawn · clear' to 16px tx-2 (#aaa498). Show the X with a 1px --ui-line-hi border and a lime focus ring only when it is focused.",
-   "P2 footer, bottom left: Make it 16px tx-2 and align its left edge with the map frame (x=153). Add a thin 4px progress bar next to it, or drop the label if the map already shows the survey state."
+   "P1 map labels (extract b, chill row, the forge, seal 0%, extract a, hot ground): Standardise map labels to 16px f-cond 600 with a 1px dark outline or 4px padded plate. Offset each label 8px from its icon, with no overlap. Move 'extract b' left of the icon column, and put 'extract a' inside the ring at the same offset as the others.",
+   "P1 contracts list (right panel): Make the reward tx-1 at 20px 700 on the same line as the name. Put the count in tx-2 16px under the name, beside the bar. Drop the progress bars for 0/n rows, or shrink them to a 3px line. Add a 3px lime left bar and --ui-raised fill on the focused row so pad focus is visible. Cap the list at 6 rows or make it scroll.",
+   "P1 map zone names (packing floor, chill row, the sump, scrap line, the long dock): Use --tx-2 (#aaa498) or brighter for zone names at 16px with a dark halo. Keep the teal and red labels for functional markers only.",
+   "P2 header row: Align the subtitle baseline with the title at 16px tx-2, or drop it, since the card and map already say it. Align 'dawn · clear' to the same 16px tx-2 label style. Make the X 40px with the standard idle border --ui-line-hi.",
+   "P2 primary action 'click to start' + key chip: Make the text f-cond 700 at 24px. Make the chip the same height as the text, with an 8px gap. Align the button right edge and bottom to the 24px padding grid. Switch the label to the live device prompt ('press e' on keyboard, pad glyph on controller)."
   ],
-  "pic": "tools/handoff/console/notes/shots/85-preraid-map-no-cache-labels-recipes-1/85-after-mapfirst-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/85-preraid-map-no-cache-labels-recipes-2/85-after-mapfirst-1080.jpg",
   "task": "85-preraid-map-no-cache-labels",
-  "when": "2026-10-21T05:42"
+  "when": "2026-10-21T05:46"
  }
 }
