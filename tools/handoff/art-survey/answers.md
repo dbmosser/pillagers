@@ -56,3 +56,6 @@ Page: https://claude.ai/artifact/9FE6Z1FhG197FsrqVLRJFH. The page's database cam
 - Answer given: yes. The test pillager is drawn by code and takes colours (style-test/pillager.js, look). Each dress-up piece (hat, vest, pack,
   build) would be redrawn once in the pixel style and layered as today; the open hard part is the figure turning to aim in raids (the test is front only).
 - No job queued yet: new features until Mon 10/26, and the advice given is after the party, for the Thanksgiving release. Waits for his go.
+- 10-20 about 22:45, his ORDER (binding, replaces the after-the-party advice): "I want to do it all now before the party", then "if we need to
+  reduce the customization to a smaller amount of items/classes etc, that is fine". The whole game takes the pixel look in the party build, dress-up
+  kept but it may shrink. The coordinator plans the jobs (planning run pixel-pass-plan, 10-20 evening); they queue after his play notes 79 to 86.
