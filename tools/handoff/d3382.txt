@@ -1,0 +1,5 @@
+## v33.82 - THE PIXEL LAMPS, FORGE AND SEAL
+
+Co-op hunt while he was away. Job 86e ship 4: with the pixel look on, lamps and lamp posts, the forge body and the seal slab are cached scene sprites through pixWrap. The lit element, glow, molten mouth, embers, ring and labels stay live.
+
+MEASURED. Check 33.82 passes, and fails on v33.81.

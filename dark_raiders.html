@@ -3360,7 +3360,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.81';
+var VER='33.82';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -39584,7 +39584,9 @@ var SHD=G.shells[i];
     if(!G.seal) return;
     var SW=G.seal,SRw=sealHere(),needW=sealNeed(SRw.tier);
     var pctW=clamp((SRw.cut+SW.gained)/needW,0,1);
-    var swx=SW.x,swy=SW.y;
+    var swx=SW.x,swy=SW.y, pctQ=SW.done?1:Math.round(pctW*20)/20;
+    // v33.78 (cw-pixlamps), HIS ORDER (2026-10-20 22:45 to 23:05, the pixel pass): with the pixel look on the slab is one cached scene sprite by state and fill step (5 percent); the label below stays live world text.
+    var swP=function(){
     wc.fillStyle='rgba(10,8,6,.40)';
     wc.beginPath(); wc.ellipse(swx,swy+4,30,11,0,0,6.2832); wc.fill();
     wc.fillStyle=INK; rrF(swx-26,swy-52,52,56,4);
@@ -39593,11 +39595,13 @@ var SHD=G.shells[i];
     wc.fillStyle='rgba(12,10,16,.6)'; wc.fillRect(swx-18,swy-40,36,3);
     wc.fillRect(swx-18,swy-24,36,3);
     wc.fillStyle=SW.done?'#ffc04a':'#4de3d0';
-    wc.fillRect(swx-20,swy-6-44*pctW,40,Math.max(2,44*pctW));
+    wc.fillRect(swx-20,swy-6-44*pctQ,40,Math.max(2,44*pctQ));
     wc.globalAlpha=0.5;
     wc.fillStyle=SW.done?'#ffc04a':'#8fd0ff';
-    wc.fillRect(swx-20,swy-8-44*pctW,40,2);
+    wc.fillRect(swx-20,swy-8-44*pctQ,40,2);
     wc.globalAlpha=1;
+    };
+    if(!(pixOn()&&pixWrap('seal:'+(SW.done?'done':Math.round(pctQ*20)),64,72,PIX_ENV,swP,swx,swy,{up:54}))) swP();
     wc.textAlign='center'; wc.font=FS(TYPE.label);
     wc.fillStyle=INK; wc.fillText(SW.done?'SEAL BROKEN':('THE SEAL  '+Math.round(pctW*100)+'%'),swx+1,swy-59);
     wc.fillStyle=SW.done?'#ffc04a':'#8fd0ff';
@@ -39622,6 +39626,8 @@ var SHD=G.shells[i];
     wc.restore();
     wc.save(); wc.strokeStyle=near?'rgba(255,201,74,.60)':'rgba(255,201,74,.22)'; wc.lineWidth=near?2:1.4; wc.setLineDash([6,7]);
     wc.beginPath(); wc.ellipse(fx,fy+4,FORGE_REACH,FORGE_REACH*0.56,0,0,6.2832); wc.stroke(); wc.restore();
+    // v33.78 (cw-pixlamps): with the pixel look on the furnace, chimney, anvil and the dark frame of the mouth are one cached scene sprite; the molten mouth, the glow, the ring, the embers and the label below stay live.
+    var fgP=function(){
     wc.fillStyle='rgba(10,8,6,.42)'; wc.beginPath(); wc.ellipse(fx,fy+6,34,11,0,0,6.2832); wc.fill();
     wc.fillStyle=INK; rrF(fx-28,fy-13,56,19,3);
     wc.fillStyle='#3b414a'; rrF(fx-26,fy-12,52,16,2); wc.fillStyle='#5b6470'; wc.fillRect(fx-26,fy-12,52,2);
@@ -39630,12 +39636,13 @@ var SHD=G.shells[i];
     wc.fillStyle='rgba(0,0,0,.30)'; for(k=0;k<3;k++) wc.fillRect(fx-22,fy-40+k*9,44,1);
     wc.fillStyle=INK; wc.fillRect(fx+9,fy-70,13,24); wc.fillStyle='#343a43'; wc.fillRect(fx+11,fy-68,9,22); wc.fillStyle='#4b535e'; wc.fillRect(fx+11,fy-68,9,2);
     wc.fillStyle=INK; wc.fillRect(fx-16,fy-41,32,17);
+    forgeAnvil(wc,fx-7,fy-60,14,'#59626e',INK);
+    };
+    if(!(pixOn()&&pixWrap('forge',72,92,PIX_ENV,fgP,fx,fy,{up:74}))) fgP();
     gl=wc.createLinearGradient(0,fy-39,0,fy-26);
     gl.addColorStop(0,'#ffe9a8'); gl.addColorStop(0.45,'#ff9a2a'); gl.addColorStop(1,'#a8300a');
     wc.globalAlpha=0.78+0.22*pv; wc.fillStyle=gl; wc.fillRect(fx-14,fy-39,28,13); wc.globalAlpha=1;
-    wc.save(); wc.globalCompositeOperation='lighter'; wc.globalAlpha=0.30+0.20*pv; wc.fillStyle='#ff8a2a'; wc.fillRect(fx-14,fy-39,28,13); wc.restore();
-    forgeAnvil(wc,fx-7,fy-60,14,'#59626e',INK);
-    wc.save(); wc.globalCompositeOperation='lighter';
+    wc.save(); wc.globalCompositeOperation='lighter'; wc.globalAlpha=0.30+0.20*pv; wc.fillStyle='#ff8a2a'; wc.fillRect(fx-14,fy-39,28,13); wc.restore();    wc.save(); wc.globalCompositeOperation='lighter';
     for(k=0;k<4;k++){ ph=(t*0.55+k*0.25)%1; wc.globalAlpha=(1-ph)*0.85; wc.fillStyle=(k&1)?'#ffb040':'#ff7a2a'; wc.fillRect(fx+14+Math.sin(t*2.3+k*1.9)*6,fy-72-ph*40,2,2); }
     wc.restore();
     wc.textAlign='center'; wc.font=FS(TYPE.label);
@@ -39845,11 +39852,11 @@ var SHD=G.shells[i];
       var LG=it.lm;
       var lfk=(LG.fl?(.72+.28*Math.sin(G.t*11+LG.f)):1)*wx().lights*(isDay()?tod().lights:1);
       var lhx=LG.x,lhy=LG.y-(LG.post?52:34);
+      // v33.78 (cw-pixlamps), HIS ORDER (2026-10-20 22:45 to 23:05, the pixel pass): with the pixel look on the post, bracket and housing are one cached scene sprite per kind; the lit element, its glow and the ground shadow stay live.
+      // A LAMP POST, standing on the ground, because outdoors there is nothing overhead for a bracket to hang from and a light with no visible cause is the thing he has now reported twice.
+      if(LG.post) shadowE(LG.x,LG.y,7,3,.34);
+      var lpP=function(){
       if(LG.post){
-        // A LAMP POST, standing on the ground, because outdoors there is nothing
-        // overhead for a bracket to hang from and a light with no visible cause
-        // is the thing he has now reported twice.
-        shadowE(LG.x,LG.y,7,3,.34);
         wc.fillStyle=INK; wc.fillRect(lhx-3,lhy+2,6,52);
         wc.fillStyle='#3a3f47'; wc.fillRect(lhx-2,lhy+2,4,52);
         wc.fillStyle='#4d545e'; wc.fillRect(lhx-2,lhy+2,1.4,52);
@@ -39862,7 +39869,8 @@ var SHD=G.shells[i];
       }
       wc.fillStyle='#2a2733'; wc.fillRect(lhx-7,lhy-2,14,5);
       wc.fillStyle='#141220'; wc.fillRect(lhx-8,lhy+3,16,2);
-      if(lfk>0.02){
+      };
+      if(!(pixOn()&&pixWrap(LG.post?'lamp:p':'lamp:b',24,LG.post?62:26,PIX_ENV,lpP,LG.x,LG.y,{up:LG.post?56:50}))) lpP();      if(lfk>0.02){
         wc.fillStyle=LG.c; wc.globalAlpha=0.85*lfk;
         wc.fillRect(lhx-5,lhy+1,10,3);
         wc.globalCompositeOperation='lighter';
@@ -52727,7 +52735,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.81: Armoured pillagers wear pixel plates (a chest plate, then pauldrons, then a collar and a helmet), the golden pillager bot is solid gold with a pixel shine, the elite ring is a pixel ring, and the chase tell flares the eyes. Check 33.81 fails on v33.80',
+  now:'v33.82: With the pixel look on, lamp posts, the forge and the great seal draw as crisp pixel sprites. With the look off nothing changes. Check 33.82 fails on v33.81',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
