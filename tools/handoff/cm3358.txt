@@ -1,0 +1,7 @@
+v33.58: the pixel pillager
+
+With the pixel look on, every plain pillager is a pixel figure with a pixel gun. Armour, hits, downed, fists and sets still draw the old figure.
+
+Check 33.58. Fails on v33.57.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

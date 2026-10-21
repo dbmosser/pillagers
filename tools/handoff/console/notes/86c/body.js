@@ -71,7 +71,7 @@ function pxPaint(mir){
       d.data[j]=n>>16; d.data[j+1]=(n>>8)&255; d.data[j+2]=n&255; d.data[j+3]=255;
     }
     s.x.putImageData(d,0,0);
-    return pixSprite(pixRing(s.c,PIX_INK),PXB.AX,PXB.AY,PIX_ACT);
+    return pixSprite(pixRing(s.c,PIX_INK).c,PXB.AX,PXB.AY,PIX_ACT);
   };
   return me;
 }

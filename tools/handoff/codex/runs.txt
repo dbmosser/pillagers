@@ -177,3 +177,5 @@
 2026-10-21 02:39 o-91b-report-news-style 29s ok PARTIAL in=677543 out=6060 run=3
 2026-10-21 02:40 o-91b-report-news-style 59s ok PARTIAL in=852356 out=8222 run=4
 2026-10-21 02:43 o-91b-report-news-style 122s ok PARTIAL in=1220821 out=12129 run=5
+2026-10-21 03:09 86b-pix-ground 992s ok PARTIAL in=2315947 out=28907 run=1
+2026-10-21 03:13 86b-pix-ground 247s ok PARTIAL in=2927241 out=35773 run=2

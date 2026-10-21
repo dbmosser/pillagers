@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.58 - THE PIXEL PILLAGER
+
+Co-op hunt while he was away. His orders of 2026-10-20 (22:45 to 23:05): the whole game in pixel art like the style test, 3 heads, 3 skins and 3 clothes with a pack. Job 86c, ship 1: one pixel body for every plain pillager (you, your mate, hires and the pillager bots), baked in layers, with a pixel gun and arms in 32 aim steps, behind the pixel look switch.
+
+MEASURED. Check 33.58 passes, and fails on v33.57.
 ## v33.57 - A PAIR THAT NEVER LINKS SAYS SO
 
 Co-op hunt while he was away. coord-06 on 2026-10-21: in a cross-site frame (itch) the player 2 window booted and nothing on screen said why the pair did not link. Now 15 seconds after the pick with nobody in, the status reads player 2 not linked, the title note says it with RETRY, and the Undercroft feed says it once. This is the first of two ships for couch mode on itch; the window bridge follows.

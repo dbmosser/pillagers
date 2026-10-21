@@ -30,3 +30,28 @@
 
 ## 10-21 02:42 run (lane a)
 - Tried shipq cw-pixground: MK FAIL, anchor matches 0, because the dirty tree already holds the v33.57 pixground patch. Still waiting on the coordinator: commit it (gate -Fix, ship.sh commit 3357) or git checkout the four files, then I re-ship.
+
+--- codex run 2026-10-21 03:09 ---
+## 2026-10-21 - Codex lane o preparation, based on v33.56
+- 86a is complete in done/86a-pix-kit-switch.md. The v33.56 worktree has no pixGroundQueue or pixHubSnap, so the old cw-pixground timeout did not leave a shipped patch in this checkout.
+- Reused the earlier mk-cw-pixground.ps1 and mk-cw-pixhub.ps1 work, with new cw-cx- keys and sandbox-compatible output paths. No tracked game or fixture file was edited.
+- Prepared keys, in order: cw-cx-pixground, cw-cx-pixhub, cw-cx-pixdecal. All three generated their drafts. Applying all 26 anchors in order in a private preview succeeded; the whole game script and all three check bodies parse. Each check rejects the build before its new function exists. Browser checks and timing remain for the lane; none were run in the sandbox.
+- Raid: same painter and seeded draws into a half-size CPU canvas, day/night district ramps, palette bands, slab seams, short strokes, turf teeth, and a queue. Kept the measured 64x64 processing tiles: the previous VM run measured 5.8 ms at 256 and 4.1 ms at 128. This is a deliberate exception to the requested 256 tile size to meet the harder 4 ms budget.
+- Fixed two problems in the old draft: the bake transform is reset before scars can use the canvas, and original palette classifications are cached at tile borders so a different camera/chunk order cannot change the texture.
+- The spawn view is processed during buildRaid before the first frame, with a cursor lean margin. Later visible tiles and the remaining queue use the 4 ms frame budget. A transient slow tile does not stall the queue forever. Context restore keeps the raid's chosen pixel mode, primes the player view, and uses the same queue. Ground blits choose smoothing using the actual device scale.
+- The ground check now compares real seed-4242 builds in both sectors and both pixel modes: seeded position, full netUpFp equality, the 85/165 and 374/593 counts, and canvas dimensions. It also checks raw and completed canvas transforms, samples, timing, the far-corner scar, and spawn readiness. The control samples must have more than 20 colours.
+- Hub: same original painter at half density, eight cool/warm ramp colours, and a full palette-membership check. Fixed the earlier draft's live rebake: the switch now takes effect at hub entry, not while walking around the same hub visit.
+- Marks: footprints, water-ring centres and decal origins follow the baked floor grid. Their stored coordinates, tracking, visibility gates and rotations are unchanged. A check records their actual Canvas calls in raid frames, including a live switch change before rebaking and the original full-size path.
+- Four camera recipes explicitly enable xfPix, since the fixture pins it off: sector 0 day, sector 0 night, sector 1 night, and the Undercroft. Staging and expectation scripts parse. Recipes use existing __cfg, __P, __gx and raid/hub hooks, so no fixture retarget is needed.
+- Still required: lane preflight and shipping; inspect returned 1080p pictures and critic findings; coordinator 4K captures because tools/codex-lane.sh fixes recipe cameras to -Res 1080. See alarms-new.md. No critic score is claimed.
+- Watch on the next play: any hitch at ascend, especially in both windows, and pillagers or machines blending into the night floor. Temporary CPU/source buffers are released when the floor queue is finished; the retained floor canvas uses one quarter of the original pixels.
+
+
+--- codex run 2026-10-21 03:13 ---
+## 2026-10-21 - first preflight timing failure
+- The lane rejected cw-cx-pixground twice: the slowest chunk took 47.6 ms and 45.7 ms. No other new-check failure was reported.
+- The chunk timer starts before getImageData, unlike the earlier lane-a draft. Its first read can force all deferred ground drawing to finish, charging a whole-world raster to one 64x64 tile. That is the likely cause; the feedback did not include the tile position or phase, so it is not yet proved.
+- Updated the same key: pixGroundQueue now reads one pixel during bake setup to drain the original painter before any timed tile. This cost is still inside the existing whole-bake timer and its unchanged 1500 ms limit. Every chunk still times its full read, classification, texture and write, with the unchanged 4 ms limit.
+- Added slowest-tile coordinates and read/classification/texture/write timings to any future failure message, plus the initial raster time. This will distinguish a read stall from texture work or a later pause if the next preflight still fails.
+- Regenerated the raid and hub drafts against v33.57. All 26 anchors apply in order in the private preview, and the whole game plus all three checks parse. The tracked game and fixture remain unchanged. Keys and camera recipes are unchanged. Lane preflight, shipping and pictures are still required; the existing coordinator handoff for 4K still applies.
+
