@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.74 - PIXEL PILLAGER STANDING HEIGHT
+
+Co-op hunt while he was away. Job 86c requires the standing height from 79a within two pixels. Those notes measured about 58 px at camera 1.05, or 55 at the current camera 1.0. The shipped 49 to 52 pixel looks only checked themselves against an arbitrary 50 pixel target.
+
+MEASURED. Check 33.74 passes, and fails on v33.73.
 ## v33.73 - PIXEL FASHION TURNTABLE
 
 Co-op hunt while he was away. Job 86c requires the same pixel body in FASHION previews at whole 4x with smoothing off. The shipped drawOp only enables pixels on the raid and Undercroft canvases, leaving the FASHION turntable in vector art.

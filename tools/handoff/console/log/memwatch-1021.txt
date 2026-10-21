@@ -1,0 +1,8 @@
+﻿--- memwatch start 10-21 05:54:01, 90 min, snapshot above 27 GB committed
+05:54:01 committed 20.2 of 31.9 GB, free RAM 6.9 GB
+05:55:02 committed 21.4 of 31.9 GB, free RAM 5.7 GB
+05:56:03 committed 22.6 of 31.9 GB, free RAM 5.0 GB
+05:57:00 committed 20.9 of 31.9 GB, free RAM 6.2 GB
+05:58:01 committed 21.7 of 31.9 GB, free RAM 5.3 GB
+05:59:02 committed 20.8 of 31.9 GB, free RAM 6.5 GB
+06:00:03 committed 21.3 of 29.2 GB, free RAM 3.4 GB

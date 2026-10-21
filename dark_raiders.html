@@ -3360,7 +3360,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.73';
+var VER='33.74';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -50818,7 +50818,7 @@ function pixOwned(id){
 // peddler, the survivor, a forged gun, a reload) draws today's vector body, and a throw falls back to the vector body and is logged. Shapes use whole pixel masks and hand placed pixels only: no rr(),
 // no random, so two windows bake the same pixels and the seed does not move.
 PIX.bodies=0;
-var PXB={W:36,H:50,AX:19,AY:51,PV:20,TARGET:50}; /* v28.xx (cw-cx-pixpose): the pixel shoulder uses the existing 20 world unit muzzle height */   // the art grid, the anchor between the feet in the ringed sprite, the gun pivot (art px above the feet), the drawn height the check expects
+var PXB={W:36,H:54,AX:19,AY:55,PV:20,TARGET:54}; /* v28.xx (cw-cx-pixheight): 79a measured about 58 px at zoom 1.05; at zoom 1 that is 55 px, with 2 px tolerance. Redraw the torso and legs, never scale a sprite. */ /* v28.xx (cw-cx-pixpose): the pixel shoulder uses the existing 20 world unit muzzle height */   // the art grid, the anchor between the feet in the ringed sprite, the gun pivot (art px above the feet), the drawn height the check expects
 var PXB_HAIR=['#5a4a4c','#3a2e34','#241c24','#14101a'];
 var PXB_BOOT=['#6a5a4a','#4a3e34','#322a22','#1e1914'];
 var PXB_EYE={white:'#f2e8e4',lid:'#d6c6c2',ink:'#1c1218',iris:'#4a3228',red:'#e03a28',redDeep:'#8e1a1c',brow:'#2a1418'};
@@ -50888,35 +50888,36 @@ function pxPaint(mir){
   return me;
 }
 // the upper body: pack, torso, neck and the head with its face. o: head, skin, clothes, bot, mir, pup (-1, 0, 1: the pupils toward the aim), arms (1: empty hands hang at the sides), lamp (team colour), band (seat colour)
+// v28.xx (cw-cx-pixheight): add two art rows to the torso, extend the packs and sleeves with it, and keep the original face grid.
 function pxBuildUpper(o){
   var p=pxPaint(o.mir), W=PXB.W, C=o.bot?PXB_REDS:(PXB_RAMP[o.clothes]||PXB_RAMP.scav), sk=PIXRAMPS.skins[o.skin]||PIXRAMPS.skins.fair, hr=PXB_HAIR, E=PXB_EYE, bot=!!o.bot, dxp=o.mir?-o.pup:o.pup, cl=o.clothes, m, y, x, skull, op, belt, mk, ml;
   // pack, on the side away from the facing (the left of the unflipped sprite)
   if(cl==='recon'){
-    p.put(pxRR(pxM(),4,15,10,40,2),C.pack); p.put(pxRR(pxM(),2,11,11,15,2.2),C.gear);
-    for(y=17;y<=38;y++) p.P(5,y,C.pack[3]);
+    p.put(pxRR(pxM(),4,15,10,42,2),C.pack); p.put(pxRR(pxM(),2,11,11,15,2.2),C.gear);
+    for(y=17;y<=40;y++) p.P(5,y,C.pack[3]);
   } else if(cl==='heavy'){
-    p.put(pxRR(pxM(),2,21,10,40,1.2),C.pack); p.put(pxRect(pxM(),4,24,8,29),C.gear);
+    p.put(pxRR(pxM(),2,21,10,42,1.2),C.pack); p.put(pxRect(pxM(),4,24,8,29),C.gear);
     p.P(5,31,C.acc); p.P(7,31,C.acc); p.P(5,33,C.gear[0]); p.P(6,33,C.gear[0]);
     for(y=5;y<=20;y++) p.P(4,y,C.gear[2]);
     p.P(4,4,C.acc); p.P(3,4,C.gear[1]);
   } else {
-    p.put(pxRR(pxM(),3,26,10,38,2),C.pack); p.put(pxRect(pxM(),4,27,9,29),C.gear); p.P(6,30,C.acc);
+    p.put(pxRR(pxM(),3,26,10,40,2),C.pack); p.put(pxRect(pxM(),4,27,9,29),C.gear); p.P(6,30,C.acc);
   }
   // torso, then what each clothes pick wears on it
-  p.put(pxRR(pxM(),10,22,25,35,2.5),C.coat);
+  p.put(pxRR(pxM(),10,22,25,37,2.5),C.coat);
   if(cl==='recon'){
-    p.put(pxSeg(pxM(),12,22.6,23.5,33.5,0.9),C.gear); p.put(pxSeg(pxM(),23.5,22.6,12,33.5,0.9),C.gear); p.put(pxRR(pxM(),15,29,20,32,1),C.pack);
+    p.put(pxSeg(pxM(),12,22.6,23.5,35.5,0.9),C.gear); p.put(pxSeg(pxM(),23.5,22.6,12,35.5,0.9),C.gear); p.put(pxRR(pxM(),15,31,20,34,1),C.pack);
   } else if(cl==='heavy'){
-    p.put(pxRR(pxM(),12,23,23,31,1.5),C.gear); p.put(pxRR(pxM(),8,21,12,26,1.5),C.gear); p.put(pxRR(pxM(),23,21,27,26,1.5),C.gear);
+    p.put(pxRR(pxM(),12,23,23,33,1.5),C.gear); p.put(pxRR(pxM(),8,21,12,26,1.5),C.gear); p.put(pxRR(pxM(),23,21,27,26,1.5),C.gear);
     p.Pl(13,24,C.gear[0]); p.Pl(9,22,C.gear[0]);
   } else {
-    p.put(pxSeg(pxM(),12.5,23,22.5,33.5,1.1),C.gear); p.put(pxRR(pxM(),11,28,14,31,1),C.gear); p.put(pxRR(pxM(),21,28,24,31,1),C.gear);
+    p.put(pxSeg(pxM(),12.5,23,22.5,35.5,1.1),C.gear); p.put(pxRR(pxM(),11,30,14,33,1),C.gear); p.put(pxRR(pxM(),21,30,24,33,1),C.gear);
   }
   belt=o.band?pixRamp(o.band):[C.gear[1],C.gear[2],C.gear[3],C.gear[3]];
-  p.put(pxRect(pxM(),10,34,25,35),belt,{line:false}); p.P(17,34,C.acc); p.P(18,34,C.acc);
+  p.put(pxRect(pxM(),10,36,25,37),belt,{line:false}); p.P(17,36,C.acc); p.P(18,36,C.acc);
   if(o.arms){
-    p.put(pxRR(pxM(),8,23,10,33,1.2),C.coat); p.put(pxRR(pxM(),25,23,27,33,1.2),C.coat);
-    p.put(pxRR(pxM(),8,33,10,36,1.2),sk); p.put(pxRR(pxM(),25,33,27,36,1.2),sk);
+    p.put(pxRR(pxM(),8,23,10,35,1.2),C.coat); p.put(pxRR(pxM(),25,23,27,35,1.2),C.coat);
+    p.put(pxRR(pxM(),8,35,10,38,1.2),sk); p.put(pxRR(pxM(),25,35,27,38,1.2),sk);
   }
   if(o.lamp){ p.Pl(11,22,o.lamp); p.Pl(12,22,o.lamp); p.Pl(11,23,o.lamp); p.Pl(12,23,o.lamp); }
   p.put(pxRect(pxM(),16,19,19,21),sk,{line:false});
@@ -50950,6 +50951,7 @@ function pxBuildUpper(o){
   return p.sprite();
 }
 // the legs and boots, a pose per call: kind s (standing), w (walk), r (sprint), c (crouch); fr is the walk frame 0 to 5 (the swing and the lift of the vector walk, to whole pixels)
+// v28.xx (cw-cx-pixheight): hips follow the longer torso; add two rows to the lower legs and keep every sole on the entity anchor.
 function pxBuildLegs(o){
   var p=pxPaint(o.mir), C=o.bot?PXB_REDS:(PXB_RAMP[o.clothes]||PXB_RAMP.scav), B=PXB_BOOT, kind=o.kind, ph, amp=0, sw=0, lA=0, lB=0, k;
   if(kind==='w'||kind==='r'){
@@ -50957,29 +50959,30 @@ function pxBuildLegs(o){
     sw=Math.sin(ph)*amp; lA=Math.max(0,Math.sin(ph))*k; lB=Math.max(0,-Math.sin(ph))*k;
   }
   function leg(cx,su,sl,lift,toe){
-    var bt=45-lift;
-    p.put(pxRR(pxM(),cx-2+su,37,cx+2+su,bt,1),C.trs);
+    var bt=49-lift;
+    p.put(pxRR(pxM(),cx-2+su,39,cx+2+su,bt,1),C.trs);
     p.put(pxRR(pxM(),cx+(toe>0?-2:-4)+sl,bt,cx+(toe>0?4:2)+sl,bt+4,1.6),B);
   }
   if(kind==='c'){
-    p.put(pxRR(pxM(),10,39,25,44,2),C.trs,{line:false});
-    p.put(pxRR(pxM(),11,42,16,46,1),C.trs); p.put(pxRR(pxM(),19,42,24,46,1),C.trs);
-    p.put(pxRR(pxM(),8,45,15,49,1.6),B); p.put(pxRR(pxM(),20,45,27,49,1.6),B);
-    p.P(14,46,B[0]); p.P(26,46,B[0]);
+    p.put(pxRR(pxM(),10,43,25,48,2),C.trs,{line:false});
+    p.put(pxRR(pxM(),11,46,16,50,1),C.trs); p.put(pxRR(pxM(),19,46,24,50,1),C.trs);
+    p.put(pxRR(pxM(),8,49,15,53,1.6),B); p.put(pxRR(pxM(),20,49,27,53,1.6),B);
+    p.P(14,50,B[0]); p.P(26,50,B[0]);
   } else {
-    p.put(pxRR(pxM(),11,33,24,40,2),C.trs,{line:false});
+    p.put(pxRR(pxM(),11,35,24,42,2),C.trs,{line:false});
     leg(14,Math.round(-sw*0.45),Math.round(-sw*0.9),Math.round(lB),-1); leg(21,Math.round(sw*0.45),Math.round(sw*0.9),Math.round(lA),1);
   }
   return p.sprite();
 }
 // the roll: a ball of coat, the head and the boots going round it (4 frames)
+// v28.xx (cw-cx-pixheight): the roll follows the four-row foot-anchor change, with the same four poses and timing.
 function pxBuildRoll(o){
   var p=pxPaint(o.mir), C=o.bot?PXB_REDS:(PXB_RAMP[o.clothes]||PXB_RAMP.scav), sk=PIXRAMPS.skins[o.skin]||PIXRAMPS.skins.fair, a=(o.fr|0)*1.5708+0.7854, c=Math.cos(a), s=Math.sin(a), t, hx, hy, bx, by, kx, ky;
-  p.put(pxEll(pxM(),10,34,25,49),C.coat);
-  for(t=a+0.9;t<=a+2.6;t+=0.1) p.P(Math.round(17.5+Math.cos(t)*6.4),Math.round(41.5+Math.sin(t)*6.4),C.gear[1]);
-  kx=Math.cos(a+1.5708); ky=Math.sin(a+1.5708); p.put(pxRR(pxM(),Math.round(17.5+kx*5)-2,Math.round(41.5+ky*5)-2,Math.round(17.5+kx*5)+1,Math.round(41.5+ky*5)+1,1),C.pack);
-  hx=Math.round(17.5+c*5.2); hy=Math.round(41.5+s*5.2); p.put(pxEll(pxM(),hx-2,hy-2,hx+2,hy+2),sk);
-  bx=Math.round(17.5-c*5.8); by=Math.round(41.5-s*5.8); p.put(pxRR(pxM(),bx-1,by-1,bx+1,by+1,0.8),PXB_BOOT);
+  p.put(pxEll(pxM(),10,38,25,53),C.coat);
+  for(t=a+0.9;t<=a+2.6;t+=0.1) p.P(Math.round(17.5+Math.cos(t)*6.4),Math.round(45.5+Math.sin(t)*6.4),C.gear[1]);
+  kx=Math.cos(a+1.5708); ky=Math.sin(a+1.5708); p.put(pxRR(pxM(),Math.round(17.5+kx*5)-2,Math.round(45.5+ky*5)-2,Math.round(17.5+kx*5)+1,Math.round(45.5+ky*5)+1,1),C.pack);
+  hx=Math.round(17.5+c*5.2); hy=Math.round(45.5+s*5.2); p.put(pxEll(pxM(),hx-2,hy-2,hx+2,hy+2),sk);
+  bx=Math.round(17.5-c*5.8); by=Math.round(45.5-s*5.8); p.put(pxRR(pxM(),bx-1,by-1,bx+1,by+1,0.8),PXB_BOOT);
   return p.sprite();
 }
 // the gun and both arms, painted at art density from the same baked gun, rotated at art resolution in 32 steps (flipped when aiming left): the pivot is the shoulder, the muzzle is kept with the sprite
@@ -52472,7 +52475,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.73: The FASHION turntable shows the plain pixel pillager at 4x, centered in its existing canvas. The later wardrobe job still owns the rack tiles and full sets. Check 33.73 fails on v33.72',
+  now:'v33.74: Plain pillagers stand 53 to 57 art pixels tall through their two breath frames. The torso and legs are redrawn four rows taller, with packs, sleeves, crouch and roll following the planted foot point. Check 33.74 fails on v33.73',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

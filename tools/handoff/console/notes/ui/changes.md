@@ -290,3 +290,6 @@
 2026-10-21 | 86c-pix-pillager | raid, Undercroft, linked demo | pixel walk and sprint torso bob 0..3/4 px to 0..1 px at the existing timings; pixel gun pivot 22 to 20 world units above feet | before: existing shipped v33.70 (lane camera pending); after: pix86c-raid, pix86c-raid-aims and pix86c-demo-p1/p2 in this run camera-recipes.json (lane paths pending)
 2026-10-21 | 86c-pix-pillager | FASHION turntable | vector-only preview to shared pixel body at exact 4x with smoothing off, centered in the existing canvas | before: existing shipped v33.70 (lane camera pending); after: pix86c-fashion in this run camera-recipes.json (lane path pending)
 
+2026-10-21 | 86c-pix-pillager | all plain bodies | redraw grid 36x50 to 36x54, torso +2 rows and lower legs +2, packs/sleeves/crouch/roll follow the 55-row foot anchor; visible standing height 49..53 to 53..57 through breath frames, matching 79a measured size | before: shots/86c-pix-pillager-recipes-1/pix86c-looks-1080.jpg and pix86c-raid-1080.jpg; after: lane recipe round 2 pending
+2026-10-21 | 86c-pix-pillager | Undercroft and FASHION | reset the shared two-build pixel budget once per actual hub frame; cold turntable can finish baking; retain smooth sampling for the existing shadow under nearest 4x body layers | before: shots/86c-pix-pillager-recipes-1/pix86c-fashion-1080.jpg; after: lane recipe round 2 pending
+

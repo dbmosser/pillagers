@@ -1,0 +1,7 @@
+v33.74: pixel pillager standing height
+
+Plain pillagers stand 53 to 57 art pixels tall through their two breath frames. The torso and legs are redrawn four rows taller, with packs, sleeves, crouch and roll following the planted foot point.
+
+Check 33.74. Fails on v33.73.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
