@@ -126,6 +126,7 @@ window.__resetCfg=function(){
     if(CFG[k]!==DEF[k]) changed[k]=[CFG[k],DEF[k]];
     CFG[k]=DEF[k];
   }
+  CFG.mmSz=1;   // v33.35 (cw-mmoff): the minimap is off by default now; the older checks measure the standard plate, so the reset puts it back (cw-mmoff's own check builds the real default)
   try{ if(P) P.tuned={}; }catch(e){}
   return changed;
 };
@@ -31738,7 +31739,7 @@ window.__REGRESS=[
        P.gameOpts={}; P.tuned={}; __opts.apply();
        // ONE: the rows, in DISPLAY, defaulting to today, stepping and saving
        md.classList.add('on'); renderSettings(); rows=__opts.rows()||[];
-       [['mmSize','mmSz',1,[1,1.35,0.75,1]],['mmZoom','mmSpan',1000,[1000,1400,700,1000]]].forEach(function(q){
+       [['mmSize','mmSz',0,[0,0.75,1,1.35,0]],['mmZoom','mmSpan',1000,[1000,1400,700,1000]]].forEach(function(q){
          var kk=q[0], rr=rowOf(kk), sn, jj;
          if(!rr){ bad.push('ONE: Settings has no '+kk+' row'); return; }
          if(CFG[q[1]]!==q[2]) bad.push('ONE: a fresh profile has '+q[1]+' '+CFG[q[1]]+', not '+q[2]);
