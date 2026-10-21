@@ -7863,7 +7863,7 @@ window.__REGRESS=[
        if(PIX.bodies!==b0+1) bad.push('the counted body was not drawn in pixels');
        n=cnt.total-(cnt.calls.getTransform||0);   // draw calls; the transform reads (the rim and ground helpers ask for it) draw nothing
        if(n>8) bad.push('a standing pillager cost '+n+' canvas draw calls, wanted 8 or fewer ('+JSON.stringify(cnt.calls)+')');
-       // 8 aim directions, crouch, empty hands and the roll all come out in pixels; armour, a hit, fists, a set and the downed body stay vector
+       // v28.xx (cw-cx-pixsets): aim, crouch, empty hands and roll use pixels; the staged plain fists/downed cases retain fallback, and sets use the available painter.
        for(i=0;i<8;i++) if(!body(st,'',i*Math.PI/4,16)) bad.push('aim direction '+i+' was not drawn in pixels');
        if(!body(st,'crouch',0.3)) bad.push('the crouch was not drawn in pixels');
        if(!body(st,'none',2.8)) bad.push('empty hands were not drawn in pixels');
@@ -7872,7 +7872,10 @@ window.__REGRESS=[
        [['fists',{},'fist'],['the downed body',{},'down'],['a set',{hero:0,outfit:'outskeleton'},'']].forEach(function(q){
          var s2={}, z; for(z in st) s2[z]=st[z]; for(z in q[1]) s2[z]=q[1][z]; if(q[1].hero===0) delete s2.own;
          b0=PIX.bodies; for(z=0;z<4;z++){ pixFrame(); drawOp(600,500,0,0,'#242832',0,0,q[2],0,s2); }
-         if(PIX.bodies!==b0) bad.push(q[0]+' was drawn in pixels but is still the vector body');
+         // v28.xx (cw-cx-pixsets): a set uses pixels once its painter ships; the old build and unsupported poses retain vector fallback.
+         if(q[0]==='a set'&&typeof pxSetUpper==='function'){
+           if(PIX.bodies===b0) bad.push('the supported set was not drawn in pixels');
+         }else if(PIX.bodies!==b0) bad.push(q[0]+' was drawn in pixels but is still the vector body');
        });
        // a forced throw still draws a body, and is counted and logged
        keep=pixDrawOp; e0=PIX.errs; g.drawErr=null;
