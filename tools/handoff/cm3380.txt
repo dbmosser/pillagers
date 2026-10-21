@@ -1,0 +1,7 @@
+v33.80: the pixel downed and dead
+
+A downed player kneels in a pulsing red pixel ring with the gun on the floor; a dead player and a falling pillager bot topple in baked pixel frames and fade.
+
+Check 33.80. Fails on v33.79.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

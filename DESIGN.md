@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.80 - THE PIXEL DOWNED AND DEAD
+
+Co-op hunt while he was away. His picks a14 B (kneel in a pulsing ring), a15 B (the player falls and turns to light) and a23 B (a pillager bot falls and fades) from the art survey, and his 10-20 orders for the pixel art pass. Job 86g, ship 2: the downed, the dead and the fallen are pixel figures instead of the old vector ones.
+
+MEASURED. Check 33.80 passes, and fails on v33.79.
 ## v33.79 - THE WHAT IS NEW STAMP KEEPS UP
 
 Co-op hunt while he was away. The card was stamped v33.63 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.

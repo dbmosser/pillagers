@@ -1,0 +1,5 @@
+## v33.80 - THE PIXEL DOWNED AND DEAD
+
+Co-op hunt while he was away. His picks a14 B (kneel in a pulsing ring), a15 B (the player falls and turns to light) and a23 B (a pillager bot falls and fades) from the art survey, and his 10-20 orders for the pixel art pass. Job 86g, ship 2: the downed, the dead and the fallen are pixel figures instead of the old vector ones.
+
+MEASURED. Check 33.80 passes, and fails on v33.79.
