@@ -1,0 +1,7 @@
+v33.40: pad back keeps the save
+
+B cancels the save delete confirmation through the existing keep action.
+
+Check 33.40. Fails on v33.39.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

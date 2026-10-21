@@ -645,3 +645,6 @@
 2026-10-21 0.1552 critic-manual
 2026-10-21 0.386858 84-airstrike-bar-lower
 2026-10-21 0.0000 o-87-pad-crawl-test
+2026-10-21 0.1579 critic-manual
+2026-10-21 0.3142681 84-airstrike-bar-lower
+2026-10-21 0.7944848 83-raid-corner-compact

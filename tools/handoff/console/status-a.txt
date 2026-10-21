@@ -1,1 +1,1 @@
-10-21 00:36 running 83-raid-corner-compact on Claude Code (your plan: week 74% of the 36.2% line, 5-hour 2%)
+10-21 00:48 waiting: another helper is just starting (memory check again in a few minutes); 84-airstrike-bar-lower kept

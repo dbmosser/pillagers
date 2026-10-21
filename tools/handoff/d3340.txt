@@ -1,0 +1,5 @@
+## v33.40 - PAD BACK KEEPS THE SAVE
+
+Co-op hunt while he was away. The hub crawl found that B was swallowed by the title while the save delete confirmation was open.
+
+MEASURED. Check 33.40 passes, and fails on v33.39.

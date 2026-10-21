@@ -235,17 +235,17 @@
  "21-raid-hud-calm": {
   "score": 2,
   "pass": false,
-  "verdict": "The top-right money block went from four stacked bars to one compact 2x2 block, which is a real gain, but the 2x2 grid reads confusingly, the HUD still has no clear focal hierarchy, and the keys panel and bot panel stay as big, dense dark boxes.",
+  "verdict": "The top-right money block is now compact and no longer a stack of empty bars, but the HUD is still a pile of same-weight boxes, with the keys cheat-sheet, bots list and run info all competing and the ammo hero, hp and the minor lines still unresolved.",
   "findings": [
-   "P1 top-right money block ($900 / xp / stash / backpack): Use one aligned label/value grid. Give a fixed 16px tx-2 label column and tx-1 20px values right-aligned in two columns, and label the $900 'cash'. Put 24px between the two column pairs. Or return to a 1x1 vertical list, which is the owner's cw-trcol order.",
-   "P1 whole HUD hierarchy: Make the keys panel collapsed or tx-2 and shrunk to a one-line 'f1 keys' chip. Raise the timer to the 56px hero size. Keep the ammo as the second anchor.",
-   "P1 top-right run info panel: Show a 16px label with the count right-aligned in one column ('sump containers 0/2'). Use lime only for the focused or active contract and tx-2 for the rest. Limit to 3 rows.",
-   "P1 bottom-left feed (codex entry / contract item nearby / resolution stepped down): Use one toast style with a 3px left bar and 16px tx-1 text, and use amber only for the glyph. Remove the duplicate faint 'resolution stepped down' text at top centre.",
-   "P2 panel language across the HUD: Apply one panel style to all: --ui-panel at 90%, 1px --ui-line-hi, 4px radius, uniform inner padding of 12px minimum on a compact HUD."
+   "P1 center-left key legend (wasd, ctrl / c ... f1 full list): Collapse it to a one-line footer hint, or show it only for the first 30s of a raid. If it stays, cap it at 4 rows, 16px type, panel fill --ui-panel at 90%, 1px --ui-line-hi border and 24px padding.",
+   "P1 top-right cluster: cash / stash / xp / backpack: Make it one vertical list, one item per row, a 20px value in tx-1 and a 16px label in tx-2, right-aligned values on a shared x. Give 16px padding inside the panel. Use cash as the single bright number (tx-1 800); the rest stay tx-2.",
+   "P1 run info panel (contracts): One line per contract: a 16px label left, an 'n/m' right-aligned in tx-1, a 2px progress bar below. Shorten the strings so none wraps. Use a fixed 16px indent for all rows.",
+   "P1 ammo block (bottom-right) and hotbar: Align the ammo block and hotbar baselines to the same y. Reduce 'b / i backpack' to 16px tx-2 and move it to the footer legend. Raise the empty-slot outline to --ui-line-hi.",
+   "P2 bottom-left status: standing / stamina / hp 100: Use 32px bars with a 1px --ui-line-hi border and 8px inner padding. Put the hp number at 20px, left-aligned, and the label in tx-2. Make the standing chip the same --rad 4px panel as the others."
   ],
-  "pic": "tools/handoff/console/notes/shots/83-after/21-raid-hud-calm-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/83-after2/21-raid-hud-calm-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T04:42"
+  "when": "2026-10-21T04:48"
  },
  "22-raid-map-open": {
   "score": 3,

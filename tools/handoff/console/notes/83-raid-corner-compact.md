@@ -1,0 +1,1 @@
+83: shipped v33.38 (cw-cornercompact) and v33.39 (cw-cornercompact2). One plate, 2 lines (3 with notes logged), block about 32-36 percent of the old height. Minimap and run info follow via trGeo.yE. Critic on whole screen: 2 (better than before); remaining findings are other panels (keys list, run info, bots panel) or ask for the 1x1 list his newer order replaced. Not acted on.
