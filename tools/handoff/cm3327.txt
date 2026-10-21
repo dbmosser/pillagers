@@ -1,0 +1,7 @@
+v33.27: power-up pickups half size
+
+Power-up pickups are half the size. Picking them up works the same.
+
+Check 33.27. Fails on v33.26.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

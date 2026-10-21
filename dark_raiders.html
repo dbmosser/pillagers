@@ -3249,7 +3249,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.26';
+var VER='33.27';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -51401,7 +51401,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.26: Machines draw a third larger and are easier to hit. Check 33.26 fails on v33.25',
+  now:'v33.27: Power-up pickups are half the size. Picking them up works the same. Check 33.27 fails on v33.26',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -63790,7 +63790,8 @@ function pwrTick(p,dt){
 // comes in with a flash and a growing ring (PWRI.spawn), shows its name under it when he is near (PWRI.label), and over its last PWR.blink seconds it blinks, faster
 // over the last PWRI.fast. The pictures: BOTTOMLESS CLIP an infinity sign over a row of rounds, DOUBLE DAMAGE a bold 2X, RAPID FIRE three chevrons,
 // SHIELD BUBBLE a shield, SCREEN CLEAR a blast. Cosmetic only: nothing here draws from a seeded stream.
-var PWRI={R:34,hover:44,bob:5,beam:340,spin:1.6,fast:2,spawn:0.45,label:380};
+// v33.25 (cw-pwrhalf), HIS WORDS (2026-10-20): "powerups need to be like 50^ smaller". PWRK is the one size knob: the medallion, its glyph and rim, the glow round it, the ground glow, the spawn flash, the hover height, the bob and the beam width all take it. The reach ring (PWR.pick) and the beam height stay.
+var PWRK=0.5;var PWRI={R:34*PWRK,hover:44*PWRK,bob:5*PWRK,beam:340,spin:1.6,fast:2,spawn:0.45,label:380};
 // the glyph in the middle of a pickup medallion or a timer (x, y the middle, s the half size)
 function pwrGlyph(c,k,x,y,s,D,z){
   var j, lw=Math.max(2.2*z,s*0.2);
@@ -63835,18 +63836,18 @@ function pwrDraw(c,p){
     c.globalAlpha=a;
     c.fillStyle='rgba(0,0,0,'+(0.3*ap).toFixed(3)+')'; c.beginPath(); c.ellipse(s.x,s.y+3*q,R*0.8*(1-0.08*Math.sin(t*2.4+it.id*1.3)),R*0.3,0,0,6.2832); c.fill();
     c.globalCompositeOperation='lighter';
-    gr=c.createRadialGradient(s.x,s.y,0,s.x,s.y,PWR.pick*q*1.7); gr.addColorStop(0,'rgba('+D.rgb+',.5)'); gr.addColorStop(1,'rgba('+D.rgb+',0)');
-    c.fillStyle=gr; c.beginPath(); c.arc(s.x,s.y,PWR.pick*q*1.7,0,6.2832); c.fill();
+    gr=c.createRadialGradient(s.x,s.y,0,s.x,s.y,PWR.pick*q*1.7*PWRK); gr.addColorStop(0,'rgba('+D.rgb+',.5)'); gr.addColorStop(1,'rgba('+D.rgb+',0)');
+    c.fillStyle=gr; c.beginPath(); c.arc(s.x,s.y,PWR.pick*q*1.7*PWRK,0,6.2832); c.fill();
     c.setLineDash([7*z,9*z]); c.lineDashOffset=-t*26*z; c.strokeStyle='rgba('+D.rgb+',.8)'; c.lineWidth=2.2*z;
     c.beginPath(); c.arc(s.x,s.y,PWR.pick*q,0,6.2832); c.stroke(); c.setLineDash([]);
     ph=(t*0.9+it.id*0.37)%1; c.strokeStyle='rgba('+D.rgb+','+(0.55*(1-ph)).toFixed(3)+')'; c.lineWidth=2*z;
     c.beginPath(); c.arc(s.x,s.y,PWR.pick*q*(1+ph*1.3),0,6.2832); c.stroke();
-    if(it.t<0.5){ u=it.t/0.5; c.strokeStyle='rgba(255,255,255,'+(0.9*(1-u)).toFixed(3)+')'; c.lineWidth=(2+5*(1-u))*z; c.beginPath(); c.arc(s.x,s.y,PWR.pick*q*(0.4+2.2*u),0,6.2832); c.stroke(); }
+    if(it.t<0.5){ u=it.t/0.5; c.strokeStyle='rgba(255,255,255,'+(0.9*(1-u)).toFixed(3)+')'; c.lineWidth=(2+5*(1-u))*z; c.beginPath(); c.arc(s.x,s.y,PWR.pick*q*PWRK*(0.4+2.2*u),0,6.2832); c.stroke(); }
     gr=c.createLinearGradient(0,s.y,0,s.y-bl); gr.addColorStop(0,'rgba('+D.rgb+','+(0.5*fl).toFixed(3)+')'); gr.addColorStop(0.55,'rgba('+D.rgb+','+(0.22*fl).toFixed(3)+')'); gr.addColorStop(1,'rgba('+D.rgb+',0)');
-    c.fillStyle=gr; c.beginPath(); c.moveTo(s.x-14*q,s.y); c.lineTo(s.x-5*q,s.y-bl); c.lineTo(s.x+5*q,s.y-bl); c.lineTo(s.x+14*q,s.y); c.closePath(); c.fill();
+    c.fillStyle=gr; c.beginPath(); c.moveTo(s.x-14*q*PWRK,s.y); c.lineTo(s.x-5*q*PWRK,s.y-bl); c.lineTo(s.x+5*q*PWRK,s.y-bl); c.lineTo(s.x+14*q*PWRK,s.y); c.closePath(); c.fill();
     gr=c.createLinearGradient(0,s.y,0,s.y-bl*0.8); gr.addColorStop(0,'rgba(255,255,255,'+(0.55*fl).toFixed(3)+')'); gr.addColorStop(1,'rgba(255,255,255,0)');
-    c.fillStyle=gr; c.fillRect(s.x-1.6*q,s.y-bl*0.8,3.2*q,bl*0.8);
-    for(k=0;k<6;k++){ u=(t*0.35+k/6+it.id*0.13)%1; mx=s.x+Math.sin(t*2.2+k*2.4+it.id)*(9+7*u)*q; my=s.y-u*bl*0.7; c.fillStyle='rgba(255,255,255,'+(0.75*(1-u)).toFixed(3)+')'; c.fillRect(mx-1.4*q,my-1.4*q,2.8*q,2.8*q); }
+    c.fillStyle=gr; c.fillRect(s.x-1.6*q*PWRK,s.y-bl*0.8,3.2*q*PWRK,bl*0.8);
+    for(k=0;k<6;k++){ u=(t*0.35+k/6+it.id*0.13)%1; mx=s.x+Math.sin(t*2.2+k*2.4+it.id)*(9+7*u)*q*PWRK; my=s.y-u*bl*0.7; c.fillStyle='rgba(255,255,255,'+(0.75*(1-u)).toFixed(3)+')'; c.fillRect(mx-1.4*q,my-1.4*q,2.8*q,2.8*q); }
     gr=c.createRadialGradient(s.x,cy,R*0.3,s.x,cy,R*2.4); gr.addColorStop(0,'rgba('+D.rgb+',.6)'); gr.addColorStop(1,'rgba('+D.rgb+',0)');
     c.fillStyle=gr; c.beginPath(); c.arc(s.x,cy,R*2.4,0,6.2832); c.fill();
     c.globalCompositeOperation='source-over';

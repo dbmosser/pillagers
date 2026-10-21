@@ -1,0 +1,1 @@
+| power-up pickups half size | v33.27 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 33.27 passes, fails on v33.26 |

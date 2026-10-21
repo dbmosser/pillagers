@@ -1,1 +1,1 @@
-10-20 23:36 running 80-machines-a-third-larger on Claude Code (your plan: week 72% of the 35.7% line, 5-hour 23%)
+10-20 23:46 running 81a-ads-breaks-sprint on Claude Code (your plan: week 72% of the 35.8% line, 5-hour 24%)

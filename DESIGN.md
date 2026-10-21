@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.27 - power-up pickups half size
+
+Co-op hunt while he was away. His order (2026-10-20): "powerups need to be like 50^ smaller". The floating pickups (bottomless clip, double damage, rapid fire, shield bubble, screen clear) draw at half size through one constant PWRK: medallion, glyph, rim, glow, hover height, bob, spawn flash and beam width. The reach ring keeps its size so picking one up plays the same, and the beam keeps its height so it still shows from far away.
+
+MEASURED. Check 33.27 passes, and fails on v33.26.
 ## v33.26 - MACHINES A THIRD LARGER
 
 Co-op hunt while he was away. His order 10-20: enemies need to be like 33 percent larger. The eight machine kinds are drawn 1.33x around their feet (one number, FIG_MACH) and a round hits them at 1.33x the body radius. Walking, doors and the nav grid keep the old radius. Pillager bots, the peddler and the survivor keep their size.

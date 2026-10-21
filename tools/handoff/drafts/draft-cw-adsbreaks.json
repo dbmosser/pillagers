@@ -1,0 +1,20 @@
+{
+    "title":  "AIM BREAKS A SPRINT",
+    "why":  "His order 10-20: aiming should immediately break sprint, even if Shift is still held. The old rule dropped aim while sprinting; now aim wins, and the sprint returns when aim is let go.",
+    "now":  "Aiming stops a sprint at once and holds with Shift down; let go of aim and the sprint comes back.",
+    "edits":  [
+                  {
+                      "anchor":  "if(_shHeld\u0026\u0026mg\u003e0\u0026\u0026p.ads\u0026\u0026!p.downed\u0026\u0026p.stam\u003e2\u0026\u0026!p.stamLock\u0026\u0026!p.stamRelease){ p.ads=false; if(typeof PAD!==\u0027undefined\u0027\u0026\u0026PAD){ PAD.adsTog=false; PAD.adsT=0; } }",
+                      "replacement":  "// v28.xx (cw-adsbreaks), HIS ORDER 2026-10-20: \"ADS should immediately break sprint, even if shift is still held down\". The v16.81 drop of aim under a held sprint is gone: aim wins, the sprint is cut by the p.ads test below, and it comes back by itself when aim lets go with Shift still down."
+                  },
+                  {
+                      "anchor":  "if(G.sprintOn\u0026\u0026(mg===0||p.downed||p.stam\u003c=2",
+                      "replacement":  "if(G.sprintOn\u0026\u0026(mg===0||p.downed||p.ads||p.stam\u003c=2"
+                  },
+                  {
+                      "anchor":  "if((PAD.adsT\u003e0||PAD.adsAim)\u0026\u0026!(pressed(10)\u0026\u0026G.player\u0026\u0026G.player.moving)){",
+                      "replacement":  "if(PAD.adsT\u003e0||PAD.adsAim){"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027aiming breaks a sprint at once even with Shift still held, and the sprint comes back when aim lets go (his order 10-20)\u0027,\n   run:function(){\n     if(typeof updatePlayer!==\u0027function\u0027||!window.__deploy||!window.__endRaid) return \u0027SKIP: this build cannot step the player\u0027;\n     var bad=[], k0=null, p=null;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       p=G.player; k0=keys; keys={};\n       CFG.sprintTgl=0; G.sprintOn=false; G.shWas=false; G.crouchTog=false;\n       p.stam=100; p.stamLock=false; p.stamRelease=0; p.downed=false; p.ads=false;\n       keys[\u0027KeyD\u0027]=true; keys[\u0027ShiftLeft\u0027]=true;\n       updatePlayer(0.016); updatePlayer(0.016);\n       if(!G.sprinting) return \u0027SKIP: staging: Shift with a move key did not start a sprint\u0027;\n       p.ads=true; PAD.adsTog=true;\n       updatePlayer(0.016);\n       if(!p.ads) bad.push(\u0027aim was dropped while Shift was held\u0027);\n       if(G.sprinting) bad.push(\u0027still sprinting one frame after aim began with Shift held\u0027);\n       p.ads=false;\n       updatePlayer(0.016); updatePlayer(0.016);\n       if(!G.sprinting) bad.push(\u0027aim let go with Shift still held did not bring the sprint back\u0027);\n     } finally { try{ keys=k0||{}; if(p) p.ads=false; PAD.adsTog=false; PAD.adsT=0; __endRaid(\u0027abandon\u0027); __topClear(); }catch(e){} }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
