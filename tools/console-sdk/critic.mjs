@@ -28,7 +28,7 @@ Answer with ONLY a JSON object: {"score":1-5,"better_than_before":"yes"|"no"|"sa
 // 10-18: lane d saw the critic flip its advice between runs ("Press any button" was a fake button, then a missing action). So it
 // is shown its own last review of the same screen and told to stay consistent.
 let prev = {}; try { prev = JSON.parse(readFileSync(U + '/accept.json', 'utf8')); } catch {}
-const shotName = p => { const m = /(\d\d-[a-z0-9-]+?)(-1080|-4k)?\.(jpe?g|png)$/i.exec(p); return m && m[1]; };
+const shotName = p => { const m = /((?:\d\d|[a-z]\d+)-[a-z0-9-]+?)(-1080|-4k)?\.(jpe?g|png)$/i.exec(p); return m && m[1]; };
 const before = pics.filter(p => !/before/i.test(p)).map(shotName).filter(k => k && prev[k] && prev[k].findings);
 const content = [];
 if (before.length) content.push({ type: 'text', text: 'Your previous review of this screen (stay consistent: do not reverse earlier advice unless the new picture shows it was wrong; if the earlier advice was followed, judge the result): ' + before.map(k => k + ': score ' + prev[k].score + '; ' + JSON.stringify(prev[k].findings).slice(0, 2500)).join(' | ') });
@@ -63,7 +63,7 @@ const task = process.env.CW_TASK || 'manual';
 appendFileSync(book, new Date().toLocaleDateString('en-CA') + ' ' + cost.toFixed(4) + ' critic-' + task + '\n');
 mkdirSync(U, { recursive: true });
 let acc = {}; try { acc = JSON.parse(readFileSync(U + '/accept.json', 'utf8')); } catch {}
-for (const p of pics.filter(p => !/before/i.test(p))) { const m = /(\d\d-[a-z0-9-]+?)(-1080|-4k)?\.(jpe?g|png)$/i.exec(p);
+for (const p of pics.filter(p => !/before/i.test(p))) { const m = /((?:\d\d|[a-z]\d+)-[a-z0-9-]+?)(-1080|-4k)?\.(jpe?g|png)$/i.exec(p);
   if (m) acc[m[1]] = { score: v.score, pass: v.score >= 4, verdict: v.verdict, findings: (v.findings || []).slice(0, 5).map(f => f.sev + ' ' + f.where + ': ' + f.fix), pic: p, task, when: new Date().toISOString().slice(0, 16) }; }
 writeFileSync(U + '/accept.json', JSON.stringify(acc, null, 1));
 console.log(JSON.stringify(v));
