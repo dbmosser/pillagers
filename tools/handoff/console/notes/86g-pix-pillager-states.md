@@ -53,3 +53,16 @@ Corrected fixture staging only: save canSee, expose the cast during the art rend
 Camera correction: after moving the player to the chosen clear spot, snap the fixture camera anchor too, since a zero-dt frame cannot ease it there. Each camera art frame temporarily exposes the cast and restores visibility immediately afterward. Before capturing, both day and night scenes now require all eight bots visible, every cast member drawn, and zero vector bodies. Captions say staged visible cast; this does not claim a line-of-sight test. Product visibility, simulation and AI are unchanged.
 
 Local validation passed: mk written; three unique anchors; patched game and fixture-check syntax; helper and six async camera recipes; cached mask alpha/order; ASCII files. Preflight retry, shipping and picture review remain with the lane.
+
+--- codex run 2026-10-21 12:30 ---
+2026-10-21, lane o visual follow-up 1, v33.90.
+
+SHIPPED cw-cx-pixfight at v33.90. Its check passed. Round 1 camera evidence completed all six scenes; day/night cast reports each actor once, eight visible bots and zero vector bodies. Both real linked windows staged, with both SEATCOL bands verified and no faults. Evidence directory: tools/handoff/console/notes/shots/86g-pix-pillager-states-recipes-1/.
+
+First critic scores: death 2, day fight 2, night fight 2, hurt 3, player 1 pair 3, player 2 pair 2. These are not passed release scores. The death P0 says to keep the proof out of the player build: that is already satisfied. The proof UI is injected only by camera-recipes.json; none of its markup, text, panels or controls is part of a ship key. Confirmed by reviewing the actual three game edits. Kept required native 1x evidence despite the suggestion to drop it.
+
+Reviewed all six attached images. Improved the camera-only presentation for round 2: short titles; no explanatory footer; 48px close glyph with visible lime focus; shared left edges and 16px gaps; style-guide raised tile fill and clear 20px captions. Hurt uses five 4x states with native samples directly below; low bright and low dim native samples remain together. Armour grows from 2x to 3x and is drawn unarmed so its plates are not hidden by the gun. Widened source cells for the downed floor gun and death/fade endpoints to avoid camera clipping. Death uses two aligned four-frame rows with native 1x insets and one aligned fade row.
+
+Day/night pictures now show a nearest 2x crop of the real world canvas centered on the nine actors. Both linked-player pictures show a nearest 4x crop around the two real bodies and their rings. Each keeps a full-view inset and lossless full/crop PNGs in the report note. No pixel colours, sizes, lighting or shaders are altered in these crops. This addresses the critic finding that the proof made the characters too small to judge. The actual game remains v33.90 with no new ship key.
+
+Validation: helper parses, all six regenerated async recipes parse, ASCII output. New recipe file requests the lane second camera/critic round. Watch: red bots and low health in real night play; shared floor/wall grading concerns are handed off separately rather than changing scenery inside a character-state proof.

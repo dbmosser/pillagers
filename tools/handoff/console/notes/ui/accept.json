@@ -1813,33 +1813,33 @@
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "The pixel-art raid world is clean and readable, but the HUD is a mix of unrelated panel styles, sizes and accents, and several elements collide, so it reads as unfinished rather than polished.",
+  "verdict": "A dev-style sprite review window inside a correct card shell, with a tiny title, a pasted-on 'full view' inset, and a picture that has no UI hierarchy of its own.",
   "findings": [
-   "P0 bottom centre: hotbar header strip, 'player 2 joined' toast, weapon tooltip: Move toasts to a fixed slot at y≈140 under the team score, never over the hotbar. Give the hint strip its own 32px-high panel (--ui-panel at 90%, 1px --ui-line-hi border, 4px radius), seated 8px above the hotbar and centred on it.",
-   "P1 top centre: team score, timer, extract chip, 'running slowly' and the blackout banner: Put score, timer and extract in one panel. Make the 0 sp hero 56px at weight 800 and the timer 32px. Put 'you 0 sp / p2 0 sp' on a 16px tx-2 line. Add 8px between stacked items. Merge 'running slowly' and the blackout banner into one status line at tx-1 (16px, 4.5:1 minimum) with the blackout text brightened.",
-   "P1 bottom left: standing / stamina / hp stack: Put hp and stamina in one panel (24px padding, 4px radius). Use matching 24px bars, 8px apart, with labels at the same 16px f-cond 600. Make the hp number the only hero-weight item. Align the stack's left edge to the 5% margin (96px) and its bottom edge to the hotbar's bottom edge. Make 'standing' a small tag inside the panel.",
-   "P1 top right: run info card vs bottom right: ammo card vs top left: f1 controls: Use one panel component for all three: --ui-panel at 90%, 1px --ui-line-hi border, 4px radius, 16px padding, 5% margins. Cap the ammo number at 56px, with '/ 144' at 20px tx-2. Align the run info card's right edge and the ammo card's right edge to the same 96px margin. Drop the f1 chip's fill, or move it into the footer legend at 14px.",
-   "P1 top left: 'keyboard' tag and 'player 2' bar; left: 'blackout' tag: Use f-cond at 16px for all of them. Give the 'keyboard' badge the standard 1px --ui-line-hi border with tx-2 text. Dock the player 2 tag with its bar on the standard panel, or hide it when the partner is on screen. Put the 'blackout' tag in the top status line with the other run states."
+   "P1 title 'player 1', top-left: Set the title to 32px f-cond 700 in tx-1. Align the title and image left edges at the same 24px inset. Add the 3px lime tab to the left of the title, or drop the underline.",
+   "P1 'full view' inset, bottom-right: Move the inset fully inside the picture, 16px from the right and bottom edges (right edge at 1744). Give it a 1px --ui-line-hi border and a 4px radius. Raise the caption to 16px tx-2, or remove it and put the label in the footer row.",
+   "P1 picture frame and card bottom: Use the 72px footer row for a caption such as 'idle' and a key hint at 16px, or centre the picture vertically with equal 24px gutters. Put a 1px --ui-line border on the picture and give it a 4px radius.",
+   "P2 close button, top-right: Make the button 48x48 with a 20px glyph. Keep the 2px --acc focus border at a 4px radius.",
+   "P2 player ring colours under the sprites: Enlarge the number badges to 20px circles with a 16px digit. Do not change the ring colours until the owner answers r3-13."
   ],
-  "pic": "tools/handoff/console/notes/shots/86c-pix-pillager-recipes-3/pix86c-demo-p1-1080.jpg",
-  "task": "86c-pix-pillager",
-  "when": "2026-10-21T10:36"
+  "pic": "tools/handoff/console/notes/shots/86g-pix-pillager-states-recipes-2/86g-pair-p1-1080.jpg",
+  "task": "86g-pix-pillager-states",
+  "when": "2026-10-21T16:33"
  },
  "p2-1080": {
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "The pixel-art world looks coherent, but the HUD is a pile of mismatched floating chips and panels with inconsistent type, crowding at top centre and bottom centre, and a hero number (the ammo count) that is the only clear focal point.",
+  "verdict": "A framed pixel-art preview with a lime-focused close button and nothing else: it works as a sprite check, but it reads as a debug viewer, not a designed player 2 screen.",
   "findings": [
-   "P1 top centre: team score, timer, extract chip, running slowly chip: One top-centre panel at 16px from the screen top. Timer is the hero at 56px f-cond 800, with 'team score 0 sp' at 20px beneath it. Drop the duplicate you/pl rows into a 16px muted line. Put extract distance at 16px inside the same panel, with a 16px gap before any status chip.",
-   "P1 bottom centre: 'in pillager's party' tooltip, 'burst carbine / fire / use' row, hotbar: Remove the second weapon name from the hotbar label row, since the ammo card already shows it. Move key hints to a 16px footer legend 16px below the hotbar. Show the party tooltip only on hover or pickup, in the standard panel (fill #16191b, 1px #4a5257, 4px radius, 16px type).",
-   "P1 run info / run goals card, top right: Keep one title only ('run goals', 20px tx-1). Rows at 16px, with rewards right-aligned in tx-2. Use the standard panel (#16191b at 90%, 1px #4a5257, 4px radius, 24px padding). Remove the chevron and the second title.",
-   "P1 left column: f1 controls, player 1 bar, running slowly, standing, stamina, hp: Show 'running slowly' once. Put hp and stamina in one panel with a 4px radius, 16px labels in tx-1 outside the bars, and bars of equal height (12px). Shrink 'f1 controls' to a 16px key hint in the footer legend. Group stance and status as plain 16px text above the bars on an 8px grid.",
-   "P2 ammo card, bottom right: Panel fill #16191b, 1px border. Loaded count at 56px 800 in tx-1, reserve at 20px tx-2. Attach the 3px lime tab to the panel's top-left edge. Align the card's bottom to the hotbar baseline."
+   "P1 whole card, the frame around the art: Put 'p1' and 'p2' labels under each ring in --fs-label 16px --tx-2. Or give the card a 24px right column in --ui-panel with the loadout name in 32px and 2 or 3 stats in 20px.",
+   "P1 art viewport (160,152 to 1760,952): Darken the backdrop 30 to 40% behind the figures (a scrim of rgba(6,7,8,.5) over the art), or crop in around the two figures. Add a 1px --ui-line-hi border to the art frame.",
+   "P1 layout, header row and card body: Use the 8px grid: 24px padding on all sides, equal gaps between the header rule and the art and between the art and the card edge. Make the rule --ui-line-hi.",
+   "P2 minimap inset 'full view' (1478,790 to 1782,992): Remove it, or move it into a 16px-padded --ui-panel in the card's bottom-right corner, 24px from the card edge, with the caption at 16px --tx-2.",
+   "P2 close button (1748,76): Make the x glyph 24px, keep the 48x48 hit target, and fill the focused state with --acc and --acc-ink glyph so that focus is unmistakable from the couch."
   ],
-  "pic": "tools/handoff/console/notes/shots/86c-pix-pillager-recipes-3/pix86c-demo-p2-1080.jpg",
-  "task": "86c-pix-pillager",
-  "when": "2026-10-21T10:36"
+  "pic": "tools/handoff/console/notes/shots/86g-pix-pillager-states-recipes-2/86g-pair-p2-1080.jpg",
+  "task": "86g-pix-pillager-states",
+  "when": "2026-10-21T16:33"
  },
  "pix86c-fashion": {
   "score": 3,
@@ -2064,5 +2064,69 @@
   "pic": "tools/handoff/console/notes/shots/86f-pix-machines-recipes-4/86f-machines-raid-night-1080.jpg",
   "task": "86f-pix-machines",
   "when": "2026-10-21T16:02"
+ },
+ "86g-death-strip": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "A clean, consistent dev sprite-sheet card with the correct x close, lower case and flat panel, but it has no hierarchy and the bottom strip is too small and dim to read.",
+  "findings": [
+   "P1 bottom strip 'light and bot fade' (y 860-1000): Make the swatches at least 120px wide and show the sprite at 2x. Raise the label to 16px in tx-2 (#aaa498). Put a 1px line-hi border on the empty frames and give them a 'gone' state, or drop the last two.",
+   "P1 title row 'death' (x121,y105): Keep the title at 32px, weight 700, tx-1. Dim the close button's lime ring to a line-hi border until it is focused. Put the lime focus bar on the selected frame instead.",
+   "P1 '1x' badges inside the preview thumbnails (e.g. x397,y247): Set the labels to 14px or more, tx-2. Move the 1x thumbnail out of the large frame to a fixed 96x96 slot below it, or shrink it to 64px and keep a 16px inset. Keep the thumbnail clear of the large sprite.",
+   "P2 frame grid vs card margins: Use one 4-column grid with equal gutters (24px) spanning the 24px-padded card width, and align the bottom strip to the same left and right edges. Enlarge the tiles to about 360px to fill the dead space.",
+   "P2 frame number captions 1-8 and swatch captions: Frame numbers should be 16px f-cond 600 in tx-2. Swatch captions (light 0.30 and so on) should also be 16px tx-2, with the value in tx-1 only for the selected swatch."
+  ],
+  "pic": "tools/handoff/console/notes/shots/86g-pix-pillager-states-recipes-2/86g-death-strip-1080.jpg",
+  "task": "86g-pix-pillager-states",
+  "when": "2026-10-21T16:31"
+ },
+ "86g-fight-day": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "This is a clean, lower-case art-review card with a proper title and corner x, but it is a debug-style sprite contact sheet, not a game menu, and the minimap inset and card framing are sloppy.",
+  "findings": [
+   "P1 full view inset, bottom right: Put the inset fully inside the canvas with a 16px margin from the right and bottom edges, or move it out into a right-hand column. Use the --ui-line-hi border, 4px radius, and a 16px label with 8px padding.",
+   "P1 hierarchy, whole card: Raise the title to 32px f-cond 700 and make it clearly the first read. Add 16px f-cond labels under each sprite group, in tx-2, giving the state name.",
+   "P1 x button, top right: Show the lime focus only while the pad or keyboard is focused, and use a --ui-line-hi idle border otherwise. Inset the button 24px from the card top and right edges, and make the target 48px.",
+   "P2 canvas inside the card: Align the canvas left edge to the 24px card padding, or centre it with equal 48px gutters on all sides. Pick one and keep it the same on every screen.",
+   "P2 card shell: Use --ui-panel fill at 90% with a --ui-line-hi border. Add a 56px header row with a 1px --ui-line divider, and a 72px footer row if actions exist."
+  ],
+  "pic": "tools/handoff/console/notes/shots/86g-pix-pillager-states-recipes-2/86g-fight-day-1080.jpg",
+  "task": "86g-pix-pillager-states",
+  "when": "2026-10-21T16:32"
+ },
+ "86g-fight-night": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "This is a debug-style art sheet in a window shell: the card, title and lime-focused x follow the guide, but the screenshot is not centred in the card, a mini-map thumbnail overlaps it, and the night tint is flat and muddy.",
+  "findings": [
+   "P1 bottom-right 'full view' thumbnail (x1478-1782, y790-992): Either dock it fully inside the image with 16px inset from the right and bottom edges, or move it out into a right-hand column. Match its border to the 1px --ui-line-hi / 4px radius panel spec. Raise the caption to 16px tx-2.",
+   "P1 image area within the card (x239-1680, y151-962): Put the image in a --ui-panel frame with 24px padding, 1px --ui-line-hi border and 4px radius. Align the left and right edges to the title's 24px inset (x121) or centre the image with equal 24px gaps top and bottom.",
+   "P1 hierarchy: title 'night fight' (x121, y105): Set the title at 32px f-cond 700 with 16px of space above the rule. Add the screen's single action (e.g. a labelled lime 'close' or next/prev state control) so the eye has a destination other than the picture.",
+   "P2 close button (x1749-1801, y77-130): Make the inset 24px on both sides. Enlarge the x glyph to 20px. Keep the lime ring only when focused, and draw the idle state with a --ui-line-hi border.",
+   "P2 art: night tint across the whole image: Lower the wash opacity by about 20 percent and lift the sprite highlights. Remove the grey rectangle or give it a defined wall texture. Feather the light cone edge by about 24px."
+  ],
+  "pic": "tools/handoff/console/notes/shots/86g-pix-pillager-states-recipes-2/86g-fight-night-1080.jpg",
+  "task": "86g-pix-pillager-states",
+  "when": "2026-10-21T16:32"
+ },
+ "86g-hurt-strip": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "A clean, consistent dark card with a lime-focused X and tidy lower-case type, but it is a dev sprite sheet: the labels are tiny, the two grids don't align, and nothing tells the eye where to start.",
+  "findings": [
+   "P1 section labels '4x + 1x' and 'armour and civilians': Set section labels to 16px f-cond 600 in --tx-2 (#aaa498) with +.04em tracking. Delete '4x + 1x' or replace it with a plain word such as 'hit and health states'. Keep a 24px gap above each label.",
+   "P1 tile grids, top row (5 tiles at 322px wide) vs bottom row (5 tiles at 242px wide): Use one 5-column grid with identical tile width, for example 322px with 16px gutters in both rows, aligned to the 24px card padding. If the bottom row must be smaller, centre each tile in the same column cell so the centres match the top row.",
+   "P1 hierarchy, whole card: Make one tile the hero: give the selected tile a --ui-raised fill and a 2px --acc border. Drop the 1x thumbnails into a smaller strip inside the tile, or hide them. Weight the title at 700 and keep everything else at --tx-2.",
+   "P2 tile captions ('white hit', 'red hit', 'armour 1'): Drop captions to 16px --tx-2 f-cond 600. Replace 'armour 1/2/3' with real names or a tier marker.",
+   "P2 bottom of the card, y≈950 to 1025: Distribute the rows with equal 32px section gaps and a 24px bottom padding, or size the tiles up so the grid fills the card to 24px from the bottom edge."
+  ],
+  "pic": "tools/handoff/console/notes/shots/86g-pix-pillager-states-recipes-2/86g-hurt-strip-1080.jpg",
+  "task": "86g-pix-pillager-states",
+  "when": "2026-10-21T16:32"
  }
 }

@@ -311,3 +311,6 @@
 
 2026-10-21, 86g-pix-pillager-states, raid player and see-through wall copy: invulnerability keeps the cached pixel body with a 35 percent teal silhouette cue under hit flashes; wall copy retains 0.55 alpha. Before/after: tools/handoff/console/notes/shots/86g-pix-pillager-states-recipes-1/86g-hurt-strip-1080.jpg (recipe evidence after shipping; lane captures available before shots).
 
+2026-10-21 | 86h-pix-sets-wardrobe | sets / raid / demo | three full-body pixel sets on the existing rig; fixed set hands; seat trim through roll and death; raw clothing agrees in both windows | before: v33.90, no custom-recipe picture | after requested: tools/handoff/console/notes/shots/86h-pix-sets-wardrobe-recipes-1/86h-pixbench-sets-1080.jpg, 86h-raid-1080.jpg, 86h-demo-p1-1080.jpg, 86h-demo-p2-1080.jpg
+2026-10-21 | 86h-pix-sets-wardrobe | fashion | four racks and twelve kept tiles plus off, 2x pixel tile art and existing 4x turntable; saved-look labels show kept picks instead of cut rack names so they describe the rendered look; legacy nineteen groups remain when off | before: v33.90, no custom-recipe picture | after requested: tools/handoff/console/notes/shots/86h-pix-sets-wardrobe-recipes-1/86h-fashion-1080.jpg
+

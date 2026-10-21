@@ -205,3 +205,8 @@
 2026-10-21 12:11 86g-pix-pillager-states 536s ok PARTIAL in=1359249 out=19066 run=2
 2026-10-21 12:13 86g-pix-pillager-states 95s ok PARTIAL in=1888433 out=22026 run=3
 2026-10-21 12:15 86g-pix-pillager-states 127s ok PARTIAL in=2870426 out=26246 run=4
+2026-10-21 12:30 86g-pix-pillager-states 363s ok PARTIAL in=4017255 out=39149 run=5
+2026-10-21 12:34 86i-building-kinds 30s ok WAITING in=94640 out=752 run=1
+2026-10-21 12:57 86h-pix-sets-wardrobe 1164s ok PARTIAL in=4386069 out=42201 run=1
+2026-10-21 12:59 86h-pix-sets-wardrobe 129s ok PARTIAL in=5347562 out=46689 run=2
+2026-10-21 13:03 86h-pix-sets-wardrobe 106s ok PARTIAL in=6366796 out=50119 run=3

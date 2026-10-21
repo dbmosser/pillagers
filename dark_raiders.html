@@ -275,6 +275,18 @@
   background:rgba(0,0,0,.3); flex:none; }
 .avslab{ font-size:13px; letter-spacing:.12em; color:var(--ash); }
 .avsval{ font-size:13px; color:var(--bone); }
+
+/* v28.xx (cw-cx-pixsets): four racks in the existing fashion columns, whole 2x tile art and readable short labels. */
+#root .pixwardrobe .pixrack{margin:0 0 16px}
+#root .pixwardrobe .glab{font:600 20px var(--f-cond);color:var(--tx-1);margin:0 0 8px;letter-spacing:.04em}
+#root .pixwardrobe .pixtiles{display:grid;grid-template-columns:repeat(4,minmax(112px,1fr));gap:8px}
+#root #appavatarpicker.pixwardrobe .costile,#root .pixwardrobe .costile{width:auto;min-width:0;padding:8px;background:var(--ui-raised,#202528);border:1px solid var(--ui-line-hi,#4a5257);border-radius:4px;box-shadow:none;color:var(--tx-1);justify-content:flex-end}
+#root .pixwardrobe .costile.on{border-color:var(--acc);background:var(--ui-raised,#202528);box-shadow:inset 0 -3px var(--acc)}
+#root .pixwardrobe .costile:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+#root .pixwardrobe .costile canvas{width:auto;height:auto;flex-shrink:0;image-rendering:pixelated}
+#root .pixwardrobe .cosname{font:600 20px/1.2 var(--f-cond);margin:4px 0;color:var(--tx-1)}
+#root .pixwardrobe .cosreq{font:600 16px/1.2 var(--f-cond);color:var(--tx-2);min-height:20px}
+
 .costile{width:96px;padding:8px 6px;border:1px solid var(--steel-hi);border-radius:3px;background:rgba(0,0,0,.32);
   text-align:center;cursor:pointer;transition:border-color .1s,background .1s}
 .costile:hover{border-color:var(--amber);background:rgba(0,0,0,.5)}
@@ -3360,7 +3372,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.90';
+var VER='33.91';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -35793,6 +35805,8 @@ function cosWorn(kind){
   var want=(typeof P!=='undefined'&&P)?P[COSKEY[kind]]:null;
   if(kind==='scheme'&&(want===undefined||want===null)&&typeof P!=='undefined'&&P&&P.cosFit&&P.cosFit!=='slate') want='sch'+P.cosFit;   // v28.04 (cosm1): an old save keeps its colour
   var c=cosFind(want);
+  // v28.xx (cw-cx-pixsets): kept ids also travel through saved looks and NET_LOOK, with the old rules when off.
+  if(c&&c.kind===kind&&typeof PIX_RACKS!=='undefined'&&PIX_RACKS&&pixOn()&&pixKeptOwned(kind,want))return c.id;
   if(c&&c.kind===kind&&cosOwned(c)) return c.id;
   return COSDEF[kind]||'none';
 }
@@ -48425,6 +48439,7 @@ var HUB_CUTS=['crop','bob','long','bun','pigtails','mohawk','shaved','tail'];
 var HUB_HATS=['none','band','phones','mask','none','visor','pigtails','crown','none'];
 var HUB_FACEN=6;
 function hubRollLook(){
+  if(pixOn())return pixRollLook(); // v28.xx (cw-cx-pixsets): the crowd uses the same twelve rolls as the demo
   var lk={skin:HUB_SKINS[(Math.random()*HUB_SKINS.length)|0],
           hair:HUB_HAIRS[(Math.random()*HUB_HAIRS.length)|0],
           hat:HUB_HATS[(Math.random()*HUB_HATS.length)|0],
@@ -51262,6 +51277,7 @@ function pxPaint(mir){
 // the upper body: pack, torso, neck and the head with its face. o: head, skin, clothes, bot, mir, pup (-1, 0, 1: the pupils toward the aim), arms (1: empty hands hang at the sides), lamp (team colour), band (seat colour)
 // v28.xx (cw-cx-pixheight): add two art rows to the torso, extend the packs and sleeves with it, and keep the original face grid.
 function pxBuildUpper(o){
+  if(pxIsSet(o.clothes))return pxSetUpper(o); // v28.xx (cw-cx-pixsets): the same upper rig for every set pose
   var p=pxPaint(o.mir), W=PXB.W, C=o.bot?(o.bot===2?PXB_GOLD:PXB_REDS):(PXB_RAMP[o.clothes]||PXB_RAMP.scav), sk=(o.bot===2)?PXB_GOLD.skin:(PIXRAMPS.skins[o.skin]||PIXRAMPS.skins.fair), hr=(o.bot===2)?PXB_GOLD.hair:PXB_HAIR, E=PXB_EYE, bot=!!o.bot, dxp=o.mir?-o.pup:o.pup, cl=o.clothes, m, y, x, skull, op, belt, mk, ml;
   // pack, on the side away from the facing (the left of the unflipped sprite)
   if(cl==='recon'){
@@ -51337,6 +51353,7 @@ function pxBuildUpper(o){
 // the legs and boots, a pose per call: kind s (standing), w (walk), r (sprint), c (crouch); fr is the walk frame 0 to 5 (the swing and the lift of the vector walk, to whole pixels)
 // v28.xx (cw-cx-pixheight): hips follow the longer torso; add two rows to the lower legs and keep every sole on the entity anchor.
 function pxBuildLegs(o){
+  if(pxIsSet(o.clothes))return pxSetLegs(o); // v28.xx (cw-cx-pixsets): the existing gait clocks and frame indices
   var p=pxPaint(o.mir), C=o.bot?(o.bot===2?PXB_GOLD:PXB_REDS):(PXB_RAMP[o.clothes]||PXB_RAMP.scav), B=(o.bot===2)?PXB_GOLD.boot:PXB_BOOT, kind=o.kind, ph, amp=0, sw=0, lA=0, lB=0, k;
   if(kind==='w'||kind==='r'){
     ph=((o.fr|0)+0.5)/6*6.28318; amp=(kind==='r')?5:3.4; k=(kind==='r')?3.4:2.2;
@@ -51361,6 +51378,7 @@ function pxBuildLegs(o){
 // the roll: a ball of coat, the head and the boots going round it (4 frames)
 // v28.xx (cw-cx-pixheight): the roll follows the four-row foot-anchor change, with the same four poses and timing.
 function pxBuildRoll(o){
+  if(pxIsSet(o.clothes))return pxSetRoll(o); // v28.xx (cw-cx-pixsets): a set stays on through a roll
   var p=pxPaint(o.mir), C=o.bot?(o.bot===2?PXB_GOLD:PXB_REDS):(PXB_RAMP[o.clothes]||PXB_RAMP.scav), sk=(o.bot===2)?PXB_GOLD.skin:(PIXRAMPS.skins[o.skin]||PIXRAMPS.skins.fair), a=(o.fr|0)*1.5708+0.7854, c=Math.cos(a), s=Math.sin(a), t, hx, hy, bx, by, kx, ky;
   p.put(pxEll(pxM(),10,38,25,53),C.coat);
   for(t=a+0.9;t<=a+2.6;t+=0.1) p.P(Math.round(17.5+Math.cos(t)*6.4),Math.round(45.5+Math.sin(t)*6.4),C.gear[1]);
@@ -51395,15 +51413,206 @@ function pxBuildGun(id,fk,el,rc,step,fl,sl,hd,ext,low){
 // ---- who is drawn, and how ----
 function pxHash(str){ var h=2166136261>>>0, i; for(i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=Math.imul(h,16777619)>>>0; } h=Math.imul(h^(h>>>15),2246822507)>>>0; return (h^(h>>>13))>>>0; }
 var PXB_HEADS=['short','long','hood'], PXB_SKINS=['fair','tan','umber'], PXB_CLOTHS=['scav','recon','heavy'];
+// v28.xx (cw-cx-pixsets): his 10-20 23:05 order: three full body skins, on the existing pose rig, with the seat band.
+var PXS_BONE=['#f0e4c0','#cabb95','#94866b','#5c5146'];
+var PXS_DARK=['#626573','#3e404c','#262733','#151621'];
+var PXS_WHITE=['#fff3ed','#dbd6db','#aaa5b6','#747083'];
+var PXS_PALE=['#fff1e8','#eadbd5','#c8b8be','#948896'];
+PXB_RAMP.skeleton={coat:PXS_BONE,trs:PXS_BONE,gear:PXS_DARK,pack:PXB_RAMP.scav.pack,acc:'#e2cf9b'};
+PXB_RAMP.trooper={coat:['#a0af78','#748254','#4b593a','#2c3626'],trs:PXS_DARK,gear:['#c3c9a0','#919b71','#606b4b','#3b452e'],pack:PXB_RAMP.recon.pack,acc:'#edc86b'};
+PXB_RAMP.android={coat:PXS_DARK,trs:PXS_DARK,gear:PXS_WHITE,pack:PXS_DARK,acc:'#e2d7ca'};
+function pxIsSet(id){ return id==='skeleton'||id==='trooper'||id==='android'; }
+function pxSetUpper(o){
+  var p=pxPaint(o.mir), id=o.clothes, C=PXB_RAMP[id], bone=PXS_BONE, white=PXS_WHITE, dark=PXS_DARK, skin=PXS_PALE, x,y,m;
+  if(id==='skeleton'){
+    // v28.xx (cw-cx-pixsets): exposed ribs, spine and pelvis; a canvas pack and strap are the only clothing.
+    p.put(pxRR(pxM(),4,25,10,38,2),C.pack);
+    p.put(pxRect(pxM(),17,20,18,36),bone);
+    for(y=23;y<=31;y+=3){
+      p.put(pxSeg(pxM(),11,y,23,y,0.7),bone);
+      p.P(11,y+1,bone[2]); p.P(23,y+1,bone[2]);
+    }
+    p.put(pxSeg(pxM(),11,22,24,22,1),bone);
+    p.put(pxSeg(pxM(),11,34,15,37,1.2),bone); p.put(pxSeg(pxM(),24,34,20,37,1.2),bone);
+    p.put(pxSeg(pxM(),10,23,23,34,0.7),C.pack);
+    if(o.arms){
+      p.put(pxSeg(pxM(),9,24,8,35,0.9),bone); p.put(pxSeg(pxM(),26,24,27,35,0.9),bone);
+      p.put(pxRR(pxM(),7,35,10,38,1),bone); p.put(pxRR(pxM(),25,35,28,38,1),bone);
+    }
+    p.put(pxEll(pxM(),9,2,26,16),bone); p.put(pxRR(pxM(),12,13,23,19,1.5),bone);
+    p.put(pxEll(pxM(),11,8,16,13),dark,{line:false}); p.put(pxEll(pxM(),20,8,25,13),dark,{line:false});
+    p.P(17,13,dark[3]); p.P(18,13,dark[3]); p.P(17,14,dark[3]);
+    for(x=13;x<=22;x+=3){p.P(x,17,bone[3]);p.P(x,18,bone[3]);}
+    p.Pl(12,4,bone[0]); p.Pl(13,4,bone[0]);
+  }else if(id==='trooper'){
+    // v28.xx (cw-cx-pixsets): original split chest plates, square shoulders and a recessed gold visor; no emblem.
+    p.put(pxRR(pxM(),3,19,10,38,1),C.pack);
+    p.put(pxRR(pxM(),8,22,27,37,2),dark);
+    p.put(pxRR(pxM(),9,21,17,29,1),C.coat); p.put(pxRR(pxM(),19,21,26,29,1),C.coat);
+    p.put(pxRR(pxM(),11,30,24,35,1),C.coat); p.put(pxRect(pxM(),15,30,20,31),C.gear);
+    p.put(pxRR(pxM(),4,20,10,27,1),C.coat); p.put(pxRR(pxM(),25,20,31,27,1),C.coat);
+    if(o.arms){
+      p.put(pxRR(pxM(),5,27,10,36,1),C.coat); p.put(pxRR(pxM(),25,27,30,36,1),C.coat);
+      p.put(pxRR(pxM(),6,36,10,39,1),dark); p.put(pxRR(pxM(),25,36,29,39,1),dark);
+    }
+    p.put(pxRR(pxM(),6,0,29,20,4),C.coat); p.put(pxRect(pxM(),9,16,26,20),C.gear);
+    p.put(pxRR(pxM(),9,6,26,14,2),dark);
+    p.put(pxRR(pxM(),10,7,25,12,1),['#fff0b1','#ebc367','#b68035','#765027']);
+    p.Pl(11,7,'#fff0b1'); p.Pl(12,7,'#fff0b1'); p.Pl(13,8,'#fff0b1');
+    p.put(pxRect(pxM(),15,15,20,17),dark,{line:false}); p.Pl(8,3,C.coat[0]);
+  }else{
+    // v28.xx (cw-cx-pixsets): pale face, cropped white bob and a blindfold over a slim dark dress and tall boots.
+    p.put(pxRR(pxM(),11,22,24,35,2),dark);
+    m=pxM(); for(y=33;y<=40;y++)pxRect(m,11-Math.floor((y-33)/3),y,24+Math.floor((y-33)/3),y);
+    p.put(m,dark); p.put(pxRect(pxM(),10,39,25,40),[dark[0],dark[1],dark[2],dark[3]],{line:false});
+    p.put(pxRect(pxM(),16,19,19,23),skin);
+    p.put(pxSeg(pxM(),14,23,17,27,0.6),white); p.put(pxSeg(pxM(),21,23,18,27,0.6),white);
+    if(o.arms){
+      p.put(pxRR(pxM(),8,23,11,30,1),skin);p.put(pxRR(pxM(),24,23,27,30,1),skin);
+      p.put(pxRR(pxM(),8,30,11,38,1),dark);p.put(pxRR(pxM(),24,30,27,38,1),dark);
+    }
+    p.put(pxRR(pxM(),7,0,28,19,4),white);
+    p.put(pxEll(pxM(),10,5,25,18),skin);
+    p.put(pxRR(pxM(),7,1,28,8,3),white);p.put(pxRect(pxM(),7,8,10,18),white);p.put(pxRect(pxM(),25,8,28,18),white);
+    p.put(pxRect(pxM(),10,10,25,13),dark,{line:false});p.Pl(12,9,white[0]);p.Pl(13,8,white[0]);p.P(18,16,skin[3]);
+  }
+  if(o.band){p.put(pxRect(pxM(),id==='android'?12:10,35,id==='android'?23:25,36),pixRamp(o.band),{line:false});p.P(15,35,o.band);p.P(16,35,o.band);}
+  if(o.lamp){p.P(11,23,o.lamp);p.P(12,23,o.lamp);}
+  if(o.low){p.Pl(14,27,'#8a1c14');p.Pl(15,27,'#b02a1e');}
+  return p.sprite();
+}
+function pxSetLegs(o){
+  var p=pxPaint(o.mir), id=o.clothes,C=PXB_RAMP[id], bone=PXS_BONE, dark=PXS_DARK, skin=PXS_PALE,sw=0,lA=0,lB=0,ph,k;
+  if(o.kind==='w'||o.kind==='r'){
+    ph=((o.fr|0)+0.5)/6*6.28318;sw=Math.sin(ph)*(o.kind==='r'?5:3.4);k=o.kind==='r'?3.4:2.2;
+    lA=Math.max(0,Math.sin(ph))*k;lB=Math.max(0,-Math.sin(ph))*k;
+  }
+  function leg(cx,su,sl,lift,toe){
+    var bt=49-lift, xx=Math.round(cx+su),foot=Math.round(cx+sl);
+    if(id==='skeleton'){
+      p.put(pxSeg(pxM(),cx,38,xx,44-lift,0.8),bone);p.put(pxSeg(pxM(),xx,45-lift,foot,bt+3,0.8),bone);
+      p.put(pxRect(pxM(),foot-2,bt+3,foot+2,bt+4),bone);p.P(xx,44-lift,bone[0]);
+    }else{
+      p.put(pxRR(pxM(),cx-2+su,39,cx+2+su,bt,1),id==='android'?skin:C.trs);
+      if(id==='trooper'){p.put(pxRR(pxM(),cx-3+su,39,cx+3+su,44-lift,1),C.coat);p.put(pxRR(pxM(),cx-2+sl,46-lift,cx+2+sl,bt+1,1),C.coat);}
+      else p.put(pxRR(pxM(),cx-2+sl,44-lift,cx+2+sl,bt+2,1),dark);
+      p.put(pxRR(pxM(),cx+(toe>0?-2:-4)+sl,bt,cx+(toe>0?4:2)+sl,bt+4,1),dark);
+    }
+  }
+  if(o.kind==='c'){
+    p.put(pxSeg(pxM(),12,43,15,48,id==='skeleton'?1:2),id==='skeleton'?bone:C.trs);
+    p.put(pxSeg(pxM(),23,43,20,48,id==='skeleton'?1:2),id==='skeleton'?bone:C.trs);
+    p.put(pxRR(pxM(),8,49,15,53,1),id==='skeleton'?bone:dark);p.put(pxRR(pxM(),20,49,27,53,1),id==='skeleton'?bone:dark);
+  }else{
+    if(id==='trooper')p.put(pxRR(pxM(),10,35,25,40,1),C.coat);
+    leg(14,Math.round(-sw*.45),Math.round(-sw*.9),Math.round(lB),-1);leg(21,Math.round(sw*.45),Math.round(sw*.9),Math.round(lA),1);
+  }
+  return p.sprite();
+}
+function pxSetRoll(o){
+  // v28.xx (cw-cx-pixsets): bend the actual set into the existing four roll angles at art resolution.
+  var s=pixCanvas(64,64),lg=pxSetLegs({clothes:o.clothes,mir:o.mir,kind:'c',fr:0}),up=pxSetUpper({clothes:o.clothes,mir:o.mir,arms:1,band:o.band||''});
+  s.x.imageSmoothingEnabled=false;s.x.translate(32,39);s.x.rotate((o.fr|0)*Math.PI/2);s.x.scale(.55,.55);
+  s.x.drawImage(lg.c,-lg.ax,-lg.ay+24);s.x.drawImage(up.c,-up.ax,-up.ay+24);pixHarden(s,128);
+  return pixSprite(pixRing(s.c,PIX_INK).c,33,64,PIX_ACT);
+}
+function pixSetCell(id,mir,band){
+  var s=pixCanvas(PXB.W+2,PXB.H+2),lg=pxSetLegs({clothes:id,mir:mir||0,kind:'s',fr:0}),up=pxSetUpper({clothes:id,mir:mir||0,arms:1,band:band||''});
+  s.x.drawImage(lg.c,0,0);s.x.drawImage(up.c,0,0);return s.c;
+}
+['skeleton','trooper','android'].forEach(function(id){pixReg('set '+id,function(){return pixSprite(pixSetCell(id,0,''),0,0,PIX_ACT);});});
+
+// v28.xx (cw-cx-pixsets): his 10-20 22:50 order: head, skin, clothes and set. Old ids and saved picks stay intact.
+var PIX_RACKS=[
+  ['head',[['short',{hat:'none',cut:'crop'}],['long',{hat:'none',cut:'long'}],['hood',{hat:'hood'}]]],
+  ['skin',[['fair',{skin:'fair'}],['tan',{skin:'tan'}],['umber',{skin:'umber'}]]],
+  ['clothes',[['scav',{scheme:'schsand',pack:'packbrown'}],['recon',{scheme:'schdrab',pack:'packbrown'}],['heavy',{scheme:'schcharcoal',pack:'packbrown'}]]],
+  ['set',[['off',{outfit:'outnone'}],['skeleton',{outfit:'outskeleton'}],['trooper',{outfit:'outtrooper'}],['android',{outfit:'outandroid'}]]]
+];
+function pixRawLook(){var lk={};for(var k in COSKEY)lk[k]=P[COSKEY[k]];return lk;}
+function pixKeptOwned(kind,id){
+  if((kind==='hat'&&(id==='none'||id==='hood'))||(kind==='cut'&&(id==='crop'||id==='long'))||(kind==='skin'&&PXB_SKINS.indexOf(id)>=0)||(kind==='scheme'&&['schsand','schdrab','schcharcoal'].indexOf(id)>=0)||(kind==='pack'&&id==='packbrown'))return true;
+  var set=pixPick(PIX_SETS,id,'none');return kind==='outfit'&&(id==='outnone'||(set!=='none'&&pixOwned(set)));
+}
+function pixWear(kind,id,free){
+  var rack=PIX_RACKS.filter(function(r){return r[0]===kind;})[0],tile=rack&&rack[1].filter(function(t){return t[0]===id;})[0];
+  if(!tile||(!free&&kind==='set'&&id!=='off'&&!pixOwned(id)))return false;
+  for(var k in tile[1])P[COSKEY[k]]=tile[1][k];
+  return true;
+}
+// v28.xx (cw-cx-pixsets): twelve equally likely complete looks: nine ordinary looks balance all three axes, then one of each set.
+function pixRollLook(n){
+  n=n===undefined?Math.floor(Math.random()*12):Math.max(0,Math.min(11,n|0));
+  var a=n%3,b=Math.floor(n/3)%3;
+  return {hat:['none','none','hood'][a],cut:a===1?'long':'crop',skin:PXB_SKINS[b],scheme:['schsand','schdrab','schcharcoal'][(a+b)%3],pack:'packbrown',outfit:n<9?'outnone':['outskeleton','outtrooper','outandroid'][n-9],faceIx:0};
+}
+function pixRollWear(owned){
+  var pool=[],i,lk,k;
+  for(i=0;i<12;i++)if(i<9||!owned||pixOwned(['skeleton','trooper','android'][i-9]))pool.push(i);
+  lk=pixRollLook(pool[Math.floor(Math.random()*pool.length)]);
+  for(k in lk)if(COSKEY[k])P[COSKEY[k]]=lk[k];
+  return lk;
+}
+var PIX_TILE_CACHE={},PIX_TILE_COUNT=0;
+function pixTileCanvas(kind,id){
+  var r=pixLook(pixRawLook()),set=kind==='set'&&id!=='off'?id:'none',head=r.head,skin=r.skin,clothes=r.clothes,src,s,y=0,h=PXB.H+2;
+  if(kind==='head')head=id;if(kind==='skin')skin=id;if(kind==='clothes')clothes=id;
+  var key=kind+'|'+id+'|'+head+'|'+skin+'|'+clothes;if(PIX_TILE_CACHE[key])return PIX_TILE_CACHE[key];
+  src=set!=='none'?pixSetCell(set,0,''):pixBodyCell(head,skin,clothes,0,0,0);
+  if(kind==='head'||kind==='skin')h=26;
+  s=pixCanvas(src.width*2,h*2);s.x.imageSmoothingEnabled=false;s.x.drawImage(src,0,y,src.width,h,0,0,s.c.width,s.c.height);
+  if(PIX_TILE_COUNT>=64){PIX_TILE_CACHE={};PIX_TILE_COUNT=0;}PIX_TILE_CACHE[key]=s.c;PIX_TILE_COUNT++;return s.c;
+}
+function pixAvatarHTML(){
+  // v28.xx (cw-cx-pixsets): the existing turntable, with one set of controls in the racks on the right.
+  return '<canvas class="avcv" id="avcv" width="380" height="470"></canvas>';
+}
+function renderPixWardrobe(box,hid,pid){
+  var r=pixLook(pixRawLook()),H='';
+  PIX_RACKS.forEach(function(rack){
+    H+='<section class="pixrack" data-pixrack="'+rack[0]+'"><div class="glab">'+rack[0]+'</div><div class="pixtiles">';
+    rack[1].forEach(function(t){
+      var id=t[0],own=rack[0]!=='set'||id==='off'||pixOwned(id),on=r[rack[0]]===(id==='off'?'none':id),need='';
+      if(!own)need=cosNeed(cosFind(t[1].outfit)).toLowerCase();
+      H+='<button type="button" class="costile'+(own?'':' lock')+(on?' on':'')+'" data-pixkind="'+rack[0]+'" data-pixid="'+id+'" aria-pressed="'+on+'" aria-label="'+id+(need?', '+need:'')+'">'+
+         '<canvas width="76" height="'+((rack[0]==='head'||rack[0]==='skin')?52:112)+'" style="image-rendering:pixelated"></canvas><span class="cosname">'+id+'</span><span class="cosreq">'+(own?(on?'worn':'owned'):need)+'</span></button>';
+    });H+='</div></section>';
+  });
+  box.classList.add('pixwardrobe');box.innerHTML=H;
+  [].forEach.call(box.querySelectorAll('[data-pixid]'),function(el){
+    var kind=el.getAttribute('data-pixkind'),id=el.getAttribute('data-pixid'),cv=el.querySelector('canvas'),pic=pixTileCanvas(kind,id);
+    cv.width=pic.width;cv.height=pic.height;cv.getContext('2d').drawImage(pic,0,0);
+    el.onclick=function(){
+      if(!pixWear(kind,id,false)){try{sfx('clank');}catch(e){}return;}
+      saveProfile();try{sfx('pick');}catch(e){}
+      if(hid&&document.getElementById(hid))renderAvatar(hid,pid);else renderPixWardrobe(box,hid,pid);
+      var next=box.querySelector('[data-pixkind="'+kind+'"][data-pixid="'+id+'"]');if(next)next.focus();
+    };
+  });
+}
+
+
+// v28.xx (cw-cx-pixsets): same barT and punchT clocks, no hit, reach or cooldown changes. Art rotates at actor density.
+function pxSetMelee(x,y,face,lk){
+  var crow=!!(G&&G.barT>0),t=crow?1-Math.max(0,Math.min(1,G.barT/.22)):1-Math.max(0,Math.min(1,(G&&G.punchT||0)/.22)),q=Math.min(1,t/.85),a=crow?face-1.2217+2.4434*q*(2-q):face,step=((Math.round(a/(Math.PI/16))%32)+32)%32,m=wc.getTransform(),hand=lk.clothes==='skeleton'?PXS_BONE[1]:(lk.clothes==='trooper'?PXS_DARK[1]:PXS_PALE[1]);
+  var fam='setmelee|'+lk.clothes+'|'+(crow?1:0),sp=pixFetch('actors',fam+'|'+step,function(){
+    var s=pixCanvas(116,116),c=s.x;c.translate(58,58);c.rotate(step*Math.PI/16);c.fillStyle=PIX_INK;c.fillRect(0,-3,19,6);c.fillStyle=hand;c.fillRect(1,-2,17,4);
+    if(crow){c.fillStyle='#88949c';c.fillRect(16,-2,36,4);c.fillRect(48,-7,4,7);c.fillStyle='#b6382c';c.fillRect(17,-2,8,4);}
+    else{c.fillStyle=hand;c.fillRect(16,-4,6,8);}pixHarden(s,128);return pixSprite(s.c,58,58,PIX_ACT);
+  },fam,step);if(sp)pxBlit(sp,x,y-PXB.PV,m);
+}
+
 // the pixel look of a body, or null when it is not a plain pillager (a set, the peddler, the survivor): vector then
 function pxLookOf(st){
   var o=st.own, hero=!!st.hero, sc=schemeOf(st), oid, lk, r, bot, h;
-  oid=hero?cosWorn('outfit'):st.outfit;
+  oid=hero?P.cosOutfit:st.outfit; // v28.xx (cw-cx-pixsets): read saved picks without the old rack ownership filter
+  var set=pixPick(PIX_SETS,oid,'none');
+  if(set!=='none'&&(!hero||pixOwned(set)))return {head:'short',skin:'fair',clothes:set,bot:0};
   if(oid==='outsurvivor') return {head:'short',skin:'tan',clothes:'survivor',bot:0};   // v33.82 (cw-pixrole): the survivor and the peddler wear their own pixel suits
   if(oid==='outpeddler') return {head:'short',skin:'fair',clothes:'peddler',bot:0};
   if(oid&&oid!=='outnone'&&!PIX_OUTFIT[oid]) return null;
-  lk=hero?{hat:cosWorn('hat'),cut:cosWorn('cut'),skin:cosWorn('skin'),scheme:sc?sc.id:cosWorn('scheme'),fit:cosWorn('fit'),outfit:oid}
-         :{hat:st.hat,cut:st.cut,skin:st.skin,scheme:sc?sc.id:st.scheme,outfit:oid};
+  lk=hero?{hat:P.cosHat,cut:P.cosCut,skin:P.cosSkin,scheme:P.cosScheme,fit:P.cosFit,outfit:oid} // v28.xx (cw-cx-pixsets): always-owned pixel picks are raw ids
+         :{hat:st.hat,cut:st.cut,skin:st.skin,scheme:st.scheme,fit:st.fit,outfit:oid}; // v28.xx (cw-cx-pixsets): the wire look matches its owner; seats use trim, not a clothes remap
   r=pixLook(lk);
   if(r.set!=='none') return null;
   bot=!hero&&st.team==='foe'&&!st.merc&&!(o&&(o.merc||o.friendly));
@@ -51422,7 +51631,7 @@ function pxLegs(o){
   return pixFetch('actors',fam+'|'+(o.fr|0),function(){ return pxBuildLegs(o); },fam,o.fr|0);
 }
 function pxRoll(o){
-  var fam='r|'+o.head+'|'+o.skin+'|'+o.clothes+'|'+o.bot+'|'+o.mir;
+  var fam='r|'+o.head+'|'+o.skin+'|'+o.clothes+'|'+o.bot+'|'+o.mir+'|'+(o.band||''); // v28.xx (cw-cx-pixsets): separate seat bands
   return pixFetch('actors',fam+'|'+(o.fr|0),function(){ return pxBuildRoll(o); },fam,o.fr|0);
 }
 function pxGun(id,fk,el,rc,step,fl,sl,hd,ext,low){
@@ -51504,9 +51713,9 @@ function pxKneelGround(x,y,fl,o,m){   // a14 B: the ring (1.2 Hz) under the knee
 }
 // the standing body (legs, empty hands) turned about the feet: frame f of 8 is f/7 of the angle A, sg is the way it falls; the sprite anchor is the feet
 function pxToppleSpr(lk,mir,sg,f,A){
-  var fam='t|'+lk.head+'|'+lk.skin+'|'+lk.clothes+'|'+lk.bot+'|'+mir+'|'+sg+'|'+A+'|'+(lk.bulk|0);
+  var fam='t|'+lk.head+'|'+lk.skin+'|'+lk.clothes+'|'+lk.bot+'|'+mir+'|'+sg+'|'+A+'|'+(lk.bulk|0)+'|'+(lk.band||''); // v28.xx (cw-cx-pixsets): trim survives the topple
   return pixFetch('actors',fam+'|'+f,function(){
-    var lg=pxBuildLegs({clothes:lk.clothes,bot:lk.bot,mir:mir,kind:'s',fr:0}), up=pxBuildUpper({head:lk.head,skin:lk.skin,clothes:lk.clothes,bot:lk.bot,mir:mir,pup:0,arms:1,lamp:'',band:'',low:0,bulk:lk.bulk|0}), R=62, s=pixCanvas(R*2+1,R*2+1);
+    var lg=pxBuildLegs({clothes:lk.clothes,bot:lk.bot,mir:mir,kind:'s',fr:0}), up=pxBuildUpper({head:lk.head,skin:lk.skin,clothes:lk.clothes,bot:lk.bot,mir:mir,pup:0,arms:1,lamp:'',band:lk.band||'',low:0,bulk:lk.bulk|0}), R=62, s=pixCanvas(R*2+1,R*2+1);
     s.x.imageSmoothingEnabled=false; s.x.translate(R,R); s.x.rotate(sg*A*f/7);
     s.x.drawImage(lg.c,-lg.ax,-lg.ay); s.x.drawImage(up.c,-up.ax,-up.ay);
     pixHarden(s,128);
@@ -51518,6 +51727,7 @@ function pxDeath(x,y,face,st,lk,m){   // a15 B: the player falls in 0.22 s, hold
   if(t>=0.9) return true;
   k=Math.min(1,t/0.22); u=(t<0.4)?1:1-(t-0.4)/0.5;
   lk.bulk=Math.min(3,Math.max(0,Math.round(st.bulk||0)));
+  lk.band=seatMarkOf(st)>=0?SEATCOL[seatMarkOf(st)&3]:''; // v28.xx (cw-cx-pixsets): the player keeps a seat band while falling
   spr=pxToppleSpr(lk,fl<0?1:0,sg,Math.round(k*k*7),1.5708); if(!spr) return false;
   wc.globalAlpha=a0*u; opGround(x,y,st); pxBlit(spr,x,y+Math.round(6*k*k),m); wc.globalAlpha=a0;
   if(t>=0.4){
@@ -51568,6 +51778,11 @@ function pxEliteRing(e){
 }
 function pxBob(ph,moving){ return Math.round(moving?Math.abs(Math.sin(ph)):(Math.sin(ph*0.35)+1)*0.5); }
 function pixDrawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
+  // v28.xx (cw-cx-pixsets): retain the set body during melee, with the existing crowbar arc over it.
+  if(mode==='fist'&&st){var slk=pxLookOf(st);if(slk&&pxIsSet(slk.clothes)){
+    var ok=pixDrawOp(x,y,face,ph,coat,pk,muzzle,'none',iv,st);
+    if(ok)pxSetMelee(x,y,face,slk);return ok;
+  }}
   var age, hurt, lw, rx=0, fx=null, dn=0, sf, m, lk, fl, mir, moving, sprint, crouch, ads, rl, hold, back, kind, fr, bob, lean, dyUp, uo, lg, up, ro, gn=null, gv=0, w, id, D, fk, el, wt, rc, low, ext, ang, step, C, sk, sl, hd, sm, px, py, ty, pxd, k;
   if(!st||OPX.inScr) return false;   // v28.xx (cw-cx-pixfight): invulnerability and the wall ghost keep the cached pixel silhouette
   if(mode==='fist') return false;
@@ -51587,7 +51802,7 @@ function pixDrawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   fl=Math.cos(face)<0?-1:1; mir=fl<0?1:0; moving=!!st.moving; sprint=!!st.sprint; ads=!!st.ads; rl=st.rl||0; crouch=(mode==='crouch'||mode==='crouchnone');
   C=lk.bot?(lk.bot===2?PXB_GOLD:PXB_REDS):(PXB_RAMP[lk.clothes]||PXB_RAMP.scav); sk=(lk.bot===2)?PXB_GOLD.skin:(PIXRAMPS.skins[lk.skin]||PIXRAMPS.skins.fair);
   if(mode==='roll'){
-    ro=pxRoll({head:lk.head,skin:lk.skin,clothes:lk.clothes,bot:lk.bot,mir:mir,fr:Math.floor(((ph/12.6)%1+1)%1*4)%4});
+    ro=pxRoll({head:lk.head,skin:lk.skin,clothes:lk.clothes,bot:lk.bot,mir:mir,band:seatMarkOf(st)>=0?SEATCOL[seatMarkOf(st)&3]:'',fr:Math.floor(((ph/12.6)%1+1)%1*4)%4}); // v28.xx (cw-cx-pixsets): seat trim rolls with the set
     if(!ro) return false;
     opGround(x,y,st); pxBlit(ro,x,y,m); wc.imageSmoothingEnabled=true; PIX.bodies++; return true;
   }
@@ -51603,6 +51818,7 @@ function pixDrawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     if(lw) fx.ra=0.5+0.5*Math.sin(((G&&G.t)||0)*hpFlashRate());
   }
   if(lk.bot===2){ sf=(((G&&G.t)||0)%2)/0.4; if(sf<1){ if(!fx) fx={wc:'',wa:0,ra:0}; fx.sh=Math.round(x+(sf*2-1)*18); } }   // v33.81 (cw-pixgear): the gold shine
+  if(lk.clothes==='skeleton')sk=PXS_BONE;else if(lk.clothes==='trooper')sk=PXS_DARK;else if(lk.clothes==='android')sk=PXS_PALE; // v28.xx (cw-cx-pixsets): set hands
   hold=gunHeldOn(st,mode); back=hold&&Math.sin(face)<-0.3;
   if(crouch){ kind='c'; fr=0; }
   else if(moving){ kind=sprint?'r':'w'; fr=Math.floor(((ph/6.28318531)%1+1)%1*6)%6; }
@@ -53008,7 +53224,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.90: Invulnerable pillagers keep their pixel silhouette and teal cue. The wall ghost keeps its transparency. Check 33.90 fails on v33.89',
+  now:'v33.91: Skeleton, trooper and android share every pixel pose. Fashion has four racks, and the demo and crowd share twelve looks. Check 33.91 fails on v33.90',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -62574,6 +62790,7 @@ function arcadeLook(){
   var k, a, i;
   if(typeof ARCADE!=='object'||!ARCADE.on||typeof P==='undefined'||!P) return false;
   P.cosAll=1;
+  if(pixOn()){pixRollWear(false);return true;} // v28.xx (cw-cx-pixsets): no cut ids on a demo roll
   for(k in COSKEY){
     if(!Object.prototype.hasOwnProperty.call(COSKEY,k)) continue;
     a=[]; for(i=0;i<COSMETICS.length;i++) if(COSMETICS[i].kind===k) a.push(COSMETICS[i].id);
@@ -70679,6 +70896,7 @@ function cosSwatch(c){
 // WHAT SHE IS WEARING, drawn as her. Hair takes the cosmetic colour, the hat
 // sits on top of it, and the torso takes the FITCOL clothing colour.
 function avatarHTML(){
+  if(pixOn())return pixAvatarHTML(); // v28.xx (cw-cx-pixsets): one control per pick, in the four racks
   var hair=cosWorn('hair'), hat=cosWorn('hat');
   var hc=HAIRCOL[hair]||HAIRCOL.blonde;
   var hatGlyph={none:'',band:'\u25AC',phones:'\u25CF\u25CF',mask:'\u25AC',visor:'\u25AD',crown:'\u2662',
@@ -70794,12 +71012,13 @@ function lookWear(L){
     // has no outfit) or locked since it was saved was skipped, so the piece already worn stayed, and the result was part saved
     // look and part what he had on, at worst a suit over all of it. A missing or locked kind goes to its default, which is what
     // an old look had in that slot.
-    if(c&&c.kind===k&&cosOwned(c)) P[COSKEY[k]]=c.id;
+    if(c&&c.kind===k&&(cosOwned(c)||(pixOn()&&pixKeptOwned(k,c.id)))) P[COSKEY[k]]=c.id; // v28.xx (cw-cx-pixsets): saved pixel picks remain always owned
     else P[COSKEY[k]]=COSDEF[k];
   }
   saveProfile(); return true;
 }
 function lookRandom(){
+  if(pixOn()){pixRollWear(true);saveProfile();return;} // v28.xx (cw-cx-pixsets): surprise me keeps to the visible wardrobe
   for(var i=0;i<LOOK_KINDS.length;i++){
     var k=LOOK_KINDS[i];
     // v14.71, wardrobe audit finding 3: AND IT TAKES A WORN SUIT OFF. The outfit was skipped but not removed, so with a suit on the
@@ -70813,6 +71032,7 @@ function lookRandom(){
 }
 function lookLabel(L){
   if(!L) return 'empty';
+  if(pixOn()){var p=pixLook(L);return p.set!=='none'?p.set:[p.head,p.skin,p.clothes].join(' / ');} // v28.xx (cw-cx-pixsets): label saved looks through the same read-side cut
   var bits=[];
   for(var i=0;i<LOOK_KINDS.length;i++){ var c=cosFind(L[LOOK_KINDS[i]]); if(c&&c.id!=='none') bits.push(c.name); }
   return bits.slice(0,3).join(', ')+(bits.length>3?(' +'+(bits.length-3)):'');
@@ -70866,6 +71086,7 @@ function cosTabOf(kind){ for(var i=0;i<COSTABS.length;i++) if(COSTABS[i][2].inde
 function renderAvTabs(){
   var box=document.getElementById('apptabs'); if(!box) return;
   box.innerHTML='';
+  if(pixOn())return; // v28.xx (cw-cx-pixsets): four racks fit on the existing page without tabs
   COSTABS.forEach(function(t){
     var d=document.createElement('div'); d.className='invtab'+(AVTAB===t[0]?' on':''); d.textContent=t[1]; d.setAttribute('data-tab',t[0]);
     d.onclick=function(){ AVTAB=t[0]; P._avSlot=null; renderAvatar('appavatar','appavatarpicker'); try{ sfx('pick'); }catch(_s){} };
@@ -70943,6 +71164,8 @@ function renderAvatar(host,pickHost){
 function renderAvPicker(pickHost,host){
   var pid=pickHost||'avpicker', hid=host||'avatar';
   var box=document.getElementById(pid); if(!box) return;
+  if(pixOn()){renderPixWardrobe(box,hid,pid);return;} // v28.xx (cw-cx-pixsets): ignore a stale old slot in pixel mode
+  box.classList.remove('pixwardrobe');
   var slot=P._avSlot;
   // v9.99: at the Discount Fashion Depot, no slot chosen means the whole of
   // the racks, not the loadout saves, which are the ascent check's business.
@@ -70970,6 +71193,8 @@ function renderAvPicker(pickHost,host){
 }
 function renderCosmetics(target,kindOnly,hid,pid){
   var box=target||document.getElementById('cosbody'); if(!box) return;
+  if(pixOn()){renderPixWardrobe(box,hid,pid);return;} // v28.xx (cw-cx-pixsets): the old nineteen groups stay below
+  box.classList.remove('pixwardrobe');
   var H='';
   var GROUPS=[['set','SETS'],['outfit','OUTFIT'],['scheme','COLOUR SCHEME'],['build','BUILD'],['vest','VEST'],['pads','SHOULDERS'],['skin','SKIN'],['eyes','EYES'],['face','FACE'],['tattoo','TATTOO'],['hair','HAIR'],['cut','HAIRSTYLE'],['beard','BEARD'],['hat','HEADGEAR'],['fit','CLOTHING'],['patch','PATCH'],['gloves','GLOVES'],['boots','BOOTS'],['pack','BACKPACK']]   // v10.54: the outfit rack first
     .filter(function(g){ return kindOnly?(g[0]===kindOnly):(hid!=='appavatar'||cosTabOf(g[0])===AVTAB); })   // v28.29 (cosm7): in FASHION the open tab only, in the order of its list
