@@ -1,4 +1,5 @@
 91-circle-only-text : no player text names Daniel or calls the game an alpha in the Thanksgiving build (planner draft 2026-10-20)
+Lane (coordinator 10-21 00:30): moved to the Codex lane as o-91-circle-only-text (lane o had no jobs while lanes a and b were busy and c waited for memory).
 Queue (coordinator 10-20 21:40): renumbered from 74 so the pick order follows the plan (his 10-20 evening play notes took 79 to 86 and come first; lanes pick by number).
 effort: medium
 

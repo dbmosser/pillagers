@@ -1,4 +1,5 @@
 87-pad-crawl-test : a pad-only check that walks every hub screen (pad research J3) (planner draft 2026-10-20)
+Lane (coordinator 10-21 00:30): moved to the Codex lane as o-87-pad-crawl-test (lane o had no jobs while lanes a and b were busy and c waited for memory).
 Queue (coordinator 10-20 21:40): renumbered from 70 so the pick order follows the plan (his 10-20 evening play notes took 79 to 86 and come first; lanes pick by number).
 effort: high
 
