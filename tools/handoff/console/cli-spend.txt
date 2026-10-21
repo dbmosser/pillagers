@@ -717,3 +717,5 @@
 2026-10-21 0.2405185 86b-pix-ground-r2
 2026-10-21 0.0000 86b-pix-ground
 2026-10-21 0.0000 86b-pix-ground
+2026-10-21 0.2632763 86d-pix-walls-trees
+2026-10-21 0.6114723 86c-pix-pillager

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.59 - COUCH MODE WORKS INSIDE ITCH
+
+Co-op hunt while he was away. coord-06 on 2026-10-21: inside itch frame the two windows could not link, because a BroadcastChannel is partitioned between the frame and the popup. When the game is embedded the pair now talks over window.opener, with the same words and the same pair code; the top level path is untouched.
+
+MEASURED. Check 33.59 passes, and fails on v33.58.
 ## v33.58 - THE PIXEL PILLAGER
 
 Co-op hunt while he was away. His orders of 2026-10-20 (22:45 to 23:05): the whole game in pixel art like the style test, 3 heads, 3 skins and 3 clothes with a pack. Job 86c, ship 1: one pixel body for every plain pillager (you, your mate, hires and the pillager bots), baked in layers, with a pixel gun and arms in 32 aim steps, behind the pixel look switch.

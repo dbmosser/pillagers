@@ -1,0 +1,7 @@
+v33.59: couch mode works inside itch
+
+On itch the player 2 window now links to player 1 through the page, and a player 2 window with no opener says so.
+
+Check 33.59. Fails on v33.58.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

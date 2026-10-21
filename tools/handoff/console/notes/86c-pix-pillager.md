@@ -17,4 +17,6 @@ Ask in questions.md: a uishots screen that sets xfPix 1 (done below).
 
 ## Status
 - 02:30 written: body.js, mk-cw-pixbody.ps1, mk-cw-pixdev.ps1, mk-cw-view.ps1. Blocked: the ship queue has v33.57 applied and uncommitted from lane a (86b), so preflight cannot run (no p3357.ps1). Alarm logged by lane a.
-- 10-21 later: tree still dirty (dark_raiders.html modified, HEAD 9bb8fa57). Still blocked; resume from the dev loop above.
+- 10-21 SHIPPED v33.58 cw-pixbody (d1a3a0c0). Fixes found in preflight: pixRing returns a wrapper (use .c); the check overrides pixDrawOp by its binding, not window; the 8-call limit counts draw calls only (getTransform reads from the rim and ground helpers, 8 of them, are not counted; the draw calls were 5).
+- Left: Undercroft crowd, hub and FASHION previews (other canvases, figOn false); pictures (?pixbench, raid 1080 and 4K, 2-window) need a camera stage with xfPix 1 (asked in questions.md); critic against style-test-play.png; armour, hurt, downed, sets still vector.
+- (older) tree still dirty (dark_raiders.html modified, HEAD 9bb8fa57). Still blocked; resume from the dev loop above.

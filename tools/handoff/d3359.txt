@@ -1,0 +1,5 @@
+## v33.59 - COUCH MODE WORKS INSIDE ITCH
+
+Co-op hunt while he was away. coord-06 on 2026-10-21: inside itch frame the two windows could not link, because a BroadcastChannel is partitioned between the frame and the popup. When the game is embedded the pair now talks over window.opener, with the same words and the same pair code; the top level path is untouched.
+
+MEASURED. Check 33.59 passes, and fails on v33.58.

@@ -3309,7 +3309,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.58';
+var VER='33.59';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -52010,7 +52010,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.58: With the pixel look on, every plain pillager is a pixel figure with a pixel gun. Armour, hits, downed, fists and sets still draw the old figure. Check 33.58 fails on v33.57',
+  now:'v33.59: On itch the player 2 window now links to player 1 through the page, and a player 2 window with no opener says so. Check 33.59 fails on v33.58',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -56853,6 +56853,7 @@ function netModeName(m){ if(m==='coop'&&((typeof ARCADE==='object'&&ARCADE&&ARCA
 function netSameName(){ return 'pillagers:same:'+((typeof location!=='undefined'&&location.pathname)||''); }
 function netSameChan(){
   if(NET.bc) return NET.bc;
+  if(netBridgeOn()){ NET.bc=netBridgeChan(); return NET.bc; }   // v33.58 (cw-p2bridge): inside itch's frame the BroadcastChannel is partitioned, so the pair talks over window.opener
   try{ NET.bc=new BroadcastChannel(netSameName()); NET.bc.onmessage=function(ev){ netSameOnMsg(ev?ev.data:null); }; }
   catch(e){ NET.bc=null; }
   return NET.bc;
@@ -56874,6 +56875,42 @@ function netSameWatch(now){
   return 'nolink';
 }
 function netSamePost(m){ if(!NET.bc) return false; try{ NET.bc.postMessage(m); return true; }catch(e){ return false; } }
+// v33.58 (cw-p2bridge), coord-06 (2026-10-21): COUCH MODE ON ITCH. The game runs in a cross-site iframe there, and a BroadcastChannel is
+// partitioned between the frame and the player 2 popup (measured: the real game did not link in 20 s). window.opener.postMessage works both ways, so
+// in the frame the channel is a bridge: the host posts to the popup handle, the popup posts to its opener, every word wrapped {pg:'pillagers',m}.
+// A word is taken only from this origin, only with the game's tag, only from the pair's own window, and only with this pair's code (itch
+// serves every html game from one origin, so the source test matters). Top level keeps its BroadcastChannel, untouched.
+function netEmbOf(q){ q=String(q||''); return (/[?&]p2=1(&|$)/).test(q)&&(/[?&]emb=1(&|$)/).test(q); }
+function netBridgeOn(){
+  if(NET.same==='p2') return !!NET.embP2;
+  if(NET.same==='host'){ try{ return !!reportEmbedded(); }catch(_be){ return false; } }
+  return false;
+}
+function netBridgeTarget(){
+  if(NET.same==='p2'){ try{ return window.opener||null; }catch(_bo){ return null; } }
+  return NET.p2win||null;
+}
+function netBridgeChan(){
+  return {br:1,onmessage:null,close:function(){},postMessage:function(m){
+    var w=netBridgeTarget();
+    if(!w) return;
+    w.postMessage({pg:'pillagers',m:m},location.origin);
+  }};
+}
+function netBridgeIn(e){
+  var d=e&&e.data, src=e&&e.source, m=d&&d.m;
+  if(!NET.bc||!NET.bc.br) return 'off';
+  if(!d||typeof d!=='object'||d.pg!=='pillagers'||!m||typeof m!=='object') return 'bad';
+  if(e.origin!==location.origin) return 'origin';
+  if(NET.same==='host'){
+    if(!NET.p2win){ if(!src||m.pair!==NET.pair) return 'source'; NET.p2win=src; }   // a host that lost its handle (the frame reloaded) takes the window that speaks with its pair code
+    else if(src!==NET.p2win) return 'source';
+  }
+  else if(NET.same==='p2'){ if(!src||src!==window.opener) return 'source'; }
+  else return 'off';
+  return netSameOnMsg(m);
+}
+try{ window.addEventListener('message',netBridgeIn); }catch(_bm){}
 function netSameStop(){
   if(NET.bc){ try{ NET.bc.onmessage=null; NET.bc.close(); }catch(e){} }
   NET.bc=null; NET.same=''; NET.pair=''; NET.mode=''; NET.p2win=null; NET.sameBusy=false; NET.sameT0=0; NET.noLink=0;
@@ -56885,7 +56922,9 @@ function netSameStop(){
 function netP2Url(mode,pair){
   var base=(typeof location!=='undefined'&&location.href)?String(location.href):'';
   base=base.split('#')[0].split('?')[0];
-  return base+'?p2=1&mode='+((mode==='pvp')?'pvp':'coop')+'&pair='+String(pair||'')+((NET.arcPick&&mode!=='pvp')?'&arc=1':'');   // v23.24 (arcade5): &arc=1
+  var emb=!!reportEmbedded(), keep='';   // v33.58 (cw-p2bridge): embedded only; the top level address is exactly what it was
+  if(emb){ keep=String((typeof location!=='undefined'&&location.search)||'').replace(/^\?/,'').split('&').filter(function(s){ return s&&!/^(p2|mode|pair|arc|emb)=/.test(s); }).join('&'); if(keep) keep+='&'; }
+  return base+'?'+keep+'p2=1&mode='+((mode==='pvp')?'pvp':'coop')+'&pair='+String(pair||'')+((NET.arcPick&&mode!=='pvp')?'&arc=1':'')+(emb?'&emb=1':'');   // v23.24 (arcade5): &arc=1
 }
 // A window, not a tab, most of the screen, so he can drag it to his second screen and go fullscreen there.
 function netP2Features(){
@@ -57054,12 +57093,14 @@ function netSameOnMsg(m){
 }
 // THE PLAYER 2 WINDOW, at boot: the mode and the pair code come off the address (or from the caller, for a check), the
 // channel opens, and the player 1 window is told this one is ready. Nothing goes to the network until its invite code arrives.
-function netSameBootP2(pair,mode){
-  var q=(typeof location!=='undefined'&&location.search)||'';
+function netSameBootP2(pair,mode,qOver){
+  var q=(typeof qOver==='string')?qOver:((typeof location!=='undefined'&&location.search)||'');
   NET.mode=(mode==='coop'||mode==='pvp')?mode:(netModeOf(q)||'coop');
   NET.arcBoot=netArcOf(q);   // v23.24 (arcade5): opened by the arcade row, so the window is named the arcade demo until arcon comes
   NET.pair=(typeof pair==='string'&&pair)?netPairOf('?pair='+pair):netPairOf(q);
   NET.same='p2';
+  NET.embP2=netEmbOf(q);   // v33.58 (cw-p2bridge): opened from itch's frame, so it talks over window.opener
+  if(NET.embP2&&!window.opener){ netModeMsg('no link: pick 2 player in the player 1 window'); return 'noopener'; }   // itch turned COOP on, or the window was opened by hand: nothing to talk to
   if(typeof BroadcastChannel!=='function'||!netSupported()){ NET.err='This browser cannot link two windows of the game.'; netRefresh(); return 'unsupported'; }
   if(!NET.pair){ NET.err='This window is missing its pair code. Close it and pick the mode again in the player 1 window.'; netRefresh(); return 'nopair'; }
   if(!netSameChan()){ NET.err='Could not open the link to the player 1 window.'; netRefresh(); return 'nochan'; }

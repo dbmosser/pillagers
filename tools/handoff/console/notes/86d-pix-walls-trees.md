@@ -10,3 +10,9 @@ Facts: wallSprite ~38891, vegSprite ~38788, tree/bush draw ~39596-39635, shadowE
 ## Run 2 (10-21 ~02:35)
 - Preflight 1 (clean tree): new check passes, control fails as it should, but "recent" failed: dry=TIMEOUT (gate Chrome slow or hung on port 9353; I may not restart it, only 9346).
 - Then lane b's cw-pixground STOPped (verifySafe) and left game + fixture dirty at v33.57: all preflights and ships blocked (alarm logged). Nothing for me to ship. Next run: check git status is clean, rerun bash tools/handoff/preflight.sh c cw-pixwalls from the repo root; if pixground landed, re-check my 6 anchors (mk script rewrites the draft).
+
+## Run 3 (10-21 03:14, lane c)
+- Tree at start: game, DESIGN, AUDIT, mkfixture dirty with a live v33.58 ship (the pixel pillager, 86c) mid-flight; v33.57 pixground is committed. Re-ran S/mk-cw-pixwalls.ps1: "written" (draft rebuilt on top of HEAD, anchors still match).
+- Blocked again: this run's shell starts in tools/handoff/console and cannot cd, so bash tools/handoff/preflight.sh and bash ../preflight.sh are both refused (needs approval). Nothing was run or shipped.
+- Coordinator: start 86d with the working directory at the repo root (C:/claudecode/dark raiders), or give me a preflight form that works from console/.
+- Next run: from the repo root, bash tools/handoff/preflight.sh c cw-pixwalls, then shipq cw-pixwalls; then doors/windows/kerbs/shWallDraw, trees/bushes, shadows.
