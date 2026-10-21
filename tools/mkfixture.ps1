@@ -126,10 +126,12 @@ window.__resetCfg=function(){
     if(CFG[k]!==DEF[k]) changed[k]=[CFG[k],DEF[k]];
     CFG[k]=DEF[k];
   }
+  CFG.xfPix=0;   // v33.51 (cw-pixkit): the pixel look is pinned off, so the older checks keep their meaning; each pixel check turns it on and restores it
   CFG.mmSz=1;   // v33.35 (cw-mmoff): the minimap is off by default now; the older checks measure the standard plate, so the reset puts it back (cw-mmoff's own check builds the real default)
   try{ if(P) P.tuned={}; }catch(e){}
   return changed;
 };
+try{ CFG.xfPix=0; }catch(_px){}   // v33.51 (cw-pixkit): pinned off at load too (the build before has no such dial; harmless there)
 window.__keys=function(){ return keys; };
 window.__mouse=function(){ return mouse; };
 window.__sim=function(dt){ refreshVseg(); updatePlayer(dt); updateEnts(dt); updateThrowables(dt); };
@@ -907,7 +909,7 @@ window.__placeAudit=function(){
 // batch is measuring a configuration nobody plays. Anything not on this list
 // showing up in __pinAudit is drift and should be fixed in the pin, not added
 // here.
-window.__PIN_BOT_ONLY={simGreed:1,simPick:1,simFlee:1,simCover:1,simDodgeRing:1};
+window.__PIN_BOT_ONLY={simGreed:1,simPick:1,simFlee:1,simCover:1,simDodgeRing:1,xfPix:1};
 window.__pinAudit=function(){
   var save={},k;
   for(k in CFG) save[k]=CFG[k];
@@ -972,6 +974,7 @@ var want={simGreed:14,simCrouch:0,simSell:0,simPed:0,simSidearm:1,simSwapBack:1,
     wadeInset:11,raiderFloorN:4,raiderFloorGap:8,overheatLock:7,superhot:0,strikeFind:0.16,eliteGuns:1,
     nRaider:10,nSentry:20,nCrawler:34,crawlerPerHouse:2.5,eDmg:1,raidSec:540};
   for(var k in want){ if(C2[k]!==want[k]){ changed[k]=[C2[k],want[k]]; C2[k]=want[k]; } }
+  C2.xfPix=0;   // v33.51 (cw-pixkit): view only, pinned off like gfxScale
   P2.mapIx=(mapIx===undefined)?1:mapIx;
   P2.body=null; P2.equipped='smg'; P2.wear=P2.wear||{}; P2.wear['smg']=0;
   // v7.48, audit items 39-41: the pin was blind to three kinds of state.
