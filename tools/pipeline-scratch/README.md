@@ -19,3 +19,11 @@ Chrome restarts it with --gpu-recent-crash-count, it grew 2.2 GB in 28 minutes (
 slices after it had 15 to 22 checks that could not run instead of 3 or 4. A run hit that way is not a fair stable baseline; the next
 run (after 07:02, corpus_t plus 4 h) starts on a fresh Chrome (corpq.sh line 12).
 10-21 05:16: he answered yes in chat: if memory gets tight again tonight, end the full test run (corpq.sh and corpus-slices.sh, not nightly.sh) and close 9344 by its port.
+
+10-21 06:25: tools/memwatch.ps1 (read-only recorder, console/log/memwatch-1021.txt) caught the 06:03 low virtual memory moment: no
+process grew, free RAM went to 0 and about 9.5 GB sat outside every process for under a minute while the VM shrank from 16 GB toward its
+10 GB day size (the 06:00 "VM night memory down" task, his answer 45 a). So the handback itself squeezes whatever still runs at 06:00:
+itch-daily.sh failed to fork at 06:03 (harmless: the 06:20 ship pushed v33.75 to itch) and the 03:02 corpus run, which ran across it,
+stalled on the same check twice; it was ended at 06:22 on his 05:16 yes. Still open: whether 05:16 and 05:40 were the same kind of
+squeeze (the recorder started at 05:53). Idea, not done: start no corpus run after about 02:30 and cap the 05:12-style robot run so both
+end before 06:00 (nightly.sh is running, so that edit waits for a runner restart).

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.76 - THE PIXEL DOOR AND WINDOW
+
+Co-op hunt while he was away. Job 86d ship 3: the door (frame, panels, lock plate and tag), the window, the stronghold shutter and barricade and the Undercroft wall are filled on the 2 unit art grid with solid district ramp and ink tones, instead of translucent vector rects. Kerbs and ruins already bake through the pixel wall sprite.
+
+MEASURED. Check 33.76 passes, and fails on v33.75.
 ## v33.75 - PIXEL HUB BAKE BUDGET
 
 Co-op hunt while he was away. The first real FASHION picture still showed a vector body. The raid resets the pixel bake budget in gfxpBegin, but the Undercroft never calls that path. A fresh hub and preview could therefore stay vector after the first two builds. The prior preview check hid this by resetting the budget itself.

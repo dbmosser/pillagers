@@ -1,0 +1,7 @@
+v33.76: the pixel door and window
+
+With the pixel look on (the default), doors, windows, stronghold gates and barricades and the Undercroft walls are chunky solid pixels like the walls. With the look off, nothing changes.
+
+Check 33.76. Fails on v33.75.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
