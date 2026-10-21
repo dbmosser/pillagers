@@ -26,3 +26,5 @@ Lane note 2026-10-20 06:28: shipped cw-cx-padlost cw-cx-o07-padreturn cw-cx-o07-
 All three fixes are shipped. Check 32.79 passes and fails on v32.78. The four-round camera limit is exhausted; corrected recipes are ready for coordinator verification.
 
 TASK PARTIAL: player 2 pictures, post-fix critic review, and remaining valid UI findings.
+
+DONE 10-21 00:40 (coordinator, coord-08): the corrected recipes staged all 6 scenes in real linked windows (5 in one run, j8-p2-press-a on a retry: notes/shots/o-07-pad-lost-coordinator-check and o-07-pad-lost-retry). Critic: j8-p1-pad-lost 3, j8-p2-pad-lost 3, the other four 2 (accept.json j8-*). Open findings are the whole raid HUD (owned by the HUD jobs) and the pad-lost tag (queued as 93); his titles pad lost and press a stay (his ruling, logged before).

@@ -24,3 +24,5 @@ TASK DONE when shipped, the checks pass and both windows' pictures show the ping
 COORDINATOR 10-20 14:57: shipped as v32.97 (3172e3e5, check 32.97 green). Only the picture from each window (his 2.86 a) is left, and a
 helper cannot take it until the camera stages player 2 of a real pair, so the job waits here, not in tasks/ (a rerun would only spend a
 run saying the same). coord-08 step 3 takes the two pictures once the camera works, then this moves to done/.
+
+DONE 10-21 00:40 (coordinator, coord-08 step 3): a picture from each window of a real linked demo raid (his 2.86 a): the other window drops a frag and this window shows one pile ping, "player 2 · frag charge · 7m" and "player 1 · frag charge · 6m" (notes/shots/62-share-drop, recipes there).

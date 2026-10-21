@@ -24,3 +24,5 @@ Lane note 2026-10-20 07:54: shipped cw-cx-padowner and parked: only lane-side st
 P1 hub and raid captures pass all six pad trials. Fixed the p2 recipe error: `netslot=B` disabled the p2 role. Corrected recipes validate locally; the four-round camera allowance is exhausted.
 
 TASK PARTIAL: coordinator must resolve missing p2 pictures and outstanding critic findings.
+
+DONE 10-21 00:40 (coordinator, coord-08): all 4 scenes staged in real linked windows, player 2 included (j7-raid-p2-pad-owner on a retry): notes/shots/o-08-pad-owner-after. Critic 2 on all four; the findings are the hub floor (job 89) and the raid HUD in general, none about the pad owner tag.

@@ -20,3 +20,5 @@ p2=link_7s_join_9s), so the camera path is at fault, not the game. Single-seat p
 Why it matters: job 62 (share by drop) and any 2-player change before the lock is done only with a picture from each window (2.86 a).
 Party risk: low (tooling only).
 Done when: o-07 and o-08 are in done/, and one real-pair player 2 picture stages.
+
+DONE 10-21 00:40 (coordinator). Why player 2 never staged: (1) the recipes put netslot=B on the player 2 window, which turns NETP2 off (o-08 found it, Codex fixed the recipes); (2) a pair scene run right after another one can find the last pair's player 2 heartbeat (salvagerun:p2raid, 75 s) and not link; it stages alone, so uishots now retries a scene that did not link (commit 367e6640). Step 1: o-07 and o-08 closed into done/ with critic scores. Step 3: job 62's two pictures taken (done/62). Not done: the o-01 two-window rerun (stash pays per window) is on his playtest sheet and was not rerun. Recipes for any new two-window picture: copy notes/shots/62-share-drop/camera-recipes.json (built from o-07 j8 staging).
