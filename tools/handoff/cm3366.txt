@@ -1,0 +1,7 @@
+v33.66: the pixel wall
+
+With the pixel look on (the default), walls are chunky stepped-colour pixel brick and panel. With the look off, nothing changes.
+
+Check 33.66. Fails on v33.65.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
