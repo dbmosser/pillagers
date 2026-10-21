@@ -1,1 +1,1 @@
-10-20 23:39 running 81-powerups-half-size on Claude Code (your plan: week 72% of the 35.7% line, 5-hour 23%)
+10-20 23:49 81-powerups-half-size: done, $0.1381663

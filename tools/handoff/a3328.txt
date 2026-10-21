@@ -1,0 +1,1 @@
+| EXPERIMENTAL SETTINGS GROUPS AND ALIGNMENT | v33.28 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 33.28 passes, fails on v33.27 |

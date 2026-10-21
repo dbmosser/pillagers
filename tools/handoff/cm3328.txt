@@ -1,0 +1,7 @@
+v33.28: experimental settings groups and alignment
+
+Experimental settings have four groups, a separate Back action, clearer on and off values, and the effect directly below the focused setting.
+
+Check 33.28. Fails on v33.27.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

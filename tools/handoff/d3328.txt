@@ -1,0 +1,5 @@
+## v33.28 - EXPERIMENTAL SETTINGS GROUPS AND ALIGNMENT
+
+Co-op hunt while he was away. The first page pictures scored 2: an absent category rail left a blank gutter, descriptions floated halfway down the pane, and Back looked like a toggle.
+
+MEASURED. Check 33.28 passes, and fails on v33.27.

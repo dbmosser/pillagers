@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.28 - EXPERIMENTAL SETTINGS GROUPS AND ALIGNMENT
+
+Co-op hunt while he was away. The first page pictures scored 2: an absent category rail left a blank gutter, descriptions floated halfway down the pane, and Back looked like a toggle.
+
+MEASURED. Check 33.28 passes, and fails on v33.27.
 ## v33.27 - power-up pickups half size
 
 Co-op hunt while he was away. His order (2026-10-20): "powerups need to be like 50^ smaller". The floating pickups (bottomless clip, double damage, rapid fire, shield bubble, screen clear) draw at half size through one constant PWRK: medallion, glyph, rim, glow, hover height, bob, spawn flash and beam width. The reach ring keeps its size so picking one up plays the same, and the beam keeps its height so it still shows from far away.
