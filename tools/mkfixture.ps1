@@ -8589,7 +8589,7 @@ window.__REGRESS=[
   {v:'32.71',what:'machines and effects (his art picks a27 a28 a30 a31 a34 a35): charging ring, machine death blast, moonlit night, lighter fog, chunkier sparks, bigger blast that stays inside its damage radius',
    run:function(){
      if(typeof __frame!=='function') return 'SKIP: no frame helper';
-     var PR=CanvasRenderingContext2D.prototype, oa=PR.arc, os=PR.stroke, of=PR.fill, g=null, i, arcs=[], n0, p0, bn, b;
+     var PR=CanvasRenderingContext2D.prototype, oa=PR.arc, os=PR.stroke, of=PR.fill, g=null, i, arcs=[], n0, p0, bn, b, fr0=CFG.flashRed, fx0=CFG.fxLevel;
      try{
        __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
@@ -8607,6 +8607,7 @@ window.__REGRESS=[
        drawWindupGlow({windup:0.02,kind:'sentry'},100,100);
        PR.arc=oa;
        if(arcs.length!==2||arcs[1]!==3) return 'a27 no white core flash in the last frames: '+arcs.join(',');
+       CFG.flashRed=0; CFG.fxLevel=1;   // 10-21: the a34 count is read with REDUCED FLASHING off and Effects Full; neither is in DEF, so __resetCfg never pinned them and a profile left with flashing on (default since v32.91) read 9
        n0=g.sparks.length; spark(0,0,'#ffcf7a',10,200);
        if(g.sparks.length-n0<18) return 'a34 sparks added '+(g.sparks.length-n0)+' for 10, want 18';
        p0=g.puffs.length; bloodFx(10,10,0,0,30);
@@ -8622,6 +8623,8 @@ window.__REGRESS=[
        return null;
      } finally {
        PR.arc=oa;
+       if(fr0===undefined) delete CFG.flashRed; else CFG.flashRed=fr0;
+       if(fx0===undefined) delete CFG.fxLevel; else CFG.fxLevel=fx0;
        try{ __endRaid('abandon'); }catch(_e){}
        __topClear();
      } }},
@@ -24985,7 +24988,7 @@ window.__REGRESS=[
   {v:'27.80',what:'feel2b, his yes to the Halo Reach bloom, the pacing half: the moment the bloom a round opened has fully closed, the ring on the cursor flashes once (a contracting ring and four ticks, p.rstT), not while a spam keeps it open, never for a player who has not fired, and the flash is really drawn',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: no raid or frame here';
-     var bad=[], g, p, all, oWep, oAmmo, oMx, oMy, w, q, t, seen, rstAt, n0, R0, R1, cap=[], proto, oArc, i;
+     var bad=[], g, p, all, oWep, oAmmo, oMx, oMy, w, q, t, seen, rstAt, n0, R0, R1, cap=[], proto, oArc, i, oFR=CFG.flashRed;
      function wipe(){ p.bloom=0; p.bloomK=0; p.bloomPend=0; p.bloomQ=9; p.blmX=undefined; p.ads=false; p.roll=0; p.rstT=0; p.rstN=0; p.bloomArm=0; p.bloomPk=0; g.sprinting=false; g.pCrouch=false; }
      function ringR(){
        var k, mr=0;
@@ -25019,13 +25022,13 @@ window.__REGRESS=[
        for(q=0;q<400;q++) bloomTick(p,0.016);
        if(p.rstN!==1) bad.push('TWO: '+(p.rstN|0)+' flashes after the spam ended, not 1');
        // THREE: the ring is really drawn
-       wipe(); p.bloom=0; p.rstT=0; R0=ringR();
+       wipe(); p.bloom=0; p.rstT=0; CFG.flashRed=0; R0=ringR();   // 10-21: REDUCED FLASHING leaves the contracting ring out (v27.80 by design) and is on by default since v32.91, so it is pinned off here
        p.rstT=0.3; R1=ringR();
        if(!(R0>0)) bad.push('THREE: no ring was drawn at the cursor');
        else if(!(R1>R0+6)) bad.push('THREE: with the flash on the outer ring is '+(R1-R0).toFixed(1)+' px wider than without, not 6 or more');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
-       try{ if(p){ p.wep=oWep; p.ammo=oAmmo; p.bloom=0; p.bloomK=0; p.bloomPend=0; p.rstT=0; p.rstN=0; p.bloomArm=0; p.blmX=undefined; } if(g){ if(all) g.ents=all.slice(); g.bullets.length=0; } if(oMx!==undefined){ mouse.x=oMx; mouse.y=oMy; } }catch(_h){}
+       try{ if(oFR===undefined) delete CFG.flashRed; else CFG.flashRed=oFR; if(p){ p.wep=oWep; p.ammo=oAmmo; p.bloom=0; p.bloomK=0; p.bloomPend=0; p.rstT=0; p.rstN=0; p.bloomArm=0; p.blmX=undefined; } if(g){ if(all) g.ents=all.slice(); g.bullets.length=0; } if(oMx!==undefined){ mouse.x=oMx; mouse.y=oMy; } }catch(_h){}
        try{ __endRaid('abandon'); }catch(_e){}
        __topClear();
      }
@@ -36865,10 +36868,10 @@ window.__REGRESS=[
   {v:'25.53',what:'his mode design and answers (2026-10-12): a CAREER extraction doubles the score and pays 1 credit a point into his credits, the card reads CAREER SCORE, and the run goes on his CAREER board; a death pays nothing and leaves the board alone',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__runPrep&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
-     var bad=[], g, c0=(typeof CAREER_ON==='number')?CAREER_ON:0, cr0, b0=null, hb=false, bb0, m, cr1;
+     var bad=[], g, c0=(typeof CAREER_ON==='number')?CAREER_ON:0, cr0, b0=null, hb=false, bb0, m, cr1, r0, hr=false, a0, ha=false;
      try{
        __topClear(); __runPrep();
-       b0=P.careerBoard; hb=('careerBoard' in P); bb0=P.careerBest; P.careerBoard=[];
+       b0=P.careerBoard; hb=('careerBoard' in P); bb0=P.careerBest; r0=P.careerRuns; hr=('careerRuns' in P); a0=P.careerAll; ha=('careerAll' in P); P.careerBoard=[]; delete P.careerRuns; delete P.careerAll;   // 10-21: v27.98 ranks a run by P.careerAll and P.careerRuns, so an empty board alone is not a first run (a 1400 left by an earlier run ranked #2)
        CAREER_ON=1;
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||g.over) return 'SKIP: no live raid';
@@ -36894,7 +36897,7 @@ window.__REGRESS=[
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{
        try{ CAREER_ON=c0; }catch(_r){}
-       try{ if(hb) P.careerBoard=b0; else delete P.careerBoard; if(bb0===undefined) delete P.careerBest; else P.careerBest=bb0; }catch(_b){}
+       try{ if(hb) P.careerBoard=b0; else delete P.careerBoard; if(hr) P.careerRuns=r0; else delete P.careerRuns; if(ha) P.careerAll=a0; else delete P.careerAll; if(bb0===undefined) delete P.careerBest; else P.careerBest=bb0; }catch(_b){}
        try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){} __topClear(); }
      return bad.length?bad.join('; '):null; }},
   {v:'25.52',what:'his order 2026-10-12 (good reload noises): every gun class reloads in recorded steps on its own reload clock (a clip the frame R is pressed, one between 60 and 90 percent, one on the frame the rounds go in only when the gun was empty), a shotgun pushes one shell per shell taken, a faster reload plays the same steps sooner, a reload cut by a swap plays nothing more, and nothing plays under G.sim',
