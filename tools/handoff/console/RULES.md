@@ -126,6 +126,8 @@ S = C:\Users\User1\AppData\Local\Temp\claude\C--Users-User1-Desktop-dark-raiders
   powershell -NoProfile -ExecutionPolicy Bypass -File tools/cdp.ps1 -Start -Port 9346
   git status / git log / git diff / git show (read only)
 - Run each command on its own: no pipes, no &&, no cd.
+- (10-21) In the VM your own Claude Code scratchpad and any C:/Users/VM Oct26/... path are NOT on the list (jobs 61 and 84 lost runs
+  to this). Write mk-cw-KEY.ps1 only into S and run it with the C:/Users/User1/... form above: C:/Users/User1 is a link to the same folder.
 
 ## Every lane (a to h) shares the one repo, so keep the tree clean
 - A ship STOPs when the game file or tools\mkfixture.ps1 has uncommitted edits. So edit tools\mkfixture.ps1 ONLY while you
