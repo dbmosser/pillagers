@@ -1,0 +1,7 @@
+v33.29: the what is new card names polish pass 42
+
+The what is new card names polish pass 42.
+
+Check 33.29. Fails on v33.28.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

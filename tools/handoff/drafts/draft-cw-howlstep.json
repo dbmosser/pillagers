@@ -1,0 +1,28 @@
+{
+    "title":  "THE HOWLER WALKS ON ITS OWN STEP",
+    "why":  "His yes on pick 73, motion only. The sentry, warden (so the Overseer) and bulwark have the heavy clank, the crawler a skitter, the Crier a drone, and the pillbox and Listener do not walk. The Howler walks and was the only machine on the light pillager scuff, so it gets a short pneumatic tick of its own: a click, a knock around 1.5 kHz, a falling triangle and a faint hiss, at most one per 150 ms and no held tone. The other machines are unchanged.",
+    "now":  "The Howler now has its own walking sound, a quick pneumatic tick. The other machines sound as before.",
+    "edits":  [
+                  {
+                      "anchor":  "// ---------------------------------------------------------------- the stronghold gate breach\n",
+                      "replacement":  "// v28.xx (cw-howlstep), HIS YES (100 picks, 73 \"machine movement signatures\", motion only, no continuous tones). Looked at which machines already have a way of\n// moving that you can hear: the sentry, the warden (and so the Overseer, a boss warden) and the bulwark have the heavy clank (stepSoundFor, v8.55), the crawler\n// its skitter, the Crier its drone, the pillbox and the Listener do not walk. The HOWLER walks and was the only machine on the light pillager scuff. It gets a\n// step of its own: a quick pneumatic tick (a click, a short bandpassed knock around 1.5 kHz, a falling 330 to 180 Hz triangle and a faint 3 kHz hiss), lighter\n// than a clank and sharper than a scuff, a little slower than a pillager\u0027s, on the machine bus and on the FOOTSTEPS VOLUME row like every step. Nothing is held,\n// nothing hums: one short sound per step, at most one per 150 ms.\nSPK_CAT.stepHowl=\u0027mach\u0027;\nSPK_INFO.stepHowl={grp:\u0027machines\u0027,lab:\u0027HOWLER step\u0027,len:0.14,kind:\u0027synth\u0027,uses:[]};\nSPK_GEN.stepHowl=function(a,OUT,vol,t){\n  var M, o;\n  if(!spkGate(\u0027stepHowl\u0027,0.15,t)) return null;\n  M=spkMaster(a,OUT,vol,t);\n  spkTick(a,M,t,2200,1,0.01,0.1);\n  spkTick(a,M,t,1500,1.2,0.04,0.12);\n  o=spkOsc(a,M,{ty:\u0027triangle\u0027,f0:330,f1:180,dur:0.07,g:0.06,lp:900,at:t,atk:0.002});\n  spkNoise(a,M,{at:t+0.02,dur:0.09,g:0.03,ft:\u0027highpass\u0027,f0:3000,q:0.7,atk:0.004});\n  return spkH(M,o,t+0.14);\n};\n// ---------------------------------------------------------------- the stronghold gate breach\n"
+                  },
+                  {
+                      "anchor":  "function stepSoundFor(kind){\n  return (kind===\u0027sentry\u0027||kind===\u0027warden\u0027||kind===\u0027bulwark\u0027)?\u0027stepHeavy\u0027:\u0027step\u0027;\n}\n",
+                      "replacement":  "function stepSoundFor(kind){\n  if(kind===\u0027howler\u0027) return \u0027stepHowl\u0027;   // v28.xx (cw-howlstep): the Howler walks on its own sound\n  return (kind===\u0027sentry\u0027||kind===\u0027warden\u0027||kind===\u0027bulwark\u0027)?\u0027stepHeavy\u0027:\u0027step\u0027;\n}\n"
+                  },
+                  {
+                      "anchor":  "  if(heavy) blip(\u0027stepHeavy\u0027,ear.d*1.35,ear.pan,bsurf);\n",
+                      "replacement":  "  if(stepSoundFor(best.kind)===\u0027stepHowl\u0027) blip(\u0027stepHowl\u0027,ear.d*1.35,ear.pan,bsurf);   // v28.xx (cw-howlstep)\n  else if(heavy) blip(\u0027stepHeavy\u0027,ear.d*1.35,ear.pan,bsurf);\n"
+                  },
+                  {
+                      "anchor":  "  STEP_T=(heavy?0.62:0.44)*",
+                      "replacement":  "  STEP_T=(heavy?0.62:(best.kind===\u0027howler\u0027?0.56:0.44))*"
+                  },
+                  {
+                      "anchor":  "(type===\u0027foot\u0027||type===\u0027step\u0027||type===\u0027stepHeavy\u0027)?volOf(\u0027volFoot\u0027):1",
+                      "replacement":  "(type===\u0027foot\u0027||type===\u0027step\u0027||type===\u0027stepHeavy\u0027||type===\u0027stepHowl\u0027)?volOf(\u0027volFoot\u0027):1"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the Howler walks on its own short pneumatic step (the only walking machine that was on the pillager scuff), on the machine bus and the footsteps volume, the other machines unchanged\u0027,\n   run:function(){\n     if(typeof SPK_GEN!==\u0027object\u0027||typeof SPK_GEN.stepHowl!==\u0027function\u0027) return \u0027there is no Howler step (no stepHowl)\u0027;\n     var bad=[], k, ks=[\u0027sentry\u0027,\u0027warden\u0027,\u0027bulwark\u0027,\u0027crawler\u0027,\u0027raider\u0027,\u0027snitch\u0027,\u0027listener\u0027,\u0027choir\u0027], want=[\u0027stepHeavy\u0027,\u0027stepHeavy\u0027,\u0027stepHeavy\u0027,\u0027step\u0027,\u0027step\u0027,\u0027step\u0027,\u0027step\u0027,\u0027step\u0027], OFF, fr, src, i;\n     if(stepSoundFor(\u0027howler\u0027)!==\u0027stepHowl\u0027) bad.push(\u0027the Howler is not on its own step\u0027);\n     for(i=0;i\u003cks.length;i++){ if(stepSoundFor(ks[i])!==want[i]) bad.push(ks[i]+\u0027 step changed to \u0027+stepSoundFor(ks[i])); }\n     if(SPK_CAT.stepHowl!==\u0027mach\u0027) bad.push(\u0027the Howler step is not on the machine bus\u0027);\n     if(typeof OfflineAudioContext===\u0027function\u0027){\n       OFF=new OfflineAudioContext(1,22050,22050);\n       try{ SPK.at.stepHowl=-9; fr=SPK_GEN.stepHowl(OFF,OFF.destination,1,0); if(!fr||!fr.g) bad.push(\u0027the Howler step made no sound\u0027); }catch(e){ bad.push(\u0027the Howler step threw \u0027+e); }\n     }\n     src=String((typeof _realBlip===\u0027function\u0027)?_realBlip:blip);\n     if(src.indexOf(\u0027step\u0027+\u0027Howl\u0027)\u003c0) bad.push(\u0027the footsteps volume row does not cover the Howler step\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null;\n   }},"
+}

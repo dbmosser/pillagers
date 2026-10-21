@@ -210,10 +210,12 @@ try{
     foreach($p in $pick){
       $name=$p.name; $t0=Get-Date
       $u=$Url; if($p.query){ $u=$Url+$p.query }
-      # one retry: a busy PC (other chains' Chromes) can make a single DevTools call time out
+      # one retry: a busy PC (other chains' Chromes) can make a single DevTools call time out; and a two-window scene right
+      # after another one can find the last pair's player 2 heartbeat (salvagerun:p2raid, 75 s) and not link (10-21: both
+      # o-07 j8-p2-press-a and o-08 j7-raid-p2-pad-owner failed last in a run and staged alone), so that retries too
       $entry=$null
       for($try=0;$try -lt 2;$try++){
-        try{ $entry=StageOne $p $u $res; if($entry.staged -or $entry.note -notmatch 'did not load'){ break } }
+        try{ $entry=StageOne $p $u $res; if($entry.staged -or $entry.note -notmatch 'did not load|did not link'){ break }; if($entry.note -match 'did not link'){ Start-Sleep -Seconds 3 } }
         catch{ $entry=[ordered]@{staged=$false;note=('ERROR '+$_.Exception.Message);viewport='';shot=$null;lint=$null}; Write-Output ("  $name  try $($try+1): "+$_.Exception.Message) }
       }
       $rows[$name][$res]=$entry

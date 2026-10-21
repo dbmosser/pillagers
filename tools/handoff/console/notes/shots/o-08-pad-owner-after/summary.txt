@@ -1,0 +1,9 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  j7-hub-p1-pad-owner                    staged      12.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"place":"hub","seat":1,"trials":[{"trial":0,"late":false,"assignment":"A=p2 B=p1","claimPulse":true,"replugOnlyA":true},{"trial":0,"late":true,"assignment":"A=p2 B=p1","claimPulse":true,"replugOnlyA":true},{"trial":1,"late":false,"assignment":"A=p2 B=p1","claimPulse":true,"replugOnlyA":true},{"tria
+  j7-hub-p2-pad-owner                    staged       7.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"place":"hub","seat":2,"trials":[{"trial":0,"late":false,"assignment":"A=p2 B=p1","claimPulse":true,"replugOnlyA":true},{"trial":0,"late":true,"assignment":"A=p2 B=p1","claimPulse":true,"replugOnlyA":true},{"trial":1,"late":false,"assignment":"A=p2 B=p1","claimPulse":true,"replugOnlyA":true},{"tria
+  j7-raid-p1-pad-owner                   staged       9.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"place":"raid","seat":1,"trials":[{"trial":0,"late":false,"assignment":"A=p2 B=p1","claimPulse":true,"replugOnlyA":true},{"trial":0,"late":true,"assignment":"A=p2 B=p1","claimPulse":true,"replugOnlyA":true},{"trial":1,"late":false,"assignment":"A=p2 B=p1","claimPulse":true,"replugOnlyA":true},{"tri
+  j7-raid-p2-pad-owner                   NOT STAGED  30.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at until (<anonymous>:7:11)
+    at async stageOwner (<anonymous>:33:3)
+    at async <anonymous>:104:8
+    at async <anonymous>:1:21

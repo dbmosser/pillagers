@@ -607,3 +607,14 @@
 2026-10-20 1.0700693000000003 80-machines-a-third-larger
 2026-10-20 0.4697041 81-powerups-half-size
 2026-10-20 0.1381663 81-powerups-half-size
+2026-10-20 0.1394 critic-61-experimental-menu
+2026-10-20 0.1391 critic-61-experimental-menu
+2026-10-20 0.1421 critic-61-experimental-menu
+2026-10-20 0.1402 critic-61-experimental-menu
+2026-10-20 0.1402 critic-61-experimental-menu
+2026-10-21 0.1394 critic-manual
+2026-10-21 0.1465 critic-manual
+2026-10-21 0.1397 critic-manual
+2026-10-21 0.1465 critic-manual
+2026-10-21 0.1423 critic-manual
+2026-10-20 0.0000 61-experimental-menu

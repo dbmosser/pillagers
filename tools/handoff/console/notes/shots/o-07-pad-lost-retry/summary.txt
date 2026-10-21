@@ -1,0 +1,2 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  j8-p2-press-a                          staged      17.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"mode":"demo","seat":2,"realPair":[{"on":true,"role":"host","seat":0,"roster":[{"seat":0,"pid":"fa25f24f","name":"PILLAGER","host":true},{"seat":1,"pid":"ee491ec5","name":"PLAYER 2","host":false}],"status":"PLAYER 2 joined","err":"","made":1,"codeLen":1181,"links":1},{"on":true,"role":"join","seat"

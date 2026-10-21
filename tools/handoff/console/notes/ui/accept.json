@@ -1187,17 +1187,17 @@
  "79-experimental-top": {
   "score": 2,
   "pass": false,
-  "verdict": "A flat 25-row list of identical on/off toggles beside an empty detail pane. The left third is blank and the lime focus bar is the only hierarchy, so it reads as a debug dump, not a polished settings screen.",
+  "verdict": "The screen is clean and consistent with the dark and lime tokens, but it is a flat list of 28 identical 'on' rows with a mostly empty detail pane and very small text, so it reads like a debug page and not a polished game menu.",
   "findings": [
-   "P0 left column of the list panel (x 50-338): Remove the empty left column. Start rows at the panel's 24px inner padding (x≈74). Either widen the rows to the full panel width or put a real category rail (16px labels) in that space.",
-   "P0 right detail pane: Show the focused row's name, a one-line state in 20px tx-1, and what it changes in 16px tx-2, top-aligned at 24px padding. Put 'starts next raid' directly under the title. Otherwise shrink the pane to about 480px and give the list more width.",
-   "P1 'experimental / back' row at y 120-175: Make back a left-aligned '‹ back' above the list, or put it in the card header next to the title. Rename the section breadcrumb 'settings / experimental' in the title row. Start the list at 'run goals' with focus on it.",
-   "P1 all toggle rows (value column x 730-985): Draw an on state as an lime/tx-1 pill and an off state in tx-2 with a dimmed track. Group the rows under 16px tx-2 sub-headers (raid rules, enemies, events, extras). Move the arrows next to the value and make them at least 20px. Highlight only the focused row's arrows.",
-   "P1 bottom of the list (event: bounty pillager bot, y≈985): Fade the last 32px of the list with a mask so the crop reads as a scroll. Make the scrollbar 6px with a 1px --ui-line track. Add a '12 / 28' counter in 16px tx-2 in the footer."
+   "P1 right detail pane: Remove the duplicate chip, or turn it into the real toggle at 20px with focus. Make the title 32px. Put the description at 20px tx-1 and 'starts next raid' at 16px tx-2. Shrink the pane to content height, or fill it with something useful such as the default value and a reset action.",
+   "P1 left list rows: Show only deviations from the default in lime or warn. Dim the 'on' chips to tx-2 with no border. Right-align the value column at the row edge and use 20px f-cond 600 names. Group the rows under 16px tx-2 section labels with 24px spacing.",
+   "P1 focused row (run goals): Use one focus language: the 4px lime left bar plus the --ui-raised fill. Show ‹ on › as plain text with no inner box, inside the row's 56px height. Delete the stray white vertical tick at x=873.",
+   "P2 group gap after 'air strike': Add a 16px tx-2 section label in the gap, or use the same 56px row pitch everywhere. If groups stay, label every group.",
+   "P2 footer legend: Use 16px tx-2 with the key in tx-1, for example 'enter  change   esc  back', 24px from the card's bottom-left edge or under the list."
   ],
-  "pic": "tools/handoff/console/notes/shots/61-experimental-menu-recipes-1/79-experimental-top-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/61-experimental-menu-recipes-2/79-experimental-top-1080.jpg",
   "task": "61-experimental-menu",
-  "when": "2026-10-21T03:33"
+  "when": "2026-10-21T03:51"
  },
  "28-settings-scroll-1200": {
   "score": 3,
@@ -1217,17 +1217,17 @@
  "80-experimental-middle": {
   "score": 2,
   "pass": false,
-  "verdict": "the list and focus bar are clean, but the section sidebar is blank, the list floats off-centre, and the detail pane is mostly empty, so the screen reads as unfinished.",
+  "verdict": "The layout is clean and lower case, but the focused row has a double focus frame, the 'back' button scrolls with the list, and the detail pane is mostly empty, so it still looks like a template settings list.",
   "findings": [
-   "P0 left column (x 50-338): Draw the section list (gameplay, controls, experimental and so on) in the 288px column, with the active section in lime and a 3px left bar. If sections aren't wanted, delete the column and widen the list to start at x=50.",
-   "P1 right detail pane: Put the description 16px under the title at 20px tx-1 or tx-2. Add a larger on/off state readout, and a default-value line at 16px tx-2. Otherwise shrink the pane so it isn't a 780px void.",
-   "P1 value controls (x 731/857/982): Make on/off a pill toggle: filled lime for on, an outlined tx-2 pill for off. Show chevrons only on the focused row. Right-align the value at the row's end, with 24px padding.",
-   "P1 row text, sizes: Use 20px f-cond 600 for names. Group the events under one 16px tx-2 label 'events' and drop the repeated prefix.",
-   "P2 list bottom (y 955-995): Snap the scroll to whole rows with a 56px row pitch. Widen the scrollbar track to 8px in --ui-line-hi, with a lime thumb on focus."
+   "P1 left list, top: Pin the back/count header outside the scroll region, 56px tall, with a 1px --ui-line divider. Clip rows to start below it, or add a 16px fade at the scroll edge.",
+   "P1 orbital debris row, focused: Use one focus treatment: a 3px lime left bar, a --ui-raised row fill, and a lime 1px outline on the value chip only. Draw the chevrons in --tx-2, 20px, 8px from the chip. Remove the white bracket and the outer 2px rounded frame.",
+   "P1 right detail pane: Drop the duplicate chip. Show a 56px hero state ('off' in lime or --tx-2), and put the 'starts next raid' note in the footer at 16px. Or narrow the pane to about 480px and give the list the rest of the width.",
+   "P1 row value chips, x≈940: Right-align the chips at 24px padding from the row edge, with a fixed 64px width. Draw 'on' quiet in --tx-2 with no border, and give 'off' a --warn outline, so the exceptions are the ones that read.",
+   "P2 list row spacing: Add 16px --tx-2 group labels ('field', 'threats', 'quality of life') with a 1px divider, or remove the gaps. Set a uniform 56px row height and vertically centre the chip and name."
   ],
-  "pic": "tools/handoff/console/notes/shots/61-experimental-menu-recipes-1/80-experimental-middle-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/61-experimental-menu-recipes-2/80-experimental-middle-1080.jpg",
   "task": "61-experimental-menu",
-  "when": "2026-10-21T03:34"
+  "when": "2026-10-21T03:51"
  },
  "29-settings-scroll-1800": {
   "score": 2,
@@ -1247,32 +1247,32 @@
  "81-experimental-bottom": {
   "score": 2,
   "pass": false,
-  "verdict": "A full-screen card with a clean focus bar, but the list floats in the middle of an empty left panel, the detail pane is nearly blank with one muted line stranded halfway down, and all 16 rows are identical 'on' toggles with nothing to tell them apart.",
+  "verdict": "A functional dark settings list with correct lower case and a clear lime focus row, but the scrolled state has a clipped group header behind the back button, uneven row gaps, a nearly empty detail pane and tiny low-contrast text, so it reads as a template list and not a polished AAA menu.",
   "findings": [
-   "P0 left list panel: Make the rows fill the panel: x=50 to 1055 with 24px inner padding. Put the row name at x=74 and the value control right-aligned to a 24px inset. Or shrink the panel to the list width and give the freed width to the detail pane.",
-   "P0 detail pane (right): Anchor the description 16px under the title (y≈210) in tx-2 at 20px, at least 4.5:1 contrast. Add what the pane is missing: a large current value (56px hero 'on'), a default-value line and a 'recommended' tag. Or narrow the pane to about 560px and widen the list.",
-   "P1 row values (all 16 rows): Idle arrows go to tx-2 (#aaa498) at 60% opacity, with the value in tx-1. Show 'off' in --danger or muted and 'on' in --ok, or use a toggle pill. Add a 16px tx-2 section label with 32px of space above it ('events', 'raid', 'assists') to break the list.",
-   "P1 row names (idle rows): Set idle row names to 20px f-cond 600 in tx-1 at 85% opacity. Keep the focused row at tx-1 on --ui-raised, with the lime 4px bar and lime arrows only. Don't use lime for the label text.",
-   "P1 scroll position and scrollbar: Add 8px of top and bottom padding inside the list, show a 6px thumb in --ui-line-hi that gets lighter on focus, and fade the top and bottom 24px of the list to the panel colour."
+   "P0 top of left list, behind the back button: Put the back bar in a fixed 56px row above the scroll area with 16px padding. Clip the scroll region below it (top 183px) with a 12px fade mask so no half glyphs show. Or scroll the group header into view with its rows.",
+   "P1 detail pane (right, x1088-1870): Set the pane to a 24px-padded layout: title 32px, one description line 20px tx-1, status tag 16px tx-2 in the pane footer. Replace the redundant 'on' chip with a real toggle that matches the row control. Or shrink the pane to content height and give the list more width.",
+   "P1 left list row spacing: Give each group a visible 16px tx-2 label in a 40px header row, and use an exact 56px row pitch everywhere else. Move '28 features' into the screen header right of the title, or drop it.",
+   "P1 value chips and focused row: Show only deviations: a default 'on' becomes plain tx-2 text with no box. Draw the chip only on focus. Make the arrows 20px with a 16px gap, and right-align every value to x=1008 (24px inner padding).",
+   "P1 footer hint and fine text: Raise the hint to 16px with tx-1 key names and tx-2 labels, separated by 24px gaps. Raise 'starts next raid' to 16px at at least 4.5:1."
   ],
-  "pic": "tools/handoff/console/notes/shots/61-experimental-menu-recipes-1/81-experimental-bottom-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/61-experimental-menu-recipes-2/81-experimental-bottom-1080.jpg",
   "task": "61-experimental-menu",
-  "when": "2026-10-21T03:34"
+  "when": "2026-10-21T03:52"
  },
  "82-experimental-host": {
   "score": 2,
   "pass": false,
-  "verdict": "the settings card has the right frame (x, title, esc close, lime focus bar), but the list is scrolled to the end with no tabs or section title, and the left third of the card is empty. Every row is identical, and the detail pane is mostly void.",
+  "verdict": "The layout is clean and readable, but the list scrolls with a stray header, the focus stepper is heavy and misaligned, and the right pane is mostly empty.",
   "findings": [
-   "P0 left list panel, x 50-335: Either draw the category or tab rail here (16px labels, 24px padding, lime 3px bar on the active one), or start the rows at x=74 (24px panel padding) and widen them to fill the panel.",
-   "P0 list, 15 rows: Add 16px tx-2 group headers (events, combat, raid, shop) with 32px space above each. Show a visible title or tab for the current section. Make idle value text tx-2 and only the focused row's value lime.",
-   "P1 detail pane, right: Put the description 16px under the title (y~210) at 20px f-body in tx-1/tx-2. Add the value state as a hero or a pill. Use --ui-raised for the pane. Or narrow the pane and give the list the width.",
-   "P1 value controls '‹ on ›': Make the arrows 24px chevrons with a 48px hit area. Show the off state in tx-2 or danger. Pack the value and arrows tighter, within about 200px of each other.",
-   "P1 scrollbar, x~1050: Use a 4px --ui-line-hi track and a solid thumb with 8px inset. Remove the fade. Add a scroll position cue such as a count or a top edge line."
+   "P0 list top, 'back' row and scroll clip: Delete the in-list back button, since the x and esc already close. Pin the '28 features' count in a fixed 48px sub-header and clip the scroll region cleanly below it with no partial rows.",
+   "P0 focused row 'needed-item glow': Keep the 3px lime left bar and the --ui-raised row fill. Keep the toggle at its idle size and only change its border to lime. Drop the glow and the outer box. Show the arrows ‹ › at 16px tx-2 inside the same 32px pill, with no bracket.",
+   "P1 right detail pane: Remove the duplicate 'on' button, or turn it into a read-only status word. Set the description at 20px tx-1. Set the two status lines at 16px tx-2 with a 16px gap. Keep the lime top tab to 36px wide, not full width.",
+   "P1 toggle column x~915-970 and row alignment: Right-align the pills at 24px from the list edge. Make 'off' states dim and 'on' states lime-ink on a filled pill so state scans. Give every row an exact 56px, and add a 16px label for any group break instead of a blank gap.",
+   "P1 type sizes: Set row names to 20px f-cond 600. Set every read-aloud line to a minimum of 16px in --tx-2 (#aaa498) and keep 14px for the version stamp only."
   ],
-  "pic": "tools/handoff/console/notes/shots/61-experimental-menu-recipes-1/82-experimental-host-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/61-experimental-menu-recipes-2/82-experimental-host-1080.jpg",
   "task": "61-experimental-menu",
-  "when": "2026-10-21T03:34"
+  "when": "2026-10-21T03:52"
  },
  "31-settings-send-play-data": {
   "score": 2,
@@ -1290,19 +1290,19 @@
   "when": "2026-10-21T03:35"
  },
  "83-experimental-guest": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "a clean dark card that follows the tokens, but the list sits in the middle of an empty left panel, the detail pane is a title and one tiny line with a big void between them, and a hundred identical 'on' rows give the eye nothing to land on.",
+  "verdict": "A clean, consistent dark card with a clear lime focus row, but it is a flat list of 28 identical rows, the detail pane is mostly empty, and the focus control and sticky header are clumsy.",
   "findings": [
-   "P0 left list panel: Left-align the rows to the panel with 24px padding, or show the category column in that space. Make the row width equal the panel inner width, with the name left, the value right and the arrows tight around the value.",
-   "P0 detail pane: Put the description directly under the title with 16px gap at 20px f-body in tx-1/tx-2. Add the current value as a hero state ('on' at 56px) or a short effect line, or shrink the pane to content. Do not vertically spread the content.",
-   "P1 value column (on, arrows): Use a toggle switch or pill for on/off (lime fill when on, tx-2 outline when off). Show chevrons only on the focused row. Make chevrons at least 20px.",
-   "P1 row text and description size: Set row names to 20px f-cond 600 and the description to 20px f-body in tx-1 or tx-2 at 4.5:1 or better. Row height 56px is fine.",
-   "P1 header and title: Title at 32px f-cond 700 with a 56px header row. Add a group sub-label in 16px tx-2 above the list ('experimental'), and sticky group headers when scrolling."
+   "P1 left list, focus row 'needed-item glow': Keep one signal: the 3px lime left bar plus a --ui-raised row fill. Draw the value as one 1px lime-bordered pill (height 32) with 16px chevrons inside it. Remove the outer glow and the bracket.",
+   "P1 right detail pane: Remove the duplicate 'on' pill. Show the description at 20px tx-1, then a 16px label/value pair block ('applies  next raid', 'this raid  off') in tx-2 at 4.5:1 or better. Anchor the block to the top and cut the pane height, or fill it with a short state summary.",
+   "P1 left list, top edge: Put the back and the '28 features' count in a fixed 56px header band outside the scroll area, with a clean 1px divider. Or drop 'back' entirely, since the X and the esc legend already cover it. Clip the scroll region below the header.",
+   "P2 list rows: Use a fixed 56px row pitch. Add 16px tx-2 group headers (e.g. 'raid', 'machines') with 24px above them where groups change. Remove the stray gaps.",
+   "P2 toggle pills, right-aligned at x≈940: Right-align the pills 24px from the panel edge. Style on as lime text with a 1px lime border and off as tx-2 on a --ui-line border, so state reads at a glance."
   ],
-  "pic": "tools/handoff/console/notes/shots/61-experimental-menu-recipes-1/83-experimental-guest-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/61-experimental-menu-recipes-2/83-experimental-guest-1080.jpg",
   "task": "61-experimental-menu",
-  "when": "2026-10-21T03:35"
+  "when": "2026-10-21T03:53"
  },
  "39-hub-after-raid": {
   "score": 2,
