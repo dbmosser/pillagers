@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.43 - PUBLIC REPORT COPY TEXT
+
+Co-op hunt while he was away. Strangers do not know Daniel. The Thanksgiving build needs useful report actions without a private contact instruction.
+
+MEASURED. Check 33.43 passes, and fails on v33.42.
 ## v33.42 - raid start map: no cache or strongbox words
 
 Co-op hunt while he was away. His order (2026-10-20): "map on this second preraid screen should not have caches labelled, makes the whole thing look messy". On the map that opens at raid start, the ten or so CACHE and LOOTED words and the STRONGBOX word, with their leader lines, are gone. The rings and icons stay so every spot is still marked. The m key map in the raid keeps its words.

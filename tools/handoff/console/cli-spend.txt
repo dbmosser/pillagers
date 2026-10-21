@@ -654,3 +654,5 @@
 2026-10-21 0.1432 critic-coord-10
 2026-10-21 0.7440075 84-airstrike-bar-lower
 2026-10-21 0.1439896 84-airstrike-bar-lower
+2026-10-21 0.0000 o-91-circle-only-text
+2026-10-21 0.48310929999999996 85-preraid-map-no-cache-labels

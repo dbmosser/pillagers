@@ -1,0 +1,7 @@
+v33.43: public report copy text
+
+Report help names the raid log. A successful copy says report copied.
+
+Check 33.43. Fails on v33.42.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

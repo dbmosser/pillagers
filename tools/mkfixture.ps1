@@ -6145,6 +6145,31 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'33.43',what:'public report text has no private contact name and successful report copy says report copied',
+   run:function(){
+     var bad=[], btn=document.getElementById('copybtn'), ta=document.getElementById('exporttext');
+     var desc=Object.getOwnPropertyDescriptor(navigator,'clipboard'), ex=document.execCommand, timer=window.setTimeout, oldText, oldValue;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       if(!btn||!ta) return 'report copy controls missing';
+       oldText=btn.textContent; oldValue=ta.value;
+       var hint=document.getElementById('oc_copynote'), oc=document.getElementById('oc_copy');
+       var texts=[hint?hint.textContent:'',WHATSNEW.join('|'),JSON.stringify(TXSHIP),String(btn.onclick),String(oc&&oc.onclick),String(window.__realDownloadExport||downloadExport)];
+       var modal=document.getElementById('spane_rec'); if(modal) texts.push(modal.textContent);
+       if(/daniel/i.test(texts.join('|'))) bad.push('report text still names a private contact');
+       Object.defineProperty(navigator,'clipboard',{value:undefined,configurable:true});
+       document.execCommand=function(cmd){ return cmd==='copy'; };
+       window.setTimeout=function(){ return 0; };
+       ta.value='report copy probe'; btn.onclick();
+       if(btn.textContent!=='report copied') bad.push('successful report copy says '+btn.textContent);
+       if(ta.value!=='report copy probe') bad.push('copy changed the report');
+       return bad.length?bad.join('; '):null;
+     } finally {
+       document.execCommand=ex; window.setTimeout=timer;
+       if(desc) Object.defineProperty(navigator,'clipboard',desc); else delete navigator.clipboard;
+       if(btn&&oldText!==undefined) btn.textContent=oldText; if(ta&&oldValue!==undefined) ta.value=oldValue;
+       try{ __endRaid('abandon'); }catch(_e){} __topClear();
+     } }},
   {v:'33.42',what:'cw-nocachelbl, his order (2026-10-20) map on this second preraid screen should not have caches labelled: the raid start map draws no cache, looted or strongbox word, keeps the extract words, and the m key map still has them',
    run:function(){
      var bad=[], g, proto, oFt, rec, cs=[], sb=null, i, c, keep=[], mf0;

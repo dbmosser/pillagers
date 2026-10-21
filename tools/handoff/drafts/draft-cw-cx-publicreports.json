@@ -1,0 +1,40 @@
+{
+    "title":  "PUBLIC REPORT COPY TEXT",
+    "why":  "Strangers do not know Daniel. The Thanksgiving build needs useful report actions without a private contact instruction.",
+    "now":  "Report help names the raid log. A successful copy says report copied.",
+    "edits":  [
+                  {
+                      "anchor":  "\u003cdiv class=\"msub\"\u003eEvery raid is logged here. Copy it out and send it to Daniel so the game can be tuned on real play.\u003c/div\u003e",
+                      "replacement":  "\u003cdiv class=\"msub\"\u003ecopy the raid log\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "\u003cdiv id=\"oc_copynote\" style=\"font-size:13px;color:var(--ash);margin-top:8px;max-width:774px;line-height:1.5;margin-bottom:26px\"\u003eCopy report puts this raid, and every raid before it, on your clipboard. Paste it to Daniel and the game gets fixed from it.\u003c/div\u003e",
+                      "replacement":  "\u003cdiv id=\"oc_copynote\" style=\"font-size:13px;color:var(--ash);margin-top:8px;max-width:774px;line-height:1.5;margin-bottom:26px\"\u003efull raid log on your clipboard\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "\"Every raid is logged here. Copy it out and send it to Daniel so the game can be tuned on real play.\":\"Copy this and send it to Daniel.\"",
+                      "replacement":  "\"copy the raid log\":\"copy the raid log\""
+                  },
+                  {
+                      "anchor":  "\"Copy report puts this raid, and every raid before it, on your clipboard. Paste it to Daniel and the game gets fixed from it.\":\" \"",
+                      "replacement":  "\"full raid log on your clipboard\":\" \""
+                  },
+                  {
+                      "anchor":  "  \u0027THE CARD AT THE END OF A RAID HAS A COPY REPORT BUTTON. It puts that raid and every raid before it on your clipboard, ready to paste straight to Daniel. That is the fastest way to get anything fixed.\u0027,",
+                      "replacement":  "  \u0027copy report copies the full raid log\u0027,"
+                  },
+                  {
+                      "anchor":  "say2(\u0027This page cannot save files. Use COPY REPORT and paste it to Daniel.\u0027)",
+                      "replacement":  "say2(\u0027download blocked: use copy report\u0027)"
+                  },
+                  {
+                      "anchor":  "function done(){ b.textContent=\u0027Copied. Paste it to Daniel.\u0027; setTimeout(function(){ b.textContent=was; },2600); }",
+                      "replacement":  "function done(){ b.textContent=\u0027report copied\u0027; setTimeout(function(){ b.textContent=was; },2600); }"
+                  },
+                  {
+                      "anchor":  "function done(){ show(\u0027Copied. Paste it to Daniel.\u0027,2600); }",
+                      "replacement":  "function done(){ show(\u0027report copied\u0027,2600); }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027public report text has no private contact name and successful report copy says report copied\u0027,\n   run:function(){\n     var bad=[], btn=document.getElementById(\u0027copybtn\u0027), ta=document.getElementById(\u0027exporttext\u0027);\n     var desc=Object.getOwnPropertyDescriptor(navigator,\u0027clipboard\u0027), ex=document.execCommand, timer=window.setTimeout, oldText, oldValue;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       if(!btn||!ta) return \u0027report copy controls missing\u0027;\n       oldText=btn.textContent; oldValue=ta.value;\n       var hint=document.getElementById(\u0027oc_copynote\u0027), oc=document.getElementById(\u0027oc_copy\u0027);\n       var texts=[hint?hint.textContent:\u0027\u0027,WHATSNEW.join(\u0027|\u0027),JSON.stringify(TXSHIP),String(btn.onclick),String(oc\u0026\u0026oc.onclick),String(window.__realDownloadExport||downloadExport)];\n       var modal=document.getElementById(\u0027spane_rec\u0027); if(modal) texts.push(modal.textContent);\n       if(/daniel/i.test(texts.join(\u0027|\u0027))) bad.push(\u0027report text still names a private contact\u0027);\n       Object.defineProperty(navigator,\u0027clipboard\u0027,{value:undefined,configurable:true});\n       document.execCommand=function(cmd){ return cmd===\u0027copy\u0027; };\n       window.setTimeout=function(){ return 0; };\n       ta.value=\u0027report copy probe\u0027; btn.onclick();\n       if(btn.textContent!==\u0027report copied\u0027) bad.push(\u0027successful report copy says \u0027+btn.textContent);\n       if(ta.value!==\u0027report copy probe\u0027) bad.push(\u0027copy changed the report\u0027);\n       return bad.length?bad.join(\u0027; \u0027):null;\n     } finally {\n       document.execCommand=ex; window.setTimeout=timer;\n       if(desc) Object.defineProperty(navigator,\u0027clipboard\u0027,desc); else delete navigator.clipboard;\n       if(btn\u0026\u0026oldText!==undefined) btn.textContent=oldText; if(ta\u0026\u0026oldValue!==undefined) ta.value=oldValue;\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){} __topClear();\n     } }},"
+}

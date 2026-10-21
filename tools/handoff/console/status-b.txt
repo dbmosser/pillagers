@@ -1,1 +1,1 @@
-10-21 00:58 running 85-preraid-map-no-cache-labels on Claude Code (your plan: week 74% of the 36.4% line, 5-hour 2%)
+10-21 01:08 running 85-preraid-map-no-cache-labels on Claude Code (your plan: week 74% of the 36.5% line, 5-hour 4%)

@@ -157,3 +157,4 @@
 2026-10-21 00:44 o-87-pad-crawl-test 54s ok PARTIAL in=3130723 out=26500 run=2
 2026-10-21 00:53 o-87-pad-crawl-test 192s ok PARTIAL in=4282294 out=33581 run=3
 2026-10-21 00:54 o-87-pad-crawl-test 17s ok DONE in=4592560 out=34142 run=4
+2026-10-21 01:03 o-91-circle-only-text 571s ok PARTIAL in=1566343 out=21847 run=1

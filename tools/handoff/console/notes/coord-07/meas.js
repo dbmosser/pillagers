@@ -14,6 +14,7 @@
     try{ __pinDPR(1); }catch(e){}
     try{ __runPrep(); }catch(e){}
     if(fw){ try{ C7.forced=__forceSize(fw,fh); }catch(e){ C7.forced='err '+e.message; } }
+    gx('DRS.scale=1;DRS.applied=1;DRS.q=0;gfxqApply();DRS.slowT=0;DRS.fastT=0;DRS.bounce=0;DRS.upAt=0;DRS.last=0;DRS.ema=0;DRS.said=0;DRS.moves=0;1');   // a fresh session: auto resolution starts at full
     var r=__deploy({kit:[],safe:null,mapIx:0,seed:seed||4242});
     var G=__state();
     return {ver:gx('VER'),forced:C7.forced||null,deploy:String(r).slice(0,80),raid:!!(G&&G.player&&!G.over),ents:G&&G.ents?G.ents.length:null,containers:G&&G.containers?G.containers.length:null,drs:C7.drs(),canvases:C7.canv(),dpr:window.devicePixelRatio,inner:[innerWidth,innerHeight]};
@@ -24,11 +25,13 @@
     opts=opts||{}; var WARM=(opts.warm||3)*1000, SEC=(opts.sec||20)*1000, MOVE=opts.move!==false;
     var cal0=C7.calib();
     return new Promise(function(res){
-      var t0=performance.now(), last=t0, gaps=[], frames=0, phase=0, h0=null, drs0=null, gfx0=null, dirs=[['KeyD'],['KeyD','KeyS'],['KeyS'],['KeyA','KeyS'],['KeyA'],['KeyA','KeyW'],['KeyW'],['KeyD','KeyW']], di=0, dirT=t0, kref=null, path=0, px=null, py=null, stuck=0, alive=1, raidLost=0;
+      var t0=performance.now(), last=t0, gaps=[], frames=0, phase=0, h0=null, drs0=null, gfx0=null, dirs=[['KeyD'],['KeyD','KeyS'],['KeyS'],['KeyA','KeyS'],['KeyA'],['KeyA','KeyW'],['KeyW'],['KeyD','KeyW']], di=0, dirT=t0, kref=null, path=0, px=null, py=null, stuck=0, alive=1, raidLost=0, busy=[], mc=new MessageChannel();
+      mc.port1.onmessage=function(ev){ if(phase===1) busy.push(performance.now()-ev.data); };
       function setDir(){ kref=gx('keys'); if(!kref) return; ['KeyW','KeyA','KeyS','KeyD'].forEach(function(k){ kref[k]=false; }); dirs[di].forEach(function(k){ kref[k]=true; }); }
       if(MOVE) setDir();
-      (function tick(){
+      (function tick(ts){
         var now=performance.now(), d=now-last; last=now; frames++;
+        if(ts) try{ mc.port2.postMessage(ts); }catch(_){}
         var G=null; try{ G=__state(); }catch(_){}
         if(!G||!G.player||G.over){ raidLost=1; }
         else {
@@ -59,6 +62,7 @@
           fps_p50:null, gfx_end:gfx, gfx_at_warm:gfx0,
           gfx_window:hd?{n:hn,p50:histPct(hd,hn,0.5),p95:histPct(hd,hn,0.95),slow25:hslow}:null,
           drs_start:drs0, drs_end:C7.drs(), canvases:C7.canv(), dpr:window.devicePixelRatio, inner:[innerWidth,innerHeight],
+          busy_ms:{p50:q(busy,0.5),p95:q(busy,0.95),worst:q(busy,1),n:busy.length,over16_7:busy.filter(function(x){return x>16.7;}).length},
           calib_ms:{before:cal0,after:cal1}, moved_px:Math.round(path), raid_lost:raidLost,
           ents:(function(){ try{ return __state().ents.length; }catch(_){ return null; } })()};
         o.fps_p50=o.gap.p50?+(1000/o.gap.p50).toFixed(1):null;
