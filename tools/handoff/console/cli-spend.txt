@@ -637,3 +637,5 @@
 2026-10-21 0.1532 critic-manual
 2026-10-21 0.5491550999999999 61-experimental-menu
 2026-10-21 0.3003118 81c-extract-siren-short
+2026-10-21 1.0069085 82-minimap-off-by-default
+2026-10-21 0.22243180000000004 82-minimap-off-by-default

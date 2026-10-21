@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.37 - experimental page: lime on chip, dim off chip, one focus mark
+
+Co-op hunt while he was away. The critic scored the experimental page 2: on and off chips looked alike, the detail pane repeated the chip, focus was stacked four ways, the footer was 13px and the last row was cut. Now on is a lime chip and off a dim one, the detail pane drops the repeated chip, the lime row bar is the only focus mark, the footer is 16px and the list has 72px of bottom padding.
+
+MEASURED. Check 33.37 passes, and fails on v33.36.
 ## v33.36 - the minimap is off by default; one Settings row turns it on
 
 Co-op hunt while he was away. His order (2026-10-20): "remove minimap entirely, i guess make it an option in settings but default to leaving it off". The MINIMAP row now has OFF first and OFF is the usual, then small, standard and large (the old on/off row is gone, one control per job). A save that held a minimap size moves to off once (P.mmOff1). With it off nothing is drawn and the run info panel and the corner sit up under the money block.

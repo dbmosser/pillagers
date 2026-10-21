@@ -6145,6 +6145,29 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'33.37',what:'cw-expchip: on the experimental page an on chip is lime and an off chip is dim (different computed colours), and the focused row carries exactly one focus mark (the row bar, no chevrons or frame)',
+   run:function(){
+     var bad=[], modal=document.getElementById('settingsmodal'), list=document.getElementById('setlist'), oldCls, oldSub=SETSUB, rows, r0, r1, cOn, cOff, b, n=0, rs, bs, ps;
+     if(!modal||!list||typeof renderSettings!=='function') return 'SKIP: no settings page';
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       oldCls=modal.className; modal.classList.add('on'); SETSUB='exp'; renderSettings();
+       rows=list.querySelectorAll('.exprow'); if(rows.length<2) return 'expected experimental rows, found '+rows.length;
+       r0=rows[0]; r1=rows[1]; r1.classList.add('expoff');
+       cOn=getComputedStyle(r0.querySelector('.expvalue')); cOff=getComputedStyle(r1.querySelector('.expvalue'));
+       var m=/rgba?\((\d+), *(\d+), *(\d+)/.exec(cOn.backgroundColor);
+       if(!m||!(+m[2]>=+m[1]&&+m[2]>+m[3]+100)) bad.push('the on chip is not lime ('+cOn.backgroundColor+')');
+       if(cOn.backgroundColor===cOff.backgroundColor||cOn.color===cOff.color) bad.push('on and off chips share a colour');
+       r0.classList.add('dshow'); b=r0.querySelector('button'); b.classList.add('padfocus');
+       rs=getComputedStyle(r0); if(rs.boxShadow&&rs.boxShadow!=='none') n++; else bad.push('focused row has no row bar');
+       ['::before','::after'].forEach(function(p){ ps=getComputedStyle(b,p); if(ps.display!=='none'&&ps.visibility!=='hidden'&&ps.content!=='none'&&ps.content!=='normal') bad.push('a chevron '+p+' is drawn on the focused row'); });
+       bs=getComputedStyle(b);
+       if(bs.outlineStyle!=='none'&&parseFloat(bs.outlineWidth)>0) bad.push('the focused button has an outline');
+       if(parseFloat(bs.borderTopWidth)>0&&bs.borderTopStyle!=='none') bad.push('the focused button has a frame');
+       if(bs.boxShadow&&bs.boxShadow!=='none') bad.push('the focused button has a shadow mark');
+       return bad.length?bad.join('; '):null;
+     } finally { SETSUB=oldSub; try{ renderSettings(); }catch(_e){} modal.className=oldCls; }
+   }},
   {v:'33.36',what:'cw-mmoff, his order (2026-10-20): the minimap is off by default in a career raid and in the demo (nothing drawn, MMAP.box empty), the Settings row turns it back on at its old size, a save that held a minimap size comes in as off once and then keeps his pick, and the run info panel sits higher with it off',
    run:function(){
      if(typeof mmShown!=='function'||typeof drawMinimap!=='function'||typeof MMAP==='undefined'||!window.__opts) return 'SKIP: no minimap here';

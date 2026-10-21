@@ -1,0 +1,7 @@
+v33.37: experimental page: lime on chip, dim off chip, one focus mark
+
+The experimental page shows on as a lime chip and off as a dim one, with one focus mark and a readable footer.
+
+Check 33.37. Fails on v33.36.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

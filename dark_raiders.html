@@ -2269,7 +2269,7 @@ body:has(#hub.on) #hubtoast{visibility:hidden;}
 #root #settingsmodal #setlist .row.save-key-hint > span.hint{ display:flex; flex:0 0 calc(var(--sp-5) * 6); justify-content:center; align-items:center; font-size:var(--fs-label) !important; color:var(--tx-2); }
 #root #settingsmodal #setlist .save-key-hint kbd{ display:inline-block; min-width:40px; box-sizing:border-box; padding:4px 8px; border:1px solid var(--ui-line-hi); border-radius:var(--rad); font:600 var(--fs-label)/1.2 var(--f-cond); text-align:center; }
 /* v28.xx (cw-cx-expui): critic job 61 round 1: empty category gutter, detached description, back in the value column, ungrouped switches and tiny idle arrows. Keep the existing Settings list/detail layout. */
-#root #settingsmodal.expmode #setlist{ --rail:0px; padding-left:0; padding-right:8px; padding-bottom:var(--sp-5); scroll-padding-top:64px; -webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 48px),transparent); mask-image:linear-gradient(to bottom,#000 calc(100% - 48px),transparent); }
+#root #settingsmodal.expmode #setlist{ --rail:0px; padding-left:0; padding-right:8px; padding-bottom:72px; scroll-padding-top:64px; -webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 48px),transparent); mask-image:linear-gradient(to bottom,#000 calc(100% - 48px),transparent); }
 #root #settingsmodal.expmode #setlist .exphead{ position:sticky; top:0; z-index:4; width:100%; box-sizing:border-box; height:64px; min-height:64px; margin:0; padding:0 var(--sp-3); display:flex; align-items:center; gap:var(--sp-3); background:var(--ui-panel); border:0; border-bottom:1px solid var(--ui-line-hi); }
 #root #settingsmodal.expmode #setlist .exphead button{ width:auto; min-width:0 !important; min-height:48px; padding:0 var(--sp-2); margin:0; border:1px solid var(--ui-line-hi) !important; border-radius:var(--rad); background:transparent; color:var(--tx-1); font:600 var(--fs-body)/1 var(--f-cond); }
 #root #settingsmodal.expmode #setlist .expcount{ margin-left:auto; color:var(--tx-2); font:400 var(--fs-label)/1 var(--f-body); }
@@ -2280,21 +2280,24 @@ body:has(#hub.on) #hubtoast{visibility:hidden;}
 #root #settingsmodal.expmode #setlist .exprow > div:first-child{ flex:1 1 0 !important; min-width:0; }
 #root #settingsmodal.expmode #setlist .exprow > div:first-child > b{ font:600 var(--fs-body)/1.2 var(--f-cond); color:var(--tx-1); opacity:1; }
 #root #settingsmodal.expmode #setlist .exprow > button{ flex:0 0 144px; width:144px; min-width:144px !important; min-height:48px; padding:0 8px !important; gap:8px; color:var(--tx-1); }
-#root #settingsmodal.expmode #setlist .exprow .expvalue{ display:inline-flex; align-items:center; justify-content:center; min-width:56px; min-height:32px; border:1px solid var(--ui-line-hi); border-radius:var(--rad); background:var(--ui-raised); font:600 var(--fs-body)/1 var(--f-cond); color:var(--tx-1); }
+/* v33.35 (cw-expchip) critic 61 round 3 (score 2): on and off chips looked alike, the detail pane repeated the chip, focus was stacked (bar + fill + framed chevrons + caret bar), footer 13px, last row cut. On is a lime chip, off a dim one; the lime row bar is the one focus mark. */
+#root #settingsmodal.expmode #setlist .exprow .expvalue{ display:inline-flex; align-items:center; justify-content:center; min-width:56px; min-height:32px; border:1px solid var(--acc); border-radius:var(--rad); background:var(--acc); font:700 var(--fs-body)/1 var(--f-cond); color:var(--ui-void); }
+#root #settingsmodal.expmode #setlist .exprow.expoff .expvalue{ background:transparent; color:var(--tx-2); border-color:var(--ui-line); font-weight:400; }
 #root #settingsmodal.expmode #setlist .exprow.expoff .expvalue{ background:transparent; color:var(--tx-2); border-color:var(--ui-line); }
-#root #settingsmodal.expmode #setlist .exprow > button::before, #root #settingsmodal.expmode #setlist .exprow > button::after{ visibility:hidden; font:400 40px/1 var(--f-body); color:var(--tx-2) !important; }
-#root #settingsmodal.expmode #setlist .exprow:hover > button::before, #root #settingsmodal.expmode #setlist .exprow:hover > button::after, #root #settingsmodal.expmode #setlist .exprow.dshow > button::before, #root #settingsmodal.expmode #setlist .exprow.dshow > button::after, #root #settingsmodal.expmode #setlist .exprow > button.padfocus::before, #root #settingsmodal.expmode #setlist .exprow > button.padfocus::after{ visibility:visible; color:var(--acc) !important; }
-#root #settingsmodal.expmode #setlist .exprow.dshow .expvalue, #root #settingsmodal.expmode #setlist .exprow:hover .expvalue, #root #settingsmodal.expmode #setlist .exprow > button.padfocus .expvalue{ border-color:var(--acc); color:var(--acc); }
+#root #settingsmodal.expmode #setlist .exprow > button::before, #root #settingsmodal.expmode #setlist .exprow > button::after{ display:none !important; content:none !important; }
+#root #settingsmodal.expmode #setlist .exprow::before, #root #settingsmodal.expmode #setlist .exprow::after{ display:none !important; content:none !important; }
+#root #settingsmodal.expmode #setlist .exprow > button, #root #settingsmodal.expmode #setlist .exprow:hover > button, #root #settingsmodal.expmode #setlist .exprow.dshow > button, #root #settingsmodal.expmode #setlist .exprow > button.padfocus, #root #settingsmodal.expmode #setlist .exprow > button:focus-visible{ border:0 !important; outline:0 !important; box-shadow:none !important; background:transparent !important; }
+/* v33.35 (cw-expchip): no chip recolour on focus; the row bar alone marks it. */
 #root #settingsmodal.expmode #setlist::-webkit-scrollbar{ width:8px; }
 #root #settingsmodal.expmode #setlist::-webkit-scrollbar-track{ background:var(--ui-line); }
 #root #settingsmodal.expmode #setlist::-webkit-scrollbar-thumb{ background:var(--ui-line-hi); border-radius:var(--rad); }
 #root #settingsmodal.expmode #setwrap > #setdetail{ display:flex; flex-direction:column; flex-wrap:nowrap; align-items:flex-start; align-content:flex-start; justify-content:flex-start; gap:var(--sp-2); padding:var(--sp-3); }
 #root #settingsmodal.expmode #setdetail > *{ flex:0 0 auto; margin:0; }
 #root #settingsmodal.expmode #setdetail .sdk{ font:700 var(--fs-title)/1.2 var(--f-cond); color:var(--tx-1); }
-#root #settingsmodal.expmode #setdetail .sdv{ display:inline-block; padding:8px 16px; border:1px solid var(--ui-line-hi); border-radius:var(--rad); background:var(--ui-raised); font:600 var(--fs-body)/1 var(--f-cond); color:var(--tx-1); }
+#root #settingsmodal.expmode #setdetail .sdv{ display:none; }
 #root #settingsmodal.expmode #setdetail .sdh{ max-width:48ch; font:400 var(--fs-body)/1.4 var(--f-body); color:var(--tx-1); }
 #root #settingsmodal.expmode #setdetail .expnote{ font:400 var(--fs-label)/1.4 var(--f-body); color:var(--tx-2); }
-#root #settingsmodal.expmode::after{ content:'enter change    esc back'; font-size:var(--fs-label); }
+#root #settingsmodal.expmode::after{ content:'enter change    esc back'; font-size:16px; }
 body.padon #root #settingsmodal.expmode::after{ content:'a change    b back'; }
 </style><canvas id="cv"></canvas>
 <canvas id="hcv"></canvas>
@@ -3277,7 +3280,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.36';
+var VER='33.37';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -51445,7 +51448,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.36: No minimap in raids unless you turn it on in Settings. Check 33.36 fails on v33.35',
+  now:'v33.37: The experimental page shows on as a lime chip and off as a dim one, with one focus mark and a readable footer. Check 33.37 fails on v33.36',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

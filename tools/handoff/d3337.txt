@@ -1,0 +1,5 @@
+## v33.37 - experimental page: lime on chip, dim off chip, one focus mark
+
+Co-op hunt while he was away. The critic scored the experimental page 2: on and off chips looked alike, the detail pane repeated the chip, focus was stacked four ways, the footer was 13px and the last row was cut. Now on is a lime chip and off a dim one, the detail pane drops the repeated chip, the lime row bar is the only focus mark, the footer is 16px and the list has 72px of bottom padding.
+
+MEASURED. Check 33.37 passes, and fails on v33.36.
