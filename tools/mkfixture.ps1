@@ -6352,7 +6352,7 @@ window.__REGRESS=[
        if(rect.left-lr.left>36) bad.push('row labels still start in an empty left gutter');
        if(parseFloat(getComputedStyle(row.querySelector('b')).fontSize)<19) bad.push('row label below 20px body size');
        if(getComputedStyle(detail).flexDirection!=='column'||getComputedStyle(detail).flexWrap!=='nowrap') bad.push('detail text can still spread across the full pane height');
-       if(!detail.querySelector('.sdv')||getComputedStyle(detail.querySelector('.sdv')).display==='none') bad.push('focused state is missing from detail');
+       if(detail.querySelector('.sdv')&&getComputedStyle(detail.querySelector('.sdv')).display!=='none') bad.push('detail repeats the chip (cw-expchip, 61b: the row chip shows the state)');
        dr=detail.querySelector('.sdh').getBoundingClientRect(); rect=detail.querySelector('.sdk').getBoundingClientRect();
        if(dr.top-rect.bottom>140) bad.push('focused description is detached from its title');
        if(!detail.querySelector('.expnote')) bad.push('next-raid timing missing');
