@@ -1,4 +1,5 @@
-73-colour-cue-backups : every colour cue also gets a shape or brightness difference, always on (planner draft 2026-10-20)
+90-colour-cue-backups : every colour cue also gets a shape or brightness difference, always on (planner draft 2026-10-20)
+Queue (coordinator 10-20 21:40): renumbered from 73 so the pick order follows the plan (his 10-20 evening play notes took 79 to 86 and come first; lanes pick by number).
 effort: medium
 
 HOLD (coordinator): do NOT move into tasks/ before Fri 10/30. Game changes go in after the party (the coordinator's reading of p-59 and his

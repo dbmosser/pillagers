@@ -1,4 +1,5 @@
-71-preraid-buy-column : on the pre-raid page, a buy control to the right of each pack row (his order 2026-10-20 evening)
+86-preraid-buy-column : on the pre-raid page, a buy control to the right of each pack row (his order 2026-10-20 evening)
+Queue (coordinator 10-20 21:40): renumbered from 71 so the pick order follows the plan (his 10-20 evening play notes go first, camera first, then the sizes, the minimap before the corner block).
 effort: high
 
 Source (his words, 10-20 about 21:30, verbatim): "on the rpre raid screen, next to the pack items, to the right, there should also be an

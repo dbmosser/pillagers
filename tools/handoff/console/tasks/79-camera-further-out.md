@@ -1,4 +1,5 @@
-76-camera-further-out : the default raid camera sits further from the pillager, at the distance in his picture (his order 2026-10-20 evening)
+79-camera-further-out : the default raid camera sits further from the pillager, at the distance in his picture (his order 2026-10-20 evening)
+Queue (coordinator 10-20 21:40): renumbered from 76 so the pick order follows the plan (his 10-20 evening play notes go first, camera first, then the sizes, the minimap before the corner block).
 effort: medium
 
 Source (his words, 10-20 about 21:52, verbatim): "default camera needs to be further away from player", then with a picture: "this is a good
@@ -19,6 +20,6 @@ What to do:
 Check (new, must fail on the build before): a fresh profile deploys at the new default zoom, in career and in the demo, both windows.
 Pictures: a raid at 1080 next to his picture.
 Cut-off: FEATURES. Ship before Mon 10/26. One small ship, easy to undo.
-Note: job 73 makes the machines a third larger; the two together are his call on the next play, tell the coordinator to ask him about both.
+Note: job 80-machines-a-third-larger makes the machines a third larger; the two together are his call on the next play, tell the coordinator to ask him about both.
 
 TASK DONE when shipped with its check and pictures; TASK PARTIAL with what is left.

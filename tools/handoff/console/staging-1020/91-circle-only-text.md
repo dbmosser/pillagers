@@ -1,4 +1,5 @@
-74-circle-only-text : no player text names Daniel or calls the game an alpha in the Thanksgiving build (planner draft 2026-10-20)
+91-circle-only-text : no player text names Daniel or calls the game an alpha in the Thanksgiving build (planner draft 2026-10-20)
+Queue (coordinator 10-20 21:40): renumbered from 74 so the pick order follows the plan (his 10-20 evening play notes took 79 to 86 and come first; lanes pick by number).
 effort: medium
 
 HOLD (coordinator): do NOT move into tasks/ before Fri 10/30. Friends and family (after 10/30) know him, so the old text may stay for them;

@@ -1,4 +1,5 @@
-73-machines-a-third-larger : the machines draw 33% larger (his order 2026-10-20 evening)
+80-machines-a-third-larger : the machines draw 33% larger (his order 2026-10-20 evening)
+Queue (coordinator 10-20 21:40): renumbered from 73 so the pick order follows the plan (his 10-20 evening play notes go first, camera first, then the sizes, the minimap before the corner block).
 effort: medium
 
 Source (his words, 10-20 about 21:40, verbatim): "enemies need to be like 33% larger"

@@ -1,4 +1,5 @@
-74-raid-corner-compact : the raid corner money column takes much less of the screen (his order 2026-10-20 evening)
+83-raid-corner-compact : the raid corner money column takes much less of the screen (his order 2026-10-20 evening)
+Queue (coordinator 10-20 21:40): renumbered from 74 so the pick order follows the plan (his 10-20 evening play notes go first, camera first, then the sizes, the minimap before the corner block).
 effort: medium
 
 Source (his words, 10-20 about 21:45, verbatim): "this takes up way too much of the screen, figure out how to make it much more company" then "compact*"
@@ -22,5 +23,9 @@ same gap as before; the seed 4242 fingerprint holds.
 Pictures: raid corner at 1080 and 4K, before and after (tools/uishots.ps1, a career raid screen such as 21-raid-hud-calm); run the critic on the after picture.
 Cut-off: FEATURES. Ship before Mon 10/26.
 Party risk: low (corner text only). Tell the coordinator to ask him if the two-line block reads at a glance.
+
+Order (coordinator 10-20): 82-minimap-off-by-default goes first. If 82-minimap-off-by-default is still in tasks/ or a lane holds it when you start,
+end at once with TASK WAITING: 82-minimap-off-by-default (that is not a try). Once 82 is in, the minimap is off by default: run the check's minimap
+gap part with the minimap turned on in Settings, and with it off check that the run info panel sits under the new block with the usual gap.
 
 TASK DONE when shipped with its check and pictures; TASK PARTIAL with what is left.

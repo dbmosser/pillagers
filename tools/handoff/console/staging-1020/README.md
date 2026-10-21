@@ -4,6 +4,10 @@ Nothing here is in tasks/ yet, and nothing is committed. The coordinator checks 
 Bottom line: 13 Claude lane jobs (58-70), 7 Codex jobs (o-13 to o-19) and 10 coordinator jobs fit this week's plan. 2 more are
 stretch (71, 72). 3 are held for after the party (73, 74, coord-11).
 
+10-20 21:40 coordinator: his evening play notes became jobs 79 to 86 (camera, machine size, power-up size, minimap off,
+corner block, air strike bar, pre-raid map labels, pre-raid buy), picked before everything below. 70 is now 87-pad-crawl-test; the held
+71 to 74 here are now 88 to 91 (numbers in the prose below are the old ones).
+
 ## Ranked list (rank follows the brief: release steps and ordered features before Mon 10/26, then his notes, then quality, then bugs, then test health)
 Job numbers are the order lanes pick in (lanes take tasks sorted by name), so stretch jobs carry the highest numbers.
 RISK = risky for the Fri 10/30 party build; each RISK draft has a hard stop ("not shipped by the cutoff: wait until after 10/30").
@@ -31,8 +35,8 @@ B. His notes and rules
 18. o-16-golden-callout-names    Codex        "golden sentry down", not "golden enemy down" (3.84 b)
 C. Quality
 19. 66-party-status-callouts     lane, small  2-player status sentences become short callouts ("pillager joined")
-20. 71-undercroft-windows        lane, large  STRETCH: b-31's last five windows (hire, gambler, contracts, stats, bar) to critic 3
-21. 72-hub-floor                 lane, medium STRETCH: hub floor title block, labels and hint pill to the style guide
+20. 88-undercroft-windows        lane, large  STRETCH: b-31's last five windows (hire, gambler, contracts, stats, bar) to critic 3
+21. 89-hub-floor                 lane, medium STRETCH: hub floor title block, labels and hint pill to the style guide
 D. Bugs
 22. 67-controls-card-hand-panel  lane, small  the compact controls list covers the item-in-hand panel's title (o-02 alarm)
 23. o-17-pad-layout-selector     Codex        pad layout arrow overlaps the name box by 6x48 (o-11 alarm)
@@ -44,10 +48,10 @@ E. Test health
 28. coord-09-corpus-slices-reason coordinator keep the " -> " reason in corpus lists (one line; wait until no corpus runs)
 29. coord-10-critic-recipe-records coordinator record recipe pictures in accept.json; pass follows 3.51 a
 30. 69-critic-rescore-sweep      lane, small  fresh critic scores for 14 never-scored screens and stale ones; fixes nothing
-31. 70-pad-crawl-test            lane, medium pad-only crawl check over the hub (2.91 a, J3); gaps pinned, fixes after 10/30
+31. 87-pad-crawl-test            lane, medium pad-only crawl check over the hub (2.91 a, J3); gaps pinned, fixes after 10/30
 HOLD (after Fri 10/30, next week's budget; do not move yet)
-    73-colour-cue-backups        shape or brightness backup for every colour cue (2.79 a, p-59 a); audit first
-    74-circle-only-text          no "paste it to Daniel" or "this is an alpha" in the 11/26 build
+    90-colour-cue-backups        shape or brightness backup for every colour cue (2.79 a, p-59 a); audit first
+    91-circle-only-text          no "paste it to Daniel" or "this is an alpha" in the 11/26 build
     coord-11-store-screenshots   six store screenshots (round 2 Q97 pick stands)
 
 Move into tasks/ now: 59-70 and o-13 to o-19. Later: 58 (when corpus-fails-v32.90.txt exists), 71 and 72 (Fri, only under the line below),

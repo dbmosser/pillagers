@@ -1,4 +1,5 @@
-78-powerups-half-size : the power-up pickups draw about 50% smaller (his order 2026-10-20 evening)
+81-powerups-half-size : the power-up pickups draw about 50% smaller (his order 2026-10-20 evening)
+Queue (coordinator 10-20 21:40): renumbered from 78 so the pick order follows the plan (his 10-20 evening play notes go first, camera first, then the sizes, the minimap before the corner block).
 effort: low
 
 Source (his words, 10-20 about 21:57, verbatim): "powerups need to be like 50^ smaller" (the ^ is a typo for %).

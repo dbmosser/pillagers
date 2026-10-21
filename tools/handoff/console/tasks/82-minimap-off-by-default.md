@@ -1,4 +1,5 @@
-77-minimap-off-by-default : no minimap in raids unless he turns it on in Settings (his order 2026-10-20 evening)
+82-minimap-off-by-default : no minimap in raids unless he turns it on in Settings (his order 2026-10-20 evening)
+Queue (coordinator 10-20 21:40): renumbered from 77 so the pick order follows the plan (his 10-20 evening play notes go first, camera first, then the sizes, the minimap before the corner block).
 effort: medium
 
 Source (his words, 10-20 about 21:55, verbatim): "remove minimap entirely, i guess make it an option in settings but default to leaving it off"
@@ -16,7 +17,7 @@ Check (new, must fail on the build before): a fresh profile in a career raid and
 to N and the minimap is back at its old size; an old save with a minimap size comes in as off once; the seed 4242 fingerprint holds.
 Pictures: raid at 1080 and 4K, before and after, plus Settings with the row showing off.
 Cut-off: FEATURES. Ship before Mon 10/26.
-Note: job 74 (compact corner block) works on the same corner; whoever takes the first of 74 and 77 should take both, 77 first, so the block's width
-is no longer tied to a minimap that is not there.
+Note: job 83-raid-corner-compact (compact corner block) works on the same corner and waits for this one; a lane that takes this one may take 83
+next, so the block's width is no longer tied to a minimap that is not there.
 
 TASK DONE when shipped with its check and pictures; TASK PARTIAL with what is left.

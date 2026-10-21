@@ -1,4 +1,5 @@
-72-hub-floor : the Undercroft floor text (title block, station labels, hint pill) to the style guide (planner draft 2026-10-20)
+89-hub-floor : the Undercroft floor text (title block, station labels, hint pill) to the style guide (planner draft 2026-10-20)
+Queue (coordinator 10-20 21:40): renumbered from 72 so the pick order follows the plan (his 10-20 evening play notes took 79 to 86 and come first; lanes pick by number).
 effort: medium
 
 STRETCH (coordinator): queue only if the week reads 78% or less on Fri 10/23 noon, after 71. Cut first if the week runs ahead (his 3.58 c).

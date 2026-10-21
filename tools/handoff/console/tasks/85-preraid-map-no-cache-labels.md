@@ -1,4 +1,5 @@
-72-preraid-map-no-cache-labels : the map on the second pre-raid screen shows no cache labels (his order 2026-10-20 evening)
+85-preraid-map-no-cache-labels : the map on the second pre-raid screen shows no cache labels (his order 2026-10-20 evening)
+Queue (coordinator 10-20 21:40): renumbered from 72 so the pick order follows the plan (his 10-20 evening play notes go first, camera first, then the sizes, the minimap before the corner block).
 effort: medium
 
 Source (his words, 10-20 about 21:35, verbatim): "map on this second preraid screen should not have caches labelled, makes the whole thing look messy"

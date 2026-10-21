@@ -1,4 +1,5 @@
-75-airstrike-bar-lower : the air strike bar sits much lower, just over the belt (his order 2026-10-20 evening)
+84-airstrike-bar-lower : the air strike bar sits much lower, just over the belt (his order 2026-10-20 evening)
+Queue (coordinator 10-20 21:40): renumbered from 75 so the pick order follows the plan (his 10-20 evening play notes go first, camera first, then the sizes, the minimap before the corner block).
 effort: low
 
 Source (his words, 10-20 about 21:50, verbatim): "airstrike bar needs to be much lower"
