@@ -3280,7 +3280,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.53';
+var VER='33.54';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47099,10 +47099,16 @@ function mapCardBack(cd){
 // The contracts column: a dark pane, a title row, then one row per contract: the short name and the reward, and under it a progress bar with 3/5 (done in
 // green, a rule contract shows holding or broken). When the rows cannot all have two lines they share the height on one line each with a thin bar.
 // v28.xx (cw-cx-mapspace-o03): fixed status width aligns all tracks; secondary names keep the map first. No contract is hidden.
+// v28.xx (cw-cx-mapstart-clear): critic P1, keep every map label at 16px and contract rewards at 20px on the raid-start map only.
+function mapStartFont(font,z,min){
+  if(!mapFirstOn()) return font;
+  return String(font).replace(/([\d.]+)px/,function(a,n){return Math.max((min||16)*z,parseFloat(n)).toFixed(1)+'px';});
+}
 function mapContractsDraw(cd,rows){
   var c=cd.col, z=cd.z, u=cd.u, q=Math.round(20*u), th=Math.round(52*u), r=Math.max(2,Math.round(4*z)), lw=Math.max(1,Math.round(z)), n=rows.length, nd=0, i, row, ry, pitch, two,
       y0, avail, nat=Math.round(76*u), mid, mid2, wRew, wCnt, maxW, barW, bh=Math.max(3,Math.round(4*z)), txt, cnt, cc, ch, fr, fcol,
-      nameFont=FSz('600 15.4px '+HUDF,z), cntFont=FSz(TYPE.label,z), rewFont=FSz(TYPE.label,z);
+      nameFont=FSz('600 15.4px '+HUDF,z), cntFont=mapStartFont(FSz(TYPE.label,z),z), rewFont=mapStartFont(FSz(TYPE.label,z),z,20);
+  if(mapFirstOn()) bh=Math.max(1,Math.round(z));   // v28.xx (cw-cx-mapstart-clear): quiet idle tracks keep all eight contracts visible.
   for(i=0;i<n;i++) if(rows[i].done) nd++;
   y0=c.y+th; avail=c.h-th-Math.round(8*u); pitch=Math.min(nat,Math.floor(avail/n));
   ch=Math.min(c.h,th+n*pitch+Math.round(8*u));
@@ -47127,15 +47133,15 @@ function mapContractsDraw(cd,rows){
       mid=two?(ry+pitch*0.30):(ry+pitch*0.40); mid2=ry+pitch*0.82;   // v28.xx (cw-cx-mapquiet-o03): status sits above a full-width track.
       maxW=c.w-2*q-(wRew?(wRew+q):0)-(two?0:(wCnt+q));
       ctx.font=nameFont; ctx.fillStyle=row.done?UIC.ok:UIC.tx_2; ctx.textAlign='left'; ctx.fillText(mapFit(row.name,maxW),c.x+q,mid);
-      if(txt){ ctx.font=rewFont; ctx.fillStyle=UIC.tx_2; ctx.textAlign='right'; ctx.fillText(txt,c.x+c.w-q,mid); ctx.textAlign='left'; }
+      if(txt){ ctx.font=rewFont; ctx.fillStyle=mapFirstOn()?UIC.tx_1:UIC.tx_2; ctx.textAlign='right'; ctx.fillText(txt,c.x+c.w-q,mid); ctx.textAlign='left'; }
       if(two){
         barW=c.w-2*q;   // v28.xx (cw-cx-mapquiet-o03): one right edge for reward, status and track.
-        ctx.fillStyle=UIC.ui_line_hi; ctx.fillRect(c.x+q,mid2-bh/2,barW,bh);
+        ctx.fillStyle=mapFirstOn()?UIC.ui_line:UIC.ui_line_hi; ctx.fillRect(c.x+q,mid2-bh/2,barW,bh);
         if(fr>0){ ctx.fillStyle=fcol; ctx.fillRect(c.x+q,mid2-bh/2,barW*fr,bh); }
         ctx.font=cntFont; ctx.fillStyle=cc; ctx.textAlign='right'; ctx.fillText(cnt,c.x+c.w-q,ry+pitch*0.60); ctx.textAlign='left';
       } else {
         ctx.font=cntFont; ctx.fillStyle=cc; ctx.textAlign='right'; ctx.fillText(cnt,c.x+c.w-q-(wRew?(wRew+q):0),mid); ctx.textAlign='left';
-        barW=c.w-2*q; ctx.fillStyle=UIC.ui_line_hi; ctx.fillRect(c.x+q,ry+pitch-bh-Math.round(2*z),barW,bh);
+        barW=c.w-2*q; ctx.fillStyle=mapFirstOn()?UIC.ui_line:UIC.ui_line_hi; ctx.fillRect(c.x+q,ry+pitch-bh-Math.round(2*z),barW,bh);
         if(fr>0){ ctx.fillStyle=fcol; ctx.fillRect(c.x+q,ry+pitch-bh-Math.round(2*z),barW*fr,bh); }
       }
       // v28.xx (cw-cx-mapspace-o03): one progress track per row supplies rhythm without an extra divider.
@@ -47352,6 +47358,7 @@ function drawMapOverlay(){
   var had=Object.prototype.hasOwnProperty.call(ctx,'fillText'), prev=ctx.fillText, Q=[], hdrY=null, done=false;
   MAPLAST=[];
   ctx.fillText=function(s,x,y){
+    ctx.font=mapStartFont(ctx.font,Math.max(1,hudRes()));   // v28.xx (cw-cx-mapstart-clear): enforce the floor before measuring and placing actual labels.
     var t=String(s), fm=(/([\d.]+)px/).exec(String(ctx.font)), fp=fm?parseFloat(fm[1]):12;
     if(t==='SECTOR MAP') hdrY=y;
     // v19.52, from the review (2026-10-08): the box is measured on the words that will be drawn, his edit (TX) included, so a longer
@@ -47477,7 +47484,7 @@ function drawMapOverlayRaw(){
     var zx=ox+(80+(Z2.mc+0.5)*G.map.cw)*sc;
     var zy=oy+(80+(Z2.mr+0.5)*G.map.ch)*sc-G.map.ch*sc*0.34;
     ctx.font=FS(TYPE.label);   // v31.xx (cw-mapstyle3): zone names at the label size, under the extraction names (the critic: still too loud against the marks)
-    ctx.fillStyle='rgba(239,233,220,.66)';   // v31.xx (cw-mapstyle): zone names are the style guide's tx-1 at about 70 percent over a dark halo (they were the district tint at 28 percent, dark on dark)
+    ctx.fillStyle=mapFirstOn()?UIC.tx_2:'rgba(239,233,220,.66)';   // v28.xx (cw-cx-mapstart-clear): opaque secondary text over the existing dark halo.
     ctx.fillText(Z2.name||DISTRICTS[Z2.d].name,zx,zy);
   }
   ctx.textAlign='left';
@@ -47502,15 +47509,15 @@ function drawMapOverlayRaw(){
   // your way out, the far ones are a decision.
   for(i=0;i<G.containers.length;i++){
     var CQ=G.containers[i];
-    if(!CQ.cache) continue;
+    if(!CQ.cache||(mapFirstOn()&&CQ.strong)) continue;   // v28.xx (cw-cx-mapstart-clear): the strongbox keeps its dedicated icon, without a second cache ring.
     var qx=ox+CQ.x*sc, qy=oy+CQ.y*sc;
     var qp=.6+.4*Math.sin(G.t*2.6+i);
     ctx.globalAlpha=CQ.opened?.35:1;
     ctx.strokeStyle=UIC.tx_1; ctx.lineWidth=2*_MZ;
-    ctx.beginPath(); ctx.arc(qx,qy,(6.5+1.5*qp)*_MZ,0,6.2832); ctx.stroke();   // v31.xx (cw-mapstyle2): a cache ring a size smaller, so a stack of them is not a pile
+    ctx.beginPath(); ctx.arc(qx,qy,(mapFirstOn()?4:(6.5+1.5*qp))*_MZ,0,6.2832); ctx.stroke();   // v28.xx (cw-cx-mapstart-clear): 4px cache rings keep every location visible in packed rooms.
     ctx.fillStyle=UIC.tx_1;
-    ctx.beginPath(); ctx.arc(qx,qy,2.6*_MZ,0,6.2832); ctx.fill();
-    mapIcon(qx,qy,13*_MZ);
+    ctx.beginPath(); ctx.arc(qx,qy,(mapFirstOn()?1.6:2.6)*_MZ,0,6.2832); ctx.fill();
+    mapIcon(qx,qy,(mapFirstOn()?7:13)*_MZ);
     // v28.xx (cw-nocachelbl), HIS ORDER (2026-10-20): "map on this second preraid screen should not have caches labelled, makes the whole thing look messy". The raid start map keeps the cache ring and icon but no word; the m key map keeps its words.
     if(!mapFirstOn()) mapLabel(CQ.opened?'LOOTED':'CACHE',qx,qy-20*_MZ,UIC.tx_1,null,qy);   // v28.xx (cw-cx-sectorhold-o03): one label per cache, including the two inside a locked room.
     ctx.globalAlpha=1;
@@ -47662,14 +47669,14 @@ function drawMapOverlayRaw(){
   // large and named: without it, being decent to him buys nothing you can see.
   for(i=0;i<G.containers.length;i++){
     var rc=G.containers[i];
-    if(!rc.revealed||rc.opened) continue;
+    if(!rc.revealed||rc.opened||(mapFirstOn()&&rc.cache)) continue;   // v28.xx (cw-cx-mapstart-clear): a revealed cache already has its small icon.
     var rmx=ox+rc.x*sc,rmy=oy+rc.y*sc; mapIcon(rmx,rmy,10*_MZ);   // v21.41 (W-D4): at the map zoom
     ctx.strokeStyle=UIC.tx_1; ctx.lineWidth=1.6*_MZ;
     ctx.beginPath(); ctx.arc(rmx,rmy,6*_MZ,0,6.2832); ctx.stroke();
     ctx.fillStyle=UIC.tx_1;
     ctx.beginPath(); ctx.arc(rmx,rmy,2.6*_MZ,0,6.2832); ctx.fill();
     ctx.textAlign='center'; ctx.font=FS(TYPE.micro);
-    ctx.fillText('CACHE',rmx,rmy-12*_MZ); ctx.textAlign='left';
+    if(!mapFirstOn()) ctx.fillText('CACHE',rmx,rmy-12*_MZ); ctx.textAlign='left';   // v28.xx (cw-cx-mapstart-clear): revealed caches obey the same no-words rule.
   }
   // The survivor, but only once you have actually found him. He is hiding.
   for(i=0;i<G.ents.length;i++){
@@ -51648,7 +51655,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.53: Nothing on screen changes. A test counter for pixel faults is added. Check 33.53 fails on v33.52',
+  now:'v33.54: Small cache icons keep their locations. Map labels and contract rewards read more clearly. Check 33.54 fails on v33.53',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

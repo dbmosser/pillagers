@@ -1,0 +1,7 @@
+v33.54: raid start map clearer
+
+Small cache icons keep their locations. Map labels and contract rewards read more clearly.
+
+Check 33.54. Fails on v33.53.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

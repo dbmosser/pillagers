@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.54 - RAID START MAP CLEARER
+
+Co-op hunt while he was away. The picture critic found overlapping cache rings, dim zone names and contract rewards on the raid-start map.
+
+MEASURED. Check 33.54 passes, and fails on v33.53.
 ## v33.53 - THE PIXEL SMOKE CHECK
 
 Co-op hunt while he was away. Job 86a: the one smoke check every later pixel job extends. With the pixel look on, a career raid, the demo, the Undercroft floor and the title draw at 1080p and 4K with no render fault. It adds pixFaults, a counter of faults on the pixel paths.
