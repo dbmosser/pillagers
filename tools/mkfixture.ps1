@@ -6813,12 +6813,12 @@ window.__REGRESS=[
      function near(a,b,label){ if(!isFinite(a)||Math.abs(a-b)>0.001) bad.push(label+': '+a+' expected '+b); }
      try{
        __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       near(ZDEFAULT,1.05,'the default dial');
+       if(ZDEFAULT!==1&&ZDEFAULT!==1.05) bad.push('the default dial is '+ZDEFAULT);   // v33.49: 1.0 since 86a ship 0, 1.05 on the build before
        // both modes and both windows load the same shared default: a fresh profile has no zoom field
        ['career','demo'].forEach(function(mode){
          [1,2].forEach(function(win){
            delete P.zoom; ZT=ZC=7; loadZoom();
-           near(ZT,1.05,mode+' window '+win+' target'); near(ZC,1.05,mode+' window '+win+' eased camera');
+           near(ZT,ZDEFAULT,mode+' window '+win+' target'); near(ZC,ZDEFAULT,mode+' window '+win+' eased camera');
          });
        });
        if(Object.prototype.hasOwnProperty.call(P,'zoom')) bad.push('loading the default wrote over the profile');
@@ -6831,8 +6831,8 @@ window.__REGRESS=[
          W=size[0]; H=size[1];
          delete P.zoom; loadZoom();
          var z=ZOOM(), res=hudRes();
-         near(z,1.05*res,'default world scale '+W);
-         near(W/z,1920/1.05,'world width '+W); near(H/z,1080/1.05,'world height '+W);
+         near(z,ZDEFAULT*res,'default world scale '+W);
+         near(W/z,1920/ZDEFAULT,'world width '+W); near(H/z,1080/ZDEFAULT,'world height '+W);
          VX=G.camX=G.player.x-W/(2*z); VY=G.camY=G.player.y-H*0.54/z;
          var s=w2s(G.player.x,0,G.player.y);
          near(s.x,W/2,'pillager x '+W); near(s.y,H*0.54,'pillager y '+W);
@@ -11362,7 +11362,7 @@ window.__REGRESS=[
      try{
        __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        delete P.zoom; loadZoom();
-       near(ZT,1.05,'fresh target'); near(ZC,1.05,'fresh eased camera');
+       near(ZT,ZDEFAULT,'fresh target'); near(ZC,ZDEFAULT,'fresh eased camera');
        if(Object.prototype.hasOwnProperty.call(P,'zoom')) bad.push('loading the default wrote over the profile');
        [0.85,1,2.15,9].forEach(function(z){
          P.zoom=z; loadZoom();
@@ -11374,15 +11374,15 @@ window.__REGRESS=[
          W=size[0]; H=size[1];
          delete P.zoom; loadZoom();
          var z=ZOOM(), res=hudRes();
-         near(z,1.05*res,'default world scale '+W);
-         near(W/z,1920/1.05,'world width '+W); near(H/z,1080/1.05,'world height '+W);
+         near(z,ZDEFAULT*res,'default world scale '+W);
+         near(W/z,1920/ZDEFAULT,'world width '+W); near(H/z,1080/ZDEFAULT,'world height '+W);
          VX=G.camX=G.player.x-W/(2*z); VY=G.camY=G.player.y-H*0.54/z;
          var s=w2s(G.player.x,0,G.player.y);
          near(s.x,W/2,'pillager x '+W); near(s.y,H*0.54,'pillager y '+W);
          mouse.x=W*0.62; mouse.y=H*0.38;
          var mw=mouseWorld(), back=w2s(mw.x,0,mw.y);
          near(back.x,mouse.x,'pointer x '+W); near(back.y,mouse.y,'pointer y '+W);
-         near(__setZoom(1.05),z,'survey spec zoom '+W);
+         near(__setZoom(ZDEFAULT),z,'survey spec zoom '+W);
        });
        return bad.length?bad.join('; '):null;
      } catch(err){
