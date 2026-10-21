@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.44 - PRE-RAID: A BUY CONTROL ON EACH PACK ROW
+
+Co-op hunt while he was away. His order 2026-10-20: next to the pack items on the pre-raid page, to the right, an ability to buy those items, skipping the guns that cannot be bought. Each pack row whose item the Undercroft counter sells today gets a price button; one press takes that price from banked credits and adds one to the stash. It uses the counter own price list and stock roll, so there is one system. Guns the counter never sells have none; too few credits shows it dim with the price in red and a press does nothing. The pad runs stepper then buy.
+
+MEASURED. Check 33.44 passes, and fails on v33.43.
 ## v33.43 - PUBLIC REPORT COPY TEXT
 
 Co-op hunt while he was away. Strangers do not know Daniel. The Thanksgiving build needs useful report actions without a private contact instruction.

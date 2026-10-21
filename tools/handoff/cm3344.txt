@@ -1,0 +1,7 @@
+v33.44: pre-raid: a buy control on each pack row
+
+On the pre-raid page each pack row now has a price button on its right. One press buys one into your stash.
+
+Check 33.44. Fails on v33.43.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

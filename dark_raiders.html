@@ -2728,7 +2728,7 @@ body.padon #root #settingsmodal.expmode::after{ content:'a change    b back'; }
   #sectormodal .srprow:has(.padfocus){ background:var(--ui-raised); box-shadow:inset 3px 0 0 var(--srseat); }
   #sectormodal .srprow .st{ display:flex; align-items:center; }
   #root #sectormodal .srprow .st .srm, #root #sectormodal .srprow .st button{ width:44px; height:44px; min-width:0; padding:0; display:grid; place-items:center; background:var(--ui-raised); border:1px solid var(--ui-line-hi); border-radius:0; color:var(--tx-1); font:700 20px var(--f-cond); cursor:pointer; }
-  #sectormodal .srprow .st b{ width:30px; text-align:center; font:700 20px var(--f-cond); cursor:pointer; }
+  #sectormodal .srprow .st b{ width:30px; text-align:center; font:700 20px var(--f-cond); cursor:pointer; } #root #sectormodal .srprow .srbuy{ flex:none; min-width:76px; height:44px; padding:0 10px; background:var(--ui-raised); border:1px solid var(--acc); border-radius:0; color:var(--acc); font:700 18px var(--f-cond); cursor:pointer; } #root #sectormodal .srprow .srbuy.dis{ border-color:var(--ui-line-hi); color:var(--danger); opacity:.65; cursor:default; } #root #sectormodal .srprow .srbuy.padfocus{ outline:2px solid var(--srseat); }
   #root #sectormodal .srprow .dis{ color:var(--tx-3); }
   #root #sectormodal button.srcore{ width:100%; height:40px; margin-top:6px; padding:0; background:none; border:0; border-bottom:1px solid var(--ui-line); border-radius:0; justify-content:flex-start; color:var(--tx-1); font:600 20px var(--f-cond); }
   #sectormodal .srcore .cb{ width:26px; height:26px; border:2px solid #55524c; border-radius:4px; margin:0 4px 0 auto; position:relative; }
@@ -3280,7 +3280,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.43';
+var VER='33.44';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -51455,7 +51455,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.43: Report help names the raid log. A successful copy says report copied. Check 33.43 fails on v33.42',
+  now:'v33.44: On the pre-raid page each pack row now has a price button on its right. One press buys one into your stash. Check 33.44 fails on v33.43',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -66984,6 +66984,10 @@ function srPackBulk(all){
   syncSectorKit(); try{ refreshInv(); }catch(_pr){}
   return true;
 }
+/* v28.xx (cw-packbuy), HIS ORDER (2026-10-20): "on the rpre raid screen, next to the pack items, to the right, there should also be an ability to purchase those items (skip some of the guns if they aren't purchaseable)". One price list: the Undercroft counter's SHOP, its stock roll (shopStocked) and the same banked credits (P.credits, stash pays). A gun the counter never sells (blue, purple, gold, the burst carbine) gets no control. */ function packBuyRec(k){ var it=ITEMS[k], i, o; if(!it) return null; for(i=0;i<SHOP.length;i++){ o=SHOP[i]; if(!o) continue; if(o.kind==='item'&&o.k===k) return o; if(o.kind==='wep'&&it.use==='gun'&&it.gk&&it.gk===o.k) return o; } return null; }
+function packBuyOk(k){ var o=packBuyRec(k); return (o&&shopStocked(o)&&(P.xp||0)>=o.rep)?o:null; }
+function packBuyHtml(k){ var o=packBuyOk(k); if(!o) return ''; return '<button class="srbuy'+(P.credits>=o.price?'':' dis')+'" data-pb="1" data-pan="p">$'+o.price.toLocaleString()+'</button>'; }
+function packBuy(k){ var o=packBuyOk(k); if(!o||P.credits<o.price) return false; P.credits-=o.price; P.stash.push(k); shopBought(ITEMS[k].name,o.price,''); saveProfile(); try{ renderHub(); }catch(_bh){} return true; }
 function syncSectorPack(){
   var host=document.getElementById('sectorpack'), keys, i, k, h, held, got, nc, tot=0, lastG=-1, g, u;
   if(!host) return;
@@ -66996,7 +67000,7 @@ function syncSectorPack(){
     k=keys[i]; held=heldCount(k); got=packedCount(k); g=srGroup(k); u=ITEMS[k].use;
     h+='<div class="srprow'+(got?' on':'')+((lastG>=0&&g!==lastG)?' g':'')+'" data-pk="'+escHtml(k)+'"><i class="rar" style="background:'+(SR_RC[ITEMS[k].r]||SR_RC.common)+'"></i>'+
        '<svg viewBox="0 0 24 24">'+(SR_IC[u]||SR_IC.other)+'</svg><span class="nm">'+escHtml(String(ITEMS[k].name).toUpperCase())+'</span><span class="held">/'+held+'</span>'+
-       '<span class="st"><i class="srm'+(got?'':' dis')+'" data-pd="-1">-</i><b data-pd="max">'+got+'</b><button data-pd="1" data-pan="p"'+(got>=held?' class="dis"':'')+'>+</button></span></div>';
+       '<span class="st"><i class="srm'+(got?'':' dis')+'" data-pd="-1">-</i><b data-pd="max">'+got+'</b><button data-pd="1" data-pan="p"'+(got>=held?' class="dis"':'')+'>+</button></span>'+packBuyHtml(k)+'</div>';
     lastG=g;
   }
   nc=heldCount('core');
@@ -67004,10 +67008,11 @@ function syncSectorPack(){
      (P.intel?'DATA CORE SLOTTED':(nc?('SLOT DATA CORE ('+nc+')'):'NO DATA CORE'))+'</span><span class="held">BURNS ON ASCENT</span><i class="cb"></i></button></div>';
   host.innerHTML=h;
   host.onclick=function(ev){
-    var t=ev.target&&ev.target.closest?ev.target.closest('[data-pd],[data-pa],[data-core]'):null, ch, pk, d, pa, hd, gt, n;
+    var t=ev.target&&ev.target.closest?ev.target.closest('[data-pd],[data-pa],[data-core],[data-pb]'):null, ch, pk, d, pa, hd, gt, n;
     if(!t||t.disabled) return;
     pa=t.getAttribute('data-pa');
-    if(t.getAttribute('data-core')){ if(!packCore()) return; }
+    if(t.getAttribute('data-pb')){ ch=t.closest('[data-pk]'); pk=ch?ch.getAttribute('data-pk'):null; if(!pk||!packBuy(pk)) return; }   /* v28.xx (cw-packbuy): too few credits changes nothing */
+    else if(t.getAttribute('data-core')){ if(!packCore()) return; }
     else if(pa){ srPackBulk(pa==='all'); return; }
     else{
       ch=t.closest('[data-pk]'); pk=ch?ch.getAttribute('data-pk'):null; d=t.getAttribute('data-pd');
@@ -67017,7 +67022,7 @@ function syncSectorPack(){
       else{ n=gt+(+d); if(n<0||n>hd) return; packSet(pk,n); }
     }
     try{ sndUi('click'); }catch(_ps){}
-    try{ syncSectorKit(); }catch(_pk){} try{ refreshInv(); }catch(_pr){}
+    try{ syncSectorKit(); }catch(_pk){} try{ refreshInv(); }catch(_pr){} try{ if(t.getAttribute('data-pb')&&PAD&&PAD.focus&&!document.contains(PAD.focus)){ var _nb=host.querySelector('[data-pk="'+pk+'"] [data-pb]'); if(_nb) padSetFocus(_nb); } }catch(_pf){}
   };
 }
 function syncSectorKit(){
@@ -67064,7 +67069,10 @@ function srPadNav(list,cur,mv){
   if(!cur) return false;
   row=cur.closest?cur.closest('.srprow[data-pk]'):null;
   if(row&&mv[0]){
-    pk=row.getAttribute('data-pk'); packSet(pk,packedCount(pk)+mv[0]);
+    pk=row.getAttribute('data-pk');
+    if(cur.getAttribute('data-pb')){ if(mv[0]<0){ nb=row.querySelector('button[data-pd="1"]'); if(nb) padSetFocus(nb); } return true; }   /* v28.xx (cw-packbuy): the row runs stepper, then buy */
+    if(mv[0]>0&&cur.getAttribute('data-pd')==='1'){ nb=row.querySelector('[data-pb]'); if(nb){ padSetFocus(nb); return true; } }
+    packSet(pk,packedCount(pk)+mv[0]);
     try{ sndUi('click'); }catch(_c){}
     syncSectorKit(); try{ refreshInv(); }catch(_r){}
     nb=document.querySelector('#sectorpack [data-pk="'+pk+'"] button[data-pd="1"]'); if(nb) padSetFocus(nb);

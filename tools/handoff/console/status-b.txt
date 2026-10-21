@@ -1,1 +1,1 @@
-10-21 01:08 running 85-preraid-map-no-cache-labels on Claude Code (your plan: week 74% of the 36.5% line, 5-hour 4%)
+10-21 01:08 85-preraid-map-no-cache-labels: partial (run 2 of 5), $0.1423376

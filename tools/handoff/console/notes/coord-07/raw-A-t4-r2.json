@@ -1,0 +1,2 @@
+{"run":"A-t4-r2","start":"01:10:47","free_gb":3.41,"unthrottled_calib_ms":42,
+"deploy":{"ver":"33.41","forced":{"W":1920,"H":1080,"dpr":0.75,"cv":[1440,810]},"deploy":"[object Object]","raid":true,"ents":39,"containers":169,"drs":{"scale":1,"applied":1,"q":0,"moves":0,"said":0,"min":0.75,"gfxScaleNow":1,"gfxAuto":1,"gfxScale":1,"gfxLight":2,"gfxPost":1,"fxLevel":1,"fpsCap":0,"DPR":0.75,"W":1920,"H":1080,"state":"raid"},"canvases":["cv 1440x810 css 1920x1080","hcv 1920x1080 css 1920x1080"],"dpr":1,"inner":[1888,977]},
