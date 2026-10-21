@@ -6144,6 +6144,35 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'33.22',what:'the human figures are back to their old size: a standing pillager is drawn no taller than before v32.64 (his order: player is too big)',
+   run:function(){
+     var PR=CanvasRenderingContext2D.prototype, of=PR.fillRect, ff=PR.fill, mn={}, rec, i, b, hv;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       if(!__state()||!__state().player) return 'SKIP: no raid';
+       if(typeof FIG_SCALE==='undefined'||typeof drawOp0!=='function') return 'the figures have no FIG_SCALE and no scaled draw';
+       if(FIG_SCALE>1) return 'FIG_SCALE is '+FIG_SCALE+', bigger than the old size 1';
+       rec=function(){ try{ if(this.canvas===cv&&(/drawOp0/).test(String(new Error().stack))){ var d=this.getTransform().d; if(!(b in mn)||d<mn[b]) mn[b]=d; } }catch(_r){} };
+       PR.fillRect=function(){ rec.apply(this,arguments); return of.apply(this,arguments); };
+       PR.fill=function(){ rec.apply(this,arguments); return ff.apply(this,arguments); };
+       hv={lean:1.08,broad:0.96,curved:1};
+       for(b in hv){
+         wc.save(); wc.setTransform(1,0,0,1,0,0);
+         drawOp(100,100,0,0,'#242832',1,0,'none',0,{hero:0,build:b,moving:false,sprint:false,ads:false,hurt:0,rl:0,own:{wep:null}});
+         wc.restore();
+       }
+       PR.fillRect=of; PR.fill=ff;
+       for(b in hv){
+         if(!(b in mn)) return 'the '+b+' figure drew nothing';
+         if(mn[b]>hv[b]+0.01) return 'the '+b+' body is drawn '+mn[b].toFixed(3)+' tall, taller than its build height '+hv[b]+' at the old size';
+       }
+       return null;
+     } finally {
+       PR.fillRect=of; PR.fill=ff;
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     } }},
   {v:'33.21',what:'all 28 experimental choices hold for the raid, the guest follows the host including glow and haul, and all-off keeps both seed-4242 map fingerprints (affix properties and barrel lists do not move them)',
    run:function(){
      if(typeof xfSnap!=='function'||typeof netUpStart!=='function'||typeof netUpFp!=='function') return 'experimental raid settings are missing';

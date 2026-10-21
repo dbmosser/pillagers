@@ -3249,7 +3249,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.21';
+var VER='33.22';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -35994,7 +35994,7 @@ function gunHeld(px,ty,face,fl,st,coat,bld,pc,ads,sprint,rl,muzzle){
 // (lean 0.92 wide by 1.08 tall, broad 1.1 by 0.96, curved 1 by 1). Shadow, seat ring and gun scale with the body. Hit areas are untouched.
 // FIG_SCALE is the one number to dial back. Previews (a small canvas swapped into wc) stay as they were. FIG_UP lifts the plates and bars
 // over the bigger head.
-var FIG_SCALE=1.25, FIG_UP=19, FIG_HEAD=1.2, FIG_PACK=1.3, FIG_VEST=1.12, FIG_PATCH=1.6;
+var FIG_SCALE=1, FIG_UP=12, /* v28.xx (cw-figback), HIS ORDER (2026-10-20): "player is too big, needs to go back to previous size" and "revert to old player size or maybe even smaller, should be scaled properly compared to bodies on ground, trees, deer". 1.25 back to 1 (the size before v32.64); his head, pack and vest picks stay. FIG_UP 19 to 12 so the plates sit over the smaller head. */ FIG_HEAD=1.2, FIG_PACK=1.3, FIG_VEST=1.12, FIG_PATCH=1.6;
 function figBuildK(b){ return (b==='broad')?[1.1,0.96]:((b==='curved')?[1,1]:[0.92,1.08]); }
 function figOn(){ return !!(typeof wc!=='undefined'&&wc&&((typeof cv!=='undefined'&&wc.canvas===cv)||RIM.on===1)); }
 function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
@@ -36139,7 +36139,7 @@ function aimRay(mx,my,dx,dy,maxT){
 }
 function drawAimMark(sh,wep,ang,dist,ads,bld){
   var D=GUNDEF[wep.id]||GUNDEF.rifle, sg=(Math.cos(ang)<0)?-1:1, L=(D.tip+(D.pist?2:0))*GUNK, by=D.by*GUNK*sg, c=Math.cos(ang), s=Math.sin(ang),
-      fs=(typeof FIG_SCALE==='number'&&bld!==null)?FIG_SCALE:1, fk=(fs===1)?[1,1]:figBuildK(bld||'lean'),
+      fs=(typeof FIG_SCALE==='number'&&bld!==null)?FIG_SCALE:1, fk=(bld===null)?[1,1]:figBuildK(bld||'lean'),   // v28.xx (cw-figback): the build height still applies at scale 1
       mx=sh.x+(c*L-s*by)*fs*fk[0], my=sh.y+(-20+s*L+c*by)*fs*fk[1], len, n, i, t;   // the gun scales with the figure about its feet (cw-figlook)
   if(ads&&gunLaserOk(wep)){
     t=aimRay(mx,my,c,s,900);
@@ -51322,7 +51322,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.21: Experimental choices hold for the whole raid. Both windows use the host choices, including needed-item glow and the result haul. Check 33.21 fails on v33.20',
+  now:'v33.22: Pillagers, mates and bots are drawn at their old size again. Check 33.22 fails on v33.21',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.22 - PILLAGERS BACK TO THEIR OLD SIZE
+
+Co-op hunt while he was away. His order: player is too big, back to the old size or smaller, in scale with bodies, trees and deer. The 1.25 figure scale from the art survey goes back to 1; the plates sit lower again.
+
+MEASURED. Check 33.22 passes, and fails on v33.21.
 ## v33.21 - EXPERIMENTAL CHOICES HOLD FOR THE RAID
 
 Co-op hunt while he was away. Job 61 requires all switches to be fixed at raid start with the host choices in both windows. Glow and haul still read live preferences.

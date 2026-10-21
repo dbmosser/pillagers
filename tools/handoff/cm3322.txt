@@ -1,0 +1,7 @@
+v33.22: pillagers back to their old size
+
+Pillagers, mates and bots are drawn at their old size again.
+
+Check 33.22. Fails on v33.21.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

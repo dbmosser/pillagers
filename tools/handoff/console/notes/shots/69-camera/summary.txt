@@ -1,0 +1,19 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  10-hire                                staged       8.1s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0  | tradermodal
+  11-wirt-gambler                        staged       7.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | gamblemodal
+  15-mainframe-stats                     staged       7.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | opmodal
+  27-settings-scroll-600                 staged       9.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  28-settings-scroll-1200                staged      10.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  29-settings-scroll-1800                staged       9.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  30-settings-scroll-2400                staged       9.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | scrollTop 2400.4453125 of 3031
+  31-settings-send-play-data             staged      10.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  39-hub-after-raid                      staged      11.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  41-hub-backpack                        staged      12.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"open":true,"snap":true}
+  43-stash-after-raid                    staged      11.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  44-title-from-character-select         staged      12.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  57-title-2p-coop-picked                staged       8.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  67-career-stash-stocked                staged       5.8s  total   2: clip 0 off 0 small 1 contrast 1 font 0 overlap 0 focus 0
+  68-settings-sec-the-raid               staged       8.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | settingsmodal
+  69-settings-sec-audio                  staged       8.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | settingsmodal
+  71-settings-sec-controller             staged       8.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | settingsmodal
+  73-settings-sec-accessibility          staged       8.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | settingsmodal
