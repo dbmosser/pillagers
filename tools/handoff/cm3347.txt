@@ -1,0 +1,7 @@
+v33.47: pre-raid: one buy slot on every pack row
+
+The pack rows on the pre-raid page line up again.
+
+Check 33.47. Fails on v33.46.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

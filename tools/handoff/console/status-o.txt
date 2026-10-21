@@ -1,1 +1,1 @@
-10-21 01:15 gate: shipping cw-cx-shortnews (o-91-circle-only-text, codex)
+10-21 01:20 retarget: waiting for another ship to finish with tools/mkfixture.ps1 (o-91-circle-only-text)

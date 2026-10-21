@@ -20,3 +20,16 @@ WHATSNEW_VER is deliberately not changed by these keys: RULES-codex.md requires 
 
 Remaining: lane preflight/ship, photographs and critic; Claude-lane compatible card-stamp refresh. Do not mark the task complete until all are confirmed. Watch line: report copying should still confirm success, and What is New should show exactly three short notes.
 
+
+--- codex run 2026-10-21 01:20 ---
+2026-10-21, retry against refreshed master v33.46.
+
+Confirmed public report text shipped in 2a5da11b (v33.43). The original five fixture retargets are already committed in 5e40ca46 and are not repeated in the new retarget file.
+
+The stopped shortnews draft passed its own dry check and failed its control as intended. Its sole reported regression was a new 33.46 card check introduced by the intervening card ship: that check demanded polish pass 44 and the alpha line. Replaced fixture-retarget.json with ONE new full-check retarget for 33.46, dependent only on cw-cx-shortnews. It keeps the version/stamp drift check, accepts the exact three real notes with lowercase/length/whole-note checks, and retains the legacy expectations on the current build before shipping. The game-change script and key cw-cx-shortnews stay the same.
+
+Current master includes card ships 7653a301 (v33.45) and 09bb190a (v33.46), so WHATSNEW_VER is already fresh at 33.46. This resolves the immediate card-refresh step that the first run handed to a Claude lane. The retry preserves that stamp; its expected next build is only 0.01 ahead. No additional card ship is needed for this retry. The earlier warning about genP's alpha anchor and polish filler still matters for future refreshes, which must respect this public-text task.
+
+Revalidated on v33.46: the new retarget anchor matches exactly once; the unchanged mk script prints written; both game anchors match exactly once; the proposed game script, both new checks and the new retarget compile. The proposed source scan again finds no Daniel outside comments, no alpha warning and no polish filler. No tracked game/fixture file was edited, and no game or check code was executed locally.
+
+The existing keys list keeps the shipped publicreports key (lane skips it) followed by the pending shortnews key. Existing camera recipes remain ready for the actual pause news window, recorder and floor card. Remaining work belongs to the lane: apply/check the new retarget, retry cw-cx-shortnews, take pictures and run the critic.

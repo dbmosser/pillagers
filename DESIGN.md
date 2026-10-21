@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.47 - PRE-RAID: ONE BUY SLOT ON EVERY PACK ROW
+
+Co-op hunt while he was away. The first pass shifted the steppers of rows the counter does not sell (the burst carbine) and squeezed names to dots. Every row now keeps a 66 px buy slot, empty when nothing is sold, and the button is 16 px so the stepper column lines up.
+
+MEASURED. Check 33.47 passes, and fails on v33.46.
 ## v33.46 - THE WHAT IS NEW CARD NAMES POLISH PASS 44
 
 Co-op hunt while he was away. The card was stamped v33.45 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.

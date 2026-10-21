@@ -2728,7 +2728,7 @@ body.padon #root #settingsmodal.expmode::after{ content:'a change    b back'; }
   #sectormodal .srprow:has(.padfocus){ background:var(--ui-raised); box-shadow:inset 3px 0 0 var(--srseat); }
   #sectormodal .srprow .st{ display:flex; align-items:center; }
   #root #sectormodal .srprow .st .srm, #root #sectormodal .srprow .st button{ width:44px; height:44px; min-width:0; padding:0; display:grid; place-items:center; background:var(--ui-raised); border:1px solid var(--ui-line-hi); border-radius:0; color:var(--tx-1); font:700 20px var(--f-cond); cursor:pointer; }
-  #sectormodal .srprow .st b{ width:30px; text-align:center; font:700 20px var(--f-cond); cursor:pointer; } #root #sectormodal .srprow .srbuy{ flex:none; min-width:76px; height:44px; padding:0 10px; background:var(--ui-raised); border:1px solid var(--acc); border-radius:0; color:var(--acc); font:700 18px var(--f-cond); cursor:pointer; } #root #sectormodal .srprow .srbuy.dis{ border-color:var(--ui-line-hi); color:var(--danger); opacity:.65; cursor:default; } #root #sectormodal .srprow .srbuy.padfocus{ outline:2px solid var(--srseat); }
+  #sectormodal .srprow .st b{ width:30px; text-align:center; font:700 20px var(--f-cond); cursor:pointer; } #root #sectormodal .srprow .srbuy{ flex:none; width:66px; min-width:0; height:44px; padding:0 4px; background:var(--ui-raised); border:1px solid var(--acc); border-radius:0; color:var(--acc); font:700 16px var(--f-cond); cursor:pointer; } #root #sectormodal .srprow span.srbuy.sp{ width:66px; height:44px; border:0; background:none; } #root #sectormodal .srprow .srbuy.dis{ border-color:var(--ui-line-hi); color:var(--danger); opacity:.65; cursor:default; } #root #sectormodal .srprow .srbuy.padfocus{ outline:2px solid var(--srseat); }
   #root #sectormodal .srprow .dis{ color:var(--tx-3); }
   #root #sectormodal button.srcore{ width:100%; height:40px; margin-top:6px; padding:0; background:none; border:0; border-bottom:1px solid var(--ui-line); border-radius:0; justify-content:flex-start; color:var(--tx-1); font:600 20px var(--f-cond); }
   #sectormodal .srcore .cb{ width:26px; height:26px; border:2px solid #55524c; border-radius:4px; margin:0 4px 0 auto; position:relative; }
@@ -3280,7 +3280,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.46';
+var VER='33.47';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -51457,7 +51457,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.46: The what is new card names polish pass 44. Check 33.46 fails on v33.45',
+  now:'v33.47: The pack rows on the pre-raid page line up again. Check 33.47 fails on v33.46',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -66988,7 +66988,7 @@ function srPackBulk(all){
 }
 /* v28.xx (cw-packbuy), HIS ORDER (2026-10-20): "on the rpre raid screen, next to the pack items, to the right, there should also be an ability to purchase those items (skip some of the guns if they aren't purchaseable)". One price list: the Undercroft counter's SHOP, its stock roll (shopStocked) and the same banked credits (P.credits, stash pays). A gun the counter never sells (blue, purple, gold, the burst carbine) gets no control. */ function packBuyRec(k){ var it=ITEMS[k], i, o; if(!it) return null; for(i=0;i<SHOP.length;i++){ o=SHOP[i]; if(!o) continue; if(o.kind==='item'&&o.k===k) return o; if(o.kind==='wep'&&it.use==='gun'&&it.gk&&it.gk===o.k) return o; } return null; }
 function packBuyOk(k){ var o=packBuyRec(k); return (o&&shopStocked(o)&&(P.xp||0)>=o.rep)?o:null; }
-function packBuyHtml(k){ var o=packBuyOk(k); if(!o) return ''; return '<button class="srbuy'+(P.credits>=o.price?'':' dis')+'" data-pb="1" data-pan="p">$'+o.price.toLocaleString()+'</button>'; }
+function packBuyHtml(k){ var o=packBuyOk(k); if(!o) return '<span class="srbuy sp"></span>'; /* v28.xx (cw-packbuy2): a row with no buy keeps the slot so every stepper lines up */ return '<button class="srbuy'+(P.credits>=o.price?'':' dis')+'" data-pb="1" data-pan="p">$'+o.price.toLocaleString()+'</button>'; }
 function packBuy(k){ var o=packBuyOk(k); if(!o||P.credits<o.price) return false; P.credits-=o.price; P.stash.push(k); shopBought(ITEMS[k].name,o.price,''); saveProfile(); try{ renderHub(); }catch(_bh){} return true; }
 function syncSectorPack(){
   var host=document.getElementById('sectorpack'), keys, i, k, h, held, got, nc, tot=0, lastG=-1, g, u;

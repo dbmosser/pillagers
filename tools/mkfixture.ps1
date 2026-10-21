@@ -6145,6 +6145,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'33.47',what:'the pre-raid pack rows keep one buy slot each, so a row the counter does not sell still lines its stepper up with the rest',
+   run:function(){
+     if(!(window.__hubEnter&&window.__P&&window.__applyLoaded)||typeof renderSector!=='function'||typeof packBuyHtml!=='function') return 'SKIP: no pack buy control';
+     var bad=[], snap=null, q, sm=document.getElementById('sectormodal'), a, b, d;
+     function shut(){ var mo=document.querySelectorAll('.modal.on'); for(var j=0;j<mo.length;j++) mo[j].classList.remove('on'); }
+     try{
+       snap=JSON.parse(JSON.stringify(__P()));
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       q=__P(); q.freeKit=0; q.kitPick='mine'; q.stash=['bandage','gun_carbine']; q.kit=[]; q.equipped='fists'; q.credits=5000;
+       __hubEnter(); shut(); renderSector(); openModal('sectormodal');
+       a=sm.querySelector('#sectorpack [data-pk="bandage"] .st'); b=sm.querySelector('#sectorpack [data-pk="gun_carbine"] .st');
+       if(!a||!b) return 'the pack rows are not drawn';
+       d=Math.abs(a.getBoundingClientRect().right-b.getBoundingClientRect().right);
+       if(d>1) bad.push('the steppers of a sold and an unsold row end '+d.toFixed(1)+' px apart');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ shut(); }catch(_s){} try{ if(snap) __applyLoaded(snap); }catch(_a){} try{ __cleanProfile(); }catch(_c){} __topClear(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'33.46',what:'the what is new card is stamped within 0.15 of the build and leads with the new news shown whole',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';
