@@ -3309,7 +3309,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.63';
+var VER='33.64';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -52189,7 +52189,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.63: The what is new stamp keeps up with the build; the three notes are unchanged. Check 33.63 fails on v33.62',
+  now:'v33.64: A test frame opened with netslot now links its player 2 window; nothing changes for players. Check 33.64 fails on v33.63',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -57151,11 +57151,11 @@ function netSameStop(){
   netSndRelease();   // v15.78: the master gain goes back to 1 and the other window's word is forgotten; this window's own switch stays
 }
 // The address of the player 2 window: this page, with p2=1, the mode and the pair code and nothing else.
-function netP2Url(mode,pair){
-  var base=(typeof location!=='undefined'&&location.href)?String(location.href):'';
+function netP2Url(mode,pair,qOver){  var base=(typeof location!=='undefined'&&location.href)?String(location.href):'';
   base=base.split('#')[0].split('?')[0];
   var emb=!!reportEmbedded(), keep='';   // v33.58 (cw-p2bridge): embedded only; the top level address is exactly what it was
-  if(emb){ keep=String((typeof location!=='undefined'&&location.search)||'').replace(/^\?/,'').split('&').filter(function(s){ return s&&!/^(p2|mode|pair|arc|emb)=/.test(s); }).join('&'); if(keep) keep+='&'; }
+  // v33.62 (cw-p2noslot): the embedded copy drops netslot too; a window with ?netslot is never player 2 (NETP2=!NETSLOT&&..., v15.76), so a test frame opened with it never linked. qOver is a test seam for the frame's query.
+  if(emb){ keep=String((typeof qOver==='string')?qOver:((typeof location!=='undefined'&&location.search)||'')).replace(/^\?/,'').split('&').filter(function(s){ return s&&!/^(p2|mode|pair|arc|emb|netslot)=/.test(s); }).join('&'); if(keep) keep+='&'; }
   return base+'?'+keep+'p2=1&mode='+((mode==='pvp')?'pvp':'coop')+'&pair='+String(pair||'')+((NET.arcPick&&mode!=='pvp')?'&arc=1':'')+(emb?'&emb=1':'');   // v23.24 (arcade5): &arc=1
 }
 // A window, not a tab, most of the screen, so he can drag it to his second screen and go fullscreen there.

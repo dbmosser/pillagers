@@ -1,0 +1,7 @@
+v33.64: player 2 links in a test frame
+
+A test frame opened with netslot now links its player 2 window; nothing changes for players.
+
+Check 33.64. Fails on v33.63.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

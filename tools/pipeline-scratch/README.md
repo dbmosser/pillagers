@@ -9,3 +9,7 @@ If the scratchpad is ever lost, copy these files back into it. Do not edit them 
 10-21 03:58: corpq.sh line 12 now closes the corpus Chrome (9344) by its port and starts a fresh one at every full run. The one started
 10-20 23:00 served two runs and its graphics process grew to 2.8 GB of committed memory; at 03:25 Windows ran low on virtual memory
 (System log event 2004) with it as the top user. The line was rewritten at the same byte length because a run was reading the script.
+
+10-21 04:40: mk-cw-cardstamp.ps1 is the one What's New stamp key (RULES.md item 5; genP.sh is retired). It reads VER at run time,
+moves only WHATSNEW_VER to the build it ships as, and keeps the three short notes. When the stamp is within 0.10 of VER it stops at
+the mk step ("the stamp is fresh"), so a lane that reaches it after another ship fixed the stamp ships nothing.
