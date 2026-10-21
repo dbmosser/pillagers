@@ -67,3 +67,11 @@ Critic requests for a 420px preview conflict with the task limit of 240px; rewri
 Validation: generator prints written; anchor occurs once in both workspace 33.56 and real 33.57; draft is CSS-only; generated check JavaScript and ASCII checks pass. No tracked file edited. No runtime test or seed fingerprint claimed.
 Infrastructure remains unchanged: real game VER 33.57, both p3357.ps1 and f3357.ps1 absent. The updated pending key remains in deferred-keys.txt to avoid another identical automatic setup failure. After coordinator recovery, restore cw-cx-o91b-windowlayout to keys.txt and ship the updated script. Please preserve round-2 1080p baseline and capture genuine 4k before ship, then both resolutions after ship. Do not spend the remaining camera rounds photographing the unshipped layout again.
 Watch: the news and report windows look tidier; copy still copies the whole report.
+
+--- codex run 2026-10-21 03:43 ---
+2026-10-21 continuation on v33.61 after coordinator recovery: workspace and real game both report 33.61. The pending cw-cx-o91b-windowlayout CSS is absent from both; its closing-style anchor matches exactly once in both. No repeated infrastructure failure is claimed.
+Kept the already prepared CSS and checks unchanged. The generator printed written against current workspace HEAD. Draft is one CSS-only insertion; generator is ASCII; generated gate check and both camera scripts pass node --check. The existing 33.56 check remains applicable to the <=240px preview, primary copy, preserved raw report value, lowercase presentation and shared news body size. No fixture retarget is needed. Runtime checks and seed 4242 remain unverified until lane preflight/ship.
+keys.txt retains the already-shipped cw-cx-o91b-newsreport and pending cw-cx-o91b-windowlayout, in that order. Please now preflight and ship the pending key. No additional styling variant is required before seeing it.
+The latest saved baseline directory still contains only the two 1080p images. Please capture both existing recipe names at 1080 and 4k BEFORE the pending ship and AFTER it, then run both critics. Current recorded scores remain news 2 and recorder 3; this run claims no new grade. The finish line requires both >=3 and resolution of in-scope P0/P1 findings.
+Watch: the news and report windows look tidier; copy still copies the whole report.
+

@@ -1,1 +1,1 @@
-10-21 03:02 running 85a-itch-couch-link on Claude Code (your plan: week 76% of the 37.5% line, 5-hour 11%)
+10-21 04:00 running 85b-emb-p2-drops-netslot on Claude Code (your plan: week 78% of the 37.9% line, 5-hour 19%)

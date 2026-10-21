@@ -1,0 +1,16 @@
+{
+    "title":  "PLAYER 2 LINKS IN A TEST FRAME",
+    "why":  "coord-06 re-test of v33.59: inside itch frame the player 2 address kept ?netslot, and a window with netslot is never player 2, so a test copy opened with it never linked. The embedded path now drops netslot like p2, mode, pair, arc and emb. Players never have netslot; the top level address is unchanged.",
+    "now":  "A test frame opened with netslot now links its player 2 window; nothing changes for players.",
+    "edits":  [
+                  {
+                      "anchor":  "function netP2Url(mode,pair){\n",
+                      "replacement":  "function netP2Url(mode,pair,qOver){"
+                  },
+                  {
+                      "anchor":  "  if(emb){ keep=String((typeof location!==\u0027undefined\u0027\u0026\u0026location.search)||\u0027\u0027).replace(/^\\?/,\u0027\u0027).split(\u0027\u0026\u0027).filter(function(s){ return s\u0026\u0026!/^(p2|mode|pair|arc|emb)=/.test(s); }).join(\u0027\u0026\u0027); if(keep) keep+=\u0027\u0026\u0027; }",
+                      "replacement":  "  // v33.62 (cw-p2noslot): the embedded copy drops netslot too; a window with ?netslot is never player 2 (NETP2=!NETSLOT\u0026\u0026..., v15.76), so a test frame opened with it never linked. qOver is a test seam for the frame\u0027s query.\n  if(emb){ keep=String((typeof qOver===\u0027string\u0027)?qOver:((typeof location!==\u0027undefined\u0027\u0026\u0026location.search)||\u0027\u0027)).replace(/^\\?/,\u0027\u0027).split(\u0027\u0026\u0027).filter(function(s){ return s\u0026\u0026!/^(p2|mode|pair|arc|emb|netslot)=/.test(s); }).join(\u0027\u0026\u0027); if(keep) keep+=\u0027\u0026\u0027; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the player 2 address made inside itch frame drops netslot (a window with netslot is never player 2) and keeps the frame own query; the top level address is unchanged\u0027,\n   run:function(){\n     var oEmb=reportEmbedded, bad=[], u, top;\n     try{\n       reportEmbedded=function(){ return true; };\n       u=netP2Url(\u0027coop\u0027,\u0027zqxpair\u0027,\u0027?netslot=A\u0026v=123\u0027);\n       if(u.indexOf(\u0027netslot\u0027)\u003e=0) bad.push(\u0027embedded address carries netslot: \u0027+u);\n       if(u.indexOf(\u0027v=123\u0027)\u003c0) bad.push(\u0027embedded address lost the frame v=123: \u0027+u);\n       if(u.indexOf(\u0027p2=1\u0027)\u003c0||u.indexOf(\u0027emb=1\u0027)\u003c0) bad.push(\u0027embedded address lacks p2=1 or emb=1: \u0027+u);\n       reportEmbedded=function(){ return false; };\n       top=netP2Url(\u0027coop\u0027,\u0027zqxpair\u0027,\u0027?netslot=A\u0026v=123\u0027);\n       if(top.indexOf(\u0027?p2=1\u0026mode=coop\u0026pair=zqxpair\u0027)\u003c0||top.indexOf(\u0027netslot\u0027)\u003e=0||top.indexOf(\u0027v=123\u0027)\u003e=0||top.indexOf(\u0027emb=1\u0027)\u003e=0) bad.push(\u0027top level address changed: \u0027+top);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally { reportEmbedded=oEmb; }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

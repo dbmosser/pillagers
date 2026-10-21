@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.62 - THE WHAT IS NEW CARD STAMP IS CURRENT
+
+Co-op hunt while he was away. The card was stamped v33.46 and the stamp may not trail the build by more than 0.15. Its three short notes are unchanged.
+
+MEASURED. Check 33.62 passes, and fails on v33.61.
 ## v33.61 - THE PAIR SHARES ITS MARKS AND SETTINGS INSIDE ITCH
 
 Co-op hunt while he was away. coord-06 on 2026-10-21: in itch frame player 1 and player 2 keep separate stores, so the raid marks and the shared sound and kid settings never crossed. Player 2 now sends a beat every 2 seconds and the settings are compared once a second over the window bridge, so player 1 never opens a window over a live player 2 raid and both windows keep the same sound and kid settings. Saves are not shared.

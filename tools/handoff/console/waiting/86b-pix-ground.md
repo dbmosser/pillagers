@@ -51,3 +51,8 @@ Party risk: medium: most of the screen, plus ascend load and memory in both wind
 Size: about 1 lane-night. Small ships, each easy to undo.
 
 TASK DONE when shipped with its check and pictures; TASK PARTIAL with what is left.
+
+Lane note 2026-10-21 03:41: shipped cw-cx-pixground and parked: only lane-side steps are left. Codex's last words:
+Reviewed all three images. Both night reviews scored 2/4; the day critic failed while saving. I logged the unresolved HUD findings and coordinator actions.
+
+TASK PARTIAL: news refresh, hub/decal shipping, HUD fixes, and hub/4K reviews remain.

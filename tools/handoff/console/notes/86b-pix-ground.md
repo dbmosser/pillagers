@@ -55,3 +55,32 @@
 - Added slowest-tile coordinates and read/classification/texture/write timings to any future failure message, plus the initial raster time. This will distinguish a read stall from texture work or a later pause if the next preflight still fails.
 - Regenerated the raid and hub drafts against v33.57. All 26 anchors apply in order in the private preview, and the whole game plus all three checks parse. The tracked game and fixture remain unchanged. Keys and camera recipes are unchanged. Lane preflight, shipping and pictures are still required; the existing coordinator handoff for 4K still applies.
 
+
+--- codex run 2026-10-21 03:30 ---
+## 2026-10-21 - raid ground shipped; hub stopped on the shared news stamp
+- cw-cx-pixground shipped as v33.60; the workspace is now v33.61. The raster-flush repair passed preflight and the ship gate.
+- cw-cx-pixhub passed its new check twice on the draft and failed twice on the control, as intended. The gate stopped only on the unrelated older check 33.46: the news stamp is stale. Nothing from the hub key shipped. Keeping the same key and its passing implementation/check.
+- Confirmed the cause: dark_raiders.html has WHATSNEW_VER='33.46'. At v33.61 that is exactly the allowed 0.15 behind; drafting v33.62 exceeds it. Any next ordinary ship hits this same stamp check.
+- The Codex addendum explicitly assigns What's New refreshes to a Claude lane and says to hand them over in questions-new.md. That handoff is written. Next unused generator number found is P45 (P44 is the highest existing mk-card-autoP script).
+- Generator compatibility detail for the Claude lane: genP.sh still uses mk-card-autoA3.ps1. Its new check requires WHATSNEW[0] to begin with the old alpha text and WHATSNEW[1] with polish pass text. The current card's first three entries and wnList() were deliberately shortened by cw-cx-shortnews. Running the old generator unchanged would replace this stale-stamp failure with a new-card check failure. Preserve the three current short notes and adapt the refresh check, or update the notes through the normal UI process; do not restore the old long card just to satisfy the generator.
+- Regenerated the unchanged hub and decal drafts against v33.61. All 10 remaining anchors apply in order and the resulting full game plus both checks parse. The tracked game and fixture are unchanged. keys.txt still lists the shipped ground key followed by the same hub and decal keys; the lane skips the shipped key.
+- Remaining work: Claude lane news-card refresh, retry hub and decal, camera recipes/critic review, and the previously handed-over 4K capture. No new visual change was made in this run.
+
+
+--- codex run 2026-10-21 03:36 ---
+## 2026-10-21 - repeated stale-stamp stop; do raid photography meanwhile
+- The workspace is still v33.61 and WHATSNEW_VER is still 33.46. The previous handoff reached questions.md but no refresh has shipped. The identical preflight stop has no new hub-code failure to repair. The explicit Codex addendum still assigns the card refresh to a Claude lane.
+- Left the passing cw-cx-pixhub script and check unchanged, and preserved its exact key. Moved the two remaining keys to deferred-keys.txt; keys.txt now contains only the already-shipped cw-cx-pixground. This stops repeating a known external preflight failure.
+- Enabled useful independent work: camera-recipes.json now contains the three shipped raid views only. The full four-view recipe is preserved in all-ground-recipes.json. The lane can take these pictures without attempting another blocked ship. No hub picture is claimed before its key ships.
+- After the Claude lane refreshes the news stamp, restore deferred-keys.txt after the shipped ground key in keys.txt and run node .codex-work/86b-pix-ground/make-recipes.js without --raid-only to restore the full recipe. Then retry the same hub/decal keys, and capture the hub plus the required 4K views. The earlier questions.md handoff explains the legacy genP template mismatch; do not duplicate the owner question.
+- Still partial: review returned raid pictures and critic findings, then finish the deferred ships and hub/4K pictures after the shared stamp is repaired. No game, fixture or player text was changed this run.
+
+
+--- codex run 2026-10-21 03:41 ---
+## 2026-10-21 - reviewed recipe round 1
+- Opened and inspected all three returned raid images. All staged at 1920x1080 with zero camera lint findings. Picture paths and the complete follow-up are in .codex-work/86b-pix-ground/critic-followup.md.
+- External results: raid night 2/4, cold-mile night 2/4. The day critic failed while writing accept.json (UNKNOWN/-4094), so it has no valid saved score. Cold-mile's recorded need:3 is a filename heuristic error; the task requires 4 for that raid too.
+- Saved P0/P1 findings concern the existing right/left HUD panels, timer/extract hierarchy, ammo panel, hotbar, panel family, colours and health/stamina. None identifies a ground-specific defect. Kept these findings open and handed them to the coordinator for raid HUD work; no visual acceptance is claimed.
+- Current game/stamp are unchanged at 33.61/33.46. Remaining hub and decal keys stay preserved in deferred-keys.txt until the required Claude-lane news refresh. No pointless preflight retry or new camera round was queued.
+- Coordinator also needs to recover the day critic using the existing picture, then complete post-hub and actual 4K photography. Existing scripts, key names, recipes and tracked files are unchanged this run. Task remains partial.
+

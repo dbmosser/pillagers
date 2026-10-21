@@ -1,4 +1,6 @@
 #!/bin/bash
+# RETIRED 10-21 04:25 (coordinator): since v33.49 check 33.49 bans the POLISH PASS line this writes. Use bash S/shipq.sh cw-cardstamp (RULES.md item 5).
+echo "genP.sh is retired: ship cw-cardstamp instead (RULES.md item 5)"; exit 1
 # genP.sh N : write mk-card-autoPN.ps1, a What's New card refresh with a generic true line (POLISH PASS N), from the A3 template.
 S="C:/Users/User1/AppData/Local/Temp/claude/C--Users-User1-Desktop-dark-raiders/8a09e991-b4f4-4b23-b10f-ded92e837fc3/scratchpad"; n=$1
 sed -e "s/draft-card-autoA3.json/draft-card-autoP$n.json/" \

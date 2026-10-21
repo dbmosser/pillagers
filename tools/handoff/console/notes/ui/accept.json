@@ -1776,5 +1776,37 @@
   "pic": "tools/handoff/console/notes/shots/85-preraid-map-no-cache-labels-recipes-4/85-after-mapfirst-1080.jpg",
   "task": "85-preraid-map-no-cache-labels",
   "when": "2026-10-21T06:04"
+ },
+ "86b-cold-mile-night": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The HUD is readable and all lower case, but it is a pile of small, dim, unrelated boxes with no hero element, and the type sizes, panels and accent colours don't follow the guide.",
+  "findings": [
+   "P0 top-right: career box and run info box: Cut run info to a 16px label row ('night · storm'). Move the effect text to a tooltip or delete it. Show contracts as three rows at 16px with a right-aligned count. Build the career block as one list of equal rows (cash, stash, backpack, xp) using the same panel (--ui-panel 90%, 1px --ui-line-hi, 4px radius, 16px padding). Align it to the 48px margin.",
+   "P1 center top: 8:59 timer and 'extract 166m' chip: Make the timer 56px f-cond 800 in --tx-1 (--fs-hero). Make the extract chip 20px with 8px padding. Delete the storm banner sentence and keep only a 16px 'storm' tag. Leave 16px between the timer and the chip.",
+   "P1 bottom-right ammo card 'scav pistol 12 / 24' and 'b / i backpack': Right-align the name, ammo and items line on one 24px inner margin. Move 'b / i backpack' to a 14px muted legend under the card, or into a key chip like the 'f' and 'use' chips. Set the name to 20px --tx-2 and the numerals to 56px 800, with 12 in --tx-1 and '/ 24' in --tx-2. Make the accent tab 36px wide by 2px, flush with the card edge.",
+   "P1 hotbar, bottom centre: Draw the owned guns at 100% and the empty slots at 35%. Make the key numbers 16px. Use the --acc lime 2px border for the active slot only, and drop the blue fill on 4 (use a 3px rarity bar at the bottom edge). Place the 'fire / use' hints with an 8px gap above the bar at 16px, or move them next to the ammo card.",
+   "P1 left, 'current pillager bots 16' list: Cut it to the top 5 rows plus 'you'. Use --tx-1 for names and --tx-2 for values, and --acc only for 'you'. Remove the amber header and the purple name, or move the purple to a 3px bar on the left of the row. Use tabular figures for the $ column. Align the panel's left edge to the 48px margin to match the other panels."
+  ],
+  "pic": "tools/handoff/console/notes/shots/86b-pix-ground-recipes-1/86b-cold-mile-night-1080.jpg",
+  "task": "86b-pix-ground",
+  "when": "2026-10-21T07:37"
+ },
+ "86b-raid-night": {
+  "score": 2,
+  "pass": false,
+  "need": 4,
+  "verdict": "The raid HUD has good bones (a clear ammo hero number and a readable hotbar), but it is a scatter of mismatched panels with too many type sizes and too many accent colours. It has not reached the one-hot-accent look of ARC Raiders.",
+  "findings": [
+   "P0 top-right stack (cash/stash, run info, contracts): Collapse it into one vertical list with every row the same size. Use 20px values in tx-1 and 16px labels in tx-2, with 8px row padding. Remove the 'night foggy / sight -40%' block, or reduce it to one icon row. Show at most one active contract line.",
+   "P0 top-left 'current pillager bots 3' scoreboard: Use one header colour (tx-2) and white rows. Mark 'you' with a 3px lime left bar on a --ui-raised row fill. Keep the purple only if it is a per-player tint, but the owner has not answered that question, so drop it. Match the 1px --ui-line-hi border and 4px radius to the other panels.",
+   "P1 whole HUD, panel family: Use one panel component: --ui-panel at 90%, 1px --ui-line-hi, 4px radius, 16px padding, no slanted corner. Put the lime 3px tab only on the weapon panel as the star.",
+   "P1 colour use: amber text, teal pill, lime, cyan 'extraction c available', green hp, blue stamina: Keep the colours semantic: --extract teal only for the extract timer and prompt, --warn amber only as a small glyph, lime only for focus and the active weapon. Make 'concealed · in cover' tx-1 with a small amber glyph. Make the amber panel header tx-2.",
+   "P1 bottom-left 'standing' / stamina / hp: Make hp 16px thin and secondary, with a 20px numeric value in tx-1 inside a 12px bar. Make stamina a 6px bar in tx-2. Fold 'standing' into the bar label, or make it a plain 16px tx-2 word. Put both in one 5%-margin group aligned to the hotbar's left edge."
+  ],
+  "pic": "tools/handoff/console/notes/shots/86b-pix-ground-recipes-1/86b-raid-night-1080.jpg",
+  "task": "86b-pix-ground",
+  "when": "2026-10-21T07:38"
  }
 }

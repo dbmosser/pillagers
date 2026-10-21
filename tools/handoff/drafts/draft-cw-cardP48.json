@@ -1,0 +1,12 @@
+{
+    "title":  "THE WHAT IS NEW CARD STAMP IS CURRENT",
+    "why":  "The card was stamped v33.46 and the stamp may not trail the build by more than 0.15. Its three short notes are unchanged.",
+    "now":  "The what is new card stamp is current.",
+    "edits":  [
+                  {
+                      "anchor":  "var WHATSNEW_VER=\u002733.46\u0027;",
+                      "replacement":  "var WHATSNEW_VER=\u002733.62\u0027;"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the what is new card stamp is within 0.15 of the build and the card still shows its three short notes first\u0027,\n   run:function(){\n     if(typeof WHATSNEW===\u0027undefined\u0027||typeof WHATSNEW_VER===\u0027undefined\u0027||typeof VER===\u0027undefined\u0027||typeof wnList!==\u0027function\u0027) return \u0027SKIP: this build has no what is new card\u0027;\n     if(parseFloat(WHATSNEW_VER)\u003e33.62+0.001) return \u0027SKIP: the card has moved on, a later card check covers it\u0027;\n     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER);\n     if(!(d\u003c=0.10+1e-9)) bad.push(\u0027the card is stamped v\u0027+WHATSNEW_VER+\u0027, \u0027+d.toFixed(2)+\u0027 behind v\u0027+VER);\n     if(wnList().length!==3) bad.push(\u0027the card does not show its three short notes\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

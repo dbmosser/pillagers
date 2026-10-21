@@ -1,0 +1,4 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  86b-raid-day                           staged       8.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  86b-raid-night                         staged       8.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  86b-cold-mile-night                    staged      13.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0

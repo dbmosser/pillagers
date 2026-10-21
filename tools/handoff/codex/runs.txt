@@ -179,3 +179,7 @@
 2026-10-21 02:43 o-91b-report-news-style 122s ok PARTIAL in=1220821 out=12129 run=5
 2026-10-21 03:09 86b-pix-ground 992s ok PARTIAL in=2315947 out=28907 run=1
 2026-10-21 03:13 86b-pix-ground 247s ok PARTIAL in=2927241 out=35773 run=2
+2026-10-21 03:30 86b-pix-ground 156s ok PARTIAL in=3732259 out=39869 run=3
+2026-10-21 03:36 86b-pix-ground 127s ok PARTIAL in=4303383 out=43258 run=4
+2026-10-21 03:41 86b-pix-ground 216s ok PARTIAL in=5135098 out=49167 run=5
+2026-10-21 03:43 o-91b-report-news-style 94s ok PARTIAL in=191439 out=2576 run=6

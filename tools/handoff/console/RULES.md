@@ -109,8 +109,10 @@ S = C:\Users\User1\AppData\Local\Temp\claude\C--Users-User1-Desktop-dark-raiders
    "itch: not pushed"; that is expected, not a failure).
 4. The gate also reruns the last ~80 checks and the seed 4242 fingerprint (ents 85/374, containers 165/593). A change that
    moves the fingerprint is wrong unless the task says otherwise.
-5. If a STOP says the What's New card stamp is stale, read S\genP.sh, run it with the next unused number (P8 and up) and
-   ship that card key first.
+5. If a STOP says the What's New card stamp is stale ("REGRESS 33.46: the news stamp is stale" or a later card check), ship the
+   ONE stamp key: bash "S/shipq.sh" cw-cardstamp (no preflight needed; it reads the build at run time and moves only the stamp).
+   Never write your own card key and never use genP.sh (retired 10-21: since v33.49 the card is three short lower case notes and
+   check 33.49 bans the "POLISH PASS" line it wrote). A cw-cardstamp STOP saying "control did not fail" means it is already fresh.
 6. If the gate's parse checks time out, restart its Chrome: powershell -ExecutionPolicy Bypass -File tools\cdp.ps1 -Start -Port 9346
 7. If the lock S\shipq.lock looks stale (its owner in S\shipq.owner is dead for over 30 min), use bash "S/clearstale.sh". Nothing else.
    (10-21) A STOP after the build was written (verifySafe or a fingerprint) now puts the game, fixture, DESIGN and AUDIT back by

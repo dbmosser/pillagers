@@ -6148,6 +6148,14 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'33.62',what:'the what is new card stamp is within 0.15 of the build and the card still shows its three short notes first',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnList!=='function') return 'SKIP: this build has no what is new card';
+     if(parseFloat(WHATSNEW_VER)>33.62+0.001) return 'SKIP: the card has moved on, a later card check covers it';
+     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER);
+     if(!(d<=0.10+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
+     if(wnList().length!==3) bad.push('the card does not show its three short notes');
+     return bad.length?bad.join('; '):null; }},
   {v:'33.61',what:'inside itch frame the player 2 marks and the shared settings cross the bridge: a beat with raid 1 makes the pick say player 2 is in a raid, a changed sound or split key is sent and applied, only the three shared keys are taken',
    run:function(){
      if(typeof netBeatIn!=='function'||typeof netBeatPost!=='function'||typeof netBridgeTick!=='function'||typeof netBridgeKv!=='function'||typeof netBridgeKvAll!=='function') return 'FAIL: this build has no bridge marks (netBeatIn, netBeatPost, netBridgeTick, netBridgeKv, netBridgeKvAll)';

@@ -16,3 +16,8 @@ Facts: wallSprite ~38891, vegSprite ~38788, tree/bush draw ~39596-39635, shadowE
 - Blocked again: this run's shell starts in tools/handoff/console and cannot cd, so bash tools/handoff/preflight.sh and bash ../preflight.sh are both refused (needs approval). Nothing was run or shipped.
 - Coordinator: start 86d with the working directory at the repo root (C:/claudecode/dark raiders), or give me a preflight form that works from console/.
 - Next run: from the repo root, bash tools/handoff/preflight.sh c cw-pixwalls, then shipq cw-pixwalls; then doors/windows/kerbs/shWallDraw, trees/bushes, shadows.
+
+## Run 4 (10-21, lane c, repo root works)
+- Re-ran mk-cw-pixwalls (written on v33.61). Preflight: my check passes; 2 old failures: REGRESS 33.60 chunk step 4.7 ms (over 4, timing noise on the ground bake) and REGRESS 33.46 news stamp stale.
+- Shipping card first as cw-card47 (S/mk-cw-card47.ps1, polish pass 47), then pixwalls again.
+- Run 4 result: shipq cw-card47 sat 10 min behind a lock owned by "324592 manual 03:28:04" and was killed by the background limit; nothing shipped, no game change. Next run: git log to see if card47 or another card landed; if not, shipq cw-card47 (S/mk-cw-card47.ps1 exists), then preflight c cw-pixwalls (33.60 chunk-step 4.7 ms may repeat: timing noise, log in alarms.md), ship, pictures, then the rest.

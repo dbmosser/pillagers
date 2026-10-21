@@ -1,0 +1,12 @@
+{
+    "title":  "THE WHAT IS NEW STAMP CATCHES UP",
+    "why":  "The card stamp was v33.46 and may not trail the build by more than 0.15. Only the stamp moves; the three short notes stay.",
+    "now":  "The what is new stamp catches up with the build.",
+    "edits":  [
+                  {
+                      "anchor":  "var WHATSNEW_VER=\u002733.46\u0027;",
+                      "replacement":  "var WHATSNEW_VER=\u002733.62\u0027;"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the what is new stamp is moved up to the build it ships as, with the three short notes unchanged\u0027,\n   run:function(){\n     if(typeof WHATSNEW===\u0027undefined\u0027||typeof WHATSNEW_VER===\u0027undefined\u0027||typeof wnList!==\u0027function\u0027) return \u0027FAIL: this build has no what is new card\u0027;\n     if(parseFloat(WHATSNEW_VER)\u003e33.62+0.001) return null;\n     var bad=[];\n     if(!(parseFloat(WHATSNEW_VER)\u003e=33.62-0.001)) bad.push(\u0027the card is stamped v\u0027+WHATSNEW_VER+\u0027, older than v\u0027+33.62);\n     if(WHATSNEW[0]!==\u0027experimental switches in settings\u0027||wnList().length!==3) bad.push(\u0027the three short notes changed\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

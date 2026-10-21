@@ -1,0 +1,7 @@
+v33.62: the what is new card stamp is current
+
+The what is new card stamp is current.
+
+Check 33.62. Fails on v33.61.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
