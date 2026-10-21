@@ -1,0 +1,7 @@
+v33.23: camera further out
+
+The default camera is further out. Reset zoom returns to 105 percent.
+
+Check 33.23. Fails on v33.22.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

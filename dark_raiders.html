@@ -3249,7 +3249,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.22';
+var VER='33.23';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19553,7 +19553,7 @@ var KEYS_ACTS=[['KeyW','move up'],['KeyA','move left'],['KeyS','move down'],['Ke
   // CAPS LOCK (auto-jog), the HUD size pair, the zoom pair and the zoom reset all work in the raid and were not on the list, so none could be moved and a bind onto one
   // did not swap. They are on it now. The keys that cannot move (1 to 9, P, TAB, ESC, BACKSPACE, the key left of 1, F11) are listed at the end, locked.
   // v31.33 (cw-gearrules): the H row is gone. H tapped a heal and held a plate, but the item wheel (hold Q) took both and nothing arms the H hold any more, so a row for H listed a key that does nothing.
-  ['KeyG','air strike (when charged)'],['CapsLock','auto-jog'],['Equal','hud bigger'],['Minus','hud smaller'],['NumpadAdd','zoom in'],['NumpadSubtract','zoom out'],['Numpad0','zoom to 130%']];
+  ['KeyG','air strike (when charged)'],['CapsLock','auto-jog'],['Equal','hud bigger'],['Minus','hud smaller'],['NumpadAdd','zoom in'],['NumpadSubtract','zoom out'],['Numpad0','zoom to 105%']];
 var KEYS={inv:null,waiting:null,built:0,inited:0,note:null};
 // v25.xx (keyremap), HIS ORDER 2026-10-13 ("add something in settings where the player can remap keys"): the version of the map (a map made
 // before the key swap named jobs that have moved, so a profile older than this starts on the defaults, once, at load), and the keys no action
@@ -34919,7 +34919,8 @@ var ZMIN=0.85,ZMAX=9.0;   // v8.79 set 0.85; v8.92 raised the ceiling from 3.0
 //      were zooming. That is the jank you could feel.
 // ZT is the target the input sets, ZC is the eased value the renderer reads.
 // v28.xx (cw-cx-camera130), HIS PICK (2026-10-18, art survey a36 C): "30 percent closer". One default for both windows and every raid mode; a saved dial keeps its value.
-var ZDEFAULT=1.3,ZT=ZDEFAULT,ZC=ZDEFAULT,zoomSaveT=0;
+// v28.xx (cw-camfar105), HIS ORDER (2026-10-20 evening): "default camera needs to be further away from player", then with his picture: "this is a good distance for default camera". His picture shows a pillager 6.4 percent of the screen height; 1.3 drew it 7.9 percent, so the default is 1.05 (1.3 x 6.4 / 7.9). Reverses the 1.3 of v31.85; a zoom he set himself stays.
+var ZDEFAULT=1.05,ZT=ZDEFAULT,ZC=ZDEFAULT,zoomSaveT=0;
 function loadZoom(){ ZT=ZC=clamp(P.zoom||ZDEFAULT,ZMIN,ZMAX); }
 // v9.16: THE DIAL TIMES THE SCREEN. This returned the dial alone, so one world
 // unit was one screen pixel on every monitor and a 4K player saw 2.13x more
@@ -51322,7 +51323,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.22: Pillagers, mates and bots are drawn at their old size again. Check 33.22 fails on v33.21',
+  now:'v33.23: The default camera is further out. Reset zoom returns to 105 percent. Check 33.23 fails on v33.22',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

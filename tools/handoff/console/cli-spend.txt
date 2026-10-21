@@ -582,3 +582,13 @@
 2026-10-20 0.1420 critic-manual
 2026-10-20 0.1404 critic-manual
 2026-10-20 0.1431 critic-61-experimental-menu
+2026-10-20 0.1421 critic-manual
+2026-10-20 0.1374 critic-61-experimental-menu
+2026-10-20 0.1381 critic-manual
+2026-10-20 0.1401 critic-61-experimental-menu
+2026-10-20 0.1433 critic-manual
+2026-10-20 0.1390 critic-61-experimental-menu
+2026-10-20 0.1422 critic-manual
+2026-10-20 0.1387 critic-61-experimental-menu
+2026-10-20 0.1417 critic-manual
+2026-10-20 0.1454 critic-manual

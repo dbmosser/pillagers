@@ -1,1 +1,1 @@
-10-20 23:32 pictures: recipe round 1 for 61-experimental-menu (screens 79-experimental-top,80-experimental-middle,81-experimental-bottom,82-experimental-host,83-experimental-guest, camera 9364)
+10-20 23:35 running 61-experimental-menu (codex, run 2 of 5)

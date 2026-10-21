@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.23 - CAMERA FURTHER OUT
+
+Co-op hunt while he was away. His 10-20 order and picture: the default camera sits further from the pillager. The default dial goes from 1.3 to 1.05, matching the pillager size in his picture; a saved personal zoom stays as chosen.
+
+MEASURED. Check 33.23 passes, and fails on v33.22.
 ## v33.22 - PILLAGERS BACK TO THEIR OLD SIZE
 
 Co-op hunt while he was away. His order: player is too big, back to the old size or smaller, in scale with bodies, trees and deer. The 1.25 figure scale from the art survey goes back to 1; the plates sit lower again.
