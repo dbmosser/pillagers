@@ -773,3 +773,5 @@
 2026-10-21 0.1502 critic-86c-pix-pillager
 2026-10-21 0.1453 critic-86c-pix-pillager
 2026-10-21 0.0000 86c-pix-pillager
+2026-10-21 0.4291353 86e-pix-props
+2026-10-21 0.15929459999999998 86h-pix-sets-wardrobe-wait

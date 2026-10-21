@@ -1,1 +1,1 @@
-10-21 06:44 waiting: another helper is just starting (memory check again in a few minutes); 86g-pix-pillager-states kept
+10-21 07:40 waiting for RAM: 1 GB free, a helper starts at 3; 86i-building-kinds kept

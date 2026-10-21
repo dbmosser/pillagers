@@ -138,7 +138,10 @@ while true; do
     #     longer waits for 45 min without a ship nor holds the ship lock (3.5 hours on 10-17): corpq.sh tests a frozen fixture copy.
     cl="$S/corpus.lock"; [ -d "$cl" ] && [ $(( $(date +%s) - $(stat -c %Y "$cl") )) -gt 21600 ] && rmdir "$cl" 2>/dev/null
     ct=$(get corpus_t); [ -z "$ct" ] && ct=0
-    if [ "$atq" = 0 ] && [ "$spl" = 0 ] && [ "$(get corpus_head)" != "$head" ] && [ $(( $(date +%s) - ct )) -ge 14400 ] && mkdir "$cl" 2>/dev/null; then
+    #     10-21 07:30 (coordinator): the run's Chrome takes 2 to 4 GB, so like the fuzzer it starts only with the floor + 3 GB free and no
+    #     helper waiting for RAM. The 07:04 run started on the 10 GB day VM with about 2.5 GB free and took it to 0.7 GB, and the robots
+    #     and two helpers stopped. In practice the full run now happens at night, when the VM has its night memory (answer 45 a).
+    if [ "$atq" = 0 ] && [ "$spl" = 0 ] && [ "$(get corpus_head)" != "$head" ] && [ $(( $(date +%s) - ct )) -ge 14400 ] && [ "$ram" -ge $((rf + 3)) ] && [ "${hw:-0}" -eq 0 ] && mkdir "$cl" 2>/dev/null; then
       out="$S/corpus-$(date +%m%d-%H%M).txt"; put corpus_head "$head"; put corpus_file "$out"; put corpus_t "$(date +%s)"; echo "$head" > "$out.head"
       echo "$(date +%H:%M) corpus start at $head" >> "$LOG"
       (bash "$S/corpq.sh" "$out" > /dev/null 2>&1; rmdir "$cl" 2>/dev/null; echo "$(date +%H:%M) corpus done" >> "$LOG"; summary) &

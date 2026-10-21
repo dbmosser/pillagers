@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.78 - THE PIXEL HURT STATES
+
+Co-op hunt while he was away. His picks a12 B (white then red hit with a recoil) and a13 D (red ink pulse, shoulders drop, stains at low health) from the art survey, and his 10-20 orders for the pixel art pass. Job 86g, ship 1: a hit and low health stay in the pixel body instead of falling back to the vector one.
+
+MEASURED. Check 33.78 passes, and fails on v33.77.
 ## v33.77 - THE PIXEL COVER WRECKS
 
 Co-op hunt while he was away. Job 86e ship 3: with the pixel look on, the cover wrecks (cars, skips, barriers, pipes, pallets) are one cached scene sprite each through pixWrap, keyed by kind, side, size, colour and rust. The soft contact shadow stays on the world.

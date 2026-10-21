@@ -16,3 +16,9 @@ cw-pixcover (cover wrecks, PIX_ENV, scene cache): draft written (scratchpad mk-c
 Gaps said plainly
 - No pictures: the camera (uishots) has no xfPix 1 stage; asked in questions.md by 86a / 86c. The bench sheet exists for when it does.
 - Watch (his next play): opened and closed crates still read at a glance (opened is the same body dimmed to 62 percent, lid back). Wreck ground shadow is now one flat tone under the wreck instead of a soft 50 percent oval.
+
+## Run (10-21, lane a)
+- SHIPPED v33.77 cw-pixcover (cover wrecks car, skip, barrier, pipes, pallets as scene sprites). The first ship STOPped: the check fell back on pipes because the builder allows only 2 bakes a frame (PIXSTORE.maxBuilds) and pipes have many distinct keys. Fix: the check warms up until every piece has a sprite (up to 40 frames). The game code was fine.
+- Preflight is refused from this shell (started in console/notes, cannot reach preflight.sh); shipped straight through shipq.
+- Watch (his next play): pipe bundles and cars pop in over a few frames after you enter a street (vector for a moment, then pixel), 2 bakes a frame.
+- STILL LEFT: lamps, forge / seal slab / story desk, extraction ring, Undercroft posts and racks and drop crate, deer and birds, text moves (strongbox label, seal %, forge name) to GFXWT; pictures (no xfPix camera stage).

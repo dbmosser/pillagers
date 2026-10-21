@@ -1,0 +1,7 @@
+v33.78: the pixel hurt states
+
+A hit washes the pixel pillager white then red inside its own shape with a one pixel push; low health pulses the outline red and drops the shoulders one pixel with two stains.
+
+Check 33.78. Fails on v33.77.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
