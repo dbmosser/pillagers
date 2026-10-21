@@ -59,3 +59,8 @@ Page: https://claude.ai/artifact/9FE6Z1FhG197FsrqVLRJFH. The page's database cam
 - 10-20 about 22:45, his ORDER (binding, replaces the after-the-party advice): "I want to do it all now before the party", then "if we need to
   reduce the customization to a smaller amount of items/classes etc, that is fine". The whole game takes the pixel look in the party build, dress-up
   kept but it may shrink. The coordinator plans the jobs (planning run pixel-pass-plan, 10-20 evening); they queue after his play notes 79 to 86.
+- 10-20 about 22:50, his ORDER on the dress-up cut (binding): "maybe just like a total reduction of cosmetics to -- 3 head options, 3 skin
+  options,  3  clothing (with pack) options, and 3 unique full sets". So: 3 heads (hair or headgear), 3 skin tones, 3 outfits each with its own pack,
+  3 full sets that replace the whole look. Coordinator calls, logged as questions, not waiting: the body builds (lean, curved, broad) and the paint
+  schemes are not in his list, so one body shape, with the feminine look carried by the head options; team colours stay (they are play, not
+  dress-up). Old saves map each removed pick to the nearest kept one inside salvagerun:profile (never a new key), and nothing he paid for is lost.
