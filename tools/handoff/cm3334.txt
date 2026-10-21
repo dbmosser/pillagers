@@ -1,0 +1,7 @@
+v33.34: the howler walks on its own step
+
+The Howler now has its own walking sound, a quick pneumatic tick. The other machines sound as before.
+
+Check 33.34. Fails on v33.33.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,14 @@
+{
+ "about": "61 experimental page camera recipe (own file, so the shared catalog is untouched)",
+ "prelude": "window.__uis=window.__uis||(function(){ function kv(c){ if(/^Key[A-Z]$/.test(c)) return c.slice(3).toLowerCase(); if(/^Digit\\d$/.test(c)) return c.slice(5); if(c==='Space') return ' '; return c; } var U={ wait:function(ms){ return new Promise(function(r){ setTimeout(r,ms); }); }, down:function(c){ window.dispatchEvent(new KeyboardEvent('keydown',{code:c,key:kv(c),bubbles:true,cancelable:true})); }, up:function(c){ window.dispatchEvent(new KeyboardEvent('keyup',{code:c,key:kv(c),bubbles:true,cancelable:true})); }, key:async function(c,hold){ U.down(c); await U.wait(hold||50); U.up(c); }, el:function(s){ return typeof s==='string'?document.querySelector(s):s; }, on:function(s){ var e=U.el(s); if(!e) return false; var b=e.getBoundingClientRect(); if(b.width<1||b.height<1) return false; return e.checkVisibility?e.checkVisibility({opacityProperty:true,visibilityProperty:true}):true; }, click:function(s){ var e=U.el(s); if(!e) return false; e.click(); return true; }, closeModals:function(){ [].slice.call(document.querySelectorAll('.modal.on')).forEach(function(m){ m.classList.remove('on'); }); }, untitle:function(){ var t=document.getElementById('title'); if(t) t.classList.remove('on'); }, until:async function(f,ms){ var t0=Date.now(); while(Date.now()-t0<(ms||5000)){ try{ if(f()) return true; }catch(e){} await U.wait(100); } return false; }, prep:async function(){ try{ __pinDPR(1); }catch(e){} }, floor:async function(){ U.click('#titlestart'); await U.until(function(){ return U.on('#welcomemodal'); },3000); U.click('#welcometake'); await U.wait(900); __hubEnter(); await U.wait(400); }, hold:async function(c,ms){ U.down(c); await U.wait(ms); U.up(c); }, raid:function(){ var g=__state(); return !!(g&&g.player&&!g.over); }, dep:function(o){ U.untitle(); U.closeModals(); __topClear(); return __deploy(o); }, near:function(list,n){ var g=__state(), p=g.player; return list.slice().sort(function(a,b){ return Math.hypot(a.x-p.x,a.y-p.y)-Math.hypot(b.x-p.x,b.y-p.y); }).slice(0,n); }, modal:function(){ var m=[].slice.call(document.querySelectorAll('.modal.on')).filter(function(x){ return U.on(x); }); return m.map(function(x){ return x.id; }).join(' '); } }; return U; })()",
+ "screens": [
+  {
+   "name": "79-settings-experimental",
+   "screen": "Settings, experimental page",
+   "before": "staged by lane b 10-21",
+   "query": "",
+   "expect": "U.on('#settingsmodal')",
+   "js": "await U.floor(); __station('dev','KeyE'); await U.wait(1200); try{SETSUB='exp'; renderSettings();}catch(x){} await U.wait(900); return U.modal();"
+  }
+ ]
+}

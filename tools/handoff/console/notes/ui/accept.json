@@ -1588,5 +1588,20 @@
   "pic": "tools/handoff/console/notes/shots/o-08-pad-owner-after/j7-raid-p2-pad-owner-1080.jpg",
   "task": "manual",
   "when": "2026-10-21T04:08"
+ },
+ "79-settings-experimental": {
+  "score": 3,
+  "pass": false,
+  "verdict": "The settings card is clean and consistent with the guide: it has a single lime focus bar, a close x in the corner and a calm column layout. But the list leaks other categories, the detail pane is mostly empty and wordy, and the type is small for a couch.",
+  "findings": [
+   "P0 middle list, rows after 'experimental': Show only the selected tab's rows. If the sections must share one scroll, add a 16px-label tx-2 section header ('audio') with a 1px --ui-line rule and 32px of space above it.",
+   "P1 right detail pane: Cut the copy to one short line, or two, of at most 12 words, placed 16px under the title. Use tx-1 or a brighter tx-2 at 20px with a 1.4 line-height. Drop the empty gap, or put the current value as a 56px hero (--fs-hero) so the pane has a point.",
+   "P1 'experimental' row: Render it as a navigation row with a '>' chevron at the right edge, or as a small outlined button with a --ui-line-hi border. Keep the row at the standard 56px pitch and use a deliberate section gap after it.",
+   "P1 all list rows and left tabs: Set row names to 20px --fs-body in tx-1 at weight 600. Pull the value column to a right-aligned block about 160px from the row end, and make the arrows 20px. Keep tx-2 only for idle tab labels.",
+   "P1 left category column: Give the active tab a --ui-raised fill, tx-1 text and a 3px lime bar. Dim the tab bar when focus is in the list. Use a uniform 56px pitch, or add a 1px divider and a label before the 'send play data' group."
+  ],
+  "pic": "tools/handoff/console/notes/shots/61-experimental-menu-r3/79-settings-experimental-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-21T04:17"
  }
 }

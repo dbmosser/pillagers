@@ -1,1 +1,1 @@
-10-21 00:11 81b-no-loot-gun-card: done, $0.16348899999999997
+10-21 00:16 waiting: another helper is just starting (memory check again in a few minutes); 81c-extract-siren-short kept

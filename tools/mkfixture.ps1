@@ -6144,6 +6144,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'33.34',what:'the Howler walks on its own short pneumatic step (the only walking machine that was on the pillager scuff), on the machine bus and the footsteps volume, the other machines unchanged',
+   run:function(){
+     if(typeof SPK_GEN!=='object'||typeof SPK_GEN.stepHowl!=='function') return 'there is no Howler step (no stepHowl)';
+     var bad=[], k, ks=['sentry','warden','bulwark','crawler','raider','snitch','listener','choir'], want=['stepHeavy','stepHeavy','stepHeavy','step','step','step','step','step'], OFF, fr, src, i;
+     if(stepSoundFor('howler')!=='stepHowl') bad.push('the Howler is not on its own step');
+     for(i=0;i<ks.length;i++){ if(stepSoundFor(ks[i])!==want[i]) bad.push(ks[i]+' step changed to '+stepSoundFor(ks[i])); }
+     if(SPK_CAT.stepHowl!=='mach') bad.push('the Howler step is not on the machine bus');
+     if(typeof OfflineAudioContext==='function'){
+       OFF=new OfflineAudioContext(1,22050,22050);
+       try{ SPK.at.stepHowl=-9; fr=SPK_GEN.stepHowl(OFF,OFF.destination,1,0); if(!fr||!fr.g) bad.push('the Howler step made no sound'); }catch(e){ bad.push('the Howler step threw '+e); }
+     }
+     src=String((typeof _realBlip==='function')?_realBlip:blip);
+     if(src.indexOf('step'+'Howl')<0) bad.push('the footsteps volume row does not cover the Howler step');
+     return bad.length?bad.join('; '):null;
+   }},
   {v:'33.33',what:'the four experimental group names show with a real height on the experimental page',
    run:function(){
      var bad=[], modal=document.getElementById('settingsmodal'), list=document.getElementById('setlist'), oldCls, oldSub=SETSUB, gs, i, r;

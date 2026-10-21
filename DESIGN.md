@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.34 - THE HOWLER WALKS ON ITS OWN STEP
+
+Co-op hunt while he was away. His yes on pick 73, motion only. The sentry, warden (so the Overseer) and bulwark have the heavy clank, the crawler a skitter, the Crier a drone, and the pillbox and Listener do not walk. The Howler walks and was the only machine on the light pillager scuff, so it gets a short pneumatic tick of its own: a click, a knock around 1.5 kHz, a falling triangle and a faint hiss, at most one per 150 ms and no held tone. The other machines are unchanged.
+
+MEASURED. Check 33.34 passes, and fails on v33.33.
 ## v33.33 - EXPERIMENTAL GROUP NAMES SHOW
 
 Co-op hunt while he was away. The experimental page has four groups (raid, combat, events, extras) but their names were squeezed to zero height by an older Settings rule. The critic scored the page 2 for it. Now each group has a 48px band with its name.
