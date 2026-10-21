@@ -1,0 +1,5 @@
+## v33.24 - KILL CHAIN TICKS CLIMB A NOTE FOR EACH KILL
+
+Co-op hunt while he was away. His yes on pick 72. Each kill that chains inside the 4 second streak plays a small soft sine tick one pentatonic note higher than the last (E5 up to A6, the key of the medal pops), and a broken chain starts again from the bottom note. No words, on the sting bus, much quieter than a medal pop.
+
+MEASURED. Check 33.24 passes, and fails on v33.23.

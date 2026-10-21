@@ -1,1 +1,1 @@
-10-20 23:17 running 79-camera-further-out on Claude Code (your plan: week 71% of the 35.6% line, 5-hour 21%)
+10-20 23:36 running 80-machines-a-third-larger on Claude Code (your plan: week 72% of the 35.7% line, 5-hour 23%)

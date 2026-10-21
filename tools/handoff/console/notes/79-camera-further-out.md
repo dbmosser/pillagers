@@ -6,3 +6,4 @@
 - Watch next play: sprint and scope zoom multiply on top (sprint 0.93, scope 1.25 and up), so scoped views are wider than before; two-window pictures and the HUD/minimap/arrows were not re-shot (the camera still projects through ZOOM, nothing else moved).
 - Tell coordinator: ask him about this together with job 80 (machines a third larger).
 - Old check v31.85 asserts 1.3; it needs retargeting to 1.05 (job in alarms.md if the lock stays busy).
+- SHIPPED v33.23 (cw-camfar105), old check v31.85 retargeted (commit d0db4bfd). After picture: shots/79-after/21-raid-hud-calm-1080.jpg (HUD, minimap, arrows, extract marker all in place). Pillager there is a smaller suit than his skeleton, so the on-screen share reads a bit lower than 6.4 percent; the zoom ratio is what matters.

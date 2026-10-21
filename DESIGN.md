@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.24 - KILL CHAIN TICKS CLIMB A NOTE FOR EACH KILL
+
+Co-op hunt while he was away. His yes on pick 72. Each kill that chains inside the 4 second streak plays a small soft sine tick one pentatonic note higher than the last (E5 up to A6, the key of the medal pops), and a broken chain starts again from the bottom note. No words, on the sting bus, much quieter than a medal pop.
+
+MEASURED. Check 33.24 passes, and fails on v33.23.
 ## v33.23 - CAMERA FURTHER OUT
 
 Co-op hunt while he was away. His 10-20 order and picture: the default camera sits further from the pillager. The default dial goes from 1.3 to 1.05, matching the pillager size in his picture; a saved personal zoom stays as chosen.

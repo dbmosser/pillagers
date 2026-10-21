@@ -592,3 +592,9 @@
 2026-10-20 0.1387 critic-61-experimental-menu
 2026-10-20 0.1417 critic-manual
 2026-10-20 0.1454 critic-manual
+2026-10-20 0.1432 critic-manual
+2026-10-20 0.1406 critic-manual
+2026-10-20 0.7146091 79-camera-further-out
+2026-10-20 0.1402 critic-manual
+2026-10-20 0.1454 critic-manual
+2026-10-20 0.1423 critic-manual

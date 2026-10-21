@@ -420,19 +420,19 @@
   "when": "2026-10-18T23:33"
  },
  "57-title-2p-coop-picked": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "the title screen has a good dark column and one lime accent, but the orange gradient logo, a stacked error bar, a capitalised input value and tiny low-contrast labels make it read as an unfinished template rather than a polished screen.",
+  "verdict": "The title screen has a clean centred column and a clear focus bar, but the error banner steals the hierarchy, the buttons are thin and generic, and the menu leaves a lot of dead space.",
   "findings": [
-   "P0 name input field, 'PILLAGER': render the value lower case ('pillager') with text-transform lowercase and store it that way. Use the 56px row style: --ui-raised fill, 1px --ui-line-hi border, 4px radius, a 'name' label above it at 16px tx-2, and a lime 2px focus border.",
-   "P0 popup-blocked error bar between the menu and 'saves': shorten it to 'popup blocked' with a ghost 'retry' button, or show it as a toast above the menu. Leave at least 24px between it and the mode list. Keep one lime fill per screen, so make retry a ghost button with a --danger border.",
-   "P1 'pillagers' logo and tagline: make the logo flat --tx-1 or flat --acc at 56px f-cond 800 with no gradient or shadow, or make it an actual art asset. Raise the tagline to tx-2 at 20px, or delete it.",
-   "P1 mode list rows (1 player … 2 player co-op (server)): make '1 player' the 56px lime --acc primary. Make the rest ghost rows. Give the focused row a --ui-raised fill plus a 3px lime left bar. Cut the demo variants or group them under 'more'. Use a 16px tag with 8px padding, or drop the disabled row.",
-   "P1 saves section (saves label, 'pillager new' row, input row): line the saves block up with the 558px column or make it a proper panel. Use a 16px label. Use tx-1 for the name and tx-2 for the stats. Make every control in the row 48px high with 8px gaps. Move 'change name' and 'create' into one ghost style."
+   "P1 error banner between menu and saves: Shorten the message to 'popup blocked' with a 16px warn-amber glyph. Make retry a normal outlined button, or use the accent fill only while the banner is the sole action. Move the banner to a toast at the top or bottom so the column does not jump.",
+   "P1 menu rows (1 player ... 1 player arcade demo): Make 1 player the lead row, 64px tall, with a --ui-raised fill. Group the two arcade demos beneath it as quieter rows. Give the focused row a full lime 2px border plus a --ui-raised fill and a 4px left bar.",
+   "P1 title wordmark: Use a flat --tx-1 or lime wordmark at 72px with no gradient or shadow, or make a deliberate logo treatment. Raise the tagline to 16px in --tx-2, with a clear 24px gap above and below it.",
+   "P1 saves section and name row: Keep the lime border only on the focused element. Make the idle selected save a 2px --ui-line-hi border with a lime check glyph. Set the controls row to 40px tall with 16px labels. Add 32px of space above the 'saves' label. Raise the label to 16px --tx-2.",
+   "P2 background art: Add a 90% --ui-panel card behind the column with a 1px --ui-line-hi border and 4px radius, or darken the scrim to .80 across the middle 640px."
   ],
-  "pic": "tools/handoff/console/notes/shots/03-r5after/57-title-2p-coop-picked-1080.jpg",
-  "task": "03-title-and-backdrop",
-  "when": "2026-10-18T20:15"
+  "pic": "tools/handoff/console/notes/shots/69-camera/57-title-2p-coop-picked-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-21T03:37"
  },
  "59-raid-abandon-confirm": {
   "score": 3,
@@ -825,19 +825,19 @@
   "when": "2026-10-20T18:48"
  },
  "44-title-from-character-select": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The title screen has a clear lime primary button, but the orange-gold gradient logo fights it, the trophy toast overlaps and hides the key-hint legend, and there are capitals on screen, a stacked menu and a saves block with no clear structure.",
+  "verdict": "The title screen has a clear hierarchy, with a gold logo and a lime primary button, but it is crowded, a toast overlaps the key legend, and the logo's gold and the lime accent clash.",
   "findings": [
-   "P0 bottom centre: trophy toast over key-hint legend: Move the toast to the top-centre or the bottom-right, at least 24px clear of the legend (e.g. y=96px). Or lift the legend 56px. Never overlap them.",
-   "P0 name field 'PILLAGER': Render the value with text-transform:lowercase and use 'pillager' as the default. Add a 16px tx-2 label 'name'.",
-   "P1 'pillagers' logo: Make the logo flat --tx-1 at 800 weight (~96px), or flat --acc. Remove the gradient and shadow so the lime '1 player' button is the only hot element.",
-   "P1 menu stack and saves block: Put the menu and saves in one centred 640px column on a 90% --ui-panel with a 1px --ui-line-hi border and 24px padding. Use a 56px row pitch with 8px gaps. Give 'saves' a 16px f-cond 600 tx-2 label with a 1px divider.",
-   "P1 menu content: Hide 'coming later' and group the demos under one 'demos' entry. Delete the duplicate stats line and keep it only in the save row. Aim for 3 to 4 visible actions."
+   "P0 bottom centre, trophy toast over key legend: Move the toast to the top-centre or bottom-right, at least 24px clear of the legend, with an opaque --ui-panel fill. Alternatively, raise the legend 48px, or hide it while a toast shows.",
+   "P1 logo 'pillagers': Make the logo flat --tx-1 (#efe9dc) with no shadow, or flat lime. Let the 1 player button be the one saturated element. If the logo stays warm, use it only as the game's art mark and drop the lime elsewhere on the screen.",
+   "P1 menu column, 4 mode buttons: Show 1 player and 2 player co-op as the main pair. Move the arcade demos into a quiet tx-2 row or a sub-list at 16px. Cut '(same machine)' to '2 player'. Keep one lime button.",
+   "P1 saves block, y 700-825: Delete the stats line, since the save row already says '1 raid · $900'. Put 'change name' and 'create a new save' into a single secondary row with 16px gaps. Add 24px between the mode buttons and the saves label.",
+   "P1 fullscreen/settings buttons and save row: Use one idle-button spec: 1px --ui-line-hi border, 4px radius, 16px/600 type, 40px minimum height. Reserve lime for the single focused element. Make the save row's selected state a 3px lime left bar with tx-1 text."
   ],
-  "pic": "tools/handoff/console/notes/shots/03-r5/44-title-from-character-select-1080.jpg",
-  "task": "03-title-and-backdrop",
-  "when": "2026-10-18T20:03"
+  "pic": "tools/handoff/console/notes/shots/69-camera/44-title-from-character-select-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-21T03:36"
  },
  "90-legend-full": {
   "score": 2,
@@ -1333,5 +1333,50 @@
   "pic": "tools/handoff/console/notes/shots/69-camera/41-hub-backpack-1080.jpg",
   "task": "manual",
   "when": "2026-10-21T03:35"
+ },
+ "43-stash-after-raid": {
+  "score": 3,
+  "pass": false,
+  "verdict": "A competent dark inventory card with a good lime take button and a clean x, but it is overloaded: three data zones plus a legend share one screen, the type is tiny and uniform, and the stash grid is mostly empty while the right column is crammed.",
+  "findings": [
+   "P1 right column, gun keys and item wheel (y 640-890): Give gun keys and item wheel their own tab or sub-pane, or shrink the empty backpack from 2 rows to 1 and give the freed 120px to the binds. Use 20px labels, 8px gaps and one reset per group in the header row.",
+   "P1 hierarchy, whole card: Make the title the quiet part and $900 the one hero number at 56px, or make the grid the star. Shrink 'take' to a 40px high button and keep it lime only when there is something to take. Fill or collapse the empty grid area.",
+   "P1 top-right header: '$900  130 xp  stash $960 bag $0': Keep one money figure ($900) and one xp figure, both at 20px, with 16px tx-2 labels. Move 'stash $960 bag $0' to the stash and loadout pane headers, where '$0 going up' already lives. Leave a 24px gap before the x.",
+   "P1 tab row (all 8, guns 2, ... trophies 2/8): Dim zero-count tabs to tx-2 at 50 percent or hide them. Make the selected tab a 3px lime underline with tx-1 text. Move armory and trophies to the header next to the x or into a separate right-aligned group with a 1px divider.",
+   "P2 stash item grid: Use a flat --ui-panel tile fill, a 3px rarity bar at the bottom, and a 16px count in a dark chip. Make the key badge a neutral outlined chip, reserving lime for the focused tile."
+  ],
+  "pic": "tools/handoff/console/notes/shots/69-camera/43-stash-after-raid-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-21T03:36"
+ },
+ "67-career-stash-stocked": {
+  "score": 3,
+  "pass": false,
+  "verdict": "This is a competent Diablo-style dark inventory card with a clear lime 'take' CTA and good rarity bars, but it is crowded and the type scale is inconsistent. The loadout pane is mostly empty while the footer is dense, and the 'take' bar competes with the header for attention.",
+  "findings": [
+   "P1 header, top right: Keep one hero figure ($48,250 at 32px f-cond 800). Move 'xp' to tx-2 at 16px. Delete 'stash $8,405 bag $0' and keep only '$0 going up' in the loadout pane.",
+   "P1 bottom, 'freebie kit' / 'take' row: Fold it into the card footer. Make it a 56px footer row with the label left and a 160x40 'take' button directly after the label (24px gap), or move it into the loadout pane. Keep one filled button per card.",
+   "P1 footer: key legend, 'sell all salvage' bar, 'freebie kit' row: Merge them into one 72px footer. Put the legend on the left in 14px tx-2 and 'sell all salvage $1,975' as a real outlined button (40px high, 20px text) on the right. Drop the second bar.",
+   "P1 loadout pane (backpack, tactical belt, gun keys, item wheel): Enlarge gun key and item wheel icons to at least 32px. Raise the numerals to 16px tx-2. Give empty slots a 1px --ui-line border and an 8px gap so they read as slots. Add a short empty-state label in the backpack, such as 'drop items here'.",
+   "P2 type scale across the card: Snap to the five sizes. Section labels at 20px f-cond 600 tx-1 with a 1px --ui-line divider under them. Sub-section labels at 16px tx-2. Counts and badges at a minimum of 16px, or drop them."
+  ],
+  "pic": "tools/handoff/console/notes/shots/69-camera/67-career-stash-stocked-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-21T03:37"
+ },
+ "68-settings-sec-the-raid": {
+  "score": 3,
+  "pass": false,
+  "verdict": "It is a clean, consistent card with a clear lime focus bar. But the detail pane is a large empty box with a paragraph at the bottom, the list is crowded and has no section headers, and two cell states look the same, so it is not yet polished.",
+  "findings": [
+   "P1 right detail pane: Anchor the title and body together at the top with a 16px gap. Cut the body to one short line of 20 words or fewer at fs-body 20px in tx-1. Or show the current value and a default marker, and drop the prose.",
+   "P1 centre list, rows after 'experimental': Move the volume rows to the audio tab. If they stay, add a 16px tx-2 section label row ('audio') with a 1px --ui-line divider and 24px extra spacing. Make the scrollbar 6px wide in --ui-line-hi. Add a row-fade or a 'more' cue at the bottom.",
+   "P1 value column, chevrons and 'experimental' row: Show the chevrons only on the focused or hovered row. Give 'experimental' a single right-aligned chevron or a boxed 'open' pill in --ui-line-hi so it reads as a different control.",
+   "P2 left tab column: Use one focus recipe everywhere: a 3px lime left bar on a --ui-raised fill, with no outline box. Raise idle tab text to tx-1 at 20px, or at least tx-2 at 18px. Put a 1px divider above 'send play data' or move it to 'saves and tools'.",
+   "P2 title row and top edge: Set the title to 32px f-cond 700. Either make the tick a deliberate 36px by 2px top tab on the left edge with a 4px inset, or delete it. Make the X 36px with a 2px stroke in tx-1 and a visible hover and focus state."
+  ],
+  "pic": "tools/handoff/console/notes/shots/69-camera/68-settings-sec-the-raid-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-21T03:37"
  }
 }

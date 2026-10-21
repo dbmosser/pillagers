@@ -1,0 +1,7 @@
+v33.24: kill chain ticks climb a note for each kill
+
+Chained kills now tick a note higher each time, and a broken chain starts the climb again.
+
+Check 33.24. Fails on v33.23.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
