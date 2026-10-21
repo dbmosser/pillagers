@@ -64766,8 +64766,8 @@ window.__REGRESS=[
        if(!p.ads) return 'SKIP: staging: focus aim dropped with sprint held and no movement, so this cannot tell a sprint from something else';
        keys['KeyW']=true; p.ads=true; PAD.adsTog=true;
        updatePlayer(0.016);
-       if(p.ads) bad.push('holding sprint while moving left focus aim on');
-       if(PAD.adsTog) bad.push('holding sprint while moving left the pad focus aim toggle on');
+       if(!p.ads) bad.push('holding sprint while moving dropped focus aim (his order 10-20: aim wins over sprint)');
+       if(!PAD.adsTog) bad.push('holding sprint while moving let go of the pad focus aim toggle (his order 10-20: aim wins over sprint)');
      } finally { try{ keys=k0||{}; if(p) p.ads=false; PAD.adsTog=false; PAD.adsT=0; __endRaid('abandon'); __topClear(); }catch(e){} }
      return bad.length?bad.join('; '):null; }},
   {v:'16.80',what:'the controller follows its window whether or not that window is in front: a window whose pad timestamp moves plays it with focus false and hands the other window its pad, a window whose pad stands still plays only a state handed over, a state handed over 0.4 s ago still plays (a slow host frame no longer drops it) while one 0.8 s old lets go, and after 1.5 s with neither the window that had a pad says CONTROLLER PAUSED on the HUD, under the message scale, and where to click, never a window that had none; outside a same machine mode the first pad is read as before',
