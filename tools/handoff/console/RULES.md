@@ -86,6 +86,8 @@ Screens and text
 - All player text is lower case; $ is money and SP is score (see above).
 - Equipping a gun says nothing about the rest of the backpack (10-12).
 Process
+- The SPARE PC (his 10-20 answer "16gb ram, it can stay on and connected") is the test and robot machine: tools/spare/README.md. It never
+  ships, commits to the game or edits the game; its results come in through the spare-results branch. Do not loosen its limits.
 - Never touch his play port 8802. Hide PvP and show no live rank (his Q71 and Q72).
 After the cutoff (Mon 10/26) and after the lock (Thu 10/29): see "The direction" at the top (his 10-20 23:00 order: nothing waits for the party).
 - Never switch a feature off yourself, not even one that keeps breaking (his process answer 21: "Ask me first"): put the question in

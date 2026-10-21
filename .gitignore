@@ -43,3 +43,7 @@ tools/fxslice*.html
 tools/fxpin*.html
 exports/*NOT-REAL-bridge-test*
 tools/handoff/notes-fetch.txt
+# 10-20 the spare PC (tools/spare/): its marker file, and the VM's mirror of its results
+/.spare-pc
+/tools/handoff/spare/
+/tools/handoff/spare-status.txt

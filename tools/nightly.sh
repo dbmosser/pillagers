@@ -103,6 +103,15 @@ while true; do
   # reports from the party copy he plays on the main PC come into exports/ (the main PC puts them in the bridge share as pcnote-NAME;
   # tools/fetch-notes.mjs takes the new ones with share-get). Status: tools/handoff/notes-fetch.txt.
   nt=$(get notes_t); if [ $(( $(date +%s) - ${nt:-0} )) -ge 300 ] && [ -f "$R/tools/fetch-notes.mjs" ]; then put notes_t "$(date +%s)"; (timeout 600 node "$R/tools/fetch-notes.mjs" >> "$LOG" 2>&1) & fi
+  # (1c) 10-20 (his spare PC: "16gb ram, it can stay on and connected"): every 5 minutes the spare PC's finished full test runs and robot
+  #      logs come in from the spare-results branch on GitHub (tools/spare/spare-import.mjs; status tools/handoff/spare-status.txt). While a
+  #      spare PC was seen in the last 3 hours (tools/handoff/spare/live.txt), this VM starts no full test run and no robots of its own
+  #      (spl=1), so its memory goes to the helpers; when the spare PC goes quiet for 3 hours the VM runs them again by itself.
+  sit=$(get spare_t); if [ $(( $(date +%s) - ${sit:-0} )) -ge 300 ] && [ -f "$R/tools/spare/spare-import.mjs" ]; then put spare_t "$(date +%s)"; (timeout 600 node "$R/tools/spare/spare-import.mjs" >> "$LOG" 2>&1) & fi
+  spl=0; se=$(sed -n 's/^epoch=//p' "$R/tools/handoff/spare/live.txt" 2>/dev/null | head -1 | tr -dc '0-9'); [ -n "$se" ] && [ $(( $(date +%s) - se )) -lt 10800 ] && spl=1
+  if [ "$(get spare_live)" != "$spl" ]; then put spare_live "$spl"
+    [ "$spl" = 1 ] && echo "$(date +%H:%M) the spare PC runs the full test run and the robots now: the VM starts neither" >> "$LOG"
+    [ "$spl" = 0 ] && [ -n "$se" ] && echo "$(date +%H:%M) the spare PC has been quiet for 3 hours: the VM runs the full test run and the robots again" >> "$LOG"; fi
   pv=$(get atpc); nv=${atp:-?}
   if [ "$pv" != "$nv" ]; then put atpc "$nv"
     [ "$nv" = 1 ] && echo "$(date +%H:%M) he is at the main PC: no new full test run, robots or local AI" >> "$LOG"
@@ -119,7 +128,7 @@ while true; do
     #     10-20 05:58: that still let the fuzzer take the memory a waiting helper needed (4 GB free, about 1.2 GB taken, 2.8 left), so it
     #     also waits while any helper status says it is waiting for RAM.
     hw=$(grep -ls "waiting for RAM" "$R"/tools/handoff/console/status-*.txt 2>/dev/null | wc -l)
-    if [ "$atq" = 0 ] && [ -n "$fa" ] && [ -n "$fb" ] && [ -f "$R/tools/fuzz.ps1" ] && [ $((fa - fb)) -le 0 ] && [ "$ram" -ge $((rf + 2)) ] && [ "${hw:-0}" -eq 0 ]; then
+    if [ "$atq" = 0 ] && [ "$spl" = 0 ] && [ -n "$fa" ] && [ -n "$fb" ] && [ -f "$R/tools/fuzz.ps1" ] && [ $((fa - fb)) -le 0 ] && [ "$ram" -ge $((rf + 2)) ] && [ "${hw:-0}" -eq 0 ]; then
       echo "$(date +%H:%M) fuzz start at $head" >> "$LOG"
       (powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/fuzz.ps1" -Minutes 120 -IgnoreFlag -MinFreeGB "$rf" > /dev/null 2>&1; echo "$(date +%H:%M) fuzz done" >> "$LOG") &
     fi
@@ -127,7 +136,7 @@ while true; do
     #     longer waits for 45 min without a ship nor holds the ship lock (3.5 hours on 10-17): corpq.sh tests a frozen fixture copy.
     cl="$S/corpus.lock"; [ -d "$cl" ] && [ $(( $(date +%s) - $(stat -c %Y "$cl") )) -gt 21600 ] && rmdir "$cl" 2>/dev/null
     ct=$(get corpus_t); [ -z "$ct" ] && ct=0
-    if [ "$atq" = 0 ] && [ "$(get corpus_head)" != "$head" ] && [ $(( $(date +%s) - ct )) -ge 14400 ] && mkdir "$cl" 2>/dev/null; then
+    if [ "$atq" = 0 ] && [ "$spl" = 0 ] && [ "$(get corpus_head)" != "$head" ] && [ $(( $(date +%s) - ct )) -ge 14400 ] && mkdir "$cl" 2>/dev/null; then
       out="$S/corpus-$(date +%m%d-%H%M).txt"; put corpus_head "$head"; put corpus_file "$out"; put corpus_t "$(date +%s)"; echo "$head" > "$out.head"
       echo "$(date +%H:%M) corpus start at $head" >> "$LOG"
       (bash "$S/corpq.sh" "$out" > /dev/null 2>&1; rmdir "$cl" 2>/dev/null; echo "$(date +%H:%M) corpus done" >> "$LOG"; summary) &
@@ -161,7 +170,7 @@ while true; do
     fi
     # (6) 10-17: a second fuzzer on its own Chrome (9332) with its own seeds, beside the first (9331)
     f2=$(running 'fuzz\.ps1.*9332')
-    if [ "$atq" = 0 ] && [ -f "$R/tools/fuzz.ps1" ] && [ "$f2" = "0" ] && [ "$ram" -ge $((rf+2)) ]; then
+    if [ "$atq" = 0 ] && [ "$spl" = 0 ] && [ -f "$R/tools/fuzz.ps1" ] && [ "$f2" = "0" ] && [ "$ram" -ge $((rf+2)) ]; then
       # 10-18: on the corpus copy of the game (tools/fxcorpus.html, under 12 hours old) so the full test set and the robots meet on one version
       fxarg=""; [ -n "$(find "$R/tools/fxcorpus.html" -mmin -720 2>/dev/null)" ] && fxarg="-Fixture fxcorpus.html"
       echo "$(date +%H:%M) fuzz2 start at $head${fxarg:+ on the corpus copy}" >> "$LOG"

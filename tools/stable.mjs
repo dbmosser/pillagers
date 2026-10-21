@@ -23,7 +23,7 @@
 //   tools/handoff/stable-status.txt   (why the newest runs are or are not stable yet; overwritten every run)
 //   tools/handoff/stable-history.log  (one line per promotion)
 //   git tag stable-vNN.NN             (on the "vNN.NN:" commit)
-// Reads only: git objects, the corpus files, nightly.log, fuzz.log. It never touches the working copy of dark_raiders.html.
+// Reads only: git objects, the corpus files (the VM's and the spare PC's, tools/spare/), nightly.log, fuzz.log and the spare PC's fuzz.log copies. It never touches the working copy of dark_raiders.html.
 // Freeze: a file tools/handoff/stable.freeze stops all promotions (party-stop.ps1 makes it; party-start.ps1 removes it).
 // Usage: node tools/stable.mjs [--quiet] [--dry]     (--dry: judge but publish and write nothing)
 import { readFileSync, writeFileSync, existsSync, readdirSync, renameSync, appendFileSync } from 'fs';
@@ -92,7 +92,10 @@ function blobInfo(hash) {
 runs.forEach(r => { const b = blobInfo(r.hash); r.ver = b ? b.ver : ''; r.blob = b ? b.blob : ''; });
 
 // ---- the robots, per exact build
-const fuzzLines = rd(FUZZ).split(/\n/);
+// 10-20: the spare PC's robots too (tools/spare/spare-import.mjs mirrors each spare PC's fuzz.log into tools/handoff/spare/HOST/)
+const SPARE = H + '/spare';
+let spareLogs = []; try { spareLogs = readdirSync(SPARE, { withFileTypes: true }).filter(d => d.isDirectory()).map(d => SPARE + '/' + d.name + '/fuzz.log'); } catch {}
+const fuzzLines = [FUZZ, ...spareLogs].flatMap(p => rd(p).split(/\r?\n/));
 function robots(ver) {
   let sec = 0, problems = 0, raids = 0;
   for (const l of fuzzLines) {

@@ -49,6 +49,11 @@ if up 8820 api; then echo "dashboard 8820: up"; else if [ $FIX = 1 ]; then power
 # 9 RAM floor
 # 10-20 (coord-01): his notes and run reports from the main PC (tools/fetch-notes.mjs, every 5 min from the runner)
 nf="$H/notes-fetch.txt"; [ -f "$nf" ] && echo "notes from the main PC: $(head -1 "$nf" | tr -d '' | cut -c1-160)"
+# 10-20: the spare PC (tools/spare/, his "16gb ram, it can stay on and connected"); it is his machine, so a quiet one is a WAIT, never a fix here
+ss="$H/spare-status.txt"
+if [ ! -f "$ss" ] || grep -q "not set up yet\|no spare PC has reported" "$ss"; then echo "WAIT: spare PC not set up yet (his steps: tools/handoff/console/for-you.md)"
+elif grep -q "QUIET" "$ss"; then echo "WAIT: spare PC quiet: $(head -1 "$ss" | cut -c1-160)"
+else echo "spare PC: $(head -1 "$ss" | cut -c1-170)"; fi
 fm=$(powershell -NoProfile -Command "[int]((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1MB)" 2>/dev/null | tr -d '\r'); echo "free RAM: ${fm} GB"; rf=$(grep -m1 "^RAM_FLOOR_GB=" "$C/caps.txt" 2>/dev/null | cut -d= -f2 | tr -dc "0-9"); rf=${rf:-6}; [ "${fm:-9}" -lt "$rf" ] && prob "free RAM ${fm} GB is under the ${rf} GB floor (RAM_FLOOR_GB in console/caps.txt)"
 # 10 the saved build scripts (tools/pipeline-scratch, his 10-20 "save the 12 build scripts into the GitHub project"). The scratchpad copies
 # are the live ones: copy any that changed, never one that looks like it holds a key, and flag the copy so the coordinator commits it.
