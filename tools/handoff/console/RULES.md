@@ -113,6 +113,9 @@ S = C:\Users\User1\AppData\Local\Temp\claude\C--Users-User1-Desktop-dark-raiders
    ship that card key first.
 6. If the gate's parse checks time out, restart its Chrome: powershell -ExecutionPolicy Bypass -File tools\cdp.ps1 -Start -Port 9346
 7. If the lock S\shipq.lock looks stale (its owner in S\shipq.owner is dead for over 30 min), use bash "S/clearstale.sh". Nothing else.
+   (10-21) A STOP after the build was written (verifySafe or a fingerprint) now puts the game, fixture, DESIGN and AUDIT back by
+   itself and saves your build in tools/handoff/console/log/unshipped-*.patch, so the next ship is not blocked. A STOP that says "the game or
+   fixture has uncommitted changes" for more than 30 minutes is the coordinator's: write it in your notes and stop; never clean it.
 8. Old checks live in tools\mkfixture.ps1. Retarget an old check only through bash "S/fixq.sh" "MESSAGE" after editing it,
    and to run single checks read S\runchk.sh first (it needs the lock: bash "S/lock.sh" then bash "S/unlock.sh").
 
