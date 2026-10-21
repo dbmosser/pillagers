@@ -21,3 +21,5 @@ New card's first line (3261) is "THIS IS AN ALPHA. Things will break..." followe
 Party risk: none (text only).
 
 TASK DONE when the grep finds no "Daniel" and no "alpha" in player text and the card is refreshed; TASK PARTIAL with what is left.
+
+DONE 10-21 01:55 (coordinator, moved from failed/): the goal is met. v33.43 (cw-cx-publicreports) took Daniel out of the report copy lines and v33.49 (cw-cx-shortnews) replaced the alpha line and the polish pass fillers with three short real news notes; card ships v33.45 and v33.46 refreshed the stamp. grep of dark_raiders.html now finds "Daniel" only in a code comment (54331) and "alpha" only in comments and canvas code. The third key (cw-cx-reportnewsstyle, a style pass on the report and news windows) did not ship; the screen judge scores those windows 2 (91-public-news-window, 91-public-report-recorder; the finish line is 3), so it goes on as job o-91b.
