@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.63 - THE WHAT IS NEW STAMP KEEPS UP
+
+Co-op hunt while he was away. The card was stamped v33.62 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.
+
+MEASURED. Check 33.63 passes, and fails on v33.62.
 ## v33.62 - THE WHAT IS NEW CARD STAMP IS CURRENT
 
 Co-op hunt while he was away. The card was stamped v33.46 and the stamp may not trail the build by more than 0.15. Its three short notes are unchanged.

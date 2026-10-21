@@ -1,16 +1,12 @@
 {
-    "title":  "THE WHAT IS NEW CARD NAMES POLISH PASS 46",
-    "why":  "The card was stamped v33.46 and the stamp may not trail the build by more than 0.15. Its new line names the polish builds since.",
-    "now":  "The what is new card names polish pass 46.",
+    "title":  "THE WHAT IS NEW CARD STAMP MOVES UP",
+    "why":  "The card was stamped v33.62 and the stamp may not trail the build by more than 0.15.",
+    "now":  "The what is new card stamp follows the build.",
     "edits":  [
                   {
-                      "anchor":  "var WHATSNEW_VER=\u002733.46\u0027;",
-                      "replacement":  "var WHATSNEW_VER=\u002733.62\u0027;"
-                  },
-                  {
-                      "anchor":  "  \u0027EXPERIMENTAL. Settings has a new experimental page: every new idea has its own on and off switch.\u0027,",
-                      "replacement":  "  \u0027POLISH PASS 46. More fixes to the screens, the sounds and two player play.\u0027,\n  \u0027EXPERIMENTAL. Settings has a new experimental page: every new idea has its own on and off switch.\u0027,"
+                      "anchor":  "var WHATSNEW_VER=\u002733.62\u0027;",
+                      "replacement":  "var WHATSNEW_VER=\u002733.63\u0027;"
                   }
               ],
-    "check":  "  {v:\u0027VER\u0027,what:\u0027the what is new card is stamped within 0.15 of the build and names polish pass 46\u0027,\n   run:function(){\n     if(typeof WHATSNEW===\u0027undefined\u0027||typeof WHATSNEW_VER===\u0027undefined\u0027||typeof VER===\u0027undefined\u0027) return \u0027SKIP: this build has no what is new card\u0027;\n     if(parseFloat(WHATSNEW_VER)\u003e33.62+0.001) return \u0027SKIP: the card has moved on, a later card check covers it\u0027;\n     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER);\n     if(!(d\u003c=0.15+1e-9)) bad.push(\u0027the card is stamped v\u0027+WHATSNEW_VER+\u0027, \u0027+d.toFixed(2)+\u0027 behind v\u0027+VER);\n     if(WHATSNEW.join(\u0027~\u0027).indexOf(\u0027POLISH\u0027+\u0027 PASS 46.\u0027)\u003c0) bad.push(\u0027the card does not name pass 46\u0027);\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the what is new card is stamped within 0.15 of the build\u0027,\n   run:function(){\n     if(typeof WHATSNEW_VER===\u0027undefined\u0027||typeof VER===\u0027undefined\u0027) return \u0027SKIP: this build has no what is new card\u0027;\n     if(parseFloat(WHATSNEW_VER)\u003e33.63+0.001) return \u0027SKIP: the card has moved on, a later card check covers it\u0027;\n     var d=parseFloat(VER)-parseFloat(WHATSNEW_VER);\n     return d\u003c=0.15+1e-9?null:\u0027the card is stamped v\u0027+WHATSNEW_VER+\u0027, \u0027+d.toFixed(2)+\u0027 behind v\u0027+VER; }},"
 }
