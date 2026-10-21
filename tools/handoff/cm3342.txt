@@ -1,0 +1,7 @@
+v33.42: raid start map: no cache or strongbox words
+
+The map at raid start shows cache and strongbox marks without the words.
+
+Check 33.42. Fails on v33.41.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

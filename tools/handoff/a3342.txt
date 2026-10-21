@@ -1,0 +1,1 @@
+| raid start map: no cache or strongbox words | v33.42 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 33.42 passes, fails on v33.41 |

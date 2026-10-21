@@ -257,3 +257,5 @@
 2026-10-21 | o-87-pad-crawl-test | 01 title / saves | B cancels an open delete-save confirmation through KEEP | before: tools/handoff/console/notes/shots/o-87-pad-crawl-test-before/01-title-mode-menu-1080.jpg | after: tools/handoff/console/notes/shots/o-87-pad-crawl-test-after/01-title-mode-menu-1080.jpg
 
 2026-10-21 | 83-raid-corner-compact | 21-raid-hud-calm | v33.38: the four money plates became one plate, two lines (cash / xp, stash / backpack), height about a third of before; v33.39: 'cash' label on the money figure (critic P1: unlabelled figure read as part of the xp pair; his Q59 keeps the $), 20 px between the columns | before notes/shots/83-before, after notes/shots/83-after2
+
+2026-10-21 | 84-airstrike-bar-lower | raid hud | v33.41 cw-airlow: air strike plate loses its 64 px lift and stands 8 px (times HUD zoom) over the belt at the belt's right end; still lifts clear of an item in hand or other boxes. Reason: his order "airstrike bar needs to be much lower". No before/after pictures: no camera screen stages the air strike (see questions.md). Old check 32.86 retargeted (fe4927e9).

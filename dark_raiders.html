@@ -3280,7 +3280,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.41';
+var VER='33.42';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47560,7 +47560,8 @@ function drawMapOverlayRaw(){
     ctx.fillStyle=UIC.tx_1;
     ctx.beginPath(); ctx.arc(qx,qy,2.6*_MZ,0,6.2832); ctx.fill();
     mapIcon(qx,qy,13*_MZ);
-    mapLabel(CQ.opened?'LOOTED':'CACHE',qx,qy-20*_MZ,UIC.tx_1,null,qy);   // v28.xx (cw-cx-sectorhold-o03): one label per cache, including the two inside a locked room.
+    // v28.xx (cw-nocachelbl), HIS ORDER (2026-10-20): "map on this second preraid screen should not have caches labelled, makes the whole thing look messy". The raid start map keeps the cache ring and icon but no word; the m key map keeps its words.
+    if(!mapFirstOn()) mapLabel(CQ.opened?'LOOTED':'CACHE',qx,qy-20*_MZ,UIC.tx_1,null,qy);   // v28.xx (cw-cx-sectorhold-o03): one label per cache, including the two inside a locked room.
     ctx.globalAlpha=1;
   }
   // Encampments in red: advertised danger. You are told where the fight is and
@@ -47688,7 +47689,8 @@ function drawMapOverlayRaw(){
     ctx.fillStyle=UIC.tx_1;
     ctx.beginPath(); ctx.arc(sbx,sby,3.6*_MZ,0,6.2832); ctx.fill();
     ctx.textAlign='center'; ctx.font=FS(TYPE.micro);
-    mapLabel('STRONGBOX',sbx,sby-20*_MZ,UIC.tx_1,ctx.font,sby);   // v28.xx (cw-cx-sectorhold-o03): the strongbox has its own anchored label too.
+    // v28.xx (cw-nocachelbl): the strongbox word goes with the cache words on the raid start map; the icon and ring stay.
+    if(!mapFirstOn()) mapLabel('STRONGBOX',sbx,sby-20*_MZ,UIC.tx_1,ctx.font,sby);   // v28.xx (cw-cx-sectorhold-o03): the strongbox has its own anchored label too.
   }
   // YOUR BODY. The bm.mine write is unreachable (P.body is cleared on every
   // raid start and nothing recreates it), so this loop marks nothing; it stays
@@ -51453,7 +51455,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.41: The air strike plate stands just over the belt at the right end, and still lifts only for a real obstacle like an item in hand. Check 33.41 fails on v33.40',
+  now:'v33.42: The map at raid start shows cache and strongbox marks without the words. Check 33.42 fails on v33.41',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
