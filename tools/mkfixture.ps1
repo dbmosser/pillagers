@@ -40706,11 +40706,10 @@ window.__REGRESS=[
        paint({build:'lean'},'none'); eLean=edgeU();
        if(eCur>eLean-1.8) bad.push('Curved: the shoulders are as wide as Lean (edge '+eCur.toFixed(1)+' against '+eLean.toFixed(1)+'), she lost her narrow shoulders');
        /* job 55 (audit): the fixed 9.6 probe is back at the head scale. The caps are drawn inside the v32.64 FIG_HEAD (1.2) head scale, not the vest, so Curved ends at about 11.0 and Lean at about 13.7 here; a Curved cap wider than 9.6 unscaled (11.52) fails, and Lean must still reach it */
-       var pk=9.6*((typeof FIG_HEAD==='number')?FIG_HEAD:1);
-       paint({build:'curved'},'none');
-       if(at(pk,-21)[3]>40) bad.push('Curved: the shoulders reach '+pk.toFixed(2)+' like Lean, she lost her narrow shoulders (alpha '+at(pk,-21)[3]+')');
-       paint({build:'lean'},'none');
-       if(!(at(pk,-21)[3]>200)) bad.push('Lean: no shoulder at '+pk.toFixed(2));
+       /* 10-20 (cw-headbody, job 68): the caps go back to body scale (Curved ends about 9.2, Lean about 11.4), so the probe holds at 9.6 on the fixed build and at the head-scaled 11.52 on the builds before it. Each probe needs Lean to reach it and Curved not to */
+       var pks=[9.6,9.6*((typeof FIG_HEAD==='number')?FIG_HEAD:1)], okP=false, cA=0, lA=0, k2;
+       for(k2=0;k2<pks.length&&!okP;k2++){ paint({build:'curved'},'none'); cA=at(pks[k2],-21)[3]; paint({build:'lean'},'none'); lA=at(pks[k2],-21)[3]; if(cA<=40&&lA>200) okP=true; }
+       if(!okP) bad.push('Curved: the shoulders reach as far as Lean at 9.60 and at '+pks[1].toFixed(2)+', or Lean has no shoulder there (last: Curved alpha '+cA+', Lean alpha '+lA+'), she lost her narrow shoulders');
        paint({build:'curved'},'none');
        if(!(at(-4.5,-18.0)[3]>200)) bad.push('Curved: the chest is gone');
        paint({team:'foe',build:'lean',bulk:2},'none');
