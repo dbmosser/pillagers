@@ -37,3 +37,5 @@ stand-in for GitHub: the results push works, a push to master from the results c
 hooks; the import takes the finished run with its `.head`, skips the unfinished one, mirrors the robot log, writes `live.txt` and the
 status line, takes nothing twice, and says "not set up yet" when the branch is missing; `stable.mjs --dry` counted 32 robot minutes from a
 spare robot log. Not tested (needs the spare PC): the task, the GitHub sign-in, a full run and the robots on that machine.
+
+Set up by Claude Code on the spare PC (10-21, his pick for reliability): he signs in to the Claude app there and types one line pointing at `tools/spare/claude-setup.md`, the brief that session follows.
