@@ -6667,12 +6667,12 @@ window.__REGRESS=[
        if(modal.querySelector('h3').textContent!=='settings / experimental') bad.push('missing page breadcrumb');
        b=document.getElementById('exp_back'); if(!b||b.closest('.row')) bad.push('Back is still a toggle row');
        groups=list.querySelectorAll('[data-exp-group]'); if(groups.length!==4) bad.push('expected four feature groups');
-       if(list.querySelectorAll('button[id^="go_xf"]').length!==28) bad.push('not all 28 switches were drawn');
+       if(list.querySelectorAll('button[id^="go_xf"]').length!==XF_KEYS.length) bad.push('not all '+XF_KEYS.length+' switches were drawn');   // v33.51 (cw-pixkit): was 28; the pixel look row makes 29, so it reads the list
        lr=list.getBoundingClientRect();
        for(i=0;i<XF_KEYS.length;i++){
          b=document.getElementById('go_'+XF_KEYS[i]);
          if(!b||seen[b.id]){ bad.push('missing or duplicate '+XF_KEYS[i]); continue; } seen[b.id]=1;
-         if(!b.querySelector('.expvalue')||String(b.textContent)!=='on'||b.getAttribute('aria-pressed')!=='true') bad.push('default on state is unclear for '+XF_KEYS[i]);
+         if(XF_KEYS[i]!=='xfPix'&&(!b.querySelector('.expvalue')||String(b.textContent)!=='on'||b.getAttribute('aria-pressed')!=='true')) bad.push('default on state is unclear for '+XF_KEYS[i]);   // v33.51 (cw-pixkit): the fixture pins the pixel look off
          row=b.closest('.row'); if(!row.classList.contains('exprow')) bad.push('ungrouped control '+XF_KEYS[i]);
        }
        b=document.getElementById('go_xfGoals'); row=b.closest('.row');
@@ -6951,7 +6951,7 @@ window.__REGRESS=[
      }
      try{
        down();
-       if(XF_KEYS.length!==28) return 'expected the 28 surviving experimental switches, got '+XF_KEYS.length;
+       if(XF_KEYS.filter(function(k){ return k!=='xfPix'; }).length!==28) return 'expected the 28 surviving experimental switches, got '+XF_KEYS.length;   // v33.51 (cw-pixkit): the pixel look row is a view switch, not one of the 28
        // Both sectors, all on then all off. Compare complete fingerprints, not only population counts.
        for(value=1;value>=0;value--) for(mi=0;mi<2;mi++){
          prep(value);
