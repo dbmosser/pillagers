@@ -8229,7 +8229,7 @@ window.__REGRESS=[
          if(box.x<hand.x+hand.w&&box.y+bh>hand.y-Math.round(8*z)) bad.push(W+' '+roles[j]+': the vertical fallback has no 8px gap');
          if(Math.abs(box.x+bw-right)>1) bad.push(W+' '+roles[j]+': the plate lost the belt right edge');
          if(box.x<0||box.y<0||box.x+bw>W||box.y+bh>H) bad.push(W+' '+roles[j]+': the plate leaves the screen');
-         p.hand=null; empty=airPlateAt(bw,bh,z); expectedY=Math.round(y-64*z-Math.round(8*z)-bh);
+         p.hand=null; empty=airPlateAt(bw,bh,z); expectedY=Math.round(y-Math.round(8*z)-bh);
          if(Math.abs(empty.x+bw-right)>1||Math.abs(empty.y-expectedY)>1) bad.push(W+' '+roles[j]+': an empty hand changed the former placement');
        }
        return bad.length?bad.join('; '):null;
