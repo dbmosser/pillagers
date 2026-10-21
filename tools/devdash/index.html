@@ -24,6 +24,7 @@ main{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1
 <span class="big">Changes added today <b id="ships">0</b></span>
 <span class="big" id="stablebox" title="Open http://localhost:8802/stable.html to play it">Latest stable: <b id="stable">none yet</b></span>
 <a class="big" id="rep" href="/report" target="_blank" rel="noopener">Latest report</a>
+<span class="sub" id="links"></span>
 <span class="sub" id="upd">connecting...</span></header>
 <main>
 <section class="card"><h2>EVERYONE WORKING ON THE GAME</h2>
@@ -161,6 +162,9 @@ async function tick(){
   let d; try{ d=await (await fetch('/api',{cache:'no-store'})).json(); }catch(e){ $('upd').innerHTML='<span class="warn">Dashboard server not answering</span>'; return; }
   TITLES=d.titles||{}; $('ver').textContent=d.ver; $('ships').textContent=d.shipsToday;
   const sb=d.stable||{}; $('stable').textContent=sb.version?('v'+sb.version+' ('+sb.at.slice(5)+')'+(sb.frozen?' frozen':'')):'none yet';
+  const nf=/last (?:fetch|try) \d\d-\d\d (\d\d:\d\d)/.exec(d.notes||''), sp=d.spare||'', sl=/last seen \S+ (\d\d:\d\d)/.exec(sp);
+  $('links').textContent='Your notes from the main PC: '+(nf?'checked '+nf[1]:'not checked yet')+'. Spare PC: '+
+    (!sp||/not set up|no spare PC/.test(sp)?'not set up yet':/QUIET/.test(sp)?'quiet'+(sl?' since '+sl[1]:''):'working'+(sl?', last seen '+sl[1]:''))+'.';
   const rp=d.report; $('rep').textContent=rp?('Latest report ('+rp.name.replace(/\.html$/,'').slice(5)+')'):'Latest report (none yet)'; $('upd').textContent='Updated '+d.now+' (every 5 seconds)';
   $('lanes').innerHTML=(d.stopFile?row('r',null,'<b>All helpers are paused</b> because the STOP file is in tools/handoff/console. Delete it to restart them.'):'')+
     d.lanes.filter(l=>l.lane!=='o').map(l=>{const [c,t]=laneLine(l.status);return row(c,null,'<b>'+LANE[l.lane]+'</b>: '+esc(t)+'<div class="small">Next up: '+([...new Set(l.queue.map(job))].slice(0,3).map(esc).join(' / ')||'nothing')+(l.queue.length>3?' ... ('+l.queue.length+' jobs waiting)':'')+'</div>');}).join('')+

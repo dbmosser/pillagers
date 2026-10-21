@@ -43,3 +43,4 @@ report has been saved in the party copy yet (the collector makes that folder on 
 pcnote- file arrive. Step 4 answered: the copy's collector (party-host-copy.ps1 -Start) writes run-*.txt into that same folder, so they
 are mirrored too. Side fact: right now localhost:8802 on the main PC is the play relay answering 502 (the VM's pad route is his WAIT item);
 today's run-*.txt files in the VM's exports are test corpus reports (fxcorpus.html), not his. His last real note here is from 10-18.
+DONE (coordinator 10-20 23:30): step 3 seen. His run report run-20261020-215550-244.txt (build 33.17, the party copy) reached the VM's exports/ at 21:59 through the bridge share, and every 5-minute fetch since says "main PC copying: on". The dashboard header now shows when his notes were last checked (and the spare PC's state).
