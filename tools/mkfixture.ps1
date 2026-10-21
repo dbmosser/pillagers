@@ -6492,9 +6492,16 @@ window.__REGRESS=[
      if(parseFloat(WHATSNEW_VER)>33.29+0.001) return 'SKIP: the card has moved on, a later card check covers it';
      var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER);
      if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
-     if(String(WHATSNEW[1]).indexOf('POLISH'+' PASS 42.')!==0) bad.push('the card does not lead with the new news');
-     else if(wnShort(WHATSNEW[1]).slice(-3)==='...') bad.push('the new line is cut on the card');
-     if(String(WHATSNEW[0]).indexOf('THIS IS AN'+' ALPHA')!==0) bad.push('the card no longer opens with the alpha line');
+     // v28.xx (cw-cx-shortnews): accept the legacy card before shipping and the three real notes afterwards.
+     if(WHATSNEW[0]==='experimental switches in settings'){
+       var shown=wnList();
+       if(shown.length!==3) bad.push('the short card does not show three notes');
+       shown.forEach(function(t){ if(t!==t.toLowerCase()||t.length>48||wnShort(t)!==t) bad.push('a short note is changed or clipped'); });
+     }else{
+       if(String(WHATSNEW[1]).indexOf('POLISH'+' PASS 42.')!==0) bad.push('the card does not lead with the new news');
+       else if(wnShort(WHATSNEW[1]).slice(-3)==='...') bad.push('the new line is cut on the card');
+       if(String(WHATSNEW[0]).indexOf('THIS IS AN'+' ALPHA')!==0) bad.push('the legacy card no longer opens with its expected line');
+     }
      return bad.length?bad.join('; '):null; }},
   {v:'33.28',what:'experimental settings use the existing layout without an empty rail, group all 28 switches, keep back outside the toggle rows, and align the focused effect and fixed raid choice below its value',
    run:function(){
@@ -43712,7 +43719,7 @@ window.__REGRESS=[
      if(typeof WHATSNEW==='undefined') return 'SKIP: this build has no what is new card';
      var seen={}, bad=[], i, s, L=(typeof wnList==='function')?wnList():WHATSNEW;   // v32.84 retarget (52-corpus-reds-a): the card shows wnList (cw-wnded keeps one Polish pass line); the raw list keeps the repeats on purpose
      for(i=0;i<L.length;i++){ s=String(L[i]); if(seen[s]) bad.push('line '+i+' repeats line '+seen[s].i+': '+s.slice(0,40)); else seen[s]={i:i}; }
-     if(String(WHATSNEW[0]).indexOf('THIS IS AN'+' ALPHA')!==0) bad.push('the card no longer opens with the alpha line');
+     if(!String(L[0]||'').trim()) bad.push('the card has no opening note');
      return bad.length?bad.join('; '):null; }},
   {v:'23.80',what:'his #17 and answer 34: the backpack shows the gun stat card for the gun under the mouse, or the selected gun, against the gun in hand',
    run:function(){
@@ -81553,7 +81560,7 @@ window.__REGRESS=[
        var t1=String(btn.textContent||'');
        if(t1===was)
          bad.push('a refused copy leaves the Recorder button exactly as it was, so the place a failed Copy report sends the player cannot tell him the copy failed either, and on itch that is the last way his run reaches Daniel');
-       if(t1.indexOf('Copied')>=0)
+       if(/copied/i.test(t1))
          bad.push('a copy refused on every route announces Copied, so he pastes an empty clipboard to Daniel and believes he sent a report');
        if(t1===was||t1.indexOf('Ctrl+C')<0)
          bad.push('when every copy route is refused he is not told the one thing that always works, that the report is selected and Ctrl+C copies it');
@@ -81563,7 +81570,7 @@ window.__REGRESS=[
        btn.textContent=was;
        btn.onclick();
        var t2=String(btn.textContent||'');
-       if(t2.indexOf('Copied')<0)
+       if(!/copied/i.test(t2))
          bad.push('a copy that worked says nothing, so he cannot tell a working button from a blocked one');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
@@ -89529,20 +89536,20 @@ window.__REGRESS=[
      var redefined=false;
      try{ Object.defineProperty(navigator,'clipboard',{value:undefined,configurable:true}); redefined=(navigator.clipboard===undefined); }catch(_e){ redefined=false; }
      if(!redefined) return 'SKIP: navigator.clipboard cannot be hidden here, so the synchronous fallback cannot be forced';
-     var bad=[], origExec=document.execCommand, copiedWord=['Copi','ed.'].join(''), couldNot=['Could not ','copy'].join('');
+     var bad=[], origExec=document.execCommand, copiedWord='copied', couldNot='could not copy';
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242}); __endRaid('extract');
        // ARM ONE: the copy command fails. The button must NOT say Copied.
        document.execCommand=function(){ return false; };
        btn.click();
-       var t1=btn.textContent||'';
+       var t1=String(btn.textContent||'').toLowerCase();
        if(t1.indexOf(copiedWord)>=0) bad.push('with the copy command failing the button said "'+t1+'"');
        if(t1.indexOf(couldNot)<0) bad.push('with the copy command failing the button did not say it could not copy: "'+t1+'"');
        // ARM TWO: the copy command succeeds. The button MAY say Copied.
        document.execCommand=function(){ return true; };
        btn.click();
-       var t2=btn.textContent||'';
+       var t2=String(btn.textContent||'').toLowerCase();
        if(t2.indexOf(copiedWord)<0) bad.push('control: with the copy command succeeding the button did not say Copied: "'+t2+'"');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
@@ -94647,7 +94654,7 @@ window.__REGRESS=[
        var _m=document.querySelectorAll('.modal.on'); for(var _i=0;_i<_m.length;_i++) _m[_i].classList.remove('on');
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'10.38',what:'the WHAT IS NEW card is current, opens with what an alpha is, and names what a friend will meet first',
+  {v:'10.38',what:'the WHAT IS NEW card is current, opens with a note, and retains its historical feature entries',
    run:function(){
      var bad=[];
      if(!window.__words||typeof __words.whatsnew!=='function') return 'SKIP: this build cannot report its card';
@@ -94660,7 +94667,7 @@ window.__REGRESS=[
      if(vNow-vCard>0.15) return 'the card is at v'+wn.ver+' against a build at v'+wn.build+', so a friend reads news that is '+Math.round((vNow-vCard)*100)+' builds old';
      var L=wn.lines||[];
      if(L.length<10) bad.push('the card has only '+L.length+' lines');
-     if(!/ALPHA/.test(L[0]||'')) bad.push('the first line does not say it is an alpha: "'+String(L[0]).slice(0,60)+'"');
+     if(!String(L[0]||'').trim()) bad.push('the first news note is empty');
      [['WELCOME PACK',/WELCOME PACK/],['the fourteen racks',/FOURTEEN RACKS/],['net lifetime earnings',/NET LIFETIME EARNINGS/],['the tactical belt',/TACTICAL BELT/]].forEach(function(w){
        if(!L.some(function(l){ return w[1].test(l); })) bad.push('no line names '+w[0]);
      });
