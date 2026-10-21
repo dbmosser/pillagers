@@ -1,0 +1,16 @@
+{
+    "title":  "PILLAGERS BACK TO THEIR OLD SIZE",
+    "why":  "His order: player is too big, back to the old size or smaller, in scale with bodies, trees and deer. The 1.25 figure scale from the art survey goes back to 1; the plates sit lower again.",
+    "now":  "Pillagers, mates and bots are drawn at their old size again.",
+    "edits":  [
+                  {
+                      "anchor":  "var FIG_SCALE=1.25, FIG_UP=19,",
+                      "replacement":  "var FIG_SCALE=1, FIG_UP=12, /* v28.xx (cw-figback), HIS ORDER (2026-10-20): \"player is too big, needs to go back to previous size\" and \"revert to old player size or maybe even smaller, should be scaled properly compared to bodies on ground, trees, deer\". 1.25 back to 1 (the size before v32.64); his head, pack and vest picks stay. FIG_UP 19 to 12 so the plates sit over the smaller head. */"
+                  },
+                  {
+                      "anchor":  "fs=(typeof FIG_SCALE===\u0027number\u0027\u0026\u0026bld!==null)?FIG_SCALE:1, fk=(fs===1)?[1,1]:figBuildK(bld||\u0027lean\u0027),",
+                      "replacement":  "fs=(typeof FIG_SCALE===\u0027number\u0027\u0026\u0026bld!==null)?FIG_SCALE:1, fk=(bld===null)?[1,1]:figBuildK(bld||\u0027lean\u0027),   // v28.xx (cw-figback): the build height still applies at scale 1"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the human figures are back to their old size: a standing pillager is drawn no taller than before v32.64 (his order: player is too big)\u0027,\n   run:function(){\n     var PR=CanvasRenderingContext2D.prototype, of=PR.fillRect, ff=PR.fill, mn={}, rec, i, b, hv;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       if(!__state()||!__state().player) return \u0027SKIP: no raid\u0027;\n       if(typeof FIG_SCALE===\u0027undefined\u0027||typeof drawOp0!==\u0027function\u0027) return \u0027the figures have no FIG_SCALE and no scaled draw\u0027;\n       if(FIG_SCALE\u003e1) return \u0027FIG_SCALE is \u0027+FIG_SCALE+\u0027, bigger than the old size 1\u0027;\n       rec=function(){ try{ if(this.canvas===cv\u0026\u0026(/drawOp0/).test(String(new Error().stack))){ var d=this.getTransform().d; if(!(b in mn)||d\u003cmn[b]) mn[b]=d; } }catch(_r){} };\n       PR.fillRect=function(){ rec.apply(this,arguments); return of.apply(this,arguments); };\n       PR.fill=function(){ rec.apply(this,arguments); return ff.apply(this,arguments); };\n       hv={lean:1.08,broad:0.96,curved:1};\n       for(b in hv){\n         wc.save(); wc.setTransform(1,0,0,1,0,0);\n         drawOp(100,100,0,0,\u0027#242832\u0027,1,0,\u0027none\u0027,0,{hero:0,build:b,moving:false,sprint:false,ads:false,hurt:0,rl:0,own:{wep:null}});\n         wc.restore();\n       }\n       PR.fillRect=of; PR.fill=ff;\n       for(b in hv){\n         if(!(b in mn)) return \u0027the \u0027+b+\u0027 figure drew nothing\u0027;\n         if(mn[b]\u003ehv[b]+0.01) return \u0027the \u0027+b+\u0027 body is drawn \u0027+mn[b].toFixed(3)+\u0027 tall, taller than its build height \u0027+hv[b]+\u0027 at the old size\u0027;\n       }\n       return null;\n     } finally {\n       PR.fillRect=of; PR.fill=ff;\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}

@@ -1,0 +1,7 @@
+v33.21: experimental choices hold for the raid
+
+Experimental choices hold for the whole raid. Both windows use the host choices, including needed-item glow and the result haul.
+
+Check 33.21. Fails on v33.20.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

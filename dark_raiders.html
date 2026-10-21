@@ -3249,7 +3249,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.20';
+var VER='33.21';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3762,7 +3762,7 @@ function applyCfg(base,over){ CFG=cloneObj(base); if(over){ for(var k in over) i
 // "make it a separate menu accessible from settings"). Settings has one row, experimental, that opens its own page with an on/off row per newer feature. Every
 // switch is ON by default, so a profile that never opens it plays exactly as before. Each key is a DEF key, so the host's off switches ride in the raid word
 // (netUpCfgDiff) and a linked window builds and plays the raid under them. A WORLD switch ('w') is read from XF, a snapshot startRaid takes before the raid is
-// built, never from CFG during a raid: a change made mid raid starts with the next raid. A LOCAL switch ('l') is read live from CFG. A row is listed only when
+// v28.xx (cw-cx-expsnap): all keys are snapshotted; changes made mid raid start with the next raid. The shop and party seed read CFG outside a raid. A row is listed only when
 // its guard is in the build: add the row above XF_ROWS_END and the guard where the feature starts.
 var XF_ROWS=[
   // [key, label, hint, scope]
@@ -3798,9 +3798,11 @@ var XF_ROWS=[
 ];
 var XF_KEYS=[], XF_WORLD=[], XF={}, SETSUB='';
 (function(){ var i; for(i=0;i<XF_ROWS.length;i++){ XF_KEYS.push(XF_ROWS[i][0]); DEF[XF_ROWS[i][0]]=1; if(XF_ROWS[i][3]==='w') XF_WORLD.push(XF_ROWS[i][0]); } })();
-function xfSnap(){ var i, k; XF={}; for(i=0;i<XF_WORLD.length;i++){ k=XF_WORLD[i]; XF[k]=(CFG&&CFG[k]===0)?0:1; } return XF; }
+// v28.xx (cw-cx-expsnap): job 61 says switches are read once at raid start and the host rules in both windows. Include the four formerly local keys.
+function xfSnap(){ var i, k; XF={}; for(i=0;i<XF_KEYS.length;i++){ k=XF_KEYS[i]; XF[k]=(CFG&&CFG[k]===0)?0:1; } return XF; }
 function xf(k){ return XF[k]!==0; }                      // a WORLD switch, as this raid was started with it (all on before any raid)
-function xfL(k){ return !(CFG&&CFG[k]===0); }            // a LOCAL switch, this window, now
+// v28.xx (cw-cx-expsnap): a guest restores its own CFG after netUpStart, so raid-time local calls must read the host snapshot too. Outside a raid the shop and party-seed controls act on the next run.
+function xfL(k){ return (typeof G!=='undefined'&&G&&!G.sim&&!G.over)?xf(k):!(CFG&&CFG[k]===0); }
 var XF_EV={debris:'xfEvDebris',convoy:'xfEvConvoy',bounty:'xfEvBounty',cool:'xfEvCool',rampage:'xfEvRamp'};   // v32.xx (cw-expmenu3): the raid events, by id
 function expRowHtml(){
   return '<div class="row"><div style="flex:1"><b>experimental</b><div class="hint">newer features on or off</div></div><button id="exp_open" style="padding:6px 12px;min-width:92px">open</button></div>';
@@ -34298,7 +34300,7 @@ function haulTotalLine(){
 function haulRevealStart(){
   var w=document.getElementById('oc_manifest'), strip, its, i, list=[], sec;
   HAUL_REV=null;
-  if(!xfL('xfHaul')) return 0;   // v32.xx (cw-expmenu6): switched off, the haul on the extracted card shows at once
+  if(!xf('xfHaul')) return 0;   // v28.xx (cw-cx-expsnap): the result card keeps this raid choice after G.over, including the host choice for a linked window
   if(!w) return 0;
   strip=w.querySelector('.haulstrip'); if(!strip) return 0;
   its=strip.querySelectorAll('.haulit'); if(its.length<2) return 0;
@@ -44152,7 +44154,7 @@ function needItems(){
 function needRefresh(){
   var n=0, k;
   if(!G||G.sim) return 0;
-  if(!xfL('xfNeed')){ G.need={}; G.needN=0; return 0; }   // v32.xx (cw-expmenu6): switched off, no box glows for a contract (read live, this window)
+  if(!xfL('xfNeed')){ G.need={}; G.needN=0; return 0; }   // v28.xx (cw-cx-expsnap): needed-item glow uses this raid snapshot, including the host choice
   G.need=needItems();
   for(k in G.need) n++;
   G.needN=n;
@@ -51320,7 +51322,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.20: Below 30 health the sound of the world goes duller as you get worse. Back above 30 it opens again. Menu clicks and pickups stay crisp. Check 33.20 fails on v33.19',
+  now:'v33.21: Experimental choices hold for the whole raid. Both windows use the host choices, including needed-item glow and the result haul. Check 33.21 fails on v33.20',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

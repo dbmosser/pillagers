@@ -1,0 +1,5 @@
+## v33.21 - EXPERIMENTAL CHOICES HOLD FOR THE RAID
+
+Co-op hunt while he was away. Job 61 requires all switches to be fixed at raid start with the host choices in both windows. Glow and haul still read live preferences.
+
+MEASURED. Check 33.21 passes, and fails on v33.20.

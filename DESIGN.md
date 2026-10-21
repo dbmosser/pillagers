@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.21 - EXPERIMENTAL CHOICES HOLD FOR THE RAID
+
+Co-op hunt while he was away. Job 61 requires all switches to be fixed at raid start with the host choices in both windows. Glow and haul still read live preferences.
+
+MEASURED. Check 33.21 passes, and fails on v33.20.
 ## v33.20 - LOW HEALTH FILTER: THE WORLD MUFFLES AS YOU BLEED
 
 Co-op hunt while he was away. His yes on pick 70. Below 30 health the world mix runs through a soft low-pass that closes from about 12 kHz to 2.2 kHz as health falls to 0 (nothing at 30). It uses the same filter as the downed dip and waits out the dip, so they never stack, and menu sounds and stings never pass through it.
