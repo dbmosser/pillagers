@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.69 - THE PIXEL TREE, BUSH AND SHADOW
+
+Co-op hunt while he was away. Job 86d ship 2: with the pixel look on, a canopy and a bush bake once at one pixel per 2 world units in the map leaf palette with hard alpha and a dark bottom and right edge, the trunk is drawn at art pixels, and a ground shadow is a hard pixel ellipse a little bigger and darker.
+
+MEASURED. Check 33.69 passes, and fails on v33.68.
 ## v33.68 - THE PIXEL ADAPTER AND THE LOOT
 
 Co-op hunt while he was away. Job 86e ship 1: pixWrap runs a vector painter into an art resolution scratch once and caches it hard edged on the tones the painter used, so with the pixel look on every container, body, carcass and the 9 machine wrecks are one cached sprite a frame (opened and closed both). The ground shadow, the dim, the search bar and the wreck smoke stay live.

@@ -1,1 +1,1 @@
-10-21 04:48 waiting for RAM: 2 GB free, a helper starts at 3; 86c-pix-pillager kept
+10-21 05:03 86c-pix-pillager: partial (run 4 of 5), $0.2230493

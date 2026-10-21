@@ -1,0 +1,7 @@
+v33.69: the pixel tree, bush and shadow
+
+With the pixel look on (the default), trees, bushes and ground shadows are chunky hard-edged pixels. With the look off, nothing changes.
+
+Check 33.69. Fails on v33.68.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

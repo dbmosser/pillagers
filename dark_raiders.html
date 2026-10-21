@@ -3335,7 +3335,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.68';
+var VER='33.69';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -35098,6 +35098,7 @@ function camClamp(v,span,world){
 var SHADSPR={m:{},n:0,ss:0};
 function shadowE(x,y,rx,ry,a){
   var ss, k, e, R, cv2, c2;
+  if(pixOn()&&CFG.wallBake!==0&&rx>0&&ry>0&&rx<400&&ry<400&&pixShadow(x,y,rx,ry,a)) return;   // v33.67 (cw-pixveg): a hard pixel shadow
   if(CFG.wallBake!==0&&rx>0&&ry>0&&rx<400&&ry<400&&typeof wallSpriteScale==='function'){
     ss=(function(){ try{ var _m=wc.getTransform(); return Math.max(1,Math.min(4,Math.ceil(Math.hypot(_m.a,_m.b)/adsZf()-0.05))); }catch(_t){ return wallSpriteScale(); } })();   // v18.76: without the scope zoom   // v18.48: the scale of the canvas being drawn on
     // v28.xx (cw-shadowstore): the store used to empty whenever the sprite scale changed, and the world (ss 1) and the bigger figures (ss 2)
@@ -38835,16 +38836,57 @@ var WALLSPR={m:{},n:0,key:'',max:320,tick:0};
 // live paint used. The trunk, the bush's base and the shadows stay live. Same colours, same shapes; a bush's blobs now sway
 // together instead of each at its own rate, which at raid distance is the same bush.
 var VEGSPR={m:{},key:''};
+// v33.67 (cw-pixveg), HIS ORDER (2026-10-20 22:45 to 23:05): THE PIXEL TREE, BUSH AND SHADOW, job 86d ship 2. With the pixel look on a canopy and a bush bake once at one pixel per 2 world units (no screen scale in the key): the same blobs
+// as the vector paint, filled whole pixels, tones of the map's own day or night leaf palette (G.vegPal), hard alpha (0 or 255), a bottom and right edge pixel in a dark tone of the palette, a few lit specks by grit(). A ground shadow is a hard
+// pixel ellipse (a stamp of solid pixels laid at the shadow's alpha, a little bigger and darker than the soft one, his a09 B). Only grit() and the size, never rr().
+var PIX_VEGRGB={};
+function pixVegRGB(hx,dk){ var k=hx+(dk?'d':''), r=PIX_VEGRGB[k], n; if(!r){ n=parseInt(hx.slice(1),16); r=[n>>16,(n>>8)&255,n&255]; if(dk) r=[(r[0]*0.55)|0,(r[1]*0.55)|0,(r[2]*0.55)|0]; PIX_VEGRGB[k]=r; } return r; }
+function pixVegBake(kind,rr,pal){
+  var E=PIX_ENV, tree=(kind==='tree'), ox, oy, w, h, aw, ah, s, id, p, D, tn, x, y, i, wx, wy, dx, dy, t, o, kc=tree?1:2, ed, k;
+  if(tree){ ox=rr+2; oy=rr*1.35+2; w=rr*2+4; h=rr*2+4; D=[[0,-rr*.35,rr,0],[-rr*.25,-rr*.5,rr*.72,1],[-rr*.35,-rr*.62,rr*.45,2]]; }
+  else { ox=rr*0.9+2; oy=rr+2; w=rr*1.8+4; h=rr*1.3+4; D=[[-rr*0.34,-rr*0.55*0.50,rr*0.52,1],[rr*0.30,-rr*0.55*0.42,rr*0.48,1],[0,-rr*0.55*0.78,rr*0.54,2],[-rr*0.16,-rr*0.55*0.96,rr*0.32,3]]; }
+  aw=Math.max(1,Math.ceil(w/E)); ah=Math.max(1,Math.ceil(h/E));
+  s=pixCanvas(aw,ah); id=s.x.createImageData(aw,ah); p=id.data; tn=new Array(aw*ah);
+  for(y=0;y<ah;y++) for(x=0;x<aw;x++){
+    wx=(x+0.5)*E-ox; wy=(y+0.5)*E-oy; t=-1;
+    if(!tree&&(wx*wx)/(rr*0.96*rr*0.96)+(wy*wy)/(rr*0.5*rr*0.5)<=1) t=0;   // the bush's ground blob (it was a live ellipse)
+    for(i=0;i<D.length;i++){ dx=wx-D[i][0]; dy=wy-D[i][1]; if(dx*dx+dy*dy<=D[i][2]*D[i][2]) t=D[i][3]; }
+    tn[y*aw+x]=t;
+  }
+  for(y=0;y<ah;y++) for(x=0;x<aw;x++){
+    t=tn[y*aw+x]; if(t<0) continue;
+    ed=((x+1>=aw||tn[y*aw+x+1]<0)||(y+1>=ah||tn[(y+1)*aw+x]<0));
+    if(!ed&&t<pal.length-1&&grit(x*7+rr,y*11+kc)>0.9) t++;
+    k=pixVegRGB(ed?pal[0]:pal[t],ed); o=(y*aw+x)*4; p[o]=k[0]; p[o+1]=k[1]; p[o+2]=k[2]; p[o+3]=255;
+  }
+  s.x.putImageData(id,0,0);
+  return {c:s.c,ss:1/E,px:true,ox:ox,oy:oy};
+}
+function pixSmooth(){ var q=ZOOM()*DPR*PIX_ENV; return Math.abs(q-Math.round(q))>0.001; }
+function pixShadow(x,y,rx,ry,a){
+  var E=PIX_ENV, ra=Math.max(1,Math.round(rx*1.12/E)), rb=Math.max(1,Math.round(ry*1.12/E)), k='px:'+ra+','+rb, e=SHADSPR.m[k], s, id, p, i, j, u, v, o, a0, sm;
+  if(!e){
+    if(SHADSPR.n>300){ SHADSPR.m={}; SHADSPR.n=0; }
+    s=pixCanvas(ra*2+1,rb*2+1); id=s.x.createImageData(ra*2+1,rb*2+1); p=id.data;
+    for(j=0;j<rb*2+1;j++) for(i=0;i<ra*2+1;i++){ u=(i-ra)/(ra+0.4); v=(j-rb)/(rb+0.4); if(u*u+v*v<=1){ o=(j*(ra*2+1)+i)*4; p[o+3]=255; } }
+    s.x.putImageData(id,0,0); e=SHADSPR.m[k]={c:s.c,px:true}; SHADSPR.n++;
+  }
+  a0=wc.globalAlpha; sm=wc.imageSmoothingEnabled; wc.imageSmoothingEnabled=pixSmooth(); wc.globalAlpha=a0*Math.min(0.62,a*1.3+0.04);
+  wc.drawImage(e.c,Math.round((x-(ra+0.5)*E)/E)*E,Math.round((y-(rb+0.5)*E)/E)*E,e.c.width*E,e.c.height*E);
+  wc.globalAlpha=a0; wc.imageSmoothingEnabled=sm;
+  return true;
+}
 function vegSprite(kind,r){
   var ss, day, pal, gk, rr, k, e, cv2, c2, ox, oy, w, h, blf;
   if(CFG.wallBake===0||!(r>0)||!G||!G.vegPal) return null;
   ss=wallSpriteScale(); day=isDay();
   pal=(kind==='tree')?(day?G.vegPal.treeD:G.vegPal.treeN):(day?G.vegPal.bushD:G.vegPal.bushN);
   if(!pal) return null;
-  gk=String(G.seed)+'|'+(day?'d':'n')+'|'+ss;
+  gk=String(G.seed)+'|'+(day?'d':'n')+'|'+(pixOn()?'px':ss);   // v33.67 (cw-pixveg): the pixel look has no screen scale in its key
   if(VEGSPR.key!==gk){ VEGSPR.m={}; VEGSPR.key=gk; }
   rr=Math.round(r); k=kind+rr; e=VEGSPR.m[k];
   if(e) return e;
+  if(pixOn()){ try{ e=pixVegBake(kind,rr,pal); }catch(_pv){ PIX.errs++; e=null; } if(e){ VEGSPR.m[k]=e; return e; } }   // v33.67 (cw-pixveg)
   if(kind==='tree'){ ox=rr+2; oy=rr*1.35+2; w=rr*2+4; h=rr*2+4; }
   else { ox=rr*0.9+2; oy=rr+2; w=rr*1.8+4; h=rr*1.3+4; }
   cv2=document.createElement('canvas'); cv2.width=Math.ceil(w*ss); cv2.height=Math.ceil(h*ss); c2=cv2.getContext('2d'); if(!c2) return null;
@@ -38866,6 +38908,11 @@ function vegSprite(kind,r){
 function vegDraw(kind,r,x,y){
   var e=vegSprite(kind,r);
   if(!e) return false;
+  if(e.px){   // v33.67 (cw-pixveg): whole art pixels, the sway moves it a pixel at a time
+    var _vm=wc.imageSmoothingEnabled; wc.imageSmoothingEnabled=pixSmooth();
+    wc.drawImage(e.c,Math.round((x-e.ox)/PIX_ENV)*PIX_ENV,Math.round((y-e.oy)/PIX_ENV)*PIX_ENV,e.c.width*PIX_ENV,e.c.height*PIX_ENV);
+    wc.imageSmoothingEnabled=_vm; return true;
+  }
   wc.drawImage(e.c,0,0,e.c.width,e.c.height,x-e.ox,y-e.oy,e.c.width/e.ss,e.c.height/e.ss);
   return true;
 }
@@ -39720,7 +39767,7 @@ var SHD=G.shells[i];
       if(bmine) wc.globalAlpha=0.52;
       shadowE(BU.x+2,BU.y+BU.r*0.26,BU.r*0.88,BU.r*0.28,.28);
       wc.fillStyle=isDay()?G.vegPal.bushD[0]:G.vegPal.bushN[0];
-      wc.beginPath(); wc.ellipse(BU.x,BU.y,BU.r*0.96,BU.r*0.50,0,0,6.2832); wc.fill();
+      if(!(pixOn()&&CFG.wallBake!==0)){ wc.beginPath(); wc.ellipse(BU.x,BU.y,BU.r*0.96,BU.r*0.50,0,0,6.2832); wc.fill(); }   // v33.67 (cw-pixveg): the pixel bush carries its own ground blob
       if(!vegDraw('bush',BU.r,BU.x+bsw*1.15,BU.y)){   // v18.16: the blobs off a baked sprite, swaying together; the live paint below when there is none
       wc.fillStyle=isDay()?G.vegPal.bushD[1]:G.vegPal.bushN[1];
       wc.beginPath(); wc.arc(BU.x-BU.r*0.34+bsw,BU.y-blf*0.50,BU.r*0.52,0,6.2832); wc.fill();
@@ -39739,9 +39786,11 @@ var SHD=G.shells[i];
       var swayT=Math.sin(G.t*0.9+tcx*0.013)*2.2;
       shadowE(tcx+3,tby+1,TR.canopy*.8,TR.canopy*.30,.30);
       wc.fillStyle='#4a3620';
-      wc.fillRect(tcx-TR.w*.32,tby-26,TR.w*.64,26);
+      var _tx=tcx-TR.w*.32, _tw=TR.w*.64, _ty=tby-26, _tl=TR.w*.2;
+      if(pixOn()){ _tx=Math.round(_tx/PIX_ENV)*PIX_ENV; _tw=Math.max(PIX_ENV*2,Math.round(_tw/PIX_ENV)*PIX_ENV); _ty=Math.round(_ty/PIX_ENV)*PIX_ENV; _tl=Math.max(PIX_ENV,Math.round(_tl/PIX_ENV)*PIX_ENV); }   // v33.67 (cw-pixveg): the trunk is drawn at art pixels
+      wc.fillRect(_tx,_ty,_tw,tby-_ty);
       wc.fillStyle='#2e2114';
-      wc.fillRect(tcx-TR.w*.32,tby-26,TR.w*.2,26);
+      wc.fillRect(_tx,_ty,_tl,tby-_ty);
       var canY=tby-30,cr2=TR.canopy;
       if(!vegDraw('tree',cr2,tcx+swayT,canY)){   // v18.16: the canopy off a baked sprite; the live paint below when there is none
       wc.fillStyle=isDay()?G.vegPal.treeD[0]:G.vegPal.treeN[0];
@@ -52367,7 +52416,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.68: With the pixel look on, crates, lockers, safes, caches, bodies, deer and the machine wrecks draw as crisp pixel sprites; opened ones still dim. Wreck smoke still rises. With the look off nothing changes. Check 33.68 fails on v33.67',
+  now:'v33.69: With the pixel look on (the default), trees, bushes and ground shadows are chunky hard-edged pixels. With the look off, nothing changes. Check 33.69 fails on v33.68',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
