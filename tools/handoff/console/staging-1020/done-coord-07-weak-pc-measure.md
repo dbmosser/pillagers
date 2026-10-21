@@ -1,4 +1,5 @@
 coord-07-weak-pc-measure : measure frame times on HEAD on a "5-year-old laptop" class machine (planner draft 2026-10-20)
+DONE 10-21 01:40 (coordinator): measured (workflow wf_402525c4-ae2, skeptic agrees, high confidence): 1 player about 24 fps and the 2-player pair about 7 fps per window at 1080p under the throttle. Write-up notes/coord-07.md; ladder job queued as tasks/94-ladder-sheds-sooner.md; the shared main thread of the pair goes to job 95 with coord-06. Re-measure after 86c and 86f with notes/coord-07/runA.sh and runC.sh.
 effort: medium
 
 SESSION AGENT OR COORDINATOR (tools/cdp.ps1 -Throttle and tools/handoff/stress.ps1 are not in the lane command list). Do not move into tasks/.
