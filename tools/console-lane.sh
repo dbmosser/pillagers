@@ -147,9 +147,11 @@ if [ $ENGINE = cli ]; then
   mkdir "$C/start.lock" 2>/dev/null || { echo "$(date '+%m-%d %H:%M') waiting: another helper is just starting (memory check again in a few minutes); $name kept" > "$C/status-$L.txt"; exit 0; }
   echo "$(date '+%m-%d %H:%M') running $name on Claude Code (your plan: week $wk% of the $line% line, 5-hour $ses%)" > "$C/status-$L.txt"
   st=$(date +%s)
-  ( cd "$R" && env -u ANTHROPIC_API_KEY claude -p "Your task id is $name. Your lane is $L. You run in Claude Code: run every command with the Bash tool (never the PowerShell tool), use Read (it also shows pictures; it replaces view_image), Grep, Glob, Write, Edit and Bash, with each Bash command typed exactly in a form your rules list. $(cat "$t")" \
-      --append-system-prompt "$(cat "$C/RULES.md")" --model "$(cap CLI_MODEL sonnet)" --output-format json --max-turns "$(cap CLI_TURNS 150)" \
-      --allowedTools "${ALLOW[@]}" > "$out" 2> "$C/log/$name-$stamp.err" < /dev/null )
+  # 10-21 02:52: job 85a (11.7 KB) plus RULES.md (21 KB) on the command line passed Windows' 32 KB limit ("env: 'claude': Argument
+  # list too long") and the run never started. The job text now goes in on stdin and the rules as a file (tested 10-21 02:58).
+  ( cd "$R" && printf '%s' "Your task id is $name. Your lane is $L. You run in Claude Code: run every command with the Bash tool (never the PowerShell tool), use Read (it also shows pictures; it replaces view_image), Grep, Glob, Write, Edit and Bash, with each Bash command typed exactly in a form your rules list. $(cat "$t")" | env -u ANTHROPIC_API_KEY claude -p \
+      --append-system-prompt-file "$(cygpath -m "$C/RULES.md")" --model "$(cap CLI_MODEL sonnet)" --output-format json --max-turns "$(cap CLI_TURNS 150)" \
+      --allowedTools "${ALLOW[@]}" > "$out" 2> "$C/log/$name-$stamp.err" )
   cost=$(grep -o '"total_cost_usd":[0-9.eE+-]*' "$out" | tail -1 | cut -d: -f2); cost=${cost:-0}
   if awk -v c="$cost" 'BEGIN{exit !(c+0==0)}'; then
     if grep -qi 'authenticate\|oauth\|not logged in\|/login' "$out"; then w="waiting for you to sign in to Claude Code once (terminal: claude, then /login)"
