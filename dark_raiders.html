@@ -3309,7 +3309,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.60';
+var VER='33.61';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -52189,7 +52189,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.60: With the pixel look on (the default), the ground is chunky pixel art in stepped district colours, and the first seconds of a raid finish baking it. With the look off, nothing changes. Check 33.60 fails on v33.59',
+  now:'v33.61: On itch, player 1 is told when player 2 is in a raid, and the shared sound and kid settings follow in both windows. Check 33.61 fails on v33.60',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -56262,9 +56262,9 @@ function p2LiveKey(){ return 'salvagerun:p2live'; }
 // v20.35, from the whole-game bug hunt of 2026-10-08 (H24): and a second mark while that window is in a raid, so player 1 never
 // opens a fresh player 2 window over a raid in progress (see netSamePick).
 function p2RaidKey(){ return 'salvagerun:p2raid'; }
-function p2LiveBeat(){ try{ localStorage.setItem(p2LiveKey(),String(Date.now())); if(typeof G!=='undefined'&&G&&!G.sim&&!G.over) localStorage.setItem(p2RaidKey(),String(Date.now())); else localStorage.removeItem(p2RaidKey()); return true; }catch(_b){ return false; } }
-function p2RaidNow(){ var t=0; try{ t=+localStorage.getItem(p2RaidKey())||0; }catch(_g){ t=0; } return !!(t&&Math.abs(Date.now()-t)<75000); }
-function p2LiveNow(){ var t=0; try{ t=+localStorage.getItem(p2LiveKey())||0; }catch(_g){ t=0; } return !!(t&&Math.abs(Date.now()-t)<75000); }
+function p2LiveBeat(){ try{ netBeatPost(); }catch(_nb){} try{ localStorage.setItem(p2LiveKey(),String(Date.now())); if(typeof G!=='undefined'&&G&&!G.sim&&!G.over) localStorage.setItem(p2RaidKey(),String(Date.now())); else localStorage.removeItem(p2RaidKey()); return true; }catch(_b){ return false; } }
+function p2RaidNow(){ var t=0; try{ t=+localStorage.getItem(p2RaidKey())||0; }catch(_g){ t=0; } try{ t=Math.max(t,(NET.mateBeat&&NET.mateBeat.raid)||0); }catch(_gm){}   /* v33.58 (cw-p2marks): in itch frame player 2 marks come over the bridge, not this store */ return !!(t&&Math.abs(Date.now()-t)<75000); }
+function p2LiveNow(){ var t=0; try{ t=+localStorage.getItem(p2LiveKey())||0; }catch(_g){ t=0; } try{ t=Math.max(t,(NET.mateBeat&&NET.mateBeat.live)||0); }catch(_gm){} return !!(t&&Math.abs(Date.now()-t)<75000); }
 if(typeof NETP2!=='undefined'&&NETP2){
   p2LiveBeat(); try{ setInterval(p2LiveBeat,2000); }catch(_si){}
   try{ window.addEventListener('pagehide',function(){ try{ localStorage.removeItem(p2LiveKey()); localStorage.removeItem(p2RaidKey()); }catch(_r){} }); }catch(_ph){}
@@ -56955,7 +56955,7 @@ function netMateLeave(){
 }
 // Every floor frame while the pair is on: eases the other body toward where he last said he stood, drops him when he is not heard from, and
 // a few times a second posts where this player stands. Returns 1 when a word went out.
-function netMateTick(dt){ try{ netSameWatch(Date.now()); }catch(_nw){}   // v33.58 (cw-p2nolink): the no-link watch rides the Undercroft frame, no timer of its own
+function netMateTick(dt){ try{ netSameWatch(Date.now()); }catch(_nw){} try{ netBridgeTick(Date.now()); }catch(_nbt){}   // v33.58 (cw-p2marks): the shared settings ride the same frame tick   // v33.58 (cw-p2nolink): the no-link watch rides the Undercroft frame, no timer of its own
   var g=NETMATE.g, k, dx, dy, da, sp, p, msg, lk, ls;
   if(!isFinite(dt)||dt<0) dt=0;
   if(g&&(!NET.same||!NET.pair||NETMATE.pair!==NET.pair||g.age>=NET_MATE_STALE)){ NETMATE.g=null; g=null; }
@@ -57076,11 +57076,64 @@ function netBridgeChan(){
     w.postMessage({pg:'pillagers',m:m},location.origin);
   }};
 }
+// v33.58 (cw-p2marks), coord-06 (2026-10-21): THE MARKS AND THE SHARED SETTINGS ACROSS THE TWO STORES. In itch frame player 1 and player 2 keep
+// separate stores, so the p2live and p2raid marks never reached player 1 and the v20.35 refusal (never open a window over a live raid) could not
+// fire. Player 2 now posts a beat to its opener every 2 s (raid 0 or 1); the host keeps it in memory (NET.mateBeat) and p2RaidNow and p2LiveNow read
+// the newer of storage and memory. Saves and slot pointers are NOT shared, so two windows can never open the same save. The three settings the pair
+// shares (who hears the world, split speakers, the kid settings) are compared once a second on the bridge and posted when one changes.
+function netBrKeys(){ return [NET_WHO_KEY,NET_SPLIT_KEY,KID_SHARE_KEY]; }
+function netBeatPost(q){
+  var o=(typeof q==='string')?q:((typeof location!=='undefined'&&location.search)||''), w=null, raid;
+  if(!netEmbOf(o)) return false;
+  try{ w=window.opener; }catch(_bp){ w=null; }
+  if(!w) return false;
+  raid=(typeof G!=='undefined'&&G&&!G.sim&&!G.over)?1:0;
+  try{ w.postMessage({pg:'pillagers',m:{t:'beat',raid:raid}},location.origin); return true; }catch(_bq){ return false; }
+}
+function netBeatIn(src,m){
+  var now=Date.now();
+  if(typeof NETP2!=='undefined'&&NETP2) return 'off';
+  try{ if(!reportEmbedded()) return 'off'; }catch(_bi){ return 'off'; }
+  if(!src) return 'source';
+  if(NET.p2win&&!NET.p2win.closed&&src!==NET.p2win) return 'source';
+  NET.p2win=src;
+  NET.mateBeat={live:now,raid:m.raid?now:0};
+  return 'beat';
+}
+function netBridgeKvAll(){
+  var ks=netBrKeys(), i, v, n=0;
+  for(i=0;i<ks.length;i++){ v=null; try{ v=localStorage.getItem(ks[i]); }catch(_ka){ v=null; } if(typeof v==='string'){ if(!NET.brKv) NET.brKv={}; NET.brKv[ks[i]]=v; netSamePost({t:'kv',pair:NET.pair,k:ks[i],v:v}); n++; } }
+  return n;
+}
+function netBridgeTick(now){
+  if(!NET.bc||!NET.bc.br||!NET.pair) return 'off';
+  if(!NET.brKv) NET.brKv={};
+  if(NET.brKvT&&now-NET.brKvT<1000) return 'wait';
+  NET.brKvT=now;
+  var ks=netBrKeys(), i, v, n=0;
+  for(i=0;i<ks.length;i++){
+    v=null; try{ v=localStorage.getItem(ks[i]); }catch(_kt){ v=null; }
+    if(!(ks[i] in NET.brKv)){ NET.brKv[ks[i]]=v; continue; }
+    if(v!==NET.brKv[ks[i]]){ NET.brKv[ks[i]]=v; if(typeof v==='string'){ netSamePost({t:'kv',pair:NET.pair,k:ks[i],v:v}); n++; } }
+  }
+  return n;
+}
+function netBridgeKv(m){
+  if(!NET.bc||!NET.bc.br) return 'ignored';
+  if(netBrKeys().indexOf(m.k)<0||typeof m.v!=='string'||m.v.length>400) return 'ignored';
+  try{ localStorage.setItem(m.k,m.v); }catch(_kw){}
+  if(!NET.brKv) NET.brKv={};
+  NET.brKv[m.k]=m.v;
+  if(m.k===KID_SHARE_KEY){ try{ if(kidSync(m.v)){ var sm=document.getElementById('settingsmodal'); if(sm&&sm.classList.contains('on')) renderSettings(); } }catch(_kk){} }
+  else { try{ netSndApply(); renderParty(); }catch(_kn){} }
+  return 'kv';
+}
 function netBridgeIn(e){
   var d=e&&e.data, src=e&&e.source, m=d&&d.m;
-  if(!NET.bc||!NET.bc.br) return 'off';
   if(!d||typeof d!=='object'||d.pg!=='pillagers'||!m||typeof m!=='object') return 'bad';
   if(e.origin!==location.origin) return 'origin';
+  if(m.t==='beat') return netBeatIn(src,m);   // v33.58 (cw-p2marks): pair free, taken before any pick, so a reloaded frame finds the popup again
+  if(!NET.bc||!NET.bc.br) return 'off';
   if(NET.same==='host'){
     if(!NET.p2win){ if(!src||m.pair!==NET.pair) return 'source'; NET.p2win=src; }   // a host that lost its handle (the frame reloaded) takes the window that speaks with its pair code
     else if(src!==NET.p2win) return 'source';
@@ -57092,7 +57145,7 @@ function netBridgeIn(e){
 try{ window.addEventListener('message',netBridgeIn); }catch(_bm){}
 function netSameStop(){
   if(NET.bc){ try{ NET.bc.onmessage=null; NET.bc.close(); }catch(e){} }
-  NET.bc=null; NET.same=''; NET.pair=''; NET.mode=''; NET.p2win=null; NET.sameBusy=false; NET.sameT0=0; NET.noLink=0;
+  NET.bc=null; NET.same=''; NET.pair=''; NET.mode=''; NET.p2win=null; NET.sameBusy=false; NET.sameT0=0; NET.noLink=0; NET.brKv={}; NET.brKvT=0;
   NET.padFwd=null; NET.padOther=-1;   // v15.77: the handed-over state and the other window's pick go with the channel; this window's own pick stays
   NET.padWas=null;   // v17.27: and the kept sides
   netSndRelease();   // v15.78: the master gain goes back to 1 and the other window's word is forgotten; this window's own switch stays
@@ -57221,6 +57274,7 @@ try{ window.addEventListener('blur',netKeyLetGo); window.addEventListener('pageh
 function netSameOnMsg(m){
   if(!m||typeof m!=='object'||typeof m.t!=='string') return 'bad';
   if(!NET.same||!NET.pair||m.pair!==NET.pair) return 'ignored';
+  if(m.t==='kv') return netBridgeKv(m);   // v33.58 (cw-p2marks): a shared setting from the other window, bridge only
   // v15.77: the two controller words, read on either side: a pad state handed over by the window in front, and a pick.
   if(m.t==='padclaim') return padClaimRecv(m); // v28.xx (cw-cx-padowner): never buzz a different slot after a delayed request.
   if(m.t==='rumble'){ if(!RUMBLE.other) return 'nopad'; return padRumbleOn(RUMBLE.other,+m.s||0,+m.ms||0)?'rumble':'nopad'; }   // v17.37: a buzz the other window asked for, on the pad this window reads for him
@@ -57243,6 +57297,7 @@ function netSameOnMsg(m){
     if(m.t==='ready'){
       netPadPost();   // v15.77: a player 2 window that just booted, or reloaded, is told this window's controller pick
       netSndPost();   // v15.78: and whether this window's sound is on
+      if(NET.bc&&NET.bc.br) netBridgeKvAll();   // v33.58 (cw-p2marks): on the bridge the host shared settings go out when the pair links, so the host values win
       if(typeof ARCADE==='object'&&ARCADE&&ARCADE.on&&ARCADE.role==='host'&&!ARCADE.solo) netSamePost({t:'arcon',pair:NET.pair});   // v23.24 (arcade5): so a rebooted player 2 window always rejoins the arcade (v23.54, arcade30: not the 1 player arcade)
       if(NET.pend&&NET.pend.state==='offer'){ if(NET.code){ netSamePost({t:'offer',pair:NET.pair,mode:NET.mode,code:NET.code}); return 'offer'; } return 'wait'; }
       netSameHostLink();

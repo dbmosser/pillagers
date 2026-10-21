@@ -154,7 +154,7 @@ async function t2(cs) {
 // t4: the real game. mode 'framed' = fixture.html inside a cross-site frame (top on 127.0.0.1:8871); 'control' = fixture.html top-level.
 async function t4(mode) {
   const pair = 'c6' + mode.slice(0, 3) + Date.now().toString(36).slice(-6);
-  const gameUrl = 'http://localhost:8809/fixture.html?netslot=A&pair=' + pair;
+  const gameUrl = 'http://localhost:8809/' + (process.env.C6_GAME || 'fixture.html') + '?netslot=A&pair=' + pair;  // C6_GAME (10-21 03:30): a frozen copy, so a ship cannot swap the build mid-test
   out.pair = pair; out.gameUrl = gameUrl;
   let H, topId = null;
   if (mode === 'framed') {
@@ -203,7 +203,7 @@ try {
   if (out.test === 't4') { await serveTop(); await t4(out.mode); } else
   if (out.test === 't1') await t1(out.mode); else if (out.test === 't2') { await serveTop(); await t2(out.mode); }
 } catch (e) { out.error = String(e && e.stack || e); }
-const f = path.join(DIR, `raw-${out.test.toUpperCase()}-${out.mode}.json`);
+const f = path.join(DIR, `raw-${out.test.toUpperCase()}-${out.mode}${process.env.C6_TAG ? "-" + process.env.C6_TAG : ""}.json`);
 fs.writeFileSync(f, JSON.stringify(out, null, 1));
 console.log(JSON.stringify(Object.assign({ file: path.basename(f) }, out.test === 't4' ? { linked: out.linkedWithin20s, linkMs: out.linkMs, pick: out.pickResult, p2: out.p2WindowFound, p2Opener: out.p2HasOpener, hostIsTop: out.hostIsTop, error: out.error } : out.verdict || { sharedThread: out.sharedThread, samePid: out.samePid, aOpenReturnedNull: out.aOpenReturnedNull, bMaxGap: out.bMaxGapWhileABusy2000Ms, error: out.error })));
 if (srv) srv.close(); ws.close(); process.exit(0);

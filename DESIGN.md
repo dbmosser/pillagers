@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.61 - THE PAIR SHARES ITS MARKS AND SETTINGS INSIDE ITCH
+
+Co-op hunt while he was away. coord-06 on 2026-10-21: in itch frame player 1 and player 2 keep separate stores, so the raid marks and the shared sound and kid settings never crossed. Player 2 now sends a beat every 2 seconds and the settings are compared once a second over the window bridge, so player 1 never opens a window over a live player 2 raid and both windows keep the same sound and kid settings. Saves are not shared.
+
+MEASURED. Check 33.61 passes, and fails on v33.60.
 ## v33.60 - THE PIXEL GROUND
 
 Co-op hunt while he was away. Job 86b: with the pixel look on, the floor is baked at one pixel per 2 world units from the same code (the seeded stream does not move), snapped to a 4 step ramp of each district hue with slab seams, strokes and grass teeth, and processed in 64 pixel tiles within a 4 ms frame budget (the earlier 256 pixel tile exceeded it on the VM). One quarter of the floor canvas memory, a stepped pixel look.

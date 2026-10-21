@@ -1,0 +1,7 @@
+v33.61: the pair shares its marks and settings inside itch
+
+On itch, player 1 is told when player 2 is in a raid, and the shared sound and kid settings follow in both windows.
+
+Check 33.61. Fails on v33.60.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
