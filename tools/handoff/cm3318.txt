@@ -1,0 +1,7 @@
+v33.18: a daily raid row on the pre-raid page
+
+A DAILY RAID row sits under the surface and weather rows on the pre-raid page. Switch it on and the next ascent is today raid, the same for everyone. Its best haul shows on the row.
+
+Check 33.18. Fails on v33.17.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

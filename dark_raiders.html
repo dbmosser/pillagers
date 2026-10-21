@@ -2754,6 +2754,8 @@ body:has(#hub.on) #hubtoast{visibility:hidden;}
           </div>
           <div class="srwxh" id="wxhint" style="font-size:16px"></div>
           <span id="condhint" style="display:none;font-size:14px"></span>
+          <div class="srcap">SEED</div>
+          <div class="srstack"><button class="srchip" id="conddaily" data-pan="c"><i class="srrd"></i>DAILY RAID<em id="srdl"></em></button></div>
         </div>
       </div>
     </div>
@@ -3247,7 +3249,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.17';
+var VER='33.18';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3705,6 +3707,30 @@ var WHATSNEW=[
 var RNGS=(Math.random()*4294967296)>>>0, RSEED=RNGS;
 function srand(s){ RSEED=(s>>>0)||1; RNGS=RSEED; return RSEED; }
 var pendSeed=null;
+// v32.xx (cw-seedday), planner job 63, his round 3 answer 2.98 (seed of the day: before launch): THE DAILY RAID. One opt-in row on the pre-raid page; when it is on, the next
+// career raid is built on a seed taken from today's date (UTC, so everyone gets the same raid that day, no server). No reward, no streak, no login prize (his 10-12
+// no daily login rewards stands): just a best haul of its own in the profile (P.dailyRec, new fields, same storage key). Normal raids, the demo and the party seed never
+// come here: the flag is armed only on that page, spent by the first raid that starts, and ignored in the demo and in a linked party.
+var DAILY={on:0};
+function dailyKey(t){ var d=new Date(t===undefined?Date.now():t), m=d.getUTCMonth()+1, n=d.getUTCDate(); return d.getUTCFullYear()+'-'+(m<10?'0':'')+m+'-'+(n<10?'0':'')+n; }
+function dailySeedOf(k){ var h=2166136261, s='pillagers-daily-'+k, i; for(i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619)>>>0; } return h||1; }
+function dailyArm(){
+  if(!DAILY.on) return '';
+  DAILY.on=0;
+  if(typeof ARCADE==='object'&&ARCADE&&ARCADE.on) return '';
+  if(typeof NET==='object'&&NET&&NET.on) return '';
+  if(pendSeed!==null) return '';
+  var k=dailyKey(); pendSeed=dailySeedOf(k); return k;
+}
+function dailyRecord(k,v){
+  var r=P.dailyRec;
+  if(!r||typeof r!=='object') r=P.dailyRec={d:'',t:0,b:0};
+  if(r.d!==k){ r.d=k; r.t=0; }
+  v=Math.max(0,(+v)|0);
+  if(v>(r.t|0)) r.t=v;
+  if(v>(r.b|0)) r.b=v;
+  return r;
+}
 function rr(){
   RNGS=(RNGS+0x6D2B79F5)>>>0;
   var t=RNGS;
@@ -17063,7 +17089,9 @@ function startRaid(){
   // in focus aim started the next one in it: 62% walking speed, no sprint, [ADS] on the HUD, until RS was clicked again. Every raid
   // now starts with the toggle off and the steadying after a shot spent. No player text, no number and no seeded draw moved.
   if(typeof PAD!=='undefined'&&PAD){ PAD.adsTog=false; PAD.adsT=0; }
+  var _dyk=''; try{ _dyk=dailyArm(); }catch(_dya){}   // v32.xx (cw-seedday): the daily raid takes today's seed
   G=buildRaid(false);
+  if(G&&_dyk) G.daily=_dyk;
   if(_gpBack.length&&G&&!G.sim){ G.spliced=G.spliced||[]; for(var _gpi=0;_gpi<_gpBack.length;_gpi++) if(G.spliced.indexOf(_gpBack[_gpi])<0) G.spliced.push(_gpBack[_gpi]); }   // v21.96 (K6): the gun in the pile is this raid's to bring home on an abandon
   if(ARCADE&&ARCADE.on&&G&&!G.sim) arcadePostBuild(G);
   else if(G&&!G.sim&&CAREER_ON) careerPostBuild(G);   // v24.xx (feat0h1): every other raid from the Undercroft is a CAREER raid   // v23.21 (arcade2): an arcade raid is this same build made endless, with a random kit (the arcade section)
@@ -33778,6 +33806,7 @@ var _cdone=contractExtract(G.bag,haul);
     // measurements read off the run log.
     var _netHaul=Math.max(0,haul-(G.carriedIn||0));
     if(_netHaul>P.best) P.best=_netHaul;
+    if(G.daily){ try{ dailyRecord(G.daily,_netHaul); }catch(_dyr){} }   // v32.xx (cw-seedday): the daily raid keeps its own best haul
     // v8.56, audit: "1 items secured". One item out is an ordinary result of a
     // bad raid, which is exactly the run where you read this line closely.
     // v13.78, downed and extraction audit: the issued Bandages handed back were not secured.
@@ -51241,7 +51270,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.17: The head, hair, hats, face and suit head marks stay 1.2; shoulder caps and suit body paint are back at body scale and the pauldrons at 1.12. Check 33.17 fails on v33.16',
+  now:'v33.18: A DAILY RAID row sits under the surface and weather rows on the pre-raid page. Switch it on and the next ascent is today raid, the same for everyone. Its best haul shows on the row. Check 33.18 fails on v33.17',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -66670,6 +66699,7 @@ function syncSectorCond(){
   d.disabled=g; nt.disabled=g;
   if(nx) nx.textContent='+'+Math.round((nightXpMul()-1)*100)+'%';
   try{ syncSectorWx(); }catch(_sw2){}
+  try{ syncSectorDaily(); }catch(_sdy){}
 }
 // v11.00, HIS NOTE 16: the weather is chosen the same way, on the same page. The badge is the xp bonus the weather pays right now (hard weather, and a lamp killer only when the lamps would be on); no badge when it pays nothing.
 function srWxBonus(id){
@@ -67542,8 +67572,22 @@ document.getElementById('sectordeploy').onclick=function(){
   document.getElementById('sectormodal').classList.remove('on');
   kitDeploy();   // v26.xx (kit1): the kit was chosen on this page, so it goes straight up
 };
+// v32.xx (cw-seedday): the daily raid row on the pre-raid page. It is a plain switch: on means the next ascent from this page is today's raid. Off in a linked party (the host's seed rules there).
+function syncSectorDaily(){
+  var b=document.getElementById('conddaily'), em=document.getElementById('srdl'), r=P.dailyRec, k=dailyKey(), off=false;
+  if(!b) return;
+  try{ off=srGuest()||!!(typeof NET==='object'&&NET&&NET.on); }catch(_dg){}
+  if(off) DAILY.on=0;
+  b.classList.toggle('on',!!DAILY.on); b.disabled=off;
+  if(em) em.textContent=(r&&r.b>0)?('best $'+(r.b|0).toLocaleString()):k.slice(5);
+}
+document.getElementById('conddaily').onclick=function(){
+  if(this.disabled) return;
+  DAILY.on=DAILY.on?0:1; syncSectorDaily();
+};
 document.getElementById('closesector').onclick=function(){
   document.getElementById('sectormodal').classList.remove('on');
+  DAILY.on=0;
 };
 document.getElementById('closeappear').onclick=function(){
   document.getElementById('appearmodal').classList.remove('on');

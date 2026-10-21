@@ -6144,6 +6144,38 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'33.18',what:'the daily raid: one date gives one seed, another date another, the row arms only the next raid, a normal raid still rolls its own seed, and the best haul is kept in new profile fields',
+   run:function(){
+     if(typeof dailyArm!=='function'||typeof dailySeedOf!=='function'||typeof dailyRecord!=='function') return 'no daily raid code in this build';
+     var s1, s2, k, t, r, g, sv=pendSeed, svP=null;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       svP=P.dailyRec;
+       pendSeed=null; DAILY.on=1; k=dailyArm(); s1=pendSeed;
+       pendSeed=null; DAILY.on=1; dailyArm(); s2=pendSeed;
+       if(!k||!s1||s1!==s2) return 'two starts of today got seeds '+s1+' and '+s2;
+       if(dailySeedOf(dailyKey(Date.now()+864e5))===s1) return 'tomorrow gave the same seed as today';
+       if(dailySeedOf(dailyKey(Date.now()+864e5*2))===dailySeedOf(dailyKey(Date.now()+864e5))) return 'two other dates gave the same seed';
+       pendSeed=null; DAILY.on=0;
+       if(dailyArm()||pendSeed!==null) return 'a normal raid was given a seed with the daily row off';
+       if(DAILY.on) return 'the daily flag stayed on after a raid started';
+       P.dailyRec=null; t=dailyKey();
+       dailyRecord(t,300); dailyRecord(t,120); r=P.dailyRec;
+       if(!r||r.b!==300||r.t!==300) return 'daily best not kept: '+JSON.stringify(r);
+       dailyRecord('1999-01-01',50); r=P.dailyRec;
+       if(r.t!==50||r.b!==300) return 'a new day did not restart the day line or lost the best: '+JSON.stringify(r);
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state();
+       if(!g||g.seed!==4242) return 'a normal deploy lost its seed (got '+(g&&g.seed)+')';
+       __endRaid('abandon');
+       pendSeed=null; DAILY.on=1; startRaid(); g=__state();
+       if(!g||g.seed!==s1) return 'the daily raid seed was '+(g&&g.seed)+', wanted '+s1;
+       if(g.daily!==k) return 'the raid does not know it is the daily raid';
+       return null;
+     } finally {
+       DAILY.on=0; pendSeed=sv; try{ P.dailyRec=svP; }catch(_e0){}
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     } }},
   {v:'33.17',what:'cw-headbody, job 68 (his a01 D head 1.2 and a05 B pauldrons 1.12): only the head, hair, hats, face and the suit head marks draw at the 1.2 head scale; the shoulder caps and the suit body paint draw at body scale and the pauldrons at FIG_VEST, not 1.344',
    run:function(){
      if(typeof drawOp!=='function'||typeof drawPads!=='function'||typeof FIG_HEAD!=='number'||typeof FIG_VEST!=='number') return 'SKIP: no painter here';

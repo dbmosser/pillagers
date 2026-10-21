@@ -569,3 +569,6 @@
 2026-10-20 0.0000 o-19-duplicate-check-ids
 2026-10-20 0.0000 o-19-duplicate-check-ids
 2026-10-20 0.0000 o-19-duplicate-check-ids
+2026-10-20 0.1902951 61-experimental-menu
+2026-10-20 0.2796 critic-manual
+2026-10-20 0.1437 critic-manual

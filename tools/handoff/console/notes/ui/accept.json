@@ -1080,34 +1080,34 @@
   "when": "2026-10-20T06:36"
  },
  "41-hub-backpack-pad-p1": {
-  "score": 1,
+  "score": 2,
   "pass": false,
-  "verdict": "The backpack window is broken: two stale hover tooltips cover its content, the card is not the near-full-screen centred card with an X, and text collides with the hub labels, so it is not shippable.",
+  "verdict": "The backpack opens as a small dark popup over a busy, undimmed hub, with a second detail panel jammed against it, so it looks like a debug overlay and not the near-full-screen centred card the guide requires.",
   "findings": [
-   "P0 backpack card, lower half and right side: Show one tooltip at most, anchored to the focused cell and clamped inside the card. Clear tooltip state when focus changes or the window opens. Put the stats in a fixed detail pane at the card's right 40% (--ui-raised, 24px padding) instead of floating tooltips.",
-   "P0 backpack card frame (546-1374, 310-922): Make the card 1728x972 centred, with a --ui-panel fill at 96% over a --scrim at .80 across the whole screen. Add a 56px header holding the title at 32px, with a 40px x button at the top right. Add a 72px footer with the key hints at 16px.",
-   "P0 top right of the card, 'view to close' (1250-1340,348): Replace it with an x at the top right and a footer hint, 'b close' drawn in 16px --tx-2. Make sure no tooltip layer sits on the header.",
-   "P1 hierarchy inside the card: Set the title to 32px f-cond 700. Make the equipped weapon the hero at 56px, or make a 5-column grid of 96px cells with rarity bars (a Diablo style grid). Use lime only on the focused cell and on nothing else.",
-   "P1 hub labels behind the card ('shop, craft, and hir', 'experimental feature may glitch***'): Dim or blur the hub with the .80 scrim whenever a window is open. Delete the glitch line, or put it in the 14px footer of the relevant window. Fix the label to 'shop, craft, hire' and clamp it to its sign width."
+   "P0 backpack window frame: Draw a 90% width and height centred card with fill --ui-panel and a 1px --ui-line-hi border. Put a 48px x button at the top-right. Put an rgba(6,7,8,.80) scrim behind it. Hide hub world labels and the p1 hotbar while the card is open.",
+   "P0 right 'auto rifle' detail pane, x 1388-1825: Make it the detail column inside the same card: --ui-raised fill, 24px padding, and a 1px --ui-line divider from the left list. Make the card opaque so nothing shows through. Align its top with the 'backpack' title.",
+   "P1 hierarchy, backpack card: Set the card title at --fs-title 32px/700. Make the item tiles a 72px-per-cell grid, at least 96px, in a left column. Show the selected item name once at 32px. Cut the duplicate 'auto rifle' header, and show the price as the single accented value.",
+   "P1 type sizes and contrast: Set minimum text to --fs-label 16px in --tx-2 #aaa498 and body rows to 20px in --tx-1. Colour the rarity tag with --r-rare. Stat values go to 20px/600.",
+   "P1 capital letters and copy: Lower-case 'integrity'. Render the footer as 4 pad-glyph chips (a, y, b) at 16px, aligned left in a 72px footer row. Drop 'view to close' for the x button. Trim the damage line to 'dmg 23' and 'dps 174'."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-10-pad-floor-bag-recipes-3/41-hub-backpack-pad-p1-1080.jpg",
-  "task": "o-10-pad-floor-bag",
-  "when": "2026-10-20T12:06"
+  "pic": "tools/handoff/console/notes/shots/48-after/41-hub-backpack-pad-p1-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-21T01:10"
  },
  "41-hub-backpack-pad-p2-held": {
   "score": 2,
   "pass": false,
-  "verdict": "The backpack is a small, cramped dark panel on top of a busy hub. The compare pane collides with it, there is no title bar or close x, and the hub's own signs and a hotbar label show through, so it looks unfinished.",
+  "verdict": "the backpack is a small dark box that sits on top of a busy, undimmed hub, and it ignores the card-with-x window rule, the five-size type scale and the single lime accent.",
   "findings": [
-   "P0 backpack panel, top-right ('view to close') and compare pane at x1260-1697: Dock the compare pane flush against the backpack card with a 16px gap, or put both in one 90% centred card with the compare pane as a right column. Give the close hint its own 56px header row, right-aligned, with nothing over it. Use '[x]' or 'b close' only once.",
-   "P0 whole screen: backpack panel (545-1375 x 308-923) against the hub: Use a 90% width, 90% height centred card with a 1px --ui-line-hi border and an x in the top-right corner. Put a rgba(6,7,8,.80) scrim behind it so the hub signs drop out. Hide the hub's world labels while a window is open.",
-   "P1 backpack panel hierarchy: Make the title 32px f-cond 700 in a header row. Enlarge the item tiles to 96px with a lime 2px focus border on the held tile. Make the item name 20px tx-1 and the labels 16px tx-2 at 4.5:1 or better. Add 1px --ui-line row dividers to the stat list.",
-   "P1 top-left corner: Move the badge to 5% margin (96px, 54px) or remove it, and show the correct device ('pad') there. Set the stash line to 14px minimum with 24px padding. Give the hub title its own space.",
-   "P1 compare pane 'auto rifle': Use the standard detail pane (--ui-raised, 1px --ui-line-hi, --rad 4px). Keep the 3px bar only in rarity blue (--r-rare). Show 'upgrade' as a short +delta in --ok beside each number. Use 16px labels, 20px values, and a 24px column gap."
+   "P0 backpack window and the hub behind it: Put a scrim of rgba(6,7,8,.80) behind the window. Make one centred card at 90% width and height with an x in the top-right corner. Put the detail pane inside the card as a right column in --ui-raised. Remove the floating box.",
+   "P0 capitals and stray symbols on screen: Delete the footnote and the 'view to close' text. Show a single close hint, 'b close', in the footer legend at 14px. Make the title match the selected item.",
+   "P1 backpack title and header: Set the title 'backpack' to 32px f-cond 700 in a 56px header row, with the x aligned right. Scale the item cells to at least 96px so the grid reads as the focus.",
+   "P1 item grid (rifle and medkit cells): Draw the full backpack grid with empty slots (4 by 2 at least). Put a 2px --acc border and a --ui-raised fill on the focused cell. Keep the rarity colour as a 3px bar only.",
+   "P1 equipped and stat rows: Use only 20px for names and 16px for labels. Break the run-on lines into a two-column label and value table with 16px row spacing. Show the stats once, in the detail pane."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-10-pad-floor-bag-recipes-3/41-hub-backpack-pad-p2-held-1080.jpg",
-  "task": "o-10-pad-floor-bag",
-  "when": "2026-10-20T12:06"
+  "pic": "tools/handoff/console/notes/shots/48-after/41-hub-backpack-pad-p2-held-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-21T01:10"
  },
  "30-settings-scroll-2400": {
   "score": 2,

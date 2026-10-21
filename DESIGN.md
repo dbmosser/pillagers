@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.18 - A DAILY RAID ROW ON THE PRE-RAID PAGE
+
+Co-op hunt while he was away. His round 3 answer 2.98: a seed of the day raid before launch. One opt-in row on the pre-raid page builds the next career raid on a seed taken from the UTC date, so everyone gets the same raid that day with no server. It keeps its own best haul in new profile fields. No reward, no streak. Normal raids, the demo and the party seed are untouched.
+
+MEASURED. Check 33.18 passes, and fails on v33.17.
 ## v33.17 - ONLY THE HEAD IS SCALED UP, NOT THE SHOULDERS
 
 Co-op hunt while he was away. Job 68: the 1.2 head scale (his a01 D pick) also took in the suit paint, the team shoulder caps and the pauldrons, so pauldrons drew at 1.344 instead of his a05 B 1.12 and suit marks slid down the body.
