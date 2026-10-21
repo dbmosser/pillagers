@@ -1,0 +1,7 @@
+v33.85: the pixel wildlife
+
+With the pixel look on, deer and birds draw as crisp pixel frames. With the look off nothing changes except the animal steps are whole pixels.
+
+Check 33.85. Fails on v33.84.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

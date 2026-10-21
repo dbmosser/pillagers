@@ -3360,7 +3360,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.84';
+var VER='33.85';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -39785,6 +39785,8 @@ var SHD=G.shells[i];
       } else
       if(CT.dead){
         shadowE(CT.x,CT.y+1,CT.k==='deer'?15:5,CT.k==='deer'?5:2.5,.34);
+        // v33.84 (cw-pixwild), HIS ORDER (2026-10-20 22:45 to 23:05, the pixel pass): with the pixel look on a dead deer or bird is one cached scene sprite per kind.
+        var cdP=function(){
         wc.fillStyle='#3a1b12';
         wc.beginPath();
         wc.ellipse(CT.x,CT.y-2,CT.k==='deer'?14:5.5,CT.k==='deer'?5.5:3,0.18,0,6.2832);
@@ -39800,10 +39802,13 @@ var SHD=G.shells[i];
           wc.moveTo(CT.x-9,CT.y-1); wc.lineTo(CT.x-15,CT.y+1);
           wc.stroke();
         }
+        };
+        if(!(pixOn()&&pixWrap('cd:'+CT.k,CT.k==='deer'?48:20,CT.k==='deer'?26:14,PIX_ENV,cdP,CT.x,CT.y,{up:CT.k==='deer'?14:8}))) cdP();
       } else
       if(CT.k==='bird'){
         shadowE(CT.x,CT.y,3.5,2,.30*(1-CT.z/90));
-        var flap=CT.st==='flee'?Math.sin(CT.f)*5:0;
+        var flap=CT.st==='flee'?Math.round(Math.sin(CT.f)*2)*2.5:0, pk=(CT.st!=='flee'&&Math.sin(CT.f*1.4)>0.72)?2:0;   // v33.84 (cw-pixwild): the wing beat and the peck are steps, so a pixel frame can be cached
+        var bdP=function(){
         wc.fillStyle=INK;
         wc.beginPath(); wc.ellipse(cxw,cyw-3,4.2,3,0,0,6.2832); wc.fill();
         wc.fillStyle='#2e3238';
@@ -39815,15 +39820,16 @@ var SHD=G.shells[i];
           wc.stroke();
         } else {
           // Head down and pecking, which is what says "nothing has spooked it".
-          var pk=Math.sin(CT.f*1.4)>0.72?2:0;
           wc.fillStyle=INK; wc.fillRect(cxw+fl*3,cyw-5+pk,2,2);
         }
-      } else {
+        };
+        if(!(pixOn()&&pixWrap('bd:'+(CT.st==='flee'?'f'+flap:'g'+pk)+(fl>0?'r':'l'),24,24,PIX_ENV,bdP,cxw,cyw,{up:16}))) bdP();      } else {
         // Deer. Head down grazing, head up and legs out at a gallop, and it is
         // BIG enough on screen to mistake for a person at the edge of the fog,
         // which is a feature.
         shadowE(CT.x,CT.y,11,4.5,.34);
-        var run=CT.st==='flee',gait=Math.sin(CT.f)*(run?5:1.2);
+        var run=CT.st==='flee',gait=Math.round(Math.sin(CT.f)*(run?5:1.2)), hbob=Math.round(Math.sin(CT.f*0.8)*2);   // v33.84 (cw-pixwild): the gait and the head bob are whole steps, so a pixel frame can be cached
+        var drP=function(){
         wc.strokeStyle=INK; wc.lineWidth=2.2; wc.beginPath();
         wc.moveTo(cxw-6,cyw-9); wc.lineTo(cxw-6-gait*0.5,cyw);
         wc.moveTo(cxw+6,cyw-9); wc.lineTo(cxw+6+gait*0.5,cyw);
@@ -39834,7 +39840,7 @@ var SHD=G.shells[i];
         wc.fillStyle='#6b563f'; rrF(cxw-10,cyw-22,20,13,5);
         wc.fillStyle='#7d6749'; rrF(cxw-10,cyw-22,20,5,4);
         // neck and head: down when grazing, level and forward when running
-        var hy=run?(cyw-30):(cyw-13+Math.sin(CT.f*0.8)*2);
+        var hy=run?(cyw-30):(cyw-13+hbob);
         var hx=cxw+fl*13;
         wc.strokeStyle=INK; wc.lineWidth=4.5; wc.beginPath();
         wc.moveTo(cxw+fl*8,cyw-20); wc.lineTo(hx,hy); wc.stroke();
@@ -39852,7 +39858,8 @@ var SHD=G.shells[i];
         }
         wc.fillStyle='rgba(232,226,214,.55)';
         wc.fillRect(cxw-fl*11,cyw-14,4,4);
-      }
+        };
+        if(!(pixOn()&&pixWrap('dr:'+(run?'r':'g')+gait+':'+(run?0:hbob)+(fl>0?'r':'l')+(CT.ant?'a':''),72,56,PIX_ENV,drP,cxw,cyw,{up:50}))) drP();      }
     } else if(it.lm){
       var LG=it.lm;
       var lfk=(LG.fl?(.72+.28*Math.sin(G.t*11+LG.f)):1)*wx().lights*(isDay()?tod().lights:1);
@@ -52757,7 +52764,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.84: With the pixel look on, role gear sits on the pixel shoulders, the aim dots start on the pixel gun, and the peddler and the survivor are pixel figures. Check 33.84 fails on v33.83',
+  now:'v33.85: With the pixel look on, deer and birds draw as crisp pixel frames. With the look off nothing changes except the animal steps are whole pixels. Check 33.85 fails on v33.84',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

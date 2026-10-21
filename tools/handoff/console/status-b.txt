@@ -1,1 +1,1 @@
-10-21 07:30 running 86g-pix-pillager-states on Claude Code (your plan: week 79% of the 39.7% line, 5-hour 3%)
+10-21 08:21 waiting for RAM: 1 GB free, a helper starts at 3; 86g-pix-pillager-states kept

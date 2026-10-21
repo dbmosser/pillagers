@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.85 - THE PIXEL WILDLIFE
+
+Co-op hunt while he was away. Job 86e ship 6: with the pixel look on, deer and birds, alive and dead, are cached scene sprites through pixWrap. The wing beat, peck, gait and head bob are whole steps so each frame caches.
+
+MEASURED. Check 33.85 passes, and fails on v33.84.
 ## v33.84 - THE PIXEL ROLE GEAR
 
 Co-op hunt while he was away. His answer 73 (role gear is worn on the body), his 10-20 orders for the pixel art pass and the 86g task: the role gear re-anchored to the pixel shoulders with one figure constant, the aim dots without the build height, and the peddler and the survivor as pixel suits.

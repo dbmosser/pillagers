@@ -776,3 +776,4 @@
 2026-10-21 0.4291353 86e-pix-props
 2026-10-21 0.15929459999999998 86h-pix-sets-wardrobe-wait
 2026-10-21 0.1281942 86i-building-kinds-wait
+2026-10-21 4.4060158 86g-pix-pillager-states
