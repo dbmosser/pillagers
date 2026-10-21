@@ -1,0 +1,7 @@
+v33.65: the pixel undercroft crowd
+
+With the pixel look on (the default), the Undercroft crowd, you and your mates are pixel pillagers. With the look off, nothing changes.
+
+Check 33.65. Fails on v33.64.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

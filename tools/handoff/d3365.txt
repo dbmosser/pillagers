@@ -1,0 +1,5 @@
+## v33.65 - THE PIXEL UNDERCROFT CROWD
+
+Co-op hunt while he was away. Job 86c ship 2: the Undercroft crowd, your own body and the party draw as pixel pillagers on the hub canvas, the same body the raid uses; the preview canvases stay vector.
+
+MEASURED. Check 33.65 passes, and fails on v33.64.

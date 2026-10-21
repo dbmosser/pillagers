@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.65 - THE PIXEL UNDERCROFT CROWD
+
+Co-op hunt while he was away. Job 86c ship 2: the Undercroft crowd, your own body and the party draw as pixel pillagers on the hub canvas, the same body the raid uses; the preview canvases stay vector.
+
+MEASURED. Check 33.65 passes, and fails on v33.64.
 ## v33.64 - PLAYER 2 LINKS IN A TEST FRAME
 
 Co-op hunt while he was away. coord-06 re-test of v33.59: inside itch frame the player 2 address kept ?netslot, and a window with netslot is never player 2, so a test copy opened with it never linked. The embedded path now drops netslot like p2, mode, pair, arc and emb. Players never have netslot; the top level address is unchanged.
