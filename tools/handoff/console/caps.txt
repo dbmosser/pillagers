@@ -5,7 +5,9 @@ END_DATE=2026-10-17
 PACE=0
 WORKSPACE_ID=wrkspc_01LtptfWuGJbsFuYZyeWFuW5
 MAXRUNS=5
-CLI=1
+# 10-21 10:50, his order "slow down claude usage on pillagers to the bare minimum to keep it rolling, until the sunday reset": CLI=0 keeps
+# lanes a, b and c off; Codex (CX_ANY=1 in codex/caps-codex.txt) carries the jobs. Back to CLI=1 after the reset (Sun 10-25 05:00 UTC).
+CLI=0
 CLI_LANES=3
 CLI_DAY_USD=25
 CLI_ALWAYS=

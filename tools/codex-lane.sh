@@ -165,8 +165,8 @@ if [ -n "$JOBARG" ]; then [ -f "$C/tasks/$JOBARG.md" ] && t="$C/tasks/$JOBARG.md
 else
   t=$(ls "$C/tasks/$L-"*.md 2>/dev/null | sort | free)
   # 2026-10-19: only o-* jobs for now. Taking any free job let Codex grab Claude lanes' UI jobs (12, 14) and burn their runs, and jobs that
-  # rewrite mkfixture checks need a Claude lane (Codex cannot edit the shared tree). Set CX_ANY=1 to allow any free job again.
-  [ -z "$t" ] && [ "${CX_ANY:-0}" = 1 ] && t=$(ls "$C/tasks/"*.md 2>/dev/null | sort | free)
+  # rewrite mkfixture checks need a Claude lane (Codex cannot edit the shared tree). Set CX_ANY=1 (env or caps-codex.txt) to allow any free job again.
+  [ -z "$t" ] && [ "${CX_ANY:-$(cap CX_ANY 0)}" = 1 ] && t=$(ls "$C/tasks/"*.md 2>/dev/null | sort | free)
   [ -z "$t" ] && [ "$MODE" = run ] && t=$(retry)
 fi
 if [ "$MODE" = run ]; then [ -n "$t" ] && basename "$t" > "$LK/task"; rm -rf "$C/pick.lock"; fi
