@@ -13,6 +13,10 @@ credit comes back on 11-01). His 10-19 rule: speed is fine, waste is not. Be thr
   game's 2 player arcade demo (his 10-19 order); do not polish party-only things. Dates: new features until Mon 10/26; after that nothing
   brand new, everything else up to the lock (3.37 c); the party version locks Thu 10/29 evening; after the lock only fixes you judge urgent,
   reported afterwards (2.81 c). Release work goes on after the party.
+  HIS ORDER 10-20 about 23:00 (verbatim): "quit queuing stuff for after the party -- just do it all as it naturally arises". This beats
+  every "after the party" or "after 10/30" hold in this file, in job files and in staging: nothing waits for the party. The Mon 10/26
+  cutoff no longer holds back work he ordered. The Thu 10/29 lock only freezes the party copy (the -Prepare snapshot on his PC); the
+  game file keeps moving after it. Risky changes ship now, each with a line on what he should watch for on his next play.
 - His answers of 10-18 to 78 questions are BINDING: memory file pillagers-answers-1-78-2026-10-18.md (read it when your task
   names a question number like Q57).
 - Read the CURRENT block at the top of tools/handoff/START-HERE.md first (where things stand), then your task file and any memory file
@@ -57,7 +61,7 @@ credit comes back on 11-01). His 10-19 rule: speed is fine, waste is not. Be thr
 - If your change makes something else worse, keep the better of the two and say so in your notes (28). Newest answer wins (30).
 - His taste beats the judge, and the style guide beats the judge (54, 22). A brand NEW screen design needs 2 or 3 mockups he picks
   from first (53): restyling an existing screen does not.
-- Risky changes wait until after the party (95). Version number: only inside a menu (58).
+- Risky changes no longer wait for the party (his order 10-20 23:00, beats 95): ship them now with a watch line. Version number: only inside a menu (58).
 
 ## Vetoes: his "never again" list (binding; never propose, build, restyle or bring back; only he can lift one)
 World and play
@@ -83,7 +87,7 @@ Screens and text
 - Equipping a gun says nothing about the rest of the backpack (10-12).
 Process
 - Never touch his play port 8802. Hide PvP and show no live rank (his Q71 and Q72).
-After the cutoff (Mon 10/26) and after the lock (Thu 10/29): see "The direction" at the top (3.37 c and 2.81 c).
+After the cutoff (Mon 10/26) and after the lock (Thu 10/29): see "The direction" at the top (his 10-20 23:00 order: nothing waits for the party).
 - Never switch a feature off yourself, not even one that keeps breaking (his process answer 21: "Ask me first"): put the question in
   questions.md and carry on with other work. New on/off switches (the experimental menu, job 61) default ON; only he flips them.
 
@@ -196,6 +200,6 @@ actually look good". So for any change a player can see:
   - After 6 tries without reaching the finish line (2.83 b), stop and leave the two best versions with pictures in your notes.
   - You may decide alone (2.85): anything that is not a brand new feature and not a change to one of his rulings, including tuning up to about 25 percent.
   - A 2-player change is done only after you have seen it work in both windows, with a picture from each (2.86 a).
-  - After Mon 10/26 (3.37 c): nothing brand new, everything else up to the lock. After the lock (2.81 c): only fixes you judge urgent, reported afterwards.
+  - Mon 10/26 and the lock: his 10-20 23:00 order beats 3.37 c and 2.81 c for the game file: nothing waits for the party; the lock freezes only the party copy.
   - Callouts use the specific name, e.g. "golden sentry down" or "golden pillager bot down" (3.84 b).
   - Plain language ALWAYS in anything written for him (2.38 b).

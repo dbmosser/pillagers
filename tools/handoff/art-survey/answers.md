@@ -70,3 +70,15 @@ Page: https://claude.ai/artifact/9FE6Z1FhG197FsrqVLRJFH. The page's database cam
   building gets a kind (house, office, warehouse, and a few more) from its own seeded draw, so maps, loot and the seed 4242 fingerprint stay the
   same; the kind sets the floor, re-skins the existing furniture and adds flat details that never block movement or sight. New solid furniture
   would change paths and sight lines, so it waits until after the party unless he asks.
+- 10-20 about 23:00, his ORDER (binding): "quit queuing stuff for after the party -- just do it all as it naturally arises". This voids the
+  last sentence above: buildings may get new solid furniture now, as long as the reachability repair passes keep every door, room and loot
+  spot reachable. The seed 4242 fingerprint (ents 85/374, containers 165/593) must still hold; if new furniture would move it, put it in a
+  later seeded draw that does not touch the counted things, or retarget the fingerprint in the same ship with the reason.
+- 10-20 about 23:05, his ORDER (binding), the 3 full sets: "the 3 unique sets i want to be the skeleton, the trooper (heavily inspired by
+  master chief), and the android (heavily inspired by 2b)", then "those should be like full body skins that override whatever else the
+  player had set in terms of customization". So: a full set replaces the head, skin and outfit picks while it is worn (the saved picks stay
+  and come back when the set is taken off); team colours still show on a set (a trim or band), because they are play, not dress-up.
+  Coordinator call (logged, not waiting): inspired, not copied. The trooper is a big armoured space soldier with a full helmet and a
+  gold one-way visor; the android is a slim pale figure with a short white bob, a black blindfold band and a dark short dress over boots.
+  Our own shapes, colours and details, no names, logos or traced art from either game, so the itch release is safe. The skeleton is a
+  bare bone figure with a pack strap. Names in the game: "skeleton", "trooper", "android" (lower case, his words).
