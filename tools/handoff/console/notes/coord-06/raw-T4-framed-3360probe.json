@@ -1,0 +1,129 @@
+{
+ "test": "t4",
+ "mode": "framed",
+ "at": "2026-10-21T07:26:44.310Z",
+ "chrome": "Chrome/155.0.8059.85",
+ "pair": "c6frahsgvok",
+ "gameUrl": "http://localhost:8809/c6-fx3360.html?netslot=A&pair=c6frahsgvok",
+ "frameFound": 1,
+ "hostBootMs": 354,
+ "hostIsTop": false,
+ "hostSecure": true,
+ "ver": "33.60",
+ "errs": [],
+ "pickResult": "opened",
+ "p2WindowFound": 1,
+ "p2Url": "http://localhost:8809/c6-fx3360.html?netslot=A&p2=1&mode=coop&pair=c6frahsgvok&emb=1",
+ "p2BootMs": 498,
+ "p2HasOpener": true,
+ "p2Probe0": "{\"same\":\"\",\"pair\":\"\",\"bc\":false,\"br\":false,\"op\":true,\"err\":\"\",\"status\":\"\",\"role\":null}",
+ "linkedWithin20s": false,
+ "linkMs": null,
+ "samples": [
+  {
+   "ms": 693,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 1706,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 2713,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 3728,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 4733,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 5746,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 6758,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 7763,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 8779,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 9786,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 10808,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 11819,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 12844,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 13851,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 14856,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 15873,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 16883,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 17907,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 18917,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 19922,
+   "hostRoster": 1,
+   "p2Roster": 0
+  }
+ ],
+ "hostState": "{\"on\":true,\"role\":\"host\",\"seat\":0,\"roster\":[{\"seat\":0,\"pid\":\"80fc93ff\",\"name\":\"PILLAGER\",\"host\":true}],\"status\":\"player 2 not linked\",\"err\":\"\",\"made\":1,\"codeLen\":1192,\"links\":1}",
+ "hostSame": "{\"mode\":\"coop\",\"pick\":\"coop\",\"same\":\"host\",\"pair\":\"c6frahsgvok\",\"p2url\":\"http://localhost:8809/c6-fx3360.html?netslot=A&p2=1&mode=coop&pair=c6frahsgvok&emb=1\",\"chan\":true,\"busy\":false,\"p2win\":true}",
+ "p2State": "{\"on\":false,\"role\":null,\"seat\":-1,\"roster\":[],\"status\":\"\",\"err\":\"\",\"made\":0,\"codeLen\":0,\"links\":0}",
+ "hostMsgs": "[]",
+ "p2Probe1": "{\"same\":\"\",\"pair\":\"\",\"bc\":false,\"br\":false,\"op\":true,\"err\":\"\",\"status\":\"\",\"role\":null}"
+}

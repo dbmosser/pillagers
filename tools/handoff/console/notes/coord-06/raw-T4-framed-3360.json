@@ -1,0 +1,125 @@
+{
+ "test": "t4",
+ "mode": "framed",
+ "at": "2026-10-21T07:25:17.082Z",
+ "chrome": "Chrome/155.0.8059.85",
+ "pair": "c6frahsf0ev",
+ "gameUrl": "http://localhost:8809/c6-fx3360.html?netslot=A&pair=c6frahsf0ev",
+ "frameFound": 1,
+ "hostBootMs": 555,
+ "hostIsTop": false,
+ "hostSecure": true,
+ "ver": "33.60",
+ "pickResult": "opened",
+ "p2WindowFound": 1,
+ "p2Url": "http://localhost:8809/c6-fx3360.html?netslot=A&p2=1&mode=coop&pair=c6frahsf0ev&emb=1",
+ "p2BootMs": 310,
+ "p2HasOpener": true,
+ "linkedWithin20s": false,
+ "linkMs": null,
+ "samples": [
+  {
+   "ms": 498,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 1512,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 2527,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 3530,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 4548,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 5552,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 6558,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 7584,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 8596,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 9620,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 10630,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 11647,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 12650,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 13656,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 14674,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 15685,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 16704,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 17717,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 18722,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 19725,
+   "hostRoster": 1,
+   "p2Roster": 0
+  }
+ ],
+ "hostState": "{\"on\":true,\"role\":\"host\",\"seat\":0,\"roster\":[{\"seat\":0,\"pid\":\"f1ad94c8\",\"name\":\"PILLAGER\",\"host\":true}],\"status\":\"player 2 not linked\",\"err\":\"\",\"made\":1,\"codeLen\":1189,\"links\":1}",
+ "hostSame": "{\"mode\":\"coop\",\"pick\":\"coop\",\"same\":\"host\",\"pair\":\"c6frahsf0ev\",\"p2url\":\"http://localhost:8809/c6-fx3360.html?netslot=A&p2=1&mode=coop&pair=c6frahsf0ev&emb=1\",\"chan\":true,\"busy\":false,\"p2win\":true}",
+ "p2State": "{\"on\":false,\"role\":null,\"seat\":-1,\"roster\":[],\"status\":\"\",\"err\":\"\",\"made\":0,\"codeLen\":0,\"links\":0}"
+}

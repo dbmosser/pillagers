@@ -41,3 +41,16 @@ Skeptic (not safe as first drafted; its must-change list is appended to both job
 
 Also fixed: tools/party/party.cfg URL_OPTIONS back to 0. Option 1 asked the game for ?party=1, which v32.01 retired, so the old
 launcher would have opened a spare player 2 window that a click on the demo doubles. The party itself is the plain game (START-HERE).
+
+## Re-test of v33.59 and v33.60 (coordinator, 10-21 03:30 to 03:50)
+
+85a shipped as v33.57 (the "player 2 not linked" callout after 15 s) and v33.59 (the window bridge). Same driver, c6drive.mjs t4, on a
+frozen copy of the v33.60 test build (C6_GAME), headless Chrome 155 on 9371 and headless Edge 155 on 9372, each on its own profile.
+- With the test save on the address (?netslot=A, as on 10-21 01:45): framed did NOT link; top level linked in 1.5 s. Cause: on the
+  embedded path netP2Url keeps the frame's query, netslot included, and a ?netslot window is never player 2 (NETP2 needs !NETSLOT). Player 2's
+  window stayed a second test copy (NET.same '', no word reached player 1). Test-path only: queued as job 85b-emb-p2-drops-netslot.
+  The callout did show: host status "player 2 not linked" (raw-T4-framed-3360.json, raw-T4-framed-3360probe.json).
+- With itch's own query instead (?v=1782253839, C6_ITCHQ; the host's test handle built on __gx): framed linked in 1.8 s in Chrome
+  (raw-T4-framed-3360itch.json) and 1.8 s in Edge (raw-T4-framed-3360itch-edge.json); top level 1.8 s in both. The words went over the bridge
+  (ready, answer, padpick, snd, all from the pair's own window), player 2's address kept ?v= and got emb=1, no page errors.
+- Still open: the real itch page (needs his itch key in the VM so a build reaches itch), then the same pick there in Chrome and Edge.

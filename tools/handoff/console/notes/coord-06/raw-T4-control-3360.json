@@ -1,0 +1,34 @@
+{
+ "test": "t4",
+ "mode": "control",
+ "at": "2026-10-21T07:25:44.847Z",
+ "chrome": "Chrome/155.0.8059.85",
+ "pair": "c6conhsflss",
+ "gameUrl": "http://localhost:8809/c6-fx3360.html?netslot=A&pair=c6conhsflss",
+ "hostBootMs": 445,
+ "hostIsTop": true,
+ "hostSecure": true,
+ "ver": "33.60",
+ "pickResult": "opened",
+ "p2WindowFound": 1,
+ "p2Url": "http://localhost:8809/c6-fx3360.html?p2=1&mode=coop&pair=c6conhsflss",
+ "p2BootMs": 320,
+ "p2HasOpener": true,
+ "linkedWithin20s": true,
+ "linkMs": 1480,
+ "samples": [
+  {
+   "ms": 474,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 1480,
+   "hostRoster": 2,
+   "p2Roster": 2
+  }
+ ],
+ "hostState": "{\"on\":true,\"role\":\"host\",\"seat\":0,\"roster\":[{\"seat\":0,\"pid\":\"c2a7bb08\",\"name\":\"PILLAGER\",\"host\":true},{\"seat\":1,\"pid\":\"5469d9f7\",\"name\":\"PILLAGER\",\"host\":false}],\"status\":\"PILLAGER joined\",\"err\":\"\",\"made\":1,\"codeLen\":1194,\"links\":1}",
+ "hostSame": "{\"mode\":\"coop\",\"pick\":\"coop\",\"same\":\"host\",\"pair\":\"c6conhsflss\",\"p2url\":\"http://localhost:8809/c6-fx3360.html?p2=1&mode=coop&pair=c6conhsflss\",\"chan\":true,\"busy\":false,\"p2win\":true}",
+ "p2State": "{\"on\":true,\"role\":\"join\",\"seat\":1,\"roster\":[{\"seat\":0,\"pid\":\"c2a7bb08\",\"name\":\"PILLAGER\",\"host\":true},{\"seat\":1,\"pid\":\"5469d9f7\",\"name\":\"PILLAGER\",\"host\":false}],\"status\":\"in PILLAGER's party\",\"err\":\"\",\"made\":1,\"codeLen\":1089,\"links\":1}"
+}

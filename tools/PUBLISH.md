@@ -48,13 +48,14 @@ The coordinator tells him each one in chat on the day, one or two plain lines wi
   files, put them in exports/ and they are read like his own.
 - His own save on http://localhost:8802 is not touched by any of this.
 
-## Open risk: couch mode does not link on itch yet
+## Open risk: couch mode on itch not yet tried on the real page
 
 - Tested 10-21 (coord-06, tools/handoff/console/notes/coord-06/): inside a cross-site frame, the way itch embeds the game, the
   two windows cannot hear each other (Chrome keys BroadcastChannel and storage by the top-level site). The real game framed that
   way opened player 2 but never linked, and nothing on screen said why. Top level it links in 1.4 s.
-- The fix is job 85a-itch-couch-link (a postMessage bridge over the opener on the embedded path, plus a "player 2 not linked"
-  callout). It must ship, and be tried on the real itch page in Chrome and Edge, before friends and family get the link.
+- The fix shipped as v33.57 (a "player 2 not linked" callout) and v33.59 (a postMessage bridge over the opener on the embedded path).
+  10-21 re-test in a local cross-site frame: it links in 1.8 s in Chrome and in Edge (notes/coord-06.md). Still to do before friends and
+  family get the link: try it on the real itch page in Chrome and Edge (that needs his itch key in the VM, so builds reach itch).
 - Never turn on itch's SharedArrayBuffer option for this page: it sends a header that cuts the opener, which kills that bridge,
   and itch then serves the game from another address, so saves made before are lost.
 

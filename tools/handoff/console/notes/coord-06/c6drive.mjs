@@ -9,7 +9,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import http from 'node:http';
 const DIR = path.dirname(fileURLToPath(import.meta.url));
-const PORT = 9371;
+const PORT = +(process.env.C6_PORT || 9371);   // C6_PORT=9372: the Edge run (10-21)
 const BASE = 'http://localhost:8809/handoff/console/notes/coord-06/';
 const TOP = 'http://127.0.0.1:8871/top2.html';
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -154,7 +154,7 @@ async function t2(cs) {
 // t4: the real game. mode 'framed' = fixture.html inside a cross-site frame (top on 127.0.0.1:8871); 'control' = fixture.html top-level.
 async function t4(mode) {
   const pair = 'c6' + mode.slice(0, 3) + Date.now().toString(36).slice(-6);
-  const gameUrl = 'http://localhost:8809/' + (process.env.C6_GAME || 'fixture.html') + '?netslot=A&pair=' + pair;  // C6_GAME (10-21 03:30): a frozen copy, so a ship cannot swap the build mid-test
+  const gameUrl = 'http://localhost:8809/' + (process.env.C6_GAME || 'fixture.html') + '?' + (process.env.C6_ITCHQ ? 'v=1782253839' : 'netslot=A') + '&pair=' + pair;  // C6_ITCHQ: itch's own query instead of the test save  // C6_GAME (10-21 03:30): a frozen copy, so a ship cannot swap the build mid-test
   out.pair = pair; out.gameUrl = gameUrl;
   let H, topId = null;
   if (mode === 'framed') {
@@ -166,13 +166,18 @@ async function t4(mode) {
     const { targetId } = await send('Target.createTarget', { url: gameUrl }); topId = targetId;
     H = await attach(targetId);
   }
-  const booted = async (S, ms) => { const t0 = Date.now(); while (Date.now() - t0 < ms) { try { if (await ev(S, "!!(window.__net&&window.__gx&&__gx('PLOADED'))") === true) return Date.now() - t0; } catch (e) { } await sleep(250); } return false; };
+  const booted = async (S, ms) => { const t0 = Date.now(); while (Date.now() - t0 < ms) { try { if (await ev(S, "!!(window.__gx&&__gx('PLOADED'))") === true) return Date.now() - t0; } catch (e) { } await sleep(250); } return false; };
   out.hostBootMs = await booted(H, 60000);
+  // C6_ITCHQ: without ?netslot the host has no __net test handle, so the same three calls are built on __gx (10-21 03:50)
+  if (process.env.C6_ITCHQ) await ev(H, "window.__net=window.__net||{pick:function(m){return __gx(\"netSamePick('\"+m+\"',function(){})\")},state:function(){return __gx('({on:NET.on,role:NET.role,seat:NET.seat,roster:JSON.parse(JSON.stringify(NET.roster)),status:NET.status,err:NET.err,made:NET.made,codeLen:NET.codeLen,links:NET.peers.length})')},same:function(){return __gx('({mode:NET.mode,pick:NET.pick,same:NET.same,pair:NET.pair,p2url:NET.p2url,chan:!!NET.bc,busy:NET.sameBusy,p2win:!!NET.p2win})')}};1");
   out.hostIsTop = await ev(H, 'window.top===window');
   out.hostSecure = await ev(H, 'window.isSecureContext');
   out.ver = await ev(H, "typeof VER!=='undefined'?VER:__gx('VER')");
   try { await ev(H, "localStorage.removeItem('salvagerun:p2raid');localStorage.removeItem('salvagerun:p2live');1"); } catch (e) { }
   await ev(H, `__gx("NET.pair='${pair}'")`);
+  const PROBE = !!process.env.C6_PROBE;   // 10-21 03:40: trace the bridge words and the errors in both windows
+  if (PROBE) { out.errs = []; events.push(m => { if (m.method === 'Runtime.exceptionThrown') out.errs.push((m.sessionId === H ? 'host ' : 'p2 ') + (m.params.exceptionDetails.exception ? m.params.exceptionDetails.exception.description : m.params.exceptionDetails.text).slice(0, 300)); if (m.method === 'Runtime.consoleAPICalled' && (m.params.type === 'error' || m.params.type === 'warning')) out.errs.push((m.sessionId === H ? 'host ' : 'p2 ') + m.params.type + ' ' + JSON.stringify(m.params.args.map(x => x.value || x.description)).slice(0, 300)); }); await send('Runtime.enable', {}, H);
+    await ev(H, "window.__msgs=[];addEventListener('message',function(e){var d=e.data;window.__msgs.push({o:e.origin,pg:d&&d.pg,t:d&&d.m&&d.m.t,src:(e.source===__gx('NET.p2win'))})});1"); }
   out.pickResult = await ev(H, "__net.pick('coop')", true);
   const t0 = Date.now();
   const gt = await waitTarget(t => t.type === 'page' && t.url.includes('p2=1') && t.url.includes('pair=' + pair), 8000);
@@ -181,6 +186,8 @@ async function t4(mode) {
   if (gt.length) { G = await attach(gt[0].targetId); out.p2Url = gt[0].url; }
   out.p2BootMs = G ? await booted(G, 20000) : false;
   out.p2HasOpener = G ? await ev(G, 'window.opener!==null') : null;
+  const P2PROBE = "JSON.stringify({same:__gx('NET.same'),emb:__gx('NET.embP2'),pair:__gx('NET.pair'),bc:!!__gx('NET.bc'),br:!!(__gx('NET.bc')&&__gx('NET.bc').br),op:!!window.opener,err:__gx('NET.err'),status:__gx('NET.status'),role:__gx('NET.role')})";
+  if (PROBE && G) { await send('Runtime.enable', {}, G); out.p2Probe0 = await ev(G, P2PROBE); }
   let linked = false; const samples = [];
   while (Date.now() - t0 < 20000) {
     const h = await ev(H, 'JSON.stringify(__net.state())');
@@ -194,6 +201,7 @@ async function t4(mode) {
   out.samples = samples;
   out.hostState = await ev(H, 'JSON.stringify(__net.state())'); out.hostSame = await ev(H, 'JSON.stringify(__net.same())');
   out.p2State = G ? await ev(G, "window.__net?JSON.stringify(__net.state()):'no __net'") : null;
+  if (PROBE) { out.hostMsgs = await ev(H, 'JSON.stringify(window.__msgs)'); if (G) out.p2Probe1 = await ev(G, P2PROBE); }
   try { await ev(H, "__gx('netSameStop()');1"); } catch (e) { }
   if (G) try { await ev(G, "__gx('netSameStop()');1"); } catch (e) { }
   await closeAll(t => t.url.includes(pair) || t.targetId === topId);
