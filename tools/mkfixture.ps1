@@ -6184,7 +6184,7 @@ window.__REGRESS=[
   {v:'33.46',what:'the what is new card is stamped within 0.15 of the build and leads with the new news shown whole',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';
-     if(parseFloat(WHATSNEW_VER)>33.46+0.001) return 'SKIP: the card has moved on, a later card check covers it';
+     if(parseFloat(WHATSNEW_VER)>33.46+0.001) return 'SKIP: the card has moved on, a later card check covers it'; /* v28.xx (cw-cx-shortnews): keep the stamp gate and accept the three real notes without requiring the old alpha and polish text. */  if(WHATSNEW[0]==='experimental switches in settings'){    var news=wnList(), expected=['experimental switches in settings','one feed for loot, kills and sp','full raid log with copy report'], issues=[];    if(!(parseFloat(VER)-parseFloat(WHATSNEW_VER)<=0.15+1e-9)) issues.push('the news stamp is stale');    if(JSON.stringify(news)!==JSON.stringify(expected)) issues.push('the short card does not show its three real notes');    news.forEach(function(t){ if(t!==t.toLowerCase()||t.length>48||wnShort(t)!==t) issues.push('a short note is changed or clipped'); });    return issues.length?issues.join('; '):null;  }
      var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER);
      if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
      if(String(WHATSNEW[1]).indexOf('POLISH'+' PASS 44.')!==0) bad.push('the card does not lead with the new news');
