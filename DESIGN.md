@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.73 - PIXEL FASHION TURNTABLE
+
+Co-op hunt while he was away. Job 86c requires the same pixel body in FASHION previews at whole 4x with smoothing off. The shipped drawOp only enables pixels on the raid and Undercroft canvases, leaving the FASHION turntable in vector art.
+
+MEASURED. Check 33.73 passes, and fails on v33.72.
 ## v33.72 - ONE PIXEL WALK BOB
 
 Co-op hunt while he was away. Job 86c asks for a one pixel bob at the existing timings and a muzzle within one world unit of the vector muzzle. The shipped body bobs by up to four pixels and its shoulder is two units too high. Its old muzzle check measures only the gun offset, missing the world placement.

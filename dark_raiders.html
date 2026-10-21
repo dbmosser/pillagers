@@ -3360,7 +3360,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.72';
+var VER='33.73';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -36154,7 +36154,7 @@ function figBuildK(b){ return (b==='broad')?[1.1,0.96]:((b==='curved')?[1,1]:[0.
 function figOn(){ return !!(typeof wc!=='undefined'&&wc&&((typeof cv!=='undefined'&&wc.canvas===cv)||RIM.on===1)); }
 function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   if(!figOn()){
-    if(pixOn()&&typeof hcv!=='undefined'&&wc&&wc.canvas===hcv&&pixBodyTry(x,y,face,ph,coat,pk,muzzle,mode,iv,st)) return;   // v33.60 (cw-pixcrowd), his pixel pass (10-20): the Undercroft crowd, you and the party on the hub canvas are pixel pillagers too; the small preview canvases stay vector until the wardrobe job
+    if(pixOn()&&wc&&((typeof hcv!=='undefined'&&wc.canvas===hcv)||wc.canvas.id==='avcv')&&pixBodyTry(x,y,face,ph,coat,pk,muzzle,mode,iv,st)) return; // v28.xx (cw-cx-pixpreview): the FASHION turntable uses the same plain pixel body as the raid and Undercroft
     return drawOp0(x,y,face,ph,coat,pk,muzzle,mode,iv,st);
   }
   if(pixOn()&&pixBodyTry(x,y,face,ph,coat,pk,muzzle,mode,iv,st)) return;   // v33.58 (cw-pixbody): the pixel pillager; false draws the vector body below
@@ -52472,7 +52472,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.72: The pixel torso breathes and bobs between two adjacent pixel rows. The gun shoulder is back at the existing muzzle height. Check 33.72 fails on v33.71',
+  now:'v33.73: The FASHION turntable shows the plain pixel pillager at 4x, centered in its existing canvas. The later wardrobe job still owns the rack tiles and full sets. Check 33.73 fails on v33.72',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -70369,8 +70369,11 @@ function drawAvatarCanvas(){
   var c=document.getElementById('avcv'); if(!c||typeof drawOp!=='function') return;
   var x2=c.getContext('2d'); if(!x2) return;
   x2.setTransform(1,0,0,1,0,0); x2.clearRect(0,0,c.width,c.height);
-  var S=Math.max(5.2,c.height/62);   // v28.29 (cosm7): the figure fills the taller canvas
-  x2.save(); x2.translate(c.width/2,c.height-16); x2.scale(S,S);
+  var S=pixOn()?4:Math.max(5.2,c.height/62); // v28.xx (cw-cx-pixpreview): job 86c asks for whole 4x previews with smoothing off
+  c.style.imageRendering=pixOn()?'pixelated':'';
+  x2.imageSmoothingEnabled=!pixOn();
+  var base=pixOn()?Math.round((c.height+PXB.TARGET*S)/2):c.height-16; // v28.xx (cw-cx-pixpreview): center the 4x figure in the existing turntable canvas
+  x2.save(); x2.translate(c.width/2,base); x2.scale(S,S);
   var keep=wc; wc=x2;
   try{ drawOp(0,0,AVANG,AVPH,'#242832',0,0,'none',0,{hero:1,moving:false,sprint:false,ads:false,hurt:0,rl:0,own:{wep:null}}); }   // v28.29 (cosm7): turning
   catch(e){}

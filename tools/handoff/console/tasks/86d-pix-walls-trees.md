@@ -43,3 +43,5 @@ Party risk: low to medium: everywhere on screen, but drawing only
 Size: about 0.7 lane-nights. Small ships, each easy to undo.
 
 TASK DONE when shipped with its check and pictures; TASK PARTIAL with what is left.
+
+REQUEUED 10-21 05:40 (coordinator): 5 runs shipped v33.66 (pixel walls) and v33.69 (trees, bushes, shadows); its last words were TASK PARTIAL. Left, in order: pixel doors, windows, kerbs, ruins, the stronghold wall and the Undercroft wall copy, then the four districts day and night and the hub pictures, and the critic on them. Read the 1021-0405 run log first; do not redo the walls or trees. Its earlier runs are renamed 86d-pix-walls-trees-r2, so it has its full runs again.

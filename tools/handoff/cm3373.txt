@@ -1,0 +1,7 @@
+v33.73: pixel fashion turntable
+
+The FASHION turntable shows the plain pixel pillager at 4x, centered in its existing canvas. The later wardrobe job still owns the rack tiles and full sets.
+
+Check 33.73. Fails on v33.72.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

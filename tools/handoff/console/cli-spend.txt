@@ -698,10 +698,10 @@
 2026-10-21 0.0000 o-91b-report-news-style-r2
 2026-10-21 0.1421 critic-o-91b-report-news-style
 2026-10-21 0.1392 critic-o-91b-report-news-style
-2026-10-21 0.9914238 86d-pix-walls-trees
+2026-10-21 0.9914238 86d-pix-walls-trees-r2
 2026-10-21 0.0000 o-91b-report-news-style-r2
 2026-10-21 2.8002765999999997 86b-pix-ground-r2
-2026-10-21 0.39998000000000006 86d-pix-walls-trees
+2026-10-21 0.39998000000000006 86d-pix-walls-trees-r2
 2026-10-21 4.155963599999999 86c-pix-pillager-r2
 2026-10-21 0.1771436 86b-pix-ground-r2
 2026-10-21 0.0000 o-91b-report-news-style-r2
@@ -717,7 +717,7 @@
 2026-10-21 0.2405185 86b-pix-ground-r2
 2026-10-21 0.0000 86b-pix-ground
 2026-10-21 0.0000 86b-pix-ground
-2026-10-21 0.2632763 86d-pix-walls-trees
+2026-10-21 0.2632763 86d-pix-walls-trees-r2
 2026-10-21 0.6114723 86c-pix-pillager-r2
 2026-10-21 1.5709406000000001 85a-itch-couch-link
 2026-10-21 0.0000 86b-pix-ground
@@ -729,7 +729,7 @@
 2026-10-21 0.0000 o-91b-report-news-style-r2
 2026-10-21 0.9480636000000001 85a-itch-couch-link
 2026-10-21 0.2022006 85a-itch-couch-link
-2026-10-21 0.5640783 86d-pix-walls-trees
+2026-10-21 0.5640783 86d-pix-walls-trees-r2
 2026-10-21 0.0000 o-91b-report-news-style
 2026-10-21 0.6582887 85b-emb-p2-drops-netslot
 2026-10-21 1.6157465000000002 86c-pix-pillager-r2
@@ -737,7 +737,7 @@
 2026-10-21 0.1394 critic-o-91b-report-news-style
 2026-10-21 0.0000 o-91b-report-news-style
 2026-10-21 0.2230493 86c-pix-pillager-r2
-2026-10-21 1.4344859 86d-pix-walls-trees
+2026-10-21 1.4344859 86d-pix-walls-trees-r2
 2026-10-21 0.17820159999999996 86c-pix-pillager-r2
 2026-10-21 0.1411 critic-o-91b-report-news-style
 2026-10-21 0.1410 critic-o-91b-report-news-style
