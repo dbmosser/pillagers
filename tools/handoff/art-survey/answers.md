@@ -82,3 +82,6 @@ Page: https://claude.ai/artifact/9FE6Z1FhG197FsrqVLRJFH. The page's database cam
   gold one-way visor; the android is a slim pale figure with a short white bob, a black blindfold band and a dark short dress over boots.
   Our own shapes, colours and details, no names, logos or traced art from either game, so the itch release is safe. The skeleton is a
   bare bone figure with a pack strap. Names in the game: "skeleton", "trooper", "android" (lower case, his words).
+- 10-20 23:45, queued: the pixel pass as jobs 86a to 86j (tools/handoff/console/tasks; plan tools/handoff/console/notes/pixel-plan.md;
+  raw run tools/handoff/art-survey/pixel-plan/result.json). Coordinator edits: 86a first sets the default camera to exactly 1.0 (79 shipped 1.05);
+  lanes keep the 85% weekly stop (his answer 33); 86i ships solid furniture right after its flat details (his 23:00 order).
