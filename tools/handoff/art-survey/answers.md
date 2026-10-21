@@ -50,3 +50,9 @@ Page: https://claude.ai/artifact/9FE6Z1FhG197FsrqVLRJFH. The page's database cam
 
 ## Tasks queued
 40-art-player-look, 41-art-player-states, 42-art-pillager-bots, 43-art-machines-world, 44-camera-closer.
+
+## 10-20 evening: the pixel style test (style-test/, d5bd516d)
+- His words: "The art test came back looking really good". Then: "We can't use that style but still have customization?"
+- Answer given: yes. The test pillager is drawn by code and takes colours (style-test/pillager.js, look). Each dress-up piece (hat, vest, pack,
+  build) would be redrawn once in the pixel style and layered as today; the open hard part is the figure turning to aim in raids (the test is front only).
+- No job queued yet: new features until Mon 10/26, and the advice given is after the party, for the Thanksgiving release. Waits for his go.
