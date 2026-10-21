@@ -19,6 +19,8 @@ What to do:
 4. Drawing only: hit circles, reach, line of sight and the name plates' gaps stay as they are (move a plate down only if it now floats).
 Check (new, must fail on the build before): at raid size a standing pillager drawn by the painter is no taller than before v32.64, measured the same
 way the v32.64 check measures. The v32.64 check asserts the 1.25 pick: retarget it in the same ship (old-check retarget rules).
+Also run v20.01 and v20.11 (Curved waist and chest plate) in your gate: they measure at fixed body offsets, so a new FIG_SCALE can move the waist.
+If either is red only because of the new size, retarget it in the same ship.
 Pictures: tools/handoff/art-survey/recipes-x.json lineup, plus a raid at 1080 with a body, a tree and a deer in view, before and after.
 Note: 80-machines-a-third-larger works against today's world; with this, the machines will look much bigger next to the pillagers. Tell the coordinator
 to ask him about both after his next play (79 notes the same).
