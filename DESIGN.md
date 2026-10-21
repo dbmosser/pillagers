@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.55 - RAID START LABEL BACKING
+
+Co-op hunt while he was away. The critic still found map text over busy linework and insufficient hierarchy in the contracts panel.
+
+MEASURED. Check 33.55 passes, and fails on v33.54.
 ## v33.54 - RAID START MAP CLEARER
 
 Co-op hunt while he was away. The picture critic found overlapping cache rings, dim zone names and contract rewards on the raid-start map.

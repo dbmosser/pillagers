@@ -1,0 +1,5 @@
+## v33.55 - RAID START LABEL BACKING
+
+Co-op hunt while he was away. The critic still found map text over busy linework and insufficient hierarchy in the contracts panel.
+
+MEASURED. Check 33.55 passes, and fails on v33.54.

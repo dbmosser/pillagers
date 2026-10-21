@@ -3280,7 +3280,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.54';
+var VER='33.55';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47118,7 +47118,7 @@ function mapContractsDraw(cd,rows){
   try{
     mapRR(c.x+lw/2,c.y+lw/2,c.w-lw,ch-lw,r); ctx.fillStyle=UIC.ui_raised; ctx.fill(); ctx.lineWidth=lw; ctx.strokeStyle=UIC.ui_line; ctx.stroke();
     ctx.textBaseline='middle'; ctx.textAlign='left';
-    ctx.font=nameFont; ctx.fillStyle=UIC.tx_1; ctx.fillText('contracts',c.x+q,c.y+th/2);
+    ctx.font=mapFirstOn()?FSz('700 24.6px '+HUDF,z):nameFont; ctx.fillStyle=UIC.tx_1; ctx.fillText('contracts',c.x+q,c.y+th/2);   // v28.xx (cw-cx-mapstart-plates): the panel heading uses the 32px title role.
     ctx.font=cntFont; ctx.fillStyle=UIC.tx_2; ctx.textAlign='right'; ctx.fillText(nd+' of '+n+' done',c.x+c.w-q,c.y+th/2); ctx.textAlign='left';
     ctx.strokeStyle=UIC.ui_line; ctx.lineWidth=lw; ctx.beginPath(); ctx.moveTo(c.x+lw,c.y+th); ctx.lineTo(c.x+c.w-lw,c.y+th); ctx.stroke();
     for(i=0;i<n;i++){
@@ -47132,7 +47132,8 @@ function mapContractsDraw(cd,rows){
       ctx.font=cntFont; wCnt=Math.max(hudRawW('holding'),hudRawW('broken'),hudRawW('99/99'));
       mid=two?(ry+pitch*0.30):(ry+pitch*0.40); mid2=ry+pitch*0.82;   // v28.xx (cw-cx-mapquiet-o03): status sits above a full-width track.
       maxW=c.w-2*q-(wRew?(wRew+q):0)-(two?0:(wCnt+q));
-      ctx.font=nameFont; ctx.fillStyle=row.done?UIC.ok:UIC.tx_2; ctx.textAlign='left'; ctx.fillText(mapFit(row.name,maxW),c.x+q,mid);
+      ctx.font=nameFont; ctx.fillStyle=row.done?UIC.ok:(mapFirstOn()?UIC.tx_1:UIC.tx_2); ctx.textAlign='left'; ctx.fillText(mapFit(row.name,maxW),c.x+q,mid);
+      if(mapFirstOn()&&row.rule==='holding'){ ctx.fillStyle=UIC.ok; ctx.fillRect(c.x+Math.round(8*z),ry+Math.round(12*z),Math.max(1,Math.round(3*z)),pitch-Math.round(24*z)); }   // v28.xx (cw-cx-mapstart-plates): a status mark, with no invented selection or new control.
       if(txt){ ctx.font=rewFont; ctx.fillStyle=mapFirstOn()?UIC.tx_1:UIC.tx_2; ctx.textAlign='right'; ctx.fillText(txt,c.x+c.w-q,mid); ctx.textAlign='left'; }
       if(two){
         barW=c.w-2*q;   // v28.xx (cw-cx-mapquiet-o03): one right edge for reward, status and track.
@@ -47159,10 +47160,10 @@ function mapCardChrome(cd){
     nm=(g.map&&g.map.name)?String(g.map.name):''; x0=cd.x+p;
     ctx.font=FSz('700 24.6px '+HUDF,z); ctx.fillStyle=UIC.tx_1;
     ttl=nm||'SECTOR MAP'; var _tfp=parseFloat(((/([\d.]+)px/).exec(ctx.font)||[0,24])[1])||24, _tby=Math.round(hy+_tfp*0.34); ctx.textBaseline='alphabetic'; ctx.fillText(ttl,x0,_tby); hx=x0+hudRawW(ttl)+Math.round(16*u);   // v31.xx (cw-mapstyle3): the sector name and the muted words sit on one baseline
-    if(nm){ ctx.font=FSz('500 15.4px '+HUDF,z); ctx.fillStyle=UIC.tx_2; ctx.fillText('SECTOR MAP',hx,_tby); hx+=hudRawW('SECTOR MAP')+Math.round(24*u); }  ctx.textBaseline='middle';
+    if(nm){ ctx.font=mapFirstOn()?('600 '+(16*z)+'px '+HUDF):FSz('500 15.4px '+HUDF,z); ctx.fillStyle=UIC.tx_2; ctx.fillText('SECTOR MAP',hx,_tby); hx+=hudRawW('SECTOR MAP')+Math.round(24*u); }  ctx.textBaseline='middle';
     if(g.intel){ ctx.font=FSz(TYPE.label,z); ctx.fillStyle=UIC.tx_2; ctx.fillText('elites and keys are live intel',hx,hy); hx+=hudRawW('elites and keys are live intel')+Math.round(24*u); }
     wxs=(isDay()?tod().name:'night')+' \u00b7 '+g.wx.name+(g.wxNext?(' \u2192 '+g.wxNext.name+' '+Math.round(g.wxT*100)+'%'):'');   // v31.xx (cw-mapstyle2): one separator between the hour and the weather, no double spaces
-    ctx.font=FSz('600 15.4px '+HUDF,z); ctx.textAlign='right'; ctx.fillStyle=(wx().id==='clear')?UIC.tx_2:UIC.tx_1; ctx.fillText(wxs,xb.x-Math.round(24*u),hy); ctx.textAlign='left';
+    ctx.font=mapFirstOn()?('600 '+(16*z)+'px '+HUDF):FSz('600 15.4px '+HUDF,z); ctx.textAlign='right'; ctx.fillStyle=(mapFirstOn()||wx().id==='clear')?UIC.tx_2:UIC.tx_1; if(mapFirstOn())ctx.textBaseline='alphabetic'; ctx.fillText(wxs,xb.x-Math.round(24*u),mapFirstOn()?_tby:hy); ctx.textAlign='left'; ctx.textBaseline='middle';
     hov=(typeof mouse==='object'&&mouse&&mouse.x>=xb.x&&mouse.x<=xb.x+xb.w&&mouse.y>=xb.y&&mouse.y<=xb.y+xb.h);
     mapRR(xb.x+lw/2,xb.y+lw/2,xb.w-lw,xb.h-lw,r); if(hov){ ctx.fillStyle=UIC.ui_hover; ctx.fill(); }
     ctx.lineWidth=lw; ctx.strokeStyle=hov?UIC.tx_2:UIC.ui_line_hi; ctx.stroke();
@@ -47342,6 +47343,12 @@ function mapPlaceLabels(Q,hdrY,fn){
   out.forEach(function(g){ g.items.forEach(function(L){
     ctx.save(); try{ ctx.setTransform(L.m); }catch(_t){}
     ctx.font=L.font; ctx.fillStyle=L.fs; ctx.textAlign=L.ta; ctx.textBaseline=L.tb; ctx.globalAlpha=L.ga;
+    // v28.xx (cw-cx-mapstart-plates): critic P1, preserve every label and separate it from map linework with 4px side padding.
+    if(mapFirstOn()){
+      var plate=mapLabelRect(L,g.dx,g.dy);
+      ctx.save(); ctx.setTransform(1,0,0,1,0,0); ctx.fillStyle='rgba(11,12,13,.8)';
+      ctx.fillRect(plate.l-4*_mz,plate.t-3*_mz,plate.r-plate.l+8*_mz,plate.b-plate.t+6*_mz); ctx.restore();
+    }
     // v28.xx (cw-cx-sectorhold-o03): a displaced loot label stays visibly attached to its own icon, never a neighbouring cache.
     if(L.mark&&(Math.abs(g.dx||0)>1||Math.abs(g.dy||0)>1)){
       var B=mapLabelRect(L,g.dx,g.dy), M=L.mark, ax=M.x*M.m.a+M.m.e, ay=M.y*M.m.d+M.m.f,
@@ -51655,7 +51662,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.54: Small cache icons keep their locations. Map labels and contract rewards read more clearly. Check 33.54 fails on v33.53',
+  now:'v33.55: Raid-start map labels have dark backing. Contract names and holding states are clearer. Check 33.55 fails on v33.54',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

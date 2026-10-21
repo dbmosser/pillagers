@@ -1,1 +1,1 @@
-10-21 01:50 86f-pix-machines: waiting on 86e-pix-props, parked in blocked/ (not counted as a try), $0.17713340000000002
+10-21 02:01 waiting: another helper is just starting (memory check again in a few minutes); 86f-pix-machines kept

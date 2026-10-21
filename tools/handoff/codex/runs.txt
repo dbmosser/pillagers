@@ -165,3 +165,4 @@
 2026-10-21 01:41 85-preraid-map-no-cache-labels 138s ok PARTIAL in=358677 out=5758 run=1
 2026-10-21 01:45 85-preraid-map-no-cache-labels 136s ok PARTIAL in=868529 out=11136 run=2
 2026-10-21 01:51 85-preraid-map-no-cache-labels 287s ok PARTIAL in=2073575 out=23347 run=3
+2026-10-21 02:00 85-preraid-map-no-cache-labels 210s ok PARTIAL in=2655330 out=32239 run=4
