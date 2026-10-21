@@ -18,3 +18,5 @@ o-10 recipes-3, before v32.84; the 48-after pictures were never scored); 10, 11 
 Cost: about 20 critic runs (about $3) and one lane run. Party risk: none (pictures and scores only).
 
 TASK DONE when every listed screen has a fresh score and the table is written; TASK PARTIAL with the screens left.
+
+COORDINATOR 10-20 21:07: taken by the coordinator (helpers are held by RAM); it runs from here.
