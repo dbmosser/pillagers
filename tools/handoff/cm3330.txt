@@ -1,0 +1,7 @@
+v33.30: aim breaks a sprint
+
+Aiming stops a sprint at once and holds with Shift down; let go of aim and the sprint comes back.
+
+Check 33.30. Fails on v33.29.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

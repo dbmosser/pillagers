@@ -6144,6 +6144,28 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'33.30',what:'aiming breaks a sprint at once even with Shift still held, and the sprint comes back when aim lets go (his order 10-20)',
+   run:function(){
+     if(typeof updatePlayer!=='function'||!window.__deploy||!window.__endRaid) return 'SKIP: this build cannot step the player';
+     var bad=[], k0=null, p=null;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       p=G.player; k0=keys; keys={};
+       CFG.sprintTgl=0; G.sprintOn=false; G.shWas=false; G.crouchTog=false;
+       p.stam=100; p.stamLock=false; p.stamRelease=0; p.downed=false; p.ads=false;
+       keys['KeyD']=true; keys['ShiftLeft']=true;
+       updatePlayer(0.016); updatePlayer(0.016);
+       if(!G.sprinting) return 'SKIP: staging: Shift with a move key did not start a sprint';
+       p.ads=true; PAD.adsTog=true;
+       updatePlayer(0.016);
+       if(!p.ads) bad.push('aim was dropped while Shift was held');
+       if(G.sprinting) bad.push('still sprinting one frame after aim began with Shift held');
+       p.ads=false;
+       updatePlayer(0.016); updatePlayer(0.016);
+       if(!G.sprinting) bad.push('aim let go with Shift still held did not bring the sprint back');
+     } finally { try{ keys=k0||{}; if(p) p.ads=false; PAD.adsTog=false; PAD.adsT=0; __endRaid('abandon'); __topClear(); }catch(e){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'33.29',what:'the what is new card is stamped within 0.15 of the build and leads with the new news shown whole',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';

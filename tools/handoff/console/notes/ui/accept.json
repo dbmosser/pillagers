@@ -1438,5 +1438,50 @@
   "pic": "tools/handoff/console/notes/shots/69-camera/27-settings-scroll-600-1080.jpg",
   "task": "manual",
   "when": "2026-10-21T03:40"
+ },
+ "j8-p1-pad-lost": {
+  "score": 3,
+  "pass": false,
+  "verdict": "Clean, consistent card with a clear lime primary and a proper title and x, but it is a generic pause-menu clone that carries no pad-lost context, and it has a bare black background, a stray top-tab, small type and an unevenly weighted button stack.",
+  "findings": [
+   "P1 whole screen / title: Add a 32px pad glyph (or a 'player 1' label in tx-2 at 16px) beside the title, and show the live prompt on the reconnect button (e.g. 'reconnect  [a]' at 16px, acc-ink).",
+   "P1 background: Keep the frozen game frame behind it under a rgba(6,7,8,.80) scrim, or make the card follow the window rule. Either way, drop the pure-black void.",
+   "P1 button stack: Keep only reconnect, settings and end run here. Move feedback, report and what's new to the normal pause menu. Give 'end run' a 1px --danger border at the same 56px height.",
+   "P2 button text: Set button text to 20px f-cond 600 tx-1. Keep 16px for hints only.",
+   "P2 card top-left accent tab: Draw it at full --acc, 2px tall, starting at x=760 (the content edge), or remove it."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-07-pad-lost-coordinator-check/j8-p1-pad-lost-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-21T04:04"
+ },
+ "j8-p1-press-a": {
+  "score": 2,
+  "pass": false,
+  "verdict": "A clean, consistent small pause card, but its title \"press a\" is the wrong content for a pause menu, and the card is tiny and floats in an empty black screen with no game behind it.",
+  "findings": [
+   "P0 card title: Use one state per screen. Either title the card \"paused\" with the pad prompt as a small --fs-label line under it, or show a dedicated pad-lost card with a 56px hero prompt like \"press a\" and no menu buttons.",
+   "P1 whole screen: Dim the raid frame with --scrim rgba(6,7,8,.80). Add the run state (timer, sector) as quiet --tx-2 --fs-label text. Optionally scale the card up to about 560px wide.",
+   "P1 button stack: Keep resume, settings and end run. Merge feedback and report a problem into one \"feedback\" button, and move what's new into settings or the title screen.",
+   "P1 end run: Give it a 56px high ghost button with a 1px --danger border, spaced 16px like the others. Add a confirm step before the run ends. Keep the 3px lime focus bar on it when focused.",
+   "P2 focus state: Show focus as a lime 2px border and a 3px left bar with --ui-raised fill. Keep the filled lime only for the one primary action. Add a small pad-button glyph in the footer."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-07-pad-lost-coordinator-check/j8-p1-press-a-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-21T04:04"
+ },
+ "j8-p1-sees-p2-lost": {
+  "score": 2,
+  "pass": false,
+  "verdict": "This raid HUD is readable and mostly lower case, but the centre column stacks four unrelated banners and every corner uses a different panel style, so the eye has no clear first stop and the 'p2 pad lost' alert barely registers.",
+  "findings": [
+   "P0 top-centre and centre banner stack (team score, extract, chill row, golden enemy, stronghold, p2 pad lost): Show each message once. Drop the centre 'golden enemy' and 'stronghold' pills, since the toasts already carry them. Make 'p2 pad lost' a single 20px f-cond 600 line in --warn on a --ui-panel pill, with a 3px --warn left bar, at about 30% screen height, and keep nothing else near it.",
+   "P1 top-centre team score block: Use --fs-hero 56px for one number only (the timer or the score, not both). Set the split lines to 16px tx-2. Put 16px of padding above the block, and put the extract chip inside the same panel as a footer row with a 1px --ui-line divider.",
+   "P1 HUD panels: run info top-right, ammo bottom-right, hotbar, status bars bottom-left, map: Use one panel component everywhere: fill #16191b at 90%, 1px #4a5257 border, 4px radius, 16px padding, and no gradient. Reserve the 3px lime left tab for the one star panel, which is the ammo block.",
+   "P1 bottom-left status bars (armour 60, stamina, hp 100): Make all three bars 20px tall with 16px f-cond 600 labels placed outside the fill, in tx-1. Keep hp as the only large figure, at 32px. Use a 5% (54px) bottom and left margin, and an 8px gap between bars.",
+   "P1 toast list left (easy mode on / stronghold / golden enemy) and the 'the seal 0%' world label: Cap the toast list at one or two rows and drop the info glyph. Use tx-1 at 16px on --ui-panel pills. Make the zone name tx-1 with a text shadow, and use --extract teal only for the extraction elements. Remove the pink-purple colour."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-07-pad-lost-coordinator-check/j8-p1-sees-p2-lost-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-21T04:05"
  }
 }

@@ -1,6 +1,5 @@
 summary_head=c728a3ef
 fuzz_head=d1f6e0a2
-backup_day=2026-10-20
 review_day=2026-10-20
 report_am=2026-10-20
 report_pm=2026-10-20
@@ -13,6 +12,7 @@ stable_t=1792552245
 spare_live=0
 summary_t=1792554248
 llm_head=4e51ac5c
-atpc_t=1792555181
-notes_t=1792555181
-spare_t=1792555181
+backup_day=2026-10-21
+atpc_t=1792555510
+notes_t=1792555510
+spare_t=1792555510
