@@ -2273,7 +2273,8 @@ body:has(#hub.on) #hubtoast{visibility:hidden;}
 #root #settingsmodal.expmode #setlist .exphead{ position:sticky; top:0; z-index:4; width:100%; box-sizing:border-box; height:64px; min-height:64px; margin:0; padding:0 var(--sp-3); display:flex; align-items:center; gap:var(--sp-3); background:var(--ui-panel); border:0; border-bottom:1px solid var(--ui-line-hi); }
 #root #settingsmodal.expmode #setlist .exphead button{ width:auto; min-width:0 !important; min-height:48px; padding:0 var(--sp-2); margin:0; border:1px solid var(--ui-line-hi) !important; border-radius:var(--rad); background:transparent; color:var(--tx-1); font:600 var(--fs-body)/1 var(--f-cond); }
 #root #settingsmodal.expmode #setlist .expcount{ margin-left:auto; color:var(--tx-2); font:400 var(--fs-label)/1 var(--f-body); }
-#root #settingsmodal.expmode #setlist .expgroup{ height:48px; min-height:48px; margin:0; padding:16px var(--sp-3) 8px; border:0; background:transparent; box-shadow:none; opacity:1 !important; }
+/* v33.31 (cw-expgrp) critic 61 rounds 1 to 2 (score 2): the four group names never showed because cw-setsechd zeroes every opacity:.7 row with !important. Scoped back on for the experimental page: 48px band, 16px name. */
+#root #settingsmodal.expmode #setlist .expgroup{ height:48px !important; min-height:48px !important; margin:0 !important; padding:16px var(--sp-3) 8px !important; border:0 !important; background:transparent; box-shadow:none; opacity:1 !important; overflow:visible !important; display:flex !important; }
 #root #settingsmodal.expmode #setlist .expgroup > div:first-child > b{ padding:0; box-shadow:none; font:600 var(--fs-label)/1.2 var(--f-cond); color:var(--tx-2); letter-spacing:var(--track); }
 #root #settingsmodal.expmode #setlist .exprow{ padding-inline:var(--sp-3); scroll-margin-top:64px; }
 #root #settingsmodal.expmode #setlist .exprow > div:first-child{ flex:1 1 0 !important; min-width:0; }
@@ -3276,7 +3277,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.32';
+var VER='33.33';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -51411,7 +51412,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.32: Gunfire is back to its one tail per place (v23.77). The extra tail of the last build is gone. Check 33.32 fails on v33.31',
+  now:'v33.33: The experimental page shows raid, combat, events and extras headings. Check 33.33 fails on v33.32',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

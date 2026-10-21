@@ -6144,6 +6144,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'33.33',what:'the four experimental group names show with a real height on the experimental page',
+   run:function(){
+     var bad=[], modal=document.getElementById('settingsmodal'), list=document.getElementById('setlist'), oldCls, oldSub=SETSUB, gs, i, r;
+     if(!modal||!list||typeof renderSettings!=='function') return 'SKIP: no settings page';
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       oldCls=modal.className; modal.classList.add('on'); SETSUB='exp'; renderSettings();
+       gs=list.querySelectorAll('[data-exp-group]');
+       if(gs.length!==4) return 'expected four group rows, found '+gs.length;
+       for(i=0;i<gs.length;i++){
+         r=gs[i].getBoundingClientRect();
+         if(r.height<40) bad.push('group '+gs[i].getAttribute('data-exp-group')+' is '+Math.round(r.height)+'px tall');
+         if(parseFloat(getComputedStyle(gs[i].querySelector('b')).fontSize)<14) bad.push('group name under 14px');
+       }
+       return bad.length?bad.join('; '):null;
+     } finally { SETSUB=oldSub; try{ renderSettings(); }catch(_e){} modal.className=oldCls; }
+   }},
   {v:'33.32',what:'one gunfire tail only: the v23.77 place tails (slaps indoors, a roll outside, soft in the woods, a ring in a vault, a hiss over water) are the space-aware gunfire; the second tail of v33.25 is gone',
    run:function(){
      var bad=[], src, L;

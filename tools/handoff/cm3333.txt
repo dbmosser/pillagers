@@ -1,0 +1,7 @@
+v33.33: experimental group names show
+
+The experimental page shows raid, combat, events and extras headings.
+
+Check 33.33. Fails on v33.32.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

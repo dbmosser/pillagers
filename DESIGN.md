@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.33 - EXPERIMENTAL GROUP NAMES SHOW
+
+Co-op hunt while he was away. The experimental page has four groups (raid, combat, events, extras) but their names were squeezed to zero height by an older Settings rule. The critic scored the page 2 for it. Now each group has a 48px band with its name.
+
+MEASURED. Check 33.33 passes, and fails on v33.32.
 ## v33.32 - ONE GUNFIRE TAIL: TAKE OUT THE DUPLICATE
 
 Co-op hunt while he was away. Pick 69 (space-aware gunfire) was already in the game since v23.77: gunLayers and gunTail give slaps indoors, a roll outside, a soft wash in the woods, a ring in a vault and a hiss over water, with a crack-then-thump for far shots. The v33.25 tail doubled it and broke his v10.58 note that a tail is a tenth of the crack or less. It is removed; the old tails stay exactly as they were.
