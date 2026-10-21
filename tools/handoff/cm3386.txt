@@ -1,0 +1,7 @@
+v33.86: pixel props finish
+
+Wildlife and the story desk use the pixel adapter. Strongbox, seal and forge labels stay sharp above the world.
+
+Check 33.86. Fails on v33.85.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

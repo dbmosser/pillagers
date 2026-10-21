@@ -753,7 +753,7 @@
 2026-10-21 0.1392 critic-86c-pix-pillager
 2026-10-21 0.1464 critic-86c-pix-pillager
 2026-10-21 0.1434 critic-86c-pix-pillager
-2026-10-21 3.1683266 86e-pix-props
+2026-10-21 3.1683266 86e-pix-props-r2
 2026-10-21 0.0000 86c-pix-pillager
 2026-10-21 0.0000 86c-pix-pillager
 2026-10-21 0.1428 critic-86c-pix-pillager
@@ -773,7 +773,11 @@
 2026-10-21 0.1502 critic-86c-pix-pillager
 2026-10-21 0.1453 critic-86c-pix-pillager
 2026-10-21 0.0000 86c-pix-pillager
-2026-10-21 0.4291353 86e-pix-props
+2026-10-21 0.4291353 86e-pix-props-r2
 2026-10-21 0.15929459999999998 86h-pix-sets-wardrobe-wait
 2026-10-21 0.1281942 86i-building-kinds-wait
 2026-10-21 4.4060158 86g-pix-pillager-states
+2026-10-21 2.180942699999999 86e-pix-props-r2
+2026-10-21 0.16507370000000002 86e-pix-props-r2
+2026-10-21 0.198842 86e-pix-props-r2
+2026-10-21 0.0000 86e-pix-props

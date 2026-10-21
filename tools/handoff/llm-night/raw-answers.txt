@@ -4,3 +4,16 @@ NONE
 NONE
 NONE
 NONE
+NONE
+LINE 40219: try/catch that swallows a whole per-frame draw or update.
+LINE 40244: wc.beginPath(); wc.arc(tgx,tgy-3.2,3,Math.PI,0); wc.stroke();
+LINE 40304: wc.drawImage(_ws.c,wl2.x,wl2.y-LIFT,_ws.c.width*PIX_ENV,_ws.c.height*PIX_ENV);
+LINE 40365: if(G.arcade&&p.arcSh) arcadeShieldRing(p.x,p.y,1);
+LINE 40397: else if(e2.kind==='stray'){
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE

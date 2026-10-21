@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.86 - PIXEL PROPS FINISH
+
+Co-op hunt while he was away. Finish 86e: wildlife uses actor density, the story desk caches at scene density, and landmark labels join the sharp HUD world-text hand-off. Pixel-off wildlife keeps its original continuous painted poses.
+
+MEASURED. Check 33.86 passes, and fails on v33.85.
 ## v33.85 - THE PIXEL WILDLIFE
 
 Co-op hunt while he was away. Job 86e ship 6: with the pixel look on, deer and birds, alive and dead, are cached scene sprites through pixWrap. The wing beat, peck, gait and head bob are whole steps so each frame caches.

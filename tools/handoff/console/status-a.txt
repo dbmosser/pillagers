@@ -1,1 +1,1 @@
-10-21 06:49 running 86e-pix-props on Claude Code (your plan: week 79% of the 39.4% line, 5-hour 2%)
+10-21 08:57 waiting for RAM: 2 GB free, a helper starts at 3; 86f-pix-machines kept
