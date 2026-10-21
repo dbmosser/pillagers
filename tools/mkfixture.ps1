@@ -11995,7 +11995,8 @@ window.__REGRESS=[
        if(getComputedStyle(document.getElementById('wallet_bar')).display!=='none') bad.push('wallet_bar shows');
        renderBar();
        var bt=document.querySelector('#barlist [data-bz]');
-       if(bt&&!bt.disabled){ var bg=getComputedStyle(bt).backgroundColor; if(bg!=='rgba(0, 0, 0, 0)') bad.push('ingest filled '+bg); }
+       // v28.xx (cw-cx-ucfinish): accept the old idle outline or the new current-row accent fill; both keep the existing ingest action readable.
+       if(bt&&!bt.disabled){ var bg=getComputedStyle(bt).backgroundColor; if(bg!=='rgba(0, 0, 0, 0)'&&bg!==__ACC()) bad.push('ingest has neither the idle outline nor current-row accent fill: '+bg); }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      return bad.length?bad.join('; '):null; }},
   {v:'32.44',what:'auto resolution never steps the picture below 75 percent (his 2.44 b)',
@@ -98844,7 +98845,8 @@ window.__REGRESS=[
        // A computed border width is divided by the modal's zoom, so 1px reads
        // 0.769px at zoom 1.3: test the style and a positive width, not 1.
        if(cg.borderTopStyle!=='solid'||!(parseFloat(cg.borderTopWidth)>0)||co.borderTopStyle!=='solid'||!(parseFloat(co.borderTopWidth)>0)) bad.push('a section has no border of its own');
-       if(cg.borderTopColor===co.borderTopColor) bad.push('both sections share one border colour, so nothing tells them apart');
+       // v28.xx (cw-cx-ucfinish): either a different outline or an accent left edge identifies the offer while both section boxes remain.
+       if(cg.borderTopColor===co.borderTopColor&&cg.borderLeftColor===co.borderLeftColor) bad.push('neither outline nor left edge distinguishes the two sections');
        var gap=ro.top-rg.bottom;
        if(!(gap>=8)) bad.push('the two sections are '+Math.round(gap)+' px apart, which is not clear air');
        if(!/THE GAMBLE/i.test(sg.textContent)||!/LIMITED TIME OFFER/i.test(so.textContent)) bad.push('the section heads are not THE GAMBLE and LIMITED TIME OFFER');
