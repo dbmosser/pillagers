@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.35 - SHORT EXTRACTION SIREN
+
+Co-op hunt while he was away. His order 10-20: the extraction siren is intrusive. It now sounds 4 seconds at the call and 4 seconds before the ship arrives, not the whole time. The inbound ping stays.
+
+MEASURED. Check 33.35 passes, and fails on v33.34.
 ## v33.34 - THE HOWLER WALKS ON ITS OWN STEP
 
 Co-op hunt while he was away. His yes on pick 73, motion only. The sentry, warden (so the Overseer) and bulwark have the heavy clank, the crawler a skitter, the Crier a drone, and the pillbox and Listener do not walk. The Howler walks and was the only machine on the light pillager scuff, so it gets a short pneumatic tick of its own: a click, a knock around 1.5 kHz, a falling triangle and a faint hiss, at most one per 150 ms and no held tone. The other machines are unchanged.

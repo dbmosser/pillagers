@@ -1,0 +1,24 @@
+{
+    "title":  "SHORT EXTRACTION SIREN",
+    "why":  "His order 10-20: the extraction siren is intrusive. It now sounds 4 seconds at the call and 4 seconds before the ship arrives, not the whole time. The inbound ping stays.",
+    "now":  "The extraction siren sounds for 4 seconds after the call and the last 4 seconds before the ship arrives, then stops.",
+    "edits":  [
+                  {
+                      "anchor":  "var XALARM_GAP=1.8;   // v27.xx (xalarm): seconds between throbs of the extraction alarm",
+                      "replacement":  "var XALARM_GAP=1.8;   // v27.xx (xalarm): seconds between throbs of the extraction alarm\nvar XALARM_LEN=4;   // v33.35 (cw-xalarmshort), HIS ORDER (2026-10-20): \"extraction siren is intrusive, it doesn\u0027t need to go off the entire time, just for maybe 4 seconds when the extraction is first called, and 4 seconds before the extraction actually starts\". Seconds of siren at each end of the wait; replaces the whole-time loop of answer 41"
+                  },
+                  {
+                      "anchor":  "if(z.beaconT===null||z.beaconT===undefined){ z.alarmT=undefined; continue; }",
+                      "replacement":  "if(z.beaconT===null||z.beaconT===undefined){ z.alarmT=undefined; z.alarmAge=0; continue; }"
+                  },
+                  {
+                      "anchor":  "if(z.alarmT===undefined) z.alarmT=XALARM_GAP;",
+                      "replacement":  "z.alarmAge=(z.alarmAge||0)+dt;   // v33.35 (cw-xalarmshort): siren only in the first XALARM_LEN s after the call and the last XALARM_LEN s before the ship arrives (beaconT 0); none while the ship holds\n      var _xaOn=(z.beaconT\u003e0\u0026\u0026(z.alarmAge\u003c=XALARM_LEN||z.beaconT\u003c=XALARM_LEN));\n      if(z.alarmT===undefined||!_xaOn) z.alarmT=XALARM_GAP;"
+                  },
+                  {
+                      "anchor":  "if(z.alarmT\u003e=XALARM_GAP){ z.alarmT=0; blip(\u0027xalarm\u0027); }",
+                      "replacement":  "if(_xaOn\u0026\u0026z.alarmT\u003e=XALARM_GAP){ z.alarmT=0; blip(\u0027xalarm\u0027); }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027his order 10-20: the extraction siren sounds only for the first 4 s after the call and the last 4 s before the ship arrives, none in between and none while the ship holds\u0027,\n   run:function(){\n     if(!window.__deploy||!window.__endRaid||!window.__state||typeof tickExtractPoints!==\u0027function\u0027) return \u0027SKIP: no raid here\u0027;\n     var bad=[], g=null, z=null, rb=blip, t=0, hits=[], i, early=0, late=0, mid=0, hold=0;\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0);\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||g.over||g.sim||!g.player) return \u0027SKIP: staging: no live raid\u0027;\n       z=g.zones\u0026\u0026g.zones[0]; if(!z) return \u0027SKIP: staging: no extraction zone\u0027;\n       g.player.iv=99;\n       blip=function(k){ if(k===\u0027xalarm\u0027) hits.push(t); };\n       z.beaconT=20; z.hold=null; z.pingT=0; z.alarmT=undefined; z.alarmAge=0; g.active=z; g.beaconT=20;\n       for(i=0;i\u003c396;i++){ t+=0.05; if(z.beaconT\u003e0) tickExtractPoints(0.05); }\n       for(i=0;i\u003chits.length;i++){ if(hits[i]\u003c=4.1) early++; else if(hits[i]\u003e=16) late++; else mid++; }\n       if(!early) bad.push(\u0027no siren in the first 4 s after the call\u0027);\n       if(!late) bad.push(\u0027no siren in the last 4 s before the ship arrives\u0027);\n       if(mid) bad.push(\u0027the siren sounded \u0027+mid+\u0027 times between the two windows\u0027);\n       hits.length=0; z.beaconT=0; z.hold=20; g.beaconT=0;\n       for(i=0;i\u003c60;i++){ t+=0.05; tickExtractPoints(0.05); }\n       hold=hits.length;\n       if(hold) bad.push(\u0027the siren sounded \u0027+hold+\u0027 times while the ship held\u0027);\n     }catch(x){ bad.push(\u0027threw: \u0027+(x\u0026\u0026x.message||x)); }\n     finally{\n       blip=rb;\n       try{ if(z){ z.beaconT=null; z.hold=null; z.alarmT=undefined; z.alarmAge=0; } }catch(_z){}\n       try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ g2.player.iv=0; __endRaid(\u0027abandon\u0027); } }catch(_e){}\n       __topClear();\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

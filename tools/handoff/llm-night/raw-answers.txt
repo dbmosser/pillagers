@@ -1,32 +1,4 @@
 
-The provided HTML and CSS code snippet appears to be part of a web-based game interface, specifically for a pause menu in a raid scenario. The content includes various elements such as buttons, text areas, and modals that allow players to interact with the game during pauses or after completing a run.
-
-Here's a breakdown of some key components:
-
-1. **Pause Menu (`#pausebox`)**:
-   - Contains buttons for resuming the run, accessing settings, viewing the leaderboard, providing feedback, and abandoning the run.
-   - Includes text areas for notes and problem reports.
-   - Displays information about being downed or hosting a raid.
-
-2. **Feedback Modal (`#fbmodal`)**:
-   - Allows players to provide feedback by typing a note and taking a screenshot of the current moment in the game.
-   - Provides options to save or close the modal.
-
-3. **What's New Modal (`#wnmodal`)**:
-   - Displays information about new features or updates in the game.
-   - Includes a list of recent changes and a button to close the modal.
-
-4. **Leaderboard Modal (`#lbmodal`)**:
-   - Shows the career leaderboard, allowing players to view their performance compared to others.
-   - Provides a button to close the modal.
-
-5. **Outcome Card (`#outcome`)**:
-   - Displays information about the outcome of a raid, such as extraction or death.
-   - Includes options for logging the run and copying a report.
-
-6
-NONE
-NONE
 NONE
 NONE
 NONE

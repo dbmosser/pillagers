@@ -1187,17 +1187,17 @@
  "79-experimental-top": {
   "score": 2,
   "pass": false,
-  "verdict": "The screen is clean and consistent with the dark and lime tokens, but it is a flat list of 28 identical 'on' rows with a mostly empty detail pane and very small text, so it reads like a debug page and not a polished game menu.",
+  "verdict": "A clean dark card with a clear focus row, but it is a 28-row list of identical 'on' chips with no state contrast, a mostly empty detail pane, a spacing glitch, and tiny fine print, so it reads as a debug panel rather than a polished settings screen.",
   "findings": [
-   "P1 right detail pane: Remove the duplicate chip, or turn it into the real toggle at 20px with focus. Make the title 32px. Put the description at 20px tx-1 and 'starts next raid' at 16px tx-2. Shrink the pane to content height, or fill it with something useful such as the default value and a reset action.",
-   "P1 left list rows: Show only deviations from the default in lime or warn. Dim the 'on' chips to tx-2 with no border. Right-align the value column at the row edge and use 20px f-cond 600 names. Group the rows under 16px tx-2 section labels with 24px spacing.",
-   "P1 focused row (run goals): Use one focus language: the 4px lime left bar plus the --ui-raised fill. Show ‹ on › as plain text with no inner box, inside the row's 56px height. Delete the stray white vertical tick at x=873.",
-   "P2 group gap after 'air strike': Add a 16px tx-2 section label in the gap, or use the same 56px row pitch everywhere. If groups stay, label every group.",
-   "P2 footer legend: Use 16px tx-2 with the key in tx-1, for example 'enter  change   esc  back', 24px from the card's bottom-left edge or under the list."
+   "P1 image 1, list between 'air strike' and 'golden enemy': Always draw the group headers, or remove the gap when headers are off. Use one header row of 32px at 16px tx-2 and a consistent 56px row pitch.",
+   "P1 toggle column, all rows: Draw on as an --acc-ink-on-lime 56x32 chip or a lime switch, and off as an outlined --tx-2 chip. Move the chips to the right edge with 24px padding, or make the whole row the toggle.",
+   "P1 right detail pane: Remove the duplicate chip. Use the pane for a short label such as 'starts next raid' at 20px tx-1, and shrink the pane, or give the list the extra width. Put the state in the title row as a lime word.",
+   "P1 focused row control (run goals): Keep one focus signal: the 3px lime bar plus the raised fill. Show the chevrons in plain lime with no frame, and delete the white bar. Keep the frame within the 56px row height.",
+   "P2 footer legend, bottom right: Set it at 16px minimum, tx-2 at 4.5:1, with 24px gaps between the pairs. Show the key or pad glyphs for the active device."
   ],
   "pic": "tools/handoff/console/notes/shots/61-experimental-menu-recipes-2/79-experimental-top-1080.jpg",
-  "task": "61-experimental-menu",
-  "when": "2026-10-21T03:51"
+  "task": "manual",
+  "when": "2026-10-21T04:18"
  },
  "28-settings-scroll-1200": {
   "score": 3,
@@ -1590,18 +1590,18 @@
   "when": "2026-10-21T04:08"
  },
  "79-settings-experimental": {
-  "score": 3,
+  "score": 2,
   "pass": false,
-  "verdict": "The settings card is clean and consistent with the guide: it has a single lime focus bar, a close x in the corner and a calm column layout. But the list leaks other categories, the detail pane is mostly empty and wordy, and the type is small for a couch.",
+  "verdict": "A clean dark card with a clear focus row, but it is a 28-row list of identical 'on' chips with no state contrast, a mostly empty detail pane, a spacing glitch, and tiny fine print, so it reads as a debug panel rather than a polished settings screen.",
   "findings": [
-   "P0 middle list, rows after 'experimental': Show only the selected tab's rows. If the sections must share one scroll, add a 16px-label tx-2 section header ('audio') with a 1px --ui-line rule and 32px of space above it.",
-   "P1 right detail pane: Cut the copy to one short line, or two, of at most 12 words, placed 16px under the title. Use tx-1 or a brighter tx-2 at 20px with a 1.4 line-height. Drop the empty gap, or put the current value as a 56px hero (--fs-hero) so the pane has a point.",
-   "P1 'experimental' row: Render it as a navigation row with a '>' chevron at the right edge, or as a small outlined button with a --ui-line-hi border. Keep the row at the standard 56px pitch and use a deliberate section gap after it.",
-   "P1 all list rows and left tabs: Set row names to 20px --fs-body in tx-1 at weight 600. Pull the value column to a right-aligned block about 160px from the row end, and make the arrows 20px. Keep tx-2 only for idle tab labels.",
-   "P1 left category column: Give the active tab a --ui-raised fill, tx-1 text and a 3px lime bar. Dim the tab bar when focus is in the list. Use a uniform 56px pitch, or add a 1px divider and a label before the 'send play data' group."
+   "P1 image 1, list between 'air strike' and 'golden enemy': Always draw the group headers, or remove the gap when headers are off. Use one header row of 32px at 16px tx-2 and a consistent 56px row pitch.",
+   "P1 toggle column, all rows: Draw on as an --acc-ink-on-lime 56x32 chip or a lime switch, and off as an outlined --tx-2 chip. Move the chips to the right edge with 24px padding, or make the whole row the toggle.",
+   "P1 right detail pane: Remove the duplicate chip. Use the pane for a short label such as 'starts next raid' at 20px tx-1, and shrink the pane, or give the list the extra width. Put the state in the title row as a lime word.",
+   "P1 focused row control (run goals): Keep one focus signal: the 3px lime bar plus the raised fill. Show the chevrons in plain lime with no frame, and delete the white bar. Keep the frame within the 56px row height.",
+   "P2 footer legend, bottom right: Set it at 16px minimum, tx-2 at 4.5:1, with 24px gaps between the pairs. Show the key or pad glyphs for the active device."
   ],
   "pic": "tools/handoff/console/notes/shots/61-experimental-menu-r3/79-settings-experimental-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T04:17"
+  "when": "2026-10-21T04:18"
  }
 }

@@ -3277,7 +3277,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.34';
+var VER='33.35';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -27681,17 +27681,20 @@ function tickRaiderWaves(dt){
   if(!G.sim) say('PILLAGER BOT REINFORCEMENTS','warn');   // v22.xx (tr3fixc): the shooter voice
 }
 var XALARM_GAP=1.8;   // v27.xx (xalarm): seconds between throbs of the extraction alarm
+var XALARM_LEN=4;   // v33.35 (cw-xalarmshort), HIS ORDER (2026-10-20): "extraction siren is intrusive, it doesn't need to go off the entire time, just for maybe 4 seconds when the extraction is first called, and 4 seconds before the extraction actually starts". Seconds of siren at each end of the wait; replaces the whole-time loop of answer 41
 function tickExtractPoints(dt){
   var p=G.player,T=G.tel;
   for(var zi=0;zi<G.zones.length;zi++){
     var z=G.zones[zi];
-    if(z.beaconT===null||z.beaconT===undefined){ z.alarmT=undefined; continue; }
+    if(z.beaconT===null||z.beaconT===undefined){ z.alarmT=undefined; z.alarmAge=0; continue; }
     // v27.xx (xalarm), HIS ANSWER 41: THE LOW ALARM LOOPS through the extraction countdown, the wait for the ship and the boarding hold alike
     // (a ring is called from the call until its beacon is cleared). Only the ring you called, never the bot sim, and the dial CFG.xAlarm 0 mutes it.
     if(!G.sim&&z===G.active&&CFG.xAlarm!==0){
-      if(z.alarmT===undefined) z.alarmT=XALARM_GAP;
+      z.alarmAge=(z.alarmAge||0)+dt;   // v33.35 (cw-xalarmshort): siren only in the first XALARM_LEN s after the call and the last XALARM_LEN s before the ship arrives (beaconT 0); none while the ship holds
+      var _xaOn=(z.beaconT>0&&(z.alarmAge<=XALARM_LEN||z.beaconT<=XALARM_LEN));
+      if(z.alarmT===undefined||!_xaOn) z.alarmT=XALARM_GAP;
       z.alarmT+=dt;
-      if(z.alarmT>=XALARM_GAP){ z.alarmT=0; blip('xalarm'); }
+      if(_xaOn&&z.alarmT>=XALARM_GAP){ z.alarmT=0; blip('xalarm'); }
     }
     // THE APPROACH IS AUDIBLE NOW. A ping whose interval shrinks from 2.2s at
     // the moment of the call to 0.55s as the ship arrives, so the wait has a
@@ -51432,7 +51435,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.34: The Howler now has its own walking sound, a quick pneumatic tick. The other machines sound as before. Check 33.34 fails on v33.33',
+  now:'v33.35: The extraction siren sounds for 4 seconds after the call and the last 4 seconds before the ship arrives, then stops. Check 33.35 fails on v33.34',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

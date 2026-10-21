@@ -1,0 +1,7 @@
+v33.35: short extraction siren
+
+The extraction siren sounds for 4 seconds after the call and the last 4 seconds before the ship arrives, then stops.
+
+Check 33.35. Fails on v33.34.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

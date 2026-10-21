@@ -1,0 +1,5 @@
+## v33.35 - SHORT EXTRACTION SIREN
+
+Co-op hunt while he was away. His order 10-20: the extraction siren is intrusive. It now sounds 4 seconds at the call and 4 seconds before the ship arrives, not the whole time. The inbound ping stays.
+
+MEASURED. Check 33.35 passes, and fails on v33.34.

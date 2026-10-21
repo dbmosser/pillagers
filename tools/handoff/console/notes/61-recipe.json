@@ -8,7 +8,7 @@
    "before": "staged by lane b 10-21",
    "query": "",
    "expect": "U.on('#settingsmodal')",
-   "js": "await U.floor(); __station('dev','KeyE'); await U.wait(1200); try{SETSUB='exp'; renderSettings();}catch(x){} await U.wait(900); return U.modal();"
+   "js": "await U.floor(); __station('dev','KeyE'); await U.wait(1200); U.click('#exp_open'); await U.wait(1200); return U.modal();"
   }
  ]
 }

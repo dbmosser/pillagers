@@ -16,8 +16,22 @@ Shipped, one key each (no one can hear from here, so each line says what he shou
 4. **69 space-aware gunfire**: ALREADY IN THE GAME since v23.77 (gunLayers, gunTail, sndSpaceN: slaps indoors, roll outside, soft woods, ring in a vault,
    hiss over water, snap close and thump far, with his v10.58 note "tail a tenth of the crack or less"). The planner's grep missed it. I shipped a second
    tail on top (v33.25, cw-guntail) before I read the shot generator: MY MISTAKE. It is taken out again by cw-guntailundo (see below). Nothing new for him to hear.
-5. **73 machine movement sounds**: see the end of this file.
+   The removal shipped as v33.32 (cw-guntailundo); the v33.25 check was retargeted through fixq (commit 17245f97) so it holds on both builds.
+5. **73 machine movement sounds** (v33.34, cw-howlstep). Audit: sentry, warden (so the Overseer) and bulwark have the heavy clank (stepHeavy), crawler a skitter,
+   Crier a drone, pillbox and Listener do not walk. The HOWLER walks and was the only machine on the light pillager scuff. It now has stepHowl: a click, a
+   knock around 1.5 kHz, a falling 330 to 180 Hz triangle, a faint 3 kHz hiss, machine bus, FOOTSTEPS VOLUME row, one per 150 ms, steps 0.56 s apart. No held tone.
+   LISTEN: walk near a howler (out of sight, behind a wall is fine): a quick pneumatic tick, lighter than a sentry clank, sharper than a pillager scuff.
 
 ## Own mistake, one line
-v33.25 doubled the gunfire tail that v23.77 already has. I grepped the planner's words, not the shot code. Removing it (cw-guntailundo); the v33.25 check is
-retargeted through fixq so it holds on both builds.
+v33.25 doubled the gunfire tail that v23.77 already has. I grepped the planner's words, not the shot code. Fixed in v33.32.
+
+## For the coordinator: what changed to the ear (tell him to listen for these)
+- LATE NIGHT AUDIO row (off by default; nothing changes unless he turns it on).
+- Dull world sound below 30 health.
+- A soft rising tick on each chained kill.
+- Howler footsteps.
+- Gunfire: net no change (v33.25 was in for one build, v33.25 to v33.31, then removed).
+
+## Measuring
+No audio render is possible in the gate (the fixture audio is a stand-in), so loudness was held by design: every new sound is far under a medal pop or a shot
+(chain tick 0.06, howler step about 0.1 peak per layer, late night only lowers ceilings) and everything sits under the v32.32 limiter.
