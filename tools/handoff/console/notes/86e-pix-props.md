@@ -53,3 +53,23 @@ Gaps said plainly
 - Skipped the critic suggestion to add rarity bars to unopened containers: it reverses the owner rule that closed containers never reveal hidden loot value. Logged that ruling once in questions-new.md; no answer is needed.
 - Local checks pass: one exact current-build anchor, full game and new check syntax, four camera recipes and helper syntax, ASCII inputs. Next: lane preflight/ship for propsread, then round-2 photos and critic results.
 - Watch: opened pixel boxes should be easier to spot, while their raised lids still say looted at a glance.
+
+--- codex run 2026-10-21 09:32 ---
+## Codex lane o, 2026-10-21, run 3
+- Confirmed cw-cx-propsread SHIPPED as v33.87. Opened all four round-2 images. Camera lint: zero on all. Critic: containers 2, barrels 2, wrecks 3, raid street 2. The earlier full-HUD picture remains round 1.
+- Fixed the cause of stray fragments and ragged review baselines: the original shared pixPropsSheet canvas allowed neighbouring art into another 96px cell. The new camera calls drawContS/brlDraw separately and takes each real pixWrap cache result, at identical world coordinates for both states. It draws with the actual blit opacity and a shared ground/horizontal anchor. No neighbouring cells, effects or raster captions can leak in. Live effects remain in the street shot.
+- Prepared cw-cx-propsshape: crate slats, locker vents, safe door hardware, cache/jackpot braces and latches; raised chest lids and swung metal doors for visible opened silhouettes. All are baked into the existing sprite. Base widths (crate 16, locker 12, cache 26), collision and loot are unchanged. Only the pixel path gets details; vector mode keeps its painter.
+- Calmed the cache purple by about 25 percent saturation and the idle red barrel by about 30 percent saturation. Kept kind identity, the explosive hazard mark, flashing fuse, pulse and other live effects. No rarity data is used in the new art.
+- Added a functional check for the real cached silhouette: raised crate lid adds at least 6 art rows, opened locker/safe add at least 3 columns, alpha stays binary, hidden cache rarity reuses the same sprite. It fails on v33.87 (no detail painter). Local anchors (5), full game/check syntax, six camera recipes/helper syntax and ASCII inputs pass.
+- Enlarged the camera proofs to 6x basic containers, 4x caches/salvage, 3x machine wrecks (two pages) and 6x barrels. Removed duplicate barrel/state captions, outer borders and empty last-row gaps. The real 1080 street stays unchanged for an honest comparison. Six recipes use the camera maximum.
+- Kept existing body/carcass art. The old review compared different fixed-position variants (so the body rotated between opened/closed); the new camera holds position and variation constant. Opening loot does not animate or revive remains. The rarity-bar exception was already logged and is not repeated.
+- Remaining street findings concern other jobs: district palette seam and water/floor marks (86b-pix-ground), pale walls (86d-pix-walls-trees), small/low-contrast pillager (86c-pix-pillager). The red-barrel dominance and plain container shapes are addressed here. Sent the other findings to the coordinator with the round-2 image; do not blend or resize another job to please this UI critic.
+- This is the second follow-up to the original review. If round 3 still does not raise a sheet score, record what remains and keep the two best pictures, as the rules require; do not keep polishing the camera indefinitely.
+- Watch: newly opened chests have a raised lid; lockers and safes have a door swung to the side. Neither the loot reach nor collision changed. Idle red barrels are calmer but must still read as dangerous.
+
+--- codex run 2026-10-21 09:36 ---
+## Codex lane o, 2026-10-21, run 4 - preflight correction
+- cw-cx-propsshape did not ship. Preflight caught REGRESS 33.68: opened locker/safe were 21/25 art pixels wide, beyond the existing 12+6 and 16+6 limits. The new door hinges started at the outside wall of each cabinet.
+- Corrected the same key: move each hinge 4 world/art pixels into the cabinet, keeping the swing angle and face inside the existing width-plus-lid limit. Expected bounds from the painted coordinates: locker 17 (limit 18), safe 21 (limit 22). Closed footprints remain locker 12 plus ink and safe 16 plus ink.
+- Strengthened the new functional check to reject opened sprites over base width + 6. Kept older check 33.68 unchanged; no fixture retarget. It still checks the requested unchanged footprints.
+- Local mk run prints written; all 5 anchors, complete game/check syntax, camera helper and six recipes, and ASCII handoff pass. The isolated-art recipes remain ready for round 3 after the corrected key passes and ships.

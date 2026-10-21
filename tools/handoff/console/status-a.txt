@@ -1,1 +1,1 @@
-10-21 09:17 waiting for RAM: 1 GB free, a helper starts at 3; 86f-pix-machines kept
+10-21 09:38 waiting for RAM: 1 GB free, a helper starts at 3; 86f-pix-machines kept

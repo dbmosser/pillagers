@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.88 - PIXEL CONTAINER SHAPES
+
+Co-op hunt while he was away. The 86e critic found plain boxes and weak opened silhouettes. Bake crate slats, locker vents, safe doors, cache braces and raised lids by kind. Calm the idle red barrel palette while keeping its hazard mark and pulse.
+
+MEASURED. Check 33.88 passes, and fails on v33.87.
 ## v33.87 - OPENED PIXEL CONTAINERS
 
 Co-op hunt while he was away. The 86e picture critic found opened container bodies too dark against the scene. Raise pixel opacity by 16 percent while keeping the lifted lid, cache, footprint and hidden loot colours unchanged.

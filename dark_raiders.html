@@ -3360,7 +3360,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.87';
+var VER='33.88';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21437,11 +21437,11 @@ function brlDraw(B){
   // v33.66 (cw-pixbarrels), HIS ORDER (2026-10-20 22:45 to 23:05, the pixel pass): with the pixel look on the barrel body (not its pulse, glow or pools) is one cached sprite per blink state.
   var bp=function(){
   wc.fillStyle=INK; wc.fillRect(x-w-1,y-h-1,w*2+2,h+2);
-  wc.fillStyle=fl?'#ff7a4a':'#c4281c'; wc.fillRect(x-w,y-h,w*2,h);
+  wc.fillStyle=fl?'#ff7a4a':(pixOn()?'#a4372f':'#c4281c'); wc.fillRect(x-w,y-h,w*2,h); // v28.xx (cw-cx-propsshape): calmer idle red; the hazard mark and live pulse stay
   wc.fillStyle='rgba(0,0,0,.30)'; wc.fillRect(x+w*0.35,y-h,w*0.65,h);
   wc.fillStyle='rgba(255,255,255,.16)'; wc.fillRect(x-w+2,y-h,3,h);
   wc.fillStyle='#5e120d'; wc.fillRect(x-w,y-h+4,w*2,2); wc.fillRect(x-w,y-4,w*2,2);
-  wc.fillStyle=fl?'#ffc08a':'#d9483c'; wc.beginPath(); wc.ellipse(x,y-h,w,4.2,0,0,6.2832); wc.fill();
+  wc.fillStyle=fl?'#ffc08a':(pixOn()?'#b8544c':'#d9483c'); wc.beginPath(); wc.ellipse(x,y-h,w,4.2,0,0,6.2832); wc.fill();
   wc.strokeStyle=INK; wc.lineWidth=1.2; wc.stroke();
   wc.fillStyle='#4a0e0a'; wc.beginPath(); wc.ellipse(x+4.5,y-h,2.2,1.2,0,0,6.2832); wc.fill();
   // the big white !: a bar and a dot, inked so it reads on a dark floor and in the red
@@ -38612,6 +38612,43 @@ function drawWreckPeddler(ct){
   wreckSmoke(ct,10);
 }
 WRECKDRAW.peddler=drawWreckPeddler;
+// v28.xx (cw-cx-propsshape): the 86e critic found plain rectangles and weak open silhouettes. These baked details identify the kind, never the loot value. Footprints are unchanged.
+function pixContDetail(ct,w,lift,d2,cF,cT,cL){
+  if(!pixOn()||ct.bot||ct.carcass||ct.type==='body'||ct.type==='botwreck') return;
+  var x=ct.x, y=ct.y, top=y-lift-d2, metal=ct.type==='locker'||(ct.type==='safe'&&!ct.camp), k;
+  if(ct.opened){
+    wc.fillStyle=INK; wc.beginPath();
+    if(metal){
+      // v28.xx (cw-cx-propsshape): inset the hinge so the swung face stays inside the existing width-plus-lid footprint limit.
+      var side=ct.type==='locker'?-1:1, edge=x+side*(w/2-4);
+      wc.moveTo(edge,top); wc.lineTo(edge+side*7,top+3); wc.lineTo(edge+side*7,y-1); wc.lineTo(edge,y-4);
+      wc.closePath(); wc.fill();
+      wc.fillStyle=cT; wc.beginPath(); wc.moveTo(edge+side,top+2); wc.lineTo(edge+side*5,top+4); wc.lineTo(edge+side*5,y-3); wc.lineTo(edge+side,y-5); wc.closePath(); wc.fill();
+      wc.fillStyle=cL; wc.fillRect(side<0?edge-5:edge+4,top+5,1,Math.max(3,lift-3));
+    } else {
+      wc.moveTo(x-w/2-1,top-2); wc.lineTo(x-w/2+3,top-10); wc.lineTo(x+w/2+2,top-7); wc.lineTo(x+w/2+1,top-2); wc.closePath(); wc.fill();
+      wc.fillStyle=cT; wc.beginPath(); wc.moveTo(x-w/2+1,top-3); wc.lineTo(x-w/2+4,top-8); wc.lineTo(x+w/2,top-6); wc.lineTo(x+w/2-1,top-3); wc.closePath(); wc.fill();
+      wc.fillStyle=cL; wc.fillRect(x-w/2+4,top-8,Math.max(3,w-5),1);
+    }
+    return;
+  }
+  if(ct.type==='crate'){
+    wc.fillStyle='#302414'; wc.fillRect(x-w/2+5,y-lift,1,lift); wc.fillRect(x-w/2+10,y-lift,1,lift);
+    wc.fillStyle=cL; wc.fillRect(x-w/2+1,y-3,w-2,1); wc.fillRect(x-w/2+2,top+2,1,d2-3); wc.fillRect(x+w/2-3,top+2,1,d2-3);
+  } else if(ct.type==='locker'){
+    wc.fillStyle=INK; for(k=0;k<3;k++) wc.fillRect(x-3,top+5+k*3,6,1);
+    wc.fillStyle=cL; wc.fillRect(x+3,y-9,1,4);
+  } else if(ct.type==='safe'&&!ct.camp){
+    wc.strokeStyle=INK; wc.lineWidth=1; wc.strokeRect(x-w/2+2,y-lift+1,w-4,lift-3);
+    wc.fillStyle=cL; wc.fillRect(x-1,y-9,3,3); wc.fillRect(x+3,y-8,1,4);
+  } else if(ct.type==='cache'||ct.type==='jackpot'){
+    wc.fillStyle=cF; wc.fillRect(x-w/2+2,top+2,w-4,Math.max(2,d2-4));
+    wc.fillStyle=cL; wc.fillRect(x-w/2+2,y-lift,2,lift); wc.fillRect(x+w/2-4,y-lift,2,lift);
+    wc.fillStyle=INK; wc.fillRect(x-3,y-lift+2,6,5); wc.fillStyle=cL; wc.fillRect(x-1,y-lift+3,2,2);
+  } else if(ct.type!=='safe'){
+    wc.fillStyle=cL; wc.fillRect(x-w/2+2,top+2,w-4,1); wc.fillRect(x-2,y-lift,4,2);
+  }
+}
 function drawContS(ct){
   var w,lift,d2,cF,cT;
   var cL;
@@ -38626,7 +38663,7 @@ function drawContS(ct){
   else if(ct.type==='safe'){ w=16;lift=13;d2=8;cF='#2a1f33';cT='#5a4670';cL='#7c6796'; }
   // An Meridian cache is the biggest, brightest object of its kind in the game on
   // purpose: it is the one thing every raid guarantees, so it has to be findable.
-else if(ct.type==='cache'){ w=26;lift=19;d2=11;cF='#3a2050';cT='#8f4fc0';cL='#e0a0ff'; }
+else if(ct.type==='cache'){ w=26;lift=19;d2=11;cF=pixOn()?'#403449':'#3a2050';cT=pixOn()?'#80638f':'#8f4fc0';cL=pixOn()?'#bc98ce':'#e0a0ff'; }
   else if(ct.type==='jackpot'){ w=24;lift=14;d2=10;cF='#4a3410';cT='#b8860b';cL='#ffc04a'; }
   else { w=20;lift=3;d2=6;cF='#302719';cT='#57462f';cL='#756042'; }
   // SPEC 7.4: an opened container stays VISIBLY opened for the rest of the run,
@@ -38738,6 +38775,7 @@ if(ct.bot&&WRECKDRAW[ct.bot]){
     wc.fillStyle='#c9b458';
     wc.fillRect(ct.x-1.6,ct.y-lift+1,3.2,3.4);
   }
+  pixContDetail(ct,w,lift,d2,cF,cT,cL);
   wc.globalAlpha=1;
   };
   // v33.65 (cw-pixprops), HIS ORDER (2026-10-20 22:45 to 23:05, the pixel pass): with the pixel look on this body is one cached sprite (opened and closed are two), at 1 world unit per art pixel; the ground shadow, the dim of an
@@ -52758,7 +52796,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.87: Opened pixel containers are easier to read at a glance. Check 33.87 fails on v33.86',
+  now:'v33.88: Pixel containers have clearer shapes and opened states. Check 33.88 fails on v33.87',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

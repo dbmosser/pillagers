@@ -1,0 +1,7 @@
+v33.88: pixel container shapes
+
+Pixel containers have clearer shapes and opened states.
+
+Check 33.88. Fails on v33.87.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

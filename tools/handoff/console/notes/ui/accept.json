@@ -1925,32 +1925,64 @@
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "This is a debug contact sheet, not a player-facing screen. Judged as one, it is a low-contrast grid of tiny sprites with captions that are too small and that collide with the art, so a player could not read it from a couch.",
+  "verdict": "This is a clean, consistent dev contact sheet, but the sprites are tiny specks bottom-aligned in big empty cells, and several variants (crate, box, locker, safe) look nearly the same, so it doesn't show a polished set of props.",
   "findings": [
-   "P1 all captions on the 1x grid: Use Barlow Condensed 600 at 16px with +.04em tracking in --tx-2 (#aaa498). Put the sprite name on one line and drop the repeated '/ closed' and '/ open' by pairing each closed and open sprite under one name.",
-   "P1 body, sentry, bulwark, howler, peddler, choir and warden captions: Give each cell a fixed 96x96 sprite area with the sprite anchored to its bottom edge. Start the caption 8px below that area. Make the cell pitch at least 112px so the tall sprites (warden, choir, sentry) cannot reach the text.",
-   "P1 locker/open, safe/open, strongbox/open, box/open, listener, sentry/open: Put a --ui-panel (#16191b) tile with a 1px --ui-line-hi border behind each cell. Lift the shadow and rim values of open sprites by about 15 percent. Add the 3px rarity bar under crate, cache, jackpot and strongbox.",
-   "P1 1x grid hierarchy and scale: Draw all sprites at 2x minimum, as the lower 2x row already does. Group them under three 32px f-cond 700 headings: containers, bots, barrels. Use a 4-column grid with 24px gutters inside one centred 90 percent card.",
-   "P2 section titles 'props / closed + opened / 1x' and '2x': Use 32px f-cond 700 titles with 24px below. Fill the last row or centre it. Drop the 2x row, or make it a 'detail' panel with a --ui-raised fill."
+   "P0 all nine cells, sprite size: Scale sprites to 4x to 6x with nearest-neighbour, so the largest prop fills about 60% of the cell height (about 140px). Drop the 2x note or change it to the real scale.",
+   "P0 crate, box, locker, safe (closed vs opened): Give each type its own silhouette and a visible opened change: a lid tilted at 30 to 45 degrees, a door swung open, a lit interior. Make box clearly flatter and crate a different shape with slats. Keep the tint per rarity but change the shape too.",
+   "P1 cache and jackpot tiles: Add 2 to 3 shades of shading, an edge highlight and a latch or lock detail. Keep the colour in a 3px trim or glow so it works as a rarity bar, as the guide says, instead of a full fill. Lower the purple saturation by about 25%.",
+   "P1 body and carcass tiles: Match pixel density and outline weight to the boxes. Make the opened state clearly different: a flipped body, a gutted carcass with a darker underside. Check the body silhouette reads as a person.",
+   "P1 tile composition: Centre the sprite pair vertically, with a 24px gap between the sprites and the caption. Reduce tile height to about 180px or enlarge the art to fill it. Keep padding at 16px on the 8px grid."
   ],
-  "pic": "tools/handoff/console/notes/shots/86e-pix-props-recipes-1/86e-pixel-props-sheet-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/86e-pix-props-recipes-2/86e-pixel-props-sheet-1080.jpg",
   "task": "86e-pix-props",
-  "when": "2026-10-21T13:08"
+  "when": "2026-10-21T13:22"
  },
  "86e-pixel-raid-street": {
   "score": 2,
   "pass": false,
   "need": 4,
-  "verdict": "Readable pixel-art raid with a clean dark HUD, but the HUD panels disagree on size, weight and spacing, and the extra overlays (keys cheat sheet, codex toast, tooltip) crowd the lower half of the screen.",
+  "verdict": "This is a raid-world art review shot with no HUD, so there is no UI to judge. The world reads as a flat pastel pixel-art tile map, with a red/blue split that looks like a lighting bug and does not match the dark ARC Raiders x Zero Sievert mood.",
   "findings": [
-   "P1 center-bottom keys cheat sheet (wasd/ctrl list): Move it to a collapsed corner hint (one 16px line, 'f1 keys'), or auto-hide it after 10s. If it stays, anchor it left at the 5% margin, widen the line gap to 24px, make keys tx-1 600 and actions tx-2 at 16px.",
-   "P1 hud panels: top-left bots list, top-right cash and run info: Use one panel component: 16px 24px padding, 1px #4a5257 border, 4px radius, 20px row names and 16px labels, a 2px top tab on the star panel only. Keep 32px row pitch and tx-2 #aaa498 minimum. Build the top-right as a single vertical column with equal widths.",
-   "P1 bottom-right ammo panel: Make the fill 90% --ui-panel. Right-align every line to a 24px padding. Put the weapon name at 20px tx-2, the hero at 56px 800 tx-1, and the backpack line at 16px tx-2 on one baseline row. Remove the stray tick or turn it into the 3px left accent tab.",
-   "P1 bottom-left stance, stamina and hp bars: Put the three in one panel of 8px grid rows, use 16px labels outside the bars, and keep the number inside at 20px 600. Use hp = --ok and stamina = a neutral --ui-line-hi fill. Reserve the 800 weight for ammo only.",
-   "P2 hotbar tooltip 'scav pistol / fire / use' and the codex toast: Use one chip style (16px, 8px padding, --ui-panel fill, 1px line). Put 12px between the tooltip and the hotbar. Restyle the codex toast as a standard panel with the lime 3px left tab and place it under the top-left panel."
+   "P0 whole frame, the red-brown top half against the blue-lavender bottom half: Blend the zone tint over about 200px with a soft falloff and cap the tint alpha near 0.15. Or drop it from the street ground and keep it only on interior floors.",
+   "P1 walls, the long beige and lavender slabs at y≈410-490 and 650-910: Darken the wall tops about 25% in value. Add a 2px dark outline and a 6-8px contact shadow below each wall. Drop the wall saturation so props and enemies pop.",
+   "P1 player at (958,552): Add a 1px dark outline to the sprite and a soft 40px ground shadow. Raise the sprite scale 1.25x or add a player ring in the pending P1 colour. Replace the white cone blob with a low-alpha warm gradient.",
+   "P1 red exclamation barrels, 9 of them across the frame: Desaturate the red to about 70% and drop the white '!' glyph for a small hazard stripe. Vary the barrel sprite (rust, dent, tilt). Reserve full saturation for the loot and danger that matter.",
+   "P1 pool area, bottom left (160-980 x 570-1080): Add a 12px shore band and a light edge highlight. Add 2-3 low-alpha animated ripples. Remove or darken the ghost '81', '77' and '3b' floor text."
   ],
-  "pic": "tools/handoff/console/notes/shots/86e-pix-props-recipes-1/86e-pixel-raid-street-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/86e-pix-props-recipes-2/86e-pixel-raid-street-1080.jpg",
   "task": "86e-pix-props",
-  "when": "2026-10-21T13:09"
+  "when": "2026-10-21T13:23"
+ },
+ "86e-pixel-barrels-sheet": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "a debug sprite sheet, not a game screen: the barrel art reads clearly, but the cells are misaligned, the labels are tiny and the sheet has no hierarchy or game identity.",
+  "findings": [
+   "P0 acid and cryo cells: Anchor every sprite at the same centre point, for example cell centre y=570 and caption at sprite bottom + 24px. Remove the stray fragments by cropping or clearing the sprite buffer.",
+   "P1 cell captions: Delete the repeated 'barrel' captions. If a caption is needed, use the effect name at 16px f-cond 600 in --tx-2, and drop the cell title so the name appears once.",
+   "P1 sheet title and '4x' tag: Set the '4x' tag to 16px --tx-2. Set the cell titles to 20px f-cond 600. Keep the title at 32px.",
+   "P1 sprite scale and cell space: Draw the sprites at 6x to 8x, or shrink the cells to about 300px tall and centre them. Use the freed space for a larger sheet title.",
+   "P2 ground shadows and discs: Use one shared soft oval shadow at rgba(0,0,0,.45), the same size under every barrel. Show each barrel's element tint only as a small rim glow."
+  ],
+  "pic": "tools/handoff/console/notes/shots/86e-pix-props-recipes-2/86e-pixel-barrels-sheet-1080.jpg",
+  "task": "86e-pix-props",
+  "when": "2026-10-21T13:22"
+ },
+ "86e-pixel-wrecks-sheet": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "This is a tidy, consistent dev-style sprite sheet in the house palette and type, but the sprites are tiny and clipped, the captions are low-contrast, and the cards are unevenly aligned, so it is not yet polished.",
+  "findings": [
+   "P1 choir and listener cards, top of the sprite area: Find which draw layer (antenna, smoke or glow) is offset from the body and re-anchor it to the sprite origin. Clip each sprite to its own cell so nothing floats 150px above the body.",
+   "P1 all 10 cards, sprite scale: Draw the sprites at 3x or 4x instead of 2x (the header says 2x). Make the sprite area about 70% of the card height. Scale every sprite by one factor, so the wrecks keep their relative sizes.",
+   "P1 sprite baselines across the grid: Anchor every sprite's ground shadow to one baseline, 56px above the card bottom. Put every caption on one fixed row at card bottom minus 24px.",
+   "P1 layout of the last row: Use equal-height cards (240px) in a 5x2 grid, or 4 columns with the last row centred. Alternatively fill the gap with a legend card.",
+   "P2 captions 'closed' and 'opened', and the header note 'closed / opened / 2x': Set the captions to 16px f-cond 600 at tx-2, and show them once as column headers per card or per sheet. Delete 'closed / opened / 2x' or move it to the 14px footer legend."
+  ],
+  "pic": "tools/handoff/console/notes/shots/86e-pix-props-recipes-2/86e-pixel-wrecks-sheet-1080.jpg",
+  "task": "86e-pix-props",
+  "when": "2026-10-21T13:23"
  }
 }
