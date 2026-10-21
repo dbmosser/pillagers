@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.19 - LATE NIGHT AUDIO: A SETTING FOR SOFTER PEAKS
+
+Co-op hunt while he was away. His yes on pick 74, the party volume governor. A new row in AUDIO, off by default, for a living room TV at night: the world compressor squeezes harder, the limiters catch peaks about 6 dB lower and the world trim drops 2 dB. Off is exactly the old mix.
+
+MEASURED. Check 33.19 passes, and fails on v33.18.
 ## v33.18 - A DAILY RAID ROW ON THE PRE-RAID PAGE
 
 Co-op hunt while he was away. His round 3 answer 2.98: a seed of the day raid before launch. One opt-in row on the pre-raid page builds the next career raid on a seed taken from the UTC date, so everyone gets the same raid that day with no server. It keeps its own best haul in new profile fields. No reward, no streak. Normal raids, the demo and the party seed are untouched.

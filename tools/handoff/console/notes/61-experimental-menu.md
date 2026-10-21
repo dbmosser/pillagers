@@ -32,3 +32,6 @@ Left: add screen 79 (SETSUB='exp'; renderSettings()), shoot 1080 and 4K, run the
 
 ## Run 10-20 evening
 Shot screen 68 (the raid section) at 1080: shots/61-experimental-menu-after2/68-settings-sec-the-raid-1080.jpg. The "experimental / open" row sits at the end of THE RAID, matches the other rows, lint 0 issues. The sub-page itself still cannot be shot: screen 79 needs his OK (question already in questions.md, not asked again). When allowed: add 79 (open settings as screen 18 does, then SETSUB='exp'; renderSettings()), shoot 1080 and 4K, run the critic (finish line 3).
+
+## Run 10-20 late (lane a)
+Checked HEAD: menu, all 28 switches shipped, nothing to build. Question for screen 79 still open (questions.md line 47), no answer yet, so the sub-page picture and critic stay undone. When allowed: add 79, shoot 1080 and 4K, critic (finish line 3).

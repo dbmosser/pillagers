@@ -1,0 +1,7 @@
+v33.19: late night audio: a setting for softer peaks
+
+Settings, AUDIO now has LATE NIGHT AUDIO. On, blasts and heavy guns hit softer and footsteps stay clear. Off is the old sound.
+
+Check 33.19. Fails on v33.18.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

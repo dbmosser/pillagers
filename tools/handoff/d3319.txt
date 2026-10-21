@@ -1,0 +1,5 @@
+## v33.19 - LATE NIGHT AUDIO: A SETTING FOR SOFTER PEAKS
+
+Co-op hunt while he was away. His yes on pick 74, the party volume governor. A new row in AUDIO, off by default, for a living room TV at night: the world compressor squeezes harder, the limiters catch peaks about 6 dB lower and the world trim drops 2 dB. Off is exactly the old mix.
+
+MEASURED. Check 33.19 passes, and fails on v33.18.

@@ -3249,7 +3249,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.18';
+var VER='33.19';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -6395,12 +6395,30 @@ function monoApply(){
   return true;
 }
 function volOf(k){ var v=+CFG[k]; return (isFinite(v)&&v>=0&&v<=1)?v:1; }
+// v28.xx (cw-latenight), HIS YES (100 picks, 74 "party volume governor"): LATE NIGHT AUDIO. A setting in AUDIO, off by default, for a living room
+// TV at night: the world compressor squeezes harder (3.5 to 6), the world limiter and the master limiter catch peaks 6 dB lower and the world trim
+// drops 2 dB, so blasts and heavy guns stop being the loudest thing in the house while footsteps stay heard. Off is exactly the old mix. The
+// numbers are in LATE_OFF and LATE_ON; lateNightApply writes them to the real nodes and is called from volApply every frame (it only writes on a change).
+var LATE_OFF={cr:3.5,lt:-3,tr:0.5,mt:-2}, LATE_ON={cr:6,lt:-9,tr:0.4,mt:-8};
+function lateNightOn(){ return CFG.lateNight===1; }
+function lateNightParams(on){ return on?LATE_ON:LATE_OFF; }
+function lateNightApply(S,ml,on){
+  var p=lateNightParams(on), n=0;
+  try{
+    if(S&&S.comp&&S.comp.ratio&&S.comp.ratio.value!==p.cr){ S.comp.ratio.value=p.cr; n++; }
+    if(S&&S.lim&&S.lim.threshold&&S.lim.threshold.value!==p.lt){ S.lim.threshold.value=p.lt; n++; }
+    if(S&&S.trim&&S.trim.gain&&S.trim.gain.value!==p.tr){ S.trim.gain.value=p.tr; n++; }
+    if(ml&&ml.threshold&&ml.threshold.value!==p.mt){ ml.threshold.value=p.mt; n++; }
+  }catch(_ln){}
+  return n;
+}
 function volApply(){
   var m=volOf('volMaster'), f=volOf('volFx'), mu=volOf('volMusic'), key=m+'/'+f+'/'+mu, a;
   if(BUS&&BUS.gain){ try{ if(BUS.gain.value!==m*f) BUS.gain.value=m*f; }catch(_vb){} }
   try{ if(SND&&SND.bus&&SND.bus.ui&&SND.bus.ui.gain){ var _vu=volOf('volUi'); if(SND.bus.ui.gain.value!==_vu) SND.bus.ui.gain.value=_vu; } }catch(_vu2){}   // v26.xx (settings1): UI VOLUME is the HUD bus, which nothing ducks
   try{ if(SND&&SND.bus){ ['imp','gun'].forEach(function(_tc){ var _tg=SND.bus[_tc]&&SND.bus[_tc].gain, _tv=sndDemoTrim(_tc); if(_tg&&_tg.value!==_tv) _tg.value=_tv; }); } }catch(_vt){}   // v28.xx (cw-masterlimit): the demo trim follows the mode
   try{ monoApply(); }catch(_vm2){}   // v26.xx (settings1): MONO AUDIO
+  try{ lateNightApply(SND,(typeof AC!=='undefined'&&AC)?AC.__ml:null,lateNightOn()); }catch(_vln){}   // v28.xx (cw-latenight): LATE NIGHT AUDIO
   if(key!==VOL_LAST){
     VOL_LAST=key;
     if(typeof MUS==='object'&&MUS&&MUS.g&&MUS.g.gain&&typeof MUS.lvl==='number'){ a=(typeof AC!=='undefined'&&AC)?AC.currentTime:0; try{ MUS.g.gain.setTargetAtTime(MUS.lvl*mu*m,a,0.5); }catch(_vm){} }
@@ -51270,7 +51288,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.18: A DAILY RAID row sits under the surface and weather rows on the pre-raid page. Switch it on and the next ascent is today raid, the same for everyone. Its best haul shows on the row. Check 33.18 fails on v33.17',
+  now:'v33.19: Settings, AUDIO now has LATE NIGHT AUDIO. On, blasts and heavy guns hit softer and footsteps stay clear. Off is the old sound. Check 33.19 fails on v33.18',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -67872,6 +67890,13 @@ var GAMEOPTS=[
    opts:[
      {n:'OFF', cfg:{mono:0}},
      {n:'ON',  cfg:{mono:1}}
+   ], def:0},
+  // v28.xx (cw-latenight), HIS YES (100 picks, 74): softer peaks for a quiet room. Off by default; see lateNightApply.
+  {k:'lateNight', label:'LATE NIGHT AUDIO', sec:'AUDIO',
+   hint:'Quieter blasts and heavy guns for a quiet room. Footsteps stay clear.',
+   opts:[
+     {n:'OFF', cfg:{lateNight:0}},
+     {n:'ON',  cfg:{lateNight:1}}
    ], def:0},
   // v26.xx (settings2), HIS ORDER 2026-10-14 ("ok add all this stuff to settings"): HOLD OR TOGGLE for AIM, CROUCH and SPRINT, each its own row.
   // The defaults are today: aim down sights is held on the right mouse button, crouch is a toggle (Ctrl or C), sprint is held. AIM TOGGLE: one

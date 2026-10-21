@@ -1,1 +1,1 @@
-10-20 23:05 waiting: another helper is just starting (memory check again in a few minutes); 64-audio-picks kept
+10-20 23:13 waiting: another helper is just starting (memory check again in a few minutes); 79a-player-size-back kept

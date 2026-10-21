@@ -40,17 +40,17 @@
  "05-sector-page": {
   "score": 3,
   "pass": false,
-  "verdict": "The pre-raid card has a clear hero (the lime ascend button) and a consistent dark card with an X, but it is dense: the map is a pile of unlabeled dark boxes, the kit column is crowded with small text, and several key labels sit at or below the 16px floor.",
+  "verdict": "The screen is cleanly structured, with a strong lime ascend CTA, a centred card with an X, and consistent lime focus rows. It is still crowded, and the three columns compete for attention. Several type sizes fall below the 16px floor, and the map is a flat blueprint that doesn't match the rest of the game.",
   "findings": [
-   "P1 kit column warning row: Use 16px f-cond 600 in --warn, put it in a 32px row with 8px padding, keep the 3px warn bar, and make the triangle glyph 20px. Reverse the shrink made in this pass.",
-   "P1 kit column, item rows: Drop the stepper borders to a 1px --ui-line and make the '-' and '+' buttons 36x36 with 20px glyphs. Raise the caps to 16px --tx-2. Merge the gun row and data core row into one 'extras' group with a 24px gap above it.",
-   "P1 map panel: Offset zone labels so they never overlap props (min 8px clearance), cut the rings to 24px with a 2px stroke, and take the dashed purple key rooms down to 60% alpha. Make zone names 18px in --tx-1 with no pill.",
-   "P2 conditions column (surface, weather): Use a 24px gutter on each side. Set section labels to 16px --tx-2. Choose one selected signal, the lime bar plus the check, and drop the fill change. Move the +10% modifiers to --tx-2 and 16px.",
-   "P2 title and header rows: Keep the window title at 32px and make the sector name 20px f-cond 600 beside it. Move the stats line to 16px --tx-2 under the sector name. Drop the pill border and show just the lime check and the word."
+   "P1 right kit column (pack list, steppers, data core row, gun row, warning): Cut the pack list to a scrollable block or collapse the zero-count rows. Give the steppers 40px square targets. Use one bar colour, or rarity colours only. Move the 'no data core' and 'own gun in stash' rows into a single 'extras' row. Group the kit tiles and the pack list with 24px between them.",
+   "P1 small text: 'conditions' / 'surface' / 'weather' / 'seed' labels, '/2' caps, 'scav pistol · 4 items' sublines, 'no armour equipped' warning, map zone labels, 'own gun in stash': Set all labels and sublines to 16px, f-cond 600, tx-2 at 4.5:1 or better. Make 'no armour equipped' 16px in --warn, with the glyph at 20px. Section labels should be 16px with +.04em tracking, not wide spacing.",
+   "P1 map panel (left, 1040x770): Draw the map in --ui-panel and --ui-raised greys, with 1px --ui-line-hi walls. Use extract teal only for exits. Put zone names in tx-2 16px with no pill. Show a purple key marker only if a legend or label says what it is. Cut the map to about 60% width and give the freed space to the kit column.",
+   "P1 header row ('cold storage' + 'ascending here' chip + '420 x 340 m · 5 zones · 2 keyed rooms · 3 exits'): Keep one title. Make 'pre-raid' tx-2 16px as a breadcrumb and 'cold storage' 32px, or merge them. Delete the stats line or cut it to '5 zones · 3 exits' at 16px. Make the chip a flat tag with no border.",
+   "P2 conditions column (surface / weather / seed lists): Use one selected style everywhere: --ui-raised fill, a 3px lime left bar and a lime check. Use 8px gaps between rows. Give 'daily raid' its own toggle state, and show the date as a tx-2 tag."
   ],
-  "pic": "tools/handoff/console/notes/shots/22-after6/05-sector-page-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/63-after/05-sector-page-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T06:36"
+  "when": "2026-10-21T03:06"
  },
  "06-terms": {
   "score": 3,

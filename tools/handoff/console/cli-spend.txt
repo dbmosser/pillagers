@@ -507,7 +507,7 @@
 2026-10-20 0.1431 critic-o-15-hide-coming-later-row
 2026-10-20 0.0000 o-15-hide-coming-later-row
 2026-10-20 0.0000 o-16-golden-callout-names
-2026-10-20 4.379035500000002 61-experimental-menu
+2026-10-20 4.379035500000002 61-experimental-menu-r2
 2026-10-20 0.16187120000000002 58b-corpus-harness-reds
 2026-10-20 0.1367 critic-o-16-golden-callout-names
 2026-10-20 0.1392 critic-o-16-golden-callout-names
@@ -527,7 +527,7 @@
 2026-10-20 0.0000 o-16-golden-callout-names
 2026-10-20 0.0000 o-17-pad-layout-selector
 2026-10-20 0.0000 o-17-pad-layout-selector
-2026-10-20 0.21833360000000002 61-experimental-menu
+2026-10-20 0.21833360000000002 61-experimental-menu-r2
 2026-10-20 0.1374 critic-o-17-pad-layout-selector
 2026-10-20 0.1375 critic-o-17-pad-layout-selector
 2026-10-20 0.1380 critic-o-17-pad-layout-selector
@@ -569,6 +569,10 @@
 2026-10-20 0.0000 o-19-duplicate-check-ids
 2026-10-20 0.0000 o-19-duplicate-check-ids
 2026-10-20 0.0000 o-19-duplicate-check-ids
-2026-10-20 0.1902951 61-experimental-menu
+2026-10-20 0.1902951 61-experimental-menu-r2
 2026-10-20 0.2796 critic-manual
 2026-10-20 0.1437 critic-manual
+2026-10-20 0.18067899999999998 61-experimental-menu-r2
+2026-10-20 0.1611 critic-manual
+2026-10-20 0.7336758000000001 63-seed-of-the-day
+2026-10-20 0.14210650000000002 61-experimental-menu-r2
