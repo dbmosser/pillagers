@@ -762,3 +762,14 @@
 2026-10-21 0.1402 critic-86c-pix-pillager
 2026-10-21 0.1433 critic-86c-pix-pillager
 2026-10-21 0.1428 critic-86c-pix-pillager
+2026-10-21 0.1414 critic-manual
+2026-10-21 1.1490888 86d-pix-walls-trees
+2026-10-21 0.0000 86c-pix-pillager
+2026-10-21 0.15994370000000002 86i-building-kinds-wait
+2026-10-21 0.1503 critic-86c-pix-pillager
+2026-10-21 0.1481 critic-86c-pix-pillager
+2026-10-21 0.1456 critic-86c-pix-pillager
+2026-10-21 0.1450 critic-86c-pix-pillager
+2026-10-21 0.1502 critic-86c-pix-pillager
+2026-10-21 0.1453 critic-86c-pix-pillager
+2026-10-21 0.0000 86c-pix-pillager

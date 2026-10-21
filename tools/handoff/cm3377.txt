@@ -1,0 +1,7 @@
+v33.77: the pixel cover wrecks
+
+With the pixel look on, wrecked cars, skips, barriers, pipe bundles and pallets draw as crisp pixel sprites. With the look off nothing changes.
+
+Check 33.77. Fails on v33.76.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

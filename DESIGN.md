@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.77 - THE PIXEL COVER WRECKS
+
+Co-op hunt while he was away. Job 86e ship 3: with the pixel look on, the cover wrecks (cars, skips, barriers, pipes, pallets) are one cached scene sprite each through pixWrap, keyed by kind, side, size, colour and rust. The soft contact shadow stays on the world.
+
+MEASURED. Check 33.77 passes, and fails on v33.76.
 ## v33.76 - THE PIXEL DOOR AND WINDOW
 
 Co-op hunt while he was away. Job 86d ship 3: the door (frame, panels, lock plate and tag), the window, the stronghold shutter and barricade and the Undercroft wall are filled on the 2 unit art grid with solid district ramp and ink tones, instead of translucent vector rects. Kerbs and ruins already bake through the pixel wall sprite.

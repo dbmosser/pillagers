@@ -11,18 +11,18 @@
  "03-hub-floor": {
   "score": 2,
   "pass": false,
-  "verdict": "The hub reads as a prototype: tiny top corners, station labels all shouting at the same size, a stray glitch caption and amber still used as the accent, so it neither follows the guide nor shows what to do first.",
+  "need": 3,
+  "verdict": "The pixel art hub reads as a place, but it has no clear focal point, the HUD is tiny and unaligned with the style guide, and the screen is crowded with identical NPC sprites, overlapping glow circles and a stray text line.",
   "findings": [
-   "P0 top-right currency strip: Replace credits with '$900' and xp with 'sp'. Put the career items in one vertical 1x1 list (cw-trcol). Set every value at 20px f-cond 600 in tx-1 and every label at 16px in tx-2. Put the list in a --ui-panel at 90% with a 1px --ui-line-hi border, 24px padding and the 4px radius.",
-   "P0 '***experimental feature may glitch***' under 'the last pour': Delete the caption. If a warning is needed, use a 16px '--warn' glyph plus one word, 'beta', inside the station label plate, not free-floating text.",
-   "P1 station labels (wirt the gambler, enter raid!, the mainframe, shop craft and hire, settings, the last pour, the stash, fashion): Set labels to 20px f-cond 600 on a --ui-panel plate with 8px/16px padding. Make 'enter raid' the one hero: 32px f-cond 800, a lime --acc underline or 3px left tab, and no '!'. Shorten 'shop, craft, and hire' to 'trader'. Move plates so they never cover sprites.",
-   "P1 top-left title block 'the undercroft / 12 items in stash · 0 runs': Set 'the undercroft' to 32px f-cond 700 in tx-1 and the subline to 16px tx-2. Place them at 5% margins (about 96px by 54px) inside a panel. Use amber only for warnings. 'stash' counts are already in the top right, so drop the duplicate 'items in stash'.",
-   "P1 bottom hint pill ('the welcome pack is in your stash.' / 'wasd walk · shift jog · e use station'): Shorten the toast to 'welcome pack in stash' at 20px. Show the hints as 16px keycap chips (w a s d, shift, e) that swap to pad glyphs when a pad is in use. Leave at least 16px between pill and hotbar, and place the pill at 5% from the bottom."
+   "P0 top-right career HUD ($900, 0 xp, stash $3,750 bag $0): Build the cw-trcol column: one item per line, all at --fs-body 20px f-cond 600, label in --tx-2 and value in --tx-1, 24px from the edge. '$900' is the only item at 800 weight. Put it on a --ui-panel at 90% with a 1px --ui-line-hi border and --rad 4px.",
+   "P0 station labels ('the stash', 'the last pour', 'fashion'): Delete the sentence, or turn it into a 16px '--warn' tag 'experimental' placed beside the title. Remove the asterisks. Move sprites out from under label boxes or draw labels above the sprite layer with a --scrim plate.",
+   "P1 whole hub floor, 12 identical pillager sprites: Cut the idle sprites to about 4 and spread them out. Ring the player sprite with the --acc lime. Make 'enter raid' the only label with an --acc fill or underline, at 32px against 20px for the other labels.",
+   "P1 station glow circles: Shrink the glow to the 3px ring that already exists. Remove the stray grey disc at centre and the overlapping circle at the mainframe. Reserve lime for the focused or nearest station and use 20% line colour for the others.",
+   "P1 station labels, type consistency: Set labels to --fs-title 32px with 8px/16px padding, a --ui-panel plate and a 1px --ui-line-hi border at 4px radius, or drop the plate and use a shadowed text label. Use --fs-body for secondary stations."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-31-n1/03-hub-floor-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/86d-doors/03-hub-floor-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T06:39",
-  "need": 3
+  "when": "2026-10-21T10:30"
  },
  "04-stash-terminal": {
   "score": 2,
@@ -1810,52 +1810,52 @@
   "when": "2026-10-21T07:38"
  },
  "p1-1080": {
-  "score": 3,
-  "pass": true,
+  "score": 2,
+  "pass": false,
   "need": 3,
-  "verdict": "The raid HUD is dark, flat and readable, with a good hero ammo number and a clear lime-bordered selected slot. Duplicated callouts, a cluttered top-centre cluster and uneven panel and type styling keep it from looking polished.",
+  "verdict": "The pixel-art raid world is clean and readable, but the HUD is a mix of unrelated panel styles, sizes and accents, and several elements collide, so it reads as unfinished rather than polished.",
   "findings": [
-   "P1 top-centre team score panel with the extract chip and the 'running slowly' tag: Make the 0 sp or the timer the one 56px hero. Drop the you/p2 split to a 16px tx-2 line. Move the extract chip fully outside the panel with 8px of space below it. Drop the 'running slowly' tag from this column.",
-   "P1 'running slowly' shown twice (top-centre tag and bottom-left pill) plus the 'standing' pill: Show the status once, as a single bottom-left pill. Use one status-pill component for it and for 'standing': 4px radius, 1px --ui-line-hi border, --ui-panel fill, 16px f-cond.",
-   "P1 bottom-centre prompt strip, 'riot scattergun / fire / use', overlapping the 'player 2 joined' toast and the hotbar: Give the prompt strip a --ui-panel 90% fill with 8px padding. Put 'fire' and 'use' in matching key chips. Move the toast up to about y=840 (40px clear of the strip), and keep at least 12px between the strip and the hotbar.",
-   "P1 bars at bottom-left (stamina, hp 100): Put both bars in one panel P (24px padding, 4px radius, 1px border). Use a dark track with a fill. Set the labels to 16px f-cond with the same weight, and make hp the only bold one. Move the block in to the 5% margin.",
-   "P2 run info panel (top right) and 'f1 controls' (top left): Use panel P for both. Set 'f1 controls' to a 16px tx-2 hint with no pill. Align the goal rows to the header's left edge, set the reward in lime, and add a 1px divider under the header."
+   "P0 bottom centre: hotbar header strip, 'player 2 joined' toast, weapon tooltip: Move toasts to a fixed slot at y≈140 under the team score, never over the hotbar. Give the hint strip its own 32px-high panel (--ui-panel at 90%, 1px --ui-line-hi border, 4px radius), seated 8px above the hotbar and centred on it.",
+   "P1 top centre: team score, timer, extract chip, 'running slowly' and the blackout banner: Put score, timer and extract in one panel. Make the 0 sp hero 56px at weight 800 and the timer 32px. Put 'you 0 sp / p2 0 sp' on a 16px tx-2 line. Add 8px between stacked items. Merge 'running slowly' and the blackout banner into one status line at tx-1 (16px, 4.5:1 minimum) with the blackout text brightened.",
+   "P1 bottom left: standing / stamina / hp stack: Put hp and stamina in one panel (24px padding, 4px radius). Use matching 24px bars, 8px apart, with labels at the same 16px f-cond 600. Make the hp number the only hero-weight item. Align the stack's left edge to the 5% margin (96px) and its bottom edge to the hotbar's bottom edge. Make 'standing' a small tag inside the panel.",
+   "P1 top right: run info card vs bottom right: ammo card vs top left: f1 controls: Use one panel component for all three: --ui-panel at 90%, 1px --ui-line-hi border, 4px radius, 16px padding, 5% margins. Cap the ammo number at 56px, with '/ 144' at 20px tx-2. Align the run info card's right edge and the ammo card's right edge to the same 96px margin. Drop the f1 chip's fill, or move it into the footer legend at 14px.",
+   "P1 top left: 'keyboard' tag and 'player 2' bar; left: 'blackout' tag: Use f-cond at 16px for all of them. Give the 'keyboard' badge the standard 1px --ui-line-hi border with tx-2 text. Dock the player 2 tag with its bar on the standard panel, or hide it when the partner is on screen. Put the 'blackout' tag in the top status line with the other run states."
   ],
-  "pic": "tools/handoff/console/notes/shots/86c-pix-pillager-recipes-2/pix86c-demo-p1-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/86c-pix-pillager-recipes-3/pix86c-demo-p1-1080.jpg",
   "task": "86c-pix-pillager",
-  "when": "2026-10-21T10:22"
+  "when": "2026-10-21T10:36"
  },
  "p2-1080": {
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "The raid HUD is readable and all lower case, but it is a scatter of unrelated boxes: different fills, borders, type sizes and alignments, a hot-key tooltip stack that collides with itself, and a rain hint that fights the map.",
+  "verdict": "The pixel-art world looks coherent, but the HUD is a pile of mismatched floating chips and panels with inconsistent type, crowding at top centre and bottom centre, and a hero number (the ammo count) that is the only clear focal point.",
   "findings": [
-   "P0 bottom centre, above the hotbar ('in pillager's party' chip, 'burst carbine / fire / use' strip): Merge into one 40px-high panel (--ui-panel 90%, 1px --ui-line-hi, 4px radius) set 8px above the hotbar. Put the weapon name left in 20px tx-1. Put key-cap tiles (16px label, 24px square) before 'fire' and 'use'. Delete the separate 'in pillager's party' chip, or move it to the top-left.",
-   "P0 top centre, 'rain · covers your noise and theirs' line: Delete the sentence. Keep only the small 'rain' tag at bottom left. If a callout is needed, use a 'rain' chip at 16px tx-1 on a solid --ui-panel at 90% with 8px padding, and never run it into the 'running slowly' chip. Leave 16px between callouts.",
-   "P1 whole HUD, panel language: Put every HUD block on panel P (fill #16191b at 90%, 1px #4a5257, 4px radius, 16px padding). Remove the skew on the ammo card. Keep the lime 2px top tab only on the star panel, which is the ammo card.",
-   "P1 type scale across the HUD: Use only 56 / 32 / 20 / 16 / 14. Make ammo the one hero at 56px weight 800 and cut 'hp 100' and the 0 sp score to 32px. Set the 'run goals' rows to 20px with the rewards in 16px tx-2. Raise every 13px label (you 0 sp, pl 0 sp, the seal 0%) to a minimum of 16px.",
-   "P1 bottom left (standing, stamina, hp 100): Put hp and stamina in one panel with 24px padding, 5% margin (54px from left and bottom). Make the bars 12px high, hp 12px taller than stamina, labels in 16px above the bars and the number in 32px at the right. Fold 'standing' into this panel as a 16px tag, and delete its separate box."
+   "P1 top centre: team score, timer, extract chip, running slowly chip: One top-centre panel at 16px from the screen top. Timer is the hero at 56px f-cond 800, with 'team score 0 sp' at 20px beneath it. Drop the duplicate you/pl rows into a 16px muted line. Put extract distance at 16px inside the same panel, with a 16px gap before any status chip.",
+   "P1 bottom centre: 'in pillager's party' tooltip, 'burst carbine / fire / use' row, hotbar: Remove the second weapon name from the hotbar label row, since the ammo card already shows it. Move key hints to a 16px footer legend 16px below the hotbar. Show the party tooltip only on hover or pickup, in the standard panel (fill #16191b, 1px #4a5257, 4px radius, 16px type).",
+   "P1 run info / run goals card, top right: Keep one title only ('run goals', 20px tx-1). Rows at 16px, with rewards right-aligned in tx-2. Use the standard panel (#16191b at 90%, 1px #4a5257, 4px radius, 24px padding). Remove the chevron and the second title.",
+   "P1 left column: f1 controls, player 1 bar, running slowly, standing, stamina, hp: Show 'running slowly' once. Put hp and stamina in one panel with a 4px radius, 16px labels in tx-1 outside the bars, and bars of equal height (12px). Shrink 'f1 controls' to a 16px key hint in the footer legend. Group stance and status as plain 16px text above the bars on an 8px grid.",
+   "P2 ammo card, bottom right: Panel fill #16191b, 1px border. Loaded count at 56px 800 in tx-1, reserve at 20px tx-2. Attach the 3px lime tab to the panel's top-left edge. Align the card's bottom to the hotbar baseline."
   ],
-  "pic": "tools/handoff/console/notes/shots/86c-pix-pillager-recipes-2/pix86c-demo-p2-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/86c-pix-pillager-recipes-3/pix86c-demo-p2-1080.jpg",
   "task": "86c-pix-pillager",
-  "when": "2026-10-21T10:22"
+  "when": "2026-10-21T10:36"
  },
  "pix86c-fashion": {
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "It's a clean, consistent dark card with a clear title and close button, but the cosmetic tiles are all the same dim and the operator preview is shrunk and clipped, so there's no clear hero.",
+  "verdict": "A clean, consistent dark card with a good pixel turntable and a clear tab bar, but the eye has no single place to land, the tiles are cluttered and low contrast, and the left list and a stray toast are rough.",
   "findings": [
-   "P1 your operator panel, bottom list: Make the preview the hero and enlarge the figure to ~60% of the panel height. Turn the attribute list into 48px rows with 20px values, and drop the icon boxes. Show 5 rows without clipping, or move the rest into the tabs.",
-   "P1 tile grid, all 18 tiles: Enlarge the thumbnail to ~72px. Raise names to 16px tx-1 for locked items and 20px for owned items. Keep the hat art at full brightness and show only the lock glyph and requirement dimmed.",
-   "P1 selected tile, 'bare' and 'crop': Selected = --ui-raised fill with a 2px --acc border and a lime 'worn' tag at 16px. Keep focus as a separate 3px lime outline with a glow offset. Add a ~48px gap or a divider between the headgear and hairstyle groups.",
-   "P1 header row, top right: Show a single money figure at 20px tx-1 and drop stash/bag/xp from the fashion screen. Alternatively, align them as one 16px label/value group. Keep the title as the only 32px bold item.",
-   "P2 tab row (head/body/pack/colours/sets): Raise the tabs to 20px with 32px spacing and a full-width 3px lime underline on the active one. Delete the 'headgear' subheader, or make it a 16px divider only where a tab has several groups."
+   "P1 head tile grid, whole rack: Make the worn tile a 2px --acc border with an accent-ink 'worn' tag. Drop the lock icon on locked tiles and dim the sprite to 50% instead. Make the rarity bar a 3px top bar, not a full coloured outline. Keep the name at 20px tx-1 and the unlock line at 16px tx-2.",
+   "P1 tile text (names and unlock lines): Name 20px f-cond 600 tx-1, unlock line 16px tx-2 (at least 4.5:1). Pull both under the sprite with 8px between them. Shorten the long unlock strings, for example '2 wardens (0/2)'.",
+   "P1 left column, 'your operator' list: Cut the left list to the slots that have no rack, or turn it into 16px labels over 20px values with a 56px row height and no scrollbar. Enlarge the preview to about 70% of the column and centre a 24px-tall rim light under it. Add a visible focus bar (--acc 3px left edge) on the focused row.",
+   "P1 header row and subtitle: Delete the subtitle sentence. Keep only '$900' as the hero at 32px tx-1, and make the stash/bag and xp 16px tx-2 and right-aligned. Drop 'xp' if it is 0. Space everything on the 8px grid with 24px between groups.",
+   "P2 bottom toast 'the welcome pack is in your stash.': Move it fully outside the card or into the card's footer row. Use a standard panel with 16px text and no sentence ending, for example 'welcome pack in stash'. Make it fade out after 3 seconds."
   ],
-  "pic": "tools/handoff/console/notes/shots/86c-pix-pillager-recipes-2/pix86c-fashion-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/86c-pix-pillager-recipes-3/pix86c-fashion-1080.jpg",
   "task": "86c-pix-pillager",
-  "when": "2026-10-21T10:23"
+  "when": "2026-10-21T10:37"
  },
  "pix86c-looks": {
   "score": 2,
@@ -1877,32 +1877,48 @@
   "score": 2,
   "pass": false,
   "need": 4,
-  "verdict": "The pixel art world looks good, but the HUD is a busy set of mismatched boxes with wrapped, clipped and duplicated text, and nothing on screen is clearly the main thing.",
+  "verdict": "The pixel art world reads well, but the HUD is a pile of mismatched panels with five accent colours, three corners of dense text, and no clear hero number, so it looks like a prototype and not a shipped game.",
   "findings": [
-   "P0 top-right run info / contracts panel: Show each contract on one line, trimmed to 'secure cases 0/2', with the count right-aligned in a 16px label column. Show at most 3 lines. Drop 'dawn clear' or move it to the timer. Use 16px tx-2 for the names and tx-1 for the counts.",
-   "P0 top-right cash/stash/xp/backpack plus run info plus top-left pillager bots: Give all three the same panel P: fill #16191b at 90%, 1px #4a5257 border, 4px radius, 16px padding, 16px/600 label type. Use one header colour (tx-2). Stack the top-right items in one column of equal-width rows, 8px apart.",
-   "P1 bottom-right ammo card: Keep the 56px/800 hero number in tx-1 and the 20px weapon name. Delete the second '$1,620' line or the duplicate backpack row in the top right. Put the 'b / i' hint at 14px in the footer-legend style. Use the same panel fill and border as the other HUD panels.",
-   "P1 center top, timer and extract pill: Put a --scrim backing under the timer at 56px/800. Put the extract pill 8px below it with 16px text and the arrow inside the pill. Use teal #47d8c6 only for the extract state.",
-   "P1 bottom-left status stack: Make both bars the same height (12px) and label them 16px above the bar in tx-2. Put the hp value at 32px on the right. Use --ok green for hp and --extract teal for stamina, with a 1px line border. Make 'standing' a quiet 16px label, not a tab."
+   "P0 top-right: cash/stash panel and run info panel: Collapse run info by default to a single 20px line (contract 1 of 3). Show the full list only on a held key. Give both panels the same 16px padding and 8px gap, and put a 24px margin from the screen edge. Make the progress counts right-aligned tx-2 16px. Use one status colour (--ok) for done lines only.",
+   "P0 whole HUD: colour use: Switch the amber elements (bots header, toast bar and text, selected slot border, status pill text) to tx-1 text with a 3px --acc left bar, and keep --warn only for real warnings. Reserve teal for the extraction chip and arrow. Make the selected slot border and the ammo underline --acc.",
+   "P1 bottom-right weapon panel: Use a --ui-panel fill at 90% with a 1px --ui-line-hi border and 24px padding. Put the name on the left (20px tx-2) and the hero number on the right (56px 800). Make the ammo reserve 20px tx-2. Move the backpack line to a 16px footer row. Align the left edges of all rows. Keep a 3px --acc left tab instead of the stray tick.",
+   "P1 bottom-left: status 'standing', stamina bar, hp bar: Draw both bars on a --ui-panel backing 8px high and 360px wide. Set the labels outside the bars at 16px tx-2 with the value at 20px tx-1. Make hp the taller bar (16px) and stamina thin (6px). Drop 'standing' to the same 16px label as the other tags, with no pill.",
+   "P1 left: current pillager bots panel: Shrink to 320px wide with 16px labels and 8px row gaps. Use the same panel P (1px --ui-line-hi, 4px radius, 24px padding) as on the right. Restyle 'f1 controls' as a 16px --fs-label key hint at the footer legend size, with no box."
   ],
-  "pic": "tools/handoff/console/notes/shots/86c-pix-pillager-recipes-2/pix86c-raid-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/86c-pix-pillager-recipes-3/pix86c-raid-1080.jpg",
   "task": "86c-pix-pillager",
-  "when": "2026-10-21T10:24"
+  "when": "2026-10-21T10:38"
  },
  "pix86c-raid-aims": {
   "score": 2,
   "pass": false,
   "need": 4,
-  "verdict": "A debug sprite-sheet overlay and a pixel-test panel sit on top of the raid view, covering about half the screen and hiding the career HUD, so this reads as a dev screen and not a shippable raid HUD.",
+  "verdict": "This is a raid screen with two debug art-test panels pasted over it (an aim-direction sheet across the top, a comparison inset at bottom right), so the real HUD is half hidden and the screen does not read as a shippable game view.",
   "findings": [
-   "P0 top panel, full width, y 16-505: Gate it behind a debug flag, or render it only in screenshot tooling. Shipped raid frames should show the world with the 5% margins and nothing else.",
-   "P0 bottom-right, x 1265-1905, y 825-1065: Remove it from the live HUD. If it must stay as a dev panel, put it outside the 5% safe margin, don't let it overlap the hotbar, and use a minimum of 14px text.",
-   "P1 bottom-left: stamina and hp bars, 'standing' tag: Use one label size (16px f-cond 600, tx-1) and the hero 56px for at most one number. Make the bars 12px high with a --ui-line track and a --ok fill. Put the labels outside the bars, and give 'standing' the same panel treatment as the rest of the HUD.",
-   "P1 hotbar, x 565-1265, y 955-1060: Use one focus style: a 2px --acc border plus a --ui-raised fill on the active slot only. Idle slots get a 1px --ui-line-hi border. Make key hints 16px tx-2. Give the hotbar a fixed right edge, 8px from the other HUD elements.",
-   "P1 left toasts: 'codex entry · scav pistol · common' and 'contract item nearby': Make one toast component: --ui-panel fill, 1px border, 3px left tab in the colour of the kind (--acc for contract, --tx-2 for codex), 16px text, 8px stack gap, and 24px clear of the stamina bar."
+   "P0 top overlay, 8 aim directions sheet (about y 15 to 505, full width): Keep it out of the shipped HUD layer. If it must stay as a review shot, render it as a separate image, not over the raid. Otherwise cap it at 25% of screen height and move it off the top-right HUD corner.",
+   "P0 bottom right, two inset comparison panels ('now - raid size' / 'pixel test - raid size', x 1265 to 1905, y 825 to 1065): Remove from the raid layer. If kept for review, give the insets a 24px margin from the screen edge and the 16px minimum label size, and keep them clear of the hotbar and status text.",
+   "P1 hotbar, bottom centre (x 565 to 1265): Use one focus style: a 2px --acc border plus a --ui-raised fill on the active slot only. Make unselected slots flat --ui-panel with a --ui-line-hi border. Anchor the tag to the active slot at 16px, with a single chip background.",
+   "P1 bottom left HUD (standing / stamina / hp 100): Make the hp bar 12px tall with the 56px hero number set separately beside it, one corner tick only. Use the same --rad 4px panel for 'standing'. Keep a 48px bottom margin (the --sp-5 space token). Move stamina to a thin 6px line under hp, in --tx-2 instead of blue.",
+   "P1 left callouts ('codex entry - scav pistol - common', 'contract item nearby', x 15 to 315, y 740 to 797): Use one pill component: same height of 28px, 16px text, 3px left bar in the rarity colour (--r-common #9da3a8 here, warn amber for contract). Align the left edge to the 5% margin (96px) shared with the HUD, with an 8px gap between pills."
   ],
-  "pic": "tools/handoff/console/notes/shots/86c-pix-pillager-recipes-2/pix86c-raid-aims-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/86c-pix-pillager-recipes-3/pix86c-raid-aims-1080.jpg",
   "task": "86c-pix-pillager",
-  "when": "2026-10-21T10:24"
+  "when": "2026-10-21T10:38"
+ },
+ "pix86c-native4k": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The raid HUD is readable and all lower case, but it is a pile of equal-weight small boxes with mixed type sizes and no clear lead element, and it looks like a template.",
+  "findings": [
+   "P0 top-right: cash/stash and run info panels: Build the 1x1 vertical list at a uniform 20px/16px scale. Use a 24px margin, one panel width (about 320px), and a tx-2 label with a tx-1 value. Drop the chevron. Move 'no downs yet' into the same left-aligned column as the other rows.",
+   "P0 bottom-right ammo panel: Put the weapon name at 16px tx-2 top-left and the 56px count on the right. Reduce the footer to one 16px tx-2 line ('backpack $1,620'). Anchor the tab flush at the left edge. Align the right padding to 24px.",
+   "P1 top-left: current pillager bots: Make the heading tx-2 16px and show the player row in lime only. Use 28px row height, 1px --ui-line dividers, and a 24px margin. Use the same panel treatment as the career list.",
+   "P1 centre top: timer, extract 152m, contract toast: Make the timer 56px f-cond 800 tx-1. Shorten the toast to 'contract item nearby'. Delete the duplicate bottom-left entry. Use a single toast stack at 16px.",
+   "P1 bottom-left: standing, stamina, hp: Both bars 12px high on a --ui-line track. Fill hp with --ok and stamina with a muted tx-2. Put 'hp 100' at 20px outside the bar, above it. Use the same 4px radius as the other panels. Margin 24px."
+  ],
+  "pic": "tools/handoff/console/notes/shots/86c-pix-pillager-recipes-3/pix86c-native4k-1080.jpg",
+  "task": "86c-pix-pillager",
+  "when": "2026-10-21T10:37"
  }
 }

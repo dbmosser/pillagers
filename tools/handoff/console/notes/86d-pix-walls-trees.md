@@ -28,3 +28,9 @@ Facts: wallSprite ~38891, vegSprite ~38788, tree/bush draw ~39596-39635, shadowE
 - Still left: doors, windows, kerbs, ruins, shWallDraw, Undercroft wall copy; trees/bushes (vegSprite) + live trunks; shadowE hard shadows; tree-list/seg-grid parts of the check.
 - SHIPPED v33.69 cw-pixveg: pixel tree/bush canopies (map vegPal tones, hard alpha, dark bottom/right edge, bush ground blob in sprite), trunk at art px, hard pixel shadowE (a bit bigger/darker, drawn at globalAlpha). Used G.vegPal (map tinted, day/night kept) instead of PIXRAMPS.plants. Picture notes/shots/86d-veg/21-raid-hud-calm-1080.jpg. Watch: tree sway now steps 2 units at a time.
 - STILL LEFT: doors, windows, kerbs, ruins, stronghold shwallDraw, Undercroft wall copy; 4 districts day/night pictures; critic run.
+
+## Run 6 (10-21, lane a)
+- SHIPPED v33.76 cw-pixdoors: pixel door (frame, panels, lock plate, tag), window (sill, ink frame, 3 glass tones, muntins), stronghold shutter and barricade (pixShDraw), Undercroft wall (pixHubWall, baked once, hubWallHex tones kept). Kerbs and ruins already bake through wallSprite, so they were pixel since v33.66 (check asserts it).
+- Preflight on port 9351 TIMED OUT twice in the dry run (same as 86e's cw-pixcover; lane a Chrome slow, not the check: parse passed). Shipped straight through shipq: new check PASS twice, fingerprint held (85/374, 165/593).
+- Pictures notes/shots/86d-doors/ (hub 03, raid 21, night board 64). Critic on hub: 2, all findings are HUD/labels/crowd (not walls; other jobs own them). Per-district day/night shots need staging the camera has no screen for; the raid and hub are the pictures.
+- Watch on next play: doors and windows are solid blocks now, lock tag is opaque.

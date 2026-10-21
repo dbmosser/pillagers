@@ -1,31 +1,15 @@
 
-The provided code snippet is an HTML document with embedded CSS styles and JavaScript. It appears to be a web page or application interface, possibly for a game or interactive experience. Here's a breakdown of the key components:
-
-### HTML Structure
-
-1. **Canvas Elements**:
-   - `<canvas id="cv"></canvas>`: A canvas element used for rendering graphics.
-   - `<canvas id="hcv"></canvas>`: Another canvas element, likely for additional graphical content.
-
-2. **Hub Toast Notification**:
-   - `<div id="hubtoast"></div>`: A container for notifications or messages that appear on the screen.
-
-3. **Pause Box**:
-   - `<div class="pausebox" id="pausebox">`: A modal dialog box that appears when a pause event occurs.
-     - Contains various elements like headers, text areas, buttons, and other interactive controls.
-
-4. **Buttons in Pause Box**:
-   - `#resumebtn`, `#pausesetbtn`, `#lbbtn`, `#fbbtn`: Buttons for resuming the run, accessing settings, viewing the leaderboard, and providing feedback.
-   - `#confirmabandon`: A button to abandon the current run.
-
-5. **Text Areas**:
-   - `#pausenote`: A text area for users to input notes or comments about their experience.
-   - `#pausefb`: A text area for reporting problems directly from the pause menu.
-
-### CSS Styles
 NONE
 NONE
 NONE
+NONE
+NONE
+NONE
+LINE 49412: for(i=0;i<DR.length;i++){ - This loop uses the variable `i` without declaring it. It should be declared with `let` or `var`.
+
+LINE 49578: var fk=Lt.fl?(.80+.20*Math.sin(HB.t*9+Lt.f)):1; - The property access on `Lt.fl` and `Lt.f` can lead to a TypeError if `Lt` is null or undefined.
+
+LINE 49600: if(NET.on) netDrawTags(S,ox,oy); - This line calls `netDrawTags` without checking if `NET` or its methods are defined.
 NONE
 NONE
 NONE

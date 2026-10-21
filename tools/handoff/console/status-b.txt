@@ -1,1 +1,1 @@
-10-21 05:28 86h-pix-sets-wardrobe: waiting on 86g-pix-pillager-states, parked in blocked/ (not counted as a try), $0.26310540000000004
+10-21 06:44 waiting: another helper is just starting (memory check again in a few minutes); 86g-pix-pillager-states kept
