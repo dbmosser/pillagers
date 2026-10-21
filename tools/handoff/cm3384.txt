@@ -1,0 +1,7 @@
+v33.84: the pixel role gear
+
+With the pixel look on, role gear sits on the pixel shoulders, the aim dots start on the pixel gun, and the peddler and the survivor are pixel figures.
+
+Check 33.84. Fails on v33.83.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
