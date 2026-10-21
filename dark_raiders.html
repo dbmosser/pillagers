@@ -3247,7 +3247,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.16';
+var VER='33.17';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -36712,6 +36712,7 @@ function drawOpB(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
       wc.fillStyle='#ffffff'; wc.fillRect(hx2+fl*2.6-1.4,ty-39.4,1.0,0.8);
     }
   }
+  wc.restore();   // v33.xx (cw-headbody), job 68, his a01 D: the scaled head ends with the hair, face and hats; the suit body paint, caps and pads below draw at body scale (pads at their own FIG_VEST, his a05 B)
   // v10.54, his notes: THE SUIT'S OWN PAINT. Last, over everything the racks
   // would have put there, so a suit is a suit and not a coat colour.
   if(OUTF&&OUTF.mark){
@@ -36723,24 +36724,28 @@ function drawOpB(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
       wc.fillRect(_ox-5,ty-20.6,10,1.1); wc.fillRect(_ox-5,ty-18.2,10,1.1); wc.fillRect(_ox-4.4,ty-15.8,8.8,1.1);
       wc.fillRect(_ox-0.6,ty-21.6,1.2,9.2);
       wc.fillRect(x-4.6+swing2*.5,ty-10.4,1.4,6.4-liftB*.5); wc.fillRect(x+3.4+swing*.5,ty-10.4,1.4,6.4-liftA*.5);
+      wc.save(); wc.translate(hx2,ty-22); wc.scale(FIG_HEAD,FIG_HEAD); wc.translate(-hx2,-(ty-22));   // v33.xx (cw-headbody): scaled head for the skull
       wc.fillStyle=INK;
       wc.beginPath(); wc.ellipse(hx2-3.4,ty-29.8,2.9,3.3,0,0,6.2832); wc.fill();
       wc.beginPath(); wc.ellipse(hx2+3.4,ty-29.8,2.9,3.3,0,0,6.2832); wc.fill();
       wc.fillRect(hx2-0.7,ty-27.2,1.4,1.6);
       wc.fillRect(hx2-4.2,ty-25.4,8.4,1.0);
       wc.fillRect(hx2-2.6,ty-25.4,0.8,1.8); wc.fillRect(hx2-0.4,ty-25.4,0.8,1.8); wc.fillRect(hx2+1.8,ty-25.4,0.8,1.8);
+      wc.restore();   // v33.xx (cw-headbody)
     } else if(_om==='robot'){
       // plate seams, a chest light, a red eye bar across the face, an antenna.
       wc.fillStyle=INK;
       if(_BLD){ wc.save(); buildPath(_ox,ty,(_BLD==='broad')?BUILD_BROAD:BUILD_CURVED,0); wc.clip(); wc.fillRect(_ox-0.5,ty-22,1,11); wc.fillRect(_ox-10,ty-16.6,20,1); wc.restore(); }   // v20.05: the seams stay on the build's body
       else { wc.fillRect(_ox-0.5,ty-22,1,11); wc.fillRect(_ox-6.5,ty-16.6,13,1); }
       wc.fillStyle='#4de3d0'; wc.fillRect(_ox+fl*2.6-1.2,ty-19.6,2.4,1.6);
+      wc.save(); wc.translate(hx2,ty-22); wc.scale(FIG_HEAD,FIG_HEAD); wc.translate(-hx2,-(ty-22));   // v33.xx (cw-headbody): scaled head for the robot eye bar and antenna
       wc.fillStyle=INK;       rrF(hx2-7.8,ty-32.4,15.6,5.4,1.4);
       wc.fillStyle='#1a2028'; rrF(hx2-7.2,ty-31.9,14.4,4.4,1.1);
       wc.fillStyle='#ff3a3a'; wc.fillRect(hx2-5.8,ty-30.6,11.6,1.6);
       wc.fillStyle='#ffb0a0'; wc.fillRect(hx2-1.2+Math.cos(face)*3.6,ty-30.6,2.4,1.6);
       wc.fillStyle=INK;       wc.fillRect(hx2-0.6,ty-42.4,1.2,4.6);
       wc.fillStyle='#ff3a3a'; wc.fillRect(hx2-1.1,ty-43.6,2.2,1.6);
+      wc.restore();   // v33.xx (cw-headbody)
     } else if(_om==='trooper'){
       // shoulder plates and a chest plate in the helmet's green, lit on top.
       wc.fillStyle=INK;     rrF(_ox-9.6,ty-22.6,6,6.4,2.2); rrF(_ox+3.6,ty-22.6,6,6.4,2.2);
@@ -36754,8 +36759,10 @@ function drawOpB(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
       wc.fillStyle=INK;       rrF(_ox-8.6,ty-13.6,17.2,4.4,1.6);
       wc.fillStyle='#101216'; rrF(_ox-8,ty-13.2,16,3.6,1.3);
       wc.fillStyle='#f7ddc2'; wc.fillRect(_ox-5.4,ty-21.4,10.8,1.6);
+      wc.save(); wc.translate(hx2,ty-22); wc.scale(FIG_HEAD,FIG_HEAD); wc.translate(-hx2,-(ty-22));   // v33.xx (cw-headbody): scaled head for the android eye band
       wc.fillStyle=INK;       rrF(hx2-7.8,ty-32.0,15.6,4.6,1.4);
       wc.fillStyle='#1a1c22'; rrF(hx2-7.2,ty-31.5,14.4,3.6,1.1);
+      wc.restore();   // v33.xx (cw-headbody)
     } else if(_om==='explorer'){
       // a teal tank top with bare shoulders, a belt, and a holster on each hip.
       wc.fillStyle=(SKINCOL[st.hero?cosWorn('skin'):(st.skin||'fair')]||SKINCOL.fair);
@@ -36783,12 +36790,14 @@ function drawOpB(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
       wc.fillStyle=_dLo; wc.beginPath(); wc.moveTo(_ox+1.6,ty-21.6); wc.lineTo(_ox+4.0,ty-21.6); wc.lineTo(_ox+0.6,ty-14.2); wc.closePath(); wc.fill();
       wc.strokeStyle='#2e2016'; wc.lineWidth=1.3; wc.beginPath(); wc.moveTo(_ox-4.6,ty-21.4); wc.lineTo(_ox+4.8,ty-13.6); wc.stroke();
       wc.fillStyle='#2a1e14'; wc.fillRect(_ox-6.4,ty-13.6,12.8,1.2); wc.fillStyle='#a8996a'; wc.fillRect(_ox-0.7,ty-13.6,1.4,1.2);
+      wc.save(); wc.translate(hx2,ty-22); wc.scale(FIG_HEAD,FIG_HEAD); wc.translate(-hx2,-(ty-22));   // v33.xx (cw-headbody): scaled head for the peddler hat
       wc.fillStyle=INK;       rrF(hx2-12.6,ty-38.8,25.2,3.8,1.9);
       rrF(hx2-7.6,ty-43.6,15.2,7.4,3);
       wc.fillStyle='#4a3524'; rrF(hx2-12.0,ty-38.2,24.0,2.6,1.3);
       wc.fillStyle='#5e4430'; rrF(hx2-7.0,ty-43.0,14.0,6.4,2.6);
       wc.fillStyle='#2a1e14'; wc.fillRect(hx2-7.0,ty-39.2,14.0,1.3);
       wc.fillStyle='#7c5c40'; wc.fillRect(hx2-6.0,ty-42.6,6.4,1.0); wc.fillRect(hx2-11.2,ty-38.2,8,0.8);
+      wc.restore();   // v33.xx (cw-headbody)
     } else if(_om==='survivor'){
       // v23.xx (spr21): THE SURVIVOR. A torn civilian jacket (notches in the hem, a darker patch), a bandage round the head with a
       // spot of blood, and when you are near and he has not been helped, one arm raised with the open hand: unarmed, asking.
@@ -36798,10 +36807,12 @@ function drawOpB(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
       wc.fillStyle=darkHex(cc,.22); wc.fillRect(_ox+1.0,ty-19.6,3.0,2.8);
       wc.fillStyle=litHex(cc,.30); wc.fillRect(_ox+1.4,ty-19.2,0.6,0.6); wc.fillRect(_ox+3.0,ty-17.4,0.6,0.6);
       wc.fillStyle=darkHex(cc,.40); wc.beginPath(); wc.moveTo(_ox-2.6,ty-22); wc.lineTo(_ox+2.6,ty-22); wc.lineTo(_ox,ty-18.6); wc.closePath(); wc.fill();
+      wc.save(); wc.translate(hx2,ty-22); wc.scale(FIG_HEAD,FIG_HEAD); wc.translate(-hx2,-(ty-22));   // v33.xx (cw-headbody): scaled head for the survivor head bandage
       wc.fillStyle=INK; wc.fillRect(hx2-8.1,ty-36.8,16.2,3.0);
       wc.fillStyle='#ece6d8'; wc.fillRect(hx2-7.6,ty-36.4,15.2,2.2);
       wc.fillStyle='#d8d0c0'; wc.beginPath(); wc.moveTo(hx2-4.2,ty-38.0); wc.lineTo(hx2-1.4,ty-38.0); wc.lineTo(hx2+5.6,ty-34.6); wc.lineTo(hx2+3.4,ty-34.2); wc.closePath(); wc.fill();
       wc.fillStyle='#9a2a20'; wc.fillRect(hx2+3.0,ty-36.2,1.6,1.3);
+      wc.restore();   // v33.xx (cw-headbody)
       if(st.wave){
         var _wv=Math.sin(((typeof G!=='undefined'&&G&&G.t)||0)*6.5)*1.3, _sx=_ox-fl*6.6, _hx=_ox-fl*10.0+_wv, _hy=ty-33.6;
         wc.lineCap='round';
@@ -36869,6 +36880,7 @@ function drawOpB(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     wc.fillText(Math.ceil(st.healSec)+'s',hx2,_hy+3);
     wc.textAlign='left';
   }
+  wc.save(); wc.translate(hx2,ty-22); wc.scale(FIG_HEAD,FIG_HEAD); wc.translate(-hx2,-(ty-22));   // v33.xx (cw-headbody): the head scale again for the mouth (closed by the restore after it)
   // a small mouth, hurt pulls it into a grimace
   wc.fillStyle=(_BLD==='curved'&&!(OUTF&&/^(skeleton|robot|trooper)$/.test(OUTF.mark))&&!/^(mask|spartan|ghostmask|gasmask)$/.test(HAT))?'#c25a6c':'#8a5c46';   /* v20.15, code review: nor over a mask or helmet worn as a hat */   // v20.05: not on a skull, a robot or a helmet   // v20.01: Curved, a rose mouth
   if(st.hurt>0) wc.fillRect(hx2-2,ty-25.6,4,1.6);
@@ -51229,7 +51241,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.16: They read as short callouts with no full stop: pillager joined, waiting for player 2, party ascended, out until the next raid. Check 33.16 fails on v33.15',
+  now:'v33.17: The head, hair, hats, face and suit head marks stay 1.2; shoulder caps and suit body paint are back at body scale and the pauldrons at 1.12. Check 33.17 fails on v33.16',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

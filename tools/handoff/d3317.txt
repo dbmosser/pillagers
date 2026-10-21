@@ -1,0 +1,5 @@
+## v33.17 - ONLY THE HEAD IS SCALED UP, NOT THE SHOULDERS
+
+Co-op hunt while he was away. Job 68: the 1.2 head scale (his a01 D pick) also took in the suit paint, the team shoulder caps and the pauldrons, so pauldrons drew at 1.344 instead of his a05 B 1.12 and suit marks slid down the body.
+
+MEASURED. Check 33.17 passes, and fails on v33.16.

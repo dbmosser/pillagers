@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.17 - ONLY THE HEAD IS SCALED UP, NOT THE SHOULDERS
+
+Co-op hunt while he was away. Job 68: the 1.2 head scale (his a01 D pick) also took in the suit paint, the team shoulder caps and the pauldrons, so pauldrons drew at 1.344 instead of his a05 B 1.12 and suit marks slid down the body.
+
+MEASURED. Check 33.17 passes, and fails on v33.16.
 ## v33.16 - THE 2-PLAYER PARTY LINES BECOME SHORT CALLOUTS
 
 Co-op hunt while he was away. His rule (RULES: never an explaining sentence on screen; answer 27 lets us reword): the 2-player hub toasts and PARTY window lines were full sentences with a full stop, such as pillager joined your party

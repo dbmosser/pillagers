@@ -1,0 +1,56 @@
+{
+    "title":  "ONLY THE HEAD IS SCALED UP, NOT THE SHOULDERS",
+    "why":  "Job 68: the 1.2 head scale (his a01 D pick) also took in the suit paint, the team shoulder caps and the pauldrons, so pauldrons drew at 1.344 instead of his a05 B 1.12 and suit marks slid down the body.",
+    "now":  "The head, hair, hats, face and suit head marks stay 1.2; shoulder caps and suit body paint are back at body scale and the pauldrons at 1.12.",
+    "edits":  [
+                  {
+                      "anchor":  "  // v10.54, his notes: THE SUIT\u0027S OWN PAINT. Last, over everything the racks",
+                      "replacement":  "  wc.restore();   // v33.xx (cw-headbody), job 68, his a01 D: the scaled head ends with the hair, face and hats; the suit body paint, caps and pads below draw at body scale (pads at their own FIG_VEST, his a05 B)\n  // v10.54, his notes: THE SUIT\u0027S OWN PAINT. Last, over everything the racks"
+                  },
+                  {
+                      "anchor":  "      wc.fillRect(x-4.6+swing2*.5,ty-10.4,1.4,6.4-liftB*.5); wc.fillRect(x+3.4+swing*.5,ty-10.4,1.4,6.4-liftA*.5);",
+                      "replacement":  "      wc.fillRect(x-4.6+swing2*.5,ty-10.4,1.4,6.4-liftB*.5); wc.fillRect(x+3.4+swing*.5,ty-10.4,1.4,6.4-liftA*.5);\n      wc.save(); wc.translate(hx2,ty-22); wc.scale(FIG_HEAD,FIG_HEAD); wc.translate(-hx2,-(ty-22));   // v33.xx (cw-headbody): scaled head for the skull"
+                  },
+                  {
+                      "anchor":  "      wc.fillRect(hx2-2.6,ty-25.4,0.8,1.8); wc.fillRect(hx2-0.4,ty-25.4,0.8,1.8); wc.fillRect(hx2+1.8,ty-25.4,0.8,1.8);",
+                      "replacement":  "      wc.fillRect(hx2-2.6,ty-25.4,0.8,1.8); wc.fillRect(hx2-0.4,ty-25.4,0.8,1.8); wc.fillRect(hx2+1.8,ty-25.4,0.8,1.8);\n      wc.restore();   // v33.xx (cw-headbody)"
+                  },
+                  {
+                      "anchor":  "      wc.fillStyle=INK;       rrF(hx2-7.8,ty-32.4,15.6,5.4,1.4);",
+                      "replacement":  "      wc.save(); wc.translate(hx2,ty-22); wc.scale(FIG_HEAD,FIG_HEAD); wc.translate(-hx2,-(ty-22));   // v33.xx (cw-headbody): scaled head for the robot eye bar and antenna\n      wc.fillStyle=INK;       rrF(hx2-7.8,ty-32.4,15.6,5.4,1.4);"
+                  },
+                  {
+                      "anchor":  "      wc.fillStyle=\u0027#ff3a3a\u0027; wc.fillRect(hx2-1.1,ty-43.6,2.2,1.6);",
+                      "replacement":  "      wc.fillStyle=\u0027#ff3a3a\u0027; wc.fillRect(hx2-1.1,ty-43.6,2.2,1.6);\n      wc.restore();   // v33.xx (cw-headbody)"
+                  },
+                  {
+                      "anchor":  "      wc.fillStyle=INK;       rrF(hx2-7.8,ty-32.0,15.6,4.6,1.4);",
+                      "replacement":  "      wc.save(); wc.translate(hx2,ty-22); wc.scale(FIG_HEAD,FIG_HEAD); wc.translate(-hx2,-(ty-22));   // v33.xx (cw-headbody): scaled head for the android eye band\n      wc.fillStyle=INK;       rrF(hx2-7.8,ty-32.0,15.6,4.6,1.4);"
+                  },
+                  {
+                      "anchor":  "      wc.fillStyle=\u0027#1a1c22\u0027; rrF(hx2-7.2,ty-31.5,14.4,3.6,1.1);",
+                      "replacement":  "      wc.fillStyle=\u0027#1a1c22\u0027; rrF(hx2-7.2,ty-31.5,14.4,3.6,1.1);\n      wc.restore();   // v33.xx (cw-headbody)"
+                  },
+                  {
+                      "anchor":  "      wc.fillStyle=INK;       rrF(hx2-12.6,ty-38.8,25.2,3.8,1.9);",
+                      "replacement":  "      wc.save(); wc.translate(hx2,ty-22); wc.scale(FIG_HEAD,FIG_HEAD); wc.translate(-hx2,-(ty-22));   // v33.xx (cw-headbody): scaled head for the peddler hat\n      wc.fillStyle=INK;       rrF(hx2-12.6,ty-38.8,25.2,3.8,1.9);"
+                  },
+                  {
+                      "anchor":  "      wc.fillStyle=\u0027#7c5c40\u0027; wc.fillRect(hx2-6.0,ty-42.6,6.4,1.0); wc.fillRect(hx2-11.2,ty-38.2,8,0.8);",
+                      "replacement":  "      wc.fillStyle=\u0027#7c5c40\u0027; wc.fillRect(hx2-6.0,ty-42.6,6.4,1.0); wc.fillRect(hx2-11.2,ty-38.2,8,0.8);\n      wc.restore();   // v33.xx (cw-headbody)"
+                  },
+                  {
+                      "anchor":  "      wc.fillStyle=INK; wc.fillRect(hx2-8.1,ty-36.8,16.2,3.0);",
+                      "replacement":  "      wc.save(); wc.translate(hx2,ty-22); wc.scale(FIG_HEAD,FIG_HEAD); wc.translate(-hx2,-(ty-22));   // v33.xx (cw-headbody): scaled head for the survivor head bandage\n      wc.fillStyle=INK; wc.fillRect(hx2-8.1,ty-36.8,16.2,3.0);"
+                  },
+                  {
+                      "anchor":  "      wc.fillStyle=\u0027#9a2a20\u0027; wc.fillRect(hx2+3.0,ty-36.2,1.6,1.3);",
+                      "replacement":  "      wc.fillStyle=\u0027#9a2a20\u0027; wc.fillRect(hx2+3.0,ty-36.2,1.6,1.3);\n      wc.restore();   // v33.xx (cw-headbody)"
+                  },
+                  {
+                      "anchor":  "  // a small mouth, hurt pulls it into a grimace",
+                      "replacement":  "  wc.save(); wc.translate(hx2,ty-22); wc.scale(FIG_HEAD,FIG_HEAD); wc.translate(-hx2,-(ty-22));   // v33.xx (cw-headbody): the head scale again for the mouth (closed by the restore after it)\n  // a small mouth, hurt pulls it into a grimace"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027cw-headbody, job 68 (his a01 D head 1.2 and a05 B pauldrons 1.12): only the head, hair, hats, face and the suit head marks draw at the 1.2 head scale; the shoulder caps and the suit body paint draw at body scale and the pauldrons at FIG_VEST, not 1.344\u0027,\n   run:function(){\n     if(typeof drawOp!==\u0027function\u0027||typeof drawPads!==\u0027function\u0027||typeof FIG_HEAD!==\u0027number\u0027||typeof FIG_VEST!==\u0027number\u0027) return \u0027SKIP: no painter here\u0027;\n     if(typeof TEAMHI!==\u0027object\u0027||!TEAMHI||!TEAMHI.ally) return \u0027SKIP: no team colours here\u0027;\n     var bad=[], w0=wc, od=drawPads, painter=(typeof drawOp0===\u0027function\u0027)?drawOp0:drawOp, cvs=document.createElement(\u0027canvas\u0027), x2, hi, seen={pads:[],caps:[],mouth:[],eye:[],chest:[]}, k;\n     cvs.width=240; cvs.height=240; x2=cvs.getContext(\u00272d\u0027); if(!x2||typeof x2.getTransform!==\u0027function\u0027) return \u0027SKIP: no canvas transform here\u0027;\n     x2.fillStyle=TEAMHI.ally; hi=x2.fillStyle;\n     function sc(){ return Math.abs(x2.getTransform().a)/4; }\n     function near(list,want,what){ var i; if(!list.length){ bad.push(what+\u0027: not drawn\u0027); return; } for(i=0;i\u003clist.length;i++) if(Math.abs(list[i]-want)\u003e0.005){ bad.push(what+\u0027 draws at \u0027+list[i].toFixed(3)+\u0027, not \u0027+want.toFixed(3)); return; } }\n     function paint(st){ var b={hero:0,moving:false,sprint:false,ads:false,hurt:0,rl:0,bulk:0,build:\u0027lean\u0027,hat:\u0027none\u0027,own:{wep:null}}, q; for(q in st) b[q]=st[q];\n       x2.setTransform(1,0,0,1,0,0); x2.clearRect(0,0,240,240); x2.setTransform(4,0,0,4,120,200); wc=x2;\n       try{ painter(0,0,0,0,\u0027#242832\u0027,0,0,\u0027none\u0027,0,b); } finally { wc=w0; x2.setTransform(1,0,0,1,0,0); } }\n     x2.fillRect=function(){ var s=String(this.fillStyle).toLowerCase();\n       if(s===hi) seen.caps.push(sc()); else if(s===\u0027#8a5c46\u0027) seen.mouth.push(sc()); else if(s===\u0027#ff3a3a\u0027) seen.eye.push(sc()); else if(s===\u0027#4de3d0\u0027) seen.chest.push(sc());\n       return CanvasRenderingContext2D.prototype.fillRect.apply(this,arguments); };\n     drawPads=function(){ seen.pads.push(sc()); return od.apply(this,arguments); };\n     try{\n       paint({team:\u0027ally\u0027,pads:\u0027padsround\u0027});\n       k={caps:seen.caps.slice(),mouth:seen.mouth.slice(),pads:seen.pads.slice()};\n       seen.mouth=[]; paint({outfit:\u0027outrobot\u0027});\n       near(k.pads,FIG_VEST,\u0027the pauldrons (padsround on a Lean ally)\u0027);\n       near(k.caps,1,\u0027the team shoulder caps\u0027);\n       if(k.caps.length\u0026\u0026k.caps.length!==2) bad.push(\u0027the team shoulder caps drew \u0027+k.caps.length+\u0027 strips, not 2\u0027);\n       near(k.mouth,FIG_HEAD,\u0027the mouth (a head part)\u0027);\n       near(seen.eye,FIG_HEAD,\u0027the robot eye bar and antenna (suit head marks)\u0027);\n       near(seen.chest,1,\u0027the robot chest light (suit body paint)\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ drawPads=od; wc=w0; delete x2.fillRect; }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

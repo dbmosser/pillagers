@@ -1,0 +1,7 @@
+v33.17: only the head is scaled up, not the shoulders
+
+The head, hair, hats, face and suit head marks stay 1.2; shoulder caps and suit body paint are back at body scale and the pauldrons at 1.12.
+
+Check 33.17. Fails on v33.16.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
