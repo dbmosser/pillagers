@@ -9201,35 +9201,43 @@ window.__REGRESS=[
        __topClear();
      }
    }},
-  {v:'33.22',what:'the human figures are back to their old size: a standing pillager is drawn no taller than before v32.64 (his order: player is too big)',
+  {v:'33.22',what:'legacy vector figures retain their build scale; pixel figures use the approved standing height from job 79a, measured on their actual body pixels',
    run:function(){
-     var PR=CanvasRenderingContext2D.prototype, of=PR.fillRect, ff=PR.fill, mn={}, rec, i, b, hv;
+     var PR=CanvasRenderingContext2D.prototype,of=PR.fillRect,ff=PR.fill,di=PR.drawImage,mn={},bounds={},rec,i,b,hv,pixel=false;
      try{
-       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       if(!__state()||!__state().player) return 'SKIP: no raid';
-       if(typeof FIG_SCALE==='undefined'||typeof drawOp0!=='function') return 'the figures have no FIG_SCALE and no scaled draw';
-       if(FIG_SCALE>1) return 'FIG_SCALE is '+FIG_SCALE+', bigger than the old size 1';
-       rec=function(){ try{ if(this.canvas===cv&&(/drawOp0/).test(String(new Error().stack))){ var d=this.getTransform().d; if(!(b in mn)||d<mn[b]) mn[b]=d; } }catch(_r){} };
-       PR.fillRect=function(){ rec.apply(this,arguments); return of.apply(this,arguments); };
-       PR.fill=function(){ rec.apply(this,arguments); return ff.apply(this,arguments); };
-       hv={lean:1.08,broad:0.96,curved:1};
+       if(!__state()||!__state().player)return 'SKIP: no raid';
+       if(typeof FIG_SCALE==='undefined'||typeof drawOp0!=='function')return 'the figures have no scaled draw';
+       if(FIG_SCALE>1)return 'FIG_SCALE is '+FIG_SCALE+', bigger than the old size 1';
+       pixel=typeof pixOn==='function'&&pixOn();
+       // v28.xx (cw-cx-pixfx): observe the actual vector scale or opaque pixel body bounds, never a substitute canvas size.
+       rec=function(){if(this.canvas===cv&&/drawOp0/.test(String(new Error().stack))){var d=this.getTransform().d;if(!(b in mn)||d<mn[b])mn[b]=d;}};
+       PR.fillRect=function(){rec.apply(this,arguments);return of.apply(this,arguments);};
+       PR.fill=function(){rec.apply(this,arguments);return ff.apply(this,arguments);};
+       PR.drawImage=function(src,x,y,w,h){
+         if(pixel&&this.canvas===cv&&arguments.length===5&&/pxBlit/.test(String(new Error().stack))&&src&&src.getContext){
+           var p=src.getContext('2d').getImageData(0,0,src.width,src.height).data,T=this.getTransform(),q=bounds[b]||(bounds[b]={lo:Infinity,hi:-Infinity}),yy,xx,painted;
+           for(yy=0;yy<src.height;yy++){painted=false;for(xx=0;xx<src.width;xx++)if(p[(yy*src.width+xx)*4+3]>=128){painted=true;break;}
+             if(painted){q.lo=Math.min(q.lo,T.d*(y+yy*h/src.height)+T.f);q.hi=Math.max(q.hi,T.d*(y+(yy+1)*h/src.height)+T.f);}}
+         }
+         return di.apply(this,arguments);
+       };
+       hv={lean:1.08,broad:.96,curved:1};
        for(b in hv){
-         wc.save(); wc.setTransform(1,0,0,1,0,0);
-         drawOp(100,100,0,0,'#242832',1,0,'none',0,{hero:0,build:b,moving:false,sprint:false,ads:false,hurt:0,rl:0,own:{wep:null}});
-         wc.restore();
+         wc.save();try{wc.setTransform(1,0,0,1,0,0);
+           for(i=0;i<(pixel?8:1);i++){if(pixel)pixFrame();drawOp(100,100,0,0,'#242832',1,0,'none',0,{hero:0,build:b,moving:false,sprint:false,ads:false,hurt:0,rl:0,own:{wep:null}});}
+         }finally{wc.restore();}
        }
-       PR.fillRect=of; PR.fill=ff;
        for(b in hv){
-         if(!(b in mn)) return 'the '+b+' figure drew nothing';
-         if(mn[b]>hv[b]+0.01) return 'the '+b+' body is drawn '+mn[b].toFixed(3)+' tall, taller than its build height '+hv[b]+' at the old size';
+         if(pixel){var q=bounds[b],height=q?q.hi-q.lo:0;if(!(height>0))return 'the '+b+' pixel body drew nothing';if(height>PXB.TARGET+3)return b+' pixel body height '+height+' exceeds the job 79a height '+(PXB.TARGET+3);}
+         else{if(!(b in mn))return 'the '+b+' vector figure drew nothing';if(mn[b]>hv[b]+.01)return b+' vector scale '+mn[b]+' exceeds '+hv[b];}
        }
        return null;
-     } finally {
-       PR.fillRect=of; PR.fill=ff;
-       try{ __endRaid('abandon'); }catch(_e){}
-       __topClear();
-     } }},
+     }finally{
+       PR.fillRect=of;PR.fill=ff;PR.drawImage=di;try{__endRaid('abandon');}catch(e){}__topClear();
+     }
+   }},
   {v:'33.21',what:'all 28 experimental choices hold for the raid, the guest follows the host including glow and haul, and all-off keeps both seed-4242 map fingerprints (affix properties and barrel lists do not move them)',
    run:function(){
      if(typeof xfSnap!=='function'||typeof netUpStart!=='function'||typeof netUpFp!=='function') return 'experimental raid settings are missing';
