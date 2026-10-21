@@ -29,3 +29,5 @@ Party risk: medium. It touches the entry point of every newer feature; a wrong g
 must prove the feature still runs with its switch on.
 
 TASK DONE when the menu and all guards are shipped with checks and pictures; TASK PARTIAL with the switches left.
+
+DONE 10-21 00:30 (coordinator): the menu and all 28 switches shipped (v32.99 to v33.06), host snapshot v33.21, layout v33.28, pictures at 1080 and 4K (notes/shots/61-experimental-menu-r3). Only the page polish is left (critic 2, 3 of 6 tries used): moved to tasks/61b-experimental-page-polish.md. The last run's "cannot reach the ship scripts" was wrong: shipq.sh and fixq.sh are in S in the VM, and lanes shipped v33.29 to v33.34 with them tonight.
