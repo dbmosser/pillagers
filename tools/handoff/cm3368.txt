@@ -1,0 +1,7 @@
+v33.68: the pixel adapter and the loot
+
+With the pixel look on, crates, lockers, safes, caches, bodies, deer and the machine wrecks draw as crisp pixel sprites; opened ones still dim. Wreck smoke still rises. With the look off nothing changes.
+
+Check 33.68. Fails on v33.67.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

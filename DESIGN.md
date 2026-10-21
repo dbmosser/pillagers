@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.68 - THE PIXEL ADAPTER AND THE LOOT
+
+Co-op hunt while he was away. Job 86e ship 1: pixWrap runs a vector painter into an art resolution scratch once and caches it hard edged on the tones the painter used, so with the pixel look on every container, body, carcass and the 9 machine wrecks are one cached sprite a frame (opened and closed both). The ground shadow, the dim, the search bar and the wreck smoke stay live.
+
+MEASURED. Check 33.68 passes, and fails on v33.67.
 ## v33.67 - NEWS AND RECORDER LAYOUT
 
 Co-op hunt while he was away. The critic found a crowded news header, weak news hierarchy and an unbalanced recorder column.

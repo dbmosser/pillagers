@@ -1733,33 +1733,33 @@
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "a near-empty full-screen card whose only visible hierarchy is a small title, with the career HUD colliding with the close button and a stray toast at the bottom, so it reads as an unfinished template, not a polished window.",
+  "verdict": "The card frame, title, and x follow the guide, but three one-line rows float in a mostly empty 90% card, and the career HUD overlaps the card's top edge, so it reads as an unfinished template.",
   "findings": [
-   "P0 top-right: career HUD ($900, 0 xp, stash $3,750 bag $0) and the x close button: hide the career HUD while a window card is open, or keep it outside the card. Put the x in a 56px header row, centred vertically with the title, 24px from the card edge, with a 48x48 hit area.",
-   "P0 whole card body (y 350 to 1000): size this card to its content (about 720px wide, centred, with the scrim visible around it) or fill the space with a real layout: a hero version number at 56px and three entries as 72px rows with a 16px lime tab each. Don't ship a full-screen card for three lines.",
-   "P1 title 'what's new' and subtitle 'new in v0,0976': set the title to 32px f-cond 700. Make the version the 56px f-cond 800 hero in --acc and fix it to 'v0.0976'. Keep the subtitle at 16px --tx-2 (4.5:1 or better) or delete it.",
-   "P1 rows 1 to 3 (y 207, 272, 337): drop the numerals and use a 3px --acc left tab on the focused row with a --ui-raised fill. Cap the row width at about 760px. Add a 16px uppercase-free tag (new, fix) in --tx-2 at the right of each row.",
-   "P1 bottom toast 'the welcome pack is in your stash.': delete it from this window or move it to the HUD toast layer. If it stays, set it to 'welcome pack in stash' with no full stop at 16px. Add a 72px footer with one primary 'ok' button (lime fill, 48px tall) to match the other windows."
+   "P0 top-right career HUD ($900, 0 xp, stash $3,750 bag $0): Dim or hide the HUD under any full-card window. Otherwise put the card's z-order above the HUD, or push the card top to 96px and keep the HUD out of it.",
+   "P0 card body, about 60% of the card (y 430-1020): Fill the card: make each entry a larger row (96px) with a 32px title and a one-line 20px tx-2 note on the right. Or put a 56px hero version number on the left and the list on the right. Or shrink the card to content height, but the guide says near full screen, so fill it.",
+   "P1 header, accent tab at top-left (x 122-158, y 56): Remove it, or draw it as a clean 3px by 36px tab inside the panel. The lime then stays only on focus and selected.",
+   "P1 'new in v0.0993' subline and list placement: Left-align the list to x=121, or centre the subline over the list. Raise the subline to 16px tx-2 with 24px spacing under the header rule.",
+   "P1 list rows: Drop the numerals and add a 16px tx-2 tag or category on the right of each row. Make the focused row use --ui-raised with a 4px lime bar and tx-1 text, and unfocused rows tx-2 at 20px 600."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-91b-report-news-style-recipes-2/91-public-news-window-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-91b-report-news-style-recipes-3/91-public-news-window-1080.jpg",
   "task": "o-91b-report-news-style",
-  "when": "2026-10-21T06:41"
+  "when": "2026-10-21T08:56"
  },
  "91-public-report-recorder": {
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "A clean, consistent settings card with a clear lime primary button and an x in the corner. The content is stuck in the left 70% of the card, the lower third is empty, and the text is small and clipped.",
+  "verdict": "It is a clean, consistent settings card with a clear lime primary action, but the log box is cramped, a large empty gap splits the screen, and the title, tabs and section labels are weak.",
   "findings": [
-   "P1 content column vs card: Make the content column fill the card (max 1500px, centred), or split it into two panels: raid log on the left and restore on the right. Make the log box taller (about 420px) so it uses the empty space.",
-   "P1 log box: Set the log to f-body 16px in --tx-1 at 70% or brighter. Wrap long lines with word-break. Make the box at least 8 lines tall, snapped to whole lines. Use a 6px --ui-line-hi scrollbar thumb.",
-   "P1 restore section copy: Cut it to a label 'restore code' plus a short 'replaces your save' in --warn 16px. Style 'read code' with a --danger border or label because it overwrites the save.",
-   "P2 section labels: Make both f-cond 600 at 16px with +.04em tracking in --tx-2, with 24px above and 8px below. Use the same token for both.",
-   "P2 tabs and title: Put 32px between the title and the first tab. Make the inactive tab --tx-2 at 4.5:1 or better and the active tab --tx-1 with a 3px lime underline. Either make the top-left tick a 3px by 36px tab that is clearly intended, or remove it."
+   "P1 log textarea (y 183-302): Make the textarea fill the dead space: about 400px tall (y 183 to 600). Show 12 or more lines, add 16px padding, and move the action row to 24px below the box.",
+   "P1 empty band between the buttons and 'restore a character' (y 380-740): Grow the log box into this band (see above), or group the two sections with a 32px gap and centre the stack vertically. Do not leave a hole larger than any content block.",
+   "P1 restore helper line (y 816): Cut it to a short callout such as 'replaces your current save', in --warn at 16px f-cond 600. Drop the 'paste a restore code from the end of a run report (above)' wording.",
+   "P1 title and tab row (y 55-105): Align the tab baseline with the title. Put the tabs 32px after the title, set them at 20px f-cond 700, and make the idle tabs --tx-2 at 4.5:1 or better. Give the active tab a 3px lime bar.",
+   "P2 content column (x 411-1509): Either left-align the content column to the title's left edge, or set the whole card to a consistent 48px inset. Do not mix a centred column with an edge-aligned header and footer."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-91b-report-news-style-recipes-2/91-public-report-recorder-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-91b-report-news-style-recipes-3/91-public-report-recorder-1080.jpg",
   "task": "o-91b-report-news-style",
-  "when": "2026-10-21T06:41"
+  "when": "2026-10-21T08:56"
  },
  "85-after-mapfirst": {
   "score": 3,
