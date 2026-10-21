@@ -6144,6 +6144,29 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'33.31',what:'his order 10-20: looting a gun raises no stat card (G.gunCard stays null, nothing drawn); the gun card itself still draws for the belt hover and backpack',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__textTrace)||typeof drawHUD!=='function'||typeof grantLoot!=='function'||typeof gunCardDraw!=='function'||typeof gunCompare!=='function') return 'SKIP: no raid or HUD here';
+     if(!ITEMS.gun_lmg) return 'SKIP: no Support MG item';
+     var bad=[], g=null, p=null, tr, cmp;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over||!g.player) return 'SKIP: staging: no raid';
+       p=g.player; keys={}; g.bagOpen=false; g.mapOpen=false; g.gunCard=null;
+       grantLoot({x:p.x,y:p.y,loot:[]},['gun_lmg']);
+       if(g.gunCard) bad.push('looting a Support MG raised a stat card');
+       tr=__textTrace(function(){ try{ drawHUD(); }catch(_h){} });
+       if(tr.some(function(o){ return o.t==='HANDLING'; })) bad.push('a gun card was drawn after a pickup');
+       cmp=gunCompare(WEAPONS.lmg,p.wep);
+       tr=__textTrace(function(){ try{ gunCardDraw(cmp,900,700,1,'SLOT 2'); }catch(_d){} });
+       if(!tr.some(function(o){ return o.t==='HANDLING'; })) bad.push('the gun card no longer draws for the belt hover and backpack');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.gunCard=null; g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       __topClear(); __cleanProfile();
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'33.30',what:'aiming breaks a sprint at once even with Shift still held, and the sprint comes back when aim lets go (his order 10-20)',
    run:function(){
      if(typeof updatePlayer!=='function'||!window.__deploy||!window.__endRaid) return 'SKIP: this build cannot step the player';

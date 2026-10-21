@@ -1,0 +1,7 @@
+v33.31: no card when you loot a gun
+
+Picking up a gun shows no stat card. Check a gun by opening the backpack or hovering its slot.
+
+Check 33.31. Fails on v33.30.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

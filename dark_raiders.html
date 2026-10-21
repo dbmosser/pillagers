@@ -3276,7 +3276,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.30';
+var VER='33.31';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -25982,7 +25982,7 @@ function grantLoot(ct,keys,delay0){
       }
       // v23.xx (feat2b), HIS #17 and his answer 34 (2026-10-12): THE STAT CARD ON PICKUP. Every gun he takes raises the card against
       // the gun that was in his hands, with where it went. In the arcade a gun scrapped for points raises none (it is not his).
-      if(!G.sim&&!(G.arcade&&(/^SCRAPPED/).test(String(_ptags[l]||'')))) G.gunCard={gk:itm.gk,w:found,vs:_gcVs,route:String(_ptags[l]||'BACKPACK'),t0:G.t||0};
+      // v33.xx (cw-nolootguncard), HIS ORDER (2026-10-20): "get rid of weapon card popups when weapons are looted -- they are invasive and not helpful". Looting a gun raises no card now; the pickup row still says where it went. The card stays in the backpack, on the belt hover and in the forge.
     }
     else if(G.arcade&&!G.sim&&itm&&!itm.use) _ptags[l]='+'+arcadeCr(arcadeLoot(key));   // v23.33 (arcade11): a valuable is points and pot, never the backpack; v23.56 (arcade31): in credits
     else { G.bag.push(key); _beltGot=autoBelt(key,1); if(_beltGot) _beltKeep.push(_beltGot); if(beltTag()) _ptags[l]=beltTag(); }
@@ -51450,7 +51450,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.30: Aiming stops a sprint at once and holds with Shift down; let go of aim and the sprint comes back. Check 33.30 fails on v33.29',
+  now:'v33.31: Picking up a gun shows no stat card. Check a gun by opening the backpack or hovering its slot. Check 33.31 fails on v33.30',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

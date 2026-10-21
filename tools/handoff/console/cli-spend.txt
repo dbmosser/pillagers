@@ -621,3 +621,11 @@
 2026-10-21 0.1397 critic-manual
 2026-10-21 0.1392 critic-manual
 2026-10-21 0.1483 critic-manual
+2026-10-21 0.1412 critic-manual
+2026-10-20 0.5206642 81a-ads-breaks-sprint
+2026-10-21 0.1419 critic-manual
+2026-10-21 0.1453 critic-manual
+2026-10-21 0.1453 critic-manual
+2026-10-21 0.1458 critic-manual
+2026-10-21 0.1446 critic-manual
+2026-10-21 0.1537 critic-manual

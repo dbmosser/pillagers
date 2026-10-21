@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.31 - NO CARD WHEN YOU LOOT A GUN
+
+Co-op hunt while he was away. His order 10-20: weapon card popups when weapons are looted are invasive and not helpful. Looting a gun no longer raises its stat card. The pickup row stays; the card stays in the backpack, on the belt hover and in the forge.
+
+MEASURED. Check 33.31 passes, and fails on v33.30.
 ## v33.30 - AIM BREAKS A SPRINT
 
 Co-op hunt while he was away. His order 10-20: aiming should immediately break sprint, even if Shift is still held. The old rule dropped aim while sprinting; now aim wins, and the sprint returns when aim is let go.

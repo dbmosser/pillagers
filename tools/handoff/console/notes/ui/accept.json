@@ -1483,5 +1483,110 @@
   "pic": "tools/handoff/console/notes/shots/o-07-pad-lost-coordinator-check/j8-p1-sees-p2-lost-1080.jpg",
   "task": "manual",
   "when": "2026-10-21T04:05"
+ },
+ "j8-p2-pad-lost": {
+  "score": 3,
+  "pass": false,
+  "verdict": "A clean, calm pause card with a clear lime primary and tidy lower-case type, but it reads as a generic pause menu: tiny in a black void, with no player context, no focus state, and chrome buttons that crowd out the pad-lost message.",
+  "findings": [
+   "P1 whole screen / card: Dim the live raid behind it with a --scrim rgba(6,7,8,.80) layer instead of pure black. Either widen the card toward the window rule, or keep it small as a modal and add a context line: a 'p2' tag (16px f-cond, tx-2) above the title, or 'pad lost' with a 56px hero glyph.",
+   "P1 menu buttons (settings, report a problem, feedback, what's new): Keep reconnect, settings and end run. Move feedback, what's new and report a problem into settings, or shrink them to a 14px footer legend row. This cuts the card height by about 200px.",
+   "P1 reconnect button: Add a 24px pad-button glyph left of 'reconnect'. Give every non-primary row a visible focus state: a 2px --acc border or a --ui-raised fill, plus a 3px lime left bar.",
+   "P2 top-left accent tab: Brighten it to full --acc and align it with the title's left edge at x=760 (24px inset), or remove it.",
+   "P2 title row and X: Make the X a 40x40 hit box with a 1px --ui-line-hi border on focus. Centre it on the title's cap-height (y=349) and right-align it to the 760-1160 content column."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-07-pad-lost-coordinator-check/j8-p2-pad-lost-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-21T04:05"
+ },
+ "j8-p2-press-a": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The panel is clean and consistent (lime main action, red end run, x in the corner), but the screen's real job, 'press a' after a pad was lost, is a small title above a pause menu, so the player can't tell what happened or what to do.",
+  "findings": [
+   "P0 title 'press a' (top-left of card): Make the live prompt the hero: 56px f-cond 800 tx-1, centred above the buttons, with a 16px tx-2 label above it that names the player and the cause (e.g. 'p2 pad lost'). Drop 'press a' from the title slot and use 'paused' or the player label there. Put a pad glyph for the button on the resume button.",
+   "P1 whole screen / scrim: If this stays a compact pause card, scale it up to about 640x720 with 24px button text and 72px rows, or follow the guide and go to a 90% card. Show the frozen raid behind a .80 scrim rather than flat #0b0c0d.",
+   "P1 button stack (resume, settings, report a problem, feedback, what's new): Keep resume, settings, end run. Move report a problem, feedback and what's new into settings or a single 'more' row. If they stay, make them one consistent full-width ghost row each at 56px high with 16px gaps.",
+   "P1 'end run' at bottom: Give it the ghost button shape with a 1px --danger border and --danger text at 20px 600. Align it to the same 400px column and 56px height, 24px below the stack, and label the confirm step on press.",
+   "P2 focus state on the buttons: Idle border --ui-line-hi #4a5257 at 1px with a --ui-raised fill. Focus: 2px --acc border plus a 3px lime left bar. Keep the lime fill only for the one primary action, not for the focused row."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-07-pad-lost-coordinator-check/j8-p2-press-a-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-21T04:06"
+ },
+ "j8-p2-sees-p1-lost": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The \"p1 pad lost\" alert is a small amber tag floating in mid-screen between the storm hint and the walls. It is easy to miss, it has no glyph, and it sits beside several other floating tags, so the HUD reads as a pile of pills, not one clear layer.",
+  "findings": [
+   "P0 \"p1 pad lost\" tag, centre of screen at about (960,285): Make it one dark --ui-panel card with a 3px --warn left bar, 32px f-cond title \"p1 pad lost\" in tx-1, and a 16px --tx-2 line \"reconnect pad\" below. Centre it at y≈30% with a 90ms bounce-in. Keep the pad glyph at 24px in --warn.",
+   "P1 Stack of pills in the top centre: team score, extract 133m, running slowly, p1 pad lost: Put them in one centred column of equal-width cards (280px) with 8px gaps and --rad 4px. Give all the same fill, #16191b at 90%, and a 1px --ui-line-hi border. Put alerts below status and use one fixed font size, 20px.",
+   "P1 Faded line \"storm · lightning shows you from farther off\" at y≈245: Delete the sentence. If a storm cue is needed, use the existing \"storm\" chip at bottom-left only, with 16px text on --ui-panel.",
+   "P1 Right column: minimap, run info, \"extraction c available\" tag: Make the heading 16px tx-2 and the rows 20px tx-1, with the reward \"+200 sp\" right-aligned in lime. Put the extraction tag inside a 24px-padded card of the same width as run info, 8px below it, and inset the minimap by 24px so it is not clipped.",
+   "P2 Bottom centre: \"in pillager's party\" tooltip over \"compact smg / fire / use\": Merge into one 16px line card 12px above the hotbar, with key caps drawn as 24px outlined squares. Raise the party text to 16px, or drop it, since the top-left player 1 label already says who is who."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-07-pad-lost-coordinator-check/j8-p2-sees-p1-lost-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-21T04:06"
+ },
+ "j7-hub-p1-pad-owner": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The hub reads as a cluttered prototype: the station labels are huge and compete with each other, the HUD text is tiny, the accents don't follow the style guide, and the hotbar is heavy for a hub.",
+  "findings": [
+   "P0 station labels (wirt the gambler, enter raid!, the mainframe, shop craft and hire, settings, the stash, the last pour, fashion): Drop the labels to 20px f-cond 600 on a --ui-panel pill with 8px 16px padding and a 1px --ui-line-hi border. Make only 'enter raid!' a lime (--acc) pill with --acc-ink text, or put a 3px lime bar on it. Remove the '!'. Place every label 16px above its station, not over the character.",
+   "P0 top-left and top-right HUD (the undercroft, 0 items in stash, $900, 0 xp, stash $0 bag $0): Put the title at 32px f-cond 700 in tx-1, with the subtitle at 16px tx-2 and 24px inset from the screen edge. Group the career numbers in one panel with a $ hero at 56px, and the other numbers at 16px tx-2. Use --acc, not amber, for the one highlighted item.",
+   "P1 hotbar (bottom centre): Hide the empty slots in the hub, or shrink the bar to 64px cells and show only the owned ones. Set the numerals at 16px, and use --acc for the 2px focus border.",
+   "P1 'experimental feature may glitch' below the last pour: Replace it with a 16px 'experimental' tag in --warn on a small panel pill attached to the label, with no asterisks and no sentence.",
+   "P1 player markers (pillager name, p1 tag, the rings under the characters): Set the name at 16px f-cond 600 with the p1 badge in the same pill (20px tall, 4px radius) directly above the head. Keep the ring colours as they are, since the colour choice is pending."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-08-pad-owner-after/j7-hub-p1-pad-owner-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-21T04:07"
+ },
+ "j7-hub-p2-pad-owner": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The hub reads as a prototype, not a polished menu: the room labels are all the same size and weight, the top HUD text is tiny and scattered, and a capital letter, an explaining sentence and a clipped caption sit next to the player.",
+  "findings": [
+   "P0 the last pour label and its caption: Delete the sentence. If a flag is needed, use a 16px f-cond tag 'experimental' in --warn on a --ui-panel chip, 8px below the label, with no asterisks.",
+   "P0 top-left title block 'the undercroft / 0 items in stash · 0 runs': Place the title at x=48, y=40 (the 5% margin) in f-cond 700 32px --tx-1. Put the subline below it in 16px --tx-2 with 8px between. Keep the 'stash' figures out of this block, since they repeat in the top right.",
+   "P1 top-right HUD: $900 / 0 xp / stash $0 bag $0: Switch to the cw-trcol vertical list: every row 20px f-cond 600, label in --tx-2 at 16px, value in --tx-1 right-aligned, 8px row gap, 48px from the right edge. Use one --ui-panel at 90% with 1px --ui-line-hi.",
+   "P1 station labels (wirt the gambler, enter raid!, the mainframe, shop craft and hire, settings, the stash, the last pour, fashion): Make secondary labels 20px f-cond 600 --tx-1 on --ui-panel, with 8px/16px padding and a 4px radius. Make 'enter raid' the one 32px label with a 2px lime (--acc) top tab, and drop the '!'. Add a 3px --ui-void halo or move the labels out so they do not cover NPCs.",
+   "P1 bottom centre: 'in pillager's party' chip and 'l stick walk · ls jog · a use station' legend: Put the legend in a --ui-panel strip at 16px f-cond --tx-2 with key glyphs in --tx-1, centred 16px above the hotbar. Move the party chip to the top-left under the title, so it is a status, not a floating tooltip."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-08-pad-owner-after/j7-hub-p2-pad-owner-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-21T04:07"
+ },
+ "j7-raid-p1-pad-owner": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The raid HUD is readable but cluttered: four overlapping notification and legend stacks, mismatched panel styles, and no single hero element.",
+  "findings": [
+   "P0 bottom centre, between the pad legend and the hotbar: Hide the legend during live play. Show it only on hold-view or in the first 10 seconds, as a single-row 16px hint strip. Keep the toast stack at least 24px clear of the hotbar top.",
+   "P0 left middle, bottom left, top centre: Use one toast component, anchored in one place, and de-duplicate by id. Remove the centre pills for events already in the left stack. Delete 'gold glow marks the box'. Use one 4px radius, one --ui-panel fill, and a 3px left tab for the type.",
+   "P1 top-right career list, minimap, run info: Use equal 40px rows with a label in tx-2 at 16px and a value in tx-1. Add a label to the first row, for example 'cash'. Put 16px gaps between the stack, the minimap and run info, and a 5% margin from the screen edge.",
+   "P1 run info panel, 'concealed · in cover' tag, 'extraction c available': Put all status tags in one right-aligned column of 8px-gap pills, with --warn for the warning glyph only. Add 8px between run info and the extraction line. Use tx-2 for objective lines, and lime only for the active one.",
+   "P1 hp / stamina bars, bottom left: Put hp and stamina in one --ui-panel card with a 1px border, 8px padding and 4px radius. Use 16px labels left-aligned and the number at 32px. Keep a fixed 24px gap from the hotbar and the screen edge."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-08-pad-owner-after/j7-raid-p1-pad-owner-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-21T04:08"
+ },
+ "j7-raid-p2-pad-owner": {
+  "score": 2,
+  "pass": false,
+  "verdict": "The HUD works as a debug-style stack of unrelated boxes. Nothing leads the eye, the type sizes are inconsistent, and the screen is cluttered with controls help and duplicate toasts.",
+  "findings": [
+   "P0 centre-bottom, controls legend (l stick / b / rt ...) at about 495-900 x 715-865: Remove it from the raid HUD, or show it once and fade it after 5s. If kept, make it a P panel (#16191b at 90%, 1px #4a5257, 4px radius, 24px padding) with 16px labels in tx-1 and 16px actions in tx-2. Limit it to the 4 actions in use.",
+   "P0 bottom-left vitals (standing / stamina / hp 100): Use one bar component: 24px tall, 4px radius, #16191b track with a 1px border, a label at 16px f-cond 600 inside with 8px padding, and the value right-aligned. Reserve the single hero size (56px) for ammo. Inset the block to 5% margins (96px left, 54px bottom). Make the stance a small 16px tag above the bars.",
+   "P1 top-right career column ($900 / xp 0 / stash $0 / backpack $120): Keep this corner alone per the pending cw-trcol order, but make sure each row is a consistent 40px high with 8px gaps. Add a label to the first row, and drop xp when it is 0. Match the minimap and run info panels to the P spec (#16191b, 1px #4a5257, 4px radius, 24px padding) with a 16px label size.",
+   "P1 run info panel (right, 1605-1900 x 515-695): Cut the text to short callouts such as 'haul $1,200  0/1', 'data core  0/1', 'cases  0/2'. Set the header at 16px tx-2, and the rows at 20px tx-1 with the 0/1 counters right-aligned in lime when active. Use 8px row gaps and 16px padding on all sides.",
+   "P1 top-left raid scoreboard 'current pillager bots 3' and the 'pillager' nameplate card: Make the scoreboard header tx-2 16px, with row text at 20px tx-1 and values right-aligned. Collapse it to the top 3 lines. Align the name card and the scoreboard to the same 96px left margin, and use the P panel spec on both."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-08-pad-owner-after/j7-raid-p2-pad-owner-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-21T04:08"
  }
 }
