@@ -3360,7 +3360,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.82';
+var VER='33.83';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -39406,10 +39406,14 @@ var sl=G.shells[i];
   // extract zones
   for(i=0;i<G.zones.length;i++){
     var z=G.zones[i],act=!!z.open;
+    // v33.83 (cw-pixhub), HIS ORDER (2026-10-20 22:45 to 23:05, the pixel pass): with the pixel look on the ring line is one cached scene sprite per state and radius (a solid 2 or 3 art pixel line); the pulsing fill below stays live.
+    var zrr=Math.round(z.r), zE=null;
+    if(pixOn()) zE=pixWrap('xz:'+(act?'a':'i')+zrr,zrr*2+16,zrr*2+16,PIX_ENV,function(){ wc.strokeStyle=act?'#4de3d0':'#6c7076'; wc.lineWidth=act?6:4; wc.beginPath(); wc.arc(z.x,z.y,z.r,0,6.2832); wc.stroke(); },z.x,z.y,{up:zrr+8});
+    if(!zE){
     wc.strokeStyle=act?'#4de3d0':'rgba(148,152,158,.38)';
     wc.lineWidth=act?3:1.5;
     wc.beginPath(); wc.arc(z.x,z.y,z.r,0,6.2832); wc.stroke();
-    if(act){
+    }    if(act){
       wc.globalCompositeOperation='lighter';
       wc.fillStyle='rgba(53,214,200,'+(.05+.03*Math.sin(G.t*2.4))+')';
       wc.beginPath(); wc.arc(z.x,z.y,z.r,0,6.2832); wc.fill();
@@ -49400,11 +49404,14 @@ function drawHubWorld(dt){
   // reads as powered. Cosmetic, time-driven, no PRNG.
   for(i=0;i<(P.racks||0)&&i<4;i++){
     var _rx=498+i*34,_ry=58;
+    // v33.83 (cw-pixhub): with the pixel look on the cabinet body is one cached scene sprite; the blinking lights below stay live.
+    var hrP=function(){
     wc.fillStyle='rgba(0,0,0,.4)'; wc.fillRect(_rx+2,_ry+3,26,44);
     wc.fillStyle='#1c2a30'; wc.fillRect(_rx,_ry,26,44);
     wc.fillStyle='#24444c'; wc.fillRect(_rx,_ry,26,5);
     wc.fillStyle='rgba(77,227,208,.5)'; wc.fillRect(_rx+4,_ry+10,18,3);
-    var _bl=Math.sin(HB.t*3+i*1.7)>0;
+    };
+    if(!(pixOn()&&pixWrap('hr',36,54,PIX_ENV,hrP,_rx+13,_ry+44,{up:46}))) hrP();    var _bl=Math.sin(HB.t*3+i*1.7)>0;
     wc.fillStyle=_bl?'#4de3d0':'#1c4a44';
     wc.fillRect(_rx+4,_ry+20,4,4);
     wc.fillStyle=(!_bl)?'#ffc04a':'#4a3a1c';
@@ -49445,10 +49452,13 @@ function drawHubWorld(dt){
     } else if(it.s){
       var s2=it.s,pulse=.6+.4*Math.sin(HB.t*2.2+s2.x*.01);
       shadowE(s2.x,s2.y+2,13,5,.4);
+      // v33.83 (cw-pixhub): with the pixel look on the post is one cached scene sprite per tint; its pulsing screen below stays live.
+      var hsP=function(){
       wc.fillStyle='#232a33'; wc.fillRect(s2.x-11,s2.y-34,22,34);
       wc.fillStyle='#39424d'; wc.fillRect(s2.x-11,s2.y-37,22,4);
       wc.fillStyle=hexA(s2.c,.20); wc.fillRect(s2.x-8,s2.y-31,16,18);
-      wc.globalCompositeOperation='lighter';
+      };
+      if(!(pixOn()&&pixWrap('hs:'+s2.c,32,40,PIX_ENV,hsP,s2.x,s2.y,{up:38}))) hsP();      wc.globalCompositeOperation='lighter';
       wc.fillStyle=hexA(s2.c,.55*pulse); wc.fillRect(s2.x-8,s2.y-31,16,18);
       wc.globalCompositeOperation='source-over';
     } else if(it.dp){
@@ -52735,7 +52745,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.82: With the pixel look on, lamp posts, the forge and the great seal draw as crisp pixel sprites. With the look off nothing changes. Check 33.82 fails on v33.81',
+  now:'v33.83: With the pixel look on, extraction rings and the Undercroft posts, racks and dropped crates draw as crisp pixel art. With the look off nothing changes. Check 33.83 fails on v33.82',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -59309,10 +59319,13 @@ function netHubDropTake(peer,m){
 function hubDropsToDR(DR){ var i; if(!HB||!HB.drops) return 0; for(i=0;i<HB.drops.length;i++) DR.push({k:HB.drops[i].y,dp:HB.drops[i]}); return HB.drops.length; }
 function hubDrawDrop(d){
   shadowE(d.x,d.y+2,14,5,.35);
+  // v33.83 (cw-pixhub): with the pixel look on the crate is one cached scene sprite; the item icon on it stays live.
+  var hdP=function(){
   wc.fillStyle=INK; rrF(d.x-13,d.y-16,26,20,3);
   wc.fillStyle='#6a5236'; rrF(d.x-12,d.y-15,24,18,2.5);
   wc.fillStyle='#8a6a3a'; wc.fillRect(d.x-12,d.y-15,24,4);
-  try{ drawItemIcon(wc,d.k,d.x,d.y-25,18); }catch(_di){}
+  };
+  if(!(pixOn()&&pixWrap('hd',32,28,PIX_ENV,hdP,d.x,d.y,{up:18}))) hdP();  try{ drawItemIcon(wc,d.k,d.x,d.y-25,18); }catch(_di){}
 }
 function hubDrawDropPrompt(){
   var d=HB&&HB.nearDrop, it;

@@ -1,0 +1,5 @@
+## v33.83 - THE PIXEL RING, POSTS AND RACKS
+
+Co-op hunt while he was away. Job 86e ship 5: with the pixel look on, the extraction ring line, the Undercroft station posts, mainframe racks and the dropped crate are cached scene sprites through pixWrap. Pulses, blinking lights, fills and icons stay live.
+
+MEASURED. Check 33.83 passes, and fails on v33.82.

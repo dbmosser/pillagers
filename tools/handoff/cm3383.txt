@@ -1,0 +1,7 @@
+v33.83: the pixel ring, posts and racks
+
+With the pixel look on, extraction rings and the Undercroft posts, racks and dropped crates draw as crisp pixel art. With the look off nothing changes.
+
+Check 33.83. Fails on v33.82.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

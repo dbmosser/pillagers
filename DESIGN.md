@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.83 - THE PIXEL RING, POSTS AND RACKS
+
+Co-op hunt while he was away. Job 86e ship 5: with the pixel look on, the extraction ring line, the Undercroft station posts, mainframe racks and the dropped crate are cached scene sprites through pixWrap. Pulses, blinking lights, fills and icons stay live.
+
+MEASURED. Check 33.83 passes, and fails on v33.82.
 ## v33.82 - THE PIXEL LAMPS, FORGE AND SEAL
 
 Co-op hunt while he was away. Job 86e ship 4: with the pixel look on, lamps and lamp posts, the forge body and the seal slab are cached scene sprites through pixWrap. The lit element, glow, molten mouth, embers, ring and labels stay live.
