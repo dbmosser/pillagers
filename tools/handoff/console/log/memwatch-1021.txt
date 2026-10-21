@@ -6,3 +6,107 @@
 05:58:01 committed 21.7 of 31.9 GB, free RAM 5.3 GB
 05:59:02 committed 20.8 of 31.9 GB, free RAM 6.5 GB
 06:00:03 committed 21.3 of 29.2 GB, free RAM 3.4 GB
+06:01:04 committed 21.5 of 29.2 GB, free RAM 3.1 GB
+06:02:01 committed 21.9 of 29.2 GB, free RAM 2.7 GB
+06:03:02 committed 27.4 of 29.2 GB, free RAM 0.0 GB
+=== SNAPSHOT 06:03:02: committed 27.4 of 29.2 GB; processes hold 19.4 GB, so 8.0 GB is outside any process
+  top chrome 25136 1793 MB, started 05:39:43, gpu-process pillagers-cdp9344
+  top claude 3040 1222 MB, started 20:39:40, renderer VM
+  top claude 12464 758 MB, started 21:12:36, 
+  top chrome 13940 744 MB, started 04:43:43, gpu-process pillagers-cdp9359
+  top chrome 16912 674 MB, started 03:30:09, gpu-process pillagers-cdp9352
+  top claude 16760 640 MB, started 21:23:09, 
+  top chrome 29528 591 MB, started 05:38:03, renderer port 9344 pillagers-cdp9344
+  top MsMpEng 4120 531 MB, started ?, 
+  top chrome 21584 511 MB, started 06:02:49, renderer port 9346 pillagers-cdp
+  top claude 5680 456 MB, started 05:52:12, mk-cw-*)
+  browser 26644 port 9353 pillagers-cdp9353, 8 processes, 180 MB
+  browser 15544 port 9332 pillagers-cdp9332, 10 processes, 762 MB
+  browser 17196 , 21 processes, 2239 MB
+  browser 19772 port 9352 pillagers-cdp9352, 8 processes, 846 MB
+  browser 21560 port 9344 pillagers-cdp9344, 10 processes, 2564 MB
+  browser 1312 port 9346 pillagers-cdp, 9 processes, 744 MB
+  browser 20540 port 9331 pillagers-cdp9331, 10 processes, 834 MB
+  browser 12108 port 9359 pillagers-cdp9359, 8 processes, 899 MB
+  browser 23104 port 9351 pillagers-cdp9351, 8 processes, 270 MB
+  new bash 1912 6 MB, started 06:02:31, 
+  new bash 10348 6 MB, started 06:02:31, 
+  new bash 12772 6 MB, started 06:02:55, 
+  new bash 17956 6 MB, started 06:02:38, 
+  new bash 25368 6 MB, started 06:02:55, 
+  new bash 28284 6 MB, started 06:02:38, 
+  new chrome 14468 49 MB, started 06:02:48, utility pillagers-cdp
+  new chrome 21584 511 MB, started 06:02:49, renderer port 9346 pillagers-cdp
+  new chrome 24716 8 MB, started 06:01:47, utility pillagers-cdp9344
+  new chrome 24884 17 MB, started 06:01:46, renderer port 9344 pillagers-cdp9344
+  new chrome 26580 122 MB, started 06:02:52, renderer port 9346 pillagers-cdp
+  new chrome 29152 14 MB, started 06:00:33, renderer port 9359 pillagers-cdp9359
+  new cut 23712 5 MB, started 06:02:31, 
+  new grep 12648 5 MB, started 06:02:39, 
+  new powershell 23984 71 MB, started 06:02:56, dark
+  new powershell 26132 71 MB, started 06:02:51, dark
+  new powershell 26276 65 MB, started 06:02:55, dark
+  new sleep 23208 5 MB, started 06:02:11, 
+  new tail 26584 5 MB, started 06:02:31, 
+  new timeout 20336 5 MB, started 06:02:31, 
+=== SNAPSHOT 06:03:25: committed 29.2 of 29.2 GB; processes hold 19.7 GB, so 9.5 GB is outside any process
+  top chrome 25136 1832 MB, started 05:39:43, gpu-process pillagers-cdp9344
+  top claude 3040 1220 MB, started 20:39:40, renderer VM
+  top claude 12464 773 MB, started 21:12:36, 
+  top chrome 13940 744 MB, started 04:43:43, gpu-process pillagers-cdp9359
+  top chrome 16912 674 MB, started 03:30:09, gpu-process pillagers-cdp9352
+  top chrome 29528 654 MB, started 05:38:03, renderer port 9344 pillagers-cdp9344
+  top claude 16760 642 MB, started 21:23:09, 
+  top MsMpEng 4120 566 MB, started ?, 
+  top chrome 21584 482 MB, started 06:02:49, 
+  top claude 5680 460 MB, started 05:52:12, mk-cw-*)
+  browser 26644 port 9353 pillagers-cdp9353, 8 processes, 180 MB
+  browser 15544 port 9332 pillagers-cdp9332, 10 processes, 759 MB
+  browser 17196 , 21 processes, 2245 MB
+  browser 19772 port 9352 pillagers-cdp9352, 8 processes, 844 MB
+  browser 21584 , 1 processes, 0 MB
+  browser 21560 port 9344 pillagers-cdp9344, 10 processes, 2670 MB
+  browser 1312 port 9346 pillagers-cdp, 9 processes, 325 MB
+  browser 20540 port 9331 pillagers-cdp9331, 10 processes, 902 MB
+  browser 12108 port 9359 pillagers-cdp9359, 8 processes, 899 MB
+  browser 23104 port 9351 pillagers-cdp9351, 8 processes, 270 MB
+  new bash 1912 6 MB, started 06:02:31, 
+  new bash 10348 6 MB, started 06:02:31, 
+  new bash 12772 6 MB, started 06:02:55, 
+  new bash 17956 6 MB, started 06:02:38, 
+  new bash 22160 6 MB, started 06:03:25, 
+  new bash 25168 5 MB, started 06:03:25, 
+  new bash 25368 6 MB, started 06:02:55, 
+  new bash 28284 6 MB, started 06:02:38, 
+  new chrome 14468 49 MB, started 06:02:48, utility pillagers-cdp
+  new chrome 21584 482 MB, started 06:02:49, 
+  new chrome 24716 8 MB, started 06:01:47, utility pillagers-cdp9344
+  new chrome 24884 17 MB, started 06:01:46, renderer port 9344 pillagers-cdp9344
+  new chrome 26580 97 MB, started 06:02:52, renderer port 9346 pillagers-cdp
+  new chrome 29152 14 MB, started 06:00:33, renderer port 9359 pillagers-cdp9359
+  new cut 23712 5 MB, started 06:02:31, 
+  new grep 12648 5 MB, started 06:02:39, 
+  new powershell 4696 71 MB, started 06:03:14, dark
+  new powershell 23984 71 MB, started 06:02:56, dark
+  new powershell 26276 65 MB, started 06:02:55, dark
+  new RuntimeBroker 17620 2 MB, started 06:03:18, 
+  new sleep 23208 5 MB, started 06:02:11, 
+  new tail 26584 5 MB, started 06:02:31, 
+  new timeout 20336 5 MB, started 06:02:31, 
+06:04:02 committed 21.3 of 29.2 GB, free RAM 5.7 GB
+06:05:03 committed 21.0 of 29.2 GB, free RAM 5.7 GB
+06:06:04 committed 20.9 of 29.2 GB, free RAM 5.7 GB
+06:07:00 committed 21.4 of 29.2 GB, free RAM 5.3 GB
+06:08:01 committed 21.4 of 29.2 GB, free RAM 5.3 GB
+06:09:02 committed 21.5 of 29.2 GB, free RAM 5.3 GB
+06:10:03 committed 21.8 of 29.2 GB, free RAM 4.6 GB
+06:11:04 committed 21.3 of 29.2 GB, free RAM 5.1 GB
+06:12:00 committed 21.1 of 29.2 GB, free RAM 5.2 GB
+06:13:01 committed 21.5 of 29.2 GB, free RAM 4.9 GB
+06:14:03 committed 21.3 of 29.2 GB, free RAM 5.1 GB
+06:15:04 committed 21.7 of 29.1 GB, free RAM 4.6 GB
+06:16:00 committed 22.2 of 29.1 GB, free RAM 4.1 GB
+06:17:01 committed 21.3 of 29.1 GB, free RAM 5.0 GB
+06:18:02 committed 22.5 of 29.1 GB, free RAM 3.7 GB
+06:19:03 committed 22.7 of 29.1 GB, free RAM 3.5 GB
+06:20:05 committed 22.0 of 29.1 GB, free RAM 4.2 GB

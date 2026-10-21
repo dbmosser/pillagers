@@ -188,3 +188,4 @@
 2026-10-21 05:11 o-91b-report-news-style 99s ok PARTIAL in=1199673 out=13345 run=3
 2026-10-21 05:24 86c-pix-pillager 754s ok PARTIAL in=1604348 out=21218 run=1
 2026-10-21 05:54 86c-pix-pillager 835s ok PARTIAL in=4828607 out=45556 run=2
+2026-10-21 06:14 86c-pix-pillager 240s ok PARTIAL in=6263416 out=52463 run=3

@@ -1,0 +1,7 @@
+v33.75: pixel hub bake budget
+
+The Undercroft starts each frame with the existing two-build budget, shared with the FASHION turntable. The preview keeps the original soft ground shadow under its nearest 4x body.
+
+Check 33.75. Fails on v33.74.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.75 - PIXEL HUB BAKE BUDGET
+
+Co-op hunt while he was away. The first real FASHION picture still showed a vector body. The raid resets the pixel bake budget in gfxpBegin, but the Undercroft never calls that path. A fresh hub and preview could therefore stay vector after the first two builds. The prior preview check hid this by resetting the budget itself.
+
+MEASURED. Check 33.75 passes, and fails on v33.74.
 ## v33.74 - PIXEL PILLAGER STANDING HEIGHT
 
 Co-op hunt while he was away. Job 86c requires the standing height from 79a within two pixels. Those notes measured about 58 px at camera 1.05, or 55 at the current camera 1.0. The shipped 49 to 52 pixel looks only checked themselves against an arbitrary 50 pixel target.

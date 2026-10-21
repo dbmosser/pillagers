@@ -53,3 +53,14 @@ Ask in questions.md: a uishots screen that sets xfPix 1 (done below).
 - Watch next play: the plain body is four art rows taller, matching the measured 79a size; packs and crouch/roll feet remain planted; the hub crowd and FASHION now finish baking into pixels instead of remaining vector; 4x preview shadow remains soft.
 - Still open: new keys must pass lane gates and ship, inspect the corrected art/reference/aim/FASHION pictures, resolve any body findings, and obtain the actual 4K camera pictures. Full sets and rack tiles remain 86h work, as assigned, without parking 86c behind its own downstream task.
 
+
+--- codex run 2026-10-21 06:14 ---
+2026-10-21, lane o, Codex run 3:
+- Lane confirmed cw-cx-pixheight shipped as v33.74. cw-cx-pixhubframe did not ship. Kept that same key.
+- The hub fix passed its new Canvas check twice on the drafted build, and the control failed it as intended. The gate stopped later because the drafted newest-80-check run timed out. The reported 33.33 zero-height settings groups also appear in the control output, so that message alone is not proof of a new settings regression. I have not retargeted or weakened 33.33.
+- Revised only the new cw-cx-pixhubframe check, keeping the production edits. It previously entered a hub, potentially warmed 120 full crowd frames, and left hub/modal state behind. It now stages one ordinary crowd body plus the player, still calls real __hubFrame and drawAvatarCanvas with an initially exhausted budget, and caps warm-up at 24 frames. There are no manual pixFrame calls in the test.
+- Cleanup now restores the prior HB reference and its shallow fields, prior player fields and crowd, screen state, world context binding, modal classes, hub class, preview angle/phase/timer, wrapped painters, and original bake counters. It closes newly opened modals before restoring the original ones. This reduces avoidable work and state leakage into the older-check run without changing the assertion or accepting a failing build.
+- Re-ran the same mk script against v33.74: written, both production anchors still unique. Applied the two edits in memory and parsed the complete inline game script plus the revised check in Node. Handoff files remain ASCII. No tracked game or fixture files edited.
+- Existing height, muzzle, pose and preview-route ships remain in keys.txt and will be skipped by the lane. The next action is the lane retry of cw-cx-pixhubframe, then the already-repaired camera recipes and critic. The 4K camera limitation is already logged; no duplicate alarm or question added.
+- Completion still requires that retry to ship, inspection of the fixed reference/aim/FASHION pictures, any body-specific follow-up, and the actual 4K evidence from the coordinator.
+
