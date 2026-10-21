@@ -4,3 +4,4 @@
 - 17-party-easy-mode.md (parked 10-20 01:30): all four builds shipped; only the two card pictures are left, taken by the coordinator (easy-cards-recipes.json). Close it after looking at them. CLOSED 01:45 (done/).
 - o-04-camera-closer.md (parked 10-20 02:00): shipped; only its two-window pictures are left, taken by the coordinator with uishots -NoPopupBlock. CLOSED 02:25 (done/).
 - o-02-corpus-green (10-20 07:58): waits for the full run that started 07:25 (ends about 11:30); the coordinator requeues it with the new list. REQUEUED 09:50 as round 3 (tasks/).
+- o-91b-report-news-style (parked 10-21 02:43): it waited for the coordinator to clear the stuck v33.57 ground ship. REQUEUED 03:08 (tasks/), its layout key back in keys.txt.

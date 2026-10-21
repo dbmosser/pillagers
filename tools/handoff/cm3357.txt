@@ -1,0 +1,7 @@
+v33.57: a pair that never links says so
+
+If player 2 does not link within 15 seconds, the game says player 2 not linked and offers RETRY.
+
+Check 33.57. Fails on v33.56.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

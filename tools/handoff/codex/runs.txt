@@ -170,3 +170,10 @@
 2026-10-21 02:10 o-91b-report-news-style 224s ok PARTIAL in=612789 out=7413 run=1
 2026-10-21 02:11 o-91b-report-news-style 40s ok PARTIAL in=787301 out=8648 run=2
 2026-10-21 02:13 o-91b-report-news-style 91s ok PARTIAL in=1124374 out=11419 run=3
+2026-10-21 02:23 o-91b-report-news-style 319s ok PARTIAL in=1792975 out=22272 run=4
+2026-10-21 02:35 o-91b-report-news-style 216s ok PARTIAL in=567076 out=5317 run=5
+2026-10-21 02:37 o-91b-report-news-style 118s ok PARTIAL in=304364 out=3229 run=1
+2026-10-21 02:38 o-91b-report-news-style 66s ok PARTIAL in=564834 out=5204 run=2
+2026-10-21 02:39 o-91b-report-news-style 29s ok PARTIAL in=677543 out=6060 run=3
+2026-10-21 02:40 o-91b-report-news-style 59s ok PARTIAL in=852356 out=8222 run=4
+2026-10-21 02:43 o-91b-report-news-style 122s ok PARTIAL in=1220821 out=12129 run=5

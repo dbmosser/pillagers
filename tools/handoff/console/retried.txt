@@ -21,3 +21,5 @@ o-02-corpus-green
 o-19-duplicate-check-ids
 61-experimental-menu
 85-preraid-map-no-cache-labels
+o-91b-report-news-style
+86b-pix-ground

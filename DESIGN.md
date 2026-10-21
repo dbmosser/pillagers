@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.57 - A PAIR THAT NEVER LINKS SAYS SO
+
+Co-op hunt while he was away. coord-06 on 2026-10-21: in a cross-site frame (itch) the player 2 window booted and nothing on screen said why the pair did not link. Now 15 seconds after the pick with nobody in, the status reads player 2 not linked, the title note says it with RETRY, and the Undercroft feed says it once. This is the first of two ships for couch mode on itch; the window bridge follows.
+
+MEASURED. Check 33.57 passes, and fails on v33.56.
 ## v33.56 - PUBLIC REPORT AND NEWS READABILITY
 
 Co-op hunt while he was away. The critic found a full-height raw dump, a weak copy action, cramped restore controls and small news text.

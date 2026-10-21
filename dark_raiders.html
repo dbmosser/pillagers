@@ -3309,7 +3309,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.56';
+var VER='33.57';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -51691,7 +51691,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.56: The recorder preview is 240px tall, copy is the filled primary action, restore has room and pause news uses 20px body text. Check 33.56 fails on v33.55',
+  now:'v33.57: If player 2 does not link within 15 seconds, the game says player 2 not linked and offers RETRY. Check 33.57 fails on v33.56',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -56457,7 +56457,7 @@ function netMateLeave(){
 }
 // Every floor frame while the pair is on: eases the other body toward where he last said he stood, drops him when he is not heard from, and
 // a few times a second posts where this player stands. Returns 1 when a word went out.
-function netMateTick(dt){
+function netMateTick(dt){ try{ netSameWatch(Date.now()); }catch(_nw){}   // v33.58 (cw-p2nolink): the no-link watch rides the Undercroft frame, no timer of its own
   var g=NETMATE.g, k, dx, dy, da, sp, p, msg, lk, ls;
   if(!isFinite(dt)||dt<0) dt=0;
   if(g&&(!NET.same||!NET.pair||NETMATE.pair!==NET.pair||g.age>=NET_MATE_STALE)){ NETMATE.g=null; g=null; }
@@ -56538,10 +56538,26 @@ function netSameChan(){
   catch(e){ NET.bc=null; }
   return NET.bc;
 }
+// v33.58 (cw-p2nolink), coord-06 (2026-10-21): A PAIR THAT NEVER LINKS SAYS SO. In a cross-site frame (itch) player 2 booted and nothing on screen said why
+// nothing happened. 15 s after the pick with nobody in, the status reads "player 2 not linked" where "waiting for player 2" showed, the title note
+// says it with RETRY, and the hub feed says it once. It is drivable: netSameWatch(now) is called from the Undercroft frame (netMateTick) and by checks.
+var NET_NOLINK_MS=15000;
+function netSameWatch(now){
+  if(NET.same!=='host'||!NET.sameT0) return 'off';
+  if(netInCount()>0){
+    if(NET.noLink){ NET.noLink=0; if(NET.status==='player 2 not linked') NET.status=''; netModeMsg(''); netRefresh(); }
+    NET.sameT0=0; return 'linked';
+  }
+  if(NET.noLink) return 'shown';
+  if(!(now-NET.sameT0>=NET_NOLINK_MS)) return 'wait';
+  NET.noLink=1; NET.status='player 2 not linked';
+  netModeMsg('player 2 not linked',true); netSay('player 2 not linked'); netRefresh();
+  return 'nolink';
+}
 function netSamePost(m){ if(!NET.bc) return false; try{ NET.bc.postMessage(m); return true; }catch(e){ return false; } }
 function netSameStop(){
   if(NET.bc){ try{ NET.bc.onmessage=null; NET.bc.close(); }catch(e){} }
-  NET.bc=null; NET.same=''; NET.pair=''; NET.mode=''; NET.p2win=null; NET.sameBusy=false;
+  NET.bc=null; NET.same=''; NET.pair=''; NET.mode=''; NET.p2win=null; NET.sameBusy=false; NET.sameT0=0; NET.noLink=0;
   NET.padFwd=null; NET.padOther=-1;   // v15.77: the handed-over state and the other window's pick go with the channel; this window's own pick stays
   NET.padWas=null;   // v17.27: and the kept sides
   netSndRelease();   // v15.78: the master gain goes back to 1 and the other window's word is forgotten; this window's own switch stays
@@ -56604,6 +56620,7 @@ function netSamePick(mode,startFn){
   try{ w=window.open(url,'pillagers_p2',netP2Features()); }catch(e){ w=null; }
   if(!w){ NET.p2win=null; netModeMsg('The browser blocked the second window. Allow popups for this page, then press RETRY.',true); return 'blocked'; }
   NET.p2win=w; NET.same='host'; NET.mode=mode; netModeMsg('');
+  NET.sameT0=Date.now(); NET.noLink=0;   // v33.58 (cw-p2nolink): the 15 s no-link watch starts at the pick
   if(!NET.role) netStartHost();
   NET.status='waiting for player 2';
   netSameChan();

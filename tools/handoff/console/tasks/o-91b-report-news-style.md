@@ -19,3 +19,10 @@ Party risk: none (menus outside the raid). Watch line: "the news and report wind
 Size: one ship.
 
 TASK DONE when shipped and both windows score 3 or more; TASK PARTIAL with what is left.
+
+Lane note 2026-10-21 02:43: shipped cw-cx-o91b-newsreport and parked: only lane-side steps are left. Codex's last words:
+Reviewed both pictures and updated the pending CSS with brighter, wrapped log text and a 6px scrollbar. Local validation passes. Scores remain news 2, recorder 3; the layout fix has not shipped.
+
+TASK PARTIAL: shared ship recovery is still required, followed by the deferred key and 1080p/4K critic reviews.
+
+REQUEUED 10-21 03:08 (coordinator): the stuck cw-pixground v33.57 is cleared (the tree is back at v33.56, and a late STOP now undoes itself), and cw-cx-o91b-windowlayout is back in keys.txt. Left: preflight and ship it, the 1080p and 4k pictures of both windows before and after, both critic scores at least 3.

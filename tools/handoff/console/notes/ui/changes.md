@@ -275,3 +275,7 @@
 
 2026-10-21 | o-91b-report-news-style | 91-public-report-recorder | preflight repair for cw-cx-o91b-newsreport: account for default 130 percent menu scale so preview measures 240px at 1080p; make lowercase CSS win over the global reset; raw data unchanged | before/after lane camera capture pending at 1080 and 4k.
 
+2026-10-21 | o-91b-report-news-style | 91-public-news-window, 91-public-report-recorder | cw-cx-o91b-windowlayout: news 5% frame, 72px rows/newest accent and clear header; centered 1100px recorder, 160px preview/fade, body-size restore title and ghost actions; all words/data/handlers retained | before: tools/handoff/console/notes/shots/o-91b-report-news-style-recipes-1/91-public-news-window-1080.jpg and 91-public-report-recorder-1080.jpg | after: pending lane round 2 at 1080 and 4k.
+
+2026-10-21 | o-91b-report-news-style | 91-public-news-window | pending cw-cx-o91b-windowlayout: retain 1px ui-line-hi idle border on the relocated 48px close button; 2px lime focus outline | before: tools/handoff/console/notes/shots/o-91b-report-news-style-recipes-1/91-public-news-window-1080.jpg | after: lane capture pending for cw-cx-o91b-windowlayout, both 1080p and 4k requested
+2026-10-21 | o-91b-report-news-style | 91-public-report-recorder | pending cw-cx-o91b-windowlayout updated: preview tx-2 to tx-1, wrapped long lines, 6px scrollbar; words/data/handlers preserved | before tools/handoff/console/notes/shots/o-91b-report-news-style-recipes-2/91-public-report-recorder-1080.jpg | after pending shared ship recovery
