@@ -1,0 +1,7 @@
+v33.93: pixel kind guard
+
+Throwing pixel kinds use their vector art for the rest of that raid, with one recorder entry.
+
+Check 33.93. Fails on v33.92.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

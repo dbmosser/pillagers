@@ -3407,7 +3407,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.92';
+var VER='33.93';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -34315,6 +34315,7 @@ var _cdone=contractExtract(G.bag,haul);
       return wearable(W.id)?'owned':'field'; })(),
     n:P.runs,ver:VER,seed:G.seed,outcome:how,weapon:T.weapon,preset:CFG.preset||'custom',termPay:tPay,terms:termsOf().slice(),
     drawErr:T.drawErr||null,
+    pixGuard:(T.pixGuard||[]).slice(), // v28.xx (cw-cx-pixguard): one entry per kind after the third throw
     // v23.xx (gfx1): frame telemetry, a copy, so the frames after the raid ends do not move it
     gfx:(T.gfx&&T.gfx.n)?{n:T.gfx.n,p50:T.gfx.p50,p95:T.gfx.p95,slow:T.gfx.slow,q:T.gfx.q,pass:T.gfx.pass||null}:null,
     // WHICH SECTOR THIS RUN WAS ON, added v2.96, and it is overdue by exactly one
@@ -50608,6 +50609,33 @@ var PIX_ACT=1, PIX_ENV=2, PIX_INK='#16121c';   // world units per art px: actors
 var PIX={builds:0,bakeMs:0,hits:0,miss:0,refused:0,evict:0,errs:0,fall:0,fB:0,fMs:0,S:1,reg:{}};
 function pixOn(){ return !!CFG&&CFG.xfPix!==0; }
 var PIXSTORE={cap:{actors:24*1048576,scene:16*1048576},bytes:{actors:0,scene:0},m:{actors:new Map(),scene:new Map()},maxBuilds:2,maxMs:2};
+// v28.xx (cw-cx-pixguard): "I want to do it all now before the party" (10-20). Three throwing attempts keep that kind in vector for this raid; the owner alone controls pixel look.
+var PIXGUARD={raid:null,kinds:Object.create(null),active:'',serial:0};
+function pixGuardKind(key){
+  if(PIXGUARD.active) return PIXGUARD.active;
+  var s=String(key||'sprite'), p=s.split('|');
+  if(p[0]==='mach') return 'machine:'+p[1];
+  if(/^(u|l|r|g|f|k|e|top|setmelee)$/.test(p[0])) return 'pillager';
+  if(p[0]==='pwr') return 'power-up:'+p[1];
+  if(s.indexOf('bx:')===0) return 'container:'+s.slice(3).replace(/[oc]$/,'');
+  if(s.indexOf('wr:')===0) return 'wreck:'+s.slice(3).replace(/[v01oc]+$/,'');
+  return s.split(/[|:]/)[0];
+}
+function pixGuardState(key){
+  var g=(typeof G!=='undefined'&&G&&!G.over)?G:null, k=pixGuardKind(key);
+  if(PIXGUARD.raid!==g){ PIXGUARD.raid=g; PIXGUARD.kinds=Object.create(null); }
+  return PIXGUARD.kinds[k]||(PIXGUARD.kinds[k]={kind:k,n:0,line:0});
+}
+function pixGuardBlocked(key){ return pixGuardState(key).n>=3; }
+function pixGuardFail(key,err){
+  var s=pixGuardState(key), g=PIXGUARD.raid, msg=String(err&&err.message||err||'bake failed').slice(0,160);
+  s.n++; PIXGUARD.serial++; PIX.errs++;
+  if(g&&!g.drawErr){ g.drawErr='pixel '+s.kind+': '+msg; if(g.tel)g.tel.drawErr=g.drawErr; }
+  if(s.n===3&&!s.line){
+    s.line=1;
+    if(g&&g.tel){ if(!g.tel.pixGuard)g.tel.pixGuard=[]; g.tel.pixGuard.push({kind:s.kind,t:Math.round(g.t||0),txt:'vector for this raid'}); }
+  }
+}
 function pixDropAll(){ var k; for(k in PIXSTORE.m){ PIXSTORE.m[k].clear(); PIXSTORE.bytes[k]=0; } }
 gfxStore('pix',function(){ pixDropAll(); });   // a lost canvas context empties the caches with the other sprite stores
 function pixNow(){ return (typeof performance!=='undefined')?performance.now():Date.now(); }
@@ -50648,6 +50676,7 @@ function pixBlit(spr,x,y,flip,c,S){
   return true;
 }
 function pixGet(kind,key){
+  if(pixGuardBlocked(key)) return null; // v28.xx (cw-cx-pixguard): a cached pose cannot bypass the raid guard
   var m=PIXSTORE.m[kind], e=m.get(key);
   if(e){ m.delete(key); m.set(key,e); PIX.hits++; return e; }
   PIX.miss++; return null;
@@ -50665,9 +50694,10 @@ function pixPut(kind,key,e){
 // build a sprite (fn returns a pixSprite) unless this frame has already spent 2 builds or 2 ms: then null, and the caller uses pixNearest or its vector painter
 function pixBuild(kind,key,fn,fam,pose){
   var t0, e, dt;
+  if(pixGuardBlocked(key)) return null; // v28.xx (cw-cx-pixguard)
   if(PIX.fB>=PIXSTORE.maxBuilds||PIX.fMs>=PIXSTORE.maxMs){ PIX.refused++; return null; }
   t0=pixNow();
-  try{ e=fn(); }catch(_pb){ PIX.errs++; return null; }
+  try{ e=fn(); }catch(_pb){ PIX.fB++; PIX.fMs+=pixNow()-t0; pixGuardFail(key,_pb); return null; } // v28.xx (cw-cx-pixguard): failed work spends the same frame budget
   if(!e||!e.c){ PIX.errs++; return null; }
   dt=pixNow()-t0; PIX.fB++; PIX.fMs+=dt; PIX.builds++; PIX.bakeMs+=dt;
   e.fam=fam||''; e.pose=+pose||0;
@@ -50679,7 +50709,11 @@ function pixNearest(kind,fam,pose){   // the cached pose of the same family clos
   return best;
 }
 function pixFetch(kind,key,fn,fam,pose){
-  var e=pixGet(kind,key)||pixBuild(kind,key,fn,fam,pose)||pixNearest(kind,fam,pose);
+  // v28.xx (cw-cx-pixguard): a throw draws this body in vector, even when a nearby pose exists.
+  if(pixGuardBlocked(key)) return null;
+  var serial=PIXGUARD.serial, e=pixGet(kind,key)||pixBuild(kind,key,fn,fam,pose);
+  if(PIXGUARD.serial!==serial) return null;
+  if(!e) e=pixNearest(kind,fam,pose);
   if(!e) PIX.fall++;
   return e;
 }
@@ -50821,7 +50855,7 @@ function pixWrap(key,w,h,d,paint,x,y,o){
     pixBlit(e,T.a*x+T.e,T.d*y+T.f,false,wc,T.a*d);
     PIXW.last=e;
     return e;
-  }catch(_pw){ PIX.errs++; return null; }
+  }catch(_pw){ pixGuardFail(key,_pw); return null; } // v28.xx (cw-cx-pixguard)
 }
 // ---- the ramp tables, as data (86b ground and 86d walls and trees read these) ----
 // value bands in lightness percent, kept from the district palette: floor 42-50, wall face 54-60, wall top 72-78, actors and loot 80-94. Night keeps the same order and the same gaps,
@@ -51907,13 +51941,16 @@ function pixBodySheet(bot){
 }
 // one call for drawOp: a throw anywhere in the pixel body is counted, logged as the raid's render fault text and the vector body is drawn instead
 function pixBodyTry(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
-  try{ return pixDrawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st); }
+  // v28.xx (cw-cx-pixguard): all component bakes share one pillager guard, restored after nested painters.
+  var active=PIXGUARD.active, serial=PIXGUARD.serial, a=wc.globalAlpha, op=wc.globalCompositeOperation;
+  PIXGUARD.active='pillager';
+  if(pixGuardBlocked('pillager')){ PIXGUARD.active=active; return false; }
+  try{ var ok=pixDrawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st); return PIXGUARD.serial===serial&&ok; }
   catch(e){
-    PIX.errs++; PIX.fall++;
+    pixGuardFail('pillager',e); PIX.fall++;
     try{ wc.imageSmoothingEnabled=true; wc.globalCompositeOperation='source-over'; }catch(_r){}
-    if(typeof G!=='undefined'&&G&&!G.drawErr){ G.drawErr='pixel pillager: '+(e&&e.message||e); if(G.tel) G.tel.drawErr=G.drawErr; }
     return false;
-  }
+  } finally { PIXGUARD.active=active; wc.globalAlpha=a; wc.globalCompositeOperation=op; }
 }
 pixReg('pillager looks 27',function(){ return pixBodySheet(0); });
 pixReg('pillager bots 27',function(){ return pixBodySheet(1); });
@@ -53259,7 +53296,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.92: Four complete racks fit the fashion page with clear worn and pad states, a flat 4x preview and readable save controls. Check 33.92 fails on v33.91',
+  now:'v33.93: Throwing pixel kinds use their vector art for the rest of that raid, with one recorder entry. Check 33.93 fails on v33.92',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -56292,6 +56329,7 @@ function buildExport(){
     if(r.abandonFee) line+=' abandonFee:'+r.abandonFee;
     if(r.raidersExtracted) line+=' aiExtracted:'+r.raidersExtracted;
     if(r.drawErr) line+=' DRAWERR:'+r.drawErr;
+    if(r.pixGuard) r.pixGuard.forEach(function(q){ line+=' PIXGUARD:'+q.kind+' vector for this raid'; }); // v28.xx (cw-cx-pixguard)
     // v23.xx (gfx1): the frame gap this raid ran at on his PC, and what the sampled passes cost (ms of script)
     if(r.gfx&&r.gfx.n){
       line+=' gfx:'+r.gfx.p50+'/'+r.gfx.p95+'ms n:'+r.gfx.n+' slow:'+r.gfx.slow+' scale:'+r.gfx.q;

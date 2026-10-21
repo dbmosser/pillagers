@@ -1,0 +1,5 @@
+## v33.93 - PIXEL KIND GUARD
+
+Co-op hunt while he was away. A broken art bake must keep a body visible and must stop retrying that kind after three throws in one raid.
+
+MEASURED. Check 33.93 passes, and fails on v33.92.

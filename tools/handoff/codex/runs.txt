@@ -212,3 +212,12 @@
 2026-10-21 13:03 86h-pix-sets-wardrobe 106s ok PARTIAL in=6366796 out=50119 run=3
 2026-10-21 13:27 86h-pix-sets-wardrobe 907s ok PARTIAL in=12248274 out=80541 run=4
 2026-10-21 13:29 86h-pix-sets-wardrobe 138s ok PARTIAL in=13800089 out=85076 run=5
+2026-10-21 13:38 86i-building-kinds 27s ok WAITING in=94490 out=646 run=1
+2026-10-21 13:39 86i-building-kinds 27s ok WAITING in=93418 out=581 run=1
+2026-10-21 13:44 86i-building-kinds 20s ok WAITING in=68326 out=521 run=1
+2026-10-21 13:49 86i-building-kinds 25s ok WAITING in=116467 out=818 run=1
+2026-10-21 13:54 86i-building-kinds 20s ok WAITING in=73353 out=496 run=1
+2026-10-21 14:00 86i-building-kinds 19s ok WAITING in=68991 out=471 run=1
+2026-10-21 14:24 86i-building-kinds 24s ok WAITING in=70441 out=565 run=1
+2026-10-21 14:30 86i-building-kinds 17s ok WAITING in=70609 out=368 run=1
+2026-10-21 14:54 86j-pix-fx-guard 1177s ok PARTIAL in=4663379 out=43738 run=1

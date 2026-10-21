@@ -1,0 +1,48 @@
+{
+    "title":  "PIXEL KIND GUARD",
+    "why":  "A broken art bake must keep a body visible and must stop retrying that kind after three throws in one raid.",
+    "now":  "Throwing pixel kinds use their vector art for the rest of that raid, with one recorder entry.",
+    "edits":  [
+                  {
+                      "anchor":  "function pixDropAll(){",
+                      "replacement":  "// v28.xx (cw-cx-pixguard): \"I want to do it all now before the party\" (10-20). Three throwing attempts keep that kind in vector for this raid; the owner alone controls pixel look.\nvar PIXGUARD={raid:null,kinds:Object.create(null),active:\u0027\u0027,serial:0};\nfunction pixGuardKind(key){\n  if(PIXGUARD.active) return PIXGUARD.active;\n  var s=String(key||\u0027sprite\u0027), p=s.split(\u0027|\u0027);\n  if(p[0]===\u0027mach\u0027) return \u0027machine:\u0027+p[1];\n  if(/^(u|l|r|g|f|k|e|top|setmelee)$/.test(p[0])) return \u0027pillager\u0027;\n  if(p[0]===\u0027pwr\u0027) return \u0027power-up:\u0027+p[1];\n  if(s.indexOf(\u0027bx:\u0027)===0) return \u0027container:\u0027+s.slice(3).replace(/[oc]$/,\u0027\u0027);\n  if(s.indexOf(\u0027wr:\u0027)===0) return \u0027wreck:\u0027+s.slice(3).replace(/[v01oc]+$/,\u0027\u0027);\n  return s.split(/[|:]/)[0];\n}\nfunction pixGuardState(key){\n  var g=(typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026!G.over)?G:null, k=pixGuardKind(key);\n  if(PIXGUARD.raid!==g){ PIXGUARD.raid=g; PIXGUARD.kinds=Object.create(null); }\n  return PIXGUARD.kinds[k]||(PIXGUARD.kinds[k]={kind:k,n:0,line:0});\n}\nfunction pixGuardBlocked(key){ return pixGuardState(key).n\u003e=3; }\nfunction pixGuardFail(key,err){\n  var s=pixGuardState(key), g=PIXGUARD.raid, msg=String(err\u0026\u0026err.message||err||\u0027bake failed\u0027).slice(0,160);\n  s.n++; PIXGUARD.serial++; PIX.errs++;\n  if(g\u0026\u0026!g.drawErr){ g.drawErr=\u0027pixel \u0027+s.kind+\u0027: \u0027+msg; if(g.tel)g.tel.drawErr=g.drawErr; }\n  if(s.n===3\u0026\u0026!s.line){\n    s.line=1;\n    if(g\u0026\u0026g.tel){ if(!g.tel.pixGuard)g.tel.pixGuard=[]; g.tel.pixGuard.push({kind:s.kind,t:Math.round(g.t||0),txt:\u0027vector for this raid\u0027}); }\n  }\n}\nfunction pixDropAll(){"
+                  },
+                  {
+                      "anchor":  "  var m=PIXSTORE.m[kind], e=m.get(key);",
+                      "replacement":  "  if(pixGuardBlocked(key)) return null; // v28.xx (cw-cx-pixguard): a cached pose cannot bypass the raid guard\n  var m=PIXSTORE.m[kind], e=m.get(key);"
+                  },
+                  {
+                      "anchor":  "  var t0, e, dt;\n  if(PIX.fB\u003e=PIXSTORE.maxBuilds",
+                      "replacement":  "  var t0, e, dt;\n  if(pixGuardBlocked(key)) return null; // v28.xx (cw-cx-pixguard)\n  if(PIX.fB\u003e=PIXSTORE.maxBuilds"
+                  },
+                  {
+                      "anchor":  "  try{ e=fn(); }catch(_pb){ PIX.errs++; return null; }",
+                      "replacement":  "  try{ e=fn(); }catch(_pb){ PIX.fB++; PIX.fMs+=pixNow()-t0; pixGuardFail(key,_pb); return null; } // v28.xx (cw-cx-pixguard): failed work spends the same frame budget"
+                  },
+                  {
+                      "anchor":  "  var e=pixGet(kind,key)||pixBuild(kind,key,fn,fam,pose)||pixNearest(kind,fam,pose);",
+                      "replacement":  "  // v28.xx (cw-cx-pixguard): a throw draws this body in vector, even when a nearby pose exists.\n  if(pixGuardBlocked(key)) return null;\n  var serial=PIXGUARD.serial, e=pixGet(kind,key)||pixBuild(kind,key,fn,fam,pose);\n  if(PIXGUARD.serial!==serial) return null;\n  if(!e) e=pixNearest(kind,fam,pose);"
+                  },
+                  {
+                      "anchor":  "  }catch(_pw){ PIX.errs++; return null; }",
+                      "replacement":  "  }catch(_pw){ pixGuardFail(key,_pw); return null; } // v28.xx (cw-cx-pixguard)"
+                  },
+                  {
+                      "anchor":  "  try{ return pixDrawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st); }\n  catch(e){\n    PIX.errs++; PIX.fall++;",
+                      "replacement":  "  // v28.xx (cw-cx-pixguard): all component bakes share one pillager guard, restored after nested painters.\n  var active=PIXGUARD.active, serial=PIXGUARD.serial, a=wc.globalAlpha, op=wc.globalCompositeOperation;\n  PIXGUARD.active=\u0027pillager\u0027;\n  if(pixGuardBlocked(\u0027pillager\u0027)){ PIXGUARD.active=active; return false; }\n  try{ var ok=pixDrawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st); return PIXGUARD.serial===serial\u0026\u0026ok; }\n  catch(e){\n    pixGuardFail(\u0027pillager\u0027,e); PIX.fall++;"
+                  },
+                  {
+                      "anchor":  "    if(typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026!G.drawErr){ G.drawErr=\u0027pixel pillager: \u0027+(e\u0026\u0026e.message||e); if(G.tel) G.tel.drawErr=G.drawErr; }\n    return false;\n  }\n}",
+                      "replacement":  "    return false;\n  } finally { PIXGUARD.active=active; wc.globalAlpha=a; wc.globalCompositeOperation=op; }\n}"
+                  },
+                  {
+                      "anchor":  "    drawErr:T.drawErr||null,",
+                      "replacement":  "    drawErr:T.drawErr||null,\n    pixGuard:(T.pixGuard||[]).slice(), // v28.xx (cw-cx-pixguard): one entry per kind after the third throw"
+                  },
+                  {
+                      "anchor":  "    if(r.drawErr) line+=\u0027 DRAWERR:\u0027+r.drawErr;",
+                      "replacement":  "    if(r.drawErr) line+=\u0027 DRAWERR:\u0027+r.drawErr;\n    if(r.pixGuard) r.pixGuard.forEach(function(q){ line+=\u0027 PIXGUARD:\u0027+q.kind+\u0027 vector for this raid\u0027; }); // v28.xx (cw-cx-pixguard)"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027cw-cx-pixguard: a throwing bake draws the vector body, the third throw locks only its kind for this raid and writes one recorder line, a new raid retries\u0027,\n   run:function(){\n     if(typeof pixGuardBlocked!==\u0027function\u0027)return \u0027no per-kind pixel guard\u0027;\n     var cfg=CFG.xfPix, bake=pixWrapBake, oldDraw=drawOp0, body=pixDrawOp, w=wc, err=PIX.errs, active=PIXGUARD.active, g, saved=false, count=0, vec=0, serial;\n     try{\n       __runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();CFG.xfPix=1;\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});g=G;pixDropAll();wc=w;wc.save();saved=true;\n       wc.setTransform(1,0,0,1,120,160);\n       pixWrapBake=function(){count++;throw new Error(\u0027injected guard bake\u0027);};\n       function paint(){wc.fillStyle=\u0027#eeb08a\u0027;wc.fillRect(-4,-12,8,12);vec++;}\n       // v28.xx (cw-cx-pixguard): This is the adapter contract used by props: a false return calls the existing body painter.\n       for(var i=0;i\u003c6;i++){pixFrame();if(!pixWrap(\u0027guard-test|\u0027+i,20,20,1,paint,0,0,{up:16}))paint();}\n       if(count!==3||vec!==6)return \u0027throwing kind did not stay vector: bakes \u0027+count+\u0027 vector bodies \u0027+vec;\n       if(!g.tel.pixGuard||g.tel.pixGuard.length!==1||g.tel.pixGuard[0].kind!==\u0027guard-test\u0027)return \u0027guard did not record exactly one line\u0027;\n       if(CFG.xfPix!==1)return \u0027guard turned off pixel look\u0027;\n       pixWrapBake=bake;pixFrame();\n       if(!pixWrap(\u0027other-kind\u0027,20,20,1,paint,0,0,{up:16}))return \u0027guard disabled a different kind\u0027;\n       // v28.xx (cw-cx-pixguard): The public pillager dispatcher must draw its old body when a component throws, then stop trying after three.\n       count=0;vec=0;drawOp0=function(){vec++;};\n       pixDrawOp=function(){count++;throw new Error(\u0027injected pillager body\u0027);};\n       var st={hero:1,own:g.player,moving:false,sprint:false,ads:false,bulk:0};\n       for(i=0;i\u003c5;i++){pixFrame();drawOp(0,0,0,0,\u0027#aaa\u0027,0,0,\u0027none\u0027,0,st);}\n       if(count!==3||vec!==5)return \u0027pillager dispatcher failed vector fallback \u0027+count+\u0027/\u0027+vec;\n       if(g.tel.pixGuard.length!==2)return \u0027pillager guard recorded more than once\u0027;\n       pixDrawOp=body;drawOp0=oldDraw;\n       var over=g.over;g.over=true;\n       if(pixGuardBlocked(\u0027pillager\u0027))return \u0027guard continued after the raid ended\u0027;\n       g.over=over;\n       // v28.xx (cw-cx-pixguard): A different raid object is the lifetime boundary, independent of settings and cache resets.\n       G={sim:0,tel:{},t:0};\n       if(pixGuardBlocked(\u0027guard-test\u0027)||pixGuardBlocked(\u0027pillager\u0027))return \u0027new raid inherited the guard\u0027;\n       return null;\n     }finally{\n       G=g||G;wc=w;if(saved)wc.restore();pixWrapBake=bake;pixDrawOp=body;drawOp0=oldDraw;PIX.errs=err;PIXGUARD.active=active;\n       if(g){g.drawErr=null;if(g.tel){g.tel.drawErr=null;g.tel.pixGuard=[];}}\n       PIXGUARD.raid=null;PIXGUARD.kinds=Object.create(null);\n       try{__endRaid(\u0027abandon\u0027);}catch(e){}__topClear();__resetCfg();__cleanProfile();CFG.xfPix=cfg;pixDropAll();pixFrame();\n     }\n   }},"
+}

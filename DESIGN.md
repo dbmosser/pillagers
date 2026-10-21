@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.93 - PIXEL KIND GUARD
+
+Co-op hunt while he was away. A broken art bake must keep a body visible and must stop retrying that kind after three throws in one raid.
+
+MEASURED. Check 33.93 passes, and fails on v33.92.
 ## v33.92 - PIXEL FASHION READABILITY
 
 Co-op hunt while he was away. The critic found no visible worn or pad state, oversized tiles, clipped set row and small saved-look controls.

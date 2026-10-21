@@ -1,12 +1,59 @@
 
 NONE
+It looks like you've provided a large block of CSS code, which appears to be styling various elements within a web application. The styles are targeting specific IDs and classes related to different modal windows, buttons, text areas, and other UI components.
+
+Here's a summary of what each section does:
+
+1. **Settings Modal (Recorder Mode)**:
+   - Styles for the recorder mode settings modal, including button sizes, padding, font sizes, colors, and hover effects.
+   - Specific styles for elements like `#exporttext`, `#copybtn`, `#wipelog`, and others.
+
+2. **News Window**:
+   - Styles for a news window (`#wnmodal`), including layout adjustments, font sizes, padding, and positioning of close buttons.
+   - Adjustments for different screen sizes using media queries.
+
+3. **Appearance Modal (Pix Fashion)**:
+   - Hides certain elements within the appearance modal when in pix fashion mode.
+   - Styles for grid layouts, headers, and avatar pickers.
+
+If you need help with a specific part of this CSS or have questions about how to modify it, feel free to ask!
+NONE
+It looks like you've provided a detailed list of changes or rules for a video game, possibly related to its mechanics, gameplay features, and user interface. Here are some key points from your text:
+
+1. **Cooked Frag Charge**: Keeps burning through a roll.
+2. **Heal on Key**: No longer stops Medical using other heals.
+3. **Controller Packs**: A controller packs from the stash with "A. SURPRISE ME" takes off a worn suit, erasing 3537: 'NOTHING FROM NOTHING, AND A FAIRER FIGHT'.
+4. **Pile You Drop**: Earns no hot zone bonus and never restocks.
+5. **Medkit**: Never wasted at full health or refused on its own key.
+6. **Grenade Cooking**: Stays in your hand.
+7. **Contracts and Hazard Pay**: Count only what the run found.
+8. **Undercroft Restore Code**: Replaces your whole inventory.
+9. **Fewer Enemies by Default**: Few machines now means the number it says; houses no longer push crawlers past it.
+10. **Out of Bandages or Grenades**: Switch back to gun yourself.
+11. **Raised Decks Gone**: Catwalks and gantries removed from both sectors.
+12. **Tab Pauses and Backs Out of Any Menu**: On itch, browser spends Escape on leaving fullscreen; TAB does everything Escape does in the game.
+13
 NONE
 NONE
 NONE
 NONE
-LINE 40423: Possible NaN or undefined values reaching canvas calls (arc, createRadialGradient).
-LINE 40457: Assignment used where a comparison was meant.
-LINE 40463: A try/catch that swallows a whole per-frame draw or update.
-LINE 40580: Property access on a value that can be null or undefined in per-frame code without a guard (wlPx).
-LINE 40582: Possible NaN or undefined values reaching canvas calls (fillText positions).
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
 NONE
