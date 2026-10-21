@@ -1,0 +1,50 @@
+<!doctype html><meta charset=utf-8><title>c6 inner</title>
+<style>body{margin:0}button{position:absolute;left:0;width:200px;height:60px}#open{top:0}#rsa{top:100px}</style>
+<button id=open>open</button><button id=rsa>rsa</button>
+<script>
+var q=new URLSearchParams(location.search), run=q.get('run')||'x';
+var S={who:'inner',run:run,origin:location.origin,isTop:window.top===window,secure:window.isSecureContext,log:[],maxGap:0,ticks:0,hasSA:null,rsa:null};
+var last=performance.now();
+setInterval(function(){var n=performance.now(),g=n-last;if(g>S.maxGap)S.maxGap=g;last=n;S.ticks++},10);
+function L(x){S.log.push(Math.round(performance.now())+' '+x)}
+function G(k){try{return localStorage.getItem(k)}catch(e){return 'ERR '+e}}
+var bc=new BroadcastChannel('c6t2'); bc.onmessage=function(e){L('bc:'+JSON.stringify(e.data))};
+addEventListener('storage',function(e){L('storage:'+e.key+'='+e.newValue)});
+try{localStorage.setItem('c6t2:inner',run+':load')}catch(e){L('lsErr:'+e)}
+var W=null, PORT=null;
+addEventListener('message',function(e){
+  var d=e.data||{};
+  if(d.c6cmd){
+    if(d.c6cmd==='reset'){S.maxGap=0;last=performance.now();S.ticks=0}
+    if(d.c6cmd==='busy'){var t=performance.now();while(performance.now()-t<d.arg){}}
+    if(d.c6cmd==='write'){try{localStorage.setItem('c6t2:inner',run+':'+d.arg)}catch(err){} bc.postMessage({from:'inner',run:run,n:d.arg}); if(W){try{W.postMessage({from:'inner',via:'W-late',n:d.arg},'*')}catch(err){L('W-late err '+err)}} if(PORT)PORT.postMessage({from:'inner',via:'port-late',n:d.arg})}
+    S.lsPop=G('c6t2:pop'); S.wClosed=W?W.closed:null;
+    parent.postMessage({c6state:JSON.parse(JSON.stringify(S))},'*'); return;
+  }
+  if(d.from==='pop'){
+    L('msg:'+JSON.stringify(d)+' srcIsW='+(e.source===W)+' ports='+(e.ports?e.ports.length:0));
+    if(e.ports&&e.ports[0]){PORT=e.ports[0];PORT.onmessage=function(ev){L('port:'+JSON.stringify(ev.data))};PORT.postMessage({from:'inner',via:'port'});}
+    if(d.hello){
+      try{ if(W){W.postMessage({from:'inner',via:'W'},'*'); L('replied via W')} else L('W is null, no reply via W'); }catch(err){L('W reply err '+err)}
+      try{ e.source.postMessage({from:'inner',via:'source'},'*'); L('replied via source')}catch(err){L('source reply err '+err)}
+    }
+  }
+});
+document.getElementById('open').onclick=function(){
+  var f=q.get('feat')==='noopener'?'noopener,popup=yes,width=800,height=600,left=0,top=0':'popup=yes,width=800,height=600,left=0,top=0';
+  var u='http://localhost:8809/handoff/console/notes/coord-06/pop.html?run='+run+'&popmode='+(q.get('popmode')||'none');
+  L('click; activation='+(navigator.userActivation?navigator.userActivation.isActive:'?'));
+  try{W=window.open(u,'c6pop_'+run,f)}catch(err){L('open threw '+err)}
+  L('opened; W null='+(W===null));
+  setTimeout(function(){bc.postMessage({from:'inner',run:run,n:'t1'}); try{localStorage.setItem('c6t2:inner',run+':t1')}catch(e){}},1500);
+};
+document.getElementById('rsa').onclick=function(){
+  if(!document.requestStorageAccess){S.rsa='no api';L('rsa no api');return}
+  document.requestStorageAccess({all:true}).then(function(h){
+    S.rsa='ok'; L('rsa ok; BroadcastChannel fn='+(typeof h.BroadcastChannel)+' localStorage='+(typeof h.localStorage));
+    try{var b2=h.BroadcastChannel('c6t2'); b2.onmessage=function(e){L('rsabc:'+JSON.stringify(e.data))}; b2.postMessage({from:'inner',via:'rsa-bc',run:run}); window.__b2=b2; L('rsa bc posted')}catch(err){L('rsa bc err '+err)}
+    try{L('rsa ls c6t2:pop='+h.localStorage.getItem('c6t2:pop')); h.localStorage.setItem('c6t2:rsa',run)}catch(err){L('rsa ls err '+err)}
+  },function(err){S.rsa='err '+err;L('rsa err '+err)});
+};
+if(document.hasStorageAccess) document.hasStorageAccess().then(function(v){S.hasSA=v},function(e){S.hasSA='err '+e});
+</script>

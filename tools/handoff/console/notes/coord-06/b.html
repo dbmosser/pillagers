@@ -1,0 +1,12 @@
+<!doctype html><meta charset=utf-8><title>c6 b</title><body>b
+<script>
+var S={who:'b',url:location.href,openerAtLoad:window.opener!==null,maxGap:0,ticks:0,bc:[],storageEv:[],lsA:null};
+var last=performance.now();
+setInterval(function(){var n=performance.now(),g=n-last;if(g>S.maxGap)S.maxGap=g;last=n;S.ticks++;},10);
+var bc=new BroadcastChannel('c6t1');bc.onmessage=function(e){S.bc.push(e.data)};
+addEventListener('storage',function(e){S.storageEv.push(e.key+'='+e.newValue)});
+function reset(){S.maxGap=0;S.ticks=0;last=performance.now();return 1}
+function busy(ms){var t=performance.now();while(performance.now()-t<ms){}return 1}
+function cut(){window.opener=null;S.openerAfterCut=window.opener!==null;return S.openerAfterCut}
+function st(){S.lsA=localStorage.getItem('c6t1:a');S.openerNow=window.opener!==null;return JSON.parse(JSON.stringify(S))}
+</script>

@@ -22,3 +22,8 @@ Pictures: the raid-start map at 1080 and 4K, before and after, with his picture 
 Cut-off: FEATURES (a removal, low risk). Ship before Mon 10/26.
 
 TASK DONE when shipped with its check and pictures; TASK PARTIAL with what is left.
+
+Lane note 2026-10-21 02:06: shipped cw-cx-mapstart-clear cw-cx-mapstart-plates and parked: only lane-side steps are left. Codex's last words:
+All changes and checks shipped through v33.55. Verified the 1080p pictures and recorded remaining critic findings under the two-follow-up stopping rule.
+
+TASK PARTIAL: coordinator must capture and review the required 4K pictures; the lane forces 1080p.

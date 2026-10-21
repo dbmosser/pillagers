@@ -1765,16 +1765,16 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "A clean, consistent card with a clear lime primary action and a map-first layout, but the map labels are cluttered and inconsistent, and the contracts list is a flat, undifferentiated wall of same-weight rows.",
+  "verdict": "The pre-raid screen now has a clear structure: map on the left, contracts on the right, a lime start button, and a card with an x. It still falls short of polished, because the map labels are cluttered and sit on dark chips, a few text sizes are too small, and the bottom-left stat is nearly invisible.",
   "findings": [
-   "P1 map labels (extract a/b/c, hot ground, encampment, locked rooms): Use one label style, 16px f-cond 600, with a 2px --ui-void halo. Offset every label 12px from its icon so none touches linework or another label. Drop labels for minor rooms, or show them only on focus. Keep teal for extract only and red for hostile only.",
-   "P1 contracts panel: Make the name 20px tx-1 and the reward 20px tx-1 (not bold). Set progress at 16px tx-2. Show the 'holding' state as a 3px --ok left bar plus 16px text. Cap the list at 5 rows or let it scroll. Raise the header to a 32px title, or drop it and let the card title carry it.",
-   "P1 map region vs card: Reduce the hot-ground fill to about 10% alpha and keep the dashed outline. Raise the room outlines from #2e3337 to #4a5257. Make the player marker the single brightest element: lime ring, 24px.",
-   "P1 header row: Title 32px f-cond 700. Put 'sector map' at 16px tx-2 on the same baseline, 16px to the right. Set 'dawn · clear' at 16px tx-2 with 24px clear of the X. Keep the X in a 40px square on the card edge.",
-   "P2 primary button 'click to start [e]': Keep the lime fill. Make the chip an outlined 24px key cap with acc-ink 1px border and no fill. Pad the button 24px horizontally. Add a visible focus ring state (2px --acc-hover outline offset 3px) for pad users."
+   "P1 map area, labels: Cut the labels to the extracts, the player and the 3-4 key places. Show room names only on hover or focus, or at 14px tx-2 with no chip. Give every chip the same 4px radius, 6px by 3px padding and 80% --ui-panel fill. Move 'locked' into a small lock glyph.",
+   "P1 hierarchy, whole card: Drop the 'contracts' header to 20px f-cond 600 in tx-2, or make it a 16px label. Cut the hot-ground fill from about 25% to 12% opacity and keep the dashed outline. Keep the extract names at 20px but make the 'closes in' lines 16px tx-2.",
+   "P1 contracts list rows: Put the reward on the first line at 20px tx-1, and the progress as a 16px tx-2 line on the left under the name. Make the accent bar 3px lime on the active rows and label it ('active'). Use a uniform 72px row pitch with a 1px --ui-line divider, and give the 'holding' text --ok at 16px with a 4.5:1 contrast check.",
+   "P1 header row: Set both to 16px f-cond 600 tx-2 and baseline-align them to the title. Put 'dawn · clear' next to the X with a 16px gap. Give the X button the --ui-line-hi border at 1px and a 48px hit box.",
+   "P2 footer, bottom left: Put it in a pill of 16px tx-2 text with a thin 120px progress bar. Or merge it into the map panel's corner. Keep the footer to a 72px row with 24px padding."
   ],
-  "pic": "tools/handoff/console/notes/shots/85-preraid-map-no-cache-labels-recipes-3/85-after-mapfirst-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/85-preraid-map-no-cache-labels-recipes-4/85-after-mapfirst-1080.jpg",
   "task": "85-preraid-map-no-cache-labels",
-  "when": "2026-10-21T05:56"
+  "when": "2026-10-21T06:04"
  }
 }

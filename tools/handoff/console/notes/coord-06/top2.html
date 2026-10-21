@@ -1,0 +1,16 @@
+<!doctype html><meta charset=utf-8><title>c6 top</title>
+<style>html,body{margin:0;background:#fff}iframe{position:absolute;left:0;top:0;width:800px;height:600px;border:0}</style>
+<body><script>
+var q=new URLSearchParams(location.search), sb=q.get('sb')||'none';
+var f=document.createElement('iframe'); f.id='game_drop';
+if(sb==='esc') f.setAttribute('sandbox','allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-pointer-lock allow-forms');
+if(sb==='noesc') f.setAttribute('sandbox','allow-scripts allow-same-origin allow-popups allow-pointer-lock allow-forms');
+f.setAttribute('allow','autoplay; fullscreen *; geolocation; microphone; camera; midi; monetization; xr-spatial-tracking; gamepad; gyroscope; accelerometer; xr; cross-origin-isolated; web-share');
+f.src=(q.get('src')||'http://localhost:8809/handoff/console/notes/coord-06/inner.html?'+q.toString());
+if(q.get('full')){f.style.width='1920px';f.style.height='1080px';}
+document.body.appendChild(f);
+var waiters=[]; window.__last=null;
+addEventListener('message',function(e){ if(e.data&&e.data.c6state){window.__last=e.data.c6state; var w=waiters; waiters=[]; w.forEach(function(fn){fn(e.data.c6state)});}});
+window.__ask=function(cmd,arg){return new Promise(function(res){waiters.push(res); f.contentWindow.postMessage({c6cmd:cmd,arg:arg},'*'); setTimeout(function(){res({timeout:true})},4000);});};
+window.__busy=function(ms){var t=performance.now();while(performance.now()-t<ms){}return 1};
+</script>

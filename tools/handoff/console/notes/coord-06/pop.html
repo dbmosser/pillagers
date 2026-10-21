@@ -1,0 +1,30 @@
+<!doctype html><meta charset=utf-8><title>c6 pop</title><body>pop
+<script>
+var q=new URLSearchParams(location.search), run=q.get('run')||'x', popmode=q.get('popmode')||'none';
+var S={who:'pop',run:run,popmode:popmode,gen:q.get('gen')||'1',origin:location.origin,openerAtLoad:window.opener!==null,secure:window.isSecureContext,log:[],maxGap:0,ticks:0};
+var last=performance.now();
+setInterval(function(){var n=performance.now(),g=n-last;if(g>S.maxGap)S.maxGap=g;last=n;S.ticks++},10);
+function L(x){S.log.push(Math.round(performance.now())+' '+x)}
+function G(k){try{return localStorage.getItem(k)}catch(e){return 'ERR '+e}}
+var bc=new BroadcastChannel('c6t2'); bc.onmessage=function(e){L('bc:'+JSON.stringify(e.data))};
+bc.postMessage({from:'pop',run:run,n:'load'});
+addEventListener('storage',function(e){L('storage:'+e.key+'='+e.newValue)});
+try{localStorage.setItem('c6t2:pop',run+':load')}catch(e){L('lsErr '+e)}
+S.lsInnerAtLoad=G('c6t2:inner');
+var mc=null;
+addEventListener('message',function(e){L('msg:'+JSON.stringify(e.data)+' srcIsOpener='+(e.source===window.opener)); if(e.data&&e.data.via==='W'&&e.source){try{e.source.postMessage({from:'pop',via:'source-reply'},'*')}catch(err){L('src reply err '+err)}}});
+if(window.opener){
+  try{
+    if(popmode==='cutport'||popmode==='cutnav'){mc=new MessageChannel(); mc.port1.onmessage=function(e){L('port:'+JSON.stringify(e.data))}; window.opener.postMessage({from:'pop',run:run,hello:1},'*',[mc.port2]);}
+    else window.opener.postMessage({from:'pop',run:run,hello:1},'*');
+    L('posted to opener');
+  }catch(err){L('opener post err '+err)}
+} else L('no opener at load');
+if(popmode!=='none') setTimeout(function(){window.opener=null; S.openerAfterCut=window.opener!==null; L('cut opener');
+  if(popmode==='cutnav') setTimeout(function(){location.href=location.href.replace('popmode=cutnav','popmode=none')+'&gen=2'},500);},600);
+setTimeout(function(){bc.postMessage({from:'pop',run:run,n:'t1'}); try{localStorage.setItem('c6t2:pop',run+':t1')}catch(e){}},1000);
+function reset(){S.maxGap=0;S.ticks=0;last=performance.now();return 1}
+function busy(ms){var t=performance.now();while(performance.now()-t<ms){}return 1}
+function portPing(){if(mc){mc.port1.postMessage({from:'pop',via:'port',n:'ping'});return 1}return 0}
+function st(){S.lsInner=G('c6t2:inner');S.lsRsa=G('c6t2:rsa');S.openerNow=window.opener!==null;return JSON.parse(JSON.stringify(S))}
+</script>

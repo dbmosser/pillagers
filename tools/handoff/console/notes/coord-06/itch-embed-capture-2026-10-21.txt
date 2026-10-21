@@ -1,0 +1,38 @@
+raw capture, itch.io HTML5 embed, fetched 2026-10-21 with curl (no browser). Data only.
+
+1. iframe tag on ncase.itch.io/wbwwb (classic host, no SharedArrayBuffer option):
+<iframe id="game_drop" allowfullscreen="true" scrolling="no" frameborder="0" allowtransparency="true" allow="autoplay; fullscreen *; geolocation; microphone; camera; midi; monetization; xr-spatial-tracking; gamepad; gyroscope; accelerometer; xr; cross-origin-isolated; web-share" mozallowfullscreen="true" msallowfullscreen="true" src="https://html-classic.itch.zone/html/300364/index.html?v=1782253839" webkitallowfullscreen="true">
+
+2. iframe template on starpelly.itch.io/hyperspin (SharedArrayBuffer option on, html.itch.zone host):
+data-iframe="<iframe msallowfullscreen="true" id="game_drop" frameborder="0" allowfullscreen="true" scrolling="no" webkitallowfullscreen="true" allow="autoplay; fullscreen *; geolocation; microphone; camera; midi; monetization; xr-spatial-tracking; gamepad; gyroscope; accelerometer; xr; cross-origin-isolated; web-share" allowtransparency="true" src="https://html.itch.zone/html/19918174/index.html?v=1792559941" mozallowfullscreen="true"></iframe>
+
+3. sandbox attribute count in 8 sampled game pages and in itch game.min.js + bundle.min.js:
+pages: 0  scripts: 0
+
+4. response headers:
+-- https://ncase.itch.io/wbwwb
+HTTP/1.1 200 OK
+Content-Security-Policy: frame-ancestors 'self' https://itch.io
+-- https://starpelly.itch.io/hyperspin
+HTTP/1.1 200 OK
+Content-Security-Policy: frame-ancestors 'self' https://itch.io
+Cross-Origin-Opener-Policy: same-origin
+Cross-Origin-Embedder-Policy: credentialless
+-- https://html-classic.itch.zone/html/300364/index.html
+HTTP/1.1 200 OK
+-- https://html.itch.zone/html/19918174/index.html
+HTTP/1.1 404 Not Found
+Cross-Origin-Resource-Policy: cross-origin
+Cross-Origin-Embedder-Policy: require-corp
+Cross-Origin-Opener-Policy: same-origin
+
+5. itch game.min.js click handler (popup_url is set only with the SharedArrayBuffer option; Tt() is false on Safari):
+load_iframe_btn:function(e){return function(r){if(!Tt()&&e.opts.popup_url){window.open(e.opts.popup_url,"_blank","popup")
+Tt=function(){switch(new URLSearchParams(location.search).get("force_embed")){case"true":return!0;case"false":return!1}return!S.is_safari()}
+
+6. top-level load of the frame URL (as a player 2 popup would request it):
+status 200
+
+7. public suffix list hits for itch.io / itch.zone: 0 (0 = both are ordinary registrable domains, so every creator page is top-level site https://itch.io)
+
+4b. html.itch.zone (SharedArrayBuffer host) answered 200 to the first request this session (with a Referer) and 404 to later bare requests; every answer carried COOP same-origin, COEP require-corp and CORP cross-origin. The 404 does not matter for this note: the headers are what count.

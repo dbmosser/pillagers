@@ -1,0 +1,7 @@
+v33.56: public report and news readability
+
+The recorder preview is 240px tall, copy is the filled primary action, restore has room and pause news uses 20px body text.
+
+Check 33.56. Fails on v33.55.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

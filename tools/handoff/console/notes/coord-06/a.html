@@ -1,0 +1,23 @@
+<!doctype html><meta charset=utf-8><title>c6 a</title><body>a
+<script>
+var S={who:'a',maxGap:0,ticks:0,bc:[],storageEv:[],wNull:null};
+var last=performance.now();
+setInterval(function(){var n=performance.now(),g=n-last;if(g>S.maxGap)S.maxGap=g;last=n;S.ticks++;},10);
+var bc=new BroadcastChannel('c6t1');bc.onmessage=function(e){S.bc.push(e.data)};
+addEventListener('storage',function(e){S.storageEv.push(e.key+'='+e.newValue)});
+var W=[];
+function openB(mode,tag,name){
+  var u='b.html?tag='+tag, w=null, nm=name||('c6_p2_'+tag);
+  var game='popup=yes,width=800,height=600,left=0,top=0';
+  if(mode==='plain'||mode==='cut'||mode==='cutnav') w=window.open(u,nm,game);
+  else if(mode==='noopener') w=window.open(u,nm,'noopener');
+  else if(mode==='noopenerpopup') w=window.open(u,nm,'noopener,'+game);
+  else if(mode==='noreferrer') w=window.open(u,nm,'noreferrer,'+game);
+  else if(mode==='link'){var a=document.createElement('a');a.href=u;a.target=nm;a.rel='noopener';a.textContent='p2';document.body.appendChild(a);a.click();}
+  W.push(w); S.wNull=(w===null); return S.wNull;
+}
+function poke(tag){bc.postMessage({from:'a',tag:tag});localStorage.setItem('c6t1:a',tag+':'+Date.now());return 1}
+function busy(ms){var t=performance.now();while(performance.now()-t<ms){}return 1}
+function reset(){S.maxGap=0;S.ticks=0;last=performance.now();return 1}
+function st(){return JSON.parse(JSON.stringify(S))}
+</script>
