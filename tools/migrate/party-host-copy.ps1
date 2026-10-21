@@ -199,14 +199,17 @@ function Test-CopyUsable {
 }
 
 function Get-RelayProcs {
-  return @(Get-CimInstance -ClassName Win32_Process -Filter "Name='node.exe'" -ErrorAction SilentlyContinue |
-      Where-Object { $_.CommandLine -and ($_.CommandLine -match 'play-relay\.mjs') -and ($_.CommandLine -notmatch '--probe|--help|play-relay\.test') })
+  # 10-20 evening: on the main PC a FILTERED process query (-Filter "Name='node.exe'") returned nothing while the relay ran (pid 30112 on
+  # 8802 and 8799), so -Start refused the busy port and -Status said 'not running'; host-verify, which lists every process and filters
+  # afterwards, saw it. Every process is listed here too, then filtered.
+  return @(Get-CimInstance -ClassName Win32_Process -ErrorAction SilentlyContinue |
+      Where-Object { ([string]$_.Name -match '(?i)^node(\.exe)?$') -and $_.CommandLine -and ($_.CommandLine -match 'play-relay\.mjs') -and ($_.CommandLine -notmatch '--probe|--help|play-relay\.test') })
 }
 
 function Get-PartyProcs {
   $rx = [regex]::Escape($Dir.TrimEnd('\', '/')) + '[\\/]+tools[\\/]+(serve|collector)\.ps1'
-  return @(Get-CimInstance -ClassName Win32_Process -Filter "Name='powershell.exe' OR Name='pwsh.exe'" -ErrorAction SilentlyContinue |
-      Where-Object { $_.CommandLine -and ($_.CommandLine -match $rx) -and ([int]$_.ProcessId -ne [int]$PID) })
+  return @(Get-CimInstance -ClassName Win32_Process -ErrorAction SilentlyContinue |   # unfiltered, see Get-RelayProcs
+      Where-Object { ([string]$_.Name -match '(?i)^(powershell|pwsh)(\.exe)?$') -and $_.CommandLine -and ($_.CommandLine -match $rx) -and ([int]$_.ProcessId -ne [int]$PID) })
 }
 
 function Read-PartyState {
