@@ -1,0 +1,69 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>style test play</title>
+<!-- style-test-play.html : the same question at raid size. Left: today's pillager cut from a real 1920x1080 raid picture,
+     at 2x (easy to see) and at 1x (true raid size). Right: the pixel test at 2x and 1x, and the machine at 2x, on ground at scale 2.
+     Rendered at 1920x720 by render.sh into style-test-play.png. -->
+<style>html,body{margin:0;background:#121016;overflow:hidden;width:1920px;height:720px}canvas{display:block}</style>
+</head><body>
+<canvas id="cv" width="1920" height="720"></canvas>
+<div style="display:none"><img id="raid" src="../../console/notes/shots/43-after/21-raid-hud-calm-1080.jpg"></div>
+<script src="pix.js"></script>
+<script src="ground.js"></script>
+<script src="machine.js"></script>
+<script src="pillager.js"></script>
+<script>
+var CUT = { x: 380, y: 470, w: 240, h: 154, ax: 117, ay: 111 };   // raid cut (stops above the wall top at y 625); ax, ay = the feet in it
+var LINE = 392;                                                    // the ground line every figure stands on
+var P2 = 304, P1 = 757, TK = 530;                                  // x inside a half: 2x pillager, 1x pillager, machine
+
+function pill(ctx, x, y, text, size, centre) {
+  ctx.save();
+  ctx.font = '600 ' + size + 'px "Segoe UI", system-ui, sans-serif';
+  var pad = Math.round(size * 0.75), h = Math.round(size * 1.75), w = Math.ceil(ctx.measureText(text).width) + pad * 2;
+  if (centre) x = Math.round(x - w / 2);
+  ctx.fillStyle = 'rgba(18,16,22,0.86)';
+  ctx.beginPath(); ctx.roundRect(x, y, w, h, h / 2); ctx.fill();
+  ctx.fillStyle = '#ece6d6'; ctx.textBaseline = 'middle';
+  ctx.fillText(text, x + pad, y + h / 2 + 1);
+  ctx.restore();
+}
+
+function framed(ctx, img, s, x, y) {   // the raid cut at a whole scale, no smoothing, with a thin frame
+  ctx.save();
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(img, CUT.x, CUT.y, CUT.w, CUT.h, x, y, CUT.w * s, CUT.h * s);
+  ctx.strokeStyle = '#3a3542'; ctx.lineWidth = 2;
+  ctx.strokeRect(x - 1, y - 1, CUT.w * s + 2, CUT.h * s + 2);
+  ctx.restore();
+}
+
+window.onload = function () {
+  var cv = document.getElementById('cv'), ctx = cv.getContext('2d'), img = document.getElementById('raid');
+
+  // ---- left half: today at raid size ----
+  ctx.fillStyle = '#28252f'; ctx.fillRect(0, 0, 960, 720);
+  var x2 = P2 - CUT.ax * 2, y2 = LINE - CUT.ay * 2, x1 = P1 - CUT.ax, y1 = LINE - CUT.ay;
+  framed(ctx, img, 2, x2, y2);
+  framed(ctx, img, 1, x1, y1);
+  pill(ctx, P2, y2 + CUT.h * 2 + 14, '2x', 13, true);
+  pill(ctx, P1, y1 + CUT.h + 14, '1x', 13, true);
+
+  // ---- right half: pixel test at raid size ----
+  ctx.save();
+  ctx.translate(960, 0);
+  paintPixelGround(ctx, 960, 720, 777, 2, { clear: [{ x: P2, y: LINE - 20, r: 95 }, { x: P2, y: LINE - 110, r: 80 }, { x: TK, y: LINE - 20, r: 100 }, { x: TK, y: LINE - 90, r: 80 },
+    { x: P1, y: LINE - 10, r: 60 }, { x: P1, y: LINE - 55, r: 50 }] });
+  paintPixelMachine(ctx, TK, LINE, 2);
+  paintPixelPillager(ctx, P2, LINE, 2);
+  paintPixelPillager(ctx, P1, LINE, 1);
+  pill(ctx, P2, LINE + 20, '2x', 13, true);
+  pill(ctx, P1, LINE + 20, '1x', 13, true);
+  ctx.restore();
+
+  // ---- divider and labels ----
+  ctx.fillStyle = '#16121c'; ctx.fillRect(959, 0, 2, 720);
+  pill(ctx, 16, 16, 'now · raid size', 17);
+  pill(ctx, 976, 16, 'pixel test · raid size', 17);
+};
+</script>
+</body></html>

@@ -1,0 +1,126 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>style test</title>
+<!-- style-test.html : his 10-20 pixel-art question. Left: today's look, cut from today's lineup picture. Right: the pixel test
+     (ground.js, machine.js, pillager.js on pix.js). Rendered at 1920x1080 by render.sh into style-test.png. -->
+<style>html,body{margin:0;background:#121016;overflow:hidden;width:1920px;height:1080px}canvas{display:block}</style>
+</head><body>
+<canvas id="cv" width="1920" height="1080"></canvas>
+<div style="display:none"><img id="lineup" src="../../console/notes/shots/68-head-scale-body-after/lineup-1080.jpg"></div>
+<script src="pix.js"></script>
+<script src="ground.js"></script>
+<script src="machine.js"></script>
+<script src="pillager.js"></script>
+<script>
+// where the two figures stand in each half (ground point under them, px inside the half)
+var TANK = { x: 346, y: 404 }, PIL = { x: 617, y: 688 };
+
+// today's pieces in lineup-1080.jpg: a clean stretch of ground, and the two figures with some ground around them
+var FILL = { x: 912, y: 470, w: 180, h: 112 };                                  // empty ground between the two rows
+var NOW_TANK = { x: 1282, y: 268, w: 218, h: 200, ax: 109, ay: 166, f: [20, 24, 30, 12] };   // ax, ay = tread bottom centre in the cut
+var NOW_PIL = { x: 300, y: 570, w: 225, h: 280, ax: 97, ay: 193, f: [44, 30, 48, 28] };      // ax, ay = ground point under the feet
+// f = soft edge widths left, top, right, bottom (px), all on ground, clear of the figure (only used if the jpg cannot be read)
+
+// a cut of the jpg with its ground taken out: flood from the cut's edge over every pixel that is plain ground green
+// (light or dark patch, grass blade); the figure's dark outline and its darker shadow stop the flood, so both stay, as today
+function keyCut(img, r) {
+  var c = document.createElement('canvas'); c.width = r.w; c.height = r.h;
+  var x = c.getContext('2d'), d;
+  x.drawImage(img, r.x, r.y, r.w, r.h, 0, 0, r.w, r.h);
+  try { d = x.getImageData(0, 0, r.w, r.h); } catch (e) { return softCut(img, r); }
+  var p = d.data, w = r.w, h = r.h, gone = new Uint8Array(w * h), st = [], i, k, a, b;
+  function lum(i) { return 0.3 * p[i * 4] + 0.59 * p[i * 4 + 1] + 0.11 * p[i * 4 + 2]; }
+  function ground(i) {
+    var R = p[i * 4], G = p[i * 4 + 1], B = p[i * 4 + 2], Y = lum(i);
+    return Y >= 86 && Y <= 165 && G - R >= 6 && G - R <= 60 && G - B >= 14 && R - B >= -8;
+  }
+  function seed(i) { if (!gone[i] && ground(i)) { gone[i] = 1; st.push(i); } }
+  for (a = 0; a < w; a++) { seed(a); seed((h - 1) * w + a); }
+  for (b = 0; b < h; b++) { seed(b * w); seed(b * w + w - 1); }
+  while (st.length) {
+    i = st.pop(); a = i % w; b = (i - a) / w;
+    if (a > 0) seed(i - 1); if (a < w - 1) seed(i + 1); if (b > 0) seed(i - w); if (b < h - 1) seed(i + w);
+  }
+  for (i = 0; i < w * h; i++) {
+    if (gone[i]) { p[i * 4 + 3] = 0; continue; }
+    a = i % w; b = (i - a) / w;
+    // a kept pixel on the edge of the flood that is still fairly light is a blend of edge and ground: half see-through
+    k = (a > 0 && gone[i - 1]) || (a < w - 1 && gone[i + 1]) || (b > 0 && gone[i - w]) || (b < h - 1 && gone[i + w]);
+    if (k && lum(i) >= 78) p[i * 4 + 3] = 128;
+  }
+  // drop lone specks of jpg noise left out on the ground (any kept island smaller than 15 px)
+  var lab = new Uint8Array(w * h), isl, j, q, u, v;
+  for (i = 0; i < w * h; i++) {
+    if (gone[i] || lab[i]) continue;
+    isl = [i]; lab[i] = 1;
+    for (j = 0; j < isl.length; j++) {
+      q = isl[j]; a = q % w; b = (q - a) / w;
+      for (v = -1; v <= 1; v++) for (u = -1; u <= 1; u++) {
+        if (a + u < 0 || a + u >= w || b + v < 0 || b + v >= h) continue;
+        k = q + v * w + u; if (!gone[k] && !lab[k]) { lab[k] = 1; isl.push(k); }
+      }
+    }
+    if (isl.length < 15) for (j = 0; j < isl.length; j++) p[isl[j] * 4 + 3] = 0;
+  }
+  x.putImageData(d, 0, 0);
+  return c;
+}
+
+// fallback: a cut of the jpg whose edges fade out, so its own ground melts into the fill
+function softCut(img, r) {
+  var c = document.createElement('canvas'); c.width = r.w; c.height = r.h;
+  var x = c.getContext('2d');
+  x.drawImage(img, r.x, r.y, r.w, r.h, 0, 0, r.w, r.h);
+  x.globalCompositeOperation = 'destination-in';
+  function ramp(g, a, b, len) {   // 0 -> 1 over a, flat, 1 -> 0 over b, smoothed with two extra stops
+    g.addColorStop(0, 'rgba(0,0,0,0)');
+    g.addColorStop(a / len * 0.5, 'rgba(0,0,0,0.25)');
+    g.addColorStop(a / len, 'rgba(0,0,0,1)');
+    g.addColorStop(1 - b / len, 'rgba(0,0,0,1)');
+    g.addColorStop(1 - b / len * 0.5, 'rgba(0,0,0,0.25)');
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    return g;
+  }
+  x.fillStyle = ramp(x.createLinearGradient(0, 0, r.w, 0), r.f[0], r.f[2], r.w); x.fillRect(0, 0, r.w, r.h);
+  x.fillStyle = ramp(x.createLinearGradient(0, 0, 0, r.h), r.f[1], r.f[3], r.h); x.fillRect(0, 0, r.w, r.h);
+  return c;
+}
+
+function pill(ctx, x, y, text) {
+  ctx.save();
+  ctx.font = '600 17px "Segoe UI", system-ui, sans-serif';
+  var w = Math.ceil(ctx.measureText(text).width) + 26, h = 30;
+  ctx.fillStyle = 'rgba(18,16,22,0.86)';
+  ctx.beginPath(); ctx.roundRect(x, y, w, h, h / 2); ctx.fill();
+  ctx.fillStyle = '#ece6d6'; ctx.textBaseline = 'middle';
+  ctx.fillText(text, x + 13, y + h / 2 + 1);
+  ctx.restore();
+}
+
+window.onload = function () {
+  var cv = document.getElementById('cv'), ctx = cv.getContext('2d'), img = document.getElementById('lineup');
+
+  // ---- left half: now ----
+  ctx.save();
+  ctx.beginPath(); ctx.rect(0, 0, 960, 1080); ctx.clip();
+  ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(img, FILL.x, FILL.y, FILL.w, FILL.h, 0, 0, 960, 1080);
+  [[NOW_TANK, TANK], [NOW_PIL, PIL]].forEach(function (p) {
+    ctx.drawImage(keyCut(img, p[0]), p[1].x - p[0].ax, p[1].y - p[0].ay);   // 1x, same size as the game draws it
+  });
+  ctx.restore();
+
+  // ---- right half: pixel test ----
+  ctx.save();
+  ctx.translate(960, 0);
+  paintPixelGround(ctx, 960, 1080, 4242, 4, { clear: [{ x: TANK.x, y: TANK.y - 20, r: 130 }, { x: PIL.x, y: PIL.y - 30, r: 110 }] });
+  paintPixelMachine(ctx, TANK.x, TANK.y, 4);
+  paintPixelPillager(ctx, PIL.x, PIL.y, 4);
+  ctx.restore();
+
+  // ---- divider and labels ----
+  ctx.fillStyle = '#16121c'; ctx.fillRect(959, 0, 2, 1080);
+  pill(ctx, 16, 16, 'now');
+  pill(ctx, 976, 16, 'pixel test');
+};
+</script>
+</body></html>

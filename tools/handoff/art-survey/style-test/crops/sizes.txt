@@ -1,0 +1,9 @@
+ref-pillager 330 500
+ref-tank 390 390
+ref-ground-top 1120 400
+ref-ground-bottom 1120 282
+ref-ground-mid 1120 240
+now-pillager 270 460
+now-tank 340 350
+now-ground 1120 240
+raid-pillager 720 480

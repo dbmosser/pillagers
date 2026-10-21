@@ -1,0 +1,35 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>ground preview</title>
+<style>
+html,body{margin:0;background:#121016;overflow:hidden;width:1920px;height:1080px}
+#L{position:absolute;left:0;top:0;width:960px;height:1080px}
+#L img{display:block;width:960px}
+canvas{position:absolute;left:960px;top:0}
+.lab{position:absolute;font:600 15px/1 Segoe UI,system-ui,sans-serif;color:#ece6d6;background:rgba(18,16,22,.82);padding:5px 8px;border-radius:3px}
+</style></head>
+<body>
+<div id="L"><img src="crops/ref-ground-top.png"><img src="crops/ref-ground-bottom.png"><img src="crops/ref-ground-mid.png"><img src="crops/now-ground.png"></div>
+<canvas id="cv" width="960" height="1080"></canvas>
+<div class="lab" style="left:12px;top:12px">reference</div>
+<div class="lab" style="left:12px;top:803px">today</div>
+<div class="lab" id="l4" style="left:972px;top:12px">pixel test, scale 4</div>
+<div class="lab" id="l2" style="left:972px;top:792px">scale 2</div>
+<script src="pix.js"></script>
+<script src="ground.js"></script>
+<script>
+var cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+// where a pillager and a machine would stand: nothing big may go there
+var clear = [{ x: 300, y: 540, r: 110 }, { x: 680, y: 540, r: 130 }];
+var t0 = performance.now();
+paintPixelGround(ctx, 960, 1080, 4242, 4, { clear: clear });
+var t1 = performance.now(); var st4 = JSON.stringify(paintPixelGround.last);
+ctx.save(); ctx.translate(0, 780);
+paintPixelGround(ctx, 960, 300, 777, 2, { clear: [] });
+ctx.restore();
+var t2 = performance.now(); var st2 = JSON.stringify(paintPixelGround.last);
+ctx.fillStyle = '#16121c'; ctx.fillRect(0, 778, 960, 2);
+function cnts(s) { var o = JSON.parse(s); return o.dirt + ' dirt, ' + o.rocks + ' rocks, ' + o.plants + ' plants, ' + o.tufts + ' tufts'; }
+document.getElementById('l4').textContent = 'pixel test, scale 4 (' + Math.round(t1 - t0) + ' ms; ' + cnts(st4) + ')';
+document.getElementById('l2').textContent = 'scale 2 (' + Math.round(t2 - t1) + ' ms; ' + cnts(st2) + ')';
+</script>
+</body></html>

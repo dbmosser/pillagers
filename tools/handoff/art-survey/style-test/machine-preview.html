@@ -1,0 +1,25 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>machine preview</title>
+<style>html,body{margin:0;background:#4f8a2c;overflow:hidden}canvas{display:block}</style>
+<script src="pix.js"></script>
+<script src="machine.js"></script>
+</head><body>
+<canvas id="c" width="1400" height="480"></canvas>
+<script>
+(function () {
+  var c = document.getElementById('c'), ctx = c.getContext('2d');
+  ctx.imageSmoothingEnabled = false;
+  ctx.fillStyle = '#4f8a2c'; ctx.fillRect(0, 0, 1400, 480);
+  function label(t, x) { ctx.fillStyle = '#e8f0dc'; ctx.font = '16px monospace'; ctx.textAlign = 'center'; ctx.fillText(t, x, 30); }
+  function img(src, x, y, t) {
+    var im = new Image();
+    im.onload = function () { ctx.drawImage(im, x, y); label(t, x + im.width / 2); };
+    im.src = src;
+  }
+  img('crops/ref-tank.png', 20, 60, 'reference (2x crop)');
+  img('crops/now-tank.png', 440, 80, 'today (2x crop)');
+  paintPixelMachine(ctx, 960, 400, 4); label('pixel test x4', 960);
+  paintPixelMachine(ctx, 1250, 400, 2); label('pixel test x2', 1250);
+})();
+</script>
+</body></html>
