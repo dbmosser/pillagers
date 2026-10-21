@@ -1,0 +1,36 @@
+{
+    "title":  "power-up pickups half size",
+    "why":  "His order (2026-10-20): \"powerups need to be like 50^ smaller\". The floating pickups (bottomless clip, double damage, rapid fire, shield bubble, screen clear) draw at half size through one constant PWRK: medallion, glyph, rim, glow, hover height, bob, spawn flash and beam width. The reach ring keeps its size so picking one up plays the same, and the beam keeps its height so it still shows from far away.",
+    "now":  "Power-up pickups are half the size. Picking them up works the same.",
+    "edits":  [
+                  {
+                      "anchor":  "var PWRI={R:34,hover:44,bob:5,beam:340,",
+                      "replacement":  "// v33.25 (cw-pwrhalf), HIS WORDS (2026-10-20): \"powerups need to be like 50^ smaller\". PWRK is the one size knob: the medallion, its glyph and rim, the glow round it, the ground glow, the spawn flash, the hover height, the bob and the beam width all take it. The reach ring (PWR.pick) and the beam height stay.\nvar PWRK=0.5;var PWRI={R:34*PWRK,hover:44*PWRK,bob:5*PWRK,beam:340,"
+                  },
+                  {
+                      "anchor":  "s.x,s.y,PWR.pick*q*1.7); gr.addColorStop",
+                      "replacement":  "s.x,s.y,PWR.pick*q*1.7*PWRK); gr.addColorStop"
+                  },
+                  {
+                      "anchor":  "c.arc(s.x,s.y,PWR.pick*q*1.7,0,6.2832)",
+                      "replacement":  "c.arc(s.x,s.y,PWR.pick*q*1.7*PWRK,0,6.2832)"
+                  },
+                  {
+                      "anchor":  "PWR.pick*q*(0.4+2.2*u)",
+                      "replacement":  "PWR.pick*q*PWRK*(0.4+2.2*u)"
+                  },
+                  {
+                      "anchor":  "c.moveTo(s.x-14*q,s.y); c.lineTo(s.x-5*q,s.y-bl); c.lineTo(s.x+5*q,s.y-bl); c.lineTo(s.x+14*q,s.y);",
+                      "replacement":  "c.moveTo(s.x-14*q*PWRK,s.y); c.lineTo(s.x-5*q*PWRK,s.y-bl); c.lineTo(s.x+5*q*PWRK,s.y-bl); c.lineTo(s.x+14*q*PWRK,s.y);"
+                  },
+                  {
+                      "anchor":  "c.fillRect(s.x-1.6*q,s.y-bl*0.8,3.2*q,bl*0.8);",
+                      "replacement":  "c.fillRect(s.x-1.6*q*PWRK,s.y-bl*0.8,3.2*q*PWRK,bl*0.8);"
+                  },
+                  {
+                      "anchor":  "(9+7*u)*q;",
+                      "replacement":  "(9+7*u)*q*PWRK;"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027cw-pwrhalf, his order (2026-10-20) powerups need to be like 50 percent smaller: each of the five floating pickups draws its medallion at half the old radius while the ring at the pickup reach keeps its size\u0027,\n   run:function(){\n     if(typeof arcadeDeploy!==\u0027function\u0027||typeof ARCADE!==\u0027object\u0027||typeof pwrDraw!==\u0027function\u0027||typeof PWRI===\u0027undefined\u0027) return \u0027SKIP: no arcade here\u0027;\n     var bad=[], g=null, p, own=false, rs=say, S, i, k, q, sp, proto, oArc, oOct, arcs, mr, ring, ks=[\u0027clip\u0027,\u0027dmg\u0027,\u0027rapid\u0027,\u0027shield\u0027,\u0027pulse\u0027], want, got;\n     try{\n       __topClear(); __runPrep();\n       if(ARCADE.on) return \u0027SKIP: the arcade is on after __topClear\u0027;\n       if(!arcadeDeploy({mapIx:0,seed:4242})) return \u0027SKIP: arcadeDeploy built no arcade raid\u0027;\n       g=__state(); if(!g||g.over||!g.player) return \u0027SKIP: no live raid\u0027;\n       p=g.player; keys={}; say=function(){}; own=true; ARCADE.holdT=0; g.pwr=null; S=pwrS(); render2D(0);\n       proto=CanvasRenderingContext2D.prototype; oArc=proto.arc; oOct=styOct; q=ZOOM(); want=34*q*0.5;\n       for(k=0;k\u003cks.length;k++){\n         S.items.length=0; S.act={}; S.items.push({k:ks[k],x:p.x+120,y:p.y-30,t:3,life:16,id:5+k}); sp=w2s(S.items[0].x,0,S.items[0].y);\n         arcs=[]; mr=0;\n         proto.arc=function(){ arcs.push([arguments[0],arguments[1],arguments[2]]); return oArc.apply(this,arguments); };\n         styOct=function(c2,r2,u2){ if(r2\u003emr) mr=r2; return oOct(c2,r2,u2); };\n         try{ pwrDraw(ctx,p); } finally { proto.arc=oArc; styOct=oOct; }\n         if(!(Math.abs(mr-want)\u003c=want*0.05)) bad.push(ks[k]+\u0027: the medallion radius is \u0027+mr.toFixed(2)+\u0027, not half the old \u0027+(34*q).toFixed(2)+\u0027 (\u0027+want.toFixed(2)+\u0027)\u0027);\n         ring=0; for(i=0;i\u003carcs.length;i++) if(Math.abs(arcs[i][0]-sp.x)\u003c1\u0026\u0026Math.abs(arcs[i][1]-sp.y)\u003c1\u0026\u0026Math.abs(arcs[i][2]-PWR.pick*q)\u003c1) ring++;\n         if(!ring) bad.push(ks[k]+\u0027: the ring at the pickup reach (\u0027+PWR.pick*q+\u0027) changed size\u0027);\n       }\n     }catch(x){ bad.push(\u0027threw: \u0027+(x\u0026\u0026x.message||x)); }\n     finally{\n       if(own) say=rs;\n       try{ if(proto\u0026\u0026oArc) proto.arc=oArc; if(oOct) styOct=oOct; }catch(_p){}\n       keys={};\n       try{ if(g){ g.pwr=null; } }catch(_gp){}\n       try{ if(typeof ARCADE===\u0027object\u0027\u0026\u0026ARCADE.on) arcadeLeave(); }catch(_l){}\n       try{ if(__state()\u0026\u0026!__state().over) __endRaid(\u0027abandon\u0027); }catch(_e){}\n       try{ if(typeof ARCADE===\u0027object\u0027){ ARCADE.mine=0; ARCADE.waveT=0; ARCADE.holdT=0; } }catch(_h){}\n       __topClear();\n     }\n     return bad.length?bad.slice(0,8).join(\u0027; \u0027):null; }},"
+}

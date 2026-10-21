@@ -1,0 +1,7 @@
+v33.25: gunfire has a tail that says where it was fired
+
+Shots now sound like the place they are fired in: short and bright indoors, a crack and a low thump outside, dry in the woods.
+
+Check 33.25. Fails on v33.24.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

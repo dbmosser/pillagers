@@ -1378,5 +1378,65 @@
   "pic": "tools/handoff/console/notes/shots/69-camera/68-settings-sec-the-raid-1080.jpg",
   "task": "manual",
   "when": "2026-10-21T03:37"
+ },
+ "69-settings-sec-audio": {
+  "score": 3,
+  "pass": false,
+  "verdict": "A clean, consistent dark card with a clear lime focus, but the audio tab shows a list that runs on into controls and gameplay rows, and the detail pane is mostly empty.",
+  "findings": [
+   "P1 center list, below 'music': Show only audio rows under 'audio' (8 to 9 rows). Move keys and aim settings to 'controls'. If sections must share a tab, add a 16px f-cond tx-2 section label with a 1px --ui-line divider and 24px space above it.",
+   "P1 left tab column: Use one focus language. Tab: 3px lime left bar, --ui-raised fill, tx-1 text, no outline. Row: the same. When focus is in the list, keep the tab at tx-1 with the bar and no outline. Fix the 'send play data' gap to the 64px row pitch or add a divider.",
+   "P1 right detail pane: Anchor the description 16px under the title. Use 20px tx-1 at 85% for the body. Add a real use of the pane, such as a volume bar for the focused row, or shrink the pane to content height.",
+   "P2 value column, arrows and values: Right-align the value group: arrow, value (min-width 120px, centred), arrow, at 16px gaps. Dim arrows on unfocused rows to --ui-line-hi and show them in tx-1 or lime only on the focused row. Make labels tx-2 and values tx-1.",
+   "P2 focused row 'master volume': Keep the 3px lime left bar and raise the fill to --ui-raised plus a 1px --ui-line-hi top and bottom border. Show the label in tx-1. Leave lime for the value only."
+  ],
+  "pic": "tools/handoff/console/notes/shots/69-camera/69-settings-sec-audio-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-21T03:38"
+ },
+ "71-settings-sec-controller": {
+  "score": 3,
+  "pass": false,
+  "verdict": "The shell is clean and on style guide (centred card, x top right, lime focus, all lower case), but the controller tab is cluttered with unrelated display rows, the detail pane is mostly empty, and text is small and dim for couch reading.",
+  "findings": [
+   "P1 middle list, rows after vibration strength: Show only the 5 pad rows here (pad buttons, rumble, sensitivity, deadzone, invert, vibration) and move the rest to display. If they must stay, add a 32px section header with a 1px --ui-line divider and a brighter 6px scrollbar.",
+   "P1 right detail pane: Cut the sentence to a short callout (e.g. 'swap pad buttons') at 20px directly under the title with 16px gap. Add a pad button map or the current binding summary in the empty space. Never leave a floating paragraph.",
+   "P1 row labels and values, left nav idle items: Row names and values 20px f-cond 600 in --tx-1. Nav items 20px, idle in --tx-2 at 4.5:1 or better. Row height 56px.",
+   "P2 focused row 'pad buttons': Use one focus treatment for both lists: --ui-raised fill plus 3px lime left bar. Draw the action as a 36px-tall button with 1px --ui-line-hi border, or add a right chevron.",
+   "P2 value column, arrows: Enlarge the arrows to 24px, put them 40px either side of the value, and give them a 40x40 hit area that lights lime on focus."
+  ],
+  "pic": "tools/handoff/console/notes/shots/69-camera/71-settings-sec-controller-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-21T03:38"
+ },
+ "73-settings-sec-accessibility": {
+  "score": 2,
+  "pass": false,
+  "verdict": "the card shell is clean and on-token, but the page is a long undifferentiated list with a stray full-width lime button that outshouts everything, a focus state that is ambiguous across the rail and the list, and an explaining paragraph in the detail pane.",
+  "findings": [
+   "P0 restore from a backup row, 'pick file' button: make it a normal row with a 160x40 outlined button (1px --ui-line-hi, tx-1 text) in the value column at x~857. Fill lime only on focus. Keep one lime fill per screen.",
+   "P0 left rail: 'display' (filled, lime bar) and 'accessibility' (lime outline box): one focus style everywhere: 4px lime left bar plus --ui-raised fill. The selected tab gets tx-1 text and a 2px lime underline or bar only, the focused item gets the full fill. Show focus in one zone at a time and dim the rest.",
+   "P1 right detail pane: title and the current value (hero 56px 'off') at the top, one short line of 16-20px tx-2 directly beneath at y+16 (e.g. 'recolours rarity and marks'). Cut the red-green and blue-yellow explanation. Remove the dead gap.",
+   "P1 settings list, rows 1-9 vs 10-14: fixed 56px rows, 1px --ui-line divider on every row, labels tx-2 at 20px/600, values tx-1 at 20px/700 right-aligned to one column. Use arrows only when focused. Put group headers (16px tx-2, +.04em) between groups instead of random gaps.",
+   "P1 list length and scroll: split into saves/tools and dev pages, so accessibility holds 5 rows or fewer. Make the scrollbar 6px, tx-2 at 40%, inset 8px from the edge. Even the rail rows at 64px with no orphan gap."
+  ],
+  "pic": "tools/handoff/console/notes/shots/69-camera/73-settings-sec-accessibility-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-21T03:39"
+ },
+ "27-settings-scroll-600": {
+  "score": 2,
+  "pass": false,
+  "verdict": "A clean dark card with a lime focus bar, but the focused row is clipped at the top, the audio list runs on into controls rows with no section break, and the detail pane is mostly empty. It reads as a functional dump, not a polished menu.",
+  "findings": [
+   "P0 focused row 'master volume', top of list: Scroll so the focused row is fully visible. Keep at least 8px of padding above and below it and clip the list on whole-row boundaries, not mid-row. Add a 56px row minimum.",
+   "P0 middle list, rows from 'keys' to 'pause when the window loses focus': Add a 16px-label section header ('controls') in tx-2 with a 24px gap above it, or split the content by nav tab so the 'audio' tab shows only audio rows. Fade or clip the bottom row on a row boundary.",
+   "P1 right detail pane: Vertically anchor the description right under the title (title, 16px gap, text). Show the current value as a 56px hero number or a slider preview. Drop the sentence, or shrink the pane to about 30% width and widen the list.",
+   "P1 value column, chevrons: Show chevrons only on the focused row, in lime and 20px. Render volume values as a 120px bar with a lime fill. Keep idle values in tx-1 and make the focused value lime.",
+   "P1 left nav: Put a 1px --ui-line divider and 24px space above 'send play data', or move it to the footer. Use 20px labels, tx-1 on the selected tab, and a --ui-raised fill with a 3px lime bar full row height."
+  ],
+  "pic": "tools/handoff/console/notes/shots/69-camera/27-settings-scroll-600-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-21T03:40"
  }
 }

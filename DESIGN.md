@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.25 - GUNFIRE HAS A TAIL THAT SAYS WHERE IT WAS FIRED
+
+Co-op hunt while he was away. His yes on pick 69. A shot indoors now has a short bright room tail, a shot outside a crack and then a longer low thump that comes later the farther it is, and in the woods nothing. The tail rides the same muffled, panned path as the shot, so it is built on the v23.73 wall muffling.
+
+MEASURED. Check 33.25 passes, and fails on v33.24.
 ## v33.24 - KILL CHAIN TICKS CLIMB A NOTE FOR EACH KILL
 
 Co-op hunt while he was away. His yes on pick 72. Each kill that chains inside the 4 second streak plays a small soft sine tick one pentatonic note higher than the last (E5 up to A6, the key of the medal pops), and a broken chain starts again from the bottom note. No words, on the sting bus, much quieter than a medal pop.

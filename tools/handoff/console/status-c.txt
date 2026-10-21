@@ -1,1 +1,1 @@
-10-20 23:23 running 79a-player-size-back on Claude Code (your plan: week 72% of the 35.6% line, 5-hour 22%)
+10-20 23:39 running 81-powerups-half-size on Claude Code (your plan: week 72% of the 35.7% line, 5-hour 23%)

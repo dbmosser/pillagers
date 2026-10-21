@@ -247,3 +247,4 @@
 2026-10-20 | 63-seed-of-the-day | pre-raid page | new "seed" caption and a "daily raid" switch row under weather, same chip style as the other rows | before: none (new row) | after: notes/shots/63-after/05-sector-page-1080.jpg
 2026-10-20 | 61-experimental-menu | experimental settings, needed-item glow and result haul | queued cw-cx-expsnap: all 28 choices now hold for the raid; guest glow and haul use the host choices; existing page layout retained | before: existing lane-a shots in task notes; after: pending camera-recipes.json views 79-83 at 1080 and 4K
 
+2026-10-20 | 79a-player-size-back | raid (you, mate, pillager bots) | figures drawn at the old size again (1.25 to 1, plates 7 px lower) | before tools/handoff/console/notes/shots/79a-before/21-raid-hud-calm-1080.jpg, after tools/handoff/console/notes/shots/79a-after/21-raid-hud-calm-1080.jpg

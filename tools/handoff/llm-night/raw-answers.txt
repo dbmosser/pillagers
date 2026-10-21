@@ -4,3 +4,18 @@ NONE
 NONE
 NONE
 NONE
+LINE 8836: spkDuck(undefined,1);
+- `undefined` is passed as the first argument to `spkDuck`, which might not be intended.
+
+LINE 8945: SPK_GEN[nm]=function(a,OUT,vol,t){ if(!spkGate('medal',0.05,t)) return null; return spkMedal(a,OUT,vol,t,tier); };
+- The `if` condition checks for `'medal'`, but the function is named based on the tier (`nm='medal'+tier`). This might be a bug if the intention was to check for a gate specific to each medal tier.
+
+LINE 8956: spkDuck(d);
+- `d` is used without checking if it's defined or not, which could lead to an error if `spkDuck` expects a valid argument.
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
+NONE
