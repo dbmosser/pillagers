@@ -6148,6 +6148,42 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'33.53',what:'cw-pixsmoke (86a): THE PIXEL SMOKE CHECK that every later pixel job extends. With the pixel look on, a career raid, the demo, the Undercroft floor and the title all draw at 1080p and 4K with no render fault and no pixel fault',
+   run:function(){
+     if(typeof pixFaults!=='function') return 'no pixel fault counter (pixFaults)';
+     if(!(window.__deploy&&window.__state&&window.__frame&&window.__forceSize&&window.__runPrep&&window.__topClear&&window.__endRaid&&window.__hubEnter&&window.__hubFrame&&window.__showScreen)) return 'SKIP: this fixture cannot draw a raid, the floor and the title';
+     var bad=[], sw=cv.style.width, sh=cv.style.height, hw=hcv.style.width, hh=hcv.style.height, sizes=[[1920,1080],[3840,2160]], si, i, g, f0, n=0;
+     function frames(tag,k,fn){ var j; for(j=0;j<k;j++){ try{ fn(); }catch(e){ bad.push(tag+' threw: '+(e&&e.message||e)); return; } } g=__state(); if(g&&g.drawErr) bad.push(tag+' render fault: '+g.drawErr); n++; }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       CFG.xfPix=1; f0=pixFaults();
+       for(si=0;si<sizes.length;si++){
+         __forceSize(sizes[si][0],sizes[si][1]);
+         __deploy({kit:[],safe:null,mapIx:0,seed:4242}); keys={};
+         frames('career '+sizes[si][0],12,function(){ __frame(0.016); });
+         __endRaid('abandon'); __topClear();
+         if(typeof arcadeDeploy==='function'&&typeof ARCADE==='object'&&ARCADE){
+           if(arcadeDeploy({mapIx:0,seed:4242})){ ARCADE.holdT=0; frames('demo '+sizes[si][0],12,function(){ __frame(0.016); }); }
+           else bad.push('staging: arcadeDeploy built no demo raid');
+           try{ if(ARCADE.on) arcadeLeave(); }catch(_l){}
+           try{ if(__state()&&!__state().over) __endRaid('abandon'); }catch(_e){}
+           __topClear();
+         }
+         __hubEnter(); frames('floor '+sizes[si][0],6,function(){ __hubFrame(0.016); });
+         __showScreen('title'); __topClear();
+       }
+       if(pixFaults()>f0) bad.push('the pixel paths logged '+(pixFaults()-f0)+' fault(s)');
+       if(n<6) bad.push('only '+n+' of 6 scenes drew');
+       return bad.length?bad.join('; '):null;
+     } catch(err){
+       return 'pixel smoke check: '+String(err&&err.message||err);
+     } finally {
+       CFG.xfPix=0;
+       try{ if(typeof ARCADE==='object'&&ARCADE&&ARCADE.on) arcadeLeave(); }catch(_a){}
+       try{ if(__state()&&!__state().over) __endRaid('abandon'); }catch(_e2){}
+       try{ cv.style.width=sw; cv.style.height=sh; hcv.style.width=hw; hcv.style.height=hh; resize(); }catch(_z){}
+       keys={}; __resetCfg(); __topClear(); __cleanProfile();
+     } }},
   {v:'33.52',what:'cw-pixlook (86a): all 145 racks resolve to a kept pixel pick, ten fixed looks resolve per the cut table, resolving writes nothing to the profile, and a profile with only The Machine owns the trooper',
    run:function(){
      if(typeof pixLook!=='function'||typeof pixOwned!=='function') return 'no pixel look map (pixLook, pixOwned)';

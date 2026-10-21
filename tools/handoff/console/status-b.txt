@@ -1,1 +1,1 @@
-10-21 01:45 86e-pix-props: waiting on 86a-pix-kit-switch, parked in blocked/ (not counted as a try), $0.1416598
+10-21 01:50 86f-pix-machines: waiting on 86e-pix-props, parked in blocked/ (not counted as a try), $0.17713340000000002

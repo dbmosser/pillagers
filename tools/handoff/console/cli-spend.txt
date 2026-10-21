@@ -682,3 +682,5 @@
 2026-10-21 0.0000 85-preraid-map-no-cache-labels
 2026-10-21 0.1447 critic-85-preraid-map-no-cache-labels
 2026-10-21 0.1633 critic-85-preraid-map-no-cache-labels
+2026-10-21 0.17713340000000002 86f-pix-machines-wait
+2026-10-21 0.0000 85-preraid-map-no-cache-labels

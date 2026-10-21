@@ -3280,7 +3280,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.52';
+var VER='33.53';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -50216,6 +50216,8 @@ function pixFetch(kind,key,fn,fam,pose){
   if(!e) PIX.fall++;
   return e;
 }
+// v33.53 (cw-pixsmoke): faults the pixel paths have logged this page load (a build or a draw that threw) plus the raid's own render fault; the smoke check reads it
+function pixFaults(){ return PIX.errs+((typeof G!=='undefined'&&G&&G.drawErr)?1:0); }
 function pixTelRow(){
   return {builds:PIX.builds,ms:Math.round(PIX.bakeMs*10)/10,hits:PIX.hits,miss:PIX.miss,refused:PIX.refused,bytes:PIXSTORE.bytes.actors+PIXSTORE.bytes.scene,S:Math.round(PIX.S*100)/100};
 }
@@ -51646,7 +51648,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.52: The game can now work out a pillager pixel look (head, skin, clothes, set) from any saved look. Nothing on screen changes yet. Check 33.52 fails on v33.51',
+  now:'v33.53: Nothing on screen changes. A test counter for pixel faults is added. Check 33.53 fails on v33.52',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

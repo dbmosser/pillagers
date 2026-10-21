@@ -1,0 +1,60 @@
+{
+    "title":  "RAID START MAP CLEARER",
+    "why":  "The picture critic found overlapping cache rings, dim zone names and contract rewards on the raid-start map.",
+    "now":  "Small cache icons keep their locations. Map labels and contract rewards read more clearly.",
+    "edits":  [
+                  {
+                      "anchor":  "function mapContractsDraw(cd,rows){",
+                      "replacement":  "// v28.xx (cw-cx-mapstart-clear): critic P1, keep every map label at 16px and contract rewards at 20px on the raid-start map only.\nfunction mapStartFont(font,z,min){\n  if(!mapFirstOn()) return font;\n  return String(font).replace(/([\\d.]+)px/,function(a,n){return Math.max((min||16)*z,parseFloat(n)).toFixed(1)+\u0027px\u0027;});\n}\nfunction mapContractsDraw(cd,rows){"
+                  },
+                  {
+                      "anchor":  "      nameFont=FSz(\u0027600 15.4px \u0027+HUDF,z), cntFont=FSz(TYPE.label,z), rewFont=FSz(TYPE.label,z);",
+                      "replacement":  "      nameFont=FSz(\u0027600 15.4px \u0027+HUDF,z), cntFont=mapStartFont(FSz(TYPE.label,z),z), rewFont=mapStartFont(FSz(TYPE.label,z),z,20);\n  if(mapFirstOn()) bh=Math.max(1,Math.round(z));   // v28.xx (cw-cx-mapstart-clear): quiet idle tracks keep all eight contracts visible."
+                  },
+                  {
+                      "anchor":  "      if(txt){ ctx.font=rewFont; ctx.fillStyle=UIC.tx_2; ctx.textAlign=\u0027right\u0027; ctx.fillText(txt,c.x+c.w-q,mid); ctx.textAlign=\u0027left\u0027; }",
+                      "replacement":  "      if(txt){ ctx.font=rewFont; ctx.fillStyle=mapFirstOn()?UIC.tx_1:UIC.tx_2; ctx.textAlign=\u0027right\u0027; ctx.fillText(txt,c.x+c.w-q,mid); ctx.textAlign=\u0027left\u0027; }"
+                  },
+                  {
+                      "anchor":  "        ctx.fillStyle=UIC.ui_line_hi; ctx.fillRect(c.x+q,mid2-bh/2,barW,bh);",
+                      "replacement":  "        ctx.fillStyle=mapFirstOn()?UIC.ui_line:UIC.ui_line_hi; ctx.fillRect(c.x+q,mid2-bh/2,barW,bh);"
+                  },
+                  {
+                      "anchor":  "        barW=c.w-2*q; ctx.fillStyle=UIC.ui_line_hi; ctx.fillRect(c.x+q,ry+pitch-bh-Math.round(2*z),barW,bh);",
+                      "replacement":  "        barW=c.w-2*q; ctx.fillStyle=mapFirstOn()?UIC.ui_line:UIC.ui_line_hi; ctx.fillRect(c.x+q,ry+pitch-bh-Math.round(2*z),barW,bh);"
+                  },
+                  {
+                      "anchor":  "    var t=String(s), fm=(/([\\d.]+)px/).exec(String(ctx.font)), fp=fm?parseFloat(fm[1]):12;",
+                      "replacement":  "    ctx.font=mapStartFont(ctx.font,Math.max(1,hudRes()));   // v28.xx (cw-cx-mapstart-clear): enforce the floor before measuring and placing actual labels.\n    var t=String(s), fm=(/([\\d.]+)px/).exec(String(ctx.font)), fp=fm?parseFloat(fm[1]):12;"
+                  },
+                  {
+                      "anchor":  "    ctx.fillStyle=\u0027rgba(239,233,220,.66)\u0027;   // v31.xx (cw-mapstyle): zone names are the style guide\u0027s tx-1 at about 70 percent over a dark halo (they were the district tint at 28 percent, dark on dark)",
+                      "replacement":  "    ctx.fillStyle=mapFirstOn()?UIC.tx_2:\u0027rgba(239,233,220,.66)\u0027;   // v28.xx (cw-cx-mapstart-clear): opaque secondary text over the existing dark halo."
+                  },
+                  {
+                      "anchor":  "    if(!CQ.cache) continue;",
+                      "replacement":  "    if(!CQ.cache||(mapFirstOn()\u0026\u0026CQ.strong)) continue;   // v28.xx (cw-cx-mapstart-clear): the strongbox keeps its dedicated icon, without a second cache ring."
+                  },
+                  {
+                      "anchor":  "    ctx.beginPath(); ctx.arc(qx,qy,(6.5+1.5*qp)*_MZ,0,6.2832); ctx.stroke();   // v31.xx (cw-mapstyle2): a cache ring a size smaller, so a stack of them is not a pile",
+                      "replacement":  "    ctx.beginPath(); ctx.arc(qx,qy,(mapFirstOn()?4:(6.5+1.5*qp))*_MZ,0,6.2832); ctx.stroke();   // v28.xx (cw-cx-mapstart-clear): 4px cache rings keep every location visible in packed rooms."
+                  },
+                  {
+                      "anchor":  "    ctx.beginPath(); ctx.arc(qx,qy,2.6*_MZ,0,6.2832); ctx.fill();",
+                      "replacement":  "    ctx.beginPath(); ctx.arc(qx,qy,(mapFirstOn()?1.6:2.6)*_MZ,0,6.2832); ctx.fill();"
+                  },
+                  {
+                      "anchor":  "    mapIcon(qx,qy,13*_MZ);",
+                      "replacement":  "    mapIcon(qx,qy,(mapFirstOn()?7:13)*_MZ);"
+                  },
+                  {
+                      "anchor":  "    if(!rc.revealed||rc.opened) continue;",
+                      "replacement":  "    if(!rc.revealed||rc.opened||(mapFirstOn()\u0026\u0026rc.cache)) continue;   // v28.xx (cw-cx-mapstart-clear): a revealed cache already has its small icon."
+                  },
+                  {
+                      "anchor":  "    ctx.fillText(\u0027CACHE\u0027,rmx,rmy-12*_MZ); ctx.textAlign=\u0027left\u0027;",
+                      "replacement":  "    if(!mapFirstOn()) ctx.fillText(\u0027CACHE\u0027,rmx,rmy-12*_MZ); ctx.textAlign=\u0027left\u0027;   // v28.xx (cw-cx-mapstart-clear): revealed caches obey the same no-words rule."
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027cw-cx-mapstart-clear: raid-start map keeps every cache location with compact icons, no loot words, 16px labels and clear 20px rewards; m map unchanged\u0027,\n   run:function(){\n     var g, ow=W, oh=H, os=MAPFIRST.skip, oldC=P.contracts, PR=CanvasRenderingContext2D.prototype, oa=PR.arc, ot=PR.fillText, arcs=[], texts=[], c, revealed, bad=[];\n     function grab(){\n       arcs=[]; texts=[];\n       PR.arc=function(x,y,r){ arcs.push({x:x,y:y,r:r}); return oa.apply(this,arguments); };\n       PR.fillText=function(s,x,y){ var m=this.getTransform();texts.push({s:String(s),font:this.font,col:this.fillStyle,x:x*m.a+m.e,y:y*m.d+m.f}); return ot.apply(this,arguments); };\n       try{drawMapOverlay();}finally{PR.arc=oa;PR.fillText=ot;}\n     }\n     function size(t){return +((/([\\d.]+)px/.exec(t.font)||[0,0])[1]);}\n     function at(c,r){var m=mapProj();return arcs.some(function(a){return Math.abs(a.x-(m.ox+c.x*m.sc))\u003c0.1\u0026\u0026Math.abs(a.y-(m.oy+c.y*m.sc))\u003c0.1\u0026\u0026Math.abs(a.r-r)\u003c0.1;});}\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile(); MAPFIRST.skip=1;\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state(); if(!g||g.over) return \u0027SKIP: no raid\u0027;\n       g.mapOpen=true; g.bagOpen=false; keys={}; mouse.down=false;\n       c=g.containers.filter(function(c){return c.cache\u0026\u0026!c.strong\u0026\u0026!c.opened;})[0]; if(!c) return \u0027SKIP: no native cache\u0027;\n       revealed=c.revealed; c.revealed=true;\n       P.contracts=[{type:\u0027kill\u0027,tgt:\u0027crawler\u0027,n:5,prog:0,reward:450,desc:\u0027x\u0027,tier:\u0027std\u0027}];\n       [[1920,1080],[3840,2160]].forEach(function(wh){\n         W=wh[0];H=wh[1];var z=Math.max(1,hudRes());g.mapFirst=1;grab();\n         g.containers.filter(function(v){return v.cache\u0026\u0026!v.strong;}).forEach(function(v){if(!at(v,4*z))bad.push(\u0027cache has no compact ring at \u0027+H);});\n         g.containers.filter(function(v){return v.strong\u0026\u0026!v.opened;}).forEach(function(v){if(!at(v,10*z))bad.push(\u0027strongbox icon lost at \u0027+H);});\n         if(texts.some(function(t){return /^(cache|looted|strongbox)$/i.test(t.s);})) bad.push(\u0027loot word at \u0027+H);\n         if(texts.filter(function(t){return /^extract [abc]$/i.test(t.s);}).length!==3) bad.push(\u0027extract labels lost at \u0027+H);\n         var reward=texts.filter(function(t){return t.s===\u0027$450\u0027;})[0];\n         if(!reward||size(reward)\u003c20*z-0.1||reward.col!==UIC.tx_1) bad.push(\u0027reward not 20px primary text at \u0027+H);\n         var box=mapProj();\n         if(texts.some(function(t){return t.x\u003e=box.ox\u0026\u0026t.x\u003c=box.ox+WORLD_W*box.sc\u0026\u0026t.y\u003e=box.oy\u0026\u0026t.y\u003c=box.oy+WORLD_H*box.sc\u0026\u0026size(t)\u003c16*z-0.1;})) bad.push(\u0027map text below 16px at \u0027+H);\n         g.mapFirst=0;grab();\n         if(!texts.some(function(t){return /^(cache|strongbox)$/i.test(t.s);})) bad.push(\u0027m map lost loot words\u0027);\n         if(!arcs.some(function(a){var m=mapProj();return Math.abs(a.x-(m.ox+c.x*m.sc))\u003c0.1\u0026\u0026Math.abs(a.y-(m.oy+c.y*m.sc))\u003c0.1\u0026\u0026a.r\u003e=6.5*z\u0026\u0026a.r\u003c=8*z;})) bad.push(\u0027m map cache ring changed\u0027);\n       });\n       return bad.length?bad.join(\u0027; \u0027):null;\n     }finally{\n       PR.arc=oa;PR.fillText=ot;W=ow;H=oh;MAPFIRST.skip=os;P.contracts=oldC;if(c)c.revealed=revealed;\n       try{if(g){g.mapFirst=0;g.mapOpen=false;}__endRaid(\u0027abandon\u0027);}catch(e){}__topClear();__resetCfg();__cleanProfile();\n     }\n   }},"
+}

@@ -1,0 +1,7 @@
+v33.53: the pixel smoke check
+
+Nothing on screen changes. A test counter for pixel faults is added.
+
+Check 33.53. Fails on v33.52.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
