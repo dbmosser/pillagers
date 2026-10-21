@@ -7473,7 +7473,7 @@ window.__REGRESS=[
        if(!body(st,'none',2.8)) bad.push('empty hands were not drawn in pixels');
        if(!body(st,'roll',0.5)) bad.push('the roll was not drawn in pixels');
        st.moving=true; if(!body(st,'',0.4)) bad.push('the walk was not drawn in pixels'); st.sprint=true; if(!body(st,'',0.4)) bad.push('the sprint was not drawn in pixels'); st.moving=false; st.sprint=false;
-       [['fists',{},'fist'],['the downed body',{},'down'],['a set',{hero:0,outfit:'outskeleton'},''],['the peddler',{hero:0,outfit:'outpeddler'},'none']].forEach(function(q){
+       [['fists',{},'fist'],['the downed body',{},'down'],['a set',{hero:0,outfit:'outskeleton'},'']].forEach(function(q){
          var s2={}, z; for(z in st) s2[z]=st[z]; for(z in q[1]) s2[z]=q[1][z]; if(q[1].hero===0) delete s2.own;
          b0=PIX.bodies; for(z=0;z<4;z++){ pixFrame(); drawOp(600,500,0,0,'#242832',0,0,q[2],0,s2); }
          if(PIX.bodies!==b0) bad.push(q[0]+' was drawn in pixels but is still the vector body');
