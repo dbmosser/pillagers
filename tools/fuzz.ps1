@@ -615,8 +615,9 @@ try{
     if(-not $IgnoreFlag -and (Test-Path -LiteralPath $Flag)){ $stopWhy='light.flag (he is back)'; break }
     $left=($deadline-(Get-Date)).TotalSeconds
     if($Mode -eq '' -and $left -lt 70){ break }
-    $freeGB=(Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1MB
-    if($freeGB -lt $MinFreeGB){ $stopWhy=('low RAM '+[Math]::Round($freeGB,1)+' GB free'); break }
+    # 10-21: the smaller of free RAM and free virtual memory (Windows ran out of virtual memory at 02:19 with 4 GB of RAM free; both robots hung)
+    $osm=Get-CimInstance Win32_OperatingSystem; $freeGB=[Math]::Min($osm.FreePhysicalMemory,$osm.FreeVirtualMemory)/1MB
+    if($freeGB -lt $MinFreeGB){ $stopWhy=('low memory '+[Math]::Round($freeGB,1)+' GB free (RAM or virtual)'); break }
     $script:raidNo++
     $m=$modes[($script:raidNo-1) % 3]; $rs=$master.Next(1,2147483000)
     if($P2Share -gt 0){   # 10-18, his order: 3 of every 4 raids are the real 2-player demo (-P2Share 75); the 4th alternates demo1 and career

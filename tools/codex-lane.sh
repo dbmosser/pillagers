@@ -57,7 +57,8 @@ log(){ echo "$(date '+%F %T') $*" >> "$X/log/lane.log"; }
 rd(){ LC_ALL=C tr -d '\000\r' < "$1" | LC_ALL=C sed '1s/^\xef\xbb\xbf//; 1s/^\xff\xfe//'; }   # Codex on Windows may write UTF-16 or BOM files
 MODEL=$(cap CODEX_MODEL gpt-6.1-sol); EFFORT=$(cap CODEX_EFFORT high); CAM=$(cap CAMERA_PORT 9364)
 PFN=$(cap PREFLIGHT_CHROME_N 9); PFPORT=$((9350+PFN))
-freegb(){ if [ -n "$CX_FREEGB" ]; then echo "$CX_FREEGB"; return; fi; powershell -NoProfile -Command "[int]((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1MB)" 2>/dev/null | tr -dc '0-9'; }
+# 10-21: the smaller of free RAM and free virtual memory (Windows ran out of virtual memory at 02:19 with 4 GB of RAM free)
+freegb(){ if [ -n "$CX_FREEGB" ]; then echo "$CX_FREEGB"; return; fi; powershell -NoProfile -Command "\$o=Get-CimInstance Win32_OperatingSystem; [int]([Math]::Min(\$o.FreePhysicalMemory,\$o.FreeVirtualMemory)/1MB)" 2>/dev/null | tr -dc '0-9'; }
 ramwait(){ local floor g i; floor=$(cap RAM_FLOOR_GB 6)
   for i in 1 2 3 4 5 6 7 8 9 10; do g=$(freegb); g=${g:-0}; [ "$g" -ge "$floor" ] && return 0; say "waiting for RAM: $g GB free, need $floor (${name:-codex})"; sleep 60; done; return 1; }
 

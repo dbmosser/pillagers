@@ -43,7 +43,9 @@ date +%s > "$HB"
 get(){ grep -m1 "^$1=" "$ST" | cut -d= -f2-; }
 put(){ grep -v "^$1=" "$ST" > "$ST.tmp"; echo "$1=$2" >> "$ST.tmp"; mv "$ST.tmp" "$ST"; }
 running(){ powershell -NoProfile -Command "@(Get-CimInstance Win32_Process | Where-Object { \$_.CommandLine -match '$1' }).Count" 2>/dev/null | tr -dc '0-9'; }
-freegb(){ powershell -NoProfile -Command "[int]((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1MB)" 2>/dev/null | tr -dc '0-9'; }
+# 10-21: the smaller of free RAM and free virtual memory. At 02:19 Windows ran out of virtual memory (31.5 of 31.9 GB committed) with
+# 4 GB of RAM still free, and both robots hung; the RAM-only check never saw it.
+freegb(){ powershell -NoProfile -Command "\$o=Get-CimInstance Win32_OperatingSystem; [int]([Math]::Min(\$o.FreePhysicalMemory,\$o.FreeVirtualMemory)/1MB)" 2>/dev/null | tr -dc '0-9'; }
 summary(){
   d=$(date +%Y-%m-%d); f="$N/$d.md"; L="$R/tools/handoff/llm-night"
   { echo "# Runner $d (written $(date +%H:%M))"; echo; echo "HEAD $(git -C "$R" log -1 --format='%h %s')"; echo

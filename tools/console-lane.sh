@@ -138,7 +138,8 @@ if [ $ENGINE = cli ]; then
   if { [ "$(cap PLAN_PACE 1)" != 0 ] && awk -v w="$wk" -v l="$line" -v b="$boost" 'BEGIN{exit !(w+b>=l)}'; } || [ "$ses" -ge "$(cap PLAN_SESSION_MAX 75)" ]; then
     if [ "$(cap PLAN_PACE 1)" = 0 ]; then echo "$(date '+%m-%d %H:%M') resting: the 5-hour window is at $ses% (helpers stop at $(cap PLAN_SESSION_MAX 75)%); week $wk% used" > "$C/status-$L.txt"
     else echo "$(date '+%m-%d %H:%M') pacing your plan: week $wk% used (the 85% line is at $line% now), 5-hour window $ses%" > "$C/status-$L.txt"; fi; exit 0; fi
-  rf=$(( $(cap RAM_FLOOR_GB 6) + 1 )); g=$(powershell -NoProfile -Command "[int]((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1MB)" 2>/dev/null | tr -dc '0-9')
+  # 10-21: the smaller of free RAM and free virtual memory (Windows ran out of virtual memory at 02:19 with 4 GB of RAM free)
+  rf=$(( $(cap RAM_FLOOR_GB 6) + 1 )); g=$(powershell -NoProfile -Command "\$o=Get-CimInstance Win32_OperatingSystem; [int]([Math]::Min(\$o.FreePhysicalMemory,\$o.FreeVirtualMemory)/1MB)" 2>/dev/null | tr -dc '0-9')
   [ "${g:-0}" -lt "$rf" ] && { echo "$(date '+%m-%d %H:%M') waiting for RAM: ${g:-0} GB free, a helper starts at $rf; $name kept" > "$C/status-$L.txt"; exit 0; }
   # 10-20 00:10: lanes a and b both saw 3 GB free in the same second and both started (2.2 GB left). A new helper's memory shows only
   # after a minute or two, so one lane starts at a time: start.lock holds the others back for 2 minutes, then anyone may clear it.

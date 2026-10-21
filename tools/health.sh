@@ -55,6 +55,9 @@ if [ ! -f "$ss" ] || grep -q "not set up yet\|no spare PC has reported" "$ss"; t
 elif grep -q "QUIET" "$ss"; then echo "WAIT: spare PC quiet: $(head -1 "$ss" | cut -c1-160)"
 else echo "spare PC: $(head -1 "$ss" | cut -c1-170)"; fi
 fm=$(powershell -NoProfile -Command "[int]((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1MB)" 2>/dev/null | tr -d '\r'); echo "free RAM: ${fm} GB"; rf=$(grep -m1 "^RAM_FLOOR_GB=" "$C/caps.txt" 2>/dev/null | cut -d= -f2 | tr -dc "0-9"); rf=${rf:-6}; [ "${fm:-9}" -lt "$rf" ] && prob "free RAM ${fm} GB is under the ${rf} GB floor (RAM_FLOOR_GB in console/caps.txt)"
+# 10-21: virtual memory too. At 02:19 Windows ran out of it (31.5 of 31.9 GB) with 4 GB of RAM free and both robots hung.
+fv=$(powershell -NoProfile -Command "\$o=Get-CimInstance Win32_OperatingSystem; '{0} {1}' -f [int](\$o.FreeVirtualMemory/1MB), [int](\$o.TotalVirtualMemorySize/1MB)" 2>/dev/null | tr -d '\r'); echo "free virtual memory: ${fv% *} GB of ${fv#* } GB"; [ "${fv% *}" -lt "$rf" ] 2>/dev/null && prob "free virtual memory ${fv% *} GB is under the ${rf} GB floor: Windows may refuse new programs (see the System log, event 2004)"
+ve=$(powershell -NoProfile -Command "@(Get-WinEvent -FilterHashtable @{LogName='System'; Id=2004; StartTime=(Get-Date).AddHours(-2)} -ErrorAction SilentlyContinue).Count" 2>/dev/null | tr -dc '0-9'); [ "${ve:-0}" -gt 0 ] && prob "Windows ran low on virtual memory ${ve} time(s) in the last 2 h (System log event 2004)"
 # 10 the saved build scripts (tools/pipeline-scratch, his 10-20 "save the 12 build scripts into the GitHub project"). The scratchpad copies
 # are the live ones: copy any that changed, never one that looks like it holds a key, and flag the copy so the coordinator commits it.
 PSC="$R/tools/pipeline-scratch"; ch=""
