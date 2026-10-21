@@ -6145,6 +6145,25 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'33.48',what:'the pre-raid pack names are shown whole beside the buy slot (the kit column is 480 px wide at most) and a buy control is never lime, which is the ascend colour',
+   run:function(){
+     if(!(window.__hubEnter&&window.__P&&window.__applyLoaded)||typeof renderSector!=='function'||typeof packBuyHtml!=='function') return 'SKIP: no pack buy control';
+     var bad=[], snap=null, q, sm=document.getElementById('sectormodal'), n, b, k, cut=[];
+     function shut(){ var mo=document.querySelectorAll('.modal.on'); for(var j=0;j<mo.length;j++) mo[j].classList.remove('on'); }
+     try{
+       snap=JSON.parse(JSON.stringify(__P()));
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       q=__P(); q.freeKit=0; q.kitPick='mine'; q.stash=['medkit','bandage','smoke','frag','plate','gun_carbine','gun_smg']; q.kit=[]; q.equipped='fists'; q.credits=900;
+       __hubEnter(); shut(); renderSector(); openModal('sectormodal');
+       n=sm.querySelectorAll('#sectorpack .srprow[data-pk] .nm');
+       for(k=0;k<n.length;k++) if(n[k].scrollWidth>n[k].clientWidth+1) cut.push(n[k].textContent);
+       if(cut.length) bad.push('names cut to dots: '+cut.join(', '));
+       b=sm.querySelector('#sectorpack .srbuy[data-pb]');
+       if(!b) bad.push('no buy control drawn');
+       else if(getComputedStyle(b).color==='rgb(201, 242, 59)'||getComputedStyle(b).borderTopColor===getComputedStyle(document.getElementById('sectordeploy')).backgroundColor) bad.push('the buy control uses the ascend colour');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ try{ shut(); }catch(_s){} try{ if(snap) __applyLoaded(snap); }catch(_a){} try{ __cleanProfile(); }catch(_c){} __topClear(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'33.47',what:'the pre-raid pack rows keep one buy slot each, so a row the counter does not sell still lines its stepper up with the rest',
    run:function(){
      if(!(window.__hubEnter&&window.__P&&window.__applyLoaded)||typeof renderSector!=='function'||typeof packBuyHtml!=='function') return 'SKIP: no pack buy control';

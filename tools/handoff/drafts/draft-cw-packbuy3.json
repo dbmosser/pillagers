@@ -1,0 +1,16 @@
+{
+    "title":  "PRE-RAID: WIDER KIT COLUMN SO PACK NAMES SHOW WHOLE, A CALM BUY BUTTON",
+    "why":  "The critic scored the page 3 and named the pack names cut to dots beside the new buy slot and a lime price that competes with ascend. The kit column may now grow to 480 px (it was 400) and the map gives up the width; the affordable price is plain light text on the raised fill, with red kept for what you cannot afford.",
+    "now":  "The pre-raid pack names show in full and the price buttons are calmer.",
+    "edits":  [
+                  {
+                      "anchor":  "#srkitcol{ flex:1 1 0; min-width:0; max-width:400px;",
+                      "replacement":  "#srkitcol{ flex:1 1 0; min-width:0; max-width:480px;"
+                  },
+                  {
+                      "anchor":  "border:1px solid var(--acc); border-radius:0; color:var(--acc); font:700 16px var(--f-cond);",
+                      "replacement":  "border:1px solid var(--ui-line-hi); border-radius:0; color:var(--tx-1); font:700 16px var(--f-cond);"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the pre-raid pack names are shown whole beside the buy slot (the kit column is 480 px wide at most) and a buy control is never lime, which is the ascend colour\u0027,\n   run:function(){\n     if(!(window.__hubEnter\u0026\u0026window.__P\u0026\u0026window.__applyLoaded)||typeof renderSector!==\u0027function\u0027||typeof packBuyHtml!==\u0027function\u0027) return \u0027SKIP: no pack buy control\u0027;\n     var bad=[], snap=null, q, sm=document.getElementById(\u0027sectormodal\u0027), n, b, k, cut=[];\n     function shut(){ var mo=document.querySelectorAll(\u0027.modal.on\u0027); for(var j=0;j\u003cmo.length;j++) mo[j].classList.remove(\u0027on\u0027); }\n     try{\n       snap=JSON.parse(JSON.stringify(__P()));\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       q=__P(); q.freeKit=0; q.kitPick=\u0027mine\u0027; q.stash=[\u0027medkit\u0027,\u0027bandage\u0027,\u0027smoke\u0027,\u0027frag\u0027,\u0027plate\u0027,\u0027gun_carbine\u0027,\u0027gun_smg\u0027]; q.kit=[]; q.equipped=\u0027fists\u0027; q.credits=900;\n       __hubEnter(); shut(); renderSector(); openModal(\u0027sectormodal\u0027);\n       n=sm.querySelectorAll(\u0027#sectorpack .srprow[data-pk] .nm\u0027);\n       for(k=0;k\u003cn.length;k++) if(n[k].scrollWidth\u003en[k].clientWidth+1) cut.push(n[k].textContent);\n       if(cut.length) bad.push(\u0027names cut to dots: \u0027+cut.join(\u0027, \u0027));\n       b=sm.querySelector(\u0027#sectorpack .srbuy[data-pb]\u0027);\n       if(!b) bad.push(\u0027no buy control drawn\u0027);\n       else if(getComputedStyle(b).color===\u0027rgb(201, 242, 59)\u0027||getComputedStyle(b).borderTopColor===getComputedStyle(document.getElementById(\u0027sectordeploy\u0027)).backgroundColor) bad.push(\u0027the buy control uses the ascend colour\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ shut(); }catch(_s){} try{ if(snap) __applyLoaded(snap); }catch(_a){} try{ __cleanProfile(); }catch(_c){} __topClear(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

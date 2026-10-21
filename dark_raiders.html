@@ -2705,7 +2705,7 @@ body.padon #root #settingsmodal.expmode::after{ content:'a change    b back'; }
   #sectormodal .srkr{ height:34px; display:flex; align-items:center; gap:12px; font:600 20px var(--f-cond); }
   #sectormodal .srkr svg{ width:28px; height:28px; flex:none; }
   #sectormodal .srkr em{ margin-left:auto; font:500 16px var(--f-body); font-style:normal; color:var(--tx-2); }
-  #srkitcol{ flex:1 1 0; min-width:0; max-width:400px; min-height:0; display:flex; flex-direction:column; gap:10px; padding:10px 12px; background:var(--ui-panel); border:0; border-radius:4px; }
+  #srkitcol{ flex:1 1 0; min-width:0; max-width:480px; min-height:0; display:flex; flex-direction:column; gap:10px; padding:10px 12px; background:var(--ui-panel); border:0; border-radius:4px; }
   #sectorkitpick{ flex:none; display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:0 !important; }
   #root #sectormodal .kitb{ height:52px; display:grid; grid-template-columns:22px minmax(0,1fr); column-gap:8px; align-content:center; align-items:center; padding:0 8px; background:var(--ui-raised); border:1px solid var(--ui-line-hi); border-radius:4px; color:var(--tx-1); text-align:left; white-space:nowrap; overflow:hidden; }
   #sectormodal .kitb .srrd{ grid-row:1/3; }
@@ -2728,7 +2728,7 @@ body.padon #root #settingsmodal.expmode::after{ content:'a change    b back'; }
   #sectormodal .srprow:has(.padfocus){ background:var(--ui-raised); box-shadow:inset 3px 0 0 var(--srseat); }
   #sectormodal .srprow .st{ display:flex; align-items:center; }
   #root #sectormodal .srprow .st .srm, #root #sectormodal .srprow .st button{ width:44px; height:44px; min-width:0; padding:0; display:grid; place-items:center; background:var(--ui-raised); border:1px solid var(--ui-line-hi); border-radius:0; color:var(--tx-1); font:700 20px var(--f-cond); cursor:pointer; }
-  #sectormodal .srprow .st b{ width:30px; text-align:center; font:700 20px var(--f-cond); cursor:pointer; } #root #sectormodal .srprow .srbuy{ flex:none; width:66px; min-width:0; height:44px; padding:0 4px; background:var(--ui-raised); border:1px solid var(--acc); border-radius:0; color:var(--acc); font:700 16px var(--f-cond); cursor:pointer; } #root #sectormodal .srprow span.srbuy.sp{ width:66px; height:44px; border:0; background:none; } #root #sectormodal .srprow .srbuy.dis{ border-color:var(--ui-line-hi); color:var(--danger); opacity:.65; cursor:default; } #root #sectormodal .srprow .srbuy.padfocus{ outline:2px solid var(--srseat); }
+  #sectormodal .srprow .st b{ width:30px; text-align:center; font:700 20px var(--f-cond); cursor:pointer; } #root #sectormodal .srprow .srbuy{ flex:none; width:66px; min-width:0; height:44px; padding:0 4px; background:var(--ui-raised); border:1px solid var(--ui-line-hi); border-radius:0; color:var(--tx-1); font:700 16px var(--f-cond); cursor:pointer; } #root #sectormodal .srprow span.srbuy.sp{ width:66px; height:44px; border:0; background:none; } #root #sectormodal .srprow .srbuy.dis{ border-color:var(--ui-line-hi); color:var(--danger); opacity:.65; cursor:default; } #root #sectormodal .srprow .srbuy.padfocus{ outline:2px solid var(--srseat); }
   #root #sectormodal .srprow .dis{ color:var(--tx-3); }
   #root #sectormodal button.srcore{ width:100%; height:40px; margin-top:6px; padding:0; background:none; border:0; border-bottom:1px solid var(--ui-line); border-radius:0; justify-content:flex-start; color:var(--tx-1); font:600 20px var(--f-cond); }
   #sectormodal .srcore .cb{ width:26px; height:26px; border:2px solid #55524c; border-radius:4px; margin:0 4px 0 auto; position:relative; }
@@ -3280,7 +3280,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.47';
+var VER='33.48';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -51457,7 +51457,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.47: The pack rows on the pre-raid page line up again. Check 33.47 fails on v33.46',
+  now:'v33.48: The pre-raid pack names show in full and the price buttons are calmer. Check 33.48 fails on v33.47',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

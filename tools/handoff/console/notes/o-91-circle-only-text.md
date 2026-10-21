@@ -33,3 +33,27 @@ Current master includes card ships 7653a301 (v33.45) and 09bb190a (v33.46), so W
 Revalidated on v33.46: the new retarget anchor matches exactly once; the unchanged mk script prints written; both game anchors match exactly once; the proposed game script, both new checks and the new retarget compile. The proposed source scan again finds no Daniel outside comments, no alpha warning and no polish filler. No tracked game/fixture file was edited, and no game or check code was executed locally.
 
 The existing keys list keeps the shipped publicreports key (lane skips it) followed by the pending shortnews key. Existing camera recipes remain ready for the actual pause news window, recorder and floor card. Remaining work belongs to the lane: apply/check the new retarget, retry cw-cx-shortnews, take pictures and run the critic.
+
+--- codex run 2026-10-21 01:22 ---
+2026-10-21, retry against master v33.47 after the anchor refusal.
+
+Found the exact cause: the current fixture uses CRLF, while prepare-retarget.ps1 removed carriage returns before copying its anchor. The prior local validator also normalized the fixture, masking the mismatch. The check text itself had not changed: normalized matching found it once, raw matching found it zero times.
+
+Fixed both helpers to preserve the raw fixture's line endings. Replacement text is converted to the same newline style. The generator now also deserializes its JSON and asserts that the serialized anchor matches the raw current fixture exactly once. The regenerated fixture-retarget.json still contains only the same old/new-compatible 33.46 check retarget, dependent on cw-cx-shortnews. The pending game script/key is unchanged.
+
+Validation on v33.47 passed: exact raw fixture anchor count 1, with 10 CRLF line breaks; replacement has 17 CRLF line breaks. The mk script printed written, its two game anchors matched once, and game/new-check/retarget JavaScript syntax passed. The proposed source again has no Daniel outside comments, no alpha warning and no polish filler. WHATSNEW_VER remains the fresh 33.46 stamp. No tracked game or fixture file was edited.
+
+Remaining: lane applies and runs the retarget, retries cw-cx-shortnews, then captures the existing three camera recipes and runs the critic. Publicreports is already shipped. No additional owner decision or stamp-refresh handoff is needed for this retry.
+
+--- codex run 2026-10-21 01:24 ---
+2026-10-21, retry on v33.47 after the second anchor refusal.
+
+The previous newline diagnosis was incomplete. The worktree has CRLF in the whole 33.46 check; the real repo has LF in that check and CRLF elsewhere. retarget.mjs chooses one newline style for the whole fixture and normalizes each supplied anchor to it. That makes this multiline anchor fail against the mixed-line-ending real file even though it matches the worktree exactly. No check text was changed by another helper.
+
+Rebuilt fixture-retarget.json with a single-line anchor copied from the current check: the unique guard containing WHATSNEW_VER >33.46. Both anchor and replacement contain zero line breaks, so the planner cannot change their line endings. The replacement retains the original guard, then accepts the exact three short real notes with the same 0.15 stamp-drift, lowercase, length and whole-note checks. Legacy card behavior continues through the original check unchanged. Same pending key: cw-cx-shortnews. The original five retargets stay applied in 5e40ca46.
+
+Verified with the ACTUAL tools/handoff/codex/retarget.mjs plan command, without output-file arguments, against BOTH the worktree fixture and the read-only real repo fixture. Both returned STATUS ok, EDIT 1 anchors=1 chars=113->861 state=new, RUN 33.46. This read-only planner validation is stronger than the previous string-count-only check and executes no game or regression test.
+
+The normal local validation also passed: mk printed written; two game anchors matched exactly once; proposed game script, new checks and retarget fragment compile; no Daniel outside comments, alpha warning or polish filler remains in the proposed game. No tracked file was edited. WHATSNEW_VER is still fresh at 33.46, so no extra card refresh is required for this retry.
+
+Remaining: lane applies/checks the retarget, ships cw-cx-shortnews, then takes the three existing recipe photographs and runs the critic. Publicreports remains shipped.

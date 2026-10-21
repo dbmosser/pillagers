@@ -660,3 +660,7 @@
 2026-10-21 0.1397709 85-preraid-map-no-cache-labels
 2026-10-21 0.1489885 85-preraid-map-no-cache-labels
 2026-10-21 0.0000 o-91-circle-only-text
+2026-10-21 0.1433 critic-manual
+2026-10-21 0.0000 o-91-circle-only-text
+2026-10-21 0.0000 o-91-circle-only-text
+2026-10-21 0.1548417 85-preraid-map-no-cache-labels

@@ -1,1 +1,1 @@
-10-21 01:20 retarget: waiting for another ship to finish with tools/mkfixture.ps1 (o-91-circle-only-text)
+10-21 01:24 retarget: trying o-91-circle-only-text's fixture edit on a trial copy (1 checks)

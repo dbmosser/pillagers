@@ -37,11 +37,12 @@
         else {
           var p=G.player;
           try{ p.hp=p.maxhp||100; p.downed=0; }catch(_){}
+          if(opts.arc&&frames%10===0) gx('ARCADE.ownAt=Date.now();1');   // the arcade idle clock sees a player at the keys (a robot holding keys[] is not input to it)
+          if(opts.drift){ var da=Math.floor(now/1500)*2.2; var dt0=Math.min(0.1,d/1000); try{ p.x+=Math.cos(da)*opts.drift*dt0; p.y+=Math.sin(da)*opts.drift*dt0; }catch(_){} }
+          if(opts.drift||MOVE){ if(px!==null){ path+=Math.hypot(p.x-px,p.y-py); } px=p.x; py=p.y; }
           if(MOVE){
             if(now-dirT>1500){ di=(di+3)%dirs.length; dirT=now; setDir(); }
             try{ var m=gx('mouse'); if(m){ var a=now/900; m.x=(gx('W')||1920)/2+Math.cos(a)*300; m.y=(gx('H')||1080)/2+Math.sin(a)*220; } }catch(_){}
-            if(px!==null){ var dd=Math.hypot(p.x-px,p.y-py); path+=dd; }
-            px=p.x; py=p.y;
           }
         }
         if(phase===0&&now-t0>=WARM){ phase=1; h0=C7.hist(); drs0=C7.drs(); try{ gfx0=JSON.parse(JSON.stringify(__state().tel.gfx||null)); }catch(_){} last=now; }
