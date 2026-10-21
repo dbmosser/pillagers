@@ -3360,7 +3360,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.88';
+var VER='33.89';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -37359,12 +37359,14 @@ function mbPoly(p){ wc.beginPath(); wc.moveTo(p[0],p[1]); for(var i=2;i<p.length
 // boss, 44) is drawn scaled up around where it stands, in every window, since its size rides the word that announces it.
 function wardenDrawScale(e){ var r=e&&+e.r; return (r>34&&r<80)?r/30:1; }
 function drawWardenAt(e){
+  if(pixOn()&&!PIXM.paint&&pixMachDraw(e,drawWardenS)) return wardenDrawScale(e); // v28.xx (cw-cx-pixmachines): boss size is baked, never applied to a finished sprite
   var s=wardenDrawScale(e);
   if(s===1){ drawWardenS(e); return 1; }
   wc.save(); wc.translate(e.x,e.y); wc.scale(s,s); wc.translate(-e.x,-e.y);
   try{ drawWardenS(e); } finally { wc.restore(); }
   return s;
 }function drawWardenS(e){
+  if(pixOn()&&!PIXM.paint&&pixMachDraw(e,drawWardenS)) return; // v28.xx (cw-cx-pixmachines): the body is cached at PIX_ACT, including job 80 size
   var x=e.x,y=e.y,B=!!(e.boss||e.name===BOSS_NAME),P=B?MBPAL_OV:MBPAL,fl=Math.cos(e.face)>=0?1:-1,st=(e.step||0),el=!!e.elite,i,a,tx;
   shadowE(x,y+2,26,8,.45);
   wc.save(); wc.translate(x,y); wc.scale(fl,1);
@@ -37420,15 +37422,15 @@ function drawWardenAt(e){
   wc.fillStyle=P.ox[2]; wc.fillRect(-12.4,-28.4,15.4,1.2);
   wc.fillStyle=P.och; mbPoly([-10.4,-26.6,-7.6,-26.6,-9.8,-22.6,-12.4,-22.6]); mbPoly([-5.6,-26.6,-2.8,-26.6,-5,-22.6,-7.8,-22.6]);
   // THE HEAD: set low between the shoulders, a visor slit in the sensor language (the Overseer: a crown of three sensor masts and one big lens)
-  var E=mbEye(e,G.t);
+  var E=mbEye(e,pixMachTime());
   if(B){
     wc.lineCap='round'; wc.strokeStyle=P.ink; wc.lineWidth=2.6; wc.beginPath();
     wc.moveTo(4.6,-44); wc.lineTo(3.4,-55.4); wc.moveTo(9.4,-45); wc.lineTo(9.4,-58.4); wc.moveTo(14.2,-43); wc.lineTo(15.6,-54.6); wc.stroke();
     wc.strokeStyle=P.och; wc.lineWidth=1.1; wc.stroke(); wc.lineCap='butt';
-    wc.globalCompositeOperation='lighter'; wc.fillStyle='#ff3b30'; wc.globalAlpha=.55+.35*Math.sin(G.t*4);
+    if(!PIXM.baking){ wc.globalCompositeOperation='lighter'; wc.fillStyle='#ff3b30'; wc.globalAlpha=.55+.35*Math.sin(pixMachTime()*4);
     wc.beginPath(); wc.arc(3.4,-55.8,1.5,0,6.2832); wc.moveTo(10.9,-58.8); wc.arc(9.4,-58.8,1.5,0,6.2832); wc.moveTo(17.1,-55); wc.arc(15.6,-55,1.5,0,6.2832); wc.fill();
     wc.globalAlpha=.18; wc.beginPath(); wc.arc(3.4,-55.8,3,0,6.2832); wc.moveTo(12.4,-58.8); wc.arc(9.4,-58.8,3,0,6.2832); wc.moveTo(18.6,-55); wc.arc(15.6,-55,3,0,6.2832); wc.fill();
-    wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
+    wc.globalAlpha=1; wc.globalCompositeOperation='source-over'; } else { wc.fillStyle='#ff3b30'; wc.beginPath(); wc.arc(3.4,-55.8,1.5,0,6.2832); wc.moveTo(10.9,-58.8); wc.arc(9.4,-58.8,1.5,0,6.2832); wc.moveTo(17.1,-55); wc.arc(15.6,-55,1.5,0,6.2832); wc.fill(); }
   }
   wc.fillStyle=P.ink; rrF(1.4,-45,16,11.6,3);
   wc.fillStyle=P.gm[1]; rrF(2.6,-43.8,13.6,9.2,2.2);
@@ -37437,17 +37439,17 @@ function drawWardenAt(e){
     if(E[2]===2) E[0]='#d0202a';
     wc.fillStyle=P.ink; wc.beginPath(); wc.arc(9.4,-39.2,5.2,0,6.2832); wc.fill();
     wc.strokeStyle=P.och; wc.lineWidth=0.9; wc.beginPath(); wc.arc(9.4,-39.2,4.4,0,6.2832); wc.stroke();
-    wc.globalCompositeOperation='lighter'; wc.fillStyle=E[0]; wc.globalAlpha=Math.min(1,E[1]+.15);
+    if(!PIXM.baking){ wc.globalCompositeOperation='lighter'; wc.fillStyle=E[0]; wc.globalAlpha=Math.min(1,E[1]+.15);
     wc.beginPath(); wc.arc(9.4,-39.2,3.3,0,6.2832); wc.fill();
     if(E[2]){ wc.globalAlpha=E[2]>1?.24:.16; wc.beginPath(); wc.arc(9.4,-39.2,5.3,0,6.2832); wc.fill(); }
     wc.globalAlpha=.85; wc.fillStyle='#ffffff'; wc.beginPath(); wc.arc(8.2,-40.4,.8,0,6.2832); wc.fill();
-    wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
+    wc.globalAlpha=1; wc.globalCompositeOperation='source-over'; } else { wc.fillStyle=E[0]; wc.beginPath(); wc.arc(9.4,-39.2,3.3,0,6.2832); wc.fill(); wc.fillStyle='#ffffff'; wc.beginPath(); wc.arc(8.2,-40.4,.8,0,6.2832); wc.fill(); }
   } else {
   wc.fillStyle=P.ink; rrF(4.2,-40.6,12.4,4.8,1.8);
-  wc.globalCompositeOperation='lighter'; wc.fillStyle=E[0]; wc.globalAlpha=E[1];
+  if(!PIXM.baking){ wc.globalCompositeOperation='lighter'; wc.fillStyle=E[0]; wc.globalAlpha=E[1];
   wc.fillRect(5.2,-39.6,10.4,2.6);
   if(E[2]){ wc.globalAlpha=E[2]>1?.22:.16; wc.beginPath(); wc.arc(10.4,-38.3,E[2]>1?7:5,0,6.2832); wc.fill(); }
-  wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
+  wc.globalAlpha=1; wc.globalCompositeOperation='source-over'; } else { wc.fillStyle=E[0]; wc.globalAlpha=E[1]; wc.fillRect(5.2,-39.6,10.4,2.6); wc.globalAlpha=1; }
   }
   // CANNON ARM: a piston from the chassis, the barrel, the muzzle block
   wc.strokeStyle=P.ink; wc.lineWidth=4.4; wc.beginPath(); wc.moveTo(8.4,-17.6); wc.lineTo(20.6,-25); wc.stroke();
@@ -37471,21 +37473,22 @@ function drawWardenAt(e){
   if(el){ wc.strokeStyle=P.brass[0]; wc.lineWidth=1.2; wc.beginPath(); wc.moveTo(-1,-46.6); wc.lineTo(-2,-56); wc.stroke();
     wc.fillStyle=P.brass[1]; wc.beginPath(); wc.arc(-2,-56.4,1.5,0,6.2832); wc.fill(); }
   if(e.hitT>0){
-    wc.globalCompositeOperation='lighter';
+    if(!PIXM.baking){ wc.globalCompositeOperation='lighter';
     wc.fillStyle='rgba(255,70,56,'+clamp(e.hitT*2,0,.7)+')';
     mbPoly([-15.8,-19.2,-15.8,-35.6,-10.8,-44,3,-46,13.6,-41.2,17.6,-30,15.8,-19.2]);
-    wc.globalCompositeOperation='source-over';
+    wc.globalCompositeOperation='source-over'; } else {  }
   }
   wc.restore();
   if(e.muzzle>0){
-    wc.globalCompositeOperation='lighter';
+    if(!PIXM.baking){ wc.globalCompositeOperation='lighter';
     wc.fillStyle='#ffc04a'; wc.globalAlpha=clamp(e.muzzle*6,0,1)*flashK();
     wc.beginPath(); wc.arc(x+fl*32.4,y-27,7,0,6.2832); wc.fill();
-    wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
+    wc.globalAlpha=1; wc.globalCompositeOperation='source-over'; } else {  }
   }
   drawWindupGlow(e,x+fl*32.4,y-27);
 }
 function drawChoirS(e){
+  if(pixOn()&&!PIXM.paint&&pixMachDraw(e,drawChoirS)) return; // v28.xx (cw-cx-pixmachines): the body is cached at PIX_ACT, including job 80 size
   // v23.xx (spr13), HIS ORDER (2026-10-12) on the sprite program: THE PILLBOX REDESIGN (MACHINES B 5). It was a purple drum
   // with seven lilac bubbles and a black porthole: the pipes read as candles, the mouth as a speaker, and purple is the elite
   // colour. Now a gunmetal emplacement: a bolted plinth with rusty sandbag lumps at its corners, a gunmetal drum with a rust
@@ -37520,7 +37523,7 @@ function drawChoirS(e){
   // THE CROWN: seven brass organ pipes in a ring on the drum top, slowly turning (back ones first)
   wc.fillStyle=P.gm[3]; wc.beginPath(); wc.ellipse(x,y-38.6,16.4,4.6,0,0,6.2832); wc.fill();
   var PH=[7.5,10.5,6.5,9.5,7,10,8.5], pl=[];
-  for(q=0;q<7;q++){ var pa=(q/7)*6.2832+G.t*0.20; pl.push([Math.sin(pa),x+Math.cos(pa)*12.6,y-38.6+Math.sin(pa)*3.6,PH[q]]); }
+  for(q=0;q<7;q++){ var pa=(q/7)*6.2832+pixMachTime()*0.20; pl.push([Math.sin(pa),x+Math.cos(pa)*12.6,y-38.6+Math.sin(pa)*3.6,PH[q]]); }
   pl.sort(function(a,b){ return a[0]-b[0]; });
   if(el){ wc.strokeStyle=P.brass[1]; wc.lineWidth=1.2; wc.beginPath(); wc.ellipse(x,y-38.6,17.2,5.4,0,3.1416,6.2832); wc.stroke(); }
   for(q=0;q<7;q++){ var px=pl[q][1], py=pl[q][2], ph=pl[q][3];
@@ -37536,38 +37539,38 @@ function drawChoirS(e){
   wc.fillStyle=P.ink; wc.beginPath(); wc.arc(mx,my,9,0,6.2832); wc.fill();
   wc.fillStyle=P.gm[2]; wc.beginPath(); wc.arc(mx,my,7.8,0,6.2832); wc.fill();
   wc.fillStyle=P.gm[0]; wc.beginPath(); wc.arc(mx,my+0.4,6.6,0,6.2832); wc.fill();
-  wc.globalCompositeOperation='lighter';
+  if(!PIXM.baking){ wc.globalCompositeOperation='lighter';
   wc.fillStyle=hot?'#ff8a3c':(live?'#ff3b30':'#dfe9f0');
-  wc.globalAlpha=hot?(.5+.4*Math.sin(G.t*14)):(live?(.55+.35*Math.sin(G.t*7)):.35);
+  wc.globalAlpha=hot?(.5+.4*Math.sin(pixMachTime()*14)):(live?(.55+.35*Math.sin(pixMachTime()*7)):.35);
   wc.beginPath(); wc.arc(mx,my+0.4,ap,0,6.2832); wc.fill();
   // While it is awake it wears a faint halo, which is the only cue you get at range that you have wandered inside its reach.
   if(live){ wc.globalAlpha=.08; wc.beginPath(); wc.arc(x,y-22,26,0,6.2832); wc.fill(); }
-  wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
+  wc.globalAlpha=1; wc.globalCompositeOperation='source-over'; } else { wc.fillStyle=hot?'#ff8a3c':(live?'#ff3b30':'#dfe9f0'); wc.globalAlpha=hot?.7:(live?.75:.35); wc.beginPath(); wc.arc(mx,my+0.4,ap,0,6.2832); wc.fill(); wc.globalAlpha=1; }
   wc.strokeStyle=P.ink; wc.lineWidth=0.9; wc.beginPath();
   for(i=0;i<6;i++){ var ia=i*1.0472+ap*0.18; wc.moveTo(mx+Math.cos(ia)*ap,my+0.4+Math.sin(ia)*ap); wc.lineTo(mx+Math.cos(ia+0.5)*6.6,my+0.4+Math.sin(ia+0.5)*6.6); }
   wc.stroke();
   // VENTING. Unmistakable, because the four seconds it buys are the reward for hitting a weak point and the player has to know
   // they have them: heat rises from the pipe tops.
   if(hot){
-    wc.globalCompositeOperation='lighter';
+    if(!PIXM.baking){ wc.globalCompositeOperation='lighter';
     wc.fillStyle='rgba(255,138,60,.42)';
     for(v=0;v<3;v++){
-      var vy=y-52-((G.t*40+v*14)%24);
+      var vy=y-52-((pixMachTime()*40+v*14)%24);
       wc.beginPath(); wc.ellipse(x+(v-1)*10,vy,4.6,2.8,0,0,6.2832); wc.fill();
     }
-    wc.globalCompositeOperation='source-over';
+    wc.globalCompositeOperation='source-over'; } else {  }
   }
   if(e.hitT>0){
-    wc.globalCompositeOperation='lighter';
+    if(!PIXM.baking){ wc.globalCompositeOperation='lighter';
     wc.fillStyle='rgba(255,70,56,'+clamp(e.hitT*2,0,.7)+')';
     rrF(x-18,y-39,36,31,6);
-    wc.globalCompositeOperation='source-over';
+    wc.globalCompositeOperation='source-over'; } else {  }
   }
   if(e.muzzle>0){
-    wc.globalCompositeOperation='lighter';
+    if(!PIXM.baking){ wc.globalCompositeOperation='lighter';
     wc.fillStyle='#ffb070'; wc.globalAlpha=clamp(e.muzzle*6,0,1)*flashK();
     wc.beginPath(); wc.arc(mx,my,8,0,6.2832); wc.fill();
-    wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
+    wc.globalAlpha=1; wc.globalCompositeOperation='source-over'; } else {  }
   }
 }
 // v26.xx (ai20), HIS YES (2026-10-14, suggestion 20): ATTACK TELEGRAPHS. A machine that winds up a shot used to show only a red glow at its
@@ -37603,6 +37606,7 @@ function telegraphLane(e){
 // 3 px #ff3b30 at alpha .4 to .95, and a 6 px white core flashes in the last 3 frames (0.05 s). Drawn only.
 function windupRingR(wf){ return 26-18*clamp(wf,0,1); }
 function drawWindupGlow(e,gx,gy){
+  if(PIXM.baking) return; // v28.xx (cw-cx-pixmachines): charging ring remains live after the body
   if(e.windup===undefined||e.windup===null) return;
   var wf=clamp(1-e.windup/(e.kind==='warden'?0.7:0.4),0,1);
   wc.save();
@@ -37646,7 +37650,7 @@ function sprMP(ox,oy,fl,S,p){ wc.beginPath(); wc.moveTo(ox+fl*p[0]*S,oy+p[1]*S);
 // THE SENSOR LANGUAGE, one face for every machine: idle a dim cool white with no halo, suspicious amber, hunting red and
 // pulsing (its halo at most 1.6 times the lens), venting an orange flicker, dead black. c colour, a alpha, h halo factor.
 function sprEyeOf(e){
-  var t=(typeof G!=='undefined'&&G)?(G.t||0):0;
+  var t=pixMachTime(); // v28.xx (cw-cx-pixmachines): stable sensor state while baking
   if(!e||e.hp<=0) return {c:'#000000',a:1,h:0};
   if((e.overheat||0)>0) return {c:'#ff8a3c',a:0.65+0.35*Math.sin(t*22),h:1.3};
   if(e.state==='chase'||e.state==='alarm'||e.seenYou) return {c:'#ff3b30',a:0.85+0.15*Math.sin(t*9),h:1.6};
@@ -37672,8 +37676,9 @@ function sprKnee(hx,hy,ax,ay,a,b){
   return [hx+ux*al+uy*pp, hy+uy*al-ux*pp];
 }
 function drawSentryS(e){
+  if(pixOn()&&!PIXM.paint&&pixMachDraw(e,drawSentryS)) return; // v28.xx (cw-cx-pixmachines): the body is cached at PIX_ACT, including job 80 size
   var S=e.r/SENTRY_R0, fl=Math.cos(e.face)<0?-1:1, x=e.x, y=e.y, st=e.step||0, i, k, EY=sprEyeOf(e), mv=!!e.moving, K, c, hx, hy, fx, ph, lf, sw, tx;
-  var lean=Math.sin(st*3)*1.3, brass=!!e.elite, t=(typeof G!=='undefined'&&G)?(G.t||0):0;
+  var lean=Math.sin(st*3)*1.3, brass=!!e.elite, t=(typeof G!=='undefined'&&G)?(pixMachTime()||0):0;
   var g=st*1.5, bob=mv?-Math.abs(Math.cos(g))*1.2:0, yb=y+bob*S;
   shadowE(x,y+2,20*S,7*S,.46);
   wc.lineCap='round'; wc.lineJoin='round';
@@ -37762,11 +37767,11 @@ function drawSentryS(e){
   var lx=x+fl*7.8*S, ly=yb-43.6*S;
   wc.fillStyle=INK; wc.beginPath(); wc.arc(lx,ly,3.3*S,0,6.2832); wc.fill();
   wc.fillStyle='#2a2f35'; wc.beginPath(); wc.arc(lx,ly,2.5*S,0,6.2832); wc.fill();
-  wc.globalCompositeOperation='lighter';
+  if(!PIXM.baking){ wc.globalCompositeOperation='lighter';
   wc.fillStyle=EY.c;
   if(EY.h>0){ wc.globalAlpha=0.30*EY.a; wc.beginPath(); wc.arc(lx,ly,2.6*EY.h*S*(EY.c==='#ff3b30'?(1+Math.sin(t*9)*0.12):1),0,6.2832); wc.fill(); }
   wc.globalAlpha=EY.a; wc.beginPath(); wc.arc(lx,ly,1.7*S,0,6.2832); wc.fill();
-  wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
+  wc.globalAlpha=1; wc.globalCompositeOperation='source-over'; } else { wc.fillStyle=EY.c; wc.globalAlpha=EY.a; wc.beginPath(); wc.arc(lx,ly,1.7*S,0,6.2832); wc.fill(); wc.globalAlpha=1; }
   wc.fillStyle='rgba(255,255,255,.85)'; wc.fillRect(lx-1.3*S,ly-1.4*S,0.9*S,0.9*S);
   drawWindupGlow(e,lx,ly);
   // THE GUN ARM turns to the aim from its shoulder ball: a bracket, a perforated cooling shroud, twin barrels with a lit top line, a muzzle brake
@@ -37787,11 +37792,11 @@ function drawSentryS(e){
   wc.fillStyle='#2a2f35'; wc.fillRect(26*S,-3.6*S,2.8*S,7.2*S);
   if(brass){ wc.fillStyle='#c9a24a'; wc.fillRect(26*S,-3.6*S,2.8*S,0.9*S); wc.fillRect(2*S,-4*S,1*S,8*S); }
   if(e.muzzle>0){
-    wc.globalCompositeOperation='lighter';
+    if(!PIXM.baking){ wc.globalCompositeOperation='lighter';
     wc.fillStyle='rgba(255,194,122,'+(0.95*flashK()).toFixed(3)+')';
     wc.beginPath(); wc.arc(30*S,-1.6*S,4.2*S,0,6.2832); wc.fill();
     wc.beginPath(); wc.arc(30*S,1.6*S,4.2*S,0,6.2832); wc.fill();
-    wc.globalCompositeOperation='source-over';
+    wc.globalCompositeOperation='source-over'; } else {  }
   }
   wc.restore();
 }
@@ -37809,7 +37814,8 @@ function sprCrawlLeg(ox,oy,fl,S,hx,hy,kx,ky,fx,fy){
   wc.moveTo(ox+fl*hx*S,oy+hy*S); wc.lineTo(ox+fl*kx*S,oy+ky*S); wc.lineTo(ox+fl*fx*S,oy+fy*S);
 }
 function drawCrawlerS(e){
-  var S=e.r/CRAWLER_R0, fl=Math.cos(e.face)<0?-1:1, x=e.x, y=e.y, i, k, side, EY=sprEyeOf(e), t=(typeof G!=='undefined'&&G)?(G.t||0):0;
+  if(pixOn()&&!PIXM.paint&&pixMachDraw(e,drawCrawlerS)) return; // v28.xx (cw-cx-pixmachines): the body is cached at PIX_ACT, including job 80 size
+  var S=e.r/CRAWLER_R0, fl=Math.cos(e.face)<0?-1:1, x=e.x, y=e.y, i, k, side, EY=sprEyeOf(e), t=(typeof G!=='undefined'&&G)?(pixMachTime()||0):0;
   var hunting=e.state==='chase', drop=hunting?2:0, brass=!!e.elite, lg=e.legs||0;
   // the legs per side (far, near): hip, knee, foot for the rear, middle and front leg; the rear and front knees stand out past
   // the shell ends, the middle knees bend low under it
@@ -37866,11 +37872,11 @@ function drawCrawlerS(e){
         var ex=x+fl*EYES[k][0]*S, ey=y+(hy+EYES[k][1])*S;
         wc.fillStyle=INK; wc.beginPath(); wc.arc(ex,ey,EYES[k][2]*S,0,6.2832); wc.fill();
       }
-      wc.globalCompositeOperation='lighter'; wc.fillStyle=EY.c;
+      if(!PIXM.baking){ wc.globalCompositeOperation='lighter'; wc.fillStyle=EY.c;
       if(EY.h>0){ wc.globalAlpha=0.30*EY.a; wc.beginPath(); wc.arc(x+fl*17*S,y+(hy-1.3)*S,1.5*EY.h*S*(hunting?(1+Math.sin(t*14)*0.15):1),0,6.2832); wc.fill(); }
       wc.globalAlpha=EY.a;
       for(k=0;k<EYES.length;k++){ wc.beginPath(); wc.arc(x+fl*EYES[k][0]*S,y+(hy+EYES[k][1])*S,EYES[k][3]*S,0,6.2832); wc.fill(); }
-      wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
+      wc.globalAlpha=1; wc.globalCompositeOperation='source-over'; } else { wc.fillStyle=EY.c; wc.globalAlpha=EY.a; for(k=0;k<EYES.length;k++){ wc.beginPath(); wc.arc(x+fl*EYES[k][0]*S,y+(hy+EYES[k][1])*S,EYES[k][3]*S,0,6.2832); wc.fill(); } wc.globalAlpha=1; }
       wc.fillStyle='rgba(255,255,255,.8)'; wc.fillRect(x+fl*17*S-1.1*S,y+(hy-2.5)*S,0.7*S,0.7*S);
     }
   }
@@ -37955,6 +37961,7 @@ function drawPeddlerS(e){
   wc.fillStyle='#fff3c8'; wc.fillRect(hx+27,hy-32,2,4);
 }
 function drawListenerS(e){
+  if(pixOn()&&!PIXM.paint&&pixMachDraw(e,drawListenerS)) return; // v28.xx (cw-cx-pixmachines): the body is cached at PIX_ACT, including job 80 size
   // Nothing else on this map is this shape. Tall, thin, no face, arms too long,
   // and a wide dish where a head should be. Dormant it is nearly black and
   // hunched, so at a glance it is a bit of standing scrap; awake it straightens
@@ -37990,17 +37997,20 @@ function drawListenerS(e){
   wc.fillStyle=dorm?'#1a1d25':'#2b3240';
   wc.beginPath(); wc.ellipse(e.x+sway*1.2,hy+0.6,5.2,3.2,0,0,6.2832); wc.fill();
   if(!dorm){
-    var pl=0.55+0.45*Math.sin((G?G.t:0)*7);
-    wc.save(); wc.globalCompositeOperation='lighter'; wc.globalAlpha=0.5*pl;
+    var pl=0.55+0.45*Math.sin((G?pixMachTime():0)*7);
+if(!PIXM.baking){     wc.save(); wc.globalCompositeOperation='lighter'; wc.globalAlpha=0.5*pl;
+    if(pixOn()){ pixMachListenerGlow(e.x+sway*1.2,hy,1); } else {
     var lg=wc.createRadialGradient(e.x+sway*1.2,hy,1,e.x+sway*1.2,hy,26);
     lg.addColorStop(0,'#ff5a4a'); lg.addColorStop(1,'rgba(0,0,0,0)');
     wc.fillStyle=lg; wc.beginPath(); wc.arc(e.x+sway*1.2,hy,26,0,6.2832); wc.fill();
-    wc.restore();
+    }
+    wc.restore(); }
     wc.fillStyle='#ff5a4a';
     wc.fillRect(e.x-1.4+sway*1.2,hy-1.2,2.8,2.4);
   }
 }
 function drawBulwarkS(e){
+  if(pixOn()&&!PIXM.paint&&pixMachDraw(e,drawBulwarkS)) return; // v28.xx (cw-cx-pixmachines): the body is cached at PIX_ACT, including job 80 size
   // v23.xx (spr11), HIS ORDER (2026-10-12) on the sprite program: THE BULWARK REDESIGN (MACHINES B 3). The slab was light
   // blue-grey, the same steel as human armour, the body behind it a dark lozenge with a blinking dot on two pebbles, and the
   // slab hung below its own shadow. Now a squat walker on two stompy feet that step as it moves, a hunched gunmetal body set
@@ -38008,7 +38018,7 @@ function drawBulwarkS(e){
   // gunmetal with rust edge trim, an ochre-and-black chevron band along its top, three rivets and a viewing slit lit in the
   // eye colour. The slab still turns to its facing (band up whichever side it faces), pivots higher so its foot stands on the ground inside the shadow. Elite:
   // a brass slab edge. Drawn only: the radius, the shield arc and the weak point are unchanged.
-  var P=MBPAL,x=e.x,y=e.y,st=(e.step||0),el=!!e.elite,E=mbEye(e,G.t),i;
+  var P=MBPAL,x=e.x,y=e.y,st=(e.step||0),el=!!e.elite,E=mbEye(e,pixMachTime()),i;
   var bx=x-Math.cos(e.face)*3, lf=Math.max(0,Math.sin(st*2.2))*2, rf=Math.max(0,-Math.sin(st*2.2))*2;
   shadowE(x,y+2,e.r*.95,4,.36);
   // FEET and short legs
@@ -38031,15 +38041,15 @@ function drawBulwarkS(e){
   wc.fillStyle=P.gm[1]; rrF(bx-5.4,y-36.4,10.8,7.2,3);
   wc.fillStyle=P.gm[3]; wc.fillRect(bx-4,y-36.4,8,1.2);
   wc.fillStyle=P.ink; wc.beginPath(); wc.arc(ex,y-32.4,2.8,0,6.2832); wc.fill();
-  wc.globalCompositeOperation='lighter'; wc.fillStyle=E[0]; wc.globalAlpha=E[1];
+  if(!PIXM.baking){ wc.globalCompositeOperation='lighter'; wc.fillStyle=E[0]; wc.globalAlpha=E[1];
   wc.beginPath(); wc.arc(ex,y-32.4,1.9,0,6.2832); wc.fill();
   if(E[2]){ wc.globalAlpha=E[2]>1?.22:.15; wc.beginPath(); wc.arc(ex,y-32.4,4.2,0,6.2832); wc.fill(); }
-  wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
+  wc.globalAlpha=1; wc.globalCompositeOperation='source-over'; } else { wc.fillStyle=E[0]; wc.globalAlpha=E[1]; wc.beginPath(); wc.arc(ex,y-32.4,1.9,0,6.2832); wc.fill(); wc.globalAlpha=1; }
   if(e.hitT>0){
-    wc.globalCompositeOperation='lighter';
+    if(!PIXM.baking){ wc.globalCompositeOperation='lighter';
     wc.fillStyle='rgba(255,70,56,'+clamp(e.hitT*2,0,.7)+')';
     rrF(bx-13.4,y-29.8,26.8,22.6,6);
-    wc.globalCompositeOperation='source-over';
+    wc.globalCompositeOperation='source-over'; } else {  }
   }
   // THE SLAB: turned to its facing, pivoting high so its foot stands on the ground
   wc.save(); wc.translate(x,y-18); wc.rotate(e.face); if(Math.cos(e.face)<-0.01) wc.scale(1,-1);
@@ -38052,9 +38062,9 @@ function drawBulwarkS(e){
   for(i=0;i<3;i++){ wc.moveTo(9.6+i*4.8,-17.6); wc.lineTo(12.2+i*4.8,-17.6); wc.lineTo(14.8+i*4.8,-22.8); wc.lineTo(12.2+i*4.8,-22.8); wc.closePath(); }
   wc.fill();
   wc.fillStyle=P.ink; rrF(9.6,-13.6,11.8,3,1.2);
-  wc.globalCompositeOperation='lighter'; wc.fillStyle=E[0]; wc.globalAlpha=E[1]*.9;
+  if(!PIXM.baking){ wc.globalCompositeOperation='lighter'; wc.fillStyle=E[0]; wc.globalAlpha=E[1]*.9;
   wc.fillRect(10.6,-12.8,9.8,1.4);
-  wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
+  wc.globalAlpha=1; wc.globalCompositeOperation='source-over'; } else { wc.fillStyle=E[0]; wc.globalAlpha=E[1]*.9; wc.fillRect(10.6,-12.8,9.8,1.4); wc.globalAlpha=1; }
   wc.fillStyle=P.gm[0]; wc.beginPath(); wc.arc(14.4,-2,1.5,0,6.2832); wc.moveTo(15.9,8); wc.arc(14.4,8,1.5,0,6.2832); wc.moveTo(15.9,17); wc.arc(14.4,17,1.5,0,6.2832); wc.fill();
   wc.fillStyle=P.gm[3]; wc.beginPath(); wc.rect(13.8,-3.6,1,0.8); wc.rect(13.8,6.4,1,0.8); wc.rect(13.8,15.4,1,0.8); wc.fill();
   wc.fillStyle=P.steel; wc.beginPath(); wc.rect(8.4,-8,1.2,1.6); wc.rect(21.6,4,1,1.8); wc.rect(10,21,2,0.8); wc.fill();
@@ -38062,13 +38072,14 @@ function drawBulwarkS(e){
   wc.restore();
 }
 function drawHowlerS(e){
+  if(pixOn()&&!PIXM.paint&&pixMachDraw(e,drawHowlerS)) return; // v28.xx (cw-cx-pixmachines): the body is cached at PIX_ACT, including job 80 size
   // v23.xx (spr12), HIS ORDER (2026-10-12) on the sprite program: THE HOWLER REDESIGN (MACHINES B 4). It was a black lunchbox
   // with a tube stuck in it at a fixed angle, the lowest contrast in the cast (gone on a dark floor), and the mortar never
   // pointed at what it was shooting. Now a mortar walker: four short splayed legs that step as it moves, a hull under a round
   // turret ring (the lightest thing on it, so it reads on a dark floor), a FAT tube with an ochre muzzle ring raised at its
   // firing elevation and leaning toward its facing (shorter when it faces you, longer when it faces away), an ammo drum on
   // the off side and a spotting lamp in the sensor language. Elite: a brass muzzle ring. Drawn only: radius and fight unchanged.
-  var P=MBPAL,x=e.x,y=e.y,st=(e.step||0),el=!!e.elite,E=mbEye(e,G.t),fl=Math.cos(e.face)>=0?1:-1,i,s,lx,lift;
+  var P=MBPAL,x=e.x,y=e.y,st=(e.step||0),el=!!e.elite,E=mbEye(e,pixMachTime()),fl=Math.cos(e.face)>=0?1:-1,i,s,lx,lift;
   shadowE(x,y+2,e.r*.9,4,.35);
   // LEGS: two back, then the hull, then two front; opposite corners step together
   function leg(hx,hy,fx,fy,up){ wc.strokeStyle=P.ink; wc.lineWidth=4.6; wc.beginPath(); wc.moveTo(x+hx,y+hy); wc.lineTo(x+(hx+fx)/2+(fx>hx?1.5:-1.5),y+hy-3-up); wc.lineTo(x+fx,y+fy-up); wc.stroke();
@@ -38098,10 +38109,10 @@ function drawHowlerS(e){
   // SPOTTING LAMP on the turret front
   var sx=x+fl*8.6;
   wc.fillStyle=P.ink; wc.beginPath(); wc.arc(sx,y-19.4,2.7,0,6.2832); wc.fill();
-  wc.globalCompositeOperation='lighter'; wc.fillStyle=E[0]; wc.globalAlpha=E[1];
+  if(!PIXM.baking){ wc.globalCompositeOperation='lighter'; wc.fillStyle=E[0]; wc.globalAlpha=E[1];
   wc.beginPath(); wc.arc(sx,y-19.4,1.8,0,6.2832); wc.fill();
   if(E[2]){ wc.globalAlpha=E[2]>1?.22:.15; wc.beginPath(); wc.arc(sx,y-19.4,4,0,6.2832); wc.fill(); }
-  wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
+  wc.globalAlpha=1; wc.globalCompositeOperation='source-over'; } else { wc.fillStyle=E[0]; wc.globalAlpha=E[1]; wc.beginPath(); wc.arc(sx,y-19.4,1.8,0,6.2832); wc.fill(); wc.globalAlpha=1; }
   // THE TUBE: raised, leaning toward the facing, foreshortened when it faces you
   var Lt=15.5-Math.sin(e.face)*4;
   wc.save(); wc.translate(x,y-22); wc.rotate(Math.cos(e.face)*0.62);
@@ -38115,13 +38126,14 @@ function drawHowlerS(e){
   wc.fillStyle=P.ink; wc.beginPath(); wc.ellipse(0,-Lt+0.2,3.3,1.2,0,0,6.2832); wc.fill();
   wc.restore();
   if(e.hitT>0){
-    wc.globalCompositeOperation='lighter';
+    if(!PIXM.baking){ wc.globalCompositeOperation='lighter';
     wc.fillStyle='rgba(255,70,56,'+clamp(e.hitT*2,0,.7)+')';
     rrF(x-12.8,y-17.8,25.6,12.6,4);
-    wc.globalCompositeOperation='source-over';
+    wc.globalCompositeOperation='source-over'; } else {  }
   }
 }
 function drawSnitchS(e){
+  if(pixOn()&&!PIXM.paint&&pixMachDraw(e,drawSnitchS)) return; // v28.xx (cw-cx-pixmachines): the body is cached at PIX_ACT, including job 80 size
   // v23.xx (spr4), HIS ORDER (2026-10-12): "improve the sprites of all characters, bots, etc", gritty and grounded like ARC
   // Raiders, silhouettes first. The sprite program, MACHINES A, build 3: THE CRIER. It was a grey square tilted on its corner
   // and spinning like a sticker, with a bulb on top: it read as a picture frame or a die, nothing said drone and nothing said it
@@ -38131,7 +38143,7 @@ function drawSnitchS(e){
   // into its facing instead of spinning. When it calls the ALARM the horn mouth glows red and the expanding ring and the
   // countdown arc come out of the horn; the ALARM word stays. An elite has a brass frame and a second lamp. Drawn only: no
   // random numbers, nothing written on the machine, the hover, its size and its shadow as before.
-  var S=e.r/SNITCH_R0, fl=Math.cos(e.face)<0?-1:1, t=(typeof G!=='undefined'&&G)?(G.t||0):0;
+  var S=e.r/SNITCH_R0, fl=Math.cos(e.face)<0?-1:1, t=(typeof G!=='undefined'&&G)?(pixMachTime()||0):0;
   var al=e.state==='alarm', brass=!!e.elite, EY=sprEyeOf(e), i, k, a=fl*0.1;
   var hov=(17+Math.sin(t*6+e.x*.1)*4)*S;
   shadowE(e.x,e.y+1,8*S,3*S,.32);
@@ -38141,18 +38153,18 @@ function drawSnitchS(e){
   // SPEC 8.3: visually distinctive at a distance so it can be identified and prioritised. A winding Crier throws an expanding
   // red alarm ring and a filling countdown arc from its horn, so from across the map you can see one is calling and how long
   // you have left to stop it.
-  if(al&&e.wind!==undefined&&e.wind!==null){
+  if(al&&!PIXM.baking&&e.wind!==undefined&&e.wind!==null){
     var wf=1-clamp(e.wind/4,0,1);
-    wc.globalCompositeOperation='lighter';
+    if(!PIXM.baking){ wc.globalCompositeOperation='lighter';
     var pulse=(t*2)%1;
     wc.strokeStyle='rgba(255,59,48,'+(0.5*(1-pulse))+')'; wc.lineWidth=2.5*S;
     wc.beginPath(); wc.arc(hmx,hmy,(16+44*pulse)*S,0,6.2832); wc.stroke();
     wc.strokeStyle='#ff3b30'; wc.lineWidth=3*S;
     wc.beginPath(); wc.arc(hmx,hmy,22*S,-1.5708,-1.5708+6.2832*wf); wc.stroke();
-    wc.globalCompositeOperation='source-over';
+    wc.globalCompositeOperation='source-over'; } else {  }
     wc.font=FS(TYPE.label); wc.textAlign='center';
-    wc.fillStyle=INK; wc.fillText('ALARM',e.x+1,cy-30*S+1);
-    wc.fillStyle='#ff5040'; wc.fillText('ALARM',e.x,cy-30*S);
+    if(pixOn()) pixMachAlarm(e); else { wc.fillStyle=INK; wc.fillText('ALARM',e.x+1,cy-30*S+1);
+    wc.fillStyle='#ff5040'; wc.fillText('ALARM',e.x,cy-30*S); }
     wc.textAlign='left';
   }
   wc.save(); wc.translate(ox,oy); wc.rotate(a); wc.scale(fl*S,S);
@@ -38161,12 +38173,12 @@ function drawSnitchS(e){
   var RH=[[-7.5,-4.6],[7.5,-4.6],[-10.5,0.6],[10.5,0.6]], spin=t*(al?38:24);
   function rotor(hx,hy,k2){
     var ph=spin+k2*1.7, bx=Math.cos(ph)*6, by=Math.sin(ph)*1.6;
-    wc.globalCompositeOperation='lighter';
+    if(!PIXM.baking){ wc.globalCompositeOperation='lighter';
     wc.fillStyle=al?'rgba(255,140,110,.22)':'rgba(190,210,225,.25)';
     wc.beginPath(); wc.ellipse(hx,hy-2.2,6.4,1.9,0,0,6.2832); wc.fill();
     wc.strokeStyle=al?'rgba(255,170,150,.45)':'rgba(220,232,240,.45)'; wc.lineWidth=0.9;
     wc.beginPath(); wc.moveTo(hx-bx,hy-2.2-by); wc.lineTo(hx+bx,hy-2.2+by); wc.stroke();
-    wc.globalCompositeOperation='source-over';
+    wc.globalCompositeOperation='source-over'; } else {  }
     wc.fillStyle=INK; wc.fillRect(hx-1.2,hy-2.6,2.4,2.8);
     wc.fillStyle=frameHi; wc.fillRect(hx-0.6,hy-2.6,1.2,0.9);
   }
@@ -38182,8 +38194,8 @@ function drawSnitchS(e){
   wc.fillStyle='#59626b'; wc.beginPath(); wc.moveTo(2.4,1.8); wc.lineTo(5.8,2.2); wc.lineTo(9.6,0.6); wc.lineTo(9.6,2.0); wc.lineTo(5.8,3.3); wc.lineTo(2.4,3.0); wc.closePath(); wc.fill();
   wc.fillStyle='#c8962e'; wc.beginPath(); wc.ellipse(9.8,4.6,1.6,5,0,0,6.2832); wc.fill();
   wc.fillStyle=al?'#ff3b30':'#1b1f24'; wc.beginPath(); wc.ellipse(10.0,4.6,0.9,3.8,0,0,6.2832); wc.fill();
-  if(al){ wc.globalCompositeOperation='lighter'; wc.fillStyle='rgba(255,59,48,'+(0.35+0.25*Math.sin(t*16)).toFixed(3)+')';
-    wc.beginPath(); wc.ellipse(10.6,4.6,3.2,6.2,0,0,6.2832); wc.fill(); wc.globalCompositeOperation='source-over'; }
+  if(al){ if(!PIXM.baking){ wc.globalCompositeOperation='lighter'; wc.fillStyle='rgba(255,59,48,'+(0.35+0.25*Math.sin(t*16)).toFixed(3)+')';
+    wc.beginPath(); wc.ellipse(10.6,4.6,3.2,6.2,0,0,6.2832); wc.fill(); wc.globalCompositeOperation='source-over'; } else {  } }
   // THE POD: inked, machine grey, a lit top, a shaded belly, one seam and two rivets
   wc.fillStyle=INK; rrF(-8.2,-6.2,16.4,11.6,3.6);
   wc.fillStyle='#3e454c'; rrF(-7,-5,14,9.2,2.8);
@@ -38197,11 +38209,11 @@ function drawSnitchS(e){
   var LP=brass?[[0,-6.6],[-3.8,-6.2]]:[[0,-6.6]];
   for(k=0;k<LP.length;k++){ wc.fillStyle=INK; wc.beginPath(); wc.arc(LP[k][0],LP[k][1],2.2,0,6.2832); wc.fill(); }
   var la=EY.a*(al?((Math.sin(t*16)>0)?1:0.35):1);
-  wc.globalCompositeOperation='lighter'; wc.fillStyle=EY.c;
+  if(!PIXM.baking){ wc.globalCompositeOperation='lighter'; wc.fillStyle=EY.c;
   if(EY.h>0){ wc.globalAlpha=0.30*la; wc.beginPath(); wc.arc(LP[0][0],LP[0][1],1.5*EY.h,0,6.2832); wc.fill(); }
   wc.globalAlpha=la;
   for(k=0;k<LP.length;k++){ wc.beginPath(); wc.arc(LP[k][0],LP[k][1],1.5,0,6.2832); wc.fill(); }
-  wc.globalAlpha=1; wc.globalCompositeOperation='source-over';
+  wc.globalAlpha=1; wc.globalCompositeOperation='source-over'; } else { wc.fillStyle=EY.c; wc.globalAlpha=EY.a; for(k=0;k<LP.length;k++){ wc.beginPath(); wc.arc(LP[k][0],LP[k][1],1.5,0,6.2832); wc.fill(); } wc.globalAlpha=1; }
   wc.restore();
 }
 // v28.xx (cw-deercarcass), HIS NOTE (2026-10-15): "deer becomes a human body: fix it". A shot deer leaves a meat container of type body, and
@@ -40398,13 +40410,14 @@ var SHD=G.shells[i];
       var e2=it.e;
       var eLift=drawLift((G&&G.map&&G.map.liftAt)?G.map.liftAt(e2.x,e2.y):0);
       if(eLift>0){ wc.save(); _svd++; wc.translate(0,-eLift); }
-      var _mm=machScaleBegin(e2); _svd+=_mm;   // v28.xx (cw-machbig): the machine body, shadow, elite ring, affix mark, windup glow and weak points all ride the bigger body
-      var _kb=animHitShift(e2); if(_kb){ wc.save(); _svd++; wc.translate(_kb.x,_kb.y); }   // v17.47: his pick 29, the hit jolt
+      var _pm=pixOn()&&MACH_KIND[e2.kind]===1, _mm=_pm?0:machScaleBegin(e2); _svd+=_mm; // v28.xx (cw-cx-pixmachines): FIG_MACH is inside the art, not the finished blit
+      var _kb=animHitShift(e2); if(_kb&&_pm){ _kb.x*=machMul(e2); _kb.y*=machMul(e2); } if(_kb){ wc.save(); _svd++; wc.translate(_kb.x,_kb.y); }   // v17.47: his pick 29, the hit jolt
       // ELITE MARKER, v3.62: one site under every kind's sprite, in the same
       // purple the loot pips already use for elite, so the colour is a word
       // the player has met before. Pure time drive, no PRNG touch.
+      var _em=_pm?machScaleBegin(e2):0; // v28.xx (cw-cx-pixmachines): live ground marks retain job 80 size
       if(e2.elite&&e2.affix&&AFFIX[e2.affix]) drawAffixMark(e2);   // v26.xx (ai25): an affixed elite wears its own colour, not the purple ring
-      else if(e2.elite&&!(pixOn()&&e2.kind==='raider'&&pxEliteRing(e2))){   // v33.81 (cw-pixgear) a20 A: a pillager bot elite ring is a baked pixel ring
+      else if(e2.elite&&!_pm&&!(pixOn()&&e2.kind==='raider'&&pxEliteRing(e2))){   // v33.81 (cw-pixgear) a20 A: a pillager bot elite ring is a baked pixel ring
         var _ep=0.55+0.45*Math.sin(G.t*3.1+e2.x*0.02);
         wc.save(); wc.globalCompositeOperation='lighter';
         wc.strokeStyle='rgba(208,140,232,'+(0.28+0.24*_ep).toFixed(3)+')';
@@ -40412,8 +40425,9 @@ var SHD=G.shells[i];
         wc.beginPath(); wc.ellipse(e2.x,e2.y+2,e2.r*1.2,Math.max(3,e2.r*0.5),0,0,6.2832); wc.stroke();
         wc.restore();
       }
+      machScaleEnd(_em);
       var _rm=null, _tlf=0, _tlh=0, _gb=null;   // v32.xx (cw-botlook): the body tell and the golden body
-      if(e2.elite&&e2.affix&&AFFIX[e2.affix]) _rm=rimOpen(e2,AFFIX[e2.affix].c);   // v26.xx (aip1): the elite outline
+      if(!_pm&&e2.elite&&e2.affix&&AFFIX[e2.affix]) _rm=rimOpen(e2,AFFIX[e2.affix].c);   // v26.xx (aip1): the elite outline
       _gb=goldBodyBegin(e2);   // v32.xx (cw-botlook) a21 B: the golden enemy is drawn inside the gold filter with a shine sweeping across it
       if(e2.kind==='choir') drawChoirS(e2);
       else if(e2.kind==='warden') drawWardenAt(e2);   // v17.49: the boss is drawn to its size
@@ -40475,6 +40489,7 @@ var SHD=G.shells[i];
       // colour: hot orange for the vent, cold blue for the optic. They ride the
       // machine's facing, so watching one turn is watching the shot open and
       // close.
+      var _ef=_pm?machScaleBegin(e2):0; // v28.xx (cw-cx-pixmachines): weak points and affix lights are live at the old size
       if(e2.elite&&e2.affix&&AFFIX[e2.affix]) drawAffixTop(e2);   // v26.xx (ai25): its badge, shield bubble and mend beams
       var WL=weakOf(e2);
       if(WL) for(var wk=0;wk<WL.length;wk++){
@@ -40494,6 +40509,7 @@ var SHD=G.shells[i];
         wc.beginPath(); wc.arc(wpt.x,wpt.y,WW.rad*0.40,0,6.2832); wc.fill();
         wc.globalAlpha=1;
       }
+      machScaleEnd(_ef);
       if(_kb){ wc.restore(); _svd--; }
       machScaleEnd(_mm); _svd-=_mm;
       if(eLift>0) wc.restore();
@@ -50697,7 +50713,7 @@ function pixSwap(src,map){   // palette swap at bake time: map is {'#rrggbb':'#r
 // v33.65 (cw-pixprops):  paints the vector way. Bake time only reads pixels back; the draw never does. Live things (wreck smoke) are not baked: wreckSmoke records its height while PIXW.on and the caller draws it on top.
 var PIXW={on:0,smoke:0,clip:0,last:null};
 var PIXW_SHAD={day:[60,52,46],night:[20,17,15]};
-function pixWrapBake(w,h,d,up,paint,x,y){
+function pixWrapBake(w,h,d,up,paint,x,y,actor){ // v28.xx (cw-cx-pixmachines): actors have no ground shadow in their body mask
   var aw=Math.ceil(w/d)+2, ah=Math.ceil(h/d)+2, n=aw*ah, s=pixCanvas(aw,ah), w0=wc, sh0=shadowE, ox=x-w/2, oy=y-up, sm=0, sh=new Uint8Array(n), cnt={}, tot=0, near={}, pal=[], ks, im, p, sr, i, j, k, a, key, q, c0, best, bd, dd, r, g, b, xx, yy, mx=aw, my=ah, Mx=-1, My=-1, bx, by, out, spr, ink=[22,18,28];
   PIXW.on=1; PIXW.smoke=0;
   s.x.setTransform(1/d,0,0,1/d,1-ox/d,1-oy/d);
@@ -50708,8 +50724,8 @@ function pixWrapBake(w,h,d,up,paint,x,y){
   im=s.x.getImageData(0,0,aw,ah); p=im.data; sr=PIXW_SHAD[isDay()?'day':'night'];
   for(i=0;i<n;i++){   // alpha to 0 or 255: a dark half see through pixel is the painter's ground shadow and becomes the one shadow tone
     k=i*4; a=p[k+3];
-    if(a<64){ p[k+3]=0; continue; }
-    if(a<200&&(p[k]*3+p[k+1]*6+p[k+2])<400){ sh[i]=1; continue; }
+    if(a<64||(actor&&a<128)){ p[k+3]=0; continue; } // v28.xx (cw-cx-pixmachines): one actor cutoff, matching the opaque silhouette
+    if(!actor&&a<200&&(p[k]*3+p[k+1]*6+p[k+2])<400){ sh[i]=1; continue; } // v28.xx (cw-cx-pixmachines): prop shadow recovery must not grow actor edges
     if(a<128){ p[k+3]=0; continue; }
     p[k+3]=255; key=(p[k]<<16)|(p[k+1]<<8)|p[k+2]; cnt[key]=(cnt[key]||0)+1; tot++;
   }
@@ -50750,7 +50766,7 @@ function pixWrap(key,w,h,d,paint,x,y,o){
     T=wc.getTransform();
     if(!(T.a>0)||!(T.d>0)||T.b||T.c||!isFinite(x)||!isFinite(y)) return null;
     o=o||{}; kind=o.kind||(d>=PIX_ENV?'scene':'actors');
-    e=pixFetch(kind,key+'|'+d+(isDay()?'d':'n'),function(){ return pixWrapBake(w,h,d,o.up==null?h*0.75:o.up,paint,x,y); },key,0);
+    e=pixFetch(kind,key+'|'+d+(isDay()?'d':'n'),function(){ var sp=pixWrapBake(w,h,d,o.up==null?h*0.75:o.up,paint,x,y,o.actor); return o.finish?o.finish(sp):sp; },key,0);
     if(!e) return null;
     pixBlit(e,T.a*x+T.e,T.d*y+T.f,false,wc,T.a*d);
     PIXW.last=e;
@@ -50933,6 +50949,201 @@ function pixGroundStep(ox,oy,VW,VH){
   }
   if(T.left<=0) pixGroundFinal(g);
 }
+// v28.xx (cw-cx-pixmachines): his 10-20 order, "I want to do it all now before the party". Existing designs, baked at their full job 80 size. No simulation writes or random draws.
+var PIXM={paint:0,baking:0,time:0,paints:0,draws:0,near:0,last:null,halo:null};
+gfxStore('pixmachines',function(){PIXM.halo=null;PIXM.last=null;});
+function pixMachTime(){ return PIXM.baking?PIXM.time:((typeof G!=='undefined'&&G&&G.t)||0); }
+function pixMachKind(e){ return e.kind==='warden'&&(e.boss||e.name===BOSS_NAME)?'overseer':e.kind; }
+function pixMachEye(e){
+  if(e.kind==='listener') return e.state==='dormant'?0:2;
+  if(e.overheat>0) return 3;
+  if(e.state==='chase'||e.state==='alarm'||e.seenYou) return 2;
+  if(e.state==='investigate'||e.state==='search') return 1;
+  return 0;
+}
+function pixMachPose(e){
+  var k=pixMachKind(e), t=pixMachTime(), ph=e.step||0, eye=pixMachEye(e), a=((Math.round((e.face||0)*8/Math.PI)%16)+16)%16;
+  if(k==='sentry') ph*=1.5;
+  else if(k==='crawler') ph=e.legs||0;
+  else if(k==='bulwark') ph*=2.2;
+  else if(k==='howler') ph*=2.4;
+  else if(k==='warden'||k==='overseer') ph*=7/4.8*Math.PI*2;
+  else if(k==='listener') ph=(e.legs||0)*0.6;
+  else if(k==='choir') ph=t*0.20;
+  else ph=t*6;
+  var f=Math.floor(((ph/(Math.PI*2))%1+1)%1*4)%4, mir=Math.cos(e.face||0)<0?1:0, q={}, n, phase=f*Math.PI/2, m=machMul(e)*(e.kind==='warden'?wardenDrawScale(e):1), size=1;
+  if(e.kind==='sentry') size=e.r/SENTRY_R0;
+  if(e.kind==='crawler') size=e.r/CRAWLER_R0;
+  if(e.kind==='snitch') size=e.r/SNITCH_R0;
+  for(n in {kind:1,boss:1,name:1,r:1,hp:1,state:1,seenYou:1,elite:1,golden:1,overheat:1,affix:1,moving:1}) q[n]=e[n];
+  q.x=0; q.y=0; q.face=a*Math.PI/8;
+  if(Math.abs(Math.cos(q.face))<1e-6) q.face+=(mir?1:-1)*(a===4?1:-1)*1e-8;
+  q.step=phase/(k==='sentry'?1.5:(k==='bulwark'?2.2:(k==='howler'?2.4:((k==='warden'||k==='overseer')?7/4.8*Math.PI*2:1))));
+  q.legs=phase/(k==='listener'?0.6:1); q.hitT=0; q.muzzle=0; q.windup=null; q.wind=null;
+  var fam='mach|'+k+'|'+mir+'|'+eye+'|'+(e.elite?1:0)+'|'+(e.golden?1:0)+'|'+m+'|'+size+'|'+(e.moving?1:0)+'|'+e.state+'|'+(e.seenYou?1:0)+'|'+(e.affix||'')+'|'+(isDay()?'d':'n');
+  return {q:q,k:k,f:f,a:a,mir:mir,eye:eye,m:m,size:size,day:isDay(),fam:fam,key:fam+'|'+f+'|'+a,time:k==='choir'?phase/0.20:0};
+}
+function pixMachNearest(p){
+  var best=null, bd=1e9;
+  PIXSTORE.m.actors.forEach(function(s){
+    var q=s.mp, da, df, d;
+    if(!q||q.k!==p.k||q.m!==p.m||q.size!==p.size||q.day!==p.day||!!q.q.elite!==!!p.q.elite||!!q.q.golden!==!!p.q.golden||(q.q.affix||'')!==(p.q.affix||'')) return;
+    da=Math.abs(q.a-p.a); df=Math.abs(q.f-p.f); d=Math.min(da,16-da)*4+Math.min(df,4-df)+(q.eye!==p.eye?80:0)+(q.mir!==p.mir?160:0)+(!!q.q.moving!==!!p.q.moving?12:0)+(q.q.state!==p.q.state?8:0);
+    if(d<bd){bd=d;best=s;}
+  });
+  if(best) PIXM.near++;
+  return best;
+}
+function pixMachFinish(s,p){
+  var im, b, i, L, c, ring, r, col=p.q.affix&&AFFIX[p.q.affix]?AFFIX[p.q.affix].c:'#d08ce8';
+  if(p.q.golden){
+    im=s.c.getContext('2d').getImageData(0,0,s.c.width,s.c.height); b=im.data;
+    for(i=0;i<b.length;i+=4){
+      if(!b[i+3]) continue;
+      L=b[i]*0.3+b[i+1]*0.59+b[i+2]*0.11;
+      c=L<26?[22,18,28]:(L<55?[110,76,16]:(L<95?[180,138,28]:(L<145?[240,200,64]:[255,240,160])));
+      b[i]=c[0]; b[i+1]=c[1]; b[i+2]=c[2];
+    }
+    s.c.getContext('2d').putImageData(im,0,0);
+  }
+  ring=pixRing(s.c,PIX_INK,0,1); r=pixSprite(ring.c,s.ax+1,s.ay+1,PIX_ACT); r.mp=p;
+  r.flash=pixSprite(pixSilhouette(r.c,'#ff4638').c,r.ax,r.ay,PIX_ACT);
+  r.bytes+=r.flash.bytes;
+  if(p.q.elite){
+    ring=pixRing(r.c,col,0,0);ring.x.globalCompositeOperation='destination-out';ring.x.drawImage(r.c,1,1);ring.x.globalCompositeOperation='source-over';
+    r.edge=pixSprite(ring.c,r.ax+1,r.ay+1,PIX_ACT); r.bytes+=r.edge.bytes;
+  }
+  return r;
+}
+// v28.xx (cw-cx-pixmachines): shadows are live ground art; the mask contains only the body, so a hit never paints the floor.
+function pixMachShadow(e,p){
+  var k=e.kind, S=p.size, rx=20*S, ry=7*S, yy=2, alpha=.46;
+  if(k==='crawler'){rx=15*S;ry=5*S;yy=1;alpha=.44;}
+  else if(k==='snitch'){rx=8*S;ry=3*S;yy=1;alpha=.32;}
+  else if(k==='warden'){rx=26;ry=8;alpha=.45;}
+  else if(k==='choir'){rx=30;ry=10;yy=3;alpha=.5;}
+  else if(k==='listener'){rx=10;ry=4;yy=1;alpha=.4;}
+  else if(k==='howler'){rx=e.r*.9;ry=4;alpha=.35;}
+  else if(k==='bulwark'){rx=e.r*.95;ry=4;alpha=.36;}
+  shadowE(e.x,e.y+yy*p.m,rx*p.m,ry*p.m,alpha);
+}
+function pixMachGlow(x,y,r,col,a){
+  wc.save(); wc.globalCompositeOperation='lighter'; wc.fillStyle=col;
+  wc.globalAlpha*=a*.16; wc.beginPath(); wc.arc(x,y,r,0,Math.PI*2); wc.fill();
+  wc.globalAlpha*=2; wc.beginPath(); wc.arc(x,y,r*.55,0,Math.PI*2); wc.fill(); wc.restore();
+}
+function pixMachListenerGlow(x,y,a){
+  if(!PIXM.halo){
+    var s=pixCanvas(54,54),g=s.x.createRadialGradient(27,27,1,27,27,26);
+    g.addColorStop(0,'#ff5a4a');g.addColorStop(1,'rgba(0,0,0,0)');s.x.fillStyle=g;s.x.beginPath();s.x.arc(27,27,26,0,Math.PI*2);s.x.fill();PIXM.halo=s.c;
+  }
+  wc.save();wc.globalCompositeOperation='lighter';wc.globalAlpha*=a;wc.drawImage(PIXM.halo,x-27,y-27);wc.restore();
+}
+function pixMachAlarm(e){
+  if(e.state!=='alarm'||e.wind===undefined||e.wind===null) return;
+  var S=e.r/SNITCH_R0, hov=(17+Math.sin(pixMachTime()*6+e.x*.1)*4)*S;
+  CACHETAGS.push({t:'alarm',x:e.x,y:e.y-(hov+30*S)*machMul(e),c:'#ff5040',f:TYPE.label,always:1});
+}
+// v28.xx (cw-cx-pixmachines): all light is live after the cached body. Coordinates use the pose actually blitted on a budget miss.
+function pixMachLive(e,p,dy){
+  var q=p.q,k=e.kind,S=p.size,fl=p.mir?-1:1,t=pixMachTime(),E=sprEyeOf(e),phase=p.f*Math.PI/2,ey,ex,bob=k==='sentry'&&q.moving?-Math.abs(Math.cos(phase))*1.2:0;
+  wc.save(); wc.translate(e.x,e.y+dy); wc.scale(p.m,p.m);
+  function eye(x,y,r){
+    if(E.h) pixMachGlow(x,y,r*E.h,E.c,E.a);
+  }
+  if(k==='sentry'){
+    eye(fl*7.8*S,(bob-43.6)*S,1.7*S);
+    drawWindupGlow(e,fl*7.8*S,(bob-43.6)*S);
+    if(e.muzzle>0){
+      wc.save();wc.translate(fl*12.2*S,(bob-36.8)*S);wc.rotate(q.face);if(fl<0)wc.scale(1,-1);
+      pixMachGlow(30*S,-1.6*S,6*S,'#ffc27a',flashK());pixMachGlow(30*S,1.6*S,6*S,'#ffc27a',flashK());wc.restore();
+    }
+  }else if(k==='crawler'){
+    var hy=-13.5+(q.state==='chase'?2:0), eyes=e.elite?[[17,-1.3,1.5],[13.9,-2.4,1],[14.6,.9,1],[18.2,1.3,.8]]:[[17,-1.3,1.5],[13.9,-2.4,1],[14.6,.9,1]];
+    eyes.forEach(function(v){eye(fl*v[0]*S,(hy+v[1])*S,v[2]*S);});
+  }else if(k==='listener'){
+    if(e.state!=='dormant'){
+      var sway=Math.sin(q.legs*.6)*2.2; ex=sway*1.2; ey=-47;
+      pixMachListenerGlow(ex,ey,.5*(.55+.45*Math.sin(t*7)));
+    }
+  }else if(k==='warden'){
+    eye(fl*(p.k==='overseer'?9.4:10.4),p.k==='overseer'?-39.2:-38.3,p.k==='overseer'?3.3:2);
+    if(p.k==='overseer') [[3.4,-55.8],[9.4,-58.8],[15.6,-55]].forEach(function(v){pixMachGlow(fl*v[0],v[1],3,'#ff3b30',.55+.35*Math.sin(t*4));});
+    if(e.muzzle>0)pixMachGlow(fl*32.4,-27,9,'#ffc04a',clamp(e.muzzle*6,0,1)*flashK());
+    drawWindupGlow(e,fl*32.4,-27);
+  }else if(k==='howler'){
+    eye(fl*8.6,-19.4,1.8);
+  }else if(k==='bulwark'){
+    eye(Math.cos(q.face)*.4,-32.4,1.9);
+  }else if(k==='choir'){
+    ex=Math.cos(q.face)*17;ey=-24+Math.sin(q.face)*5;
+    eye(ex,ey+.4,p.eye===2?5.2:(p.eye===3?4.2:2.2));
+    if(e.overheat>0) for(var v=0;v<3;v++)pixMachGlow((v-1)*10,-52-((t*40+v*14)%24),4.6,'#ff8a3c',.42);
+    if(e.muzzle>0)pixMachGlow(ex,ey,8,'#ffb070',clamp(e.muzzle*6,0,1)*flashK());
+  }else if(k==='snitch'){
+    var tilt=fl*.1, al=e.state==='alarm', hov=17*S, ox=0, oy=-hov-7*S;
+    var hmx=(fl*9.6*S)*Math.cos(tilt)-(4.6*S)*Math.sin(tilt),hmy=oy+(fl*9.6*S)*Math.sin(tilt)+(4.6*S)*Math.cos(tilt);
+    if(al&&e.wind!==undefined&&e.wind!==null){
+      var wf=1-clamp(e.wind/4,0,1), pulse=(t*2)%1;
+      wc.save();wc.globalCompositeOperation='lighter';wc.strokeStyle='rgba(255,59,48,'+(.5*(1-pulse))+')';wc.lineWidth=2.5*S;
+      wc.beginPath();wc.arc(hmx,hmy,(16+44*pulse)*S,0,Math.PI*2);wc.stroke();
+      wc.strokeStyle='#ff3b30';wc.lineWidth=3*S;wc.beginPath();wc.arc(hmx,hmy,22*S,-Math.PI/2,-Math.PI/2+Math.PI*2*wf);wc.stroke();wc.restore();
+    }
+    wc.save();wc.translate(ox,oy);wc.rotate(tilt);wc.scale(fl*S,S);
+    eye(0,-6.6,1.5);if(e.elite)eye(-3.8,-6.2,1.5);
+    if(al)pixMachGlow(10.6,4.6,6.2,'#ff3b30',.35+.25*Math.sin(t*16));
+    [[-7.5,-4.6],[7.5,-4.6],[-10.5,.6],[10.5,.6]].forEach(function(v,i){
+      var a=t*(al?38:24)+i*1.7,bx=Math.cos(a)*6,by=Math.sin(a)*1.6;
+      wc.save();wc.globalCompositeOperation='lighter';wc.fillStyle=al?'rgba(255,140,110,.22)':'rgba(190,210,225,.25)';
+      wc.beginPath();wc.ellipse(v[0],v[1]-2.2,6.4,1.9,0,0,Math.PI*2);wc.fill();wc.strokeStyle='rgba(220,232,240,.45)';wc.lineWidth=.9;
+      wc.beginPath();wc.moveTo(v[0]-bx,v[1]-2.2-by);wc.lineTo(v[0]+bx,v[1]-2.2+by);wc.stroke();wc.restore();
+    });wc.restore();
+  }
+  wc.restore();
+  if(k==='snitch')pixMachAlarm(e);
+}
+function pixMachDraw(e,paint){
+  if(PIXM.paint||!MACH_KIND[e.kind]||!pixOn()||(typeof G!=='undefined'&&G&&G.sim))return false;
+  var T=wc.getTransform(),p=pixMachPose(e),key=p.key,s=null,near=null,oldShadow=shadowE,oldTime=PIXM.time,box,dy=0;
+  if(!(T.a>0)||!(T.d>0)||T.b||T.c)return false;
+  if(e.kind==='warden')paint=drawWardenS;
+  var boxes={sentry:[110,106,90],crawler:[66,40,33],snitch:[64,56,52],listener:[44,66,60],choir:[76,88,78],warden:[92,90,78],howler:[64,66,58],bulwark:[80,96,68]};
+  box=boxes[e.kind];
+  if(!PIXSTORE.m.actors.has(key+'|'+PIX_ACT+(isDay()?'d':'n'))&&(PIX.fB>=PIXSTORE.maxBuilds||PIX.fMs>=PIXSTORE.maxMs)){
+    near=pixMachNearest(p);if(near){p=near.mp;key=p.key;}
+  }
+  if(e.kind==='snitch')dy=-Math.sin(pixMachTime()*6+e.x*.1)*4*p.size*p.m;
+  function body(){
+    PIXM.paint=1;PIXM.baking=1;PIXM.time=p.time;PIXM.paints++;shadowE=function(){};
+    wc.save();wc.translate(e.x,e.y+dy);wc.scale(p.m,p.m);
+    try{paint(p.q);}finally{wc.restore();shadowE=oldShadow;PIXM.time=oldTime;PIXM.baking=0;PIXM.paint=0;}
+  }
+  pixMachShadow(e,p);wc.save();
+  try{
+    s=pixWrap(key,2*Math.ceil(box[0]*p.m*p.size/2),Math.ceil(box[1]*p.m*p.size),PIX_ACT,body,e.x,e.y+dy,{actor:true,up:Math.ceil(box[2]*p.m*p.size),finish:function(sp){return pixMachFinish(sp,p);}});
+  }finally{wc.restore();}
+  if(!s){
+    // v28.xx (cw-cx-pixmachines): a cold kind has no nearest pose yet; the existing vector art remains visible until its budget slot arrives.
+    wc.save();wc.translate(e.x,e.y);wc.scale(p.m,p.m);wc.translate(-e.x,-e.y);PIXM.paint=1;
+    shadowE=function(){};try{paint(e);}finally{shadowE=oldShadow;PIXM.paint=0;wc.restore();}return true;
+  }
+  PIXM.last=s;PIXM.draws++;p=s.mp;
+  // v28.xx (cw-cx-pixmachines): the adapter already blitted the body; ring-only pixels never cover it, and the hit uses the exact same silhouette.
+  if(s.edge){wc.save();wc.globalAlpha*=.55+.25*Math.sin(pixMachTime()*3.2+e.x*.02);pixBlit(s.edge,T.a*e.x+T.e,T.d*(e.y+dy)+T.f,false,wc,T.a*PIX_ACT);wc.restore();}
+  if(e.hitT>0){wc.save();wc.globalAlpha*=clamp(e.hitT*2,0,.7);pixBlit(s.flash,T.a*e.x+T.e,T.d*(e.y+dy)+T.f,false,wc,T.a*PIX_ACT);wc.restore();}
+  pixMachLive(e,p,dy);return true;
+}
+function pixMachSample(k){
+  var kind=k==='overseer'?'warden':k,r=kind==='sentry'?SENTRY_R0:(kind==='crawler'?CRAWLER_R0:(kind==='snitch'?SNITCH_R0:(kind==='warden'?(k==='overseer'?44:30):22)));
+  return {kind:kind,boss:k==='overseer'?1:0,name:k==='overseer'?BOSS_NAME:k,x:0,y:0,r:r,hp:400,maxhp:400,face:0,step:0,legs:0,moving:false,state:'patrol',seenYou:false,overheat:0,hitT:0,muzzle:0,windup:null,wind:null};
+}
+function pixMachPainter(k){return {sentry:drawSentryS,crawler:drawCrawlerS,snitch:drawSnitchS,listener:drawListenerS,choir:drawChoirS,warden:drawWardenS,overseer:drawWardenAt,howler:drawHowlerS,bulwark:drawBulwarkS}[k];}
+// v28.xx (cw-cx-pixmachines): the same nine actual bodies are available on ?pixbench, at their common actor density.
+pixReg('machines',function(){
+  var old=wc,cfg=CFG.xfPix,s=pixCanvas(920,210),names=['sentry','crawler','snitch','bulwark','howler','listener','choir','warden','overseer'];
+  try{CFG.xfPix=1;wc=s.x;names.forEach(function(k,i){var e=pixMachSample(k);e.x=50+i*100;e.y=170;pixFrame();pixMachPainter(k)(e);});}finally{wc=old;CFG.xfPix=cfg;}
+  return pixSprite(s.c,0,0,PIX_ACT);
+});
 // ---- ?pixbench: every registered asset at 1x and 4x, and the ramp tables, on a plain page. pixReg(name, fn) registers an asset: fn() returns a pixSprite ----
 function pixReg(nm,fn){ PIX.reg[nm]=fn; return nm; }
 // v33.52 (cw-pixlook), HIS ORDERS (2026-10-20 22:50 and 23:05: "3 head options, 3 skin options, 3 clothing (with pack) options, and 3 unique full sets", the sets "full body skins that override whatever
@@ -52796,7 +53007,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.88: Pixel containers have clearer shapes and opened states. Check 33.88 fails on v33.87',
+  now:'v33.89: Machines use cached pixel bodies. Gold, elite outlines and hit masks are baked. Charging rings and weak points stay live. Check 33.89 fails on v33.88',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -64103,7 +64314,7 @@ function goldTick(dt){
 var GOLDB={c:null,x:null,h:null};
 function goldBodyBegin(e){
   var T, hw, up, dn, sx, sy, w, h, h1;
-  if(!e||!e.golden||(pixOn()&&e.kind==='raider')||typeof wc==='undefined'||!wc||!wc.getTransform||!('filter' in wc)||(typeof G!=='undefined'&&G&&G.sim)||GOLDB.h) return null;
+  if(!e||!e.golden||(pixOn()&&(e.kind==='raider'||MACH_KIND[e.kind]===1))||typeof wc==='undefined'||!wc||!wc.getTransform||!('filter' in wc)||(typeof G!=='undefined'&&G&&G.sim)||GOLDB.h) return null;
   try{
     T=wc.getTransform();
     if(!(T.a>0)||!(T.d>0)||T.b||T.c||!isFinite(e.x)||!isFinite(e.y)) return null;

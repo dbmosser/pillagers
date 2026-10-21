@@ -1,0 +1,7 @@
+v33.89: pixel machines
+
+Machines use cached pixel bodies. Gold, elite outlines and hit masks are baked. Charging rings and weak points stay live.
+
+Check 33.89. Fails on v33.88.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

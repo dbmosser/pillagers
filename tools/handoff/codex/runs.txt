@@ -195,3 +195,7 @@
 2026-10-21 09:16 86e-pix-props 412s ok PARTIAL in=4124306 out=33650 run=2
 2026-10-21 09:32 86e-pix-props 538s ok PARTIAL in=6074905 out=49437 run=3
 2026-10-21 09:36 86e-pix-props 105s ok PARTIAL in=6853503 out=51908 run=4
+2026-10-21 09:59 86e-pix-props 307s ok PARTIAL in=8245433 out=60117 run=5
+2026-10-21 10:51 86e-pix-props 79s ok DONE in=9002486 out=62207 run=6
+2026-10-21 11:15 86f-pix-machines 1424s ok PARTIAL in=3844359 out=46303 run=1
+2026-10-21 11:18 86f-pix-machines 110s ok PARTIAL in=4492193 out=49856 run=2

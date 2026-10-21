@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.89 - PIXEL MACHINES
+
+Co-op hunt while he was away. His 10-20 art order: all nine existing machine designs use the actor pixel density and job 80 size, with cached bodies and live lights.
+
+MEASURED. Check 33.89 passes, and fails on v33.88.
 ## v33.88 - PIXEL CONTAINER SHAPES
 
 Co-op hunt while he was away. The 86e critic found plain boxes and weak opened silhouettes. Bake crate slats, locker vents, safe doors, cache braces and raised lids by kind. Calm the idle red barrel palette while keeping its hazard mark and pulse.

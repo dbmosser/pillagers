@@ -1,0 +1,5 @@
+## v33.89 - PIXEL MACHINES
+
+Co-op hunt while he was away. His 10-20 art order: all nine existing machine designs use the actor pixel density and job 80 size, with cached bodies and live lights.
+
+MEASURED. Check 33.89 passes, and fails on v33.88.

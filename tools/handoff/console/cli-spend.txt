@@ -790,3 +790,15 @@
 2026-10-21 0.1392 critic-86e-pix-props
 2026-10-21 0.0000 86e-pix-props
 2026-10-21 0.0000 86e-pix-props
+2026-10-21 0.1382 critic-86e-pix-props
+2026-10-21 0.1414 critic-86e-pix-props
+2026-10-21 0.1392 critic-86e-pix-props
+2026-10-21 0.1388 critic-86e-pix-props
+2026-10-21 0.1359 critic-86e-pix-props
+2026-10-21 0.1394 critic-86e-pix-props
+2026-10-21 0.0000 86e-pix-props
+2026-10-21 0.1460 critic-86e-pix-props
+2026-10-21 0.1383 critic-86e-pix-props
+2026-10-21 0.0000 86e-pix-props
+2026-10-21 0.0000 86f-pix-machines
+2026-10-21 0.0000 86f-pix-machines
