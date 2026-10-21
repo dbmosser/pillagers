@@ -10363,6 +10363,177 @@ window.__REGRESS=[
        Object.keys(PAD).forEach(function(k){delete PAD[k];});Object.assign(PAD,PK);
      }
    }},
+  {v:'87.01',what:'J3: pad-only hub crawl; focused A action, B exit, field routes, pinned debt and remove-one-debt control',
+  run:function(){
+    // v28.xx (cw-cx-padcrawl): J3, hub only. No keyboard events and no direct clicks.
+    var DEBT=[
+      'stash:field:stashsearch',
+      'saves-delete:field:delword',
+      'saves-delete:back',
+      'pause:field:pausefb',
+      'mainframe-racks:field:mfghostname',
+      'outcome-feedback:field:oc_note'
+    ];
+    var pp=P, sv=saveProfile, pk=Object.assign({},PAD), ns=NET.same, no=NET.on,
+        ao=ARCADE.on, at=ATT.on, wn=WNSEEN, ng=navigator.getGamepads,
+        own=Object.prototype.hasOwnProperty.call(navigator,'getGamepads'),
+        oldState=state, oldHB=HB, oldG=G, oldKeys=keys, oldCfg=Object.assign({},CFG),
+        oldPause=pauseOpen, oldKeysPad=KEYS.pad, oldWait=PADB.waiting,
+        pin=document.getElementById('pnamein'), pinValue=pin.value, pinTyped=pin.__typed,
+        pad={connected:true,index:0,id:'Xbox J3 crawl',mapping:'standard',axes:[0,0,0,0],buttons:[]},
+        gaps=[], covered=[], events=0, storageKey=null, storageValue=null, bad=[], i;
+    for(i=0;i<17;i++)pad.buttons.push({pressed:false,value:0});
+    function gap(s){if(gaps.indexOf(s)<0)gaps.push(s);}
+    function need(b,s){if(!b)gap(s);}
+    function on(e){if(!e)return false;var r=e.getBoundingClientRect(),c=getComputedStyle(e);return r.width>=4&&r.height>=4&&c.visibility!=='hidden'&&c.display!=='none';}
+    function keyEvent(){events++;}
+    function poll(b){for(var n=0;n<17;n++){pad.buttons[n].pressed=n===b;pad.buttons[n].value=n===b?1:0;}pollPad();}
+    function tap(b){poll(-1);poll(b);poll(-1);}
+    function clear(){
+      if(PADNAME)padNameClose(false);
+      if(GRAB)grabEnd();if(IMENU)closeItemMenu();
+      hubBagOpenSet(false);togglePauseBox(false);
+      [].forEach.call(document.querySelectorAll('.modal.on,.pausebox.on,#title.on,#hub.on,#outcome.on'),function(e){e.classList.remove('on');});
+      PAD.focus=null;PAD.focusMd=null;PAD.focusIx=0;PAD.prev=[];PAD.prevMap=null;PAD.mSpent=[];PAD.mDdir=0;PAD.mDmd=null;
+      keys={};PAD.held={};PADB.waiting=null;state='hub';
+    }
+    function focusStart(root,name){
+      PAD.focus=null;PAD.focusMd=null;PAD.focusIx=0;poll(-1);
+      need(padOpenModal()===root,name+':top');
+      need(!!PAD.focus&&root.contains(PAD.focus)&&on(PAD.focus),name+':focus');
+      need(root.querySelectorAll('.padfocus').length===1,name+':focus-count');
+    }
+    function fields(root,name){
+      var list=padFocusables(root);
+      [].forEach.call(root.querySelectorAll('input,textarea,select,[contenteditable="true"]'),function(e){
+        if(!on(e)||e.disabled||e.readOnly)return;
+        var tag=e.tagName,type=e.type||'',id=e.id||tag.toLowerCase();
+        if(e.id==='pnamein')return; // Exercised with A, letter change and B below.
+        if(tag==='INPUT'&&/^(button|submit|reset|checkbox|radio)$/.test(type))return;
+        // A click alone cannot edit a range or choose a select option. These are gaps too.
+        gap(name+':field:'+id);
+        if(list.indexOf(e)>=0)gap(name+':focusable-field:'+id);
+      });
+    }
+    // Breadth first search uses only real D-pad taps. Replaying an observed path from
+    // the default focus avoids teleporting the highlight with padSetFocus(target).
+    function reach(root,target,name){
+      if(!target||padFocusables(root).indexOf(target)<0){gap(name+':route:'+(target?target.id:'missing'));return false;}
+      var queue=[[]],seen=[],dirs=root.id==='sectormodal'?[4,5,12,13]:[12,13,14,15],path,j,k,el,limit=260;
+      while(queue.length&&seen.length<limit){
+        path=queue.shift();PAD.focus=null;PAD.focusMd=null;PAD.focusIx=0;poll(-1);
+        for(j=0;j<path.length;j++)tap(path[j]);
+        el=PAD.focus;if(el===target)return true;
+        if(!el||seen.indexOf(el)>=0)continue;seen.push(el);
+        for(k=0;k<dirs.length;k++)queue.push(path.concat(dirs[k]));
+      }
+      gap(name+':route:'+target.id);return false;
+    }
+    function visit(name,open,id,closeId,effect){
+      clear();open();var root=document.getElementById(id);covered.push(name);
+      if(!root||!on(root)){gap(name+':staging');return;}
+      focusStart(root,name);fields(root,name);
+      var close=document.getElementById(closeId);
+      if(reach(root,close,name)){tap(0);need(effect?effect():!root.classList.contains('on'),name+':A');}
+      clear();open();focusStart(root,name);tap(1);
+      need(!root.classList.contains('on'),name+':back');
+    }
+    function station(id,b){
+      var s=HB.stations.filter(function(x){return x.id===id;})[0];
+      if(!s)throw Error('missing station '+id);
+      // Positioning is fixture staging; the real pad-to-station path opens the panel.
+      HB.player.x=s.x;HB.player.y=s.y;HB.near=null;HB.nearDrop=null;HB.eLock=false;
+      poll(-1);updateHubWorld(0);need(HB.near===s,'floor:'+id+':focus');
+      poll(b);updateHubWorld(0);poll(-1);updateHubWorld(0);
+    }
+    function newGaps(debt){return gaps.filter(function(s){return debt.indexOf(s)<0;});}
+    try{
+      P=JSON.parse(JSON.stringify(pp));saveProfile=function(){};
+      __runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();
+      NET.same=null;NET.on=false;ARCADE.on=false;ATT.on=false;WNSEEN=true;
+      G=null;__hubEnter();clear();P.runs=1;P.credits=100000;P.freeKit=false;
+      P.stash=['gun_rifle','gun_shotgun','medkit','scrap','wire'];P.kit=['gun_rifle','gun_shotgun','medkit'];P.hotAssign={};
+      navigator.getGamepads=function(){return [pad];};PAD.announced=true;PAD.claim=null;
+      window.addEventListener('keydown',keyEvent,true);window.addEventListener('keyup',keyEvent,true);
+      var title=document.getElementById('title');title.classList.add('on');covered.push('title');focusStart(title,'title');fields(title,'title');
+      if(reach(title,pin,'title')){
+        tap(0);need(!!PADNAME,'title:name-A');
+        if(PADNAME){var letter=PADNAME.l[0];tap(12);need(PADNAME.l[0]!==letter,'title:name-letter');tap(1);need(!PADNAME,'title:name-back');}
+      }
+      // A real name change rebuilds saves. A spare saved slot makes Delete available.
+      for(i=1;i<=8;i++)if(String(i)!==SLOT&&!slotBlocked(String(i))){storageKey=i===1?'salvagerun:profile':'salvagerun:profile:'+i;break;}
+      if(!storageKey)throw Error('no spare save for delete confirmation');
+      storageValue=localStorage.getItem(storageKey);localStorage.setItem(storageKey,JSON.stringify({pname:'crawl spare',runs:1,credits:0,xp:0}));
+      P.pname='crawl before';pin.value='crawl after';covered.push('saves');
+      if(reach(title,document.getElementById('pnamesave'),'saves')){tap(0);need(P.pname==='crawl after','saves:A');}
+      var del=title.querySelector('[data-del="'+i+'"]');
+      if(reach(title,del,'saves-delete')){
+        tap(0);var conf=document.getElementById('delconfirm');covered.push('saves-delete');
+        need(on(conf),'saves-delete:A');fields(conf,'saves-delete');tap(1);
+        need(!on(conf),'saves-delete:back');
+        if(on(conf)&&reach(title,document.getElementById('delno'),'saves-delete-keep'))tap(0);
+      }
+      if(reach(title,document.getElementById('titlestart'),'title')){tap(0);need(!title.classList.contains('on'),'title:A');}
+      clear();covered.push('floor');
+      var px=HB.player.x;pad.axes[0]=1;poll(-1);updateHubWorld(0.05);pad.axes[0]=0;poll(-1);
+      need(HB.player.x!==px,'floor:stick');
+      visit('stash',function(){station('term',0);},'hub','stashclose');
+      visit('sector',function(){station('lift',0);},'sectormodal','condnight',function(){return P.cond==='night';});
+      visit('shop',function(){station('trader',0);},'tradermodal','closetrader');
+      visit('craft',function(){station('trader',2);},'tradermodal','closetrader');
+      visit('hire',function(){station('trader',3);},'tradermodal','closetrader');
+      visit('terms',function(){station('lift',5);},'termsmodal','closeterms');
+      visit('mainframe-contracts',function(){station('mf',0);},'opmodal','closeop');
+      visit('mainframe-rewards',function(){station('mf',2);},'opmodal','closeop');
+      visit('mainframe-racks',function(){station('mf',3);},'opmodal','closeop');
+      visit('mainframe-stats',function(){station('mf',5);},'opmodal','closeop');
+      visit('bar',function(){station('bar',0);},'barmodal','closebar');
+      visit('gambler',function(){station('gamble',0);},'gamblemodal','closegamble');
+      visit('fashion',function(){station('mirror',0);},'appearmodal','closeappear');
+      visit('settings',function(){openSettings('display');},'settingsmodal','closesettings');
+      visit('controller-settings',function(){keysOpen(true);},'keysmodal','closekeys');
+      visit('pause',function(){tap(9);},'pausebox','resumebtn');
+      // Outcome is staged through endRaid; no raid input or raid HUD is audited.
+      // Instant abandon intentionally skips this card. Death always produces a real outcome, even at zero elapsed time.
+      function outcome(){clear();__deploy({kit:['gun_rifle'],safe:null,mapIx:0,seed:4242});__endRaid('dead');}
+      outcome();covered.push('outcome');var oc=document.getElementById('outcome');
+      if(!oc||!oc.classList.contains('on')||!on(oc))throw Error('outcome staging: death did not open the card');
+      focusStart(oc,'outcome');
+      var fb=document.getElementById('fbhead');
+      if(reach(oc,fb,'outcome')){tap(0);need(oc.querySelector('.ocwin').classList.contains('fbopen'),'outcome:A');fields(oc,'outcome-feedback');}
+      for(i=0;i<4&&oc.classList.contains('on');i++)tap(1);
+      need(!oc.classList.contains('on'),'outcome:back');
+      clear();P.weapons=[];P.equipped='fists';P.equippedSec='none';
+      P.stash=['gun_rifle','gun_shotgun','medkit'];P.kit=P.stash.slice();P.hotAssign={};
+      covered.push('backpack');tap(8);drawHubBag();
+      need(!!hubBagOpen&&!!hubBagG,'backpack:view');
+      if(hubBagG){
+        var h=hubBagG;h.bagBelt=false;h.bagSel=0;drawHubBag();
+        var cell=null;withHubBag(function(){cell=bagPadCell();});need(!!cell,'backpack:focus');
+        tap(15);need(h.bagSel!==0,'backpack:dpad');tap(14);drawHubBag();
+        tap(0);need(!!h.drag&&!!h.drag.pad,'backpack:A');
+        tap(1);need(!hubBagOpen,'backpack:back');
+      }
+      need(events===0,'keyboard-events:'+events);
+      var errors=newGaps(DEBT),control=newGaps(DEBT.slice(1));
+      // Remove the real stash-search debt, never a fabricated synthetic failure.
+      if(gaps.indexOf(DEBT[0])<0)errors.push('control: pinned stash field was not observed');
+      if(control.indexOf(DEBT[0])<0)errors.push('control: removing stash field debt did not fail');
+      window.__padCrawl87={covered:covered,gaps:gaps,known:DEBT,failures:errors,removedDebt:DEBT[0],control:control};
+      return errors.length?errors.join('; '):null;
+    }catch(e){return 'J3 crawl threw: '+(e&&e.stack||e);}
+    finally{
+      window.removeEventListener('keydown',keyEvent,true);window.removeEventListener('keyup',keyEvent,true);
+      try{padRelease();if(G&&!G.over)__endRaid('abandon');clear();__topClear();}catch(_e){}
+      if(storageKey){if(storageValue===null)localStorage.removeItem(storageKey);else localStorage.setItem(storageKey,storageValue);}
+      if(own)navigator.getGamepads=ng;else delete navigator.getGamepads;
+      P=pp;saveProfile=sv;NET.same=ns;NET.on=no;ARCADE.on=ao;ATT.on=at;WNSEEN=wn;
+      state=oldState;HB=oldHB;G=oldG;keys=oldKeys;Object.assign(CFG,oldCfg);pauseOpen=oldPause;KEYS.pad=oldKeysPad;PADB.waiting=oldWait;
+      pin.value=pinValue;pin.__typed=pinTyped;
+      Object.keys(PAD).forEach(function(k){delete PAD[k];});Object.assign(PAD,pk);
+    }
+  }
+},
   {v:'31.98',what:'J5: hub pad View opens, all D-pad directions move, A picks up and places, Y drops a recoverable crate, B closes without keyboard events',
    run:function(){
      var ng=navigator.getGamepads,own=Object.prototype.hasOwnProperty.call(navigator,'getGamepads'),pk=Object.assign({},PAD),pp=P,ns=NET.same,no=NET.on,sv=saveProfile;
