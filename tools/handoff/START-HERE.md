@@ -13,7 +13,8 @@ The game is PILLAGERS (old name Dark Raiders; the file is still dark_raiders.htm
 - The queue: jobs 58 to 70 (Claude lanes a, b, c) and o-14 to o-19 (ChatGPT lane o), from the 10-20 backlog sweep. The rest of the sweep (stretch, after-party and coordinator jobs) waits in tools/handoff/console/staging-1020 (README there: the ranked list and the plan-week checkpoints).
 - Memory is the limit in the VM: a helper starts only with about 3 GB free, and the full test run blocks them while it runs. At-the-PC mode (10-20): while he uses the main PC the VM gets half its processors and starts no full test run, robots or local AI.
 - Pacing is off (his 10-19 rule): speed is fine, waste is not. Helpers run on his Max plan (the Console credit is used up until 11-01).
-- itch: ships skip itch until he enters his itch key (ai-keys.ps1 itch); ITCH_TARGET is set and tools/itch-zip.ps1 packs the licence files.
+- itch: his key is in; every ship and the daily catch-up push the zip (10-21 00:05 "itch was v33.29, pushed v33.30"). The release sheet is tools/PUBLISH.md (rewritten 10-21 to his answers 71 to 79).
+- Dates to tell him (coord-04; one or two plain lines each, with the reason): Sat 10/31, share the private link or page password with friends and family; by about Fri 11/13, set up itch payments, payouts and the tax form, then Pricing "$0 or donate"; Thu 11/26, set the page to Public. Before 11/26 coord-06 must settle whether couch mode links inside itch's frame.
 - Memory notes: the live folder is C:/Users/VM Oct26/.claude/projects/C--claudecode-dark-raiders/memory; on 10-20 it was synced from the newer C--Users-User1-Desktop-dark-raiders copy (13 notes). Both now match.
 
 **Who works (live view: tools/handoff/console/status-LANE.txt; rules: tools/handoff/console/RULES.md, "Lanes"):**
