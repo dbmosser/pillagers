@@ -9,7 +9,7 @@ R="/c/claudecode/dark raiders"; OUT="${1:-$S/corpus-belt.txt}"
 cd "$R" || exit 1
 cp -f tools/fixture.html tools/fxcorpus.html || { echo "NO FIXTURE TO COPY"; exit 1; }
 export FX=fxcorpus.html
-curl -s --max-time 3 http://127.0.0.1:9344/json/version >/dev/null || powershell -NoProfile -ExecutionPolicy Bypass -File tools/cdp.ps1 -Start -Port 9344 -Profile "$TEMP/pillagers-cdp9344" >/dev/null
+powershell -NoP -ep Bypass -File tools/cdp.ps1 -Port 9344 -Close >/dev/null; powershell -NoP -ep Bypass -File tools/cdp.ps1 -Start -Port 9344 -Profile "$TEMP/pillagers-cdp9344" >/dev/null #10-21     
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/cdp.ps1 -Port 9344 -Open "http://localhost:8806/fxcorpus.html?count=1" >/dev/null; sleep 30
 N=$(powershell -NoProfile -ExecutionPolicy Bypass -File tools/cdp.ps1 -Port 9344 -Match "count=1" -TimeoutSec 60 -Expr "String(window.__REGRESS?window.__REGRESS.length:0)" 2>/dev/null | tail -1 | tr -dc '0-9')
 [ -z "$N" -o "$N" = "0" ] && { echo "COULD NOT READ THE CORPUS SIZE"; exit 1; }

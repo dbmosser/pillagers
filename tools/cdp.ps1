@@ -5,10 +5,21 @@
 # Evaluate:        powershell -File tools\cdp.ps1 -Match 8804 -Expr "window.__PROG.done"
 # The expression may be a promise; a non-string result comes back as JSON.
 param([int]$Port=9333,[switch]$Start,[string]$Open='',[string]$Match='',[string]$Expr='document.title',[int]$TimeoutSec=120,
-      [double]$Throttle=0,[string]$Shot='',[string]$Profile="$env:TEMP\pillagers-cdp")
+      [double]$Throttle=0,[string]$Shot='',[string]$Profile="$env:TEMP\pillagers-cdp",[switch]$Close)
 # -Throttle N: the page runs on a CPU N times slower for this call (Chrome's own emulation), to stand in for a weak PC.
 # -Shot path.jpg: after the expression, a screenshot of the page is saved there (the visual pass, 2026-10-02).
+# -Close (10-21): closes the browser on -Port through its own debug socket (Browser.close) and waits until the port is free. By port only,
+#   never by profile name (several test browsers share the pillagers-cdp name). Nothing on the port is not an error.
 $ErrorActionPreference='Stop'
+if($Close){
+  try{ $v=Invoke-RestMethod "http://127.0.0.1:$Port/json/version" -TimeoutSec 3 }catch{ Write-Output "no browser on $Port"; exit 0 }
+  $ws=New-Object System.Net.WebSockets.ClientWebSocket; $ct=[Threading.CancellationToken]::None
+  $ws.ConnectAsync([Uri]$v.webSocketDebuggerUrl,$ct).Wait(5000) | Out-Null
+  $b=[Text.Encoding]::UTF8.GetBytes('{"id":1,"method":"Browser.close"}')
+  try{ $ws.SendAsync((New-Object 'ArraySegment[byte]' -ArgumentList (,$b)),[System.Net.WebSockets.WebSocketMessageType]::Text,$true,$ct).Wait(5000) | Out-Null }catch{}
+  for($i=0;$i -lt 60;$i++){ Start-Sleep -Milliseconds 250; try{ Invoke-RestMethod "http://127.0.0.1:$Port/json/version" -TimeoutSec 1 | Out-Null }catch{ Write-Output "browser on $Port closed"; exit 0 } }
+  Write-Output "browser on $Port did not close"; exit 1
+}
 if($Start){
   $exe='C:\Program Files\Google\Chrome\Application\chrome.exe'
   if(-not (Test-Path $exe)){ $exe='C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe' }
