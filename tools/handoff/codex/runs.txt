@@ -151,3 +151,4 @@
 2026-10-20 17:25 o-19-duplicate-check-ids 24s ok PARTIAL in=188468 out=2261 run=4
 2026-10-20 17:26 o-19-duplicate-check-ids 66s ok PARTIAL in=195339 out=2261 run=5
 2026-10-20 23:22 61-experimental-menu 564s ok PARTIAL in=1552383 out=19792 run=1
+2026-10-20 23:45 61-experimental-menu 608s ok PARTIAL in=3728055 out=40814 run=2

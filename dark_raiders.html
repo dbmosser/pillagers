@@ -3249,7 +3249,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.25';
+var VER='33.26';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13738,7 +13738,7 @@ function weakHit(e,bx,by,ux,uy){
   var best=null,bd=1e9, ray=(typeof ux==='number'&&typeof uy==='number'&&(ux!==0||uy!==0)), tc=0;
   if(ray){ tc=(e.x-bx)*ux+(e.y-by)*uy; if(tc<0) tc=0; }
   for(var i=0;i<L.length;i++){
-    var W=L[i],pt=weakPos(e,W), qx=bx, qy=by, t;
+    var W=L[i],pt=weakPos(e,W), qx=bx, qy=by, t, mm=machMul(e); if(mm!==1){ pt={x:e.x+(pt.x-e.x)*mm,y:e.y+(pt.y-e.y)*mm}; W={id:W.id,name:W.name,ang:W.ang,rf:W.rf,rad:W.rad*mm,mult:W.mult,eff:W.eff,c:W.c}; }   // v28.xx (cw-machbig): the opening rides the bigger body
     if(ray){ t=(pt.x-bx)*ux+(pt.y-by)*uy; if(t<0) t=0; else if(t>tc) t=tc; qx=bx+ux*t; qy=by+uy*t; }
     var dx=qx-pt.x,dy=qy-pt.y,d=Math.sqrt(dx*dx+dy*dy);
     if(d<=W.rad&&d<bd){ bd=d; best=W; }
@@ -32614,7 +32614,7 @@ function updateBullets(dt){
             if(en.kind==='raider'&&en.suppB!==b&&dist(b,en)<en.r+SUPP_R){ en.suppB=b; suppHit(en); if(NET.on&&NET.role==='join'&&en.nid&&netEntsPeer()){ NET.supQ=NET.supQ||{}; NET.supQ[en.nid]=(NET.supQ[en.nid]|0)+1; } }   // v28.xx (cw-nearmiss), CLOUD HUNT 2026-10-15: on a linked window the host runs this man, so the round past him is counted for the host, sent in one word a tenth of a second (netFxStep)
             if(en.roll>0.08) continue;
             if(en.finished) continue;   // v16.98, co-op hunt 2026-09-28: a man who bled out lies here one more frame; a round on the body wrote the kill mark again and took the kill from player 2, so it passes over him
-            if(dist(b,en)<en.r+3){
+            if(dist(b,en)<en.r*machMul(en)+3){   // v28.xx (cw-machbig): a round hits the machine you see
               var edmg=b.dmg;
               // SPEC 8.7: a weak point is checked BEFORE armour, because it is
               // the gap in the armour. Nothing soaks a round through the vent.
@@ -37181,7 +37181,13 @@ function alertTopShift(e){
   var s=w2s(e.x,(spriteTop(e)+8+ph-3)*z+LH(4)*Math.max(1,hudRes()),e.y);
   return Math.max(0,Math.round(msgPx(hudFS(TYPE.head))+LH(2))-s.y);
 }
-function spriteTop(e){
+// v28.xx (cw-machbig), HIS ORDER (2026-10-20 evening): "enemies need to be like 33% larger". The machines (sentry, crawler, warden, choir, snitch, listener, howler, bulwark) are DRAWN FIG_MACH times bigger around the foot point and a round hits them at FIG_MACH times the body radius; walking, doors and the nav grid keep the old radius, so nothing sticks in a doorway. Pillager bots, the peddler and the survivor keep their size. FIG_MACH is the one number to change.
+var FIG_MACH=1.33, MACH_KIND={sentry:1,crawler:1,warden:1,choir:1,snitch:1,listener:1,howler:1,bulwark:1};
+function machMul(e){ return (e&&MACH_KIND[e.kind]===1)?FIG_MACH:1; }
+function machScaleBegin(e){ var m=machMul(e); if(m===1) return 0; wc.save(); wc.translate(e.x,e.y); wc.scale(m,m); wc.translate(-e.x,-e.y); return 1; }
+function machScaleEnd(n){ if(n) wc.restore(); }
+function spriteTop(e){ return spriteTop0(e)*machMul(e); }   // the name plate, alert mark and health pip ride the taller body
+function spriteTop0(e){
   if(e.kind==='sentry') return 46*(e.r/SENTRY_R0);
   if(e.kind==='crawler') return 24*(e.r/CRAWLER_R0);
   if(e.kind==='snitch') return 34*(e.r/SNITCH_R0);
@@ -40023,6 +40029,7 @@ var SHD=G.shells[i];
       var e2=it.e;
       var eLift=drawLift((G&&G.map&&G.map.liftAt)?G.map.liftAt(e2.x,e2.y):0);
       if(eLift>0){ wc.save(); _svd++; wc.translate(0,-eLift); }
+      var _mm=machScaleBegin(e2); _svd+=_mm;   // v28.xx (cw-machbig): the machine body, shadow, elite ring, affix mark, windup glow and weak points all ride the bigger body
       var _kb=animHitShift(e2); if(_kb){ wc.save(); _svd++; wc.translate(_kb.x,_kb.y); }   // v17.47: his pick 29, the hit jolt
       // ELITE MARKER, v3.62: one site under every kind's sprite, in the same
       // purple the loot pips already use for elite, so the colour is a word
@@ -40119,6 +40126,7 @@ var SHD=G.shells[i];
         wc.globalAlpha=1;
       }
       if(_kb){ wc.restore(); _svd--; }
+      machScaleEnd(_mm); _svd-=_mm;
       if(eLift>0) wc.restore();
     }
     }catch(drErr){
@@ -51393,7 +51401,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.25: Shots now sound like the place they are fired in: short and bright indoors, a crack and a low thump outside, dry in the woods. Check 33.25 fails on v33.24',
+  now:'v33.26: Machines draw a third larger and are easier to hit. Check 33.26 fails on v33.25',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

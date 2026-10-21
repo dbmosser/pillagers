@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.26 - MACHINES A THIRD LARGER
+
+Co-op hunt while he was away. His order 10-20: enemies need to be like 33 percent larger. The eight machine kinds are drawn 1.33x around their feet (one number, FIG_MACH) and a round hits them at 1.33x the body radius. Walking, doors and the nav grid keep the old radius. Pillager bots, the peddler and the survivor keep their size.
+
+MEASURED. Check 33.26 passes, and fails on v33.25.
 ## v33.25 - GUNFIRE HAS A TAIL THAT SAYS WHERE IT WAS FIRED
 
 Co-op hunt while he was away. His yes on pick 69. A shot indoors now has a short bright room tail, a shot outside a crack and then a longer low thump that comes later the farther it is, and in the woods nothing. The tail rides the same muffled, panned path as the shot, so it is built on the v23.73 wall muffling.

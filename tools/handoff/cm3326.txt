@@ -1,0 +1,7 @@
+v33.26: machines a third larger
+
+Machines draw a third larger and are easier to hit.
+
+Check 33.26. Fails on v33.25.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
