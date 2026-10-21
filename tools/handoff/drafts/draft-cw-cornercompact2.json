@@ -1,0 +1,16 @@
+{
+    "title":  "CORNER BLOCK: CASH LABEL, WIDER GAP",
+    "why":  "The picture critic found the unlabelled money figure read as part of the xp pair and the columns were tight. A short cash label and 20 between columns fix it.",
+    "now":  "The corner block names the money figure cash and spaces its two columns wider.",
+    "edits":  [
+                  {
+                      "anchor":  "cw=(g.bw-28)/2, cx=g.x+8+(i\u00261)*(cw+12);",
+                      "replacement":  "cw=(g.bw-36)/2, cx=g.x+8+(i\u00261)*(cw+20);   // v33.xx (cw-cornercompact2): 20 between the two columns, so a figure never touches the next label"
+                  },
+                  {
+                      "anchor":  "trRow(i++,\u0027\u0027,\u0027$\u0027+TRV.c);",
+                      "replacement":  "trRow(i++,\u0027cash\u0027,\u0027$\u0027+TRV.c); /* v33.xx (cw-cornercompact2): the critic found the money figure with no label read as part of the xp pair; a short word names it */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027cw-cornercompact2: the first corner cell is labelled cash and the two columns are 20 apart\u0027,\n   run:function(){\n     if(typeof trRow!==\u0027function\u0027||typeof trColDraw!==\u0027function\u0027) return \u0027SKIP: no corner rows here\u0027;\n     if(String(trColDraw).indexOf(\"\u0027cash\u0027\")\u003c0) return \u0027the money cell has no cash label\u0027;\n     if(String(trRow).indexOf(\u0027cw+20\u0027)\u003c0) return \u0027the two columns are not 20 apart\u0027;\n     return null; }},"
+}

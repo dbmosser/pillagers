@@ -641,3 +641,7 @@
 2026-10-21 0.22243180000000004 82-minimap-off-by-default
 2026-10-21 0.1523 critic-manual
 2026-10-21 0.8291761 61b-experimental-page-polish
+2026-10-21 0.0000 o-87-pad-crawl-test
+2026-10-21 0.1552 critic-manual
+2026-10-21 0.386858 84-airstrike-bar-lower
+2026-10-21 0.0000 o-87-pad-crawl-test

@@ -235,17 +235,17 @@
  "21-raid-hud-calm": {
   "score": 2,
   "pass": false,
-  "verdict": "The raid HUD has the right pieces (one hero ammo number, a lime-adjacent hotbar focus, a teal extract chip), but every corner is crowded with a different panel style, the controls legend sits in the middle of the play space, and the type and fill rules are broken in several places.",
+  "verdict": "The top-right money block went from four stacked bars to one compact 2x2 block, which is a real gain, but the 2x2 grid reads confusingly, the HUD still has no clear focal hierarchy, and the keys panel and bot panel stay as big, dense dark boxes.",
   "findings": [
-   "P0 bottom-centre controls legend (wasd/ctrl/lmb... block): Collapse it to the single 'f1 controls' hint at 16px in tx-2, bottom-left above the stance chip, or show it only for the first 30s. If kept, set it at 16px with a 24px panel padding, anchored to the 5% margin, in tx-1 for the keys and tx-2 for the actions.",
-   "P0 top-right career column (credits/xp/stash/backpack) plus minimap plus run info: Use one 4px-radius --ui-panel at 90% with 1px --ui-line-hi. Rows are 40px tall with 16px tx-2 labels and 20px tx-1 values. Put only $ credits in tx-1 at 20/600. Drop xp and stash to tx-2, or move them to the pause menu. Align the minimap and run info to the same 24px inner padding and the same width, and remove the stray indent in the contracts lines.",
-   "P1 hp and stamina bars, bottom-left: Make both bars 16px tall with a 1px --ui-line-hi border on --ui-panel. Use --ok for hp and a muted tx-2 fill for stamina. Put the labels outside the bars at 16px, with the hp number at 20px. Use an 8px gap between bars and give the stance chip the same panel style.",
-   "P1 ammo card, bottom-right ('12 / 24', 'b / i backpack', '5 items $1,770'): Use the standard panel (4px radius, 24px padding). Put the weapon name at 16px tx-2, the '12' at 56/800 tx-1 and '/ 24' at 20px tx-2. Make 'b / i backpack' a 16px tx-2 hint, and remove the backpack total here or at top right, not both.",
-   "P1 top-left scoreboard 'current pillager bots 3': Make the heading 16px tx-2 ('pillagers 3'), and mark the 'you' row with the 3px lime left tab and tx-1 (the others tx-2). Use the same panel as the right column, 24px from the screen edge, aligned to the same top margin as the credits panel."
+   "P1 top-right money block ($900 / xp / stash / backpack): Use one aligned label/value grid. Give a fixed 16px tx-2 label column and tx-1 20px values right-aligned in two columns, and label the $900 'cash'. Put 24px between the two column pairs. Or return to a 1x1 vertical list, which is the owner's cw-trcol order.",
+   "P1 whole HUD hierarchy: Make the keys panel collapsed or tx-2 and shrunk to a one-line 'f1 keys' chip. Raise the timer to the 56px hero size. Keep the ammo as the second anchor.",
+   "P1 top-right run info panel: Show a 16px label with the count right-aligned in one column ('sump containers 0/2'). Use lime only for the focused or active contract and tx-2 for the rest. Limit to 3 rows.",
+   "P1 bottom-left feed (codex entry / contract item nearby / resolution stepped down): Use one toast style with a 3px left bar and 16px tx-1 text, and use amber only for the glyph. Remove the duplicate faint 'resolution stepped down' text at top centre.",
+   "P2 panel language across the HUD: Apply one panel style to all: --ui-panel at 90%, 1px --ui-line-hi, 4px radius, uniform inner padding of 12px minimum on a compact HUD."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-02-r21/21-raid-hud-calm-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/83-after/21-raid-hud-calm-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T05:37"
+  "when": "2026-10-21T04:42"
  },
  "22-raid-map-open": {
   "score": 3,

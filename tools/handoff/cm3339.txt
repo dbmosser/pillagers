@@ -1,0 +1,7 @@
+v33.39: corner block: cash label, wider gap
+
+The corner block names the money figure cash and spaces its two columns wider.
+
+Check 33.39. Fails on v33.38.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

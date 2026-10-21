@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.39 - CORNER BLOCK: CASH LABEL, WIDER GAP
+
+Co-op hunt while he was away. The picture critic found the unlabelled money figure read as part of the xp pair and the columns were tight. A short cash label and 20 between columns fix it.
+
+MEASURED. Check 33.39 passes, and fails on v33.38.
 ## v33.38 - RAID CORNER MONEY BLOCK IS COMPACT
 
 Co-op hunt while he was away. His order: the raid corner takes way too much of the screen, make it much more compact. The four money plates become one short plate with two lines of figures, about a third of the height; the minimap and the panels under it move up with it.

@@ -1,0 +1,5 @@
+## v33.39 - CORNER BLOCK: CASH LABEL, WIDER GAP
+
+Co-op hunt while he was away. The picture critic found the unlabelled money figure read as part of the xp pair and the columns were tight. A short cash label and 20 between columns fix it.
+
+MEASURED. Check 33.39 passes, and fails on v33.38.

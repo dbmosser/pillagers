@@ -6145,6 +6145,12 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'33.39',what:'cw-cornercompact2: the first corner cell is labelled cash and the two columns are 20 apart',
+   run:function(){
+     if(typeof trRow!=='function'||typeof trColDraw!=='function') return 'SKIP: no corner rows here';
+     if(String(trColDraw).indexOf("'cash'")<0) return 'the money cell has no cash label';
+     if(String(trRow).indexOf('cw+20')<0) return 'the two columns are not 20 apart';
+     return null; }},
   {v:'33.38',what:'cw-cornercompact, his order: the raid corner money block is one short plate (at most 40 percent of the four-row height) at 1080 and 4K, all four figures drawn, the minimap one gap under it',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__frame&&window.__forceSize&&window.__runPrep&&window.__topClear&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy and draw';

@@ -3280,7 +3280,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.38';
+var VER='33.39';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5411,7 +5411,7 @@ function trPlate(x,y,w,h){
   ctx.strokeStyle='rgba(112,122,130,.95)'; ctx.lineWidth=1; ctx.stroke();
 }
 function trRow(i,lab,val){
-  var g=TRG, y=g.y0, by=y+8+LH(8)+(i>>1)*g.ls, cw=(g.bw-28)/2, cx=g.x+8+(i&1)*(cw+12);   // v33.xx (cw-cornercompact): cell i sits on line i>>1, left or right half   // the same baseline as the run info title: pad 8 and LH(8) under the plate's top
+  var g=TRG, y=g.y0, by=y+8+LH(8)+(i>>1)*g.ls, cw=(g.bw-36)/2, cx=g.x+8+(i&1)*(cw+20);   // v33.xx (cw-cornercompact2): 20 between the two columns, so a figure never touches the next label   // v33.xx (cw-cornercompact): cell i sits on line i>>1, left or right half   // the same baseline as the run info title: pad 8 and LH(8) under the plate's top
   if(i===0) trPlate(g.x,y,g.bw,g.rh);
   ctx.textAlign='left'; ctx.fillStyle=UIC.tx_2; ctx.fillText(lab,cx,by);
   ctx.textAlign='right'; ctx.fillStyle=UIC.tx_1; ctx.fillText(val,cx+cw,by);
@@ -5426,7 +5426,7 @@ function trColDraw(){
   ctx.globalAlpha=1; ctx.font=FS(TYPE.label); ctx.textBaseline='alphabetic';
   // v33.xx (cw-raiddollar), his rule (Q59: "$ for money, SP for score"): the money row is the figure alone, $900 as in the Undercroft,
   // and the stash and backpack rows are money too (item values), so they carry $. xp stays a plain number.
-  if(!trDemo()){ trRow(i++,'','$'+TRV.c); trRow(i++,'xp',TRV.x); trRow(i++,'stash','$'+TRV.sv); trRow(i++,'backpack','$'+TRV.bv); }
+  if(!trDemo()){ trRow(i++,'cash','$'+TRV.c); /* v33.xx (cw-cornercompact2): the critic found the money figure with no label read as part of the xp pair; a short word names it */ trRow(i++,'xp',TRV.x); trRow(i++,'stash','$'+TRV.sv); trRow(i++,'backpack','$'+TRV.bv); }
   if(nn) trRow(i++,'notes logged',TRV.ns);
   ctx.textAlign='left';
   ctx.restore();
@@ -51448,7 +51448,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.38: The raid corner shows money, xp, stash and backpack on two short lines in one plate instead of four tall plates. Check 33.38 fails on v33.37',
+  now:'v33.39: The corner block names the money figure cash and spaces its two columns wider. Check 33.39 fails on v33.38',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

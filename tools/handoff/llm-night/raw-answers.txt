@@ -1,25 +1,4 @@
 
-It looks like you've provided a large snippet of HTML and CSS code, which appears to be part of a web page or application interface. The content seems to include various UI elements such as modals, buttons, text areas, and other interactive components.
-
-Here's a brief overview of the key sections:
-
-1. **CSS Styles**:
-   - The CSS styles define the appearance and layout of various elements on the page.
-   - There are styles for different modes (e.g., `expmode`), which likely control how certain UI elements behave or look based on user interactions.
-
-2. **HTML Elements**:
-   - `<canvas>` elements (`cv`, `hcv`) are used for rendering graphics, possibly game-related content.
-   - A `<div id="hubtoast">` is likely a toast notification area.
-   - The pause box (`<div class="pausebox" id="pausebox">`) contains various buttons and text areas related to pausing the game or providing feedback.
-
-3. **Modals**:
-   - There are several modals defined, such as `fbmodal`, `wnmodal`, and `lbmodal`. These appear to be pop-up dialogs that can overlay other content on the page.
-   - Each modal contains specific elements like headers, text areas, buttons, and sometimes images.
-
-4. **Outcome Section**:
-   - The outcome section (`<div class="outcome" id="outcome">`) seems to display information about a completed game or
-NONE
-NONE
 NONE
 NONE
 NONE
