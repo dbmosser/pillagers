@@ -52,10 +52,10 @@ const curVer = cur.version || '0.0';
 
 // ---- the finished corpus runs, oldest first
 function failsOf(txt) {
-  // a failing check is the text after " || " that starts "vNN.NN "; its key is the words up to " -> " (max 80 chars)
+  // a failing check is the text after " || " that starts "vNN.NN " or a lettered id "vNN.NNh " (job o-19); its key is the words up to " -> " (max 80 chars)
   const segs = txt.replace(/\r/g, '').replace(/\n+/g, ' ').split(' || '), set = new Set();
   for (let i = 1; i < segs.length; i++) {
-    const s = segs[i].trim(); if (!/^v\d+\.\d+ /.test(s)) continue;
+    const s = segs[i].trim(); if (!/^v\d+\.\d+[a-z]* /.test(s)) continue;
     set.add(s.split(' -> ')[0].slice(0, 80).trim());
   }
   return set;
