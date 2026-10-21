@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.94 - PIXEL EFFECTS AND MEDALLIONS
+
+Co-op hunt while he was away. The pixel cast needs square fight particles, stepped blast and ground stamps, whole-pixel rings and baked power-up medallions at the approved half size.
+
+MEASURED. Check 33.94 passes, and fails on v33.93.
 ## v33.93 - PIXEL KIND GUARD
 
 Co-op hunt while he was away. A broken art bake must keep a body visible and must stop retrying that kind after three throws in one raid.

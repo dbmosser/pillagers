@@ -1,0 +1,5 @@
+## v33.94 - PIXEL EFFECTS AND MEDALLIONS
+
+Co-op hunt while he was away. The pixel cast needs square fight particles, stepped blast and ground stamps, whole-pixel rings and baked power-up medallions at the approved half size.
+
+MEASURED. Check 33.94 passes, and fails on v33.93.

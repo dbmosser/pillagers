@@ -221,3 +221,5 @@
 2026-10-21 14:24 86i-building-kinds 24s ok WAITING in=70441 out=565 run=1
 2026-10-21 14:30 86i-building-kinds 17s ok WAITING in=70609 out=368 run=1
 2026-10-21 14:54 86j-pix-fx-guard 1177s ok PARTIAL in=4663379 out=43738 run=1
+2026-10-21 15:04 86j-pix-fx-guard 133s ok PARTIAL in=5855104 out=48078 run=2
+2026-10-21 15:17 86j-pix-fx-guard 153s ok PARTIAL in=7320733 out=52469 run=3

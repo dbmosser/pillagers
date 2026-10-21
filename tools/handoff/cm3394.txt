@@ -1,0 +1,7 @@
+v33.94: pixel effects and medallions
+
+Sparks, blood, smoke and blasts use art pixels. Power-up coins are cached on the sharp HUD canvas.
+
+Check 33.94. Fails on v33.93.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
