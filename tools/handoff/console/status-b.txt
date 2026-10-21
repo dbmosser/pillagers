@@ -1,1 +1,1 @@
-10-21 05:03 86c-pix-pillager: partial (run 4 of 5), $0.2230493
+10-21 05:28 86h-pix-sets-wardrobe: waiting on 86g-pix-pillager-states, parked in blocked/ (not counted as a try), $0.26310540000000004

@@ -3360,7 +3360,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.71';
+var VER='33.72';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -50818,7 +50818,7 @@ function pixOwned(id){
 // peddler, the survivor, a forged gun, a reload) draws today's vector body, and a throw falls back to the vector body and is logged. Shapes use whole pixel masks and hand placed pixels only: no rr(),
 // no random, so two windows bake the same pixels and the seed does not move.
 PIX.bodies=0;
-var PXB={W:36,H:50,AX:19,AY:51,PV:22,TARGET:50};   // the art grid, the anchor between the feet in the ringed sprite, the gun pivot (art px above the feet), the drawn height the check expects
+var PXB={W:36,H:50,AX:19,AY:51,PV:20,TARGET:50}; /* v28.xx (cw-cx-pixpose): the pixel shoulder uses the existing 20 world unit muzzle height */   // the art grid, the anchor between the feet in the ringed sprite, the gun pivot (art px above the feet), the drawn height the check expects
 var PXB_HAIR=['#5a4a4c','#3a2e34','#241c24','#14101a'];
 var PXB_BOOT=['#6a5a4a','#4a3e34','#322a22','#1e1914'];
 var PXB_EYE={white:'#f2e8e4',lid:'#d6c6c2',ink:'#1c1218',iris:'#4a3228',red:'#e03a28',redDeep:'#8e1a1c',brow:'#2a1418'};
@@ -51050,6 +51050,8 @@ function pxBlit(spr,wx,wy,m){
   wc.drawImage(src,(dx-m.e)/m.a,(dy-m.f)/m.d,dw/m.a,dh/m.d);
 }
 // draws one body in pixels and returns true, or returns false having drawn nothing (the caller then draws the vector body)
+// v28.xx (cw-cx-pixpose): quantize the old stride and breath phases to two heights, without changing their clocks or the planted feet.
+function pxBob(ph,moving){ return Math.round(moving?Math.abs(Math.sin(ph)):(Math.sin(ph*0.35)+1)*0.5); }
 function pixDrawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   var m, lk, fl, mir, moving, sprint, crouch, ads, rl, hold, back, kind, fr, bob, lean, dyUp, uo, lg, up, ro, gn=null, gv=0, w, id, D, fk, el, wt, rc, low, ext, ang, step, C, sk, sl, hd, sm, px, py, ty, pxd, k;
   if(!st||iv>0||OPX.inScr||st.bulk>0||st.low) return false;
@@ -51071,7 +51073,7 @@ function pixDrawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   if(crouch){ kind='c'; fr=0; }
   else if(moving){ kind=sprint?'r':'w'; fr=Math.floor(((ph/6.28318531)%1+1)%1*6)%6; }
   else { kind='s'; fr=0; }
-  bob=moving?Math.round(Math.abs(Math.sin(ph))*(sprint?3.6:2.6)):(((((G&&G.t)||0)*0.8)|0)&1);
+  bob=pxBob(ph,moving); /* v28.xx (cw-cx-pixpose): his a11 B bounce, one art pixel at the existing stride and breath timings */
   lean=sprint?fl*3:(moving?fl:0);
   dyUp=(crouch?5:0)-bob;
   sm=seatMarkOf(st);
@@ -52470,7 +52472,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.71: With the pixel look on, explosive barrels draw as crisp pixel sprites; the floor pulse, sparks and glow still move. A props sheet is added to the pixel bench page. With the look off nothing changes. Check 33.71 fails on v33.70',
+  now:'v33.72: The pixel torso breathes and bobs between two adjacent pixel rows. The gun shoulder is back at the existing muzzle height. Check 33.72 fails on v33.71',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

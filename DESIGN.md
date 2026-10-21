@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.72 - ONE PIXEL WALK BOB
+
+Co-op hunt while he was away. Job 86c asks for a one pixel bob at the existing timings and a muzzle within one world unit of the vector muzzle. The shipped body bobs by up to four pixels and its shoulder is two units too high. Its old muzzle check measures only the gun offset, missing the world placement.
+
+MEASURED. Check 33.72 passes, and fails on v33.71.
 ## v33.71 - THE PIXEL BARRELS AND THE PROPS SHEET
 
 Co-op hunt while he was away. Job 86e ship 2: with the pixel look on the four barrel bodies (red, shock, acid, cryo) are one cached sprite per blink state through pixWrap, while the pulse on the floor, the lid glow, the idle sparks and the pools stay live. It also adds the props sheet to ?pixbench (containers, bodies, wrecks, barrels drawn by their real painters).

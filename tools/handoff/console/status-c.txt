@@ -1,1 +1,1 @@
-10-21 05:05 86c-pix-pillager: failed, $0.17820159999999996
+10-21 05:27 waiting: another helper is just starting (memory check again in a few minutes); 86i-building-kinds kept

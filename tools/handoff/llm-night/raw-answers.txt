@@ -1,44 +1,32 @@
 
-It looks like you've provided a snippet of HTML and CSS code that appears to be part of a web application, possibly related to some kind of game or interactive experience. The content includes various elements such as buttons, text areas, and divs styled with custom classes and IDs.
+The provided code snippet is an HTML document with embedded CSS styles and JavaScript. It appears to be a web page or application interface, possibly for a game or interactive experience. Here's a breakdown of the key components:
 
-Here's a breakdown of the key components:
+### HTML Structure
 
-1. **CSS Styles**:
-   - The styles define the appearance of various elements like buttons, textareas, and divs.
-   - They include properties for font size, color, padding, border, background, and more.
-   - Some styles are specific to certain IDs or classes, such as `#pausebox`, `.modal`, and others.
+1. **Canvas Elements**:
+   - `<canvas id="cv"></canvas>`: A canvas element used for rendering graphics.
+   - `<canvas id="hcv"></canvas>`: Another canvas element, likely for additional graphical content.
 
-2. **HTML Elements**:
-   - The HTML includes several buttons (`<button>`), text areas (`<textarea>`), divs (`<div>`), and other elements like `<canvas>`.
-   - These elements are styled using the CSS defined above.
-   - There are also some comments that provide context or notes about specific features, such as feedback forms, settings modals, and news reports.
+2. **Hub Toast Notification**:
+   - `<div id="hubtoast"></div>`: A container for notifications or messages that appear on the screen.
 
-3. **JavaScript References**:
-   - While not included in this snippet, there are references to JavaScript functionality through IDs like `#resumebtn`, `#fbbtn`, etc., which suggest that the full application likely includes JavaScript for handling user interactions with these elements.
+3. **Pause Box**:
+   - `<div class="pausebox" id="pausebox">`: A modal dialog box that appears when a pause event occurs.
+     - Contains various elements like headers, text areas, buttons, and other interactive controls.
 
-### Key Features Identified:
+4. **Buttons in Pause Box**:
+   - `#resumebtn`, `#pausesetbtn`, `#lbbtn`, `#fbbtn`: Buttons for resuming the run, accessing settings, viewing the leaderboard, and providing feedback.
+   - `#confirmabandon`: A button to abandon the current run.
 
-- **Pause Menu**: A pause menu (`<div id="pausebox">`) with various buttons
+5. **Text Areas**:
+   - `#pausenote`: A text area for users to input notes or comments about their experience.
+   - `#pausefb`: A text area for reporting problems directly from the pause menu.
+
+### CSS Styles
 NONE
 NONE
 NONE
 NONE
-NONE
-NONE
-LINE 40028: wc.beginPath(); wc.arc(kx,ky,Math.min(5,FN.w*0.2),0,6.2832); wc.fill();
-- Possible NaN or undefined values reaching canvas calls (arc)
-
-LINE 40030: wc.beginPath(); wc.arc(kx,ky,Math.min(3,FN.w*0.12),0,6.2832); wc.fill();
-- Possible NaN or undefined values reaching canvas calls (arc)
-
-LINE 40077: if(wl2.sh!==undefined){ try{ shWallDraw(wc,wl2,LIFT); }catch(_swd){} continue; }
-- A try/catch that swallows a whole per-frame draw or update
-
-LINE 40158: wc.drawImage(_ws.c,wl2.x,wl2.y-LIFT,_ws.c.width*PIX_ENV,_ws.c.height*PIX_ENV);
-- Possible NaN or undefined values reaching canvas calls (drawImage)
-
-LINE 40163: else if(_ws) wc.drawImage(_ws.c,0,0,_ws.c.width,_ws.c.height,wl2.x-1/_ws.ss,wl2.y-LIFT-1/_ws.ss,_ws.c.width/_ws.ss,_ws.c.height/_ws.ss);
-- Possible NaN or undefined values reaching canvas calls (drawImage)
 NONE
 NONE
 NONE

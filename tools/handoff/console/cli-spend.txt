@@ -742,3 +742,8 @@
 2026-10-21 0.1411 critic-o-91b-report-news-style
 2026-10-21 0.1410 critic-o-91b-report-news-style
 2026-10-21 0.0000 o-91b-report-news-style
+2026-10-21 0.1473631 86f-pix-machines-wait
+2026-10-21 0.17505510000000002 86g-pix-pillager-states-wait
+2026-10-21 0.1727176 86h-pix-sets-wardrobe-wait
+2026-10-21 0.0000 86c-pix-pillager
+2026-10-21 0.26310540000000004 86h-pix-sets-wardrobe-wait

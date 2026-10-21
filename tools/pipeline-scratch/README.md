@@ -18,3 +18,4 @@ the mk step ("the stamp is fresh"), so a lane that reaches it after another ship
 Chrome restarts it with --gpu-recent-crash-count, it grew 2.2 GB in 28 minutes (about three times the first one's rate) and the
 slices after it had 15 to 22 checks that could not run instead of 3 or 4. A run hit that way is not a fair stable baseline; the next
 run (after 07:02, corpus_t plus 4 h) starts on a fresh Chrome (corpq.sh line 12).
+10-21 05:16: he answered yes in chat: if memory gets tight again tonight, end the full test run (corpq.sh and corpus-slices.sh, not nightly.sh) and close 9344 by its port.
