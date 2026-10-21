@@ -1,0 +1,24 @@
+coord-07 environment 2026-10-21 01:29:38
+logical CPUs: 12 (navigator.hardwareConcurrency 12)
+free RAM now GB: 3.6
+chrome: 155.0.8059.85 headless=new; chrome://gpu: Canvas Hardware accelerated, Rasterization Hardware accelerated, WebGL renderer ANGLE AMD Radeon RX 7900 XTX D3D11
+rAF on a blank page in this headless Chrome: p50 31.3 ms (about 32 Hz), so no run can show a gap under about 31 ms
+nightly: last corpus start 23:00, corpus done 00:09 (not running during the runs)
+--- status files at end
+10-21 01:26 running 86a-pix-kit-switch on Claude Code (your plan: week 74% of the 36.7% line, 5-hour 4%)
+10-21 01:29 cannot read your plan usage yet; waiting
+10-21 01:29 running 86c-pix-pillager on Claude Code (your plan: week 74% of the 36.7% line, 5-hour 4%)
+10-21 01:28 gate: shipping cw-cx-shortnews (o-91-circle-only-text, codex)
+--- listening test ports at end
+  TCP    127.0.0.1:9331         0.0.0.0:0              LISTENING       21048
+  TCP    127.0.0.1:9332         0.0.0.0:0              LISTENING       20136
+  TCP    127.0.0.1:9344         0.0.0.0:0              LISTENING       21560
+  TCP    127.0.0.1:9346         0.0.0.0:0              LISTENING       1312
+  TCP    127.0.0.1:9351         0.0.0.0:0              LISTENING       23104
+  TCP    127.0.0.1:9352         0.0.0.0:0              LISTENING       19772
+  TCP    127.0.0.1:9353         0.0.0.0:0              LISTENING       26644
+  TCP    127.0.0.1:9359         0.0.0.0:0              LISTENING       17396
+--- other headless Chromes during the runs: 9331, 9332 fuzz robots, 9344 corpus Chrome (idle), 9346 gate, 9351 9352 9353 9359 lane preflight; lanes a and b ran 84-airstrike-bar-lower and 85-preraid-map-no-cache-labels, lane o ran codex o-91; ships v33.41 to v33.46 landed during the runs
+--- RAM watchdog (watchdog.txt): lowest during the measuring runs 2.39 GB at 01:10:10; at 01:29:28, after the last run (C-t1-r3 ended about 01:28), free RAM fell to 1.87 GB and the watchdog stopped Chrome 9371 by its port. The demo pair unstage call then had no browser (the pair died with it; only the temp profile pillagers-cdp9371 held its keys).
+--- note: the first C tries (raw-C-*-try1-benched.json) are kept but not used: player 1 was benched by the arcade idle rule (keys[] set by a robot is not input to it) and player 2 stood still
+--- versions: A ran on fixture 33.41 (loaded 01:00), B on 33.44 to 33.46 (stress.ps1 opens a fresh tab), C on 33.46; all before 86c/86f (86c was still running in lane at 01:29)

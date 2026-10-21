@@ -1,0 +1,5 @@
+## v33.49 - THREE SHORT REAL NEWS NOTES
+
+Co-op hunt while he was away. The Thanksgiving build needs a few useful notes instead of the alpha warning and repeated polish filler.
+
+MEASURED. Check 33.49 passes, and fails on v33.48.

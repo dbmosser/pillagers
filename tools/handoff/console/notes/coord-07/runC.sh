@@ -13,8 +13,7 @@ for r in $(seq 1 $N); do
   FREE2=$(powershell.exe -NoProfile -Command "[math]::Round((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1MB,2)" | tr -d '\r')
   for w in p1 p2; do
     R=$R1; [ $w = p2 ] && R=$R2
-    { echo "{\"run\":\"C-t$T-r$r-$w\",\"free_gb\":$FREE,\"free_gb_end\":$FREE2,\"reset_and_unthrottled_calib\":\"$R\",\"sample\":"; cat "$D/raw-C-t$T-r$r-$w.tmp"; echo "}"; } > "$D/raw-C-t$T-r$r-$w.json"; rm -f "$D/raw-C-t$T-r$r-$w.tmp"
-    python -c "import json,sys; d=json.load(open(sys.argv[1])); s=d['sample']; print(d["run"], "bench", s.get("drs_end",{}).get("state"), "gap", s['gap'], 'busy', s['busy_ms'], 'gfxw', s['gfx_window'], 'q', s['drs_end']['gfxScaleNow'], s['drs_end']['q'], 'moves', s['drs_end']['moves'], 'cal', d['reset_and_unthrottled_calib'], s['calib_ms'], 'moved', s['moved_px'], 'lost', s['raid_lost'], 'free', d['free_gb'], d['free_gb_end'], s['canvases'])" "$D/raw-C-t$T-r$r-$w.json" || cat "$D/raw-C-t$T-r$r-$w.json"
+    { echo "{\"run\":\"C-t$T-r$r-$w\",\"free_gb\":$FREE,\"free_gb_end\":$FREE2,\"reset_and_unthrottled_calib\":\"$R\",\"sample\":"; cat "$D/raw-C-t$T-r$r-$w.tmp"; echo "}"; } > "$D/raw-C-t$T-r$r-$w.json"; rm -f "$D/raw-C-t$T-r$r-$w.tmp"; echo "wrote C-t$T-r$r-$w"
   done
   sleep 3
 done

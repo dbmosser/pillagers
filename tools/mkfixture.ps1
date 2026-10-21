@@ -6145,6 +6145,28 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'33.49',what:'both what is new views show three short lowercase real notes without alpha or polish fillers',
+   run:function(){
+     var bad=[], list=document.getElementById('wnlist'), modal=document.getElementById('wnmodal'), cls, html, sub=document.getElementById('wnsub'), oldSub;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       if(!list||!modal||typeof wnList!=='function') return 'what is new controls missing';
+       cls=modal.className; html=list.innerHTML; oldSub=sub&&sub.textContent;
+       var lines=wnList(), want=['experimental switches in settings','one feed for loot, kills and sp','full raid log with copy report'];
+       if(JSON.stringify(lines)!==JSON.stringify(want)) bad.push('the shown news is not the three short real notes');
+       if(/\balpha\b|polish pass|daniel/i.test(WHATSNEW.join('|'))) bad.push('the news still contains private or filler copy');
+       for(var i=0;i<lines.length;i++){
+         if(lines[i]!==lines[i].toLowerCase()||lines[i].length>48) bad.push('note '+i+' is not short lowercase text');
+         if(wnHead(lines[i])!==lines[i]||wnShort(lines[i])!==lines[i]) bad.push('the card clips note '+i);
+       }
+       wnOpen();
+       if(list.children.length!==3) bad.push('the pause window does not show three notes');
+       for(i=0;i<list.children.length;i++) if(list.children[i].textContent!==TX((i+1)+'. '+want[i])) bad.push('the pause window changed note '+i);
+       return bad.length?bad.join('; '):null;
+     } finally {
+       if(cls!==undefined) modal.className=cls; if(html!==undefined) list.innerHTML=html; if(sub&&oldSub!==undefined) sub.textContent=oldSub;
+       try{ __endRaid('abandon'); }catch(_e){} __topClear();
+     } }},
   {v:'33.48',what:'the pre-raid pack names are shown whole beside the buy slot (the kit column is 480 px wide at most) and a buy control is never lime, which is the ascend colour',
    run:function(){
      if(!(window.__hubEnter&&window.__P&&window.__applyLoaded)||typeof renderSector!=='function'||typeof packBuyHtml!=='function') return 'SKIP: no pack buy control';

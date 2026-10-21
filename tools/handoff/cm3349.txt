@@ -1,0 +1,7 @@
+v33.49: three short real news notes
+
+Both news views show three short lowercase notes. The alpha warning and all polish filler entries are removed.
+
+Check 33.49. Fails on v33.48.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

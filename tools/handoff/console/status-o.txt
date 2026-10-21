@@ -1,1 +1,1 @@
-10-21 01:24 retarget: trying o-91-circle-only-text's fixture edit on a trial copy (1 checks)
+10-21 01:28 gate: shipping cw-cx-shortnews (o-91-circle-only-text, codex)

@@ -664,3 +664,5 @@
 2026-10-21 0.0000 o-91-circle-only-text
 2026-10-21 0.0000 o-91-circle-only-text
 2026-10-21 0.1548417 85-preraid-map-no-cache-labels
+2026-10-21 1.3730033000000004 86-preraid-buy-column
+2026-10-21 0.14352890000000001 86c-pix-pillager-wait

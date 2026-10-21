@@ -3280,7 +3280,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.48';
+var VER='33.49';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3296,17 +3296,8 @@ var WHATSNEW_VER='33.46';
 // whole floor. It now shows the newest WN_SHOW notes, each as its headline sentence and the start of what follows. The notes
 // themselves are unchanged.
 var WN_SHOW=5, WN_TAIL=150;
-// v28.xx (cw-wnded), critic on screen 40 (What's New): "4 of 5 notes are the same Polish pass sentence". The card shows the newest generic
-// polish line once and every other note once; the list itself is untouched (old checks read it by index).
-function wnList(){
-  var o=[], i, t, seen=0;
-  for(i=0;i<WHATSNEW.length;i++){
-    t=String(WHATSNEW[i]);
-    if(/^POLISH PASS \d+\. MORE FIXES TO THE SCREENS/i.test(t)){ if(seen) continue; seen=1; }
-    o.push(WHATSNEW[i]);
-  }
-  return o;
-}
+// v28.xx (cw-cx-shortnews): three short real notes in both views. Historical real entries stay below for vocabulary and feature checks.
+function wnList(){ return WHATSNEW.slice(0,3); }
 function wnShort(s){
   var t=String(s||''), i=t.indexOf('. '), head, rest, cut;
   if(i<0||i>140) return (t.length>WN_TAIL+60)?(t.slice(0,WN_TAIL+60).replace(/\s+\S*$/,'')+'...'):t;
@@ -3328,53 +3319,10 @@ function wnHead(s){
   return wnShort(t);}
 var WNSEEN=1;   // v27.xx (wnbutton), HIS ANSWER 37: the card no longer shows by itself on the floor (it was 0 until you walked off it); WHAT'S NEW in the pause box shows the notes. Left at 0 by a check, the old card still draws.          // v6.62, his note: one showing per page load, not per version.
 var WHATSNEW=[
-  'THIS IS AN ALPHA. Things will break. When something does, the game writes it into your run report and tells you so; that report is how it gets fixed.',
-  'POLISH PASS 44. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 43. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 42. More fixes to the screens, the sounds and two player play.',
+  'experimental switches in settings',
+  'one feed for loot, kills and sp',
+  'full raid log with copy report',
   'EXPERIMENTAL. Settings has a new experimental page: every new idea has its own on and off switch.',
-  'POLISH PASS 40. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 39. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 38. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 37. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 36. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 35. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 34. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 33. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 30. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 32. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 31. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 30. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 29. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 28. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 27. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 26. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 25. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 22. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 24. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 20. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 21. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 20. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 19. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 18. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 17. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 15. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 16. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 15. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 14. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 13. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 12. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 11. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 10. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 9. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 8. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 7. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 6. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 5. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 4. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 3. A tidier pause box and stash, kits last one raid, and the needed-item glow says why.',
-  'POLISH PASS 2. More fixes to the screens, the sounds and two player play.',
-  'POLISH PASS 1. More fixes to the screens, the sounds and two player play.',
   'MORE POLISH. Cleaner screens and sharper feedback across the raid, from the gun bar to the end cards.',
   'CLEANER RAIDS. One message feed on the left, one alert lane at the top, red barrels and a kit row on the map screen.',
   'ONE FEED. What you pick up, kill and earn is a line at the bottom left, and the big moments are an alert at the top.',
@@ -51457,7 +51405,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.48: The pre-raid pack names show in full and the price buttons are calmer. Check 33.48 fails on v33.47',
+  now:'v33.49: Both news views show three short lowercase notes. The alpha warning and all polish filler entries are removed. Check 33.49 fails on v33.48',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

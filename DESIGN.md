@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.49 - THREE SHORT REAL NEWS NOTES
+
+Co-op hunt while he was away. The Thanksgiving build needs a few useful notes instead of the alpha warning and repeated polish filler.
+
+MEASURED. Check 33.49 passes, and fails on v33.48.
 ## v33.48 - PRE-RAID: WIDER KIT COLUMN SO PACK NAMES SHOW WHOLE, A CALM BUY BUTTON
 
 Co-op hunt while he was away. The critic scored the page 3 and named the pack names cut to dots beside the new buy slot and a lime price that competes with ascend. The kit column may now grow to 480 px (it was 400) and the map gives up the width; the affordable price is plain light text on the raised fill, with red kept for what you cannot afford.
