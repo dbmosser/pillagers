@@ -1,44 +1,4 @@
 
-It looks like you've provided a large block of HTML and CSS code, which appears to be part of a web page or application. The content seems to include various UI elements such as modals, buttons, text areas, and other interactive components.
-
-Here's a brief overview of the key sections:
-
-1. **CSS Styles**:
-   - The CSS styles define the appearance and behavior of various HTML elements.
-   - There are styles for different modes (e.g., `expmode`), which likely control how certain UI elements are displayed based on user interactions or settings.
-
-2. **HTML Elements**:
-   - The HTML includes several modals (`#settingsmodal`, `#fbmodal`, `#wnmodal`, `#lbmodal`) that can be used to display additional information or options.
-   - There are also other sections like the pause box (`#pausebox`), outcome card (`#outcome`), and trader modal (`#tradermodal`).
-
-3. **Interactive Elements**:
-   - Buttons, text areas, and other interactive elements are present throughout the HTML.
-   - These elements often have IDs or classes that can be used to manipulate them via JavaScript.
-
-4. **Canvas Elements**:
-   - There are two canvas elements (`<canvas id="cv"></canvas>` and `<canvas id="hcv"></canvas>`) which might be used for rendering graphics or animations.
-
-5. **Pause Box**:
-   - The pause box contains various buttons and text areas
-NONE
-NONE
-NONE
-I apologize, but I don't have enough context to provide a detailed response about your character or game state based on the code snippet you've shared. The text appears to be part of some kind of game's source code, possibly related to a survival horror or action-adventure title involving pillagers and raids.
-
-Without more information about the specific game or what you're asking for, I can't generate details like:
-
-- Your character's name
-- Credits earned
-- XP points
-- What you're wearing
-- Contents of your stash
-- Unlocked features
-
-If you have a specific question about this code or need help with something related to it, please provide more context or clarify what information you're looking for. I'd be happy to assist if I can!
-NONE
-NONE
-NONE
-NONE
 NONE
 NONE
 NONE

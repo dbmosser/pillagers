@@ -1,0 +1,5 @@
+## v33.51 - THE PIXEL LOOK SWITCH AND KIT
+
+Co-op hunt while he was away. His orders of 2026-10-20 (22:45 to 23:05): the whole game goes pixel art. Job 86a, ship 1: one experimental row (pixel look, on by default, only he flips it), pixBlit, byte capped sprite caches with a build budget, the style test kit, the ramp tables and a ?pixbench page. Nothing draws differently yet.
+
+MEASURED. Check 33.51 passes, and fails on v33.50.

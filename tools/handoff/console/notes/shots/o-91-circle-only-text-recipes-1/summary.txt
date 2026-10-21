@@ -1,0 +1,8 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  91-public-news-window                  NOT STAGED   6.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: wnOpen is not defined
+    at <anonymous>:1:2308
+    at async <anonymous>:1:21
+  91-public-report-recorder              NOT STAGED   5.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: openSettings is not defined
+    at <anonymous>:1:2308
+    at async <anonymous>:1:21
+  40-whats-new-card                      staged      12.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | runs 1 wnseen 0

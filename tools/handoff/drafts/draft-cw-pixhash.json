@@ -1,0 +1,12 @@
+{
+    "title":  "DISCOVERY",
+    "why":  "discovery only, never shipped",
+    "now":  "nothing",
+    "edits":  [
+                  {
+                      "anchor":  "var GFXP={on:0,k:0,last:0,cur:{}};",
+                      "replacement":  "var GFXP={on:0,k:0,last:0,cur:{}};   // v33.51 (cw-pixhash): discovery only"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027DISCOVERY: print a staged raid frame hash\u0027,\n   run:function(){\n     function fnv(c){ var d=c.getContext(\u00272d\u0027).getImageData(0,0,c.width,c.height).data, h=2166136261, i; for(i=0;i\u003cd.length;i+=4){ h^=d[i]; h=Math.imul(h,16777619); h^=d[i+1]; h=Math.imul(h,16777619); h^=d[i+2]; h=Math.imul(h,16777619); } return (h\u003e\u003e\u003e0).toString(16); }\n     var out=[], sw=cv.style.width, sh=cv.style.height, hw=hcv.style.width, hh=hcv.style.height, i, g;\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __forceSize(1920,1080);\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); keys={};\n       for(i=0;i\u003c3;i++) __frame(0.016);\n       out.push(fnv(cv)+\u0027/\u0027+fnv(hcv));\n       __frame(0.016); out.push(fnv(cv)+\u0027/\u0027+fnv(hcv));\n       __frame(0.016); out.push(fnv(cv)+\u0027/\u0027+fnv(hcv));\n       return \u0027HASH \u0027+cv.width+\u0027x\u0027+cv.height+\u0027 \u0027+out.join(\u0027 \u0027);\n     } finally {\n       try{ if(__state()\u0026\u0026!__state().over) __endRaid(\u0027abandon\u0027); }catch(_e){}\n       try{ cv.style.width=sw; cv.style.height=sh; hcv.style.width=hw; hcv.style.height=hh; resize(); }catch(_z){}\n       __topClear(); __cleanProfile();\n     } }},"
+}

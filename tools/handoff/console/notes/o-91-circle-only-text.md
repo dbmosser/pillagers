@@ -57,3 +57,18 @@ Verified with the ACTUAL tools/handoff/codex/retarget.mjs plan command, without 
 The normal local validation also passed: mk printed written; two game anchors matched exactly once; proposed game script, new checks and retarget fragment compile; no Daniel outside comments, alpha warning or polish filler remains in the proposed game. No tracked file was edited. WHATSNEW_VER is still fresh at 33.46, so no extra card refresh is required for this retry.
 
 Remaining: lane applies/checks the retarget, ships cw-cx-shortnews, then takes the three existing recipe photographs and runs the critic. Publicreports remains shipped.
+
+--- codex run 2026-10-21 01:39 ---
+2026-10-21, continued on v33.50 after successful ships and first pictures.
+
+Confirmed cw-cx-shortnews shipped in b51c3b39 (v33.49), after the 33.46 retarget passed in 22e6527f. Both requested text keys are now shipped. Current source has zero Daniel occurrences outside comments and zero alpha-warning/polish-filler entries. The stamp is 33.46, refreshed by a Claude card ship and within the gate limit.
+
+Inspected the supplied pictures and opened the actual after/31 recorder and after/40 floor-card images with the image viewer. The two custom recipes failed because wnOpen and openSettings are closure-local, not browser globals. Fixed both recipes to click the existing DOM controls: wnbtn for news and exportbtn for recorder. Each recipe now throws if the intended modal is not visible instead of returning a bare hub shot as useful evidence. No fixture API or game behavior change is needed for camera staging.
+
+Dropped the forced floor-card recipe and emptied shots.txt. HIS ANSWER 37 says news is accessed from the pause window; WNSEEN defaults to 1 and only the old screen 40 recipe forces the obsolete floor notice on. We should review the real news window, not redesign/re-enable that removed path. The extracted-card challenge/hierarchy findings concern another worker's change; no gameplay or run-over layout is modified here. Both points are in alarms-new.md for the coordinator. Bare-hub critic findings from the failed recipes are invalid evidence for either intended modal.
+
+Prepared a scoped style follow-up cw-cx-reportnewsstyle from the valid recorder critic. It caps the raw preview at 240px with 16px/24px type and visual lowercase while retaining the exact raw textarea value for copying/restoration; makes copy the one lime 48px/20px primary action; quiets clear until hover/focus; left-aligns the recorder column instead of reserving the empty 480px margin; gives restore a 16px muted label, 8px field gap, 56px field, 16px action gap and 24px footer padding. The existing news window gets 20px notes and 32px heading using shared tokens. This restyles the existing controls and changes no report data, restore logic, controls or game feel.
+
+The new check stages the real recorder, measures the preview and action/restore sizes, verifies the raw textarea probe remains unchanged despite lowercase styling, checks the copy accent, and stages the actual pause news window to measure its 20px text. Local script/anchor and JavaScript syntax checks passed. The new mk printed written and its unique style anchor applied once to a private proposed copy. All handoff files are ASCII; no tracked file was edited and no game/regression code was executed locally. Existing retarget JSON stays unchanged (already applied and skipped by the lane).
+
+Pending: ship cw-cx-reportnewsstyle and photograph/review the two corrected recipes (camera round 2). Original text changes are shipped; no additional stamp ship is required at this build.

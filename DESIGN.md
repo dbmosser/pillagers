@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.51 - THE PIXEL LOOK SWITCH AND KIT
+
+Co-op hunt while he was away. His orders of 2026-10-20 (22:45 to 23:05): the whole game goes pixel art. Job 86a, ship 1: one experimental row (pixel look, on by default, only he flips it), pixBlit, byte capped sprite caches with a build budget, the style test kit, the ramp tables and a ?pixbench page. Nothing draws differently yet.
+
+MEASURED. Check 33.51 passes, and fails on v33.50.
 ## v33.50 - DEFAULT CAMERA EXACTLY 1.0
 
 Co-op hunt while he was away. Pixel art pass job 86a, ship 0. The default camera lands at 1.0 so 1080p is pixel exact and 4K is exactly double. Inside the 1.0 to 1.05 range job 79 measured. A zoom he set himself stays his.

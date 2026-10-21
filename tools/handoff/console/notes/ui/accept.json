@@ -389,17 +389,17 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The card is much calmer: three short lines replace the paragraphs, so it reads in a second. It is still a small card with loose spacing, and it does not follow the near-full-screen window rule.",
+  "verdict": "A clean, compact dark card with a lime focus bar, an x and one lime action, but it is small, its content is a plain numbered list, and the busy hub behind it competes with it.",
   "findings": [
-   "P1 whole card: Either make it a 90% card, or document a small-notice exception in the guide. Raise the scrim to rgba(6,7,8,.80), because the hub labels (wirt the gambler, shop craft and hire, the last pour) are still readable behind it.",
-   "P1 list rows 1-3: Drop the numerals. Use a 16px lime or tx-2 bullet or tick at the left. Keep the names in tx-1 at 20px 600 and tighten the row pitch to 40px. Tighten the card width to about 560px, or give each line a tx-2 sub-label.",
-   "P1 title row: Set the title to 32px 700 in tx-1. Make the version a tx-2 16px tag on the right, or put it below the title, so the eye hits the title and then the button.",
-   "P2 footer: Shorten to 'enter' or 'walk' at 16px tx-2 (#aaa498), or delete it, since the button and X already dismiss. Keep the hint lined up with the button's text baseline.",
-   "P2 x button and divider: Make the divider run the full inner width (24px padding) with --ui-line. Make the X 40px with a clear 8px focus ring so pad focus shows. Align its centre with the title's centre."
+   "P1 card size and placement: Decide whether this is a window or a toast. If it is a window, make it about 90 percent wide. If it stays small, raise the scrim to rgba(6,7,8,.80) and hide the hotbar and hint toast while it is open.",
+   "P1 hierarchy: Make the items f-cond 600 at 20px in tx-1 with a lime or tx-2 number column. Keep the title at 32px/700. Make the version tx-2 or a small tag. Keep the lime fill on the button only.",
+   "P1 footer row: Delete the hint line. Keep x and 'got it'. If a key hint stays, show it as an enter glyph inside the button. Show the live pad button on pad.",
+   "P2 x close button: Use a 40px button, a 20px glyph in tx-1 and 16px from the top and right edges. Run the divider the full card width so the left and right padding match.",
+   "P2 spacing and alignment: Use 16px row gaps with 1px --ui-line dividers, 24px between header and list, 24px between list and footer, and a 3px bar."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-91-circle-only-text-after/40-whats-new-card-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-91-circle-only-text-recipes-1/40-whats-new-card-1080.jpg",
   "task": "o-91-circle-only-text",
-  "when": "2026-10-21T05:32"
+  "when": "2026-10-21T05:33"
  },
  "45-arcade-attract-board": {
   "score": 3,
@@ -1728,5 +1728,53 @@
   "pic": "tools/handoff/console/notes/shots/o-01-stash-pays-in-raid-recipes-1/stashraid-forge-elements-1080.jpg",
   "task": "coord-10",
   "when": "2026-10-21T05:00"
+ },
+ "91-public-news-window": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "This screenshot is named the news window but shows only the undercroft hub with no news card on screen, so the news window itself can't be judged. The hub it does show has a clipped title, tiny HUD text, a sentence on screen and no clear primary action.",
+  "findings": [
+   "P0 whole frame (file 91-public-news-window-1080): Re-shoot with the card open. It should be a centred card at about 90% of the screen, a 32px lower-case title, an x in the top-right corner, a --scrim of rgba(6,7,8,.80) behind it, and one lime focus row.",
+   "P1 hub station labels (enter raid!, wirt the gambler, the stash, fashion, settings): Give 'enter raid' the only lime treatment (a filled --acc plate with --acc-ink text, 32px) and drop the '!'. Make the other labels 20px with a --ui-panel plate at 90% and a 1px --ui-line-hi border. Offset each label 24px above its pad, clear of the people.",
+   "P1 'the last pour' sub-label: Delete it. If a warning is needed, use a 16px '--warn' tag reading 'experimental' inside the label plate.",
+   "P1 bottom toast 'the welcome pack is in your stash.' and the hint line below it: Shorten the toast to 'welcome pack in stash' at 20px. Raise the hint to at least 14px, tx-2 on a --ui-panel plate, with 8px padding.",
+   "P1 top-left title block 'the undercroft / 12 items in stash · 0 runs': Use a 32px f-cond 700 title in tx-1, with a 16px tx-2 sub-line. Give it a 24px inset (the 5% margin) with 24px of clear width so nothing clips. Reserve lime for focus."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-91-circle-only-text-recipes-1/91-public-news-window-1080.jpg",
+  "task": "o-91-circle-only-text",
+  "when": "2026-10-21T05:33"
+ },
+ "91-public-report-recorder": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The hub reads as a crowded sprite crowd with oversized, inconsistent labels; the HUD is tiny, off-style and clipped, so it looks like a prototype and not a polished menu.",
+  "findings": [
+   "P0 top-left title block 'the undercroft / 12 items in stash · 0 runs': Make 'the undercroft' 32px f-cond 700 tx-1 at 48px margin from the left and top. Move the sub line to 16px tx-2 on its own line, 8px below. Keep it inside the 5% safe margin so it never touches the arena frame.",
+   "P0 top-right currency strip ($900 / 0 xp / stash $3,750 bag $0): Stack as a vertical list: each row a 16px tx-2 label on the left and a 20px tx-1 value on the right, 8px row gap, in one panel (--ui-panel, 1px --ui-line-hi, 4px radius, 16px padding). Min text 14px, xp at 16px tx-2 (>=4.5:1).",
+   "P1 station labels (wirt the gambler, enter raid!, the mainframe, shop craft and hire, settings, the stash, fashion, the last pour): Drop labels to 20px f-cond 600 tx-1 on a --ui-panel pill (8px 16px padding, 4px radius), anchored centred 16px above each pad. Give 'enter raid' alone a lime (--acc) 2px underline or accent tab, and show the focused station with a lime border. Remove the '!'. Nudge 'the stash' and 'fashion' so no label covers a sprite.",
+   "P1 '***experimental feature may glitch***' under 'the last pour': Delete the asterisk line. If a warning is needed, use a 16px --warn word 'beta' as a small tag at the right of the 'the last pour' pill.",
+   "P1 bottom hint panel 'the welcome pack is in your stash.' + 'wasd walk · shift jog · e use station': Remove the sentence (or move it into the What's New card). Put the legend at 16px tx-2 centred 16px above the hotbar, with key names as 16px f-cond in --ui-raised key caps. Keep 24px clear of the stash label."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-91-circle-only-text-recipes-1/91-public-report-recorder-1080.jpg",
+  "task": "o-91-circle-only-text",
+  "when": "2026-10-21T05:34"
+ },
+ "85-after-mapfirst": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "A clean, consistent card with a clear lime primary action and a tidy contracts column, but the map is cluttered with overlapping labels and glyphs, and the contracts rows are too small and too quiet to read from a couch.",
+  "findings": [
+   "P1 map, the eastern block around extract b, the forge and chill row: Give every label a 6px dark plate at 80% --ui-void, or a 2px outline, so it separates from the line work. Offset extract labels 12px from their ring. Resolve the stacked glyphs in the two boxes into one icon each. Keep at least 8px between labels.",
+   "P1 map labels, overall: Use 16px f-cond 600 as the floor for every map label. Use tx-1 for place names and tx-2 for secondary text, with teal reserved for extracts and red for hostile. Add the dark plate from the first finding behind the grey labels so they hit 4.5:1.",
+   "P1 contracts panel rows: Put the payout on the name line in 20px tx-1 and the progress in a 4px bar under the name with the bar fill in --acc. Make the idle track --ui-line at 1px, not a thick grey bar. Raise the progress text to 16px. Give the rows 56px of height and show the 4 to 5 that matter, or add a scroll cue.",
+   "P2 header: Set 'sector map' and 'dawn · clear' to 16px tx-2 (#aaa498). Show the X with a 1px --ui-line-hi border and a lime focus ring only when it is focused.",
+   "P2 footer, bottom left: Make it 16px tx-2 and align its left edge with the map frame (x=153). Add a thin 4px progress bar next to it, or drop the label if the map already shows the survey state."
+  ],
+  "pic": "tools/handoff/console/notes/shots/85-preraid-map-no-cache-labels-recipes-1/85-after-mapfirst-1080.jpg",
+  "task": "85-preraid-map-no-cache-labels",
+  "when": "2026-10-21T05:42"
  }
 }

@@ -1,1 +1,1 @@
-10-21 01:29 86c-pix-pillager: waiting on 86a-pix-kit-switch, parked in blocked/ (not counted as a try), $0.14352890000000001
+10-21 01:40 waiting: another helper is just starting (memory check again in a few minutes); 86e-pix-props kept

@@ -1,0 +1,7 @@
+v33.51: the pixel look switch and kit
+
+A new experimental row, pixel look, is in Settings. The art kit for the pixel look is in the build; nothing on screen changes yet.
+
+Check 33.51. Fails on v33.50.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

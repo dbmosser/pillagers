@@ -1,0 +1,4 @@
+{"check":"skeptic spot check: blank page rAF cadence and CPU throttle calibration on 9371","time":"01:35:57","free_gb_end":4.18,
+"t1":{"calib_before":41.6,"calib_after":41.9,"n":193,"ts_gap":{"p05":30.8,"p50":31.2,"p95":31.7},"now_gap":{"p05":30.2,"p50":31.3,"p95":32.3},"hidden":false,"vis":"visible","inner":[1888,977]},
+"t4":{"calib_before":208.7,"calib_after":203.5,"n":192,"ts_gap":{"p05":30.9,"p50":31.2,"p95":31.6},"now_gap":{"p05":30,"p50":31.3,"p95":32.4},"hidden":false,"vis":"visible","inner":[1888,977]},
+"t1_after":{"calib_before":41.9,"calib_after":41.9,"n":193,"ts_gap":{"p05":30.9,"p50":31.2,"p95":31.6},"now_gap":{"p05":30.1,"p50":31.3,"p95":32.5},"hidden":false,"vis":"visible","inner":[1888,977]}}
