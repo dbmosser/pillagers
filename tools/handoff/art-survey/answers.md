@@ -64,3 +64,9 @@ Page: https://claude.ai/artifact/9FE6Z1FhG197FsrqVLRJFH. The page's database cam
   3 full sets that replace the whole look. Coordinator calls, logged as questions, not waiting: the body builds (lean, curved, broad) and the paint
   schemes are not in his list, so one body shape, with the feminine look carried by the head options; team colours stay (they are play, not
   dress-up). Old saves map each removed pick to the nearest kept one inside salvagerun:profile (never a new key), and nothing he paid for is lost.
+- 10-20 about 22:55, his ORDER (binding): "lets use that same art style to add more furniture and details inside buildings so as to give the
+  buidlings more identity -- e.g. is this a house, an office, a warehouse, etc". Today buildings have a layout plan (open, spine, core, pinwheel,
+  cells, lsplit; makeBuilding about dark_raiders.html line 10382) and solid furniture, but no kind. Coordinator call (logged, not waiting): each
+  building gets a kind (house, office, warehouse, and a few more) from its own seeded draw, so maps, loot and the seed 4242 fingerprint stay the
+  same; the kind sets the floor, re-skins the existing furniture and adds flat details that never block movement or sight. New solid furniture
+  would change paths and sight lines, so it waits until after the party unless he asks.
