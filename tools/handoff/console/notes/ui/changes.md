@@ -285,3 +285,4 @@
 
 2026-10-21 | 86d-pix-walls-trees | raid walls | walls are pixel blocks with chips instead of smooth | notes/shots/86d-after/21-raid-hud-calm-1080.jpg
 2026-10-21, o-91b-report-news-style, news and recorder: prepared cw-cx-o91b-finalspacing; news frame top 55 to 96px minimum, existing version 16 to 56px beside 112px rows; recorder preview 123 to 184 CSS px, restore gap auto to 32px, helper 16px and header tabs aligned. Words and handlers preserved. Before: tools/handoff/console/notes/shots/o-91b-report-news-style-recipes-3/91-public-news-window-1080.jpg and 91-public-report-recorder-1080.jpg. After: pending lane round-4 captures at 1080 and 4k.
+2026-10-21 | 86d-pix-walls-trees | raid trees, bushes, shadows | smooth blobs and soft shadows became hard pixels | notes/shots/86d-veg/21-raid-hud-calm-1080.jpg

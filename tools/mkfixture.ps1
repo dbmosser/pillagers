@@ -6148,6 +6148,30 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'33.70',what:'news frame clears currency and pairs a large existing version with the notes; recorder keeps a bounded six-line preview and a 32px restore gap',
+   run:function(){
+     var bad=[],ta=document.getElementById('exporttext'),oldValue;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __forceSize(1920,1080);applyMenuZoom();openSettings('rec');oldValue=ta.value;
+       var ts=getComputedStyle(ta),actions=ta.nextElementSibling,restore=actions.nextElementSibling;
+       if(parseFloat(ts.height)<183||ta.getBoundingClientRect().height>240.5)bad.push('preview is not the bounded six-line height');
+       if(parseFloat(ts.lineHeight)!==24||parseFloat(ts.paddingBottom)<22)bad.push('preview lines have no padding before fade');
+       if(Math.abs(parseFloat(getComputedStyle(restore).marginTop)-32)>1)bad.push('restore is still pinned apart from the log');
+       var help=restore.querySelector('.msub');if(parseFloat(getComputedStyle(help).fontSize)<16)bad.push('restore helper is below 16px');
+       if(ta.value!==oldValue)bad.push('report data changed');
+       document.getElementById('settingsmodal').classList.remove('on');wnOpen();
+       var news=document.getElementById('wnmodal'),ns=getComputedStyle(news),frame=getComputedStyle(news,'::before'),sub=document.getElementById('wnsub'),list=document.getElementById('wnlist'),row=list.firstElementChild;
+       if(ns.display!=='grid'||parseFloat(getComputedStyle(sub).fontSize)<56||parseFloat(getComputedStyle(row).minHeight)<112)bad.push('news lacks the version and notes composition');
+       if(frame.backgroundImage!=='none')bad.push('news still has the stray accent tab');
+       var hud=document.getElementById('topright'),hs=getComputedStyle(hud),hr=hud.getBoundingClientRect(),nr=news.getBoundingClientRect(),zoom=parseFloat(news.style.zoom)||1,frameTop=nr.top+parseFloat(frame.top)*zoom;
+       if(hs.visibility!=='hidden'&&hs.display!=='none'&&hr.width>0&&frameTop<hr.bottom+24)bad.push('news frame overlaps the currency strip');
+       return bad.length?bad.join('; '):null;
+     }finally{
+       if(ta&&oldValue!==undefined)ta.value=oldValue;
+       ['settingsmodal','wnmodal'].forEach(function(id){document.getElementById(id).classList.remove('on');});
+       try{__endRaid('abandon');}catch(_e){}__runPrep();applyMenuZoom();__topClear();
+     }}},
   {v:'33.69',what:'cw-pixveg (86d): THE PIXEL TREE, BUSH AND SHADOW. With the pixel look on a canopy, a bush and a ground shadow are art-pixel sprites (ceil(w/2) wide whatever the render resolution, not rebuilt on a zoom step) with only alpha 0 and 255, canopy and bush colours only from the map palette or its dark edge tone, the map trees and walls are untouched, and with the look off the sprite sizes are the old ones',
    run:function(){
      if(typeof pixVegBake!=='function') return 'no pixel veg (pixVegBake)';

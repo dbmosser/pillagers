@@ -737,3 +737,5 @@
 2026-10-21 0.1394 critic-o-91b-report-news-style
 2026-10-21 0.0000 o-91b-report-news-style
 2026-10-21 0.2230493 86c-pix-pillager
+2026-10-21 1.4344859 86d-pix-walls-trees
+2026-10-21 0.17820159999999996 86c-pix-pillager

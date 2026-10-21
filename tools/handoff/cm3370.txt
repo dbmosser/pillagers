@@ -1,0 +1,7 @@
+v33.70: news and report spacing
+
+The frame clears currency, the existing version anchors the notes, and the recorder groups a six-line preview with restore.
+
+Check 33.70. Fails on v33.69.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

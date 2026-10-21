@@ -1,0 +1,5 @@
+## v33.70 - NEWS AND REPORT SPACING
+
+Co-op hunt while he was away. The news frame crosses the currency strip and its three notes lack an anchor. Restore sits too far from the small report preview.
+
+MEASURED. Check 33.70 passes, and fails on v33.69.

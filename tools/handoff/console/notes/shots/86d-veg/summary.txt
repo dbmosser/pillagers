@@ -1,0 +1,3 @@
+== 1080 : window 1952x1183, viewport 1920x1080
+  21-raid-hud-calm                       staged      14.6s  
+  64-arcade-board-seeded-night           staged      10.2s  

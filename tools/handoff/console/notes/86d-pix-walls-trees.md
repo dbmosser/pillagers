@@ -26,3 +26,5 @@ Facts: wallSprite ~38891, vegSprite ~38788, tree/bush draw ~39596-39635, shadowE
 - Card 33.62 shipped (stamp only; check threshold 0.10), then SHIPPED v33.66 cw-pixwalls (the pixel wall). Picture: notes/shots/86d-after/21-raid-hud-calm-1080.jpg (blocky walls with chips, looks right in the raid). Also 03 hub and 64 night there.
 - Watch on next play: wall edges and bullet chips look blocky/pixel; nothing else changed.
 - Still left: doors, windows, kerbs, ruins, shWallDraw, Undercroft wall copy; trees/bushes (vegSprite) + live trunks; shadowE hard shadows; tree-list/seg-grid parts of the check.
+- SHIPPED v33.69 cw-pixveg: pixel tree/bush canopies (map vegPal tones, hard alpha, dark bottom/right edge, bush ground blob in sprite), trunk at art px, hard pixel shadowE (a bit bigger/darker, drawn at globalAlpha). Used G.vegPal (map tinted, day/night kept) instead of PIXRAMPS.plants. Picture notes/shots/86d-veg/21-raid-hud-calm-1080.jpg. Watch: tree sway now steps 2 units at a time.
+- STILL LEFT: doors, windows, kerbs, ruins, stronghold shwallDraw, Undercroft wall copy; 4 districts day/night pictures; critic run.

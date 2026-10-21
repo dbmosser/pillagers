@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.70 - NEWS AND REPORT SPACING
+
+Co-op hunt while he was away. The news frame crosses the currency strip and its three notes lack an anchor. Restore sits too far from the small report preview.
+
+MEASURED. Check 33.70 passes, and fails on v33.69.
 ## v33.69 - THE PIXEL TREE, BUSH AND SHADOW
 
 Co-op hunt while he was away. Job 86d ship 2: with the pixel look on, a canopy and a bush bake once at one pixel per 2 world units in the map leaf palette with hard alpha and a dark bottom and right edge, the trunk is drawn at art pixels, and a ground shadow is a hard pixel ellipse a little bigger and darker.
