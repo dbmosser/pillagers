@@ -1,0 +1,20 @@
+{
+    "title":  "PRE-RAID: ONE BUY SLOT ON EVERY PACK ROW",
+    "why":  "The first pass shifted the steppers of rows the counter does not sell (the burst carbine) and squeezed names to dots. Every row now keeps a 66 px buy slot, empty when nothing is sold, and the button is 16 px so the stepper column lines up.",
+    "now":  "The pack rows on the pre-raid page line up again.",
+    "edits":  [
+                  {
+                      "anchor":  "var o=packBuyOk(k); if(!o) return \u0027\u0027;",
+                      "replacement":  "var o=packBuyOk(k); if(!o) return \u0027\u003cspan class=\"srbuy sp\"\u003e\u003c/span\u003e\u0027; /* v28.xx (cw-packbuy2): a row with no buy keeps the slot so every stepper lines up */"
+                  },
+                  {
+                      "anchor":  "min-width:76px; height:44px; padding:0 10px; background:var(--ui-raised); border:1px solid var(--acc); border-radius:0; color:var(--acc); font:700 18px var(--f-cond);",
+                      "replacement":  "width:66px; min-width:0; height:44px; padding:0 4px; background:var(--ui-raised); border:1px solid var(--acc); border-radius:0; color:var(--acc); font:700 16px var(--f-cond);"
+                  },
+                  {
+                      "anchor":  "#root #sectormodal .srprow .srbuy.dis{",
+                      "replacement":  "#root #sectormodal .srprow span.srbuy.sp{ width:66px; height:44px; border:0; background:none; } #root #sectormodal .srprow .srbuy.dis{"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the pre-raid pack rows keep one buy slot each, so a row the counter does not sell still lines its stepper up with the rest\u0027,\n   run:function(){\n     if(!(window.__hubEnter\u0026\u0026window.__P\u0026\u0026window.__applyLoaded)||typeof renderSector!==\u0027function\u0027||typeof packBuyHtml!==\u0027function\u0027) return \u0027SKIP: no pack buy control\u0027;\n     var bad=[], snap=null, q, sm=document.getElementById(\u0027sectormodal\u0027), a, b, d;\n     function shut(){ var mo=document.querySelectorAll(\u0027.modal.on\u0027); for(var j=0;j\u003cmo.length;j++) mo[j].classList.remove(\u0027on\u0027); }\n     try{\n       snap=JSON.parse(JSON.stringify(__P()));\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       q=__P(); q.freeKit=0; q.kitPick=\u0027mine\u0027; q.stash=[\u0027bandage\u0027,\u0027gun_carbine\u0027]; q.kit=[]; q.equipped=\u0027fists\u0027; q.credits=5000;\n       __hubEnter(); shut(); renderSector(); openModal(\u0027sectormodal\u0027);\n       a=sm.querySelector(\u0027#sectorpack [data-pk=\"bandage\"] .st\u0027); b=sm.querySelector(\u0027#sectorpack [data-pk=\"gun_carbine\"] .st\u0027);\n       if(!a||!b) return \u0027the pack rows are not drawn\u0027;\n       d=Math.abs(a.getBoundingClientRect().right-b.getBoundingClientRect().right);\n       if(d\u003e1) bad.push(\u0027the steppers of a sold and an unsold row end \u0027+d.toFixed(1)+\u0027 px apart\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ shut(); }catch(_s){} try{ if(snap) __applyLoaded(snap); }catch(_a){} try{ __cleanProfile(); }catch(_c){} __topClear(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

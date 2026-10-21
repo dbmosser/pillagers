@@ -1,0 +1,5 @@
+run B-t4-r1 start 01:12:18 free_gb 3.06
+{"n":0,"ents":40,"bullets":13,"sparks":68,"frames":318,"over":null,"ms":{"med":55.6,"p95":83,"worst":114.4},"update":{"med":5.3,"p95":10.6},"draw":{"med":45.6,"p95":58.4}}
+{"n":40,"ents":80,"bullets":14,"sparks":116,"frames":175,"over":null,"ms":{"med":103.9,"p95":151.1,"worst":201.5},"update":{"med":25.8,"p95":36.5},"draw":{"med":83.1,"p95":111.5}}
+after: {"ver":"33.44","drs":{"scale":0.75,"q":3,"moves":8,"said":1,"gfxScaleNow":0.75,"W":1886,"H":975,"DPR":0.75},"canvases":["cv 1414x731","hcv 1886x975"],"calib":41.9}
+end 01:13:14 free_gb 2.54
