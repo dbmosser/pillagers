@@ -16,3 +16,27 @@ Local validation: the mk script prints written, all 22 anchors match exactly onc
 
 Also corrected the elite mask: pixRing with keepArt 0 returns a grown silhouette, so the machine edge now explicitly subtracts the original body. The check verifies no elite outline pixels cover opaque body pixels. Existing keys and three camera recipes remain ready for the lane.
 
+
+--- codex run 2026-10-21 11:44 ---
+2026-10-21, run 3: cw-cx-pixmachines shipped at v33.89; the new check passed. Viewed all three first-round pictures. The benchmark reference URL failed because the fixture serves from tools/, so a relative tools/handoff URL doubled the path. The next recipe embeds the local reference as a data URL and now requires naturalWidth > 0 before staging succeeds. The benchmark uses equal cells, a shared ground line within each row, centered 20px names with 16px roles, a 56px header, close control and 36x2 accent tab. Every machine stays at the same 2x magnification; no relative size or design changes.
+
+The raid critics only addressed the existing HUD. Logged those findings for the coordinator. Next photos copy the actual rendered world into a labeled development proof at 2x, preserving the full-resolution machine/floor/lighting pixels while removing unrelated HUD overlays from the art review. Runtime staging disables automatic resolution scaling for these photos and chooses dry scenery with fewer wall/bush overlaps. It does not ship a HUD or gameplay change. This is camera follow-up 1; no new ship key is required.
+
+First-round pictures: tools/handoff/console/notes/shots/86f-pix-machines-recipes-1/86f-machines-lineup-1080.jpg, 86f-machines-raid-day-1080.jpg, 86f-machines-raid-night-1080.jpg. All scored 2; next camera round still required.
+
+
+--- codex run 2026-10-21 11:56 ---
+2026-10-21, run 4: viewed the second-round pictures. Scores: benchmark 2, day 3, night 3. The new reference loads. The benchmark grid was about 60px too tall because the cropped source pictures included extra shadow/halo margins. It now displays the actual cached body canvases, on the same 2x scale and baseline, removing those margins rather than scaling machines individually. Names are 24px, roles 20px and grid gaps 16px. The title remains the required explicit 32px/700. The close control now uses a centered SVG cross with zero inherited button padding, and only shows its focus outline when actually focused.
+
+The raid obstruction is the forge landmark, which was not covered by the map-wall collision score. The next camera recipe explicitly avoids forge, seal and story desk footprints, strongly rejects water, and avoids a bush at the player position. It keeps all map objects in the world. The real raid crop now fills the available frame, includes 20px name tags for all nine machines, and marks the elite and gold captions with 3px colour strips. The footer is shortened to elite sentry + golden warden. No game code or feel values changed. Camera follow-up 2 is ready; the lane still needs to photograph it.
+
+Best current proofs: tools/handoff/console/notes/shots/86f-pix-machines-recipes-2/86f-machines-lineup-1080.jpg and 86f-machines-raid-day-1080.jpg and 86f-machines-raid-night-1080.jpg. The original full-HUD raid views remain in recipes-1. The machine key shipped at v33.89 and the check has passed.
+
+
+--- codex run 2026-10-21 12:01 ---
+2026-10-21, run 5: viewed round 3. The benchmark reached 3, meeting its non-raid finish line. Its remaining requests to remove the owner's reference, resize individual machines or add a new interactive catalogue conflict with the explicit task and were already logged. Kept the required reference, existing designs, shared PIX_ACT and job 80 sizes. The passing benchmark is tools/handoff/console/notes/shots/86f-pix-machines-recipes-3/86f-machines-lineup-1080.jpg.
+
+Day and night both remain 3. Preparing the fourth and final camera round only for these two views. They now explicitly say machine art proof and dev only, since these are camera annotations, not a shipped player screen. Caption plates have a 4px radius, 1px line-hi border, 90% void fill, 20px text, 8px horizontal padding and a full 3px rarity bar. Captions move onto one common baseline per row below the largest shadow. The image gets a 4px panel inset. No game change or new key; all nine bodies and their check already shipped in cw-cx-pixmachines at v33.89.
+
+The critic's requests for a flat background without the floor, props or player would defeat the requested day/night raid context. The task's actual world lighting is preserved. The screenshot is marked dev only instead of adding a new player-facing codex/list or day/night switch. Night readability findings are handed to the coordinator/86j. The older full-HUD pictures in recipes-1 and the two best corrected art versions in recipes-2 and recipes-3 remain available. If the last round stays at 3, two further camera refinements have not raised that score and the no-more-polish rule applies; record the result and finish with that limit stated.
+

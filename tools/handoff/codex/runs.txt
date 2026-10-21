@@ -199,3 +199,9 @@
 2026-10-21 10:51 86e-pix-props 79s ok DONE in=9002486 out=62207 run=6
 2026-10-21 11:15 86f-pix-machines 1424s ok PARTIAL in=3844359 out=46303 run=1
 2026-10-21 11:18 86f-pix-machines 110s ok PARTIAL in=4492193 out=49856 run=2
+2026-10-21 11:44 86f-pix-machines 570s ok PARTIAL in=7250725 out=69526 run=3
+2026-10-21 11:56 86f-pix-machines 553s ok PARTIAL in=9374205 out=85623 run=4
+2026-10-21 12:01 86f-pix-machines 158s ok PARTIAL in=10155572 out=90315 run=5
+2026-10-21 12:11 86g-pix-pillager-states 536s ok PARTIAL in=1359249 out=19066 run=2
+2026-10-21 12:13 86g-pix-pillager-states 95s ok PARTIAL in=1888433 out=22026 run=3
+2026-10-21 12:15 86g-pix-pillager-states 127s ok PARTIAL in=2870426 out=26246 run=4

@@ -2016,5 +2016,53 @@
   "pic": "tools/handoff/console/notes/shots/86e-pix-props-recipes-3/86e-pixel-wrecks-detail-1080.jpg",
   "task": "86e-pix-props",
   "when": "2026-10-21T13:53"
+ },
+ "86f-machines-lineup": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "it follows the card, x and lower-case rules, but it is a dev sprite sheet with a dead left column and a bright green reference photo that outshouts the title and the machines.",
+  "findings": [
+   "P0 left column, reference image: remove it from the player screen or move it to a dev-only view. If it stays, desaturate it to about 40%, shrink it to a 240px thumbnail, and keep it inside a --ui-panel tile with a 1px --ui-line-hi border.",
+   "P1 left column, empty space: drop the column and use a full-width 3x3 grid (about 1680px wide, 24px gaps), or make the left side a detail pane in --ui-raised that shows the focused machine at 2x with its name and 2 stat lines.",
+   "P1 grid tiles, sprite scale and baseline: use equal tile heights (about 280px). Anchor every sprite to a shared baseline 56px above the bottom, with 16px minimum top padding. Scale small sprites up to at least 96px, or add a size bar. Scale the overseer down so it clears the top by 24px.",
+   "P1 tile labels: add a focus state: --acc 2px border plus a --ui-raised fill on the focused tile, with a 3px lime bar on the left edge. Make the arrow keys and d-pad move between tiles.",
+   "P2 title row: set the header row to exactly 56px, with the title baseline centred on the x button, and 24px padding under the divider."
+  ],
+  "pic": "tools/handoff/console/notes/shots/86f-pix-machines-recipes-3/86f-machines-lineup-1080.jpg",
+  "task": "86f-pix-machines",
+  "when": "2026-10-21T15:57"
+ },
+ "86f-machines-raid-day": {
+  "score": 3,
+  "pass": false,
+  "need": 4,
+  "verdict": "A clean dev-only proof card that follows the window rules (centred, x in the corner, lower case, lime title tab), but it is a label sheet on a loud purple and orange floor and not a designed screen, and several small details are sloppy.",
+  "findings": [
+   "P1 Art area, machine labels and the player sprite: Move the player sprite at least 40px clear of the label row, or hide it for the proof. Use one label style for every machine. Keep the underline only if it means something, and add a legend for it.",
+   "P1 Art area background: Put the proof on a neutral --ui-raised (#1e2225) or a flat mid-grey floor. Or dim the scene to about 60% brightness so the machines are the brightest thing. This also makes the lime title tab read as the one accent.",
+   "P1 Overseer and the grey building at lower right: Draw the scene with the props off, or move the overseer at least 100px from any prop. A proof sheet needs unobstructed sprites.",
+   "P2 Bottom-left of the art area (~125-400px, y 932-944): Remove it, or move it into the footer row if it is needed. If it stays, use a 2px --ui-line-hi track with an --acc fill.",
+   "P2 Title row, footer and inner frame: Remove the inner border and give the art a 16px gap inside the card. Raise the footer text to 16px in --tx-2 (#aaa498). Drop 'esc / close', since the X already does the job."
+  ],
+  "pic": "tools/handoff/console/notes/shots/86f-pix-machines-recipes-4/86f-machines-raid-day-1080.jpg",
+  "task": "86f-pix-machines",
+  "when": "2026-10-21T16:01"
+ },
+ "86f-machines-raid-night": {
+  "score": 3,
+  "pass": false,
+  "need": 4,
+  "verdict": "A clean dev-only proof card that follows the window pattern (centred card, x in the corner, lime tab on the title, lower-case text), but the proof art pane has crowding, overlap and weak label craft, and it isn't a real player screen.",
+  "findings": [
+   "P1 art pane, 'crier' label and the player character: Move the player sprite out of the label row, or move the player 60px lower. Put each label at a fixed 12px below its own sprite's shadow, not at a shared baseline.",
+   "P1 overseer and golden warden, bottom row: Leave at least 48px between neighbouring sprites. Shift the overseer 80px right and move the building out from behind it.",
+   "P1 art pane, whole image: For a proof sheet, put a flat #16191b backdrop behind the sprites, or raise the sprite rim light so the sprite-to-floor luminance ratio is at least 3:1.",
+   "P2 sprite name labels: Make all pills the same height (28px) with 8px side padding, use one underline rule (rarity colour on the 3px bar only), and size the text at 16px with +.04em tracking.",
+   "P2 layout of the sprite grid: Put every sprite's ground shadow at a shared y per row and pin the labels 12px under it. Move the player out of the grid."
+  ],
+  "pic": "tools/handoff/console/notes/shots/86f-pix-machines-recipes-4/86f-machines-raid-night-1080.jpg",
+  "task": "86f-pix-machines",
+  "when": "2026-10-21T16:02"
  }
 }

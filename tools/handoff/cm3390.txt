@@ -1,0 +1,7 @@
+v33.90: pixel fight states
+
+Invulnerable pillagers keep their pixel silhouette and teal cue. The wall ghost keeps its transparency.
+
+Check 33.90. Fails on v33.89.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

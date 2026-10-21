@@ -1,0 +1,5 @@
+## v33.90 - PIXEL FIGHT STATES
+
+Co-op hunt while he was away. Invulnerability still sent the player and the see-through wall ghost to the vector body during a pixel raid.
+
+MEASURED. Check 33.90 passes, and fails on v33.89.
