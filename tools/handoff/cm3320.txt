@@ -1,0 +1,7 @@
+v33.20: low health filter: the world muffles as you bleed
+
+Below 30 health the sound of the world goes duller as you get worse. Back above 30 it opens again. Menu clicks and pickups stay crisp.
+
+Check 33.20. Fails on v33.19.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

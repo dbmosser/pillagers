@@ -1,1 +1,1 @@
-10-20 23:13 waiting: another helper is just starting (memory check again in a few minutes); 79a-player-size-back kept
+10-20 23:17 waiting: another helper is just starting (memory check again in a few minutes); 79a-player-size-back kept

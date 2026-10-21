@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.20 - LOW HEALTH FILTER: THE WORLD MUFFLES AS YOU BLEED
+
+Co-op hunt while he was away. His yes on pick 70. Below 30 health the world mix runs through a soft low-pass that closes from about 12 kHz to 2.2 kHz as health falls to 0 (nothing at 30). It uses the same filter as the downed dip and waits out the dip, so they never stack, and menu sounds and stings never pass through it.
+
+MEASURED. Check 33.20 passes, and fails on v33.19.
 ## v33.19 - LATE NIGHT AUDIO: A SETTING FOR SOFTER PEAKS
 
 Co-op hunt while he was away. His yes on pick 74, the party volume governor. A new row in AUDIO, off by default, for a living room TV at night: the world compressor squeezes harder, the limiters catch peaks about 6 dB lower and the world trim drops 2 dB. Off is exactly the old mix.

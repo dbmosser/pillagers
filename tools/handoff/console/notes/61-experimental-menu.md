@@ -35,3 +35,31 @@ Shot screen 68 (the raid section) at 1080: shots/61-experimental-menu-after2/68-
 
 ## Run 10-20 late (lane a)
 Checked HEAD: menu, all 28 switches shipped, nothing to build. Question for screen 79 still open (questions.md line 47), no answer yet, so the sub-page picture and critic stay undone. When allowed: add 79, shoot 1080 and 4K, critic (finish line 3).
+
+--- codex run 2026-10-20 23:22 ---
+2026-10-20, lane o, HEAD v33.18: refreshed the shipped flag map before building. Earlier notes and the task draft describe missing code that is already shipped (v32.99 to v33.06).
+
+28 rows remain. Removed features stay removed: golden clue hunt, mimic crates, lockdown alarm, magnet, whisper and marksman. No duplicate damage-numbers control.
+
+Refreshed entry points:
+- xfGoals: goalsTick; xfGold: goldTick; xfHold: shTick; xfPwr: pwrKill.
+- xfRoles: raiderRole; xfSupp: suppHit; xfFeud: machFoe and machine/pillager target routing; xfAffix: affixApply; xfOvPh: overseerTick and damage overheat multiplier.
+- xfStyle: styleKill, styleTick and styleDraw; xfTeam: teamKill, arcadeTeamTake and teamDraw; xfFire: fuel-fire planning in fireTick.
+- xfEvDebris, xfEvConvoy, xfEvBounty, xfEvCool, xfEvRamp: evEligible through XF_EV.
+- xfWarden: directional armour damage branch; xfBarrel: brlPlace; xfRamp: waveTier; xfTell: aimLane plus landing-circle pass; xfSearch: scan/search helpers and stuck movement branches.
+- xfDir: flowDir, flowAmbushOk and extraction-ring wave rule; xfAir: airScan, airKey, airCharge, pad chord, network air word and goalsMake pool.
+- xfNeed: needRefresh; xfHaul: haulRevealStart; xfShop: shopStocked; xfSeed: arcadePartySeed and operator notes.
+
+The 24 world switches already snapshot at startRaid. Found a requirement gap: the other four read CFG live, and netUpStart restores the guest CFG after building, so needed-item glow and haul reveal can disagree with the host. Plan: snapshot every key; use that snapshot for local-feature calls during a raid and for the result haul. Shop and party seed still read preferences outside a raid, when their controls act. Existing on/off checks explicitly call xfSnap, so their feature checks remain valid.
+
+The task still needs an all-off seed-4242 fingerprint check and page pictures/critic at 1080 and 4K. Standalone camera recipes avoid editing the shared screen catalog and the old blocked screen-79 question.
+
+Handed over cw-cx-expsnap: five unique anchors validated against v33.18. It snapshots all 28 keys, reads that snapshot for the four formerly local keys during a raid, and keeps the haul choice through the result card. The shop and party-seed preferences still act outside raids. No preference is switched off by this change.
+
+Check: actual deployments on both sectors, seed 4242, all on and all off; expected 85/374 bodies and 165/593 containers, plus complete netUpFp equality on/off. Elite-affix properties are initialized during building and barrels have their own G.brl list; neither should change canonical geometry/body/container fingerprints. Actual needRefresh and haulRevealStart calls prove on behavior still works and mid-raid preference changes wait. Actual netUpStart calls with opposite guest preferences cover host-off and omitted/default host-on wire values after guest CFG is restored. The old build necessarily fails because the four local keys are absent from XF and use live guest CFG.
+
+Local validation: script prints written, each of five draft anchors occurs once, complete candidate game JS parses, check JS parses, camera prelude and recipe JS parse, handoff files are ASCII. Chrome checks cannot run in this sandbox; lane preflight and ship remain required. Existing feature checks use xfSnap after selecting each value and should need no retarget.
+
+Camera handoff: camera-recipes.json, five screens (top/middle/bottom plus host and player-2 windows) with default Res 1080,4k. The first three open the real Settings experimental row and verify controller B returns to main Settings. The pair recipes open a second fixture window, pass the host raid word through real netUpStart, verify host-off glow/haul despite guest on preferences, and photograph each named window. These stage the shared raid word across two real windows, not a live network transport session. Every popup is closed on pagehide. Critic results and any fixes remain pending.
+
+Watch on next play: change glow or haul during a raid and confirm it takes effect on the next raid; in two windows, start with opposite experimental preferences and confirm the host choice wins. All-on should look and play as before.
