@@ -53,3 +53,33 @@ Local verification: both fixture anchors occur once; the complete retargeted 33.
 
 Remaining with the lane: apply and validate the fixture retarget on the current build, rerun preflight, ship cw-cx-pixsets, photograph the five scenes and run the critic. The job is not complete until shipping and picture review succeed.
 
+
+--- codex run 2026-10-21 13:27 ---
+2026-10-21, lane o visual follow-up 1, base v33.91.
+
+SHIPPED cw-cx-pixsets in v33.91. The fixture retarget landed as 5086acf4 and check 33.58 passed first on the old v33.90 trial. All five round-1 scenes staged. Both linked windows reported real host/guest links, both sets, both seat bands and zero pixel faults. Images: tools/handoff/console/notes/shots/86h-pix-sets-wardrobe-recipes-1/.
+
+Reviewed all five attached images. Critic scores were bench 2, fashion 3, raid 2, player 1 pair 3 and player 2 pair 3. FASHION had a real P0 despite reaching 3: worn tiles had no visible border, and its set row was below the fold. Legacy button CSS overrode the early pixel CSS. The empty tab strip, roomy tiles, gradient stage and small save controls also need correction. These are not accepted final pictures.
+
+Prepared cw-cx-pixrackfit as a separate six-edit follow-up, after the shipped key in keys.txt. New CSS is scoped to a pixel-only class and appended after the legacy styles. Worn tiles get a 2px lime border, a 4px inset bar and a lime 16px worn label. Pad focus gets a distinct outer 2px outline. The three ordinary racks fill their rows; set uses four columns. Tiles use an art column plus adjacent name/status, with the original nearest 2x pixels. Tile height is 128px, or 120px below 1000px viewport height. Both keep all four racks visible. No kept id, profile writer, set unlock or random roller changed.
+
+FASHION hides the unused tab strip and the explaining sentence in pixel mode. The player pane is called your pillager, following his naming rule. Panel headings are quiet 20px text. The turntable stays exactly 4x, now in a flat 320-square canvas instead of a 380x470 gradient. Its shallow shadow uses the original shadowE hook, and linked seat rings are retained. The temporary preview ground painter and wc are restored in finally. Saved-look text is 16px and save buttons are 48px tall; repeated save-to-keep explanations are hidden. The existing surprise/save/wear controls and their handlers remain the only controls. The new check measures actual selected/focus styles, all thirteen visible controls, equal tile heights, font/button sizes and the legacy-style reset.
+
+Kept the corner totals: the critic request to delete xp, stash and bag conflicts with his 10-15 everywhere order. Kept the worn skeleton in the preview: it is correct, because his set order explicitly overrides the base picks. The new visible set row should remove the apparent contradiction. Logged these rulings once in questions-new.md. Retained the required exact 4x and native samples rather than adopting inconsistent scale suggestions.
+
+Round-2 camera presentation is prepared in camera-helper.js and regenerated camera-recipes.json. These helpers remain camera-only. The bench is now three compact panels, each grouping actual front/mirror 4x art and labeled 1x samples. The 16px labels and 32px title use explicit scoped rules. Raid and linked views have a factual read-only side column, a separate full game thumbnail including HUD, and a tighter nearest crop. No thumbnail overlaps the crop. Camera staging chooses a shared clear rectangle, moves the two real players through the existing fixture stand route, and waits for their real network positions, so the second character is not behind a wall. Actual scene colours, lighting and sprite pixels are unchanged. There are no equip/select buttons, fake tabs or additional player-facing proof screens.
+
+Local validation passed: mk prints written; six anchors match once; candidate inline game script and fixture check parse; all five async recipes and helper parse; handoff files are ASCII and fallback paths are correct. A local failure-injection probe confirms drawAvatarCanvas restores wc and opGround, and keeps both the shadowE hook needed by check 33.75 and linked seat rings. Browser layout and critic results still belong to the lane.
+
+Remaining: lane preflight/ship cw-cx-pixrackfit and round-2 photographs/critic. Watch the set-row fit at 1080 and smaller gate height, visible selected/focus states, and saved-look controls. No simulation, combat timing or world art changed.
+
+
+--- codex run 2026-10-21 13:29 ---
+2026-10-21, lane o cw-cx-pixrackfit check repair, base v33.91.
+
+Preflight reported two failures twice: worn skeleton lacks its lime selected border, and pad cursor is invisible. Both failed assertions compared computed line widths to an unscaled literal 2. The worn label colour assertion and the other layout/control assertions were not reported as failures.
+
+The game uses menuScale/titleRes to zoom modals below 1080p; the gate viewport is 1888x977. Chrome quantizes border and outline widths under that zoom, so a declared 2px line can report less than 2 in computed style. Corrected the check to create a temporary 2px lime border/outline reference in the same picker, measure its used widths, and compare the actual selected tile and pad cursor against those widths. It still requires the pressed state, exact lime colour, a non-none stroke and at least the reference thickness. It refuses a missing reference and removes it immediately and in finally. Any remaining failure now includes the actual colour, style, width and reference width.
+
+Only the check changed. The six game edits, CSS, keys and five camera recipes are unchanged. Regenerated the self-contained mk and draft; written, six unique anchors, candidate script/check syntax, preview failure cleanup, original shadow/seat hooks, recipe parsing, ASCII and fallback-path probes pass locally. This does not claim a browser pass; the lane must retry preflight and then photograph/review round 2 after the follow-up ships.
+

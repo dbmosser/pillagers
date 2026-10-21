@@ -210,3 +210,5 @@
 2026-10-21 12:57 86h-pix-sets-wardrobe 1164s ok PARTIAL in=4386069 out=42201 run=1
 2026-10-21 12:59 86h-pix-sets-wardrobe 129s ok PARTIAL in=5347562 out=46689 run=2
 2026-10-21 13:03 86h-pix-sets-wardrobe 106s ok PARTIAL in=6366796 out=50119 run=3
+2026-10-21 13:27 86h-pix-sets-wardrobe 907s ok PARTIAL in=12248274 out=80541 run=4
+2026-10-21 13:29 86h-pix-sets-wardrobe 138s ok PARTIAL in=13800089 out=85076 run=5

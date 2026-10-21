@@ -2391,6 +2391,41 @@ body:has(#wnmodal.on) #hubtoast,body:has(#settingsmodal.recmode.on) #hubtoast{vi
   #root #wnmodal #wnsub{grid-column:1;grid-row:2;font-size:32px;max-width:none;}
   #root #wnmodal #wnlist{grid-column:1;grid-row:3;}
 }
+</style>
+<style id="pix-fashion-fit">
+/* v28.xx (cw-cx-pixrackfit): visible worn/focus states and four complete racks in the existing fashion columns. */
+#root #appearmodal.pixfashion > .msub,#root #appearmodal.pixfashion #apptabs{display:none !important}
+#root #appearmodal.pixfashion > .hubgrid{grid-template-columns:360px minmax(0,1fr) !important;margin-top:16px !important}
+#root #appearmodal.pixfashion .panel > h2{font:600 20px/24px var(--f-cond) !important;color:var(--tx-1) !important;letter-spacing:.04em !important}
+#root #appearmodal.pixfashion #appavatarpicker{padding:12px !important}
+#root #appearmodal.pixfashion .pixrack{margin:0 0 16px !important}
+#root #appearmodal.pixfashion .pixrack:last-child{margin-bottom:0 !important}
+#root #appearmodal.pixfashion .pixrack .glab{font:600 20px/24px var(--f-cond) !important;margin:0 0 8px !important;color:var(--tx-1) !important}
+#root #appearmodal.pixfashion .pixtiles{display:grid !important;grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:8px !important}
+#root #appearmodal.pixfashion [data-pixrack="set"] .pixtiles{grid-template-columns:repeat(4,minmax(0,1fr)) !important}
+#root #appearmodal.pixfashion #appavatarpicker .costile{display:grid !important;grid-template-columns:76px minmax(0,1fr) !important;grid-template-rows:1fr 1fr !important;column-gap:16px !important;row-gap:8px !important;align-items:center !important;justify-items:start !important;width:100% !important;min-width:0 !important;height:128px !important;min-height:128px !important;padding:4px 12px !important;box-sizing:border-box !important;text-align:left !important;border:1px solid var(--ui-line-hi) !important;background:var(--ui-raised) !important;box-shadow:none !important;border-radius:4px !important}
+#root #appearmodal.pixfashion #appavatarpicker .costile.on{border:2px solid var(--acc) !important;box-shadow:inset 4px 0 0 var(--acc) !important;padding:3px 11px !important}
+#root #appearmodal.pixfashion #appavatarpicker .costile.on .cosreq{color:var(--acc) !important}
+#root #appearmodal.pixfashion #appavatarpicker .costile.padfocus,#root #appearmodal.pixfashion #appavatarpicker .costile:focus-visible{outline:2px solid var(--acc) !important;outline-offset:2px !important;background:#292e32 !important}
+#root #appearmodal.pixfashion #appavatarpicker .costile canvas{grid-column:1 !important;grid-row:1 / span 2 !important;width:76px !important;height:auto !important;margin:0 !important;image-rendering:pixelated !important}
+#root #appearmodal.pixfashion #appavatarpicker .costile .cosname{grid-column:2 !important;grid-row:1 !important;align-self:end !important;font:600 20px/24px var(--f-cond) !important;color:var(--tx-1) !important;margin:0 !important;letter-spacing:.02em !important}
+#root #appearmodal.pixfashion #appavatarpicker .costile .cosreq{grid-column:2 !important;grid-row:2 !important;align-self:start !important;font:600 16px/20px var(--f-cond) !important;color:var(--tx-2) !important;margin:0 !important;padding:0 !important;min-height:0 !important;letter-spacing:0 !important}
+#root #appearmodal.pixfashion #appopscroll{display:flex !important;flex-direction:column !important}
+#root #appearmodal.pixfashion #appavatar{display:flex !important;align-items:center !important;justify-content:center !important;flex:1 !important;min-height:320px !important;background:var(--ui-raised) !important}
+#root #appearmodal.pixfashion #avcv{width:320px !important;height:320px !important;margin:0 !important;background:var(--ui-raised) !important;border-radius:4px !important}
+#root #appearmodal.pixfashion #applooks{flex:none !important;padding:16px !important;background:var(--ui-panel) !important}
+#root #appearmodal.pixfashion #looksurprise{min-height:48px !important;font:600 20px/24px var(--f-cond) !important;margin-bottom:16px !important}
+#root #appearmodal.pixfashion #applooks > .glab{font:600 16px/24px var(--f-cond) !important;color:var(--tx-2) !important;margin:0 0 8px !important}
+#root #appearmodal.pixfashion #applooks .avslot{opacity:1 !important;min-height:56px !important;gap:8px !important;padding:4px 8px !important;box-sizing:border-box !important}
+#root #appearmodal.pixfashion #applooks .avsval,#root #appearmodal.pixfashion #applooks .avsic{font:600 16px/20px var(--f-cond) !important;color:var(--tx-1) !important}
+#root #appearmodal.pixfashion #applooks .avslab{display:none !important}
+#root #appearmodal.pixfashion #applooks [data-looksave]{font:600 16px/20px var(--f-cond) !important;min-width:56px !important;min-height:48px !important;padding:4px 8px !important;margin-left:8px !important}
+body:has(#appearmodal.pixfashion.on) #hubtoast{display:none !important}
+@media(max-height:1000px){
+#root #appearmodal.pixfashion #appavatarpicker .costile{height:120px !important;min-height:120px !important;padding:3px 12px !important}
+#root #appearmodal.pixfashion #appavatarpicker .costile.on{padding:2px 11px !important}
+}
+
 </style><canvas id="cv"></canvas>
 <canvas id="hcv"></canvas>
 <div id="hubtoast"></div>
@@ -2541,7 +2576,7 @@ body:has(#wnmodal.on) #hubtoast,body:has(#settingsmodal.recmode.on) #hubtoast{vi
        left. Each column now fills the window and scrolls on its own. -->
   <div class="hubgrid" style="grid-template-columns:400px 1fr;grid-template-rows:minmax(0,1fr);margin-top:6px">
     <div class="panel" style="display:flex;flex-direction:column;min-height:0">
-      <h2>Your operator</h2>
+      <h2>your pillager</h2> <!-- v28.xx (cw-cx-pixrackfit): his player name is pillager. -->
       <!-- v19.16, from the review (2026-10-07): an inner box scrolls, as the racks do, so the panel frame line and the heading stay put
            when the slot list scrolls; before, the whole panel scrolled and its frame line slid up through the slot rows -->
       <div id="appopscroll" style="flex:1;min-height:0;overflow-y:auto">
@@ -3372,7 +3407,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.91';
+var VER='33.92';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -51565,7 +51600,7 @@ function pixTileCanvas(kind,id){
 }
 function pixAvatarHTML(){
   // v28.xx (cw-cx-pixsets): the existing turntable, with one set of controls in the racks on the right.
-  return '<canvas class="avcv" id="avcv" width="380" height="470"></canvas>';
+  return '<canvas class="avcv" id="avcv" width="320" height="320"></canvas>'; // v28.xx (cw-cx-pixrackfit): a whole 4x figure in a compact, flat turntable
 }
 function renderPixWardrobe(box,hid,pid){
   var r=pixLook(pixRawLook()),H='';
@@ -53224,7 +53259,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.91: Skeleton, trooper and android share every pixel pose. Fashion has four racks, and the demo and crowd share twelve looks. Check 33.91 fails on v33.90',
+  now:'v33.92: Four complete racks fit the fashion page with clear worn and pad states, a flat 4x preview and readable save controls. Check 33.92 fails on v33.91',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -71127,6 +71162,8 @@ function avTurnStart(){
     try{ avTurnStep(0.08); }catch(_t){}
   },80);
 }
+// v28.xx (cw-cx-pixrackfit): a shallow preview shadow through the same painter, retaining linked seat rings.
+function pixFashionGround(x,y,st){shadowE(x,y+1,11,.5,.28);var s=seatMarkOf(st);if(s>=0)drawSeatRing(x,y,s);}
 function drawAvatarCanvas(){
   var c=document.getElementById('avcv'); if(!c||typeof drawOp!=='function') return;
   var x2=c.getContext('2d'); if(!x2) return;
@@ -71137,11 +71174,13 @@ function drawAvatarCanvas(){
   var base=pixOn()?Math.round((c.height+PXB.TARGET*S)/2):c.height-16; // v28.xx (cw-cx-pixpreview): center the 4x figure in the existing turntable canvas
   x2.save(); x2.translate(c.width/2,base); x2.scale(S,S);
   var keep=wc; wc=x2;
-  try{ drawOp(0,0,AVANG,AVPH,'#242832',0,0,'none',0,{hero:1,moving:false,sprint:false,ads:false,hurt:0,rl:0,own:{wep:null}}); }   // v28.29 (cosm7): turning
-  catch(e){}
-  wc=keep; x2.restore();
+  var ground=opGround; // v28.xx (cw-cx-pixrackfit): preview-only shadow; restore both painter globals even on failure
+  try{if(pixOn())opGround=pixFashionGround;drawOp(0,0,AVANG,AVPH,'#242832',0,0,'none',0,{hero:1,moving:false,sprint:false,ads:false,hurt:0,rl:0,own:{wep:null}});}
+  catch(e){}finally{opGround=ground;wc=keep;x2.restore();}
 }
 function renderAvatar(host,pickHost){
+  // v28.xx (cw-cx-pixrackfit): only the pixel wardrobe uses its compact rack and saved-look styling.
+  var fashion=document.getElementById('appearmodal');if(fashion)fashion.classList.toggle('pixfashion',pixOn());
   var hid=host||'avatar', pid=pickHost||(host?host+'picker':'avpicker');
   var a=document.getElementById(hid); if(!a) return;
   a.innerHTML=avatarHTML();

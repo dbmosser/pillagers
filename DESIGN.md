@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.92 - PIXEL FASHION READABILITY
+
+Co-op hunt while he was away. The critic found no visible worn or pad state, oversized tiles, clipped set row and small saved-look controls.
+
+MEASURED. Check 33.92 passes, and fails on v33.91.
 ## v33.91 - PIXEL SETS AND FOUR RACKS
 
 Co-op hunt while he was away. His 10-20 orders: three full body sets and a smaller wardrobe, with existing saved looks preserved.

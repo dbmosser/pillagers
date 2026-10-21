@@ -1,0 +1,5 @@
+## v33.92 - PIXEL FASHION READABILITY
+
+Co-op hunt while he was away. The critic found no visible worn or pad state, oversized tiles, clipped set row and small saved-look controls.
+
+MEASURED. Check 33.92 passes, and fails on v33.91.

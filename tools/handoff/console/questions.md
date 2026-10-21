@@ -69,3 +69,5 @@ Moved 10-19 night to tools/handoff/console/alarms.md (helper fix F18). This file
 
 86f-pix-machines, raid-proof critic conflict (logged once): the critic asks to replace the actual raid ground, props, player and night cone with a flat specimen backdrop and to add a selectable codex list or day/night control. This task explicitly requests day and night raid pictures, so the proof retains the real floor and lighting and is marked dev only. No new player screen, control or lighting rule is added just for the camera.
 
+2026-10-21, 86h-pix-sets-wardrobe, critic findings skipped under existing rulings: kept credits, xp, stash and bag in FASHION because his 10-15 cw-stashbag order says they are shown everywhere; kept the worn skeleton because his 10-20 set order says a full set overrides base picks. The critic suggestions to add equip/select actions or sets/wardrobe/recipes tabs to development-camera sheets are skipped: those sheets are camera-only evidence, not new product screens or duplicate wardrobe controls. The actual FASHION selection and layout defects are being fixed. No answer is needed to continue.
+

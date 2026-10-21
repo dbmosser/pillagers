@@ -1,0 +1,7 @@
+v33.92: pixel fashion readability
+
+Four complete racks fit the fashion page with clear worn and pad states, a flat 4x preview and readable save controls.
+
+Check 33.92. Fails on v33.91.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

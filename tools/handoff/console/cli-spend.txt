@@ -836,3 +836,10 @@
 2026-10-21 0.0000 86h-pix-sets-wardrobe
 2026-10-21 0.0000 86h-pix-sets-wardrobe
 2026-10-21 0.0000 86h-pix-sets-wardrobe
+2026-10-21 0.1378 critic-86h-pix-sets-wardrobe
+2026-10-21 0.1370 critic-86h-pix-sets-wardrobe
+2026-10-21 0.1401 critic-86h-pix-sets-wardrobe
+2026-10-21 0.1388 critic-86h-pix-sets-wardrobe
+2026-10-21 0.1394 critic-86h-pix-sets-wardrobe
+2026-10-21 0.0000 86h-pix-sets-wardrobe
+2026-10-21 0.0000 86h-pix-sets-wardrobe
