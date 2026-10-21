@@ -13,3 +13,8 @@ If the scratchpad is ever lost, copy these files back into it. Do not edit them 
 10-21 04:40: mk-cw-cardstamp.ps1 is the one What's New stamp key (RULES.md item 5; genP.sh is retired). It reads VER at run time,
 moves only WHATSNEW_VER to the build it ships as, and keeps the three short notes. When the stamp is within 0.10 of VER it stops at
 the mk step ("the stamp is fresh"), so a lane that reaches it after another ship fixed the stamp ships nothing.
+
+10-21 04:55: ending the corpus Chrome's graphics process mid-run (04:24 and 04:53, to stop low virtual memory) is a stopgap only.
+Chrome restarts it with --gpu-recent-crash-count, it grew 2.2 GB in 28 minutes (about three times the first one's rate) and the
+slices after it had 15 to 22 checks that could not run instead of 3 or 4. A run hit that way is not a fair stable baseline; the next
+run (after 07:02, corpus_t plus 4 h) starts on a fresh Chrome (corpq.sh line 12).

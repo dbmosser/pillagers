@@ -283,3 +283,4 @@
 
 - 2026-10-21 | 86b-pix-ground | raid ground, shipped v33.60 cw-cx-pixground | half-density floor, stepped district palettes and grid texture; round-1 pictures received and reviewed, no visual pass claimed | before: no custom recipe baseline | after: tools/handoff/console/notes/shots/86b-pix-ground-recipes-1/86b-raid-day-1080.jpg, tools/handoff/console/notes/shots/86b-pix-ground-recipes-1/86b-raid-night-1080.jpg, tools/handoff/console/notes/shots/86b-pix-ground-recipes-1/86b-cold-mile-night-1080.jpg | pending: pixel hub, marks, 4K and unresolved HUD critic findings
 
+2026-10-21 | 86d-pix-walls-trees | raid walls | walls are pixel blocks with chips instead of smooth | notes/shots/86d-after/21-raid-hud-calm-1080.jpg

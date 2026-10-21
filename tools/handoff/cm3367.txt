@@ -1,0 +1,7 @@
+v33.67: news and recorder layout
+
+News has 72px rows with a newest accent and a clear header. The recorder column is centered with a quieter warning and a fading preview.
+
+Check 33.67. Fails on v33.66.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

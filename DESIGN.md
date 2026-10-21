@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.67 - NEWS AND RECORDER LAYOUT
+
+Co-op hunt while he was away. The critic found a crowded news header, weak news hierarchy and an unbalanced recorder column.
+
+MEASURED. Check 33.67 passes, and fails on v33.66.
 ## v33.66 - THE PIXEL WALL
 
 Co-op hunt while he was away. Job 86d ship 1: with the pixel look on, a plain wall bakes once at one pixel per 2 world units (never again on a zoom or a resolution step) from the district wall and roof tone ramps: lit roof row, brick or panel courses, an ink foot row, cracks and stains by grit, bullet marks as ink pixels.
