@@ -26,7 +26,7 @@ Check (new, must fail on the build before): on a staged profile with known credi
 P.credits by exactly the counter price and raises the stash count by one; a gun the counter never sells has none; with too few credits the
 press changes nothing; the seed 4242 fingerprint holds.
 Pictures: tools/uishots.ps1 screen 05-sector-page at 1080 and 4K, before and after; run the critic on the after picture.
-Cut-off: FEATURES. Ship before Mon 10/26, or it waits until after 10/30.
+Cut-off: none (his 10-20 23:00 order: nothing waits for the party). Aim for Mon 10/26.
 Party risk: low to medium (a money path on the pre-raid page). Tell the coordinator what he should try at the next play.
 
 TASK DONE when shipped with its check and pictures; TASK PARTIAL with what is left.

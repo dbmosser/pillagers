@@ -2,7 +2,7 @@
 Queue (coordinator 10-20 21:40): renumbered from 71 so the pick order follows the plan (his 10-20 evening play notes took 79 to 86 and come first; lanes pick by number).
 effort: medium
 
-STRETCH (coordinator): queue only if the week reads 78% or less on Fri 10/23 noon. Cut first if the week runs ahead (his 3.58 c).
+Queued 10-20 23:10 (his 10-20 23:00 order: nothing waits for the party); the plan budget throttle still paces lanes.
 Source: tools/handoff/console/notes/b-31-ui-undercroft.md run 24: "NEXT: CSS-only ships for 10 / 11 / 15"; q-process/answers.md 56: "b) Both" (Career screens polished too).
 Not done (planner, 10-20): notes/ui/accept.json: 10-hire 2, 11-wirt-gambler 2, 15-mainframe-stats 2 (scored 06:10Z on b-31-n1 pictures
 taken BEFORE v32.47 and v32.50), 12-mainframe-contracts 2 (10-19), 16-bar-last-pour 2. b-31 went to failed/ at 02:39 because its 5 runs

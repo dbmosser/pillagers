@@ -2,7 +2,7 @@
 Queue (coordinator 10-20 21:40): renumbered from 72 so the pick order follows the plan (his 10-20 evening play notes took 79 to 86 and come first; lanes pick by number).
 effort: medium
 
-STRETCH (coordinator): queue only if the week reads 78% or less on Fri 10/23 noon, after 71. Cut first if the week runs ahead (his 3.58 c).
+Queued 10-20 23:10 (his 10-20 23:00 order: nothing waits for the party); the plan budget throttle still paces lanes.
 Source: tools/handoff/console/notes/ui/accept.json 03-hub-floor (score 2, 2026-10-20T06:39): "The hub reads as a prototype".
 Not done (planner, 10-20): accept.json 03-hub-floor = 2 on b-31-n1; b-31 run 25 left it as "hub-floor canvas draws", owned by no job
 (failed/03-title-and-backdrop.md owns only 01, 44, 45 and 57). The picture notes/shots/48-after/41-hub-backpack-pad-p1-1080.jpg (v32.84)

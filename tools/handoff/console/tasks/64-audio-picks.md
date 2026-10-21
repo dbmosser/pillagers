@@ -17,7 +17,7 @@ Ship each pick as its own key, least risky first, using the definitions in tools
 Hard rules (veto list and his answers): no tonal hum ambience, no spoken sounds, no music in raids, everything made here (p-23: synthesised,
 no new recordings). His 57: he judges by playing. You cannot hear, so measure: peak and loudness through the limiter must not rise
 (render offline or read the limiter's meter), and write in notes what he should listen for after each ship.
-Cut-off: FEATURES. Whatever is not shipped by Mon 10/26 waits until after 10/30.
+Cut-off: none (his 10-20 23:00 order: nothing waits for the party). Aim for Mon 10/26; past it, keep going.
 Party risk: medium to high: harsh sound is his #1 worry (Q27) and helpers cannot hear the result. The coordinator tells him which sounds
 changed so he listens for them.
 

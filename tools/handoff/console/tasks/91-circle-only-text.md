@@ -2,8 +2,7 @@
 Queue (coordinator 10-20 21:40): renumbered from 74 so the pick order follows the plan (his 10-20 evening play notes took 79 to 86 and come first; lanes pick by number).
 effort: medium
 
-HOLD (coordinator): do NOT move into tasks/ before Fri 10/30. Friends and family (after 10/30) know him, so the old text may stay for them;
-it must be gone before the public build of Thu 11/26. Next week's budget.
+Queued 10-20 23:10 (his 10-20 23:00 order: nothing waits for the party, beats the old hold).
 Source: CLAUDE.md rule 9: "short callouts ... never an explaining sentence"; q-process/answers.md 75 (store page text): "c) Keep it bare".
 Not done (planner, 10-20): grep of dark_raiders.html: "Copied. Paste it to Daniel." at 66038 and 68718; "...paste it to Daniel." at
 65945; "Copy it out and send it to Daniel..." at 2906; the outcome card copy note (oc_copynote, 2310); a TXSHIP entry at 4446 ("Copy
@@ -18,6 +17,6 @@ New card's first line (3261) is "THIS IS AN ALPHA. Things will break..." followe
    by index (the comment above wnList, about line 3229): retarget them through fixq, and refresh the card stamp (WHATSNEW_VER) through a
    card ship (genP.sh).
 4. All lower case, short, no explaining sentences.
-Party risk: none (after the party).
+Party risk: none (text only).
 
 TASK DONE when the grep finds no "Daniel" and no "alpha" in player text and the card is refreshed; TASK PARTIAL with what is left.

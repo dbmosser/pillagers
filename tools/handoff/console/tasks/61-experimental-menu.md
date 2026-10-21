@@ -24,7 +24,7 @@ features"). His process answer 21: helpers never switch a feature off themselves
    change map building (those may move the fingerprint only when switched off).
 5. Pictures: the new sub-page at 1080 and 4K (camera recipe), critic finish line 3, at most 6 tries.
 Cut-off: a FEATURE. If the menu and its guards cannot all ship by Sun 10/25 evening, stop: what shipped stays (all on = no change) and the
-rest waits until after 10/30 (his 95 a: risky changes wait). Write what is left in notes.
+rest goes on right after (his 10-20 23:00 order: nothing waits for the party, beats 95 a). Write what is left in notes.
 Party risk: medium. It touches the entry point of every newer feature; a wrong guard could silence one on the night. Each guard's check
 must prove the feature still runs with its switch on.
 

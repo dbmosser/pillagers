@@ -7,6 +7,8 @@ stretch (71, 72). 3 are held for after the party (73, 74, coord-11).
 10-20 21:40 coordinator: his evening play notes became jobs 79 to 86 (camera, machine size, power-up size, minimap off,
 corner block, air strike bar, pre-raid map labels, pre-raid buy), picked before everything below. 70 is now 87-pad-crawl-test; the held
 71 to 74 here are now 88 to 91 (numbers in the prose below are the old ones).
+10-20 23:10 coordinator: his 10-20 23:00 order: nothing waits for the party ("quit queuing stuff for after the party -- just do it all as it naturally arises"). 88 to 91 moved into
+tasks/; every "after 10/30" hold below is void.
 
 ## Ranked list (rank follows the brief: release steps and ordered features before Mon 10/26, then his notes, then quality, then bugs, then test health)
 Job numbers are the order lanes pick in (lanes take tasks sorted by name), so stretch jobs carry the highest numbers.

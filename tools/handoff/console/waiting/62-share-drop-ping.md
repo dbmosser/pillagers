@@ -17,7 +17,7 @@ makes no ping. Fixture gotcha: the fixture replaces say() and sfx(), so put the 
 Pictures: a picture from EACH window (his 2.86 a). The camera cannot yet stage the player 2 side of a real linked pair; the coordinator is
 fixing that (coord-08). If it is not fixed when you ship, end TASK PARTIAL: "two-window pictures wait on coord-08" (not TASK WAITING:
 coord-08 is not a task file).
-It is a FEATURE: ship by Mon 10/26, otherwise it waits until after 10/30. Party risk: medium (a new message between the two windows).
+It is a FEATURE: aim for Mon 10/26; past it, keep going (his 10-20 23:00 order: nothing waits for the party). Party risk: medium (a new message between the two windows).
 
 TASK DONE when shipped, the checks pass and both windows' pictures show the ping; TASK PARTIAL with what is left.
 

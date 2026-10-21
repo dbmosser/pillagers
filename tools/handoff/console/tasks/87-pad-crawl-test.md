@@ -13,9 +13,9 @@ notes/o-05-pad-presets.md still lists "pad-only title/pause entry and B-back che
    button) leaves; no focusable text field or select lacks a pad route.
 3. Today's gaps go into the check as a pinned known-debt list (the way 29.33 pins its literals), so the check PASSES now and FAILS on any
    NEW gap. Its control: remove one known gap from the list and the check must fail.
-4. The gaps themselves: list them in notes/87-pad-crawl-test.md as the after-party fix list (his 2.91: the pass is after the party). Fix one
-   now only if it is a plain bug that stops a pad player cold (no way back, stuck focus), through the ship queue.
+4. The gaps themselves: list them in notes/87-pad-crawl-test.md and fix them now through the ship queue, worst first (his 10-20 23:00 order: nothing waits for the party,
+   beats his 2.91 "after the party"). If they are too many for one job, write each left gap as its own job in staging-1020/.
 5. Fixture: plan the whole check before you take the lock; hold it at most 8 minutes (RULES.md).
-Party risk: none (test only). This week only if the budget allows (see staging README); otherwise it is the first job after 10/30.
+Party risk: none (test only). Lanes take it in pick order (his 10-20 23:00 order: nothing waits for the party).
 
 TASK DONE when the check is committed, passes on HEAD, fails with one gap removed, and the gap list is written; TASK PARTIAL with what is left.

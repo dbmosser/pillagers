@@ -16,7 +16,7 @@ Checks (control must FAIL on v32.90): two starts of today's raid get the same se
 still rolls its seed as before; the fingerprint is unchanged.
 Picture: the page with the new row at 1080, critic finish line 3.
 Timing: a brand new FEATURE. "Before launch" means before Thanksgiving, but new features stop on Mon 10/26 (3.37 c). If it cannot ship by
-Mon 10/26, stop and write what is left: it then goes in after 10/30 as release work.
+Mon 10/26, keep going (his 10-20 23:00 order: nothing waits for the party). Write what is left in notes if you stop.
 Party risk: low to medium (career-only path and a new seed source; keep it out of the demo flow).
 
 TASK DONE when shipped with its checks and picture; TASK PARTIAL with what is left.
