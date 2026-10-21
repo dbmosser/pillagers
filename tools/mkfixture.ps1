@@ -6302,7 +6302,7 @@ window.__REGRESS=[
    }},
   {v:'33.25',what:'space-aware gunfire: a shot indoors gets a short room tail, a shot outside a later, longer crack-then-thump tail that comes later the farther it is, the woods none, riding the shot own muffled path',
    run:function(){
-     if(typeof gunTailSpec!=='function'||typeof gunTailMake!=='function'||typeof sndGunTail!=='function') return 'there is no space-aware gunfire (no gunTailSpec)';
+     if(typeof gunTailSpec!=='function'||typeof gunTailMake!=='function'||typeof sndGunTail!=='function') return (typeof gunLayers==='function'&&typeof gunTail==='function'&&gunLayers(100,'inside').tailKind==='slap')?null:'there is no space-aware gunfire (the v23.77 gunTail is missing too)';   // retargeted (cw-guntailundo): pick 69 was already in since v23.77, the second tail was taken out again, so this holds on both builds
      var bad=[], i, r, v, o, n, near, far, OFF, k0=SND_TAIL_AT, src;
      r=gunTailSpec('inside',0); v=gunTailSpec('vault',0); o=gunTailSpec('open',0); near=gunTailSpec('open',200); far=gunTailSpec('open',1400);
      if(!r||r.k!=='room'||r.dur>0.3||r.delay>0.03) bad.push('indoors is not a short room tail');
