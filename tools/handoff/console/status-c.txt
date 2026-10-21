@@ -1,1 +1,1 @@
-10-21 07:51 86i-building-kinds: waiting on 86e-pix-props, parked in blocked/ (not counted as a try), $0.1281942
+10-21 07:56 waiting for RAM: 2 GB free, a helper starts at 3; 86j-pix-fx-guard kept

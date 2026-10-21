@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.81 - THE PIXEL ARMOUR AND GOLD
+
+Co-op hunt while he was away. His picks a20 A (elite ring), a21 B (the golden enemy is solid gold with a shine), a22 (the chase tell) from the art survey and SPEC 9.7 (the armour tier reads as a silhouette), plus his 10-20 orders for the pixel art pass. Job 86g, ship 3: armour tiers, the golden pillager bot, the elite ring and the tell stay pixel instead of falling back to the vector body.
+
+MEASURED. Check 33.81 passes, and fails on v33.80.
 ## v33.80 - THE PIXEL DOWNED AND DEAD
 
 Co-op hunt while he was away. His picks a14 B (kneel in a pulsing ring), a15 B (the player falls and turns to light) and a23 B (a pillager bot falls and fades) from the art survey, and his 10-20 orders for the pixel art pass. Job 86g, ship 2: the downed, the dead and the fallen are pixel figures instead of the old vector ones.

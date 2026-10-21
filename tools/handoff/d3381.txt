@@ -1,0 +1,5 @@
+## v33.81 - THE PIXEL ARMOUR AND GOLD
+
+Co-op hunt while he was away. His picks a20 A (elite ring), a21 B (the golden enemy is solid gold with a shine), a22 (the chase tell) from the art survey and SPEC 9.7 (the armour tier reads as a silhouette), plus his 10-20 orders for the pixel art pass. Job 86g, ship 3: armour tiers, the golden pillager bot, the elite ring and the tell stay pixel instead of falling back to the vector body.
+
+MEASURED. Check 33.81 passes, and fails on v33.80.

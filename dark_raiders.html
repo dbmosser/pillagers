@@ -3360,7 +3360,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.80';
+var VER='33.81';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -40353,7 +40353,7 @@ var SHD=G.shells[i];
       // purple the loot pips already use for elite, so the colour is a word
       // the player has met before. Pure time drive, no PRNG touch.
       if(e2.elite&&e2.affix&&AFFIX[e2.affix]) drawAffixMark(e2);   // v26.xx (ai25): an affixed elite wears its own colour, not the purple ring
-      else if(e2.elite){
+      else if(e2.elite&&!(pixOn()&&e2.kind==='raider'&&pxEliteRing(e2))){   // v33.81 (cw-pixgear) a20 A: a pillager bot elite ring is a baked pixel ring
         var _ep=0.55+0.45*Math.sin(G.t*3.1+e2.x*0.02);
         wc.save(); wc.globalCompositeOperation='lighter';
         wc.strokeStyle='rgba(208,140,232,'+(0.28+0.24*_ep).toFixed(3)+')';
@@ -50986,7 +50986,7 @@ function pxPaint(mir){
 // the upper body: pack, torso, neck and the head with its face. o: head, skin, clothes, bot, mir, pup (-1, 0, 1: the pupils toward the aim), arms (1: empty hands hang at the sides), lamp (team colour), band (seat colour)
 // v28.xx (cw-cx-pixheight): add two art rows to the torso, extend the packs and sleeves with it, and keep the original face grid.
 function pxBuildUpper(o){
-  var p=pxPaint(o.mir), W=PXB.W, C=o.bot?PXB_REDS:(PXB_RAMP[o.clothes]||PXB_RAMP.scav), sk=PIXRAMPS.skins[o.skin]||PIXRAMPS.skins.fair, hr=PXB_HAIR, E=PXB_EYE, bot=!!o.bot, dxp=o.mir?-o.pup:o.pup, cl=o.clothes, m, y, x, skull, op, belt, mk, ml;
+  var p=pxPaint(o.mir), W=PXB.W, C=o.bot?(o.bot===2?PXB_GOLD:PXB_REDS):(PXB_RAMP[o.clothes]||PXB_RAMP.scav), sk=(o.bot===2)?PXB_GOLD.skin:(PIXRAMPS.skins[o.skin]||PIXRAMPS.skins.fair), hr=(o.bot===2)?PXB_GOLD.hair:PXB_HAIR, E=PXB_EYE, bot=!!o.bot, dxp=o.mir?-o.pup:o.pup, cl=o.clothes, m, y, x, skull, op, belt, mk, ml;
   // pack, on the side away from the facing (the left of the unflipped sprite)
   if(cl==='recon'){
     p.put(pxRR(pxM(),4,15,10,42,2),C.pack); p.put(pxRR(pxM(),2,11,11,15,2.2),C.gear);
@@ -51015,6 +51015,12 @@ function pxBuildUpper(o){
     p.put(pxRR(pxM(),8,23,10,35,1.2),C.coat); p.put(pxRR(pxM(),25,23,27,35,1.2),C.coat);
     p.put(pxRR(pxM(),8,35,10,38,1.2),sk); p.put(pxRR(pxM(),25,35,27,38,1.2),sk);
   }
+  if(o.bulk>0){   // v33.81 (cw-pixgear) SPEC 9.7: the tier is the silhouette; steel, not the coat colour
+    var A=PXB_ARM, bt=o.bulk;
+    if(bt===1){ p.put(pxRR(pxM(),11,23,24,32,1.5),A); }
+    else if(bt===2){ p.put(pxRR(pxM(),9,22,26,34,1.8),A); p.put(pxRR(pxM(),6,20,11,26,2),A); p.put(pxRR(pxM(),24,20,29,26,2),A); }
+    else { p.put(pxRR(pxM(),8,21,27,35,2),A); p.put(pxRR(pxM(),5,18,11,26,2.2),A); p.put(pxRR(pxM(),24,18,30,26,2.2),A); p.put(pxRR(pxM(),12,19,23,22,1.5),A); p.put(pxRect(pxM(),17,23,18,33),[A[0],A[0],A[1],A[1]],{line:false}); }
+  }
   if(o.low){ p.Pl(14,27,'#8a1c14'); p.Pl(15,27,'#b02a1e'); p.Pl(14,28,'#b02a1e'); p.Pl(15,28,'#8a1c14'); p.Pl(16,28,'#8a1c14'); p.Pl(22,30,'#8a1c14'); p.Pl(23,30,'#b02a1e'); p.Pl(22,31,'#b02a1e'); p.Pl(23,31,'#8a1c14'); p.Pl(24,31,'#8a1c14'); }   // v33.78 (cw-pixhurt) a13 D: two dark red stains, chest and arm
   if(o.lamp){ p.Pl(11,22,o.lamp); p.Pl(12,22,o.lamp); p.Pl(11,23,o.lamp); p.Pl(12,23,o.lamp); }
   p.put(pxRect(pxM(),16,19,19,21),sk,{line:false});
@@ -51037,20 +51043,23 @@ function pxBuildUpper(o){
     p.put(ml,hr,{line:false});
     p.P(17,16,sk[3]); p.P(18,16,sk[3]);
   }
+  if(o.bulk>=3&&o.head!=='hood'){ p.put(pxRR(pxM(),8,0,27,9,4),PXB_ARM); p.put(pxRect(pxM(),9,9,26,9),[PXB_ARM[2],PXB_ARM[2],PXB_ARM[3],PXB_ARM[3]],{line:false}); p.P(8,10,'#5c5c3c'); p.P(8,11,'#5c5c3c'); p.P(27,10,'#5c5c3c'); p.P(27,11,'#5c5c3c'); }   // v33.81 (cw-pixgear): the armour 3 helmet shell
   // the face: two 3 by 3 eyes, the pupils a pixel toward the aim; a bot has red eyes and angry brows
   function eye(ex){
     var px=ex+1+dxp, yy, xx;
     for(yy=11;yy<=13;yy++) for(xx=ex;xx<=ex+2;xx++) p.P(xx,yy,yy===11?E.lid:E.white);
     if(bot){ p.P(px,12,E.red); p.P(px,13,E.redDeep); } else { p.P(px,12,E.iris); p.P(px,13,E.ink); }
   }
+  if(o.tell){ [12,21].forEach(function(ex){ var xx, yy; for(yy=10;yy<=14;yy++) for(xx=ex-1;xx<=ex+3;xx++) if(xx<ex||xx>ex+2||yy<11||yy>13) p.P(xx,yy,'#c4302a'); }); }   // v33.81 (cw-pixgear) a22: the eyes flare
   eye(12); eye(21);
+  if(o.tell&&bot){ p.P(11,11,E.brow); p.P(12,11,E.brow); p.P(24,11,E.brow); p.P(23,11,E.brow); }   // and the brows go a pixel thicker
   if(bot){ p.P(11,10,E.brow); p.P(12,10,E.brow); p.P(13,11,E.brow); p.P(14,11,E.brow); p.P(24,10,E.brow); p.P(23,10,E.brow); p.P(22,11,E.brow); p.P(21,11,E.brow); p.P(13,10,E.brow); p.P(22,10,E.brow); }
   return p.sprite();
 }
 // the legs and boots, a pose per call: kind s (standing), w (walk), r (sprint), c (crouch); fr is the walk frame 0 to 5 (the swing and the lift of the vector walk, to whole pixels)
 // v28.xx (cw-cx-pixheight): hips follow the longer torso; add two rows to the lower legs and keep every sole on the entity anchor.
 function pxBuildLegs(o){
-  var p=pxPaint(o.mir), C=o.bot?PXB_REDS:(PXB_RAMP[o.clothes]||PXB_RAMP.scav), B=PXB_BOOT, kind=o.kind, ph, amp=0, sw=0, lA=0, lB=0, k;
+  var p=pxPaint(o.mir), C=o.bot?(o.bot===2?PXB_GOLD:PXB_REDS):(PXB_RAMP[o.clothes]||PXB_RAMP.scav), B=(o.bot===2)?PXB_GOLD.boot:PXB_BOOT, kind=o.kind, ph, amp=0, sw=0, lA=0, lB=0, k;
   if(kind==='w'||kind==='r'){
     ph=((o.fr|0)+0.5)/6*6.28318; amp=(kind==='r')?5:3.4; k=(kind==='r')?3.4:2.2;
     sw=Math.sin(ph)*amp; lA=Math.max(0,Math.sin(ph))*k; lB=Math.max(0,-Math.sin(ph))*k;
@@ -51074,7 +51083,7 @@ function pxBuildLegs(o){
 // the roll: a ball of coat, the head and the boots going round it (4 frames)
 // v28.xx (cw-cx-pixheight): the roll follows the four-row foot-anchor change, with the same four poses and timing.
 function pxBuildRoll(o){
-  var p=pxPaint(o.mir), C=o.bot?PXB_REDS:(PXB_RAMP[o.clothes]||PXB_RAMP.scav), sk=PIXRAMPS.skins[o.skin]||PIXRAMPS.skins.fair, a=(o.fr|0)*1.5708+0.7854, c=Math.cos(a), s=Math.sin(a), t, hx, hy, bx, by, kx, ky;
+  var p=pxPaint(o.mir), C=o.bot?(o.bot===2?PXB_GOLD:PXB_REDS):(PXB_RAMP[o.clothes]||PXB_RAMP.scav), sk=(o.bot===2)?PXB_GOLD.skin:(PIXRAMPS.skins[o.skin]||PIXRAMPS.skins.fair), a=(o.fr|0)*1.5708+0.7854, c=Math.cos(a), s=Math.sin(a), t, hx, hy, bx, by, kx, ky;
   p.put(pxEll(pxM(),10,38,25,53),C.coat);
   for(t=a+0.9;t<=a+2.6;t+=0.1) p.P(Math.round(17.5+Math.cos(t)*6.4),Math.round(45.5+Math.sin(t)*6.4),C.gear[1]);
   kx=Math.cos(a+1.5708); ky=Math.sin(a+1.5708); p.put(pxRR(pxM(),Math.round(17.5+kx*5)-2,Math.round(45.5+ky*5)-2,Math.round(17.5+kx*5)+1,Math.round(45.5+ky*5)+1,1),C.pack);
@@ -51120,13 +51129,13 @@ function pxLookOf(st){
   bot=!hero&&st.team==='foe'&&!st.merc&&!(o&&(o.merc||o.friendly));
   if(bot){   // a pillager bot: head, skin and clothes picked evenly from his own look hash (raiderLook), drawn in red
     h=pxHash([st.hair,st.cut,st.hat,st.skin,st.beard,st.eyes,st.faceMark,st.boots,st.gloves,st.pack,st.patch,st.tattoo,st.build].join('|'));
-    return {head:PXB_HEADS[h%3],skin:PXB_SKINS[(h>>>4)%3],clothes:PXB_CLOTHS[(h>>>8)%3],bot:1};
+    return {head:PXB_HEADS[h%3],skin:PXB_SKINS[(h>>>4)%3],clothes:PXB_CLOTHS[(h>>>8)%3],bot:(o&&o.golden)?2:1};   // v33.81 (cw-pixgear) a21 B: the golden pillager bot is the gold palette
   }
   return {head:r.head,skin:r.skin,clothes:r.clothes,bot:0};
 }
 function pxUpper(o){
   var fam='u|'+o.head+'|'+o.skin+'|'+o.clothes+'|'+o.bot+'|'+o.mir;
-  return pixFetch('actors',fam+'|'+o.pup+'|'+o.arms+'|'+(o.lamp||'')+'|'+(o.band||'')+'|'+(o.low?1:0),function(){ return pxBuildUpper(o); },fam,0);
+  return pixFetch('actors',fam+'|'+o.pup+'|'+o.arms+'|'+(o.lamp||'')+'|'+(o.band||'')+'|'+(o.low?1:0)+'|'+(o.bulk|0)+'|'+(o.tell?1:0),function(){ return pxBuildUpper(o); },fam,0);
 }
 function pxLegs(o){
   var fam='g|'+o.clothes+'|'+o.bot+'|'+o.mir+'|'+o.kind;
@@ -51182,6 +51191,7 @@ function pxLayer(spr,wx,wy,m,fx){   // one layer, then the wash over its own sil
   a0=wc.globalAlpha;
   if(fx.wa>0){ wc.globalAlpha=a0*fx.wa; pxBlit(pxTint(spr,fx.wc),wx,wy,m); }
   if(fx.ra>0&&(t=pxRingRed(spr))){ wc.globalAlpha=a0*fx.ra; pxBlit(t,wx,wy,m); }
+  if(fx.sh!==undefined){ wc.save(); wc.beginPath(); wc.rect(fx.sh,wy-70,5,80); wc.clip(); wc.globalAlpha=a0*0.45; pxBlit(pxTint(spr,'#fff6d0'),wx,wy,m); wc.restore(); }   // v33.81 (cw-pixgear) a21 B: a 5 px shine band crosses the gold body for 0.4 s of every 2 s
   wc.globalAlpha=a0;
 }
 // v33.79 (cw-pixdown), HIS PICKS a14 B, a15 B and a23 B (art survey 2026-10-19), job 86g ship 2: THE DOWNED, DEAD AND FALLEN IN PIXELS. A downed player kneels (the crouch legs, the shoulders bowed a pixel forward and
@@ -51213,9 +51223,9 @@ function pxKneelGround(x,y,fl,o,m){   // a14 B: the ring (1.2 Hz) under the knee
 }
 // the standing body (legs, empty hands) turned about the feet: frame f of 8 is f/7 of the angle A, sg is the way it falls; the sprite anchor is the feet
 function pxToppleSpr(lk,mir,sg,f,A){
-  var fam='t|'+lk.head+'|'+lk.skin+'|'+lk.clothes+'|'+lk.bot+'|'+mir+'|'+sg+'|'+A;
+  var fam='t|'+lk.head+'|'+lk.skin+'|'+lk.clothes+'|'+lk.bot+'|'+mir+'|'+sg+'|'+A+'|'+(lk.bulk|0);
   return pixFetch('actors',fam+'|'+f,function(){
-    var lg=pxBuildLegs({clothes:lk.clothes,bot:lk.bot,mir:mir,kind:'s',fr:0}), up=pxBuildUpper({head:lk.head,skin:lk.skin,clothes:lk.clothes,bot:lk.bot,mir:mir,pup:0,arms:1,lamp:'',band:'',low:0}), R=62, s=pixCanvas(R*2+1,R*2+1);
+    var lg=pxBuildLegs({clothes:lk.clothes,bot:lk.bot,mir:mir,kind:'s',fr:0}), up=pxBuildUpper({head:lk.head,skin:lk.skin,clothes:lk.clothes,bot:lk.bot,mir:mir,pup:0,arms:1,lamp:'',band:'',low:0,bulk:lk.bulk|0}), R=62, s=pixCanvas(R*2+1,R*2+1);
     s.x.imageSmoothingEnabled=false; s.x.translate(R,R); s.x.rotate(sg*A*f/7);
     s.x.drawImage(lg.c,-lg.ax,-lg.ay); s.x.drawImage(up.c,-up.ax,-up.ay);
     pixHarden(s,128);
@@ -51226,6 +51236,7 @@ function pxDeath(x,y,face,st,lk,m){   // a15 B: the player falls in 0.22 s, hold
   var o=st.own, fl=Math.cos(face)<0?-1:1, t=(G&&typeof G.deathBeat==='number')?Math.max(0,1.5-G.deathBeat):9, sg=(o.hitDX||-fl)<0?-1:1, k, u, spr, a0=wc.globalAlpha, u2, col, i, qx, qy, S;
   if(t>=0.9) return true;
   k=Math.min(1,t/0.22); u=(t<0.4)?1:1-(t-0.4)/0.5;
+  lk.bulk=Math.min(3,Math.max(0,Math.round(st.bulk||0)));
   spr=pxToppleSpr(lk,fl<0?1:0,sg,Math.round(k*k*7),1.5708); if(!spr) return false;
   wc.globalAlpha=a0*u; opGround(x,y,st); pxBlit(spr,x,y+Math.round(6*k*k),m); wc.globalAlpha=a0;
   if(t>=0.4){
@@ -51245,16 +51256,39 @@ function pxFallTry(o,x,y,t,sg,st){   // a23 B: a pillager bot tips 85 degrees aw
     if(!lk) return false;
     m=wc.getTransform(); if(Math.abs(m.b)>1e-9||Math.abs(m.c)>1e-9||!(m.a>0)||Math.abs(m.a-m.d)>1e-6) return false;
     fl=Math.cos(o.face||0)<0?-1:1; k=Math.min(1,t/0.2); u=(t<0.2)?1:1-(t-0.2)/0.5;
+    lk.bulk=Math.min(3,Math.max(0,Math.round(st.bulk||0)));
     spr=pxToppleSpr(lk,fl<0?1:0,sg<0?-1:1,Math.round((1-(1-k)*(1-k))*7),1.4835); if(!spr) return false;
     wc.globalAlpha=a0*u; shadowE(x+1.5,y+2,12.5,5,0.5); pxBlit(spr,x,y,m); wc.globalAlpha=a0;
     PIX.bodies++;
     return true;
   }catch(_pf){ PIX.errs++; PIX.fall++; try{ wc.globalAlpha=a0; }catch(_q){} return false; }
 }
+// v33.81 (cw-pixgear), HIS PICKS a20 A, a21 B and a22 (art survey 2026-10-19) and SPEC 9.7, job 86g ship 3: ARMOUR, GOLD, ELITE AND THE TELL IN PIXELS. The armour tier is a silhouette on the upper body (1 a chest plate, 2 a wider
+// v33.81 (cw-pixgear):  plate with pauldrons, 3 wider again with a collar, a ridge and a helmet shell), the golden pillager bot is a baked solid gold palette with a pixel shine band (no scratch canvas, no ctx.filter), the elite
+// v33.81 (cw-pixgear):  purple ground ring is a baked pixel ring at the vector pulse, and the 0.45 s chase tell flares the eyes with a red halo and tightens the brows. Cosmetic: no random draw, nothing the sim reads.
+var PXB_ARM=['#9aa6b0','#75818c','#55606b','#3a434c'];
+var PXB_GOLD={coat:['#fff0a0','#f0c840','#b48a1c','#6e4c10'],trs:['#e0b83a','#b48a1c','#8a640e','#5a400a'],gear:['#fff4b0','#f4d050','#c49a24','#7c5810'],pack:['#e8c440','#c49a24','#8a640e','#5a400a'],acc:'#ffffff',
+  skin:['#fff0a0','#f0c840','#b48a1c','#6e4c10'],hair:['#d8b030','#b48a1c','#8a640e','#5a400a'],boot:['#c49a24','#8a640e','#5a400a','#3a2806']};
+function pxEliteRing(e){
+  var rx=Math.max(4,Math.round(e.r*1.2)), ry=Math.max(3,Math.round(e.r*0.5)), m, spr, ep, a0=wc.globalAlpha;
+  try{
+    if(!(e.r>0)||!wc.getTransform) return false;
+    m=wc.getTransform(); if(Math.abs(m.b)>1e-9||Math.abs(m.c)>1e-9||!(m.a>0)||Math.abs(m.a-m.d)>1e-6) return false;
+    spr=pixFetch('actors','e|'+rx+'|'+ry,function(){
+      var s=pixCanvas(rx*2+6,ry*2+6), q;
+      s.x.imageSmoothingEnabled=true; s.x.strokeStyle='#d08ce8'; s.x.lineWidth=2; s.x.beginPath(); s.x.ellipse(rx+3,ry+3,rx,ry,0,0,6.2832); s.x.stroke();
+      pixHarden(s,100); q=pixSprite(s.c,rx+3,ry+3,PIX_ACT); q.elite=1; return q;
+    },'e|'+rx+'|'+ry,0);
+    if(!spr) return false;
+    ep=0.55+0.45*Math.sin(((G&&G.t)||0)*3.1+e.x*0.02);
+    wc.save(); wc.globalCompositeOperation='lighter'; wc.globalAlpha=a0*(0.28+0.24*ep); pxBlit(spr,e.x,e.y+2,m); wc.restore();
+    return true;
+  }catch(_pe){ PIX.errs++; PIX.fall++; try{ wc.globalAlpha=a0; }catch(_q){} return false; }
+}
 function pxBob(ph,moving){ return Math.round(moving?Math.abs(Math.sin(ph)):(Math.sin(ph*0.35)+1)*0.5); }
 function pixDrawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
-  var age, hurt, lw, rx=0, fx=null, dn=0, m, lk, fl, mir, moving, sprint, crouch, ads, rl, hold, back, kind, fr, bob, lean, dyUp, uo, lg, up, ro, gn=null, gv=0, w, id, D, fk, el, wt, rc, low, ext, ang, step, C, sk, sl, hd, sm, px, py, ty, pxd, k;
-  if(!st||iv>0||OPX.inScr||st.bulk>0) return false;   // v33.78 (cw-pixhurt): low health is drawn in pixels now
+  var age, hurt, lw, rx=0, fx=null, dn=0, sf, m, lk, fl, mir, moving, sprint, crouch, ads, rl, hold, back, kind, fr, bob, lean, dyUp, uo, lg, up, ro, gn=null, gv=0, w, id, D, fk, el, wt, rc, low, ext, ang, step, C, sk, sl, hd, sm, px, py, ty, pxd, k;
+  if(!st||iv>0||OPX.inScr) return false;   // v33.78 (cw-pixhurt): low health is drawn in pixels now; v33.81 (cw-pixgear): armour too
   if(mode==='fist') return false;
   if(mode==='down'){   // v33.79 (cw-pixdown): a14 B kneel (1) and a15 B death (2) are pixel; any other down body stays vector
     if(!(st.own&&opIsPlayer(st))) return false;
@@ -51270,7 +51304,7 @@ function pixDrawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   lk=pxLookOf(st); if(!lk) return false;
   if(dn===2) return pxDeath(x,y,face,st,lk,m);
   fl=Math.cos(face)<0?-1:1; mir=fl<0?1:0; moving=!!st.moving; sprint=!!st.sprint; ads=!!st.ads; rl=st.rl||0; crouch=(mode==='crouch'||mode==='crouchnone');
-  C=lk.bot?PXB_REDS:(PXB_RAMP[lk.clothes]||PXB_RAMP.scav); sk=PIXRAMPS.skins[lk.skin]||PIXRAMPS.skins.fair;
+  C=lk.bot?(lk.bot===2?PXB_GOLD:PXB_REDS):(PXB_RAMP[lk.clothes]||PXB_RAMP.scav); sk=(lk.bot===2)?PXB_GOLD.skin:(PIXRAMPS.skins[lk.skin]||PIXRAMPS.skins.fair);
   if(mode==='roll'){
     ro=pxRoll({head:lk.head,skin:lk.skin,clothes:lk.clothes,bot:lk.bot,mir:mir,fr:Math.floor(((ph/12.6)%1+1)%1*4)%4});
     if(!ro) return false;
@@ -51287,6 +51321,7 @@ function pixDrawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
     }
     if(lw) fx.ra=0.5+0.5*Math.sin(((G&&G.t)||0)*hpFlashRate());
   }
+  if(lk.bot===2){ sf=(((G&&G.t)||0)%2)/0.4; if(sf<1){ if(!fx) fx={wc:'',wa:0,ra:0}; fx.sh=Math.round(x+(sf*2-1)*18); } }   // v33.81 (cw-pixgear): the gold shine
   hold=gunHeldOn(st,mode); back=hold&&Math.sin(face)<-0.3;
   if(crouch){ kind='c'; fr=0; }
   else if(moving){ kind=sprint?'r':'w'; fr=Math.floor(((ph/6.28318531)%1+1)%1*6)%6; }
@@ -51296,7 +51331,7 @@ function pixDrawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   dyUp=(crouch?5:0)-bob+(lw?1:0)+(dn?2:0);   // a13 D: the shoulders drop; a14 B: and the kneel
   sm=seatMarkOf(st);
   uo={head:lk.head,skin:lk.skin,clothes:lk.clothes,bot:lk.bot,mir:mir,pup:(Math.cos(face)*1.4>0.6?1:(Math.cos(face)*1.4<-0.6?-1:0)),arms:hold?0:1,
-      lamp:(st.team==='ally'||st.team==='foe')&&typeof TEAMCOL!=='undefined'?TEAMCOL[st.team]:'',band:sm>=0?SEATCOL[sm&3]:'',low:lw?1:0};
+      lamp:(st.team==='ally'||st.team==='foe')&&typeof TEAMCOL!=='undefined'?TEAMCOL[st.team]:'',band:sm>=0?SEATCOL[sm&3]:'',low:lw?1:0,bulk:Math.min(3,Math.max(0,Math.round(st.bulk||0))),tell:(st.tell>0)?1:0};
   lg=pxLegs({clothes:lk.clothes,bot:lk.bot,mir:mir,kind:kind,fr:fr}); if(!lg) return false;
   up=pxUpper(uo); if(!up) return false;
   ty=y+dyUp; pxd=x+lean+rx; px=pxd; py=ty-PXB.PV+(ads?-1:0);
@@ -52692,7 +52727,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.80: A downed player kneels in a pulsing red pixel ring with the gun on the floor; a dead player and a falling pillager bot topple in baked pixel frames and fade. Check 33.80 fails on v33.79',
+  now:'v33.81: Armoured pillagers wear pixel plates (a chest plate, then pauldrons, then a collar and a helmet), the golden pillager bot is solid gold with a pixel shine, the elite ring is a pixel ring, and the chase tell flares the eyes. Check 33.81 fails on v33.80',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -63996,7 +64031,7 @@ function goldTick(dt){
 var GOLDB={c:null,x:null,h:null};
 function goldBodyBegin(e){
   var T, hw, up, dn, sx, sy, w, h, h1;
-  if(!e||!e.golden||typeof wc==='undefined'||!wc||!wc.getTransform||!('filter' in wc)||(typeof G!=='undefined'&&G&&G.sim)||GOLDB.h) return null;
+  if(!e||!e.golden||(pixOn()&&e.kind==='raider')||typeof wc==='undefined'||!wc||!wc.getTransform||!('filter' in wc)||(typeof G!=='undefined'&&G&&G.sim)||GOLDB.h) return null;
   try{
     T=wc.getTransform();
     if(!(T.a>0)||!(T.d>0)||T.b||T.c||!isFinite(e.x)||!isFinite(e.y)) return null;

@@ -1,0 +1,7 @@
+v33.81: the pixel armour and gold
+
+Armoured pillagers wear pixel plates (a chest plate, then pauldrons, then a collar and a helmet), the golden pillager bot is solid gold with a pixel shine, the elite ring is a pixel ring, and the chase tell flares the eyes.
+
+Check 33.81. Fails on v33.80.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
