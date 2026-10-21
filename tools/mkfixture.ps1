@@ -194,6 +194,9 @@ window.__cleanProfile=function(){
   P.cond='day';   // v10.48: a night a check left in the SAVED profile ran every fingerprint after it after dark
   P.cosOutfit='outnone';   // v10.54: a suit left on by a check would overrule every sprite check after it
   delete P.wirtLotBought;   // v13.23: a Limited Time Offer one check bought left the counter reading Bought for the next, and v11.61 skipped
+  // 10-20 (job 68): every worn piece goes back to the default look. v14.71 rolls SURPRISE ME into the saved profile, so a full run
+  // after it drew a randomly dressed hero against a plainly dressed body (v28.12, v28.13, v28.16 red; v20.01 and v20.11 when a wide vest rolled)
+  try{ if(typeof COSKEY==='object'&&COSKEY&&typeof COSDEF==='object'&&COSDEF){ for(var _ck in COSKEY) if(COSKEY.hasOwnProperty(_ck)&&COSDEF.hasOwnProperty(_ck)) P[COSKEY[_ck]]=COSDEF[_ck]; } }catch(_cz){}
   try{ saveProfile(); }catch(e){}
   return was;
 };
