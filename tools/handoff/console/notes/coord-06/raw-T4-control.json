@@ -1,0 +1,34 @@
+{
+ "test": "t4",
+ "mode": "control",
+ "at": "2026-10-21T06:26:52.261Z",
+ "chrome": "Chrome/155.0.8059.85",
+ "pair": "c6conhqbw1e",
+ "gameUrl": "http://localhost:8809/fixture.html?netslot=A&pair=c6conhqbw1e",
+ "hostBootMs": 397,
+ "hostIsTop": true,
+ "hostSecure": true,
+ "ver": "33.57",
+ "pickResult": "opened",
+ "p2WindowFound": 1,
+ "p2Url": "http://localhost:8809/fixture.html?p2=1&mode=coop&pair=c6conhqbw1e",
+ "p2BootMs": 285,
+ "p2HasOpener": true,
+ "linkedWithin20s": true,
+ "linkMs": 1419,
+ "samples": [
+  {
+   "ms": 407,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 1419,
+   "hostRoster": 2,
+   "p2Roster": 2
+  }
+ ],
+ "hostState": "{\"on\":true,\"role\":\"host\",\"seat\":0,\"roster\":[{\"seat\":0,\"pid\":\"89aa058e\",\"name\":\"PILLAGER\",\"host\":true},{\"seat\":1,\"pid\":\"777685c2\",\"name\":\"PILLAGER\",\"host\":false}],\"status\":\"PILLAGER joined\",\"err\":\"\",\"made\":1,\"codeLen\":1192,\"links\":1}",
+ "hostSame": "{\"mode\":\"coop\",\"pick\":\"coop\",\"same\":\"host\",\"pair\":\"c6conhqbw1e\",\"p2url\":\"http://localhost:8809/fixture.html?p2=1&mode=coop&pair=c6conhqbw1e\",\"chan\":true,\"busy\":false,\"p2win\":true}",
+ "p2State": "{\"on\":true,\"role\":\"join\",\"seat\":1,\"roster\":[{\"seat\":0,\"pid\":\"89aa058e\",\"name\":\"PILLAGER\",\"host\":true},{\"seat\":1,\"pid\":\"777685c2\",\"name\":\"PILLAGER\",\"host\":false}],\"status\":\"in PILLAGER's party\",\"err\":\"\",\"made\":1,\"codeLen\":1085,\"links\":1}"
+}

@@ -1,11 +1,13 @@
 // coord-06 primitive test driver. Talks to the headless Chrome on debug port 9371 ONLY.
 // usage: node c6drive.mjs t1 <mode>     (mode: plain|noopener|noopenerpopup|noreferrer|link|cut|cutnav|twice)
 //        node c6drive.mjs t2 <case>     (case: none|esc|noesc|noopener|cut|cutport|cutnav)
-// The top page of t2 is served at http://127.0.0.1:8871/ by CDP Fetch interception (nothing listens on 8871):
+// The top page of t2 is served at http://127.0.0.1:8871/ by a tiny in-process server that lives only for the run
+// (CDP Fetch interception was tried first: Chrome then treats the top page as public and Local Network Access blocks the frame):
 // the static servers on 8803-8810 answer 400 Invalid Hostname to Host 127.0.0.1.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import http from 'node:http';
 const DIR = path.dirname(fileURLToPath(import.meta.url));
 const PORT = 9371;
 const BASE = 'http://localhost:8809/handoff/console/notes/coord-06/';
@@ -36,6 +38,8 @@ async function click(sess, x, y) {
   for (const type of ['mouseMoved', 'mousePressed', 'mouseReleased']) await send('Input.dispatchMouseEvent', { type, x, y, button: 'left', clickCount: 1 }, sess);
 }
 async function closeAll(pred) { for (const t of await targets()) if (t.type === 'page' && pred(t)) { try { await send('Target.closeTarget', { targetId: t.targetId }); } catch (e) { } } }
+let srv = null;
+function serveTop() { return new Promise(r => { srv = http.createServer((req, res) => { if (req.url.startsWith('/top2.html')) { res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' }); res.end(fs.readFileSync(path.join(DIR, 'top2.html'))); } else { res.writeHead(404); res.end(); } }); srv.listen(8871, '127.0.0.1', r); }); }
 const out = { test: process.argv[2], mode: process.argv[3], at: new Date().toISOString(), chrome: ver.Browser };
 
 async function t1(mode) {
@@ -85,13 +89,6 @@ async function t2(cs) {
   out.params = qs;
   const { targetId: tId } = await send('Target.createTarget', { url: 'about:blank' });
   const T = await attach(tId);
-  const html = fs.readFileSync(path.join(DIR, 'top2.html'));
-  events.push(async m => {
-    if (m.method === 'Fetch.requestPaused' && m.sessionId === T) {
-      await send('Fetch.fulfillRequest', { requestId: m.params.requestId, responseCode: 200, responseHeaders: [{ name: 'Content-Type', value: 'text/html; charset=utf-8' }], body: html.toString('base64') }, T);
-    }
-  });
-  await send('Fetch.enable', { patterns: [{ urlPattern: 'http://127.0.0.1:8871/*' }] }, T);
   await send('Page.enable', {}, T);
   await send('Page.navigate', { url: TOP + '?' + new URLSearchParams(qs).toString() }, T);
   let s0 = null; const t0 = Date.now();
@@ -109,7 +106,7 @@ async function t2(cs) {
   out.renderersWithPop = (await procs()).length;
   await click(T, 100, 130); await sleep(1500);
   await ev(T, "__ask('write','w2')"); await sleep(400);
-  if (P) { out.popPortPing = await ev(P, 'portPing()'); await sleep(400); }
+  if (P) { out.popPortPing = await ev(P, 'portPing()'); out.popBcAfterRsa = await ev(P, "bc.postMessage({from:'pop',n:'after-rsa',run:run});1"); await sleep(400); }
   if (P) {
     await ev(T, "__ask('reset')");
     const q0 = await procs();
@@ -132,10 +129,10 @@ async function t2(cs) {
   // verdicts
   const il = (out.inner && out.inner.log) || [], pl = (out.pop && out.pop.log) || [];
   out.verdict = {
-    bcPopToFrame: il.some(x => x.includes('bc:{"from":"pop"')),
-    bcFrameToPop: pl.some(x => x.includes('bc:{"from":"inner"') && !x.includes('rsa')),
-    lsFrameSeesPopKey: !!(out.inner && out.inner.lsPop),
-    lsPopSeesFrameKey: !!(out.pop && (out.pop.lsInner || out.pop.lsInnerAtLoad)),
+    bcPopToFrame: il.some(x => x.includes(' bc:{"from":"pop"')),
+    bcFrameToPop: pl.some(x => x.includes(' bc:{"from":"inner"') && !x.includes('rsa')),
+    lsFrameSeesPopKey: !!(out.inner && (out.inner.lsPop || '').startsWith(run)),
+    lsPopSeesFrameKey: !!(out.pop && ((out.pop.lsInner || '').startsWith(run) || (out.pop.lsInnerAtLoad || '').startsWith(run))),
     storageEventInFrame: il.some(x => x.includes('storage:c6t2:pop')),
     storageEventInPop: pl.some(x => x.includes('storage:c6t2:inner')),
     popHasOpener: out.pop ? out.pop.openerAtLoad : null,
@@ -147,16 +144,66 @@ async function t2(cs) {
     portPopToFrame: il.some(x => x.includes('port:{"from":"pop"')),
     rsa: out.inner && out.inner.rsa,
     rsaBcReachedPop: pl.some(x => x.includes('rsa-bc')),
-    rsaLsWriteSeenByPop: !!(out.pop && out.pop.lsRsa),
+    rsaLsWriteSeenByPop: !!(out.pop && out.pop.lsRsa === run),
+    rsaBcPopToFrame: il.some(x => x.includes('rsabc:') && x.includes('after-rsa')),
     popOwnProcess: out.pidPop != null ? out.pidPop !== out.pidInner : null,
   };
   await closeAll(t => t.url.includes(run) || t.targetId === tId);
 }
 
+// t4: the real game. mode 'framed' = fixture.html inside a cross-site frame (top on 127.0.0.1:8871); 'control' = fixture.html top-level.
+async function t4(mode) {
+  const pair = 'c6' + mode.slice(0, 3) + Date.now().toString(36).slice(-6);
+  const gameUrl = 'http://localhost:8809/fixture.html?netslot=A&pair=' + pair;
+  out.pair = pair; out.gameUrl = gameUrl;
+  let H, topId = null;
+  if (mode === 'framed') {
+    const { targetId } = await send('Target.createTarget', { url: TOP + '?full=1&src=' + encodeURIComponent(gameUrl) }); topId = targetId;
+    const ft = await waitTarget(t => t.type === 'iframe' && t.url.includes('pair=' + pair), 15000);
+    out.frameFound = ft.length; if (!ft.length) return;
+    H = await attach(ft[0].targetId);
+  } else {
+    const { targetId } = await send('Target.createTarget', { url: gameUrl }); topId = targetId;
+    H = await attach(targetId);
+  }
+  const booted = async (S, ms) => { const t0 = Date.now(); while (Date.now() - t0 < ms) { try { if (await ev(S, "!!(window.__net&&window.__gx&&__gx('PLOADED'))") === true) return Date.now() - t0; } catch (e) { } await sleep(250); } return false; };
+  out.hostBootMs = await booted(H, 60000);
+  out.hostIsTop = await ev(H, 'window.top===window');
+  out.hostSecure = await ev(H, 'window.isSecureContext');
+  out.ver = await ev(H, "typeof VER!=='undefined'?VER:__gx('VER')");
+  try { await ev(H, "localStorage.removeItem('salvagerun:p2raid');localStorage.removeItem('salvagerun:p2live');1"); } catch (e) { }
+  await ev(H, `__gx("NET.pair='${pair}'")`);
+  out.pickResult = await ev(H, "__net.pick('coop')", true);
+  const t0 = Date.now();
+  const gt = await waitTarget(t => t.type === 'page' && t.url.includes('p2=1') && t.url.includes('pair=' + pair), 8000);
+  out.p2WindowFound = gt.length;
+  let G = null;
+  if (gt.length) { G = await attach(gt[0].targetId); out.p2Url = gt[0].url; }
+  out.p2BootMs = G ? await booted(G, 20000) : false;
+  out.p2HasOpener = G ? await ev(G, 'window.opener!==null') : null;
+  let linked = false; const samples = [];
+  while (Date.now() - t0 < 20000) {
+    const h = await ev(H, 'JSON.stringify(__net.state())');
+    const g = G ? await ev(G, "window.__net?JSON.stringify(__net.state()):'no __net'") : null;
+    let hr = 0, gr = 0; try { hr = JSON.parse(h).roster.length; } catch (e) { } try { gr = JSON.parse(g).roster.length; } catch (e) { }
+    samples.push({ ms: Date.now() - t0, hostRoster: hr, p2Roster: gr });
+    if (hr === 2 && gr === 2) { linked = true; break; }
+    await sleep(1000);
+  }
+  out.linkedWithin20s = linked; out.linkMs = linked ? samples[samples.length - 1].ms : null;
+  out.samples = samples;
+  out.hostState = await ev(H, 'JSON.stringify(__net.state())'); out.hostSame = await ev(H, 'JSON.stringify(__net.same())');
+  out.p2State = G ? await ev(G, "window.__net?JSON.stringify(__net.state()):'no __net'") : null;
+  try { await ev(H, "__gx('netSameStop()');1"); } catch (e) { }
+  if (G) try { await ev(G, "__gx('netSameStop()');1"); } catch (e) { }
+  await closeAll(t => t.url.includes(pair) || t.targetId === topId);
+}
+
 try {
-  if (out.test === 't1') await t1(out.mode); else if (out.test === 't2') await t2(out.mode);
+  if (out.test === 't4') { await serveTop(); await t4(out.mode); } else
+  if (out.test === 't1') await t1(out.mode); else if (out.test === 't2') { await serveTop(); await t2(out.mode); }
 } catch (e) { out.error = String(e && e.stack || e); }
 const f = path.join(DIR, `raw-${out.test.toUpperCase()}-${out.mode}.json`);
 fs.writeFileSync(f, JSON.stringify(out, null, 1));
-console.log(JSON.stringify(Object.assign({ file: path.basename(f) }, out.verdict || { sharedThread: out.sharedThread, samePid: out.samePid, aOpenReturnedNull: out.aOpenReturnedNull, bMaxGap: out.bMaxGapWhileABusy2000Ms, error: out.error })));
-ws.close(); process.exit(0);
+console.log(JSON.stringify(Object.assign({ file: path.basename(f) }, out.test === 't4' ? { linked: out.linkedWithin20s, linkMs: out.linkMs, pick: out.pickResult, p2: out.p2WindowFound, p2Opener: out.p2HasOpener, hostIsTop: out.hostIsTop, error: out.error } : out.verdict || { sharedThread: out.sharedThread, samePid: out.samePid, aOpenReturnedNull: out.aOpenReturnedNull, bMaxGap: out.bMaxGapWhileABusy2000Ms, error: out.error })));
+if (srv) srv.close(); ws.close(); process.exit(0);

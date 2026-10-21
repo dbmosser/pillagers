@@ -48,11 +48,15 @@ The coordinator tells him each one in chat on the day, one or two plain lines wi
   files, put them in exports/ and they are read like his own.
 - His own save on http://localhost:8802 is not touched by any of this.
 
-## Open risk
+## Open risk: couch mode does not link on itch yet
 
-- The 2-player same-machine mode links its two windows over a BroadcastChannel. Inside itch's frame Chrome may keep the frame and
-  the player 2 window apart, so couch mode may not link on itch at all. Not tested yet: coordinator job coord-06
-  (tools/handoff/console/staging-1020/coord-06-itch-iframe-2p-test.md). It must be settled before 11/26.
+- Tested 10-21 (coord-06, tools/handoff/console/notes/coord-06/): inside a cross-site frame, the way itch embeds the game, the
+  two windows cannot hear each other (Chrome keys BroadcastChannel and storage by the top-level site). The real game framed that
+  way opened player 2 but never linked, and nothing on screen said why. Top level it links in 1.4 s.
+- The fix is job 85a-itch-couch-link (a postMessage bridge over the opener on the embedded path, plus a "player 2 not linked"
+  callout). It must ship, and be tried on the real itch page in Chrome and Edge, before friends and family get the link.
+- Never turn on itch's SharedArrayBuffer option for this page: it sends a header that cuts the opener, which kills that bridge,
+  and itch then serves the game from another address, so saves made before are lost.
 
 ## Fonts (2026-10-12)
 The game embeds Barlow Condensed, Barlow, IBM Plex Mono, Titan One and Rubik (SIL Open Font License 1.1). The itch zip must carry tools/fonts/OFL-*.txt (all five) beside the game; since 10-20 tools/itch-zip.ps1 packs them, and the sound licences, for every ship and the daily push. The Titan One and Rubik copyright lines were read from the fonts embedded in the game.

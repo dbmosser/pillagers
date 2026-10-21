@@ -1,0 +1,125 @@
+{
+ "test": "t4",
+ "mode": "framed",
+ "at": "2026-10-21T06:27:07.797Z",
+ "chrome": "Chrome/155.0.8059.85",
+ "pair": "c6frahqc80z",
+ "gameUrl": "http://localhost:8809/fixture.html?netslot=A&pair=c6frahqc80z",
+ "frameFound": 1,
+ "hostBootMs": 313,
+ "hostIsTop": false,
+ "hostSecure": true,
+ "ver": "33.57",
+ "pickResult": "opened",
+ "p2WindowFound": 1,
+ "p2Url": "http://localhost:8809/fixture.html?p2=1&mode=coop&pair=c6frahqc80z",
+ "p2BootMs": 166,
+ "p2HasOpener": true,
+ "linkedWithin20s": false,
+ "linkMs": null,
+ "samples": [
+  {
+   "ms": 350,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 1353,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 2374,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 3385,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 4389,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 5404,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 6420,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 7435,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 8449,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 9454,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 10470,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 11482,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 12500,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 13514,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 14523,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 15534,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 16550,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 17566,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 18579,
+   "hostRoster": 1,
+   "p2Roster": 0
+  },
+  {
+   "ms": 19593,
+   "hostRoster": 1,
+   "p2Roster": 0
+  }
+ ],
+ "hostState": "{\"on\":true,\"role\":\"host\",\"seat\":0,\"roster\":[{\"seat\":0,\"pid\":\"82758d1f\",\"name\":\"PILLAGER\",\"host\":true}],\"status\":\"waiting for player 2\",\"err\":\"\",\"made\":1,\"codeLen\":1185,\"links\":1}",
+ "hostSame": "{\"mode\":\"coop\",\"pick\":\"coop\",\"same\":\"host\",\"pair\":\"c6frahqc80z\",\"p2url\":\"http://localhost:8809/fixture.html?p2=1&mode=coop&pair=c6frahqc80z\",\"chan\":true,\"busy\":false,\"p2win\":true}",
+ "p2State": "{\"on\":false,\"role\":null,\"seat\":-1,\"roster\":[],\"status\":\"\",\"err\":\"\",\"made\":0,\"codeLen\":0,\"links\":0}"
+}

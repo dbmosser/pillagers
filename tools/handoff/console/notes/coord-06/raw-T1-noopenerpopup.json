@@ -1,0 +1,76 @@
+{
+ "test": "t1",
+ "mode": "noopenerpopup",
+ "at": "2026-10-21T06:16:47.218Z",
+ "chrome": "Chrome/155.0.8059.85",
+ "renderersBefore": 3,
+ "aReady": true,
+ "aOpenReturnedNull": true,
+ "bFound": 1,
+ "bReady": true,
+ "renderersWithAB": 5,
+ "bBaselineMaxGapMs": 11.5,
+ "bMaxGapWhileABusy2000Ms": 11.5,
+ "bTicksDuringWindow": 206,
+ "sharedThread": false,
+ "cpuDeltaWhileABusy": [
+  {
+   "id": 19708,
+   "d": 1.947
+  },
+  {
+   "id": 24116,
+   "d": 0.012
+  },
+  {
+   "id": 26856,
+   "d": 0
+  }
+ ],
+ "cpuDeltaWhileBBusy": [
+  {
+   "id": 24116,
+   "d": 0.984
+  },
+  {
+   "id": 19708,
+   "d": 0.005
+  },
+  {
+   "id": 26856,
+   "d": 0
+  }
+ ],
+ "pidA": 19708,
+ "pidB": 24116,
+ "samePid": false,
+ "b": {
+  "who": "b",
+  "url": "http://localhost:8809/handoff/console/notes/coord-06/b.html?tag=noopenerpopup_mvhpyx6a",
+  "openerAtLoad": false,
+  "maxGap": 11.5,
+  "ticks": 206,
+  "bc": [
+   {
+    "from": "a",
+    "tag": "noopenerpopup_mvhpyx6a"
+   }
+  ],
+  "storageEv": [
+   "c6t1:a=noopenerpopup_mvhpyx6a:1792563408846"
+  ],
+  "lsA": "noopenerpopup_mvhpyx6a:1792563408846",
+  "openerNow": false
+ },
+ "a": {
+  "who": "a",
+  "maxGap": 2001.6000000089407,
+  "ticks": 303,
+  "bc": [],
+  "storageEv": [],
+  "wNull": true
+ },
+ "bSawABroadcast": true,
+ "bSawStorageEvent": true,
+ "bReadsALocalStorage": true
+}

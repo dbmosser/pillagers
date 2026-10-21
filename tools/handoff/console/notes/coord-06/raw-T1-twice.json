@@ -1,0 +1,78 @@
+{
+ "test": "t1",
+ "mode": "twice",
+ "at": "2026-10-21T06:17:15.330Z",
+ "chrome": "Chrome/155.0.8059.85",
+ "renderersBefore": 3,
+ "aReady": true,
+ "aOpenReturnedNull": true,
+ "aSecondOpenReturnedNull": true,
+ "bTargetsAfterTwoOpensSameName": 2,
+ "bFound": 2,
+ "bReady": true,
+ "renderersWithAB": 6,
+ "bBaselineMaxGapMs": 11.3,
+ "bMaxGapWhileABusy2000Ms": 11.2,
+ "bTicksDuringWindow": 206,
+ "sharedThread": false,
+ "cpuDeltaWhileABusy": [
+  {
+   "id": 28824,
+   "d": 1.948
+  },
+  {
+   "id": 18652,
+   "d": 0.009
+  },
+  {
+   "id": 4836,
+   "d": 0.007
+  }
+ ],
+ "cpuDeltaWhileBBusy": [
+  {
+   "id": 18652,
+   "d": 0.985
+  },
+  {
+   "id": 4836,
+   "d": 0.004
+  },
+  {
+   "id": 28824,
+   "d": 0.003
+  }
+ ],
+ "pidA": 28824,
+ "pidB": 18652,
+ "samePid": false,
+ "b": {
+  "who": "b",
+  "url": "http://localhost:8809/handoff/console/notes/coord-06/b.html?tag=twice_mvhpziv6",
+  "openerAtLoad": false,
+  "maxGap": 11.200000002980232,
+  "ticks": 206,
+  "bc": [
+   {
+    "from": "a",
+    "tag": "twice_mvhpziv6"
+   }
+  ],
+  "storageEv": [
+   "c6t1:a=twice_mvhpziv6:1792563438859"
+  ],
+  "lsA": "twice_mvhpziv6:1792563438859",
+  "openerNow": false
+ },
+ "a": {
+  "who": "a",
+  "maxGap": 2004.5,
+  "ticks": 494,
+  "bc": [],
+  "storageEv": [],
+  "wNull": true
+ },
+ "bSawABroadcast": true,
+ "bSawStorageEvent": true,
+ "bReadsALocalStorage": true
+}

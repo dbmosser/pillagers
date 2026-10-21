@@ -1,0 +1,145 @@
+{
+ "test": "t2",
+ "mode": "esc",
+ "at": "2026-10-21T06:24:18.944Z",
+ "chrome": "Chrome/155.0.8059.85",
+ "params": {
+  "run": "esc_mvhq8lqm",
+  "sb": "esc",
+  "feat": "plain",
+  "popmode": "none"
+ },
+ "innerAtLoad": {
+  "who": "inner",
+  "run": "esc_mvhq8lqm",
+  "origin": "http://localhost:8809",
+  "isTop": false,
+  "secure": true,
+  "log": [],
+  "maxGap": 12.200000002980232,
+  "ticks": 419,
+  "hasSA": true,
+  "rsa": null,
+  "lsPop": null,
+  "wClosed": null
+ },
+ "topOrigin": "http://127.0.0.1:8871",
+ "renderersTopAndFrame": 5,
+ "popFound": 1,
+ "popReady": true,
+ "renderersWithPop": 5,
+ "popPortPing": 0,
+ "popBcAfterRsa": 1,
+ "innerMaxGapWhilePopBusy2000Ms": 2002.8,
+ "innerSharesPopThread": true,
+ "pidPop": 23084,
+ "pidInner": 23084,
+ "pidTop": 13932,
+ "cpuDeltas": {
+  "popBusy": [
+   {
+    "id": 23084,
+    "d": 1.912
+   },
+   {
+    "id": 13932,
+    "d": 0.001
+   },
+   {
+    "id": 28184,
+    "d": 0
+   }
+  ],
+  "innerBusy": [
+   {
+    "id": 23084,
+    "d": 0.967
+   },
+   {
+    "id": 13932,
+    "d": 0.001
+   },
+   {
+    "id": 28184,
+    "d": 0
+   }
+  ],
+  "topBusy": [
+   {
+    "id": 13932,
+    "d": 0.687
+   },
+   {
+    "id": 23084,
+    "d": 0.005
+   },
+   {
+    "id": 28184,
+    "d": 0
+   }
+  ]
+ },
+ "pop": {
+  "who": "pop",
+  "run": "esc_mvhq8lqm",
+  "popmode": "none",
+  "gen": "1",
+  "origin": "http://localhost:8809",
+  "openerAtLoad": true,
+  "secure": true,
+  "log": [
+   "14 posted to opener",
+   "16 msg:{\"from\":\"inner\",\"via\":\"W\"} srcIsOpener=true",
+   "16 msg:{\"from\":\"inner\",\"via\":\"source\"} srcIsOpener=true",
+   "4249 msg:{\"from\":\"inner\",\"via\":\"W-late\",\"n\":\"w2\"} srcIsOpener=true"
+  ],
+  "maxGap": 2009.5999999940395,
+  "ticks": 582,
+  "lsInnerAtLoad": null,
+  "lsInner": null,
+  "lsRsa": "none_mvhq8bg9",
+  "openerNow": true
+ },
+ "inner": {
+  "who": "inner",
+  "run": "esc_mvhq8lqm",
+  "origin": "http://localhost:8809",
+  "isTop": false,
+  "secure": true,
+  "log": [
+   "4227 click; activation=true",
+   "4274 opened; W null=false",
+   "4287 msg:{\"from\":\"pop\",\"run\":\"esc_mvhq8lqm\",\"hello\":1} srcIsW=true ports=0",
+   "4288 replied via W",
+   "4288 replied via source",
+   "4288 msg:{\"from\":\"pop\",\"via\":\"source-reply\"} srcIsW=true ports=0",
+   "7014 rsa err NotAllowedError: requestStorageAccess not allowed"
+  ],
+  "maxGap": 2002.7999999970198,
+  "ticks": 80,
+  "hasSA": true,
+  "rsa": "err NotAllowedError: requestStorageAccess not allowed",
+  "lsPop": null,
+  "wClosed": false
+ },
+ "verdict": {
+  "bcPopToFrame": false,
+  "bcFrameToPop": false,
+  "lsFrameSeesPopKey": false,
+  "lsPopSeesFrameKey": false,
+  "storageEventInFrame": false,
+  "storageEventInPop": false,
+  "popHasOpener": true,
+  "openerPostPopToFrame": true,
+  "frameReplyViaW": true,
+  "frameReplyViaSource": true,
+  "lateWAfterCut": true,
+  "portFrameToPop": false,
+  "portPopToFrame": false,
+  "rsa": "err NotAllowedError: requestStorageAccess not allowed",
+  "rsaBcReachedPop": false,
+  "rsaLsWriteSeenByPop": false,
+  "rsaBcPopToFrame": false,
+  "popOwnProcess": false
+ }
+}

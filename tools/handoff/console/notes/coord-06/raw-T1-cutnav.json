@@ -1,0 +1,79 @@
+{
+ "test": "t1",
+ "mode": "cutnav",
+ "at": "2026-10-21T06:17:08.531Z",
+ "chrome": "Chrome/155.0.8059.85",
+ "renderersBefore": 3,
+ "aReady": true,
+ "aOpenReturnedNull": false,
+ "bFound": 1,
+ "bReady": true,
+ "bCutOpenerStillThere": false,
+ "bReadyGen2": true,
+ "bUrlAfterNav": "http://localhost:8809/handoff/console/notes/coord-06/b.html?tag=cutnav_mvhpzdmc&gen=2",
+ "renderersWithAB": 4,
+ "bBaselineMaxGapMs": 11.6,
+ "bMaxGapWhileABusy2000Ms": 2001.2,
+ "bTicksDuringWindow": 7,
+ "sharedThread": true,
+ "cpuDeltaWhileABusy": [
+  {
+   "id": 29612,
+   "d": 1.986
+  },
+  {
+   "id": 21556,
+   "d": 0
+  },
+  {
+   "id": 28824,
+   "d": 0
+  }
+ ],
+ "cpuDeltaWhileBBusy": [
+  {
+   "id": 29612,
+   "d": 0.981
+  },
+  {
+   "id": 21556,
+   "d": 0
+  },
+  {
+   "id": 28824,
+   "d": 0
+  }
+ ],
+ "pidA": 29612,
+ "pidB": 29612,
+ "samePid": true,
+ "b": {
+  "who": "b",
+  "url": "http://localhost:8809/handoff/console/notes/coord-06/b.html?tag=cutnav_mvhpzdmc&gen=2",
+  "openerAtLoad": false,
+  "maxGap": 2001.199999988079,
+  "ticks": 7,
+  "bc": [
+   {
+    "from": "a",
+    "tag": "cutnav_mvhpzdmc"
+   }
+  ],
+  "storageEv": [
+   "c6t1:a=cutnav_mvhpzdmc:1792563431692"
+  ],
+  "lsA": "cutnav_mvhpzdmc:1792563431692",
+  "openerNow": false
+ },
+ "a": {
+  "who": "a",
+  "maxGap": 2001.0999999940395,
+  "ticks": 357,
+  "bc": [],
+  "storageEv": [],
+  "wNull": false
+ },
+ "bSawABroadcast": true,
+ "bSawStorageEvent": true,
+ "bReadsALocalStorage": true
+}

@@ -1,0 +1,150 @@
+{
+ "test": "t2",
+ "mode": "cutnav",
+ "at": "2026-10-21T06:25:25.661Z",
+ "chrome": "Chrome/155.0.8059.85",
+ "params": {
+  "run": "cutnav_mvhqa17w",
+  "sb": "none",
+  "feat": "plain",
+  "popmode": "cutnav"
+ },
+ "innerAtLoad": {
+  "who": "inner",
+  "run": "cutnav_mvhqa17w",
+  "origin": "http://localhost:8809",
+  "isTop": false,
+  "secure": true,
+  "log": [],
+  "maxGap": 11.300000011920929,
+  "ticks": 418,
+  "hasSA": true,
+  "rsa": null,
+  "lsPop": null,
+  "wClosed": null
+ },
+ "topOrigin": "http://127.0.0.1:8871",
+ "renderersTopAndFrame": 5,
+ "popFound": 1,
+ "popReady": true,
+ "popReadyGen2": true,
+ "popUrl": "http://localhost:8809/handoff/console/notes/coord-06/pop.html?run=cutnav_mvhqa17w&popmode=none&gen=2",
+ "renderersWithPop": 5,
+ "popPortPing": 0,
+ "popBcAfterRsa": 1,
+ "innerMaxGapWhilePopBusy2000Ms": 2002.9,
+ "innerSharesPopThread": true,
+ "pidPop": 23084,
+ "pidInner": 23084,
+ "pidTop": 21932,
+ "cpuDeltas": {
+  "popBusy": [
+   {
+    "id": 23084,
+    "d": 1.943
+   },
+   {
+    "id": 24020,
+    "d": 0.001
+   },
+   {
+    "id": 21932,
+    "d": 0.001
+   }
+  ],
+  "innerBusy": [
+   {
+    "id": 23084,
+    "d": 0.98
+   },
+   {
+    "id": 21932,
+    "d": 0.001
+   },
+   {
+    "id": 24020,
+    "d": 0
+   }
+  ],
+  "topBusy": [
+   {
+    "id": 21932,
+    "d": 0.676
+   },
+   {
+    "id": 23084,
+    "d": 0.005
+   },
+   {
+    "id": 24020,
+    "d": 0
+   }
+  ]
+ },
+ "pop": {
+  "who": "pop",
+  "run": "cutnav_mvhqa17w",
+  "popmode": "none",
+  "gen": "2",
+  "origin": "http://localhost:8809",
+  "openerAtLoad": false,
+  "secure": true,
+  "log": [
+   "14 no opener at load",
+   "1587 storage:c6t2:rsa=cutnav_mvhqa17w",
+   "1587 bc:{\"from\":\"inner\",\"via\":\"rsa-bc\",\"run\":\"cutnav_mvhqa17w\"}",
+   "3094 msg:{\"from\":\"inner\",\"via\":\"W-late\",\"n\":\"w2\"} srcIsOpener=false"
+  ],
+  "maxGap": 2004.7000000029802,
+  "ticks": 470,
+  "lsInnerAtLoad": null,
+  "lsInner": null,
+  "lsRsa": "cutnav_mvhqa17w",
+  "openerNow": false
+ },
+ "inner": {
+  "who": "inner",
+  "run": "cutnav_mvhqa17w",
+  "origin": "http://localhost:8809",
+  "isTop": false,
+  "secure": true,
+  "log": [
+   "4215 click; activation=true",
+   "4253 opened; W null=false",
+   "4270 msg:{\"from\":\"pop\",\"run\":\"cutnav_mvhqa17w\",\"hello\":1} srcIsW=true ports=1",
+   "4270 replied via W",
+   "4270 replied via source",
+   "4270 msg:{\"from\":\"pop\",\"via\":\"source-reply\"} srcIsW=true ports=0",
+   "6977 rsa ok; BroadcastChannel fn=function localStorage=object",
+   "6977 rsa bc posted",
+   "6977 rsa ls c6t2:pop=cutnav_mvhqa17w:t1",
+   "8902 rsabc:{\"from\":\"pop\",\"n\":\"after-rsa\",\"run\":\"cutnav_mvhqa17w\"}"
+  ],
+  "maxGap": 2002.9000000059605,
+  "ticks": 78,
+  "hasSA": true,
+  "rsa": "ok",
+  "lsPop": null,
+  "wClosed": false
+ },
+ "verdict": {
+  "bcPopToFrame": false,
+  "bcFrameToPop": false,
+  "lsFrameSeesPopKey": false,
+  "lsPopSeesFrameKey": false,
+  "storageEventInFrame": false,
+  "storageEventInPop": false,
+  "popHasOpener": false,
+  "openerPostPopToFrame": true,
+  "frameReplyViaW": false,
+  "frameReplyViaSource": false,
+  "lateWAfterCut": true,
+  "portFrameToPop": false,
+  "portPopToFrame": false,
+  "rsa": "ok",
+  "rsaBcReachedPop": true,
+  "rsaLsWriteSeenByPop": true,
+  "rsaBcPopToFrame": true,
+  "popOwnProcess": false
+ }
+}

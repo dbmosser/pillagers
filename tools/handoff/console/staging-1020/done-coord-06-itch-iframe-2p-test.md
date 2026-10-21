@@ -1,4 +1,5 @@
 coord-06-itch-iframe-2p-test : prove the 2-player same-machine mode links inside itch's frame, and plan a fix if it does not (planner draft 2026-10-20)
+DONE 10-21 02:50 (coordinator): measured (workflow wf_0eba117f-79c): the real game does NOT link in a cross-site frame; the opener postMessage path works there. Write-up notes/coord-06.md. Fix queued as tasks/85a-itch-couch-link.md (first in line), the own-process split as tasks/95-p2-own-process.md (after 85a, behind an experimental switch). The real itch draft test stays open as part of 85a.
 effort: high
 
 SESSION AGENT (d, g or h) OR COORDINATOR. Not a lane job: it needs a lane test port, a framing page under tools/ and Chrome started by
