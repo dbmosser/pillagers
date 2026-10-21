@@ -18,3 +18,6 @@ COORDINATOR 10-20 16:23: step 1 done (no full run was going; swapped in as a new
 A failure line now keeps "vNN.NN", at most 140 characters of description (then "..."), and " -> " with up to 400 characters of reason.
 stable.mjs keys a check on its first 80 characters, which are unchanged, so old and new runs still match. Step 2 is left: read the
 next corpus list and confirm every red line has a reason, then rename this file done-coord-09.
+
+COORDINATOR 10-20 22:30: step 2 done. corpus-1020-1723 (v33.12, the first full run after the 16:23 change) has 6 red checks in 4 slices, and every one
+keeps its " -> " reason. Closed.
