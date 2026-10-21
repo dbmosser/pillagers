@@ -3277,7 +3277,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.35';
+var VER='33.36';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -42033,6 +42033,16 @@ function drawBossBar(){
 var MMSPAN=1000, MMAP={cv:null,map:null,bs:0,bakes:0,box:null,ops:0};
 // v26.xx (settings7): the two rows. mmSizeK is the factor on the plate, mmSpan the world units it shows across; an unset or odd value is the usual.
 function mmSizeK(){ var s=+CFG.mmSz; return (s>=0.5&&s<=2)?s:1; }
+// v33.35 (cw-mmoff), HIS ORDER (2026-10-20): "remove minimap entirely, i guess make it an option in settings but default to leaving it off". The one Settings row
+// (MINIMAP) has OFF first and OFF is the usual: mmSz 0 draws nothing, and the column, the run info panel and everything under the corner already sit by MMAP.box
+// being empty. mmSizeK still reads 1 for a 0, so the column keeps its width. mmOffMove moves a save that holds a minimap size to OFF once (P.mmOff1 marks it done).
+function mmOn(){ return +CFG.mmSz>0; }
+function mmOffMove(){
+  if(!P||P.mmOff1===1) return false;
+  if(P.gameOpts&&typeof P.gameOpts.mmSize==='number') P.gameOpts.mmSize=0;
+  P.mmOff1=1;
+  return true;
+}
 function mmSpan(){ var s=+CFG.mmSpan; return (s>=400&&s<=2500)?s:MMSPAN; }
 function mmRect(){
   // v30.xx (cw-trcol), HIS ORDER (2026-10-18): the minimap is a square as wide as the rows above it and the run info panel under it (the Settings size S, N, L
@@ -42083,7 +42093,7 @@ function mmBake(bs){
 // drawn in the Undercroft. Off or hidden, the CONDITIONS panel moves back up under the credits as before. Player 2's window draws
 // its own from its own position, and the size follows the screen (hudRes) at 1080p, 1440p and 4K, like the rest of the HUD.
 function mmShown(){
-  if(CFG.minimap===0) return false;
+  if(CFG.minimap===0||!mmOn()) return false;   // v33.35 (cw-mmoff): the Settings row says OFF
   if(typeof state==='string'&&state!=='raid') return false;
   if(!G||G.over||G.mapOpen||G.bagOpen) return false;
   if(G.arcade&&typeof ARCADE==='object'&&ARCADE&&ARCADE.over) return false;
@@ -51435,7 +51445,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.35: The extraction siren sounds for 4 seconds after the call and the last 4 seconds before the ship arrives, then stops. Check 33.35 fails on v33.34',
+  now:'v33.36: No minimap in raids unless you turn it on in Settings. Check 33.36 fails on v33.35',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -67980,13 +67990,6 @@ var GAMEOPTS=[
      {n:'STANDARD',     cfg:{hudTv:0}},
      {n:'LARGE FOR TV', cfg:{hudTv:1}}
    ], def:0},
-  // v24.xx (minimap3): his "add minimap"; on by default
-  {k:'minimap', label:'MINIMAP',
-   hint:'The street around you, top right in a raid.',
-   opts:[
-     {n:'ON',  cfg:{minimap:1}},
-     {n:'OFF', cfg:{minimap:0}}
-   ], def:0},
   {k:'volMaster', label:'Master volume',
    hint:'Everything the game plays.',
    opts:[
@@ -68189,14 +68192,16 @@ var GAMEOPTS=[
   // v26.xx (settings7), HIS ORDER 2026-10-14 ("ok add all this stuff to settings"): MINIMAP SIZE and MINIMAP ZOOM, in DISPLAY. The defaults are the
   // minimap as it was: 216 pixels at 1080p showing 1000 world units across. SIZE scales the plate (the HUD panels under it move down to make room);
   // ZOOM is how many world units the plate shows across, close (700) for a tight street, wide (1400) for the lie of the land.
-  {k:'mmSize', label:'MINIMAP SIZE', sec:'DISPLAY',
-   hint:'How big the minimap is, top right. The panels under it move down.',
+  // v33.35 (cw-mmoff), HIS ORDER (2026-10-20): "remove minimap entirely, i guess make it an option in settings but default to leaving it off". One row for the minimap now:
+  // OFF (the usual) and the three sizes. The old MINIMAP on/off row is gone (one control per job). A save that held a size moves to OFF once (mmOffMove).
+  {k:'mmSize', label:'MINIMAP', sec:'DISPLAY',
+   hint:'The street around you, top right. Off is the usual.',
    opts:[
+     {n:'OFF',      cfg:{mmSz:0}},
      {n:'SMALL',    cfg:{mmSz:0.75}},
      {n:'STANDARD', cfg:{mmSz:1}},
      {n:'LARGE',    cfg:{mmSz:1.35}}
-   ], def:1},
-  {k:'mmZoom', label:'MINIMAP ZOOM', sec:'DISPLAY',
+   ], def:0},  {k:'mmZoom', label:'MINIMAP ZOOM', sec:'DISPLAY',
    hint:'How much street it shows. Close is a tight view, wide is the lie of the land.',
    opts:[
      {n:'CLOSE',    cfg:{mmSpan:700}},
@@ -68376,6 +68381,7 @@ function volMusicMove(){
 }
 function applyGameOpts(){
   try{ volMusicMove(); }catch(_vm){}
+  try{ mmOffMove(); }catch(_mo){}   // v33.35 (cw-mmoff): once per save
   var tk=tunedKeys();
   for(var i=0;i<GAMEOPTS.length;i++){
     var row=GAMEOPTS[i], sel=row.opts[gameOptIx(row.k)];

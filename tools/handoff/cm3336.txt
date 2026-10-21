@@ -1,0 +1,7 @@
+v33.36: the minimap is off by default; one settings row turns it on
+
+No minimap in raids unless you turn it on in Settings.
+
+Check 33.36. Fails on v33.35.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

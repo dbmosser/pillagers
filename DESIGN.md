@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.36 - the minimap is off by default; one Settings row turns it on
+
+Co-op hunt while he was away. His order (2026-10-20): "remove minimap entirely, i guess make it an option in settings but default to leaving it off". The MINIMAP row now has OFF first and OFF is the usual, then small, standard and large (the old on/off row is gone, one control per job). A save that held a minimap size moves to off once (P.mmOff1). With it off nothing is drawn and the run info panel and the corner sit up under the money block.
+
+MEASURED. Check 33.36 passes, and fails on v33.35.
 ## v33.35 - SHORT EXTRACTION SIREN
 
 Co-op hunt while he was away. His order 10-20: the extraction siren is intrusive. It now sounds 4 seconds at the call and 4 seconds before the ship arrives, not the whole time. The inbound ping stays.
