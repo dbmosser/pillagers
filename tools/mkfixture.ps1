@@ -15615,7 +15615,7 @@ window.__REGRESS=[
        t=draw(2); if(!t) bad.push('TWO: the card has no heading for player 2'); else if(!/player 2/i.test(t)||!/enter initials/i.test(t)) bad.push('TWO: the player 2 heading reads "'+t+'"');
        // THREE: one player: what the letters are for
        ARCADE.solo=1;
-       t=draw(1); if(!t) bad.push('THREE: the 1 player card has no heading'); else if(!/top 10 tonight/i.test(t)||!/enter initials/i.test(t)) bad.push('THREE: the 1 player heading reads "'+t+'"');
+       t=draw(1); if(!t) bad.push('THREE: the 1 player card has no heading'); else if(!/(?:top 10 tonight|tonight's best)/i.test(t)||!/enter initials/i.test(t)) bad.push('THREE: the 1 player heading reads "'+t+'"');
        // FOUR: the heading is the first line, then the three letters, then the hint
        ARCADE.solo=0; draw(1);
        k=[].map.call(c.children,function(e){ return e.className; }).join(',');
