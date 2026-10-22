@@ -44151,7 +44151,8 @@ window.__REGRESS=[
        if(!(parseFloat(s.minHeight)>=46)) bad.push('GAMBLE is held to '+s.minHeight);
        if(!(parseFloat(s.fontSize)>=16)) bad.push('GAMBLE is '+s.fontSize);
        br=b.getBoundingClientRect(); sr=sec.getBoundingClientRect();
-       if(br.width<sr.width*0.8) bad.push('GAMBLE is '+Math.round(100*br.width/sr.width)+' percent of its box, not full width');
+       // v28.xx (cw-cx-ucbody): retain the former full-width primary or accept the critic-requested compact 320x64 primary, with a large readable label.
+       if(br.width<sr.width*0.8&&!(parseFloat(s.width)>=300&&parseFloat(s.width)<=360&&parseFloat(s.minHeight)>=60&&parseFloat(s.fontSize)>=20)) bad.push('GAMBLE is neither full width nor a readable compact primary ('+s.width+' by '+s.minHeight+', '+s.fontSize+')');
        if(b.disabled&&s.color==='rgb(122, 118, 110)') bad.push('a greyed GAMBLE is in the faint third text colour');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ __topClear(); }catch(_c){} }
