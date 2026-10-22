@@ -29009,10 +29009,12 @@ window.__REGRESS=[
        wide=frs.filter(function(s){ return s.w>=400&&s.w<0.95*ww57&&s.h>=120&&s.h<0.95*hh57&&/^#[0-9a-f]{6}$/.test(s.s); });
        if(!wide.length) bad.push('the What is New card is not a solid plate (no card sized rectangle in an opaque colour)');
        wide.forEach(function(s){ if(s.a<0.99) bad.push('the What is New card plate is '+Math.round(s.w)+'x'+Math.round(s.h)+' at '+Math.round(s.a*100)+' percent, not solid'); });
-       seen.length=0; __wnseen(1);
-       __hubBagSet(true); drawHubBag(); __hubBagSet(false);
-       wide=seen.filter(function(s){ return s.w>=600&&s.h>=120; });
-       if(!wide.length) return bad.length?bad.join('; '):'SKIP: the Undercroft backpack was not drawn as a plate here';
+       seen.length=0; frs=[]; __wnseen(1);
+       // v28.xx (cw-cx-hubbagcard): accept the old solid hudPanel or the new solid centred card, recording the actual fill in either case.
+       proto.fillRect=function(x,y,w,h){ if(this===ctx) frs.push({w:w,h:h,s:String(this.fillStyle).toLowerCase(),a:this.globalAlpha}); return ofr.apply(this,arguments); };
+       try{ __hubBagSet(true); drawHubBag(); __hubBagSet(false); }finally{proto.fillRect=ofr;}
+       wide=seen.filter(function(s){ return s.w>=600&&s.h>=120; }).concat(frs.filter(function(s){return s.w>=600&&s.w<W*.95&&s.h>=120&&s.h<H*.95&&s.s==='#16191b';}));
+       if(!wide.length) return bad.length?bad.join('; '):'the Undercroft backpack did not draw a solid plate';
        wide.forEach(function(s){ if(s.a<0.99) bad.push('the Undercroft backpack plate is '+Math.round(s.w)+'x'+Math.round(s.h)+' at '+Math.round(s.a*100)+' percent, not solid'); });
        return bad.length?bad.join('; '):null;
      } finally { hudPanel=hp; proto.fillText=oft; proto.fillRect=ofr; try{ __hubBagSet(false); }catch(_b){} P2.runs=keepRuns; __wnseen(1); try{ saveProfile(); }catch(_s){} try{ __topClear(); __cleanProfile(); }catch(_c){} } }},
@@ -74630,7 +74632,7 @@ window.__REGRESS=[
        var f1=drawn(drawHubBag);
        // CONTROL: the floor draws the selected gun and a hint line naming the drag. drawHubBag swallows a throw, so the words
        // are looked for rather than trusted.
-       if(f1===null||!has(f1,GUN)||!has(f1,DRAG)) return skip('the Undercroft backpack did not draw the selected Compact SMG and a hint line naming the drag to the tactical belt here');
+       if(f1===null||!has(f1.toLowerCase(),GUN.toLowerCase())||!has(f1,DRAG)) return skip('the Undercroft backpack did not draw the selected Compact SMG and a hint line naming the drag to the tactical belt here');
        var named=[];
        if(has(f1,AN)) named.push('the arrows');
        if(has(f1,ZN)) named.push('Z to drop');
@@ -74638,7 +74640,7 @@ window.__REGRESS=[
        if(named.length) bad.push('on the Undercroft floor the backpack hint for the selected Compact SMG names '+named.join(', ')+', and none of those keys does anything down here');
        PAD.on=true; var f2=drawn(drawHubBag); PAD.on=false;
        // CONTROL: with the controller flag up the floor backpack header says VIEW, so the flag reached the draw.
-       if(f2===null||!has(f2,'VIEW to close')) return skip('with a controller on, the Undercroft backpack header did not say VIEW here');
+       if(f2===null||!(has(f2,'VIEW to close')||(document.getElementById('hubbagclose')&&has(f2,padB('B')+'  close')))) return skip('with a controller on, the Undercroft backpack did not draw its close prompt');
        if(has(f2,DN)) bad.push('on the Undercroft floor with a controller the backpack hint names the D-pad drop, and the floor reads no D-pad');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
