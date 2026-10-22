@@ -6189,7 +6189,7 @@ window.__REGRESS=[
          try{__frame(0.016);}finally{collecting=false;}
          var z=Math.max(0.75,Math.min(2.2,H/1080)),b=panels[0],t=tags[0];
          if(tags.length!==1||panels.length!==1){bad.push(side+': expected one tag and warning panel, got '+tags.length+'/'+panels.length);return;}
-         var tagTypeOK=(Math.abs(t.sz-20*z)<=0.5&&/600 /.test(t.font)&&t.c===UIC.warn)||(Math.abs(t.sz-32*z)<=0.5&&/700 /.test(t.font)&&t.c===UIC.tx_1); if(!tagTypeOK)bad.push(side+': tag is not a style guide warning');
+         var tagTypeOK=(Math.abs(t.sz-20*z)<=0.5&&/600 /.test(t.font)&&t.c===UIC.warn)||(Math.abs(t.sz-32*z)<=0.5&&/(?:700|bold) /.test(t.font)&&t.c===UIC.tx_1); if(!tagTypeOK)bad.push(side+': tag is not a style guide warning');
          if((Math.abs(b.h-48*z)>0.5&&Math.abs(b.h-64*z)>0.5)||Math.abs(b.x+b.w/2-W/2)>1)bad.push(side+': warning panel size or centre is wrong');
          if(b.y<H*0.24||b.y+b.h>H*0.43)bad.push(side+': warning escaped the top band '+b.y);
          if(t.x<b.x+12*z||t.y<b.y||t.y>b.y+b.h)bad.push(side+': text escaped its panel');
