@@ -34521,10 +34521,12 @@ window.__REGRESS=[
      if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so nothing can be drawn';
      if(typeof renderSettings!=='function'||typeof flash!=='function'||typeof spark!=='function'||typeof msPlayerScreen!=='function') return 'SKIP: no flashes here';
      if(typeof flashK!=='function'||typeof lightningA!=='function') return 'Settings has no reduced flashing row';
+     var oldPix=CFG.xfPix,oldFX=FXS,oldGround=null,compareFX=0;
      var bad=[], g=null, p=null, md=document.getElementById('settingsmodal'), was=md&&md.classList.contains('on'), kGO=P.gameOpts, kTU=P.tuned, kR=CFG.flashRed, kFx=CFG.fxLevel, rows, rr, sn, j, n0, F, ps, c, x0, y0, d, a, s1, s2, s3, src, NEEDLE=['lightning'+'A(lf)','flash'+'K()'];
      function secOf(id){ var e=document.getElementById(id), s=e&&e.closest('.row'), b; while(s){ if(/opacity:\s*\.7/.test(s.getAttribute('style')||'')){ b=s.querySelector('b'); return b?b.textContent:''; } s=s.previousElementSibling; } return ''; }
      function sumAround(){ var q=cv.getContext('2d'), w=220, h=220, dd, t=0, z; ps=msPlayerScreen(); x0=Math.max(0,Math.round(ps.x-110)); y0=Math.max(0,Math.round(ps.y-130)); w=Math.min(w,cv.width-x0); h=Math.min(h,cv.height-y0); dd=q.getImageData(x0,y0,w,h).data; for(z=0;z<dd.length;z+=4) t+=dd[z]+dd[z+1]+dd[z+2]; return t; }
-     function shot(){ g.flashes.length=0; p.muzzle=0.05; __frame(0); __frame(0); var t=sumAround(); g.flashes.length=0; return t; }
+     function still(){ FXS=compareFX; __frame(0); __frame(0); }
+     function shot(){ g.flashes.length=0; p.muzzle=0.05; still(); var t=sumAround(); g.flashes.length=0; return t; }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        try{ __pinDPR(1); }catch(_d){}
@@ -34559,17 +34561,25 @@ window.__REGRESS=[
        if(src.indexOf(NEEDLE[0])<0) bad.push('THREE: the lightning does not draw through lightningA');
        if(src.split(NEEDLE[1]).length<8) bad.push('THREE: too few muzzle flashes and fog lifts read flashK ('+(src.split(NEEDLE[1]).length-1)+')');
        // FOUR: the muzzle flash on the gun, drawn
-       CFG.fxLevel=1; __frame(0); __frame(0);
+       // v28.xx (cw-cx-flashprobe): applyGameOpts restores the default pixel path, and TWO leaves live sparks. Neither belongs in a muzzle-only comparison.
+       CFG.xfPix=0; g.sparks.length=0; g.flashes.length=0;
+       // Snapshot only the background. This keeps the original frame/muzzle renderer and all numerical controls, while an incremental ground bake cannot change between the four captures.
+       oldGround=g.ground;
+       var floor=document.createElement('canvas'); floor.width=oldGround.width; floor.height=oldGround.height;
+       floor.getContext('2d').drawImage(oldGround,0,0); floor._pe=oldGround._pe||1; g.ground=floor;
+       CFG.fxLevel=1; compareFX=FXS; still(); still();
        CFG.flashRed=0; s1=shot(); CFG.flashRed=1; s2=shot();
-       p.muzzle=0; g.flashes.length=0; CFG.flashRed=0; __frame(0); __frame(0); s3=sumAround(); CFG.flashRed=1; __frame(0); __frame(0); c=sumAround();
+       p.muzzle=0; g.flashes.length=0; CFG.flashRed=0; still(); s3=sumAround(); CFG.flashRed=1; still(); c=sumAround();
+       if(!(s3>0&&c>0)) bad.push('FOUR: control: no finished world picture to compare');
        if(!(s1>s2+4000)) bad.push('FOUR: the muzzle flash is no dimmer with the row on ('+s1+' against '+s2+')');
        if(Math.abs(s3-c)>3000) bad.push('FOUR: control: with no muzzle flash the picture moved by '+Math.abs(s3-c)+' with the row');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
+       if(g&&oldGround)g.ground=oldGround;
        try{ CFG.flashRed=kR; CFG.fxLevel=kFx; var g1=__state(); if(g1){ g1.flashes.length=0; g1.sparks.length=0; if(g1.player) g1.player.muzzle=0; } }catch(_c){}
        try{ P.gameOpts=kGO||{}; P.tuned=kTU||{}; __opts.apply(); renderSettings(); if(!was) md.classList.remove('on'); }catch(_r){}
        try{ var g2=__state(); if(g2&&!g2.over){ g2.player.iv=0; __endRaid('abandon'); } }catch(_e){}
-       __topClear();
+       __topClear(); CFG.xfPix=oldPix; FXS=oldFX;
      }
      return bad.length?bad.slice(0,8).join('; '):null; }},
   {v:'26.49',what:'settings8, his order 2026-10-14: ACCESSIBILITY has COLOUR-BLIND MODE (off, deuteranopia, protanopia, tritanopia): off is the game as drawn, and each mode swaps the rarity colours, the enemy and ally marks and the stylesheet tokens for a set whose five rarities and two sides stay far apart in the eye of that colour blindness (simulated here), and off puts the original colours back exactly',
