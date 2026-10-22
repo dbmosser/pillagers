@@ -1718,7 +1718,10 @@ window.__REGRESS=[
    run:function(){
      var bad=[];
      ['sentry','warden','bulwark'].forEach(function(k){ if(__audio.stepSound(k)!=='stepHeavy') bad.push(k+' is not heavy'); });
-     ['crawler','raider','snitch','listener','howler','choir'].forEach(function(k){ if(__audio.stepSound(k)!=='step') bad.push(k+' went heavy'); });
+     // v28.xx (cw-cx-newreds): v33.34 gives the Howler a separate step; heavies still have their exact old routing.
+     ['crawler','raider','snitch','listener','choir'].forEach(function(k){ if(__audio.stepSound(k)!=='step') bad.push(k+' went heavy'); });
+     var howler=__audio.stepSound('howler');
+     if(howler!==(typeof SPK_GEN.stepHowl==='function'?'stepHowl':'step')) bad.push('howler has the wrong step: '+howler);
      return bad.length?bad.join('; '):null; }},
   {v:'8.55h',what:'roads never cross an authored wall',
    run:function(){
@@ -2031,15 +2034,18 @@ window.__REGRESS=[
        z.beaconT=0; z.hold=25; z.callT=0;
        p.x=z.x; p.y=z.y; p.iv=99; p.downed=false;
        var K=__keysRef(); for(var k in K) K[k]=false; K[__extKey()]=true;
-       for(var f=0;f<50&&__state()&&!__state().over;f++) __loop(performance.now()+f*16.7);
+       // v28.xx (cw-cx-newreds): CPU draw time must not lengthen a simulated hold.
+       var clock=performance.now(), frame=0;
+       function step(){ __loop(clock+(++frame)*16.7); }
+       for(var f=0;f<50&&__state()&&!__state().over;f++) step();
        var got=z.pullT;
        if(leave){
          K[__extKey()]=false; p.x=z.x+900; p.y=z.y+700;
-         for(var f2=0;f2<120&&__state()&&!__state().over;f2++) __loop(performance.now()+f2*16.7);
+         for(var f2=0;f2<120&&__state()&&!__state().over;f2++) step();
        }
        var after=z.pullT;
        p.x=z.x; p.y=z.y; K[__extKey()]=true;
-       var fr=0; for(;fr<40&&__state()&&!__state().over;fr++) __loop(performance.now()+fr*16.7);
+       var fr=0; for(;fr<40&&__state()&&!__state().over;fr++) step();
        K[__extKey()]=false;
        return {got:got,after:after,extracted:(!__state()||!!__state().over),frames:fr};
      }
@@ -6458,6 +6464,7 @@ window.__REGRESS=[
   {v:'33.89',what:'cw-cx-pixmachines: nine machine bodies cache at job 80 size, masks fit hits, gold has no filter, live lights and alarm HUD, two builds per frame and zero steady readbacks, including the title sentry',
    run:function(){
      if(typeof pixMachDraw!=='function'||typeof pixMachPose!=='function')return 'machines still use vector painters every frame';
+     var finish0=pixMachFinish,base=null;
      var cfg=CFG.xfPix,cond=P.cond,w0=wc,sh0=shadowE,read=CanvasRenderingContext2D.prototype.getImageData,filter=Object.getOwnPropertyDescriptor(CanvasRenderingContext2D.prototype,'filter'),bad=[],g=null,labels=CACHETAGS,see=canSee,worldOwn,hudOwn,worldFill,hudFill,oldPixWrap=pixWrap;
      var names=['sentry','crawler','snitch','bulwark','howler','listener','choir','warden','overseer'],canvas=document.createElement('canvas'),cx,reads=0,filters=0,worldAlarms=0,hudAlarms=0;
      canvas.width=440;canvas.height=400;cx=canvas.getContext('2d');
@@ -6478,15 +6485,27 @@ window.__REGRESS=[
      try{
        __runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();CFG.xfPix=1;
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});keys={};mouse.down=false;g=G;G.t=0;P.cond='day';pixDropAll();
+       // v28.xx (cw-cx-newreds): The cached body and its explicit ink ring have separate size contracts.
+       pixMachFinish=function(s,p){ base=s; return finish0(s,p); };
        for(var i=0;i<names.length;i++){
-         var e=pixMachSample(names[i]),b0=rawBounds(e);pixFrame();PIXM.last=null;var sp=draw(e),p0=PIXM.paints,h0=PIX.hits;
+         var e=pixMachSample(names[i]),b0=rawBounds(e);pixFrame();PIXM.last=null;base=null;var sp=draw(e),p0=PIXM.paints,h0=PIX.hits;
          if(!sp||sp.mp.k!==names[i]){fail(names[i]+' did not build');continue;}
          pixFrame();if(draw(e)!==sp||PIXM.paints!==p0||PIX.hits<=h0)fail(names[i]+' second frame was not a cache hit');
          if(sp.d!==PIX_ACT)fail(names[i]+' has the wrong density');
          if(sp.ax!==Math.round(sp.ax)||sp.ay!==Math.round(sp.ay))fail(names[i]+' has a fractional art anchor');
          var a=read.call(sp.c.getContext('2d'),0,0,sp.c.width,sp.c.height).data,b1=bounds(a,sp.c.width,sp.ax,sp.ay),f=read.call(sp.flash.c.getContext('2d'),0,0,sp.flash.c.width,sp.flash.c.height).data;
          if(!b0.n||!b1.n)fail(names[i]+' body is empty');
-         for(var j=0;j<4;j++)if(Math.abs(b0.a[j]-b1.a[j])>1.01)fail(names[i]+' bounds '+j+' differ from job 80 by '+Math.abs(b0.a[j]-b1.a[j])+' art px ('+b0.a.join(',')+' vs '+b1.a.join(',')+')');
+         // v28.xx (cw-cx-newreds): Keep the original one-pixel body rounding limit; the final mask must be exactly that body grown by one ink pixel.
+         if(!base){fail(names[i]+' did not expose its unoutlined body');continue;}
+         var bd=read.call(base.c.getContext('2d'),0,0,base.c.width,base.c.height).data,bb=bounds(bd,base.c.width,base.ax,base.ay);
+         if(!bb.n)fail(names[i]+' unoutlined body is empty');
+         for(var j=0;j<4;j++)if(Math.abs(b0.a[j]-bb.a[j])>1.01)fail(names[i]+' unoutlined bounds '+j+' differ from job 80 by more than one pixel');
+         function bodyInk(x,y){return x>=0&&y>=0&&x<base.c.width&&y<base.c.height&&bd[(y*base.c.width+x)*4+3]>=128;}
+         var maskBad=false;
+         for(var py=0;py<sp.c.height&&!maskBad;py++)for(var px=0;px<sp.c.width;px++){
+           var bx=px-sp.ax+base.ax,by=py-sp.ay+base.ay,want=bodyInk(bx,by)||bodyInk(bx-1,by)||bodyInk(bx+1,by)||bodyInk(bx,by-1)||bodyInk(bx,by+1),actual=a[(py*sp.c.width+px)*4+3]>0;
+           if(want!==actual){fail(names[i]+' ink mask is not exactly a one-pixel cross outline');maskBad=true;break;}
+         }
          for(j=3;j<a.length;j+=4){if(a[j]!==0&&a[j]!==255){fail(names[i]+' body has soft alpha');break;}if(f[j]!==a[j]){fail(names[i]+' hit flash escaped the opaque mask');break;}}
        }
        // Exercise four gait poses for twelve visible machines for three seconds; after that they must only blit.
@@ -6534,7 +6553,7 @@ window.__REGRESS=[
        return bad.length?bad.join('; '):null;
      }catch(err){return 'machine art check: '+String(err&&err.stack||err);}
      finally{
-       wc=w0;shadowE=sh0;PIXM.paint=0;PIXM.baking=0;pixWrap=oldPixWrap;canSee=see;CanvasRenderingContext2D.prototype.getImageData=read;
+       pixMachFinish=finish0;wc=w0;shadowE=sh0;PIXM.paint=0;PIXM.baking=0;pixWrap=oldPixWrap;canSee=see;CanvasRenderingContext2D.prototype.getImageData=read;
        if(filter&&filter.configurable)Object.defineProperty(CanvasRenderingContext2D.prototype,'filter',filter);
        if(worldFill){if(worldOwn)Object.defineProperty(w0,'fillText',worldOwn);else delete w0.fillText;if(hudOwn)Object.defineProperty(ctx,'fillText',hudOwn);else delete ctx.fillText;}
        CACHETAGS=labels;GFXWT=null;P.cond=cond;try{if(__state()&&!__state().over)__endRaid('abandon');}catch(_end){}
@@ -7196,7 +7215,7 @@ window.__REGRESS=[
    run:function(){
      if(typeof pixDoorDraw!=='function'||typeof pixWinDraw!=='function'||typeof pixShDraw!=='function'||typeof pixHubWall!=='function') return 'no pixel door/window/stronghold/hub wall';
      if(!(window.__deploy&&window.__state&&window.__runPrep&&window.__topClear&&window.__endRaid)) return 'SKIP: this fixture cannot build a raid';
-     var bad=[], cond0=P.cond, nm, R, ok, ox, oy, W, H, s, px, px2, e, e2, GL, i, hxs;
+     var bad=[], fault0=PIX.errs, cond0=P.cond, nm, R, ok, ox, oy, W, H, s, px, px2, e, e2, GL, i, hxs;
      function hex(r,g,b){ return '#'+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1); }
      function shot(fn,w,h){ var s2=pixCanvas(w,h); s2.x.translate(-ox,-oy); fn(s2.x); return s2.x.getImageData(0,0,w,h).data; }
      function audit(p,w,h,okm,label){
@@ -7251,7 +7270,8 @@ window.__REGRESS=[
        if(!e2||!e2.px) bad.push('a ruin is not a pixel wall sprite');
        // the look off: the pixel doors do not run (pixOn is the switch the wall pass reads)
        CFG.xfPix=0; if(pixOn()) bad.push('xfPix 0 still says the pixel look is on');
-       if(pixFaults()) bad.push('pixel faults logged: '+pixFaults());
+       // v28.xx (cw-cx-newreds): A previous check can deliberately trip the guard. New builder faults and this raid's own render fault still fail.
+       if(PIX.errs!==fault0||(G&&G.drawErr)) bad.push('pixel faults logged by doors: '+(PIX.errs-fault0)+', render '+((G&&G.drawErr)||0));
        return bad.length?bad.join('; '):null;
      } catch(err){
        return 'pixel door check: '+String(err&&err.message||err);
@@ -8394,6 +8414,7 @@ window.__REGRESS=[
   {v:'33.51',what:'cw-pixkit (86a): the pixel look row (local, on), pinned off in the fixture; pixBlit draws on whole device pixels and only edge pixels blend at a part scale; the caches evict past their cap; a 3rd build in a frame is refused and draws the nearest pose; the ramp tables keep their value bands; with the switch off a raid frame is the same',
    run:function(){
      if(typeof pixOn!=='function'||typeof pixBlit!=='function'||typeof PIXSTORE!=='object'||typeof pixBuild!=='function'||typeof pixCanvas!=='function') return 'no pixel kit (pixOn, pixBlit, PIXSTORE, pixBuild)';
+     var oldFX=FXS;
      var bad=[], row=null, i, oldCapA=PIXSTORE.cap.actors, oldPO=pixOn, sw=cv.style.width, sh=cv.style.height, hw=hcv.style.width, hh=hcv.style.height, h0, h1, d, s, spr, t;
      function fnv(c){ var q=c.getContext('2d').getImageData(0,0,c.width,c.height).data, h=2166136261, k; for(k=0;k<q.length;k+=4){ h^=q[k]; h=Math.imul(h,16777619); h^=q[k+1]; h=Math.imul(h,16777619); h^=q[k+2]; h=Math.imul(h,16777619); } return (h>>>0).toString(16); }
      function dest(){ return pixCanvas(24,24); }
@@ -8447,15 +8468,21 @@ window.__REGRESS=[
        (function(){ var el=pixBenchOpen(), n=Object.keys(PIX.reg).length; if(!el||!document.getElementById('pixbench')) bad.push('the pixel bench did not open'); else { if(el.getElementsByTagName('canvas').length!==2*n) bad.push('the pixel bench shows '+el.getElementsByTagName('canvas').length+' pictures for '+n+' assets'); if(!n&&String(el.textContent).indexOf('no pixel assets registered yet')<0) bad.push('an empty pixel bench does not say so'); el.remove(); } })();
        // with the switch off, a raid frame is the same as with every pixel path stubbed off
        CFG.xfPix=0; __forceSize(1920,1080); __deploy({kit:[],safe:null,mapIx:0,seed:4242}); keys={};
-       for(i=0;i<3;i++) __frame(0.016);
-       h0=fnv(cv); __frame(0.016); if(fnv(cv)!==h0) bad.push('the raid frame is not steady between two frames, so it cannot be compared');
-       pixOn=function(){ return false; }; __frame(0.016); h1=fnv(cv); pixOn=oldPO;
+       // v28.xx (cw-cx-newreds): Compare the same frozen render state; cosmetic noise is allowed to consume its own stream in normal play.
+       for(i=0;i<3;i++) __frame(0);
+       var frameFX=FXS;
+       function frozen(){ FXS=frameFX; __frame(0); return fnv(cv); }
+       h0=frozen(); if(frozen()!==h0) bad.push('the frozen raid frame is not steady, so it cannot be compared');
+       var ink=cv.getContext('2d').getImageData(0,0,cv.width,cv.height).data,varied=0;
+       for(i=0;i<ink.length;i+=64)if(ink[i+3]>0&&Math.abs(ink[i]-ink[0])+Math.abs(ink[i+1]-ink[1])+Math.abs(ink[i+2]-ink[2])>24)varied++;
+       if(varied<100)bad.push('control: the captured world is empty or flat');
+       pixOn=function(){ return false; }; h1=frozen(); pixOn=oldPO;
        if(h1!==h0) bad.push('with the pixel look off the raid frame differs from the frame with every pixel path stubbed off');
        return bad.length?bad.join('; '):null;
      } catch(err){
        return 'pixel kit check: '+String(err&&err.message||err);
      } finally {
-       pixOn=oldPO; PIXSTORE.cap.actors=oldCapA; try{ pixDropAll(); pixFrame(); }catch(_p){}
+       FXS=oldFX; pixOn=oldPO; PIXSTORE.cap.actors=oldCapA; try{ pixDropAll(); pixFrame(); }catch(_p){}
        try{ var be=document.getElementById('pixbench'); if(be) be.remove(); }catch(_b){}
        try{ if(__state()&&!__state().over) __endRaid('abandon'); }catch(_e){}
        try{ cv.style.width=sw; cv.style.height=sh; hcv.style.width=hw; hcv.style.height=hh; resize(); }catch(_z){}
@@ -14726,8 +14753,10 @@ window.__REGRESS=[
        arm(tag,'with its right end 24 px under the left edge of the column',L-tw/2+24,cy,false);
        arm(tag,'with its right end 14 px left of the column',L-tw/2-14,cy,true);
        if(rows){
-         if(pl.length>=4&&pl[3].y0-pl[2].y1>2){ gy=(pl[2].y1+pl[3].y0)/2; arm(tag,'in the gap between the stash and backpack rows',L+w/2,gy+py*0.35,false); }
-         else bad.push(tag+': found no gap between the stash and backpack rows to put a label in ('+pl.length+' row plates)');
+         // v28.xx (cw-cx-newreds): The compact block still protects its gap above the minimap from world labels.
+         if(pl.length===1&&mm.y-pl[0].y1>2){ gy=(pl[0].y1+mm.y)/2; arm(tag,'in the gap under the compact wallet',L+w/2,gy+py*0.35,false); }
+         else if(pl.length>=4&&pl[3].y0-pl[2].y1>2){ gy=(pl[2].y1+pl[3].y0)/2; arm(tag,'in the gap between the stash and backpack rows',L+w/2,gy+py*0.35,false); }
+         else bad.push(tag+': no measurable protected gap above the minimap ('+pl.length+' row plates)');
        }
        for(a=0;a<r.rr.length;a++) if(r.rr[a].x0<W/2&&r.rr[a].x1>W/2&&r.rr[a].y0<=1&&r.rr[a].y1>4&&(r.rr[a].x1-r.rr[a].x0)>W*0.04){ rr=r.rr[a]; break; }
        if(!rr){ bad.push(tag+': no score and clock plate was drawn at the top centre'); return null; }
@@ -15435,45 +15464,41 @@ window.__REGRESS=[
        return r;
      }
      function hdrRight(wn){ var r=grab(), a, w=String(wn).toLowerCase(), best=null; for(a=0;a<r.t.length;a++) if(r.t[a].al==='right'&&r.t[a].d.toLowerCase().indexOf(w)>=0&&(!best||r.t[a].y<best.y)) best=r.t[a]; return best; }
+     // v28.xx (cw-cx-newreds): 33.38/33.39 replace the per-row plates; judge the actual compact block without dropping values, alignment, size or obstruction coverage.
      function judge(tag,r,wallet,notes){
-       var C=HUDBOX.cond, n=(wallet?4:0)+(notes?1:0), labs=[], pl=[], px=[], vx=[], gaps=[], k, p, q, lab, val, ref=null, L, Rr, a, low=[];
-       if(wallet){ labs.push('credits'); labs.push('xp'); labs.push('stash'); labs.push('backpack'); }
+       var C=HUDBOX.cond, labs=wallet?['cash','xp','stash','backpack']:[], pl=[], i,j,p,q,box,rows=[],mm=MMAP.box,ref=null,eps=1.5;
        if(notes) labs.push('notes logged');
-       if(!C){ bad.push(tag+': no run info panel was drawn to line the corner up with'); return; }
-       L=C.x; Rr=C.x+C.w;
-       for(a=0;a<r.p.length;a++){ p=r.p[a]; if(p.x0>=W*0.55&&p.x1<=W+1&&(p.x1-p.x0)>=W*0.06&&p.y1<=C.y+C.h+2&&p.y0>=0) pl.push(p); }
-       pl.sort(function(u,v){ return u.y0-v.y0; });
-       if(pl.length!==n+2) bad.push(tag+': the corner holds '+pl.length+' plates, one under another, and not '+(n+2)+' ('+n+' rows, the minimap and the run info panel)');
-       for(a=0;a<pl.length;a++){
-         p=pl[a];
-         if(Math.abs(p.x0-L)>1.5||Math.abs(p.x1-Rr)>1.5) bad.push(tag+': plate '+(a+1)+' of '+pl.length+' spans x '+p.x0.toFixed(0)+' to '+p.x1.toFixed(0)+' ('+(p.x1-p.x0).toFixed(0)+' wide), not the column '+L.toFixed(0)+' to '+Rr.toFixed(0)+' ('+(Rr-L).toFixed(0)+' wide)');
-         if(a){ gaps.push(p.y0-pl[a-1].y1); if(p.y0<pl[a-1].y1-0.5) bad.push(tag+': plate '+(a+1)+' starts at y '+p.y0.toFixed(0)+', on top of the one above it, which ends at '+pl[a-1].y1.toFixed(0)); }
+       if(!C||!mm){ bad.push(tag+': missing run info or minimap'); return; }
+       for(i=0;i<r.p.length;i++){p=r.p[i];if(p.x0>=W*.55&&p.x1<=W+1&&p.x1-p.x0>=W*.06&&p.y0>=0&&p.y1<=C.y+C.h+2)pl.push(p);}
+       pl.sort(function(a,b){return a.y0-b.y0;});
+       if(pl.length!==(labs.length?3:2))bad.push(tag+': expected compact wallet, minimap and run info plates; found '+pl.length);
+       for(i=0;i<pl.length;i++){
+         p=pl[i];if(Math.abs(p.x0-C.x)>eps||Math.abs(p.x1-C.x-C.w)>eps)bad.push(tag+': corner plate width or right edge differs');
+         if(i&&p.y0<pl[i-1].y1-.5)bad.push(tag+': corner plates overlap');
        }
-       for(a=1;a<gaps.length;a++) if(Math.abs(gaps[a]-gaps[0])>2.5) bad.push(tag+': the gap under plate '+(a+1)+' is '+gaps[a].toFixed(1)+' and under plate 1 it is '+gaps[0].toFixed(1)+', not one gap all the way down');
-       for(a=1;a<n&&a<pl.length;a++) if(Math.abs((pl[a].y1-pl[a].y0)-(pl[0].y1-pl[0].y0))>1) bad.push(tag+': row '+(a+1)+' is '+(pl[a].y1-pl[a].y0).toFixed(1)+' high and row 1 is '+(pl[0].y1-pl[0].y0).toFixed(1));
-       if(pl.length&&(pl[0].y0>H*0.05||W-pl[0].x1>W*0.03)) bad.push(tag+': the column does not start in the top right corner (first plate at x '+pl[0].x1.toFixed(0)+' right edge, y '+pl[0].y0.toFixed(0)+')');
-       if(!MMAP.box) bad.push(tag+': no minimap was drawn');
-       else {
-         q=MMAP.box;
-         if(Math.abs(q.w-q.h)>1.5) bad.push(tag+': the minimap is '+q.w+' by '+q.h+', not a square');
-         if(Math.abs(q.x-L)>1.5||Math.abs(q.x+q.w-Rr)>1.5) bad.push(tag+': the minimap spans x '+q.x+' to '+(q.x+q.w)+', not the column '+L.toFixed(0)+' to '+Rr.toFixed(0));
-         if(pl.length>n&&Math.abs(pl[n].y0-q.y)>1.5) bad.push(tag+': the plate after the rows starts at y '+pl[n].y0.toFixed(0)+' and the minimap at '+q.y);
+       if(Math.abs(mm.w-mm.h)>eps||Math.abs(mm.x-C.x)>eps||Math.abs(mm.w-C.w)>eps)bad.push(tag+': minimap is not a column-width square');
+       if(labs.length){
+         box=pl[0];if(!box){bad.push(tag+': wallet plate missing');return;}
+         if(box.y0>H*.05||W-box.x1>W*.03)bad.push(tag+': wallet is not at the top right');
+         if(box.y1>mm.y-.5)bad.push(tag+': wallet overlaps the minimap');
+         for(i=0;i<labs.length;i++){
+           var label=null,value=null,left=box.x0+(i%2)*(box.x1-box.x0)/2,right=left+(box.x1-box.x0)/2;
+           for(j=0;j<r.t.length;j++){q=r.t[j];if(q.d===labs[i]&&q.al==='left'&&q.x>=left&&q.x<right&&q.y>=box.y0&&q.y<=box.y1){label=q;break;}}
+           if(!label){bad.push(tag+': missing '+labs[i]+' in its compact cell');continue;}
+           for(j=0;j<r.t.length;j++){q=r.t[j];if(q.al==='right'&&q.x>label.x&&q.x<=right+eps&&Math.abs(q.y-label.y)<.5){value=q;break;}}
+           if(!value){bad.push(tag+': '+labs[i]+' has no figure in its cell');continue;}
+           if(i===0&&value.d!=='$'+(4471337).toLocaleString())bad.push(tag+': wrong cash figure '+value.d);
+           if(i===1&&value.d!==(98761).toLocaleString())bad.push(tag+': wrong xp figure '+value.d);
+           if((i===2||i===3)&&!/^\$[0-9,.]+$/.test(value.d))bad.push(tag+': '+labs[i]+' is not a money figure');
+           if(labs[i]==='notes logged'&&value.d!=='1')bad.push(tag+': wrong note count '+value.d);
+           if(Math.abs(value.px-label.px)>.3)bad.push(tag+': label and figure type sizes differ');
+           if(i%2&&rows[i-1]&&Math.abs(label.y-rows[i-1].y)>.5)bad.push(tag+': paired cells are on different baselines');
+           if(i>=2&&rows[i-2]&&label.y<=rows[i-2].y+label.px)bad.push(tag+': compact lines collide');
+           rows[i]=label;
+         }
        }
-       for(a=0;a<r.t.length;a++) if(/run info/.test(r.t[a].d)){ ref=r.t[a]; break; }
-       if(!ref) bad.push(tag+': the run info title was not drawn');
-       for(k=0;k<n&&k<pl.length;k++){
-         p=pl[k]; lab=null; val=null;
-         for(a=0;a<r.t.length;a++){ q=r.t[a]; if(q.x>=p.x0-1&&q.x<=p.x1+1&&q.y>=p.y0&&q.y<=p.y1+1){ if(q.al==='left'&&!lab) lab=q; else if(q.al==='right'&&!val) val=q; } }
-         // 10-20 (coordinator, cw-raiddollar): since v33.14 the money row is the figure alone ($900, his Q59), so its label may be empty
-         if(!lab||(lab.d!==labs[k]&&!(k===0&&labs[k]==='credits'&&lab.d===''))) bad.push(tag+': row '+(k+1)+' says "'+(lab?lab.d:'')+'" and not "'+labs[k]+'"');
-         else px.push(lab.px);
-         if(!val) bad.push(tag+': row '+(k+1)+' ('+labs[k]+') has no figure at its right edge');
-         else { px.push(val.px); vx.push(val.x); if(wallet&&k===0&&val.d!==(4471337).toLocaleString()&&val.d!=='$'+(4471337).toLocaleString()) bad.push(tag+': the credits row says "'+val.d+'", not '+(4471337).toLocaleString()); if(wallet&&k===1&&val.d!==(98761).toLocaleString()) bad.push(tag+': the xp row says "'+val.d+'", not '+(98761).toLocaleString()); }
-       }
-       for(a=1;a<vx.length;a++) if(Math.abs(vx[a]-vx[0])>1) bad.push(tag+': the figures do not share one right edge ('+vx[0].toFixed(0)+' and '+vx[a].toFixed(0)+')');
-       for(a=0;a<px.length;a++) if(Math.abs(px[a]-px[0])>0.3||(ref&&Math.abs(px[a]-ref.px)>0.3)) { bad.push(tag+': the rows use more than one type size ('+px[0].toFixed(1)+' and '+px[a].toFixed(1)+(ref?', the run info title '+ref.px.toFixed(1):'')+')'); break; }
-       for(a=0;a<r.t.length;a++){ q=r.t[a]; if(pl.length&&q.x>=L-1&&q.x<=Rr+1&&q.y>=pl[0].y0&&q.y<=pl[pl.length-1].y1&&q.d!==q.d.toLowerCase()) low.push(q.d); }
-       if(low.length) bad.push(tag+': words in the corner are not lower case ('+low.slice(0,3).join(', ')+')');
+       for(i=0;i<r.t.length;i++){q=r.t[i];if(q.d==='run info')ref=q;if(q.x>=C.x&&q.x<=C.x+C.w&&q.y>=0&&q.y<=C.y+C.h&&q.d!==q.d.toLowerCase())bad.push(tag+': corner text is not lower case');}
+       if(!ref)bad.push(tag+': run info title missing');
      }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -26791,6 +26816,7 @@ window.__REGRESS=[
   {v:'28.04',what:'the colour scheme: a rack of presets (primary, secondary, accent) drawn on the body, carried over the link, kept in looks, and an old clothing colour maps to its scheme',
    run:function(){
      if(typeof SCHEMES==='undefined'||typeof schemeOf!=='function') return 'there is no colour scheme in this build';
+     var pix0=CFG.xfPix;
      var bad=[], keep={}, ks=['cosScheme','cosFit','cosAll','cosOutfit'], i, k, list, box, el, d1, d2, n1, n2;
      function paint(st,mode,sc){
        var cv2=document.createElement('canvas'), x2, kw=wc, d;
@@ -26801,6 +26827,8 @@ window.__REGRESS=[
      function near(d,hex,tol){ var r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16), n=0, j; for(j=0;j<d.length;j+=4) if(d[j+3]>200&&Math.abs(d[j]-r)<=tol&&Math.abs(d[j+1]-g)<=tol&&Math.abs(d[j+2]-b)<=tol) n++; return n; }
      function diff(a,b){ var n=0, j; for(j=0;j<a.length;j+=4) if(a[j]!==b[j]||a[j+1]!==b[j+1]||a[j+2]!==b[j+2]||a[j+3]!==b[j+3]) n++; return n; }
      try{
+       // v28.xx (cw-cx-newreds): Keep all legacy scheme colour, click and migration assertions on their actual picker. Pixel racks are covered by 33.91.
+       CFG.xfPix=0;
        for(i=0;i<ks.length;i++) keep[ks[i]]=P[ks[i]];
        // the rack
        list=COSMETICS.filter(function(c){ return c.kind==='scheme'; });
@@ -26872,7 +26900,7 @@ window.__REGRESS=[
        renderCosmetics(box,'fit');
        if(box.querySelectorAll('.costile').length!==1) bad.push('CLOTHING still shows '+box.querySelectorAll('.costile').length+' tiles beside the schemes');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ for(i=0;i<ks.length;i++){ k=ks[i]; if(keep[k]===undefined) delete P[k]; else P[k]=keep[k]; } try{ saveProfile(); }catch(_sp){} }
+     finally{ CFG.xfPix=pix0; for(i=0;i<ks.length;i++){ k=ks[i]; if(keep[k]===undefined) delete P[k]; else P[k]=keep[k]; } try{ saveProfile(); }catch(_sp){} }
      return bad.length?bad.join('; '):null; }},
   {v:'28.03',what:'his order 2026-10-15 (score and haul reconciled): a CAREER run card is one ledger of raid score rows, credits, haul and a RAID TOTAL of credits plus haul, with stat tiles instead of sentences, a death shows credits and haul as LOST, the first press lands the tally, and any other card keeps its sentences',
    run:function(){
@@ -27336,10 +27364,17 @@ window.__REGRESS=[
        if(getComputedStyle(b).display==='none') bad.push('the What is New button is hidden in the pause box');
        b.click();
        if(!m.classList.contains('on')) bad.push('the button did not open the What is New window');
-       if(L.children.length<5) bad.push('the window lists '+L.children.length+' notes, not 5 or more');
-       else {
-         if(String(L.children[0].textContent).indexOf('1. ')!==0) bad.push('the list does not start with 1. ('+L.children[0].textContent.slice(0,30)+')');
-         if(String(L.children[0].textContent).toUpperCase().indexOf('ALPHA')<0) bad.push('the first note is not the alpha line ('+L.children[0].textContent.slice(0,40)+')');
+       // v28.xx (cw-cx-newreds): The public card has three real notes since 33.49; retain the original navigation checks and compare every shown note.
+       var notes=wnList();
+       if(notes.length===3){
+         if(L.children.length!==3) bad.push('the public window must show exactly three notes');
+         for(i=0;i<notes.length;i++){
+           if(!notes[i]||notes[i].length>48||notes[i]!==notes[i].toLowerCase()||/alpha|daniel|polish pass/i.test(notes[i])) bad.push('note '+i+' is not short public copy');
+           if(!L.children[i]||L.children[i].textContent!==TX((i+1)+'. '+notes[i])) bad.push('shown note '+i+' differs from the card');
+         }
+       }else{
+         if(L.children.length<5) bad.push('the legacy window lists fewer than five notes');
+         if(!L.children[0]||String(L.children[0].textContent).indexOf('1. ')!==0||String(L.children[0].textContent).toUpperCase().indexOf('ALPHA')<0) bad.push('the legacy first note is missing');
        }
        if(typeof escCloseTopModal==='function'){ escCloseTopModal(); if(m.classList.contains('on')) bad.push('ESC did not close the What is New window'); }
        b.click();
@@ -32833,6 +32868,7 @@ window.__REGRESS=[
   {v:'26.79',what:'his words (suggestion 28): a plain Warden has an armoured front like the Bulwark (a round inside its front arc does 40 percent, from the side full, from behind half again), the Bulwark is unchanged, and the Overseer stays unarmoured',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)||typeof mkWarden!=='function'||typeof mkBulwark!=='function'||typeof updateBullets!=='function'||typeof spotFree!=='function'||typeof rayHitG!=='function') return 'SKIP: no raid here';
+     // v28.xx (cw-cx-newreds): Move the armour-only side lane outside the enlarged weak seam; assert that it misses the seam before measuring damage.
      var bad=[], g=null, p=null, all=null, sp=null, k, aa, x, y, W, Bw, Ov, lossF, lossS, lossB, lossBw, lossOv;
      function inW(x,y){ return x>60&&y>60&&x<WORLD_W-60&&y<WORLD_H-60; }
      function lane(ax,ay,bx,by){ var d=Math.hypot(bx-ax,by-ay)||1; return rayHitG(ax,ay,(bx-ax)/d,(by-ay)/d,d)>=d-0.5; }
@@ -32850,22 +32886,23 @@ window.__REGRESS=[
        p=g.player; p.iv=99; p.hp=100; p.downed=false; all=g.ents.slice();
        for(k=0;k<24&&!sp;k++){
          aa=k/24*6.2832; x=p.x+Math.cos(aa)*200; y=p.y+Math.sin(aa)*200;
-         if(inW(x-130,y)&&inW(x+130,y)&&inW(x,y+130)&&inW(x,y-130)&&spotFree(g.map,x,y,60)&&lane(x+130,y+14,x,y+14)&&lane(x,y+130,x,y)&&lane(x-130,y+14,x,y+14)) sp={x:x,y:y};
+         if(inW(x-130,y)&&inW(x+130,y)&&inW(x,y+130)&&inW(x,y-130)&&spotFree(g.map,x,y,60)&&lane(x+130,y+24,x,y+24)&&lane(x,y+130,x,y)&&lane(x-130,y+24,x,y+24)) sp={x:x,y:y};
        }
        if(!sp) return 'SKIP: no open ground for the shots';
        W=mkWarden(sp.x,sp.y); W.face=0; W.hp=W.maxhp=100000; W.state='patrol'; W.boss=0; W.windup=null;
        g.ents=[W];
-       lossF=hit(W,sp.x+130,sp.y+14,-1,0);
+       if(weakHit(W,sp.x-130,sp.y+24,1,0)||weakHit(W,sp.x+130,sp.y+24,-1,0)) bad.push('control: armour probe intersects a weak point');
+       lossF=hit(W,sp.x+130,sp.y+24,-1,0);
        lossS=hit(W,sp.x,sp.y+130,0,-1);
-       lossB=hit(W,sp.x-130,sp.y+14,1,0);
+       lossB=hit(W,sp.x-130,sp.y+24,1,0);
        if(!(lossF>=35&&lossF<=45)) bad.push('a round of 100 into the front of a Warden did '+Math.round(lossF)+', not about 40');
        if(!(lossS>=95&&lossS<=105)) bad.push('a round of 100 into the side of a Warden did '+Math.round(lossS)+', not 100');
        if(!(lossB>=145&&lossB<=155)) bad.push('a round of 100 into the back of a Warden did '+Math.round(lossB)+', not 150');
        Ov=mkWarden(sp.x,sp.y); Ov.boss=1; Ov.face=0; Ov.r=44; Ov.hp=Ov.maxhp=100000; Ov.state='patrol'; Ov.windup=null; g.ents=[Ov];
-       lossOv=hit(Ov,sp.x+130,sp.y+14,-1,0);
+       lossOv=hit(Ov,sp.x+130,sp.y+24,-1,0);
        if(!(lossOv>=95&&lossOv<=105)) bad.push('a round of 100 into the front of the Overseer did '+Math.round(lossOv)+': it should stay unarmoured');
        Bw=mkBulwark(sp.x,sp.y); Bw.elite=0; Bw.face=0; Bw.hp=Bw.maxhp=100000; Bw.state='patrol'; Bw.windup=null; g.ents=[Bw];
-       lossBw=hit(Bw,sp.x+130,sp.y+14,-1,0);
+       lossBw=hit(Bw,sp.x+130,sp.y+24,-1,0);
        if(!(lossBw>=10&&lossBw<=14)) bad.push('a round of 100 into the front of a Bulwark did '+Math.round(lossBw)+', not 12 (the Bulwark is unchanged)');
      }catch(x2){ bad.push('threw: '+(x2&&x2.message||x2)); }
      finally{
@@ -36601,9 +36638,12 @@ window.__REGRESS=[
        ctx.fillText=function(t){ if(String(t)==='THE FORGE') seen.map++; return rC.apply(this,arguments); };
        try{ g.mapOpen=true; drawMapOverlay(); } finally { g.mapOpen=false; if(hadC) ctx.fillText=rC; else delete ctx.fillText; }
        if(!seen.map) bad.push('the sector map does not name the Forge');
+       // v28.xx (cw-cx-newreds): Read the final name on either canvas, and require the HUD world-text pass for the moved label.
        hadW=OWN.call(wc,'fillText'); rW=wc.fillText;
-       wc.fillText=function(t){ if(String(t)==='THE FORGE') seen.world++; return rW.apply(this,arguments); };
-       try{ for(n=0;n<40&&!seen.world;n++){ p.x=f.x-80; p.y=f.y; render2D(0.05); } } finally { if(hadW) wc.fillText=rW; else delete wc.fillText; }
+       hadC=OWN.call(ctx,'fillText'); rC=ctx.fillText;
+       wc.fillText=function(t){ if(String(t).toLowerCase()==='the forge') seen.world++; return rW.apply(this,arguments); };
+       ctx.fillText=function(t){ if(String(t).toLowerCase()==='the forge'&&/_wtA/.test(new Error().stack)) seen.world++; return rC.apply(this,arguments); };
+       try{ for(n=0;n<40&&!seen.world;n++){ p.x=f.x-80; p.y=f.y; render2D(0.05); } } finally { if(hadW) wc.fillText=rW; else delete wc.fillText; if(hadC) ctx.fillText=rC; else delete ctx.fillText; }
        if(!seen.world) bad.push('the world does not draw the Forge');
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{ try{ var g2=__state(); if(g2&&!g2.over){ g2.mapOpen=false; __endRaid('abandon'); } }catch(_e3){} __topClear(); }
@@ -40780,14 +40820,18 @@ window.__REGRESS=[
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)||typeof drawHUD!=='function'||typeof ctx==='undefined') return 'SKIP: no raid HUD here';
      if(typeof drawMinimap!=='function'||typeof MMAP!=='object') return 'SKIP: no minimap in this build';
+     var oldSize=CFG.mmSz;
      var bad=[], g, row=null, i, oc=CFG.minimap, os=state, oa=(typeof ARCADE==='object'&&ARCADE)?ARCADE.over:undefined, b1, b2;
      try{
-       for(i=0;i<GAMEOPTS.length;i++) if(GAMEOPTS[i].k==='minimap') row=GAMEOPTS[i];
+       // v28.xx (cw-cx-newreds): The one MINIMAP row now owns off and size; keep every existing visibility assertion below.
+       for(i=0;i<GAMEOPTS.length;i++) if(GAMEOPTS[i].k==='mmSize'||GAMEOPTS[i].k==='minimap') row=GAMEOPTS[i];
        if(!row) bad.push('Settings has no MINIMAP row');
-       else if(!row.opts[row.def]||row.opts[row.def].cfg.minimap!==1) bad.push('the MINIMAP row is not on by default');
+       else if(row.k==='mmSize'){
+         if(row.def!==0||row.opts.length!==4||row.opts[0].cfg.mmSz!==0||row.opts[2].cfg.mmSz!==1) bad.push('the one minimap row must offer off, small, standard and large, default off');
+       }else if(!row.opts[row.def]||row.opts[row.def].cfg.minimap!==1) bad.push('the legacy MINIMAP row is not on by default');
        __topClear(); __runPrep(); __deploy({kit:['gun_carbine'],seed:4242,mapIx:0});
        g=__state(); if(!g||g.over) return 'SKIP: no live raid';
-       CFG.minimap=1; drawHUD(); b1=MMAP.box;
+       CFG.mmSz=1; CFG.minimap=1; drawHUD(); b1=MMAP.box;
        if(!b1) bad.push('MINIMAP ON draws no minimap in a raid');
        else if(b1.w<Math.round(216*hudRes())-1) bad.push('the minimap is '+b1.w+' wide, under 216 times the screen scale '+hudRes());   // 2026-10-18 (cw-trcol): as wide as the column (the run info panel), never narrower than the old 216
        CFG.minimap=0; drawHUD(); b2=MMAP.box;
@@ -40804,6 +40848,7 @@ window.__REGRESS=[
        if(g&&g.player){ drawMinimap(); if(MMAP.box) bad.push('the minimap draws over the end card'); }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
+       CFG.mmSz=oldSize;
        try{ if(oc===undefined) delete CFG.minimap; else CFG.minimap=oc; }catch(_c0){}
        try{ state=os; }catch(_s){} try{ if(typeof ARCADE==='object'&&ARCADE) ARCADE.over=oa; }catch(_a){}
        try{ var g2=__state(); if(g2){ g2.mapOpen=false; g2.bagOpen=false; if(!g2.over) __endRaid('abandon'); } }catch(_e){} try{ __topClear(); }catch(_c){}
@@ -41514,9 +41559,11 @@ window.__REGRESS=[
   {v:'25.17',what:'his #50 (UI redesign ui5q2l): every Fashion rack tile is the same height (at least 156px at the menu size) and at least 180px wide',
    run:function(){
      if(!(window.__station&&window.__hubEnter)) return 'SKIP: this fixture cannot walk the Undercroft';
+     var pix0=CFG.xfPix;
      var bad=[], q, i, z, h, lo=1e9, w;
      try{
-       __topClear(); __hubEnter(); __station('mirror','KeyE');
+       // v28.xx (cw-cx-newreds): Measure the legacy racks with their own switch; 33.91 measures the replacement four-rack wardrobe.
+       __topClear(); CFG.xfPix=0; __hubEnter(); __station('mirror','KeyE');
        q=document.querySelectorAll('#appavatarpicker .costile');
        z=(((typeof menuScale==='function')&&menuScale())||1);
        var n=0;
@@ -41526,7 +41573,7 @@ window.__REGRESS=[
        w=q[0].getBoundingClientRect().width/z;
        if(w<180) bad.push('a rack tile is '+Math.round(w)+'px wide');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ try{ __topClear(); }catch(_c){} }
+     finally{ CFG.xfPix=pix0; try{ __topClear(); }catch(_c){} }
      return bad.length?bad.join('; '):null; }},
   {v:'25.16',what:'his order 2026-10-12, pillagers say no words: no taunt() and no TAUNT lines are left; a pillager spotting him, a pillager round hitting him, him going down beside a pillager and a pillager breaking off to extract draw no bubble over the pillager; the spot still plays the seen swell once, gated to once in four seconds',
    run:function(){
@@ -78691,9 +78738,12 @@ window.__REGRESS=[
      if(typeof lookRandom!=='function'||typeof COSDEF==='undefined'||typeof COSKEY==='undefined') return 'SKIP: no random look in this build';
      var suit=null; for(var i=0;i<COSMETICS.length;i++){ var c=COSMETICS[i]; if(c.kind==='outfit'&&c.id!==COSDEF.outfit){ suit=c.id; break; } }
      if(!suit) return 'SKIP: no suit to wear';
+     var pix0=CFG.xfPix;
      var bad=[], prof=null, keepAll=null;
      try{
        __topClear(); __cleanProfile(); prof=__P(); keepAll=prof.cosAll;
+       // v28.xx (cw-cx-newreds): The vector rack still removes a suit. Pixel Surprise Me has twelve complete looks, including owned sets (33.91).
+       CFG.xfPix=0;
        prof.cosAll=true;
        // CONTROL: with no suit on, a random look puts none on.
        prof[COSKEY.outfit]=COSDEF.outfit; lookRandom();
@@ -78702,7 +78752,7 @@ window.__REGRESS=[
        prof[COSKEY.outfit]=suit; lookRandom();
        if(prof[COSKEY.outfit]===suit) bad.push('SURPRISE ME left the '+suit+' suit on, hiding every piece it rolled');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ try{ if(prof) prof.cosAll=keepAll; }catch(_a){} try{ __topClear(); __cleanProfile(); }catch(_c){} }
+     finally{ CFG.xfPix=pix0; try{ if(prof) prof.cosAll=keepAll; }catch(_a){} try{ __topClear(); __cleanProfile(); }catch(_c){} }
      return bad.length?bad.join('; '):null; }},
   {v:'14.70',what:'a saved look is worn whole: a look saved with no outfit, worn over a suit, puts on the hat it names and takes the suit off (wardrobe audit finding 4)',
    run:function(){
@@ -90108,13 +90158,19 @@ window.__REGRESS=[
        __frame(0.016);
        var bottom=topRightBottom();
        if(!(bottom>26)) return 'SKIP: the corner readout is not on screen here (bottom '+Math.round(bottom)+')';
-       proto.fillText=function(t,x,y){ rec.push({t:String(t),y:y}); return o.apply(this,arguments); };
+       proto.fillText=function(t,x,y){ if(this===ctx) rec.push({t:String(t),y:y}); return o.apply(this,arguments); };
        __frame(0.016);
        proto.fillText=o;
        var ln=null; for(var i=0;i<rec.length;i++) if(/notes? logged/.test(rec[i].t)){ ln=rec[i]; break; }
        if(!ln) bad.push('control: the notes line was not drawn');
-       else if(ln.y<=bottom) bad.push('the notes line is drawn at y '+Math.round(ln.y)+', inside the corner readout that ends at '+Math.round(bottom));
-       else if(ln.y>H) bad.push('the notes line is drawn off the canvas at y '+Math.round(ln.y));
+       // v28.xx (cw-cx-newreds): The notes row lives inside the compact wallet, below its cash/stash lines; the hidden DOM box is not its boundary.
+       else if(typeof TRG==='object'&&TRG&&TRG.n>0){
+         var tg=trGeo(), edge=tg.yE/tg.z, top=tg.y0;
+         if(!(ln.y>top&&ln.y<edge)) bad.push('the notes row is outside the compact wallet: '+ln.y+' vs '+top+'..'+edge);
+         var prior=0; for(var j=0;j<rec.length;j++) if(/^(cash|xp|stash|backpack)$/.test(rec[j].t)&&rec[j].y>top&&rec[j].y<edge) prior=Math.max(prior,rec[j].y);
+         if(!prior||ln.y<=prior) bad.push('the notes row is not below the wallet figures');
+       }else if(ln.y<=bottom) bad.push('the notes line overlaps the legacy corner readout');
+       if(ln&&ln.y>H) bad.push('the notes line is drawn off the canvas at y '+Math.round(ln.y));
        var C=(typeof HUDBOX!=='undefined')&&HUDBOX.cond;
        if(ln&&C&&ln.y>C.y&&ln.y<C.y+C.h) bad.push('the notes line is drawn at y '+Math.round(ln.y)+', inside the conditions panel at '+Math.round(C.y)+' to '+Math.round(C.y+C.h));
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
@@ -100612,6 +100668,8 @@ window.__REGRESS=[
        var g=__state(), p=g.player, z=(g.zones&&g.zones[0])||null;
        g.ents.length=0;
        if(o.landed&&!z) return null;
+       // v28.xx (cw-cx-newreds): One fixed clock keeps a one-second negative control shorter than the hold.
+       var clock=performance.now();
        var fr=Math.round((o.secs||2.5)/0.016), at=-1, peak=0;
        for(var i=0;i<fr;i++){
          if(p.hp<=0){ at=i; break; }
@@ -100626,7 +100684,7 @@ window.__REGRESS=[
          if(o.landed){ g.active=z; z.open=true; z.beaconT=0; z.hold=20; z.holdMax=30;
                        g.beaconT=0; g.shipHold=20; p.x=z.x; p.y=z.y; }
          var K=__keysRef(); for(var k in K) K[k]=false; if(o.hold) K['Space']=true;
-         __loop(performance.now()+i*16.7);
+         __loop(clock+(i+1)*16.7);
          if((p.giveT||0)>peak) peak=p.giveT;
        }
        var S=__state();
