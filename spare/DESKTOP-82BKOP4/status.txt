@@ -1,9 +1,9 @@
 host=DESKTOP-82BKOP4
-seen=2026-10-22 04:27
-epoch=1792657632
-game=3c86416a v33.94
-test_run=idle
+seen=2026-10-22 04:58
+epoch=1792659494
+game=3d734668 v33.95
+test_run=running corpus-1022-0458.txt
 robots=2
-ram_free_gb=23.8
+ram_free_gb=25.2
 push_ok=1
 runner=19294359
