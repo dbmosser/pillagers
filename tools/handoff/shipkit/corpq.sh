@@ -4,8 +4,9 @@
 # whole time (3.5 hours on 10-17, 12:53 to 16:23), so no helper could ship. It now tests a frozen copy of the fixture
 # (tools/fxcorpus.html, taken at the start), so ships can rebuild tools/fixture.html meanwhile, and it takes no lock. Its Chrome
 # (9344) has its own profile, so its storage never meets the gate Chrome's.
-S="C:/Users/User1/AppData/Local/Temp/claude/C--Users-User1-Desktop-dark-raiders/8a09e991-b4f4-4b23-b10f-ded92e837fc3/scratchpad"
-R="/c/claudecode/dark raiders"; OUT="${1:-$S/corpus-belt.txt}"
+# 10-22: a runner with its own folders (the main PC's idle runs, tools/spare/spare-runner.ps1) sets PILLAGERS_SCRATCH and PILLAGERS_ROOT.
+S="${PILLAGERS_SCRATCH:-C:/Users/User1/AppData/Local/Temp/claude/C--Users-User1-Desktop-dark-raiders/8a09e991-b4f4-4b23-b10f-ded92e837fc3/scratchpad}"
+R="${PILLAGERS_ROOT:-/c/claudecode/dark raiders}"; OUT="${1:-$S/corpus-belt.txt}"
 cd "$R" || exit 1
 cp -f tools/fixture.html tools/fxcorpus.html || { echo "NO FIXTURE TO COPY"; exit 1; }
 export FX=fxcorpus.html

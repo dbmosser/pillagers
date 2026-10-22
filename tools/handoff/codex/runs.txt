@@ -313,3 +313,4 @@
 2026-10-22 06:07 89-hub-floor 64s ok DONE in=3616523 out=37380 run=5
 2026-10-22 06:10 90-colour-cue-backups 188s ok PARTIAL in=519331 out=5900 run=1
 2026-10-22 06:20 90-colour-cue-backups 378s ok PARTIAL in=2064673 out=18512 run=2
+2026-10-22 06:28 90-colour-cue-backups 231s ok PARTIAL in=3877637 out=25243 run=3

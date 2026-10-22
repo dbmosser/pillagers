@@ -1,0 +1,7 @@
+v34.02: elite intel has a shape
+
+Map intel elites use a purple triangle with a cream edge, readable without colour.
+
+Check 34.02. Fails on v34.01.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -6,7 +6,7 @@
 # 2026-10-08 05:15 fix: only a NUMBER is progress. A hung page answers TIMEOUT, which the old loop took as progress and then
 # logged as index 0 and restarted the slice from 1. Now a page that will not answer for 6 polls (about 18 minutes) is paused
 # with the debugger (pause.ps1), which records the check it was in and the stack, and the next slice starts after that check.
-cd "/c/claudecode/dark raiders"
+cd "${PILLAGERS_ROOT:-/c/claudecode/dark raiders}"   # 10-22: the main PC's idle runs use their own copy (tools/spare/spare-runner.ps1)
 SD="$(dirname "$0")"
 OUT="$1"; A=${2:-0}; END=${3:-962}; STEP=${4:-120}
 CDP() { powershell -NoProfile -ExecutionPolicy Bypass -File tools/cdp.ps1 -Port 9344 "$@" 2>/dev/null | tail -1; }

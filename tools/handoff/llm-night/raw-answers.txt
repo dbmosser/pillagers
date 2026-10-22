@@ -1,45 +1,4 @@
 
-This CSS code snippet appears to be styling various elements within an HTML structure with the ID "attract". It's likely part of a larger web application or game interface. Here are some key points about what this CSS does:
-
-1. **Font and Text Styling**:
-   - The `.attname` class styles a title element, setting its font size, weight, line height, letter spacing, and color.
-   - The `.attpress` class styles a button or prompt text with similar properties but slightly different values.
-
-2. **Panel and Page Layouts**:
-   - The `.arcpage` class defines the styling for a panel or page element, including padding, background color, border, and font size.
-   - It also includes pseudo-element `::before` to create an accent tab at the top of the panel.
-
-3. **Table Styling**:
-   - Styles are applied to tables within `.arcpage`, setting their width, margin, and cell padding.
-   - Headers (`th`) have specific styling for font size, weight, color, and border.
-
-4. **Run Over Card (arcover)**:
-   - The `.arcover` class styles a run over card element, centering it on the screen with specific padding and background properties.
-   - It includes various child elements like titles (`aoh`), scores (`aos`), rows (`aor`), best moments (`aobm`), initials keys (`aoi`), labels
-It looks like you have a large block of HTML and CSS code that defines various elements for a web page, particularly related to game interfaces or user interactions. Here's a summary of what each section does:
-
-1. **CSS Styles**:
-   - The first style block (`<style id="ucbody">`) contains rules for positioning and styling a toast notification (`#hubtoast`). It ensures that the toast is positioned above certain cards so it doesn't cover important elements.
-   
-2. **Additional CSS Styles**:
-   - The second style block (`<style id="pix-fashion-fit">`) modifies the appearance of an "appearance modal" with class `pixfashion`. This includes changes to grid layouts, font sizes, and other visual properties to fit a specific design aesthetic.
-
-3. **Canvas Elements**:
-   - Two `<canvas>` elements are defined: one with ID `cv` and another with ID `hcv`. These are likely used for rendering graphics or animations within the game interface.
-
-4. **Toast Notification Div**:
-   - A `<div id="hubtoast"></div>` is included, which will be used to display toast notifications on the page.
-
-5. **Pause Box**:
-   - The pause box (`<div class="pausebox" id="pausebox">`) contains various buttons and elements for handling game pauses. It includes options like resuming the run, settings, leaderboard access, feedback submission, and more.
-   
-6. **Feedback Modal**
 NONE
-NONE
-LINE 49803: Unmatched closing brace.
-LINE 49804: Empty catch block that swallows exceptions.
-LINE 49825: Possible NaN or undefined values reaching canvas calls (arc).
-LINE 49867: Possible NaN or undefined values reaching canvas calls (hubSignPlate).
-LINE 49913: Property access on a value that can be null or undefined in per-frame code without a guard.
 NONE
 NONE

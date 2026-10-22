@@ -45,7 +45,7 @@ param(
   [int]$P2Share=75
 )
 $ErrorActionPreference='Stop'
-$R='C:\claudecode\dark raiders'; $T=$R+'\tools'; $OutDir=$T+'\handoff\fuzz'
+$R=$(if($env:PILLAGERS_ROOT){ $env:PILLAGERS_ROOT -replace '/','\' }else{ 'C:\claudecode\dark raiders' }); $T=$R+'\tools'; $OutDir=$T+'\handoff\fuzz'   # 10-22: the main PC's idle runs set PILLAGERS_ROOT
 $Flag='C:\Users\User1\AppData\Local\Temp\claude\C--Users-User1-Desktop-dark-raiders\8a09e991-b4f4-4b23-b10f-ded92e837fc3\scratchpad\light.flag'
 if($FlagFile -ne ''){ $Flag=$FlagFile }
 if($env:FUZZ_OUT_DIR){ $OutDir=$env:FUZZ_OUT_DIR }   # a hand test writes its log and records somewhere else, never into the nightly ones

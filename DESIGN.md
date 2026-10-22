@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.02 - ELITE INTEL HAS A SHAPE
+
+Co-op hunt while he was away. The greyscale map audit shows elite intel as an anonymous dot beside other round map marks. His 2.79 a calls for a shape backup.
+
+MEASURED. Check 34.02 passes, and fails on v34.01.
 ## v34.01 - RARITY READS WITHOUT COLOUR
 
 Co-op hunt while he was away. The greyscale audit shows identical rarity bars in the stash and backpack. His 2.79 a says every colour cue needs an always on backup.

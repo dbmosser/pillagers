@@ -6154,6 +6154,29 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.02',what:'map intel elites draw cream edged triangles rather than plain coloured dots',
+   run:function(){
+     var g=null, oldMove=ctx.moveTo,oldLine=ctx.lineTo,oldBegin=ctx.beginPath,oldFill=ctx.fill,oldStroke=ctx.stroke,path=[],found=0,edged=0, expect, e, z;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:['gun_rifle'],safe:null,mapIx:0,seed:4242}); g=__state();
+       if(!g||!g.player||g.over) return 'no raid staged';
+       g.intel=true; g.mapOpen=true; g.bagOpen=false; g.paused=true;
+       e=g.ents[0]; if(!e) return 'no entity staged'; e.elite=true; e.downed=false; e.x=WORLD_W*.48; e.y=WORLD_H*.58;
+       var p=mapProj(); z=hudRes(); expect=[p.ox+e.x*p.sc,p.oy+e.y*p.sc];
+       function triangle(){return path.length===3&&Math.abs(path[0][0]-expect[0])<.1&&Math.abs(path[0][1]-(expect[1]-5*z))<.1&&Math.abs(path[1][0]-(expect[0]+4.5*z))<.1&&Math.abs(path[2][0]-(expect[0]-4.5*z))<.1;}
+       ctx.beginPath=function(){path=[];return oldBegin.apply(this,arguments);};
+       ctx.moveTo=function(x,y){path.push([x,y]);return oldMove.apply(this,arguments);};
+       ctx.lineTo=function(x,y){path.push([x,y]);return oldLine.apply(this,arguments);};
+       ctx.fill=function(){if(triangle()&&this.fillStyle===UIC.r_elite) found++;return oldFill.apply(this,arguments);};
+       ctx.stroke=function(){if(triangle()&&this.strokeStyle===UIC.tx_1&&Math.abs(this.lineWidth-1.5*z)<.1) edged++;return oldStroke.apply(this,arguments);};
+       drawMapOverlay();
+       return !found?'elite intel has no triangle':!edged?'elite intel triangle has no cream edge':null;
+     }finally{
+       ctx.moveTo=oldMove;ctx.lineTo=oldLine;ctx.beginPath=oldBegin;ctx.fill=oldFill;ctx.stroke=oldStroke;
+       try{__endRaid('abandon');}catch(_e){} __topClear();
+     }
+   }},
   {v:'34.01',what:'every item icon has one to five cream rarity pips in menus, backpack and belt, in every colour mode',
    run:function(){
      var ranks=['common','uncommon','rare','elite','gold'], keysByRank={}, oldCb=CFG.cb, oldSpr=ICONSPR, oldURL=_iconURL, oldCreate=document.createElement, cv2=document.createElement('canvas'), menuCanvas=null, c, i,j,m,key,d,x,y,want,bad=[];

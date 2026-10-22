@@ -3513,7 +3513,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.01';
+var VER='34.02';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -48163,7 +48163,10 @@ function drawMapOverlayRaw(){
       var IEE=G.ents[i];
       if(!IEE.elite||IEE.downed) continue;
       ctx.fillStyle=UIC.r_elite;
-      ctx.beginPath(); ctx.arc(ox+IEE.x*sc,oy+IEE.y*sc,3.4*_MZ,0,6.2832); ctx.fill();   // v21.41 (W-D4): at the map zoom
+      // v28.xx (cw-cx-inteltriangle), his 2.79 a: elite intel has a triangle as well as its purple colour.
+      var eliteX=ox+IEE.x*sc, eliteY=oy+IEE.y*sc;
+      ctx.beginPath(); ctx.moveTo(eliteX,eliteY-5*_MZ); ctx.lineTo(eliteX+4.5*_MZ,eliteY+4*_MZ); ctx.lineTo(eliteX-4.5*_MZ,eliteY+4*_MZ); ctx.closePath(); ctx.fill();
+      ctx.save(); ctx.strokeStyle=UIC.tx_1; ctx.lineWidth=1.5*_MZ; ctx.stroke(); ctx.restore();
     }
     mapLabel('INTEL LIVE',ox+52*_MZ,oy+14*_MZ,UIC.tx_2);
   }
@@ -53540,7 +53543,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.01: Item icons carry one to five cream rarity pips, from common through gold, in every colour mode. Check 34.01 fails on v34.00',
+  now:'v34.02: Map intel elites use a purple triangle with a cream edge, readable without colour. Check 34.02 fails on v34.01',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
