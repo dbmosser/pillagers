@@ -1,0 +1,6 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  41-hub-backpack                        staged       5.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"open":true,"pad":false,"bag":["gun_shotgun","medkit","bandage","plate","frag","smoke"]}
+  41-hub-backpack-pad-p1                 staged       5.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"open":true,"side":"host","pad":1,"bag":["gun_rifle","gun_shotgun","medkit"],"placed":"gun_shotgun","held":false,"keyEvents":0}
+  41-hub-backpack-pad-p2-held            staged       5.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"open":true,"side":"p2","pad":0,"bag":["gun_rifle","gun_shotgun","medkit"],"placed":"gun_shotgun","held":true,"keyEvents":0}
+  41-hub-backpack-pad-p1                 staged       5.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"open":true,"side":"host","pad":1,"bag":["gun_rifle","gun_shotgun","medkit"],"placed":"gun_shotgun","held":false,"keyEvents":0}
+  41-hub-backpack-pad-p2-held            staged       5.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"open":true,"side":"p2","pad":0,"bag":["gun_rifle","gun_shotgun","medkit"],"placed":"gun_shotgun","held":true,"keyEvents":0}

@@ -1,0 +1,7 @@
+v34.07: hub backpack readability
+
+Larger labels, an aligned belt, compact item details and a lifted held item make the hub backpack easier to read.
+
+Check 34.07. Fails on v34.06.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

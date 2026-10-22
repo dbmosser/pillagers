@@ -1,1 +1,1 @@
-10-22 07:33 gate: shipping cw-cx-hubbagcard (92-hub-backpack-card, codex)
+10-22 07:44 gate: shipping cw-cx-hubbagreadability (92-hub-backpack-card, codex)

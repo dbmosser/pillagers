@@ -1,0 +1,5 @@
+## v34.07 - HUB BACKPACK READABILITY
+
+Co-op hunt while he was away. The critic found small labels, detached belt alignment, empty detail space and an unclear pad-held item.
+
+MEASURED. Check 34.07 passes, and fails on v34.06.
