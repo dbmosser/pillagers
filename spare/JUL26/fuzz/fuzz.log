@@ -14,3 +14,7 @@
 2026-10-22 11:57:33 raid 4 demo1 raidSeed=1008468804 map=0 god=0 sec=116 end=ended problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=3614 score=0 ents=47 travelPx=9540 fires=54 menuPct=20 heapMB=47 p2= build=34.15
 2026-10-22 12:01:58 raid 5 demo2p raidSeed=1845297927 map=0 god=1 sec=302 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=9346 score=0 ents=50 travelPx=28342 fires=172 menuPct=12 heapMB=72 p2=link_2s_join_3s_pad_fwd build=34.15
 2026-10-22 12:02:43 raid 5 demo2p raidSeed=1267866110 map=0 god=0 sec=305 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=9553 score=0 ents=53 travelPx=26026 fires=109 menuPct=20 heapMB=65 p2=link_2s_join_4s_pad_own build=34.15
+2026-10-22 12:03:22 FUZZ START seed=1795437817 minutes=60 raidsec=300 port=9332 srv=8806 build=34.18 maps=0
+2026-10-22 12:03:22 FUZZ START seed=1793955528 minutes=60 raidsec=300 port=9331 srv=8806 build=34.18 maps=0
+2026-10-22 12:03:23 FUZZ END raids=0 problems=0 unique=0 reason=low memory 0.4 GB free (RAM or virtual) minutes=0.4
+2026-10-22 12:03:23 FUZZ END raids=0 problems=0 unique=0 reason=low memory 0.4 GB free (RAM or virtual) minutes=0.4

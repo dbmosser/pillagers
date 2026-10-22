@@ -1,10 +1,10 @@
 host=JUL26
-seen=2026-10-22 12:02
-epoch=1792684979
+seen=2026-10-22 12:03
+epoch=1792685012
 game=a19c2e74 v34.18
-test_run=running corpus-1022-1202.txt
-robots=2
-ram_free_gb=6.5
+test_run=paused: under 6 GB free
+robots=0
+ram_free_gb=1.6
 push_ok=1
 runner=12128265
 mode=idle
