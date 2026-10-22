@@ -1,0 +1,7 @@
+v33.96: floor bake keeps its mode
+
+The rubble coordinate has its own name. The legacy floor stays full density, stamps land where they are measured, and the pixel floor keeps its requested density. The six pending checks run with their original numerical thresholds. Watch: with pixel look off, check that the floor stays stable while scorch and brass marks appear at their landing points.
+
+Check 33.96. Fails on v33.95.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

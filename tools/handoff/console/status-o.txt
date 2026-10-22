@@ -1,1 +1,1 @@
-10-22 04:48 gate: the what is new card is stale, shipping a card refresh first (cw-cx-groundmode, 87r-v3394-new-reds)
+10-22 04:56 gate: shipping cw-cx-groundmode (87r-v3394-new-reds, codex)

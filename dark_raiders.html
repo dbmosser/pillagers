@@ -3407,7 +3407,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.95';
+var VER='33.96';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13230,13 +13230,14 @@ function bakeGround(map){
     //    because one flat grey on a dark floor disappears at any distance.
     var _rn=Math.max(14,Math.min(60,Math.round((rw0*rh0)/5200)));
     for(k=0;k<_rn;k++){
-      var _px=rx0+rw0*_rubH(RB.x+k*31,RB.y+k*17);
+      // v28.xx (cw-cx-groundmode): the rubble x coordinate must not overwrite the pixel ground flag in this function scope.
+      var _rubbleX=rx0+rw0*_rubH(RB.x+k*31,RB.y+k*17);
       var _py=ry0+rh0*_rubH(RB.x+k*19,RB.y+k*37);
       var _ps=7+19*_rubH(RB.x+k*43,RB.y+k*5);
       c.fillStyle=isDay()?'rgba(20,18,17,0.42)':'rgba(6,7,10,0.46)';
-      c.fillRect(_px-_ps/2+2,_py-_ps/3+2,_ps,_ps*0.62);
+      c.fillRect(_rubbleX-_ps/2+2,_py-_ps/3+2,_ps,_ps*0.62);
       c.fillStyle=isDay()?hexA(RD.wallTop,0.62):hexA(darkHex(RD.wallTop,0.40),0.58);
-      c.fillRect(_px-_ps/2,_py-_ps/3,_ps,_ps*0.62);
+      c.fillRect(_rubbleX-_ps/2,_py-_ps/3,_ps,_ps*0.62);
     }
     // 4. AND THE SCORCH AT THE MIDDLE, so the eye is given a place the thing
     //    came down from rather than an even scatter.
@@ -53423,7 +53424,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.95: The what is new stamp keeps up with the build; the three notes are unchanged. Check 33.95 fails on v33.94',
+  now:'v33.96: The rubble coordinate has its own name. The legacy floor stays full density, stamps land where they are measured, and the pixel floor keeps its requested density. The six pending checks run with their original numerical thresholds. Watch: with pixel look off, check that the floor stays stable while scorch and brass marks appear at their landing points. Check 33.96 fails on v33.95',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,5 @@
+## v33.96 - FLOOR BAKE KEEPS ITS MODE
+
+Co-op hunt while he was away. v33.60 (14799c50) reused _px for the pixel flag and a rubble x coordinate. Ruins sent a full size legacy floor through the half density pixel queue. This breaks the original scorch, brass and frag checks (24.00, 24.17, 24.39) and changes standing floors between the two ruin arms in 10.82. These game checks stay unchanged. Check 26.50 separately isolates muzzle brightness from leftover sparks, cold pixel caches and incremental background paint, with its original numerical controls.
+
+MEASURED. Check 33.96 passes, and fails on v33.95.
