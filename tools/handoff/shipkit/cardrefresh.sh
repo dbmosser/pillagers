@@ -11,11 +11,15 @@ wn=$(grep -o "^var WHATSNEW_VER='[0-9.]*'" "$G" | grep -o "[0-9][0-9.]*")
 [ -n "$ver" ] && [ -n "$wn" ] || { echo "cardrefresh: no VER or WHATSNEW_VER in the game file"; exit 1; }
 awk -v a="$ver" -v b="$wn" 'BEGIN{exit !(a-b>=0.10-1e-9)}' || { echo "cardrefresh: card fine, stamped v$wn, build v$ver"; exit 0; }
 n=$(grep -o "^  'POLISH PASS [0-9]*\." "$G" | grep -o "[0-9][0-9]*" | sort -n | tail -1)
-[ -n "$n" ] || { echo "cardrefresh: no POLISH PASS line in the card"; exit 1; }
-m=$((n+1)); k="cw-cardP$m"
+# 10-22 (coordinator): the three-short-notes card (v33.49) has no POLISH PASS line and check 33.49 bans one, so its stamp ships as
+# cw-cardstamp (S/mk-cw-cardstamp.ps1 moves only WHATSNEW_VER, as v33.79 did). Before, this exited here and lane o waited on the stamp for hours.
+if [ -z "$n" ]; then [ -f "$S/mk-cw-cardstamp.ps1" ] || { echo "cardrefresh: no POLISH PASS line in the card and no mk-cw-cardstamp.ps1"; exit 1; }; k=cw-cardstamp
+else m=$((n+1)); k="cw-cardP$m"; fi
 mkdir "$S/cardrefresh.lock" 2>/dev/null || { find "$S/cardrefresh.lock" -maxdepth 0 -mmin +180 -exec rm -rf {} \; 2>/dev/null; mkdir "$S/cardrefresh.lock" 2>/dev/null || { echo "cardrefresh: another refresh is running"; exit 0; }; }
 trap 'rm -rf "$S/cardrefresh.lock"' EXIT
+if [ "$k" != cw-cardstamp ]; then
 sed -e "s/PASS 31\./PASS $m./g" -e "s/PASS 31'/PASS $m'/g" -e "s/cardP31/cardP$m/g" -e "s/polish pass 31\./polish pass $m./" "$T" > "$S/mk-$k.ps1"
 grep -q "PASS 31" "$S/mk-$k.ps1" && { echo "cardrefresh: the template still names pass 31 after the rename"; exit 1; }
+fi
 echo "cardrefresh: card stamped v$wn, build v$ver, shipping $k"
 cd "$R" && timeout 7500 bash "$S/shipq.sh" "$k" 2>&1 | tail -4
