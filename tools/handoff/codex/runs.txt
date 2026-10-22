@@ -314,3 +314,5 @@
 2026-10-22 06:10 90-colour-cue-backups 188s ok PARTIAL in=519331 out=5900 run=1
 2026-10-22 06:20 90-colour-cue-backups 378s ok PARTIAL in=2064673 out=18512 run=2
 2026-10-22 06:28 90-colour-cue-backups 231s ok PARTIAL in=3877637 out=25243 run=3
+2026-10-22 06:58 90-colour-cue-backups 1275s ok PARTIAL in=6638714 out=52273 run=4
+2026-10-22 07:02 90-colour-cue-backups 137s ok PARTIAL in=8058173 out=56036 run=5

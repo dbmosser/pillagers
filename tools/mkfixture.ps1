@@ -6154,6 +6154,25 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.03',what:'backpack rarity pips are at least eight solid pixels tall on a 52px item icon',
+   run:function(){
+     var cv2=document.createElement('canvas'),c,k=null,d,x,y,y0,y1,n=0,S=52,pass,oldSpr=ICONSPR;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       Object.keys(ITEMS).some(function(id){if(ITEMS[id].use==='gun'&&dispR(id)==='gold'){k=id;return true;}return false;});
+       if(!k)return 'no gold icon staged';
+       cv2.width=100;cv2.height=100;c=cv2.getContext('2d',{willReadFrequently:true});ICONSPR={m:{},n:0};
+       x=Math.floor(50-S*.29);y0=Math.ceil(40+S*.39);y1=Math.ceil(40+S*.57);
+       for(pass=0;pass<2;pass++){
+         c.clearRect(0,0,100,100);
+         if(pass)drawIconSprite(c,k,50,40,S);else drawItemIcon(c,k,50,40,S);
+         d=c.getImageData(x,y0,1,y1-y0).data;n=0;
+         for(y=0;y<d.length;y+=4)if(d[y]>200&&d[y+1]>200&&d[y+2]>180&&d[y+3]>240)n++;
+         if(n<8)return (pass?'cached':'direct')+' rank pip is only '+n+' solid pixels tall';
+       }
+       return null;
+     }finally{ICONSPR=oldSpr;__topClear();}
+   }},
   {v:'34.02',what:'map intel elites draw cream edged triangles rather than plain coloured dots',
    run:function(){
      var g=null, oldMove=ctx.moveTo,oldLine=ctx.lineTo,oldBegin=ctx.beginPath,oldFill=ctx.fill,oldStroke=ctx.stroke,path=[],found=0,edged=0, expect, e, z;

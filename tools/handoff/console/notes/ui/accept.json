@@ -2240,5 +2240,53 @@
   "pic": "tools/handoff/console/notes/shots/87r-v3394-new-reds-recipes-1/87r-groundmode-returning-raid-1080.jpg",
   "task": "87r-v3394-new-reds",
   "when": "2026-10-22T09:10"
+ },
+ "intel-after-map-greyscale": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The card frame is clean and consistent: title, an x in the corner, a footer with a key chip and a two-column map and contracts split. The map is cluttered with overlapping labels, there is no obvious focal point, and several type sizes are too small for a couch.",
+  "findings": [
+   "P1 map, east cluster (blast freezer, strongbox, cache x5, extract b): Show one 'cache x5' label per cluster and offset it 24px clear of the icons. Collision-nudge the labels so no two overlap. Give extract labels priority and hide room names that collide with them.",
+   "P1 map, labels and key points: Make the extracts the hero: 24px f-cond 800 in tx-1 with a 2px ring on the icon. Set room names to 14px --tx-2 with no shadow. Make the player arrow 28px and give it a 2px halo. Keep the other labels at 16px minimum.",
+   "P1 header ('sector map' and 'elites and keys are live intel'): Delete the sentence. Keep 'intel live' as one 16px tag on the map or in the header. Align the title and subtitle on one baseline with a 16px gap.",
+   "P2 footer, 'click to set a waypoint' and 'surveyed 2%': Use 16px for the legend, with 32px between items. Shorten the hint to 'waypoint' with a mouse-click glyph. Make the 'm' chip 28px, with a 1px --ui-line-hi border.",
+   "P2 contracts panel: Set the reward at 20px tx-1 and the progress at 16px tx-2. Add a 3px accent tab to the focused row. Align the panel top and bottom with the map frame (160 to 920) and give 16px bottom padding."
+  ],
+  "pic": "tools/handoff/console/notes/shots/90-colour-cue-backups-recipes-2/intel-after-map-greyscale-1080.jpg",
+  "task": "90-colour-cue-backups",
+  "when": "2026-10-22T10:36"
+ },
+ "rarity-after-backpack-greyscale": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "A greyscale rarity-cue test of the backpack. It is a small, dim, mostly empty panel with no hierarchy, a tiny text style and weak rarity readability, so it is nowhere near the 90% centred card with an X that the guide requires.",
+  "findings": [
+   "P0 backpack window, whole card: Make the card 90% of the screen wide (about 1730px by 970px). Put a 40px x button in the top-right corner, with a focus state. Remove the 'b or i to close' text, or move it to a 14px footer legend.",
+   "P0 item grid, 8 slots plus 1: Add a 3px bar across the bottom of each tile in the rarity colour. In greyscale this also needs a different cue, so vary the bar length or use 1 to 5 filled 8px segments. Raise the pips to 8px tall with 2px gaps. Make tiles 96px with a 4px gap, and keep the focus tile's 2px lime border.",
+   "P1 equipped block and detail pane: Use the 32px title for the selected item's name. Put the stats in a 2-column table of 16px labels in tx-2 and 20px values in tx-1, with 8px row gaps. Make 'use' a real button with a lime fill and 'armor' its label. Pick one spelling ('armour') everywhere.",
+   "P1 footer hints 'arrows move  z drop one  drag to tactical belt': Show the hints as key chips (a 24px rounded square with the key letter) followed by one word, in a 14px footer. Show only the keys of the device in use. Cut the 'drag to tactical belt' line.",
+   "P1 card interior spacing: Set all section gaps to 24px on the 8px grid. Make the dividers 1px in --ui-line-hi (#4a5257). Raise the card so its bottom edge is 16px or more above the hotbar's tooltip, or dim the hotbar to 40% while the card is open."
+  ],
+  "pic": "tools/handoff/console/notes/shots/90-colour-cue-backups-recipes-2/rarity-after-backpack-greyscale-1080.jpg",
+  "task": "90-colour-cue-backups",
+  "when": "2026-10-22T10:36"
+ },
+ "rarity-after-stash-greyscale": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "This is a competent dark stash card with a clear grid, tabs and close X, and the greyscale test shows rarity still reads through pip counts. Its hierarchy is flat: no hero number, the main action sits in a weak footer, and the right pane is crowded with tiny text.",
+  "findings": [
+   "P1 right pane: gun keys and item wheel (y 640-890): Raise tile height to 72px with 8px padding. Put icons at 32px and labels at 16px. Numerals go at 16px in a corner chip. Drop the 'wheel' filler tile. Leave 24px of space above the footer legend.",
+   "P1 header money row (x 1470-1745, y 80-100): Show $900 at 32px f-cond 800 in tx-1. Set xp and stash at 16px tx-2 with 24px gaps between them. Remove the duplicate 'bag $0' here, since 'going up' already shows it.",
+   "P1 bottom bar: freebie kit / take: Make the bar a panel with a 1px --ui-line-hi border and 24px padding. Fill the take button with --acc and set its text in --acc-ink at 20px. Make it 160x48, right aligned, 24px from the edge.",
+   "P1 stash grid tiles (x 122-1075): Use flat --ui-panel fill with a 1px --ui-line border and a 3px rarity bar at the bottom. Show the item name at 16px under the icon. Make pips 10px with 3px gaps. Add a 2px --acc focus outline with a --ui-raised fill on the focused tile.",
+   "P2 tab row (y 130-165) and sort/armory/trophies group: Set the active tab to tx-1 with a 3px --acc underline, and idle tabs to tx-2 at 16px. Put a 1px --ui-line divider between the tabs and the utility group. Shrink the search to 280px so the right-hand links get breathing room."
+  ],
+  "pic": "tools/handoff/console/notes/shots/90-colour-cue-backups-recipes-2/rarity-after-stash-greyscale-1080.jpg",
+  "task": "90-colour-cue-backups",
+  "when": "2026-10-22T10:36"
  }
 }

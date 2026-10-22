@@ -1,0 +1,12 @@
+{
+    "title":  "LARGER RARITY PIPS",
+    "why":  "The greyscale backpack critic found the rank pips too small at about 5px. Keep their count and positions, increase height and width.",
+    "now":  "Rarity pips are taller and wider: about 9px high on a backpack icon at 1080p.",
+    "edits":  [
+                  {
+                      "anchor":  "  c.fillStyle=\u0027#0b0c0d\u0027; c.fillRect(cx-S*.4,cy+S*.39,S*.8,S*.18);\n  c.fillStyle=\u0027#efe9dc\u0027;\n  for(var i=0;i\u003cn;i++) c.fillRect(cx-S*.34+i*S*.145,cy+S*.43,S*.1,S*.1);",
+                      "replacement":  "  // v28.xx (cw-cx-pipreadable): the greyscale backpack critic found 5px pips too small; 52px icons now carry 9px-high rank bars.\n  c.fillStyle=\u0027#0b0c0d\u0027; c.fillRect(cx-S*.4,cy+S*.36,S*.8,S*.24);\n  c.fillStyle=\u0027#efe9dc\u0027;\n  for(var i=0;i\u003cn;i++) c.fillRect(cx-S*.34+i*S*.145,cy+S*.39,S*.12,S*.18);"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027backpack rarity pips are at least eight solid pixels tall on a 52px item icon\u0027,\n   run:function(){\n     var cv2=document.createElement(\u0027canvas\u0027),c,k=null,d,x,y,y0,y1,n=0,S=52,pass,oldSpr=ICONSPR;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       Object.keys(ITEMS).some(function(id){if(ITEMS[id].use===\u0027gun\u0027\u0026\u0026dispR(id)===\u0027gold\u0027){k=id;return true;}return false;});\n       if(!k)return \u0027no gold icon staged\u0027;\n       cv2.width=100;cv2.height=100;c=cv2.getContext(\u00272d\u0027,{willReadFrequently:true});ICONSPR={m:{},n:0};\n       x=Math.floor(50-S*.29);y0=Math.ceil(40+S*.39);y1=Math.ceil(40+S*.57);\n       for(pass=0;pass\u003c2;pass++){\n         c.clearRect(0,0,100,100);\n         if(pass)drawIconSprite(c,k,50,40,S);else drawItemIcon(c,k,50,40,S);\n         d=c.getImageData(x,y0,1,y1-y0).data;n=0;\n         for(y=0;y\u003cd.length;y+=4)if(d[y]\u003e200\u0026\u0026d[y+1]\u003e200\u0026\u0026d[y+2]\u003e180\u0026\u0026d[y+3]\u003e240)n++;\n         if(n\u003c8)return (pass?\u0027cached\u0027:\u0027direct\u0027)+\u0027 rank pip is only \u0027+n+\u0027 solid pixels tall\u0027;\n       }\n       return null;\n     }finally{ICONSPR=oldSpr;__topClear();}\n   }},"
+}

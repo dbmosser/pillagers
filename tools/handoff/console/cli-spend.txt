@@ -983,3 +983,11 @@
 2026-10-22 0.1420 critic-90-colour-cue-backups
 2026-10-22 0.0000 90-colour-cue-backups
 2026-10-22 0.0000 90-colour-cue-backups
+2026-10-22 0.1614 critic-90-colour-cue-backups
+2026-10-22 0.1464 critic-90-colour-cue-backups
+2026-10-22 0.1395 critic-90-colour-cue-backups
+2026-10-22 0.1346 critic-90-colour-cue-backups
+2026-10-22 0.1382 critic-90-colour-cue-backups
+2026-10-22 0.1384 critic-90-colour-cue-backups
+2026-10-22 0.0000 90-colour-cue-backups
+2026-10-22 0.0000 90-colour-cue-backups

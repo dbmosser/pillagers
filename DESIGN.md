@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.03 - LARGER RARITY PIPS
+
+Co-op hunt while he was away. The greyscale backpack critic found the rank pips too small at about 5px. Keep their count and positions, increase height and width.
+
+MEASURED. Check 34.03 passes, and fails on v34.02.
 ## v34.02 - ELITE INTEL HAS A SHAPE
 
 Co-op hunt while he was away. The greyscale map audit shows elite intel as an anonymous dot beside other round map marks. His 2.79 a calls for a shape backup.

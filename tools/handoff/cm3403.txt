@@ -1,0 +1,7 @@
+v34.03: larger rarity pips
+
+Rarity pips are taller and wider: about 9px high on a backpack icon at 1080p.
+
+Check 34.03. Fails on v34.02.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

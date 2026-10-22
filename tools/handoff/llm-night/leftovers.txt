@@ -59,12 +59,12 @@
  45141  [WEAK SPOT]  ['WEAK SPOTS','The glowing parts take'],
  45235  [JAMMED]  JAMMED:'#ff5a4a', HEALING:'#6fe0a0', REVIVING:'#7fc4a0', EXTRACTING:'#4de3d0',
  45257  [JAMMED]  if(p.jam>0) parts.push('JAMMED');
- 52753  [WEAK SPOT]  // THE HUD CANVAS. The nameplates, the party tags, the damage numbers and the floating labels (loot found, targets down, WEAK SPOT)
- 56614  [diedWithMed]  if(r.diedWithMed) line+=' unusedMed:1';
- 60608  [jam>]  if(p&&!G.over&&!G.paused&&!G.mapOpen&&!G.bagOpen&&!G.trade&&!p.downed&&!(p.reloading>0)&&!(p.jam>0)&&!p.cooking&&p.wep&&p.wep.mag>0&&(p.ammo>0||p.reserve>0)){
- 62065  [Search resumed]  // v24.xx (nosearchline), HIS ORDER (2026-10-12): no Search resumed line on a linked window either; the search bar shows the progress.
- 62639  [p.jam]  p.swapped=false; p.reloading=0; p.jam=0;
- 62741  [HALLOWEEN]  // lamps, pumpkins by lamps and doors, the violet haze, HAPPY HALLOWEEN on the attract) is gone entirely: an arcade raid keeps the lamp
- 62912  [GO_SEC]  // pins it, as it pins GO_SEC).
- 66042  [p.jam]  if(S.act.clip>0&&p.wep&&p.wep.mag>0){ p.ammo=p.wep.mag; p.reloading=0; p.jam=0; }
- 66613  [HALLOWEEN]  // board and HOW TO PLAY only. After a run the RUN OVER card shows first and the loop goes on from the board. HAPPY HALLOWEEN sits
+ 52756  [WEAK SPOT]  // THE HUD CANVAS. The nameplates, the party tags, the damage numbers and the floating labels (loot found, targets down, WEAK SPOT)
+ 56617  [diedWithMed]  if(r.diedWithMed) line+=' unusedMed:1';
+ 60611  [jam>]  if(p&&!G.over&&!G.paused&&!G.mapOpen&&!G.bagOpen&&!G.trade&&!p.downed&&!(p.reloading>0)&&!(p.jam>0)&&!p.cooking&&p.wep&&p.wep.mag>0&&(p.ammo>0||p.reserve>0)){
+ 62068  [Search resumed]  // v24.xx (nosearchline), HIS ORDER (2026-10-12): no Search resumed line on a linked window either; the search bar shows the progress.
+ 62642  [p.jam]  p.swapped=false; p.reloading=0; p.jam=0;
+ 62744  [HALLOWEEN]  // lamps, pumpkins by lamps and doors, the violet haze, HAPPY HALLOWEEN on the attract) is gone entirely: an arcade raid keeps the lamp
+ 62915  [GO_SEC]  // pins it, as it pins GO_SEC).
+ 66045  [p.jam]  if(S.act.clip>0&&p.wep&&p.wep.mag>0){ p.ammo=p.wep.mag; p.reloading=0; p.jam=0; }
+ 66616  [HALLOWEEN]  // board and HOW TO PLAY only. After a run the RUN OVER card shows first and the loop goes on from the board. HAPPY HALLOWEEN sits
