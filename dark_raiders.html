@@ -3516,7 +3516,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.13';
+var VER='34.14';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22975,7 +22975,7 @@ function bloodFx(x,y,sx,sy,amt){
 function spark(x,y,col,n,spread){
   if(G.sim) return;
   if(col!==BLOOD_SPRAY) n=Math.min(70,Math.ceil(n*1.8));   // v32.xx (cw-machfx) a34 B (his pick): chunkier hit sparks, 1.8 times the count (blood keeps its own count)
-  if(CFG.fxLevel===0) n=Math.ceil(n/3);   // v17.43: his pick 28, reduced effects
+  if(CFG.fxLevel===0||GFXQ.particles===0) n=Math.ceil(n/3); // v28.xx (cw-cx-laddereffects): Reduced counts at spawn only; existing sparks finish their lives.
   if(CFG.flashRed===1) n=Math.ceil(n*0.5);   // v26.xx (settings9): REDUCED FLASHING, half the sparks of every burst
   // v7.69: cosmetic draws come from the cosmetic stream. Live play used to
   // burn seeded draws here that the sim never saw.
@@ -23152,7 +23152,7 @@ function pushPrint(d){
 function decal(x,y,col,size){
   if(G.sim) return;
   var _a0=fxn(.35,.65);
-  G.decals.push({x:x,y:y,c:col,s:size,a:_a0,a0:_a0,rot:fxn(0,3),t:0,life:45});
+  G.decals.push({x:x,y:y,c:col,s:size,a:_a0,a0:_a0,rot:fxn(0,3),t:0,life:GFXQ.particles===0?15:45}); // v28.xx (cw-cx-laddereffects): new ground decals only; tracks and gameplay marks keep their lifetimes.
   if(G.decals.length>420) G.decals.shift();
 }
 function killPlayer(src){
@@ -35116,21 +35116,26 @@ var RES_APPLIED, CAP_LAST=0;
 // ticks of a covered window (v17.73) and hidden pages are left out at the call. The first step down says so once, so a
 // softer picture is never a mystery. The Render resolution row is a ceiling: Auto only ever goes below it.
 var DRS={scale:1,applied:1,ema:0,slowT:0,fastT:0,last:0,bounce:0,upAt:0,said:0,min:0.75,step:0.05,moves:0,q:0,qa:0};   // v32.xx (cw-drsfloor), HIS ANSWER 2.44 b (round 2): the quality ladder may drop effects but never picture sharpness below 75 percent. Floor 0.5 to 0.75; step 0.1 to 0.05 so the auto step still has rungs to use
-// v23.xx (gfx6), HIS ORDER (2026-10-12) on the graphics program: "add ALL of this stuff", item 11, and his answer 21 (b): 60 frames
-// a second also on a mid laptop at 1080p. THE QUALITY LADDER. Auto resolution had one lever: a slow stretch made the whole world
-// softer, while the costly extras kept drawing at full price. Now a slow stretch sheds the extras first, one rung a second, and
-// only then the resolution: rung 1 turns the post pass off (POST FX), rung 2 draws the soft sheets (the darkness and light map
-// and the fog of war) at two thirds of their size, rung 3 draws LIGHTING HIGH as STANDARD (the lamp shadows and cookies go, the
-// coloured light stays). After the third rung the render scale steps down as before (two seconds slow, never under Low, the
-// RESOLUTION STEPPED DOWN line on the first step). Smooth frames climb back in reverse: the resolution first, then each rung, with
-// the same wait and bounce guard as the scale. A rung whose extra is already off in Settings is passed over, so it never costs a
-// slow second. The rung is kept in DRS (q, and qa for the size the canvases were last built at), so it rests at 0 outside a raid
-// and with Auto resolution Off, exactly as the scale does. GFXQ is the view the graphics passes read: post, lmap (the soft sheet
-// share) and shadow; gfxLightNow() and gfxPostNow() fold the settings and the rung into one answer.
-var GFXQ={q:0,post:1,lmap:1,shadow:1};
+// v28.xx (cw-cx-laddereffects): his 2.44 b: effects can go down, picture sharpness no lower than 75 percent.
+// Rung 1: Reduced particle counts and shorter new decals. Rung 2: decorative corner shade and lighter weather, eased over one second.
+// Rung 3: the existing two-thirds soft sheets. Empty post and shadow passes stay off the ladder; lighting colour and gameplay marks stay intact.
+var GFXQ={q:0,post:1,lmap:1,shadow:1,particles:1,detail:1}; // v28.xx (cw-cx-laddereffects): keep lighting colour and gameplay marks; shed cosmetic work first.
 // v28.xx (cw-cx-ladderwindow): empty post and lamp-shadow passes stay off the ladder until they have readers.
-function gfxqApply(){ var q=DRS.q|0; GFXQ.q=q; GFXQ.post=1; GFXQ.lmap=(q>=2)?0.66:1; GFXQ.shadow=1; return GFXQ; }
-function gfxqCan(l){ return l===2; }
+// v28.xx (cw-cx-laddereffects): real rungs: spawn counts, HUD/weather, then the existing two-thirds sheets. Empty passes have no rung.
+function gfxqApply(){ var q=DRS.q|0; GFXQ.q=q; GFXQ.post=1; GFXQ.shadow=1; GFXQ.particles=q>=1?0:1; GFXQ.lmap=q>=3?0.66:1; return GFXQ; }
+function gfxqCan(l){ if(l==='post'||l==='shadow') return false; return l===1||l===2||l===3; }
+function gfxqEase(dt){
+  var target=GFXQ.q>=2?0:1, step=Math.max(0,+dt||0);
+  GFXQ.detail=target<GFXQ.detail?Math.max(target,GFXQ.detail-step):Math.min(target,GFXQ.detail+step);
+}
+function gfxqRainCount(n){ return Math.round(n*(0.5+0.5*GFXQ.detail)); }
+function gfxqFogWeight(i){ return i<3?1:GFXQ.detail; }
+function gfxqVignette(){
+  if(!(GFXQ.detail>0)) return false;
+  var vg=ctx.createRadialGradient(W/2,H/2,H*.42,W/2,H/2,H*.85);
+  vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,'+(0.45*GFXQ.detail).toFixed(3)+')');
+  ctx.fillStyle=vg; ctx.fillRect(0,0,W,H); return true;
+}
 function gfxqSync(){
   gfxqApply();
   if(CFG.gfxScale!==RES_APPLIED||DRS.scale!==DRS.applied||GFXQ.lmap!==DRS.sheet){ resize(); }
@@ -39477,6 +39482,7 @@ function wlUnder(x,y,w,h){
 }
 function wlPx(){ var f=wc.font, m; if(f!==_wlF){ _wlF=f; m=/([\d.]+)px/.exec(f); _wlP=m?+m[1]:12; } return _wlP; }   // the size of the font wc is set to, in the units it draws in
 function render2D(dt){
+  gfxqEase(dt); // v28.xx (cw-cx-laddereffects): ease decorative HUD and weather changes over one second.
   var p=G.player,i,j;
   gfxpBegin();   // v23.xx (gfx1): one frame in 15 times its passes
   // Zoom. Z is a scale on the world, so the amount of WORLD visible is W/Z by
@@ -41436,7 +41442,7 @@ wc.drawImage(fogC,0,0,W,H);   // v18.03: stretched back over the frame
     // to loud. Half way between the two: visibly raining, thinner and dimmer
     // than v3.51, still scaling with intensity so a storm outranks a shower.
     var _rr=Math.min(WX.rain,2);
-    var drops=Math.round(110+_rr*90);
+    var drops=gfxqRainCount(Math.round(110+_rr*90)); // v28.xx (cw-cx-laddereffects): half the rain lines at rung 2, eased over one second.
     // "rain at night is still too distracting", v3.58. Bright strokes on a dark
     // scene pop far harder than the same strokes at noon, which is why one
     // number kept being wrong twice. The alpha now scales with how dark the
@@ -41481,11 +41487,12 @@ wc.drawImage(fogC,0,0,W,H);   // v18.03: stretched back over the frame
     wc.fillStyle='rgba(200,210,222,'+(0.09*_fa).toFixed(3)+')';
     wc.fillRect(0,0,W,H);
     for(var _fi=0;_fi<7;_fi++){
+      var _fq=gfxqFogWeight(_fi); if(!(_fq>0)) continue; // v28.xx (cw-cx-laddereffects): fade the last four banks out; keep the first three.
       var _fx=((Math.sin(_fi*3.7+_ft*(0.6+_fi*0.11))*0.5+0.5)*(W+700))-350;
       var _fy=((Math.sin(_fi*9.1+1.7+_ft*(0.45+_fi*0.07))*0.5+0.5)*(H+500))-250;
       var _fr=340+_fi*55;
       var _fgd=wc.createRadialGradient(_fx,_fy,_fr*0.15,_fx,_fy,_fr);
-      _fgd.addColorStop(0,'rgba(205,214,226,'+(0.11*_fa).toFixed(3)+')');
+      _fgd.addColorStop(0,'rgba(205,214,226,'+(0.11*_fa*_fq).toFixed(3)+')');
       _fgd.addColorStop(1,'rgba(205,214,226,0)');
       wc.fillStyle=_fgd;
       wc.fillRect(_fx-_fr,_fy-_fr,_fr*2,_fr*2);
@@ -42876,9 +42883,7 @@ function drawHUD(){
   var p=G.player,T=G.tel,i;
   hudClampAll();
   ctx.clearRect(0,0,W,H);
-  var vg=ctx.createRadialGradient(W/2,H/2,H*.42,W/2,H/2,H*.85);
-  vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,.45)');
-  ctx.fillStyle=vg; ctx.fillRect(0,0,W,H);
+  gfxqVignette(); // v28.xx (cw-cx-laddereffects): only decorative corner shade; low-health, hit and scope edges below stay intact.
   if(GFXWT) gfxWorldText();   // v23.xx (gfx5): the nameplates, tags, damage numbers and labels of this raid frame, sharp on the HUD canvas
   var _pcs=msPlayerScreen(); padClaimDraw(_pcs.x,_pcs.y); // v28.xx (cw-cx-padowner): this window only.
   // v18.21, FOUND BY THE TRADE AUDIT (2026-10-03): THE BOSS BAR AND THE OFFER LINE WERE DRAWN AND THEN WIPED. Both were painted at
@@ -53039,7 +53044,7 @@ function gfxESprites(){
 function boomFx(x,y,size,kind,dmgR){
   if(!gfxHook('boom')) return false;
   x=+x; y=+y; if(!isFinite(x)||!isFinite(y)) return false;
-  var s0=clamp(+size||1,0.3,2.5), s=(String(kind||'')==='bot')?s0:clamp(s0*1.6,0.3,2.5), thin=(CFG.fxLevel===0), i, n, a, vz, cs=['#2b2723','#38322b','#4a4036','#221f1c','#57504a'];
+  var s0=clamp(+size||1,0.3,2.5), s=(String(kind||'')==='bot')?s0:clamp(s0*1.6,0.3,2.5), thin=(CFG.fxLevel===0||GFXQ.particles===0), i, n, a, vz /* v28.xx (cw-cx-laddereffects): Reduced blast debris and smoke at spawn only */, cs=['#2b2723','#38322b','#4a4036','#221f1c','#57504a'];
   var b={g:G,x:x,y:y,s:s,s0:s0,dmgR:+dmgR||BOOM_DMGR,kind:String(kind||''),t0:G.t||0,deb:[],smoke:[]};
   n=thin?5:clamp(Math.round(8+4*s),8,16);
   for(i=0;i<n;i++){
@@ -53770,7 +53775,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.13: Quality reads two seconds of frame gaps and own work. Empty passes stay off the ladder and only size changes rebuild canvases. Check 34.13 fails on v34.12',
+  now:'v34.14: The ladder trims sparks and blast debris, then corner shade and weather, then soft sheets. Lighting colour and gameplay marks stay intact. Check 34.14 fails on v34.13',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

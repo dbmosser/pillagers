@@ -328,3 +328,4 @@
 2026-10-22 08:23 93-pad-lost-tag 107s ok PARTIAL in=2163186 out=19708 run=4
 2026-10-22 08:35 93-pad-lost-tag 56s ok DONE in=2511158 out=21299 run=5
 2026-10-22 08:40 94-ladder-sheds-sooner 309s ok PARTIAL in=406723 out=9491 run=1
+2026-10-22 09:02 94-ladder-sheds-sooner 986s ok PARTIAL in=2281930 out=40921 run=2

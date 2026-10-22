@@ -1,30 +1,23 @@
 Latest stable: v29.09 (2026-10-18 10:23)
-Checked: 2026-10-22 08:01
+Checked: 2026-10-22 09:03
 Play address: http://localhost:8802/stable.html
 Result: no change
 
 Newest test runs, newest first:
-  corpus-1022-0458  v33.95  failing 21, new 17  robots 267 min/4 problems  -> 17 check(s) newly failing, e.g. v9.07 a noise you cannot see leaves a ring on the ground, an | v9.27 standing behind a container roof draws you through it 
+  corpus-1022-0707  v34.03  failing 11, new 7  robots 113 min/0 problems  -> 7 check(s) newly failing, e.g. v9.07 a noise you cannot see leaves a ring on the ground, an | v33.60 cw-cx-pixground (86b): THE PIXEL GROUND. With the pix
+  corpus-1022-0458  v33.95  failing 21, new 17  robots 285 min/4 problems  -> 17 check(s) newly failing, e.g. v9.07 a noise you cannot see leaves a ring on the ground, an | v9.27 standing behind a container roof draws you through it 
   corpus-1021-2139  v33.94  failing 37, new 32  robots 1217 min/7 problems  -> 32 check(s) newly failing, e.g. v8.55 the two armoured heavies walk heavy | v8.61 the boarding hold cannot be done in instalments
   corpus-1020-2300  v33.17  failing 3, new 1  robots 232 min/4 problems  -> 1 check(s) newly failing, e.g. v32.71 machines and effects (his art picks a27 a28 a30 a31 a
   corpus-1020-1723  v33.12  failing 6, new 3  robots 0 min/0 problems  -> 3 check(s) newly failing, e.g. v31.59 Keys callout is as wide as the table, scrollbars are  | v20.11 armour fits a Curved body: the chest plate on a Curve
-  corpus-1020-1250  v32.90  failing 11, new 7  robots 0 min/0 problems  -> 7 check(s) newly failing, e.g. v8.58 the sector board reads in metres, not a tenfold hectar | v31.67 Keys table spans the card and settings steppers box o
-  corpus-1020-0828  v32.83  failing 101, new 57  robots 0 min/0 problems  -> 57 check(s) newly failing, e.g. v11.52 credits and XP are shown at all times in the upper ri | v31.67 Keys table spans the card and settings steppers box o
-  corpus-1019-2343  v32.16  failing 132, new 52  robots 0 min/0 problems  -> 52 check(s) newly failing, e.g. v31.67 Keys table spans the card and settings steppers box o | v31.04 cw-shkey, his note (2026-10-18) "superhot mode needs 
-  corpus-1019-1531  v?  failing 122, new 41  robots 0 min/0 problems  -> could not tell which version it tested
+  corpus-1020-1250  v32.90  failing 11, new 4  robots 0 min/0 problems  -> 4 check(s) newly failing, e.g. v8.58 the sector board reads in metres, not a tenfold hectar | v24.38 graphics program gfx25: a round going north that stop
+  corpus-1020-0828  v32.83  failing 101, new 39  robots 0 min/0 problems  -> 39 check(s) newly failing, e.g. v11.52 credits and XP are shown at all times in the upper ri | v31.52 the end cards have a 48px close X top right that leav
+  corpus-1019-2343  v32.16  failing 132, new 23  robots 0 min/0 problems  -> 23 check(s) newly failing, e.g. v30.97 the operator card hides tonight 0 runs and rings the  | v30.70 the first controller is player 2 only and the second 
 
 Checks that are newly red and still red (they block until fixed, or until listed in tools/handoff/stable-known-red.txt):
-  v9.27 standing behind a container roof draws you through it instead of swallowin
   v33.51 cw-pixkit (86a): the pixel look row (local, on), pinned off in the fixtur
   v33.33 the four experimental group names show with a real height on the experime
-  v24.39 graphics program gfx26: a frag blast on open floor darkens the baked floo
-  v24.17 graphics program gfx23: casings settle into the floor: 60 brass casings i
-  v24.00 graphics program gfx22: a ground stamp (a scorch of radius 20) darkens th
-  v18.34 the belt keys are rounded tiles in the raid: with the HUD drawn, the oute
-  v11.14 no piece of furniture sits in a doorway, and a machine inside a building
-  v11.12 a machine that can see you through a window does not try to walk through
-  v10.99 a pillager wears the hat, the beard and the tattoo his look rolled, and t
-  v10.93 the Undercroft station names are painted on top of the room darkness rath
-  v10.87 sprint follows the SHIFT key: let go and you stop running, while crouch i
-  v10.86 the ambient bed ducks when the pause box opens and comes back when you re
-  v10.84 a machine standing inside a building can work out a route to somebody out
+  v9.07 a noise you cannot see leaves a ring on the ground, and one you can see do
+  v33.60 cw-cx-pixground (86b): THE PIXEL GROUND. With the pixel look on, the same
+  v18.78 text in the framed windows stays inside the frame: the text lines of the
+  v10.54 the OUTFIT rack exists, each suit repaints the whole figure and hides the
+  v9.55 bare hands are not drawn as a gun, and one word for one outcome on the dea

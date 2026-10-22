@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.14 - QUALITY SHEDS REAL EFFECTS
+
+Co-op hunt while he was away. His quality ladder should shed real work before sharpness. Sparks and ground decals are spawn only; decorative HUD and weather fade over one second.
+
+MEASURED. Check 34.14 passes, and fails on v34.13.
 ## v34.13 - QUALITY READS REAL FRAMES
 
 Co-op hunt while he was away. His 2.43 a: sustained frames below 60 should shed effects. Empty quality rungs did nothing and rebuilt every canvas.

@@ -1,0 +1,52 @@
+{
+    "title":  "QUALITY SHEDS REAL EFFECTS",
+    "why":  "His quality ladder should shed real work before sharpness. Sparks and ground decals are spawn only; decorative HUD and weather fade over one second.",
+    "now":  "The ladder trims sparks and blast debris, then corner shade and weather, then soft sheets. Lighting colour and gameplay marks stay intact.",
+    "edits":  [
+                  {
+                      "anchor":  "// v23.xx (gfx6), HIS ORDER (2026-10-12) on the graphics program: \"add ALL of this stuff\", item 11, and his answer 21 (b): 60 frames\n// a second also on a mid laptop at 1080p. THE QUALITY LADDER. Auto resolution had one lever: a slow stretch made the whole world\n// softer, while the costly extras kept drawing at full price. Now a slow stretch sheds the extras first, one rung a second, and\n// only then the resolution: rung 1 turns the post pass off (POST FX), rung 2 draws the soft sheets (the darkness and light map\n// and the fog of war) at two thirds of their size, rung 3 draws LIGHTING HIGH as STANDARD (the lamp shadows and cookies go, the\n// coloured light stays). After the third rung the render scale steps down as before (two seconds slow, never under Low, the\n// RESOLUTION STEPPED DOWN line on the first step). Smooth frames climb back in reverse: the resolution first, then each rung, with\n// the same wait and bounce guard as the scale. A rung whose extra is already off in Settings is passed over, so it never costs a\n// slow second. The rung is kept in DRS (q, and qa for the size the canvases were last built at), so it rests at 0 outside a raid\n// and with Auto resolution Off, exactly as the scale does. GFXQ is the view the graphics passes read: post, lmap (the soft sheet\n// share) and shadow; gfxLightNow() and gfxPostNow() fold the settings and the rung into one answer.\n",
+                      "replacement":  "// v28.xx (cw-cx-laddereffects): his 2.44 b: effects can go down, picture sharpness no lower than 75 percent.\n// Rung 1: Reduced particle counts and shorter new decals. Rung 2: decorative corner shade and lighter weather, eased over one second.\n// Rung 3: the existing two-thirds soft sheets. Empty post and shadow passes stay off the ladder; lighting colour and gameplay marks stay intact.\n"
+                  },
+                  {
+                      "anchor":  "var GFXQ={q:0,post:1,lmap:1,shadow:1};",
+                      "replacement":  "var GFXQ={q:0,post:1,lmap:1,shadow:1,particles:1,detail:1}; // v28.xx (cw-cx-laddereffects): keep lighting colour and gameplay marks; shed cosmetic work first."
+                  },
+                  {
+                      "anchor":  "function gfxqApply(){ var q=DRS.q|0; GFXQ.q=q; GFXQ.post=1; GFXQ.lmap=(q\u003e=2)?0.66:1; GFXQ.shadow=1; return GFXQ; }\nfunction gfxqCan(l){ return l===2; }",
+                      "replacement":  "// v28.xx (cw-cx-laddereffects): real rungs: spawn counts, HUD/weather, then the existing two-thirds sheets. Empty passes have no rung.\nfunction gfxqApply(){ var q=DRS.q|0; GFXQ.q=q; GFXQ.post=1; GFXQ.shadow=1; GFXQ.particles=q\u003e=1?0:1; GFXQ.lmap=q\u003e=3?0.66:1; return GFXQ; }\nfunction gfxqCan(l){ if(l===\u0027post\u0027||l===\u0027shadow\u0027) return false; return l===1||l===2||l===3; }\nfunction gfxqEase(dt){\n  var target=GFXQ.q\u003e=2?0:1, step=Math.max(0,+dt||0);\n  GFXQ.detail=target\u003cGFXQ.detail?Math.max(target,GFXQ.detail-step):Math.min(target,GFXQ.detail+step);\n}\nfunction gfxqRainCount(n){ return Math.round(n*(0.5+0.5*GFXQ.detail)); }\nfunction gfxqFogWeight(i){ return i\u003c3?1:GFXQ.detail; }\nfunction gfxqVignette(){\n  if(!(GFXQ.detail\u003e0)) return false;\n  var vg=ctx.createRadialGradient(W/2,H/2,H*.42,W/2,H/2,H*.85);\n  vg.addColorStop(0,\u0027rgba(0,0,0,0)\u0027); vg.addColorStop(1,\u0027rgba(0,0,0,\u0027+(0.45*GFXQ.detail).toFixed(3)+\u0027)\u0027);\n  ctx.fillStyle=vg; ctx.fillRect(0,0,W,H); return true;\n}"
+                  },
+                  {
+                      "anchor":  "  if(CFG.fxLevel===0) n=Math.ceil(n/3);   // v17.43: his pick 28, reduced effects",
+                      "replacement":  "  if(CFG.fxLevel===0||GFXQ.particles===0) n=Math.ceil(n/3); // v28.xx (cw-cx-laddereffects): Reduced counts at spawn only; existing sparks finish their lives."
+                  },
+                  {
+                      "anchor":  "  G.decals.push({x:x,y:y,c:col,s:size,a:_a0,a0:_a0,rot:fxn(0,3),t:0,life:45});",
+                      "replacement":  "  G.decals.push({x:x,y:y,c:col,s:size,a:_a0,a0:_a0,rot:fxn(0,3),t:0,life:GFXQ.particles===0?15:45}); // v28.xx (cw-cx-laddereffects): new ground decals only; tracks and gameplay marks keep their lifetimes."
+                  },
+                  {
+                      "anchor":  "thin=(CFG.fxLevel===0), i, n, a, vz",
+                      "replacement":  "thin=(CFG.fxLevel===0||GFXQ.particles===0), i, n, a, vz /* v28.xx (cw-cx-laddereffects): Reduced blast debris and smoke at spawn only */"
+                  },
+                  {
+                      "anchor":  "function render2D(dt){",
+                      "replacement":  "function render2D(dt){\n  gfxqEase(dt); // v28.xx (cw-cx-laddereffects): ease decorative HUD and weather changes over one second."
+                  },
+                  {
+                      "anchor":  "    var drops=Math.round(110+_rr*90);",
+                      "replacement":  "    var drops=gfxqRainCount(Math.round(110+_rr*90)); // v28.xx (cw-cx-laddereffects): half the rain lines at rung 2, eased over one second."
+                  },
+                  {
+                      "anchor":  "    for(var _fi=0;_fi\u003c7;_fi++){",
+                      "replacement":  "    for(var _fi=0;_fi\u003c7;_fi++){\n      var _fq=gfxqFogWeight(_fi); if(!(_fq\u003e0)) continue; // v28.xx (cw-cx-laddereffects): fade the last four banks out; keep the first three."
+                  },
+                  {
+                      "anchor":  "(0.11*_fa).toFixed(3)",
+                      "replacement":  "(0.11*_fa*_fq).toFixed(3)"
+                  },
+                  {
+                      "anchor":  "  var vg=ctx.createRadialGradient(W/2,H/2,H*.42,W/2,H/2,H*.85);\n  vg.addColorStop(0,\u0027rgba(0,0,0,0)\u0027); vg.addColorStop(1,\u0027rgba(0,0,0,.45)\u0027);\n  ctx.fillStyle=vg; ctx.fillRect(0,0,W,H);",
+                      "replacement":  "  gfxqVignette(); // v28.xx (cw-cx-laddereffects): only decorative corner shade; low-health, hit and scope edges below stay intact."
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027real quality rungs reduce spawn counts and new decal life, fade decorative HUD/weather, and reserve canvas resizing for the sheets\u0027,\n   run:function(){\n     var d0=JSON.stringify(DRS), q0=JSON.stringify(GFXQ), c0=JSON.stringify(CFG), b0=BOOMS.slice(), g, n, full, b, oldSpark, oldDecal, bad=[], oR=resize, calls=0, k;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state(); if(!g||!g.player) return \u0027no raid\u0027;\n       CFG.fxLevel=1; CFG.flashRed=0; CFG.gfxAuto=1; CFG.gfxScale=1; DRS.scale=1; DRS.q=0; gfxqApply(); GFXQ.detail=1; resize();\n       n=g.sparks.length; spark(10,10,\u0027#fff\u0027,30,100); full=g.sparks.length-n; oldSpark=g.sparks[g.sparks.length-1];\n       decal(10,10,\u0027#fff\u0027,3); oldDecal=g.decals[g.decals.length-1];\n       resize=function(){ calls++; return oR.apply(this,arguments); };\n       DRS.q=1; gfxqSync();\n       n=g.sparks.length; spark(10,10,\u0027#fff\u0027,30,100);\n       if(g.sparks.length-n!==Math.ceil(full/3)) bad.push(\u0027rung 1 did not spawn a third of sparks\u0027);\n       if(g.sparks.indexOf(oldSpark)\u003c0||oldSpark.t!==0) bad.push(\u0027rung 1 changed a living spark\u0027);\n       CFG.fxLevel=0; n=g.sparks.length; spark(10,10,\u0027#fff\u0027,30,100);\n       if(g.sparks.length-n!==Math.ceil(full/3)) bad.push(\u0027Reduced effects was reduced twice\u0027);\n       decal(10,10,\u0027#fff\u0027,3);\n       if(oldDecal.life!==45||g.decals[g.decals.length-1].life!==15) bad.push(\u0027decal life was not spawn only, 45 to 15\u0027);\n       CFG.fxLevel=1; boomFx(10,10,1,\u0027frag\u0027); b=BOOMS[BOOMS.length-1];\n       if(!b||b.deb.length!==5||b.smoke.length!==5) bad.push(\u0027rung 1 did not take the Reduced blast path\u0027);\n       DRS.q=2; gfxqSync(); gfxqEase(0.5);\n       if(Math.abs(GFXQ.detail-0.5)\u003e1e-6||gfxqRainCount(200)!==150||gfxqFogWeight(3)!==0.5) bad.push(\u0027half-second HUD/weather fade is wrong\u0027);\n       gfxqEase(0.5);\n       if(GFXQ.detail!==0||gfxqRainCount(200)!==100||gfxqFogWeight(2)!==1||gfxqFogWeight(3)!==0||gfxqVignette()!==false) bad.push(\u0027rung 2 did not remove corner shade, four banks and half the rain\u0027);\n       if(calls) bad.push(\u0027rungs 1 and 2 rebuilt canvases\u0027);\n       if(GFXQ.lmap!==1) bad.push(\u0027sheets changed before rung 3\u0027);\n       DRS.q=3; gfxqSync(); if(calls!==1||GFXQ.lmap!==0.66) bad.push(\u0027rung 3 did not resize soft sheets\u0027);\n       if(GFXQ.post!==1||GFXQ.shadow!==1||gfxqCan(\u0027post\u0027)||gfxqCan(\u0027shadow\u0027)) bad.push(\u0027empty passes rejoined the ladder\u0027);\n       DRS.q=0; gfxqApply(); gfxqEase(0.5); if(GFXQ.detail!==0.5) bad.push(\u0027recovery did not fade back\u0027); gfxqEase(0.5);\n       if(GFXQ.detail!==1||gfxqRainCount(200)!==200||gfxqFogWeight(6)!==1) bad.push(\u0027full weather did not return\u0027);\n       return bad.length?bad.join(\u0027; \u0027):null;\n     }finally{\n       resize=oR; try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       var ds=JSON.parse(d0), qs=JSON.parse(q0), cs=JSON.parse(c0);\n       for(k in DRS) if(!(k in ds)) delete DRS[k]; for(k in ds) DRS[k]=ds[k]; for(k in qs) GFXQ[k]=qs[k]; for(k in cs) CFG[k]=cs[k];\n       BOOMS.length=0; for(k=0;k\u003cb0.length;k++) BOOMS.push(b0[k]); gfxqApply(); try{ resize(); }catch(_r){} __topClear();\n     } }},"
+}

@@ -1,0 +1,7 @@
+v34.14: quality sheds real effects
+
+The ladder trims sparks and blast debris, then corner shade and weather, then soft sheets. Lighting colour and gameplay marks stay intact.
+
+Check 34.14. Fails on v34.13.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
