@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.97 - UNDERCROFT WINDOW FINISH
+
+Co-op hunt while he was away. Fresh critic reviews score gambler, stats and bar at two: centred content, small text and unclear primary actions.
+
+MEASURED. Check 33.97 passes, and fails on v33.96.
 ## v33.96 - FLOOR BAKE KEEPS ITS MODE
 
 Co-op hunt while he was away. v33.60 (14799c50) reused _px for the pixel flag and a rubble x coordinate. Ruins sent a full size legacy floor through the half density pixel queue. This breaks the original scorch, brass and frag checks (24.00, 24.17, 24.39) and changes standing floors between the two ruin arms in 10.82. These game checks stay unchanged. Check 26.50 separately isolates muzzle brightness from leftover sparks, cold pixel caches and incremental background paint, with its original numerical controls.

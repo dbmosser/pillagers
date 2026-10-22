@@ -132,3 +132,17 @@ Local validation: the new retarget has one unique anchor; official plan STATUS o
 
 Next lane actions: apply the new 26.50 retarget on v33.94, then retry cw-cx-groundmode preflight and ship. Keep shots.txt=21 for the before/after raid picture and critic. The game key, six-check preflight and picture review remain pending; no owner question or permission is needed. If 26.50 still fails, report the exact assertion; do not raise its thresholds or remove it from the six-check gate.
 
+
+--- codex run 2026-10-22 05:09 ---
+2026-10-22, run 5, game v33.96.
+
+Functional task completed in shipped changes: bfa02c29 v33.96 ships cw-cx-groundmode. The prior fixture repair commits are 7b69c9e9 and e66eed37. All 32 task checks now have targeted browser evidence: 26 held in the fixture trial; the remaining six are invoked by the passing shipped check 33.96. Their ledger is .codex-work/87r-v3394-new-reds/completion-ledger.txt. This does not claim a new full overnight corpus run.
+
+Inspected the supplied after picture and the camera report. The catalog scene is staged and DOM lint reports no issues. The critic scored it 2 but its two P0 findings are stale/incorrect: ncFix under NCLOWER lowercases the player text, and the newer v33.38 owner order requires the compact two-line corner rather than the old 1-by-1 list. The guide's section on that corner also says screen tasks leave it alone. The screenshot's two right-side plates share the same visible left and right edges. Logged the ruling conflict once in questions-new.md, without requesting an owner decision or changing the approved layout.
+
+The controls-clutter finding identifies a real camera-stage problem: the catalog 21 recipe calls U.dep without keepLegend, and __deploy explicitly forces the full legend on unless keepLegend is set. The game already initializes the legend collapsed after three raids (game 16933); it does not need a new default. The old fixture recipe also leaves auto resolution enabled, producing running slowly/resolution stepped down notices in the supplied test-machine image. Those are actual player performance feedback, not developer-only text to delete.
+
+Prepared camera-recipes.json for ONE review of the same existing calm career scene, with P.runs=4 and keepLegend:1 so the true returning-player controls default is preserved. It keeps pixel look off to show the repaired floor, and selects fixed full resolution to make the visual comparison stable. It does not hide HUD panels, replace game graphics or change production defaults. The expect predicate requires a live raid, the real collapsed legend state, pixel look off and auto resolution off. It uses the catalog prelude and existing deployment route. The recipe JS and predicate compile locally; ASCII output verified by its builder.
+
+No further game key or fixture edits were drafted this run. The existing key is already shipped and must not be rebuilt/re-shipped. Other broad HUD restyling requested by the critic predates this floor repair and would expand a stable-check task; review the corrected normal-play picture before proposing any such change. Remaining work is the lane's camera/critic result for the corrected stage. Functional evidence and the watch line are already in the shipped DESIGN section. No questions or approvals are required.
+

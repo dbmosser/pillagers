@@ -1,0 +1,7 @@
+v33.97: undercroft window finish
+
+Aligned headers, readable actions, a filling stats grid and one clear hero value in the existing windows.
+
+Check 33.97. Fails on v33.96.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
