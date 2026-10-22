@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.16 - FOLDED CONTROLS STAY CLEAR
+
+Co-op hunt while he was away. The quality comparison critic found a ghost panel under the bot list. After the controls folded, their hint still used the open compact panel shift and zoom.
+
+MEASURED. Check 34.16 passes, and fails on v34.15.
 ## v34.15 - STEADY QUALITY BETWEEN RAIDS
 
 Co-op hunt while he was away. His sharpness floor is 75 percent. A screen or script limit must never soften the picture; quality must recover slowly and carry into the next raid.

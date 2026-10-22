@@ -1028,3 +1028,10 @@
 2026-10-22 0.0000 93-pad-lost-tag
 2026-10-22 0.0000 94-ladder-sheds-sooner
 2026-10-22 0.0000 94-ladder-sheds-sooner
+2026-10-22 0.1430 critic-94-ladder-sheds-sooner
+2026-10-22 0.1380 critic-94-ladder-sheds-sooner
+2026-10-22 0.0000 94-ladder-sheds-sooner
+2026-10-22 0.1604 critic-94-ladder-sheds-sooner
+2026-10-22 0.1382 critic-94-ladder-sheds-sooner
+2026-10-22 0.0000 94-ladder-sheds-sooner
+2026-10-22 0.0000 94-ladder-sheds-sooner

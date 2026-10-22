@@ -1,0 +1,7 @@
+v34.16: folded controls stay clear
+
+The folded f1 controls hint uses its screen anchor and keeps its drag offset. The open controls lists keep their existing placement and timing.
+
+Check 34.16. Fails on v34.15.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

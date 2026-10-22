@@ -2368,5 +2368,37 @@
   "pic": "tools/handoff/console/notes/shots/90-colour-cue-backups-recipes-3/shape-cues-after-world-side-p2-greyscale-1080.jpg",
   "task": "90-colour-cue-backups",
   "when": "2026-10-22T11:17"
+ },
+ "94-firefight-rung-0": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The raid HUD is readable and is mostly lower case, but the corners are cluttered with overlapping boxes. Panel styles and type sizes are inconsistent, and several elements are too small, too dim, or collide.",
+  "findings": [
+   "P0 top-left, 'current pillager bots' panel: Remove or reposition the hidden panel behind the leaderboard, or give the stack an 8px gap. Use one panel height computed from its rows, with 24px padding.",
+   "P0 top-right, cash/stash/xp/backpack panel and run info panel: Build the career HUD as a single column with equal 20px rows, a tx-2 label on the left and a tx-1 value on the right. Put run info in the same panel style with a 16px divider. Share one width (about 300px) and one 8px gap.",
+   "P1 HUD panels overall: Apply one panel class: fill #16191b at 90%, 1px #4a5257 border, 4px radius, 16px padding. Reserve the 3px lime tab for the ammo panel only.",
+   "P1 type sizes across the HUD: Restrict the HUD to 56, 32, 20, 16 and 14. Raise slot numbers, the stack counts (24) and 'items' to 16px. Use f-cond 600 throughout and put row names at 20px.",
+   "P1 bottom-centre, 'location revealed' toast and the 'scav pistol fire use' hint: Lift the toast to y≈860 with 16px clearance above the hotbar. Put the key hints in a panel strip at 16px tx-1. Move the toast to the top centre under the timer, or fade it out."
+  ],
+  "pic": "tools/handoff/console/notes/shots/94-ladder-sheds-sooner-recipes-2/94-firefight-rung-0-1080.jpg",
+  "task": "94-ladder-sheds-sooner",
+  "when": "2026-10-22T13:22"
+ },
+ "94-firefight-rung-2": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "This in-raid HUD has too many different panel styles, type sizes and colours on one screen, and the left and top-right panels collide with the world and with each other, so it reads as a debug overlay and not as one polished HUD.",
+  "findings": [
+   "P0 left 'current pillager bots' panel: Remove the leftover panel behind the list. Use one 16px-padded panel with a 24px bottom pad. Keep the header in tx-2 at 16px and the rows in tx-1 at 16 to 20px. Set the money column in the same font and align it to a fixed 16px right pad.",
+   "P0 top-right stack (cash/stash, run info, contracts): Use one 1px --ui-line-hi panel with a 24px margin from the screen edge and 16px padding. Set row height to 28px. Keep labels in tx-2 and values in tx-1. Use lime only for the one live objective. Drop 'xp 0'. Collapse 'dawn clear' into the header.",
+   "P1 hotbar and weapon prompt strip: Put the toast 16px above the bar in the same panel style. Merge the weapon name and key hints into a single 16px row. Raise slot numbers to 16px. Cut empty slot art opacity to about 25% and use one outline.",
+   "P1 bottom-right ammo panel: Keep one 56px weight-800 ammo number and set the reserve at 20px tx-2. Left-align the weapon name over the number. Move the backpack line to a 16px footer with a 1px divider. Leave a 24px gap between the panel and the hotbar. Attach the lime tab flush to the panel's left edge.",
+   "P1 bottom-left vitals (standing, stamina, hp 83): Make both bars 12px tall. Put the label and value above or beside the bar at 16px tx-1 on --ui-panel, not on the bar. Use --ok for hp, a darker --danger for the lost portion, and tx-2 for stamina. Put 'standing' in the same pill style as the other tags."
+  ],
+  "pic": "tools/handoff/console/notes/shots/94-ladder-sheds-sooner-recipes-2/94-firefight-rung-2-1080.jpg",
+  "task": "94-ladder-sheds-sooner",
+  "when": "2026-10-22T13:22"
  }
 }

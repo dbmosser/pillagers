@@ -3516,7 +3516,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.15';
+var VER='34.16';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -44727,7 +44727,9 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
       if(P.hud&&P.hud.legend){ P.hud.legend.dx=_legDX; P.hud.legend.dy=_legDY; }
     }
     ctx.save();
-    if(G.legendOn===2){
+    // v28.xx (cw-cx-foldedhint): the critic saw a ghost panel under the bot list. The folded hint already has a screen-space anchor; only the compact list needs its old bottom shift and zoom.
+    if(!G.legendOn||HOL.c){ ctx.translate(_legDX,_legDY); }
+    else if(G.legendOn===2){
       // v10.44, his answer 25: THE FULL LIST IS CENTRED, AND IT FITS. The corner
       // zoom below is right for the compact panel in the bottom left; the full
       // list centres itself on W, and a zoom about the left edge threw that
@@ -44744,7 +44746,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
       ctx.translate(_legDX+_legFX,_legShift+_legDY);   // bottom on the target, plus his drag (and the room the feed takes)
       hudZoomIn('legend',0,_legTarget);    // then grow upward from there
     }
-    drawLegend(G.legendOn===2?_fz:1);   // v20.74 (H40): the full list is told its zoom
+    drawLegend(G.legendOn===2&&!HOL.c?_fz:1); // v28.xx (cw-cx-foldedhint): the full-list fit scale belongs only to the open full list.
     ctx.restore();
     if(HUDBOX.legend){
       // v9.46: SCREEN SPACE, and the shift added the way the draw adds it.
@@ -46045,7 +46047,7 @@ function drawLegend(fz){   // v20.74 (H40): fz is the zoom the full list is draw
     return;
   }
   if(!G.legendOn){
-    ctx.font=MONO; ctx.fillStyle='rgba(140,152,163,.55)';
+    ctx.font=uiFont('label',Math.max(1,uiScale())); ctx.fillStyle=UIC.tx_2; // v28.xx (cw-cx-foldedhint): at least 16px now that the hint no longer borrows the compact-panel zoom.
     // v11.39: above the vitals panel, not inside it. HUDBOX.body is set earlier
     // this frame and carries the panel drag, so the hint follows it.
     var _hy=(FEEDBOX.on?FEEDBOX.y-LH(6):(HUDBOX.body?HUDBOX.body.y-LH(6):H-14));   // v27.26 (feedleg): the hint stands over the feed, not on its last line
@@ -53799,7 +53801,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.15: Effects shed after two slow seconds. Sharpness only falls after a measured fill gain. Recovery waits ten seconds or longer and the next raid starts one step better. Check 34.15 fails on v34.14',
+  now:'v34.16: The folded f1 controls hint uses its screen anchor and keeps its drag offset. The open controls lists keep their existing placement and timing. Check 34.16 fails on v34.15',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

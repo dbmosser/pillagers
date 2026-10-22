@@ -1,0 +1,3 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  94-firefight-rung-0                    staged       6.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | frozen 1080 firefight, rung 0, 108 sparks
+  94-firefight-rung-2                    staged       6.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | frozen 1080 firefight, rung 2, 36 sparks
