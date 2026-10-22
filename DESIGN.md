@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.11 - THE WHAT IS NEW STAMP KEEPS UP
+
+Co-op hunt while he was away. The card was stamped v33.95 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.
+
+MEASURED. Check 34.11 passes, and fails on v34.10.
 ## v34.10 - TEAMMATE PAD LOST PRIORITY
 
 Co-op hunt while he was away. The linked-window critic found the device warning weaker than the notices above it.

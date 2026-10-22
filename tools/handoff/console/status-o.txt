@@ -1,1 +1,1 @@
-10-22 08:17 gate: shipping cw-cx-padlostfocus (93-pad-lost-tag, codex)
+10-22 08:25 gate: the what is new card is stale, shipping a card refresh first (cw-cx-padlostglyph, 93-pad-lost-tag)

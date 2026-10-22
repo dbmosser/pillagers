@@ -352,3 +352,5 @@
 
 2026-10-22 | 93-pad-lost-tag | linked raid teammate tag in both windows | follow-up: text 20px/600 amber to 32px/700 tx-1; panel 48px to 64px high and minimum 280px wide; gap 16px to 24px; words unchanged | before: notes/shots/93-pad-lost-tag-recipes-1/j8-p1-sees-p2-lost-1080.jpg and j8-p2-sees-p1-lost-1080.jpg | after: pending next lane recipe round.
 
+2026-10-22 | 93-pad-lost-tag | linked raid teammate tag, both windows | controller drawing visible width 18px to 24px, same 2px stroke; title, 3px warning rail and top-centre placement unchanged | before: notes/shots/93-pad-lost-tag-recipes-2/j8-p1-sees-p2-lost-1080.jpg and j8-p2-sees-p1-lost-1080.jpg | after: pending recipe round 3.
+

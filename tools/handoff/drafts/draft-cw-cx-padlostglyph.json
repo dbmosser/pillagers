@@ -1,0 +1,12 @@
+{
+    "title":  "TEAMMATE PAD LOST GLYPH",
+    "why":  "The linked-window critic still found the controller glyph tiny because the path used only 18 pixels of its nominal 24px box.",
+    "now":  "The teammate warning controller drawing is 24px wide with the same 2px stroke.",
+    "edits":  [
+                  {
+                      "anchor":  "      if(icon){ ctx.save(); ctx.translate(24,20); ctx.strokeStyle=UIC.warn; ctx.lineWidth=2; ctx.stroke(icon); ctx.restore(); }",
+                      "replacement":  "      // v28.xx (cw-cx-padlostglyph): the controller path is 18 units wide in a 24-unit box; show a full 24px glyph, with the same 2px stroke.\n      if(icon){ ctx.save(); ctx.translate(20,16); ctx.scale(4/3,4/3); ctx.strokeStyle=UIC.warn; ctx.lineWidth=1.5; ctx.stroke(icon); ctx.restore(); }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027both teammate pad lost tags draw a visible 24px controller glyph in warn with a 2px stroke\u0027,\n   run:function(){\n     var nk=Object.assign({},NET), stroke=ctx.stroke, rec=[], bad=[], g, icon=uiIconPath(\u0027controller\u0027);\n     try{\n       __runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();\n       __deploy({kit:[\u0027gun_rifle\u0027],safe:null,mapIx:0,seed:4242});g=__state();__topClear();\n       if(!icon)return \u0027controller path is missing\u0027;\n       ctx.stroke=function(p){if(p===icon){var m=ctx.getTransform(),s=Math.hypot(m.a,m.b)/(DPR||1);rec.push({w:18*s,line:ctx.lineWidth*s,c:ctx.strokeStyle});}return stroke.apply(this,arguments);};\n       [\u0027host\u0027,\u0027p2\u0027].forEach(function(side){\n         NET.same=side;NET.pair=\u0027pad-glyph-check\u0027;NET.padPeerLost=true;rec=[];\n         var t=netPadHud(),z=Math.max(.75,Math.min(2.2,H/1080)),r=rec[0];\n         if(t!==(side===\u0027host\u0027?\u0027p2 pad lost\u0027:\u0027p1 pad lost\u0027)||rec.length!==1){bad.push(side+\u0027: missing one controller glyph\u0027);return;}\n         if(Math.abs(r.w-24*z)\u003e.1||Math.abs(r.line-2*z)\u003e.1||r.c!==UIC.warn)bad.push(side+\u0027: controller glyph width/stroke/colour is wrong (\u0027+r.w+\u0027, \u0027+r.line+\u0027, \u0027+r.c+\u0027)\u0027);\n       });\n       return bad.length?bad.join(\u0027; \u0027):null;\n     }finally{\n       ctx.stroke=stroke;try{__endRaid(\u0027abandon\u0027);}catch(e){}__topClear();\n       Object.keys(NET).forEach(function(k){delete NET[k];});Object.assign(NET,nk);\n     }\n   }},"
+}
