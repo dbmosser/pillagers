@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.00 - UNDERCROFT FLOOR CLEARANCE
+
+Co-op hunt while he was away. The critic found the toast covering the new hint chips, title text crossing the wall seam, and cramped dim station plates.
+
+MEASURED. Check 34.00 passes, and fails on v33.99.
 ## v33.99 - UNDERCROFT FLOOR TEXT
 
 Co-op hunt while he was away. The hub floor has equal-weight station names, a tiny amber title and a tiny control line. The style guide calls for clear hierarchy and readable hints.

@@ -1,10 +1,10 @@
 Latest stable: v29.09 (2026-10-18 10:23)
-Checked: 2026-10-22 04:57
+Checked: 2026-10-22 05:58
 Play address: http://localhost:8802/stable.html
 Result: no change
 
 Newest test runs, newest first:
-  corpus-1021-2139  v33.94  failing 37, new 32  robots 1130 min/7 problems  -> 32 check(s) newly failing, e.g. v8.55 the two armoured heavies walk heavy | v8.61 the boarding hold cannot be done in instalments
+  corpus-1021-2139  v33.94  failing 37, new 32  robots 1217 min/7 problems  -> 32 check(s) newly failing, e.g. v8.55 the two armoured heavies walk heavy | v8.61 the boarding hold cannot be done in instalments
   corpus-1020-2300  v33.17  failing 3, new 1  robots 232 min/4 problems  -> 1 check(s) newly failing, e.g. v32.71 machines and effects (his art picks a27 a28 a30 a31 a
   corpus-1020-1723  v33.12  failing 6, new 3  robots 0 min/0 problems  -> 3 check(s) newly failing, e.g. v31.59 Keys callout is as wide as the table, scrollbars are  | v20.11 armour fits a Curved body: the chest plate on a Curve
   corpus-1020-1250  v32.90  failing 11, new 8  robots 0 min/0 problems  -> 8 check(s) newly failing, e.g. v8.58 the sector board reads in metres, not a tenfold hectar | v31.67 Keys table spans the card and settings steppers box o

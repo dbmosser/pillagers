@@ -1,0 +1,7 @@
+v34.00: undercroft floor clearance
+
+Hub toasts clear the hints, the title has a panel, and station names have cream text and padded bordered plates.
+
+Check 34.00. Fails on v33.99.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

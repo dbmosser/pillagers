@@ -966,3 +966,7 @@
 2026-10-22 0.0000 89-hub-floor
 2026-10-22 0.0000 89-hub-floor
 2026-10-22 0.0000 89-hub-floor
+2026-10-22 0.1454 critic-89-hub-floor
+2026-10-22 0.1469 critic-89-hub-floor
+2026-10-22 0.1467 critic-89-hub-floor
+2026-10-22 0.0000 89-hub-floor
