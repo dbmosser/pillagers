@@ -40,3 +40,14 @@ Day and night both remain 3. Preparing the fourth and final camera round only fo
 
 The critic's requests for a flat background without the floor, props or player would defeat the requested day/night raid context. The task's actual world lighting is preserved. The screenshot is marked dev only instead of adding a new player-facing codex/list or day/night switch. Night readability findings are handed to the coordinator/86j. The older full-HUD pictures in recipes-1 and the two best corrected art versions in recipes-2 and recipes-3 remain available. If the last round stays at 3, two further camera refinements have not raised that score and the no-more-polish rule applies; record the result and finish with that limit stated.
 
+
+--- codex run 2026-10-22 10:03 ---
+2026-10-22, closeout: read the prior run notes and viewed the passing lineup and both final day/night pictures. cw-cx-pixmachines shipped at v33.89 with its check passing; its machine paths and fixture check are present in the current v34.16 worktree. No new ship or game edit is needed.
+
+Final critic results: lineup 3/5, pass (needs 3); day 3/5 and night 3/5 (need 4). Both final raid captures staged successfully with zero camera lint findings. The final two camera refinements did not improve the day/night scores, and all four camera rounds have been used. Closing under the explicit stop-after-two-follow-ups-without-improvement rule, not claiming that the raid score reached 4.
+
+Remaining critic findings concern the proof framing (player touching the crier caption, building behind the overseer, caption styling) and machine/floor contrast at night. Earlier notes already handed night readability to the coordinator/86j. Replacing the raid floor with a neutral backdrop would remove the day/night world context requested by this task. No simulation, light strength or machine size is changed to address proof layout.
+
+Keep these two best proof versions: tools/handoff/console/notes/shots/86f-pix-machines-recipes-3/86f-machines-raid-day-1080.jpg and 86f-machines-raid-night-1080.jpg; tools/handoff/console/notes/shots/86f-pix-machines-recipes-4/86f-machines-raid-day-1080.jpg and 86f-machines-raid-night-1080.jpg. The passing lineup is tools/handoff/console/notes/shots/86f-pix-machines-recipes-3/86f-machines-lineup-1080.jpg. The original full-HUD views remain in recipes-1. All versions are retained for review.
+
+Watch on next play: machines should read against the pixel floor and should not pop while turning. All nine kinds, the title sentry, baked sizes, cache budgets, masks and live effects remain covered by the shipped key. Task complete with the visual review limit stated above.

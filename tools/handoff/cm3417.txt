@@ -1,0 +1,7 @@
+v34.17: demo easy question after map
+
+The easy question gets 12 seconds after the opening map closes in each window. The initials card uses the board title.
+
+Check 34.17. Fails on v34.16.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

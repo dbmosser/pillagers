@@ -26,3 +26,6 @@ o-91b-report-news-style
 86c-pix-pillager
 86d-pix-walls-trees
 86e-pix-props
+86f-pix-machines
+86g-pix-pillager-states
+86h-pix-sets-wardrobe

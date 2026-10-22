@@ -1,0 +1,5 @@
+## v34.17 - DEMO EASY QUESTION AFTER MAP
+
+Co-op hunt while he was away. The opening map hid the easy question while its 12 seconds ran out. The initials card claimed a top 10 although the board keeps 20.
+
+MEASURED. Check 34.17 passes, and fails on v34.16.

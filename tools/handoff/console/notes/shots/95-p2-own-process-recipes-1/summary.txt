@@ -1,0 +1,2 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  95-before-shared-measure               NOT STAGED 123.3s    | the fixture did not load

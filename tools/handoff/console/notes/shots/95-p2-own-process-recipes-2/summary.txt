@@ -1,0 +1,7 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  95-before-shared-measure               NOT STAGED  80.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at until (<anonymous>:6:155)
+    at async window.__c7stage (<anonymous>:33:5)
+    at async window.__c7stage (<anonymous>:139:84)
+    at async <anonymous>:140:1
+    at async <anonymous>:1:21

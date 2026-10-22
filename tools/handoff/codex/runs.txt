@@ -332,3 +332,11 @@
 2026-10-22 09:21 94-ladder-sheds-sooner 549s ok PARTIAL in=4487970 out=53883 run=3
 2026-10-22 09:31 94-ladder-sheds-sooner 497s ok PARTIAL in=6598066 out=67241 run=4
 2026-10-22 09:33 94-ladder-sheds-sooner 116s ok PARTIAL in=7645042 out=70251 run=5
+2026-10-22 09:45 95-p2-own-process 388s ok PARTIAL in=562955 out=11852 run=1
+2026-10-22 09:50 95-p2-own-process 127s ok PARTIAL in=1140930 out=15078 run=2
+2026-10-22 09:55 95-p2-own-process 160s ok PARTIAL in=1693829 out=19779 run=3
+2026-10-22 10:01 95-p2-own-process 230s ok PARTIAL in=2122975 out=26870 run=4
+2026-10-22 10:02 95-p2-own-process 46s ok PARTIAL in=2464114 out=28002 run=5
+2026-10-22 10:03 86f-pix-machines 82s ok DONE in=213057 out=1927 run=1
+2026-10-22 10:08 96-demo-easy-card-and-board-words 296s ok PARTIAL in=576724 out=9585 run=1
+2026-10-22 10:11 96-demo-easy-card-and-board-words 128s ok PARTIAL in=1184656 out=13262 run=2

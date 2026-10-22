@@ -3516,7 +3516,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.16';
+var VER='34.17';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17261,6 +17261,8 @@ function mapFirstEnd(why){
   var g=G;
   if(!g||!g.mapFirst) return false;
   g.mapFirst=0; g.mapFirstMe=0; g.mapFirstWhy=String(why||''); g.mapOpen=false; g.mapCur=null;
+  // v28.xx (cw-cx-easymapwords): the want easy mode? question now comes after the opening map.
+  if(typeof ARCADE==='object'&&ARCADE&&ARCADE.easyAsk&&ARCADE.easyAsk.waitMap){ ARCADE.easyAsk.at=Date.now(); ARCADE.easyAsk.waitMap=0; }
   mouse.down=false;
   syncPause();
   return true;
@@ -53801,7 +53803,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.16: The folded f1 controls hint uses its screen anchor and keeps its drag offset. The open controls lists keep their existing placement and timing. Check 34.16 fails on v34.15',
+  now:'v34.17: The easy question gets 12 seconds after the opening map closes in each window. The initials card uses the board title. Check 34.17 fails on v34.16',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -67828,7 +67830,7 @@ function arcadeIniDraw(c,n){
       '#attract .arcover .aoq{font-size:.6em;opacity:.8}';
     document.head.appendChild(st);
   }
-  el=document.createElement('div'); el.className='aoi'; el.textContent=ARCADE.solo?'TOP 10 TONIGHT \u00b7 ENTER INITIALS':('Player '+((n.who|0)===2?2:1)+' \u00b7 enter initials'); c.appendChild(el);   // v28.xx (cw-iniplayer), his Q62: the heading says whose turn it is. v31.xx (cw-inihead): the appendChild sat inside this comment from v30.36 on, so the card was drawn with no heading at all
+  el=document.createElement('div'); el.className='aoi'; el.textContent=ARCADE.solo?"tonight's best \u00b7 enter initials":('Player '+((n.who|0)===2?2:1)+' \u00b7 enter initials'); c.appendChild(el);   // v28.xx (cw-iniplayer), his Q62: the heading says whose turn it is. v31.xx (cw-inihead): the appendChild sat inside this comment from v30.36 on, so the card was drawn with no heading at all   // v28.xx (cw-cx-easymapwords): solo uses the same board title; his Q62 player headings stay
   el=document.createElement('div'); el.className='aol';
   for(i=0;i<3;i++){ sp=document.createElement('span'); sp.textContent=n.l[i]||'A'; if(i===n.pos) sp.className='cur'; el.appendChild(sp); }
   c.appendChild(el);
@@ -67859,7 +67861,7 @@ function arcadeIniExtract(){
 // its own keys and buttons are taken. Nothing changes until he says yes, so a normal raid and the seed 4242 fingerprint are untouched.
 var EASY_MUL=0.7, EASY_MS=12000;
 function easyDmgMul(){ return ((typeof ARCADE==='object'&&ARCADE&&ARCADE.easy&&G&&G.arcade)||(G&&G.easyC&&!G.arcade))?EASY_MUL:1; }   // v28.xx (cw-easycareer): and a career raid where he said yes to the offer
-function easyLive(){ return !!(typeof ARCADE==='object'&&ARCADE&&ARCADE.easyAsk&&G&&!G.over&&!G.sim&&((ARCADE.on&&G.arcade)||(G.carAsk&&!G.arcade))); }   // v28.xx (cw-easycareer): the card also lives in a career raid that asked
+function easyLive(){ return !!(typeof ARCADE==='object'&&ARCADE&&ARCADE.easyAsk&&!ARCADE.easyAsk.waitMap&&G&&!G.over&&!G.sim&&((ARCADE.on&&G.arcade)||(G.carAsk&&!G.arcade))); }   // v28.xx (cw-easycareer): the card also lives in a career raid that asked   // v28.xx (cw-cx-easymapwords): the hidden start question takes no answers behind the opening map
 function easyAskMaybe(why){
   if(typeof ARCADE!=='object'||!ARCADE||!ARCADE.on||ARCADE.solo||ARCADE.easyAsked||ARCADE.easy||why==='bench') return false;
   if((ARCADE.deaths|0)<2||(ARCADE.ext|0)>0) return false;
@@ -67870,7 +67872,7 @@ function easyAskMaybe(why){
 // same card up in that window (Y or A easy, N or B normal); the offer after the second death (2.90 b) stays for anyone who said no.
 function easyStartAsk(){
   if(typeof ARCADE!=='object'||!ARCADE||!ARCADE.on||ARCADE.solo) return false;
-  ARCADE.easy=0; ARCADE.easyAsked=0; ARCADE.easyAsk={at:Date.now()};
+  ARCADE.easy=0; ARCADE.easyAsked=0; ARCADE.easyAsk={at:Date.now(),waitMap:mapFirstOn()?1:0};   // v28.xx (cw-cx-easymapwords): his 2.28 c, each demo player chooses before the run; the clock waits for this window opening map
   return true;
 }
 // v28.xx (cw-easycareer), HIS ANSWER (2026-10-18, 2.90 b): "Career offers Forgiving on a card after a few deaths, the same offer as the demo." The profile counts deaths in a row
@@ -67935,7 +67937,7 @@ function arcadeIniHud(){
   ctx.save(); ctx.textAlign='center'; ctx.textBaseline='alphabetic';
   ctx.fillStyle='rgba(6,9,13,.86)'; ctx.fillRect(cx-bw/2,y-LH(46),bw,bh);
   ctx.strokeStyle='rgba(127,227,212,.75)'; ctx.lineWidth=2; ctx.strokeRect(cx-bw/2+1,y-LH(46)+1,bw-2,bh-2);
-  ctx.font=FS(TYPE.head); ctx.fillStyle='#7fe3d4'; hudText('TOP 10 TONIGHT \u00b7 ENTER INITIALS',cx,y-LH(18));
+  ctx.font=FS(TYPE.head); ctx.fillStyle='#7fe3d4'; hudText("tonight's best \u00b7 enter initials",cx,y-LH(18));   // v28.xx (cw-cx-easymapwords): name the board without choosing a row count
   for(i=0;i<3;i++){
     lx=Math.round(cx+(i-1)*gx);
     ctx.font=FSz(TYPE.huge,1.3); ctx.fillStyle=(i===n.pos)?'#ffc04a':'#f2e6c8'; hudText(n.l[i]||'A',lx,y+LH(36));
