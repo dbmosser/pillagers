@@ -331,3 +331,7 @@
 2026-10-22 08:48:05 FUZZ END raids=14 problems=0 unique=0 reason=time minutes=59.2
 2026-10-22 08:48:12 raid 14 demo2p raidSeed=858288416 map=0 god=1 sec=20 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=295 score=0 ents=50 travelPx=1625 fires=2 menuPct=0 heapMB=50 p2=link_7s_join_10s_pad_own build=34.03
 2026-10-22 08:48:12 FUZZ END raids=14 problems=0 unique=0 reason=time minutes=59.3
+2026-10-22 08:48:35 FUZZ START seed=935364652 minutes=60 raidsec=300 port=9331 srv=8806 build=34.13 maps=0
+2026-10-22 08:48:36 FUZZ START seed=936760824 minutes=60 raidsec=300 port=9332 srv=8806 build=34.13 maps=0
+2026-10-22 08:53:51 raid 1 demo2p raidSeed=1994479649 map=0 god=0 sec=307 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=2125 score=0 ents=45 travelPx=16947 fires=36 menuPct=0 heapMB=68 p2=link_6s_join_9s_pad_fwd build=34.13
+2026-10-22 08:53:52 raid 1 demo2p raidSeed=1126385567 map=0 god=1 sec=304 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=2150 score=0 ents=52 travelPx=19667 fires=39 menuPct=9 heapMB=65 p2=link_8s_join_12s_pad_fwd build=34.13
