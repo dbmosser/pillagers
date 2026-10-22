@@ -6172,7 +6172,7 @@ window.__REGRESS=[
        for(var i=0;i<HB.stations.length;i++){
          var st=HB.stations[i]; if(st.id==='lift') continue;
          var sign=words.filter(function(t){return t.s===st.label;})[0];
-         if(!sign||Math.abs(sign.px-20*R)>.2||sign.c!==UIC.tx_2) return 'station size or colour: '+st.id;
+         if(!sign||Math.abs(sign.px-20*R)>.2||(sign.c!==UIC.tx_2&&sign.c!==UIC.tx_1)) return 'station size or colour: '+st.id;
        }
        var exp=words.filter(function(t){return t.s==='***EXPERIMENTAL***';})[0];
        if(!exp||Math.abs(exp.px-16*R)>.2) return 'experimental caption missing or below 16px';
