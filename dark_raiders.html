@@ -3513,7 +3513,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.03';
+var VER='34.04';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -36313,7 +36313,43 @@ function gunHeld(px,ty,face,fl,st,coat,bld,pc,ads,sprint,rl,muzzle){
 var FIG_SCALE=1, FIG_UP=12, /* v28.xx (cw-figback), HIS ORDER (2026-10-20): "player is too big, needs to go back to previous size" and "revert to old player size or maybe even smaller, should be scaled properly compared to bodies on ground, trees, deer". 1.25 back to 1 (the size before v32.64); his head, pack and vest picks stay. FIG_UP 19 to 12 so the plates sit over the smaller head. */ FIG_HEAD=1.2, FIG_PACK=1.3, FIG_VEST=1.12, FIG_PATCH=1.6;
 function figBuildK(b){ return (b==='broad')?[1.1,0.96]:((b==='curved')?[1,1]:[0.92,1.08]); }
 function figOn(){ return !!(typeof wc!=='undefined'&&wc&&((typeof cv!=='undefined'&&wc.canvas===cv)||RIM.on===1)); }
+// v28.xx (cw-cx-sideglyphs), his 2.79 a: allegiance has a shape as well as team colour, always on, in both body renderers.
+function colourCueGlyph(c,kind,x,y,R,col){
+  c.save(); c.translate(x,y); c.scale(R,R); c.lineWidth=1.5; c.lineJoin='round';
+  c.fillStyle='#0b0c0d'; c.fillRect(-7,-7,14,14); c.strokeStyle='#efe9dc'; c.fillStyle=col||'#efe9dc';
+  c.beginPath();
+  if(kind==='foe'||kind==='danger'){
+    c.moveTo(0,-5);c.lineTo(5,4);c.lineTo(-5,4);c.closePath();c.fill();c.stroke();
+    if(kind==='danger'){c.fillStyle='#0b0c0d';c.fillRect(-.7,-2,1.4,3);c.fillRect(-.7,2,1.4,1);}
+  }else if(kind==='ally'||kind==='down'){
+    if(kind==='down')c.rotate(Math.PI/4);
+    c.fillStyle='#efe9dc';c.fillRect(-5,-1.5,10,3);c.fillRect(-1.5,-5,3,10);
+  }else if(kind==='seal'||kind==='place'){
+    c.moveTo(0,-5);c.lineTo(5,0);c.lineTo(0,5);c.lineTo(-5,0);c.closePath();c.fill();c.stroke();
+  }else if(kind==='loot'){
+    c.rect(-4.5,-3,9,7);c.fill();c.stroke();c.moveTo(-2,-3);c.lineTo(-2,-5);c.lineTo(2,-5);c.lineTo(2,-3);c.stroke();
+  }else if(kind==='target'||kind==='waypoint'){
+    c.arc(0,0,3,0,6.2832);c.moveTo(-6,0);c.lineTo(-2,0);c.moveTo(2,0);c.lineTo(6,0);c.moveTo(0,-6);c.lineTo(0,-2);c.moveTo(0,2);c.lineTo(0,6);c.stroke();
+  }else if(kind==='exit'){
+    c.arc(0,0,5,0,6.2832);c.stroke();c.beginPath();c.moveTo(0,3);c.lineTo(0,-3);c.moveTo(-2,-1);c.lineTo(0,-3);c.lineTo(2,-1);c.stroke();
+  }else if(kind==='partywaypoint'){
+    c.arc(0,0,5,0,6.2832);c.stroke();c.beginPath();c.arc(0,0,1.5,0,6.2832);c.stroke();
+  }else if(kind==='forge'){
+    c.fillStyle='#efe9dc';c.fillRect(-5,-3,10,3);c.fillRect(-2,0,4,3);c.fillRect(-4,3,8,2);
+  }
+  c.restore();
+}
+function worldSideCue(x,y,st){
+  if(!st||st.hero||seatMarkOf(st)>=0||!(st.team==='ally'||st.team==='foe'))return;
+  if(st.own&&(st.own.hp<=0||st.own.dead))return;
+  colourCueGlyph(wc,st.team,x-18,y-29,.85,TEAMCOL[st.team]);
+}
 function drawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
+  var result=drawOpBody(x,y,face,ph,coat,pk,muzzle,mode,iv,st);
+  worldSideCue(x,y,st);
+  return result;
+}
+function drawOpBody(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   if(!figOn()){
     if(pixOn()&&wc&&((typeof hcv!=='undefined'&&wc.canvas===hcv)||wc.canvas.id==='avcv')&&pixBodyTry(x,y,face,ph,coat,pk,muzzle,mode,iv,st)) return; // v28.xx (cw-cx-pixpreview): the FASHION turntable uses the same plain pixel body as the raid and Undercroft
     return drawOp0(x,y,face,ph,coat,pk,muzzle,mode,iv,st);
@@ -53544,7 +53580,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.03: Rarity pips are taller and wider: about 9px high on a backpack icon at 1080p. Check 34.03 fails on v34.02',
+  now:'v34.04: Unnumbered allies carry a cream plus and hostile human pillagers a cream edged triangle. Numbered player badges stay clear. Check 34.04 fails on v34.03',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -1,0 +1,7 @@
+v34.04: allegiance has a shape
+
+Unnumbered allies carry a cream plus and hostile human pillagers a cream edged triangle. Numbered player badges stay clear.
+
+Check 34.04. Fails on v34.03.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

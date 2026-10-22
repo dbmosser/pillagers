@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.04 - ALLEGIANCE HAS A SHAPE
+
+Co-op hunt while he was away. The greyscale audit shows hostile and friendly human pillagers without a readable side distinction. His 2.79 a requires an always on backup.
+
+MEASURED. Check 34.04 passes, and fails on v34.03.
 ## v34.03 - LARGER RARITY PIPS
 
 Co-op hunt while he was away. The greyscale backpack critic found the rank pips too small at about 5px. Keep their count and positions, increase height and width.
