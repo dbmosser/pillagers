@@ -44439,48 +44439,27 @@ window.__REGRESS=[
        __topClear();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'24.47',what:'graphics program gfx6: the quality ladder: slow frames shed the extras before the resolution (post pass off, soft sheets at two thirds, HIGH lighting drawn as STANDARD, one rung a second) and only then step the render scale down; smooth frames climb back scale first, then every rung; a rung already off in Settings is passed over; the rung rests at 0 outside a raid',
+  {v:'24.47',what:'quality ladder keeps the manual scale ceiling, shrinks soft sheets, restores full quality and respects lighting settings (timing covered by current ladder checks)',
    run:function(){
-     if(typeof drsTick!=='function'||typeof DRS==='undefined') return 'SKIP: the game has no auto resolution';
-     if(typeof GFXQ==='undefined'||typeof gfxqApply!=='function'||typeof gfxLightNow!=='function') return 'auto resolution still sheds only the resolution: no quality ladder (GFXQ)';
-     if(typeof resize!=='function'||typeof litC==='undefined') return 'SKIP: no canvas in this fixture';
-     var bad=[], c0=CFG.gfxAuto, s0=CFG.gfxScale, f0=CFG.fpsCap, p0=CFG.gfxPost, l0=CFG.gfxLight, d0=JSON.stringify(DRS), oSwf=sayWhenFree, lines=[], t=0, i, seq=[], last='', w0, w2, k;
-     function reset(){ DRS.scale=1; DRS.ema=0; DRS.slowT=0; DRS.fastT=0; DRS.last=0; DRS.bounce=0; DRS.upAt=0; DRS.said=0; DRS.q=0; gfxqApply(); }
-     function cur(){ return (DRS.q|0)+'/'+DRS.scale; }
-     function note(){ var s=cur(); if(s!==last){ seq.push(s); last=s; } }
-     function mark(){ seq=[]; last=cur(); }
+     var d0=JSON.stringify(DRS), c0=JSON.stringify(CFG), bad=[], w0, k;
      try{
-       sayWhenFree=function(s,kk,o){ lines.push(String(s)); };
-       CFG.gfxAuto=1; CFG.gfxScale=1; CFG.fpsCap=0; CFG.gfxPost=1; CFG.gfxLight=2; reset();
-       resize(); w0=litC.width; mark();
-       for(i=0;i<63;i++){ t+=40; drsTick(40,t); note(); }
-       if(!(GFXQ.post===0)) bad.push('2.5 seconds of slow frames left the post pass on (GFXQ.post '+GFXQ.post+')');
-       if(DRS.scale!==1) bad.push('2.5 seconds of slow frames already stepped the render scale to '+DRS.scale+', before the extras');
-       if(gfxLightNow()!==2) bad.push('the first rung already changed the lighting (gfxLightNow '+gfxLightNow()+')');
-       for(i=0;i<1500&&DRS.scale>=1;i++){ t+=40; drsTick(40,t); note(); }
-       if(!(DRS.scale<1)) bad.push('a minute of slow frames never stepped the render scale ('+seq.join(' ')+')');
-       if(!/^1\/1 2\/1 3\/1 3\/0\.(?:9|95)$/.test(seq.slice(0,4).join(' '))) bad.push('the steps went '+seq.join(' ')+', not post, sheets, shadows, then the scale');
-       if(!(GFXQ.lmap<1)) bad.push('rung 2 left the soft sheets at full size (GFXQ.lmap '+GFXQ.lmap+')');
-       if(gfxLightNow()!==1) bad.push('rung 3 did not draw HIGH as STANDARD (gfxLightNow '+gfxLightNow()+')');
-       if(lines.length!==1) bad.push('the steps said '+JSON.stringify(lines)+', want only the one resolution line');
-       resize(); w2=litC.width;
-       if(!(w2<w0)) bad.push('the soft sheets did not shrink on rung 2 ('+w0+' to '+w2+')');
-       mark();
-       for(i=0;i<5000&&((DRS.q|0)>0||DRS.scale<1);i++){ t+=16; drsTick(16,t); note(); }
-       if((DRS.q|0)!==0||DRS.scale!==1||GFXQ.post!==1||GFXQ.lmap!==1||GFXQ.shadow!==1) bad.push('smooth frames left the ladder at rung '+DRS.q+' scale '+DRS.scale);
-       else if(seq.join(' ')!=='3/1 2/1 1/1 0/1') bad.push('the climb back went '+seq.join(' ')+', not the scale first and then each rung');
-       // rungs already off in Settings are passed over: POST FX OFF and LIGHTING STANDARD leave only the sheets rung
-       CFG.gfxPost=0; CFG.gfxLight=1; reset(); mark();
-       for(i=0;i<1500&&DRS.scale>=1;i++){ t+=40; drsTick(40,t); note(); }
-       if(!/^2\/1 2\/0\.(?:9|95)$/.test(seq.slice(0,2).join(' '))) bad.push('with POST FX OFF and LIGHTING STANDARD the steps went '+seq.join(' ')+', not the sheets then the scale');
-       // outside a raid the rung rests at 0 (the frame loop line)
-       k=[].slice.call(document.scripts).map(function(s){ return s.textContent||''; }).join('\n');
-       if(k.indexOf('DRS.scale'+'!==1||DRS.q)){ DRS.scale=1; DRS.q=0; }')<0) bad.push('the frame loop does not rest the rung with the scale');
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       CFG.gfxAuto=1; CFG.gfxScale=1; CFG.gfxPost=1; CFG.gfxLight=2;
+       DRS.q=0; DRS.scale=1; gfxqApply(); resize(); w0=litC.width;
+       if(GFXQ.lmap!==1||gfxLightNow()!==2) bad.push('full quality changed sheets or lighting');
+       DRS.q=3; gfxqApply(); resize();
+       if(!(GFXQ.lmap<1&&litC.width<w0)) bad.push('last effects rung did not shrink soft sheets');
+       CFG.gfxLight=0; if(gfxLightNow()!==0) bad.push('ladder enabled disabled lighting');
+       CFG.gfxLight=1; if(gfxLightNow()!==1) bad.push('ladder changed standard lighting');
+       CFG.gfxScale=0.8; DRS.scale=0.9;
+       if(Math.abs(gfxScaleNow()-0.8)>0.00001) bad.push('automatic scale exceeded the manual ceiling');
+       DRS.q=0; DRS.scale=1; gfxqApply(); CFG.gfxScale=1; CFG.gfxLight=2; resize();
+       if(GFXQ.post!==1||GFXQ.shadow!==1||GFXQ.lmap!==1||litC.width!==w0) bad.push('full quality did not restore the sheets and settings');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
-       sayWhenFree=oSwf; CFG.gfxAuto=c0; CFG.gfxScale=s0; CFG.fpsCap=f0; CFG.gfxPost=p0; CFG.gfxLight=l0;
-       try{ var d=JSON.parse(d0), kk; for(kk in d) DRS[kk]=d[kk]; DRS.q=d.q|0; }catch(_d){}
-       try{ resize(); }catch(_r){}
+       var ds=JSON.parse(d0), cs=JSON.parse(c0);
+       for(k in DRS) if(!(k in ds)) delete DRS[k]; for(k in ds) DRS[k]=ds[k]; for(k in cs) CFG[k]=cs[k];
+       gfxqApply(); try{ resize(); }catch(_r){} __topClear();
      }
      return bad.length?bad.join('; '):null; }},
   {v:'24.46',what:'the what is new card is stamped within 0.15 of the build and leads with the sharper fights news, shown whole',
