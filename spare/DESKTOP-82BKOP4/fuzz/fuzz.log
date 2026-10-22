@@ -44,3 +44,7 @@
 2026-10-21 23:07:36 FUZZ END raids=5 problems=3 unique=3 reason=ERROR: Unable to connect to the remote server minutes=20.9
 2026-10-21 23:11:01 raid 5 demo2p raidSeed=1284935051 map=0 god=1 sec=305 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=4879 score=0 ents=55 travelPx=22360 fires=83 menuPct=17 heapMB=73 p2=link_3s_join_6s_pad_fwd build=33.94
 2026-10-21 23:12:00 raid 6 demo2p raidSeed=1326541353 map=0 god=0 sec=55 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= build=33.94
+2026-10-21 23:12:29 FUZZ START seed=1222872921 minutes=60 raidsec=300 port=9331 srv=8806 build=33.94 maps=0
+2026-10-21 23:13:21 raid 7 demo2p raidSeed=1442039717 map=0 god=0 sec=77 end=nostart problems=1 newUnique=0 totalUnique=1 totalProblems=2 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= build=33.94
+2026-10-21 23:14:07 raid 1 demo2p raidSeed=1488315206 map=0 god=0 sec=97 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= build=33.94
+2026-10-21 23:14:29 raid 8 career raidSeed=2122236842 map=0 god=0 sec=60 end=ended problems=0 newUnique=0 totalUnique=1 totalProblems=2 events=313 score=0 ents=53 travelPx=1496 fires=2 menuPct=0 heapMB=47 p2= build=33.94
