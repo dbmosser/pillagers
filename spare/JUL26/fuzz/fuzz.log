@@ -18,3 +18,17 @@
 2026-10-22 12:03:22 FUZZ START seed=1793955528 minutes=60 raidsec=300 port=9331 srv=8806 build=34.18 maps=0
 2026-10-22 12:03:23 FUZZ END raids=0 problems=0 unique=0 reason=low memory 0.4 GB free (RAM or virtual) minutes=0.4
 2026-10-22 12:03:23 FUZZ END raids=0 problems=0 unique=0 reason=low memory 0.4 GB free (RAM or virtual) minutes=0.4
+2026-10-22 12:05:17 FUZZ START seed=967184744 minutes=60 raidsec=300 port=9332 srv=8806 build=34.18 maps=0
+2026-10-22 12:05:17 FUZZ START seed=966928072 minutes=60 raidsec=300 port=9331 srv=8806 build=34.18 maps=0
+2026-10-22 12:10:26 raid 1 demo2p raidSeed=1050933847 map=0 god=0 sec=302 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=9400 score=0 ents=52 travelPx=24967 fires=96 menuPct=16 heapMB=65 p2=link_4s_join_6s_pad_fwd build=34.18
+2026-10-22 12:10:27 raid 1 demo2p raidSeed=1157784971 map=0 god=0 sec=303 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=9299 score=0 ents=53 travelPx=23651 fires=101 menuPct=14 heapMB=68 p2=link_4s_join_6s_pad_fwd build=34.18
+2026-10-22 12:15:35 raid 2 demo2p raidSeed=764506649 map=0 god=1 sec=302 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=9232 score=0 ents=52 travelPx=28358 fires=120 menuPct=13 heapMB=63 p2=link_2s_join_4s_pad_fwd build=34.18
+2026-10-22 12:15:37 raid 2 demo2p raidSeed=27030759 map=0 god=1 sec=302 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=9391 score=0 ents=47 travelPx=26135 fires=110 menuPct=19 heapMB=63 p2=link_2s_join_4s_pad_fwd build=34.18
+2026-10-22 12:20:45 raid 3 demo2p raidSeed=852889404 map=0 god=0 sec=302 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=9303 score=0 ents=52 travelPx=23852 fires=115 menuPct=14 heapMB=65 p2=link_2s_join_4s_pad_own build=34.18
+2026-10-22 12:20:46 raid 3 demo2p raidSeed=1614189597 map=0 god=1 sec=302 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=9312 score=0 ents=47 travelPx=28538 fires=111 menuPct=15 heapMB=66 p2=link_2s_join_4s_pad_fwd build=34.18
+2026-10-22 12:21:44 raid 4 demo1 raidSeed=1578517925 map=0 god=0 sec=56 end=ended problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=1706 score=0 ents=50 travelPx=3823 fires=19 menuPct=20 heapMB=45 p2= build=34.18
+2026-10-22 12:22:34 raid 4 demo1 raidSeed=1956734290 map=0 god=0 sec=104 end=ended problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=3273 score=0 ents=57 travelPx=8458 fires=31 menuPct=24 heapMB=46 p2= build=34.18
+2026-10-22 12:26:51 raid 5 demo2p raidSeed=1805453084 map=0 god=1 sec=302 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=9365 score=0 ents=50 travelPx=29774 fires=109 menuPct=16 heapMB=68 p2=link_2s_join_4s_pad_own build=34.18
+2026-10-22 12:27:40 raid 5 demo2p raidSeed=199571573 map=0 god=1 sec=302 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=9539 score=0 ents=51 travelPx=30596 fires=111 menuPct=20 heapMB=70 p2=link_2s_join_4s_pad_fwd build=34.18
+2026-10-22 12:32:03 raid 6 demo2p raidSeed=2141757543 map=0 god=1 sec=305 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=9334 score=0 ents=44 travelPx=29905 fires=117 menuPct=19 heapMB=63 p2=link_2s_join_4s_pad_fwd build=34.18
+2026-10-22 12:32:50 raid 6 demo2p raidSeed=1931654614 map=0 god=1 sec=302 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=9318 score=0 ents=59 travelPx=30278 fires=136 menuPct=11 heapMB=65 p2=link_2s_join_4s_pad_own build=34.18
