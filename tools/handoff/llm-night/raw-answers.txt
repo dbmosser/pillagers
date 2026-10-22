@@ -1,18 +1,1 @@
 
-It looks like you've provided a list of changes or updates for a video game, likely related to its mechanics, user interface, or gameplay balance. Here's a summary of some key points:
-
-1. **Cooked Frag Charge**: Keeps burning through a roll.
-2. **Heal on Key**: No longer stops Medical using other heals.
-3. **Controller Packs from Stash with A. SURPRISE ME**: Takes off a worn suit, erasing 3537: 'NOTHING FROM NOTHING, AND A FAIRER FIGHT'.
-4. **Pile You Drop**: Earns no hot zone bonus and never restocks.
-5. **Medkit**: Never wasted at full health or refused on its own key.
-6. **Grenade Cooking**: Stays in your hand.
-7. **Contracts and Hazard Pay**: Count only what the run found.
-8. **Fewer Enemies by Default**: Few machines now means the number it says; fewer pillagers is the new default.
-9. **Out of Bandages or Grenades**: Switch back to gun yourself.
-10. **Raised Decks Gone**: Catwalks and gantries removed from both sectors.
-11. **Tab Pauses and Backs Out of Any Menu**: Works in Undercroft and on the surface.
-12. **Armour Plate Found**: Goes into backpack, not snaps onto armour.
-13. **X Searches What You Are Standing On**: Even inside an extraction
-NONE
-NONE

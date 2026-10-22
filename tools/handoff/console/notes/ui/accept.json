@@ -140,17 +140,17 @@
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "a near-empty 90% card holding a small, flat, tiny-type content block with no hero, two explaining sentences and a duplicated label, so it reads as an unstyled template and not a polished ARC Raiders-style window.",
+  "verdict": "Clean and consistent with the card-and-X window pattern, but it is a flat, empty window with two weak buttons, no hero element, and the lower half of the card is dead space.",
   "findings": [
-   "P0 whole card composition: Fill the card with a two-column layout. Put the gamble on the left with a 56px hero price and a 20px primary button. Put the limited time offer on the right as a tall item card with a large icon, at least 160px. Alternatively shrink the card to fit the content. Anchor the title to a 56px header row at top-left.",
-   "P0 copy: 'current credits...' and 'wirt has wares...' lines, 'nothing rolled yet...' line, 'new limited time offer arrives in 2 minutes': Delete both subtitle lines and the 'nothing rolled yet' placeholder. Show the cost only on the button. Keep one balance in the header. Reduce the offer timer to a short '2:00' label.",
-   "P1 limited time offer panel: Keep one label, in tx-2 16px. Make the item name 32px f-cond 700 in its rarity colour. Put 'with armour plate, medkit' and the worth value in 16px tx-2. Use a 1px --ui-line-hi border plus a 3px accent tab on the left edge only. Make the buy button the lime primary action.",
-   "P1 the gamble panel / gamble button: Make the button 56px tall with 20px f-cond 700 text and --ui-raised fill. When it is affordable, use --acc fill with --acc-ink text. When it is not, use a --danger 1px outline on a dimmed button, with the shortfall as plain danger text and no boxed pill. Add a 2px lime focus ring with a 4px offset.",
-   "P1 type scale across the card: Set every read string to at least 16px, using only the 56/32/20/16/14 scale. Reduce the tracking on labels to +.04em. Raise the stash/bag line to 16px, or drop it, since this window does not need it."
+   "P0 whole card, y 560-960: Make the gamble panel the hero: about 360px tall with a 56px 'gamble' title or odds readout. Or shrink the card to fit the content. Stack the two panels with 24px gaps and centre them vertically in the body.",
+   "P0 gamble button (386,236)-(1534,292) and buy button (1287,440)-(1533,496): Make the gamble button 320x64, left-aligned or centred, with 24px type. For a disabled state use a muted fill (--ui-raised) and a --ui-line-hi border. Put the shortfall as a 16px --danger line under the button instead of inline. Keep the red outline for a failed attempt only.",
+   "P1 panel labels 'the gamble' / 'limited time offer' (386,193)/(387,377): Use 16px f-cond 600 in --tx-2 with +.04em tracking, or 20px in --tx-1. Tighten label-to-content spacing to 16px. State what the gamble gives (a rarity range or reward icon) in place of the empty space.",
+   "P1 header currency row (1470-1742, y 90): Use a uniform 20px for each value with a 16px label. Space the items 24px apart and keep 24px between the row and the X. Show wallet only here and move stash and bag to a footer legend.",
+   "P1 offer panel text (539-827, y 428-514): Show the name (32px), a rarity bar on the icon's left edge, and 'worth $10,680' in 16px. Replace the timer sentence with a '5:00' countdown tag at the panel's top right. Drop 'with armour plate' or turn it into a tag chip. Lighten the icon tile to --ui-raised."
   ],
-  "pic": "tools/handoff/console/notes/shots/88-undercroft-windows-recipes-1/11-wirt-gambler-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/88-undercroft-windows-recipes-2/11-wirt-gambler-1080.jpg",
   "task": "88-undercroft-windows",
-  "when": "2026-10-21T20:04"
+  "when": "2026-10-22T09:16"
  },
  "12-mainframe-contracts": {
   "score": 3,
@@ -185,20 +185,20 @@
   "need": 3
  },
  "16-bar-last-pour": {
-  "score": 2,
-  "pass": false,
+  "score": 3,
+  "pass": true,
   "need": 3,
-  "verdict": "The bar window is a clean dark card with a visible close x, but the content is a small list floating in a mostly empty card. The title is tiny, the header is undersized and the toast collides with the card border.",
+  "verdict": "The card is clean, consistent and on style (x top-right, lime focus row with one lime button), but it is an almost empty window with two stretched rows, and a stray toast sentence plus a tiny header currency strip weaken it.",
   "findings": [
-   "P0 whole card, 1724x968: Anchor the title top-left in a 56px header row at y~72 and start the list at y~150. Make the rows 96px tall with 24px padding. Fill the rest with a detail pane or a bottom footer row, or shrink the card to fit its content.",
-   "P0 title 'the last pour': Use 32px f-cond 700 tx-1, left-aligned with the list edge at x=261 in the header row. Remove the underline or make it a 36px accent tab.",
-   "P1 top-right currency strip ($900 / 0 xp / stash $3,750 bag $0): Use one style: 16px f-cond 600 tx-2 labels with 20px tx-1 values and an even 24px gap. Keep $900 as the only bright value. Leave 24px before the x.",
-   "P1 toast 'the welcome pack is in your stash.' at the bottom edge: Place the toast 24px inside the card or above it at y~960. Shorten it to 'welcome pack in stash', 16px, and give it a --ui-raised fill. Better still, suppress it on this window.",
-   "P1 ingest buttons: Show the focused row with a --ui-raised fill and a 3px lime left bar. Make only the focused row's button a lime fill with --acc-ink text and leave the others as --ui-line-hi outlines. Put 24px between price and button."
+   "P1 whole card, y 430-950: Either shrink this window to a content-fit card (about 1400x520, centred) or fill it: a 56px hero (the drink or its effect) or a left detail pane in --ui-raised with a bigger 96px icon. Don't leave 600px of void.",
+   "P1 toast 'the welcome pack is in your stash.' at bottom centre (819-1101, 963-1001): Remove it from this window, or cut it to a short callout like 'pack in stash' and show it only as a transient toast above the card with the panel style. No trailing period.",
+   "P1 blotter description (392-930, y 372): Shorten each description to 3-5 words at 16px --tx-2 (for example 'loud and fast', 'ego off'). Drop the exclamation mark.",
+   "P1 header right currency strip (1472-1742, y 80-100): Show only the wallet ($900) in the header at 20px f-cond 700 tx-1. Drop xp, stash and bag, which have no use in a bar. If they must stay, make every label 16px tx-2 with 24px gaps and put 32px between the strip and the x.",
+   "P2 row 1 vs row 2 focus treatment: Focus = lime left bar plus raised fill only. Make the button lime only when the row has focus (as now), with a 2px lime outline on the focused button. Give the idle button a 1.5px --ui-line-hi border and make the label tx-1 at 20px."
   ],
-  "pic": "tools/handoff/console/notes/shots/88-undercroft-windows-recipes-1/16-bar-last-pour-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/88-undercroft-windows-recipes-2/16-bar-last-pour-1080.jpg",
   "task": "88-undercroft-windows",
-  "when": "2026-10-21T20:05"
+  "when": "2026-10-22T09:17"
  },
  "17-fashion-mirror": {
   "score": 3,
@@ -1109,17 +1109,17 @@
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "The card frame, tabs and x are consistent, but the stats page is a flat wall of small text and uneven tiles with no hero number, and its explaining sentences and low contrast undercut it.",
+  "verdict": "the card shell, tabs and x are correct, but the stats grid is a wall of identical empty boxes, with a stray tooltip stuck in the achievements row and explaining sentences all over.",
   "findings": [
-   "P0 whole stats body: Make one hero tile (extract rate, or level 1) use --fs-hero 56px f-cond 800 in --acc. Drop the other values to 32px tx-1 and the labels to 16px tx-2. Make the hero tile span 2 columns.",
-   "P0 notoriety panel, tile descriptions, achievements list: Delete the notoriety paragraph. Cut the net earnings tile to the value plus one 3-word note. Show achievement goals as short tags such as 'carry $5k' or 'kill 10', or move them to a focus tooltip.",
-   "P1 stat tiles, grid layout: Use a fixed 4-column grid with 16px gaps and equal tile widths filling the card. Pick a tile height of 120px and let the net earnings tile span 2 columns. Move notoriety into a normal tile.",
-   "P1 body text and small type: Raise all read text to at least 16px. Use tx-2 #aaa498 at 4.5:1 or better for muted text. Set labels to f-cond 600 with +.04em tracking, not wide spacing.",
-   "P1 achievements list: Drop the 'locked' word. Show a lock glyph and a dimmed name (tx-2). Lay the achievements out as a 2-column grid of rows with a 3px left bar, and use --ok for unlocked ones."
+   "P0 achievements row, bottom, centre: remove the stray tooltip from the row layout, or anchor it above the hovered cell. Render the achievements as a 4-column grid of tiles (name 20px tx-1, requirement 16px tx-2, 3px rarity bar). Show a 16px ok-green tick on earned ones. Drop the trailing periods.",
+   "P1 stat tiles (12 tiles): make level 1 the single hero stat at 56px f-cond 800 in tx-1, with a 3px lime top tab on its panel. Set the other values to 32px with 16px labels. Collapse empty tiles to one 'no runs yet' placeholder, or dim empty values to tx-2.",
+   "P1 notoriety tile: delete the sentence, or reduce it to a 16px tx-2 tag such as 'attack non-threats to raise it'. Keep the tile to one column, so the grid stays at 4 columns.",
+   "P1 tile micro-copy, several tiles: cut these to bare values or a short label ('none', '0'). Show 'last 10' only when the data exists. Remove the 'walked away' phrase.",
+   "P1 tile labels and secondary text: set labels to 16px f-cond 600 with +.04em tracking in tx-2 (at least 4.5:1). Set secondary lines to 16px minimum. Reserve 700 weight for the card title."
   ],
-  "pic": "tools/handoff/console/notes/shots/88-undercroft-windows-recipes-1/15-mainframe-stats-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/88-undercroft-windows-recipes-2/15-mainframe-stats-1080.jpg",
   "task": "88-undercroft-windows",
-  "when": "2026-10-21T20:04"
+  "when": "2026-10-22T09:16"
  },
  "74-pad-player-1": {
   "score": 3,

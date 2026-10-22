@@ -1,0 +1,7 @@
+v33.98: undercroft body readability
+
+A large gamble heading and compact action, readable stats and paired achievements, with empty metrics folded until a real run exists.
+
+Check 33.98. Fails on v33.97.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

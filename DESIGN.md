@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.98 - UNDERCROFT BODY READABILITY
+
+Co-op hunt while he was away. Gambler and stats remain at critic two: weak focal point, undefined empty metrics and a toast covering achievement goals.
+
+MEASURED. Check 33.98 passes, and fails on v33.97.
 ## v33.97 - UNDERCROFT WINDOW FINISH
 
 Co-op hunt while he was away. Fresh critic reviews score gambler, stats and bar at two: centred content, small text and unclear primary actions.

@@ -2460,6 +2460,44 @@ body:has(#gamblemodal.on,#barmodal.on,#opane_rec[style*="display: flex"]) #hubto
   #root #opane_rec #achlist{grid-template-columns:minmax(0,1fr);}
 }
 </style>
+<style id="uc-window-body">
+/* v28.xx (cw-cx-ucbody): task 88, second visual attempt on gambler/stats; keep the centred card, one common edge and all existing controls. */
+#root #gamblemodal #wirtsec_gamble{display:flex;flex-direction:column;align-items:flex-start;min-height:320px;}
+#root #gamblemodal #wirtsec_gamble > div:first-child{font-size:64px !important;line-height:1.05 !important;font-weight:700 !important;letter-spacing:0 !important;color:var(--tx-1) !important;margin-bottom:16px !important;}
+#root #gamblemodal #gamblelist{width:100%;flex:1 1 auto;min-height:0;font-size:22px;}
+#root #gamblemodal #wirtsec_gamble > div:last-child{flex:none;width:100%;min-height:104px;box-sizing:border-box;padding-bottom:40px;align-items:flex-start;margin-top:16px !important;}
+#root #gamblemodal #gamblebtn{position:relative;flex:none;width:320px !important;max-width:100%;min-width:0;min-height:64px;font-size:24px;}
+#root #gamblemodal #gamblebtn:disabled,#root #gamblemodal #wirtlotbtn:disabled{border-color:var(--ui-line-hi) !important;color:var(--tx-1) !important;}
+#root #gamblemodal #gamblebtn[data-need]:not([data-need=""])::after{position:absolute;top:calc(100% + 8px);left:0;right:0;margin:0;text-align:left;font-size:18px;line-height:1.4;}
+#root #gamblemodal #wirtlotbtn[data-need]:not([data-need=""])::after{display:block;margin:4px 0 0;font-size:18px;}
+#root #gamblemodal #wirtsec_offer > div:first-child{font-size:20px !important;color:var(--tx-1) !important;}
+#root #gamblemodal #wirtlot > span > span:nth-child(2){font-size:36px;}
+#root #gamblemodal #wirtlot > span > span:nth-child(2) > span,#root #gamblemodal #wirtlot > span > span:nth-child(n+3){font-size:20px !important;}
+/* v28.xx (cw-cx-ucbody): compensate for menu zoom so the visible label size clears 16px at 1080; keep one lime experience hero, as the style guide permits for a hero number. */
+#root #opane_rec .scard .sk{font-size:20px;min-height:50px;}
+#root #opane_rec .scard .ss{font-size:20px;line-height:1.4;}
+#root #opane_rec .scard .sv{font-size:36px;min-height:41.4px;}
+#root #opane_rec .scard .sv.word{min-height:41.4px;}
+#root #opane_rec .scard:nth-child(7) .sv{font-size:64px;}
+/* v28.xx (cw-cx-ucbody): Q8, with no logged runs the heading already says zero. Fold only the undefined/repeated run metrics and their empty explanations; the first real log row restores every metric automatically. */
+#root #opane_rec:not(:has(#loglist .runline)) #statgrid > .scard:nth-child(-n+14):not(:nth-child(6)):not(:nth-child(7)):not(:nth-child(8)){display:none;}
+#root #opane_rec:not(:has(#loglist .runline)) #statgrid > .scard:nth-child(7){order:-2;}
+#root #opane_rec:not(:has(#loglist .runline)) #statgrid > .scard:nth-child(8){order:-1;grid-column:span 1;}
+#root #opane_rec:not(:has(#loglist .runline)) #statgrid > .scard:nth-child(6){grid-column:span 1;}
+#root #opane_rec:not(:has(#loglist .runline)) > #loglist,#root #opane_rec:not(:has(#loglist .runline)) > .crlab{display:none !important;}
+#root #opane_rec .scard:nth-child(5) .ss:not(:has(br)){display:none;}
+/* v28.xx (cw-cx-ucbody): existing achievement name/goal pairs read as two columns of cards rather than four loose text cells; preserve earned state through its green edge. */
+#root #opane_rec #achlist{gap:12px 16px;}
+#root #opane_rec #achlist > div:not(:first-child){display:flex !important;flex-direction:column;gap:4px !important;min-height:76px;box-sizing:border-box;padding:12px 16px !important;background:var(--ui-panel);border:1px solid var(--ui-line-hi);border-left:3px solid var(--ui-line-hi);font-size:20px !important;}
+#root #opane_rec #achlist > div:not(:first-child) > span{flex:none !important;}
+#root #opane_rec #achlist > div:not(:first-child) > span:first-child{font:600 22px/1.2 var(--f-cond);color:var(--tx-1);}
+#root #opane_rec #achlist > div[style*="var(--amber)"]{border-left-color:var(--ok);}
+/* v28.xx (cw-cx-ucbody): a toast may cross the outer margin (style guide section 3); put it above these two cards so it cannot cover a goal or a control. Bar is already finished and is not restyled. */
+body:has(#gamblemodal.on) #hubtoast,body:has(#opmodal.on #opane_rec[style*="display: flex"]) #hubtoast{top:4px;bottom:auto;padding:6px 16px;font-size:18px;line-height:1.2;background:var(--ui-raised);}
+@media(max-width:1100px){
+  #root #opane_rec:not(:has(#loglist .runline)) #statgrid > .scard:nth-child(7),#root #opane_rec:not(:has(#loglist .runline)) #statgrid > .scard:nth-child(8),#root #opane_rec:not(:has(#loglist .runline)) #statgrid > .scard:nth-child(6){grid-column:1/-1;}
+}
+</style>
 <style id="pix-fashion-fit">
 /* v28.xx (cw-cx-pixrackfit): visible worn/focus states and four complete racks in the existing fashion columns. */
 #root #appearmodal.pixfashion > .msub,#root #appearmodal.pixfashion #apptabs{display:none !important}
@@ -3475,7 +3513,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='33.97';
+var VER='33.98';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -53492,7 +53530,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v33.97: Aligned headers, readable actions, a filling stats grid and one clear hero value in the existing windows. Check 33.97 fails on v33.96',
+  now:'v33.98: A large gamble heading and compact action, readable stats and paired achievements, with empty metrics folded until a real run exists. Check 33.98 fails on v33.97',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

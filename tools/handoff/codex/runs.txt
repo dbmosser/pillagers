@@ -304,3 +304,5 @@
 2026-10-22 01:43 87r-v3394-new-reds 550s ok PARTIAL in=18511683 out=65031 run=3
 2026-10-22 01:54 87r-v3394-new-reds 359s ok PARTIAL in=21057007 out=76155 run=4
 2026-10-22 05:09 87r-v3394-new-reds 449s ok PARTIAL in=22768867 out=85386 run=5
+2026-10-22 05:25 88-undercroft-windows 509s ok PARTIAL in=3426252 out=32685 run=4
+2026-10-22 05:27 88-undercroft-windows 84s ok PARTIAL in=4023584 out=35133 run=5
