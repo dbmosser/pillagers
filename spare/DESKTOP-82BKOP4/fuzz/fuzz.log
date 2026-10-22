@@ -24,3 +24,23 @@
 2026-10-21 22:32:35 raid 10 demo2p raidSeed=1088683978 map=0 god=0 sec=307 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=1557 score=0 ents=46 travelPx=14124 fires=25 menuPct=15 heapMB=66 p2=link_12s_join_21s_pad_own build=33.94
 2026-10-21 22:37:33 raid 13 demo2p raidSeed=935353084 map=0 god=0 sec=304 end=clock-end problems=0 newUnique=0 totalUnique=1 totalProblems=1 events=1623 score=0 ents=44 travelPx=16911 fires=71 menuPct=12 heapMB=74 p2=link_4s_join_10s_pad_own build=33.94
 2026-10-21 22:38:01 raid 11 demo2p raidSeed=1871337135 map=0 god=1 sec=307 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=1642 score=0 ents=56 travelPx=12488 fires=43 menuPct=16 heapMB=68 p2=link_5s_join_12s_pad_fwd build=33.94
+2026-10-21 22:42:54 raid 14 demo2p raidSeed=1036040489 map=0 god=0 sec=304 end=clock-end problems=0 newUnique=0 totalUnique=1 totalProblems=1 events=1841 score=0 ents=45 travelPx=12407 fires=67 menuPct=25 heapMB=51 p2=link_3s_join_10s_pad_fwd build=33.94
+2026-10-21 22:43:13 raid 12 demo1 raidSeed=307824335 map=0 god=0 sec=305 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=2644 score=0 ents=53 travelPx=17574 fires=24 menuPct=22 heapMB=63 p2= build=33.94
+2026-10-21 22:43:13 FUZZ END raids=12 problems=0 unique=0 reason=time minutes=59.1
+2026-10-21 22:43:32 raid 15 demo2p raidSeed=1402068516 map=0 god=0 sec=20 end=clock-end problems=0 newUnique=0 totalUnique=1 totalProblems=1 events=525 score=0 ents=54 travelPx=1367 fires=27 menuPct=0 heapMB=55 p2=link_5s_join_12s_pad_own build=33.94
+2026-10-21 22:43:32 FUZZ END raids=15 problems=1 unique=1 reason=time minutes=59.4
+2026-10-21 22:47:06 FUZZ START seed=21467746 minutes=60 raidsec=300 port=9331 srv=8806 build=33.94 maps=0
+2026-10-21 22:47:06 FUZZ START seed=21358042 minutes=60 raidsec=300 port=9332 srv=8806 build=33.94 maps=0
+2026-10-21 22:52:27 raid 1 demo2p raidSeed=1135069248 map=0 god=1 sec=306 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=1568 score=0 ents=55 travelPx=14343 fires=31 menuPct=25 heapMB=67 p2=link_4s_join_15s_pad_own build=33.94
+2026-10-21 22:52:29 raid 1 demo2p raidSeed=1450035865 map=0 god=1 sec=303 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=1546 score=0 ents=44 travelPx=15346 fires=37 menuPct=5 heapMB=68 p2=link_13s_join_19s_pad_fwd build=33.94
+2026-10-21 22:57:48 raid 2 demo2p raidSeed=368121312 map=0 god=0 sec=303 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=1785 score=0 ents=52 travelPx=17707 fires=50 menuPct=14 heapMB=69 p2=link_4s_join_11s_pad_own build=33.94
+2026-10-21 22:57:51 raid 2 demo2p raidSeed=2094645889 map=0 god=1 sec=305 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=1862 score=0 ents=51 travelPx=15347 fires=41 menuPct=19 heapMB=67 p2=link_5s_join_12s_pad_fwd build=33.94
+2026-10-21 23:03:05 raid 3 demo2p raidSeed=868970079 map=0 god=1 sec=303 end=clock-end problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=1889 score=0 ents=44 travelPx=17945 fires=69 menuPct=14 heapMB=70 p2=link_3s_join_8s_pad_fwd build=33.94
+2026-10-21 23:03:09 raid 3 demo2p raidSeed=1344621774 map=0 god=1 sec=305 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=1960 score=0 ents=51 travelPx=16932 fires=42 menuPct=16 heapMB=66 p2=link_3s_join_8s_pad_own build=33.94
+2026-10-21 23:03:37 raid 4 demo1 raidSeed=381103422 map=0 god=0 sec=25 end=hang problems=1 newUnique=1 totalUnique=2 totalProblems=2 events=36 score=0 ents=50 travelPx=493 fires=0 menuPct=0 heapMB=43 p2= build=33.94
+2026-10-21 23:05:41 raid 5 demo2p raidSeed=837389348 map=0 god=0 sec=46 end=poll problems=1 newUnique=1 totalUnique=3 totalProblems=3 events=8 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2=link_8s_join_35s_pad_own build=33.94
+2026-10-21 23:05:50 raid 4 demo1 raidSeed=1361951366 map=0 god=1 sec=153 end=ended problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=352 score=0 ents=53 travelPx=1461 fires=15 menuPct=22 heapMB=56 p2= build=33.94
+2026-10-21 23:07:35 FUZZ ERROR Unable to connect to the remote server at 205
+2026-10-21 23:07:36 FUZZ END raids=5 problems=3 unique=3 reason=ERROR: Unable to connect to the remote server minutes=20.9
+2026-10-21 23:11:01 raid 5 demo2p raidSeed=1284935051 map=0 god=1 sec=305 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=4879 score=0 ents=55 travelPx=22360 fires=83 menuPct=17 heapMB=73 p2=link_3s_join_6s_pad_fwd build=33.94
+2026-10-21 23:12:00 raid 6 demo2p raidSeed=1326541353 map=0 god=0 sec=55 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= build=33.94
