@@ -63,6 +63,10 @@ main{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1
 <div class="what">A program that runs all day and night with no Claude cost: it starts the crash-hunting robots, re-runs all the tests on new versions, backs up the game, and keeps the helpers going.</div>
 <div id="runner"></div></section>
 
+<section class="card"><h2>SPARE PC (JTPC)</h2>
+<div class="what">Your spare PC tests the game by itself: it re-runs all the tests on each new version and keeps two crash-hunting robots playing, so the VM's memory goes to the helpers. It never changes the game, and it uses no Claude.</div>
+<div id="spare"></div></section>
+
 <section class="card"><h2>QUESTIONS FOR YOU</h2>
 <div class="what">Only the questions that need you, in plain words. Claude writes and trims this list; the helpers' notes to Claude stay out of it.</div>
 <div id="qs"></div></section>
@@ -143,6 +147,20 @@ function aiHtml(a,p){
   o+='<div class="small" style="margin-top:10px">Not used, on purpose: Grok, Copilot, Perplexity, Venice, DeepSeek and the free API tiers (cost or quality; see tools/handoff/ai-services/research.md).</div>';
   return o;
 }
+// 10-21: the spare PC (JTPC). It reports through GitHub about every 5 to 15 minutes, so 45 minutes of silence means it is off or asleep.
+const dur=s=>s<5400?Math.round(s/60)+' minutes':(s/3600).toFixed(1)+' hours';
+function spareState(x){ if(!x||!x.host) return ['d','not set up yet']; const age=x.seenEpoch?Math.round(Date.now()/1000-x.seenEpoch):1e9;
+  return age<2700?['g','working, last report '+dur(age)+' ago',age]:['r','no report for '+dur(age)+' (off, asleep or at the sign-in screen?)',age]; }
+function spareHtml(x){
+  const [c,t]=spareState(x); if(!x||!x.host) return row('d',null,'Not set up yet. Its setup steps are in tools/spare/claude-setup.md.');
+  const v=(/v([\d.]+)/.exec(x.game)||[])[1], tr=/^running (?:corpus-\d{4}-(\d\d)(\d\d))?/.exec(x.testRun||'');
+  let o=row(c,null,'<b>'+(c==='g'?'Working':'<span class="warn">Quiet</span>')+'</b>: '+esc(t.replace(/^working, /,''))+'<div class="small">'+esc(x.host)+(x.ramFree?' &middot; '+esc(x.ramFree)+' GB memory free':'')+'</div>');
+  o+=row(tr?'g':'d',null,'<b>Full test re-run:</b> '+(tr?'running'+(tr[1]?' since '+tr[1]+':'+tr[2]:'')+(v?' on version '+esc(v):''):'waiting for the next new version'+(v?' (has version '+esc(v)+')':'')));
+  o+=row(x.robots?'g':'d',null,'<b>Crash-hunting robots:</b> '+(x.robots?x.robots+' playing now':'none playing')+'<div class="small">Today: '+x.raidsToday+' raids, '+(x.problemsToday?'<span class="warn">'+x.problemsToday+' problem'+(x.problemsToday>1?'s':'')+'</span> (Claude checks whether each is the game or the test)':'no problems')+'</div>');
+  o+=row(x.pushOk==='1'?'g':'a',null,'<b>Results to the VM:</b> '+(x.pushOk==='1'?'arriving':'its last upload try failed; it tries again on its next round'));
+  x.lastRaids.slice().reverse().forEach(l=>{ const m=/^\S+ (\d\d:\d\d)\S* raid \d+ (\S+) .*?end=(\S+) problems=(\d+)/.exec(l); if(m) o+=row(+m[4]?'a':'d',m[1],esc((m[2]==='demo2p'?'2-player demo':m[2]==='demo1'?'1-player demo':m[2])+' raid: '+(m[3]==='nostart'?'did not start':m[3]==='clock-end'||m[3]==='ended'?'played to the end':m[3])+(+m[4]?', '+m[4]+' problem'+(+m[4]>1?'s':''):''))); });
+  return o;
+}
 function crewHtml(d){
   const a=d.ai||{}, p=d.procs, L=d.lanes.filter(l=>l.lane!=='o'), busy=L.filter(l=>l.busy).length, alive=d.runnerAgeS!==null&&d.runnerAgeS<900;
   const lr=L.map(l=>laneLine(l.status)), rest=lr.find(x=>x[0]==='a');
@@ -153,6 +171,7 @@ function crewHtml(d){
   if(a.local) o+=svcRow(!a.local.up?'r':a.local.loaded.length?'g':'d','Local AI',!a.local.up?'Ollama not running':a.local.loaded.length?'thinking now':(a.local.pull&&a.local.pull!=='done')?'downloading the new model ('+esc(a.local.pull)+')':'idle');
   o+=svcRow(d.lockOwner?'b':'d','Quality check line',d.lockOwner?'testing a change now':'nobody in line');
   o+=svcRow(p.fuzz.length?'g':'d','Crash-hunting robots',p.fuzz.length?p.fuzz.length+' playing the game now':'none running');
+  { const [sc,stx]=spareState(d.spareInfo); o+=svcRow(sc,'Spare PC (JTPC)',esc(stx)); }
   o+=svcRow(alive?'g':'r','Background runner',alive?'running (backups, test re-runs, starting the helpers)':'<span class="warn">not running</span>');
   { const qn=(d.questions||[]).filter(q=>String(q).trim()&&!/^nothing for you/i.test(String(q).trim())).length;  // the "nothing for you" line is not a question
   o+=svcRow(qn?'a':'d','Waiting on you',qn?qn+' question'+(qn>1?'s':'')+' (see QUESTIONS FOR YOU)':'nothing'); }
@@ -163,7 +182,7 @@ async function tick(){
   TITLES=d.titles||{}; $('ver').textContent=d.ver; $('ships').textContent=d.shipsToday;
   const sb=d.stable||{}; $('stable').textContent=sb.version?('v'+sb.version+' ('+sb.at.slice(5)+')'+(sb.frozen?' frozen':'')):'none yet';
   const nf=/last (?:fetch|try) \d\d-\d\d (\d\d:\d\d)/.exec(d.notes||''), sp=d.spare||'', sl=/last seen \S+ (\d\d:\d\d)/.exec(sp);
-  $('links').textContent='Your notes from the main PC: '+(nf?'checked '+nf[1]:'not checked yet')+'. Spare PC: '+
+  $('links').textContent='Your notes from the main PC: '+(nf?'checked '+nf[1]:'not checked yet')+'. Spare PC (JTPC): '+
     (!sp||/not set up|no spare PC/.test(sp)?'not set up yet':/QUIET/.test(sp)?'quiet'+(sl?' since '+sl[1]:''):'working'+(sl?', last seen '+sl[1]:''))+'.';
   const rp=d.report; $('rep').textContent=rp?('Latest report ('+rp.name.replace(/\.html$/,'').slice(5)+')'):'Latest report (none yet)'; $('upd').textContent='Updated '+d.now+' (every 5 seconds)';
   $('lanes').innerHTML=(d.stopFile?row('r',null,'<b>All helpers are paused</b> because the STOP file is in tools/handoff/console. Delete it to restart them.'):'')+
@@ -188,7 +207,7 @@ async function tick(){
     (d.review.length?row('b',null,'<b>Nightly code review:</b> '+esc(d.review[d.review.length-1].replace(/^\S+ review: /,''))):'');
   if(d.plan) $('plan').innerHTML=planHtml(d.plan);
   if(d.ai) $('aisvc').innerHTML=aiHtml(d.ai,d.procs);
-  $('crew').innerHTML=crewHtml(d);
+  $('crew').innerHTML=crewHtml(d); $('spare').innerHTML=spareHtml(d.spareInfo);
   $('qs').innerHTML=d.questions.length?d.questions.map(q=>row('a',null,esc(q))).join(''):row('d',null,'No questions right now');
 }
 tick(); setInterval(tick,5000);

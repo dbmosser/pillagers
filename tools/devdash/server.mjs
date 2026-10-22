@@ -108,6 +108,22 @@ function ai() {
     reviews: revs.slice(0, 6), reviewsToday: revs.filter(r => new Date(r.at).toLocaleDateString('en-CA') === day).length,
     findings: tail(SR + '/findings.txt', 6) };
 }
+// 10-21, his "spare pc should be reflected in the dev dashboard" (he also calls the spare PC the JTPC): what it is doing, from what
+// tools/spare/spare-import.mjs brings in from the spare-results branch (live.txt, its status file, its robot log). Cached for a minute.
+const SPD = R + '/tools/handoff/spare';
+let spareCache = { t: 0, v: null };
+function spareInfo() {
+  if (spareCache.v && Date.now() - spareCache.t < 60e3) return spareCache.v;
+  const live = kv(SPD + '/live.txt'), host = /^[\w-]+$/.test(live.host || '') ? live.host : '';
+  const raw = host ? git(['cat-file', 'blob', 'refs/spare-import/spare-results:spare/' + host + '/status.txt']) : '';
+  const st = Object.fromEntries([...raw.replace(/\r?\n/g, ' ').matchAll(/(?:^|\s)(\w+)=(.*?)(?=\s+\w+=|\s*$)/g)].map(m => [m[1], m[2].trim()]));
+  const day = new Date().toLocaleDateString('en-CA'), L = host ? tail(SPD + '/' + host + '/fuzz.log', 600) : [];
+  const raids = L.filter(l => l.startsWith(day) && / raid \d+ /.test(l));
+  const v = { host, seenEpoch: +live.epoch || 0, game: st.game || '', testRun: st.test_run || '', robots: +st.robots || 0, ramFree: st.ram_free_gb || '', pushOk: st.push_ok || '',
+    raidsToday: raids.length, problemsToday: raids.reduce((s, l) => s + +((/ problems=(\d+)/.exec(l) || [0, 0])[1]), 0),
+    lastRaids: raids.slice(-4), lastEnd: L.filter(l => /FUZZ END/.test(l)).slice(-1)[0] || '' };
+  spareCache = { t: Date.now(), v }; return v;
+}
 function data() {
   const today = new Date().toLocaleDateString('en-CA'), cp = caps();
   const sp = rd(C + '/spend.txt').split(/\r?\n/).filter(Boolean).map(l => l.split(' '));
@@ -129,7 +145,7 @@ function data() {
   const st = kv(R + '/tools/handoff/stable.txt');
   // 10-20: his notes from the main PC (tools/fetch-notes.mjs, coord-01) and the spare PC (tools/spare/spare-import.mjs)
   const notes = rd(R + '/tools/handoff/notes-fetch.txt').trim().slice(0, 240), spare = rd(R + '/tools/handoff/spare-status.txt').trim().slice(0, 300);
-  return { now: new Date().toLocaleTimeString(), ver: ver(), shipsToday, cpu, notes, spare,
+  return { now: new Date().toLocaleTimeString(), ver: ver(), shipsToday, cpu, notes, spare, spareInfo: spareInfo(),
     stable: { version: st.version || '', at: st.at || '', address: st.address || '', frozen: existsSync(R + '/tools/handoff/stable.freeze') }, report: latestReport(), ramFree: +(os.freemem() / 2 ** 30).toFixed(1), ramTot: Math.round(os.totalmem() / 2 ** 30),
     procs, runnerAgeS: hb, lockOwner, titles, lanes, stopFile: existsSync(C + '/STOP'),
     spend: { real: !!real, today: +(real ? real.today_usd : spentToday0).toFixed(2), all: +(real ? real.month_usd : spentAll0).toFixed(2), total, share: +share.toFixed(2), daysLeft, end },
