@@ -1572,18 +1572,18 @@
  "j8-p1-sees-p2-lost": {
   "score": 2,
   "pass": false,
-  "verdict": "This raid HUD is readable and mostly lower case, but the centre column stacks four unrelated banners and every corner uses a different panel style, so the eye has no clear first stop and the 'p2 pad lost' alert barely registers.",
+  "need": 3,
+  "verdict": "The new 'p2 pad lost' tag is readable, but it sits in a crowded middle band of stacked toasts, and the HUD around it has inconsistent panels and type sizes and too much explaining text, so it reads as amateur, not polished.",
   "findings": [
-   "P0 top-centre and centre banner stack (team score, extract, chill row, golden enemy, stronghold, p2 pad lost): Show each message once. Drop the centre 'golden enemy' and 'stronghold' pills, since the toasts already carry them. Make 'p2 pad lost' a single 20px f-cond 600 line in --warn on a --ui-panel pill, with a 3px --warn left bar, at about 30% screen height, and keep nothing else near it.",
-   "P1 top-centre team score block: Use --fs-hero 56px for one number only (the timer or the score, not both). Set the split lines to 16px tx-2. Put 16px of padding above the block, and put the extract chip inside the same panel as a footer row with a 1px --ui-line divider.",
-   "P1 HUD panels: run info top-right, ammo bottom-right, hotbar, status bars bottom-left, map: Use one panel component everywhere: fill #16191b at 90%, 1px #4a5257 border, 4px radius, 16px padding, and no gradient. Reserve the 3px lime left tab for the one star panel, which is the ammo block.",
-   "P1 bottom-left status bars (armour 60, stamina, hp 100): Make all three bars 20px tall with 16px f-cond 600 labels placed outside the fill, in tx-1. Keep hp as the only large figure, at 32px. Use a 5% (54px) bottom and left margin, and an 8px gap between bars.",
-   "P1 toast list left (easy mode on / stronghold / golden enemy) and the 'the seal 0%' world label: Cap the toast list at one or two rows and drop the info glyph. Use tx-1 at 16px on --ui-panel pills. Make the zone name tx-1 with a text shadow, and use --extract teal only for the extraction elements. Remove the pink-purple colour."
+   "P1 center screen, below the top score block: 'golden enemy · kill it for the hoard', 'stronghold · 2 on the map', 'hold to breach', 'p2 pad lost': Hold one centred toast column at a single x, with 8px between toasts. Show only one or two at a time. Give 'p2 pad lost' priority: 20px text, a 3px --warn left bar, a --ui-raised fill, and the top slot. Collapse or delay the golden enemy and stronghold toasts while a device alert is up.",
+   "P1 left toast stack: 'partly cloudy · the weather will turn', 'easy mode on', 'stronghold · 2 on the map', 'golden enemy': Show each notice once, in one place. Delete 'the weather will turn' and 'kill it for the hoard'. Give every row the same icon slot and the same 3px bar. Keep a maximum of 2 visible notices.",
+   "P1 bottom centre: 'player 2 joined' tooltip, 'riot scattergun / fire / use' hint, and the hotbar: Put the hint line 16px above the hotbar, with 8px between key cap and label. Use the shared toast style for 'player 2 joined' and anchor it in the toast column, not on the hotbar. Set the hint text to at least 16px.",
+   "P1 HUD panels overall: score block, run info card, ammo card, player 2 bar, standing chip, 'extraction c available': Use one panel component for all of them: --ui-panel at 90%, 1px --ui-line-hi border, 4px radius, 16px padding. Use accent tabs only on the hero panels (score, ammo).",
+   "P2 top-right 'run info / run goals' card: Make the header 16px in --tx-2. Set goal names at 20px in --tx-1 and the rewards right-aligned in --acc at 16px. Align the top margin to the 5% safe margin (about 54px)."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-07-pad-lost-coordinator-check/j8-p1-sees-p2-lost-1080.jpg",
-  "task": "manual",
-  "when": "2026-10-21T04:05",
-  "need": 3
+  "pic": "tools/handoff/console/notes/shots/93-pad-lost-tag-recipes-1/j8-p1-sees-p2-lost-1080.jpg",
+  "task": "93-pad-lost-tag",
+  "when": "2026-10-22T12:10"
  },
  "j8-p2-pad-lost": {
   "score": 3,
@@ -1620,18 +1620,18 @@
  "j8-p2-sees-p1-lost": {
   "score": 2,
   "pass": false,
-  "verdict": "The \"p1 pad lost\" alert is a small amber tag floating in mid-screen between the storm hint and the walls. It is easy to miss, it has no glyph, and it sits beside several other floating tags, so the HUD reads as a pile of pills, not one clear layer.",
+  "need": 3,
+  "verdict": "The new 'p1 pad lost' tag is legible and sits in a sensible spot, but it is a small, low-weight toast crowded among a dozen other HUD elements. The raid HUD around it is cluttered and inconsistent: there are capitals on screen, a mix of type sizes, and corner panels that don't match each other.",
   "findings": [
-   "P0 \"p1 pad lost\" tag, centre of screen at about (960,285): Make it one dark --ui-panel card with a 3px --warn left bar, 32px f-cond title \"p1 pad lost\" in tx-1, and a 16px --tx-2 line \"reconnect pad\" below. Centre it at y≈30% with a 90ms bounce-in. Keep the pad glyph at 24px in --warn.",
-   "P1 Stack of pills in the top centre: team score, extract 133m, running slowly, p1 pad lost: Put them in one centred column of equal-width cards (280px) with 8px gaps and --rad 4px. Give all the same fill, #16191b at 90%, and a 1px --ui-line-hi border. Put alerts below status and use one fixed font size, 20px.",
-   "P1 Faded line \"storm · lightning shows you from farther off\" at y≈245: Delete the sentence. If a storm cue is needed, use the existing \"storm\" chip at bottom-left only, with 16px text on --ui-panel.",
-   "P1 Right column: minimap, run info, \"extraction c available\" tag: Make the heading 16px tx-2 and the rows 20px tx-1, with the reward \"+200 sp\" right-aligned in lime. Put the extraction tag inside a 24px-padded card of the same width as run info, 8px below it, and inset the minimap by 24px so it is not clipped.",
-   "P2 Bottom centre: \"in pillager's party\" tooltip over \"compact smg / fire / use\": Merge into one 16px line card 12px above the hotbar, with key caps drawn as 24px outlined squares. Raise the party text to 16px, or drop it, since the top-left player 1 label already says who is who."
+   "P0 hud, 'keyboard' badge top-left, 'in pillager's party' tooltip, 'player 1' label top-left: Set every HUD label to f-cond 600 at 16px with +.04em tracking, and make the 'keyboard' badge a --ui-panel fill with a 1px --ui-line-hi border and --tx-2 text. Remove the green outline and use one label style.",
+   "P0 top-right 'run info / run goals' panel: Keep one 16px --tx-2 header ('run goals'). Make the 3 goals 20px --tx-1 rows on an 8px grid with 24px padding, and put the sp reward right-aligned in --tx-2. Drop the redundant 'run info' line.",
+   "P1 'p1 pad lost' tag at center, about (880-1040, 340-380): Use a --ui-panel fill at 90% with a 1px --ui-line-hi border and a 3px --warn left tab. Set the text at 20px f-cond 600 --tx-1, with a 24px --warn pad glyph. Put it at least 24px clear of the other toasts, and stack toasts with the most urgent on top.",
+   "P1 center stack: 'extract 111m', 'running slowly', 'p1 pad lost', 'in pillager's party', 'auto rifle fire use': Use one toast component: --rad 4px, --ui-panel fill, 8px gap between toasts. Delete the 'in pillager's party' tooltip, or move it to the p2 name tag. Put 'fire' and 'use' key hints in a single 16px row with 8px gaps and no overlap.",
+   "P1 bottom-left status block (standing, armour 60, stamina, hp 100): Make all bars 24px tall with 8px gaps in one --ui-panel container. Put hp text in --tx-1 or --acc-ink on its fill, set the labels at 16px, and drop the 'standing' box to a plain 16px --tx-2 label."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-07-pad-lost-coordinator-check/j8-p2-sees-p1-lost-1080.jpg",
-  "task": "manual",
-  "when": "2026-10-21T04:06",
-  "need": 3
+  "pic": "tools/handoff/console/notes/shots/93-pad-lost-tag-recipes-1/j8-p2-sees-p1-lost-1080.jpg",
+  "task": "93-pad-lost-tag",
+  "when": "2026-10-22T12:10"
  },
  "j7-hub-p1-pad-owner": {
   "score": 2,

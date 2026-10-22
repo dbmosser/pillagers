@@ -1,0 +1,7 @@
+v34.10: teammate pad lost priority
+
+The warning has a 32px primary text title, a wider 64px panel and 24px clearance from the centre notices.
+
+Check 34.10. Fails on v34.09.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

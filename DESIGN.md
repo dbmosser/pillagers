@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.10 - TEAMMATE PAD LOST PRIORITY
+
+Co-op hunt while he was away. The linked-window critic found the device warning weaker than the notices above it.
+
+MEASURED. Check 34.10 passes, and fails on v34.09.
 ## v34.09 - TEAMMATE PAD LOST TAG
 
 Co-op hunt while he was away. The teammate pad lost strip was lost beneath the centre message stack in both linked windows.

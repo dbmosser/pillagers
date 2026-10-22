@@ -1,1 +1,1 @@
-10-22 08:06 gate: shipping cw-cx-padlosttag (93-pad-lost-tag, codex)
+10-22 08:17 gate: shipping cw-cx-padlostfocus (93-pad-lost-tag, codex)

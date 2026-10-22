@@ -3516,7 +3516,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.09';
+var VER='34.10';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -53749,7 +53749,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.09: One dark warning panel with a 3px amber bar and 20px condensed words sits clear of the score and extract block. Check 34.09 fails on v34.08',
+  now:'v34.10: The warning has a 32px primary text title, a wider 64px panel and 24px clearance from the centre notices. Check 34.10 fails on v34.09',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -59169,23 +59169,23 @@ function netPadDead(){ return !!(NET.same&&NET.padHad&&NET.padOkAt!==undefined&&
 function netPadHud(){
   var t, w;
   // v28.xx (cw-cx-padlost): reuse the existing small HUD plate; the unaffected window keeps its raid running.
-  // v28.xx (cw-cx-padlosttag): one teammate warning, his words unchanged, clear of the top message and score stack.
+  // v28.xx (cw-cx-padlostfocus): one teammate warning, his words unchanged, clear of the top message and score stack.
   if(NET.padPeerLost&&G&&!G.over&&state==='raid'){
     t=NET.same==='host'?'p2 pad lost':'p1 pad lost';
     ctx.save();
     try{
-      var z=Math.max(0.75,Math.min(2.2,H/1080)), ph=48;
-      ctx.font=uiFont('body',1);
-      var pw=Math.ceil(ctx.measureText(t).width)+88;
+      var z=Math.max(0.75,Math.min(2.2,H/1080)), ph=64;
+      ctx.font=uiFont('title',1);
+      var pw=Math.max(280,Math.ceil(ctx.measureText(t).width)+112);
       var bottom=Math.max(HUDBOSSB,HUDGIFTB,HUDMSGB);
       if(SCOREBOX.g===G) bottom=Math.max(bottom,SCOREBOX.y+SCOREBOX.h);
-      var py=Math.max(H*0.30-ph*z/2,bottom+16*z);
+      var py=Math.max(H*0.30-ph*z/2,bottom+24*z);
       ctx.translate(W/2-pw*z/2,py); ctx.scale(z,z);
       uiPanel(ctx,0,0,pw,ph,UIC.warn);
       var icon=uiIconPath('controller');
-      if(icon){ ctx.save(); ctx.translate(16,12); ctx.strokeStyle=UIC.warn; ctx.lineWidth=2; ctx.stroke(icon); ctx.restore(); }
-      ctx.font=uiFont('body',1); ctx.textAlign='left'; ctx.textBaseline='middle';
-      ctx.fillStyle=UIC.warn; ctx.fillText(t,56,ph/2);
+      if(icon){ ctx.save(); ctx.translate(24,20); ctx.strokeStyle=UIC.warn; ctx.lineWidth=2; ctx.stroke(icon); ctx.restore(); }
+      ctx.font=uiFont('title',1); ctx.textAlign='left'; ctx.textBaseline='middle';
+      ctx.fillStyle=UIC.tx_1; ctx.fillText(t,64,ph/2);
     }finally{ ctx.restore(); }
     return t;
   }

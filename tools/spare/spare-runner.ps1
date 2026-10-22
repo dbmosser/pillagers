@@ -21,7 +21,8 @@
 # 10-22 IDLE MODE (his orders "When my main PC isn't being used, it should be used for testing too" and "its resources shouldn't be idle"):
 # on the MAIN PC (JUL26) this runner works from its own copy, C:\PillagersIdle\game, never his old C:\claudecode\dark raiders there. It
 # starts nothing until no key, mouse or game pad has been used for 15 minutes and 6 GB are free; it stops everything it started within
-# seconds of a touch (or under 2.5 GB free); and a build another PC is testing or has tested stays that PC's: here it gets robots only.
+# seconds of a touch (or under 4 GB free); and a build another PC is testing or has tested stays that PC's: here it gets robots only.
+# The VM's nights come first: from 22:40 to 23:10 it holds nothing, and until 06:45 it starts only with 10 GB free (see VMNight below).
 param([switch]$Once,[int]$FuzzMinutes=60,[int]$PublishMin=30)
 $ErrorActionPreference='Continue'
 $Idle=($env:COMPUTERNAME -eq 'JUL26')
@@ -98,6 +99,13 @@ public static bool PadInUse(){
 }
 function AwaySec(){ if([PillagersIdle.Input]::PadInUse()){ $script:padT=Get-Date }; return [Math]::Min([PillagersIdle.Input]::IdleSec(),((Get-Date)-$script:padT).TotalSeconds) }
 function FreeGB(){ $os=Get-CimInstance Win32_OperatingSystem -ErrorAction SilentlyContinue; if(-not $os){ return 0 }; return [Math]::Min($os.FreePhysicalMemory,$os.FreeVirtualMemory)/1MB }
+# 10-22 the VM's nights: the main PC's "VM night memory up" task (tools/migrate/host-night-memory.ps1) lends the VM up to 6 GB more at 23:00,
+# sized once from what is free right then, and takes it back from 06:00. Measured 10-20 and 10-21: 12.1 and 12.5 GB free at 23:00, VM 10 -> 16.
+# So from 22:40 to 23:10 this runner frees what it holds and starts nothing, and until 06:45 it starts only with 10 GB free (the VM did not
+# take its share). Once working it goes on down to 4 GB free, the margin that task keeps for this PC.
+function HourMin(){ return [int](Get-Date).ToString('HHmm') }
+function VMResizeSoon(){ $hm=HourMin; return ($hm -ge 2240 -and $hm -lt 2310) }
+function VMNight(){ $hm=HourMin; return ($hm -ge 2240 -or $hm -lt 645) }
 # ends only what this runner started: the test scripts run from C:\PillagersIdle, and the test Chromes (debug port and pillagers-cdp profile)
 function Stop-Work([string]$why){
   $n=0
@@ -114,7 +122,10 @@ function Watch([int]$sec){
   while((Get-Date) -lt $end){
     Start-Sleep -Seconds 5; $k++
     if((AwaySec) -lt 30){ Stop-Work 'he is back at the PC'; return }
-    if(($k % 6) -eq 0 -and (FreeGB) -lt 2.5){ Stop-Work 'under 2.5 GB free'; return }
+    if(($k % 6) -eq 0){
+      if((FreeGB) -lt 4){ Stop-Work 'under 4 GB free'; return }
+      if(VMResizeSoon){ Stop-Work 'the VM takes its night memory at 23:00'; return }
+    }
   }
 }
 
@@ -241,9 +252,10 @@ while($true){
   [IO.File]::WriteAllText($Hb,[string](Epoch),$Enc)
   if($Idle){
     # IDLE MODE: while he is at the PC (or memory is short) nothing runs; a look every 20 seconds, a status note when that changes
-    $away=AwaySec; $fg=FreeGB
-    if($away -lt 900 -or $fg -lt 6){
-      $pw=$(if($away -lt 900){ 'paused: he is using the PC' }else{ 'paused: under 6 GB free' })
+    $away=AwaySec; $fg=FreeGB; $vmn=VMNight
+    $ng=$(if(VMResizeSoon){ 999 }elseif($script:working){ 4 }elseif($vmn){ 10 }else{ 6 })
+    if($away -lt 900 -or $fg -lt $ng){
+      $pw=$(if($away -lt 900){ 'paused: he is using the PC' }elseif($vmn){ 'paused: the VM has the memory at night' }else{ 'paused: under 6 GB free' })
       if($script:working){ Stop-Work $pw }
       $pt=[long]('0'+(GetS 'pub_t'))
       if((GetS 'pause_why') -ne $pw -or ((Epoch)-$pt) -ge ($PublishMin*60)){

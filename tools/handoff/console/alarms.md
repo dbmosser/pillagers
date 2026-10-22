@@ -271,3 +271,5 @@ Correction: the copy to notes failed. The mk script is at C:/Users/VM Oct26/AppD
 
 2026-10-22, 92-hub-backpack-card: the mouse baseline was NOT STAGED (U.dep missing from the pad prelude); the critic scored a title screenshot, which is outside this task. The repaired camera-recipes.json stages the hub directly. If available, capture this corrected mouse baseline before shipping; otherwise keep the recorded failure and judge only a successfully staged backpack after shipping. Both pad baselines are valid. The critic typos/capital claims are visual misreads; source words remain correct and the lower-case text door remains in use.
 
+2026-10-22 93-pad-lost-tag: both v34.09 linked raid pictures score 2 despite zero camera lint. Out-of-scope critic findings need HUD owner review: duplicate golden enemy/stronghold notices in centre and left feed; stale party tooltip over belt hint; run info/run goals hierarchy; inconsistent legacy raid panels. Task 93 explicitly allows only teammate-tag restyling. Current follow-up increases that tag to a 32px title and 64px panel. Critic text is in notes/shots/93-pad-lost-tag-recipes-1/.
+
