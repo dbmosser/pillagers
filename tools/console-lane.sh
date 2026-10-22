@@ -76,10 +76,11 @@ retry(){ ls "$C/failed/"*.md 2>/dev/null | sort | while read -r f; do n=$(basena
 # 10-19 night (b-30 spent its last two runs, 12 and 18 seconds, only to say it waited on c-02, then went to failed/): a run that ends
 # TASK WAITING: OTHER-TASK-ID parks the job in blocked/ and does not count as a try (its spend line says NAME-wait). It comes back to
 # tasks/ once no list or lane holds the other job any more, or after BLOCK_MAX_H hours. release() runs at every pick, RAM or not.
+# 10-22 (coordinator): waiting/ counts as holding it too, as the jobs say ("in tasks/, waiting/ or running"); before, 86i was let out every pick, Codex parked it again at once, and lane o never reached the jobs behind it.
 stag(){ grep -q 'TASK WAITING: *[a-z0-9]' "$out" 2>/dev/null && ! grep -q 'TASK DONE' "$out" && echo "$name-wait" || echo "$name"; }
 release(){ local f n on age; for f in "$C/blocked/"*.md; do [ -f "$f" ] || continue; n=$(basename "$f" .md); on=$(tr -d '\r\n ' < "$C/blocked/$n.on" 2>/dev/null)
   age=$(( ( $(date +%s) - $(stat -c %Y "$f") ) / 3600 ))
-  if [ -n "$on" ] && [ "$age" -lt "$(cap BLOCK_MAX_H 6)" ] && { ls "$C/tasks/"*"$on"*.md >/dev/null 2>&1 || printf '%s\n' "$busy" | grep -qF -- "$on"; }; then continue; fi
+  if [ -n "$on" ] && [ "$age" -lt "$(cap BLOCK_MAX_H 6)" ] && { ls "$C/tasks/"*"$on"*.md >/dev/null 2>&1 || ls "$C/waiting/"*"$on"*.md >/dev/null 2>&1 || printf '%s\n' "$busy" | grep -qF -- "$on"; }; then continue; fi
   mv "$f" "$C/tasks/" && rm -f "$C/blocked/$n.on" && echo "$(date '+%m-%d %H:%M') $n: back in tasks/ (it waited on ${on:-nothing named}, ${age} h)" >> "$C/runs.log"; done; }
 # 10-18 08:10: two lanes picked the same job in the same second; picking is now one lane at a time (pick.lock, stale after 60 s)
 for i in $(seq 1 30); do mkdir "$C/pick.lock" 2>/dev/null && break; [ -n "$(find "$C/pick.lock" -maxdepth 0 -mmin +1 2>/dev/null)" ] && rm -rf "$C/pick.lock"; sleep 2; done
