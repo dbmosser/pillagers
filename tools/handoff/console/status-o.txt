@@ -1,1 +1,1 @@
-10-22 07:07 gate: shipping cw-cx-sideglyphs (90-colour-cue-backups, codex)
+10-22 07:12 gate: shipping cw-cx-minicues (90-colour-cue-backups, codex)

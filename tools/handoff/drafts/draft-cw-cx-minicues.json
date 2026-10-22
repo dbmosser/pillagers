@@ -1,0 +1,72 @@
+{
+    "title":  "MINIMAP MARKS READ WITHOUT COLOUR",
+    "why":  "Greyscale audit: dots, state colours, identical pings and distant arrows lose their meaning. His 2.79 a requires always on shape backups.",
+    "now":  "Enemies are triangles, allies plus signs and downed allies crosses. Doors, extraction states, pings and distant objectives have distinct shapes.",
+    "edits":  [
+                  {
+                      "anchor":  "function mmArrow(s,R,col){\n  ctx.save(); ctx.translate(s.x,s.y); ctx.rotate(s.a);\n  ctx.beginPath(); ctx.moveTo(6*R,0); ctx.lineTo(-4*R,5*R); ctx.lineTo(-2*R,0); ctx.lineTo(-4*R,-5*R); ctx.closePath();\n  ctx.lineJoin=\u0027round\u0027; ctx.lineWidth=2*R; ctx.strokeStyle=INK; ctx.stroke(); ctx.fillStyle=col; ctx.fill();\n  ctx.restore(); MMAP.ops+=2; MMAP.got.pins++;\n}",
+                      "replacement":  "// v28.xx (cw-cx-minicues), his 2.79 a: static shapes back up minimap colours; existing pulse rates and visibility stay unchanged.\nfunction mmDoorMark(s,R,open,c){\n  c=c||ctx;c.save();c.fillStyle=INK;c.fillRect(s.x-4.5*R,s.y-4.5*R,9*R,9*R);\n  if(open){c.strokeStyle=\u0027#efe9dc\u0027;c.lineWidth=1.8*R;c.strokeRect(s.x-3*R,s.y-3*R,6*R,6*R);}\n  else{c.fillStyle=UIC.acc;c.fillRect(s.x-3*R,s.y-3*R,6*R,6*R);}\n  c.restore();MMAP.ops+=2;\n}\nfunction mmSealMark(s,R,done,col,c){\n  c=c||ctx;c.save();c.beginPath();c.moveTo(s.x,s.y-6*R);c.lineTo(s.x+6*R,s.y);c.lineTo(s.x,s.y+6*R);c.lineTo(s.x-6*R,s.y);c.closePath();\n  c.fillStyle=done?col:INK;c.fill();c.lineWidth=2*R;c.strokeStyle=col;c.stroke();c.restore();MMAP.ops+=2;\n}\nfunction mmExtractRing(s,R,col,rad,st,c){\n  c=c||ctx;c.save();c.strokeStyle=col;c.lineWidth=2*R;\n  if(st===\u0027closing\u0027)c.setLineDash([3*R,2*R]);\n  c.beginPath();c.arc(s.x,s.y,rad,0,6.2832);\n  if(st===\u0027closed\u0027){\n    c.moveTo(s.x-rad*.6,s.y-rad*.6);c.lineTo(s.x+rad*.6,s.y+rad*.6);\n    c.moveTo(s.x+rad*.6,s.y-rad*.6);c.lineTo(s.x-rad*.6,s.y+rad*.6);\n  }else if(st===\u0027inbound\u0027){\n    c.moveTo(s.x-3*R,s.y-rad-3*R);c.lineTo(s.x-3*R,s.y-rad+3*R);\n    c.moveTo(s.x+3*R,s.y-rad-3*R);c.lineTo(s.x+3*R,s.y-rad+3*R);\n  }else if(st===\u0027live\u0027){c.moveTo(s.x+rad+3*R,s.y);c.arc(s.x,s.y,rad+3*R,0,6.2832);}\n  c.stroke();c.restore();MMAP.ops++;\n}\nfunction mmArrow(s,R,col,kind,detail){\n  ctx.save();ctx.translate(s.x,s.y);ctx.rotate(s.a);\n  ctx.beginPath();ctx.moveTo(6*R,0);ctx.lineTo(-4*R,5*R);ctx.lineTo(-2*R,0);ctx.lineTo(-4*R,-5*R);ctx.closePath();\n  ctx.lineJoin=\u0027round\u0027;ctx.lineWidth=2*R;ctx.strokeStyle=INK;ctx.stroke();ctx.fillStyle=col;ctx.fill();ctx.restore();\n  MMAP.ops+=2;MMAP.got.pins++;\n  if(!kind)return;\n  var r=MMAP.markRect,slots=MMAP.pinSlots||(MMAP.pinSlots=[]),baseX=s.x-Math.cos(s.a)*16*R,baseY=s.y-Math.sin(s.a)*16*R,bx=baseX,by=baseY,i,j,off,clear;\n  for(i=0;i\u003c15;i++){\n    off=i?Math.ceil(i/2)*18*R*(i%2?1:-1):0;\n    bx=baseX-Math.sin(s.a)*off;by=baseY+Math.cos(s.a)*off;\n    if(r){bx=clamp(bx,r.x+12*R,r.x+r.w-12*R);by=clamp(by,r.y+12*R,r.y+r.h-12*R);}\n    clear=true;for(j=0;j\u003cslots.length;j++)if(Math.hypot(slots[j].x-bx,slots[j].y-by)\u003c16*R){clear=false;break;}\n    if(clear)break;\n  }\n  slots.push({x:bx,y:by});\n  ctx.save();ctx.globalAlpha=1;ctx.strokeStyle=\u0027#aaa498\u0027;ctx.lineWidth=R;ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(bx,by);ctx.stroke();\n  colourCueGlyph(ctx,kind,bx,by,.85*R,col);\n  if(kind===\u0027exit\u0027\u0026\u0026detail!==\u0027open\u0027)mmExtractRing({x:bx,y:by},.7*R,col,7*R,detail);\n  ctx.restore();MMAP.ops+=4;\n}"
+                  },
+                  {
+                      "anchor":  "  var got=MMAP.got={zones:[],seal:null,forge:null,doors:0,mates:0,foes:[],pins:0,wp:null};",
+                      "replacement":  "  var got=MMAP.got={zones:[],seal:null,forge:null,doors:0,mates:0,foes:[],pins:0,wp:null};\n  MMAP.markRect=r;MMAP.pinSlots=[]; // v28.xx (cw-cx-minicues): keep adjacent edge badges apart inside the clip."
+                  },
+                  {
+                      "anchor":  "    ctx.fillStyle=INK; ctx.fillRect(s.x-4.5*R,s.y-4.5*R,9*R,9*R);\n    ctx.fillStyle=q.open?HUDC.gain:UIC.acc; ctx.fillRect(s.x-3*R,s.y-3*R,6*R,6*R); MMAP.ops+=2; got.doors++;",
+                      "replacement":  "    mmDoorMark(s,R,q.open);got.doors++; // v28.xx (cw-cx-minicues): open is hollow, locked is solid."
+                  },
+                  {
+                      "anchor":  "    if(s.out){ if(st!==\u0027closed\u0027){ ctx.globalAlpha=a; mmArrow(s,R,col); ctx.globalAlpha=1; } continue; }",
+                      "replacement":  "    if(s.out){if(st!==\u0027closed\u0027){ctx.globalAlpha=a;mmArrow(s,R,col,\u0027exit\u0027,st);ctx.globalAlpha=1;}continue;}"
+                  },
+                  {
+                      "anchor":  "    ctx.globalAlpha=a; ctx.strokeStyle=col; ctx.lineWidth=2*R; ctx.beginPath(); ctx.arc(s.x,s.y,rad,0,6.2832);\n    if(st===\u0027closed\u0027){ ctx.moveTo(s.x-rad*0.6,s.y-rad*0.6); ctx.lineTo(s.x+rad*0.6,s.y+rad*0.6); ctx.moveTo(s.x+rad*0.6,s.y-rad*0.6); ctx.lineTo(s.x-rad*0.6,s.y+rad*0.6); }\n    ctx.stroke(); MMAP.ops++;",
+                      "replacement":  "    ctx.globalAlpha=a;mmExtractRing(s,R,col,rad,st);"
+                  },
+                  {
+                      "anchor":  "    if(s.out){ if(!G.seal.done){ mmArrow(s,R,col); got.seal=\u0027pin\u0027; } }",
+                      "replacement":  "    if(s.out){if(!G.seal.done){mmArrow(s,R,col,\u0027seal\u0027);got.seal=\u0027pin\u0027;}}"
+                  },
+                  {
+                      "anchor":  "      ctx.beginPath(); ctx.moveTo(s.x,s.y-6*R); ctx.lineTo(s.x+6*R,s.y); ctx.lineTo(s.x,s.y+6*R); ctx.lineTo(s.x-6*R,s.y); ctx.closePath();\n      ctx.lineWidth=2*R; ctx.strokeStyle=INK; ctx.stroke(); ctx.fillStyle=col; ctx.fill(); MMAP.ops+=2; got.seal=\u0027in\u0027;",
+                      "replacement":  "      mmSealMark(s,R,G.seal.done,col);got.seal=\u0027in\u0027; // v28.xx (cw-cx-minicues): pending hollow, broken filled."
+                  },
+                  {
+                      "anchor":  "    if(s.out){ mmArrow(s,R,FORGE_GOLD); got.forge=\u0027pin\u0027; }",
+                      "replacement":  "    if(s.out){mmArrow(s,R,FORGE_GOLD,\u0027forge\u0027);got.forge=\u0027pin\u0027;}"
+                  },
+                  {
+                      "anchor":  "      if(s.out){ mmArrow(s,R,\u0027#bfe0ff\u0027); continue; }",
+                      "replacement":  "      if(s.out){mmArrow(s,R,\u0027#bfe0ff\u0027,\u0027partywaypoint\u0027);continue;}"
+                  },
+                  {
+                      "anchor":  "      ctx.beginPath(); ctx.moveTo(s.x,s.y-5*R); ctx.lineTo(s.x+4*R,s.y); ctx.lineTo(s.x,s.y+5*R); ctx.lineTo(s.x-4*R,s.y); ctx.closePath(); ctx.fill(); MMAP.ops++;",
+                      "replacement":  "      colourCueGlyph(ctx,q.dg?\u0027danger\u0027:q.pl?\u0027loot\u0027:q.w?\u0027target\u0027:\u0027place\u0027,s.x,s.y,.85*R,ctx.fillStyle);MMAP.ops+=3;"
+                  },
+                  {
+                      "anchor":  "    if(s.out) mmArrow(s,R,UIC.acc);",
+                      "replacement":  "    if(s.out)mmArrow(s,R,UIC.acc,\u0027waypoint\u0027);"
+                  },
+                  {
+                      "anchor":  "    for(i=0;i\u003cfoes.length;i++){ ctx.moveTo(foes[i].x+4*R,foes[i].y); ctx.arc(foes[i].x,foes[i].y,4*R,0,6.2832); }",
+                      "replacement":  "    // v28.xx (cw-cx-minicues): visible enemies are triangles, allies plus signs; keep the existing VIS-only list.\n    for(i=0;i\u003cfoes.length;i++){ctx.moveTo(foes[i].x,foes[i].y-5*R);ctx.lineTo(foes[i].x+4.5*R,foes[i].y+4*R);ctx.lineTo(foes[i].x-4.5*R,foes[i].y+4*R);ctx.closePath();}"
+                  },
+                  {
+                      "anchor":  "    ctx.lineWidth=2*R; ctx.strokeStyle=INK; ctx.stroke(); ctx.fillStyle=HUDC.danger; ctx.fill(); MMAP.ops+=2;",
+                      "replacement":  "    ctx.lineWidth=2*R;ctx.strokeStyle=\u0027#efe9dc\u0027;ctx.stroke();ctx.fillStyle=HUDC.danger;ctx.fill();MMAP.ops+=2;"
+                  },
+                  {
+                      "anchor":  "    if(s.out){ mmArrow(s,R,col); continue; }",
+                      "replacement":  "    if(s.out){mmArrow(s,R,col,q.dn?\u0027down\u0027:\u0027ally\u0027);continue;}"
+                  },
+                  {
+                      "anchor":  "    ctx.fillStyle=INK; ctx.beginPath(); ctx.arc(s.x,s.y,6*R,0,6.2832); ctx.fill();\n    ctx.fillStyle=col; ctx.beginPath(); ctx.arc(s.x,s.y,4.2*R,0,6.2832); ctx.fill(); MMAP.ops+=2;",
+                      "replacement":  "    colourCueGlyph(ctx,q.dn?\u0027down\u0027:\u0027ally\u0027,s.x,s.y,.85*R,col);MMAP.ops+=3;"
+                  },
+                  {
+                      "anchor":  "    ctx.fillStyle=p.dg?\u0027#ff4a3a\u0027:(p.w?\u0027#ff8a3c\u0027:\u0027#6fe0ff\u0027); ctx.beginPath(); ctx.moveTo(px,py-6); ctx.lineTo(px+5,py); ctx.lineTo(px,py+6); ctx.lineTo(px-5,py); ctx.closePath(); ctx.fill();",
+                      "replacement":  "    colourCueGlyph(ctx,p.dg?\u0027danger\u0027:p.pl?\u0027loot\u0027:p.w?\u0027target\u0027:\u0027place\u0027,px,py,Math.max(1,hudRes()),p.dg?\u0027#ff4a3a\u0027:p.w?\u0027#ff8a3c\u0027:\u0027#6fe0ff\u0027); // v28.xx (cw-cx-minicues): the same ping shapes on the sector map."
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027minimap colours have static shapes for sides, downed allies, pings, doors, extraction states, seals and edge objectives\u0027,\n   run:function(){\n     if(typeof mmExtractRing!==\u0027function\u0027)return \u0027extraction states have no static shape backup\u0027;\n     var g,p,oldGlyph=colourCueGlyph,oldShown=netUpShown,oldVis=VIS,oldUp=NET.up,oldPings=NET.pings,oldWps=NET.wps,seen=[],rings=[],oldRing=mmExtractRing,cv2=document.createElement(\u0027canvas\u0027),c,states=[\u0027open\u0027,\u0027closing\u0027,\u0027inbound\u0027,\u0027live\u0027,\u0027closed\u0027],sigs=[],i,j,bytes,sig,d;\n     try{\n       __runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();__deploy({kit:[\u0027gun_rifle\u0027],seed:4242,mapIx:0});g=__state();p=g.player;\n       cv2.width=90;cv2.height=90;c=cv2.getContext(\u00272d\u0027);\n       mmDoorMark({x:45,y:45},1,true,c);d=c.getImageData(45,45,1,1).data;if(d[0]\u003e40)return \u0027open door has no hollow centre\u0027;\n       mmDoorMark({x:45,y:45},1,false,c);d=c.getImageData(45,45,1,1).data;if(d[0]\u003c80)return \u0027locked door has no filled centre\u0027;\n       c.clearRect(0,0,90,90);mmSealMark({x:45,y:45},1,false,\u0027#efe9dc\u0027,c);d=c.getImageData(45,45,1,1).data;if(d[0]\u003e40)return \u0027pending seal has no hollow centre\u0027;\n       mmSealMark({x:45,y:45},1,true,\u0027#efe9dc\u0027,c);d=c.getImageData(45,45,1,1).data;if(d[0]\u003c200)return \u0027broken seal has no filled centre\u0027;\n       for(i=0;i\u003cstates.length;i++){\n         c.clearRect(0,0,90,90);mmExtractRing({x:45,y:45},1,\u0027#efe9dc\u0027,18,states[i],c);bytes=c.getImageData(0,0,90,90).data;sig=\u0027\u0027;\n         for(j=3;j\u003cbytes.length;j+=4)sig+=bytes[j]\u003e180?\u00271\u0027:\u00270\u0027;\n         if(sigs.indexOf(sig)\u003e=0)return \u0027two extraction states have the same static shape\u0027;sigs.push(sig);\n       }\n       colourCueGlyph=function(c,k,x,y,R,col){seen.push(k);return oldGlyph.apply(this,arguments);};\n       mmExtractRing=function(s,R,col,rad,st,c){rings.push(st);return oldRing.apply(this,arguments);};\n       netUpShown=function(q){return !!q.cueTest;};\n       NET.up=[{cueTest:1,x:p.x+100,y:p.y+80,f:0,dn:0},{cueTest:1,x:p.x-100,y:p.y+80,f:0,dn:1}];\n       NET.pings=[{x:p.x,y:p.y+100,dg:1},{x:p.x+60,y:p.y+100,w:\u0027sentry\u0027},{x:p.x-60,y:p.y+100},{x:p.x-120,y:p.y+100,pl:1,w:\u0027scrap\u0027}];\n       NET.wps={1:{x:p.x+3000,y:p.y}};g.waypoint={x:p.x+3000,y:p.y+50};\n       g.seal={x:p.x+3000,y:p.y+100,done:false};g.forge={x:p.x+3000,y:p.y+150};\n       g.zones=states.map(function(st,i){return {x:p.x+3000,y:p.y-200+i*50,r:30,open:st!==\u0027closed\u0027,beaconT:st===\u0027inbound\u0027?12:st===\u0027live\u0027?0:null,hold:st===\u0027live\u0027?5:null,closeAt:st===\u0027closing\u0027?g.timeLeft-10:undefined};});\n       g.map.locked=[{x:p.x-100,y:p.y,w:40,h:40,open:false},{x:p.x+100,y:p.y,w:40,h:40,open:true}];\n       VIS=[{kind:\u0027sentry\u0027,hp:100,x:p.x+150,y:p.y-80},{kind:\u0027raider\u0027,hp:100,x:p.x+120,y:p.y-60,merc:true}];\n       mmMarks({x:200,y:200,w:300,h:300},.3,1);\n       for(i=0;i\u003c10;i++)if(seen.indexOf([\u0027ally\u0027,\u0027down\u0027,\u0027danger\u0027,\u0027target\u0027,\u0027place\u0027,\u0027loot\u0027,\u0027partywaypoint\u0027,\u0027waypoint\u0027,\u0027seal\u0027,\u0027forge\u0027][i])\u003c0)return \u0027missing glyph \u0027+[\u0027ally\u0027,\u0027down\u0027,\u0027danger\u0027,\u0027target\u0027,\u0027place\u0027,\u0027loot\u0027,\u0027partywaypoint\u0027,\u0027waypoint\u0027,\u0027seal\u0027,\u0027forge\u0027][i];\n       if(MMAP.got.foes.length!==1||MMAP.got.foes[0]!==VIS[0])return \u0027the minimap changed its hostile visibility filter\u0027;\n       if(MMAP.got.doors!==2||MMAP.got.mates!==2)return \u0027doors or teammates were lost\u0027;\n       for(i=1;i\u003c4;i++)if(rings.indexOf(states[i])\u003c0)return \u0027missing offscreen extraction state \u0027+states[i];\n       seen=[];netWpMapDraw(0,0,.1);for(i=0;i\u003c4;i++)if(seen.indexOf([\u0027danger\u0027,\u0027target\u0027,\u0027place\u0027,\u0027loot\u0027][i])\u003c0)return \u0027sector map ping shape missing\u0027;\n       return null;\n     }finally{colourCueGlyph=oldGlyph;mmExtractRing=oldRing;netUpShown=oldShown;VIS=oldVis;NET.up=oldUp;NET.pings=oldPings;NET.wps=oldWps;try{__endRaid(\u0027abandon\u0027);}catch(_e){}__topClear();}\n   }},"
+}

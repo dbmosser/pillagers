@@ -1,0 +1,5 @@
+## v34.05 - MINIMAP MARKS READ WITHOUT COLOUR
+
+Co-op hunt while he was away. Greyscale audit: dots, state colours, identical pings and distant arrows lose their meaning. His 2.79 a requires always on shape backups.
+
+MEASURED. Check 34.05 passes, and fails on v34.04.
