@@ -117,8 +117,10 @@ function Start-Robot([int]$port,[string]$copy){
 function Write-Status([string]$corpus,[int]$robots){
   $os=Get-CimInstance Win32_OperatingSystem -ErrorAction SilentlyContinue
   $free=if($os){ [math]::Round($os.FreePhysicalMemory/1MB,1) }else{ '?' }
-  $L=@('host='+$HostN,'seen='+(Get-Date).ToString('yyyy-MM-dd HH:mm'),'epoch='+(Epoch),'game='+(G -C $R rev-parse --short=8 HEAD)+' v'+(GameVer),
-    'test_run='+$corpus,'robots='+$robots,'ram_free_gb='+$free,'push_ok='+(GetS 'push_ok'),'runner='+$SelfHash.Substring(0,8))
+  # 10-21: each pair in its own brackets. PowerShell's comma binds before +, so the old list was ONE string joined with spaces and the
+  # VM's import never found epoch= (it read the spare PC as never seen).
+  $L=@(('host='+$HostN),('seen='+(Get-Date).ToString('yyyy-MM-dd HH:mm')),('epoch='+(Epoch)),('game='+(G -C $R rev-parse --short=8 HEAD)+' v'+(GameVer)),
+    ('test_run='+$corpus),('robots='+$robots),('ram_free_gb='+$free),('push_ok='+(GetS 'push_ok')),('runner='+$SelfHash.Substring(0,8)))
   [IO.File]::WriteAllLines($StatusF,[string[]]$L,$Enc)
 }
 

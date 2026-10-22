@@ -41,7 +41,10 @@ const hosts = {};
 for (const f of git(['ls-tree', '-r', '--name-only', REF, '--', 'spare/']).split('\n').filter(Boolean)) {
   const m = /^spare\/([A-Za-z0-9_.-]{1,40})\/(.+)$/.exec(f); if (m) (hosts[m[1]] ||= []).push(m[2]);
 }
-const kv = (t) => Object.fromEntries(t.split(/\r?\n/).map((l) => /^(\w+)=(.*)$/.exec(l.trim())).filter(Boolean).map((m) => [m[1], m[2]]));
+// 10-21 (coordinator): also reads the pairs when they come on one line. The first spare runner wrote its whole status as one line
+// ("host=... seen=2026-10-21 23:17 epoch=..."; PowerShell's comma binds before +), so epoch was never read, live.txt never written,
+// and the VM ran its own full test run beside the spare's. A value runs up to the next " word=".
+const kv = (t) => Object.fromEntries([...t.replace(/\r?\n/g, ' ').matchAll(/(?:^|\s)(\w+)=(.*?)(?=\s+\w+=|\s*$)/g)].map((m) => [m[1], m[2].trim()]));
 let seen = 0, seenHost = '', seenSt = {};
 const got = [], bad = [];
 fs.mkdirSync(S, { recursive: true });
