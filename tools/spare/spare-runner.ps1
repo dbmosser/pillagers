@@ -199,6 +199,13 @@ function Start-Corpus(){
       if((GetS 'fx_blob') -ne $blob -and (Build-Fixture)){ Copy-Item -LiteralPath ($T+'\fixture.html') -Destination ($T+'\fxcorpus.html') -Force; PutS 'fx_blob' $blob; Say ('build '+$head.Substring(0,8)+' (v'+(GameVer)+'): robots only until the morning, a full run would not end before 22:40') }
       return
     }
+    # 10-22 12:03: the first full run here (with two robots) took this PC from 8.4 GB free to under 4 within a minute and was stopped,
+    # spending a try. By day this PC has about 8 to 9 GB free while he is away (the VM holds 10), so a full run starts only with 10 GB free;
+    # otherwise the robots get the build and no try is spent.
+    if((FreeGB) -lt 10){
+      if((GetS 'fx_blob') -ne $blob -and (Build-Fixture)){ Copy-Item -LiteralPath ($T+'\fixture.html') -Destination ($T+'\fxcorpus.html') -Force; PutS 'fx_blob' $blob; Say ('build '+$head.Substring(0,8)+' (v'+(GameVer)+'): robots only, a full run needs 10 GB free here') }
+      return
+    }
   }
   $tries=0; if((GetS 'try_blob') -eq $blob){ $tries=[int]('0'+(GetS 'tries')) }
   if($tries -ge 2){ return }   # this build failed twice to give a full run; wait for the next one
