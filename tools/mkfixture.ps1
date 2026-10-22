@@ -6154,6 +6154,26 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.12',what:'both teammate pad lost tags draw a visible 24px controller glyph in warn with a 2px stroke',
+   run:function(){
+     var nk=Object.assign({},NET), stroke=ctx.stroke, rec=[], bad=[], g, icon=uiIconPath('controller');
+     try{
+       __runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();
+       __deploy({kit:['gun_rifle'],safe:null,mapIx:0,seed:4242});g=__state();__topClear();
+       if(!icon)return 'controller path is missing';
+       ctx.stroke=function(p){if(p===icon){var m=ctx.getTransform(),s=Math.hypot(m.a,m.b)/(DPR||1);rec.push({w:18*s,line:ctx.lineWidth*s,c:ctx.strokeStyle});}return stroke.apply(this,arguments);};
+       ['host','p2'].forEach(function(side){
+         NET.same=side;NET.pair='pad-glyph-check';NET.padPeerLost=true;rec=[];
+         var t=netPadHud(),z=Math.max(.75,Math.min(2.2,H/1080)),r=rec[0];
+         if(t!==(side==='host'?'p2 pad lost':'p1 pad lost')||rec.length!==1){bad.push(side+': missing one controller glyph');return;}
+         if(Math.abs(r.w-24*z)>.1||Math.abs(r.line-2*z)>.1||r.c!==UIC.warn)bad.push(side+': controller glyph width/stroke/colour is wrong ('+r.w+', '+r.line+', '+r.c+')');
+       });
+       return bad.length?bad.join('; '):null;
+     }finally{
+       ctx.stroke=stroke;try{__endRaid('abandon');}catch(e){}__topClear();
+       Object.keys(NET).forEach(function(k){delete NET[k];});Object.assign(NET,nk);
+     }
+   }},
   {v:'34.11',what:'the what is new card is stamped with this build or later and still shows the three short lowercase real notes',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnList!=='function') return 'SKIP: this build has no what is new card';

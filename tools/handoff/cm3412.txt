@@ -1,0 +1,7 @@
+v34.12: teammate pad lost glyph
+
+The teammate warning controller drawing is 24px wide with the same 2px stroke.
+
+Check 34.12. Fails on v34.11.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
