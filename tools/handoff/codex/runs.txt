@@ -340,3 +340,9 @@
 2026-10-22 10:03 86f-pix-machines 82s ok DONE in=213057 out=1927 run=1
 2026-10-22 10:08 96-demo-easy-card-and-board-words 296s ok PARTIAL in=576724 out=9585 run=1
 2026-10-22 10:11 96-demo-easy-card-and-board-words 128s ok PARTIAL in=1184656 out=13262 run=2
+2026-10-22 10:20 96-demo-easy-card-and-board-words 115s ok PARTIAL in=1868417 out=16344 run=3
+2026-10-22 10:24 96-demo-easy-card-and-board-words 84s ok DONE in=2226466 out=18754 run=4
+2026-10-22 10:27 86g-pix-pillager-states 196s ok PARTIAL in=528700 out=10397 run=1
+2026-10-22 10:34 86g-pix-pillager-states 183s ok PARTIAL in=1301422 out=19192 run=2
+2026-10-22 10:38 86g-pix-pillager-states 97s ok DONE in=2263524 out=23228 run=3
+2026-10-22 10:47 86h-pix-sets-wardrobe 544s ok PARTIAL in=1644303 out=15873 run=1

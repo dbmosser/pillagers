@@ -28,3 +28,29 @@ Expanded local validation to compile the complete generated fixture with the new
 
 Same key remains in keys.txt. The lane still needs to rerun preflight, ship, take the four requested pictures and obtain critic results.
 
+
+--- codex run 2026-10-22 10:20 ---
+2026-10-22, third Codex run. cw-cx-easymapwords shipped as v34.17.
+
+Looked at all four round-1 pictures. The solo run-over picture shows the correct "tonight's best" heading. The other three pictures show the wrong screens: the manually staged arcade had ownAt=0, so its background idle tick immediately ended the host raid or removed player 2. Their critic findings therefore describe unrelated attract/run-over cards, not the easy question or in-raid initials card.
+
+Corrected camera-recipes.json only: start the real arcade idle clock when staging each manual arcade raid, keep the player invulnerable while paused, and require the intended live card with the attract overlay absent. The three corrected staging bodies and expectations parse. No game follow-up key is needed to fix the camera.
+
+The solo picture is tools/handoff/console/notes/shots/96-demo-easy-card-and-board-words-recipes-1/96-initials-solo-run-over-1080.jpg. Its critic gave 3 with broader existing run-over typography, focus-colour and size findings. The task is the timer and board words, with a one-ship limit; a general run-over redesign is outside that scope. The same solo picture remains in the recipe set so the next review has context. The first three intended cards still need valid pictures and critic review.
+
+Watch: the want easy mode? question now comes after the opening map
+
+
+--- codex run 2026-10-22 10:24 ---
+2026-10-22, final functional verification on v34.17. The lane reports cw-cx-easymapwords shipped, and the shipped fixture contains check 34.17. No new key is required.
+
+Inspected all four round-2 pictures. All camera expectations passed, with zero lint findings. Both the player 1 and player 2 pictures show "want easy mode?" with the unchanged Y/N wording and 12 seconds after the simulated 15-second opening map. Player 2's score strip names p1 and player 1's names p2, confirming the two local roles. The in-raid initials picture shows "tonight's best - enter initials" (middle dot in game), as does the valid solo run-over picture. This completes the requested timing and wording evidence in both window roles.
+
+Pictures: tools/handoff/console/notes/shots/96-demo-easy-card-and-board-words-recipes-2/96-easy-after-map-p1-1080.jpg; 96-easy-after-map-p2-1080.jpg; 96-initials-in-raid-p2-1080.jpg; 96-initials-solo-run-over-1080.jpg in that same directory.
+
+The critic scores are 2, 2, 2 and 3. These are not visual passes. The remaining findings concern pre-existing panel opacity, type size, teal borders, initials focus colour, surrounding HUD clutter and run-over layout. They have been handed to the coordinator in alarms-new.md. I am preserving this task's explicit "Size: one ship" scope and "Nothing else about it changes: the same words, keys and 12 s" requirement, rather than adding a general presentation redesign or following suggestions to shorten the controls. In particular, adding selectable buttons, explanatory effect text, or removing keys would exceed the task. The critic also misread already-lowercase run info as capitalized, and extraction x2 is the score multiplier, not an extraction count.
+
+Requested functional work is complete and shipped in one key. Presentation concerns are recorded honestly rather than reported as passing.
+
+Watch: the want easy mode? question now comes after the opening map
+

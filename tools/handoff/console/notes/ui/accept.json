@@ -1810,36 +1810,36 @@
   "when": "2026-10-21T07:38"
  },
  "p1-1080": {
-  "score": 3,
-  "pass": true,
+  "score": 2,
+  "pass": false,
   "need": 3,
-  "verdict": "A clean, consistent dark card with a lime-focused x and a clear hero preview, but it reads as a debug or inspector sheet: the left column is mostly empty, the info text is small, and the preview sits in dead space.",
+  "verdict": "A near-empty window card with a small, unlabeled pixel-art sprite pair floating in the upper middle, so it reads as a debug dump and not a designed screen.",
   "findings": [
-   "P1 left info column: Make the rows real 56px selectable rows with a 3px lime left bar on the focused row, a divider in --ui-line, and 20px values. Or shrink the column to about 240px and drop the thumbnail.",
-   "P1 preview pane: Scale the preview to fill the pane with 24px padding. Delete the caption, since the left column already says the same. If it stays, use 16px tx-2.",
-   "P1 hierarchy: Set the title at 32px f-cond 700 with a plain name such as 'pillagers'. Add one focused lime action (for example 'select') at the bottom right, 20px, acc fill with acc-ink text.",
-   "P2 left column labels: Labels 16px f-cond 600 +.04em in --tx-2. Values 20px in --tx-1. Spacing between pairs 24px.",
-   "P2 'full view' thumbnail: Remove it, or enlarge it to the full column width inside a 1px --ui-line-hi border with a 16px label."
+   "P0 card body, y 160-1025: Centre the content block vertically in the card body (card body is y 144-1025). Scale the preview to about 60% of the card width, and add a 16px label row under each sprite ('player 1' / 'player 2', f-cond 600, tx-2). Or drop the card and show the pair inside the real linked-raid screen.",
+   "P1 title 'linked raid - window 1': Rename to 'linked raid' with a 16px tx-2 'player 1' tag on its right. Make the divider 1px --ui-line-hi. Add a 3px --acc left tab to the title.",
+   "P1 'esc close' hint, top right: Set the hint to 16px f-cond 600 --tx-2 and leave a 16px gap before the X. Align the hint and the X to the title's vertical centre (y 112). Make the X button 40px.",
+   "P1 sprite crop, x 512-1408: Give the crop a 1px --ui-line-hi border and 4px radius. Crop tighter on the pair with no clipped props, and scale the sprites about 1.5x so the pair fills the frame.",
+   "P2 player ring numerals: Make the numerals dark (--acc-ink) on a filled disc, 18px tall, at least 4.5:1 contrast. Do not change the ring hues."
   ],
-  "pic": "tools/handoff/console/notes/shots/86h-pix-sets-wardrobe-recipes-2/86h-demo-p1-1080.jpg",
-  "task": "86h-pix-sets-wardrobe",
-  "when": "2026-10-21T17:36"
+  "pic": "tools/handoff/console/notes/shots/86g-pix-pillager-states-recipes-4/86g-pair-p1-1080.jpg",
+  "task": "86g-pix-pillager-states",
+  "when": "2026-10-22T14:36"
  },
  "p2-1080": {
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "This reads as a developer inspection sheet, not a game menu: it has a tiny spec list on the left, a cropped screenshot in the middle and no primary action or focus beyond the x.",
+  "verdict": "This is a 'linked raid - window 2' screen that is mostly empty dark space around a small purple sprite-pair preview, so it reads as a debug capture and not a finished menu.",
   "findings": [
-   "P0 whole screen / purpose: If it ships, make it a real linked-demo seat card: one lime filled 'ready' or 'continue' button at the bottom right (48px high, 20px text, --acc fill with --acc-ink text), and drop the spec rows. If it is a dev debug view, keep it out of the UI set.",
-   "P1 left spec column, rows 'sets / state / seat trim / view': Set labels to 16px --tx-2 with +.04em tracking. Add 1px --ui-line row dividers at 16px row padding. Delete 'view / live game canvas' and 'state', which explain nothing. Either size the column to its content or drop the thumbnail.",
-   "P1 centre preview panel: Fill the panel width (inset 24px) and give the screenshot a 1px --ui-line-hi border and 4px radius. Put the caption at 16px --tx-2, left-aligned under the image, or delete it. Remove the thumbnail.",
-   "P1 title 'linked demo / player 2': Set the title to 32px f-cond 700 as 'player 2' (or 'linked demo'). Give the header a 56px row, with the x centred in it and a 16px gap above the divider.",
-   "P2 seat trim values 'amber / cyan': Show two 12px swatches or pills next to the words, using the settled P1 amber and P2 cyan only as already shipped. Better, label the sprites 'p1' and 'p2' and drop this row."
+   "P0 card body, below and beside the purple preview (y 720-1025, x 100-510 and 1410-1820): Fill the card with a real layout. Put the preview in a left column about 60% wide. In a right column, show two player rows: name, ring colour chip, ready state. Add one lime primary action in the 72px footer. If this is only a test harness, don't ship it as a window.",
+   "P1 purple preview image (512,160 to 1408,720): Use a dark, desaturated floor tile (about #1b1d1f to #24272a) behind the sprites. Give the image a 1px --ui-line-hi border, a 4px radius and 24px padding in a --ui-panel container. Add a vignette so it blends.",
+   "P1 title 'linked raid - window 2' (121,112): Rename it to something like 'linked raid' or 'player 2'. Use the plain hyphen-free title style (32px, f-cond 700). Show the player slot as a small 16px tag in tx-2.",
+   "P1 top-right 'esc close' and x button (1680-1800, 85-138): Raise the hint to 16px f-cond 600 in tx-2 with 16px gap to the x. Keep the x as the focus-ring close, but add a real lime-filled primary action in the footer so the lime marks the main action.",
+   "P2 player ring badges (780,578 and 1140,578): Enlarge the pip to about 22px with a 14px bold digit in --acc-ink on the ring colour. If player identity matters here, add 16px 'p1' and 'p2' labels under the sprites."
   ],
-  "pic": "tools/handoff/console/notes/shots/86h-pix-sets-wardrobe-recipes-2/86h-demo-p2-1080.jpg",
-  "task": "86h-pix-sets-wardrobe",
-  "when": "2026-10-21T17:36"
+  "pic": "tools/handoff/console/notes/shots/86g-pix-pillager-states-recipes-4/86g-pair-p2-1080.jpg",
+  "task": "86g-pix-pillager-states",
+  "when": "2026-10-22T14:36"
  },
  "pix86c-fashion": {
   "score": 3,
@@ -2069,65 +2069,65 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "A clean, consistent dev sprite-sheet card with the correct x close, lower case and flat panel, but it has no hierarchy and the bottom strip is too small and dim to read.",
+  "verdict": "A clean, consistent dark card with a lime-focused x and a clear grid, but it reads as a developer sprite sheet: the title is tiny, the labels are tiny, and the bottom strip is cramped.",
   "findings": [
-   "P1 bottom strip 'light and bot fade' (y 860-1000): Make the swatches at least 120px wide and show the sprite at 2x. Raise the label to 16px in tx-2 (#aaa498). Put a 1px line-hi border on the empty frames and give them a 'gone' state, or drop the last two.",
-   "P1 title row 'death' (x121,y105): Keep the title at 32px, weight 700, tx-1. Dim the close button's lime ring to a line-hi border until it is focused. Put the lime focus bar on the selected frame instead.",
-   "P1 '1x' badges inside the preview thumbnails (e.g. x397,y247): Set the labels to 14px or more, tx-2. Move the 1x thumbnail out of the large frame to a fixed 96x96 slot below it, or shrink it to 64px and keep a 16px inset. Keep the thumbnail clear of the large sprite.",
-   "P2 frame grid vs card margins: Use one 4-column grid with equal gutters (24px) spanning the 24px-padded card width, and align the bottom strip to the same left and right edges. Enlarge the tiles to about 360px to fill the dead space.",
-   "P2 frame number captions 1-8 and swatch captions: Frame numbers should be 16px f-cond 600 in tx-2. Swatch captions (light 0.30 and so on) should also be 16px tx-2, with the value in tx-1 only for the selected swatch."
+   "P1 title 'death' top-left: Set the title to 32px f-cond 700 in tx-1 and put 24px of padding between it and the divider line.",
+   "P1 bottom strip 'light and bot fade' (labels and cells): Raise the strip label to 16px tx-2 with 16px of space above it. Make the fade cells 8px apart on a --ui-raised fill so the dark states show. Set the fade labels to 16px tx-2 weight 600, and show the 0.88 and 0.69 states with a 1px --ui-line-hi border.",
+   "P1 '1x' tags in each frame, bottom-right: Remove the per-frame '1x' text. Add one legend line in the footer ('small sprite = 1x'), or keep only the small sprite and move it 16px from the frame edge.",
+   "P2 header right: 'esc close' and the x button: Set the hint to 14px minimum (16px label preferred) in tx-2 and use a 16px gap to the button. Keep the x at 48-52px.",
+   "P2 frame numbers 1-8 below each tile: Put the number inside the tile top-left at 16px tx-2, or keep it below at 16px with 8px between tile and number and 24px between rows."
   ],
-  "pic": "tools/handoff/console/notes/shots/86g-pix-pillager-states-recipes-2/86g-death-strip-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/86g-pix-pillager-states-recipes-4/86g-death-strip-1080.jpg",
   "task": "86g-pix-pillager-states",
-  "when": "2026-10-21T16:31"
+  "when": "2026-10-22T14:35"
  },
  "86g-fight-day": {
-  "score": 3,
-  "pass": true,
-  "need": 3,
-  "verdict": "This is a clean, lower-case art-review card with a proper title and corner x, but it is a debug-style sprite contact sheet, not a game menu, and the minimap inset and card framing are sloppy.",
-  "findings": [
-   "P1 full view inset, bottom right: Put the inset fully inside the canvas with a 16px margin from the right and bottom edges, or move it out into a right-hand column. Use the --ui-line-hi border, 4px radius, and a 16px label with 8px padding.",
-   "P1 hierarchy, whole card: Raise the title to 32px f-cond 700 and make it clearly the first read. Add 16px f-cond labels under each sprite group, in tx-2, giving the state name.",
-   "P1 x button, top right: Show the lime focus only while the pad or keyboard is focused, and use a --ui-line-hi idle border otherwise. Inset the button 24px from the card top and right edges, and make the target 48px.",
-   "P2 canvas inside the card: Align the canvas left edge to the 24px card padding, or centre it with equal 48px gutters on all sides. Pick one and keep it the same on every screen.",
-   "P2 card shell: Use --ui-panel fill at 90% with a --ui-line-hi border. Add a 56px header row with a 1px --ui-line divider, and a 72px footer row if actions exist."
-  ],
-  "pic": "tools/handoff/console/notes/shots/86g-pix-pillager-states-recipes-2/86g-fight-day-1080.jpg",
-  "task": "86g-pix-pillager-states",
-  "when": "2026-10-21T16:32"
- },
- "86g-fight-night": {
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "This is a debug-style art sheet in a window shell: the card, title and lime-focused x follow the guide, but the screenshot is not centred in the card, a mini-map thumbnail overlaps it, and the night tint is flat and muddy.",
+  "verdict": "This is a dev reference sheet in a window frame, not a player-facing screen. The 56px-style header is there, but the bottom 165px is dead space and the content is a flat strip of labelled sprites with no hierarchy.",
   "findings": [
-   "P1 bottom-right 'full view' thumbnail (x1478-1782, y790-992): Either dock it fully inside the image with 16px inset from the right and bottom edges, or move it out into a right-hand column. Match its border to the 1px --ui-line-hi / 4px radius panel spec. Raise the caption to 16px tx-2.",
-   "P1 image area within the card (x239-1680, y151-962): Put the image in a --ui-panel frame with 24px padding, 1px --ui-line-hi border and 4px radius. Align the left and right edges to the title's 24px inset (x121) or centre the image with equal 24px gaps top and bottom.",
-   "P1 hierarchy: title 'night fight' (x121, y105): Set the title at 32px f-cond 700 with 16px of space above the rule. Add the screen's single action (e.g. a labelled lime 'close' or next/prev state control) so the eye has a destination other than the picture.",
-   "P2 close button (x1749-1801, y77-130): Make the inset 24px on both sides. Enlarge the x glyph to 20px. Keep the lime ring only when focused, and draw the idle state with a --ui-line-hi border.",
-   "P2 art: night tint across the whole image: Lower the wash opacity by about 20 percent and lift the sprite highlights. Remove the grey rectangle or give it a defined wall texture. Feather the light cone edge by about 24px."
+   "P0 bottom of card, y 860-1025: Fit the card to its content, or scale the strip to fill the body (about 1676x860). Alternatively fill the space with a second row of states. Keep a 24px gap above a 72px footer.",
+   "P1 sprite strip, all 8 labels: Use tx-1 labels at 16px on --ui-panel. Colour a 3px bar under each label by state: golden gets --r-gold, alert gets --warn, elite gets --r-elite. Group by row, with the row names as 16px tx-2 labels.",
+   "P1 image area, y 160-860: Wrap the strip in a panel with a 1px --ui-line-hi border and 24px padding. Dim the backdrop by about 35%, for example a --scrim overlay, so the sprites carry the contrast.",
+   "P1 title 'day fight' (top-left, 32px): Set the title to 32px f-cond 700 and the 'esc close' hint to 16px tx-2 (14px is the minimum). Add a subtitle such as 'pillager states' at 16px tx-2 if the context is needed.",
+   "P2 close button (top-right, 1750-1800 x 85-137): Remove the 'esc close' text. Keep the X at 40px with a --ui-line-hi border at rest, and show lime only on focus."
   ],
-  "pic": "tools/handoff/console/notes/shots/86g-pix-pillager-states-recipes-2/86g-fight-night-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/86g-pix-pillager-states-recipes-4/86g-fight-day-1080.jpg",
   "task": "86g-pix-pillager-states",
-  "when": "2026-10-21T16:32"
+  "when": "2026-10-22T14:35"
+ },
+ "86g-fight-night": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "Clean, consistent card shell with lower case text and a clear focused close button, but the content is a dev-looking contact sheet with a big dead band below and tiny, low-contrast header text.",
+  "findings": [
+   "P1 bottom of the card, y 860 to 1025: Scale the image to fill the card body (about 1676x940 area) or centre the content vertically. Otherwise shrink the card to fit the content. Keep a 24px bottom padding.",
+   "P1 the whole screen, hierarchy: Frame it as a real screen: put a 16px tx-2 sub-label row under the title or a lime 2px tab on the title. Group the 8 sprites into a 4x2 grid of 24px-padded tiles with 1px --ui-line borders. Pick one featured state at the hero size.",
+   "P1 'esc close' hint, top right (x 1682 to 1735): Set it to 16px f-cond 600 in --tx-2 (at least 4.5:1) with 16px of gap to the button. Or drop it and keep only the X.",
+   "P1 sprite name tags, 8 labels: Use 20px f-cond 600 tags on --ui-void at 85%, 8px padding, centred 16px under the feet. Give the duplicate a distinct name (for example 'armour 3 alt').",
+   "P2 image area, x 122 to 1798: Add a 1px --ui-line-hi border and 4px radius to the image. Make the gap under the header rule 24px. Crop or clean the stray tan patches at (1385,230) and (1385,600) and at (345,745)."
+  ],
+  "pic": "tools/handoff/console/notes/shots/86g-pix-pillager-states-recipes-4/86g-fight-night-1080.jpg",
+  "task": "86g-pix-pillager-states",
+  "when": "2026-10-22T14:36"
  },
  "86g-hurt-strip": {
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "A clean, consistent dark card with a lime-focused X and tidy lower-case type, but it is a dev sprite sheet: the labels are tiny, the two grids don't align, and nothing tells the eye where to start.",
+  "verdict": "A clean, consistent dev-style sprite sheet in the shared card shell, with a lime-focused x and lower-case text, but the section labels are too small and dim, the bottom of the card is empty, and the screen reads as a debug sheet instead of a game screen.",
   "findings": [
-   "P1 section labels '4x + 1x' and 'armour and civilians': Set section labels to 16px f-cond 600 in --tx-2 (#aaa498) with +.04em tracking. Delete '4x + 1x' or replace it with a plain word such as 'hit and health states'. Keep a 24px gap above each label.",
-   "P1 tile grids, top row (5 tiles at 322px wide) vs bottom row (5 tiles at 242px wide): Use one 5-column grid with identical tile width, for example 322px with 16px gutters in both rows, aligned to the 24px card padding. If the bottom row must be smaller, centre each tile in the same column cell so the centres match the top row.",
-   "P1 hierarchy, whole card: Make one tile the hero: give the selected tile a --ui-raised fill and a 2px --acc border. Drop the 1x thumbnails into a smaller strip inside the tile, or hide them. Weight the title at 700 and keep everything else at --tx-2.",
-   "P2 tile captions ('white hit', 'red hit', 'armour 1'): Drop captions to 16px --tx-2 f-cond 600. Replace 'armour 1/2/3' with real names or a tier marker.",
-   "P2 bottom of the card, y≈950 to 1025: Distribute the rows with equal 32px section gaps and a 24px bottom padding, or size the tiles up so the grid fills the card to 24px from the bottom edge."
+   "P1 section labels 'hit and health states' and 'armour and civilians': Set them to 16px f-cond 600 with +.04em tracking in --tx-2 (#aaa498, 4.5:1 or better), and add a 1px --ui-line rule under each, matching the title divider.",
+   "P1 header close hint 'esc close' and x button: Raise the hint to 16px --tx-2 and leave a 16px gap before the x. Keep the x at 48px with a 24px inset from the card edge, and keep the lime border only for the focused state.",
+   "P1 card bottom (y 950 to 1025): Distribute the row gaps evenly (the 24px sp-3 gap between sections becomes 32px), or centre the grid vertically, so top and bottom padding are both 24px and the tile rows fill the card.",
+   "P2 row 1 thumbnail strips under the tiles: Add a 'small size' label at 16px, or drop the strip and show one tile size. If it stays, put it in both rows and align it to the same 8px grid with 16px gaps.",
+   "P2 tile captions ('white hit', 'red hit', 'armour 1'): Set the captions to 16px --tx-2 and the section labels to 20px --tx-1. Add a tier marker, a rarity bar or a number badge, to the armour tiles so the difference is readable at couch distance."
   ],
-  "pic": "tools/handoff/console/notes/shots/86g-pix-pillager-states-recipes-2/86g-hurt-strip-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/86g-pix-pillager-states-recipes-4/86g-hurt-strip-1080.jpg",
   "task": "86g-pix-pillager-states",
-  "when": "2026-10-21T16:32"
+  "when": "2026-10-22T14:36"
  },
  "86h-fashion": {
   "score": 3,
@@ -2400,5 +2400,69 @@
   "pic": "tools/handoff/console/notes/shots/94-ladder-sheds-sooner-recipes-3/94-firefight-rung-2-1080.jpg",
   "task": "94-ladder-sheds-sooner",
   "when": "2026-10-22T13:39"
+ },
+ "96-easy-after-map-p1": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The easy-mode question is a small, low-contrast teal-outlined box in the middle of a busy live raid. Its text is tiny, the y/n choice isn't a clear action, and the box is transparent enough that the map shows through it. The HUD around it uses a mix of unrelated styles.",
+  "findings": [
+   "P0 want easy mode? card, centre: Use an opaque panel (--ui-panel at 95%, 1px --ui-line-hi border, 4px radius) with a scrim at 80% behind it. Set the title to 32px tx-1 f-cond 700. Add two 56px-tall buttons: 'yes' as a lime --acc fill with --acc-ink text, and 'no' as an outlined button. Put the live key or pad glyph inside each button at 20px. Show the countdown as a 16px ring or number labelled with its unit, and drop the teal border (teal is reserved for extraction).",
+   "P1 card border and title colour: Remove all teal from the card. Use tx-1 for the title, a --ui-line-hi border and a lime fill on the default answer.",
+   "P1 hierarchy of the whole screen: While the question is open, dim everything else with the 80% scrim, or hide the controls panel and run goals. Make the card the one bold element, with the title at 32px and the buttons at 56px high.",
+   "P1 run info panel, top right: Lower-case 'run info'. Set 24px padding and a 16px tx-2 header. Right-align the +sp values in a column using tabular numbers. Replace the pixel face with Barlow Condensed 600 at 20px for names.",
+   "P1 controls panel, bottom centre: Show at most 4 contextual hints at 16px with key caps (1px border, 4px radius). Collapse the rest behind 'f1 full list', and hide the panel entirely while the question card is open."
+  ],
+  "pic": "tools/handoff/console/notes/shots/96-demo-easy-card-and-board-words-recipes-2/96-easy-after-map-p1-1080.jpg",
+  "task": "96-demo-easy-card-and-board-words",
+  "when": "2026-10-22T14:21"
+ },
+ "96-easy-after-map-p2": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The easy-mode question is a small, flat, translucent box dropped mid-raid over a busy map, with a tiny prompt that is hard to read and no real choice buttons, so it looks like a debug overlay and not a designed card.",
+  "findings": [
+   "P0 easy mode card, centre (618,263 to 1302,411): Fill it with solid #16191b at 95% or more, use a 1px #4a5257 border, 4px radius and 24px padding. Dim the whole screen behind it with --scrim rgba(6,7,8,.8). Cut the box to about 560x220 and centre it.",
+   "P0 answer line 'y yes · n no · 12': Add two 20px buttons side by side, 160x48 each. 'yes' gets the lime #e6ff3d fill with #11150a text. 'no' gets a 1px #4a5257 outline. Put the key or pad glyph inside each button ('y' / 'n' on keyboard, 'a' / 'b' on pad). Show the countdown as a 16px ring or number on the right, labelled for example '12s'.",
+   "P1 title 'want easy mode?': Set the title to 32px tx-1 #efe9dc, f-cond 700, left aligned at the 24px padding. Add one 16px tx-2 line such as 'more hp, slower foes' only if the real effect is short. Drop the teal border and use #4a5257.",
+   "P1 card placement and timing, centre of the live raid: Hide the controls cheat sheet and run info while the card is open. Dim the world by 60 to 80 percent. Keep only the hp and ammo bars at their normal size.",
+   "P1 controls cheat sheet, bottom-left (492,696 to 902,866): Use 16px minimum, key column tx-1 and action column tx-2 at 4.5:1 or better, and a solid #16191b panel with 24px padding. Remove the duplicate lmb row or label one 'lmb (item)'. Align the rows on a 24px baseline grid."
+  ],
+  "pic": "tools/handoff/console/notes/shots/96-demo-easy-card-and-board-words-recipes-2/96-easy-after-map-p2-1080.jpg",
+  "task": "96-demo-easy-card-and-board-words",
+  "when": "2026-10-22T14:21"
+ },
+ "96-initials-in-raid-p2": {
+  "score": 2,
+  "pass": false,
+  "need": 4,
+  "verdict": "The initials card works as a modal, but it sits on top of the controls legend with no scrim, its hint line collides with the legend text, and the empty space and weak hierarchy make it look unfinished.",
+  "findings": [
+   "P0 initials card bottom edge, overlapping the controls legend (x 500-900, y 700-860): Hide the controls legend while the card is open (or draw it below the scrim). Make the card fill opaque --ui-panel at 95%. Put a full-screen --scrim rgba(6,7,8,.80) behind it.",
+   "P0 scene behind the card (whole screen): Add a --scrim .80 layer behind the card, or at minimum dim the HUD to 40% while the card is open. Card 16px lower than centre is fine once the scrim exists.",
+   "P1 hint line (y ~724): Cut it to the one live action: 'enter done'. Use 16px tx-2 minimum, centred 24px below the letter row. Make the countdown a visible 32px hero-style number on the right, or a thin progress bar along the card's bottom edge.",
+   "P1 card layout (572-1348 x 535-775): Shrink the card to about 560x300. Use 24px padding. Keep the title at 32px and the letters at 56px with 24px gaps between them. Remove the dark bar or make it a full-width 1px divider.",
+   "P1 title 'tonight's best · enter initials': Use 32px f-cond 700 in tx-1. Reserve teal for extraction only. Put a title such as 'tonight's best' on one line, then the smaller label 'enter initials' at 16px tx-2 below it."
+  ],
+  "pic": "tools/handoff/console/notes/shots/96-demo-easy-card-and-board-words-recipes-2/96-initials-in-raid-p2-1080.jpg",
+  "task": "96-demo-easy-card-and-board-words",
+  "when": "2026-10-22T14:22"
+ },
+ "96-initials-solo-run-over": {
+  "score": 3,
+  "pass": false,
+  "need": 4,
+  "verdict": "A clean, quiet run-over card with a clear hero number and a live prompt, but the type is too small for a couch, the initials block fights the main action, and the card sits small in an unfinished-looking dim scene.",
+  "findings": [
+   "P1 initials block (a a a) and its hint line: Make the letters 40px f-cond 700 with 16px gaps. Use --acc for the active letter and underline, and tx-1 for the rest. Cut the hint to the pad or key glyphs only ('▲▼  enter') at 16px --tx-2.",
+   "P1 press any key prompt: Show 'enter  done' as the one prompt, 24px --acc, left-aligned under the initials. Drop the competing 'press any key' text, or show it only once the initials are done.",
+   "P1 label and stat text (score, kills, extractions, deaths, tonight's best): Set labels to 16px with +.04em tracking in --tx-2 (#aaa498). Set stat numbers to 32px f-cond 700. Set 'extracted x2' to 20px --tx-1.",
+   "P1 stats row (9 / 1 / 0): Use a 3-column grid with 24px gutters and left-align each column to the 24px card padding. Put 'tonight's best' in 16px --tx-1 with a 1px --ui-line rule above it, and leave 24px between sections.",
+   "P2 card overall and the title 'run over': Make the title 32px f-cond 700 and the score 56px f-cond 800. Change the top tab from a 36px lime tick to a 3px left-edge accent bar the full height of the score block, and tighten the vertical rhythm to an 8px grid."
+  ],
+  "pic": "tools/handoff/console/notes/shots/96-demo-easy-card-and-board-words-recipes-2/96-initials-solo-run-over-1080.jpg",
+  "task": "96-demo-easy-card-and-board-words",
+  "when": "2026-10-22T14:22"
  }
 }

@@ -1,0 +1,7 @@
+v34.18: pixel wardrobe focus
+
+Four equal set tiles stay still, with an inset focus ring, a separate worn rail and concise status labels.
+
+Check 34.18. Fails on v34.17.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

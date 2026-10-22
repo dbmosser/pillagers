@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.18 - PIXEL WARDROBE FOCUS
+
+Co-op hunt while he was away. The focused set scales outside its grid and the extra halo overlaps neighbouring tiles.
+
+MEASURED. Check 34.18 passes, and fails on v34.17.
 ## v34.17 - DEMO EASY QUESTION AFTER MAP
 
 Co-op hunt while he was away. The opening map hid the easy question while its 12 seconds ran out. The initials card claimed a top 10 although the board keeps 20.

@@ -1,0 +1,5 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  96-easy-after-map-p1                   NOT STAGED   5.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | expect failed: __gx("!!G&&G.arcade&&!G.mapFirst&&easyLive()") -> false
+  96-easy-after-map-p2                   NOT STAGED   5.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | expect failed: __gx("!!G&&G.arcade&&!G.mapFirst&&easyLive()") -> false
+  96-initials-in-raid-p2                 NOT STAGED   5.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | expect failed: __gx('arcadeIniRaid()') -> false
+  96-initials-solo-run-over              staged      15.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0

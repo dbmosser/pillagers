@@ -29,3 +29,5 @@ o-91b-report-news-style
 86f-pix-machines
 86g-pix-pillager-states
 86h-pix-sets-wardrobe
+86j-pix-fx-guard
+87r-v3394-new-reds

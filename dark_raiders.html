@@ -2535,6 +2535,20 @@ body:has(#appearmodal.pixfashion.on) #hubtoast{display:none !important}
 #root #appearmodal.pixfashion #appavatarpicker .costile.on{padding:2px 11px !important}
 }
 
+</style>
+<style id="pix-fashion-focus">
+/* v28.xx (cw-cx-pixrackfocus): keep thirteen tiles on their grid; worn is a left rail, focus is an inset ring. */
+#root #appearmodal.pixfashion #appavatarpicker .costile{scale:1 !important;translate:none !important;transform:none !important}
+#root #appearmodal.pixfashion #appavatarpicker .costile.on{border:1px solid var(--ui-line-hi) !important;border-left:3px solid var(--acc) !important;box-shadow:none !important;padding:4px 12px 4px 10px !important}
+#root #appearmodal.pixfashion #appavatarpicker .costile.padfocus,#root #appearmodal.pixfashion #appavatarpicker .costile:focus-visible{outline:2px solid var(--acc) !important;outline-offset:-4px !important;box-shadow:none !important;background:#1e2225 !important}
+#root #appearmodal.pixfashion #appavatarpicker .costile.on.padfocus,#root #appearmodal.pixfashion #appavatarpicker .costile.on:focus-visible{box-shadow:none !important}
+body:has(#appearmodal.pixfashion.on) > #uimring{display:none !important}
+#root #appearmodal.pixfashion #applooks > .glab{letter-spacing:0 !important}
+#root #appearmodal.pixfashion #appavatar{position:relative;flex:0 0 320px !important}
+#root #appearmodal.pixfashion #appavatar::before{content:'';position:absolute;top:16px;left:16px;width:36px;height:3px;background:var(--acc)}
+#root #appearmodal.pixfashion #applooks{flex:1 !important}
+@media(max-height:1000px){#root #appearmodal.pixfashion #appavatarpicker .costile.on{padding:3px 12px 3px 10px !important}}
+
 </style><canvas id="cv"></canvas>
 <canvas id="hcv"></canvas>
 <div id="hubtoast"></div>
@@ -3516,7 +3530,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.17';
+var VER='34.18';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -52024,7 +52038,7 @@ function renderPixWardrobe(box,hid,pid){
       var id=t[0],own=rack[0]!=='set'||id==='off'||pixOwned(id),on=r[rack[0]]===(id==='off'?'none':id),need='';
       if(!own)need=cosNeed(cosFind(t[1].outfit)).toLowerCase();
       H+='<button type="button" class="costile'+(own?'':' lock')+(on?' on':'')+'" data-pixkind="'+rack[0]+'" data-pixid="'+id+'" aria-pressed="'+on+'" aria-label="'+id+(need?', '+need:'')+'">'+
-         '<canvas width="76" height="'+((rack[0]==='head'||rack[0]==='skin')?52:112)+'" style="image-rendering:pixelated"></canvas><span class="cosname">'+id+'</span><span class="cosreq">'+(own?(on?'worn':'owned'):need)+'</span></button>';
+         '<canvas width="76" height="'+((rack[0]==='head'||rack[0]==='skin')?52:112)+'" style="image-rendering:pixelated"></canvas><span class="cosname">'+id+'</span><span class="cosreq">'+(own?(on?'worn':''):need)+'</span></button>';
     });H+='</div></section>';
   });
   box.classList.add('pixwardrobe');box.innerHTML=H;
@@ -53803,7 +53817,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.17: The easy question gets 12 seconds after the opening map closes in each window. The initials card uses the board title. Check 34.17 fails on v34.16',
+  now:'v34.18: Four equal set tiles stay still, with an inset focus ring, a separate worn rail and concise status labels. Check 34.18 fails on v34.17',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
