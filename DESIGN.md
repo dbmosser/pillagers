@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.09 - TEAMMATE PAD LOST TAG
+
+Co-op hunt while he was away. The teammate pad lost strip was lost beneath the centre message stack in both linked windows.
+
+MEASURED. Check 34.09 passes, and fails on v34.08.
 ## v34.08 - HUB BACKPACK DETAIL AND BELT
 
 Co-op hunt while he was away. The critic still saw a split detail pane, a detached belt and no held label.

@@ -1,0 +1,7 @@
+v34.09: teammate pad lost tag
+
+One dark warning panel with a 3px amber bar and 20px condensed words sits clear of the score and extract block.
+
+Check 34.09. Fails on v34.08.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

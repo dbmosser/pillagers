@@ -1157,33 +1157,33 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "A clean, consistent dark card with a clear title, a visible lime focus ring and a close prompt, but the huge empty grid and right column, tiny type and a stray capital I leave the hierarchy flat and a little unfinished.",
+  "verdict": "A clean, consistent dark card with a clear lime focus tile, but the equipped strip and the detail pane are weak, the type is too small and dim, and the idle grid is a field of identical empty boxes.",
   "findings": [
-   "P1 right detail pane and empty space below it (y 565-800): Make it one panel in --ui-raised with a 1px --ui-line-hi border. Put the item name at 32px and the rarity as a 3px bar. Make the price a 20px tx-1 line under the name. Stretch the pane to the grid's bottom edge (y740), or put the compare stats in the lower half.",
-   "P1 hierarchy, whole card: Make the section labels 16px tx-2 with +.04em tracking. Give the focused item's name the 32px weight. Shrink the equipped strip to roughly 96px tall, or turn it into a compact row, so the grid and the detail pane become the focus.",
-   "P1 backpack grid, 12x4 (x120-1328, y342-740): Draw empty cells with a 1px --ui-line border and a --ui-panel fill. Keep a single lime 2px focus ring, and carry rarity only as a 3px bottom bar. Consider 8 columns at a larger cell size (about 120px) so the grid fills the card better.",
-   "P1 tactical belt (y830-940) and key hints in the footer: Use lime for the selected slot only (2px ring). Show rarity as a bottom bar. Set the slot numbers to 16px tx-2 in a corner chip with solid backing. Delete the stray green dot, or label it. Drop the extra container box and use the same 8px gap as the grid.",
-   "P1 footer prompt row (y985-1005): Render every hint as a 16px chip plus a 16-20px label in tx-1. Give 'b close' the same chip with the lime outline. On pad, hide the X or turn it into the same chip, so there is one close control."
+   "P1 detail pane (right): Show the hero stat (dmg 23) at 56px f-cond 800. Put the rarity as a 3px bar on the left edge or at the top of the pane. Set the rarity tag at 16px in --r-rare. Move 'in backpack' to the bottom as a 16px tx-2 label, or drop it. Shrink the pane height to fit its content, or fill it with a compare bar per stat.",
+   "P1 equipped strip (top left): Left-align the label at x=121 plus 24px padding, the same as the section labels. Put the icon, the name at 20px tx-1, and the stats at 16px in a single row with 24px gaps. Reduce the strip height from 128px to about 96px, or place the stats in a spaced row so the strip does not read as empty.",
+   "P1 tactical belt slots 4, 6, 7, 8, 0: Raise the empty ghost opacity to about 25%. Set slot numbers to 16px --tx-2 or brighter. Use one focus language: if amber is the player ring, show it only as a 2px outline and keep the lime for the active selection. Alternatively, add a small 'equipped' tick to slot 1 instead of an orange fill.",
+   "P1 backpack grid (3x8 cells): Use --ui-line at 40% on idle cells with a 1px inner top highlight, and a subtle cell-index tick pattern. Alternatively, shrink the grid to the actual capacity (backpack 2 shows 2 of 24). Make the rarity bar 3px, consistent with the guide.",
+   "P2 footer legend: Draw 'b' in a chip like the others, with lime only on the chip border. Raise the scrim to .80 and make the card 92% tall so the world hint strip does not show beneath it."
   ],
-  "pic": "tools/handoff/console/notes/shots/92-hub-backpack-card-recipes-3/41-hub-backpack-pad-p1-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/92-hub-backpack-card-recipes-4/41-hub-backpack-pad-p1-1080.jpg",
   "task": "92-hub-backpack-card",
-  "when": "2026-10-22T11:48"
+  "when": "2026-10-22T11:58"
  },
  "41-hub-backpack-pad-p2-held": {
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "A clean, consistent dark card with a clear title, an X and a lime focus ring, but it is mostly dead space: three of the four backpack rows are empty and the right pane is half empty. The held weapon is shown in the detail pane without any held cue, and the type scale is loose.",
+  "verdict": "A clean, consistent dark card with a clear lime focus on the belt slot, but the 24-slot grid is mostly empty, and the type is small and low-contrast. The equipped strip and the detail pane share one visual weight, and the gaps don't follow the 8px grid.",
   "findings": [
-   "P1 detail pane, right column: Merge the header and stats into one --ui-raised panel with one border. Make the pane the full height of the grid (y150 to 740). Replace 'in backpack' with a 16px label chip, 'held', in lime or tx-1, placed beside the name. Drop the blue left bar or use it only as the rarity bar at 3px.",
-   "P1 equipped panel (y150-295): Align the 'equipped' label to x=121 and put it above the panel like the other section labels. Use 32px for the name and 20px for the stat row, with 16px tx-2 labels. Put dmg, range, mode, integrity and armour on one or two lines of equal size. Shrink the panel to about 60% of the width or give it a second use.",
-   "P1 tactical belt, slots 1, 3 and 5: Keep lime for focus only, with a 3px border and a 4px glow. Give the equipped slot a 2px tx-1 bottom bar, not an amber fill. Remove the blue fill on slot 3, or use it only for rarity as a 3px bottom bar. Make the slot numbers 16px tx-1 with a dark chip behind them.",
-   "P1 backpack grid (y342-740): Raise the empty-cell outline to --ui-line (#2e3337) at 1px and the cell fill to --ui-bg. Show the capacity next to the label, '2 / 48', in tx-2 16px. Make the grid 6 columns wide, not 12, so it is not a stretched strip. Tighten the vertical gap to 24px.",
-   "P2 footer legend (y985-1005): Draw 'b close' as the same chip plus label as the others. Keep it in tx-1 and let only the X be the close affordance, or colour the chip for the main action only. Keep every legend at 16px."
+   "P1 detail pane (right): Colour the 'rare' tag --r-rare as a 16px chip. Move the 3px rarity bar to the top or left edge. Anchor the stats block to the pane's vertical centre or add a compare row. Reconcile 'held' with 'equipped' so they don't contradict, for example by showing 'held in slot 5'.",
+   "P1 equipped strip and backpack grid: Cut the strip to 72px, one row: icon left, name 20px, stats inline in tx-2 16px. Left-align 'equipped' at x=121 like the other section labels. Raise 'melee' to 16px.",
+   "P1 tactical belt: Use exactly one lime focus ring, 3px. Mark the equipped slot with a 3px accent bar, not an amber fill. Put the numbers in tx-2 at 16px with a 4.5:1 floor. Drop the blue fill on slot 3 or tie it to rarity only.",
+   "P2 backpack grid: Rename it 'backpack 2/24'. Dim the empty slots to --ui-line fill at 50%. Raise the rarity bar to 3px. Consider a smaller grid or a weight readout so the card doesn't look empty.",
+   "P2 footer legend: Use real a/b/x/y face-button glyphs coloured to the pad, and 18px chips. Keep a single close affordance: the 'b close' footer plus the x. Make the legend tx-1 at 16px."
   ],
-  "pic": "tools/handoff/console/notes/shots/92-hub-backpack-card-recipes-3/41-hub-backpack-pad-p2-held-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/92-hub-backpack-card-recipes-4/41-hub-backpack-pad-p2-held-1080.jpg",
   "task": "92-hub-backpack-card",
-  "when": "2026-10-22T11:48"
+  "when": "2026-10-22T11:59"
  },
  "30-settings-scroll-2400": {
   "score": 3,
@@ -1413,17 +1413,17 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "it's a clean dark card with a clear hero ammo number and lime focus, but the layout wastes space (empty detail pane, 48 empty slots, a floating belt) and the type is too small and too mixed to read from a couch.",
+  "verdict": "It is a clean, consistent dark card with a clear lime focus tile and a big ammo number, but the right detail pane is mostly empty, the equipped strip and its labels are cramped, and the type sizes drift off the five-size scale.",
   "findings": [
-   "P1 right detail pane (armour plate): stretch the pane to the grid's full height (y 150-740) or put the stats, the use action and a lime primary button in it. Align the value column to a fixed x. Pick one spelling (armour) everywhere.",
-   "P1 type scale across the card: raise the stats, price and detail rows to 16-20px and keep the footer at 14 at most. Limit the card to hero 56 (ammo), title 32 (backpack, item name), body 20, label 16. Make 'backpack' and 'armour plate' both 32.",
-   "P1 tactical belt strip (y 810-940): make the belt span the grid width, 12 columns at 8px gaps, or centre it. Use lime only for focus. Mark filled slots with a quiet --ui-raised fill plus a rarity bar. Drop the ghost silhouettes, or lower them to about 20% opacity. Keep the belt gap to the grid at 24px.",
-   "P2 backpack grid (4x12): raise the slot fill to --ui-raised with a 1px --ui-line border, or reduce the visible empty slots to about 2 rows. Close the 70px dead gap by moving the belt up 24px.",
-   "P2 equipped panel (auto rifle): add 24px inner padding. Put the ammo pips inside a 4px-radius chip with a clear 8px gap. Set the stat line at 16px with 16px separators. Add 24px between the panel and the 'backpack 6' label."
+   "P1 detail pane (right, x1360-1798, y150-762): Shrink the pane to its content, or fill it. Make the item name 32px f-cond 700 at the pane top with the rarity bar directly under it. Set 'use: armor' as a label (16px, tx-2) on the left and its value (20px, tx-1) 16px away on the same baseline. Move the '$340 each' price to the pane's bottom edge as a footer, or drop it.",
+   "P1 equipped strip (y150-278) and 'backpack 6' label (y294): Align every label to x121. Raise the strip padding to 16px. Put the weapon name at 20px f-cond 700 in tx-1. Set the stats at 16px tx-2, in two columns separated by 24px gaps. Add 24px between the strip bottom and the 'backpack' label.",
+   "P1 tactical belt row (y810-937): Use one selected state on the belt: a 2px lime border and nothing else. Mark filled slots with a --ui-raised fill, and show empty slots as bare dark tiles with no silhouette, or at about 15% opacity. Raise the hotkey numbers to 16px tx-2. Make the amber on slot 1 a rarity bar or a warn glyph only.",
+   "P2 item tiles and stack badges (grid): Replace the pips with real quantity text, e.g. 'x2', at 16px f-cond 600 tx-1, set bottom-right on a --ui-void 70% chip. Scale the item art to about 70% of the tile and make the rarity bar 3px.",
+   "P2 type scale across the card: Snap every size to the 56/32/20/16/14 scale. Set the ammo as 56px for the loaded count and the reserve at 32px tx-2 (danger red at 0). Make the pane item name 32px. Set the footer legend at 14-16px, with only 'esc' in lime and 'close' in tx-2."
   ],
-  "pic": "tools/handoff/console/notes/shots/92-hub-backpack-card-recipes-3/41-hub-backpack-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/92-hub-backpack-card-recipes-4/41-hub-backpack-1080.jpg",
   "task": "92-hub-backpack-card",
-  "when": "2026-10-22T11:47"
+  "when": "2026-10-22T11:58"
  },
  "43-stash-after-raid": {
   "score": 3,
