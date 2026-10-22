@@ -228,6 +228,21 @@ function Start-Robot([int]$port,[string]$copy){
   Say ('robot started on '+$port)
 }
 
+# 10-22 his "All this work and you can't tell what it's doing?!": the spare PC went quiet at 09:27 and the VM (behind the main PC's private
+# switch) cannot see the home network. The main PC can, so in idle mode its status also says whether the spare PC is on: its name, then a
+# ping, then two ports, then whether it answered the network's address lookup (ARP, which its firewall cannot block). At most every 10 minutes.
+function SparePC([string]$n='DESKTOP-82BKOP4'){
+  if($script:spT -and ((Get-Date)-$script:spT).TotalSeconds -lt 600){ return $script:spV }
+  $script:spT=Get-Date; $ip=''
+  try { $ip=@([Net.Dns]::GetHostAddresses($n) | Where-Object { $_.AddressFamily -eq 'InterNetwork' })[0].IPAddressToString } catch { }
+  if(-not $ip){ $script:spV='off or offline (its name is not on the network), '+(Get-Date).ToString('HH:mm'); return $script:spV }
+  $v=''
+  if(Test-Connection -ComputerName $ip -Count 1 -Quiet -ErrorAction SilentlyContinue){ $v='on ('+$ip+' answers a ping)' }
+  if(-not $v){ foreach($port in 445,135){ $c=New-Object Net.Sockets.TcpClient; try { if($c.ConnectAsync($ip,$port).Wait(1500) -and $c.Connected){ $v='on ('+$ip+' port '+$port+')'; break } } catch { } finally { $c.Dispose() } } }
+  if(-not $v -and @(Get-NetNeighbor -IPAddress $ip -ErrorAction SilentlyContinue | Where-Object { [string]$_.State -eq 'Reachable' }).Count){ $v='on ('+$ip+' is on the network but answers nothing else)' }
+  if(-not $v){ $v='not answering ('+$ip+')' }
+  $script:spV=$v+', '+(Get-Date).ToString('HH:mm'); return $script:spV
+}
 function Write-Status([string]$corpus,[int]$robots){
   $os=Get-CimInstance Win32_OperatingSystem -ErrorAction SilentlyContinue
   $free=if($os){ [math]::Round($os.FreePhysicalMemory/1MB,1) }else{ '?' }
@@ -235,6 +250,7 @@ function Write-Status([string]$corpus,[int]$robots){
   # VM's import never found epoch= (it read the spare PC as never seen).
   $L=@(('host='+$HostN),('seen='+(Get-Date).ToString('yyyy-MM-dd HH:mm')),('epoch='+(Epoch)),('game='+(G -C $R rev-parse --short=8 HEAD)+' v'+(GameVer)),
     ('test_run='+$corpus),('robots='+$robots),('ram_free_gb='+$free),('push_ok='+(GetS 'push_ok')),('runner='+$SelfHash.Substring(0,8)),('mode='+$(if($Idle){ 'idle' }else{ 'full' })))
+  if($Idle){ $L+=('spare_pc='+(SparePC)) }
   [IO.File]::WriteAllLines($StatusF,[string[]]$L,$Enc)
 }
 

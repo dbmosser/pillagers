@@ -90,7 +90,7 @@ const ago = seen ? Math.round((Date.now() / 1000 - seen) / 60) : -1;
 let line = !seen ? `no spare PC has reported yet (checked ${stamp()})`
   : `${seenHost} last seen ${seenSt.seen || '?'} (${ago} min ago${ago >= 180 ? ', QUIET: the VM runs the tests and robots again' : ''}), game ${seenSt.game || '?'}, ` +
     `test run ${seenSt.test_run || '?'}, robots ${seenSt.robots || '?'}, push ${seenSt.push_ok === '0' ? 'FAILING' : 'ok'}`;
-for (const [h, st, ep] of idleHosts) line += `; main PC ${h} last seen ${st.seen || '?'} (${ep ? Math.round((Date.now() / 1000 - ep) / 60) : '?'} min ago): ${st.test_run || '?'}, robots ${st.robots || '0'}`;
+for (const [h, st, ep] of idleHosts) line += `; main PC ${h} last seen ${st.seen || '?'} (${ep ? Math.round((Date.now() / 1000 - ep) / 60) : '?'} min ago): ${st.test_run || '?'}, robots ${st.robots || '0'}${st.spare_pc ? `; spare PC as the main PC sees it: ${st.spare_pc}` : ''}`;
 if (got.length) line += `; took ${got.length} finished run(s) now: ${got.join(', ').slice(0, 200)}`;
 if (bad.length) line += `; could not take ${bad.length}: ${bad.join('; ').slice(0, 300)}`;
 say(line + ` (checked ${stamp()})`);
