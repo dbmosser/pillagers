@@ -75,3 +75,5 @@ Moved 10-19 night to tools/handoff/console/alarms.md (helper fix F18). This file
 
 2026-10-22 | 89-hub-floor critic exceptions: 03 and 39 ask to remove or shorten the experimental warning and remove its asterisks. The task explicitly requires his own v7.74 caption and asterisks, so they are retained unchanged. The critics also suggest reducing the raid hero to 32px while another finding asks for the guide 56px hero; retained the guide 56px and fixed padding, border and underline treatment. No wording changes and no owner decision needed; these suggestions are skipped under the existing task and style-guide rulings.
 
+2026-10-22 | 89-hub-floor, additional round 2 exception: critic asks to remove the exclamation mark in enter raid!. The task explicitly says to keep his words, so the existing label and punctuation are preserved. The caption and 56px hero exceptions were logged in the previous run. No owner decision needed; both required hub screens scored 3.
+

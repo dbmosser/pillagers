@@ -970,3 +970,15 @@
 2026-10-22 0.1469 critic-89-hub-floor
 2026-10-22 0.1467 critic-89-hub-floor
 2026-10-22 0.0000 89-hub-floor
+2026-10-22 0.1461 critic-89-hub-floor
+2026-10-22 0.1479 critic-89-hub-floor
+2026-10-22 0.1499 critic-89-hub-floor
+2026-10-22 0.0000 89-hub-floor
+2026-10-22 0.0000 90-colour-cue-backups
+2026-10-22 0.1503 critic-90-colour-cue-backups
+2026-10-22 0.1487 critic-90-colour-cue-backups
+2026-10-22 0.1443 critic-90-colour-cue-backups
+2026-10-22 0.1522 critic-90-colour-cue-backups
+2026-10-22 0.1504 critic-90-colour-cue-backups
+2026-10-22 0.1420 critic-90-colour-cue-backups
+2026-10-22 0.0000 90-colour-cue-backups

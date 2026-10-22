@@ -31,3 +31,13 @@ Added a compatible 33.99 fixture retarget: accept either muted or cream station 
 All five anchors matched once. The draft and scripts are ASCII; full inline game JS and the new check parsed. The new behavioral check stages 1080p and 4K, inspects station plate padding and contrast, and checks the actual toast rectangle against hints and focused prompt. Browser execution remains to the lane. Requested only 03 and 39 for the next critic round; the one-time 01 check is complete.
 Recorded caption/hero-size critic exceptions in questions-new.md. Title-menu and currency findings are handed off in alarms-new.md; they are outside this task. This is the second Codex picture round when shipped, about four total picture tries including the two older b-31 tries.
 
+
+--- codex run 2026-10-22 06:07 ---
+2026-10-22, completed at v34.00.
+Confirmed shipped commits b5b07573 (cw-cx-hubfloor, v33.99) and fe0dc197 (cw-cx-hubfloorclear, v34.00). Compatible fixture retarget committed as 3ab21ebc; the lane passed 33.99 against the old build before shipping.
+Opened the latest 03 and 39 pictures. Critic round 2 scores: 03=3, 39=3, both better than before. No remaining P0. The overlap that prompted the follow-up is gone: toast, hint row and belt have separate bands. The task finish line of 3 on both screens is met after two Codex picture rounds.
+Remaining P1 findings are accounted for: the experimental caption and asterisks are binding owner wording; enter raid! punctuation is covered by the instruction to keep his words; a 32px raid label would reverse the guide 56px hero. These exceptions are logged. The claimed missing station size/borders/padding are already present in the shipped code: uiFont body is 20px/600, cream text, 16px side/8px vertical padding, 4px corners, 1px border. The existing focused-station prompt supplies the live use key; no duplicate prompt is added. Career currency is explicitly outside this task under the style guide and was already handed off.
+01 title backdrop was checked once: floor heading and station labels do not show through. Its new reported score is 3, same image apart from moving background figures; title-specific findings were already handed off.
+Final 1080p pictures: tools/handoff/console/notes/shots/89-hub-floor-after/03-hub-floor-1080.jpg and tools/handoff/console/notes/shots/89-hub-floor-after/39-hub-after-raid-1080.jpg. Title check: the same folder, 01-title-mode-menu-1080.jpg. Before pictures are in tools/handoff/console/notes/shots/89-hub-floor-before/.
+All requested changes are shipped and all original wording is preserved. No new ship or retarget is needed. TASK DONE.
+

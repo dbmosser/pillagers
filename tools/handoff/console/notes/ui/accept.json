@@ -12,17 +12,17 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The new floor has a clear hierarchy, with a lime 'enter raid!' as the one hot label and quiet station tags, but the toast overlaps the key-hint chips and the title block collides with the map wall.",
+  "verdict": "The new floor has a clear hierarchy, with a lime 'enter raid!' and quiet station chips, and the title now sits in a real panel. It still reads as a debug-looking overlay, though, because of the 'experimental' banner with its stars, the tiny 14-16px text, the exclamation mark and the loose key-hint chips.",
   "findings": [
-   "P0 bottom centre, above the hotbar: Stack them with a 8px gap. Put the toast 48px above the hint row, or fold the hints into the footer legend at 14px and drop the toast after 3s. Never let two layers share the same y.",
-   "P1 top-left title block 'the undercroft / 12 items in stash · 0 runs': Put the title block at the 5% margin (x=96) on a --ui-panel plate (90% fill, 1px --ui-line-hi, 4px radius, 16px padding), or keep it entirely inside the void. Use 32px for the title and 16px tx-2 for the sub-line.",
-   "P1 station labels (wirt the gambler, shop, craft, and hire, settings...): Use 20px f-cond 600 in tx-1 (#efe9dc) with a 16px horizontal chip padding. Move the labels so they never overlap the NPC sprites, or give the chip a 1px --ui-line-hi border.",
-   "P1 'enter raid!' label: Use 32px f-cond 800 with 8px/16px padding in --acc-ink on --acc. Drop the '!'. Keep it clear of the pillars (move y+16). The lime fill is acceptable because it is the one primary action.",
-   "P1 the last pour label and '***experimental feature may glitch***': Replace it with a 16px --warn 'beta' tag at the top-right of the station chip, or delete it. Remove the asterisks."
+   "P1 the last pour station, '***experimental feature may glitch***' tag: Delete the sentence. If a warning is needed, use a 16px '--warn' amber 'beta' tag inside the name chip, with no asterisks.",
+   "P1 station name chips (wirt the gambler, shop craft and hire, settings, the stash, fashion): Set station names to 20px f-cond 600 at the 16px minimum, with 8px/16px padding. Add a 1px --ui-line-hi border and a key chip ('e') on the nearest station only, to create focus.",
+   "P1 enter raid! chip: Use --fs-title 32px f-cond 800 in --acc on a --ui-panel chip with a 3px lime bottom bar. Drop the '!' and say 'enter raid'. Add the 'e' key chip.",
+   "P2 bottom hint stack (welcome toast + wasd/shift/e legend) above the hotbar: Remove the welcome sentence, or auto-dismiss it after 4s. Make the legend one 16px row, with 16px gaps and the same --ui-panel fill and border as the other chips. Keep a 16px clearance above the hotbar.",
+   "P2 top-left title panel 'the undercroft': Align it to the 96px (5%) margin to match the top-right group. Drop the repeated sub-line, or set it to 16px --tx-2. Make the panel height match the top-right currency row."
   ],
   "pic": "tools/handoff/console/notes/shots/89-hub-floor-after/03-hub-floor-1080.jpg",
   "task": "89-hub-floor",
-  "when": "2026-10-22T09:52"
+  "when": "2026-10-22T10:05"
  },
  "04-stash-terminal": {
   "score": 2,
@@ -866,20 +866,20 @@
   "need": 3
  },
  "01-title-mode-menu": {
-  "score": 2,
-  "pass": false,
+  "score": 3,
+  "pass": true,
   "need": 3,
-  "verdict": "The menu is unchanged except for a few extra background pillager sprites and the version stamp, so it still reads as a stacked list of near-identical boxes in front of a muddy backdrop, and background figures now crowd behind the buttons and the title.",
+  "verdict": "The menu is a clean, readable column with a strong lime primary, but it is unchanged apart from the moving background sprites. The orange gradient logo, the stacked button list and the busy backdrop keep it from looking polished.",
   "findings": [
-   "P1 background behind the menu column (x 680-1240, y 270-760): Keep a clear lane about 640px wide down the centre, with no sprites between x 640 and 1280. Or darken the scrim to .80 under the column. Put the new figures at the sides or lower, where they frame the menu.",
-   "P1 mode buttons (1 player vs 3 others): Shorten to '2 player co-op'. Separate the arcade demos into a quieter row or a 16px label, with a 24px gap above them. Use 48px rows for the secondary buttons, a 1px --ui-line-hi border and tx-2 text.",
-   "P1 title lockup 'pillagers': Make the title flat --tx-1 at 56px, f-cond 800, with no gradient or shadow. Put the lime on the primary button only. Raise the tagline to 16px tx-2 at 4.5:1 or better, with a 16px gap below the title.",
-   "P2 saves block (y 685-805): Use a tx-2 16px label. Give the selected row a 3px lime left bar with tx-1 text instead of a lime outline. Make the buttons the same 40px height with 16px text. Remove the blue tint and use --ui-raised.",
-   "P2 button text sizes: Set the text to 16px minimum with 600 weight. Use 40px high buttons with 16px padding and a 1px --ui-line-hi border. Keep them at the 5% margin."
+   "P1 pillagers logo: Use a flat tx-1 wordmark, or a flat --acc one, with no gradient and no shadow. Keep gold only for rarity bars. The title and the primary button should not both shout, so make the logo about 56px f-cond 800 in tx-1.",
+   "P1 mode buttons and saves block (y 441-805): Keep '1 player' as the hero. Give the other modes a quieter style (a 16px label row or 2 columns). Add 32px between the mode group and saves. Move the arcade demos out of the main list or demote them.",
+   "P1 background sprites: Raise the scrim to rgba(6,7,8,.80) or more over the centre 700px column. Keep the sprites out of x 640-1280 and y 280-820, or blur them harder and drop their opacity to 40 percent.",
+   "P2 saves row (y 713-754) and name row (y 765-804): Use one row style, with --ui-raised fill and a 1px --ui-line-hi border. Use lime only for the selected row. Make 'change name' and 'create a new save' the same fill, with 16px gaps. Make the 'saves' label 16px tx-2 at 4.5:1 or better.",
+   "P2 tagline 'ascend. pillage. extract.': Use 20px --tx-2 with +.04em tracking and add a 24px gap above and 32px below, or delete it. Put it on a calm band."
   ],
   "pic": "tools/handoff/console/notes/shots/89-hub-floor-after/01-title-mode-menu-1080.jpg",
   "task": "89-hub-floor",
-  "when": "2026-10-22T09:51"
+  "when": "2026-10-22T10:05"
  },
  "44-title-from-character-select": {
   "score": 3,
@@ -1397,17 +1397,17 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The new hub has a clear focal point: the lime 'enter raid!' label, with quiet small labels around it. It still has overlapping bottom text, unlabelled-looking chrome and a crowded cast.",
+  "verdict": "The new floor is clearly calmer and better organised: the labels are quiet 20px chips, one lime 'enter raid!' is the hero, the title sits in a panel and the key hints are chips. It still has loose ends: the stash and last-pour prompts are crowded, the career HUD is a small mismatched strip, and there is a stray amber warning line.",
   "findings": [
-   "P1 bottom centre, key hint strip and trophy toast: Move the toast up to about y=860 and keep it off the hint row. Put the hints in one row at least 16px high, with 8px clear above the hotbar at y=952. Drop the hint strip or fade it out after the first few seconds.",
-   "P1 station labels (gambler, mainframe, shop, settings, stash, last pour, fashion): Set non-primary labels to 20px f-cond 600 in tx-1, on a --ui-panel pill at 90% with 8px padding. Keep them in a straight line, centred over each station.",
-   "P1 'enter raid!' label: Use a 4px-radius --ui-panel pill with 16px horizontal and 8px vertical padding. Use lime --acc text at 32px and a 3px lime bar underneath, or make it an --acc fill with --acc-ink text, but not both.",
-   "P1 '***experimental feature may glitch***' under the last pour: Delete it, or reduce it to a small --warn 'experimental' tag of 16px inside the label pill, with no asterisks.",
-   "P2 top-left title block: Put the title at 32px f-cond 700 tx-1 and the subtitle at 16px tx-2, on a panel strip at 80% opacity. Set x=48px and y=40px."
+   "P1 top-right career strip ('$900 130 xp stash $960 bag $0'): Put it in one --ui-panel card, 24px from the screen edge, with a 1px --ui-line-hi border. Use 20px for the values and 16px for the labels. Show 'sp' only if it is a score. Align it with the title card's top edge at y=48. The pending cw-trcol vertical list will replace it.",
+   "P1 '***experimental feature may glitch***' under 'the last pour': Delete it, or replace it with a 16px 'beta' tag in tx-2 inside the label chip. Drop the asterisks. Leave 8px between the chip and the ring.",
+   "P1 'enter raid!' label: Use --fs-title 32px f-cond 800 in a lime-bordered chip (2px --acc border, --ui-panel fill, 4px radius, 16px padding). Remove the '!'. Keep the lime fill only on the focus bar. Centre the chip on the station's x, 16px above the sprite.",
+   "P2 station labels (gambler, mainframe, shop, settings, stash, fashion, last pour): Use one 20px f-cond 600 label with 12px/8px padding, placed 12px above each station's top edge. Use a --ui-panel fill at 90% so the glow does not wash it out. Move the trophy toast clear of the stash chip.",
+   "P2 bottom centre: trophy toast and key-hint chips: Move the toast up to y≈120, centred under the title card, and give it a 3px --acc left tab. Keep the key-hint strip as the only bottom element at 16px. Use the same 4px radius, 1px --ui-line-hi border and 12px padding on both."
   ],
   "pic": "tools/handoff/console/notes/shots/89-hub-floor-after/39-hub-after-raid-1080.jpg",
   "task": "89-hub-floor",
-  "when": "2026-10-22T09:52"
+  "when": "2026-10-22T10:06"
  },
  "41-hub-backpack": {
   "score": 2,

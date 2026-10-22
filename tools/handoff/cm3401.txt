@@ -1,0 +1,7 @@
+v34.01: rarity reads without colour
+
+Item icons carry one to five cream rarity pips, from common through gold, in every colour mode.
+
+Check 34.01. Fails on v34.00.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
