@@ -1,0 +1,7 @@
+v34.15: steady quality between raids
+
+Effects shed after two slow seconds. Sharpness only falls after a measured fill gain. Recovery waits ten seconds or longer and the next raid starts one step better.
+
+Check 34.15. Fails on v34.14.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

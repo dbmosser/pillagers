@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.15 - STEADY QUALITY BETWEEN RAIDS
+
+Co-op hunt while he was away. His sharpness floor is 75 percent. A screen or script limit must never soften the picture; quality must recover slowly and carry into the next raid.
+
+MEASURED. Check 34.15 passes, and fails on v34.14.
 ## v34.14 - QUALITY SHEDS REAL EFFECTS
 
 Co-op hunt while he was away. His quality ladder should shed real work before sharpness. Sparks and ground decals are spawn only; decorative HUD and weather fade over one second.
