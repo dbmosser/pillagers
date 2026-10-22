@@ -102,3 +102,9 @@
 2026-10-22 15:07:29 FUZZ START seed=278716349 minutes=60 raidsec=300 port=9331 srv=8806 build=34.18 maps=0
 2026-10-22 15:12:37 raid 1 demo2p raidSeed=1349853090 map=0 god=1 sec=302 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=9422 score=0 ents=47 travelPx=27367 fires=110 menuPct=17 heapMB=64 p2=link_4s_join_6s_pad_own build=34.18
 2026-10-22 15:12:39 raid 1 demo2p raidSeed=1980443808 map=0 god=1 sec=305 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=9325 score=0 ents=44 travelPx=28019 fires=104 menuPct=12 heapMB=64 p2=link_4s_join_6s_pad_own build=34.18
+2026-10-22 15:32:48 FUZZ START seed=1477847016 minutes=60 raidsec=300 port=9331 srv=8806 build=34.18 maps=0
+2026-10-22 15:32:48 FUZZ START seed=1479065880 minutes=60 raidsec=300 port=9332 srv=8806 build=34.18 maps=0
+2026-10-22 15:37:56 raid 1 demo2p raidSeed=823593678 map=0 god=0 sec=302 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=9297 score=0 ents=44 travelPx=25518 fires=195 menuPct=18 heapMB=68 p2=link_3s_join_6s_pad_own build=34.18
+2026-10-22 15:37:56 raid 1 demo2p raidSeed=1700097074 map=0 god=0 sec=302 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=9471 score=0 ents=58 travelPx=27225 fires=183 menuPct=18 heapMB=63 p2=link_3s_join_6s_pad_own build=34.18
+2026-10-22 15:43:05 raid 2 demo2p raidSeed=1399193960 map=0 god=0 sec=302 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=9421 score=0 ents=54 travelPx=24708 fires=269 menuPct=19 heapMB=68 p2=link_2s_join_4s_pad_own build=34.18
+2026-10-22 15:43:09 raid 2 demo2p raidSeed=561868240 map=0 god=0 sec=305 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=9285 score=0 ents=48 travelPx=22977 fires=195 menuPct=20 heapMB=66 p2=link_2s_join_4s_pad_own build=34.18
