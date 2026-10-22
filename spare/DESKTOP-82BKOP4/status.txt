@@ -1,1 +1,1 @@
-host=DESKTOP-82BKOP4 seen=2026-10-21 23:17 epoch=1792639027 game=bdd27ce7 v33.94 test_run=running corpus-1021-2139.txt robots=2 ram_free_gb=18.4 push_ok=0 runner=0FE44F53
+host=DESKTOP-82BKOP4 seen=2026-10-21 23:48 epoch=1792640899 game=3c86416a v33.94 test_run=idle robots=1 ram_free_gb=26.3 push_ok=1 runner=0FE44F53
