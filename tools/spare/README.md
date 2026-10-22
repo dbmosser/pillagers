@@ -39,3 +39,13 @@ status line, takes nothing twice, and says "not set up yet" when the branch is m
 spare robot log. Not tested (needs the spare PC): the task, the GitHub sign-in, a full run and the robots on that machine.
 
 Set up by Claude Code on the spare PC (10-21, his pick for reliability): he signs in to the Claude app there and types one line pointing at `tools/spare/claude-setup.md`, the brief that session follows.
+
+## The main PC, while he is away (10-22)
+His order: "When my main PC isn't being used, it should be used for testing too" and "its resources shouldn't be idle"; he said yes to it
+checking how long since he last touched the keyboard, mouse or a pad. On JUL26 the same runner works in IDLE MODE from its own copy
+(C:\PillagersIdle\game; his old C:\claudecode\dark raiders there is never touched). It starts nothing until nobody has used the keyboard,
+mouse or a pad for 15 minutes and 6 GB are free, stops what it started within seconds of a touch (or under 2.5 GB free), and gives a build
+the spare PC is testing or has tested robots only. Its results go to spare/JUL26/ on spare-results with mode=idle; the VM counts them but
+never treats the main PC as the full-time spare. Set up once on the main PC, in a normal PowerShell window:
+    git clone https://github.com/dbmosser/pillagers.git C:\PillagersIdle\game; powershell -ExecutionPolicy Bypass -File C:\PillagersIdle\game\tools\spare\spare-setup.ps1
+Stop for good: the same setup with -Remove. Status: with -Status.

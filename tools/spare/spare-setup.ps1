@@ -10,11 +10,20 @@
 # administrator) or, if Windows refuses that, a Startup shortcut; and starts tools\spare\spare-runner.ps1.
 # It never runs a firewall, Defender, UAC, power-plan or Windows Update command, never asks for or stores a password or key itself (the
 # GitHub sign-in is Git's own window), and never touches port 8802. ASCII only.
+# 10-22 THE MAIN PC (his orders "When my main PC isn't being used, it should be used for testing too", "its resources shouldn't be idle",
+# and his yes to it checking how long since he last touched the keyboard, mouse or a pad): on JUL26 the same setup makes a SEPARATE copy,
+# C:\PillagersIdle\game (it clones it; his old C:\claudecode\dark raiders there is never touched), marked .idle-pc, with its results copy in
+# C:\PillagersIdle\results and the task "Main PC idle tests" (no "Pillagers" in the name, so tools\migrate\host-stop.ps1 never matches it).
+# The runner then tests only while he is away (tools\spare\spare-runner.ps1, IDLE MODE). One line on the main PC does it all:
+#   git clone https://github.com/dbmosser/pillagers.git C:\PillagersIdle\game; powershell -ExecutionPolicy Bypass -File C:\PillagersIdle\game\tools\spare\spare-setup.ps1
 param([switch]$Status,[switch]$Remove)
 $ErrorActionPreference='Continue'
-$R='C:\claudecode\dark raiders'; $W='C:\PillagersSpare'; $Res=$W+'\results'
-$Url='https://github.com/dbmosser/pillagers.git'; $Branch='spare-results'; $TaskName='Pillagers spare runner'
-$Vbs=$R+'\tools\spare\spare-start.vbs'; $Lnk=[Environment]::GetFolderPath('Startup')+'\Pillagers spare runner.lnk'
+$Main=($env:COMPUTERNAME -eq 'JUL26')
+if($Main){ $R='C:\PillagersIdle\game'; $W='C:\PillagersIdle'; $TaskName='Main PC idle tests'; $Mark='.idle-pc'; $Who='main PC idle tests' }
+else { $R='C:\claudecode\dark raiders'; $W='C:\PillagersSpare'; $TaskName='Pillagers spare runner'; $Mark='.spare-pc'; $Who='spare PC' }
+$Res=$W+'\results'
+$Url='https://github.com/dbmosser/pillagers.git'; $Branch='spare-results'
+$Vbs=$R+'\tools\spare\spare-start.vbs'; $Lnk=[Environment]::GetFolderPath('Startup')+'\'+$TaskName+'.lnk'
 $Enc=New-Object Text.UTF8Encoding $false
 
 function Say([string]$s){ Write-Host $s }
@@ -28,7 +37,7 @@ function RunnerProcs(){
     ($_.CommandLine -match 'fuzz\.ps1.*-Port 933[12](\s|$)') -or ($_.Name -eq 'chrome.exe' -and $_.CommandLine -match 'remote-debugging-port=(9344|9331|9332)(\s|$)')) })
 }
 
-if($env:COMPUTERNAME -in 'JUL26','VM_Oct2026'){ Finish $false 'This is the main PC or the VM, not the spare PC. Nothing was changed.' }
+if($env:COMPUTERNAME -eq 'VM_Oct2026'){ Finish $false 'This is the VM, not a test PC. Nothing was changed.' }
 
 if($Status){
   if(Test-Path -LiteralPath ($W+'\status.txt')){ Get-Content -LiteralPath ($W+'\status.txt') | ForEach-Object { Say ('  '+$_) } } else { Say '  no status yet' }
@@ -44,7 +53,7 @@ if($Remove){
   Remove-Item -LiteralPath $Lnk -Force -ErrorAction SilentlyContinue
   RunnerProcs | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }
   Remove-Item -LiteralPath ($W+'\runner.heartbeat') -Force -ErrorAction SilentlyContinue
-  Finish $true 'The spare PC runner is stopped and will not start again. Its folders are kept (C:\PillagersSpare).'
+  Finish $true ('The '+$Who+' runner is stopped and will not start again. Its folders are kept ('+$W+').')
 }
 
 # 1 the programs it needs
@@ -62,18 +71,19 @@ if($miss.Count){
 Say '1. Git, Node and Chrome are installed.'
 
 # 2 this game copy becomes the spare PC's (never pushes)
+if($Main -and -not (Test-Path -LiteralPath $R)){ Say ('   making the main PC''s own test copy in '+$R+' (a few minutes)'); [void](G clone -q $Url $R) }
 if(-not (Test-Path -LiteralPath ($R+'\.git'))){ Finish $false ('There is no game copy at '+$R+'. Run the clone line from the steps first.') }
 $origin=G -C $R remote get-url origin
 if($origin -notmatch '^https://github\.com/dbmosser/pillagers(\.git)?/?$'){ Finish $false ('The copy at '+$R+' is not the Pillagers GitHub copy ('+$origin+'). Nothing was changed.') }
-if(-not (Test-Path -LiteralPath ($R+'\.spare-pc'))){
+if(-not (Test-Path -LiteralPath ($R+'\'+$Mark))){
   [void](G -C $R fetch -q origin master)
   $dirty=G -C $R status --porcelain --untracked-files=no
   $ahead=G -C $R log --oneline origin/master..HEAD
   if($dirty -or $ahead){ Finish $false ('The copy at '+$R+' has work of its own, so it may be someone''s working copy. Nothing was changed.') }
-  [IO.File]::WriteAllText($R+'\.spare-pc',('spare PC game copy: '+$env:COMPUTERNAME+', set up '+(Get-Date).ToString('yyyy-MM-dd HH:mm')+"`n"),$Enc)
+  [IO.File]::WriteAllText($R+'\'+$Mark,($Who+' game copy: '+$env:COMPUTERNAME+', set up '+(Get-Date).ToString('yyyy-MM-dd HH:mm')+"`n"),$Enc)
 }
-[IO.File]::WriteAllText($R+'\.git\hooks\pre-push',"#!/bin/sh`necho 'the spare PC game copy never pushes (tools/spare/spare-runner.ps1)' >&2`nexit 1`n",$Enc)
-Say '2. The game copy is marked as the spare PC''s and can never push.'
+[IO.File]::WriteAllText($R+'\.git\hooks\pre-push',"#!/bin/sh`necho 'this test game copy never pushes (tools/spare/spare-runner.ps1)' >&2`nexit 1`n",$Enc)
+Say ('2. The game copy is marked as the '+$Who+' copy and can never push.')
 
 # 3 the results copy (spare-results only)
 New-Item -ItemType Directory -Force -Path $Res | Out-Null
@@ -89,7 +99,7 @@ if($cur -ne $Branch){
 [IO.File]::WriteAllText($Res+'\.git\hooks\pre-push',("#!/bin/sh`nwhile read lref lsha rref rsha; do`n  [ `"`$rref`" = `"refs/heads/$Branch`" ] || { echo 'the spare PC results copy pushes only $Branch' >&2; exit 1; }`ndone`nexit 0`n"),$Enc)
 $d=$Res+'\spare\'+$env:COMPUTERNAME; New-Item -ItemType Directory -Force -Path $d | Out-Null
 [IO.File]::WriteAllLines($d+'\status.txt',[string[]]@('host='+$env:COMPUTERNAME,'seen='+(Get-Date).ToString('yyyy-MM-dd HH:mm'),
-  'epoch='+[DateTimeOffset]::UtcNow.ToUnixTimeSeconds(),'test_run=set up, the runner is starting','robots=0'),$Enc)
+  'epoch='+[DateTimeOffset]::UtcNow.ToUnixTimeSeconds(),'test_run=set up, the runner is starting','robots=0',('mode='+$(if($Main){ 'idle' }else{ 'full' }))),$Enc)
 [void](G -C $Res add -A -f -- spare)
 [void](G -C $Res diff --cached --quiet); if($script:gx -ne 0){ [void](G -C $Res commit -q -m ('spare: '+$env:COMPUTERNAME+' set up')) }
 Say '3. Sending a first note to GitHub. If a GitHub sign-in window opens, sign in there and allow it.'
@@ -124,4 +134,5 @@ if(-not $ok){
     if((Test-Path -LiteralPath ($W+'\runner.log')) -and (@(Get-Content -LiteralPath ($W+'\runner.log') | Select-Object -Skip $n0) -match 'spare runner started')){ $ok=$true; break } }
 }
 if(-not $ok){ Finish $false 'The runner did not start. Run this setup again with -Status and send me what it says.' }
+if($Main){ Finish $true 'The main PC now tests new builds whenever nobody has touched it for 15 minutes, and stops within seconds when you do.' }
 Finish $true 'The spare PC now tests every new Pillagers build by itself. Leave it on and signed in; if it restarts, just sign in.'

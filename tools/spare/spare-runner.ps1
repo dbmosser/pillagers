@@ -18,16 +18,25 @@
 # Start: wscript tools\spare\spare-start.vbs (the task made by spare-setup.ps1 does it at sign-in and every 15 minutes; a copy whose
 # heartbeat is under 10 minutes old makes a new one exit). When master brings a new copy of this file, it restarts itself.
 # Log: C:\PillagersSpare\runner.log. Status: C:\PillagersSpare\status.txt. ASCII only (PowerShell 5.1 reads .ps1 as ANSI).
+# 10-22 IDLE MODE (his orders "When my main PC isn't being used, it should be used for testing too" and "its resources shouldn't be idle"):
+# on the MAIN PC (JUL26) this runner works from its own copy, C:\PillagersIdle\game, never his old C:\claudecode\dark raiders there. It
+# starts nothing until no key, mouse or game pad has been used for 15 minutes and 6 GB are free; it stops everything it started within
+# seconds of a touch (or under 2.5 GB free); and a build another PC is testing or has tested stays that PC's: here it gets robots only.
 param([switch]$Once,[int]$FuzzMinutes=60,[int]$PublishMin=30)
 $ErrorActionPreference='Continue'
-$R='C:\claudecode\dark raiders'; $T=$R+'\tools'; $W='C:\PillagersSpare'
+$Idle=($env:COMPUTERNAME -eq 'JUL26')
+if($Idle){ $R='C:\PillagersIdle\game'; $W='C:\PillagersIdle' } else { $R='C:\claudecode\dark raiders'; $W='C:\PillagersSpare' }
+$T=$R+'\tools'
 $Res=$W+'\results'; $Out=$W+'\out'; $FzOut=$Out+'\fuzz'; $CorpDir=$Out+'\corpus'
 $Log=$W+'\runner.log'; $StateF=$W+'\state.txt'; $Hb=$W+'\runner.heartbeat'; $StatusF=$W+'\status.txt'
 $Bash='C:\Program Files\Git\bin\bash.exe'; $Branch='spare-results'; $HostN=$env:COMPUTERNAME
 $Enc=New-Object Text.UTF8Encoding $false
 
-if($HostN -in 'JUL26','VM_Oct2026'){ Write-Output 'refusing: this is the main PC or the VM, not the spare PC'; exit 2 }
-if(-not (Test-Path -LiteralPath ($R+'\.spare-pc'))){ Write-Output 'refusing: no spare PC marker (run tools\spare\spare-setup.ps1 first)'; exit 2 }
+if($HostN -eq 'VM_Oct2026'){ Write-Output 'refusing: this is the VM, not a test PC'; exit 2 }
+$Mark=$(if($Idle){ '.idle-pc' }else{ '.spare-pc' })
+if(-not (Test-Path -LiteralPath ($R+'\'+$Mark))){ Write-Output ('refusing: no '+$Mark+' marker (run tools\spare\spare-setup.ps1 first)'); exit 2 }
+# the test scripts (corpq.sh, corpus-slices.sh, fuzz.ps1) take their folders from these; unset, they use the spare PC's paths as before
+if($Idle){ $env:PILLAGERS_ROOT=($R -replace '\\','/'); $env:PILLAGERS_SCRATCH=(($W+'\scratch') -replace '\\','/'); New-Item -ItemType Directory -Force -Path ($W+'\scratch') | Out-Null }
 New-Item -ItemType Directory -Force -Path $W,$Out,$FzOut,$CorpDir | Out-Null
 if(-not $Once -and (Test-Path -LiteralPath $Hb)){
   if(((Get-Date)-(Get-Item -LiteralPath $Hb).LastWriteTime).TotalSeconds -lt 600){ exit 0 }   # another copy is alive
@@ -59,11 +68,55 @@ function GameVer(){
   return '?'
 }
 
-# keep the PC awake while this runs (ES_CONTINUOUS | ES_SYSTEM_REQUIRED); it ends with this process
-try{
+# keep the PC awake while this runs (ES_CONTINUOUS | ES_SYSTEM_REQUIRED); it ends with this process. Not on the main PC: that is his.
+if(-not $Idle){ try{
   Add-Type -Namespace PillagersSpare -Name Power -MemberDefinition '[DllImport("kernel32.dll")] public static extern uint SetThreadExecutionState(uint f);' -ErrorAction Stop
   [void][PillagersSpare.Power]::SetThreadExecutionState([uint32]2147483649)
-}catch{ Say ('could not ask Windows to stay awake: '+(Short "$_")) }
+}catch{ Say ('could not ask Windows to stay awake: '+(Short "$_")) } }
+
+# IDLE MODE: is he here? (his yes of 10-22: it may check how long since he last touched the keyboard, mouse or a pad, only to know whether
+# he is away, and stop its own tests when he is back.) It reads the time since the last key or mouse input (GetLastInputInfo) and, for
+# pads, whether a button, trigger or stick is past its rest zone at a check (XInput pads 1 to 4; a pad does not move the Windows idle clock
+# and the party plays on pads). It records nothing of what was pressed.
+$script:padT=Get-Date; $script:working=$false
+if($Idle){
+  try{ Add-Type -Namespace PillagersIdle -Name Input -ErrorAction Stop -MemberDefinition @'
+[StructLayout(LayoutKind.Sequential)] public struct LII { public uint cbSize; public uint dwTime; }
+[DllImport("user32.dll")] static extern bool GetLastInputInfo(ref LII p);
+[DllImport("xinput1_4.dll")] static extern uint XInputGetState(uint i, byte[] s);
+public static double IdleSec(){ LII p = new LII(); p.cbSize = 8; if (!GetLastInputInfo(ref p)) return 0; return unchecked((uint)Environment.TickCount - p.dwTime) / 1000.0; }
+public static bool PadInUse(){
+  byte[] s = new byte[16];
+  for (uint i = 0; i < 4; i++) {
+    try { if (XInputGetState(i, s) != 0) continue; } catch { return false; }
+    if (BitConverter.ToUInt16(s, 4) != 0 || s[6] > 30 || s[7] > 30) return true;
+    for (int k = 8; k < 16; k += 2) { if (Math.Abs((int)BitConverter.ToInt16(s, k)) > 8000) return true; }
+  }
+  return false;
+}
+'@ }catch{ Say ('PROBLEM: cannot tell whether he is at the PC, so nothing runs: '+(Short "$_")); exit 1 }
+}
+function AwaySec(){ if([PillagersIdle.Input]::PadInUse()){ $script:padT=Get-Date }; return [Math]::Min([PillagersIdle.Input]::IdleSec(),((Get-Date)-$script:padT).TotalSeconds) }
+function FreeGB(){ $os=Get-CimInstance Win32_OperatingSystem -ErrorAction SilentlyContinue; if(-not $os){ return 0 }; return [Math]::Min($os.FreePhysicalMemory,$os.FreeVirtualMemory)/1MB }
+# ends only what this runner started: the test scripts run from C:\PillagersIdle, and the test Chromes (debug port and pillagers-cdp profile)
+function Stop-Work([string]$why){
+  $n=0
+  Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object { $_.ProcessId -ne $PID -and $_.CommandLine -and (
+    ($_.CommandLine -match 'PillagersIdle' -and $_.CommandLine -match 'fuzz\.ps1|corpq\.sh|corpus-slices\.sh') -or
+    ($_.Name -eq 'chrome.exe' -and $_.CommandLine -match 'remote-debugging-port=(9344|9331|9332)(\s|$)' -and $_.CommandLine -match 'pillagers-cdp')) } |
+    ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue; $n++ }
+  $script:working=$false
+  if($n){ Say ('stopped '+$n+' test parts ('+$why+')') }
+}
+# the wait between rounds, looking for him every 5 seconds
+function Watch([int]$sec){
+  $end=(Get-Date).AddSeconds($sec); $k=0
+  while((Get-Date) -lt $end){
+    Start-Sleep -Seconds 5; $k++
+    if((AwaySec) -lt 30){ Stop-Work 'he is back at the PC'; return }
+    if(($k % 6) -eq 0 -and (FreeGB) -lt 2.5){ Stop-Work 'under 2.5 GB free'; return }
+  }
+}
 
 $SelfHash=(Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash
 Say ('spare runner started (pid '+$PID+', game v'+(GameVer)+')')
@@ -88,16 +141,47 @@ function Update-Game(){
   return $true
 }
 
+function Build-Fixture(){
+  $t0=Get-Date
+  $fx=& powershell.exe -NoProfile -ExecutionPolicy Bypass -File ($T+'\mkfixture.ps1') -Root $R 2>&1 | Select-Object -Last 2
+  $fi=Get-Item -LiteralPath ($T+'\fixture.html') -ErrorAction SilentlyContinue
+  if(-not $fi -or $fi.LastWriteTime -lt $t0 -or $fi.Length -lt 5000000){ Say ('PROBLEM: the test copy did not build: '+(Short ($fx -join ' '))); return $false }
+  return $true
+}
+
+# IDLE MODE: is this commit already another PC's? Its status says it is testing it now (seen under 3 hours ago), or it sent a finished run of it.
+function OtherPC([string]$head){
+  [void](G -C $Res fetch -q origin $Branch); if($script:gx -ne 0){ return '' }
+  foreach($f in ((G -C $Res ls-tree -r --name-only FETCH_HEAD -- spare) -split "`n")){
+    if($f -notmatch '^spare/([A-Za-z0-9_.-]+)/(.+)$' -or $Matches[1] -eq $HostN){ continue }
+    $h=$Matches[1]; $p=$Matches[2]
+    if($p -eq 'status.txt'){
+      $t=G -C $Res show ('FETCH_HEAD:'+$f)
+      if($t -match ('(?m)^game='+$head.Substring(0,8)) -and $t -match '(?m)^test_run=running' -and $t -match '(?m)^epoch=(\d+)' -and ((Epoch)-[long]$Matches[1]) -lt 10800){ return ('being tested on '+$h) }
+    } elseif($p -match '^corpus/corpus-\d{4}-\d{4}\.txt\.head$'){
+      if((G -C $Res show ('FETCH_HEAD:'+$f)).StartsWith($head)){ return ('already tested on '+$h) }
+    }
+  }
+  return ''
+}
+
 function Start-Corpus(){
   $blob=G -C $R rev-parse 'HEAD:dark_raiders.html'; $head=G -C $R rev-parse HEAD
   if(-not $blob -or $blob -eq (GetS 'tested_blob')){ return }
+  if($Idle){
+    if((GetS 'skip_blob') -eq $blob){ return }
+    $who=OtherPC $head
+    if($who){
+      PutS 'skip_blob' $blob; Say ('build '+$head.Substring(0,8)+' (v'+(GameVer)+') is '+$who+': robots only here')
+      if((GetS 'fx_blob') -ne $blob -and (Build-Fixture)){ Copy-Item -LiteralPath ($T+'\fixture.html') -Destination ($T+'\fxcorpus.html') -Force; PutS 'fx_blob' $blob }
+      return
+    }
+  }
   $tries=0; if((GetS 'try_blob') -eq $blob){ $tries=[int]('0'+(GetS 'tries')) }
   if($tries -ge 2){ return }   # this build failed twice to give a full run; wait for the next one
   PutS 'try_blob' $blob; PutS 'tries' ([string]($tries+1))
-  $t0=Get-Date
-  $fx=& powershell.exe -NoProfile -ExecutionPolicy Bypass -File ($T+'\mkfixture.ps1') 2>&1 | Select-Object -Last 2
-  $fi=Get-Item -LiteralPath ($T+'\fixture.html') -ErrorAction SilentlyContinue
-  if(-not $fi -or $fi.LastWriteTime -lt $t0 -or $fi.Length -lt 5000000){ Say ('PROBLEM: the test copy did not build: '+(Short ($fx -join ' '))); return }
+  if(-not (Build-Fixture)){ return }
+  PutS 'fx_blob' $blob   # corpq.sh copies this test copy to fxcorpus.html, which the robots play
   $name='corpus-'+(Get-Date -Format 'MMdd-HHmm')+'.txt'; $outF=$CorpDir+'\'+$name
   [IO.File]::WriteAllText($outF+'.head',$head+"`n",$Enc)
   Start-Process -FilePath $Bash -ArgumentList @('tools/handoff/shipkit/corpq.sh',('"'+($outF -replace '\\','/')+'"')) -WorkingDirectory $R -WindowStyle Hidden | Out-Null
@@ -109,7 +193,7 @@ function Start-Robot([int]$port,[string]$copy){
   if(-not (Test-Path -LiteralPath ($T+'\fxcorpus.html'))){ return }
   $env:FUZZ_OUT_DIR=$FzOut; $env:FUZZ_COPY_NAME=$copy
   Start-Process -FilePath powershell.exe -WindowStyle Hidden -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-WindowStyle','Hidden',
-    '-File',('"'+$T+'\fuzz.ps1"'),'-Minutes',[string]$FuzzMinutes,'-IgnoreFlag','-Port',[string]$port,'-MinFreeGB','2','-Fixture','fxcorpus.html') | Out-Null
+    '-File',('"'+$T+'\fuzz.ps1"'),'-Minutes',[string]$FuzzMinutes,'-IgnoreFlag','-Port',[string]$port,'-MinFreeGB',$(if($Idle){ '3' }else{ '2' }),'-Fixture','fxcorpus.html') | Out-Null
   Remove-Item Env:FUZZ_OUT_DIR,Env:FUZZ_COPY_NAME -ErrorAction SilentlyContinue
   Say ('robot started on '+$port)
 }
@@ -120,7 +204,7 @@ function Write-Status([string]$corpus,[int]$robots){
   # 10-21: each pair in its own brackets. PowerShell's comma binds before +, so the old list was ONE string joined with spaces and the
   # VM's import never found epoch= (it read the spare PC as never seen).
   $L=@(('host='+$HostN),('seen='+(Get-Date).ToString('yyyy-MM-dd HH:mm')),('epoch='+(Epoch)),('game='+(G -C $R rev-parse --short=8 HEAD)+' v'+(GameVer)),
-    ('test_run='+$corpus),('robots='+$robots),('ram_free_gb='+$free),('push_ok='+(GetS 'push_ok')),('runner='+$SelfHash.Substring(0,8)))
+    ('test_run='+$corpus),('robots='+$robots),('ram_free_gb='+$free),('push_ok='+(GetS 'push_ok')),('runner='+$SelfHash.Substring(0,8)),('mode='+$(if($Idle){ 'idle' }else{ 'full' })))
   [IO.File]::WriteAllLines($StatusF,[string[]]$L,$Enc)
 }
 
@@ -141,12 +225,37 @@ function Publish([string]$why){
   [void](G -C $Res diff --cached --quiet)
   if($script:gx -eq 0){ return }
   [void](G -C $Res commit -q -m ('spare: '+$HostN+' '+$why+' '+(Stamp)))
-  $o=G -C $Res push -q origin ('HEAD:refs/heads/'+$Branch)
+  # 10-22: two PCs push here now (the spare PC and the main PC's idle runs), each into its own folder, so a refused push is usually the
+  # other PC's newer note: take it in with a plain merge (never a rebase or a force) and push once more.
+  for($k=0;$k -lt 2;$k++){
+    $o=G -C $Res push -q origin ('HEAD:refs/heads/'+$Branch)
+    if($script:gx -eq 0 -or $k -eq 1){ break }
+    [void](G -C $Res fetch -q origin $Branch)
+    $m=G -C $Res merge -q --no-edit FETCH_HEAD
+    if($script:gx -ne 0){ [void](G -C $Res merge --abort); $o=$o+' / merge: '+$m; break }
+  }
   if($script:gx -ne 0){ PutS 'push_ok' '0'; Say ('PROBLEM: results push failed: '+(Short $o)) } else { PutS 'push_ok' '1'; PutS 'pub_t' ([string](Epoch)) }
 }
 
 while($true){
   [IO.File]::WriteAllText($Hb,[string](Epoch),$Enc)
+  if($Idle){
+    # IDLE MODE: while he is at the PC (or memory is short) nothing runs; a look every 20 seconds, a status note when that changes
+    $away=AwaySec; $fg=FreeGB
+    if($away -lt 900 -or $fg -lt 6){
+      $pw=$(if($away -lt 900){ 'paused: he is using the PC' }else{ 'paused: under 6 GB free' })
+      if($script:working){ Stop-Work $pw }
+      $pt=[long]('0'+(GetS 'pub_t'))
+      if((GetS 'pause_why') -ne $pw -or ((Epoch)-$pt) -ge ($PublishMin*60)){
+        if((GetS 'pause_why') -ne $pw){ PutS 'pause_why' $pw; Say $pw }
+        Write-Status $pw 0; Publish 'paused'
+      }
+      if($Once){ break }
+      Start-Sleep -Seconds 20; continue
+    }
+    if((GetS 'pause_why')){ PutS 'pause_why' ''; Say ('he has been away '+[int]($away/60)+' minutes and '+[Math]::Round($fg,1)+' GB are free: testing') }
+    $script:working=$true
+  }
   Ensure-Server
   $cr=Running 'corpq\.sh|corpus-slices\.sh'
   $why=''
@@ -175,5 +284,5 @@ while($true){
   $pt=[long]('0'+(GetS 'pub_t'))
   if($why -or ((Epoch)-$pt) -ge ($PublishMin*60)){ if(-not $why){ $why='update' }; Publish $why }
   if($Once){ break }
-  Start-Sleep -Seconds 300
+  if($Idle){ Watch 300 } else { Start-Sleep -Seconds 300 }
 }

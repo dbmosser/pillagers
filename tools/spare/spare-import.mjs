@@ -46,11 +46,17 @@ for (const f of git(['ls-tree', '-r', '--name-only', REF, '--', 'spare/']).split
 // and the VM ran its own full test run beside the spare's. A value runs up to the next " word=".
 const kv = (t) => Object.fromEntries([...t.replace(/\r?\n/g, ' ').matchAll(/(?:^|\s)(\w+)=(.*?)(?=\s+\w+=|\s*$)/g)].map((m) => [m[1], m[2].trim()]));
 let seen = 0, seenHost = '', seenSt = {};
+// 10-22: the main PC's idle runs (status mode=idle) send results too. They count like the spare PC's, but never as a full-time spare in
+// live.txt, since the main PC tests only while he is away; the VM still starts its own runs when the spare PC is quiet.
+const idleHosts = [];
 const got = [], bad = [];
 fs.mkdirSync(S, { recursive: true });
 for (const [h, list] of Object.entries(hosts)) {
   if (list.includes('status.txt')) {
-    try { const st = kv(blob(`spare/${h}/status.txt`).toString('utf8')); const ep = +st.epoch || 0; if (ep > seen) { seen = ep; seenHost = h; seenSt = st; } } catch { }
+    try {
+      const st = kv(blob(`spare/${h}/status.txt`).toString('utf8')); const ep = +st.epoch || 0;
+      if (st.mode === 'idle') idleHosts.push([h, st, ep]); else if (ep > seen) { seen = ep; seenHost = h; seenSt = st; }
+    } catch { }
   }
   // finished full test runs
   for (const n of list.filter((x) => /^corpus\/corpus-\d{4}-\d{4}\.txt$/.test(x)).sort()) {
@@ -84,6 +90,7 @@ const ago = seen ? Math.round((Date.now() / 1000 - seen) / 60) : -1;
 let line = !seen ? `no spare PC has reported yet (checked ${stamp()})`
   : `${seenHost} last seen ${seenSt.seen || '?'} (${ago} min ago${ago >= 180 ? ', QUIET: the VM runs the tests and robots again' : ''}), game ${seenSt.game || '?'}, ` +
     `test run ${seenSt.test_run || '?'}, robots ${seenSt.robots || '?'}, push ${seenSt.push_ok === '0' ? 'FAILING' : 'ok'}`;
+for (const [h, st, ep] of idleHosts) line += `; main PC ${h} last seen ${st.seen || '?'} (${ep ? Math.round((Date.now() / 1000 - ep) / 60) : '?'} min ago): ${st.test_run || '?'}, robots ${st.robots || '0'}`;
 if (got.length) line += `; took ${got.length} finished run(s) now: ${got.join(', ').slice(0, 200)}`;
 if (bad.length) line += `; could not take ${bad.length}: ${bad.join('; ').slice(0, 300)}`;
 say(line + ` (checked ${stamp()})`);

@@ -159,6 +159,9 @@ function spareHtml(x){
   o+=row(x.robots?'g':'d',null,'<b>Crash-hunting robots:</b> '+(x.robots?x.robots+' playing now':'none playing')+'<div class="small">Today: '+x.raidsToday+' raids, '+(x.problemsToday?'<span class="warn">'+x.problemsToday+' problem'+(x.problemsToday>1?'s':'')+'</span> (Claude checks whether each is the game or the test)':'no problems')+'</div>');
   o+=row(x.pushOk==='1'?'g':'a',null,'<b>Results to the VM:</b> '+(x.pushOk==='1'?'arriving':'its last upload try failed; it tries again on its next round'));
   x.lastRaids.slice().reverse().forEach(l=>{ const m=/^\S+ (\d\d:\d\d)\S* raid \d+ (\S+) .*?end=(\S+) problems=(\d+)/.exec(l); if(m) o+=row(+m[4]?'a':'d',m[1],esc((m[2]==='demo2p'?'2-player demo':m[2]==='demo1'?'1-player demo':m[2])+' raid: '+(m[3]==='nostart'?'did not start':m[3]==='clock-end'||m[3]==='ended'?'played to the end':m[3])+(+m[4]?', '+m[4]+' problem'+(+m[4]>1?'s':''):''))); });
+  // 10-22: the main PC tests only while nobody uses it (it reports at least every 30 minutes while on)
+  const mp=x.mainPc; if(mp){ const age=mp.seenEpoch?Math.round(Date.now()/1000-mp.seenEpoch):1e9, paused=/^paused/.test(mp.testRun||''), on=age<2700;
+    o+=row(!on?'d':paused?'d':'g',null,'<b>Main PC, while you are away:</b> '+(!on?'no report for '+dur(age):paused?(/under 6 GB/.test(mp.testRun)?'waiting for free memory':'waiting while you use it'):'testing'+(/^running/.test(mp.testRun)?': a full test run':'')+(mp.robots?', '+mp.robots+' robots':''))+'<div class="small">Today: '+mp.raidsToday+' raids, '+(mp.problemsToday?'<span class="warn">'+mp.problemsToday+' problem'+(mp.problemsToday>1?'s':'')+'</span>':'no problems')+'</div>'); }
   return o;
 }
 function crewHtml(d){

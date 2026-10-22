@@ -122,6 +122,14 @@ function spareInfo() {
   const v = { host, seenEpoch: +live.epoch || 0, game: st.game || '', testRun: st.test_run || '', robots: +st.robots || 0, ramFree: st.ram_free_gb || '', pushOk: st.push_ok || '',
     raidsToday: raids.length, problemsToday: raids.reduce((s, l) => s + +((/ problems=(\d+)/.exec(l) || [0, 0])[1]), 0),
     lastRaids: raids.slice(-4), lastEnd: L.filter(l => /FUZZ END/.test(l)).slice(-1)[0] || '' };
+  // 10-22: the main PC's idle runs (tools/spare/spare-runner.ps1 IDLE MODE on JUL26): tests only while he is away
+  const mraw = git(['cat-file', 'blob', 'refs/spare-import/spare-results:spare/JUL26/status.txt']);
+  if (mraw) {
+    const ms = Object.fromEntries([...mraw.replace(/\r?\n/g, ' ').matchAll(/(?:^|\s)(\w+)=(.*?)(?=\s+\w+=|\s*$)/g)].map(m => [m[1], m[2].trim()]));
+    const mr = tail(SPD + '/JUL26/fuzz.log', 600).filter(l => l.startsWith(day) && / raid \d+ /.test(l));
+    v.mainPc = { seenEpoch: +ms.epoch || 0, testRun: ms.test_run || '', robots: +ms.robots || 0, game: ms.game || '', raidsToday: mr.length,
+      problemsToday: mr.reduce((s, l) => s + +((/ problems=(\d+)/.exec(l) || [0, 0])[1]), 0) };
+  }
   spareCache = { t: Date.now(), v }; return v;
 }
 function data() {
