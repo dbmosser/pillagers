@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v33.99 - UNDERCROFT FLOOR TEXT
+
+Co-op hunt while he was away. The hub floor has equal-weight station names, a tiny amber title and a tiny control line. The style guide calls for clear hierarchy and readable hints.
+
+MEASURED. Check 33.99 passes, and fails on v33.98.
 ## v33.98 - UNDERCROFT BODY READABILITY
 
 Co-op hunt while he was away. Gambler and stats remain at critic two: weak focal point, undefined empty metrics and a toast covering achievement goals.

@@ -961,3 +961,8 @@
 2026-10-22 0.1346 critic-88-undercroft-windows
 2026-10-22 0.0000 88-undercroft-windows
 2026-10-22 0.0000 88-undercroft-windows
+2026-10-22 0.1397 critic-88-undercroft-windows
+2026-10-22 0.1387 critic-88-undercroft-windows
+2026-10-22 0.0000 89-hub-floor
+2026-10-22 0.0000 89-hub-floor
+2026-10-22 0.0000 89-hub-floor

@@ -140,17 +140,17 @@
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "Clean and consistent with the card-and-X window pattern, but it is a flat, empty window with two weak buttons, no hero element, and the lower half of the card is dead space.",
+  "verdict": "A flat, tidy but empty card: the 'the gamble' panel is a big title over a void with a small grey button, nothing on screen is the clear primary action, and the bottom third is dead space.",
   "findings": [
-   "P0 whole card, y 560-960: Make the gamble panel the hero: about 360px tall with a 56px 'gamble' title or odds readout. Or shrink the card to fit the content. Stack the two panels with 24px gaps and centre them vertically in the body.",
-   "P0 gamble button (386,236)-(1534,292) and buy button (1287,440)-(1533,496): Make the gamble button 320x64, left-aligned or centred, with 24px type. For a disabled state use a muted fill (--ui-raised) and a --ui-line-hi border. Put the shortfall as a 16px --danger line under the button instead of inline. Keep the red outline for a failed attempt only.",
-   "P1 panel labels 'the gamble' / 'limited time offer' (386,193)/(387,377): Use 16px f-cond 600 in --tx-2 with +.04em tracking, or 20px in --tx-1. Tighten label-to-content spacing to 16px. State what the gamble gives (a rarity range or reward icon) in place of the empty space.",
-   "P1 header currency row (1470-1742, y 90): Use a uniform 20px for each value with a 16px label. Space the items 24px apart and keep 24px between the row and the X. Show wallet only here and move stash and bag to a footer legend.",
-   "P1 offer panel text (539-827, y 428-514): Show the name (32px), a rarity bar on the icon's left edge, and 'worth $10,680' in 16px. Replace the timer sentence with a '5:00' countdown tag at the panel's top right. Drop 'with armour plate' or turn it into a tag chip. Lighten the icon tile to --ui-raised."
+   "P0 the gamble panel (360-1558 x 157-475): Cut the panel to about 200px. Put a rarity-bar reward preview or a row of odds tiles beside the title. Give the button a 56px height, a lime fill (--acc with --acc-ink text) when affordable, or a dimmed outline with a danger 'need $1,600 more' when not. Make it full width of the panel's left column or sit it on the right, and show a lime focus ring (2px) for pad focus.",
+   "P0 whole card, bottom 290px (y 740-1020) and side gutters: Stretch the panels to the card's inner width (margins 48px), or vertically centre the stack. Better, add a third element (past results or the last winnings) so the card fills. Keep the panel gap at 24px (it is currently 25px, fine).",
+   "P1 'the gamble' title vs 'wirt the gambler' window title: Remove the inner 'the gamble' heading or shrink it to 20px label size. If kept, make the window title 32px and the inner one 20px f-cond 600. Spend the 56px hero on the cost or prize.",
+   "P1 top-right currency strip ($900, 0 xp, stash $3,750 bag $0): Use one row of equal 20px values with a 16px muted label each, a 24px gap and a 1px divider before the X. Drop bag $0 here, or move stash/bag to a fine footer. Align baselines with the 'wirt the gambler' title (y=98 vs 91 now).",
+   "P1 limited time offer panel (360-1558 x 500-737): Make the tab 3px. Raise the 'need' text to 16px --danger and move it below the button, not inside. Delete or shrink the timer to a 16px label with a clock glyph on the right. Put the price on one line at 20px tx-1, with 'worth $10,680' at 16px tx-2 and the item name as the one emphasised line."
   ],
-  "pic": "tools/handoff/console/notes/shots/88-undercroft-windows-recipes-2/11-wirt-gambler-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/88-undercroft-windows-recipes-3/11-wirt-gambler-1080.jpg",
   "task": "88-undercroft-windows",
-  "when": "2026-10-22T09:16"
+  "when": "2026-10-22T09:33"
  },
  "12-mainframe-contracts": {
   "score": 3,
@@ -1106,20 +1106,20 @@
   "need": 3
  },
  "15-mainframe-stats": {
-  "score": 2,
-  "pass": false,
+  "score": 3,
+  "pass": true,
   "need": 3,
-  "verdict": "the card shell, tabs and x are correct, but the stats grid is a wall of identical empty boxes, with a stray tooltip stuck in the achievements row and explaining sentences all over.",
+  "verdict": "it is a clean, consistent dark card with a proper x, tabs and one lime hero, but the body is a flat grid of identical boxes with empty cells, an explaining paragraph, a 'locked' prefix repeated on every row and a clipped last row, so it reads as a template and not a polished AAA stats screen.",
   "findings": [
-   "P0 achievements row, bottom, centre: remove the stray tooltip from the row layout, or anchor it above the hovered cell. Render the achievements as a 4-column grid of tiles (name 20px tx-1, requirement 16px tx-2, 3px rarity bar). Show a 16px ok-green tick on earned ones. Drop the trailing periods.",
-   "P1 stat tiles (12 tiles): make level 1 the single hero stat at 56px f-cond 800 in tx-1, with a 3px lime top tab on its panel. Set the other values to 32px with 16px labels. Collapse empty tiles to one 'no runs yet' placeholder, or dim empty values to tx-2.",
-   "P1 notoriety tile: delete the sentence, or reduce it to a 16px tx-2 tag such as 'attack non-threats to raise it'. Keep the tile to one column, so the grid stays at 4 columns.",
-   "P1 tile micro-copy, several tiles: cut these to bare values or a short label ('none', '0'). Show 'last 10' only when the data exists. Remove the 'walked away' phrase.",
-   "P1 tile labels and secondary text: set labels to 16px f-cond 600 with +.04em tracking in tx-2 (at least 4.5:1). Set secondary lines to 16px minimum. Reserve 700 weight for the card title."
+   "P1 notoriety card: cut to the state word 'clean' plus at most a 3-5 word tag (e.g. 'no bounty'). Move the rule into a hover or focus tooltip. Set the card to the same 16px label style as the other two.",
+   "P1 stats row: experience / notoriety / net lifetime earnings: make three equal columns (about 1/3 each, 16px gutters) and height 160px instead of 270. Put every value on one baseline at y=card top+96. Give 'net lifetime earnings' a hero-weight or matching 32px number in tx-1. Add a thin progress bar under 'level 1' using a lime 4px fill.",
+   "P1 achievements grid: drop the 'locked' word. Show locked state by dimming the name to tx-2 at 60% plus a 16px padlock glyph at the right. Unlocked tiles get a 3px lime left bar and tx-1 name. Add a 40px icon square at the left (x=136) and a small progress fraction such as '0/1' in 16px tx-2 at the right.",
+   "P1 bottom of the scroll area (y~975-1003): add 24px bottom padding to the scroll container and a 32px fade-to-panel gradient at the clip edge. Make the clip end at the card's inner padding (y=1000), not mid-row. Inset the scrollbar 8px from the tiles (tile right edge 1778, scrollbar at 1792).",
+   "P1 header resource strip (top right): use one pattern: 20px tx-1 number plus 16px tx-2 label, with even 24px gaps, e.g. '$900', '0 xp', '$3,750 stash', '$0 bag'. Put the x button 24px to the right, 48px square."
   ],
-  "pic": "tools/handoff/console/notes/shots/88-undercroft-windows-recipes-2/15-mainframe-stats-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/88-undercroft-windows-recipes-3/15-mainframe-stats-1080.jpg",
   "task": "88-undercroft-windows",
-  "when": "2026-10-22T09:16"
+  "when": "2026-10-22T09:33"
  },
  "74-pad-player-1": {
   "score": 3,
