@@ -1,0 +1,36 @@
+{
+    "title":  "QUALITY READS REAL FRAMES",
+    "why":  "His 2.43 a: sustained frames below 60 should shed effects. Empty quality rungs did nothing and rebuilt every canvas.",
+    "now":  "Quality reads two seconds of frame gaps and own work. Empty passes stay off the ladder and only size changes rebuild canvases.",
+    "edits":  [
+                  {
+                      "anchor":  "function gfxqApply(){ var q=DRS.q|0; GFXQ.q=q; GFXQ.post=(q\u003e=1)?0:1; GFXQ.lmap=(q\u003e=2)?0.66:1; GFXQ.shadow=(q\u003e=3)?0:1; return GFXQ; }\nfunction gfxqCan(l){ if(l===1) return CFG.gfxPost!==0; if(l===2) return true; if(l===3) return CFG.gfxLight!==0\u0026\u0026CFG.gfxLight!==1; return false; }",
+                      "replacement":  "// v28.xx (cw-cx-ladderwindow): empty post and lamp-shadow passes stay off the ladder until they have readers.\nfunction gfxqApply(){ var q=DRS.q|0; GFXQ.q=q; GFXQ.post=1; GFXQ.lmap=(q\u003e=2)?0.66:1; GFXQ.shadow=1; return GFXQ; }\nfunction gfxqCan(l){ return l===2; }\nfunction gfxqSync(){\n  gfxqApply();\n  if(CFG.gfxScale!==RES_APPLIED||DRS.scale!==DRS.applied||GFXQ.lmap!==DRS.sheet){ resize(); }\n  DRS.qa=DRS.q|0;\n}"
+                  },
+                  {
+                      "anchor":  "  var budget=(CFG.fpsCap\u003e0)?1000/CFG.fpsCap:16.7;\n  DRS.ema=DRS.ema?(DRS.ema*0.9+gapMs*0.1):gapMs;\n  if(DRS.ema\u003ebudget*1.5){ DRS.slowT+=gapMs; DRS.fastT=0; }\n  else if(DRS.ema\u003cbudget*1.15){ DRS.fastT+=gapMs; DRS.slowT=0; }\n  else { DRS.slowT=0; DRS.fastT=0; }",
+                      "replacement":  "  // v28.xx (cw-cx-ladderwindow): his 2.43 a, react below 60, even with a 120 or 144 cap; keep two seconds of gap and own work.\n  var budget=Math.max(16.7,(CFG.fpsCap\u003e0)?1000/CFG.fpsCap:16.7), w=DRS.win||(DRS.win=[]);\n  var workMs=arguments.length\u003e2?+arguments[2]:(+DRS.workMs||0);\n  if(w.length\u0026\u0026(now\u003c=w[w.length-1][0]||now-w[w.length-1][0]\u003e250)){ w.length=0; DRS.slowT=0; DRS.fastT=0; }\n  w.push([now,gapMs,Math.max(0,workMs)]);\n  while(w.length\u003e1\u0026\u0026w[1][0]\u003c=now-2000) w.shift();\n  var gaps=w.map(function(f){ return f[1]; }).sort(function(a,b){ return a-b; });\n  var works=w.map(function(f){ return f[2]; }).sort(function(a,b){ return a-b; });\n  DRS.gap95=gaps[Math.ceil(gaps.length*0.95)-1]; DRS.gap50=gaps[Math.ceil(gaps.length*0.5)-1];\n  DRS.work95=works[Math.ceil(works.length*0.95)-1]; DRS.ema=DRS.gap95;\n  if(now-w[0][0]\u003c1950) return false;\n  if(DRS.gap95\u003e20*budget/16.7){ DRS.slowT+=gapMs; DRS.fastT=0; }\n  else if(DRS.gap95\u003c17.5*budget/16.7\u0026\u0026DRS.work95\u003c10){ DRS.fastT+=gapMs; DRS.slowT=0; }\n  else { DRS.slowT=0; DRS.fastT=0; }"
+                  },
+                  {
+                      "anchor":  "  gfxqApply(); DRS.qa=DRS.q|0;   // v23.xx (gfx6): the quality ladder rung these canvases are built at",
+                      "replacement":  "  gfxqApply(); DRS.qa=DRS.q|0; DRS.sheet=GFXQ.lmap; // v28.xx (cw-cx-ladderwindow): remember the actual sheet size, not an inert rung."
+                  },
+                  {
+                      "anchor":  "  if(CFG.gfxScale!==RES_APPLIED||DRS.scale!==DRS.applied||(DRS.q|0)!==(DRS.qa|0)){ try{ resize(); }catch(_rz){} }   // v17.43: his pick 28, a new render resolution applies at once; v18.01: and an auto step",
+                      "replacement":  "  try{ gfxqSync(); }catch(_rz){} // v28.xx (cw-cx-ladderwindow): resize only when a canvas size changes."
+                  },
+                  {
+                      "anchor":  "function loop(ts){",
+                      "replacement":  "function loop(ts){\n  DRS.frameStart=performance.now(); // v28.xx (cw-cx-ladderwindow): own work starts before frame setup and simulation."
+                  },
+                  {
+                      "anchor":  "  if(state===\u0027raid\u0027\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!G.sim\u0026\u0026!HID.fromWorker\u0026\u0026!(typeof document!==\u0027undefined\u0027\u0026\u0026document.hidden)){ try{ drsTick(gap0); }catch(_dt){} }   // v18.01: auto resolution, on real frames of a visible window",
+                      "replacement":  "  DRS.frameGap=gap0; // v28.xx (cw-cx-ladderwindow): pair this frame gap with its work after the HUD pass."
+                  },
+                  {
+                      "anchor":  "  gfxpMark(\u0027hud\u0027); gfxpEnd();   // v23.xx (gfx1)",
+                      "replacement":  "  gfxpMark(\u0027hud\u0027); gfxpEnd();\n  // v28.xx (cw-cx-ladderwindow): only real, visible raid frames steer quality, after their own HUD has finished.\n  if(state===\u0027raid\u0027\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!G.sim\u0026\u0026!HID.fromWorker\u0026\u0026!document.hidden\u0026\u0026DRS.frameStart!==undefined){\n    var _drsEnd=performance.now(); DRS.workMs=Math.max(0,_drsEnd-DRS.frameStart);\n    drsTick(DRS.frameGap,_drsEnd,DRS.workMs);\n  }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027quality reads two seconds of gaps and own work, ignores empty passes and only resizes canvas size changes\u0027,\n   run:function(){\n     var d0=JSON.stringify(DRS), c0=JSON.stringify(CFG), oR=resize, calls=0, bad=[], t=100000, i;\n     function reset(){ DRS.scale=1; DRS.q=0; DRS.ema=0; DRS.slowT=0; DRS.fastT=0; DRS.last=0; DRS.upAt=0; DRS.bounce=0; DRS.said=1; DRS.win=[]; gfxqApply(); }\n     function feed(gap,ms,work){ var end=t+ms; while(t\u003cend){ t+=gap; drsTick(gap,t,work); } }\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       CFG.gfxAuto=1; CFG.gfxScale=1; CFG.fpsCap=0; reset(); feed(22,5000,6);\n       if(!DRS.q) bad.push(\u002745 fps for five seconds shed no rung\u0027);\n       if(DRS.gap95!==22||DRS.work95!==6) bad.push(\u0027gap and work window lost their samples\u0027);\n       reset(); CFG.fpsCap=144; feed(11,30000,6);\n       if(DRS.q||DRS.scale!==1) bad.push(\u0027144 cap sheds above 60 fps\u0027);\n       CFG.fpsCap=0; reset(); DRS.q=2; gfxqApply(); feed(16,15000,12);\n       if(DRS.q!==2) bad.push(\u0027high own work was incorrectly clear\u0027);\n       reset(); resize(); resize=function(){ calls++; return oR.apply(this,arguments); };\n       DRS.q=1; gfxqSync(); if(calls) bad.push(\u0027an unchanged sheet rebuilt canvases\u0027);\n       if(GFXQ.particles!==undefined){ DRS.q=2; gfxqSync(); if(calls) bad.push(\u0027HUD and weather rung rebuilt canvases\u0027); }\n       DRS.q=GFXQ.particles!==undefined?3:2; gfxqSync(); if(calls!==1) bad.push(\u0027sheet size change did not resize once\u0027);\n       gfxqSync(); if(calls!==1) bad.push(\u0027stable sheet rebuilt canvases\u0027);\n       if(GFXQ.post!==1||GFXQ.shadow!==1) bad.push(\u0027empty passes still change with a rung\u0027);\n       return bad.length?bad.join(\u0027; \u0027):null;\n     }finally{\n       resize=oR; var k, ds=JSON.parse(d0), cs=JSON.parse(c0);\n       for(k in DRS) if(!(k in ds)) delete DRS[k]; for(k in ds) DRS[k]=ds[k]; for(k in cs) CFG[k]=cs[k];\n       gfxqApply(); try{ resize(); }catch(_r){} __topClear();\n     } }},"
+}

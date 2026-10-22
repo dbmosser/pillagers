@@ -1,0 +1,7 @@
+v34.13: quality reads real frames
+
+Quality reads two seconds of frame gaps and own work. Empty passes stay off the ladder and only size changes rebuild canvases.
+
+Check 34.13. Fails on v34.12.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -3516,7 +3516,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.12';
+var VER='34.13';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -35128,8 +35128,14 @@ var DRS={scale:1,applied:1,ema:0,slowT:0,fastT:0,last:0,bounce:0,upAt:0,said:0,m
 // and with Auto resolution Off, exactly as the scale does. GFXQ is the view the graphics passes read: post, lmap (the soft sheet
 // share) and shadow; gfxLightNow() and gfxPostNow() fold the settings and the rung into one answer.
 var GFXQ={q:0,post:1,lmap:1,shadow:1};
-function gfxqApply(){ var q=DRS.q|0; GFXQ.q=q; GFXQ.post=(q>=1)?0:1; GFXQ.lmap=(q>=2)?0.66:1; GFXQ.shadow=(q>=3)?0:1; return GFXQ; }
-function gfxqCan(l){ if(l===1) return CFG.gfxPost!==0; if(l===2) return true; if(l===3) return CFG.gfxLight!==0&&CFG.gfxLight!==1; return false; }
+// v28.xx (cw-cx-ladderwindow): empty post and lamp-shadow passes stay off the ladder until they have readers.
+function gfxqApply(){ var q=DRS.q|0; GFXQ.q=q; GFXQ.post=1; GFXQ.lmap=(q>=2)?0.66:1; GFXQ.shadow=1; return GFXQ; }
+function gfxqCan(l){ return l===2; }
+function gfxqSync(){
+  gfxqApply();
+  if(CFG.gfxScale!==RES_APPLIED||DRS.scale!==DRS.applied||GFXQ.lmap!==DRS.sheet){ resize(); }
+  DRS.qa=DRS.q|0;
+}
 function gfxqNext(q){ var l; for(l=q+1;l<=3;l++){ if(gfxqCan(l)) return l; } return q; }
 function gfxqPrev(q){ var l=q-1; while(l>0&&!gfxqCan(l)) l--; return Math.max(0,l); }
 function gfxLightNow(){ var l=(CFG.gfxLight===0)?0:((CFG.gfxLight===1)?1:2); if(l===2&&!GFXQ.shadow) l=1; return l; }
@@ -35138,10 +35144,19 @@ function gfxScaleNow(){ var s=+CFG.gfxScale; s=(s>0&&s<=1)?s:1; return (CFG.gfxA
 function drsTick(gapMs,now){
   if(CFG.gfxAuto===0||!(gapMs>0)||gapMs>250) return false;
   now=(now!==undefined)?now:((typeof performance!=='undefined')?performance.now():Date.now());
-  var budget=(CFG.fpsCap>0)?1000/CFG.fpsCap:16.7;
-  DRS.ema=DRS.ema?(DRS.ema*0.9+gapMs*0.1):gapMs;
-  if(DRS.ema>budget*1.5){ DRS.slowT+=gapMs; DRS.fastT=0; }
-  else if(DRS.ema<budget*1.15){ DRS.fastT+=gapMs; DRS.slowT=0; }
+  // v28.xx (cw-cx-ladderwindow): his 2.43 a, react below 60, even with a 120 or 144 cap; keep two seconds of gap and own work.
+  var budget=Math.max(16.7,(CFG.fpsCap>0)?1000/CFG.fpsCap:16.7), w=DRS.win||(DRS.win=[]);
+  var workMs=arguments.length>2?+arguments[2]:(+DRS.workMs||0);
+  if(w.length&&(now<=w[w.length-1][0]||now-w[w.length-1][0]>250)){ w.length=0; DRS.slowT=0; DRS.fastT=0; }
+  w.push([now,gapMs,Math.max(0,workMs)]);
+  while(w.length>1&&w[1][0]<=now-2000) w.shift();
+  var gaps=w.map(function(f){ return f[1]; }).sort(function(a,b){ return a-b; });
+  var works=w.map(function(f){ return f[2]; }).sort(function(a,b){ return a-b; });
+  DRS.gap95=gaps[Math.ceil(gaps.length*0.95)-1]; DRS.gap50=gaps[Math.ceil(gaps.length*0.5)-1];
+  DRS.work95=works[Math.ceil(works.length*0.95)-1]; DRS.ema=DRS.gap95;
+  if(now-w[0][0]<1950) return false;
+  if(DRS.gap95>20*budget/16.7){ DRS.slowT+=gapMs; DRS.fastT=0; }
+  else if(DRS.gap95<17.5*budget/16.7&&DRS.work95<10){ DRS.fastT+=gapMs; DRS.slowT=0; }
   else { DRS.slowT=0; DRS.fastT=0; }
   // v23.xx (gfx6): the ladder first, one rung after a second of slow frames, before any step of the render scale
   if(DRS.slowT>1000&&now-DRS.last>1000){
@@ -35177,7 +35192,7 @@ function frameCapSkip(ts){ var c=+CFG.fpsCap; if(!(c>0)) return false; if(ts-CAP
   // screen's own pixels (DPRH, the device ratio capped at 2), so text stays sharp at any resolution and the world alone pays
   // for the speed. The soft sheets below still follow the render scale.
   DPRH=Math.min(window.devicePixelRatio||1,2);
-  gfxqApply(); DRS.qa=DRS.q|0;   // v23.xx (gfx6): the quality ladder rung these canvases are built at
+  gfxqApply(); DRS.qa=DRS.q|0; DRS.sheet=GFXQ.lmap; // v28.xx (cw-cx-ladderwindow): remember the actual sheet size, not an inert rung.
   DPR=DPRH*gfxScaleNow(); RES_APPLIED=CFG.gfxScale; DRS.applied=DRS.scale;   // v17.43: his pick 28, the render resolution; v18.01: and the auto step
   var r=cv.getBoundingClientRect();
   W=r.width; H=r.height;
@@ -41541,7 +41556,12 @@ wc.drawImage(fogC,0,0,W,H);   // v18.03: stretched back over the frame
   gfxpMark('wx');   // v23.xx (gfx1): rain, weather fog and the overlays
   try{ drawHUD(); } finally { GFXWT=null; }   // v23.xx (gfx5): the world text hand-off is this frame's only
   drawBuzzFx();
-  gfxpMark('hud'); gfxpEnd();   // v23.xx (gfx1)
+  gfxpMark('hud'); gfxpEnd();
+  // v28.xx (cw-cx-ladderwindow): only real, visible raid frames steer quality, after their own HUD has finished.
+  if(state==='raid'&&G&&!G.over&&!G.sim&&!HID.fromWorker&&!document.hidden&&DRS.frameStart!==undefined){
+    var _drsEnd=performance.now(); DRS.workMs=Math.max(0,_drsEnd-DRS.frameStart);
+    drsTick(DRS.frameGap,_drsEnd,DRS.workMs);
+  }
 }
 
 // ================================================================ HUD (2D overlay)
@@ -53110,6 +53130,7 @@ function hidStart(){
   }catch(_hw){ HID.w=null; return false; }
 }
 function loop(ts){
+  DRS.frameStart=performance.now(); // v28.xx (cw-cx-ladderwindow): own work starts before frame setup and simulation.
   if(!HID.fromWorker){ requestAnimationFrame(loop); HID.lastRaf=(typeof performance!=='undefined')?performance.now():Date.now(); if(!HID.w) hidStart(); }
   try{ syncTopRight(); }catch(_tr2){}   // v11.52: a string compare per frame, a DOM write only on change
   try{ trHide(ts); }catch(_th){}   // v30.xx (cw-trcol): the page text in the corner is clipped away while the raid HUD draws its rows
@@ -53119,7 +53140,7 @@ function loop(ts){
   // browser hands the context back. lastTs is restamped on restore.
   if(ctxLost){ lastTs=ts; return; }
   if((CFG.gfxAuto===0||state!=='raid')&&(DRS.scale!==1||DRS.q)){ DRS.scale=1; DRS.q=0; }   // v18.01: auto resolution rests at full outside a raid and when switched Off
-  if(CFG.gfxScale!==RES_APPLIED||DRS.scale!==DRS.applied||(DRS.q|0)!==(DRS.qa|0)){ try{ resize(); }catch(_rz){} }   // v17.43: his pick 28, a new render resolution applies at once; v18.01: and an auto step
+  try{ gfxqSync(); }catch(_rz){} // v28.xx (cw-cx-ladderwindow): resize only when a canvas size changes.
   // v23.xx (gfx6): the quality ladder rung rests at 0 with the scale, and a new rung rebuilds the canvases like a new scale
   try{ volApply(); }catch(_va){}   // v17.74: the volume rows, applied at once
   try{ brightApply(); }catch(_br){}   // v26.xx (settings5): BRIGHTNESS, applied at once
@@ -53139,7 +53160,7 @@ function loop(ts){
   // either, which is worth as much.
   var gap0=ts-lastTs; var dt=clamp(gap0/1000,0,.05); lastTs=ts;   // v17.87: gap0 is the raw frame gap, for perfNote
   if(state==='raid'&&G&&!G.over&&!G.sim&&!(CFG.fpsCap>0)) perfNote(gap0);   // v17.87: a slow PC is told where the levers are
-  if(state==='raid'&&G&&!G.over&&!G.sim&&!HID.fromWorker&&!(typeof document!=='undefined'&&document.hidden)){ try{ drsTick(gap0); }catch(_dt){} }   // v18.01: auto resolution, on real frames of a visible window
+  DRS.frameGap=gap0; // v28.xx (cw-cx-ladderwindow): pair this frame gap with its work after the HUD pass.
   if(state==='raid'&&G&&!G.over&&!G.sim&&!HID.fromWorker){ try{ gfxTel(gap0); }catch(_gt){} }   // v23.xx (gfx1): frame telemetry, the raw gap of real live raid frames
   tickMusic();
   // Ahead of every early return below, so zoom keeps easing in the hub, while
@@ -53749,7 +53770,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.12: The teammate warning controller drawing is 24px wide with the same 2px stroke. Check 34.12 fails on v34.11',
+  now:'v34.13: Quality reads two seconds of frame gaps and own work. Empty passes stay off the ladder and only size changes rebuild canvases. Check 34.13 fails on v34.12',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

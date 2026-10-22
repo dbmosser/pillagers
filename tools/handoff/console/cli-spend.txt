@@ -1023,3 +1023,7 @@
 2026-10-22 0.1379 critic-93-pad-lost-tag
 2026-10-22 0.1384 critic-93-pad-lost-tag
 2026-10-22 0.0000 93-pad-lost-tag
+2026-10-22 0.1397 critic-93-pad-lost-tag
+2026-10-22 0.1386 critic-93-pad-lost-tag
+2026-10-22 0.0000 93-pad-lost-tag
+2026-10-22 0.0000 94-ladder-sheds-sooner

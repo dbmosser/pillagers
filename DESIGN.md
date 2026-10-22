@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.13 - QUALITY READS REAL FRAMES
+
+Co-op hunt while he was away. His 2.43 a: sustained frames below 60 should shed effects. Empty quality rungs did nothing and rebuilt every canvas.
+
+MEASURED. Check 34.13 passes, and fails on v34.12.
 ## v34.12 - TEAMMATE PAD LOST GLYPH
 
 Co-op hunt while he was away. The linked-window critic still found the controller glyph tiny because the path used only 18 pixels of its nominal 24px box.

@@ -354,3 +354,6 @@
 
 2026-10-22 | 93-pad-lost-tag | linked raid teammate tag, both windows | controller drawing visible width 18px to 24px, same 2px stroke; title, 3px warning rail and top-centre placement unchanged | before: notes/shots/93-pad-lost-tag-recipes-2/j8-p1-sees-p2-lost-1080.jpg and j8-p2-sees-p1-lost-1080.jpg | after: pending recipe round 3.
 
+2026-10-22 | 93-pad-lost-tag | final linked raid teammate tag in both windows, v34.12 | shipped dark panel, 3px warn bar, 32px title and visible 24px controller glyph; no wording changes | before: notes/shots/o-07-pad-lost-coordinator-check/j8-p1-sees-p2-lost-1080.jpg and j8-p2-sees-p1-lost-1080.jpg | after: notes/shots/93-pad-lost-tag-recipes-3/j8-p1-sees-p2-lost-1080.jpg and j8-p2-sees-p1-lost-1080.jpg | critic 2/2, stopped after two follow-ups without score increase.
+
+2026-10-22 | 94-ladder-sheds-sooner | automatic quality | first ship: detects sustained sub-60 frames using a two-second gap/work window, removes empty quality rungs and avoids canvas rebuilds for unchanged sizes | before/after firefight pictures pending ship (b).
