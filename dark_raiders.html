@@ -3516,7 +3516,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.07';
+var VER='34.08';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22290,11 +22290,11 @@ function drawPickups(){
 function gunCardMetrics(){
   var s=Math.max(0.75,Math.min(2.2,H/1080));
   var hub=G&&G.hubFloor&&typeof G.hubBagBeltBottom==='number'; // v28.xx (cw-cx-hubbagreadability): larger hub labels and a subordinate item title.
-  return {s:s,pad:24*s,rh:32*s,title:(hub?28:32)*s,label:(hub?20:16)*s,value:20*s,w:440*s};
+  return {s:s,pad:24*s,rh:32*s,title:32*s,label:(hub?20:16)*s,value:20*s,w:440*s}; // v28.xx (cw-cx-hubbagfinish): one title size for the focused item.
 }
 function gunCardSize(cmp,tag){
   var m=gunCardMetrics(),el=!!(cmp&&cmp.f&&cmp.f.el&&typeof ELEM!=='undefined'&&ELEM[cmp.f.el]);
-  return {w:Math.round(m.w),h:Math.round(m.pad*2+m.title*1.1+m.rh*(1+GUNSTAT_ROWS.length+(tag?1:0)+(el?1:0)+((cmp&&cmp.f&&gunKillsOf(cmp.f.id)>0)?1:0)))};
+  return {w:Math.round(m.w),h:Math.round(m.pad*2+(G&&G.hubFloor&&G.hubBagDetail?m.rh:0)+m.title*1.1+m.rh*(1+GUNSTAT_ROWS.length+(tag?1:0)+(el?1:0)+((cmp&&cmp.f&&gunKillsOf(cmp.f.id)>0)?1:0)))}; // v28.xx (cw-cx-hubbagfinish): include the hub price row in the measured card.
 }
 function gunCardDraw(cmp,xR,yB,al,tag){
   var m=gunCardMetrics(),sz=gunCardSize(cmp,tag),x=xR-sz.w,y=yB-sz.h,pad=m.pad,rh=m.rh,yy,
@@ -22304,13 +22304,16 @@ function gunCardDraw(cmp,xR,yB,al,tag){
   ctx.save();
   try{
     ctx.globalAlpha*=al===undefined?1:al;
+    if(!(G&&G.hubFloor&&G.hubBagDetail)){ // v28.xx (cw-cx-hubbagfinish): the hub owns one surrounding detail panel and its rarity bar.
     hudPlate(x,y,sz.w,sz.h,null,'rgba(22,25,27,.95)');
     ctx.strokeStyle=UIC.ui_line_hi;ctx.lineWidth=1;ctx.strokeRect(x+0.5,y+0.5,sz.w-1,sz.h-1);
     ctx.fillStyle=rc;ctx.fillRect(x,y+4*m.s,3*m.s,sz.h-8*m.s);
+    }
     GUNCARD_LAST={x:x,y:y,w:sz.w,h:sz.h};
     ctx.textBaseline='alphabetic';ctx.textAlign='left';yy=y+pad+m.title*0.85;
     ctx.font=fT;ctx.fillStyle=UIC.tx_1;ctx.fillText(String(cmp.f.name).toUpperCase(),x+pad,yy,sz.w-pad*2-72*m.s);
     ctx.font=fL;ctx.fillStyle=UIC.tx_2;ctx.textAlign='right';ctx.fillText(ITEMRAR[gunRarity(cmp.f.id)]||'',xd,yy);
+    if(G&&G.hubFloor&&G.hubBagDetail){yy+=rh;ctx.textAlign='left';ctx.font=fV;ctx.fillStyle=UIC.tx_1;ctx.fillText(G.hubBagDetail.price,x+pad,yy);} // v28.xx (cw-cx-hubbagfinish): price belongs directly under the item name.
     yy+=rh;ctx.textAlign='left';ctx.fillStyle=vc;ctx.fillText(cmp.verdict,x+pad,yy);
     ctx.textAlign='right';ctx.fillStyle=UIC.tx_2;
     if(!cmp.noVs)ctx.fillText('VS '+(cmp.h?String(cmp.h.name).toUpperCase()+((cmp.h.id!==cmp.f.id&&gunBase(cmp.h.id)===gunBase(cmp.f.id))?(' '+(ITEMRAR[gunRarity(cmp.h.id)]||'')):''):'BARE HANDS'),xd,yy,sz.w*0.56);
@@ -41827,6 +41830,7 @@ function drawBuzzFx(){
     // square and everything inside one is already drawn as a fraction of bw, so
     // the icons grow with the cell.
     var gap=LH(6), gapG=LH(18);   // v25.xx (belt6a): LH(6) inside a group, LH(18) between groups
+    if(G&&G.hubFloor&&typeof G.hubBagBeltWidth==='number')gap=gapG=8*Math.max(.75,Math.min(2.2,H/1080)); // v28.xx (cw-cx-hubbagfinish): one 8px rhythm across the window belt.
     var _hz=hudRes();
     // v16.28, his note: the HP bar ran under the belt. These edges ignored the size and place he gave each block, so a vitals block
     // made bigger or moved right went under the slots. They now read both (hudUserZ, hudOff), and the slots shrink to fit.
@@ -41853,6 +41857,7 @@ function drawBuzzFx(){
     if(G&&G.hubFloor) hx=Math.round((W-tw2)/2);
     if(G&&G.hubFloor&&typeof G.hubBagBeltBottom==='number') hy=G.hubBagBeltBottom-bw; // v28.xx (cw-cx-hubbagcard): same belt and hit boxes, inside the card.
     if(G&&G.hubFloor&&typeof G.hubBagBeltLeft==='number') hx=G.hubBagBeltLeft; // v28.xx (cw-cx-hubbagreadability): left edge follows the open grid.
+    if(G&&G.hubFloor&&typeof G.hubBagBeltWidth==='number'){bw=(G.hubBagBeltWidth-_gt)/sl.length;tw2=G.hubBagBeltWidth;hy=G.hubBagBeltBottom-bw;} // v28.xx (cw-cx-hubbagfinish): nine existing slots span the grid; no extra controls.
     // The rectangles are recorded AS THEY ARE DRAWN rather than recomputed by the
     // mouse code. Two copies of this arithmetic would drift the first time the
     // slot count or the scale changed, and the drop target would stop matching
@@ -47379,7 +47384,7 @@ function drawHubBagCard(){
   var left=b.x+p,right=b.x+b.w-p,top=b.y+head+p,dw=gunCardMetrics().w,dx=right-dw,lw=dx-32*s-left;
   var stacks=bagStacks(),sel=clamp(G.bagSel||0,0,Math.max(0,stacks.length-1)),i,j;
   G.bagSel=sel;G.bagPanel=b;G.bagHead={x:b.x,y:b.y,w:b.w,h:head};
-  G.bagFoot={x:b.x,y:b.y+b.h-foot,w:b.w,h:foot};G.bagCardBox=null;
+  G.bagFoot={x:b.x,y:b.y+b.h-foot,w:b.w,h:foot};G.bagCardBox=null;G.hubBagDetail=null;
   ctx.save();
   try{
     ctx.globalAlpha=1;ctx.textBaseline='alphabetic';ctx.textAlign='left';
@@ -47391,21 +47396,21 @@ function drawHubBagCard(){
     function rule(y){ctx.strokeStyle='#2e3337';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(right,y);ctx.stroke();}
     text('backpack',left,b.y+46*s,32,'#efe9dc',700);rule(b.y+head);rule(G.bagFoot.y);
     hubBagChrome(true,{x:right-48*s,y:b.y+12*s,w:48*s,h:48*s});
-    G.hubBagBeltBottom=G.bagFoot.y-24*s;G.hubBagBeltLeft=left; // v28.xx (cw-cx-hubbagreadability): the belt and its label share the grid edge.
+    G.hubBagBeltBottom=G.bagFoot.y-24*s;G.hubBagBeltLeft=left;G.hubBagBeltWidth=lw; // v28.xx (cw-cx-hubbagreadability): the belt and its label share the grid edge.
     drawBelt();
     var beltTop=G.hotCells.length?G.hotCells[0].y:G.hubBagBeltBottom-100*s;
     text('tactical belt',left,beltTop-16*s,20,'#aaa498');
-    ctx.fillStyle='#1e2225';mapRR(left,top,lw,144*s,4*s);ctx.fill();
+    ctx.fillStyle='#1e2225';mapRR(left,top,lw,128*s,4*s);ctx.fill();
     text('equipped',left+24*s,top+28*s,20,'#aaa498');
-    drawIconSprite(ctx,G.player.wep.id,left+72*s,top+96*s,96*s);
-    text(G.player.wep.name,left+144*s,top+64*s,32);
+    drawIconSprite(ctx,G.player.wep.id,left+72*s,top+80*s,72*s);
+    text(G.player.wep.name,left+144*s,top+56*s,20);
     var w=G.player.wep;
-    text('dmg '+(w.dmg*(w.pellets||1))+'  range '+Math.round(w.rng/10)+'m  '+(w.auto?'auto':'semi')+(w.mag?'  mag '+w.mag:''),left+144*s,top+100*s,20,'#aaa498');
-    text('integrity '+Math.round(G.player.hp)+'/'+G.player.maxhp+'    armour '+Math.round(G.player.armor),left+144*s,top+132*s,20,'#aaa498');
-    if(w.mag===0){font(32);var nameW=ctx.measureText(w.name).width;text('melee',left+144*s+nameW+16*s,top+64*s,16,'#aaa498');}
+    text('dmg '+(w.dmg*(w.pellets||1))+'  range '+Math.round(w.rng/10)+'m  '+(w.auto?'auto':'semi')+(w.mag?'  mag '+w.mag:''),left+144*s,top+88*s,20,'#aaa498');
+    text('integrity '+Math.round(G.player.hp)+'/'+G.player.maxhp+'    armour '+Math.round(G.player.armor),left+144*s,top+116*s,20,'#aaa498');
+    if(w.mag===0){font(20);var nameW=ctx.measureText(w.name).width;text('melee',left+144*s+nameW+16*s,top+56*s,16,'#aaa498');}
     else{ctx.textAlign='right';text('ammo',left+lw-24*s,top+28*s,20,'#aaa498');text(G.player.ammo+' / '+rsvShow(G.player),left+lw-24*s,top+86*s,56,'#efe9dc',800);ctx.textAlign='left';}
-    var cols=Math.max(1,Math.floor((lw+gap)/(88*s+gap))),tile=(lw-(cols-1)*gap)/cols;
-    var gy=top+192*s,rows=Math.max(1,Math.floor((beltTop-48*s-gy+gap)/(tile+gap)));
+    var cols=Math.max(1,Math.min(8,Math.floor((lw+gap)/(88*s+gap)))),tile=(lw-(cols-1)*gap)/cols;
+    var gy=top+166*s,rows=Math.max(1,Math.floor((beltTop-40*s-gy+gap)/(tile+gap)));
     var all=Math.max(1,Math.ceil(stacks.length/cols)),first=clamp(Math.floor(sel/cols)-Math.floor(rows/2),0,Math.max(0,all-rows));
     G.bagCols=cols;G.bagCells=[];
     var n=0;for(i=0;i<stacks.length;i++)n+=stacks[i].idxs.length;
@@ -47413,8 +47418,8 @@ function drawHubBagCard(){
     var prot=safeSet();
     for(i=0;i<rows;i++)for(j=0;j<cols;j++){
       var ix=(first+i)*cols+j,st=stacks[ix],tx=left+j*(tile+gap),ty=gy+i*(tile+gap),focused=!!st&&ix===sel&&!G.bagBelt;
-      ctx.fillStyle=st?'#1e2225':'#111315';mapRR(tx,ty,tile,tile,4*s);ctx.fill();
-      ctx.lineWidth=focused?3:1;ctx.strokeStyle=focused?'#e6ff3d':(st?'#2e3337':'rgba(46,51,55,.4)');ctx.stroke();
+      ctx.fillStyle=st?'#1e2225':'#16191b';mapRR(tx,ty,tile,tile,4*s);ctx.fill();
+      ctx.lineWidth=focused?3:1;ctx.strokeStyle=focused?'#e6ff3d':'#2e3337';ctx.stroke();
       if(!st)continue;
       G.bagCells.push({x:tx,y:ty,w:tile,h:tile,key:st.key,stackIx:ix,bagIx:st.idxs[0]});
       ctx.fillStyle=RCOL[dispR(st.key)]||'#4a5257';ctx.fillRect(tx+2,ty+tile-4*s,tile-4,3*s);
@@ -47433,21 +47438,24 @@ function drawHubBagCard(){
       }
     }
     // v28.xx (cw-cx-hubbagreadability): the portrait, price and shared gun card form one detail pane sized to its content.
-    var it=key&&ITEMS[key],detailY=top+184*s,sz=null,cmp=null,rr=it?itemRows(key):[];
+    // v28.xx (cw-cx-hubbagfinish): one raised detail panel, with the shared comparison rows drawn directly on it.
+    var it=key&&ITEMS[key],detailY=top+224*s,sz=null,cmp=null,rr=it?itemRows(key):[],tag=G.drag?null:'IN BACKPACK';
+    if(it)G.hubBagDetail={price:'$'+ival(key).toLocaleString()+' each'};
     if(it&&it.gk&&WEAPONS[it.gk]){
       var weapon=(typeof gunQPeek==='function'&&gunQPeek(it.gk))||WEAPONS[it.gk];cmp=gunCompare(weapon,G.player.wep);
-      cmp.f=Object.assign({},cmp.f,{name:it.name});sz=gunCardSize(cmp,'IN BACKPACK');
+      cmp.f=Object.assign({},cmp.f,{name:it.name});sz=gunCardSize(cmp,tag);
     }
     if(it){
-      var dh=sz?112*s+sz.h:(176+Math.min(6,rr.length)*36)*s;
-      ctx.fillStyle='#1e2225';mapRR(dx,top,dw,dh,4*s);ctx.fill();
+      var dh=Math.max(gy+rows*(tile+gap)-gap-top,sz?112*s+sz.h:(216+Math.min(6,rr.length)*36)*s);
+      ctx.fillStyle='#1e2225';mapRR(dx,top,dw,dh,4*s);ctx.fill();ctx.strokeStyle='#4a5257';ctx.lineWidth=1;ctx.stroke();
+      ctx.fillStyle=RCOL[dispR(key)]||'#4a5257';ctx.fillRect(dx+1,top+dh-4*s,dw-2,3*s);
       drawIconSprite(ctx,key,dx+72*s,top+56*s,96*s);
-      ctx.textAlign='right';text('$'+ival(key).toLocaleString()+' each',right-24*s,top+42*s,20);ctx.textAlign='left';
-      if(sz){gunCardDraw(cmp,right,top+112*s+sz.h,1,'IN BACKPACK');G.bagCardBox={x:dx,y:top+112*s,w:sz.w,h:sz.h};}
+      if(G.drag){ctx.strokeStyle='#4a5257';ctx.lineWidth=1;mapRR(dx+144*s,top+40*s,64*s,32*s,4*s);ctx.stroke();text('held',dx+152*s,top+62*s,20);}
+      if(sz){gunCardDraw(cmp,right,top+112*s+sz.h,1,tag);G.bagCardBox={x:dx,y:top+112*s,w:sz.w,h:sz.h};}
       else{
-        text(it.name,dx+24*s,top+144*s,32);ctx.fillStyle=RCOL[dispR(key)]||'#4a5257';ctx.fillRect(dx+24*s,top+160*s,dw-48*s,3*s);
+        text(it.name,dx+24*s,top+144*s,32);text(G.hubBagDetail.price,dx+24*s,top+180*s,20);
         for(i=0;i<rr.length&&i<6;i++){
-          text(rr[i][0],dx+24*s,detailY,20,'#aaa498');text(String(rr[i][1]),dx+160*s,detailY,20);detailY+=36*s;
+          text(rr[i][0],dx+24*s,detailY,20,'#aaa498');text(String(rr[i][1])==='armor'?'armour':String(rr[i][1]),dx+160*s,detailY,20);detailY+=36*s;
         }
       }
     }
@@ -53741,7 +53749,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.07: Larger labels, an aligned belt, compact item details and a lifted held item make the hub backpack easier to read. Check 34.07 fails on v34.06',
+  now:'v34.08: One detail panel shows the price under the item name and labels held items. The nine belt slots span the grid. Check 34.08 fails on v34.07',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

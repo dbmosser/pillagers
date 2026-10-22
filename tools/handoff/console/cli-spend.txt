@@ -1007,3 +1007,7 @@
 2026-10-22 0.1383 critic-92-hub-backpack-card
 2026-10-22 0.1373 critic-92-hub-backpack-card
 2026-10-22 0.0000 92-hub-backpack-card
+2026-10-22 0.1364 critic-92-hub-backpack-card
+2026-10-22 0.1387 critic-92-hub-backpack-card
+2026-10-22 0.1399 critic-92-hub-backpack-card
+2026-10-22 0.0000 92-hub-backpack-card

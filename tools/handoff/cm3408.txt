@@ -1,0 +1,7 @@
+v34.08: hub backpack detail and belt
+
+One detail panel shows the price under the item name and labels held items. The nine belt slots span the grid.
+
+Check 34.08. Fails on v34.07.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

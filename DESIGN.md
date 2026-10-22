@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.08 - HUB BACKPACK DETAIL AND BELT
+
+Co-op hunt while he was away. The critic still saw a split detail pane, a detached belt and no held label.
+
+MEASURED. Check 34.08 passes, and fails on v34.07.
 ## v34.07 - HUB BACKPACK READABILITY
 
 Co-op hunt while he was away. The critic found small labels, detached belt alignment, empty detail space and an unclear pad-held item.
