@@ -1,0 +1,8 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  86j-pixel-firefight                    NOT STAGED  57.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: night is not defined
+    at <anonymous>:23:5224
+    at async <anonymous>:1:21
+  86j-pixel-night                        NOT STAGED   4.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: night is not defined
+    at <anonymous>:1:7499
+    at async <anonymous>:1:21
+  86j-pixel-two-window                   staged     138.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"twoWindowBudget":{"secondsPerMode":60,"off":[{"n":1918,"p50":31.200000000004366,"p95":31.69999999999709,"pixel":0,"faults":0,"bytes":{"actors":4198092,"scene":228944},"stepped":0},{"n":1918,"p50":31.200000000004366,"p95":31.69999999999709,"pixel":0,"faults":0,"bytes":{"actors":991776,"scene":99696

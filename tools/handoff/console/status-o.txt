@@ -1,1 +1,1 @@
-10-21 15:19 gate: shipping cw-cx-pixfx (86j-pix-fx-guard, codex)
+10-22 04:48 gate: the what is new card is stale, shipping a card refresh first (cw-cx-groundmode, 87r-v3394-new-reds)

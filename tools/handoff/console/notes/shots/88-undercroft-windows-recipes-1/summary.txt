@@ -1,0 +1,6 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  10-hire                                staged       7.5s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0  | tradermodal
+  11-wirt-gambler                        staged       7.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | gamblemodal
+  12-mainframe-contracts                 staged       7.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | opmodal
+  15-mainframe-stats                     staged       7.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | opmodal
+  16-bar-last-pour                       staged       7.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | barmodal

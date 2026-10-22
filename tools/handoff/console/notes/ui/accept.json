@@ -123,50 +123,50 @@
  "10-hire": {
   "score": 3,
   "pass": true,
-  "verdict": "A clean dark card with a clear lime focus tile, but the red glitch banner shouts louder than anything else, the 30,000 price repeats on 24 tiles, and the detail pane is mostly empty with a dead hire button.",
+  "need": 3,
+  "verdict": "A tidy dark window with a clear lime focus tile and a consistent X, but a red warning banner, a hire button that cannot be seen, and a 30,000 price repeated on every tile hold it back from polished.",
   "findings": [
-   "P1 banner under tabs: '***experimental feature may glitch***': Delete the asterisks. Make it a 16px tx-2 or --warn label, left-aligned, or put a small 'experimental' tag in the detail pane. Cut the letter-spacing to the .04em label spec and the height to 24px.",
-   "P1 detail pane: name, price, hire button: Make hire the single lime fill (--acc bg, --acc-ink text, 56px tall) when affordable. If the $900 balance cannot cover it, show it as a clear 'need $29,100' state in --danger. Render the name in tx-1 at 32px. Put the portrait at about 160px at the top of the pane to fill the void.",
-   "P1 detail pane copy: 'no history between you.' and 'buy a friend.': Remove both lines. Replace them with 2 or 3 stat rows (label 16px tx-2, value 20px tx-1) on 8px-grid spacing, or leave only the 'pillager bot' tag, name and price.",
-   "P2 grid tiles: '30,000' on every tile: Remove the per-tile price, since the detail pane already shows it. Make the names 18 to 20px tx-1 in f-cond 600. Show a price only on tiles that differ, or a lock glyph when unaffordable. Keep the lime border and fill on the focused tile (that is the best part of the screen).",
-   "P2 header right: '$900  0 xp  stash $3,750 bag $0': Use one style: 20px tx-1 for values and 16px tx-2 for labels, 24px gaps. Label '$900' as 'cash' or add a coin icon. Move the 'stash' and 'bag' values into 16px tx-2 and add a 1px --ui-line divider before them."
+   "P0 top of the tab content, the '***experimental feature may glitch***' banner: Delete the asterisks. Make it a small 16px --warn amber tag with a glyph at the right end of the tab row, or drop it. Remove the .2em tracking and the 28px size.",
+   "P0 right pane, 'hire' button at about y=897: When affordable, fill the button with --acc and use --acc-ink text at 20px/700. When not affordable, keep the outline but show the price in --danger and the label in --tx-2 at 4.5:1. Make the button 56px tall.",
+   "P1 detail pane, name 'xx_beefstuffer69_xx' and tag 'pillager bot': Use --tx-1 at 32px/700 for the name. Use the red only on the price when the player cannot afford it. Keep the tag at 16px --tx-2.",
+   "P1 detail pane, between the 'buy a friend.' line and the price block (about y=430-780): Show 3 or 4 label/value rows (gun, role, raids together) at 20px with 16px labels. Delete 'buy a friend.'. Or shrink the pane and let the grid take the width.",
+   "P1 hire grid, the '30,000' price in every tile's top right: Remove it from the tiles and show it only in the detail pane. If it stays, make it '$30k' at 16px --tx-2. Highlight only a tile that cannot be afforded."
   ],
-  "pic": "tools/handoff/console/notes/shots/69-camera/10-hire-1080.jpg",
-  "task": "manual",
-  "when": "2026-10-21T03:32",
-  "need": 3
+  "pic": "tools/handoff/console/notes/shots/88-undercroft-windows-recipes-1/10-hire-1080.jpg",
+  "task": "88-undercroft-windows",
+  "when": "2026-10-21T20:03"
  },
  "11-wirt-gambler": {
   "score": 2,
   "pass": false,
-  "verdict": "the gambler window is a small, low-contrast cluster of stacked boxes floating in a huge empty card; it has no hero element, the type is too small and the copy is repeated, so it looks like a debug form and not a polished AAA vendor screen.",
+  "need": 3,
+  "verdict": "a near-empty 90% card holding a small, flat, tiny-type content block with no hero, two explaining sentences and a duplicated label, so it reads as an unstyled template and not a polished ARC Raiders-style window.",
   "findings": [
-   "P0 whole card composition: make the gamble the hero. Add a 56px result or prize slot (f-cond 800) above the roll button, with a vendor portrait or art on the left. Widen the content to about 1100px, or split it into two columns: wirt and the offer on the left, the roll and result on the right. Move the stack up so it is optically centred.",
-   "P0 intro text and the 'the gamble' panel: delete both intro lines and the 'nothing rolled yet' sentence. Keep the price only on the button ('gamble $2,500'). Use the empty result box for the outcome only, or remove it until a roll happens.",
-   "P1 limited time offer card: delete the blue duplicate. Make the item name 32px tx-1 and put a 3px rarity bar (blue for rare) on the left. Drop the full lime border to a 1px --ui-line-hi border with a 3px lime tab. Use '1:00' with a timer glyph in 16px tx-2 in the top-right corner of the card.",
-   "P1 type scale across the card: use only the guide sizes: title 32, row and button 20, labels 16. Every body or label string is at least 16px, and anything read is tx-2 #aaa498 or brighter. Remove the sub-16px strings.",
-   "P1 gamble button and buy button: make gamble the single lime primary (acc fill, acc-ink text, 56px tall, 20px label). When it can't be afforded, show a disabled fill (--ui-raised, tx-2) with 'need $1,600 more' as the button text in --danger. No nested pill. Give both buttons the same height and a 2px lime focus ring. Align buy to the item's baseline."
+   "P0 whole card composition: Fill the card with a two-column layout. Put the gamble on the left with a 56px hero price and a 20px primary button. Put the limited time offer on the right as a tall item card with a large icon, at least 160px. Alternatively shrink the card to fit the content. Anchor the title to a 56px header row at top-left.",
+   "P0 copy: 'current credits...' and 'wirt has wares...' lines, 'nothing rolled yet...' line, 'new limited time offer arrives in 2 minutes': Delete both subtitle lines and the 'nothing rolled yet' placeholder. Show the cost only on the button. Keep one balance in the header. Reduce the offer timer to a short '2:00' label.",
+   "P1 limited time offer panel: Keep one label, in tx-2 16px. Make the item name 32px f-cond 700 in its rarity colour. Put 'with armour plate, medkit' and the worth value in 16px tx-2. Use a 1px --ui-line-hi border plus a 3px accent tab on the left edge only. Make the buy button the lime primary action.",
+   "P1 the gamble panel / gamble button: Make the button 56px tall with 20px f-cond 700 text and --ui-raised fill. When it is affordable, use --acc fill with --acc-ink text. When it is not, use a --danger 1px outline on a dimmed button, with the shortfall as plain danger text and no boxed pill. Add a 2px lime focus ring with a 4px offset.",
+   "P1 type scale across the card: Set every read string to at least 16px, using only the 56/32/20/16/14 scale. Reduce the tracking on labels to +.04em. Raise the stash/bag line to 16px, or drop it, since this window does not need it."
   ],
-  "pic": "tools/handoff/console/notes/shots/69-camera/11-wirt-gambler-1080.jpg",
-  "task": "manual",
-  "when": "2026-10-21T03:32",
-  "need": 3
+  "pic": "tools/handoff/console/notes/shots/88-undercroft-windows-recipes-1/11-wirt-gambler-1080.jpg",
+  "task": "88-undercroft-windows",
+  "when": "2026-10-21T20:04"
  },
  "12-mainframe-contracts": {
-  "score": 2,
-  "pass": false,
-  "verdict": "it has the right card-and-x structure and a clear lime focus row, but the list is a flat wall of identical rows, the text is tiny and low-contrast for a couch, and the unused detail pane, clipped last row and overlapping toast make it feel unfinished.",
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "A clean, consistent dark card with a clear selected row, but small low-contrast type, an explaining sentence, a clipped list, and a dead right pane keep it from looking polished.",
   "findings": [
-   "P1 contract list rows (left pane): drop the repeated 'standard' tag (show a tag only for hard or elite), set the row name to 20px tx-1 and the pays line to 16px tx-2 (min 4.5:1). Right-align the $ reward at 20px in a fixed column. Raise row height to 72px with 16px padding.",
-   "P1 selected row fill: use --ui-raised #1e2225 for the fill, a 4px solid --acc left bar, and tx-1 text. Optionally a 1px --acc-at-40% outline.",
-   "P1 bottom of list and toast ('the welcome pack is in your stash.'): fit the list to the card with 24px bottom padding and a fade or scroll indicator on the cut row. Move the toast to 24px above the card edge, outside the border, or inside the safe area, and shorten it or remove it.",
-   "P1 detail pane (right): stretch the pane to the full list height, pin the action button to the bottom at 56px tall, and make the progress bar 8px with an --acc fill. Enlarge the reward icon to 56px with a 16px count. State the disabled state in tx-2 with a 1px --ui-line-hi border.",
-   "P2 header stats (900 credits, 0 xp, stash 3,750 bag 0): use one pattern for all three: a 20px tx-1 number plus a 16px tx-2 label, 32px gaps. Split stash and bag into two items. Use '$' consistently for money ('$600', not '600 c' and not 'credits' next to '$')."
+   "P1 list rows, detail pane and header: Row name 20px tx-1. Sub-lines ('pays', progress) at least 16px in tx-2 #aaa498. Tab labels 20px. The stash/bag legend 16px minimum. Drop the 'standard' tag from every row, since it is identical on all of them and the detail pane already shows it.",
+   "P1 under the tabs ('stuff for you to do.') and the list header ('hard work needs 3 more credits (a hard card is worth 2, an elite 3)'): Delete the tab subtitle. Replace the list header with a short stat such as 'done 0 · credits 0/3', 16px, tx-2.",
+   "P1 contract list bottom edge: Snap the list height to a whole number of rows, or fade the bottom 24px. Make the scrollbar 6px in --ui-line-hi. Move the toast 24px above the card edge or into the footer row.",
+   "P1 selected row: Use the --ui-raised #1e2225 fill, a 3px solid #e6ff3d left bar, and a 1px --ui-line-hi border. Set the selected name to tx-1 at weight 700.",
+   "P1 right detail pane: Stretch the pane to the list height (y=227 to 1002), pin the action button to the bottom, and put the reward '$520' at 56px hero size. The disabled button should show a 1px border and tx-2 text."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-31-f2/12-mainframe-contracts-1080.jpg",
-  "task": "b-31-ui-undercroft",
-  "when": "2026-10-19T00:28",
-  "need": 3
+  "pic": "tools/handoff/console/notes/shots/88-undercroft-windows-recipes-1/12-mainframe-contracts-1080.jpg",
+  "task": "88-undercroft-windows",
+  "when": "2026-10-21T20:04"
  },
  "14-mainframe-racks": {
   "score": 2,
@@ -187,18 +187,18 @@
  "16-bar-last-pour": {
   "score": 2,
   "pass": false,
-  "verdict": "The bar list is bigger and easier to read than before, but it is still two rows floating in a huge empty card, with no focused row, a stray toast over the card edge, and wallet text that is too small.",
+  "need": 3,
+  "verdict": "The bar window is a clean dark card with a visible close x, but the content is a small list floating in a mostly empty card. The title is tiny, the header is undersized and the toast collides with the card border.",
   "findings": [
-   "P0 whole card, 98-1822 x 56-1024: Put the title top-left in the 56px header row at 32px, on the same line as the wallet and close. Fill the body: a left column of 3-4 drinks as 96px rows, and a right raised detail pane (--ui-raised) with the selected drink's icon at 96px, its effect in one short line, and the price. Or shrink the card to about 60% width when there are only 2 items.",
-   "P0 liquor and blotter rows: Give the focused row a --ui-raised fill and a 3px lime bar on its left edge. Only the focused row's ingest becomes a filled lime button (--acc fill, --acc-ink text, 48px high). Make the other rows' buttons idle (--ui-line-hi border, tx-1 text).",
-   "P1 top-right wallet: '900 credits  0 xp  stash 3,750 bag 0': Show only '$900', and drop xp and stash from the bar. Set it at 20px f-cond 700 with a 16px tx-2 label. Put 24px gaps between items and align the baseline with the X. If stash and bag are needed, use 16px with a 1px divider.",
-   "P1 row text: description lines: Replace each with a 3-5 word effect, e.g. 'speed up, blur vision', and put the duration in a 16px tag. Cap the description at 40ch. Use tx-2 at 4.5:1 or better.",
-   "P1 price '$300' / '$520' beside ingest: Set the price at 20px f-cond 600 tx-1 in a fixed 96px right-aligned column. Make the button label 20px 700 with 24px side padding. Turn the price red (--danger) when the player cannot afford it, and disable that row's button."
+   "P0 whole card, 1724x968: Anchor the title top-left in a 56px header row at y~72 and start the list at y~150. Make the rows 96px tall with 24px padding. Fill the rest with a detail pane or a bottom footer row, or shrink the card to fit its content.",
+   "P0 title 'the last pour': Use 32px f-cond 700 tx-1, left-aligned with the list edge at x=261 in the header row. Remove the underline or make it a 36px accent tab.",
+   "P1 top-right currency strip ($900 / 0 xp / stash $3,750 bag $0): Use one style: 16px f-cond 600 tx-2 labels with 20px tx-1 values and an even 24px gap. Keep $900 as the only bright value. Leave 24px before the x.",
+   "P1 toast 'the welcome pack is in your stash.' at the bottom edge: Place the toast 24px inside the card or above it at y~960. Shorten it to 'welcome pack in stash', 16px, and give it a --ui-raised fill. Better still, suppress it on this window.",
+   "P1 ingest buttons: Show the focused row with a --ui-raised fill and a 3px lime left bar. Make only the focused row's button a lime fill with --acc-ink text and leave the others as --ui-line-hi outlines. Put 24px between price and button."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-31-n3/16-bar-last-pour-1080.jpg",
-  "task": "manual",
-  "when": "2026-10-20T06:09",
-  "need": 3
+  "pic": "tools/handoff/console/notes/shots/88-undercroft-windows-recipes-1/16-bar-last-pour-1080.jpg",
+  "task": "88-undercroft-windows",
+  "when": "2026-10-21T20:05"
  },
  "17-fashion-mirror": {
   "score": 3,
@@ -1108,18 +1108,18 @@
  "15-mainframe-stats": {
   "score": 2,
   "pass": false,
-  "verdict": "The window shell is consistent (centred card, x in the corner, lime tab underline), but the stats page is a dense wall of equal-weight boxes and small grey text. No hero number leads it, it has several off-scale type sizes, and a toast overlaps the card edge.",
+  "need": 3,
+  "verdict": "The card frame, tabs and x are consistent, but the stats page is a flat wall of small text and uneven tiles with no hero number, and its explaining sentences and low contrast undercut it.",
   "findings": [
-   "P0 whole stats body: Pick one hero (extract rate or net lifetime earnings) at 56px f-cond 800 in tx-1. Cut the tiles to 6 to 8, with the numbers at 32px and labels at 16px tx-2. Drop empty-state tiles, or merge them into one 'make a run and this fills in' line.",
-   "P0 tile descriptions, achievements list, notoriety paragraph: Delete the explanation sentences. Keep a 16px tx-2 label plus the number. Cut the notoriety paragraph to one short word or phrase, or move it to a tooltip. Set all remaining small text to at least 16px with tx-2 at 4.5:1 or better.",
-   "P1 achievements 0 of 12: Show achievements as a 4 by 3 grid of 96px badge tiles with a lock glyph (drop the word 'locked'), and put the description in the focused tile's detail line. Collapse 'every run' behind its own tab or show an empty state, so no section is clipped at the card edge.",
-   "P1 tile grid rows: Use a 6 column grid on an 8px gutter with equal tile sizes (for example 280 by 120). Let notoriety span 2 columns, not the full width. Pull the scroll track 8px clear of the content.",
-   "P1 header currency strip, top right: Make the strip a row of equal 20px f-cond items with 24px gaps and 16px tx-2 labels. Put 16px of clearance before the x. Raise the title to 32px."
+   "P0 whole stats body: Make one hero tile (extract rate, or level 1) use --fs-hero 56px f-cond 800 in --acc. Drop the other values to 32px tx-1 and the labels to 16px tx-2. Make the hero tile span 2 columns.",
+   "P0 notoriety panel, tile descriptions, achievements list: Delete the notoriety paragraph. Cut the net earnings tile to the value plus one 3-word note. Show achievement goals as short tags such as 'carry $5k' or 'kill 10', or move them to a focus tooltip.",
+   "P1 stat tiles, grid layout: Use a fixed 4-column grid with 16px gaps and equal tile widths filling the card. Pick a tile height of 120px and let the net earnings tile span 2 columns. Move notoriety into a normal tile.",
+   "P1 body text and small type: Raise all read text to at least 16px. Use tx-2 #aaa498 at 4.5:1 or better for muted text. Set labels to f-cond 600 with +.04em tracking, not wide spacing.",
+   "P1 achievements list: Drop the 'locked' word. Show a lock glyph and a dimmed name (tx-2). Lay the achievements out as a 2-column grid of rows with a 3px left bar, and use --ok for unlocked ones."
   ],
-  "pic": "tools/handoff/console/notes/shots/69-camera/15-mainframe-stats-1080.jpg",
-  "task": "manual",
-  "when": "2026-10-21T03:33",
-  "need": 3
+  "pic": "tools/handoff/console/notes/shots/88-undercroft-windows-recipes-1/15-mainframe-stats-1080.jpg",
+  "task": "88-undercroft-windows",
+  "when": "2026-10-21T20:04"
  },
  "74-pad-player-1": {
   "score": 3,
@@ -2176,5 +2176,53 @@
   "pic": "tools/handoff/console/notes/shots/86h-pix-sets-wardrobe-recipes-2/86h-raid-1080.jpg",
   "task": "86h-pix-sets-wardrobe",
   "when": "2026-10-21T17:38"
+ },
+ "86j-pixel-firefight": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "A clean dev-only comparison card with correct lower case, a lime-focused close x and consistent card chrome, but the captions are too small and dim for 1080, the title is weak, and the three crops are all the same scene.",
+  "findings": [
+   "P1 captions 'ignition', 'blast and debris', 'smoke and scorch': Set them to 16px f-cond 600 in tx-2 (#aaa498) or tx-1, with 12px of space under the image and left-aligned to the image edge. Use 20px if they are meant to be the panel titles.",
+   "P1 footer 'dev only, 2x game pixels' / 'esc / back': Delete 'dev only, 2x game pixels', or fold it into the title as a tag. Drop the footer's 'esc / back', or make it a 16px key hint in tx-2 with the key in a small chip. Remove the 72px footer row if nothing is left.",
+   "P1 title 'pixel firefight': Set the title to 32px f-cond 700 with 24px padding. Either mark one panel as the star with a 3px lime top tab, or accept an equal layout but drop the full-width divider under the title.",
+   "P2 the three image panels: Crop each panel to its effect and leave out the shield bubble pickup. If the pickup has to stay, show it once. Alternatively draw the label at 50% alpha.",
+   "P2 panel borders and gutters: Use 24px gutters, a 1px #4a5257 border and a 4px radius on each image. Apply the same 24px padding to the card edge."
+  ],
+  "pic": "tools/handoff/console/notes/shots/86j-pix-fx-guard-recipes-3/86j-pixel-firefight-1080.jpg",
+  "task": "86j-pix-fx-guard",
+  "when": "2026-10-21T19:50"
+ },
+ "86j-pixel-night": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "A clean dev-only preview card that follows the guide (centred 90% card, one lime close x, lower-case Barlow Condensed), but the footer text is small and dim, the title is under-scaled, and the whole card is mostly a screenshot frame.",
+  "findings": [
+   "P1 caption under image ('standing pillager, blast, shield pickup') and footer ('dev only, native game pixels', 'esc / back'): Set the caption to 16px, f-cond 600, colour --tx-2 #aaa498 (or tx-1). Delete it if the screenshot already shows these things. Set the footer to 16px at --tx-2, with 'esc / back' kept in the same style.",
+   "P1 title 'pixel night raid' (top-left, about 28px): Set it to 32px, f-cond 700, with 24px padding above and 16px below. Keep the 1px divider. Rename it to something short like 'night preview'.",
+   "P2 close x, top-right (1755-1803, 79-127): Use a 40px square with a 20px glyph. Centre it on the title row at y=104, 24px from the right edge. Use a filled --acc background with --acc-ink text only while focused.",
+   "P2 image frame (121-1799, 157-877): Add a 1px --ui-line-hi border, 4px radius, around the image. Remove the extra 24px between caption and divider so the caption and footer sit on the 8px grid (16px gap above the divider, 24px below).",
+   "P2 in-image label 'shield bubble' (1010, 633): Draw a 16px label with a 60% dark pill (#0b0c0d) behind it and move it 8px below the ring. This is a game-render fix, not a UI-chrome fix."
+  ],
+  "pic": "tools/handoff/console/notes/shots/86j-pix-fx-guard-recipes-3/86j-pixel-night-1080.jpg",
+  "task": "86j-pix-fx-guard",
+  "when": "2026-10-21T19:50"
+ },
+ "86j-pixel-two-window": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "A clean, consistent dev-only card with a clear lime hero number and a visible focused close button, but the hero is a meaningless 0.0 ms, the two panels are weakly labelled and unbalanced, and the card is smaller than the 90 percent window rule.",
+  "findings": [
+   "P1 hero number '0.0 ms' with 'p95 change': Make the hero the verdict: '31.7 ms' at 56px f-cond 800, with 'budget passed' as a 16px --ok tag. Demote the delta to a 16px --tx-2 line, e.g. 'change 0.0 ms'.",
+   "P1 player 1 / player 2 columns: Put each column in a panel (--ui-panel, 1px --ui-line-hi, 4px radius, 16px padding). Label at 16px --tx-2 with +.04em tracking, value at 32px --tx-1, image flush below with a 16px gap.",
+   "P1 card size and placement: Align the images to the 120px text margin and make each fill its column width exactly (about 840px). Keep the same left edge as the labels, or extend the card to about 90 percent of the height with a 48px margin.",
+   "P2 footer 'dev only, v33.94, budget passed': Move 'budget passed' up as an --ok tag next to the hero. Keep 'dev only, v33.94' as the 14px footer. Drop 'esc / back' or show it as a key chip, since the X already exists.",
+   "P2 title row: Set the title row to 56px high with the title and X both centred on its midline. Use a 2px --acc outline on focus only, and make idle X borders --ui-line-hi."
+  ],
+  "pic": "tools/handoff/console/notes/shots/86j-pix-fx-guard-recipes-3/86j-pixel-two-window-1080.jpg",
+  "task": "86j-pix-fx-guard",
+  "when": "2026-10-21T19:50"
  }
 }
