@@ -1,0 +1,7 @@
+v34.06: hub backpack card
+
+The hub backpack fills one centred card, with a scrim, an X and one item detail pane.
+
+Check 34.06. Fails on v34.05.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

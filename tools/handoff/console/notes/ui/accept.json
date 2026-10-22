@@ -1156,34 +1156,34 @@
  "41-hub-backpack-pad-p1": {
   "score": 2,
   "pass": false,
-  "verdict": "The backpack opens as a small dark popup over a busy, undimmed hub, with a second detail panel jammed against it, so it looks like a debug overlay and not the near-full-screen centred card the guide requires.",
+  "need": 3,
+  "verdict": "The backpack is a small floating panel in front of a busy hub that bleeds through it. It is not the 90% centred card with an X, and the detail pane is clipped and overlapped, the title is smaller than the 'enter raid!' sign behind it, and the ui text has typos and sits below the type scale.",
   "findings": [
-   "P0 backpack window frame: Draw a 90% width and height centred card with fill --ui-panel and a 1px --ui-line-hi border. Put a 48px x button at the top-right. Put an rgba(6,7,8,.80) scrim behind it. Hide hub world labels and the p1 hotbar while the card is open.",
-   "P0 right 'auto rifle' detail pane, x 1388-1825: Make it the detail column inside the same card: --ui-raised fill, 24px padding, and a 1px --ui-line divider from the left list. Make the card opaque so nothing shows through. Align its top with the 'backpack' title.",
-   "P1 hierarchy, backpack card: Set the card title at --fs-title 32px/700. Make the item tiles a 72px-per-cell grid, at least 96px, in a left column. Show the selected item name once at 32px. Cut the duplicate 'auto rifle' header, and show the price as the single accented value.",
-   "P1 type sizes and contrast: Set minimum text to --fs-label 16px in --tx-2 #aaa498 and body rows to 20px in --tx-1. Colour the rarity tag with --r-rare. Stat values go to 20px/600.",
-   "P1 capital letters and copy: Lower-case 'integrity'. Render the footer as 4 pad-glyph chips (a, y, b) at 16px, aligned left in a 72px footer row. Drop 'view to close' for the x button. Trim the damage line to 'dmg 23' and 'dps 174'."
+   "P0 backpack card and detail pane vs window rule: Make one centred card at 90% of the screen width with a 4px radius and --ui-panel fill. Put a 40px x button in the top-right corner. Put --scrim rgba(6,7,8,.80) behind it. Dim or hide the hub labels and the hotbar while it is open.",
+   "P0 auto rifle detail pane, right side (x1388-1825, y310-613): Fill the pane with --ui-raised at 100% opacity and attach it to the card with 0 gap, or put it inside the card as a column. Align the top and bottom edges with the main panel. Keep it inside the 5% margin.",
+   "P1 typography, whole card: Proofread and correct the strings. Set the row values at 20px/600 tx-1 and the labels at 16px tx-2. Separate the legend into key-cap chips with 24px gaps. Use 16px for the legend minimum, not 14px.",
+   "P1 hierarchy: Set the card title to 32px/700 tx-1. Scrim the world so the lime sign drops out. Set the pane title to the same 32px, or 20px if it is a sub-title. Drop the '!' on the sign.",
+   "P1 item grid (y530-615): Show all backpack slots as a 96px grid, including empty ones at --ui-line. Use a 3px lime border for focus only. Put rarity in a 3px bar at the bottom of each slot, and show the count at 16px."
   ],
-  "pic": "tools/handoff/console/notes/shots/48-after/41-hub-backpack-pad-p1-1080.jpg",
-  "task": "manual",
-  "when": "2026-10-21T01:10",
-  "need": 3
+  "pic": "tools/handoff/console/notes/shots/92-hub-backpack-card-recipes-1/41-hub-backpack-pad-p1-1080.jpg",
+  "task": "92-hub-backpack-card",
+  "when": "2026-10-22T11:23"
  },
  "41-hub-backpack-pad-p2-held": {
   "score": 2,
   "pass": false,
-  "verdict": "the backpack is a small dark box that sits on top of a busy, undimmed hub, and it ignores the card-with-x window rule, the five-size type scale and the single lime accent.",
+  "need": 3,
+  "verdict": "The backpack card is cleanly structured, but it opens over a busy, unscrimmed hub, the pad-held view has a duplicate detail pane, and there are visible text and spacing defects (capital letters, a typo, an overlapping slot label), so it still reads as an amateur overlay.",
   "findings": [
-   "P0 backpack window and the hub behind it: Put a scrim of rgba(6,7,8,.80) behind the window. Make one centred card at 90% width and height with an x in the top-right corner. Put the detail pane inside the card as a right column in --ui-raised. Remove the floating box.",
-   "P0 capitals and stray symbols on screen: Delete the footnote and the 'view to close' text. Show a single close hint, 'b close', in the footer legend at 14px. Make the title match the selected item.",
-   "P1 backpack title and header: Set the title 'backpack' to 32px f-cond 700 in a 56px header row, with the x aligned right. Scale the item cells to at least 96px so the grid reads as the focus.",
-   "P1 item grid (rifle and medkit cells): Draw the full backpack grid with empty slots (4 by 2 at least). Put a 2px --acc border and a --ui-raised fill on the focused cell. Keep the rarity colour as a 3px bar only.",
-   "P1 equipped and stat rows: Use only 20px for names and 16px for labels. Break the run-on lines into a two-column label and value table with 16px row spacing. Show the stats once, in the detail pane."
+   "P0 whole screen, behind the backpack card: Draw a rgba(6,7,8,.80) scrim over the hub when the card opens and hide the world-space nameplates, banner and tags. Make the card a centred window, about 90% of width, with a 56px header row and an x in the corner. Put the item detail inside the card as a right-hand column rather than a floating pane.",
+   "P0 right pane 'auto rifle' vs card section 'auto rifle (field)': Keep one detail view. Delete either the right pane or the lower stat block, and use a single label set ('damage', 'rate', 'magazine', 'range', 'handling'). If one pane stays, give it a solid --ui-raised fill and align its top edge to the card's top edge, with a 24px gutter between them.",
+   "P1 card title row and footer: 'view to close', 'dpad move  a pick up or place  y drop  b close': Replace 'view to close' with a 32px x in the top-right corner, and keep only the footer legend. Render each key as a 24px rounded badge (a, y, b) followed by its label, with 24px between pairs, in --tx-2 at 16px minimum.",
+   "P1 'integrity 100/100  armour 0  backpack 2  belt 1' and the 'equipped' block: Lay out stats as label/value pairs in a 4-column grid with 24px gutters, with the value in tx-1 at 20px and the label in tx-2 at 16px. Move the hotbar slot-5 name out of the slot icon, into a tooltip above the bar, or truncate it. Check that the f-cond glyphs for 'i' and 'l' render properly at this size.",
+   "P1 inventory item tiles (auto rifle and medkit): Make tiles 96px with 16px gaps. Give the focused tile a 3px --acc (lime) outline plus a --ui-raised fill, and show rarity only as a 3px bar on the tile's bottom edge. Reduce the empty gap below the row to 24px."
   ],
-  "pic": "tools/handoff/console/notes/shots/48-after/41-hub-backpack-pad-p2-held-1080.jpg",
-  "task": "manual",
-  "when": "2026-10-21T01:10",
-  "need": 3
+  "pic": "tools/handoff/console/notes/shots/92-hub-backpack-card-recipes-1/41-hub-backpack-pad-p2-held-1080.jpg",
+  "task": "92-hub-backpack-card",
+  "when": "2026-10-22T11:23"
  },
  "30-settings-scroll-2400": {
   "score": 3,
@@ -1410,20 +1410,20 @@
   "when": "2026-10-22T10:06"
  },
  "41-hub-backpack": {
-  "score": 2,
-  "pass": false,
-  "verdict": "The backpack is a small, dim, mostly empty box that stops halfway across the hub. It is nothing like the near-full-screen centred card with an X that the owner ordered, and it sits on top of busy world labels and a hotbar.",
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "This is a clean, centred title menu with a clear lime primary button, but the amber gradient logo clashes with the lime accent, the secondary UI is tiny and the scene behind it is murky, so it reads as a competent template rather than a polished ARC Raiders-grade screen.",
   "findings": [
-   "P0 backpack window, whole panel: Make it a centred card at 90% of the screen (about 1730x970), 4px radius, --ui-panel at 90% with a 1px --ui-line-hi border, and an x button in the top-right corner (40x40, focusable). Put a rgba(6,7,8,.80) scrim behind it that dims the hub, and drop the 'b or i to close' text.",
-   "P0 panel interior, empty area (y 690-830): Draw a fixed grid of empty slots (for example 8x5 cells at 64px with a 8px gap, --ui-raised fill, 1px --ui-line border). Add a '0 / 40' capacity label in --fs-label. Remove the 'backpack is empty.' sentence.",
-   "P1 hierarchy: 'backpack' title and the equipped block: Set the title at 32px f-cond 700. Show the equipped gun in a --ui-raised detail pane with a 96px icon, the name at 20px, and the ammo at --fs-hero 56px f-cond 800. Use --acc only on the focused slot.",
-   "P1 stat lines (dmg 17 range 50m semi mag 24 / integrity... armour 0 backpack 0 belt 0): Use label/value pairs in a 2-column stat grid, labels in --tx-2 at 16px and values in --tx-1 at 20px f-cond 600. Fix the capital I in 'integrity' and the capital I in 'backpack is empty'. Check that every string is lower case.",
-   "P1 toast 'trophy earned · first out +1' and key hint 'wasd walk · shift jog · e use station': Hide the key hint and toasts while a window is open, or move the toast to the top centre at 24px below the safe margin. Any footer legend must be at least 14px and sit inside the card's 72px footer row."
+   "P1 pillagers logo: Make the wordmark flat --tx-1 (#efe9dc), f-cond 800, about 72px, with no gradient or shadow. Leave lime to the '1 player' button only.",
+   "P1 menu column, 4 mode buttons: Add a 24px gap between the 'play' group (1 player, 2 player co-op) and the 'arcade demo' group, with a 16px muted group label as for 'saves'. Shorten the label to '2 player co-op'. Make the demo rows secondary with a --ui-line border only.",
+   "P1 saves section: Set the 'saves' label to 16px --tx-2 with +.04em tracking. Make the selected save row --ui-raised with a 3px lime left tab, not a full lime border and lime text. Give the name field and both buttons equal 48px height, 16px gaps and the --ui-line-hi border. Remove the blue fill.",
+   "P1 background scene: Raise the scrim to rgba(6,7,8,.80) and increase the blur to about 12px. Fade the scene edges to --ui-void so no rectangle shows. Put a single --ui-panel card at 90% behind the menu column.",
+   "P2 tagline 'ascend. pillage. extract.': Use 16px f-cond in --tx-2 with +.08em tracking, 16px below the logo and 24px above the buttons. Put it on the dimmed panel so no sprite shows through."
   ],
-  "pic": "tools/handoff/console/notes/shots/69-camera/41-hub-backpack-1080.jpg",
-  "task": "manual",
-  "when": "2026-10-21T03:35",
-  "need": 3
+  "pic": "tools/handoff/console/notes/shots/92-hub-backpack-card-recipes-1/41-hub-backpack-1080.jpg",
+  "task": "92-hub-backpack-card",
+  "when": "2026-10-22T11:22"
  },
  "43-stash-after-raid": {
   "score": 3,
@@ -2288,5 +2288,85 @@
   "pic": "tools/handoff/console/notes/shots/90-colour-cue-backups-recipes-2/rarity-after-stash-greyscale-1080.jpg",
   "task": "90-colour-cue-backups",
   "when": "2026-10-22T10:36"
+ },
+ "larger-pips-after-backpack-greyscale": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The backpack is a small dark box floating over a busy raid with the title at the same weight as the rows. It has no hero element and no close X, and the greyscale test shows the pips and rarity cues are still too small to read.",
+  "findings": [
+   "P0 backpack window frame: Make it a 90% card with the --scrim rgba(6,7,8,.80) behind it and a 32px x button in the top-right corner. Replace the 'b or i to close' text with the x. Keep the card clear of the hotbar, with 24px between them.",
+   "P0 item grid and pips: Draw a 3px rarity bar across the bottom of each tile and put a 16px count in the top-right corner. Show the focused tile with a 2px --acc border on a --ui-raised fill. Make the tiles 96px. Add empty slot outlines so the grid reads as 8 by 2.",
+   "P1 hierarchy: Set the title to 32px f-cond 700. Make the selected item name 32px and the price a single 20px tx-1 figure. Reduce the equipped row to a quiet tx-2 label with 16px stats.",
+   "P1 stat lines: Lay the stats out as label and value pairs in a grid, with 16px tx-2 labels above 20px tx-1 values and 16px row spacing. Keep the icon 8px clear of the text. Fix the spelling to 'armour'.",
+   "P1 key hints: Show keycap chips (z, f) with 16px labels in a footer row of 72px. Drop 'drag to tactical belt' and show the pad glyph when a pad is in use."
+  ],
+  "pic": "tools/handoff/console/notes/shots/90-colour-cue-backups-recipes-3/larger-pips-after-backpack-greyscale-1080.jpg",
+  "task": "90-colour-cue-backups",
+  "when": "2026-10-22T11:16"
+ },
+ "shape-cues-after-minimap-greyscale": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The greyscale shape-cue test mostly works: the minimap marks, rarity pips and the pistol slot all stay readable without colour. But the HUD has five or more clashing panel styles and mixed type sizes, and the top-right corner and the bottom-left bars are cluttered.",
+  "findings": [
+   "P1 top-right career block, minimap, run info and extraction chip: Put all four in one column of the same width (about 300px). Give each the same panel treatment: --ui-panel at 90%, 1px --ui-line-hi border, 4px radius, 16px padding, 8px gap. Make the career rows a vertical list of 20px label and value pairs. Align the extraction chip to the same left and right edges.",
+   "P1 hierarchy across the HUD: Make hp the bigger of the two bars (28px high, 20px bold label). Make stamina a 10px thin bar with no inside label. Keep the ammo as the hero. Cut the timer to 32px so it stays secondary.",
+   "P1 current pillager bots list (top-left), with a clipped ghost panel beneath it: Remove or fix the orphaned panel behind the list. Give the list 16px padding and the same 4px radius as other panels. Align it to the same 48px left margin as the standing chip and toasts. Use 16px minimum text with a 20px name column.",
+   "P1 toasts and tags: codex entry, contract item nearby, running slowly, concealed · in cover, extraction c available: Define one chip: 32px high, 4px radius, 12px horizontal padding, 16px label, an optional 3px left accent bar. Use it for all five. Put status chips (running, concealed) in a fixed row above the hp bar instead of floating or right-anchored. Drop the double-dot separators.",
+   "P2 bottom hotbar: Raise the slot numbers to 16px. Drop empty-slot silhouettes to about 25% opacity and remove the empty bar. Give the selected slot a 2px --acc border and a raised fill. Leave 8px between the hint line and the slots, or move the hint above at 16px."
+  ],
+  "pic": "tools/handoff/console/notes/shots/90-colour-cue-backups-recipes-3/shape-cues-after-minimap-greyscale-1080.jpg",
+  "task": "90-colour-cue-backups",
+  "when": "2026-10-22T11:16"
+ },
+ "shape-cues-after-minimap-states-greyscale": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "In greyscale the minimap shapes do separate the marker types, but the HUD as a whole is crowded, uses too many type sizes, and its panels are inconsistent, so a player would not call it polished.",
+  "findings": [
+   "P0 top-left, pillager bots leaderboard over extraction toasts: Give the leaderboard its own slot with a 16px gap below it. Stack world-anchored toasts so they never draw under a HUD panel, or hide the toast while the panel covers it. Remove the duplicate extraction text.",
+   "P1 top-right column: cash/stash card, minimap, run info: Use one panel component: 90% --ui-panel fill, 1px --ui-line-hi border, 4px radius, 16px padding. Use 8px gaps between panels and a 5% safe margin from the edge. Frame the minimap with the same border and keep it fully inside the screen.",
+   "P1 HUD-wide type: Use five sizes only: 56 hero, 32, 20, 16 minimum, 14 footer. Raise all read text to at least 16px. Make the 5:00 timer the hero at 56px f-cond 800. Drop 'hp 100' to 32px and keep the ammo number as the second hero, or merge the two.",
+   "P1 center-top, '5:00' + 'extract 30m' pill: Put the timer at 56px with a 2px dark outline or inside the standard panel. Use the standard panel fill and 4px radius for the pill, and make the direction arrow at least 16px.",
+   "P1 minimap markers: Keep at most 5 shape classes, each at least 14px, with a 2px dark outline halo. Make the extraction rings a 2px solid stroke in white, and set the letters at 16px."
+  ],
+  "pic": "tools/handoff/console/notes/shots/90-colour-cue-backups-recipes-3/shape-cues-after-minimap-states-greyscale-1080.jpg",
+  "task": "90-colour-cue-backups",
+  "when": "2026-10-22T11:17"
+ },
+ "p1-greyscale": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "A greyscale raid HUD that reads fine as a test of shape cues, but the corners compete with each other, the type sizes drift, and there is no single hot accent, so it still looks like an amateur HUD.",
+  "findings": [
+   "P1 top-right stack (cash/xp/stash/backpack, run info, contracts): Make the stack one panel width with 24px padding. Put contracts on single-line rows with a 16px minimum. Drop the repeated backpack value. Leave the cash number at tx-1 600 and everything else tx-2. Keep a 24px margin from the screen edge.",
+   "P1 ammo block bottom-right (12 / 24): Use panel fill #16191b at 90% with a 1px #4a5257 border and a 3px --acc tab on the left. Set 12 at 56px/800 and /24 at 20px tx-2. Put the backpack line on a single 16px baseline in tx-2, aligned to the panel's 24px padding.",
+   "P1 hotbar bottom-centre: Draw the selected slot with a 2px --acc border and a --ui-raised fill. Render empty slots at 40% opacity with the silhouettes removed. Raise the tooltip to 16px with 8px padding and a panel behind it, and move 'fire' and 'use' to key-hint chips.",
+   "P1 HUD copy and messages (contract item nearby ×2, codex entry, extract 152m): Remove one of the two and drop the 'gold glow marks the box' clause. Use one toast component: --ui-panel fill, 1px border, a 16px label, and a 24px icon slot. Stack toasts at a 24px margin from the left edge.",
+   "P2 bottom-left vitals (standing, stamina, hp 100): Use equal 12px bars. Put the labels above the bars at 16px/600. Show hp at 32px in tx-1 on the left. Give the 'standing' chip the toast component styling."
+  ],
+  "pic": "tools/handoff/console/notes/shots/90-colour-cue-backups-recipes-3/shape-cues-after-world-side-p1-greyscale-1080.jpg",
+  "task": "90-colour-cue-backups",
+  "when": "2026-10-22T11:17"
+ },
+ "p2-greyscale": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "A greyscale raid HUD with a clear hero ammo number and a readable hotbar, but the HUD is made of many unrelated panel styles, mixed type sizes and capital letters, and it is crowded at every corner.",
+  "findings": [
+   "P0 top-right career block and run info: Rebuild as one vertical list with equal rows, 16px minimum labels and 24px padding. Cut contracts to short fragments such as 'servo actuator 0/2', each on one line. Use one panel fill and a 1px --ui-line-hi border.",
+   "P1 hotbar, hp and stamina bars, ammo panel: Use one panel recipe with a 4px radius and the same border. Make the ammo number 56px weight 800 and the gun name 20px tx-2. Move the backpack line out of the ammo panel. Hide empty slots 4-0 at 30% opacity, or show only the slot number.",
+   "P1 top-left 'current pillager bots 2' card and 'f1 controls': Change the header to 'pillagers' at 16px +.04em tx-2. Highlight the 'you' row with a 3px --acc left bar. Move 'f1 controls' to the footer legend at 14px with no box. Set the panel fill to 90% --ui-panel.",
+   "P1 top-centre timer and extract chip: Make the timer 56px weight 800 with a 90% --ui-void backing. Put the extract distance at 16px in --extract teal, attached to the timer with 8px spacing. Make the direction arrow 16px.",
+   "P1 player name labels and pickup toasts: Set all of these to 16px minimum. Use one tag style: --ui-panel fill, 1px border, 8px padding. Separate the two player names, with one nameplate per player and a P1/P2 tint only after the owner picks the colours."
+  ],
+  "pic": "tools/handoff/console/notes/shots/90-colour-cue-backups-recipes-3/shape-cues-after-world-side-p2-greyscale-1080.jpg",
+  "task": "90-colour-cue-backups",
+  "when": "2026-10-22T11:17"
  }
 }

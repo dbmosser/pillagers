@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.06 - HUB BACKPACK CARD
+
+Co-op hunt while he was away. His Q43 calls for one centred window with an X. The hub backpack was a small panel with detached duplicate details.
+
+MEASURED. Check 34.06 passes, and fails on v34.05.
 ## v34.05 - MINIMAP MARKS READ WITHOUT COLOUR
 
 Co-op hunt while he was away. Greyscale audit: dots, state colours, identical pings and distant arrows lose their meaning. His 2.79 a requires always on shape backups.

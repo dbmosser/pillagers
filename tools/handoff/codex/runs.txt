@@ -316,3 +316,6 @@
 2026-10-22 06:28 90-colour-cue-backups 231s ok PARTIAL in=3877637 out=25243 run=3
 2026-10-22 06:58 90-colour-cue-backups 1275s ok PARTIAL in=6638714 out=52273 run=4
 2026-10-22 07:02 90-colour-cue-backups 137s ok PARTIAL in=8058173 out=56036 run=5
+2026-10-22 07:18 86i-building-kinds 24s ok WAITING in=72940 out=548 run=1
+2026-10-22 07:21 92-hub-backpack-card 78s ok PARTIAL in=357203 out=2618 run=1
+2026-10-22 07:30 92-hub-backpack-card 430s ok PARTIAL in=2192785 out=22098 run=2
