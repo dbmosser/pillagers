@@ -47,7 +47,9 @@ checking how long since he last touched the keyboard, mouse or a pad. On JUL26 t
 mouse or a pad for 15 minutes and 6 GB are free, stops what it started within seconds of a touch (or under 4 GB free), and gives a build
 the spare PC is testing or has tested robots only. The VM's nights come first (his 10-22 question "should it matter if its day or night?"):
 the main PC's 23:00 task lends the VM about 6 GB until 06:00, sized from what is free at 23:00, so the runner holds nothing from 22:40 to
-23:10 and until 06:45 starts only with 10 GB free. By day the spare memory tests on the main PC; by night it is the VM's. Its results go to spare/JUL26/ on spare-results with mode=idle; the VM counts them but
+23:10 and until 06:45 starts only with 10 GB free. By day the spare memory tests on the main PC; by night it is the VM's. After 19:10 it
+starts no full test run (2.5 to 3.5 hours would not end before 22:40): the robots get the build and the full run waits for the morning. A
+copy that restarted itself for a new runner looks after the robots the old copy left running. Its results go to spare/JUL26/ on spare-results with mode=idle; the VM counts them but
 never treats the main PC as the full-time spare. Set up once on the main PC, in a normal PowerShell window:
     git clone https://github.com/dbmosser/pillagers.git C:\PillagersIdle\game; powershell -ExecutionPolicy Bypass -File C:\PillagersIdle\game\tools\spare\spare-setup.ps1
 Stop for good: the same setup with -Remove. Status: with -Status.

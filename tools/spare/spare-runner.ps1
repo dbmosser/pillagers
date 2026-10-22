@@ -116,6 +116,11 @@ function Stop-Work([string]$why){
   $script:working=$false
   if($n){ Say ('stopped '+$n+' test parts ('+$why+')') }
 }
+# the test scripts this runner's copies started (the same match Stop-Work uses)
+function IdleWork(){
+  @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object { $_.ProcessId -ne $PID -and $_.CommandLine -and
+    $_.CommandLine -match 'PillagersIdle' -and $_.CommandLine -match 'fuzz\.ps1|corpq\.sh|corpus-slices\.sh' }).Count
+}
 # the wait between rounds, looking for him every 5 seconds
 function Watch([int]$sec){
   $end=(Get-Date).AddSeconds($sec); $k=0
@@ -187,6 +192,13 @@ function Start-Corpus(){
       if((GetS 'fx_blob') -ne $blob -and (Build-Fixture)){ Copy-Item -LiteralPath ($T+'\fixture.html') -Destination ($T+'\fxcorpus.html') -Force; PutS 'fx_blob' $blob }
       return
     }
+    # 10-22 review: a full run takes 2.5 to 3.5 hours (corpq.sh), so one started after 19:10 is stopped at 22:40 and spends one of the
+    # build's two tries. The robots get the build now; the full run waits for the morning (tries untouched).
+    $hm=HourMin
+    if($hm -ge 1910 -and $hm -lt 2240){
+      if((GetS 'fx_blob') -ne $blob -and (Build-Fixture)){ Copy-Item -LiteralPath ($T+'\fixture.html') -Destination ($T+'\fxcorpus.html') -Force; PutS 'fx_blob' $blob; Say ('build '+$head.Substring(0,8)+' (v'+(GameVer)+'): robots only until the morning, a full run would not end before 22:40') }
+      return
+    }
   }
   $tries=0; if((GetS 'try_blob') -eq $blob){ $tries=[int]('0'+(GetS 'tries')) }
   if($tries -ge 2){ return }   # this build failed twice to give a full run; wait for the next one
@@ -248,6 +260,9 @@ function Publish([string]$why){
   if($script:gx -ne 0){ PutS 'push_ok' '0'; Say ('PROBLEM: results push failed: '+(Short $o)) } else { PutS 'push_ok' '1'; PutS 'pub_t' ([string](Epoch)) }
 }
 
+# 10-22 review: a copy that restarted itself for a new runner from GitHub left its robots (or a test run) going; this copy looks after them,
+# so his return, the 4 GB floor and the 22:40 hold still stop them
+if($Idle -and (IdleWork) -gt 0){ $script:working=$true; Say 'an earlier copy left test work running: this copy looks after it now' }
 while($true){
   [IO.File]::WriteAllText($Hb,[string](Epoch),$Enc)
   if($Idle){
