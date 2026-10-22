@@ -1,10 +1,10 @@
 host=DESKTOP-82BKOP4
-seen=2026-10-22 19:17
-epoch=1792711044
+seen=2026-10-22 19:22
+epoch=1792711348
 game=84172440 v34.13
 test_run=idle
 robots=2
-ram_free_gb=23
+ram_free_gb=22.8
 push_ok=0
 runner=12128265
 mode=full
