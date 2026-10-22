@@ -12571,17 +12571,19 @@ window.__REGRESS=[
        if(bt&&!bt.disabled){ var bg=getComputedStyle(bt).backgroundColor; if(bg!=='rgba(0, 0, 0, 0)'&&bg!==__ACC()) bad.push('ingest has neither the idle outline nor current-row accent fill: '+bg); }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      return bad.length?bad.join('; '):null; }},
-  {v:'32.44',what:'auto resolution never steps the picture below 75 percent (his 2.44 b)',
+  {v:'32.44',what:'auto resolution uses the scale ladder but never steps the picture below 75 percent (his 2.44 b)',
    run:function(){
-     if(typeof drsTick!=='function'||typeof DRS!=='object') return 'SKIP: no drsTick';
-     var sv={scale:DRS.scale,ema:DRS.ema,slowT:DRS.slowT,fastT:DRS.fastT,last:DRS.last,bounce:DRS.bounce,upAt:DRS.upAt,said:DRS.said,moves:DRS.moves,q:DRS.q}, sa=CFG.gfxAuto, lo=1, i, t=100000;
+     var d0=JSON.stringify(DRS), sa=CFG.gfxAuto, cap=CFG.fpsCap, lo=1, t=100000, i, k;
      try{
-       CFG.gfxAuto=1; DRS.scale=1; DRS.ema=0; DRS.slowT=0; DRS.fastT=0; DRS.last=0; DRS.q=3; DRS.said=1;
-       for(i=0;i<4000;i++){ t+=40; drsTick(40,t); if(DRS.scale<lo) lo=DRS.scale; }
-     } finally { for(var k in sv) DRS[k]=sv[k]; CFG.gfxAuto=sa; }
-     if(lo>=1-1e-6) return 'the ladder never stepped the scale (check is blind)';
-     if(lo<0.75-1e-6) return 'auto resolution fell to '+lo+', under 0.75';
-     return null; }},
+       CFG.gfxAuto=1; CFG.fpsCap=0; DRS.scale=1; DRS.q=3; DRS.ema=0; DRS.slowT=0; DRS.fastT=0; DRS.last=0; DRS.upAt=0; DRS.downAt=0; DRS.bounce=0; DRS.said=1;
+       DRS.win=[]; DRS.fillOK=true; DRS.noFillGap=0; DRS.recoverT=0;
+       for(i=0;i<4000;i++){ t+=40; drsTick(40,t,6); lo=Math.min(lo,DRS.scale); }
+       if(lo>0.75+1e-6) return 'qualifying scale ladder did not reach its floor: '+lo;
+       if(lo<0.75-1e-6) return 'auto resolution fell under 0.75: '+lo;
+       return null;
+     }finally{
+       var ds=JSON.parse(d0); for(k in DRS) if(!(k in ds)) delete DRS[k]; for(k in ds) DRS[k]=ds[k]; CFG.gfxAuto=sa; CFG.fpsCap=cap; gfxqApply();
+     } }},
   {v:'32.43',what:'forge choices have a full-screen scrim, one close target, readable effects, neutral current tier and dollar prices; purchase receipt has readable cost and docks above the hotbar',
    run:function(){
      if(typeof gunCardMetrics!=='function')return 'forge finish not installed';
@@ -13298,7 +13300,9 @@ window.__REGRESS=[
      try{
        sayWhenFree=function(m,k,o){ lines.push({m:String(m),sub:(o&&o.sub)?String(o.sub):''}); };
        CFG.gfxAuto=1; CFG.gfxScale=1; CFG.fpsCap=0; DRS.scale=1; DRS.ema=0; DRS.slowT=0; DRS.fastT=0; DRS.last=0; DRS.bounce=0; DRS.upAt=0; DRS.said=0;
-       lines.length=0; for(i=0;i<200;i++){ t+=40; drsTick(40,t); }
+       // v28.xx (cw-cx-laddersteady): stage an already-proven fill gain; a fixed cadence alone must no longer force a toast.
+       DRS.q=3; DRS.win=[]; DRS.fillOK=true; DRS.noFillGap=0; DRS.downAt=0; DRS.recoverT=0;
+       lines.length=0; for(i=0;i<200;i++){ t+=40; drsTick(40,t,6); }
        if(!lines.length) return 'SKIP: staging: no resolution step line';
        if(lines[0].sub) bad.push('the resolution step still has the detail '+JSON.stringify(lines[0].sub));
        PERF.win=[]; PERF.said=0; t0=performance.now()-9000; for(i=0;i<120;i++) PERF.win.push([t0+i*75,40]);
@@ -51001,7 +51005,9 @@ window.__REGRESS=[
        P.buzz=[{id:'lsd',tag:'lsd',t:0.001,dur:180}]; lines.length=0; tickBuzz(0.05);
        cap('the Blotter wearing off',lines[0]); if(lines[0]&&lines[0].m!=='BLOTTER WORE OFF') bad.push('the Blotter wearing off said '+JSON.stringify(lines[0].m)+', not BLOTTER WORE OFF');
        CFG.gfxAuto=1; CFG.gfxScale=1; CFG.fpsCap=0; DRS.scale=1; DRS.ema=0; DRS.slowT=0; DRS.fastT=0; DRS.last=0; DRS.bounce=0; DRS.upAt=0; DRS.said=0;
-       lines.length=0; for(i=0;i<200;i++){ t+=40; drsTick(40,t); }
+       // v28.xx (cw-cx-laddersteady): stage an already-proven fill gain; a fixed cadence alone must no longer force a toast.
+       DRS.q=3; DRS.win=[]; DRS.fillOK=true; DRS.noFillGap=0; DRS.downAt=0; DRS.recoverT=0;
+       lines.length=0; for(i=0;i<200;i++){ t+=40; drsTick(40,t,6); }
        cap('the resolution step',lines[0]); if(lines[0]&&lines[0].sub&&lines[0].sub!=='Settings: Auto resolution') bad.push('the resolution step has the detail '+JSON.stringify(lines[0].sub));
        PERF.win=[]; PERF.said=0; t0=performance.now()-9000; for(i=0;i<120;i++) PERF.win.push([t0+i*75,40]);
        lines.length=0; perfNote(40);
