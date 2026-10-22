@@ -1,0 +1,23 @@
+[0,120) FAIL x1 || v9.07 a noise you cannot see leaves a ring on the ground, and one you can see does not -> two identical redraws differ, so no pixel measurement here means anything
+[120,240) FAIL x3 || v33.60 cw-cx-pixground (86b): THE PIXEL GROUND. With the pixel look on, the same bake runs into a half size canvas (rr position identical, 4... -> one chunk step took 40.5 ms (over 4; phase ms {"x":26,"y":3,"read":40.100000001490116,"classify":0.19999999552965164,"texture":0.10000000149011612,"write":0.10000000149011612}; initial raster 55.9 ms) || v33.51 cw-pixkit (86a): the pixel look row (local, on), pinned off in the fixture; pixBlit draws on whole device pixels and only edge pixels... -> the frozen raid frame is not steady, so it cannot be compared; with the pixel look off the raid frame differs from the frame with every pixel path stubbed off || v33.33 the four experimental group names show with a real height on the experimental page -> group raid is 0px tall; group combat is 0px tall; group events is 0px tall; group extras is 0px tall
+[240,360) PASS, 109 checks, 11 could not run
+[360,480) PASS, 102 checks, 18 could not run
+[480,600) FAIL x1 || v29.33 the title and mode menu run on the shared look: tokens in the CSS equal UIT, the ui-shared block has no raw color or font-size litera... -> ui-shared has a NEW raw colour or font-size literal in: #root #settingsmodal.expmode #setlist
+[600,720) PASS, 108 checks, 12 could not run
+[720,840) FAIL x1 || v27.36 strikeplace, his playtest note (air strike bar in a weird place, colliding): the air strike plate sits over on the right, at the righ... -> 3840 host: the plate overlaps the power-up chips; 3840 join: the plate overlaps the power-up chips
+[840,960) FAIL x1 || v26.38 settings1, his order 2026-10-14: Settings reads in sections (THE RAID, AUDIO, CONTROLS, CONTROLLER, DISPLAY, SAVES AND TOOLS) under a... -> ONE: Settings draws no go_minimap
+[960,1080) PASS, 109 checks, 11 could not run
+[1080,1200) PASS, 106 checks, 14 could not run
+[1200,1320) PASS, 94 checks, 26 could not run
+[1320,1440) PASS, 102 checks, 18 could not run
+[1440,1560) FAIL x1 || v20.58 a controller reaches the FASHION racks, slot rows and saved looks and the run tags: A on a rack tile wears it, A on a slot row opens ... -> 0 of the 0 slot rows are in reach of the pad
+[1560,1680) FAIL x1 || v18.78 text in the framed windows stays inside the frame: the text lines of the Terms, Party, gambler and bar windows are capped at 1060 lik... -> gamblemodal text lines are capped at 1060px, its list at none
+[1680,1800) PASS, 118 checks, 2 could not run
+[1800,1920) PASS, 106 checks, 14 could not run
+[1920,2040) PASS, 84 checks, 36 could not run
+[2040,2160) PASS, 99 checks, 21 could not run
+[2160,2280) PASS, 108 checks, 12 could not run
+[2280,2400) PASS, 117 checks, 3 could not run
+[2400,2520) FAIL x1 || v10.54 the OUTFIT rack exists, each suit repaints the whole figure and hides the coat colour, an unowned suit changes nothing, and the Depot... -> an unowned suit repainted 13 pixels
+[2520,2538) FAIL x1 || v9.55 bare hands are not drawn as a gun, and one word for one outcome on the death screen -> control: a pistol drawn as an item and drawn as a gun differ in 452 pixels, so guns no longer route to the gun painter and this comparison proves nothing
+ALL DONE 08:39
