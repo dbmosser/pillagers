@@ -85,9 +85,8 @@ for (const [h, list] of Object.entries(hosts)) {
   }
 }
 
-// The newest 40 windows a robot played at 4K on host h: the middle of their p50, p95 and p99 work times (ms per drawn raid frame).
-function perf4k(h) {
-  const f = path.join(SP, h, 'fuzz.log');
+// The newest 40 windows a robot played at 4K in robot log f (machine h): the middle of their p50, p95 and p99 work times (ms per drawn raid frame).
+function perf4k(f, h) {
   if (!fs.existsSync(f)) return '';
   let big = false, last = ''; const w = [];
   for (const ln of fs.readFileSync(f, 'utf8').split('\n')) {
@@ -107,7 +106,8 @@ let line = !seen ? `no spare PC has reported yet (checked ${stamp()})`
   : `${seenHost} last seen ${seenSt.seen || '?'} (${ago} min ago${ago >= 180 ? ', QUIET: the VM runs the tests and robots again' : ''}), game ${seenSt.game || '?'}, ` +
     `test run ${seenSt.test_run || '?'}, robots ${seenSt.robots || '?'}, push ${seenSt.push_ok === '0' ? 'FAILING' : 'ok'}`;
 for (const [h, st, ep] of idleHosts) line += `; main PC ${h} last seen ${st.seen || '?'} (${ep ? Math.round((Date.now() / 1000 - ep) / 60) : '?'} min ago): ${st.test_run || '?'}, robots ${st.robots || '0'}${st.spare_pc ? `; spare PC as the main PC sees it: ${st.spare_pc}` : ''}`;
-for (const h of fs.readdirSync(SP)) { const p = perf4k(h); if (p) line += '; ' + p; }
+for (const h of fs.readdirSync(SP)) { const p = perf4k(path.join(SP, h, 'fuzz.log'), h); if (p) line += '; ' + p; }
+{ const p = perf4k(path.join(R, 'tools', 'handoff', 'fuzz', 'fuzz.log'), 'the VM'); if (p) line += '; ' + p; }   // 10-22: the VM's own second robot plays at 4K
 if (got.length) line += `; took ${got.length} finished run(s) now: ${got.join(', ').slice(0, 200)}`;
 if (bad.length) line += `; could not take ${bad.length}: ${bad.join('; ').slice(0, 300)}`;
 say(line + ` (checked ${stamp()})`);
