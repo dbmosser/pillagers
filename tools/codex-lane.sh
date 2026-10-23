@@ -135,7 +135,7 @@ if [ "$MODE" = run ]; then
   if [ -n "$re" ]; then
     if [ "$re" -gt "$now" ]; then
       [ -f "$X/rest-why.txt" ] && why=$(cat "$X/rest-why.txt") || why="codex is resting"
-      say "resting: $why, back about $(date -d "@$re" '+%H:%M')"; exit 0; fi
+      say "resting: $why, back about $(date -d "@$re" '+%a %H:%M')"; exit 0; fi
     rm -f "$X/rest-until.txt" "$X/rest-why.txt"; fi
   login_state; ls=$?
   [ $ls = 1 ] && { say "$NEEDS_SIGNIN"; exit 0; }
@@ -490,7 +490,7 @@ while [ "$it" -lt "$left" ]; do
   case "$CLASS" in
     limit)
       e=$(parse_reset "$ERRTXT"); [ -z "$e" ] && e=$(( $(date +%s) + $(cap REST_DEFAULT_MIN 60) * 60 ))
-      rest_until "$e" "codex usage limit"; say "resting: codex usage limit, back about $(date -d "@$e" '+%H:%M'); $name kept"
+      rest_until "$e" "codex usage limit"; say "resting: codex usage limit, back about $(date -d "@$e" '+%a %H:%M'); $name kept"
       echo "$(date '+%F %H:%M') $name ${dt}s usage-limit (not counted) back $(date -d "@$e" '+%F %H:%M')" >> "$X/runs.txt"; r="limit"; break;;
     login)
       say "$NEEDS_SIGNIN; $name kept"; echo "$(date '+%F %H:%M') $name ${dt}s not-signed-in (not counted)" >> "$X/runs.txt"; r="login"; break;;

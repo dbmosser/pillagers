@@ -78,8 +78,13 @@ function caps() { const o = {}; rd(C + '/caps.txt').split(/\r?\n/).forEach(l => 
 const SR = R + '/tools/handoff/ship-review', CX = R + '/tools/handoff/codex';
 let aiLive = { ollamaUp: false, models: [], loaded: [], codexLogin: '', t: 0, lt: 0 };
 function getJson(url) { return new Promise(res => { const rq = http.get(url, { timeout: 4000 }, r => { let b = ''; r.on('data', c => b += c); r.on('end', () => { try { res(JSON.parse(b)); } catch { res(null); } }); }); rq.on('error', () => res(null)); rq.on('timeout', () => { rq.destroy(); res(null); }); }); }
+// 10-23: the bug checker in the VM uses the main PC's Ollama (PILLAGERS_OLLAMA_URL, the same rule as ship-review.ps1: only localhost or a
+// private-network address), so the dashboard asks the same place; asking the VM's own port said "not running" while it ran.
+let OLL = String(process.env.PILLAGERS_OLLAMA_URL || '').trim();
+if (!OLL) try { OLL = (execFileSync('reg', ['query', 'HKCU\\Environment', '/v', 'PILLAGERS_OLLAMA_URL'], { encoding: 'utf8', windowsHide: true }).match(/REG_\w+\s+(\S+)/) || [])[1] || ''; } catch {}
+OLL = /^https?:\/\/(localhost|127(\.\d{1,3}){3}|10(\.\d{1,3}){3}|192\.168(\.\d{1,3}){2}|172\.(1[6-9]|2\d|3[01])(\.\d{1,3}){2})(:\d{1,5})?\/*$/.test(OLL) ? OLL.replace(/\/+$/, '') : 'http://127.0.0.1:11434';
 async function aiPoll() {
-  const tags = await getJson('http://127.0.0.1:11434/api/tags'), ps = tags ? await getJson('http://127.0.0.1:11434/api/ps') : null;
+  const tags = await getJson(OLL + '/api/tags'), ps = tags ? await getJson(OLL + '/api/ps') : null;
   aiLive.ollamaUp = !!tags; aiLive.models = tags ? (tags.models || []).map(m => ({ name: m.name, gb: +(m.size / 2 ** 30).toFixed(1) })) : [];
   aiLive.loaded = ps ? (ps.models || []).map(m => m.name) : []; aiLive.t = Date.now();
   if (Date.now() - aiLive.lt > 10 * 60e3) { aiLive.lt = Date.now();
