@@ -209,6 +209,9 @@ $script:needReset=$true; $script:ver='?'; $script:maps=@()
 $script:Hook=[IO.File]::ReadAllText($T+'\fuzz-hook.js')
 # 10-22: a robot's demo raid ends with a real run report posted to the local note collector (localhost:8799, demoReportPost); the test copy
 # points the older report route away but not that one, so robot runs filled his notes folder (exports/) beside his own. Chrome refuses the address.
+# 10-23: the block alone leaks: a report posted as the player 2 window closes (keepalive) leaves with the browser, past the page's block
+# (one at 00:22). So each robot window also gets the dead report address a fixed test copy has (mkfixture.ps1), whatever copy it runs.
+$DeadDrop="try{ LOCAL_DROP='http://127.0.0.1:9/telemetry'; }catch(e){}"
 function Block-Collector(){ Cmd 'Network.enable'; Cmd 'Network.setBlockedURLs' '{"urls":["*:8799/*"]}' }
 function Open-Page(){
   $base='http://127.0.0.1:'+$Port
@@ -230,6 +233,7 @@ function Open-Page(){
   Start-Sleep 2
   $r=Gx $script:Hook
   if($r -ne 'installed' -and $r -ne 'already'){ throw ('hook install said: '+$r) }
+  [void](Gx $DeadDrop)
   [void](Gx '__runPrep()')
   $script:ver=[string](Gx 'VER')
   $mp=Gx "(function(){ var a=[],i; for(i=0;i<FIXED_MAPS.length;i++){ try{ if(mapOffered(FIXED_MAPS[i])) a.push(i); }catch(e){ a.push(i); } } return JSON.stringify(a.length?a:[0]); })()"
@@ -354,6 +358,7 @@ function Start-2P([int]$mapIx,[int]$rseed){
     Start-Sleep 1
     $r=Gx $script:Hook
     if($r -ne 'installed' -and $r -ne 'already'){ return ('ERR player 2 hook install said: '+$r) }
+    [void](Gx $DeadDrop)
     $padSeed=[int]($rseed -bxor 1540483477)
     if($padMode -eq 'own'){ $r=Gx ($script:PadJs.Replace('__SEED__',[string]$padSeed)) } else { $r=Gx $script:BlindJs }
     if($r -ne 'installed' -and $r -ne 'already'){ return ('ERR the simulated pad install (player 2 window, '+$padMode+') said: '+$r) }
