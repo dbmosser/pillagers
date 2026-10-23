@@ -207,6 +207,9 @@ $script:padPage='p2'
 
 $script:needReset=$true; $script:ver='?'; $script:maps=@()
 $script:Hook=[IO.File]::ReadAllText($T+'\fuzz-hook.js')
+# 10-22: a robot's demo raid ends with a real run report posted to the local note collector (localhost:8799, demoReportPost); the test copy
+# points the older report route away but not that one, so robot runs filled his notes folder (exports/) beside his own. Chrome refuses the address.
+function Block-Collector(){ Cmd 'Network.enable'; Cmd 'Network.setBlockedURLs' '{"urls":["*:8799/*"]}' }
 function Open-Page(){
   $base='http://127.0.0.1:'+$Port
   Pg-Drop2   # a player 2 window from a demo2p raid is closed with every other page just below
@@ -214,6 +217,7 @@ function Open-Page(){
   $tab=Invoke-RestMethod -Method Put -Uri ($base+'/json/new?http://localhost:'+$script:srvPort+'/'+$FzName) -TimeoutSec 10
   Ws-Connect $tab.webSocketDebuggerUrl
   Cmd 'Page.enable'
+  Block-Collector
   Cmd 'Emulation.setDeviceMetricsOverride' ('{"width":'+$ScrW+',"height":'+$ScrH+',"deviceScaleFactor":1,"mobile":false}')
   Cmd 'Emulation.setFocusEmulationEnabled' '{"enabled":true}'
   Cmd 'Page.bringToFront'
@@ -338,6 +342,7 @@ function Start-2P([int]$mapIx,[int]$rseed){
     Pg-Use 'p2'
     Ws-Connect $ws2
     Cmd 'Page.enable'
+    Block-Collector
     Cmd 'Emulation.setDeviceMetricsOverride' ('{"width":'+$w2+',"height":'+$h2+',"deviceScaleFactor":1,"mobile":false}')
     Cmd 'Emulation.setFocusEmulationEnabled' '{"enabled":true}'
     $ok=$false

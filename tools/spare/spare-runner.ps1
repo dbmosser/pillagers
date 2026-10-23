@@ -328,9 +328,9 @@ while($true){
     }
   }
   if((Running 'fuzz\.ps1.*-Port 9331(\s|$)') -eq 0){ Start-Robot 9331 'fixture-soak-spare1.html' }
-  # 10-22, his "No we might as well get rolling on it": on the main PC (the party PC, two 4K screens) the second robot plays at 4K, both windows
-  # of a 2-player raid included, so its log carries the game's own frame times at the party size (fuzz.ps1 -Size; read by spare-import.mjs).
-  if((Running 'fuzz\.ps1.*-Port 9332(\s|$)') -eq 0){ Start-Robot 9332 'fixture-soak-spare2.html' $(if($Idle){ '3840x2160' }else{ '' }) }
+  # 10-22: Start-Robot takes a screen size (fuzz.ps1 -Size), but both robots here stay at 1080p. A 4K robot on the main PC reads as "he is gaming"
+  # to its game check (a program at 15% of the graphics card, 22:38 that night), which holds the VM to 30% of its processors; the VM plays the 4K robot.
+  if((Running 'fuzz\.ps1.*-Port 9332(\s|$)') -eq 0){ Start-Robot 9332 'fixture-soak-spare2.html' }
   $cs='idle'; if((Running 'corpq\.sh|corpus-slices\.sh') -gt 0){ $cs='running '+(Split-Path (GetS 'corpus_file') -Leaf) }
   Write-Status $cs (Running 'fuzz\.ps1')
   $pt=[long]('0'+(GetS 'pub_t'))

@@ -1497,6 +1497,11 @@ try{ if(window.webkitAudioContext) window.webkitAudioContext=window.AudioContext
 // and function declarations are hoisted regardless, so direct stubs stick.
 // DROP stays redirected as belt and braces.
 try{ DROP='http://127.0.0.1:9/blackhole'; }catch(e){}
+// 10-22: LOCAL_DROP too. A finished demo run posts its run report straight to LOCAL_DROP (demoReportPost, v32.93), so every robot
+// demo raid and every check that ends one wrote a real report into his notes folder through the local collector. A dead address of
+// its own keeps what the code compares: still set, still not DROP (so the note post stays off, as before). Checks that need the
+// collector set it themselves and put this back.
+try{ LOCAL_DROP='http://127.0.0.1:9/telemetry'; }catch(e){}
 try{ window.__realAutoExport=autoExport; autoExport=function(){ if(typeof P!=='undefined'&&P) P.lastReport='fixture-stub'; }; }catch(e){}
 // v13.20: KEEP THE REAL ONE. The stub below stays, because a corpus run must
 // never write files into his Downloads; but a check that is specifically about

@@ -178,8 +178,12 @@ while true; do
     if [ "$atq" = 0 ] && [ "$spl" = 0 ] && [ -f "$R/tools/fuzz.ps1" ] && [ "$f2" = "0" ] && [ "$ram" -ge $((rf+2)) ]; then
       # 10-18: on the corpus copy of the game (tools/fxcorpus.html, under 12 hours old) so the full test set and the robots meet on one version
       fxarg=""; [ -n "$(find "$R/tools/fxcorpus.html" -mmin -720 2>/dev/null)" ] && fxarg="-Fixture fxcorpus.html"
-      echo "$(date +%H:%M) fuzz2 start at $head${fxarg:+ on the corpus copy}" >> "$LOG"
-      (powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/fuzz.ps1" -Minutes 120 -IgnoreFlag -Port 9332 -MinFreeGB "$rf" $fxarg > /dev/null 2>&1; echo "$(date +%H:%M) fuzz2 done" >> "$LOG") &
+      # 10-22, his "No we might as well get rolling on it" and "Or the vm": with room for it (the night memory) the second robot plays at 4K,
+      #      both windows of a 2-player raid, so its log carries the game's own work time per frame at the party size (fuzz.ps1 -Size).
+      #      In the VM, not on the main PC: there a 4K browser reads as "he is gaming" to the main PC's game check and slows the VM.
+      szarg=""; [ "$ram" -ge $((rf+3)) ] && szarg="-Size 3840x2160"
+      echo "$(date +%H:%M) fuzz2 start at $head${fxarg:+ on the corpus copy}${szarg:+ at 4K}" >> "$LOG"
+      (powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/fuzz.ps1" -Minutes 120 -IgnoreFlag -Port 9332 -MinFreeGB "$rf" $fxarg $szarg > /dev/null 2>&1; echo "$(date +%H:%M) fuzz2 done" >> "$LOG") &
     fi
   fi
   # (7) 2026-10-17: once a day after 03:00, the half-price code review of the day's game commits (tools/review-nightly.sh)
