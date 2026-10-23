@@ -181,7 +181,8 @@ while true; do
       # 10-22, his "No we might as well get rolling on it" and "Or the vm": with room for it (the night memory) the second robot plays at 4K,
       #      both windows of a 2-player raid, so its log carries the game's own work time per frame at the party size (fuzz.ps1 -Size).
       #      In the VM, not on the main PC: there a 4K browser reads as "he is gaming" to the main PC's game check and slows the VM.
-      szarg=""; [ "$ram" -ge $((rf+3)) ] && szarg="-Size 3840x2160"
+      #      Always at 4K: it ran in 2.7 GB free on 10-22, the start rule above already wants rf+2, and fuzz.ps1 stops itself under rf.
+      szarg="-Size 3840x2160"
       echo "$(date +%H:%M) fuzz2 start at $head${fxarg:+ on the corpus copy}${szarg:+ at 4K}" >> "$LOG"
       (powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/fuzz.ps1" -Minutes 120 -IgnoreFlag -Port 9332 -MinFreeGB "$rf" $fxarg $szarg > /dev/null 2>&1; echo "$(date +%H:%M) fuzz2 done" >> "$LOG") &
     fi

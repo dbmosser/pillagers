@@ -36,7 +36,8 @@ const notes = (list.files || []).filter((f) => OK_NAME.test(f.name));
 const got = [], bad = [];
 for (const f of notes) {
   const name = f.name.slice('pcnote-'.length);
-  if (fs.existsSync(path.join(EXP, name)) || fs.existsSync(path.join(EXP, 'consumed-' + name))) continue;
+  // 10-22: exports/robot-runs/ holds the robot-made run reports filed out of exports/ (its README.txt); those are had too
+  if (fs.existsSync(path.join(EXP, name)) || fs.existsSync(path.join(EXP, 'consumed-' + name)) || fs.existsSync(path.join(EXP, 'robot-runs', name))) continue;
   try {
     const j = host('share-get', 'name=' + f.name);
     if (!j.ok || !j.base64) { bad.push(name + ': ' + (j.error || 'no data')); continue; }
