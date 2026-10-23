@@ -1089,3 +1089,14 @@
 2026-10-23 04:55:21 FUZZ END raids=15 problems=3 unique=2 reason=time minutes=59
 2026-10-23 04:55:23 raid 17 demo2 raidSeed=1329021054 map=0 god=1 sec=68 end=clock-end problems=0 newUnique=0 totalUnique=2 totalProblems=3 events=1991 score=0 ents=51 travelPx=4018 fires=29 menuPct=19 heapMB=91 p2= build=34.13
 2026-10-23 04:55:23 FUZZ END raids=17 problems=3 unique=2 reason=time minutes=59.1
+2026-10-23 04:57:06 FUZZ START seed=48984870 minutes=60 raidsec=300 port=9331 srv=8806 build=34.13 maps=0
+2026-10-23 04:57:06 FUZZ START seed=49453615 minutes=60 raidsec=300 port=9332 srv=8806 build=34.13 maps=0
+2026-10-23 04:57:59 raid 1 demo2p raidSeed=1774909949 map=0 god=1 sec=53 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= build=34.13
+2026-10-23 04:57:59 raid 1 demo2p raidSeed=172671992 map=0 god=1 sec=53 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= build=34.13
+2026-10-23 04:58:54 raid 2 demo2p raidSeed=1407791399 map=0 god=0 sec=51 end=nostart problems=1 newUnique=0 totalUnique=1 totalProblems=2 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= build=34.13
+2026-10-23 04:58:54 raid 2 demo2p raidSeed=355314818 map=0 god=1 sec=51 end=nostart problems=1 newUnique=0 totalUnique=1 totalProblems=2 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= build=34.13
+2026-10-23 04:59:48 FUZZ 2P ROBOTS OFF: three 2-window starts in a row failed, so the 2-player share runs as demo2 (this window as host alone) for the rest of this run
+2026-10-23 04:59:48 raid 3 demo2p raidSeed=1586398772 map=0 god=0 sec=50 end=nostart problems=1 newUnique=0 totalUnique=1 totalProblems=3 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= build=34.13
+2026-10-23 04:59:48 FUZZ 2P ROBOTS OFF: three 2-window starts in a row failed, so the 2-player share runs as demo2 (this window as host alone) for the rest of this run
+2026-10-23 04:59:48 raid 3 demo2p raidSeed=1316682607 map=0 god=1 sec=51 end=nostart problems=1 newUnique=0 totalUnique=1 totalProblems=3 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= build=34.13
+2026-10-23 05:01:09 raid 4 demo1 raidSeed=154201155 map=0 god=0 sec=78 end=ended problems=0 newUnique=0 totalUnique=1 totalProblems=3 events=2283 score=0 ents=45 travelPx=6526 fires=58 menuPct=15 heapMB=65 p2= build=34.13
