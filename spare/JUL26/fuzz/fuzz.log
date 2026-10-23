@@ -306,3 +306,5 @@
 2026-10-22 22:14:21 raid 8 career raidSeed=470676042 map=0 god=0 sec=159 end=ended problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=4978 score=0 ents=54 travelPx=12923 fires=27 menuPct=14 heapMB=46 p2= build=34.18
 2026-10-22 22:19:20 raid 7 demo2p raidSeed=830273278 map=0 god=0 sec=302 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=9628 score=0 ents=54 travelPx=23991 fires=97 menuPct=20 heapMB=63 p2=link_2s_join_3s_pad_own build=34.18
 2026-10-22 22:19:28 raid 9 demo2p raidSeed=1440748623 map=0 god=0 sec=302 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=9292 score=0 ents=52 travelPx=27464 fires=254 menuPct=19 heapMB=68 p2=link_2s_join_4s_pad_fwd build=34.18
+2026-10-22 22:35:31 FUZZ START seed=1107582543 minutes=60 raidsec=300 port=9331 srv=8806 build=34.18 maps=0 size=1920x1080 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
+2026-10-22 22:35:31 FUZZ START seed=1108117708 minutes=60 raidsec=300 port=9332 srv=8806 build=34.18 maps=0 size=3840x2160 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
