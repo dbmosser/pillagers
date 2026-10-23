@@ -42,7 +42,8 @@ param(
   [switch]$SelfTest,
   [switch]$Trace,
   [string]$Fixture='fixture.html',
-  [int]$P2Share=75
+  [int]$P2Share=75,
+  [string]$Size='1920x1080'
 )
 $ErrorActionPreference='Stop'
 $R=$(if($env:PILLAGERS_ROOT){ $env:PILLAGERS_ROOT -replace '/','\' }else{ 'C:\claudecode\dark raiders' }); $T=$R+'\tools'; $OutDir=$T+'\handoff\fuzz'   # 10-22: the main PC's idle runs set PILLAGERS_ROOT
@@ -61,6 +62,14 @@ $FzName = $(if($Fixture -eq 'fixture.html'){ 'fixture-soak-fuzz.html' } else { '
 # 2026-10-18 (the 2-player robots): FUZZ_COPY_NAME=name.html gives a hand test its own served copy name, so it never touches a running robot's copy
 if($env:FUZZ_COPY_NAME -and $env:FUZZ_COPY_NAME -match '^[A-Za-z0-9._-]+\.html$'){ $FzName=$env:FUZZ_COPY_NAME }
 if($P2Share -lt 0){ $P2Share=0 }; if($P2Share -gt 100){ $P2Share=100 }
+# 10-22, his "No we might as well get rolling on it" (real 4K frame tests on the graphics card): -Size 3840x2160 runs this robot at 4K, the player 2
+# window of a 2-player raid too (the party: two 4K windows on one card). The aim point and screen edges scale with it. Every raid line carries
+# gfx=frames/p50/p95/slow/q from the game's own frame timer (G.tel.gfx: ms between drawn raid frames, slow = over 25 ms, q = draw scale) and
+# work=frames/p50/p95/p99 (ms of the game's own work per frame, DRS.workMs, read by fuzz-hook.js), gfx2= and work2= for the player 2 window,
+# and the FUZZ START line names the graphics card Chrome draws with. A hidden browser hands out about 30 frames a second in the VM, so
+# there gfx= shows the cap and work= is the measure; 16.7 ms of work is the 60 fps line.
+if($Size -notmatch '^(\d{3,4})x(\d{3,4})$'){ $Size='1920x1080' }
+$ScrW=[int]($Size -split 'x')[0]; $ScrH=[int]($Size -split 'x')[1]; $ScrK=$ScrW/1920.0; $ScrCX=[int]($ScrW/2); $ScrCY=[int]($ScrH/2)
 
 function Stamp(){ (Get-Date).ToString('yyyy-MM-dd HH:mm:ss') }
 function Clean([string]$s){ ($s -replace '[^\x20-\x7e]','?') }
@@ -205,7 +214,7 @@ function Open-Page(){
   $tab=Invoke-RestMethod -Method Put -Uri ($base+'/json/new?http://localhost:'+$script:srvPort+'/'+$FzName) -TimeoutSec 10
   Ws-Connect $tab.webSocketDebuggerUrl
   Cmd 'Page.enable'
-  Cmd 'Emulation.setDeviceMetricsOverride' '{"width":1920,"height":1080,"deviceScaleFactor":1,"mobile":false}'
+  Cmd 'Emulation.setDeviceMetricsOverride' ('{"width":'+$ScrW+',"height":'+$ScrH+',"deviceScaleFactor":1,"mobile":false}')
   Cmd 'Emulation.setFocusEmulationEnabled' '{"enabled":true}'
   Cmd 'Page.bringToFront'
   $ok=$false
@@ -232,7 +241,7 @@ $KM['Space']=@(' ','Space',32); $KM['Escape']=@('Escape','Escape',27); $KM['Tab'
 $KM['ControlLeft']=@('Control','ControlLeft',17); $KM['AltLeft']=@('Alt','AltLeft',18); $KM['ShiftLeft']=@('Shift','ShiftLeft',16)
 $MOVE=@('KeyW','KeyA','KeyS','KeyD'); $MODK=@('ControlLeft','AltLeft','ShiftLeft')
 $script:ring=New-Object 'System.Collections.Generic.Queue[string]'
-$script:held=(New-Object 'System.Collections.Generic.Dictionary[string,object]'); $script:btns=0; $script:mx=960; $script:my=540; $script:tick=0; $script:lastAct=-1000; $script:lastMmRing=-100; $script:nEv=0
+$script:held=(New-Object 'System.Collections.Generic.Dictionary[string,object]'); $script:btns=0; $script:mx=$ScrCX; $script:my=$ScrCY; $script:tick=0; $script:lastAct=-1000; $script:lastMmRing=-100; $script:nEv=0
 function Ring([string]$s){ $script:ring.Enqueue(([string]$script:tick)+':'+$s); while($script:ring.Count -gt 60){ [void]$script:ring.Dequeue() } }
 function ModBits(){ $m=0; if($script:held.ContainsKey('AltLeft')){ $m+=1 }; if($script:held.ContainsKey('ControlLeft')){ $m+=2 }; if($script:held.ContainsKey('ShiftLeft')){ $m+=8 }; return $m }
 function KeyEv([string]$type,[string]$n,[bool]$rep){
@@ -259,7 +268,7 @@ function MouseEv([string]$type,[int]$x,[int]$y,[string]$btn,[int]$buttons,[int]$
 }
 function BtnName([int]$bit){ if($bit -eq 1){ return 'left' }; if($bit -eq 2){ return 'right' }; return 'middle' }
 function MMove([int]$x,[int]$y){
-  if($x -lt 0){ $x=0 }; if($y -lt 0){ $y=0 }; if($x -gt 1919){ $x=1919 }; if($y -gt 1079){ $y=1079 }
+  if($x -lt 0){ $x=0 }; if($y -lt 0){ $y=0 }; if($x -gt ($ScrW-1)){ $x=$ScrW-1 }; if($y -gt ($ScrH-1)){ $y=$ScrH-1 }
   $script:mx=$x; $script:my=$y
   $b='none'; if($script:btns -band 1){ $b='left' }elseif($script:btns -band 2){ $b='right' }elseif($script:btns -band 4){ $b='middle' }
   MouseEv 'mouseMoved' $x $y $b $script:btns 0 0
@@ -322,13 +331,14 @@ function Start-2P([int]$mapIx,[int]$rseed){
   if($r1 -notmatch '"ok":true'){ return 'ERR the 2 player pick: '+$r1 }
   $url=[string](($r1 | ConvertFrom-Json).url)
   # 2. the player 2 window, with its own socket, the hook and the simulated pad
-  $ws2=New-WindowPage $url 1280 720
+  $w2=1280; $h2=720; if($ScrW -gt 1920){ $w2=$ScrW; $h2=$ScrH }   # the 4K robot: player 2 gets a 4K window too
+  $ws2=New-WindowPage $url $w2 $h2
   $script:pgs['p2']=@{ ws=$null; rxTask=$null; rxBuf=(New-Object byte[] 262144); rxMs=(New-Object IO.MemoryStream) }
   try{
     Pg-Use 'p2'
     Ws-Connect $ws2
     Cmd 'Page.enable'
-    Cmd 'Emulation.setDeviceMetricsOverride' '{"width":1280,"height":720,"deviceScaleFactor":1,"mobile":false}'
+    Cmd 'Emulation.setDeviceMetricsOverride' ('{"width":'+$w2+',"height":'+$h2+',"deviceScaleFactor":1,"mobile":false}')
     Cmd 'Emulation.setFocusEmulationEnabled' '{"enabled":true}'
     $ok=$false
     for($i=0;$i -lt 90;$i++){
@@ -412,9 +422,25 @@ function P2-Poll([string]$mode){
   foreach($b in @($q.bad)){ if($b){ Add-Problem 'p2:nan' ('non-finite '+([string]$b -replace '\d+','#')+' in the player 2 window') ('raw='+$b+' x='+$q.x+' y='+$q.y+' hp='+$q.hp) } }
 }
 
+$GFXQ='(function(){ try{ var g=G&&G.tel&&G.tel.gfx; return (g&&g.n>0)?(g.n+"/"+g.p50+"/"+g.p95+"/"+g.slow+"/"+g.q):""; }catch(e){ return ""; } })()'
+function Gfx-Now([string]$pg){ try{ Pg-Use $pg; return [string](Gx $GFXQ 8000) }catch{ return '' }finally{ try{ Pg-Use 'p1' }catch{} } }
+function Work-Now([string]$pg,[bool]$reset){ try{ Pg-Use $pg; return [string](Ev ('(window.__fz&&window.__fz.work)?window.__fz.work('+$(if($reset){'1'}else{'0'})+'):""') 8000) }catch{ return '' }finally{ try{ Pg-Use 'p1' }catch{} } }
+function Gfx-Keep($res){
+  $g=Gfx-Now 'p1'; if($g){ $res.gfx=$g }
+  $g=Work-Now 'p1' $false; if($g){ $res.work=$g }
+  if($res.mode -eq 'demo2p' -and $script:pgs.ContainsKey('p2')){ $g=Gfx-Now 'p2'; if($g){ $res.gfx2=$g }; $g=Work-Now 'p2' $false; if($g){ $res.work2=$g } }
+}
+function Gpu-Name(){
+  try{
+    $v=Invoke-RestMethod ('http://127.0.0.1:'+$Port+'/json/version') -TimeoutSec 5
+    $g=((Cdp-Once ([string]$v.webSocketDebuggerUrl) 'SystemInfo.getInfo' '{}') | ConvertFrom-Json).result.gpu
+    $d=@($g.devices | Where-Object { $_.deviceString -and $_.deviceString -notmatch 'Basic Render' })[0].deviceString
+    return (([string]$d)+' 2d='+[string]$g.featureStatus.'2d_canvas') -replace '\s','_'
+  }catch{ return '?' }
+}
 function Run-Raid([string]$mode,[int]$rseed,[int]$secs){
   $script:curMode=$mode; $script:curSeed=$rseed; $script:raidProblems=0; $script:newUniq=0
-  $script:ring.Clear(); $script:held=(New-Object 'System.Collections.Generic.Dictionary[string,object]'); $script:btns=0; $script:mx=960; $script:my=540; $script:tick=0; $script:lastAct=-1000; $script:nEv=0
+  $script:ring.Clear(); $script:held=(New-Object 'System.Collections.Generic.Dictionary[string,object]'); $script:btns=0; $script:mx=$ScrCX; $script:my=$ScrCY; $script:tick=0; $script:lastAct=-1000; $script:nEv=0
   $rng=New-Object System.Random($rseed)
   $mapIx=0; if($script:maps.Count -gt 0){ $mapIx=[int]$script:maps[$rseed % $script:maps.Count] }
   $god=($rng.NextDouble() -lt 0.5)
@@ -424,7 +450,7 @@ function Run-Raid([string]$mode,[int]$rseed,[int]$secs){
     for($i=0;$i -lt $n;$i++){ $ks+=("'"+$pool[$rng.Next(0,$pool.Count)]+"'") }
     $kit='['+($ks -join ',')+']'
   }
-  $res=[ordered]@{ mode=$mode; seed=$rseed; map=$mapIx; god=[int]$god; sec=0; end=''; ticks=0; events=0; heap=0; score=0; ents=0; travel=0; fires=0; menuPct=0; p2='' }
+  $res=[ordered]@{ mode=$mode; seed=$rseed; map=$mapIx; god=[int]$god; sec=0; end=''; ticks=0; events=0; heap=0; score=0; ents=0; travel=0; fires=0; menuPct=0; p2=''; gfx=''; gfx2=''; work=''; work2='' }
   $script:raidSw=[Diagnostics.Stopwatch]::StartNew()
   if($mode -eq 'demo1'){ $js='(function(){ try{ __topClear(); __runPrep(); CAREER_ON=0; var r=arcadeSoloPick(); var ok=arcadeDeploy({mapIx:'+$mapIx+',seed:'+$rseed+'}); return JSON.stringify({ok:!!(ok&&G&&G.arcade&&ARCADE.solo),r:r,arc:!!(G&&G.arcade)}); }catch(e){ return "ERR "+e+" "+String(e&&e.stack||"").slice(0,200); } })()' }
   elseif($mode -eq 'demo2'){ $js='(function(){ try{ __topClear(); __runPrep(); CAREER_ON=0; var ok=arcadeDeploy({mapIx:'+$mapIx+',seed:'+$rseed+'}); return JSON.stringify({ok:!!(ok&&G&&G.arcade&&!ARCADE.solo),arc:!!(G&&G.arcade)}); }catch(e){ return "ERR "+e+" "+String(e&&e.stack||"").slice(0,200); } })()' }
@@ -438,8 +464,9 @@ function Run-Raid([string]$mode,[int]$rseed,[int]$secs){
     $res.end='nostart'; $res.sec=[int]$script:raidSw.Elapsed.TotalSeconds
     return $res
   }
+  [void](Work-Now 'p1' $true)   # this raid's work times start from zero (the host page lives on across raids)
   $endPhase=$false; $endAt=0.0; $reason=''; $stuckAcc=0.0; $lastX=$null; $lastY=$null; $menuTicks=0; $dragPts=$null; $dragI=0
-  $lUntil=0; $rUntil=0; $tx=960; $ty=540; $bagC=@(); $hotC=@(); $baseGb=@(); $baseSet=$false; $stallAt=-99999.0; $stuckRep=$false; $o=$null
+  $lUntil=0; $rUntil=0; $tx=$ScrCX; $ty=$ScrCY; $bagC=@(); $hotC=@(); $baseGb=@(); $baseSet=$false; $stallAt=-99999.0; $stuckRep=$false; $o=$null
   $a=New-Object double[] 24; $next=0; $selfDone=(-not $SelfTest -or $script:selfRan); $noPoll=0; $lastAm=$null; $menuPolls=0; $polls=0
   $dirs=@(@('KeyW'),@('KeyW','KeyD'),@('KeyD'),@('KeyS','KeyD'),@('KeyS'),@('KeyS','KeyA'),@('KeyA'),@('KeyW','KeyA'))
   $taps=@('KeyR','KeyE','KeyX','KeyG','KeyU','KeyH','KeyJ','KeyQ','KeyF','Digit1','Digit2','Digit3','Digit4','Digit5','Digit6','Digit7','Digit8','Digit9')
@@ -519,14 +546,15 @@ function Run-Raid([string]$mode,[int]$rseed,[int]$secs){
       }
       else {
         if($a[20] -lt 0.06){
-          if($a[21] -lt 0.75){ $ang=$a[22]*6.2832; $rr=100+$a[23]*400; $tx=960+[Math]::Cos($ang)*$rr; $ty=540+[Math]::Sin($ang)*$rr }
-          else { $tx=5+$a[22]*1909; $ty=5+$a[23]*1069 }
+          if($a[21] -lt 0.75){ $ang=$a[22]*6.2832; $rr=(100+$a[23]*400)*$ScrK; $tx=$ScrCX+[Math]::Cos($ang)*$rr; $ty=$ScrCY+[Math]::Sin($ang)*$rr }
+          else { $tx=5+$a[22]*($ScrW-11); $ty=5+$a[23]*($ScrH-11) }
         }
         $dx=($tx-$script:mx)*0.3+($a[18]-0.5)*6; $dy=($ty-$script:my)*0.3+($a[19]-0.5)*6
         if([Math]::Abs($dx)+[Math]::Abs($dy) -ge 2){ MMove ([int]($script:mx+$dx)) ([int]($script:my+$dy)) }
       }
       # ---- the player 2 window (demo2p): polled every 10th tick, its problems are kind p2:...
       if($mode -eq 'demo2p' -and ($tk % 10) -eq 3){ P2-Poll $mode }
+      if(($tk % 400) -eq 7){ Gfx-Keep $res }   # the frame timer every 20 s, so a raid that ends in a death still has its numbers
       # ---- the poll, every 5th tick
       if(($tk % 5) -eq 0){
         try{ $o=(Ev $POLLX 20000) | ConvertFrom-Json }
@@ -580,6 +608,7 @@ function Run-Raid([string]$mode,[int]$rseed,[int]$secs){
   $res.sec=[int]$sw.Elapsed.TotalSeconds; $res.ticks=$script:tick; $res.events=$script:nEv; $res.end=$reason
   if($mode -eq 'demo2p'){ $res.p2=$script:p2Info; if($script:p2Dead){ $res.p2+=' DEAD' } }
   if(-not $script:needReset){
+    Gfx-Keep $res
     try{
       Release-All
       $cr=[string](Gx "(function(){ try{ if(G&&!G.over&&state==='raid') endRaid('abandon'); }catch(e){ return 'endRaid threw: '+e+' '+String(e&&e.stack||'').slice(0,240); } try{ __topClear(); }catch(e){ return '__topClear threw: '+e; } return 'ok'; })()" 30000)
@@ -608,7 +637,7 @@ try{
   $so=& powershell.exe -NoProfile -ExecutionPolicy Bypass -File ($T+'\cdp.ps1') -Start -Port $Port -Profile $prof
   if(($so | Out-String) -notmatch 'browser up'){ throw ('chrome did not start on '+$Port+': '+($so | Out-String)) }
   Open-Page
-  LogLine ((Stamp)+' FUZZ START seed='+$Seed+' minutes='+$Minutes+' raidsec='+$RaidSec+' port='+$Port+' srv='+$script:srvPort+' build='+$script:ver+' maps='+($script:maps -join ','))
+  LogLine ((Stamp)+' FUZZ START seed='+$Seed+' minutes='+$Minutes+' raidsec='+$RaidSec+' port='+$Port+' srv='+$script:srvPort+' build='+$script:ver+' maps='+($script:maps -join ',')+' size='+$Size+' gpu='+(Gpu-Name))
   $modes=@('demo1','career','demo2'); $master=New-Object System.Random($Seed)
   $others=@('demo1','career'); $script:otherNo=0; $script:p2Off=$false; $script:p2Fails=0; $script:dirty=$false
   while($true){
@@ -638,7 +667,7 @@ try{
         if($script:p2Fails -ge 3 -and -not $script:p2Off){ $script:p2Off=$true; LogLine ((Stamp)+' FUZZ 2P ROBOTS OFF: three 2-window starts in a row failed, so the 2-player share runs as demo2 (this window as host alone) for the rest of this run') }
       } else { $script:p2Fails=0 }
     }
-    LogLine ((Stamp)+' raid '+$script:raidNo+' '+$m+' raidSeed='+$rs+' map='+$rres.map+' god='+$rres.god+' sec='+$rres.sec+' end='+$rres.end+' problems='+$script:raidProblems+' newUnique='+$script:newUniq+' totalUnique='+$script:uniq.Count+' totalProblems='+$totProb+' events='+$rres.events+' score='+$rres.score+' ents='+$rres.ents+' travelPx='+$rres.travel+' fires='+$rres.fires+' menuPct='+$rres.menuPct+' heapMB='+$rres.heap+' p2='+(([string]$rres.p2) -replace '\s','_')+' build='+$script:ver)   # build= stays LAST: tools\stable.mjs counts robot minutes per version with endsWith(' build='+ver)
+    LogLine ((Stamp)+' raid '+$script:raidNo+' '+$m+' raidSeed='+$rs+' map='+$rres.map+' god='+$rres.god+' sec='+$rres.sec+' end='+$rres.end+' problems='+$script:raidProblems+' newUnique='+$script:newUniq+' totalUnique='+$script:uniq.Count+' totalProblems='+$totProb+' events='+$rres.events+' score='+$rres.score+' ents='+$rres.ents+' travelPx='+$rres.travel+' fires='+$rres.fires+' menuPct='+$rres.menuPct+' heapMB='+$rres.heap+' p2='+(([string]$rres.p2) -replace '\s','_')+' gfx='+$(if($rres.gfx){ $rres.gfx }else{ 'none' })+$(if($rres.gfx2){ ' gfx2='+$rres.gfx2 }else{ '' })+' work='+$(if($rres.work){ $rres.work }else{ 'none' })+$(if($rres.work2){ ' work2='+$rres.work2 }else{ '' })+' build='+$script:ver)   # build= stays LAST: tools\stable.mjs counts robot minutes per version with endsWith(' build='+ver)
     if($rres.end -eq 'lightflag'){ $stopWhy='light.flag (he is back)'; break }
     if($Mode -ne ''){ $stopWhy='replay done'; break }
   }

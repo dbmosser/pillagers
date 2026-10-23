@@ -5,7 +5,7 @@
 # Evaluate:        powershell -File tools\cdp.ps1 -Match 8804 -Expr "window.__PROG.done"
 # The expression may be a promise; a non-string result comes back as JSON.
 param([int]$Port=9333,[switch]$Start,[string]$Open='',[string]$Match='',[string]$Expr='document.title',[int]$TimeoutSec=120,
-      [double]$Throttle=0,[string]$Shot='',[string]$Profile="$env:TEMP\pillagers-cdp",[switch]$Close)
+      [double]$Throttle=0,[string]$Shot='',[string]$Profile="$env:TEMP\pillagers-cdp",[switch]$Close,[string]$Size='1920,1080')
 # -Throttle N: the page runs on a CPU N times slower for this call (Chrome's own emulation), to stand in for a weak PC.
 # -Shot path.jpg: after the expression, a screenshot of the page is saved there (the visual pass, 2026-10-02).
 # -Close (10-21): closes the browser on -Port through its own debug socket (Browser.close) and waits until the port is free. By port only,
@@ -23,7 +23,8 @@ if($Close){
 if($Start){
   $exe='C:\Program Files\Google\Chrome\Application\chrome.exe'
   if(-not (Test-Path $exe)){ $exe='C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe' }
-  $a='--headless=new --window-size=1920,1080 --force-device-scale-factor=1 --remote-debugging-port='+$Port+
+  if($Size -notmatch '^\d{3,4},\d{3,4}$'){ $Size='1920,1080' }   # 10-22: -Size 3840,2160 for the 4K robot (fuzz.ps1 -Size)
+  $a='--headless=new --window-size='+$Size+' --force-device-scale-factor=1 --remote-debugging-port='+$Port+
      ' --user-data-dir="'+$Profile+'" --no-first-run --no-default-browser-check --disable-background-timer-throttling'+
      ' --disable-renderer-backgrounding --disable-backgrounding-occluded-windows --autoplay-policy=no-user-gesture-required about:blank'
   Start-Process -FilePath $exe -ArgumentList $a | Out-Null

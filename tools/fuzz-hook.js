@@ -3,8 +3,8 @@
 // poll that returns a compact state object) and never changes the game, its code or its seeded random stream.
 // ASCII only. Evaluated once per page load; a second evaluation returns 'already'.
 (function(){
-  if(window.__fz&&window.__fz.v===3) return 'already';
-  var Z=window.__fz={v:3,errs:[],raf:performance.now(),frames:0,lastPoll:performance.now(),cmap:{},dead:0};
+  if(window.__fz&&window.__fz.v===4) return 'already';
+  var Z=window.__fz={v:4,errs:[],raf:performance.now(),frames:0,lastPoll:performance.now(),cmap:{},dead:0};
   function push(k,m,w){
     if(Z.errs.length>=40) return;
     Z.errs.push({k:k,m:String(m==null?'':m).slice(0,400),w:String(w||'').slice(0,400)});
@@ -30,7 +30,20 @@
     };
   }catch(e){}
   // 2. frame heartbeat of the page itself (the game has its own, HID.lastRaf, read in poll)
-  (function beat(){ Z.raf=performance.now(); Z.frames++; requestAnimationFrame(beat); })();
+  // 2b. 10-22 (the 4K robot): the game's own WORK time of each drawn raid frame (DRS.workMs: the frame's start to the end of its HUD),
+  //     in half milliseconds. Unlike the gap between frames it is not held at 30 a second by a hidden browser. Z.work(1) reads and starts over.
+  Z.wh=[]; for(var wi=0;wi<=200;wi++) Z.wh.push(0); Z.wn=0; Z.wfs=-1;
+  Z.work=function(reset){
+    function pct(f){ var want=Math.max(1,Math.ceil(Z.wn*f)),c=0,i; for(i=0;i<=200;i++){ c+=Z.wh[i]; if(c>=want) return (i>=200)?100:(i+0.5)/2; } return 0; }
+    var s=Z.wn?(Z.wn+'/'+pct(0.5)+'/'+pct(0.95)+'/'+pct(0.99)):'';
+    if(reset){ for(var i=0;i<=200;i++) Z.wh[i]=0; Z.wn=0; }
+    return s;
+  };
+  (function beat(){
+    Z.raf=performance.now(); Z.frames++;
+    try{ if(state==='raid'&&G&&!G.over&&!G.sim&&DRS.frameStart!==undefined&&DRS.frameStart!==Z.wfs&&DRS.workMs>0){ Z.wfs=DRS.frameStart; Z.wh[Math.min(200,Math.floor(DRS.workMs*2))]++; Z.wn++; } }catch(e){}
+    requestAnimationFrame(beat);
+  })();
   // 3. the game's own crash list: what it caught is read as seen, so only new entries (or a repeat count that grew) are reported
   try{ (P.crashes||[]).forEach(function(c){ Z.cmap[c.kind+'|'+c.msg]=c.n||1; }); }catch(e){}
   // 4. watchdog: if the driver stops polling (killed when he came back), the page lets go of the CPU on its own

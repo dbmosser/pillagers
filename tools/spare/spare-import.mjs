@@ -7,7 +7,8 @@
 //     those fuzz.log files with the VM's own;
 //   - tools/handoff/spare/live.txt says when a spare PC was last seen. While that is under 3 hours old the runner (tools/nightly.sh)
 //     starts no full test run and no robots in the VM, so the VM's memory goes to the helpers;
-//   - tools/handoff/spare-status.txt: one plain line for the health check and the coordinator.
+//   - tools/handoff/spare-status.txt: one plain line for the health check and the coordinator, with the 4K frame numbers when a robot
+//     played at 4K (the main PC's second robot, fuzz.ps1 -Size 3840x2160: work= is ms of the game's own work per drawn frame, 16.7 = 60 fps).
 // The runner calls it every 5 minutes. It prints a line only when a run arrived or something failed. ASCII only.
 // Usage: node tools/spare/spare-import.mjs [--remote NAME_OR_URL] [--scratch DIR] [--out DIR]   (the options are for tests)
 import { execFileSync } from 'node:child_process';
@@ -84,6 +85,21 @@ for (const [h, list] of Object.entries(hosts)) {
   }
 }
 
+// The newest 40 windows a robot played at 4K on host h: the middle of their p50, p95 and p99 work times (ms per drawn raid frame).
+function perf4k(h) {
+  const f = path.join(SP, h, 'fuzz.log');
+  if (!fs.existsSync(f)) return '';
+  let big = false, last = ''; const w = [];
+  for (const ln of fs.readFileSync(f, 'utf8').split('\n')) {
+    if (ln.includes(' FUZZ START ')) { big = ln.includes(' size=3840x2160'); continue; }
+    if (!big || !/ raid \d+ /.test(ln)) continue;
+    for (const m of ln.matchAll(/ work2?=(\d+)\/([\d.]+)\/([\d.]+)\/([\d.]+)/g)) if (+m[1] >= 300) { w.push([+m[2], +m[3], +m[4]]); last = ln.slice(5, 16); }
+  }
+  if (!w.length) return '';
+  const k = w.slice(-40), mid = (i) => { const a = k.map((x) => x[i]).sort((x, y) => x - y); return a[Math.floor(a.length / 2)]; };
+  return `4K frames on ${h}: work ${mid(0)} ms typical, ${mid(1)} ms slowest 1 in 20, ${mid(2)} ms slowest 1 in 100 (${k.length} windows, newest ${last})`;
+}
+
 // 3 the live mark and the status line
 if (seen) fs.writeFileSync(path.join(SP, 'live.txt'), `epoch=${seen}\nhost=${seenHost}\nseen=${seenSt.seen || ''}\n`);
 const ago = seen ? Math.round((Date.now() / 1000 - seen) / 60) : -1;
@@ -91,6 +107,7 @@ let line = !seen ? `no spare PC has reported yet (checked ${stamp()})`
   : `${seenHost} last seen ${seenSt.seen || '?'} (${ago} min ago${ago >= 180 ? ', QUIET: the VM runs the tests and robots again' : ''}), game ${seenSt.game || '?'}, ` +
     `test run ${seenSt.test_run || '?'}, robots ${seenSt.robots || '?'}, push ${seenSt.push_ok === '0' ? 'FAILING' : 'ok'}`;
 for (const [h, st, ep] of idleHosts) line += `; main PC ${h} last seen ${st.seen || '?'} (${ep ? Math.round((Date.now() / 1000 - ep) / 60) : '?'} min ago): ${st.test_run || '?'}, robots ${st.robots || '0'}${st.spare_pc ? `; spare PC as the main PC sees it: ${st.spare_pc}` : ''}`;
+for (const h of fs.readdirSync(SP)) { const p = perf4k(h); if (p) line += '; ' + p; }
 if (got.length) line += `; took ${got.length} finished run(s) now: ${got.join(', ').slice(0, 200)}`;
 if (bad.length) line += `; could not take ${bad.length}: ${bad.join('; ').slice(0, 300)}`;
 say(line + ` (checked ${stamp()})`);

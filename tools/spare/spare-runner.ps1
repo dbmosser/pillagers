@@ -219,13 +219,13 @@ function Start-Corpus(){
   Say ('full test run started on '+$head.Substring(0,8)+' (v'+(GameVer)+') -> '+$name)
 }
 
-function Start-Robot([int]$port,[string]$copy){
+function Start-Robot([int]$port,[string]$copy,[string]$size=''){
   if(-not (Test-Path -LiteralPath ($T+'\fxcorpus.html'))){ return }
   $env:FUZZ_OUT_DIR=$FzOut; $env:FUZZ_COPY_NAME=$copy
   Start-Process -FilePath powershell.exe -WindowStyle Hidden -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-WindowStyle','Hidden',
-    '-File',('"'+$T+'\fuzz.ps1"'),'-Minutes',[string]$FuzzMinutes,'-IgnoreFlag','-Port',[string]$port,'-MinFreeGB',$(if($Idle){ '3' }else{ '2' }),'-Fixture','fxcorpus.html') | Out-Null
+    '-File',('"'+$T+'\fuzz.ps1"'),'-Minutes',[string]$FuzzMinutes,'-IgnoreFlag','-Port',[string]$port,'-MinFreeGB',$(if($Idle){ '3' }else{ '2' }),'-Fixture','fxcorpus.html',$(if($size){ '-Size' }else{ '-P2Share' }),$(if($size){ $size }else{ '75' })) | Out-Null
   Remove-Item Env:FUZZ_OUT_DIR,Env:FUZZ_COPY_NAME -ErrorAction SilentlyContinue
-  Say ('robot started on '+$port)
+  Say ('robot started on '+$port+$(if($size){ ' at '+$size }else{ '' }))
 }
 
 # 10-22 his "All this work and you can't tell what it's doing?!": the spare PC went quiet at 09:27 and the VM (behind the main PC's private
@@ -328,7 +328,9 @@ while($true){
     }
   }
   if((Running 'fuzz\.ps1.*-Port 9331(\s|$)') -eq 0){ Start-Robot 9331 'fixture-soak-spare1.html' }
-  if((Running 'fuzz\.ps1.*-Port 9332(\s|$)') -eq 0){ Start-Robot 9332 'fixture-soak-spare2.html' }
+  # 10-22, his "No we might as well get rolling on it": on the main PC (the party PC, two 4K screens) the second robot plays at 4K, both windows
+  # of a 2-player raid included, so its log carries the game's own frame times at the party size (fuzz.ps1 -Size; read by spare-import.mjs).
+  if((Running 'fuzz\.ps1.*-Port 9332(\s|$)') -eq 0){ Start-Robot 9332 'fixture-soak-spare2.html' $(if($Idle){ '3840x2160' }else{ '' }) }
   $cs='idle'; if((Running 'corpq\.sh|corpus-slices\.sh') -gt 0){ $cs='running '+(Split-Path (GetS 'corpus_file') -Leaf) }
   Write-Status $cs (Running 'fuzz\.ps1')
   $pt=[long]('0'+(GetS 'pub_t'))

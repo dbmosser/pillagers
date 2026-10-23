@@ -53,3 +53,10 @@ copy that restarted itself for a new runner looks after the robots the old copy 
 never treats the main PC as the full-time spare. Set up once on the main PC, in a normal PowerShell window:
     git clone https://github.com/dbmosser/pillagers.git C:\PillagersIdle\game; powershell -ExecutionPolicy Bypass -File C:\PillagersIdle\game\tools\spare\spare-setup.ps1
 Stop for good: the same setup with -Remove. Status: with -Status.
+
+4K frame numbers (10-22, his "No we might as well get rolling on it"): on the main PC the second robot (9332) plays at 4K
+(fuzz.ps1 -Size 3840x2160), both windows of a 2-player raid included, which is the party load on the party PC. Every raid line carries
+work= (ms of the game's own work per drawn frame: frames/p50/p95/p99; 16.7 ms is the 60 fps line) and gfx= (the gap between frames).
+spare-import.mjs puts the middle of the newest 40 windows in the status line. In the VM a hidden browser hands out only about 30 frames
+a second, so there the gap reads 31 ms whatever the game does and work= is the measure. VM trial 10-22, one 4K window: 6.75/14.25/23.75;
+two 4K windows: 8.25/13.75/40.75 and 6.75/12.75/28.75; 1080p: 5.75/9.75/14.25. The first robot shares the card, so the 4K numbers run high.
