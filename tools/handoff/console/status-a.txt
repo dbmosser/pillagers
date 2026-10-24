@@ -1,1 +1,1 @@
-10-24 13:47 running 104-ui-pause-dialogs on Claude Code (your plan: week 97% of the 74.7% line, 5-hour 6%)
+10-24 14:28 waiting for RAM: 2 GB free, a helper starts at 3; 104-ui-pause-dialogs kept

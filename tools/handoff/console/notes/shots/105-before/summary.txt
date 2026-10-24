@@ -1,0 +1,5 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  35-kia-card                            staged      10.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  38-extracted-card                      staged       9.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  59-raid-abandon-confirm                staged      12.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  60-abandoned-card                      staged      14.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0

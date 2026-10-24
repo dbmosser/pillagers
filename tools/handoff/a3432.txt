@@ -1,0 +1,1 @@
+| END CARDS: SHORT XP LINE, 32PX TITLE, TILES UNDER THE LOSS, GHOST FEEDBACK BUTTON | v34.32 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 34.32 passes, fails on v34.31 |

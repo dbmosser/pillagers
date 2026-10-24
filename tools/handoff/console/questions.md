@@ -86,3 +86,6 @@ Moved 10-19 night to tools/handoff/console/alarms.md (helper fix F18). This file
 
 
 2026-10-24 | coordinator | The raid key legend (controls card) is always on during raids. The critic docks every raid HUD screen for it (10-24: "always-open key legend", "permanent controls card"), and 103 kept it because his 10-18 orders want live key and pad prompts for walk-up players. Question for him: in career raids (not the party demo), may the key legend start hidden after the first raid, or stay on? Default until he answers: it stays on. Also: after 103 (v34.29 one hero, v34.30) the critic scored the four HUD screens 2 again, down from 3 after 102; feel is his call, so he should look at the raid HUD in his next playtest.
+
+## 2026-10-24 task 106 (lane c)
+the raid shows an alert twice: the red banner and a row in the left feed ("the pillbox has seen you", "location revealed"). that is your 10-15 order that every line on screen also goes in the feed. keep both, or show a line in only one place (banner or feed)? i kept both.

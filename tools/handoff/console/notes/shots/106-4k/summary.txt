@@ -1,0 +1,2 @@
+== 4k : window 3876x2265, viewport 3840x2160
+  34-raid-downed-pickups                 staged      10.3s    | downed true hp 0

@@ -306,18 +306,18 @@
  "25-raid-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, calm pause card with a clear lime primary action and an X in the corner, but it is a small 480px box on a 1920 screen, with a mismatched button stack and a dead gap above a tiny abandon link.",
+  "need": 4,
+  "verdict": "The pause card now has one clear hero (lime resume) and a danger-outlined abandon button that fits the button column, but it is still a stacked list of five similar buttons with a thin, template-like card.",
   "findings": [
-   "P1 card size vs window rule: Keep it as a compact pause menu if that is the intent, but then state that exception in the guide. Otherwise widen it to about 640px and add a hero title at 32px.",
-   "P1 button stack: Make every button 56px with 16px gaps. Make report a problem, feedback and what's new share one equal row of three, or stack all of them at full width.",
-   "P1 abandon run: Make it a 56px outlined button with a 1px --danger border and --danger text at 20px. Place it 24px below the secondary rows, or lower it into a footer row.",
-   "P2 header: Give the X a 48px square hit area with a --ui-line-hi border on focus. Make the tab 3px high and fully --acc.",
-   "P2 secondary button fills: Use one idle fill, transparent or --ui-bg, with a --ui-line-hi border on every non-primary button."
+   "P1 button stack, report a problem / feedback / what's new: Merge report a problem and feedback into one 'feedback' button. Keep settings as the only full-width secondary. Move what's new into a 16px tx-2 text link row, or drop it from pause. Result: resume, settings, one small row, abandon.",
+   "P1 abandon run button: Add 32px of space above abandon and a 1px --ui-line divider, or keep it as a quiet danger ghost with no box. Show the confirm step only on press. Make the border --danger at 60% and fill it with a red tint at 10% only when focused.",
+   "P1 focus state: Add a 2px --acc outline with a 2px offset (or a 3px left focus bar plus a --ui-raised fill) on the focused row, distinct from the filled primary style. Show this state in the next shot with focus on settings.",
+   "P2 title row: Make the X hit area 48x48 and draw it in tx-2 at 2px stroke, brightening to tx-1 on hover and focus. Set 24px between the divider and the first button, so it matches the 24px card padding.",
+   "P2 card proportions: Keep it as a narrow dialog but make padding uniform at 40px on all sides. Add the run context (time, map, carried $) as one 16px tx-2 line under the title so the card says something about this run."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-31x-after/25-raid-pause-box-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/104-after/25-raid-pause-box-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T04:54",
-  "need": 4
+  "when": "2026-10-24T18:26"
  },
  "26-settings-from-pause-top": {
   "score": 3,
@@ -667,34 +667,34 @@
  "42-hub-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "a clean, readable pause card with one lime primary action and a clear x, but the buttons are weakly graded, the secondary row is tiny, and the card does not follow the near-full-screen window rule.",
+  "need": 4,
+  "verdict": "A clean, consistent column menu with a clear lime primary and a danger ghost, but it is small and generic, the buttons are crowded and look alike, and the toast and dim backdrop weaken it.",
   "findings": [
-   "P1 card size and placement: either document the pause menu as a small-dialog exception, or widen the card to about 560px with 32px padding. Add a visible pad focus state to every button so it is clear which one is selected.",
-   "P1 feedback / what's new buttons: raise the label to 16px f-cond 600 with +.04em tracking, make the buttons 48px tall, and keep the 16px gap between them and the rows above.",
-   "P1 button hierarchy (settings / leaderboard / report a problem): give all secondary buttons --ui-panel fill, a 1px --ui-line-hi border and a 4px radius. Move 'report a problem' into the small row with feedback.",
-   "P1 return to character selection: give it a 48px ghost button with a 1px --danger border and --danger text, at least 20px. Keep 32px of space above it and ask the player to confirm.",
-   "P2 title bar: set the title at 32px f-cond 700, centre the x vertically with it at a 40x40 hit area, and make the accent tab a clear 2px lime line."
+   "P1 hub pause box, card size: Either treat the pause box as an allowed small dialog and say so in the guide, or scale it up: width 560-640px, button height 64px, label 20px, title 32px. Add one identity element, such as a pillagers wordmark or a run-state line (stash value in `$`) in tx-2 at 16px.",
+   "P1 button stack: Merge 'report a problem' into 'feedback'. Move 'what's new' and 'feedback' into a 14-16px tx-2 text-link footer row with a 1px --ui-line divider above it. Keep 'settings' and 'leaderboard' as the only ghost buttons. Add a 24px gap before the danger button.",
+   "P1 background and toast: Raise the scrim to --scrim .80 plus a 6px blur on the hub, as the guide says. Hold the toast until the pause closes, or give it the panel style: fill --ui-panel, 16px text, and position it above the card at y=220 with a 3px accent tab.",
+   "P2 primary and danger buttons: Shorten them to 'resume' (or 'back to the undercroft') and 'character select'. Lighten the red text to #ff6a4f, or fill the danger button at 12% red with a 1px --danger border.",
+   "P2 header: Set the title to 32px 700 tx-1, make the X 20px in tx-2 with a 40px hit area, and make the tab 3px high by 36px wide in --acc so it is visible."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-31ag-after/42-hub-pause-box-1080.jpg",
-  "task": "c-31-ui-pause-settings",
-  "when": "2026-10-19T01:11",
-  "need": 4
+  "pic": "tools/handoff/console/notes/shots/104-after/42-hub-pause-box-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-24T18:06"
  },
  "49-arcade-pause-box": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, consistent pause card with one lime primary action. The end-run gap and the card padding are tighter than before, but the card is small and generic, and it breaks the rule that windows are a big centred card.",
+  "need": 4,
+  "verdict": "A clean, calm column menu with one lime primary and a red danger ghost. The hierarchy is correct, but the type is small for a couch, the card is small next to the 90% window rule, and the dim backdrop still shows through.",
   "findings": [
-   "P1 whole card: Either declare the pause box an exempt compact dialog in the guide, or add identity to it: a 14px version stamp at the bottom, the run's timer or sp in the header, and a 3px lime tab on the left edge instead of the tiny 36px top tick.",
-   "P1 button stack, resume vs others: Keep resume and settings as full-width 56px buttons. Merge report, feedback and what's new into one row of three 16px ghost buttons with no border, or into the footer legend, so only two heavy buttons remain.",
-   "P2 end run: Give it a 48px-high hit area with a 1px --danger border at 40% opacity, and a full red fill on focus. Keep the 24px gap above it so it stays separated from the other buttons.",
-   "P2 header tick and divider: Make the tick 3px x 48px at full --acc, or delete it. Align the X's centre to the title's cap-height centre (they are about 2px off).",
-   "P2 focus state: Focused buttons get a 2px --acc border and a --ui-raised fill. Resume keeps its fill and adds a 2px outer ring when it is not the focused item."
+   "P1 button labels (resume, settings, report a problem, feedback, what's new, end run): Set button labels to 20px f-cond 600 with +.04em tracking. Make the title 32px at weight 700 and 36px if there is room.",
+   "P1 card size and placement: Either widen to 560 and add 24px more padding, or document the pause box as a small modal in the guide. Keep the X in the corner at 24px inset with a 48px hit target.",
+   "P1 backdrop: Use the standard --scrim rgba(6,7,8,.80) plus a 6px blur on the HUD layer, or hide the HUD layer under the pause card. Do not use the flat ~92% black.",
+   "P2 button grid: Merge 'report a problem' and 'feedback' into one 'feedback' button. Put 'what's new' in settings or the footer legend. Leave resume, settings and end run.",
+   "P2 end run button: Raise to 20px text and a 2px border, or fill it with 12% danger on focus. Add 16px extra margin above it (48px total) to separate it from the safe actions."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-31y-after/49-arcade-pause-box-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/104-after/49-arcade-pause-box-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T07:31",
-  "need": 4
+  "when": "2026-10-24T18:07"
  },
  "56-arcade-attract-board-scored": {
   "score": 3,

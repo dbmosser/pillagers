@@ -1,0 +1,7 @@
+v34.32: end cards: short xp line, 32px title, tiles under the loss, ghost feedback button
+
+End cards show a short xp line, a 32px title, tiles under the loss figure and a bordered feedback button; the abandon question hides the raid feed and its x sits on the title row.
+
+Check 34.32. Fails on v34.31.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

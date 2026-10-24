@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.32 - END CARDS: SHORT XP LINE, 32PX TITLE, TILES UNDER THE LOSS, GHOST FEEDBACK BUTTON
+
+Co-op hunt while he was away. The critic held the killed, abandoned and abandon-question cards at 3: the xp line explains too much, the tiles sit above the figure, the title competes with the hero, the feedback line has no button shape and a toast shows over the abandon question. Rendering only.
+
+MEASURED. Check 34.32 passes, and fails on v34.31.
 ## v34.31 - PAUSE BOX LEAVE BUTTON IS A DANGER GHOST, ONE FOCUS RING
 
 Co-op hunt while he was away. Critic held the four pause boxes at 3: tiny abandon link, mismatched stack, no focus state. Style guide danger button is a ghost with a danger border.

@@ -1,0 +1,5 @@
+## v34.32 - END CARDS: SHORT XP LINE, 32PX TITLE, TILES UNDER THE LOSS, GHOST FEEDBACK BUTTON
+
+Co-op hunt while he was away. The critic held the killed, abandoned and abandon-question cards at 3: the xp line explains too much, the tiles sit above the figure, the title competes with the hero, the feedback line has no button shape and a toast shows over the abandon question. Rendering only.
+
+MEASURED. Check 34.32 passes, and fails on v34.31.
