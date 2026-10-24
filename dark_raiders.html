@@ -2587,6 +2587,12 @@ body:has(#gamblemodal.on) #hubtoast,body:has(#opmodal.on #opane_rec[style*="disp
 #root #gamblemodal #wirtlotbtn{position:relative;flex:none;width:100%;min-width:0;min-height:56px;margin-bottom:32px;}
 #root #gamblemodal #gamblebtn[data-need]:not([data-need=""])::after,#root #gamblemodal #wirtlotbtn[data-need]:not([data-need=""])::after{position:absolute;top:calc(100% + 8px);left:0;right:0;margin:0;text-align:left;font-size:16px;line-height:1.4;display:block;}
 #root #gamblemodal #gamblebtn:focus-visible,#root #gamblemodal #wirtlotbtn:focus-visible,#root #gamblemodal button.padfocus{outline:3px solid var(--acc) !important;outline-offset:2px;}
+</style><style id="uc-gamble-card2">
+/* v34.xx (cw-gamblecard2), task 108 second pass, picture of v34.34: the two panels were stretched the whole card height, so each held a void between a tiny label and its button. Now they are as tall as their content (item, name, button) under the header, the section labels are the 20px body size in tx-1 so the eye reads what each panel is, and the roll list keeps a 200px area. Looks only. */
+#root #gamblemodal.modal.ui-win.on{grid-template-rows:auto auto minmax(0,1fr);}
+#root #gamblemodal > .ui-foot{grid-row:3;}
+#root #gamblemodal #wirtsec_gamble > div:first-child,#root #gamblemodal #wirtsec_offer > div:first-child{font-size:20px !important;color:var(--tx-1) !important;}
+#root #gamblemodal #gamblelist{min-height:200px;}
 </style><style id="mf-racks-rewards">
 /* v28.xx (cw-rackrew) task 99, critic 2 on 13 rewards ("flat wall of identical rows, empty xp bar, no reward-type cues, toast on the card border") and 14 racks ("thin strip of five near-identical flat buttons and grey paragraphs in a mostly empty card, no hero, no primary action"). Looks only; nothing a rack or reward does, costs or gives changes. */
 /* rewards: 36px bar, one filled lime claim all in a footer under the list, a 4px type bar on every row (credits amber, gun cyan, kit grey), the next reward raised, a lime bar on the focused row for the pad */
@@ -3655,7 +3661,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.35';
+var VER='34.36';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -53968,7 +53974,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.35: Settings scrolls with the whole focused row in view, shows one focus at a time and has no lime box. Check 34.35 fails on v34.34',
+  now:'v34.36: Wirt window panels no longer run to the bottom of the card. Check 34.36 fails on v34.35',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

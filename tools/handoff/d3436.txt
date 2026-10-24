@@ -1,0 +1,5 @@
+## v34.36 - Wirt panels fit their content, labels at body size
+
+Co-op hunt while he was away. Task 108 second pass: the gambler panels were stretched the whole card so each held a void between a tiny label and its button. They now fit their content under the header and the section labels are 20px.
+
+MEASURED. Check 34.36 passes, and fails on v34.35.

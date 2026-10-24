@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.36 - Wirt panels fit their content, labels at body size
+
+Co-op hunt while he was away. Task 108 second pass: the gambler panels were stretched the whole card so each held a void between a tiny label and its button. They now fit their content under the header and the section labels are 20px.
+
+MEASURED. Check 34.36 passes, and fails on v34.35.
 ## v34.35 - SETTINGS KEEPS THE FOCUSED ROW IN VIEW AND HAS ONE FOCUS
 
 Co-op hunt while he was away. Critic on Settings 27, 29 and 73 (2 each): the focused row is clipped at the top or sits in the bottom fade, no break between sections, the rail and the list both look focused with a different tab lit, a full-width lime restore button, and a long paragraph in the detail pane. Now a key step leaves the row clear of both edges, a line and a gap start each section, one focus at a time, the clicked tab stays lit, restore is a quiet box and the pane keeps the first clause of a hint.

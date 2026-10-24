@@ -1,0 +1,7 @@
+v34.36: wirt panels fit their content, labels at body size
+
+Wirt window panels no longer run to the bottom of the card.
+
+Check 34.36. Fails on v34.35.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
