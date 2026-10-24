@@ -451,17 +451,17 @@
   "score": 3,
   "pass": false,
   "need": 4,
-  "verdict": "The 0 sp hero is now bright tx-1 and clearly the first thing you see, but the card is still a small, left-heavy panel that leaves the right half empty and sits over a busy backdrop.",
+  "verdict": "The new card is a little brighter and more legible than the old one, with a whiter hero number and a brighter lime prompt dot. It is still a small, flat, timid card on a busy scene, and it would not pass for polished.",
   "findings": [
-   "P1 card layout, right half of the top block: Centre the hero and title in the card, or put the hero on the left and the stats in a right-hand column. Move the prompt to the bottom-centre or the left edge so the eye path is title, then hero, then prompt.",
-   "P1 'press any key' prompt: Set the text to 24px --tx-1 and use the full #e6ff3d for the dot ring and its fill. Add a slow 160ms bounce pulse on the dot. Put it in a row with a 1px line above it.",
-   "P1 backdrop behind the card: Raise --scrim to .88 and make the card fill 96% opaque (--ui-panel). Drop the blur and sprite layer to about 30% brightness for run-over screens.",
-   "P2 stat row (kills / extractions / deaths): Spread the columns evenly over the card's 24px padding, with the last column right-aligned. Dim the stat numbers to --tx-2, and make sure the 56px hero is the only 800-weight number.",
-   "P2 'ended early -50%' subtitle and 'score' label: Raise the 'score' label to 16px with +.04em tracking, and give it 8px above the hero and 24px below the subtitle. Keep amber only as a small warn glyph or the word itself."
+   "P1 hero '0 sp' and the whole card: Make the card about 880px wide. Make the hero 72-96px at weight 800. Centre or left-anchor it with the stats set in a tighter band. Or fill the right half with a quiet per-player summary. Cut the empty space by at least 30%.",
+   "P1 background scene behind the scrim: Raise the scrim to the guide's rgba(6,7,8,.80) or darker, and apply a blur or dim to the lobby layer when the card is up. Keep sprites from straddling the card edge.",
+   "P1 'ended early -50%' line: Move it below the hero as a 16px label, with 'ended early' in tx-2 and '-50%' in --warn. Or drop it to the footer row. Keep the 16px minimum and 4.5:1 contrast.",
+   "P2 'score' label (y~447): Set it at 16px f-cond 600 +.04em in tx-2. Put it 8px above the hero and 24px below the amber line, on the 8px grid.",
+   "P2 stats row: kills, extractions, deaths: Distribute the columns over the full inner width, or use a 3-column grid with 1px --ui-line separators. Set the labels to 16px. Hide stats that are zero, or show only the non-zero ones."
   ],
-  "pic": "tools/handoff/console/notes/shots/110-after/52-arcade-run-over-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/110-after2/52-arcade-run-over-1080.jpg",
   "task": "manual",
-  "when": "2026-10-24T19:43"
+  "when": "2026-10-24T19:51"
  },
  "57-title-2p-coop-picked": {
   "score": 3,
@@ -643,17 +643,17 @@
   "score": 3,
   "pass": false,
   "need": 4,
-  "verdict": "The card is unchanged from the old version: the layout, type, and hierarchy are identical, and only the blurred background characters differ. It is clean and consistent, but the 56px hero is too small, the card is crowded, and it still looks like a template.",
+  "verdict": "The run over card is clean and quiet, with a clear 2,500 sp hero and a lime press-any-key prompt, but it is identical to the old version apart from the background characters, and it still has small, dim secondary text, a lot of empty space, and amber that competes with the lime accent.",
   "findings": [
-   "P1 hero score '2,500 sp': Raise it to the 56px hero token at weight 800. Colour it --acc, or make it clearly brighter than the stats. Align it to the baseline of a right-hand or centred column so the empty right half is used.",
-   "P1 title block: 'run over', 'ended early -50%', 'score': Set the title to 32px at weight 700 in tx-1. Put 'ended early -50%' on the same row, right-aligned, as a warn-coloured tag. Remove the separate 'score' label or move it to 16px directly above the number with 8px spacing.",
-   "P1 initials row and hint 'type or ▲▼ · space next · backspace back · enter done': Colour the active letter and its underline with --acc. Cut the hint to the key glyphs only, at 16px minimum in tx-2. Leave 16px of space before the divider.",
-   "P2 stats row 12/0/0 and labels: Divide the 652px inner width into three equal columns and use the 32px title size for the values. Raise the labels to tx-2 at 16px. Add 24px of space above and below the row.",
-   "P2 'press any key' prompt: Raise the text to 24px and keep the lime ring. Keep the right alignment but add 24px of bottom padding so it does not crowd the card edge."
+   "P1 initials row 'a a a' with the amber underline: Make the active initial and its 3px underline --acc #e6ff3d. Keep the other two initials tx-1 with a --ui-line-hi underline. Keep amber only for '-50%'.",
+   "P1 labels 'score', 'kills', 'extractions', 'deaths', 'tonight's best · enter initials': Set all labels to 16px f-cond 600 with +.04em tracking in --tx-2 #aaa498 (at least 4.5:1). Add 8px between each label and its number.",
+   "P1 'type or ▲▼ · space next · backspace back · enter done' hint line: Cut it to one short live prompt such as '▲▼ change · enter done'. Show it at 16px in --tx-2, 16px below the initials. Delete 'space next' and 'backspace back'.",
+   "P2 card layout, right half of the stat row and the hero: Set the stat columns to 3 equal columns with 24px gaps. Either right-align the hero beside the title or cut the card width to about 560px. Align the prompt's left edge with the stat grid.",
+   "P2 'press any key' prompt (bottom right): Make the prompt text 24px with a lime ring of 24px or more. Add a subtle 160ms pulse, which is already in v34.42. Move it 8px closer to the divider."
   ],
-  "pic": "tools/handoff/console/notes/shots/110-after/55-arcade-run-over-scored-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/110-after2/55-arcade-run-over-scored-1080.jpg",
   "task": "manual",
-  "when": "2026-10-24T19:43"
+  "when": "2026-10-24T19:51"
  },
  "60-abandoned-card": {
   "score": 3,
