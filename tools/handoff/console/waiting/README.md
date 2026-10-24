@@ -5,3 +5,6 @@
 - o-04-camera-closer.md (parked 10-20 02:00): shipped; only its two-window pictures are left, taken by the coordinator with uishots -NoPopupBlock. CLOSED 02:25 (done/).
 - o-02-corpus-green (10-20 07:58): waits for the full run that started 07:25 (ends about 11:30); the coordinator requeues it with the new list. REQUEUED 09:50 as round 3 (tasks/).
 - o-91b-report-news-style (parked 10-21 02:43): it waited for the coordinator to clear the stuck v33.57 ground ship. REQUEUED 03:08 (tasks/), its layout key back in keys.txt.
+- 86b-pix-ground (parked 10-21 03:41 with lane-side steps left, forgotten): BACK IN tasks/ 10-24 15:55 with steps 5 and 6 named; 86i waits on it.
+- 85-preraid-map-no-cache-labels and o-91b-report-news-style (parked 10-21): wait for the coordinator's 4K pictures (the lane camera forces 1080p). Take them at night when the VM has the memory (23:00 to 06:00), then close or requeue.
+- o-14-daily-save-backup (parked 10-21): waits for a real long-career save size from a run report; the coordinator records it and closes it.

@@ -56,3 +56,16 @@ Lane note 2026-10-21 03:41: shipped cw-cx-pixground and parked: only lane-side s
 Reviewed all three images. Both night reviews scored 2/4; the day critic failed while saving. I logged the unresolved HUD findings and coordinator actions.
 
 TASK PARTIAL: news refresh, hub/decal shipping, HUD fixes, and hub/4K reviews remain.
+
+--- BACK IN tasks/ 2026-10-24 15:55 (coordinator). Read first; where it disagrees with the text above, this block wins. ---
+Why: it was parked 10-21 03:41 with only lane-side steps left and then forgotten for three days, so 86i (building kinds, After: 86b)
+kept parking itself behind it. A Claude lane does the rest now.
+Already shipped (do not redo): v33.60 cw-cx-pixground, steps 1 to 4 and 7 (raid floor at 1/PIX_ENV, the ramp and texture pass in 64 px
+tiles within 4 ms, the slice blit, the switch). Check 33.60.
+Left, in this order (his 10-20 art orders):
+- step 6: bakeHubGround uses the same ramps (the Undercroft floor with pixOn), and the check's "the hub floor uses only ramp colours".
+- step 5: blast scars (gfxScarReplay), footprints and decals snap to the ground grid when pixOn.
+- pictures: raid day and night and the hub at 1080; the coordinator takes the 4K ones at night (the lane camera forces 1080p).
+Not this job: the HUD findings in Codex's last note (jobs 102, 103, 106 and 109 cover the raid HUD) and the What's New stamp (a card ship
+does that when the gate says it is stale).
+TASK DONE when steps 5 and 6 are shipped with their checks and the 1080 pictures; then 86i can start.
