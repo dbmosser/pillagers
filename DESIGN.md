@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.26 - RAID HUD CORNERS GO QUIET
+
+Co-op hunt while he was away. UI step 3 of the HUD calm job (102). The critic: the corners compete with the ammo hero. The item count and the backpack cue on the gun card were 20 and 24 px on screen and are 16 now (the style guide label size). The pillager board title was amber while the run info title is cream; it is cream now, so amber stays for focus and warnings. The hidden chip was 22 px amber on a 78 percent plate; it is label size on the same 88 percent plate as the rest. Nothing moves.
+
+MEASURED. Check 34.26 passes, and fails on v34.25.
 ## v34.25 - RAID HUD TYPE SIZES MERGE
 
 Co-op hunt while he was away. UI step 1 of the HUD calm job (102). The critic keeps the raid screens at 2 and 3 for too many type sizes: 14 distinct word sizes in one raid frame. The vitals corner and the gun card now share one zoom (1.36, was 1.40 and 1.36), and the pillager board words are 16 px, the style guide label size (was 17). 14 sizes become 10. Nothing moves except by about 3 and 6 percent.

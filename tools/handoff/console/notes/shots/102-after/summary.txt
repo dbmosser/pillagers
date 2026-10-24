@@ -1,0 +1,5 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  21-raid-hud-calm                       staged      15.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  19-raid-hud-drop-first-raid            staged       8.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  37-raid-extracting-countdown           staged      10.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  61-raid-wheel-open                     staged       8.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0

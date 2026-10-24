@@ -1,0 +1,7 @@
+v34.26: raid hud corners go quiet
+
+The item count and backpack hint on the ammo card are smaller. The pillager board title is cream. The hidden chip is smaller.
+
+Check 34.26. Fails on v34.25.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

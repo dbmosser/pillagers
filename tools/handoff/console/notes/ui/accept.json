@@ -259,17 +259,17 @@
   "score": 2,
   "pass": false,
   "need": 4,
-  "verdict": "The only change is different contract text in the run info panel, so the HUD is still a pile of small, evenly weighted dark boxes with no hero element, a capital-letter bug and a crowded top right.",
+  "verdict": "The new version tightens a few HUD plates (bots list, hotbar, keys card) but the screen is still a pile of five or six small, unrelated text boxes at different sizes with no clear hierarchy, and the corners are cluttered.",
   "findings": [
-   "P0 run info panel, 'run info' header and 'contracts' row: Remove the capital from the 'run info' header string and from every other draw path that capitalises words. Make 'contracts' a 16px tx-2 label. Put the contract lines in a single column at one 16px indent.",
-   "P0 top-right corner (career box above run info): Wait for cw-trcol and then rebuild this corner as one panel with one 16px label column and one 20px value column, both right-aligned. Merge run info into the same panel. Both boxes should share a width of about 300px.",
-   "P1 top-left 'current pillager bots 3' leaderboard and the top-right panels: Use one panel component: fill #16191b at 90%, 1px #4a5257 border, 4px radius, 16px padding. Make headers tx-2 16px 600 with no amber. Make the border visible.",
-   "P1 controls cheat sheet (bottom centre-left, 500-900 x 700-865): Collapse it by default after the first raid and show only 'f1 controls' at 14px. Where it stays open, cut it to 6 rows and use a 16px minimum.",
-   "P1 bottom-left stack (standing tag, stamina, hp 100) and toast stack (codex entry, running slowly, resolution stepped down): Make both bars 16px high with 16px label text inside the left edge. Align the 'standing' tag to the bar's left edge at 8px padding. Give the toasts a uniform --ui-panel fill and 8px gaps. Drop the debug toast from the normal HUD."
+   "P0 top-right career and run info stack plus top-left bots list: Make one hero element per corner. Set all row text to 16px tx-1 and all labels to 14px tx-2. Make the plate titles one colour and one size (16px, 600, tx-2). Stack the top-right items as one panel, 8px apart, with 24px padding and a 2px accent tab on only one of them.",
+   "P1 keys help card at bottom centre (wasd list): Hide the card after the first 20s, or collapse it to a single 'f1 keys' chip at 16px in the bottom-left. If it stays, set text to 16px and tx-1 for the keys, tx-2 for the actions, with a 4.5:1 floor.",
+   "P1 hotbar slot row: Show a single focus state, a 2px lime border on the active slot only. Use a neutral border for the rest and dim the empties to 40%. Set key numbers to 16px. Align the hotbar vertical centre with the ammo plate (both 88px tall) and keep a 24px gap to each.",
+   "P1 bottom-left status stack (standing, stamina, hp 100): Put the bars on one 16px-tall plate at 5% margin (54px from the bottom, 96px from the left). Make hp the hero at 32px with a 56px bar, stamina a thin 8px bar under it. Use one font size for the labels.",
+   "P2 bottom-right ammo plate: Put 'b / i' in a key chip and set the backpack line at 16px tx-2, one baseline. Keep '12 / 24' as the only 56px element."
   ],
-  "pic": "tools/handoff/console/notes/shots/87r-v3394-new-reds-after/21-raid-hud-calm-1080.jpg",
-  "task": "87r-v3394-new-reds",
-  "when": "2026-10-22T09:02"
+  "pic": "tools/handoff/console/notes/shots/102-after/21-raid-hud-calm-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-24T16:19"
  },
  "22-raid-map-open": {
   "score": 3,

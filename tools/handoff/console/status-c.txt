@@ -1,1 +1,1 @@
-10-24 11:58 waiting for RAM: 2 GB free, a helper starts at 3; 95-p2-own-process kept
+10-24 12:24 waiting for RAM: 1 GB free, a helper starts at 3; 95-p2-own-process kept

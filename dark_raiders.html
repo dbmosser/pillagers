@@ -3609,7 +3609,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.25';
+var VER='34.26';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12918,6 +12918,8 @@ function beltCapFS(bw){ var a=beltFS(bw,0.12), b=hudFS(TYPE.label), pa=parseFloa
 // straight in screen pixels that stayed their 1080p size at 4K.
 function hudFS(spec){ var f=FS(spec), r=Math.max(1,(typeof hudRes==='function')?hudRes():1); return (r===1)?f:f.replace((/([\d.]+)px/),function(m0,n0){ return (parseFloat(n0)*r).toFixed(1)+'px'; }); }
 // v32.xx (cw-extbig), the critic on screen 37: the extract countdown was one of three small cues and no hero. While the ship is inbound the line takes the big-number size (TYPE.huge), the same type as the ammo hero; once it lands it is the callout size again.
+// v28.xx (cw-hudquiet), the critic on screens 21, 19, 37, 61 ('the corners compete with the ammo hero'): the quiet lines on the gun card (the item count and the backpack cue) are 16 px on screen at 1080p, the guide label size, not 20 and 24. 0.8 of the micro face, so the player's text scale still applies.
+function hudFineFS(){ return FS(TYPE.micro).replace((/([\d.]+)px/),function(m0,n0){ return (parseFloat(n0)*0.8).toFixed(1)+'px'; }); }
 function extBanFont(t){ return hudFS((t>0)?TYPE.huge:TYPE.head); }
 // v32.xx (cw-hostplate), the critic on screen 37: the red "hostiles closing in" line under the countdown sat loose on the floor with no plate. It stands on the same flat HUD plate as the countdown, measured to its words.
 function extRowPlate(s,x,y,R,minW){
@@ -44180,7 +44182,7 @@ var by=H-34;
       if(_nearD>_chid){ clab='HIDDEN  \u00b7  CROUCHED'; ccol='#7fc4a0'; }
       else { clab='PARTLY HIDDEN  \u00b7  TOO CLOSE'; ccol='#ffc04a'; }
     } else if(_cr){ clab='PARTLY HIDDEN  \u00b7  CROUCHED'; ccol='#ffc04a'; }
-    ctx.font=hudFS(TYPE.head);   // v19.22: grows with the screen, as the weapon panel under it does
+    ctx.font=hudFS(TYPE.label);   // v28.xx (cw-hudquiet), the critic: the hidden chip was louder (22 px amber) than the info plates; it is label size now. v19.22: grows with the screen, as the weapon panel under it does
     // HIS NOTE, 2026-08-24: "CONCEALED on the right lower corner is blocked by
     // the key legend". It was drawn bottom LEFT at x=14, which is exactly the
     // column the legend panel occupies, and the legend bottoms out at
@@ -44197,7 +44199,7 @@ var by=H-34;
     // on screen, and the chip is a HUD panel like the rest.
     var _zg=(HUDZ.gear||1)*hudRes()*hudUserZ('gear'), _og=hudOff('gear'), _ptop=H+((by-LH(90))-H)*_zg+(_og.dy||0), _cyb=Math.min(by-LH(86)-_gGrow,_ptop-LH(6));
     var _cr2=Math.max(1,hudRes());
-    if(typeof hudPanel==='function') hudPanel(W-8-cw2-16*_cr2,_cyb-LH(20)*_cr2,cw2+16*_cr2,LH(20)*_cr2,0.78,1); else { ctx.fillRect(W-8-cw2-16*_cr2,_cyb-LH(20)*_cr2,cw2+16*_cr2,LH(20)*_cr2); }
+    if(typeof hudPanel==='function') hudPanel(W-8-cw2-16*_cr2,_cyb-LH(20)*_cr2,cw2+16*_cr2,LH(20)*_cr2,0.88,1); else { ctx.fillRect(W-8-cw2-16*_cr2,_cyb-LH(20)*_cr2,cw2+16*_cr2,LH(20)*_cr2); }
     ctx.fillStyle=ccol; ctx.fillText(clab,W-8-8*_cr2,_cyb-LH(6)*_cr2);   // v19.22: centred in its panel
     ctx.textAlign='left';
   }
@@ -44421,7 +44423,7 @@ if(p.armor>0){
   // frame. A floor of 180 so a short name like FISTS still reserves the space
   // the ammo line under it needs.
   G.cornerBox={x:W-16-Math.max(180,_cornW)-10,y:by-LH(66),w:Math.max(180,_cornW)+26,h:LH(76)};
-  ctx.font=FS(TYPE.micro); ctx.fillStyle='#8a96a1';
+  ctx.font=hudFineFS(); ctx.fillStyle='#8a96a1';   // v28.xx (cw-hudquiet): the item count is a quiet 16 px line
   // A cost you cannot see is not a decision, it is the game feeling wrong for no stated
   // reason. The weight readout now says what the weight is DOING: how much speed it is
   // taking and how much louder it has made you. Amber once it bites, rust once it is
@@ -44442,7 +44444,7 @@ if(p.armor>0){
   // LH(34) is 71 and the weapon name climbs straight through it. Scaled now, and
   // moved clear of the tallest line in the stack.
   if(!G.bagOpen&&!trDemo()){   // v28.xx (cw-hudDemoCard), his Q56 (2026-10-18): the backpack hint is hidden in the demo
-    ctx.font=FS(TYPE.label); ctx.fillStyle='#aaa498';   // v28.xx (cw-hudhero), UI step 4: the backpack cue is a quiet hint (style guide tx-2), not bold amber; amber is for focus
+    ctx.font=hudFineFS(); ctx.fillStyle='#aaa498';   // v28.xx (cw-hudquiet): the backpack cue is the same quiet 16 px as the item count. v28.xx (cw-hudhero), UI step 4: the backpack cue is a quiet hint (style guide tx-2), not bold amber; amber is for focus
     // v22.65, the raid text rewrite (R23): THE BACKPACK CUE FOLLOWS KEY CHANGES. On the keyboard it always said B / I even after
     // CHANGE KEYS moved the backpack; both keys now come from keyLabel, so an unmoved keyboard reads B / I as before.
     ctx.textAlign='left'; ctx.fillText(padOn()?padB(pbn(8)+'  BACKPACK'):(keyLabel('KeyB','B')+' / '+keyLabel('KeyI','I')+'  BACKPACK'),(typeof _wpx==='number'&&_wpx===_wpx)?_wpx+LH(10):W-LH(130),by); ctx.textAlign='right'; /* v28.xx (cw-cardhint), the critic (2026-10-19): the backpack hint sits on the bottom row of the card, left, opposite the item count; it was above the gun name */   // v13.52: pad B is the dodge roll  // v27.70 (cloud-menus-pad-prompts-follow-binds), CLOUD HUNT 2026-10-15: the backpack cue said VIEW after the backpack moved to another button, and VIEW no longer opened it; it names the button it is on
@@ -45938,7 +45940,7 @@ function hudPanel(x,y,w,h,a,plain){
   var boxH=HOr.c?LH(18):(LH(20)+(_rShown+_rSum)*LH1-LH(3));   // v21.55, from the 4K visual pass (V-B11): the board ended a full empty row under the last name; now the room under it matches the room over the heading
   hudPanel(PADX-8,y0-LH(13),LW,boxH,undefined,1);   // v18.13: the one HUD panel
   ctx.font=FS(TYPE.micro);
-  ctx.fillStyle='#ffc04a';
+  ctx.fillStyle=HUDC.text;   // v28.xx (cw-hudquiet), the critic: the board title was amber while the run info title is cream; one title colour, amber stays for focus and warnings
   ctx.fillText('CURRENT PILLAGER BOTS  '+live,PADX,y0-LH(2));
   HUDBOX.raiders={x:PADX-8,y:y0-LH(13),w:LW,h:boxH,
     tg:{x:PADX-8+LW-LH(20),y:y0-LH(13),w:LH(20),h:LH(16)}};
@@ -53903,7 +53905,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.25: The health, stamina and status words are a hair smaller; the pillager board words are 16 px. Check 34.25 fails on v34.24',
+  now:'v34.26: The item count and backpack hint on the ammo card are smaller. The pillager board title is cream. The hidden chip is smaller. Check 34.26 fails on v34.25',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

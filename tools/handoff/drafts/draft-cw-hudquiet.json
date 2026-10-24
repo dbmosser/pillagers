@@ -1,0 +1,32 @@
+{
+    "title":  "RAID HUD CORNERS GO QUIET",
+    "why":  "UI step 3 of the HUD calm job (102). The critic: the corners compete with the ammo hero. The item count and the backpack cue on the gun card were 20 and 24 px on screen and are 16 now (the style guide label size). The pillager board title was amber while the run info title is cream; it is cream now, so amber stays for focus and warnings. The hidden chip was 22 px amber on a 78 percent plate; it is label size on the same 88 percent plate as the rest. Nothing moves.",
+    "now":  "The item count and backpack hint on the ammo card are smaller. The pillager board title is cream. The hidden chip is smaller.",
+    "edits":  [
+                  {
+                      "anchor":  "function extBanFont(t){",
+                      "replacement":  "// v28.xx (cw-hudquiet), the critic on screens 21, 19, 37, 61 (\u0027the corners compete with the ammo hero\u0027): the quiet lines on the gun card (the item count and the backpack cue) are 16 px on screen at 1080p, the guide label size, not 20 and 24. 0.8 of the micro face, so the player\u0027s text scale still applies.\nfunction hudFineFS(){ return FS(TYPE.micro).replace((/([\\d.]+)px/),function(m0,n0){ return (parseFloat(n0)*0.8).toFixed(1)+\u0027px\u0027; }); }\nfunction extBanFont(t){"
+                  },
+                  {
+                      "anchor":  "  ctx.font=FS(TYPE.micro); ctx.fillStyle=\u0027#8a96a1\u0027;\n  // A cost you cannot see",
+                      "replacement":  "  ctx.font=hudFineFS(); ctx.fillStyle=\u0027#8a96a1\u0027;   // v28.xx (cw-hudquiet): the item count is a quiet 16 px line\n  // A cost you cannot see"
+                  },
+                  {
+                      "anchor":  "ctx.font=FS(TYPE.label); ctx.fillStyle=\u0027#aaa498\u0027;   // v28.xx (cw-hudhero)",
+                      "replacement":  "ctx.font=hudFineFS(); ctx.fillStyle=\u0027#aaa498\u0027;   // v28.xx (cw-hudquiet): the backpack cue is the same quiet 16 px as the item count. v28.xx (cw-hudhero)"
+                  },
+                  {
+                      "anchor":  "  ctx.font=FS(TYPE.micro);\n  ctx.fillStyle=\u0027#ffc04a\u0027;\n  ctx.fillText(\u0027CURRENT PILLAGER BOTS  \u0027+live,PADX,y0-LH(2));",
+                      "replacement":  "  ctx.font=FS(TYPE.micro);\n  ctx.fillStyle=HUDC.text;   // v28.xx (cw-hudquiet), the critic: the board title was amber while the run info title is cream; one title colour, amber stays for focus and warnings\n  ctx.fillText(\u0027CURRENT PILLAGER BOTS  \u0027+live,PADX,y0-LH(2));"
+                  },
+                  {
+                      "anchor":  "ctx.font=hudFS(TYPE.head);   // v19.22: grows with the screen, as the weapon panel under it does",
+                      "replacement":  "ctx.font=hudFS(TYPE.label);   // v28.xx (cw-hudquiet), the critic: the hidden chip was louder (22 px amber) than the info plates; it is label size now. v19.22: grows with the screen, as the weapon panel under it does"
+                  },
+                  {
+                      "anchor":  "cw2+16*_cr2,LH(20)*_cr2,0.78,1)",
+                      "replacement":  "cw2+16*_cr2,LH(20)*_cr2,0.88,1)"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the raid HUD quiets its corners: the item count and backpack cue on the gun card are 16 px on screen (not 20 and 24), the pillager board title is cream not amber, and the hidden chip is label size\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid\u0026\u0026window.__frame)) return \u0027SKIP: this fixture cannot deploy and draw\u0027;\n     var proto=CanvasRenderingContext2D.prototype, o=proto.fillText, hit={}, bad=[], g, i;\n     function px(c){ var m=/([\\d.]+)px/.exec(c.font); return m?Math.round(parseFloat(m[1])*c.getTransform().a*10)/10:0; }\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player||g.over) return \u0027SKIP: no live raid\u0027;\n       g.bagOpen=false; g.mapOpen=false; g.pBush=true; g.pConceal=0.4;\n       __frame(0.001);\n       proto.fillText=function(t,x,y){ if(this===ctx){ var s=String(t); if(/  BACKPACK$/i.test(s)) hit.bp={px:px(this)}; else if(/^\\d+ ITEMS?\\b/i.test(s)) hit.it={px:px(this)}; else if(/^CURRENT PILLAGER/i.test(s)) hit.bd={c:String(this.fillStyle).toLowerCase()}; else if(/IN COVER|CONCEALED|HIDDEN/i.test(s)) hit.cc={px:px(this)}; } return o.apply(this,arguments); };\n       g.pBush=true; g.pConceal=0.4;\n       __frame(0.001);\n       if(!hit.bp) bad.push(\u0027no backpack cue drawn\u0027); else if(hit.bp.px\u003e17) bad.push(\u0027the backpack cue is \u0027+hit.bp.px+\u0027 px\u0027);\n       if(!hit.it) bad.push(\u0027no item count drawn\u0027); else if(hit.it.px\u003e17) bad.push(\u0027the item count is \u0027+hit.it.px+\u0027 px\u0027);\n       if(!hit.bd) bad.push(\u0027no pillager board drawn\u0027); else if(hit.bd.c===\u0027#ffc04a\u0027) bad.push(\u0027the board title is amber\u0027);\n       if(!hit.cc) bad.push(\u0027no hidden chip drawn\u0027); else if(hit.cc.px\u003e19) bad.push(\u0027the hidden chip is \u0027+hit.cc.px+\u0027 px\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ proto.fillText=o; try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ g2.pBush=false; g2.player.downed=false; __endRaid(\u0027abandon\u0027); } }catch(_e){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
