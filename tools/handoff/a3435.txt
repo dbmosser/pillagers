@@ -1,0 +1,1 @@
+| SETTINGS KEEPS THE FOCUSED ROW IN VIEW AND HAS ONE FOCUS | v34.35 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 34.35 passes, fails on v34.34 |

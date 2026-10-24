@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.35 - SETTINGS KEEPS THE FOCUSED ROW IN VIEW AND HAS ONE FOCUS
+
+Co-op hunt while he was away. Critic on Settings 27, 29 and 73 (2 each): the focused row is clipped at the top or sits in the bottom fade, no break between sections, the rail and the list both look focused with a different tab lit, a full-width lime restore button, and a long paragraph in the detail pane. Now a key step leaves the row clear of both edges, a line and a gap start each section, one focus at a time, the clicked tab stays lit, restore is a quiet box and the pane keeps the first clause of a hint.
+
+MEASURED. Check 34.35 passes, and fails on v34.34.
 ## v34.34 - Wirt window fills its card with two panels and one lime primary
 
 Co-op hunt while he was away. Task 108, critic 2 on the gambler: big inner title over a void, small grey button, dead bottom third. The gamble and offer panels sit side by side and fill the card, the inner heading is a 16px label, the gamble button is the one 56px lime primary (quiet when unaffordable), pad focus is a 3px ring. Looks only.

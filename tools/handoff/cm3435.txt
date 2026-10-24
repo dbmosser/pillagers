@@ -1,0 +1,7 @@
+v34.35: settings keeps the focused row in view and has one focus
+
+Settings scrolls with the whole focused row in view, shows one focus at a time and has no lime box.
+
+Check 34.35. Fails on v34.34.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

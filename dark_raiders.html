@@ -2448,6 +2448,15 @@ body:has(#wnmodal.on) #hubtoast,body:has(#settingsmodal.recmode.on) #hubtoast{vi
 #root #settingsmodal.recmode #settabs{top:var(--py);height:56px;align-items:center;gap:16px;}
 #root #settingsmodal.recmode #settabs .invtab{font:700 var(--fs-body)/1 var(--f-cond);min-height:48px;color:var(--tx-2);border-bottom-width:3px;}
 #root #settingsmodal.recmode #settabs .invtab.on{color:var(--tx-1);border-bottom-color:var(--acc);}
+/* v34.34 (cw-setscroll) job 107, critic on Settings 27/29/73 (2): "the focused row is clipped at the top", "no section break", "a stray full-width lime button", "a focus state that is ambiguous across the rail and the list". A key or pad step keeps the row clear of the bottom fade (scroll-padding), a thin line and a 32px gap start every section, the rail and the list never both wear the focus look, restore is a quiet box, the pane packs to the top. */
+#root #settingsmodal #setlist{ scroll-padding:var(--sp-1) 0 var(--sp-5); }
+#root #settingsmodal #setlist .row[style*="opacity:.7"]{ height:1px !important; margin:var(--sp-4) 0 var(--sp-1) !important; background:var(--ui-line); }
+#root #settingsmodal #setlist .setjump button:focus-visible, #root #settingsmodal #setlist .setjump button.padfocus{ outline:0 !important; background:var(--ui-raised); color:var(--tx-1); border-left-color:var(--acc) !important; }
+#root #settingsmodal #setlist .setjump:has(button:focus-visible, button.padfocus) button.on:not(:focus-visible):not(.padfocus){ background:transparent; color:var(--tx-2); border-left-color:transparent !important; }
+#root #settingsmodal #setlist:has(.setjump button:focus-visible, .setjump button.padfocus) .row.dshow:not(.setjump):not(:hover){ background:transparent !important; box-shadow:inset 0 -1px 0 var(--ui-line-hi) !important; }
+#root #settingsmodal #setlist .save-restore-actions > #set_restore{ height:var(--btn-h-sm); min-height:var(--btn-h-sm); background:transparent !important; color:var(--tx-1) !important; border-color:var(--ui-line-hi) !important; font-weight:600; }
+#root #settingsmodal #setlist .save-restore-actions > #set_restore:hover:not(:disabled), #root #settingsmodal #setlist .save-restore-actions > #set_restore:focus-visible, #root #settingsmodal #setlist .save-restore-actions > #set_restore.padfocus{ background:transparent !important; color:var(--acc) !important; border-color:var(--acc) !important; outline:0 !important; }
+#root #settingsmodal #setwrap > #setdetail:not(.daily-restore-detail){ align-content:flex-start; }
 @media(max-width:1100px){
   #root #wnmodal{grid-template-columns:minmax(0,1fr);grid-template-rows:56px auto minmax(0,1fr);gap:24px;}
   #root #wnmodal #wnsub{grid-column:1;grid-row:2;font-size:32px;max-width:none;}
@@ -3646,7 +3655,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.34';
+var VER='34.35';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -53959,7 +53968,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.34: Wirt window uses the whole card and the gamble button is the clear main action. Check 34.34 fails on v34.33',
+  now:'v34.35: Settings scrolls with the whole focused row in view, shows one focus at a time and has no lime box. Check 34.35 fails on v34.34',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -68844,7 +68853,7 @@ document.getElementById('pausesetbtn').onclick=function(){ openSettings(); };
   function real(r){ return r&&r.querySelector&&r.querySelector('div > b')&&!/opacity:\s*\.7/.test(r.getAttribute('style')||''); }
   function rowOf(t){ var r=(t&&t.closest)?t.closest('.row'):null; return (r&&sl.contains(r))?r:null; }
   // v28.xx (cw-setvis) critic c-31 (Settings 72 at 2, P0): "the detail pane names a row that is not on screen (Edit the words) and no row is visibly focused". The pane and the focus look now name the first row IN VIEW when nothing is pointed at, and follow the list as it scrolls or jumps to a tab.
-  function vis(x){ var a=sl.getBoundingClientRect(), c=x.getBoundingClientRect(), m=(c.top+c.bottom)/2, bar=sl.querySelector('.setjump'), t=a.top+(bar?bar.getBoundingClientRect().height:0); return !a.height||(m>=t&&m<=a.bottom); }   // v28.xx (cw-setvis2) the sticky tab strip covers the top of the list: a row under it is not in view (after the Display tab the pane named the Controller row above it)
+  function vis(x){ var a=sl.getBoundingClientRect(), c=x.getBoundingClientRect(), bar=sl.querySelector('.setjump'), t=a.top+(bar?bar.getBoundingClientRect().height:0); return !a.height||(c.top>=t-1&&c.bottom<=a.bottom+1); }   // v34.34 (cw-setscroll): the WHOLE row, so the focus look never lands on a row cut by the top edge   // v28.xx (cw-setvis2) the sticky tab strip covers the top of the list: a row under it is not in view (after the Display tab the pane named the Controller row above it)
   function sync(){
     pend=0;
     var pf=sl.querySelector('.padfocus'), r=pf?rowOf(pf):null, q, i;
@@ -68856,7 +68865,7 @@ document.getElementById('pausesetbtn').onclick=function(){ openSettings(); };
     var _cur=sl.querySelector('.row.dshow'); if(_cur!==r){ if(_cur) _cur.classList.remove('dshow'); r.classList.add('dshow'); }
     var b=r.querySelector('div > b'), h=r.querySelector('.hint'), v=r.querySelector('button'), sel=r.querySelector('select');
     var vt=v?v.textContent:(sel&&sel.options[sel.selectedIndex]?sel.options[sel.selectedIndex].text:'');
-    var html='<div class="sdk">'+escHtml(b.textContent)+'</div>'+(vt?'<div class="sdv">'+escHtml(vt)+'</div>':'')+(h&&h.textContent?'<div class="sdh">'+escHtml(h.textContent)+'</div>':'');
+    var html='<div class="sdk">'+escHtml(b.textContent)+'</div>'+(vt?'<div class="sdv">'+escHtml(vt)+'</div>':'')+(h&&h.textContent?'<div class="sdh">'+escHtml(setHintShort(h.textContent))+'</div>':'');
     // v28.xx (cw-cx-dailyrestoreui): only the restore row gets backup details; other Settings rows keep their own descriptions.
     var restoreRow=!!r.querySelector('#set_restore');
     dt.classList.toggle('daily-restore-detail',restoreRow);
@@ -71164,6 +71173,8 @@ var SETSEC_OF={textEdit:'THE RAID',superhot:'THE RAID',sharedSight:'THE RAID',ra
   gfxScale:'DISPLAY',gfxAuto:'DISPLAY',fpsCap:'DISPLAY',fxLevel:'DISPLAY',gfxLight:'DISPLAY',gfxPost:'DISPLAY',fxInt:'DISPLAY',hudTv:'DISPLAY',minimap:'DISPLAY'};
 function setSecOf(r){ return (r&&r.sec)||SETSEC_OF[r&&r.k]||'THE RAID'; }
 function setSecId(n){ return 'setsec_'+String(n).replace(/ /g,'_'); }
+// v34.34 (cw-setscroll) job 107, critic on Settings 73 (2): "an explaining paragraph in the detail pane". The pane keeps the first clause of a row hint, at most 56 characters. The row and its setting are untouched.
+function setHintShort(t){ var s=String(t||'').split(/[:;]|\. | \(/)[0].trim(); if(s.length>56){ s=s.slice(0,56); s=s.slice(0,Math.max(s.lastIndexOf(' '),1)); } return s; }
 function setSecHead(n){ return '<div class="row" id="'+setSecId(n)+'" style="opacity:.7"><div style="flex:1"><b>'+n+'</b></div></div>'; }
 function setSecsHtml(S,X){
   var h='', j='', i, n, b;
@@ -71195,6 +71206,8 @@ function setSecSpy(host){
   var bar=host.querySelector('.setjump'), bh=bar?bar.getBoundingClientRect().height:0, ht=host.getBoundingClientRect().top, cur=null, i, h, bs;
   for(i=0;i<SETSEC.length;i++){ h=document.getElementById(setSecId(SETSEC[i])); if(h&&h.getBoundingClientRect().top<=ht+bh+6) cur=SETSEC[i]; }
   // v28.xx (cw-cx-dailyrestorefinish): a focused restore row belongs to saves, even when display rows remain visible above it.
+  // v34.34 (cw-setscroll) job 107, critic on Settings 73 (2): "mismatched tab and row state". A section too short to reach the top of the list (ACCESSIBILITY) kept the tab above it lit while the chip clicked wore the focus box. The clicked chip stays the lit tab until a wheel turn or a row focus moves on.
+  if(host._secPick){ var _pk=document.getElementById(setSecId(host._secPick)), _pt=_pk?_pk.getBoundingClientRect().top:-1e9; if(_pk&&_pt>=ht+bh-6&&_pt<host.getBoundingClientRect().bottom&&!(host.querySelector('.padfocus')&&!host.querySelector('.setjump .padfocus'))) cur=host._secPick; else host._secPick=null; }
   if(host.querySelector('.save-restore:focus-within,.save-restore:has(.padfocus),.setjump button[data-sec="SAVES AND TOOLS"]:focus')) cur='SAVES AND TOOLS';
   bs=host.querySelectorAll('.setjump button');
   for(i=0;i<bs.length;i++) bs[i].classList.toggle('on',bs[i].getAttribute('data-sec')===cur);
@@ -71208,10 +71221,11 @@ function setSecMove(host){
     if(!nx) nx=document.getElementById('setsec_end');
     if(nx&&nx.parentNode) nx.parentNode.insertBefore(r,nx);
   }
-  [].forEach.call(host.querySelectorAll('.setjump button'),function(b){ b.onclick=function(){ b.focus({preventScroll:true}); if(b.getAttribute('data-go')){ openSettings(b.getAttribute('data-go')); return; } setSecJump(host,b.getAttribute('data-sec')); setSecSpy(host); }; }); // v28.xx (cw-cx-dailyrestorefinish): navigation takes focus away from the previous restore control.
+  [].forEach.call(host.querySelectorAll('.setjump button'),function(b){ b.onclick=function(){ b.focus({preventScroll:true}); if(b.getAttribute('data-go')){ openSettings(b.getAttribute('data-go')); return; } host._secPick=b.getAttribute('data-sec'); setSecJump(host,b.getAttribute('data-sec')); setSecSpy(host); }; }); // v28.xx (cw-cx-dailyrestorefinish): navigation takes focus away from the previous restore control.
   host.onscroll=function(){ setSecSpy(host); }; setSecSpy(host);   // v26.xx (settingsfix)
   // v28.xx (cw-cx-dailyrestorefinish): keyboard and pad focus update the same section marker as scrolling.
-  host.onfocusin=function(){ setSecSpy(host); };
+  host.onfocusin=function(e){ if(!(e&&e.target&&e.target.closest&&e.target.closest('.setjump'))) host._secPick=null; setSecSpy(host); };   // v34.34 (cw-setscroll)
+  host.onwheel=function(){ host._secPick=null; };
 }
 function renderSettingsInner(host){
   // THE GAME ROWS COME FIRST. The presentation rows below are real settings but
