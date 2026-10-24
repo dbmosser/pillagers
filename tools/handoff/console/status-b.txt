@@ -1,1 +1,1 @@
-10-24 15:20 waiting for RAM: 1 GB free, a helper starts at 3; 110-ui-demo-end-screens kept
+10-24 15:26 waiting for RAM: 2 GB free, a helper starts at 3; 110-ui-demo-end-screens kept

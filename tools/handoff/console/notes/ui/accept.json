@@ -166,7 +166,7 @@
   "verdict": "A clean, consistent dark card with a clear selected row, but small low-contrast type, an explaining sentence, a clipped list, and a dead right pane keep it from looking polished.",
   "findings": [
    "P1 list rows, detail pane and header: Row name 20px tx-1. Sub-lines ('pays', progress) at least 16px in tx-2 #aaa498. Tab labels 20px. The stash/bag legend 16px minimum. Drop the 'standard' tag from every row, since it is identical on all of them and the detail pane already shows it.",
-   "P1 under the tabs ('stuff for you to do.') and the list header ('hard work needs 3 more credits (a hard card is worth 2, an elite 3)'): Delete the tab subtitle. Replace the list header with a short stat such as 'done 0 \u00b7 credits 0/3', 16px, tx-2.",
+   "P1 under the tabs ('stuff for you to do.') and the list header ('hard work needs 3 more credits (a hard card is worth 2, an elite 3)'): Delete the tab subtitle. Replace the list header with a short stat such as 'done 0 · credits 0/3', 16px, tx-2.",
    "P1 contract list bottom edge: Snap the list height to a whole number of rows, or fade the bottom 24px. Make the scrollbar 6px in --ui-line-hi. Move the toast 24px above the card edge or into the footer row.",
    "P1 selected row: Use the --ui-raised #1e2225 fill, a 3px solid #e6ff3d left bar, and a 1px --ui-line-hi border. Set the selected name to tx-1 at weight 700.",
    "P1 right detail pane: Stretch the pane to the list height (y=227 to 1002), pin the action button to the bottom, and put the reward '$520' at 56px hero size. The disabled button should show a 1px border and tx-2 text."
@@ -226,18 +226,18 @@
  "18-settings-hub": {
   "score": 3,
   "pass": true,
-  "verdict": "A clean, consistent card with a clear lime focus row and an X in the corner, but the detail pane is a dead void with a stranded paragraph, the rows run past the card edge in one flat tone, and the page has the wrong scroll and focus cues.",
+  "need": 3,
+  "verdict": "The detail pane no longer has a paragraph pinned to its bottom, but its description is now cut off mid-sentence and the other 3-score faults (a mostly empty pane, a faint focus on the left rail, a 'close' that is only text) are unchanged.",
   "findings": [
-   "P1 right detail pane: Cut the paragraph to a short callout of 8 words or fewer, set at 20px tx-1 directly under the title with a 16px gap. Or show a control preview or the current value as a 56px hero number. Do not leave 350px of void between them.",
-   "P1 left category rail: Make the rail 20px f-cond 600. Give the selected row a full --ui-raised fill with a 4px lime left bar and tx-1 text. Idle rows get tx-2 at 4.5:1 or better. Pin 'send play data' to the bottom of the rail with a 1px divider above it.",
-   "P1 settings list (rows): Add a 16px tx-2 section label ('the raid', 'audio') with a 1px --ui-line rule above each group. Raise row names to 20px tx-1 at 85%. Widen the scrollbar to 8px in --ui-line-hi. Show only the active category's rows, since the rail already selects it.",
-   "P1 value steppers (< value >): Move the stepper cluster to right-align at the row edge, about 220px wide. Make the arrows 24px with a 40px hit area. Keep the label, value and arrows in the same 56px row. Show idle arrows at tx-2 and focused ones in lime.",
-   "P2 card frame, header and footer: Remove the stray lime tick or turn it into a proper 36px top tab on the card. Set the title to 32px f-cond 700 with 24px padding. Make the footer hint name the live device key or button, and drop it if the X already covers close."
+   "P0 detail pane, description under 'edit the words': Show the full text, or write a short one-line description that ends cleanly, such as 'click any word to rewrite it'. If it must be clipped, use an ellipsis. Place it at 20px f-body in tx-2, directly under the 32px title with a 16px gap.",
+   "P1 detail pane, overall: Fill the pane with something useful: the current value as a 56px hero number (the hero token) and the options in a row, and a default marker. Or shrink the pane to fit its content (max-height about 240px) and give the list more width.",
+   "P1 left rail (the raid selected): Give the selected tab a 3px full-height lime bar and tx-1 text, and dim the unselected tabs to tx-2. When focus moves to the list, drop the rail's fill and keep only the lime text.",
+   "P1 spacing between 'experimental' and 'master volume': Use a 24px gap, put a 16px section label ('audio') above the group, and keep the 1px divider centred in the gap.",
+   "P2 setting rows, left label and right value: Narrow the value column to about 240px and align it nearer the labels, or right-align the value with the arrows at 16px from the row edge. Raise the row label to tx-1 for the focused row only."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-31-n1/18-settings-hub-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/107-after2/18-settings-hub-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T06:38",
-  "need": 3
+  "when": "2026-10-24T19:24"
  },
  "19-raid-hud-drop-first-raid": {
   "score": 2,
@@ -247,7 +247,7 @@
   "findings": [
    "P0 top-right: cash/stash card plus run info card: Collapse run info to the contracts only (3 lines at 16px, tx-2) and delete the weather effect sentence. Keep one 24px margin from the screen edge. Show cash as a single hero-weight $ figure and drop the stash, xp and backpack grid.",
    "P0 bottom-centre controls card (wasd / ctrl / lmb ... f1 full list): Show it only for the first 20 s of a raid or on f1, then fade over 240 ms. If it stays, cut it to 6 rows, raise the footer to 16px at tx-2 or brighter, and use one panel fill with a 1px --ui-line-hi border.",
-   "P1 centre callouts ('scav pistol \u00b7 equip your own gun at the stash.', 'rain \u00b7 covers your noise and theirs', 'the welcome pack is in your stash.'): Keep one callout slot, 20px f-cond, max 3 words, no punctuation. Remove the duplicate scav pistol hint from the left stack and from the hint strip.",
+   "P1 centre callouts ('scav pistol · equip your own gun at the stash.', 'rain · covers your noise and theirs', 'the welcome pack is in your stash.'): Keep one callout slot, 20px f-cond, max 3 words, no punctuation. Remove the duplicate scav pistol hint from the left stack and from the hint strip.",
    "P1 left-edge tag stack ('rain', 'scav pistol') and the bar below the hotbar ('scav pistol fire use'): Merge tags into one 16px stack on a --ui-panel fill at 90% with 8px padding. Fold 'fire use' into the hotbar's selected slot, or drop it.",
    "P1 hp/stamina/standing block, bottom-left: Use one panel style, 4px radius, 24px from the bottom and left edges. Make hp the single hero at 56px f-cond 800 and shrink the stamina bar to 8px tall with a 16px label. Drop the 'standing' label box or make it a plain 16px tx-2 tag."
   ],
@@ -263,7 +263,7 @@
   "findings": [
    "P0 Raid HUD overall hierarchy: Close the key legend by default (show it for 10s on raid start, then f1 only). Keep the ammo as the one hero at 56px. Drop the stamina and hp bars to 12px thin bars with a 16px label, and keep the hp number at 32px max.",
    "P0 top-left 'current pillager bots' scoreboard and top-right cash/run info/contracts stack: Use one panel style: --ui-panel at 90%, 1px --ui-line-hi border, 4px radius, 16px padding, 20px row names and 16px labels. Give the right column one fixed width (320px), 16px gaps and a 48px margin. Keep scores and contracts at 16px minimum. Put 'no downs yet' under a 'bonus' label in tx-2.",
-   "P1 bottom-left toasts ('codex entry \u00b7 scav pistol \u00b7 common', 'running slowly'): Make every toast the same: a 3px left bar (warn for hints, tx-2 for info), 16px f-cond 600 in tx-1 on a --ui-panel pill at 90%, 8px gap between toasts. Put the status text at tx-1 (not 50% grey) so it reaches 4.5:1.",
+   "P1 bottom-left toasts ('codex entry · scav pistol · common', 'running slowly'): Make every toast the same: a 3px left bar (warn for hints, tx-2 for info), 16px f-cond 600 in tx-1 on a --ui-panel pill at 90%, 8px gap between toasts. Put the status text at tx-1 (not 50% grey) so it reaches 4.5:1.",
    "P1 center-bottom controls legend: Collapse it into a one-line footer hint ('f1 controls', 14px, tx-2) after the first raid. If it must stay, use two aligned columns on a 480px panel at 16px with 24px row height.",
    "P1 hotbar and weapon tag: Hide empty slots, or draw them as 1px outlines without silhouettes. Use one focus treatment (the lime --acc 2px border on the active slot only). Slot numbers 16px. Make both hints the same chip style."
   ],
@@ -374,7 +374,7 @@
   "verdict": "The new card is cleaner: the loss figure now leads, the xp line is shorter, and the feedback control reads as a button. The main hero is no longer the red title or the red number, but the card still has too many small grey lines and a soft hierarchy.",
   "findings": [
    "P1 title 'killed in action' vs the $1,770 hero: Keep the title at 32px f-cond 700 red. Make $1,770 the single 56px 800 hero, and put it in the danger red it had before, or keep it tx-1 and drop the red from 'items lost'. Pick one place for red emphasis.",
-   "P1 header block (subtitle + xp line): Cut it to 'killed by unknown \u00b7 152m'. Render the line at 16px tx-2 or better, and move '+65 xp' into the stat row as a fifth cell, or drop the penalty text.",
+   "P1 header block (subtitle + xp line): Cut it to 'killed by unknown · 152m'. Render the line at 16px tx-2 or better, and move '+65 xp' into the stat row as a fifth cell, or drop the penalty text.",
    "P1 item tiles row: Keep 24px between the loss label and the tiles and 32px between the tiles and the stats rule. Add '+1' as a fifth tile or a count label so 4 tiles match '5 items'. Make the bars 3px and enlarge the x2 badge to 16px text.",
    "P2 'how did that run feel +' button: Use 16px tx-1 label, 1px --ui-line-hi border with 8px/16px padding, drop the '+', and leave 32px above the primary button.",
    "P2 stats row (containers, kills, accuracy, time): Keep the row but drop the bottom rule, set the values at 20px tx-1 and the labels at 16px tx-2, or collapse it to a single muted line."
@@ -389,11 +389,11 @@
   "need": 4,
   "verdict": "The ghost feedback button and the tighter spacing are small improvements, but the card now has a 32px title and a second checklist line, so it is still a stack of small centred lines. The $1,770 hero is the only strong element, and the title no longer leads.",
   "findings": [
-   "P1 title 'extracted' vs haul number: Keep the hero at 56px. Make the title 32px/700 with 8px under it. Fold 'out clean \u00b7 never spotted' and '+130 xp' into one 16px line in tx-2 so the header is two lines, not three.",
-   "P1 checklist lines: 'extract without killing anything' / 'burst carbine': Drop the sentence row or shorten it to 'no kills'. Group the objectives under one 16px label in a 24px block with 8px row gaps. Colour the \u2713 var(--ok).",
+   "P1 title 'extracted' vs haul number: Keep the hero at 56px. Make the title 32px/700 with 8px under it. Fold 'out clean · never spotted' and '+130 xp' into one 16px line in tx-2 so the header is two lines, not three.",
+   "P1 checklist lines: 'extract without killing anything' / 'burst carbine': Drop the sentence row or shorten it to 'no kills'. Group the objectives under one 16px label in a 24px block with 8px row gaps. Colour the ✓ var(--ok).",
    "P1 vertical rhythm of the whole card: Use three groups, each with a 32px gap between them: header (title, one line), the haul (label, hero, tiles), and the stats. Keep gaps inside a group at 8px or 16px, and put the checks and badges inside the stats group.",
    "P1 'how did that run feel +' ghost button: Make the ghost 44px tall with 16px/600 text in tx-2, and add a 16px border in --ui-line-hi. Leave 24px between it and the primary. Replace '+' with a chevron, or drop it.",
-   "P2 stat strip and tags: 'first out \u00b7 untouched \u00b7 ghost': Set the labels to 16px/600 with +.04em tracking. Draw the tags as small bordered chips at 16px with an 8px gap. Dim a stat with 0 to tx-2 and keep non-zero values in tx-1."
+   "P2 stat strip and tags: 'first out · untouched · ghost': Set the labels to 16px/600 with +.04em tracking. Draw the tags as small bordered chips at 16px with an 8px gap. Dim a stat with 0 to tx-2 and keep non-zero values in tx-1."
   ],
   "pic": "tools/handoff/console/notes/shots/105-after/38-extracted-card-1080.jpg",
   "task": "manual",
@@ -421,7 +421,7 @@
   "verdict": "The card is clean and all lower case, but it is unchanged from the last review: the empty body is centered, the prompt is a dim ring-and-text with no real focus state, and the small card is neither a proper dialog nor a window.",
   "findings": [
    "P1 'press any key' prompt, bottom-right of card (1065-1206 x 605-628): Make it a 56px-high primary button with fill #e6ff3d, text #11150a at 20px/700, min-width 200px, right-aligned 24px from the card edge. Or use tx-1 text with a 3px #e6ff3d underline and drop the ring.",
-   "P1 card body, 'no scores yet' (x\u2248906-1014, y\u2248534): Left-align it at x=714 in tx-2, 20px/400, 24px below the header. Add 3 dim placeholder rows at a 56px pitch ('1 ---', '2 ---', '3 ---') with 1px #2e3337 dividers.",
+   "P1 card body, 'no scores yet' (x≈906-1014, y≈534): Left-align it at x=714 in tx-2, 20px/400, 24px below the header. Add 3 dim placeholder rows at a 56px pitch ('1 ---', '2 ---', '3 ---') with 1px #2e3337 dividers.",
    "P1 card structure (682-1238 x 412-667): Choose one. For a dialog, make it 480x240 with 24px padding. For a window, make it 90% wide and tall with a 56px header and a 72px footer holding the primary on the right.",
    "P2 close X, top-right of card (1167-1215 x 430-476): Use a 1px #4a5257 border, a 20px close glyph in tx-2, and a 'B' glyph 8px to its left. Inset it 24px from the top and right edges.",
    "P2 'pillagers' wordmark, top-left (96-210 x 60-88): Set it in tx-2 at 70% opacity, or remove it. If kept, use 32px with a 36px lime tab above it, aligned to x=96."
@@ -455,7 +455,7 @@
    "P1 Footer prompt 'press any key', bottom-right: Set the text at 24px f-cond 700 in tx-1 #efe9dc. Make the glyph full --acc #e6ff3d at 28px. Put the prompt in a 72px footer row with 24px padding and centre it vertically.",
    "P1 Hero 'score 0 sp': Put a 16px tx-2 'score' label above. Show '0' at 56px f-cond 800 tx-1 with 'sp' at 20px tx-2 beside it. Move 'ended early -50%' directly under the hero as a 16px --warn line.",
    "P1 Stats row (kills / extractions / deaths): Use equal columns across the 652px inner width. Set values at 24px f-cond 600 tx-1 and labels at 16px f-cond 600 tx-2 with +.04em tracking, at least 4.5:1 contrast. Add a fourth 'time' column, or centre each stat in its column.",
-   "P2 Card vertical rhythm: Use 24px title\u2192hero, 24px hero\u2192divider, 24px divider\u2192stats and 32px stats\u2192footer. Make the footer row 72px, with a 1px --ui-line divider above it if needed.",
+   "P2 Card vertical rhythm: Use 24px title→hero, 24px hero→divider, 24px divider→stats and 32px stats→footer. Make the footer row 72px, with a 1px --ui-line divider above it if needed.",
    "P2 Card size and backdrop: Darken the scrim to rgba(6,7,8,.80). Either enlarge the card to match the window card, or keep it compact with 32px padding, the 4px radius and an opaque --ui-panel fill."
   ],
   "pic": "tools/handoff/console/notes/shots/12-r4-after2/52-arcade-run-over-1080.jpg",
@@ -500,7 +500,7 @@
   "pass": true,
   "verdict": "The tiles now fill the card and the empty void is gone, but the grid is still a narrow column of tiny gun icons in oversized boxes, and a toast sits on top of the bottom row.",
   "findings": [
-   "P0 bottom centre toast 'trophy earned \u00b7 motherlode': Move toasts to a fixed zone above the card or at the top (y\u224824, outside the card), or end the grid at y\u2264940 and reserve a 56px footer row for toasts. Never draw it over content.",
+   "P0 bottom centre toast 'trophy earned · motherlode': Move toasts to a fixed zone above the card or at the top (y≈24, outside the card), or end the grid at y≤940 and reserve a 56px footer row for toasts. Never draw it over content.",
    "P1 tile content and icon size: Scale the icon to about 140px, centred in the tile's upper half or filling the left 45%, with the name and tags beside or below it. Use a rarity glow behind found guns. Silhouettes on locked tiles need about 25% more brightness.",
    "P1 vertical alignment inside tiles: Anchor the name baseline at a fixed offset (tile top + 32px). Reserve the kills row for every found gun, or show a muted 'kills 0'. Give the new badge 8px inset and 16px type.",
    "P1 grid layout in the card: Run the grid from the card padding (x=119 to x=1801), with 24px gutters (8px grid), which gives about 410px tiles. Or add a left filter rail (rarity, class) so the width is used.",
@@ -516,7 +516,7 @@
   "pass": true,
   "verdict": "A clean, consistent dark card with a clear x and a readable grid, but the tiles are big and empty, the title is small, and unlocked and locked states barely differ in hierarchy.",
   "findings": [
-   "P1 header title 'trophy case \u00b7 6 of 8': Make the title 32px f-cond 700 in tx-1. Move '6 of 8' to the right of the header, next to the x, in tx-2 at 20px, or make it the one 56px hero count. Pad the header to 24px.",
+   "P1 header title 'trophy case · 6 of 8': Make the title 32px f-cond 700 in tx-1. Move '6 of 8' to the right of the header, next to the x, in tx-2 at 20px, or make it the one 56px hero count. Pad the header to 24px.",
    "P1 all 8 tiles: Cut the tile height to about 260px and use a 4x2 grid with a 24px gap. Scale the icon to about 96px. Alternatively use 6 columns of smaller tiles so the card is not mostly void. Fill earned tiles with --ui-raised and keep locked tiles on --ui-panel.",
    "P1 locked tiles (full armory, overseer down): Draw locked icons as a 2px outline in --ui-line-hi (#4a5257), not a dark fill. Keep the locked name and description at tx-2 or brighter (4.5:1 minimum). Replace the 'locked' tag with a 16px tx-2 label.",
    "P1 trophy tier colours: Make all earned icons one neutral tone (tx-1 at 70%). Put a 3px top bar in the tier colour on each tile, as the rarity bars do elsewhere. Use lime only for focus.",
@@ -565,7 +565,7 @@
   "verdict": "the clutter is gone and the lime button now leads the screen, but the amber gradient title competes with it, the lower block is cramped and the type is off-scale.",
   "findings": [
    "P1 title 'pillagers' (about 56px, amber gradient with drop shadow): Fill it flat --tx-1 #efe9dc with no gradient and no shadow, f-cond 800 at 56px. Leave lime to the button and the focused save row.",
-   "P1 button, 'player 2 window' label and saves block (y 511\u2013735): Use an 8px grid: 24px between title block and button, 32px from button to saves. Move 'player 2 window' into a 16px tx-2 chip above the title or into the top-left, not under the button. Give the saves label a 16px tx-2 size with 8px below it.",
+   "P1 button, 'player 2 window' label and saves block (y 511–735): Use an 8px grid: 24px between title block and button, 32px from button to saves. Move 'player 2 window' into a 16px tx-2 chip above the title or into the top-left, not under the button. Give the saves label a 16px tx-2 size with 8px below it.",
    "P1 name row: 'pillager' input, 'change name', 'create a new save': Make the row 48px high with 16px labels at weight 600. Make the input a --ui-raised field with a 1px --ui-line-hi border and a visible focus ring in lime. Fold the two actions into one 'new save' ghost button, or keep 'change name' only on the selected row.",
    "P1 type scale across the page (tagline, 'saves', row values, hints, 'v0.0737'): Snap to 56/32/20/16/14. Make the tagline 20px --tx-2 #aaa498 with a --scrim panel or stronger vignette behind it. Make the row stats 16px tx-2. Keep the version at 14px, only in the footer.",
    "P1 background art behind the menu column: Raise the --scrim to .80 across the centre, or put the menu column on a 560px-wide --ui-panel at 90% with a 1px --ui-line-hi border. Keep the art visible at the edges only."
@@ -580,10 +580,10 @@
   "pass": true,
   "verdict": "the how-to-play card is tidy and fully lower case, but the previous fixes were mostly not applied: the prompt is still white with a radio dot, the card is still narrow with small text, and the scrim is still too light, so it reads as a tidy table rather than something polished.",
   "findings": [
-   "P1 footer prompt 'press any key' (x\u22481166-1346, y\u2248838-870): Set the text to 20-24px f-cond 700 in --acc #e6ff3d, swap the radio dot for a 16px key glyph, and use a 72px footer row under the 1px --ui-line rule. Keep the right edge at x=1346.",
+   "P1 footer prompt 'press any key' (x≈1166-1346, y≈838-870): Set the text to 20-24px f-cond 700 in --acc #e6ff3d, swap the radio dot for a 16px key glyph, and use a 72px footer row under the 1px --ui-line rule. Keep the right edge at x=1346.",
    "P1 card scale (x 541-1378, y 176-905): Widen the card to about 1600-1700px (90%), set row names to 24px and keycaps to 22px, and use 64px rows. If you keep it narrow, scale the text to 20px minimum and pad every side by 24px.",
-   "P1 column headers 'keyboard' / 'controller' (x\u2248759, 1053; y\u2248271-285): Set them to 16px f-cond 600 with +.04em tracking in --tx-2 #aaa498 or brighter, inside a 40px header row above the existing 1px rule.",
-   "P1 close X (x\u22481298-1346, y\u2248192-239): Delete it on this walk-up screen. If you keep it, make it a 48x48 ghost button with a 24px glyph in a 56px header row.",
+   "P1 column headers 'keyboard' / 'controller' (x≈759, 1053; y≈271-285): Set them to 16px f-cond 600 with +.04em tracking in --tx-2 #aaa498 or brighter, inside a 40px header row above the existing 1px rule.",
+   "P1 close X (x≈1298-1346, y≈192-239): Delete it on this walk-up screen. If you keep it, make it a 48x48 ghost button with a 24px glyph in a 56px header row.",
    "P2 background scrim (whole screen): Set the scrim to rgba(6,7,8,.80) and lift the card border to --ui-line-hi #4a5257."
   ],
   "pic": "tools/handoff/console/notes/shots/12-r7-after/46-arcade-attract-how-to-play-1080.jpg",
@@ -630,7 +630,7 @@
   "findings": [
    "P1 Backdrop: Render the live world behind it dimmed to about 55% under --scrim rgba(6,7,8,.80). Keep the card at a deliberate size, or bring it toward the 90% window spec.",
    "P1 Confirm new party row: Use a #1e2225 fill with a 1px --danger border and a 3px --acc left bar inset by 0. Keep red to the border and a small 'clears best' label. Make the row 56px tall with a 16px gap to the next row.",
-   "P1 Helper line 'clears tonight's best \u00b7 new seed': Fold it into the armed row as a right-aligned 16px tx-2 value ('clears best, new seed'), or delete it. If kept, use 16px at 4.5:1 or better.",
+   "P1 Helper line 'clears tonight's best · new seed': Fold it into the armed row as a right-aligned 16px tx-2 value ('clears best, new seed'), or delete it. If kept, use 16px at 4.5:1 or better.",
    "P2 Exit demo row: Make exit demo a ghost row with a 1px --ui-line-hi border and tx-2 text. Put the dangerous confirm on the row the player has to reach deliberately.",
    "P2 Close button: Align the x right edge to the row edge at x=1246, make it 48px, and centre it on the title's cap height."
   ],
@@ -644,9 +644,9 @@
   "pass": false,
   "verdict": "The card is cleaner and now has a clear title, score label, grey zero hero and a ringed prompt, but the type is still small for a couch, the lower half is crowded with rules, and the card is a lot of empty dark space with the hero still not dominant.",
   "findings": [
-   "P1 hero '0 sp' (x 634, y\u2248500): Make the hero a true 56px f-cond 800. Set the 'score' label to 16px tx-2. Make the stat values tx-2 at 24px so only the title and hero are bright. Leave 24px between the hero and the divider.",
-   "P1 'press any key' prompt (x 1106-1286, y\u2248697): Set the text to tx-1, 20px f-cond 700. Make the glyph 24px with a full #e6ff3d ring and dot. Delete the divider at y\u2248650, or leave 24px above and below it.",
-   "P1 labels 'kills / extractions / deaths' (y\u2248632) and 'score' (y\u2248448): Set all labels to 16px f-cond 600 with +.04em tracking in tx-2 #aaa498 or brighter. Keep a 4px gap to each value.",
+   "P1 hero '0 sp' (x 634, y≈500): Make the hero a true 56px f-cond 800. Set the 'score' label to 16px tx-2. Make the stat values tx-2 at 24px so only the title and hero are bright. Leave 24px between the hero and the divider.",
+   "P1 'press any key' prompt (x 1106-1286, y≈697): Set the text to tx-1, 20px f-cond 700. Make the glyph 24px with a full #e6ff3d ring and dot. Delete the divider at y≈650, or leave 24px above and below it.",
+   "P1 labels 'kills / extractions / deaths' (y≈632) and 'score' (y≈448): Set all labels to 16px f-cond 600 with +.04em tracking in tx-2 #aaa498 or brighter. Keep a 4px gap to each value.",
    "P2 stats row column grid (x 634, 859, 1085): Use three equal 217px columns from x 634 to 1286, or right-align the prompt with the third column. Keep 24px of padding on all sides.",
    "P2 title block ('run over', 'ended early -50%'): Set the title to 32px f-cond 700 tx-1. Set the subline to 16px with 'ended early' in tx-2 and '-50%' in --warn. Leave 8px between them."
   ],
@@ -662,7 +662,7 @@
   "verdict": "The new card is tidier: the xp line is shorter, the feedback link is now a visible ghost button, and the red loss number is clearly the hero. The title is still small and the secondary text is still dim.",
   "findings": [
    "P1 title 'abandoned': Set the title to 32px f-cond 700 in tx-1. Keep $1,170 at 56px, and put 24px between the title and the xp line.",
-   "P1 xp line '+33 xp \u00b7 75% penalty': Use 16px f-cond 600 in tx-2 (#aaa498 or brighter). Word it as '+33 xp (75% less)', or colour '75% penalty' with --warn.",
+   "P1 xp line '+33 xp · 75% penalty': Use 16px f-cond 600 in tx-2 (#aaa498 or brighter). Word it as '+33 xp (75% less)', or colour '75% penalty' with --warn.",
    "P1 stat tile labels and 'left behind': Use 16px labels in tx-2 with +.04em tracking. Use 24px values at weight 700 in tx-1. Put 16px of padding above and below the rules.",
    "P2 'how did that run feel +' ghost button: Give it a 1px --ui-line-hi border, tx-1 text at 16px, and 48px height. Keep a 24px gap to the primary button, up from the current 30px between the tiles and the ghost button.",
    "P2 vertical rhythm: Put everything on the 8px grid: 24px between blocks and 32px of padding at the top and bottom. Cut the 80px gap to 32px."
@@ -773,7 +773,7 @@
   "verdict": "The HUD works as an in-raid overlay, but the same extraction event appears four times, the top-centre block is cramped and overlaps, and type sizes, tags and panel styles ignore the guide.",
   "findings": [
    "P0 Extraction messaging (centre banner, top toast, left feed, bottom line): Keep one: a 56px hero countdown in --extract at top-centre ('25 s'), plus a 40px toast at most. Delete the left-feed copy, the bottom line and the 'Extraction 0m' label. Make the 25 s the only big number.",
-   "P0 Top-centre block: Score / 0 SP / 9:48 / Extraction 0m / arrow / '?' / toast / 'Warden' label: Move the toast to its own slot at y\u224896 with 40px height and no overlap. Push the block in from the top by at least 24px. Drop the '?' and the arrow, or put them in the world. Raise the 'Score' label to 16px.",
+   "P0 Top-centre block: Score / 0 SP / 9:48 / Extraction 0m / arrow / '?' / toast / 'Warden' label: Move the toast to its own slot at y≈96 with 40px height and no overlap. Push the block in from the top by at least 24px. Drop the '?' and the arrow, or put them in the world. Raise the 'Score' label to 16px.",
    "P1 Bottom-centre text: 'Extract in progress! C 25S left', '19 hostiles closing in': Write '25 s'. Remove the 'C'. Put the line on a 40px toast with a 4px danger bar, or drop it. Keep 16px of clear space above the hotbar tag.",
    "P1 Bottom-left feed (Stronghold, Golden enemy, Spotted, Extract): Show at most 3 toasts, each 40px high with a 4px left bar. Use tx-1 text at 16px minimum and a --scrim fill. Remove info toasts that repeat the map state. Hide the grey ones after 3 s.",
    "P1 Bottom-right ammo panel: Make the ammo 56px f-cond 800 and the weapon name 20px tx-2. Change the key hint to a cap plus a word ('B  Backpack') at 16px in a footer. Replace '$390' with 'SP 390' or remove it. Shrink the panel to fit its content, with 24px padding."
@@ -788,7 +788,7 @@
   "pass": false,
   "verdict": "the card is still a small, quiet dialog with a tiny 'seeded night' line, a bare 'no scores yet', a dim prompt and a blurred, busy backdrop, so nothing here reads as AAA polish.",
   "findings": [
-   "P1 'seeded night \u00b7 zbxx' (x713-837, y496): Show only 'seeded night' at 16px f-cond 600, +.04em, in tx-2 #aaa498, 8px under the title. Drop the seed code.",
+   "P1 'seeded night · zbxx' (x713-837, y496): Show only 'seeded night' at 16px f-cond 600, +.04em, in tx-2 #aaa498, 8px under the title. Drop the seed code.",
    "P1 'no scores yet' (x713-820, y545): Draw 5 ghost rows at 40px pitch (rank, name, sp) in --ui-line at 40% opacity under the title block. Keep 'no scores yet' in tx-1 20px above them. No explanatory sentence.",
    "P1 'press any key' prompt (x1027-1206, y612-645): Set the text to 20px f-cond 600 tx-1. Replace the dot with a 24px key chip showing the live key or pad glyph. Put the right edge on the 24px padding line at x1214. Use --ui-line-hi #4a5257 for the divider at y582.",
    "P1 card and scrim (x681-1239, y400-680): Raise the scrim to rgba(6,7,8,.80) and add 2px blur-free darkening. Either widen the card to about 720px with a 24px padding grid, or make it a 90% window with a 56px header and 72px footer.",
@@ -805,10 +805,10 @@
   "verdict": "The detail pane is now flat, but the settings card still has the same weaknesses as before: a narrow 960px column floating in a 1870px card, steppers stranded mid-row, tiny low-contrast tabs, and a list that is clipped mid-row.",
   "findings": [
    "P1 whole card: 960px column centred in a 1870px card, with about 450px of empty void on each side: Widen the list column to about 1400px, or add a 280px left rail for the tabs (the raid, audio, controls...) and give the rows the rest. Left-align the title with the column.",
-   "P1 value column: arrows at x\u2248923 and x\u22481175, values at x\u22481049: Right-align the stepper to a column ending 24px inside the row. Use 20px tx-1 values and 24px tx-2 arrows, with the arrows turning lime only on the focused row. Give action rows ('change keys') a 1px --ui-line-hi pill or button outline so they read as buttons.",
+   "P1 value column: arrows at x≈923 and x≈1175, values at x≈1049: Right-align the stepper to a column ending 24px inside the row. Use 20px tx-1 values and 24px tx-2 arrows, with the arrows turning lime only on the focused row. Give action rows ('change keys') a 1px --ui-line-hi pill or button outline so they read as buttons.",
    "P1 tab strip (the raid ... accessibility) and 'send play data' at the top right: Use 20px tabs with 32px gaps, a 3px lime underline plus tx-1 on the active tab, and tx-2 at 4.5:1 or better for the rest. Move 'send play data' into the list as a row or into the footer. Add lb/rb glyphs at the strip ends.",
-   "P2 bottom of the list, 'stick deadzone' row (y\u2248825): Snap the viewport to whole rows (for example 10 \u00d7 56px = 560px), or add a 24px gradient mask at the bottom. Make the scrollbar 6px in --ui-line-hi and brighter on focus.",
-   "P2 detail pane (keys / rebind...), y\u2248860-978: Put a 1px --ui-line-hi border and --ui-panel fill back at 24px padding, with an 8px gap above the pane. Use a 20px tx-1 title and a 16px tx-2 body trimmed to one short clause, e.g. 'rebind any action; conflicts swap'."
+   "P2 bottom of the list, 'stick deadzone' row (y≈825): Snap the viewport to whole rows (for example 10 × 56px = 560px), or add a 24px gradient mask at the bottom. Make the scrollbar 6px in --ui-line-hi and brighter on focus.",
+   "P2 detail pane (keys / rebind...), y≈860-978: Put a 1px --ui-line-hi border and --ui-panel fill back at 24px padding, with an 8px gap above the pane. Use a 20px tx-1 title and a 16px tx-2 body trimmed to one short clause, e.g. 'rebind any action; conflicts swap'."
   ],
   "pic": "tools/handoff/console/notes/shots/c-31y-after2/70-settings-sec-controls-1080.jpg",
   "task": "c-31-ui-pause-settings",
@@ -823,7 +823,7 @@
   "findings": [
    "P1 haul number and card hierarchy: Raise the haul to 56px at weight 800. Add 24px of space above it and 32px below. Make 'haul' the 16px tx-2 label directly above it. Make the title tx-1 or keep it teal but drop it to 32px so the number is the first read.",
    "P1 checklist block (three check lines): Tighten the row pitch to 32px. Show the objectives as short chips: 'haul $800+', 'data core'. Put the recovered guns as two chips with a gun glyph, and drop the sentence 'extract with a haul worth...'.",
-   "P1 header lines under the title: Merge them into one 16px line, 'out clean \u00b7 +297 xp', and drop 'never spotted' (it repeats the 'ghost' tag). That frees about 24px.",
+   "P1 header lines under the title: Merge them into one 16px line, 'out clean · +297 xp', and drop 'never spotted' (it repeats the 'ghost' tag). That frees about 24px.",
    "P2 item chip row: Show a single dashed slot, or none, instead of four. Make the chips 72px. Give the focused chip a 2px --acc outline. Put 32px between the haul number and the row, and align '+11 more' to the row's baseline.",
    "P2 stats row (containers / kills / accuracy / time): Drop the numbers to 20px or fold the stats into the footer line. Raise the label colour to tx-2 at 4.5:1. Remove the lower hairline."
   ],
@@ -836,11 +836,11 @@
   "pass": true,
   "verdict": "the waiting chip now reads cleanly as the one lime thing (image 2 calms the banner to a raised fill with a thin lime tab), but the screen is still a flat wall of same-weight 16px text with a left-heavy offset layout, a faded half-row at the bottom, and a footer that strands 'esc close' in the corner.",
   "findings": [
-   "P1 banner 'press a button for sprint \u00b7 esc cancels': keep the image 2 treatment (--ui-raised fill) with a 3px --acc tab, set text to 20px tx-1, and cut it to 'press a button for sprint'. Move 'esc cancels' to the footer legend at 16px tx-2, and show 'b cancel' on pad.",
+   "P1 banner 'press a button for sprint · esc cancels': keep the image 2 treatment (--ui-raised fill) with a 3px --acc tab, set text to 20px tx-1, and cut it to 'press a button for sprint'. Move 'esc cancels' to the footer legend at 16px tx-2, and show 'b cancel' on pad.",
    "P1 list rows and chips (all categories): category labels 16px tx-2 uppercase-free with +.04em tracking, no bold. Action names 20px tx-1 weight 600. Idle chips use --ui-raised fill and a --ui-line border. Keep --acc only on the waiting chip.",
    "P1 bottom of list, 'world' row (ping, pause): snap the scroll so the focused row is fully visible, or add a 24px gradient mask to --ui-panel. Make the scrollbar 6px --ui-line-hi, with the thumb in tx-2.",
    "P2 left edge alignment: pick one left edge: align the banner and list to x=49 with the title, or centre a 1440px column and align the title to it. Align category labels and action names to the same inset.",
-   "P2 footer 'reset to defaults' and 'esc close': make one 72px footer row: reset on the left, and on the right a legend 'b close \u00b7 y reset' at 16px tx-2 with pad glyphs. Both items are vertically centred on the same line."
+   "P2 footer 'reset to defaults' and 'esc close': make one 72px footer row: reset on the left, and on the right a legend 'b close · y reset' at 16px tx-2 with pad glyphs. Both items are vertically centred on the same line."
   ],
   "pic": "tools/handoff/console/notes/shots/c-31y-after2/75-settings-pad-rebind-waiting-1080.jpg",
   "task": "c-31-ui-pause-settings",
@@ -853,8 +853,8 @@
   "verdict": "the settings card is clean, consistent and all lower case, but the detail pane is a huge empty box, the stepper columns float mid-row, and the list is cut off at the bottom, so it still reads as a template options screen.",
   "findings": [
    "P1 right detail pane (x=1088-1870, y=116-994): Narrow the pane to about 420px and give the freed width to the list. Or keep it full height and add a 56px f-cond 800 hero readout of the current value ('full') in --acc under the 32px title. Put the description 24px below the title at 20px f-body tx-1 and top-align it.",
-   "P1 stepper columns (chevrons x\u2248731 and x\u2248982, value x\u2248857, row x=338-1046): Right-align the cluster to the row edge: chevrons at x\u22481000 and x\u22481030 with a 160px value cell centred between them. Or shrink the list column to about 560px. Make the chevrons 20px, with tx-2 when idle and --acc when the row is focused.",
-   "P1 list bottom (rows 'crosshair' and 'crosshair colour', y\u2248900-994): End the viewport on a multiple of the 56px row height (for example y=952), 16px above the footer. Limit the fade to the last 24px. Make the thumb 6px wide in --ui-line-hi, inset 8px from the border, with a visible track.",
+   "P1 stepper columns (chevrons x≈731 and x≈982, value x≈857, row x=338-1046): Right-align the cluster to the row edge: chevrons at x≈1000 and x≈1030 with a 160px value cell centred between them. Or shrink the list column to about 560px. Make the chevrons 20px, with tx-2 when idle and --acc when the row is focused.",
+   "P1 list bottom (rows 'crosshair' and 'crosshair colour', y≈900-994): End the viewport on a multiple of the 56px row height (for example y=952), 16px above the footer. Limit the fade to the last 24px. Make the thumb 6px wide in --ui-line-hi, inset 8px from the border, with a visible track.",
    "P1 left rail (x=50-313) idle items and 'send play data' (y=555): Set idle items to 20px f-cond 600 tx-2 and the selected item to tx-1 on --ui-raised. Add a 1px --ui-line divider and 24px of space above 'send play data', and mark it as a utility link in 16px tx-2.",
    "P2 focused row 'render resolution' (x=338-1046, y=117-171) and the detail pane top edge (y=116): Inset the list 8px from the top, or add a 1px --ui-line gap. Make the pane's top tab 36px wide, not full-width, so only the focused row carries the strong lime."
   ],
@@ -903,7 +903,7 @@
    "P0 bottom centre, trophy toast over key legend: Move the toast to the top-centre or bottom-right, at least 24px clear of the legend, with an opaque --ui-panel fill. Alternatively, raise the legend 48px, or hide it while a toast shows.",
    "P1 logo 'pillagers': Make the logo flat --tx-1 (#efe9dc) with no shadow, or flat lime. Let the 1 player button be the one saturated element. If the logo stays warm, use it only as the game's art mark and drop the lime elsewhere on the screen.",
    "P1 menu column, 4 mode buttons: Show 1 player and 2 player co-op as the main pair. Move the arcade demos into a quiet tx-2 row or a sub-list at 16px. Cut '(same machine)' to '2 player'. Keep one lime button.",
-   "P1 saves block, y 700-825: Delete the stats line, since the save row already says '1 raid \u00b7 $900'. Put 'change name' and 'create a new save' into a single secondary row with 16px gaps. Add 24px between the mode buttons and the saves label.",
+   "P1 saves block, y 700-825: Delete the stats line, since the save row already says '1 raid · $900'. Put 'change name' and 'create a new save' into a single secondary row with 16px gaps. Add 24px between the mode buttons and the saves label.",
    "P1 fullscreen/settings buttons and save row: Use one idle-button spec: 1px --ui-line-hi border, 4px radius, 16px/600 type, 40px minimum height. Reserve lime for the single focused element. Make the save row's selected state a 3px lime left bar with tx-1 text."
   ],
   "pic": "tools/handoff/console/notes/shots/69-camera/44-title-from-character-select-1080.jpg",
@@ -917,10 +917,10 @@
   "verdict": "The new version only adds a superhot toggle row to the key legend and trims a few lines of copy; the legend is still a big, dense, tiny-text wall that sits over the middle of the playfield and fights with every HUD element.",
   "findings": [
    "undefined key legend (centre panel, 735-1170 x 155-927): Split it into a 2-column card sized to content, max ~60% height, with a 32px title ('controls') and a 48px X plus an esc/B hint. Cut it to the ~12 essential bindings. Use --ui-panel at 90% with a 1px --ui-line-hi border and 24px padding.",
-   "undefined legend text size and contrast: Set rows to 20px (minimum 16px). Key chips in tx-1 with a --ui-raised fill and 1px --ui-line. Descriptions in tx-2 at \u22654.5:1. Section heads at 16px with +.04em tracking in --acc or tx-1, not amber (--warn is for warnings only). Raise the fill to --scrim .80+ so the map does not show through.",
+   "undefined legend text size and contrast: Set rows to 20px (minimum 16px). Key chips in tx-1 with a --ui-raised fill and 1px --ui-line. Descriptions in tx-2 at ≥4.5:1. Section heads at 16px with +.04em tracking in --acc or tx-1, not amber (--warn is for warnings only). Raise the fill to --scrim .80+ so the map does not show through.",
    "undefined legend column alignment and new last row: Render the backtick as a key chip like the others. Add 1px --ui-line dividers on a 48px row pitch. Keep 8px grid spacing between sections. Move 'f1 hide' into a 16px footer legend with a pad glyph.",
    "undefined HUD colour and weight consistency (pillagers list, run info, concealed tag, codex toast): Map every accent to a token: lime --acc for focus only, --warn for warnings, --extract for extraction. Pull the label out from behind the minimap or clip it cleanly. Cap the HUD to the 5-size scale. Dim or hide the legend's backdrop competition.",
-   "undefined run info panel (right, 1585-1900 x 305-445): Use one panel style (same title colour and size for both panels). 16px padding on all sides. Give each objective row a 32px pitch with the count right-aligned in tx-2. Make the chevron \u226524px."
+   "undefined run info panel (right, 1585-1900 x 305-445): Use one panel style (same title colour and size for both panels). 16px padding on all sides. Give each objective row a 32px pitch with the count right-aligned in tx-2. Make the chevron ≥24px."
   ],
   "pic": "tools/handoff/console/notes/shots/cw-shkey-after/90-legend-full-1080.jpg",
   "task": "manual",
@@ -934,7 +934,7 @@
   "findings": [
    "P0 list bottom edge, 'master volume' row and the detail pane above it: Clip the list at a whole row boundary (56px pitch) with 8px of padding above the detail pane. Remove the audio rows from the 'the raid' group. Add a visible scrollbar track 4px wide spanning the full list height, or a fade at the bottom edge.",
    "P0 detail pane at bottom ('superhot mode / time only moves when you act. / key: `(left of 1)'): Show the description only for the focused row, as a single 16px tx-2 line. Move the key hint to a right-aligned keycap chip. Align the text to the row label x (499). Remove the title that repeats the focused row.",
-   "P1 row layout: label at x\u2248499, stepper arrows at x\u2248923 and x\u22481175, values centred at x\u22481049: Put the control block at x\u2248800\u20131100, or right-align it to the row edge (x=1420). Make the chevrons 24px, tx-2, with a lime fill on the focused row. Use 20px/600 for values and make the focused value lime.",
+   "P1 row layout: label at x≈499, stepper arrows at x≈923 and x≈1175, values centred at x≈1049: Put the control block at x≈800–1100, or right-align it to the row edge (x=1420). Make the chevrons 24px, tx-2, with a lime fill on the focused row. Use 20px/600 for values and make the focused value lime.",
    "P1 tab strip ('the raid / audio / controls / controller / display / accessibility' + 'send play data'): Move 'send play data' to the footer as a ghost button or into its own tab content. Set tabs at 20px/600 with 24px side padding and a 48px height. Add LB/RB glyphs at the strip ends.",
    "P1 window card (outer frame) and the centred 960px column: Either widen the list to max 900px with a 5% margin and add a left category rail, or keep the 960px column and drop the full-width dividers. Place the 36px lime top tab inside the header, aligned to the title, or delete it."
   ],
@@ -952,7 +952,7 @@
    "P1 contracts panel: progress bars and right column: Give every bar the same x-range, ending 16px before the right-aligned reward and count column. Use a #2e3337 track with a lime fill. Replace 'holding' with '0/1' or hide the bar on those rows. Keep green for 'done' only.",
    "P2 map labels: 'hot ground', 'encampment' x2, 'extract a' and 'closes in 5:00': Set these labels to 16px/600 with a 2px #0b0c0d halo, or switch 'hot ground' to #efe9dc beside the 20px warn glyph. Lower the ring fill to about 12% alpha. Move 'extract a' and its sub-line 16px down and 12px left of the extract icon to clear the ring.",
    "P2 map, zone names (packing floor, the long dock, the sump, scrap line): Set them at 16px/600 #aaa498 with +.04em tracking and a halo. Pin each to an empty top-left corner of its zone, 8px inside the border. Keep pickup labels #efe9dc.",
-   "P2 header: 'cold storage', 'sector map', 'dawn \u00b7 clear', x: Align 'sector map' to the title's baseline with a 16px gap and set it to 20px #aaa498. Put 'dawn \u00b7 clear' at 16px #aaa498 with a 24px gap to the x. Add a lime focus ring on the x when the pad is on it."
+   "P2 header: 'cold storage', 'sector map', 'dawn · clear', x: Align 'sector map' to the title's baseline with a 16px gap and set it to 20px #aaa498. Put 'dawn · clear' at 16px #aaa498 with a 24px gap to the x. Add a lime focus ring on the x when the pad is on it."
   ],
   "pic": "tools/handoff/console/notes/shots/cw-mapstyle-after3/60-mapfirst-1p-4k.jpg",
   "task": "manual",
@@ -964,11 +964,11 @@
   "pass": false,
   "verdict": "The lime frame, size tag and copy/save actions are clearer than before, but the whole HUD is still at full strength, the controls cheat-sheet still collides with the frame, and the selection is still washed in blue, so it reads as a debug overlay rather than a polished snip mode.",
   "findings": [
-   "P1 controls cheat-sheet (492-902, 697-867): Hide the sheet while snip mode is active. If it must stay, move it at least 16px clear of the frame (top \u2265 735), use 16px #aaa498 text on a 24px row pitch, and add 16px padding so no row is clipped.",
+   "P1 controls cheat-sheet (492-902, 697-867): Hide the sheet while snip mode is active. If it must stay, move it at least 16px clear of the frame (top ≥ 735), use 16px #aaa498 text on a 24px row pitch, and add 16px padding so no row is clipped.",
    "P1 whole HUD (pillagers board, run info, minimap, hotbar, hp/stamina, ammo block, toasts): Fade all HUD to 25% opacity while snipping. Keep only the frame, the size tag and the actions. Show one toast at most.",
    "P1 selection interior (520-1239, 300-719): Remove the blue fill and show the inside at 100%. Dim the outside with --scrim (rgba(6,7,8,.80)). Add 8px square corner handles on the 2px lime border.",
    "P1 copy / save action box (942-1239, 728-802): Drop the outer box and keep the two buttons only. Use 20px 700 labels, 56px high, 16px below the frame, right-aligned to it. Make save transparent with a 1px #4a5257 border. Add a 2px lime focus ring with a 2px offset.",
-   "P2 size tag '720 x 420 px' (520-630, 264-292): Use the panel component: --ui-panel fill, 1px --ui-line-hi border, 4px radius, 16px f-cond 600 text. Sit it flush on the frame's top-left edge. Use '\u00d7'."
+   "P2 size tag '720 x 420 px' (520-630, 264-292): Use the panel component: --ui-panel fill, 1px --ui-line-hi border, 4px radius, 16px f-cond 600 text. Sit it flush on the frame's top-left edge. Use '×'."
   ],
   "pic": "tools/handoff/console/notes/shots/cw-snip2-after/91-snip-panel-raid-1080.jpg",
   "task": "manual",
@@ -996,7 +996,7 @@
   "pass": false,
   "verdict": "the downed plate is now a contained dark card and the career row is a vertical list, but the right column is a crowded stack where the pickup feed, run info, 'extraction available' and the 'concealed' tag overlap each other, and the timer is still not the hero.",
   "findings": [
-   "P0 right column: run info, pickup feed, 'extraction available', 'concealed \u00b7 in cover' tag: stack the right column top to bottom with a fixed 16px gap and a 48px right margin: career list, minimap at about 240px tall, run info, then status. Move the pickup feed out of this column to a separate anchor (above the weapon panel, right-aligned). Give 'extraction available' its own 24px row and drop the concealed tag to its own row or into the weapon panel.",
+   "P0 right column: run info, pickup feed, 'extraction available', 'concealed · in cover' tag: stack the right column top to bottom with a fixed 16px gap and a 48px right margin: career list, minimap at about 240px tall, run info, then status. Move the pickup feed out of this column to a separate anchor (above the weapon panel, right-aligned). Give 'extraction available' its own 24px row and drop the concealed tag to its own row or into the weapon panel.",
    "P0 top-right career list (credits / xp / stash / backpack): shrink rows to 32px with 16px label text, a 240px width, and tx-2 labels with tx-1 values. Hide world labels under HUD panels, or add a 1px dark outline and keep them at least 16px clear of the HUD.",
    "P1 centre downed plate: 'down' at 32px --danger, the timer at 56px tx-1 as the one hero, one 8px --danger bar, then the prompt at 20px with [f] in a lime chip. Use 24px padding and 16px gaps. Give the plate the same 1px --ui-line-hi border and 4px radius as the other panels.",
    "P1 run info panel: cap it at 3 contract lines with 24px padding and 8px row gaps, and use tx-1 for names with tx-2 for counts. Keep colour only for status glyphs.",
@@ -1016,7 +1016,7 @@
    "P0 centre-bottom controls cheat sheet (wasd / ctrl / lmb ... f1 full list): Show it only for the first run or on hold of f1. Remove it from the default raid view. If it stays, cut it to 4 essentials at 16px with tx-1 keys and tx-2 actions.",
    "P1 hp bar and stamina bar (bottom-left): Make the hp bar 12px taller with one flat style. Use a danger fill (#e5482f) over a dark track, a 56px hero number, and a pulse below 25 hp. Make stamina a thin 6px bar, and drop the 'standing' tag or turn it into a small glyph. Align the three to the left 48px margin.",
    "P1 panel styling across the screen (pillager bots list, run info, key list, ammo card, hotbar): Use one panel: --ui-panel at 90%, a 1px --ui-line-hi border, a 4px radius and 16px padding. Titles use tx-2 at 16px. Reserve the lime accent for focus and the main action. Turn the amber callouts into warn-coloured text or plain tx-1.",
-   "P1 scattered callouts (extract 152m, running slowly x2, codex entry, concealed \u00b7 in cover): Show a status callout once, in one slot (a 24px strip under the timer). Use one pill style at 16px and 8px padding. Put toasts in a single stack at bottom-left. Fix the clipping of 'concealed \u00b7 in cover' with a 48px right margin and remove the ghost text. Keep the timer at the 56px hero size with a dark backing."
+   "P1 scattered callouts (extract 152m, running slowly x2, codex entry, concealed · in cover): Show a status callout once, in one slot (a 24px strip under the timer). Use one pill style at 16px and 8px padding. Put toasts in a single stack at bottom-left. Fix the clipping of 'concealed · in cover' with a 48px right margin and remove the ghost text. Keep the timer at the 56px hero size with a dark backing."
   ],
   "pic": "tools/handoff/console/notes/shots/c-02-r19/36-raid-low-health-1080.jpg",
   "task": "manual",
@@ -1319,7 +1319,7 @@
    "P1 left list, top: Pin the back/count header outside the scroll region, 56px tall, with a 1px --ui-line divider. Clip rows to start below it, or add a 16px fade at the scroll edge.",
    "P1 orbital debris row, focused: Use one focus treatment: a 3px lime left bar, a --ui-raised row fill, and a lime 1px outline on the value chip only. Draw the chevrons in --tx-2, 20px, 8px from the chip. Remove the white bracket and the outer 2px rounded frame.",
    "P1 right detail pane: Drop the duplicate chip. Show a 56px hero state ('off' in lime or --tx-2), and put the 'starts next raid' note in the footer at 16px. Or narrow the pane to about 480px and give the list the rest of the width.",
-   "P1 row value chips, x\u2248940: Right-align the chips at 24px padding from the row edge, with a fixed 64px width. Draw 'on' quiet in --tx-2 with no border, and give 'off' a --warn outline, so the exceptions are the ones that read.",
+   "P1 row value chips, x≈940: Right-align the chips at 24px padding from the row edge, with a fixed 64px width. Draw 'on' quiet in --tx-2 with no border, and give 'off' a --warn outline, so the exceptions are the ones that read.",
    "P2 list row spacing: Add 16px --tx-2 group labels ('field', 'threats', 'quality of life') with a 1px divider, or remove the gaps. Set a uniform 56px row height and vertically centre the chip and name."
   ],
   "pic": "tools/handoff/console/notes/shots/61-experimental-menu-recipes-2/80-experimental-middle-1080.jpg",
@@ -1328,20 +1328,20 @@
   "need": 3
  },
  "29-settings-scroll-1800": {
-  "score": 2,
-  "pass": false,
-  "verdict": "A clean, consistent dark card in the right palette, but the scrolled controller page has a clipped focused row, mismatched tab and row state, a dead detail pane and a very flat hierarchy.",
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The focused row now sits with context above it and the detail pane is tighter, but the settings screen is still one flat list of identical rows, and the clipped top row and unlabelled gap leave it short of polished.",
   "findings": [
-   "P0 settings list, top edge: Scroll so the focused row is fully inside the viewport with at least 8px above it. Keep the row pitch at 56px with no gap after the focused row. Draw a fade mask of about 24px at the top and bottom of the list.",
-   "P1 settings list, bottom edge: Clip the list at a whole-row boundary or fade the last row over 24px. Make the scrollbar 8px wide in --ui-line-hi, with the thumb in --tx-2.",
-   "P1 left tab column, 'controller' tab: Show only controller options under 'controller', and move the display rows under 'display'. Give the active tab a dimmer lime marker, or a --ui-raised fill with no bar, while the list row holds the lime focus bar.",
-   "P1 right detail pane: Anchor the description directly under the title, 16px below it. Use tx-1 at 20px. Shorten it to a few words such as 'pad rumble strength'. Or narrow the pane to about 480px and give the list more width.",
-   "P1 settings rows (label, arrows, value): Right-align the value and arrows as a group, with the arrows 16px from the value. Set the label in tx-1 and the value in tx-2 (lime only on the focused row). Make the arrows 20px. Add a 1px --ui-line divider on every row."
+   "P1 settings list top edge: Clip the scroll area on whole rows, or add a 24px fade mask at the top and bottom. Align the scroll offset to the 56px row pitch so the top row is never sliced.",
+   "P1 list between 'vibration strength' and 'render resolution': Put a 16px label such as 'graphics' (tx-2, +.04em) in the gap, or move the graphics settings to the display tab. Cut the gap to 24px.",
+   "P1 detail pane, right side: Narrow the pane to about 30% of the card, or fill it with the current value, its default and a small preview. Keep the description short, at most 8 words.",
+   "P2 row hierarchy: Make labels tx-2 at weight 600 and values tx-1 at weight 800. Add 16px group headers every 5 to 6 rows.",
+   "P2 focused row: Extend the focus fill to the full list width. Make the scrollbar 6px wide in --ui-line-hi, or show a scroll-position count."
   ],
-  "pic": "tools/handoff/console/notes/shots/69-camera/29-settings-scroll-1800-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/107-after2/29-settings-scroll-1800-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T03:34",
-  "need": 3
+  "when": "2026-10-24T19:24"
  },
  "81-experimental-bottom": {
   "score": 2,
@@ -1365,7 +1365,7 @@
   "verdict": "The layout is clean and readable, but the list scrolls with a stray header, the focus stepper is heavy and misaligned, and the right pane is mostly empty.",
   "findings": [
    "P0 list top, 'back' row and scroll clip: Delete the in-list back button, since the x and esc already close. Pin the '28 features' count in a fixed 48px sub-header and clip the scroll region cleanly below it with no partial rows.",
-   "P0 focused row 'needed-item glow': Keep the 3px lime left bar and the --ui-raised row fill. Keep the toggle at its idle size and only change its border to lime. Drop the glow and the outer box. Show the arrows \u2039 \u203a at 16px tx-2 inside the same 32px pill, with no bracket.",
+   "P0 focused row 'needed-item glow': Keep the 3px lime left bar and the --ui-raised row fill. Keep the toggle at its idle size and only change its border to lime. Drop the glow and the outer box. Show the arrows ‹ › at 16px tx-2 inside the same 32px pill, with no bracket.",
    "P1 right detail pane: Remove the duplicate 'on' button, or turn it into a read-only status word. Set the description at 20px tx-1. Set the two status lines at 16px tx-2 with a 16px gap. Keep the lime top tab to 36px wide, not full width.",
    "P1 toggle column x~915-970 and row alignment: Right-align the pills at 24px from the list edge. Make 'off' states dim and 'on' states lime-ink on a filled pill so state scans. Give every row an exact 56px, and add a 16px label for any group break instead of a blank gap.",
    "P1 type sizes: Set row names to 20px f-cond 600. Set every read-aloud line to a minimum of 16px in --tx-2 (#aaa498) and keep 14px for the version stamp only."
@@ -1400,7 +1400,7 @@
    "P1 right detail pane: Remove the duplicate 'on' pill. Show the description at 20px tx-1, then a 16px label/value pair block ('applies  next raid', 'this raid  off') in tx-2 at 4.5:1 or better. Anchor the block to the top and cut the pane height, or fill it with a short state summary.",
    "P1 left list, top edge: Put the back and the '28 features' count in a fixed 56px header band outside the scroll area, with a clean 1px divider. Or drop 'back' entirely, since the X and the esc legend already cover it. Clip the scroll region below the header.",
    "P2 list rows: Use a fixed 56px row pitch. Add 16px tx-2 group headers (e.g. 'raid', 'machines') with 24px above them where groups change. Remove the stray gaps.",
-   "P2 toggle pills, right-aligned at x\u2248940: Right-align the pills 24px from the panel edge. Style on as lime text with a 1px lime border and off as tx-2 on a --ui-line border, so state reads at a glance."
+   "P2 toggle pills, right-aligned at x≈940: Right-align the pills 24px from the panel edge. Style on as lime text with a 1px lime border and off as tx-2 on a --ui-line border, so state reads at a glance."
   ],
   "pic": "tools/handoff/console/notes/shots/61-experimental-menu-recipes-2/83-experimental-guest-1080.jpg",
   "task": "61-experimental-menu",
@@ -1417,7 +1417,7 @@
    "P1 '***experimental feature may glitch***' under 'the last pour': Delete it, or replace it with a 16px 'beta' tag in tx-2 inside the label chip. Drop the asterisks. Leave 8px between the chip and the ring.",
    "P1 'enter raid!' label: Use --fs-title 32px f-cond 800 in a lime-bordered chip (2px --acc border, --ui-panel fill, 4px radius, 16px padding). Remove the '!'. Keep the lime fill only on the focus bar. Centre the chip on the station's x, 16px above the sprite.",
    "P2 station labels (gambler, mainframe, shop, settings, stash, fashion, last pour): Use one 20px f-cond 600 label with 12px/8px padding, placed 12px above each station's top edge. Use a --ui-panel fill at 90% so the glow does not wash it out. Move the trophy toast clear of the stash chip.",
-   "P2 bottom centre: trophy toast and key-hint chips: Move the toast up to y\u2248120, centred under the title card, and give it a 3px --acc left tab. Keep the key-hint strip as the only bottom element at 16px. Use the same 4px radius, 1px --ui-line-hi border and 12px padding on both."
+   "P2 bottom centre: trophy toast and key-hint chips: Move the toast up to y≈120, centred under the title card, and give it a 3px --acc left tab. Keep the key-hint strip as the only bottom element at 16px. Use the same 4px radius, 1px --ui-line-hi border and 12px padding on both."
   ],
   "pic": "tools/handoff/console/notes/shots/89-hub-floor-after/39-hub-after-raid-1080.jpg",
   "task": "89-hub-floor",
@@ -1520,36 +1520,36 @@
   "need": 3
  },
  "73-settings-sec-accessibility": {
-  "score": 2,
-  "pass": false,
-  "verdict": "the card shell is clean and on-token, but the page is a long undifferentiated list with a stray full-width lime button that outshouts everything, a focus state that is ambiguous across the rail and the list, and an explaining paragraph in the detail pane.",
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The new screen is cleaner, with one focus, the lime pick-file slab gone and a short description. But the focused row has lost its fill and bar, the settings list is a flat wall of same-weight rows, and the right pane is mostly empty.",
   "findings": [
-   "P0 restore from a backup row, 'pick file' button: make it a normal row with a 160x40 outlined button (1px --ui-line-hi, tx-1 text) in the value column at x~857. Fill lime only on focus. Keep one lime fill per screen.",
-   "P0 left rail: 'display' (filled, lime bar) and 'accessibility' (lime outline box): one focus style everywhere: 4px lime left bar plus --ui-raised fill. The selected tab gets tx-1 text and a 2px lime underline or bar only, the focused item gets the full fill. Show focus in one zone at a time and dim the rest.",
-   "P1 right detail pane: title and the current value (hero 56px 'off') at the top, one short line of 16-20px tx-2 directly beneath at y+16 (e.g. 'recolours rarity and marks'). Cut the red-green and blue-yellow explanation. Remove the dead gap.",
-   "P1 settings list, rows 1-9 vs 10-14: fixed 56px rows, 1px --ui-line divider on every row, labels tx-2 at 20px/600, values tx-1 at 20px/700 right-aligned to one column. Use arrows only when focused. Put group headers (16px tx-2, +.04em) between groups instead of random gaps.",
-   "P1 list length and scroll: split into saves/tools and dev pages, so accessibility holds 5 rows or fewer. Make the scrollbar 6px, tx-2 at 40%, inset 8px from the edge. Even the rail rows at 64px with no orphan gap."
+   "P1 colour-blind mode row (first row, focused): Restore the --ui-raised row fill and a 3px --acc bar on the left edge. Add 16px top padding in the scroll list so the focused row never touches the panel border.",
+   "P1 right detail pane: Show the current value at hero size (56px, f-cond 800, lime) under the title. Add a 16px tx-2 hint line such as 'left / right change'. Alternatively narrow the pane to about 480px and give the list the extra width.",
+   "P1 settings list rows: Add 16px tx-2 group labels with 32px spacing above them ('visual', 'player 2', 'data', 'dev'). Give every row the same 56px height and drop the stray blank bands. Give every value cell the same style: tx-1 for the value, with chevrons only on the focused row.",
+   "P1 pick file button: Put 'restore from a backup' and a 160x40 outlined 'pick file' button on one 56px row, with the button right-aligned in the value column. Use the lime fill only on focus.",
+   "P2 left nav rail: Remove the odd 24px gap, or add a 1px divider and a 'data' group label there. Set a 56px row height on every tab for consistent rhythm. Reduce the rail to about 220px."
   ],
-  "pic": "tools/handoff/console/notes/shots/69-camera/73-settings-sec-accessibility-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/107-after2/73-settings-sec-accessibility-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T03:39",
-  "need": 3
+  "when": "2026-10-24T19:23"
  },
  "27-settings-scroll-600": {
-  "score": 2,
-  "pass": false,
-  "verdict": "A clean dark card with a lime focus bar, but the focused row is clipped at the top, the audio list runs on into controls rows with no section break, and the detail pane is mostly empty. It reads as a functional dump, not a polished menu.",
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The focused row now sits fully inside the list with no clipping at the top or bottom, which fixes the worst flaw of the old shot, but the screen is still a flat template with a mostly empty detail pane and weak section structure.",
   "findings": [
-   "P0 focused row 'master volume', top of list: Scroll so the focused row is fully visible. Keep at least 8px of padding above and below it and clip the list on whole-row boundaries, not mid-row. Add a 56px row minimum.",
-   "P0 middle list, rows from 'keys' to 'pause when the window loses focus': Add a 16px-label section header ('controls') in tx-2 with a 24px gap above it, or split the content by nav tab so the 'audio' tab shows only audio rows. Fade or clip the bottom row on a row boundary.",
-   "P1 right detail pane: Vertically anchor the description right under the title (title, 16px gap, text). Show the current value as a 56px hero number or a slider preview. Drop the sentence, or shrink the pane to about 30% width and widen the list.",
-   "P1 value column, chevrons: Show chevrons only on the focused row, in lime and 20px. Render volume values as a 120px bar with a lime fill. Keep idle values in tx-1 and make the focused value lime.",
-   "P1 left nav: Put a 1px --ui-line divider and 24px space above 'send play data', or move it to the footer. Use 20px labels, tx-1 on the selected tab, and a --ui-raised fill with a 3px lime bar full row height."
+   "P1 right detail pane: Put the current value at 56px hero size (f-cond 800, lime) under the 32px title, then show a 12px volume bar or a preview below it. Or narrow the pane to about 480px and give the list the extra width.",
+   "P1 list rows, value column: Narrow the row so the label and value are at most 420px apart, and enlarge the chevrons to 24px. Draw volume rows with a thin 6px fill bar. Leave idle values in tx-1 and make only the focused value lime.",
+   "P1 audio and controls groups, y≈585-620: Add a 16px tx-2 section label ('controls') above the keys row and move those rows to the controls tab. Fade the bottom 32px of the list to the panel colour.",
+   "P2 focus row (music volume): Raise the focus fill to #262b2f or draw a 1px lime-at-30% top and bottom edge. Drop the lighter border.",
+   "P2 left tab column: Make the selected tab text lime or tx-1 at full strength. Pin 'send play data' to the bottom of the column, or fold it into 'saves and tools'."
   ],
-  "pic": "tools/handoff/console/notes/shots/69-camera/27-settings-scroll-600-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/107-after2/27-settings-scroll-600-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T03:40",
-  "need": 3
+  "when": "2026-10-24T19:23"
  },
  "j8-p1-pad-lost": {
   "score": 3,
@@ -1669,10 +1669,10 @@
   "verdict": "The hub reads as a prototype, not a polished menu: the room labels are all the same size and weight, the top HUD text is tiny and scattered, and a capital letter, an explaining sentence and a clipped caption sit next to the player.",
   "findings": [
    "P0 the last pour label and its caption: Delete the sentence. If a flag is needed, use a 16px f-cond tag 'experimental' in --warn on a --ui-panel chip, 8px below the label, with no asterisks.",
-   "P0 top-left title block 'the undercroft / 0 items in stash \u00b7 0 runs': Place the title at x=48, y=40 (the 5% margin) in f-cond 700 32px --tx-1. Put the subline below it in 16px --tx-2 with 8px between. Keep the 'stash' figures out of this block, since they repeat in the top right.",
+   "P0 top-left title block 'the undercroft / 0 items in stash · 0 runs': Place the title at x=48, y=40 (the 5% margin) in f-cond 700 32px --tx-1. Put the subline below it in 16px --tx-2 with 8px between. Keep the 'stash' figures out of this block, since they repeat in the top right.",
    "P1 top-right HUD: $900 / 0 xp / stash $0 bag $0: Switch to the cw-trcol vertical list: every row 20px f-cond 600, label in --tx-2 at 16px, value in --tx-1 right-aligned, 8px row gap, 48px from the right edge. Use one --ui-panel at 90% with 1px --ui-line-hi.",
    "P1 station labels (wirt the gambler, enter raid!, the mainframe, shop craft and hire, settings, the stash, the last pour, fashion): Make secondary labels 20px f-cond 600 --tx-1 on --ui-panel, with 8px/16px padding and a 4px radius. Make 'enter raid' the one 32px label with a 2px lime (--acc) top tab, and drop the '!'. Add a 3px --ui-void halo or move the labels out so they do not cover NPCs.",
-   "P1 bottom centre: 'in pillager's party' chip and 'l stick walk \u00b7 ls jog \u00b7 a use station' legend: Put the legend in a --ui-panel strip at 16px f-cond --tx-2 with key glyphs in --tx-1, centred 16px above the hotbar. Move the party chip to the top-left under the title, so it is a status, not a floating tooltip."
+   "P1 bottom centre: 'in pillager's party' chip and 'l stick walk · ls jog · a use station' legend: Put the legend in a --ui-panel strip at 16px f-cond --tx-2 with key glyphs in --tx-1, centred 16px above the hotbar. Move the party chip to the top-left under the title, so it is a status, not a floating tooltip."
   ],
   "pic": "tools/handoff/console/notes/shots/o-08-pad-owner-after/j7-hub-p2-pad-owner-1080.jpg",
   "task": "manual",
@@ -1687,7 +1687,7 @@
    "P0 bottom centre, between the pad legend and the hotbar: Hide the legend during live play. Show it only on hold-view or in the first 10 seconds, as a single-row 16px hint strip. Keep the toast stack at least 24px clear of the hotbar top.",
    "P0 left middle, bottom left, top centre: Use one toast component, anchored in one place, and de-duplicate by id. Remove the centre pills for events already in the left stack. Delete 'gold glow marks the box'. Use one 4px radius, one --ui-panel fill, and a 3px left tab for the type.",
    "P1 top-right career list, minimap, run info: Use equal 40px rows with a label in tx-2 at 16px and a value in tx-1. Add a label to the first row, for example 'cash'. Put 16px gaps between the stack, the minimap and run info, and a 5% margin from the screen edge.",
-   "P1 run info panel, 'concealed \u00b7 in cover' tag, 'extraction c available': Put all status tags in one right-aligned column of 8px-gap pills, with --warn for the warning glyph only. Add 8px between run info and the extraction line. Use tx-2 for objective lines, and lime only for the active one.",
+   "P1 run info panel, 'concealed · in cover' tag, 'extraction c available': Put all status tags in one right-aligned column of 8px-gap pills, with --warn for the warning glyph only. Add 8px between run info and the extraction line. Use tx-2 for objective lines, and lime only for the active one.",
    "P1 hp / stamina bars, bottom left: Put hp and stamina in one --ui-panel card with a 1px border, 8px padding and 4px radius. Use 16px labels left-aligned and the number at 32px. Keep a fixed 24px gap from the hotbar and the screen edge."
   ],
   "pic": "tools/handoff/console/notes/shots/o-08-pad-owner-after/j7-raid-p1-pad-owner-1080.jpg",
@@ -1717,7 +1717,7 @@
   "verdict": "The 61b version fixes the repeated chip and the double focus box, but 28 lime 'on' chips now outshout everything, and the actual focus is a faint row tint that is hard to see.",
   "findings": [
    "P0 every row's 'on' chip: Make the 'on' state quiet: tx-1 text on a transparent chip with a 1px --ui-line-hi border, or a small 8px lime dot plus 'on' in tx-1. Show 'off' in tx-2. Keep a lime fill only for the focused row's control.",
-   "P0 focused row 'run goals': On the focused row, add a 2px --acc outline or a full-width 4px lime left bar. Raise the row fill to #262b2f and make the label 22px with tx-1 at 100%. Show the \u2039 \u203a arrows on the focused row only, in lime.",
+   "P0 focused row 'run goals': On the focused row, add a 2px --acc outline or a full-width 4px lime left bar. Raise the row fill to #262b2f and make the label 22px with tx-1 at 100%. Show the ‹ › arrows on the focused row only, in lime.",
    "P1 chip column position: Right-align chips to the row's inner padding of 24px, which is x~1014. Use a fixed 56x32 chip so every row aligns to the same right edge.",
    "P1 bottom row 'elite affixes': Use a clean 24px fade mask on the list, applied to the chip too, or clip the list at a row boundary. Make the scrollbar 6px wide in --ui-line-hi, and add a position indicator, e.g. '1 / 28' in the header in place of '28 features'.",
    "P1 detail pane: Put the on/off state in the pane as a 56px hero word ('on' in lime, 'off' in tx-2) under the title, then the description at 20px. Raise 'starts next raid' to 16px tx-2. Pin it to the bottom of the pane as a note, or drop it."
@@ -1749,7 +1749,7 @@
   "need": 3,
   "verdict": "A near-empty full-screen card whose content is a stray hero line and three plain rows floating in dead space, with no real hierarchy, no readable release notes, and a hard-to-see close button.",
   "findings": [
-   "P0 card body, left column 'new in v0.0993': Remove it, or fold it into the title row as a 16px tx-2 tag ('v0.0993') right of 'what's new'. Start the list at y\u2248216 (title divider + 40px) and give it the full card width.",
+   "P0 card body, left column 'new in v0.0993': Remove it, or fold it into the title row as a 16px tx-2 tag ('v0.0993') right of 'what's new'. Start the list at y≈216 (title divider + 40px) and give it the full card width.",
    "P0 whole card, 1726x926 with about 60% empty: Top-align the list at 216px, with rows 72px tall at 20px type and 16px gaps. Add a 16px tx-2 sub-line under each row (e.g. where to find it). If the card must stay 90%, fill with a latest-first list of older versions, grouped under 16px section labels.",
    "P1 rows 1-3 (x 901-1799): Make rows non-interactive: drop the raised fill and lime bar, and use tx-1 20px text with line dividers. Or make them open a detail pane, with the focused row in --ui-raised and the detail in a pane on the left, replacing the hero. Drop the numerals and use a 6px lime dot or nothing.",
    "P1 close button top-right (1751-1799, 121-169): Set the title to 32px/700. Make the x glyph 24px in tx-1 inside a 48px box with a 1px --ui-line-hi border and a 2px --acc focus ring. Add a 16px tx-2 'esc' hint left of it, or a live pad button glyph.",
@@ -1784,7 +1784,7 @@
    "P1 map area, labels: Cut the labels to the extracts, the player and the 3-4 key places. Show room names only on hover or focus, or at 14px tx-2 with no chip. Give every chip the same 4px radius, 6px by 3px padding and 80% --ui-panel fill. Move 'locked' into a small lock glyph.",
    "P1 hierarchy, whole card: Drop the 'contracts' header to 20px f-cond 600 in tx-2, or make it a 16px label. Cut the hot-ground fill from about 25% to 12% opacity and keep the dashed outline. Keep the extract names at 20px but make the 'closes in' lines 16px tx-2.",
    "P1 contracts list rows: Put the reward on the first line at 20px tx-1, and the progress as a 16px tx-2 line on the left under the name. Make the accent bar 3px lime on the active rows and label it ('active'). Use a uniform 72px row pitch with a 1px --ui-line divider, and give the 'holding' text --ok at 16px with a 4.5:1 contrast check.",
-   "P1 header row: Set both to 16px f-cond 600 tx-2 and baseline-align them to the title. Put 'dawn \u00b7 clear' next to the X with a 16px gap. Give the X button the --ui-line-hi border at 1px and a 48px hit box.",
+   "P1 header row: Set both to 16px f-cond 600 tx-2 and baseline-align them to the title. Put 'dawn · clear' next to the X with a 16px gap. Give the X button the --ui-line-hi border at 1px and a 48px hit box.",
    "P2 footer, bottom left: Put it in a pill of 16px tx-2 text with a thin 120px progress bar. Or merge it into the map panel's corner. Keep the footer to a 72px row with 24px padding."
   ],
   "pic": "tools/handoff/console/notes/shots/85-preraid-map-no-cache-labels-recipes-4/85-after-mapfirst-1080.jpg",
@@ -1797,7 +1797,7 @@
   "need": 3,
   "verdict": "The HUD is readable and all lower case, but it is a pile of small, dim, unrelated boxes with no hero element, and the type sizes, panels and accent colours don't follow the guide.",
   "findings": [
-   "P0 top-right: career box and run info box: Cut run info to a 16px label row ('night \u00b7 storm'). Move the effect text to a tooltip or delete it. Show contracts as three rows at 16px with a right-aligned count. Build the career block as one list of equal rows (cash, stash, backpack, xp) using the same panel (--ui-panel 90%, 1px --ui-line-hi, 4px radius, 16px padding). Align it to the 48px margin.",
+   "P0 top-right: career box and run info box: Cut run info to a 16px label row ('night · storm'). Move the effect text to a tooltip or delete it. Show contracts as three rows at 16px with a right-aligned count. Build the career block as one list of equal rows (cash, stash, backpack, xp) using the same panel (--ui-panel 90%, 1px --ui-line-hi, 4px radius, 16px padding). Align it to the 48px margin.",
    "P1 center top: 8:59 timer and 'extract 166m' chip: Make the timer 56px f-cond 800 in --tx-1 (--fs-hero). Make the extract chip 20px with 8px padding. Delete the storm banner sentence and keep only a 16px 'storm' tag. Leave 16px between the timer and the chip.",
    "P1 bottom-right ammo card 'scav pistol 12 / 24' and 'b / i backpack': Right-align the name, ammo and items line on one 24px inner margin. Move 'b / i backpack' to a 14px muted legend under the card, or into a key chip like the 'f' and 'use' chips. Set the name to 20px --tx-2 and the numerals to 56px 800, with 12 in --tx-1 and '/ 24' in --tx-2. Make the accent tab 36px wide by 2px, flush with the card edge.",
    "P1 hotbar, bottom centre: Draw the owned guns at 100% and the empty slots at 35%. Make the key numbers 16px. Use the --acc lime 2px border for the active slot only, and drop the blue fill on 4 (use a 3px rarity bar at the bottom edge). Place the 'fire / use' hints with an 8px gap above the bar at 16px, or move them next to the ammo card.",
@@ -1816,7 +1816,7 @@
    "P0 top-right stack (cash/stash, run info, contracts): Collapse it into one vertical list with every row the same size. Use 20px values in tx-1 and 16px labels in tx-2, with 8px row padding. Remove the 'night foggy / sight -40%' block, or reduce it to one icon row. Show at most one active contract line.",
    "P0 top-left 'current pillager bots 3' scoreboard: Use one header colour (tx-2) and white rows. Mark 'you' with a 3px lime left bar on a --ui-raised row fill. Keep the purple only if it is a per-player tint, but the owner has not answered that question, so drop it. Match the 1px --ui-line-hi border and 4px radius to the other panels.",
    "P1 whole HUD, panel family: Use one panel component: --ui-panel at 90%, 1px --ui-line-hi, 4px radius, 16px padding, no slanted corner. Put the lime 3px tab only on the weapon panel as the star.",
-   "P1 colour use: amber text, teal pill, lime, cyan 'extraction c available', green hp, blue stamina: Keep the colours semantic: --extract teal only for the extract timer and prompt, --warn amber only as a small glyph, lime only for focus and the active weapon. Make 'concealed \u00b7 in cover' tx-1 with a small amber glyph. Make the amber panel header tx-2.",
+   "P1 colour use: amber text, teal pill, lime, cyan 'extraction c available', green hp, blue stamina: Keep the colours semantic: --extract teal only for the extract timer and prompt, --warn amber only as a small glyph, lime only for focus and the active weapon. Make 'concealed · in cover' tx-1 with a small amber glyph. Make the amber panel header tx-2.",
    "P1 bottom-left 'standing' / stamina / hp: Make hp 16px thin and secondary, with a 20px numeric value in tx-1 inside a 12px bar. Make stamina a 6px bar in tx-2. Fold 'standing' into the bar label, or make it a plain 16px tx-2 word. Put both in one 5%-margin group aligned to the hotbar's left edge."
   ],
   "pic": "tools/handoff/console/notes/shots/86b-pix-ground-recipes-1/86b-raid-night-1080.jpg",
@@ -2328,7 +2328,7 @@
    "P1 top-right career block, minimap, run info and extraction chip: Put all four in one column of the same width (about 300px). Give each the same panel treatment: --ui-panel at 90%, 1px --ui-line-hi border, 4px radius, 16px padding, 8px gap. Make the career rows a vertical list of 20px label and value pairs. Align the extraction chip to the same left and right edges.",
    "P1 hierarchy across the HUD: Make hp the bigger of the two bars (28px high, 20px bold label). Make stamina a 10px thin bar with no inside label. Keep the ammo as the hero. Cut the timer to 32px so it stays secondary.",
    "P1 current pillager bots list (top-left), with a clipped ghost panel beneath it: Remove or fix the orphaned panel behind the list. Give the list 16px padding and the same 4px radius as other panels. Align it to the same 48px left margin as the standing chip and toasts. Use 16px minimum text with a 20px name column.",
-   "P1 toasts and tags: codex entry, contract item nearby, running slowly, concealed \u00b7 in cover, extraction c available: Define one chip: 32px high, 4px radius, 12px horizontal padding, 16px label, an optional 3px left accent bar. Use it for all five. Put status chips (running, concealed) in a fixed row above the hp bar instead of floating or right-anchored. Drop the double-dot separators.",
+   "P1 toasts and tags: codex entry, contract item nearby, running slowly, concealed · in cover, extraction c available: Define one chip: 32px high, 4px radius, 12px horizontal padding, 16px label, an optional 3px left accent bar. Use it for all five. Put status chips (running, concealed) in a fixed row above the hp bar instead of floating or right-anchored. Drop the double-dot separators.",
    "P2 bottom hotbar: Raise the slot numbers to 16px. Drop empty-slot silhouettes to about 25% opacity and remove the empty bar. Give the selected slot a 2px --acc border and a raised fill. Leave 8px between the hint line and the slots, or move the hint above at 16px."
   ],
   "pic": "tools/handoff/console/notes/shots/90-colour-cue-backups-recipes-3/shape-cues-after-minimap-greyscale-1080.jpg",
@@ -2360,7 +2360,7 @@
    "P1 top-right stack (cash/xp/stash/backpack, run info, contracts): Make the stack one panel width with 24px padding. Put contracts on single-line rows with a 16px minimum. Drop the repeated backpack value. Leave the cash number at tx-1 600 and everything else tx-2. Keep a 24px margin from the screen edge.",
    "P1 ammo block bottom-right (12 / 24): Use panel fill #16191b at 90% with a 1px #4a5257 border and a 3px --acc tab on the left. Set 12 at 56px/800 and /24 at 20px tx-2. Put the backpack line on a single 16px baseline in tx-2, aligned to the panel's 24px padding.",
    "P1 hotbar bottom-centre: Draw the selected slot with a 2px --acc border and a --ui-raised fill. Render empty slots at 40% opacity with the silhouettes removed. Raise the tooltip to 16px with 8px padding and a panel behind it, and move 'fire' and 'use' to key-hint chips.",
-   "P1 HUD copy and messages (contract item nearby \u00d72, codex entry, extract 152m): Remove one of the two and drop the 'gold glow marks the box' clause. Use one toast component: --ui-panel fill, 1px border, a 16px label, and a 24px icon slot. Stack toasts at a 24px margin from the left edge.",
+   "P1 HUD copy and messages (contract item nearby ×2, codex entry, extract 152m): Remove one of the two and drop the 'gold glow marks the box' clause. Use one toast component: --ui-panel fill, 1px border, a 16px label, and a 24px icon slot. Stack toasts at a 24px margin from the left edge.",
    "P2 bottom-left vitals (standing, stamina, hp 100): Use equal 12px bars. Put the labels above the bars at 16px/600. Show hp at 32px in tx-1 on the left. Give the 'standing' chip the toast component styling."
   ],
   "pic": "tools/handoff/console/notes/shots/90-colour-cue-backups-recipes-3/shape-cues-after-world-side-p1-greyscale-1080.jpg",
@@ -2407,7 +2407,7 @@
   "findings": [
    "P1 top-right run info and contracts panel: Use one row per contract: a 16px tx-2 label on the left and the count right-aligned in tx-1. Put a 1px --ui-line divider between contracts and a 16px gap between the cash panel and run info. Make the header 16px, tx-2, +.04em, so the rows read first.",
    "P1 HUD panels, all four corners: Apply one panel spec: --ui-panel at 90%, 1px --ui-line-hi border, 4px radius, 16px padding. Use the same 14-16px type for every header, and show the chevron on every collapsible panel or on none.",
-   "P1 amber text on warm terrain: 'concealed \u00b7 in cover', pillager names, 'current pillager bots 3': Put status chips on --ui-panel at 90% with a 1px border. Use tx-1 for the text, with a 3px --warn bar on the left as the only amber. Use tx-1 for panel headers and keep lime or amber for focus only.",
+   "P1 amber text on warm terrain: 'concealed · in cover', pillager names, 'current pillager bots 3': Put status chips on --ui-panel at 90% with a 1px border. Use tx-1 for the text, with a 3px --warn bar on the left as the only amber. Use tx-1 for panel headers and keep lime or amber for focus only.",
    "P1 bottom-left hp, stamina and standing: Use 16px tx-1 labels inside or beside the bars. Use one 56px hero number only where it matters, the ammo, and keep hp at 32px. Make the bars 12px high, with the damage segment in --danger at 60%. Align 'standing' flush to the bar's left edge, 8px above it.",
    "P2 bottom-right ammo block: Set the secondary lines to 16px --tx-2 with 4.5:1 contrast. Move the lime tab to the left edge at full height, or remove it. Use 24px padding on all sides."
   ],
@@ -2438,7 +2438,7 @@
   "verdict": "The easy-mode question is a small, flat, translucent box dropped mid-raid over a busy map, with a tiny prompt that is hard to read and no real choice buttons, so it looks like a debug overlay and not a designed card.",
   "findings": [
    "P0 easy mode card, centre (618,263 to 1302,411): Fill it with solid #16191b at 95% or more, use a 1px #4a5257 border, 4px radius and 24px padding. Dim the whole screen behind it with --scrim rgba(6,7,8,.8). Cut the box to about 560x220 and centre it.",
-   "P0 answer line 'y yes \u00b7 n no \u00b7 12': Add two 20px buttons side by side, 160x48 each. 'yes' gets the lime #e6ff3d fill with #11150a text. 'no' gets a 1px #4a5257 outline. Put the key or pad glyph inside each button ('y' / 'n' on keyboard, 'a' / 'b' on pad). Show the countdown as a 16px ring or number on the right, labelled for example '12s'.",
+   "P0 answer line 'y yes · n no · 12': Add two 20px buttons side by side, 160x48 each. 'yes' gets the lime #e6ff3d fill with #11150a text. 'no' gets a 1px #4a5257 outline. Put the key or pad glyph inside each button ('y' / 'n' on keyboard, 'a' / 'b' on pad). Show the countdown as a 16px ring or number on the right, labelled for example '12s'.",
    "P1 title 'want easy mode?': Set the title to 32px tx-1 #efe9dc, f-cond 700, left aligned at the 24px padding. Add one 16px tx-2 line such as 'more hp, slower foes' only if the real effect is short. Drop the teal border and use #4a5257.",
    "P1 card placement and timing, centre of the live raid: Hide the controls cheat sheet and run info while the card is open. Dim the world by 60 to 80 percent. Keep only the hp and ammo bars at their normal size.",
    "P1 controls cheat sheet, bottom-left (492,696 to 902,866): Use 16px minimum, key column tx-1 and action column tx-2 at 4.5:1 or better, and a solid #16191b panel with 24px padding. Remove the duplicate lmb row or label one 'lmb (item)'. Align the rows on a 24px baseline grid."
@@ -2457,7 +2457,7 @@
    "P0 scene behind the card (whole screen): Add a --scrim .80 layer behind the card, or at minimum dim the HUD to 40% while the card is open. Card 16px lower than centre is fine once the scrim exists.",
    "P1 hint line (y ~724): Cut it to the one live action: 'enter done'. Use 16px tx-2 minimum, centred 24px below the letter row. Make the countdown a visible 32px hero-style number on the right, or a thin progress bar along the card's bottom edge.",
    "P1 card layout (572-1348 x 535-775): Shrink the card to about 560x300. Use 24px padding. Keep the title at 32px and the letters at 56px with 24px gaps between them. Remove the dark bar or make it a full-width 1px divider.",
-   "P1 title 'tonight's best \u00b7 enter initials': Use 32px f-cond 700 in tx-1. Reserve teal for extraction only. Put a title such as 'tonight's best' on one line, then the smaller label 'enter initials' at 16px tx-2 below it."
+   "P1 title 'tonight's best · enter initials': Use 32px f-cond 700 in tx-1. Reserve teal for extraction only. Put a title such as 'tonight's best' on one line, then the smaller label 'enter initials' at 16px tx-2 below it."
   ],
   "pic": "tools/handoff/console/notes/shots/96-demo-easy-card-and-board-words-recipes-2/96-initials-in-raid-p2-1080.jpg",
   "task": "96-demo-easy-card-and-board-words",
@@ -2469,7 +2469,7 @@
   "need": 4,
   "verdict": "A clean, quiet run-over card with a clear hero number and a live prompt, but the type is too small for a couch, the initials block fights the main action, and the card sits small in an unfinished-looking dim scene.",
   "findings": [
-   "P1 initials block (a a a) and its hint line: Make the letters 40px f-cond 700 with 16px gaps. Use --acc for the active letter and underline, and tx-1 for the rest. Cut the hint to the pad or key glyphs only ('\u25b2\u25bc  enter') at 16px --tx-2.",
+   "P1 initials block (a a a) and its hint line: Make the letters 40px f-cond 700 with 16px gaps. Use --acc for the active letter and underline, and tx-1 for the rest. Cut the hint to the pad or key glyphs only ('▲▼  enter') at 16px --tx-2.",
    "P1 press any key prompt: Show 'enter  done' as the one prompt, 24px --acc, left-aligned under the initials. Drop the competing 'press any key' text, or show it only once the initials are done.",
    "P1 label and stat text (score, kills, extractions, deaths, tonight's best): Set labels to 16px with +.04em tracking in --tx-2 (#aaa498). Set stat numbers to 32px f-cond 700. Set 'extracted x2' to 20px --tx-1.",
    "P1 stats row (9 / 1 / 0): Use a 3-column grid with 24px gutters and left-align each column to the 24px card padding. Put 'tonight's best' in 16px --tx-1 with a 1px --ui-line rule above it, and leave 24px between sections.",

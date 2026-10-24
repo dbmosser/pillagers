@@ -1,0 +1,12 @@
+{
+    "title":  "SETTINGS PANE HINT ENDS CLEANLY",
+    "why":  "Critic on Settings 18 (P0): the shortened pane text stopped mid-sentence with no mark. The first clause now stays whole up to 90 characters and a longer one ends in an ellipsis.",
+    "now":  "The Settings pane hint never stops mid-sentence.",
+    "edits":  [
+                  {
+                      "anchor":  "function setHintShort(t){ var s=String(t||\u0027\u0027).split(/[:;]|\\. | \\(/)[0].trim(); if(s.length\u003e56){ s=s.slice(0,56); s=s.slice(0,Math.max(s.lastIndexOf(\u0027 \u0027),1)); } return s; }",
+                      "replacement":  "function setHintShort(t){ var s=String(t||\u0027\u0027).split(/[:;]|\\. | \\(/)[0].trim(); if(s.length\u003e90){ s=s.slice(0,88); s=s.slice(0,Math.max(s.lastIndexOf(\u0027 \u0027),1))+\u0027\\u2026\u0027; } return s; }   // v34.37 (cw-setscroll3): critic on Settings 18 (P0): the pane text stopped mid-sentence with no mark. The first clause stays whole up to 90 characters, longer ones end in an ellipsis."
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the Settings pane hint keeps its first clause whole and marks a cut with an ellipsis, never a bare mid-sentence stop\u0027,\n   run:function(){\n     var long1=\u0027this words go on and on and on and on and on and on and on and on and on and on and on and on and on and on and on\u0027, s, bad=[];\n     if(typeof setHintShort!==\u0027function\u0027) return \u0027no setHintShort\u0027;\n     s=setHintShort(\u0027turns the words on: click any word to rewrite it\u0027);\n     if(s!==\u0027turns the words on\u0027) bad.push(\u0027a hint with a colon is not cut at the clause: \u0027+s);\n     s=setHintShort(\u0027a short hint that fits whole, with a comma\u0027);\n     if(s!==\u0027a short hint that fits whole, with a comma\u0027) bad.push(\u0027a short hint was changed: \u0027+s);\n     s=setHintShort(long1);\n     if(s.charAt(s.length-1)!==\u0027\\u2026\u0027) bad.push(\u0027a cut hint has no ellipsis: \u0027+s);\n     if(s.length\u003e91) bad.push(\u0027a cut hint is still long: \u0027+s.length);\n     return bad.length?bad.join(\u0027; \u0027):null;\n   }},"
+}

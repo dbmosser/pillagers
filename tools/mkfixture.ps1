@@ -6159,6 +6159,19 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.38',what:'the Settings pane hint keeps its first clause whole and marks a cut with an ellipsis, never a bare mid-sentence stop',
+   run:function(){
+     var long1='this words go on and on and on and on and on and on and on and on and on and on and on and on and on and on and on', s, bad=[];
+     if(typeof setHintShort!=='function') return 'no setHintShort';
+     s=setHintShort('turns the words on: click any word to rewrite it');
+     if(s!=='turns the words on') bad.push('a hint with a colon is not cut at the clause: '+s);
+     s=setHintShort('a short hint that fits whole, with a comma');
+     if(s!=='a short hint that fits whole, with a comma') bad.push('a short hint was changed: '+s);
+     s=setHintShort(long1);
+     if(s.charAt(s.length-1)!=='\u2026') bad.push('a cut hint has no ellipsis: '+s);
+     if(s.length>91) bad.push('a cut hint is still long: '+s.length);
+     return bad.length?bad.join('; '):null;
+   }},
   {v:'34.37',what:'Settings: a focused tab has no halo ring, a clicked tab leaves no list row lit, the section line shows no sliver of its label',
    run:function(){
      var bad=[], list, chip, dr, head, cs;

@@ -1,0 +1,7 @@
+v34.38: settings pane hint ends cleanly
+
+The Settings pane hint never stops mid-sentence.
+
+Check 34.38. Fails on v34.37.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

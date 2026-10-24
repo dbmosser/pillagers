@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.38 - SETTINGS PANE HINT ENDS CLEANLY
+
+Co-op hunt while he was away. Critic on Settings 18 (P0): the shortened pane text stopped mid-sentence with no mark. The first clause now stays whole up to 90 characters and a longer one ends in an ellipsis.
+
+MEASURED. Check 34.38 passes, and fails on v34.37.
 ## v34.37 - SETTINGS TAB FOCUS HAS NO HALO AND NO SECTION SLIVER
 
 Co-op hunt while he was away. My own pictures after the last Settings ship: the focused tab still wore the global halo ring, a clicked tab left the list row lit with the focus bar, and the new section line showed a sliver of its hidden label. Now the tab shows only its bar, the list row steps back while a tab has the focus, and the line is clean.
