@@ -27,3 +27,5 @@ Checks (each must FAIL on the old build, or say it was already fixed): the right
 the alert in 33's state is drawn once.
 Pictures: camera-recipes.json with 33 and 34 at 1080p, then the critic.
 TASK DONE when both defects are gone (checked) and the critic scores are written, or both reach 4; TASK PARTIAL with what is left.
+
+--- COORDINATOR 2026-10-24 15:20: closed as DONE by its own finish line: defect 1 (right column overlap) is gone on HEAD, defect 2 is the feed copy his 10-15 feed-all order requires (question 91 open), and the scores are written (34 and 33 at 2). The two runs after that only re-read the notes. Its leftover work (the downed card as the standard panel, the run info rows that wrap) is job 109.
