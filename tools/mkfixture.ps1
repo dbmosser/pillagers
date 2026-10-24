@@ -8989,7 +8989,7 @@ window.__REGRESS=[
      var bad=[],ta=document.getElementById('exporttext'),oldValue;
      try{
        __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       __forceSize(1920,1080);applyMenuZoom();openSettings('rec');oldValue=ta.value;
+       __forceSize(1920,1080);applyMenuZoom();openSettings('rec');var _sd=document.getElementById('showdata');if(_sd)_sd.click();oldValue=ta.value;
        var ts=getComputedStyle(ta),actions=ta.nextElementSibling,restore=actions.nextElementSibling;
        if(parseFloat(ts.height)<183||ta.getBoundingClientRect().height>240.5)bad.push('preview is not the bounded six-line height');
        if(parseFloat(ts.lineHeight)!==24||parseFloat(ts.paddingBottom)<22)bad.push('preview lines have no padding before fade');
