@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.33 - ABANDON QUESTION HIDES THE PAGE TOAST
+
+Co-op hunt while he was away. The critic named the running slowly toast over the abandon question twice. It is the page toast, not the raid feed that the last ship moved. It now hides while the question is up. Tiles sit 8px lower under the loss figure.
+
+MEASURED. Check 34.33 passes, and fails on v34.32.
 ## v34.32 - END CARDS: SHORT XP LINE, 32PX TITLE, TILES UNDER THE LOSS, GHOST FEEDBACK BUTTON
 
 Co-op hunt while he was away. The critic held the killed, abandoned and abandon-question cards at 3: the xp line explains too much, the tiles sit above the figure, the title competes with the hero, the feedback line has no button shape and a toast shows over the abandon question. Rendering only.

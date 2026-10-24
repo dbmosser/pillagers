@@ -6159,6 +6159,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.33',what:'the page toast hides while the abandon question is up (the critic: a running slowly toast shines over the scrim)',
+   run:function(){
+     var pb, t, w, bad=null;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       t=document.getElementById('hubtoast'); pb=document.getElementById('pausebox');
+       if(!t||!pb) return 'SKIP: no toast or pause box';
+       w=pb.classList.contains('asking'); pb.classList.add('asking');
+       if(getComputedStyle(t).visibility!=='hidden') bad='the page toast still shows while the abandon question is up';
+       if(!w) pb.classList.remove('asking');
+       return bad;
+     } finally {
+       try{ var _p=document.getElementById('pausebox'); if(_p) _p.classList.remove('asking'); }catch(_e){}
+       __topClear();
+     } }},
   {v:'34.32',what:'the end cards: the xp line is short, the title is 32px, the feedback line is a bordered button, the haul tiles sit under the loss figure, and the raid feed waits behind the abandon question',
    run:function(){
      var bad=[], man, vis, h1, fb, pb, w, tl, lo, ti, i;

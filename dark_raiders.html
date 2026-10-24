@@ -1681,7 +1681,9 @@
   #root .outcome:has(#oc_title[style*="hazard"]) .ocloss span{ color:#ff6e55; }
   #root .octile{ width:80px; height:80px; }
   #root .octile img{ width:56px !important; height:56px !important; }
-  #root .ocloss ~ .octiles{ margin:-16px 0 32px; }
+  #root .ocloss ~ .octiles{ margin:-8px 0 32px; }
+  /* v34.xx (cw-endcards3), the critic on 59 (3 of 5, P1, twice): "the running slowly toast stays bright over the 80 percent scrim, the brightest thing on screen after the card". The page toast (#hubtoast, not the canvas feed) waits while the abandon question is up. Tiles 24px under the hero label (was 16). */
+  body:has(#pausebox.asking) #hubtoast{ visibility:hidden; }
   #root .ocwin .fbhead{ border:1px solid var(--ui-line-hi); border-radius:4px; min-height:40px !important; padding:8px 24px; font-size:16px; margin-top:8px; }
   #root .ocwin .fbhead:focus-visible, #root .ocwin .fbhead.padfocus{ outline:3px solid var(--acc); outline-offset:4px; }
   #root #oc_btn:focus-visible, #root #oc_btn.padfocus{ outline:3px solid var(--acc); outline-offset:4px; }  #root #confirmabandon small{ display:block; margin-top:4px; font-size:16px; font-weight:400; letter-spacing:.04em; line-height:1.2; color:var(--tx-2); }  /* vNN.xx, UI CLEANUP uic4 (his 2026-10-14 note, "ui and player messaging just isn't as clean as it should be", from the 1080p shots of the
@@ -3626,7 +3628,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.32';
+var VER='34.33';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -53939,7 +53941,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.32: End cards show a short xp line, a 32px title, tiles under the loss figure and a bordered feedback button; the abandon question hides the raid feed and its x sits on the title row. Check 34.32 fails on v34.31',
+  now:'v34.33: The abandon question no longer has a toast shining over it. Check 34.33 fails on v34.32',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

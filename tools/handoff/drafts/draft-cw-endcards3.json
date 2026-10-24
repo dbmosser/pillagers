@@ -1,0 +1,12 @@
+{
+    "title":  "ABANDON QUESTION HIDES THE PAGE TOAST",
+    "why":  "The critic named the running slowly toast over the abandon question twice. It is the page toast, not the raid feed that the last ship moved. It now hides while the question is up. Tiles sit 8px lower under the loss figure.",
+    "now":  "The abandon question no longer has a toast shining over it.",
+    "edits":  [
+                  {
+                      "anchor":  "  #root .ocloss ~ .octiles{ margin:-16px 0 32px; }",
+                      "replacement":  "  #root .ocloss ~ .octiles{ margin:-8px 0 32px; }\n  /* v34.xx (cw-endcards3), the critic on 59 (3 of 5, P1, twice): \"the running slowly toast stays bright over the 80 percent scrim, the brightest thing on screen after the card\". The page toast (#hubtoast, not the canvas feed) waits while the abandon question is up. Tiles 24px under the hero label (was 16). */\n  body:has(#pausebox.asking) #hubtoast{ visibility:hidden; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the page toast hides while the abandon question is up (the critic: a running slowly toast shines over the scrim)\u0027,\n   run:function(){\n     var pb, t, w, bad=null;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       t=document.getElementById(\u0027hubtoast\u0027); pb=document.getElementById(\u0027pausebox\u0027);\n       if(!t||!pb) return \u0027SKIP: no toast or pause box\u0027;\n       w=pb.classList.contains(\u0027asking\u0027); pb.classList.add(\u0027asking\u0027);\n       if(getComputedStyle(t).visibility!==\u0027hidden\u0027) bad=\u0027the page toast still shows while the abandon question is up\u0027;\n       if(!w) pb.classList.remove(\u0027asking\u0027);\n       return bad;\n     } finally {\n       try{ var _p=document.getElementById(\u0027pausebox\u0027); if(_p) _p.classList.remove(\u0027asking\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}

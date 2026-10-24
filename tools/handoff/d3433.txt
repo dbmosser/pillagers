@@ -1,0 +1,5 @@
+## v34.33 - ABANDON QUESTION HIDES THE PAGE TOAST
+
+Co-op hunt while he was away. The critic named the running slowly toast over the abandon question twice. It is the page toast, not the raid feed that the last ship moved. It now hides while the question is up. Tiles sit 8px lower under the loss figure.
+
+MEASURED. Check 34.33 passes, and fails on v34.32.

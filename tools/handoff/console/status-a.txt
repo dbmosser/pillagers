@@ -1,1 +1,1 @@
-10-24 14:28 waiting for RAM: 2 GB free, a helper starts at 3; 104-ui-pause-dialogs kept
+10-24 14:33 waiting for RAM: 1 GB free, a helper starts at 3; 104-ui-pause-dialogs kept

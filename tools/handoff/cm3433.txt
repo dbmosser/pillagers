@@ -1,0 +1,7 @@
+v34.33: abandon question hides the page toast
+
+The abandon question no longer has a toast shining over it.
+
+Check 34.33. Fails on v34.32.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -370,27 +370,34 @@
  "35-kia-card": {
   "score": 3,
   "pass": false,
-  "verdict": "A clean, centred end card that mostly follows the shell (red title, one hero number, row of 4 stats, tile row, one primary), but the hero is a banned '$' figure, the secondary text is tiny and dim, and the item tiles are too small and confusingly placed above the number.",
-  "pic": "tools/handoff/console/notes/shots/13-h1/35-kia-card-1080.jpg",
-  "task": "13-ui-end-cards",
-  "when": "2026-10-18T12:21",
-  "need": 4
+  "need": 4,
+  "verdict": "The new card is cleaner: the loss figure now leads, the xp line is shorter, and the feedback control reads as a button. The main hero is no longer the red title or the red number, but the card still has too many small grey lines and a soft hierarchy.",
+  "findings": [
+   "P1 title 'killed in action' vs the $1,770 hero: Keep the title at 32px f-cond 700 red. Make $1,770 the single 56px 800 hero, and put it in the danger red it had before, or keep it tx-1 and drop the red from 'items lost'. Pick one place for red emphasis.",
+   "P1 header block (subtitle + xp line): Cut it to 'killed by unknown · 152m'. Render the line at 16px tx-2 or better, and move '+65 xp' into the stat row as a fifth cell, or drop the penalty text.",
+   "P1 item tiles row: Keep 24px between the loss label and the tiles and 32px between the tiles and the stats rule. Add '+1' as a fifth tile or a count label so 4 tiles match '5 items'. Make the bars 3px and enlarge the x2 badge to 16px text.",
+   "P2 'how did that run feel +' button: Use 16px tx-1 label, 1px --ui-line-hi border with 8px/16px padding, drop the '+', and leave 32px above the primary button.",
+   "P2 stats row (containers, kills, accuracy, time): Keep the row but drop the bottom rule, set the values at 20px tx-1 and the labels at 16px tx-2, or collapse it to a single muted line."
+  ],
+  "pic": "tools/handoff/console/notes/shots/105-after/35-kia-card-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-24T18:31"
  },
  "38-extracted-card": {
   "score": 3,
   "pass": false,
   "need": 4,
-  "verdict": "The only change is a new 'extract without using a single heal' challenge line that adds clutter and an explaining sentence, while the card's main problems (a tiny floating card, a weak hero, too many stacked small lines) are still there.",
+  "verdict": "The ghost feedback button and the tighter spacing are small improvements, but the card now has a 32px title and a second checklist line, so it is still a stack of small centred lines. The $1,770 hero is the only strong element, and the title no longer leads.",
   "findings": [
-   "P1 challenge line above 'burst carbine recovered': Cut the sentence to a short chip such as 'no heals', with the ✓ in --ok, and put it in the tag row with 'first out · untouched · ghost'. Or drop it from this card. If it stays as a line, give it 16px tx-2 and a 24px gap above and below, away from the recovered line.",
-   "P1 hierarchy: title vs haul number: Make the haul exactly 56px f-cond 800 tx-1. Drop the title to 32px/700, or tx-2 weight. Keep teal for the title only.",
-   "P1 top text stack: Merge 'out clean · never spotted' into the tag row. Keep one xp line at 16px. Put the recovered line at 20px tx-1 right above the item tiles. Keep the vertical gaps at 8/16/24 only.",
-   "P2 stats row and tag row: Raise the tags to 16px tx-2 (#aaa498). Move the feedback prompt to the footer legend at 14px, or make it a ghost button of the same width as the primary, with a 24px gap.",
-   "P2 spacing rhythm: Use 16px between related lines, 24px between groups and 32px above the button. Set the card padding to 24-32px all round."
+   "P1 title 'extracted' vs haul number: Keep the hero at 56px. Make the title 32px/700 with 8px under it. Fold 'out clean · never spotted' and '+130 xp' into one 16px line in tx-2 so the header is two lines, not three.",
+   "P1 checklist lines: 'extract without killing anything' / 'burst carbine': Drop the sentence row or shorten it to 'no kills'. Group the objectives under one 16px label in a 24px block with 8px row gaps. Colour the ✓ var(--ok).",
+   "P1 vertical rhythm of the whole card: Use three groups, each with a 32px gap between them: header (title, one line), the haul (label, hero, tiles), and the stats. Keep gaps inside a group at 8px or 16px, and put the checks and badges inside the stats group.",
+   "P1 'how did that run feel +' ghost button: Make the ghost 44px tall with 16px/600 text in tx-2, and add a 16px border in --ui-line-hi. Leave 24px between it and the primary. Replace '+' with a chevron, or drop it.",
+   "P2 stat strip and tags: 'first out · untouched · ghost': Set the labels to 16px/600 with +.04em tracking. Draw the tags as small bordered chips at 16px with an 8px gap. Dim a stat with 0 to tx-2 and keep non-zero values in tx-1."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-91-circle-only-text-after/38-extracted-card-1080.jpg",
-  "task": "o-91-circle-only-text",
-  "when": "2026-10-21T05:32"
+  "pic": "tools/handoff/console/notes/shots/105-after/38-extracted-card-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-24T18:32"
  },
  "40-whats-new-card": {
   "score": 3,
@@ -475,18 +482,18 @@
  "59-raid-abandon-confirm": {
   "score": 3,
   "pass": false,
-  "verdict": "the x now sits inside the card, which fixes the worst flaw, but it is still stranded mid-card at the title line and the title, danger button and padding are unchanged from the last review.",
+  "need": 4,
+  "verdict": "The abandon dialog is clean, with a clear hierarchy (title, lime keep playing, red ghost abandon) and one close x. The new version moves the x so it lines up with the title, but the card is still small and sparse, and its edge pieces are off-grid and slightly faint.",
   "findings": [
-   "P1 close x (~1136,428): put the x 16px from the top and right edges (centre ~1160,404), in a 40x40 hit area, same position as on every other card. Or remove it, since 'keep playing' already closes the card.",
-   "P1 danger button 'yes, abandon this run' + 'free this early': label it 'abandon run' at 20px/600 in --danger in a 56px button. Delete 'free this early', or move it to a 16px --tx-2 line under the title. Keep the 1px --danger border.",
-   "P1 title 'abandon this run?': title at 32px/700 --tx-1, top padding 32px. Add one 16px --tx-2 line such as 'your bag is lost'. Keep the divider 16px below.",
-   "P2 card padding and vertical rhythm: use 32px padding all round, 16px between the divider and the first button, 16px between the buttons. Card width 520px.",
-   "P2 accent tab (top-left, ~720-756,380): make it 36x3px solid --acc flush to the card's top-left corner, or delete it."
+   "P1 Modal card overall (720-1200 x 380-700): Widen to about 560px. Raise the title to a clear 32px with 700 weight, keep the button text at 20px, and make both buttons 64px tall. Add a 3px danger-red top tab or a short danger glyph so the card says 'this costs you' and not just 'confirm'.",
+   "P1 Sub-label 'free this early' on the abandon button: Set it at 16px in --tx-2 #aaa498 (4.5:1 minimum) or tx-1. Make the copy concrete, e.g. 'lose your bag, keep $0 risked'. Keep it lower case and to one short line.",
+   "P2 Focus and pad indication: Draw a 2px --acc outer ring with a 4px gap on the focused button, whichever it is. Make the danger outline 2px. Add a small 16px pad/key glyph for the confirm and back buttons in the footer (14px legend).",
+   "P2 Close x (1124-1148, y 432-456): Put the x in a 40x40 hit box with 16px padding from the corner (top 16px, right 16px). Use a 2px stroke in tx-1, and add a --ui-raised fill on hover or focus.",
+   "P2 Top-left lime tab (720-756, 380): Remove the lime tab on this card, or recolour it --danger when the dialog is about loss, so the accent appears only on the primary button."
   ],
-  "pic": "tools/handoff/console/notes/shots/13-p4/59-raid-abandon-confirm-1080.jpg",
-  "task": "13-ui-end-cards",
-  "when": "2026-10-19T01:28",
-  "need": 4
+  "pic": "tools/handoff/console/notes/shots/105-after/59-raid-abandon-confirm-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-24T18:32"
  },
  "65-codex": {
   "score": 3,
@@ -649,20 +656,20 @@
   "need": 4
  },
  "60-abandoned-card": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The card is clean and all lower case with a clear lime main action, but it is still a small 720px modal with a weak hero, tiny stats, a loss that does not read as a loss, and an xp line that explains too much.",
+  "need": 4,
+  "verdict": "The new card is tidier: the xp line is shorter, the feedback link is now a visible ghost button, and the red loss number is clearly the hero. The title is still small and the secondary text is still dim.",
   "findings": [
-   "P1 whole card (601-1318 x 246-833): Either scale it to the shared window size (90% wide, 56px header and 72px footer), or add the run-over card to the guide as a named exception with a fixed 720px width. Do not leave it undecided.",
-   "P1 hero '$1,170' / 'left behind': Set the number to 56px f-cond 800 in --danger, or add a 3px --danger top tab to the card. Set 'left behind' to 16px --tx-2 with +.04em tracking.",
-   "P1 xp line under the title (y≈362): Cut it to '+33 xp' at 16px --tx-2, plus a small --warn tag '-75%'. Move the total xp to the progress screen. Keep 24px between the title and this line.",
-   "P1 stat strip (containers / kills / accuracy / time): Set values to 32px f-cond 700 in --tx-1 and labels to 16px --tx-2. Cut the gap between hero and strip to 32px. Keep the 1px --ui-line rules.",
-   "P2 'how did that run feel +' (y≈705): Make it a tertiary text button in the footer row beside the main action, with a 2px --acc focus outline, or drop it from this card."
+   "P1 title 'abandoned': Set the title to 32px f-cond 700 in tx-1. Keep $1,170 at 56px, and put 24px between the title and the xp line.",
+   "P1 xp line '+33 xp · 75% penalty': Use 16px f-cond 600 in tx-2 (#aaa498 or brighter). Word it as '+33 xp (75% less)', or colour '75% penalty' with --warn.",
+   "P1 stat tile labels and 'left behind': Use 16px labels in tx-2 with +.04em tracking. Use 24px values at weight 700 in tx-1. Put 16px of padding above and below the rules.",
+   "P2 'how did that run feel +' ghost button: Give it a 1px --ui-line-hi border, tx-1 text at 16px, and 48px height. Keep a 24px gap to the primary button, up from the current 30px between the tiles and the ghost button.",
+   "P2 vertical rhythm: Put everything on the 8px grid: 24px between blocks and 32px of padding at the top and bottom. Cut the 80px gap to 32px."
   ],
-  "pic": "tools/handoff/console/notes/shots/13-p3/60-abandoned-card-1080.jpg",
-  "task": "13-ui-end-cards",
-  "when": "2026-10-19T01:22",
-  "need": 4
+  "pic": "tools/handoff/console/notes/shots/105-after/60-abandoned-card-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-24T18:31"
  },
  "42-hub-pause-box": {
   "score": 3,
