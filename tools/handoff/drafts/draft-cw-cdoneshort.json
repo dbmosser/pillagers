@@ -1,0 +1,12 @@
+{
+    "title":  "CONTRACT DONE LINE SHORTER",
+    "why":  "Critic on the downed screen: one long contract done sentence runs across the middle of the raid. The line keeps the contract words and drops the trailing turn in sentence (logged in changes.md, Q8).",
+    "now":  "The contract done callout shows just the contract words.",
+    "edits":  [
+                  {
+                      "anchor":  "{sub:contractDesc(c)+\u0027. Complete contract at mainframe.\u0027,key:\u0027cdone\u0027",
+                      "replacement":  "{sub:contractDesc(c),key:\u0027cdone\u0027"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the contract done line carries only the contract words, not the long turn in sentence (one row on screen, 109)\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__P)||typeof contractKill!==\u0027function\u0027||typeof say!==\u0027function\u0027) return \u0027SKIP: no contracts here\u0027;\n     var P2=__P(), con0=P2.contracts, realSay=say, said=[], hit=null, i, c;\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); keys={};\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       c={type:\u0027kill\u0027,tgt:\u0027warden\u0027,n:1,prog:0,desc:\u0027Destroy 1 Warden\u0027,reward:100,id:\u0027zqx109\u0027};\n       P2.contracts=[c];\n       say=function(m,k,o){ said.push({m:String(m),sub:(o\u0026\u0026o.sub)?String(o.sub):\u0027\u0027}); return realSay.apply(this,arguments); };\n       contractKill(\u0027warden\u0027);\n       for(i=0;i\u003csaid.length;i++) if(said[i].m.indexOf(\u0027CONTRACT DONE\u0027)===0) hit=said[i];\n       if(!hit) return \u0027SKIP: staging: the contract did not finish\u0027;\n       if(/mainframe/i.test(hit.sub)) return \u0027the contract done detail still says \u0027+JSON.stringify(hit.sub);\n       return null;\n     }catch(err){ return \u0027threw: \u0027+(err\u0026\u0026err.message||err); }\n     finally{ say=realSay; P2.contracts=con0; keys={}; try{ __endRaid(\u0027abandon\u0027); }catch(e2){} } }},"
+}

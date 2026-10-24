@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.46 - CONTRACT DONE LINE SHORTER
+
+Co-op hunt while he was away. Critic on the downed screen: one long contract done sentence runs across the middle of the raid. The line keeps the contract words and drops the trailing turn in sentence (logged in changes.md, Q8).
+
+MEASURED. Check 34.46 passes, and fails on v34.45.
 ## v34.45 - INITIALS IN THE FOCUS COLOUR
 
 Co-op hunt while he was away. Critic on the party end cards (53 54 55, 3 of 5): the active initial is amber and the heading teal beside the lime accent. The guide says one accent, lime is focus. The active letter and underline go lime and the heading tx-2. Restyle only.

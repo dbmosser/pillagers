@@ -1,4 +1,4 @@
-# host-night-memory.ps1 : lends the Pillagers VM more memory at night and takes it back by morning, on the MAIN PC (JUL26).
+# host-night-memory.ps1 : lends the Pillagers VM more memory while he is away from the MAIN PC (JUL26) and takes it back when he is here.
 # His answers of 2026-10-19 night: 45 a "Yes" (the VM may take more memory only at night, back to normal by morning), 44 c (keep 10 GB by day),
 # and 100: "you should actively be optimizing my hardware etc to make sure we are getting max bang for our buck in terms of development".
 #
@@ -26,6 +26,10 @@
 #      C:\claudecode\pillagers-party\exports) into the bridge share as pcnote-NAME, once (notes-mirrored.txt keeps the names), so the VM
 #      can fetch them (tools/fetch-notes.mjs). It only reads the copy, never writes into it; files over 11 MB or older than 14 days stay out,
 #      and pcnote- files leave the share after 3 days (the VM has them by then).
+#   8. (10-24, his "since I'm not at the pc shouldn't it be fungible between the main pc and the vm at any time" and his yes) the VM's
+#      memory follows him, not the clock: the same minute check grows the VM while he is away from this PC (no keyboard or mouse for
+#      -AwayMin minutes and no game) and takes it back when he is here, only as fast as the VM has memory free (see MemFollow below).
+#      The old 23:00 and 06:00 tasks are removed by -Install; -Up and -Down still work by hand.
 # Up: the VM gets more memory while it runs (Hyper-V runtime memory resize, no restart), up to -MaxGB, always leaving -KeepFreeGB free on this PC.
 # Down: the VM goes back to its daytime size (the size it had when -Install ran, normally 10 GB). Nothing else on the VM changes.
 # It never changes Defender, the firewall, UAC, Windows Update or any other security setting, and never starts or stops the VM.
@@ -36,11 +40,13 @@
 #   -Up / -Down / -Snapshot / -GameCheck  what the tasks run
 #   -MaxGB N (default 16)  -KeepFreeGB N (default 4)  -VMName NAME (default Pillagers_Oct26)  -KeepSnapshots N (2)  -Gpu3DPct N (15)  -GameCpuPct N (30)
 #   -AtPcCpuPct N (50)  -AtPcIdleMin N (10)  -IdleWatch  what the idle watch task runs (a loop, as him)  -NotesSrc PATH (the copy's exports)
+#   -AwayMin N (30) minutes away before the VM grows   -VmKeepGB N (3) what the VM keeps free while it hands memory back
 # Exit codes: 0 done, 2 refused or nothing could be done (see the log line), 3 needs an administrator window. ASCII only. PowerShell 5.1 and 7.
 param(
   [switch]$Install, [switch]$Undo, [switch]$Status, [switch]$DryRun, [switch]$Up, [switch]$Down, [switch]$Snapshot, [switch]$GameCheck, [switch]$IdleWatch,
   [string]$VMName = 'Pillagers_Oct26', [int]$MaxGB = 16, [int]$KeepFreeGB = 4, [int]$DayGB = 0,
   [int]$KeepSnapshots = 2, [int]$Gpu3DPct = 15, [int]$GameCpuPct = 30, [int]$AtPcCpuPct = 50, [int]$AtPcIdleMin = 10,
+  [int]$AwayMin = 30, [int]$VmKeepGB = 3,
   [string]$BaseDir = '', [string]$NotesSrc = 'C:\claudecode\pillagers-party\exports'
 )
 $ErrorActionPreference = 'Continue'
@@ -53,6 +59,7 @@ $TaskUp = 'VM night memory up'; $TaskDown = 'VM night memory down'; $TaskSnap = 
 $LinkName = 'Pillagers Dev (live).url'
 $GameFile = Join-Path $Share 'gaming.txt'; $GameSeen = Join-Path $BaseDir 'gaming-last-seen.txt'; $SnapPrefix = 'Pillagers weekly '
 $IdleFile = Join-Path $BaseDir 'input-idle.txt'
+$VmMemFile = Join-Path $Share 'vm-memory.txt'; $FollowFile = Join-Path $BaseDir 'memory-follow-last.txt'
 
 function Say([string]$msg, [string]$kind = 'INFO') { Write-Host ('{0,-5} {1}' -f $kind, $msg) }
 function LogLine([string]$msg) {
@@ -175,6 +182,62 @@ function ConsoleIdleMin {
   } catch { }
   return -1
 }
+
+# ------------------------------------------------------------------ the VM's memory follows him (item 8 above, 10-24)
+# Away (no keyboard or mouse for -AwayMin minutes and no game; when the idle time is unknown, the night hours 23 to 06 as before): the VM
+# grows toward -MaxGB while this PC keeps -KeepFreeGB free. Here again, or a game: it goes back to its day size, but only by what the VM
+# itself has free (vm-memory.txt, which the VM sends every 30 seconds, minus -VmKeepGB), one step per new report, so taking memory back
+# never squeezes running work (the straight cuts at 06:00 came back "partially completed" and left the VM short). While it is above its
+# day size and he is here, gaming.txt says vmback=1 and the VM starts no new helper. A VM that sends no report for 15 minutes (off,
+# restarting, an older copy) goes back to its day size the old way, and Hyper-V hands back what it can, a minute at a time.
+function VmMemReport {
+  try {
+    $t = Get-Content -LiteralPath $VmMemFile -Raw -ErrorAction Stop
+    $e = [regex]::Match($t, 'epoch=(\d+)'); $f = [regex]::Match($t, 'freeMB=(\d+)')
+    if (-not ($e.Success -and $f.Success)) { return $null }
+    $ep = [int64]$e.Groups[1].Value
+    return @{ epoch = $ep; age = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds() - $ep; freeGB = [int64]$f.Groups[1].Value / 1024.0 }
+  } catch { return $null }
+}
+$MemSay = ''; $VmBack = $false; $VmGB = 0
+function MemFollow($vm, [bool]$away, [int]$idle) {
+  $day = ReadDayGB
+  if (-not $vm -or $vm.State -ne 'Running') { $script:MemSay = 'the VM is not running'; return }
+  if ($vm.DynamicMemoryEnabled) { $script:MemSay = 'the VM uses dynamic memory: left alone'; return }
+  $asg = [math]::Round($vm.MemoryAssigned / 1GB, 1); $cur = [int][math]::Round($asg); $script:VmGB = $asg
+  if ($away) {
+    $free = HostFreeGB
+    $target = [int][math]::Min($MaxGB, [math]::Floor($cur + $free - $KeepFreeGB))
+    if ($free -lt 0 -or $target -lt $cur + 1) { $script:MemSay = 'away, VM ' + $asg + ' GB (' + $(if ($cur -ge $MaxGB) { 'its most' } else { 'no more room: this PC has ' + $free + ' GB free and keeps ' + $KeepFreeGB }) + ')'; return }
+    if ($DryRun) { $script:MemSay = 'away: would give the VM ' + $target + ' GB (now ' + $asg + ')'; return }
+    try {
+      Set-VMMemory -VMName $VMName -StartupBytes ([int64]$target * 1GB) -ErrorAction Stop
+      $script:MemSay = 'away, VM ' + $cur + ' -> ' + $target + ' GB'
+      LogLine ('away: VM ' + $cur + ' -> ' + $target + ' GB (no keyboard or mouse here for ' + $(if ($idle -ge 0) { [string]$idle + ' min' } else { 'an unknown time, night hours' }) + ' and no game; this PC had ' + $free + ' GB free)')
+    } catch { $script:MemSay = 'away, Hyper-V refused ' + $target + ' GB'; LogLine ('away: Hyper-V refused ' + $target + ' GB: ' + ($_.Exception.Message -replace '\s+', ' ')) }
+    return
+  }
+  if ($asg -le $day + 0.5) { $script:MemSay = 'here, VM at its day size (' + $asg + ' GB)'; return }
+  $script:VmBack = $true
+  $r = VmMemReport; $lastEp = [int64]0
+  try { $lastEp = [int64]((Get-Content -LiteralPath $FollowFile -Raw -ErrorAction Stop).Trim()) } catch { }
+  if ($r -and [math]::Abs($r.age) -lt 180) {
+    if ($r.epoch -le $lastEp) { $script:MemSay = 'here, VM ' + $asg + ' GB, waiting for its next memory report'; return }
+    $give = [int][math]::Floor($r.freeGB - $VmKeepGB)
+    if ($give -lt 1) { $script:MemSay = 'here, VM ' + $asg + ' GB with ' + [math]::Round($r.freeGB, 1) + ' GB free (it keeps ' + $VmKeepGB + '): waiting for its work to finish'; return }
+    $to = [int][math]::Max($day, $cur - $give); $mark = $r.epoch
+  } elseif ((-not $r) -or [math]::Abs($r.age) -ge 900) { $to = $day; $mark = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds() }
+  else { $script:MemSay = 'here, VM ' + $asg + ' GB, its memory report is ' + $r.age + ' s old: waiting'; return }
+  if ($to -ge $cur) { $script:MemSay = 'here, VM ' + $asg + ' GB, nothing to hand back yet'; return }
+  if ($DryRun) { $script:MemSay = 'here: would take the VM from ' + $asg + ' to ' + $to + ' GB'; return }
+  try { Set-Content -LiteralPath $FollowFile -Value ([string]$mark) -Encoding ASCII } catch { }
+  try {
+    Set-VMMemory -VMName $VMName -StartupBytes ([int64]$to * 1GB) -ErrorAction Stop
+    $script:MemSay = 'here, VM ' + $cur + ' -> ' + $to + ' GB'
+    LogLine ('back: VM ' + $cur + ' -> ' + $to + ' GB (he is at this PC or playing; ' + $(if ($r -and [math]::Abs($r.age) -lt 180) { 'the VM had ' + [math]::Round($r.freeGB, 1) + ' GB free and keeps ' + $VmKeepGB } else { 'no memory report from the VM for 15 minutes' }) + ')')
+  } catch { $script:MemSay = 'here, the VM handed back part of it'; LogLine ('back: Hyper-V handed back only part of ' + $cur + ' -> ' + $to + ' GB (the next try is in a minute): ' + ($_.Exception.Message -replace '\s+', ' ')) }
+}
+
 if ($GameCheck) {
   $hit = ''; $pct = 0
   try {
@@ -189,6 +252,8 @@ if ($GameCheck) {
       if ($avg -lt $Gpu3DPct) { continue }
       $n = ''; try { $n = (Get-Process -Id $p -ErrorAction Stop).ProcessName } catch { }
       if (-not $n -or $n -match '^(dwm|vmwp|vmmem|vmcompute|vmconnect|mstsc|msrdc|csrss|System|Idle|audiodg)$') { continue }
+      # 10-24: the main PC tester's own test browsers (profile pillagers-cdp, tools/spare/spare-runner.ps1) are robots, not him playing
+      if ($n -eq 'chrome') { $cl = ''; try { $cl = [string](Get-CimInstance Win32_Process -Filter ('ProcessId=' + $p) -ErrorAction Stop).CommandLine } catch { }; if ($cl -match 'pillagers-cdp') { continue } }
       if ($avg -gt $pct) { $pct = [int]$avg; $hit = $n }
     }
   } catch { LogLine ('game check: cannot read the graphics card counters: ' + ($_.Exception.Message -replace '\s+', ' ')); $hit = ''; $pct = 0 }   # 10-20: go on, so the idle check, gaming.txt and the processor limit still run
@@ -201,16 +266,20 @@ if ($GameCheck) {
   $want = 100; $why = 'nobody at this PC for ' + $AtPcIdleMin + ' minutes and no game'
   if ($atpc) { $want = $AtPcCpuPct; $why = 'he is at this PC (keyboard or mouse used ' + $idle + ' min ago)' }
   if ($gaming) { $want = $GameCpuPct; $why = $(if ($hit) { $hit + ' works the graphics card (' + $pct + '% 3D)' } else { 'a game in the last 10 minutes' }) }
-  if ($DryRun) { Say ('graphics card: ' + $(if ($hit) { $hit + ' at ' + $pct + '% 3D' } else { 'no program at ' + $Gpu3DPct + '% 3D or more' }) + '; playing: ' + $gaming + '; idle: ' + $(if ($idle -ge 0) { [string]$idle + ' min' } else { 'unknown' }) + '; the VM would be held to ' + $want + '%') 'DRY'; exit 0 }
+  $vm = GetVm
+  $awayMem = (-not $gaming) -and $(if ($idle -ge 0) { $idle -ge $AwayMin } else { ($now.Hour -ge 23) -or ($now.Hour -lt 6) })
+  MemFollow $vm $awayMem $idle
+  if ($DryRun) { Say ('graphics card: ' + $(if ($hit) { $hit + ' at ' + $pct + '% 3D' } else { 'no program at ' + $Gpu3DPct + '% 3D or more' }) + '; playing: ' + $gaming + '; idle: ' + $(if ($idle -ge 0) { [string]$idle + ' min' } else { 'unknown' }) + '; the VM would be held to ' + $want + '%; memory: ' + $MemSay) 'DRY'; exit 0 }
   try { if (-not (Test-Path $Share)) { New-Item -ItemType Directory -Force -Path $Share | Out-Null }
         $lines = @(('gaming=' + $(if ($gaming) { '1' } else { '0' })), ('checked=' + $now.ToString('yyyy-MM-dd HH:mm:ss')),
           ('last=' + $(if ($last) { $last.ToString('yyyy-MM-dd HH:mm:ss') } else { '' })), ('what=' + $(if ($hit) { $hit + ' ' + $pct + '%' } else { '' })), ('idle=' + $idle), ('idlefrom=' + $IdleSrc))
         if ($idle -ge 0) { $lines += ('atpc=' + $(if ($atpc) { '1' } else { '0' })) }
+        # 10-24: follow=away tells the VM and the main PC tester that the memory follows him (item 8); vmback=1 holds new helpers in the VM
+        $lines += @('follow=away', ('awaymin=' + $AwayMin), ('vmgb=' + $VmGB), ('vmback=' + $(if ($VmBack) { '1' } else { '0' })), ('mem=' + $MemSay))
         # 10-20 evening: tells the VM this copy has the note copying (item 7), so it never has to ask him whether the setup was run again
         $lines += ('notes=' + $(if (Test-Path -LiteralPath $NotesSrc) { 'on, ' + @(Get-ChildItem -LiteralPath $NotesSrc -File -ErrorAction SilentlyContinue | Where-Object { $_.Name -like 'feedback-*' -or $_.Name -like 'run-*' }).Count + ' notes and run reports in ' + $NotesSrc } else { 'on, ' + $NotesSrc + ' is not there' }))
         Set-Content -Path $GameFile -Encoding ASCII -Value $lines } catch { }
   MirrorNotes
-  $vm = GetVm
   if ($vm -and $vm.State -eq 'Running') {
     try {
       $cap = (Get-VMProcessor -VMName $VMName -ErrorAction Stop).Maximum
@@ -243,7 +312,7 @@ if ($Undo) {
   $vm = GetVm; $day = ReadDayGB
   if ($vm -and [int][math]::Round($vm.MemoryStartup / 1GB) -gt $day) { try { Set-VMMemory -VMName $VMName -StartupBytes ([int64]$day * 1GB) -ErrorAction Stop; Say ('VM back to ' + $day + ' GB') 'OK' } catch { Say ('could not set the VM back to ' + $day + ' GB now: ' + $_.Exception.Message) 'WARN' } }
   if ($vm) { try { if ((Get-VMProcessor -VMName $VMName -ErrorAction Stop).Maximum -lt 100) { Set-VMProcessor -VMName $VMName -Maximum 100 -ErrorAction Stop; Say 'VM has all its processors again' 'OK' } } catch { Say ('could not lift the processor limit: ' + $_.Exception.Message) 'WARN' } }
-  foreach ($f in $Copy, $StateFile, $GameFile, $GameSeen, $IdleFile, (Join-Path $desktop $LinkName)) { if (Test-Path $f) { Remove-Item $f -Force; Say ('removed ' + $f) 'OK' } }
+  foreach ($f in $Copy, $StateFile, $GameFile, $GameSeen, $IdleFile, $FollowFile, (Join-Path $desktop $LinkName)) { if (Test-Path $f) { Remove-Item $f -Force; Say ('removed ' + $f) 'OK' } }
   $snaps = @(OurSnapshots); if ($snaps.Count) { Say ('the weekly checkpoints stay as a safety copy (' + (($snaps | ForEach-Object { $_.Name }) -join ', ') + '); Hyper-V Manager can delete them') }
   LogLine 'undo: tasks removed, VM back to its day size and all its processors'; exit 0
 }
@@ -256,27 +325,24 @@ if ($vm.DynamicMemoryEnabled) { Say 'The VM uses dynamic memory; this setup only
 # have recorded the night size (up to -MaxGB) as the day size.
 $day = if ($DayGB -gt 0) { $DayGB } elseif (Test-Path $StateFile) { ReadDayGB } else { [int][math]::Round($vm.MemoryStartup / 1GB) }
 $free = HostFreeGB; $tonight = [int][math]::Min($MaxGB, [math]::Floor($day + $free - $KeepFreeGB))
-Say ('VM ' + $VMName + ': ' + $day + ' GB by day. At 23:00 it gets up to ' + $MaxGB + ' GB (as much as fits while this PC keeps ' + $KeepFreeGB + ' GB free; right now that would be ' + [math]::Max($day, $tonight) + ' GB), and at 06:00 it goes back to ' + $day + ' GB.')
+Say ('VM ' + $VMName + ': ' + $day + ' GB while you use this PC. When nobody has touched the keyboard or mouse here for ' + $AwayMin + ' minutes and no game runs, it gets up to ' + $MaxGB + ' GB (as much as fits while this PC keeps ' + $KeepFreeGB + ' GB free; right now that would be ' + [math]::Max($day, $tonight) + ' GB). When you are back it goes back to ' + $day + ' GB, as fast as the VM can free it.')
 $noCk = ([string]$vm.CheckpointType -eq 'Disabled')   # 10-20: the graphics card share needs checkpoints off, and then every weekly try failed
 if (-not $noCk) { Say ('Every Sunday at 05:00 it makes a safety checkpoint of the VM (keeps the newest ' + $KeepSnapshots + ').') }
 Say ('Every minute it checks for a game: while one works the graphics card, the VM is held to ' + $GameCpuPct + '% of its processors and starts nothing new. While you use this PC (keyboard or mouse in the last ' + $AtPcIdleMin + ' minutes) it is held to ' + $AtPcCpuPct + '% and starts no long job; when you are away it gets them all.')
-if ($DryRun) { Say ('would copy this script to ' + $Copy + ', make the tasks "' + $TaskUp + '" (23:00), "' + $TaskDown + '" (06:00, every 15 min until 08:00), "' + $TaskSnap + '" (Sunday 05:00) and "' + $TaskGame + '" (every minute) as SYSTEM, "' + $TaskIdle + '" (hidden, as you, from logon), make the first checkpoint, and put "' + $LinkName + '" on the desktop') 'DRY'; exit 0 }
+if ($DryRun) { Say ('would copy this script to ' + $Copy + ', remove the old tasks "' + $TaskUp + '" and "' + $TaskDown + '", make "' + $TaskSnap + '" (Sunday 05:00) and "' + $TaskGame + '" (every minute, it now also moves the memory) as SYSTEM, "' + $TaskIdle + '" (hidden, as you, from logon), make the first checkpoint, and put "' + $LinkName + '" on the desktop') 'DRY'; exit 0 }
 New-Item -ItemType Directory -Force -Path $Share | Out-Null
 Copy-Item -LiteralPath $PSCommandPath -Destination $Copy -Force
 Set-Content -Path $StateFile -Value ('dayGB=' + $day) -Encoding ASCII
 $ps = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
-$common = '-NoProfile -ExecutionPolicy Bypass -File "' + $Copy + '" -VMName "' + $VMName + '" -MaxGB ' + $MaxGB + ' -KeepFreeGB ' + $KeepFreeGB + ' -DayGB ' + $day + ' -BaseDir "' + $BaseDir + '" -KeepSnapshots ' + $KeepSnapshots + ' -Gpu3DPct ' + $Gpu3DPct + ' -GameCpuPct ' + $GameCpuPct + ' -AtPcCpuPct ' + $AtPcCpuPct + ' -AtPcIdleMin ' + $AtPcIdleMin
+$common = '-NoProfile -ExecutionPolicy Bypass -File "' + $Copy + '" -VMName "' + $VMName + '" -MaxGB ' + $MaxGB + ' -KeepFreeGB ' + $KeepFreeGB + ' -DayGB ' + $day + ' -BaseDir "' + $BaseDir + '" -KeepSnapshots ' + $KeepSnapshots + ' -Gpu3DPct ' + $Gpu3DPct + ' -GameCpuPct ' + $GameCpuPct + ' -AtPcCpuPct ' + $AtPcCpuPct + ' -AtPcIdleMin ' + $AtPcIdleMin + ' -AwayMin ' + $AwayMin + ' -VmKeepGB ' + $VmKeepGB
 $principal = New-ScheduledTaskPrincipal -UserId 'SYSTEM' -LogonType ServiceAccount -RunLevel Highest
-$settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -ExecutionTimeLimit (New-TimeSpan -Minutes 10)
-$tUp = New-ScheduledTaskTrigger -Daily -At '23:00'
-$tDown = New-ScheduledTaskTrigger -Daily -At '06:00'
-try {
-  Register-ScheduledTask -TaskName $TaskUp -Action (New-ScheduledTaskAction -Execute $ps -Argument ($common + ' -Up')) -Trigger $tUp -Principal $principal -Settings $settings -Force -ErrorAction Stop | Out-Null
-  $dt = Register-ScheduledTask -TaskName $TaskDown -Action (New-ScheduledTaskAction -Execute $ps -Argument ($common + ' -Down')) -Trigger $tDown -Principal $principal -Settings $settings -Force -ErrorAction Stop
-  $dt.Triggers[0].Repetition = (New-ScheduledTaskTrigger -Once -At '06:00' -RepetitionInterval (New-TimeSpan -Minutes 15) -RepetitionDuration (New-TimeSpan -Hours 2)).Repetition
-  $dt | Set-ScheduledTask -ErrorAction Stop | Out-Null
-  Say ('tasks made: "' + $TaskUp + '" at 23:00 and "' + $TaskDown + '" at 06:00 (repeats every 15 minutes until 08:00)') 'OK'
-} catch { Say ('Windows refused the scheduled tasks: ' + $_.Exception.Message) 'FAIL'; exit 2 }
+# 10-24: the minute check moves the memory now (item 8), so the clock tasks of 10-20 go; -Up and -Down still work by hand
+foreach ($n in $TaskUp, $TaskDown) {
+  if (Get-ScheduledTask -TaskName $n -ErrorAction SilentlyContinue) {
+    try { Stop-ScheduledTask -TaskName $n -ErrorAction SilentlyContinue; Unregister-ScheduledTask -TaskName $n -Confirm:$false -ErrorAction Stop; Say ('removed the old task "' + $n + '": the minute check moves the memory now') 'OK' }
+    catch { Say ('could not remove the old task "' + $n + '": ' + $_.Exception.Message) 'WARN' }
+  }
+}
 if ($noCk) {
   if (Get-ScheduledTask -TaskName $TaskSnap -ErrorAction SilentlyContinue) { Unregister-ScheduledTask -TaskName $TaskSnap -Confirm:$false; Say ('removed task "' + $TaskSnap + '": this VM has checkpoints switched off (its graphics card share needs that), so it failed every week') 'OK' }
   else { Say 'no weekly checkpoint task: this VM has checkpoints switched off (its graphics card share needs that)' }
@@ -289,8 +355,8 @@ try {
   $gset = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -MultipleInstances IgnoreNew -ExecutionTimeLimit (New-TimeSpan -Minutes 2)
   $gt = New-ScheduledTaskTrigger -Once -At ((Get-Date).AddMinutes(1)) -RepetitionInterval (New-TimeSpan -Minutes 1) -RepetitionDuration (New-TimeSpan -Days 3650)
   Register-ScheduledTask -TaskName $TaskGame -Action (New-ScheduledTaskAction -Execute $ps -Argument ($common + ' -GameCheck')) -Trigger $gt -Principal $principal -Settings $gset -Force -ErrorAction Stop | Out-Null
-  Say ('task made: "' + $TaskGame + '" every minute') 'OK'
-} catch { Say ('Windows refused the game check task: ' + $_.Exception.Message) 'WARN' }
+  Say ('task made: "' + $TaskGame + '" every minute (it also moves the VM memory)') 'OK'
+} catch { Say ('Windows refused the minute check task, so the VM memory cannot follow you: ' + $_.Exception.Message) 'FAIL'; exit 2 }
 try {
   # as him, not SYSTEM: only his own session can read when he last used the keyboard or mouse. One hidden PowerShell loop; the 5-minute
   # trigger only restarts it if it ever stops (IgnoreNew skips it while it runs).
@@ -312,8 +378,6 @@ try {
   Set-Content -Path (Join-Path $desktop $LinkName) -Value ("[InternetShortcut]`r`nURL=" + $u + "`r`n") -Encoding ASCII
   Say ('desktop shortcut "' + $LinkName + '" made: the live dashboard from the VM (it refreshes itself every 30 seconds)') 'OK'
 } catch { Say ('could not make the desktop shortcut: ' + $_.Exception.Message) 'WARN' }
-LogLine ('install: day ' + $day + ' GB, night up to ' + $MaxGB + ' GB, this PC keeps ' + $KeepFreeGB + ' GB free')
-$now = (Get-Date).Hour
-if ($now -ge 23 -or $now -lt 6) { Say 'It is night now, so the VM gets its night memory right away.' ; & $ps -NoProfile -ExecutionPolicy Bypass -File $Copy -VMName $VMName -MaxGB $MaxGB -KeepFreeGB $KeepFreeGB -DayGB $day -BaseDir $BaseDir -Up; if (Test-Path $Log) { Get-Content $Log -Tail 1 | ForEach-Object { Say $_ } } }
+LogLine ('install: ' + $day + ' GB while he is here, up to ' + $MaxGB + ' GB after ' + $AwayMin + ' min away, this PC keeps ' + $KeepFreeGB + ' GB free, the VM keeps ' + $VmKeepGB + ' GB free while it hands memory back')
 Say 'DONE. Nothing else to do. To undo it: night-memory-setup.cmd undo' 'OK'
 exit 0

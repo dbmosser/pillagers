@@ -1,0 +1,7 @@
+v34.46: contract done line shorter
+
+The contract done callout shows just the contract words.
+
+Check 34.46. Fails on v34.45.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

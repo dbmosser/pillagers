@@ -643,17 +643,17 @@
   "score": 3,
   "pass": false,
   "need": 4,
-  "verdict": "A clean, calm run-over card with a clear hero score and a sensible live prompt, but its small type, empty right half and vague initials entry keep it below polished.",
+  "verdict": "The initials cursor is now lime, so it follows the accent rule, but the card is still a small, left-heavy stack with sub-minimum text, a hint line that explains controls, and a hero number that does not own the screen.",
   "findings": [
-   "P1 initials entry and its hint line: Draw three 56px slots in tx-1 with a 3px lime underline on the active slot only (amber is not the accent). Cut the hint to 'enter ok' at 16px. Make the footer prompt read 'enter to save' while initials are active, and 'press any key' only after they are saved.",
-   "P1 card layout, right half: Either narrow the card to about 560px or put the score on the left and the stats in a right-hand column. Alternatively centre the title, score and stats on one axis. Keep the 24px padding.",
-   "P1 small text: 'score', 'kills', 'extractions', 'deaths', 'tonight's best', hint line: Set all labels and the hint to 16px f-cond 600 in --tx-2 (#aaa498). Set the stat numbers to 32px (--fs-title). Keep the score at 56px.",
-   "P2 'ended early -50%' line: Put the penalty on the same row as the 'run over' title, right-aligned, in --warn at 20px. Use 'ended early' in tx-2 at 20px. Then drop the amber from the initials slot.",
-   "P2 vertical rhythm: Use 8px grid steps only. Put 32px between sections and 8px inside each pair. Add a divider above 'tonight's best'. The footer rule should not sit 18px below the hint."
+   "P1 hero score block: Raise the score to the 56px hero token at weight 800. Cut the title to a quiet 32px at tx-2 or centre both. Drop the separate 'score' label, since 'sp' already says it.",
+   "P1 hint line 'type or ▲▼ · space next · backspace back · enter done': Delete the line, or cut it to 'type or ▲▼' at 16px. Show the next-slot cue with the underline only.",
+   "P1 label sizes: 'score', 'kills', 'extractions', 'deaths', 'tonight's best': Set labels to 16px with +.04em tracking in the --tx-2 #aaa498 colour. Set the stat numbers to the 32px title size.",
+   "P2 primary prompt 'press any key': Set the prompt to 24px with a 40px ring. Right-align it to the card padding with 24px above it, and keep it lime only here.",
+   "P2 stats row (12 kills / 0 extractions / 0 deaths): Use a three-column grid with equal 1/3 widths. Show kills in tx-1 and render the zero values in tx-2. Or show only kills and deaths."
   ],
-  "pic": "tools/handoff/console/notes/shots/110-r3/55-arcade-run-over-scored-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/110-r3-after/55-arcade-run-over-scored-1080.jpg",
   "task": "manual",
-  "when": "2026-10-24T20:10"
+  "when": "2026-10-24T20:17"
  },
  "60-abandoned-card": {
   "score": 3,

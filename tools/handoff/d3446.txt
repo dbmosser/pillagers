@@ -1,0 +1,5 @@
+## v34.46 - CONTRACT DONE LINE SHORTER
+
+Co-op hunt while he was away. Critic on the downed screen: one long contract done sentence runs across the middle of the raid. The line keeps the contract words and drops the trailing turn in sentence (logged in changes.md, Q8).
+
+MEASURED. Check 34.46 passes, and fails on v34.45.
