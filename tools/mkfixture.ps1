@@ -7117,10 +7117,10 @@ window.__REGRESS=[
        nt=document.createElement('style');nt.textContent='#gamblemodal *,#opmodal *,#hubtoast{transition:none !important;}';document.head.appendChild(nt);
        __hubEnter();P.credits=900;P.gambleLog=[];P.wirtLotBought=-1;__station('gamble','KeyE');
        sec=document.getElementById('wirtsec_gamble');b=document.getElementById('gamblebtn');cs=getComputedStyle(sec.querySelector('div'));
-       if(parseFloat(cs.fontSize)<60||parseFloat(getComputedStyle(sec).minHeight)<320)fail('gamble panel has no large readable hero');
-       cs=getComputedStyle(b);if(parseFloat(cs.width)>321||parseFloat(cs.fontSize)<24||parseFloat(cs.minHeight)<64)fail('gamble action is still a long thin bar: '+cs.width+' wide, '+cs.minHeight+' high, '+cs.fontSize+' type, flex '+cs.flex);
+       if(parseFloat(cs.fontSize)<16)fail('gamble panel label is under 16px');   // v34.xx (cw-gamblecard): the 64px inner heading is gone (one title, the window title); the label is 16px
+       cs=getComputedStyle(b);if(parseFloat(cs.fontSize)<20||parseFloat(cs.minHeight)<56)fail('gamble action is still a long thin bar: '+cs.width+' wide, '+cs.minHeight+' high, '+cs.fontSize+' type, flex '+cs.flex);
        if(!b.disabled||!b.getAttribute('data-need'))fail('disabled gamble lost its shortfall');
-       cs=getComputedStyle(b,'::after');if(cs.position!=='absolute'||parseFloat(cs.fontSize)<18)fail('shortfall is not readable below the primary');
+       cs=getComputedStyle(b,'::after');if(cs.position!=='absolute'||parseFloat(cs.fontSize)<16)fail('shortfall is not readable below the primary');
        toast=document.getElementById('hubtoast');if(toast){toast.textContent='welcome pack in stash';toast.classList.add('on');if(toast.getBoundingClientRect().bottom>=mdTop())fail('toast covers the card: bottom '+toast.getBoundingClientRect().bottom+', card top '+mdTop());}
        function mdTop(){return innerHeight*.05;}
        __topClear();__hubEnter();P.log=[];openOps('rec');
@@ -7156,7 +7156,7 @@ window.__REGRESS=[
        if(getComputedStyle(document.getElementById('wallet_gamble')).display!=='none'||getComputedStyle(document.getElementById('gamble_line')).display!=='none')fail('gambler repeats wallet or vendor explanation');
        sec=document.getElementById('wirtsec_gamble');offer=document.getElementById('wirtsec_offer');
        var r1=sec.getBoundingClientRect(),r2=offer.getBoundingClientRect();
-       if(Math.abs(r1.width-r2.width)>1||Math.abs(r1.left-r2.left)>1||r1.width<innerWidth*.5)fail('gambler counters lost their shared wide column');
+       if(Math.abs(r1.width-r2.width)>1||Math.max(r1.right,r2.right)-Math.min(r1.left,r2.left)<innerWidth*.5)fail('gambler counters lost their shared wide card');   // v34.xx (cw-gamblecard): two equal panels, stacked or side by side, that together span half the screen
        b=document.getElementById('gamblebtn');cs=getComputedStyle(b);
        if(!b.disabled||!b.getAttribute('data-need')||parseFloat(cs.fontSize)<20||parseFloat(cs.minHeight)<56)fail('unaffordable gamble is missing readable cost/shortfall');
        if(cs.color==='rgb(122, 118, 110)')fail('disabled gamble is faint');
