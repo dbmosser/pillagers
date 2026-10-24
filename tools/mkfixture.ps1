@@ -15862,7 +15862,7 @@ window.__REGRESS=[
        if(!pf||!ab) bad.push('pause parts missing');
        else{
          if(getComputedStyle(pf).fontWeight!=='600') bad.push('the report box is not weight 600: '+getComputedStyle(pf).fontWeight);
-         if(getComputedStyle(ab).borderTopColor.replace(/\s/g,'')!=='rgba(0,0,0,0)') bad.push('abandon still has a box: '+getComputedStyle(ab).borderTopColor);
+         if(getComputedStyle(ab).borderTopColor.replace(/\s/g,'')!=='rgb(229,72,47)') bad.push('abandon is not the danger ghost box: '+getComputedStyle(ab).borderTopColor);   /* v34.31 (cw-pausedlg): the guide's danger button is a ghost with a danger border; critic held the pause boxes at 3 for a tiny boxless link */
        }
        openSettings('display');
        sm=document.getElementById('settingsmodal'); cs=getComputedStyle(sm);
