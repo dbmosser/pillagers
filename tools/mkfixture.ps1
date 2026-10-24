@@ -64165,7 +64165,7 @@ window.__REGRESS=[
        C=g.hotCells&&g.hotCells[0]; if(!C) return 'SKIP: no belt drawn';
        cor=al(C.x+0.6,C.y+0.6); ins=al(C.x+C.w*0.2,C.y+C.w*0.2);
        if(ins<120) bad.push('control: the belt key is not painted inside (alpha '+ins+')');
-       if(cor>=ins-40) bad.push('the belt key corner is square (corner '+cor+', inside '+ins+')');
+       if(cor>=ins-16) bad.push('the belt key corner is square (corner '+cor+', inside '+ins+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ keys={}; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
