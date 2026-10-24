@@ -6168,7 +6168,7 @@ window.__REGRESS=[
      function sig(mp){ var a=[], j, w; for(j=0;j<mp.walls.length;j++){ w=mp.walls[j]; a.push(w.x,w.y,w.w,w.h,w.furn||0); } return mp.walls.length+':'+mp.segs.length+':'+H(a)+':'+H(Array.prototype.slice.call(mp.nav.blk)); }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       CFG.bkind=0; RNGS=4242; mA=buildFixedMap(FIXED_MAPS[0]); rA=RNGS;
+       CFG.bsolid=0; CFG.bkind=0; RNGS=4242; mA=buildFixedMap(FIXED_MAPS[0]); rA=RNGS;   // cw-bldsolid: solid pieces change the walls on purpose, so this check builds both maps without them
        delete CFG.bkind; RNGS=4242; mB=buildFixedMap(FIXED_MAPS[0]); rB=RNGS;
        if(rA!==rB) bad.push('kinds move the seeded stream: '+rA+' without, '+rB+' with');
        if(sig(mA)!==sig(mB)) bad.push('kinds change the walls, sight segments or nav grid: '+sig(mA)+' against '+sig(mB));
@@ -6205,7 +6205,7 @@ window.__REGRESS=[
      } catch(err){
        return 'building kinds check: '+String(err&&err.message||err);
      } finally {
-       delete CFG.bkind; CFG.xfPix=old;
+       delete CFG.bkind; delete CFG.bsolid; CFG.xfPix=old;
        try{ if(__state()&&!__state().over) __endRaid('abandon'); }catch(_e2){}
        keys={}; __resetCfg(); __topClear(); __cleanProfile();
      } }},
