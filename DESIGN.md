@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.25 - RAID HUD TYPE SIZES MERGE
+
+Co-op hunt while he was away. UI step 1 of the HUD calm job (102). The critic keeps the raid screens at 2 and 3 for too many type sizes: 14 distinct word sizes in one raid frame. The vitals corner and the gun card now share one zoom (1.36, was 1.40 and 1.36), and the pillager board words are 16 px, the style guide label size (was 17). 14 sizes become 10. Nothing moves except by about 3 and 6 percent.
+
+MEASURED. Check 34.25 passes, and fails on v34.24.
 ## v34.24 - RAID HUD PANELS SHARE ONE FILL
 
 Co-op hunt while he was away. UI step 2 of the HUD calm job (102). The critic holds the raid screens at 2 and 3 because panel styles disagree: the plates were blue-black at 78 percent, the chamfered panels graphite at 88, the posture chip 78, the gun card 62, the gun card and wheel backings near-black 90. All of them are now the one graphite at 88 percent. Shapes and places do not move.

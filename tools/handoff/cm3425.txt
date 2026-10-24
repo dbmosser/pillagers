@@ -1,0 +1,7 @@
+v34.25: raid hud type sizes merge
+
+The health, stamina and status words are a hair smaller; the pillager board words are 16 px.
+
+Check 34.25. Fails on v34.24.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

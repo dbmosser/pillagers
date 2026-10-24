@@ -1,0 +1,5 @@
+## v34.25 - RAID HUD TYPE SIZES MERGE
+
+Co-op hunt while he was away. UI step 1 of the HUD calm job (102). The critic keeps the raid screens at 2 and 3 for too many type sizes: 14 distinct word sizes in one raid frame. The vitals corner and the gun card now share one zoom (1.36, was 1.40 and 1.36), and the pillager board words are 16 px, the style guide label size (was 17). 14 sizes become 10. Nothing moves except by about 3 and 6 percent.
+
+MEASURED. Check 34.25 passes, and fails on v34.24.

@@ -3609,7 +3609,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.24';
+var VER='34.25';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -45648,7 +45648,7 @@ var HUDBOX={},HUDDRAG=null,HUDRESIZE=null;
 // measured at 103,664 square pixels against 102,782 for the vitals, over the line
 // by under one percent. At 1.05 it sits about 16 percent under, which content
 // variation cannot undo.
-var HUDZ={body:1.40, gear:1.36, raiders:1.15, legend:1.5, cond:1.05};
+var HUDZ={body:1.36, gear:1.36, raiders:1.08, legend:1.5, cond:1.05};   // v28.xx (cw-hudtype), the critic on screens 21, 19, 37, 61: 'too many type sizes'. The vitals share the gun card's 1.36 (was 1.40) so their words land on the same sizes, and the pillager board is 16 px at 1080p, the guide's label size (was 17). The top-right column (cond) stays as he placed it.
 var LEGZ0=HUDZ.legend, LEGMW=0;   // v27.26 (feedleg): the compact controls list zoom as set, and its width at zoom 1 as last drawn
 // v8.93: and the size is his, not mine. A grip in the bottom right corner of any
 // panel scales it, saved on the profile beside the position and the collapsed
@@ -53903,7 +53903,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.24: The boxes on the raid HUD are all the same dark graphite, a little more solid than before. Check 34.24 fails on v34.23',
+  now:'v34.25: The health, stamina and status words are a hair smaller; the pillager board words are 16 px. Check 34.25 fails on v34.24',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
