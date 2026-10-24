@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.41 - DOWNED CARD: BIGGER LABEL, LIME KEY
+
+Co-op hunt while he was away. Critic on screen 34 (3 of 5): the small down label is easy to miss and the self-revive prompt should be the lime action. The label goes to the title size and the live key is drawn in the accent.
+
+MEASURED. Check 34.41 passes, and fails on v34.40.
 ## v34.40 - ZERO SCORE IS THE HERO
 
 Co-op hunt while he was away. Critic on 52 (2 of 5): the zero score hero is muted grey, dimmer than the title. Drawn in tx-1 now.

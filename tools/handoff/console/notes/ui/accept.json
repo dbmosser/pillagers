@@ -450,18 +450,18 @@
  "52-arcade-run-over": {
   "score": 3,
   "pass": false,
-  "verdict": "The title is now bright and the sub-line is a quiet grey rather than competing lime, but the prompt is still small and dim, the stats row is still left-heavy and the card is still a small box with dead space at the bottom.",
+  "need": 4,
+  "verdict": "The 0 sp hero is now bright tx-1 and clearly the first thing you see, but the card is still a small, left-heavy panel that leaves the right half empty and sits over a busy backdrop.",
   "findings": [
-   "P1 Footer prompt 'press any key', bottom-right: Set the text at 24px f-cond 700 in tx-1 #efe9dc. Make the glyph full --acc #e6ff3d at 28px. Put the prompt in a 72px footer row with 24px padding and centre it vertically.",
-   "P1 Hero 'score 0 sp': Put a 16px tx-2 'score' label above. Show '0' at 56px f-cond 800 tx-1 with 'sp' at 20px tx-2 beside it. Move 'ended early -50%' directly under the hero as a 16px --warn line.",
-   "P1 Stats row (kills / extractions / deaths): Use equal columns across the 652px inner width. Set values at 24px f-cond 600 tx-1 and labels at 16px f-cond 600 tx-2 with +.04em tracking, at least 4.5:1 contrast. Add a fourth 'time' column, or centre each stat in its column.",
-   "P2 Card vertical rhythm: Use 24px title→hero, 24px hero→divider, 24px divider→stats and 32px stats→footer. Make the footer row 72px, with a 1px --ui-line divider above it if needed.",
-   "P2 Card size and backdrop: Darken the scrim to rgba(6,7,8,.80). Either enlarge the card to match the window card, or keep it compact with 32px padding, the 4px radius and an opaque --ui-panel fill."
+   "P1 card layout, right half of the top block: Centre the hero and title in the card, or put the hero on the left and the stats in a right-hand column. Move the prompt to the bottom-centre or the left edge so the eye path is title, then hero, then prompt.",
+   "P1 'press any key' prompt: Set the text to 24px --tx-1 and use the full #e6ff3d for the dot ring and its fill. Add a slow 160ms bounce pulse on the dot. Put it in a row with a 1px line above it.",
+   "P1 backdrop behind the card: Raise --scrim to .88 and make the card fill 96% opaque (--ui-panel). Drop the blur and sprite layer to about 30% brightness for run-over screens.",
+   "P2 stat row (kills / extractions / deaths): Spread the columns evenly over the card's 24px padding, with the last column right-aligned. Dim the stat numbers to --tx-2, and make sure the 56px hero is the only 800-weight number.",
+   "P2 'ended early -50%' subtitle and 'score' label: Raise the 'score' label to 16px with +.04em tracking, and give it 8px above the hero and 24px below the subtitle. Keep amber only as a small warn glyph or the word itself."
   ],
-  "pic": "tools/handoff/console/notes/shots/12-r4-after2/52-arcade-run-over-1080.jpg",
-  "task": "12-ui-party-screens",
-  "when": "2026-10-18T23:33",
-  "need": 4
+  "pic": "tools/handoff/console/notes/shots/110-after/52-arcade-run-over-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-24T19:43"
  },
  "57-title-2p-coop-picked": {
   "score": 3,
@@ -642,18 +642,18 @@
  "55-arcade-run-over-scored": {
   "score": 3,
   "pass": false,
-  "verdict": "The card is cleaner and now has a clear title, score label, grey zero hero and a ringed prompt, but the type is still small for a couch, the lower half is crowded with rules, and the card is a lot of empty dark space with the hero still not dominant.",
+  "need": 4,
+  "verdict": "The card is unchanged from the old version: the layout, type, and hierarchy are identical, and only the blurred background characters differ. It is clean and consistent, but the 56px hero is too small, the card is crowded, and it still looks like a template.",
   "findings": [
-   "P1 hero '0 sp' (x 634, y≈500): Make the hero a true 56px f-cond 800. Set the 'score' label to 16px tx-2. Make the stat values tx-2 at 24px so only the title and hero are bright. Leave 24px between the hero and the divider.",
-   "P1 'press any key' prompt (x 1106-1286, y≈697): Set the text to tx-1, 20px f-cond 700. Make the glyph 24px with a full #e6ff3d ring and dot. Delete the divider at y≈650, or leave 24px above and below it.",
-   "P1 labels 'kills / extractions / deaths' (y≈632) and 'score' (y≈448): Set all labels to 16px f-cond 600 with +.04em tracking in tx-2 #aaa498 or brighter. Keep a 4px gap to each value.",
-   "P2 stats row column grid (x 634, 859, 1085): Use three equal 217px columns from x 634 to 1286, or right-align the prompt with the third column. Keep 24px of padding on all sides.",
-   "P2 title block ('run over', 'ended early -50%'): Set the title to 32px f-cond 700 tx-1. Set the subline to 16px with 'ended early' in tx-2 and '-50%' in --warn. Leave 8px between them."
+   "P1 hero score '2,500 sp': Raise it to the 56px hero token at weight 800. Colour it --acc, or make it clearly brighter than the stats. Align it to the baseline of a right-hand or centred column so the empty right half is used.",
+   "P1 title block: 'run over', 'ended early -50%', 'score': Set the title to 32px at weight 700 in tx-1. Put 'ended early -50%' on the same row, right-aligned, as a warn-coloured tag. Remove the separate 'score' label or move it to 16px directly above the number with 8px spacing.",
+   "P1 initials row and hint 'type or ▲▼ · space next · backspace back · enter done': Colour the active letter and its underline with --acc. Cut the hint to the key glyphs only, at 16px minimum in tx-2. Leave 16px of space before the divider.",
+   "P2 stats row 12/0/0 and labels: Divide the 652px inner width into three equal columns and use the 32px title size for the values. Raise the labels to tx-2 at 16px. Add 24px of space above and below the row.",
+   "P2 'press any key' prompt: Raise the text to 24px and keep the lime ring. Keep the right alignment but add 24px of bottom padding so it does not crowd the card edge."
   ],
-  "pic": "tools/handoff/console/notes/shots/12-r7-after/55-arcade-run-over-scored-1080.jpg",
-  "task": "12-ui-party-screens",
-  "when": "2026-10-19T01:38",
-  "need": 4
+  "pic": "tools/handoff/console/notes/shots/110-after/55-arcade-run-over-scored-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-24T19:43"
  },
  "60-abandoned-card": {
   "score": 3,

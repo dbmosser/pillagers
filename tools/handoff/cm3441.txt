@@ -1,0 +1,7 @@
+v34.41: downed card: bigger label, lime key
+
+On the downed card the word down is bigger and the self-revive key shows in lime.
+
+Check 34.41. Fails on v34.40.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

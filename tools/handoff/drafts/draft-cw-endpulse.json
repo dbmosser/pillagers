@@ -1,0 +1,12 @@
+{
+    "title":  "PROMPT PULSE STAYS BRIGHT",
+    "why":  "Critic on 52 and 55: the press any key prompt reads dim. The pulse dipped to 0.6; now 0.85.",
+    "now":  "The press any key prompt on end cards stays bright through its pulse.",
+    "edits":  [
+                  {
+                      "anchor":  "@keyframes attpulse{0%,100%{opacity:1}50%{opacity:.6}}\u0027;",
+                      "replacement":  "@keyframes attpulse{0%,100%{opacity:1}50%{opacity:.85}}\u0027;   // v34.xx (cw-endpulse), the critic on 52 and 55: \"press any key is small and dim grey\" (the shot caught the pulse at .6): the faint end is .85 now"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the press any key pulse never dips below .85 (critic on 52 and 55: the prompt reads dim)\u0027,\n   run:function(){\n     if(typeof attEl!==\u0027function\u0027) return \u0027SKIP: no attEl\u0027;\n     attEl();\n     var low=null, seen=0;\n     for(var i=0;i\u003cdocument.styleSheets.length;i++){ var rs; try{ rs=document.styleSheets[i].cssRules; }catch(e){ continue; }\n       for(var j=0;j\u003crs.length;j++){ var r=rs[j]; if(r.name===\u0027attpulse\u0027){ seen=1; for(var k=0;k\u003cr.cssRules.length;k++){ var o=parseFloat(r.cssRules[k].style.opacity); if(o\u003c.85) low=o; } } } }\n     if(!seen) return \u0027no attpulse keyframes found\u0027;\n     if(low!==null) return \u0027the pulse dips to \u0027+low;\n     return null; }},"
+}
