@@ -43215,8 +43215,10 @@ window.__REGRESS=[
      var bad=[], g, i, OWN=Object.prototype.hasOwnProperty, names=['fillRect','fill','stroke','drawImage','fillText','strokeText','strokeRect','putImageData'], own={}, real={}, n=0, srcs=[], b0, b1, bx, cb;
      function wrap(){ names.forEach(function(k){ own[k]=OWN.call(ctx,k); real[k]=ctx[k]; ctx[k]=function(){ n++; if(k==='drawImage') srcs.push(arguments[0]); return real[k].apply(this,arguments); }; }); }
      function unwrap(){ names.forEach(function(k){ if(!(k in real)) return; if(own[k]) ctx[k]=real[k]; else delete ctx[k]; }); real={}; }
+     var mm0=CFG.mmSz;
      try{
        __topClear(); __runPrep();
+       CFG.mmSz=1;   /* 2026-10-24 (87r): the minimap is OFF by default since v33.35, so this check turns it on (STANDARD) and restores it */
        b0=MMAP.bakes;
        __deploy({kit:['gun_carbine'],seed:4242,mapIx:0});
        g=__state(); if(!g||g.over) return 'SKIP: no live raid';
@@ -43250,7 +43252,7 @@ window.__REGRESS=[
          if(!(px[0]>120&&px[1]>120)) bad.push('the bake has no wall where a wall stands (rgb '+px[0]+','+px[1]+','+px[2]+')');
        }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ try{ unwrap(); }catch(_u){} try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){} try{ __topClear(); }catch(_c){} }
+     finally{ try{ unwrap(); }catch(_u){} try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){} CFG.mmSz=mm0; try{ __topClear(); }catch(_c){} }
      return bad.length?bad.join('; '):null; }},
   {v:'24.94',what:'his order 2026-10-12, distinct noises: an enemy round that passes close by you without hitting whizzes past once, on the side it passed (a band of noise falling from 3.5 kHz with a small snap, on the HUD bus); a round that hits you, one far off, your own round and any round under G.sim do not, and the whizz itself never plays under G.sim',
    run:function(){
