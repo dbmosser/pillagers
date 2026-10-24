@@ -8255,7 +8255,7 @@ window.__REGRESS=[
    run:function(){
      if(typeof pixWrap!=='function'||typeof PIXW!=='object') return 'no adapter: pixWrap is not defined';
      if(!(window.__deploy&&window.__frame&&window.__runPrep&&window.__topClear&&window.__endRaid)) return 'SKIP: this fixture cannot draw a raid';
-     var bad=[], calls=[], pw0=pixWrap, cfg0=CFG.xfPix, wc0, i, j, e, px, aa, a1, src, got, ik, c;
+     var bad=[], calls=[], pw0=pixWrap, cfg0=CFG.xfPix, wc0, i, j, e, px, aa, a1, src, got, ik, c, pe0=PIX.errs;
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        CFG.xfPix=1;
@@ -8288,7 +8288,7 @@ window.__REGRESS=[
      } catch(err){
        return 'pixhub check: '+String(err&&err.message||err);
      } finally {
-       pixWrap=pw0;
+       pixWrap=pw0; PIX.errs=pe0;   // the forced throw is this check's own staging: leave no pixel fault for the checks after it
        CFG.xfPix=cfg0;
        try{ if(__state()&&!__state().over) __endRaid('abandon'); }catch(_e2){}
        keys={}; __resetCfg(); __topClear(); __cleanProfile();
@@ -8297,7 +8297,7 @@ window.__REGRESS=[
    run:function(){
      if(typeof pixWrap!=='function'||typeof PIXW!=='object') return 'no adapter: pixWrap is not defined';
      if(!(window.__deploy&&window.__frame&&window.__runPrep&&window.__topClear&&window.__endRaid)) return 'SKIP: this fixture cannot draw a raid';
-     var bad=[], calls=[], pw0=pixWrap, cfg0=CFG.xfPix, wc0, i, j, L1, e, px, aa, a1, clip0, e0, got={}, t, want, src, tm=[], T0=performance.now(), lamp, post, brk, thrown;
+     var bad=[], calls=[], pw0=pixWrap, cfg0=CFG.xfPix, wc0, i, j, L1, e, px, aa, a1, clip0, e0, got={}, t, want, src, tm=[], T0=performance.now(), lamp, post, brk, thrown, pe0=PIX.errs;
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        CFG.xfPix=1;
@@ -8340,7 +8340,7 @@ window.__REGRESS=[
      } catch(err){
        return 'pixlamps check: '+String(err&&err.message||err);
      } finally {
-       pixWrap=pw0;
+       pixWrap=pw0; PIX.errs=pe0;   // the forced throw is this check's own staging: leave no pixel fault for the checks after it
        CFG.xfPix=cfg0;
        try{ if(__state()&&!__state().over) __endRaid('abandon'); }catch(_e2){}
        keys={}; __resetCfg(); __topClear(); __cleanProfile();
