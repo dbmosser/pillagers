@@ -944,3 +944,7 @@
 2026-10-24 13:14:17 FUZZ START seed=372022955 minutes=60 raidsec=300 port=9332 srv=8806 build=34.28 maps=0 size=1920x1080 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
 2026-10-24 13:16:33 FUZZ START seed=1723935877 minutes=60 raidsec=300 port=9332 srv=8806 build=34.28 maps=0 size=1920x1080 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
 2026-10-24 13:16:33 FUZZ START seed=1723935877 minutes=60 raidsec=300 port=9331 srv=8806 build=34.28 maps=0 size=1920x1080 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
+2026-10-24 13:22:24 FUZZ START seed=1245772046 minutes=60 raidsec=300 port=9331 srv=8806 build=34.28 maps=0 size=1920x1080 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
+2026-10-24 13:22:25 FUZZ START seed=1246712276 minutes=60 raidsec=300 port=9332 srv=8806 build=34.28 maps=0 size=1920x1080 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
+2026-10-24 13:27:32 raid 1 demo2p raidSeed=470282158 map=0 god=0 sec=302 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=9189 score=0 ents=44 travelPx=27983 fires=176 menuPct=12 heapMB=64 p2=link_4s_join_5s_pad_own gfx=17822/16.75/16.75/206/1 gfx2=17835/16.75/16.75/179/1 work=17877/5.25/9.75/15.75 work2=17926/4.25/8.25/12.25 build=34.28
+2026-10-24 13:27:33 raid 1 demo2p raidSeed=570870157 map=0 god=0 sec=302 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=9440 score=0 ents=49 travelPx=28040 fires=120 menuPct=15 heapMB=65 p2=link_4s_join_6s_pad_fwd gfx=17959/16.75/16.75/141/1 gfx2=17869/16.75/16.75/136/1 work=17967/5.25/10.25/14.75 work2=17972/3.75/7.75/11.75 build=34.28
