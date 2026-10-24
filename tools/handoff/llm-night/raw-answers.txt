@@ -1,20 +1,28 @@
 
 It looks like you've provided a detailed list of changes or updates for a game, likely related to its mechanics, user interface, and gameplay experience. Here are some key points from the entries:
 
-1. **Co-op Improvements**: Enhanced co-op features such as teammates reading run cards going up with the party, enemies staying audible after the host leaves, and improved pinging mechanics.
+1. **Co-op Improvements**: Enhanced co-op features such as teammates reading run cards going up with the party, enemies staying audible after the host leaves, and pinging twice marking danger.
 
-2. **Grenades and Items**: Changes to how grenades work (e.g., cooked Frag Charges keep burning through a roll), items like belt keys no longer stopping Medical from using other heals, and controller packs from the stash.
+2. **Grenades and Items**: Changes to how grenades work (e.g., a cooked Frag Charge keeps burning through a roll), items like belt keys no longer stopping Medical using other heals, and controller packs from the stash with A key.
 
 3. **Healing and Contracts**: Medkits are never wasted at full health or refused on their own key, grenades you are cooking stay in your hand, and contracts count only what the run found.
 
-4. **Controller Improvements**: The Undercroft floor and every raid now support controllers, with View opening the backpack and Menu pausing.
+4. **Controller Features**: The Undercroft floor and every raid now support controller use, including viewing backpacks and trading with peddlers.
 
-5. **Enemy Behavior**: Fewer enemies by default, including fewer pillagers and smaller reinforcement waves.
+5. **Enemy Behavior**: Fewer enemies by default, meaning fewer machines pushing crawlers past houses and smaller reinforcement waves of pillagers.
 
-6. **User Interface Changes**: Tab pauses and backs out of any menu, X searches what you are standing on (even inside an extraction point), and ESC only keeps fullscreen when the game has its own tab in Chrome and Edge.
+6. **User Interface Changes**: Tab pauses and backs out of any menu, X searches what you are standing on (even inside extraction points), and the welcome pack goes to your stash without equipping anything.
 
-7. **Gameplay Mechanics**: Improved handling of armor plates, empty cells spending nothing from another cell, guns keeping their rounds when stowed, and a new character keeping what their first session earned
+7. **Gameplay Mechanics**: A roll with no stamina left says so, whoever killed you is recorded correctly, a key already down is not counted as a
 NONE
-NONE
+LINE 46013: RSTAT.lines=[]; - This line clears the lines array, which might not be intended if other parts of the code rely on its contents.
+
+LINE 46025: if(raidClockOn()){ t=Math.ceil(Math.max(0,+G.timeLeft||0)); T.push({l:'RAID CLOCK',v:fmtClock(t),c:(t<=CLOCK_RED)?'#ff5a4a':'#e8eef2',s:'ELAPSED '+fmtClock(elapsed()),big:1,rail:(t<=CLOCK_RED)?'#e5482f':'#4a5257'}); } - The use of +G.timeLeft||0 could potentially lead to NaN if G.timeLeft is not a number or undefined.
+
+LINE 46031: try{ goalsTiles(T); }catch(_gtl){} - This try/catch block swallows any exceptions thrown by the goalsTiles function, which might hide bugs and make debugging difficult.
+
+LINE 46109: ctx.strokeStyle='rgba(255,90,74,'+pulse+')'; ctx.lineWidth=2*_cr; - The pulse variable is used directly in a string without checking if it's NaN or undefined.
+
+LINE 46138: } else { - This line has no code after the conditional return statement on LINE 46139,
 NONE
 NONE

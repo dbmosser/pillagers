@@ -1,0 +1,7 @@
+v34.30: raid hud text keeps its i dots
+
+Small i letters in the raid HUD show their dot again. The ammo card fades less while the extraction ship is coming.
+
+Check 34.30. Fails on v34.29.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -3609,7 +3609,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.29';
+var VER='34.30';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -43013,6 +43013,7 @@ function drawHUD(){
   var p=G.player,T=G.tel,i;
   hudClampAll();
   ctx.clearRect(0,0,W,H);
+  if(ctx.textRendering!=='geometricPrecision') ctx.textRendering='geometricPrecision';   // v28.xx (cw-h103fix), the critic on screens 21 and 61 ('run Info', 'In cover': a capital letter): the small i of the condensed face lost its dot to hinting at 1080p and read as a capital I; unhinted text keeps the dot
   gfxqVignette(); // v28.xx (cw-cx-laddereffects): only decorative corner shade; low-health, hit and scope edges below stay intact.
   if(GFXWT) gfxWorldText();   // v23.xx (gfx5): the nameplates, tags, damage numbers and labels of this raid frame, sharp on the HUD canvas
   var _pcs=msPlayerScreen(); padClaimDraw(_pcs.x,_pcs.y); // v28.xx (cw-cx-padowner): this window only.
@@ -44346,7 +44347,7 @@ if(p.armor>0){
   var _boG=hudOff('gear');
   ctx.save(); ctx.translate(_boG.dx,_boG.dy);
   hudZoomIn('gear',W,H);                 // v8.08: grows up and left from the corner
-  if(typeof G.beaconT==='number'&&G.beaconT>0) ctx.globalAlpha=0.6;   // v28.xx (cw-h103hero), the critic on screen 37 ('the extraction banner still lacks hero weight'): while the ship is inbound the extract line is the one hero, so the ammo card steps down; it is back at full strength the moment the countdown ends
+  if(typeof G.beaconT==='number'&&G.beaconT>0) ctx.globalAlpha=0.7;   // v28.xx (cw-h103fix): the critic found 60 percent too faint to read the rounds, so 70;   // v28.xx (cw-h103hero), the critic on screen 37 ('the extraction banner still lacks hero weight'): while the ship is inbound the extract line is the one hero, so the ammo card steps down; it is back at full strength the moment the countdown ends
   // v10.01: 30, not 38. by is H-34, so 38 put the box bottom past the screen
   // edge at every monitor size, by the panel's zoom; the content ends at by.
   HUDBOX.gear=(function(){ var R=hudZoomRect('gear',W,H,{x:W-252,y:by-LH(80),w:246,h:LH(80)+30});
@@ -53914,7 +53915,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.29: While you wait for the extraction ship the ammo card fades back. The controls list is a bit quieter. Check 34.29 fails on v34.28',
+  now:'v34.30: Small i letters in the raid HUD show their dot again. The ammo card fades less while the extraction ship is coming. Check 34.30 fails on v34.29',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

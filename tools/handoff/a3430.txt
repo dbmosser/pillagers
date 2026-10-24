@@ -1,0 +1,1 @@
+| RAID HUD TEXT KEEPS ITS I DOTS | v34.30 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 34.30 passes, fails on v34.29 |

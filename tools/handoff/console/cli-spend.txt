@@ -1117,3 +1117,5 @@
 2026-10-24 0.1739332 102-ui-raid-hud-calm
 2026-10-24 0.17674199999999998 94-ladder-sheds-sooner
 2026-10-24 0.17884 94-ladder-sheds-sooner
+2026-10-24 0.1477 critic-manual
+2026-10-24 0.1475 critic-manual
