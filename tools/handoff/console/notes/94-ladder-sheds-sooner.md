@@ -59,3 +59,15 @@ Watch on the next play: a raid that turns softer or loses sparks while nothing i
 --- claude run 2026-10-24 (lane a, second) ---
 No change. Code unchanged and shipped (v34.13 to v34.16). The A-t4 / C-t4 re-measure still cannot run on my command list (runA.sh, runC.sh, Chrome scripts are not allowed forms); notes/coord-07/94-ladder-after still absent. No numbers invented. Old: A-t4 p50 40.8 / p95 50.1; C-t4 p1 148.5 / 187.1, p2 146.7 / 217.6.
 Watch on the next play: a raid that turns softer or loses sparks while nothing is happening, or sparks or haze that come and go; the first 20 seconds of each raid should look like the rest.
+
+--- claude run 2026-10-24 (lane b) ---
+No change. Ladder code is shipped (v34.13 to v34.16) and matches steps 1 to 6 in dark_raiders.html (drsTick, gfxqApply, drsBeginRaid). The A-t4 / C-t4 re-measure still cannot run on my command list (runA.sh, runC.sh and Chrome scripts are not allowed forms); notes/coord-07/94-ladder-after is still absent. No numbers invented. Old: A-t4 p50 40.8 / p95 50.1; C-t4 p1 148.5 / 187.1, p2 146.7 / 217.6.
+Watch on the next play: a raid that turns softer or loses sparks while nothing is happening, or sparks or haze that come and go; the first 20 seconds of each raid should look like the rest.
+
+--- claude run 2026-10-24 (lane c) ---
+No change. Ladder code is shipped (v34.13 to v34.16; drsTick, gfxqApply, gfxqCan at about 35218-35279 in dark_raiders.html). Only the A-t4 / C-t4 re-measure is open: runA.sh, runC.sh and the Chrome scripts are not on my command list, so no new numbers. Old: A-t4 p50 40.8 / p95 50.1; C-t4 p1 148.5 / 187.1, p2 146.7 / 217.6.
+Watch on the next play: a raid that turns softer or loses sparks while nothing is happening, or sparks or haze that come and go; the first 20 seconds of each raid should look like the rest.
+
+--- claude run 2026-10-24 (lane b, second) ---
+No change. Ladder code shipped (v34.13 to v34.16; DRS/GFXQ/gfxqCan/drsTick at 35218-35279). Re-measure (coord-07 A-t4 / C-t4) still not runnable on my command list; notes/coord-07/94-ladder-after absent. No numbers invented. Old: A-t4 p50 40.8 / p95 50.1; C-t4 p1 148.5 / 187.1, p2 146.7 / 217.6.
+Watch on the next play: a raid that turns softer or loses sparks while nothing is happening, or sparks or haze that come and go; the first 20 seconds of each raid should look like the rest.

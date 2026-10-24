@@ -1,1 +1,1 @@
-10-24 11:53 running 102-ui-raid-hud-calm on Claude Code (your plan: week 96% of the 73.8% line, 5-hour 4%)
+10-24 12:55 running 103-ui-raid-hud-hierarchy on Claude Code (your plan: week 96% of the 74.2% line, 5-hour 5%)

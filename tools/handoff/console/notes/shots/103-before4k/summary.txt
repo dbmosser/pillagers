@@ -1,0 +1,2 @@
+== 4k : window 3876x2265, viewport 3840x2160
+  21-raid-hud-calm                       staged      14.9s  

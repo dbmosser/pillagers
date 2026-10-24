@@ -1,0 +1,7 @@
+v34.27: the what is new stamp keeps up
+
+The what is new stamp keeps up with the build; the three notes are unchanged.
+
+Check 34.27. Fails on v34.26.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
