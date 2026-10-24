@@ -22,6 +22,17 @@ echo "last ship: $(git log -1 --format='%s' master | cut -c1-70) ($age min ago)"
 # 2 the ship gate browser
 if up 9346 json/version; then echo "gate browser 9346: up"
 else if [ $FIX = 1 ]; then powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/cdp.ps1" -Start -Port 9346 >/dev/null 2>&1; up 9346 json/version && echo "gate browser 9346: was down, STARTED" || prob "gate browser 9346 down and would not start"; else prob "gate browser 9346 down"; fi; fi
+# 2b 10-24: the gate browser grows with every ship (2.7 GB after ten ships on 10-24, which held the 10 GB VM at 1 GB free and kept
+# the helpers from starting). Over 1500 MB and no ship or gate running: restart it (a fresh one is about 350 MB).
+gm=$(powershell -NoProfile -Command "\$t=0; Get-CimInstance Win32_Process -Filter \"Name='chrome.exe'\" | Where-Object { \$_.CommandLine -match 'remote-debugging-port=9346(\s|\$)' } | ForEach-Object { \$t+=\$_.WorkingSetSize }; [int](\$t/1MB)" 2>/dev/null | tr -dc '0-9')
+if [ "${gm:-0}" -gt 1500 ]; then
+  gb=$(powershell -NoProfile -Command "@(Get-CimInstance Win32_Process | Where-Object { \$_.Name -match '^(bash|powershell)\.exe$' -and \$_.CommandLine -match 'shipone\.sh|[^(]ship\.sh|preflight\.sh|gate\.ps1|slicechk\.sh' }).Count" 2>/dev/null | tr -dc '0-9')
+  curl -s -m 3 http://127.0.0.1:9346/json 2>/dev/null | grep -q '"url": *"http' && gb=1
+  if [ "${gb:-1}" != 0 ]; then echo "gate browser 9346: ${gm} MB, kept (a ship or gate is running)"
+  elif [ $FIX = 1 ]; then powershell -NoProfile -Command "Get-CimInstance Win32_Process -Filter \"Name='chrome.exe'\" | Where-Object { \$_.CommandLine -match 'remote-debugging-port=9346(\s|\$)' } | ForEach-Object { Stop-Process -Id \$_.ProcessId -Force -ErrorAction SilentlyContinue }" >/dev/null 2>&1
+    powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/cdp.ps1" -Start -Port 9346 >/dev/null 2>&1
+    up 9346 json/version && echo "gate browser 9346: had grown to ${gm} MB, RESTARTED" || prob "gate browser 9346 restarted after ${gm} MB and did not come back"
+  else echo "gate browser 9346: ${gm} MB (over 1500)"; fi; fi
 # 3 the runner
 hb="$H/nightly/runner.heartbeat"; if [ -f "$hb" ]; then ha=$(( (now-$(date -r "$hb" +%s))/60 )); echo "runner heartbeat: $ha min ago"; [ $ha -gt 20 ] && prob "runner heartbeat is $ha min old"; else prob "no runner heartbeat file"; fi
 # 4 helpers
