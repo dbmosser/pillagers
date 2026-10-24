@@ -15,3 +15,6 @@ Fresh critic (shots/110-r3): 52 = 3, 53 = 3, 54 = 3, 55 = 3, 64 = 3. 53 and 54 a
 - Points still docked are size or layout, each against a ruling or the dialog rule: card 716 wide (his Q43), scrim lighter than .80 (his Q52 and Q54, live fights stay readable; cw-title-sharp 2px blur), labels read 13-14px by the critic but css floors them at 16px (cw-partylook6), initials hint line is job 96 text.
 - 53, 54 and 64 meet their target 3. 52 and 55 sit at 3, target 4: three ships over two runs (endzero, endpulse, iniacc), so stopped (2.83 b). Best version is HEAD.
 - Only ships left need his say: wider card (against Q43), darker scrim (against Q52 and Q54).
+
+## Run of 2026-10-24 (lane a, HEAD v34.46)
+Fresh critic (shots/110-r4): 52 = 3, 55 = 3. 53, 54 and 64 were 3 last run (targets met) and nothing changed for them since. No ship: 52 and 55 are past the 6-try rule over three runs, and every P1 left is size or layout against the dialog rule (card 716 wide, his Q43), a lighter scrim (his Q52 and Q54), or labels the critic reads at 13-14px that css floors at 16px. Best version is HEAD. Needs his say to go further: wider end card, darker scrim.

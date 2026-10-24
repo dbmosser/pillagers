@@ -1,0 +1,7 @@
+v34.47: the pixel undercroft floor
+
+With the pixel look on (the default), the Undercroft floor is chunky pixel art in 8 stepped tones. With the look off, nothing changes.
+
+Check 34.47. Fails on v34.46.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

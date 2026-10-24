@@ -213,3 +213,14 @@ function pushSnap() {
   });
 }
 setTimeout(pushSnap, 3000); setInterval(pushSnap, 30000);
+// 10-24, his yes to "the VM gets the extra memory whenever you are away": the main PC's minute check (tools/migrate/host-night-memory.ps1,
+// MemFollow) takes memory back only as fast as the VM has it free, so every 30 s the VM tells it the time and its free memory (os.freemem is
+// the available physical memory, what Hyper-V can take back).
+const MEM_NAME = 'vm-memory.txt', MEM_TMP = os.tmpdir() + '/pillagers-vm-memory.txt';
+let memBusy = false;
+function pushMem() {
+  if (memBusy) return; memBusy = true;
+  try { writeFileSync(MEM_TMP, 'epoch=' + Math.floor(Date.now() / 1000) + '\nfreeMB=' + Math.floor(os.freemem() / 1048576) + '\n'); } catch (e) { memBusy = false; return; }
+  execFile(process.execPath, [R + '/tools/bridge/hostctl.mjs', 'share-put', 'name=' + MEM_NAME, '--file', MEM_TMP], { timeout: 20000, windowsHide: true }, () => { memBusy = false; });
+}
+setTimeout(pushMem, 5000); setInterval(pushMem, 30000);

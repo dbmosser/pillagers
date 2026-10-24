@@ -21,4 +21,6 @@ Watch on next play: the run info panel is wider (up to 1.6 x the column) when a 
 
 Run 5 (10-24): no new ship. Re-read notes and check 34.39: wrap defect check covers rows inside panel at the staged viewport; same HUD-space code at 4k and P2. 3 of 6 tries used, best v34.41 (critic 3). Left: critic 4 on 34, 4k and P2 pictures.
 
+Run 7 (lane a, 10-24): shipped v34.46 cw-cdoneshort (contract done line shortened, checks 23.10 and 53 retargeted, logged in changes.md). Critic on 34: 3 (same, no P0; the rest is HUD-wide panel styles, running slowly duplicate = feed-all order q91, world labels, hotbar). The "notch" it names is the intended 36px danger tab. 4 of 6 tries used, best v34.41 and v34.46 at 3. 36 unchanged. Not done: critic 4 on 34, P2 picture. Watch on next play: contract done shows only the contract words.
+
 Run 6 (10-24): shot 34 at 4k (notes/shots/109-4k). Run info rows stay on one line, panel fits, downed card has the shared panel, danger tab, hero timer, danger label, live key. 4k confirmed. No new ship. P2 picture still not taken. Critic 4 on 34 not reached (best v34.41, critic 3); 3 of 6 tries used.

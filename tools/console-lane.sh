@@ -146,6 +146,14 @@ if [ $ENGINE = cli ]; then
   if { [ "$pace" != 0 ] && awk -v w="$wk" -v l="$line" -v b="$boost" 'BEGIN{exit !(w+b>=l)}'; } || [ "$ses" -ge "$(cap PLAN_SESSION_MAX 75)" ]; then
     if [ "$pace" = 0 ]; then echo "$(date '+%m-%d %H:%M') resting: the 5-hour window is at $ses% (helpers stop at $(cap PLAN_SESSION_MAX 75)%); week $wk% used" > "$C/status-$L.txt"
     else echo "$(date '+%m-%d %H:%M') pacing your plan: week $wk% used (the $(cap PLAN_TARGET 85)% line is at $line% now), 5-hour window $ses%" > "$C/status-$L.txt"; fi; exit 0; fi
+  # 10-24, his yes to "the VM gets the extra memory whenever you are away": while he is back at the main PC and it takes its memory back
+  # (gaming.txt vmback=1 from tools/migrate/host-night-memory.ps1, under 10 minutes old), no new helper starts, so each one that finishes
+  # frees memory the VM can hand back. Running helpers go on.
+  gt=$(timeout 25 node "$R/tools/bridge/hostctl.mjs" share-get name=gaming.txt 2>/dev/null | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{try{const j=JSON.parse(s);if(j.ok&&j.base64)process.stdout.write(Buffer.from(j.base64,'base64').toString('utf8'))}catch(e){}})" | tr -d '\r')
+  if printf '%s\n' "$gt" | grep -q '^vmback=1$'; then
+    ck=$(printf '%s\n' "$gt" | sed -n 's/^checked=//p' | head -1); cks=$(date -d "$ck" +%s 2>/dev/null || echo 0)
+    if [ $(( $(date +%s) - cks )) -lt 600 ]; then echo "$(date '+%m-%d %H:%M') waiting: he is back at the main PC and it is taking its memory back; $name kept" > "$C/status-$L.txt"; exit 0; fi
+  fi
   # 10-21: the smaller of free RAM and free virtual memory (Windows ran out of virtual memory at 02:19 with 4 GB of RAM free)
   rf=$(( $(cap RAM_FLOOR_GB 6) + 1 )); g=$(powershell -NoProfile -Command "\$o=Get-CimInstance Win32_OperatingSystem; [int]([Math]::Min(\$o.FreePhysicalMemory,\$o.FreeVirtualMemory)/1MB)" 2>/dev/null | tr -dc '0-9')
   [ "${g:-0}" -lt "$rf" ] && { echo "$(date '+%m-%d %H:%M') waiting for RAM: ${g:-0} GB free, a helper starts at $rf; $name kept" > "$C/status-$L.txt"; exit 0; }

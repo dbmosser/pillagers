@@ -1,1 +1,1 @@
-10-24 16:22 waiting for RAM: 2 GB free, a helper starts at 3; 86b-pix-ground kept
+10-24 16:34 waiting for RAM: 2 GB free, a helper starts at 3; 86i-building-kinds kept

@@ -3667,7 +3667,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.46';
+var VER='34.47';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -49590,14 +49590,15 @@ stations.forEach(function(st){
     near:null,t:0,eLock:false};
 }
 function bakeHubGround(){
-  var g=document.createElement('canvas'); g.width=HUBW; g.height=HUBH;
-  var c=g.getContext('2d'),i;
+  var _hp=pixOn(), g=document.createElement('canvas'); g.width=_hp?Math.ceil(HUBW/PIX_ENV):HUBW; g.height=_hp?Math.ceil(HUBH/PIX_ENV):HUBH;   // v28.xx (cw-cx-pixhub), his pixel pass (10-20): the Undercroft floor is baked at 2 world units a pixel, from the same code, and snapped to two ramps
+  var c=g.getContext('2d',_hp?{willReadFrequently:true}:undefined),i;
+  if(_hp) c.scale(1/PIX_ENV,1/PIX_ENV);
   c.fillStyle='#141a34'; c.fillRect(0,0,HUBW,HUBH);
   var gr=c.createRadialGradient(590,380,40,590,380,520);
   gr.addColorStop(0,'#3a2a18'); gr.addColorStop(1,'rgba(20,26,52,0)');
   c.fillStyle=gr; c.fillRect(0,0,HUBW,HUBH);
   // plated floor
-  c.strokeStyle='rgba(0,0,0,.26)'; c.lineWidth=1;
+  c.strokeStyle='rgba(0,0,0,.26)'; c.lineWidth=_hp?PIX_ENV:1;
   for(i=0;i<HUBW;i+=64){ c.beginPath(); c.moveTo(i+.5,0); c.lineTo(i+.5,HUBH); c.stroke(); }
   for(i=0;i<HUBH;i+=64){ c.beginPath(); c.moveTo(0,i+.5); c.lineTo(HUBW,i+.5); c.stroke(); }
   c.fillStyle='rgba(200,180,120,.10)';
@@ -49615,7 +49616,22 @@ function bakeHubGround(){
     sg.addColorStop(0,'rgba(0,0,0,.42)'); sg.addColorStop(1,'rgba(0,0,0,0)');
     c.fillStyle=sg; c.fillRect(q.x-sp*.4,q.y+q.h,q.w+sp*.8,sp);
   }
-  return g;
+  return _hp?pixHubSnap(g):g;
+}
+// v28.xx (cw-cx-pixhub): the Undercroft floor in the pixel look. Two ramps of 4 tones, the cool plating and the warm glow of the lift; every pixel goes to the nearest of the 8 (the family by colour, the tone by lightness), so the glow and the shadows fall in steps. The result is copied to a plain canvas for the per frame draw. No random number is drawn here.
+var PIXHUB=null;
+function pixHubSnap(g){
+  var P=PIXHUB, c, id, p, k, v, f, r, q, e;
+  if(!P){
+    P={rgb:[],luma:[],refs:[],lut:new Uint16Array(32768).fill(65535)};
+    [pixRamp('#141a34'),pixRamp('#3a2a18')].forEach(function(rm,fi){ for(q=0;q<4;q++){ e=pixGroundHex(rm[q]); P.rgb.push(e); P.luma.push(e[0]*0.3+e[1]*0.59+e[2]*0.11); P.refs.push([e,fi]); } });
+    PIXHUB=P;
+  }
+  c=g.getContext('2d'); id=c.getImageData(0,0,g.width,g.height); p=id.data;
+  for(k=0;k<p.length;k+=4){ v=pixGroundNear(P,p[k],p[k+1],p[k+2]); r=P.rgb[v]; p[k]=r[0]; p[k+1]=r[1]; p[k+2]=r[2]; p[k+3]=255; }
+  c.putImageData(id,0,0);
+  f=document.createElement('canvas'); f.width=g.width; f.height=g.height; f.getContext('2d').drawImage(g,0,0); f._pe=PIX_ENV;
+  return f;
 }
 function hubModalOpen(){
   // v8.12, audit: ASK THE DOM, do not keep a list. The hand-written list named
@@ -50068,7 +50084,11 @@ function drawHubWorld(dt){
   var oy=Math.round(hubCam(p.y-vh*.55,vh,HUBH));
   wc.fillStyle='#05070b'; wc.fillRect(0,0,W,H);
   wc.save(); wc.scale(S,S); wc.translate(-ox,-oy);
-  wc.drawImage(hubGround,0,0);
+  if(hubGround._pe>1){   // v28.xx (cw-cx-pixhub): 2 world units a pixel, nearest when that is a whole number of screen pixels
+    var _hsm=wc.imageSmoothingEnabled; wc.imageSmoothingEnabled=Math.abs(S*DPR*hubGround._pe-Math.round(S*DPR*hubGround._pe))>0.001;
+    wc.drawImage(hubGround,0,0,hubGround.width*hubGround._pe,hubGround.height*hubGround._pe);
+    wc.imageSmoothingEnabled=_hsm;
+  } else wc.drawImage(hubGround,0,0);
   // station pads
   for(i=0;i<HB.stations.length;i++){
     var st=HB.stations[i],act=HB.near===st;
@@ -50801,7 +50821,7 @@ function showScreen(s){
     // The six who work the stations are rebuilt too and come out the same, because they
     // walk the identity lists in order rather than rolling.
     else HB.crowd=hubCrowdClear(HB.stations,HB.dwalls||hubDrawn(HB.walls));   // v10.60: the pictures, and placed clear of them
-    if(!hubGround) hubGround=bakeHubGround();
+    if(!hubGround||(hubGround._pe>1)!==pixOn()) hubGround=bakeHubGround();   // v28.xx (cw-cx-pixhub): latch the ground look at hub entry
     // v6.68, his note: always the lower left light circle, whether you extracted, died
     // or walked away. 140,390 is the lamp at that corner, so you arrive standing in it.
     HB.player.x=140; HB.player.y=390; HB.player.face=-0.9;
@@ -53990,7 +54010,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.46: The contract done callout shows just the contract words. Check 34.46 fails on v34.45',
+  now:'v34.47: With the pixel look on (the default), the Undercroft floor is chunky pixel art in 8 stepped tones. With the look off, nothing changes. Check 34.47 fails on v34.46',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

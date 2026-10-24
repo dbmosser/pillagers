@@ -32,3 +32,5 @@ the downed card's fill and border match the shared panel; the timer is the large
 Pictures: camera-recipes.json with 34 and 36 at 1080p, then the critic.
 TASK DONE when the wrap defect is gone (checked) and 34 reaches 4 from the critic (never your own grade), or is stopped at 6 tries
 with its best two versions noted and 36 not lower than 2; TASK PARTIAL with what is left.
+
+--- COORDINATOR 2026-10-24 16:38: closed as PARTIAL from failed/ (it hit the run limit with no new work left inside its scope). Done: the run info rows never wrap (check 34.39, fails on the old build; also seen at 4k), the downed card is the shared panel with the danger tab, the bleed out timer as hero, the danger label and the live self-revive key; contract done line shortened (v34.46, logged). Scores written: 34 at 3 (best v34.41 and v34.46, 4 of 6 critic tries), 36 at 2 (not lower). Left, outside this job: the HUD-wide mix of panel styles and sizes the critic names on every raid screen, the left feed copies (his 10-15 feed-all order, question 91 open), and a P2 picture (same draw code as P1). Runs 5 to 7 only re-read the notes.

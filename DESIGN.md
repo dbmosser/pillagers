@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.47 - THE PIXEL UNDERCROFT FLOOR
+
+Co-op hunt while he was away. Job 86b: the Undercroft floor in the pixel look: baked at one pixel per 2 world units from the same code and snapped to two 4 tone ramps, so the lift glow and the shadows fall in steps like the raid ground.
+
+MEASURED. Check 34.47 passes, and fails on v34.46.
 ## v34.46 - CONTRACT DONE LINE SHORTER
 
 Co-op hunt while he was away. Critic on the downed screen: one long contract done sentence runs across the middle of the raid. The line keeps the contract words and drops the trailing turn in sentence (logged in changes.md, Q8).

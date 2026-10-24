@@ -104,8 +104,17 @@ function FreeGB(){ $os=Get-CimInstance Win32_OperatingSystem -ErrorAction Silent
 # So from 22:40 to 23:10 this runner frees what it holds and starts nothing, and until 06:45 it starts only with 10 GB free (the VM did not
 # take its share). Once working it goes on down to 4 GB free, the margin that task keeps for this PC.
 function HourMin(){ return [int](Get-Date).ToString('HHmm') }
-function VMResizeSoon(){ $hm=HourMin; return ($hm -ge 2240 -and $hm -lt 2310) }
-function VMNight(){ $hm=HourMin; return ($hm -ge 2240 -or $hm -lt 645) }
+# 10-24, his yes to "the VM gets the extra memory whenever you are away": once he runs the new night-memory setup, the main PC's minute check
+# moves the VM's memory by whether he is here, not by the clock, and writes follow=away and awaymin=N into gaming.txt. Then the clock holds
+# below are off, and this runner starts work only after he has been away awaymin + 2 minutes, so the VM has had its turn first.
+function FollowAway(){
+  try{ $f=Join-Path $env:LOCALAPPDATA 'PillagersBridge\share\gaming.txt'; $i=Get-Item -LiteralPath $f -ErrorAction Stop
+       if(((Get-Date)-$i.LastWriteTime).TotalMinutes -gt 5){ return 0 }
+       $t=[IO.File]::ReadAllText($f); if($t -match '(?m)^follow=away' -and $t -match '(?m)^awaymin=(\d+)'){ return [int]$Matches[1] } }catch{}
+  return 0
+}
+function VMResizeSoon(){ if((FollowAway) -gt 0){ return $false }; $hm=HourMin; return ($hm -ge 2240 -and $hm -lt 2310) }
+function VMNight(){ if((FollowAway) -gt 0){ return $false }; $hm=HourMin; return ($hm -ge 2240 -or $hm -lt 645) }
 # ends only what this runner started: the test scripts run from C:\PillagersIdle, and the test Chromes (debug port and pillagers-cdp profile)
 function Stop-Work([string]$why){
   $n=0
@@ -195,7 +204,7 @@ function Start-Corpus(){
     # 10-22 review: a full run takes 2.5 to 3.5 hours (corpq.sh), so one started after 19:10 is stopped at 22:40 and spends one of the
     # build's two tries. The robots get the build now; the full run waits for the morning (tries untouched).
     $hm=HourMin
-    if($hm -ge 1910 -and $hm -lt 2240){
+    if($hm -ge 1910 -and $hm -lt 2240 -and (FollowAway) -eq 0){
       if((GetS 'fx_blob') -ne $blob -and (Build-Fixture)){ Copy-Item -LiteralPath ($T+'\fixture.html') -Destination ($T+'\fxcorpus.html') -Force; PutS 'fx_blob' $blob; Say ('build '+$head.Substring(0,8)+' (v'+(GameVer)+'): robots only until the morning, a full run would not end before 22:40') }
       return
     }
@@ -292,8 +301,9 @@ while($true){
     # IDLE MODE: while he is at the PC (or memory is short) nothing runs; a look every 20 seconds, a status note when that changes
     $away=AwaySec; $fg=FreeGB; $vmn=VMNight
     $ng=$(if(VMResizeSoon){ 999 }elseif($script:working){ 4 }elseif($vmn){ 10 }else{ 6 })
-    if($away -lt 900 -or $fg -lt $ng){
-      $pw=$(if($away -lt 900){ 'paused: he is using the PC' }elseif($vmn){ 'paused: the VM has the memory at night' }else{ 'paused: under 6 GB free' })
+    $fw=FollowAway; $na=$(if($script:working -or $fw -le 0){ 900 }else{ [Math]::Max(900,($fw+2)*60) })
+    if($away -lt $na -or $fg -lt $ng){
+      $pw=$(if($away -lt 900){ 'paused: he is using the PC' }elseif($away -lt $na){ 'paused: the VM takes its memory first' }elseif($vmn){ 'paused: the VM has the memory at night' }else{ 'paused: under 6 GB free' })
       if($script:working){ Stop-Work $pw }
       $pt=[long]('0'+(GetS 'pub_t'))
       if((GetS 'pause_why') -ne $pw -or ((Epoch)-$pt) -ge ($PublishMin*60)){
