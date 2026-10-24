@@ -1,1 +1,1 @@
-10-24 12:55 running 103-ui-raid-hud-hierarchy on Claude Code (your plan: week 96% of the 74.2% line, 5-hour 5%)
+10-24 13:47 running 104-ui-pause-dialogs on Claude Code (your plan: week 97% of the 74.7% line, 5-hour 6%)

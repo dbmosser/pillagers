@@ -53,3 +53,6 @@ Third check: notes/95/ still does not exist, no split, pid or stall files; alarm
 
 --- claude lane b run 2026-10-24 (4th) ---
 notes/95/ still missing; no split, pid or stall raw files. Command list cannot run measure95.mjs or run-measure95.ps1. Step 1 undecided. No game edits, no ship key. Resume at step 2 when raw files are in notes/95/.
+
+--- claude lane c run 2026-10-24 (4th) ---
+85a done. notes/95/ still missing, no split, pid or stall raw files; alarms.md line 6 still open. Step 1 cannot decide. No game edits, no ship key. Resume at step 2 when raw files are in notes/95/.

@@ -1,0 +1,5 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  25-raid-pause-box                      staged       9.5s  
+  78-raid-pause-box-full-kit             staged       8.7s  
+  42-hub-pause-box                       staged      12.2s  
+  49-arcade-pause-box                    staged      13.2s  

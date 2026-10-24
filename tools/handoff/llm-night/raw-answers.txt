@@ -1,28 +1,23 @@
 
-It looks like you've provided a detailed list of changes or updates for a game, likely related to its mechanics, user interface, and gameplay experience. Here are some key points from the entries:
+It looks like you've provided a detailed list of changes or updates for a game, likely related to its mechanics, user interface, and gameplay experience. Here's a summary of the key points:
 
-1. **Co-op Improvements**: Enhanced co-op features such as teammates reading run cards going up with the party, enemies staying audible after the host leaves, and pinging twice marking danger.
+1. **Co-op Improvements**: Enhanced co-op features such as better communication tools (pinging), improved enemy behavior after host leaves, and more intuitive revive mechanics.
 
-2. **Grenades and Items**: Changes to how grenades work (e.g., a cooked Frag Charge keeps burning through a roll), items like belt keys no longer stopping Medical using other heals, and controller packs from the stash with A key.
+2. **Grenades and Items**: Changes in how grenades work (e.g., cooked frag charges burning through rolls), interactions with stash items, and the ability to pick up controller packs from the stash.
 
-3. **Healing and Contracts**: Medkits are never wasted at full health or refused on their own key, grenades you are cooking stay in your hand, and contracts count only what the run found.
+3. **Healing and Contracts**: Adjustments to healing mechanics (e.g., medkits not being wasted at full health), grenade handling during cooking, and contract rewards based on actual run findings.
 
-4. **Controller Features**: The Undercroft floor and every raid now support controller use, including viewing backpacks and trading with peddlers.
+4. **Controller Support**: Improved support for controllers in various game modes, including the Undercroft floor and raids.
 
-5. **Enemy Behavior**: Fewer enemies by default, meaning fewer machines pushing crawlers past houses and smaller reinforcement waves of pillagers.
+5. **Enemy Behavior**: Reduced default enemy numbers (fewer machines and pillagers) to make runs more manageable.
 
-6. **User Interface Changes**: Tab pauses and backs out of any menu, X searches what you are standing on (even inside extraction points), and the welcome pack goes to your stash without equipping anything.
+6. **User Interface**: Changes to UI elements such as tab functionality, backpack management, and menu navigation.
 
-7. **Gameplay Mechanics**: A roll with no stamina left says so, whoever killed you is recorded correctly, a key already down is not counted as a
+7. **Gameplay Mechanics**: Various tweaks to gameplay mechanics including roll stamina costs, extraction process, and how guns are handled upon death or switching hands.
+
+8. **Bug Fixes**: Numerous bug fixes related to character behavior, enemy AI, item interactions, and UI elements.
+
+9. **Settings and Customization**: Improvements in settings management, such as weather pinning and the
 NONE
-LINE 46013: RSTAT.lines=[]; - This line clears the lines array, which might not be intended if other parts of the code rely on its contents.
-
-LINE 46025: if(raidClockOn()){ t=Math.ceil(Math.max(0,+G.timeLeft||0)); T.push({l:'RAID CLOCK',v:fmtClock(t),c:(t<=CLOCK_RED)?'#ff5a4a':'#e8eef2',s:'ELAPSED '+fmtClock(elapsed()),big:1,rail:(t<=CLOCK_RED)?'#e5482f':'#4a5257'}); } - The use of +G.timeLeft||0 could potentially lead to NaN if G.timeLeft is not a number or undefined.
-
-LINE 46031: try{ goalsTiles(T); }catch(_gtl){} - This try/catch block swallows any exceptions thrown by the goalsTiles function, which might hide bugs and make debugging difficult.
-
-LINE 46109: ctx.strokeStyle='rgba(255,90,74,'+pulse+')'; ctx.lineWidth=2*_cr; - The pulse variable is used directly in a string without checking if it's NaN or undefined.
-
-LINE 46138: } else { - This line has no code after the conditional return statement on LINE 46139,
 NONE
 NONE

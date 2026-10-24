@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.31 - PAUSE BOX LEAVE BUTTON IS A DANGER GHOST, ONE FOCUS RING
+
+Co-op hunt while he was away. Critic held the four pause boxes at 3: tiny abandon link, mismatched stack, no focus state. Style guide danger button is a ghost with a danger border.
+
+MEASURED. Check 34.31 passes, and fails on v34.30.
 ## v34.30 - RAID HUD TEXT KEEPS ITS I DOTS
 
 Co-op hunt while he was away. UI step 1 of the HUD hierarchy job (103). No capital letter is drawn in a raid frame (every string goes through the lower case door), but at 1080p the small i of the condensed face lost its dot and read as a capital I (run Info, In cover, In chill row), which the critic and a player both take for a broken lower case order. The HUD canvas now draws unhinted text, which keeps the dot. The ammo card dip while the extraction ship is inbound goes from 60 to 70 percent (the critic: too faint). Watch: HUD letters look a touch softer; the i dots are visible; if the text looks worse to him, this one line (textRendering) is the one to undo.

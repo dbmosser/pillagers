@@ -1,0 +1,7 @@
+v34.31: pause box leave button is a danger ghost, one focus ring
+
+Abandon, end run and return to character selection get a red box at the same height, and every pause button shows one lime focus ring.
+
+Check 34.31. Fails on v34.30.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

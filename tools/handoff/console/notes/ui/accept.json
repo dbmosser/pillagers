@@ -240,36 +240,36 @@
   "need": 3
  },
  "19-raid-hud-drop-first-raid": {
-  "score": 3,
+  "score": 2,
   "pass": false,
   "need": 4,
-  "verdict": "The corners are calmer and the panels now share one dark fill, one type size and one border. It is still a stack of five or six equal dark boxes. The keys cheat sheet is big and always on, and the hero ammo number is the only strong focal point.",
+  "verdict": "The raid hud is still a crowded, equal-weight set of boxes: ammo is a clear hero, but the stacked top-right panels, the permanent controls card and the always-on explaining text bury it, and the hud looks the same as before.",
   "findings": [
-   "P1 keys legend, bottom centre-left: Collapse it to 3 or 4 contextual key chips (e.g. 'e search', 'r reload') at 16px with tx-1 keys and tx-2 labels. Show the full list only on F1, or fade it out after about 20s. Otherwise cut it to about 50% of its current area.",
-   "P1 top-right stack, career + run info: Make both panels the same width (about 300px). Use one row template: label left in tx-2 16px, value right in tx-1 20px, 32px row height. Align every contract row at x+16 with no stagger. Show a '0/2' counter in lime only on the active objective.",
-   "P1 ammo card, bottom-right: Narrow the card to about 300px, or put the weapon icon in the empty half. Set both footer strings to 16px tx-2 on the same baseline. Make the lime tab 3px by 36px and flush with the left padding. Raise the 'b / i' key hint so it reads as a key chip.",
-   "P1 left column, bots list and 'scav pistol' pickup chip: Pin the bots list to the top margin (y=24, x=24) with 16px rows on a 28px pitch, and align its width to the 300px panel standard. Move the pickup chip to the same left x=24 as the hp bars, at 20px text with a 32px row.",
-   "P2 hotbar, bottom centre: Raise the slot digits to 14px minimum. Drop the empty slots to about 25% opacity so the active slot clearly wins. Give the prompt strip 8px of clearance above the slots and 16px type. Stack the toast 16px above that, or drop it, because it is a full explaining sentence."
+   "P0 top-right: cash/stash card plus run info card: Collapse run info to the contracts only (3 lines at 16px, tx-2) and delete the weather effect sentence. Keep one 24px margin from the screen edge. Show cash as a single hero-weight $ figure and drop the stash, xp and backpack grid.",
+   "P0 bottom-centre controls card (wasd / ctrl / lmb ... f1 full list): Show it only for the first 20 s of a raid or on f1, then fade over 240 ms. If it stays, cut it to 6 rows, raise the footer to 16px at tx-2 or brighter, and use one panel fill with a 1px --ui-line-hi border.",
+   "P1 centre callouts ('scav pistol · equip your own gun at the stash.', 'rain · covers your noise and theirs', 'the welcome pack is in your stash.'): Keep one callout slot, 20px f-cond, max 3 words, no punctuation. Remove the duplicate scav pistol hint from the left stack and from the hint strip.",
+   "P1 left-edge tag stack ('rain', 'scav pistol') and the bar below the hotbar ('scav pistol fire use'): Merge tags into one 16px stack on a --ui-panel fill at 90% with 8px padding. Fold 'fire use' into the hotbar's selected slot, or drop it.",
+   "P1 hp/stamina/standing block, bottom-left: Use one panel style, 4px radius, 24px from the bottom and left edges. Make hp the single hero at 56px f-cond 800 and shrink the stamina bar to 8px tall with a 16px label. Drop the 'standing' label box or make it a plain 16px tx-2 tag."
   ],
-  "pic": "tools/handoff/console/notes/shots/102-final/19-raid-hud-drop-first-raid-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/103-final/19-raid-hud-drop-first-raid-1080.jpg",
   "task": "manual",
-  "when": "2026-10-24T16:29"
+  "when": "2026-10-24T17:31"
  },
  "21-raid-hud-calm": {
   "score": 2,
   "pass": false,
   "need": 4,
-  "verdict": "The only visible change is the contract text (different contracts); the hud is still a crowded set of small, unrelated floating boxes, with a capital letter and a '$' bug left on screen and no single clear focal point beyond the ammo number.",
+  "verdict": "The new raid hud is effectively the old one with different contract text and a different toast; it is still a cluttered stack of small, low-contrast corner boxes with an always-open key legend and no clear focal point.",
   "findings": [
-   "P0 top-right career block (cash/stash/xp/backpack + run info): Ship cw-trcol: one column, 4 rows at 20px/32px row height, label tx-2 left and value tx-1 right-aligned, 1px --ui-line dividers, panel padding 16px. Cut the contract lines to a single line or move them behind a key.",
-   "P0 top-right, 'run info' header: Send every hud string through the lowercase pass. Check the 'run info' title and the contract strings (the 'in' in 'search 2 containers in chill row' renders as 'In'). Also check 'in cover', which reads 'In cover'.",
-   "P1 center-bottom controls cheat sheet (wasd/ctrl/lmb... block): Remove it from the calm hud, or collapse it to a single 'f1 controls' hint at 16px tx-2. If kept, use a --ui-panel fill at 90% with a 1px border, keys in tx-1 600 and actions in tx-2, minimum 16px.",
-   "P1 hud overall: One panel component: fill #16191b at 90%, 1px #4a5257 border, 4px radius, 16px padding. Put the 3px lime top tab only on the single hero element (the ammo).",
-   "P1 bottom-left status cluster ('standing', stamina, hp 100): Make hp the single 56px hero or give ammo the hero size and put hp at 32px. Use --ok for hp, tx-2 for stamina in a 4px thin bar, and align the 'standing' label to the 16px label size with 8px spacing."
+   "P0 Raid HUD overall hierarchy: Close the key legend by default (show it for 10s on raid start, then f1 only). Keep the ammo as the one hero at 56px. Drop the stamina and hp bars to 12px thin bars with a 16px label, and keep the hp number at 32px max.",
+   "P0 top-left 'current pillager bots' scoreboard and top-right cash/run info/contracts stack: Use one panel style: --ui-panel at 90%, 1px --ui-line-hi border, 4px radius, 16px padding, 20px row names and 16px labels. Give the right column one fixed width (320px), 16px gaps and a 48px margin. Keep scores and contracts at 16px minimum. Put 'no downs yet' under a 'bonus' label in tx-2.",
+   "P1 bottom-left toasts ('codex entry · scav pistol · common', 'running slowly'): Make every toast the same: a 3px left bar (warn for hints, tx-2 for info), 16px f-cond 600 in tx-1 on a --ui-panel pill at 90%, 8px gap between toasts. Put the status text at tx-1 (not 50% grey) so it reaches 4.5:1.",
+   "P1 center-bottom controls legend: Collapse it into a one-line footer hint ('f1 controls', 14px, tx-2) after the first raid. If it must stay, use two aligned columns on a 480px panel at 16px with 24px row height.",
+   "P1 hotbar and weapon tag: Hide empty slots, or draw them as 1px outlines without silhouettes. Use one focus treatment (the lime --acc 2px border on the active slot only). Slot numbers 16px. Make both hints the same chip style."
   ],
-  "pic": "tools/handoff/console/notes/shots/103-after/21-raid-hud-calm-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/103-final/21-raid-hud-calm-1080.jpg",
   "task": "manual",
-  "when": "2026-10-24T17:19"
+  "when": "2026-10-24T17:30"
  },
  "22-raid-map-open": {
   "score": 3,
@@ -537,20 +537,20 @@
   "need": 3
  },
  "61-raid-wheel-open": {
-  "score": 3,
+  "score": 2,
   "pass": false,
   "need": 4,
-  "verdict": "The wheel is still a strong focal point and the HUD corners are calmer and more consistent than before, but the wheel's own labels and badges are crude, a capital letter slipped in, and the screen still has too many differently sized text blocks.",
+  "verdict": "The wheel is the right hero with a strong lime focus wedge, but the HUD around it is still small, mixed-size and cluttered, and the only change from before is slightly different contract text in the run info panel.",
   "findings": [
-   "P1 bottom-right status tag 'concealed · In cover': Change the string to 'concealed · in cover'. Use --fs-label 16px f-cond 600 for the tag, with --warn text on the same panel fill as the other HUD plates.",
-   "P1 wheel slice labels and pip blocks (medkit, stim injector, smoke canister, frag charge, etc.): Put each name in a fixed band 16px below the icon, centred, with no stroke and --tx-1. Move the pips to a row 8px above the name, or beside the x-count badge. Keep a minimum 8px gap between pips and text.",
-   "P1 wheel hierarchy: focused slice vs centre readout: Make the count badges --ui-raised with --tx-1 text and keep lime for the focused slice only. Set the centre sub-line to --tx-2.",
-   "P2 top-right 'run info' contract list: Use one 16px line height with a 24px hanging indent for wrapped lines. Show the label in --tx-2 and the progress count right-aligned in --tx-1. Limit the block to three contracts.",
-   "P2 left corner toasts ('codex entry', 'contract item nearby'): Give both toasts the same plate and the same 3px left tab. Use --warn only for real warnings and --tx-1 here. Add 16px of vertical spacing between toasts."
+   "P1 wheel item labels and pip boxes: Put the icon in the upper 60% of each wedge and the label in a fixed row below it with a 16px gap. Make the label 20px f-cond 600 in tx-1 (tx-2 for empty slots, at least 4.5:1). Move the pips to the wedge's outer arc, not behind the label.",
+   "P1 top-right career and run info panels: Set all text in these panels to at least 16px. Remove the carets. Use one panel style (--ui-panel at 90%, 1px --ui-line-hi border, 4px radius, 24px padding) with the same padding and row height. Cut the 'running slowly' repeat: it shows twice, once top-centre and once bottom-left.",
+   "P1 wheel centre and 'q release to take out' prompt: Make the key cap tx-1 on --ui-raised with a 1px line-hi border, not a lime fill, and anchor the prompt directly under the wheel centre. Change the 'cook and throw' sub-label to tx-2 at 16px and keep lime for the wedge outline only.",
+   "P1 bottom-left status stack: Stack them in one 24px-wide-grid block, same 20px bar height, 8px gap and 16px label. Keep the hp number as the single hero at 32px and shrink the stamina label to 16px. Make the 'standing' tag a plain 16px tx-2 label with no box.",
+   "P2 hotbar and ammo block bottom: Use a single slot style: --ui-panel fill, 1px line-hi border, with lime outline only on the selected slot. Raise slot digits and the key hint strip to 16px. Drop the duplicate weapon name from the strip. Make the footer text 16px in tx-2."
   ],
-  "pic": "tools/handoff/console/notes/shots/102-final/61-raid-wheel-open-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/103-final/61-raid-wheel-open-1080.jpg",
   "task": "manual",
-  "when": "2026-10-24T16:28"
+  "when": "2026-10-24T17:31"
  },
  "58-coop-player2-window-title": {
   "score": 3,
