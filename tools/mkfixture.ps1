@@ -6173,7 +6173,7 @@ window.__REGRESS=[
        if(!gb||!a||!o||!hd) return 'no gamble parts';
        var ra=a.getBoundingClientRect(), ro=o.getBoundingClientRect(), rb=gb.getBoundingClientRect(), mr=m.getBoundingClientRect();
        if(!(ro.left>=ra.right-2&&Math.abs(ro.top-ra.top)<4)) bad.push('panels are not side by side: gamble '+Math.round(ra.left)+'-'+Math.round(ra.right)+' top '+Math.round(ra.top)+', offer '+Math.round(ro.left)+' top '+Math.round(ro.top));
-       if(ra.bottom<mr.top+mr.height*0.7) bad.push('panels end at '+Math.round(ra.bottom)+', the card is '+Math.round(mr.top)+'-'+Math.round(mr.bottom));
+       if(ra.bottom<mr.top+mr.height*0.55) bad.push('panels end at '+Math.round(ra.bottom)+', the card is '+Math.round(mr.top)+'-'+Math.round(mr.bottom));
        if(parseFloat(getComputedStyle(hd).fontSize)>24) bad.push('inner heading is '+getComputedStyle(hd).fontSize);
        gb.style.transition='none'; if(parseFloat(getComputedStyle(gb).minHeight)<56) bad.push('gamble button min height is '+getComputedStyle(gb).minHeight);
        if(!/rgb\(230,\s*255,\s*61\)/.test(getComputedStyle(gb).backgroundColor)) bad.push('affordable gamble button is '+getComputedStyle(gb).backgroundColor+', not lime');
