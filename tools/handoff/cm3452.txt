@@ -1,0 +1,7 @@
+v34.52: play data page and settings pane polish
+
+Send play data reads as a headline, one copy button and a quiet restore panel; the settings detail pane no longer shows a tall empty box.
+
+Check 34.52. Fails on v34.51.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

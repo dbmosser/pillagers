@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.52 - PLAY DATA PAGE AND SETTINGS PANE POLISH
+
+Co-op hunt while he was away. Job 113, critic round 2 (both pages scored 3): the play data counts become the page headline, the actions group tightly, restore sits in its own quiet panel with a one line amber warning, and the settings detail pane packs to its content with a tx-1 hero value and an on-grid chip.
+
+MEASURED. Check 34.52 passes, and fails on v34.51.
 ## v34.51 - SEND PLAY DATA LEADS WITH COPY, THE TEXT IS FOLDED AWAY
 
 Co-op hunt while he was away. Job 113, critic score 2 on the play data page: a raw debug dump filled the screen. The export text is now folded behind a show data button (closed by default), a muted line says how many runs and notes are in it, copy to clipboard is the one hero, and the page packs to the top. The text, the copy, clear recorder and the restore box are unchanged. The superhot pane also gets its value as the 56px hero and its key line as a chip.

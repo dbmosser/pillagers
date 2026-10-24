@@ -928,20 +928,20 @@
   "need": 3
  },
  "92-settings-superhot-pane": {
-  "score": 2,
-  "pass": false,
-  "verdict": "The window shell is right (centred card, title top-left, X top-right), but the pane is a flat, same-weight list with a clipped row, a mixed-up tab strip and an explanation block, so it reads as an unfinished template.",
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The detail pane now has a hero value (lime 'off') and a key chip, which fixes the old flat text stack. The rest of the card is unchanged and still has a half-empty right pane and a cramped, mixed-purpose list.",
   "findings": [
-   "P0 list bottom edge, 'master volume' row and the detail pane above it: Clip the list at a whole row boundary (56px pitch) with 8px of padding above the detail pane. Remove the audio rows from the 'the raid' group. Add a visible scrollbar track 4px wide spanning the full list height, or a fade at the bottom edge.",
-   "P0 detail pane at bottom ('superhot mode / time only moves when you act. / key: `(left of 1)'): Show the description only for the focused row, as a single 16px tx-2 line. Move the key hint to a right-aligned keycap chip. Align the text to the row label x (499). Remove the title that repeats the focused row.",
-   "P1 row layout: label at x≈499, stepper arrows at x≈923 and x≈1175, values centred at x≈1049: Put the control block at x≈800–1100, or right-align it to the row edge (x=1420). Make the chevrons 24px, tx-2, with a lime fill on the focused row. Use 20px/600 for values and make the focused value lime.",
-   "P1 tab strip ('the raid / audio / controls / controller / display / accessibility' + 'send play data'): Move 'send play data' to the footer as a ghost button or into its own tab content. Set tabs at 20px/600 with 24px side padding and a 48px height. Add LB/RB glyphs at the strip ends.",
-   "P1 window card (outer frame) and the centred 960px column: Either widen the list to max 900px with a 5% margin and add a left category rail, or keep the 960px column and drop the full-width dividers. Place the 36px lime top tab inside the header, aligned to the title, or delete it."
+   "P1 right detail pane, below the key chip (y≈380 to 990): Either shrink the pane to its content or anchor it. Put a 'default: off' line and a 'reset' action at the bottom edge, or show a small before/after state strip. Otherwise narrow the pane to about 420px and give the freed width to the list.",
+   "P1 detail pane hierarchy: title 'superhot mode' (32px) against hero 'off' (≈56px lime): Keep the hero only if it adds something. Show the hero in tx-1 when 'off' and in lime only when 'on'. Drop the lime top border on the pane and the lime tab tick so there is one focus signal per column.",
+   "P1 key chip 'key: left of 1' (≈1112,328 to 1213,365): Set it at 16px f-cond 600 with +.04em tracking, 8px by 16px padding, and a --ui-line-hi border that is not clickable-looking. Label it 'key' with a separate key cap showing '`'. Space it 24px below the description.",
+   "P2 spacing in the detail pane (title to hero to description to chip): Use 24px between title and hero, 16px between hero and description, and 24px between description and chip.",
+   "P2 left tab column ('send play data' at y≈618): Add a 1px divider with 16px of space above 'send play data'. Put tabs in tx-1 at 20px 700 when active and tx-2 when idle. Use the same row height as the list, 56px."
   ],
-  "pic": "tools/handoff/console/notes/shots/cw-shkey-after/92-settings-superhot-pane-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/113-after/92-settings-superhot-pane-1080.jpg",
   "task": "manual",
-  "when": "2026-10-18T21:10",
-  "need": 3
+  "when": "2026-10-24T22:01"
  },
  "60-mapfirst-1p": {
   "score": 4,
@@ -1376,20 +1376,20 @@
   "need": 3
  },
  "31-settings-send-play-data": {
-  "score": 2,
-  "pass": false,
+  "score": 3,
+  "pass": true,
   "need": 3,
-  "verdict": "The two screens are identical except for the build stamp and install id, and the main fault, a raw debug dump filling the screen, is still there, so this does not read as a polished player-facing settings tab.",
+  "verdict": "Much cleaner than the old log dump: a short status line, one lime action and a quiet 'show data' beside it, but the content hugs the top and leaves the lower half of the card empty.",
   "findings": [
-   "P0 flight recorder text box (center, y 115-800): Hide the dump behind a collapsed 'view details' row, or show a 3-line summary at 20px (version, install id, runs) in tx-1 and tx-2. Keep the full text only for 'copy to clipboard'. If the dump must stay visible, lower-case the strings it shows, set it at 16px with a 24px line height, and cap its height at 240px.",
-   "P1 primary action hierarchy (copy to clipboard, y 808-848): Make 'copy to clipboard' the one lime (--acc) filled button with --acc-ink text, 48px high and 20px type. Make 'clear recorder' a quiet outline in tx-2 that only turns danger red on focus or hover.",
-   "P1 restore a character block (y 870-995): Label at 16px tx-2 with 8px below it. Field 56px high with a --ui-line-hi border. 'read code' 16px below the field with 24px padding above the footer rule. Use tx-2 for the label, since lime is reserved for focus.",
-   "P1 left column (x 25-480) and overall layout: Left-align the content column to the title edge at x=48, or put a 240px left rail with the tabs stacked vertically (the Halo Reach column menu). Use --sp-4 (32px) gutters.",
-   "P2 tab row (y 66-98): Tabs at 20px f-cond 600, inactive in tx-2 #aaa498, active in tx-1 with a 3px lime underline sitting directly on the header rule. Pad each tab 16px horizontally."
+   "P1 whole card, y 560-990: Vertically centre the 1100px column, or pad the top to about 15% of the card height. Alternatively split it into two 24px-padded panels (send, restore) so the card has structure.",
+   "P1 status line '0 runs, 0 notes ready to send': Make the counts tx-1 at 32px f-cond 700 ('0 runs · 0 notes') with the explanatory words in 16px tx-2 underneath. Or give the stack a 'send play data' title at 32px.",
+   "P1 restore a character helper text (y 387): Cut it to 'replaces your current save' at 16px in --warn amber. Delete the 'above' reference.",
+   "P2 button row (y 227-282): Group copy and show data at an 8px gap on the left, and keep clear recorder on the right as it is. Check that show data reveals the text in a panel without shifting the layout under the buttons.",
+   "P2 restore section (y 315-545): Put restore in its own --ui-panel with a 24px padding, or add 32px of extra space above the divider. Give 'read code' a disabled look until the field has text."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-91-circle-only-text-after/31-settings-send-play-data-1080.jpg",
-  "task": "o-91-circle-only-text",
-  "when": "2026-10-21T05:31"
+  "pic": "tools/handoff/console/notes/shots/113-after/31-settings-send-play-data-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-24T22:01"
  },
  "83-experimental-guest": {
   "score": 3,

@@ -1,0 +1,5 @@
+## v34.52 - PLAY DATA PAGE AND SETTINGS PANE POLISH
+
+Co-op hunt while he was away. Job 113, critic round 2 (both pages scored 3): the play data counts become the page headline, the actions group tightly, restore sits in its own quiet panel with a one line amber warning, and the settings detail pane packs to its content with a tx-1 hero value and an on-grid chip.
+
+MEASURED. Check 34.52 passes, and fails on v34.51.

@@ -1212,3 +1212,5 @@
 2026-10-24 0.1627162 110-ui-demo-end-screens
 2026-10-24 0.1636 critic-manual
 2026-10-24 0.1682 critic-manual
+2026-10-24 0.1368 critic-manual
+2026-10-24 0.1412 critic-manual

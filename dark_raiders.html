@@ -2472,7 +2472,14 @@ body:has(#wnmodal.on) #hubtoast,body:has(#settingsmodal.recmode.on) #hubtoast{vi
 #root #settingsmodal.recmode #showdata{ height:56px; min-height:56px; padding:0 var(--sp-3) !important; font:600 var(--fs-body)/1 var(--f-cond); letter-spacing:var(--track); background:transparent; color:var(--tx-1); border:1px solid var(--ui-line-hi); border-radius:var(--rad); }
 #root #settingsmodal.recmode #showdata:hover, #root #settingsmodal.recmode #showdata:focus-visible, #root #settingsmodal.recmode #showdata.padfocus{ color:var(--acc); border-color:var(--acc); outline:0; }
 #root #settingsmodal #setwrap > #setdetail:not(.daily-restore-detail) .sdv{ display:block; flex:1 1 100%; margin:var(--sp-2) 0 0; padding:0; border:0; font:800 var(--fs-hero)/1.1 var(--f-cond); letter-spacing:var(--track); color:var(--acc); overflow-wrap:anywhere; }
-#root #settingsmodal #setwrap > #setdetail .sdkey{ display:inline-block; flex:0 0 auto; padding:var(--sp-1) var(--sp-2); border:1px solid var(--ui-line-hi); border-radius:var(--rad); color:var(--tx-1); font:600 var(--fs-label)/1.2 var(--f-cond); }
+/* v34.52 (cw-playdata2) job 113, critic round 2 (31 and 92 both 3). 31: the counts are the page headline (32px), the actions group at an 8px gap, restore is its own quiet panel and its helper is one short amber line (the old sentence pointed "above" at a box that is folded now). 92: the pane packs to its content instead of a tall empty box, the hero value is tx-1 (lime stays for focus only), the chip is body size and the gaps sit on the 8px grid. */
+#root #settingsmodal.recmode #spane_rec > #expsum{ font:700 var(--fs-title)/1.2 var(--f-cond); color:var(--tx-1); letter-spacing:var(--track); margin:0 0 var(--sp-4); }
+#root #settingsmodal.recmode #exporttext + div{ gap:var(--sp-1) !important; }
+#root #settingsmodal.recmode #exporttext + div + div{ margin-top:var(--sp-4) !important; padding:var(--sp-3) !important; border:1px solid var(--ui-line-hi); border-radius:var(--rad); background:var(--ui-panel); }
+#root #settingsmodal.recmode #spane_rec > div:has(> #rescode) > .msub{ font:600 var(--fs-label)/1.4 var(--f-cond) !important; color:var(--warn); }
+#root #settingsmodal #setwrap > #setdetail:not(.daily-restore-detail){ align-self:flex-start; min-height:0; }
+#root #settingsmodal #setwrap > #setdetail:not(.daily-restore-detail) .sdv{ color:var(--tx-1); margin-top:var(--sp-2); }
+#root #settingsmodal #setwrap > #setdetail .sdkey{ display:inline-block; flex:0 0 auto; margin-top:var(--sp-2); padding:var(--sp-1) var(--sp-2); border:1px solid var(--ui-line-hi); border-radius:var(--rad); color:var(--tx-1); font:600 var(--fs-body)/1.2 var(--f-cond); letter-spacing:var(--track); }
 @media(max-width:1100px){
   #root #wnmodal{grid-template-columns:minmax(0,1fr);grid-template-rows:56px auto minmax(0,1fr);gap:24px;}
   #root #wnmodal #wnsub{grid-column:1;grid-row:2;font-size:32px;max-width:none;}
@@ -3381,7 +3388,7 @@ body:has(#appearmodal.pixfashion.on) > #uimring{display:none !important}
          it comes out of. Destructive, so it is a three step door. -->
     <div style="margin-top:12px;border-top:1px solid var(--steel-hi);padding-top:10px">
       <div style="font-size:13px;letter-spacing:.12em;color:var(--amber)">RESTORE A CHARACTER</div>
-      <div class="msub">Paste a RESTORE CODE from the end of a run report. It REPLACES the save you are playing. Read it first: the game will tell you whose character it is before anything is written.</div>
+      <div class="msub">paste a restore code. replaces your save.</div>
       <textarea id="rescode" rows="2" spellcheck="false" placeholder="PIL1..." style="width:100%"></textarea>
       <div style="display:flex;gap:8px;margin-top:6px;align-items:center;flex-wrap:wrap">
         <button id="resread" style="padding:7px 16px">READ CODE</button>
@@ -3678,7 +3685,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.51';
+var VER='34.52';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -54171,7 +54178,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.51: Send play data opens on one big copy button and a short line of what is in it; show data opens the full text. Check 34.51 fails on v34.50',
+  now:'v34.52: Send play data reads as a headline, one copy button and a quiet restore panel; the settings detail pane no longer shows a tall empty box. Check 34.52 fails on v34.51',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
