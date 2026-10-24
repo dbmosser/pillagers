@@ -50885,7 +50885,7 @@ window.__REGRESS=[
        c1={type:'open',ct:ct.type,n:2,prog:1,desc:'Open 2 zqx9k boxes',reward:100};
        c2={type:'district',d:ct.d,n:2,prog:1,desc:'zqx9k district',reward:100};
        P2.contracts=[c1,c2];
-       H1=contractDesc(c1)+'. Complete contract at mainframe.'; H2=contractDesc(c2)+'. Complete contract at mainframe.';
+       H1=contractDesc(c1); H2=contractDesc(c2);   /* v34.46 (cw-cdoneshort): the detail is the contract words only */
        if(H1===H2) return 'SKIP: staging: the two contracts read the same';
        g.paused=false; g.msg=''; g.msgT=0; g.msgSub=''; g.msgKey=''; g.feed=[]; g.msgQ=[]; g.msgQM=[];
        contractOpen(ct);
@@ -51036,7 +51036,7 @@ window.__REGRESS=[
        p=g.player; p.downed=false; p.iv=99;
        c={type:'kill',tgt:'warden',n:2,prog:1,desc:'Destroy 2 Wardens',reward:100,id:'zqx53'};
        P2.contracts=[c];
-       HIS=contractDesc(c)+'. Complete contract at mainframe.';
+       HIS=contractDesc(c);   /* v34.46 (cw-cdoneshort): the detail is the contract words only */
        say=function(m,k,o){ said.push({m:String(m),sub:(o&&o.sub)?String(o.sub):''}); return realSay.apply(this,arguments); };
        for(a=0;a<16&&!rr;a++){ var ang=a*Math.PI/8, tx=p.x+Math.cos(ang)*140, ty=p.y+Math.sin(ang)*140; p.face=ang; if(canSee(p.x,p.y,p.face,tx,ty,g.vseg)) rr={x:tx,y:ty}; }
        if(!rr) return 'SKIP: staging: no clear line of sight from the spawn';
