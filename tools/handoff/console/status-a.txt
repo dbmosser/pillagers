@@ -1,1 +1,1 @@
-10-24 10:04 waiting for RAM: 2 GB free, a helper starts at 3; 88-undercroft-windows kept
+10-24 10:30 waiting: another helper is just starting (memory check again in a few minutes); 94-ladder-sheds-sooner kept

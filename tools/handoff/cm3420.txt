@@ -1,0 +1,7 @@
+v34.20: racks and rewards look
+
+Rewards and racks tabs look finished: type cues, one lime action, two column racks, toast clear of the card.
+
+Check 34.20. Fails on v34.19.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.20 - RACKS AND REWARDS LOOK
+
+Co-op hunt while he was away. Critic scored the mainframe racks and rewards tabs 2: flat identical rows, no focal point, no primary action, a toast on the card border. Rewards rows now carry a type cue and the next reward reads first, claim all is the one lime action under the list, racks are a hero rack row over two columns with a lime build button, and the toast sits above the card.
+
+MEASURED. Check 34.20 passes, and fails on v34.19.
 ## v34.19 - RANK BARS GROW WITH RANK
 
 Co-op hunt while he was away. His 2.79 a: every colour cue also gets a shape backup. Legacy fashion tiles showed rank by colour only; the top bar now grows 2 to 6px from common to gold.

@@ -39,3 +39,10 @@ No split/PID/throttled measurements or go decision yet. The unchanged successful
 
 --- codex run 2026-10-22 10:02 ---
 2026-10-22, run 5: Checked the refreshed task notes and measurement folders. No coordinator split/PID/throttled raw files, summary or go decision have arrived; only the completed shared baseline is present. The task still requires the step-1 measurement before implementation, so no game patch or ship key was prepared. The coordinator test launcher and full baseline handoff from run 4 remain ready. Do not rerun the successful baseline or consume the final camera round on it. Resume implementation only after the coordinator runs run-measure95.ps1 outside this sandbox and supplies the unthrottled split/PID/stall results and go decision. No further independent measurement work can run through the lane's camera-recipe interface.
+
+--- claude lane c run 2026-10-24 ---
+85a is done (done/85a-itch-couch-link.md), so the queue wait is over. Step 1 is still undecided: only the shared baseline exists (P2 stall gaps 2019/2010/2012 ms, p95 about 33 ms). The split half (separate pids, stall gap under 50 ms) needs CDP Target.getTargets from outside the page. My command list has no way to run measure95.mjs or run-measure95.ps1 (in C:\claudecode\pillagers-codex\.codex-work\95-p2-own-process\), and a recipe cannot read the other window's pid. No game edits, no ship key.
+Next run: when raw split files are in notes/95/, decide go or stop from the unthrottled numbers and the stall test, then build steps 2 to 7 behind an experimental switch (default off) per the coordinator corrections.
+
+--- claude lane b run 2026-10-24 ---
+85a is done. Still no split/pid/stall raw files in notes/95/ (folder does not exist), and my command list cannot run measure95.mjs or run-measure95.ps1. Alarm already in alarms.md (line 6). No game edits, no ship key. Resume at step 2 once the numbers are copied into notes/95/ and say go.

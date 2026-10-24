@@ -51,3 +51,6 @@ Updated round 3 recipes: backpack with larger bars; enabled minimap distant badg
 Kept the terrain check and its 4ms limit intact; no fixture retarget, game terrain change, threshold increase or feature switch. Improved the new pip check to use a CPU-backed test canvas and two single-column readbacks instead of many individual pixel reads. It now verifies the minimum visible pip height through both direct drawing and the cached sprite used by the backpack, and restores the sprite cache in finally. The game edit is unchanged. The revised script is ready for another lane preflight.
 Revalidated the revised draft: written, unique anchor, checks parse, patched game JS parses. The remaining world/minimap keys and round 3 camera recipes remain queued behind this key. If 33.60 repeats, the terrain owner/coordinator needs the machine-load/readback timing evidence; do not retarget it just to ship these item cues.
 
+
+--- claude run 2026-10-24 lane c ---
+Audit check: rarity pips (v34.01/02), elite triangles, side glyphs, minimap cues were already in the game. Shipped v34.19 cw-cosrarthick: legacy fashion tile rank bar grows 2 to 6px common to gold (last listed gap). Not re-run through the critic. Watch: legacy (pixel off) fashion tiles, bar thickness shifts tile content by up to 4px.

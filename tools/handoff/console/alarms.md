@@ -3,6 +3,8 @@
 Written by the helper lanes, read by the coordinator. NOT for the owner. Pipeline alarms, fixture retargets, Chrome or gate failures, camera staging requests and other lane-to-coordinator handoffs go here, never in questions.md.
 When one is dealt with, add a line under it: "- DONE <date time> (coordinator): what was done".
 
+- 2026-10-24 95-p2-own-process (lane c): step 1 needs the split, pid and stall measurement and my lane cannot run it. Please run C:\claudecode\pillagers-codex\.codex-work\95-p2-own-process\run-measure95.ps1 and copy raw files and summary into tools/handoff/console/notes/95/. Also needed before any 95 ship: tag party-pre95 and resolve party.cfg URL_OPTIONS=1.
+
 ## Moved from questions.md 10-19 night
 
 2026-10-19 - o-01-stash-pays-in-raid - coordinator handoff required, not a new design question for the owner. His new stash order already decides these changes.

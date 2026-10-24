@@ -1,11 +1,11 @@
 Latest stable: v29.09 (2026-10-18 10:23)
-Checked: 2026-10-24 09:27
+Checked: 2026-10-24 10:30
 Play address: http://localhost:8802/stable.html
 Result: no change
 
 Newest test runs, newest first:
-  corpus-1023-2304  v34.18  failing 14, new 9  robots 4654 min/0 problems  -> 9 check(s) newly failing, e.g. v33.69 cw-pixveg (86d): THE PIXEL TREE, BUSH AND SHADOW. Wit | v33.66 cw-pixwalls (86d): THE PIXEL WALL. With the pixel loo
-  corpus-1022-2301  v34.18  failing 15, new 10  robots 4654 min/0 problems  -> 10 check(s) newly failing, e.g. v33.69 cw-pixveg (86d): THE PIXEL TREE, BUSH AND SHADOW. Wit | v33.66 cw-pixwalls (86d): THE PIXEL WALL. With the pixel loo
+  corpus-1023-2304  v34.18  failing 14, new 9  robots 4765 min/0 problems  -> 9 check(s) newly failing, e.g. v33.69 cw-pixveg (86d): THE PIXEL TREE, BUSH AND SHADOW. Wit | v33.66 cw-pixwalls (86d): THE PIXEL WALL. With the pixel loo
+  corpus-1022-2301  v34.18  failing 15, new 10  robots 4765 min/0 problems  -> 10 check(s) newly failing, e.g. v33.69 cw-pixveg (86d): THE PIXEL TREE, BUSH AND SHADOW. Wit | v33.66 cw-pixwalls (86d): THE PIXEL WALL. With the pixel loo
   corpus-1022-0707  v34.03  failing 11, new 7  robots 113 min/0 problems  -> 7 check(s) newly failing, e.g. v9.07 a noise you cannot see leaves a ring on the ground, an | v33.60 cw-cx-pixground (86b): THE PIXEL GROUND. With the pix
   corpus-1022-0458  v33.95  failing 21, new 17  robots 285 min/4 problems  -> 17 check(s) newly failing, e.g. v9.07 a noise you cannot see leaves a ring on the ground, an | v9.27 standing behind a container roof draws you through it 
   corpus-1021-2139  v33.94  failing 37, new 32  robots 1217 min/7 problems  -> 32 check(s) newly failing, e.g. v8.55 the two armoured heavies walk heavy | v8.61 the boarding hold cannot be done in instalments
