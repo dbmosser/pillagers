@@ -1,0 +1,7 @@
+v34.29: raid hud has one hero
+
+While you wait for the extraction ship the ammo card fades back. The controls list is a bit quieter.
+
+Check 34.29. Fails on v34.28.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

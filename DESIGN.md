@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.29 - RAID HUD HAS ONE HERO
+
+Co-op hunt while he was away. UI step 3 of the HUD hierarchy job (103). The critic: the extraction banner lacks hero weight and the keys sheet is always on at full strength. While the extraction ship is inbound the ammo card drops to 60 percent so the countdown line is the hero; the compact controls list is drawn at 80 percent so it reads as a reference. Ammo stays the hero in a fight. Nothing moves, no draw call added. Watch: the ammo card looks faded for the 15 to 30 seconds of the inbound countdown; the controls list on the first raids is quieter.
+
+MEASURED. Check 34.29 passes, and fails on v34.28.
 ## v34.28 - RAID HUD TYPE IS COUCH SIZE
 
 Co-op hunt while he was away. UI step 2 of the HUD hierarchy job (103). The critic said several fonts are too small to read from a couch and the contract line wraps. The belt key numbers were 14.8 px on the screen and are 16 now (the style guide floor). A contract line that would wrap in the run info panel takes a shorter wording when that fits on one line (haul over $1,200, carry 2x item, search 2 in place); the contract itself keeps its words. Step 1 (lower case) needs no change: no capital is drawn in a raid frame, the capital I the critic saw is the small i of the condensed face at 1080p. Watch: the belt key digits are a little bigger; a long contract reads shorter.

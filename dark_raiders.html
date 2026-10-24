@@ -3609,7 +3609,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.28';
+var VER='34.29';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -44346,6 +44346,7 @@ if(p.armor>0){
   var _boG=hudOff('gear');
   ctx.save(); ctx.translate(_boG.dx,_boG.dy);
   hudZoomIn('gear',W,H);                 // v8.08: grows up and left from the corner
+  if(typeof G.beaconT==='number'&&G.beaconT>0) ctx.globalAlpha=0.6;   // v28.xx (cw-h103hero), the critic on screen 37 ('the extraction banner still lacks hero weight'): while the ship is inbound the extract line is the one hero, so the ammo card steps down; it is back at full strength the moment the countdown ends
   // v10.01: 30, not 38. by is H-34, so 38 put the box bottom past the screen
   // edge at every monitor size, by the panel's zoom; the content ends at by.
   HUDBOX.gear=(function(){ var R=hudZoomRect('gear',W,H,{x:W-252,y:by-LH(80),w:246,h:LH(80)+30});
@@ -46169,6 +46170,7 @@ function drawLegend(fz){   // v20.74 (H40): fz is the zoom the full list is draw
   // COMPACT, the default since v2.94. Two columns, twelve bindings, micro type,
   // about a fifth of the area the full list took and clear of the message line.
   if(G.legendOn===1){
+    ctx.save();   // v28.xx (cw-h103hero)
     var MN=(padOn()?LEGEND_MINI_PAD:LEGEND_MINI).slice(),mi;
     // v20.76, from the whole-game bug hunt of 2026-10-08 (H46): ON A CONTROLLER THE PARTY ROWS ADD NO SECOND PING. The pad list
     // above already says D-UP ping, and the row added here named both bumpers, which never ping. On keys N still pings.
@@ -46190,7 +46192,7 @@ function drawLegend(fz){   // v20.74 (H40): fz is the zoom the full list is draw
     hudPanel(mx-8,my-6,MW,MH+10,undefined,1);   // v18.13: the one HUD panel
     HUDBOX.legend={x:mx-8,y:my-6,w:MW,h:MH+10,tg:{x:mx-8+MW-LH(20),y:my-6,w:LH(20),h:LH(14)}};
     ctx.textAlign='right'; ctx.fillStyle='#8a96a1'; ctx.font=MONO;
-    hudChev(mx-8+MW-4,my+LH(4),true);   // vNN.xx (ui5q2p): a drawn chevron, not [-]
+    ctx.globalAlpha*=0.8; hudChev(mx-8+MW-4,my+LH(4),true);   // v28.xx (cw-h103hero), the critic on screens 21 and 19 ('the keys cheat sheet is big and always on'): the words of the compact list are drawn at 80 percent (the panel keeps the one shared fill), so it reads as a reference and not as a second hero   // vNN.xx (ui5q2p): a drawn chevron, not [-]
     ctx.textAlign='left';
     for(mi=0;mi<MN.length;mi++){
       var cx0=mx+(mi%2)*COLW, cy0=my+LH(7)+Math.floor(mi/2)*MROW;
@@ -46203,6 +46205,7 @@ function drawLegend(fz){   // v20.74 (H40): fz is the zoom the full list is draw
     // v19.68, seen on the 4K controller screenshot (2026-10-08): on a controller (player 2 in co-op) no button opens the full list, so
     // H  full list named a keyboard key the pad player cannot press. On a pad the line and its row are left out.
     if(!padOn()) ctx.fillText(legendKeys('F1')+'  full list',mx,my+LH(7)+MROW*_mr+LH(3));
+    ctx.restore();   // v28.xx (cw-h103hero)
     return;
   }
   var x=14,i,j,rows=0;
@@ -53911,7 +53914,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.28: The belt key numbers are bigger. A long contract in the run info box is worded shorter so it stays on one line. Check 34.28 fails on v34.27',
+  now:'v34.29: While you wait for the extraction ship the ammo card fades back. The controls list is a bit quieter. Check 34.29 fails on v34.28',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
