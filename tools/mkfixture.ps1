@@ -43238,7 +43238,8 @@ window.__REGRESS=[
        n=0; srcs=[];
        wrap(); try{ drawMinimap(); } finally { unwrap(); }
        if(!(n>0)) bad.push('the minimap made no draw calls');
-       if(n>24) bad.push('the minimap made '+n+' draw calls in one frame');
+       /* retargeted 2026-10-24 (v34.04/v34.05, 87r): every pinned mark now also draws its own shape badge and connector (about 9 calls each), so the budget is 24 plus 10 per pin the frame really drew */
+       if(n>24+10*((MMAP.got&&MMAP.got.pins)||0)) bad.push('the minimap made '+n+' draw calls in one frame ('+((MMAP.got&&MMAP.got.pins)||0)+' pins)');
        if(srcs.indexOf(MMAP.cv)<0) bad.push('the minimap frame did not draw the baked map');
        // the bake holds the walls: the middle of a solid wall is lighter than the floor
        var wl=null, ws=g.map.walls||[], cv2=MMAP.cv, c2=cv2&&cv2.getContext('2d'), px;
@@ -64764,6 +64765,8 @@ window.__REGRESS=[
      try{
        sayWhenFree=function(s,k,o){ lines.push(String(s)+((o&&o.sub)?"  "+o.sub:"")); };   /* retargeted for the raid text R36: the line is a caps system row with the setting in its detail */
        CFG.gfxAuto=1; CFG.gfxScale=1; CFG.fpsCap=0; DRS.scale=1; DRS.ema=0; DRS.slowT=0; DRS.fastT=0; DRS.last=0; DRS.bounce=0; DRS.upAt=0; DRS.said=0;
+       /* retargeted 2026-10-24 (v34.13 to v34.15, 87r): the ladder sheds effect rungs first and only softens the picture after the fill rung (q 3) is proven to help, so stage that proven state like 32.44 does; the scale steps, the said line, the canvas shrink and the climb back are asserted as before */
+       DRS.q=3; DRS.win=[]; DRS.fillOK=true; DRS.noFillGap=0; DRS.recoverT=0; DRS.downAt=0; DRS.fillAt=0; gfxqApply();
        resize(); w1=cv.width;
        for(i=0;i<120;i++){ t+=16; drsTick(16,t); }
        if(DRS.scale!==1) bad.push('smooth frames moved the scale to '+DRS.scale);
