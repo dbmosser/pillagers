@@ -1,0 +1,12 @@
+{
+    "title":  "RACKS INTRO STAYS HIDDEN",
+    "why":  "The v34.20 racks grid rule matched the hidden intro sentence and showed it again above the rack row.",
+    "now":  "The racks page shows no intro sentence.",
+    "edits":  [
+                  {
+                      "anchor":  "#root #opane_mf \u003e div:not(#mfstatus){display:grid !important;",
+                      "replacement":  "#root #opane_mf \u003e div.msub:not(#mfstatus){display:none !important;}   /* v28.xx (cw-rackrew2): the racks intro sentence stays hidden (Q8, cw-uc-racks); the two column grid rule below matched it and brought it back */\n#root #opane_mf \u003e div:not(#mfstatus){display:grid !important;"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the racks intro sentence stays hidden after the two column layout\u0027,\n   run:function(){\n     var oldP=null,bad=[],m;\n     try{\n       __runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();oldP=JSON.stringify(P);\n       __hubEnter();openOps(\u0027mf\u0027);\n       m=document.querySelector(\u0027#opane_mf \u003e .msub\u0027);\n       if(m\u0026\u0026getComputedStyle(m).display!==\u0027none\u0027)bad.push(\u0027the racks intro sentence is showing again: display \u0027+getComputedStyle(m).display);\n       return bad.length?bad.join(\u0027; \u0027):null;\n     }finally{\n       try{__endRaid(\u0027abandon\u0027);}catch(e){}__topClear();__resetCfg();__cleanProfile();if(oldP)P=JSON.parse(oldP);\n     }\n   }},"
+}

@@ -6159,6 +6159,19 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.21',what:'the racks intro sentence stays hidden after the two column layout',
+   run:function(){
+     var oldP=null,bad=[],m;
+     try{
+       __runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();oldP=JSON.stringify(P);
+       __hubEnter();openOps('mf');
+       m=document.querySelector('#opane_mf > .msub');
+       if(m&&getComputedStyle(m).display!=='none')bad.push('the racks intro sentence is showing again: display '+getComputedStyle(m).display);
+       return bad.length?bad.join('; '):null;
+     }finally{
+       try{__endRaid('abandon');}catch(e){}__topClear();__resetCfg();__cleanProfile();if(oldP)P=JSON.parse(oldP);
+     }
+   }},
   {v:'34.20',what:'rewards rows carry a type cue and the next one reads first, claim all is lime under the list, no nothing-ready sentence, and the toast on rewards and racks sits above the card; racks are two columns with a lime build button',
    run:function(){
      var oldP=null,nt=null,bad=[],toast,i,rows,cs,a,b,list,btn,top;

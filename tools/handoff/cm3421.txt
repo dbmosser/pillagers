@@ -1,0 +1,7 @@
+v34.21: racks intro stays hidden
+
+The racks page shows no intro sentence.
+
+Check 34.21. Fails on v34.20.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

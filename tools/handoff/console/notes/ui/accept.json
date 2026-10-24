@@ -1090,20 +1090,20 @@
   "need": 3
  },
  "13-mainframe-rewards": {
-  "score": 2,
-  "pass": false,
-  "verdict": "The list now fills the card and the dead right gutter is gone, but it is still a flat wall of identical rows with an empty xp bar, no hero element, no rarity or reward-type cues, and a toast sitting on the card's bottom border.",
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The rewards screen is cleaner than before, with a visible focus row, a footer action and kind-coded edge bars. It is still a long flat table with no hero, no progress fill and no readable state, so it falls short of polished.",
   "findings": [
-   "P1 xp bar: Make the bar 12px tall with a --ui-raised track and a lime fill. Add a milestone tick at each reward threshold. Show the current xp at 56px f-cond 800 on the left of the bar, with '/ 1,200,000' in tx-2 16px at the right end, and remove the centred text.",
-   "P1 reward rows 1-11: Highlight the first unclaimed row: --ui-raised fill, a 3px lime left bar, name in tx-1 at 20px/600. Dim the other rows to tx-2. Add a 40px item icon tile at the left of each row, plus a 3px rarity bar on tiles for the better rewards.",
-   "P1 right end of each row ('N to go' and the boxed number): Keep one value only: the threshold in tx-1 16px f-cond, with '7,200 to go' in tx-2 beneath it. Drop the boxed cell, or make it a real 'claim' button that is lime-filled when claimable and hidden otherwise.",
-   "P1 'nothing ready to claim' button, top right of the list: Move it to a sticky footer row (72px) at the right of the card. Show a lime-filled 'claim' button (48px tall, --acc-ink text) when something is ready, and a disabled 'claim' in --ui-line-hi when not. Drop the sentence.",
-   "P2 list bottom edge and toast: Add a 72px footer row inside the card so the list ends above it. Place toasts at 24px above the card bottom or outside the card. Shorten the toast to 'welcome pack in stash'. Fade the list's last 24px and widen the scroll thumb to 6px."
+   "P1 xp bar and the list below it: Give the bar a 12px height with a --acc fill and tier ticks. Put 'next reward in 7,200' in --fs-hero (56px, f-cond 800) beside it, or show the number as the hero and make the bar a thin 8px strip under it. Delete the 'xp' label or move it into the bar.",
+   "P1 rows 2, 5 and 7: coloured left edge bars: Use one meaning per colour. Either drop the bars, or colour them by rarity (--r-* at 3px) and put a 16px label for the kind in the row. Make the focus bar 4px --acc on the left edge and move the scrollbar thumb to --ui-line-hi.",
+   "P1 right-hand cost chips (7,200 etc.): Show one value: 'xp needed' as a single 18-20px f-cond number in tx-1 for the focused or next row and tx-2 for the rest. Delete the chip box or turn it into a state pill (claimable, locked) at 16px.",
+   "P1 claim all button, bottom right: Use a 56px-tall button. Disabled state: fill --ui-raised, text tx-2, 1px --ui-line-hi border. Enabled state: --acc fill with --acc-ink text. Add a 16px reason, 'next at 7,200 xp', next to it.",
+   "P2 toast at top, 'the welcome pack is in your stash.': Shorten it to 'welcome pack in stash' and drop the full stop. Position it at y=48 (safe margin), or show it only on the first open and not on tab entry."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-31-n3/13-mainframe-rewards-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/99-after/13-mainframe-rewards-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T06:08",
-  "need": 3
+  "when": "2026-10-24T14:40"
  },
  "15-mainframe-stats": {
   "score": 3,

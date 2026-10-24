@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.21 - RACKS INTRO STAYS HIDDEN
+
+Co-op hunt while he was away. The v34.20 racks grid rule matched the hidden intro sentence and showed it again above the rack row.
+
+MEASURED. Check 34.21 passes, and fails on v34.20.
 ## v34.20 - RACKS AND REWARDS LOOK
 
 Co-op hunt while he was away. Critic scored the mainframe racks and rewards tabs 2: flat identical rows, no focal point, no primary action, a toast on the card border. Rewards rows now carry a type cue and the next reward reads first, claim all is the one lime action under the list, racks are a hero rack row over two columns with a lime build button, and the toast sits above the card.
