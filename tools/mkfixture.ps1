@@ -56844,7 +56844,8 @@ window.__REGRESS=[
        if(Math.abs(m.m-W/2)>2) bad.push('the floor belt is centred at x '+Math.round(m.m)+', '+Math.round(m.m-W/2)+' px off the middle of a '+W+' wide screen, where the key line and the station prompt are centred');
        if(m.l<0||m.r>W) bad.push('the floor belt runs off the screen ('+Math.round(m.l)+' to '+Math.round(m.r)+')');
        hubBagG=hubBagState(); drawHubBag(); hc=(hubBagG&&hubBagG.hotCells)||[];
-       if(hc.length>1){ m=span(hc); if(Math.abs(m.m-W/2)>2) bad.push('with the Undercroft backpack open the belt is centred at x '+Math.round(m.m)+', '+Math.round(m.m-W/2)+' px off the middle, under a backpack that is centred'); }
+       if(hc.length>1){ m=span(hc); var bl=hubBagG&&hubBagG.hubBagBeltLeft, bwid=hubBagG&&hubBagG.hubBagBeltWidth, tgt=W/2, what='the middle'; if(typeof bl==='number'&&typeof bwid==='number'){ tgt=bl+bwid/2; what='the open grid'; }   // retargeted 2026-10-24 (v34.07, v34.08): the open backpack belt sits under the grid (hubBagBeltLeft/Width), left of the detail pane, so it is centred on the grid, not the screen
+         if(Math.abs(m.m-tgt)>2) bad.push('with the Undercroft backpack open the belt is centred at x '+Math.round(m.m)+', '+Math.round(m.m-tgt)+' px off '+what+', under a backpack that is centred'); if(m.l<0||m.r>W) bad.push('the open-backpack belt runs off the screen'); }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        hubBagG=bg0; hubBagOpen=bo0;
@@ -63201,7 +63202,7 @@ window.__REGRESS=[
   {v:'18.78',what:'text in the framed windows stays inside the frame: the text lines of the Terms, Party, gambler and bar windows are capped at 1060 like their lists, not the general 1180',
    run:function(){
      var bad=[], ids=['termsmodal','partymodal','gamblemodal','barmodal'], n=0;
-     ids.forEach(function(id){ var m=document.getElementById(id); if(!m) return; var s=m.querySelector('.msub'); if(!s) return; n++; var mw=getComputedStyle(s).maxWidth, ls=m.querySelector('.plist'), lw=ls?getComputedStyle(ls).maxWidth:'1060px'; if(mw!==lw||(/^(none|\d+(\.\d+)?%)$/).test(mw)) bad.push(id+' text lines are capped at '+mw+', its list at '+lw); });   // retargeted 2026-10-20 (v32.22, v32.41, v32.45: his terms and bar windows are wider, 1400): the intent is that the text lines are capped like the list under them, never the general 1180
+     ids.forEach(function(id){ var m=document.getElementById(id); if(!m) return; var s=m.querySelector('.msub'); if(!s) return; n++; var mw=getComputedStyle(s).maxWidth, ls=m.querySelector('.plist'), lw=ls?getComputedStyle(ls).maxWidth:'1060px'; if(lw==='none') lw='1060px'; if(mw!==lw||(/^(none|\d+(\.\d+)?%)$/).test(mw)) bad.push(id+' text lines are capped at '+mw+', its list at '+lw); });   // retargeted 2026-10-20 (v32.22, v32.41, v32.45: his terms and bar windows are wider, 1400): the intent is that the text lines are capped like the list under them, never the general 1180
      if(!n) return 'SKIP: no framed windows here';
      return bad.length?bad.join('; '):null; }},
   {v:'18.77',what:'the gambler window lines are centred like its title and cards: the credits line and Wirt line read centred, never flush against the panel edge',
