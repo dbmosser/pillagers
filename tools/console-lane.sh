@@ -189,6 +189,11 @@ if grep -q '"terminal_reason":"api_error"' "$out" && awk -v c="$cost" 'BEGIN{exi
   echo "$(date '+%m-%d %H:%M') API error before any work (check the key and the Console credits); $name kept" | tee -a "$C/runs.log" > "$C/status-$L.txt"; exit 0; fi
 echo "$today $cost $(stag)" >> "$C/spend.txt"
 fi
+# 10-24: the run is over, so this lane's preflight Chrome closes (preflight.sh starts it on 9350+lane number and keeps it for the
+# job's next preflight). Left open after the job it held 140 to 320 MB with nobody using it and took the 10 GB VM under 2 GB free
+# (09:46 port 9353 after job 99, 12:16 port 9351 after job 101). The next preflight starts a fresh one.
+pcp=$((9350 + $(printf '%d' "'$L") - 96))
+powershell -NoProfile -Command "Get-CimInstance Win32_Process -Filter \"Name='chrome.exe'\" | Where-Object { \$_.CommandLine -match 'remote-debugging-port=$pcp(\s|\$)' } | ForEach-Object { Stop-Process -Id \$_.ProcessId -Force -ErrorAction SilentlyContinue }" > /dev/null 2>&1
 n=$(cat "$C/spend.txt" "$C/cli-spend.txt" 2>/dev/null | grep -c " $name$")
 wo=$(grep -o 'TASK WAITING: *[a-z0-9][a-z0-9-]\{2,60\}' "$out" | tail -1 | sed 's/^TASK WAITING: *//')
 if [ -n "$wo" ] && ! grep -q 'TASK DONE' "$out"; then mkdir -p "$C/blocked"; mv "$t" "$C/blocked/" && touch "$C/blocked/$name.md" && echo "$wo" > "$C/blocked/$name.on"; r="waiting on $wo, parked in blocked/ (not counted as a try)"
