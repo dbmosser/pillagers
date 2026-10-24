@@ -137,9 +137,15 @@ if [ $ENGINE = cli ]; then
   # 10-19 18:30, his "forget about the pacing rule ... I don't care if you blow my usage quicker than the reset" and "I just don't want to
   # spend more tokens bc we are moving faster": PLAN_PACE=0 drops the weekly line (helpers run whenever they can); the 5-hour stop stays
   # so a helper never locks the chat out, and a helper starts only with RAM_FLOOR_GB+1 free (each one adds about 1 GB).
-  if { [ "$(cap PLAN_PACE 1)" != 0 ] && awk -v w="$wk" -v l="$line" -v b="$boost" 'BEGIN{exit !(w+b>=l)}'; } || [ "$ses" -ge "$(cap PLAN_SESSION_MAX 75)" ]; then
-    if [ "$(cap PLAN_PACE 1)" = 0 ]; then echo "$(date '+%m-%d %H:%M') resting: the 5-hour window is at $ses% (helpers stop at $(cap PLAN_SESSION_MAX 75)%); week $wk% used" > "$C/status-$L.txt"
-    else echo "$(date '+%m-%d %H:%M') pacing your plan: week $wk% used (the 85% line is at $line% now), 5-hour window $ses%" > "$C/status-$L.txt"; fi; exit 0; fi
+  # 10-24, his "Go ahead and blow the 4% of usage between now and 1am reset, then after reset pace back up to spend 80% over the next
+  # week": until PLAN_BURN_UNTIL the weekly line is off (helpers run whenever they can); after it PLAN_PACE=1 holds an even line to
+  # PLAN_TARGET% (80) by the next reset. PLAN_WEEK_MAX stops them near the top of the week, so the chat is never locked out.
+  pace=$(cap PLAN_PACE 1); bu=$(cap PLAN_BURN_UNTIL ""); [ -n "$bu" ] && [ "$nw" -lt "$(date -d "$bu" +%s 2>/dev/null || echo 0)" ] && pace=0
+  if [ "$wk" -ge "$(cap PLAN_WEEK_MAX 100)" ]; then
+    echo "$(date '+%m-%d %H:%M') resting: the week is at $wk% (helpers stop at $(cap PLAN_WEEK_MAX 100)% so the chat keeps room)" > "$C/status-$L.txt"; exit 0; fi
+  if { [ "$pace" != 0 ] && awk -v w="$wk" -v l="$line" -v b="$boost" 'BEGIN{exit !(w+b>=l)}'; } || [ "$ses" -ge "$(cap PLAN_SESSION_MAX 75)" ]; then
+    if [ "$pace" = 0 ]; then echo "$(date '+%m-%d %H:%M') resting: the 5-hour window is at $ses% (helpers stop at $(cap PLAN_SESSION_MAX 75)%); week $wk% used" > "$C/status-$L.txt"
+    else echo "$(date '+%m-%d %H:%M') pacing your plan: week $wk% used (the $(cap PLAN_TARGET 85)% line is at $line% now), 5-hour window $ses%" > "$C/status-$L.txt"; fi; exit 0; fi
   # 10-21: the smaller of free RAM and free virtual memory (Windows ran out of virtual memory at 02:19 with 4 GB of RAM free)
   rf=$(( $(cap RAM_FLOOR_GB 6) + 1 )); g=$(powershell -NoProfile -Command "\$o=Get-CimInstance Win32_OperatingSystem; [int]([Math]::Min(\$o.FreePhysicalMemory,\$o.FreeVirtualMemory)/1MB)" 2>/dev/null | tr -dc '0-9')
   [ "${g:-0}" -lt "$rf" ] && { echo "$(date '+%m-%d %H:%M') waiting for RAM: ${g:-0} GB free, a helper starts at $rf; $name kept" > "$C/status-$L.txt"; exit 0; }

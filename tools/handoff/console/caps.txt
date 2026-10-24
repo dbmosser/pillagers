@@ -5,9 +5,7 @@ END_DATE=2026-10-17
 PACE=0
 WORKSPACE_ID=wrkspc_01LtptfWuGJbsFuYZyeWFuW5
 MAXRUNS=5
-# 10-21 10:50, his order "slow down claude usage on pillagers to the bare minimum to keep it rolling, until the sunday reset": CLI=0 keeps
-# lanes a, b and c off; Codex (CX_ANY=1 in codex/caps-codex.txt) carries the jobs. Back to CLI=1 after the reset (Sun 10-25 05:00 UTC).
-CLI=0
+CLI=1
 CLI_LANES=3
 CLI_DAY_USD=25
 CLI_ALWAYS=
@@ -16,10 +14,15 @@ P_OUT=8.54
 P_CR=0.171
 P_CW=2.13
 CLI_BOOST=f
-PLAN_TARGET=85
+# 10-24 09:10, his "Go ahead and blow the 4% of usage between now and 1am reset, then after reset pace back up to spend 80% over the
+# next week": until PLAN_BURN_UNTIL the helpers run whenever they can, up to PLAN_WEEK_MAX% of the week; after it an even line to
+# PLAN_TARGET% by the next reset (tools/console-lane.sh).
+PLAN_TARGET=80
+PLAN_BURN_UNTIL=2026-10-25T05:00:00Z
+PLAN_WEEK_MAX=99
 PLAN_SESSION_MAX=85
 WEEK_RESET=2026-10-25T05:00:00Z
-PLAN_PACE=0
+PLAN_PACE=1
 PLAN_ACCOUNT_SHA=12a1aafbabb92b0e1071c81a9da0b3f6ff9c80852a0e5c0edddcf4e4a1d60cde
 # 10-20 00:15: 2 (a helper starts at 3 GB free). At 3 the 10 GB VM ran NO helper while the 3.5-hour corpus ran (3.1 GB free, all
 # three lanes waiting for 4). His standing line is to stop a helper under 2 GB free, which one helper at 3 still respects.
