@@ -1,0 +1,7 @@
+v34.53: settings pane value lit only when on
+
+The settings detail pane lights an on value and mutes an off one; the restore warning is bigger.
+
+Check 34.53. Fails on v34.52.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

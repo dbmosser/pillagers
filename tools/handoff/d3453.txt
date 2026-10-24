@@ -1,0 +1,5 @@
+## v34.53 - SETTINGS PANE VALUE LIT ONLY WHEN ON
+
+Co-op hunt while he was away. Job 113, critic round 3: the detail pane hero value was always accent or always white. Now it is accent only when the value is on and muted otherwise, and the restore warning is body size.
+
+MEASURED. Check 34.53 passes, and fails on v34.52.

@@ -2478,7 +2478,9 @@ body:has(#wnmodal.on) #hubtoast,body:has(#settingsmodal.recmode.on) #hubtoast{vi
 #root #settingsmodal.recmode #exporttext + div + div{ margin-top:var(--sp-4) !important; padding:var(--sp-3) !important; border:1px solid var(--ui-line-hi); border-radius:var(--rad); background:var(--ui-panel); }
 #root #settingsmodal.recmode #spane_rec > div:has(> #rescode) > .msub{ font:600 var(--fs-label)/1.4 var(--f-cond) !important; color:var(--warn); }
 #root #settingsmodal #setwrap > #setdetail:not(.daily-restore-detail){ align-self:flex-start; min-height:0; }
-#root #settingsmodal #setwrap > #setdetail:not(.daily-restore-detail) .sdv{ color:var(--tx-1); margin-top:var(--sp-2); }
+#root #settingsmodal #setwrap > #setdetail:not(.daily-restore-detail) .sdv{ color:var(--tx-2); margin-top:var(--sp-2); }
+#root #settingsmodal #setwrap > #setdetail:not(.daily-restore-detail) .sdv.on{ color:var(--acc); }   /* v34.53 (cw-playdata3) job 113, critic round 3 on 92: the live value is lime only when it is on; the restore warning is body size (the critic read it as 12px) */
+#root #settingsmodal.recmode #spane_rec > div:has(> #rescode) > .msub{ font-size:var(--fs-body) !important; }
 #root #settingsmodal #setwrap > #setdetail .sdkey{ display:inline-block; flex:0 0 auto; margin-top:var(--sp-2); padding:var(--sp-1) var(--sp-2); border:1px solid var(--ui-line-hi); border-radius:var(--rad); color:var(--tx-1); font:600 var(--fs-body)/1.2 var(--f-cond); letter-spacing:var(--track); }
 @media(max-width:1100px){
   #root #wnmodal{grid-template-columns:minmax(0,1fr);grid-template-rows:56px auto minmax(0,1fr);gap:24px;}
@@ -3685,7 +3687,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.52';
+var VER='34.53';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -54178,7 +54180,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.52: Send play data reads as a headline, one copy button and a quiet restore panel; the settings detail pane no longer shows a tall empty box. Check 34.52 fails on v34.51',
+  now:'v34.53: The settings detail pane lights an on value and mutes an off one; the restore warning is bigger. Check 34.53 fails on v34.52',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -69076,7 +69078,7 @@ document.getElementById('pausesetbtn').onclick=function(){ openSettings(); };
     var _cur=sl.querySelector('.row.dshow'); if(_cur!==r){ if(_cur) _cur.classList.remove('dshow'); r.classList.add('dshow'); }
     var b=r.querySelector('div > b'), h=r.querySelector('.hint'), v=r.querySelector('button'), sel=r.querySelector('select');
     var vt=v?v.textContent:(sel&&sel.options[sel.selectedIndex]?sel.options[sel.selectedIndex].text:'');
-    var html='<div class="sdk">'+escHtml(b.textContent)+'</div>'+(vt?'<div class="sdv">'+escHtml(vt)+'</div>':'')+(h&&h.textContent?'<div class="sdh">'+escHtml(setHintShort(h.textContent))+'</div>':'');
+    var html='<div class="sdk">'+escHtml(b.textContent)+'</div>'+(vt?'<div class="sdv'+(/^on$/i.test(vt)?' on':'')+'">'+escHtml(vt)+'</div>':'')+(h&&h.textContent?'<div class="sdh">'+escHtml(setHintShort(h.textContent))+'</div>':'');
     // v28.xx (cw-cx-dailyrestoreui): only the restore row gets backup details; other Settings rows keep their own descriptions.
     var restoreRow=!!r.querySelector('#set_restore');
     dt.classList.toggle('daily-restore-detail',restoreRow);

@@ -931,17 +931,17 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The detail pane now has a hero value (lime 'off') and a key chip, which fixes the old flat text stack. The rest of the card is unchanged and still has a half-empty right pane and a cramped, mixed-purpose list.",
+  "verdict": "A clean, consistent dark card with a clear focus bar, and the new detail pane is better than before (white hero value, bigger key chip, pane shrunk to its content). But it still leaves a big empty right half, and the list is crowded, unevenly spaced and has no focus on the sidebar.",
   "findings": [
-   "P1 right detail pane, below the key chip (y≈380 to 990): Either shrink the pane to its content or anchor it. Put a 'default: off' line and a 'reset' action at the bottom edge, or show a small before/after state strip. Otherwise narrow the pane to about 420px and give the freed width to the list.",
-   "P1 detail pane hierarchy: title 'superhot mode' (32px) against hero 'off' (≈56px lime): Keep the hero only if it adds something. Show the hero in tx-1 when 'off' and in lime only when 'on'. Drop the lime top border on the pane and the lime tab tick so there is one focus signal per column.",
-   "P1 key chip 'key: left of 1' (≈1112,328 to 1213,365): Set it at 16px f-cond 600 with +.04em tracking, 8px by 16px padding, and a --ui-line-hi border that is not clickable-looking. Label it 'key' with a separate key cap showing '`'. Space it 24px below the description.",
-   "P2 spacing in the detail pane (title to hero to description to chip): Use 24px between title and hero, 16px between hero and description, and 24px between description and chip.",
-   "P2 left tab column ('send play data' at y≈618): Add a 1px divider with 16px of space above 'send play data'. Put tabs in tx-1 at 20px 700 when active and tx-2 when idle. Use the same row height as the list, 56px."
+   "P1 detail pane, below the key chip: Pin the pane to the full column height again, or fill it with a useful block: a 3-row value legend (off/on) and a reset-to-default row. Otherwise centre the content vertically at 40% of the pane height.",
+   "P1 hierarchy, the hero value 'off': Keep the hero white, but colour it --acc only when the value is 'on' (on = lime, off = tx-2 #aaa498). Drop the hero to the title weight (700) so the pane title is not drowned out.",
+   "P1 centre column, from 'experimental' down to 'master volume': Add a 16px tx-2 group label row ('audio') with 24px above it, or move the audio rows to the audio tab. Make the scrollbar 6px wide in --ui-line-hi, and add a 24px bottom fade mask.",
+   "P2 left tab column: Use a 56px row pitch for the tabs. Put a 1px --ui-line divider and 24px extra space above 'send play data'. Raise idle tab text to --tx-2 #aaa498 at 18px or larger, with 600 weight.",
+   "P2 key chip 'key: left of 1': Either make it a real rebind button with a focus ring in --acc and the text 'rebind', or render it as a plain tx-2 label with no border. If it stays a chip, name the key: 'key: `'."
   ],
-  "pic": "tools/handoff/console/notes/shots/113-after/92-settings-superhot-pane-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/113-after2/92-settings-superhot-pane-1080.jpg",
   "task": "manual",
-  "when": "2026-10-24T22:01"
+  "when": "2026-10-24T22:09"
  },
  "60-mapfirst-1p": {
   "score": 4,
@@ -1379,17 +1379,17 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "Much cleaner than the old log dump: a short status line, one lime action and a quiet 'show data' beside it, but the content hugs the top and leaves the lower half of the card empty.",
+  "verdict": "The second shot is cleaner than the first, with a bolder status line, a boxed restore section and a shorter warning, but the content sits in the top half of a 90% card and the warning text is too small and in an off-token colour.",
   "findings": [
-   "P1 whole card, y 560-990: Vertically centre the 1100px column, or pad the top to about 15% of the card height. Alternatively split it into two 24px-padded panels (send, restore) so the card has structure.",
-   "P1 status line '0 runs, 0 notes ready to send': Make the counts tx-1 at 32px f-cond 700 ('0 runs · 0 notes') with the explanatory words in 16px tx-2 underneath. Or give the stack a 'send play data' title at 32px.",
-   "P1 restore a character helper text (y 387): Cut it to 'replaces your current save' at 16px in --warn amber. Delete the 'above' reference.",
-   "P2 button row (y 227-282): Group copy and show data at an 8px gap on the left, and keep clear recorder on the right as it is. Check that show data reveals the text in a panel without shifting the layout under the buttons.",
-   "P2 restore section (y 315-545): Put restore in its own --ui-panel with a 24px padding, or add 32px of extra space above the divider. Give 'read code' a disabled look until the field has text."
+   "P1 restore panel warning line: Set it to 16px f-cond 600 in --warn (#f5b73b) or --danger, with +.04em tracking. Alternatively, move it above the input as a 20px tx-1 line with a small warn glyph.",
+   "P1 whole card, lower 45%: Either vertically centre the 1100px content column in the body area (y 105 to 995), or add the next real content such as a last-sent timestamp or a run list. Do not add explaining text.",
+   "P1 status line 'ready to send' (second shot): Use 20px f-cond 600 in --tx-2 for the line. If the count is non-zero, give only the numbers tx-1 weight. Keep the lime fill for 'copy to clipboard' alone.",
+   "P2 button row spacing: Set the button gap to 16px (--sp-2). Give the buttons equal height and padding (56px tall, 32px side padding).",
+   "P2 'read code' button and input: Put the button on the same row as the input, right-aligned, with the input at flex 1. Give the input a 2px --acc border on focus. Raise the placeholder to --tx-2 at 4.5:1 contrast."
   ],
-  "pic": "tools/handoff/console/notes/shots/113-after/31-settings-send-play-data-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/113-after2/31-settings-send-play-data-1080.jpg",
   "task": "manual",
-  "when": "2026-10-24T22:01"
+  "when": "2026-10-24T22:09"
  },
  "83-experimental-guest": {
   "score": 3,

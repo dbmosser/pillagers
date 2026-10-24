@@ -1,0 +1,16 @@
+{
+    "title":  "SETTINGS PANE VALUE LIT ONLY WHEN ON",
+    "why":  "Job 113, critic round 3: the detail pane hero value was always accent or always white. Now it is accent only when the value is on and muted otherwise, and the restore warning is body size.",
+    "now":  "The settings detail pane lights an on value and mutes an off one; the restore warning is bigger.",
+    "edits":  [
+                  {
+                      "anchor":  "(vt?\u0027\u003cdiv class=\"sdv\"\u003e\u0027+escHtml(vt)+\u0027\u003c/div\u003e\u0027:\u0027\u0027)",
+                      "replacement":  "(vt?\u0027\u003cdiv class=\"sdv\u0027+(/^on$/i.test(vt)?\u0027 on\u0027:\u0027\u0027)+\u0027\"\u003e\u0027+escHtml(vt)+\u0027\u003c/div\u003e\u0027:\u0027\u0027)"
+                  },
+                  {
+                      "anchor":  "#root #settingsmodal #setwrap \u003e #setdetail:not(.daily-restore-detail) .sdv{ color:var(--tx-1); margin-top:var(--sp-2); }",
+                      "replacement":  "#root #settingsmodal #setwrap \u003e #setdetail:not(.daily-restore-detail) .sdv{ color:var(--tx-2); margin-top:var(--sp-2); }\n#root #settingsmodal #setwrap \u003e #setdetail:not(.daily-restore-detail) .sdv.on{ color:var(--acc); }   /* v34.53 (cw-playdata3) job 113, critic round 3 on 92: the live value is lime only when it is on; the restore warning is body size (the critic read it as 12px) */\n#root #settingsmodal.recmode #spane_rec \u003e div:has(\u003e #rescode) \u003e .msub{ font-size:var(--fs-body) !important; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027cw-playdata3 (job 113): the settings detail pane shows an on value in the accent colour and an off value muted, and the restore warning on the play data page is body size\u0027,\n   run:function(){\n     var bad=[], det, v, help, c0, c1;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __forceSize(1920,1080); applyMenuZoom(); openSettings(\u0027rec\u0027);\n       help=document.querySelector(\u0027#spane_rec \u003e div:has(\u003e #rescode) \u003e .msub\u0027);\n       if(!help) return \u0027restore helper missing\u0027;\n       if(parseFloat(getComputedStyle(help).fontSize)\u003c20) bad.push(\u0027the restore warning is below body size [\u0027+getComputedStyle(help).fontSize+\u0027]\u0027);\n       openSettings(); det=document.getElementById(\u0027setdetail\u0027);\n       if(window.__setDetailSync) window.__setDetailSync();\n       v=det\u0026\u0026det.querySelector(\u0027.sdv\u0027); if(!v) return \u0027SKIP: no value in the detail pane\u0027;\n       c0=getComputedStyle(v).color;\n       v.classList.add(\u0027on\u0027); c1=getComputedStyle(v).color; v.classList.remove(\u0027on\u0027);\n       if(c0===c1) bad.push(\u0027an on value is not lit differently from an off value [\u0027+c0+\u0027]\u0027);\n       if(/230, 255, 61/.test(c0)) bad.push(\u0027an off value is drawn in the accent colour\u0027);\n       return bad.length?bad.join(\u0027; \u0027):null;\n     } finally {\n       document.getElementById(\u0027settingsmodal\u0027).classList.remove(\u0027on\u0027);\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){} __runPrep(); applyMenuZoom(); __topClear();\n     } }},"
+}

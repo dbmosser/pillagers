@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.53 - SETTINGS PANE VALUE LIT ONLY WHEN ON
+
+Co-op hunt while he was away. Job 113, critic round 3: the detail pane hero value was always accent or always white. Now it is accent only when the value is on and muted otherwise, and the restore warning is body size.
+
+MEASURED. Check 34.53 passes, and fails on v34.52.
 ## v34.52 - PLAY DATA PAGE AND SETTINGS PANE POLISH
 
 Co-op hunt while he was away. Job 113, critic round 2 (both pages scored 3): the play data counts become the page headline, the actions group tightly, restore sits in its own quiet panel with a one line amber warning, and the settings detail pane packs to its content with a tx-1 hero value and an on-grid chip.
