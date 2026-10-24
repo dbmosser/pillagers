@@ -146,3 +146,10 @@ Prepared camera-recipes.json for ONE review of the same existing calm career sce
 
 No further game key or fixture edits were drafted this run. The existing key is already shipped and must not be rebuilt/re-shipped. Other broad HUD restyling requested by the critic predates this floor repair and would expand a stable-check task; review the corrected normal-play picture before proposing any such change. Remaining work is the lane's camera/critic result for the corrected stage. Functional evidence and the watch line are already in the shipped DESIGN section. No questions or approvals are required.
 
+
+
+--- lane c run 2026-10-24 (v34.18) ---
+Fixture-only retargets, committed 1f5330d54 and e9dc97f01; no game change, so no ship.
+- v18.01: the game is fine. v34.13 to v34.15 shed effect rungs first and soften the picture only after the fill rung (q 3) is proven to help. The check now stages that proven state (DRS.q=3, fillOK=true) like 32.44; all its old assertions stay. PASS.
+- v24.95: two causes. The minimap is off by default since v33.35 (the check never turned it on; it only passed in the corpus because earlier checks left it on). Now sets CFG.mmSz=1 and restores it. And v34.04/34.05 added a shape badge and connector per pinned mark (about 9 calls each), so the draw budget is 24 plus 10 per pin drawn. PASS.
+- v33.69 and v33.66: not in the newest run's failing list (corpus-1023-2304), nothing to do.

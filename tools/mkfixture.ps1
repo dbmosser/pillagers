@@ -6159,6 +6159,19 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.19',what:'fashion tiles show rank by top bar thickness, not only colour (2.79 a)',
+   run:function(){
+     var host=document.getElementById('appavatarpicker'), tmp=null;
+     if(!host){ host=tmp=document.createElement('div'); host.id='appavatarpicker'; document.body.appendChild(host); }
+     var w=[];
+     try{
+       ['common','uncommon','rare','elite','gold'].forEach(function(r){
+         var t=document.createElement('div'); t.className='costile'; t.setAttribute('data-rar',r); host.appendChild(t);
+         w.push(parseFloat(getComputedStyle(t).borderTopWidth)); host.removeChild(t);
+       });
+     } finally { if(tmp) document.body.removeChild(tmp); }
+     for(var i=1;i<w.length;i++) if(!(w[i]>w[i-1])) return 'bar widths do not grow with rank: '+w.join(',');
+     return null; }},
   {v:'34.18',what:'pixel wardrobe focus stays inside four equal set tiles; worn marks differ from focus and redundant owned labels are absent',
    run:function(){
      var cfg=CFG.xfPix,oldP,bad=[];

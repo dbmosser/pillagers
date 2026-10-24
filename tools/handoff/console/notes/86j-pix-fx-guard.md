@@ -70,3 +70,8 @@ Prepared camera round 3: shield pickup moves from +105 to +50 world units in the
 
 Local checks: fixture replacement anchor unique and replacement parses; camera sources/recipes parse; generated day/night calls execute with literal booleans; failed photo retains corpus diagnostics; lane files are ASCII; tracked files remain untouched. Remaining: lane fixture application and pixel-on rechecks, round-3 critic, and the coordinator's pixel-on tools/fuzz.ps1 run requested in the run-1 alarm.
 
+--- claude lane b 2026-10-24 ---
+Both keys shipped (cw-cx-pixguard v33.93, cw-cx-pixfx v33.94). Round-3 pictures viewed: firefight strip (ignition, blast and debris, smoke and scorch) and night raid show square pixel sparks, stamped blast and scorch, half-size shield medallion with a clean edge; standing pillager readable at night. Round-3 corpus recheck: 7 of 7 pass (33.82, 33.76, 33.69, 33.66, 33.51, 33.33, 33.22), no reds, no skips. Night ratio min 2.59:1 (needs 1.8), so no ramp tuning. Two-window budget passed (p95 31.7 ms off and on, no faults). Critic on the night proof scored 3: every finding is about the dev-only proof card (caption size, footer text), not the game art; players never see it, so left as is.
+Left for coordinator: tools/fuzz.ps1 with pixel on in both windows (alarms.md 10-21 entry); needs a runner and a disposable fixture copy.
+Watch on next play: square smoke and blast keep pillager silhouettes readable; a kind that throws 3 times draws vector until the raid ends.
+

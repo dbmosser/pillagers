@@ -1810,36 +1810,36 @@
   "when": "2026-10-21T07:38"
  },
  "p1-1080": {
-  "score": 2,
-  "pass": false,
+  "score": 3,
+  "pass": true,
   "need": 3,
-  "verdict": "A near-empty window card with a small, unlabeled pixel-art sprite pair floating in the upper middle, so it reads as a debug dump and not a designed screen.",
+  "verdict": "This is a clean, style-guide-correct card shell with a lime title tab and an X, but it is a dev-style preview window: the title is generic, a flat game crop fills the frame, and there is no player-facing hierarchy or label to tell the two pillagers apart.",
   "findings": [
-   "P0 card body, y 160-1025: Centre the content block vertically in the card body (card body is y 144-1025). Scale the preview to about 60% of the card width, and add a 16px label row under each sprite ('player 1' / 'player 2', f-cond 600, tx-2). Or drop the card and show the pair inside the real linked-raid screen.",
-   "P1 title 'linked raid - window 1': Rename to 'linked raid' with a 16px tx-2 'player 1' tag on its right. Make the divider 1px --ui-line-hi. Add a 3px --acc left tab to the title.",
-   "P1 'esc close' hint, top right: Set the hint to 16px f-cond 600 --tx-2 and leave a 16px gap before the X. Align the hint and the X to the title's vertical centre (y 112). Make the X button 40px.",
-   "P1 sprite crop, x 512-1408: Give the crop a 1px --ui-line-hi border and 4px radius. Crop tighter on the pair with no clipped props, and scale the sprites about 1.5x so the pair fills the frame.",
-   "P2 player ring numerals: Make the numerals dark (--acc-ink) on a filled disc, 18px tall, at least 4.5:1 contrast. Do not change the ring hues."
+   "P1 card body / art crop: Crop tighter on the two characters, add a 1px --ui-line-hi inner border and 4px radius, and drop or darken the pink slab (about 40% scrim) so the characters, not the floor, are the focal point.",
+   "P1 hierarchy: Add a 20px f-cond label under each ring ('player 1', 'player 2') in tx-1 on a --ui-panel pill. Enlarge the ring badge digits to at least 16px.",
+   "P1 title text: Use a clear title such as 'player 1' at 32px f-cond 700, 24px from the left edge, with the lime tab at 3px x 32px aligned to the cap height.",
+   "P2 header / close button: Make the X 40px with a --ui-line-hi border, and lime only on focus. Pad the header 16px below the divider before the art.",
+   "P2 card margins and footer: Use a uniform 5% margin (96px by 54px) with 24px inner padding on all sides, and add a 16px tx-2 footer legend with the live close key or button."
   ],
-  "pic": "tools/handoff/console/notes/shots/86g-pix-pillager-states-recipes-4/86g-pair-p1-1080.jpg",
-  "task": "86g-pix-pillager-states",
-  "when": "2026-10-22T14:36"
+  "pic": "tools/handoff/console/notes/shots/86h-pix-sets-wardrobe-recipes-3/86h-demo-p1-1080.jpg",
+  "task": "86h-pix-sets-wardrobe",
+  "when": "2026-10-22T14:53"
  },
  "p2-1080": {
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "This is a 'linked raid - window 2' screen that is mostly empty dark space around a small purple sprite-pair preview, so it reads as a debug capture and not a finished menu.",
+  "verdict": "This is a card frame around a raw game viewport with a small title and an X. It has no UI of its own: no player 2 state, no prompt, no controls, and nothing to show the player what to do or that the screen is live.",
   "findings": [
-   "P0 card body, below and beside the purple preview (y 720-1025, x 100-510 and 1410-1820): Fill the card with a real layout. Put the preview in a left column about 60% wide. In a right column, show two player rows: name, ring colour chip, ready state. Add one lime primary action in the 72px footer. If this is only a test harness, don't ship it as a window.",
-   "P1 purple preview image (512,160 to 1408,720): Use a dark, desaturated floor tile (about #1b1d1f to #24272a) behind the sprites. Give the image a 1px --ui-line-hi border, a 4px radius and 24px padding in a --ui-panel container. Add a vignette so it blends.",
-   "P1 title 'linked raid - window 2' (121,112): Rename it to something like 'linked raid' or 'player 2'. Use the plain hyphen-free title style (32px, f-cond 700). Show the player slot as a small 16px tag in tx-2.",
-   "P1 top-right 'esc close' and x button (1680-1800, 85-138): Raise the hint to 16px f-cond 600 in tx-2 with 16px gap to the x. Keep the x as the focus-ring close, but add a real lime-filled primary action in the footer so the lime marks the main action.",
-   "P2 player ring badges (780,578 and 1140,578): Enlarge the pip to about 22px with a 14px bold digit in --acc-ink on the ring colour. If player identity matters here, add 16px 'p1' and 'p2' labels under the sprites."
+   "P0 whole card content: Add one live prompt centred below the viewport at 32px f-cond 700 in --tx-1, naming the key or pad button of the device in use (for example 'press any key to join'). Keep the line to 3 to 4 words and give it a 3px --acc top tab. The prompt is the single bold element and the title stays quiet.",
+   "P1 title 'linked demo / player 2': Set the title to 32px f-cond 700 with a 56px header row. Make it a single clear name such as 'player 2'. Move the lime bar to a 3px full-height left-edge tab on the card, or remove it.",
+   "P1 viewport (the pixel-art scene): Render at an integer pixel scale. Add a 1px --ui-line-hi inner border, a 4px radius and a 20 to 30% --scrim-style vignette. Remove the grey rectangle from the scene or draw it as an intentional spotlight. Reposition the characters so no prop overlaps them.",
+   "P1 player rings and numbers: Put a 16px f-cond 600 label ('player 1', 'player 2') under each ring, using the ring colours on a --ui-panel chip at 90% fill. Do not change the ring colours; that decision is still pending.",
+   "P1 layout: outer card and margins: Use the 56px header and 72px footer rows from section 2, a 1px --ui-line divider under the header, and 24px padding. Put the prompt and any legend in the footer at 16px."
   ],
-  "pic": "tools/handoff/console/notes/shots/86g-pix-pillager-states-recipes-4/86g-pair-p2-1080.jpg",
-  "task": "86g-pix-pillager-states",
-  "when": "2026-10-22T14:36"
+  "pic": "tools/handoff/console/notes/shots/86h-pix-sets-wardrobe-recipes-3/86h-demo-p2-1080.jpg",
+  "task": "86h-pix-sets-wardrobe",
+  "when": "2026-10-22T14:53"
  },
  "pix86c-fashion": {
   "score": 3,
@@ -2133,49 +2133,49 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "A clean dark centred card with a clear focus ring and readable pixel previews, but the set row breaks the grid and overlaps, the preview is dead space, and small text is too dim and tiny.",
+  "verdict": "A clean, consistent dark card that follows the guide (lower case, lime focus, x in the corner), but the type is small and quiet, the hierarchy is flat, and the bottom of both panels is empty.",
   "findings": [
-   "P0 set row (off / skeleton / trooper / android): Use 4 equal columns with 8px gutters for that row (or a consistent 3-col grid that wraps). Draw the focus ring inside the card bounds, with no outer glow bleeding onto neighbours. Keep every tile at the same width.",
-   "P1 preview pane (your pillager): Scale the sprite 2x or more (about 220px tall, integer scaling with nearest-neighbour). Add a 3px lime top tab or a ground line under it. Trim the panel height or put the looks list inside it.",
-   "P1 focus vs worn state: Worn gets a 3px left accent bar and a tx-1 'worn' label with no full border. Only the focused tile gets the 2px full lime border, plus a raised fill (#1e2225). Remove the glow.",
-   "P1 tile text: 'owned' / 'worn' labels and 'looks' header: Drop 'owned' from tiles and show only 'worn' or a price when locked. Set remaining labels to 16px in tx-2 (#aaa498). Remove the tracking from 'looks'. Raise the header stash and bag text to 16px.",
-   "P1 top-right header cluster: Show one hero value ($900, 32px tx-1) and put the stash and bag values in a 16px tx-2 group with 24px gaps. Give 'xp' the same 16px label style as the others. Make the X 40px with a 1px line-hi border, and align the centreline with the title."
+   "P1 rack tiles (head, skin, clothes, set): Give the focused tile a --ui-raised fill, a 3px lime left bar and a 2px lime border. Make 'worn' tx-2 with a small check glyph, or --ok green, so lime means focus only.",
+   "P1 preview panel, 'your pillager': Scale the sprite up 1.5x to 2x with nearest-neighbour filtering, centre it on a floor shadow, and delete the stray dash or turn it into the 3px panel accent tab. Show the equipped set name under the sprite at 20px.",
+   "P1 header currency row, top right: Use one style for the whole row: 20px f-cond 600, with labels in tx-2 at 16px. Drop 'bag $0' or put the stash on a second line. Leave 24px between the row and the x.",
+   "P1 'looks' save slots (left panel): Set the label and row text to 16px or larger with a 48px row height. Make 'surprise me' the one filled lime button (acc-ink text on a lime fill) and keep 'save' as an idle outline button. Highlight the selected slot.",
+   "P2 section headings 'head', 'skin', 'clothes', 'set': Make headings 16px tx-2 uppercase-free with a 1px divider line. Use 3 or 4 equal columns throughout, or give the set row its own labelled section with a clear break."
   ],
-  "pic": "tools/handoff/console/notes/shots/86h-pix-sets-wardrobe-recipes-2/86h-fashion-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/86h-pix-sets-wardrobe-recipes-3/86h-fashion-1080.jpg",
   "task": "86h-pix-sets-wardrobe",
-  "when": "2026-10-21T17:37"
+  "when": "2026-10-22T14:54"
  },
  "86h-pixbench-sets": {
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "A clean, all-lower-case dev review card with decent sprites, but it is a small, sparse bench sheet rather than a game screen: the card is far from the near-full-screen window the guide requires, the type is too small, and it has no hierarchy, identity or real pad affordance.",
+  "verdict": "This is a debug sprite sheet, not a wardrobe menu: it has no selection, no equipped state, no pad focus and no action, and its labels are tiny and misaligned.",
   "findings": [
-   "P1 outer card: Make the card 90% of screen width and height (about 1728x972). Scale the three set panels to fill it and raise the sprite scale from about 3x to 5x or more.",
-   "P1 set panels (skeleton, trooper, android): Make the panel name 32px f-cond 700 in tx-1. Give the selected panel a --ui-raised fill with a 3px lime left tab. Keep the labels at 16px tx-2. Make the front sprite the largest element.",
-   "P1 '1x' rows and 'front' / 'mirror / seat trim' labels: Raise all labels to 16px with +.04em tracking and tx-2 at 4.5:1 contrast or better. Drop the '1x' text. Keep the thumbnails only as a small true-size preview, with at least 16px between that row and the big sprites.",
-   "P1 title bar 'full sets / art review': Title at 32px f-cond 700 with a plain player-facing name such as 'wardrobe'. Add the 56px header row. Put the set-select tabs or a main action in lime. Keep the focus ring on the X only while it is focused.",
-   "P2 vertical spacing inside card: Use the 8px grid: 24px card padding on all sides, 24px between the header and the panels, and panels that stretch to the card's bottom padding. Centre the sprites vertically in the area between the labels and the 1x row."
+   "P0 whole screen: Turn it into a column list of outfits on the left (row height 56, 20px names, one lime focus bar 3px wide). Put one large preview of the focused outfit on the right, with a single primary 'equip' button. Delete the 3-card by 6-pose grid.",
+   "P1 pose labels (front, mirror / seat trim, crouch, roll): Set the labels at 16px f-cond 600 in tx-2, 8px above each sprite, on one shared baseline. Rename or drop the jargon. Show only front plus one small pose strip, or remove the labels.",
+   "P1 sprite sizing and card spacing: Use one integer pixel scale per view, and set card padding to 24px. Centre the hero sprite in the card, with its pose strip at a fixed 8px grid gap. Make the roll sprite at least 2x larger or remove it.",
+   "P1 card titles (skeleton, trooper, android): Keep the window title at 32px. Use 20px names, and add a rarity bar (3px) and an owned or equipped tag at 16px.",
+   "P2 window header: Set the title at 32px / 700. Make the header row 56px, with a full-width 1px divider. Give the X an idle --ui-line-hi border, and show lime only when it is focused."
   ],
-  "pic": "tools/handoff/console/notes/shots/86h-pix-sets-wardrobe-recipes-2/86h-pixbench-sets-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/86h-pix-sets-wardrobe-recipes-3/86h-pixbench-sets-1080.jpg",
   "task": "86h-pix-sets-wardrobe",
-  "when": "2026-10-21T17:37"
+  "when": "2026-10-22T14:54"
  },
  "86h-raid": {
-  "score": 2,
+  "score": 3,
   "pass": false,
   "need": 4,
-  "verdict": "A clean dark card with a lime-focused close button, but it works like a debug sprite viewer: three plain text rows with no visible controls, a mostly empty left rail and a tiny caption, and a pale pink preview that outshines the UI.",
+  "verdict": "The card frame is clean and consistent with the window rules: lime tab, lower case title, and an x that has a visible focus ring. As a screen it is only a bare art preview with no way to tell what it is for, and the preview art is washed out.",
   "findings": [
-   "P1 left rail: sets / state / view: Make each row a 56px tall button with a 1px --ui-line divider and a chevron or arrows on the right. Give the focused row a --ui-raised fill, a 3px --acc left bar and tx-1 text. Put initial focus on the first row, not on the x.",
-   "P1 left rail, y 420-810: Remove the dead space by sizing the rail to its content, or fill it with real rows (for example a set list). Make the thumbnail a 16:9 tile at the rail width with a 1px --ui-line-hi border, or drop it.",
-   "P1 preview stage, 712-1512 x 256-864: Scale the preview to fill the pane height with 24px padding and a 1px --ui-line-hi frame, or tint the pane's surround so it reads as a viewport. Put one hero element, such as the set name at --fs-title, above the stage.",
-   "P2 title row 'raid / skeleton', y 108: Add 16px between the title baseline and the rule. Make the x 40px with a --ui-line-hi border and use the lime ring only when it is focused. Keep the title as the only heavy element.",
-   "P2 labels 'sets', 'state', 'view', 'full view': Set labels to 16px f-cond 600 with +.04em tracking in tx-2 (at least 4.5:1). Set the caption to 20px tx-1 or remove it, since it repeats the title."
+   "P1 whole card body: Shrink the preview to about 60% of the card width in a --ui-raised pane. Add a left column of selectable rows (20px f-cond, 56px rows, lime 3px focus bar). Put the item name in the 32px title and the stats or recipe in 16px labels.",
+   "P1 preview art, bottom wall and left strip: Clip or crop the preview to the player area and remove the wall overlay haze (alpha 0.35 down to 0). Clean up the dark pixel debris at x=1350-1375 and the corner at x=190-310.",
+   "P1 title bar, 'raid / skeleton': Set the title to 32px f-cond 700 in tx-1. Use a plain label such as 'skeleton' with a 16px tx-2 sub-label. Make the divider --ui-line-hi.",
+   "P2 preview frame, margins: Wrap the image in a 1px --ui-line-hi border with a 4px radius and padding of 24px inside a --ui-panel, and keep the insets equal on all sides.",
+   "P2 close button: Keep the focus ring. Make the idle x outline --ui-line-hi and use lime only when focused. Add a 16px key hint such as 'esc' beside it."
   ],
-  "pic": "tools/handoff/console/notes/shots/86h-pix-sets-wardrobe-recipes-2/86h-raid-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/86h-pix-sets-wardrobe-recipes-3/86h-raid-1080.jpg",
   "task": "86h-pix-sets-wardrobe",
-  "when": "2026-10-21T17:38"
+  "when": "2026-10-22T14:54"
  },
  "86j-pixel-firefight": {
   "score": 3,
@@ -2197,17 +2197,17 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "A clean dev-only preview card that follows the guide (centred 90% card, one lime close x, lower-case Barlow Condensed), but the footer text is small and dim, the title is under-scaled, and the whole card is mostly a screenshot frame.",
+  "verdict": "A clean, consistent dev-only card: lower case, lime-focused x, flat dark panel and a large preview that dominates the screen. It is a plain template window with weak type hierarchy and low-contrast, tiny secondary text.",
   "findings": [
-   "P1 caption under image ('standing pillager, blast, shield pickup') and footer ('dev only, native game pixels', 'esc / back'): Set the caption to 16px, f-cond 600, colour --tx-2 #aaa498 (or tx-1). Delete it if the screenshot already shows these things. Set the footer to 16px at --tx-2, with 'esc / back' kept in the same style.",
-   "P1 title 'pixel night raid' (top-left, about 28px): Set it to 32px, f-cond 700, with 24px padding above and 16px below. Keep the 1px divider. Rename it to something short like 'night preview'.",
-   "P2 close x, top-right (1755-1803, 79-127): Use a 40px square with a 20px glyph. Centre it on the title row at y=104, 24px from the right edge. Use a filled --acc background with --acc-ink text only while focused.",
-   "P2 image frame (121-1799, 157-877): Add a 1px --ui-line-hi border, 4px radius, around the image. Remove the extra 24px between caption and divider so the caption and footer sit on the 8px grid (16px gap above the divider, 24px below).",
-   "P2 in-image label 'shield bubble' (1010, 633): Draw a 16px label with a 60% dark pill (#0b0c0d) behind it and move it 8px below the ring. This is a game-render fix, not a UI-chrome fix."
+   "P1 caption 'standing pillager, blast, shield pickup' under the image: Delete it, or raise it to 16px f-cond 600 in tx-2 (#aaa498). Put the caption inside the 24px padding with 16px spacing above and below.",
+   "P1 footer left 'dev only, native game pixels': Delete it or move it to a --fs-fine (14px) version stamp. Keep only the footer legend on the right, in the 72px footer row.",
+   "P1 title 'pixel night raid': Set the title to 32px f-cond 700 in a 56px header row, and give the image a 1px --ui-line-hi border so it reads as one framed element.",
+   "P2 close button top-right (1755-1802, 80-126): Make the button 48x48 at 24px inset, with a 2px --acc border only when focused. Use an 18px glyph at weight 600 and a 1px --ui-line-hi border when idle.",
+   "P2 card layout margins and dividers: Use 24px padding on all sides, 16px between image and caption, 24px between caption and footer divider. Use the same 1px --ui-line on both dividers."
   ],
   "pic": "tools/handoff/console/notes/shots/86j-pix-fx-guard-recipes-3/86j-pixel-night-1080.jpg",
-  "task": "86j-pix-fx-guard",
-  "when": "2026-10-21T19:50"
+  "task": "manual",
+  "when": "2026-10-24T13:18"
  },
  "86j-pixel-two-window": {
   "score": 3,

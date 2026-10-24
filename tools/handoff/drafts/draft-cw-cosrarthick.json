@@ -1,0 +1,12 @@
+{
+    "title":  "RANK BARS GROW WITH RANK",
+    "why":  "His 2.79 a: every colour cue also gets a shape backup. Legacy fashion tiles showed rank by colour only; the top bar now grows 2 to 6px from common to gold.",
+    "now":  "Fashion tiles show rank by bar thickness too.",
+    "edits":  [
+                  {
+                      "anchor":  "#appavatarpicker .costile[data-rar]{ border-top:3px solid var(--rar,#9da3a8); }",
+                      "replacement":  "#appavatarpicker .costile[data-rar]{ border-top:3px solid var(--rar,#9da3a8); }\n/* v28.xx (cw-cosrarthick) 2.79 a: rank also reads in greyscale, the top bar grows 2 to 6px from common to gold */\n#appavatarpicker .costile[data-rar=\"common\"]{ border-top-width:2px; }\n#appavatarpicker .costile[data-rar=\"uncommon\"]{ border-top-width:3px; }\n#appavatarpicker .costile[data-rar=\"rare\"]{ border-top-width:4px; }\n#appavatarpicker .costile[data-rar=\"elite\"]{ border-top-width:5px; }\n#appavatarpicker .costile[data-rar=\"gold\"]{ border-top-width:6px; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027fashion tiles show rank by top bar thickness, not only colour (2.79 a)\u0027,\n   run:function(){\n     var host=document.getElementById(\u0027appavatarpicker\u0027), tmp=null;\n     if(!host){ host=tmp=document.createElement(\u0027div\u0027); host.id=\u0027appavatarpicker\u0027; document.body.appendChild(host); }\n     var w=[];\n     try{\n       [\u0027common\u0027,\u0027uncommon\u0027,\u0027rare\u0027,\u0027elite\u0027,\u0027gold\u0027].forEach(function(r){\n         var t=document.createElement(\u0027div\u0027); t.className=\u0027costile\u0027; t.setAttribute(\u0027data-rar\u0027,r); host.appendChild(t);\n         w.push(parseFloat(getComputedStyle(t).borderTopWidth)); host.removeChild(t);\n       });\n     } finally { if(tmp) document.body.removeChild(tmp); }\n     for(var i=1;i\u003cw.length;i++) if(!(w[i]\u003ew[i-1])) return \u0027bar widths do not grow with rank: \u0027+w.join(\u0027,\u0027);\n     return null; }},"
+}

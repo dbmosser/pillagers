@@ -1,1 +1,1 @@
-10-22 10:50 Console money used up for 2026-10; the Claude Code engine is off (CLI=0)
+10-24 10:04 waiting for RAM: 2 GB free, a helper starts at 3; 88-undercroft-windows kept

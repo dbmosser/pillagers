@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.19 - RANK BARS GROW WITH RANK
+
+Co-op hunt while he was away. His 2.79 a: every colour cue also gets a shape backup. Legacy fashion tiles showed rank by colour only; the top bar now grows 2 to 6px from common to gold.
+
+MEASURED. Check 34.19 passes, and fails on v34.18.
 ## v34.18 - PIXEL WARDROBE FOCUS
 
 Co-op hunt while he was away. The focused set scales outside its grid and the extra halo overlaps neighbouring tiles.

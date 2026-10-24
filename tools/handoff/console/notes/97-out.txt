@@ -1,0 +1,4 @@
+21.42: with the Undercroft backpack open the belt is centred at x 728, -213 px off the middle, under a backpack that is centred
+18.78: gamblemodal text lines are capped at 1060px, its list at none
+33.33: PASS
+ALL DONE
