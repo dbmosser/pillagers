@@ -151,8 +151,17 @@ if [ $ENGINE = cli ]; then
   [ "${g:-0}" -lt "$rf" ] && { echo "$(date '+%m-%d %H:%M') waiting for RAM: ${g:-0} GB free, a helper starts at $rf; $name kept" > "$C/status-$L.txt"; exit 0; }
   # 10-20 00:10: lanes a and b both saw 3 GB free in the same second and both started (2.2 GB left). A new helper's memory shows only
   # after a minute or two, so one lane starts at a time: start.lock holds the others back for 2 minutes, then anyone may clear it.
-  [ -n "$(find "$C/start.lock" -maxdepth 0 -mmin +2 2>/dev/null)" ] && rm -rf "$C/start.lock"
-  mkdir "$C/start.lock" 2>/dev/null || { echo "$(date '+%m-%d %H:%M') waiting: another helper is just starting (memory check again in a few minutes); $name kept" > "$C/status-$L.txt"; exit 0; }
+  # 10-24 14:50: a lane whose job ended in seconds (a TASK PARTIAL rerun of 105) took the lock at every 5-minute tick, so lanes b and c
+  # sat out 10 minutes with the VM free. A lane that finds the lock now waits it out once (staggered per lane) and checks memory again.
+  for try in 1 2; do
+    [ -n "$(find "$C/start.lock" -maxdepth 0 -mmin +2 2>/dev/null)" ] && rm -rf "$C/start.lock"
+    mkdir "$C/start.lock" 2>/dev/null && break
+    [ $try = 2 ] && { echo "$(date '+%m-%d %H:%M') waiting: another helper is just starting (memory check again in a few minutes); $name kept" > "$C/status-$L.txt"; exit 0; }
+    echo "$(date '+%m-%d %H:%M') waiting: another helper is just starting (trying again in about 2 minutes); $name kept" > "$C/status-$L.txt"
+    sleep $((125 + 15 * ($(printf '%d' "'$L") - 97)))
+    g=$(powershell -NoProfile -Command "\$o=Get-CimInstance Win32_OperatingSystem; [int]([Math]::Min(\$o.FreePhysicalMemory,\$o.FreeVirtualMemory)/1MB)" 2>/dev/null | tr -dc '0-9')
+    [ "${g:-0}" -lt "$rf" ] && { echo "$(date '+%m-%d %H:%M') waiting for RAM: ${g:-0} GB free, a helper starts at $rf; $name kept" > "$C/status-$L.txt"; exit 0; }
+  done
   echo "$(date '+%m-%d %H:%M') running $name on Claude Code (your plan: week $wk% of the $line% line, 5-hour $ses%)" > "$C/status-$L.txt"
   st=$(date +%s)
   # 10-21 02:52: job 85a (11.7 KB) plus RULES.md (21 KB) on the command line passed Windows' 32 KB limit ("env: 'claude': Argument

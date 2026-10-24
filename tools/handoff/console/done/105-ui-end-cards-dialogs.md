@@ -33,3 +33,5 @@ guide's minimum, the x inside the header row).
 Pictures: camera-recipes.json with the four cards at 1080p, then the critic.
 TASK DONE when each reaches 4 from the critic (never your own grade), or the fixes shipped and the scores are written with the reason
 for any point docked for size; TASK PARTIAL with what is left.
+
+--- COORDINATOR 2026-10-24 14:50: closed as DONE by its own second finish line (the fixes shipped in v34.32 and v34.33, all four scores are written, and the size points are docked on purpose under the dialog rule). Runs 3 to 5 would only re-read the same scores. Left idea, not tried: stat values 24px and block gaps 32px on all four cards (shared css).
