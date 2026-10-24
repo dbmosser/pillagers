@@ -1,19 +1,4 @@
 
-L44712: Bleeding out. Crawl to an open extraction point. => NONE
-To address the request to "drop the bordered stepper box," we need to identify and remove any CSS rules that define or apply borders to a stepper component. Based on the provided code, there are no specific rules for a stepper component with borders. However, if you want to ensure that all elements related to steppers do not have borders, you can add or modify existing rules.
-
-Here is an example of how you might remove borders from any element with a class like `.stepper`:
-
-```css
-/* Remove border styles from the stepper component */
-.stepper,
-.stepper * {
-    border: none !important;
-}
-```
-
-If there are specific classes or IDs related to steppers that need to be targeted, please provide those details so I can tailor the solution more precisely.
-NONE
 NONE
 NONE
 NONE

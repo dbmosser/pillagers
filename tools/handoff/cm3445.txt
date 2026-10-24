@@ -1,0 +1,7 @@
+v34.45: initials in the focus colour
+
+The active initial letter is lime and the heading is grey, not amber and teal.
+
+Check 34.45. Fails on v34.44.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

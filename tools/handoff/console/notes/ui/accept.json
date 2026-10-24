@@ -451,17 +451,17 @@
   "score": 3,
   "pass": false,
   "need": 4,
-  "verdict": "The new card is a little brighter and more legible than the old one, with a whiter hero number and a brighter lime prompt dot. It is still a small, flat, timid card on a busy scene, and it would not pass for polished.",
+  "verdict": "A clean, correctly lower-case run-over card with a clear hero number, but it is small, left-heavy and bare for a screen that ends a whole run.",
   "findings": [
-   "P1 hero '0 sp' and the whole card: Make the card about 880px wide. Make the hero 72-96px at weight 800. Centre or left-anchor it with the stats set in a tighter band. Or fill the right half with a quiet per-player summary. Cut the empty space by at least 30%.",
-   "P1 background scene behind the scrim: Raise the scrim to the guide's rgba(6,7,8,.80) or darker, and apply a blur or dim to the lobby layer when the card is up. Keep sprites from straddling the card edge.",
-   "P1 'ended early -50%' line: Move it below the hero as a 16px label, with 'ended early' in tx-2 and '-50%' in --warn. Or drop it to the footer row. Keep the 16px minimum and 4.5:1 contrast.",
-   "P2 'score' label (y~447): Set it at 16px f-cond 600 +.04em in tx-2. Put it 8px above the hero and 24px below the amber line, on the 8px grid.",
-   "P2 stats row: kills, extractions, deaths: Distribute the columns over the full inner width, or use a 3-column grid with 1px --ui-line separators. Set the labels to 16px. Hide stats that are zero, or show only the non-zero ones."
+   "P1 whole card, 716x413 px centred on a 1920x1080 screen: Grow the card to about 1100x620 (or lay it out as a centred column with a wider type scale). Centre the title and the hero number, or spread the three stats evenly across the full width.",
+   "P1 hero '0 sp' and the 'score' label: Set the hero to 56px at weight 800 in --tx-1 with 'sp' in --tx-2 at 32px. Raise the 'score' label to 16px. Make 'run over' a true 32px title and put 24px above the hero.",
+   "P1 type sizes: 'kills / extractions / deaths' labels, 'ended early' line: Raise every label to 16px at weight 600 with +.04em tracking, and use --tx-2 (#aaa498). Make '-50%' 20px in --warn.",
+   "P2 background behind the scrim: Use rgba(6,7,8,.80) behind the card plus a blur of about 6px. Add a 1px --ui-line-hi border at full strength so the card edge reads.",
+   "P2 stat row (0 kills, 0 extractions, 0 deaths): Set the stat numbers to 32px in tx-1 and the labels to 16px, with equal column widths filling the card's inner width. Add a 1px divider between columns. Consider dimming zeros to tx-2."
   ],
-  "pic": "tools/handoff/console/notes/shots/110-after2/52-arcade-run-over-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/110-r3/52-arcade-run-over-1080.jpg",
   "task": "manual",
-  "when": "2026-10-24T19:51"
+  "when": "2026-10-24T20:09"
  },
  "57-title-2p-coop-picked": {
   "score": 3,
@@ -643,17 +643,17 @@
   "score": 3,
   "pass": false,
   "need": 4,
-  "verdict": "The run over card is clean and quiet, with a clear 2,500 sp hero and a lime press-any-key prompt, but it is identical to the old version apart from the background characters, and it still has small, dim secondary text, a lot of empty space, and amber that competes with the lime accent.",
+  "verdict": "A clean, calm run-over card with a clear hero score and a sensible live prompt, but its small type, empty right half and vague initials entry keep it below polished.",
   "findings": [
-   "P1 initials row 'a a a' with the amber underline: Make the active initial and its 3px underline --acc #e6ff3d. Keep the other two initials tx-1 with a --ui-line-hi underline. Keep amber only for '-50%'.",
-   "P1 labels 'score', 'kills', 'extractions', 'deaths', 'tonight's best · enter initials': Set all labels to 16px f-cond 600 with +.04em tracking in --tx-2 #aaa498 (at least 4.5:1). Add 8px between each label and its number.",
-   "P1 'type or ▲▼ · space next · backspace back · enter done' hint line: Cut it to one short live prompt such as '▲▼ change · enter done'. Show it at 16px in --tx-2, 16px below the initials. Delete 'space next' and 'backspace back'.",
-   "P2 card layout, right half of the stat row and the hero: Set the stat columns to 3 equal columns with 24px gaps. Either right-align the hero beside the title or cut the card width to about 560px. Align the prompt's left edge with the stat grid.",
-   "P2 'press any key' prompt (bottom right): Make the prompt text 24px with a lime ring of 24px or more. Add a subtle 160ms pulse, which is already in v34.42. Move it 8px closer to the divider."
+   "P1 initials entry and its hint line: Draw three 56px slots in tx-1 with a 3px lime underline on the active slot only (amber is not the accent). Cut the hint to 'enter ok' at 16px. Make the footer prompt read 'enter to save' while initials are active, and 'press any key' only after they are saved.",
+   "P1 card layout, right half: Either narrow the card to about 560px or put the score on the left and the stats in a right-hand column. Alternatively centre the title, score and stats on one axis. Keep the 24px padding.",
+   "P1 small text: 'score', 'kills', 'extractions', 'deaths', 'tonight's best', hint line: Set all labels and the hint to 16px f-cond 600 in --tx-2 (#aaa498). Set the stat numbers to 32px (--fs-title). Keep the score at 56px.",
+   "P2 'ended early -50%' line: Put the penalty on the same row as the 'run over' title, right-aligned, in --warn at 20px. Use 'ended early' in tx-2 at 20px. Then drop the amber from the initials slot.",
+   "P2 vertical rhythm: Use 8px grid steps only. Put 32px between sections and 8px inside each pair. Add a divider above 'tonight's best'. The footer rule should not sit 18px below the hint."
   ],
-  "pic": "tools/handoff/console/notes/shots/110-after2/55-arcade-run-over-scored-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/110-r3/55-arcade-run-over-scored-1080.jpg",
   "task": "manual",
-  "when": "2026-10-24T19:51"
+  "when": "2026-10-24T20:10"
  },
  "60-abandoned-card": {
   "score": 3,
@@ -752,52 +752,52 @@
   "need": 4
  },
  "53-arcade-extracted-bonus-initials": {
-  "score": 2,
-  "pass": false,
-  "verdict": "This is still a cluttered in-raid HUD, not the extracted/bonus/initials end card the filename promises, and the same extract message appears four times at four different sizes.",
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "A clean, calm dark card with a clear score hero, but the initials entry and the primary prompt compete, and small text is too small and too sparse for a couch.",
   "findings": [
-   "P0 Whole screen vs. filename (extracted / bonus / initials): Capture the end state: hide the HUD, show a 720px centred card on rgba(6,7,8,.80), 32px --extract title, one 56px hero SP number, a 4-stat row, initials tiles, and one 56px --acc primary button.",
-   "P0 Extract messaging: centre banner card, 'hold [x] to extract' at ~48px, bottom 'extract in progress! b 28s left', left toast 'extract in progress!': Keep one centre prompt only. Delete the banner card, the toast and the bottom line. Show one 56px f-cond 800 --extract countdown ('28 s') with a 16px 'hold [x]' label under it. Remove the stray 'b'.",
-   "P1 Top-centre cluster: 'score / 0 sp / 9:51 / extraction 0m / arrow': One 56px hero (the extract timer while extracting, otherwise SP), with a 16px tx-2 'score' label. Fold the extraction distance and arrow into one element inside the panel. Give it 24px padding and a 5% top margin.",
-   "P1 Run info panel (right, ~1500-1900 x 245-390): Panel P: --ui-panel, 1px --ui-line-hi, 4px radius, 24px padding. One 20px tx-1 title, delete the duplicate 'run goals' line. Rows at 16px with 8px gaps, values right-aligned in tx-2. 16px gap below the minimap.",
-   "P1 Left toast stack (5 toasts, 20-430 x 600-775): Cap at 3 toasts, 40px high, 8px gap, 5% left margin. Remove the duplicates and the tip text. Use the danger colour only on the glyph, with tx-1 for the text."
+   "P1 initials row (a a a) and 'press any key' prompt: Make the active initial lime (--acc) with a 3px lime underline, idle initials tx-1 with a --ui-line-hi underline. Raise the initials to 56px f-cond 800, with 24px gaps. Replace the prompt with a single 'enter done' prompt, or drop 'press any key' while initials are being typed.",
+   "P1 hint line 'type or ▲▼ · space next · backspace back · enter done': Cut it to 'enter done' only, at 16px and tx-2. Show a pad glyph when a pad is in use. Move the divider to 24px below the hint.",
+   "P1 label sizes: 'score', 'kills', 'extractions', 'deaths', \"tonight's best · enter initials\", 'extracted x2': Set every label to 16px f-cond 600 with +.04em tracking, in tx-2 (#aaa498). Use a uniform 8px gap between label and value. Show 'extracted x2' as a 20px tx-1 chip or tag, not as a grey sub-title.",
+   "P2 card title 'run over': Set the title to 32px f-cond 700. Tint the tab and the 'extracted x2' tag with --extract teal on a success, or --danger on a death. Keep the lime for focus only.",
+   "P2 stats row (9 kills / 1 extractions / 0 deaths): Use 32px numbers in three equal columns, with 0 shown in tx-2. Or put the hero score and the stats side by side to use the width. Align columns to the 24px padding grid."
   ],
-  "pic": "tools/handoff/console/notes/shots/12d-after/53-arcade-extracted-bonus-initials-1080.jpg",
-  "task": "12-ui-party-screens",
-  "when": "2026-10-18T21:25",
-  "need": 3
+  "pic": "tools/handoff/console/notes/shots/110-r3/53-arcade-extracted-bonus-initials-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-24T20:10"
  },
  "54-arcade-initials-redrop": {
-  "score": 2,
-  "pass": false,
-  "verdict": "The HUD works as an in-raid overlay, but the same extraction event appears four times, the top-centre block is cramped and overlaps, and type sizes, tags and panel styles ignore the guide.",
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The card is clean and lower case, with a clear hero score, but the type is small for a couch, the initials entry is weak, and it has the generic card-on-blurred-scene look.",
   "findings": [
-   "P0 Extraction messaging (centre banner, top toast, left feed, bottom line): Keep one: a 56px hero countdown in --extract at top-centre ('25 s'), plus a 40px toast at most. Delete the left-feed copy, the bottom line and the 'Extraction 0m' label. Make the 25 s the only big number.",
-   "P0 Top-centre block: Score / 0 SP / 9:48 / Extraction 0m / arrow / '?' / toast / 'Warden' label: Move the toast to its own slot at y≈96 with 40px height and no overlap. Push the block in from the top by at least 24px. Drop the '?' and the arrow, or put them in the world. Raise the 'Score' label to 16px.",
-   "P1 Bottom-centre text: 'Extract in progress! C 25S left', '19 hostiles closing in': Write '25 s'. Remove the 'C'. Put the line on a 40px toast with a 4px danger bar, or drop it. Keep 16px of clear space above the hotbar tag.",
-   "P1 Bottom-left feed (Stronghold, Golden enemy, Spotted, Extract): Show at most 3 toasts, each 40px high with a 4px left bar. Use tx-1 text at 16px minimum and a --scrim fill. Remove info toasts that repeat the map state. Hide the grey ones after 3 s.",
-   "P1 Bottom-right ammo panel: Make the ammo 56px f-cond 800 and the weapon name 20px tx-2. Change the key hint to a cap plus a word ('B  Backpack') at 16px in a footer. Replace '$390' with 'SP 390' or remove it. Shrink the panel to fit its content, with 24px padding."
+   "P1 initials row (d b a): Draw three 56px slots, each 64x72 with a 2px --ui-line-hi border. Give the active slot a 2px --acc border and --acc text, and give the others tx-1. Replace the amber with lime. Cut the hint to 'type or ▲▼ · enter done'.",
+   "P1 stat labels, 'score' label, hint line, 'tonight's best' label: Set every label to 16px f-cond 600 at +.04em, with colour at least #aaa498. Raise the hint to 16px. Set the stat numbers to 32px.",
+   "P1 hierarchy, title versus hero: Set the title to 32px/700. Set the hero to 56px/800. Put the initials directly under the hero as the second tier, and shrink the stats to quiet 20px numbers.",
+   "P2 'press any key' button: Enlarge the ring to 40px and the text to 24px/700 in tx-1. Keep it at the bottom right. Make clear that any key continues after the initials are entered, for example by dimming it until the initials are set.",
+   "P2 card layout and padding: Use 24px padding and 24px rhythm between blocks. Widen the stats row to a 3-column grid with equal gutters, or centre the score and initials. Make the accent tab 36px by 3px."
   ],
-  "pic": "tools/handoff/console/notes/shots/12-h2/54-arcade-initials-redrop-1080.jpg",
-  "task": "12-ui-party-screens",
-  "when": "2026-10-18T13:50",
-  "need": 3
+  "pic": "tools/handoff/console/notes/shots/110-r3/54-arcade-initials-redrop-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-24T20:11"
  },
  "64-arcade-board-seeded-night": {
-  "score": 2,
-  "pass": false,
-  "verdict": "the card is still a small, quiet dialog with a tiny 'seeded night' line, a bare 'no scores yet', a dim prompt and a blurred, busy backdrop, so nothing here reads as AAA polish.",
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The card is clean, lower case and consistent with the guide, but it is small and empty for an empty-state screen, and its text is too small to read from a couch.",
   "findings": [
-   "P1 'seeded night · zbxx' (x713-837, y496): Show only 'seeded night' at 16px f-cond 600, +.04em, in tx-2 #aaa498, 8px under the title. Drop the seed code.",
-   "P1 'no scores yet' (x713-820, y545): Draw 5 ghost rows at 40px pitch (rank, name, sp) in --ui-line at 40% opacity under the title block. Keep 'no scores yet' in tx-1 20px above them. No explanatory sentence.",
-   "P1 'press any key' prompt (x1027-1206, y612-645): Set the text to 20px f-cond 600 tx-1. Replace the dot with a 24px key chip showing the live key or pad glyph. Put the right edge on the 24px padding line at x1214. Use --ui-line-hi #4a5257 for the divider at y582.",
-   "P1 card and scrim (x681-1239, y400-680): Raise the scrim to rgba(6,7,8,.80) and add 2px blur-free darkening. Either widen the card to about 720px with a 24px padding grid, or make it a 90% window with a 56px header and 72px footer.",
-   "P2 close x (x1159-1207, y417-465): Make the glyph 20px tx-1 in a 40px box centred on y443, with the right edge at x1214. Draw a 2px --acc border when focused."
+   "P1 subtitle 'seeded night · xj1s': Raise it to 16px f-cond 600 in tx-2 (#aaa498 or brighter), or drop the seed code and keep only 'seeded night'.",
+   "P1 card overall (about 557x280 at screen centre): Make the card at least 640px wide and enlarge the empty state. Put 'no scores yet' at 32px with tx-1, or use a hero-size placeholder. Add a muted outline of an empty rank list, with rows 1 to 5 as dashes, so the screen reads as a scoreboard.",
+   "P1 backdrop: Set the scrim to rgba(6,7,8,.80) and add a 6 to 8px blur so the lobby recedes.",
+   "P2 'press any key' prompt: Make the text tx-1 at 24px, with lime reserved for the ring. Centre the prompt or align it to the left content edge at x=713, and cut the footer height by about 16px.",
+   "P2 title row and close button: Centre the title on the X button's midline. Enlarge the X glyph to 20px. Align the lime tab flush to the card's top border and the left padding edge at x=713 with a 2px height."
   ],
-  "pic": "tools/handoff/console/notes/shots/12-r7-after/64-arcade-board-seeded-night-1080.jpg",
-  "task": "12-ui-party-screens",
-  "when": "2026-10-19T01:38",
-  "need": 3
+  "pic": "tools/handoff/console/notes/shots/110-r3/64-arcade-board-seeded-night-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-24T20:11"
  },
  "70-settings-sec-controls": {
   "score": 3,
@@ -992,36 +992,36 @@
   "need": 4
  },
  "34-raid-downed-pickups": {
-  "score": 3,
+  "score": 2,
   "pass": false,
   "need": 4,
-  "verdict": "the downed card now reads clearly, with a red 'down' label, a white hero timer and a lime key, but the heavy red wash and the cluttered, mixed-weight HUD around it keep the screen well short of polished.",
+  "verdict": "The down card is clear and the 15.39s hero number reads first, but the HUD around it is cluttered. It also has several type and capitalization defects, and the red wash buries the rest of the screen.",
   "findings": [
-   "P1 downed card, 'down' label and bar stack: Keep the 'down' label red and make the timer bar tx-2 grey, or drop the bar and keep the 56px number. Move the qte bar below the hint, or give it a 16px label. Use one accent per card.",
-   "P1 downed card, hint line '[f] self-revive, one per raid': Shorten to '[f] self-revive'. If the one-per-raid limit must show, put it in 16px tx-2. Keep the key in lime, 16px, with 8px padding.",
-   "P1 full screen, red downed vignette: Limit the tint to a radial vignette at the edges, at most 25% opacity. Keep the centre and the HUD panels at full contrast. Draw the HUD above the wash.",
-   "P1 run info panel (top right) and its contracts text: Fix the font or case of the 'in' in contract strings so no capital 'I' shows. Set the contract lines to 16px with 8px line gaps, and add a 16px gap between the cash and run info panels.",
-   "P2 left pickup log and contract callout: Give the pickup rows one fill (--ui-panel at 90%), a 4px gap between rows, and a fixed 8px left bar. Move the contract callout out of the world-label area."
+   "P1 hud text: 'extraction c available', 'run info', 'contract item nearby', 'in cover': Use Barlow Condensed with a lowercase 'i' glyph. Make sure no string is uppercased or drawn with a font whose lowercase i looks like a capital. Fix the string to 'extraction available'.",
+   "P1 center down card: Shorten the prompt to '[f] self-revive'. Make the skill-bar marker 4px wide with an accent-coloured hit zone. Give the card a 4px radius and a 2px top tab in --danger. Drop the extra red bar so the hero number is the only large element.",
+   "P1 top-right career block and run info: Leave the career block to the cw-trcol task. In run info, use 16px labels with 8px row spacing and 24px padding. Use tx-2 for the headers and tx-1 for the contract text. Show only the active contract.",
+   "P1 left pickup stack (codex entry, contract item nearby, scrap metal, cracked cell, copper wire): Remove the left duplicate list and keep the right pickup feed only. Move the 'codex entry' and 'contract item nearby' toasts to one slot with 8px gaps so nothing overlaps.",
+   "P2 whole screen: Fade the wash to the edges as a vignette. Cap the centre at about 15% opacity. Raise the world label text to tx-1 with a --scrim backing."
   ],
-  "pic": "tools/handoff/console/notes/shots/109-after2/34-raid-downed-pickups-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/109-after3/34-raid-downed-pickups-1080.jpg",
   "task": "manual",
-  "when": "2026-10-24T19:47"
+  "when": "2026-10-24T19:59"
  },
  "36-raid-low-health": {
   "score": 2,
   "pass": false,
   "need": 4,
-  "verdict": "The only change is the contract text in the run info panel, so the raid HUD is still a crowded set of small, unevenly styled boxes with no clear hierarchy.",
+  "verdict": "The new frame is nearly identical to the old one. The only visible change is a duplicate 'running slowly' notice at lower left in place of the amber contract chip. The HUD is still cluttered with many same-weight boxes and a red-orange wash over the whole map, and the low-health state has no clear hero or focus.",
   "findings": [
-   "P1 hp bar, bottom left: Draw a visible red fill proportional to hp. Make the number 32px in --danger. Pulse the outline (90-160ms). Cut the vignette to about 40% opacity, kept at the screen edges only.",
-   "P1 run info panel, top right (contract rows): Set the objective name in 20px --tx-1 and the progress '0/2' right-aligned in 16px --tx-2. Add 24px padding and 8px row gaps. Truncate or shorten names to fit. Fix the glyph rendering so the i and l are not confused.",
-   "P1 whole HUD, panel styles: Use one panel component: --ui-panel at 90%, 1px --ui-line-hi border, 4px radius, 16px padding. Use the lime tab only on the ammo panel as the hero.",
-   "P1 keybind cheat-sheet, bottom centre: Auto-hide it after the first raid or after 10 seconds. If it stays, show only 4 keys, in 16px --tx-2 on a 90% panel, and put the key in --tx-1 for contrast.",
-   "P2 left toasts: 'codex entry' and 'contract item nearby': Show one notice per event. Delete the 'gold glow marks the box' sentence. Use one bar colour (--warn) for contract notices and one fixed width."
+   "P0 top-right run info card, contract lines: Set the run info title at 16px tx-2 and the contract rows at 16px/600, with the 0/x counts right-aligned in a fixed column. Cut each row to 3-4 words, for example 'search 2 containers'. Give the card 16px padding with the right edge on the 5% margin.",
+   "P1 bottom-left notice stack ('running slowly' repeated): Show each status once. Remove the lower-left duplicate or the centre pill. Give every chip in the stack the same 3px left bar, 16px text and 8px gap, and use tx-2 for the neutral ones. Use --warn only for real warnings.",
+   "P1 whole-screen low-health tint: Cut the tint to a vignette: transparent in the centre 60%, ~25% --danger alpha only in the outer 20% of the screen. Give the hp bar a 56px/800 number and a solid --danger fill proportional to hp, plus a 2px pulse on the outline below 25 hp.",
+   "P1 controls card (centre bottom): Collapse it by default after the first 20 s and keep only the 'f1 full list' hint at 14px in the footer. If it stays open, set the text to 16px/600 tx-1 for keys and tx-2 for actions, and align it to the 5% left margin.",
+   "P1 top-left scoreboard and top-right career/run boxes: Raise row text to 16px with 8px row spacing. Dim the scoreboard rows (tx-2) and keep only 'you' in tx-1 with the lime bar. Merge the career box into one hero figure (backpack $2,170 at 20px/800)."
   ],
-  "pic": "tools/handoff/console/notes/shots/109-after/36-raid-low-health-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/109-after3/36-raid-low-health-1080.jpg",
   "task": "manual",
-  "when": "2026-10-24T19:41"
+  "when": "2026-10-24T19:59"
  },
  "51-arcade-alert-reinforcements": {
   "score": 2,

@@ -1,0 +1,5 @@
+## v34.45 - INITIALS IN THE FOCUS COLOUR
+
+Co-op hunt while he was away. Critic on the party end cards (53 54 55, 3 of 5): the active initial is amber and the heading teal beside the lime accent. The guide says one accent, lime is focus. The active letter and underline go lime and the heading tx-2. Restyle only.
+
+MEASURED. Check 34.45 passes, and fails on v34.44.

@@ -1174,3 +1174,14 @@
 2026-10-24 0.1458 critic-manual
 2026-10-24 0.1455 critic-manual
 2026-10-24 0.9262312000000003 110-ui-demo-end-screens
+2026-10-24 0.1476 critic-manual
+2026-10-24 0.1484 critic-manual
+2026-10-24 1.3208341000000001 109-ui-raid-downed-card-run-info
+2026-10-24 0.17555 109-ui-raid-downed-card-run-info
+2026-10-24 0.16715119999999997 109-ui-raid-downed-card-run-info
+2026-10-24 0.1362 critic-manual
+2026-10-24 0.1374 critic-manual
+2026-10-24 0.17209780000000002 109-ui-raid-downed-card-run-info
+2026-10-24 0.1383 critic-manual
+2026-10-24 0.1352 critic-manual
+2026-10-24 0.1353 critic-manual

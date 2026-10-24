@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.45 - INITIALS IN THE FOCUS COLOUR
+
+Co-op hunt while he was away. Critic on the party end cards (53 54 55, 3 of 5): the active initial is amber and the heading teal beside the lime accent. The guide says one accent, lime is focus. The active letter and underline go lime and the heading tx-2. Restyle only.
+
+MEASURED. Check 34.45 passes, and fails on v34.44.
 ## v34.44 - DOWNED WASH LIGHTER, ONE RED ACCENT
 
 Co-op hunt while he was away. Critic on screen 34 (3 of 5): the red wash tints the whole HUD and three red elements stack on the card. The wash drops from 45 to 30 percent and the bleed bar goes neutral.

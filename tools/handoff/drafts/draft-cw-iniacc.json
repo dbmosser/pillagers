@@ -1,0 +1,20 @@
+{
+    "title":  "INITIALS IN THE FOCUS COLOUR",
+    "why":  "Critic on the party end cards (53 54 55, 3 of 5): the active initial is amber and the heading teal beside the lime accent. The guide says one accent, lime is focus. The active letter and underline go lime and the heading tx-2. Restyle only.",
+    "now":  "The active initial letter is lime and the heading is grey, not amber and teal.",
+    "edits":  [
+                  {
+                      "anchor":  "#attract .arcover .aoi{color:#7fe3d4;margin-top:.55em}",
+                      "replacement":  "#attract .arcover .aoi{color:var(--tx-2);margin-top:.55em}"
+                  },
+                  {
+                      "anchor":  "span.cur{color:#ffc04a;border-bottom-color:#ffc04a}",
+                      "replacement":  "span.cur{color:var(--acc);border-bottom-color:var(--acc)}"
+                  },
+                  {
+                      "anchor":  "// The pad on the card: nw is the buttons newly pressed this poll",
+                      "replacement":  "// v34.xx (cw-iniacc), the critic on 53 54 55 (3 of 5, 10-24): \"the active initial is amber, not the lime accent\" and a teal heading beside it. The active letter and its underline are the lime focus colour and the heading is tx-2 (guide: one accent, lime is focus). Restyle only; the words are job 96 and unchanged.\n// The pad on the card: nw is the buttons newly pressed this poll"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the initials card draws the active letter in the lime accent and the heading in tx-2, not amber and teal (critic 53 54 55)\u0027,\n   run:function(){\n     if(typeof arcadeIniDraw!==\u0027function\u0027) return \u0027SKIP: no initials draw\u0027;\n     var s=String(arcadeIniDraw);\n     if(s.indexOf(\u0027#ffc04a\u0027)\u003e=0) return \u0027the active initial is still amber\u0027;\n     if(s.indexOf(\u0027#7fe3d4\u0027)\u003e=0) return \u0027the initials heading is still teal\u0027;\n     if(s.indexOf(\u0027span.cur{color:var(--acc)\u0027)\u003c0) return \u0027the active initial is not the accent\u0027;\n     return null; }},"
+}

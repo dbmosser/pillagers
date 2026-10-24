@@ -6159,6 +6159,14 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.45',what:'the initials card draws the active letter in the lime accent and the heading in tx-2, not amber and teal (critic 53 54 55)',
+   run:function(){
+     if(typeof arcadeIniDraw!=='function') return 'SKIP: no initials draw';
+     var s=String(arcadeIniDraw);
+     if(s.indexOf('#ffc04a')>=0) return 'the active initial is still amber';
+     if(s.indexOf('#7fe3d4')>=0) return 'the initials heading is still teal';
+     if(s.indexOf('span.cur{color:var(--acc)')<0) return 'the active initial is not the accent';
+     return null; }},
   {v:'34.44',what:'cw-downedcard3: the downed wash over the whole screen is at most 30 percent',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop)) return 'SKIP: this fixture cannot deploy and step';
