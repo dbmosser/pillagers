@@ -1,0 +1,7 @@
+v34.23: extracted card: haul figure leads, no season total, recovered guns as chips, dashed empty slots, focus ring
+
+The extracted card shows the haul figure above the tiles, drops the season total and the recovered sentences from view, draws unrevealed tiles as dashed slots and rings the focused lime button.
+
+Check 34.23. Fails on v34.22.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

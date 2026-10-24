@@ -1,12 +1,19 @@
 {
  "02-welcome-pack": {
-  "score": 2,
-  "pass": false,
-  "verdict": "The e4 centred card is a real step toward the guide, but it still has an explaining paragraph, rarity-coloured names, a heavy 'Take the pack' button and a bare close button with no X; the e1 full-screen slab is the exact pattern the guide deletes.",
-  "pic": "tools/handoff/console/notes/shots/b-31-e4/02-welcome-pack-1080.jpg",
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The new card is cleaner and more consistent, with an x, one lime action, tiles, rarity bars and no explaining text. It is still a plain list in a mostly empty card, with undersized text and a weak hero.",
+  "findings": [
+   "P1 item rows, 1080 card: Set names to 20px f-cond 600 and counts to 20px tx-1 in a fixed-width column, with the x in tx-2. Put the counts directly after the name, or use a 2-column tile grid. Give the rare gun a larger tile or an --r-rare name colour so one row clearly leads.",
+   "P1 layout, whole card: Make the card 90% wide and about 85% tall, with 2 columns of 96px tiles (guns on the left, consumables on the right). Or keep the card narrow and drop the empty space with a 40px bottom padding.",
+   "P1 item tiles: Draw icons at 48px inside a 72px tile. Delete the pip blocks or turn them into a real number. Set the tile border colour to the rarity colour.",
+   "P2 rarity bars: Move the bar to the tile's left edge at full row height (72px), or colour the tile border. Make the rare and uncommon bars 4px wide so they stay distinct from common.",
+   "P2 close x, top right: Use a 40px x with a 2px stroke in tx-1, a --ui-raised fill on hover, and a lime focus ring. Show the b/esc hint at 14px beside it."
+  ],
+  "pic": "tools/handoff/console/notes/shots/100-after/02-welcome-pack-1080.jpg",
   "task": "manual",
-  "when": "2026-10-18T13:00",
-  "need": 3
+  "when": "2026-10-24T15:12"
  },
  "03-hub-floor": {
   "score": 3,
@@ -73,20 +80,20 @@
   "need": 3
  },
  "07-party-coop": {
-  "score": 2,
-  "pass": false,
-  "verdict": "The copy is shorter and the type is bigger, but the screen is still a small column of text floating in a nearly empty 90 percent card, with no clear main action and no focus state.",
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "A big step up: the party window is now a tight, aligned card with one lime primary action, an x, and a dimmed hub behind it, but it is small, sparse and has a few leftover fiddly bits.",
   "findings": [
-   "P0 whole card, content block at y 380-690: Lay out two columns inside the card. Put a 48px-padded header row at the top with the title left-aligned at 32px and the x on the right. Below it, put a 4-slot party roster on the left and the host and join actions on the right. Alternatively shrink the card to about 60 percent width for this small window.",
-   "P0 host a party and join a party buttons, y 575-690: Make host a party a lime --acc fill with --acc-ink text, 48px high and at least 200px wide, with 20px f-cond 700 text. Keep join a party as a quiet outlined button. Draw a visible focus bar on the pad-selected button.",
-   "P1 lime status line 'not in a party...' (y 490): Set it in tx-2 at 20px, or replace it with a short status such as 'no party', paired with a small ok or warn glyph. Reserve lime for the host a party button.",
-   "P1 join field (564,575 to 1489,643) and join a party button: Put host a party on its own row. Put the join field and join a party button on a second row, with the field 48px high and the button at its right, both with identical heights and top edges. Use 16px gaps between rows.",
-   "P1 intro, hint and trade lines (y 453-598): Cut the trade line and the pty1o hint. Reduce the field to a short label 'invite code' at 16px. Keep one line, 'up to four pillagers', at 20px tx-2. Use a consistent 24px gap between blocks."
+   "P1 card size: Either make the party card 90% wide, or write the exception into the style guide for small one-question dialogs. If it stays small, make it a fixed 960x360 and use the same size for the welcome-pack card.",
+   "P1 invite code field, right edge: Remove the scrollbar and resize handle (overflow:hidden, resize:none) and switch to a single-line input. Give it a 2px --acc border when focused. Keep the placeholder at 16px, tx-2.",
+   "P1 title row and body copy: Delete the 'up to four pillagers' sentence. Keep one 16px tx-1 status line ('not in a party'), or put '0/4' in a right-aligned label. Raise the title to 32px with weight 700.",
+   "P2 button row: Put the input and join in one group, and host on its own row or on the far left with more gap. Better: hide join (greyed out) until the field has text. Keep the 56px height.",
+   "P2 card padding: Make the bottom padding equal the top (32px). Shrink the x to 40px with a borderless idle state, outlined only on focus."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-31-k1/07-party-coop-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/100-after/07-party-coop-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T04:13",
-  "need": 3
+  "when": "2026-10-24T15:12"
  },
  "08-shop": {
   "score": 3,

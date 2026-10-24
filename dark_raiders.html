@@ -1664,7 +1664,14 @@
   #root .ocach, #root .ocach.ocok{ padding:0; background:transparent; border:0; border-radius:0; font-size:16px; line-height:1.4; color:var(--tx-2); }
   #root .ocach:not(:last-child)::after{ content:'\00b7'; margin-left:8px; color:var(--ui-line-hi); }
   #root .ocach.ocok::before{ content:'\2713'; margin-right:8px; color:var(--ok); }
-  #root #confirmabandon small{ display:block; margin-top:4px; font-size:16px; font-weight:400; letter-spacing:.04em; line-height:1.2; color:var(--tx-2); }  /* vNN.xx, UI CLEANUP uic4 (his 2026-10-14 note, "ui and player messaging just isn't as clean as it should be", from the 1080p shots of the
+  /* v28.xx (cw-haulread), the critic on 76 (2 of 5): "an oversized empty tile overlaps its neighbours, four empty slots look broken", "the strip, not the number, is what the eye hits first", "+11 more is dim", "no focus ring on the one action". A slot not yet revealed is a dashed empty outline, the arriving tile settles at 1.12x (was 1.25x) so it no longer covers its neighbours, the +n more count is tx-1, the haul figure is 800 weight with 24px above and 8px below and the strip sits under it, and the one lime button draws a 3px lime ring when focused (keys or pad). */
+  #root .ocwin .haulit.hid{ background:transparent !important; border:1px dashed var(--ui-line-hi) !important; }
+  #root .ocwin .haulit.hid[data-r]{ border:1px dashed var(--ui-line-hi) !important; }
+  @keyframes haulsettle{ 0%{ transform:scale(1.12); filter:brightness(2); } 100%{ transform:scale(1); filter:none; } }
+  #root .ocwin .haulstrip>span:not(.haulit){ color:var(--tx-1) !important; }
+  #root .haultot{ font-weight:800; margin:24px 0 8px; }
+  #root .ocwin .haulstrip{ margin:8px 0 24px !important; }
+  #root #oc_btn:focus-visible, #root #oc_btn.padfocus{ outline:3px solid var(--acc); outline-offset:4px; }  #root #confirmabandon small{ display:block; margin-top:4px; font-size:16px; font-weight:400; letter-spacing:.04em; line-height:1.2; color:var(--tx-2); }  /* vNN.xx, UI CLEANUP uic4 (his 2026-10-14 note, "ui and player messaging just isn't as clean as it should be", from the 1080p shots of the
      map select screen and the Undercroft floor): THE ANSWER LINE STAYS OFF THE BUTTONS. The line sat 38 px up in the middle of the screen
      whatever was open, so it landed on ASCEND TO THIS SECTOR (the whole bottom of the map select screen is that one button) and, on the
      floor, on the middle cells of the tactical belt (TROPHY EARNED over gun key 4). On the map select screen it rides under the heading
@@ -3602,7 +3609,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.22';
+var VER='34.23';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -34713,7 +34720,7 @@ function haulRevealStart(){
   its=strip.querySelectorAll('.haulit'); if(its.length<2) return 0;
   for(i=its.length-1;i>=0;i--){ list.push(its[i]); its[i].classList.add('hid'); }
   sec=+strip.getAttribute('data-sec')||0;
-  if(!document.getElementById('haultot')) strip.insertAdjacentHTML('afterend','<div class="haultot" id="haultot">HAUL  $0</div>');
+  if(!document.getElementById('haultot')) strip.insertAdjacentHTML('beforebegin','<div class="haultot" id="haultot">HAUL  \x240</div>');   // v28.xx (cw-haulread): the figure leads, the tiles that make it sit under it
   HAUL_REV={list:list,i:0,t:0.3+((OC_LG&&OC_LG.t)||0),sum:0,sec:sec}; haulTotalLine();
   HAUL_LAST=0;
   return list.length;
@@ -34795,7 +34802,7 @@ function ocEmblem(n,d,id){
 // v28.xx (cw-endcard-stats): the critic, "a run-on dotted sentence at 14px". The one stats sentence (containers, accuracy, kills, time) becomes a row of four cells and each
 // achievement becomes a name chip; the old words stay in the card as hidden spans (class ocsr), so nothing that reads the card text moves. A career card has its own ledger and is left alone.
 function ocStatRow(lines,st){
-  var out=[], i, k, ln, m, names=[], cells, h, chips, lost=[], lostTxt='';
+  var out=[], i, k, ln, m, names=[], cells, h, chips, lost=[], lostTxt='', recN=[], recHid='', recAt=-1;   // v28.xx (cw-haulread): recN, recHid and recAt gather the recovered guns into one chip row
   function flushLost(){
     var t='<div class="octiles">', q;
     for(q=0;q<lost.length;q++) t+='<span class="octile" title="'+lost[q].name+'" style="border-bottom-color:'+lost[q].col+'">'+lost[q].img+(lost[q].n>1?'<i>x'+lost[q].n+'</i>':'')+'</span>';
@@ -34821,6 +34828,13 @@ function ocStatRow(lines,st){
     if((m=/^(.* lost), \$([\d,]+) gone$/.exec(ln))){ out.push('<div class="ocloss"><b>\x24'+m[2]+'</b><span>'+m[1].charAt(0).toUpperCase()+m[1].slice(1)+'</span></div><span class="ocsr">'+ln+'</span>'); continue; }
     if((m=/^<span style="color:#7fc4a0">CONTRACT COMPLETE: (.*)\. Complete contract at mainframe\.<\/span>$/.exec(ln))){
       out.push('<div class="ocachs"><span class="ocach ocok">'+m[1].charAt(0).toUpperCase()+m[1].slice(1).toLowerCase()+'</span></div><span class="ocsr">'+ln+'</span>'); continue;
+    }
+    // v28.xx (cw-haulread), the critic on 76 (2 of 5, P1): "the xp line is clutter, the 1,200,000 figure most of all" and "the recovered lines explain rather than show". Q8, reason in notes/ui/changes.md: the "n of 1,200,000" total leaves the card (it stays as hidden text, the season total is on the Mainframe), and each "x recovered to the armoury" sentence is one name chip with a tick, the sentence kept as hidden text.
+    if((m=/^(<span style="color:var\(--amber\)">\+[\d,]+ XP)(  &middot;  [\d,]+ of [\d,]+)(<\/span>.*)$/.exec(ln))){ out.push(m[1]+'<span class="ocsr">'+m[2]+'</span>'+m[3]); continue; }
+    if((m=/^(.*) recovered to the armoury$/.exec(ln))){
+      if(recAt<0){ out.push(''); recAt=out.length-1; }
+      recN.push(m[1]); recHid+='<span class="ocsr">'+ln+'</span>';
+      out[recAt]='<div class="ocachs">'+recN.map(function(n){ return '<span class="ocach ocok">'+n+'</span>'; }).join('')+'</div>'+recHid; continue;
     }
     if(ln.indexOf('>ACHIEVEMENT: ')>=0){
       chips='';
@@ -53889,7 +53903,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.22: The welcome pack and the party card are cleaner: one lime button, an X in the corner, no explaining lines. Check 34.22 fails on v34.21',
+  now:'v34.23: The extracted card shows the haul figure above the tiles, drops the season total and the recovered sentences from view, draws unrevealed tiles as dashed slots and rings the focused lime button. Check 34.23 fails on v34.22',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

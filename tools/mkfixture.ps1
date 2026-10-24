@@ -6159,6 +6159,33 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.23',what:'the extracted card leads with the haul figure above the tiles, shows no season total or recovered sentence as visible text, draws an unrevealed tile as a dashed slot, and the lime button has a focus ring (the critic on 76)',
+   run:function(){
+     if(!(window.__deploy&&window.__endRaid&&window.__state)) return 'SKIP: this fixture cannot end a raid';
+     var bad=[], g, oc, st, ht, its, hid, gk, vis, cl, txt, ok=false, i, rs, j, rl;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       gk=ITEMS.gun_smg&&ITEMS.gun_smg.gk; if(gk&&P.weapons) P.weapons=P.weapons.filter(function(w){ return w!==gk; });
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); g.bag.push('core','core','scrap','wire','cell','core','scrap','wire','cell','core','gun_smg');
+       __endRaid('extract');
+       oc=document.getElementById('outcome'); st=oc&&oc.querySelector('.haulstrip'); ht=document.getElementById('haultot');
+       if(!st||!ht) bad.push('the card has no strip or no haul figure in the check');
+       else {
+         if(!(ht.compareDocumentPosition(st)&Node.DOCUMENT_POSITION_FOLLOWING)) bad.push('the haul figure sits under the tiles, not above them');
+         if(+getComputedStyle(ht).fontWeight<800) bad.push('the haul figure weight is '+getComputedStyle(ht).fontWeight+', not 800');
+       }
+       cl=document.getElementById('oc_manifest').cloneNode(true); rs=cl.querySelectorAll('.ocsr'); for(j=0;j<rs.length;j++) rs[j].parentNode.removeChild(rs[j]);
+       txt=cl.textContent||'';
+       if(/of [\d,]{5,}/.test(txt)) bad.push('the season total still shows: '+(/.{0,20}of [\d,]{5,}/.exec(txt)||[''])[0]);
+       if(/recovered to the armoury/i.test(txt)) bad.push('a recovered sentence still shows');
+       its=oc?oc.querySelectorAll('.haulit.hid'):[];
+       if(its.length&&getComputedStyle(its[0]).borderTopStyle!=='dashed') bad.push('an unrevealed tile is '+getComputedStyle(its[0]).borderTopStyle+', not a dashed slot');
+       for(i=0;i<document.styleSheets.length&&!ok;i++){ try{ rl=document.styleSheets[i].cssRules; for(j=0;j<rl.length;j++){ if(/#oc_btn:focus-visible/.test(rl[j].selectorText||'')&&/solid/.test(rl[j].style.outline||rl[j].style.outlineStyle||'')){ ok=true; break; } } }catch(_s){} }
+       if(!ok) bad.push('the lime button has no focus ring rule');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ __topClear(); __cleanProfile(); }
+     return bad.length?bad.join('; '):null; }},
   {v:'34.22',what:'welcome pack and party card (critic 02 and 07 = 2): the welcome pack has no intro line or stash hints, its close is a 48px X in the card corner and its primary is lime; the party card is a fitted 960 card with a lime host button and a one line 56px invite field, no trade line',
    run:function(){
      if(typeof openParty!=='function'||typeof openModal!=='function') return 'SKIP: no party window';

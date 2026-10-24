@@ -1,24 +1,40 @@
 
-The provided code snippet is a collection of CSS styles and HTML elements that are used to enhance the appearance and functionality of a web application, likely related to some form of game or interactive platform. Here's a breakdown of the key components:
-
-### CSS Styles
-
-1. **General Styling:**
-   - The `#hubtoast` element is styled for displaying notifications or messages at the top of the page.
-   - Various elements like buttons and text are given specific colors, fonts, and sizes to maintain consistency across the application.
-
-2. **Specific Sections:**
-   - **Achievements List (`#achlist`):** Styles for highlighting achievements with a border color change when certain conditions are met.
-   - **Rewards Section (`#seasonbar`, `#seasonclaimall`, etc.):** Custom styles for reward bars, claim buttons, and list items to make them more visually appealing and interactive.
-   - **Racks Section (`#opane_mf`):** Grid layout for organizing different elements like build buttons, hints, arrays, slots, and ghost elements.
-   - **Fashion Appearance Modal (`#appearmodal.pixfashion`):** Detailed styling for an appearance modal that includes avatar customization options, grid layouts for tiles, and focus states.
-
-3. **Responsive Design:**
-   - Media queries are used to adjust styles based on screen size, ensuring the application is usable across different devices.
-
-### HTML Elements
-
-- **Canvas Elements (`<canvas id="cv
 NONE
 NONE
+It looks like you've provided a list of changes or updates for a game, likely related to gameplay mechanics, user interface elements, and bug fixes. Here are some key points from your list:
+
+1. **Grenades and Gun Switching**: Using the last grenade no longer puts your gun up automatically. You need to switch back manually.
+
+2. **Raised Decks Removal**: The catwalks and gantries that previously trapped players have been removed, allowing for easier traversal across sectors.
+
+3. **Tab Key Functionality**: The Tab key now closes menus and exits fullscreen mode in the browser.
+
+4. **Armour Plate Handling**: Armour plates found are placed in your backpack instead of automatically equipping them.
+
+5. **Search Key (X)**: The X key searches what you are standing on, even inside extraction points where E is used for calling extraction.
+
+6. **Welcome Pack**: The welcome pack goes to the stash and does not equip anything initially; players need to manually choose a gun from their stash.
+
+7. **Limited Time Offer**: Each limited time offer can only be purchased once per cycle.
+
+8. **Stamina Roll**: A roll with no stamina left now explicitly states so, instead of failing silently.
+
+9. **Death Notification**: The game now correctly identifies the entity that killed you during a death fade.
+
+10. **Key Presses and Revives**: A key already down is not counted as a press; melee strikes require an actual release and press to
+NONE
+LINE 68031: ctx.font=FSz(TYPE.huge,1.3); ctx.fillStyle=(i===n.pos)?'#ffc04a':'#f2e6c8'; hudText(n.l[i]||'A',lx,y+LH(36));
+- Possible issue with `hudText` function call if it expects a specific type or format for its arguments that isn't guaranteed by the current code.
+
+LINE 68041: return false;
+- Unreachable code after this line in the `arcadeHiTick` function.
+
+LINE 68057: function netContView(){
+- Possible issue with `NET.srchOwn` and `NET.holds` being accessed without checking if they are defined or null, which could lead to errors when trying to JSON.parse or slice them later in the function.
+
+LINE 68132: var ok=false;
+- Variable `ok` is reassigned but never used after its initial assignment in the `netCopyOld` function.
+
+LINE 68195: return netPingMake();
+- Potential issue if `netPingMake` returns a promise that isn't handled properly, leading to unhandled rejections.
 NONE
