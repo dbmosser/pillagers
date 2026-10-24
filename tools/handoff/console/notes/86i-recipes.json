@@ -1,0 +1,36 @@
+{
+ "about": "86i-building-kinds: one building of each kind with the pixel look on",
+ "prelude": "window.__uis=window.__uis||(function(){ function kv(c){ if(/^Key[A-Z]$/.test(c)) return c.slice(3).toLowerCase(); if(/^Digit\\d$/.test(c)) return c.slice(5); if(c==='Space') return ' '; return c; } var U={ wait:function(ms){ return new Promise(function(r){ setTimeout(r,ms); }); }, down:function(c){ window.dispatchEvent(new KeyboardEvent('keydown',{code:c,key:kv(c),bubbles:true,cancelable:true})); }, up:function(c){ window.dispatchEvent(new KeyboardEvent('keyup',{code:c,key:kv(c),bubbles:true,cancelable:true})); }, key:async function(c,hold){ U.down(c); await U.wait(hold||50); U.up(c); }, el:function(s){ return typeof s==='string'?document.querySelector(s):s; }, on:function(s){ var e=U.el(s); if(!e) return false; var b=e.getBoundingClientRect(); if(b.width<1||b.height<1) return false; return e.checkVisibility?e.checkVisibility({opacityProperty:true,visibilityProperty:true}):true; }, click:function(s){ var e=U.el(s); if(!e) return false; e.click(); return true; }, closeModals:function(){ [].slice.call(document.querySelectorAll('.modal.on')).forEach(function(m){ m.classList.remove('on'); }); }, untitle:function(){ var t=document.getElementById('title'); if(t) t.classList.remove('on'); }, until:async function(f,ms){ var t0=Date.now(); while(Date.now()-t0<(ms||5000)){ try{ if(f()) return true; }catch(e){} await U.wait(100); } return false; }, prep:async function(){ try{ __pinDPR(1); }catch(e){} }, floor:async function(){ U.click('#titlestart'); await U.until(function(){ return U.on('#welcomemodal'); },3000); U.click('#welcometake'); await U.wait(900); __hubEnter(); await U.wait(400); }, hold:async function(c,ms){ U.down(c); await U.wait(ms); U.up(c); }, raid:function(){ var g=__state(); return !!(g&&g.player&&!g.over); }, dep:function(o){ U.untitle(); U.closeModals(); __topClear(); return __deploy(o); }, near:function(list,n){ var g=__state(), p=g.player; return list.slice().sort(function(a,b){ return Math.hypot(a.x-p.x,a.y-p.y)-Math.hypot(b.x-p.x,b.y-p.y); }).slice(0,n); }, modal:function(){ var m=[].slice.call(document.querySelectorAll('.modal.on')).filter(function(x){ return U.on(x); }); return m.map(function(x){ return x.id; }).join(' '); } }; return U; })()",
+ "screens": [
+  {
+   "name": "bk1-house",
+   "screen": "inside a house, pixel look on",
+   "js": "__cfg({xfPix:1}); var g,b,mi; for(mi=0;mi<4&&!b;mi++){ U.dep({kit:['gun_carbine'],seed:4242,mapIx:mi}); await U.wait(400); g=__state(); b=g.map.buildings.filter(function(q){ return q.kind==='house'; })[0]; } await U.wait(9500); g.player.x=b.x+b.w/2; g.player.y=b.y+b.h/2; await U.wait(700);",
+   "expect": "U.raid()&&__cfg().xfPix===1"
+  },
+  {
+   "name": "bk2-office",
+   "screen": "inside an office, pixel look on",
+   "js": "__cfg({xfPix:1}); U.dep({kit:['gun_carbine'],seed:4242,mapIx:0}); await U.wait(9500); var g=__state(), b=g.map.buildings.filter(function(q){ return q.kind==='office'; })[0]; g.player.x=b.x+b.w/2; g.player.y=b.y+b.h/2; await U.wait(700);",
+   "expect": "U.raid()&&__cfg().xfPix===1"
+  },
+  {
+   "name": "bk3-warehouse",
+   "screen": "inside a warehouse, pixel look on",
+   "js": "__cfg({xfPix:1}); U.dep({kit:['gun_carbine'],seed:4242,mapIx:0}); await U.wait(9500); var g=__state(), b=g.map.buildings.filter(function(q){ return q.kind==='warehouse'; })[0]; g.player.x=b.x+b.w/2; g.player.y=b.y+b.h/2; await U.wait(700);",
+   "expect": "U.raid()&&__cfg().xfPix===1"
+  },
+  {
+   "name": "bk4-shop",
+   "screen": "inside a shop, pixel look on",
+   "js": "__cfg({xfPix:1}); var g,b,mi; for(mi=0;mi<4&&!b;mi++){ U.dep({kit:['gun_carbine'],seed:4242,mapIx:mi}); await U.wait(400); g=__state(); b=g.map.buildings.filter(function(q){ return q.kind==='shop'; })[0]; } await U.wait(9500); g.player.x=b.x+b.w/2; g.player.y=b.y+b.h/2; await U.wait(700);",
+   "expect": "U.raid()&&__cfg().xfPix===1"
+  },
+  {
+   "name": "bk5-workshop",
+   "screen": "inside a workshop, pixel look on",
+   "js": "__cfg({xfPix:1}); U.dep({kit:['gun_carbine'],seed:4242,mapIx:0}); await U.wait(9500); var g=__state(), b=g.map.buildings.filter(function(q){ return q.kind==='workshop'; })[0]; g.player.x=b.x+b.w/2; g.player.y=b.y+b.h/2; await U.wait(700);",
+   "expect": "U.raid()&&__cfg().xfPix===1"
+  }
+ ]
+}

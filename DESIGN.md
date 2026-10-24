@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.50 - SOLID PIECES PER BUILDING KIND
+
+Co-op hunt while he was away. Job 86i ship 2, his 10-20 22:55 and 23:00 orders: a house gets a bed and a sofa, an office a desk row, a warehouse rack rows, a shop a counter and shelves, a workshop benches. Placed last in the map build from grit() so the seeded stream stays put, flush to a wall, clear of doorways, locked rooms and each other, and dropped for any building whose floor they would cut off.
+
+MEASURED. Check 34.50 passes, and fails on v34.49.
 ## v34.49 - BUILDING KINDS: FLOORS, FURNITURE SKINS, FLAT DETAILS
 
 Co-op hunt while he was away. Job 86i ship 1, his 10-20 22:55 order: buildings get an identity. Each gets a kind (house, office, warehouse, shop, workshop) from grit(), never rr(). In the pixel look the kind picks the floor, the furniture wears its colours through the pixel adapter, and flat details (rugs, papers, pallets, oil, shelf lines, steel plates) are baked into the floor. Nothing solid is added.

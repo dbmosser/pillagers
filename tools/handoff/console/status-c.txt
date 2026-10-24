@@ -1,1 +1,1 @@
-10-24 16:43 no tasks left
+10-24 17:04 waiting for RAM: 2 GB free, a helper starts at 3; 111-pix-fault-in-corpus kept

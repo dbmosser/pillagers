@@ -1,0 +1,7 @@
+v34.50: solid pieces per building kind
+
+Buildings have a few more solid pieces that match what they are: beds and sofas, desk rows, rack rows, counters, benches. They block movement and bullets like the other furniture, and every door and room stays reachable.
+
+Check 34.50. Fails on v34.49.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
