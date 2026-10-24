@@ -48580,8 +48580,8 @@ window.__REGRESS=[
          NG=navigator.getGamepads, ownNG=Object.prototype.hasOwnProperty.call(navigator,'getGamepads'), padK={}, pk, ownPad=false, down12=false, kW=null;
      function kd(code,key){ window.dispatchEvent(new KeyboardEvent('keydown',{code:code,key:key,bubbles:true,cancelable:true})); window.dispatchEvent(new KeyboardEvent('keyup',{code:code,key:key,bubbles:true})); }
      function row(rn){ var a=arcadeBoardLoad(), q; for(q=0;q<a.length;q++) if(a[q].run===rn) return a[q]; return null; }
-     function has(list,s){ var j; for(j=0;j<list.length;j++) if(list[j].t.indexOf(s)>=0) return true; return false; }
-     function eq(list,s){ var j; for(j=0;j<list.length;j++) if(list[j].t===s) return true; return false; }
+     function has(list,s){ var j; for(j=0;j<list.length;j++) if(list[j].t.toLowerCase().indexOf(s.toLowerCase())>=0) return true; return false; }   // retarget (his 10-18 all lower case order): the text door lowers everything drawn, so compare without case
+     function eq(list,s){ var j; for(j=0;j<list.length;j++) if(list[j].t.toLowerCase()===s.toLowerCase()) return true; return false; }
      function frame(ts){ return __textTrace(function(){ __loop(ts); }); }
      function pad(){ var b=[], q; for(q=0;q<17;q++) b.push({pressed:(q===12&&down12),value:(q===12&&down12)?1:0,touched:false}); return [{connected:true,id:'check pad',index:0,mapping:'standard',timestamp:Date.now(),buttons:b,axes:[0,0,0,0]}]; }
      try{
@@ -102626,7 +102626,9 @@ window.__REGRESS=[
      // CONTROL ONE: a real gun must still go straight to the gun painter, or a
      // pass below would only mean the comparison is broken. These two must be
      // pixel identical.
-     var pd=diff(pistItem,pistGun);
+     // retarget (86 pixel art pass): drawItemIcon now adds the rarity pips under a gun (rows from 0.36*S below centre), so compare only the rows above them
+     function diffTop(a,b){ if(!a||!b) return -1; var d=0, i, lim=Math.floor((SZ/2+SZ*0.8*0.36)-1)*SZ*4; for(i=0;i<lim;i+=4) if(Math.abs(a[i]-b[i])+Math.abs(a[i+1]-b[i+1])+Math.abs(a[i+2]-b[i+2])>8) d++; return d; }
+     var pd=diffTop(pistItem,pistGun);
      if(pd!==0)
        bad.push('control: a pistol drawn as an item and drawn as a gun differ in '+pd+
                 ' pixels, so guns no longer route to the gun painter and this comparison proves nothing');
