@@ -2505,3 +2505,5 @@
 2026-10-24 18:15:50 FUZZ 2P ROBOTS OFF: three 2-window starts in a row failed, so the 2-player share runs as demo2 (this window as host alone) for the rest of this run
 2026-10-24 18:15:50 raid 3 demo2p raidSeed=580391936 map=0 god=1 sec=51 end=nostart problems=1 newUnique=1 totalUnique=2 totalProblems=3 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= build=34.13
 2026-10-24 18:16:55 raid 4 demo1 raidSeed=657307817 map=0 god=0 sec=62 end=ended problems=0 newUnique=0 totalUnique=3 totalProblems=3 events=1817 score=0 ents=45 travelPx=5555 fires=76 menuPct=24 heapMB=49 p2= build=34.13
+2026-10-24 18:20:21 raid 4 demo1 raidSeed=1778375717 map=0 god=1 sec=268 end=ended problems=0 newUnique=0 totalUnique=2 totalProblems=3 events=8117 score=0 ents=46 travelPx=25842 fires=169 menuPct=25 heapMB=69 p2= build=34.13
+2026-10-24 18:21:57 raid 5 demo2 raidSeed=1498907265 map=0 god=0 sec=302 end=clock-end problems=0 newUnique=0 totalUnique=3 totalProblems=3 events=9333 score=0 ents=51 travelPx=23246 fires=169 menuPct=20 heapMB=74 p2= build=34.13
