@@ -1,0 +1,7 @@
+v34.28: raid hud type is couch size
+
+The belt key numbers are bigger. A long contract in the run info box is worded shorter so it stays on one line.
+
+Check 34.28. Fails on v34.27.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

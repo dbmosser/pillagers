@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.28 - RAID HUD TYPE IS COUCH SIZE
+
+Co-op hunt while he was away. UI step 2 of the HUD hierarchy job (103). The critic said several fonts are too small to read from a couch and the contract line wraps. The belt key numbers were 14.8 px on the screen and are 16 now (the style guide floor). A contract line that would wrap in the run info panel takes a shorter wording when that fits on one line (haul over $1,200, carry 2x item, search 2 in place); the contract itself keeps its words. Step 1 (lower case) needs no change: no capital is drawn in a raid frame, the capital I the critic saw is the small i of the condensed face at 1080p. Watch: the belt key digits are a little bigger; a long contract reads shorter.
+
+MEASURED. Check 34.28 passes, and fails on v34.27.
 ## v34.27 - THE WHAT IS NEW STAMP KEEPS UP
 
 Co-op hunt while he was away. The card was stamped v34.11 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.

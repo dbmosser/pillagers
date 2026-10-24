@@ -3609,7 +3609,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.27';
+var VER='34.28';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12909,7 +12909,7 @@ function FSz(spec,z){
 // v18.71, SEEN ON THE 4K RAID SCREENSHOT (2026-10-07): THE BELT TEXT GROWS WITH THE BELT. The belt slots are sized by the room
 // they have (up to LH(112)), but the key number, the count and the caption over them were the smallest HUD type, so at 4K a
 // count was a speck in the corner of a big slot. They now take a share of the slot size, never smaller than before.
-function beltFS(bw,k){ var f=FS(TYPE.micro), m=(/([\d.]+)px/).exec(f), n=m?parseFloat(m[1]):11, want=Math.round(bw*k); if(G&&G.hubFloor&&typeof G.hubBagBeltBottom==='number')want=Math.max(want,20*Math.max(.75,Math.min(2.2,H/1080))); return (want>n)?f.replace((/([\d.]+)px/),want+'px'):f; } // v28.xx (cw-cx-hubbagreadability): key numbers stay readable in the hub card.
+function beltFS(bw,k){ var f=FS(TYPE.micro), m=(/([\d.]+)px/).exec(f), n=m?parseFloat(m[1]):11, want=Math.round(bw*k); if(G&&G.hubFloor&&typeof G.hubBagBeltBottom==='number')want=Math.max(want,20*Math.max(.75,Math.min(2.2,H/1080))); return hudFloor16((want>n)?f.replace((/([\d.]+)px/),want+'px'):f); } // v28.xx (cw-cx-hubbagreadability): key numbers stay readable in the hub card.
 // v19.66, seen on a 4K text scan (2026-10-08): the line over the belt grew 1.3 times from 1080p to 4K while the extraction lines above
 // it (v19.54) and the rest of the HUD grow twice, so it read as small print. It is the larger of the slot size and the screen-grown size.
 /* v31.xx (cw-beltcap), the critic on screen 36 (2026-10-19): the line over the belt (scav pistol, fire, use) was the smallest print on the HUD, 13 px, unreadable from a couch. It takes the label size (15.6 px rendered, the size of prompts) and the emote strip and bars above it move up with it, as they already read this function. */
@@ -12919,6 +12919,10 @@ function beltCapFS(bw){ var a=beltFS(bw,0.12), b=hudFS(TYPE.label), pa=parseFloa
 function hudFS(spec){ var f=FS(spec), r=Math.max(1,(typeof hudRes==='function')?hudRes():1); return (r===1)?f:f.replace((/([\d.]+)px/),function(m0,n0){ return (parseFloat(n0)*r).toFixed(1)+'px'; }); }
 // v32.xx (cw-extbig), the critic on screen 37: the extract countdown was one of three small cues and no hero. While the ship is inbound the line takes the big-number size (TYPE.huge), the same type as the ammo hero; once it lands it is the callout size again.
 // v28.xx (cw-hudquiet), the critic on screens 21, 19, 37, 61 ('the corners compete with the ammo hero'): the quiet lines on the gun card (the item count and the backpack cue) are 16 px on screen at 1080p, the guide label size, not 20 and 24. 0.8 of the micro face, so the player's text scale still applies.
+// v28.xx (cw-h103type), the critic on screen 21 ('a wrapping contract'): a contract line that wraps is shortened (Q8: shorter wording, same meaning) when the short form fits on one line. Run info only; the contract itself keeps its words.
+function runInfoShort(t){ return String(t).replace(/^extract with a haul worth (\$[\d,]+) or more/i,'haul over $1').replace(/^extract carrying /i,'carry ').replace(/^search (\d+) containers in /i,'search $1 in '); }
+// v28.xx (cw-h103type), the critic on screens 21 and 19 ('several fonts are too small to read from a couch'): the style guide floor is 16 px on the screen. The belt key numbers were 14.8, so the belt fonts are raised to 16 on the screen (the size is divided by the HUD zoom in force at the call).
+function hudFloor16(f){ var m=/([\d.]+)px/.exec(f); if(!m) return f; var a=(typeof ctx==='object'&&ctx&&ctx.getTransform)?ctx.getTransform().a:1; if(!(a>0)) a=1; var need=Math.ceil(16/a*10)/10; return (parseFloat(m[1])<need)?f.replace(/([\d.]+)px/,need+'px'):f; }
 function hudFineFS(){ return FS(TYPE.micro).replace((/([\d.]+)px/),function(m0,n0){ return (parseFloat(n0)*0.8).toFixed(1)+'px'; }); }
 function extBanFont(t){ return hudFS((t>0)?TYPE.huge:TYPE.head); }
 // v32.xx (cw-hostplate), the critic on screen 37: the red "hostiles closing in" line under the countdown sat loose on the floor with no plate. It stands on the same flat HUD plate as the countdown, measured to its words.
@@ -42999,7 +43003,7 @@ function drawMinimap(){
   ctx.save();
   mmPath(ctx,{x:r.x+0.5,y:r.y+0.5,w:r.w-1,h:r.h-1},Math.max(0,cut-0.5));
   ctx.strokeStyle='rgba(112,122,130,.95)'; ctx.lineWidth=Math.max(1,TRG.z); ctx.stroke(); MMAP.ops++;   // v30.xx (cw-trcol): the same 1px light edge as every plate in the column (v31.03), no amber
-  ctx.font=hudFS(TYPE.micro); ctx.textAlign='center'; ctx.fillStyle=HUDC.dim;
+  ctx.font=hudFloor16(hudFS(TYPE.micro)); ctx.textAlign='center'; ctx.fillStyle=HUDC.dim;   // v28.xx (cw-h103type): the north mark on the minimap is 16 px on the screen too
   hudText('N',cx,r.y+Math.round(15*R)); MMAP.ops+=2;
   ctx.restore();
   MMAP.box=r;
@@ -43607,7 +43611,9 @@ else if(CC.ck==='elite'){ note=((T.eliteKills||0)>0)?'elite down, get out':'no e
         if(cur) lines.push(cur);
         return lines.length?lines:[''];
       }
-      best=greedy(inner); n=best.length; lo=inner*0.4; hi=inner;
+      best=greedy(inner);
+      if(best.length>1){ var _t0=t, _b2; t=runInfoShort(t); if(t!==_t0){ _b2=greedy(inner); if(_b2.length<best.length) best=_b2; else t=_t0; } }   // v28.xx (cw-h103type): one line when the short form fits
+      n=best.length; lo=inner*0.4; hi=inner;
       if(n>1){ for(it=0;it<9;it++){ mid=(lo+hi)/2; tr=greedy(mid); if(tr.length<=n){ best=tr; hi=mid; } else lo=mid; } }
       if(++CONDWRAPN>300){ CONDWRAP={}; CONDWRAPN=1; }
       return (CONDWRAP[ck]=best);
@@ -53905,7 +53911,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.27: The what is new stamp keeps up with the build; the three notes are unchanged. Check 34.27 fails on v34.26',
+  now:'v34.28: The belt key numbers are bigger. A long contract in the run info box is worded shorter so it stays on one line. Check 34.28 fails on v34.27',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
