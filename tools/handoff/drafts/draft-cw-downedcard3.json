@@ -1,0 +1,16 @@
+{
+    "title":  "DOWNED WASH LIGHTER, ONE RED ACCENT",
+    "why":  "Critic on screen 34 (3 of 5): the red wash tints the whole HUD and three red elements stack on the card. The wash drops from 45 to 30 percent and the bleed bar goes neutral.",
+    "now":  "The red tint while downed is lighter and the card keeps red only on the label and the slider.",
+    "edits":  [
+                  {
+                      "anchor":  "ctx.fillStyle=\u0027rgba(60,8,5,.45)\u0027; ctx.fillRect(0,0,W,H);",
+                      "replacement":  "ctx.fillStyle=\u0027rgba(60,8,5,.30)\u0027; ctx.fillRect(0,0,W,H);   // v34.40 (cw-downedcard3), critic on screen 34 (P1 \u0027the heavy red wash tints every HUD colour\u0027): the downed wash is 30 percent, was 45, so the HUD keeps its contrast"
+                  },
+                  {
+                      "anchor":  "bar(W/2-100,_barY,200,10,p.downT/CFG.downTime,UIC.danger);",
+                      "replacement":  "bar(W/2-100,_barY,200,10,p.downT/CFG.downTime,UIC.tx_2);   // v34.40 (cw-downedcard3), critic on screen 34 (P1 \u0027three red elements stacked, use one accent per card\u0027): the bleed bar is neutral, the danger red stays on the label and the slider"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027cw-downedcard3: the downed wash over the whole screen is at most 30 percent\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid\u0026\u0026window.__loop)) return \u0027SKIP: this fixture cannot deploy and step\u0027;\n     var proto=CanvasRenderingContext2D.prototype, o=proto.fillRect, bad=[], al=-1, g, p, i, md=mouse.down;\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player||g.over) return \u0027SKIP: no live raid\u0027;\n       p=g.player; g.ents.length=0; p.hp=0; p.downed=true; p.downT=12.34; p.revived=0; p.iv=99; p.pendKiller=null; mouse.down=false;\n       proto.fillRect=function(x,y,w,h){ if(this===ctx\u0026\u0026x===0\u0026\u0026y===0\u0026\u0026w\u003e=W\u0026\u0026h\u003e=H){ var m=/rgba\\(\\s*60,\\s*8,\\s*5,\\s*([\\d.]+)\\)/.exec(String(this.fillStyle)); if(m) al=parseFloat(m[1]); } return o.apply(this,arguments); };\n       for(i=0;i\u003c3;i++) __loop(performance.now()+i*17);\n       if(al\u003c0) bad.push(\u0027no downed wash drawn\u0027);\n       else if(al\u003e0.301) bad.push(\u0027the downed wash is at \u0027+al+\u0027, want 0.30 or less\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ proto.fillRect=o; mouse.down=md; try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ g2.player.downed=false; __endRaid(\u0027abandon\u0027); } }catch(_e){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

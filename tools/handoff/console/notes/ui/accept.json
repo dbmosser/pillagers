@@ -995,17 +995,17 @@
   "score": 3,
   "pass": false,
   "need": 4,
-  "verdict": "The downed card now has a proper hierarchy (small red 'down' label, white hero timer) and the run-info panel no longer wraps, but the HUD around it is still a patchwork of unrelated panel styles with several small type sizes.",
+  "verdict": "the downed card now reads clearly, with a red 'down' label, a white hero timer and a lime key, but the heavy red wash and the cluttered, mixed-weight HUD around it keep the screen well short of polished.",
   "findings": [
-   "P1 downed card, centre: Raise 'down' to 32px f-cond 700 in --danger, keep the timer at 56px, and add a 1px --ui-line-hi border so the card separates from the red wash. Make the self-revive prompt the lime action: '[f]' in --acc, with the rest in tx-1.",
-   "P1 downed card, top ring marker: Delete one of the two. Keep the bar under the timer (4px high, full card width minus 48px padding). If the top gauge is a timing-window mechanic, label it or move it away from the countdown.",
-   "P1 panels overall (top-left bots list, top-right cash, run info, downed card, bottom-right ammo): Apply the same panel fill (--ui-panel at 90%) and a 1px --ui-line-hi border to every HUD panel, with 4px radius and 16px padding.",
-   "P1 run info panel, top right: Set rows to 16px minimum at 4.5:1 or better, put the panel on the same right edge and width as the cash box (x=1603), and use a 1px border. Use tx-1 for the active contract and tx-2 for the rest.",
-   "P2 left feed (codex entry, contract item nearby, scrap metal x3...): Cap the feed at 4 rows, fix the row height at 28px, use one bar colour (--acc for the live row only), and move the world label so it does not sit under the feed."
+   "P1 downed card, 'down' label and bar stack: Keep the 'down' label red and make the timer bar tx-2 grey, or drop the bar and keep the 56px number. Move the qte bar below the hint, or give it a 16px label. Use one accent per card.",
+   "P1 downed card, hint line '[f] self-revive, one per raid': Shorten to '[f] self-revive'. If the one-per-raid limit must show, put it in 16px tx-2. Keep the key in lime, 16px, with 8px padding.",
+   "P1 full screen, red downed vignette: Limit the tint to a radial vignette at the edges, at most 25% opacity. Keep the centre and the HUD panels at full contrast. Draw the HUD above the wash.",
+   "P1 run info panel (top right) and its contracts text: Fix the font or case of the 'in' in contract strings so no capital 'I' shows. Set the contract lines to 16px with 8px line gaps, and add a 16px gap between the cash and run info panels.",
+   "P2 left pickup log and contract callout: Give the pickup rows one fill (--ui-panel at 90%), a 4px gap between rows, and a fixed 8px left bar. Move the contract callout out of the world-label area."
   ],
-  "pic": "tools/handoff/console/notes/shots/109-after/34-raid-downed-pickups-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/109-after2/34-raid-downed-pickups-1080.jpg",
   "task": "manual",
-  "when": "2026-10-24T19:40"
+  "when": "2026-10-24T19:47"
  },
  "36-raid-low-health": {
   "score": 2,

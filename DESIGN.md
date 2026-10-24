@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.42 - PROMPT PULSE STAYS BRIGHT
+
+Co-op hunt while he was away. Critic on 52 and 55: the press any key prompt reads dim. The pulse dipped to 0.6; now 0.85.
+
+MEASURED. Check 34.42 passes, and fails on v34.41.
 ## v34.41 - DOWNED CARD: BIGGER LABEL, LIME KEY
 
 Co-op hunt while he was away. Critic on screen 34 (3 of 5): the small down label is easy to miss and the self-revive prompt should be the lime action. The label goes to the title size and the live key is drawn in the accent.

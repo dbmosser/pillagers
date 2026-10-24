@@ -6159,6 +6159,16 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.42',what:'the press any key pulse never dips below .85 (critic on 52 and 55: the prompt reads dim)',
+   run:function(){
+     if(typeof attEl!=='function') return 'SKIP: no attEl';
+     attEl();
+     var low=null, seen=0;
+     for(var i=0;i<document.styleSheets.length;i++){ var rs; try{ rs=document.styleSheets[i].cssRules; }catch(e){ continue; }
+       for(var j=0;j<rs.length;j++){ var r=rs[j]; if(r.name==='attpulse'){ seen=1; for(var k=0;k<r.cssRules.length;k++){ var o=parseFloat(r.cssRules[k].style.opacity); if(o<.85) low=o; } } } }
+     if(!seen) return 'no attpulse keyframes found';
+     if(low!==null) return 'the pulse dips to '+low;
+     return null; }},
   {v:'34.41',what:'cw-downedcard2: on the downed card the word down is the title size (26 px or more) and the self-revive key is drawn in the accent colour',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop)) return 'SKIP: this fixture cannot deploy and step';

@@ -1,0 +1,7 @@
+v34.42: prompt pulse stays bright
+
+The press any key prompt on end cards stays bright through its pulse.
+
+Check 34.42. Fails on v34.41.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
