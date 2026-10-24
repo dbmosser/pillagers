@@ -1,0 +1,5 @@
+{"generated":"2026-10-24T16:43:01","url":"http://localhost:8808/fixture.html","recipes":"tools/handoff/console/notes/86b-recipes.json","seconds":52,"screens":[
+{"name":"gr1-raid-day","screen":"raid, sector 0, pixel look on","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"gr1-raid-day-1080.jpg","lint":""}},
+{"name":"gr2-raid-night","screen":"raid, sector 1 (night), pixel look on","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"gr2-raid-night-1080.jpg","lint":""}},
+{"name":"gr3-hub","screen":"the Undercroft floor, pixel look on","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"gr3-hub-1080.jpg","lint":""}}
+]}

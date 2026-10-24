@@ -451,17 +451,17 @@
   "score": 3,
   "pass": false,
   "need": 4,
-  "verdict": "A clean, lower-case run-over card with a clear hero number and a live prompt, but it is small, the type is underscaled, the scrim is weak, and the hero is not really the hero.",
+  "verdict": "A clean, lower-case, on-token card with a clear hero score, but it is small and left-heavy in a wide empty panel, the title is weak, and the prompt is a tiny afterthought.",
   "findings": [
-   "P1 whole card: Scale the card to about 60% of screen width (about 1150px). Raise the result and title type to the guide sizes. Alternatively, keep it compact but scale all type by about 1.3x.",
-   "P1 hero '0 sp': Make the hero 56px at weight 800 and drop the 'sp' to a 20px tx-2 suffix. Keep the title at 32px but weight 700 in tx-2, or tone it down. Give the hero the single bold spot.",
-   "P1 background scrim: Use --scrim at rgba(6,7,8,.80) plus a blur or darkening behind the card. Make the card fill an opaque --ui-panel (#16191b at 95% or more) so no sprites show through.",
-   "P2 label sizes: 'score', 'kills', 'extractions', 'deaths': Set every label to 16px, f-cond 600, +.04em, tx-2 (#aaa498 or brighter). Remove the standalone 'score' label, since the hero 'sp' already says it, or set it at 16px with 8px spacing.",
-   "P2 'ended early -50%' line: Move it below the hero as a 16px tx-2 note, with only '-50%' in --warn. Or fold it into the hero row as a small tag to the right of the score."
+   "P1 card title 'run over': Set the title to 32px f-cond 700 in tx-1 and give it 8px more space below. Keep the hero at 56px, but make it the one bold element.",
+   "P1 score hero '0 sp': Raise the hero to 56px, label to 16px. Either centre the hero block or put the score on the left and the three stats stacked on the right so the card fills.",
+   "P1 'press any key' prompt: Use a 24px prompt with a pulsing lime key-cap or pad-button glyph, centred or left-aligned under the stats, with 32px of padding above it.",
+   "P2 stat row (kills, extractions, deaths): Use 16px labels and 32px numbers on an equal 3-column grid with the same inner padding as the panel. Consider hiding the row when every value is 0.",
+   "P2 'ended early -50%' line: Move it next to the score as a 16px label in --warn, or put it on its own row below the hero. Do not stack three small lines between title and hero."
   ],
-  "pic": "tools/handoff/console/notes/shots/110-r4/52-arcade-run-over-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/110-r5/52-arcade-run-over-1080.jpg",
   "task": "manual",
-  "when": "2026-10-24T20:27"
+  "when": "2026-10-24T20:47"
  },
  "57-title-2p-coop-picked": {
   "score": 3,
@@ -643,17 +643,17 @@
   "score": 3,
   "pass": false,
   "need": 4,
-  "verdict": "A clean, calm dark card with a clear hero score and a lime action, but the small text is too small, the right half of the card is empty, and the instruction line explains too much.",
+  "verdict": "A clean, calm dark card with a clear hero score and one lime focus, but the type is too small for couch reading at 1080, the card is small and left-weighted on a big empty panel, and the initials entry competes with the score.",
   "findings": [
-   "P1 initials block: 'tonight's best · enter initials' and 'type or ▲▼ · space next · backspace back · enter done': Cut it to a short legend, e.g. '▲▼ change · enter done'. Set it to 16px f-cond in tx-2 at 4.5:1 or better. Drop the explaining 'type or' and 'space next/backspace back'.",
-   "P1 card composition, right half of the score block and the whole card: Put the hero score and the stats in a 2-column layout: the score block at left, a stacked kills/extractions/deaths column at right. Alternatively centre the score. Use the right side for a rank or initials panel so the card reads as one composition.",
-   "P1 labels: 'score', 'kills', 'extractions', 'deaths', 'ended early': Set all labels to 16px f-cond 600 with +.04em tracking in tx-2 (#aaa498). Set 'ended early' to 20px and keep only '-50%' in --warn. Add 8px more space between each number and its label.",
-   "P2 initials entry 'a a a': Draw 3 separate 48x56px slots with a 1px --ui-line-hi border and a --ui-raised fill. Give the active slot a 2px --acc border and a blinking caret. Use 32px type in tx-1.",
-   "P2 'press any key' prompt, bottom right: Replace the ring with the actual key glyph (a keycap in the device in use). Make it 24px f-cond 700. Give it 24px of padding from the divider and keep it right-aligned."
+   "P1 labels: score, kills, extractions, deaths, tonight's best, hint line: Raise every label to 16px f-cond 600 with +.04em tracking in --tx-2 (#aaa498). Keep 14px only for the footer legend. Give the hint line 16px as well.",
+   "P1 initials block: Make the letters 40px with 24px gaps and a 3px underline under each slot, lime only on the active slot. Cut the hint to 'enter done' at 16px, or show only the pad glyphs.",
+   "P1 hero score area: Set the hero to 56px f-cond 800. Keep the -50% in --warn, but bump it to 20px and put it directly beside or under the number. Use the right half of the row for a rank or best-of-night chip, or tighten the card width.",
+   "P2 stats row (12 kills / 0 extractions / 0 deaths): Use 32px numbers in --tx-1 with 16px labels, aligned on a 3-column grid that fills the 24px padding. Dim zero values to --tx-2.",
+   "P2 press any key prompt: Set it to 24px with a 32px key/pad glyph. Keep it right-aligned. Optionally pulse the ring at 1.2s to show it is live."
   ],
-  "pic": "tools/handoff/console/notes/shots/110-r4/55-arcade-run-over-scored-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/110-r5/55-arcade-run-over-scored-1080.jpg",
   "task": "manual",
-  "when": "2026-10-24T20:28"
+  "when": "2026-10-24T20:48"
  },
  "60-abandoned-card": {
   "score": 3,
@@ -2478,5 +2478,21 @@
   "pic": "tools/handoff/console/notes/shots/96-demo-easy-card-and-board-words-recipes-2/96-initials-solo-run-over-1080.jpg",
   "task": "96-demo-easy-card-and-board-words",
   "when": "2026-10-22T14:22"
+ },
+ "r3-hub": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The hub reads as a cluttered debug scene: many overlapping circles and a crowd of identical characters bury the stations, and the HUD has no consistent type scale or panel style.",
+  "findings": [
+   "P0 station interaction circles and rings: Draw one 2px ring per station at 25% opacity. Delete the filled discs. Fill and brighten only the nearest station. Remove the stray discs at (1440,280), (960,550) and (480,880).",
+   "P0 'enter raid!' label, top centre: Use the same 20px label style as the other stations, with a lime 3px underline or accent tab as the one primary. Drop the '!'. Add a lime ring on the raid station when the player is near it. Keep the label out from behind the pillars.",
+   "P1 station name labels: Anchor every label 16px above its station, centred, with 8px by 16px padding, a 4px radius and a 1px --ui-line-hi border. Nudge the labels away from walls rather than letting them overlap.",
+   "P1 '***experimental feature may glitch***' chip under 'the last pour': Replace it with a 16px 'beta' tag in --warn inside the label chip, or remove it. No asterisks.",
+   "P1 top-right currency strip ('$900  0 xp  stash $3,750 bag $0'): Make a vertical list on a --ui-panel with a 24px margin from the screen edge. Use 20px for the values and 16px --tx-2 for the labels. Show '$900' as the hero value in lime or --tx-1. Do not use bold in two places."
+  ],
+  "pic": "tools/handoff/console/notes/shots/86b-r1/gr3-hub-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-24T20:43"
  }
 }

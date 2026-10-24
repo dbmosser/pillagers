@@ -1,0 +1,7 @@
+v34.49: building kinds: floors, furniture skins, flat details
+
+With the pixel look on, houses, offices, warehouses, shops and workshops have their own floors, furniture colours and floor details. Walls, paths and sight lines are unchanged. With the look off nothing changes.
+
+Check 34.49. Fails on v34.48.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

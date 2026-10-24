@@ -1,0 +1,4 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  gr1-raid-day                           staged      16.1s  
+  gr2-raid-night                         staged      17.4s  
+  gr3-hub                                staged       7.2s  

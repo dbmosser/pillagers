@@ -84,3 +84,9 @@
 - Current game/stamp are unchanged at 33.61/33.46. Remaining hub and decal keys stay preserved in deferred-keys.txt until the required Claude-lane news refresh. No pointless preflight retry or new camera round was queued.
 - Coordinator also needs to recover the day critic using the existing picture, then complete post-hub and actual 4K photography. Existing scripts, key names, recipes and tracked files are unchanged this run. Task remains partial.
 
+
+## 10-24 lane b run (claude)
+- Shipped cw-cx-pixhub as v34.47 (Undercroft floor at half density, 8 ramp tones, follows the switch at hub entry) and cw-pixdecal as v34.48 (footprints, water rings and decals draw from the 2 unit grid with pixOn; mk is mk-cw-pixdecal.ps1). Scars were already snapped in v33.60 (scarOn). Both passed preflight, gate and the 4242 fingerprint.
+- Pictures (1080, pixel look on via 86b-recipes.json, run with uishots -Recipes): notes/shots/86b-r1/gr1-raid-day, gr2-raid-night, gr3-hub. Ground reads as stepped pixel art; pillagers and machines stay readable on the night floor. 4K stays with the coordinator.
+- Critic on the hub picture: 2/5, but every P0/P1 is the hub HUD and station overlay (discs, enter raid label, currency strip, hotbar), none is the floor. Left to the HUD jobs (102/103/106/109) and a hub UI job; not touched here.
+- Watch line: any hitch at ascend or hub entry; the hub floor is now a CPU pass at entry (checked under 250 ms).

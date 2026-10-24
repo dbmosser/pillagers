@@ -18,3 +18,6 @@ Fresh critic (shots/110-r3): 52 = 3, 53 = 3, 54 = 3, 55 = 3, 64 = 3. 53 and 54 a
 
 ## Run of 2026-10-24 (lane a, HEAD v34.46)
 Fresh critic (shots/110-r4): 52 = 3, 55 = 3. 53, 54 and 64 were 3 last run (targets met) and nothing changed for them since. No ship: 52 and 55 are past the 6-try rule over three runs, and every P1 left is size or layout against the dialog rule (card 716 wide, his Q43), a lighter scrim (his Q52 and Q54), or labels the critic reads at 13-14px that css floors at 16px. Best version is HEAD. Needs his say to go further: wider end card, darker scrim.
+
+## Run of 2026-10-24 (lane b, HEAD v34.48)
+Fresh critic (shots/110-r5): 52 = 3, 55 = 3 (same as the last three runs). 53, 54, 64 were 3 (target met) and unchanged. No ship. The critic repeats the same size and layout points that css already floors or that sit under the dialog rule: card 716 wide (Q43), labels read 13-14px but floored at 16px, scrim .80 vs his Q52/Q54 (lighter live fights), hero 56px read as 48px, initials hint is job 96 text. Past the 6-try rule over four runs; best version is HEAD. Only wider card or darker scrim would go further and both need his say.

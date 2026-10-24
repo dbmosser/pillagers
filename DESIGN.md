@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.49 - BUILDING KINDS: FLOORS, FURNITURE SKINS, FLAT DETAILS
+
+Co-op hunt while he was away. Job 86i ship 1, his 10-20 22:55 order: buildings get an identity. Each gets a kind (house, office, warehouse, shop, workshop) from grit(), never rr(). In the pixel look the kind picks the floor, the furniture wears its colours through the pixel adapter, and flat details (rugs, papers, pallets, oil, shelf lines, steel plates) are baked into the floor. Nothing solid is added.
+
+MEASURED. Check 34.49 passes, and fails on v34.48.
 ## v34.48 - FOOTPRINTS AND DECALS ON THE GROUND GRID
 
 Co-op hunt while he was away. Job 86b step 5: in the pixel look, boot prints, water rings and decals are drawn from the 2 unit ground grid so they sit on the floor pixels like the blast scars already do.
