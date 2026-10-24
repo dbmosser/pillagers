@@ -20,3 +20,6 @@ Findings, all left alone, with reasons:
 - run info line: task says add nothing new.
 - scrim .80 and blur: check 29.56 needs the HUD readable at 99 percent; not touched.
 Scores stay 25 = 3, 78 = 3 (same CSS), 42 = 3, 49 = 3. Two follow-up rounds gave no rise, so I stop here (his 2.83 b).
+
+## Run 3 (2026-10-24, lane b)
+No new work: v34.31 shipped the fixes, two critic rounds held 25/78/42/49 at 3 with only size, Q61/37, scrim (29.56) and no-new-info findings left (reasons above). Stopped per his 2.83 b.

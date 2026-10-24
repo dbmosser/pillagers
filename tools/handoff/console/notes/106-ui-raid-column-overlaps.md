@@ -22,3 +22,9 @@ Not done: restyle of the downed card and the run info wrap are the next real wor
 ## Close (later run, same day)
 Nothing shipped. Defect 1 (right column overlap) is gone on HEAD. Defect 2 is two copies by his 10-15 feed-all order; question 91 is open in questions.md.
 Critic 2 and 2 on HEAD pictures (see above). Next real work: downed card as the standard panel, run info wrap (own task).
+
+## Rerun (lane a, 2026-10-24)
+Read the notes above, nothing changed on HEAD that reopens them. No ship. Defect 1 gone; defect 2 is the feed copy his 10-15 feed-all order requires (question open). Downed card restyle and run info wrap need their own task.
+
+## Rerun 2 (lane a, 2026-10-24)
+HEAD is v34.33; nothing since the last run touches the raid HUD right column or the alert feed. Defect 1 gone, defect 2 waits on question 91 (feed-all order). No ship.

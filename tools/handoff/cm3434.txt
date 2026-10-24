@@ -1,0 +1,7 @@
+v34.34: wirt window fills its card with two panels and one lime primary
+
+Wirt window uses the whole card and the gamble button is the clear main action.
+
+Check 34.34. Fails on v34.33.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

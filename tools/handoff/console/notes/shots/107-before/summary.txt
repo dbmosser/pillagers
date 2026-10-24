@@ -1,0 +1,5 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  18-settings-hub                        staged       8.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | settingsmodal
+  27-settings-scroll-600                 staged      10.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  29-settings-scroll-1800                staged      10.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  73-settings-sec-accessibility          staged       8.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | settingsmodal

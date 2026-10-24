@@ -1,0 +1,1 @@
+| Wirt window fills its card with two panels and one lime primary | v34.34 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 34.34 passes, fails on v34.33 |

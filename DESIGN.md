@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.34 - Wirt window fills its card with two panels and one lime primary
+
+Co-op hunt while he was away. Task 108, critic 2 on the gambler: big inner title over a void, small grey button, dead bottom third. The gamble and offer panels sit side by side and fill the card, the inner heading is a 16px label, the gamble button is the one 56px lime primary (quiet when unaffordable), pad focus is a 3px ring. Looks only.
+
+MEASURED. Check 34.34 passes, and fails on v34.33.
 ## v34.33 - ABANDON QUESTION HIDES THE PAGE TOAST
 
 Co-op hunt while he was away. The critic named the running slowly toast over the abandon question twice. It is the page toast, not the raid feed that the last ship moved. It now hides while the question is up. Tiles sit 8px lower under the loss figure.
