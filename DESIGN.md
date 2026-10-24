@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.48 - FOOTPRINTS AND DECALS ON THE GROUND GRID
+
+Co-op hunt while he was away. Job 86b step 5: in the pixel look, boot prints, water rings and decals are drawn from the 2 unit ground grid so they sit on the floor pixels like the blast scars already do.
+
+MEASURED. Check 34.48 passes, and fails on v34.47.
 ## v34.47 - THE PIXEL UNDERCROFT FLOOR
 
 Co-op hunt while he was away. Job 86b: the Undercroft floor in the pixel look: baked at one pixel per 2 world units from the same code and snapped to two 4 tone ramps, so the lift glow and the shadows fall in steps like the raid ground.

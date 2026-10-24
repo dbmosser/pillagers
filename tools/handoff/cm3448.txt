@@ -1,0 +1,7 @@
+v34.48: footprints and decals on the ground grid
+
+With the pixel look on, footprints and ground marks line up with the floor pixels. With the look off, nothing changes.
+
+Check 34.48. Fails on v34.47.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

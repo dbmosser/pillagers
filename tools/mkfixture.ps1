@@ -6159,6 +6159,20 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.48',what:'cw-pixdecal (86b): FOOTPRINTS AND DECALS SIT ON THE GROUND GRID. In the pixel look their draw position snaps to the 2 unit ground grid; with it off nothing moves; and the raid frame draws them through that snap',
+   run:function(){
+     if(typeof pixMarkSnap!=='function') return 'no mark snap (pixMarkSnap)';
+     var bad=[], old=CFG.xfPix, src=String(render2D), a, b;
+     try{
+       CFG.xfPix=1; a=pixMarkSnap(101.3); b=pixMarkSnap(-7.9);
+       if(a!==102||b!==-8) bad.push('the look on does not snap to the 2 unit grid: '+a+', '+b);
+       CFG.xfPix=0; a=pixMarkSnap(101.3);
+       if(a!==101.3) bad.push('the look off moved a mark: '+a);
+       if((src.match(/pixMarkSnap\(/g)||[]).length<5) bad.push('the raid frame does not draw prints and decals through the snap');
+       return bad.length?bad.join('; '):null;
+     } catch(err){
+       return 'pixel decal check: '+String(err&&err.message||err);
+     } finally { CFG.xfPix=old; } }},
   {v:'34.47',what:'cw-cx-pixhub (86b): THE PIXEL UNDERCROFT FLOOR. With the pixel look on the hub floor is half size and holds only the 8 tones of its two ramps, the bake is quick and moves no seeded number, with the look off it is full size, and flipping the switch re-bakes it at the next hub entry',
    run:function(){
      if(typeof pixHubSnap!=='function') return 'no pixel hub floor (pixHubSnap)';

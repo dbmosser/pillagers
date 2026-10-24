@@ -1,0 +1,24 @@
+{
+    "title":  "FOOTPRINTS AND DECALS ON THE GROUND GRID",
+    "why":  "Job 86b step 5: in the pixel look, boot prints, water rings and decals are drawn from the 2 unit ground grid so they sit on the floor pixels like the blast scars already do.",
+    "now":  "With the pixel look on, footprints and ground marks line up with the floor pixels. With the look off, nothing changes.",
+    "edits":  [
+                  {
+                      "anchor":  "function gfxScarReplay(){",
+                      "replacement":  "// v34.xx (cw-pixdecal), his pixel pass (10-20): in the pixel look a footprint or a decal is drawn from the corner of the 2 unit ground grid, so it sits on the floor pixels like the scars do. Only the draw position moves; the stored x and y, the lifetimes and the AI that smells prints are untouched.\nfunction pixMarkSnap(v){ return pixOn()?Math.round(v/PIX_ENV)*PIX_ENV:v; }\nfunction gfxScarReplay(){"
+                  },
+                  {
+                      "anchor":  "wc.ellipse(_fp.x,_fp.y,4+_fp.t*14,(4+_fp.t*14)*0.42,0,0,6.2832);",
+                      "replacement":  "wc.ellipse(pixMarkSnap(_fp.x),pixMarkSnap(_fp.y),4+_fp.t*14,(4+_fp.t*14)*0.42,0,0,6.2832);"
+                  },
+                  {
+                      "anchor":  "    wc.fillRect(_fp.x-3,_fp.y-1,3,5);\n    wc.fillRect(_fp.x+1,_fp.y-3,3,5);",
+                      "replacement":  "    var _fsx=pixMarkSnap(_fp.x),_fsy=pixMarkSnap(_fp.y);   // v34.xx (cw-pixdecal)\n    wc.fillRect(_fsx-3,_fsy-1,3,5);\n    wc.fillRect(_fsx+1,_fsy-3,3,5);"
+                  },
+                  {
+                      "anchor":  "wc.save(); wc.translate(dc.x,dc.y); wc.rotate(dc.rot);",
+                      "replacement":  "wc.save(); wc.translate(pixMarkSnap(dc.x),pixMarkSnap(dc.y)); wc.rotate(dc.rot);   // v34.xx (cw-pixdecal): on the ground grid in the pixel look"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027cw-pixdecal (86b): FOOTPRINTS AND DECALS SIT ON THE GROUND GRID. In the pixel look their draw position snaps to the 2 unit ground grid; with it off nothing moves; and the raid frame draws them through that snap\u0027,\n   run:function(){\n     if(typeof pixMarkSnap!==\u0027function\u0027) return \u0027no mark snap (pixMarkSnap)\u0027;\n     var bad=[], old=CFG.xfPix, src=String(render2D), a, b;\n     try{\n       CFG.xfPix=1; a=pixMarkSnap(101.3); b=pixMarkSnap(-7.9);\n       if(a!==102||b!==-8) bad.push(\u0027the look on does not snap to the 2 unit grid: \u0027+a+\u0027, \u0027+b);\n       CFG.xfPix=0; a=pixMarkSnap(101.3);\n       if(a!==101.3) bad.push(\u0027the look off moved a mark: \u0027+a);\n       if((src.match(/pixMarkSnap\\(/g)||[]).length\u003c5) bad.push(\u0027the raid frame does not draw prints and decals through the snap\u0027);\n       return bad.length?bad.join(\u0027; \u0027):null;\n     } catch(err){\n       return \u0027pixel decal check: \u0027+String(err\u0026\u0026err.message||err);\n     } finally { CFG.xfPix=old; } }},"
+}
