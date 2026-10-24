@@ -46,3 +46,6 @@ Next run: when raw split files are in notes/95/, decide go or stop from the unth
 
 --- claude lane b run 2026-10-24 ---
 85a is done. Still no split/pid/stall raw files in notes/95/ (folder does not exist), and my command list cannot run measure95.mjs or run-measure95.ps1. Alarm already in alarms.md (line 6). No game edits, no ship key. Resume at step 2 once the numbers are copied into notes/95/ and say go.
+
+--- claude lane c run 2026-10-24 (later) ---
+85a done. notes/95/ still missing: no split, pid or stall raw files. My command list cannot run measure95.mjs or run-measure95.ps1, so step 1 has no go decision. No game edits, no ship key. Resume at step 2 once the numbers are in notes/95/.

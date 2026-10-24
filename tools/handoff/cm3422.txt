@@ -1,0 +1,7 @@
+v34.22: welcome pack and party card: one primary, an x, no explaining lines
+
+The welcome pack and the party card are cleaner: one lime button, an X in the corner, no explaining lines.
+
+Check 34.22. Fails on v34.21.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

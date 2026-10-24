@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.22 - Welcome pack and party card: one primary, an X, no explaining lines
+
+Co-op hunt while he was away. Critic on 02 (welcome pack) and 07 (party), both 2 of 5: an explaining paragraph and stash hints, rarity coloured names, a bare close button with no X, a 90 percent party card with a tiny column of text, a lime sentence, a tall empty invite box and no main action. The welcome pack loses its intro and hints, gets 72px rows with an icon tile and the count at the right, a lime primary and an X. The party card is a fitted 960 card with a lime host button and a one line invite field. Restyle only.
+
+MEASURED. Check 34.22 passes, and fails on v34.21.
 ## v34.21 - RACKS INTRO STAYS HIDDEN
 
 Co-op hunt while he was away. The v34.20 racks grid rule matched the hidden intro sentence and showed it again above the rack row.

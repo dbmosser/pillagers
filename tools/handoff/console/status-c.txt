@@ -1,1 +1,1 @@
-10-24 10:30 running 99-ui-mainframe-racks-rewards on Claude Code (your plan: week 96% of the 73.1% line, 5-hour 2%)
+10-24 11:07 waiting for RAM: 1 GB free, a helper starts at 3; 95-p2-own-process kept
