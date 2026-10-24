@@ -6159,6 +6159,30 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.37',what:'Settings: a focused tab has no halo ring, a clicked tab leaves no list row lit, the section line shows no sliver of its label',
+   run:function(){
+     var bad=[], list, chip, dr, head, cs;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       G=null; __hubEnter(); __topClear(); openSettings();
+       list=document.getElementById('setlist'); if(!list) return 'Settings did not open';
+       chip=list.querySelector('.setjump button[data-sec="ACCESSIBILITY"]'); if(!chip) return 'no accessibility tab';
+       chip.onclick(); chip.focus({preventScroll:true}); padSetFocus(chip); if(window.__setDetailSync) window.__setDetailSync();
+       [].forEach.call(list.querySelectorAll('.setjump button, .row.dshow'),function(x){ x.style.setProperty('transition','none','important'); });
+       cs=getComputedStyle(chip);
+       if(/230, 255, 61/.test(cs.boxShadow)) bad.push('the focused tab still draws the halo ring');
+       chip.classList.remove('padfocus'); chip.focus({preventScroll:true});
+       dr=list.querySelector('.row.dshow:not(.setjump)');
+       if(dr&&/230, 255, 61/.test(getComputedStyle(dr).boxShadow)) bad.push('a clicked tab leaves a list row wearing the focus bar');
+       [].forEach.call(list.querySelectorAll('.row'),function(x){ if(!head&&/opacity:\s*0?\.7/.test(x.getAttribute('style')||'')&&x.id&&getComputedStyle(x).display!=='none') head=x; });
+       if(!head) return 'SKIP: no section head';
+       head.firstElementChild.style.setProperty('transition','none','important');
+       if(getComputedStyle(head.firstElementChild).visibility!=='hidden') bad.push('the section line shows a sliver of its hidden label ['+head.id+' '+head.firstElementChild.tagName+' '+getComputedStyle(head.firstElementChild).visibility+' '+getComputedStyle(head).height+' '+(head.getAttribute('style')||'')+']');
+       return bad.length?bad.join('; '):null;
+     } finally {
+       try{ document.querySelectorAll('.padfocus').forEach(function(x){ x.classList.remove('padfocus'); }); if(document.activeElement) document.activeElement.blur(); }catch(e){}
+       __topClear();
+     } }},
   {v:'34.36',what:'the gambler panels are as tall as their content (not the whole card) and their section labels are the 20px body size',
    run:function(){
      var bad=[], snap=null, m=document.getElementById('gamblemodal');

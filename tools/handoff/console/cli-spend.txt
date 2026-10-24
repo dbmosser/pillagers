@@ -1154,3 +1154,5 @@
 2026-10-24 0.1454814 106-ui-raid-column-overlaps
 2026-10-24 0.1687 critic-manual
 2026-10-24 0.1371112 106-ui-raid-column-overlaps
+2026-10-24 0.1443 critic-manual
+2026-10-24 1.5982181999999998 108-ui-stash-and-gamble-windows

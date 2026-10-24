@@ -1,0 +1,7 @@
+v34.37: settings tab focus has no halo and no section sliver
+
+Settings shows one clear focus and clean section lines.
+
+Check 34.37. Fails on v34.36.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

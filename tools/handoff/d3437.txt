@@ -1,0 +1,5 @@
+## v34.37 - SETTINGS TAB FOCUS HAS NO HALO AND NO SECTION SLIVER
+
+Co-op hunt while he was away. My own pictures after the last Settings ship: the focused tab still wore the global halo ring, a clicked tab left the list row lit with the focus bar, and the new section line showed a sliver of its hidden label. Now the tab shows only its bar, the list row steps back while a tab has the focus, and the line is clean.
+
+MEASURED. Check 34.37 passes, and fails on v34.36.

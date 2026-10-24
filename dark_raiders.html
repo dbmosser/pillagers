@@ -2457,6 +2457,11 @@ body:has(#wnmodal.on) #hubtoast,body:has(#settingsmodal.recmode.on) #hubtoast{vi
 #root #settingsmodal #setlist .save-restore-actions > #set_restore{ height:var(--btn-h-sm); min-height:var(--btn-h-sm); background:transparent !important; color:var(--tx-1) !important; border-color:var(--ui-line-hi) !important; font-weight:600; }
 #root #settingsmodal #setlist .save-restore-actions > #set_restore:hover:not(:disabled), #root #settingsmodal #setlist .save-restore-actions > #set_restore:focus-visible, #root #settingsmodal #setlist .save-restore-actions > #set_restore.padfocus{ background:transparent !important; color:var(--acc) !important; border-color:var(--acc) !important; outline:0 !important; }
 #root #settingsmodal #setwrap > #setdetail:not(.daily-restore-detail){ align-content:flex-start; }
+/* v34.35 (cw-setscroll2) job 107, my own pictures after cw-setscroll: the focused tab still wore the global halo ring, a clicked tab (mouse focus) left the list row lit, and the section line showed a sliver of its hidden label. */
+#root #settingsmodal #setlist .setjump button:focus-visible, #root #settingsmodal #setlist .setjump button.padfocus{ box-shadow:none !important; }
+#root #settingsmodal #setlist:has(.setjump button:focus):not(:has(.row:not(.setjump) .padfocus)) .row.dshow:not(.setjump):not(:hover){ background:transparent !important; box-shadow:inset 0 -1px 0 var(--ui-line-hi) !important; }
+#root #settingsmodal #setlist .row[style*="opacity:.7"] > *{ visibility:hidden; }
+#root #settingsmodal #setlist .row[style*="opacity:.7"]{ margin-top:var(--sp-3) !important; }
 @media(max-width:1100px){
   #root #wnmodal{grid-template-columns:minmax(0,1fr);grid-template-rows:56px auto minmax(0,1fr);gap:24px;}
   #root #wnmodal #wnsub{grid-column:1;grid-row:2;font-size:32px;max-width:none;}
@@ -3661,7 +3666,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.36';
+var VER='34.37';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -53974,7 +53979,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.36: Wirt window panels no longer run to the bottom of the card. Check 34.36 fails on v34.35',
+  now:'v34.37: Settings shows one clear focus and clean section lines. Check 34.37 fails on v34.36',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

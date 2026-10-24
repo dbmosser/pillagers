@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.37 - SETTINGS TAB FOCUS HAS NO HALO AND NO SECTION SLIVER
+
+Co-op hunt while he was away. My own pictures after the last Settings ship: the focused tab still wore the global halo ring, a clicked tab left the list row lit with the focus bar, and the new section line showed a sliver of its hidden label. Now the tab shows only its bar, the list row steps back while a tab has the focus, and the line is clean.
+
+MEASURED. Check 34.37 passes, and fails on v34.36.
 ## v34.36 - Wirt panels fit their content, labels at body size
 
 Co-op hunt while he was away. Task 108 second pass: the gambler panels were stretched the whole card so each held a void between a tiny label and its button. They now fit their content under the header and the section labels are 20px.
