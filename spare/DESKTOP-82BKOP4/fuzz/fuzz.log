@@ -2430,3 +2430,5 @@
 2026-10-24 16:15:29 raid 4 demo1 raidSeed=1224470194 map=0 god=0 sec=27 end=ended problems=0 newUnique=0 totalUnique=1 totalProblems=3 events=759 score=0 ents=44 travelPx=2622 fires=23 menuPct=9 heapMB=51 p2= build=34.13
 2026-10-24 16:18:11 raid 4 demo1 raidSeed=129814911 map=0 god=1 sec=190 end=ended problems=0 newUnique=0 totalUnique=2 totalProblems=3 events=5836 score=0 ents=47 travelPx=17016 fires=134 menuPct=18 heapMB=66 p2= build=34.13
 2026-10-24 16:20:34 raid 5 demo2 raidSeed=1803381270 map=0 god=1 sec=305 end=clock-end problems=0 newUnique=0 totalUnique=1 totalProblems=3 events=9338 score=0 ents=51 travelPx=25009 fires=206 menuPct=19 heapMB=68 p2= build=34.13
+2026-10-24 16:23:16 raid 5 demo2 raidSeed=16229487 map=0 god=0 sec=305 end=clock-end problems=0 newUnique=0 totalUnique=2 totalProblems=3 events=9471 score=0 ents=48 travelPx=26376 fires=223 menuPct=17 heapMB=79 p2= build=34.13
+2026-10-24 16:25:39 raid 6 demo2 raidSeed=25777555 map=0 god=0 sec=305 end=clock-end problems=0 newUnique=0 totalUnique=1 totalProblems=3 events=9248 score=0 ents=51 travelPx=27008 fires=207 menuPct=16 heapMB=74 p2= build=34.13
