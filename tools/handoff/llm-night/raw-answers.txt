@@ -1,40 +1,34 @@
 
+This CSS code snippet is part of a larger UI design system that follows specific guidelines for styling web elements. The rules are designed to ensure consistency across different screens and components by using custom properties (CSS variables) defined at the `:root` level. Here's a breakdown of what each section does:
+
+1. **Shared Look Rules**:
+   - These rules apply styles to various UI panels, headers, buttons, and other elements.
+   - They use CSS variables like `--fs-*`, `--sp-*`, `--rad`, etc., which are defined elsewhere in the codebase.
+
+2. **Title Screen Styles**:
+   - The title screen (`#title`) is styled with specific fonts, colors, and spacing using these variables.
+   - Elements like `.ui-hd` (header), `.tstep` (steps), and buttons within `#modemenu` are given consistent styles.
+
+3. **Attract Board Styles**:
+   - The attract board (`#attract`) is styled similarly with custom properties for font sizes, colors, and layout.
+   - It includes elements like `.attname`, `.attpress`, and tables that follow the same design principles.
+
+4. **Run Over Card Styles**:
+   - The run over card (`.arcover`) has a specific centered layout using CSS variables for padding, margins, and font sizes.
+   - Elements within this card are styled to match the overall theme with consistent colors and spacing.
+
+### Key Points
+It looks like you've provided a list of changes or updates for a game, likely related to its mechanics, user interface, and gameplay balance. Here are some key points from the entries:
+
+1. **Co-op Improvements**: Enhanced co-op experience with better handling of teammates' actions, enemy behavior, and map navigation.
+2. **Grenades and Items**: Improved functionality for grenades (e.g., cooked Frag Charges), belt keys, stash management, racks, saves, and storms.
+3. **Healing and Contracts**: Changes to healing mechanics (Medkit usage) and contract rewards based on actual run findings.
+4. **Controller Support**: Enhanced controller support in various game modes, including the Undercroft.
+5. **Enemy Behavior**: Reduced number of enemies by default, affecting machine behavior and pillager waves.
+6. **User Interface**: Various UI improvements such as tab functionality for pausing menus, improved search mechanics, and clearer prompts.
+7. **Gameplay Mechanics**: Changes to stamina usage during rolls, character death handling, extraction process, and more.
+
+These changes seem aimed at improving the overall gameplay experience, balancing difficulty, and enhancing both single-player and co-op play. If you have any specific questions or need further details on these updates, feel free to ask!
 NONE
 NONE
-It looks like you've provided a list of changes or updates for a game, likely related to gameplay mechanics, user interface elements, and bug fixes. Here are some key points from your list:
-
-1. **Grenades and Gun Switching**: Using the last grenade no longer puts your gun up automatically. You need to switch back manually.
-
-2. **Raised Decks Removal**: The catwalks and gantries that previously trapped players have been removed, allowing for easier traversal across sectors.
-
-3. **Tab Key Functionality**: The Tab key now closes menus and exits fullscreen mode in the browser.
-
-4. **Armour Plate Handling**: Armour plates found are placed in your backpack instead of automatically equipping them.
-
-5. **Search Key (X)**: The X key searches what you are standing on, even inside extraction points where E is used for calling extraction.
-
-6. **Welcome Pack**: The welcome pack goes to the stash and does not equip anything initially; players need to manually choose a gun from their stash.
-
-7. **Limited Time Offer**: Each limited time offer can only be purchased once per cycle.
-
-8. **Stamina Roll**: A roll with no stamina left now explicitly states so, instead of failing silently.
-
-9. **Death Notification**: The game now correctly identifies the entity that killed you during a death fade.
-
-10. **Key Presses and Revives**: A key already down is not counted as a press; melee strikes require an actual release and press to
-NONE
-LINE 68031: ctx.font=FSz(TYPE.huge,1.3); ctx.fillStyle=(i===n.pos)?'#ffc04a':'#f2e6c8'; hudText(n.l[i]||'A',lx,y+LH(36));
-- Possible issue with `hudText` function call if it expects a specific type or format for its arguments that isn't guaranteed by the current code.
-
-LINE 68041: return false;
-- Unreachable code after this line in the `arcadeHiTick` function.
-
-LINE 68057: function netContView(){
-- Possible issue with `NET.srchOwn` and `NET.holds` being accessed without checking if they are defined or null, which could lead to errors when trying to JSON.parse or slice them later in the function.
-
-LINE 68132: var ok=false;
-- Variable `ok` is reassigned but never used after its initial assignment in the `netCopyOld` function.
-
-LINE 68195: return netPingMake();
-- Potential issue if `netPingMake` returns a promise that isn't handled properly, leading to unhandled rejections.
 NONE

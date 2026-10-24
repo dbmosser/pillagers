@@ -1,0 +1,7 @@
+v34.24: raid hud panels share one fill
+
+The boxes on the raid HUD are all the same dark graphite, a little more solid than before.
+
+Check 34.24. Fails on v34.23.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

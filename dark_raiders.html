@@ -3609,7 +3609,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.23';
+var VER='34.24';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -12949,7 +12949,7 @@ var UIC={ui_void:'#0b0c0d', ui_bg:'#111315', ui_panel:'#16191b', ui_raised:'#1e2
   danger:'#e5482f', danger_bg:'rgba(60,12,8,.86)', warn:'#f5b73b', ok:'#76b97c', extract:'#47d8c6', ally:'#9cc7ff', armour:'#7fa6c9',
   r_common:'#9da3a8', r_uncommon:'#5fbf6a', r_rare:'#3f9de9', r_elite:'#a866e0', r_gold:'#ffc72e'};   // 2026-10-12 (rarity): gold is gold, as RCOL
 var HUDC={text:UIC.tx_1, dim:UIC.tx_2, danger:UIC.danger, warn:UIC.warn, extract:UIC.extract, gain:UIC.ok, ally:UIC.ally,
-  special:UIC.r_elite, plate:'rgba(6,9,13,.78)', dangerPlate:'rgba(40,8,6,.84)', ink:INK};
+  special:UIC.r_elite, plate:'rgba(17,19,21,.88)'/* v28.xx (cw-hudpanels), the critic on screens 21, 19, 37, 61: 'panel styles disagree'. One HUD panel fill, the graphite of hudPanel at 88 percent (was blue-black at 78) */, dangerPlate:'rgba(40,8,6,.84)', ink:INK};
 // v28.xx (cw-uishared-title), his order 2026-10-18 (UI step 2, one shared look): UIT is the style guide as ONE table (the same numbers as
 // the :root tokens --fs-*, --sp-*, --rad; the check keeps them equal). uiFont(role,z) is the type of a role at a screen scale z, uiPanel
 // is Panel P on a canvas (fill --ui-panel at 90 percent, a 1px --ui-line-hi border, --rad, an optional 3px accent bar). The DOM side is
@@ -22542,7 +22542,7 @@ function itemCardDraw(o,xR,yB,al){
   ctx.save();
   try{
     ctx.globalAlpha=oa*(al===undefined?1:al);
-    hudPlate(x,y,w,h,null,'rgba(11,12,13,.9)'); hudPlate(x,y,w,h,o.col,HUDC.plate);   // solid, as the gun card over the belt
+    hudPlate(x,y,w,h,null,HUDC.plate); hudPlate(x,y,w,h,o.col,HUDC.plate);   // solid, as the gun card over the belt
     ctx.textBaseline='alphabetic';
     yy=y+pad+Math.round(hp*0.85);
     ctx.font=fH; ctx.textAlign='left'; ctx.fillStyle=o.col; ctx.fillText(o.name,x+pad,yy,w-pad*2);
@@ -22592,7 +22592,7 @@ function beltHoverHud(){
   xR=Math.round(Math.max(m+sz.w,Math.min(W-m,c.x+c.w/2+sz.w/2)));
   yB=Math.round(c.y-LH(6)*rs-((state!=='hub')?msgPx(beltCapFS(c.w))*1.1:0));   // above the key, and above its caption line in a raid
   yB=Math.max(m+sz.h,Math.min(H-m,yB));
-  ctx.save(); try{ hudPlate(xR-sz.w,yB-sz.h,sz.w,sz.h,null,'rgba(11,12,13,.9)'); } finally { ctx.restore(); }   // a solid backing: over the belt the card sits on busy ground and HUD panels
+  ctx.save(); try{ hudPlate(xR-sz.w,yB-sz.h,sz.w,sz.h,null,HUDC.plate); } finally { ctx.restore(); }   // a solid backing: over the belt the card sits on busy ground and HUD panels
   gunCardDraw(cmp,xR,yB,1,g.tag||'');
   BELTHOV.box={x:xR-sz.w,y:yB-sz.h,w:sz.w,h:sz.h,i:c.i,kind:'gun',name:String(cmp.f.name)};
   return BELTHOV.box;
@@ -24073,7 +24073,7 @@ function drawWheel(){
     ctx.font=FSz(TYPE.head,sk*0.95); tw=ctx.measureText('x'+w.list[j].n).width+LH(14)*sk; ph=LH(24)*sk;
     bx=ix+sz*0.5-tw*0.35; by=iy-sz*0.5-ph*0.45;
     ctx.globalAlpha=fade*(ok?1:0.55);
-    hudPlate(bx,by,tw,ph,null,'rgba(11,12,13,.9)');
+    hudPlate(bx,by,tw,ph,null,HUDC.plate);
     ctx.fillStyle=ok?UIC.acc:UIC.tx_3; ctx.fillText('x'+w.list[j].n,bx+tw/2,by+ph*0.74);
     ctx.globalAlpha=fade;
   }
@@ -42418,7 +42418,7 @@ function drawUseBar(){
     s=(PR.kind==='armor'?'SLOTTING ':'APPLYING ')+nm;
     if(typeof PR.aid==='number'){ try{ s+=' ON '+String(netSeatName(PR.aid)||'YOUR TEAMMATE').toUpperCase(); }catch(_an){ s+=' ON YOUR TEAMMATE'; } }
     s+='   '+Math.max(0,(PR.max||0)-(PR.t||0)).toFixed(1)+'s';
-    if(typeof hudPanel==='function') hudPanel(x-_ux,y-_ut,w+_ux*2,h+_uh,0.78,1);   // v22.xx (R40): the paddings grow with the screen
+    if(typeof hudPanel==='function') hudPanel(x-_ux,y-_ut,w+_ux*2,h+_uh,0.88,1);   // v22.xx (R40): the paddings grow with the screen
     else { ctx.fillStyle='rgba(6,9,13,.78)'; ctx.fillRect(x-_ux,y-_ut,w+_ux*2,h+_uh); }
     ctx.fillStyle='#e8f0f6'; ctx.fillText(s,W/2,y-_uc);
     ctx.fillStyle='rgba(255,255,255,.12)'; ctx.fillRect(x,y,w,h);
@@ -44280,7 +44280,7 @@ ctx.fillStyle='rgba(190,255,220,.85)';
     var _pw=ctx.measureText(_ps).width;
     // v18.41, THE STYLING PASS IN THE RAID (2026-10-04): the posture chip (STANDING, CROUCHED, SPRINTING...) is a small rounded
     // HUD panel like the boxes around it, same place and size.
-    if(typeof hudPanel==='function') hudPanel(18,by-_up-LH(18),_pw+14,LH(16),0.78,1);
+    if(typeof hudPanel==='function') hudPanel(18,by-_up-LH(18),_pw+14,LH(16),0.88,1);
     else { ctx.fillStyle='rgba(6,9,13,.72)'; ctx.fillRect(20,by-_up-LH(17),_pw+10,LH(14)); }
     ctx.fillStyle=STATCOL[_ps.split(' + ')[0]]||'#a5b1bc';
     ctx.fillText(_ps,25,by-_up-LH(6));
@@ -44395,7 +44395,7 @@ if(p.armor>0){
        var _gdx=(typeof _boG==='object'&&_boG)?(_boG.dx||0):0, _lim=_hcL?(W+((_hcL.x+_hcL.w+LH(8))-_gdx-W)/_gz):-1e9;   // the belt edge, brought into this corner's scaled space
        if(_hcL&&_wpx<_lim){ _wpx=_lim; _wpw=_wpR-_wpx; }   // v18.39: never over the belt (it covered key 9)
        /* v28.xx (cw-hudstar): the demo hides the item line and the backpack hint (Q56), so the card is 72 high and not 100 with an empty strip; it keeps the tab, it is the star */
-       if(_wpw>LH(60)){ var _gtop=trDemo()?LH(62):LH(66), _gh=trDemo()?LH(58):LH(76); /* v28.xx (cw-cardhint), the critic (2026-10-19): the career card is 76 high, the backpack hint left the top (order: name, ammo, one quiet row) so the card has no dead strip over the name */   /* v28.xx (cw-panelflat), the critic (2026-10-19): the demo card had dead space over the name; it is 58 high, the top moves down 14 */ hudPanel(_wpx,by-_gtop,_wpw,_gh,0.62); } ctx.textAlign='right'; }catch(_wp){}
+       if(_wpw>LH(60)){ var _gtop=trDemo()?LH(62):LH(66), _gh=trDemo()?LH(58):LH(76); /* v28.xx (cw-cardhint), the critic (2026-10-19): the career card is 76 high, the backpack hint left the top (order: name, ammo, one quiet row) so the card has no dead strip over the name */   /* v28.xx (cw-panelflat), the critic (2026-10-19): the demo card had dead space over the name; it is 58 high, the top moves down 14 */ hudPanel(_wpx,by-_gtop,_wpw,_gh,0.88); } ctx.textAlign='right'; }catch(_wp){}
   ctx.fillText(_cornName,W-16,by-LH(46));   // v28.xx (cw-hudammo): the name rides higher (was 34) so the big ammo figure has the room
   ctx.font=FS(TYPE.title);
   if(!_heldGun){
@@ -53903,7 +53903,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.23: The extracted card shows the haul figure above the tiles, drops the season total and the recovered sentences from view, draws unrevealed tiles as dashed slots and rings the focused lime button. Check 34.23 fails on v34.22',
+  now:'v34.24: The boxes on the raid HUD are all the same dark graphite, a little more solid than before. Check 34.24 fails on v34.23',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

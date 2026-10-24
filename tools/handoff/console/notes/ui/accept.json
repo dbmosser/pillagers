@@ -809,20 +809,20 @@
   "need": 3
  },
  "76-haul-reveal-mid": {
-  "score": 2,
-  "pass": false,
-  "verdict": "the haul reveal reads clean at a glance but contradicts its own success check and is missing half the component polish the style guide requires.",
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The haul figure now leads, with the chips under it and a cleaner header, but the card is still a stack of small grey lines around a lime button and the haul number is not a clear hero.",
   "findings": [
-   "P0 objective line vs haul number: gate the checkmark on the actual haul total (haul >= 1200) or drop the objective line when it was not met; never show a check next to a number that contradicts it.",
-   "P1 xp line under the title, 'extracted': relabel to 'sp' if this is the score track, or get an explicit ruling from the owner before shipping a new 'xp' currency distinct from $ and sp.",
-   "P1 item grid, rows under the recovered-weapons lines: collapse the grid to only the slots that hold items (pack them left-to-right, no empty cells), or if empty slots are intentional capacity indicators, dim them further and add a consistent dashed outline so they read as 'empty' and not 'missing render'.",
-   "P1 item icon slots: add the 3px rarity-color bottom or left bar from the token set to every filled slot so the grid matches the Diablo-style rarity read the guide specifies.",
-   "P2 'first out . heavy haul . untouched . ghost' row: render each as a small pill/tag (1px --ui-line-hi border, --rad corners, --fs-label text) so they read as discrete earned badges, not a sentence fragment."
+   "P1 haul number and card hierarchy: Raise the haul to 56px at weight 800. Add 24px of space above it and 32px below. Make 'haul' the 16px tx-2 label directly above it. Make the title tx-1 or keep it teal but drop it to 32px so the number is the first read.",
+   "P1 checklist block (three check lines): Tighten the row pitch to 32px. Show the objectives as short chips: 'haul $800+', 'data core'. Put the recovered guns as two chips with a gun glyph, and drop the sentence 'extract with a haul worth...'.",
+   "P1 header lines under the title: Merge them into one 16px line, 'out clean · +297 xp', and drop 'never spotted' (it repeats the 'ghost' tag). That frees about 24px.",
+   "P2 item chip row: Show a single dashed slot, or none, instead of four. Make the chips 72px. Give the focused chip a 2px --acc outline. Put 32px between the haul number and the row, and align '+11 more' to the row's baseline.",
+   "P2 stats row (containers / kills / accuracy / time): Drop the numbers to 20px or fold the stats into the footer line. Raise the label colour to tx-2 at 4.5:1. Remove the lower hairline."
   ],
-  "pic": "tools/handoff/console/notes/shots/13-q1/76-haul-reveal-mid-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/101-after/76-haul-reveal-mid-1080.jpg",
   "task": "manual",
-  "when": "2026-10-19T23:10",
-  "need": 3
+  "when": "2026-10-24T15:36"
  },
  "75-settings-pad-rebind-waiting": {
   "score": 3,

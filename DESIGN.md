@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.24 - RAID HUD PANELS SHARE ONE FILL
+
+Co-op hunt while he was away. UI step 2 of the HUD calm job (102). The critic holds the raid screens at 2 and 3 because panel styles disagree: the plates were blue-black at 78 percent, the chamfered panels graphite at 88, the posture chip 78, the gun card 62, the gun card and wheel backings near-black 90. All of them are now the one graphite at 88 percent. Shapes and places do not move.
+
+MEASURED. Check 34.24 passes, and fails on v34.23.
 ## v34.23 - EXTRACTED CARD: HAUL FIGURE LEADS, NO SEASON TOTAL, RECOVERED GUNS AS CHIPS, DASHED EMPTY SLOTS, FOCUS RING
 
 Co-op hunt while he was away. The critic scored the haul reveal 2 of 5: the strip led instead of the number, an oversized empty tile, a clutter xp total, sentences instead of chips, no focus ring.

@@ -1,0 +1,36 @@
+{
+    "title":  "RAID HUD PANELS SHARE ONE FILL",
+    "why":  "UI step 2 of the HUD calm job (102). The critic holds the raid screens at 2 and 3 because panel styles disagree: the plates were blue-black at 78 percent, the chamfered panels graphite at 88, the posture chip 78, the gun card 62, the gun card and wheel backings near-black 90. All of them are now the one graphite at 88 percent. Shapes and places do not move.",
+    "now":  "The boxes on the raid HUD are all the same dark graphite, a little more solid than before.",
+    "edits":  [
+                  {
+                      "anchor":  "plate:\u0027rgba(6,9,13,.78)\u0027",
+                      "replacement":  "plate:\u0027rgba(17,19,21,.88)\u0027/* v28.xx (cw-hudpanels), the critic on screens 21, 19, 37, 61: \u0027panel styles disagree\u0027. One HUD panel fill, the graphite of hudPanel at 88 percent (was blue-black at 78) */"
+                  },
+                  {
+                      "anchor":  "hudPlate(x,y,w,h,null,\u0027rgba(11,12,13,.9)\u0027); hudPlate(x,y,w,h,o.col,HUDC.plate);",
+                      "replacement":  "hudPlate(x,y,w,h,null,HUDC.plate); hudPlate(x,y,w,h,o.col,HUDC.plate);"
+                  },
+                  {
+                      "anchor":  "hudPlate(xR-sz.w,yB-sz.h,sz.w,sz.h,null,\u0027rgba(11,12,13,.9)\u0027)",
+                      "replacement":  "hudPlate(xR-sz.w,yB-sz.h,sz.w,sz.h,null,HUDC.plate)"
+                  },
+                  {
+                      "anchor":  "hudPlate(bx,by,tw,ph,null,\u0027rgba(11,12,13,.9)\u0027)",
+                      "replacement":  "hudPlate(bx,by,tw,ph,null,HUDC.plate)"
+                  },
+                  {
+                      "anchor":  "h+_uh,0.78,1)",
+                      "replacement":  "h+_uh,0.88,1)"
+                  },
+                  {
+                      "anchor":  "hudPanel(18,by-_up-LH(18),_pw+14,LH(16),0.78,1)",
+                      "replacement":  "hudPanel(18,by-_up-LH(18),_pw+14,LH(16),0.88,1)"
+                  },
+                  {
+                      "anchor":  "hudPanel(_wpx,by-_gtop,_wpw,_gh,0.62)",
+                      "replacement":  "hudPanel(_wpx,by-_gtop,_wpw,_gh,0.88)"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the raid HUD has one panel fill: every hudPanel and hudPlate in a raid frame is the same graphite (the critic on screens 21, 19, 37, 61: panel styles disagree)\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid\u0026\u0026window.__frame)) return \u0027SKIP: this fixture cannot deploy and draw\u0027;\n     var proto=CanvasRenderingContext2D.prototype, o=proto.fill, seen={}, n=0, g, k, list=[], tmp=document.createElement(\u0027canvas\u0027).getContext(\u00272d\u0027);\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player||g.over) return \u0027SKIP: no live raid\u0027;\n       g.bagOpen=false; g.mapOpen=false;\n       __frame(0.001);\n       proto.fill=function(){ var st=String(new Error().stack); if(this===ctx\u0026\u0026this.globalAlpha\u003e0.05\u0026\u0026(/hudPlate|hudPanel/).test(st)){ tmp.globalAlpha=1; tmp.fillStyle=this.fillStyle; var s=String(tmp.fillStyle)+\u0027@\u0027+this.globalAlpha; seen[s]=(seen[s]||0)+1; n++; } return o.apply(this,arguments); };\n       __frame(0.001);\n       for(k in seen) list.push(k);\n       if(n\u003c3) return \u0027only \u0027+n+\u0027 HUD panels were drawn\u0027;\n       if(list.length\u003e1) return \u0027the raid HUD panels use \u0027+list.length+\u0027 fills: \u0027+list.join(\u0027 ; \u0027);\n       return null;\n     }catch(e){ return \u0027threw: \u0027+(e\u0026\u0026e.message||e); }\n     finally{ proto.fill=o; try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ g2.player.downed=false; __endRaid(\u0027abandon\u0027); } }catch(_e){} __topClear(); __cleanProfile(); } }},"
+}
