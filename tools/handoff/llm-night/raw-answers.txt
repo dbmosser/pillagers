@@ -1,18 +1,8 @@
 
-The provided CSS styles are designed to enhance the appearance and functionality of various elements within a web application, specifically focusing on modals related to gambling and statistics. Here's a breakdown of some key changes and features introduced by these styles:
-
-### 1. **Gamble Modal Enhancements**
-- **Grid Layout**: The `#gamblemodal` is now displayed as a grid with two columns (`minmax(0,1fr) minmax(0,1fr)`), allowing for better organization of content.
-- **Section Alignment**: Sections within the modal are aligned to stretch and fill available space, improving visual balance.
-- **Button Styling**: Buttons have been styled to be more prominent and accessible. They now have a larger font size (`24px`), improved padding, and focus outlines that enhance usability for keyboard navigation.
-
-### 2. **Statistics Panel Enhancements**
-- **Grid Layout**: The statistics panel uses a four-column grid layout (`repeat(4,minmax(0,1fr))`) to display various metrics.
-- **Card Styling**: Each card within the grid has padding and border-radius for better visual separation and readability.
-- **Hero Element**: A hero element (7th card) is styled with larger text and a different color scheme to draw attention.
-
-### 3. **Achievements Section**
-- **Grid Layout**: Achievements are displayed in a two-column grid, making it easier to read and manage multiple achievements at once.
-- **Card Sty
+NONE
+NONE
+NONE
+NONE
+NONE
 NONE
 NONE

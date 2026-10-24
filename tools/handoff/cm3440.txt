@@ -1,0 +1,7 @@
+v34.40: zero score is the hero
+
+A zero score on the run over card is drawn bright like every score.
+
+Check 34.40. Fails on v34.39.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

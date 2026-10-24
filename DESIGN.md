@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.40 - ZERO SCORE IS THE HERO
+
+Co-op hunt while he was away. Critic on 52 (2 of 5): the zero score hero is muted grey, dimmer than the title. Drawn in tx-1 now.
+
+MEASURED. Check 34.40 passes, and fails on v34.39.
 ## v34.39 - DOWNED CARD IS THE RAID PANEL, RUN INFO NEVER WRAPS
 
 Co-op hunt while he was away. Critic on screen 34 (2 of 5): the downed card was a flat box, not the standard panel, and contract rows wrapped in run info. The card now uses the shared raid panel with a 3px danger tab, the word down as a danger label and the timer as the one hero. Run info widens to its longest row.

@@ -2007,7 +2007,8 @@ body #attract[style*="block"]:has(.arcpage[style*="block"]) .attpress::before, b
 body #attract .arcpage, body #attract .arcover{ background-image:linear-gradient(var(--ui-line), var(--ui-line)); background-repeat:no-repeat; background-size:calc(100% - var(--sp-4) * 2 * var(--attz,1)) 1px; background-position:center calc(100% - (var(--sp-3) + var(--btn-h) + var(--sp-2)) * var(--attz,1)); }
 /* v31.xx (cw-partylook8), the critic on 55 (3 of 5, after v31.73) and 64 (2 of 5): "the hero is one white line, score and the number are the same size: a 16px tx-2 score label above the 56px figure", "dim a zero result to tx-2", "the bottom divider runs wider (626 to 1293) than the top one (634 to 1286): inset it to the content margin", "colour the -50% in warn", "left-align the empty state". The footer rule is inset to the 32px card padding (it was 24px), so it meets the stats rule edge to edge; the score word is a small label over the figure (the text is the same, only split in two spans), a zero score is tx-2, the penalty on the second line is warn amber, and the no scores yet line sits on the left edge like every other row. Restyle only. */
 body #attract .arcover .aos .aolb{ display:block; font-size:max(16px, calc(var(--fs-label) * var(--attz,1))); line-height:1.4; font-weight:600; letter-spacing:var(--track); color:var(--tx-2); margin-bottom:calc(var(--sp-1) * var(--attz,1)); }
-body #attract .arcover .aos.aoz{ color:var(--tx-2) !important; }
+/* v34.xx (cw-endzero), the critic on 52 (2 of 5, 10-24): "the one hero number is drawn in muted grey, dimmer than the title, so the eye lands on the title, not the score". A zero score is the hero in tx-1 like every other score (the cw-partylook8 dim is dropped; newest critic wins). Restyle only. */
+body #attract .arcover .aos.aoz{ color:var(--tx-1) !important; }
 body #attract .arcover .aoh .aow{ color:var(--warn); }
 body #attract .arcpage .apn{ text-align:left; }
 #root #pausebox #abandonbtn, #root #pausebox #arcendbtn, #root #pausebox #charselbtn{ margin-top:var(--sp-4); }
@@ -3666,7 +3667,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.39';
+var VER='34.40';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -53986,7 +53987,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.39: The downed card matches the other raid panels with the timer as the biggest number, and the run info panel grows leftward so no contract row breaks over two lines. Check 34.39 fails on v34.38',
+  now:'v34.40: A zero score on the run over card is drawn bright like every score. Check 34.40 fails on v34.39',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

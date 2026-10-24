@@ -6159,6 +6159,13 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.40',what:'a zero score on the run over card is the hero in tx-1, not dimmed to tx-2 (critic on 52)',
+   run:function(){
+     var bad=null;
+     for(var i=0;i<document.styleSheets.length;i++){ var rs; try{ rs=document.styleSheets[i].cssRules; }catch(e){ continue; }
+       for(var j=0;j<rs.length;j++){ var r=rs[j]; if(r.selectorText&&r.selectorText.indexOf('.aos.aoz')>=0&&/tx-2/.test(r.style.cssText)) bad=r.cssText; } }
+     if(bad) return 'a zero score is still dimmed: '+bad;
+     return null; }},
   {v:'34.39',what:'cw-downedcard: no run info contract row wraps (it stays inside the panel), and the downed card is the shared raid panel with the timer as its biggest text',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame&&window.__loop)) return 'SKIP: this fixture cannot deploy and draw';

@@ -992,36 +992,36 @@
   "need": 4
  },
  "34-raid-downed-pickups": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "the downed plate is now a contained dark card and the career row is a vertical list, but the right column is a crowded stack where the pickup feed, run info, 'extraction available' and the 'concealed' tag overlap each other, and the timer is still not the hero.",
+  "need": 4,
+  "verdict": "The downed card now has a proper hierarchy (small red 'down' label, white hero timer) and the run-info panel no longer wraps, but the HUD around it is still a patchwork of unrelated panel styles with several small type sizes.",
   "findings": [
-   "P0 right column: run info, pickup feed, 'extraction available', 'concealed · in cover' tag: stack the right column top to bottom with a fixed 16px gap and a 48px right margin: career list, minimap at about 240px tall, run info, then status. Move the pickup feed out of this column to a separate anchor (above the weapon panel, right-aligned). Give 'extraction available' its own 24px row and drop the concealed tag to its own row or into the weapon panel.",
-   "P0 top-right career list (credits / xp / stash / backpack): shrink rows to 32px with 16px label text, a 240px width, and tx-2 labels with tx-1 values. Hide world labels under HUD panels, or add a 1px dark outline and keep them at least 16px clear of the HUD.",
-   "P1 centre downed plate: 'down' at 32px --danger, the timer at 56px tx-1 as the one hero, one 8px --danger bar, then the prompt at 20px with [f] in a lime chip. Use 24px padding and 16px gaps. Give the plate the same 1px --ui-line-hi border and 4px radius as the other panels.",
-   "P1 run info panel: cap it at 3 contract lines with 24px padding and 8px row gaps, and use tx-1 for names with tx-2 for counts. Keep colour only for status glyphs.",
-   "P1 left pickup feed, contract toast and world labels: keep one feed, right-aligned, 3 rows with a 32px row height and an 8px gap, and delete the left one. Use a face where lower-case 'l' and 'i' are distinct. Give world labels a 1px dark outline at tx-1 and a 16px minimum."
+   "P1 downed card, centre: Raise 'down' to 32px f-cond 700 in --danger, keep the timer at 56px, and add a 1px --ui-line-hi border so the card separates from the red wash. Make the self-revive prompt the lime action: '[f]' in --acc, with the rest in tx-1.",
+   "P1 downed card, top ring marker: Delete one of the two. Keep the bar under the timer (4px high, full card width minus 48px padding). If the top gauge is a timing-window mechanic, label it or move it away from the countdown.",
+   "P1 panels overall (top-left bots list, top-right cash, run info, downed card, bottom-right ammo): Apply the same panel fill (--ui-panel at 90%) and a 1px --ui-line-hi border to every HUD panel, with 4px radius and 16px padding.",
+   "P1 run info panel, top right: Set rows to 16px minimum at 4.5:1 or better, put the panel on the same right edge and width as the cash box (x=1603), and use a 1px border. Use tx-1 for the active contract and tx-2 for the rest.",
+   "P2 left feed (codex entry, contract item nearby, scrap metal x3...): Cap the feed at 4 rows, fix the row height at 28px, use one bar colour (--acc for the live row only), and move the world label so it does not sit under the feed."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-30g-after/34-raid-downed-pickups-1080.jpg",
-  "task": "b-30-ui-hud",
-  "when": "2026-10-18T22:51",
-  "need": 4
+  "pic": "tools/handoff/console/notes/shots/109-after/34-raid-downed-pickups-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-24T19:40"
  },
  "36-raid-low-health": {
   "score": 2,
   "pass": false,
-  "verdict": "The low-health state reads clearly from the red vignette and the hp bar, but the HUD around it is cluttered: panels differ in style, text sizes are mixed, there are several overlapping layers, and it looks like a debug overlay more than a shipped raid HUD.",
+  "need": 4,
+  "verdict": "The only change is the contract text in the run info panel, so the raid HUD is still a crowded set of small, unevenly styled boxes with no clear hierarchy.",
   "findings": [
-   "P0 top-right career stack (credits, xp, stash, backpack) plus minimap and run info: Cut the stack to two compact items (backpack value and one more) of about 24px height each, or move them into the tab or inventory view. Rename 'credits' to a '$' value. Drop the repeat of the 2,170 figure. Right-align to a 5% margin (96px) and use 8px gaps.",
-   "P0 centre-bottom controls cheat sheet (wasd / ctrl / lmb ... f1 full list): Show it only for the first run or on hold of f1. Remove it from the default raid view. If it stays, cut it to 4 essentials at 16px with tx-1 keys and tx-2 actions.",
-   "P1 hp bar and stamina bar (bottom-left): Make the hp bar 12px taller with one flat style. Use a danger fill (#e5482f) over a dark track, a 56px hero number, and a pulse below 25 hp. Make stamina a thin 6px bar, and drop the 'standing' tag or turn it into a small glyph. Align the three to the left 48px margin.",
-   "P1 panel styling across the screen (pillager bots list, run info, key list, ammo card, hotbar): Use one panel: --ui-panel at 90%, a 1px --ui-line-hi border, a 4px radius and 16px padding. Titles use tx-2 at 16px. Reserve the lime accent for focus and the main action. Turn the amber callouts into warn-coloured text or plain tx-1.",
-   "P1 scattered callouts (extract 152m, running slowly x2, codex entry, concealed · in cover): Show a status callout once, in one slot (a 24px strip under the timer). Use one pill style at 16px and 8px padding. Put toasts in a single stack at bottom-left. Fix the clipping of 'concealed · in cover' with a 48px right margin and remove the ghost text. Keep the timer at the 56px hero size with a dark backing."
+   "P1 hp bar, bottom left: Draw a visible red fill proportional to hp. Make the number 32px in --danger. Pulse the outline (90-160ms). Cut the vignette to about 40% opacity, kept at the screen edges only.",
+   "P1 run info panel, top right (contract rows): Set the objective name in 20px --tx-1 and the progress '0/2' right-aligned in 16px --tx-2. Add 24px padding and 8px row gaps. Truncate or shorten names to fit. Fix the glyph rendering so the i and l are not confused.",
+   "P1 whole HUD, panel styles: Use one panel component: --ui-panel at 90%, 1px --ui-line-hi border, 4px radius, 16px padding. Use the lime tab only on the ammo panel as the hero.",
+   "P1 keybind cheat-sheet, bottom centre: Auto-hide it after the first raid or after 10 seconds. If it stays, show only 4 keys, in 16px --tx-2 on a 90% panel, and put the key in --tx-1 for contrast.",
+   "P2 left toasts: 'codex entry' and 'contract item nearby': Show one notice per event. Delete the 'gold glow marks the box' sentence. Use one bar colour (--warn) for contract notices and one fixed width."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-02-r19/36-raid-low-health-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/109-after/36-raid-low-health-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T04:24",
-  "need": 4
+  "when": "2026-10-24T19:41"
  },
  "51-arcade-alert-reinforcements": {
   "score": 2,
