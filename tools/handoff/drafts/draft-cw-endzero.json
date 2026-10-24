@@ -1,0 +1,12 @@
+{
+    "title":  "ZERO SCORE IS THE HERO",
+    "why":  "Critic on 52 (2 of 5): the zero score hero is muted grey, dimmer than the title. Drawn in tx-1 now.",
+    "now":  "A zero score on the run over card is drawn bright like every score.",
+    "edits":  [
+                  {
+                      "anchor":  "body #attract .arcover .aos.aoz{ color:var(--tx-2) !important; }",
+                      "replacement":  "/* v34.xx (cw-endzero), the critic on 52 (2 of 5, 10-24): \"the one hero number is drawn in muted grey, dimmer than the title, so the eye lands on the title, not the score\". A zero score is the hero in tx-1 like every other score (the cw-partylook8 dim is dropped; newest critic wins). Restyle only. */\nbody #attract .arcover .aos.aoz{ color:var(--tx-1) !important; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a zero score on the run over card is the hero in tx-1, not dimmed to tx-2 (critic on 52)\u0027,\n   run:function(){\n     var bad=null;\n     for(var i=0;i\u003cdocument.styleSheets.length;i++){ var rs; try{ rs=document.styleSheets[i].cssRules; }catch(e){ continue; }\n       for(var j=0;j\u003crs.length;j++){ var r=rs[j]; if(r.selectorText\u0026\u0026r.selectorText.indexOf(\u0027.aos.aoz\u0027)\u003e=0\u0026\u0026/tx-2/.test(r.style.cssText)) bad=r.cssText; } }\n     if(bad) return \u0027a zero score is still dimmed: \u0027+bad;\n     return null; }},"
+}

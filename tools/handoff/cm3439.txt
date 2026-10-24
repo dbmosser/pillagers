@@ -1,0 +1,7 @@
+v34.39: downed card is the raid panel, run info never wraps
+
+The downed card matches the other raid panels with the timer as the biggest number, and the run info panel grows leftward so no contract row breaks over two lines.
+
+Check 34.39. Fails on v34.38.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

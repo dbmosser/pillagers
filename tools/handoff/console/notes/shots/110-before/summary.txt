@@ -1,0 +1,6 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  52-arcade-run-over                     staged      16.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  53-arcade-extracted-bonus-initials     staged      15.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  54-arcade-initials-redrop              staged      15.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  55-arcade-run-over-scored              staged      16.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  64-arcade-board-seeded-night           staged      10.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0

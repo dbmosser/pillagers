@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.39 - DOWNED CARD IS THE RAID PANEL, RUN INFO NEVER WRAPS
+
+Co-op hunt while he was away. Critic on screen 34 (2 of 5): the downed card was a flat box, not the standard panel, and contract rows wrapped in run info. The card now uses the shared raid panel with a 3px danger tab, the word down as a danger label and the timer as the one hero. Run info widens to its longest row.
+
+MEASURED. Check 34.39 passes, and fails on v34.38.
 ## v34.38 - SETTINGS PANE HINT ENDS CLEANLY
 
 Co-op hunt while he was away. Critic on Settings 18 (P0): the shortened pane text stopped mid-sentence with no mark. The first clause now stays whole up to 90 characters and a longer one ends in an ellipsis.
