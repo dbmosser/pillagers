@@ -325,3 +325,8 @@
 --- claude run 2026-10-24 ---
 2026-10-24: 86b-pix-ground still open in waiting/ (partial; hub and 4K pictures pending). 86e is done. Task says wait for 86b. No scripts or keys prepared.
 
+--- claude run 2026-10-24 16:44 (lane a) ---
+- 86b is done now. Shipped cw-bldkinds as v34.49 (kinds from grit, floors by kind, kind furniture colours through pixWrap at PIX_ENV, flat details baked into the pixel ground) and cw-bldsolid as v34.50 (solid beds, sofas, desk rows, rack rows, counters, benches; placed last in buildFixedMap from grit, flush to walls, clear of doors and locked rooms, dropped per building if the floor would be cut off). Both passed preflight and the gate; the 4242 fingerprint held (ents 85/374, containers 165/593), so no fingerprint retarget. Mk scripts: mk-cw-bldkinds.ps1, mk-cw-bldsolid.ps1.
+- Old check 34.49 retargeted (fixture commit d10851557): it builds both maps with CFG.bsolid 0 because solid pieces change the walls on purpose.
+- Pictures: shots/86i-s1 and 86i-s2, bk1 to bk5, recipes in 86i-recipes.json (house and shop need sector 1 or later; seed 4242 sector 0 has office, warehouse and workshop).
+- Watch line for his next play: paths and sight lines inside buildings changed (new solid pieces); look for a door that feels pinched or a room that feels cut off. Flat floor details are faint (rugs, papers); strengthening them is one small follow-up if he wants them louder.

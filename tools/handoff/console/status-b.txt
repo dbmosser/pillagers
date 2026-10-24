@@ -1,1 +1,1 @@
-10-24 17:04 waiting for RAM: 2 GB free, a helper starts at 3; 110-ui-demo-end-screens kept
+10-24 17:52 resting: the week is at 99% (helpers stop at 99% so the chat keeps room)

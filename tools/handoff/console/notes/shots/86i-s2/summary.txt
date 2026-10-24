@@ -1,0 +1,6 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  bk1-house                              staged      20.8s  
+  bk2-office                             staged      15.2s  
+  bk3-warehouse                          staged      15.1s  
+  bk4-shop                               staged      20.4s  
+  bk5-workshop                           staged      15.1s  

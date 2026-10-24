@@ -1,0 +1,7 @@
+v34.51: send play data leads with copy, the text is folded away
+
+Send play data opens on one big copy button and a short line of what is in it; show data opens the full text.
+
+Check 34.51. Fails on v34.50.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

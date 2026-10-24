@@ -21,3 +21,21 @@ Fresh critic (shots/110-r4): 52 = 3, 55 = 3. 53, 54 and 64 were 3 last run (targ
 
 ## Run of 2026-10-24 (lane b, HEAD v34.48)
 Fresh critic (shots/110-r5): 52 = 3, 55 = 3 (same as the last three runs). 53, 54, 64 were 3 (target met) and unchanged. No ship. The critic repeats the same size and layout points that css already floors or that sit under the dialog rule: card 716 wide (Q43), labels read 13-14px but floored at 16px, scrim .80 vs his Q52/Q54 (lighter live fights), hero 56px read as 48px, initials hint is job 96 text. Past the 6-try rule over four runs; best version is HEAD. Only wider card or darker scrim would go further and both need his say.
+
+## Run of 2026-10-24 (lane a, HEAD v34.50, later)
+No pictures, no ship: nothing touching the five end screens changed since the last run. Same state as below.
+
+## Run of 2026-10-24 (lane a, HEAD v34.50, third look)
+No pictures, no ship. HEAD is still v34.50 and nothing touching the five end screens changed since v34.48. 52 and 55 stay at 3 (target 4); 53, 54, 64 at 3 (target met). Past the 6-try rule; best version is HEAD. Going further needs his say: wider end card (against Q43) or darker scrim (against Q52 and Q54).
+
+## Run of 2026-10-24 (lane a, HEAD v34.50, fourth look)
+No pictures, no ship. HEAD unchanged, nothing touching the five end screens since v34.48. 52 and 55 at 3 (target 4); 53, 54, 64 at 3 (target met). Past the 6-try rule; best version is HEAD. Further needs his say: wider end card (Q43) or darker scrim (Q52, Q54).
+
+## Run of 2026-10-24 (lane b, HEAD v34.50, later)
+No pictures, no ship. HEAD unchanged (7e8699560). Same state: 52 and 55 at 3 (target 4), 53, 54, 64 at 3 (met). Needs his say: wider end card (Q43) or darker scrim (Q52, Q54).
+
+## Run of 2026-10-24 (lane a, HEAD v34.50, fifth look)
+No pictures, no ship. Game file unchanged since v34.50 (building kinds only). 52 and 55 at 3 (target 4); 53, 54, 64 at 3 (met). Past the 6-try rule; best version is HEAD. Going further needs his say: wider end card (Q43) or darker scrim (Q52, Q54).
+
+## Run of 2026-10-24 (lane b, HEAD v34.50)
+No new pictures or ship. Nothing touching the five end screens changed since v34.48 (v34.49 and v34.50 are building kinds in the raid map). 52 and 55 stay at 3 (target 4); 53, 54 and 64 at 3 (target met). Past the 6-try rule over five runs; best version is HEAD. Going further needs his say: wider end card (against Q43) or darker scrim (against Q52 and Q54).

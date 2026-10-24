@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.51 - SEND PLAY DATA LEADS WITH COPY, THE TEXT IS FOLDED AWAY
+
+Co-op hunt while he was away. Job 113, critic score 2 on the play data page: a raw debug dump filled the screen. The export text is now folded behind a show data button (closed by default), a muted line says how many runs and notes are in it, copy to clipboard is the one hero, and the page packs to the top. The text, the copy, clear recorder and the restore box are unchanged. The superhot pane also gets its value as the 56px hero and its key line as a chip.
+
+MEASURED. Check 34.51 passes, and fails on v34.50.
 ## v34.50 - SOLID PIECES PER BUILDING KIND
 
 Co-op hunt while he was away. Job 86i ship 2, his 10-20 22:55 and 23:00 orders: a house gets a bed and a sofa, an office a desk row, a warehouse rack rows, a shop a counter and shelves, a workshop benches. Placed last in the map build from grit() so the seeded stream stays put, flush to a wall, clear of doorways, locked rooms and each other, and dropped for any building whose floor they would cut off.

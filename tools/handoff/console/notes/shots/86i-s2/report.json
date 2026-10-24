@@ -1,0 +1,7 @@
+{"generated":"2026-10-24T17:09:29","url":"http://localhost:8808/fixture.html","recipes":"tools/handoff/console/notes/86i-recipes.json","seconds":99,"screens":[
+{"name":"bk1-house","screen":"inside a house, pixel look on","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"bk1-house-1080.jpg","lint":""}},
+{"name":"bk2-office","screen":"inside an office, pixel look on","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"bk2-office-1080.jpg","lint":""}},
+{"name":"bk3-warehouse","screen":"inside a warehouse, pixel look on","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"bk3-warehouse-1080.jpg","lint":""}},
+{"name":"bk4-shop","screen":"inside a shop, pixel look on","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"bk4-shop-1080.jpg","lint":""}},
+{"name":"bk5-workshop","screen":"inside a workshop, pixel look on","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"bk5-workshop-1080.jpg","lint":""}}
+]}
