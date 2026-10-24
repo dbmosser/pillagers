@@ -3667,7 +3667,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.43';
+var VER='34.44';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -44673,7 +44673,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
     // THE WASH IS DRAWN OUTSIDE THE SCALE, deliberately. It has to cover the
     // whole screen, and a fillRect(0,0,W,H) under a 2x scale about the centre
     // covers a quarter of it.
-    ctx.fillStyle='rgba(60,8,5,.45)'; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='rgba(60,8,5,.30)'; ctx.fillRect(0,0,W,H);   // v34.40 (cw-downedcard3), critic on screen 34 (P1 'the heavy red wash tints every HUD colour'): the downed wash is 30 percent, was 45, so the HUD keeps its contrast
     // v9.08, HIS NOTE: this block is too small. Everything below scales with the
     // SCREEN as well as the text setting, which is the half that was missing:
     // the type roles and LH follow the TEXT SIZE setting only, so at 4K this was
@@ -44699,7 +44699,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
     // The bar clears DOWN by its descent, and is narrower so the timer beside it
     // has room of its own instead of leaning on the line below.
     var _tmY=_dy+Math.round(_hH*1.05), _barY=_dy+Math.round(_hH*0.42)+Math.round(_hH*1.05);   // v28.xx (cw-downplate2): the timer has its own row under the word down, centred
-    bar(W/2-100,_barY,200,10,p.downT/CFG.downTime,UIC.danger);   // v34.39 (cw-downedcard): the guide danger colour
+    bar(W/2-100,_barY,200,10,p.downT/CFG.downTime,UIC.tx_2);   // v34.40 (cw-downedcard3), critic on screen 34 (P1 'three red elements stacked, use one accent per card'): the bleed bar is neutral, the danger red stays on the label and the slider   // v34.39 (cw-downedcard): the guide danger colour
     // cw-downgain, HIS WORDS (2026-10-18): "players clock should include 2 decimals so that it is shown to run down". Left aligned so the digits do not
     // push into the bar as they change, and green while a hit's +0.50s shows.
     ctx.font=FS(TYPE.num); ctx.fillStyle=(p.dbGainT>DB_POP*0.5)?'#9fe8b0':UIC.tx_1; ctx.textAlign='center';   // v34.39 (cw-downedcard): the timer is the hero, the biggest type on the card (44, the HUD hero size), in the text colour   // v28.xx (cw-downplate2): one centred column (critic on screen 34: the timer was pushed to the plate edge)
@@ -53990,7 +53990,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.43: The what is new stamp keeps up with the build; the three notes are unchanged. Check 34.43 fails on v34.42',
+  now:'v34.44: The red tint while downed is lighter and the card keeps red only on the label and the slider. Check 34.44 fails on v34.43',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

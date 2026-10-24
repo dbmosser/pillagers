@@ -1,0 +1,5 @@
+## v34.44 - DOWNED WASH LIGHTER, ONE RED ACCENT
+
+Co-op hunt while he was away. Critic on screen 34 (3 of 5): the red wash tints the whole HUD and three red elements stack on the card. The wash drops from 45 to 30 percent and the bleed bar goes neutral.
+
+MEASURED. Check 34.44 passes, and fails on v34.43.

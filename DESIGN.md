@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.44 - DOWNED WASH LIGHTER, ONE RED ACCENT
+
+Co-op hunt while he was away. Critic on screen 34 (3 of 5): the red wash tints the whole HUD and three red elements stack on the card. The wash drops from 45 to 30 percent and the bleed bar goes neutral.
+
+MEASURED. Check 34.44 passes, and fails on v34.43.
 ## v34.43 - THE WHAT IS NEW STAMP KEEPS UP
 
 Co-op hunt while he was away. The card was stamped v34.27 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.
