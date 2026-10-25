@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.70 - THE LOST PAD TAG COLOURS COME FROM THE COLOUR TABLE
+
+Co-op hunt while he was away. Job 117: the v29.33 shared look check found two raw colours typed in the css for the lost pad title (p1 and p2 tag). The tag now takes P1 amber (the warn token) and P2 cyan from script, as his r3-13 says. The same colours show; the css has no raw colour left there. Cause per check: v29.33 was the game (new raw literal, fixed here); v31.90 J8 was the check going blind after v34.67 put a p1 or p2 tag in front of the title words (re-aimed in mkfixture, the pause itself still opens).
+
+MEASURED. Check 34.70 passes, and fails on v34.69.
 ## v34.69 - ONE CORNER PANEL LOOK
 
 Co-op hunt while he was away. The critic on screens 47, 48 and 51: every corner has a differently shaped box. The ammo and gun panels had a cut corner, the plates had no line. Both now draw the same fill, 1px line and 4px radius.

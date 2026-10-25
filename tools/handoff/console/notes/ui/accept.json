@@ -291,17 +291,17 @@
   "score": 3,
   "pass": false,
   "need": 4,
-  "verdict": "The only change is a slightly bigger 'backpack' title; the card, stat rows, slot grid, hint line and missing close button are all as before, so it is still a dark default inventory box rather than a polished screen.",
+  "verdict": "The backpack card still looks like the earlier version: a dark box with loose text rows and plain slots. None of the earlier advice (key-cap hints, close X, slot borders, rarity bars, a raised detail pane) was applied.",
   "findings": [
-   "P1 stat rows, selected item block and hint line (y 480-515, 790-870): Put the stats in a 4-column grid with 24px gutters: label 16px tx-2 above value 20px tx-1. Use 'armour' everywhere. Make 'use' a lime-filled button with an 'e' key-cap chip. Draw hints as key-cap chips (1px --ui-line-hi border, 8px gaps) in a 16px footer row, and cut 'drag to tactical belt'.",
-   "P1 card frame (530-1390 x 327-921): Add a 32px X button 16px from the top-right corner with a 'b' key-cap chip, and delete the text hint. Put --scrim rgba(6,7,8,.80) behind the card. Grow the card to a 90% centred card, or keep at least 24px clear of the hotbar and the tooltip.",
-   "P1 slot grid (566-1354 x 548-737): Give each slot a --ui-bg fill, a 1px --ui-line-hi border and a 4px radius. Add a 3px rarity bar along the bottom of each item. Put '3 / 16' in the header at 16px tx-2. Label '12 / 24' as ammo, or remove it.",
-   "P1 hierarchy: title (y 362) and 'armour plate' (y 792): Make the title 32px f-cond 700 and both item names 20px f-cond 600 tx-1. Put the selected item in a --ui-raised pane with 16px padding, with its price at 16px tx-2. Then the title is the only bold element.",
-   "P2 equipped block (566-790 x 435-500): Put the equipped weapon in a --ui-raised panel with a 64px icon, 16px padding and a 3px rarity bar. Remove the pip or place it clear of the text. Set the label to 16px tx-2 at weight 600."
+   "P1 Card frame (530-1390 x 327-921) and close hint at top right (y 367): Add a 32px X button 16px from the top-right corner with a 'b' key-cap chip, and delete the text. Put --scrim rgba(6,7,8,.80) behind the card. Grow the card to about 90% of the screen, or keep at least 24px between the card and the hotbar.",
+   "P1 Selected item block (y 780-880): Put the selected item in a --ui-raised pane with 16px padding. Name at 20px f-cond 600 tx-1, price at 16px tx-2. Make 'use' a lime-filled button (--acc, --acc-ink text) with an 'e' key-cap chip. Use 'armour' everywhere. Draw hints as key-cap chips (1px --ui-line-hi border, 8px gaps) in a 16px footer row, and cut 'drag to tactical belt'.",
+   "P1 Slot grid (566-1354 x 548-737): Give each slot a --ui-bg fill, a 1px --ui-line-hi border and a 4px radius, with an 8px gap. Add a 3px rarity bar along the bottom of each item. Show '3 / 16' in the header at 16px tx-2.",
+   "P1 Equipped block (566-1354 x 400-525): Put the weapon in a --ui-raised panel with a 64px icon, 16px padding and a 3px rarity bar. Move the pip away from the text. Lay the stats out in a 4-column grid with 24px gutters: label 16px tx-2 above value 20px tx-1. Label '12 / 24' as ammo, or remove it.",
+   "P1 Hierarchy (title y 362, 'armour plate' y 792, 'scav pistol' y 448): Make the title 32px f-cond 700 and both item names 20px f-cond 600 tx-1. Let the lime selected frame and the 'use' button be the only accents on the card."
   ],
-  "pic": "tools/handoff/console/notes/shots/115-after2/23-raid-backpack-open-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/115-after3/23-raid-backpack-open-1080.jpg",
   "task": "manual",
-  "when": "2026-10-25T10:53"
+  "when": "2026-10-25T11:38"
  },
  "25-raid-pause-box": {
   "score": 3,
@@ -722,34 +722,34 @@
  "47-arcade-drop-controls-card": {
   "score": 2,
   "pass": false,
-  "verdict": "The controls card and the duplicate storm toasts are gone, so the screen reads as a plain in-raid HUD, but the HUD is crowded with mismatched panels, type sizes and styles, and the pad focus and hierarchy are unresolved.",
+  "need": 3,
+  "verdict": "The HUD is unchanged from the last review: the vitals, run info panel, ammo block and top-centre score card still each use their own styling, and the screen is cluttered with stacked toasts and tags.",
   "findings": [
-   "P1 Bottom-left vitals (24-526, 905-1068): Make all three bars 12px high with 8px gaps and the same 16px f-cond label inside the left edge. Use --ok for hp, a muted tx-2 fill for stamina, and one cool blue for armour. Align the right edges and fold the 'standing' pill into a 16px tx-2 tag above the stack.",
-   "P1 Top-right run info panel (1502-1902, 244-390): Put it in panel P (fill #16191b at 90%, 1px --ui-line-hi border, 4px radius, 16px padding). Set the title to 20px 700 tx-1 and 'run goals' to 16px tx-2. Use a 32px row pitch with rewards right-aligned in tx-2. Leave a 16px gap below the minimap and make the chevron 24px.",
-   "P1 Bottom-right ammo panel (1577-1910, 868-1022): Use one panel style for every HUD block. Set the weapon name to 20px tx-2, the hero '60' to 56px 800 tx-1, and '/ 360' to 20px tx-2 on the same baseline. Give the panel a 16px inset and a 5% margin that matches the other corners.",
-   "P1 Top-left 'f1 controls' hint (22-135, 155-180): Draw 'f1' as a 28px key cap with tx-1 text on --ui-panel, followed by 'controls' in 16px tx-2 on a panel backing. Make the 'blackout' tag, the top toast and this hint share one pill style with 4px radius, a 3px left bar and 16px text.",
-   "P1 Top-centre score block and extract line (880-1040, 0-135): Offset the card 24px from the top. Make the timer the 56px hero and 'sp' a 20px tx-2 line. Put the extract line inside the card as a 16px teal row. Move the toast to 72px below the card, and move the arrow to a screen-edge indicator."
+   "P1 Bottom-left vitals (24-430, 905-1068): Make all three bars 12px high with 8px gaps and a 16px f-cond label inside the left edge. Use --ok for hp, tx-2 for stamina and one cool blue for armour. Turn 'standing' into a 16px tx-2 tag 8px above the stack with no box.",
+   "P1 Top-right run info panel (1603-1902, 64-210): Use panel P: #16191b at 90%, 1px --ui-line-hi border, 4px radius, 16px padding, and inset it 48px from the edge. Set the title at 20px 700 tx-1 and 'run goals' at 16px tx-2. Use a 32px row pitch with rewards right-aligned in tx-2. Make the chevron 24px and leave 16px below the panel before any world label.",
+   "P1 Top-centre score card, extract line and toasts (880-1160, 0-262): Offset the card 24px from the top. Make 9:58 the 56px hero with 'sp' as a 20px tx-2 line. Put the extract line inside the card as a 16px teal row. Move the arrow to a screen-edge indicator. Put toasts 72px below in one pill style (4px radius, 3px left bar, 16px text, 90% opaque panel) and show only one at a time.",
+   "P1 Bottom-right ammo panel (1577-1910, 868-1022): Use the shared panel P with a 4px radius and 16px padding. Set the weapon name at 20px tx-2, '60' at 56px 800 tx-1 and '/ 360' at 20px tx-2 on the same baseline. Inset 48px from the corner so it lines up with the vitals and run info panel.",
+   "P1 Weapon hotbar and prompt (553-1555, 918-1062): Use 56px slots with 8px gaps, tx-2 numerals at 16px minimum, and a lime border on the selected slot only. Dim empty slots to 50% with no icon. Put the prompt 16px above the bar with one key-cap style shared with 'f1'."
   ],
-  "pic": "tools/handoff/console/notes/shots/12d-after/47-arcade-drop-controls-card-1080.jpg",
-  "task": "12-ui-party-screens",
-  "when": "2026-10-18T21:25",
-  "need": 3
+  "pic": "tools/handoff/console/notes/shots/116-after/47-arcade-drop-controls-card-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-25T11:36"
  },
  "48-arcade-hud-move-to-start": {
   "score": 2,
   "pass": false,
-  "verdict": "The in-raid HUD works as a functional tutorial overlay but looks like stacked, unrelated widgets: the controls panel buries the start prompt, and six different type sizes, mixed panel styles, and washed-out low-contrast text break the guide.",
+  "need": 4,
+  "verdict": "The how-to-play panel and the old B / I backpack clutter are gone, which is a real cleanup, but the HUD is otherwise unchanged: the status stack, score block, run goals and ammo panel are still small, uneven and generic, and the move-to-start prompt is still only a tiny 'shield' tag under the player.",
   "findings": [
-   "P0 Whole screen hierarchy: How to play panel vs the 'Shield - Move to start' prompt: Shrink the panel to a 4-row essentials list or collapse it to a dismissible strip. Promote the start prompt to a 32px tx-1 centred line with a key cap ('WASD  Move to start'). Make the panel 70% opacity so the world and the prompt read first.",
-   "P1 Top-centre score block (Score / 0 SP / 9:46 / Extract 140m): Sit the block 24px below the top edge, SP at 56px f-cond 800 tx-1, timer 20px tx-1, extract line 16px --extract on a 40px --ui-panel 90% chip. Drop the 'Score' label or move it to 16px tx-2.",
-   "P1 Bottom-left status stack (Standing, Armour 60, Stamina, HP 100): One bar component: 12px high, 320px wide, 8px gap, 16px tx-1 label left-aligned above or inside each bar. HP gets the only heavy treatment (24px number). Drop the 'Standing' tab or make it a 16px chip. Move the stack to the 5% margin.",
-   "P1 Bottom-right ammo panel ('B / I backpack', Burst Carbine 24 / 144, 4 items $390): Use a 1px --ui-line-hi bordered panel with 24px padding, inset 5% from the edges. Ammo is the hero at 56px, weapon name 20px tx-2. Make the hint a cap plus a word ('B  Backpack'). Replace '$390' with 'Credits 390' or remove it.",
-   "P1 Run Info / Run goals panel (right, under the minimap): Merge to one 16px tx-2 label, 'Run goals'. Rows at 16px tx-1 with right-aligned SP values in tx-2, 8px gaps, 16px padding, 1px --ui-line-hi border and --ui-panel fill. Leave a 16px gap below the minimap."
+   "P0 Player 'shield' tag (960,600) and hotbar prompt strip (burst carbine / fire / use): Add one centred prompt at about y=62% in 32px f-cond 700 tx-1, e.g. 'move to start', with a 56px-high key cap for wasd (or the pad stick) on a --ui-panel 90% chip with a 1px --ui-line-hi border. Drop the 'shield' label to 16px tx-2 or remove it. Fold fire/use into the hotbar footer legend at 14px.",
+   "P1 Bottom-left stack: 'standing' chip, armour 60, stamina, hp 100 (24-1050): One bar component: 320px wide, 16px high, 8px gap, 16px tx-1 label above each bar in f-cond 600. HP is the only exception: bar 24px high, with a 32px number. Make 'standing' a 16px chip aligned to the same left edge. Inset the stack 48px from the left and bottom, and keep world labels out of the HUD zone.",
+   "P1 Top-centre score block (880-1040, 0-135): One 280x112 --ui-panel 90% card, 1px --ui-line-hi border, 24px from the top. Inside: sp number at 56px f-cond 800 tx-1, timer at 20px tx-1 beside it or below, and the extract line at 16px --extract inside the same card, with the arrow 8px to the right. Remove the 'score' label or set it to 16px tx-2.",
+   "P1 Ammo panel (1578-1910, 870-1020): Inset the panel 48px from the right and bottom. Hero '24' at 56px f-cond 800 tx-1, reserve '/ 144' at 20px tx-2 on the same baseline. Weapon name 20px tx-2 left-aligned, with the weapon icon at 100% opacity beside it. Use the lime tick only to mark the selected slot, or remove it.",
+   "P1 Run info / run goals panel (1603-1900, 65-210): Make it one card: 16px tx-2 label 'run goals', rows at 16px tx-1 with a 32px pitch, and sp values right-aligned in --acc-free tx-2 in a tabular column. 16px padding, 1px --ui-line-hi border, --ui-panel 90% fill, 48px from the right edge and 24px from the top to share the score block's top line. Drop the 'run info' header, since the chevron already says it folds."
   ],
-  "pic": "tools/handoff/console/notes/shots/12-h2/48-arcade-hud-move-to-start-1080.jpg",
-  "task": "12-ui-party-screens",
-  "when": "2026-10-18T13:49",
-  "need": 4
+  "pic": "tools/handoff/console/notes/shots/116-after/48-arcade-hud-move-to-start-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-25T11:37"
  },
  "53-arcade-extracted-bonus-initials": {
   "score": 3,
@@ -1026,18 +1026,18 @@
  "51-arcade-alert-reinforcements": {
   "score": 2,
   "pass": false,
-  "verdict": "The HUD is still a pile of different-looking widgets: pillager reinforcements shows twice (top pill and left log), the left log is a stack of mismatched pills, and the score, minimap, vitals and ammo panels share no common panel, type scale or padding.",
+  "need": 3,
+  "verdict": "The new shot is cleaner in one respect: the red alert banner and the two threat rows are gone from the log. But the top-centre pill still duplicates the log's last row, and the score block, run info panel and vitals still have the problems I listed last time.",
   "findings": [
-   "P0 top-centre 'pillager reinforcements' pill plus left event log (both shots): Show a live alert only in the top card. Log only older events, max 3 rows. Delete 'machine has you in sight'. Remove the duplicate pill.",
-   "P0 left event log: rain / blackout, stronghold, golden enemy, pillager reinforcements: One row component: fixed 320px wide, 32px high, --ui-panel at 90%, 3px left bar (--warn for info, --danger for threat), 16px f-cond 600 tx-1 text, 8px gap between rows, max 3 rows with older ones fading out. Drop the info icons.",
-   "P1 top-right minimap + 'run info' panel: Drop 'run info'. Make 'run goals' a 16px tx-2 label, goal names 20px tx-1, rewards right-aligned in tx-2. Use 16px padding, a 1px --ui-line divider between rows, an 8px gap below the minimap and a 24px margin from the screen edge.",
-   "P1 top-centre score block (0 sp / 9:45 / extract 113m): One Panel P, 16px from the top, containing the 56px f-cond 800 timer, a 20px score and the 16px --extract line with the arrow attached to it.",
-   "P1 bottom-left vitals (standing, armour, stamina, hp): Three bars, each 20px high with 8px gaps. Put the 16px label inside the left edge and the value on the right. Use --ok for hp, --extract for stamina and a neutral for armour. Make 'standing' a plain 16px tx-2 label above the bars. Render the damage chip as a tx-1 number."
+   "P0 top-centre 'pillager reinforcements' pill and the bottom row of the left log: Make the live alert one 320x40 card with a 3px --warn left bar, 20px f-cond 600 tx-1 text, 16px padding, and 16px below the score block. Show the log only for events older than the live alert. Don't repeat the live event as a bright row.",
+   "P0 left event log (running slowly, stronghold, golden enemy, pillager reinforcements): Use a max of 3 rows, each a fixed 320x32 --ui-panel at 90% with a 3px left bar (--warn for info). Use 16px f-cond 600 text in tx-1 or tx-2, with an 8px gap between rows. Delete the icons and the '1 on the map' tail. Fade older rows by opacity only, to a floor of 60%.",
+   "P1 top-right 'run info' / 'run goals' panel: Drop 'run info' and the chevron. Make 'run goals' a 16px tx-2 label, then 20px tx-1 goal names with the reward right-aligned in tx-2. Use 16px padding, 1px --ui-line dividers, and a 24px margin from the screen edge. Give every goal an n/m count. Keep the dock cache label at least 24px inside the screen.",
+   "P1 top-centre score block (0 sp / 9:45 / extract 154m): Use one panel 16px from the top. Put the timer in 56px f-cond 800 tx-1, the score as a 20px line beneath it, and the 16px --extract line with the arrow attached to its left. Use one 4px radius and 16px padding.",
+   "P1 bottom-left vitals (standing, armour, stamina, hp): Draw three bars at 20px high with 8px gaps. Put the 16px label inside the left edge and the value on the right. Use --ok for hp, --extract for stamina and a neutral for armour. Make 'standing' a plain 16px tx-2 label with no box. Show the damage as a tx-1 number that fades out."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-30i-after/51-arcade-alert-reinforcements-1080.jpg",
-  "task": "b-30-ui-hud",
-  "when": "2026-10-18T23:04",
-  "need": 3
+  "pic": "tools/handoff/console/notes/shots/116-after/51-arcade-alert-reinforcements-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-25T11:37"
  },
  "78-raid-pause-box-full-kit": {
   "score": 3,

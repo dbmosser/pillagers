@@ -1,9 +1,10 @@
 Latest stable: v29.09 (2026-10-18 10:23)
-Checked: 2026-10-25 07:14
+Checked: 2026-10-25 09:18
 Play address: http://localhost:8802/stable.html
 Result: no change
 
 Newest test runs, newest first:
+  corpus-1025-0741  v34.69  failing 6, new 5  robots 120 min/0 problems  -> 5 check(s) newly failing, e.g. v9.13 the backpack follows the monitor instead of staying it | v31.90 J8 polling: null and disconnected slots pause in two 
   corpus-1024-2302  v34.53  failing 44, new 39  robots 1161 min/0 problems  -> 39 check(s) newly failing, e.g. v8.93 a HUD panel can be resized by its corner grip, and the | v9.14 the writing on the sector map follows the monitor, lik
   corpus-1024-1829  v34.53  failing 46, new 40  robots 1161 min/0 problems  -> 40 check(s) newly failing, e.g. v8.93 a HUD panel can be resized by its corner grip, and the | v9.14 the writing on the sector map follows the monitor, lik
   corpus-1023-2304  v34.18  failing 14, new 9  robots 4765 min/0 problems  -> 9 check(s) newly failing, e.g. v33.69 cw-pixveg (86d): THE PIXEL TREE, BUSH AND SHADOW. Wit | v33.66 cw-pixwalls (86d): THE PIXEL WALL. With the pixel loo
@@ -11,20 +12,10 @@ Newest test runs, newest first:
   corpus-1022-0707  v34.03  failing 11, new 7  robots 113 min/0 problems  -> 7 check(s) newly failing, e.g. v9.07 a noise you cannot see leaves a ring on the ground, an | v33.60 cw-cx-pixground (86b): THE PIXEL GROUND. With the pix
   corpus-1022-0458  v33.95  failing 21, new 17  robots 285 min/4 problems  -> 17 check(s) newly failing, e.g. v9.07 a noise you cannot see leaves a ring on the ground, an | v9.27 standing behind a container roof draws you through it 
   corpus-1021-2139  v33.94  failing 37, new 32  robots 1217 min/7 problems  -> 32 check(s) newly failing, e.g. v8.55 the two armoured heavies walk heavy | v8.61 the boarding hold cannot be done in instalments
-  corpus-1020-2300  v33.17  failing 3, new 1  robots 232 min/4 problems  -> 1 check(s) newly failing, e.g. v32.71 machines and effects (his art picks a27 a28 a30 a31 a
 
 Checks that are newly red and still red (they block until fixed, or until listed in tools/handoff/stable-known-red.txt):
-  v33.33 the four experimental group names show with a real height on the experime
-  v18.01 auto resolution: two seconds of slow frames step the render scale down on
-  v8.93 a HUD panel can be resized by its corner grip, and the default dropped to
-  v9.14 the writing on the sector map follows the monitor, like the map itself doe
-  v33.56 public recorder has a bounded lowercase preview and primary copy action w
-  v33.28 experimental settings use the existing layout without an empty rail, grou
-  v32.95 daily restore has one primary action, a source stepper and clear undo, a
-  v32.82 an online invite code keeps its case through the host, the shown box, the
-  v32.45 rewards intro hidden and bar 28px, bar flavour and wallet lines hidden, i
-  v32.22 party intro is one short line, sector hint lines hidden, party text 18px
-  v32.19 the racks column is centred in the card, not left of centre
-  v31.75 Settings and keys lists fade out at the bottom and the settings detail pa
-  v31.62 the terms, party, gamble and bar windows draw the same 90 percent card fr
-  v31.59 Keys callout is as wide as the table, scrollbars are 8px, Settings rows s
+  v31.32 cw-trcol, his order (2026-10-18) everything in the right hand upper corne
+  v30.75 the arcade and Undercroft prompts that named both devices follow the last
+  v9.13 the backpack follows the monitor instead of staying its 1080p size
+  v31.90 J8 polling: null and disconnected slots pause in two polls, same slot say
+  v20.09 the Undercroft crowd has builds: in 300 rolled looks there are Broad and

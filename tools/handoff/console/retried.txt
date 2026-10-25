@@ -37,3 +37,5 @@ o-91b-report-news-style
 95-p2-own-process
 106-ui-raid-column-overlaps
 110-ui-demo-end-screens
+115-ui-raid-backpack
+116-ui-demo-raid-hud

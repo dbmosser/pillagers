@@ -6165,6 +6165,25 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.70',what:'the lost pad title tag takes its p1 or p2 colour from the shared table, not from raw colours in the css (his r3-13: P1 amber, P2 cyan)',
+   run:function(){
+     var oSame=NET.same, bad=[], css='', i, h, sp, col, box;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:['gun_rifle'],safe:null,mapIx:0,seed:4242}); __topClear();
+       var st=document.querySelectorAll('style'); for(i=0;i<st.length;i++) css+=st[i].textContent;
+       if(/\.pl\.p[12]\s*\{[^}]*#[0-9a-fA-F]{3,8}\b/.test(css)) bad.push('the css still types a raw colour on .pl.p1 or .pl.p2');
+       togglePauseBox(true); box=document.getElementById('pausebox'); h=document.querySelector('#pausebox h3');
+       if(!box||!h) return 'staging: no pause box';
+       box.classList.add('padlost');
+       [['p1','rgb(245, 183, 59)'],['p2','rgb(95, 215, 232)']].forEach(function(t){
+         NET.same=t[0]; padLostTitle(h,false); sp=h.querySelector('.pl.'+t[0]);
+         if(!sp){ bad.push(t[0]+': no tag span'); return; }
+         col=getComputedStyle(sp).color; if(col!==t[1]) bad.push(t[0]+' tag is '+col+', not '+t[1]);
+       });
+       return bad.length?bad.join('; '):null;
+     }catch(e){ return 'threw: '+(e&&e.stack||e); }
+     finally{ NET.same=oSame; try{ if(pauseOpen) togglePauseBox(false); }catch(_p){} try{ __endRaid('abandon'); }catch(_e){} __topClear(); } }},
   {v:'34.69',what:'the corner panels share one fill, one line and one radius (hudPlate and hudPanel read HUDPS; the critic: every corner has a differently shaped box)',
    run:function(){
      if(typeof HUDPS==='undefined') return 'no shared corner panel style (HUDPS)';

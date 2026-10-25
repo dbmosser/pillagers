@@ -1,0 +1,16 @@
+{
+    "title":  "THE LOST PAD TAG COLOURS COME FROM THE COLOUR TABLE",
+    "why":  "Job 117: the v29.33 shared look check found two raw colours typed in the css for the lost pad title (p1 and p2 tag). The tag now takes P1 amber (the warn token) and P2 cyan from script, as his r3-13 says. The same colours show; the css has no raw colour left there. Cause per check: v29.33 was the game (new raw literal, fixed here); v31.90 J8 was the check going blind after v34.67 put a p1 or p2 tag in front of the title words (re-aimed in mkfixture, the pause itself still opens).",
+    "now":  "The lost pad title looks the same; its p1 and p2 tag colours no longer sit as raw colours in the css.",
+    "edits":  [
+                  {
+                      "anchor":  "#root #pausebox.padlost h3 .pl.p1{ color:#f5b73b; }\n#root #pausebox.padlost h3 .pl.p2{ color:#5fd7e8; }\n",
+                      "replacement":  "/* v34.70 (cw-padtagcol): the p1 and p2 tag colours (his r3-13: P1 amber, P2 cyan) are set from the shared colour table in padLostTitle, not typed here as raw colours. */\n"
+                  },
+                  {
+                      "anchor":  "    var sp=document.createElement(\u0027span\u0027); sp.className=\u0027pl \u0027+same; sp.textContent=same;\n",
+                      "replacement":  "    var sp=document.createElement(\u0027span\u0027); sp.className=\u0027pl \u0027+same; sp.textContent=same;\n    sp.style.color=(same===\u0027p2\u0027)?\u0027#5fd7e8\u0027:UIC.warn;   // v34.70 (cw-padtagcol): P1 amber (the warn token), P2 cyan, his r3-13\n"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the lost pad title tag takes its p1 or p2 colour from the shared table, not from raw colours in the css (his r3-13: P1 amber, P2 cyan)\u0027,\n   run:function(){\n     var oSame=NET.same, bad=[], css=\u0027\u0027, i, h, sp, col, box;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[\u0027gun_rifle\u0027],safe:null,mapIx:0,seed:4242}); __topClear();\n       var st=document.querySelectorAll(\u0027style\u0027); for(i=0;i\u003cst.length;i++) css+=st[i].textContent;\n       if(/\\.pl\\.p[12]\\s*\\{[^}]*#[0-9a-fA-F]{3,8}\\b/.test(css)) bad.push(\u0027the css still types a raw colour on .pl.p1 or .pl.p2\u0027);\n       togglePauseBox(true); box=document.getElementById(\u0027pausebox\u0027); h=document.querySelector(\u0027#pausebox h3\u0027);\n       if(!box||!h) return \u0027staging: no pause box\u0027;\n       box.classList.add(\u0027padlost\u0027);\n       [[\u0027p1\u0027,\u0027rgb(245, 183, 59)\u0027],[\u0027p2\u0027,\u0027rgb(95, 215, 232)\u0027]].forEach(function(t){\n         NET.same=t[0]; padLostTitle(h,false); sp=h.querySelector(\u0027.pl.\u0027+t[0]);\n         if(!sp){ bad.push(t[0]+\u0027: no tag span\u0027); return; }\n         col=getComputedStyle(sp).color; if(col!==t[1]) bad.push(t[0]+\u0027 tag is \u0027+col+\u0027, not \u0027+t[1]);\n       });\n       return bad.length?bad.join(\u0027; \u0027):null;\n     }catch(e){ return \u0027threw: \u0027+(e\u0026\u0026e.stack||e); }\n     finally{ NET.same=oSame; try{ if(pauseOpen) togglePauseBox(false); }catch(_p){} try{ __endRaid(\u0027abandon\u0027); }catch(_e){} __topClear(); } }},"
+}

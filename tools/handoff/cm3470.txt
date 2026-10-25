@@ -1,0 +1,7 @@
+v34.70: the lost pad tag colours come from the colour table
+
+The lost pad title looks the same; its p1 and p2 tag colours no longer sit as raw colours in the css.
+
+Check 34.70. Fails on v34.69.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
