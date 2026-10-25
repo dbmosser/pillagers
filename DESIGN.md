@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.55 - SETTINGS PANE BACK TO ONE SHAPE
+
+Co-op hunt while he was away. Job 113: nine settings checks went red because v34.51 to v34.53 gave the detail pane a hero value and a packed shape that older rulings and checks forbid. The pane is back to full height without the repeated value; a jump chip never scrolls the list; one raw hex colour became a named colour.
+
+MEASURED. Check 34.55 passes, and fails on v34.54.
 ## v34.54 - CAREER CONTROLS LIST FOLDED, MID-BOTTOM LEFT
 
 Co-op hunt while he was away. His answer rs-1 (2026-10-24): the keys list should sit mid-bottom left, minimized, a key reveals it. A career raid starts with the list folded; the folded f1 line moves down to stand where the opened list stands, so F1 opens it upward from there. The demo keeps its own start.

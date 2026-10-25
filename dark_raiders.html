@@ -2344,7 +2344,7 @@ body:has(#hub.on) #hubtoast{visibility:hidden;}
 #root #settingsmodal #setlist .row.save-key-hint > span.hint{ display:flex; flex:0 0 calc(var(--sp-5) * 6); justify-content:center; align-items:center; font-size:var(--fs-label) !important; color:var(--tx-2); }
 #root #settingsmodal #setlist .save-key-hint kbd{ display:inline-block; min-width:40px; box-sizing:border-box; padding:4px 8px; border:1px solid var(--ui-line-hi); border-radius:var(--rad); font:600 var(--fs-label)/1.2 var(--f-cond); text-align:center; }
 /* v28.xx (cw-cx-expui): critic job 61 round 1: empty category gutter, detached description, back in the value column, ungrouped switches and tiny idle arrows. Keep the existing Settings list/detail layout. */
-#root #settingsmodal.expmode #setlist{ --rail:0px; padding-left:0; padding-right:8px; padding-bottom:72px; scroll-padding-top:64px; -webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 48px),transparent); mask-image:linear-gradient(to bottom,#000 calc(100% - 48px),transparent); }
+#root #settingsmodal.expmode #setlist{ --rail:0px; padding-left:0; padding-right:8px; padding-bottom:72px; scroll-padding-top:64px; -webkit-mask-image:linear-gradient(to bottom,black calc(100% - 48px),transparent); mask-image:linear-gradient(to bottom,black calc(100% - 48px),transparent); }
 #root #settingsmodal.expmode #setlist .exphead{ position:sticky; top:0; z-index:4; width:100%; box-sizing:border-box; height:64px; min-height:64px; margin:0; padding:0 var(--sp-3); display:flex; align-items:center; gap:var(--sp-3); background:var(--ui-panel); border:0; border-bottom:1px solid var(--ui-line-hi); }
 #root #settingsmodal.expmode #setlist .exphead button{ width:auto; min-width:0 !important; min-height:48px; padding:0 var(--sp-2); margin:0; border:1px solid var(--ui-line-hi) !important; border-radius:var(--rad); background:transparent; color:var(--tx-1); font:600 var(--fs-body)/1 var(--f-cond); }
 #root #settingsmodal.expmode #setlist .expcount{ margin-left:auto; color:var(--tx-2); font:400 var(--fs-label)/1 var(--f-body); }
@@ -2471,15 +2471,15 @@ body:has(#wnmodal.on) #hubtoast,body:has(#settingsmodal.recmode.on) #hubtoast{vi
 #root #settingsmodal.recmode #exporttext + div + div{ order:2; }
 #root #settingsmodal.recmode #showdata{ height:56px; min-height:56px; padding:0 var(--sp-3) !important; font:600 var(--fs-body)/1 var(--f-cond); letter-spacing:var(--track); background:transparent; color:var(--tx-1); border:1px solid var(--ui-line-hi); border-radius:var(--rad); }
 #root #settingsmodal.recmode #showdata:hover, #root #settingsmodal.recmode #showdata:focus-visible, #root #settingsmodal.recmode #showdata.padfocus{ color:var(--acc); border-color:var(--acc); outline:0; }
-#root #settingsmodal #setwrap > #setdetail:not(.daily-restore-detail) .sdv{ display:block; flex:1 1 100%; margin:var(--sp-2) 0 0; padding:0; border:0; font:800 var(--fs-hero)/1.1 var(--f-cond); letter-spacing:var(--track); color:var(--acc); overflow-wrap:anywhere; }
+/* v34.54 (cw-setrevert) job 113: the detail pane hero value and the packed pane (v34.51 to v34.53) are out again. Reason: the older rulings and checks 30.05, 31.75 and 33.28 say the pane never repeats the row value (the row shows it) and runs the full list height; the critic scored the two shapes against each other with no gain (92 stayed 3). */
 /* v34.52 (cw-playdata2) job 113, critic round 2 (31 and 92 both 3). 31: the counts are the page headline (32px), the actions group at an 8px gap, restore is its own quiet panel and its helper is one short amber line (the old sentence pointed "above" at a box that is folded now). 92: the pane packs to its content instead of a tall empty box, the hero value is tx-1 (lime stays for focus only), the chip is body size and the gaps sit on the 8px grid. */
 #root #settingsmodal.recmode #spane_rec > #expsum{ font:700 var(--fs-title)/1.2 var(--f-cond); color:var(--tx-1); letter-spacing:var(--track); margin:0 0 var(--sp-4); }
 #root #settingsmodal.recmode #exporttext + div{ gap:var(--sp-1) !important; }
 #root #settingsmodal.recmode #exporttext + div + div{ margin-top:var(--sp-4) !important; padding:var(--sp-3) !important; border:1px solid var(--ui-line-hi); border-radius:var(--rad); background:var(--ui-panel); }
 #root #settingsmodal.recmode #spane_rec > div:has(> #rescode) > .msub{ font:600 var(--fs-label)/1.4 var(--f-cond) !important; color:var(--warn); }
-#root #settingsmodal #setwrap > #setdetail:not(.daily-restore-detail){ align-self:flex-start; min-height:0; }
-#root #settingsmodal #setwrap > #setdetail:not(.daily-restore-detail) .sdv{ color:var(--tx-2); margin-top:var(--sp-2); }
-#root #settingsmodal #setwrap > #setdetail:not(.daily-restore-detail) .sdv.on{ color:var(--acc); }   /* v34.53 (cw-playdata3) job 113, critic round 3 on 92: the live value is lime only when it is on; the restore warning is body size (the critic read it as 12px) */
+
+
+
 #root #settingsmodal.recmode #spane_rec > div:has(> #rescode) > .msub{ font-size:var(--fs-body) !important; }
 #root #settingsmodal #setwrap > #setdetail .sdkey{ display:inline-block; flex:0 0 auto; margin-top:var(--sp-2); padding:var(--sp-1) var(--sp-2); border:1px solid var(--ui-line-hi); border-radius:var(--rad); color:var(--tx-1); font:600 var(--fs-body)/1.2 var(--f-cond); letter-spacing:var(--track); }
 @media(max-width:1100px){
@@ -3687,7 +3687,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.54';
+var VER='34.55';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19291,7 +19291,7 @@ function padSetFocus(el){
   if(el!==old){ try{ sndUi('move'); }catch(_su){} }   // v24.49 (his #45): the highlight ticks as it moves
   try{ UIM.focus(el,old); }catch(_um){}   // v28.xx (cw-uimotion): the focus ring eases to its target, the focused cell grows to 1.05
   PAD.focus=el;
-  try{ el.scrollIntoView({block:'nearest',inline:'nearest'}); }catch(_e){}
+  try{ if(!(el.closest&&el.closest('.setjump'))) el.scrollIntoView({block:'nearest',inline:'nearest'}); }catch(_e){}   // v34.54 (cw-setrevert): the jump chips are sticky, so focusing one never moves the list
   try{ var _sl=el.closest&&el.closest('#setlist'), _sj=_sl&&_sl.querySelector('.setjump'); if(_sj&&!_sj.contains(el)){ var _c=_sj.getBoundingClientRect().bottom-el.getBoundingClientRect().top, _z=(_sl.offsetHeight>0)?_sl.getBoundingClientRect().height/_sl.offsetHeight:1; if(_c>0) _sl.scrollTop-=(_c+4)/(_z>0?_z:1); } }catch(_sj2){}   // v28.38 (cloud-coop-pad-settings-under-bar), CLOUD HUNT 2026-10-15: in Settings the sticky jump bar covers the top of the list, so a control the pad highlights scrolls clear below it; the overlap is converted from screen pixels to list pixels under the menu zoom, as setSecJump notes
   // v22.01, from the whole-game bug hunt of 2026-10-08 (K11): A HIGHLIGHTED STASH ITEM IS NAMED. The line above the stash grid
   // (name, count, price, what wants it, a gun's damage) is written when the mouse comes onto a cell, and the controller highlight
@@ -54184,7 +54184,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.54: Career raids start with the controls list folded; the folded f1 line stands at the lower left beside the feed, and F1 opens the list upward from it. Check 34.54 fails on v34.53',
+  now:'v34.55: The settings side pane is back to its full height and no longer repeats the row value. Check 34.55 fails on v34.54',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
