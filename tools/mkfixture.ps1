@@ -10518,7 +10518,7 @@ window.__REGRESS=[
      if(!modal||!list||typeof renderSettings!=='function') return 'SKIP: no settings page';
      try{
        __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       oldCls=modal.className; modal.classList.add('on'); SETSUB='exp'; renderSettings();
+       oldCls=modal.className; openSettings('display'); SETSUB='exp'; renderSettings();   // v34.56 (cw-setrevert2): own state. A check that left the play data tab open (recmode) hid the game pane and every group read 0px; openSettings('display') clears it
        gs=list.querySelectorAll('[data-exp-group]');
        if(gs.length!==4) return 'expected four group rows, found '+gs.length;
        for(i=0;i<gs.length;i++){
