@@ -2788,8 +2788,10 @@ window.__REGRESS=[
      // drifting by accident, so it moves with a deliberate change and not before.
      // v21.55 (V-B11, the 4K visual pass) ended the board under its last name on purpose: 16 px less, 384x186 from that build on.
      var bh0=(typeof VER!=='undefined'&&parseFloat(VER)>=21.55)?186:202;
-     if(Math.abs(B.w-384)>12||Math.abs(B.h-bh0)>14)
-       bad.push('the default board is '+B.w+'x'+B.h+', it should be about 384x'+bh0);
+     // v34.25 (cw-hudtype, the critic on screens 21, 19, 37, 61): the board scale went 1.15 to 1.08 (16 px label size), so 361x175 from that build on.
+     var bw0=384; if(typeof VER!=='undefined'&&parseFloat(VER)>=34.25){ bw0=361; bh0=175; }
+     if(Math.abs(B.w-bw0)>12||Math.abs(B.h-bh0)>14)
+       bad.push('the default board is '+B.w+'x'+B.h+', it should be about '+bw0+'x'+bh0);
      var cv=document.getElementById('cv'), r=cv.getBoundingClientRect();
      function ev(t,x,y,tgt){ (tgt||cv).dispatchEvent(new MouseEvent(t,
        {button:0,bubbles:true,clientX:r.left+x,clientY:r.top+y})); }
@@ -3999,8 +4001,10 @@ window.__REGRESS=[
      var g2=__state(); g2.ents.length=0; g2.player.iv=99;
      for(var f2=0;f2<6;f2++) __loop(performance.now()+f2*16.7);
      var vb=__hud().box.body;
-     if(!vb||Math.abs(vb.w-532)>10)
-       bad.push('control: the vitals panel is '+(vb?Math.round(vb.w):'missing')+'px wide at 1080p, it should be 532 - the map font has leaked into the HUD');
+     // v34.25 (cw-hudtype): the vitals share the gun card zoom 1.36 (was 1.40), so 517 wide from that build on.
+     var vw0=(typeof VER!=='undefined'&&parseFloat(VER)>=34.25)?517:532;
+     if(!vb||Math.abs(vb.w-vw0)>10)
+       bad.push('control: the vitals panel is '+(vb?Math.round(vb.w):'missing')+'px wide at 1080p, it should be '+vw0+' - the map font has leaked into the HUD');
      // CONTROL 3: bigger writing must still fit on the screen it is drawn on.
      if(b.tw>3840) bad.push('control: the 4K map heading is wider than the screen');
      return bad.length?bad.join('; '):null; }},
@@ -18852,7 +18856,7 @@ window.__REGRESS=[
        g.bagOpen=false; g.mapOpen=false; g.paused=false; keys={}; mouse.down=false; a0=g.arcade; g.arcade=1;
        hudPanel=function(x,y,w,h,a,plain){ rec.push({w:w,h:h,a:a}); return oP.apply(this,arguments); };
        try{ __frame(0.016); }finally{ hudPanel=oP; }
-       for(i=0;i<rec.length;i++) if(rec[i].a===0.62) dc=rec[i];
+       for(i=0;i<rec.length;i++) if(!rec[i].plain&&rec[i].a===0.88) dc=rec[i];   // v34.24 (cw-hudfill): the gun card is the one panel with the tab, same 0.88 fill as the rest (was 0.62)
        if(!dc) return 'the demo gun card is not drawn';
        if(dc.h>LH(60)+0.5) return 'the demo gun card is '+dc.h+' high, over '+LH(60);
        return null;
@@ -20258,7 +20262,7 @@ window.__REGRESS=[
      function pass(){ rec=[]; hudPanel=function(x,y,w,h,a,plain){ rec.push({w:w,h:h,a:a,plain:plain}); return oP.apply(this,arguments); };
        try{ __frame(0.016); }finally{ hudPanel=oP; }
        return rec.slice(); }
-     function card(r){ var i, o=null; for(i=0;i<r.length;i++) if(r[i].a===0.62) o=r[i]; return o; }
+     function card(r){ var i, o=null; for(i=0;i<r.length;i++) if(!r[i].plain&&r[i].a===0.88) o=r[i]; return o; }   // v34.24: the gun card is the one tabbed panel, fill 0.88 like the rest (was 0.62)
      try{
        __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:['gun_shotgun','gun_rifle'],safe:null,mapIx:0,seed:4242});
@@ -66724,10 +66728,11 @@ window.__REGRESS=[
    run:function(){
      if(typeof drawWardenAt!=='function'||typeof wardenDrawScale!=='function') return 'this build draws the boss at a plain warden size';
      if(typeof wc==='undefined'||!wc||typeof wc.getTransform!=='function'||!window.__deploy) return 'SKIP: no world canvas in this fixture';
-     var bad=[], o=drawWardenS, seen=[], a, b;
+     var bad=[], o=drawWardenS, seen=[], a, b, px0=CFG.xfPix;
      try{
        __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        if(!G||G.over) return 'SKIP: staging: no raid';
+       CFG.xfPix=0;   // v33.89 (pixel machines) bakes wardens at its own size (plain 1.33); this check is about the vector draw scale
        drawWardenS=function(e){ var t=wc.getTransform(); seen.push({a:t.a,x:t.a*e.x+t.e,y:t.d*e.y+t.f}); };
        wc.save(); wc.setTransform(1,0,0,1,0,0);
        drawWardenAt({kind:'warden',x:500,y:400,r:30,face:0});
@@ -66742,7 +66747,7 @@ window.__REGRESS=[
        }
      }catch(ex){ bad.push('threw: '+(ex&&ex.message||ex)); }
      finally{
-       drawWardenS=o;
+       drawWardenS=o; CFG.xfPix=px0;
        try{ __endRaid('abandon'); __topClear(); }catch(_c){}
      }
      return bad.length?bad.join('; '):null; }},
