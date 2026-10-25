@@ -1,0 +1,23 @@
+[0,120) FAIL x1 || v9.13 the backpack follows the monitor instead of staying its 1080p size -> control: the 1080p panel changed to 862x596, it was 830x477
+[120,240) PASS, 110 checks, 10 could not run
+[240,360) PASS, 110 checks, 10 could not run
+[360,480) FAIL x2 || v31.90 J8 polling: null and disconnected slots pause in two polls, same slot says press a and physical A resumes; both player windows keep t... -> host null: no pad lost pause within two polls; host: returning slot did not say press a; host: physical A did not resume and spend its press; p2 null: no pad lost pause within two polls; p2: returning slot did not say press a; p2: physical A did not resume and spend its press; host connected:false: no pad lost pause within two polls; host: returning slot did not say press a; host: physical A d || v31.32 cw-trcol, his order (2026-10-18) everything in the right hand upper corner in a vertical 1 by 1 list, all the same size: in a raid th... -> career 1080p: expected compact wallet, minimap and run info plates; found 2; career 4k: expected compact wallet, minimap and run info plates; found 2; the demo 1080p: expected compact wallet, minimap and run info plates; found 1
+[480,600) FAIL x1 || v30.75 the arcade and Undercroft prompts that named both devices follow the last input device: press any key or press any button on the attr... -> with the keyboard in use the easy mode card reads "want easy mode? | y  yes | n  no | 12", not Y yes and N no; with the pad in use the easy mode card reads "want easy mode? | a  yes | b  no | 12", not A yes and B no
+[600,720) FAIL x1 || v29.33 the title and mode menu run on the shared look: tokens in the CSS equal UIT, the ui-shared block has no raw color or font-size litera... -> ui-shared has a NEW raw colour or font-size literal in: #root #pausebox.padlost h3 .pl.p1
+[720,840) PASS, 110 checks, 10 could not run
+[840,960) PASS, 103 checks, 17 could not run
+[960,1080) PASS, 90 checks, 30 could not run
+[1080,1200) PASS, 109 checks, 11 could not run
+[1200,1320) PASS, 102 checks, 18 could not run
+[1320,1440) PASS, 96 checks, 24 could not run
+[1440,1560) PASS, 103 checks, 17 could not run
+[1560,1680) FAIL x1 || v20.09 the Undercroft crowd has builds: in 300 rolled looks there are Broad and Curved people, and a crowd member is drawn in the build roll... -> no Broad or Curved in 300 crowd looks ({"none":300})
+[1680,1800) PASS, 111 checks, 9 could not run
+[1800,1920) PASS, 111 checks, 9 could not run
+[1920,2040) PASS, 93 checks, 27 could not run
+[2040,2160) PASS, 92 checks, 28 could not run
+[2160,2280) PASS, 106 checks, 14 could not run
+[2280,2400) PASS, 111 checks, 9 could not run
+[2400,2520) PASS, 117 checks, 3 could not run
+[2520,2604) PASS, 80 checks, 4 could not run
+ALL DONE 08:47

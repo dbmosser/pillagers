@@ -1269,3 +1269,8 @@
 2026-10-25 08:40:19 FUZZ END raids=12 problems=0 unique=0 reason=time minutes=59.1
 2026-10-25 08:40:19 raid 13 demo2p raidSeed=308005081 map=0 god=0 sec=249 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=7685 score=0 ents=50 travelPx=22381 fires=172 menuPct=13 heapMB=65 p2=link_2s_join_4s_pad_fwd gfx=14478/16.75/16.75/24/1 gfx2=14425/16.75/16.75/12/1 work=14881/4.25/8.25/12.75 work2=14931/4.25/8.75/12.25 build=34.69
 2026-10-25 08:40:20 FUZZ END raids=13 problems=0 unique=0 reason=time minutes=59.1
+2026-10-25 08:42:18 FUZZ START seed=1186583372 minutes=60 raidsec=300 port=9332 srv=8806 build=34.69 maps=0 size=1920x1080 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
+2026-10-25 08:42:18 FUZZ ERROR Exception calling "AppendAllText" with "3" argument(s): "The process cannot access the file 'C:\PillagersIdle\out\fuzz\fuzz.log' because it is being used by another process." at 76
+2026-10-25 08:42:19 FUZZ END raids=0 problems=0 unique=0 reason=ERROR: Exception calling "AppendAllText" with "3" argument(s): "The process cannot access the file 'C:\PillagersIdle\out\fuzz\fuzz.log' because it is being used by another process." minutes=0.3
+2026-10-25 08:47:23 FUZZ START seed=238573633 minutes=60 raidsec=300 port=9331 srv=8806 build=34.69 maps=0 size=1920x1080 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
+2026-10-25 08:47:29 raid 1 demo2p raidSeed=1406481213 map=0 god=1 sec=305 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=9257 score=0 ents=46 travelPx=25498 fires=101 menuPct=16 heapMB=64 p2=link_4s_join_5s_pad_fwd gfx=17859/16.75/16.75/245/1 gfx2=17880/16.75/16.75/233/1 work=17934/4.75/10.25/27.25 work2=18022/4.25/15.75/22.25 build=34.69

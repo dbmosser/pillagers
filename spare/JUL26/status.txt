@@ -1,11 +1,11 @@
 host=JUL26
-seen=2026-10-25 08:41
-epoch=1792932118
+seen=2026-10-25 08:52
+epoch=1792932729
 game=6da8c594 v34.69
-test_run=running corpus-1025-0741.txt
+test_run=idle
 robots=2
-ram_free_gb=11
+ram_free_gb=9.1
 push_ok=1
 runner=8E87772F
 mode=idle
-spare_pc=off or offline (its name is not on the network), 08:36
+spare_pc=off or offline (its name is not on the network), 08:47
