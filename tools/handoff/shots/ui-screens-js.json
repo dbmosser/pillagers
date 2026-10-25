@@ -625,6 +625,22 @@
                         "query":  "",
                         "expect":  "U.on(\u0027#pausebox\u0027)",
                         "js":  "U.dep({kit:[\u0027gun_carbine\u0027,\u0027gun_smg\u0027,\u0027medkit\u0027,\u0027bandage\u0027,\u0027bandage\u0027,\u0027plate\u0027,\u0027frag\u0027,\u0027smoke\u0027,\u0027stim\u0027],seed:4242,mapIx:0}); await U.wait(2500); await U.key(\u0027KeyP\u0027); await U.wait(1200);"
+                    },
+                    {
+                        "name":  "79-raid-controls-folded-career",
+                        "screen":  "Career raid at drop with the game default: controls list folded, mid bottom left (his rs-1, v34.54)",
+                        "before":  "none (new 10-25): query career=1 (the fixture otherwise turns career raids off), deploy with keepLegend:1, wait 2.5 s",
+                        "query":  "?career=1",
+                        "expect":  "U.raid()&&U.modal()===''&&__state().career===1&&__state().legendOn===0",
+                        "js":  "U.dep({kit:['gun_carbine','medkit','bandage','bandage','plate','frag','smoke'],seed:4242,mapIx:0,keepLegend:1}); await U.wait(2500); var g=__state(); return 'career '+g.career+' legendOn '+g.legendOn;"
+                    },
+                    {
+                        "name":  "80-raid-controls-career-after-f1",
+                        "screen":  "Career raid after one F1: the compact controls list opens (his rs-1, v34.54)",
+                        "before":  "none (new 10-25): as 79, then F1 once, wait 1.3 s",
+                        "query":  "?career=1",
+                        "expect":  "U.raid()&&U.modal()===''&&__state().career===1&&__state().legendOn===1",
+                        "js":  "U.dep({kit:['gun_carbine','medkit','bandage','bandage','plate','frag','smoke'],seed:4242,mapIx:0,keepLegend:1}); await U.wait(2500); await U.key('F1'); await U.wait(1300); var g=__state(); return 'career '+g.career+' legendOn '+g.legendOn;"
                     }
                 ]
 }

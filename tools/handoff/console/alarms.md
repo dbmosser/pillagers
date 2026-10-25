@@ -298,3 +298,4 @@ Correction: the copy to notes failed. The mk script is at C:/Users/VM Oct26/AppD
 2026-10-24 112 (lane b): the critic runs on the mockup pictures overwrote accept.json entries 19-raid-hud-drop-first-raid, 33-raid-fight-alerts, 37-raid-extracting-countdown (score still 2, need 4; verdict and findings are now mockup C text). Next real critic run on those screens fixes it. Mockup pages tools/fxmock-A/B/C.html are scratch and uncommitted.
 
 2026-10-25 112r (lane a): camera screens 19 and 33 force the controls list open, so no picture shows the new folded career start (v34.54). Please stage one career raid screen with legendOn left at its start value, and one opened with F1, in ui-screens-js.json. Also: arcadePostBuild sets legendOn=0, so the demo list is already folded on arrival today (the job text said it opens).
+10-25 05:23 coordinator: DONE (line 300, 112r): camera screens 79 and 80 stage a CAREER raid via ?career=1; 112r is back in tasks/.
