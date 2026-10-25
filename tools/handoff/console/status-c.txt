@@ -1,1 +1,1 @@
-10-25 10:10 waiting for RAM: 2 GB free, a helper starts at 3; 122-gfx-pixel-melee kept
+10-25 10:16 waiting for RAM: 1 GB free, a helper starts at 3; 123-gfx-pixel-reload-forged kept

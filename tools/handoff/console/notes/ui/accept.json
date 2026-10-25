@@ -291,17 +291,17 @@
   "score": 3,
   "pass": false,
   "need": 4,
-  "verdict": "The backpack card still looks like the earlier version: a dark box with loose text rows and plain slots. None of the earlier advice (key-cap hints, close X, slot borders, rarity bars, a raised detail pane) was applied.",
+  "verdict": "The only change is a small x button in the corner, and it sits beside the old 'b or i to close' text. The rest of the card still looks like a debug panel: the slots are bare, the item detail is flat, and the stats are one cramped line.",
   "findings": [
-   "P1 Card frame (530-1390 x 327-921) and close hint at top right (y 367): Add a 32px X button 16px from the top-right corner with a 'b' key-cap chip, and delete the text. Put --scrim rgba(6,7,8,.80) behind the card. Grow the card to about 90% of the screen, or keep at least 24px between the card and the hotbar.",
-   "P1 Selected item block (y 780-880): Put the selected item in a --ui-raised pane with 16px padding. Name at 20px f-cond 600 tx-1, price at 16px tx-2. Make 'use' a lime-filled button (--acc, --acc-ink text) with an 'e' key-cap chip. Use 'armour' everywhere. Draw hints as key-cap chips (1px --ui-line-hi border, 8px gaps) in a 16px footer row, and cut 'drag to tactical belt'.",
-   "P1 Slot grid (566-1354 x 548-737): Give each slot a --ui-bg fill, a 1px --ui-line-hi border and a 4px radius, with an 8px gap. Add a 3px rarity bar along the bottom of each item. Show '3 / 16' in the header at 16px tx-2.",
-   "P1 Equipped block (566-1354 x 400-525): Put the weapon in a --ui-raised panel with a 64px icon, 16px padding and a 3px rarity bar. Move the pip away from the text. Lay the stats out in a 4-column grid with 24px gutters: label 16px tx-2 above value 20px tx-1. Label '12 / 24' as ammo, or remove it.",
-   "P1 Hierarchy (title y 362, 'armour plate' y 792, 'scav pistol' y 448): Make the title 32px f-cond 700 and both item names 20px f-cond 600 tx-1. Let the lime selected frame and the 'use' button be the only accents on the card."
+   "P1 close x (1345-1383 x 327-363) and 'b or i to close' text (y 367): Delete the 'b or i to close' text. Make the x a 32px button, 16px from the card's top and right edges, with a 'b' key-cap chip beside it. Align its centre with the title baseline at y 362.",
+   "P1 selected item block (y 780-880), 'use' / 'armor' row and hint line: Put the block in a --ui-raised pane with 16px padding. Make 'use' a lime --acc button with --acc-ink text and an 'e' key-cap chip. Change 'armor' to 'armour'. Render the hints as key-cap chips (1px --ui-line-hi border, 8px gaps) in a footer row. Cut 'drag to tactical belt'.",
+   "P1 slot grid (566-1354 x 548-737): Give each slot a --ui-bg fill, a 1px --ui-line-hi border, a 4px radius and an 8px gap. Add a 3px rarity bar along the bottom of each filled slot. Show '3 / 16' at 16px tx-2 in the section header. Put the item count in a small --ui-void chip.",
+   "P1 equipped block (566-1354 x 400-525): Put the weapon in a --ui-raised panel with a 64px icon, 16px padding and a 3px rarity bar. Move the pip clear of the text. Lay the stats out in a 4-column grid with 24px gutters: label 16px tx-2 above value 20px tx-1. Label '12 / 24' as 'ammo'.",
+   "P1 card frame (530-1390 x 318-921) and hotbar overlap (y 921-950): Put --scrim rgba(6,7,8,.80) behind the card. Either grow the card to about 90% of the screen, or lift it so there is at least 24px between its bottom edge and the hotbar tooltip."
   ],
-  "pic": "tools/handoff/console/notes/shots/115-after3/23-raid-backpack-open-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/120-after/23-raid-backpack-open-1080.jpg",
   "task": "manual",
-  "when": "2026-10-25T11:38"
+  "when": "2026-10-25T14:12"
  },
  "25-raid-pause-box": {
   "score": 3,

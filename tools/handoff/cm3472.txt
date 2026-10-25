@@ -1,0 +1,7 @@
+v34.72: pixel body keeps its swing
+
+A crowbar swing or punch keeps the pixel body on every look.
+
+Check 34.72. Fails on v34.71.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.72 - PIXEL BODY KEEPS ITS SWING
+
+Co-op hunt while he was away. Idea I3 of the graphics list. A crowbar swing or punch flipped a plain-look pillager into the old vector art for 0.22 s. The pixel body now stays and swings the pixel crowbar or fist, as the three full sets already do. Hand colour is the skin ramp. Same arc timing on barT and punchT.
+
+MEASURED. Check 34.72 passes, and fails on v34.71.
 ## v34.71 - RAID BACKPACK CLOSE BUTTON
 
 Co-op hunt while he was away. His Q1 rule: every menu screen gets a close button and ESC closes it. The raid backpack had ESC, Tab and B but no button. One 36 px ghost square with the close glyph (the pad B when the last input was a pad) sits in the top right of the card header; a click does what ESC does.

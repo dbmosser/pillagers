@@ -1,0 +1,5 @@
+## v34.72 - PIXEL BODY KEEPS ITS SWING
+
+Co-op hunt while he was away. Idea I3 of the graphics list. A crowbar swing or punch flipped a plain-look pillager into the old vector art for 0.22 s. The pixel body now stays and swings the pixel crowbar or fist, as the three full sets already do. Hand colour is the skin ramp. Same arc timing on barT and punchT.
+
+MEASURED. Check 34.72 passes, and fails on v34.71.

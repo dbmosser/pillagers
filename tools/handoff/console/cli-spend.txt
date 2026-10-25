@@ -1281,3 +1281,5 @@
 2026-10-25 0.3811237 118-easy-card-and-corner-reds
 2026-10-25 0.7020594000000001 117-lost-pad-reds
 2026-10-25 0.2958639 119-backpack-size-and-crowd-reds
+2026-10-25 0.1212 critic-manual
+2026-10-25 0.5052523000000001 120-raid-backpack-close

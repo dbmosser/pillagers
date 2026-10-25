@@ -6166,6 +6166,31 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.72',what:'a crowbar swing or punch keeps the pixel body on a plain look (no flip to the vector art)',
+   run:function(){
+     __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     if(typeof pixDrawOp!=='function'||typeof pxLookOf!=='function') return 'SKIP: no pixel painter';
+     var bad=[], g, st, b0, i, sv=P.cosOutfit, lk;
+     try{
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state();
+       if(!g||g.over) return 'SKIP: no raid';
+       st={hero:1,own:g.player,team:'ally',moving:false,sprint:false,ads:false,hurt:0,bulk:0,rl:0};
+       P.cosOutfit='outnone'; lk=pxLookOf(st);
+       if(!lk||pxIsSet(lk.clothes)) return 'SKIP: the hero is not a plain look';
+       wc.save(); wc.setTransform(1,0,0,1,0,0);
+       try{
+         [['a punch',0.1,0],['a crowbar swing',0,0.1]].forEach(function(q){
+           G.punchT=q[1]; G.barT=q[2]; CFG.xfPix=1; b0=PIX.bodies;
+           for(i=0;i<4;i++){ pixFrame(); drawOp(600,500,0,0,'#242832',0,0,'fist',0,st); }
+           if(PIX.bodies===b0) bad.push(q[0]+' on a plain look was not drawn in pixels');
+           CFG.xfPix=0; b0=PIX.bodies;
+           for(i=0;i<4;i++){ pixFrame(); drawOp(600,500,0,0,'#242832',0,0,'fist',0,st); }
+           if(PIX.bodies!==b0) bad.push(q[0]+' drew a pixel body with the pixel look off');
+           CFG.xfPix=1;
+         });
+       }finally{ wc.restore(); G.punchT=0; G.barT=0; CFG.xfPix=1; }
+     }finally{ P.cosOutfit=sv; try{ __endRaid(); }catch(_e){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'34.71',what:'the raid backpack card has a close button inside it and a click on it closes the backpack like ESC (his Q1)',
    run:function(){
      var g, bp, cb, f;

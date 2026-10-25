@@ -1,0 +1,20 @@
+{
+    "title":  "PIXEL BODY KEEPS ITS SWING",
+    "why":  "Idea I3 of the graphics list. A crowbar swing or punch flipped a plain-look pillager into the old vector art for 0.22 s. The pixel body now stays and swings the pixel crowbar or fist, as the three full sets already do. Hand colour is the skin ramp. Same arc timing on barT and punchT.",
+    "now":  "A crowbar swing or punch keeps the pixel body on every look.",
+    "edits":  [
+                  {
+                      "anchor":  "if(slk\u0026\u0026pxIsSet(slk.clothes)){",
+                      "replacement":  "if(slk){   // v28.xx (cw-pixmelee) I3: a plain look keeps its pixel body in a swing or punch too (was: only the three full sets); the hand is the skin ramp"
+                  },
+                  {
+                      "anchor":  "hand=lk.clothes===\u0027skeleton\u0027?PXS_BONE[1]:(lk.clothes===\u0027trooper\u0027?PXS_DARK[1]:PXS_PALE[1]);",
+                      "replacement":  "hand=lk.clothes===\u0027skeleton\u0027?PXS_BONE[1]:(lk.clothes===\u0027trooper\u0027?PXS_DARK[1]:(lk.clothes===\u0027android\u0027?PXS_PALE[1]:(lk.bot===2?PXB_GOLD.skin[1]:(PIXRAMPS.skins[lk.skin]||PIXRAMPS.skins.fair)[1])));   // v28.xx (cw-pixmelee) I3: plain looks use the skin ramp"
+                  },
+                  {
+                      "anchor":  "var fam=\u0027setmelee|\u0027+lk.clothes+\u0027|\u0027+(crow?1:0),sp=",
+                      "replacement":  "var fam=\u0027setmelee|\u0027+lk.clothes+\u0027|\u0027+hand+\u0027|\u0027+(crow?1:0),sp="
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a crowbar swing or punch keeps the pixel body on a plain look (no flip to the vector art)\u0027,\n   run:function(){\n     __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n     if(typeof pixDrawOp!==\u0027function\u0027||typeof pxLookOf!==\u0027function\u0027) return \u0027SKIP: no pixel painter\u0027;\n     var bad=[], g, st, b0, i, sv=P.cosOutfit, lk;\n     try{\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state();\n       if(!g||g.over) return \u0027SKIP: no raid\u0027;\n       st={hero:1,own:g.player,team:\u0027ally\u0027,moving:false,sprint:false,ads:false,hurt:0,bulk:0,rl:0};\n       P.cosOutfit=\u0027outnone\u0027; lk=pxLookOf(st);\n       if(!lk||pxIsSet(lk.clothes)) return \u0027SKIP: the hero is not a plain look\u0027;\n       wc.save(); wc.setTransform(1,0,0,1,0,0);\n       try{\n         [[\u0027a punch\u0027,0.1,0],[\u0027a crowbar swing\u0027,0,0.1]].forEach(function(q){\n           G.punchT=q[1]; G.barT=q[2]; CFG.xfPix=1; b0=PIX.bodies;\n           for(i=0;i\u003c4;i++){ pixFrame(); drawOp(600,500,0,0,\u0027#242832\u0027,0,0,\u0027fist\u0027,0,st); }\n           if(PIX.bodies===b0) bad.push(q[0]+\u0027 on a plain look was not drawn in pixels\u0027);\n           CFG.xfPix=0; b0=PIX.bodies;\n           for(i=0;i\u003c4;i++){ pixFrame(); drawOp(600,500,0,0,\u0027#242832\u0027,0,0,\u0027fist\u0027,0,st); }\n           if(PIX.bodies!==b0) bad.push(q[0]+\u0027 drew a pixel body with the pixel look off\u0027);\n           CFG.xfPix=1;\n         });\n       }finally{ wc.restore(); G.punchT=0; G.barT=0; CFG.xfPix=1; }\n     }finally{ P.cosOutfit=sv; try{ __endRaid(); }catch(_e){} }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
