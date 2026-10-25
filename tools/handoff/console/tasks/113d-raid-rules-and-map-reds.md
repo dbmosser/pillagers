@@ -50,3 +50,12 @@ host and re-marked him: the game is right and the staging broke (b). Re-aim: set
 windup (c.face = Math.atan2(c.y-p.y, c.x-p.x), the host is 160 px to its left) and check it cannot see him, then show the control
 (today's staging) fails on v34.53. Note: a patched copy of a check cannot be eval'd in the page (the game's names live in its own
 scope), so try a change only through a drafted fixture (mkfixture.ps1, fxdryNN).
+--- COORDINATOR 2026-10-24 22:55: v10.81 and v9.81 leads confirmed in the code (b, re-aim both; the game is right).
+v34.50's bldSolid (dark_raiders.html about line 10928) skips ruined buildings (`if(!plan||b.ruined) continue;`) and makes each piece a
+wall with `ib:bi, furn:P.f, bs:1`. v10.81's survey counts every wall with an `ib` as an interior partition BEFORE it skips `w.furn`
+(mkfixture.ps1, `if(w.ib!==undefined){ inner[w.ib]=...; continue; }`), so with the dial off a building gets its v34.50 bed or rack row
+and with the dial on (ruined) it does not: "lost interior walls, 9 against 10" is a furniture piece, not a room. Count only partitions
+(skip w.furn, as the shell count already does) and show the control fails on v34.53 as written. v9.81's control counts (2191 and 545)
+are the walls before v34.50; 2268 and 558 are those plus the solid pieces: re-aim the counts and name v34.50 (86i ship 2, his 10-20
+22:55 and 23:00 orders) in the DESIGN.md section. v34.50's DESIGN note says the pieces are placed last from grit() so the seeded stream
+stays put; my 21:25 line above saying every roll moved is wrong, so look at v30.26, v13.81, v15.80 and v22.12 on their own merits.
