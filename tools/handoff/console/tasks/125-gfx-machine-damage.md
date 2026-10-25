@@ -27,3 +27,5 @@ Rules for every graphics job:
 TASK DONE when it shipped with pictures and frame numbers; TASK PARTIAL with what is left.
 
 Coordinator 10-25 11:19: shipped by the coordinator as v34.74 (0dfa49fbd) after the stale index was refreshed. Do only what is left: 1080p and 4K pictures (both windows) and the 4K frame numbers; add the numbers to notes and, if they belong in DESIGN.md, ship them with the next change. No second ship of cw-machdmg.
+
+Coordinator 10-25 11:52: his photo of v34.78 (notes/his-photo-notes-1025/bulwark-and-wallet-v3478-1080.jpg, recipe recipes-bc.json screen gfx-b-machine-damage, one bulwark at 40% and one at 10% health) shows NO smoke on either machine and one orange pixel spark on the 10% one. The effect does not read at 1080p zoom 3: find why (drawn under the name plates, too faint, too small, or not firing in that state) and make it read in that picture. Job 120a makes the bulwark bigger; put the smoke on the new body.

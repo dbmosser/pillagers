@@ -97,3 +97,5 @@ the raid shows an alert twice: the red banner and a row in the left feed ("the p
 2026-10-25 | 113b | the party window is the 90 percent card again (your Q43), but the critic scores it 2: the card is almost empty because it holds one button row and two lines. Should the party window stay the big card (add four pillager slots to fill it), or may it be a smaller centred card like the confirm dialogs? I kept your Q43 for now.
 2026-10-24 23:45 | his answer (chat) | "Friday": the party copy is refreshed Fri 10/30 afternoon with the newest build that passed a full test run (no Thursday freeze). CLAUDE.md, RULES.md and MOVE-TO-VM.md K8 updated.
 - 10-25 09:25 coordinator: raid HUD layout rebuild (critic 2 on twelve raid screens; job 112's three panel styles all scored 2, job 116 stuck at 2). Taken: no rebuild before the Fri 10/30 party (risk to the screen everyone plays on), fixes only; asked him in chat whether he wants it before Friday anyway.
+
+- 10-25 11:50 (his photo note "player too big vs the bulwark"): I made the bulwark bigger (job 120a) and kept the player size. Does he also want the player smaller?
