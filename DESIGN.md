@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.83 - AUTO RESOLUTION CHASES YOUR FRAME CAP
+
+Co-op hunt while he was away. His answer of 2026-10-25, right after the frame caps of v34.82: Yes picture quality should reduce to chase a higher cap, and Eg dynamic resolution. This reverses his 2.43 a. With a cap above 60, auto resolution now steps quality and sharpness down until the frames reach the cap, never past what the screen can show (a 240 cap on a 144 Hz screen aims at 144, a 120 cap on a 60 Hz screen keeps the old 60 rule). The game measures the screen rate from every browser frame. The 75 percent sharpness floor (his 2.44 b) still holds, and cap off still aims at 60.
+
+MEASURED. Check 34.83 passes, and fails on v34.82.
 ## v34.82 - FRAME CAPS THAT HOLD THEIR NUMBER
 
 Co-op hunt while he was away. His order of 2026-10-25: I want higher frame rates to be an option, eg 75, 90, 120, 144, 240. The options were there since v28.70 but the row stepped off, 60, 30 first, so it read as if nothing went over 60, and the cap snapped to whole screen refreshes: 60 drew 48 on a 144 Hz screen, 75 and 90 drew 72. The cap now paces on due times and the row steps in plain order. Auto resolution keeps its 60 frame floor (his 2.43 a: a fast cap is no reason to shed quality).

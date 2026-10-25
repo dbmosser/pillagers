@@ -1,0 +1,7 @@
+v34.83: auto resolution chases your frame cap
+
+Pick a frame cap above 60 in settings, display: when the PC falls short of it in a raid, the picture softens a step at a time (effects first, then sharpness, never under 75 percent) until the cap holds, and sharpens again when there is room. Auto resolution off keeps the picture sharp at any cap. Watch for: a softer picture at 120 to 240, and quality stepping up and down in a long fight.
+
+Check 34.83. Fails on v34.82.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

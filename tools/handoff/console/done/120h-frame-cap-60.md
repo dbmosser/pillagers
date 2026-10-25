@@ -7,3 +7,5 @@ Do: fix the cap so a 60 cap holds 60 on 120 and 144 Hz displays (pace on the rAF
 
 Rules: the seed 4242 fingerprint (ents 85/374, containers 165/593) must hold unless this brief says otherwise; the check must FAIL on the build before; both windows; player text all lower case. Say in DESIGN.md what he should watch for in a playtest.
 TASK DONE when it shipped; TASK PARTIAL with what is left.
+
+Coordinator 10-25 13:00: done by the coordinator as v34.82 (cw-fpscap, his order "I want higher frame rates to be an option, eg 75, 90, 120, 144, 240"): the cap paces on due times and the row steps in plain order. Nothing left.
