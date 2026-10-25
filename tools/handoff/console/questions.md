@@ -99,3 +99,4 @@ the raid shows an alert twice: the red banner and a row in the left feed ("the p
 - 10-25 09:25 coordinator: raid HUD layout rebuild (critic 2 on twelve raid screens; job 112's three panel styles all scored 2, job 116 stuck at 2). Taken: no rebuild before the Fri 10/30 party (risk to the screen everyone plays on), fixes only; asked him in chat whether he wants it before Friday anyway.
 
 - 10-25 11:50 (his photo note "player too big vs the bulwark"): I made the bulwark bigger (job 120a) and kept the player size. Does he also want the player smaller?
+- 10-25 15:15 coordinator: his "switch to 400k" read as the helpers' summary window (caps.txt CLI_COMPACT 1000000 to 400000). If he meant this chat's own context or something else, he says so and it changes.
