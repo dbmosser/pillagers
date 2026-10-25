@@ -69,3 +69,19 @@ check's direct low-roll call gives a vault gun and its high-roll call gives none
 calls vaultKillDrop(e) (dark_raiders.html about line 31290, after the wreck roll). So look at whether the body the check picks (the
 first live crawler, sentry, bulwark or howler) reaches that line in its one updateEnts(0.05): a later ship (86g pixel pillager states,
 v34.47 to v34.50) may hold a death for a beat, or the picked body may now be one of the kinds vaultKillDrop skips.
+--- COORDINATOR 2026-10-25 01:45: the last two leads (read-only search, each checked by a second reader; line numbers as of v34.55):
+- v30.26 (b, re-aim): the check sets hit.hp=0 on the first live sentry and leaves it in 'patrol'. The v4.45 weld (c4f681e54, "machines
+  weld each other when left alone", dark_raiders.html about line 30976, no hp>0 guard) runs before the death branch and gives it +2 hp
+  when another patrolling machine is within 90, so it never dies that frame. A real player kill sets state 'chase' first (a landed round
+  about line 33285, a frag about 21984), so players are not affected. That v34.50's solid pieces moved a machine next to it at seed 4242
+  is likely (freeSpot), not proven. Fix: set hit.state='chase' before the frame, as a landed round does; print hit.state and the nearest
+  welder distance; add a control that today's staging comes back with 2 hp. Optional game hardening, no roll moves: add `_se.hp>0&&` to
+  the weld test (today a pillager bot round that leaves a patrolling machine at 0 hp or less gets welded back to life).
+- v15.80 (b, re-aim): no ship changed the hit word. The check never clears G.bullets after its ten real frames, so a real pillager bot
+  round still in flight (dmg 46, rd:1, only netBulletPeer posts rd) lands in the same step and its word is the last one read
+  (updateBullets walks from the end, the staged round goes first). "kind":"raider" is the internal shooter id the check itself wants;
+  player text maps it through KINDWORD (about line 6405), so his vocabulary order holds. Fix: G.bullets.length=0 just before the staged
+  push (mkfixture about line 73106), or require exactly one seat 1 hit word with dmg 9 among the words; add a control that today's
+  staging reads the 46 round. Keep the host untouched and damagePlayer never called asserts.
+So six of the seven point at the checks, not the game (v20.38, v10.81, v9.81, v22.12, v30.26, v15.80). v13.81 is the one still
+open: find why the carbine from the ordinary crate is not in the hands (see 21:50).
