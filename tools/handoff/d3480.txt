@@ -1,0 +1,5 @@
+## v34.80 - FLASHES AND MACHINE EYES LIGHT THE GROUND IN THEIR OWN COLOUR
+
+Co-op hunt while he was away. His 10-12 graphics list (gfx9, coloured light) was half done: lamps lit the light map in colour but every flash, hunting machine and the extraction beacon was stamped plain white. Each now uses the colour it already stores, the same one the glow pass draws. The draw count is unchanged (cached sprite per colour), reduced flashing is untouched, his lamp and the teammate lamp stay white. Watch: at night a blast, cryo or acid tints the street, hunting machines throw red, the beacon teal.
+
+MEASURED. Check 34.80 passes, and fails on v34.79.

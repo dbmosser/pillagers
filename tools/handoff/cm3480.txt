@@ -1,0 +1,7 @@
+v34.80: flashes and machine eyes light the ground in their own colour
+
+At night blasts, shots, hunting machines and the beacon light the ground in their own colour.
+
+Check 34.80. Fails on v34.79.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
