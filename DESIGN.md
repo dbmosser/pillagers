@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.75 - THE WHAT IS NEW STAMP KEEPS UP
+
+Co-op hunt while he was away. The card was stamped v34.59 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.
+
+MEASURED. Check 34.75 passes, and fails on v34.74.
 ## v34.74 - MACHINES SHOW THEIR DAMAGE: SMOKE AT HALF HEALTH, SPARKS AND A STUTTERING EYE NEAR DEATH
 
 Co-op hunt while he was away. Item 4 of his 10-12 graphics list ("add ALL of this stuff") was never started: nothing on a live machine changed with its health. Under half health a machine now trails dark smoke; under a fifth it also spits sparks and its eye stutters, so players see which one to finish, in both windows. Clock-driven puffs like the wreck smoke, sparks from the cosmetic stream, no smoke that blocks sight, no simulation change. Shed first on the quality ladder, scaled by effect intensity.
