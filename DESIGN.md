@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.76 - GLOW POOLS: THE FORGE, FORGED GUNS AND ELEMENTS LIGHT THE WORLD
+
+Co-op hunt while he was away. His 10-12 graphics list, idea I5: the game registered glow sources every frame (forge furnace, forged gun, burning, shocked and frozen bodies) and nothing read them. They now add a coloured pool to the light map and one cached halo sprite each before the fog, no blur. POST FX joins the quality ladder (shed with the HUD and weather rung), scales with effect intensity, and its hint says what it does.
+
+MEASURED. Check 34.76 passes, and fails on v34.75.
 ## v34.75 - THE WHAT IS NEW STAMP KEEPS UP
 
 Co-op hunt while he was away. The card was stamped v34.59 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.

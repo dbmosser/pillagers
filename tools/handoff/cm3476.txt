@@ -1,0 +1,7 @@
+v34.76: glow pools: the forge, forged guns and elements light the world
+
+The forge and the elements cast a soft coloured light on the ground and a gentle halo; POST FX off, effect intensity 0 or a busy frame removes it.
+
+Check 34.76. Fails on v34.75.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
