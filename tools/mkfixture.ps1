@@ -16380,7 +16380,7 @@ window.__REGRESS=[
      function arm(tag,where,cx,cy,expect){
        var s; put(cx,cy); s=shown();
        if(expect&&!s.n) bad.push(tag+': the '+sub.nm+' was not drawn '+where+' (x '+cx.toFixed(0)+', y '+cy.toFixed(0)+'), where it clears the HUD');
-       else if(!expect&&s.n) bad.push(tag+': the '+sub.nm+' is drawn '+where+' (x '+cx.toFixed(0)+', y '+cy.toFixed(0)+'), over the HUD');
+       else if(!expect&&s.n) bad.push(tag+': the '+sub.nm+' is drawn '+where+' (x '+cx.toFixed(0)+', y '+cy.toFixed(0)+'), over the HUD [label at '+(s.t?s.t.x.toFixed(0)+','+s.t.y.toFixed(0):'?')+' n'+s.n+' trcol '+(EDGEBOX.trcol?[EDGEBOX.trcol.x,EDGEBOX.trcol.y,EDGEBOX.trcol.w,EDGEBOX.trcol.h].map(Math.round).join(','):'none')+' z'+WTX.z.toFixed(2)+']');
      }
      function runArms(tag,wantW,rows,quick){
        var s=calib(), r, pl=[], a, p, mm, L, w, tw, py, cy, gy, rr=null, ys;
