@@ -3914,8 +3914,9 @@ window.__REGRESS=[
      // CONTROL 1: 1080p must not have moved. He has a working layout there and
      // this was a 4K complaint.
      // v32.83 retarget (50-corpus-old-a): the backpack panel was redesigned (nine gun keys, the grid beside the figure); its 1080p size is 830x477 now (it was 1194x435).
-     if(Math.abs(a.p.w-830)>6||Math.abs(a.p.h-477)>6)
-       bad.push('control: the 1080p panel changed to '+Math.round(a.p.w)+'x'+Math.round(a.p.h)+', it was 830x477');
+     // v34.65 and v34.66 (job 115) made the raid backpack tiles bigger on purpose; job 119 retarget: the 1080p panel is 862x596 now.
+     if(Math.abs(a.p.w-862)>6||Math.abs(a.p.h-596)>6)
+       bad.push('control: the 1080p panel changed to '+Math.round(a.p.w)+'x'+Math.round(a.p.h)+', it was 862x596');
      // CONTROL 2: it must still clear the belt at BOTH sizes. Doubling a panel
      // that sits above the belt is exactly how it lands on the belt, which is a
      // thing he has already reported once.
@@ -61523,8 +61524,10 @@ window.__REGRESS=[
   {v:'20.09',what:'the Undercroft crowd has builds: in 300 rolled looks there are Broad and Curved people, and a crowd member is drawn in the build rolled',
    run:function(){
      if(typeof hubRollLook!=='function') return 'SKIP: no crowd roller here';
-     var bad=[], n={}, i, lk;
-     for(i=0;i<300;i++){ lk=hubRollLook(); n[lk.build||'none']=(n[lk.build||'none']||0)+1; }
+     var bad=[], n={}, i, lk, px0=CFG.xfPix;
+     // job 119 retarget: the pixel look rolls twelve fixed looks with no build, so an earlier check leaving it on blinded this one in the full run; pin it off like the fixture does and restore it.
+     CFG.xfPix=0;
+     try{ for(i=0;i<300;i++){ lk=hubRollLook(); n[lk.build||'none']=(n[lk.build||'none']||0)+1; } } finally{ CFG.xfPix=px0; }
      if(!n.curved||!n.broad) bad.push('no Broad or Curved in 300 crowd looks ('+JSON.stringify(n)+')');
      return bad.length?bad.join('; '):null; }},
   {v:'20.08',what:'the jiggle follows the body, not the map: walking it swings the chest without sitting on its stop, and moving across the map with no bob does not shake it',
