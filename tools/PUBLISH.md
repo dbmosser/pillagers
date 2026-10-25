@@ -30,8 +30,8 @@ The butler key lives in his Windows user environment; it is never printed. He ne
 
 The coordinator tells him each one in chat on the day, one or two plain lines with the reason (his answer 99: give context):
 1. After the party, from Sat 10/31: share the private link or the page password with friends and family.
-2. Well before 11/26, because payouts take days to clear: in his itch account settings, set up payments and payouts (PayPal or
-   Stripe) and fill in the tax form, then set the page's Pricing to "$0 or donate".
+2. DROPPED by his order of 10-25 ("Forget about itch payments"): do not remind him about payments, payouts or the tax form. If he
+   brings it back himself: set up payments and payouts (PayPal or Stripe) and the tax form, then Pricing "$0 or donate".
 3. On Thu 11/26: set the page's Visibility to Public.
 
 ## Page text (bare, lower case, as the game's own text rule)
