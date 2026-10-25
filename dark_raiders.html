@@ -3690,7 +3690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.76';
+var VER='34.77';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -52252,7 +52252,7 @@ function pxBuildRoll(o){
   return p.sprite();
 }
 // the gun and both arms, painted at art density from the same baked gun, rotated at art resolution in 32 steps (flipped when aiming left): the pivot is the shoulder, the muzzle is kept with the sprite
-function pxBuildGun(id,fk,el,rc,step,fl,sl,hd,ext,low){
+function pxBuildGun(id,fk,el,rc,step,fl,sl,hd,ext,low,rq){
   var D=GUNDEF[id]||GUNDEF.rifle, K=GUNK, ang=step*Math.PI/16, c0=Math.cos(ang), s0=Math.sin(ang), sg=fl<0?-1:1, B=gunBake(id,fk,el,rc,3), co=[[-6,-11],[D.tip+ext+5,-11],[D.tip+ext+5,12],[-6,12]],
       mnx=1e9, mny=1e9, mxx=-1e9, mxy=-1e9, i, lx, ly, rx, ry, px, py, w, h, s, c, aw=2.1/1.12, sx, gx, tx, spr;
   for(i=0;i<4;i++){
@@ -52262,13 +52262,16 @@ function pxBuildGun(id,fk,el,rc,step,fl,sl,hd,ext,low){
   px=Math.ceil(-mnx)+1; py=Math.ceil(-mny)+1; w=Math.ceil(mxx)+px+1; h=Math.ceil(mxy)+py+1;
   s=pixCanvas(w,h); c=s.x; c.imageSmoothingEnabled=true; try{ c.imageSmoothingQuality='high'; }catch(_q){}
   c.translate(px,py); c.rotate(ang); if(fl<0) c.scale(1,-1); c.scale(K,K);
-  sx=D.pist?(D.grip+ext+0.4):(D.fg+ext);
+  rq=rq|0; sx=rq>0?(D.well[0]+ext):(D.pist?(D.grip+ext+0.4):(D.fg+ext));   // v28.xx (cw-pixreload) I1: the far arm reaches for the magazine well
   if(!low){ c.fillStyle=PIX_INK; c.fillRect(-0.5,0.4,sx+0.6,3.8); c.fillStyle=sl; c.fillRect(0,0.9,sx-0.4,2.8); }
   c.drawImage(B.c,B.x0+ext,B.y0,B.w,B.h);
   gx=D.grip+ext-1.2;
   c.fillStyle=PIX_INK; c.fillRect(-1.2,-aw-0.5,gx+1.4,2*aw+1); c.fillStyle=sl; c.fillRect(-0.8,-aw,gx+0.8,2*aw);
   c.fillStyle=PIX_INK; c.fillRect(gx-0.5,-0.1,4.4,4.4); c.fillStyle=hd; c.fillRect(gx,0.4,3.4,3.4);
-  if(!low){ tx=D.pist?(D.grip+ext+0.2):(D.fg+ext-1.7); c.fillStyle=PIX_INK; c.fillRect(tx-0.5,D.pist?0.9:-0.3,4.4,4.4); c.fillStyle=hd; c.fillRect(tx,D.pist?1.4:0.2,3.4,3.4); }
+  if(rq>0){ var rch=rq/4, ty2=D.well[1]+(1-rch)*7; tx=D.well[0]+ext-1.7;   // v28.xx (cw-pixreload) I1: the fresh magazine and the hand at the well, the vector reach in four steps
+    c.fillStyle=PIX_INK; c.fillRect(tx-0.1,ty2+1.4,3.6,5.2); c.fillStyle=GUNMAT.l; c.fillRect(tx+0.3,ty2+1.8,2.8,4.4);
+    c.fillStyle=PIX_INK; c.fillRect(tx-0.5,ty2-0.5,4.4,4.4); c.fillStyle=hd; c.fillRect(tx,ty2,3.4,3.4); }
+  else if(!low){ tx=D.pist?(D.grip+ext+0.2):(D.fg+ext-1.7); c.fillStyle=PIX_INK; c.fillRect(tx-0.5,D.pist?0.9:-0.3,4.4,4.4); c.fillStyle=hd; c.fillRect(tx,D.pist?1.4:0.2,3.4,3.4); }
   pixHarden(s,110);
   spr=pixSprite(s.c,px,py,PIX_ACT);
   spr.mx=c0*K*(D.tip+ext)-s0*K*sg*D.by; spr.my=s0*K*(D.tip+ext)+c0*K*sg*D.by;   // where the muzzle is, from the shoulder pivot
@@ -52498,9 +52501,31 @@ function pxRoll(o){
   var fam='r|'+o.head+'|'+o.skin+'|'+o.clothes+'|'+o.bot+'|'+o.mir+'|'+(o.band||''); // v28.xx (cw-cx-pixsets): separate seat bands
   return pixFetch('actors',fam+'|'+(o.fr|0),function(){ return pxBuildRoll(o); },fam,o.fr|0);
 }
-function pxGun(id,fk,el,rc,step,fl,sl,hd,ext,low){
-  var fam='n|'+id+'|'+fk+'|'+el+'|'+rc+'|'+fl+'|'+sl+'|'+hd+'|'+ext+'|'+low;
-  return pixFetch('actors',fam+'|'+step,function(){ return pxBuildGun(id,fk,el,rc,step,fl,sl,hd,ext,low); },fam,step);
+// v28.xx (cw-pixreload) I1: the live bits over a pixel gun: the spent magazine falling from the well while reloading, and the forge shine (and the MK III element at the muzzle), as gunHeld draws them. G.t only, never the raid stream.
+function pxGunLive(px,py,ang,fl,D,ext,fk,el,rl){
+  var t, f, k, ec, i, mg, wx, wy, mx, my, tx, ty2;
+  if(rl>0&&rl<.4){
+    mg=rl/.4; wx=D.well[0]+ext; wy=(D.well[1]+2)*(fl<0?-1:1); mx=px+Math.cos(ang)*wx-Math.sin(ang)*wy; my=py+Math.sin(ang)*wx+Math.cos(ang)*wy;
+    wc.globalAlpha=clamp(1-mg,0,1); wc.fillStyle=GUNMAT.l; wc.fillRect(Math.round(mx)-1,Math.round(my+mg*14)-3,3,6); wc.globalAlpha=1;
+  }
+  if(!fk||!GFXQ.particles) return;
+  t=(typeof G!=='undefined'&&G&&isFinite(G.t))?G.t:0; f=(t%2.5)/2.5;
+  wc.save(); wc.translate(px,py); wc.rotate(ang); if(fl<0) wc.scale(1,-1); wc.scale(GUNK,GUNK);
+  wc.globalCompositeOperation='lighter';
+  if(f<0.5){ wc.fillStyle='rgba(255,240,176,.55)'; wc.fillRect(D.rv[0]+ext+(f/0.5)*(D.rv[2]-1.4),D.rv[1],1.4,D.rv[3]); }
+  if(el){
+    ec=ELEM[el].c; k=0.5+0.5*Math.sin(t*4.2); tx=D.tip+ext; ty2=D.by;
+    wc.globalAlpha=0.28+0.22*k; wc.fillStyle=ec; wc.beginPath(); wc.arc(tx,ty2,2.2+k*1.1,0,6.2832); wc.fill(); wc.globalAlpha=1;
+    if(el==='fire'){ for(i=0;i<2;i++){ f=((t*0.9+i*0.5)%1); wc.fillStyle='rgba(255,150,60,'+(0.9*(1-f)).toFixed(3)+')'; wc.fillRect(D.br[0]+ext+4+i*5+f*2,D.by-1.6-f*5,0.9,0.9); } }
+    else if(el==='shock'){ i=Math.floor(t/0.2); if(i%3!==2){ f=(i*7)%5; wc.strokeStyle=ec; wc.lineWidth=0.6; wc.beginPath(); wc.moveTo(D.br[0]+ext+2+f,D.by-0.6); wc.lineTo(D.br[0]+ext+4.5+f,D.by-2.6+(i%2)*0.8); wc.lineTo(D.br[0]+ext+7+f,D.by-0.8); wc.stroke(); } }
+    else if(el==='cryo'){ wc.fillStyle='rgba(220,245,255,.22)'; wc.fillRect(D.rv[0]+ext,D.rv[1]-0.8,D.br[1]-D.rv[0],0.8); }
+    else if(el==='acid'){ f=(t%1.2)/1.2; wc.globalAlpha=f<0.6?0.9:Math.max(0,0.9-(f-0.6)*2.2); wc.fillStyle=ec; wc.beginPath(); wc.arc(tx-1,ty2+1.6+(f>0.6?(f-0.6)*14:0),0.5+Math.min(f,0.6)*1.4,0,6.2832); wc.fill(); wc.globalAlpha=1; }
+  }
+  wc.restore();
+}
+function pxGun(id,fk,el,rc,step,fl,sl,hd,ext,low,rq){
+  var fam='n|'+id+'|'+fk+'|'+el+'|'+rc+'|'+fl+'|'+sl+'|'+hd+'|'+ext+'|'+low+'|'+(rq|0);
+  return pixFetch('actors',fam+'|'+step,function(){ return pxBuildGun(id,fk,el,rc,step,fl,sl,hd,ext,low,rq); },fam,step);
 }
 // a baked layer onto the world canvas on whole device pixels: the anchor lands on a whole device pixel; a whole scale draws nearest, any other scale draws the prescale smooth (sharp bilinear)
 function pxBlit(spr,wx,wy,m){
@@ -52704,13 +52729,15 @@ function pixDrawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   if(hold){
     w=(st.own&&st.own.wep&&st.own.wep.id)?st.own.wep:null; id=(w&&GUNDEF[w.id])?w.id:'rifle'; D=GUNDEF[id];
     fk=(w&&(w.fk===1||w.fk===2))?w.fk:0; el=(fk===2&&w.el&&ELEM[w.el])?w.el:'';
-    if(fk||rl>0) gv=1;   // a forged gun (its shine) and a reload (the arm to the magazine) keep the vector gun on the pixel body
+    var rd=0, rq=0;   // v28.xx (cw-pixreload) I1: a reload tips the PIXEL gun down by the vector timings (rd) and the far hand goes to the magazine well in four steps (rq); a forged gun stays pixel too (was: both flipped the gun to the smooth vector art)
+    if(rl>0){ if(rl<.35) rd=(rl/.35)*.55; else if(rl<.78){ rd=.55; rq=Math.ceil((rl-.35)/.43*4); } else rd=.55*(1-(rl-.78)/.22); }
+    if(false) gv=1;
     else {
       wt=(w&&WTIER[w.id]!==undefined)?WTIER[w.id]+(RV_BASE[w.id]?1:0):1;
       rc=!w?'':((w.q==='gold')?'#ffc72e':(wt>=5?RCOL.gold:(wt>=4?RCOL.elite:(wt===3?RCOL.rare:(wt===2?RCOL.uncommon:RCOL.common)))));
-      low=!!sprint; ext=(D.pist?2:0)+(ads?2:(low?-2:0)); ang=face+fl*(low?0.45:0);
+      low=!!sprint&&!(rl>0); ext=(D.pist?2:0)+(ads?2:(low?-2:0)); ang=face+fl*(rd+(low?0.45:0));   // v28.xx (cw-pixreload) I1: the reload angle is just another aim step
       step=((Math.round(ang/(Math.PI/16))%32)+32)%32;
-      gn=pxGun(id,fk,el,rc,step,fl,C.coat[1],sk[1],ext,low?1:0); if(!gn) return false;
+      gn=pxGun(id,fk,el,rc,step,fl,C.coat[1],sk[1],ext,low?1:0,rq); if(!gn) return false;
     }
   }
   opGround(x,y,st);
@@ -52721,6 +52748,7 @@ function pixDrawOp(x,y,face,ph,coat,pk,muzzle,mode,iv,st){
   if(hold&&!back){ if(gv){ wc.imageSmoothingEnabled=true; gunHeld(pxd,ty,face,fl,st,C.coat[1],null,true,ads,sprint,rl,muzzle); } else if(gn) pxLayer(gn,px,py,m,fx); }
   wc.imageSmoothingEnabled=true;
   if(lw) opLowDrops(x,y,fl);
+  if(hold&&gn&&!gv&&((fk&&GFXQ.particles)||(rl>0&&rl<.4))) pxGunLive(px,py,step*Math.PI/16,fl,D,ext,fk,el,rl);   // v28.xx (cw-pixreload) I1: the forge shine and the falling magazine over the pixel gun; the shine sheds on the first quality rung
   if(gn&&muzzle>0){
     k=flashK(); wc.globalCompositeOperation='lighter'; wc.fillStyle='rgba(255,212,138,'+(0.95*k).toFixed(3)+')';
     wc.fillRect(Math.round(px+gn.mx)-3,Math.round(py+gn.my)-1,7,3); wc.fillRect(Math.round(px+gn.mx)-1,Math.round(py+gn.my)-3,3,7);
@@ -54300,7 +54328,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.76: The forge and the elements cast a soft coloured light on the ground and a gentle halo; POST FX off, effect intensity 0 or a busy frame removes it. Check 34.76 fails on v34.75',
+  now:'v34.77: Reloads and forged guns stay in the pixel style. Check 34.77 fails on v34.76',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.77 - PIXEL RELOAD AND FORGED GUNS
+
+Co-op hunt while he was away. Idea I1 of the graphics list. A reload and a forged gun flipped the gun on a pixel body to the smooth vector gun. Now the pixel gun tips down by the vector timings, the far hand reaches the magazine well in four steps, the spent magazine falls, and a forged gun keeps its pixel gold with the shine and element glow drawn over it (shed on the first quality rung). Cosmetic only.
+
+MEASURED. Check 34.77 passes, and fails on v34.76.
 ## v34.76 - GLOW POOLS: THE FORGE, FORGED GUNS AND ELEMENTS LIGHT THE WORLD
 
 Co-op hunt while he was away. His 10-12 graphics list, idea I5: the game registered glow sources every frame (forge furnace, forged gun, burning, shocked and frozen bodies) and nothing read them. They now add a coloured pool to the light map and one cached halo sprite each before the fog, no blur. POST FX joins the quality ladder (shed with the HUD and weather rung), scales with effect intensity, and its hint says what it does.

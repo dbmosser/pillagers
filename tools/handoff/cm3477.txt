@@ -1,0 +1,7 @@
+v34.77: pixel reload and forged guns
+
+Reloads and forged guns stay in the pixel style.
+
+Check 34.77. Fails on v34.76.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

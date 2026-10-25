@@ -314,3 +314,4 @@ git status shows " M tools/mkfixture.ps1" but git diff, diff --raw and --ignore-
 10-25 10:46 123-gfx-pixel-reload-forged (lane a) waits on the coordinator: coordinator refresh the stale index flag on tools/mkfixture.ps1 (git status shows it modified, git diff is empty), then ship cw-pixreload
 10-25 lane b 124-gfx-coloured-flash-light waits on the coordinator: same stale index flag on tools/mkfixture.ps1; cw-flashlight passed preflight (v34.73), then ship it with shipq.sh cw-flashlight
 10-25 10:49 124-gfx-coloured-flash-light (lane b) waits on the coordinator: coordinator refresh the stale git index entry for tools/mkfixture.ps1 (`git update-index --refresh`), then run `shipq.sh cw-flashlight`
+- 10-25 127-gfx-glow-pools (lane b): camera needs a new screen that stages the forge furnace and a burning or shocked body at night (for glow pictures and a 4K frame time). Shipped v34.76 without glow pictures.
