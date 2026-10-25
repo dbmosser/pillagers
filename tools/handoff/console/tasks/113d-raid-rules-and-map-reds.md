@@ -64,3 +64,8 @@ under Q8) changed the sub from contractDesc(c)+'. Complete contract at mainframe
 want+'.' in the raid line (mkfixture.ps1, `m.indexOf(want+'.')>=0`), and the line now ends at the place name, which is the right place
 on the sector played. Match the line ending in want (no period), keep the run card and detail card halves, and show the control fails
 on v34.53 as written.
+--- COORDINATOR 2026-10-24 23:40: v30.26, what is ruled out (not a finding yet): the rate and vaultKillDrop itself are fine (the
+check's direct low-roll call gives a vault gun and its high-roll call gives none; only the death-path half fails). The death path still
+calls vaultKillDrop(e) (dark_raiders.html about line 31290, after the wreck roll). So look at whether the body the check picks (the
+first live crawler, sentry, bulwark or howler) reaches that line in its one updateEnts(0.05): a later ship (86g pixel pillager states,
+v34.47 to v34.50) may hold a death for a beat, or the picked body may now be one of the kinds vaultKillDrop skips.
