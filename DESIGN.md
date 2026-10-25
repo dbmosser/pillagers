@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.74 - MACHINES SHOW THEIR DAMAGE: SMOKE AT HALF HEALTH, SPARKS AND A STUTTERING EYE NEAR DEATH
+
+Co-op hunt while he was away. Item 4 of his 10-12 graphics list ("add ALL of this stuff") was never started: nothing on a live machine changed with its health. Under half health a machine now trails dark smoke; under a fifth it also spits sparks and its eye stutters, so players see which one to finish, in both windows. Clock-driven puffs like the wreck smoke, sparks from the cosmetic stream, no smoke that blocks sight, no simulation change. Shed first on the quality ladder, scaled by effect intensity.
+
+MEASURED. Check 34.74 passes, and fails on v34.73.
 ## v34.73 - GUN KICK ON THE BODY
 
 Co-op hunt while he was away. Idea I6 of the graphics list. p.recoil only moved the crosshair. The pixel body now steps its gun and shoulders back 1 art px on a shot, 2 for shotgun, magnum, sniper, dmr and lance, scaled by EFFECT INTENSITY (HALF keeps 1, OFF none). It reads the muzzle value so the linked window shows it too. Offset only, no new draw, no random draw.

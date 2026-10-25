@@ -1,0 +1,5 @@
+## v34.74 - MACHINES SHOW THEIR DAMAGE: SMOKE AT HALF HEALTH, SPARKS AND A STUTTERING EYE NEAR DEATH
+
+Co-op hunt while he was away. Item 4 of his 10-12 graphics list ("add ALL of this stuff") was never started: nothing on a live machine changed with its health. Under half health a machine now trails dark smoke; under a fifth it also spits sparks and its eye stutters, so players see which one to finish, in both windows. Clock-driven puffs like the wreck smoke, sparks from the cosmetic stream, no smoke that blocks sight, no simulation change. Shed first on the quality ladder, scaled by effect intensity.
+
+MEASURED. Check 34.74 passes, and fails on v34.73.

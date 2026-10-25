@@ -1,1 +1,1 @@
-10-25 10:32 running 126-gfx-gun-kick on Claude Code (your plan: week 4% of the 5.4% line, 5-hour 7%)
+10-25 10:59 waiting for RAM: 2 GB free, a helper starts at 3; 128-gfx-lamp-dust kept

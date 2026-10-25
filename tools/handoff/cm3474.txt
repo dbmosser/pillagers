@@ -1,0 +1,7 @@
+v34.74: machines show their damage: smoke at half health, sparks and a stuttering eye near death
+
+Machines now trail smoke under half health and spark with a stuttering eye near death.
+
+Check 34.74. Fails on v34.73.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

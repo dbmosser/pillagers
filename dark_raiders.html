@@ -3690,7 +3690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.73';
+var VER='34.74';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -52932,7 +52932,48 @@ function gfxTrauma(dt){
 function gfxCam(dt){ try{ gfxTrauma(dt); }catch(_gt){ GFX.sx=0; GFX.sy=0; } if(!gfxHook('cam')) return false; GFX.emit.length=0; return true; }   // F1: trauma shake (gfx38)
 function gfxGround(dt){ return gfxHook('ground'); }   // D: ground stamps, puddles, casings
 function gfxShadowPass(dt){ return gfxHook('shadow'); }   // B: body shadows that follow the lamps
-function gfxBodyFx(dt){ return gfxHook('body'); }   // C, E: damage smoke and fire, explosions, atmosphere
+// v34.73 (cw-machdmg), item 4 of his 10-12 graphics list ("add ALL of this stuff"): MACHINES SHOW THEIR DAMAGE. A live machine under half health trails
+// dark smoke; under a fifth it also spits sparks and its eye stutters, so you can see which one to finish. Clock-driven puffs like wreckSmoke (never
+// G.smokes, those block sight), sparks from the fx stream (spark uses fxn), no simulation reads. Player 2 gets the health in 20 steps, so both windows draw it.
+// Shed first on the quality ladder (GFXQ.particles 0) and scaled by EFFECT INTENSITY (CFG.fxInt: alpha and spark rate; OFF draws nothing).
+var GFXDMG_KINDS={sentry:1,crawler:1,snitch:1,listener:1,bulwark:1,howler:1,warden:1,choir:1};
+function gfxDmgLevel(e){
+  if(!e||!GFXDMG_KINDS[e.kind]||!(e.maxhp>0)||!(e.hp>0)||e.downed||e.finished||e.gone||!isFinite(e.x)||!isFinite(e.y)) return 0;
+  var k=(CFG.fxInt===undefined)?1:+CFG.fxInt;
+  if(!(k>0)||GFXQ.particles===0) return 0;
+  var f=e.hp/e.maxhp;
+  return f<=0.2?2:(f<=0.5?1:0);
+}
+function gfxDamageFx(dt){
+  var L=G.ents, i, j, e, lv, ph, t, H, x, y, s, pix=pixOn(), k=(CFG.fxInt===undefined)?1:Math.max(0,Math.min(1,+CFG.fxInt||0)), nS=0, nK=0;
+  dt=(isFinite(dt)&&dt>0)?Math.min(dt,0.1):0;
+  for(i=0;i<L.length;i++){
+    e=L[i];
+    if(!GFXDMG_KINDS[e.kind]) continue;
+    lv=gfxDmgLevel(e); if(!lv) continue;
+    H=elemBodyH(e); ph=grit((e.nid|0)*7+3,11)*6.2832; nS++;
+    wc.fillStyle=lv>1?'#1c1917':'#2a2623';
+    for(j=0;j<2+lv;j++){
+      t=(G.t*.45+j/(2+lv)+ph)%1;
+      wc.globalAlpha=(lv>1?.5:.4)*(1-t)*k;
+      x=e.x+Math.sin(t*5+ph+j)*3; y=e.y-H-t*18; s=2.5+t*4;
+      if(pix) pixFxSquare(wc,x,y,s*2,wc.fillStyle);
+      else{ wc.beginPath(); wc.arc(x,y,s,0,6.2832); wc.fill(); }
+    }
+    if(lv>1){
+      nK++;
+      if(((G.t*11+ph*3)|0)%3===0){
+        wc.globalAlpha=.9*k;
+        if(pix) pixFxSquare(wc,e.x,e.y-H*.8,3,'#ffb040');
+        else{ wc.fillStyle='#ffb040'; wc.fillRect(e.x-1.5,e.y-H*.8-1.5,3,3); }
+      }
+      if(fxr()<dt*5*k) spark(e.x+fxn(-(e.r||14)*.4,(e.r||14)*.4),e.y-H*.6+7.8,'#ffb040',1,90);
+    }
+  }
+  wc.globalAlpha=1;
+  GFX.dmgN=nS; GFX.dmgS=nK;
+}
+function gfxBodyFx(dt){ if(!gfxHook('body')) return false; try{ gfxDamageFx(dt); }catch(_gdf){} return true; }   // C, E: damage smoke and sparks (cw-machdmg), explosions, atmosphere
 // v23.xx (gfx7), HIS ORDER (2026-10-12) on the graphics program: "add ALL of this stuff", item 1, real lighting, and his answer 20
 // (a): gritty and grounded, like ARC Raiders. THE COLOURED LIGHT MAP. A lamp's colour only ever reached the screen as two faint
 // flat discs: the darkness sheet was colourless and every lamp punched a grey hole in it. Under LIGHTING HIGH or STANDARD the light
@@ -54227,7 +54268,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.73: Firing jolts the pixel gun and shoulders back a pixel or two. Check 34.73 fails on v34.72',
+  now:'v34.74: Machines now trail smoke under half health and spark with a stuttering eye near death. Check 34.74 fails on v34.73',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
