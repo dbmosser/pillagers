@@ -7053,7 +7053,7 @@ window.__REGRESS=[
        if(b!=='rgb(230, 255, 61)') return 'the welcome primary is not lime: '+b;
        openParty();
        c=getComputedStyle(pm,'::before');
-       if(Math.abs(parseFloat(c.width)-window.innerWidth*0.9)>6) return 'the party card is '+c.width+' wide, not the 90 percent window card (his Q43; v34.63 cw-partywin undid the fitted 960 card of v34.22)';
+       if(Math.abs(parseFloat(c.width)+2*parseFloat(c.left)-pm.offsetWidth)>4||Math.abs(parseFloat(c.left)-window.innerWidth*0.05)>4) return 'the party card is '+c.width+' wide, not the 90 percent window card (his Q43; v34.63 cw-partywin undid the fitted 960 card of v34.22)';
        if(getComputedStyle(document.getElementById('partytrade')).display!=='none') return 'the party card still shows the trade line';
        b=getComputedStyle(document.getElementById('partyhost')).backgroundColor;
        if(b!=='rgb(230, 255, 61)') return 'host a party is not the lime primary: '+b;
