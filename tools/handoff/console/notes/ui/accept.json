@@ -931,17 +931,17 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "A clean, consistent dark card with a clear focus bar, and the new detail pane is better than before (white hero value, bigger key chip, pane shrunk to its content). But it still leaves a big empty right half, and the list is crowded, unevenly spaced and has no focus on the sidebar.",
+  "verdict": "A clean, consistent full-screen card with a clear focus bar and an off-state that is dimmed correctly, but it is a plain settings list with a wasted detail pane, a crowded mixed list and weak identity.",
   "findings": [
-   "P1 detail pane, below the key chip: Pin the pane to the full column height again, or fill it with a useful block: a 3-row value legend (off/on) and a reset-to-default row. Otherwise centre the content vertically at 40% of the pane height.",
-   "P1 hierarchy, the hero value 'off': Keep the hero white, but colour it --acc only when the value is 'on' (on = lime, off = tx-2 #aaa498). Drop the hero to the title weight (700) so the pane title is not drowned out.",
-   "P1 centre column, from 'experimental' down to 'master volume': Add a 16px tx-2 group label row ('audio') with 24px above it, or move the audio rows to the audio tab. Make the scrollbar 6px wide in --ui-line-hi, and add a 24px bottom fade mask.",
-   "P2 left tab column: Use a 56px row pitch for the tabs. Put a 1px --ui-line divider and 24px extra space above 'send play data'. Raise idle tab text to --tx-2 #aaa498 at 18px or larger, with 600 weight.",
-   "P2 key chip 'key: left of 1': Either make it a real rebind button with a focus ring in --acc and the text 'rebind', or render it as a plain tx-2 label with no border. If it stays a chip, name the key: 'key: `'."
+   "P1 detail pane (right, y 115-403): Stretch the pane to the full list height (y115 to 990) in --ui-raised and anchor the content at the top. Or add a state preview and a short toggle row. Make the hero number tx-1 when off and --acc when on.",
+   "P1 centre list, sections the raid and audio (y 115-990): Move the volume rows under the audio tab. Keep the raid tab to about 10 rows. Remove the hairline section break. If a scroll is still needed, make the scrollbar 8px in --ui-line-hi.",
+   "P1 value column (x 730-985): Put the arrows 40px either side of the value at 20px and 44px minimum hit size. Show them only on the focused row, in lime. Render 'open' as a bordered button, not a bare value.",
+   "P2 focused row (y 175-230): Keep the lime bar and lime value only. Turn the row name tx-1. Dim the active tab bar to --ui-line-hi once focus is in the list.",
+   "P2 left tab column (x 50-313): Close the gap and put 'send play data' at the bottom of the column, separated by a line. Raise tab text to 20px and set rows to 64px."
   ],
-  "pic": "tools/handoff/console/notes/shots/113-after2/92-settings-superhot-pane-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/113-after3/92-settings-superhot-pane-1080.jpg",
   "task": "manual",
-  "when": "2026-10-24T22:09"
+  "when": "2026-10-24T22:17"
  },
  "60-mapfirst-1p": {
   "score": 4,
@@ -1379,17 +1379,17 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The second shot is cleaner than the first, with a bolder status line, a boxed restore section and a shorter warning, but the content sits in the top half of a 90% card and the warning text is too small and in an off-token colour.",
+  "verdict": "The screen is clean, readable and consistent, with the lime copy button as a clear primary action. It still looks like a form dropped into a big empty card, with weak hierarchy, a left-heavy header and nothing that says this game.",
   "findings": [
-   "P1 restore panel warning line: Set it to 16px f-cond 600 in --warn (#f5b73b) or --danger, with +.04em tracking. Alternatively, move it above the input as a 20px tx-1 line with a small warn glyph.",
-   "P1 whole card, lower 45%: Either vertically centre the 1100px content column in the body area (y 105 to 995), or add the next real content such as a last-sent timestamp or a run list. Do not add explaining text.",
-   "P1 status line 'ready to send' (second shot): Use 20px f-cond 600 in --tx-2 for the line. If the count is non-zero, give only the numbers tx-1 weight. Keep the lime fill for 'copy to clipboard' alone.",
-   "P2 button row spacing: Set the button gap to 16px (--sp-2). Give the buttons equal height and padding (56px tall, 32px side padding).",
-   "P2 'read code' button and input: Put the button on the same row as the input, right-aligned, with the input at flex 1. Give the input a 2px --acc border on focus. Raise the placeholder to --tx-2 at 4.5:1 contrast."
+   "P1 content column vs card: Align the content column's left edge to the title's 48px margin, or keep it centred and move the tab row to match it. Cap the card at about 1200px wide for this tab, or add a real status block (last send time, run count) to fill the height.",
+   "P1 headline '0 runs, 0 notes ready to send': Make the counts the hero. Show the numbers at 56px f-cond 800 in tx-1 and the labels at 16px tx-2. When both are 0, dim the line to tx-2 and disable 'copy to clipboard' and 'show data' (dimmed fill, no lime).",
+   "P1 copy to clipboard / show data / clear recorder row: Keep the safe actions together on the left, set the gap between buttons to 16px, and put 'clear recorder' at the right end of the same row, matching the card edge (it already does). Alternatively, move it into a separate danger zone under the restore panel, with the panel's border-top line as a divider.",
+   "P1 restore a character panel: Cut the sentence down to a short warning tag, 'replaces your save', in --warn at 16px f-cond 600 beside the title. Make the panel title 20px tx-1. Use the --ui-raised fill with 24px padding so it reads as a panel rather than another button.",
+   "P2 input field 'pil1...' and 'read code' button: Set the placeholder to --tx-2 (#aaa498). Put 'read code' to the right of the field at 56px height to match the 56px input. Give the focused input a 2px --acc border."
   ],
-  "pic": "tools/handoff/console/notes/shots/113-after2/31-settings-send-play-data-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/113-after3/31-settings-send-play-data-1080.jpg",
   "task": "manual",
-  "when": "2026-10-24T22:09"
+  "when": "2026-10-24T22:17"
  },
  "83-experimental-guest": {
   "score": 3,

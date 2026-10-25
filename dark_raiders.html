@@ -3687,7 +3687,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.53';
+var VER='34.54';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22902,6 +22902,7 @@ function drawLore(){
 // seeded draw, nothing under G.sim, no game state; the feed clock (G.fd.t) runs on msgTick, so it stands still under the solo pause.
 var FEED={show:10,keep:40,hold:6,dim:0.6,fade:1,again:1,merge:30,enter:0.14};
 var FEEDBOX={on:0,x:0,y:0,w:0,h:0,rows:[]};
+var LEGHINT=null;   // v34.xx (cw-careerlegend): where the folded f1 controls line stood this frame (career raids), for the checks
 // v27.40 (medal0), HIS ANSWER (2026-10-14), "Halo puts medals in a row at the left": THE MEDAL SPOT IS RESERVED. A row for the style medals
 // (the later party polish draws the emblems there, 48 px at 1080p) between the feed and the vitals, the feed's width: nothing else may draw
 // in it. The feed stands on it now, so the feed moved up by its height; until the emblems exist the spot is empty.
@@ -46357,10 +46358,13 @@ function drawLegend(fz){   // v20.74 (H40): fz is the zoom the full list is draw
     ctx.font=uiFont('label',Math.max(1,uiScale())); ctx.fillStyle=UIC.tx_2; // v28.xx (cw-cx-foldedhint): at least 16px now that the hint no longer borrows the compact-panel zoom.
     // v11.39: above the vitals panel, not inside it. HUDBOX.body is set earlier
     // this frame and carries the panel drag, so the hint follows it.
-    var _hy=(FEEDBOX.on?FEEDBOX.y-LH(6):(HUDBOX.body?HUDBOX.body.y-LH(6):H-14));   // v27.26 (feedleg): the hint stands over the feed, not on its last line
+    var _hy=(FEEDBOX.on?FEEDBOX.y-LH(6):(HUDBOX.body?HUDBOX.body.y-LH(6):H-14)), _hx=8;
+    // v34.xx (cw-careerlegend), his answer rs-1 (2026-10-24): "keys should be in mid bottom LEFT hand side", minimized. In a career raid the folded line stands where the opened list stands (left of the middle, its bottom just over the vitals, beside the feed), so F1 opens the list upward from it and the two never overlap the feed or the vitals.
+    LEGHINT=null;
+    if(G.career&&!G.arcade&&FEEDBOX.on&&HUDBOX.body){ _hx=FEEDBOX.x+FEEDBOX.w+Math.round(LH(10)*Math.max(1,hudRes())); _hy=HUDBOX.body.y-LH(8)-LH(8); }   // v27.26 (feedleg): the hint stands over the feed, not on its last line
     // v19.93, from the code review of 2026-10-08: no pad button sends H, so on a controller this hint (and H  hide below) named a key
     // the pad player cannot press, as H  full list did before v19.68. On a pad they are left out.
-    if(!padOn()&&!(typeof arcadeCardOn==='function'&&arcadeCardOn()>0)) { var _f1t=legendKeys('F1')+'  controls', _f1w=Math.round(ctx.measureText(_f1t).width+LH(16)); /* v28.xx (cw-f1plate), the critic (2026-10-19): the f1 controls hint is dim grey over a busy map with no plate. It sits on the HUD plate in the quiet grey text colour. */ hudPlate(8,Math.round(_hy-LH(14)),_f1w,LH(22),null,HUDC.plate); ctx.fillStyle=UIC.tx_2; ctx.fillText(_f1t,16,_hy); }   // v25.xx (keyswap): F1; v30.xx (cw-partyhud2): not while the arcade controls card is up (it showed through the card)
+    if(!padOn()&&!(typeof arcadeCardOn==='function'&&arcadeCardOn()>0)) { var _f1t=legendKeys('F1')+'  controls', _f1w=Math.round(ctx.measureText(_f1t).width+LH(16)); /* v28.xx (cw-f1plate), the critic (2026-10-19): the f1 controls hint is dim grey over a busy map with no plate. It sits on the HUD plate in the quiet grey text colour. */ hudPlate(_hx,Math.round(_hy-LH(14)),_f1w,LH(22),null,HUDC.plate); ctx.fillStyle=UIC.tx_2; ctx.fillText(_f1t,_hx+8,_hy); LEGHINT={x:_hx,y:Math.round(_hy-LH(14)),w:_f1w,h:LH(22)}; }   // v25.xx (keyswap): F1; v30.xx (cw-partyhud2): not while the arcade controls card is up (it showed through the card)
     return;
   }
   // COMPACT, the default since v2.94. Two columns, twelve bindings, micro type,
@@ -54180,7 +54184,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.53: The settings detail pane lights an on value and mutes an off one; the restore warning is bigger. Check 34.53 fails on v34.52',
+  now:'v34.54: Career raids start with the controls list folded; the folded f1 line stands at the lower left beside the feed, and F1 opens the list upward from it. Check 34.54 fails on v34.53',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -63738,6 +63742,7 @@ function careerPostBuild(g){
   if(!g||g.sim||g.arcade) return false;
   var i;
   g.career=1; g.raidLen=g.timeLeft=CAREER_RAID_SEC;
+  g.legendOn=0;   // v34.xx (cw-careerlegend), his answer rs-1 (2026-10-24): "keys should be in mid bottom LEFT hand side", minimized, hit key to reveal. A career raid starts with the controls list folded (the demo keeps its own start).
   for(i=0;i<(g.zones||[]).length;i++) g.zones[i].closeAt=undefined;
   try{ arcadeVaults(g); }catch(_cv){}   // v24.xx (careervault): the two DEMO vaults (side stream)
   try{ arcadeKeycards(g); }catch(_ck){}   // v24.xx (careervault): a keycard per vault in a box outside (side stream)

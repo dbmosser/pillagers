@@ -1,0 +1,32 @@
+{
+    "title":  "SETTINGS PANE BACK TO ONE SHAPE",
+    "why":  "Job 113: nine settings checks went red because v34.51 to v34.53 gave the detail pane a hero value and a packed shape that older rulings and checks forbid. The pane is back to full height without the repeated value; a jump chip never scrolls the list; one raw hex colour became a named colour.",
+    "now":  "The settings side pane is back to its full height and no longer repeats the row value.",
+    "edits":  [
+                  {
+                      "anchor":  "#root #settingsmodal #setwrap \u003e #setdetail:not(.daily-restore-detail) .sdv{ display:block; flex:1 1 100%; margin:var(--sp-2) 0 0; padding:0; border:0; font:800 var(--fs-hero)/1.1 var(--f-cond); letter-spacing:var(--track); color:var(--acc); overflow-wrap:anywhere; }",
+                      "replacement":  "/* v34.54 (cw-setrevert) job 113: the detail pane hero value and the packed pane (v34.51 to v34.53) are out again. Reason: the older rulings and checks 30.05, 31.75 and 33.28 say the pane never repeats the row value (the row shows it) and runs the full list height; the critic scored the two shapes against each other with no gain (92 stayed 3). */"
+                  },
+                  {
+                      "anchor":  "#root #settingsmodal #setwrap \u003e #setdetail:not(.daily-restore-detail){ align-self:flex-start; min-height:0; }",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "#root #settingsmodal #setwrap \u003e #setdetail:not(.daily-restore-detail) .sdv{ color:var(--tx-2); margin-top:var(--sp-2); }",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "#root #settingsmodal #setwrap \u003e #setdetail:not(.daily-restore-detail) .sdv.on{ color:var(--acc); }   /* v34.53 (cw-playdata3) job 113, critic round 3 on 92: the live value is lime only when it is on; the restore warning is body size (the critic read it as 12px) */",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "scroll-padding-top:64px; -webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 48px),transparent); mask-image:linear-gradient(to bottom,#000 calc(100% - 48px),transparent); }",
+                      "replacement":  "scroll-padding-top:64px; -webkit-mask-image:linear-gradient(to bottom,black calc(100% - 48px),transparent); mask-image:linear-gradient(to bottom,black calc(100% - 48px),transparent); }"
+                  },
+                  {
+                      "anchor":  "try{ el.scrollIntoView({block:\u0027nearest\u0027,inline:\u0027nearest\u0027}); }catch(_e){}",
+                      "replacement":  "try{ if(!(el.closest\u0026\u0026el.closest(\u0027.setjump\u0027))) el.scrollIntoView({block:\u0027nearest\u0027,inline:\u0027nearest\u0027}); }catch(_e){}   // v34.54 (cw-setrevert): the jump chips are sticky, so focusing one never moves the list"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027cw-setrevert (job 113): the settings detail pane does not repeat the row value and runs the full list height, a jump chip taking the pad focus never scrolls the list, and the expmode list rule has no raw hex colour\u0027,\n   run:function(){\n     var bad=[], l, d, v, c, s0, i, oS=(typeof sndUi===\u0027function\u0027)?sndUi:null, f0=PAD.focus, css;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       if(oS) sndUi=function(){};\n       openSettings(\u0027display\u0027); try{ window.__setDetailSync(); }catch(_s){}\n       l=document.getElementById(\u0027setlist\u0027); d=document.getElementById(\u0027setdetail\u0027);\n       v=d\u0026\u0026d.querySelector(\u0027.sdv\u0027); if(v\u0026\u0026getComputedStyle(v).display!==\u0027none\u0027) bad.push(\u0027the detail pane repeats the row value\u0027);\n       if(l\u0026\u0026d\u0026\u0026d.getBoundingClientRect().height\u003cl.getBoundingClientRect().height-4) bad.push(\u0027detail pane is \u0027+Math.round(d.getBoundingClientRect().height)+\u0027 tall against the list \u0027+Math.round(l.getBoundingClientRect().height));\n       c=l.querySelectorAll(\u0027.setjump button[data-sec]\u0027);\n       if(c.length){ l.scrollTop=2000; s0=Math.round(l.scrollTop); for(i=0;i\u003cc.length;i++) padSetFocus(c[i]); if(Math.abs(Math.round(l.scrollTop)-s0)\u003e1) bad.push(\u0027focusing the jump chips moved the list from \u0027+s0+\u0027 to \u0027+Math.round(l.scrollTop)); }\n       css=(document.getElementById(\u0027ui-shared\u0027)||{textContent:\u0027\u0027}).textContent;\n       if(/settingsmodal\\.expmode #setlist\\{[^}]*#[0-9a-fA-F]{3,8}\\b/.test(css)) bad.push(\u0027the expmode list rule has a raw hex colour\u0027);\n       return bad.length?bad.join(\u0027; \u0027):null;\n     } finally {\n       try{ var o=document.querySelector(\u0027.padfocus\u0027); if(o) o.classList.remove(\u0027padfocus\u0027); PAD.focus=f0; }catch(_f){}\n       if(oS) sndUi=oS;\n       document.getElementById(\u0027settingsmodal\u0027).classList.remove(\u0027on\u0027);\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){} __runPrep(); applyMenuZoom(); __topClear();\n     } }},"
+}

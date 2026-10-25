@@ -1,0 +1,7 @@
+v34.54: career controls list folded, mid-bottom left
+
+Career raids start with the controls list folded; the folded f1 line stands at the lower left beside the feed, and F1 opens the list upward from it.
+
+Check 34.54. Fails on v34.53.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

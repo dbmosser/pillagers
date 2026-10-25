@@ -1216,3 +1216,6 @@
 2026-10-24 0.1412 critic-manual
 2026-10-24 0.1380 critic-manual
 2026-10-24 0.1411 critic-manual
+2026-10-24 0.1300 critic-manual
+2026-10-24 0.1273 critic-manual
+2026-10-24 1.942593 113-ui-settings-play-data-and-superhot

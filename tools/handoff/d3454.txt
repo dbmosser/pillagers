@@ -1,0 +1,5 @@
+## v34.54 - CAREER CONTROLS LIST FOLDED, MID-BOTTOM LEFT
+
+Co-op hunt while he was away. His answer rs-1 (2026-10-24): the keys list should sit mid-bottom left, minimized, a key reveals it. A career raid starts with the list folded; the folded f1 line moves down to stand where the opened list stands, so F1 opens it upward from there. The demo keeps its own start.
+
+MEASURED. Check 34.54 passes, and fails on v34.53.

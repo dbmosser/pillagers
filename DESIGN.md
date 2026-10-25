@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.54 - CAREER CONTROLS LIST FOLDED, MID-BOTTOM LEFT
+
+Co-op hunt while he was away. His answer rs-1 (2026-10-24): the keys list should sit mid-bottom left, minimized, a key reveals it. A career raid starts with the list folded; the folded f1 line moves down to stand where the opened list stands, so F1 opens it upward from there. The demo keeps its own start.
+
+MEASURED. Check 34.54 passes, and fails on v34.53.
 ## v34.53 - SETTINGS PANE VALUE LIT ONLY WHEN ON
 
 Co-op hunt while he was away. Job 113, critic round 3: the detail pane hero value was always accent or always white. Now it is accent only when the value is on and muted otherwise, and the restore warning is body size.
