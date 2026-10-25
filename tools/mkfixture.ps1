@@ -65716,7 +65716,7 @@ window.__REGRESS=[
        sayWhenFree=function(s,k,o){ lines.push(String(s)+((o&&o.sub)?"  "+o.sub:"")); };   /* retargeted for the raid text R36: the line is a caps system row with the setting in its detail */
        CFG.gfxAuto=1; CFG.gfxScale=1; CFG.fpsCap=0; DRS.scale=1; DRS.ema=0; DRS.slowT=0; DRS.fastT=0; DRS.last=0; DRS.bounce=0; DRS.upAt=0; DRS.said=0;
        /* retargeted 2026-10-24 (v34.13 to v34.15, 87r): the ladder sheds effect rungs first and only softens the picture after the fill rung (q 3) is proven to help, so stage that proven state like 32.44 does; the scale steps, the said line, the canvas shrink and the climb back are asserted as before */
-       DRS.q=3; DRS.win=[]; DRS.fillOK=true; DRS.noFillGap=0; DRS.recoverT=0; DRS.downAt=0; DRS.fillAt=0; gfxqApply();
+       DRS.q=3; DRS.win=[]; DRS.fillOK=true; DRS.noFillGap=0; DRS.recoverT=0; DRS.downAt=0; DRS.fillAt=0; DRS.workMs=0; gfxqApply();   /* 113a: drsTick reads DRS.workMs when no work figure is passed; a heavy frame left by an earlier check kept the clear test (work95 under 10) false and the scale never climbed */
        resize(); w1=cv.width;
        for(i=0;i<120;i++){ t+=16; drsTick(16,t); }
        if(DRS.scale!==1) bad.push('smooth frames moved the scale to '+DRS.scale);
