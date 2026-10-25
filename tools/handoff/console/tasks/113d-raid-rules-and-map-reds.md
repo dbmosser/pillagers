@@ -40,5 +40,7 @@ map build rolls per wall, so every roll after the build moved (memory dark-raide
 (dark_raiders.html about line 31896, `if(sees){ ... e.markSeat=... }`), so if its rolled facing now points at the host, marking the host
 is the right game behaviour and the check's staging is what broke (b: set the facing away from the host or put it out of sight; then
 show the control fails on v34.53 as staged before). Ask the same of v30.26 (a low roll), v13.81 (the crate's carbine), v15.80 (which
-body fired) and v22.12 (which contract rolled) before calling any of them a game bug. v13.81's -1 rounds is the one to be sure of: a
-gun a player can pick up with -1 rounds would be a real bug.
+body fired) and v22.12 (which contract rolled) before calling any of them a game bug.
+--- COORDINATOR 2026-10-24 21:50: v13.81's "-1 rounds" is not a gun with -1 rounds. The check writes -1 when the carbine from the
+ordinary crate is in neither hand (mkfixture.ps1, `got=...?p.secAmmo:(...?p.ammo:-1)`), so the control's carbine was not equipped by
+openContainer after the second bagHeldGun. Find why it stayed out of the hands (the belt, the bag, a new pickup rule since v34.18).
