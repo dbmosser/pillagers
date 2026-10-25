@@ -24,3 +24,5 @@ Rules for every graphics job:
 - Checks (each must FAIL on the old build): the new drawing happens when it should, does not happen when it should not (the quality
   step, the setting off), and costs under the budget you measured.
 TASK DONE when it shipped with pictures and frame numbers; TASK PARTIAL with what is left.
+
+Coordinator 10-25 11:19: shipped by the coordinator as v34.77 (aaac590c1). Do only what is left: pictures of a reload and a forged gun (a camera stage if needed) and the 4K frame numbers. No second ship of cw-pixreload.

@@ -24,3 +24,5 @@ Rules for every graphics job:
 - Checks (each must FAIL on the old build): the new drawing happens when it should, does not happen when it should not (the quality
   step, the setting off), and costs under the budget you measured.
 TASK DONE when it shipped with pictures and frame numbers; TASK PARTIAL with what is left.
+
+Coordinator 10-25 11:19: the stale index is fixed (shipone.sh now refreshes it), but shipq.sh cw-flashlight then STOPPED at 11:15: "verifySafe did not pass" on top of v34.76 (job 127 glow pools also works in the light pass). Rebuild the draft on HEAD, run preflight until PASS, then ship.

@@ -25,3 +25,5 @@ Rules for every graphics job:
 - Checks (each must FAIL on the old build): the new drawing happens when it should, does not happen when it should not (the quality
   step, the setting off), and costs under the budget you measured.
 TASK DONE when it shipped with pictures and frame numbers; TASK PARTIAL with what is left.
+
+Coordinator 10-25 11:19: shipped by the coordinator as v34.74 (0dfa49fbd) after the stale index was refreshed. Do only what is left: 1080p and 4K pictures (both windows) and the 4K frame numbers; add the numbers to notes and, if they belong in DESIGN.md, ship them with the next change. No second ship of cw-machdmg.
