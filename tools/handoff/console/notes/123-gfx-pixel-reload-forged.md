@@ -1,0 +1,5 @@
+# 123 pixel reload and forged guns
+- Draft cw-pixreload (mk script in scratchpad, draft in tools/handoff/drafts) PASSED preflight b as v34.73. Not shipped: shipq STOPs "uncommitted changes" 3 times; tools/mkfixture.ps1 shows M with an empty diff (alarms.md). Next run: ship cw-pixreload first (git log to see if it is already in).
+- 10-25 10:47 run 2: same STOP. git status shows tools/mkfixture.ps1 M but git diff (even --ignore-cr-at-eol) is empty: stale index flag. Parked for coordinator (logged in alarms.md).
+- What it does: pixDrawOp no longer flips to vector gunHeld for rl>0 or forged. Reload tip angle (rd) is an aim step; far hand + fresh mag at the well in 4 steps (rq, new arg of pxGun/pxBuildGun, in the cache key). New pxGunLive draws the falling mag and the forge shine/element glow over the pixel gun; the shine is gated on GFXQ.particles (sheds on rung 1).
+- Not done yet: before/after pictures (camera has no reload stage), 4K frame numbers. Watch on next play: does the reload read as a reload from the couch; first reload of each gun may draw vector for a frame or two (PIXSTORE budget).

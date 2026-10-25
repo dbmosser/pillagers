@@ -6166,6 +6166,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.73',what:'the pixel gun and shoulders kick back on a shot (heavy guns more), and not at rest or with EFFECT INTENSITY off',
+   run:function(){
+     __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+     if(typeof pxKick!=='function') return 'FAIL: no pxKick';
+     var bad=[], fi=CFG.fxInt;
+     try{
+       CFG.fxInt=1;
+       if(pxKick(0,'rifle')!==0) bad.push('kick at rest');
+       if(pxKick(0.06,'rifle')!==1) bad.push('rifle kick not 1');
+       if(pxKick(0.06,'shotgun')!==2) bad.push('shotgun kick not 2');
+       if(pxKick(0.06,'sniper')<=pxKick(0.06,'smg')) bad.push('heavy not more than smg');
+       CFG.fxInt=0.5; if(pxKick(0.06,'shotgun')!==1) bad.push('half intensity shotgun not 1');
+       CFG.fxInt=0; if(pxKick(0.06,'shotgun')!==0) bad.push('kick with intensity off');
+     }finally{ CFG.fxInt=fi; }
+     return bad.length?bad.join('; '):null; }},
   {v:'34.72',what:'a crowbar swing or punch keeps the pixel body on a plain look (no flip to the vector art)',
    run:function(){
      __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();

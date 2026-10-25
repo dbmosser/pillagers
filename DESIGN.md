@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.73 - GUN KICK ON THE BODY
+
+Co-op hunt while he was away. Idea I6 of the graphics list. p.recoil only moved the crosshair. The pixel body now steps its gun and shoulders back 1 art px on a shot, 2 for shotgun, magnum, sniper, dmr and lance, scaled by EFFECT INTENSITY (HALF keeps 1, OFF none). It reads the muzzle value so the linked window shows it too. Offset only, no new draw, no random draw.
+
+MEASURED. Check 34.73 passes, and fails on v34.72.
 ## v34.72 - PIXEL BODY KEEPS ITS SWING
 
 Co-op hunt while he was away. Idea I3 of the graphics list. A crowbar swing or punch flipped a plain-look pillager into the old vector art for 0.22 s. The pixel body now stays and swings the pixel crowbar or fist, as the three full sets already do. Hand colour is the skin ramp. Same arc timing on barT and punchT.

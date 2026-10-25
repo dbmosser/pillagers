@@ -10,3 +10,7 @@
 - o-14-daily-save-backup (parked 10-21): waits for a real long-career save size from a run report; the coordinator records it and closes it.
 - 112r-raid-controls-right-folded.md (parked 10-25 05:10, coordinator): its code shipped in v34.54; the pictures and critic wait on a CAREER_ON camera stage in tools/handoff/shots/ui-screens-js.json (alarms.md line 300), which only the coordinator adds. It named a job that does not exist (113b-camera-career-stage, then itself) in TASK WAITING, release() let it out at once every time, and it ran 6 times in 25 minutes for about $1.10. Back to tasks/ once the stage is in.
   BACK IN tasks/ 10-25 05:23: camera screens 79 and 80 added.
+- 121-ui-raid-controls-list.md (parked 10-25 10:21 by lane a): coordinator refresh the stale git index entry for tools/mkfixture.ps1 (git status shows it modified with an empty diff; alarms.md has details), then ship cw-ctrlchip.
+- 125-gfx-machine-damage.md (parked 10-25 10:27 by lane a): coordinator `tools/mkfixture.ps1` has uncommitted edits (since 10:19) and blocks every ship. Commit or clear it, then re-run `shipq.sh cw-machdmg`.
+- 123-gfx-pixel-reload-forged.md (parked 10-25 10:46 by lane a): coordinator refresh the stale index flag on tools/mkfixture.ps1 (git status shows it modified, git diff is empty), then ship cw-pixreload
+- 124-gfx-coloured-flash-light.md (parked 10-25 10:49 by lane b): coordinator refresh the stale git index entry for tools/mkfixture.ps1 (`git update-index --refresh`), then run `shipq.sh cw-flashlight`

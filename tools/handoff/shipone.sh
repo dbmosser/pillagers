@@ -13,6 +13,9 @@ undo(){ cd "$R" || return; local p="$H/console/log/unshipped-$NEW-$K-$(date +%m%
   git diff -- dark_raiders.html tools/mkfixture.ps1 DESIGN.md AUDIT.md > "$p" 2>/dev/null
   git checkout -q -- dark_raiders.html tools/mkfixture.ps1 DESIGN.md AUDIT.md && echo "undone: the tree is back at HEAD (the drafted build is in $p)"; }
 cd "$R" || exit 1
+# 10-25: a stale index stat (several helpers run git at once) showed the fixture as changed with an empty diff and stopped 3 jobs;
+# refresh the index first so only a real edit stops a ship.
+git update-index -q --refresh >/dev/null 2>&1
 [ -n "$(git status --porcelain dark_raiders.html tools/mkfixture.ps1)" ] && die "the game or fixture has uncommitted changes"
 NOW=$(powershell -NoProfile -Command "(Get-Content -Raw '$(cygpath -w "$D/draft-$K.json")' | ConvertFrom-Json).now")
 [ -z "$NOW" ] && die "no now text"

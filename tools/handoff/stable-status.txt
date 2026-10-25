@@ -1,10 +1,10 @@
 Latest stable: v29.09 (2026-10-18 10:23)
-Checked: 2026-10-25 09:18
+Checked: 2026-10-25 10:21
 Play address: http://localhost:8802/stable.html
 Result: no change
 
 Newest test runs, newest first:
-  corpus-1025-0741  v34.69  failing 6, new 5  robots 120 min/0 problems  -> 5 check(s) newly failing, e.g. v9.13 the backpack follows the monitor instead of staying it | v31.90 J8 polling: null and disconnected slots pause in two 
+  corpus-1025-0741  v34.69  failing 6, new 5  robots 245 min/0 problems  -> 5 check(s) newly failing, e.g. v9.13 the backpack follows the monitor instead of staying it | v31.90 J8 polling: null and disconnected slots pause in two 
   corpus-1024-2302  v34.53  failing 44, new 39  robots 1161 min/0 problems  -> 39 check(s) newly failing, e.g. v8.93 a HUD panel can be resized by its corner grip, and the | v9.14 the writing on the sector map follows the monitor, lik
   corpus-1024-1829  v34.53  failing 46, new 40  robots 1161 min/0 problems  -> 40 check(s) newly failing, e.g. v8.93 a HUD panel can be resized by its corner grip, and the | v9.14 the writing on the sector map follows the monitor, lik
   corpus-1023-2304  v34.18  failing 14, new 9  robots 4765 min/0 problems  -> 9 check(s) newly failing, e.g. v33.69 cw-pixveg (86d): THE PIXEL TREE, BUSH AND SHADOW. Wit | v33.66 cw-pixwalls (86d): THE PIXEL WALL. With the pixel loo

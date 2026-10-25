@@ -1,0 +1,7 @@
+v34.73: gun kick on the body
+
+Firing jolts the pixel gun and shoulders back a pixel or two.
+
+Check 34.73. Fails on v34.72.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
