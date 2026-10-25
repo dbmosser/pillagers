@@ -1,0 +1,5 @@
+## v34.82 - FRAME CAPS THAT HOLD THEIR NUMBER
+
+Co-op hunt while he was away. His order of 2026-10-25: I want higher frame rates to be an option, eg 75, 90, 120, 144, 240. The options were there since v28.70 but the row stepped off, 60, 30 first, so it read as if nothing went over 60, and the cap snapped to whole screen refreshes: 60 drew 48 on a 144 Hz screen, 75 and 90 drew 72. The cap now paces on due times and the row steps in plain order. Auto resolution keeps its 60 frame floor (his 2.43 a: a fast cap is no reason to shed quality).
+
+MEASURED. Check 34.82 passes, and fails on v34.81.

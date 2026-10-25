@@ -1,0 +1,7 @@
+v34.82: frame caps that hold their number
+
+Settings, display, frame cap now steps off, 30, 60, 75, 90, 120, 144, 165, 240, and each cap gives its own number of frames (show fps shows it). A cap above the screen refresh gives the screen rate.
+
+Check 34.82. Fails on v34.81.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

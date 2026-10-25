@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.82 - FRAME CAPS THAT HOLD THEIR NUMBER
+
+Co-op hunt while he was away. His order of 2026-10-25: I want higher frame rates to be an option, eg 75, 90, 120, 144, 240. The options were there since v28.70 but the row stepped off, 60, 30 first, so it read as if nothing went over 60, and the cap snapped to whole screen refreshes: 60 drew 48 on a 144 Hz screen, 75 and 90 drew 72. The cap now paces on due times and the row steps in plain order. Auto resolution keeps its 60 frame floor (his 2.43 a: a fast cap is no reason to shed quality).
+
+MEASURED. Check 34.82 passes, and fails on v34.81.
 ## v34.81 - SMOOTH LOOK, A SMALLER PILLAGER, A BIGGER BULWARK
 
 Co-op hunt while he was away. His notes of 2026-10-25 on the photos: I dont like the pixelated style, I want the graphics smooth; Pillager still too big; Bulwark still too small. The smooth look is the default again and a save that holds the pixel look moves to it once (the pixel look stays as an experimental switch). Every human figure is drawn at 0.8 of the old size (drawing only). The bulwark is drawn and hit at 1.5 times the other machines, about twice its old art; it walks and fits doors on the old radius.

@@ -3690,7 +3690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.81';
+var VER='34.82';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -35529,7 +35529,7 @@ function drsTick(gapMs,now){
   }
   return false;
 }
-function frameCapSkip(ts){ var c=+CFG.fpsCap; if(!(c>0)) return false; if(ts-CAP_LAST<1000/c-2) return true; CAP_LAST=ts; return false; }function resize(){
+function frameCapSkip(ts){ var c=+CFG.fpsCap, iv; if(!(c>0)){ CAP_LAST=0; return false; } iv=1000/c; if(CAP_LAST>0&&ts<CAP_LAST-1) return true; CAP_LAST=(CAP_LAST>0&&ts-CAP_LAST<iv)?CAP_LAST+iv:ts+iv; return false; }   /* v28.xx (cw-fpscap), HIS ORDER (2026-10-25): "I want higher frame rates to be an option, eg 75, 90, 120, 144, 240". CAP_LAST is now the time the next frame is due (0: none yet). The old test (a frame at least 1000/c-2 ms after the last) snapped to whole screen refreshes: 60 drew 48 on a 144 Hz screen, 75 and 90 drew 72, 90 drew 60 on 120 Hz. Due times step by exactly 1000/c, so the average is the cap; a frame 1 ms early is on time (stamps jitter); a frame a whole step late starts the schedule again from now, so a hitch never brings a burst. */function resize(){
   // v23.xx (gfx4), HIS ORDER (2026-10-12) on the graphics program: "add ALL of this stuff", item 11, render scale. A lower Render
   // resolution, or an Auto resolution step, used to shrink BOTH canvases, so every HUD word, number and icon went soft along
   // with the world. Now only the world canvas (cv, DPR) takes the render scale. The HUD canvas (hcv, ctx) always draws at the
@@ -54348,7 +54348,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.81: The game looks smooth again (the pixel look is off, saved games too). Pillagers are drawn a fifth smaller. The bulwark is about twice as big and easier to hit. Watch for: name plates sitting right over heads, the smaller pillager staying easy to spot in a fight, and the bulwark art overlapping walls when it hugs one. Check 34.81 fails on v34.80',
+  now:'v34.82: Settings, display, frame cap now steps off, 30, 60, 75, 90, 120, 144, 165, 240, and each cap gives its own number of frames (show fps shows it). A cap above the screen refresh gives the screen rate. Check 34.82 fails on v34.81',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -71496,7 +71496,7 @@ function applyGameOpts(){
     if(CFG.textEdit!==1) txClose();
   }catch(e){}
 }
-function cycleGameOpt(k){
+var GO_SEQ={fpsCap:[0,2,1,3,4,5,6,7,8]};   /* v28.xx (cw-fpscap), his 10-25 order: the Frame cap row stepped off, 60, 30 before 75 to 240, so it read as if nothing went over 60. A click now steps off, 30, 60, 75, 90, 120, 144, 165, 240; the options keep their saved index. */ function cycleGameOpt(k){
   var row=null;
   for(var i=0;i<GAMEOPTS.length;i++) if(GAMEOPTS[i].k===k) row=GAMEOPTS[i];
   if(!row) return;
@@ -71509,7 +71509,7 @@ function cycleGameOpt(k){
   // v10.28: the next option after the one the dials show, so a click always
   // moves the row he is looking at by one step.
   var _cur=gameOptLive(k); if(_cur<0) _cur=gameOptIx(k);
-  P.gameOpts[k]=(_cur+1)%row.opts.length;
+  var _sq=GO_SEQ[k]; P.gameOpts[k]=(_sq&&_sq.length===row.opts.length&&_sq.indexOf(_cur)>=0)?_sq[(_sq.indexOf(_cur)+1)%_sq.length]:(_cur+1)%row.opts.length;   // v28.xx (cw-fpscap): a row with a step order follows it
   // v8.74, his order that the settings work: clicking a row RELEASES the tuning
   // console's claim on the keys that row owns. Without this, once a slider had
   // been dragged the matching Settings row was dead forever - it still cycled and
