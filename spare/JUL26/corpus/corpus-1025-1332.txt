@@ -1,0 +1,23 @@
+[0,120) FAIL x2 || v8.91 the three in-raid panels are twice the size, at every resolution, and never touch -> legend at 1920x1080 is 267 wide, smaller than it was before v8.91 grew it; legend at 2560x1440 is 356 wide, smaller than it was before v8.91 grew it; legend at 3840x2160 is 534 wide, smaller than it was before v8.91 grew it || v9.13 the backpack follows the monitor instead of staying its 1080p size -> control: the 1080p panel changed to 862x606, it was 862x596
+[120,240) FAIL x3 || v34.51 cw-playdata (job 113): the SEND PLAY DATA page opens with the export text folded away, show data opens the same text buildExport() re... -> threw: TypeError: Cannot read properties of undefined (reading 'toUpperCase')     at http://localhost:8806/fxcorpus.html?slice120=1:57361:54     at Array.forEach (<anonymous>)     at buildExport (http://localhost:8806/fxcorpus.html?slice120=1:57357:9)     at Object.run (http://localhost:8806/fxcorpus.html?slice120=1:79416:13)     at ch.port1.onmessage (http://localhost:8806/fxcorpus.html?slice || v33.84 cw-pixrole (86g): with the pixel look on the role gear is scaled by one figure constant so its shoulder line sits within 1 art px of ... -> the aim dots move with the build on the pixel body (633.4012364261026,501.79348111328477 against 640.2463804088476,501.53300031439755) || v33.58 cw-pixbody (86c): with the pixel look on a plain pillager is baked pixel layers: a standing one costs at most 8 canvas calls, the 27 ... -> fists was drawn in pixels but is still the vector body
+[240,360) FAIL x4 || v32.93 cw-demoreport, his answer 66: a finished demo run posts one run report to the local collector tagged demo and its seat after the card... -> ONE: the run end made 0 posts, not 1; TWO: player 2 report is not tagged seat p2 (0 posts) || v32.92 daily save copies keep three dates per slot, leave the main bytes alone, exclude demo and second windows, survive quota errors, and r... -> threw: TypeError: Cannot read properties of undefined (reading 'toUpperCase')     at http://localhost:8806/fxcorpus.html?slice240=1:57361:54     at Array.forEach (<anonymous>)     at buildExport (http://localhost:8806/fxcorpus.html?slice240=1:57357:9)     at Object.run (http://localhost:8806/fxcorpus.html?slice240=1:85355:11)     at ch.port1.onmessage (http://localhost:8806/fxcorpus.html?slice || v32.90 job 55: the close X sits the same distance under its frame top in Settings, the shop and the stash (one close place, v31.02) -> the close X sits at different heights under its frame: settings 1008, shop 12, stash 13 || v32.51 the pre-raid page fixes from the critic: pack rows are 46 px with 36 px steppers, one gun chip, a quiet no armour row with no amber f... -> the going up line has 2 chips, not one
+[360,480) PASS, 112 checks, 8 could not run
+[480,600) PASS, 99 checks, 21 could not run
+[600,720) PASS, 110 checks, 10 could not run
+[720,840) PASS, 110 checks, 10 could not run
+[840,960) PASS, 103 checks, 17 could not run
+[960,1080) FAIL x1 || v26.06 his note: the crowbar swing is larger and more prominent: the bar is drawn 1.6 times as long and thick, a pale crescent swoosh sweeps... -> the crowbar is drawn 27.4 long, under 1.5 times the old 20.6
+[1080,1200) PASS, 109 checks, 11 could not run
+[1200,1320) PASS, 106 checks, 14 could not run
+[1320,1440) PASS, 93 checks, 27 could not run
+[1440,1560) FAIL x1 || v21.39 the backpack words line up with the item grid: the BACKPACK title, EQUIPPED and the selected item line start where the first tile sta... -> the key line is drawn at 797 from the panel edge, the grid ends at 824
+[1560,1680) PASS, 95 checks, 25 could not run
+[1680,1800) FAIL x1 || v18.60 the compact legend names the keys as set and never runs a key into its word: CTRL / C ends before crouch begins, and with search move... -> CTRL / C (ends at 58) runs into crouch (starts at 56)
+[1800,1920) FAIL x1 || v17.76 the raid controls legend: its two columns no longer collide (the label column is wide enough for TACTICAL BELT) and after three raids... -> TACTICAL BELT runs into the next column (152 past 113)
+[1920,2040) PASS, 99 checks, 21 could not run
+[2040,2160) PASS, 90 checks, 30 could not run
+[2160,2280) PASS, 102 checks, 18 could not run
+[2280,2400) PASS, 110 checks, 10 could not run
+[2400,2520) FAIL x1 || v11.06 the 23 jersey reads as a jersey rather than as a black block, and the number is not painted over -> the 23 shows only 1564 pale pixels, so something is painted across it
+[2520,2618) PASS, 94 checks, 4 could not run
+ALL DONE 14:43
