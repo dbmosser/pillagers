@@ -7020,7 +7020,7 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'34.22',what:'welcome pack and party card (critic 02 and 07 = 2): the welcome pack has no intro line or stash hints, its close is a 48px X in the card corner and its primary is lime; the party card is a fitted 960 card with a lime host button and a one line 56px invite field, no trade line',
+  {v:'34.22',what:'welcome pack and party card (critic 02 and 07 = 2): the welcome pack has no intro line or stash hints, its close is a 48px X in the card corner and its primary is lime; the party card is the 90 percent window card (his Q43) with a lime host button and a one line 56px invite field, no trade line',
    run:function(){
      if(typeof openParty!=='function'||typeof openModal!=='function') return 'SKIP: no party window';
      var wm, pm, c, r, b, q, z=1, cx, cy, res=null;
@@ -7038,7 +7038,7 @@ window.__REGRESS=[
        if(b!=='rgb(230, 255, 61)') return 'the welcome primary is not lime: '+b;
        openParty();
        c=getComputedStyle(pm,'::before');
-       if(parseFloat(c.width)>961) return 'the party card is '+c.width+' wide, not a fitted 960 card';
+       if(Math.abs(parseFloat(c.width)-window.innerWidth*0.9)>6) return 'the party card is '+c.width+' wide, not the 90 percent window card (his Q43; v34.63 cw-partywin undid the fitted 960 card of v34.22)';
        if(getComputedStyle(document.getElementById('partytrade')).display!=='none') return 'the party card still shows the trade line';
        b=getComputedStyle(document.getElementById('partyhost')).backgroundColor;
        if(b!=='rgb(230, 255, 61)') return 'host a party is not the lime primary: '+b;
@@ -12680,7 +12680,7 @@ window.__REGRESS=[
        if(!back||back.type!=='offer'||back.sdp!==d.sdp) return 'FIVE: the join read did not get the host offer back';
        if(sdpUnpackPlain(code.toLowerCase())) return 'FIVE: a lower case code reads, so this guard proves nothing';
        var ph=pin.getAttribute('placeholder')||'', ph2=(document.getElementById('partyreplyin').getAttribute('placeholder')||'');
-       if(ph.indexOf('PTY1o')<0) return 'SIX: the paste box placeholder does not name the code as it looks: '+ph;
+       if(ph.indexOf('invite code')<0) return 'SIX: the paste box placeholder does not name the code as it looks: '+ph;   /* re-aimed (v34.22 cw-wpcard, his lower case order): the placeholder is "invite code" now, not the PTY1o sentence */
        if(ph2.indexOf('PTY1a')<0) return 'SIX: the reply box placeholder does not name the code as it looks: '+ph2;
        if(ncFix('Start with PTY1o. No CAPS here')!=='start with PTY1o. no caps here') return 'SIX: the tag exemption lets other words keep capitals: '+ncFix('Start with PTY1o. No CAPS here');
        // SEVEN: a pad, on every layout, uses an armour plate and calls an air strike
@@ -14221,7 +14221,7 @@ window.__REGRESS=[
        ['condhint','wxhint'].forEach(function(id){ var e=document.getElementById(id);
          if(!e) bad.push('no '+id); else if(getComputedStyle(e).display!=='none') bad.push(id+' displays'); });
        var fs=m?parseFloat(getComputedStyle(m).fontSize):0;
-       if(fs<18) bad.push('party msub '+fs+'px');
+       if(Math.abs(fs-16)>0.5) bad.push('party msub '+fs+'px');   /* re-aimed (v34.22 cw-wpcard, changes.md): the party intro is 16px on purpose */
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      return bad.length?bad.join('; '):null; }},
   {v:'32.21',what:'the what is new card is stamped within 0.15 of the build and leads with the new news shown whole',
@@ -22203,7 +22203,7 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ var q=document.getElementById('settingsmodal'); if(q) q.classList.remove('on'); q=document.getElementById('keysmodal'); if(q) q.classList.remove('on'); }catch(_k){} try{ __topClear(); }catch(_c){} }
      return bad.length?bad.join('; '):null; }},
-  {v:'29.95',what:'the end cards lead with a 40px title, 72px loss tiles and the Abandoned loot line is its own 24px line (critic: title too small, tiles small, no focal line; screens 35 and 60)',
+  {v:'29.95',what:'the end cards lead with a 32px title, 80px loss tiles (re-aimed to v34.32) and the Abandoned loot line is its own 24px line (critic: title too small, tiles small, no focal line; screens 35 and 60)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: cannot deploy and end a raid here';
      var man=document.getElementById('oc_manifest'), oc=document.getElementById('outcome');
@@ -22218,7 +22218,7 @@ window.__REGRESS=[
        __endRaid('abandon');
        if(g.over!=='abandon'||!oc.classList.contains('on')) return 'SKIP: the abandon card was not drawn here';
        h1=document.getElementById('oc_title')||oc.querySelector('h1');
-       if(h1&&Math.abs(parseFloat(getComputedStyle(h1).fontSize)-40)>1.5) bad.push('the card title is '+getComputedStyle(h1).fontSize+', not 40px');
+       if(h1&&Math.abs(parseFloat(getComputedStyle(h1).fontSize)-32)>1.5) bad.push('the card title is '+getComputedStyle(h1).fontSize+', not 32px');   /* re-aimed (v34.32 cw-endcards2, style-guide.md end cards: title --fs-title 32); the old 40 was a critic ask, never his order */
        nt=man.querySelector('.ocnote');
        if(!nt) bad.push('the Abandoned loot line is not its own line');
        else{
@@ -22227,7 +22227,7 @@ window.__REGRESS=[
          if(String(nt.textContent).indexOf('Run abandoned.')!==0||String(nt.textContent).indexOf('left behind.')<0) bad.push('the loot line words changed: '+nt.textContent);
        }
        wrap=document.createElement('div'); wrap.className='octiles'; tmp=document.createElement('div'); tmp.className='octile'; wrap.appendChild(tmp); man.appendChild(wrap);
-       if(Math.abs(tmp.offsetWidth-72)>1.5) bad.push('a loss tile is '+tmp.offsetWidth+'px, not 72');
+       if(Math.abs(tmp.offsetWidth-80)>1.5) bad.push('a loss tile is '+tmp.offsetWidth+'px, not 80');   /* re-aimed (v34.32 cw-endcards2): 80px tiles */
        man.removeChild(wrap);
        return bad.length?bad.join('; '):null;
      } finally {
@@ -22560,7 +22560,7 @@ window.__REGRESS=[
        if(String(man.textContent||'').indexOf(' lost, ')<0) return 'SKIP: nothing was lost on this card';
        tiles=man.querySelectorAll('.octile');
        if(!tiles.length) return 'what you lost is not a tile row';
-       if(tiles[0].offsetWidth!==72) bad.push('a tile is '+tiles[0].offsetWidth+'px, not 72');   /* v28.xx (cw-endcard-clean): the critic, 64px tiles are small: 72 */
+       if(tiles[0].offsetWidth!==80) bad.push('a tile is '+tiles[0].offsetWidth+'px, not 80');   /* re-aimed (v34.32 cw-endcards2): the tile is 80px; it was 72 under cw-endcard-clean */
        hero=man.querySelector('.ocloss b');
        if(!hero) bad.push('no loss figure');
        else if(Math.round(parseFloat(getComputedStyle(hero).fontSize))!==56) bad.push('the loss figure is '+getComputedStyle(hero).fontSize+', not 56px');
@@ -23279,7 +23279,11 @@ window.__REGRESS=[
      if(res) return res;
      a=/rgba?\([^)]*?,\s*([\d.]+)\)/.exec(getComputedStyle(oc).backgroundColor);
      if(!a||parseFloat(a[1])<0.9) return 'the scrim is '+getComputedStyle(oc).backgroundColor+', the HUD reads through';
-     if(getComputedStyle(fb).borderTopWidth!=='0px') return 'the feedback prompt still has a box';
+     /* re-aimed (v34.32 cw-endcards2, style-guide.md end cards: one primary + one ghost): the feedback prompt is the one ghost, a 1px border, no fill, not lime */
+     a=getComputedStyle(fb);
+     if(!(parseFloat(a.borderTopWidth)>=1)) return 'the feedback prompt has no ghost border';
+     if(a.backgroundColor.replace(/\s/g,'')!=='rgba(0,0,0,0)') return 'the feedback prompt has a fill: '+a.backgroundColor;
+     if(a.borderTopColor.replace(/\s/g,'')==='rgb(230,255,61)') return 'the feedback prompt is lime, the primary is the one lime';
      return null;
    }},
   {v:'29.52',what:'the end card is one flat shell: 4px radius, no glow on the title, a 56px primary, the scrim blurs the world behind it (critic: debug dialog, screens 35 38 60 77)',
@@ -58811,7 +58815,9 @@ window.__REGRESS=[
        rg=sg.getBoundingClientRect(); ro=so.getBoundingClientRect();
        if(!(rg.width>0&&ro.width>0)) return 'SKIP: the Wirt panel has no layout';
        if(Math.abs(rg.width-ro.width)>1) bad.push('THE GAMBLE is '+rg.width.toFixed(1)+' px wide and LIMITED TIME OFFER '+ro.width.toFixed(1)+' px');
-       if(Math.abs(rg.left-ro.left)>1) bad.push('the two boxes start '+Math.abs(rg.left-ro.left).toFixed(1)+' px apart');
+       /* re-aimed (v34.34 cw-gamblecard): the two panels sit side by side, so they share a top edge; stacked they would share a left edge */
+       if(rg.bottom>ro.top+1&&ro.bottom>rg.top+1){ if(Math.abs(rg.top-ro.top)>1) bad.push('the two boxes start '+Math.abs(rg.top-ro.top).toFixed(1)+' px apart at the top'); }
+       else if(Math.abs(rg.left-ro.left)>1) bad.push('the two boxes start '+Math.abs(rg.left-ro.left).toFixed(1)+' px apart');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ P.wirtLotBought=b0; try{ [].slice.call(document.querySelectorAll('.modal.on')).forEach(function(x){ x.classList.remove('on'); }); }catch(_m){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
@@ -62629,7 +62635,7 @@ window.__REGRESS=[
        if(!tr||!st||!document.getElementById('partymodal').classList.contains('on')) return 'SKIP: the PARTY window did not open';
        a=tr.getBoundingClientRect(); b=st.getBoundingClientRect();
        if(a.width>b.width+2) bad.push('the TRADING line is '+Math.round(a.width)+' px wide against '+Math.round(b.width)+' for the other lines');
-       if(a.left<b.left-2) bad.push('the TRADING line starts left of the window text');
+       if(a.width>0&&a.left<b.left-2) bad.push('the TRADING line starts left of the window text');   /* re-aimed (v34.22 cw-wpcard): the line is hidden on purpose (#partytrade display:none), so it is tested only when shown */
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
@@ -100614,8 +100620,10 @@ window.__REGRESS=[
        // 0.769px at zoom 1.3: test the style and a positive width, not 1.
        if(cg.borderTopStyle!=='solid'||!(parseFloat(cg.borderTopWidth)>0)||co.borderTopStyle!=='solid'||!(parseFloat(co.borderTopWidth)>0)) bad.push('a section has no border of its own');
        // v28.xx (cw-cx-ucfinish): either a different outline or an accent left edge identifies the offer while both section boxes remain.
-       if(cg.borderTopColor===co.borderTopColor&&cg.borderLeftColor===co.borderLeftColor) bad.push('neither outline nor left edge distinguishes the two sections');
-       var gap=ro.top-rg.bottom;
+       // re-aimed (v34.34 cw-gamblecard, changes.md: the offer's lime left tab was dropped on purpose so gamble is the one lime; his 09-03 note asks for "a more clear delineation"): each panel opens with its own visible label
+       var lbG=sg.firstElementChild, lbO=so.firstElementChild;
+       if(!lbG||!lbO||lbG.getBoundingClientRect().height<1||lbO.getBoundingClientRect().height<1||parseFloat(getComputedStyle(lbG).fontSize)<19||parseFloat(getComputedStyle(lbO).fontSize)<19) bad.push('a section does not open with its own visible label at 19px or more');
+       var gap=(rg.bottom>ro.top+1&&ro.bottom>rg.top+1)?ro.left-rg.right:ro.top-rg.bottom;
        if(!(gap>=8)) bad.push('the two sections are '+Math.round(gap)+' px apart, which is not clear air');
        if(!/THE GAMBLE/i.test(sg.textContent)||!/LIMITED TIME OFFER/i.test(so.textContent)) bad.push('the section heads are not THE GAMBLE and LIMITED TIME OFFER');
        if(!sg.querySelector('#gamblebtn')) bad.push('the Gamble button is not inside THE GAMBLE');
