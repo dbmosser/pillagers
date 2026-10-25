@@ -211,6 +211,7 @@ actually look good". So for any change a player can see:
 - HIS ROUND 2-3 RULES (10-18 evening; full list in tools/handoff/q-round3/answers.md):
   - Finish line (3.51 a): critic 4 for the raid, waiting, pause and run-over screens; 3 is enough for the rest.
   - After 6 tries without reaching the finish line (2.83 b), stop and leave the two best versions with pictures in your notes.
+    When this rule stops you, end with TASK DONE (scores, reasons and the best versions written), never TASK PARTIAL: a partial is run again and finds the same stop.
   - You may decide alone (2.85): anything that is not a brand new feature and not a change to one of his rulings, including tuning up to about 25 percent.
   - A 2-player change is done only after you have seen it work in both windows, with a picture from each (2.86 a).
   - Mon 10/26 and the lock: his 10-20 23:00 order beats 3.37 c and 2.81 c for the game file: nothing waits for the party; the lock freezes only the party copy.
