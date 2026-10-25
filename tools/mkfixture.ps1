@@ -6168,13 +6168,7 @@ window.__REGRESS=[
        help=document.querySelector('#spane_rec > div:has(> #rescode) > .msub');
        if(!help) return 'restore helper missing';
        if(parseFloat(getComputedStyle(help).fontSize)<20) bad.push('the restore warning is below body size ['+getComputedStyle(help).fontSize+']');
-       openSettings(); det=document.getElementById('setdetail');
-       if(window.__setDetailSync) window.__setDetailSync();
-       v=det&&det.querySelector('.sdv'); if(!v) return 'SKIP: no value in the detail pane';
-       c0=getComputedStyle(v).color;
-       v.classList.add('on'); c1=getComputedStyle(v).color; v.classList.remove('on');
-       if(c0===c1) bad.push('an on value is not lit differently from an off value ['+c0+']');
-       if(/230, 255, 61/.test(c0)) bad.push('an off value is drawn in the accent colour');
+       // v34.54 (cw-setrevert): the pane no longer shows the row value (checks 30.05 and 33.28), so the lit-when-on part is gone with it
        return bad.length?bad.join('; '):null;
      } finally {
        document.getElementById('settingsmodal').classList.remove('on');
@@ -6190,9 +6184,7 @@ window.__REGRESS=[
        if(!sum||!help) return 'play data page parts missing';
        if(parseFloat(getComputedStyle(sum).fontSize)<32) bad.push('the summary is not the 32px headline ['+getComputedStyle(sum).fontSize+']');
        if(help.textContent.length>60||/above/i.test(help.textContent)) bad.push('the restore helper is still an explaining sentence ['+help.textContent+']');
-       openSettings(); det=document.getElementById('setdetail'); list=document.getElementById('setlist');
-       if(window.__setDetailSync) window.__setDetailSync();
-       if(det&&det.innerHTML&&list&&det.getBoundingClientRect().height>list.getBoundingClientRect().height*0.7) bad.push('the detail pane is a tall empty box ['+Math.round(det.getBoundingClientRect().height)+' of '+Math.round(list.getBoundingClientRect().height)+']');
+       // v34.54 (cw-setrevert): the packed pane part is gone; check 31.75 holds the pane at the full list height
        return bad.length?bad.join('; '):null;
      } finally {
        document.getElementById('settingsmodal').classList.remove('on');
@@ -9776,7 +9768,8 @@ window.__REGRESS=[
      try{
        __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __forceSize(1920,1080); applyMenuZoom();
-       openSettings('rec'); oldValue=ta.value; ta.value='REPORT Case Probe';
+       openSettings('rec'); var _sd=document.getElementById('showdata'); if(_sd&&getComputedStyle(ta).display==='none') _sd.click();   // v34.54 (cw-setrevert): the export text is folded on open (v34.51), so show it before measuring, as 33.70
+       oldValue=ta.value; ta.value='REPORT Case Probe';
        var ts=getComputedStyle(ta), copy=document.getElementById('copybtn'), cs=getComputedStyle(copy), root=document.getElementById('root');
        if(ta.getBoundingClientRect().height<1||ta.getBoundingClientRect().height>240.5) bad.push('raw preview exceeds 240px: height '+ta.getBoundingClientRect().height+', zoom '+document.getElementById('settingsmodal').style.zoom);
        if(parseFloat(ts.fontSize)<16||parseFloat(ts.lineHeight)<24||ts.textTransform!=='lowercase') bad.push('preview does not use readable lowercase text: '+ts.fontSize+'/'+ts.lineHeight+', transform '+ts.textTransform);
@@ -16005,7 +15998,8 @@ window.__REGRESS=[
        try{ document.getElementById('keysmodal').classList.remove('on'); }catch(_k){}
        openSettings('display');
        // 10-20 (coordinator): the daily restore row puts its buttons under its label on purpose (cw-cx-dailyrestorefinish), so it is the one row left out
-       rows=document.querySelectorAll('#setlist .row:not(.setjump):not(.save-restore)');
+       // v34.54 (cw-setrevert): the section heads (style opacity .7) are collapsed to a hairline on purpose, they are labels not rows
+       rows=document.querySelectorAll('#setlist .row:not(.setjump):not(.save-restore):not([style*="opacity:.7"])');
        if(rows.length<4) bad.push('too few settings rows');
        for(i=0;i<rows.length;i++){ if(rows[i].offsetHeight>0) hs[Math.round(rows[i].getBoundingClientRect().height)]=1; }
        for(i in hs) ks++;
@@ -36693,7 +36687,7 @@ window.__REGRESS=[
        hd=[].map.call(document.querySelectorAll('#setlist .row[style*="opacity:.7"] b'),function(b){ return b.textContent; });
        at=-1;
        ['THE RAID','AUDIO','CONTROLS','CONTROLLER','DISPLAY','SAVES AND TOOLS'].forEach(function(w){ var x=hd.indexOf(w); if(x<0) bad.push('ONE: Settings has no '+w+' section'); else { if(x<=at) bad.push('ONE: '+w+' is out of order ('+hd.join(' > ')+')'); at=x; } });
-       q={go_raiders:'THE RAID',go_volMaster:'AUDIO',go_volMusic:'AUDIO',go_volFx:'AUDIO',go_volUi:'AUDIO',go_volFoot:'AUDIO',go_mono:'AUDIO',set_music:'AUDIO',set_keys:'CONTROLS',go_rumble:'CONTROLLER',go_gfxLight:'DISPLAY',go_minimap:'DISPLAY',go_fxInt:'DISPLAY',set_text:'DISPLAY',set_layout:'DISPLAY',set_auto:'SAVES AND TOOLS'};
+       q={go_raiders:'THE RAID',go_volMaster:'AUDIO',go_volMusic:'AUDIO',go_volFx:'AUDIO',go_volUi:'AUDIO',go_volFoot:'AUDIO',go_mono:'AUDIO',set_music:'AUDIO',set_keys:'CONTROLS',go_rumble:'CONTROLLER',go_gfxLight:'DISPLAY',go_mmSize:'DISPLAY',go_fxInt:'DISPLAY',set_text:'DISPLAY',set_layout:'DISPLAY',set_auto:'SAVES AND TOOLS'};
        for(k in q){ if(!document.getElementById(k)){ bad.push('ONE: Settings draws no '+k); continue; } if(secOf(k)!==q[k]) bad.push('ONE: '+k+' sits under '+secOf(k)+', not '+q[k]); }
        // TWO: the jump bar scrolls to a section
        chip=null; el=host.querySelectorAll('.setjump button');
