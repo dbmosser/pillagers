@@ -1568,20 +1568,20 @@
   "need": 3
  },
  "j8-p1-press-a": {
-  "score": 2,
-  "pass": false,
+  "score": 3,
+  "pass": true,
   "need": 3,
-  "verdict": "The only change is that the title now reads 'p1 press a' in amber, and the card still mixes a pad-lost prompt with a full pause menu, so most of the earlier advice was not followed.",
+  "verdict": "The card is cleaner and its hierarchy is clear, with one lime resume button, a quiet stack, a red end run and a corner x. The title still reads as a pad prompt rather than a pause, and the card is small and floats on a flat black void.",
   "findings": [
-   "P0 card title 'p1 press a': Remove the amber tint and set the title in --tx-1. Either title the card 'paused' with 'p1 press a' as a 16px --tx-2 line under it, or show a pad-lost card with a 56px hero 'press a' and no menu buttons.",
-   "P1 whole screen: Show the dimmed raid frame behind the card at rgba(6,7,8,.80). Add the run timer and sector as 16px --tx-2 text. Widen the card to about 560px.",
-   "P1 button stack: Keep resume, settings and end run. Merge report a problem and feedback into one 'feedback' button. Move what's new into settings. Use full-width rows 56px high with 16px gaps.",
-   "P1 end run button: Add a 24px extra gap above end run and a confirm step. Keep the 1px --danger border and add the 3px lime focus bar when it is focused.",
-   "P2 focus state: Give a focused button a 2px lime border, a 3px left bar and the --ui-raised fill. Keep the filled lime for the one primary action. Add a 14px footer legend with the pad glyphs, for example a for select and b for back."
+   "P1 card title 'p1 press a': Title it 'paused' in --tx-1 at 32px/700. Put 'p1 press a' on a 16px line under the title: 'p1' in amber, 'press a' in --tx-2. If it is a pad-lost card, drop the menu buttons and show a 56px hero 'press a'.",
+   "P1 whole screen background: Render the frozen raid frame under a rgba(6,7,8,.80) scrim. If a 90% card is not wanted for a pause, widen it to about 560px and keep it centred.",
+   "P1 button stack, rows 3 and 4: Keep resume, settings, feedback and end run. Merge report a problem into feedback and move what's new into settings. Use four full-width rows, each 56px high, with 16px gaps.",
+   "P2 end run button: Add 24px of extra space above end run. Brighten the text to about #ff6a4f, or use tx-1 on a --danger 1px border. Add a confirm step.",
+   "P2 top-left of card edge at about x=720..756, y=298: Remove it, or make it a deliberate 3px x 40px --acc bar inset 0 from the card edge and aligned with the content at x=760."
   ],
-  "pic": "tools/handoff/console/notes/shots/114-after2/j8-p1-press-a-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/114-after3/j8-p1-press-a-1080.jpg",
   "task": "manual",
-  "when": "2026-10-25T11:10"
+  "when": "2026-10-25T11:22"
  },
  "j8-p1-sees-p2-lost": {
   "score": 2,

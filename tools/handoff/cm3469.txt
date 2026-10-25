@@ -1,0 +1,7 @@
+v34.69: one corner panel look
+
+The raid hud panels (score, ammo, log rows, controls) all share one fill, one border and 4px round corners.
+
+Check 34.69. Fails on v34.68.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

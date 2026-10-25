@@ -3691,7 +3691,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.68';
+var VER='34.69';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13135,6 +13135,8 @@ var UIC={ui_void:'#0b0c0d', ui_bg:'#111315', ui_panel:'#16191b', ui_raised:'#1e2
   r_common:'#9da3a8', r_uncommon:'#5fbf6a', r_rare:'#3f9de9', r_elite:'#a866e0', r_gold:'#ffc72e'};   // 2026-10-12 (rarity): gold is gold, as RCOL
 var HUDC={text:UIC.tx_1, dim:UIC.tx_2, danger:UIC.danger, warn:UIC.warn, extract:UIC.extract, gain:UIC.ok, ally:UIC.ally,
   special:UIC.r_elite, plate:'rgba(17,19,21,.88)'/* v28.xx (cw-hudpanels), the critic on screens 21, 19, 37, 61: 'panel styles disagree'. One HUD panel fill, the graphite of hudPanel at 88 percent (was blue-black at 78) */, dangerPlate:'rgba(40,8,6,.84)', ink:INK};
+// v34.69 (cw-hudpanel1), the critic on screens 47, 48 and 51 (every corner has a differently shaped box): ONE corner panel look, the fill of HUDC.plate, a 1px line and a 4px radius. hudPlate and hudPanel both read it (hudPanel had a cut corner, hudPlate had no line).
+var HUDPS={fill:HUDC.plate, line:'rgba(112,122,130,.95)', rad:4};
 // v28.xx (cw-uishared-title), his order 2026-10-18 (UI step 2, one shared look): UIT is the style guide as ONE table (the same numbers as
 // the :root tokens --fs-*, --sp-*, --rad; the check keeps them equal). uiFont(role,z) is the type of a role at a screen scale z, uiPanel
 // is Panel P on a canvas (fill --ui-panel at 90 percent, a 1px --ui-line-hi border, --rad, an optional 3px accent bar). The DOM side is
@@ -13194,12 +13196,16 @@ function uiIconPath(name){
 }
 function hudPlate(x,y,w,h,accent,fill){
   if(!(w>0&&h>0)) return;
-  var r=Math.max(0,Math.min(LH(4),h/2,w/2));
-  ctx.fillStyle=fill||HUDC.plate;
+  var r=Math.max(0,Math.min(LH(HUDPS.rad),h/2,w/2));
+  ctx.fillStyle=fill||HUDPS.fill;
   ctx.beginPath();
   if(ctx.roundRect) ctx.roundRect(x,y,w,h,r);
   else { ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
   ctx.fill();
+  ctx.beginPath();   // v34.69 (cw-hudpanel1): the shared 1px line
+  if(ctx.roundRect) ctx.roundRect(x+.5,y+.5,w-1,h-1,Math.max(0,r-.5));
+  else ctx.rect(x+.5,y+.5,w-1,h-1);
+  ctx.strokeStyle=HUDPS.line; ctx.lineWidth=1; ctx.stroke();
   if(accent){ ctx.fillStyle=accent; ctx.fillRect(x,y+r*0.5,Math.max(2,LH(3)),h-r); }
 }
 function hudText(s,x,y,lw){
@@ -46037,14 +46043,14 @@ function hudChev(xr,yb,open){
 function hudPanel(x,y,w,h,a,plain){
   var c, g;
   if(!(w>0&&h>0)) return;
-  c=Math.max(0,Math.min(10,w/3,h/3)); a=(a===undefined)?0.88:a;
-  function path(px,py,pw,ph,pc){ ctx.beginPath(); ctx.moveTo(px+pc,py); ctx.lineTo(px+pw,py); ctx.lineTo(px+pw,py+ph); ctx.lineTo(px,py+ph); ctx.lineTo(px,py+pc); ctx.closePath(); }
+  c=Math.max(0,Math.min(LH(HUDPS.rad),w/3,h/3)); a=(a===undefined)?0.88:a;   // v34.69 (cw-hudpanel1): the shared 4px radius, not a cut corner
+  function path(px,py,pw,ph,pc){ ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(px,py,pw,ph,pc); else ctx.rect(px,py,pw,ph); }
   ctx.save();
   path(x,y,w,h,c);
   ctx.fillStyle='rgba(17,19,21,'+a+')';   // v28.xx (cw-panelflat), the critic (2026-10-19) and the style guide (Panel P: 'NO gradient'): one flat fill, was a top-to-bottom wash
   ctx.fill();
   path(x+.5,y+.5,w-1,h-1,Math.max(0,c-.5));
-  ctx.strokeStyle='rgba(112,122,130,.95)'; ctx.lineWidth=1; ctx.stroke();   // v28.xx (cw-panelflat): the 1px line is lighter so the edge reads (the critic: 'no 1px border')
+  ctx.strokeStyle=HUDPS.line; ctx.lineWidth=1; ctx.stroke();   // v28.xx (cw-panelflat): the 1px line is lighter so the edge reads (the critic: 'no 1px border')
   if(w>c+20&&!plain){ ctx.fillStyle='#e6ff3d'; ctx.fillRect(x+c+4,y,Math.min(36,w*0.25),2); }   // the tab of the menu plate (ui6); v28.xx (cw-hudstar): only where plain is not set
   ctx.restore();
 }function drawRaiderBoard(){
@@ -54200,7 +54206,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.68: On the lost pad screen only the p1 or p2 tag is coloured and the words are plain. Check 34.68 fails on v34.67',
+  now:'v34.69: The raid hud panels (score, ammo, log rows, controls) all share one fill, one border and 4px round corners. Check 34.69 fails on v34.68',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

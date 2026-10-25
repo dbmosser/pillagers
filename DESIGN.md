@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.69 - ONE CORNER PANEL LOOK
+
+Co-op hunt while he was away. The critic on screens 47, 48 and 51: every corner has a differently shaped box. The ammo and gun panels had a cut corner, the plates had no line. Both now draw the same fill, 1px line and 4px radius.
+
+MEASURED. Check 34.69 passes, and fails on v34.68.
 ## v34.68 - THE LOST PAD TITLE COLOURS ONLY ITS P1 OR P2 TAG
 
 Co-op hunt while he was away. The critic scored the press a screen 2 with a P0: the whole title in amber sat beside the lime resume button, which the guide bans. Only the p1 or p2 tag keeps its player colour now; the words are the normal title colour.

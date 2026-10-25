@@ -1250,3 +1250,12 @@
 2026-10-25 0.0981 critic-manual
 2026-10-25 0.0917 critic-manual
 2026-10-25 0.0897 critic-manual
+2026-10-25 0.0912 critic-manual
+2026-10-25 1.2617529 114-ui-demo-raid-cards
+2026-10-25 0.0694741 114-ui-demo-raid-cards
+2026-10-25 0.0999 critic-manual
+2026-10-25 0.1016992 114-ui-demo-raid-cards
+2026-10-25 0.10514849999999999 115-ui-raid-backpack
+2026-10-25 0.1070 critic-manual
+2026-10-25 0.0978 critic-manual
+2026-10-25 0.0927 critic-manual

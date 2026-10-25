@@ -6165,6 +6165,16 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.69',what:'the corner panels share one fill, one line and one radius (hudPlate and hudPanel read HUDPS; the critic: every corner has a differently shaped box)',
+   run:function(){
+     if(typeof HUDPS==='undefined') return 'no shared corner panel style (HUDPS)';
+     if(HUDPS.fill!==HUDC.plate) return 'the panel fill is not the HUD plate fill';
+     if(!(HUDPS.rad===4)) return 'the radius is '+HUDPS.rad+', not 4';
+     var a=String(hudPlate), b=String(hudPanel);
+     if(a.indexOf('HUDPS.fill')<0||a.indexOf('HUDPS.line')<0) return 'hudPlate does not read the shared fill and line';
+     if(b.indexOf('HUDPS.line')<0||b.indexOf('HUDPS.rad')<0) return 'hudPanel does not read the shared line and radius';
+     if(b.indexOf('lineTo')>=0) return 'hudPanel still draws a cut corner';
+     return null; }},
   {v:'34.68',what:'the lost pad title colours only its p1 or p2 tag, the words stay the title colour',
    run:function(){
      if(typeof padLostTitle!=='function') return 'no padLostTitle';
