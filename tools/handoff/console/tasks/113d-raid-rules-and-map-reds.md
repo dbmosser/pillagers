@@ -69,7 +69,7 @@ check's direct low-roll call gives a vault gun and its high-roll call gives none
 calls vaultKillDrop(e) (dark_raiders.html about line 31290, after the wreck roll). So look at whether the body the check picks (the
 first live crawler, sentry, bulwark or howler) reaches that line in its one updateEnts(0.05): a later ship (86g pixel pillager states,
 v34.47 to v34.50) may hold a death for a beat, or the picked body may now be one of the kinds vaultKillDrop skips.
---- COORDINATOR 2026-10-25 01:45: the last two leads (read-only search, each checked by a second reader; line numbers as of v34.55):
+--- COORDINATOR 2026-10-25 01:35: the last two leads (read-only search, each checked by a second reader; line numbers as of v34.55):
 - v30.26 (b, re-aim): the check sets hit.hp=0 on the first live sentry and leaves it in 'patrol'. The v4.45 weld (c4f681e54, "machines
   weld each other when left alone", dark_raiders.html about line 30976, no hp>0 guard) runs before the death branch and gives it +2 hp
   when another patrolling machine is within 90, so it never dies that frame. A real player kill sets state 'chase' first (a landed round

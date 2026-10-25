@@ -35,7 +35,7 @@ TASK DONE when the ten pass on the drafted build or are fixed in a shipped batch
 
 --- COORDINATOR 2026-10-24 21:25: step 1 is done for you. Each check was rerun alone on v34.53 (fresh tab of the corpus Chrome, as a full-run slice runs it).
 All ten fail alone (real): v29.95, v29.83, v29.53, v21.00, v9.94, v31.62, v20.00, v19.42, v32.22, v32.82.
---- COORDINATOR 2026-10-25 01:45: causes found for all ten (read-only search, each finding checked by a second reader; line numbers
+--- COORDINATOR 2026-10-25 01:35: causes found for all ten (read-only search, each finding checked by a second reader; line numbers
 are as of v34.55, so grep again). Two are real game breaks, eight need the check re-aimed.
 a. FIX THE GAME (v34.22, 36fca4824, cw-wpcard, job 100): v31.62 and v20.00. dark_raiders.html about line 884
    `#root #partymodal.ui-win:not(#zz1):not(#zz2)::before{ inset:50% auto auto 50%; width:min(960px,...); ...transform:translate(-50%,-50%) }`
