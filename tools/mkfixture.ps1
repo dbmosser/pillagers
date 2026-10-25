@@ -6163,6 +6163,12 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.61',what:'cw-setrevert4 (job 113): the what is new subtitle rules in the shared block have no raw px font size',
+   run:function(){
+     var css=(document.getElementById('ui-shared')||{textContent:''}).textContent.replace(/\/\*[\s\S]*?\*\//g,''), rs=css.match(/[^{}]*#wnmodal #wnsub\s*\{[^}]*\}/g)||[], i, bad=[];
+     if(!rs.length) return 'SKIP: no what is new subtitle rule in the shared block';
+     for(i=0;i<rs.length;i++) if(/#[0-9a-fA-F]{3,8}\b|rgba?\(|font-size\s*:\s*[\d.]+(px|em|rem)|font\s*:[^;]*[\d.]+px/.test(rs[i].slice(rs[i].indexOf('{')))) bad.push(rs[i].slice(rs[i].indexOf('{'),rs[i].indexOf('{')+60));
+     return bad.length?'raw literal in the subtitle rule: '+bad[0]:null; }},
   {v:'34.60',what:'cw-airchips: with all four power-up chips showing at 4K the air strike plate does not overlap the chip row (27.36 in one window)',
    run:function(){
      if(!(window.__state&&window.__endRaid&&window.__runPrep&&window.__frame&&window.__forceSize)) return 'SKIP: no frame or forced size here';

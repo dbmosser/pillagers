@@ -1,9 +1,2 @@
-8.93: PASS
-9.14: PASS
-31.03: PASS
-30.73: PASS
-17.49: PASS
-31.50: career 1080p: the nameplate is drawn in the middle of the minimap (x 1753, y 243), over the HUD; career 1080p: the nameplate is drawn with its right end 24 px under the left edge of the column (x 1596, y 243), over the HUD; career 1080p: the nameplate is drawn in the gap under the compact wallet (x 
-27.36: 3840 host: the plate overlaps the power-up chips; 3840 join: the plate overlaps the power-up chips
-34.39: PASS
+31.50: career 1080p: the nameplate is drawn in the middle of the minimap (x 1753, y 243), over the HUD [label at 115,-1156 n2 trcol 1603,17,300,371 z1.00]; career 1080p: the nameplate is drawn with its right end 24 px under the left edge of the column (x 1596, y 243), over the HUD [label at 115,-1156 n2 tr
 ALL DONE

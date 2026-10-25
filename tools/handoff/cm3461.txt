@@ -1,0 +1,7 @@
+v34.61: what is new subtitle on tokens
+
+No visible change.
+
+Check 34.61. Fails on v34.60.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
