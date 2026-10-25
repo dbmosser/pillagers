@@ -7505,7 +7505,7 @@ window.__REGRESS=[
        if(calls) bad.push('rungs 1 and 2 rebuilt canvases');
        if(GFXQ.lmap!==1) bad.push('sheets changed before rung 3');
        DRS.q=3; gfxqSync(); if(calls!==1||GFXQ.lmap!==0.66) bad.push('rung 3 did not resize soft sheets');
-       if(GFXQ.post!==1||GFXQ.shadow!==1||gfxqCan('post')||gfxqCan('shadow')) bad.push('empty passes rejoined the ladder');
+       if(GFXQ.shadow!==1||gfxqCan('shadow')) bad.push('empty passes rejoined the ladder');   // cw-glowpools: post has its own rung now
        DRS.q=0; gfxqApply(); gfxqEase(0.5); if(GFXQ.detail!==0.5) bad.push('recovery did not fade back'); gfxqEase(0.5);
        if(GFXQ.detail!==1||gfxqRainCount(200)!==200||gfxqFogWeight(6)!==1) bad.push('full weather did not return');
        return bad.length?bad.join('; '):null;
@@ -7534,7 +7534,7 @@ window.__REGRESS=[
        if(GFXQ.particles!==undefined){ DRS.q=2; gfxqSync(); if(calls) bad.push('HUD and weather rung rebuilt canvases'); }
        DRS.q=GFXQ.particles!==undefined?3:2; gfxqSync(); if(calls!==1) bad.push('sheet size change did not resize once');
        gfxqSync(); if(calls!==1) bad.push('stable sheet rebuilt canvases');
-       if(GFXQ.post!==1||GFXQ.shadow!==1) bad.push('empty passes still change with a rung');
+       if(GFXQ.shadow!==1) bad.push('empty passes still change with a rung');   // cw-glowpools: post has its own rung now
        return bad.length?bad.join('; '):null;
      }finally{
        resize=oR; var k, ds=JSON.parse(d0), cs=JSON.parse(c0);
