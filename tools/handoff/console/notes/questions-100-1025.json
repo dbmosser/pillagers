@@ -1,0 +1,1088 @@
+{
+ "title": "100 gameplay questions",
+ "sections": [
+  {
+   "name": "moving and feel",
+   "items": [
+    {
+     "id": "g-1",
+     "q": "Should firing your gun stop a sprint, the way aiming already does?",
+     "opts": [
+      "No, fire on the run",
+      "Yes, firing stops the sprint"
+     ],
+     "pick": 0,
+     "note": "Aiming already cuts the sprint, as you ordered; firing does not."
+    },
+    {
+     "id": "g-2",
+     "q": "While you bandage or use a medkit, how should you move?",
+     "opts": [
+      "Full speed, as now",
+      "Half speed",
+      "Stand still"
+     ],
+     "pick": 1,
+     "note": "Today you heal at full speed."
+    },
+    {
+     "id": "g-3",
+     "q": "What should an explosion right next to you do to your pillager?",
+     "opts": [
+      "A shove only",
+      "A short knockdown",
+      "A stagger that throws off aim"
+     ],
+     "pick": 0,
+     "note": "Per-gun kicks and hit shoves stay, as you chose."
+    },
+    {
+     "id": "g-4",
+     "q": "What should taking a hit do to your sprint?",
+     "opts": [
+      "Nothing, keep running",
+      "End the sprint",
+      "Slow it for a moment"
+     ],
+     "pick": 0,
+     "note": ""
+    },
+    {
+     "id": "g-5",
+     "q": "Should taking a hit stop a bandage or medkit you are using?",
+     "opts": [
+      "No, keep healing",
+      "Yes, any hit stops it",
+      "Only a big hit stops it"
+     ],
+     "pick": null,
+     "note": "Today only going down stops a heal."
+    },
+    {
+     "id": "g-6",
+     "q": "Should a heavy hit nudge your aim off target for a moment?",
+     "opts": [
+      "No, aim stays put",
+      "A small nudge on big hits",
+      "A nudge on every hit"
+     ],
+     "pick": null,
+     "note": "Today hits shake the screen but never move your aim."
+    },
+    {
+     "id": "g-7",
+     "q": "Should sprinting pause a reload until you stop?",
+     "opts": [
+      "No, reload on the run",
+      "Yes, sprinting pauses it"
+     ],
+     "pick": 0,
+     "note": "Today a reload keeps going while you sprint."
+    },
+    {
+     "id": "g-8",
+     "q": "When you are downed, should you be able to shoot while you crawl?",
+     "opts": [
+      "No, crawl only",
+      "A pistol only, slowly",
+      "Any gun in hand"
+     ],
+     "pick": null,
+     "note": "Today a downed pillager can crawl and extract, but not shoot."
+    }
+   ]
+  },
+  {
+   "name": "guns and fighting",
+   "items": [
+    {
+     "id": "g-9",
+     "q": "How should the crowbar swing work?",
+     "opts": [
+      "Quick swings only",
+      "Hold for a heavy swing",
+      "Third swing in a row hits hardest"
+     ],
+     "pick": null,
+     "note": "Melee one-shots crawlers and breaks walls today."
+    },
+    {
+     "id": "g-10",
+     "q": "What should a finisher on a downed pillager bot give you?",
+     "opts": [
+      "A little health",
+      "A little armour",
+      "Ammo for the gun in hand",
+      "Only the SP"
+     ],
+     "pick": 0,
+     "note": ""
+    },
+    {
+     "id": "g-11",
+     "q": "Your half-second warnings cover the bulwark, warden, Overseer and air strikes, as you chose. Should the elite longshot bot's big shot join that list with a glint?",
+     "opts": [
+      "Yes, a glint",
+      "No, heavy machines only, as now"
+     ],
+     "pick": 0,
+     "note": "It hits for 272 from long range."
+    },
+    {
+     "id": "g-12",
+     "q": "Should shotguns load one shell at a time, so you can fire before the reload ends?",
+     "opts": [
+      "No, one full reload",
+      "Yes, shell by shell"
+     ],
+     "pick": null,
+     "note": "Every gun reloads in one go today."
+    },
+    {
+     "id": "g-13",
+     "q": "Should a decoy beacon also pull the Overseer away?",
+     "opts": [
+      "Yes, even the Overseer",
+      "No, the Overseer ignores decoys"
+     ],
+     "pick": 1,
+     "note": ""
+    },
+    {
+     "id": "g-14",
+     "q": "Should a thrown grenade bounce off walls?",
+     "opts": [
+      "No, it stops at the wall",
+      "Yes, one bounce",
+      "Yes, it bounces until it rests"
+     ],
+     "pick": 1,
+     "note": "Today a throw stops at the first wall in its path."
+    },
+    {
+     "id": "g-15",
+     "q": "Should holding fire on a single-shot gun keep firing at its top rate?",
+     "opts": [
+      "No, one click per shot",
+      "Yes, hold to repeat"
+     ],
+     "pick": null,
+     "note": "Automatic guns already fire while held."
+    },
+    {
+     "id": "g-16",
+     "q": "Should you be able to throw back a grenade a pillager bot lands at your feet?",
+     "opts": [
+      "Yes, a quick throw back",
+      "No, run from it"
+     ],
+     "pick": null,
+     "note": "Pillager bots carry and throw frags today."
+    },
+    {
+     "id": "g-17",
+     "q": "Should the scav pistol from the freebie kit never run out of ammo?",
+     "opts": [
+      "Yes, endless but weak",
+      "No, it uses ammo, as now"
+     ],
+     "pick": null,
+     "note": "It is the spawn-only last resort gun."
+    },
+    {
+     "id": "g-18",
+     "q": "Should a round hitting a far wall make a noise machines can hear there?",
+     "opts": [
+      "No, only the shot is heard",
+      "Yes, the impact makes noise"
+     ],
+     "pick": null,
+     "note": "Today machines hear the shot where it is fired."
+    },
+    {
+     "id": "g-19",
+     "q": "Should reloading an empty gun take longer than topping up a part-full one?",
+     "opts": [
+      "No, the same time, as now",
+      "Yes, empty takes longer"
+     ],
+     "pick": null,
+     "note": "Rounds left in the magazine are kept either way."
+    }
+   ]
+  },
+  {
+   "name": "pillager bots and machines",
+   "items": [
+    {
+     "id": "g-20",
+     "q": "When a heavy machine you cannot see is about to fire at you, how should you be warned?",
+     "opts": [
+      "A red streak at your feet",
+      "Charge sound only, as now"
+     ],
+     "pick": 0,
+     "note": "Seen heavies warn half a second ahead, as you chose."
+    },
+    {
+     "id": "g-21",
+     "q": "What should the golden enemy do when it gets hurt?",
+     "opts": [
+      "Stand and fight",
+      "Run, so you chase it",
+      "Call for help"
+     ],
+     "pick": 1,
+     "note": "A golden enemy shows up every raid with big loot."
+    },
+    {
+     "id": "g-22",
+     "q": "If nobody hunts the golden enemy, should it leave the map after a while?",
+     "opts": [
+      "Yes, gone after a few minutes",
+      "No, it stays all raid"
+     ],
+     "pick": null,
+     "note": ""
+    },
+    {
+     "id": "g-23",
+     "q": "What should badly hurt pillager bots do?",
+     "opts": [
+      "Fight to the end",
+      "Back off to heal",
+      "Some back off, some charge"
+     ],
+     "pick": 2,
+     "note": ""
+    },
+    {
+     "id": "g-24",
+     "q": "In two-player raids, who should the Overseer go after?",
+     "opts": [
+      "The closest pillager",
+      "Whoever hurt it most",
+      "It switches every few seconds"
+     ],
+     "pick": 1,
+     "note": ""
+    },
+    {
+     "id": "g-25",
+     "q": "Should a few more machines start asleep, so you can sneak past or ambush them?",
+     "opts": [
+      "Yes, a few more sleepers",
+      "No, only the listener, as now"
+     ],
+     "pick": 0,
+     "note": "Today only the listener lies dormant until it hears you."
+    },
+    {
+     "id": "g-26",
+     "q": "When machines attack, what should nearby pillager bots do?",
+     "opts": [
+      "Keep shooting you",
+      "Shoot the machines first",
+      "Call a short truce with you"
+     ],
+     "pick": null,
+     "note": "Machines and pillager bots already fight each other."
+    },
+    {
+     "id": "g-27",
+     "q": "Should a machine wreck block shots, so you can use it as cover?",
+     "opts": [
+      "Yes, wrecks are cover",
+      "No, loot only, as now"
+     ],
+     "pick": 0,
+     "note": "Wrecks stay today and you can search them, but they do not block shots."
+    },
+    {
+     "id": "g-28",
+     "q": "How should pillager bots react to a grenade landing near them?",
+     "opts": [
+      "They run from it",
+      "Some run, some freeze",
+      "They ignore it, as now"
+     ],
+     "pick": 1,
+     "note": "Today bots ignore your grenades; they only dodge mortar rings."
+    },
+    {
+     "id": "g-29",
+     "q": "Should a warden or bulwark open up for a moment right after it fires its big shot?",
+     "opts": [
+      "Yes, a short open beat",
+      "No, flank it, as now"
+     ],
+     "pick": null,
+     "note": "Today you hit a warden in the back and flank a bulwark."
+    },
+    {
+     "id": "g-30",
+     "q": "Should machines go after a downed pillager?",
+     "opts": [
+      "No, machines ignore the downed, as now",
+      "Crawling draws them, lying still hides",
+      "Yes, machines hunt the downed"
+     ],
+     "pick": null,
+     "note": ""
+    },
+    {
+     "id": "g-31",
+     "q": "Should a new stalker machine shadow you just outside your sight, closing in when you look away?",
+     "opts": [
+      "Yes, a rare stalker",
+      "No new machine"
+     ],
+     "pick": null,
+     "note": "Today the listener is the only machine that ambushes."
+    }
+   ]
+  },
+  {
+   "name": "loot, stash and the forge",
+   "items": [
+    {
+     "id": "g-32",
+     "q": "Should the forge sit in the same spot every raid, or move?",
+     "opts": [
+      "Same spot, as now",
+      "A random spot each raid",
+      "Two spots, only one lit"
+     ],
+     "pick": 1,
+     "note": ""
+    },
+    {
+     "id": "g-33",
+     "q": "Should the forge have machines guarding it?",
+     "opts": [
+      "Yes, always guarded",
+      "Sometimes, at random",
+      "No, it is a safe spot"
+     ],
+     "pick": 1,
+     "note": ""
+    },
+    {
+     "id": "g-34",
+     "q": "Before you extract, should you be able to swap a forge element for $?",
+     "opts": [
+      "Yes, swap for $",
+      "No, the pick is final, as now"
+     ],
+     "pick": 0,
+     "note": "An extracted forge gun keeps its element forever, as you chose."
+    },
+    {
+     "id": "g-35",
+     "q": "Should the forge also upgrade the crowbar, with its own element?",
+     "opts": [
+      "Yes, a forged crowbar",
+      "No, guns only"
+     ],
+     "pick": null,
+     "note": ""
+    },
+    {
+     "id": "g-36",
+     "q": "Should elite pillager bots sometimes carry an element gun you can take?",
+     "opts": [
+      "Yes, a rare element gun",
+      "No, forge only, as now"
+     ],
+     "pick": null,
+     "note": "Today only a MK III forge gun carries an element."
+    },
+    {
+     "id": "g-37",
+     "q": "Should a door key be used up when it opens its room, or kept for later raids?",
+     "opts": [
+      "Used up, as now",
+      "Kept, opens it every raid"
+     ],
+     "pick": null,
+     "note": "Keys are rare loot that open the locked rooms."
+    },
+    {
+     "id": "g-38",
+     "q": "Should the crowbar force a locked room open without a key, slowly and loudly?",
+     "opts": [
+      "Yes, slow and loud",
+      "No, keys only, as now"
+     ],
+     "pick": null,
+     "note": "The crowbar breaks other walls today, but never a keyed door."
+    },
+    {
+     "id": "g-39",
+     "q": "When you look at a gun on the floor, should it show its damage next to the gun in your hands?",
+     "opts": [
+      "Yes, side by side",
+      "No, just its own numbers"
+     ],
+     "pick": 0,
+     "note": ""
+    },
+    {
+     "id": "g-40",
+     "q": "Should you be able to break a spare gun into crafting parts?",
+     "opts": [
+      "Yes, break it down",
+      "No, sell it, as now"
+     ],
+     "pick": null,
+     "note": ""
+    },
+    {
+     "id": "g-41",
+     "q": "Should you be able to craft at a bench up top during a raid?",
+     "opts": [
+      "Yes, a raid bench",
+      "No, the Undercroft only"
+     ],
+     "pick": null,
+     "note": ""
+    }
+   ]
+  },
+  {
+   "name": "the raid and the map",
+   "items": [
+    {
+     "id": "g-42",
+     "q": "Should you choose where you ascend on the map?",
+     "opts": [
+      "A random spot, as now",
+      "Pick from three spots",
+      "Pick anywhere"
+     ],
+     "pick": 1,
+     "note": "Today you ascend at a random one of about ten spots."
+    },
+    {
+     "id": "g-43",
+     "q": "Should every ascend spot have some easy loot in sight, so the first minute pays?",
+     "opts": [
+      "Yes, loot in sight",
+      "No, leave it to chance"
+     ],
+     "pick": 0,
+     "note": ""
+    },
+    {
+     "id": "g-44",
+     "q": "Should the soft night light around you give you away to machines, with a switch to turn it off?",
+     "opts": [
+      "Yes, seen and switchable",
+      "No, drawn only, as now"
+     ],
+     "pick": null,
+     "note": "Today a soft light always surrounds you at night; machines cannot see it."
+    },
+    {
+     "id": "g-45",
+     "q": "Should a lightning bolt hurt machines too?",
+     "opts": [
+      "Yes, machines too",
+      "No, as now"
+     ],
+     "pick": 0,
+     "note": "Today a bolt only hurts players, and its crack draws machines."
+    },
+    {
+     "id": "g-46",
+     "q": "Should some machines walk fixed patrol routes you can learn and time?",
+     "opts": [
+      "Yes, a few patrols",
+      "No, they wander, as now"
+     ],
+     "pick": 0,
+     "note": ""
+    },
+    {
+     "id": "g-47",
+     "q": "Should kills on hot ground pay more SP?",
+     "opts": [
+      "Yes, more SP there",
+      "No, richer crates only, as now"
+     ],
+     "pick": null,
+     "note": ""
+    },
+    {
+     "id": "g-48",
+     "q": "In the last minute, should the map show the burn coming, with falling ash and a red glow?",
+     "opts": [
+      "Yes, ash and a red glow",
+      "Ash only",
+      "No, the red clock is enough"
+     ],
+     "pick": 0,
+     "note": "The last 60 s already bring a sting and a red clock."
+    },
+    {
+     "id": "g-49",
+     "q": "Should opening a vault set off an alarm that brings a wave?",
+     "opts": [
+      "Yes, loot fast and run",
+      "No, vaults stay quiet"
+     ],
+     "pick": null,
+     "note": ""
+    },
+    {
+     "id": "g-50",
+     "q": "Should the map hide one safe room that machines never enter?",
+     "opts": [
+      "Yes, one safe room",
+      "No, nowhere is safe"
+     ],
+     "pick": null,
+     "note": ""
+    },
+    {
+     "id": "g-51",
+     "q": "Should a pillager bot crew sometimes hold an extract ring you must clear first?",
+     "opts": [
+      "Yes, now and then",
+      "No, rings stay clear"
+     ],
+     "pick": null,
+     "note": ""
+    },
+    {
+     "id": "g-52",
+     "q": "Besides the bounty pillager bot event, should a second machine boss roam far from the Overseer, with its own loot?",
+     "opts": [
+      "Yes, a machine boss too",
+      "No, the two are enough"
+     ],
+     "pick": null,
+     "note": ""
+    },
+    {
+     "id": "g-53",
+     "q": "Should doorways have doors you can shut, so machines must break through?",
+     "opts": [
+      "Yes, doors you can shut",
+      "No, open doorways, as now"
+     ],
+     "pick": null,
+     "note": "Locked rooms already need a key."
+    }
+   ]
+  },
+  {
+   "name": "two players together",
+   "items": [
+    {
+     "id": "g-54",
+     "q": "While you watch your partner after extracting, can you still ping danger for them?",
+     "opts": [
+      "Yes, pings only",
+      "No, just watch"
+     ],
+     "pick": 0,
+     "note": "The first one out watches the partner live, as you chose."
+    },
+    {
+     "id": "g-55",
+     "q": "After you extract, should you be able to call one supply drop for your partner?",
+     "opts": [
+      "Yes, one drop",
+      "No, just watch"
+     ],
+     "pick": null,
+     "note": ""
+    },
+    {
+     "id": "g-56",
+     "q": "When your partner joins a run that is already going, where should they ascend?",
+     "opts": [
+      "Beside you",
+      "At a random ascend spot"
+     ],
+     "pick": 0,
+     "note": ""
+    },
+    {
+     "id": "g-57",
+     "q": "Besides the team combo, should two players near each other get anything more?",
+     "opts": [
+      "Crates open faster with two",
+      "A supply drop for the pair",
+      "No, the team combo is enough"
+     ],
+     "pick": null,
+     "note": "In the demo the team combo pays for kills made close together."
+    },
+    {
+     "id": "g-58",
+     "q": "Should reviving your partner use up a bandage?",
+     "opts": [
+      "No, revives are free",
+      "A bandage makes it faster",
+      "Yes, every revive costs one"
+     ],
+     "pick": 1,
+     "note": "Partners can revive each other any number of times, as you chose."
+    },
+    {
+     "id": "g-59",
+     "q": "How much health should a revived partner come back with?",
+     "opts": [
+      "40 percent, as now",
+      "Half",
+      "Most of it"
+     ],
+     "pick": null,
+     "note": ""
+    },
+    {
+     "id": "g-60",
+     "q": "Should the bleed-out clock pause while your partner is reviving you?",
+     "opts": [
+      "Yes, pause during a revive",
+      "No, keep running, as now"
+     ],
+     "pick": 0,
+     "note": "Today the 17 s clock keeps running while your partner revives you."
+    },
+    {
+     "id": "g-61",
+     "q": "When your partner goes down, should you get a short burst of speed to reach them?",
+     "opts": [
+      "No, the same speed",
+      "Yes, a short burst"
+     ],
+     "pick": null,
+     "note": ""
+    },
+    {
+     "id": "g-62",
+     "q": "When your downed partner has 5 s left, should a sharper alert sound?",
+     "opts": [
+      "Yes, a sharper alert",
+      "No, the timer is enough"
+     ],
+     "pick": 0,
+     "note": ""
+    },
+    {
+     "id": "g-63",
+     "q": "How should a downed partner get to cover?",
+     "opts": [
+      "They crawl, as now",
+      "You can drag them slowly",
+      "You can carry them at walking pace"
+     ],
+     "pick": 1,
+     "note": ""
+    },
+    {
+     "id": "g-64",
+     "q": "Your partner's row shows name, health, armour and the down timer. Should it also show their ammo?",
+     "opts": [
+      "No, as now",
+      "Add ammo",
+      "Add ammo and gun"
+     ],
+     "pick": 1,
+     "note": ""
+    },
+    {
+     "id": "g-65",
+     "q": "Should you be able to see what your partner carries in their backpack?",
+     "opts": [
+      "Yes, a quick look",
+      "No, only your own"
+     ],
+     "pick": null,
+     "note": ""
+    },
+    {
+     "id": "g-66",
+     "q": "Should a medal reward reviving your partner under fire?",
+     "opts": [
+      "Yes, a save medal",
+      "No medal for that"
+     ],
+     "pick": 0,
+     "note": "Today no medal rewards helping your partner."
+    },
+    {
+     "id": "g-67",
+     "q": "When your partner is dead or extracted, should the pillager still up top get tougher for a while?",
+     "opts": [
+      "Yes, for a while",
+      "No"
+     ],
+     "pick": null,
+     "note": "Your SP never depends on your partner, as you chose."
+    }
+   ]
+  },
+  {
+   "name": "controls and pads",
+   "items": [
+    {
+     "id": "g-68",
+     "q": "One sprint row sets hold or toggle for keys and pad. Should pads start on toggle, keys on hold?",
+     "opts": [
+      "Pad defaults to toggle",
+      "One setting, as now"
+     ],
+     "pick": 0,
+     "note": "Today hold is the default for both."
+    },
+    {
+     "id": "g-69",
+     "q": "On keyboard, how should you roll?",
+     "opts": [
+      "The roll key only, as now",
+      "Tap the sprint key",
+      "Double tap a move key"
+     ],
+     "pick": 0,
+     "note": ""
+    },
+    {
+     "id": "g-70",
+     "q": "F brings up the next gun on the bar. Should it go back to the gun you held last instead?",
+     "opts": [
+      "Next gun, as now",
+      "Last gun"
+     ],
+     "pick": null,
+     "note": ""
+    },
+    {
+     "id": "g-71",
+     "q": "Should the mouse wheel step through your guns instead of zooming?",
+     "opts": [
+      "Zoom, as now",
+      "Step through guns"
+     ],
+     "pick": null,
+     "note": ""
+    },
+    {
+     "id": "g-72",
+     "q": "Should the big map stay open only while you hold M?",
+     "opts": [
+      "Press to open and close, as now",
+      "Yes, hold to look"
+     ],
+     "pick": null,
+     "note": ""
+    },
+    {
+     "id": "g-73",
+     "q": "Should the pad buzz when a machine spots you?",
+     "opts": [
+      "Yes, a short buzz",
+      "No, as now"
+     ],
+     "pick": 0,
+     "note": "Today the pad buzzes on hits, going down and near blasts."
+    },
+    {
+     "id": "g-74",
+     "q": "Should your roll go where you move, or where you aim?",
+     "opts": [
+      "Where you move, as now",
+      "Where you aim"
+     ],
+     "pick": 0,
+     "note": "Standing still, you roll the way you face."
+    },
+    {
+     "id": "g-75",
+     "q": "Should pressing fire during a reload stop it, so you shoot the rounds still in the gun?",
+     "opts": [
+      "No, the reload finishes",
+      "Yes, fire stops it"
+     ],
+     "pick": null,
+     "note": ""
+    }
+   ]
+  },
+  {
+   "name": "settings players can change",
+   "items": [
+    {
+     "id": "g-76",
+     "q": "Should Settings offer a tap instead of a hold for extract and revive?",
+     "opts": [
+      "Yes, a settings switch",
+      "No, holds stay holds"
+     ],
+     "pick": 0,
+     "note": "Looting stays a hold, as you ordered."
+    },
+    {
+     "id": "g-77",
+     "q": "Should the crosshair dim when your target is out of your gun's range?",
+     "opts": [
+      "Yes, on by default",
+      "Yes, as a setting, off",
+      "No, always the same"
+     ],
+     "pick": 0,
+     "note": "Today a round simply stops at the gun's range."
+    },
+    {
+     "id": "g-78",
+     "q": "Should Settings offer a clean view that hides most of the HUD?",
+     "opts": [
+      "No, the full HUD always",
+      "Keep only health and ammo",
+      "Hide the whole HUD"
+     ],
+     "pick": null,
+     "note": "Today you can drag HUD panels and fold them."
+    },
+    {
+     "id": "g-79",
+     "q": "Should Settings let players turn off the faint aim line?",
+     "opts": [
+      "Yes, add a switch",
+      "No, always on"
+     ],
+     "pick": 0,
+     "note": "The dotted line from your gun is always on today, as you chose."
+    },
+    {
+     "id": "g-80",
+     "q": "Should Settings have a switch to turn blood off?",
+     "opts": [
+      "Yes, a blood switch",
+      "No, blood always shows"
+     ],
+     "pick": 0,
+     "note": "Players bleed a little today."
+    },
+    {
+     "id": "g-81",
+     "q": "Should alarms and warnings get their own volume row in Settings?",
+     "opts": [
+      "Yes, their own row",
+      "No, effects volume covers them"
+     ],
+     "pick": 0,
+     "note": ""
+    }
+   ]
+  },
+  {
+   "name": "screen, callouts and sound",
+   "items": [
+    {
+     "id": "g-82",
+     "q": "How should the game warn that your magazine is nearly empty?",
+     "opts": [
+      "The ring only, as now",
+      "Add a lighter click near empty"
+     ],
+     "pick": 1,
+     "note": "Today the magazine ring turns amber, then red, and pulses."
+    },
+    {
+     "id": "g-83",
+     "q": "Should regular machines show a health bar, or only smoke and sparks?",
+     "opts": [
+      "Smoke and sparks only, as now",
+      "A small bar once hurt",
+      "A bar always"
+     ],
+     "pick": 0,
+     "note": "Machines smoke at half health and spark near death today."
+    },
+    {
+     "id": "g-84",
+     "q": "Should fast hits on one enemy merge into one growing damage number?",
+     "opts": [
+      "Yes, one growing number",
+      "No, one number per hit"
+     ],
+     "pick": 0,
+     "note": "Today each hit shows its own number."
+    },
+    {
+     "id": "g-85",
+     "q": "Should damage you take show as red numbers over your pillager?",
+     "opts": [
+      "Yes, red numbers",
+      "No, the health bar is enough"
+     ],
+     "pick": null,
+     "note": ""
+    },
+    {
+     "id": "g-86",
+     "q": "Should the kill feed show the gun or element that got the kill?",
+     "opts": [
+      "Yes, a small gun or element icon",
+      "No, names only"
+     ],
+     "pick": 0,
+     "note": ""
+    },
+    {
+     "id": "g-87",
+     "q": "How should your pillager show armour wearing down in a raid?",
+     "opts": [
+      "The HUD bar only",
+      "Cracks on the body",
+      "Plates fall off as they break"
+     ],
+     "pick": 1,
+     "note": ""
+    },
+    {
+     "id": "g-88",
+     "q": "How should enemy shots look next to your own?",
+     "opts": [
+      "All shots look alike",
+      "Enemy tracers brighter",
+      "Enemy tracers in a warning colour"
+     ],
+     "pick": 2,
+     "note": ""
+    },
+    {
+     "id": "g-89",
+     "q": "When a machine slips out of sight, should a fading mark show where you last saw it?",
+     "opts": [
+      "Yes, a fading mark",
+      "No, out of sight is gone"
+     ],
+     "pick": 0,
+     "note": ""
+    },
+    {
+     "id": "g-90",
+     "q": "Should a faint ring show how far your own steps and shots carry?",
+     "opts": [
+      "Yes, always faint",
+      "Only while crouched",
+      "No ring"
+     ],
+     "pick": null,
+     "note": "Red rings already show unseen sounds within earshot."
+    },
+    {
+     "id": "g-91",
+     "q": "Should the KIA card replay the last few seconds before you went down?",
+     "opts": [
+      "Yes, a short replay",
+      "No, just the card"
+     ],
+     "pick": null,
+     "note": ""
+    }
+   ]
+  },
+  {
+   "name": "career and progress",
+   "items": [
+    {
+     "id": "g-92",
+     "q": "Contracts pay $ plus gear today, and a gun on hard and elite. Should the big ones also pay a cosmetic?",
+     "opts": [
+      "Yes, elite pays a cosmetic",
+      "No, $ and gear, as now"
+     ],
+     "pick": 0,
+     "note": ""
+    },
+    {
+     "id": "g-93",
+     "q": "Should the three full sets also drop as rare loot up top?",
+     "opts": [
+      "No, milestones only, as now",
+      "Yes, rare finds you must extract"
+     ],
+     "pick": null,
+     "note": "Today: skeleton 12 extractions, trooper level 8, android 30 runs."
+    },
+    {
+     "id": "g-94",
+     "q": "Should the Undercroft get a small shooting range to try guns?",
+     "opts": [
+      "Yes, a small range",
+      "No range"
+     ],
+     "pick": 0,
+     "note": ""
+    },
+    {
+     "id": "g-95",
+     "q": "What should happen to a hired merc who survives the raid?",
+     "opts": [
+      "They leave; hire fresh, as now",
+      "They stay until they fall",
+      "They stay for a fee each raid"
+     ],
+     "pick": null,
+     "note": "Today a hire lasts one raid; safe extractions make them cheaper."
+    },
+    {
+     "id": "g-96",
+     "q": "Should you be able to hand your hire a gun from your stash before the raid?",
+     "opts": [
+      "Yes, arm your hire",
+      "No, they bring their own"
+     ],
+     "pick": 0,
+     "note": ""
+    },
+    {
+     "id": "g-97",
+     "q": "Should a ping send your hire to that spot?",
+     "opts": [
+      "Yes, a ping sends them",
+      "No, the three orders are enough"
+     ],
+     "pick": 0,
+     "note": "Today O cycles loot, follow and hold."
+    },
+    {
+     "id": "g-98",
+     "q": "Should career offer an optional hardcore save where one death wipes the stash?",
+     "opts": [
+      "Yes, an optional hardcore save",
+      "No hardcore save"
+     ],
+     "pick": null,
+     "note": "Death already empties what you carried."
+    },
+    {
+     "id": "g-99",
+     "q": "Night already pays 20 percent more XP, as you chose. Should it also pay more $?",
+     "opts": [
+      "Yes, $ too",
+      "No, XP only, as now"
+     ],
+     "pick": null,
+     "note": "Night also brings more machines."
+    },
+    {
+     "id": "g-100",
+     "q": "The codex lists the guns you have found. Should it also list each machine you have destroyed, with its picture and your kill count?",
+     "opts": [
+      "Yes, machines too",
+      "No, guns only, as now"
+     ],
+     "pick": 0,
+     "note": ""
+    }
+   ]
+  }
+ ]
+}
