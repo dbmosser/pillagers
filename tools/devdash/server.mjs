@@ -45,11 +45,14 @@ function plan() {
   if (at && at !== planLogged) { try { appendFileSync(PL, at + ' ' + ses + ' ' + wk + '\n'); planLogged = at; } catch {} }
   const caps = kv(C + '/caps.txt'), target = +(caps.PLAN_TARGET || 85), sesMax = +(caps.PLAN_SESSION_MAX || 75);
   let reset = Date.parse(caps.WEEK_RESET || '2026-10-25T05:00:00Z'); while (Date.now() >= reset) reset += 7 * 864e5;
-  const start = reset - 7 * 864e5, line = (Date.now() - start) / (7 * 864e5) * target;
+  // 10-25: PLAN_LINE_END (his "as ready as possible by Friday night") ends the line early, the same rule tools/console-lane.sh paces by,
+  // so the page shows the line the helpers actually use (it showed the even line to the reset).
+  const start = reset - 7 * 864e5, le = Date.parse(caps.PLAN_LINE_END || ''), end = le > start && le < reset ? le : reset;
+  const line = Math.min(1, Math.max(0, (Date.now() - start) / (end - start))) * target;
   const hist = tail(PL, 3000).map(l => l.split(' ').map(Number)).filter(h => h[0] * 1000 >= start && !isNaN(h[2])).map(h => [h[0] * 1000, h[2]]);
   if (isNaN(wk)) return { wk: null };
-  return { ses, wk, ageS, target, sesMax, pace: String(caps.PLAN_PACE ?? '1').trim() !== '0', reset, start, line: +line.toFixed(1), catchUp: wk > line ? start + (wk / target) * 7 * 864e5 : null,
-    perDay: +((target - wk) / Math.max(0.1, (reset - Date.now()) / 864e5)).toFixed(1), hist };
+  return { ses, wk, ageS, target, sesMax, pace: String(caps.PLAN_PACE ?? '1').trim() !== '0', reset, start, lineEnd: end, line: +line.toFixed(1), catchUp: wk > line ? start + Math.min(1, wk / target) * (end - start) : null,
+    perDay: +((target - wk) / Math.max(0.1, (Math.max(end, Date.now() + 864e5) - Date.now()) / 864e5)).toFixed(1), hist };
 }
 let cpuPrev = os.cpus(), cpu = 0;
 setInterval(() => { const c = os.cpus(); let idle = 0, tot = 0;
@@ -69,7 +72,9 @@ function pollProcs() {
       reviewers: L.filter(l => /^powershell/i.test(l) && /ship-review\.ps1/.test(l)).map(l => (/-Engine (\w+)/i.exec(l) || [0, 'ollama'])[1].toLowerCase()), t: Date.now() };
   });
 }
-pollProcs(); setInterval(pollProcs, 15000);
+// 10-25 (his "what about updating the dashboard ... is it unduly expensive"): once a minute, not every 15 s. Each listing starts a
+// PowerShell (measured 0.8 s), which every 15 s came to over an hour of processor time a day; a minute is still live for a page of counts.
+pollProcs(); setInterval(pollProcs, 60000);
 function git(args) { try { return execFileSync('git', args, { cwd: R, encoding: 'utf8', windowsHide: true }).trim(); } catch { return ''; } }
 function caps() { const o = {}; rd(C + '/caps.txt').split(/\r?\n/).forEach(l => { const m = /^(\w+)=(.*)$/.exec(l.trim()); if (m) o[m[1]] = m[2]; }); return o; }
 // 10-19, his "the dashboard should be a cmprehensive napshot of everything we are doing to develop the game": the other AI services.
@@ -87,7 +92,7 @@ async function aiPoll() {
   const tags = await getJson(OLL + '/api/tags'), ps = tags ? await getJson(OLL + '/api/ps') : null;
   aiLive.ollamaUp = !!tags; aiLive.models = tags ? (tags.models || []).map(m => ({ name: m.name, gb: +(m.size / 2 ** 30).toFixed(1) })) : [];
   aiLive.loaded = ps ? (ps.models || []).map(m => m.name) : []; aiLive.t = Date.now();
-  if (Date.now() - aiLive.lt > 10 * 60e3) { aiLive.lt = Date.now();
+  if (Date.now() - aiLive.lt > 30 * 60e3) { aiLive.lt = Date.now();   // 10-25: the Codex login check every 30 min (was 10); it starts Codex each time
     const js = process.execPath.replace(/node\.exe$/i, '') + 'node_modules/@openai/codex/bin/codex.js', env = { ...process.env }; delete env.OPENAI_API_KEY; delete env.CODEX_API_KEY;
     execFile(process.execPath, [js, 'login', 'status'], { env, timeout: 30e3, windowsHide: true }, (e, o, er) => { aiLive.codexLogin = String(o || er || '').trim().split(/\r?\n/)[0] || ''; }); }
 }
@@ -191,9 +196,9 @@ const SNAP_TAIL = "tick();(function(){var age=Math.round((Date.now()-window.__SN
   "if(age>120)$('upd').innerHTML='<span class=\"warn\">No news from the VM for '+Math.round(age/60)+' min (it may be restarting); this page keeps trying</span>';" +
   "try{var y=sessionStorage.getItem('dashY');if(y)scrollTo(0,+y);}catch(e){}" +
   "setTimeout(function(){try{sessionStorage.setItem('dashY',String(scrollY));}catch(e){}location.reload();},30000);})();";
-let snapBusy = false, snapErrAt = 0;
-function snapshot() {
-  const d = data(); d.snapAt = Date.now();
+let snapBusy = false, snapErrAt = 0, snapSig = '', snapSent = 0;
+function snapshot(d) {
+  d = d || data(); d.snapAt = Date.now();
   return PAGE()
     .replace("d=await (await fetch('/api',{cache:'no-store'})).json();", 'd=window.__SNAP;')
     .replace('tick(); setInterval(tick,5000);', SNAP_TAIL)
@@ -202,8 +207,14 @@ function snapshot() {
     .replace('<script>', '<script>window.__SNAP=' + JSON.stringify(d).replace(/</g, '\u003c') + ';</script><script>');
 }
 function pushSnap() {
-  if (snapBusy) return; snapBusy = true;
-  try { writeFileSync(SNAP_TMP, snapshot()); } catch (e) { snapBusy = false; return; }
+  if (snapBusy) return;
+  // 10-25: a copy goes only when something on the page changed, or 90 s after the last one (the page warns after 120 s of silence),
+  // not every 30 s regardless: while the helpers rest most copies were the same page with a new clock.
+  const d = data(), sig = JSON.stringify({ ...d, now: 0, cpu: 0, ramFree: 0, runnerAgeS: 0, procs: { ...d.procs, t: 0 }, ai: { ...d.ai, local: { ...d.ai.local, loaded: 0 } },
+    plan: d.plan && { ...d.plan, ageS: 0, line: 0, perDay: 0, catchUp: 0 }, spareInfo: { ...d.spareInfo, seenEpoch: 0 } });
+  if (sig === snapSig && Date.now() - snapSent < 90e3) return;
+  snapBusy = true; snapSig = sig; snapSent = Date.now();
+  try { writeFileSync(SNAP_TMP, snapshot(d)); } catch (e) { snapBusy = false; return; }
   execFile(process.execPath, [R + '/tools/bridge/hostctl.mjs', 'share-put', 'name=' + SNAP_NAME, '--file', SNAP_TMP], { timeout: 20000, windowsHide: true }, (err, out, errOut) => {
     snapBusy = false;
     if ((err || !/"ok":\s*true/.test(String(out))) && Date.now() - snapErrAt > 600000) {
