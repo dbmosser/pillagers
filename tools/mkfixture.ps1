@@ -28092,7 +28092,7 @@ window.__REGRESS=[
      function ext(d,y0,y1){ var l=999, r=-1, j2, y, x; for(j2=0;j2<d.length;j2+=4){ if(d[j2+3]>60){ y=Math.floor(j2/4/240); if(y<y0||y>=y1) continue; x=(j2/4)%240; if(x<l) l=x; if(x>r) r=x; } } return {r:(r-120)/3,l:(120-l)/3}; }
      function near(d,hex,tol,y0,y1){ var rr0=parseInt(hex.slice(1,3),16), gg=parseInt(hex.slice(3,5),16), bb=parseInt(hex.slice(5,7),16), n=0, j2, y; for(j2=0;j2<d.length;j2+=4){ y=Math.floor(j2/4/240); if(y<y0||y>=y1) continue; if(d[j2+3]>200&&Math.abs(d[j2]-rr0)<=tol&&Math.abs(d[j2+1]-gg)<=tol&&Math.abs(d[j2+2]-bb)<=tol) n++; } return n; }
      function diff(a,b){ var n=0, j2; for(j2=0;j2<a.length;j2+=4) if(a[j2]!==b[j2]||a[j2+1]!==b[j2+1]||a[j2+2]!==b[j2+2]) n++; return n; }
-     var base={hero:0,build:'lean',pack:'packbrown',boots:'bootblack',hair:'dark',cut:'crop',hat:'none',skin:'fair',fit:'slate',eyes:'eyebrown',scheme:'schember',team:'ally'};
+     var base={hero:0,build:'lean',pack:'packbrown',boots:'bootblack',hair:'dark',cut:'crop',hat:'none',skin:'fair',fit:'slate',eyes:'eyebrown',scheme:'schember',team:''};   // 113c: v34.04 (his 2.79 a, allegiance has a shape) draws a plus glyph up and left of an ally; it sat in the shoulder rows and the outline box, so the silhouette is measured on a body with no team
      var mk=function(o){ var q={}, k2; for(k2 in base) q[k2]=base[k2]; for(k2 in o) q[k2]=o[k2]; return q; };
      var shot={}, chestY0=200-17*3, chestY1=200-13*3;
      try{
@@ -28152,7 +28152,7 @@ window.__REGRESS=[
      function box(d,y0,y1){ var top=999, l=999, r=-999, j2, y, x; for(j2=0;j2<d.length;j2+=4){ if(d[j2+3]>60){ y=Math.floor(j2/4/240); if(y<y0||y>=y1) continue; x=(j2/4)%240; if(y<top) top=y; if(x<l) l=x; if(x>r) r=x; } } return {top:(200-top)/3,l:(120-l)/3,r:(r-120)/3}; }
      function near(d,hex,tol,y0,y1){ var rr0=parseInt(hex.slice(1,3),16), gg=parseInt(hex.slice(3,5),16), bb=parseInt(hex.slice(5,7),16), n=0, j2, y; for(j2=0;j2<d.length;j2+=4){ y=Math.floor(j2/4/240); if(y<y0||y>=y1) continue; if(d[j2+3]>200&&Math.abs(d[j2]-rr0)<=tol&&Math.abs(d[j2+1]-gg)<=tol&&Math.abs(d[j2+2]-bb)<=tol) n++; } return n; }
      function diff(a,b){ var n=0, j2; for(j2=0;j2<a.length;j2+=4) if(a[j2]!==b[j2]||a[j2+1]!==b[j2+1]||a[j2+2]!==b[j2+2]) n++; return n; }
-     var base={hero:0,build:'lean',pack:'packbrown',boots:'bootblack',hair:'dark',cut:'crop',hat:'none',skin:'fair',fit:'slate',eyes:'eyebrown',scheme:'schember',team:'ally'};
+     var base={hero:0,build:'lean',pack:'packbrown',boots:'bootblack',hair:'dark',cut:'crop',hat:'none',skin:'fair',fit:'slate',eyes:'eyebrown',scheme:'schember',team:''};   // 113c: v34.04 (his 2.79 a, allegiance has a shape) draws a plus glyph up and left of an ally; it sat in the shoulder rows and the outline box, so the silhouette is measured on a body with no team
      var mk=function(o){ var q={}, k2; for(k2 in base) q[k2]=base[k2]; for(k2 in o) q[k2]=o[k2]; return q; };
      var shot={}, b0, all=packs.concat(boots);
      try{
