@@ -4,7 +4,7 @@
 31.75: PASS
 31.59: PASS
 30.05: PASS
-29.33: ui-shared has a NEW raw colour or font-size literal in: #root #wnmodal #wnsub
+29.33: ui-shared has a NEW raw colour or font-size literal in: #root #settingsmodal.recmode #spane_rec > div:has(> #rescode) > .msub
 28.38: PASS
 26.38: PASS
 34.52: PASS

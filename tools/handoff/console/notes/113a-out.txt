@@ -1,2 +1,5 @@
-31.50: career 1080p: the nameplate is drawn in the middle of the minimap (x 1753, y 243), over the HUD [label at 115,-1156 n2 trcol 1603,17,300,371 z1.00]; career 1080p: the nameplate is drawn with its right end 24 px under the left edge of the column (x 1596, y 243), over the HUD [label at 115,-1156 n2 tr
+27.36: PASS
+31.32: PASS
+30.75: PASS
+18.01: PASS
 ALL DONE

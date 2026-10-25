@@ -1,0 +1,5 @@
+## v34.62 - RESTORE HELPER LINE ON TOKENS
+
+Co-op hunt while he was away. Job 113: check 29.33 caught raw 16px in the restore helper line rule. Same pixels, written with the label token.
+
+MEASURED. Check 34.62 passes, and fails on v34.61.

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.62 - RESTORE HELPER LINE ON TOKENS
+
+Co-op hunt while he was away. Job 113: check 29.33 caught raw 16px in the restore helper line rule. Same pixels, written with the label token.
+
+MEASURED. Check 34.62 passes, and fails on v34.61.
 ## v34.61 - WHAT IS NEW SUBTITLE ON TOKENS
 
 Co-op hunt while he was away. Job 113: check 29.33 caught raw px font sizes in the what is new subtitle rules. Same pixels, written with the hero and title tokens.

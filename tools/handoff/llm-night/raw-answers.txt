@@ -1,6 +1,21 @@
 
-NONE
-NONE
-NONE
+The provided CSS code appears to be a series of styles and modifications for a web application, likely related to a game or interactive platform. The styles are organized into different sections, each addressing specific elements within the UI such as modals, buttons, grids, and other components.
+
+Here's a breakdown of some key parts:
+
+1. **Gamble Modal Styles**:
+   - `#root #gamblemodal`: This selector targets the main container for the gamble modal.
+   - `#root #gamblemodal #wirtlotbtn:disabled`: Styles for disabled buttons within the modal, changing their background color and text color to indicate they are not clickable.
+
+2. **Button Focus and Hover Effects**:
+   - `#root #gamblemodal button.padfocus:focus-visible`: Adds an outline effect when a button is focused or hovered over.
+   - `#root #barmodal #barlist button[data-bz]:not(:disabled):is(.padfocus,:focus-visible,:hover)`: Similar focus and hover effects for buttons in the bar modal.
+
+3. **Grid Layouts**:
+   - `#root #opane_rec #statgrid`: Defines a grid layout with four columns for displaying statistics.
+   - `#root #opane_rec #achlist`: Another grid layout, this time with two columns for achievements.
+
+4. **Responsive Design**:
+   - Media queries (`@media(max-width:1100px)`) adjust the layout and
 NONE
 NONE

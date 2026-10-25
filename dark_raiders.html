@@ -2444,7 +2444,7 @@ body:has(#wnmodal.on) #hubtoast,body:has(#settingsmodal.recmode.on) #hubtoast{vi
 #root #settingsmodal.recmode #exporttext{min-height:184px !important;height:184px;max-height:184px;padding:16px 16px 22px;line-height:24px;-webkit-mask-image:linear-gradient(to bottom,black calc(100% - 8px),transparent);mask-image:linear-gradient(to bottom,black calc(100% - 8px),transparent);}
 #root #settingsmodal.recmode #exporttext + div{margin-top:24px !important;flex-shrink:0;}
 #root #settingsmodal.recmode #exporttext + div + div{margin-top:32px !important;}
-#root #settingsmodal.recmode #spane_rec > div:has(> #rescode) > .msub{font:400 16px/1.5 var(--f-body);font-size:16px !important;color:var(--tx-2);}
+#root #settingsmodal.recmode #spane_rec > div:has(> #rescode) > .msub{font:400 var(--fs-label)/1.5 var(--f-body);font-size:var(--fs-label) !important;color:var(--tx-2);}
 #root #settingsmodal.recmode > h3{min-height:56px;display:flex;align-items:center;}
 #root #settingsmodal.recmode #settabs{top:var(--py);height:56px;align-items:center;gap:16px;}
 #root #settingsmodal.recmode #settabs .invtab{font:700 var(--fs-body)/1 var(--f-cond);min-height:48px;color:var(--tx-2);border-bottom-width:3px;}
@@ -3687,7 +3687,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.61';
+var VER='34.62';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -54184,7 +54184,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.61: No visible change. Check 34.61 fails on v34.60',
+  now:'v34.62: No visible change. Check 34.62 fails on v34.61',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

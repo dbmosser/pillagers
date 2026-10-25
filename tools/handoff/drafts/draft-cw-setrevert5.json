@@ -1,0 +1,12 @@
+{
+    "title":  "RESTORE HELPER LINE ON TOKENS",
+    "why":  "Job 113: check 29.33 caught raw 16px in the restore helper line rule. Same pixels, written with the label token.",
+    "now":  "No visible change.",
+    "edits":  [
+                  {
+                      "anchor":  "font:400 16px/1.5 var(--f-body);font-size:16px !important;color:var(--tx-2);}",
+                      "replacement":  "font:400 var(--fs-label)/1.5 var(--f-body);font-size:var(--fs-label) !important;color:var(--tx-2);}"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027cw-setrevert5 (job 113): the restore helper line rules in the shared block have no raw px font size\u0027,\n   run:function(){\n     var css=(document.getElementById(\u0027ui-shared\u0027)||{textContent:\u0027\u0027}).textContent.replace(/\\/\\*[\\s\\S]*?\\*\\//g,\u0027\u0027), rs=css.match(/[^{}]*rescode\\) \u003e \\.msub\\s*\\{[^}]*\\}/g)||[], i, bad=[];\n     if(!rs.length) return \u0027SKIP: no restore helper rule in the shared block\u0027;\n     for(i=0;i\u003crs.length;i++) if(/#[0-9a-fA-F]{3,8}\\b|rgba?\\(|font-size\\s*:\\s*[\\d.]+(px|em|rem)|font\\s*:[^;]*[\\d.]+px/.test(rs[i].slice(rs[i].indexOf(\u0027{\u0027)))) bad.push(rs[i].slice(rs[i].indexOf(\u0027{\u0027),rs[i].indexOf(\u0027{\u0027)+60));\n     return bad.length?\u0027raw literal in the helper rule: \u0027+bad[0]:null; }},"
+}
