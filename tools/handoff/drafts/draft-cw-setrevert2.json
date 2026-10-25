@@ -1,0 +1,12 @@
+{
+    "title":  "EXPERIMENTAL FOOTER HINT ON THE LABEL TOKEN",
+    "why":  "Job 113: check 29.33 caught a raw 16px font-size in the experimental page footer hint. The label token is the same 16px, so nothing moves.",
+    "now":  "No visible change.",
+    "edits":  [
+                  {
+                      "anchor":  "#root #settingsmodal.expmode::after{ content:\u0027enter change    esc back\u0027; font-size:16px; }",
+                      "replacement":  "#root #settingsmodal.expmode::after{ content:\u0027enter change    esc back\u0027; font-size:var(--fs-label); }   /* v34.56 (cw-setrevert2): the label token is the same 16px */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027cw-setrevert2 (job 113): the experimental page footer hint size comes from the label token, not a raw px literal\u0027,\n   run:function(){\n     var css=(document.getElementById(\u0027ui-shared\u0027)||{textContent:\u0027\u0027}).textContent;\n     if(/settingsmodal\\.expmode::after\\{[^}]*font-size\\s*:\\s*[\\d.]+px/.test(css)) return \u0027the expmode footer hint has a raw font-size literal\u0027;\n     if(!/settingsmodal\\.expmode::after\\{[^}]*font-size:var\\(--fs-label\\)/.test(css)) return \u0027the expmode footer hint is not on the label token\u0027;\n     return null; }},"
+}

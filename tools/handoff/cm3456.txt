@@ -1,0 +1,7 @@
+v34.56: experimental footer hint on the label token
+
+No visible change.
+
+Check 34.56. Fails on v34.55.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

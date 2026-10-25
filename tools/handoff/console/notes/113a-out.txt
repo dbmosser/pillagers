@@ -1,0 +1,8 @@
+8.93: the default board is 361x175, it should be about 384x186
+9.14: control: the vitals panel is 517px wide at 1080p, it should be 532 - the map font has leaked into the HUD
+31.03: the demo gun card is not drawn
+30.73: the gun card panel is not drawn (career false, demo false)
+17.49: PASS
+31.50: career 1080p: the run info panel is 323.4 px wide, not 300; career 1080p: the nameplate is drawn in the middle of the minimap (x 1753, y 243), over the HUD; career 1080p: the nameplate is drawn with its right end 24 px under the left edge of the column (x 1596, y 243), over the HUD; career 1080p: th
+27.36: 3840 host: the plate overlaps the power-up chips; 3840 join: the plate overlaps the power-up chips
+ALL DONE

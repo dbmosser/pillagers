@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.56 - EXPERIMENTAL FOOTER HINT ON THE LABEL TOKEN
+
+Co-op hunt while he was away. Job 113: check 29.33 caught a raw 16px font-size in the experimental page footer hint. The label token is the same 16px, so nothing moves.
+
+MEASURED. Check 34.56 passes, and fails on v34.55.
 ## v34.55 - SETTINGS PANE BACK TO ONE SHAPE
 
 Co-op hunt while he was away. Job 113: nine settings checks went red because v34.51 to v34.53 gave the detail pane a hero value and a packed shape that older rulings and checks forbid. The pane is back to full height without the repeated value; a jump chip never scrolls the list; one raw hex colour became a named colour.

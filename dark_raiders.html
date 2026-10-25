@@ -2372,7 +2372,7 @@ body:has(#hub.on) #hubtoast{visibility:hidden;}
 #root #settingsmodal.expmode #setdetail .sdv{ display:none; }
 #root #settingsmodal.expmode #setdetail .sdh{ max-width:48ch; font:400 var(--fs-body)/1.4 var(--f-body); color:var(--tx-1); }
 #root #settingsmodal.expmode #setdetail .expnote{ font:400 var(--fs-label)/1.4 var(--f-body); color:var(--tx-2); }
-#root #settingsmodal.expmode::after{ content:'enter change    esc back'; font-size:16px; }
+#root #settingsmodal.expmode::after{ content:'enter change    esc back'; font-size:var(--fs-label); }   /* v34.56 (cw-setrevert2): the label token is the same 16px */
 body.padon #root #settingsmodal.expmode::after{ content:'a change    b back'; }
 /* v28.xx (cw-cx-o91b-newsreport): critic on the public recorder, 10-21: cap the raw preview, keep copy primary and use the shared text sizes. Copy and restore still use the original data. The 130 percent default menu scale turns this preview cap into 240 screen pixels at 1080p. */
 #root #settingsmodal.recmode #spane_rec{max-width:1320px;margin:0;width:100%;min-height:0;overflow:auto;box-sizing:border-box;padding:24px 0;align-self:flex-start;justify-content:flex-start;}
@@ -3687,7 +3687,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.55';
+var VER='34.56';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -54184,7 +54184,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.55: The settings side pane is back to its full height and no longer repeats the row value. Check 34.55 fails on v34.54',
+  now:'v34.56: No visible change. Check 34.56 fails on v34.55',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

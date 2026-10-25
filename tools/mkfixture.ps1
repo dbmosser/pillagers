@@ -6163,6 +6163,12 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.56',what:'cw-setrevert2 (job 113): the experimental page footer hint size comes from the label token, not a raw px literal',
+   run:function(){
+     var css=(document.getElementById('ui-shared')||{textContent:''}).textContent;
+     if(/settingsmodal\.expmode::after\{[^}]*font-size\s*:\s*[\d.]+px/.test(css)) return 'the expmode footer hint has a raw font-size literal';
+     if(!/settingsmodal\.expmode::after\{[^}]*font-size:var\(--fs-label\)/.test(css)) return 'the expmode footer hint is not on the label token';
+     return null; }},
   {v:'34.55',what:'cw-setrevert (job 113): the settings detail pane does not repeat the row value and runs the full list height, a jump chip taking the pad focus never scrolls the list, and the expmode list rule has no raw hex colour',
    run:function(){
      var bad=[], l, d, v, c, s0, i, oS=(typeof sndUi==='function')?sndUi:null, f0=PAD.focus, css;
