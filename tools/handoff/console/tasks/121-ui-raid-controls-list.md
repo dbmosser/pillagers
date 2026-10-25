@@ -29,3 +29,5 @@ guide's label size; one footer line.
 Pictures: camera-recipes.json with 79 and 80 at 1080p and 4K, then the critic.
 TASK DONE when 80 reaches 4 from the critic (never your own grade), or the fixes shipped and the scores are written with the reason
 for any point left (stop rule 2.83 b applies); TASK PARTIAL with what is left.
+
+Coordinator 10-25 11:21: shipped by the coordinator as v34.78 (0d1b52c30). Do only what is left: pictures 79 and 80 at 1080p and 4K, a player 2 window picture, the critic with rs-1 and rs-2 named, the changes.md line. No second ship of cw-ctrlchip.
