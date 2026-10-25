@@ -1422,7 +1422,9 @@ try{ GO_SEC=0; }catch(e){}
 // v24.xx (career chain, feat0h1): every raid from the Undercroft becomes a CAREER raid (10 minute clock, rings open, kill score,
 // waves). The checks deploy the old raid, as before; the CAREER checks set CAREER_ON back to 1 for themselves. On a build with no
 // CAREER raid this only makes a global.
-try{ CAREER_ON=0; }catch(e){}
+// 10-25 (coordinator, job 112r): ?career=1 keeps the game default CAREER raid, for camera screens 79 and 80 (the folded keys
+// list at a career drop, his rs-1); the staging JS cannot reach CAREER_ON from outside.
+try{ if(!/[?&]career=1(&|$)/.test(location.search)) CAREER_ON=0; }catch(e){}
 // THE FIXTURE IS SILENT. Verification drives real frames, and real frames fire real
 // gunshots, alarms and machine voices through WebAudio. On 2026-08-24 a 40 raid batch
 // played all of it out loud on Daniel's PC while he was trying to work. He should never
