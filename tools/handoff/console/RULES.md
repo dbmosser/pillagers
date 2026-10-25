@@ -15,7 +15,7 @@ credit comes back on 11-01). His 10-19 rule: speed is fine, waste is not. Be thr
   reported afterwards (2.81 c). Release work goes on after the party.
   HIS ORDER 10-20 about 23:00 (verbatim): "quit queuing stuff for after the party -- just do it all as it naturally arises". This beats
   every "after the party" or "after 10/30" hold in this file, in job files and in staging: nothing waits for the party. The Mon 10/26
-  cutoff no longer holds back work he ordered. The Thu 10/29 lock only freezes the party copy (the -Prepare snapshot on his PC); the
+  cutoff no longer holds back work he ordered. The party copy (the -Prepare snapshot on his PC) is refreshed Fri 10/30 afternoon (his 10-24 answer "Friday"; it was a Thu 10/29 lock); the
   game file keeps moving after it. Risky changes ship now, each with a line on what he should watch for on his next play.
 - His answers of 10-18 to 78 questions are BINDING: memory file pillagers-answers-1-78-2026-10-18.md (read it when your task
   names a question number like Q57).

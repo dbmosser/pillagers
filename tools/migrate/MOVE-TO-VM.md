@@ -524,7 +524,7 @@ A normal window is often not allowed to read Hyper-V; `host-verify.ps1` then say
 ### K8 - The party fallback: a frozen copy on the main PC [MAIN PC, normal window]  (1-2 minutes to prepare)
 Why: if anything about the VM or the relay is in doubt on Fri 10/30, the party must not depend on it. `party-host-copy.ps1` keeps a frozen copy of the game in its own folder on the main PC (`C:\claudecode\pillagers-party`) and serves it at the same address, `http://localhost:8802/dark_raiders.html`, with the run-report collector on 8799. It needs nothing from the VM: no relay, no running VM, and no internet once the copy is prepared. It never touches `C:\claudecode\dark raiders`.
 
-When: after the Thu 10/29 lock, once Claude in the VM has pushed the final version and told you the tag or commit. A rehearsal a few days earlier is a good habit: prepare, start, play, stop.
+When: Fri 10/30 afternoon (his 10-24 answer "Friday"; it was after a Thu 10/29 lock), once Claude in the VM has pushed the newest build that passed a full test run and told you the tag or commit. A rehearsal a few days earlier is a good habit: prepare, start, play, stop.
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\migrate\party-host-copy.ps1" -Status
