@@ -1,0 +1,7 @@
+v34.60: air strike plate clears the chips
+
+At 4K the air strike plate no longer sits on the power-up chips.
+
+Check 34.60. Fails on v34.59.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

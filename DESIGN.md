@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.60 - AIR STRIKE PLATE CLEARS THE CHIPS
+
+Co-op hunt while he was away. Check 27.36 fails at 4K: with all four power-up chips showing, the air strike plate at the right end of the gun bar overlaps them. The plate now treats the chip row as an obstacle and steps over it.
+
+MEASURED. Check 34.60 passes, and fails on v34.59.
 ## v34.59 - THE WHAT IS NEW STAMP KEEPS UP
 
 Co-op hunt while he was away. The card was stamped v34.43 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.
