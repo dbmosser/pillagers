@@ -21,3 +21,5 @@ Pictures: the camera recipe that made his picture is notes/his-photo-notes-1025/
 (tools/uishots.ps1 -Recipes that file). Take before and after at 1080p and 4K and look at them: the bulwark must read as about one and a
 half times the player's height. Check (must FAIL on v34.78): the bulwark's drawn height on screen against the player's.
 TASK DONE when it shipped with pictures; TASK PARTIAL with what is left.
+
+Coordinator 10-25 12:55: his notes "Pillager still too big. Bulwark still too small" were shipped by the coordinator in cw-smoothlook (v34.81 if the gate passed): BULWARK_BIG=1.5 in machMul (drawn, plated and hit 1.5x the other machines, walking radius unchanged) and FIG_SCALE 0.8 for every human. Do only what is left: the wreck (drawWreckBulwark) and the shield arc must match the bigger body, and pictures at 1080p and 4K in the SMOOTH look (his 10-25 order turned the pixel look off). No second change to BULWARK_BIG or FIG_SCALE unless the pictures show a defect.

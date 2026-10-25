@@ -6,6 +6,7 @@ Written by the helper lanes, read by the coordinator. NOT for the owner. Pipelin
 When one is dealt with, add a line under it: "- DONE <date time> (coordinator): what was done".
 
 - 2026-10-24 95-p2-own-process (lane c): step 1 needs the split, pid and stall measurement and my lane cannot run it. Please run C:\claudecode\pillagers-codex\.codex-work\95-p2-own-process\run-measure95.ps1 and copy raw files and summary into tools/handoff/console/notes/95/. Also needed before any 95 ship: tag party-pre95 and resolve party.cfg URL_OPTIONS=1.
+- 10-25 12:55 (coordinator): run-measure95.ps1 needs 6 GB free and the VM has 3 by day; it runs tonight when the VM gets its night memory. Gameplay idea 1 (notes/gameplay-next-1025.md) makes it the top smoothness item.
 
 ## Moved from questions.md 10-19 night
 

@@ -17,3 +17,5 @@ Pictures: before and after at 1080p and 4K (the recipe in notes/his-photo-notes-
 two bushes), and one wider shot of a street with several bushes. Check (must FAIL on v34.78): the ground pixel under a bush's centre is
 turf, in the pixel look.
 TASK DONE when it shipped with pictures; TASK PARTIAL with what is left.
+
+Coordinator 10-25 12:55: his 10-25 order turned the pixel look OFF ("I want the graphics smooth"). Do the SMOOTH look first: in the smooth look bushes also sit on bare concrete and asphalt (picture: scratchpad shot look-smooth-z1, same staging), so give each bush its grass patch in the smooth ground. The pixel ground part is optional now.
