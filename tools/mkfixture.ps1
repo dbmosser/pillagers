@@ -12099,8 +12099,9 @@ window.__REGRESS=[
        // v28.xx (cw-cx-dailyrestorefinish): evaluate the final focus colours synchronously instead of sampling a 120ms CSS transition.
        [src,primary,undo].forEach(function(b){b.style.setProperty('transition','none','important');});
        css=getComputedStyle(primary);other=getComputedStyle(src);
-       if(css.backgroundColor!==other.borderTopColor||css.color===other.color||primary.getBoundingClientRect().height/zoom<55)bad.push('restore is not the 56px primary action');
-       if(getComputedStyle(undo).backgroundColor===css.backgroundColor)bad.push('undo competes with the primary action');
+       // 113c: v34.35 (one focus) made restore a 44px ghost box like its neighbours: the accent shows only on the focused control, so no button in the row holds a fill
+       if(css.backgroundColor!=='rgba(0, 0, 0, 0)'||primary.getBoundingClientRect().height/zoom<43)bad.push('restore is not a 44px ghost action');
+       if(getComputedStyle(undo).backgroundColor!=='rgba(0, 0, 0, 0)')bad.push('undo has a fill and competes with restore');
        if(getComputedStyle(src,'::before').content==='none'||getComputedStyle(src,'::after').content==='none')bad.push('source choice has no stepper affordance');
        detail=document.getElementById('setdetail');hero=detail.querySelector('.daily-selected');title=detail.querySelector('.sdk');meta=detail.querySelector('.daily-meta');
        if(!hero||!title||parseFloat(getComputedStyle(hero).fontSize)>parseFloat(getComputedStyle(title).fontSize))bad.push('relative day label still dominates the title');
@@ -13736,7 +13737,8 @@ window.__REGRESS=[
      try{
        var rw=document.getElementById('opane_rew'), m=rw.querySelector(':scope > .msub:not(#roadmaphead)');
        if(m&&getComputedStyle(m).display!=='none') bad.push('rewards intro shows');
-       if(getComputedStyle(document.getElementById('seasonbar')).height!=='28px') bad.push('bar h '+getComputedStyle(document.getElementById('seasonbar')).height);
+       // 113c: v34.20 (racks and rewards look, critic 2 of 5) set the season bar to 36px on purpose; the bar is one fixed height
+       if(getComputedStyle(document.getElementById('seasonbar')).height!=='36px') bad.push('bar h '+getComputedStyle(document.getElementById('seasonbar')).height);
        if(getComputedStyle(rw).maxWidth!=='none') bad.push('rew maxw '+getComputedStyle(rw).maxWidth);
        if(getComputedStyle(document.getElementById('bar_line')).display!=='none') bad.push('bar_line shows');
        if(getComputedStyle(document.getElementById('wallet_bar')).display!=='none') bad.push('wallet_bar shows');
@@ -14270,7 +14272,8 @@ window.__REGRESS=[
        __hubEnter(); __station('mf','KeyF');
        pane=document.getElementById('opane_mf'); bt=document.getElementById('mfbuild');
        if(!pane||!bt||!(pane.getBoundingClientRect().width>0)) return 'SKIP: the RACKS page did not open';
-       r=bt.getBoundingClientRect(); cx=r.left+r.width/2; mid=window.innerWidth/2;
+       // 113c: v34.20 made the racks two columns with the build button in the left one; the centred thing is the grid holding both columns
+       r=bt.parentNode.getBoundingClientRect(); cx=r.left+r.width/2; mid=window.innerWidth/2;
        if(Math.abs(cx-mid)>40) bad.push('the build button centre is at '+Math.round(cx)+', the window middle is '+Math.round(mid));
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ [].slice.call(document.querySelectorAll('.modal.on')).forEach(function(x){ x.classList.remove('on'); }); }catch(_m){} __topClear(); __cleanProfile(); }
@@ -16196,6 +16199,9 @@ window.__REGRESS=[
        h=its[0]; h.classList.add('hid');
        cs=getComputedStyle(h); line=getComputedStyle(document.documentElement).getPropertyValue('--ui-line').trim();
        hi=document.createElement('span'); hi.style.color=line; document.body.appendChild(hi); line=getComputedStyle(hi).color; hi.remove();
+       // 113c: v34.23 (critic) draws an empty haul slot as a dashed outline in the brighter line colour; still no rarity bar
+       hi=document.createElement('span'); hi.style.color=getComputedStyle(document.documentElement).getPropertyValue('--ui-line-hi').trim(); document.body.appendChild(hi); line=getComputedStyle(hi).color; hi.remove();
+       if(cs.borderBottomStyle!=='dashed') bad.push('a tile not yet shown is not a dashed slot ('+cs.borderBottomStyle+')');
        if(cs.borderBottomColor!==line) bad.push('a tile not yet shown has a '+cs.borderBottomColor+' bar, not the plain slot colour '+line);
        if(getComputedStyle(st).textWrap!=='balance') bad.push('the haul strip does not wrap balanced (text-wrap '+getComputedStyle(st).textWrap+')');
        h.classList.remove('hid');
@@ -16216,7 +16222,8 @@ window.__REGRESS=[
          for(i=0;i<mf.children.length;i++){
            el=mf.children[i]; if(el.classList.contains('msub')) continue;
            cs=getComputedStyle(el);
-           if(cs.maxWidth!=='672px') bad.push('racks child '+i+' max-width is '+cs.maxWidth+', not 672px');
+           // 113c: v34.20 (critic) made the racks page a 1344px two column grid (hero row, build button, ghost column); still one centred block
+           if(cs.maxWidth!=='1344px') bad.push('racks child '+i+' max-width is '+cs.maxWidth+', not 1344px');
          }
          el=document.getElementById('mfhint'); cs=el?getComputedStyle(el):null;
          if(!cs||cs.fontSize!=='16px') bad.push('mfhint font-size is '+(cs&&cs.fontSize));
@@ -21975,6 +21982,7 @@ window.__REGRESS=[
        openModal('welcomemodal'); cardFrameFit(el);
        ms=el.querySelector('.msub'); ft=el.querySelector('.ui-foot')||el.querySelector('#welcometake');
        h=parseFloat(getComputedStyle(el,'::before').height)||0; r=el.getBoundingClientRect(); cy=r.top+r.height/2; ct=cy-h/2; cb=cy+h/2;
+       if(ms&&getComputedStyle(ms).display==='none') ms=null;   // 113c: v34.22 hid the welcome pack intro (no explaining paragraph); nothing to keep inside the frame
        if(ms&&ms.getBoundingClientRect().width>881) return 'the welcome pack intro is '+Math.round(ms.getBoundingClientRect().width)+'px wide in a 960px card';
        if(ms&&ms.getBoundingClientRect().top<ct-1) return 'the welcome pack intro starts at '+Math.round(ms.getBoundingClientRect().top)+' above the card top '+Math.round(ct);
        if(ft&&ft.getBoundingClientRect().bottom>cb+1) return 'the welcome pack footer ends at '+Math.round(ft.getBoundingClientRect().bottom)+' below the card bottom '+Math.round(cb);
@@ -28060,9 +28068,9 @@ window.__REGRESS=[
      if(bad.length) return bad.join('; ');
      if(COSDEF.vest!=='vestplate'||COSDEF.pads!=='padsnone') bad.push('the defaults are '+COSDEF.vest+' and '+COSDEF.pads);
      function paint(st){
-       var cv2=document.createElement('canvas'), x2, kw=wc;
+       var cv2=document.createElement('canvas'), x2, kw=wc, px0=CFG.xfPix;
        cv2.width=240; cv2.height=240; x2=cv2.getContext('2d'); wc=x2;
-       try{ x2.translate(120,200); x2.scale(3,3); drawOp(0,0,0,0,'#242832',0,0,'none',0,st); } finally { wc=kw; }
+       try{ x2.translate(120,200); x2.scale(3,3); CFG.xfPix=0; drawOp(0,0,0,0,'#242832',0,0,'none',0,st); } finally { wc=kw; CFG.xfPix=px0; }   // 113c: this check is about the vector body (the pixel body has its own looks); the pin is lifted after each paint
        return x2.getImageData(0,0,240,240).data;
      }
      function ext(d,y0,y1){ var l=999, r=-1, j2, y, x; for(j2=0;j2<d.length;j2+=4){ if(d[j2+3]>60){ y=Math.floor(j2/4/240); if(y<y0||y>=y1) continue; x=(j2/4)%240; if(x<l) l=x; if(x>r) r=x; } } return {r:(r-120)/3,l:(120-l)/3}; }
@@ -28120,9 +28128,9 @@ window.__REGRESS=[
      for(i=0;i<boots.length;i++){ c=cosFind(boots[i]); if(!c||c.kind!=='boots') bad.push(boots[i]+' is not on the boots rack'); else if(!/^(runs|extracts|level|warden):\d+$/.test(c.how)) bad.push(boots[i]+' cannot be earned: '+c.how); }
      if(bad.length) return bad.join('; ');
      function paint(st,face){
-       var cv2=document.createElement('canvas'), x2, kw=wc;
+       var cv2=document.createElement('canvas'), x2, kw=wc, px0=CFG.xfPix;
        cv2.width=240; cv2.height=240; x2=cv2.getContext('2d'); wc=x2;
-       try{ x2.translate(120,200); x2.scale(3,3); drawOp(0,0,face||0,0,'#242832',0,0,'none',0,st); } finally { wc=kw; }
+       try{ x2.translate(120,200); x2.scale(3,3); CFG.xfPix=0; drawOp(0,0,face||0,0,'#242832',0,0,'none',0,st); } finally { wc=kw; CFG.xfPix=px0; }   // 113c: this check is about the vector body (the pixel body has its own looks); the pin is lifted after each paint
        return x2.getImageData(0,0,240,240).data;
      }
      function box(d,y0,y1){ var top=999, l=999, r=-999, j2, y, x; for(j2=0;j2<d.length;j2+=4){ if(d[j2+3]>60){ y=Math.floor(j2/4/240); if(y<y0||y>=y1) continue; x=(j2/4)%240; if(y<top) top=y; if(x<l) l=x; if(x>r) r=x; } } return {top:(200-top)/3,l:(120-l)/3,r:(r-120)/3}; }
