@@ -28,3 +28,12 @@ buildExport() returns; copy still copies that text; and the clipped row in 92's 
 Pictures: camera-recipes.json with 31 and 92 at 1080p, then the critic.
 TASK DONE when each reaches 4 from the critic (never your own grade) or the fixes shipped and the scores are written, with the reason
 for any point left; TASK PARTIAL with what is left.
+
+--- COORDINATOR 2026-10-24 21:10: the full run corpus-1024-1829 on v34.53 has nine settings checks newly red; they are yours (same
+screen, so no second helper works it). Before TASK DONE run each alone, drop any that pass, then fix the game or re-aim (never loosen):
+v33.56 public recorder bounded preview -> "raw preview exceeds 240px: height 0, zoom 1.3" (your fold: open it before measuring, as 33.70);
+v33.33 experimental group names -> "group raid is 0px tall" (all four); v33.28 experimental layout -> "detail repeats the chip";
+v31.75 settings detail pane -> "detail pane is 200 tall against the list 793"; v31.59 settings rows -> "2 different heights: 1,50";
+v30.05 rebind callout -> "the detail pane still repeats the row value"; v29.33 shared look -> "NEW raw colour or font-size literal in:
+#root #settingsmodal.expmode #setlist"; v28.38 D-pad up settings -> "highlighting the jump chips moved the list from 2000 to 1984";
+v26.38 settings sections -> "ONE: Settings draws no go_minimap". Likely ships v34.35 to v34.38 and your v34.51 to v34.53.
