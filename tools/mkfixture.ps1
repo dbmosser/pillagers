@@ -28185,7 +28185,7 @@ window.__REGRESS=[
        pd=px.getImageData(0,0,240,240).data;
        if(diff(pd,shot.base)<200) bad.push('a body over the link does not wear the shapes in its look');
        // the rack tiles
-       var box2=document.createElement('div'); renderCosmetics(box2,'pack'); if(box2.querySelectorAll('.costile').length!==COSMETICS.filter(function(q){ return q.kind==='pack'; }).length) bad.push('the backpack rack shows '+box2.querySelectorAll('.costile').length+' tiles');
+       var box2=document.createElement('div'), pxK=CFG.xfPix; try{ CFG.xfPix=0; renderCosmetics(box2,'pack'); } finally { CFG.xfPix=pxK; }   /* 113c: the pixel wardrobe (v33.91) lays the racks out in its own tiles; this check is about the old backpack rack */ if(box2.querySelectorAll('.costile').length!==COSMETICS.filter(function(q){ return q.kind==='pack'; }).length) bad.push('the backpack rack shows '+box2.querySelectorAll('.costile').length+' tiles');
        if(!box2.querySelector('.costile[data-id="packradio"] img')) bad.push('a pack tile has no picture of the pack on the figure');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ for(i=0;i<ks.length;i++){ var k3=ks[i]; if(keep[k3]===undefined) delete P[k3]; else P[k3]=keep[k3]; } try{ saveProfile(); }catch(_sp){} }
