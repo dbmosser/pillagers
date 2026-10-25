@@ -6165,6 +6165,18 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.68',what:'the lost pad title colours only its p1 or p2 tag, the words stay the title colour',
+   run:function(){
+     if(typeof padLostTitle!=='function') return 'no padLostTitle';
+     var h=document.createElement('h3'), was=NET.same, tag, txt;
+     try{
+       NET.same='p2'; padLostTitle(h,true); tag=h.firstChild; txt=h.textContent;
+       if(txt!=='p2 press a') return 'the title words changed: '+txt;
+       if(!tag||tag.nodeType!==1||!/\bpl\b/.test(tag.className)||!/\bp2\b/.test(tag.className)) return 'the p2 tag is not its own coloured span';
+       NET.same=''; padLostTitle(h,false); if(h.textContent!=='pad lost'||h.firstChild.nodeType!==3) return 'a window with no pair has a tag';
+       return null;
+     } finally { NET.same=was; }
+   }},
   {v:'34.67',what:'the two in-raid demo cards are solid dialogs clear of the controls legend, and the press a title names the lost pad',
    run:function(){
      if(typeof dlgCard!=='function') return 'no dialog card layout (dlgCard): the easy and initials cards are still see-through boxes on the legend';

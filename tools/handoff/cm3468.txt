@@ -1,0 +1,7 @@
+v34.68: the lost pad title colours only its p1 or p2 tag
+
+On the lost pad screen only the p1 or p2 tag is coloured and the words are plain.
+
+Check 34.68. Fails on v34.67.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,5 @@
+{"generated":"2026-10-25T07:06:35","url":"http://localhost:8808/fixture.html","recipes":"tools/handoff/codex/work/96-demo-easy-card-and-board-words/recipes.json","seconds":28,"screens":[
+{"name":"96-easy-after-map-p1","screen":"Demo easy question in the player 1 window after 15 seconds reading the opening map","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"96-easy-after-map-p1-1080.jpg","lint":""}},
+{"name":"96-easy-after-map-p2","screen":"Demo easy question in the player 2 window after 15 seconds reading the opening map","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"96-easy-after-map-p2-1080.jpg","lint":""}},
+{"name":"96-initials-in-raid-p2","screen":"Demo initials card in the player 2 raid window, naming tonights best","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"96-initials-in-raid-p2-1080.jpg","lint":""}}
+]}

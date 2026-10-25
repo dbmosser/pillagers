@@ -1570,18 +1570,18 @@
  "j8-p1-press-a": {
   "score": 2,
   "pass": false,
-  "verdict": "A clean, consistent small pause card, but its title \"press a\" is the wrong content for a pause menu, and the card is tiny and floats in an empty black screen with no game behind it.",
+  "need": 3,
+  "verdict": "The only change is that the title now reads 'p1 press a' in amber, and the card still mixes a pad-lost prompt with a full pause menu, so most of the earlier advice was not followed.",
   "findings": [
-   "P0 card title: Use one state per screen. Either title the card \"paused\" with the pad prompt as a small --fs-label line under it, or show a dedicated pad-lost card with a 56px hero prompt like \"press a\" and no menu buttons.",
-   "P1 whole screen: Dim the raid frame with --scrim rgba(6,7,8,.80). Add the run state (timer, sector) as quiet --tx-2 --fs-label text. Optionally scale the card up to about 560px wide.",
-   "P1 button stack: Keep resume, settings and end run. Merge feedback and report a problem into one \"feedback\" button, and move what's new into settings or the title screen.",
-   "P1 end run: Give it a 56px high ghost button with a 1px --danger border, spaced 16px like the others. Add a confirm step before the run ends. Keep the 3px lime focus bar on it when focused.",
-   "P2 focus state: Show focus as a lime 2px border and a 3px left bar with --ui-raised fill. Keep the filled lime only for the one primary action. Add a small pad-button glyph in the footer."
+   "P0 card title 'p1 press a': Remove the amber tint and set the title in --tx-1. Either title the card 'paused' with 'p1 press a' as a 16px --tx-2 line under it, or show a pad-lost card with a 56px hero 'press a' and no menu buttons.",
+   "P1 whole screen: Show the dimmed raid frame behind the card at rgba(6,7,8,.80). Add the run timer and sector as 16px --tx-2 text. Widen the card to about 560px.",
+   "P1 button stack: Keep resume, settings and end run. Merge report a problem and feedback into one 'feedback' button. Move what's new into settings. Use full-width rows 56px high with 16px gaps.",
+   "P1 end run button: Add a 24px extra gap above end run and a confirm step. Keep the 1px --danger border and add the 3px lime focus bar when it is focused.",
+   "P2 focus state: Give a focused button a 2px lime border, a 3px left bar and the --ui-raised fill. Keep the filled lime for the one primary action. Add a 14px footer legend with the pad glyphs, for example a for select and b for back."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-07-pad-lost-coordinator-check/j8-p1-press-a-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/114-after2/j8-p1-press-a-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T04:04",
-  "need": 3
+  "when": "2026-10-25T11:10"
  },
  "j8-p1-sees-p2-lost": {
   "score": 2,
@@ -2416,20 +2416,20 @@
   "when": "2026-10-22T13:39"
  },
  "96-easy-after-map-p1": {
-  "score": 2,
-  "pass": false,
+  "score": 3,
+  "pass": true,
   "need": 3,
-  "verdict": "The easy-mode question is a small, low-contrast teal-outlined box in the middle of a busy live raid. Its text is tiny, the y/n choice isn't a clear action, and the box is transparent enough that the map shows through it. The HUD around it uses a mix of unrelated styles.",
+  "verdict": "The question card is now a real modal with a lime yes button, an outlined no button and a neutral border, but it is still a floating box over a fully lit HUD, with a dead title row and an unlabeled countdown.",
   "findings": [
-   "P0 want easy mode? card, centre: Use an opaque panel (--ui-panel at 95%, 1px --ui-line-hi border, 4px radius) with a scrim at 80% behind it. Set the title to 32px tx-1 f-cond 700. Add two 56px-tall buttons: 'yes' as a lime --acc fill with --acc-ink text, and 'no' as an outlined button. Put the live key or pad glyph inside each button at 20px. Show the countdown as a 16px ring or number labelled with its unit, and drop the teal border (teal is reserved for extraction).",
-   "P1 card border and title colour: Remove all teal from the card. Use tx-1 for the title, a --ui-line-hi border and a lime fill on the default answer.",
-   "P1 hierarchy of the whole screen: While the question is open, dim everything else with the 80% scrim, or hide the controls panel and run goals. Make the card the one bold element, with the title at 32px and the buttons at 56px high.",
-   "P1 run info panel, top right: Lower-case 'run info'. Set 24px padding and a 16px tx-2 header. Right-align the +sp values in a column using tabular numbers. Replace the pixel face with Barlow Condensed 600 at 20px for names.",
-   "P1 controls panel, bottom centre: Show at most 4 contextual hints at 16px with key caps (1px border, 4px radius). Collapse the rest behind 'f1 full list', and hide the panel entirely while the question card is open."
+   "P1 whole screen, behind the card: Add a full-screen rgba(6,7,8,.80) scrim under the card. Alternatively, hide the controls panel and run info panel while the question is open. The card should be the only bright element.",
+   "P1 controls panel, bottom centre (x 493-900, y 703-870): Hide it while the card is open. Outside the card, fold it to one 16px line ('f1 controls'), per the owner's ruling that it starts folded.",
+   "P1 card border and edges, x 587-1333, y 262-515: Add a 1px --ui-line-hi border and a 4px radius. Make the countdown a full-width 3px bar with a --ui-line track and a lime fill that drains. Remove the orphan tick.",
+   "P1 title row, 'want easy mode?' (x 623, y 318): Set the title to 32px tx-1 f-cond 700 and make it the only bold line. Replace '12' with 'auto no in 12s' at 16px tx-2, or with the draining bar. Use 32px top padding and 24px between the title and the buttons.",
+   "P1 yes / no buttons (y 398-478): Put 'y' and 'n' in 1px-bordered 4px-radius key caps inside each button. Give the focused button a 2px --acc-hover outer ring. Raise the no border to --ui-line-hi and use tx-1 for its text. Show the pad glyph (a / b) when a pad is in use."
   ],
-  "pic": "tools/handoff/console/notes/shots/96-demo-easy-card-and-board-words-recipes-2/96-easy-after-map-p1-1080.jpg",
-  "task": "96-demo-easy-card-and-board-words",
-  "when": "2026-10-22T14:21"
+  "pic": "tools/handoff/console/notes/shots/114-after/96-easy-after-map-p1-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-25T11:10"
  },
  "96-easy-after-map-p2": {
   "score": 2,
@@ -2448,20 +2448,20 @@
   "when": "2026-10-22T14:21"
  },
  "96-initials-in-raid-p2": {
-  "score": 2,
+  "score": 3,
   "pass": false,
   "need": 4,
-  "verdict": "The initials card works as a modal, but it sits on top of the controls legend with no scrim, its hint line collides with the legend text, and the empty space and weak hierarchy make it look unfinished.",
+  "verdict": "The card no longer overlaps the controls legend. It now sits cleanly above the scene with a lime focus letter, a left-aligned title and a corner countdown, but it is still a plain dark box with no scrim, and the HUD stays at full brightness around it.",
   "findings": [
-   "P0 initials card bottom edge, overlapping the controls legend (x 500-900, y 700-860): Hide the controls legend while the card is open (or draw it below the scrim). Make the card fill opaque --ui-panel at 95%. Put a full-screen --scrim rgba(6,7,8,.80) behind it.",
-   "P0 scene behind the card (whole screen): Add a --scrim .80 layer behind the card, or at minimum dim the HUD to 40% while the card is open. Card 16px lower than centre is fine once the scrim exists.",
-   "P1 hint line (y ~724): Cut it to the one live action: 'enter done'. Use 16px tx-2 minimum, centred 24px below the letter row. Make the countdown a visible 32px hero-style number on the right, or a thin progress bar along the card's bottom edge.",
-   "P1 card layout (572-1348 x 535-775): Shrink the card to about 560x300. Use 24px padding. Keep the title at 32px and the letters at 56px with 24px gaps between them. Remove the dark bar or make it a full-width 1px divider.",
-   "P1 title 'tonight's best · enter initials': Use 32px f-cond 700 in tx-1. Reserve teal for extraction only. Put a title such as 'tonight's best' on one line, then the smaller label 'enter initials' at 16px tx-2 below it."
+   "P1 scene behind the card and HUD (whole screen): Draw a full-screen rgba(6,7,8,.80) layer behind the card, or at minimum dim the HUD to 40% while it is open. Hide the controls legend (x 492-902, y 702-872) while the card is open.",
+   "P1 card shape and edge (556-1364 x 261-555): Use a --ui-panel #16191b fill, a 1px --ui-line-hi #4a5257 border and a 4px radius. Make the lime tick a full 3px top bar across the card or remove it.",
+   "P1 hint line (y ~522): Cut it to two short key hints, 'enter done' and 'backspace back', as tx-2 16px labels. Give the keys small pill glyphs. Centre it 24px under the letter underlines (y 452).",
+   "P1 title 'tonight's best · enter initials' (592, 318): Centre the title block. Use 'tonight's best' at 32px f-cond 700 tx-1, with 'enter initials' on its own line at 16px tx-2. Render the countdown as a 32px --acc number or a thin progress bar along the card's bottom edge.",
+   "P2 letter row (830-1090 x 395-455): Set the letters to 56px f-cond 800 and use 24px gaps. Give the active slot a 64x72 --ui-raised tile with a 3px lime underline, and keep the idle underlines at --ui-line-hi."
   ],
-  "pic": "tools/handoff/console/notes/shots/96-demo-easy-card-and-board-words-recipes-2/96-initials-in-raid-p2-1080.jpg",
-  "task": "96-demo-easy-card-and-board-words",
-  "when": "2026-10-22T14:22"
+  "pic": "tools/handoff/console/notes/shots/114-after/96-initials-in-raid-p2-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-25T11:10"
  },
  "96-initials-solo-run-over": {
   "score": 3,

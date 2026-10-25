@@ -2039,8 +2039,8 @@ body #attract .arcpage .apn{ text-align:left; }
 /* v28.xx (cw-cx-o07-padcontrast): critic P0, disabled reconnect keeps dark ink on lime; P1, no faint HUD behind this card. */
 #root #pausebox.padlost{ background:var(--ui-void) !important; }
 /* v34.67 (cw-demorcards): the lost pad's title is in its player's colour (p1 amber, p2 cyan, as the pad tag), the same two colours the pad tag uses */
-#root #pausebox.padlost[data-who="p1"] h3{ color:#f5b73b; }
-#root #pausebox.padlost[data-who="p2"] h3{ color:#5fd7e8; }
+#root #pausebox.padlost h3 .pl.p1{ color:#f5b73b; }
+#root #pausebox.padlost h3 .pl.p2{ color:#5fd7e8; }
 #root #pausebox.padlost #resumebtn:disabled{ opacity:1 !important; color:var(--acc-ink) !important; background:var(--acc) !important; border-color:var(--acc) !important; font-weight:700; }
 body:has(#pausebox.padlost.on) #hubtoast{ display:none !important; }
 #root #pausebox > div:has(> #resumebtn){ width:var(--pw); }
@@ -3691,7 +3691,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.67';
+var VER='34.68';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19523,9 +19523,12 @@ function padLostWords(ready,same){
 }
 function padLostTitle(h,ready){
   var same=(typeof NET==='object'&&NET&&NET.same)?(NET.same==='p2'?'p2':'p1'):'', box=document.getElementById('pausebox');
+  // v34.68 (cw-demorcards2), the critic on j8-p1-press-a (2, a P0): amber beside the lime resume button is banned by the guide. Only the p1 or p2 tag is in its player colour now; the words stay the title colour.
   h.textContent=padLostWords(ready,same);
-  if(box){ if(same) box.setAttribute('data-who',same); else box.removeAttribute('data-who'); }
-}
+  if(same){
+    var sp=document.createElement('span'); sp.className='pl '+same; sp.textContent=same;
+    h.textContent=''; h.appendChild(sp); h.appendChild(document.createTextNode(' '+(ready?'press a':'pad lost')));
+  }}
 function padLostUi(on,ready){
   if(!on&&!PAD.lossUi) return;
   var b=document.getElementById('resumebtn'); if(!b) return;
@@ -54197,7 +54200,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.67: The easy mode and initials cards are solid dialog cards that stay clear of the controls list, and the lost pad screen names which pillager lost their pad. Check 34.67 fails on v34.66',
+  now:'v34.68: On the lost pad screen only the p1 or p2 tag is coloured and the words are plain. Check 34.68 fails on v34.67',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

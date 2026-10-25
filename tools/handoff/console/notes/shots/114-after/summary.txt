@@ -1,0 +1,4 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  96-easy-after-map-p1                   staged       5.4s  
+  96-easy-after-map-p2                   staged       5.0s  
+  96-initials-in-raid-p2                 staged       5.2s  

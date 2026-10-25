@@ -1,0 +1,16 @@
+{
+    "title":  "THE LOST PAD TITLE COLOURS ONLY ITS P1 OR P2 TAG",
+    "why":  "The critic scored the press a screen 2 with a P0: the whole title in amber sat beside the lime resume button, which the guide bans. Only the p1 or p2 tag keeps its player colour now; the words are the normal title colour.",
+    "now":  "On the lost pad screen only the p1 or p2 tag is coloured and the words are plain.",
+    "edits":  [
+                  {
+                      "anchor":  "  h.textContent=padLostWords(ready,same);\n  if(box){ if(same) box.setAttribute(\u0027data-who\u0027,same); else box.removeAttribute(\u0027data-who\u0027); }\n",
+                      "replacement":  "  // v34.68 (cw-demorcards2), the critic on j8-p1-press-a (2, a P0): amber beside the lime resume button is banned by the guide. Only the p1 or p2 tag is in its player colour now; the words stay the title colour.\n  h.textContent=padLostWords(ready,same);\n  if(same){\n    var sp=document.createElement(\u0027span\u0027); sp.className=\u0027pl \u0027+same; sp.textContent=same;\n    h.textContent=\u0027\u0027; h.appendChild(sp); h.appendChild(document.createTextNode(\u0027 \u0027+(ready?\u0027press a\u0027:\u0027pad lost\u0027)));\n  }"
+                  },
+                  {
+                      "anchor":  "#root #pausebox.padlost[data-who=\"p1\"] h3{ color:#f5b73b; }\n#root #pausebox.padlost[data-who=\"p2\"] h3{ color:#5fd7e8; }",
+                      "replacement":  "#root #pausebox.padlost h3 .pl.p1{ color:#f5b73b; }\n#root #pausebox.padlost h3 .pl.p2{ color:#5fd7e8; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the lost pad title colours only its p1 or p2 tag, the words stay the title colour\u0027,\n   run:function(){\n     if(typeof padLostTitle!==\u0027function\u0027) return \u0027no padLostTitle\u0027;\n     var h=document.createElement(\u0027h3\u0027), was=NET.same, tag, txt;\n     try{\n       NET.same=\u0027p2\u0027; padLostTitle(h,true); tag=h.firstChild; txt=h.textContent;\n       if(txt!==\u0027p2 press a\u0027) return \u0027the title words changed: \u0027+txt;\n       if(!tag||tag.nodeType!==1||!/\\bpl\\b/.test(tag.className)||!/\\bp2\\b/.test(tag.className)) return \u0027the p2 tag is not its own coloured span\u0027;\n       NET.same=\u0027\u0027; padLostTitle(h,false); if(h.textContent!==\u0027pad lost\u0027||h.firstChild.nodeType!==3) return \u0027a window with no pair has a tag\u0027;\n       return null;\n     } finally { NET.same=was; }\n   }},"
+}

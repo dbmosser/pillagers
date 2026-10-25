@@ -1,0 +1,5 @@
+## v34.68 - THE LOST PAD TITLE COLOURS ONLY ITS P1 OR P2 TAG
+
+Co-op hunt while he was away. The critic scored the press a screen 2 with a P0: the whole title in amber sat beside the lime resume button, which the guide bans. Only the p1 or p2 tag keeps its player colour now; the words are the normal title colour.
+
+MEASURED. Check 34.68 passes, and fails on v34.67.
