@@ -1,0 +1,7 @@
+v34.58: play data text rules on tokens
+
+No visible change.
+
+Check 34.58. Fails on v34.57.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

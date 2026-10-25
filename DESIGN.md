@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.58 - PLAY DATA TEXT RULES ON TOKENS
+
+Co-op hunt while he was away. Job 113: check 29.33 caught raw hex and px literals in the play data export text rules. Same values, written with the tokens, longhand font and the named colour black.
+
+MEASURED. Check 34.58 passes, and fails on v34.57.
 ## v34.57 - RUN INFO STAYS IN THE COLUMN
 
 Co-op hunt while he was away. His one column order for the upper right corner (all the same width). Since v34.39 the run info panel grew to the left past the minimap and rows, 323 px against 300.

@@ -6163,6 +6163,12 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.58',what:'cw-setrevert3 (job 113): the play data export text rules in the shared block have no raw hex colour and no px inside a font shorthand',
+   run:function(){
+     var css=(document.getElementById('ui-shared')||{textContent:''}).textContent.replace(/\/\*[\s\S]*?\*\//g,''), rs=css.match(/[^{}]*settingsmodal\.recmode #exporttext\s*\{[^}]*\}/g)||[], i, bad=[];
+     if(!rs.length) return 'SKIP: no export text rule in the shared block';
+     for(i=0;i<rs.length;i++) if(/#[0-9a-fA-F]{3,8}\b|rgba?\(|font-size\s*:\s*[\d.]+(px|em|rem)|font\s*:[^;]*[\d.]+px/.test(rs[i].slice(rs[i].indexOf('{')))) bad.push(rs[i].slice(rs[i].indexOf('{'),rs[i].indexOf('{')+60));
+     return bad.length?'raw literal in the export text rule: '+bad[0]:null; }},
   {v:'34.57',what:'cw-runinfocol: in a career raid the run info panel is exactly as wide as the corner column (the minimap), his one column order, whatever the contract rows say',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__frame&&window.__forceSize&&window.__runPrep&&window.__topClear&&window.__endRaid)) return 'SKIP: this fixture cannot deploy and draw';
