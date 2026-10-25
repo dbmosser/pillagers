@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.67 - THE EASY MODE AND INITIALS CARDS ARE SOLID DIALOGS AND PRESS A NAMES THE LOST PAD
+
+Co-op hunt while he was away. The critic scored the in-raid easy mode card and the initials card 2 (see-through boxes; the initials card sat on the controls legend) and the press a screen 2 (a bare title over a pause menu). Both cards are now the guide dialog: solid panel fill, a lime tab, the question as the title, a primary yes and a ghost no with the live key or pad glyph, placed above the legend. The press a title says p1 or p2 pad lost, then p1 or p2 press a, in that player colour.
+
+MEASURED. Check 34.67 passes, and fails on v34.66.
 ## v34.66 - RAID BACKPACK TITLE AND EMPTY CELLS
 
 Co-op hunt while he was away. The critic scored the raid backpack 3 after the grid ship: the title is weaker than the item name, empty cells are barely visible and armour and armor both show. Title is now the guide title size, empty cell border is brighter, one spelling.

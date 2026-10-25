@@ -6165,6 +6165,19 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.67',what:'the two in-raid demo cards are solid dialogs clear of the controls legend, and the press a title names the lost pad',
+   run:function(){
+     if(typeof dlgCard!=='function') return 'no dialog card layout (dlgCard): the easy and initials cards are still see-through boxes on the legend';
+     var e=dlgCard('easy'), i=dlgCard('ini'), s;
+     if(!/^#[0-9a-f]{6}$/i.test(e.fill)||!/^#[0-9a-f]{6}$/i.test(i.fill)) return 'a card fill is not opaque: '+e.fill+' '+i.fill;
+     if(i.y+i.h>H*0.62) return 'the initials card reaches the controls legend (bottom '+(i.y+i.h)+' of '+H+')';
+     s=String(easyHud)+String(arcadeIniHud);
+     if(s.indexOf('dlgCard')<0||s.indexOf('rgba(6,9,13')>=0) return 'the cards still draw their own see-through box';
+     if(typeof padLostWords!=='function') return 'the press a title does not name the pad (no padLostWords)';
+     if(padLostWords(false,'p1')!=='p1 pad lost'||padLostWords(true,'p2')!=='p2 press a'||padLostWords(true,'')!=='press a') return 'the pad lost title words are wrong: '+padLostWords(false,'p1')+' / '+padLostWords(true,'p2')+' / '+padLostWords(true,'');
+     if(String(padLostPoll).indexOf('padLostTitle')<0||String(padLostStart).indexOf('padLostTitle')<0) return 'the lost pad screens do not use the named title';
+     return null;
+   }},
   {v:'34.66',what:'raid backpack title is at the screen title size and empty cells are drawn with a visible border',
    run:function(){
      var g, bp, f, PR=CanvasRenderingContext2D.prototype, of=PR.fillText, os=PR.strokeRect, ts=0, em=0, tf;

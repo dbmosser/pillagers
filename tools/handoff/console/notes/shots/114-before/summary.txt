@@ -1,0 +1,6 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  j8-p1-press-a                          staged      19.1s    | {"mode":"demo","seat":1,"realPair":[{"on":true,"role":"host","seat":0,"roster":[{"seat":0,"pid":"fe67ce12","name":"PILLAGER","host":true},{"seat":1,"pid":"d0d37145","name":"PLAYER 2","host":false}],"status":"PLAYER 2 joined","err":"","made":1,"codeLen":1193,"links":1},{"on":true,"role":"join","seat"
+  j8-p2-press-a                          NOT STAGED  42.1s    | EXCEPTION Error: both real windows did not link
+    at stagePadLostPair (<anonymous>:162:11)
+    at async <anonymous>:166:8
+    at async <anonymous>:1:21

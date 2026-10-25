@@ -1,0 +1,7 @@
+v34.67: the easy mode and initials cards are solid dialogs and press a names the lost pad
+
+The easy mode and initials cards are solid dialog cards that stay clear of the controls list, and the lost pad screen names which pillager lost their pad.
+
+Check 34.67. Fails on v34.66.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
