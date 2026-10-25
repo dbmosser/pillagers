@@ -3690,7 +3690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.80';
+var VER='34.81';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -4190,7 +4190,7 @@ var XF_ROWS=[
   // XF_ROWS_END
 ];
 var XF_KEYS=[], XF_WORLD=[], XF={}, SETSUB='';
-(function(){ var i; for(i=0;i<XF_ROWS.length;i++){ XF_KEYS.push(XF_ROWS[i][0]); DEF[XF_ROWS[i][0]]=1; if(XF_ROWS[i][3]==='w') XF_WORLD.push(XF_ROWS[i][0]); } })();
+(function(){ var i; for(i=0;i<XF_ROWS.length;i++){ XF_KEYS.push(XF_ROWS[i][0]); DEF[XF_ROWS[i][0]]=1; if(XF_ROWS[i][3]==='w') XF_WORLD.push(XF_ROWS[i][0]); } })(); DEF.xfPix=0;   // v28.xx (cw-smoothlook), HIS ORDER (2026-10-25): "I don't like the pixelated style, I want the graphics smooth". The pixel look is off by default; its row stays in Settings, experimental, and off is the smooth game byte for byte.
 // v28.xx (cw-cx-expsnap): job 61 says switches are read once at raid start and the host rules in both windows. Include the four formerly local keys.
 function xfSnap(){ var i, k; XF={}; for(i=0;i<XF_KEYS.length;i++){ k=XF_KEYS[i]; XF[k]=(CFG&&CFG[k]===0)?0:1; } return XF; }
 function xf(k){ return XF[k]!==0; }                      // a WORLD switch, as this raid was started with it (all on before any raid)
@@ -36677,7 +36677,7 @@ function gunHeld(px,ty,face,fl,st,coat,bld,pc,ads,sprint,rl,muzzle){
 // (lean 0.92 wide by 1.08 tall, broad 1.1 by 0.96, curved 1 by 1). Shadow, seat ring and gun scale with the body. Hit areas are untouched.
 // FIG_SCALE is the one number to dial back. Previews (a small canvas swapped into wc) stay as they were. FIG_UP lifts the plates and bars
 // over the bigger head.
-var FIG_SCALE=1, FIG_UP=12, /* v28.xx (cw-figback), HIS ORDER (2026-10-20): "player is too big, needs to go back to previous size" and "revert to old player size or maybe even smaller, should be scaled properly compared to bodies on ground, trees, deer". 1.25 back to 1 (the size before v32.64); his head, pack and vest picks stay. FIG_UP 19 to 12 so the plates sit over the smaller head. */ FIG_HEAD=1.2, FIG_PACK=1.3, FIG_VEST=1.12, FIG_PATCH=1.6;
+var FIG_SCALE=0.8, FIG_UP=4, /* v28.xx (cw-smoothlook), HIS NOTES (2026-10-25): "Pillager is too big" and "Pillager still too big" (his 10-20 order already said "or maybe even smaller, should be scaled properly compared to bodies on ground, trees, deer"). 1 to 0.8, drawing only: hit areas, walking and doors are untouched. FIG_UP 12 to 4 so the plates sit just over the smaller head. */ /* v28.xx (cw-figback), HIS ORDER (2026-10-20): "player is too big, needs to go back to previous size" and "revert to old player size or maybe even smaller, should be scaled properly compared to bodies on ground, trees, deer". 1.25 back to 1 (the size before v32.64); his head, pack and vest picks stay. FIG_UP 19 to 12 so the plates sit over the smaller head. */ FIG_HEAD=1.2, FIG_PACK=1.3, FIG_VEST=1.12, FIG_PATCH=1.6;
 function figBuildK(b){ return (b==='broad')?[1.1,0.96]:((b==='curved')?[1,1]:[0.92,1.08]); }
 function figOn(){ return !!(typeof wc!=='undefined'&&wc&&((typeof cv!=='undefined'&&wc.canvas===cv)||RIM.on===1)); }
 // v28.xx (cw-cx-sideglyphs), his 2.79 a: allegiance has a shape as well as team colour, always on, in both body renderers.
@@ -37835,7 +37835,7 @@ function alertTopShift(e){
 }
 // v28.xx (cw-machbig), HIS ORDER (2026-10-20 evening): "enemies need to be like 33% larger". The machines (sentry, crawler, warden, choir, snitch, listener, howler, bulwark) are DRAWN FIG_MACH times bigger around the foot point and a round hits them at FIG_MACH times the body radius; walking, doors and the nav grid keep the old radius, so nothing sticks in a doorway. Pillager bots, the peddler and the survivor keep their size. FIG_MACH is the one number to change.
 var FIG_MACH=1.33, MACH_KIND={sentry:1,crawler:1,warden:1,choir:1,snitch:1,listener:1,howler:1,bulwark:1};
-function machMul(e){ return (e&&MACH_KIND[e.kind]===1)?FIG_MACH:1; }
+var BULWARK_BIG=1.5; /* v28.xx (cw-smoothlook), HIS NOTES (2026-10-25): "Player too big vs the bulwark which is too small" and "Bulwark still too small". The bulwark is drawn, plated and hit 1.5 times the other machines (about 2x its old art); it still walks, fits doors and routes on the old radius, so it never sticks in a doorway. A bigger target is the balance cost. */ function machMul(e){ return (e&&MACH_KIND[e.kind]===1)?(e.kind==='bulwark'?FIG_MACH*BULWARK_BIG:FIG_MACH):1; }
 function machScaleBegin(e){ var m=machMul(e); if(m===1) return 0; wc.save(); wc.translate(e.x,e.y); wc.scale(m,m); wc.translate(-e.x,-e.y); return 1; }
 function machScaleEnd(n){ if(n) wc.restore(); }
 function spriteTop(e){ return spriteTop0(e)*machMul(e); }   // the name plate, alert mark and health pip ride the taller body
@@ -42974,7 +42974,7 @@ function mmSizeK(){ var s=+CFG.mmSz; return (s>=0.5&&s<=2)?s:1; }
 // v33.35 (cw-mmoff), HIS ORDER (2026-10-20): "remove minimap entirely, i guess make it an option in settings but default to leaving it off". The one Settings row
 // (MINIMAP) has OFF first and OFF is the usual: mmSz 0 draws nothing, and the column, the run info panel and everything under the corner already sit by MMAP.box
 // being empty. mmSizeK still reads 1 for a 0, so the column keeps its width. mmOffMove moves a save that holds a minimap size to OFF once (P.mmOff1 marks it done).
-function mmOn(){ return +CFG.mmSz>0; }
+function mmOn(){ return +CFG.mmSz>0; } function pixOffMove(){ if(!P||P.pixOff1===1) return false; if(P.gameOpts&&typeof P.gameOpts.xfPix==='number') P.gameOpts.xfPix=1; P.pixOff1=1; return true; }   // v28.xx (cw-smoothlook), HIS ORDER (2026-10-25) "I want the graphics smooth": a save that holds the pixel look moves to off once (P.pixOff1 marks it done), so a pixel pick made after today survives
 function mmOffMove(){
   if(!P||P.mmOff1===1) return false;
   if(P.gameOpts&&typeof P.gameOpts.mmSize==='number') P.gameOpts.mmSize=0;
@@ -54348,7 +54348,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.80: At night blasts, shots, hunting machines and the beacon light the ground in their own colour. Check 34.80 fails on v34.79',
+  now:'v34.81: The game looks smooth again (the pixel look is off, saved games too). Pillagers are drawn a fifth smaller. The bulwark is about twice as big and easier to hit. Watch for: name plates sitting right over heads, the smaller pillager staying easy to spot in a fight, and the bulwark art overlapping walls when it hugs one. Check 34.81 fails on v34.80',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -71418,7 +71418,7 @@ hint:'Damage taken from everything on the surface. Standard is how the game has 
   var i, r, on, off;
   for(i=0;i<XF_ROWS.length;i++){
     r=XF_ROWS[i]; on={}; off={}; on[r[0]]=1; off[r[0]]=0;
-    GAMEOPTS.push({k:r[0],label:r[1],sec:'EXPERIMENTAL',hint:r[2],opts:[{n:'on',cfg:on},{n:'off',cfg:off}],def:0});
+    GAMEOPTS.push({k:r[0],label:r[1],sec:'EXPERIMENTAL',hint:r[2],opts:[{n:'on',cfg:on},{n:'off',cfg:off}],def:(r[0]==='xfPix'?1:0)});   // v28.xx (cw-smoothlook): the pixel look row defaults to off (his 10-25 order); every other experimental row stays on
   }
 })();// v10.28: which option the LIVE dials match, or -1 when a slider has put them
 // somewhere no option names. The rows show this; the stored choice is the
@@ -71456,7 +71456,7 @@ function volMusicMove(){
 }
 function applyGameOpts(){
   try{ volMusicMove(); }catch(_vm){}
-  try{ mmOffMove(); }catch(_mo){}   // v33.35 (cw-mmoff): once per save
+  try{ mmOffMove(); }catch(_mo){} try{ pixOffMove(); }catch(_po){}   // v33.35 (cw-mmoff): once per save; v28.xx (cw-smoothlook): the pixel look move, once per save
   var tk=tunedKeys();
   for(var i=0;i<GAMEOPTS.length;i++){
     var row=GAMEOPTS[i], sel=row.opts[gameOptIx(row.k)];

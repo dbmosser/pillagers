@@ -20,3 +20,5 @@
 - 121-ui-raid-controls-list.md back to tasks/ 10-25 11:21 by the coordinator (shipped v34.78; pictures and critic left)
 - 123-gfx-pixel-reload-forged.md (parked 10-25 11:25 by lane b): coordinator add a camera stage for a mid-reload rifle with the cryo forge, and run the 4K two-window frame test before and after
 - 127-gfx-glow-pools.md (parked 10-25 11:32 by lane c): coordinator needs a uishots screen that stages the forge or a burning body, plus a 4K two-window perf run, for 127-gfx-glow-pools.
+- 10-25 12:50 coordinator: 128, 129, 130 held until job 120k measures the 2-player frame cost (gameplay idea 2: each adds drawing every frame). Then back to tasks/, smooth look first.
+- 10-25 12:50 coordinator: 123-gfx-pixel-reload-forged closed: his 10-25 order turned the pixel look off ("I want the graphics smooth"); the pixel reload has no player left.

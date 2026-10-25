@@ -1,0 +1,7 @@
+v34.81: smooth look, a smaller pillager, a bigger bulwark
+
+The game looks smooth again (the pixel look is off, saved games too). Pillagers are drawn a fifth smaller. The bulwark is about twice as big and easier to hit. Watch for: name plates sitting right over heads, the smaller pillager staying easy to spot in a fight, and the bulwark art overlapping walls when it hugs one.
+
+Check 34.81. Fails on v34.80.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.81 - SMOOTH LOOK, A SMALLER PILLAGER, A BIGGER BULWARK
+
+Co-op hunt while he was away. His notes of 2026-10-25 on the photos: I dont like the pixelated style, I want the graphics smooth; Pillager still too big; Bulwark still too small. The smooth look is the default again and a save that holds the pixel look moves to it once (the pixel look stays as an experimental switch). Every human figure is drawn at 0.8 of the old size (drawing only). The bulwark is drawn and hit at 1.5 times the other machines, about twice its old art; it walks and fits doors on the old radius.
+
+MEASURED. Check 34.81 passes, and fails on v34.80.
 ## v34.80 - FLASHES AND MACHINE EYES LIGHT THE GROUND IN THEIR OWN COLOUR
 
 Co-op hunt while he was away. His 10-12 graphics list (gfx9, coloured light) was half done: lamps lit the light map in colour but every flash, hunting machine and the extraction beacon was stamped plain white. Each now uses the colour it already stores, the same one the glow pass draws. The draw count is unchanged (cached sprite per colour), reduced flashing is untouched, his lamp and the teammate lamp stay white. Watch: at night a blast, cryo or acid tints the street, hunting machines throw red, the beacon teal.
