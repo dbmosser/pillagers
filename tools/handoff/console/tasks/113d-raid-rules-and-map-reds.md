@@ -44,3 +44,9 @@ body fired) and v22.12 (which contract rolled) before calling any of them a game
 --- COORDINATOR 2026-10-24 21:50: v13.81's "-1 rounds" is not a gun with -1 rounds. The check writes -1 when the carbine from the
 ordinary crate is in neither hand (mkfixture.ps1, `got=...?p.secAmmo:(...?p.ammo:-1)`), so the control's carbine was not equipped by
 openContainer after the second bagHeldGun. Find why it stayed out of the hands (the belt, the bag, a new pickup rule since v34.18).
+--- COORDINATOR 2026-10-24 22:25: v20.38 lead confirmed on v34.53 (alone, fresh tab): the run's full reason is also "player 2 was never
+told the Crier fired", i.e. the fire word went out for seat 0. markSeat changes only where `sees` is true, so the staged Crier saw the
+host and re-marked him: the game is right and the staging broke (b). Re-aim: set the Crier's facing away from the host before the
+windup (c.face = Math.atan2(c.y-p.y, c.x-p.x), the host is 160 px to its left) and check it cannot see him, then show the control
+(today's staging) fails on v34.53. Note: a patched copy of a check cannot be eval'd in the page (the game's names live in its own
+scope), so try a change only through a drafted fixture (mkfixture.ps1, fxdryNN).
