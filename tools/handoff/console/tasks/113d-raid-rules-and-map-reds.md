@@ -59,3 +59,8 @@ and with the dial on (ruined) it does not: "lost interior walls, 9 against 10" i
 are the walls before v34.50; 2268 and 558 are those plus the solid pieces: re-aim the counts and name v34.50 (86i ship 2, his 10-20
 22:55 and 23:00 orders) in the DESIGN.md section. v34.50's DESIGN note says the pieces are placed last from grit() so the seeded stream
 stays put; my 21:25 line above saying every roll moved is wrong, so look at v30.26, v13.81, v15.80 and v22.12 on their own merits.
+--- COORDINATOR 2026-10-24 23:25: v22.12 confirmed (b, re-aim). v34.46 (e1550208e, "contract done line shorter", logged in changes.md
+under Q8) changed the sub from contractDesc(c)+'. Complete contract at mainframe.' to contractDesc(c). The check still looks for
+want+'.' in the raid line (mkfixture.ps1, `m.indexOf(want+'.')>=0`), and the line now ends at the place name, which is the right place
+on the sector played. Match the line ending in want (no period), keep the run card and detail card halves, and show the control fails
+on v34.53 as written.
