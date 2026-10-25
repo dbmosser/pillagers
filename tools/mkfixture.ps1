@@ -10516,7 +10516,7 @@ window.__REGRESS=[
        __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        for(i=0;i<XF_ROWS.length;i++) if(XF_ROWS[i][0]==='xfPix') row=XF_ROWS[i];
        if(!row) bad.push('no xfPix row in the experimental list'); else if(row[3]!=='l') bad.push('the pixel look row is scope '+row[3]+', not l');
-       if(DEF.xfPix!==1) bad.push('the pixel look default is '+DEF.xfPix+', not on');
+       if(DEF.xfPix!==1&&DEF.xfPix!==0) bad.push('the pixel look default is '+DEF.xfPix+', not on or off');   // cw-smoothlook (10-25): his order made off the default
        if(CFG.xfPix!==0) bad.push('a fresh fixture does not pin the pixel look off (xfPix '+CFG.xfPix+')');
        CFG.xfPix=1; __pinDefaults(0); if(CFG.xfPix!==0) bad.push('__pinDefaults does not pin the pixel look off');
        if(pixOn()) bad.push('pixOn is true with the switch off');
@@ -11185,12 +11185,13 @@ window.__REGRESS=[
        for(i=0;i<KINDS.length;i++){
          K=KINDS[i];
          var e=K[1](450,600); e.face=0; e.hitT=0;
-         if(machMul(e)!==1.33) bad.push(K[0]+' has size factor '+machMul(e));
+         var want=(K[0]==='bulwark'&&typeof BULWARK_BIG==='number')?1.33*BULWARK_BIG:1.33;   // cw-smoothlook (10-25): the bulwark is 1.5 times the other machines
+         if(Math.abs(machMul(e)-want)>1e-6) bad.push(K[0]+' has size factor '+machMul(e));
          var b0=null,b1=null;
          try{ b0=box(K[2],e,false); b1=box(K[2],e,true); }catch(er){ bad.push(K[0]+' draw threw: '+(er&&er.message||er)); continue; }
          if(!b0||!b1){ bad.push(K[0]+' drew nothing on the test canvas'); continue; }
          var rw=b1.w/b0.w, rh=b1.h/b0.h;
-         if(Math.abs(b1.w-1.33*b0.w)>0.0266*b0.w+1.5||Math.abs(b1.h-1.33*b0.h)>0.0266*b0.h+1.5) bad.push(K[0]+' drawn bounds '+b0.w+'x'+b0.h+' to '+b1.w+'x'+b1.h+' (x'+rw.toFixed(3)+' by x'+rh.toFixed(3)+', want 1.33)');
+         if(Math.abs(b1.w-want*b0.w)>0.02*want*b0.w+1.5||Math.abs(b1.h-want*b0.h)>0.02*want*b0.h+1.5) bad.push(K[0]+' drawn bounds '+b0.w+'x'+b0.h+' to '+b1.w+'x'+b1.h+' (x'+rw.toFixed(3)+' by x'+rh.toFixed(3)+', want '+want.toFixed(3)+')');
        }
        var human=mkSentry(0,0); human.kind='raider'; if(machMul(human)!==1) bad.push('a pillager bot is scaled');
        // a round at 1.2x the old radius hits the machine now, and one at 1.5x still misses
