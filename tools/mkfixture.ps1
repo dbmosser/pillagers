@@ -16419,9 +16419,10 @@ window.__REGRESS=[
        var k, e=null, o0;
        for(k=0;k<gg.ents.length;k++){ if(gg.ents[k].name&&gg.ents[k].kind==='sentry'){ e=gg.ents[k]; break; } }
        if(!e) return null;
-       o0={x:e.x,y:e.y,state:e.state};
+       o0={x:e.x,y:e.y,state:e.state,name:e.name};
+       e.name='probe unit zq';   // 113a: two machines can share a name; the second one, drawn far off screen, was read as this label
        canSee=function(){ return true; };
-       return {o:e,txt:String(e.name),want:TX(String(e.name)),left:1,font:function(){ return FS(TYPE.micro); },back:function(){ e.x=o0.x; e.y=o0.y; e.state=o0.state; canSee=oCs; }};
+       return {o:e,txt:String(e.name),want:TX(String(e.name)),left:1,font:function(){ return FS(TYPE.micro); },back:function(){ e.x=o0.x; e.y=o0.y; e.state=o0.state; e.name=o0.name; canSee=oCs; }};
      }
      function use(s){ if(sub) sub.back(); sub=s; cal=null; }
      function put(cx,cy){ var Z=ZOOM(); sub.o.x=VX+(cx-cal.dx)/Z; sub.o.y=VY+(cy-cal.dy)/Z; if(sub.left) sub.o.state='idle'; }
