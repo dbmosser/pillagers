@@ -89,3 +89,5 @@ Moved 10-19 night to tools/handoff/console/alarms.md (helper fix F18). This file
 
 ## 2026-10-24 task 106 (lane c)
 the raid shows an alert twice: the red banner and a row in the left feed ("the pillbox has seen you", "location revealed"). that is your 10-15 order that every line on screen also goes in the feed. keep both, or show a line in only one place (banner or feed)? i kept both.
+
+2026-10-24 23:55 | his answers (chat) to the raid screen calls page | rs-1 OTHER, his words: "should be on right hand side, minimized, hit key to reveal" -> job 112r (career raids: the controls list on the right, folded from the start, F1 opens it; the demo keeps today's list). rs-2 a: keep both alert copies (banner and log row) -> style-guide.md section 0, the critic is told it is his ruling.

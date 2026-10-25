@@ -9,6 +9,11 @@ Rule of the guide: the code already HAS most tokens (CSS :root at line ~40, UIC 
 - Accent: lime yellow, "whichever is most visible" (his Q46). The helpers' pick, --acc #e6ff3d, is shipped (v30.61 cw-limeacc; dark_raiders.html line 55 has --acc:#e6ff3d). Keep it unless he objects.
 - Motion: livelier, with bounce (his Q47). Shipped in v30.85 (cw-bounce). Sound (his Q48) is section 6.
 - Windows: a centred card with an X in the corner that takes up nearly the entire screen (his Q43). Shipped: v30.89 (settings and keys fill the screen as a card), v31.02 (windows close with an x in the corner), v31.10 (a centred 90 percent card for the shop, codex, trophies, fashion, mainframe, gamble, bar, terms, party and sector windows), v31.16 (the shop fills its card). Whether the 56px header and 72px footer rows of section 2 exist in the code: unverified.
+- Raid controls list (his answer rs-1, 2026-10-24 23:55, his words: "should be on right hand side, minimized, hit key to reveal"): in a
+  career raid it sits on the right-hand side, folded to one short line from the start, and F1 opens it there. It replaces his v6.68
+  "always open on arrival" for career. The party demo keeps today's list for walk-up players. Job 112r builds it.
+- The same alert in two places stays (his answer rs-2 a, 2026-10-24: keep both, the red banner and its row in the left log, his 10-15
+  order that every line also goes in the log). It is his ruling: tell the critic, and do not mark a raid screen down for it.
 - Career HUD top-right: a vertical 1 by 1 list, every item the same size (his newest chat order, 10-18 afternoon). It replaces the Q58 "one row". Another helper builds it under key cw-trcol (not shipped as of v31.23). Screen tasks leave that corner alone.
 - PENDING his answer, do not invent: the colours for player 1 and player 2. Round 3 question r3-13 asks (raid: P1 amber, P2 cyan; new menus: P1 lime, P2 blue); he has not answered. If he picks "lime for player 1", the role of lime (--acc) changes too. Until then change no ring colour and add no new per-player tint.
 
