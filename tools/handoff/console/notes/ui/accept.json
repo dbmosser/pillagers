@@ -931,17 +931,17 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "A clean, consistent full-screen card with a clear focus bar and an off-state that is dimmed correctly, but it is a plain settings list with a wasted detail pane, a crowded mixed list and weak identity.",
+  "verdict": "The new version drops the duplicated big 'off' from the detail pane and stretches the pane to full height, so it is cleaner and matches the list height, but the pane is now mostly empty and the settings list is still a long, flat, same-weight wall of rows.",
   "findings": [
-   "P1 detail pane (right, y 115-403): Stretch the pane to the full list height (y115 to 990) in --ui-raised and anchor the content at the top. Or add a state preview and a short toggle row. Make the hero number tx-1 when off and --acc when on.",
-   "P1 centre list, sections the raid and audio (y 115-990): Move the volume rows under the audio tab. Keep the raid tab to about 10 rows. Remove the hairline section break. If a scroll is still needed, make the scrollbar 8px in --ui-line-hi.",
-   "P1 value column (x 730-985): Put the arrows 40px either side of the value at 20px and 44px minimum hit size. Show them only on the focused row, in lime. Render 'open' as a bordered button, not a bare value.",
-   "P2 focused row (y 175-230): Keep the lime bar and lime value only. Turn the row name tx-1. Dim the active tab bar to --ui-line-hi once focus is in the list.",
-   "P2 left tab column (x 50-313): Close the gap and put 'send play data' at the bottom of the column, separated by a line. Raise tab text to 20px and set rows to 64px."
+   "P1 detail pane (right, y 160-990): Either shrink the pane to fit its content (about 200px high, restore the 3px lime top bar), or use the space for a real preview or the value choices as a stacked list. Do not stretch an empty panel to 100% height.",
+   "P1 middle list, rows 'edit the words' to 'footsteps volume': Move the volume rows under the 'audio' tab. Where groups stay together, add a 16px tx-2 label per group with 24px space above. Show about 8 rows per screen at 56px, with the scroll hint made clearer.",
+   "P1 value column (x 730-990): Right-align the value group, or pull it to x about 600-860. Use tx-2 at 4.5:1 or more for idle arrows, and give 'open' a button-style chip to separate it from the toggle values.",
+   "P2 scrollbar (x 1050, y 118-310): Make the thumb 6px wide in --ui-line-hi with a 4px gap from the border, and add a bottom fade of 32px.",
+   "P2 left tab column: Keep one lime marker per column of focus: dim the selected tab to a tx-1 name with a 2px lime edge when focus is in the list, and use a 1px divider rather than a blank gap before 'send play data'."
   ],
-  "pic": "tools/handoff/console/notes/shots/113-after3/92-settings-superhot-pane-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/113-after4/92-settings-superhot-pane-1080.jpg",
   "task": "manual",
-  "when": "2026-10-24T22:17"
+  "when": "2026-10-25T05:58"
  },
  "60-mapfirst-1p": {
   "score": 4,

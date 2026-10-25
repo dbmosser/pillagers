@@ -1,0 +1,7 @@
+v34.63: the party window is the 90 percent card again
+
+The party window fills 90 percent of the screen like the shop and the other windows.
+
+Check 34.63. Fails on v34.62.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

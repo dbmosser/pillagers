@@ -1,11 +1,11 @@
 Latest stable: v29.09 (2026-10-18 10:23)
-Checked: 2026-10-25 01:02
+Checked: 2026-10-25 04:08
 Play address: http://localhost:8802/stable.html
 Result: no change
 
 Newest test runs, newest first:
-  corpus-1024-2302  v34.53  failing 44, new 39  robots 794 min/0 problems  -> 39 check(s) newly failing, e.g. v8.93 a HUD panel can be resized by its corner grip, and the | v9.14 the writing on the sector map follows the monitor, lik
-  corpus-1024-1829  v34.53  failing 46, new 40  robots 794 min/0 problems  -> 40 check(s) newly failing, e.g. v8.93 a HUD panel can be resized by its corner grip, and the | v9.14 the writing on the sector map follows the monitor, lik
+  corpus-1024-2302  v34.53  failing 44, new 39  robots 1017 min/0 problems  -> 39 check(s) newly failing, e.g. v8.93 a HUD panel can be resized by its corner grip, and the | v9.14 the writing on the sector map follows the monitor, lik
+  corpus-1024-1829  v34.53  failing 46, new 40  robots 1017 min/0 problems  -> 40 check(s) newly failing, e.g. v8.93 a HUD panel can be resized by its corner grip, and the | v9.14 the writing on the sector map follows the monitor, lik
   corpus-1023-2304  v34.18  failing 14, new 9  robots 4765 min/0 problems  -> 9 check(s) newly failing, e.g. v33.69 cw-pixveg (86d): THE PIXEL TREE, BUSH AND SHADOW. Wit | v33.66 cw-pixwalls (86d): THE PIXEL WALL. With the pixel loo
   corpus-1022-2301  v34.18  failing 15, new 10  robots 4765 min/0 problems  -> 10 check(s) newly failing, e.g. v33.69 cw-pixveg (86d): THE PIXEL TREE, BUSH AND SHADOW. Wit | v33.66 cw-pixwalls (86d): THE PIXEL WALL. With the pixel loo
   corpus-1022-0707  v34.03  failing 11, new 7  robots 113 min/0 problems  -> 7 check(s) newly failing, e.g. v9.07 a noise you cannot see leaves a ring on the ground, an | v33.60 cw-cx-pixground (86b): THE PIXEL GROUND. With the pix

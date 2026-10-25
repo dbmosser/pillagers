@@ -1221,3 +1221,11 @@
 2026-10-24 1.942593 113-ui-settings-play-data-and-superhot
 2026-10-25 0.9049657000000001 112r-raid-controls-right-folded
 2026-10-25 3.0200503999999997 113a-raid-hud-reds
+2026-10-25 0.1629 critic-manual
+2026-10-25 1.9163484 113-ui-settings-play-data-and-superhot
+2026-10-25 0.2233 critic-coord-test
+2026-10-25 0.0877 critic-coord-test
+2026-10-25 0.3401179 112r-raid-controls-right-folded
+2026-10-25 0.13474770000000003 113-ui-settings-play-data-and-superhot
+2026-10-25 0.1542895 112r-raid-controls-right-folded
+2026-10-25 0.1555108 112r-raid-controls-right-folded

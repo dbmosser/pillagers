@@ -6163,6 +6163,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.63',what:'the party window is the 90 percent card (his Q43, style guide Window 90 x 90), not a fitted 960 card: five percent insets all round, no shift',
+   run:function(){
+     if(typeof openParty!=='function'||typeof openModal!=='function') return 'SKIP: no party window';
+     var pm, cs, w, h, l, t, tw=window.innerWidth, th=window.innerHeight, r, q, res=null;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       openParty();
+       pm=document.getElementById('partymodal'); cs=getComputedStyle(pm,'::before');
+       w=parseFloat(cs.width); h=parseFloat(cs.height); l=parseFloat(cs.left); t=parseFloat(cs.top);
+       if(!(Math.abs(w+2*l-pm.offsetWidth)<=4&&Math.abs(h+2*t-pm.offsetHeight)<=4&&Math.abs(l-tw*0.05)<=4&&Math.abs(t-th*0.05)<=4)) return 'the party frame is '+Math.round(w)+' x '+Math.round(h)+' at '+Math.round(l)+','+Math.round(t)+' in a window '+pm.offsetWidth+' x '+pm.offsetHeight+', not the 90 percent card';
+       if(cs.transform&&cs.transform!=='none') return 'the party frame is shifted by '+cs.transform;
+       return null;
+     } finally {
+       try{ __topClear(); }catch(_e){}
+     } }},
   {v:'34.62',what:'cw-setrevert5 (job 113): the restore helper line rules in the shared block have no raw px font size',
    run:function(){
      var css=(document.getElementById('ui-shared')||{textContent:''}).textContent.replace(/\/\*[\s\S]*?\*\//g,''), rs=css.match(/[^{}]*rescode\) > \.msub\s*\{[^}]*\}/g)||[], i, bad=[];

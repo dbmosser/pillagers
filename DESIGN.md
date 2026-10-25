@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.63 - THE PARTY WINDOW IS THE 90 PERCENT CARD AGAIN
+
+Co-op hunt while he was away. His Q43 and the style guide: a window is a centred card taking nearly the whole screen, and party is a window. v34.22 gave party a fitted 960 by 440 card with a stronger rule that beat the 90 percent card. The fitted frame and side padding are removed; the X moves to the card corner.
+
+MEASURED. Check 34.63 passes, and fails on v34.62.
 ## v34.62 - RESTORE HELPER LINE ON TOKENS
 
 Co-op hunt while he was away. Job 113: check 29.33 caught raw 16px in the restore helper line rule. Same pixels, written with the label token.
