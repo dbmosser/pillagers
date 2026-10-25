@@ -32,3 +32,6 @@ Steps:
 Pictures: the extract, killed in action and abandoned cards, Wirt and the party window at 1080p, both windows.
 
 TASK DONE when the ten pass on the drafted build or are fixed in a shipped batch; TASK PARTIAL with the ones left and why.
+
+--- COORDINATOR 2026-10-24 21:25: step 1 is done for you. Each check was rerun alone on v34.53 (fresh tab of the corpus Chrome, as a full-run slice runs it).
+All ten fail alone (real): v29.95, v29.83, v29.53, v21.00, v9.94, v31.62, v20.00, v19.42, v32.22, v32.82.

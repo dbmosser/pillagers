@@ -37,3 +37,6 @@ v31.75 settings detail pane -> "detail pane is 200 tall against the list 793"; v
 v30.05 rebind callout -> "the detail pane still repeats the row value"; v29.33 shared look -> "NEW raw colour or font-size literal in:
 #root #settingsmodal.expmode #setlist"; v28.38 D-pad up settings -> "highlighting the jump chips moved the list from 2000 to 1984";
 v26.38 settings sections -> "ONE: Settings draws no go_minimap". Likely ships v34.35 to v34.38 and your v34.51 to v34.53.
+
+--- COORDINATOR 2026-10-24 21:25: step 1 is done for you. Each check was rerun alone on v34.53 (fresh tab of the corpus Chrome, as a full-run slice runs it).
+Fail alone (real): v33.56, v33.28, v31.75, v31.59, v30.05, v29.33, v28.38, v26.38. Pass alone: v33.33. A check that PASSES alone but failed in the full run is led astray by a check run before it (state left behind); it still blocks stable, so make it set up its own state (never loosen), after the real ones.

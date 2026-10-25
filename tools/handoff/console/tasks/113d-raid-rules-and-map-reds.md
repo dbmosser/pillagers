@@ -31,3 +31,14 @@ Steps:
 3. One batch per cause, through preflight.sh and shipq.sh as usual.
 
 TASK DONE when the seven pass on the drafted build or are fixed in a shipped batch; TASK PARTIAL with the ones left and why.
+
+--- COORDINATOR 2026-10-24 21:25: step 1 is done for you. Each check was rerun alone on v34.53 (fresh tab of the corpus Chrome, as a
+full-run slice runs it). All seven fail alone (real): v30.26, v22.12, v20.38, v15.80, v13.81, v10.81, v9.81.
+A lead to test first, not a finding: v34.49 and v34.50 put more walls on both maps (v9.81: 2268 and 558 against 2191 and 545), and the
+map build rolls per wall, so every roll after the build moved (memory dark-raiders-map-build-rolls-per-wall). v20.38 stages the Crier
+160 px from the host with markSeat 1 but never sets its facing; since v21.23 a Crier that SEES a player re-marks him every frame
+(dark_raiders.html about line 31896, `if(sees){ ... e.markSeat=... }`), so if its rolled facing now points at the host, marking the host
+is the right game behaviour and the check's staging is what broke (b: set the facing away from the host or put it out of sight; then
+show the control fails on v34.53 as staged before). Ask the same of v30.26 (a low roll), v13.81 (the crate's carbine), v15.80 (which
+body fired) and v22.12 (which contract rolled) before calling any of them a game bug. v13.81's -1 rounds is the one to be sure of: a
+gun a player can pick up with -1 rounds would be a real bug.

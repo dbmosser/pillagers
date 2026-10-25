@@ -32,3 +32,7 @@ Steps:
 Pictures: the pre-raid page, racks, the haul screen, rewards and the welcome pack at 1080p, both windows.
 
 TASK DONE when the ten pass on the drafted build or are fixed in a shipped batch; TASK PARTIAL with the ones left and why.
+
+--- COORDINATOR 2026-10-24 21:25: step 1 is done for you. Each check was rerun alone on v34.53 (fresh tab of the corpus Chrome, as a full-run slice runs it).
+Fail alone (real, start here): v32.45, v32.19, v31.57, v31.58, v30.07, v32.95, v28.13, v28.12.
+Pass alone: v32.51, v26.30. A check that PASSES alone but failed in the full run is led astray by a check run before it (state left behind); it still blocks stable, so make it set up its own state (never loosen), after the real ones.

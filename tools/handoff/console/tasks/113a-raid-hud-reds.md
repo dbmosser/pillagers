@@ -31,3 +31,7 @@ Steps:
 Pictures: the raid HUD in career and demo at 1080p and 4K, both windows.
 
 TASK DONE when the ten pass on the drafted build or are fixed in a shipped batch; TASK PARTIAL with the ones left and why.
+
+--- COORDINATOR 2026-10-24 21:25: step 1 is done for you. Each check was rerun alone on v34.53 (fresh tab of the corpus Chrome, as a full-run slice runs it).
+Fail alone (real, start here): v8.93, v9.14, v31.50, v31.03, v30.73, v27.36, v17.49.
+Pass alone: v31.32, v30.75, v18.01. A check that PASSES alone but failed in the full run is led astray by a check run before it (state left behind); it still blocks stable, so make it set up its own state (never loosen), after the real ones.
