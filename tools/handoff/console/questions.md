@@ -100,3 +100,4 @@ the raid shows an alert twice: the red banner and a row in the left feed ("the p
 
 - 10-25 11:50 (his photo note "player too big vs the bulwark"): I made the bulwark bigger (job 120a) and kept the player size. Does he also want the player smaller?
 - 10-25 15:15 coordinator: his "switch to 400k" read as the helpers' summary window (caps.txt CLI_COMPACT 1000000 to 400000). If he meant this chat's own context or something else, he says so and it changes.
+- 10-25 16:45 (coordinator): his g-98 "yes, an optional hardcore save" (one death wipes the stash). Job 177 reads it as the stash, the armoury guns and $ going back to a new save's values on death, keeping level, XP and unlocks. If he meant the stash only, he says so and the job narrows. Also: may a save backup (job 136, o-14) bring back a wiped hardcore stash? Built as yes for now.

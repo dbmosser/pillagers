@@ -1,0 +1,1763 @@
+{
+ "all": [
+  {
+   "id": "g-1",
+   "choice": "Yes, firing stops the sprint",
+   "verdict": "change",
+   "today": "Aiming cuts a sprint: updatePlayer 28930 `if(p.ads) sprint=false` (his 10-20 order, done job 81a). Firing with the mouse does not. The trigger block (29181-29232) and the player block of fireWeapon (24774-24790) never touch sprint, so on keys and mouse you keep the 1.62x sprint (28950) while shooting. Missed by the first check: on a PAD it already happens. RT held sets the settle aim (PAD.adsT=0.35 at 19906, G.player.ads=true at 19912), kid firing does the same (netAutoFire 61453), so p.ads cuts the sprint at 28930 and it comes back 0.35 s after the trigger lets go. The work is for keys and mouse only.",
+   "change": "Firing a gun round ends the sprint on every input, the same way the pad settle already does. In the fromPlayer block of fireWeapon (24774; only guns reach it, because a crowbar or bare-hands swing returns at 24738), set G.player.shotSprT=FIRE_SPRINT_T, a new const of 0.35 s to match the pad settle beat. Count it down with the player timers (28706-28716). In updatePlayer, next to 28930, add `if(p.shotSprT>0) sprint=false;`. That is before G.sprinting is set (28931) and before the scent trail and the stamina drain read sprint. In the SPRINT TOGGLE branch, add p.shotSprT>0 to the test that turns G.sprintOn off (28899), as aim does. Add !(p.shotSprT>0) to the crouch-clearing test at 28921 so Shift+C while firing keeps the crouch (the v15.64 rule). With Shift still held, the sprint comes back by itself 0.35 s after the last round, as it does when aim lets go. No move slow and no spread change: those belong to aim. Simulation only; the HUD and camera already read G.sprinting. No text, no switch.",
+   "party": true,
+   "size": "S",
+   "risk": "Run-and-gun on keys and mouse gets slower, and it now matches the pad. This reverses part of his 10-12 'movement and stamina sprint stay as they are'; the newest answer wins (process answer 30). Watch that a quick tap while fleeing does not feel like the sprint key broke.",
+   "check": "Keys and mouse only, no pad. Fixture raid, loaded pistol, stamina 100: hold ShiftLeft+KeyW until G.sprinting is true; set mouse.down for one frame, then release; step 2 frames: G.sprinting false and p.stam rising. Step 0.5 s with Shift held and the trigger up: G.sprinting true again. Control: a V crowbar swing while sprinting leaves G.sprinting true. Fails today: G.sprinting stays true through the shot on keys and mouse.",
+   "clash": "",
+   "related": "81a (done, aim breaks sprint); g-2 and g-15 (same sprint and trigger lines); g-68 (pad defaults to sprint toggle, same G.sprintOn path)"
+  },
+  {
+   "id": "g-2",
+   "choice": "Half speed",
+   "verdict": "change",
+   "today": "Healing costs no movement. The speed line (28950-28956) multiplies only rig, crouch, sprint, stim, wading and aim, then applies the floor (SPEED_FLOOR 46, 28969). A Bandage or Medkit is a 1.5 s wind-up: startPrep 25260, CFG.healPrep, p.prep, the APPLYING use bar. Bandaging a teammate uses the same p.prep with PR.aid (netAidStart 60782). After the wind-up comes a heal over time (applyHeal 25094, hot x healSlow 1.6: about 4.2 s for a Bandage, 9.6 s for a Medkit). You walk and sprint at full speed through both.",
+   "change": "While a medical wind-up runs (p.prep is set: your own Bandage or Medkit, or one you are putting on a teammate), move at half speed with no sprint. In updatePlayer, next to 28930, add `if(p.prep) sprint=false;`. After 28956, add `if(p.prep) spd*=HEAL_MOVE;` with a new const of 0.5 (the floor at 28969 still applies after it). Add !p.prep to the crouch-clearing test at 28921. Add p.prep to the SPRINT TOGGLE off test at 28899, as aim does. The plate wind-up (p.prepA) and the heal over time after the wind-up lands stay at full speed. The question is about bandaging and using the medkit, which is the wind-up the use bar shows. Simulation only; no text, no switch.",
+   "party": true,
+   "size": "S",
+   "risk": "Healing in the open gets riskier. Watch whether a 1.5 s half-speed wind-up feels sticky, and whether he expected the slow to last through the heal over time too (4.2 s Bandage, 9.6 s Medkit, not the 14 s the first check said). That would be one more line.",
+   "check": "Fixture raid, hp 50, a bandage in the bag. Control: hold KeyW only for 0.5 s and note the distance D. Then hold KeyW and ShiftLeft, call useMedical() and step 0.5 s: distance between 0.45 D and 0.55 D, and G.sprinting false. Second control: slotting a plate (p.prepA) while walking covers about D. Fails today: with Shift held the distance is about 1.62 D and G.sprinting stays true.",
+   "clash": "",
+   "related": "g-1 (same sprint lines); g-5 (same wind-up); g-68 (toggle path)"
+  },
+  {
+   "id": "g-3",
+   "choice": "A shove only",
+   "verdict": "change",
+   "today": "Every blast that reaches the player only damages him, and the damage is followed by shake, flash, rumble and the drawn 2.5 px hit recoil (p.hitDX 23641, his a12 B). The blast sites: explodeFrag 21961 (80*(1-d/R)+18, R 190; frags, pillager charges, and rockets through rocketBlast 25479), the explosive barrel 21499, barrel kinds 21583 (the cryo blast deals 0 and skips the call), the Howler shell 22083, orbital debris 64928 and debrisImpactPeer 65971, and the volatile elite 25835 (netHitPlayer). Peers are reached through netAreaHitPeers at 21962 and 22084. No blast moves the pillager: no push, knockdown or stagger. The only push in the game is the Meridian Lance kick (lanceKick 30948: p.kickVx/kickVy/kickT, applied at 28714 through collide). Lightning (11509) is a bolt, not an explosion, and stays out.",
+   "change": "Blasts shove, and nothing else changes. Add the consts BLAST_SHOVE_V=300 and BLAST_SHOVE_T=0.14 (at most about 42 units at the centre) and a global BLAST_AT (null, or {x,y,R}). Each blast site sets BLAST_AT={x,y,R} in a try/finally around its damagePlayer call: 21961, 21499, 21583, 22083, 64928, 65971. Inside damagePlayer, after the hit lands on a standing player (after p.hitDX at 23641, p.hp>0, !G.sim), when BLAST_AT is set and d<R: set p.kickVx/kickVy to the unit vector from the centre times BLAST_SHOVE_V*(1-d/R), and set p.kickT=BLAST_SHOVE_T. That uses the Lance kick path at 28714, which runs collide, so he is never pushed into a wall. Below 1 unit, push along p.hitDX or skip. A hit soaked by roll i-frames or a shield returns earlier and does not shove. A hit that downs him does not shove either. Player 2: netHitPlayer gets an optional bl (radius). For this window's own player it sets BLAST_AT around its damagePlayer. For a peer it adds m.bl=R to the hit word (the centre already rides in m.x,m.y). netAreaHitPeers passes opt.bl through (21962, 22084), and the volatile elite at 25835 passes R. netHitTake (62472) sets BLAST_AT from m.bl,m.x,m.y around its damagePlayer (62480). g-6 reads the same BLAST_AT to skip blasts. No knockdown, no stagger, no aim change, no text.",
+   "party": true,
+   "size": "M",
+   "risk": "Watch whether being shoved by your own frag or rocket up close feels fair, and how a shove next to deep water or a doorway reads. Check that both windows shove.",
+   "check": "Fixture raid, hp 100, player still, mouse fixed: explodeFrag({x:p.x+60,y:p.y}) with a clear line; step 0.2 s: p.x moved at least 15 units left (about 29 expected) and p.face unchanged. Controls: the same blast 400 away, or behind a wall, moves him 0. Fails today: p.x never changes.",
+   "clash": "",
+   "related": "g-6 (shares BLAST_AT); g-5; job 132 (drawn hit jolt, separate); 120i (shake half)"
+  },
+  {
+   "id": "g-4",
+   "choice": "Nothing, keep running",
+   "verdict": "already",
+   "today": "A hit never touches the sprint. damagePlayer (23509-23700) sets rumble, shake, flash, the hit log, hurtHeat and the drawn recoil, but never p.stam, G.sprintOn, G.sprinting or the speed. The speed line (28950-28956) has no hurt term, and no slow-on-hit field exists (no p.slowT or hurtSlow anywhere).",
+   "change": "",
+   "party": true,
+   "size": "S",
+   "risk": "None. The g-3 blast shove moves a sprinting body but does not end the sprint; g-1 ends it on firing, not on being hit.",
+   "check": "Guard only, passes today: sprint with Shift+W, damagePlayer(30,'raider','x',p.x+200,p.y); next frame G.sprinting is still true and the step length is unchanged.",
+   "clash": "",
+   "related": "g-3; g-1"
+  },
+  {
+   "id": "g-5",
+   "choice": "Only a big hit stops it",
+   "verdict": "change",
+   "today": "Only going down stops a heal. damagePlayer clears p.prep and p.prepA only on the down (23684) and the heal queue at 23708; the respawn paths at 64015 and 64143 also clear them. Any hit that leaves you standing lets a Bandage or Medkit wind-up (p.prep, startPrep 25260) run to the end.",
+   "change": "A big hit stops a medical wind-up. In damagePlayer, capture the incoming amount on entry as amt0, before the kid cut (23511), the demo cut ARCADE_DMG (23512) and the easy cut (23603), so one blow counts the same in DEMO and CAREER and for player 2. After the hit lands on a standing player (after p.hitDX at 23641, p.hp>0): if bigHit(amt0) (amt0>=BIG_HIT, a new const of 30) and p.prep is set (your own Bandage or Medkit, or one you are putting on a teammate), set p.prep=null. The item is lost, as when going down (v3.54: the item is spent at the press); its foley stops by itself. When !G.sim, say('heal interrupted','warn') once. The plate wind-up (p.prepA) and a heal already flowing (healQ) are untouched. Hits under 30 change nothing. A hit soaked by roll i-frames or a shield returns earlier and never interrupts. bigHit is one helper that g-6 also reads.",
+   "party": true,
+   "size": "S",
+   "risk": "Big hits are wardens, the Overseer beam, magnum and Longshot bots, Listener bites, elite rifles and close blasts. Watch whether losing the item feels too harsh; a refund would be the other way to do it.",
+   "check": "Fixture raid, hp 50, no armour: useMedical() with a bandage, then damagePlayer(40,'raider','x',p.x+100,p.y): p.prep is null and no bandage heal arrives in 2 s. Control: damagePlayer(10) during the wind-up leaves p.prep running, and the bandage lands. Fails today: p.prep survives the 40 hit.",
+   "clash": "",
+   "related": "g-2 (same wind-up); g-6 (same bigHit); 120e (downed damage cuts, same damagePlayer entry)"
+  },
+  {
+   "id": "g-6",
+   "choice": "A small nudge on big hits",
+   "verdict": "change",
+   "today": "Hits shake the screen, flash, rumble and draw a small body recoil (damagePlayer 23509-23700), but the aim never moves. p.face is set from the mouse every frame (updatePlayer 28704) and nothing adds to it; fireWeapon aims along p.face (29206).",
+   "change": "A big hit that is not a blast nudges the aim for a quarter second. In damagePlayer, after the hit lands on a standing player (after 23641, p.hp>0, !G.sim), when bigHit(amt0) (the g-5 helper, amt0>=30) and BLAST_AT is not set (the g-3 flag; he chose a shove only for explosions): set p.aimNudge=side*(0.06+0.03*clamp((amt0-30)/60,0,1)) radians and p.aimNudgeT=0.25. side is +1 or -1, away from the source (the sign of the angle between p.face and sx,sy; +1 when dead ahead or with no source). No random draw. A new big hit replaces the nudge and never stacks. In updatePlayer, right after 28704, when p.aimNudgeT>0 and the item wheel is shut: count it down and add p.aimNudge*(p.aimNudgeT/0.25) to p.face, so rounds fired in that window leave off line. The reticle stays at the mouse. The dotted aim line (aimMarks 36880, drawn from p.face, always on per g-79) shows the nudge. Player 2 gets it in his own window through netHitTake (62480), which sets BLAST_AT for blast words, so his blasts do not nudge either. No text, no switch.",
+   "party": true,
+   "size": "M",
+   "risk": "Felt most in long duels. Watch that it never reads as input lag or a bad mouse, and that the shake jobs (120i, 137) do not hide or remove it.",
+   "check": "Fixture raid, hp 100, mouse fixed: damagePlayer(45,'raider','x',p.x,p.y-200); next frame |angDiff(p.face, mouse angle)| > 0.04, and back under 0.005 after 0.3 s; a round fired inside that window leaves on the nudged angle. Controls: damagePlayer(15) changes nothing, and a 72 point frag blast (explodeFrag 60 away) shoves but leaves p.face on the mouse. Fails today: p.face always equals the mouse angle.",
+   "clash": "",
+   "related": "g-3 (BLAST_AT); g-5 (bigHit); g-79 (aim line always on); 120i; 137"
+  },
+  {
+   "id": "g-7",
+   "choice": "No, reload on the run",
+   "verdict": "already",
+   "today": "tickReload(dt) runs every standing frame (29064) and in the roll branch (28831). Neither it (25480-25500) nor the sprint lines read the sprint, so a reload finishes on the run. The only things that cut a reload are a swap (26466, 26657, 26813, 26925) and going down (23721). The comment at 25495-25496 lists a sprint among reload cuts, but no code does it.",
+   "change": "",
+   "party": true,
+   "size": "S",
+   "risk": "None.",
+   "check": "Guard only, passes today: start a reload with KeyR, then sprint with Shift+W: p.reloading reaches 0 and the magazine fills.",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-8",
+   "choice": "No, crawl only",
+   "verdict": "already",
+   "today": "The downed branch of updatePlayer (28727-28791) crawls at 30 a second (28752), self-revives on F (28774) and can extract, then returns (28791) before the trigger block (29181). Kid firing also refuses while downed (netAutoFire 61437), so a downed pillager never fires.",
+   "change": "",
+   "party": true,
+   "size": "S",
+   "risk": "None.",
+   "check": "Guard only, passes today: downed with mouse.down held for 1 s: no new player bullets in G.bullets.",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-9",
+   "choice": "Quick swings only",
+   "verdict": "already",
+   "today": "One quick swing per press. V keydown with !repeat (18170) or the right stick click edge (19909) calls meleeStrike (24559) on the bare-hands 420 ms clock. A left click with the crowbar or fists in hand swings once per click (29183-29188). crowbarDmgOn (24426) sets the blow per body kind; there is no hold, charge or combo. Holding V on a downed pillager is the finisher (finisherTick, FIN_T 0.55, 24460), not a heavy swing.",
+   "change": "",
+   "party": true,
+   "size": "S",
+   "risk": "None.",
+   "check": "Guard only, passes today: V held 1 s with no downed pillager in reach: exactly one swing (G.tel.melee +1).",
+   "clash": "",
+   "related": "g-10"
+  },
+  {
+   "id": "g-10",
+   "choice": "Only the SP",
+   "verdict": "already",
+   "today": "finishHim (24472-24481) kills the downed pillager bot and adds FIN_PTS 100 SP through scoreBonus (the FINISHER plate); the kill then pays as any kill does. Nothing in it gives health, armour or ammo.",
+   "change": "",
+   "party": true,
+   "size": "S",
+   "risk": "None.",
+   "check": "Guard only, passes today: finish a downed bot: p.hp, p.armor, p.ammo and p.reserve unchanged; score up by 100 plus the normal kill.",
+   "clash": "",
+   "related": "g-9"
+  },
+  {
+   "id": "g-11",
+   "choice": "Yes, a glint",
+   "verdict": "change",
+   "today": "Pillager bots fire with no warning. In the raider chase block (32324-32348), the shot leaves once he has held you raiderReact 0.34 s (or on return fire) and his cooldown is up; raiderThrow is tried first (32333). An elite gets a Longshot 11 times in 100 (blessElite pool 15107: rifle 26, lmg 24, magnum 20, carbine 14, sniper 11, lance 5) and hits for 170 x eliteDmg 1.6 = 272 (fireWeapon 24744). Half-second tells exist only for machines: the windup ring and 'charge' sound (drawWindupGlow 38171; sentry 0.4 s, warden 0.7 s at 31859) and the aim lanes (telegraphLane 38146, xfTell).",
+   "change": "An elite pillager bot holding a Longshot (e.elite, gunBase(e.wep.id)==='sniper', not e.merc, not friendlyPC) shows a 0.5 s glint before each shot at a player. In the chase fire block, in the else branch after raiderThrow (32334), when he would fire: if no glint is running, set e.glint=GLINT_T (a new const of 0.5) and do not fire. Count it down each frame. At 0, fire as today (the same rnd draws in the same order) if the line is still clear (sees, or the return-fire test) and in range, otherwise drop it. Then set the cooldown as today minus GLINT_T (cd is at least 2.72 s for the Longshot), so his rate of fire is unchanged, the way the sentry windup is. Drawing only reads e.glint: a white four-point star with a red core at his muzzle that grows over 0.5 s and flashes in the last 0.05 s. It is drawn above the fog whenever the line from him to the local player is clear, even if his body is out of your sight, and plays the machines' 'charge' sfx at him when it starts. Player 2: the flags word is full (all 32 bits are used, netEntFlags 62222-62232; the first check's 'free bit' is wrong). Use the row's second word instead (netEntRow 62236, index 8, which holds burn 1 and get-up 2): add 4 for a running glint, and read it in netEntFlagsApply through r[8] (62350). Not behind the aim lanes switch; no new switch, no text.",
+   "party": true,
+   "size": "M",
+   "risk": "Watch that the glint reads at range in the smooth look and at night, and that showing a hidden Longshot bot's spot does not feel like a wallhack. Longshot bots will now lose more duels (dodging is the intent). It adds to his 2.59 a list by his own newer pick.",
+   "check": "Fixture: an elite raider with WEAPONS.sniper in chase, sees the player at 400, acqT 1, cd 0, no throwables: step one frame: no new bullet from him and e.glint about 0.5; step 0.5 s: exactly one bullet from him. Control: a non-elite Auto Rifle raider in the same spot fires on the first frame. Fails today: the elite fires on the first frame.",
+   "clash": "",
+   "related": "his 2.59 a (heavy tells; idea 14 in notes/gameplay-next-1025.md); telegraphLane / xfTell aim lanes"
+  },
+  {
+   "id": "g-12",
+   "choice": "Yes, shell by shell",
+   "verdict": "change",
+   "today": "Every gun reloads in one go. tickReload (25480-25500) adds all the rounds when the clock ends (25491), and the trigger is locked while p.reloading>0 (29181). The Riot Scattergun is mag 7, reload 2400 ms (4269). Its sound plan (reloadPlan 25327-25330) already plays one shellIn per shell between 10 and 85 percent of the reload. The bot sim reloads on its own in updateBot (29823).",
+   "change": "Shotguns (gunBase 'shotgun': the Riot Scattergun, its rarity twins and forged copies) load shell by shell and keep today's total reload time, so g-19 holds. In tickReload, for a shotgun: on the first frame of a reload (p.shTot unset, or p.reloading>p.shTot+1, the same start test activeReloadTick uses at 25437), store p.shTot=p.reloading, p.shN=rlRounds(p) and p.shIn=0. Each frame, f=1-p.reloading/p.shTot. Shell k is due where its shellIn sound plays: with n>1 at 0.1+0.75*k/(n-1), with n==1 at 0.45. While p.shIn<p.shN, the next shell is due and rlRounds(p)>0: p.ammo++, p.reserve--, p.shIn++. At the end, the existing line (25491) loads what is left, since rlRounds counts only the empty room. Clear p.shTot when the reload ends or is cut. Firing a loaded shell mid-reload is his g-75 rule ('fire stops it', for every gun). Build it once with g-75 as one trigger change: in the test at 29181, allow p.reloading>0 when p.ammo>0 && !p.fired (a fresh pull, so a trigger held from before does not cut it), and on that pull set p.reloading=0, p.rlTot=0, p.rlArm=0 and call rlfxStop() before firing. A swap, roll or going down keeps the shells already in, because they are already in p.ammo. An active reload hit still finishes the rest at once. The bot sim reload stays one go. No text, no switch.",
+   "party": true,
+   "size": "M",
+   "risk": "Watch the end pump sound when a reload is cut, and whether a one-shell top-up still taking 2.4 s feels slow (per-shell timing is the next dial).",
+   "check": "Fixture: shotgun, ammo 0, reserve 50, start a reload with KeyR; step to 50 percent (1.2 s): p.ammo is 4 and p.reserve fell by 4. Release, then press the trigger: 6 new pellets in G.bullets, p.reloading 0, p.ammo 3. Control: an Auto Rifle at 50 percent of its reload still has ammo 0. Fails today: the shotgun's ammo stays 0 until 2.4 s and the trigger does nothing during the reload.",
+   "clash": "",
+   "related": "g-75 (fire stops a reload: the shell cut is that rule, one trigger change); g-15 (held trigger); g-19 (same total time)"
+  },
+  {
+   "id": "g-13",
+   "choice": "No, the Overseer ignores decoys",
+   "verdict": "change",
+   "today": "A decoy pings 420 every 0.8 s for 6 s (updateThrowables 22164, src 'env'). ping() (23224) wakes every body in range except listeners, the Peddler, the Stray and neutrals (23260-23261), and sets tx/ty to the decoy for any body in patrol or loot (23264). The Overseer (kind warden, boss 1, spawned in state patrol at 15434) is not skipped. While unaware, the warden branch resets it to patrol every frame (31823) and walks it to tx/ty (31871); the 1100 leash at 31826 applies only once it has seen you. So every decoy ping in reach pulls the Overseer today.",
+   "change": "The Overseer ignores decoys. Mark the decoy ping with a global flag set around the ping call at 22164 (for example PING_DECOY=1 in a try/finally), and in the body loop of ping() skip e.boss while it is set. Every other body still hears decoys, and the Overseer still hears shots, steps and blasts. A decoy player 2 throws is already put in the host world (activateThrow 21094), so the same tick covers it.",
+   "party": true,
+   "size": "S",
+   "risk": "Little. Check that its summoned crawlers still fall for a decoy.",
+   "check": "Fixture: the Overseer unaware at its lair (state patrol, cd 9), a plain warden 100 beside it (cd 9), the player far off, a decoy pushed into G.decoys 200 from both with acc 0.7; tick 1 s: the Overseer tx/ty unchanged, the warden tx/ty at the decoy. Fails today: the Overseer tx/ty jump to the decoy on the first ping.",
+   "clash": "",
+   "related": "g-24 (who the Overseer chases)"
+  },
+  {
+   "id": "g-14",
+   "choice": "Yes, one bounce",
+   "verdict": "change",
+   "today": "A throw stops at the first wall. throwAim (20952-20957) rays the map segments (rayHitG) and cuts the reach to max(wt*0.6, wt-12) short of the face. throwFrom (20984) pushes one straight leg into G.throws (21003), updateThrowables slides it (22158), it is drawn at 41409-41416, and the marker draws one arc (drawThrowMarker 20966). GRENADE HIT COVER or THROW BLOCKED is said when it stops inside 190 (frag) or 110 (21012). THROWKEYS are smoke, decoy, frag and trip (4828). Pillager charges do not fly (raiderThrow 28063 places them).",
+   "change": "A thrown frag, smoke or decoy bounces once. Add rayHitSegG, a copy of rayHitG and rayHit (14042, 13972) that also returns the struck segment. In throwAim, when the ray hits at wt before the aimed reach: the face normal is the segment's perpendicular, turned to face the thrower (dot with the ray below 0). Reflect the direction, start 6 units off the face, and fly on for half the reach left ((rngT-wt)*0.5). That second leg stops at the next wall as today (the max(wt2*0.6, wt2-12) rule), with no second bounce. With under 8 units left, stop as today. throwAim returns the bounce point (bx,by) with the landing point. throwFrom stores bx,by on the G.throws entry, with dur=max(0.25, total path/430). updateThrowables (22158) moves along both legs by length. The drawn throw (41409-41416) and the marker (drawThrowMarker) show both legs, the second as a low hop. GRENADE HIT COVER and THROW BLOCKED fire when the final landing point is within 190 (frag) or 110 of the thrower. The Tripwire Mine (kind trip) and pillager charges are unchanged.",
+   "party": true,
+   "size": "M",
+   "risk": "Bank throws can now reach round corners into rooms you cannot see, which the wall stop was added to prevent. Watch whether that feels like cheating, and how often frags come back at the thrower.",
+   "check": "Fixture: player 80 from a wall, mouse 250 out at 45 degrees into it: throwAim returns a bounce point on the face and a reflected landing point on the thrower's side of the face; throw a frag and step to the landing: the G.frags entry is at that point. Control: a throw with no wall lands at the mouse. Fails today: it lands 12 short of the wall (rngT 68) with no bounce point.",
+   "clash": "",
+   "related": "g-28 (bots run from grenades: they should read the final landing point)"
+  },
+  {
+   "id": "g-15",
+   "choice": "Yes, hold to repeat",
+   "verdict": "change",
+   "today": "Single-shot guns fire once per pull. The gun test at 29191 is p.wep.auto||!p.fired, and p.fired clears only on release (29241). The Scav Pistol, Magnum, Longshot, Burst Carbine, Riot Scattergun, Meridian Lance and Rocket Launcher are auto:false (4256-4283). Kid firing for player 2 already pulses the trigger for single-shot guns, letting go one frame after each round so the next comes at the gun rate (netAutoFire 61452).",
+   "change": "Every gun with a magazine repeats at its own rate while the trigger is held. Drop the !p.fired gate at 29191: that branch is reached only for guns with a magazine (mag 0 swings take the branch at 29183, which keeps its own one-swing-per-click test). A held trigger then fires every gun on its rof clock (now-p.lastShot>rof*spinMul*pwrRof at 29181) with every other guard unchanged (trigYield, drawT, hand, cooking, reload). p.fired is still set on each shot, so the dry click (29224) and throwables and items (one use per press, 29130-29170) behave as now. The Burst Carbine repeats bursts on its 360 ms clock. Kid firing needs no change.",
+   "party": true,
+   "size": "S",
+   "risk": "The Lance (rof 60) empties its 3 rounds in about 0.13 s when held, and the Rocket Launcher fires both rockets 0.7 s apart; watch both. Older gate checks or probes that hold the trigger on a single-shot gun and expect one round (the memory note says probes pulse semi-autos) may go red and need a pulse.",
+   "check": "Fixture: Scav Pistol, ammo 12, trigger held for 1.0 s of frames: at least 3 rounds fired (rof 290). Controls: a held frag cell cooks one grenade; held bare hands swing once. Fails today: one round.",
+   "clash": "",
+   "related": "g-12; g-75; g-1"
+  },
+  {
+   "id": "g-16",
+   "choice": "No, run from it",
+   "verdict": "already",
+   "today": "No throw-back exists. Pillager charges are placed at the target with the 1.1 s fuse (raiderThrow 28063, pushed at 28107, FRAG_FUSE 20881). G.frags is pushed only at 21102 (yours), 28107 (pillager) and 60690 (a teammate's copy), and nothing lets the player pick up or return one (no throw-back code anywhere).",
+   "change": "",
+   "party": true,
+   "size": "S",
+   "risk": "None.",
+   "check": "Guard only, passes today: E or the trigger next to a live pillager charge leaves it in G.frags where it lies, and it goes off at its fuse.",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-17",
+   "choice": "Yes, endless but weak",
+   "verdict": "change",
+   "today": "The Scav Pistol (FREEKIT_GUN 'pistol' 70712; 23 damage, mag 12, reload 1400, 4256) is the freebie kit gun (17404-17412: its own two magazines, wepIssued and wepFromArmory false, G.freeKit set at 17376), or the gun you get with none (16260, G.spawnGun). It draws from the one shared reserve: rlHave needs p.reserve>0 (25477), rlRounds is capped by it (25476), and tickReload subtracts it (25491). It is spawn-only (veto) and never loot. DEMO deals its own guns (arcadeKitApply 63461) and never sets freeKit or spawnGun.",
+   "change": "The spawn Scav Pistol never runs dry. Add spawnPistol(p): p.wep&&p.wep.id===FREEKIT_GUN&&!p.wepFromArmory&&!p.wepIssued&&(G.freeKit||G.spawnGun)&&!G.arcade&&!G.sim. For it: rlHave (25477) is true; rlRounds (25476) is mag-ammo whatever the reserve; tickReload (25491) takes nothing from p.reserve, so the shared pool stays for his other guns; rsvShow (25478) returns the infinity sign (written as the escape u+221E in the mk script, no raw non-ASCII), so the gun card (42498, 47817, 48020) reads 12 / infinity. Kid firing (netAutoFire 61437) tests rlHave(p) instead of p.reserve>0, so player 2's empty spawn pistol keeps firing. autoEmptyGun (28674) and the NO AMMO reticle (43350) already read rlHave and follow. The magazine still empties and reloads in 1400 ms, and damage stays 23. A Scav Pistol banked from an extraction and equipped from the armoury (wepFromArmory true) uses ammo as now. The bot sim keeps its starter.",
+   "party": false,
+   "size": "S",
+   "risk": "Freebie runs can plink forever; watch whether the kit becomes too safe. Career only.",
+   "check": "Fixture: P.freeKit=1, start a CAREER raid, set p.reserve=0 and p.ammo=0, hold the trigger: a reload starts and ends with p.ammo 12 and p.reserve still 0. Control: an armoury pistol (wepFromArmory true) with reserve 0 does not reload. Fails today: rlHave is false at reserve 0, so nothing reloads.",
+   "clash": "",
+   "related": "veto: the scav pistol is spawn-only (10-12), untouched"
+  },
+  {
+   "id": "g-18",
+   "choice": "Yes, the impact makes noise",
+   "verdict": "change",
+   "today": "Machines hear a shot only where it is fired: fireWeapon pings the gun noise at the shooter (24760; pistol 330). A round striking a wall (updateBullets wall branch 33431-33486) damages it (33437), sparks, marks it, and plays the clank or the ricochet tone (ricoPing 33070 is sound only), but makes no ping. Nothing hears the impact. A rocket ends in rocketBlast, and explodeFrag pings 560.",
+   "change": "A player round that strikes a wall makes a small noise there. In the wall branch, for b.player and not b.rkt, and not when matOf(_struck) is glass, call impactNoise(b.x,b.y) in both the punch-through and the stop or ricochet branches. impactNoise skips within 220 of where the round was fired (b.sx,b.sy), because the shot itself covers that. It fires at most once per 0.2 s per window (G.impNzT). It calls ping(x,y,IMPACT_NOISE*CFG.noiseMult*wx().noise,false,false,'player','move',null,1), where IMPACT_NOISE is a new const of 200 and pre is set so the rig rattle does not apply. src 'player' means no ring is drawn, and on player 2's window it goes to the host (NET.nzQ, 23240). No text.",
+   "party": true,
+   "size": "S",
+   "risk": "Shooting a far wall becomes a way to pull machines (intended), and stray fire wakes more of the map. Watch stealth raids and whether the demo gets busier.",
+   "check": "Fixture: a patrol sentry 120 from a concrete wall that is 600 from the player, outside the pistol's 330 ping and not seeing the player; fire one pistol round into that wall; after impact the sentry is in investigate with tx/ty within 30 of the impact. Control: a round flying to the end of its range in open ground leaves it on patrol. Fails today: the sentry stays on patrol.",
+   "clash": "",
+   "related": "131 (gun and impact sound caps, sound only)"
+  },
+  {
+   "id": "g-19",
+   "choice": "No, the same time, as now",
+   "verdict": "already",
+   "today": "Reload time is p.wep.reload whatever is left. The R key (29066) and the held trigger on an empty gun (29071) both set p.wep.reload*buzzSlow (1 unless drunk); the dry pull (29226) sets p.wep.reload. tickReload keeps the rounds left and adds the rest (25491). The empty or part-full state (RLFX.dry, reloadFoley 25372) changes only which sounds play.",
+   "change": "",
+   "party": true,
+   "size": "S",
+   "risk": "None. The g-12 spec keeps the shotgun at the same total time to match.",
+   "check": "Guard only, passes today: an empty and a half-full Auto Rifle reload both start at p.reloading=2050.",
+   "clash": "",
+   "related": "g-12"
+  },
+  {
+   "id": "g-20",
+   "choice": "A red streak at your feet",
+   "verdict": "change",
+   "today": "Confirmed. A sentry or warden (the Overseer too) in its windup paints a red aim lane on the ground (telegraphLane 38146, drawn at 40071 to 40085), but the draw loop skips any machine with !e.seen (40073). An unseen one only plays sfx('charge') at windup start: warden 31859, generic machine branch 32400 (sentry and bulwark), Overseer sweep charge 25780. telegraphLane returns null for any kind but sentry and warden (38150), so a bulwark gets no lane even when seen. xf('xfTell') switches telegraphs off (38148). e.windup reaches player 2 through flag 512 (62223, rebuilt at 62313), and e.seen is worked out per window in the render (39898), so both windows can draw this.",
+   "change": "Add unseenTell(e,p) next to telegraphLane (~38146), render layer only. It returns {x1,y1,x2,y2,f} or null. Null unless all hold: xf('xfTell'); e.hp>0; !e.seen; e.windup is live; e.kind is sentry (tot 0.4), bulwark (tot 0.4) or warden including the Overseer (tot 0.7); p is standing; dist(e,p)<e.rng*1.2; and !(NET.on&&netTargetFor(e)!==p), the same target test telegraphLane uses at 38158. f=clamp(1-e.windup/tot,0,1). The streak starts 14 units from the player's centre toward the machine and runs 64 units further toward it. Draw it in the ground pass right after the aim lane loop (after 40085): rgba(255,36,28), alpha 0.3+0.6*f, width 2+3*f, tapering to a point at the far end. Nothing drawn at the machine, no sim change, no text, no new switch (xfTell owns telegraphs).",
+   "party": true,
+   "size": "S",
+   "risk": "He may read the streak as his own aim line. Watch that he notices it mid-fight and that it never shows for a machine that is not shooting at him.",
+   "check": "Staged raid: a warden 300 from the player, e.seen=false, e.windup=0.35, facing him. unseenTell(warden,G.player) is non-null and points at the warden, and one ground pass strokes within 80 px of the player's screen point (spy wc.stroke). Fails today: unseenTell does not exist and the only windup ground draw (40073) skips !e.seen.",
+   "clash": "",
+   "related": "ai20 telegraph lane (shipped); xfTell switch; g-29 (bulwark big windup lane)"
+  },
+  {
+   "id": "g-21",
+   "choice": "Run, so you chase it",
+   "verdict": "change",
+   "today": "Confirmed. goldMake (65631) only gilds the body: GOLD.hp 3x health, GOLD.big 1.1x size (65618). It keeps its kind's AI. Golden kinds are crawler, sentry, raider, bulwark, howler, listener (never warden or the Overseer). Machines never flee (comment at 32010). A golden pillager bot under 30 percent health runs for the extract ring like any bot (32026 to 32035), which is leaving, not a chase. Nothing golden reacts to being hurt; a hit only forces state 'chase' as on any body.",
+   "change": "Golden bolt, host only (skip when flowPeer(), as goldTick does at 65661). Early in the updateEnts loop (after the hp<=0 block, before the kind branches), for e.golden && e.hp>0 && !e.downed: if e.gHp!==undefined && e.hp<e.gHp && !(e.gRunT>0) && !(e.gRunCd>0): set e.gRunT=GOLD.runT (3.5 s) and pick a flee point 520 from the nearest player (netNearDist / netPlayersList) along the away bearing; try bearings away, away+-0.6, away+-1.2 rad and take the first where spotFree(G.map,x,y,e.r+4) and navReachable(G.map,x,y) hold, else the point 40 short of the first wall on the away line (rayHitG). Do NOT use freeSpot (it picks a random spot anywhere and draws rnd). While gRunT>0: navSeek to it at GOLD.runSpd 1.35x e.spd, face the way it runs, no firing or biting, collide, then continue (skip the rest of its turn, as the ring dodge at 32064 does). When gRunT ends: e.gRunCd=GOLD.runCd (5 s), state 'chase' on the nearest player, alert 2.6. Count gRunCd down each frame. Store e.gHp=e.hp at the end of the frame. A golden pillager bot skips the 30 percent run at 32026 (add !e.golden) and drops no smoke. No rnd, no text.",
+   "party": true,
+   "size": "M",
+   "risk": "A fleeing golden can lead him into other machines or a dead end. Watch that the chase is fun and not a long walk; a golden howler (40 x 1.35) is barely a chase, a golden crawler (120 x 1.35 = 162) must still be catchable at a 256 sprint.",
+   "check": "Stage a golden crawler 200 from a still player in chase and take 20 percent of its health. After 1 s e.gRunT>0 and it is at least 100 farther from the player than at the hit. Fails today: the chase branch keeps closing, so the distance shrinks.",
+   "clash": "",
+   "related": "g-22; g-23 (golden pillager uses the bolt, not the brave charge)"
+  },
+  {
+   "id": "g-22",
+   "choice": "No, it stays all raid",
+   "verdict": "change",
+   "today": "Confirmed partly different. A golden machine stays: goldTick (65659) never removes it. A golden pillager bot can leave: under 30 percent (32026) or with a full haul or no loot goal left (32658) it goes to 'extract' and is spliced out at the ring (32905); those are the only two 'extract' entries in the file. goldTick then treats the missing body as a death and drops the hoard at the ring (65669). arcadeCullTick (66254) removes an arcWave body that is not chasing and is 2200 from every player for 60 s (ARCADE_CULL 66244) and does not exclude golden. convoyLeave (65002) splices crew that are away from view.",
+   "change": "The golden never leaves the map. (1) At 32026 and 32658 add !e.golden: a golden pillager bot never enters 'extract'. Under 30 percent it bolts per g-21. At 32658, when it has no goal left, a golden sets state 'patrol' (the idle wander branch near 32918) instead of 'extract'. (2) In arcadeCullTick (66265 loop) skip e.golden. (3) In convoyLeave (65006), a golden crew member is kept (e.carrier=0) instead of spliced. After this, goldTick drops the hoard only on a real death.",
+   "party": true,
+   "size": "S",
+   "risk": "A golden pillager bot that never leaves may wander or camp near a ring. Watch for one standing in an extract ring or walking in circles.",
+   "check": "Gild a hostile pillager bot with goldMake, set looted to CFG.raiderHaul and hp to 25 percent, then step 20 s: its state is never 'extract' and it is still in G.ents. In DEMO, a golden arcWave body 2300 from both players in patrol survives 70 s of arcadeCullTick. Fails today: the state becomes 'extract' at once (32027) and the cull removes the body after 60 s.",
+   "clash": "",
+   "related": "g-21"
+  },
+  {
+   "id": "g-23",
+   "choice": "Some back off, some charge",
+   "verdict": "change",
+   "today": "Confirmed. Every pillager bot that is not already cornered goes to 'extract' and drops a smoke once under 30 percent health (32026 to 32035; the test does not check hostile or merc). Shot while running, he turns and fights (runnerTurns 30599 sets cornered=1, hostile, chase, alert 2.6). No bot charges on his own and none heals.",
+   "change": "At the 30 percent check (32026), for a hostile, non-merc, non-friendlyPC, non-golden pillager bot, give a fixed temperament set once with no rnd: if(e.brave===undefined) e.brave=((Math.imul((e.nid|0)||Math.round(e.x*7+e.y),2654435761)>>>0)%10<4)?1:0 (about 40 percent). A brave bot charges instead of going to 'extract': call runnerTurns(e,p.x,p.y) (cornered=1 so the check never fires again), plus e.rushT=4 s during which the chase branch moves him at 1.25x e.spd. He drops no smoke and gets no running line. The rest keep today's run for the ring with the smoke (the back off). Hires, friendly and neutral bots are unchanged.",
+   "party": true,
+   "size": "S",
+   "risk": "A nearly dead bot that charges is more dangerous. Watch for deaths to a bot at low health and whether the charge reads as a choice or as random.",
+   "check": "Stage 20 hostile pillager bots with nid 1..20 in chase at 25 percent health and step one frame: 6 to 10 are in 'chase' with cornered=1 and no new smoke, the rest in 'extract'. Fails today: all 20 go to 'extract'.",
+   "clash": "",
+   "related": "g-28; g-21"
+  },
+  {
+   "id": "g-24",
+   "choice": "Whoever hurt it most",
+   "verdict": "change",
+   "today": "Confirmed. netTargetFor (62155) picks the nearest standing player for every body, the Overseer too, called each frame at 31099 (NET.on only). overseerTick (25736) uses that p for its sweep aim. There is no damage ledger. Hits are tagged with e.pHitSeat and e.pHitT 0.3: host rounds 33283 (seat 0), party rounds in netShotTake 62528 (seat s), blasts 21230/21520/21599, crowbar 24727.",
+   "change": "Host only. In updateEnts, for e.boss each frame: d=(e.ovHp0===undefined?e.hp:e.ovHp0)-e.hp; if d>0 and e.pHitT>0, e.ovDmg[e.pHitSeat|0]+=d; then e.ovHp0=e.hp. In netTargetFor (62155), when e.boss and some ledger value is above 0: among the shown, standing, not spectating players (G.player is seat 0; party bodies netUpBody(g) by g.seat) pick the one with the highest ledger; if nobody standing has dealt damage, or the top two tie, use today's nearest rule. Putting it in netTargetFor keeps the aim lane test (38158) and the near test (8368) on the same target. So player 2's window agrees, the host puts the target seat in the Overseer's row, ninth field (62235), as (seat+1)<<4, and netTargetFor on a joining window returns that body for e.boss when set. Solo is unchanged.",
+   "party": true,
+   "size": "M",
+   "risk": "The higher-damage partner holds the Overseer all fight. Watch that the other player does not feel left out and that the target does not flip back and forth.",
+   "check": "Stub NET.on with one party body (seat 1) 900 from the Overseer and the host 300 away, and set e.ovDmg={0:50,1:400}. netTargetFor(boss) returns the seat 1 body; with that body downed it returns the host. Fails today: it returns the nearest player (the host).",
+   "clash": "",
+   "related": "g-29 (same ninth field, bits 4 and 8)"
+  },
+  {
+   "id": "g-25",
+   "choice": "Yes, a few more sleepers",
+   "verdict": "change",
+   "today": "The Listener is the only body that starts 'dormant' (mkListener 15284) and it wakes on noise (listenersHearInner 15301 only takes listener and howler, 15304). The question missed one thing: about 1 in 7 crawlers already starts in state 'possum' beside a vehicle wreck (raid build 16882 to 16890, i%7===3) and wakes only when a player comes within 95 (31104 to 31107, 'IT WAS PLAYING DEAD'). A dormant Listener is drawn dark and hunched (38532). 'dormant' already crosses the wire (NET_ENT_STATES 60588). No sentry or bulwark ever sleeps.",
+   "change": "Add sleeping sentries and bulwarks (crawlers already have the possum). At raid build, after all spawns and before var g (17261), with no rnd: candidates are sentries and bulwarks that are not elite, not camp guards (e.camp), not waves, and at least 900 from every ascend spot. A candidate sleeps when ((Math.imul(Math.round(e.x),73856093)^Math.imul(Math.round(e.y),19349663)^seed)>>>0)%5===0: set e.sleep=1, e.state='dormant'. In updateEnts before the sight test (31711), a dormant sleeper stands still and does not turn, scan or fire (continue after collide). A player within 70, or any hit, wakes it into 'chase'. listenersHearInner lets e.sleep&&e.state==='dormant' through the kind test, with reach 0.6x LISTEN_R and the same loudness rule; a heard noise wakes it into 'investigate' toward the noise, alert 2.4. On any wake: e.wakeT=0.6 with no firing, sfx('charge') once, no callout. Drawing: a dormant sentry or bulwark has its eye and lamp off and the body darkened, no scan cone (skip it in the cone loop next to the possum skip at 40049) and no nameplate (next to 41218). Ent counts do not change, so the seed fingerprint holds.",
+   "party": true,
+   "size": "M",
+   "risk": "A sleeper waking next to loot can feel like the removed mimics. Watch for wakes he calls cheap, and that sleepers read as asleep from a distance.",
+   "check": "Build seed 4242: ents 85/374 and containers 165/593 unchanged. Over seeds 1 to 20, sleepers exist and are 10 to 30 percent of the candidate sentries and bulwarks. Stage a dormant sentry 250 from a still, quiet player inside its cone: no shot and no windup in 3 s; a 330 ping at the player then wakes it within one frame. Fails today: no sentry or bulwark is ever 'dormant'.",
+   "clash": "",
+   "related": "g-31; possum crawlers (shipped)"
+  },
+  {
+   "id": "g-26",
+   "choice": "Keep shooting you",
+   "verdict": "already",
+   "today": "Confirmed. A pillager bot in chase (raider branch 32256 to 32349) fires only at the player (32333 throw, 32346 fireWeapon at p). He shoots a machine only while looting (machine within 280, 32669 to 32685) or while running for the ring (feudEngage 26055, called at 32768 inside the extract branch). A machine biting a bot (machHuntRaider 15052) puts him into 'chase', which targets the player. Nothing in the chase branch reads machFoe.",
+   "change": "",
+   "party": true,
+   "size": "S",
+   "risk": "None; today stays.",
+   "check": "No change, so nothing should fail. To confirm: stage a pillager bot in chase on the player with a sentry 150 away in his sight; over 3 s every fireWeapon call from him aims within 60 of the player.",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-27",
+   "choice": "Yes, wrecks are cover",
+   "verdict": "change",
+   "today": "Confirmed. Machine wrecks are containers, not walls: the warden cache (31239, the Overseer too), the pillbox (choir) cache (31245) and the botwreck (31298), which a bulwark leaves only on rr()<.55 or when hard. They draw through WRECKDRAW (38816, called at 39255). Rounds, sight and bodies pass through containers. Only the map's vehicle wrecks (walls with wreck:1, 12227) block, with wallHp 150 (23753). His note: only large machines leave cover, not sentries or crawlers.",
+   "change": "Large machines only: warden, the Overseer, bulwark and choir. Never sentry, crawler, snitch, listener or howler. On the host at every such death (whether or not a container rolls): add a wall {x,y,w,h,d:1,mwreck:kind,wid:9500+n} (SH.wid 9000 is the stronghold base; shWall 65372 is the model), a square with half size 20 (26 for the Overseer) centred on the death spot, only if the whole footprint plus 4 is clear of walls, doors, every player and living body (memory: features fit the map); else no cover and today's wreck. Then rebuildGeometry() (23763, it ends with refreshVseg). If a wreck container exists, move it 32 from the centre toward the killer (or the nearest player) so the 46 reach and the search sight test (29607) pass, and set ct.cov=wid. Drawing (render only): the wall pass and both maps skip mwreck walls; the block is drawn in the y-sorted list (as drawForge is, 40320) with WRECKDRAW[kind] at its centre; a container with ct.cov skips its own wreck art. wallHp gives mwreck walls 150; when the block falls, clear ct.cov and the container draws as today. Co-op: a new host word {t:'mwr',sd,id,x,y,h,k} through the dispatcher at 58759; the joining window adds the same wall and rebuilds; netWallGone already removes it by wid. No rnd.",
+   "party": true,
+   "size": "M",
+   "risk": "Adding a wall mid-raid rebuilds the nav and grids at once (a possible hitch), and a block can pin a body. Watch frame time at a warden death and for stuck bots or crates.",
+   "check": "Kill a warden in open ground in a staged raid: one mwreck wall stands at its spot, rayHitG through the spot stops at the block, and the wreck still searches from the near side (G.nearContainer set). Kill a bulwark with rr forced above 0.55: the block still stands. Kill a sentry and a crawler: no mwreck wall. Fails today: no machine death adds a wall.",
+   "clash": "",
+   "related": "120a-bulwark-bigger (BULWARK_BIG 1.5 at 37838: the block must fit the bigger bulwark); c-00a-wreckage (done)"
+  },
+  {
+   "id": "g-28",
+   "choice": "They run from it",
+   "verdict": "change",
+   "today": "Confirmed. Nothing in updateEnts reads G.frags; the only readers are the push sites (21102 player, 28107 pillager bot, 60690 a party frag drawn on the host as fx:1), the tick (22167) and the draw (40283). Fuse FRAG_FUSE 1.1 s (20881), blast CFG.fragR 190. Pillager bots only dodge Howler mortar rings (raiderDodgeRing 32053 to 32064). Raider speed is 122 (mkRaider).",
+   "change": "Beside the mortar ring dodge (after 32064), for every pillager bot (hires too) that is not downed: check each G.frags entry (party fx:1 frags too, so bots run from player 2's grenades on the host) with fr.by!==e, fr.t>=0.15 (a short reaction) and fr.t<fr.fuse. If the frag is within fragR+16 and either losClear(e,frag) or within 120, the bot sprints straight away to fragR+30 at 1.35x e.spd, sets e.moving=true, collides, and skips the rest of its turn that frame (continue), the same shape as the ring dodge. No rnd. The bot raid (G.sim) dodges too.",
+   "party": true,
+   "size": "S",
+   "risk": "Bots that always escape could make grenades useless for kills. Watch his frag kill rate; cooking is the counter.",
+   "check": "Stage a looting pillager bot in open ground and push a frag {mine:1,t:0,fuse:1.1} 60 away. When it bursts (t=1.1 s) he is more than 190 from it and takes no blast damage. Fails today: nothing reads G.frags, so he stays at 60 and takes the blast.",
+   "clash": "",
+   "related": "g-23"
+  },
+  {
+   "id": "g-29",
+   "choice": "Yes, a short open beat",
+   "verdict": "change",
+   "today": "Confirmed. The plain warden's front armour (WARDEN_ARC 1.0, WARDEN_SOAK 0.4, 26029; only with xf('xfWarden')) and the bulwark shield (bulwarkArc 1.15, bulwarkSoak 0.12) soak every front round at all times (33191 to 33208). For a party round the soak runs on player 2's window, because the shield test comes before the netEntsPeer branch. The warden cannon fires after a 0.7 s windup, then 1.7 s cooldown (31848 to 31860). The bulwark has no big shot: the generic 0.4 s windup, then e.cd=rnd(0,.35), so it fires every 0.4 to 0.75 s (32389 to 32400) for 11 damage.",
+   "change": "Warden (not the Overseer): when its cannon fires (31852 to 31856), e.openT=WARDEN_OPEN 0.9 s. Bulwark: every BULWARK_SHOT_N=4th shot is its big shot (name it apart from BULWARK_BIG, the 1.5 draw scale at 37838): e.bigW=1, windup 0.7, damage 2.5x, and telegraphLane returns a lane for a bulwark with e.bigW (tot 0.7, width 8; drawWindupGlow uses 0.7 too). After that shot, e.openT=BULWARK_OPEN 1.0 s. While e.openT>0 the shield and armour test (33191) does not soak and plays no clank; openT counts down in updateEnts. Drawing only: the warden's front plates part and its core glows, the bulwark's shield lowers. Player 2 gets the beat in the row's ninth field (62235): bit 4 = open, bit 8 = big windup (62313 then rebuilds windup as 0.7). Read in netEntFlagsApply (62308). No new text.",
+   "party": true,
+   "size": "M",
+   "risk": "The bulwark's new big shot hits 2.5x and changes its rhythm. Watch that it is readable and not a cheap death, and that he notices the opening.",
+   "check": "With xfWarden on, stage a plain warden facing the player with windup 0.01 and step until it fires. A front round 0.3 s later takes full damage; one at 1.2 s is soaked to 0.4. For a bulwark, its 4th shot sets openT>0 and a front round then takes full damage. Fails today: the front round right after the shot is soaked.",
+   "clash": "",
+   "related": "120a-bulwark-bigger; 125-gfx-machine-damage (same machine draw code); g-20; g-24 (same ninth field)"
+  },
+  {
+   "id": "g-30",
+   "choice": "No, machines ignore the downed, as now",
+   "verdict": "already",
+   "today": "Confirmed. Machines never see a downed player: 31758 if(sees&&p.downed&&e.kind!=='raider') sees=false. netTargetFor (62155) prefers standing players. The Overseer sweep skips the downed (overseerTick ~25763). A crawler never bites a downed player (32255 !p.downed) and a latched crawler lets go when he goes down (crawlerLatchBody 'b.downed' check).",
+   "change": "",
+   "party": true,
+   "size": "S",
+   "risk": "None; today stays.",
+   "check": "No change, so nothing should fail. To confirm: stage a downed player with a sentry 200 away facing him; over 3 s the sentry never winds up.",
+   "clash": "",
+   "related": "120e-downed-damage-cuts"
+  },
+  {
+   "id": "g-31",
+   "choice": "Yes, a rare stalker",
+   "verdict": "change",
+   "today": "Confirmed. No such machine. Kinds on the wire are sentry, crawler, raider, snitch, listener, bulwark, howler, warden, choir, peddler, stray (NET_ENT_KINDS 60587). The Listener is the only noise ambusher and the possum crawler the only one that plays dead; neither reacts to your facing.",
+   "change": "New kind 'stalker': r 13, hp 70*CFG.eHp, spd 175 (over the 158 walk, under the 256 sprint), melee 24 after a 0.3 s windup like the Listener blow. Host only, once per raid at t>=20 s, inside sideStream(G.seed, an unused tag): 35 percent of raids, at a free reachable spot at least 1300 from every player and out of their sight; pushed as a body made after the build (netEntNewWord), so the fingerprint holds. Sim, flat coordinates: it knows where the nearest player is. State 'stalk': it holds a point behind that player (bearing p.face+PI) at the edge of his sight (VF()+60, 11700) with navSeek. When his facing is more than 1.9 rad away from it for 0.5 s, it closes at full speed and strikes. When he can see it (canSee from his face, 14167) it freezes 0.3 s, then backs off to the sight edge at 1.2x. Any hit sends it out of sight for 4 s. Quiet: a light step, no move pings, no callout. Register it in NET_ENT_KINDS (append at the end, indices are on the wire), NET_ENT_R 13, MACH_KIND (37837), MDIE_KINDS (8601), MACH_DIE (38192), KILLXP 12 (33839), ARCADE_KILLPTS 150 (64162), RECAP_WEP 'claws' (33992), DEATH_COL (37858), GFXDMG_KINDS (52987), tel.kills (17330), the pixel bake boxes and pixMachPainter (52039). Art: drawStalkerS, thin, low, dark, two dim eyes; a small botwreck in WRECKDRAW. Not in GOLD.kinds and never a sleeper.",
+   "party": false,
+   "size": "L",
+   "risk": "An unseen fast melee machine is the likeliest unfair complaint. Watch for deaths with no warning, and its frame cost in two-player raids.",
+   "check": "Over seeds 1 to 100 (live build), 25 to 45 raids get exactly one stalker after t=20 s and none get two. Staged: a stalker 500 behind a player who faces away reaches strike range in under 4 s; with the player facing it, it stays beyond 300 for 4 s. Fails today: there is no 'stalker' kind.",
+   "clash": "",
+   "related": "g-25"
+  },
+  {
+   "id": "g-32",
+   "choice": "Two spots, only one lit",
+   "verdict": "change",
+   "today": "Confirmed. One forge, authored at {x:2420,y:1540} on Cold Storage (11858, the only map def with a forge; map 4200x3400). forgeSpot (14647) uses a fixed spiral and no random draw, so it sits in the same spot every raid, only nudged off walls and crates. G.forge is set in the raid build (17261) and read at 14728, 29514 to 29516 (near test), 40233 and 40320 (drawForge), 43141, 48833 to 48839 (maps), and 65326 (strongholds avoid its building).",
+   "change": "Give Cold Storage a second authored point def.forge2, at least 1400 from def.forge. Start from {x:3400,y:2600} (1443 away); forgeSpot's spiral nudges it onto clear, reachable ground; confirm with a picture that it is in fair ground and not cutting a building. At raid build place both with forgeSpot. Pick the lit one with no rnd: (seed>>>0)&1 chooses forge or forge2. G.forge stays the lit station, so its users are unchanged. G.forgeCold={x,y} is the other. drawForge also draws the cold station as the same anvil in dark grey: no glow, no sparks, no prompt, not on the minimap or sector map, no near test. Both windows pick the same station from the seed. No text.",
+   "party": true,
+   "size": "M",
+   "risk": "He may walk to the cold forge first. Watch that the lit one reads from far away and that the second spot is in fair ground.",
+   "check": "Build two seeds of different parity: G.forge sits at a different authored spot in each, G.forgeCold is the other spot, and standing at G.forgeCold never sets G.nearForge. Fails today: G.forge is the same spot every raid and G.forgeCold does not exist.",
+   "clash": "",
+   "related": "g-33; 127-gfx-glow-pools (the forge light must follow the lit station only)"
+  },
+  {
+   "id": "g-33",
+   "choice": "Sometimes, at random",
+   "verdict": "change",
+   "today": "Confirmed. Nothing guards the forge and nothing spawns near it. Camp guards exist only at camps (17171 to 17176, mkSentry and mkCrawler with e.camp, patrolling the post at 32931). Only e.camp.x and e.camp.y are ever read.",
+   "change": "Host only, once at raid t>=1 s (skip in G.sim and on a joining window). Inside one sideStream(G.seed, an unused tag, ...) call, roll FORGE_GUARD_P 0.4 and, on a yes, make the bodies too, so mkSentry and mkCrawler's own rnd draws come from the side stream: 1 sentry and 2 crawlers at 120 to 220 from G.forge on spotFree ground, e.camp={x:G.forge.x,y:G.forge.y}, e.campR=200, state 'patrol', pushed to G.ents. The party gets them as bodies made after the build (netEntNewWord). The build counts and the seeded stream do not move. No text.",
+   "party": true,
+   "size": "M",
+   "risk": "A guarded forge may stop new party players from upgrading. Watch that they still reach it and that the guards do not spill toward the ascend area.",
+   "check": "Over seeds 1 to 50 (live build, not sim), 12 to 28 raids have exactly 3 bodies whose camp is the forge spot and the rest have none; seed 4242 build counts unchanged. Fails today: no body ever has its camp at the forge.",
+   "clash": "",
+   "related": "g-32"
+  },
+  {
+   "id": "g-34",
+   "choice": "No, the pick is final, as now",
+   "verdict": "already",
+   "today": "Confirmed. forgeOpts (14690) returns err 'MAX TIER' for a MK III gun (fk 2), and there is no swap, refund or sell-back of an element anywhere (grep finds none). An extracted forge gun keeps its element (forgeBank 33933).",
+   "change": "",
+   "party": false,
+   "size": "S",
+   "risk": "None; today stays.",
+   "check": "No change, so nothing should fail. To confirm: with a MK III gun in hand, forgeOpts().err==='MAX TIER' and forgeOpts().opts is empty.",
+   "clash": "",
+   "related": "g-35"
+  },
+  {
+   "id": "g-35",
+   "choice": "Yes, a forged crowbar",
+   "verdict": "change",
+   "today": "Confirmed. The crowbar is the built-in melee: V (18170) or the pad right stick click (19909) runs meleeStrike (24559), which fires crowbarWep (24437, no element). The blow lands at 24723 to 24735 and passes '' as the element to netShotSend (6th parameter el, 62485). forgeGun (14687) accepts only a gun with a magazine, so the forge never touches the crowbar. FORGE_COST is [2500,6000] (4477).",
+   "change": "At the forge, while the crowbar is not yet forged, the crowbar key (V or the pad crowbar button) opens the element picker for the crowbar instead of swinging: meleeStrike returns early when G.nearForge&&!G.crowbarEl, reusing G.forgeUI with a crowbar flag (its four ELEM_ORDER cards). Once forged, V swings as always, also at the forge. Price CROWBAR_FORGE_COST $4,000 from P.credits (forgeSpend). The pick sets G.crowbarEl and crowbarWep carries el. Each crowbar hit calls elemHit(e,el,dmg,seat,sx,sy) (30688) as a MK III round does; on a joining window it goes through netShotSend's el. The swing draws in the element colour. The existing forge prompt gets a second line '[v] crowbar $4,000', then 'max tier' once forged (one prompt, no new panel). Keeping it follows the forge rules: a CAREER extract keeps it (new profile field P.crowbarEl, same storage key), death or abandon loses it, DEMO keeps it for the raid only. A second pick is never offered (g-34).",
+   "party": false,
+   "size": "M",
+   "risk": "V at the forge opens a menu until the crowbar is forged. Watch for a swing that opens the picker mid-fight next to the forge.",
+   "check": "Staged raid at the forge with P.credits 10000: dispatch V (on window only) and pick fire. G.crowbarEl==='fire', credits are down 4000, and a crowbar hit on a sentry sets burnT>0; a second V at the forge swings. Fails today: V at the forge swings and a crowbar hit never burns.",
+   "clash": "",
+   "related": "g-34; 127-gfx-glow-pools"
+  },
+  {
+   "id": "g-36",
+   "choice": "Yes, a rare element gun",
+   "verdict": "change",
+   "today": "Confirmed. An elite pillager bot (CFG.eliteRate 0.08, blessElite 15094) gets a better plain gun from a weighted pool; no bot gun is forged. Elements exist only on MK III guns made by forgeApply (4490, which also sets the tint to the element colour). Only player rounds carry an element (fireWeapon el line ~24748). A forged gun comes out forged only from a dropped pile (loot path 26354 requires ct.dropped; pile records c.fw at 24928 and 24983, with no gun key).",
+   "change": "In blessElite, for an elite pillager bot, with no new draw: frac=roll/rate (where the elite roll fell, 0 to 1). When frac<0.25 (a quarter of elites, about 2 percent of bots), e.wep=forgeApply(WEAPONS[_gk],2,ELEM_ORDER[Math.floor(frac/0.25*4)]) and e.dmg=e.wep.dmg. His rounds stay plain, but his gun and tracers draw in the element colour (forgeApply sets the tint). On death, the body container (31270) records ct.fw={gk:'gun_'+e.wep.id,fk:2,el}. The loot path at 26354 also applies fw on a body, once and only to that gun key: (ct.dropped||ct.fw.gk===key) and mark it used. Co-op: the cont word (netContNewWord 63147, read in netContMake 63296) carries the fw fields so a party search gets the forged gun.",
+   "party": false,
+   "size": "M",
+   "risk": "Element guns from bots may make the forge's MK III feel less special, and a MK III elite hits harder. Watch how often he finds one.",
+   "check": "Over seeds 1 to 200, elite pillager bots with wep.fk===2 and an element exist and make up 15 to 35 percent of elite bots. In a staged raid, kill one and search the body: the gun comes out with fk 2 and that element. Fails today: no bot gun ever has fk or el.",
+   "clash": "",
+   "related": "127-gfx-glow-pools (forged guns glow)"
+  },
+  {
+   "id": "g-37",
+   "choice": "Used up, as now",
+   "verdict": "already",
+   "today": "Confirmed. Opening a locked room spends the key: G.bag.splice(ki,1) at 29264, after doorKeyIx (defined 13325, called 29262) finds the room's own key or a Vault Keycard.",
+   "change": "",
+   "party": false,
+   "size": "S",
+   "risk": "None; today stays.",
+   "check": "No change, so nothing should fail. To confirm: with one fitting key in G.bag, open the door with E; the key count in G.bag drops by one.",
+   "clash": "",
+   "related": "g-38"
+  },
+  {
+   "id": "g-38",
+   "choice": "No, keys only, as now",
+   "verdict": "already",
+   "today": "Confirmed. wallHp (23749) returns null for lockWall and door walls, so damageWall (23826) and the crowbar through crowbarWalls (24548, 'it rings and holds' at 24552) cannot harm a keyed room. Doors open only through doorKeyIx (29262).",
+   "change": "",
+   "party": false,
+   "size": "S",
+   "risk": "None; today stays.",
+   "check": "No change, so nothing should fail. To confirm: wallHp of a lockWall or door wall is null, and 20 crowbar swings at a keyed door leave it standing.",
+   "clash": "",
+   "related": "g-37"
+  },
+  {
+   "id": "g-39",
+   "choice": "(none)",
+   "verdict": "already",
+   "today": "His note (no pick): no gun cards on pickup; a gun's card is only seen in the hotbar or inventory. cw-nolootguncard (26486, his 10-20 order) already stops looting from raising a card. The only G.gunCard setter left is the forge upgrade receipt (forgeBuy 14736, a buy, not a pickup). gunCardDraw is called only from that receipt (22674), the belt hover (22803), the Undercroft backpack (47860) and the raid backpack (48150). Looking at a gun on the floor shows no card.",
+   "change": "",
+   "party": true,
+   "size": "S",
+   "risk": "If he also means the forge receipt card (after a forge buy, not a pickup), that one still pops; log it as a question only if he says so.",
+   "check": "No change, so nothing should fail. To confirm: in a live raid, loot a gun through the normal path; G.gunCard stays null and no card draws, while the belt hover card still draws.",
+   "clash": "",
+   "related": "81b-no-loot-gun-card (done)"
+  },
+  {
+   "id": "g-40",
+   "choice": "Yes, break it down",
+   "verdict": "change",
+   "today": "Confirmed. A stash gun can be sold (Sell one 55724, Sell all 55733 in itemMenuRows 55650, Stash screen only, not when locked), locked or tagged as junk. There is no break down. Parts come from loot, and RECIPES (4788) turn parts into gear and bench guns. Part values: scrap 25, board 150, comp 120, optic 230, servo 310 (4509 to 4515); guns e.g. pistol 300 common, smg 900 uncommon, rifle 1500 rare, lance 4600 elite.",
+   "change": "Add 'break down' to the Stash screen item menu (itemMenuRows), for a gun in P.stash that is not stashLocked, on the same screens and gate as Sell one (CAREER; DEMO has no stash). Its hint lists the parts in lower case. It removes one copy as Sell one does and adds parts by ITEMS[k].r: common gives comp 1 and scrap 2 (170); uncommon gives servo 1, board 1 and comp 1 (580); rare gives servo 2, board 2 and comp 1 (1040); elite gives servo 3, board 3, optic 1 and comp 2 (1850). Every set is worth less than its gun, and recipe inputs are worth more than outputs, so it never pays more than selling and cannot loop. No XP and no $. Then saveProfile and refreshInv; forgeSweep clears a forge record left with no gun. On the pad it is in the same menu (Y).",
+   "party": false,
+   "size": "M",
+   "risk": "Cheap parts could make bench guns and armour easy to craft. Watch his stash for servo and board hoards.",
+   "check": "With the hub on, put gun_rifle in P.stash. itemMenuRows('gun_rifle','stash',1) has a 'break down' row; after running it there is no gun_rifle, servo +2, board +2, comp +1, and the parts' ival total is below ival('gun_rifle'). Fails today: no such row exists.",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-41",
+   "choice": "No, the Undercroft only",
+   "verdict": "already",
+   "today": "Confirmed. Crafting runs only on the Undercroft work screen (renderWork 57840). The only RECIPES readers are craftUse (4840), renderWork (57890) and the work detail pane (57960, 58054). The only other bench is the debug pixel bench (pixBenchOpen 52827, a test page). No raid code path crafts.",
+   "change": "",
+   "party": false,
+   "size": "S",
+   "risk": "None; today stays.",
+   "check": "No change, so nothing should fail. To confirm: no raid code path reads RECIPES; the readers are craftUse, renderWork and the work detail pane.",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-42",
+   "choice": "A random spot, as now",
+   "verdict": "already",
+   "today": "Confirmed. startRaid builds the pool before the roll: map spawns that clear CFG.spawnClear (1500) from every extract (16304-16317), relaxed to max(700, 0.6 x bar) when fewer than 8 qualify (16326-16330), the 3 farthest when fewer than 3 (16334-16340), then one uniform draw var _spIx=ri(0,_spawnPool.length-1) at 16345. The record is _spDbg (16349), kept as G.spawnDbg (17263). No screen lets you choose a spot.",
+   "change": "",
+   "party": true,
+   "size": "S",
+   "risk": "nothing changes",
+   "check": "No work. Guard only: over 30 career raids on different seeds, G.spawnDbg.pool>=3 and G.spawnDbg.pt is one of map.spawns; passes today.",
+   "clash": "",
+   "related": "g-56"
+  },
+  {
+   "id": "g-43",
+   "choice": "Yes, loot in sight",
+   "verdict": "change",
+   "today": "Confirmed: nothing places loot near the ascend spots. The only spawn-aware container is THE VAULT CASE, put at the free spot FARTHEST from every spawn (16541-16554). careerPostBuild (63905) and arcadePostBuild (63917) add only the two vaults (arcadeVaults, side stream tag 7) and the keycards (arcadeKeycards, tag 8). Whether a box happens to be in view of a spawn is chance.",
+   "change": "New spawnLootSight(g) next to arcadeKeycards (63680), called last in careerPostBuild (after arcadeKeycards, 63912) and in arcadePostBuild (after arcadeKeycards, 63924). For each point s in g.map.spawns: if no container that is not opened, not dropped, not cache or vault, not inLocked lies within 340 of s with losClear(s.x,s.y,c.x,c.y,g.map.segs), place one. All draws inside sideStream(g.seed,80,...) (tags in use: 1, 3 to 8, 47, 61 to 73; 80 is free), so the main stream does not move and both windows build the same boxes (both run the post build). Up to 24 tries at an angle and radius from rr(), radius 140 to 320; keep the first point that passes spotFree(g.map,x,y,20), navReachable(g.map,x,y), !shutRoomAt(g.map,x,y) and losClear from s; then c=mkContainer(x,y,'crate') (its own crate roll; the scav pistol is spawn only and never in a crate), c.time=1.0, push to g.containers. Simulation only: no marker, no words. The gate fingerprint holds (the fixture pins CAREER_ON 0 at tools/mkfixture.ps1 1427 and the gate never builds a demo raid); career checks that count boxes may need a retarget, name them in DESIGN.md.",
+   "party": true,
+   "size": "M",
+   "risk": "does every start show a box on screen in the first seconds, and does it make the opening too rich or pull both players to the same box",
+   "check": "Career fixture (?career=1), seed 4242 and five other seeds: for every map spawn assert an unopened, non-vault, non-cache container within 340 with losClear from the spawn. Measure on today's build first: at least one spawn on one seed must have none, so the check fails today; if every spawn already has one, report that and do not ship.",
+   "clash": "",
+   "related": "g-56 (a late joiner lands on a map spawn, so it gets the same box)"
+  },
+  {
+   "id": "g-44",
+   "choice": "No, drawn only, as now",
+   "verdict": "already",
+   "today": "Confirmed. The soft light exists only in the render light map: gfxLightPass sets plr=100*min(1.5,BR) at 53110 and draws it with put(wspr,p.x,p.y,plr,...) at 53111, the partner's at 53112. Machine sight widens only for a lightning flash (FLASH_SEE 2 at 14166, used at 31763). Nothing in the simulation reads the player's glow.",
+   "change": "",
+   "party": false,
+   "size": "S",
+   "risk": "nothing changes",
+   "check": "No work. Guard only: in a night raid a sentry's sight test on a still player just past its range is false whether or not the light pass ran that frame; passes today.",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-45",
+   "choice": "Yes, machines too",
+   "verdict": "already",
+   "today": "Confirmed; the note under the question was wrong. strikeTick (11462) ends each bolt with a loop over G.ents (11549-11554): any body within STRIKE_R 118, not under a roof and with a clear line takes E.hp-=STRIKE_DMG (62) at 11553, with no seat credited. The crack also pings 900 (11499). Only the host lands bolts (11468); a linked window plays the flash and crack only.",
+   "change": "",
+   "party": false,
+   "size": "S",
+   "risk": "nothing changes; storms already hurt machines and pillager bots",
+   "check": "No work. Guard only: a crawler 40 from a strike point outdoors, push G.strikes=[{x,y,t:0}], run strikeTick once; its hp drops by 62; passes today.",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-46",
+   "choice": "Yes, a few patrols",
+   "verdict": "change",
+   "today": "Confirmed: no fixed routes exist (no e.route anywhere). An idle machine re-picks a random target in the wander branch (32917-32947): camp guards circle their camp (32931), everything else takes freeSpot(G.map,24) at 32932 and keeps it for rnd(3,7) s (32941), walking at e.spd*0.45 (32944-32945).",
+   "change": "New patrolRoutes(g), called in careerPostBuild and arcadePostBuild after arcadeVaults, all picks inside sideStream(g.seed,81,...) (a free tag). Pick 3 bodies, sentries first then crawlers, that are not e.camp, not elite, not boss, not a listener and not inside a building (buildingAtPt). Give each e.route = 4 points: the centres of the 4 map.landmarks nearest it, each pushed out of any building with outOfBuilding and kept only if navReachable; fill missing points with freeSpot inside the side stream; legs 400 to 1,200 long. e.ri=0. In the wander branch (32917): for a body with e.route, when its timer runs out still call freeSpot(G.map,24) and throw the result away (so the seeded stream does not move, the rule this branch already keeps for criers), then aim at route[e.ri] with navSeek at e.spd*0.45; on arrival (within 30) stand 2 s turning toward the next point, then e.ri=(e.ri+1)%4. Chase, investigate and alarm are unchanged; when it drops back to patrol it resumes at its nearest route point. Host only (AI runs on the host). No marker, no words. Fingerprint holds (career and demo only).",
+   "party": false,
+   "size": "M",
+   "risk": "do patrols read as a pattern you can learn and time, or as bots stuck on a loop; watch for a patroller hugging a wall on one leg",
+   "check": "Career fixture on seed 4242: exactly 3 ents carry e.route of length 4; with the player far off and quiet, step 120 s and assert each patroller came within 40 of its route points in order. Today no ent has e.route, so it fails.",
+   "clash": "",
+   "related": "g-50 (a route point must never sit in the safe room)"
+  },
+  {
+   "id": "g-47",
+   "choice": "Yes, more SP there",
+   "verdict": "change",
+   "today": "Confirmed. Hot ground (G.hotZone r 620, built at 16473, moved every HOT_EVERY 115 s by tickHot 45762) pays only at boxes: two extra LOOT.safe rolls on a box opened inside it (26248-26258), netHotBonus (63064) for a partner. Kill SP has no position factor: careerKill (66499) pays scoreKill (66487) and arcadeKill (66509) pays arcadeKillPts (66290) times the streak, nothing else.",
+   "change": "var HOT_KILLX=1.5. In scoreKill (career) and in arcadeKill (demo), right after the streak multiplier (n*=mx): if G.hotZone and x,y are finite and Math.hypot(x-G.hotZone.x,y-G.hotZone.y)<=G.hotZone.r, then n=Math.round(n*HOT_KILLX) and the kill popup label reads '+'+arcadeCr(n)+' hot' (lowered by the text door). Applies on whichever window credits the kill (host and partner, both modes; the partner already has the host's hot ground through the world word). Style medals, power-ups and the team combo are unchanged. No seeded draw.",
+   "party": true,
+   "size": "S",
+   "risk": "is the hot ground now worth its two extra machines; watch demo SP totals on the board",
+   "check": "Career fixture (?career=1): set G.cs.streak=null, careerKill('sentry',0,0,x,y) at a point inside G.hotZone returns 150; set G.cs.streak=null again, the same kill outside returns 100. Today both return 100, so it fails.",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-48",
+   "choice": "Yes, ash and a red glow",
+   "verdict": "change",
+   "today": "Confirmed. The last minute has the 'lastmin' sting at 60 s (tickClockWarn 50174, blip at 50192) and a red clock from CLOCK_RED 60 (50167; drawn at 43555, 46245, 67192-67202). No falling ash and no world tint exist; the light pass only tints for the extract beacon (urg, 41432).",
+   "change": "Render layer only, each window draws its own. New burnFx(), called once per raid frame after the lighting overlay is composed (after the gfxLightOn if/else that starts at 41456, so it covers both the light pass and the CLASSIC sheet at 41467) and before the HUD. Active while raidClockOn() and 0<G.timeLeft<=CLOCK_RED and !G.nuking and !G.over; f=1-G.timeLeft/60. (1) Red glow: one full-frame source-over fill rgba(150,24,10,0.16*f) on the world canvas, so the world reddens from 0 at 1:00 to 0.16 at 0:00; not an edge frame, no pulsing. (2) Falling ash: a screen-space pool of up to 70 flakes at 1080p (scale with the graphics quality ladder), grey #9a948c to #5e5a56, 1.5 to 3 px times hudRes, falling 22 to 40 px/s and drifting 6 to 14 px/s sideways, alpha up to 0.55, fading in over the first 3 s, positions from Math.random (cosmetic). Counters BURN={ash:flakes drawn this frame,k:tint alpha}. No sound (no hum, per the veto). When job 137 lands, reduce motion also turns the ash off. Measure the frame cost at 4K with two windows.",
+   "party": true,
+   "size": "M",
+   "risk": "the ash and red must read as the burn coming without hiding machines in the last minute or costing frames at 4K with two windows",
+   "check": "Career fixture: G.timeLeft=59, draw one raid frame; BURN.ash>0 and BURN.k>0. At G.timeLeft=120, and with G.nuking set, both are 0. Today BURN does not exist, so it fails.",
+   "clash": "",
+   "related": "137-os-reduce-motion, 120k-two-player-frame-cost, o-13-reduced-flashing-default (done), 128-gfx-lamp-dust (waiting)"
+  },
+  {
+   "id": "g-49",
+   "choice": "Yes, loot fast and run",
+   "verdict": "change",
+   "today": "Confirmed. A keycard at an arc vault door (29261-29269) calls lockedOpen (61722), netDoorSend, pays VAULT OPEN +500 SP to the opener (arcadeVaultPay, called at 29268) and pings 340. No bodies are sent. Vaults exist in both modes (arcadeVaults from careerPostBuild 63911 and arcadePostBuild 63923). Waves come only from arcadeWaveTick (64262).",
+   "change": "In lockedOpen, when LKR.arc and it was shut: every window says 'vault alarm' (warn lane, no machine count) and plays annCue('WAVE') (the low urgent alarm). Only the run authority (arcadeWaveTick's guard at 64264: not a player 2 sharing the host world, not netEntsPeer(); and allow G===NET.specG) calls new vaultAlarm(LKR) once per vault per raid (LKR.alarmed): tier=waveTier(score) as arcadeWaveTick takes it; n=min(6,3+floor(tier/2)), at least 2 even when the live cap is full; kinds crawler and sentry, from tier 2 also a hostile pillager bot (arcadeWaveRaider), at least one sentry; spots 700 to 1,000 from the door on open reachable floor outside every shut room and at least 420 from every ring (arcadeWaveOk with the door as q, plus arcadeWaveBody); bodies made inside fxBorrow in both modes (mkSentry and mkCrawler draw on the seeded stream; career waves already do this at 64301); each body alert 3, state investigate, tx/ty the door plus or minus 60, flags arcWave and vaultAlarm. Math.random for spots. It ignores the director breather. The bodies reach player 2 as any new body does.",
+   "party": true,
+   "size": "M",
+   "risk": "opening a vault may feel punishing for walk-up players in the demo; watch that the pack lands out of sight and leaves a few seconds to loot",
+   "check": "Career fixture: give a keycard, stand within 52 of an arc vault door, hold E one frame: G.ents gains at least 2 bodies with vaultAlarm, each 700 to 1,000 from the door and aiming within 60 of it; the same door word arriving again adds none. Today no bodies are added, so it fails.",
+   "clash": "",
+   "related": "g-50 (alarm spawns and targets must skip the safe room)"
+  },
+  {
+   "id": "g-50",
+   "choice": "Yes, one safe room",
+   "verdict": "change",
+   "today": "Confirmed: no safe room. Machines path anywhere; only shut vaults and locked rooms (doors in m.locked, opened by lockedOpen 61722) keep things out until opened.",
+   "change": "New safeRoomPick(g) in careerPostBuild and arcadePostBuild after arcadeKeycards, picks inside sideStream(g.seed,82,...) (a free tag). Candidates by arcadeVaults' own tests (63626-63640): a building interior box (arcadeVaultBox) with exactly one doorway in m.idoors, not overlapping m.locked (vaults included), with no ent, spawn, ring, zone or seal inside; prefer a 'core' building the vaults left. Store g.map.safeRoom={x,y,w,h,dx,dy} (dx,dy the doorway centre). Machines (every kind except raider, peddler and stray) never enter: in moveToward (30556) and navSeek (30457), a step for such a body that would put its centre inside the box grown by e.r is refused (it keeps its position); any machine tx/ty inside the box is moved to the outside face of the doorway; wave, ambush, siege, hot ground, vault alarm and patrol spots and targets skip it. Pillager bots may enter. Machines can still see and shoot through the doorway. It is an ordinary building with an ordinary doorway (real map geometry, as his 10-15 rule asks), not drawn or marked on any map. The first time a player stands inside in a raid: 'safe room' (info lane, once). Host runs it (AI).",
+   "party": false,
+   "size": "M",
+   "risk": "players camping in the doorway while sentries shoot in; machines crowding the door and looking stuck",
+   "check": "Career fixture on seed 4242: g.map.safeRoom exists; player inside it, a crawler in chase 200 outside the doorway; step 15 s; the crawler centre is never inside the box. Today safeRoom is undefined, so it fails.",
+   "clash": "",
+   "related": "g-46, g-49"
+  },
+  {
+   "id": "g-51",
+   "choice": "No, rings stay clear",
+   "verdict": "already",
+   "today": "Confirmed. No code makes a crew hold a ring. Pillager bots use a ring only to leave: the 14 s hold (raiderExtract 14 in DEF at 4144; Settings row 49104). Machine camps are placed 900 from the start and 500 from the first ring (16649-16653). The raid events (XF_EV 4199: debris, convoy, bounty, coolant, rampage) never put a crew on a ring.",
+   "change": "",
+   "party": false,
+   "size": "S",
+   "risk": "nothing changes",
+   "check": "No work. Guard only: over 20 seeds no hostile crew stands inside a ring at raid start; passes today.",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-52",
+   "choice": "Yes, a machine boss too",
+   "verdict": "change",
+   "today": "Confirmed. The bosses are THE OVERSEER (bossTick 15428, called at 30966 from G.t 2: a warden with boss:1 at bossLair 15413 near the map centre, 4,000 hp, leashed 1,100 to its lair at 31818-31868, OVERSEER HOARD on death at 31242) and the bounty pillager bot event. The bulwark (mkBulwark 15480) is an ordinary machine (260 hp, dmg 11, spd 52). No second machine boss exists.",
+   "change": "New bossTick2() beside bossTick, called right after it at 30966, only in G.arcade or G.career, run authority only (bossTick's guards), once (G.boss2Done) from G.t>=4. Lair: the point clear of walls by 50 (bossLair's test) farthest from the Overseer lair, tried over map.spawns and 40 freeSpot points drawn inside fxBorrow, at least 1,800 from the Overseer lair and 900 from every ring and spawn; none found, no second boss. Body made inside fxBorrow (mkBulwark draws on the seeded stream): mkBulwark, elite off, boss2=1 (not boss, so Overseer code, phases and the boss bar leave it alone), name 'THE JUGGERNAUT', r 31 (1.3x), hp and maxhp 3000*CFG.eHp, dmg 22, rng 420, lairX/lairY its spot. Leash: extend the leash tests at 31818, 31834, 31837 and 31865-31868 to boss2 with radius 1,600, so it roams its far half. Death: beside 31242, a cache tagged 'JUGGERNAUT HOARD' with ['reactor','titan','coil',vaultGunPick()], time 3.0, and 'the juggernaut destroyed' (obj). Kill pays 1,000 SP (ARCADE_BOSSPTS/2). Party: it reaches player 2 as a body that came after the build (netEntNewWord; the late join replay already sends those); netEntFill sets boss2 on a bulwark with that name (as it sets boss by BOSS_NAME); netPingName names it; the takeover at 63338-63350 rebuilds it with its health share as it does the Overseer instead of dropping it with the other mirrors.",
+   "party": false,
+   "size": "L",
+   "risk": "a second boss can crowd the map and cost frames; watch whether players find it and whether it reads as different from the Overseer",
+   "check": "Career fixture: step to G.t=5; exactly one ent has boss2, at least 1,800 from the Overseer lair; set its hp to 0 and step; a container tagged JUGGERNAUT HOARD exists. Today no ent has boss2, so it fails.",
+   "clash": "",
+   "related": "120a-bulwark-bigger (bulwark art size), g-46"
+  },
+  {
+   "id": "g-53",
+   "choice": "(none)",
+   "verdict": "skip",
+   "today": "No pick and no note. Doorways are open; only locked rooms and vaults have keyed doors (lockedOpen 61722). Today stays.",
+   "change": "",
+   "party": false,
+   "size": "S",
+   "risk": "nothing changes",
+   "check": "none",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-54",
+   "choice": "Yes, pings only",
+   "verdict": "change",
+   "today": "Confirmed. The first one out cannot ping. Demo: the extracted host is benched (specOut, ARCADE.xOut 'h') and shown the attract loop (arcadeExtractEnd 64102, arcadeAttShow at 64122); every key and click then goes to arcadeKeyAtt (67769), which treats it as a drop-in press (67775 lets keys through only while not benched), so N never reaches netPingMake. Career: the spectating host (netSpecStart 62005) has G.over, and netPingMake returns on G.over (61464); the N key (18195) and middle mouse (18054) need !G.over. Watching the partner live (his 2.25 b, idea 13 in notes/gameplay-next-1025.md) is not built and not queued.",
+   "change": "Prerequisite: queue idea 13 (the first one out watches the partner live) as its own job first; the pings need a view to aim in. Then, while this window is out and watching (demo: arcadeBenched() with ARCADE.xOut==='h'; career: the spectating host with NET.specG; a player 2 out with specOut): (1) arcadeKeyAtt lets KeyN and Mouse1 pass instead of treating them as a drop-in press; (2) the N key (18195), middle mouse (18054) and pad ping (20003) accept G.over when G===NET.specG; (3) netPingMake (61462) accepts that state, aims mouseWorld through the watch camera, and makes no map marker (its G.mapOpen branch is off while watching). The double press still makes danger. Nothing else acts while watching: no shots, no search. This is not rejoining (veto: nobody rejoins after extracting).",
+   "party": true,
+   "size": "M",
+   "risk": "needs the watch view first; a ping from the watcher must not read as the partner's own",
+   "check": "Demo pair fixture: host extracts while player 2 is up (ARCADE.xOut 'h'), mouse over a crawler near player 2, dispatch KeyN on window; the host sends a png word and player 2's NET.pings gains an entry naming the crawler. Today arcadeKeyAtt takes the key as a drop-in press, so it fails.",
+   "clash": "",
+   "related": "idea 13 in tools/handoff/console/notes/gameplay-next-1025.md (not queued), 139-solo-pings"
+  },
+  {
+   "id": "g-55",
+   "choice": "No, just watch",
+   "verdict": "already",
+   "today": "Confirmed. No in-raid supply drop can be called; the BIG and FULL RESUPPLY CRATE rows (33621, 33694) are Mainframe rewards bought outside a raid.",
+   "change": "",
+   "party": true,
+   "size": "S",
+   "risk": "nothing changes",
+   "check": "No work; nothing to test.",
+   "clash": "",
+   "related": "g-54"
+  },
+  {
+   "id": "g-56",
+   "choice": "At a random ascend spot",
+   "verdict": "change",
+   "today": "Confirmed. netLateApply puts the late joiner beside the host: 60199 p.x=L.x+36; p.y=L.y+8 (L is the host spot from netLateReply 60155). Only when a demo host is benched does it use arcadeRedropSpot (the spawn farthest from hostiles, 60200). The demo joins late through the same path (arcgo then netLateAsk, 67417).",
+   "change": "In netLateApply replace the beside-the-host placement at 60199 with a random map spawn: candidates are map.spawns that pass spotFree(G.map,x,y,22), are not shutRoomAt, and stand at least 600 from every live hostile (arcadeRedropSpot's foe filter: hp>0, not merc, not peddler or stray); pick one with Math.random, never the seeded stream; if none qualifies, arcadeRedropSpot(p,G,0). Keep the bench branch at 60200. Demo and career. No new words.",
+   "party": true,
+   "size": "S",
+   "risk": "the joiner may land far from the partner and feel alone at first; the edge arrow points the way",
+   "check": "Pair fixture: host in a raid at a known spot; player 2 joins late (netLateApply with m.late x,y of the host); player 2 stands within 1 of one of map.spawns and not within 60 of the host. Today he lands 36 from the host, so it fails.",
+   "clash": "",
+   "related": "g-43"
+  },
+  {
+   "id": "g-57",
+   "choice": "Crates open faster with two",
+   "verdict": "change",
+   "today": "Confirmed. Search speed has no two-player factor at any of its three doors: the host's own search near.prog+=dt/buzzSlow()*(ARCADE_SRCH 1) at 29648; the host running a partner's hold ct.prog+=dt/r.slow at 63087; the partner's local bar at 62897. The team combo (teamKill 67097, called only from arcadeKill) is the only reward for being close, and only in the demo.",
+   "change": "var DUO_SRCH=1.5, DUO_R=200. Helper duoAt(ct,seat): true when another party member who is up (not downed, not specOut or out, word fresh by netUpShown, same raid seed) stands within DUO_R of the box; on the host, the host's own player counts for a partner's hold. Multiply the progress step by DUO_SRCH when true at all three doors: 29648, 63087 and 62897 (the partner's bar uses the same test so it does not lag the host). Every searchable box. Demo and career co-op; solo unchanged. No new words.",
+   "party": true,
+   "size": "S",
+   "risk": "two players may stack on every box; watch that searching alone does not start to feel slow",
+   "check": "Pair fixture (host window): a crate, the host 30 from it holding E, a fresh NET.up partner word 120 from it; after 1.0 s near.prog is 1.5 times a control run with the partner 600 away. Today both are equal, so it fails.",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-58",
+   "choice": "A bandage makes it faster",
+   "verdict": "change",
+   "today": "Confirmed. netRevHold (62574) fills NET_REV_T 3.2 s (62555) for every pick-up, whatever the reviver carries (62600-62602); nothing is used up. The REVIVING bar divides by NET_REV_T (44252), and so does the charge sound's step (sndRevCharge 7938-7939).",
+   "change": "Helper netRevNeed(): 1.6 when G.bag holds a 'bandage', else NET_REV_T (3.2). Use it for the fill test and charge fraction at 62601-62602, the REVIVING bar at 44252, and the step at 7939. When a 1.6 s pick-up is sent (62603), set G.netRevBand=1; in the rose branch (62590), when he is shown up and G.netRevBand is set, remove one 'bandage' from G.bag and clear the flag, so a pick-up that never takes spends nothing. Without a bandage the pick-up stays free at 3.2 s. Health on rise stays 40 percent. No new words.",
+   "party": true,
+   "size": "S",
+   "risk": "a reviver may spend a bandage he wanted for healing; watch whether it feels like a choice or a tax",
+   "check": "Pair fixture: reviver with one bandage beside a downed partner; hold E 1.7 s: the rev word is sent; then the partner word shows him up and the bag has no bandage. Control: no bandage, nothing sent at 1.7 s, sent at 3.2 s. Today nothing is sent at 1.7 s, so it fails.",
+   "clash": "",
+   "related": "g-60, g-66, 120e-downed-damage-cuts"
+  },
+  {
+   "id": "g-59",
+   "choice": "40 percent, as now",
+   "verdict": "already",
+   "today": "Confirmed. netRevApply (62623) at 62630: p.downed=false; p.hp=Math.round(p.maxhp*0.4).",
+   "change": "",
+   "party": true,
+   "size": "S",
+   "risk": "nothing changes",
+   "check": "No work. Guard only: netRevApply on a downed player with maxhp 100 gives hp 40; passes today.",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-60",
+   "choice": "Yes, pause during a revive",
+   "verdict": "change",
+   "today": "Confirmed. tickDowned (28596) runs p.downT-=dt on every downed frame (28598). The downed window is never told a pick-up is running: the reviver's G.netRevT stays in his own window, and the st word (60417) has no field for it.",
+   "change": "The reviver's st word (60417) adds rg: G.netRevS while G.netRevT>0 (left out otherwise); the host relay (58987) passes it on and the take (58980) stores g.rg (-1 when absent). In tickDowned skip p.downT-=dt while some NET.up word passes netUpShown, has age under 0.4 s, shows rg===NET.seat and stands within NET_REV_R*1.5 of the player. The hit time gain of the downed bar keeps working; the shown seconds hold still. Demo and career.",
+   "party": true,
+   "size": "S",
+   "risk": "revives may get too safe: a pick-up started with 1 s left now always finishes",
+   "check": "Downed window: p.downT=10 and a fresh NET.up word (age 0) with rg equal to NET.seat, 30 away; run tickDowned for 2 s; downT is still 10. Control without rg: 8. Today it is 8 either way, so it fails.",
+   "clash": "",
+   "related": "g-58, g-62, g-63, 120e-downed-damage-cuts"
+  },
+  {
+   "id": "g-61",
+   "choice": "No, the same speed",
+   "verdict": "already",
+   "today": "Confirmed. Nothing changes the player's speed when a partner goes down: the TEAMMATE DOWN take (58979) only says the alert, rumbles and plays sndDowned and sndMateAlert; the move speed (28950-28968) reads only rig, crouch, sprint, stim, wading and ADS.",
+   "change": "",
+   "party": true,
+   "size": "S",
+   "risk": "nothing changes",
+   "check": "No work. Guard only: a teammate word with dn 1 arrives and the player's speed that frame equals CFG.pSpeed times his rig; passes today.",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-62",
+   "choice": "Yes, a sharper alert",
+   "verdict": "change",
+   "today": "Confirmed. The partner window plays sndMateAlert (7089: four triangle notes 880/660 every 0.16 s, counted in SND_DOWN.alert at 7104) and sndDowned once, when the down flag first arrives (58979), with a rumble and the held TEAMMATE DOWN alert. Nothing fires as his down seconds (dt, whole seconds, sent in the st word) run low.",
+   "change": "In the st word take (58979-58980): when a teammate already down stays down and his dt goes from above 5 to 5 or less (and above 0), once per fall (flag cleared when dn clears), play new sndMateLate(): six square notes alternating 1320 and 990 Hz every 0.09 s, peak 0.24, on the sting bus (same guards as sndMateAlert), plus padRumble(0.8,300). Count it in SND_DOWN.late. No words. Not a voice (veto respected).",
+   "party": true,
+   "size": "S",
+   "risk": "it must not blur with the last ten clock ticks or the machine siren late in a raid",
+   "check": "Feed st words for a downed teammate with dt 6, then 5, then 4: SND_DOWN.late rises by exactly 1. Today SND_DOWN.late does not exist, so it fails.",
+   "clash": "",
+   "related": "g-60 (with the pause, dt holds still during a pick-up)"
+  },
+  {
+   "id": "g-63",
+   "choice": "You can carry them at walking pace",
+   "verdict": "change",
+   "today": "Confirmed. A downed player crawls at a flat 30 units a second (28741-28752, the move at 28752); a partner cannot move him, only hold E to revive (netRevHold 62574). The prompt at the downed body is '[e] revive name' with seconds (44054).",
+   "change": "Carry, both modes. Start: two presses of E (or the pad revive button) within 0.4 s within NET_REV_R (64) of a downed partner nobody carries; this resets pick-up progress. While carrying: the carrier moves at walking speed (CFG.pSpeed times rig, no sprint, no roll) and cannot fire, aim, search or heal; he can ping and open the map. His st word (60417) adds cy: the carried seat; the host relays it (58987) and the take stores it (58980). The carried window, while a fresh word shows cy===NET.seat, ignores its crawl input and sets its body 14 behind the carrier each frame (collide with walls); his bleed clock keeps running, he can still be hit, and F still self-revives (which ends the carry). End: two presses of E again set him down; the carrier going down, leaving, or the word going stale (age over 0.4 s) drops him where he is. In a ring he can still pull from the floor as today (hauledAboard is 0). The prompt at the downed body adds '[e e] carry' beside the revive prompt (44054). No seeded draw.",
+   "party": true,
+   "size": "L",
+   "risk": "two-window sync: watch for the carried body jittering or jumping, and whether walking pace with no gun feels too exposed",
+   "check": "Pair fixture: partner downed; reviver presses E twice inside 0.4 s, then holds W 2 s; the downed window's body stays within 30 of the point 14 behind the carrier, and the carrier's speed never exceeds walking speed. Today the downed body does not move, so it fails.",
+   "clash": "",
+   "related": "g-58, g-60, 120e-downed-damage-cuts"
+  },
+  {
+   "id": "g-64",
+   "choice": "Add ammo and gun",
+   "verdict": "change",
+   "today": "Confirmed. netTeamHud (61186) draws per row the name, DOWN with seconds, a health bar and an armour bar (61203-61213) in a box 36 high (61206) on a 44 step (61203, _trh 61196). The st word (60417) carries the gun id (w, e.g. 'carbine') but no ammo, and the row never shows the gun.",
+   "change": "The st word adds am (p.ammo, rounds in the magazine) and rs (rsvShow(p) 25478, the reserve as his own HUD shows it); the host relays both (58987) and the take stores them (58980). netTeamHud: a third line under the bars, the gun name (forgeName(g.w,g.fk), lowered by the text door) on the left and 'am / rs' on the right in TYPE.micro; nothing when he holds no gun (w empty or 'fists') or g.hd. Row box from 36 to 48 high, row step from 44 to 56 (the y step, _ty, _trh and NETTEAMBOX). Pictures at 1080p and 4K, both windows, smooth look.",
+   "party": true,
+   "size": "M",
+   "risk": "the left column may crowd at 4K; the row must stay readable from the couch",
+   "check": "Feed a teammate word with w 'carbine', am 18, rs 90; draw netTeamHud with fillText captured; 'burst carbine' (any case) and '18 / 90' are drawn. Today neither is drawn, so it fails.",
+   "clash": "",
+   "related": "138-hud-size-row-does-nothing"
+  },
+  {
+   "id": "g-65",
+   "choice": "No, only your own",
+   "verdict": "already",
+   "today": "Confirmed. No view of another player's backpack exists; searching a hire's bag was removed in v6.72 (29617-29622). The T key only offers one selected item (18193).",
+   "change": "",
+   "party": true,
+   "size": "S",
+   "risk": "nothing changes",
+   "check": "No work; nothing to test.",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-66",
+   "choice": "Yes, a save medal",
+   "verdict": "change",
+   "today": "Confirmed. Medals come only from kills, style and the team combo through styMedal (66569), with tiers in STY_TIER (66631) and icons in STY_ICON (66636). A finished pick-up pays nothing: the rise branch of netRevHold (62590) only says NAME IS BACK UP and plays the land sound.",
+   "change": "When a pick-up starts (G.netRevS changes, 62597), set G.netRevAt0=G.t. In the rise branch (62590), pay styMedal('SAVE',150,p.x,p.y) when the reviver took damage during the hold (p.hurtAt>=G.netRevAt0) or a hostile (flowFoe) in chase, alarm or hunt stood within 700 when it landed (mirrors carry state, NET_ENT_STATES 60588), only while xf('xfStyle') is on. Add 'SAVE':2 to STY_TIER and a STY_ICON path (the TEAM COMBO figures are fine). No STY_SND entry: since v27.94 a medal's only sound is the tier blip styMedal already plays. On screen 'save' and '+150 sp' (text door). Demo and career.",
+   "party": true,
+   "size": "S",
+   "risk": "the medal may fire on almost every revive near a machine; watch how often it pops",
+   "check": "Pair fixture: start a 3.2 s pick-up, set p.hurtAt=G.t inside the hold, then feed the partner word showing him up; G.sty.pops holds SAVE and the run score rose by 150. Control: a quiet pick-up pays no SAVE. Today no SAVE medal exists, so it fails.",
+   "clash": "",
+   "related": "g-58"
+  },
+  {
+   "id": "g-67",
+   "choice": "No",
+   "verdict": "already",
+   "today": "Confirmed. Nothing makes the player still up top tougher when the partner is dead or out: arcadeExtractEnd (64102) only benches the extractor, and no code changes the other player's health, armour or damage then.",
+   "change": "",
+   "party": true,
+   "size": "S",
+   "risk": "nothing changes",
+   "check": "No work; nothing to test.",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-68",
+   "choice": "Pad defaults to toggle",
+   "verdict": "change",
+   "today": "There is one SPRINT row in CONTROLS: GAMEOPTS k:'sprintMode' (dark_raiders.html 71150-71155). Its options are HOLD {sprintTgl:0} and TOGGLE {sprintTgl:1}, with def:0, so keys and pad both start on hold. The pad's LS click (pad action 10, read through padLogical, so every preset in PAD_PRESETS 20303 keeps it on sprint) writes the same keys['ShiftLeft'] through padHold (PADHOLD 10:'ShiftLeft' 19028, padHold 19641-19643, raid loop call 19991). updatePlayer reads one flag for both (_shHeld 28892, toggle block 28896-28901, only when CFG.sprintTgl===1). PAD.held.ShiftLeft is 1 only while the pad holds the key, so the pad press can be told apart from the keyboard. Nothing else reads sprintTgl or G.sprintOn. A row pick is saved only on a click (cycleGameOpt 71512); otherwise gameOptIx (71437) returns row.def. The memory note gameplay-next-1025.md line 171 logged this as his call against his 09-04 hold note (v10.87). That note is not on the veto list, and this 10-25 pick is newer, so it wins.",
+   "change": "Keep the one SPRINT row (one control per job) and add a third option, which becomes the default. 1) GAMEOPTS sprintMode (71150-71155): opts [HOLD {sprintTgl:0}, TOGGLE {sprintTgl:1}, 'HOLD, PAD TOGGLE' {sprintTgl:2}], def:2. Indexes 0 and 1 keep their meaning, so a saved hand pick is kept. Hint (drawn lower case): 'Hold: run while the key is down. Toggle: press once to run, until you stop or tire. Hold, pad toggle: keys hold, the pad stick click toggles.' 2) updatePlayer sprint block (28892-28901): add var _padSh=!!(PAD.on&&PAD.held&&PAD.held.ShiftLeft). When CFG.sprintTgl===2: if(_padSh&&!G.shWasPad&&!p.downed) G.sprintOn=!G.sprintOn; G.shWasPad=_padSh; then if(G.sprintOn&&(mg===0||p.downed||p.ads||p.stam<=2||p.stamLock||p.stamRelease)) G.sprintOn=false (the same cancel line as mode 1); then _shHeld=(_shHeld&&!_padSh)||!!G.sprintOn, so a keyboard Shift is still a hold. Modes 0 and 1 run exactly as today, and both also set G.shWasPad=_padSh. The Undercroft jog (49895, hub pad path 19789) stays a hold. Simulation only, no drawing. Each window reads its own pad and profile.",
+   "party": true,
+   "size": "S",
+   "risk": "Check that a pad player clicks LS once and keeps running, that the run ends when the stick is let go, on aim (LT) or when breath runs out, and that keyboard Shift is still a hold. If his own save already holds a hand pick on this row, he keeps it until he clicks the row. If g-1 (firing stops a sprint) ships, it must clear G.sprintOn too, or the sprint comes back after a shot. Look at the Settings row in a picture: the new option name is the longest on the row.",
+   "check": "Fresh profile: set P.gameOpts={} and P.tuned={}, then call applyGameOpts() (there is no __opts in the game). Expect CFG.sprintTgl===2 and gameOptLive('sprintMode')===2. Stub navigator.getGamepads with a pad whose axes[0]=1 and button 10 is pressed for one poll and then released, and step raid frames. G.sprinting must stay true after the release. Control 1: keyboard keys.KeyD=true with keys.ShiftLeft true and then false gives G.sprinting false after the release (keys still hold). Control 2: P.gameOpts.sprintMode=0 with applyGameOpts() keeps the pad on hold. This fails today because def is 0, so CFG.sprintTgl is 0 and the pad sprint ends as soon as button 10 is released.",
+   "clash": "",
+   "related": "g-1 (firing stops a sprint: must clear G.sprintOn too); job 120d-pad-trigger-not-aim (an RT pull stops counting as aiming, so it no longer cuts a toggled sprint; with g-1 the two need one rule); done 81a-ads-breaks-sprint"
+  },
+  {
+   "id": "g-69",
+   "choice": "The roll key only, as now",
+   "verdict": "already",
+   "today": "The keyboard rolls only on the roll key: keydown 'Space' at 18216 calls tryRoll() (20776). The key can be rebound through KEYS_ACTS (20148). The Undercroft roll is also Space only (17936). No double tap, tap-sprint roll, dblTap or tapRoll code exists anywhere (grep finds none). The pad rolls on A.",
+   "change": "",
+   "party": false,
+   "size": "S",
+   "risk": "None, nothing changes.",
+   "check": "No change is needed. A guard check could assert that a tap of ShiftLeft and a double tap of KeyD leave p.roll at 0 while Space starts a roll. That check passes today.",
+   "clash": "",
+   "related": "g-74"
+  },
+  {
+   "id": "g-70",
+   "choice": "Next gun, as now",
+   "verdict": "already",
+   "today": "F calls nextGun() (keydown 18169). nextGun (24376) uses nextGunCell (24321), which takes the next gun key after the one in hand and wraps round the bar, skipping vacant and packed cells. Nothing remembers the last gun held.",
+   "change": "",
+   "party": false,
+   "size": "S",
+   "risk": "None, nothing changes.",
+   "check": "No change is needed. A guard check could put guns on keys 0 and 2 with gun 0 in hand, press F and expect key 2, then press F again and expect key 0. That check passes today.",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-71",
+   "choice": "Zoom, as now",
+   "verdict": "already",
+   "today": "The canvas wheel listener (18299-18318) zooms with setZoom(zoomTarget()*Math.exp(...)) (setZoom 35630, zoomTarget 35629). Ctrl with the wheel sizes the HUD (hudSizeStep 18283). No wheel path changes the gun. The window wheel listener at 17838 only marks the input device.",
+   "change": "",
+   "party": false,
+   "size": "S",
+   "risk": "None, nothing changes.",
+   "check": "No change is needed. A guard check could fire a wheel event on cv and expect zoomTarget() to change while G.hot stays the same. That check passes today.",
+   "clash": "",
+   "related": "job 138-hud-size-row-does-nothing"
+  },
+  {
+   "id": "g-72",
+   "choice": "Press to open and close, as now",
+   "verdict": "already",
+   "today": "M toggles the map on keydown (18079: G.mapOpen=!G.mapOpen). The keyup handler (18323) never names KeyM, so letting go does not close it. The pad D-UP also toggles it: a 0.4 s hold at 20000, and in solo a tap at 20003.",
+   "change": "",
+   "party": false,
+   "size": "S",
+   "risk": "None, nothing changes.",
+   "check": "No change is needed. A guard check could press and release KeyM and expect G.mapOpen to stay true until the next press. That check passes today.",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-73",
+   "choice": "No, as now",
+   "verdict": "already",
+   "today": "padRumble (59825) is called only for blasts near you (21214, 21485, 21576, 21927), hits on you (23554), going down (23685), each shot (24778) and a teammate going down (58979). The other buzz path (19566-19574) is the pad check in Settings. The 'seen' stinger (sfx 32153, 32159), the machine alert (sfx 'alarm' through alarmOk 8149) and the lock-on siren (tickMachSiren 8412) make no rumble.",
+   "change": "",
+   "party": false,
+   "size": "S",
+   "risk": "None, nothing changes.",
+   "check": "No change is needed. A guard check could spy on padRumble, make a machine spot the player and expect no call. That check passes today.",
+   "clash": "",
+   "related": "job 120i-shake-rumble-half"
+  },
+  {
+   "id": "g-74",
+   "choice": "Where you move, as now",
+   "verdict": "already",
+   "today": "tryRoll (20776) reads the movement keys (20806-20809), or the left stick when it is pushed (20813-20816), and sets p.rollDir from that move vector (20817). With no movement input it rolls along p.face (20818). The Undercroft roll does the same (17937-17942). Aim is used only when standing still.",
+   "change": "",
+   "party": false,
+   "size": "S",
+   "risk": "None, nothing changes.",
+   "check": "No change is needed. A guard check could hold KeyD with the aim pointing up, press Space and expect p.rollDir.x close to 1. That check passes today.",
+   "clash": "",
+   "related": "g-69"
+  },
+  {
+   "id": "g-75",
+   "choice": "Yes, fire stops it",
+   "verdict": "change",
+   "today": "Firing cannot stop a reload. The gun branch of the trigger chain (29181) needs p.reloading<=0, so a press during a reload does nothing until tickReload (25480, called at 29064) finishes and adds rlRounds. A swap, a draw or going down cut a reload short (p.reloading=0 at 23721, 26466, 26657, 26717, 26813, 26925), but the trigger does not. tickReload adds rounds only at the end, so the rounds still in the magazine (p.ammo) are untouched while a reload runs. While the trigger is held during a reload no branch runs, so p.fired keeps the value it had: true if the trigger was held since before the reload, false after a release. The pad RT sets mouse.down (19902), so a change here covers the pad too. No older ruling forbids a cancel (the v5.44 comment at 29214 already calls the reload interruptible).",
+   "change": "In updatePlayer, right after 'var hotGun=...' (29133) and before the trigger chain (29134), add: if(mouse.down&&hotGun&&!p.fired&&!p.trigYield&&!p.hand&&!p.cooking&&!(p.drawT>0)&&p.jam<=0&&p.reloading>0&&p.wep&&p.wep.mag>0&&p.ammo>0){ p.reloading=0; p.rlTot=0; p.rlArm=0; if(!G.sim) rlfxStop(); }. The gun branch at 29181 then fires on the same frame. On the Support MG it spins up first, because spinTick ran before this line. Only a fresh press counts. A trigger held since before the reload (p.fired true) never cancels, and neither does the dry pull that started an auto reload (p.ammo is 0). An empty magazine never cancels, so an empty gun cannot loop. Nothing is added to or taken from p.reserve, and no active reload bonus is given. The reload bar and ring go away because p.reloading is 0. The bot sim (29823, 29990) is unchanged. No new text.",
+   "party": true,
+   "size": "S",
+   "risk": "Watch for a reload that seems to vanish when a player taps fire out of habit mid reload with a few rounds left. On the Support MG and the rocket tube, check that cancelling and then firing feels right. A held keyboard R or pad X starts the reload again on the next frame (29066), which is expected.",
+   "check": "In a fixture raid, give the player a rifle with p.ammo=5, p.reserve=60, p.lastShot=-1e9, mouse.down=false and keys.KeyR=true, and step one frame so that p.reloading>0. Then set keys.KeyR=false, mouse.down=true and p.fired=false, and step one frame. Expect p.reloading<=0, p.ammo===4 and p.reserve===60. Control 1: p.ammo=0 with a reload running and a fresh press, and the reload goes on (p.reloading>0). Control 2: with p.fired=true (trigger held), the reload is not cancelled. This fails today because the press is ignored while p.reloading>0, so ammo stays 5 and the reload goes on.",
+   "clash": "",
+   "related": "g-12 (shotgun shell by shell: a cancel then keeps the shells already loaded); g-7 (reload on the run); job 120f-pad-x-reload-prompt"
+  },
+  {
+   "id": "g-76",
+   "choice": "No, holds stay holds",
+   "verdict": "already",
+   "today": "Extraction is a hold: z.pullT builds while the call is held (27778) and boards at 1.4 s (27783), and letting go resets it (27784). A partner revive is a hold of E for NET_REV_T 3.2 s (62555, hold logic 62593-62602), and letting go or rolling resets it (62595). No GAMEOPTS row (list 70984-71420) or XF_ROWS line (4159) offers a tap mode, and no tap or holdTap dial exists.",
+   "change": "",
+   "party": false,
+   "size": "S",
+   "risk": "None, nothing changes.",
+   "check": "No change is needed. A guard check could assert that no GAMEOPTS row has a cfg key that names a tap mode for extract or revive. That check passes today.",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-77",
+   "choice": "(none)",
+   "verdict": "skip",
+   "today": "Nothing is picked and there is no note. The crosshair never dims for range. The reticle colour (rState and rCol, about 43350-43355) depends only on jam, reload and empty, and xhArms (52878) and xhDot (52889) draw it. A round simply stops at the gun's range. Today stays.",
+   "change": "",
+   "party": false,
+   "size": "S",
+   "risk": "None, nothing changes.",
+   "check": "No change.",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-78",
+   "choice": "No, the full HUD always",
+   "verdict": "already",
+   "today": "Settings has no clean view or HUD hide row. The GAMEOPTS rows (70984-71420) and XF_ROWS (4159) have no hideHud or cleanView. Only single parts have rows: MINIMAP size, DAMAGE NUMBERS, SHOW FPS and HUD SIZE. HUD panels can be dragged or folded one at a time (hudOff 46018 holds dx, dy and the fold flag c).",
+   "change": "",
+   "party": false,
+   "size": "S",
+   "risk": "None, nothing changes.",
+   "check": "No change is needed. A guard check could assert that no GAMEOPTS row hides the HUD as a whole. That check passes today.",
+   "clash": "",
+   "related": "job 138-hud-size-row-does-nothing"
+  },
+  {
+   "id": "g-79",
+   "choice": "No, always on",
+   "verdict": "already",
+   "today": "drawAimMark (36863), called from aimMarks (36880) in every live frame (40366, skipped only under G.sim), draws the faint dotted line from the gun to 40 px short of the crosshair whenever a gun is held. On elite and gold guns (gunLaserOk 36852) the red laser replaces it while aiming down sights. No CFG dial, Settings row or XF_ROWS line turns it off (xfTell 'aim lanes' is the enemy aim lanes).",
+   "change": "",
+   "party": false,
+   "size": "S",
+   "risk": "None, nothing changes.",
+   "check": "No change is needed. A guard check could assert that drawAimMark returns 1 for a held rifle at hip with the cursor 300 away, and that no GAMEOPTS row names the aim line. That check passes today.",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-80",
+   "choice": "No, blood always shows",
+   "verdict": "already",
+   "today": "bloodFx (23273) runs for players (23634) and pillager bots (24450, 24477, 33329, 33403, 33432, 62544), with no on or off gate other than G.sim. There is no CFG.blood or gore dial and no Settings row for it. Effects Reduced and REDUCED FLASHING only thin the droplet count in spark (23283-23284). They never remove blood.",
+   "change": "",
+   "party": false,
+   "size": "S",
+   "risk": "None, nothing changes.",
+   "check": "No change is needed. A guard check could assert that no GAMEOPTS row names blood or gore and that bloodFx still pushes a puff with CFG.flashRed=1. That check passes today.",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-81",
+   "choice": "Yes, their own row",
+   "verdict": "change",
+   "today": "The AUDIO rows are Master, Music, Effects, UI, Footsteps, Mono and Late night (71068-71134), and none covers alarms. The alarm and warning sounds ride other rows. 'alarm' (machine alert through sfx and alarmOk 8149-8177, siege incoming blip 27895) and 'seen' (31107, 32153) are on the 'mach' bus (SND_CAT 6895-6900) under Effects. 'xalarm' (28216), 'lastcall' (sfxHere 28441) and 'lastmin' (50192) fall to the 'world' bus under Effects. 'clockwarn' and 'clocktick' (50188-50198) are on the 'ui' bus, so UI VOLUME scales them today (the volUi hint at 71104 says 'and the clock'). All seven generators scale their gain by blip's vol (10134, 10187, 10198, 10213, 10231, 10239, 10481). The lock-on siren is its own voice on the mach bus (tickMachSiren 8412, level lv at 8429). The alert lane stings for crit and warn (ALERTSND 22398, alertSting 22403, styTone 66551), the teammate down alert (sndMateAlert 7089) and the two and one minute cues (annSpec TWOMIN and ONEMIN 7891-7892, annCue 7895) play on the sting bus. The FOOTSTEPS VOLUME multiply inside blip (9785) is the pattern to copy. The 'ui' and 'sting' buses both go straight to BUS with no compressor or ducking (sndBuild 6914); the ui gain is volUi and the sting gain is 1. Demo pause opens the same Settings (20670).",
+   "change": "1) GAMEOPTS: a row after volFoot (71112-71120), before mono: {k:'volAlarm', label:'ALARMS VOLUME', sec:'AUDIO', hint:'Alarms, warnings and the raid clock. On top of effects volume.', opts OFF 0 / 25% 0.25 / 50% 0.5 / 75% 0.75 / FULL 1 as cfg {volAlarm:x}, def:4}. At FULL the mix is exactly today's. 2) Next to SND_CAT (6895): var SND_ALARM={alarm:1,seen:1,xalarm:1,lastcall:1,clockwarn:1,clocktick:1,lastmin:1}; function alarmVolK(t){ return SND_ALARM[t]?volOf('volAlarm'):1; }. In SND_CAT, move clockwarn and clocktick from 'ui' to 'sting', so only one row (alarms) controls the clock (one control per job). This is the same at UI FULL, because both buses go straight to BUS. Drop 'and the clock' from the volUi hint (71104), with the reason logged in notes/ui/changes.md. 3) blip (9785): after the volFoot multiply, add vol*=alarmVolK(type), before the vol<=.02 return, so OFF is silent. 4) tickMachSiren (8429): lv*=volOf('volAlarm') (the LOCKED ON text stays). 5) alertSting (22403): for k 'crit' and 'warn' only, var v=volOf('volAlarm'); if(!(v>0)) return false; pass styTone a copy of the notes with each n[5] times v. 'ext' (good news) is unchanged. 6) sndMateAlert (7089): if(!(volOf('volAlarm')>0)) return false; the peak 0.2 becomes 0.2*volOf('volAlarm'). 7) annCue (7895): for k 'TWOMIN' and 'ONEMIN' only, return false at 0 before ANNC.busy is set, and scale each n[5] by volOf('volAlarm'). These stay on Effects: heartbeat, downed sting (sndDowned), revive, medals, kill streaks, the extraction beacon family (beacon, inbound, touchdown, board), WAVE, HISCORE and EXTRACTED. Audio only, nothing in the simulation moves, noise rings still show (noiseMark runs before audio in sfx).",
+   "party": true,
+   "size": "M",
+   "risk": "At FULL nothing should sound different. At OFF, check that the raid clock, the siege and extraction alarms, the lock-on siren and the alert stings really go quiet while guns, steps and good-news stings stay. UI VOLUME no longer moves the clock ticks. His 09-27 note said the 5 minute alarm was still too loud, and harsh sound is his worst party problem (answer 27), so this row is his lever for it.",
+   "check": "Copy the v26.38 settings1 check (tools/mkfixture.ps1 about 37342-37430: fakeOn, MADE, peak, _realBlip). A fresh profile has a volAlarm row with 5 steps in AUDIO and CFG.volAlarm===1, and SND_CAT.clockwarn==='sting'. With CFG.volAlarm=1, record the peak of _realBlip('clockwarn'). At 0.5 the peak is 0.35 to 0.65 of full. At 0, each of the 7 SND_ALARM types makes no nodes, alertSting('warn'), sndMateAlert() and annCue('TWOMIN') return false, and tickMachSiren sets MSIREN.lvl to 0 with a machine locked on. Control: at 0, 'clank' and 'shot' still play, alertSting('ext') still plays, and with CFG.volUi=0 and volAlarm=1, clockwarn still makes nodes on the sting bus. This fails today because there is no volAlarm row and blip ignores CFG.volAlarm, so a clockwarn at 0 still plays at full.",
+   "clash": "",
+   "related": "g-49 (a vault alarm's new sound should join SND_ALARM); job 131-gun-impact-sound-caps (same blip function); g-82 (near-empty click, not an alarm)"
+  },
+  {
+   "id": "g-82",
+   "choice": "Add a lighter click near empty",
+   "verdict": "change",
+   "today": "Confirmed: only the ring warns. The magazine ring (dark_raiders.html 43393-43418) is white above half, amber (_mf>0.25), red at a quarter or less, and pulses at a quarter or less when CFG.cursorLoud is on (_lowPulse, 43405). The fire path at 29205-29206 (if(!pwrClip()) p.ammo--; fireWeapon(...)) plays only the gunshot (blipMine('shot') at 24765). The dry click (blip type 'dry' at 9828) plays only on a pull with the magazine already empty (blipMine('dry') at 29228). No sound marks a low magazine.",
+   "change": "Add a quiet low-magazine tick on your own shots once the ring is red. 1) New blip type 'lowmag' next to 'dry' (about line 9828): a 260-sample noise burst through a bandpass at 3600 Hz, Q 6, gain 0.05*vol (about half the dry click's 0.09), started 0.03 s after t so it lands just after the crack. 2) New function lowMagClick(p), called right after fireWeapon at line 29206 (not on the jam branch above it). It plays blip('lowmag') when !G.sim, p.wep.mag>0, !pwrClip(), and p.ammo (rounds left after this shot) is from 1 to Math.max(1,Math.floor(p.wep.mag*0.25)), the same red step as the ring. Use blip, not blipMine, so only this window hears it. The empty magazine keeps the dry click. No new setting; the sound volume rows apply. Code comment: v34.xx (cw-lowmag).",
+   "party": true,
+   "size": "S",
+   "risk": "Check the tick reads under the gunshot without nagging: the Support MG (60 rounds) ticks for its last 15, the Auto Rifle (25) for its last 6.",
+   "check": "In a live raid fixture: stub blip to record its types, give the player the Auto Rifle (mag 25), set p.ammo=4, clear keys, hold the trigger for one update frame. Expect one 'lowmag' record. The same with p.ammo=20 expects none. It fails today because nothing ever plays a 'lowmag' type.",
+   "clash": "",
+   "related": "131 (gun and impact sound caps: count lowmag as a gun voice)"
+  },
+  {
+   "id": "g-83",
+   "choice": "Smoke and sparks only, as now",
+   "verdict": "change",
+   "today": "The question's note left something out. Smoke and sparks exist: gfxDamageFx (52994-53021, v34.73 cw-machdmg) draws smoke at half health or less and sparks plus a stuttering eye at a fifth or less, for GFXDMG_KINDS (52987: sentry, crawler, snitch, listener, bulwark, howler, warden, choir). But every machine is also named (mkName at 15124, 15142, 15283, 15386, 15442, 15459, 15483, 15490), and the nameplate loop in _wtA draws a 3 px health pip under any visible named body once it is hurt: 41270-41275, if(ne.hp<ne.maxhp){ ... fillRect(ne.x-tw/2-4,ne.y-lift+5,(tw+8)*fw,3) }. So today a hurt machine also shows a small bar (option b), not smoke and sparks only.",
+   "change": "Take the health pip off machines and keep everything else. At line 41271 change `if(ne.hp<ne.maxhp){` (it occurs once in the file) to `if(ne.hp<ne.maxhp&&!GFXDMG_KINDS[ne.kind]){`. Pillager bots, the hire, strays and the peddler keep their pip; machine nameplates, smoke and sparks stay; the Overseer (kind warden, boss) keeps its top boss bar (drawBossBar, 42925). Render only. Code comment: v34.xx (cw-nomachpip), his pick 'smoke and sparks only'. Tell the job 120a helper that machines no longer carry a pip.",
+   "party": true,
+   "size": "S",
+   "risk": "The question did not tell him about the pip, so watch that he really wants it gone. His v34.78 photo (job 125) shows the smoke barely reads at 1080p, so until 125 is fixed a nearly dead machine may be hard to spot.",
+   "check": "In a live raid fixture: a sentry in view at 50 percent health and a hostile pillager bot at 50 percent, both in VIS. Run render2D with a wc.fillRect spy. Expect no 3 px high fill at the sentry's pip row (ne.y-lift+5) while the pillager bot's pip is drawn. It fails today because the sentry's pip is drawn.",
+   "clash": "",
+   "related": "125 (machine smoke and sparks do not read), 120a (bulwark bigger, mentions the pip)"
+  },
+  {
+   "id": "g-84",
+   "choice": "Yes, one growing number",
+   "verdict": "change",
+   "today": "Confirmed: every hit gets its own number. dmgNum (23338) pushes a new {x,y,t,life,n,c,kill,vx,vy} into G.dmgN on every call (oldest dropped past 40). Callers: player rounds at 33252 (netFxDmg for the party at 33253), the crowbar at 24449, shock arcs at 21632 and 30904, and teammate numbers received at 60719. drawDmgNums (23353) draws each entry on its own, so six shotgun pellets make six numbers.",
+   "change": "Merge numbers per target. 1) dmgNum(x,y,amount,col,kill,key) takes a 6th argument key: the entity for this window's own hits (en at 33252, e at 24449, best at 21632 and 30904). 2) If a live entry has the same key and the same colour (so weak spot, element and armour colours still read) and its last add was 0.5 s ago or less (d.last vs G.t), add to it instead of pushing: d.n+=amount; d.kill=d.kill||kill (when it turns true set d.life=1.05); d.t=0; d.last=G.t; d.hits++; move it back to the new x,y with fresh vx,vy so sustained fire does not carry it away; d.pop=0.12. 3) drawDmgNums scales the font by 1+Math.min(0.5,0.06*(hits-1)), times an extra 1.25 easing to 1 over pop. 4) Party: netFxDmg (60618) appends the target nid as d[5] (callers at 33253 and 24449 pass it); the receiver at 60719 passes 'p'+nid as key so a teammate's hits on one enemy merge too. Calls with no key never merge. The DAMAGE NUMBERS setting still turns all of it off. Cosmetic only (fxn stream). Code comment: v34.xx (cw-dmgmerge).",
+   "party": true,
+   "size": "M",
+   "risk": "Watch shotgun, LMG and SMG fights: one climbing number should read cleaner, but check a weak point hit still stands out in its own colour and two players on one enemy stay readable.",
+   "check": "In a live raid fixture with damage numbers on: fire three real Auto Rifle rounds from the player into one sentry across 3 update ticks of 0.1 s. Expect one G.dmgN entry for that sentry with n equal to the sum of the three hits and hits 3. A hit on a second sentry gets its own entry, and a hit 0.7 s later starts a new one. It fails today because three entries exist.",
+   "clash": "",
+   "related": "g-85 (your own damage numbers use the same merge, key 'self')"
+  },
+  {
+   "id": "g-85",
+   "choice": "Yes, red numbers",
+   "verdict": "change",
+   "today": "Confirmed. In your own window the damage you take shows only as '-N' inside the right end of the health bar (44515-44528, ui5q1l, p.lastDmg set at 23633) plus the red ghost block (hpGhost). A red number over your pillager goes only to your teammate: damagePlayer (23509) at 23624 calls netFxDmg(p.x,p.y-26,amt,'#ff5a4a',...) when NET.on. No dmgNum call exists for your own body (callers are 21632, 24449, 30904, 33252, 60719 only).",
+   "change": "In damagePlayer next to line 23624 also put the number up in this window: when !G.sim && amt>0.5 && CFG.dmgNumbers!==0, call dmgNum(p.x+fxn(-5,5),p.y-26,Math.round(amt),'#ff5a4a',p.hp<=0,'self'). Same spot and red the teammate already sees, kill style when the hit downs you. With g-84 the key 'self' merges a burst into one growing number. Keep the in-bar '-N' and the ghost block. Each window does this for its own pillager, solo and in the party. Code comment: v34.xx (cw-selfdmg).",
+   "party": true,
+   "size": "S",
+   "risk": "Check red numbers over your own pillager do not crowd your body or the reticle in a big fight.",
+   "check": "In a solo live raid fixture (NET off), damage numbers on, no armour, not invulnerable: call damagePlayer(20,'sentry','SENTRY K',p.x+100,p.y). Expect a G.dmgN entry with colour #ff5a4a, n equal to p.lastDmg (the hit after the damage multipliers), within 40 px of (p.x,p.y-26). It fails today because solo damagePlayer adds nothing to G.dmgN.",
+   "clash": "",
+   "related": "g-84"
+  },
+  {
+   "id": "g-86",
+   "choice": "Yes, a small gun or element icon",
+   "verdict": "change",
+   "today": "Confirmed: names only. feedKillEnt (23048) builds via feedKillLine(by,mine,mate,vn,vcol,verb) (23030, 6 arguments) the segments 'you  >  sentry k'; the line's glyph is the skull (FEEDGL.kill, 22934). The party list (netFeedKill 61557, netFeedTake 61564, netFeedPush 61570, netFeedDraw 61578) shows 'name killed who'. The cause is partly recorded already: a round sets e.blow='g' and e.blowG=b.gid (33283), a swing 'm' (24730), the plain explosive barrel 'x' (21520), the element barrels 'x' (21599, brlBlastK, B.k is shock, acid or cryo), your charge 'x' (21998), the air strike 'a' (64436). A burn kill happens in elemTick (e.hp-=burnDps at about 30927) and shock arc kills in brlArcs (21611-21632) and elemArc (30889-30904); none of these record an element. In the party, the host never sets blow or blowG for a teammate's round: netShotSend (62485) carries no gun id and netShotTake (62502-62547) sets only byPlayer/bySeat (62537). gunIcon(c,id,cx,cy,S,tint) (46738) draws any gun, coloured when forged.",
+   "change": "1) Record the element on the killing blow only: in elemTick when the burn takes the last health set e.blowEl='fire'; in brlBlastK (21599) when the blast kills set e.blowEl=B.k; in brlArcs and elemArc when the arc kills set blowEl='shock'. Every other blow site (33283, 24730, 21520, 21998, 64436) sets e.blowEl='' so an older element never shows. 2) feedKillEnt works out how: {el:e.blowEl} when set; else {g:e.blowG} for blow 'g' when WEAPONS[blowG] and blowG!=='fists'; else {k:e.blow} for 'm', 'x', 'a'; else null (no icon, as today). Pass it to feedKillLine as a 7th argument and store it on the line (a merged repeat keeps the newest). 3) In feedKillLine the '  >  ' separator becomes an icon segment {ic:how} when how is set; feedParts gives it a width of 1.3x the line height and feedDraw (23099) draws it: a gun with gunIcon(ctx,id,cx,cy,S); an element as a filled disc in ELEM[el].c; m, x and a as new UIICON paths 'crowbar', 'blast' and 'strike' (13163). 4) Party: netShotSend adds m.g (the gun id, 12 chars at most); netShotTake sets e.blow='g', e.blowG=m.g, e.blowEl='' on a gun round (m.sk). netFeedKill adds h (gun id, 'e:'+el or 'k:'+k) to {t:'kf'}; netFeedTake and netFeedPush pass it to feedKillLine; netFeedDraw draws the same icon in place of the word 'killed'. No text is added. Code comment: v34.xx (cw-feedicon).",
+   "party": true,
+   "size": "M",
+   "risk": "Check the gun picture reads at 1080p in the left feed and in the party list, and that a burn, shock or element barrel kill shows the element, not the gun.",
+   "check": "In a live raid fixture: a sentry with blow 'g', blowG 'rifle', byPlayer true, hp 0. Call feedKillEnt(e) and expect the returned line's how.g to be 'rifle'; run feedDraw with a gunIcon spy and expect a call with id 'rifle'. A sentry with burnT>0, burnDps high and hp 1 run through elemTick gives how.el 'fire'. It fails today because the line has no how and feedDraw never calls gunIcon.",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-87",
+   "choice": "The HUD bar only",
+   "verdict": "already",
+   "today": "Already the case. Armour points are never drawn on the body: no render code from 35500 to 42000 reads p.armor; drawOp (36714) gets only the rig's bulk (armorById(p.rig).bulk at 40958 and 41147), and the plates and helmets it draws follow the armour tier, not wear. Wear shows only as the HUD bar (44529, bar(16,by-50,HBW,16,p.armor/armorCap(),'#5aa9e6')) and the plate ring and break sounds (armorHitFoley, 23500, sound only). No cracks, no falling plates.",
+   "change": "",
+   "party": true,
+   "size": "S",
+   "risk": "None, nothing changes.",
+   "check": "No check needed: no change.",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-88",
+   "choice": "Enemy tracers in a warning colour",
+   "verdict": "change",
+   "today": "Confirmed: enemy shots look like yours. fireWeapon (24684) gives every round tint wep.tint||'#ffd48a' (24745). Pillager bots fire real guns with the same warm tints as yours (WEAPONS 4253-4283: rifle '#ffcf7a', smg '#ffe0a0'). Machines pass warm tints too: sentry '#ff9a6a' (15084, 32394), choir/pillbox '#e0a0ff' (31792), '#ffc04a' (31853). The tracer pass (41355) strokes b.tint, wider only for elemental rounds. netFxShot (60612) sends b.tint to the other windows (received at 60709, where a[5] also colours the muzzle flash via gfxShotFx). The night core branch (_trc>1 at 41359) never runs, because every round has an owner (owner:sh at 24745, owner:1 at 60709).",
+   "change": "One warning red for every shot not from your side. Add var ENEMY_TRACER='#ff3b2f' beside fireWeapon. In the push at 24745 set tint: foeShot(sh,fromPlayer)?ENEMY_TRACER:(wep.tint||'#ffd48a'), with foeShot = !fromPlayer && sh && !sh.merc && !sh.friendlyPC && !sh.friendly && sh.kind!=='stray' && sh.kind!=='peddler': every machine and every pillager bot not on your side turns red; your rounds and your hire's keep the gun tint, and forged rounds keep their element colour and width. The muzzle flash in this window still reads wep.tint (24767). The other windows get the red through b.tint with no extra work; in the receiver (60710-60712) pass '#ffc27a' to gfxShotFx when a[5]===ENEMY_TRACER so the muzzle flash there stays warm. Leave the dead night core alone. Render only, no seeded draw. Code comment: v34.xx (cw-redtracers).",
+   "party": true,
+   "size": "S",
+   "risk": "Check red enemy rounds stand out from the red danger HUD, the red noise rings and the attack telegraph lanes, at night and in rain, and that two pillager crews fighting each other still read.",
+   "check": "In a fixture: a hostile sentry fires fireWeapon(e,{dmg:14,spread:.1,rng:340,noise:340,tint:'#ff9a6a'},px,py,false) and a hostile pillager bot fires WEAPONS.rifle. Expect both new G.bullets tints to equal ENEMY_TRACER. A hire (merc 1) firing the rifle keeps '#ffcf7a', and the player's own round keeps its gun tint. It fails today with '#ff9a6a' and '#ffcf7a'.",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-89",
+   "choice": "Yes, a fading mark",
+   "verdict": "change",
+   "today": "Confirmed: out of sight is gone. render2D (39823) fills VIS in its visibility loop (39882-39902): ev.seen from canSee plus shared sight (netMateSees), and only VIS bodies are drawn. No code records where a machine was last seen. The only cue for an unseen machine is the red noise mark for sounds you hear (noiseMark, 7832).",
+   "change": "Render layer only. 1) A list LSEEN=[] of {e,x,y,t}, cleared when a raid starts, 12 entries at most (drop the oldest). 2) In the visibility loop after ev.seen is final (about line 39901), for a live machine (GFXDMG_KINDS[ev.kind], hp>0, not gone or finished, not a dormant listener, not possum): if seen, set ev.lsWas=1 and drop any LSEEN entry for ev; if not seen and ev.lsWas, set ev.lsWas=0 and push {e:ev,x:ev.x,y:ev.y,t:G.t}. 3) Draw in the world text pass _wtA (41189, world transform, after the fog sheet): for each entry younger than LS_FADE=3.5 s whose machine is still alive and unseen, a hollow diamond of half size 9 world units, 2 px stroke in HUDC.warn, alpha 0.75*(1-age/LS_FADE), with a 2 px centre dot. No text. Never clamp it to the screen edge (edge markers were dropped, see the g-20 note in questions-100-1025-changes.md). Drop an entry when its machine is seen again, dies or the mark fades. Each window keeps its own (VIS is per window). Code comment: v34.xx (cw-lastseen).",
+   "party": true,
+   "size": "M",
+   "risk": "Check the marks help you track a machine round a corner without feeling like seeing through walls, and that a busy fight does not leave a trail of diamonds.",
+   "check": "In a live raid fixture: a sentry in the player's view; run render2D once. Move the sentry behind a wall out of canSee and run render2D again. Expect an LSEEN entry at its old position, drawn with alpha above 0 (spy the diamond path in _wtA). After G.t advances 4 s the entry is gone; seeing the sentry again clears it at once. It fails today because no LSEEN list or mark exists.",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-90",
+   "choice": "Yes, always faint",
+   "verdict": "change",
+   "today": "Confirmed: no ring shows your own noise. ping() (23224) records rings only when _src!=='player' (23238, 'NOT YOUR OWN, v5.31'); DESIGN.md 18153 logs that as his v5.31 taste note, not a veto. The SOUNDKEY legend (45553) ends with the row 'never your own' (45562). Your noise reach is real but unseen: s is scaled by CFG.noiseMult, the weather and your rig (23228-23230), and machines react within s. Steps ping 110 walking, 250 sprinting, 290 wading, nothing crouch-walking (29004-29005); shots ping wep.noise (24760).",
+   "change": "A faint ring at your feet showing how far your last noise reaches. 1) In ping() inside the !G.sim block, before the v5.31 skip: when _src==='player' && !quiet && !pre, call ownNoiseNote(s,typ), which keeps OWNNZ={r:Math.max(the ring's current radius,s),t:G.t,shot:typ==='fire'}. s is already after the multipliers, so the ring is the true reach. 2) Draw one 1.5 px ring centred on G.player at OWNNZ's radius in '#dfe7ee', in the same layer as the noise rings (41755 with ringsOnTop on, 41395 with it off). Alpha 0.10, or 0.20 for the first 0.3 s after a shot easing back to 0.10. The radius holds 0.8 s after the last noise, then shrinks to 0 over 0.5 s, so standing still or crouch-walking shows no ring. 3) Change the last SOUNDKEY row (45562) to this ring's colour with the words 'your reach'. Each window draws only its own pillager's ring (the hook runs before the player 2 window's early return at 23250). No new setting; no machine hears anything different. Code comment: v34.xx (cw-ownring), his 10-25 pick, newer than the v5.31 taste note.",
+   "party": true,
+   "size": "M",
+   "risk": "This reverses his v5.31 call that your own noise shows no ring. Check the ring stays faint enough to ignore while walking, and that the jump to the full shot radius when firing reads rather than looks busy.",
+   "check": "In a live raid fixture: fire the player's rifle (fireWeapon(p,WEAPONS.rifle,tx,ty,true)) and draw one frame with a wc.arc spy. Expect an arc centred on the player with radius equal to 420*CFG.noiseMult*wx().noise*armorById(p.rig).noise within 2 units. Crouch-walking 1 s then standing 1.5 s draws no such ring. It fails today because ping drops player noise and nothing draws a ring at the player.",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-91",
+   "choice": "Yes, a short replay",
+   "verdict": "change",
+   "today": "Confirmed: the KILLED IN ACTION card is text only. endRaid (34027) writes the title at 34819, the 'killed by X with Y' recap (deathRecap 34000, from G.tel.hitLog) and DAMAGE TAKEN. Nothing records frames for playback (suggestion 60 'death replay' in research/100-suggestions-2026-10-14.md was never built; 'best moments' on RUN OVER are figures, not video). The flight recorder (buildExport, 57294) is a text log.",
+   "change": "Render layer only. 1) New module DEATHREEL: a ring of 48 canvases 384 px wide (height from the screen aspect) holding 4 s at 12 fps. At the end of a drawn raid frame, after the HUD, when at least 1/12 s of raid time has passed since the last copy, draw the world canvas and then the HUD canvas scaled into the next ring canvas. Capture only when state==='raid', !G.sim, !G.arcade, not paused, and the player is alive and not downed; it stops filling the moment you go down (p.downed or hp<=0), so it holds the 4 s before the down; a revive clears it and starts again. 2) On the KILLED IN ACTION card (how==='dead', 34819) add a canvas panel about 480 px wide at 1080p that loops the frames oldest to newest at 12 fps and holds the last frame 0.6 s. No caption, or at most 'last 4 s' in lower case. 3) Free the canvases when the card closes or a raid starts. Each window keeps its own. The DEMO RUN OVER card is untouched. Measure the capture at 4K with both windows; if one copy costs over 0.5 ms, capture at 8 fps (32 frames). Code comment: v34.xx (cw-deathreel).",
+   "party": false,
+   "size": "L",
+   "risk": "Watch the frame rate and memory with two windows (about 16 MB per window), and check the clip shows what killed you rather than the bleed-out.",
+   "check": "In a live raid fixture: call the capture step 30 times, advancing G.t by 1/12 s each time. Down the player and call endRaid('dead'). Expect the KIA card to contain the replay canvas, the ring to hold 30 frames, and no frame added after the down. It fails today because there is no capture and the card has no canvas.",
+   "clash": "",
+   "related": "120k (two-player frame cost: the capture adds frame cost)"
+  },
+  {
+   "id": "g-92",
+   "choice": "No, $ and gear, as now",
+   "verdict": "already",
+   "today": "Already the case. contractTier, rollGear and payGear (6512-6560) pay $ plus one CGEAR entry. CGEAR (6422) holds only kinds wep (5: carbine, shotgun, rifle on hard; magnum, lmg on elite), key (1) and stash items (10); payGear handles only those. No cosmetic kind exists.",
+   "change": "",
+   "party": false,
+   "size": "S",
+   "risk": "None, nothing changes.",
+   "check": "No check needed: no change.",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-93",
+   "choice": "No, milestones only, as now",
+   "verdict": "already",
+   "today": "Already the case. COSMETICS (35766-35775): The Skeleton how 'extracts:12', The Trooper 'level:8', The Android 'runs:30' (The Machine 'warden:3'). cosOwned (36008) reads only profile counters (runs, ext, xpLevel, kills, cosBought, cosAll). The outfit ids appear only in the cosmetics, outfit art and pixel look tables (35769-35772, 36059-36062, 52052-52417), never in loot or contract pools.",
+   "change": "",
+   "party": false,
+   "size": "S",
+   "risk": "None, nothing changes.",
+   "check": "No check needed: no change.",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-94",
+   "choice": "(none)",
+   "verdict": "skip",
+   "today": "No pick and no note. The Undercroft has no shooting range today (no range code in dark_raiders.html). Nothing changes.",
+   "change": "",
+   "party": false,
+   "size": "S",
+   "risk": "None.",
+   "check": "No check needed.",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-95",
+   "choice": "They leave; hire fresh, as now",
+   "verdict": "already",
+   "today": "Already the case. startRaid moves the hire into the raid and clears him from the save (17749: G.mercId=P.merc; P.merc=null). endRaid restores him only to settle (34048) and ends the settling with P.merc=null (34256), so a hire lasts one raid. A safe extraction raises his standing by 2 near you or 1 on his own (34229), and mercCost (54547) takes off 8 percent per standing point, up to 40 percent.",
+   "change": "",
+   "party": false,
+   "size": "S",
+   "risk": "None, nothing changes.",
+   "check": "No check needed: no change.",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-96",
+   "choice": "No, they bring their own",
+   "verdict": "already",
+   "today": "Already the case. The hire spawns as his own identity with its own gun (mkRaider(msp.x,msp.y,mid,sim) at 17082, then merc 1, friendly 1 at 17083). The hire panel (renderMerc 54853, renderMercDetail 54922-54959) offers only the price and HIRE, no gun or stash choice. Gear reaches a hire only by handing it over during a raid (18935), which the question does not cover.",
+   "change": "",
+   "party": false,
+   "size": "S",
+   "risk": "None, nothing changes.",
+   "check": "No check needed: no change.",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-97",
+   "choice": "(none)",
+   "verdict": "skip",
+   "today": "No pick and no note. Today O cycles loot, follow and hold (G.mercOrder at 18206-18209). Pings work only in a two-window party today; job 139 makes them work solo. Nothing changes.",
+   "change": "",
+   "party": false,
+   "size": "S",
+   "risk": "None.",
+   "check": "No check needed.",
+   "clash": "",
+   "related": "139 (solo pings)"
+  },
+  {
+   "id": "g-98",
+   "choice": "Yes, an optional hardcore save",
+   "verdict": "change",
+   "today": "Confirmed: no hardcore save ('hardcore', 'ironman' and 'permadeath' appear nowhere). A death empties only what you carried; the stash (P.stash), the armoury guns (P.weapons) and $ (P.credits) stay. There are 8 numbered saves (SLOT and SKEY at 4887-4888, slot 1 is 'salvagerun:profile'). CREATE A NEW SAVE (button #newgame at 3288, handler 72763-72774) takes the first free slot, carries the typed name through newNameKeep (58447, NEWNAME_KEY 58446) and reloads (careerNewReload, 19224). A new profile starts at credits 900, stash [], weapons ['pistol'], equipped 'fists' (4869). No older ruling or veto covers hardcore.",
+   "change": "1) On the title beside CREATE A NEW SAVE (3288) add a ghost button 'create a hardcore save'. It runs the same free-slot search as the #newgame handler (72763) and also writes a marker key for that slot the same way newNameKeep carries the name (NEWHC). Where the new profile is first built after the reload (where NEWNAME_KEY is read, 58457), set P.hardcore=1 and clear the marker. Old saves have no field and count as 0. The storage key does not change. 2) In endRaid when how==='dead' && P.hardcore && !G.sim && !G.arcade, after the normal death settling, reset to a new save's values taken from the default profile (4869): P.stash=[], P.weapons=['pistol'], P.equipped='fists', P.credits=900. Keep level, XP, unlocks, cosmetics, codex, trophies, kill tallies and stats. Add one card line: 'hardcore  ·  stash wiped'. An abandon does not wipe (death only). 3) The save row in the saves list shows a small 'hardcore' tag. 4) The player 2 window works the same on its own numbered save. Code comment: v34.xx (cw-hardcore).",
+   "party": false,
+   "size": "M",
+   "risk": "His words were 'wipes the stash'; this also resets the armoury guns and $ to a new save's values, so check that is the bite he wants. Decide later whether the daily save backup (o-14) and the second save copy (136) may restore a wiped hardcore stash; as built here they can. Check the wipe never touches a normal save.",
+   "check": "In a fixture: a profile with P.hardcore=1, 3 stash items, 2 armoury guns and $5,000. Run a raid and endRaid('dead'). Expect P.stash empty, P.weapons ['pistol'], P.credits 900, and P.xpLevel and P.kills unchanged. The same death with no hardcore field keeps the stash, guns and $. The title has the hardcore save button. It fails today because there is no field, no button and the stash survives.",
+   "clash": "",
+   "related": "o-14 (daily save backup), 136 (save second copy)"
+  },
+  {
+   "id": "g-99",
+   "choice": "Yes, $ too",
+   "verdict": "change",
+   "today": "Confirmed: night pays only XP. nightXpMul (33847, CFG.nightXp default 1.2) multiplies XP in xpBaseFor (33867). The extraction money in endRaid adds hazard pay only (34330-34338: Math.round(Math.max(0,haul-carriedIn)*tPay) when Terms are signed); nothing in the $ payout reads isDay() (12953, P.cond==='day'). The NIGHT chip badge (#srnx at 3184, text set at 69950) shows '+'+(nightXpMul()-1)*100+'%'. His 09-03 Q22 set the night XP bonus but did not rule out $.",
+   "change": "Add night pay beside hazard pay. 1) function nightPayMul(){ return (CFG.nightPay===undefined)?0.2:CFG.nightPay; } next to nightXpMul (33847), a dial with no Settings row. 2) In endRaid right after the hazard pay block (after 34338): if how==='extract' && !G.sim && !G.arcade && !isDay(), nb=Math.round(Math.max(0,haul-(G.carriedIn||0))*nightPayMul()); if nb>0, P.credits+=nb and push the card line 'night pay +20%: $N' (percent from the dial). 3) Add the same sum to _mdIn at 34212 so the hire debt line counts it. 4) The '+20%' badge on the NIGHT chip is now true for XP and $; leave it. Death and abandon pay nothing, as with hazard pay. Code comment: v34.xx (cw-nightpay), his pick.",
+   "party": false,
+   "size": "S",
+   "risk": "Night runs bring in 20 percent more money on what you carry out; check the money curve does not run away on night farming.",
+   "check": "In a fixture: P.cond='night', an extraction with haul $10,000 and nothing carried in, no Terms. Expect P.credits to rise by the usual sums plus $2,000 and a card line starting 'night pay'. The same run by day adds 0. It fails today because there is no night $ line or sum.",
+   "clash": "",
+   "related": ""
+  },
+  {
+   "id": "g-100",
+   "choice": "Yes, machines too",
+   "verdict": "change",
+   "today": "Confirmed: the codex lists guns only. #codexmodal (2901) holds #codexgrid (2903). renderCodex (45410) builds one .cxt tile per gun (codexGuns, 45204) with art, name, rarity and kills from gunKillsOf (45434). Your kills per machine kind already exist: endRaid banks G.tel.kills into P.kills (34160-34164; T.kills counts only kills by you, 31214-31215), and the tally kinds (17330) are sentry, crawler, raider, snitch, warden, listener, howler, bulwark, choir. There is no machine picture helper, but the body draws accept a stand-in entity (tskDraw at 49375 draws drawSentryS on a fake sentry); the dispatch is at 41004-41011 (drawChoirS, drawWardenAt, drawSentryS, drawCrawlerS, drawSnitchS, drawListenerS, drawHowlerS, drawBulwarkS). The .cxt.no silhouette filter exists (45402).",
+   "change": "Add a machines section under the guns in the same modal. 1) machCodexKinds() returns ['crawler','sentry','snitch','listener','howler','bulwark','choir','warden']. 2) machCodexKills(k) = (P.kills[k]||0) plus G.tel.kills[k] while a raid is live and not over, like gunKillsOf. 3) machPortrait(k): draw the kind once with its own body draw from the 41004-41011 dispatch (drawWardenAt for warden) into a 96x96 offscreen canvas: point wc at it with a stand-in {kind:k,x:48,y:64,face:0.6,hp:1,maxhp:1,state:'patrol',r:(the kind's r)}, restore wc in finally, and on any throw fall back to an empty tile. Cache as a data URL keyed by kind and look. 4) renderCodex adds a heading row 'machines  ·  n of 8 destroyed', then one .cxt tile per kind (data-mach). With kills: the portrait, kindWord(k) and 'kills  n'. With 0 kills: class no (dark silhouette by the existing filter) and 'not destroyed'. 5) The gun count in the header stays. Display only; no change to kills or saves. Code comment: v34.xx (cw-codexmach).",
+   "party": false,
+   "size": "M",
+   "risk": "Check the portraits look right in the smooth look at 1080p and 4K (the body draws may read raid state in the Undercroft), and that the codex card still fits without a long scroll.",
+   "check": "In a fixture: set P.kills={sentry:5,crawler:0} and call codexOpen(). Expect #codexgrid to hold 8 data-mach tiles; the sentry tile has an img and the text 'kills  5', the crawler tile has class no. It fails today because the grid holds only data-gun tiles.",
+   "clash": "",
+   "related": ""
+  }
+ ],
+ "jobs": {
+  "jobs": [
+   {
+    "file": "140-red-enemy-tracers.md",
+    "title": "every shot from a machine or a hostile pillager bot draws a warning red tracer",
+    "ids": [
+     "g-88"
+    ],
+    "party": true,
+    "effort": "low",
+    "size": "S"
+   },
+   {
+    "file": "141-wall-hits-make-noise.md",
+    "title": "a player round that strikes a wall makes a small noise where it lands",
+    "ids": [
+     "g-18"
+    ],
+    "party": true,
+    "effort": "low",
+    "size": "S"
+   },
+   {
+    "file": "142-hot-ground-kills-pay-more.md",
+    "title": "a kill inside the hot ground pays 1.5x sp",
+    "ids": [
+     "g-47"
+    ],
+    "party": true,
+    "effort": "low",
+    "size": "S"
+   },
+   {
+    "file": "143-late-partner-random-spot.md",
+    "title": "a partner who joins late ascends at a random ascend spot, not beside the host",
+    "ids": [
+     "g-56"
+    ],
+    "party": true,
+    "effort": "low",
+    "size": "S"
+   },
+   {
+    "file": "144-crates-faster-with-two.md",
+    "title": "a box searches 1.5x faster while both pillagers stand at it",
+    "ids": [
+     "g-57"
+    ],
+    "party": true,
+    "effort": "low",
+    "size": "S"
+   },
+   {
+    "file": "145-pad-sprint-toggle-default.md",
+    "title": "the sprint row gets a third mode, hold on keys and toggle on the pad, and it is the default",
+    "ids": [
+     "g-68"
+    ],
+    "party": true,
+    "effort": "low",
+    "size": "S"
+   },
+   {
+    "file": "146-overseer-ignores-decoys.md",
+    "title": "a decoy no longer pulls the overseer off its lair",
+    "ids": [
+     "g-13"
+    ],
+    "party": true,
+    "effort": "low",
+    "size": "S"
+   },
+   {
+    "file": "147-heal-slows-big-hit-stops-it.md",
+    "title": "a bandage or medkit wind-up moves you at half speed, and a big hit stops it",
+    "ids": [
+     "g-2",
+     "g-5"
+    ],
+    "party": true,
+    "effort": "medium",
+    "size": "S"
+   },
+   {
+    "file": "148-bots-charge-or-flee-grenades.md",
+    "title": "some hurt pillager bots charge instead of running, and every bot runs from a live grenade",
+    "ids": [
+     "g-23",
+     "g-28"
+    ],
+    "party": true,
+    "effort": "medium",
+    "size": "S"
+   },
+   {
+    "file": "149-trigger-repeat-shells-fire-cancels-reload.md",
+    "title": "single-shot guns repeat while held, shotguns load shell by shell, and a fresh pull cancels a reload",
+    "ids": [
+     "g-15",
+     "g-12",
+     "g-75"
+    ],
+    "party": true,
+    "effort": "medium",
+    "size": "M"
+   },
+   {
+    "file": "150-revive-bandage-pause-alert-medal.md",
+    "title": "a bandage halves the pick-up, the bleed clock holds during it, a sharper alert at 5 s, a save medal",
+    "ids": [
+     "g-58",
+     "g-60",
+     "g-62",
+     "g-66"
+    ],
+    "party": true,
+    "effort": "medium",
+    "size": "M"
+   },
+   {
+    "file": "151-damage-numbers-merge-and-yours-red.md",
+    "title": "hits on one target grow one number, and damage you take shows as a red number over you",
+    "ids": [
+     "g-84",
+     "g-85"
+    ],
+    "party": true,
+    "effort": "medium",
+    "size": "M"
+   },
+   {
+    "file": "152-alarms-volume-and-low-mag-tick.md",
+    "title": "an alarms volume row in audio settings, and a light tick on your last rounds",
+    "ids": [
+     "g-81",
+     "g-82"
+    ],
+    "party": true,
+    "effort": "medium",
+    "size": "M"
+   },
+   {
+    "file": "153-blasts-shove-big-hits-nudge-aim.md",
+    "title": "an explosion shoves you, and a big hit that is not a blast nudges your aim for a quarter second",
+    "ids": [
+     "g-3",
+     "g-6"
+    ],
+    "party": true,
+    "effort": "high",
+    "size": "M"
+   },
+   {
+    "file": "154-machine-tells-unseen-and-open-beat.md",
+    "title": "an unseen machine's windup paints a red streak at your feet, and wardens and bulwarks open up after their big shot",
+    "ids": [
+     "g-20",
+     "g-29"
+    ],
+    "party": true,
+    "effort": "high",
+    "size": "M"
+   },
+   {
+    "file": "155-longshot-glint.md",
+    "title": "an elite pillager bot with a longshot shows a half-second glint before each shot",
+    "ids": [
+     "g-11"
+    ],
+    "party": true,
+    "effort": "medium",
+    "size": "M"
+   },
+   {
+    "file": "156-overseer-chases-top-damage.md",
+    "title": "in a two-player raid the overseer goes after whoever hurt it most",
+    "ids": [
+     "g-24"
+    ],
+    "party": true,
+    "effort": "medium",
+    "size": "M"
+   },
+   {
+    "file": "157-golden-bolts-and-stays.md",
+    "title": "a hurt golden enemy bolts so you chase it, and it never leaves the map",
+    "ids": [
+     "g-21",
+     "g-22"
+    ],
+    "party": true,
+    "effort": "medium",
+    "size": "M"
+   },
+   {
+    "file": "158-sleeping-machines.md",
+    "title": "a few sentries and bulwarks start asleep and wake on noise, a hit or a close step",
+    "ids": [
+     "g-25"
+    ],
+    "party": true,
+    "effort": "medium",
+    "size": "M"
+   },
+   {
+    "file": "159-big-machine-wrecks-are-cover.md",
+    "title": "a dead warden, overseer, bulwark or choir leaves a wreck block that stops rounds and sight",
+    "ids": [
+     "g-27"
+    ],
+    "party": true,
+    "effort": "high",
+    "size": "M"
+   },
+   {
+    "file": "160-two-forges-one-lit-and-guards.md",
+    "title": "cold storage gets a second forge spot, only one is lit each raid, and sometimes machines guard it",
+    "ids": [
+     "g-32",
+     "g-33"
+    ],
+    "party": true,
+    "effort": "high",
+    "size": "M"
+   },
+   {
+    "file": "161-throws-bounce-once.md",
+    "title": "a thrown frag, smoke or decoy bounces once off a wall",
+    "ids": [
+     "g-14"
+    ],
+    "party": true,
+    "effort": "high",
+    "size": "M"
+   },
+   {
+    "file": "162-loot-in-sight-at-every-spawn.md",
+    "title": "every ascend spot has an unopened box in sight, so the first minute pays",
+    "ids": [
+     "g-43"
+    ],
+    "party": true,
+    "effort": "medium",
+    "size": "M"
+   },
+   {
+    "file": "163-burn-ash-and-red-glow.md",
+    "title": "in the last minute ash falls and the world slowly turns red",
+    "ids": [
+     "g-48"
+    ],
+    "party": true,
+    "effort": "medium",
+    "size": "M"
+   },
+   {
+    "file": "164-vault-alarm-pack.md",
+    "title": "opening a vault with a keycard sounds an alarm and sends a pack, so you loot fast and run",
+    "ids": [
+     "g-49"
+    ],
+    "party": true,
+    "effort": "medium",
+    "size": "M"
+   },
+   {
+    "file": "165-partner-row-gun-and-ammo.md",
+    "title": "the teammate row shows his gun and his rounds under the bars",
+    "ids": [
+     "g-64"
+    ],
+    "party": true,
+    "effort": "medium",
+    "size": "M"
+   },
+   {
+    "file": "166-kill-feed-icons.md",
+    "title": "a kill feed line shows a small picture of the gun or element that made the kill",
+    "ids": [
+     "g-86"
+    ],
+    "party": true,
+    "effort": "medium",
+    "size": "M"
+   },
+   {
+    "file": "167-last-seen-mark.md",
+    "title": "a machine that slips out of sight leaves a fading mark where it was last seen",
+    "ids": [
+     "g-89"
+    ],
+    "party": true,
+    "effort": "medium",
+    "size": "M"
+   },
+   {
+    "file": "168-own-noise-ring.md",
+    "title": "a faint ring at your feet shows how far your last noise reaches",
+    "ids": [
+     "g-90"
+    ],
+    "party": true,
+    "effort": "medium",
+    "size": "M"
+   },
+   {
+    "file": "169-out-player-watches-and-pings.md",
+    "title": "the player who gets out first watches the partner live and can still ping",
+    "ids": [
+     "g-54"
+    ],
+    "party": true,
+    "effort": "high",
+    "size": "L"
+   },
+   {
+    "file": "170-carry-downed-partner.md",
+    "title": "a partner can pick up a downed pillager and carry him at walking pace",
+    "ids": [
+     "g-63"
+    ],
+    "party": true,
+    "effort": "high",
+    "size": "L"
+   },
+   {
+    "file": "171-endless-spawn-pistol.md",
+    "title": "the scav pistol you ascend with never runs out of reserve",
+    "ids": [
+     "g-17"
+    ],
+    "party": false,
+    "effort": "low",
+    "size": "S"
+   },
+   {
+    "file": "172-night-pays-cash.md",
+    "title": "a night extraction pays 20 percent more $ on what you carry out",
+    "ids": [
+     "g-99"
+    ],
+    "party": false,
+    "effort": "low",
+    "size": "S"
+   },
+   {
+    "file": "173-forged-crowbar.md",
+    "title": "the crowbar can be forged with an element at the forge",
+    "ids": [
+     "g-35"
+    ],
+    "party": false,
+    "effort": "medium",
+    "size": "M"
+   },
+   {
+    "file": "174-elite-element-guns.md",
+    "title": "a quarter of elite pillager bots carry a forged element gun you can take from the body",
+    "ids": [
+     "g-36"
+    ],
+    "party": false,
+    "effort": "medium",
+    "size": "M"
+   },
+   {
+    "file": "175-break-down-guns.md",
+    "title": "a spare gun in the stash can be broken down into parts",
+    "ids": [
+     "g-40"
+    ],
+    "party": false,
+    "effort": "medium",
+    "size": "M"
+   },
+   {
+    "file": "176-codex-machines.md",
+    "title": "the codex lists the eight machines with a picture and your kill count",
+    "ids": [
+     "g-100"
+    ],
+    "party": false,
+    "effort": "medium",
+    "size": "M"
+   },
+   {
+    "file": "177-hardcore-save.md",
+    "title": "an optional hardcore save whose stash, guns and $ reset on death",
+    "ids": [
+     "g-98"
+    ],
+    "party": false,
+    "effort": "high",
+    "size": "L"
+   },
+   {
+    "file": "178-patrol-routes.md",
+    "title": "three machines walk fixed patrol routes between landmarks",
+    "ids": [
+     "g-46"
+    ],
+    "party": false,
+    "effort": "high",
+    "size": "L"
+   },
+   {
+    "file": "179-safe-room.md",
+    "title": "one ordinary building per raid that machines never walk into",
+    "ids": [
+     "g-50"
+    ],
+    "party": false,
+    "effort": "high",
+    "size": "L"
+   },
+   {
+    "file": "180-death-replay.md",
+    "title": "the killed in action card loops the last 4 seconds before you went down",
+    "ids": [
+     "g-91"
+    ],
+    "party": false,
+    "effort": "high",
+    "size": "L"
+   },
+   {
+    "file": "181-stalker-machine.md",
+    "title": "a rare stalker machine shadows you just outside your sight and strikes when you look away",
+    "ids": [
+     "g-31"
+    ],
+    "party": false,
+    "effort": "high",
+    "size": "L"
+   },
+   {
+    "file": "182-juggernaut-boss.md",
+    "title": "a second machine boss, the juggernaut, roams the far half of the map",
+    "ids": [
+     "g-52"
+    ],
+    "party": false,
+    "effort": "high",
+    "size": "L"
+   }
+  ],
+  "folded": [
+   {
+    "id": "g-1",
+    "into": "120d-pad-trigger-not-aim.md",
+    "why": "Job 120d edits the same sprint and pad trigger lines (28899-28931, 19906-19912). As written, its check 'a held LS sprint survives RT pulls' goes against his newer pick that firing stops a sprint on every input. Folding g-1 in gives one rule: RT no longer counts as aiming, and any fired round ends the sprint for 0.35 s. The addendum ADD-120d-pad-trigger-not-aim.md swaps that check for the g-1 check."
+   },
+   {
+    "id": "g-83",
+    "into": "125-gfx-machine-damage.md",
+    "why": "His pick makes job 125's smoke and sparks the only damage cue a machine shows. The pip removal is a one-line render change, and it has to ship together with 125's 'make the smoke read at 1080p' work, otherwise a nearly dead machine shows no readable cue. The addendum ADD-125-gfx-machine-damage.md also tells 120a that machines no longer carry a pip."
+   }
+  ]
+ }
+}
