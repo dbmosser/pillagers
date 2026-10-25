@@ -2904,3 +2904,8 @@
 2026-10-25 05:06:07 raid 14 demo2 raidSeed=1391169613 map=0 god=0 sec=302 end=clock-end problems=0 newUnique=0 totalUnique=2 totalProblems=3 events=9330 score=0 ents=50 travelPx=24511 fires=192 menuPct=22 heapMB=78 p2= build=34.13
 2026-10-25 05:10:21 raid 14 demo2 raidSeed=1397693127 map=0 god=0 sec=302 end=clock-end problems=0 newUnique=0 totalUnique=2 totalProblems=3 events=9251 score=0 ents=52 travelPx=22994 fires=115 menuPct=9 heapMB=82 p2= build=34.13
 2026-10-25 05:11:14 raid 15 demo2 raidSeed=1554790799 map=0 god=1 sec=307 end=clock-end problems=0 newUnique=0 totalUnique=2 totalProblems=3 events=9335 score=0 ents=52 travelPx=30565 fires=114 menuPct=20 heapMB=77 p2= build=34.13
+2026-10-25 05:15:24 raid 15 demo2 raidSeed=1369398166 map=0 god=0 sec=302 end=clock-end problems=0 newUnique=0 totalUnique=2 totalProblems=3 events=9264 score=0 ents=50 travelPx=21409 fires=73 menuPct=17 heapMB=83 p2= build=34.13
+2026-10-25 05:15:58 raid 16 career raidSeed=836593574 map=0 god=1 sec=284 end=clock-end problems=0 newUnique=0 totalUnique=2 totalProblems=3 events=8695 score=0 ents=47 travelPx=24855 fires=43 menuPct=15 heapMB=88 p2= build=34.13
+2026-10-25 05:15:58 FUZZ END raids=16 problems=3 unique=2 reason=time minutes=59
+2026-10-25 05:16:02 raid 16 career raidSeed=712734041 map=0 god=1 sec=39 end=clock-end problems=0 newUnique=0 totalUnique=2 totalProblems=3 events=1217 score=0 ents=53 travelPx=3599 fires=14 menuPct=35 heapMB=89 p2= build=34.13
+2026-10-25 05:16:02 FUZZ END raids=16 problems=3 unique=2 reason=time minutes=59.1
