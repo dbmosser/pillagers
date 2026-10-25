@@ -202,6 +202,9 @@ actually look good". So for any change a player can see:
   TASK WAITING is only for when everything left of your task waits on another task that is still open (TASKID is its file name in
   tools\handoff\console\tasks without .md, for example c-02-raid-hud-redesign). That run does not count as a try: your job parks in
   blocked\ and comes back by itself when that task is finished. Never use it for a question to him (take the best choice) or to skip work.
+  When everything left needs the coordinator (a camera stage, a file you may not edit), write TASK WAITING: coordinator what you need;
+  the job parks in waiting\ until the coordinator has done it. A TASK WAITING that names your own id or a task that is not open
+  counts as a try.
 
 - WORDS (his order 10-18 PM): on screen a player is a "pillager", the AI humans are "pillager bots", and "raider" never shows. Code names (kind raider, CFG.nRaider) stay as they are.
 

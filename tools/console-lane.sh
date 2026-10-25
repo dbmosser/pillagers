@@ -77,7 +77,15 @@ retry(){ ls "$C/failed/"*.md 2>/dev/null | sort | while read -r f; do n=$(basena
 # TASK WAITING: OTHER-TASK-ID parks the job in blocked/ and does not count as a try (its spend line says NAME-wait). It comes back to
 # tasks/ once no list or lane holds the other job any more, or after BLOCK_MAX_H hours. release() runs at every pick, RAM or not.
 # 10-22 (coordinator): waiting/ counts as holding it too, as the jobs say ("in tasks/, waiting/ or running"); before, 86i was let out every pick, Codex parked it again at once, and lane o never reached the jobs behind it.
-stag(){ grep -q 'TASK WAITING: *[a-z0-9]' "$out" 2>/dev/null && ! grep -q 'TASK DONE' "$out" && echo "$name-wait" || echo "$name"; }
+# 10-25 05:10 (coordinator): 112r ran 6 times in 25 minutes (about $1.10) on TASK WAITING lines that named a job no list held
+# (113b-camera-career-stage, then itself): release() let it out at the next pick every time, and a wait was never a try. Now a wait
+# on "coordinator" parks the job in waiting/ (lanes never pick there) with a line in waiting/README.md and alarms.md, and a wait
+# on a job that no list or other lane holds, or on itself, counts as a try like a partial run (heldby).
+wotarget(){ grep -o 'TASK WAITING: *[a-z0-9][a-z0-9-]\{2,60\}' "$out" 2>/dev/null | tail -1 | sed 's/^TASK WAITING: *//'; }
+heldby(){ case "$1" in coordinator*) return 0;; esac; [ "$1" = "$name" ] && return 1
+  { ls "$C/tasks/"*"$1"*.md "$C/waiting/"*"$1"*.md "$C/blocked/"*"$1"*.md 2>/dev/null | grep -v "/$name\.md\$"
+    for d in "$C"/lane-*.lock; do [ "$d" = "$LK" ] && continue; cat "$d/task" 2>/dev/null; echo; done | grep -F -- "$1"; } | grep -q .; }
+stag(){ local w; w=$(wotarget); [ -n "$w" ] && ! grep -q 'TASK DONE' "$out" 2>/dev/null && heldby "$w" && echo "$name-wait" || echo "$name"; }
 release(){ local f n on age; for f in "$C/blocked/"*.md; do [ -f "$f" ] || continue; n=$(basename "$f" .md); on=$(tr -d '\r\n ' < "$C/blocked/$n.on" 2>/dev/null)
   age=$(( ( $(date +%s) - $(stat -c %Y "$f") ) / 3600 ))
   if [ -n "$on" ] && [ "$age" -lt "$(cap BLOCK_MAX_H 6)" ] && { ls "$C/tasks/"*"$on"*.md >/dev/null 2>&1 || ls "$C/waiting/"*"$on"*.md >/dev/null 2>&1 || printf '%s\n' "$busy" | grep -qF -- "$on"; }; then continue; fi
@@ -179,8 +187,15 @@ if [ $ENGINE = cli ]; then
   st=$(date +%s)
   # 10-21 02:52: job 85a (11.7 KB) plus RULES.md (21 KB) on the command line passed Windows' 32 KB limit ("env: 'claude': Argument
   # list too long") and the run never started. The job text now goes in on stdin and the rules as a file (tested 10-21 02:58).
-  ( cd "$R" && printf '%s' "Your task id is $name. Your lane is $L. You run in Claude Code: run every command with the Bash tool (never the PowerShell tool), use Read (it also shows pictures; it replaces view_image), Grep, Glob, Write, Edit and Bash, with each Bash command typed exactly in a form your rules list. $(cat "$t")" | env -u ANTHROPIC_API_KEY claude -p \
-      --append-system-prompt-file "$(cygpath -m "$C/RULES.md")" --model "$(cap CLI_MODEL sonnet)" --output-format json --max-turns "$(cap CLI_TURNS 150)" \
+  # 10-25, his ask "other sources of waste you can reduce?": measured on 58 helper runs, a helper starts at about 53k tokens and
+  # rereads its whole conversation on every step (average 108k a step), and Sonnet 5.5 has a 1M window, so it never summarized.
+  # CLAUDE_CODE_AUTO_COMPACT_WINDOW=150000 makes it summarize at about 117k (window minus 33k): about 18% less rereading, only
+  # long jobs are touched, and the largest 3-step growth seen (29k) is far under the 56k room left after a summary (a run that
+  # refills 3 times within 3 steps stops with "Autocompact is thrashing"). Set CLI_COMPACT=1000000 in caps.txt to switch it off.
+  # Helpers never use MCP tools (--strict-mcp-config) or the coordinator memory index (DISABLE_AUTO_MEMORY, which also keeps
+  # helpers out of that folder): together a step starts at 39k instead of 52k (measured 10-25 in a helper-like setting).
+  ( cd "$R" && printf '%s' "Your task id is $name. Your lane is $L. You run in Claude Code: run every command with the Bash tool (never the PowerShell tool), use Read (it also shows pictures; it replaces view_image), Grep, Glob, Write, Edit and Bash, with each Bash command typed exactly in a form your rules list. $(cat "$t")" | env -u ANTHROPIC_API_KEY CLAUDE_CODE_AUTO_COMPACT_WINDOW="$(cap CLI_COMPACT 150000)" CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 claude -p \
+      --append-system-prompt-file "$(cygpath -m "$C/RULES.md")" --model "$(cap CLI_MODEL sonnet)" --output-format json --max-turns "$(cap CLI_TURNS 150)" --strict-mcp-config \
       --allowedTools "${ALLOW[@]}" > "$out" 2> "$C/log/$name-$stamp.err" )
   cost=$(grep -o '"total_cost_usd":[0-9.eE+-]*' "$out" | tail -1 | cut -d: -f2); cost=${cost:-0}
   if awk -v c="$cost" 'BEGIN{exit !(c+0==0)}'; then
@@ -217,11 +232,18 @@ fi
 pcp=$((9350 + $(printf '%d' "'$L") - 96))
 powershell -NoProfile -Command "Get-CimInstance Win32_Process -Filter \"Name='chrome.exe'\" | Where-Object { \$_.CommandLine -match 'remote-debugging-port=$pcp(\s|\$)' } | ForEach-Object { Stop-Process -Id \$_.ProcessId -Force -ErrorAction SilentlyContinue }" > /dev/null 2>&1
 n=$(cat "$C/spend.txt" "$C/cli-spend.txt" 2>/dev/null | grep -c " $name$")
-wo=$(grep -o 'TASK WAITING: *[a-z0-9][a-z0-9-]\{2,60\}' "$out" | tail -1 | sed 's/^TASK WAITING: *//')
-if [ -n "$wo" ] && ! grep -q 'TASK DONE' "$out"; then mkdir -p "$C/blocked"; mv "$t" "$C/blocked/" && touch "$C/blocked/$name.md" && echo "$wo" > "$C/blocked/$name.on"; r="waiting on $wo, parked in blocked/ (not counted as a try)"
+wo=$(wotarget); nw=
+if [ -n "$wo" ] && ! grep -q 'TASK DONE' "$out" && ! heldby "$wo"; then nw="; it waited on $wo, which no list or other lane holds, so the run counts as a try"; wo=; fi
+if [ -n "$wo" ] && ! grep -q 'TASK DONE' "$out"; then
+  case "$wo" in
+    coordinator*) why=$(grep -o 'TASK WAITING: [^"\\]*' "$out" | tail -1 | cut -c15-320); mkdir -p "$C/waiting"
+      mv "$t" "$C/waiting/" && echo "- $name.md (parked $(date '+%m-%d %H:%M') by lane $L): $why" >> "$C/waiting/README.md" && echo "$(date '+%m-%d %H:%M') $name (lane $L) waits on the coordinator: $why" >> "$C/alarms.md"
+      r="waiting on the coordinator, parked in waiting/ (not counted as a try)";;
+    *) mkdir -p "$C/blocked"; mv "$t" "$C/blocked/" && touch "$C/blocked/$name.md" && echo "$wo" > "$C/blocked/$name.on"; r="waiting on $wo, parked in blocked/ (not counted as a try)";;
+  esac
 elif grep -q 'TASK DONE' "$out"; then mv "$t" "$C/done/"; r=done
-elif [ "$n" -ge "$(cap MAXRUNS 3)" ]; then mv "$t" "$C/failed/"; r=failed
-else r="partial (run $n of $(cap MAXRUNS 3))"; fi
+elif [ "$n" -ge "$(cap MAXRUNS 3)" ]; then mv "$t" "$C/failed/"; r=failed$nw
+else r="partial (run $n of $(cap MAXRUNS 3))$nw"; fi
 echo "$(date '+%m-%d %H:%M') $name: $r, \$$cost" | tee -a "$C/runs.log" > "$C/status-$L.txt"
 # 10-17 evening (his "check all your stuff to see if there are other misestimates"): the runner looks only every 5 minutes, so a
 # helper sat idle up to 5 minutes between jobs. A run that did real work (a minute or more) starts the next job at once.
