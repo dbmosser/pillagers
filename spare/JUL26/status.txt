@@ -1,11 +1,11 @@
 host=JUL26
-seen=2026-10-25 02:41
-epoch=1792910500
+seen=2026-10-25 03:11
+epoch=1792912312
 game=bff3165b v34.53
 test_run=paused: the VM has the memory at night
 robots=0
-ram_free_gb=8.5
+ram_free_gb=8
 push_ok=1
 runner=8E87772F
 mode=idle
-spare_pc=off or offline (its name is not on the network), 02:41
+spare_pc=off or offline (its name is not on the network), 03:11
