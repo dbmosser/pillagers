@@ -189,12 +189,14 @@ if [ $ENGINE = cli ]; then
   # list too long") and the run never started. The job text now goes in on stdin and the rules as a file (tested 10-21 02:58).
   # 10-25, his ask "other sources of waste you can reduce?": measured on 58 helper runs, a helper starts at about 53k tokens and
   # rereads its whole conversation on every step (average 108k a step), and Sonnet 5.5 has a 1M window, so it never summarized.
-  # CLAUDE_CODE_AUTO_COMPACT_WINDOW=150000 makes it summarize at about 117k (window minus 33k): about 18% less rereading, only
-  # long jobs are touched, and the largest 3-step growth seen (29k) is far under the 56k room left after a summary (a run that
-  # refills 3 times within 3 steps stops with "Autocompact is thrashing"). Set CLI_COMPACT=1000000 in caps.txt to switch it off.
+  # CLAUDE_CODE_AUTO_COMPACT_WINDOW=150000 was meant to summarize at about 117k, but 10-25 05:11 to 05:21 jobs 114 and 115
+  # summarized at about 50k, three times in a row, and stopped with "Autocompact is thrashing" ($1.91, tries given back). The
+  # program sizes a job from the bytes of its messages, and a picture read with Read is hundreds of KB, so UI jobs look huge. So
+  # early summarizing is OFF: the default here is 1000000 (the model default, no early summary). Do not lower it for jobs that read
+  # pictures.
   # Helpers never use MCP tools (--strict-mcp-config) or the coordinator memory index (DISABLE_AUTO_MEMORY, which also keeps
   # helpers out of that folder): together a step starts at 39k instead of 52k (measured 10-25 in a helper-like setting).
-  ( cd "$R" && printf '%s' "Your task id is $name. Your lane is $L. You run in Claude Code: run every command with the Bash tool (never the PowerShell tool), use Read (it also shows pictures; it replaces view_image), Grep, Glob, Write, Edit and Bash, with each Bash command typed exactly in a form your rules list. $(cat "$t")" | env -u ANTHROPIC_API_KEY CLAUDE_CODE_AUTO_COMPACT_WINDOW="$(cap CLI_COMPACT 150000)" CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 claude -p \
+  ( cd "$R" && printf '%s' "Your task id is $name. Your lane is $L. You run in Claude Code: run every command with the Bash tool (never the PowerShell tool), use Read (it also shows pictures; it replaces view_image), Grep, Glob, Write, Edit and Bash, with each Bash command typed exactly in a form your rules list. $(cat "$t")" | env -u ANTHROPIC_API_KEY CLAUDE_CODE_AUTO_COMPACT_WINDOW="$(cap CLI_COMPACT 1000000)" CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 claude -p \
       --append-system-prompt-file "$(cygpath -m "$C/RULES.md")" --model "$(cap CLI_MODEL sonnet)" --output-format json --max-turns "$(cap CLI_TURNS 150)" --strict-mcp-config \
       --allowedTools "${ALLOW[@]}" > "$out" 2> "$C/log/$name-$stamp.err" )
   cost=$(grep -o '"total_cost_usd":[0-9.eE+-]*' "$out" | tail -1 | cut -d: -f2); cost=${cost:-0}
