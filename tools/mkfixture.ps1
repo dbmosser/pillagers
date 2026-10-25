@@ -6166,6 +6166,8 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.79',what:'probe: the light pass carries the fingerprint probe note',
+   run:function(){ return String(gfxLightPass).indexOf('fpprobe')>=0 ? null : 'no probe note'; }},
   {v:'34.78',what:'the opened career controls list: every row at the 16px label size, key caps drawn, one footer line, clear of the feed, the vitals and the bot list; the folded chip uses the same HUD panel and label face as the standing tag (job 121)',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof careerPostBuild!=='function') return 'SKIP: no raid in this fixture';

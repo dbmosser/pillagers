@@ -1,0 +1,3 @@
+{"generated":"2026-10-25T11:33:18","url":"http://localhost:8808/fixture.html","recipes":"tools/handoff/console/notes/shots/125/recipe.json","seconds":21,"screens":[
+{"name":"01-machdmg","screen":"damaged machines","1080":{"staged":true,"note":"choir sentry hp 340/850 other 22.5/150","viewport":"1920x1080","shot":"01-machdmg-1080.jpg","lint":""}}
+]}

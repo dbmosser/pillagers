@@ -1,0 +1,7 @@
+v34.79: light pass fingerprint probe
+
+Nothing visible changes.
+
+Check 34.79. Fails on v34.78.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

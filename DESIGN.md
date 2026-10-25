@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.79 - LIGHT PASS FINGERPRINT PROBE
+
+Co-op hunt while he was away. Comment-only change to learn whether the seed 4242 fingerprint already moved on HEAD. Nothing visible changes.
+
+MEASURED. Check 34.79 passes, and fails on v34.78.
 ## v34.78 - THE CAREER CONTROLS LIST IS A CLEAN PANEL AND THE FOLDED CHIP MATCHES THE STANDING TAG
 
 Co-op hunt while he was away. The critic scored screens 80 and 79 a 2 (job 121): the opened list was a dense, tiny, dim, ragged four-column block with the f1 line twice, and the folded f1 controls chip used a different chip style from the standing tag. The list is now one opaque panel with 16px rows, a key cap plus a word on every row, four short sections (move, fight, gear, raid) in two columns and one footer line; the folded chip uses the standing tag HUD panel and label face. No key, binding or F1 behaviour changed; use item in hand now reads use item.

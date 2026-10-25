@@ -1,0 +1,115 @@
+diff --git a/AUDIT.md b/AUDIT.md
+index a4423ccd7..69dea51a9 100644
+--- a/AUDIT.md
++++ b/AUDIT.md
+@@ -3792,6 +3792,7 @@ AND THE SECOND HALF OF THE STRETCH:
+ | GLOW POOLS: THE FORGE, FORGED GUNS AND ELEMENTS LIGHT THE WORLD | v34.76 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 34.76 passes, fails on v34.75 |
+ | PIXEL RELOAD AND FORGED GUNS | v34.77 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 34.77 passes, fails on v34.76 |
+ | THE CAREER CONTROLS LIST IS A CLEAN PANEL AND THE FOLDED CHIP MATCHES THE STANDING TAG | v34.78 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 34.78 passes, fails on v34.77 |
++| FLASHES AND MACHINE EYES LIGHT THE GROUND IN THEIR OWN COLOUR | v34.79 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 34.79 passes, fails on v34.78 |
+ | THE v11.24 FEUD CHECK MEASURED THE BULWARK, NOT FEUDS | v11.41 | harness repair, shipped with v11.41 because it blocked the corpus and the contract change cannot touch it. The v11.24 check parks pillagers at the COLD STORAGE centre at peace with the machines, counts hits on pillagers, calls them feud hits, and asserts raiderFeud 0 drops them to a third. PROVEN the hits are the BULWARK'S: with nBulwark 0 the only thing that can hit a pillager is another pillager, and the centre seat then shows ZERO pillager-on-pillager combat whether feuds are on or off (on 0, off 0; the raw count was 41 on, 42 off, all Bulwark). Fails identically on the v11.40 control and on a v11.36 fixture built before the v11.37 provoke change, so not a regression and not caused by anything this session; its earlier greens were contamination. FIX: the check isolates the Bulwark out, passes only on real isolable feud combat, and otherwise skips with both hit counts named. FOR HIS RULING: whether the rival-crew feud fires at all in real play, which the sim cannot see |
+ | HIS TWO REAL RUNS, 2026-09-04, AUTHENTICATED AND CONSUMED | v10.98 | Run #1 v10.96 COLD STORAGE, fog at dawn, 59s, EXTRACT 2,685c from ONE container, 6 items, 18 shots at 67 percent, 4 crawlers killed, 1 down, revived twice by raiders and three revives total, 2 walls down, 1 story read, contracts haul and kill-crawler, moved 7,594, sprint 14s, crouch 0s, closest extract 1m, ents 105. Run #2 v10.96 COLD STORAGE, clear noon, 13s, ABANDON carrying 460c and 3 items, no shot fired, moved 1,181, closest extract 96m. Both real: real durations, real distance, a named weapon, no fixture signature. Profile after: 2 runs, 1 extracted, 0 died, credits 395,700 which is the cheat box, XP 343, stash 4. HIS 13 SECOND ABANDON IS UNEXPLAINED and is a question for him, not a defect I can measure |
+ | TWO CHECKS DISAGREED ABOUT THE SERVO | v10.97 | Caught by the full corpus. v9.43 requires the servo to be SELLABLE because there is no repair to keep it for; v10.97 requires it KEPT because the contract board asks for it by name. Both right about their own premise. v9.43's real subject is the REASON and not the shelf, which its own message says: it was written when a dead repair economy was the only thing keeping the servo. It asks about the reason now and fails if the servo's KEEP line mentions repairs while the wear table has one band. Its sibling assertion, that the servo is not a crafting part, and every control around it, are untouched and still pass. No dial moves |
+diff --git a/DESIGN.md b/DESIGN.md
+index 72e883100..400565e28 100644
+--- a/DESIGN.md
++++ b/DESIGN.md
+@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
+ one he named; touchdown, inbound, lastcall and board are untouched, so the family
+ may now be led by a sound three times the length of its siblings.
+ 
++## v34.79 - FLASHES AND MACHINE EYES LIGHT THE GROUND IN THEIR OWN COLOUR
++
++Co-op hunt while he was away. His 10-12 graphics list (gfx9, coloured light) was half done: lamps lit the light map in colour but every flash, hunting machine and the extraction beacon was stamped plain white. Each now uses the colour it already stores, the same one the glow pass draws. The draw count is unchanged (cached sprite per colour), reduced flashing is untouched, his lamp and the teammate lamp stay white. Watch: at night a blast, cryo or acid tints the street, hunting machines throw red, the beacon teal.
++
++MEASURED. Check 34.79 passes, and fails on v34.78.
+ ## v34.78 - THE CAREER CONTROLS LIST IS A CLEAN PANEL AND THE FOLDED CHIP MATCHES THE STANDING TAG
+ 
+ Co-op hunt while he was away. The critic scored screens 80 and 79 a 2 (job 121): the opened list was a dense, tiny, dim, ragged four-column block with the f1 line twice, and the folded f1 controls chip used a different chip style from the standing tag. The list is now one opaque panel with 16px rows, a key cap plus a word on every row, four short sections (move, fight, gear, raid) in two columns and one footer line; the folded chip uses the standing tag HUD panel and label face. No key, binding or F1 behaviour changed; use item in hand now reads use item.
+diff --git a/dark_raiders.html b/dark_raiders.html
+index cb1637963..45dba094c 100644
+--- a/dark_raiders.html
++++ b/dark_raiders.html
+@@ -3690,7 +3690,7 @@ var cv=document.getElementById('cv');
+ var hcv=document.getElementById('hcv');
+ 
+ // ================================================================ config
+-var VER='34.78';
++var VER='34.79';
+ // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
+ // and thirty builds have landed since; nothing in the game says so, and finding
+ // out that heals take time by dying mid-heal is the wrong way to learn it. This
+@@ -53115,14 +53115,14 @@ function gfxLightPass(dt,BR,o){
+       if(fr<=0) continue;
+       frr=F.r*(F.life>.3?(.35+.65*(1-fr)):1);
+       if(F.x<ox-frr||F.x>ox+VW+frr||F.y<oy-frr||F.y>oy+VH+frr) continue;
+-      put(wspr,F.x,F.y,frr,2*a*.9*fr);
++      put(gfxLightSpr(F.c||'#ffc27a','map'),F.x,F.y,frr,2*a*.9*fr);   // v34.73 (cw-flashlight): the flash lights the ground in the colour it already stores (his 10-12 graphics list)
+     }
+     for(i=0;i<VIS.length;i++){   // VIS, never G.ents: an unseen machine is never lit through the fog
+       E=VIS[i];
+       if(E.state!=='chase'&&E.state!=='alarm') continue;
+       if(E.x<ox-90||E.x>ox+VW+90||E.y<oy-90||E.y>oy+VH+90) continue;
+       er=E.kind==='sentry'?76:(E.kind==='crawler'?54:44);
+-      put(wspr,E.x,E.y,er,2*a*.34);
++      put(gfxLightSpr(E.kind==='raider'?'#ff8a6a':'#ff4a32','map'),E.x,E.y,er,2*a*.34);   // v34.73 (cw-flashlight): the same red as the eye glow
+     }
+     // v34.xx (cw-glowpools), his 10-12 graphics list ("add ALL of this stuff"), I5: the glow sources the world pass queued this frame (the forge
+     // furnace, a forged gun, burning, shocked and frozen bodies) light the ground in their own colour. The same sprite the lamps use, in the
+@@ -53138,7 +53138,7 @@ function gfxLightPass(dt,BR,o){
+     }
+     if(az){
+       k=inb?(90+120*urg):70;
+-      if(az.x>ox-k&&az.x<ox+VW+k&&az.y>oy-k&&az.y<oy+VH+k) put(wspr,az.x,az.y,k,2*a*(inb?.62:.30));
++      if(az.x>ox-k&&az.x<ox+VW+k&&az.y>oy-k&&az.y<oy+VH+k) put(gfxLightSpr('#4de3d0','map'),az.x,az.y,k,2*a*(inb?.62:.30));   // v34.73 (cw-flashlight): the beacon throws teal
+     }
+     x.setTransform(1,0,0,1,0,0); x.globalAlpha=1; x.globalCompositeOperation='source-over';
+     // 2. the world takes the light map, stretched back over the frame as the sheet was
+@@ -54348,7 +54348,7 @@ var ROADMAP=[
+ // v7.63: parsecheck now FAILS the build when this field does not name the
+ // current VER, so it cannot silently rot a third time.
+ var DEVNOW={
+-  now:'v34.78: The controls list opened with F1 reads clearly: key caps, grouped, bigger. The folded f1 controls chip looks like the standing tag. Check 34.78 fails on v34.77',
++  now:'v34.79: At night blasts, shots, hunting machines and the beacon light the ground in their own colour. Check 34.79 fails on v34.78',
+   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
+ };
+ // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
+diff --git a/tools/mkfixture.ps1 b/tools/mkfixture.ps1
+index 63f54bd80..fc4c138e3 100644
+--- a/tools/mkfixture.ps1
++++ b/tools/mkfixture.ps1
+@@ -6166,6 +6166,34 @@ window.__REGRESS=[
+      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+      finally{ say2=_s2; __topClear(); __cleanProfile(); }
+      return bad.length?bad.join('; '):null; }},
++  {v:'34.79',what:'a flash lights the ground in its own colour in the light map (not plain white), and not under CLASSIC lighting',
++   run:function(){
++     var PR=CanvasRenderingContext2D.prototype, od=PR.drawImage, g=null, hit=0, spr=null, gl0=CFG.gfxLight, bad=[], c='#ff3a9a';
++     function run(){
++       hit=0;
++       PR.drawImage=function(im){ if(spr&&im===spr&&this===LMAP.x) hit++; return od.apply(this,arguments); };
++       try{ g.flashes.push({x:g.player.x+40,y:g.player.y,r:160,c:c,t:0,life:9}); for(var f=0;f<3;f++) __loop(performance.now()+f*16.7); }
++       finally{ PR.drawImage=od; }
++       return hit;
++     }
++     try{
++       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
++       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
++       g=__state(); if(!g||!g.player) return 'SKIP: no raid';
++       g.ents.length=0; g.player.iv=99; P.cond='night';
++       if(isDay()) return 'SKIP: the raid would not go dark';
++       if(typeof gfxLightSpr!=='function'||typeof LMAP==='undefined') return 'SKIP: no light map';
++       spr=gfxLightSpr(c,'map');
++       CFG.gfxLight=2; g.flashes.length=0;
++       if(run()<1) bad.push('a '+c+' flash was not stamped in its own colour in the light map');
++       CFG.gfxLight=0; g.flashes.length=0;
++       if(run()>0) bad.push('the coloured stamp was drawn under CLASSIC lighting');
++       return bad.length?bad.join('; '):null;
++     } finally {
++       PR.drawImage=od; CFG.gfxLight=gl0;
++       try{ __endRaid('abandon'); }catch(_e){}
++       __topClear();
++     } }},
+   {v:'34.78',what:'the opened career controls list: every row at the 16px label size, key caps drawn, one footer line, clear of the feed, the vitals and the bot list; the folded chip uses the same HUD panel and label face as the standing tag (job 121)',
+    run:function(){
+      if(!window.__deploy||!window.__endRaid||typeof careerPostBuild!=='function') return 'SKIP: no raid in this fixture';

@@ -1,0 +1,2 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  01-machdmg                             staged       8.8s    | choir sentry hp 340/850 other 22.5/150

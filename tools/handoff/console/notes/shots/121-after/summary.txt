@@ -1,0 +1,6 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  79-raid-controls-folded-career         staged       7.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | career 1 legendOn 0
+  80-raid-controls-career-after-f1       staged       8.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | career 1 legendOn 1
+== 4k : window 3876x2265, viewport 3840x2160
+  79-raid-controls-folded-career         staged       7.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | career 1 legendOn 0
+  80-raid-controls-career-after-f1       staged       9.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | career 1 legendOn 1

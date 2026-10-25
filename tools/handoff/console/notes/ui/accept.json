@@ -2512,19 +2512,19 @@
   "when": "2026-10-25T10:42"
  },
  "80-raid-controls-career-after-f1": {
-  "score": 2,
+  "score": 3,
   "pass": false,
   "need": 4,
-  "verdict": "The controls list now sits mid-bottom left and folds to a small 'f1 controls' chip, as the owner ordered. But the unfolded panel is a dense, tiny, dim, ragged four-column block that overlaps the log and sits on the water. The HUD around it is crowded and its type sizes don't follow the five-size scale.",
+  "verdict": "The controls panel is much better: it has key caps, grouped sections and a tidy two-column layout. The raid HUD around it is still crowded, with the run-info card, the left log and the panel's position all unresolved.",
   "findings": [
-   "P1 image 2, unfolded controls panel (x 493-900, y 702-872): Raise to 16px f-cond 600 with 24px row pitch. Use tx-1 for keys and tx-2 #aaa498 for actions. Use an opaque --ui-panel fill with a 1px --ui-line-hi border. Group into move / combat / items with a 16px gap between groups, and add a 'controls' label at the top left.",
-   "P1 image 2, panel position against the left log and the hotbar: Anchor the panel's bottom-left to the same 5% margin as the hp bar (x 24). Put it above the hotbar tag with a 16px gap, and move the log up or stack it above the panel so no rows share a y-band.",
-   "P1 image 2, 'run info' contracts list (x 1605-1900, y 90-335): Truncate or widen the card to 360px so each contract fits on one line. Make the headers 'contracts' and 'run goals' 16px tx-2 and the rows 20px tx-1. Right-align the counts in a column and drop 'dawn clear' from the card.",
-   "P2 image 1, 'f1 controls' chip (x 491-589, y 842-872): Use the same chip style as 'standing': --ui-panel fill, 1px --ui-line-hi border, 4px radius. Set 'f1' as a key cap in tx-1 and 'controls' in tx-2. Align its left edge to x 24 so it stacks above 'standing', or keep it centred-left at a fixed margin.",
-   "P2 image 2, collapse caret (x 884-898, y 706): Remove the caret. Keep one footer hint, 'f1 hide', at 16px tx-2, right-aligned in the panel's footer row."
+   "P1 run info card, x 1605-1900, y 90-335: Drop 'dawn clear'. Set the 'contracts' and 'run goals' headers to 16px f-cond 600 tx-2 with 16px space above. Set the rows to 20px tx-1. Right-align the counts in a column at x 1880. Widen the card to 360px.",
+   "P1 controls panel, x 493-757, y 608-872: Anchor the panel's left edge at x 24 and its bottom edge 16px above the 'standing' chip (about y 930). Make the row pitch 24px. Rename the 'move' section header to 'movement', or merge it so it is not a duplicate of the 'move' row.",
+   "P1 controls panel text, section labels and action words: Set labels to 16px f-cond 600 tx-2 with +.04em tracking. Set key caps to 16px tx-1 on --ui-raised with a 1px --ui-line-hi border. Set action words to 16px tx-1 or tx-2. Raise the panel padding to 16px.",
+   "P1 left log, x 15-315, y 692-802: Move the whole log up above the panel and cap it at 3 rows. Give every row the same 16px label size, one left bar colour and one fill. Make 'running slowly' match the others or drop it.",
+   "P2 world prompt chips, x 833-1090, y 152-210: Centre both chips under the 'extract 152m' tag at a fixed width of 300px with 8px between them. Keep the order stable between versions."
   ],
-  "pic": "tools/handoff/console/notes/shots/112r-career/80-raid-controls-career-after-f1-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/121-after/80-raid-controls-career-after-f1-1080.jpg",
   "task": "manual",
-  "when": "2026-10-25T10:42"
+  "when": "2026-10-25T15:28"
  }
 }

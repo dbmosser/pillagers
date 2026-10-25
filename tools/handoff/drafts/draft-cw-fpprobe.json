@@ -1,0 +1,12 @@
+{
+    "title":  "LIGHT PASS FINGERPRINT PROBE",
+    "why":  "Comment-only change to learn whether the seed 4242 fingerprint already moved on HEAD. Nothing visible changes.",
+    "now":  "Nothing visible changes.",
+    "edits":  [
+                  {
+                      "anchor":  "put(wspr,F.x,F.y,frr,2*a*.9*fr);",
+                      "replacement":  "put(wspr,F.x,F.y,frr,2*a*.9*fr);   // v34.79 (cw-fpprobe) comment only"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027probe: the light pass carries the fingerprint probe note\u0027,\n   run:function(){ return String(gfxLightPass).indexOf(\u0027fpprobe\u0027)\u003e=0 ? null : \u0027no probe note\u0027; }},"
+}
