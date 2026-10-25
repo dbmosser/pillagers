@@ -1,13 +1,13 @@
-  3763  [weak spot]  'HIT MARKERS. The crosshair centre flashes white on a hit, orange on a weak spot and red on a kill. Darker nights, SELL ALL and a RUN OVER score that counts up.',
-  3940  [Search resumed]  'FOUR LINES SAY WHAT THEY MEAN: the Crier names itself when its alarm goes out, the Pillbox says destroyed when it dies, the self-revive is one per raid, and a search picked up again says Search resumed.',
-  8462  [taunt(]  // vibe". His newest word reverses the pillager taunts of his answer 34 b. The taunt lines (spot, hurt, down and flee) and taunt() are
-  9940  [weak spot]  // weak spot a higher one) and a kill gives the tick, a low thunk and a two note ding. On the HUD bus, so never compressed,
- 14260  [weak spot]  // v27.xx (weakx), HIS ORDER (2026-10-14): "when we hit weak spot show the multiplier, e.g. 'weak spot 2.4x'". The label on a weak point hit reads WEAK SPOT and the multiplier
- 14261  [WEAK SPOT]  // the hit pays, one decimal and a lower case x (WEAK SPOT 3.4x on a Sentry vent, 2.0x on its optic), in the weak point colour, still once per target every half second. The
- 14262  [WEAK SPOT]  // Overseer core, exposed while it vents, pays 1.5 on every round and says WEAK SPOT 1.5x the same way (and the two multiply when a seam is hit while it vents). Only the words
- 14263  [weak spot]  // move; the multipliers, the effects and the damage are untouched. Pillagers have no weak spots.
- 14264  [WEAK SPOT]  function weakTxt(m){ return 'WEAK SPOT '+(Math.round((+m||1)*10)/10).toFixed(1)+'x'; }
- 17337  [diedWithMed]  closestExtract:1e9,deathKiller:null,deathDistExtract:null,diedWithMed:0,
+  3762  [weak spot]  'HIT MARKERS. The crosshair centre flashes white on a hit, orange on a weak spot and red on a kill. Darker nights, SELL ALL and a RUN OVER score that counts up.',
+  3939  [Search resumed]  'FOUR LINES SAY WHAT THEY MEAN: the Crier names itself when its alarm goes out, the Pillbox says destroyed when it dies, the self-revive is one per raid, and a search picked up again says Search resumed.',
+  8461  [taunt(]  // vibe". His newest word reverses the pillager taunts of his answer 34 b. The taunt lines (spot, hurt, down and flee) and taunt() are
+  9939  [weak spot]  // weak spot a higher one) and a kill gives the tick, a low thunk and a two note ding. On the HUD bus, so never compressed,
+ 14259  [weak spot]  // v27.xx (weakx), HIS ORDER (2026-10-14): "when we hit weak spot show the multiplier, e.g. 'weak spot 2.4x'". The label on a weak point hit reads WEAK SPOT and the multiplier
+ 14260  [WEAK SPOT]  // the hit pays, one decimal and a lower case x (WEAK SPOT 3.4x on a Sentry vent, 2.0x on its optic), in the weak point colour, still once per target every half second. The
+ 14261  [WEAK SPOT]  // Overseer core, exposed while it vents, pays 1.5 on every round and says WEAK SPOT 1.5x the same way (and the two multiply when a seam is hit while it vents). Only the words
+ 14262  [weak spot]  // move; the multipliers, the effects and the damage are untouched. Pillagers have no weak spots.
+ 14263  [WEAK SPOT]  function weakTxt(m){ return 'WEAK SPOT '+(Math.round((+m||1)*10)/10).toFixed(1)+'x'; }
+ 17336  [diedWithMed]  closestExtract:1e9,deathKiller:null,deathDistExtract:null,diedWithMed:0,
  19981  [[V]]  // shown FINISH [V] over every downed pillager and could not do it. Y (pad action 3, whatever CHANGE PAD BUTTONS has put it on) held with a downed pillager in finisher reach is the
  22363  [SOMETHING HUGE]  // are hosting now, PILLAGER REINFORCEMENTS, SPOTTED BY SOMETHING HUGE, and the in-ring hints in two to four words. The inbound hint
  22681  [OTHER GUN]  // HANDS with no comparison; the other gun he carries (OTHER GUN) and a packed gun (IN BACKPACK) are compared with it. It waits a

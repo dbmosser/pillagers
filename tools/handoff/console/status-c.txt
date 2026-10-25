@@ -1,1 +1,1 @@
-10-25 09:50 running 119-backpack-size-and-crowd-reds on Claude Code (your plan: week 4% of the 5.0% line, 5-hour 5%)
+10-25 10:10 waiting for RAM: 2 GB free, a helper starts at 3; 122-gfx-pixel-melee kept

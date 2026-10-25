@@ -1,0 +1,24 @@
+{
+    "title":  "RAID BACKPACK CLOSE BUTTON",
+    "why":  "His Q1 rule: every menu screen gets a close button and ESC closes it. The raid backpack had ESC, Tab and B but no button. One 36 px ghost square with the close glyph (the pad B when the last input was a pad) sits in the top right of the card header; a click does what ESC does.",
+    "now":  "The raid backpack has a close button in its corner.",
+    "edits":  [
+                  {
+                      "anchor":  "var hh=LH(236)*BZ+rows*(TILE+GAP)",
+                      "replacement":  "var hh=LH(242)*BZ+rows*(TILE+GAP)"
+                  },
+                  {
+                      "anchor":  "var cy=y+LH(30)*BZ;\n  ctx.font=bFS(TYPE.title);",
+                      "replacement":  "var cy=y+LH(36)*BZ;   // v28.xx (cw-bagclose): the header is 6 px taller so the close button sits inside it\n  ctx.font=bFS(TYPE.title);"
+                  },
+                  {
+                      "anchor":  "  ctx.fillText(_bh,x+PW-11,cy); ctx.textAlign=\u0027left\u0027; var _hdrB=cy+LH(8)*BZ;",
+                      "replacement":  "  // v28.xx (cw-bagclose), his Q1 (2026-09-03): \"Every menu screen gets a CLOSE button and ESC closes it\". The raid backpack had ESC, Tab and B but no button. One 36 px ghost square in the card corner (the style guide close place: top right of the header, the close glyph, the pad B when the last input was a pad); a click does what ESC does (shuts the backpack and drops a held drag). The key hints end left of it.\n  var _hintR=x+PW-11;\n  if(state!==\u0027hub\u0027){\n    var _cbS=Math.round(36*BZ), _cbP=Math.round(LH(6)*BZ), _cb={x:Math.round(G.bagPanel.x+G.bagPanel.w-_cbP-_cbS),y:Math.round(G.bagPanel.y+_cbP),w:_cbS,h:_cbS}, _cbH=inRect(_cb,mouse.x,mouse.y);\n    G.bagClose=_cb; _hintR=Math.min(_hintR,_cb.x-Math.round(LH(12)*BZ));\n    ctx.save();\n    ctx.fillStyle=_cbH?\u0027#232b35\u0027:\u0027rgba(0,0,0,0)\u0027; ctx.fillRect(_cb.x,_cb.y,_cb.w,_cb.h);\n    ctx.strokeStyle=_cbH?\u0027#efe9dc\u0027:\u0027#3d444a\u0027; ctx.lineWidth=1; ctx.strokeRect(_cb.x+.5,_cb.y+.5,_cb.w-1,_cb.h-1);\n    if(padOn()){ ctx.font=bFS(TYPE.label); ctx.textAlign=\u0027center\u0027; ctx.fillStyle=\u0027#efe9dc\u0027; ctx.fillText(padB(\u0027B\u0027),_cb.x+_cb.w/2,_cb.y+_cb.h/2+LH(6)*BZ); }\n    else { var _cbI=uiIconPath(\u0027close\u0027), _cbZ=Math.round(18*BZ); if(_cbI){ ctx.translate(_cb.x+(_cb.w-_cbZ)/2,_cb.y+(_cb.h-_cbZ)/2); ctx.scale(_cbZ/24,_cbZ/24); ctx.lineWidth=2*24/_cbZ; ctx.lineCap=\u0027square\u0027; ctx.strokeStyle=_cbH?\u0027#efe9dc\u0027:\u0027#aaa498\u0027; ctx.stroke(_cbI); } }\n    ctx.restore();\n  } else G.bagClose=null;\n  ctx.fillText(_bh,_hintR,cy); ctx.textAlign=\u0027left\u0027; var _hdrB=cy+LH(8)*BZ;"
+                  },
+                  {
+                      "anchor":  "  // PICK UP AN ITEM. Only while the inventory is open, and the drag is claimed",
+                      "replacement":  "  // v28.xx (cw-bagclose), his Q1: the close button on the raid backpack does what ESC does there, shuts it and drops a held drag.\n  if(e.button===0\u0026\u0026G\u0026\u0026!G.over\u0026\u0026G.bagOpen\u0026\u0026G.bagClose\u0026\u0026state!==\u0027hub\u0027\u0026\u0026inRect(G.bagClose,mouse.x,mouse.y)){ G.bagOpen=false; G.drag=null; return; }\n  // PICK UP AN ITEM. Only while the inventory is open, and the drag is claimed"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the raid backpack card has a close button inside it and a click on it closes the backpack like ESC (his Q1)\u0027,\n   run:function(){\n     var g, bp, cb, f;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[\u0027gun_carbine\u0027,\u0027medkit\u0027,\u0027bandage\u0027,\u0027bandage\u0027,\u0027plate\u0027,\u0027frag\u0027,\u0027smoke\u0027],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player) return \u0027SKIP: no raid\u0027;\n       g.ents.length=0; g.player.iv=99; g.bagOpen=true;\n       for(f=0;f\u003c8;f++) __loop(performance.now()+f*16.7);\n       bp=g.bagPanel; cb=g.bagClose;\n       if(!bp) return \u0027the backpack panel was not drawn\u0027;\n       if(!cb) return \u0027the raid backpack has no close button\u0027;\n       if(cb.x\u003cbp.x||cb.y\u003cbp.y||cb.x+cb.w\u003ebp.x+bp.w||cb.y+cb.h\u003ebp.y+bp.h) return \u0027the close button is outside the backpack card\u0027;\n       g.drag={key:\u0027medkit\u0027,bagIx:0};\n       mouse.x=cb.x+cb.w/2; mouse.y=cb.y+cb.h/2;\n       cv.dispatchEvent(new MouseEvent(\u0027mousedown\u0027,{button:0,bubbles:true,cancelable:true}));\n       if(g.bagOpen) return \u0027a click on the close button left the backpack open\u0027;\n       if(g.drag) return \u0027the close button left a held drag\u0027;\n       return null;\n     } finally {\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}

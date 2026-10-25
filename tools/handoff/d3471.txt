@@ -1,0 +1,5 @@
+## v34.71 - RAID BACKPACK CLOSE BUTTON
+
+Co-op hunt while he was away. His Q1 rule: every menu screen gets a close button and ESC closes it. The raid backpack had ESC, Tab and B but no button. One 36 px ghost square with the close glyph (the pad B when the last input was a pad) sits in the top right of the card header; a click does what ESC does.
+
+MEASURED. Check 34.71 passes, and fails on v34.70.

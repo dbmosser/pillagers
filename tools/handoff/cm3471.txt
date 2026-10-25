@@ -1,0 +1,7 @@
+v34.71: raid backpack close button
+
+The raid backpack has a close button in its corner.
+
+Check 34.71. Fails on v34.70.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

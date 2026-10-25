@@ -6166,6 +6166,29 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.71',what:'the raid backpack card has a close button inside it and a click on it closes the backpack like ESC (his Q1)',
+   run:function(){
+     var g, bp, cb, f;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:['gun_carbine','medkit','bandage','bandage','plate','frag','smoke'],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player) return 'SKIP: no raid';
+       g.ents.length=0; g.player.iv=99; g.bagOpen=true;
+       for(f=0;f<8;f++) __loop(performance.now()+f*16.7);
+       bp=g.bagPanel; cb=g.bagClose;
+       if(!bp) return 'the backpack panel was not drawn';
+       if(!cb) return 'the raid backpack has no close button';
+       if(cb.x<bp.x||cb.y<bp.y||cb.x+cb.w>bp.x+bp.w||cb.y+cb.h>bp.y+bp.h) return 'the close button is outside the backpack card';
+       g.drag={key:'medkit',bagIx:0};
+       mouse.x=cb.x+cb.w/2; mouse.y=cb.y+cb.h/2;
+       cv.dispatchEvent(new MouseEvent('mousedown',{button:0,bubbles:true,cancelable:true}));
+       if(g.bagOpen) return 'a click on the close button left the backpack open';
+       if(g.drag) return 'the close button left a held drag';
+       return null;
+     } finally {
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     } }},
   {v:'34.70',what:'the lost pad title tag takes its p1 or p2 colour from the shared table, not from raw colours in the css (his r3-13: P1 amber, P2 cyan)',
    run:function(){
      var oSame=NET.same, bad=[], css='', i, h, sp, col, box;
