@@ -1,11 +1,11 @@
 host=JUL26
-seen=2026-10-25 14:43
-epoch=1792953820
+seen=2026-10-25 15:06
+epoch=1792955189
 game=e179f6b0 v34.83
-test_run=idle
-robots=2
-ram_free_gb=10.4
+test_run=paused: he is using the PC
+robots=0
+ram_free_gb=12.4
 push_ok=1
 runner=8E87772F
 mode=idle
-spare_pc=off or offline (its name is not on the network), 14:38
+spare_pc=off or offline (its name is not on the network), 14:58
