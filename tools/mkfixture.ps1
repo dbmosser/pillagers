@@ -17291,7 +17291,7 @@ window.__REGRESS=[
      if(typeof HUDBOX==='undefined'||typeof MMAP==='undefined'||typeof TX!=='function'||typeof syncTopRight!=='function') return 'SKIP: no HUD boxes here';
      if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
      var bad=[], proto=CanvasRenderingContext2D.prototype, oFt=proto.fillText, oBp=proto.beginPath, oMv=proto.moveTo, oLn=proto.lineTo, oFl=proto.fill;
-     var sw=cv.style.width, sh=cv.style.height, hw=hcv.style.width, hh=hcv.style.height, p0=null, keepC, keepX, keepHud, hadHud, g=null, o, oSolo, el, now, cs0, i, colL=0, colW=0, colL2=0, h=null, oTb=null, oSz=null;
+     var sw=cv.style.width, sh=cv.style.height, hw=hcv.style.width, hh=hcv.style.height, p0=null, keepC, keepX, keepHud, hadHud, g=null, o, oSolo, el, now, cs0, i, colL=0, colW=0, colL2=0, h=null, oTb=null, oSz=null, oRR=proto.roundRect;
      function grab(){
        var r={t:[],p:[]}, bb=null, D=(ctx.getTransform().a)||1;
        function pt(c,x,y){ var m=c.getTransform(), X=(m.a*x+m.c*y+m.e)/D, Y=(m.b*x+m.d*y+m.f)/D; if(!bb) bb={x0:X,y0:Y,x1:X,y1:Y}; else { if(X<bb.x0) bb.x0=X; if(X>bb.x1) bb.x1=X; if(Y<bb.y0) bb.y0=Y; if(Y>bb.y1) bb.y1=Y; } }
@@ -17300,7 +17300,9 @@ window.__REGRESS=[
        proto.moveTo=function(x,y){ if(this===ctx) pt(this,x,y); return oMv.apply(this,arguments); };
        proto.lineTo=function(x,y){ if(this===ctx) pt(this,x,y); return oLn.apply(this,arguments); };
        proto.fill=function(){ if(this===ctx&&bb) r.p.push({x0:bb.x0,y0:bb.y0,x1:bb.x1,y1:bb.y1}); return oFl.apply(this,arguments); };
-       try{ __frame(0.016); } finally { proto.fillText=oFt; proto.beginPath=oBp; proto.moveTo=oMv; proto.lineTo=oLn; proto.fill=oFl; }
+       // v34.69 (cw-hudpanel1) moved hudPanel from moveTo/lineTo to roundRect, so the plates went unseen: count a rounded rect corner to corner too
+       if(oRR) proto.roundRect=function(x,y,w,h){ if(this===ctx){ pt(this,x,y); pt(this,x+w,y+h); } return oRR.apply(this,arguments); };
+       try{ __frame(0.016); } finally { proto.fillText=oFt; proto.beginPath=oBp; proto.moveTo=oMv; proto.lineTo=oLn; proto.fill=oFl; if(oRR) proto.roundRect=oRR; }
        return r;
      }
      function hdrRight(wn){ var r=grab(), a, w=String(wn).toLowerCase(), best=null; for(a=0;a<r.t.length;a++) if(r.t[a].al==='right'&&r.t[a].d.toLowerCase().indexOf(w)>=0&&(!best||r.t[a].y<best.y)) best=r.t[a]; return best; }
@@ -20373,12 +20375,12 @@ window.__REGRESS=[
        if(!easyAskMaybe('dead')||!easyLive()) return 'SKIP: staging: the easy mode question did not come up';
        kb(); t1=cap(easyHud);
        if(padOn()) bad.push('staging: the pad prompts are up for the keyboard');
-       if(!/\by yes\b/.test(t1)||!/\bn no\b/.test(t1)) bad.push('with the keyboard in use the easy mode card reads "'+t1+'", not Y yes and N no');
-       if(/\ba yes\b|\bb no\b|\by or a\b|\bn or b\b/.test(t1)) bad.push('with the keyboard in use the easy mode card still names the pad buttons: "'+t1+'"');
+       if(!/\by\s+yes\b/.test(t1)||!/\bn\s+no\b/.test(t1)) bad.push('with the keyboard in use the easy mode card reads "'+t1+'", not Y yes and N no');
+       if(/\ba\s+yes\b|\bb\s+no\b|\by or a\b|\bn or b\b/.test(t1)) bad.push('with the keyboard in use the easy mode card still names the pad buttons: "'+t1+'"');
        pd(); t2=cap(easyHud);
        if(!padOn()) bad.push('staging: the pad prompts are not up for the pad');
-       if(!/\ba yes\b/.test(t2)||!/\bb no\b/.test(t2)) bad.push('with the pad in use the easy mode card reads "'+t2+'", not A yes and B no');
-       if(/\by yes\b|\bn no\b|\by or a\b|\bn or b\b/.test(t2)) bad.push('with the pad in use the easy mode card still names the keys: "'+t2+'"');
+       if(!/\ba\s+yes\b/.test(t2)||!/\bb\s+no\b/.test(t2)) bad.push('with the pad in use the easy mode card reads "'+t2+'", not A yes and B no');
+       if(/\by\s+yes\b|\bn\s+no\b|\by or a\b|\bn or b\b/.test(t2)) bad.push('with the pad in use the easy mode card still names the keys: "'+t2+'"');
        ARCADE.easyAsk=null;
        // 2. the initials card in the raid (canvas)
        ARCADE.ini={run:'zz',raid:1,l:['A','B','C'],pos:1,at:Date.now(),touched:0,mirror:0,who:1};
