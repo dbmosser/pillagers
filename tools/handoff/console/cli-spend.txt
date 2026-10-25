@@ -1229,3 +1229,5 @@
 2026-10-25 0.13474770000000003 113-ui-settings-play-data-and-superhot
 2026-10-25 0.1542895 112r-raid-controls-right-folded
 2026-10-25 0.1555108 112r-raid-controls-right-folded
+2026-10-25 0.14171229999999999 112r-raid-controls-right-folded-wait
+2026-10-25 0.1393678 112r-raid-controls-right-folded-wait

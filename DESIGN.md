@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.64 - THE PARTY WINDOW CONTENT STARTS AT THE TOP LEFT
+
+Co-op hunt while he was away. Picture of v34.63: the 90 percent party card centred its content, so the title sat far left in the middle of the card and the lines and buttons floated to its right. Content now starts at the top left on one left edge.
+
+MEASURED. Check 34.64 passes, and fails on v34.63.
 ## v34.63 - THE PARTY WINDOW IS THE 90 PERCENT CARD AGAIN
 
 Co-op hunt while he was away. His Q43 and the style guide: a window is a centred card taking nearly the whole screen, and party is a window. v34.22 gave party a fitted 960 by 440 card with a stronger rule that beat the 90 percent card. The fitted frame and side padding are removed; the X moves to the card corner.

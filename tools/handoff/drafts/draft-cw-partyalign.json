@@ -1,0 +1,12 @@
+{
+    "title":  "THE PARTY WINDOW CONTENT STARTS AT THE TOP LEFT",
+    "why":  "Picture of v34.63: the 90 percent party card centred its content, so the title sat far left in the middle of the card and the lines and buttons floated to its right. Content now starts at the top left on one left edge.",
+    "now":  "The party window title and lines line up on the left and start at the top of the card.",
+    "edits":  [
+                  {
+                      "anchor":  "#root #partymodal.ui-win:not(#zz1):not(#zz2) \u003e .ui-foot \u003e .ui-back{ top:calc(5vh + 12px); right:calc(5vw + 16px); }\n",
+                      "replacement":  "#root #partymodal.ui-win:not(#zz1):not(#zz2) \u003e .ui-foot \u003e .ui-back{ top:calc(5vh + 12px); right:calc(5vw + 16px); }\n/* v34.64 (cw-partyalign): the 90 percent party card centred its content both ways, so the title sat on the left edge in the middle of the card and the body floated 300px to its right. Content now starts at the top left under the title, one left edge like the shop. */\n#root #partymodal.ui-win:not(#zz1):not(#zz2){ align-items:flex-start; justify-content:flex-start; }\n"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the party window content shares one left edge and starts in the top half of the card: the title and the first line start at the same left, the title is in the top third\u0027,\n   run:function(){\n     if(typeof openParty!==\u0027function\u0027) return \u0027SKIP: no party window\u0027;\n     var pm, h, s, a, b, c;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       openParty();\n       pm=document.getElementById(\u0027partymodal\u0027); h=pm.querySelector(\u0027h3\u0027); s=pm.querySelector(\u0027.msub\u0027);\n       if(!h||!s) return \u0027SKIP: no party title or line\u0027;\n       a=h.getBoundingClientRect(); b=s.getBoundingClientRect(); c=pm.getBoundingClientRect();\n       if(Math.abs(a.left-b.left)\u003e3) return \u0027the party title starts at \u0027+Math.round(a.left)+\u0027 and its first line at \u0027+Math.round(b.left)+\u0027, not one left edge\u0027;\n       if(a.top\u003ec.top+c.height/3) return \u0027the party title sits at \u0027+Math.round(a.top-c.top)+\u0027 px down a \u0027+Math.round(c.height)+\u0027 px card, not in the top third\u0027;\n       return null;\n     } finally {\n       try{ __topClear(); }catch(_e){}\n     } }},"
+}

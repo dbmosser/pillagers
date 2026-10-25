@@ -1,0 +1,12 @@
+29.95: PASS
+29.83: PASS
+29.53: PASS
+21.00: PASS
+9.94: PASS
+31.62: PASS
+20.00: PASS
+19.42: PASS
+32.22: PASS
+32.82: PASS
+34.22: the party card is 1898.36px wide, not the 90 percent window card (his Q43; v34.63 cw-partywin undid the fitted 960 card of v34.22)
+ALL DONE

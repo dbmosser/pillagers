@@ -12,3 +12,5 @@ F1 still cycles folded, compact, full list (centre); no key behaviour changed. D
 Run 3 (2026-10-25): confirmed cw-careerlegend still in the build (3 hits). No new work possible: pictures and critic still wait on a CAREER_ON camera stage in ui-screens-js.json (alarms.md line 300), which I may not edit.
 
 Run 4 (2026-10-25): no change. ui-screens-js.json still has no CAREER_ON stage (alarms.md line 300 open). Code shipped (v34.54); pictures, 4k, both windows and critic wait on that stage.
+Run 5 (2026-10-25): no change. ui-screens-js.json still has no CAREER_ON stage; code shipped in v34.54; pictures and critic still wait on it.
+Run 6 (2026-10-25): no change. ui-screens-js.json still has no CAREER_ON stage; code shipped v34.54; pictures and critic still wait on it.

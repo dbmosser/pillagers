@@ -1,0 +1,9 @@
+32.45: PASS
+32.19: PASS
+31.57: PASS
+31.58: PASS
+30.07: PASS
+32.95: PASS
+28.13: the big pauldron does not stand out at the shoulder
+28.12: the bedroll does not change the outline; the fuel can does not stand out; the frame pack does not change the outline; the hero draws the racks differently from a body that carries them (1763)
+ALL DONE

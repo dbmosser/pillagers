@@ -6163,6 +6163,22 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.64',what:'the party window content shares one left edge and starts in the top half of the card: the title and the first line start at the same left, the title is in the top third',
+   run:function(){
+     if(typeof openParty!=='function') return 'SKIP: no party window';
+     var pm, h, s, a, b, c;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       openParty();
+       pm=document.getElementById('partymodal'); h=pm.querySelector('h3'); s=pm.querySelector('.msub');
+       if(!h||!s) return 'SKIP: no party title or line';
+       a=h.getBoundingClientRect(); b=s.getBoundingClientRect(); c=pm.getBoundingClientRect();
+       if(Math.abs(a.left-b.left)>3) return 'the party title starts at '+Math.round(a.left)+' and its first line at '+Math.round(b.left)+', not one left edge';
+       if(a.top>c.top+c.height/3) return 'the party title sits at '+Math.round(a.top-c.top)+' px down a '+Math.round(c.height)+' px card, not in the top third';
+       return null;
+     } finally {
+       try{ __topClear(); }catch(_e){}
+     } }},
   {v:'34.63',what:'the party window is the 90 percent card (his Q43, style guide Window 90 x 90), not a fitted 960 card: five percent insets all round, no shift',
    run:function(){
      if(typeof openParty!=='function'||typeof openModal!=='function') return 'SKIP: no party window';
@@ -28093,7 +28109,7 @@ window.__REGRESS=[
        if(eu.r<e0.r+1.2) bad.push('the utility vest is not wider than the carrier ('+eu.r.toFixed(1)+' against '+e0.r.toFixed(1)+')');
        var s0=ext(shot.base,200-27*3,200-20*3);
        ['padsround','padsspike'].forEach(function(id){ var sp=ext(shot[id],200-27*3,200-20*3); if(sp.r<s0.r+2.5) bad.push(id+' do not stand out at the shoulder ('+sp.r.toFixed(1)+' against '+s0.r.toFixed(1)+')'); });
-       var sb=ext(shot.padsbig,200-27*3,200-20*3); if(Math.max(sb.r,sb.l)<Math.max(s0.r,s0.l)+2.5) bad.push('the big pauldron does not stand out at the shoulder');
+       var sb=ext(shot.padsbig,200-27*3,200-20*3); if(Math.max(sb.r,sb.l)<Math.max(s0.r,s0.l)+2.5) bad.push('the big pauldron does not stand out at the shoulder ('+Math.max(sb.r,sb.l).toFixed(1)+' against '+Math.max(s0.r,s0.l).toFixed(1)+', base '+JSON.stringify(s0)+' big '+JSON.stringify(sb)+')');
        var topSp=ext(shot.padsspike,200-34*3,200-28*3), top0=ext(shot.base,200-34*3,200-28*3); if(topSp.r<=top0.r||!(topSp.r>0)) bad.push('the spiked pads have no spike above the shoulder');
        // brass cartridges and the accent
        if(near(shot.vestband,'#d8b04a',14,chestY0-12,chestY1+12)<10) bad.push('the bandolier shows no brass');
@@ -28148,7 +28164,7 @@ window.__REGRESS=[
        for(i=0;i<all.length;i++) for(j=i+1;j<all.length;j++) if(diff(shot[all[i]],shot[all[j]])<120) bad.push(all[i]+' and '+all[j]+' draw alike');
        // the outline: the bedroll, the radio (with its antenna) and the frame pack stand taller; the fuel can and the frame pack stand wider on the back side
        var bb=function(id){ return box(shot[id],0,240); };
-       if(bb('packroll').top<b0.top+0.5&&bb('packroll').l<b0.l+1.5) bad.push('the bedroll does not change the outline');
+       if(bb('packroll').top<b0.top+0.5&&bb('packroll').l<b0.l+1.5) bad.push('the bedroll does not change the outline (base '+JSON.stringify(b0)+' roll '+JSON.stringify(bb('packroll'))+' fuel '+JSON.stringify(bb('packfuel'))+' frame '+JSON.stringify(bb('packframe'))+')');
        if(bb('packradio').top<b0.top+2) bad.push('the radio antenna does not stand above the figure ('+bb('packradio').top.toFixed(1)+' against '+b0.top.toFixed(1)+')');
        if(bb('packfuel').l<b0.l+1.5&&bb('packfuel').r<b0.r+1.5) bad.push('the fuel can does not stand out');
        if(bb('packframe').l<b0.l+1.5&&bb('packframe').top<b0.top+1) bad.push('the frame pack does not change the outline');

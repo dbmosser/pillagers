@@ -1,0 +1,7 @@
+v34.64: the party window content starts at the top left
+
+The party window title and lines line up on the left and start at the top of the card.
+
+Check 34.64. Fails on v34.63.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

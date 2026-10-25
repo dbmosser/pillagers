@@ -882,6 +882,8 @@
 #root #welcomemodal > .ui-foot > #welcomeno:hover::after, #root #welcomemodal > .ui-foot > #welcomeno:focus-visible::after, #root #partymodal.ui-win:not(#zz1):not(#zz2) > .ui-foot > .ui-back:hover::after, #root #partymodal.ui-win:not(#zz1):not(#zz2) > .ui-foot > .ui-back:focus-visible::after{ --xc:var(--tx-1); }
 /* v34.63 (cw-partywin), his Q43 (2026-10-18): a window is "a centred card with an X in the corner ... nearly the entire screen", and style-guide.md (Window, 90 x 90) names party. v34.22 (cw-wpcard, job 100) gave the party window a fitted 960 card with a 4-id rule that beat the 90 percent card, following the critic over his order. The fitted frame and its side padding are gone; the party window is the 90 percent card again. The X keeps its 48px look and sits in the card corner like every window's. */
 #root #partymodal.ui-win:not(#zz1):not(#zz2) > .ui-foot > .ui-back{ top:calc(5vh + 12px); right:calc(5vw + 16px); }
+/* v34.64 (cw-partyalign): the 90 percent party card centred its content both ways, so the title sat on the left edge in the middle of the card and the body floated 300px to its right. Content now starts at the top left under the title, one left edge like the shop. */
+#root #partymodal.ui-win:not(#zz1):not(#zz2){ align-items:flex-start; justify-content:flex-start; }
 #root #partymodal h3{ text-align:left; width:100%; font-size:32px; }
 #root #partymodal .msub{ font-size:16px; color:var(--tx-2); }
 #root #partymodal #partystat{ color:var(--tx-2) !important; font-weight:400 !important; }
@@ -3686,7 +3688,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.63';
+var VER='34.64';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -54183,7 +54185,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.63: The party window fills 90 percent of the screen like the shop and the other windows. Check 34.63 fails on v34.62',
+  now:'v34.64: The party window title and lines line up on the left and start at the top of the card. Check 34.64 fails on v34.63',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

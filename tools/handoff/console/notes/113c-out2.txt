@@ -1,0 +1,9 @@
+32.45: bar h 36px
+32.19: the build button centre is at 628, the window middle is 942
+31.57: racks child 1 max-width is 1344px, not 672px; racks child 2 max-width is 1344px, not 672px
+31.58: a tile not yet shown has a rgb(74, 82, 87) bar, not the plain slot colour rgb(46, 51, 55)
+30.07: the welcome pack intro starts at 0 above the card top 105
+32.95: restore is not the 56px primary action; undo competes with the primary action
+28.13: the big pauldron does not stand out at the shoulder
+28.12: the bedroll does not change the outline; the fuel can does not stand out; the frame pack does not change the outline; the hero draws the racks differently from a body that carries them (1763)
+ALL DONE
