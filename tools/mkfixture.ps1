@@ -6165,6 +6165,34 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.65',what:'raid backpack tiles are at least the guide 88 px, empty cells fill two rows, and every cell stays inside the card',
+   run:function(){
+     var g, bp, f, n=0, out=[], PR=CanvasRenderingContext2D.prototype, os=PR.strokeRect, tw=0;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:['gun_carbine','medkit','bandage','bandage','plate','frag','smoke'],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player) return 'SKIP: no raid';
+       g.ents.length=0; g.player.iv=99; g.bagOpen=true;
+       for(f=0;f<8;f++) __loop(performance.now()+f*16.7);
+       bp=g.bagPanel; if(!bp) return 'the backpack panel was not drawn';
+       var cells=g.bagCells||[];
+       if(!cells.length) return 'the backpack drew no tiles';
+       tw=cells[0].w;
+       if(tw<87.9) return 'a backpack tile is '+Math.round(tw)+' px, under the guide 88';
+       PR.strokeRect=function(x,y,w,h){
+         if(Math.abs(w-(tw-1))<1&&Math.abs(h-(tw-1))<1){ n++; if(x<bp.x||y<bp.y||x+w>bp.x+bp.w||y+h>bp.y+bp.h) out.push(Math.round(x)+','+Math.round(y)); }
+         return os.apply(this,arguments);
+       };
+       for(f=0;f<2;f++) __loop(performance.now()+f*16.7);
+       PR.strokeRect=os;
+       if(n<2*Math.max(1,g.bagCols)) return 'the backpack drew '+n+' cells, under two full rows of '+g.bagCols;
+       if(out.length) return 'a backpack cell is drawn outside the card at '+out.join(' ');
+       return null;
+     } finally {
+       PR.strokeRect=os;
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     } }},
   {v:'34.64',what:'the party window content shares one left edge and starts in the top half of the card: the title and the first line start at the same left, the title is in the top third',
    run:function(){
      if(typeof openParty!=='function') return 'SKIP: no party window';

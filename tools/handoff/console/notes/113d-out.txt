@@ -1,0 +1,8 @@
+30.26: a kill on a low roll left no vault gun in the death path
+22.12: the raid line read "CONTRACT DONE Search 13 containers in RECEIVING APRON or HOARFROST ROWS"
+20.38: the host was branded MARKED by a Crier that marked player 2; the host was told a Crier raised the alarm on him; player 2 was never told the Crier fired
+15.80: an enemy round on the party member did not post a hit word to his seat with its damage and its shooter ({"t":"hit","seat":1,"dmg":46,"kind":"raider","name":"FBI_Surveillance_Van","rd":1,"x":2078.2,"y":1144.1})
+13.81: control: a carbine found in an ordinary crate arrived with -1 rounds, not half a magazine
+10.81: COLD STORAGE building 12 lost interior walls too, 9 against 10, and this pass is meant to leave the rooms standing; THE COLD MILE building 7 lost interior walls too, 14 against 20, and this pass is meant to leave the rooms standing; THE COLD MILE building 32 lost interior walls too, 7 against 9, and
+9.81: control: the maps hold 2268 and 558 walls rather than 2191 and 545, so the split geometry moved
+ALL DONE

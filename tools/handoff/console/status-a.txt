@@ -1,1 +1,1 @@
-10-25 05:00 112r-raid-controls-right-folded: waiting on 113b-camera-career-stage, parked in blocked/ (not counted as a try), $0.1393678
+10-25 06:42 waiting for RAM: 2 GB free, a helper starts at 3; 114-ui-demo-raid-cards kept

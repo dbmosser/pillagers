@@ -27,3 +27,5 @@ Pictures: camera-recipes.json screens 33 (fight with a pillbox) and the career r
 windows; then the critic, telling it rs-1 and rs-2 are his rulings.
 
 TASK DONE when it ships with the checks and the pictures look right, and the critic scores are written down; TASK PARTIAL with what is left.
+
+Coordinator, 10-25 05:23: the camera can stage a career raid now. Screens 79-raid-controls-folded-career (the folded list at a career drop, legendOn 0) and 80-raid-controls-career-after-f1 (after one F1, legendOn 1) are in tools/handoff/shots/ui-screens-js.json with the query ?career=1 (the fixture keeps CAREER_ON for that address only, commit 32449968e). Both stage and I looked at both 1080 pictures: the f1 controls tab sits mid bottom left above the belt, and the compact list opens in the same place. Take 79 and 80 at 1080 and 4k, the both-windows check and the critic, then finish with TASK DONE.

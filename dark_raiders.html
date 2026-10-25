@@ -3688,7 +3688,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.64';
+var VER='34.65';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47892,7 +47892,7 @@ function drawBag(){
   // not yet scaled is now LH(n)*BZ. At 1080p BZ is exactly 1 and nothing moves.
   // v28.xx (cw-bagpolish), the critic scored the raid backpack 2 of 5 (2026-10-18, again 2026-10-20: "a wide, mostly empty dark slab with tiny, low contrast text and three lonely item slots ... looks like a debug panel"; the guide floor for read text is 16 px and tx-2 #aaa498). Look and layout only: the grid is 8 tiles wide (54 unit tiles, 8 unit gaps, units follow the text size) so the panel hugs its items instead of spanning 60 percent of the screen, every line of text is the label size (micro now draws as label) in tx-1 or tx-2, the title is the screen title size in tx-1, the selected tile and its ring are lime (the one accent), the lime tab is gone, and the key hints wrap onto a second line instead of running off. What the backpack holds and how items move are untouched.
   var BZ=hudRes(), bFS=function(s){ var f=FS(s===TYPE.micro?TYPE.label:s); return (BZ>1.01)?f.replace((/([\d.]+)px/),function(m0,n0){ return (parseFloat(n0)*BZ).toFixed(1)+'px'; }):f; };
-  var TILE=LH(54)*BZ,GAP=LH(8)*BZ,MARG=LH(24)*BZ;
+  var TILE=Math.max(88*BZ,LH(54)*BZ),GAP=LH(8)*BZ,MARG=LH(24)*BZ;
   var COLS=clamp(Math.floor((W*0.66-MARG*2+GAP)/(TILE+GAP)),6,8); G.bagCols=COLS;
   var gridW=COLS*TILE+(COLS-1)*GAP;
   // The panel is sized to the grid rather than the grid squeezed into a fixed
@@ -47900,13 +47900,13 @@ function drawBag(){
   var PW=Math.min(W-LH(24)*BZ,gridW+MARG*2);
   var x=Math.round((W-PW)/2);
   var gx=x+Math.round((PW-gridW)/2);
-  var rowsAll=Math.max(1,Math.ceil(stacks.length/COLS));
+  var rowsAll=Math.max(2,Math.ceil(stacks.length/COLS));   // v28.xx (cw-bagtiles), the critic (2026-10-20: a tiny 3-item grid, a small under-filled box): the grid is 88 px tiles (style guide Tile) and always shows at least two rows of cells, empty ones drawn quiet, so the card is filled by its grid; no change to what is carried
   // v9.13: the vertical paddings scale with the tile, or a grid of double-sized
   // tiles would sit in a header and footer built for the small ones.
   var rowsMax=Math.max(2,Math.floor((H-LH(560)*BZ)/(TILE+GAP)));
   var rows=Math.min(rowsAll,rowsMax);
   var _dn=stacks.length?Math.min(6,itemRows(stacks[clamp(G.bagSel||0,0,stacks.length-1)].key).length):0;   // v28.xx (cw-bagpolish): the footer is as tall as the selected item's rows
-  var hh=LH(226)*BZ+rows*(TILE+GAP)+_dn*LH(18)*BZ;
+  var hh=LH(236)*BZ+rows*(TILE+GAP)+_dn*LH(18)*BZ;
   hh=Math.min(hh,H-70*BZ);
   // v8.51, audit: reserve the belt's REAL footprint. v8.94: and MEASURE it
   // rather than assert it. LH(70)+LH(14) is 131px at every resolution, because
@@ -47994,7 +47994,7 @@ function drawBag(){
   for(var r2=0;r2<rows;r2++){
     for(var c2=0;c2<COLS;c2++){
       var si=(top0+r2)*COLS+c2;
-      if(si>=stacks.length) break;
+      if(si>=stacks.length){ var _ex=gx+c2*(TILE+GAP), _ey=cy+r2*(TILE+GAP); ctx.fillStyle='#16191b'; ctx.fillRect(_ex,_ey,TILE,TILE); ctx.strokeStyle='#2e3337'; ctx.lineWidth=1; ctx.strokeRect(_ex+.5,_ey+.5,TILE-1,TILE-1); continue; }
       var st=stacks[si], it=ITEMS[st.key];
       var tx=gx+c2*(TILE+GAP), ty=cy+r2*(TILE+GAP);
       G.bagCells.push({x:tx,y:ty,w:TILE,h:TILE,key:st.key,stackIx:si,bagIx:st.idxs[0]});
@@ -48032,7 +48032,7 @@ function drawBag(){
   ctx.moveTo(x+11,hintY-LH(12)*BZ); ctx.lineTo(x+PW-11,hintY-LH(12)*BZ); ctx.stroke();
   if(stacks.length){
     var sst=stacks[sel], sit=ITEMS[sst.key];
-    ctx.font=bFS(TYPE.head);
+    ctx.font=bFS(TYPE.title);   // v28.xx (cw-bagtiles), the critic: one hero, the selected item name at the screen title size
     ctx.fillStyle='#efe9dc';
     ctx.fillText((sit?sit.name:sst.key)+(sst.idxs.length>1?('  x'+sst.idxs.length):''),x+11,hintY);
     if(G.need&&G.need[sst.key]>0){ var _nt=(sit?sit.name:sst.key)+(sst.idxs.length>1?('  x'+sst.idxs.length):''); ctx.fillStyle='#ffd452'; ctx.fillText('NEEDED \u00b7 CONTRACT',x+11+ctx.measureText(_nt).width+LH(12)*BZ,hintY); }   // v26.xx (career9)
@@ -54185,7 +54185,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.64: The party window title and lines line up on the left and start at the top of the card. Check 34.64 fails on v34.63',
+  now:'v34.65: The raid backpack shows a full grid of larger tiles and a bigger selected item name. Check 34.65 fails on v34.64',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

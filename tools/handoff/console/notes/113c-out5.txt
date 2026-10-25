@@ -1,0 +1,11 @@
+28.13: PASS
+28.12: the backpack rack shows 13 tiles; a pack tile has no picture of the pack on the figure
+32.51: PASS
+26.30: PASS
+32.45: PASS
+32.19: PASS
+31.57: PASS
+31.58: PASS
+30.07: PASS
+32.95: PASS
+ALL DONE

@@ -80,20 +80,20 @@
   "need": 3
  },
  "07-party-coop": {
-  "score": 3,
-  "pass": true,
+  "score": 2,
+  "pass": false,
   "need": 3,
-  "verdict": "A big step up: the party window is now a tight, aligned card with one lime primary action, an x, and a dimmed hub behind it, but it is small, sparse and has a few leftover fiddly bits.",
+  "verdict": "The party card is now a 90% window as asked, but almost all of it is empty. The content is either pushed to the left edge or floats in the middle of a blank card, and the scrollbar on the input and the explaining sentence are both still there.",
   "findings": [
-   "P1 card size: Either make the party card 90% wide, or write the exception into the style guide for small one-question dialogs. If it stays small, make it a fixed 960x360 and use the same size for the welcome-pack card.",
-   "P1 invite code field, right edge: Remove the scrollbar and resize handle (overflow:hidden, resize:none) and switch to a single-line input. Give it a 2px --acc border when focused. Keep the placeholder at 16px, tx-2.",
-   "P1 title row and body copy: Delete the 'up to four pillagers' sentence. Keep one 16px tx-1 status line ('not in a party'), or put '0/4' in a right-aligned label. Raise the title to 32px with weight 700.",
-   "P2 button row: Put the input and join in one group, and host on its own row or on the far left with more gap. Better: hide join (greyed out) until the field has text. Keep the 56px height.",
-   "P2 card padding: Make the bottom padding equal the top (32px). Shrink the x to 40px with a borderless idle state, outlined only on focus."
+   "P0 whole card, both shots: Go back to a compact fixed card of about 960x400, centred, and write this exception into the style guide for one-question dialogs. If it must stay large, add a real party panel: four 96px slot rows (p1 to p4, empty slots in tx-2) with the host/join actions in a right column.",
+   "P0 layout consistency between the two shots: Pin the header row at the top (56px high, title 32px/700 at left padding 32px, x in the same row). Use one left edge of 32px for the title, status and controls. Never vertically centre the content block inside a full-screen card.",
+   "P1 invite code field, right edge: Use a single-line input with overflow:hidden and resize:none. Make it 320px wide, 56px high, with a --ui-line-hi border. Give it a 2px --acc border on focus. Set the placeholder to tx-2 at 16px with a 6-char mask format.",
+   "P1 title block and body copy, left: Delete the sentence. Keep one 16px tx-1 status line, 'not in a party', with '0/4' right-aligned in the same row. Title 32px/700. Body text must not go below the 16px label floor.",
+   "P1 button row: Put host on its own row at the left (240x56, lime). Below it add a 'join with code' group: input 320px + join 160px, with join greyed out until the field has text. Use a 32px gap between the groups. Show a 2px --acc focus ring plus a 4px inset bar on whichever control has pad focus."
   ],
-  "pic": "tools/handoff/console/notes/shots/100-after/07-party-coop-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/113b-after2/07-party-coop-1080.jpg",
   "task": "manual",
-  "when": "2026-10-24T15:12"
+  "when": "2026-10-25T09:03"
  },
  "08-shop": {
   "score": 3,
@@ -2494,5 +2494,37 @@
   "pic": "tools/handoff/console/notes/shots/86b-r1/gr3-hub-1080.jpg",
   "task": "manual",
   "when": "2026-10-24T20:43"
+ },
+ "79-raid-controls-folded-career": {
+  "score": 2,
+  "pass": false,
+  "need": 4,
+  "verdict": "The controls list now sits mid-bottom left and folds to a small 'f1 controls' chip, as the owner ordered. But the unfolded panel is a dense, tiny, dim, ragged four-column block that overlaps the log and sits on the water. The HUD around it is crowded and its type sizes don't follow the five-size scale.",
+  "findings": [
+   "P1 image 2, unfolded controls panel (x 493-900, y 702-872): Raise to 16px f-cond 600 with 24px row pitch. Use tx-1 for keys and tx-2 #aaa498 for actions. Use an opaque --ui-panel fill with a 1px --ui-line-hi border. Group into move / combat / items with a 16px gap between groups, and add a 'controls' label at the top left.",
+   "P1 image 2, panel position against the left log and the hotbar: Anchor the panel's bottom-left to the same 5% margin as the hp bar (x 24). Put it above the hotbar tag with a 16px gap, and move the log up or stack it above the panel so no rows share a y-band.",
+   "P1 image 2, 'run info' contracts list (x 1605-1900, y 90-335): Truncate or widen the card to 360px so each contract fits on one line. Make the headers 'contracts' and 'run goals' 16px tx-2 and the rows 20px tx-1. Right-align the counts in a column and drop 'dawn clear' from the card.",
+   "P2 image 1, 'f1 controls' chip (x 491-589, y 842-872): Use the same chip style as 'standing': --ui-panel fill, 1px --ui-line-hi border, 4px radius. Set 'f1' as a key cap in tx-1 and 'controls' in tx-2. Align its left edge to x 24 so it stacks above 'standing', or keep it centred-left at a fixed margin.",
+   "P2 image 2, collapse caret (x 884-898, y 706): Remove the caret. Keep one footer hint, 'f1 hide', at 16px tx-2, right-aligned in the panel's footer row."
+  ],
+  "pic": "tools/handoff/console/notes/shots/112r-career/79-raid-controls-folded-career-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-25T10:42"
+ },
+ "80-raid-controls-career-after-f1": {
+  "score": 2,
+  "pass": false,
+  "need": 4,
+  "verdict": "The controls list now sits mid-bottom left and folds to a small 'f1 controls' chip, as the owner ordered. But the unfolded panel is a dense, tiny, dim, ragged four-column block that overlaps the log and sits on the water. The HUD around it is crowded and its type sizes don't follow the five-size scale.",
+  "findings": [
+   "P1 image 2, unfolded controls panel (x 493-900, y 702-872): Raise to 16px f-cond 600 with 24px row pitch. Use tx-1 for keys and tx-2 #aaa498 for actions. Use an opaque --ui-panel fill with a 1px --ui-line-hi border. Group into move / combat / items with a 16px gap between groups, and add a 'controls' label at the top left.",
+   "P1 image 2, panel position against the left log and the hotbar: Anchor the panel's bottom-left to the same 5% margin as the hp bar (x 24). Put it above the hotbar tag with a 16px gap, and move the log up or stack it above the panel so no rows share a y-band.",
+   "P1 image 2, 'run info' contracts list (x 1605-1900, y 90-335): Truncate or widen the card to 360px so each contract fits on one line. Make the headers 'contracts' and 'run goals' 16px tx-2 and the rows 20px tx-1. Right-align the counts in a column and drop 'dawn clear' from the card.",
+   "P2 image 1, 'f1 controls' chip (x 491-589, y 842-872): Use the same chip style as 'standing': --ui-panel fill, 1px --ui-line-hi border, 4px radius. Set 'f1' as a key cap in tx-1 and 'controls' in tx-2. Align its left edge to x 24 so it stacks above 'standing', or keep it centred-left at a fixed margin.",
+   "P2 image 2, collapse caret (x 884-898, y 706): Remove the caret. Keep one footer hint, 'f1 hide', at 16px tx-2, right-aligned in the panel's footer row."
+  ],
+  "pic": "tools/handoff/console/notes/shots/112r-career/80-raid-controls-career-after-f1-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-25T10:42"
  }
 }

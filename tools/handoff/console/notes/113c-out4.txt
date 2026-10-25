@@ -1,0 +1,3 @@
+28.13: the big pauldron does not stand out at the shoulder (24.0 against 24.0, base {"r":11.333333333333334,"l":24} big {"r":11.333333333333334,"l":24})
+28.12: the bedroll does not change the outline (base {"top":41.333333333333336,"l":24,"r":14.666666666666666} roll {"top":41.333333333333336,"l":24,"r":14.666666666666666} fuel {"top":41.333333333333336,"l":24,"r":14.666666666666666} frame {"top":41.333333333333336,"l":24,"r":14.666666666666666}); the fuel
+ALL DONE

@@ -1231,3 +1231,16 @@
 2026-10-25 0.1555108 112r-raid-controls-right-folded
 2026-10-25 0.14171229999999999 112r-raid-controls-right-folded-wait
 2026-10-25 0.1393678 112r-raid-controls-right-folded-wait
+2026-10-25 0.1199 critic-manual
+2026-10-25 1.1751391999999998 113b-end-cards-and-window-reds
+2026-10-25 0.16762789999999997 112r-raid-controls-right-folded-wait
+2026-10-25 1.6046274999999999 113c-hub-page-reds
+2026-10-25 0.07735560000000001 113b-end-cards-and-window-reds
+2026-10-25 0.8328840000000004 113d-raid-rules-and-map-reds
+2026-10-25 0.1026 critic-manual
+2026-10-25 0.6528402999999999 115-ui-raid-backpack-cfgfault
+2026-10-25 0.6330924000000001 114-ui-demo-raid-cards-cfgfault
+2026-10-25 0.0887 critic-manual
+2026-10-25 0.6337316000000001 115-ui-raid-backpack-cfgfault
+2026-10-25 0.1180 critic-manual
+2026-10-25 0.14529440000000002 112r-raid-controls-right-folded

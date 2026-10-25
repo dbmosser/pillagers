@@ -1,0 +1,28 @@
+{
+    "title":  "RAID BACKPACK GRID FILLS THE CARD",
+    "why":  "The critic held the raid backpack at 2 of 5 (target 4): a small under-filled box with a tiny 3-item grid and two name sizes. Tiles are now the guide 88 px, at least two rows of empty cells are drawn so the grid fills the card, and the selected item name is the one hero at title size. Rendering only; nothing carried changes.",
+    "now":  "The raid backpack shows a full grid of larger tiles and a bigger selected item name.",
+    "edits":  [
+                  {
+                      "anchor":  "var TILE=LH(54)*BZ,GAP=",
+                      "replacement":  "var TILE=Math.max(88*BZ,LH(54)*BZ),GAP="
+                  },
+                  {
+                      "anchor":  "var rowsAll=Math.max(1,Math.ceil(stacks.length/COLS));",
+                      "replacement":  "var rowsAll=Math.max(2,Math.ceil(stacks.length/COLS));   // v28.xx (cw-bagtiles), the critic (2026-10-20: a tiny 3-item grid, a small under-filled box): the grid is 88 px tiles (style guide Tile) and always shows at least two rows of cells, empty ones drawn quiet, so the card is filled by its grid; no change to what is carried"
+                  },
+                  {
+                      "anchor":  "if(si\u003e=stacks.length) break;",
+                      "replacement":  "if(si\u003e=stacks.length){ var _ex=gx+c2*(TILE+GAP), _ey=cy+r2*(TILE+GAP); ctx.fillStyle=\u0027#16191b\u0027; ctx.fillRect(_ex,_ey,TILE,TILE); ctx.strokeStyle=\u0027#2e3337\u0027; ctx.lineWidth=1; ctx.strokeRect(_ex+.5,_ey+.5,TILE-1,TILE-1); continue; }"
+                  },
+                  {
+                      "anchor":  "var hh=LH(226)*BZ+rows",
+                      "replacement":  "var hh=LH(236)*BZ+rows"
+                  },
+                  {
+                      "anchor":  "ctx.font=bFS(TYPE.head);\n    ctx.fillStyle=\u0027#efe9dc\u0027;\n    ctx.fillText((sit?sit.name",
+                      "replacement":  "ctx.font=bFS(TYPE.title);   // v28.xx (cw-bagtiles), the critic: one hero, the selected item name at the screen title size\n    ctx.fillStyle=\u0027#efe9dc\u0027;\n    ctx.fillText((sit?sit.name"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027raid backpack tiles are at least the guide 88 px, empty cells fill two rows, and every cell stays inside the card\u0027,\n   run:function(){\n     var g, bp, f, n=0, out=[], PR=CanvasRenderingContext2D.prototype, os=PR.strokeRect, tw=0;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[\u0027gun_carbine\u0027,\u0027medkit\u0027,\u0027bandage\u0027,\u0027bandage\u0027,\u0027plate\u0027,\u0027frag\u0027,\u0027smoke\u0027],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player) return \u0027SKIP: no raid\u0027;\n       g.ents.length=0; g.player.iv=99; g.bagOpen=true;\n       for(f=0;f\u003c8;f++) __loop(performance.now()+f*16.7);\n       bp=g.bagPanel; if(!bp) return \u0027the backpack panel was not drawn\u0027;\n       var cells=g.bagCells||[];\n       if(!cells.length) return \u0027the backpack drew no tiles\u0027;\n       tw=cells[0].w;\n       if(tw\u003c87.9) return \u0027a backpack tile is \u0027+Math.round(tw)+\u0027 px, under the guide 88\u0027;\n       PR.strokeRect=function(x,y,w,h){\n         if(Math.abs(w-(tw-1))\u003c1\u0026\u0026Math.abs(h-(tw-1))\u003c1){ n++; if(x\u003cbp.x||y\u003cbp.y||x+w\u003ebp.x+bp.w||y+h\u003ebp.y+bp.h) out.push(Math.round(x)+\u0027,\u0027+Math.round(y)); }\n         return os.apply(this,arguments);\n       };\n       for(f=0;f\u003c2;f++) __loop(performance.now()+f*16.7);\n       PR.strokeRect=os;\n       if(n\u003c2*Math.max(1,g.bagCols)) return \u0027the backpack drew \u0027+n+\u0027 cells, under two full rows of \u0027+g.bagCols;\n       if(out.length) return \u0027a backpack cell is drawn outside the card at \u0027+out.join(\u0027 \u0027);\n       return null;\n     } finally {\n       PR.strokeRect=os;\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}

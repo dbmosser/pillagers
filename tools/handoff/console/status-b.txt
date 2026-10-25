@@ -1,1 +1,1 @@
-10-25 04:47 running 113b-end-cards-and-window-reds on Claude Code (your plan: week 2% of the 2.1% line, 5-hour 6%)
+10-25 06:40 waiting: another helper is just starting (memory check again in a few minutes); 114-ui-demo-raid-cards kept

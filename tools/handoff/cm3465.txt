@@ -1,0 +1,7 @@
+v34.65: raid backpack grid fills the card
+
+The raid backpack shows a full grid of larger tiles and a bigger selected item name.
+
+Check 34.65. Fails on v34.64.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

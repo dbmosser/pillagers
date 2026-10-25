@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.65 - RAID BACKPACK GRID FILLS THE CARD
+
+Co-op hunt while he was away. The critic held the raid backpack at 2 of 5 (target 4): a small under-filled box with a tiny 3-item grid and two name sizes. Tiles are now the guide 88 px, at least two rows of empty cells are drawn so the grid fills the card, and the selected item name is the one hero at title size. Rendering only; nothing carried changes.
+
+MEASURED. Check 34.65 passes, and fails on v34.64.
 ## v34.64 - THE PARTY WINDOW CONTENT STARTS AT THE TOP LEFT
 
 Co-op hunt while he was away. Picture of v34.63: the 90 percent party card centred its content, so the title sat far left in the middle of the card and the lines and buttons floated to its right. Content now starts at the top left on one left edge.

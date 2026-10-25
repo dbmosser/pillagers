@@ -13,4 +13,7 @@ Run 3 (2026-10-25): confirmed cw-careerlegend still in the build (3 hits). No ne
 
 Run 4 (2026-10-25): no change. ui-screens-js.json still has no CAREER_ON stage (alarms.md line 300 open). Code shipped (v34.54); pictures, 4k, both windows and critic wait on that stage.
 Run 5 (2026-10-25): no change. ui-screens-js.json still has no CAREER_ON stage; code shipped in v34.54; pictures and critic still wait on it.
+Run 7 (2026-10-25): no change. Still no CAREER_ON stage in ui-screens-js.json; v34.54 is in the build (3 hits).
 Run 6 (2026-10-25): no change. ui-screens-js.json still has no CAREER_ON stage; code shipped v34.54; pictures and critic still wait on it.
+
+Run 8 (2026-10-25): shot 79 and 80 at 1080 and 4k (shots/112r-career). Folded 'f1 controls' chip and the opened list both sit mid-bottom left, left half and lower half, clear of the feed, vitals, belt. Critic (told rs-1 and rs-2 are his rulings): score 2, better than before yes. Position is what he ordered. Findings are about the list's own look (13-14px text, dim action column, 4 columns without groups, chip style differs from 'standing' tag, caret plus 'f1 full list' footer twice) and old HUD clutter elsewhere (run info wrap, banners). None reverse a ruling. Not done: the list restyle (a separate picture job, style-guide sizes), and no picture from the player 2 window (same code path, not shot).
