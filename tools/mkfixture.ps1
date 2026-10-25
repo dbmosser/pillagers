@@ -21646,7 +21646,8 @@ window.__REGRESS=[
        Math.random=oRnd; hit=null;
        for(i=0;i<G.ents.length;i++){ var q=G.ents[i]; if(q&&q.hp>0&&!q.boss&&!q.golden&&!q.summoned&&(q.kind==='crawler'||q.kind==='sentry'||q.kind==='bulwark'||q.kind==='howler')){ hit=q; break; } }
        if(hit){
-         n=G.containers.length; hit.hp=0; Math.random=function(){ return 0; }; updateEnts(0.05); Math.random=oRnd;
+         // 113d: a landed round sets 'chase' before it kills; left in 'patrol' the v4.45 weld gives a machine +2 hp when another patrolling machine is within 90, so it never died this frame.
+         n=G.containers.length; hit.hp=0; hit.state='chase'; Math.random=function(){ return 0; }; updateEnts(0.05); Math.random=oRnd;
          if(!G.containers.slice(n).some(vg)) bad.push('a kill on a low roll left no vault gun in the death path');
        }
      }catch(ex){ bad.push('threw: '+(ex&&ex.message||ex)); }
@@ -55615,7 +55616,8 @@ window.__REGRESS=[
        contractStep(c);
        mid=(G.tel&&G.tel.contractsMid)||[];
        if(!(mid.length===1&&mid[0].desc===want)) bad.push('the run card will read '+JSON.stringify(mid.length?mid[0].desc:null)+' for '+want);
-       if(!said.some(function(m){ return m.indexOf(want+'.')>=0; })) bad.push('the raid line read '+JSON.stringify(said[0]||null));
+       // 113d: v34.46 (contract done line shorter, changes.md under Q8) ends the line at the place name, no 'Complete contract at mainframe.' tail.
+       if(!said.some(function(m){ return m.length>=want.length&&m.slice(m.length-want.length)===want; })) bad.push('the raid line read '+JSON.stringify(said[0]||null));
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        G=oG; say=oSay; P.mapIx=oMap; P.contracts=oCon;
@@ -60831,6 +60833,8 @@ window.__REGRESS=[
        say=function(s){ lines.push(String(s)); }; netBroadcast=function(w){ words.push(JSON.parse(JSON.stringify(w))); };
        NET.on=true; NET.role='host'; NET.seat=0; NET.peers=[]; NET.upSeed=g.seed>>>0;
        c.x=g.player.x+160; c.y=g.player.y; c.state='alarm'; c.wind=0.001; c.lost=0; c.markX=c.x; c.markY=c.y; c.markSeat=1; g.marked=0;
+       // 113d: since v21.23 a Crier that SEES a player re-marks him each frame, so a rolled facing toward the host made the host the marked one (right game behaviour, the staging broke). Face away from the host (he is 160 px to its left) so only player 2 holds the mark.
+       c.face=Math.atan2(c.y-g.player.y,c.x-g.player.x);
        updateEnts(0.05);
        if(c.wind!==null&&c.wind!==undefined) return 'SKIP: staging: the Crier windup did not run out';
        if(g.marked>0) bad.push('the host was branded MARKED by a Crier that marked player 2');
@@ -73239,7 +73243,8 @@ window.__REGRESS=[
        // AN ENEMY ROUND ON THE PARTY MEMBER: a hit word to his seat, the host player untouched, damagePlayer never called.
        sentA.length=0; dpCalls.length=0;
        var hp0=p.hp;
-       if(spot&&R){ G.bullets.push({x:spot.x-6,y:spot.y,vx:120,vy:0,dmg:9,life:1,player:false,owner:R,tint:'#fff'}); updateBullets(0.05); }
+       // 113d: the ten real frames above can leave a real pillager bot round (dmg 46) in flight; it lands in the same step and its word is the last one read. Clear the list so only the staged round of 9 is in the air.
+       if(spot&&R){ G.bullets.length=0; G.bullets.push({x:spot.x-6,y:spot.y,vx:120,vy:0,dmg:9,life:1,player:false,owner:R,tint:'#fff'}); updateBullets(0.05); }
        var hw=last(sentA,'hit');
        if(!hw||hw.seat!==1||hw.dmg!==9||hw.kind!=='raider'||hw.name!==(R?R.name:'')) bad.push('an enemy round on the party member did not post a hit word to his seat with its damage and its shooter ('+js(hw)+')');
        if(p.hp!==hp0) bad.push('an enemy round on the party member took '+(hp0-p.hp)+' off the HOST player');
@@ -83077,18 +83082,21 @@ window.__REGRESS=[
        var crate=g.containers[g.containers.length-1];
        if(!crate||!crate.dropped) return 'SKIP: dropping made no dropped crate';
        openContainer(crate,['gun_carbine']);
-       var up=(p.sec&&p.sec.id==='carbine')||(p.wep&&p.wep.id==='carbine');
+       // 113d: since v26.26 (rarvar1) one find in five out of an ordinary crate is the rarity twin (id carbine_v), and a quality changes the magazine, so match the carbine by gunBase and measure half of the mag of the gun that really arrived.
+       function isC(w){ return !!w&&gunBase(w.id)==='carbine'; }
+       var up=isC(p.sec)||isC(p.wep);
        if(!up) return 'SKIP: the carbine was not equipped from the crate, so there is no refill to measure';
        var S1=rounds(g);
        if(S1>S0) bad.push('an empty carbine dropped and picked up came back with '+(S1-S0)+' rounds that did not exist');
        // CONTROL: a carbine found in an ordinary crate arrives with half a magazine.
-       if(!bagHeldGun(p.sec&&p.sec.id==='carbine'?'gunB':'gunA')) return bad.length?bad.join('; '):'SKIP: could not bag the carbine again for the control';
+       if(!bagHeldGun(isC(p.sec)?'gunB':'gunA')) return bad.length?bad.join('; '):'SKIP: could not bag the carbine again for the control';
        g.bag=[]; g.stowAmmo={};
        var box=setLoot(mkContainer(p.x+6,p.y+6,'crate'),['gun_carbine']);
        g.containers.push(box);
        openContainer(box,['gun_carbine']);
-       var got=(p.sec&&p.sec.id==='carbine')?p.secAmmo:((p.wep&&p.wep.id==='carbine')?p.ammo:-1);
-       if(got!==Math.ceil(WEAPONS.carbine.mag/2)) bad.push('control: a carbine found in an ordinary crate arrived with '+got+' rounds, not half a magazine');
+       var hw=isC(p.sec)?p.sec:(isC(p.wep)?p.wep:null);
+       var got=isC(p.sec)?p.secAmmo:(isC(p.wep)?p.ammo:-1);
+       if(!hw||got!==Math.ceil(hw.mag/2)) bad.push('control: a carbine found in an ordinary crate arrived with '+got+' rounds, not half a magazine');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        try{ var g2=__state(); if(g2&&g2.player){ g2.player.iv=0; } if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
@@ -96735,7 +96743,8 @@ window.__REGRESS=[
        // many interior partitions it still has.
        for(j=0;j<W.length;j++){
          var w=W[j];
-         if(w.ib!==undefined){ inner[w.ib]=(inner[w.ib]||0)+1; continue; }
+         // 113d: v34.50 (86i ship 2, his 10-20 orders) stands solid furniture pieces (ib set, furn set) in buildings that are not ruined, so a bed or rack row is not a room: count partitions only.
+         if(w.ib!==undefined){ if(!w.furn) inner[w.ib]=(inner[w.ib]||0)+1; continue; }
          if(w.wreck||w.ruin||w.tree||w.furn||w.noDes) continue;
          for(i=0;i<B.length;i++){
            var b=B[i], t=20;
@@ -101742,9 +101751,10 @@ window.__REGRESS=[
      // doorway are cut back at the end of the build; net one segment a map.
      // v13.41: 2205 and 551 became 2191 and 545. The raised decks are gone, and with
      // them 14 and 6 deck edge walls.
-     if(mile.walls!==2191||cold.walls!==545)
+     // 113d: v34.50 (86i ship 2, his 10-20 22:55 and 23:00 orders) stands solid pieces per building kind: 2191 and 545 became 2268 and 558. The pieces are placed last, so the seeded entity line below is what proves the stream stayed put.
+     if(mile.walls!==2268||cold.walls!==558)
        bad.push('control: the maps hold '+mile.walls+' and '+cold.walls+
-                ' walls rather than 2191 and 545, so the split geometry moved');
+                ' walls rather than 2268 and 558, so the split geometry moved');
      if(mile.ents!==374||cold.ents!==85)
        bad.push('control: the maps spawn '+mile.ents+' and '+cold.ents+
                 ' rather than 374 and 85, so the seeded stream moved');
