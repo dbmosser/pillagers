@@ -7704,7 +7704,7 @@ window.__REGRESS=[
        if(DRS.scale!==1) bad.push('30 Hz softened to '+DRS.scale);
        if(DRS.q!==0) bad.push('fixed cadence did not recover the rungs');
        var n=events.length; feed(33.3,30000,6); if(events.length!==n) bad.push('fixed cadence keeps cycling');
-       reset(); CFG.fpsCap=144; feed(11,30000,6); if(events.length) bad.push('144 cap shed at 90 fps'); CFG.fpsCap=0;
+       reset(); CFG.fpsCap=144; var _vs0=(typeof VSYNC!=='undefined')?VSYNC.ms:null; if(_vs0!==null) VSYNC.ms=1000/60; feed(11,30000,6); if(_vs0!==null) VSYNC.ms=_vs0; if(events.length) bad.push('144 cap shed at 90 fps on a 60 Hz screen'); CFG.fpsCap=0;   /* cw-drscap, his 10-25 answer: a cap is chased only up to the screen rate, so on a 60 Hz screen a 144 cap keeps the 60 rule; the faster screen case is the cw-drscap check */
        reset();
        for(i=0;i<20;i++){ feed(22,3000,6); feed(16,3000,6); }
        for(i=1;i<events.length;i++) if(events[i].dir!==events[i-1].dir&&events[i].t-events[i-1].t<10000) bad.push('opposite moves less than ten seconds apart');
@@ -7778,8 +7778,8 @@ window.__REGRESS=[
        CFG.gfxAuto=1; CFG.gfxScale=1; CFG.fpsCap=0; reset(); feed(22,5000,6);
        if(!DRS.q) bad.push('45 fps for five seconds shed no rung');
        if(DRS.gap95!==22||DRS.work95!==6) bad.push('gap and work window lost their samples');
-       reset(); CFG.fpsCap=144; feed(11,30000,6);
-       if(DRS.q||DRS.scale!==1) bad.push('144 cap sheds above 60 fps');
+       reset(); CFG.fpsCap=144; var _vs1=(typeof VSYNC!=='undefined')?VSYNC.ms:null; if(_vs1!==null) VSYNC.ms=1000/60; feed(11,30000,6); if(_vs1!==null) VSYNC.ms=_vs1;   /* cw-drscap, his 10-25 answer: on a 60 Hz screen a 144 cap keeps the 60 rule */
+       if(DRS.q||DRS.scale!==1) bad.push('144 cap sheds above 60 fps on a 60 Hz screen');
        CFG.fpsCap=0; reset(); DRS.q=2; gfxqApply(); feed(16,15000,12);
        if(DRS.q!==2) bad.push('high own work was incorrectly clear');
        reset(); resize(); resize=function(){ calls++; return oR.apply(this,arguments); };
