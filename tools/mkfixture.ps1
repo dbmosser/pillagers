@@ -15349,13 +15349,16 @@ window.__REGRESS=[
        NET.same=s;NET.pair='j8-check';NET.padIx=-1;NET.padOther=-1;NET.padWas=null;NET.padFwd=null;NET.padTs={};NET.padHad=false;NET.padPeerLost=false;NET.padLiveAt=netPadNow();
        g.paused=false;g.mapOpen=false;g.bagOpen=false;g.mapFirst=false;g.trade=null;g.wheel=null;g.forgeUI=null;posts=[];pads=[pd(0),pd(1)];pollPad();
      }
-     function heading(){var h=document.querySelector('#pausebox h3');return h?h.textContent.toLowerCase():'';}
+     // v34.70 (cw-padtagcol), job 117: v34.67 put a p1 or p2 tag in front of the title words, so the words are read after the tag, and the tag must be this window's own
+     function heading(){var h=document.querySelector('#pausebox h3');return h?h.textContent.toLowerCase().replace(/^p[12] /,''):'';}
      function loss(s,disconnected){
        reset(s); var ix=s==='host'?1:0, other=1-ix, saved=pads[ix], before=PAD.ix;
        if(disconnected) saved.connected=false; else pads[ix]=null;
        PAD.firing=1;mouse.down=true;PAD.held.KeyE=1;keys.KeyE=true;
        pollPad();pollPad();
        var stopped=!!(pauseOpen&&g.paused&&heading()==='pad lost');
+       var tag0=(document.querySelector('#pausebox h3')||{textContent:''}).textContent.toLowerCase().slice(0,3);
+       if(stopped&&tag0!==(s==='p2'?'p2 ':'p1 '))bad.push(s+': the lost pad title does not name this window ('+tag0+')');
        if(!stopped)bad.push(s+' '+(disconnected?'connected:false':'null')+': no pad lost pause within two polls');
        if(mouse.down||keys.KeyE||PAD.mx||PAD.my)bad.push(s+': loss left an input held');
        if(PAD.ix!==before)bad.push(s+': the other pad took the lost slot');
