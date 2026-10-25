@@ -1,0 +1,7 @@
+v34.78: the career controls list is a clean panel and the folded chip matches the standing tag
+
+The controls list opened with F1 reads clearly: key caps, grouped, bigger. The folded f1 controls chip looks like the standing tag.
+
+Check 34.78. Fails on v34.77.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

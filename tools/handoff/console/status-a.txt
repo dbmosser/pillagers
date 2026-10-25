@@ -1,1 +1,1 @@
-10-25 11:14 waiting for RAM: 2 GB free, a helper starts at 3; 126-gfx-gun-kick kept
+10-25 11:19 127-gfx-glow-pools: partial (run 2 of 5), $0.0763646

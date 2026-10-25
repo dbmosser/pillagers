@@ -1,1 +1,1 @@
-10-25 11:15 126-gfx-gun-kick: done, $0.07891599999999999
+10-25 11:19 waiting for RAM: 2 GB free, a helper starts at 3; 128-gfx-lamp-dust kept
