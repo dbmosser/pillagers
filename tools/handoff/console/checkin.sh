@@ -13,7 +13,8 @@ echo "$vv" | grep '^\[FAIL' | while read -r l; do echo "LOOK: $l"; done; echo "$
 hs=$(bash tools/health.sh 2>&1)
 echo "$hs" | grep '^PROBLEM' | grep -v 'full test run says' | while read -r l; do echo "LOOK: $l"; done
 echo "$hs" | grep '^PROBLEM' | grep -qv 'full test run says' && look=1
-say "$(echo "$hs" | grep -m1 '^full test run:')  (known reds are queued as jobs 113 to 113d)"
+rj=$(for f in "$C/tasks/"*red*.md; do [ -f "$f" ] && basename "$f" | sed 's/-.*//'; done | paste -sd' ')
+say "$(echo "$hs" | grep -m1 '^full test run:')  (red-fix jobs waiting: ${rj:-none})"
 for l in a b c; do say "lane $l: $(head -c 140 "$C/status-$l.txt" 2>/dev/null | tr -d '\r\n')"; done
 say "$(echo "$hs" | grep -m1 '^jobs waiting')"
 ram=$(echo "$hs" | grep -m1 '^free RAM' | tr -dc '0-9'); say "free RAM: ${ram:-?} GB, $(echo "$hs" | grep -m1 '^free virtual' | sed 's/free virtual memory: //') virtual"
