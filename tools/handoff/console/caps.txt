@@ -18,6 +18,7 @@ CLI_BOOST=f
 # next week": until PLAN_BURN_UNTIL the helpers run whenever they can, up to PLAN_WEEK_MAX% of the week; after it an even line to
 # PLAN_TARGET% by the next reset (tools/console-lane.sh).
 PLAN_TARGET=80
+PLAN_LINE_END=2026-10-31T03:00:00Z
 PLAN_BURN_UNTIL=2026-10-25T05:00:00Z
 PLAN_WEEK_MAX=99
 PLAN_SESSION_MAX=85

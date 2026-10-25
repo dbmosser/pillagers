@@ -133,6 +133,11 @@ if [ $ENGINE = cli ]; then
   [ -z "$wk" ] && { echo "$(date '+%m-%d %H:%M') cannot read your plan usage yet; waiting" > "$C/status-$L.txt"; exit 0; }
   WR=$(date -d "$(cap WEEK_RESET 2026-10-25T05:00:00Z)" +%s); nw=$(date +%s); while [ "$nw" -ge "$WR" ]; do WR=$((WR+604800)); done
   line=$(awk -v r="$WR" -v n="$nw" -v t="$(cap PLAN_TARGET 85)" 'BEGIN{printf "%.1f", (1-(r-n)/604800)*t}')
+  # 10-25, his "The game needs to be as ready as possible by Friday night": PLAN_LINE_END (a time inside this week) moves the end of the
+  # even line from the reset to that time, same PLAN_TARGET%, so the week's work lands before the party; after it the line holds there.
+  le=""; [ -n "$(cap PLAN_LINE_END "")" ] && le=$(date -d "$(cap PLAN_LINE_END "")" +%s 2>/dev/null); ws=$((WR-604800))
+  if [ -n "$le" ] && [ "$le" -gt "$ws" ] && [ "$le" -lt "$WR" ]; then
+    line=$(awk -v s="$ws" -v e="$le" -v n="$nw" -v t="$(cap PLAN_TARGET 85)" 'BEGIN{f=(n-s)/(e-s); if(f>1)f=1; if(f<0)f=0; printf "%.1f", f*t}'); fi
   boost=0; case ",$(cap CLI_BOOST ""),," in *",$L,"*) boost=5;; esac
   # 10-19 18:30, his "forget about the pacing rule ... I don't care if you blow my usage quicker than the reset" and "I just don't want to
   # spend more tokens bc we are moving faster": PLAN_PACE=0 drops the weekly line (helpers run whenever they can); the 5-hour stop stays
