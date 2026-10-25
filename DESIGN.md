@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.59 - THE WHAT IS NEW STAMP KEEPS UP
+
+Co-op hunt while he was away. The card was stamped v34.43 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.
+
+MEASURED. Check 34.59 passes, and fails on v34.58.
 ## v34.58 - PLAY DATA TEXT RULES ON TOKENS
 
 Co-op hunt while he was away. Job 113: check 29.33 caught raw hex and px literals in the play data export text rules. Same values, written with the tokens, longhand font and the named colour black.

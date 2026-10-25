@@ -1,20 +1,50 @@
 
-This CSS code snippet appears to be styling a modal dialog for application settings, likely within a web-based user interface. The styles are organized into several sections that target different elements of the settings modal:
+It looks like you've provided a large block of CSS code, likely from a web application or extension that manages user settings and preferences. The styles are designed to enhance the appearance and functionality of various UI elements within a settings modal.
 
-1. **General Settings Modal Styles**:
-   - `#root #settingsmodal`: General styles for the entire settings modal.
-   - `#root #settingsmodal #setwrap > #setdetail.daily-restore-detail`: Specific styles for a detailed view related to daily restore.
+Here's a breakdown of some key sections:
 
-2. **Daily Restore Detail Section**:
-   - `.daily-selected`, `.daily-meta dt, dd`: Styling for selected items and metadata in the daily restore detail section.
-   - `#root #settingsmodal #setlist .row.save-restore.dshow`: Styles for a row that is highlighted or shown when certain conditions are met.
+1. **Daily Restore Settings:**
+   - Styles for daily restore actions, including buttons and their hover/focus states.
+   - Detailed view for selected daily restores with metadata display.
 
-3. **Save/Restore Actions**:
-   - `.save-restore-actions > #set_restore, #set_restore_source`: Styling for buttons related to saving and restoring settings.
-   - `#root #settingsmodal #setlist .row.save-key-hint > span.hint kbd`: Styles for keyboard hints displayed in the save key hint section.
+2. **Experimental Mode (expmode):**
+   - Adjustments to the settings list layout for an experimental interface.
+   - Grouping of settings categories and individual setting rows.
+   - Custom chips for on/off switches, improving visibility and interaction.
 
-4. **Experimental Mode**:
-   - `.exphead, .expgroup, .exprow`: Styling for elements when the settings modal is in experimental mode.
-   - `#root #settingsmodal.expmode::after`: Additional text or instructions shown in the footer of the experimental mode
+3. **News Report Mode (recmode):**
+   - Styles for a news report modal, including text preview areas, buttons, and log displays.
+   - Ensures the content is readable and fits within the screen dimensions.
+
+4. **General Enhancements:**
+   - Improved focus states for better accessibility.
+   - Adjustments to font sizes, colors, and spacing for consistency across different sections of the settings modal.
+
+If you need specific help with any part of this CSS or have questions about how certain styles work, feel free to ask!
+The provided CSS code appears to be a set of styles for a web application, specifically targeting elements within the `#root` container. These styles are designed to enhance the appearance and functionality of various UI components such as modals, buttons, grids, and lists. Below is a breakdown of some key sections and their purposes:
+
+### 1. **Gamble Modal Styles**
+   - **Disabled Buttons**: 
+     ```css
+     #root #gamblemodal #gamblebtn:disabled,
+     #root #gamblemodal #wirtlotbtn:disabled {
+       background: var(--ui-raised) !important;
+       color: var(--tx-2) !important;
+       border: 1px solid var(--danger) !important;
+     }
+     ```
+     This styles disabled buttons in the gamble modal by changing their background, text color, and border to indicate they are not clickable.
+
+   - **Buttons with Data Needs**:
+     ```css
+     #root #gamblemodal #gamblebtn[data-need]:not([data-need=""])::after,
+     #root #gamblemodal #wirtlotbtn[data-need]:not([data-need=""])::after {
+       font: 600 16px/1.4 var(--f-cond);
+       letter-spacing: .02em;
+       color: #ff8a75;
+       border: 0;
+       background: none;
+       padding:
+NONE
 NONE
 NONE

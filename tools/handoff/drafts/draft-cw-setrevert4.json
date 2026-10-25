@@ -1,0 +1,16 @@
+{
+    "title":  "WHAT IS NEW SUBTITLE ON TOKENS",
+    "why":  "Job 113: check 29.33 caught raw px font sizes in the what is new subtitle rules. Same pixels, written with the hero and title tokens.",
+    "now":  "No visible change.",
+    "edits":  [
+                  {
+                      "anchor":  "max-width:440px;margin:0;font:800 56px/1.15 var(--f-cond);color:var(--tx-1);overflow-wrap:anywhere;}",
+                      "replacement":  "max-width:440px;margin:0;font-family:var(--f-cond);font-weight:800;font-size:var(--fs-hero);line-height:1.15;color:var(--tx-1);overflow-wrap:anywhere;}"
+                  },
+                  {
+                      "anchor":  "#root #wnmodal #wnsub{grid-column:1;grid-row:2;font-size:32px;max-width:none;}",
+                      "replacement":  "#root #wnmodal #wnsub{grid-column:1;grid-row:2;font-size:var(--fs-title);max-width:none;}"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027cw-setrevert4 (job 113): the what is new subtitle rules in the shared block have no raw px font size\u0027,\n   run:function(){\n     var css=(document.getElementById(\u0027ui-shared\u0027)||{textContent:\u0027\u0027}).textContent.replace(/\\/\\*[\\s\\S]*?\\*\\//g,\u0027\u0027), rs=css.match(/[^{}]*#wnmodal #wnsub\\s*\\{[^}]*\\}/g)||[], i, bad=[];\n     if(!rs.length) return \u0027SKIP: no what is new subtitle rule in the shared block\u0027;\n     for(i=0;i\u003crs.length;i++) if(/#[0-9a-fA-F]{3,8}\\b|rgba?\\(|font-size\\s*:\\s*[\\d.]+(px|em|rem)|font\\s*:[^;]*[\\d.]+px/.test(rs[i].slice(rs[i].indexOf(\u0027{\u0027)))) bad.push(rs[i].slice(rs[i].indexOf(\u0027{\u0027),rs[i].indexOf(\u0027{\u0027)+60));\n     return bad.length?\u0027raw literal in the subtitle rule: \u0027+bad[0]:null; }},"
+}
