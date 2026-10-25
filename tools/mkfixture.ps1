@@ -6551,7 +6551,8 @@ window.__REGRESS=[
        for(i=0;i<seen.length;i++){
          if(!/search 3|haul over|haul worth|kill five/i.test(seen[i].t)) continue;
          n++;
-         if(!/\d+\/\d+$/.test(seen[i].t)) bad.push('a contract row wraps: '+seen[i].t.slice(0,40));
+         // 113a (cw-runinfocol): his one column order (2026-10-18, cw-trcol) beats the v34.39 critic widening: the panel is the column wide, so a row longer than the column may wrap (short form tried first), but the count never stands alone on a line and no row leaves the panel.
+         if(/^\d+\/\d+$/.test(seen[i].t)) bad.push('a contract count stands alone on a line: '+seen[i].t.slice(0,40));
          var inside=false;
          for(j=0;j<panels.length;j++){ var q=panels[j]; if(seen[i].x>=q.x-0.5&&seen[i].y>=q.y&&seen[i].y<=q.y+q.h){ inside=true; if(seen[i].x+seen[i].w>q.x+q.w+0.5) bad.push('a contract row is wider than the panel: '+seen[i].t.slice(0,30)); break; } }
          if(!inside) bad.push('no panel found for a row: '+seen[i].t.slice(0,30));
