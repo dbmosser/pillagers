@@ -15,7 +15,7 @@ Rule of the guide: the code already HAS most tokens (CSS :root at line ~40, UIC 
 - The same alert in two places stays (his answer rs-2 a, 2026-10-24: keep both, the red banner and its row in the left log, his 10-15
   order that every line also goes in the log). It is his ruling: tell the critic, and do not mark a raid screen down for it.
 - Career HUD top-right: a vertical 1 by 1 list, every item the same size (his newest chat order, 10-18 afternoon). It replaces the Q58 "one row". Another helper builds it under key cw-trcol (not shipped as of v31.23). Screen tasks leave that corner alone.
-- PENDING his answer, do not invent: the colours for player 1 and player 2. Round 3 question r3-13 asks (raid: P1 amber, P2 cyan; new menus: P1 lime, P2 blue); he has not answered. If he picks "lime for player 1", the role of lime (--acc) changes too. Until then change no ring colour and add no new per-player tint.
+- Player colours (his answer to r3-13, 10-18 evening, tools/handoff/q-round3/answers.md): P1 is amber and P2 is cyan everywhere, raid and menus. Lime (--acc) only means "selected". (Fixed 10-25: this line said he had not answered.) Until then change no ring colour and add no new per-player tint.
 
 ## 1. Tokens (copy this block; names match the existing CSS vars, new ones marked NEW)
 ```
@@ -86,7 +86,7 @@ Backdrop: the live world dimmed to ~55% (scrim above), baked once on open. Never
 - Hover (mouse) = focus (pad): ONE look. 3px --acc left bar on rows (or a 3px --acc outline on tiles), --ui-raised fill, text to tx-1. The existing .padfocus (3px lime outline + glow) is the tile style; rows get the bar. Mouse hover and pad focus must look identical.
 - Something is focused whenever a window opens; if it vanishes jump to the nearest. Selected (equipped, chosen) = filled badge/check or --acc fill, DIFFERENT from focus (ring).
 - Pressed: scale .98 or 1px down for 90ms. Disabled: 40%.
-- Two players: focus ring tinted per player. The colours are PENDING his answer to round 3 question r3-13 (raid: P1 amber, P2 cyan; new menus: P1 lime, P2 blue). Until he answers, change no ring colour and add no new per-player tint.
+- Two players: focus ring and per-player tags tinted per player, P1 amber and P2 cyan (his r3-13 answer). A title in the player colour is right, not a finding.
 - Destructive (Abandon, Sell all): hold 500ms with a filling ring, or a confirm dialog 480x240 (title "Abandon run?", one line, Abandon danger ghost + Keep playing primary focused).
 
 ## 5. Motion (smooth is mostly motion; targets from references.md, time-based)

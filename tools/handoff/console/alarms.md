@@ -299,3 +299,4 @@ Correction: the copy to notes failed. The mk script is at C:/Users/VM Oct26/AppD
 
 2026-10-25 112r (lane a): camera screens 19 and 33 force the controls list open, so no picture shows the new folded career start (v34.54). Please stage one career raid screen with legendOn left at its start value, and one opened with F1, in ui-screens-js.json. Also: arcadePostBuild sets legendOn=0, so the demo list is already folded on arrival today (the job text said it opens).
 10-25 05:23 coordinator: DONE (line 300, 112r): camera screens 79 and 80 stage a CAREER raid via ?career=1; 112r is back in tasks/.
+2026-10-25 07:19 coordinator (from 114): j8-p2-press-a never stages: stagePadLostPair('demo',2,0,true) on ?p2=1&pair=...&mode=coop&netslot=B reports 'both real windows did not link' before and after v34.67/68 (recipes notes/114-recipes-pressa.json, popups true). Look at the camera two-window pairing.

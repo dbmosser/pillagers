@@ -35,3 +35,5 @@ opaque; the press a title names the lost pad.
 Pictures: the recipes above for all five at 1080p, then the critic.
 TASK DONE when each reaches 3 from the critic (never your own grade), or the fixes shipped and the scores are written with the reason
 for any point docked for size; TASK PARTIAL with what is left.
+
+Coordinator, 10-25 07:19: r3-13 IS answered (P1 amber, P2 cyan everywhere, his 10-18 evening answer); notes/ui/style-guide.md said pending and I fixed both lines, so the critic now reads the player colour title as right. Re-score j8-p1-press-a once with the new guide and the dialog rule (Q43). Findings that ask for fewer pause buttons or a dimmed raid frame are the pause box redesign, not this job: record them in your notes and do not count them against the target. If the score is 3 or better, or only those findings stop it, finish with TASK DONE. Skip j8-p2-press-a's picture (same code as p1); the two-window link failing in the camera is logged in alarms.md for the coordinator.
