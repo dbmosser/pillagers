@@ -1,0 +1,7 @@
+v34.57: run info stays in the column
+
+The run info panel is the same width as the minimap and the rows above it.
+
+Check 34.57. Fails on v34.56.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

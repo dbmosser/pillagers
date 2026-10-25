@@ -1,7 +1,2 @@
-# Code sweep (chunks of 200 lines, model qwen2.5-coder:14b, 10-25 01:17, since 1509b9b9b)
+# Code sweep (chunks of 200 lines, model qwen2.5-coder:14b, 10-25 01:33, since 797b968c0)
 
-LINE 46218: Property access on a value that can be null or undefined in per-frame code without a guard. `G.bag` might be null or undefined.
-LINE 46307: Possible NaN or undefined values reaching canvas calls (arc). `s.x`, `s.y`, and `_cr` could potentially be NaN or undefined if any of the calculations leading up to them result in such values.
-LINE 46329: Property access on a value that can be null or undefined in per-frame code without a guard. `G.over` might be null or undefined.
-LINE 46370: Code after an unconditional return, which is unreachable and likely a mistake.
-LINE 46381: Possible NaN or undefined values reaching canvas calls (measureText). `_kw`, `_lw`, `KOFF`, `COLW`, `MROW`, `MW`, `MH` could potentially be NaN or undefined if any of the calculations leading up to them result in such values.

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.57 - RUN INFO STAYS IN THE COLUMN
+
+Co-op hunt while he was away. His one column order for the upper right corner (all the same width). Since v34.39 the run info panel grew to the left past the minimap and rows, 323 px against 300.
+
+MEASURED. Check 34.57 passes, and fails on v34.56.
 ## v34.56 - EXPERIMENTAL FOOTER HINT ON THE LABEL TOKEN
 
 Co-op hunt while he was away. Job 113: check 29.33 caught a raw 16px font-size in the experimental page footer hint. The label token is the same 16px, so nothing moves.

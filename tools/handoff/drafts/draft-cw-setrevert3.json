@@ -1,0 +1,20 @@
+{
+    "title":  "PLAY DATA TEXT RULES ON TOKENS",
+    "why":  "Job 113: check 29.33 caught raw hex and px literals in the play data export text rules. Same values, written with the tokens, longhand font and the named colour black.",
+    "now":  "No visible change.",
+    "edits":  [
+                  {
+                      "anchor":  "padding:16px;font:400 16px/24px var(--f-body);color:var(--tx-2);border:1px solid var(--ui-line-hi);text-transform:lowercase !important;resize:none;}",
+                      "replacement":  "padding:16px;font-family:var(--f-body);font-weight:400;font-size:var(--fs-label);line-height:24px;color:var(--tx-2);border:1px solid var(--ui-line-hi);text-transform:lowercase !important;resize:none;}"
+                  },
+                  {
+                      "anchor":  "font:400 var(--fs-body)/28px var(--f-body);color:var(--tx-1);padding-bottom:24px;white-space:pre-wrap;overflow-wrap:anywhere;scrollbar-width:thin;scrollbar-color:var(--ui-line-hi) var(--ui-bg);-webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 24px),transparent);mask-image:linear-gradient(to bottom,#000 calc(100% - 24px),transparent);}",
+                      "replacement":  "font-family:var(--f-body);font-weight:400;font-size:var(--fs-body);line-height:28px;color:var(--tx-1);padding-bottom:24px;white-space:pre-wrap;overflow-wrap:anywhere;scrollbar-width:thin;scrollbar-color:var(--ui-line-hi) var(--ui-bg);-webkit-mask-image:linear-gradient(to bottom,black calc(100% - 24px),transparent);mask-image:linear-gradient(to bottom,black calc(100% - 24px),transparent);}"
+                  },
+                  {
+                      "anchor":  "padding:16px 16px 22px;line-height:24px;-webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 8px),transparent);mask-image:linear-gradient(to bottom,#000 calc(100% - 8px),transparent);}",
+                      "replacement":  "padding:16px 16px 22px;line-height:24px;-webkit-mask-image:linear-gradient(to bottom,black calc(100% - 8px),transparent);mask-image:linear-gradient(to bottom,black calc(100% - 8px),transparent);}"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027cw-setrevert3 (job 113): the play data export text rules in the shared block have no raw hex colour and no px inside a font shorthand\u0027,\n   run:function(){\n     var css=(document.getElementById(\u0027ui-shared\u0027)||{textContent:\u0027\u0027}).textContent.replace(/\\/\\*[\\s\\S]*?\\*\\//g,\u0027\u0027), rs=css.match(/[^{}]*settingsmodal\\.recmode #exporttext\\s*\\{[^}]*\\}/g)||[], i, bad=[];\n     if(!rs.length) return \u0027SKIP: no export text rule in the shared block\u0027;\n     for(i=0;i\u003crs.length;i++) if(/#[0-9a-fA-F]{3,8}\\b|rgba?\\(|font-size\\s*:\\s*[\\d.]+(px|em|rem)|font\\s*:[^;]*[\\d.]+px/.test(rs[i].slice(rs[i].indexOf(\u0027{\u0027)))) bad.push(rs[i].slice(rs[i].indexOf(\u0027{\u0027),rs[i].indexOf(\u0027{\u0027)+60));\n     return bad.length?\u0027raw literal in the export text rule: \u0027+bad[0]:null; }},"
+}

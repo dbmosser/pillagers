@@ -3687,7 +3687,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.56';
+var VER='34.57';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13093,7 +13093,7 @@ function runInfoFitW(bw,rows,pad){
   var need=0, i, t, s, w;
   for(i=0;i<rows.length;i++){ if(!rows[i].v) continue; t=TX(String(rows[i].v)); s=runInfoShort(t); w=Math.min(txRawW(ctx,t),txRawW(ctx,s)); if(w>need) need=w; }
   need=Math.ceil(need+pad*2+8);
-  return Math.min(Math.max(bw,need),Math.round(bw*1.6));
+  return bw;   // v28.xx (cw-runinfocol), HIS ORDER (2026-10-18, cw-trcol): everything in the upper right corner is one column, all the same width. v34.39 let the run info panel grow to 1.6 of the column to the left (323 px at 1080p, the minimap and rows stay 300), so it stuck out of the column. A row that still does not fit wraps (its short form is tried first); the width is the column's.
 }
 function runInfoShort(t){ return String(t).replace(/^extract with a haul worth (\$[\d,]+) or more/i,'haul over $1').replace(/^extract carrying /i,'carry ').replace(/^search (\d+) containers in /i,'search $1 in '); }
 // v28.xx (cw-h103type), the critic on screens 21 and 19 ('several fonts are too small to read from a couch'): the style guide floor is 16 px on the screen. The belt key numbers were 14.8, so the belt fonts are raised to 16 on the screen (the size is divided by the HUD zoom in force at the call).
@@ -54184,7 +54184,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.56: No visible change. Check 34.56 fails on v34.55',
+  now:'v34.57: The run info panel is the same width as the minimap and the rows above it. Check 34.57 fails on v34.56',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

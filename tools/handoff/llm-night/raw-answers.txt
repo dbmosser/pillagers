@@ -1,10 +1,20 @@
 
-NONE
-NONE
-LINE 46218: Property access on a value that can be null or undefined in per-frame code without a guard. `G.bag` might be null or undefined.
-LINE 46307: Possible NaN or undefined values reaching canvas calls (arc). `s.x`, `s.y`, and `_cr` could potentially be NaN or undefined if any of the calculations leading up to them result in such values.
-LINE 46329: Property access on a value that can be null or undefined in per-frame code without a guard. `G.over` might be null or undefined.
-LINE 46370: Code after an unconditional return, which is unreachable and likely a mistake.
-LINE 46381: Possible NaN or undefined values reaching canvas calls (measureText). `_kw`, `_lw`, `KOFF`, `COLW`, `MROW`, `MW`, `MH` could potentially be NaN or undefined if any of the calculations leading up to them result in such values.
+This CSS code snippet appears to be styling a modal dialog for application settings, likely within a web-based user interface. The styles are organized into several sections that target different elements of the settings modal:
+
+1. **General Settings Modal Styles**:
+   - `#root #settingsmodal`: General styles for the entire settings modal.
+   - `#root #settingsmodal #setwrap > #setdetail.daily-restore-detail`: Specific styles for a detailed view related to daily restore.
+
+2. **Daily Restore Detail Section**:
+   - `.daily-selected`, `.daily-meta dt, dd`: Styling for selected items and metadata in the daily restore detail section.
+   - `#root #settingsmodal #setlist .row.save-restore.dshow`: Styles for a row that is highlighted or shown when certain conditions are met.
+
+3. **Save/Restore Actions**:
+   - `.save-restore-actions > #set_restore, #set_restore_source`: Styling for buttons related to saving and restoring settings.
+   - `#root #settingsmodal #setlist .row.save-key-hint > span.hint kbd`: Styles for keyboard hints displayed in the save key hint section.
+
+4. **Experimental Mode**:
+   - `.exphead, .expgroup, .exprow`: Styling for elements when the settings modal is in experimental mode.
+   - `#root #settingsmodal.expmode::after`: Additional text or instructions shown in the footer of the experimental mode
 NONE
 NONE
