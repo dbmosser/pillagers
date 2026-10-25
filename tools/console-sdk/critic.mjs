@@ -4,8 +4,10 @@
 //   node tools/console-sdk/critic.mjs PIC [PIC ...]      (1-4 jpg/png; a path containing "before" is the old version)
 // Since 10-19 one Claude Code run on his plan (CRITIC_ENGINE=api in caps.txt: one API call on his Console credits instead). Prints JSON
 // {score, better_than_before, verdict, findings:[{sev, where, what, fix}]}, records scores in notes/ui/accept.json and the cost in spend.txt.
-import { readFileSync, writeFileSync, existsSync, appendFileSync, mkdirSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, appendFileSync, mkdirSync, copyFileSync, rmSync } from 'fs';
 import { spawnSync } from 'child_process';
+import { createHash } from 'crypto';
+import { tmpdir } from 'os';
 const R = 'C:/claudecode/dark raiders', C = R + '/tools/handoff/console', U = C + '/notes/ui';
 const pics = process.argv.slice(2);
 const ok = p => /^tools\/handoff\/(console\/notes|shots|ui-refs)\/[A-Za-z0-9_./-]+\.(jpe?g|png)$/i.test(p) && !p.includes('..') && existsSync(R + '/' + p);
@@ -41,6 +43,15 @@ if (before.length) content.push({ type: 'text', text: 'Your previous review of t
 pics.forEach((p, i) => { const b = readFileSync(R + '/' + p); content.push({ type: 'text', text: 'Image ' + (i + 1) + ' (' + (/before/i.test(p) ? 'OLD version' : 'NEW version') + '): ' + p });
   content.push({ type: 'image', source: { type: 'base64', media_type: /png$/i.test(p) ? 'image/png' : 'image/jpeg', data: b.toString('base64') } }); });
 content.push({ type: 'text', text: 'Review the NEW version' + (pics.some(p => /before/i.test(p)) ? ' and compare it with the OLD one.' : '.') });
+// 10-25 (his "try to figure out what else you can do to be more efficient"): the same pictures get the same review. Asking again
+// about pictures already judged (same bytes, same rubric and style guide) returns the stored answer at no cost, so a score is
+// never re-rolled by asking twice. Only a real JSON answer is stored; the newest 400 are kept.
+const ckey = createHash('sha1').update(sys).update(pics.map(p => (/before/i.test(p) ? 'B' : 'N')).join('')).update(Buffer.concat(pics.map(p => readFileSync(R + '/' + p)))).digest('hex');
+const CF = U + '/critic-cache.json'; let cache = {}; try { cache = JSON.parse(readFileSync(CF, 'utf8')); } catch {}
+const task = process.env.CW_TASK || 'manual';
+let v;
+if (cache[ckey] && cache[ckey].v) { v = cache[ckey].v; console.error('critic: these pictures were judged at ' + cache[ckey].when + '; stored answer, no new run'); }
+else {
 // 10-19 his order, verbatim: "Move the screen judge onto my Claude plan instead of Console credit". The plan is the default now;
 // CRITIC_ENGINE=api in caps.txt goes back to the Console key (and still falls back to the plan when the credit is gone).
 const viaApi = caps.CRITIC_ENGINE === 'api';
@@ -58,15 +69,26 @@ else if (!viaApi || /credit/i.test(String(j.error && j.error.message))) {
   // 10-18: when the month's Console credit is gone, the same review runs once through Claude Code on his plan (Read shows pictures)
   const exe = existsSync(process.env.USERPROFILE + '/.local/bin/claude.exe') ? process.env.USERPROFILE + '/.local/bin/claude.exe' : 'claude';
   const env = { ...process.env }; delete env.ANTHROPIC_API_KEY;
-  const ask = 'Read each picture with the Read tool, then answer. ' + pics.map((p, i) => 'Image ' + (i + 1) + ' (' + (/before/i.test(p) ? 'OLD version' : 'NEW version') + '): ' + R + '/' + p).join('; ') + '. Review the NEW version' + (pics.some(p => /before/i.test(p)) ? ' and compare it with the OLD one.' : '.');
-  const r = spawnSync(exe, ['-p', ask, '--append-system-prompt', sys, '--model', 'sonnet', '--output-format', 'json', '--allowedTools', 'Read', '--max-turns', '8'], { cwd: R, env, encoding: 'utf8', windowsHide: true, timeout: 600000, maxBuffer: 32e6 });
+  // 10-25: it runs in its own folder with copies of the pictures, not in the game folder, so Claude Code does not load the project
+  // notes (CLAUDE.md, the memory index) the judge never uses. Measured on a one-word run: $0.111 from the game folder, $0.061 from
+  // an empty folder. One fixed folder (not a new one per run) so the run logs stay in one place; file names carry the process id
+  // because two helpers can ask at once. The previous review now goes along on this path too, as it always did on the API path.
+  const W = (tmpdir() + '/pillagers-critic').replace(/\\/g, '/'); mkdirSync(W, { recursive: true });
+  const local = pics.map((p, i) => { const n = W + '/img-' + process.pid + '-' + (i + 1) + (/\.png$/i.test(p) ? '.png' : '.jpg'); copyFileSync(R + '/' + p, n); return n; });
+  const prevTxt = content.filter(c => c.type === 'text' && c.text.startsWith('Your previous review')).map(c => c.text).join('\n');
+  const ask = (prevTxt ? prevTxt + '\n\n' : '') + 'Read each picture with the Read tool, then answer. ' + pics.map((p, i) => 'Image ' + (i + 1) + ' (' + (/before/i.test(p) ? 'OLD version' : 'NEW version') + ', ' + p + '): ' + local[i]).join('; ') + '. Review the NEW version' + (pics.some(p => /before/i.test(p)) ? ' and compare it with the OLD one.' : '.');
+  const r = spawnSync(exe, ['-p', ask, '--append-system-prompt', sys, '--model', 'sonnet', '--output-format', 'json', '--allowedTools', 'Read', '--max-turns', '8'], { cwd: W, env, encoding: 'utf8', windowsHide: true, timeout: 600000, maxBuffer: 32e6 });
+  local.forEach(n => { try { rmSync(n, { force: true }); } catch {} });
   let o = {}; try { o = JSON.parse(r.stdout); } catch {}
   if (!o.result || o.is_error) { console.log('CRITIC (Claude Code) failed: ' + String(o.result || r.stderr || r.stdout).slice(0, 400)); process.exit(1); }
   cost = o.total_cost_usd || 0; txt = o.result; book = C + '/cli-spend.txt'; }
 else { console.log('CRITIC API ' + res.status + ': ' + String(j.error && j.error.message).slice(0, 400)); process.exit(1); }
-let v; try { v = JSON.parse(txt.slice(txt.indexOf('{'), txt.lastIndexOf('}') + 1)); } catch { v = { score: 0, verdict: 'critic answer was not JSON', raw: txt.slice(0, 1500) }; }
-const task = process.env.CW_TASK || 'manual';
+try { v = JSON.parse(txt.slice(txt.indexOf('{'), txt.lastIndexOf('}') + 1)); } catch { v = { score: 0, verdict: 'critic answer was not JSON', raw: txt.slice(0, 1500) }; }
 appendFileSync(book, new Date().toLocaleDateString('en-CA') + ' ' + cost.toFixed(4) + ' critic-' + task + '\n');
+if (v.score >= 1 && v.score <= 5) { cache[ckey] = { v, when: new Date().toISOString().slice(0, 16) };
+  const keys = Object.keys(cache).sort((a, b) => String(cache[b].when).localeCompare(String(cache[a].when)));
+  keys.slice(400).forEach(k => delete cache[k]); mkdirSync(U, { recursive: true }); writeFileSync(CF, JSON.stringify(cache)); }
+}
 mkdirSync(U, { recursive: true });
 let acc = {}; try { acc = JSON.parse(readFileSync(U + '/accept.json', 'utf8')); } catch {}
 for (const p of pics.filter(p => !/before/i.test(p))) { const k = shotName(p);

@@ -14,37 +14,11 @@ case "$1" in
     powershell -NoProfile -ExecutionPolicy Bypass -File tools/archive-build.ps1 2>&1 | tail -1
     mkdir -p tools/publish   # 10-19: the folder is gitignored, so a fresh copy (the VM) had none and set -e stopped the commit
     cp dark_raiders.html tools/publish/index.html
-    # ONE ZIP, NOT TWO. This built dark_raiders_web.zip and pillagers-web.zip
-    # byte-for-byte identical on every commit: 750 KB of duplicate, and the docs
-    # named one while the game is called the other. The game is Pillagers, so that
-    # is the name that survives.
-    # 2026-10-09: AND THE ATTRACT CLIP (v21.17). An attract.mp4 or attract.webm beside the game is copied next to index.html and goes
-    # in the zip, so the title shows his gameplay to anyone who plays the itch build. With no clip the zip is index.html alone, as before.
-    # 10-20: tools/itch-zip.ps1 builds the zip (game, attract clip, and the font and sound licence files tools/PUBLISH.md requires)
-    ZIPBAD=""; powershell -NoProfile -ExecutionPolicy Bypass -File "C:/claudecode/dark raiders/tools/itch-zip.ps1" || ZIPBAD=1
-    # THE ITCH PUSH, and it does nothing until he has set it up. butler is itch's
-    # own uploader; it is not installed here and needs an API key only he can make.
-    # The guard means this line is inert today and live the moment
-    # tools/collector/README.md has been followed, with no further change here.
-    # v13.15: READ THE VARIABLES FROM WINDOWS, not from this shell. They live in
-    # the USER environment, and a shell already open when they were written never
-    # sees them, so the first real push printed "not pushed" with everything set
-    # up correctly. A shell should not have to be younger than the setup.
-    BUTLER_EXE="${BUTLER_EXE:-/c/Users/User1/bin/butler.exe}"
-    [ -n "$BUTLER_API_KEY" ] || BUTLER_API_KEY=$(powershell -NoProfile -Command "[Environment]::GetEnvironmentVariable('BUTLER_API_KEY','User')" 2>/dev/null | tr -d '\r\n')
-    [ -n "$ITCH_TARGET" ]    || ITCH_TARGET=$(powershell -NoProfile -Command "[Environment]::GetEnvironmentVariable('ITCH_TARGET','User')" 2>/dev/null | tr -d '\r\n')
-    export BUTLER_API_KEY ITCH_TARGET
-    BUTLER_CMD=""
-    if [ -x "$BUTLER_EXE" ]; then BUTLER_CMD="$BUTLER_EXE"
-    elif command -v butler >/dev/null 2>&1; then BUTLER_CMD="butler"; fi
-    if [ -n "$ZIPBAD" ]; then
-      echo "itch: not pushed (the zip did not build)"
-    elif [ -n "$BUTLER_CMD" ] && [ -n "$BUTLER_API_KEY" ] && [ -n "$ITCH_TARGET" ]; then
-      echo "itch: pushing $ITCH_TARGET"
-      "$BUTLER_CMD" push tools/publish/pillagers-web.zip "$ITCH_TARGET" --userversion "v$(vstr $T)" 2>&1 | tail -2
-    else
-      echo "itch: not pushed (butler, BUTLER_API_KEY or ITCH_TARGET missing; see tools/collector/README.md)"
-    fi
+    # 10-25, his question "is pushing all this to itch and GitHub needed for every single build?": NO ITCH PUSH PER BUILD. His 10-15
+    # order was once a day ("push the game to itch once a day so we always have a backup"), and tools/itch-daily.sh (run by the
+    # runner once a day) builds the zip with tools/itch-zip.ps1 and pushes it when itch is behind. A push per build held the ship lock
+    # for the zip and the upload on every ship and put every untested build on itch. GitHub still gets every build (shipone.sh): a
+    # git push sends only the change and is the off-PC copy after the 10-09 crash.
     git add -A
     git commit -q -F "$SP/$CM" 2>/dev/null || git commit -q -F "/tmp/$CM"
     git log --oneline -1

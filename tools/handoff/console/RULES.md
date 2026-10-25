@@ -105,8 +105,9 @@ S = C:\Users\User1\AppData\Local\Temp\claude\C--Users-User1-Desktop-dark-raiders
    your mk script until it prints PREFLIGHT PASS. Only then ship. The real gate is shared by every worker; do not spend it on a
    draft that has not passed preflight.
    Ship it: bash "S/shipq.sh" cw-KEY  (it waits for the lock, runs the gate, prints SHIPPED or STOP with the reason).
-   Every ship also pushes GitHub on its own, and itch once his itch key is set in the VM (until then the ship log says
-   "itch: not pushed"; that is expected, not a failure).
+   Every ship also pushes GitHub on its own. Itch gets the game once a day (tools/itch-daily.sh, his 10-15 order), not per ship
+   (10-25). Batch fixes with one cause into one ship: every ship runs the whole gate. The critic stores its answer per set of
+   pictures, so asking again about the same pictures returns the same review; change the screen before asking again.
 4. The gate also reruns the last ~80 checks and the seed 4242 fingerprint (ents 85/374, containers 165/593). A change that
    moves the fingerprint is wrong unless the task says otherwise.
 5. If a STOP says the What's New card stamp is stale ("REGRESS 33.46: the news stamp is stale" or a later card check), ship the
