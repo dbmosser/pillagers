@@ -3688,7 +3688,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.65';
+var VER='34.66';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -47938,7 +47938,7 @@ function drawBag(){
   var _tm=Math.max(0,(gx-x)-11); x+=_tm; PW-=2*_tm;
 
   var cy=y+LH(30)*BZ;
-  ctx.font=bFS(TYPE.head); ctx.fillStyle='#efe9dc';   // v28.xx (cw-bagpolish2), the critic: the title outshone the selected item, so it is the item-name size
+  ctx.font=bFS(TYPE.title); ctx.fillStyle='#efe9dc';   // v28.xx (cw-bagtiles2), the critic: the title is the guide title size like the item hero; (cw-bagpolish2), the critic: the title outshone the selected item, so it is the item-name size
   // v8.94, his note: BACKPACK, not INVENTORY. His vocabulary: I opens the
   // BACKPACK, and inventory means the backpack plus the belt together.
   ctx.fillText('BACKPACK',x+11,cy);
@@ -47994,7 +47994,7 @@ function drawBag(){
   for(var r2=0;r2<rows;r2++){
     for(var c2=0;c2<COLS;c2++){
       var si=(top0+r2)*COLS+c2;
-      if(si>=stacks.length){ var _ex=gx+c2*(TILE+GAP), _ey=cy+r2*(TILE+GAP); ctx.fillStyle='#16191b'; ctx.fillRect(_ex,_ey,TILE,TILE); ctx.strokeStyle='#2e3337'; ctx.lineWidth=1; ctx.strokeRect(_ex+.5,_ey+.5,TILE-1,TILE-1); continue; }
+      if(si>=stacks.length){ var _ex=gx+c2*(TILE+GAP), _ey=cy+r2*(TILE+GAP); ctx.fillStyle='#1a1e21'; ctx.fillRect(_ex,_ey,TILE,TILE); ctx.strokeStyle='#3d444a'; ctx.lineWidth=1; ctx.strokeRect(_ex+.5,_ey+.5,TILE-1,TILE-1); continue; }
       var st=stacks[si], it=ITEMS[st.key];
       var tx=gx+c2*(TILE+GAP), ty=cy+r2*(TILE+GAP);
       G.bagCells.push({x:tx,y:ty,w:TILE,h:TILE,key:st.key,stackIx:si,bagIx:st.idxs[0]});
@@ -48055,7 +48055,7 @@ function drawBag(){
       ctx.fillStyle='#aaa498';
       ctx.fillText(_rw[_rr][0],x+11,_ry);
       ctx.fillStyle='#efe9dc';
-      ctx.fillText(String(_rw[_rr][1]),x+11+LH(64)*BZ,_ry);   // v28.xx (cw-bagpolish2), the critic: the value of a detail row floated far from its label, so the value column is closer, and the footer was 90 px of dead panel below the hints, so it is shorter
+      ctx.fillText(String(_rw[_rr][1])==='armor'?'armour':String(_rw[_rr][1]),x+11+LH(64)*BZ,_ry);   // v28.xx (cw-bagtiles2): one spelling, armour   // v28.xx (cw-bagpolish2), the critic: the value of a detail row floated far from its label, so the value column is closer, and the footer was 90 px of dead panel below the hints, so it is shorter
       _ry+=LH(18)*BZ;
     }
     ctx.fillStyle='#aaa498';
@@ -54185,7 +54185,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.65: The raid backpack shows a full grid of larger tiles and a bigger selected item name. Check 34.65 fails on v34.64',
+  now:'v34.66: The raid backpack title is bigger and empty cells are easier to see. Check 34.66 fails on v34.65',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

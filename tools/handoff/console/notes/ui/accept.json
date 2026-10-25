@@ -288,20 +288,20 @@
   "need": 4
  },
  "23-raid-backpack-open": {
-  "score": 2,
+  "score": 3,
   "pass": false,
-  "verdict": "The backpack is a flat, dark and quiet card with a good lime focus tile, but it is a small, under-filled box with weak hierarchy, a tiny 3-item grid and a loose type scale, so it reads as a debug panel and not as a Diablo/ARC inventory.",
+  "need": 4,
+  "verdict": "The backpack now has a real 8x2 slot grid, so it reads as an inventory and not a loose list, but the card is still an undersized, headerless text stack with no close button, no rarity bars and no key-cap hints.",
   "findings": [
-   "P0 backpack card, item grid (y 670-755): Draw a fixed grid of empty slots (e.g. 8x4 at 88px tiles, 8px gap, --ui-line border, --ui-bg fill), with items sitting in it and a 3px rarity bar on the bottom edge. Put the capacity ('3 / 24') in the header at 16px tx-2.",
-   "P0 whole card: Title to 32px f-cond 700. Make the selected item's name 32px (title) and its stats 16px tx-2. Drop the second name size. Keep lime only on the focused tile.",
-   "P1 stat and hint rows (y 605-640, 850-890): Show stats as label (tx-2, 16px) over value (tx-1, 20px) pairs in a 4-column row with 24px gutters. Show hints as key-cap chips at 16px ('arrows' 'z' 'drag') with 8px gaps. Fix the armour/armor spelling to one form.",
-   "P1 card frame and placement (546-1374 x 450-923): Make it a card at about 70% of the width, anchored 24px above the hotbar, or a full 90% window. Put a 32px X button in the top-right corner, with 'b' as a key-cap hint beside it at 16px.",
-   "P1 section spacing and dividers: Use an 8px grid: 24px card padding all round, 24px between sections, 1px --ui-line-hi dividers. Make the equipped block its own --ui-raised panel with the weapon icon at 64px and not 40px."
+   "P1 stat rows, selected-item block and hint line (y 480-515, 830-870): Put stats in a 4-column row with 24px gutters: label 16px tx-2 above value 20px tx-1. Draw the hints as key-cap chips (16px, 1px --ui-line-hi border, 8px gaps) in a footer row at 14-16px. Use one spelling, 'armour'. Make 'use' a real button: a lime-filled 'use' with a 'e' key-cap.",
+   "P1 card frame (530-1390 x 327-921): Add a 32px X button 16px from the top-right corner, with a 'b' key-cap chip beside it. Dim the world behind with --scrim rgba(6,7,8,.80). Either grow the card to 70% of the width with 24px padding, or move it to a 90% centred card. Keep at least 24px clear of the hotbar.",
+   "P1 slot grid (566-1354 x 548-737): Give each slot a --ui-bg fill with a 1px --ui-line-hi border and a 4px radius. Add a 3px rarity bar along the bottom edge of each item. Move the capacity into the header as '3 / 16' at 16px tx-2, and label the '12 / 24' as ammo or remove it.",
+   "P1 hierarchy: 'armour plate' (y 792) and 'scav pistol' (y 449): Set the title 'backpack' to 32px f-cond 700. Set both item names to 20px f-cond 600 tx-1. Add an 8px-padded --ui-raised detail pane around the selected item, with its price in tx-2 at 16px.",
+   "P2 equipped block (566-790 x 435-500): Put the equipped weapon in its own --ui-raised panel with a 64px icon, 16px padding, and the 3px rarity bar. Remove the stray pip, or position it clear of the stats text. Raise the label to 16px tx-2 at 600 weight."
   ],
-  "pic": "tools/handoff/console/notes/shots/45-after5/23-raid-backpack-open-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/115-after/23-raid-backpack-open-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T11:05",
-  "need": 4
+  "when": "2026-10-25T10:46"
  },
  "25-raid-pause-box": {
   "score": 3,

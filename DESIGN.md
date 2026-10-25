@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.66 - RAID BACKPACK TITLE AND EMPTY CELLS
+
+Co-op hunt while he was away. The critic scored the raid backpack 3 after the grid ship: the title is weaker than the item name, empty cells are barely visible and armour and armor both show. Title is now the guide title size, empty cell border is brighter, one spelling.
+
+MEASURED. Check 34.66 passes, and fails on v34.65.
 ## v34.65 - RAID BACKPACK GRID FILLS THE CARD
 
 Co-op hunt while he was away. The critic held the raid backpack at 2 of 5 (target 4): a small under-filled box with a tiny 3-item grid and two name sizes. Tiles are now the guide 88 px, at least two rows of empty cells are drawn so the grid fills the card, and the selected item name is the one hero at title size. Rendering only; nothing carried changes.

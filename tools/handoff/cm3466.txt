@@ -1,0 +1,7 @@
+v34.66: raid backpack title and empty cells
+
+The raid backpack title is bigger and empty cells are easier to see.
+
+Check 34.66. Fails on v34.65.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

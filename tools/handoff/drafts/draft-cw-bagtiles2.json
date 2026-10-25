@@ -1,0 +1,20 @@
+{
+    "title":  "RAID BACKPACK TITLE AND EMPTY CELLS",
+    "why":  "The critic scored the raid backpack 3 after the grid ship: the title is weaker than the item name, empty cells are barely visible and armour and armor both show. Title is now the guide title size, empty cell border is brighter, one spelling.",
+    "now":  "The raid backpack title is bigger and empty cells are easier to see.",
+    "edits":  [
+                  {
+                      "anchor":  "ctx.font=bFS(TYPE.head); ctx.fillStyle=\u0027#efe9dc\u0027;   // v28.xx (cw-bagpolish2)",
+                      "replacement":  "ctx.font=bFS(TYPE.title); ctx.fillStyle=\u0027#efe9dc\u0027;   // v28.xx (cw-bagtiles2), the critic: the title is the guide title size like the item hero; (cw-bagpolish2)"
+                  },
+                  {
+                      "anchor":  "ctx.fillStyle=\u0027#16191b\u0027; ctx.fillRect(_ex,_ey,TILE,TILE); ctx.strokeStyle=\u0027#2e3337\u0027;",
+                      "replacement":  "ctx.fillStyle=\u0027#1a1e21\u0027; ctx.fillRect(_ex,_ey,TILE,TILE); ctx.strokeStyle=\u0027#3d444a\u0027;"
+                  },
+                  {
+                      "anchor":  "ctx.fillText(String(_rw[_rr][1]),x+11+LH(64)*BZ,_ry);",
+                      "replacement":  "ctx.fillText(String(_rw[_rr][1])===\u0027armor\u0027?\u0027armour\u0027:String(_rw[_rr][1]),x+11+LH(64)*BZ,_ry);   // v28.xx (cw-bagtiles2): one spelling, armour"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027raid backpack title is at the screen title size and empty cells are drawn with a visible border\u0027,\n   run:function(){\n     var g, bp, f, PR=CanvasRenderingContext2D.prototype, of=PR.fillText, os=PR.strokeRect, ts=0, em=0, tf;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[\u0027gun_carbine\u0027,\u0027medkit\u0027,\u0027bandage\u0027,\u0027bandage\u0027,\u0027plate\u0027,\u0027frag\u0027,\u0027smoke\u0027],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player) return \u0027SKIP: no raid\u0027;\n       g.ents.length=0; g.player.iv=99; g.bagOpen=true;\n       for(f=0;f\u003c8;f++) __loop(performance.now()+f*16.7);\n       bp=g.bagPanel; if(!bp) return \u0027the backpack panel was not drawn\u0027;\n       tf=parseFloat(String(FS(TYPE.title)).match(/([\\d.]+)px/)[1]);\n       PR.fillText=function(s){ if(String(s).toLowerCase()===\u0027backpack\u0027\u0026\u0026this.font){ var m=String(this.font).match(/([\\d.]+)px/); if(m\u0026\u0026arguments[1]\u003e=bp.x\u0026\u0026arguments[1]\u003c=bp.x+bp.w\u0026\u0026arguments[2]\u003e=bp.y\u0026\u0026arguments[2]\u003c=bp.y+bp.h) ts=parseFloat(m[1]); } return of.apply(this,arguments); };\n       PR.strokeRect=function(){ if(String(this.strokeStyle).toLowerCase()===\u0027#3d444a\u0027) em++; return os.apply(this,arguments); };\n       for(f=0;f\u003c2;f++) __loop(performance.now()+f*16.7);\n       PR.fillText=of; PR.strokeRect=os;\n       if(ts\u003ctf-.5) return \u0027the backpack title is \u0027+ts+\u0027 px, under the title size \u0027+tf;\n       if(em\u003c4) return \u0027the backpack drew \u0027+em+\u0027 visible empty cells\u0027;\n       return null;\n     } finally {\n       PR.fillText=of; PR.strokeRect=os;\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}

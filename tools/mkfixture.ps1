@@ -6165,6 +6165,29 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.66',what:'raid backpack title is at the screen title size and empty cells are drawn with a visible border',
+   run:function(){
+     var g, bp, f, PR=CanvasRenderingContext2D.prototype, of=PR.fillText, os=PR.strokeRect, ts=0, em=0, tf;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:['gun_carbine','medkit','bandage','bandage','plate','frag','smoke'],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player) return 'SKIP: no raid';
+       g.ents.length=0; g.player.iv=99; g.bagOpen=true;
+       for(f=0;f<8;f++) __loop(performance.now()+f*16.7);
+       bp=g.bagPanel; if(!bp) return 'the backpack panel was not drawn';
+       tf=parseFloat(String(FS(TYPE.title)).match(/([\d.]+)px/)[1]);
+       PR.fillText=function(s){ if(String(s).toLowerCase()==='backpack'&&this.font){ var m=String(this.font).match(/([\d.]+)px/); if(m&&arguments[1]>=bp.x&&arguments[1]<=bp.x+bp.w&&arguments[2]>=bp.y&&arguments[2]<=bp.y+bp.h) ts=parseFloat(m[1]); } return of.apply(this,arguments); };
+       PR.strokeRect=function(){ if(String(this.strokeStyle).toLowerCase()==='#3d444a') em++; return os.apply(this,arguments); };
+       for(f=0;f<2;f++) __loop(performance.now()+f*16.7);
+       PR.fillText=of; PR.strokeRect=os;
+       if(ts<tf-.5) return 'the backpack title is '+ts+' px, under the title size '+tf;
+       if(em<4) return 'the backpack drew '+em+' visible empty cells';
+       return null;
+     } finally {
+       PR.fillText=of; PR.strokeRect=os;
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     } }},
   {v:'34.65',what:'raid backpack tiles are at least the guide 88 px, empty cells fill two rows, and every cell stays inside the card',
    run:function(){
      var g, bp, f, n=0, out=[], PR=CanvasRenderingContext2D.prototype, os=PR.strokeRect, tw=0;

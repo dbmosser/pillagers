@@ -1,1 +1,1 @@
-10-25 06:42 waiting for RAM: 2 GB free, a helper starts at 3; 114-ui-demo-raid-cards kept
+10-25 06:48 waiting for RAM: 1 GB free, a helper starts at 3; 114-ui-demo-raid-cards kept
