@@ -1,0 +1,7 @@
+v34.90: pillagers drawn a third the size
+
+Every pillager, bot, hire and body is drawn at a third of the size you saw on the old copy (build 33.17), about half of the size on the newest build (drawing only: hit areas, walking and doors keep their old size). Name plates, party tags, the shields, the muzzle flash and the tracers, the golden pillager, the fire and ice of forged guns, the survivor glow and the bodies on the ground follow the smaller body; the side mark beside a bot sits on the side away from his gun; the reload bar, the grenade timer and the give prompt sit just over the head on the 4K screen and when aiming too (on the newest build the reload bar was drawn across his head at 4K); the P1 and P2 seat rings and the red downed ring keep their full size so they still read. Watch for: the small body being hard to spot in a fight or on the big screen, the smaller muzzle flash being easy to miss on the TV, shots that look like misses still hitting (the hit circle is now much bigger than the body), the crowbar reaching further than its swing looks, with superhot holding time a shot that has not moved yet drawing its tracer over the front half of the gun, the smaller survivor glow being easy to miss, the round hatch you ascend from looking big under you, the Undercroft crowd looking small next to the stations, and the deer and the trees looking big next to him.
+
+Check 34.90. Fails on v34.89.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
