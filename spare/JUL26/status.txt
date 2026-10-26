@@ -1,11 +1,11 @@
 host=JUL26
-seen=2026-10-26 14:29
-epoch=1793039369
+seen=2026-10-26 15:06
+epoch=1793041581
 game=75facf9b v34.89
-test_run=paused: he is using the PC
+test_run=paused: under 6 GB free
 robots=0
-ram_free_gb=6
+ram_free_gb=4.6
 push_ok=1
 runner=8E87772F
 mode=idle
-spare_pc=not answering (192.168.1.246), 14:29
+spare_pc=not answering (192.168.1.246), 15:06
