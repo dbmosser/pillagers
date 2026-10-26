@@ -1647,3 +1647,7 @@
 2026-10-26 03:00:51 FUZZ START seed=305810621 minutes=60 raidsec=300 port=9332 srv=8806 build=34.86 maps=0 size=1920x1080 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
 2026-10-26 03:03:15 FUZZ START seed=1752748197 minutes=60 raidsec=300 port=9331 srv=8806 build=34.86 maps=0 size=1920x1080 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
 2026-10-26 03:03:15 FUZZ START seed=1753666894 minutes=60 raidsec=300 port=9332 srv=8806 build=34.86 maps=0 size=1920x1080 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
+2026-10-26 03:04:46 FUZZ START seed=660811431 minutes=60 raidsec=300 port=9331 srv=8806 build=34.86 maps=0 size=1920x1080 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
+2026-10-26 03:04:46 FUZZ START seed=661839861 minutes=60 raidsec=300 port=9332 srv=8806 build=34.86 maps=0 size=1920x1080 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
+2026-10-26 03:04:46 FUZZ END raids=0 problems=0 unique=0 reason=low memory 2.4 GB free (RAM or virtual) minutes=0.3
+2026-10-26 03:04:46 FUZZ END raids=0 problems=0 unique=0 reason=low memory 2.3 GB free (RAM or virtual) minutes=0.3
