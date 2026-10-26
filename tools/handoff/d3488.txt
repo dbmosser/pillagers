@@ -1,0 +1,5 @@
+## v34.88 - THE MINIMAP FOLDS ON ITS CHEVRON
+
+Co-op hunt while he was away. His note of 2026-10-25 (played on 33.17): make it so the mini map is cut off by default and also make it where it is minimizable. Off by default is already true since 33.36. What was missing is a fold in the raid: the minimap now has the same chevron as run info, the pillager board and the keys list, on a small tab in its top right corner. One click folds it to a slim strip named minimap with the run info panel moving up under it, a second click on the same spot opens it. Only the drawn tab takes a click, so a shot over the rest of the minimap still fires, and a panel dragged over the tab keeps its own click. It is not draggable. The Settings MINIMAP row stays the one place that turns it on and sizes it.
+
+MEASURED. Check 34.88 passes, and fails on v34.87.

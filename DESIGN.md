@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.88 - THE MINIMAP FOLDS ON ITS CHEVRON
+
+Co-op hunt while he was away. His note of 2026-10-25 (played on 33.17): make it so the mini map is cut off by default and also make it where it is minimizable. Off by default is already true since 33.36. What was missing is a fold in the raid: the minimap now has the same chevron as run info, the pillager board and the keys list, on a small tab in its top right corner. One click folds it to a slim strip named minimap with the run info panel moving up under it, a second click on the same spot opens it. Only the drawn tab takes a click, so a shot over the rest of the minimap still fires, and a panel dragged over the tab keeps its own click. It is not draggable. The Settings MINIMAP row stays the one place that turns it on and sizes it.
+
+MEASURED. Check 34.88 passes, and fails on v34.87.
 ## v34.87 - NO BURNING BODIES THROUGH WALLS
 
 Co-op hunt while he was away. Found on 34.86 while taking the job 127 glow pictures: a burning, shocked or frozen body behind a wall still drew its flames, arcs, ice and glow. At night the fog is thin enough that a burning bot behind a wall showed as floating flames with no body, and with post effects on its glow lit the floor there too. The game rule is that everything about a body keys off sight (VIS); the eye glow pool already follows it. Now the element effects draw only on a body in sight, the same as the body itself. The 25.49 check draws a crawler that may be out of sight, so it now marks it in sight first.

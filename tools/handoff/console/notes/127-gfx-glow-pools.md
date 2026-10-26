@@ -17,6 +17,6 @@ Shipped v34.76 (cw-glowpools), after cw-cardstamp v34.75.
 - Burning, shocked, frozen bodies: a faint tint on the body only, no floor pool (the pool goes into the multiply light map, so on a near-black night
   floor it has almost nothing to lift; the additive halo is capped near 0.12 to 0.15 at night). Forged gun glow is effectively invisible.
   Not ugly anywhere: no banding at 4K, no halo off its source. Left as is: brighter body glow is a look call for him, not a defect.
-- Bug found and fixed: drawElemFx drew flames, arcs, ice and their glow for bodies out of sight (floating flames in the fog). cw-elemseen.
+- Bug found and fixed: drawElemFx drew flames, arcs, ice and their glow for bodies out of sight (floating flames in the fog). Shipped v34.87 (cw-elemseen).
 - Pre-existing, minor: within forge reach (70) the "the forge . e upgrade" card sits over the furnace and hides most of its glow.
 - Still NOT done: the 4K two-window frame time run (needs a quiet machine, no workflow).

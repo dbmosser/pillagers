@@ -1,0 +1,7 @@
+v34.88: the minimap folds on its chevron
+
+The minimap has a fold arrow on a small dark tab in its top right corner, like run info. Click it and the minimap shrinks to a thin minimap strip and run info slides up. Click it again to get the map back. Turn the minimap on in Settings first. Watch for: the arrow being easy to see over the map, a shot fired over the minimap next to the tab still going off, and an objective arrow in that corner drawn over the tab.
+
+Check 34.88. Fails on v34.87.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

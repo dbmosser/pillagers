@@ -3690,7 +3690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.87';
+var VER='34.88';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18582,7 +18582,7 @@ cv.addEventListener('mousedown',function(e){
         }
         // ONLY THE BAR DRAGS, v5.31. The body still swallows the click so the
         // shot does not go through the panel, but it is not a handle.
-        if(inRect(hudBar(HB2),mouse.x,mouse.y)){
+        if(hk!=='mmap'&&inRect(hudBar(HB2),mouse.x,mouse.y)){   // v28.xx (cw-mmfold): the minimap is fixed in the column, never dragged
           HUDDRAG={id:hk,mx:mouse.x,my:mouse.y,
             dx:hudOff(hk).dx,dy:hudOff(hk).dy};
         }
@@ -43199,14 +43199,39 @@ function mmMarks(r,sc,R){
   }
   ctx.textAlign='left'; ctx.textBaseline='alphabetic';
 }
+// v28.xx (cw-mmfold), HIS NOTE (2026-10-25): "make it so the mini map is cut off by defauolt and also make it where it is minimizable". Off by default holds since v33.36 (cw-mmoff); this is the fold.
+// The minimap folds on the same chevron as run info, the pillager board and the keys list (HUDBOX.mmap, P.hud.mmap.c, the mousedown fold toggle, the hudHit pointer).
+// The strip and the chevron are laid out in the run info panel's own zoom space about the top right corner, so the folded minimap is the folded run info plate:
+// the same height, type and chevron, and the chevron sits on the same spot open and folded, so the second click lands where the first one did.
+// The Settings MINIMAP row stays the one place that turns it on and sizes it; the fold never writes CFG.mmSz or the row.
+function mmFoldBox(r){
+  var z=(HUDZ.cond||1)*hudRes()*hudUserZ('cond'), bx, by, bw, bh;
+  if(!(z>0)) z=1;
+  bx=W-(W-r.x)/z; by=r.y/z; bw=r.w/z; bh=16+LH(13);
+  return {z:z,x:bx,y:by,w:bw,h:bh,yb:by+8+LH(8),tg:{x:bx+bw-LH(20),y:by,w:LH(20),h:bh}};
+}
 function drawMinimap(){
-  var p=G&&G.player, r, R, sc, bs, cut, x0, y0, ax, ay, bx, by, cx, cy;
+  var p=G&&G.player, r, R, sc, bs, cut, x0, y0, ax, ay, bx, by, cx, cy, f, t;
   MMAP.box=null; MMAP.ops=0;
+  delete HUDBOX.mmap;   // v28.xx (cw-mmfold): a hidden minimap (off in Settings, the map or the backpack open, the end cards, the Undercroft) leaves no box to take a click
   if(!p||G.sim||!G.map||!(W>0)||!(H>0)) return 0;
   if(!mmShown()) return 0;   // v24.xx (minimap3): the Settings row, the map, the backpack, the end cards and the Undercroft
   r=mmRect(); R=hudRes(); sc=r.w/mmSpan(); cut=Math.round(10*TRG.z);   // v26.xx (settings7): MINIMAP ZOOM; v30.xx (cw-trcol): the corner is cut like the panels beside it
   bs=Math.min(sc*Math.max(1,DPRH||1),4096/Math.max(WORLD_W,WORLD_H));
   if(!MMAP.cv||MMAP.map!==G.map||Math.abs(MMAP.bs-bs)>1e-6){ MMAP.cv=mmBake(bs); MMAP.map=G.map; MMAP.bs=bs; }
+  f=mmFoldBox(r);   // v28.xx (cw-mmfold): the fold comes after the bake above, so a folded minimap is still baked at the raid start and the first unfold does not stall a frame
+  if(hudOff('mmap').c){   // v28.xx (cw-mmfold): folded, a slim strip with its name and the chevron; the run info panel and the goals hang off MMAP.box, so they move up under it
+    ctx.save(); hudZoomIn('cond',W,0);
+    hudPanel(f.x,f.y,f.w,f.h,undefined,1);
+    ctx.font=FS(TYPE.label); ctx.textAlign='left'; ctx.textBaseline='alphabetic'; ctx.fillStyle=HUDC.text;
+    ctx.fillText('minimap',f.x+8,f.yb);
+    hudChev(f.x+f.w-8,f.yb,false);
+    ctx.restore();
+    HUDBOX.mmap=hudZoomRect('cond',W,0,{x:f.x,y:f.y,w:f.w,h:f.h,tg:f.tg});
+    MMAP.box={x:HUDBOX.mmap.x,y:HUDBOX.mmap.y,w:HUDBOX.mmap.w,h:HUDBOX.mmap.h};
+    MMAP.ops+=3;
+    return 1;
+  }
   ctx.save();
   mmPath(ctx,r,cut); ctx.fillStyle='rgba(11,12,13,.92)'; ctx.fill(); MMAP.ops++;
   ctx.clip();
@@ -43215,6 +43240,11 @@ function drawMinimap(){
   if(MMAP.cv&&bx>ax&&by>ay){
     ctx.drawImage(MMAP.cv,ax*bs,ay*bs,(bx-ax)*bs,(by-ay)*bs,r.x+(ax-x0)*sc,r.y+(ay-y0)*sc,(bx-ax)*sc,(by-ay)*sc); MMAP.ops++;
   }
+  // v28.xx (cw-mmfold): open, the fold tab in the top right corner: one LH(20) square in the run info zoom, the panel colour, on the spot the folded strip draws its chevron.
+  // It is drawn here, under the markers, so an edge arrow, its badge or a machine in that corner still shows on top of it; the chevron goes on last, after the frame.
+  // This square is the whole click box (HUDBOX.mmap below): what you click is what you see, and the map around it lets a shot through as before.
+  t=hudZoomRect('cond',W,0,{x:f.tg.x,y:f.tg.y,w:f.tg.w,h:LH(20)});
+  ctx.fillStyle='rgba(17,19,21,.88)'; ctx.fillRect(t.x,t.y,t.w,t.h); MMAP.ops++;
   try{ mmMarks(r,sc,R); }catch(_mk){ ctx.globalAlpha=1; ctx.textAlign='left'; ctx.textBaseline='alphabetic'; }   // v24.xx (minimap2): the markers, under your arrow
   // you: an amber arrow, ink edged, pointing where you face
   cx=r.x+r.w/2; cy=r.y+r.h/2;
@@ -43229,6 +43259,10 @@ function drawMinimap(){
   ctx.font=hudFloor16(hudFS(TYPE.micro)); ctx.textAlign='center'; ctx.fillStyle=HUDC.dim;   // v28.xx (cw-h103type): the north mark on the minimap is 16 px on the screen too
   hudText('N',cx,r.y+Math.round(15*R)); MMAP.ops+=2;
   ctx.restore();
+  // v28.xx (cw-mmfold): the open chevron on the fold tab, over the frame. Only the tab takes a click: the map under it never did, and a shot over it still goes through.
+  // The minimap is fixed in the column, so it has no drag bar (hudHit and the mousedown skip it).
+  ctx.save(); hudZoomIn('cond',W,0); hudChev(f.x+f.w-8,f.yb,true); ctx.restore(); MMAP.ops++;
+  HUDBOX.mmap={x:t.x,y:t.y,w:t.w,h:t.h,tg:{x:t.x,y:t.y,w:t.w,h:t.h}};
   MMAP.box=r;
   return 1;
 }
@@ -45133,6 +45167,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
     ctx.restore();
     if(HUDBOX.raiders) HUDBOX.raiders=hudZoomRect('raiders',0,0,HUDBOX.raiders);
   }
+  if(HUDBOX.mmap){ var _mmh=HUDBOX.mmap; delete HUDBOX.mmap; HUDBOX.mmap=_mmh; }   // v28.xx (cw-mmfold): the minimap is drawn first and every panel over it, so its box is tried last: run info, the keys list or the pillager board dragged over its fold tab keep their own clicks
   if(G.arcade){ try{ arcadeHud(); }catch(_ahd){} }   // v23.23 (arcade4): the arcade layer, the EXTRACTED! banner
   if(G.carAsk&&!G.arcade){ try{ easyHud(); }catch(_ehc){} }   // v28.xx (cw-easycareer): the career easy card
   RSTAT.on=0; if(keys['AltLeft']&&!G.mapOpen&&!G.bagOpen&&!G.trade){ try{ raidStatusDraw(); }catch(_rsd){} } RSTAT.rows=null;   // v25.xx (altstatus): hold ALT, the raid status over everything else
@@ -46016,7 +46051,7 @@ function hudHit(mx,my){
       if(hudOnGrip(HB,mx,my)) return {id:k,part:'grip'};
     }
     if(inRect(HB.tg,mx,my)) return {id:k,part:'glyph'};
-    if(inRect(hudBar(HB),mx,my)) return {id:k,part:'bar'};
+    if(k!=='mmap'&&inRect(hudBar(HB),mx,my)) return {id:k,part:'bar'};   // v28.xx (cw-mmfold): the minimap is fixed in the column, it has no drag bar
     if(inRect(HB,mx,my)) return {id:k,part:'body'};
   }
   return null;
@@ -54364,7 +54399,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.87: Burning, shocked and frozen bodies you cannot see no longer show flames, ice or glow through walls and fog. Watch for: flames appearing at the same moment the body does as you round a corner. Check 34.87 fails on v34.86',
+  now:'v34.88: The minimap has a fold arrow on a small dark tab in its top right corner, like run info. Click it and the minimap shrinks to a thin minimap strip and run info slides up. Click it again to get the map back. Turn the minimap on in Settings first. Watch for: the arrow being easy to see over the map, a shot fired over the minimap next to the tab still going off, and an objective arrow in that corner drawn over the tab. Check 34.88 fails on v34.87',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
