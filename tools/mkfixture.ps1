@@ -56,7 +56,7 @@ window.__opShot=function(look,face,zoom){
   var z=zoom||9, cx=Math.round(W/2), cy=Math.round(H*0.78);
   wc.setTransform(DPR,0,0,DPR,0,0);
   wc.fillStyle='#101418'; wc.fillRect(0,0,W,H);
-  wc.save(); wc.translate(cx,cy); wc.scale(z,z);
+  var _fk=(typeof figK1==='function')?figK1():1; wc.save(); wc.translate(cx,cy); wc.scale(z/_fk,z/_fk);
   var st={hero:0,moving:false,sprint:false,ads:false,hurt:0,rl:0};
   if(look) for(var k in look) st[k]=look[k];
   var thrown=null;
@@ -6922,7 +6922,7 @@ window.__REGRESS=[
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{ saveProfile=sp; try{ if(go===null) delete P.gameOpts; else P.gameOpts=JSON.parse(go); applyGameOpts(); }catch(_r){} CFG.fpsCap=c0; CAP_LAST=l0; }
      return bad.length?bad.join('; '):null; }},
-  {v:'34.81',what:'cw-smoothlook, his notes of 2026-10-25 ("I want the graphics smooth", "Pillager still too big", "Bulwark still too small"): the smooth look is the default and a save that holds the pixel look moves to it once while a later pick survives; the pillager is drawn at 0.8; the bulwark is drawn and hit at 1.5 times the other machines',
+  {v:'34.81',what:'cw-smoothlook, his notes of 2026-10-25 ("I want the graphics smooth", "Pillager still too big", "Bulwark still too small"): the smooth look is the default and a save that holds the pixel look moves to it once while a later pick survives; the pillager is drawn at 1.25/3 (a third of the 1.25 he saw on build 33.17); the bulwark is drawn and hit at 1.5 times the other machines',
    run:function(){
      if(typeof DEF==='undefined'||typeof GAMEOPTS==='undefined'||typeof applyGameOpts!=='function') return 'SKIP: no settings rows in this build';
      if(typeof __deploy!=='function'||typeof __runPrep!=='function') return 'SKIP: no raid helpers';
@@ -6930,7 +6930,7 @@ window.__REGRESS=[
      for(i=0;i<GAMEOPTS.length;i++) if(GAMEOPTS[i].k==='xfPix') row=GAMEOPTS[i];
      if(DEF.xfPix!==0) bad.push('the pixel look default is '+DEF.xfPix+', not off');
      if(!row) bad.push('no pixel look row in Settings'); else if(!row.opts[row.def]||row.opts[row.def].cfg.xfPix!==0) bad.push('the pixel look row defaults to '+(row.opts[row.def]?row.opts[row.def].n:'?')+', not off');
-     if(typeof FIG_SCALE==='undefined'||Math.abs(FIG_SCALE-0.8)>1e-9) bad.push('the pillager is drawn at FIG_SCALE '+(typeof FIG_SCALE==='undefined'?'(none)':FIG_SCALE)+', not 0.8');
+     if(typeof FIG_SCALE==='undefined'||Math.abs(FIG_SCALE-1.25/3)>1e-9) bad.push('the pillager is drawn at FIG_SCALE '+(typeof FIG_SCALE==='undefined'?'(none)':FIG_SCALE)+', not 1.25/3 (cw-thirdsize, his note on build 33.17, where it was 1.25: needs to be 1/3 of the size)');
      try{
        __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        go=P.gameOpts?JSON.stringify(P.gameOpts):null; had=('pixOff1' in P); mark=P.pixOff1;
@@ -8766,7 +8766,7 @@ window.__REGRESS=[
          st={hero:0,team:side?'ally':'foe',own:{hp:100},moving:false,ads:false,hurt:0,bulk:0,build:'lean',outfit:'outnone',skin:'fair',cut:'crop'};
          drawOp(100,130,0,0,'#46535a',0,0,'none',0,st);
          if(calls.length!==1||calls[0]!==st.team)return 'body path '+mode+' did not draw its side cue';
-         d=c.getImageData(82,101,1,1).data;if(d[3]<240)return 'side cue was not painted in body path '+mode;
+         var _k=(typeof figK1==='function')?figK1():1; d=c.getImageData(Math.round(100-(6+12*_k)),Math.round(130-29*_k),1,1).data;if(d[3]<240)return 'side cue was not painted in body path '+mode;
        }
        c.clearRect(0,0,240,180);colourCueGlyph(c,'ally',30,30,1,'#aaaaaa');
        d=c.getImageData(25,30,1,1).data;if(d[0]<200)return 'ally has no horizontal plus arm';
@@ -25586,7 +25586,7 @@ window.__REGRESS=[
      }catch(x){ return 'threw: '+(x&&x.stack||x); }
      finally{ if(own) say=rs; try{ if(g&&oF!==undefined) g.forge=oF; }catch(_f){} try{ __endRaid('abandon'); }catch(_e){} try{ __topClear(); }catch(_t){} }
    }},
-  {v:'29.08',what:'cw-muzzlenet: the partner window draws a teammate rifle flash at the drawn muzzle and starts his tracer there, as the shooter window does, aiming east and west',
+  {v:'29.08',what:'cw-muzzlenet: the partner window draws a teammate Longshot flash at the drawn muzzle (its tip clears the round spawn on the smaller body) and starts his tracer there, as the shooter window does, aiming east and west',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: no raid here';
      var bad=[], g, p, k, NK={}, sent=[], oBy=GFX.bypass, w, own, b, msg, fm, fb, r, j, angs=[0,Math.PI];
@@ -25596,7 +25596,7 @@ window.__REGRESS=[
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||g.over||!g.player) return 'SKIP: no live raid';
        if(g.sim) return 'SKIP: the fixture raid is a sim raid';
-       p=g.player; p.iv=99; GFX.bypass=0; w=WEAPONS.rifle;
+       p=g.player; p.iv=99; GFX.bypass=0; w=WEAPONS.sniper;   // v28.xx (cw-thirdsize): the Longshot tip (39.3 x GUNK x the drawn size, 19.6 on a lean body) still clears the 17 unit round spawn, so the tracer half keeps a muzzle start to compare (a rifle tip, 15 out on the smaller body, is inside it: mzd 0)
        NET.on=true; NET.up=[]; NET.upSeed=g.seed>>>0;
        NET.roster=[{seat:0,pid:'me',name:'HOST',host:true},{seat:1,pid:'zqxmate',name:'ZQX MATE'}];
        for(j=0;j<angs.length;j++){
@@ -33676,13 +33676,13 @@ window.__REGRESS=[
        if(!b) return 'SKIP: staging: no round was fired';
        d=Math.hypot(b.x-p.x,b.y-p.y);
        if(Math.abs(d-17)>0.01) bad.push('the real round spawns '+d.toFixed(2)+' units from the shooter, not 17');
-       if(!m) bad.push('the shot left no muzzle flash event'); else if(!(m.x-p.x>=36)) bad.push('the flash is '+(m.x-p.x).toFixed(1)+' units out, not at the drawn muzzle of a rifle (36 or more)');
-       if(!s||!s.brass) bad.push('the shot left no brass'); else if(!(s.x-p.x>=8)) bad.push('the brass starts '+(s.x-p.x).toFixed(1)+' units out, not at the ejection port (8 or more)');
-       if(!(b.mzd>=15)) bad.push('the round carries no tracer start past the drawn muzzle (mzd '+b.mzd+')');
+       if(!m) bad.push('the shot left no muzzle flash event'); else if(!(m.x-p.x>=36*(typeof figShK==='function'?figShK(p)[0]:1)&&Math.abs((m.x-p.x)-gunMuzD(p,w))<=0.5)) bad.push('the flash is '+(m.x-p.x).toFixed(1)+' units out, not at the drawn muzzle of a rifle ('+gunMuzD(p,w).toFixed(1)+' out; 36 or more at size 1, times the drawn size)');
+       if(!s||!s.brass) bad.push('the shot left no brass'); else if(!(s.x-p.x>=8*(typeof figShK==='function'?figShK(p)[0]:1)&&Math.abs((s.x-p.x)-gunPortOff(p,w,0).x)<=0.5)) bad.push('the brass starts '+(s.x-p.x).toFixed(1)+' units out, not at the drawn ejection port ('+gunPortOff(p,w,0).x.toFixed(1)+' out; 8 or more at size 1, times the drawn size)');
+       if(!(Math.abs((17+b.mzd)-Math.max(17,m?m.x-p.x:36))<=0.5)) bad.push('the round marks its tracer start '+(17+b.mzd).toFixed(1)+' units out (17 plus mzd), not at the drawn flash at '+(m?(m.x-p.x).toFixed(1):'none')+' or the 17 unit spawn past it: the round and the flash disagree on where the drawn muzzle is');
        GFXMUZ.length=0; g.bullets.length=0;
        fireWeapon(p,w,p.x-300,p.y,true);
        m=GFXMUZ[GFXMUZ.length-1];
-       if(!m||!(m.x-p.x<=-36)) bad.push('shooting left, the flash is not 36 or more to the left ('+(m?(m.x-p.x).toFixed(1):'none')+')');
+       if(!m||!(m.x-p.x<=-36*(typeof figShK==='function'?figShK(p)[0]:1)&&Math.abs((m.x-p.x)+gunMuzD(p,w))<=0.5)) bad.push('shooting left, the flash is not at the drawn muzzle to the left ('+(m?(m.x-p.x).toFixed(1):'none')+', the drawn muzzle '+(-gunMuzD(p,w)).toFixed(1)+')');
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{
        GFX.bypass=by0; keys={}; try{ GFXMUZ.length=0; }catch(_m){}
@@ -35130,7 +35130,7 @@ window.__REGRESS=[
        proto.fillText=function(){ txts.push(String(arguments[0])); return oFt.apply(this,arguments); };
        try{ pwrDraw2(ctx,p); } finally { proto.arc=oArc; proto.fillText=oFt; }
        sp=w2s(p.x,0,p.y); hit=0; q=0;
-       for(i=0;i<arcs.length;i++){ if(Math.abs(arcs[i][0]-sp.x)<1&&Math.abs(arcs[i][1]-(sp.y-14*ZOOM()))<1&&Math.abs(arcs[i][2]-34*ZOOM())<1.5) hit++; if(Math.abs(arcs[i][0]-sp.x)<1&&Math.abs(arcs[i][1]-sp.y)<1&&arcs[i][2]>60) q++; }
+       for(i=0;i<arcs.length;i++){ if(Math.abs(arcs[i][0]-sp.x)<1&&Math.abs(arcs[i][1]-(sp.y-14*ZOOM()*((typeof figK1==='function'&&!pixOn())?FIG_SCALE:1)))<1&&Math.abs(arcs[i][2]-34*ZOOM()*((typeof figK1==='function'&&!pixOn())?FIG_SCALE:1))<1.5) hit++; if(Math.abs(arcs[i][0]-sp.x)<1&&Math.abs(arcs[i][1]-sp.y)<1&&arcs[i][2]>60) q++; }
        if(hit<2) bad.push('FIVE: the shield bubble was not drawn round the player ('+arcs.length+' arcs)');
        if(!q) bad.push('FIVE: the screen clear wave was not drawn');
        arcs.length=0; txts.length=0; S.act={}; S.pulse=null; S.items.length=0;
@@ -37489,7 +37489,7 @@ window.__REGRESS=[
        CFG.flashRed=0; s1=shot(); CFG.flashRed=1; s2=shot();
        p.muzzle=0; g.flashes.length=0; CFG.flashRed=0; still(); s3=sumAround(); CFG.flashRed=1; still(); c=sumAround();
        if(!(s3>0&&c>0)) bad.push('FOUR: control: no finished world picture to compare');
-       if(!(s1>s2+4000)) bad.push('FOUR: the muzzle flash is no dimmer with the row on ('+s1+' against '+s2+')');
+       if(!(s1>s2+4000*((typeof figK1==='function'&&!pixOn())?FIG_SCALE/0.8:1))) bad.push('FOUR: the muzzle flash is no dimmer with the row on ('+s1+' against '+s2+')');
        if(Math.abs(s3-c)>3000) bad.push('FOUR: control: with no muzzle flash the picture moved by '+Math.abs(s3-c)+' with the row');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
@@ -40151,7 +40151,7 @@ window.__REGRESS=[
      function clr(){ for(var q in keys) keys[q]=false; }
      function extra(o){ var cnt={}, k, i, mxw=0; for(i=0;i<b0.ws.length;i++){ k=b0.ws[i]; cnt[k]=(cnt[k]||0)+1; } for(i=0;i<o.ws.length;i++){ k=o.ws[i]; if(cnt[k]>0) cnt[k]--; else mxw=Math.max(mxw,+k); } return mxw; }
      function meas(barT){
-       var m0=wc.getTransform(), s0=Math.hypot(m0.a,m0.b)||1, o={ws:[],arc:0,sw:0,cur:0,tx:-1e9},
+       var m0=wc.getTransform(), s0=(Math.hypot(m0.a,m0.b)||1)*((typeof figK1==='function')?figK1():1), o={ws:[],arc:0,sw:0,cur:0,tx:-1e9},
            oFR=wc.fillRect, oAr=wc.arc, oFi=wc.fill, oBP=wc.beginPath, oTr=wc.translate;
        function sc(){ var m=wc.getTransform(); return Math.hypot(m.a,m.b)/s0; }
        wc.fillRect=function(x,y,w,h){ o.ws.push((Math.abs(w)*sc()).toFixed(3)); return oFR.apply(wc,arguments); };
