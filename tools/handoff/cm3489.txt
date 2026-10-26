@@ -1,0 +1,7 @@
+v34.89: gun card and keys chip tidy
+
+The gun card in the lower right is snug around the gun name, the rounds and the backpack row, with no lime stub, and it holds still while you shoot, reload and aim. The f1 controls chip sits just left of belt key 1, on the same row as the fire use caption, and F1 opens the list above it, clear of the bandage and plate bars, the power up timers and the health bars (on a small screen the chip stands just above the health bars and the list opens above them, left of the middle). Watch for: whether the card reads well at a glance in a fight, whether the chip is easy to find when you want F1, and whether the opened list still reads as coming from the chip. It waits above where the bandage bar shows, so it stands about 75 px above the chip at 1080p and 140 px at 4K (95 and 180 in the demo), one bar higher while a bandage and a plate go on at once, and much higher while the ship is called (about 210 px at 1080p and 440 px at 4K, where its top stands above the height of your pillager, off to the left). It steps up and back down at those moments.
+
+Check 34.89. Fails on v34.88.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
