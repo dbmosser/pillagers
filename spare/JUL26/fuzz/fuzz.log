@@ -1645,3 +1645,5 @@
 2026-10-26 02:59:57 FUZZ START seed=1765965370 minutes=60 raidsec=300 port=9332 srv=8806 build=34.86 maps=0 size=1920x1080 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
 2026-10-26 03:00:50 FUZZ START seed=305208049 minutes=60 raidsec=300 port=9331 srv=8806 build=34.86 maps=0 size=1920x1080 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
 2026-10-26 03:00:51 FUZZ START seed=305810621 minutes=60 raidsec=300 port=9332 srv=8806 build=34.86 maps=0 size=1920x1080 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
+2026-10-26 03:03:15 FUZZ START seed=1752748197 minutes=60 raidsec=300 port=9331 srv=8806 build=34.86 maps=0 size=1920x1080 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
+2026-10-26 03:03:15 FUZZ START seed=1753666894 minutes=60 raidsec=300 port=9332 srv=8806 build=34.86 maps=0 size=1920x1080 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
