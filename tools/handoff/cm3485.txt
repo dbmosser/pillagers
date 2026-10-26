@@ -1,0 +1,7 @@
+v34.85: no lock-on siren in a superhot freeze
+
+With Superhot on, the machine lock-on siren no longer drones on while time stands still. It fades when you stop and is back the moment time moves if the machine still has you. Watch for: the siren cutting in and out as you stop and go in Superhot while a machine has you.
+
+Check 34.85. Fails on v34.84.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

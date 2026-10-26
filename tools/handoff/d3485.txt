@@ -1,0 +1,5 @@
+## v34.85 - NO LOCK-ON SIREN IN A SUPERHOT FREEZE
+
+Co-op hunt while he was away. His note of 2026-10-25 (played on 33.17 with Superhot on, still true on 34.84): weird noise lingering. With Superhot on and no input held the world stops, but the machine lock-on siren kept wailing for as long as time stood still: its sight stamp ages in game time, which does not move, and every frame pushed its fade on. Now a frame where Superhot holds time still takes the normal off path, and the siren is back on the first frame time moves while the machine still has him. In two players time moves while either player acts, so it sounds on then.
+
+MEASURED. Check 34.85 passes, and fails on v34.84.

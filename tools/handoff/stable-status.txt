@@ -1,11 +1,11 @@
 Latest stable: v29.09 (2026-10-18 10:23)
-Checked: 2026-10-25 22:46
+Checked: 2026-10-25 23:48
 Play address: http://localhost:8802/stable.html
 Result: no change
 
 Newest test runs, newest first:
-  corpus-1025-1526  v34.83  failing 16, new 15  robots 1272 min/196 problems  -> 15 check(s) newly failing, e.g. v8.91 the three in-raid panels are twice the size, at every  | v9.07 a noise you cannot see leaves a ring on the ground, an
-  corpus-1025-1332  v34.83  failing 14, new 13  robots 1272 min/196 problems  -> 13 check(s) newly failing, e.g. v8.91 the three in-raid panels are twice the size, at every  | v9.13 the backpack follows the monitor instead of staying it
+  corpus-1025-1526  v34.83  failing 16, new 15  robots 1298 min/202 problems  -> 15 check(s) newly failing, e.g. v8.91 the three in-raid panels are twice the size, at every  | v9.07 a noise you cannot see leaves a ring on the ground, an
+  corpus-1025-1332  v34.83  failing 14, new 13  robots 1298 min/202 problems  -> 13 check(s) newly failing, e.g. v8.91 the three in-raid panels are twice the size, at every  | v9.13 the backpack follows the monitor instead of staying it
   corpus-1025-0741  v34.69  failing 6, new 6  robots 245 min/0 problems  -> 6 check(s) newly failing, e.g. v9.13 the backpack follows the monitor instead of staying it | v31.90 J8 polling: null and disconnected slots pause in two 
   corpus-1024-2302  v34.53  failing 44, new 42  robots 1161 min/0 problems  -> 42 check(s) newly failing, e.g. v8.93 a HUD panel can be resized by its corner grip, and the | v9.14 the writing on the sector map follows the monitor, lik
   corpus-1024-1829  v34.53  failing 46, new 43  robots 1161 min/0 problems  -> 43 check(s) newly failing, e.g. v8.93 a HUD panel can be resized by its corner grip, and the | v9.14 the writing on the sector map follows the monitor, lik

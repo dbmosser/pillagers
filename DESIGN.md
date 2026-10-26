@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.85 - NO LOCK-ON SIREN IN A SUPERHOT FREEZE
+
+Co-op hunt while he was away. His note of 2026-10-25 (played on 33.17 with Superhot on, still true on 34.84): weird noise lingering. With Superhot on and no input held the world stops, but the machine lock-on siren kept wailing for as long as time stood still: its sight stamp ages in game time, which does not move, and every frame pushed its fade on. Now a frame where Superhot holds time still takes the normal off path, and the siren is back on the first frame time moves while the machine still has him. In two players time moves while either player acts, so it sounds on then.
+
+MEASURED. Check 34.85 passes, and fails on v34.84.
 ## v34.84 - NO GUN LINE ON THE PRE-RAID PAGE
 
 Co-op hunt while he was away. His note of 2026-10-25 (played on an older build, still true on 34.83): the gun line on the raid prep screen does not make sense, he takes a bunch of guns into the raid, so why does it say gun = compact smg; get rid of that. The gun, gun 2 and own gun in stash chips are gone from the going up box (the pack rows still list every gun going up). The no armour warning stays exactly as it was. With armour packed the box is empty and takes no room.
