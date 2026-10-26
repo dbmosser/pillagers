@@ -1,11 +1,11 @@
 host=JUL26
-seen=2026-10-26 17:45
-epoch=1793051131
+seen=2026-10-26 18:02
+epoch=1793052138
 game=75facf9b v34.89
-test_run=paused: the VM takes its memory first
+test_run=paused: under 6 GB free
 robots=0
-ram_free_gb=6.6
+ram_free_gb=4.2
 push_ok=1
 runner=8E87772F
 mode=idle
-spare_pc=not answering (192.168.1.246), 17:41
+spare_pc=not answering (192.168.1.246), 18:02
