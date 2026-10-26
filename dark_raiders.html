@@ -3690,7 +3690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.86';
+var VER='34.87';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30791,6 +30791,7 @@ function drawElemFx(dt){
     e=L[i];
     if(!(e.burnT>0||e.stunT>0||e.chillT>0||e.frozenT>0||e.corrT>0)) continue;
     if((e.hp<=0&&!e.downed)||e.finished||e.gone||!isFinite(e.x)||!isFinite(e.y)) continue;
+    if(!e.seen) continue;   // v28.xx (cw-elemseen), job 127 pictures: in sight only, like the body (VIS). Flames, arcs, ice and their glow drew through walls and fog for any burning, shocked or frozen body
     r=e.r||14; H=elemBodyH(e);
     wc.save();
     if(e.burnT>0){
@@ -54363,7 +54364,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.86: With Superhot on, a death no longer freezes until you press something: the death beat plays out and the card comes up on its own. Watch for: in Superhot the world now moves slowly under the death fade, as it does with Superhot off. Check 34.86 fails on v34.85',
+  now:'v34.87: Burning, shocked and frozen bodies you cannot see no longer show flames, ice or glow through walls and fog. Watch for: flames appearing at the same moment the body does as you round a corner. Check 34.87 fails on v34.86',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

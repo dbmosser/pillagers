@@ -1,10 +1,10 @@
 Latest stable: v29.09 (2026-10-18 10:23)
-Checked: 2026-10-26 01:52
+Checked: 2026-10-26 02:56
 Play address: http://localhost:8802/stable.html
 Result: no change
 
 Newest test runs, newest first:
-  corpus-1025-2257  v34.84  failing 18, new 17  robots 235 min/83 problems  -> 17 check(s) newly failing, e.g. v8.89 a pillager wading out of sight draws no rings in the w | v8.91 the three in-raid panels are twice the size, at every 
+  corpus-1025-2257  v34.84  failing 18, new 17  robots 237 min/85 problems  -> 17 check(s) newly failing, e.g. v8.89 a pillager wading out of sight draws no rings in the w | v8.91 the three in-raid panels are twice the size, at every 
   corpus-1025-1526  v34.83  failing 16, new 15  robots 1298 min/202 problems  -> 15 check(s) newly failing, e.g. v8.91 the three in-raid panels are twice the size, at every  | v9.07 a noise you cannot see leaves a ring on the ground, an
   corpus-1025-1332  v34.83  failing 14, new 13  robots 1298 min/202 problems  -> 13 check(s) newly failing, e.g. v8.91 the three in-raid panels are twice the size, at every  | v9.13 the backpack follows the monitor instead of staying it
   corpus-1025-0741  v34.69  failing 6, new 5  robots 245 min/0 problems  -> 5 check(s) newly failing, e.g. v9.13 the backpack follows the monitor instead of staying it | v31.90 J8 polling: null and disconnected slots pause in two 

@@ -1,0 +1,5 @@
+## v34.87 - NO BURNING BODIES THROUGH WALLS
+
+Co-op hunt while he was away. Found on 34.86 while taking the job 127 glow pictures: a burning, shocked or frozen body behind a wall still drew its flames, arcs, ice and glow. At night the fog is thin enough that a burning bot behind a wall showed as floating flames with no body, and with post effects on its glow lit the floor there too. The game rule is that everything about a body keys off sight (VIS); the eye glow pool already follows it. Now the element effects draw only on a body in sight, the same as the body itself. The 25.49 check draws a crawler that may be out of sight, so it now marks it in sight first.
+
+MEASURED. Check 34.87 passes, and fails on v34.86.

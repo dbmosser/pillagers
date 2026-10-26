@@ -1,0 +1,7 @@
+v34.87: no burning bodies through walls
+
+Burning, shocked and frozen bodies you cannot see no longer show flames, ice or glow through walls and fog. Watch for: flames appearing at the same moment the body does as you round a corner.
+
+Check 34.87. Fails on v34.86.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

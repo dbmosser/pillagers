@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.87 - NO BURNING BODIES THROUGH WALLS
+
+Co-op hunt while he was away. Found on 34.86 while taking the job 127 glow pictures: a burning, shocked or frozen body behind a wall still drew its flames, arcs, ice and glow. At night the fog is thin enough that a burning bot behind a wall showed as floating flames with no body, and with post effects on its glow lit the floor there too. The game rule is that everything about a body keys off sight (VIS); the eye glow pool already follows it. Now the element effects draw only on a body in sight, the same as the body itself. The 25.49 check draws a crawler that may be out of sight, so it now marks it in sight first.
+
+MEASURED. Check 34.87 passes, and fails on v34.86.
 ## v34.86 - NO FROZEN DEATH IN SUPERHOT
 
 Co-op hunt while he was away. His note of 2026-10-25 (played on 33.17 with Superhot on, still true on 34.85): weird noise lingering. With Superhot on and no input held the world stops, and a dead man holds no input, so the death beat counted down by nothing: the screen held on its first frame, the outcome card never came and the room tone stayed under the death duck until he pressed something. Now the death beat keeps its own clock on real frames, so it ends in its second and a half and the card comes up with or without input. Solo, time moves under it as if he acts. In two players the beat ends the same, but a dead player never moves the shared world.
