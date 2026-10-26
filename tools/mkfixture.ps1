@@ -42558,7 +42558,7 @@ window.__REGRESS=[
        sfx=oSfx;
        S=[].slice.call(document.scripts).map(function(s){ return s.text||''; }).join('\n');
        ['Fire','Shock','Cryo','Freeze','Acid'].forEach(function(n){ if(S.indexOf("type==='el"+n+"'")<0) bad.push('the sound el'+n+' is not in the mixer'); });
-       g.ents=[cr]; cr.burnT=0; cr.chillT=0; cr.stunT=0; cr.frozenT=0; cr.corrT=0; g.arcs=[];
+       g.ents=[cr]; cr.burnT=0; cr.chillT=0; cr.stunT=0; cr.frozenT=0; cr.corrT=0; g.arcs=[]; cr.seen=true;   /* cw-elemseen: the body effects draw on a body in sight only */
        c0=__gfxCount([wc],null,function(){ return drawElemFx(0.016); });
        if(c0.total!==0) bad.push('the body effects drew '+c0.total+' calls on a body with no status');
        cr.burnT=1;
