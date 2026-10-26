@@ -22,3 +22,4 @@
 - 127-gfx-glow-pools.md (parked 10-25 11:32 by lane c): coordinator needs a uishots screen that stages the forge or a burning body, plus a 4K two-window perf run, for 127-gfx-glow-pools.
 - 10-25 12:50 coordinator: 128, 129, 130 held until job 120k measures the 2-player frame cost (gameplay idea 2: each adds drawing every frame). Then back to tasks/, smooth look first.
 - 10-25 12:50 coordinator: 123-gfx-pixel-reload-forged closed: his 10-25 order turned the pixel look off ("I want the graphics smooth"); the pixel reload has no player left.
+- 127-gfx-glow-pools.md closed 10-26 05:30 by the coordinator: glow pictures taken (camera screens 81 to 92), see-through-walls bug fixed in v34.87; the 4K two-window frame time moved into job 120k.
