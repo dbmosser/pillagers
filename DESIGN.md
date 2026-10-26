@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.86 - NO FROZEN DEATH IN SUPERHOT
+
+Co-op hunt while he was away. His note of 2026-10-25 (played on 33.17 with Superhot on, still true on 34.85): weird noise lingering. With Superhot on and no input held the world stops, and a dead man holds no input, so the death beat counted down by nothing: the screen held on its first frame, the outcome card never came and the room tone stayed under the death duck until he pressed something. Now the death beat keeps its own clock on real frames, so it ends in its second and a half and the card comes up with or without input. Solo, time moves under it as if he acts. In two players the beat ends the same, but a dead player never moves the shared world.
+
+MEASURED. Check 34.86 passes, and fails on v34.85.
 ## v34.85 - NO LOCK-ON SIREN IN A SUPERHOT FREEZE
 
 Co-op hunt while he was away. His note of 2026-10-25 (played on 33.17 with Superhot on, still true on 34.84): weird noise lingering. With Superhot on and no input held the world stops, but the machine lock-on siren kept wailing for as long as time stood still: its sight stamp ages in game time, which does not move, and every frame pushed its fade on. Now a frame where Superhot holds time still takes the normal off path, and the siren is back on the first frame time moves while the machine still has him. In two players time moves while either player acts, so it sounds on then.

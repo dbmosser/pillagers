@@ -1,0 +1,7 @@
+v34.86: no frozen death in superhot
+
+With Superhot on, a death no longer freezes until you press something: the death beat plays out and the card comes up on its own. Watch for: in Superhot the world now moves slowly under the death fade, as it does with Superhot off.
+
+Check 34.86. Fails on v34.85.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -3690,7 +3690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.85';
+var VER='34.86';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -53783,6 +53783,7 @@ function loop(ts){
   if(G.mapFirst) mapFirstStep(dt);   // cw-mapfirst: the opening map still owns the raid-start clock hold.
   if(NET.on) netUpTick(dt);   // v15.79: where the party stands up top, eased in and sent out, whatever the frame does below
   if(NET.on) netFxStep(dt);   // v16.21: the party's tracers fly, and this window's sounds go out
+  var _dtLive=dt;   // v28.xx (cw-shdeath): the frame time before Superhot may stop it below; the death beat keeps its own clock on it
   // v6.73, his note; rewritten v7.23: time stops DEAD unless an input is live -
   // any held key, the mouse button, pad input, or an action already in flight.
   if(CFG.superhot&&G.player&&!G.over&&(!G.paused||netPauseLive())){   // v16.27, his note: in co-op time runs while ANY player up top is acting (v16.04 had it off); v16.74, his order: a window paused in a shared raid, where the world runs on, still stops time unless a teammate is acting
@@ -53814,12 +53815,20 @@ function loop(ts){
   try{ tickMachSiren(dt,!!_shStill); }catch(_ms){}   /* v28.xx (cw-shsiren): and whether Superhot holds time still */   // v24.xx (machsiren): the one lock-on siren, every raid frame
   if((!G.paused||netPauseLive())&&!G.over&&G.deathBeat!==undefined&&G.deathBeat!==null){
     // the death beat: the world keeps moving underwater-slow, you do not
-    G.deathBeat-=dt;
-    msgTick(dt);   // v22.36 (R12): the lanes keep time in the death beat
+    // v28.xx (cw-shdeath), HIS NOTE (2026-10-25, played with Superhot on): "weird noise lingering". With Superhot on the gate above sets dt to 0 on
+    // every frame with no input, and a dead man holds none, so the beat counted down by nothing: the screen held on its first frame, the card never
+    // came and the room tone stayed under the death duck until he pressed something. The beat now keeps its own clock on the frame time (_dtLive),
+    // so it ends in its 1.5 s with or without input. Solo, time moves as if he acts (the world underwater-slow and the frame draw, as with Superhot
+    // off). In a shared raid the world under it stays on the party clock (dt): a dead man moves nobody's world, and the sa flag this window sends a
+    // teammate is still its own input only. With Superhot off, or anyone acting, _dtLive is dt and nothing changes.
+    var _dbt=_dtLive;
+    if(!netUpShared()) dt=_dbt;
+    G.deathBeat-=_dbt;
+    msgTick(_dbt);   // v22.36 (R12): the lanes keep time in the death beat
     var bdt=netUpShared()?dt:dt*0.25;   // v16.04: in a shared co-op raid the slow-down is not put on the world the party is still playing in
     G.t+=bdt;
     refreshVseg(); updateEnts(bdt); updateBullets(bdt); updateThrowables(bdt);
-    if(G.shake>0) G.shake=Math.max(0,G.shake-dt*26);
+    if(G.shake>0) G.shake=Math.max(0,G.shake-_dbt*26);
     if(G.deathBeat<=0){ endRaid('dead'); }
   }
   else if((!G.paused||netPauseLive())&&!G.over){   // v16.04: in a shared co-op raid pause is an overlay: the world and the clock run on; v16.20: everyone paused stops it
@@ -54354,7 +54363,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.85: With Superhot on, the machine lock-on siren no longer drones on while time stands still. It fades when you stop and is back the moment time moves if the machine still has you. Watch for: the siren cutting in and out as you stop and go in Superhot while a machine has you. Check 34.85 fails on v34.84',
+  now:'v34.86: With Superhot on, a death no longer freezes until you press something: the death beat plays out and the card comes up on its own. Watch for: in Superhot the world now moves slowly under the death fade, as it does with Superhot off. Check 34.86 fails on v34.85',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
