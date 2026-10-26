@@ -2719,7 +2719,7 @@ window.__REGRESS=[
        // CONTROL ONE: doubling two panels that grow toward each other made them
        // overlap by 106px on my first attempt. Any touching pair fails.
        [['raiders','legend'],['raiders','cond'],['legend','cond'],
-        ['legend','body'],['cond','gear'],['raiders','body']].forEach(function(pr){
+        ['cond','gear'],['raiders','body']].concat((function(){ function vit(){ var v=[], ob=bar, op=hudPanel, d=(typeof DPRH==='number'&&DPRH>0)?DPRH:1; function q(x,y,w,h){ var t=ctx.getTransform(); return {x:(t.a*x+t.e)/d,y:(t.d*y+t.f)/d,w:w*t.a/d,h:h*t.d/d}; } bar=function(x,y,w,h){ v.push(q(x,y,w,h)); return ob.apply(this,arguments); }; hudPanel=function(x,y,w,h,a,pl){ var r=q(x,y,w,h); if(pl&&r.x<SW*0.03&&r.y>SH*0.75) v.push(r); return op.apply(this,arguments); }; try{ __loop(performance.now()+20*16.7); } finally { bar=ob; hudPanel=op; } return v.filter(function(r){ return r.x<SW*0.3&&r.y>SH*0.6; }); } var v=vit(), L=B.legend; if(!v.length) bad.push('no vitals were drawn at '+tag); else if(v.some(function(r){ return ov(L,{x:r.x,y:r.y,right:r.x+r.w,bottom:r.y+r.h}); })) bad.push('legend overlaps the vitals as drawn at '+tag); return []; })()).forEach(function(pr){   // retarget (cw-hudcorner, his note of 2026-10-25): the legend against the vitals as drawn; the vitals mouse box reaches over the empty corner where the list now stands on the belt chip row
          if(ov(B[pr[0]],B[pr[1]])) bad.push(pr[0]+' overlaps '+pr[1]+' at '+tag);
        });
        // CONTROL TWO: bigger must not mean partly off screen, which is the other
@@ -6708,7 +6708,7 @@ window.__REGRESS=[
      } }},
   {v:'34.79',what:'probe: the light pass carries the fingerprint probe note',
    run:function(){ return String(gfxLightPass).indexOf('fpprobe')>=0 ? null : 'no probe note'; }},
-  {v:'34.78',what:'the opened career controls list: every row at the 16px label size, key caps drawn, one footer line, clear of the feed, the vitals and the bot list; the folded chip uses the same HUD panel and label face as the standing tag (job 121)',
+  {v:'34.78',what:'the opened career controls list: every row at the 16px label size, key caps drawn, one footer line, clear of the feed, the vitals and the bot list; the folded chip is at least a standing tag high (it was the standing tag panel until cw-hudcorner; since his 10-25 note it is the belt caption strip on the caption row, which the cw-hudcorner check tests) (job 121)',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof careerPostBuild!=='function') return 'SKIP: no raid in this fixture';
      var bad=[], r0=P.runs, oSay=say, g=null, ft=ctx.fillText, sr=ctx.strokeRect, own=Object.prototype.hasOwnProperty.call(ctx,'fillText'), ownS=Object.prototype.hasOwnProperty.call(ctx,'strokeRect');
@@ -7181,7 +7181,7 @@ window.__REGRESS=[
   {v:'34.54',what:'career raid: the controls list starts folded; the folded line and the opened list stand mid-bottom left, clear of the feed and vitals (his rs-1)',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof careerPostBuild!=='function') return 'SKIP: no raid in this fixture';
-     var bad=[], r0=P.runs, oSay=say, g=null, lb, fb, hb, hh, i, others;
+     var bad=[], r0=P.runs, oSay=say, g=null, lb, fb, hb, hh, i, others, hb2; function vit(){ var v=[], ob=bar, op=hudPanel, d=(typeof DPRH==='number'&&DPRH>0)?DPRH:1; function q(x,y,w,h){ var t=ctx.getTransform(); return {x:(t.a*x+t.e)/d,y:(t.d*y+t.f)/d,w:w*t.a/d,h:h*t.d/d}; } bar=function(x,y,w,h){ v.push(q(x,y,w,h)); return ob.apply(this,arguments); }; hudPanel=function(x,y,w,h,a,pl){ var r=q(x,y,w,h); if(pl&&r.x<W*0.03&&r.y>H*0.75) v.push(r); return op.apply(this,arguments); }; try{ __frame(0.016); } finally { bar=ob; hudPanel=op; } return v.filter(function(r){ return r.x<W*0.3&&r.y>H*0.6; }); } function hitV(a,v){ return !!(a&&v&&v.some(function(b){ return hit(a,b); })); }   // retarget (cw-hudcorner, his note of 2026-10-25): the vitals are the bars and the posture tag as drawn; HUDBOX.body is their mouse box, wider than the bars and taller than the tag, over the empty corner where the chip now docks on the belt row
      function hit(a,b){ return a&&b&&a.w>0&&b.w>0&&a.x<b.x+b.w&&b.x<a.x+a.w&&a.y<b.y+b.h&&b.y<a.y+a.h; }
      function inLL(a,n){ if(!a) return n+' has no box'; if(a.x+a.w>W/2) return n+' is not in the left half: right edge '+Math.round(a.x+a.w); if(a.y<H/2) return n+' is not in the lower half: y '+Math.round(a.y); return null; }
      try{
@@ -7193,21 +7193,21 @@ window.__REGRESS=[
        if(g.legendOn!==0) bad.push('a career raid starts with the list open ('+g.legendOn+')');
        g.career=1; g.legendAutoDone=true;
        g.legendOn=0; for(i=0;i<12;i++) __frame();
-       hh=(typeof LEGHINT!=='undefined')?LEGHINT:null; fb=FEEDBOX; hb=HUDBOX.body;
+       hh=(typeof LEGHINT!=='undefined')?LEGHINT:null; fb=FEEDBOX; hb=vit(); if(!hb.length) bad.push('no vitals were drawn');
        if(!fb||!fb.on) return 'SKIP: no feed box this frame';
        if(inLL(hh,'the folded line')) bad.push(inLL(hh,'the folded line'));
        else {
          if(hit(hh,fb)) bad.push('the folded line overlaps the feed');
-         if(hit(hh,hb)) bad.push('the folded line overlaps the vitals');
+         if(hitV(hh,hb)) bad.push('the folded line overlaps the vitals (bars or posture tag as drawn)');
        }
        g.legendOn=1; for(i=0;i<12;i++) __frame();
        lb=HUDBOX.legend;
        if(inLL(lb,'the opened list')) bad.push(inLL(lb,'the opened list'));
        else {
          if(hit(lb,fb)) bad.push('the opened list overlaps the feed');
-         if(hit(lb,hb)) bad.push('the opened list overlaps the vitals');
+         hb2=vit(); if(!hb2.length) bad.push('no vitals were drawn with the list open'); if(hitV(lb,hb2)) bad.push('the opened list overlaps the vitals (bars or posture tag as drawn)');
          if(hh&&lb.y+lb.h>hh.y+hh.h+2) bad.push('the opened list does not end where the folded line ends');
-         if(hh&&Math.abs(lb.x-hh.x)>LH(14)) bad.push('the opened list and the folded line do not share a left edge: '+Math.round(lb.x)+' vs '+Math.round(hh.x));
+         if(hh&&(lb.x<hh.x-2||lb.x>hh.x+hh.w)) bad.push('the opened list does not start on the folded chip: '+Math.round(lb.x)+' vs '+Math.round(hh.x)+' to '+Math.round(hh.x+hh.w));   // retarget (cw-hudcorner, his note of 2026-10-25): the list grows up from the chip with its left edge on it, moved right only as far as the feed needs (was one left edge within LH(14))
        }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say=oSay; P.runs=r0; try{ if(G&&!G.over) __endRaid('abandon'); __topClear(); }catch(_c){} }
@@ -12099,7 +12099,7 @@ window.__REGRESS=[
          if(hit(lb,hb)) bad.push(t+'the controls list (x '+Math.round(lb.x)+' to '+Math.round(lb.x+lb.w)+', y '+Math.round(lb.y)+' to '+Math.round(lb.y+lb.h)+') covers the item-in-hand panel (x '+hb.x+' to '+(hb.x+hb.w)+', y '+hb.y+' to '+(hb.y+hb.h)+')');
          p.hand=null; g.legendOn=1; for(i=0;i<3;i++) __frame(0.016);
          lb=HUDBOX.legend;
-         if(lb&&HUDBOX.body&&Math.abs((lb.y+lb.h)-(HUDBOX.body.y-LH(8)))>LH(4)+2) bad.push(t+'with the item put away the list does not stand back on the vitals (bottom '+Math.round(lb.y+lb.h)+', vitals top '+Math.round(HUDBOX.body.y)+')');
+         var _lc=(typeof legChipSpot==='function')?legChipSpot():null, _ab=(_lc&&lb&&typeof legDock==='function')?legDock(_lc).b:null;   /* retarget (cw-hudcorner, his note of 2026-10-25): docked on the belt, the list rests where legDock puts it (the folded chip row, or over the use bar or the vitals it must clear), not on the vitals */ if(lb&&_ab!==null&&Math.abs((lb.y+lb.h)-_ab)>LH(4)+2) bad.push(t+'with the item put away the list does not stand back on its dock (bottom '+Math.round(lb.y+lb.h)+', dock '+Math.round(_ab)+')'); else if(lb&&_ab===null&&HUDBOX.body&&Math.abs((lb.y+lb.h)-(HUDBOX.body.y-LH(8)))>LH(4)+2) bad.push(t+'with the item put away the list does not stand back on the vitals (bottom '+Math.round(lb.y+lb.h)+', vitals top '+Math.round(HUDBOX.body.y)+')');
        }
      }
      try{
@@ -15205,7 +15205,7 @@ window.__REGRESS=[
        if(easyStartAsk()||ARCADE.easyAsk) return 'card shown outside the demo';
        return null;
      } finally { ARCADE.on=on0; ARCADE.solo=so0; ARCADE.easy=e0; ARCADE.easyAsk=a0; ARCADE.easyAsked=k0; } }},
-  {v:'32.14',what:'the f1 controls hint sits on a plate: a plate fill is drawn right before the words',
+  {v:'32.14',what:'the f1 controls hint sits on a plate: a plate fill (the HUD plate, or the belt caption strip it docks on since cw-hudcorner) is drawn right before the words',
    run:function(){
      if(typeof __frame!=='function') return 'SKIP: no frame helper';
      var PR=CanvasRenderingContext2D.prototype, of=PR.fillText, ofl=PR.fill, pn=(function(){ var c=document.createElement('canvas').getContext('2d'); c.fillStyle=HUDC.plate; return String(c.fillStyle); })(), g=null, seen=0, plated=0, lastFill=false;
@@ -15215,7 +15215,7 @@ window.__REGRESS=[
        g=__state(); if(!g||!g.player) return 'SKIP: no raid';
        g.legendOn=0;
        PR.fill=function(){ lastFill=(String(this.fillStyle)===pn); return ofl.apply(this,arguments); };
-       PR.fillText=function(s){ var t=String(s).toLowerCase(); if(/controls$/.test(t)&&/f1/.test(t)){ seen++; if(lastFill) plated++; } lastFill=false; return of.apply(this,arguments); };
+       PR.fillText=function(s){ var t=String(s).toLowerCase(); if(/controls$/.test(t)&&/f1/.test(t)){ seen++; if(lastFill) plated++; } lastFill=false; return of.apply(this,arguments); };   /* retarget (cw-hudcorner, his note of 2026-10-25): the belt caption strip is a plate too; it is a fillRect, so the two frames run here with fillRect watched and the hooks off after */ (function(){ var ofr=PR.fillRect, cs=(function(){ var c=document.createElement('canvas').getContext('2d'); c.fillStyle='rgba(17,19,21,.72)'; return String(c.fillStyle); })(); PR.fillRect=function(){ lastFill=(String(this.fillStyle)===cs||String(this.fillStyle)===pn); return ofr.apply(this,arguments); }; try{ __frame(); __frame(); } finally { PR.fillRect=ofr; PR.fillText=of; PR.fill=ofl; } })();
        __frame(); __frame();
        PR.fillText=of; PR.fill=ofl;
        if(!seen) return 'SKIP: no f1 controls hint drawn';
@@ -21264,14 +21264,14 @@ window.__REGRESS=[
      else if(wnShort(WHATSNEW[1]).slice(-3)==='...') bad.push('the new line is cut on the card');
      if(String(WHATSNEW[0]).indexOf('THIS IS AN'+' ALPHA')!==0) bad.push('the card no longer opens with the alpha line');
      return bad.length?bad.join('; '):null; }},
-  {v:'30.73',what:'the gun card is the one raid panel with a lime tab, and in the demo it is shorter than in career (critic 10-19, his Q56)',
+  {v:'30.73',what:'the gun card is drawn plain with no lime tab and no raid panel has one (the tab until cw-hudcorner, his 10-25 note: the lime stub was awkward), and in the demo it is shorter than in career (critic 10-19, his Q56)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)||typeof hudPanel!=='function') return 'SKIP: this fixture cannot deploy';
      var g=null, oP=hudPanel, rec=[], a0, car, dem;
-     function pass(){ rec=[]; hudPanel=function(x,y,w,h,a,plain){ rec.push({w:w,h:h,a:a,plain:plain}); return oP.apply(this,arguments); };
+     function pass(){ rec=[]; hudPanel=function(x,y,w,h,a,plain){ var m=ctx.getTransform(), d=(typeof DPRH==='number'&&DPRH>0)?DPRH:1; rec.push({w:w,h:h,a:a,plain:plain,r:(m.a*(x+w)+m.e)/d,b:(m.d*(y+h)+m.f)/d}); return oP.apply(this,arguments); };   // retarget (cw-hudcorner, his note of 2026-10-25): the screen right and bottom edge, to find the card where it stands
        try{ __frame(0.016); }finally{ hudPanel=oP; }
        return rec.slice(); }
-     function card(r){ var i, o=null; for(i=0;i<r.length;i++) if(!r[i].plain&&r[i].a===0.88) o=r[i]; return o; }   // v34.24: the gun card is the one tabbed panel, fill 0.88 like the rest (was 0.62)
+     function card(r){ var i, o=null; for(i=0;i<r.length;i++) if(r[i].a===0.88&&Math.abs(r[i].r-(W-8))<=6&&r[i].b>H*0.8&&(!o||r[i].b>o.b)) o=r[i]; return o; }   // v34.24: fill 0.88 like the rest (was 0.62); retarget (cw-hudcorner, his note of 2026-10-25): the lowest panel on the right edge, 8 px in
      try{
        __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:['gun_shotgun','gun_rifle'],safe:null,mapIx:0,seed:4242});
@@ -21281,7 +21281,7 @@ window.__REGRESS=[
        g.arcade=1; dem=pass();
        var cc=card(car), dc=card(dem), tabs, i;
        if(!cc||!dc) return 'the gun card panel is not drawn (career '+!!cc+', demo '+!!dc+')';
-       if(cc.plain||dc.plain) return 'the gun card lost its tab';
+       if(!cc.plain||!dc.plain) return 'the gun card still has the lime tab';   // retarget (cw-hudcorner, his note of 2026-10-25): the lime stub is gone; the loop below still finds any other tabbed panel
        if(!(dc.h<cc.h)) return 'the demo gun card is not shorter than the career one ('+dc.h+' vs '+cc.h+')';
        for(i=0;i<dem.length;i++){ if(dem[i]!==dc&&!dem[i].plain&&dem[i].a!==undefined&&dem[i].a<0.9) return 'a raid panel besides the gun card still has the lime tab (w '+Math.round(dem[i].w)+', h '+Math.round(dem[i].h)+')'; }
        return null;
@@ -59274,8 +59274,8 @@ window.__REGRESS=[
      function bright(){
        var c=ctx.canvas, k=c.width/W, R=HUDBOX.gear, x0, y0, w, h, d, n=0, i;
        if(!R) return -1;
-       w=Math.max(1,Math.round(R.w*0.26*k)); h=Math.max(1,Math.round(R.h*k));
-       x0=Math.min(Math.round((R.x+R.w*0.72)*k),c.width-w); y0=Math.min(Math.max(0,Math.round(R.y*k)),c.height-h);
+       w=Math.max(1,Math.round(R.w*k)); h=Math.max(1,Math.round(R.h*k));   // retarget (cw-hudcorner, his note of 2026-10-25): the card hugs its rows, so the right quarter of its box holds only the grey reserve; the whole box is read
+       x0=Math.min(Math.round(R.x*k),c.width-w); y0=Math.min(Math.max(0,Math.round(R.y*k)),c.height-h);
        d=ctx.getImageData(x0,y0,w,h).data;
        for(i=0;i<d.length;i+=4) if(d[i+3]>200&&d[i]+d[i+1]+d[i+2]>540) n++;
        return n;
@@ -101159,7 +101159,7 @@ window.__REGRESS=[
          for(var c=a+1;c<rects.length;c++){
            var B=rects[c];
            var ox=Math.min(A.x+A.w,B.x+B.w)-Math.max(A.x,B.x), oy=Math.min(A.y+A.h,B.y+B.h)-Math.max(A.y,B.y);
-           if(ox>2&&oy>2) bad.push(A.id+' overlaps '+B.id+' at '+W+'x'+H+' by '+Math.round(ox)+'x'+Math.round(oy));
+           if(ox>2&&oy>2&&!((A.id+'/'+B.id==='body/legend'||A.id+'/'+B.id==='legend/body')&&(function(L){ function vit(){ var v=[], ob=bar, op=hudPanel, d=(typeof DPRH==='number'&&DPRH>0)?DPRH:1; function q(x,y,w,h){ var t=ctx.getTransform(); return {x:(t.a*x+t.e)/d,y:(t.d*y+t.f)/d,w:w*t.a/d,h:h*t.d/d}; } bar=function(x,y,w,h){ v.push(q(x,y,w,h)); return ob.apply(this,arguments); }; hudPanel=function(x,y,w,h,a,pl){ var r=q(x,y,w,h); if(pl&&r.x<W*0.03&&r.y>H*0.75) v.push(r); return op.apply(this,arguments); }; try{ __frame(0.016); } finally { bar=ob; hudPanel=op; } return v.filter(function(r){ return r.x<W*0.3&&r.y>H*0.6; }); } var v=vit(); return v.length>0&&!v.some(function(r){ return L.x<r.x+r.w-2&&r.x<L.x+L.w-2&&L.y<r.y+r.h-2&&r.y<L.y+L.h-2; }); })(A.id==='legend'?A:B))) bad.push(A.id+' overlaps '+B.id+' at '+W+'x'+H+' by '+Math.round(ox)+'x'+Math.round(oy));   // retarget (cw-hudcorner, his note of 2026-10-25): the opened list stands on the belt chip row, over the empty corner of the vitals mouse box (wider than the bars, taller than the posture tag), so that pair counts only where the list covers the vitals as drawn
          }
        }
        // CONTROL: the gear box still holds its own text. A box shrunk past its
@@ -102346,7 +102346,7 @@ window.__REGRESS=[
      // health bar, and this build moves the drag OUT of the panel and on top of
      // that anchor. If the anchor broke, the fix traded one fault for a worse one.
      var body=__hudBox().body;
-     if(body&&Math.abs((b0.y+b0.h)-body.y)>26)
+     var _ld=(typeof legDock==='function'&&typeof legChipSpot==='function')?legDock(legChipSpot()):null; if(_ld) body={y:_ld.b};   /* retarget (cw-hudcorner, his note of 2026-10-25): docked on the belt, the list anchors where legDock puts it (the folded chip row, or over the use bar or the vitals it must clear), not on the vitals top */ if(body&&Math.abs((b0.y+b0.h)-body.y)>26)
        bad.push('with no drag the legend bottom sits at '+Math.round(b0.y+b0.h)+
                 ' against the vitals top at '+Math.round(body.y)+', so the anchor is broken');
      // THE FINDING. Measured on v9.82: a drag of 80 right and 150 up moved the
