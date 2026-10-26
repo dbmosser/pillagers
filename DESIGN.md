@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.84 - NO GUN LINE ON THE PRE-RAID PAGE
+
+Co-op hunt while he was away. His note of 2026-10-25 (played on an older build, still true on 34.83): the gun line on the raid prep screen does not make sense, he takes a bunch of guns into the raid, so why does it say gun = compact smg; get rid of that. The gun, gun 2 and own gun in stash chips are gone from the going up box (the pack rows still list every gun going up). The no armour warning stays exactly as it was. With armour packed the box is empty and takes no room.
+
+MEASURED. Check 34.84 passes, and fails on v34.83.
 ## v34.83 - AUTO RESOLUTION CHASES YOUR FRAME CAP
 
 Co-op hunt while he was away. His answer of 2026-10-25, right after the frame caps of v34.82: Yes picture quality should reduce to chase a higher cap, and Eg dynamic resolution. This reverses his 2.43 a. With a cap above 60, auto resolution now steps quality and sharpness down until the frames reach the cap, never past what the screen can show (a 240 cap on a 144 Hz screen aims at 144, a 120 cap on a 60 Hz screen keeps the old 60 rule). The game measures the screen rate from every browser frame. The 75 percent sharpness floor (his 2.44 b) still holds, and cap off still aims at 60.

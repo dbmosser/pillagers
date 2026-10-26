@@ -1,0 +1,100 @@
+{
+    "title":  "PILLAGERS DRAWN A THIRD THE SIZE",
+    "why":  "His note of 2026-10-25, played on an older copy: player character is still wayyy too big, needs to be 1/3 of the size he is right now. Every human figure (both players, the pillager bots, hires, the survivor, the peddler, downed and falling bodies, the Undercroft crowd) is drawn at a third of the v33.22 size, FIG_SCALE 1/3, drawing only: hit areas, walking, doors and the nav grid keep their old radius. FIG_UP now follows FIG_SCALE, so every plate and tag keeps the gap over the head it had on the size 1 figure. Things placed for the full size body follow it: the side mark, the world muzzle flash with the tracer start and the brass, the forge glow, the DEMO spawn shield, the power shield bubble, the waterline, the HUD plates over your head (cook, reload, seal, forge), the get-up bar, the peddler pack frame, the fall shadow and the ascent sink. The P1 and P2 seat ring and the red downed ring keep their full size so they still read. In the pixel look (its own size, PIX_FIGK) the aim dots no longer take FIG_SCALE, so they start at the pixel gun.",
+    "now":  "Every pillager, bot, hire and body is drawn a third of the old size (drawing only: hit areas, walking and doors keep their old size). Name plates, party tags, the reload bar, the shields and the muzzle flash follow the smaller body; the P1 and P2 seat rings and the red downed ring keep their full size so they still read. Watch for: the small body being hard to spot in a fight, shots landing a little wide of the drawing (the hit circle is now much bigger than the body), the crowbar reaching further than its swing looks, tracers starting a little above the gun, and faces, beards and eye colours in the Undercroft crowd too small to read.",
+    "edits":  [
+                  {
+                      "anchor":  "var FIG_SCALE=0.8, FIG_UP=4, /*",
+                      "replacement":  "var FIG_SCALE=1/3, FIG_UP=Math.round(45*FIG_SCALE)-32, /* v28.xx (cw-thirdsize), HIS NOTE (2026-10-25, played on an older copy): \"player character is still wayyy too big, needs to be 1/3 of the size he is right now\". Every human figure is drawn at a third of the size 1 figure of v33.22 to v34.80, drawing only: hit areas, walking, doors and the nav grid keep their old radius. FIG_SCALE is the one number to change; FIG_UP follows it (the lean head top is about 45*FIG_SCALE over the feet, so every plate keeps the gap over the head it had on the size 1 figure: FIG_UP 12 there, -17 at a third). */ /*"
+                  },
+                  {
+                      "anchor":  "function figOn(){ return !!(typeof wc!==\u0027undefined\u0027\u0026\u0026wc\u0026\u0026((typeof cv!==\u0027undefined\u0027\u0026\u0026wc.canvas===cv)||RIM.on===1)); }",
+                      "replacement":  "function figOn(){ return !!(typeof wc!==\u0027undefined\u0027\u0026\u0026wc\u0026\u0026((typeof cv!==\u0027undefined\u0027\u0026\u0026wc.canvas===cv)||RIM.on===1)); }\nfunction figK1(){ return (figOn()\u0026\u0026!pixOn())?FIG_SCALE:1; }   // v28.xx (cw-thirdsize): the drawn figure scale on the world canvas (1 on a preview canvas and in the pixel look, which keeps its own size)\nfunction figDrop(){ return pixOn()?0:12-FIG_UP; }   // v28.xx (cw-thirdsize): how far the head top came down from the size 1 figure (FIG_UP 12 there), in world units, for the HUD plates placed over that figure\nfunction figShK(sh){ var b=null; if(pixOn()) return [1,1]; try{ b=(typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026sh===G.player)?cosWorn(\u0027build\u0027):(sh\u0026\u0026sh.build); }catch(_b){ b=null; } return figKS(b); }   // v28.xx (cw-thirdsize): the drawn size of a shooter (FIG_SCALE times the build), for the flash point, the tracer start and the brass"
+                  },
+                  {
+                      "anchor":  "  colourCueGlyph(wc,st.team,x-18,y-29,.85,TEAMCOL[st.team]);\n}",
+                      "replacement":  "  var _cf=figK1(); colourCueGlyph(wc,st.team,x-(6+12*_cf),y-29*_cf,.85,TEAMCOL[st.team]);   // v28.xx (cw-thirdsize): beside the head of the smaller body (x-18, y-29 at size 1); the mark keeps its size so the shape still reads\n}"
+                  },
+                  {
+                      "anchor":  "function gunMuzD(sh,wep){\n  var D;\n  if(!sh||!wep||!G||!(sh===G.player||sh.kind===\u0027raider\u0027)) return 0;\n  D=GUNDEF[wep.id]||GUNDEF.rifle;\n  return (D.tip+(D.pist?2:0))*GUNK;\n}\nfunction gunMuzzleAt(sh,wep,a){\n  var L=gunMuzD(sh,wep), D, sg, by;\n  if(!(L\u003e0)) return null;\n  D=GUNDEF[wep.id]||GUNDEF.rifle; sg=(Math.cos(a)\u003c0)?-1:1; by=D.by*GUNK*sg;\n  return {x:sh.x+Math.cos(a)*L-Math.sin(a)*by, y:sh.y-20+Math.sin(a)*L+Math.cos(a)*by};\n}\nfunction gunPortOff(sh,wep,a){\n  var D, d;\n  if(!(gunMuzD(sh,wep)\u003e0)) return {x:0,y:0};\n  D=GUNDEF[wep.id]||GUNDEF.rifle; d=(D.port?D.port[0]:8)*GUNK;\n  return {x:Math.cos(a)*d, y:Math.sin(a)*d};\n}",
+                      "replacement":  "function gunMuzD0(sh,wep){\n  var D;\n  if(!sh||!wep||!G||!(sh===G.player||sh.kind===\u0027raider\u0027)) return 0;\n  D=GUNDEF[wep.id]||GUNDEF.rifle;\n  return (D.tip+(D.pist?2:0))*GUNK;\n}\n// v28.xx (cw-thirdsize), his note of 2026-10-25 (\"needs to be 1/3 of the size he is right now\"): the held gun is drawn with the figure, so the flash point, the start of\n// the tracer and the brass port are placed by the drawn size of the shooter (figShK, FIG_SCALE times the build, 1 in the pixel look) about the feet, the way drawAimMark\n// already placed its dots. Drawing only: the round still spawns 17 units out with the same speed, spread and range.\nfunction gunMuzD(sh,wep){ var L=gunMuzD0(sh,wep); return (L\u003e0)?L*figShK(sh)[0]:0; }\nfunction gunMuzzleAt(sh,wep,a){\n  var L=gunMuzD0(sh,wep), D, sg, by, k;\n  if(!(L\u003e0)) return null;\n  D=GUNDEF[wep.id]||GUNDEF.rifle; sg=(Math.cos(a)\u003c0)?-1:1; by=D.by*GUNK*sg; k=figShK(sh);\n  return {x:sh.x+(Math.cos(a)*L-Math.sin(a)*by)*k[0], y:sh.y+(-20+Math.sin(a)*L+Math.cos(a)*by)*k[1]};\n}\nfunction gunPortOff(sh,wep,a){\n  var D, d, k;\n  if(!(gunMuzD0(sh,wep)\u003e0)) return {x:0,y:0};\n  D=GUNDEF[wep.id]||GUNDEF.rifle; d=(D.port?D.port[0]:8)*GUNK; k=figShK(sh);\n  return {x:Math.cos(a)*d*k[0], y:Math.sin(a)*d*k[1]};\n}"
+                  },
+                  {
+                      "anchor":  "  hx=x+Math.cos(face)*12; hy=y-10+Math.sin(face)*4;\n  a=0.6+0.25*s; r=11+2*s;",
+                      "replacement":  "  var _gk=figK1(); hx=x+Math.cos(face)*12*_gk; hy=y+(Math.sin(face)*4-10)*_gk;   // v28.xx (cw-thirdsize): at the hands of the smaller body, sized to them\n  a=0.6+0.25*s; r=(11+2*s)*_gk;"
+                  },
+                  {
+                      "anchor":  "  var pu=0.5+0.5*Math.sin((G.t||0)*5), rx=21+pu*2.5, ry=rx*1.3, cy=y-18, tg, tw;",
+                      "replacement":  "  var pu=0.5+0.5*Math.sin((G.t||0)*5), _sk=figK1(), rx=(21+pu*2.5)*_sk, ry=rx*1.3, cy=y-18*_sk, tg, tw;   // v28.xx (cw-thirdsize): the spawn shield hugs the smaller body"
+                  },
+                  {
+                      "anchor":  "  var q, z, t, R=34, cy, gr, k, ang;",
+                      "replacement":  "  var q, z, t, R=34*figK1(), cy, gr, k, ang;   // v28.xx (cw-thirdsize): the bubble round the smaller body"
+                  },
+                  {
+                      "anchor":  "  q=ZOOM()||1; z=Math.max(1,hudRes()); t=+G.t||0; cy=g.y-14;",
+                      "replacement":  "  q=ZOOM()||1; z=Math.max(1,hudRes()); t=+G.t||0; cy=g.y-14*figK1();"
+                  },
+                  {
+                      "anchor":  "sc=w2s(p.x,0,p.y); R=34*q; cy=sc.y-14*q;",
+                      "replacement":  "sc=w2s(p.x,0,p.y); R=34*q*(pixOn()?1:FIG_SCALE); cy=sc.y-14*q*(pixOn()?1:FIG_SCALE); /* v28.xx (cw-thirdsize): your bubble round the smaller body */"
+                  },
+                  {
+                      "anchor":  "        wc.rect(p.x-40,p.y-90,80,90-WADE_DEPTH);",
+                      "replacement":  "        wc.rect(p.x-40,p.y-90,80,90-WADE_DEPTH*figK1());   // v28.xx (cw-thirdsize): the waterline at the waist of the smaller body"
+                  },
+                  {
+                      "anchor":  "        var wy=p.y-WADE_DEPTH, wob=Math.sin(G.t*3.1)*0.8;\n        wc.fillStyle=\u0027rgba(18,38,54,.55)\u0027;\n        wc.beginPath(); wc.ellipse(p.x,wy+wob,13,4.2,0,0,6.2832); wc.fill();\n        wc.strokeStyle=\u0027rgba(150,205,225,.5)\u0027; wc.lineWidth=1;\n        wc.beginPath(); wc.ellipse(p.x,wy+wob,13,4.2,0,0,6.2832); wc.stroke();\n        if(p.moving){\n          wc.strokeStyle=\u0027rgba(180,222,240,\u0027+(0.30+0.14*Math.sin(G.t*7)).toFixed(3)+\u0027)\u0027;\n          wc.beginPath(); wc.ellipse(p.x,wy+2+wob,20+2.5*Math.sin(G.t*5),6.5,0,0,6.2832); wc.stroke();",
+                      "replacement":  "        var _wk=figK1(), wy=p.y-WADE_DEPTH*_wk, wob=Math.sin(G.t*3.1)*0.8*_wk;   // v28.xx (cw-thirdsize): the waterline and its rings to the size of the smaller body\n        wc.fillStyle=\u0027rgba(18,38,54,.55)\u0027;\n        wc.beginPath(); wc.ellipse(p.x,wy+wob,13*_wk,4.2*_wk,0,0,6.2832); wc.fill();\n        wc.strokeStyle=\u0027rgba(150,205,225,.5)\u0027; wc.lineWidth=1;\n        wc.beginPath(); wc.ellipse(p.x,wy+wob,13*_wk,4.2*_wk,0,0,6.2832); wc.stroke();\n        if(p.moving){\n          wc.strokeStyle=\u0027rgba(180,222,240,\u0027+(0.30+0.14*Math.sin(G.t*7)).toFixed(3)+\u0027)\u0027;\n          wc.beginPath(); wc.ellipse(p.x,wy+2*_wk+wob,(20+2.5*Math.sin(G.t*5))*_wk,6.5*_wk,0,0,6.2832); wc.stroke();"
+                  },
+                  {
+                      "anchor":  "    var cs2=w2s(p.x,30,p.y);",
+                      "replacement":  "    var cs2=w2s(p.x,30-figDrop()*ZOOM(),p.y);   // v28.xx (cw-thirdsize): over the smaller head, the gap it had over the size 1 head"
+                  },
+                  {
+                      "anchor":  "    var _rb=w2s(p.x,34,p.y);",
+                      "replacement":  "    var _rb=w2s(p.x,34-figDrop()*ZOOM(),p.y);   // v28.xx (cw-thirdsize): over the smaller head, the gap it had over the size 1 head"
+                  },
+                  {
+                      "anchor":  "var _slp=w2s(p.x,66,p.y), _hsL",
+                      "replacement":  "var _slp=w2s(p.x,66-figDrop()*ZOOM(),p.y) /* v28.xx (cw-thirdsize): over the smaller head */, _hsL"
+                  },
+                  {
+                      "anchor":  "_fpp=w2s(p.x,66,p.y), _hsFG",
+                      "replacement":  "_fpp=w2s(p.x,66-figDrop()*ZOOM(),p.y) /* v28.xx (cw-thirdsize): over the smaller head */, _hsFG"
+                  },
+                  {
+                      "anchor":  "  bx=e.x-w/2; by=e.y-37;",
+                      "replacement":  "  bx=e.x-w/2; by=e.y-37+figDrop();   // v28.xx (cw-thirdsize): still between the head of the smaller body and his nameplate"
+                  },
+                  {
+                      "anchor":  "    var fx=e.x, fy=e.y-15;",
+                      "replacement":  "    var fx=e.x, fy=e.y-15, _pk=(figOn()\u0026\u0026!pixOn())?figKS():null;   // v28.xx (cw-thirdsize): his pack frame and what hangs off it ride the smaller body\n    if(_pk){ wc.save(); wc.translate(fx,fy); wc.scale(_pk[0],_pk[1]); wc.translate(-fx,-fy); }\n    try{"
+                  },
+                  {
+                      "anchor":  "  })();\n  drawOp(e.x,e.y-15,e.face,(e.step||0)*3,e.coat,0.3,0,\u0027none\u0027,0,",
+                      "replacement":  "    } finally { if(_pk) wc.restore(); }\n  })();\n  drawOp(e.x,e.y-15,e.face,(e.step||0)*3,e.coat,0.3,0,\u0027none\u0027,0,"
+                  },
+                  {
+                      "anchor":  "  wc.save(); wc.globalAlpha=wc.globalAlpha*u;\n  shadowE(x+1.5,y+2,12.5,5,0.5);",
+                      "replacement":  "  wc.save(); wc.globalAlpha=wc.globalAlpha*u;\n  var _fk=kb?[FIG_SCALE*kb[0],FIG_SCALE*kb[1]]:[1,1]; shadowE(x+1.5*_fk[0],y+2*_fk[1],12.5*_fk[0],5*_fk[1],0.5);   // v28.xx (cw-thirdsize): the shadow of the fall is the size of the body that falls"
+                  },
+                  {
+                      "anchor":  "  if(_SE\u003e=0) drawSeatRing(x,y,_SE);\n}",
+                      "replacement":  "  if(_SE\u003e=0){ var _rk=figK1(); if(_rk!==1){ wc.save(); wc.translate(x,y); wc.scale(1/_rk,1/_rk); wc.translate(-x,-y); } try{ drawSeatRing(x,y,_SE); } finally{ if(_rk!==1) wc.restore(); } }   // v28.xx (cw-thirdsize): the P1 and P2 ring and its number keep their full size under the smaller body, so the seats still read at the party\n}"
+                  },
+                  {
+                      "anchor":  "  wc.beginPath(); wc.ellipse(x,y+1,18,7,0,0,6.2832); wc.stroke();",
+                      "replacement":  "  var _rk=figK1(); wc.lineWidth=2/_rk; wc.beginPath(); wc.ellipse(x,y+1,18/_rk,7/_rk,0,0,6.2832); wc.stroke();   // v28.xx (cw-thirdsize): the red downed ring keeps its full size round the smaller body, so a mate still finds him"
+                  },
+                  {
+                      "anchor":  "wc.clip(); wc.translate(0,s);\n}",
+                      "replacement":  "wc.clip(); wc.translate(0,s*figK1());   // v28.xx (cw-thirdsize): the smaller body sinks by its own size, so it rises over the whole ascent\n}"
+                  },
+                  {
+                      "anchor":  "      fs=(typeof FIG_SCALE===\u0027number\u0027\u0026\u0026bld!==null)?FIG_SCALE:1,",
+                      "replacement":  "      fs=(typeof FIG_SCALE===\u0027number\u0027\u0026\u0026bld!==null\u0026\u0026!pixOn())?FIG_SCALE:1,   /* v28.xx (cw-thirdsize), his note 2026-10-25 (\"needs to be 1/3 of the size he is right now\"): the pixel body keeps its own size, so its aim dots take no FIG_SCALE */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027cw-thirdsize, his note of 2026-10-25 (\"player character is still wayyy too big, needs to be 1/3 of the size he is right now\"): every human figure is drawn a third of its size 1 art times its build (measured on the drawn pixels, lean and broad), the pillager plate rides just over the smaller head, the world muzzle flash sits on the drawn gun tip, the side mark sits beside the body, and the hit circle keeps its size\u0027,\n   run:function(){\n     if(typeof drawOp!==\u0027function\u0027||typeof drawOp0!==\u0027function\u0027||typeof gunMuzzleAt!==\u0027function\u0027||typeof worldSideCue!==\u0027function\u0027||typeof colourCueGlyph!==\u0027function\u0027||typeof spriteTop!==\u0027function\u0027) return \u0027SKIP: no figure painter here\u0027;\n     if(typeof __deploy!==\u0027function\u0027||typeof __runPrep!==\u0027function\u0027) return \u0027SKIP: no raid helpers\u0027;\n     var bad=[], g, K, X0, Y0, keepPix=CFG.xfPix, keepGlyph=colourCueGlyph, cue=null, b1, b3, B, m, i, st;\n     function box(fn){\n       var d, W2, H2, x0=1e9, y0=1e9, x1=-1, y1=-1, x, y;\n       wc.save();\n       try{ wc.setTransform(1,0,0,1,0,0); wc.clearRect(0,0,cv.width,cv.height); wc.setTransform(K,0,0,K,X0-100*K,Y0-100*K); fn(); } finally { wc.restore(); }\n       W2=cv.width; H2=cv.height; d=wc.getImageData(0,0,W2,H2).data;\n       for(y=0;y\u003cH2;y++) for(x=0;x\u003cW2;x++) if(d[(y*W2+x)*4+3]\u003e40){ if(x\u003cx0)x0=x; if(x\u003ex1)x1=x; if(y\u003cy0)y0=y; if(y\u003ey1)y1=y; }\n       return x1\u003c0?null:{w:(x1-x0+1)/K, h:(y1-y0+1)/K, top:(Y0-y0)/K, right:(x1+1-X0)/K};\n     }\n     function mk(b){ return {hero:0,build:b,moving:false,sprint:false,ads:false,hurt:0,rl:0,bulk:0,own:{wep:{id:\u0027rifle\u0027}}}; }\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player) return \u0027SKIP: no raid\u0027;\n       if(!wc||wc.canvas!==cv) return \u0027SKIP: the world canvas is not up\u0027;\n       CFG.xfPix=0; keys={};\n       K=(cv.height\u003e=500)?4:2; X0=Math.round(cv.width/2); Y0=Math.round(cv.height*0.8);\n       B={lean:[0.92,1.08],broad:[1.1,0.96]};\n       for(i in B){\n         st=mk(i);\n         b1=box(function(){ drawOp0(100,100,0,0,\u0027#242832\u0027,0,0,\u0027\u0027,0,st); });\n         b3=box(function(){ drawOp(100,100,0,0,\u0027#242832\u0027,0,0,\u0027\u0027,0,st); });\n         if(!b1||!b3){ bad.push(\u0027the \u0027+i+\u0027 figure drew nothing\u0027); continue; }\n         if(Math.abs(b3.h/b1.h-B[i][1]/3)\u003e0.02) bad.push(\u0027the \u0027+i+\u0027 figure is drawn \u0027+(b3.h/b1.h).toFixed(3)+\u0027 of its size 1 height, not a third times its build (\u0027+(B[i][1]/3).toFixed(3)+\u0027)\u0027);\n         if(Math.abs(b3.w/b1.w-B[i][0]/3)\u003e0.02) bad.push(\u0027the \u0027+i+\u0027 figure is drawn \u0027+(b3.w/b1.w).toFixed(3)+\u0027 of its size 1 width, not a third times its build (\u0027+(B[i][0]/3).toFixed(3)+\u0027)\u0027);\n         if(i===\u0027lean\u0027){\n           m=spriteTop({kind:\u0027raider\u0027,r:11})-b3.top;\n           if(!(m\u003e=2\u0026\u0026m\u003c=12)) bad.push(\u0027the pillager plate sits \u0027+m.toFixed(1)+\u0027 over the drawn head (wanted 2 to 12)\u0027);\n           m=gunMuzzleAt({kind:\u0027raider\u0027,x:100,y:100,build:\u0027lean\u0027},{id:\u0027rifle\u0027},0);\n           if(!m||Math.abs((m.x-100)-b3.right)\u003e3) bad.push(\u0027the muzzle flash point is \u0027+(m?(m.x-100).toFixed(1):\u0027none\u0027)+\u0027 out, the drawn gun ends \u0027+b3.right.toFixed(1)+\u0027 out\u0027);\n           colourCueGlyph=function(c,kind,x,y){ cue={x:x,y:y}; };\n           try{ worldSideCue(100,100,{team:\u0027foe\u0027,build:\u0027lean\u0027,own:{hp:50}}); } finally { colourCueGlyph=keepGlyph; }\n           if(!cue) bad.push(\u0027no side mark was drawn for a hostile pillager\u0027);\n           else if(!(100-cue.y\u003e=0\u0026\u0026100-cue.y\u003c=b3.top+2\u0026\u0026100-cue.x\u003e=4\u0026\u0026100-cue.x\u003c=16)) bad.push(\u0027the side mark sits \u0027+(100-cue.x).toFixed(1)+\u0027 left and \u0027+(100-cue.y).toFixed(1)+\u0027 up of the feet, not beside a body \u0027+b3.top.toFixed(1)+\u0027 tall\u0027);\n         }\n       }\n       if(g.player.r!==11) bad.push(\u0027control: the hit circle moved to \u0027+g.player.r+\u0027 (drawing only)\u0027);\n     }catch(err){ bad.push(\u0027threw: \u0027+(err\u0026\u0026err.message||err)); }\n     finally{ colourCueGlyph=keepGlyph; CFG.xfPix=keepPix; try{ if(__state()\u0026\u0026!__state().over) __endRaid(\u0027abandon\u0027); }catch(_e){} __topClear(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

@@ -1,0 +1,7 @@
+v34.84: no gun line on the pre-raid page
+
+The pre-raid page no longer says gun = something. The no armour warning still shows above ascend when you pack no armour. Watch for: no empty strip above the ascend button when you do pack armour.
+
+Check 34.84. Fails on v34.83.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
