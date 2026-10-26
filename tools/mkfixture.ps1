@@ -14070,7 +14070,7 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ shut(); }catch(_s){} try{ if(snap) __applyLoaded(snap); }catch(_a){} try{ __cleanProfile(); }catch(_c){} __topClear(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'32.51',what:'the pre-raid page fixes from the critic: pack rows are 46 px with 36 px steppers, one gun chip, a quiet no armour row with no amber fill, and no saves as you go line',
+  {v:'32.51',what:'the pre-raid page fixes from the critic: pack rows are 46 px with 36 px steppers, no gun chip (one until cw-nogunline, his 10-25 note), a quiet no armour row with no amber fill, and no saves as you go line',
    run:function(){
      if(!(window.__hubEnter&&window.__P&&window.__applyLoaded)||typeof renderSector!=='function') return 'SKIP: no pre-raid page';
      var bad=[], snap=null, q, sm=document.getElementById('sectormodal'), row, wn, st, h;
@@ -14085,7 +14085,7 @@ window.__REGRESS=[
        if(parseFloat(getComputedStyle(row).height)<45) bad.push('a pack row is '+getComputedStyle(row).height+' high, not 46');
        if(parseFloat(getComputedStyle(st).height)<35) bad.push('a stepper is '+getComputedStyle(st).height+' high, not 36');
        if(!/rgba\(0, 0, 0, 0\)|transparent/.test(getComputedStyle(wn).backgroundColor)) bad.push('the no armour row still has a fill '+getComputedStyle(wn).backgroundColor);
-       if(sm.querySelectorAll('#sectorkit .gc').length!==1) bad.push('the going up line has '+sm.querySelectorAll('#sectorkit .gc').length+' chips, not one');
+       if(sm.querySelectorAll('#sectorkit .gc').length!==0) bad.push('the going up line has '+sm.querySelectorAll('#sectorkit .gc').length+' gun chips, not none (cw-nogunline, his 10-25 note: get rid of the gun line)');
        h=document.getElementById('srhints'); if(h&&/saves as you go/i.test(h.textContent)) bad.push('saves as you go is still on the page');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ shut(); }catch(_s){} try{ if(snap) __applyLoaded(snap); }catch(_a){} try{ __cleanProfile(); }catch(_c){} __topClear(); }
@@ -81066,7 +81066,7 @@ window.__REGRESS=[
      if(kinds.length<3) return 'SKIP: 600 pillager looks drew only '+kinds.length+' hats, so the pick is not varied here';
      if(worn) bad.push(worn+' of 600 pillagers wore a hat ruled his alone ('+his.filter(function(h){ return seen[h]; }).join(', ')+')');
      return bad.length?bad.join('; '):null; }},
-  {v:'14.67',what:'the sector page names his own gun 2: with gun 1 empty and his own gun in gun 2 the going up line names that gun as gun 2, as it names a gun in gun 1 (ascent audit finding 3)',
+  {v:'14.67',what:'the sector page names no gun in gun 1 or gun 2 (retargeted by cw-nogunline, his 10-25 note: get rid of the gun line; until then it named his own gun 2, ascent audit finding 3)',
    run:function(){
      if(typeof syncSectorKit!=='function'||typeof WEAPONS==='undefined') return 'SKIP: no sector kit line in this build';
      var el=document.getElementById('sectorkit');
@@ -81080,12 +81080,12 @@ window.__REGRESS=[
        // CONTROL: his gun in gun 1 is named.
        prof.weapons=[gk]; prof.equipped=gk; prof.equippedSec=null;
        syncSectorKit();
-       if(String(el.textContent).indexOf(nm)<0) return 'SKIP: the sector page did not name a gun in gun 1 here ("'+String(el.textContent).slice(0,60)+'")';
+       if(String(el.textContent).indexOf(nm)>=0) bad.push('with his '+nm+' in gun 1 the sector page still names it ("'+String(el.textContent).slice(0,60)+'")');
        // THE FIX: gun 1 empty, his gun in gun 2.
        prof.equipped='fists'; prof.equippedSec=gk;
        syncSectorKit();
        var tx=String(el.textContent);
-       if(tx.indexOf(nm)<0||tx.indexOf('gun 2')<0) bad.push('with gun 1 empty and his '+nm+' in gun 2, the sector page said "'+tx.slice(0,80)+'" and never named the gun a death can lose');
+       if(tx.indexOf(nm)>=0||tx.indexOf('gun 2')>=0) bad.push('with gun 1 empty and his '+nm+' in gun 2 the sector page still names it ("'+tx.slice(0,80)+'")'); else if(!bad.length&&!/no armour equipped/i.test(tx)) return 'SKIP: the going up box drew no armour warning here, so an emptied box cannot be told from a fixed one';
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ __topClear(); __cleanProfile(); }catch(_c){} }
      return bad.length?bad.join('; '):null; }},
@@ -86017,7 +86017,7 @@ window.__REGRESS=[
        try{ __topClear(); }catch(_c){}
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'13.31',what:'the sector page the lift opens tells a player with nothing equipped that he has a gun of his own in his stash and how to take it, Equip as your gun, and only when his stash holds a gun (the pack guns wait there since his ruling)',
+  {v:'13.31',what:'the sector page the lift opens shows no own gun in stash or equip as your gun line, with or without a gun in the stash and with or without a gun equipped (retargeted by cw-nogunline, his 10-25 note: get rid of the gun line; until then it told a player with nothing equipped that his own gun waits in the stash)',
    run:function(){
      if(typeof renderSector!=='function') return 'SKIP: this fixture cannot draw the sector page';
      var K=document.getElementById('sectorkit'); if(!K) return 'SKIP: this build has no sector kit box';
@@ -86032,8 +86032,8 @@ window.__REGRESS=[
        P.freeKit=0; P.kitPick='mine'; P.equipped='fists'; P.equippedSec='none'; P.weapons=['pistol']; P.kit=[]; P.stash=['gun_smg','bandage'];
        var a=boxText();
        if(!a) return 'SKIP: the sector page drew an empty kit box';
-       if(!needle.test(a))
-         bad.push('a player with nothing equipped and a gun of his own in his stash is told only that he goes up with an issued gun, on the last screen before the lift ['+a.slice(0,140)+']');
+       if(needle.test(a))
+         bad.push('a player with nothing equipped and a gun in his stash is still shown an own gun in stash line on the last screen before the lift ['+a.slice(0,140)+']');
 
        // TWO: nothing equipped and no gun in the stash either.
        P.stash=['bandage'];
@@ -88992,7 +88992,7 @@ window.__REGRESS=[
        try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'12.75',what:'the last box before the lift says what actually happens: with nothing equipped it does not promise a sidearm, because the deploy issues a primary and leaves the second slot empty, and it does not list the rig on the line above the warning that he ascends with no armour on, while a character who has a gun equipped still sees that gun named (2026-09-08 first-hour audit)',
+  {v:'12.75',what:'the last box before the lift says what actually happens: with nothing equipped it does not promise a sidearm, because the deploy issues a primary and leaves the second slot empty, and it does not list the rig on the line above the warning that he ascends with no armour on, while a character who has a gun equipped sees no gun line either and still sees the armour warning (the gun line went with cw-nogunline, his 10-25 note) (2026-09-08 first-hour audit)',
    run:function(){
      if(!window.__P) return 'SKIP: this fixture cannot read the profile';
      if(typeof syncSectorKit!=='function') return 'SKIP: this build has no sector kit box to render';
@@ -89017,7 +89017,7 @@ window.__REGRESS=[
        try{ var RG=myRig(); rigName=(RG&&RG.name)||''; }catch(_r){ rigName=''; }
        if(rigName&&head.indexOf(rigName)>=0)
          bad.push('the box says he is going up with '+rigName+' on the line directly above the amber warning that he ascends with no armour on, and that rig is the same constant for everybody, so the two halves of one box contradict each other on every ascent');
-       // CONTROL: a character who HAS a gun must still be told which one, or
+       // CONTROL (cw-nogunline, his 10-25 note): a character who HAS a gun is told no gun, and the box still carries the armour warning, or
        // this check would pass on a box that had simply been emptied.
        var gid=null, k;
        for(k in WEAPONS){ if(WEAPONS[k]&&WEAPONS[k].name&&k!=='fists'&&WEAPONS[k].mag){ gid=k; break; } }
@@ -89025,8 +89025,8 @@ window.__REGRESS=[
          P2.equipped=gid; if((P2.weapons||[]).indexOf(gid)<0) P2.weapons=(P2.weapons||[]).concat([gid]);
          syncSectorKit();
          var html2=String(el.innerHTML||'');
-         if(html2.indexOf(WEAPONS[gid].name)<0)
-           bad.push('control: a character with '+WEAPONS[gid].name+' in his hands is no longer told so by the box ['+html2.split('<div')[0]+']');
+         if(html2.indexOf(WEAPONS[gid].name)>=0||html2.toLowerCase().indexOf('no armour')<0)
+           bad.push('control: with '+WEAPONS[gid].name+' in his hands the box names a gun or lost the armour warning ['+html2.slice(0,160)+']');
        }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
