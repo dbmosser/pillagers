@@ -3773,3 +3773,11 @@
 2026-10-26 02:25:30 raid 15 demo2p raidSeed=1495816825 map=0 god=1 sec=215 end=poll problems=1 newUnique=0 totalUnique=8 totalProblems=12 events=3139 score=0 ents=51 travelPx=9815 fires=95 menuPct=18 heapMB=68 p2=link_2s_join_5s_pad_fwd gfx=8146/19.75/30.25/766/1 gfx2=9267/10.25/20.25/436/1 work=8015/7.75/24.25/38.25 work2=9281/4.75/19.75/32.25 build=34.85
 2026-10-26 02:25:30 FUZZ END raids=0 problems=0 unique=0 reason=ERROR: Exception calling "SendAsync" with "4" argument(s): "The WebSocket is not connected." minutes=1.5
 2026-10-26 02:28:51 raid 16 career raidSeed=1144955477 map=0 god=0 sec=195 end=ended problems=0 newUnique=0 totalUnique=8 totalProblems=12 events=6086 score=0 ents=55 travelPx=17325 fires=35 menuPct=22 heapMB=66 p2= gfx=19415/10.25/10.25/8/1 work=19413/3.75/5.25/6.75 build=34.85
+2026-10-26 02:30:33 raid 17 demo2p raidSeed=414867138 map=0 god=0 sec=96 end=poll problems=1 newUnique=0 totalUnique=8 totalProblems=13 events=398 score=0 ents=50 travelPx=2906 fires=14 menuPct=18 heapMB=66 p2=link_3s_join_5s_pad_own gfx=185/10.25/20.25/1/1 gfx2=17/29.75/100/12/1 work=35/3.75/5.75/7.25 work2=18/26.25/94.75/94.75 build=34.85
+2026-10-26 02:30:33 FUZZ START seed=1481920253 minutes=60 raidsec=300 port=9331 srv=8806 build=34.85 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
+2026-10-26 02:32:29 FUZZ ERROR Unable to connect to the remote server at 220
+2026-10-26 02:32:29 FUZZ END raids=17 problems=13 unique=8 reason=ERROR: Unable to connect to the remote server minutes=60
+2026-10-26 02:36:02 raid 1 demo2p raidSeed=1080200290 map=0 god=0 sec=318 end=hang problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=5582 score=0 ents=51 travelPx=17166 fires=122 menuPct=10 heapMB=64 p2=link_6s_join_9s_pad_own gfx=18911/10.25/20.25/645/1 gfx2=18816/10.25/20.25/582/1 work=18784/6.75/17.75/28.25 work2=18827/6.75/16.75/27.25 build=34.85
+2026-10-26 02:36:12 FUZZ START seed=886576679 minutes=60 raidsec=300 port=9332 srv=8806 build=34.85 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
+2026-10-26 02:37:47 FUZZ ERROR Unable to connect to the remote server at 220
+2026-10-26 02:37:47 FUZZ END raids=1 problems=1 unique=1 reason=ERROR: Unable to connect to the remote server minutes=8.7
