@@ -4580,3 +4580,10 @@
 2026-10-26 22:57:57 raid 13 demo2p raidSeed=80553818 map=0 god=1 sec=123 end=poll problems=1 newUnique=0 totalUnique=4 totalProblems=8 events=299 score=0 ents=52 travelPx=2291 fires=12 menuPct=0 heapMB=72 p2=link_4s_join_21s_pad_own gfx=2958/19.75/29.75/239/0.75 gfx2=2701/19.75/29.75/259/1 work=1854/14.25/24.25/33.75 work2=2710/14.25/23.25/33.75 build=34.90
 2026-10-26 22:59:41 FUZZ ERROR Unable to connect to the remote server at 220
 2026-10-26 22:59:42 FUZZ END raids=13 problems=8 unique=4 reason=ERROR: Unable to connect to the remote server minutes=42.2
+2026-10-26 23:03:08 FUZZ START seed=1167848973 minutes=60 raidsec=300 port=9332 srv=8806 build=34.92 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
+2026-10-26 23:04:38 raid 6 demo2p raidSeed=113169329 map=0 god=0 sec=379 end=noend problems=2 newUnique=1 totalUnique=4 totalProblems=7 events=6894 score=0 ents=53 travelPx=20552 fires=79 menuPct=18 heapMB=68 p2=link_5s_join_61s_pad_fwd_DEAD gfx=6182/10.25/10.25/66/1 gfx2=25350/10.25/20.25/686/1 work=34264/4.75/12.25/34.75 work2=25354/5.25/16.25/39.75 build=34.90
+2026-10-26 23:05:50 raid 7 demo2p raidSeed=1596045557 map=0 god=1 sec=51 end=nostart problems=1 newUnique=1 totalUnique=5 totalProblems=8 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=34.90
+2026-10-26 23:07:02 raid 1 demo2p raidSeed=797198244 map=0 god=0 sec=209 end=poll problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=239 score=0 ents=45 travelPx=851 fires=3 menuPct=35 heapMB=64 p2=link_14s_join_18s_pad_own gfx=765/10.25/20.25/32/1 gfx2=844/10.25/20.25/20/1 work=672/6.25/14.75/29.75 work2=882/4.25/10.25/29.75 build=34.92
+2026-10-26 23:07:03 raid 8 career raidSeed=540681726 map=0 god=1 sec=66 end=ended problems=0 newUnique=0 totalUnique=5 totalProblems=8 events=18 score=0 ents=46 travelPx=0 fires=0 menuPct=0 heapMB=49 p2= gfx=4467/10.25/20.25/173/1 work=4145/6.25/19.75/32.75 build=34.90
+2026-10-26 23:08:46 FUZZ ERROR Unable to connect to the remote server at 220
+2026-10-26 23:08:46 FUZZ END raids=1 problems=1 unique=1 reason=ERROR: Unable to connect to the remote server minutes=6.8
