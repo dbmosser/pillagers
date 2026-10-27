@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.05 - FULLSCREEN GATE WARNING LINE READABLE
+
+Co-op hunt while he was away. The picture check of v35.04 measured the may cause glitches line on the fullscreen gate at 4.33 to 1, under the 4.5 floor. It moves to the readable grey the other gate lines use.
+
+MEASURED. Check 35.05 passes, and fails on v35.04.
 ## v35.04 - FULLSCREEN GATE SCALES LIKE THE MENUS
 
 Co-op hunt while he was away. The 4K pictures of v35.02 showed the fullscreen gate at half the size of the pause menu: it sits outside the windows the menu screen factor reaches. It now takes the same factor, and follows a resize while it is up.

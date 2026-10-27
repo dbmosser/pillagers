@@ -1,0 +1,5 @@
+## v35.05 - FULLSCREEN GATE WARNING LINE READABLE
+
+Co-op hunt while he was away. The picture check of v35.04 measured the may cause glitches line on the fullscreen gate at 4.33 to 1, under the 4.5 floor. It moves to the readable grey the other gate lines use.
+
+MEASURED. Check 35.05 passes, and fails on v35.04.
