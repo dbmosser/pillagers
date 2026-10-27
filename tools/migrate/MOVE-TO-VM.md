@@ -526,6 +526,8 @@ Why: if anything about the VM or the relay is in doubt on Fri 10/30, the party m
 
 When: Fri 10/30 afternoon (his 10-24 answer "Friday"; it was after a Thu 10/29 lock), once Claude in the VM has pushed the newest build that passed a full test run and told you the tag or commit. A rehearsal a few days earlier is a good habit: prepare, start, play, stop.
 
+Since 10-27 (his "I want the main PC to always have the latest build!"): the main PC's idle runner (`tools/spare/spare-runner.ps1`, JUL26 only) runs `-Prepare -Force` on this copy by itself about 5 minutes after each new GitHub master, whether he is at the PC or away. It never runs `-Start` or `-Stop` and never looks at 8802; he reloads the page to play the new build. The `party=` field of `spare/JUL26/status.txt` on the spare-results branch shows the version it holds. For the Friday copy pinned to a tested build, run `-Prepare -Ref` by hand as above; the runner moves it back to master at the next ship, so hold ships until the party ends if a pin must stay.
+
 ```powershell
 powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\migrate\party-host-copy.ps1" -Status
 powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\migrate\party-host-copy.ps1" -Prepare

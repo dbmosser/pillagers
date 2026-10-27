@@ -549,6 +549,46 @@ function Update-Game(){
   }
   return $true
 }
+# 10-27 his "I want the main PC to always have the latest build!": in idle mode, about every 5 minutes, whether he is at the PC or away,
+# the party copy his 8802 server plays (C:\claudecode\pillagers-party) is brought to GitHub master when master moved. Only -Prepare
+# (git fetch and reset in that copy, stable.html copied); never -Start or -Stop, never a look at 8802. He reloads the page to play it.
+function PartyVer([string]$d){ try{ $m=[regex]::Match([IO.File]::ReadAllText($d+'\dark_raiders.html'),"var VER='([0-9]+\.[0-9]+)';"); if($m.Success){ return $m.Groups[1].Value } }catch{}; return '?' }
+$script:partyT=0; $script:partyP=$null; $script:partyS=0; $script:partyW=''
+function Refresh-Party(){
+  if(-not $Idle){ return }
+  try{
+    $PD='C:\claudecode\pillagers-party'
+    if($script:partyP){   # a refresh started earlier: look at it, never wait for it
+      if(-not $script:partyP.HasExited){
+        if(((Epoch)-$script:partyS) -lt 300){ return }
+        & taskkill.exe /T /F /PID $script:partyP.Id 2>&1 | Out-Null; $script:partyP=$null; $script:partyT=(Epoch)+1500
+        Say 'PROBLEM: the party copy update took over 5 minutes and was stopped'; return
+      }
+      $rc=$script:partyP.ExitCode; $script:partyP=$null
+      $now=G -C $PD rev-parse HEAD; $ok=($rc -eq 0 -and $script:gx -eq 0 -and $now.Length -ge 8); $ver=PartyVer $PD
+      if($ok){
+        PutS 'party_head' ($now.Substring(0,8)); PutS 'party_ver' $ver
+        Say ('party copy now at '+$now.Substring(0,8)+' (v'+$ver+'): he reloads the page to play it')
+        if($now -ne $script:partyW){ $script:partyT=(Epoch)+1500; Say ('party copy is not at the GitHub master it was sent to ('+$script:partyW.Substring(0,8)+'); next try in 30 minutes') }
+      } else { $script:partyT=(Epoch)+1500; Say ('PROBLEM: the party copy did not update (code '+$rc+'), next try in 30 minutes: '+(Short ((Get-Content -LiteralPath ($W+'\party-refresh.out') -Tail 3 -ErrorAction SilentlyContinue) -join ' '))) }
+      return
+    }
+    if(-not (Test-Path -LiteralPath ($PD+'\.git'))){ if(-not (GetS 'party_none')){ PutS 'party_none' '1'; Say 'no party copy on this PC: nothing to keep current' }; return }
+    if(((Epoch)-$script:partyT) -lt 300){ return }
+    $script:partyT=Epoch
+    if((Running 'party-host-copy\.ps1') -gt 0){ return }
+    $ls=G -C $R ls-remote origin refs/heads/master
+    $m=[regex]::Match($ls,'(?m)^([0-9a-f]{40})\s'); if($script:gx -ne 0 -or -not $m.Success){ return }
+    $want=$m.Groups[1].Value; $have=G -C $PD rev-parse HEAD
+    if($script:gx -ne 0 -or $have.Length -lt 8){ return }
+    if($want -eq $have){ if((GetS 'party_head') -ne $have.Substring(0,8)){ PutS 'party_head' $have.Substring(0,8); PutS 'party_ver' (PartyVer $PD) }; return }
+    $S=$T+'\migrate\party-host-copy.ps1'; if(-not (Test-Path -LiteralPath $S)){ return }
+    $p=Start-Process powershell.exe -NoNewWindow -PassThru -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-File',('"'+$S+'"'),'-Prepare','-Force') -RedirectStandardOutput ($W+'\party-refresh.out') -RedirectStandardError ($W+'\party-refresh.err')
+    [void]$p.Handle   # PS 5.1: hold the handle so ExitCode is filled in later
+    $script:partyP=$p; $script:partyS=Epoch; $script:partyW=$want
+    Say ('GitHub master is at '+$want.Substring(0,8)+': updating the party copy')
+  } catch { Say ('PROBLEM: party copy check failed: '+(Short $_.Exception.Message)) }
+}
 
 function Build-Fixture(){
   $t0=Get-Date
@@ -648,7 +688,7 @@ function Write-Status([string]$corpus,[int]$robots){
   $L=@(('host='+$HostN),('seen='+(Get-Date).ToString('yyyy-MM-dd HH:mm')),('epoch='+(Epoch)),('game='+(G -C $R rev-parse --short=8 HEAD)+' v'+(GameVer)),
     ('test_run='+$corpus),('robots='+$robots),('ram_free_gb='+$free),('push_ok='+(GetS 'push_ok')),('runner='+$SelfHash.Substring(0,8)),('mode='+$(if($Idle){ 'idle' }else{ 'full' })))
   # SPARE-PRESENCE-PAUSE: on the spare PC, when its pause began (epoch), for whoever reads the status; the VM goes by test_run=paused alone
-  if($Idle){ $L+=('spare_pc='+(SparePC)) } else {
+  if($Idle){ $L+=('spare_pc='+(SparePC)); $L+=('party='+(GetS 'party_ver')+' '+(GetS 'party_head')) } else {
     if($corpus -like 'paused*' -and (GetS 'pause_t')){ $L+=('paused_since='+(GetS 'pause_t')) }
     if($script:noIn){ $L+='presence=off' }   # the presence checks did not load: it tests without pausing for anyone (see runner.log)
   }
@@ -710,10 +750,17 @@ while($true){
     if($away -lt $na -or $fg -lt $ng){
       $pw=$(if($away -lt 900){ 'paused: he is using the PC' }elseif($away -lt $na){ 'paused: the VM takes its memory first' }elseif($vmn){ 'paused: the VM has the memory at night' }else{ 'paused: under 6 GB free' })
       if($script:working){ Stop-Work $pw }
+      Refresh-Party
       $pt=[long]('0'+(GetS 'pub_t'))
       if((GetS 'pause_why') -ne $pw -or ((Epoch)-$pt) -ge ($PublishMin*60)){
         if((GetS 'pause_why') -ne $pw){ PutS 'pause_why' $pw; Say $pw }
         Write-Status $pw 0; Publish 'paused'
+        if(((Running 'corpq\.sh|corpus-slices\.sh') -eq 0) -and (Update-Game) -and (Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash -ne $SelfHash){
+          Say 'a new copy of this runner came from GitHub: restarting'
+          Remove-Item -LiteralPath $Hb -Force -ErrorAction SilentlyContinue
+          Start-Process -FilePath wscript.exe -ArgumentList ('"'+$T+'\spare\spare-start.vbs"') | Out-Null
+          exit 0
+        }
       }
       if($Once){ break }
       Start-Sleep -Seconds 20; continue
@@ -752,6 +799,7 @@ while($true){
     $script:working=$true
   }
   Ensure-Server
+  Refresh-Party
   $cr=Running 'corpq\.sh|corpus-slices\.sh'
   $why=''
   if($cr -eq 0){

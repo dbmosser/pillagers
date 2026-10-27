@@ -1,0 +1,7 @@
+v35.14: fog of war gap
+
+with fog of war on, unexplored ground is grey instead of black, and tracers, sparks, smoke and blasts outside your sight are not drawn; seen ground stays dimmed under the fog
+
+Check 35.14. Fails on v35.13.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
