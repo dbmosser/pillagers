@@ -2314,6 +2314,7 @@ body:has(#hub.on) #hubtoast{visibility:hidden;}
 #root #hub #hotplanwrap>div>div>div>div:last-child{display:none!important;}
 #root #hub #hotplanwrap [data-plan]{max-width:none!important;width:auto!important;border-color:var(--ui-line-hi)!important;}
 #root #hub #hotplanwrap [data-plan] span{font:600 18px/1.2 var(--f-cond)!important;letter-spacing:.04em;color:var(--tx-2)!important;}
+#root #hub #hotplanwrap [data-plan] .ic{width:48px!important;height:48px!important;}   /* cw-beltswap: the hotbar icons read on every stash layout (his ask 10-27); some layouts held them at 30 px */
 #root #hub .lohead,#root #hub .loslab,#root #hub #stashtabs .invtab{font-size:20px!important;letter-spacing:.04em;color:var(--tx-2);}
 #root #hub #kitsetup .kst span,#root #hub #kitsetup .kstc span,#root #hub #kitsetup .ksreset{font-size:20px!important;}
 /* v28.xx (cw-cx-kitnamesfit): v28.20 found clipped 20px names. Keep the nine-key grid and wheel compass; give each name its own row below the picture. */
@@ -3723,7 +3724,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.12';
+var VER='35.13';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18492,9 +18493,9 @@ cv.addEventListener('mousedown',function(e){
   // v8.96: on the Undercroft floor the same two handlers below run against the
   // backpack's own state instead of a raid. Answer 11, moving things to and from
   // the hotbar with the backpack open.
-  if(state==='hub'&&hubBagOpen&&hubBagG){
+  if(state==='hub'&&((hubBagOpen&&hubBagG)||hubFloorBeltPress())){   // cw-beltswap: the floor belt takes a press with the backpack shut too
     var _hbDone=false;
-    withHubBag(function(){
+    withHubBelt(function(){
       var GB=G.bagCells||[];
       for(var _q=0;_q<GB.length;_q++){
         var _C=GB[_q];
@@ -18653,8 +18654,10 @@ window.addEventListener('mouseup',function(e){
   if(HUDRESIZE){ HUDRESIZE=null; try{ saveProfile(); }catch(_e3){} }
   // v8.96: releasing over a belt cell on the Undercroft binds it, and releasing
   // anywhere else lets go, which is the same pair of outcomes the raid has.
-  if(state==='hub'&&hubBagOpen&&hubBagG&&hubBagG.drag){
-    withHubBag(function(){
+  if(HUBFD&&!(HUBFD.st&&HUBFD.st.drag)) HUBFD=null;   // cw-beltswap: a press on the floor belt that picked nothing up
+  if(state==='hub'&&((hubBagOpen&&hubBagG&&hubBagG.drag)||(!hubBagOpen&&HUBFD&&HUBFD.st.drag))){
+    var _hbS=(hubBagOpen&&hubBagG)?hubBagG:HUBFD.st;   // cw-beltswap: the open backpack, or the floor belt with it shut
+    withHubBelt(function(){
       var d=G.drag; G.drag=null;
       if(!d) return;
       var HCq=G.hotCells||[];
@@ -18735,9 +18738,10 @@ window.addEventListener('mouseup',function(e){
           if(d.fromHot!==undefined&&G.hotAssign&&!(d.px!==undefined&&Math.sqrt((mouse.x-d.px)*(mouse.x-d.px)+(mouse.y-d.py)*(mouse.y-d.py))<=24)) delete G.hotAssign[d.fromHot];
     });
     // Written through on every release, so closing is not the only way to keep it.
-    P.kit=(hubBagG.bag||[]).slice();
-    P.hotAssign=hubBagG.hotAssign||{};
+    P.kit=(_hbS.bag||[]).slice();
+    P.hotAssign=_hbS.hotAssign||{};
     try{ saveProfile(); }catch(_hs2){}
+    HUBFD=null;
   }
   if(e.button===2&&CFG.aimTgl!==1){ if(G) G.player.ads=false; }   // v26.xx (settings2): a toggled aim stays on until the next press
   // DROP. Released over a quickbar cell, the item is assigned to that slot;
@@ -27365,7 +27369,7 @@ function hotbarSlots(){
   // order. A packed gun whose class already has a key shows nowhere: it goes up in the backpack with no key.
   if(G.hubFloor){
     var _ckA, _ckL=[], _ckP, _ckI, _ckM, _ckT;
-    for(_fh=0;_fh<2;_fh++) if(_hcReal(_hc[_fh])&&!_hcUsed[_fh]){ _ckA=gunClassKey(gunClassOf(_hc[_fh].icon)); if(_ckA>=0&&out[_ckA]&&out[_ckA].gunFill){ out[_ckA]=_hc[_fh]; _hcUsed[_fh]=true; } }
+    for(_fh=0;_fh<2;_fh++) if(_hcReal(_hc[_fh])&&!_hcUsed[_fh]&&!_hcOnKey(_hc[_fh])/* cw-beltswap: already on a key he chose */){ _ckA=gunClassKey(gunClassOf(_hc[_fh].icon)); if(_ckA>=0&&out[_ckA]&&out[_ckA].gunFill){ out[_ckA]=_hc[_fh]; _hcUsed[_fh]=true; } }
     while((_ckP=_hcPacked())) _ckL.push(_ckP);
     for(_ckI=0;_ckI<_ckL.length;_ckI++){
       _ckT=ITEMS[_ckL[_ckI]]; _ckM=(WEAPONS[_ckT.gk]&&WEAPONS[_ckT.gk].mag)||0; _ckA=gunClassKey(gunClassOf(_ckT.gk));
@@ -48012,6 +48016,28 @@ function hubWheelDraw(){
   finally{ G=old; }
 }
 var HUBBELT={cells:[]};
+// cw-beltswap, his ask 10-27 ("grab guns and other items from the hot bar and move them around/swap them on the hotbar in the undercroft"):
+// a drag that starts on the floor belt with the backpack shut. HUBFD.st is a hub backpack state holding the belt cells as drawn, so the
+// press and the release run the backpack's own belt rules (move, swap, a gun on any gun key).
+var HUBFD=null;
+function hubFloorBeltPress(){
+  if(typeof state==='undefined'||state!=='hub'||hubBagOpen||!HB||!(HUBBELT.cells||[]).length) return false;
+  if((typeof hubWinOn==='function'&&hubWinOn())||document.querySelector('.modal.on')||(typeof pauseOpen!=='undefined'&&pauseOpen)) return false;
+  var c=HUBBELT.cells, i, hit=false;
+  for(i=0;i<c.length;i++) if(mouse.x>=c[i].x&&mouse.x<=c[i].x+c[i].w&&mouse.y>=c[i].y&&mouse.y<=c[i].y+c[i].h){ hit=true; break; }
+  if(!hit) return false;
+  var st=hubBagState(); st.hotCells=c.slice(); HUBFD={st:st};
+  return true;
+}
+function withHubBelt(fn){
+  if(hubBagOpen&&hubBagG) return withHubBag(fn);
+  if(!HUBFD||!HUBFD.st) return false;
+  var old=G, ran=false;
+  try{ G=HUBFD.st; fn(); ran=true; }
+  catch(_wf){}
+  finally{ G=old; }
+  return ran;
+}
 // v18.62, seen on the Undercroft screenshot (2026-10-07): the footer (WASD WALK, E USE STATION) sat at the bottom edge, behind the
 // belt the floor draws there since v18.0x, so only scraps of it showed between the cells. It now sits just above the belt when
 // the belt is shown, and at the bottom edge as before when it is not.
@@ -48030,6 +48056,7 @@ function drawHubBelt(){
   try{ G=st; drawBelt(); HUBBELT.cells=(st.hotCells||[]).slice(); try{ beltHoverHud(); }catch(_bhv){} }   // v24.xx (belthover1): the belt hover card on the floor
   catch(_hbl){ HUBBELT.cells=[]; }
   finally{ G=old; }
+  if(HUBFD&&HUBFD.st&&HUBFD.st.drag){ var _o3=G; try{ G=HUBFD.st; drawDragGhost(); }catch(_dg){} finally{ G=_o3; } }   // cw-beltswap: the item in his hand while it moves along the floor belt
 }
 function hubBagState(){
   // v14.87, belt audit finding 4: THE UNDERCROFT BELT COUNTS WHAT GOES UP. Its pouch was empty, so a Frag key over three packed
@@ -50903,6 +50930,7 @@ function hubFloorHints(line){
   if(!padOn()&&typeof line==='string'){
     rows=line.split(/\s+\u00b7\s+/).map(function(s){ var m=/^(.*?) (WALK|JOG|USE STATION|TAKE THE DROPPED ITEM)$/.exec(s); return m?[m[1],m[2]]:null; }).filter(function(s){return !!s;});
   }
+  if(!padOn()) rows.push([keyLabel('KeyM','M'),'MAP']);   // cw-beltswap: M opens the lift map on the floor (35.12)
   ctx.save(); ctx.font=uiFont('label',R); ctx.textAlign='left';
   var total=32*R, i;
   for(i=0;i<rows.length;i++){
@@ -51116,7 +51144,7 @@ function drawHubHUD(ox,oy){
   // the surface. Drawn after the update card so the two never fight for the middle.
   if(HB.legend){
     var _lg=['WASD','walk','SHIFT','jog','SPACE','roll','E','use the station in front of you',
-             'B or I','your things','TAB','pause, or back out','M','the map, on the surface'];
+             'B or I','your things','TAB','pause, or back out','M','the map'];
     if(typeof NET==='object'&&NET&&NET.on) _lg.push('E','take an item your teammate dropped (drop one from the stash menu)');   // v18.28: trading on the floor card
     _lg.push('F1','close this');   if(!padOn()) for(var _li=0;_li<_lg.length;_li+=2) _lg[_li]=legendKeys(_lg[_li]);   // v25.xx (keyremap): and the Undercroft list names the keys as set
     ctx.font=FS(TYPE.label);
@@ -54704,7 +54732,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.12: the wheel zooms the undercroft floor and m opens the lift map; the stash row is called hotbar with bigger icons; no white rarity bars in the shop, craft and wirt windows; wirt pulls a gun or a valuable about half the time; no gun label or dimmed guns on the pre-raid belt; the data core row says what it does on hover; packing an item keeps the list where it was Check 35.12 fails on v35.11',
+  now:'v35.13: in the undercroft the floor hotbar picks up guns and items and moves or swaps them with the backpack shut; a gun moved to another key no longer also shows on its old key; dimmed guns on the stash hotbar pick up; bigger stash hotbar icons; m map on the floor key row Check 35.13 fails on v35.12',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -56462,7 +56490,7 @@ function hotPlanHTML(where){
       var _fgk=(String(_fl[i].icon).indexOf('gun_')===0)?String(_fl[i].icon):('gun_'+_fl[i].icon);
       if(ITEMS[_fgk]) _fg={k:_fgk,name:escHtml(String(_fl[i].name||ITEMS[_fgk].name))};
     }
-    _gh[beltGroupOf(i)]+='<div data-plan="'+i+'" title="'+(it?('Key '+slotKeyName(i)+': '+it.name+', click to clear'):(_fg?('Key '+slotKeyName(i)+': '+_fg.name):('Key '+slotKeyName(i)+', free')))+'"'+
+    _gh[beltGroupOf(i)]+='<div data-plan="'+i+'"'+((!it&&_fg&&String(_fg.k).indexOf('gun_')===0)?(' data-ghost="'+_fg.k+'"'):'')+' title="'+(it?('Key '+slotKeyName(i)+': '+it.name+', click to clear'):(_fg?('Key '+slotKeyName(i)+': '+_fg.name):('Key '+slotKeyName(i)+', free')))+'"'+
       ' style="width:34px;height:34px;border:1px '+(it?'solid':'dashed')+' var(--steel-hi);border-radius:3px;'+
       'display:flex;align-items:center;justify-content:center;cursor:'+(it?'pointer':'default')+';'+
       'background:rgba(0,0,0,.3);position:relative">'+
@@ -56612,6 +56640,7 @@ try{ renderFreeKit(); }catch(_fk){}
       (function(){
         var _pk=(P.hotAssign||{})[ix];
         if(_pk&&ITEMS[_pk]) grabbable(el,_pk,'plan:'+ix,ITEMS[_pk].name);
+        else { var _gk=el.getAttribute('data-ghost'); if(_gk&&ITEMS[_gk]) grabbable(el,_gk,'plan:'+ix,ITEMS[_gk].name); }   // cw-beltswap, his ask 10-27: a gun the belt shows by itself moves too
       })();
       dropzone(el,function(key,from){
         // v14.17, Undercroft audit finding 3: A CLICK ON A FILLED BELT KEY CLEARS IT, as its tooltip says. The filled cell is

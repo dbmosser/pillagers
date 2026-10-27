@@ -1,0 +1,1 @@
+| HOTBAR SWAP | v35.13 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 35.13 passes, fails on v35.12 |

@@ -1,0 +1,7 @@
+v35.13: hotbar swap
+
+in the undercroft the floor hotbar picks up guns and items and moves or swaps them with the backpack shut; a gun moved to another key no longer also shows on its old key; dimmed guns on the stash hotbar pick up; bigger stash hotbar icons; m map on the floor key row
+
+Check 35.13. Fails on v35.12.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
