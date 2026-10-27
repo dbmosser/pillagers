@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.21 - FULLSCREEN GATE AT ANY ZOOM
+
+Co-op hunt while he was away. his report 10-27: the main PC build showed no fullscreen gate; his Chrome keeps 75 percent zoom for localhost, which made a normal window read as F11
+
+MEASURED. Check 35.21 passes, and fails on v35.20.
 ## v35.20 - NEW IN CARD NAMES YOUR BUILD
 
 Co-op hunt while he was away. his order 10-27: he read v0.1137 off the new in card while playing v0.1149 and took it for an old build; the menu now shows one version number

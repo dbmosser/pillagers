@@ -1,0 +1,5 @@
+## v35.21 - FULLSCREEN GATE AT ANY ZOOM
+
+Co-op hunt while he was away. his report 10-27: the main PC build showed no fullscreen gate; his Chrome keeps 75 percent zoom for localhost, which made a normal window read as F11
+
+MEASURED. Check 35.21 passes, and fails on v35.20.

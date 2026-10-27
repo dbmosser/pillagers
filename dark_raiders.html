@@ -3724,7 +3724,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.20';
+var VER='35.21';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -54769,7 +54769,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.20: the new in card shows the build you play Check 35.20 fails on v35.19',
+  now:'v35.21: the fullscreen gate opens in a normal window at any page zoom Check 35.21 fails on v35.20',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -69296,7 +69296,7 @@ function fsSync(){
 function fsFull(){
   if(fsOn()) return true;
   try{ if(!FSG.mq&&window.matchMedia) FSG.mq=window.matchMedia('(display-mode: fullscreen)'); if(FSG.mq&&FSG.mq.matches) return true; }catch(_mm){}
-  try{ var sc=window.screen; if(sc&&sc.width>0&&sc.height>0&&window.innerWidth>=sc.width-1&&window.innerHeight>=sc.height-1) return true; }catch(_sz){}   // the browser's own F11, when the key never reached the page
+  try{ var sc=window.screen, ow=window.outerWidth, iw=window.innerWidth, z=(ow>0&&iw>0)?ow/iw:0; if(sc&&sc.width>0&&sc.height>0&&z>0&&ow>=sc.width-2&&window.innerHeight*z>=sc.height-2) return true; }catch(_sz){}   /* v35.xx (cw-fszoom), HIS REPORT (2026-10-27): "the version on the main PC doesn't have my mandatory fullscreen pages but the version on the VM does". His Chrome keeps 75 percent zoom for localhost; inner sizes are CSS px and grow as zoom drops, screen is not, so a normal window passed as F11 and the gate never opened. The view height is put back in screen units (outer over inner width) before comparing. */   // the browser's own F11, when the key never reached the page
   return false;
 }
 // requestFullscreen answers with a promise. A refusal (no gesture: a pad press) must never reach the crash catcher, so it is caught here.
