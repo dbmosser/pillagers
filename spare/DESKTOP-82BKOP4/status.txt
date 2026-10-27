@@ -1,10 +1,10 @@
 host=DESKTOP-82BKOP4
-seen=2026-10-27 18:28
-epoch=1793140121
+seen=2026-10-27 18:38
+epoch=1793140739
 game=9075c47c v35.18
 test_run=paused: someone is using the PC
 robots=0
-ram_free_gb=25
+ram_free_gb=25.1
 push_ok=1
 runner=4F752527
 mode=full
