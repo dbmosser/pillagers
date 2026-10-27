@@ -101703,6 +101703,7 @@ window.__REGRESS=[
      var P2=__P(), keepMZ=P2.menuZoom, keepUI=P2.uiScale;
      __hubEnter();
      var hub=document.getElementById('hub');
+     var _hfw=(typeof hubFloorWheel==='function')?hubFloorWheel:null; if(_hfw) hubFloorWheel=function(){ return false; };   // cw-hubfix (35.12): the bare floor wheel zooms the floor; this check is about the menu size
      function spin(dy){ var ev=new WheelEvent('wheel',{deltaY:dy,bubbles:true,cancelable:true,clientX:960,clientY:540}); document.body.dispatchEvent(ev); return P2.menuZoom; }
      // THE FINDING. On v10.21 the wheel took the size down to 0.7 and the saved
      // profile kept it there, and his stash at 4K was drawn at about 1.5 of 1080p.
@@ -101729,6 +101730,7 @@ window.__REGRESS=[
      if(Math.abs(up-1.08)>0.001) bad.push('control: the wheel up from 1.0 gave '+up+', not 1.08');
      P2.menuZoom=1.5; applyMenuZoom(); var z2=parseFloat(hub.style.zoom)||0;
      if(Math.abs(z2-1.5*tr*0.92)>0.02) bad.push('control: a size of 1.5 draws the Undercroft at '+z2.toFixed(2)+', not '+(1.5*tr*0.92).toFixed(2));
+     if(_hfw) hubFloorWheel=_hfw;
      P2.menuZoom=keepMZ||1.3; P2.uiScale=keepUI; try{ saveProfile(); }catch(e3){} applyMenuZoom();
      return bad.length?bad.join('; '):null; }},
   {v:'10.21',what:'FACE is a ninth rack: six faces drawn on the sprite and the figure, with a swatch, and the pillagers wear them',
@@ -104893,11 +104895,12 @@ window.__REGRESS=[
        }
        return best;
      }
-     // CONTROL: on the FLOOR it always worked, and it must still. A build that
-     // broke the wheel everywhere would satisfy nothing and this catches it.
+     // CONTROL: a build that broke the wheel everywhere would satisfy nothing and this catches it. cw-hubfix (35.12, his ask
+     // 10-27): on the bare floor the wheel zooms the floor now and leaves the text alone, so the control reads the floor zoom.
+     if(typeof HZT==='number'){ HZT=1; HZC=1; }
      var floor=spin(document.body,960,540,false);
-     if(!floor.changed)
-       bad.push('control: the wheel no longer resizes the text on the Undercroft floor either, where it always worked');
+     if(floor.changed) bad.push('the wheel on the bare floor resized the text; it zooms the floor since 35.12');
+     if(typeof HZT==='number'){ if(!(HZT>1)) bad.push('control: the wheel on the bare floor zooms nothing'); HZT=1; HZC=1; }
      var tested=0, dead=[], shiftBroke=[], grew=[], ate=[];
      var sts=__station();
      for(var si=0;si<sts.length;si++){
