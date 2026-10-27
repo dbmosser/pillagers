@@ -3916,8 +3916,9 @@ window.__REGRESS=[
      // this was a 4K complaint.
      // v32.83 retarget (50-corpus-old-a): the backpack panel was redesigned (nine gun keys, the grid beside the figure); its 1080p size is 830x477 now (it was 1194x435).
      // v34.65 and v34.66 (job 115) made the raid backpack tiles bigger on purpose; job 119 retarget: the 1080p panel is 862x596 now.
-     if(Math.abs(a.p.w-862)>6||Math.abs(a.p.h-596)>6)
-       bad.push('control: the 1080p panel changed to '+Math.round(a.p.w)+'x'+Math.round(a.p.h)+', it was 862x596');
+     // v34.71 (cw-bagclose, his Q1) made the header 6 px taller on purpose so the close button sits inside it; 118r retarget: the 1080p panel is 862x606 now.
+     if(Math.abs(a.p.w-862)>6||Math.abs(a.p.h-606)>6)
+       bad.push('control: the 1080p panel changed to '+Math.round(a.p.w)+'x'+Math.round(a.p.h)+', it was 862x606');
      // CONTROL 2: it must still clear the belt at BOTH sizes. Doubling a panel
      // that sits above the belt is exactly how it lands on the belt, which is a
      // thing he has already reported once.
@@ -59550,7 +59551,8 @@ window.__REGRESS=[
        f=[['the BACKPACK title',function(o){ return o.s==='BACKPACK'&&o.a!=='right'; },gL],
           ['EQUIPPED',function(o){ return o.s==='EQUIPPED'; },gL],
           ['the selected item line',function(o){ return !!nm&&o.s.indexOf(nm)===0&&o.a!=='right'&&o.a!=='center'; },gL],
-          ['the key line',function(o){ return o.s.indexOf('to close')>=0&&o.a==='right'; },gR],
+          // v34.71 (cw-bagclose, his Q1) put a close button in the raid card corner and ends the key hints LEFT of it, one LH(12) gap away; 118r retarget: the key line ends there in a raid (not at the grid end), and the button must exist.
+          ['the key line',function(o){ return o.s.indexOf('to close')>=0&&o.a==='right'; },(g.bagClose&&typeof LH==='function')?Math.min(gR,g.bagClose.x-Math.round(LH(12)*hudRes())):gR],
           ['the price',function(o){ return o.s.indexOf(' each')>=0&&o.s.charAt(0)==='$'&&o.a==='right'; },gR]];
        for(i=0;i<f.length;i++){
          q=find(f[i][1]);
