@@ -27,6 +27,8 @@ case "$1" in
     PREV=$2; NEW=$3; PV=$(vstr $PREV); NV=$(vstr $NEW)
     git show HEAD:dark_raiders.html > "tools/prev$PREV.html"
     powershell -NoProfile -ExecutionPolicy Bypass -File "$SP/p$NEW.ps1"
+    # cw-verdate, his order 10-27: stamp the build date and time (US Eastern) beside the version; a no-op on builds without var VER_AT
+    powershell -NoProfile -ExecutionPolicy Bypass -File tools/handoff/stamp-verat.ps1 -Prev "tools/prev$PREV.html"
     powershell -NoProfile -ExecutionPolicy Bypass -File "$SP/f$NEW.ps1"
     powershell -NoProfile -ExecutionPolicy Bypass -File tools/mkfixture.ps1 -Src "tools/prev$PREV.html" -Dst "tools/fx$PREV.html" 2>&1 | tail -1
     powershell -NoProfile -ExecutionPolicy Bypass -File tools/mkfixture.ps1 2>&1 | tail -1
