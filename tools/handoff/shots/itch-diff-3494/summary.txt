@@ -1,0 +1,3 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  91-settings-the-raid-itch              staged       8.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | settingsmodal
+  92-settings-the-raid-main              staged       7.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | settingsmodal

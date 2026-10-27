@@ -3696,7 +3696,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.94';
+var VER='34.95';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -54550,7 +54550,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.94: The difficulty button shows arrows on both sides, the same as the rows under it. Check 34.94 fails on v34.93',
+  now:'v34.95: A two player run ends when its clock runs out, even if player 2 presses A while the site burns. Check 34.95 fails on v34.94',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -68078,6 +68078,8 @@ function arcadeJoinAsk(){
   }
   if(!NET.on) return 'nolink';
   if(NET.upWord&&(NET.upWord.seed>>>0)===(G.seed>>>0)){ netSamePost({t:'arcgo',fresh:0,pair:NET.pair}); return 'go'; }
+  // v34.xx (cw-joinburn): a player 2 asking in once the clock is out (the site burning, or the clock resting at 0 while the host boards) waits for the next run; the rebuild gave the run a fresh 10 minute clock, so it never ended
+  if(raidClockOn()&&(G.nuking||G.timeLeft<=0)) return 'wait';
   return arcadeRebuild()?'new':'fail';
 }
 // A fresh arcade raid on the same sector for a player 2 who cannot join this one: player 1 keeps his score (and his bench).

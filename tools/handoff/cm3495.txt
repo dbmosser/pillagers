@@ -1,0 +1,7 @@
+v34.95: a two player run ends on time
+
+A two player run ends when its clock runs out, even if player 2 presses A while the site burns.
+
+Check 34.95. Fails on v34.94.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
