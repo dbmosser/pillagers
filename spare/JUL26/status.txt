@@ -1,10 +1,10 @@
 host=JUL26
-seen=2026-10-27 12:04
-epoch=1793117042
+seen=2026-10-27 12:13
+epoch=1793117598
 game=897d7862 v35.06
-test_run=idle
-robots=2
-ram_free_gb=5.2
+test_run=paused: under 6 GB free
+robots=0
+ram_free_gb=5.8
 push_ok=1
 runner=1823BEEE
 mode=idle
