@@ -1,0 +1,5 @@
+## v35.22 - RECOVERING IN SUPERHOT
+
+Co-op hunt while he was away. his note 10-27 on build 35.19: recovering to 85 shown while his health stood still
+
+MEASURED. Check 35.22 passes, and fails on v35.21.

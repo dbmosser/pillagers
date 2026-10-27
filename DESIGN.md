@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.22 - RECOVERING IN SUPERHOT
+
+Co-op hunt while he was away. his note 10-27 on build 35.19: recovering to 85 shown while his health stood still
+
+MEASURED. Check 35.22 passes, and fails on v35.21.
 ## v35.21 - FULLSCREEN GATE AT ANY ZOOM
 
 Co-op hunt while he was away. his report 10-27: the main PC build showed no fullscreen gate; his Chrome keeps 75 percent zoom for localhost, which made a normal window read as F11

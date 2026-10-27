@@ -1,0 +1,7 @@
+v35.22: recovering in superhot
+
+recovering goes dark while superhot holds time still
+
+Check 35.22. Fails on v35.21.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

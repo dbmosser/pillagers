@@ -1,0 +1,1 @@
+# in-session: jobs a Claude session is working right now (started from his orders thread). No lane reads this folder, so a lane never doubles the work. The session moves its job to done/ once his main PC reports the build.
