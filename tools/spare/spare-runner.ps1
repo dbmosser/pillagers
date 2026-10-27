@@ -23,6 +23,20 @@
 # starts nothing until no key, mouse or game pad has been used for 15 minutes and 6 GB are free; it stops everything it started within
 # seconds of a touch (or under 4 GB free); and a build another PC is testing or has tested stays that PC's: here it gets robots only.
 # The VM's nights come first: from 22:40 to 23:10 it holds nothing, and until 06:45 it starts only with 10 GB free (see VMNight below).
+# 10-26 SPARE-PRESENCE-PAUSE (his "make it so that the JTPC pauses testing whenever someone is at the JTPC -- eg my son wants to use it
+# for gaming"): the SPARE PC now stops all its test work (scripts and test Chromes) within seconds of someone being there, and starts
+# again by itself once nobody has been there for 15 minutes. Someone is there when a key or the mouse was used, a game pad changed since
+# the look before (a stick, pedal or trigger resting off centre is nobody), or another Windows account is signed in and unlocked at the
+# screen (the sign-in and lock screens are nobody); and, for up to 2 hours after the last of those and only while this account is at the
+# screen and unlocked, when a full-screen program runs (a game or a film), a program other than a test browser plays sound, or a program
+# that is not a test browser works the graphics card (15% or more of its 3D engine at two looks in a row, a game). These are the signs
+# of the stopgap pause-watch.ps1, which retires once this text is in the runner. A full test run stopped because someone is there gives
+# its try back, so visits never use up a build's two tries. While paused its status says "paused: someone is using the PC" and when that
+# began (paused_since=); the VM then runs the tests itself (tools/spare/spare-import.mjs, 64d6fec3). It stops only its own test parts,
+# by the shape of the runner's own launches; one started by hand from a Windows program (Claude's PowerShell, a terminal window) and an
+# editor or a search that only names a test script are left alone (one started from Git bash looks like the runner's and is stopped
+# too). If the presence checks cannot load, it says PROBLEM in runner.log, adds presence=off to its status and tests as before. IDLE
+# MODE on the main PC is unchanged by this: its check, what it stops and its tries are as before.
 param([switch]$Once,[int]$FuzzMinutes=60,[int]$PublishMin=10)
 $ErrorActionPreference='Continue'
 $Idle=($env:COMPUTERNAME -eq 'JUL26')
@@ -42,6 +56,9 @@ New-Item -ItemType Directory -Force -Path $W,$Out,$FzOut,$CorpDir | Out-Null
 if(-not $Once -and (Test-Path -LiteralPath $Hb)){
   if(((Get-Date)-(Get-Item -LiteralPath $Hb).LastWriteTime).TotalSeconds -lt 600){ exit 0 }   # another copy is alive
 }
+# SPARE-PRESENCE-PAUSE: a heartbeat 10+ minutes old means this PC was off or the last copy died; a pause it was in is over (see below the
+# functions). A copy that restarts itself for a new runner deletes the heartbeat first, so its pause and paused_since go on.
+$HbOld=$false; if(-not $Idle){ try{ $HbOld=(((Get-Date)-(Get-Item -LiteralPath $Hb -ErrorAction Stop).LastWriteTime).TotalSeconds -ge 600) }catch{} }
 $Git=(Get-Command git -ErrorAction SilentlyContinue).Source; if(-not $Git){ $Git='C:\Program Files\Git\cmd\git.exe' }
 $Node=(Get-Command node -ErrorAction SilentlyContinue).Source; if(-not $Node){ $Node='C:\Program Files\nodejs\node.exe' }
 
@@ -79,9 +96,21 @@ if(-not $Idle){ try{
 # he is away, and stop its own tests when he is back.) It reads the time since the last key or mouse input (GetLastInputInfo) and, for
 # pads, whether a button, trigger or stick is past its rest zone at a check (XInput pads 1 to 4; a pad does not move the Windows idle clock
 # and the party plays on pads). It records nothing of what was pressed.
-$script:padT=Get-Date; $script:working=$false
-if($Idle){
-  try{ Add-Type -Namespace PillagersIdle -Name Input -ErrorAction Stop -MemberDefinition @'
+# 10-26 SPARE-PRESENCE-PAUSE: the spare PC uses the same keyboard and mouse check; a pad counts only when it changed since the look before
+# (PadMoved below, the stopgap's rule); it also counts another Windows account signed in and unlocked at the screen (fast user switching:
+# this runner's own session is then in the background and sees no input; only whether the account at the screen is another one, and
+# whether it is locked, is read, never its name), and the passive signs (a full-screen program, sound, a game on the graphics card) up to
+# 2 hours ($PassCapSec) after the last key, mouse, pad or other sign-in. Its pad, account and game clocks start a day back; a copy that
+# restarts itself during a pause first writes when someone was last there into state.txt (seen_t, human_t) and the new copy goes on from
+# that, and every new copy looks for about 35 s before its first round (below the functions), so neither an update nor a restart starts
+# the tests while someone is still there. If a check cannot load, it says PROBLEM and tests without it (as before this pause existed).
+# The main PC keeps its own check exactly as before.
+$script:padT=$(if($Idle){ Get-Date }else{ (Get-Date).AddDays(-1) }); $script:working=$false
+$script:conT=(Get-Date).AddDays(-1); $script:conOn=$false; $script:gpuT=(Get-Date).AddDays(-1); $script:gpuChk=(Get-Date).AddDays(-1)
+$script:gpuOn=$false; $script:gpuLast=''; $script:gpuPrev=@{}; $script:gpuPrevT=(Get-Date).AddDays(-1); $script:awayWhy=''; $script:pubTry=[long]0
+$PassCapSec=7200; $script:pasT=(Get-Date).AddDays(-1); $script:pasWhy=''; $script:holdE=[long]0; $script:holdH=[long]0; $script:humanAgo=0.0
+$script:capSaid=$false; $script:noIn=$false; $script:noPres=$false; $script:noSnd=$false; $script:sndSaid=$false; $script:sndCache=@{}
+try{ Add-Type -Namespace PillagersIdle -Name Input -ErrorAction Stop -MemberDefinition @'
 [StructLayout(LayoutKind.Sequential)] public struct LII { public uint cbSize; public uint dwTime; }
 [DllImport("user32.dll")] static extern bool GetLastInputInfo(ref LII p);
 [DllImport("xinput1_4.dll")] static extern uint XInputGetState(uint i, byte[] s);
@@ -95,9 +124,235 @@ public static bool PadInUse(){
   }
   return false;
 }
-'@ }catch{ Say ('PROBLEM: cannot tell whether he is at the PC, so nothing runs: '+(Short "$_")); exit 1 }
+'@ }catch{
+  if($Idle){ Say ('PROBLEM: cannot tell whether he is at the PC, so nothing runs: '+(Short "$_")); exit 1 }
+  # SPARE PC: a runner that stops here publishes nothing and can never take a fixed copy from GitHub, so it tests as before this pause
+  # existed (AwaySec says nobody) and says so
+  $script:noIn=$true; Say ('PROBLEM: cannot tell whether someone is at the PC (the keyboard and mouse check did not load), so this runner tests without pausing for anyone: '+(Short "$_"))
 }
-function AwaySec(){ if([PillagersIdle.Input]::PadInUse()){ $script:padT=Get-Date }; return [Math]::Min([PillagersIdle.Input]::IdleSec(),((Get-Date)-$script:padT).TotalSeconds) }
+if(-not $Idle -and -not $script:noIn){
+  $MySid=[uint32][Diagnostics.Process]::GetCurrentProcess().SessionId
+  # another account at the screen: the console session is not this runner's, someone is signed in to it (the sign-in screen has no user
+  # name), and it is not locked. WTSSessionInfoEx (25) gives WTSINFOEX: Level (1) at 0, then, 8-byte aligned, SessionId at 8, SessionState
+  # at 12 and SessionFlags at 16 (0 locked, 1 unlocked on Windows 8 and later; checked on this PC 10-26: level 1, its own session id at 8,
+  # flags 1 while in use). When that cannot be read, someone counts as there. MineAtScreen: this runner's own session is the one at the
+  # screen and is not locked (the passive signs count only then; a lock state that cannot be read counts as unlocked). Quns: the shell's
+  # notification state (SHQueryUserNotificationState): 2 busy (a full-screen program), 3 Direct3D full screen and 4 presentation mode
+  # count; 1 (locked, screen saver), 5 normal, 6 quiet time and 7 (a Store app) do not. PadMoved: XInput pads 1 to 4, true when a pad
+  # CHANGED since the last look (a button, a trigger by more than 30, a stick by more than 3000) or was switched on since then, never by
+  # how far it rests from centre; the first look only records (pause-watch.ps1 PadPoll, the same thresholds).
+  try{ Add-Type -Namespace PillagersSpare -Name Presence -ErrorAction Stop -MemberDefinition @'
+[DllImport("kernel32.dll")] static extern uint WTSGetActiveConsoleSessionId();
+[DllImport("wtsapi32.dll", CharSet = CharSet.Unicode, EntryPoint = "WTSQuerySessionInformationW")] static extern bool WTSQuerySessionInformation(IntPtr h, uint sid, int cls, out IntPtr buf, out uint n);
+[DllImport("wtsapi32.dll")] static extern void WTSFreeMemory(IntPtr p);
+public static bool OtherAtScreen(uint mine){
+  uint s = WTSGetActiveConsoleSessionId(); if (s == 0xFFFFFFFF || s == mine) return false;
+  IntPtr b; uint n; if (!WTSQuerySessionInformation(IntPtr.Zero, s, 5, out b, out n)) return false;
+  try { if (String.IsNullOrEmpty(Marshal.PtrToStringUni(b))) return false; } finally { WTSFreeMemory(b); }
+  if (!WTSQuerySessionInformation(IntPtr.Zero, s, 25, out b, out n)) return true;
+  try { if (n < 20 || Marshal.ReadInt32(b, 0) != 1 || Marshal.ReadInt32(b, 8) != (int)s) return true; return Marshal.ReadInt32(b, 16) != 0; } finally { WTSFreeMemory(b); }
+}
+public static bool MineAtScreen(uint mine){
+  if (WTSGetActiveConsoleSessionId() != mine) return false;
+  IntPtr b; uint n; if (!WTSQuerySessionInformation(IntPtr.Zero, mine, 25, out b, out n)) return true;
+  try { if (n < 20 || Marshal.ReadInt32(b, 0) != 1 || Marshal.ReadInt32(b, 8) != (int)mine) return true; return Marshal.ReadInt32(b, 16) != 0; } finally { WTSFreeMemory(b); }
+}
+[DllImport("shell32.dll")] static extern int SHQueryUserNotificationState(out int s);
+public static int Quns(){ try { int s; if (SHQueryUserNotificationState(out s) != 0) return -1; return s; } catch { return -1; } }
+[DllImport("xinput1_4.dll")] static extern uint XInputGetState(uint i, byte[] s);
+static byte[][] padLast = new byte[4][];
+static bool padFirst = true, padBroken = false;
+public static bool PadMoved(){
+  if (padBroken) return false;
+  bool act = false;
+  for (uint i = 0; i < 4; i++) {
+    byte[] s = new byte[16]; uint rc;
+    try { rc = XInputGetState(i, s); } catch { padBroken = true; return false; }
+    if (rc != 0) { padLast[i] = null; continue; }
+    byte[] p = padLast[i]; padLast[i] = s;
+    if (p == null) { if (!padFirst) act = true; continue; }
+    if (BitConverter.ToUInt16(s, 4) != BitConverter.ToUInt16(p, 4) || Math.Abs(s[6] - p[6]) > 30 || Math.Abs(s[7] - p[7]) > 30) act = true;
+    for (int k = 8; k < 16; k += 2) { if (Math.Abs(BitConverter.ToInt16(s, k) - BitConverter.ToInt16(p, k)) > 3000) act = true; }
+  }
+  padFirst = false;
+  return act;
+}
+'@ }catch{ $script:noPres=$true; Say ('PROBLEM: the pad, other-account and full-screen checks did not load, so only the keyboard, mouse, sound and graphics card say someone is at the PC: '+(Short "$_")) }
+  # sound: the default output's loudness meter, and per program only when it is not quiet (Core Audio, read only; it says only how loud,
+  # never what). The code of pause-watch.ps1, unchanged: every failure comes back as "ERR ...", the meter is made again every 5 minutes
+  # (the default output can change) and not tried again for 60 s after a failure, and every COM object is released. In its own type,
+  # so if it cannot load only the sound sign is lost.
+  try{ Add-Type -Namespace PillagersSpare -Name Sound -ErrorAction Stop -MemberDefinition @'
+[ComImport, Guid("BCDE0395-E52F-467C-8E3D-C4579291692E")] class MMDevEnumCo {}
+[ComImport, Guid("A95664D2-9614-4F35-A746-DE8DB63617E6"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+interface IMMDeviceEnumerator { int EnumAudioEndpoints(); [PreserveSig] int GetDefaultAudioEndpoint(int flow, int role, out IMMDevice dev); }
+[ComImport, Guid("D666063F-1587-4E43-81F1-B948E807363F"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+interface IMMDevice { [PreserveSig] int Activate(ref Guid iid, int ctx, IntPtr p, [MarshalAs(UnmanagedType.IUnknown)] out object o); }
+[ComImport, Guid("77AA99A0-1BD6-484F-8BC7-2C654C9A9B6F"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+interface IAudioSessionManager2 { int GetAudioSessionControl(); int GetSimpleAudioVolume(); [PreserveSig] int GetSessionEnumerator(out IAudioSessionEnumerator e); }
+[ComImport, Guid("E2F5BB11-0570-40CA-ACDD-3AA01277DEE8"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+interface IAudioSessionEnumerator { [PreserveSig] int GetCount(out int n); [PreserveSig] int GetSession(int i, out IAudioSessionControl2 s); }
+[ComImport, Guid("bfb7ff88-7239-4fc9-8fa2-07c950be9c6d"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+interface IAudioSessionControl2 {
+  [PreserveSig] int GetState(out int st); int GetDisplayName(); int SetDisplayName(); int GetIconPath(); int SetIconPath(); int GetGroupingParam(); int SetGroupingParam();
+  int RegisterAudioSessionNotification(); int UnregisterAudioSessionNotification(); int GetSessionIdentifier(); int GetSessionInstanceIdentifier();
+  [PreserveSig] int GetProcessId(out uint pid); [PreserveSig] int IsSystemSoundsSession(); }
+[ComImport, Guid("C02216F6-8C67-4B5B-9D00-D008E73E0064"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+interface IAudioMeterInformation { [PreserveSig] int GetPeakValue(out float v); }
+static object sndEnum; static IAudioSessionManager2 sndMgr; static IAudioMeterInformation sndMeter;
+static DateTime sndInitT = DateTime.MinValue, sndFailT = DateTime.MinValue;
+static void SoundFree(){
+  object[] all = new object[] { sndMeter, sndMgr, sndEnum };
+  sndMeter = null; sndMgr = null; sndEnum = null;
+  foreach (object o in all) { try { if (o != null) Marshal.ReleaseComObject(o); } catch {} }
+}
+static void SoundInit(){
+  SoundFree();
+  sndEnum = new MMDevEnumCo();
+  IMMDevice d = null;
+  try {
+    int hr = ((IMMDeviceEnumerator)sndEnum).GetDefaultAudioEndpoint(0, 1, out d);
+    if (hr != 0 || d == null) throw new Exception("no sound output device (0x" + hr.ToString("X8") + ")");
+    object o; Guid g = typeof(IAudioSessionManager2).GUID;
+    hr = d.Activate(ref g, 23, IntPtr.Zero, out o); if (hr != 0) throw new Exception("no session list (0x" + hr.ToString("X8") + ")");
+    sndMgr = (IAudioSessionManager2)o;
+    g = typeof(IAudioMeterInformation).GUID;
+    hr = d.Activate(ref g, 23, IntPtr.Zero, out o); if (hr != 0) throw new Exception("no loudness meter (0x" + hr.ToString("X8") + ")");
+    sndMeter = (IAudioMeterInformation)o;
+    sndInitT = DateTime.UtcNow;
+  } finally { if (d != null) Marshal.ReleaseComObject(d); }
+}
+public static string SoundPids(float min){
+  try {
+    if (sndMeter == null || (DateTime.UtcNow - sndInitT).TotalMinutes >= 5) {
+      if ((DateTime.UtcNow - sndFailT).TotalSeconds < 60) return "";
+      try { SoundInit(); } catch { sndFailT = DateTime.UtcNow; SoundFree(); throw; }
+    }
+    float v;
+    if (sndMeter.GetPeakValue(out v) != 0) { SoundFree(); return "ERR the loudness meter did not answer"; }
+    if (v < min) return "";
+    IAudioSessionEnumerator en;
+    if (sndMgr.GetSessionEnumerator(out en) != 0 || en == null) { SoundFree(); return "ERR the session list did not answer"; }
+    System.Text.StringBuilder sb = new System.Text.StringBuilder();
+    try {
+      int n; if (en.GetCount(out n) != 0) n = 0;
+      for (int i = 0; i < n; i++) {
+        IAudioSessionControl2 s = null;
+        try {
+          if (en.GetSession(i, out s) != 0 || s == null) continue;
+          if (s.IsSystemSoundsSession() == 0) continue;
+          float p; if (((IAudioMeterInformation)s).GetPeakValue(out p) != 0 || p < min) continue;
+          uint pid; if (s.GetProcessId(out pid) < 0) continue;
+          sb.Append(sb.Length > 0 ? "," : "").Append(pid);
+        } finally { if (s != null) Marshal.ReleaseComObject(s); }
+      }
+    } finally { Marshal.ReleaseComObject(en); }
+    return sb.ToString();
+  } catch (Exception e) { SoundFree(); return "ERR " + e.Message; }
+}
+'@ }catch{ $script:noSnd=$true; Say ('PROBLEM: the sound check did not load, so the other signs count without it: '+(Short "$_")) }
+}
+# SPARE PC: a game on the graphics card: a program at 15% or more of the 3D engine over a one-second read, at two looks in a row (about
+# 30 s apart, so a one-second spike of a launcher or a browser is not someone), not Windows' own drawing, not the Hyper-V VM and not a
+# test browser (profile pillagers-cdp): the program rule of the main PC's game check (tools/migrate/host-night-memory.ps1 -GameCheck, which
+# averages 5 one-second reads instead). One read takes about 1.5 s (measured on the spare PC 10-26), so at most every 30 s, and only when
+# nothing else says someone is here.
+function GpuGame(){
+  if(((Get-Date)-$script:gpuChk).TotalSeconds -lt 30){ return }
+  $script:gpuChk=Get-Date; $hit=''; $now=@{}
+  if(((Get-Date)-$script:gpuPrevT).TotalSeconds -gt 90){ $script:gpuPrev=@{} }   # the look before is too old to count as "in a row"
+  try{
+    $set=Get-Counter -Counter '\GPU Engine(*engtype_3D)\Utilization Percentage' -MaxSamples 1 -ErrorAction SilentlyContinue
+    $by=@{}
+    if($set){ foreach($c in $set.CounterSamples){ if($c.Status -eq 0 -and $c.InstanceName -match 'pid_(\d+)_'){ $p=[int]$Matches[1]; $by[$p]=[double]$by[$p]+$c.CookedValue } } }
+    foreach($p in @($by.Keys)){
+      if($by[$p] -lt 15 -or $p -eq $PID){ continue }
+      $n=''; try{ $n=(Get-Process -Id $p -ErrorAction Stop).ProcessName }catch{}
+      if(-not $n -or $n -match '^(dwm|vmwp|vmmem|vmcompute|vmconnect|mstsc|msrdc|csrss|System|Idle|audiodg)$'){ continue }
+      if($n -eq 'chrome'){ $cl=''; try{ $cl=[string](Get-CimInstance Win32_Process -Filter ('ProcessId='+$p) -ErrorAction Stop).CommandLine }catch{}; if($cl -match 'pillagers-cdp'){ continue } }
+      $now[$p]=$n+' at '+[int]$by[$p]+'%'
+      if(-not $hit -and $script:gpuPrev.ContainsKey($p)){ $hit=$now[$p] }
+    }
+  }catch{}
+  $script:gpuPrev=$now; $script:gpuPrevT=Get-Date
+  if($hit){ $script:gpuT=Get-Date; $script:gpuLast=$hit; if(-not $script:gpuOn){ Say ('a game on the graphics card: '+$hit) } }
+  $script:gpuOn=[bool]$hit
+}
+# SPARE PC: a program other than a test Chrome playing sound now ('' when none; the name of a process id is looked up once and kept 10
+# minutes). A sound check that does not work is said once in runner.log and counts as no sound.
+function SoundWho(){
+  if($script:noSnd){ return '' }
+  $r=''; try{ $r=[string][PillagersSpare.Sound]::SoundPids([single]0.01) }catch{ $r='ERR '+(Short "$_") }
+  if($r.StartsWith('ERR')){ if(-not $script:sndSaid){ $script:sndSaid=$true; Say ('PROBLEM: the sound check does not work, so the other signs count without it: '+(Short $r.Substring(3))) }; return '' }
+  if($script:sndCache.Count -gt 200){ $script:sndCache=@{} }
+  foreach($x in @($r.Split(',') | Where-Object { $_ -match '^\d+$' })){
+    $q=[int]$x; $c=$null
+    if($script:sndCache.ContainsKey($q)){ $c=$script:sndCache[$q]; if(((Get-Date)-$c.t).TotalMinutes -gt 10){ $c=$null } }
+    if(-not $c){
+      $pr=Get-CimInstance Win32_Process -Filter ('ProcessId='+$q) -ErrorAction SilentlyContinue
+      $c=@{ n=$(if($pr){ [string]$pr.Name }else{ 'a program' }); test=[bool]($pr -and [string]$pr.Name -eq 'chrome.exe' -and ([string]$pr.CommandLine) -match 'pillagers-cdp'); t=(Get-Date) }
+      $script:sndCache[$q]=$c
+    }
+    if(-not $c.test){ return ($c.n+' pid '+$q) }
+  }
+  return ''
+}
+# seconds since the last sign of someone at the PC. IDLE MODE: keyboard, mouse and pad, as before. SPARE PC: keyboard and mouse, a pad
+# that changed, another account at the screen and, carried over a restart, the last of these the copy before saw (human_t): that is the
+# last time a person certainly was here ($script:humanAgo). Then, under 2 hours after that and while this account is at the screen and
+# unlocked, the passive signs, cheapest first: a full-screen program, sound, a game on the graphics card (the stopgap's order and cap).
+# Last, the time someone was last there by any sign, carried over a restart (seen_t). $script:awayWhy says which sign it was (runner.log
+# only). With no presence check loaded it says nobody, so the runner tests as before.
+function AwaySec(){
+  if($Idle){ if([PillagersIdle.Input]::PadInUse()){ $script:padT=Get-Date }; return [Math]::Min([PillagersIdle.Input]::IdleSec(),((Get-Date)-$script:padT).TotalSeconds) }
+  if($script:noIn){ $script:awayWhy='nobody can be seen (the presence checks did not load)'; $script:humanAgo=1e9; return 1e9 }
+  $now=Get-Date; $e=Epoch
+  $o=$false
+  if(-not $script:noPres){
+    $pm=$false; try{ $pm=[PillagersSpare.Presence]::PadMoved() }catch{}
+    if($pm){ $script:padT=$now }
+    try{ $o=[PillagersSpare.Presence]::OtherAtScreen($MySid) }catch{}
+  }
+  if($o){ $script:conT=$now }
+  if($o -ne $script:conOn){ $script:conOn=$o; Say $(if($o){ 'another Windows account is in use at the screen' }else{ 'no other Windows account in use at the screen now' }) }
+  $a=[PillagersIdle.Input]::IdleSec(); $w='keyboard or mouse'
+  $s=($now-$script:padT).TotalSeconds; if($s -lt $a){ $a=$s; $w='game pad' }
+  $s=($now-$script:conT).TotalSeconds; if($s -lt $a){ $a=$s; $w='another account at the screen' }
+  if($script:holdH -gt 0){ $s=[double]($e-$script:holdH); if($s -lt $a){ $a=$s; $w='someone used the PC before this runner restarted' } }
+  $script:humanAgo=$a
+  if($a -lt $PassCapSec){
+    $script:capSaid=$false
+    $mine=$true; if(-not $script:noPres){ try{ $mine=[PillagersSpare.Presence]::MineAtScreen($MySid) }catch{} }
+    if($mine){
+      if($a -ge 60){
+        $q=-1; if(-not $script:noPres){ try{ $q=[int][PillagersSpare.Presence]::Quns() }catch{} }
+        if($q -ge 2 -and $q -le 4){ $script:pasT=$now; $script:pasWhy='a full-screen program' }
+        else{ $sw=SoundWho; if($sw){ $script:pasT=$now; $script:pasWhy='sound from '+$sw } else { GpuGame } }
+      }
+      $s=($now-$script:pasT).TotalSeconds; if($s -lt $a){ $a=$s; $w=$script:pasWhy }
+      $s=((Get-Date)-$script:gpuT).TotalSeconds; if($s -lt $a){ $a=$s; $w='a game on the graphics card: '+$script:gpuLast }
+    }
+  } elseif(-not $script:capSaid){
+    # the cap is what lets testing go on: say so once (a passive sign seen under 15 minutes ago would still hold it without the cap)
+    $p=[Math]::Min(($now-$script:pasT).TotalSeconds,($now-$script:gpuT).TotalSeconds)
+    if($p -lt 900){ $script:capSaid=$true; Say ('nobody has used the keyboard, mouse or a pad for '+[int]($a/60)+' minutes, so '+$(if(($now-$script:pasT).TotalSeconds -le ($now-$script:gpuT).TotalSeconds){ $script:pasWhy }else{ 'a game on the graphics card' })+' no longer counts as someone at the PC (that ends 2 hours after the last use)') }
+  }
+  if($script:holdE -gt 0){ $s=[double]($e-$script:holdE); if($s -lt $a){ $a=$s; $w='someone was at the PC before this runner restarted' } }
+  $script:awayWhy=$w
+  return $a
+}
+# SPARE PC: a copy that restarts itself while paused writes when someone was last there (seen_t) and when a person last used a key, the
+# mouse, a pad or another sign-in (human_t), as epoch seconds; the new copy goes on from them (Load-Hold), so its 15 minutes and its
+# 2-hour cap go on too. Cleared when testing starts again. A time ahead of this PC's clock counts as now.
+function Save-Hold([double]$away){
+  PutS 'seen_t' ([string]((Epoch)-[long][Math]::Min([Math]::Max($away,0),864000)))
+  PutS 'human_t' ([string]((Epoch)-[long][Math]::Min([Math]::Max($script:humanAgo,0),864000)))
+}
+function Load-Hold(){
+  $e=Epoch
+  $v=GetS 'seen_t'; if($v -match '^\d{9,11}$'){ $script:holdE=[Math]::Min([long]$v,$e) }
+  $v=GetS 'human_t'; if($v -match '^\d{9,11}$'){ $script:holdH=[Math]::Min([long]$v,$e) }
+}
 function FreeGB(){ $os=Get-CimInstance Win32_OperatingSystem -ErrorAction SilentlyContinue; if(-not $os){ return 0 }; return [Math]::Min($os.FreePhysicalMemory,$os.FreeVirtualMemory)/1MB }
 # 10-22 the VM's nights: the main PC's "VM night memory up" task (tools/migrate/host-night-memory.ps1) lends the VM up to 6 GB more at 23:00,
 # sized once from what is free right then, and takes it back from 06:00. Measured 10-20 and 10-21: 12.1 and 12.5 GB free at 23:00, VM 10 -> 16.
@@ -116,27 +371,156 @@ function FollowAway(){
 function VMResizeSoon(){ if((FollowAway) -gt 0){ return $false }; $hm=HourMin; return ($hm -ge 2240 -and $hm -lt 2310) }
 function VMNight(){ if((FollowAway) -gt 0){ return $false }; $hm=HourMin; return ($hm -ge 2240 -or $hm -lt 645) }
 # ends only what this runner started: the test scripts run from C:\PillagersIdle, and the test Chromes (debug port and pillagers-cdp profile)
-function Stop-Work([string]$why){
-  $n=0
-  Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object { $_.ProcessId -ne $PID -and $_.CommandLine -and (
-    ($_.CommandLine -match 'PillagersIdle' -and $_.CommandLine -match 'fuzz\.ps1|corpq\.sh|corpus-slices\.sh') -or
-    ($_.Name -eq 'chrome.exe' -and $_.CommandLine -match 'remote-debugging-port=(9344|9331|9332)(\s|$)' -and $_.CommandLine -match 'pillagers-cdp')) } |
-    ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue; $n++ }
+# 10-26 SPARE-PRESENCE-PAUSE, SPARE PC only (IDLE MODE keeps the match above, unchanged): a test part is one of the runner's own launch
+# shapes, by program and by where the script stands in the command line (the rule of the stopgap pause-watch.ps1 Snap): a robot
+# (powershell -File ...\tools\fuzz.ps1 ... -Port 9331/9332), the full run (Git bash with tools/handoff/shipkit/corpq.sh or
+# tools/corpus-slices.sh right after the shell, then C:/PillagersSpare/out/corpus/corpus-MMDD-HHMM.txt), a cdp.ps1 or pause.ps1 call
+# on 9344/9331/9332, and a test Chrome (debug port and pillagers-cdp profile, or a helper process of one by its profile). An editor, a
+# viewer or a search that only names one of these scripts (notepad, Code, powershell_ise, grep, a Claude command) is never one. Then
+# whose it is, by its parent chain (pause-watch.ps1 Owner): the runner's when the chain reaches a spare runner (this copy or another) or
+# ends at a process that has exited (what a stopped or restarted runner leaves; every test Chrome, whose cdp.ps1 -Start has exited; and
+# every process a Git bash script starts, whose Windows parent is a short-lived fork; so a test part started by hand from Git bash,
+# Claude's Bash tool included, is stopped like the runner's). One whose chain reaches anything else (Claude's PowerShell, a terminal,
+# explorer: started by hand) is left alone, and so is a test Chrome on a port such a test uses.
+$RxRunner='-File\s+(?:"[^"]*[\\/]spare-runner\.ps1"|[^"\s]*[\\/]spare-runner\.ps1)(?=\s|$)'
+$RxRobot='-File\s+(?:"[^"]*[\\/]tools[\\/]fuzz\.ps1"|[^"\s]*[\\/]tools[\\/]fuzz\.ps1)\s.*-Port\s+(9331|9332)(\s|$)'
+$RxCdp='-File\s+(?:"[^"]*[\\/](?:cdp|pause)\.ps1"|[^"\s]*[\\/](?:cdp|pause)\.ps1)\s.*-Port\s+(9344|9331|9332)(\s|$)'
+$RxRun='^\s*(?:"[^"]*[\\/](?:ba)?sh(?:\.exe)?"|(?:[^"\s]*[\\/])?(?:ba)?sh(?:\.exe)?)\s+"?(?:tools/handoff/shipkit/corpq\.sh|tools/corpus-slices\.sh)"?\s+"?C:/PillagersSpare/out/corpus/corpus-\d{4}-\d{4}\.txt(?:"|\s|$)'
+function Spare-Role($p){
+  $c=[string]$p.CommandLine; $n=[string]$p.Name
+  if(-not $c){ return '' }
+  if($n -eq 'powershell.exe' -or $n -eq 'pwsh.exe'){ if($c -match $RxRunner){ return 'runner' }; if($c -match $RxRobot){ return 'robot' }; if($c -match $RxCdp){ return 'cdp' }; return '' }
+  if($n -eq 'bash.exe' -or $n -eq 'sh.exe'){ if($c -match $RxRun){ return 'run' }; return '' }
+  if($n -eq 'chrome.exe' -and (($c -match 'remote-debugging-port=(9344|9331|9332)(\s|$)' -and $c -match 'pillagers-cdp') -or $c -match 'pillagers-cdp(9344|9331|9332)\b')){ return 'chrome' }
+  return ''
+}
+# every process under $roots by parent id (a child is never older than its parent, so an older process with a reused parent id is not
+# one); under a test Chrome only its own chrome.exe helpers
+function Under($kids,$roots){
+  $out=New-Object Collections.ArrayList; $seen=@{}; $q=New-Object Collections.Queue
+  foreach($r in @($roots)){ if($r){ $seen[[int]$r.ProcessId]=1; $q.Enqueue($r) } }
+  while($q.Count -gt 0){
+    $p=$q.Dequeue(); $id0=[int]$p.ProcessId
+    if(-not $kids.ContainsKey($id0)){ continue }
+    foreach($c in $kids[$id0]){
+      $id=[int]$c.ProcessId
+      if($id -le 4 -or $id -eq $PID -or $seen.ContainsKey($id)){ continue }
+      if($c.CreationDate -and $p.CreationDate -and $c.CreationDate -lt $p.CreationDate){ continue }
+      if([string]$p.Name -eq 'chrome.exe' -and [string]$c.Name -ne 'chrome.exe'){ continue }
+      $seen[$id]=1; [void]$out.Add($c); $q.Enqueue($c)
+    }
+  }
+  return $out.ToArray()
+}
+# 'runner', 'orphan' or 'hand' (above); $cand holds every test part and every process under one, so the chain of a runner's test part
+# never meets 'hand'
+function Part-Owner($p,$byId,$cand,$rid){
+  $cur=$p
+  for($i=0;$i -lt 64;$i++){
+    $pp=[int]$cur.ParentProcessId; $par=$null
+    if($pp -gt 4 -and $byId.ContainsKey($pp)){ $par=$byId[$pp] }
+    if($par -and $par.CreationDate -and $cur.CreationDate -and $par.CreationDate -gt $cur.CreationDate.AddSeconds(1)){ $par=$null }   # a reused id
+    if(-not $par){ return 'orphan' }
+    if($rid.ContainsKey($pp)){ return 'runner' }
+    if(-not $cand.ContainsKey($pp)){ return 'hand' }
+    $cur=$par
+  }
+  return 'orphan'
+}
+# stops one process from the list, checked against its start time right before: a process id that a new process has taken since the
+# list was made is left alone. True when it was stopped.
+function Kill-One($p){
+  $g=$null; try{ $g=[Diagnostics.Process]::GetProcessById([int]$p.ProcessId) }catch{ return $false }
+  try{
+    try{ if($p.CreationDate -and [Math]::Abs(($g.StartTime-$p.CreationDate).TotalSeconds) -gt 2){ return $false } }catch{}
+    $g.Kill(); return $true
+  }catch{ return $false } finally{ $g.Dispose() }
+}
+# From each part of the runner's it also stops what that part started: each robot's hidden watchdog, the test server a robot starts for
+# itself (serve.ps1 on 8811), which a killed robot never closes, the console hosts, and a test Chrome's own helpers; never this runner
+# or another runner, nor node serve.mjs (the runner's 8806 server). The scripts go first, then what they started, then the browsers: a
+# robot whose browser dies under it records a "cdp" problem (fuzz.ps1 Run-Raid) that keeps that build out of stable (tools/stable.mjs),
+# and a hashtable gives its keys in any order. A second look 2 s later catches a browser that was being started at that moment.
+# -Refund (someone is at the PC): the runner's full run (state.txt corpus_file), stopped before its end, gives its try back once, so it
+# starts again from the beginning once the PC is free (while it is paused the VM runs the tests, so a day of short visits still gets
+# full runs there).
+function Stop-Work([string]$why,[switch]$Refund){
+  if($Idle){
+    $n=0
+    Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object { $_.ProcessId -ne $PID -and $_.CommandLine -and (
+      ($_.CommandLine -match 'PillagersIdle' -and $_.CommandLine -match 'fuzz\.ps1|corpq\.sh|corpus-slices\.sh') -or
+      ($_.Name -eq 'chrome.exe' -and $_.CommandLine -match 'remote-debugging-port=(9344|9331|9332)(\s|$)' -and $_.CommandLine -match 'pillagers-cdp')) } |
+      ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue; $n++ }
+    $script:working=$false
+    if($n){ Say ('stopped '+$n+' test parts ('+$why+')') }
+    return
+  }
+  $n=0; $corp=@{}
+  for($pass=0;$pass -lt 2;$pass++){
+    $all=@(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue)
+    $byId=@{}; $kids=@{}; $role=@{}; $rid=@{}; $rid[[int]$PID]=1; $roots=@()
+    foreach($p in $all){
+      $id=[int]$p.ProcessId; $byId[$id]=$p
+      $pp=[int]$p.ParentProcessId; if(-not $kids.ContainsKey($pp)){ $kids[$pp]=New-Object Collections.ArrayList }; [void]$kids[$pp].Add($p)
+      if($id -eq $PID){ continue }
+      $r=Spare-Role $p
+      if($r -eq 'runner'){ $rid[$id]=1 } elseif($r){ $role[$id]=$r; $roots+=$p }
+    }
+    $cand=@{}; foreach($p in $roots){ $cand[[int]$p.ProcessId]=1 }; foreach($p in (Under $kids $roots)){ $cand[[int]$p.ProcessId]=1 }
+    $own=@{}; foreach($p in $roots){ $own[[int]$p.ProcessId]=Part-Owner $p $byId $cand $rid }
+    # the ports that tests started by hand use: a test Chrome there is theirs
+    $hand=@{}
+    foreach($p in $roots){
+      $id=[int]$p.ProcessId; if($own[$id] -ne 'hand'){ continue }; $c=[string]$p.CommandLine
+      if($role[$id] -eq 'run'){ $hand['9344']=1 } elseif($c -match '-Port\s+(\d+)' -or $c -match 'remote-debugging-port=(\d+)' -or $c -match 'pillagers-cdp(\d{4})'){ $hand[$Matches[1]]=1 }
+    }
+    $kill=@{}
+    foreach($p in $roots){
+      $id=[int]$p.ProcessId; if($own[$id] -eq 'hand'){ continue }; $c=[string]$p.CommandLine
+      if($role[$id] -eq 'chrome' -and ($c -match 'remote-debugging-port=(\d+)' -or $c -match 'pillagers-cdp(\d{4})') -and $hand.ContainsKey($Matches[1])){ continue }
+      $kill[$id]=$p; if($role[$id] -eq 'run'){ $corp[$c]=1 }
+    }
+    foreach($p in (Under $kids @($kill.Values))){
+      $id=[int]$p.ProcessId
+      if(-not $kill.ContainsKey($id) -and -not $rid.ContainsKey($id) -and [string]$p.CommandLine -notmatch 'serve\.mjs'){ $kill[$id]=$p }
+    }
+    if($kill.Count -eq 0){ break }
+    # the order: 0 the test scripts (robots, full run), 1 what they started (watchdogs, 8811 server, cdp.ps1 calls, bash children), 2 the
+    # test browsers; oldest first within each (a parent before its children)
+    $ord=@($kill.Values | Sort-Object @{Expression={ $r=$role[[int]$_.ProcessId]; if($_.Name -eq 'chrome.exe'){ 2 }elseif($r -eq 'robot' -or $r -eq 'run'){ 0 }else{ 1 } }},@{Expression={ $_.CreationDate }})
+    $first=@($ord | Where-Object { $_.Name -ne 'chrome.exe' -and ($role[[int]$_.ProcessId] -eq 'robot' -or $role[[int]$_.ProcessId] -eq 'run') } | ForEach-Object { [int]$_.ProcessId })
+    foreach($id in $first){ if(Kill-One $kill[$id]){ $n++ } }
+    if($first.Count){ Start-Sleep -Milliseconds 300 }   # the scripts are gone before their browsers close
+    foreach($p in $ord){ if($first -notcontains [int]$p.ProcessId){ if(Kill-One $p){ $n++ } } }
+    Start-Sleep -Seconds 2
+  }
   $script:working=$false
   if($n){ Say ('stopped '+$n+' test parts ('+$why+')') }
+  $cf=GetS 'corpus_file'
+  # only the run state.txt names (its output file is in the stopped bash's command line), only once per run, and not a run that ended
+  if($corp.Count -and $Refund -and $cf -and (GetS 'corpus_done') -ne $cf -and @($corp.Keys | Where-Object { $_.IndexOf((Split-Path $cf -Leaf),[StringComparison]::OrdinalIgnoreCase) -ge 0 }).Count -and
+     -not ((Test-Path -LiteralPath $cf) -and ([IO.File]::ReadAllText($cf) -match 'ALL DONE'))){
+    $cb=GetS 'corpus_blob'; $t=[int]('0'+(GetS 'tries'))
+    if($cb -and (GetS 'try_blob') -eq $cb -and $t -gt 0){ PutS 'tries' ([string]($t-1)) }
+    PutS 'corpus_done' $cf   # so the main loop does not report it as "ended without finishing"; the next start writes a new file
+    Say ('full test run '+(Split-Path $cf -Leaf)+' stopped before its end because someone is at the PC: its try is given back')
+  }
 }
 # the test scripts this runner's copies started (the same match Stop-Work uses)
 function IdleWork(){
   @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object { $_.ProcessId -ne $PID -and $_.CommandLine -and
     $_.CommandLine -match 'PillagersIdle' -and $_.CommandLine -match 'fuzz\.ps1|corpq\.sh|corpus-slices\.sh' }).Count
 }
-# the wait between rounds, looking for him every 5 seconds
+# SPARE-PRESENCE-PAUSE: someone came to the spare PC during this round (a fetch, a test copy build or a push can take a minute), so it
+# starts nothing more; the next round pauses. Always false in IDLE MODE.
+function Arrived(){ if($Idle){ return $false }; return ((AwaySec) -lt 30) }
+# the wait between rounds, looking for him every 5 seconds (10-26 SPARE-PRESENCE-PAUSE: on the spare PC too, for anyone)
 function Watch([int]$sec){
   $end=(Get-Date).AddSeconds($sec); $k=0
   while((Get-Date) -lt $end){
     Start-Sleep -Seconds 5; $k++
-    if((AwaySec) -lt 30){ Stop-Work 'he is back at the PC'; return }
-    if(($k % 6) -eq 0){
+    if((AwaySec) -lt 30){ if($Idle){ Stop-Work 'he is back at the PC' }else{ Stop-Work ('someone is at the PC: '+$script:awayWhy) -Refund }; return }
+    if($Idle -and ($k % 6) -eq 0){
       if((FreeGB) -lt 4){ Stop-Work 'under 4 GB free'; return }
       if(VMResizeSoon){ Stop-Work 'the VM takes its night memory at 23:00'; return }
     }
@@ -216,10 +600,14 @@ function Start-Corpus(){
       return
     }
   }
+  # SPARE-PRESENCE-PAUSE: a run stopped because someone came to the PC has already given its try back (Stop-Work -Refund)
   $tries=0; if((GetS 'try_blob') -eq $blob){ $tries=[int]('0'+(GetS 'tries')) }
   if($tries -ge 2){ return }   # this build failed twice to give a full run; wait for the next one
   PutS 'try_blob' $blob; PutS 'tries' ([string]($tries+1))
   if(-not (Build-Fixture)){ return }
+  # SPARE-PRESENCE-PAUSE: someone came to the spare PC while the test copy was built (a minute or so): the run is not started and its try
+  # is given back; the next round pauses
+  if(Arrived){ PutS 'tries' ([string]$tries); Say ('someone came to the PC while the test copy was built ('+$script:awayWhy+'): the full run waits, its try is given back'); return }
   PutS 'fx_blob' $blob   # corpq.sh copies this test copy to fxcorpus.html, which the robots play
   $name='corpus-'+(Get-Date -Format 'MMdd-HHmm')+'.txt'; $outF=$CorpDir+'\'+$name
   [IO.File]::WriteAllText($outF+'.head',$head+"`n",$Enc)
@@ -259,7 +647,11 @@ function Write-Status([string]$corpus,[int]$robots){
   # VM's import never found epoch= (it read the spare PC as never seen).
   $L=@(('host='+$HostN),('seen='+(Get-Date).ToString('yyyy-MM-dd HH:mm')),('epoch='+(Epoch)),('game='+(G -C $R rev-parse --short=8 HEAD)+' v'+(GameVer)),
     ('test_run='+$corpus),('robots='+$robots),('ram_free_gb='+$free),('push_ok='+(GetS 'push_ok')),('runner='+$SelfHash.Substring(0,8)),('mode='+$(if($Idle){ 'idle' }else{ 'full' })))
-  if($Idle){ $L+=('spare_pc='+(SparePC)) }
+  # SPARE-PRESENCE-PAUSE: on the spare PC, when its pause began (epoch), for whoever reads the status; the VM goes by test_run=paused alone
+  if($Idle){ $L+=('spare_pc='+(SparePC)) } else {
+    if($corpus -like 'paused*' -and (GetS 'pause_t')){ $L+=('paused_since='+(GetS 'pause_t')) }
+    if($script:noIn){ $L+='presence=off' }   # the presence checks did not load: it tests without pausing for anyone (see runner.log)
+  }
   [IO.File]::WriteAllLines($StatusF,[string[]]$L,$Enc)
 }
 
@@ -295,6 +687,19 @@ function Publish([string]$why){
 # 10-22 review: a copy that restarted itself for a new runner from GitHub left its robots (or a test run) going; this copy looks after them,
 # so his return, the 4 GB floor and the 22:40 hold still stop them
 if($Idle -and (IdleWork) -gt 0){ $script:working=$true; Say 'an earlier copy left test work running: this copy looks after it now' }
+# SPARE-PRESENCE-PAUSE: on the spare PC an earlier copy's work (or the full run's Chrome, which stays open after a finished run) is this
+# copy's to stop too: while someone is at the PC every look stops whatever is there. A pause this PC was switched off in (or whose runner
+# died) is over: the next one is a new pause with its own start time, and the status goes out at the first round.
+# A copy that restarted itself during a pause left when someone was last there (Save-Hold): this copy goes on from it. Then, before its
+# first round, every new copy looks for about 35 s (8 looks 5 s apart, writing the heartbeat so the task's copies exit): a pad needs two
+# looks to show a change and a game two graphics-card looks 30 s apart, so neither a restart for a new runner, nor the 15-minute task
+# reviving a stopped runner, nor the stopgap handing over, starts the tests under someone who is playing on a pad or watching.
+if(-not $Idle){
+  $script:working=$true
+  if($HbOld -and (GetS 'pause_why')){ PutS 'pause_why' ''; PutS 'pause_t' ''; PutS 'pub_t' '0'; Say 'the last pause ended with this PC off or its runner stopped' }
+  Load-Hold
+  if(-not $script:noIn){ for($i=0;$i -lt 8;$i++){ [IO.File]::WriteAllText($Hb,[string](Epoch),$Enc); if((AwaySec) -lt 900){ break }; if($i -lt 7){ Start-Sleep -Seconds 5 } } }
+}
 while($true){
   [IO.File]::WriteAllText($Hb,[string](Epoch),$Enc)
   if($Idle){
@@ -315,6 +720,36 @@ while($true){
     }
     if((GetS 'pause_why')){ PutS 'pause_why' ''; Say ('he has been away '+[int]($away/60)+' minutes and '+[Math]::Round($fg,1)+' GB are free: testing') }
     $script:working=$true
+  } else {
+    # SPARE-PRESENCE-PAUSE: while someone is at the spare PC nothing runs; a look every 20 seconds (so the heartbeat stays fresh), each
+    # one also stopping any test part that survived or started since (with nothing to stop that is one process list), a status note for
+    # the VM when the pause begins and every PublishMin minutes (a failed push is tried again at the next note, not every look), and at
+    # those notes a new runner from GitHub is still taken (not while a full run is still there: the checkout would swap its files), so a
+    # fix from the VM reaches a spare PC that is paused for hours; the new copy goes on from when someone was last there (Save-Hold)
+    $away=AwaySec
+    if($away -lt 900){
+      $pw='paused: someone is using the PC'
+      Stop-Work ($pw+', '+$script:awayWhy) -Refund
+      $chg=((GetS 'pause_why') -ne $pw)
+      if($chg){ PutS 'pause_why' $pw; PutS 'pause_t' ([string](Epoch)); Say ($pw+' ('+$script:awayWhy+')') }
+      $pt=[Math]::Max([long]('0'+(GetS 'pub_t')),$script:pubTry)
+      if($chg -or ((Epoch)-$pt) -ge ($PublishMin*60)){
+        $script:pubTry=[long](Epoch); Write-Status $pw 0; Publish 'paused'
+        if(((Running 'corpq\.sh|corpus-slices\.sh') -eq 0) -and (Update-Game) -and (Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash -ne $SelfHash){
+          Say 'a new copy of this runner came from GitHub: restarting'
+          Save-Hold $away
+          Remove-Item -LiteralPath $Hb -Force -ErrorAction SilentlyContinue
+          Start-Process -FilePath wscript.exe -ArgumentList ('"'+$T+'\spare\spare-start.vbs"') | Out-Null
+          exit 0
+        }
+      }
+      if($Once){ break }
+      Start-Sleep -Seconds 20; continue
+    }
+    # testing again: pub_t 0 makes this round publish its status at once, so the VM does not go on reading "paused" for up to PublishMin
+    if((GetS 'pause_why')){ PutS 'pause_why' ''; PutS 'pause_t' ''; PutS 'pub_t' '0'; Say ('nobody has been at the PC for '+[int]($away/60)+' minutes: testing again') }
+    if((GetS 'seen_t') -or (GetS 'human_t')){ PutS 'seen_t' ''; PutS 'human_t' '' }
+    $script:working=$true
   }
   Ensure-Server
   $cr=Running 'corpq\.sh|corpus-slices\.sh'
@@ -334,17 +769,23 @@ while($true){
         Start-Process -FilePath wscript.exe -ArgumentList ('"'+$T+'\spare\spare-start.vbs"') | Out-Null
         exit 0
       }
+      if(Arrived){ continue }   # SPARE-PRESENCE-PAUSE (never in IDLE MODE)
       Start-Corpus
     }
   }
+  if(Arrived){ continue }
   if((Running 'fuzz\.ps1.*-Port 9331(\s|$)') -eq 0){ Start-Robot 9331 'fixture-soak-spare1.html' }
   # 10-22: Start-Robot takes a screen size (fuzz.ps1 -Size), but both robots here stay at 1080p. A 4K robot on the main PC reads as "he is gaming"
   # to its game check (a program at 15% of the graphics card, 22:38 that night), which holds the VM to 30% of its processors; the VM plays the 4K robot.
-  if((Running 'fuzz\.ps1.*-Port 9332(\s|$)') -eq 0){ Start-Robot 9332 'fixture-soak-spare2.html' }
+  if(Arrived){ continue }
+  # 10-26: on the spare (4 threads) a full run plus two robots chokes the robots: 5 to 10 connection failures an hour against about 1 with the two robots
+  # alone (fuzz.log 10-25 15:00 to 10-26 23:49), and their hang reports land on the build under test. While a full run goes, the second robot waits.
+  $fullRun=(-not $Idle) -and ((Running 'corpq\.sh|corpus-slices\.sh') -gt 0)
+  if((-not $fullRun) -and (Running 'fuzz\.ps1.*-Port 9332(\s|$)') -eq 0){ Start-Robot 9332 'fixture-soak-spare2.html' }
   $cs='idle'; if((Running 'corpq\.sh|corpus-slices\.sh') -gt 0){ $cs='running '+(Split-Path (GetS 'corpus_file') -Leaf) }
   Write-Status $cs (Running 'fuzz\.ps1')
   $pt=[long]('0'+(GetS 'pub_t'))
   if($why -or ((Epoch)-$pt) -ge ($PublishMin*60)){ if(-not $why){ $why='update' }; Publish $why }
   if($Once){ break }
-  if($Idle){ Watch 300 } else { Start-Sleep -Seconds 300 }
+  Watch 300   # SPARE-PRESENCE-PAUSE: the spare PC also looks for someone every 5 seconds (it used to sleep the 5 minutes)
 }
