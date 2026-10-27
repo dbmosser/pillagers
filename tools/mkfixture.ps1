@@ -33789,6 +33789,7 @@ window.__REGRESS=[
   {v:'27.24',what:'his order: one persistent feed at the bottom left takes the raid lines: pickups counted in their rarity colour, alerts, objectives, teammate lines, kills and medals; ten lines, the newest at the bottom, full for six seconds then dimmed, clear of the body corner and the controls list',
    run:function(){
      if(!window.__deploy||!window.__endRaid||!window.__frame) return 'SKIP: no raid here';
+     if(typeof feedSay==='function'&&/cw-hudfix/.test(String(feedSay))) return 'SKIP: retired by cw-hudfix (v35.11), his note 10-27: looted items left the feed';
      if(typeof feedAdd!=='function'||typeof feedDraw!=='function'||typeof FEEDBOX==='undefined') return 'this build has no feed';
      var bad=[], g, F, i, a, b, ln, R, k;
      function find(t){ for(var j=0;j<F.lines.length;j++) if(F.lines[j].txt.indexOf(t)===0) return F.lines[j]; return null; }
@@ -59526,6 +59527,7 @@ window.__REGRESS=[
   {v:'21.65',what:'the RECOVERING icon shows only while the regen really runs',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof drawHUD!=='function'||typeof tickRegen!=='function') return 'SKIP: no HUD here';
+     if(typeof statusLive==='function'&&/regenUpT/.test(String(statusLive))) return 'SKIP: retired by cw-hudfix (v35.11), his note 10-27: recovering shows only while health climbs';
      var bad=[], g, p, said=[], own=Object.prototype.hasOwnProperty.call(ctx,'fillText'), of=ctx.fillText;
      try{
        __topClear(); __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
