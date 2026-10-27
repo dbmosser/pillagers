@@ -1,0 +1,7 @@
+v35.08: items on the hotbar
+
+drag a medkit, grenade, stim or plate onto any key of the bar, in raid, stash, undercroft or pre-raid; its key uses it at once and the gun stays in hand; a gun that lost its key moves to a free one
+
+Check 35.08. Fails on v35.07.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

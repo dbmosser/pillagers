@@ -3723,7 +3723,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.07';
+var VER='35.08';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17498,6 +17498,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
         if(g.bag.indexOf(_hk)<0&&!((_hpw.wep&&_hpw.wep.id===_hi.gk)||(_hpw.sec&&_hpw.sec.id===_hi.gk))){ (g.hotPruned=g.hotPruned||{})[_ha]=_hk; delete g.hotAssign[_ha]; }
         continue;
       }
+      if(/^(throw|med|plate)$/.test(beltClassOf(_hk))) continue;   // cw-hotitems: an item key he set stays, greyed when he has none
       if(g.bag.indexOf(_hk)<0&&!((g.pouch||{})[_hk]>0)){ (g.hotPruned=g.hotPruned||{})[_ha]=_hk; delete g.hotAssign[_ha]; }   // v14.86: kept aside for his plan
     }
   }
@@ -18243,7 +18244,7 @@ function raidKey(code,repeat,ev){
       // item in the slot". Keys 1 to 4 select and draw guns as before. In a raid keys 5 to 9 are INSTANT keys: 5 and 6 throw the grenade on that
       // key, 7 and 8 use the heal on that key, 9 slots a plate, and the gun stays in his hands every time (beltInstant). They move neither the
       // G pick nor the H pick. The Undercroft floor keeps the old pick-the-key meaning of the digits.
-      if(dn>GUNKEYS&&!G.hubFloor) beltInstant(dn-1); else setHot(dn-1);
+      var _ic=(!G.hubFloor)?hotbarSlots()[dn-1]:null; if((dn>GUNKEYS||(_ic&&/^(throw|heal|stim|armor)$/.test(_ic.kind)))&&!G.hubFloor) beltInstant(dn-1); else setHot(dn-1);   // cw-hotitems: an item key uses its item at once
       if(ev) ev.preventDefault();
     }
   }
@@ -18909,7 +18910,7 @@ window.addEventListener('mouseup',function(e){
         // A refusal that says what it is refusing is the rule this file already
         // uses for the extraction prompt, and it applies here for the same reason:
         // a gesture that silently does nothing teaches you the feature is missing.
-        if(_si&&_siDerived){
+        if(_si&&_siDerived&&!(_dit&&/^(throw|med|plate)$/.test(beltClassOf(d.key)))){   // cw-hotitems (his order of 10-27): an item takes a gun key, the gun stays where it is
           say('SLOT '+slotKeyName(HC.i)+' TAKES GUNS ONLY');   // v22.43: the shooter voice   // v22.xx (R52): the slot word
           dropped=true; break;
         }
@@ -18944,7 +18945,7 @@ window.addEventListener('mouseup',function(e){
         // v14.62, backpack audit finding 7: A DRAG WHOSE ITEM HAS LEFT THE BACKPACK BINDS NOTHING. Press and hold a tile, press Z
         // to drop that stack, then let go over a belt key: the key was bound to an item he no longer carried, and the plan
         // saved with it. A backpack drag binds only while its item is still in the backpack.
-        if(d.fromHot===undefined&&G.bag.indexOf(d.key)<0){ dropped=true; break; }
+        if(d.fromHot===undefined&&G.bag.indexOf(d.key)<0&&!((G.pouch||{})[d.key]>0)){ dropped=true; break; }   // cw-hotitems: a pouch grenade binds too
         G.hotAuto=G.hotAuto||{};
         var _wasAutoT=G.hotAuto[HC.i];
         for(var ok in G.hotAssign) if(G.hotAssign[ok]===d.key) delete G.hotAssign[ok];
@@ -18966,9 +18967,9 @@ window.addEventListener('mouseup',function(e){
           for(var _fk in G.hotAssign) if(!G.hotAuto[_fk]) _flush[_fk]=G.hotAssign[_fk];
           P.hotAssign=JSON.parse(JSON.stringify(hotKeepPruned(_flush))); saveProfile();
         }
-        G.hot=HC.i;
+        G.hot=(ITEMS[d.key]&&ITEMS[d.key].use==='gun')?HC.i:gunCell();   // cw-hotitems: an item on a key leaves the gun in his hands selected
         blip('pick');
-        say(((ITEMS[d.key]?ITEMS[d.key].name:'Item')+' to slot '+(HC.i+1)).toUpperCase());   // v22.58: the shooter voice   // v22.xx (R52): the slot word
+        say(((ITEMS[d.key]?ITEMS[d.key].name:'Item')+' to slot '+slotKeyName(HC.i)).toUpperCase());   // v22.58: the shooter voice   // v22.xx (R52): the slot word
         dropped=true;
         break;
       }
@@ -24028,14 +24029,15 @@ function useBeltHeal(ix){
 // throw path (G.tsel is pointed at it for the throw and put back, so the G pick does not move), a medical key uses its item through the path H
 // uses (useBeltHeal), key 9 slots a plate as a hold on H does (quickPlate). An empty key gives the usual none line. G.hot never moves.
 function beltInstant(i){
-  var p=G&&G.player, sl, c, cls=BELT_CLASS[i], ti, sv;
-  if(!G||G.sim||G.over||G.paused||G.trade||G.hubFloor||!p||i<GUNKEYS||i>=HOTBAR_N) return false;
+  var p=G&&G.player, sl, c, cls='', ti, sv;
+  if(!G||G.sim||G.over||G.paused||G.trade||G.hubFloor||!p||i<0||i>=HOTBAR_N) return false;
   if(p.downed){ say('NOT WHILE DOWN'); return false; }
   if(p.dying||p.specOut) return false;
   sl=hotbarSlots(); c=sl[i];
+  cls=BELT_CLASS[i]; if(c&&c.kind==='throw') cls='throw'; else if(c&&(c.kind==='heal'||c.kind==='stim')) cls='med'; else if(c&&c.kind==='armor') cls='plate'; else if(i<GUNKEYS) return false;   // cw-hotitems: the item on the key decides
   if(cls==='throw'){
     ti=(c&&c.kind==='throw'&&c.icon&&(c.count|0)>0)?THROWKEYS.indexOf(c.icon):-1;
-    if(ti<0){ say('NO THROWABLE ON KEY '+(i+1)); return false; }
+    if(ti<0){ say('NO THROWABLE ON KEY '+slotKeyName(i)); return false; }
     sv=G.tsel; G.tsel=ti;
     try{ doThrow(); } finally { G.tsel=sv; }
     return true;
@@ -24047,14 +24049,14 @@ function beltInstant(i){
 // A click on a grenade or medical key picks it, as U and J do (it used to put the highlight there, so the trigger cooked it); a gun key draws.
 function beltPickCell(i){
   var sl, c, ti;
-  if(!G||G.hubFloor||G.sim||i<GUNKEYS||i>=HOTBAR_N) return false;
+  if(!G||G.hubFloor||G.sim||i<0||i>=HOTBAR_N) return false;   // cw-hotitems: any key may hold an item
   sl=hotbarSlots(); c=sl[i];
   if(!c) return false;
-  if(BELT_CLASS[i]==='throw'&&c.kind==='throw'&&c.icon&&(c.count|0)>0){
+  if(c.kind==='throw'&&c.icon&&(c.count|0)>0){
     ti=THROWKEYS.indexOf(c.icon); if(ti<0) return false;
     G.tsel=ti; say((c.name+' ready').toUpperCase()); return true;
   }
-  if(BELT_CLASS[i]==='med'&&(c.kind==='heal'||c.kind==='stim')&&(c.count|0)>0&&c.itemKey&&ITEMS[c.itemKey]){
+  if((c.kind==='heal'||c.kind==='stim')&&(c.count|0)>0&&c.itemKey&&ITEMS[c.itemKey]){
     G.msel=c.itemKey; say((c.name+' ready').toUpperCase()); return true;
   }
   return false;
@@ -27256,7 +27258,7 @@ function hotbarSlots(){
     var aix=+ai, akey=G.hotAssign[ai];
     if(!(aix>=0&&aix<out.length)) continue;
     var ait=ITEMS[akey]; if(!ait) continue;
-    if(aix>=GUNKEYS||ait.use!=='gun') continue;   // v25.xx (belt3): a pin on a gun key is a gun; the class keys read their own pins (beltClassCells)
+    if(aix>=HOTBAR_N||!/^(gun|throw|med|plate)$/.test(beltClassOf(akey))) continue;   // cw-hotitems (his order of 10-27): an item he dragged onto a key shows there
     // v6.61, his note: the belt IS the layout. A gun is an item like any other, so an
     // assignment displaces whatever the derived bar put there, guns included. Without
     // this the Undercroft belt and the raid bar disagreed on keys 1 and 2.
@@ -27300,7 +27302,7 @@ function hotbarSlots(){
       // working throwable cell. Built exactly as the derived cell at 12930 is
       // built, so setHot syncs the selector, the trigger cooks it, and the
       // dedupe leaves exactly one cell for that grenade: the key he chose.
-      var _pq=(G.pouch&&G.pouch[akey])||0;
+      var _pq=beltHave(akey);   // cw-hotitems: the pouch and the backpack
       out[aix]={k:'throw:'+akey,name:ait.name,icon:akey,kind:'throw',
         count:_pq,c:ait.c||'#cdd6dd',assigned:1,itemKey:akey,empty:(_pq<=0)?1:0};
     } else {
@@ -27405,6 +27407,7 @@ function beltDropRefusal(key,ix){
   var cls=beltClassOf(key);
   if(!ITEMS[key]) return '';
   if(cls&&BELT_CLASS[ix]===cls) return '';
+  if(/^(throw|med|plate)$/.test(cls)&&ix>=0&&ix<HOTBAR_N) return '';   // cw-hotitems (his order of 10-27): a medkit, grenade, stim or plate goes on any key he drags it to
   return beltClassWord(cls);
 }
 // how many of a class item he carries: the pouch for a throwable, the backpack for the rest
@@ -27481,7 +27484,7 @@ function beltClassPin(key,quiet,slots){
 function classKeysSettle(o){
   if(!G||G.sim||G.over||G.hubFloor||!G.player) return;
   var A=(G.hotAssign=G.hotAssign||{}), U=(G.hotAuto=G.hotAuto||{}), k, ci, sl, c, ik;
-  for(k in A){ if(!ITEMS[A[k]]||beltClassOf(A[k])!==BELT_CLASS[+k]){ (G.hotPruned=G.hotPruned||{})[k]=A[k]; delete A[k]; delete U[k]; } }
+  for(k in A){ if(!ITEMS[A[k]]||(beltClassOf(A[k])!==BELT_CLASS[+k]&&!(/^(throw|med|plate)$/.test(beltClassOf(A[k]))&&+k<HOTBAR_N))){ (G.hotPruned=G.hotPruned||{})[k]=A[k]; delete A[k]; delete U[k]; } }   // cw-hotitems: an item pin stays
   sl=hotbarSlots();
   for(ci=GUNKEYS;ci<HOTBAR_N;ci++){
     c=sl[ci]; if(!c||c.kind==='empty'||c.assigned||A[ci]!==undefined) continue;
@@ -54672,7 +54675,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.07: The what is new stamp keeps up with the build; the three notes are unchanged. Check 35.07 fails on v35.06',
+  now:'v35.08: drag a medkit, grenade, stim or plate onto any key of the bar, in raid, stash, undercroft or pre-raid; its key uses it at once and the gun stays in hand; a gun that lost its key moves to a free one Check 35.08 fails on v35.07',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -55960,10 +55963,11 @@ function dropDeadKeys(){
   // freebie kit deleted the key he had set. The two equipped guns count as held.
   if(P.equipped&&P.equipped!=='fists') have['gun_'+P.equipped]=1;
   if(P.equippedSec&&P.equippedSec!=='none'&&P.equippedSec!=='fists') have['gun_'+P.equippedSec]=1;
-  for(k in P.hotAssign) if(!have[P.hotAssign[k]]) delete P.hotAssign[k];
+  for(k in P.hotAssign) if(!have[P.hotAssign[k]]&&!/^(throw|med|plate)$/.test(beltClassOf(P.hotAssign[k]))) delete P.hotAssign[k];   // cw-hotitems: an item key stays when he has none
 }
 function clearKeysFor(key){
   if(!P.hotAssign) return;
+  if(/^(throw|med|plate)$/.test(beltClassOf(key))) return;   // cw-hotitems: an item key stays, greyed, until he drags it off
   var live=stageKitLive(), still=0, i;
   for(i=0;i<live.length;i++) if(live[i]===key) still++;
   if(still) return;

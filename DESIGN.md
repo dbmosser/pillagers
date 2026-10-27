@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.08 - ITEMS ON THE HOTBAR
+
+Co-op hunt while he was away. his order of 10-27: players may drag medkits, grenades and other usables onto the bar, replacing that key's gun, from the raid backpack, the stash, the undercroft backpack and the pre-raid screen
+
+MEASURED. Check 35.08 passes, and fails on v35.07.
 ## v35.07 - THE WHAT IS NEW STAMP KEEPS UP
 
 Co-op hunt while he was away. The card was stamped v34.91 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.
