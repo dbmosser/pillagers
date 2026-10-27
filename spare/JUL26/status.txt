@@ -1,8 +1,8 @@
 host=JUL26
-seen=2026-10-27 00:10
-epoch=1793074232
+seen=2026-10-27 00:15
+epoch=1793074523
 game=b1fe5bf4 v34.94
-test_run=paused: he is using the PC
+test_run=paused: the VM takes its memory first
 robots=0
 ram_free_gb=7.2
 push_ok=1
