@@ -2700,7 +2700,8 @@ window.__REGRESS=[
          // v32.83 retarget (50-corpus-old-a): the legend joins the floor rule. v27.26 (feedleg) shrinks the compact controls list on purpose so it ends before 47 percent of the width and clears the feed (zoom down to 0.9), so 1.4x its old share can no longer hold; it must still not be smaller than before v8.91 grew it.
          if(k==='raiders'||k==='cond'||k==='legend'){
            var floorW=(was[k][0]/1920)*SW;
-           if(got.w<floorW)
+           // v34.97 retarget (117r-legend-reds): job 121 (v34.78) made the compact legend a taller, narrower panel (key caps and 16px words, two columns of ten rows), so its width fell under the old 311 share while the panel got bigger. The legend is held to the AREA it had before v8.91 grew it, scaled with the screen; raiders and cond keep the width floor.
+           if(got.w<floorW&&!(k==='legend'&&got.w*got.h>=was.legend[0]*was.legend[1]*(SW/1920)*(SW/1920)))
              bad.push(k+' at '+tag+' is '+got.w+' wide, smaller than it was before v8.91 grew it');
            return;
          }
@@ -66116,7 +66117,7 @@ window.__REGRESS=[
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy';
      if(typeof keysBind!=='function') return 'SKIP: no key binding here';
      var bad=[], g, oFT=ctx.fillText, rec=[], km=(P&&P.keymap)?JSON.parse(JSON.stringify(P.keymap)):null, oSave=saveProfile, oPad=padOn, k, c, i;
-     function grab(){ rec=[]; ctx.fillText=function(s,x,y){ rec.push({s:String(s),x:x,y:y,w:ctx.measureText(String(s)).width}); return oFT.apply(this,arguments); }; try{ __frame(0.016); } finally { delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; } }
+     function grab(){ rec=[]; ctx.fillText=function(s,x,y){ rec.push({s:String(s),x:x,y:y,w:ctx.measureText(String(s)).width,a:ctx.textAlign}); return oFT.apply(this,arguments); }; try{ __frame(0.016); } finally { delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; } }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        saveProfile=function(){}; padOn=function(){ return false; }; PAD.on=false;
@@ -66126,7 +66127,9 @@ window.__REGRESS=[
        __frame(0.016); grab();
        k=rec.filter(function(r){ return r.s==='CTRL / C'; })[0]; c=rec.filter(function(r){ return r.s==='crouch'; })[0];
        if(!k||!c) return 'SKIP: the compact legend was not drawn';
-       if(c.x<k.x+k.w+1) bad.push('CTRL / C (ends at '+Math.round(k.x+k.w)+') runs into crouch (starts at '+Math.round(c.x)+')');
+       // v34.97 retarget (117r-legend-reds): since v34.78 the key is centred in its cap, so x is the middle of the text, not its start. Read the real left and right edges from the alignment the text was drawn with.
+       var kR=(k.a==='center')?k.x+k.w/2:(k.a==='right'?k.x:k.x+k.w), cL=(c.a==='center')?c.x-c.w/2:(c.a==='right'?c.x-c.w:c.x);
+       if(cL<kR+1) bad.push('CTRL / C (ends at '+Math.round(kR)+') runs into crouch (starts at '+Math.round(cL)+')');
        keysBind('KeyE','KeyG'); grab();
        for(i=1;i<rec.length;i++) if(rec[i].s==='search'){ if(rec[i-1].s!=='G') bad.push('with search on G the legend says '+rec[i-1].s); break; }
        if(i>=rec.length) bad.push('control: no search row was drawn');
@@ -67769,18 +67772,24 @@ window.__REGRESS=[
        P.runs=0; __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        if(!G||G.over) return 'SKIP: staging: no raid';
        if(G.legendOn!==1) bad.push('a new player does not get the legend open ('+G.legendOn+')');
-       ctx.fillText=function(s,x,y){ seen.push({s:String(s),x:x,y:y,f:ctx.font}); return oFT.apply(this,arguments); };
+       ctx.fillText=function(s,x,y){ seen.push({s:String(s),x:x,y:y,f:ctx.font,w:ctx.measureText(String(s)).width,a:ctx.textAlign}); return oFT.apply(this,arguments); };
+       var oFR=ctx.fillRect, rects=[]; ctx.fillRect=function(x,y,w,h){ rects.push({x:x,y:y,w:w,h:h}); return oFR.apply(this,arguments); };
        try{ drawHUD(); }catch(_h){}
-       delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT;   // never leave an own fillText: the older checks capture text on the prototype
+       delete ctx.fillRect; delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT;   // never leave an own fillText: the older checks capture text on the prototype
        for(i=0;i<seen.length;i++){ if(seen[i].s==='1-9'||seen[i].s==='1-8, 0'||seen[i].s==='1-4') kx=seen[i];   /* retarget (cw-gunkeys19): the gun keys are named 1-8, 0 now (they were named 1-9), so the old and the new label both pass */ if(seen[i].s==='tactical belt'||seen[i].s==='guns') lx=seen[i]; if(seen[i].s==='B / I'||seen[i].s==='B/I') nx=seen[i]; }
        if(!kx||!lx||!nx) bad.push('the legend did not draw its belt row ('+(kx?'':'no key ')+(lx?'':'no label ')+(nx?'':'no next key')+')');
-       else{ ctx.font=lx.f; var w=ctx.measureText(lx.s).width; if(lx.x+w>nx.x-4) bad.push('TACTICAL BELT runs into the next column ('+Math.round(lx.x+w)+' past '+Math.round(nx.x)+')'); }
+       else{   // v34.97 retarget (117r-legend-reds): since v34.78 the keys are caps with the word after them, in two columns. The right edge of the first column's words must clear the left edge of the cap that holds B / I in the second column.
+         var cap=null, c0r=0;
+         rects.forEach(function(q){ if(q.x<=nx.x&&nx.x<=q.x+q.w&&q.y<=nx.y&&nx.y<=q.y+q.h+1) cap=q; });
+         seen.forEach(function(q){ if(q.a!=='center'&&q.x<nx.x&&['move','sprint','crouch','roll','fire','sights','reload','melee','next gun','item wheel'].indexOf(q.s)>=0) c0r=Math.max(c0r,q.x+q.w); });
+         if(!cap||!c0r) bad.push('the legend did not draw its second column cap ('+(cap?'':'no cap ')+(c0r?'':'no first column words')+')');
+         else if(c0r>cap.x-4) bad.push('TACTICAL BELT runs into the next column ('+Math.round(c0r)+' past '+Math.round(cap.x)+')'); }
        __endRaid('abandon'); __topClear();
        P.runs=3; __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242,keepLegend:1});
        if(!G||G.over) return 'SKIP: staging: no second raid';
        if(G.legendOn!==0) bad.push('after three raids the legend still starts open ('+G.legendOn+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; say=oSay; P.runs=r0; try{ if(G) __endRaid('abandon'); __topClear(); }catch(_c){} }
+     finally{ delete ctx.fillRect; delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; say=oSay; P.runs=r0; try{ if(G) __endRaid('abandon'); __topClear(); }catch(_c){} }
      return bad.length?bad.join('; '):null; }},
   {v:'17.75',what:'remappable keys: binding interact onto F swaps it with melee, a real F press then reads as E in the game and the pause legend says F interact; RESET puts the defaults back; Settings has a CHANGE KEYS row and the Keys window lists the actions',
    run:function(){
