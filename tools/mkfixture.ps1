@@ -7380,7 +7380,7 @@ window.__REGRESS=[
    run:function(){
      if(typeof drawOp!=='function'||typeof drawOp0!=='function'||typeof gunMuzzleAt!=='function'||typeof worldSideCue!=='function'||typeof colourCueGlyph!=='function'||typeof spriteTop!=='function') return 'SKIP: no figure painter here';
      if(typeof __deploy!=='function'||typeof __runPrep!=='function'||typeof __forceSize!=='function'||typeof drawHUD!=='function'||typeof reloadBarDraw!=='function') return 'SKIP: no raid helpers';
-     var T=1.25/3, bad=[], g, K, X0, Y0, keepPix=CFG.xfPix, keepGlyph=colourCueGlyph, cue=null, b1, b3, B, m, i, st;
+     var T=(typeof FIG_SCALE==='number'?FIG_SCALE:1.25/3) /* cw-figone retarget: his note 10-27 sets the figure back to size 1, so the ratio follows FIG_SCALE */, bad=[], g, K, X0, Y0, keepPix=CFG.xfPix, keepGlyph=colourCueGlyph, cue=null, b1, b3, B, m, i, st;
      var hTop=null, hp=null, oRB=reloadBarDraw, oF=null, hadF=false, wp0, az0, ZC0=ZC, ZT0=ZT, CS, ci, rec, rs, gp, nm;
      var keepSh=shadowE, eg, sg, P1, Gd, Rm, gOpen, rOpen, L0, A0, t0, EL, mx, ee, q, j, bb, bn, bc, bu;
      var by0=GFX.bypass, NK=null, sent=[], pl, own, ob, msg, fm, fb, fl, fp, fr, gl, ys, PS, ct, cL, LT=CanvasRenderingContext2D.prototype.lineTo, ltOn=false;
@@ -7475,8 +7475,8 @@ window.__REGRESS=[
          b1=box(function(){ drawOp0(100,100,0,0,'#242832',0,0,'',0,st); });
          b3=box(function(){ drawOp(100,100,0,0,'#242832',0,0,'',0,st); });
          if(!b1||!b3){ bad.push('the '+i+' figure drew nothing'); continue; }
-         if(Math.abs(b3.h/b1.h-B[i][1]*T)>0.02) bad.push('the '+i+' figure is drawn '+(b3.h/b1.h).toFixed(3)+' of its size 1 height, not 1.25/3 times its build ('+(B[i][1]*T).toFixed(3)+')');
-         if(Math.abs(b3.w/b1.w-B[i][0]*T)>0.02) bad.push('the '+i+' figure is drawn '+(b3.w/b1.w).toFixed(3)+' of its size 1 width, not 1.25/3 times its build ('+(B[i][0]*T).toFixed(3)+')');
+         if(Math.abs(b3.h/b1.h-B[i][1]*T)>0.02) bad.push('the '+i+' figure is drawn '+(b3.h/b1.h).toFixed(3)+' of its size 1 height, not FIG_SCALE times its build ('+(B[i][1]*T).toFixed(3)+')');
+         if(Math.abs(b3.w/b1.w-B[i][0]*T)>0.02) bad.push('the '+i+' figure is drawn '+(b3.w/b1.w).toFixed(3)+' of its size 1 width, not FIG_SCALE times its build ('+(B[i][0]*T).toFixed(3)+')');
          if(i==='lean'){
            hTop=b3.top;
            m=spriteTop({kind:'raider',r:11})-b3.top;
@@ -8372,7 +8372,7 @@ window.__REGRESS=[
      for(i=0;i<GAMEOPTS.length;i++) if(GAMEOPTS[i].k==='xfPix') row=GAMEOPTS[i];
      if(DEF.xfPix!==0) bad.push('the pixel look default is '+DEF.xfPix+', not off');
      if(!row) bad.push('no pixel look row in Settings'); else if(!row.opts[row.def]||row.opts[row.def].cfg.xfPix!==0) bad.push('the pixel look row defaults to '+(row.opts[row.def]?row.opts[row.def].n:'?')+', not off');
-     if(typeof FIG_SCALE==='undefined'||Math.abs(FIG_SCALE-1.25/3)>1e-9) bad.push('the pillager is drawn at FIG_SCALE '+(typeof FIG_SCALE==='undefined'?'(none)':FIG_SCALE)+', not 1.25/3 (cw-thirdsize, his note on build 33.17, where it was 1.25: needs to be 1/3 of the size)');
+     if(typeof FIG_SCALE==='undefined'||(Math.abs(FIG_SCALE-1)>1e-9&&Math.abs(FIG_SCALE-1.25/3)>1e-9)) bad.push('the pillager is drawn at FIG_SCALE '+(typeof FIG_SCALE==='undefined'?'(none)':FIG_SCALE)+', not 1 (cw-figone retarget, his note 10-27: back to the size he had for weeks; 1.25/3 on older builds)');
      try{
        __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        go=P.gameOpts?JSON.stringify(P.gameOpts):null; had=('pixOff1' in P); mark=P.pixOff1;
