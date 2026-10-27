@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.94 - THE DIFFICULTY BUTTON HAS ARROWS LIKE EVERY SWITCH
+
+Co-op hunt while he was away. Found in the review of v34.92: every switch in the Settings list shows a small arrow on each side of its value, but the new difficulty button had none, so it looked like a link to another page instead of a switch between new player and main game. It now has the same pair of arrows.
+
+MEASURED. Check 34.94 passes, and fails on v34.93.
 ## v34.93 - THE DIFFICULTY PANEL SAYS WHAT EACH CHOICE MEANS
 
 Co-op hunt while he was away. Found in the pictures of v34.92: the Settings side panel showed the difficulty row as "difficulty / new player" even while the row said "main game", because the panel keeps a hint only up to its first colon. The hint now names what the choice on the button means: new player is softer hits, longer raids, more loot, fewer extras; main game is standard hits, raid length and loot, extras on; custom is rows changed by hand.

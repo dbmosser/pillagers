@@ -1,0 +1,7 @@
+v34.94: the difficulty button has arrows like every switch
+
+The difficulty button shows arrows on both sides, the same as the rows under it.
+
+Check 34.94. Fails on v34.93.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

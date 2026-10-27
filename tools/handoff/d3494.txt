@@ -1,0 +1,5 @@
+## v34.94 - THE DIFFICULTY BUTTON HAS ARROWS LIKE EVERY SWITCH
+
+Co-op hunt while he was away. Found in the review of v34.92: every switch in the Settings list shows a small arrow on each side of its value, but the new difficulty button had none, so it looked like a link to another page instead of a switch between new player and main game. It now has the same pair of arrows.
+
+MEASURED. Check 34.94 passes, and fails on v34.93.

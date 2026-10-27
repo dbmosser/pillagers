@@ -6166,6 +6166,26 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.94',what:'the difficulty button in Settings has the same two arrows as every other switch in the list (it read as a link to another page)',
+   run:function(){
+     if(typeof diffRowHtml!=='function') return 'no difficulty row';
+     var bad=[], b, g, i, p, x, y;
+     try{
+       __topClear(); __runPrep(); SETSUB=''; renderSettings();
+       b=document.getElementById('set_diff'); g=document.querySelector('#setlist .row > button[id^="go_"]');
+       if(!b) bad.push('no difficulty button on the Settings page');
+       else if(!g) bad.push('no other switch on the Settings page to compare with');
+       else {
+         for(p=['::before','::after'],i=0;i<p.length;i++){
+           x=getComputedStyle(b,p[i]).content; y=getComputedStyle(g,p[i]).content;
+           if(!x||x==='none'||x==='normal') bad.push('the difficulty button has no '+(i?'right':'left')+' arrow');
+           else if(x!==y) bad.push('the difficulty button '+(i?'right':'left')+' arrow is '+x+', the other switches show '+y);
+         }
+         if(getComputedStyle(b).display!==getComputedStyle(g).display) bad.push('the difficulty button lays out as '+getComputedStyle(b).display+', the other switches as '+getComputedStyle(g).display);
+       }
+     } catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ SETSUB=''; try{ renderSettings(); __topClear(); }catch(_f){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'34.93',what:'the Settings side panel for the difficulty row says what the choice on its button means (it read "new player" on the main game)',
    run:function(){
      if(typeof diffRowHtml!=='function'||typeof setHintShort!=='function') return 'no difficulty row';
