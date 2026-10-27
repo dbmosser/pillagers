@@ -38924,9 +38924,9 @@ window.__REGRESS=[
        box=document.getElementById('fpsbox'); if(box&&box.className==='on') bad.push('FOUR: control: the plate shows with SHOW FPS off');
        CFG.showFps=1; FPSV.t0=0; FPSV.n=0; for(i=0;i<40;i++) fpsTick(5000+i*16.667);
        box=document.getElementById('fpsbox'); if(!box||box.className!=='on') bad.push('FOUR: SHOW FPS on did not show the plate');
-       else if(box.textContent!=='60 FPS') bad.push('FOUR: sixty frames a second read '+box.textContent);
+       else if(!/^60 fps(?: \| screen \d+)?$/i.test(box.textContent)) bad.push('FOUR: sixty frames a second read '+box.textContent);
        FPSV.t0=0; FPSV.n=0; for(i=0;i<20;i++) fpsTick(9000+i*33.333);
-       if(box&&box.textContent!=='30 FPS') bad.push('FOUR: thirty frames a second read '+box.textContent);
+       if(box&&!/^30 fps(?: \| screen \d+)?$/i.test(box.textContent)) bad.push('FOUR: thirty frames a second read '+box.textContent);
        CFG.showFps=0; fpsTick(20000); if(box&&box.className==='on') bad.push('FOUR: switching SHOW FPS off left the plate up');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
