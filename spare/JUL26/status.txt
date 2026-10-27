@@ -1,11 +1,11 @@
 host=JUL26
-seen=2026-10-27 13:19
-epoch=1793121549
-game=b120f8dc v35.08
+seen=2026-10-27 13:25
+epoch=1793121904
+game=638e1ae9 v35.09
 test_run=paused: under 6 GB free
 robots=0
-ram_free_gb=2.5
+ram_free_gb=4.9
 push_ok=1
 runner=1823BEEE
 mode=idle
-spare_pc=not answering (192.168.1.246), 13:10
+spare_pc=not answering (192.168.1.246), 13:25
