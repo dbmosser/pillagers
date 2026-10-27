@@ -3498,7 +3498,7 @@ body:has(#appearmodal.pixfashion.on) > #uimring{display:none !important}
             <div class="invgrid" id="kitgrid"></div>
           </div>
           <div class="losec">
-            <div class="loslab">Tactical belt<b><span id="quickn">0</span> on keys</b></div>
+            <div class="loslab">Hotbar<b><span id="quickn">0</span> on keys</b></div>
             <div id="hotplanwrap"></div>
           </div>
           <div class="losec" id="kitsetup">
@@ -3723,7 +3723,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.11';
+var VER='35.12';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17993,6 +17993,7 @@ window.addEventListener('keydown',function(e){
       e.preventDefault(); return;
     }
     if(e.code==='KeyQ'&&!e.repeat&&!_hubBusy&&HB){ hubWheelOpen(); e.preventDefault(); return; }   // v28.xx (cw-wheelhub): HOLD Q on the floor opens the item wheel, as in a raid
+    if(e.code==='KeyM'&&!e.repeat&&!_hubBusy&&HB){ var _lf=hubStationById('lift'); if(_lf&&_lf.acts&&_lf.acts.KeyE) _lf.acts.KeyE[1](); e.preventDefault(); return; }   // cw-hubfix, his ask 10-27: M opens the lift map from anywhere on the floor
     if(e.code==='Space'&&!e.repeat&&!_hubBusy&&HB&&HB.player&&!(HB.player.rollT>0)){
       var _hp=HB.player;
       var _hmx=(keys['KeyD']?1:0)-(keys['KeyA']?1:0);
@@ -47857,8 +47858,8 @@ function iconLift(c,w,h){
   }catch(e){ try{ c.restore(); }catch(_r){} return false; }
 }
 var _iconURL={};
-function itemIconURL(key,S){
-  var ck=key+'|'+S, hit=_iconURL[ck];
+function itemIconURL(key,S,np){
+  var ck=key+'|'+S+(np?'|np':''), hit=_iconURL[ck];   // cw-hubfix: np paints the icon without the rarity pips (his note 10-27)
   if(hit) return hit;
   // v18.09, HIS ORDER (2026-10-03, "item graphics like the guns still look terrible"): THE ICONS ARE DRAWN SHARP. Every icon the
   // menus show was painted once at its row size, 22 to 30 pixels, and then blown up to 40, 64 or 110 by the stash layouts with
@@ -47867,19 +47868,19 @@ function itemIconURL(key,S){
   var R=Math.min(6,Math.max(1,Math.ceil(180/S)));   // v18.12: up to six times, for the cell-filling picture
   var cnv=document.createElement('canvas'); cnv.width=S*R; cnv.height=S*R;
   var c2=cnv.getContext('2d');
-  drawItemIcon(c2,key,S*R/2,S*R/2,S*R*0.82);
+  (np?drawItemIconArt:drawItemIcon)(c2,key,S*R/2,S*R/2,S*R*0.82);
   if(!(WEAPONS[key]||(ITEMS[key]&&ITEMS[key].use==='gun'))) iconLift(c2,S*R,S*R);   // v18.14: the lift, for everything but a gun
   return _iconURL[ck]=cnv.toDataURL();
 }
-function iconImg(key,S){
+function iconImg(key,S,np){
   var im=document.createElement('img');
-  im.className='ic'; im.src=itemIconURL(key,S||26);
+  im.className='ic'; im.src=itemIconURL(key,S||26,np);
   im.style.width=(S||26)+'px'; im.style.height=(S||26)+'px';
   return im;
 }
-function iconImgHTML(key,S){
+function iconImgHTML(key,S,np){
   S=S||22;
-  return '<img class="ic" src="'+itemIconURL(key,S)+'" style="width:'+S+'px;height:'+S+'px">';
+  return '<img class="ic" src="'+itemIconURL(key,S,np)+'" style="width:'+S+'px;height:'+S+'px">';
 }
 // v6.78: how many of a thing fit in one stack. Undeclared means unlimited, which is every
 // item except the plate, so nothing else changes. Read by the backpack and stash grids;
@@ -50568,8 +50569,25 @@ function placeName(n){
 // instruction to assume 1080p or higher. The room is 700 by 470 in room units
 // and that does not change; this is the lens. Fill the tighter axis, never shrink
 // below 1 so a small window is exactly what it was before.
+var HZT=1, HZC=1, _hzLast=0;   // cw-hubfix, his ask 10-27: the wheel zooms the Undercroft floor (HZT the target, HZC the eased zoom)
+function hubZoomEase(){
+  var n=performance.now(), d=_hzLast?Math.min(0.1,(n-_hzLast)/1000):0.016; _hzLast=n;
+  HZC+=(HZT-HZC)*Math.min(1,d*14); if(Math.abs(HZT-HZC)<0.001) HZC=HZT;
+}
 function hubScale(){
-  return Math.max(1, Math.min(W/HUBW, H/HUBH));
+  return Math.max(1, Math.min(W/HUBW, H/HUBH))*(HZC||1);
+}
+// cw-hubfix: only on the bare floor; a station window, the stash, the backpack, the pause card or the title keep the wheel
+function hubFloorWheel(e){
+  if(e.ctrlKey||typeof state==='undefined'||state!=='hub'||!HB) return false;
+  if(document.querySelector('.imenu')||document.querySelector('.modal.on')) return false;
+  if((typeof pauseOpen!=='undefined'&&pauseOpen)||(typeof hubBagOpen!=='undefined'&&hubBagOpen)) return false;
+  var _hb=document.getElementById('hub'), _tt=document.getElementById('title');
+  if((_hb&&_hb.classList.contains('on'))||(_tt&&_tt.classList.contains('on'))) return false;
+  var dy=e.deltaY*(e.deltaMode===1?40:(e.deltaMode===2?400:1));
+  if(!dy) return true;
+  HZT=clamp(HZT*Math.exp(-clamp(dy,-140,140)*0.0015),1,2.2);
+  return true;
 }
 // v6.73: no overscan down here. camClamp's 80 units of slack are for a raid map that is
 // thousands of units wide; the Undercroft is smaller than the screen and the slack shows
@@ -50585,7 +50603,7 @@ function drawHubWorld(dt){
   // The camera works in ROOM units, so the visible span shrinks as the scale
   // grows. Passing W and H here instead of the scaled span is what would put the
   // player off centre at high zoom.
-  var S=hubScale(), vw=W/S, vh=H/S;
+  hubZoomEase(); var S=hubScale(), vw=W/S, vh=H/S;   // cw-hubfix
   var ox=Math.round(hubCam(p.x-vw/2,vw,HUBW));
   var oy=Math.round(hubCam(p.y-vh*.55,vh,HUBH));
   wc.fillStyle='#05070b'; wc.fillRect(0,0,W,H);
@@ -51321,6 +51339,7 @@ function showScreen(s){
   for(var _mi=0;_mi<_openM.length;_mi++) _openM[_mi].classList.remove('on');
   if(s==='hub'){
     hubBagOpen=false; hubBagG=null;   // v8.95: never arrive on the floor with it up
+    HZT=1; HZC=1; _hzLast=0;   // cw-hubfix: every arrival on the floor starts at the fitted view
     hubBagChrome(false); // v28.xx (cw-cx-hubbagcard): returning to the floor discards the old window chrome.
     if(!HB) HB=buildHub();
     // v6.64, his note: the people milling about are different every time you come down.
@@ -54685,7 +54704,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.11: loot leaves the left feed; recovering shows only while health really climbs; status icons stay clear of the feed Check 35.11 fails on v35.10',
+  now:'v35.12: the wheel zooms the undercroft floor and m opens the lift map; the stash row is called hotbar with bigger icons; no white rarity bars in the shop, craft and wirt windows; wirt pulls a gun or a valuable about half the time; no gun label or dimmed guns on the pre-raid belt; the data core row says what it does on hover; packing an item keeps the list where it was Check 35.12 fails on v35.11',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -54848,12 +54867,12 @@ function wirtLotLeft(t){
   var now=(t===undefined?Date.now():t);
   return Math.max(0,Math.ceil((WIRT_LOT_MS-(now%WIRT_LOT_MS))/1000));
 }
-var GAMBLE_POOL=[
-  ['scrap',10],['wire',10],['cell',9],['bandage',9],['ammobox',10],['board',8],
-  ['optic',7],['plate',6],['servo',6],['comp',6],['medkit',5],['smoke',4],['decoy',3],['frag',3],
-  ['core',4],['coil',3],['ledger',3],['titan',3],
-  ['gun_smg',3],['gun_carbine',2],['gun_shotgun',2],['gun_rifle',2],['gun_lmg',1],['gun_magnum',1],
-  ['blackbox',1],['relay',1],['codex',1],['reactor',1],['bloom',1],['KEY',3]
+var GAMBLE_POOL=[   // cw-hubfix, his note 10-27 ("I gambled like 20 times and never got anything good"): about half of all pulls are a gun or a valuable
+  ['scrap',1],['wire',1],['cell',1],['bandage',2],['ammobox',2],['smoke',1],['decoy',1],['board',2],['comp',1],
+  ['optic',3],['plate',8],['servo',3],['medkit',7],['frag',6],
+  ['core',3],['coil',4],['ledger',4],['titan',4],['KEY',2],
+  ['gun_smg',4],['gun_carbine',4],['gun_shotgun',4],['gun_rifle',4],['gun_lmg',5],['gun_magnum',3],
+  ['blackbox',4],['relay',4],['codex',4],['reactor',4],['bloom',4]
 ];
 // SPEC 3.1: vendors you actually talk to, not interaction prompts on crates.
 // One line each, rotating, so the Undercroft has people in it.
@@ -55502,7 +55521,7 @@ function renderGamble(){
     // out there, whose own hint promises it moves what everything is worth. So on Lean a rolled Data Core read $520 here while the
     // stash hover said $364 each and Sell one paid $364; on Rich, $520 here against $702 everywhere else. Display only: on Standard
     // the two numbers are the same, the value credited on a sale was already ival(), and no dial, table or seeded draw moves.
-    h+='<div class="row">'+iconImgHTML(log[i],22)+'<span class="nm" style="color:'+(RCOL[dispR(log[i])||it.r]||'#cdd6dd')+'">'+it.name+'</span>'+
+    h+='<div class="row">'+iconImgHTML(log[i],22,1)+'<span class="nm" style="color:'+(RCOL[dispR(log[i])||it.r]||'#cdd6dd')+'">'+it.name+'</span>'+
        '<span class="vl">'+'$'+ival(log[i]).toLocaleString()+'</span></div>';
   }
   el.innerHTML=h;
@@ -55563,7 +55582,7 @@ function renderWirtLot(){
   var worth=wirtLotWorth(lot);
   // v19.24, seen on the 4K gambler screenshot (2026-10-08): the item on the counter was a 34 pixel picture beside four lines of text, a
   // speck at the edge of the card. It is shown at 72, about the height of those lines, with a soft dark tile behind it.
-  el.innerHTML='<span title="'+escHtml(names.join(', '))+'" style="display:inline-flex;align-items:center;justify-content:center;width:84px;height:84px;flex:none;border-radius:8px;background:rgba(0,0,0,.22)">'+iconImgHTML(k,72)+'</span>'+
+  el.innerHTML='<span title="'+escHtml(names.join(', '))+'" style="display:inline-flex;align-items:center;justify-content:center;width:84px;height:84px;flex:none;border-radius:8px;background:rgba(0,0,0,.22)">'+iconImgHTML(k,72,1)+'</span>'+
     '<span style="flex:1;line-height:1.5">'+
       '<span style="color:'+col+';font-weight:700;font-size:16px;display:block">Limited Time Offer</span>'+
       // v10.03, his answer 38: the name, "of course".
@@ -56439,7 +56458,7 @@ function hotPlanHTML(where){
     // v6.60: no gun cells. Every slot on the belt is the same slot.
     var k=(P.hotAssign||{})[i], it=k?ITEMS[k]:null, _fg=null;
     if(!it&&i>=GUNKEYS&&_fl[i]&&_fl[i].kind!=='empty'&&!_fl[i].assigned&&_fl[i].icon&&ITEMS[_fl[i].icon]&&ITEMS[_fl[i].icon].use!=='gun') _fg={k:_fl[i].icon,name:escHtml(String(ITEMS[_fl[i].icon].name))};   // v25.xx (belt6c): an unbound throwable, medical or armour key shows what the floor belt shows on it
-    if(!it&&i<GUNKEYS&&_fl[i]&&_fl[i].kind==='gun'&&!_fl[i].vacant&&_fl[i].icon&&_fl[i].icon!=='fists'){
+    if(where!=='sector'&&where!=='stage'&&!it&&i<GUNKEYS&&_fl[i]&&_fl[i].kind==='gun'&&!_fl[i].vacant&&_fl[i].icon&&_fl[i].icon!=='fists'){   // cw-hubfix, his note 10-27: no gun 1 / gun 2 ghosts on the pre-raid belt
       var _fgk=(String(_fl[i].icon).indexOf('gun_')===0)?String(_fl[i].icon):('gun_'+_fl[i].icon);
       if(ITEMS[_fgk]) _fg={k:_fgk,name:escHtml(String(_fl[i].name||ITEMS[_fgk].name))};
     }
@@ -56449,7 +56468,7 @@ function hotPlanHTML(where){
       'background:rgba(0,0,0,.3);position:relative">'+
       // v19.79, seen on the 4K stash screenshot (2026-10-08): the key numbers in the belt slots were 10.5px, a speck in a 62px slot
       // on a TV. 14 in an empty slot, 12 in the corner of a filled one, with the stack count beside it.
-      (it?iconImgHTML(k,22):(_fg?('<span style="display:flex;opacity:.7">'+iconImgHTML(_fg.k,22)+'</span>'):'<span style="color:var(--ash);font-size:14px">'+slotKeyName(i)+'</span>'))+
+      (it?iconImgHTML(k,(where?22:40)):(_fg?('<span style="display:flex;opacity:.7">'+iconImgHTML(_fg.k,(where?22:40))+'</span>'):'<span style="color:var(--ash);font-size:14px">'+slotKeyName(i)+'</span>'))+
       ((it||_fg)?'<span style="position:absolute;right:2px;bottom:0;font-size:12px;color:var(--ash)">'+slotKeyName(i)+'</span>':'')+
       // v11.96, HIS ORDER: how many are coming, on the cell, so a key on a stack
       // reads as a stack. One is silent; the key number already says it is set.
@@ -56459,7 +56478,7 @@ function hotPlanHTML(where){
       ((it&&packedCount(k)<1)?'<span style="position:absolute;left:2px;top:0;font-size:10.5px;color:var(--rust)">0</span>':'')+
       '</div>';
   }
-  var _gn=['GUNS','THROW','MEDICAL','ARMOUR'], _gi;   // v25.xx (belt6c): the same four groups and labels as the raid belt
+  var _gn=['','THROW','MEDICAL','ARMOUR'], _gi;   // cw-hubfix, his note 10-27: no GUNS label, any key holds a gun or an item   // v25.xx (belt6c): the same four groups and labels as the raid belt
   // v28.15 (cloud-menus-belt-key9-fits), CLOUD HUNT 2026-10-15: THE NINTH KEY STAYS IN THE LOADOUT PANEL. The group box took the width of nine keys at
   // their full size (min-content), so it never shrank and key 9 ran past the panel, off screen at 1440p. min-width:0 lets the box take the room there is
   // and the keys shrink on one row, square, as v18.98 and v23.14 meant.
@@ -57873,7 +57892,7 @@ function renderShop(){
     }
     if(!owned&&!shopStocked(o)){ b.textContent='Sold out'; b.disabled=true; b.onclick=null; }   // v26.xx (career6): an extra that is out this raid
     var sic=o.kind==='wep'?o.k:(o.kind==='pack'?'pack':o.k);
-    row.appendChild(iconImg(sic,26));
+    row.appendChild(iconImg(sic,26,1));
     row.appendChild(nm); row.appendChild(vl); row.appendChild(b);
     row.insertBefore(row.children[0],nm);
     s.appendChild(row);
@@ -57931,7 +57950,7 @@ function renderConDetail(){
   for(var gkey in seen){
     if(!ITEMS[gkey]) continue;
     var cell=document.createElement('div'); cell.className='crewcell';
-    cell.innerHTML=iconImgHTML(gkey,26)+
+    cell.innerHTML=iconImgHTML(gkey,26,1)+
       (seen[gkey]>1?('<span class="cnt">'+seen[gkey]+'</span>'):'');
     cell.title=((c.gear&&(c.gear.kind==='wep'||c.gear.kind==='key'))?gearLabel(c.gear):ITEMS[gkey].name)+(seen[gkey]>1?('  x'+seen[gkey]):'');   // v20.46 (H28): the gun goes to the armoury, not as the field item, and the key is the room the claim rolls
     line.appendChild(cell);
@@ -57981,7 +58000,7 @@ function renderShopGrid(){
     var locked=(P.xp||0)<o.rep;
     var cell=document.createElement('div');
     cell.className='vcell'+(i===P._shopSel?' on':'')+(locked?' locked':'')+((o.price>(P.credits||0))?' poor':'')+(shopStocked(o)?'':' sold');   // v26.xx (career6)   // v21.46: a price you cannot pay reads grey
-    cell.innerHTML=iconImgHTML(shopEntryIcon(o),64)+
+    cell.innerHTML=iconImgHTML(shopEntryIcon(o),64,1)+
       '<div class="vlbl">'+escHtml(shopEntryLabel(o))+'</div>'+
       '<span class="vp">'+(shopStocked(o)?o.price.toLocaleString():'SOLD OUT')+'</span>'+
       (locked?'<span class="vlk">\u25cf</span>':'');
@@ -58198,7 +58217,7 @@ function renderWork(){
       var W=WEAPONS[id],ST=wearStep(id),C=repairCost(id);
       var row=document.createElement('div'); row.className='row';
       row.setAttribute('data-w','repair:'+id);
-      row.appendChild(iconImg(id,26));
+      row.appendChild(iconImg(id,26,1));
       var nm=document.createElement('div'); nm.className='nm';
       nm.innerHTML=W.name+' <span style="color:'+ST.c+'">'+ST.name+'</span>'+
         '<br><span style="color:var(--ash);font-size:11px">'+wearOf(id)+' rounds &middot; '+
@@ -58229,7 +58248,7 @@ function renderWork(){
     var row=document.createElement('div'); row.className='row';
     row.setAttribute('data-w','recipe:'+ri);
     var outKey=null; for(var ok2 in r.out){ outKey=ok2; break; }
-    if(outKey) row.appendChild(iconImg(outKey,26));
+    if(outKey) row.appendChild(iconImg(outKey,26,1));
     var nm=document.createElement('div'); nm.className='nm';
     var need=[],can=true,k;
     for(k in r.need){
@@ -58300,7 +58319,7 @@ function renderCraftGrid(){
     }
     var cell=document.createElement('div');
     cell.className='vcell'+(i===sel?' on':'')+((btn&&btn.disabled)?' locked':'');
-    cell.innerHTML=iconImgHTML(icon,64)+'<div class="vlbl">'+escHtml(label)+'</div>';
+    cell.innerHTML=iconImgHTML(icon,64,1)+'<div class="vlbl">'+escHtml(label)+'</div>';
     cell.title=label;
     cell.onclick=function(){ P._craftSel=i; P._craftTag=tag; renderCraftGrid(); };
     g.appendChild(cell);
@@ -58368,7 +58387,7 @@ function renderCraftDetail(rows){
   var counts=stashCounts(),h='';
   function resRow(k,have,need){
     var okc=(have>=need)?'#2f6f4e':'#a33d22';
-    return '<div class="cres">'+iconImgHTML(k,30)+
+    return '<div class="cres">'+iconImgHTML(k,30,1)+
       '<span class="crn">'+escHtml(ITEMS[k]?ITEMS[k].name:k)+'</span>'+
       '<span class="crv" style="color:'+okc+'">'+have+'<em>/'+need+'</em></span></div>';
   }
@@ -69639,6 +69658,7 @@ UIM.focus=function(el,old){
       _sc=_sc.parentElement;
     }
   }
+  if(!anyModal&&hubFloorWheel(e)){ e.preventDefault(); return; }   // cw-hubfix, his ask 10-27: on the bare floor the wheel zooms the floor
   e.preventDefault();
   var z=((P&&P.menuZoom)||1)+(e.deltaY<0?0.08:-0.08);
   // v8.75: 1.6 stopped the panels growing at 175 and 200 percent while the canvas
@@ -70559,9 +70579,13 @@ function syncSectorPack(){
     lastG=g;
   }
   nc=heldCount('core');
-  h+='<button class="srprow srcore'+(P.intel?' on':'')+'" data-core="1" data-pan="p"'+((!P.intel&&!nc)?' disabled':'')+'><svg viewBox="0 0 24 24">'+SR_IC.core+'</svg><span class="nm" style="color:inherit">'+
+  h+='<button class="srprow srcore'+(P.intel?' on':'')+'" data-core="1" title="burns 1 data core on ascent: elites and keys show live on your map" data-pan="p"'+((!P.intel&&!nc)?' disabled':'')+'><svg viewBox="0 0 24 24">'+SR_IC.core+'</svg><span class="nm" style="color:inherit">'+
      (P.intel?'DATA CORE SLOTTED':(nc?('SLOT DATA CORE ('+nc+')'):'NO DATA CORE'))+'</span><span class="held">BURNS ON ASCENT</span><i class="cb"></i></button></div>';
+  // cw-hubfix, his note 10-27: packing an item rebuilt the list and threw it back to the top; the scroll is kept across the rebuild
+  var _sk=[], _so=host.querySelector('.srplist'), _sl=_so?_so.scrollTop:0, _sa=host;
+  while(_sa&&_sa!==document.body&&_sa.id!=='sectormodal'){ _sk.push([_sa,_sa.scrollTop]); _sa=_sa.parentElement; }
   host.innerHTML=h;
+  try{ var _sn=host.querySelector('.srplist'); if(_sn&&_sl) _sn.scrollTop=_sl; for(var _si=0;_si<_sk.length;_si++) if(_sk[_si][0].scrollTop!==_sk[_si][1]) _sk[_si][0].scrollTop=_sk[_si][1]; }catch(_sx){}
   host.onclick=function(ev){
     var t=ev.target&&ev.target.closest?ev.target.closest('[data-pd],[data-pa],[data-core],[data-pb]'):null, ch, pk, d, pa, hd, gt, n;
     if(!t||t.disabled) return;

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.12 - UNDERCROFT FIXES
+
+Co-op hunt while he was away. his undercroft and pre-raid asks 10-27
+
+MEASURED. Check 35.12 passes, and fails on v35.11.
 ## v35.11 - RAID HUD FIXES
 
 Co-op hunt while he was away. his three raid notes 10-27

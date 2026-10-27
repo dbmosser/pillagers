@@ -1,0 +1,108 @@
+{
+    "title":  "UNDERCROFT FIXES",
+    "why":  "his undercroft and pre-raid asks 10-27",
+    "now":  "the wheel zooms the undercroft floor and m opens the lift map; the stash row is called hotbar with bigger icons; no white rarity bars in the shop, craft and wirt windows; wirt pulls a gun or a valuable about half the time; no gun label or dimmed guns on the pre-raid belt; the data core row says what it does on hover; packing an item keeps the list where it was",
+    "edits":  [
+                  {
+                      "anchor":  "function hubScale(){\n  return Math.max(1, Math.min(W/HUBW, H/HUBH));\n}",
+                      "replacement":  "var HZT=1, HZC=1, _hzLast=0;   // cw-hubfix, his ask 10-27: the wheel zooms the Undercroft floor (HZT the target, HZC the eased zoom)\nfunction hubZoomEase(){\n  var n=performance.now(), d=_hzLast?Math.min(0.1,(n-_hzLast)/1000):0.016; _hzLast=n;\n  HZC+=(HZT-HZC)*Math.min(1,d*14); if(Math.abs(HZT-HZC)\u003c0.001) HZC=HZT;\n}\nfunction hubScale(){\n  return Math.max(1, Math.min(W/HUBW, H/HUBH))*(HZC||1);\n}\n// cw-hubfix: only on the bare floor; a station window, the stash, the backpack, the pause card or the title keep the wheel\nfunction hubFloorWheel(e){\n  if(e.ctrlKey||typeof state===\u0027undefined\u0027||state!==\u0027hub\u0027||!HB) return false;\n  if(document.querySelector(\u0027.imenu\u0027)||document.querySelector(\u0027.modal.on\u0027)) return false;\n  if((typeof pauseOpen!==\u0027undefined\u0027\u0026\u0026pauseOpen)||(typeof hubBagOpen!==\u0027undefined\u0027\u0026\u0026hubBagOpen)) return false;\n  var _hb=document.getElementById(\u0027hub\u0027), _tt=document.getElementById(\u0027title\u0027);\n  if((_hb\u0026\u0026_hb.classList.contains(\u0027on\u0027))||(_tt\u0026\u0026_tt.classList.contains(\u0027on\u0027))) return false;\n  var dy=e.deltaY*(e.deltaMode===1?40:(e.deltaMode===2?400:1));\n  if(!dy) return true;\n  HZT=clamp(HZT*Math.exp(-clamp(dy,-140,140)*0.0015),1,2.2);\n  return true;\n}"
+                  },
+                  {
+                      "anchor":  "  var S=hubScale(), vw=W/S, vh=H/S;",
+                      "replacement":  "  hubZoomEase(); var S=hubScale(), vw=W/S, vh=H/S;   // cw-hubfix"
+                  },
+                  {
+                      "anchor":  "  e.preventDefault();\n  var z=((P\u0026\u0026P.menuZoom)||1)+(e.deltaY\u003c0?0.08:-0.08);",
+                      "replacement":  "  if(!anyModal\u0026\u0026hubFloorWheel(e)){ e.preventDefault(); return; }   // cw-hubfix, his ask 10-27: on the bare floor the wheel zooms the floor\n  e.preventDefault();\n  var z=((P\u0026\u0026P.menuZoom)||1)+(e.deltaY\u003c0?0.08:-0.08);"
+                  },
+                  {
+                      "anchor":  "    hubBagOpen=false; hubBagG=null;   // v8.95: never arrive on the floor with it up",
+                      "replacement":  "    hubBagOpen=false; hubBagG=null;   // v8.95: never arrive on the floor with it up\n    HZT=1; HZC=1; _hzLast=0;   // cw-hubfix: every arrival on the floor starts at the fitted view"
+                  },
+                  {
+                      "anchor":  "    if(e.code===\u0027KeyQ\u0027\u0026\u0026!e.repeat\u0026\u0026!_hubBusy\u0026\u0026HB){ hubWheelOpen(); e.preventDefault(); return; }   // v28.xx (cw-wheelhub): HOLD Q on the floor opens the item wheel, as in a raid",
+                      "replacement":  "    if(e.code===\u0027KeyQ\u0027\u0026\u0026!e.repeat\u0026\u0026!_hubBusy\u0026\u0026HB){ hubWheelOpen(); e.preventDefault(); return; }   // v28.xx (cw-wheelhub): HOLD Q on the floor opens the item wheel, as in a raid\n    if(e.code===\u0027KeyM\u0027\u0026\u0026!e.repeat\u0026\u0026!_hubBusy\u0026\u0026HB){ var _lf=hubStationById(\u0027lift\u0027); if(_lf\u0026\u0026_lf.acts\u0026\u0026_lf.acts.KeyE) _lf.acts.KeyE[1](); e.preventDefault(); return; }   // cw-hubfix, his ask 10-27: M opens the lift map from anywhere on the floor"
+                  },
+                  {
+                      "anchor":  "\u003cdiv class=\"loslab\"\u003eTactical belt\u003cb\u003e\u003cspan id=\"quickn\"\u003e0\u003c/span\u003e on keys\u003c/b\u003e\u003c/div\u003e",
+                      "replacement":  "\u003cdiv class=\"loslab\"\u003eHotbar\u003cb\u003e\u003cspan id=\"quickn\"\u003e0\u003c/span\u003e on keys\u003c/b\u003e\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "      (it?iconImgHTML(k,22):(_fg?(\u0027\u003cspan style=\"display:flex;opacity:.7\"\u003e\u0027+iconImgHTML(_fg.k,22)+\u0027\u003c/span\u003e\u0027):",
+                      "replacement":  "      (it?iconImgHTML(k,(where?22:40)):(_fg?(\u0027\u003cspan style=\"display:flex;opacity:.7\"\u003e\u0027+iconImgHTML(_fg.k,(where?22:40))+\u0027\u003c/span\u003e\u0027):"
+                  },
+                  {
+                      "anchor":  "function itemIconURL(key,S){\n  var ck=key+\u0027|\u0027+S, hit=_iconURL[ck];",
+                      "replacement":  "function itemIconURL(key,S,np){\n  var ck=key+\u0027|\u0027+S+(np?\u0027|np\u0027:\u0027\u0027), hit=_iconURL[ck];   // cw-hubfix: np paints the icon without the rarity pips (his note 10-27)"
+                  },
+                  {
+                      "anchor":  "  drawItemIcon(c2,key,S*R/2,S*R/2,S*R*0.82);",
+                      "replacement":  "  (np?drawItemIconArt:drawItemIcon)(c2,key,S*R/2,S*R/2,S*R*0.82);"
+                  },
+                  {
+                      "anchor":  "function iconImg(key,S){\n  var im=document.createElement(\u0027img\u0027);\n  im.className=\u0027ic\u0027; im.src=itemIconURL(key,S||26);",
+                      "replacement":  "function iconImg(key,S,np){\n  var im=document.createElement(\u0027img\u0027);\n  im.className=\u0027ic\u0027; im.src=itemIconURL(key,S||26,np);"
+                  },
+                  {
+                      "anchor":  "function iconImgHTML(key,S){\n  S=S||22;\n  return \u0027\u003cimg class=\"ic\" src=\"\u0027+itemIconURL(key,S)+\u0027\"",
+                      "replacement":  "function iconImgHTML(key,S,np){\n  S=S||22;\n  return \u0027\u003cimg class=\"ic\" src=\"\u0027+itemIconURL(key,S,np)+\u0027\""
+                  },
+                  {
+                      "anchor":  "iconImgHTML(log[i],22)",
+                      "replacement":  "iconImgHTML(log[i],22,1)"
+                  },
+                  {
+                      "anchor":  "iconImgHTML(k,72)",
+                      "replacement":  "iconImgHTML(k,72,1)"
+                  },
+                  {
+                      "anchor":  "row.appendChild(iconImg(sic,26));",
+                      "replacement":  "row.appendChild(iconImg(sic,26,1));"
+                  },
+                  {
+                      "anchor":  "iconImgHTML(gkey,26)",
+                      "replacement":  "iconImgHTML(gkey,26,1)"
+                  },
+                  {
+                      "anchor":  "iconImgHTML(shopEntryIcon(o),64)",
+                      "replacement":  "iconImgHTML(shopEntryIcon(o),64,1)"
+                  },
+                  {
+                      "anchor":  "row.appendChild(iconImg(id,26));",
+                      "replacement":  "row.appendChild(iconImg(id,26,1));"
+                  },
+                  {
+                      "anchor":  "row.appendChild(iconImg(outKey,26));",
+                      "replacement":  "row.appendChild(iconImg(outKey,26,1));"
+                  },
+                  {
+                      "anchor":  "iconImgHTML(icon,64)",
+                      "replacement":  "iconImgHTML(icon,64,1)"
+                  },
+                  {
+                      "anchor":  "\u0027\u003cdiv class=\"cres\"\u003e\u0027+iconImgHTML(k,30)",
+                      "replacement":  "\u0027\u003cdiv class=\"cres\"\u003e\u0027+iconImgHTML(k,30,1)"
+                  },
+                  {
+                      "anchor":  "var GAMBLE_POOL=[\n  [\u0027scrap\u0027,10],[\u0027wire\u0027,10],[\u0027cell\u0027,9],[\u0027bandage\u0027,9],[\u0027ammobox\u0027,10],[\u0027board\u0027,8],\n  [\u0027optic\u0027,7],[\u0027plate\u0027,6],[\u0027servo\u0027,6],[\u0027comp\u0027,6],[\u0027medkit\u0027,5],[\u0027smoke\u0027,4],[\u0027decoy\u0027,3],[\u0027frag\u0027,3],\n  [\u0027core\u0027,4],[\u0027coil\u0027,3],[\u0027ledger\u0027,3],[\u0027titan\u0027,3],\n  [\u0027gun_smg\u0027,3],[\u0027gun_carbine\u0027,2],[\u0027gun_shotgun\u0027,2],[\u0027gun_rifle\u0027,2],[\u0027gun_lmg\u0027,1],[\u0027gun_magnum\u0027,1],\n  [\u0027blackbox\u0027,1],[\u0027relay\u0027,1],[\u0027codex\u0027,1],[\u0027reactor\u0027,1],[\u0027bloom\u0027,1],[\u0027KEY\u0027,3]\n];",
+                      "replacement":  "var GAMBLE_POOL=[   // cw-hubfix, his note 10-27 (\"I gambled like 20 times and never got anything good\"): about half of all pulls are a gun or a valuable\n  [\u0027scrap\u0027,1],[\u0027wire\u0027,1],[\u0027cell\u0027,1],[\u0027bandage\u0027,2],[\u0027ammobox\u0027,2],[\u0027smoke\u0027,1],[\u0027decoy\u0027,1],[\u0027board\u0027,2],[\u0027comp\u0027,1],\n  [\u0027optic\u0027,3],[\u0027plate\u0027,8],[\u0027servo\u0027,3],[\u0027medkit\u0027,7],[\u0027frag\u0027,6],\n  [\u0027core\u0027,3],[\u0027coil\u0027,4],[\u0027ledger\u0027,4],[\u0027titan\u0027,4],[\u0027KEY\u0027,2],\n  [\u0027gun_smg\u0027,4],[\u0027gun_carbine\u0027,4],[\u0027gun_shotgun\u0027,4],[\u0027gun_rifle\u0027,4],[\u0027gun_lmg\u0027,5],[\u0027gun_magnum\u0027,3],\n  [\u0027blackbox\u0027,4],[\u0027relay\u0027,4],[\u0027codex\u0027,4],[\u0027reactor\u0027,4],[\u0027bloom\u0027,4]\n];"
+                  },
+                  {
+                      "anchor":  "    if(!it\u0026\u0026i\u003cGUNKEYS\u0026\u0026_fl[i]\u0026\u0026_fl[i].kind===\u0027gun\u0027\u0026\u0026!_fl[i].vacant\u0026\u0026_fl[i].icon\u0026\u0026_fl[i].icon!==\u0027fists\u0027){",
+                      "replacement":  "    if(where!==\u0027sector\u0027\u0026\u0026where!==\u0027stage\u0027\u0026\u0026!it\u0026\u0026i\u003cGUNKEYS\u0026\u0026_fl[i]\u0026\u0026_fl[i].kind===\u0027gun\u0027\u0026\u0026!_fl[i].vacant\u0026\u0026_fl[i].icon\u0026\u0026_fl[i].icon!==\u0027fists\u0027){   // cw-hubfix, his note 10-27: no gun 1 / gun 2 ghosts on the pre-raid belt"
+                  },
+                  {
+                      "anchor":  "  var _gn=[\u0027GUNS\u0027,\u0027THROW\u0027,\u0027MEDICAL\u0027,\u0027ARMOUR\u0027], _gi;",
+                      "replacement":  "  var _gn=[\u0027\u0027,\u0027THROW\u0027,\u0027MEDICAL\u0027,\u0027ARMOUR\u0027], _gi;   // cw-hubfix, his note 10-27: no GUNS label, any key holds a gun or an item"
+                  },
+                  {
+                      "anchor":  "data-core=\"1\" data-pan=\"p\"",
+                      "replacement":  "data-core=\"1\" title=\"burns 1 data core on ascent: elites and keys show live on your map\" data-pan=\"p\""
+                  },
+                  {
+                      "anchor":  "BURNS ON ASCENT\u003c/span\u003e\u003ci class=\"cb\"\u003e\u003c/i\u003e\u003c/button\u003e\u003c/div\u003e\u0027;\n  host.innerHTML=h;",
+                      "replacement":  "BURNS ON ASCENT\u003c/span\u003e\u003ci class=\"cb\"\u003e\u003c/i\u003e\u003c/button\u003e\u003c/div\u003e\u0027;\n  // cw-hubfix, his note 10-27: packing an item rebuilt the list and threw it back to the top; the scroll is kept across the rebuild\n  var _sk=[], _so=host.querySelector(\u0027.srplist\u0027), _sl=_so?_so.scrollTop:0, _sa=host;\n  while(_sa\u0026\u0026_sa!==document.body\u0026\u0026_sa.id!==\u0027sectormodal\u0027){ _sk.push([_sa,_sa.scrollTop]); _sa=_sa.parentElement; }\n  host.innerHTML=h;\n  try{ var _sn=host.querySelector(\u0027.srplist\u0027); if(_sn\u0026\u0026_sl) _sn.scrollTop=_sl; for(var _si=0;_si\u003c_sk.length;_si++) if(_sk[_si][0].scrollTop!==_sk[_si][1]) _sk[_si][0].scrollTop=_sk[_si][1]; }catch(_sx){}"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027UNDERCROFT FIXES: the wheel zooms the floor, M opens the lift, the stash row is the hotbar, no pips in the shop, better Wirt pulls, no gun label or ghosts pre-raid, data core hover, the pack list keeps its place\u0027,\n   run:function(){\n     var bad=[], a, b, i, w, tot=0, good=0, ev, mz0, sm, lab, rp0=rarityPips, pips=0, u1, u2, html, cb, ls, ls2, sty=null, src=\u0027\u0027, sc;\n     try{\n       __topClear(); __runPrep(); __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       // (1) the floor scale follows the zoom\n       HZT=1; HZC=1; a=hubScale(); HZC=1.5; b=hubScale(); HZC=1;\n       if(Math.abs(b/a-1.5)\u003e0.01) bad.push(\u0027floor scale does not follow the zoom (\u0027+a+\u0027 then \u0027+b+\u0027)\u0027);\n       // (2) the wheel on the bare floor zooms it and leaves the menu size alone\n       __hubEnter();\n       if(state!==\u0027hub\u0027||!HB) bad.push(\u0027staging: not on the floor\u0027);\n       else {\n         [].forEach.call(document.querySelectorAll(\u0027.modal.on\u0027),function(x){ x.classList.remove(\u0027on\u0027); });\n         if(typeof hubWinOn===\u0027function\u0027\u0026\u0026hubWinOn()) bad.push(\u0027staging: a hub window is up\u0027);\n         mz0=P.menuZoom; HZT=1; HZC=1;\n         ev=new WheelEvent(\u0027wheel\u0027,{deltaY:-120,deltaMode:0,bubbles:true,cancelable:true,clientX:960,clientY:540});\n         document.body.dispatchEvent(ev);\n         if(!(HZT\u003e1.05)) bad.push(\u0027the wheel on the floor left the floor zoom at \u0027+HZT);\n         if(P.menuZoom!==mz0) bad.push(\u0027the wheel on the floor changed the menu size to \u0027+P.menuZoom);\n         HZT=1; HZC=1;\n         // (3) M on the floor opens the lift map\n         var K0=__keys(); for(var q0 in K0) delete K0[q0];\n         window.dispatchEvent(new KeyboardEvent(\u0027keydown\u0027,{code:\u0027KeyM\u0027,key:\u0027m\u0027,bubbles:true}));\n         window.dispatchEvent(new KeyboardEvent(\u0027keyup\u0027,{code:\u0027KeyM\u0027,key:\u0027m\u0027,bubbles:true}));\n         sm=document.getElementById(\u0027sectormodal\u0027);\n         if(!sm||!sm.classList.contains(\u0027on\u0027)) bad.push(\u0027M on the floor did not open the lift map\u0027);\n         if(sm) sm.classList.remove(\u0027on\u0027);\n       }\n       // (4) the stash row is called the hotbar\n       lab=document.getElementById(\u0027quickn\u0027); lab=lab\u0026\u0026lab.parentNode\u0026\u0026lab.parentNode.parentNode;\n       if(!lab||!/^\\s*hotbar/i.test(lab.textContent)) bad.push(\u0027stash row reads \u0027+(lab?JSON.stringify(lab.textContent.slice(0,24)):\u0027nothing\u0027));\n       P.hotAssign=P.hotAssign||{}; P.hotAssign[5]=\u0027medkit\u0027;\n       if(hotPlanHTML().indexOf(\u0027width:40px\u0027)\u003c0) bad.push(\u0027stash hotbar icons are still small\u0027);\n       delete P.hotAssign[5];\n       // (5) shop and craft icons have no pips\n       rarityPips=function(){ pips++; };\n       delete _iconURL[\u0027optic|17|np\u0027]; delete _iconURL[\u0027optic|19\u0027];\n       u1=itemIconURL(\u0027optic\u0027,17,1); var p1=pips; u2=itemIconURL(\u0027optic\u0027,19); var p2=pips-p1;\n       rarityPips=rp0;\n       if(p1\u003e0) bad.push(\u0027the shop icon still paints rarity pips\u0027);\n       if(p2\u003c1) bad.push(\u0027control: the plain icon no longer paints pips\u0027);\n       if(String(renderShopGrid).indexOf(\u0027shopEntryIcon(o),64,1)\u0027)\u003c0||String(renderCraftGrid).indexOf(\u0027(icon,64,1)\u0027)\u003c0) bad.push(\u0027shop or craft grid still asks for pips\u0027);\n       // (6) Wirt: guns and valuables are at least 40 percent of the pulls, and a pull is still worth less than its price\n       var ev2=0;\n       for(i=0;i\u003cGAMBLE_POOL.length;i++){ w=GAMBLE_POOL[i][1]; tot+=w; if(GAMBLE_POOL[i][0]!==\u0027KEY\u0027\u0026\u0026ITEMS[GAMBLE_POOL[i][0]]){ if((ITEMS[GAMBLE_POOL[i][0]].val||0)\u003e=900) good+=w; ev2+=w*(ITEMS[GAMBLE_POOL[i][0]].val||0); } }\n       if(!(good/tot\u003e=0.4)) bad.push(\u0027only \u0027+Math.round(100*good/tot)+\u0027% of Wirt pulls are a gun or a valuable\u0027);\n       if(!(ev2/tot\u003cGAMBLE_PRICE)) bad.push(\u0027a Wirt pull is worth more than its price ($\u0027+Math.round(ev2/tot)+\u0027)\u0027);\n       // (7) the lift screen: no GUNS label or gun ghosts on the belt, the data core row has a hover line, the pack list keeps its scroll\n       P.kitPick=\u0027mine\u0027;\n       P.stash.push(\u0027medkit\u0027,\u0027medkit\u0027,\u0027bandage\u0027,\u0027smoke\u0027,\u0027frag\u0027,\u0027frag\u0027,\u0027plate\u0027,\u0027decoy\u0027,\u0027stim\u0027,\u0027ammobox\u0027,\u0027gun_smg\u0027,\u0027gun_rifle\u0027,\u0027gun_carbine\u0027,\u0027gun_shotgun\u0027,\u0027core\u0027);\n       saveProfile(); renderSector(); openModal(\u0027sectormodal\u0027);\n       html=hotPlanHTML(\u0027sector\u0027);\n       if(/\u003e\\s*GUNS\\s*\u003c/i.test(html)) bad.push(\u0027pre-raid belt still says GUNS\u0027);\n       if(html.indexOf(\u0027opacity:.7\u0027)\u003e=0) bad.push(\u0027pre-raid belt still shows a dimmed gun\u0027);\n       cb=document.querySelector(\u0027#sectorpack .srcore\u0027);\n       if(!cb) bad.push(\u0027staging: no data core row\u0027);\n       else if(!/data core/i.test(cb.getAttribute(\u0027title\u0027)||\u0027\u0027)) bad.push(\u0027data core row has no hover line\u0027);\n       sty=document.createElement(\u0027style\u0027); sty.textContent=\u0027#sectormodal .srplist{max-height:90px!important;flex:0 0 90px!important}\u0027; document.head.appendChild(sty);\n       syncSectorKit();\n       ls=document.querySelector(\u0027#sectormodal .srplist\u0027);\n       if(!ls) bad.push(\u0027staging: no pack list\u0027);\n       else if(ls.scrollHeight-ls.clientHeight\u003c60) bad.push(\u0027staging: the pack list does not scroll (\u0027+ls.scrollHeight+\u0027/\u0027+ls.clientHeight+\u0027)\u0027);\n       else {\n         ls.scrollTop=50; var s0=ls.scrollTop;\n         packSet(\u0027medkit\u0027,1); syncSectorKit(); try{ refreshInv(); }catch(_ri){}\n         ls2=document.querySelector(\u0027#sectormodal .srplist\u0027);\n         if(!ls2) bad.push(\u0027pack list gone after packing\u0027);\n         else if(Math.abs(ls2.scrollTop-s0)\u003e2) bad.push(\u0027pack list jumped from \u0027+s0+\u0027 to \u0027+ls2.scrollTop+\u0027 after packing\u0027);\n         if(packedCount(\u0027medkit\u0027)!==1) bad.push(\u0027control: packing a medkit packed \u0027+packedCount(\u0027medkit\u0027));\n       }\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{\n       try{ rarityPips=rp0; }catch(_rp){}\n       try{ HZT=1; HZC=1; }catch(_hz){}\n       try{ if(sty\u0026\u0026sty.parentNode) sty.parentNode.removeChild(sty); }catch(_st){}\n       try{ var sm2=document.getElementById(\u0027sectormodal\u0027); if(sm2) sm2.classList.remove(\u0027on\u0027); }catch(_s){}\n       try{ if(pauseOpen) togglePauseBox(false); }catch(_p){}\n       try{ var K2=__keys(); for(var q2 in K2) delete K2[q2]; }catch(_k){}\n       try{ if(state===\u0027raid\u0027\u0026\u0026G\u0026\u0026!G.over) __endRaid(\u0027abandon\u0027); }catch(_e){}\n       try{ __topClear(); __cleanProfile(); }catch(_c){}\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

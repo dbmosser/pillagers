@@ -1,0 +1,7 @@
+v35.12: undercroft fixes
+
+the wheel zooms the undercroft floor and m opens the lift map; the stash row is called hotbar with bigger icons; no white rarity bars in the shop, craft and wirt windows; wirt pulls a gun or a valuable about half the time; no gun label or dimmed guns on the pre-raid belt; the data core row says what it does on hover; packing an item keeps the list where it was
+
+Check 35.12. Fails on v35.11.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
