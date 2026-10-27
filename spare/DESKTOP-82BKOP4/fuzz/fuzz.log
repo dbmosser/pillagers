@@ -4617,3 +4617,10 @@
 2026-10-26 23:48:57 FUZZ ERROR CDP timeout at 144
 2026-10-26 23:49:07 raid 1 demo2p raidSeed=543120384 map=0 god=0 sec=288 end=hang problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=5367 score=215 ents=53 travelPx=20670 fires=116 menuPct=17 heapMB=71 p2=link_5s_join_8s_pad_own gfx=15823/10.25/20.25/394/1 gfx2=5902/10.25/20.25/46/1 work=15671/7.25/13.75/21.25 work2=15219/5.75/11.75/19.75 build=34.92
 2026-10-26 23:49:20 FUZZ END raids=0 problems=0 unique=0 reason=ERROR: CDP timeout minutes=1.2
+2026-10-26 23:53:58 FUZZ START seed=1858350699 minutes=60 raidsec=300 port=9331 srv=8806 build=34.92 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
+2026-10-26 23:54:37 raid 1 demo2p raidSeed=1127241831 map=0 god=1 sec=1 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=34.92
+2026-10-26 23:55:03 raid 2 demo2p raidSeed=1812511873 map=0 god=1 sec=332 end=hang problems=1 newUnique=0 totalUnique=1 totalProblems=2 events=6688 score=0 ents=57 travelPx=18948 fires=93 menuPct=18 heapMB=72 p2=link_3s_join_5s_pad_fwd gfx=20531/10.25/19.75/50/1 gfx2=20580/10.25/19.75/54/1 work=20380/6.25/12.75/15.75 work2=20582/6.75/12.25/15.75 build=34.92
+2026-10-26 23:56:39 raid 2 demo2p raidSeed=1965863297 map=0 god=1 sec=51 end=poll problems=1 newUnique=1 totalUnique=2 totalProblems=2 events=7 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2=link_12s_join_16s_pad_fwd gfx=none work=none build=34.92
+2026-10-26 23:58:20 FUZZ ERROR Unable to connect to the remote server at 220
+2026-10-26 23:58:20 FUZZ END raids=2 problems=2 unique=2 reason=ERROR: Unable to connect to the remote server minutes=5.2
+2026-10-27 00:01:44 raid 3 demo2p raidSeed=1952919688 map=0 god=1 sec=305 end=clock-end problems=0 newUnique=0 totalUnique=1 totalProblems=2 events=8831 score=0 ents=57 travelPx=26237 fires=143 menuPct=16 heapMB=73 p2=link_19s_join_66s_pad_own gfx=33075/10.25/10.25/247/1 gfx2=31811/10.25/10.25/260/1 work=30011/5.75/8.75/12.25 work2=32085/4.75/10.25/18.75 build=34.92
