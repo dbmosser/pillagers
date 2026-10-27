@@ -1,0 +1,7 @@
+v35.11: raid hud fixes
+
+loot leaves the left feed; recovering shows only while health really climbs; status icons stay clear of the feed
+
+Check 35.11. Fails on v35.10.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

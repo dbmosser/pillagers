@@ -1,19 +1,24 @@
 Latest stable: v34.53 (2026-10-27 02:38)
-Checked: 2026-10-27 14:00
+Checked: 2026-10-27 15:02
 Play address: http://localhost:8802/stable.html
 Result: no change
 
 Newest test runs, newest first:
-  corpus-1027-1146  v35.06  failing 8, new 3  robots 115 min/1 problems  -> 3 check(s) newly failing, e.g. v33.68 cw-pixprops (86e) ship 1: the pixel adapter pixWrap a | v31.32 cw-trcol, his order (2026-10-18) everything in the ri
+  corpus-1027-1326  v35.09  failing 16, new 8  robots 78 min/0 problems  -> 8 check(s) newly failing, e.g. v8.66 dragging onto the belt assigns, refuses and moves corr | v33.68 cw-pixprops (86e) ship 1: the pixel adapter pixWrap a
+  corpus-1027-1146  v35.06  failing 8, new 3  robots 126 min/1 problems  -> 3 check(s) newly failing, e.g. v33.68 cw-pixprops (86e) ship 1: the pixel adapter pixWrap a | v31.32 cw-trcol, his order (2026-10-18) everything in the ri
   corpus-1027-1017  v35.05  failing 10, new 4  robots 82 min/9 problems  -> 4 check(s) newly failing, e.g. v33.68 cw-pixprops (86e) ship 1: the pixel adapter pixWrap a | v33.60 cw-cx-pixground (86b): THE PIXEL GROUND. With the pix
   corpus-1027-0855  v35.01  failing 9, new 4  robots 114 min/1 problems  -> 4 check(s) newly failing, e.g. v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right | v33.68 cw-pixprops (86e) ship 1: the pixel adapter pixWrap a
   corpus-1027-0705  v34.96  failing 11, new 2  robots 874 min/76 problems  -> 2 check(s) newly failing, e.g. v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right | v30.17 the Settings detail pane and its focus look name the 
   corpus-1027-0155  v34.96  failing 15, new 3  robots 874 min/76 problems  -> 3 check(s) newly failing, e.g. v34.90 cw-thirdsize, his note of 2026-10-25, played on build | v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right
   corpus-1027-0032  v34.94  failing 16, new 3  robots 221 min/4 problems  -> 3 check(s) newly failing, e.g. v34.90 cw-thirdsize, his note of 2026-10-25, played on build | v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right
-  corpus-1026-2256  v34.92  failing 19, new 4  robots 95 min/32 problems  -> 4 check(s) newly failing, e.g. v34.90 cw-thirdsize, his note of 2026-10-25, played on build | v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right
-  corpus-1026-0853  v34.90  failing 14, new 1  robots 1300 min/259 problems  -> 1 check(s) newly failing, e.g. v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right
+  corpus-1026-2256  v34.92  failing 19, new 6  robots 95 min/32 problems  -> 6 check(s) newly failing, e.g. v8.89 a pillager wading out of sight draws no rings in the w | v34.90 cw-thirdsize, his note of 2026-10-25, played on build
 
 Checks that are newly red and still red (they block until fixed, or until listed in tools/handoff/stable-known-red.txt):
   v33.68 cw-pixprops (86e) ship 1: the pixel adapter pixWrap and the containers, b
   v31.32 cw-trcol, his order (2026-10-18) everything in the right hand upper corne
-  v10.38 the WHAT IS NEW card is current, opens with a note, and retains its histo
+  v8.66 dragging onto the belt assigns, refuses and moves correctly
+  v26.27 wheel4, his order: the bar holds nine gun slots and nothing else; G, U, J
+  v22.52 any gun on any key in a raid (the four-gun belt, build 5): gun 1 in his h
+  v18.91 on the Undercroft floor with the backpack open, gun 2 on belt key 2 picke
+  v13.99 a belt key does not point at something that stayed behind: going up with
+  v13.59 crafting with items packed in the backpack unpacks them properly: a Medki

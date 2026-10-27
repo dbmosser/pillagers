@@ -3723,7 +3723,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.10';
+var VER='35.11';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -23052,6 +23052,7 @@ function feedSay(m,k,o){
   if(k==='pick'){
     tag=(o&&o.sub)?String(o.sub):((o&&o.tag)?String(o.tag).toUpperCase():'');
     if(o&&o.c==='danger'){ fk='danger'; col=HUDC.danger; key=(o.key?('k:'+o.key):''); }
+    else if(item&&ITEMS[item]&&!(/^[+\-](\$|[\d,]+ SP$)/).test(s)){ return null; }   // cw-hudfix, his note 10-27: looted items show only in the right-side stack
     else if(item&&ITEMS[item]){ fk='loot'; col=feedItemCol(item,o&&o.c); cnt=true; key='p:'+item+'|'+tag; }
     /* v28.xx (cw-feedsp): a "+70 SP" pick tag is a money row, SP as well as $ */ else if((/^[+\-](\$|[\d,]+ SP$)/).test(s)){ fk='money'; col=(o&&o.c&&HUDC[o.c]&&o.c!=='gain')?HUDC[o.c]:UIC.r_gold; key='m:'+s+'|'+tag; }
     else { fk='info'; col=feedItemCol('',o&&o.c); key=(o&&o.key)?('k:'+o.key):''; }
@@ -26606,7 +26607,7 @@ function tickRegen(dt){
   else { p.crStill=0; p.crX=p.x; p.crY=p.y; }
   if(_cs&&p.crStill>=3&&p.combatT>=3&&p.crQuiet>=6&&p.hp<_top){
     p.crAcc=(p.crAcc||0)+dt; p.regenAcc=0; p.regenLive=G.t; p.crLive=G.t;
-    while(p.crAcc>=2&&p.hp<_top){ p.crAcc-=2; p.hp=Math.min(_top,p.hp+1); G.tel.regen=(G.tel.regen||0)+1; }
+    while(p.crAcc>=2&&p.hp<_top){ p.crAcc-=2; p.hp=Math.min(_top,p.hp+1); p.regenUpT=G.t; p.regenUpW=2.6; p.regenUpHp=p.hp; /* cw-hudfix */ G.tel.regen=(G.tel.regen||0)+1; }
     return;
   }
   p.crAcc=0;
@@ -26615,7 +26616,7 @@ function tickRegen(dt){
   p.regenLive=G.t;   // v21.65: the RECOVERING icon shows only while this really runs
   while(p.regenAcc>=CFG.regenSec&&p.hp<_top){
     p.regenAcc-=CFG.regenSec;
-    p.hp=Math.min(_top,p.hp+1);
+    p.hp=Math.min(_top,p.hp+1); p.regenUpT=G.t; p.regenUpW=CFG.regenSec+0.6; p.regenUpHp=p.hp;   // cw-hudfix
     G.tel.regen=(G.tel.regen||0)+1;
   }
 }
@@ -42836,7 +42837,7 @@ function statusLive(p){
       // v21.65, HIS NOTE (2026-10-09): "the left hand side says recovering to 85 but i'm not". The icon worked the rule out for itself,
       // so it showed whenever the numbers allowed it, also in moments the regen was not running at all. It now shows only while the regen
       // actually ran in the last half second, so it never says RECOVERING while health stands still.
-      if(!p.downed&&p.hp>0&&p.hp<top&&((p.combatT||0)>=CFG.regenDelay||(typeof p.crLive==='number'&&G.t-p.crLive<0.5))&&typeof p.regenLive==='number'&&G.t-p.regenLive<0.5){ E.on=true; if(E.vk!==top){ E.vk=top; E.v='to '+top; } }
+      if(!p.downed&&p.hp>0&&p.hp<top&&((p.combatT||0)>=CFG.regenDelay||(typeof p.crLive==='number'&&G.t-p.crLive<0.5))&&typeof p.regenLive==='number'&&G.t-p.regenLive<0.5&&Math.round(p.hp)<top&&typeof p.regenUpT==='number'&&G.t-p.regenUpT<(p.regenUpW||CFG.regenSec+0.6)&&!(p.hp<(p.regenUpHp||0)-0.05)){ E.on=true; if(E.vk!==top){ E.vk=top; E.v='to '+top; } }
     } else if(E.id==='wind'){
       // the v4.24 lock (the ring runs down as the bar climbs back to 12) and the v8.73 latch, which the player update clears
       // every frame the sprint key is up, so while it is set the key is still held
@@ -42925,13 +42926,14 @@ function drawStatusIcons(){
   // vitals only when their top was below it, so a board dragged down, or a list grown or dragged up, had the icons drawn over it. Every
   // panel at the left is now treated the same, top to bottom: one that starts by the column's first row pushes the column below it, one
   // that starts lower ends the column above it. When that leaves no room for a row, the column moves to the right of those panels.
-  var _bx=[HUDBOX.raiders,HUDBOX.legend,HUDBOX.body,FEEDBOX.on?FEEDBOX:null].filter(function(b){ return b&&b.x<ox+wC&&b.x+b.w>ox; }).sort(function(a,b){ return a.y-b.y; }), _bi, _br;
+  var _bx=[HUDBOX.raiders,HUDBOX.legend,HUDBOX.body,FEEDBOX.on?FEEDBOX:null,(typeof MEDALBOX==='object'&&MEDALBOX&&MEDALBOX.on)?MEDALBOX:null].filter(function(b){ return b&&b.x<ox+wC&&b.x+b.w>ox; }).sort(function(a,b){ return a.y-b.y; }), _bi, _br;
   for(_bi=0;_bi<_bx.length;_bi++){ B=_bx[_bi];
     if(B.y+B.h+g*hr<=oy||B.y>=yBot) continue;
+    if(B===FEEDBOX||B===MEDALBOX){ yBot=Math.min(yBot,B.y-g*hr); continue; }   // cw-hudfix, his note 10-27: the feed and the medal strip only cap the column
     if(B.y<=oy+S*hr/2) oy=Math.round(B.y+B.h+g*hr);
     else yBot=Math.min(yBot,B.y-((B===HUDBOX.body)?LH(20):g)*hr);
   }
-  if(yBot-oy<S*hr*0.6&&_bx.length){
+  if(yBot-oy<S*hr&&_bx.length){
     _br=0; for(_bi=0;_bi<_bx.length;_bi++) _br=Math.max(_br,_bx[_bi].x+_bx[_bi].w);
     ox=Math.round(_br+g*hr); oy=Math.round(H*0.40); yBot=H-LH(8)*hr;
     if(typeof NETTEAMBOX==='object'&&NETTEAMBOX&&NETTEAMBOX.n&&NETTEAMBOX.x<ox+wC&&NETTEAMBOX.x+NETTEAMBOX.w>ox&&NETTEAMBOX.y+NETTEAMBOX.h+g*hr>oy) oy=Math.round(NETTEAMBOX.y+NETTEAMBOX.h+g*hr);
@@ -54683,7 +54685,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.10: key 0 reads 0; drag a belt key off on the lift; pad reaches the lift belt; lift words show by the belt Check 35.10 fails on v35.09',
+  now:'v35.11: loot leaves the left feed; recovering shows only while health really climbs; status icons stay clear of the feed Check 35.11 fails on v35.10',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
