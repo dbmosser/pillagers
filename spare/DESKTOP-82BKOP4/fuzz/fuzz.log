@@ -4833,3 +4833,10 @@
 2026-10-27 07:21:20 FUZZ ERROR Unable to connect to the remote server at 237
 2026-10-27 07:21:20 FUZZ END raids=1 problems=1 unique=1 reason=ERROR: Unable to connect to the remote server minutes=5.2
 2026-10-27 07:22:45 raid 1 demo2p raidSeed=2114218167 map=0 god=0 sec=302 end=clock-end problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=5367 score=0 ents=48 travelPx=13374 fires=80 menuPct=19 heapMB=69 p2=link_49s_join_71s_pad_fwd_DEAD gfx=18960/10.25/39.75/2310/1 gfx2=9334/19.75/59.25/2275/0.75 work=20102/7.75/29.25/49.25 work2=10193/11.75/51.25/100 build=34.96
+2026-10-27 07:27:14 FUZZ ERROR CDP timeout at 144
+2026-10-27 07:28:10 FUZZ END raids=0 problems=0 unique=0 reason=ERROR: CDP timeout minutes=1.7
+2026-10-27 07:28:14 raid 2 demo2p raidSeed=617821621 map=0 god=1 sec=321 end=clock-end problems=0 newUnique=0 totalUnique=1 totalProblems=1 events=6885 score=0 ents=44 travelPx=22740 fires=113 menuPct=10 heapMB=67 p2=link_2s_join_5s_pad_fwd gfx=14657/10.25/29.75/778/0.75 gfx2=14397/10.25/30.25/935/0.75 work=18992/10.25/26.25/44.25 work2=19540/9.75/27.25/46.75 build=34.96
+2026-10-27 07:32:31 FUZZ ERROR CDP timeout at 146
+2026-10-27 07:33:02 raid 3 demo2p raidSeed=1212573457 map=0 god=0 sec=279 end=hang problems=1 newUnique=1 totalUnique=2 totalProblems=2 events=5339 score=0 ents=50 travelPx=16351 fires=118 menuPct=23 heapMB=70 p2=link_3s_join_5s_pad_fwd gfx=16346/10.25/20.25/342/1 gfx2=16059/10.25/20.25/396/1 work=16224/6.25/15.25/27.25 work2=16060/5.25/15.75/28.75 build=34.96
+2026-10-27 07:33:06 FUZZ END raids=0 problems=0 unique=0 reason=ERROR: CDP timeout minutes=1.4
+2026-10-27 07:34:57 raid 4 demo1 raidSeed=694709108 map=0 god=0 sec=105 end=ended problems=0 newUnique=0 totalUnique=2 totalProblems=2 events=3155 score=0 ents=51 travelPx=9148 fires=59 menuPct=11 heapMB=64 p2= gfx=9887/10.25/10.25/17/1 work=10157/4.75/9.25/10.75 build=34.96
