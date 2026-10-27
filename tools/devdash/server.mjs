@@ -129,16 +129,18 @@ function spareInfo() {
   const st = Object.fromEntries([...raw.replace(/\r?\n/g, ' ').matchAll(/(?:^|\s)(\w+)=(.*?)(?=\s+\w+=|\s*$)/g)].map(m => [m[1], m[2].trim()]));
   const day = new Date().toLocaleDateString('en-CA'), L = host ? tail(SPD + '/' + host + '/fuzz.log', 600) : [];
   const raids = L.filter(l => l.startsWith(day) && / raid \d+ /.test(l));
-  const v = { host, seenEpoch: +live.epoch || 0, game: st.game || '', testRun: st.test_run || '', robots: +st.robots || 0, ramFree: st.ram_free_gb || '', pushOk: st.push_ok || '',
+  const v = { host, seenEpoch: +live.epoch || 0, game: st.game || '', testRun: st.test_run || '', robots: +st.robots || 0, ramFree: st.ram_free_gb || '', pushOk: st.push_ok || '', mode: st.mode || '',
     raidsToday: raids.length, problemsToday: raids.reduce((s, l) => s + +((/ problems=(\d+)/.exec(l) || [0, 0])[1]), 0),
     lastRaids: raids.slice(-4), lastEnd: L.filter(l => /FUZZ END/.test(l)).slice(-1)[0] || '' };
   // 10-22: the main PC's idle runs (tools/spare/spare-runner.ps1 IDLE MODE on JUL26): tests only while he is away
   const mraw = git(['cat-file', 'blob', 'refs/spare-import/spare-results:spare/JUL26/status.txt']);
   if (mraw) {
     const ms = Object.fromEntries([...mraw.replace(/\r?\n/g, ' ').matchAll(/(?:^|\s)(\w+)=(.*?)(?=\s+\w+=|\s*$)/g)].map(m => [m[1], m[2].trim()]));
-    const mr = tail(SPD + '/JUL26/fuzz.log', 600).filter(l => l.startsWith(day) && / raid \d+ /.test(l));
+    const ML = tail(SPD + '/JUL26/fuzz.log', 600), mr = ML.filter(l => l.startsWith(day) && / raid \d+ /.test(l));
+    // 10-26, his "why don't you show detailed info on each PC": memory, mode, whether it can see the spare PC, why its robots last stopped
     v.mainPc = { seenEpoch: +ms.epoch || 0, testRun: ms.test_run || '', robots: +ms.robots || 0, game: ms.game || '', raidsToday: mr.length,
-      problemsToday: mr.reduce((s, l) => s + +((/ problems=(\d+)/.exec(l) || [0, 0])[1]), 0) };
+      problemsToday: mr.reduce((s, l) => s + +((/ problems=(\d+)/.exec(l) || [0, 0])[1]), 0),
+      ramFree: ms.ram_free_gb || '', mode: ms.mode || '', spareSeen: ms.spare_pc || '', lastEnd: ML.filter(l => /FUZZ END/.test(l)).slice(-1)[0] || '' };
   }
   spareCache = { t: Date.now(), v }; return v;
 }
@@ -164,7 +166,7 @@ function data() {
   // 10-20: his notes from the main PC (tools/fetch-notes.mjs, coord-01) and the spare PC (tools/spare/spare-import.mjs)
   const notes = rd(R + '/tools/handoff/notes-fetch.txt').trim().slice(0, 240), spare = rd(R + '/tools/handoff/spare-status.txt').trim().slice(0, 300);
   return { now: new Date().toLocaleTimeString(), ver: ver(), shipsToday, cpu, notes, spare, spareInfo: spareInfo(),
-    stable: { version: st.version || '', at: st.at || '', address: st.address || '', frozen: existsSync(R + '/tools/handoff/stable.freeze') }, report: latestReport(), ramFree: +(os.freemem() / 2 ** 30).toFixed(1), ramTot: Math.round(os.totalmem() / 2 ** 30),
+    stable: { version: st.version || '', at: st.at || '', address: st.address || '', frozen: existsSync(R + '/tools/handoff/stable.freeze') }, report: latestReport(), ramFree: +(os.freemem() / 2 ** 30).toFixed(1), ramTot: Math.round(os.totalmem() / 2 ** 30), cpus: os.cpus().length,
     procs, runnerAgeS: hb, lockOwner, titles, lanes, stopFile: existsSync(C + '/STOP'),
     spend: { real: !!real, today: +(real ? real.today_usd : spentToday0).toFixed(2), all: +(real ? real.month_usd : spentAll0).toFixed(2), total, share: +share.toFixed(2), daysLeft, end },
     done: existsSync(C + '/done') ? readdirSync(C + '/done').length : 0, failed: existsSync(C + '/failed') ? readdirSync(C + '/failed') : [],
@@ -211,7 +213,7 @@ function pushSnap() {
   // 10-25: a copy goes only when something on the page changed, or 90 s after the last one (the page warns after 120 s of silence),
   // not every 30 s regardless: while the helpers rest most copies were the same page with a new clock.
   const d = data(), sig = JSON.stringify({ ...d, now: 0, cpu: 0, ramFree: 0, runnerAgeS: 0, procs: { ...d.procs, t: 0 }, ai: { ...d.ai, local: { ...d.ai.local, loaded: 0 } },
-    plan: d.plan && { ...d.plan, ageS: 0, line: 0, perDay: 0, catchUp: 0 }, spareInfo: { ...d.spareInfo, seenEpoch: 0 } });
+    plan: d.plan && { ...d.plan, ageS: 0, line: 0, perDay: 0, catchUp: 0 }, spareInfo: { ...d.spareInfo, seenEpoch: 0, mainPc: d.spareInfo.mainPc && { ...d.spareInfo.mainPc, seenEpoch: 0 } } });
   if (sig === snapSig && Date.now() - snapSent < 90e3) return;
   snapBusy = true; snapSig = sig; snapSent = Date.now();
   try { writeFileSync(SNAP_TMP, snapshot(d)); } catch (e) { snapBusy = false; return; }

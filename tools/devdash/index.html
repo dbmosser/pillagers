@@ -32,7 +32,7 @@ main{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1
 <div id="crew"></div></section>
 
 <section class="card"><h2>YOUR CLAUDE PLAN THIS WEEK</h2>
-<div class="what">Your Max plan's weekly usage, the same number as Claude's /usage. Pacing is off since 10-19 (your order): the helpers use it as fast as the work needs, never faster. The dashed line is an even pace, for reference.</div>
+<div class="what">Your Max plan's weekly usage, the same number as Claude's /usage. Pacing is back on since 10-24 (your order): the aim is 80% a week, and the helpers rest whenever the week runs ahead of the dashed even-pace line.</div>
 <div id="plan"></div></section>
 
 <section class="card"><h2>CLAUDE HELPERS</h2>
@@ -55,9 +55,13 @@ main{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1
 <div class="what">The latest changes saved into the game (and backed up to GitHub). "Test update" means a change to the automatic tests, not the game itself.</div>
 <div id="commits"></div></section>
 
-<section class="card"><h2>YOUR PC</h2>
+<section class="card"><h2>THE VM (WORK COMPUTER)</h2>
 <div class="what">How hard the work computer (the VM) is working on the game right now. Your main PC always keeps at least 4 GB of memory free for you, and while you use it the VM gets half its processors and starts no big test runs.</div>
 <div id="pc"></div></section>
+
+<section class="card"><h2>MAIN PC (JUL26)</h2>
+<div class="what">Your own computer. It tests the game only while you are away and stops as soon as you come back; when the VM has taken the spare memory for the night it stays off.</div>
+<div id="mainpc"></div></section>
 
 <section class="card"><h2>BACKGROUND RUNNER</h2>
 <div class="what">A program that runs all day and night with no Claude cost: it starts the crash-hunting robots, re-runs all the tests on new versions, backs up the game, and keeps the helpers going.</div>
@@ -141,7 +145,7 @@ function aiHtml(a,p){
   o+=svcRow(!cl?'r':cx.busy?'g':cc,'ChatGPT helper','writes game changes, like the Claude helpers. '+(!cl?'<span class="warn">Not signed in.</span>':cx.busy?'Working on: '+esc(job(cx.task.replace(/\.md$/,'')))+(cx.running?' (ChatGPT is thinking)':' (testing its change)'):esc(ct)),
     'ChatGPT Plus, $20 a month, its own allowance (a 5-hour limit and a weekly limit). Works in its own copy of the game; only the quality check line can add its changes. Jobs finished: '+cx.done+(cx.stop?' &middot; <span class="warn">paused (STOP file)</span>':''));
   o+=svcRow(gs.state==='needs-you'||gs.state==='broken'?'r':g.busy?'g':g.running?'g':'d','Google bug checker','reads every new version of the game and lists possible bugs. '+(g.busy?'Checking a version now.':g.running?esc(gs.msg||'Waiting for the next version.'):'<span class="warn">Not running.</span>'),
-    'Google Antigravity, free (weekly limit not published). It only reads; Claude checks every bug it lists before anything changes.');
+    'Google Antigravity, free. This week\'s allowance is nearly used up and comes back about Nov 2. So far: 3 checks, 0 real bugs. It only reads; Claude checks every bug it lists before anything changes.');
   o+=svcRow(!l.up?'r':l.loaded.length?'g':(l.pull&&l.pull!=='done')?'b':'d','Local AI (your graphics card)',(!l.up?'<span class="warn">Ollama is not running.</span>':l.loaded.length?'Thinking now ('+esc(l.loaded.join(', '))+').':(l.pull&&l.pull!=='done'&&!has38)?'Downloading the new model: '+esc(l.pull):'Idle.')+(ls.msg?' '+esc(ls.msg):''),
     'Free. Models: '+(l.models.map(m=>esc(m.name)+' ('+m.gb+' GB)').join(', ')||'none')+'. Rests during your usual PC hours so your games stay smooth.');
   o+='<div class="small" style="margin:10px 0 2px"><b>Bug checks</b> ('+a.reviewsToday+' today)</div>'+(a.reviews.length?a.reviews.map(r=>row(r.bugs?'a':'g',new Date(r.at).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),rvLine(r))).join(''):row('d',null,'None yet'));
@@ -149,21 +153,35 @@ function aiHtml(a,p){
   o+='<div class="small" style="margin-top:10px">Not used, on purpose: Grok, Copilot, Perplexity, Venice, DeepSeek and the free API tiers (cost or quality; see tools/handoff/ai-services/research.md).</div>';
   return o;
 }
-// 10-21: the spare PC (JTPC). It reports through GitHub about every 5 to 15 minutes, so 45 minutes of silence means it is off or asleep.
+// 10-21: the spare PC (JTPC). It reports through GitHub at least every 30 to 35 minutes, so 45 minutes of silence means it is off or asleep.
 const dur=s=>s<5400?Math.round(s/60)+' minutes':(s/3600).toFixed(1)+' hours';
 function spareState(x){ if(!x||!x.host) return ['d','not set up yet']; const age=x.seenEpoch?Math.round(Date.now()/1000-x.seenEpoch):1e9;
+  if(age<2700&&/^paused/.test(x.testRun||'')) return ['a','paused, someone is using it, last report '+dur(age)+' ago',age];   // 10-26: it rests while someone plays on it
   return age<2700?['g','working, last report '+dur(age)+' ago',age]:['r','no report for '+dur(age)+' (off, asleep or at the sign-in screen?)',age]; }
+// 10-26: the last "FUZZ END" line from a PC's robot log, in plain words
+function endLine(l){ const m=/^(\S+) (\d\d:\d\d)\S* FUZZ END raids=(\d+) problems=(\d+) .*?reason=(.*?) minutes=([\d.]+)/.exec(l||''); if(!m) return '';
+  const r=/CDP|timeout|Unable to connect/i.test(m[5])?'the test browser froze':/low memory/i.test(m[5])?'stopped short on memory':/ERROR/.test(m[5])?'stopped on an error':'finished its shift';
+  return row(+m[4]?'a':'d',null,'<b>Robots last stopped:</b> '+r+'<div class="small">'+m[3]+' raids, '+(+m[4]?m[4]+' problems':'no problems')+', '+Math.round(+m[6])+' minutes, '+esc(m[1].slice(5))+' '+m[2]+'</div>'); }
 function spareHtml(x){
   const [c,t]=spareState(x); if(!x||!x.host) return row('d',null,'Not set up yet. Its setup steps are in tools/spare/claude-setup.md.');
   const v=(/v([\d.]+)/.exec(x.game)||[])[1], tr=/^running (?:corpus-\d{4}-(\d\d)(\d\d))?/.exec(x.testRun||'');
-  let o=row(c,null,'<b>'+(c==='g'?'Working':'<span class="warn">Quiet</span>')+'</b>: '+esc(t.replace(/^working, /,''))+'<div class="small">'+esc(x.host)+(x.ramFree?' &middot; '+esc(x.ramFree)+' GB memory free':'')+'</div>');
+  let o=row(c,null,'<b>'+(c==='g'?'Working':c==='a'?'Paused':'<span class="warn">Quiet</span>')+'</b>: '+esc(t.replace(/^(working|paused), /,''))+'<div class="small">'+esc(x.host)+(x.ramFree?' &middot; '+esc(x.ramFree)+' GB memory free':'')+(v?' &middot; has game version '+esc(v):'')+'</div>');
   o+=row(tr?'g':'d',null,'<b>Full test re-run:</b> '+(tr?'running'+(tr[1]?' since '+tr[1]+':'+tr[2]:'')+(v?' on version '+esc(v):''):'waiting for the next new version'+(v?' (has version '+esc(v)+')':'')));
   o+=row(x.robots?'g':'d',null,'<b>Crash-hunting robots:</b> '+(x.robots?x.robots+' playing now':'none playing')+'<div class="small">Today: '+x.raidsToday+' raids, '+(x.problemsToday?'<span class="warn">'+x.problemsToday+' problem'+(x.problemsToday>1?'s':'')+'</span> (Claude checks whether each is the game or the test)':'no problems')+'</div>');
   o+=row(x.pushOk==='1'?'g':'a',null,'<b>Results to the VM:</b> '+(x.pushOk==='1'?'arriving':'its last upload try failed; it tries again on its next round'));
   x.lastRaids.slice().reverse().forEach(l=>{ const m=/^\S+ (\d\d:\d\d)\S* raid \d+ (\S+) .*?end=(\S+) problems=(\d+)/.exec(l); if(m) o+=row(+m[4]?'a':'d',m[1],esc((m[2]==='demo2p'?'2-player demo':m[2]==='demo1'?'1-player demo':m[2])+' raid: '+(m[3]==='nostart'?'did not start':m[3]==='clock-end'||m[3]==='ended'?'played to the end':m[3])+(+m[4]?', '+m[4]+' problem'+(+m[4]>1?'s':''):''))); });
-  // 10-22: the main PC tests only while nobody uses it (it reports at least every 30 minutes while on)
-  const mp=x.mainPc; if(mp){ const age=mp.seenEpoch?Math.round(Date.now()/1000-mp.seenEpoch):1e9, paused=/^paused/.test(mp.testRun||''), on=age<2700;
-    o+=row(!on?'d':paused?'d':'g',null,'<b>Main PC, while you are away:</b> '+(!on?'no report for '+dur(age):paused?(/VM has the memory/.test(mp.testRun)?'off for the night: the VM has the memory':/under 6 GB/.test(mp.testRun)?'waiting for free memory':'waiting while you use it'):'testing'+(/^running/.test(mp.testRun)?': a full test run':'')+(mp.robots?', '+mp.robots+' robots':''))+'<div class="small">Today: '+mp.raidsToday+' raids, '+(mp.problemsToday?'<span class="warn">'+mp.problemsToday+' problem'+(mp.problemsToday>1?'s':'')+'</span>':'no problems')+'</div>'); }
+  o+=endLine(x.lastEnd);
+  return o;
+}
+// 10-22: the main PC tests only while nobody uses it (it reports at least every 30 minutes while on); 10-26 its own card
+function mainPcHtml(mp){
+  if(!mp) return row('d',null,'No report yet. It reports at least every 30 minutes while it is on.');
+  const age=mp.seenEpoch?Math.round(Date.now()/1000-mp.seenEpoch):1e9, paused=/^paused/.test(mp.testRun||''), on=age<2700, v=(/v([\d.]+)/.exec(mp.game||'')||[])[1];
+  const st=!on?'no report for '+dur(age):paused?(/VM has the memory/.test(mp.testRun)?'off for the night: the VM has the memory':/under 6 GB/.test(mp.testRun)?'waiting for free memory':'waiting while you use it'):'testing'+(/^running/.test(mp.testRun)?': a full test run':'')+(mp.robots?', '+mp.robots+' robots':'');
+  let o=row(!on?'d':paused?'a':'g',null,'<b>'+(!on?'Off':paused?'Resting':'Testing')+'</b>: '+esc(st)+'<div class="small">'+(on?'last report '+dur(age)+' ago':'it may be off or asleep')+(mp.ramFree?' &middot; '+esc(mp.ramFree)+' GB memory free':'')+(v?' &middot; has game version '+esc(v):'')+'</div>');
+  o+=row(mp.robots?'g':'d',null,'<b>Crash-hunting robots:</b> '+(mp.robots?mp.robots+' playing now':'none playing')+'<div class="small">Today: '+mp.raidsToday+' raids, '+(mp.problemsToday?'<span class="warn">'+mp.problemsToday+' problem'+(mp.problemsToday>1?'s':'')+'</span>':'no problems')+'</div>');
+  o+=endLine(mp.lastEnd);
+  if(/not answering/.test(mp.spareSeen||'')) o+=row('a',null,'<b>Spare PC link:</b> the main PC cannot reach the spare PC right now (that only matters for sharing results faster; GitHub still carries them)');
   return o;
 }
 function crewHtml(d){
@@ -201,7 +219,7 @@ async function tick(){
   $('commits').innerHTML=d.commits.map(([h,t,s])=>{const v=/^v([\d.]+): (.*)/.exec(s);
     return v?row('g',t.slice(6),'<b>Version '+esc(v[1])+'</b>: '+esc(v[2])):row('d',t.slice(6),(/^fixture:/.test(s)?'Test update: '+esc(s.replace(/^fixture:\s*(fixture:\s*)?/,'')):esc(s)));}).join('');
   const p=d.procs;
-  $('pc').innerHTML='<span class="stat"><b>'+d.cpu+'%</b>processor busy</span><span class="stat"><b>'+d.ramFree+' GB</b>memory free of '+d.ramTot+'</span>'+
+  $('pc').innerHTML='<span class="stat"><b>'+d.cpu+'%</b>processor busy</span><span class="stat"><b>'+d.ramFree+' GB</b>memory free of '+d.ramTot+'</span>'+(d.cpus?'<span class="stat"><b>'+d.cpus+'</b>processors</span>':'')+
     row(p.fuzz.length?'g':'d',null,'<b>Crash-hunting robots:</b> '+(p.fuzz.length?p.fuzz.length+' running. They play the game with random button presses for hours, looking for crashes':'none running right now'))+
     row(p.workers?'g':'d',null,'<b>Claude helpers thinking:</b> '+p.workers+(p.workers?' right now':' (resting or waiting)'))+
     row('b',null,'<b>Chrome processes:</b> '+p.chrome+' (your own browser plus the hidden test browsers: the robots, the quality check line and each helper\'s practice browser)')+
@@ -212,7 +230,7 @@ async function tick(){
     (d.review.length?row('b',null,'<b>Nightly code review:</b> '+esc(d.review[d.review.length-1].replace(/^\S+ review: /,''))):'');
   if(d.plan) $('plan').innerHTML=planHtml(d.plan);
   if(d.ai) $('aisvc').innerHTML=aiHtml(d.ai,d.procs);
-  $('crew').innerHTML=crewHtml(d); $('spare').innerHTML=spareHtml(d.spareInfo);
+  $('crew').innerHTML=crewHtml(d); $('spare').innerHTML=spareHtml(d.spareInfo); $('mainpc').innerHTML=mainPcHtml(d.spareInfo&&d.spareInfo.mainPc);
   $('qs').innerHTML=d.questions.length?d.questions.map(q=>row('a',null,esc(q))).join(''):row('d',null,'No questions right now');
 }
 tick(); setInterval(tick,5000);
