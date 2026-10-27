@@ -51134,7 +51134,7 @@ window.__REGRESS=[
      if(verShown(VER)!==want) bad.push('this build shows '+verShown(VER)+', not '+want);
      if(!/^\d+\.\d\d$/.test(String(VER))) bad.push('the internal VER is no longer a build number: '+VER);
      el=document.getElementById('titlever'); t=el?String(el.textContent||''):'';
-     if(el&&t!==want) bad.push('the title shows '+t+', not '+want);
+     if(el&&t.indexOf(want)!==0) bad.push('the title shows '+t+', not '+want+' first');   // retargeted 2026-10-27 (cw-verat): the title may carry the build date after the number
      el=document.getElementById('verlabel'); t=el?String(el.textContent||''):'';
      if(el&&t!==''&&t!==want) bad.push('the corner label shows '+t+', not '+want);
      try{ rep=String(buildExport()); }catch(x){ bad.push('the run report threw: '+(x&&x.message||x)); }
