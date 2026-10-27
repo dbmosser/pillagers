@@ -9,6 +9,8 @@ git fetch -q origin master 2>/dev/null
 if [ "$(git rev-parse master)" != "$(git rev-parse origin/master)" ]; then git push -q origin master 2>&1 | tail -1; echo "$(date +%m-%d\ %H:%M) daily: github pushed (was behind)"; else echo "$(date +%m-%d\ %H:%M) daily: github up to date"; fi
 BUTLER_API_KEY=$(powershell -NoProfile -Command "[Environment]::GetEnvironmentVariable('BUTLER_API_KEY','User')" 2>/dev/null | tr -d '\r\n')
 ITCH_TARGET=$(powershell -NoProfile -Command "[Environment]::GetEnvironmentVariable('ITCH_TARGET','User')" 2>/dev/null | tr -d '\r\n')
+# 10-26: the page moved to pillagers.itch.io/pillagers; the old name in his variable answers "invalid game", so map it here.
+ITCH_TARGET=${ITCH_TARGET/pillagersv1306/pillagers}
 export BUTLER_API_KEY
 B=/c/Users/User1/bin/butler.exe
 [ -x "$B" ] && [ -n "$BUTLER_API_KEY" ] && [ -n "$ITCH_TARGET" ] || { echo "$(date +%m-%d\ %H:%M) daily: itch not set up"; exit 0; }
@@ -16,5 +18,8 @@ have=$("$B" status "$ITCH_TARGET" 2>/dev/null | grep -o -E "v[0-9]+\.[0-9]+" | t
 if [ "$have" = "v$ver" ]; then echo "$(date +%m-%d\ %H:%M) daily: itch up to date (v$ver)"; exit 0; fi
 cp dark_raiders.html tools/publish/index.html
 powershell -NoProfile -ExecutionPolicy Bypass -File "C:/claudecode/dark raiders/tools/itch-zip.ps1" >/dev/null 2>&1 || { echo "$(date '+%m-%d %H:%M') daily: itch zip did not build, not pushed"; exit 0; }
-"$B" push tools/publish/pillagers-web.zip "$ITCH_TARGET" --userversion "v$ver" 2>&1 | tail -1
+out=$("$B" push tools/publish/pillagers-web.zip "$ITCH_TARGET" --userversion "v$ver" 2>&1); rc=$?
+echo "$out" | tail -1
+# 10-26: says FAILED when butler did not take the build (it said "pushed" whatever happened)
+if [ $rc -ne 0 ]; then echo "$(date +%m-%d\ %H:%M) daily: itch push FAILED (still $have, v$ver not pushed)"; exit 0; fi
 echo "$(date +%m-%d\ %H:%M) daily: itch was $have, pushed v$ver"
