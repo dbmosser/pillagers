@@ -1,0 +1,5 @@
+## v35.20 - NEW IN CARD NAMES YOUR BUILD
+
+Co-op hunt while he was away. his order 10-27: he read v0.1137 off the new in card while playing v0.1149 and took it for an old build; the menu now shows one version number
+
+MEASURED. Check 35.20 passes, and fails on v35.19.

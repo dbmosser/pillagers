@@ -1,0 +1,7 @@
+v35.20: new in card names your build
+
+the new in card shows the build you play
+
+Check 35.20. Fails on v35.19.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
