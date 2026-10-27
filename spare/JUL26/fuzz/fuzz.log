@@ -1989,3 +1989,5 @@
 2026-10-27 13:20:23 FUZZ START seed=26695692 minutes=60 raidsec=300 port=9332 srv=8806 build=35.09 maps=0 size=1920x1080 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
 2026-10-27 13:20:23 FUZZ ERROR Exception calling "AppendAllText" with "3" argument(s): "The process cannot access the file 'C:\PillagersIdle\out\fuzz\fuzz.log' because it is being used by another process." at 76
 2026-10-27 13:20:23 FUZZ END raids=0 problems=0 unique=0 reason=ERROR: Exception calling "AppendAllText" with "3" argument(s): "The process cannot access the file 'C:\PillagersIdle\out\fuzz\fuzz.log' because it is being used by another process." minutes=0.3
+2026-10-27 13:34:43 FUZZ START seed=626682772 minutes=60 raidsec=300 port=9331 srv=8806 build=35.09 maps=0 size=1920x1080 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
+2026-10-27 13:34:43 FUZZ START seed=627872915 minutes=60 raidsec=300 port=9332 srv=8806 build=35.09 maps=0 size=1920x1080 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
