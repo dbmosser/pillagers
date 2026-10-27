@@ -1,0 +1,7 @@
+v35.15: fog of war hides the rest of live action
+
+fog of war hides grenades, smoke, falls and damage effects out of sight.
+
+Check 35.15. Fails on v35.14.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

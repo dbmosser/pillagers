@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.15 - FOG OF WAR HIDES THE REST OF LIVE ACTION
+
+Co-op hunt while he was away. His 10-27 order: explored ground stays darkened after walking away, but live action only shows in current sight. Grenades, lingering smoke, falls, body elements, machine damage and the extract shaft still leaked.
+
+MEASURED. Check 35.15 passes, and fails on v35.14.
 ## v35.14 - FOG OF WAR GAP
 
 Co-op hunt while he was away. his fog of war words 10-27
