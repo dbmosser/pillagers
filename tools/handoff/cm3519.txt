@@ -1,0 +1,7 @@
+v35.19: pillager back to full size
+
+pillagers are back to their old full size
+
+Check 35.19. Fails on v35.18.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

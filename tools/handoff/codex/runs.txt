@@ -351,3 +351,5 @@
 2026-10-27 17:28 o-92-fog-live-action-rest 425s ok PARTIAL in=1815792 out=15974 run=1
 2026-10-27 17:40 o-92-fog-live-action-rest 96s ok DONE in=2322221 out=18966 run=2
 2026-10-27 17:43 o-93-fps-counter-screen-rate 134s ok PARTIAL in=279973 out=6436 run=1
+2026-10-27 18:43 o-93-fps-counter-screen-rate 48s ok PARTIAL in=554481 out=8007 run=2
+2026-10-27 18:45 o-93-fps-counter-screen-rate 39s ok DONE in=884314 out=9399 run=3

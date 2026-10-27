@@ -2558,5 +2558,37 @@
   "pic": "tools/handoff/console/notes/shots/o-92-fog-live-action-rest-recipes-1/fog-live-on-1080.jpg",
   "task": "o-92-fog-live-action-rest",
   "when": "2026-10-27T21:39"
+ },
+ "fps-screen-rate": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The title screen is clean and the lime 1 player button is the clear first read. Almost none of the earlier advice was applied: the gold gradient wordmark, four equal-weight buttons, the weak saves block, the legend and the top-right buttons are all as before.",
+  "findings": [
+   "P1 pillagers wordmark: Use Barlow Condensed 700 or 800 at 56px (hero), solid --tx-1 (#efe9dc), no gradient and no shadow. Or use real logo art that avoids both gold and lime. Keep a 24px gap to the tagline.",
+   "P1 buttons 2 player co-op, 2 player arcade demo, 1 player arcade demo: Keep 1 player (lime) and 2 player co-op as the two main buttons, with 20px text and 48px height. Move the two demos to a 16px --tx-2 text-link row below them, or into a 'demos' group. Drop '(same machine)' or move it to a 16px --tx-2 sub-label. Narrow the column to about 440px.",
+   "P1 saves block (label, row, name input, change name, create a new save): Set the 'saves' label at 16px --tx-2 with +.04em tracking and 24px above it. Selected row: --ui-raised fill, 3px lime left bar, name in --tx-1 at 20px, no full lime outline. Leave 16px between the list and the controls. Make the controls 40px high with equal 8px gaps. Add a 'name' label or placeholder. Make 'create a new save' the quieter text-style action.",
+   "P2 top-right go fullscreen and settings: Put both on the 5% margin (96px from the top and right). Use the 4px-radius outline button with 16px f-cond 600 text, 40px height and 24px padding. Give pad focus a 2px lime outline.",
+   "P2 bottom key legend and v0.1148: Cut the legend to 'f1 controls', or remove it. Key caps: 16px, --ui-raised fill, 1px --ui-line-hi outline, --tx-1 text. Put v0.1148 at 14px on the same baseline as the legend, at the 96px margin."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-93-fps-counter-screen-rate-recipes-2/fps-screen-rate-1080.jpg",
+  "task": "o-93-fps-counter-screen-rate",
+  "when": "2026-10-27T22:44"
+ },
+ "fps-screen-rate-control": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The calm column with one lime primary row is solid and readable, but the amber-gradient wordmark, equal-weight demo rows, mixed lime in the save strip and the key-hint legend still make it look assembled rather than designed.",
+  "findings": [
+   "P1 pillagers wordmark: Make the wordmark flat --tx-1 #efe9dc at f-cond 800, 56px or larger, with no gradient and no shadow, and leave lime only on the focused row. Or keep it big (about 96px) and flat. Delete the amber fill.",
+   "P1 menu stack: 2 player arcade demo and 1 player arcade demo: Keep 1 player and 2 player co-op as 56px primary rows. Make both demos 40px, 16px, --tx-2 text, with no border or a --ui-line border, and put them 24px below co-op. Use a constant 8px gap inside a group.",
+   "P1 saves block: Set the 'saves' label to 16px --tx-2 with +.04em tracking. Give the save row a --ui-line-hi border and --tx-1 name text, with lime only on actual focus. Make the input and both buttons 48px tall with 16px gaps. Put the strip 24px below the save row and align it to the stack's 558px width.",
+   "P2 footer key hints (wasd move, mouse aim, lmb fire, e search, f1 controls): Cut the legend to nav hints only (select, back) at 16px --tx-2, or move the raid keys to the controls screen. Set the version to 14px f-body 500 in --tx-2, aligned to the 5% margin (96px left, 54px from the bottom) on the same baseline as the hints.",
+   "P2 top-right go fullscreen and settings buttons: Turn 'go fullscreen' into a 48px square icon button. Set labels to 16px/600, and put the pair at right 96px, top 54px with a 16px gap. Move the fps badge to the same 96px / 54px margin or hide it outside debug."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-93-fps-counter-screen-rate-recipes-2/fps-screen-rate-control-1080.jpg",
+  "task": "o-93-fps-counter-screen-rate",
+  "when": "2026-10-27T22:44"
  }
 }

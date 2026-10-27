@@ -417,3 +417,5 @@
 
 2026-10-27 | o-93-fps-counter-screen-rate | fps counter (all screens) | adds "screen 60" when the settled screen rate is more than 5 below the cap; counter text lower case | before: unavailable for custom recipe; after: lane camera-recipes.json fps-screen-rate and fps-screen-rate-control captures pending.
 
+2026-10-27 | o-93-fps-counter-screen-rate | fps counter, v35.16 | adds lower case "screen 60" when the settled screen rate is more than 5 below the cap; 60 cap control has no callout | before: custom recipe unavailable; after: tools/handoff/console/notes/shots/o-93-fps-counter-screen-rate-recipes-2/fps-screen-rate-1080.jpg and tools/handoff/console/notes/shots/o-93-fps-counter-screen-rate-recipes-2/fps-screen-rate-control-1080.jpg | critic 3 each, both pass.
+

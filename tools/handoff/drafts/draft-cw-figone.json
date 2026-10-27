@@ -1,0 +1,28 @@
+{
+    "title":  "PILLAGER BACK TO FULL SIZE",
+    "why":  "his note 10-27: character is too small now, back to the size he had for weeks",
+    "now":  "pillagers are back to their old full size",
+    "edits":  [
+                  {
+                      "anchor":  "var FIG_SCALE=1.25/3, FIG_UP=Math.round(45*FIG_SCALE)-32, ",
+                      "replacement":  "var FIG_SCALE=1, FIG_UP=12, /* cw-figone, HIS NOTE 10-27: \"Character is too small now. Increase size to get him back to the original size that we had him at for a long long time (weeks)\": back to the size 1 art he played from launch to 10-20 and again 10-20 to 10-25 (FIG_UP 12 as then); never shrink again unless he asks */ "
+                  },
+                  {
+                      "anchor":  "var _cf=figK1(), _sd=(_cf!==1\u0026\u0026Math.cos(+face||0)\u003c0)?-1:1;",
+                      "replacement":  "var _cf=figK1(), _sd=((figOn()\u0026\u0026!pixOn())\u0026\u0026Math.cos(+face||0)\u003c0)?-1:1; /* cw-figone: the smooth look flips the mark away from his aim at size 1 too, so it never covers his gun (same as before wherever the figure is not size 1) */"
+                  },
+                  {
+                      "anchor":  "if(mz\u0026\u0026isFinite(mz.x)\u0026\u0026isFinite(mz.y)) m.b.push(+(+b.mzd||0).toFixed(2),+mz.x.toFixed(1),+mz.y.toFixed(1));",
+                      "replacement":  "if(mz\u0026\u0026isFinite(mz.x)\u0026\u0026isFinite(mz.y)) m.b.push(+(+b.mzd||0).toFixed(2),+mz.x.toFixed(1),+mz.y.toFixed(1)); if(m.b.length===11\u0026\u0026b.ly\u003e0) m.b.push(+(+b.ly).toFixed(1)); /* cw-figone: field 12, the height its tracer is drawn at, so the partner window draws it at the gun line of the body that fired it (an old window reads eleven) */"
+                  },
+                  {
+                      "anchor":  "if(_mzw\u0026\u0026_fb\u0026\u0026_fb.fx\u0026\u0026_fb.x===(+a[0]||0)\u0026\u0026!pixOn()) _fb.ly=20*FIG_SCALE;",
+                      "replacement":  "if(_mzw\u0026\u0026_fb\u0026\u0026_fb.fx\u0026\u0026_fb.x===(+a[0]||0)\u0026\u0026!pixOn()) _fb.ly=(a.length\u003e=12\u0026\u0026isFinite(a[11])\u0026\u0026(+a[11])\u003e0\u0026\u0026(+a[11])\u003c60)?+a[11]:20*FIG_SCALE; /* cw-figone: the height the shooter window drew it at (field 12); 20 times the figure size from an older window */"
+                  },
+                  {
+                      "anchor":  "var _sp=w2s(_se.x,pixOn()?40:figHudLift(66),_se.y), ",
+                      "replacement":  "var _sp=w2s(_se.x,pixOn()?40:(figHudLift(66)-5*figKS(\u0027lean\u0027)[1]*(ZOOM()||1)),_se.y) /* cw-figone: a found survivor is drawn crouched (5 lower in body units, lean build), so the give prompt lifts from his crouched head and keeps one gap over it at every screen and zoom at size 1 */, "
+                  }
+              ],
+    "check":  "  {v:\u002735.19\u0027,what:\u0027cw-figone, his note of 2026-10-27 (\"Character is too small now. Increase size to get him back to the original size that we had him at for a long long time (weeks)\"): the pillager is drawn at size 1 again (FIG_SCALE 1, FIG_UP 12, as from launch to 10-25), a lean figure keeps its build of 0.92 by 1.08 with the smooth look, and the world canvas draws him at 1\u0027,\n   run:function(){ var bad=[], keepPix=(typeof CFG!==\u0027undefined\u0027)?CFG.xfPix:null, k;\n     try{\n       if(typeof FIG_SCALE===\u0027undefined\u0027) bad.push(\u0027no FIG_SCALE in this build\u0027);\n       else if(FIG_SCALE!==1) bad.push(\u0027the pillager is drawn at FIG_SCALE \u0027+FIG_SCALE+\u0027, not 1\u0027);\n       if(typeof FIG_UP===\u0027undefined\u0027) bad.push(\u0027no FIG_UP in this build\u0027);\n       else if(FIG_UP!==12) bad.push(\u0027FIG_UP is \u0027+FIG_UP+\u0027, not 12 (the lift he had at size 1)\u0027);\n       if(typeof figKS===\u0027function\u0027\u0026\u0026typeof CFG!==\u0027undefined\u0027){\n         CFG.xfPix=0; k=figKS(\u0027lean\u0027);\n         if(!k||Math.abs(k[0]-0.92)\u003e1e-6||Math.abs(k[1]-1.08)\u003e1e-6) bad.push(\u0027a lean figure is scaled \u0027+JSON.stringify(k)+\u0027, not [0.92,1.08]\u0027);\n       }\n       if(typeof figK1===\u0027function\u0027){ k=figK1(); if(Math.abs(k-1)\u003e1e-6) bad.push(\u0027the world canvas draws the figure at \u0027+k+\u0027, not 1\u0027); }\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ try{ if(keepPix!==null) CFG.xfPix=keepPix; }catch(_p){} }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
