@@ -153,11 +153,12 @@ function aiHtml(a,p){
   o+='<div class="small" style="margin-top:10px">Not used, on purpose: Grok, Copilot, Perplexity, Venice, DeepSeek and the free API tiers (cost or quality; see tools/handoff/ai-services/research.md).</div>';
   return o;
 }
-// 10-21: the spare PC (JTPC). It reports through GitHub at least every 30 to 35 minutes, so 45 minutes of silence means it is off or asleep.
+// 10-21: the spare PC (JTPC). It reports through GitHub every 10 to 15 minutes (10-26; it was 30), so 30 minutes of silence means it is
+// off or asleep, the same 30 minutes after which the VM takes the tests back (his "3 quiet hours is too long -- make it like 30 mins").
 const dur=s=>s<5400?Math.round(s/60)+' minutes':(s/3600).toFixed(1)+' hours';
 function spareState(x){ if(!x||!x.host) return ['d','not set up yet']; const age=x.seenEpoch?Math.round(Date.now()/1000-x.seenEpoch):1e9;
-  if(age<2700&&/^paused/.test(x.testRun||'')) return ['a','paused, someone is using it, last report '+dur(age)+' ago',age];   // 10-26: it rests while someone plays on it
-  return age<2700?['g','working, last report '+dur(age)+' ago',age]:['r','no report for '+dur(age)+' (off, asleep or at the sign-in screen?)',age]; }
+  if(age<1800&&/^paused/.test(x.testRun||'')) return ['a','paused, someone is using it, last report '+dur(age)+' ago',age];   // 10-26: it rests while someone plays on it
+  return age<1800?['g','working, last report '+dur(age)+' ago',age]:['r','no report for '+dur(age)+' (off, asleep or at the sign-in screen?)',age]; }
 // 10-26: the last "FUZZ END" line from a PC's robot log, in plain words
 function endLine(l){ const m=/^(\S+) (\d\d:\d\d)\S* FUZZ END raids=(\d+) problems=(\d+) .*?reason=(.*?) minutes=([\d.]+)/.exec(l||''); if(!m) return '';
   const r=/CDP|timeout|Unable to connect/i.test(m[5])?'the test browser froze':/low memory/i.test(m[5])?'stopped short on memory':/ERROR/.test(m[5])?'stopped on an error':'finished its shift';

@@ -5,8 +5,10 @@
 //     scratch folder the stable picker reads (tools/stable.mjs), beside the VM's own runs; it never overwrites a file there;
 //   - the robot log and problem records are mirrored to tools/handoff/spare/HOSTNAME/ (fuzz.log, fuzz-DATE.jsonl); stable.mjs reads
 //     those fuzz.log files with the VM's own;
-//   - tools/handoff/spare/live.txt says when a spare PC was last seen. While that is under 3 hours old the runner (tools/nightly.sh)
-//     starts no full test run and no robots in the VM, so the VM's memory goes to the helpers;
+//   - tools/handoff/spare/live.txt says when a spare PC was last seen. While that is under 30 minutes old the runner (tools/nightly.sh)
+//     starts no full test run and no robots in the VM, so the VM's memory goes to the helpers (10-26, his "3 quiet hours is too long --
+//     make it like 30 mins": it was 3 hours; the spare PC sends a note every 10 minutes now). A spare PC that paused its tests because
+//     someone is using it does not count as live, so the VM takes the tests back at once;
 //   - tools/handoff/spare-status.txt: one plain line for the health check and the coordinator, with the 4K frame numbers when a robot
 //     played at 4K (the main PC's second robot, fuzz.ps1 -Size 3840x2160: work= is ms of the game's own work per drawn frame, 16.7 = 60 fps).
 // The runner calls it every 5 minutes. It prints a line only when a run arrived or something failed. ASCII only.
@@ -46,7 +48,7 @@ for (const f of git(['ls-tree', '-r', '--name-only', REF, '--', 'spare/']).split
 // ("host=... seen=2026-10-21 23:17 epoch=..."; PowerShell's comma binds before +), so epoch was never read, live.txt never written,
 // and the VM ran its own full test run beside the spare's. A value runs up to the next " word=".
 const kv = (t) => Object.fromEntries([...t.replace(/\r?\n/g, ' ').matchAll(/(?:^|\s)(\w+)=(.*?)(?=\s+\w+=|\s*$)/g)].map((m) => [m[1], m[2].trim()]));
-let seen = 0, seenHost = '', seenSt = {};
+let seen = 0, seenHost = '', seenSt = {}, paused = false;
 // 10-22: the main PC's idle runs (status mode=idle) send results too. They count like the spare PC's, but never as a full-time spare in
 // live.txt, since the main PC tests only while he is away; the VM still starts its own runs when the spare PC is quiet.
 const idleHosts = [];
@@ -56,7 +58,7 @@ for (const [h, list] of Object.entries(hosts)) {
   if (list.includes('status.txt')) {
     try {
       const st = kv(blob(`spare/${h}/status.txt`).toString('utf8')); const ep = +st.epoch || 0;
-      if (st.mode === 'idle') idleHosts.push([h, st, ep]); else if (ep > seen) { seen = ep; seenHost = h; seenSt = st; }
+      if (st.mode === 'idle') idleHosts.push([h, st, ep]); else if (ep > seen) { seen = ep; seenHost = h; seenSt = st; paused = /^paused/.test(st.test_run || ''); }
     } catch { }
   }
   // finished full test runs
@@ -100,10 +102,11 @@ function perf4k(f, h) {
 }
 
 // 3 the live mark and the status line
-if (seen) fs.writeFileSync(path.join(SP, 'live.txt'), `epoch=${seen}\nhost=${seenHost}\nseen=${seenSt.seen || ''}\n`);
+// a paused spare PC writes epoch=0 (host and seen stay for the dashboard), so nightly.sh sets spl=0 on its next pass
+if (seen) fs.writeFileSync(path.join(SP, 'live.txt'), `epoch=${paused ? 0 : seen}\nhost=${seenHost}\nseen=${seenSt.seen || ''}\n${paused ? 'paused=1\n' : ''}`);
 const ago = seen ? Math.round((Date.now() / 1000 - seen) / 60) : -1;
 let line = !seen ? `no spare PC has reported yet (checked ${stamp()})`
-  : `${seenHost} last seen ${seenSt.seen || '?'} (${ago} min ago${ago >= 180 ? ', QUIET: the VM runs the tests and robots again' : ''}), game ${seenSt.game || '?'}, ` +
+  : `${seenHost} last seen ${seenSt.seen || '?'} (${ago} min ago${ago >= 30 ? ', QUIET: the VM runs the tests and robots again' : paused ? ', PAUSED (someone is using it): the VM runs the tests and robots' : ''}), game ${seenSt.game || '?'}, ` +
     `test run ${seenSt.test_run || '?'}, robots ${seenSt.robots || '?'}, push ${seenSt.push_ok === '0' ? 'FAILING' : 'ok'}`;
 for (const [h, st, ep] of idleHosts) line += `; main PC ${h} last seen ${st.seen || '?'} (${ep ? Math.round((Date.now() / 1000 - ep) / 60) : '?'} min ago): ${st.test_run || '?'}, robots ${st.robots || '0'}${st.spare_pc ? `; spare PC as the main PC sees it: ${st.spare_pc}` : ''}`;
 for (const h of fs.readdirSync(SP)) { const p = perf4k(path.join(SP, h, 'fuzz.log'), h); if (p) line += '; ' + p; }

@@ -23,7 +23,7 @@
 # starts nothing until no key, mouse or game pad has been used for 15 minutes and 6 GB are free; it stops everything it started within
 # seconds of a touch (or under 4 GB free); and a build another PC is testing or has tested stays that PC's: here it gets robots only.
 # The VM's nights come first: from 22:40 to 23:10 it holds nothing, and until 06:45 it starts only with 10 GB free (see VMNight below).
-param([switch]$Once,[int]$FuzzMinutes=60,[int]$PublishMin=30)
+param([switch]$Once,[int]$FuzzMinutes=60,[int]$PublishMin=10)
 $ErrorActionPreference='Continue'
 $Idle=($env:COMPUTERNAME -eq 'JUL26')
 if($Idle){ $R='C:\PillagersIdle\game'; $W='C:\PillagersIdle' } else { $R='C:\claudecode\dark raiders'; $W='C:\PillagersSpare' }

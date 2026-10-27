@@ -95,6 +95,15 @@ if($cur -ne $Branch){
   if($script:gx -ne 0){ Finish $false ('GitHub did not answer: '+$has) }
   if($has){ [void](G -C $Res fetch -q origin $Branch); [void](G -C $Res checkout -q -B $Branch FETCH_HEAD) }
   else { [void](G -C $Res symbolic-ref HEAD ('refs/heads/'+$Branch)) }   # a new, empty branch (the results never share history with the game)
+} else {
+  # 10-26: a second run of setup takes in the other PCs' newer notes first (a plain merge, never a rebase or a force), or GitHub refuses the first push below
+  $has=G -C $Res ls-remote --heads origin $Branch
+  if($script:gx -ne 0){ Finish $false ('GitHub did not answer: '+$has) }
+  if($has){
+    [void](G -C $Res fetch -q origin $Branch)
+    $m=G -C $Res merge -q --no-edit FETCH_HEAD
+    if($script:gx -ne 0){ [void](G -C $Res merge --abort); Finish $false ('The results copy could not take in the newest notes from GitHub. ('+(($m -replace '\s+',' ').Trim())+')') }
+  }
 }
 [IO.File]::WriteAllText($Res+'\.git\hooks\pre-push',("#!/bin/sh`nwhile read lref lsha rref rsha; do`n  [ `"`$rref`" = `"refs/heads/$Branch`" ] || { echo 'the spare PC results copy pushes only $Branch' >&2; exit 1; }`ndone`nexit 0`n"),$Enc)
 $d=$Res+'\spare\'+$env:COMPUTERNAME; New-Item -ItemType Directory -Force -Path $d | Out-Null

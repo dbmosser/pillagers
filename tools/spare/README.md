@@ -8,13 +8,14 @@ run and the crash robots off the VM, so the VM's memory goes to the helper lanes
 | part | where | what |
 |------|-------|------|
 | `spare-setup.ps1` | spare PC, once, by him | checks Git, Node and Chrome; marks the game copy (`.spare-pc`) and makes it refuse every push; makes the results copy `C:\PillagersSpare\results` (branch `spare-results` only); first push (his GitHub sign-in); the task "Pillagers spare runner"; starts the runner. `-Status`, `-Remove`. |
-| `spare-runner.ps1` | spare PC, always | every 5 min: newest master (detached checkout, never while a full run is going), test copy (`mkfixture.ps1`), full test run (`corpq.sh`, Chrome 9344) on each new game file, two robots (`fuzz.ps1` 9331 and 9332, 60 min blocks, on `fxcorpus.html`), results pushed to `spare-results` every 30 min and when a run ends. Restarts itself when master brings a new copy of it. |
+| `spare-runner.ps1` | spare PC, always | every 5 min: newest master (detached checkout, never while a full run is going), test copy (`mkfixture.ps1`), full test run (`corpq.sh`, Chrome 9344) on each new game file, two robots (`fuzz.ps1` 9331 and 9332, 60 min blocks, on `fxcorpus.html`), results pushed to `spare-results` every 10 min and when a run ends. Restarts itself when master brings a new copy of it. |
 | `serve.mjs` | spare PC | the test server on 127.0.0.1 and ::1, port 8806, root `tools\`. Never the network card, so no firewall question. |
 | `spare-start.vbs` | spare PC | starts the runner hidden (the task runs it at sign-in and every 15 min). |
 | `spare-import.mjs` | VM, every 5 min from `tools/nightly.sh` | fetches `spare-results` into `refs/spare-import/spare-results`; finished runs (with "ALL DONE" and a `.head`) go into the scratch folder `tools/stable.mjs` reads (never overwriting); robot logs are mirrored to `tools/handoff/spare/HOST/`; `tools/handoff/spare/live.txt` and `tools/handoff/spare-status.txt`. |
 
-While a spare PC was seen in the last 3 hours, `tools/nightly.sh` starts no full test run and no robots in the VM (`spl=1`). When it goes
-quiet for 3 hours the VM runs them again by itself. `tools/stable.mjs` reads the spare PC's robot logs with the VM's own.
+While a spare PC was seen in the last 30 minutes, `tools/nightly.sh` starts no full test run and no robots in the VM (`spl=1`). When it goes
+quiet for 30 minutes, or pauses because someone is using it, the VM runs them again by itself (10-26, his "3 quiet hours is too long --
+make it like 30 mins"; it was 3 hours). `tools/stable.mjs` reads the spare PC's robot logs with the VM's own.
 `tools/health.sh` prints a `WAIT:` line while the spare PC is not set up or is quiet (it is his machine: nothing to fix from the VM).
 
 ## Limits (do not loosen)

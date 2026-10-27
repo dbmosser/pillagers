@@ -129,7 +129,8 @@ function spareInfo() {
   const st = Object.fromEntries([...raw.replace(/\r?\n/g, ' ').matchAll(/(?:^|\s)(\w+)=(.*?)(?=\s+\w+=|\s*$)/g)].map(m => [m[1], m[2].trim()]));
   const day = new Date().toLocaleDateString('en-CA'), L = host ? tail(SPD + '/' + host + '/fuzz.log', 600) : [];
   const raids = L.filter(l => l.startsWith(day) && / raid \d+ /.test(l));
-  const v = { host, seenEpoch: +live.epoch || 0, game: st.game || '', testRun: st.test_run || '', robots: +st.robots || 0, ramFree: st.ram_free_gb || '', pushOk: st.push_ok || '', mode: st.mode || '',
+  // 10-26: the status file's own epoch first (live.txt says epoch=0 while the spare PC is paused, so the VM takes the tests back)
+  const v = { host, seenEpoch: +st.epoch || +live.epoch || 0, game: st.game || '', testRun: st.test_run || '', robots: +st.robots || 0, ramFree: st.ram_free_gb || '', pushOk: st.push_ok || '', mode: st.mode || '',
     raidsToday: raids.length, problemsToday: raids.reduce((s, l) => s + +((/ problems=(\d+)/.exec(l) || [0, 0])[1]), 0),
     lastRaids: raids.slice(-4), lastEnd: L.filter(l => /FUZZ END/.test(l)).slice(-1)[0] || '' };
   // 10-22: the main PC's idle runs (tools/spare/spare-runner.ps1 IDLE MODE on JUL26): tests only while he is away

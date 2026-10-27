@@ -107,13 +107,14 @@ while true; do
   nt=$(get notes_t); if [ $(( $(date +%s) - ${nt:-0} )) -ge 300 ] && [ -f "$R/tools/fetch-notes.mjs" ]; then put notes_t "$(date +%s)"; (timeout 600 node "$R/tools/fetch-notes.mjs" >> "$LOG" 2>&1) & fi
   # (1c) 10-20 (his spare PC: "16gb ram, it can stay on and connected"): every 5 minutes the spare PC's finished full test runs and robot
   #      logs come in from the spare-results branch on GitHub (tools/spare/spare-import.mjs; status tools/handoff/spare-status.txt). While a
-  #      spare PC was seen in the last 3 hours (tools/handoff/spare/live.txt), this VM starts no full test run and no robots of its own
-  #      (spl=1), so its memory goes to the helpers; when the spare PC goes quiet for 3 hours the VM runs them again by itself.
+  #      spare PC was seen in the last 30 minutes (tools/handoff/spare/live.txt), this VM starts no full test run and no robots of its own
+  #      (spl=1), so its memory goes to the helpers; when the spare PC goes quiet for 30 minutes, or pauses because someone is using it
+  #      (live.txt epoch=0), the VM runs them again by itself (10-26, his "3 quiet hours is too long -- make it like 30 mins").
   sit=$(get spare_t); if [ $(( $(date +%s) - ${sit:-0} )) -ge 300 ] && [ -f "$R/tools/spare/spare-import.mjs" ]; then put spare_t "$(date +%s)"; (timeout 600 node "$R/tools/spare/spare-import.mjs" >> "$LOG" 2>&1) & fi
-  spl=0; se=$(sed -n 's/^epoch=//p' "$R/tools/handoff/spare/live.txt" 2>/dev/null | head -1 | tr -dc '0-9'); [ -n "$se" ] && [ $(( $(date +%s) - se )) -lt 10800 ] && spl=1
+  spl=0; se=$(sed -n 's/^epoch=//p' "$R/tools/handoff/spare/live.txt" 2>/dev/null | head -1 | tr -dc '0-9'); [ -n "$se" ] && [ $(( $(date +%s) - se )) -lt 1800 ] && spl=1
   if [ "$(get spare_live)" != "$spl" ]; then put spare_live "$spl"
     [ "$spl" = 1 ] && echo "$(date +%H:%M) the spare PC runs the full test run and the robots now: the VM starts neither" >> "$LOG"
-    [ "$spl" = 0 ] && [ -n "$se" ] && echo "$(date +%H:%M) the spare PC has been quiet for 3 hours: the VM runs the full test run and the robots again" >> "$LOG"; fi
+    [ "$spl" = 0 ] && [ -n "$se" ] && echo "$(date +%H:%M) the spare PC has been quiet for 30 minutes or paused: the VM runs the full test run and the robots again" >> "$LOG"; fi
   pv=$(get atpc); nv=${atp:-?}
   if [ "$pv" != "$nv" ]; then put atpc "$nv"
     [ "$nv" = 1 ] && echo "$(date +%H:%M) he is at the main PC: no new full test run, robots or local AI" >> "$LOG"
