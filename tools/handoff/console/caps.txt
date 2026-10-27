@@ -19,12 +19,13 @@ CLI_BOOST=f
 # PLAN_TARGET% by the next reset (tools/console-lane.sh).
 PLAN_TARGET=80
 # 10-27 06:20, his "Keep shipping. Pace for 90% use by Friday afternoon": this week the line starts at the week's use when he said it
-# (PLAN_LINE_FROM% at PLAN_LINE_START) and climbs evenly to PLAN_LINE_TARGET% at PLAN_LINE_END (Fri 10/30 16:00 local), then holds.
+# (PLAN_LINE_FROM% at PLAN_LINE_START) and climbs evenly to PLAN_LINE_TARGET% at PLAN_LINE_END (Fri 10/30 08:00 local), then holds.
+# 10-27 10:00, his "burn to 90% by Friday AM instead of PM": PLAN_LINE_END moved from Fri 16:00 local to Fri 08:00 local.
 # PLAN_TARGET stays the standing weekly goal: once these times fall outside the week, next week is the even line to it again.
 PLAN_LINE_START=2026-10-27T10:00:00Z
 PLAN_LINE_FROM=44
 PLAN_LINE_TARGET=90
-PLAN_LINE_END=2026-10-30T20:00:00Z
+PLAN_LINE_END=2026-10-30T12:00:00Z
 PLAN_BURN_UNTIL=2026-10-25T05:00:00Z
 PLAN_WEEK_MAX=99
 PLAN_SESSION_MAX=85
