@@ -1831,3 +1831,5 @@
 2026-10-27 01:27:07 FUZZ END raids=1 problems=0 unique=0 reason=low memory 0.5 GB free (RAM or virtual) minutes=5.5
 2026-10-27 01:27:09 raid 1 demo2p raidSeed=991932330 map=0 god=0 sec=306 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=9479 score=0 ents=52 travelPx=31008 fires=117 menuPct=24 heapMB=62 p2=link_4s_join_6s_pad_own gfx=18072/16.75/16.75/29/1 gfx2=18007/16.75/16.75/29/1 work=18199/4.75/8.75/13.25 work2=18223/4.25/9.75/13.75 build=34.95
 2026-10-27 01:27:09 FUZZ END raids=1 problems=0 unique=0 reason=low memory 1.7 GB free (RAM or virtual) minutes=5.6
+2026-10-27 01:28:46 FUZZ START seed=1050717363 minutes=60 raidsec=300 port=9332 srv=8806 build=34.95 maps=0 size=1920x1080 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
+2026-10-27 01:28:46 FUZZ START seed=1050717363 minutes=60 raidsec=300 port=9331 srv=8806 build=34.95 maps=0 size=1920x1080 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
