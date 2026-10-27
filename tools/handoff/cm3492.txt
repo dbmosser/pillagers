@@ -1,0 +1,7 @@
+v34.92: itch: new player defaults and a difficulty row
+
+On itch: the new player set, and the difficulty row puts the main game back in one click. Everywhere else: the main game, with the same row.
+
+Check 34.92. Fails on v34.91.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

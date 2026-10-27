@@ -3690,7 +3690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.91';
+var VER='34.92';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -54544,7 +54544,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.91: The what is new stamp keeps up with the build; the three notes are unchanged. Check 34.91 fails on v34.90',
+  now:'v34.92: On itch: the new player set, and the difficulty row puts the main game back in one click. Everywhere else: the main game, with the same row. Check 34.92 fails on v34.91',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -71608,7 +71608,45 @@ hint:'Damage taken from everything on the surface. Standard is how the game has 
     r=XF_ROWS[i]; on={}; off={}; on[r[0]]=1; off[r[0]]=0;
     GAMEOPTS.push({k:r[0],label:r[1],sec:'EXPERIMENTAL',hint:r[2],opts:[{n:'on',cfg:on},{n:'off',cfg:off}],def:(r[0]==='xfPix'?1:0)});   // v28.xx (cw-smoothlook): the pixel look row defaults to off (his 10-25 order); every other experimental row stays on
   }
-})();// v10.28: which option the LIVE dials match, or -1 when a slider has put them
+})();
+// v28.xx (cw-itcheasy), HIS ORDERS 2026-10-26: "when you put the new one to itch, make it so that it defaults to the easiest settings
+// (except kid mode), so noobs can play it and not be overwhelmed", then "I want visible settings for all this stuff so that a itch player
+// can make the game as difficult as the other/main game". On itch (the page runs on itch.zone / hwcdn.net inside the itch.io frame) a
+// profile with no saved choice starts on the NEW PLAYER set: forgiving hits, the long raid, rich loot, light shake, the large crosshair
+// and seven extras off. Only the row defaults move, so a saved choice always wins and every single row stays visible and changeable.
+// The DIFFICULTY row at the top of THE RAID switches all twelve at once between NEW PLAYER and MAIN GAME (his PC, the party copy and
+// stable boot on MAIN GAME, exactly as before); a hand change to any one row reads CUSTOM there.
+function itchHost(h){ return /(^|\.)(itch\.zone|itch\.io|hwcdn\.net)$/i.test(h||''); }
+var ON_ITCH=(function(){ try{ return itchHost(location.hostname)||window.__itchTest===1; }catch(_e){ return false; } })();
+var DIFF_KEYS=['hits','clock','loot','shake','xhSz','xfAffix','xfRamp','xfOvPh','xfEvRamp','xfEvBounty','xfEvDebris','xfSupp'];
+var ITCH_EASY={hits:3,clock:0,loot:0,shake:1,xhSz:2,xfAffix:1,xfRamp:1,xfOvPh:1,xfEvRamp:1,xfEvBounty:1,xfEvDebris:1,xfSupp:1};
+var MAIN_GAME={hits:2,clock:1,loot:1,shake:2,xhSz:1,xfAffix:0,xfRamp:0,xfOvPh:0,xfEvRamp:0,xfEvBounty:0,xfEvDebris:0,xfSupp:0};
+function itchDefs(on){
+  var i, r, t=on?ITCH_EASY:MAIN_GAME;
+  for(i=0;i<GAMEOPTS.length;i++){ r=GAMEOPTS[i]; if(DIFF_KEYS.indexOf(r.k)>=0&&typeof t[r.k]==='number') r.def=t[r.k]; }
+}
+if(ON_ITCH) itchDefs(1);
+function diffNow(){
+  var e=true, m=true, i, v;
+  for(i=0;i<DIFF_KEYS.length;i++){ v=gameOptLive(DIFF_KEYS[i]); if(v!==ITCH_EASY[DIFF_KEYS[i]]) e=false; if(v!==MAIN_GAME[DIFF_KEYS[i]]) m=false; }
+  return e?'new player':(m?'main game':'custom');
+}
+function diffRowHtml(){
+  var d=diffNow(), home=ON_ITCH?'new player':'main game';
+  return '<div class="row"><div style="flex:1"><b>difficulty</b><div class="hint">new player: softer hits, longer raids, more loot, fewer extras</div></div>'+
+    '<button id="set_diff" style="padding:6px 12px;min-width:92px'+(d===home?'':';color:var(--amber)')+'">'+d+'</button></div>';
+}
+function diffSet(t){
+  var i, k, row, oi, o, tk=tunedKeys();
+  P.gameOpts=P.gameOpts||{};
+  for(i=0;i<DIFF_KEYS.length;i++){
+    k=DIFF_KEYS[i]; P.gameOpts[k]=t[k];
+    for(row=null,oi=0;oi<GAMEOPTS.length;oi++) if(GAMEOPTS[oi].k===k) row=GAMEOPTS[oi];
+    if(row) for(oi=0;oi<row.opts.length;oi++) for(o in row.opts[oi].cfg) delete tk[o];
+  }
+  applyGameOpts(); saveProfile();
+}
+// v10.28: which option the LIVE dials match, or -1 when a slider has put them
 // somewhere no option names. The rows show this; the stored choice is the
 // fallback when nothing has been tuned by hand.
 function gameOptLive(k){
@@ -71834,7 +71872,7 @@ function renderSettingsInner(host){
       (_dflt?'':';color:var(--amber)')+'">'+(_gs?_gs.n:'CUSTOM')+'</button></div>';
   }
   if(SETSUB==='exp'){ expPage(host,_SEC); return; }   // v32.xx (cw-expmenu1): the experimental page replaces the list until back
-  _SEC['THE RAID']=(_SEC['THE RAID']||'')+expRowHtml();   // v32.xx (cw-expmenu2): the open row ends THE RAID, where the features it switches are
+  _SEC['THE RAID']=diffRowHtml()+(_SEC['THE RAID']||'')+expRowHtml();   // v32.xx (cw-expmenu2): the open row ends THE RAID, where the features it switches are; v28.xx (cw-itcheasy): the difficulty row heads it
   // v16.50, stability: Settings opens in a raid since v16.45, and three of its buttons do not belong there. PICK FILE opens a
   // file window a controller cannot shut, and a restore or its UNDO reloads the window, which drops a teammate out of the party
   // and loses the run. In a raid they are greyed out; in the Undercroft they work as before.
@@ -72020,6 +72058,8 @@ function renderSettingsInner(host){
       if(b) b.onclick=function(){ var _rs0=CFG.raidSec; cycleGameOpt(k); gameOptRaidNow(_rs0); renderSettings(); };   // v16.45: a raid in hand changes at once
     })(GAMEOPTS[_gh].k);
   }
+  var _sd=document.getElementById('set_diff');   // v28.xx (cw-itcheasy)
+  if(_sd) _sd.onclick=function(){ var _rs0=CFG.raidSec; diffSet(diffNow()==='new player'?MAIN_GAME:ITCH_EASY); gameOptRaidNow(_rs0); renderSettings(); };
   var _eo=document.getElementById('exp_open');   // v32.xx (cw-expmenu1)
   // v28.xx (cw-cx-expui): entering the page starts at its first feature; Back stays a separate page action.
   if(_eo) _eo.onclick=function(){ SETSUB='exp'; renderSettings(); try{ var list=document.getElementById('setlist'), first=document.getElementById('go_xfGoals'); list.scrollTop=0; if(first){ if(PAD.on) padSetFocus(first); first.focus({preventScroll:true}); } }catch(_es){} };
