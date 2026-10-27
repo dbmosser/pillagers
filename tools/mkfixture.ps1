@@ -7486,14 +7486,14 @@ window.__REGRESS=[
            colourCueGlyph=function(c,kind,x,y){ cue={x:x,y:y}; };
            try{ worldSideCue(100,100,{team:'foe',build:'lean',own:{hp:50}}); } finally { colourCueGlyph=keepGlyph; }
            if(!cue) bad.push('no side mark was drawn for a hostile pillager');
-           else if(!(100-cue.y>=0&&100-cue.y<=b3.top+2&&100-cue.x>=4&&100-cue.x<=16)) bad.push('the side mark sits '+(100-cue.x).toFixed(1)+' left and '+(100-cue.y).toFixed(1)+' up of the feet, not beside a body '+b3.top.toFixed(1)+' tall');
+           else if(!(100-cue.y>=0&&100-cue.y<=b3.top+2&&100-cue.x>=4&&100-cue.x<=(T<0.99?16:20))) bad.push('the side mark sits '+(100-cue.x).toFixed(1)+' left and '+(100-cue.y).toFixed(1)+' up of the feet, not beside a body '+b3.top.toFixed(1)+' tall');
            // the side mark never covers his gun: a hostile pillager and a hire (the plus mark) aiming each of eight ways, and a broad one aiming left; the mark is painted beside the
-           // body (4 to 16 out to either side, no higher than the head) and paints over at most 2 in 100 of his gun pixels (the body drawn with a rifle, less the bare body)
+           // body (4 to 16 out to either side, 4 to 20 at size 1 (cw-figone retarget), no higher than the head) and paints over at most 2 in 100 of his gun pixels (the body drawn with a rifle, less the bare body)
            SD=[['foe',0,'lean'],['foe',0.25,'lean'],['foe',0.5,'lean'],['foe',0.75,'lean'],['foe',1,'lean'],['foe',-0.75,'lean'],['foe',-0.5,'lean'],['foe',-0.25,'lean'],['ally',1,'lean'],['ally',0,'lean'],['foe',1,'broad']];
            for(j=0;j<SD.length;j++){
              sm=sideHide(SD[j][0],SD[j][1]*Math.PI,SD[j][2]); nm=(SD[j][0]==='ally'?'a hire':'a hostile pillager')+' ('+SD[j][2]+') aiming '+SD[j][1]+' pi';
              if(sm.z||sm.n<200||!sm.cu||sm.mp<200) bad.push('staging: '+nm+': '+sm.n+' gun pixels, '+sm.mp+' mark pixels, '+sm.z+' unsteady, mark '+(sm.cu?'placed':'not placed'));
-             else if(!(Math.abs(sm.cu.x)>=4&&Math.abs(sm.cu.x)<=16&&sm.cu.y>=0&&sm.cu.y<=b3.top+2)) bad.push('the side mark of '+nm+' sits '+sm.cu.x.toFixed(1)+' across and '+sm.cu.y.toFixed(1)+' up of the feet, not beside a body '+b3.top.toFixed(1)+' tall');
+             else if(!(Math.abs(sm.cu.x)>=4&&Math.abs(sm.cu.x)<=(T<0.99?16:20)&&sm.cu.y>=0&&sm.cu.y<=b3.top+2)) bad.push('the side mark of '+nm+' sits '+sm.cu.x.toFixed(1)+' across and '+sm.cu.y.toFixed(1)+' up of the feet, not beside a body '+b3.top.toFixed(1)+' tall');
              else if(sm.c>0.02*sm.n) bad.push('the side mark covers '+sm.c+' of the '+sm.n+' gun pixels of '+nm);
            }
            // the golden pillager: goldBodyBegin swaps wc for its own canvas, and he must still be drawn the size of a plain pillager, on a shadow of that size; so must an outlined elite (rimOpen)
