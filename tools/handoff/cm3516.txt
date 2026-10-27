@@ -1,0 +1,7 @@
+v35.16: fps counter screen rate
+
+The fps counter adds screen 60 when a settled screen rate is more than 5 below the selected cap. Frame timing and quality stay the same.
+
+Check 35.16. Fails on v35.15.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

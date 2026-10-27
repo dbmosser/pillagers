@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.16 - FPS COUNTER SCREEN RATE
+
+Co-op hunt while he was away. His 10-27 question: a 144 cap can still show 60 fps when the browser supplies 60 screen refreshes per second.
+
+MEASURED. Check 35.16 passes, and fails on v35.15.
 ## v35.15 - FOG OF WAR HIDES THE REST OF LIVE ACTION
 
 Co-op hunt while he was away. His 10-27 order: explored ground stays darkened after walking away, but live action only shows in current sight. Grenades, lingering smoke, falls, body elements, machine damage and the extract shaft still leaked.

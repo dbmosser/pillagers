@@ -349,3 +349,5 @@
 2026-10-22 10:58 86h-pix-sets-wardrobe 209s ok DONE in=2547584 out=21360 run=2
 2026-10-22 10:59 86j-pix-fx-guard 44s usage-limit (not counted) back 2026-10-27 02:38
 2026-10-27 17:28 o-92-fog-live-action-rest 425s ok PARTIAL in=1815792 out=15974 run=1
+2026-10-27 17:40 o-92-fog-live-action-rest 96s ok DONE in=2322221 out=18966 run=2
+2026-10-27 17:43 o-93-fps-counter-screen-rate 134s ok PARTIAL in=279973 out=6436 run=1

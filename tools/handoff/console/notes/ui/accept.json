@@ -2526,5 +2526,37 @@
   "pic": "tools/handoff/console/notes/shots/121-after/80-raid-controls-career-after-f1-1080.jpg",
   "task": "manual",
   "when": "2026-10-25T15:28"
+ },
+ "fog-live-off": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The raid HUD has a strong ammo block and hotbar, but the top-right money strip overprints itself, the controls list sits in the middle of play, and sizes and panel styles drift from one corner to the next.",
+  "findings": [
+   "P0 top-right cash/stash strip: Rebuild it as one vertical 1x1 list (cw-trcol), with each item 20px f-cond, label 16px tx-2 on the left and value tx-1 right-aligned. Use one font size, keep a 16px inset, and don't draw each value twice. Contain it in a panel with 8px padding.",
+   "P1 controls list, bottom centre-left (x490-757, y655-920): Collapse it to a single 16px line ('f1 controls') anchored at x=5% from the left, bottom 120px. Open the full list only on F1. Never show it open by default in a career raid.",
+   "P1 HUD panels overall (kill list, minimap, run info, controls, ammo): Use one panel recipe: --ui-panel at 88% alpha, 1px --ui-line-hi border, 4px radius, 16px padding, header 16px f-cond 600 tx-2. Put the chevron on every collapsible panel in the same place.",
+   "P1 left kill list ('current pillager bots'): Show only the live count and the 'you' line, or fold the dead rows into 'x out · 7 dead'. If the rows stay, use a 16px minimum, tx-2 text at 4.5:1 and a 24px row pitch. Drop the off-palette pink, or use --acc only if it means selected.",
+   "P1 bottom-left stamina and hp bars: Make hp and stamina the same height (24px) with the label 16px and the value right-aligned inside. Keep hp as the single bold element (56px hero only for ammo). Align the baselines of the bars with the hotbar slot bottoms, and restyle 'standing' as a quiet 16px tx-2 tag."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-92-fog-live-action-rest-recipes-1/fog-live-off-1080.jpg",
+  "task": "o-92-fog-live-action-rest",
+  "when": "2026-10-27T21:38"
+ },
+ "fog-live-on": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The raid HUD has a readable ammo hero and a clear weapon bar, but the top-right money strip prints overlapping text, the controls card sits open in mid-screen, and the five corner panels use different type sizes, borders and fills.",
+  "findings": [
+   "P0 top-right money strip (cash / xp / stash / bag): Draw each value once in a 2-column list: label at 16px tx-2, value at 20px tx-1 right-aligned, 8px row gap, 16px padding. Drop the duplicated stash and bag entries. Follow the cw-trcol vertical list.",
+   "P1 controls card, bottom centre-left (x 490-757): Fold it to a single 'f1 controls' line at 16px at x≈5%, y≈1040 and open it on F1. Keep it open only in the party demo.",
+   "P1 all HUD panels (pillager list, money, minimap, run info, controls, ammo): One panel: fill #16191b at 90%, 1px #4a5257 border, 4px radius, 16px padding. Title 16px f-cond 600 tx-2; body 20px tx-1 (labels 16px tx-2). Same collapse chevron on every panel.",
+   "P1 bottom-left status (standing / stamina / hp 100): Make both bars 12px tall with a #1e2225 track. Put the hp number at 32px, but only 800 weight for the one hero. Set the labels at 16px tx-1 above the bars. Show the posture as plain 16px tx-2 text with no pill.",
+   "P1 weapon slot bar: Use only lime for the active slot (3px border) and a 1px line border for the others. Dim the empty slots to 40% and shrink them to icon-only cells. Drop the blue tint and put 'f' in the label. Align the hint line to the bar's left edge at 16px."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-92-fog-live-action-rest-recipes-1/fog-live-on-1080.jpg",
+  "task": "o-92-fog-live-action-rest",
+  "when": "2026-10-27T21:39"
  }
 }

@@ -16,7 +16,9 @@
 #       in state.txt). It does not wait for the ship queue to be idle and takes no ship lock (it tests a frozen copy, tools/fxcorpus.html);
 #       one run takes 2.5 to 3.5 hours;
 #   (3) the local-LLM audits (tools/llm-night.ps1) once per new HEAD, only with 20+ GB of RAM free (the model holds about 12 GB);
-#   (4) once a day, the itch and GitHub backup catch-up (tools/itch-daily.sh);
+#   (4) once a day, the itch and GitHub backup catch-up (tools/itch-daily.sh); (4b) 10-27, his "Itch should also always get the latest
+#       build if that is feasible": whenever the last commit holds a build itch does not have yet, itch-daily.sh --itch in the background
+#       (at most one try per 10 minutes), so itch follows each ship within about 10 minutes;
 #   (5) the Console worker LANES (tools/console-lane.sh LANE; the older tools/console-worker.sh is still honoured: lane a waits while it runs).
 #       This file starts lanes a, b and c, each one Claude task at a time (a lane with an empty list takes another lane's job). Lanes e and f
 #       (CLI_ALWAYS in tools/handoff/console/caps.txt) are started by the lanes themselves and always run on Claude Code on his plan, paced by
@@ -38,8 +40,13 @@
 S="C:/Users/User1/AppData/Local/Temp/claude/C--Users-User1-Desktop-dark-raiders/8a09e991-b4f4-4b23-b10f-ded92e837fc3/scratchpad"
 R="/c/claudecode/dark raiders"; N="$R/tools/handoff/nightly"; mkdir -p "$N"; ST="$N/state.txt"; LOG="$N/nightly.log"; HB="$N/runner.heartbeat"
 touch "$ST"
-if [ -f "$HB" ] && [ $(( $(date +%s) - $(cat "$HB" 2>/dev/null || echo 0) )) -lt 600 ]; then exit 0; fi
+# 10-27: a copy restarted by itself (below) skips the one-copy check, since its own heartbeat is fresh
+RX=$PILLAGERS_RUNNER_REEXEC; unset PILLAGERS_RUNNER_REEXEC
+if [ -z "$RX" ] && [ -f "$HB" ] && [ $(( $(date +%s) - $(cat "$HB" 2>/dev/null || echo 0) )) -lt 600 ]; then exit 0; fi
 date +%s > "$HB"
+# 10-27: the running loop keeps the code it started with, so an edit to this file did nothing until the runner was killed by hand.
+# It remembers its own file here; when the file changes and still parses, the loop restarts itself on the new copy (top of the loop).
+SELF=$(sha1sum "$R/tools/nightly.sh" 2>/dev/null | cut -c1-40)
 get(){ grep -m1 "^$1=" "$ST" | cut -d= -f2-; }
 put(){ grep -v "^$1=" "$ST" > "$ST.tmp"; echo "$1=$2" >> "$ST.tmp"; mv "$ST.tmp" "$ST"; }
 running(){ powershell -NoProfile -Command "@(Get-CimInstance Win32_Process | Where-Object { \$_.CommandLine -match '$1' }).Count" 2>/dev/null | tr -dc '0-9'; }
@@ -72,8 +79,19 @@ llm_ok(){   # see (3) below
 }
 while true; do
   date +%s > "$HB"
+  nh=$(sha1sum "$R/tools/nightly.sh" 2>/dev/null | cut -c1-40)
+  if [ -n "$nh" ] && [ -n "$SELF" ] && [ "$nh" != "$SELF" ] && bash -n "$R/tools/nightly.sh" 2>/dev/null; then
+    echo "$(date '+%m-%d %H:%M') this runner's file changed: restarting on the new copy" >> "$LOG"
+    PILLAGERS_RUNNER_REEXEC=1 exec bash "$R/tools/nightly.sh"
+  fi
   head=$(git -C "$R" rev-parse --short HEAD 2>/dev/null)
   if [ "$(get backup_day)" != "$(date +%F)" ]; then put backup_day "$(date +%F)"; bash "$R/tools/itch-daily.sh" >> "$LOG" 2>&1; fi
+  # (4b) see the header: itch gets each new build. itch-ver.txt is written by itch-daily.sh once itch has that build.
+  hv=$(git -C "$R" show HEAD:dark_raiders.html 2>/dev/null | grep -m1 "^var VER='" | sed "s/var VER='\([0-9.]*\)'.*/\1/")
+  it=$(get itch_try)
+  if [ -n "$hv" ] && [ "$hv" != "$(tr -d '\r\n ' < "$N/itch-ver.txt" 2>/dev/null)" ] && [ $(( $(date +%s) - ${it:-0} )) -ge 600 ] && [ -f "$R/tools/itch-daily.sh" ]; then
+    put itch_try "$(date +%s)"; (timeout 1500 bash "$R/tools/itch-daily.sh" --itch >> "$LOG" 2>&1) &
+  fi
   ram=$(freegb); [ -z "$ram" ] && ram=0
   rf=$(grep -m1 "^RAM_FLOOR_GB=" "$R/tools/handoff/console/caps.txt" 2>/dev/null | cut -d= -f2 | tr -dc "0-9"); rf=${rf:-6}
   # 10-19 night: the main PC lends this VM extra memory from 23:00 and takes it back from 06:00 (tools/migrate/host-night-memory.ps1, his answer

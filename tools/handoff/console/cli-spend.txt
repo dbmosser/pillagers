@@ -1311,3 +1311,7 @@
 2026-10-27 0.4166016 120b-bushes-on-grass
 2026-10-27 0.350559 120c-wallet-double-text
 2026-10-27 0.0000 o-92-fog-live-action-rest
+2026-10-27 0.1058 critic-o-92-fog-live-action-rest
+2026-10-27 0.0821 critic-o-92-fog-live-action-rest
+2026-10-27 0.0000 o-92-fog-live-action-rest
+2026-10-27 0.0000 o-93-fps-counter-screen-rate
