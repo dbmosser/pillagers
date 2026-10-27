@@ -6168,6 +6168,16 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'35.01',what:'cw-walletonce, his note (text collisions on the menu thing): the page text in the top right corner stays hidden while the canvas rows are drawn, even when the loop is driven with a frame time ahead of the real clock (the camera staging), so the cash figure is named once',
+   run:function(){
+     if(typeof trHide!=='function'||typeof TRG!=='object') return 'SKIP: no corner hide here';
+     var cl=document.body.classList, had=cl.contains('trcol'), h0=TRG.hid, t0=TRG.t, bad=null;
+     try{
+       cl.remove('trcol'); TRG.hid=0; TRG.t=performance.now();
+       trHide(performance.now()+5000);
+       if(!cl.contains('trcol')) bad='the page text came back over the canvas rows when the loop ran 5 s ahead of the real clock';
+     } finally { TRG.hid=h0; TRG.t=t0; if(had) cl.add('trcol'); else cl.remove('trcol'); }
+     return bad; }},
   {v:'35.00',what:'a bush stands on turf: the smooth ground pixel under every bush centre is green, not slab or tarmac (his photo note, bricks under a bush)',
    run:function(){
      var g=null, i, j, b, cv, cx, px, bad=[], n=0, inB;

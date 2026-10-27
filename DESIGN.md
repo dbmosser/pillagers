@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.01 - CORNER MONEY PRINTED ONCE
+
+Co-op hunt while he was away. His note on the v34.78 photo: text collisions in the top right box. The page text copy of the wallet was not hidden when the loop was driven ahead of the real clock (camera staging), so it printed over the canvas rows. trHide now reads the same real clock as the rows.
+
+MEASURED. Check 35.01 passes, and fails on v35.00.
 ## v35.00 - EVERY BUSH AND TREE STANDS ON A PATCH OF GRASS
 
 Co-op hunt while he was away. His note on the v34.78 photo: bricks on the floor but a bush on top of the bricks makes no sense. The road cull only knows roads, so bushes still sat on slabs and tarmac. The ground bake now paints a ragged turf patch under every bush and tree. Render layer only: bushes and trees do not move and no seeded draw changes.
