@@ -873,7 +873,7 @@ function Check-Switch {
       if (Test-Path -LiteralPath $sf) {
         if (((Get-Date) - (Get-Item -LiteralPath $sf).LastWriteTime).TotalMinutes -lt 30) { $sl = Get-FirstLine @(Get-Content -LiteralPath $sf -TotalCount 1) }
       }
-      if ($sl -notmatch '^[0-9-]+ [0-9:]+ pacing your plan: (week [0-9]+% used \(the 80% line is at [0-9.]+% now\))') { $rest = ''; break }
+      if ($sl -notmatch '^[0-9-]+ [0-9:]+ pacing your plan: (week [0-9]+% used \(the [0-9]+% line is at [0-9.]+% now\))') { $rest = ''; break }
       $rest = $Matches[1]
     }
     if ($age -le $script:ShipMaxMin) { Add-Result 'PASS' 'a ship happened recently' ('last ship "' + $shown + '" ' + $age + ' minute(s) ago (limit ' + $script:ShipMaxMin + ')') }

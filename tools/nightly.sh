@@ -163,6 +163,14 @@ while true; do
     #     (tools/console-worker.sh) runs one Claude task at a time on his Console credits; it waits quietly until his key is saved
     #     10-17 later, his "max out my pc resources and the claude console resources": three lanes at once (tools/console-lane.sh
     #     a, b, c), one worker each; lane a also waits for an older console-worker.sh run still going
+    # 10-27: tracked helper files kept vanishing from the folder this morning (cause not found yet); with console-lane.sh gone no lane
+    #        starts, with caps.txt gone every lane rests at $0.00, with devdash/server.mjs gone the dashboard dies at its next restart.
+    #        Put the committed copy back and say so in the log.
+    for kf in tools/console-lane.sh tools/handoff/console/caps.txt tools/devdash/server.mjs; do
+      if [ ! -f "$R/$kf" ] && git -C "$R" show "HEAD:$kf" > "$R/$kf.tmp" 2>/dev/null && [ -s "$R/$kf.tmp" ]; then
+        mv -f "$R/$kf.tmp" "$R/$kf"; echo "$(date +%H:%M) $kf was missing; put back from git" >> "$LOG"
+      else rm -f "$R/$kf.tmp"; fi
+    done
     for ln in a b c; do
       [ "$ln" = a ] && [ "$(running 'console-worker\.sh')" != "0" ] && continue
       if [ -f "$R/tools/console-lane.sh" ] && [ "$(running "console-lane\.sh $ln")" = "0" ]; then

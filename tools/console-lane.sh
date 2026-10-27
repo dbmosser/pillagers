@@ -15,6 +15,8 @@
 # - A file named STOP in tools/handoff/console pauses it. The always-on runner (tools/nightly.sh) starts it every 5 min when
 #   it is not running and 6 GB of RAM are free.
 R="/c/claudecode/dark raiders"; C="$R/tools/handoff/console"; cd "$R" || exit 1
+# 10-27: caps.txt vanished from this folder twice this morning (cause not found) and every lane sat at "$0.00 allowed"; put the committed copy back
+[ -f "$C/caps.txt" ] || { git show HEAD:tools/handoff/console/caps.txt > "$C/caps.txt.tmp" 2>/dev/null && mv -f "$C/caps.txt.tmp" "$C/caps.txt" && echo "$(date '+%m-%d %H:%M') caps.txt was missing at a lane start; put back from git" >> "$C/caps-restored.log"; }
 L=${1:-a}   # 10-17 LANES (his "max out ... the claude console resources"): one worker per lane at once; lane a = tasks named 0-9*, lane b = b-*, lane c = c-*
 LK="$C/lane-$L.lock"   # one worker per lane: a lock folder holding the pid (Git Bash pids do not show in Windows process lists)
 # 10-18 06:10: CLI_ALWAYS lanes (e.g. e) always run on Claude Code on his plan, beside the Console lanes (his weekly usage was at 1%
@@ -146,6 +148,12 @@ if [ $ENGINE = cli ]; then
   le=""; [ -n "$(cap PLAN_LINE_END "")" ] && le=$(date -d "$(cap PLAN_LINE_END "")" +%s 2>/dev/null); ws=$((WR-604800))
   if [ -n "$le" ] && [ "$le" -gt "$ws" ] && [ "$le" -lt "$WR" ]; then
     line=$(awk -v s="$ws" -v e="$le" -v n="$nw" -v t="$(cap PLAN_TARGET 85)" 'BEGIN{f=(n-s)/(e-s); if(f>1)f=1; if(f<0)f=0; printf "%.1f", f*t}'); fi
+  # 10-27, his "Keep shipping. Pace for 90% use by Friday afternoon": PLAN_LINE_START (inside this week, before PLAN_LINE_END) starts the
+  # line at PLAN_LINE_FROM% (the week's use when he said it) and climbs evenly to PLAN_LINE_TARGET% at PLAN_LINE_END, then holds there.
+  tg=$(cap PLAN_TARGET 85); lst=""; [ -n "$(cap PLAN_LINE_START "")" ] && lst=$(date -d "$(cap PLAN_LINE_START "")" +%s 2>/dev/null)
+  if [ -n "$lst" ] && [ -n "$le" ] && [ "$lst" -ge "$ws" ] && [ "$lst" -lt "$le" ] && [ "$le" -lt "$WR" ]; then
+    tg=$(cap PLAN_LINE_TARGET "$tg")
+    line=$(awk -v s="$lst" -v e="$le" -v n="$nw" -v t="$tg" -v f0="$(cap PLAN_LINE_FROM 0)" 'BEGIN{f=(n-s)/(e-s); if(f>1)f=1; if(f<0)f=0; printf "%.1f", f0+f*(t-f0)}'); fi
   boost=0; case ",$(cap CLI_BOOST ""),," in *",$L,"*) boost=5;; esac
   # 10-19 18:30, his "forget about the pacing rule ... I don't care if you blow my usage quicker than the reset" and "I just don't want to
   # spend more tokens bc we are moving faster": PLAN_PACE=0 drops the weekly line (helpers run whenever they can); the 5-hour stop stays
@@ -158,7 +166,7 @@ if [ $ENGINE = cli ]; then
     echo "$(date '+%m-%d %H:%M') resting: the week is at $wk% (helpers stop at $(cap PLAN_WEEK_MAX 100)% so the chat keeps room)" > "$C/status-$L.txt"; exit 0; fi
   if { [ "$pace" != 0 ] && awk -v w="$wk" -v l="$line" -v b="$boost" 'BEGIN{exit !(w+b>=l)}'; } || [ "$ses" -ge "$(cap PLAN_SESSION_MAX 75)" ]; then
     if [ "$pace" = 0 ]; then echo "$(date '+%m-%d %H:%M') resting: the 5-hour window is at $ses% (helpers stop at $(cap PLAN_SESSION_MAX 75)%); week $wk% used" > "$C/status-$L.txt"
-    else echo "$(date '+%m-%d %H:%M') pacing your plan: week $wk% used (the $(cap PLAN_TARGET 85)% line is at $line% now), 5-hour window $ses%" > "$C/status-$L.txt"; fi; exit 0; fi
+    else echo "$(date '+%m-%d %H:%M') pacing your plan: week $wk% used (the ${tg}% line is at $line% now), 5-hour window $ses%" > "$C/status-$L.txt"; fi; exit 0; fi
   # 10-24, his yes to "the VM gets the extra memory whenever you are away": while he is back at the main PC and it takes its memory back
   # (gaming.txt vmback=1 from tools/migrate/host-night-memory.ps1, under 10 minutes old), no new helper starts, so each one that finishes
   # frees memory the VM can hand back. Running helpers go on.

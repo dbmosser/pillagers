@@ -48,11 +48,16 @@ function plan() {
   // 10-25: PLAN_LINE_END (his "as ready as possible by Friday night") ends the line early, the same rule tools/console-lane.sh paces by,
   // so the page shows the line the helpers actually use (it showed the even line to the reset).
   const start = reset - 7 * 864e5, le = Date.parse(caps.PLAN_LINE_END || ''), end = le > start && le < reset ? le : reset;
-  const line = Math.min(1, Math.max(0, (Date.now() - start) / (end - start))) * target;
+  // 10-27, his "Keep shipping. Pace for 90% use by Friday afternoon": PLAN_LINE_START/PLAN_LINE_FROM start the line at the week's use when
+  // he said it, then it climbs to PLAN_LINE_TARGET% at PLAN_LINE_END (the same rule tools/console-lane.sh paces by).
+  const ls = Date.parse(caps.PLAN_LINE_START || ''), anch = ls >= start && ls < end && end < reset, f0 = anch ? +(caps.PLAN_LINE_FROM || 0) : 0;
+  const goal = anch ? +(caps.PLAN_LINE_TARGET || target) : target, s0 = anch ? ls : start, clamp = v => Math.min(1, Math.max(0, v));
+  const line = f0 + clamp((Date.now() - s0) / (end - s0)) * (goal - f0);
   const hist = tail(PL, 3000).map(l => l.split(' ').map(Number)).filter(h => h[0] * 1000 >= start && !isNaN(h[2])).map(h => [h[0] * 1000, h[2]]);
   if (isNaN(wk)) return { wk: null };
-  return { ses, wk, ageS, target, sesMax, pace: String(caps.PLAN_PACE ?? '1').trim() !== '0', reset, start, lineEnd: end, line: +line.toFixed(1), catchUp: wk > line ? start + Math.min(1, wk / target) * (end - start) : null,
-    perDay: +((target - wk) / Math.max(0.1, (Math.max(end, Date.now() + 864e5) - Date.now()) / 864e5)).toFixed(1), hist };
+  return { ses, wk, ageS, target: goal, sesMax, pace: String(caps.PLAN_PACE ?? '1').trim() !== '0', reset, start, lineStart: anch ? ls : null, lineFrom: f0, lineEnd: end, line: +line.toFixed(1),
+    catchUp: wk > line ? s0 + clamp((wk - f0) / (goal - f0)) * (end - s0) : null,
+    perDay: +((goal - wk) / Math.max(0.1, (Math.max(end, Date.now() + 864e5) - Date.now()) / 864e5)).toFixed(1), hist };
 }
 let cpuPrev = os.cpus(), cpu = 0;
 setInterval(() => { const c = os.cpus(); let idle = 0, tot = 0;
