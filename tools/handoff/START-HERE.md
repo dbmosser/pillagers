@@ -2,6 +2,8 @@
 
 ## CURRENT (refreshed 2026-10-20 13:58, game at v32.90). Read this block. EVERYTHING BELOW IT IS HISTORY (2026-09-05 to 09-13) and is stale.
 
+**HIS ORDER 10-27 (verbatim): "Ok no new features until Nov 1. Resources should now be spent polishing, bug fixing, etc".** Until Sun 11/1 only fixes and polish of what the game already has. New-feature jobs wait in tools/handoff/console/after-nov1 (no lane reads it) and go back to tasks/ on 11/1. This beats the dates paragraph below.
+
 The game is PILLAGERS (old name Dark Raiders; the file is still dark_raiders.html). In the old text below, "Daniel" means the owner: say "the owner" or "he". He plays and gives orders; he is not a coder. His answers are binding.
 
 **Direction and dates (his answers of 10-18 and 10-19):** work toward the THANKSGIVING RELEASE, Thu 11/26 on itch.io (pay what you want; friends and family on a private link first). The 2-player party on Fri 10/30 is a simple sideshow: open the game and click the 2 player arcade demo (10-19 order). New features until Mon 10/26; after that nothing brand new, everything else up to the lock (3.37 c). The party version locks Thu 10/29 evening; after the lock only urgent fixes, reported afterwards (2.81 c). Release work goes on after the party. Party night runs from the frozen copy on the MAIN PC (party-host-copy.ps1), with no pad route into the VM (his 10-19 22:45 decision; the vm-verify pad-route WARN is expected).
