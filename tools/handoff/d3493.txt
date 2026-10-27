@@ -1,0 +1,5 @@
+## v34.93 - THE DIFFICULTY PANEL SAYS WHAT EACH CHOICE MEANS
+
+Co-op hunt while he was away. Found in the pictures of v34.92: the Settings side panel showed the difficulty row as "difficulty / new player" even while the row said "main game", because the panel keeps a hint only up to its first colon. The hint now names what the choice on the button means: new player is softer hits, longer raids, more loot, fewer extras; main game is standard hits, raid length and loot, extras on; custom is rows changed by hand.
+
+MEASURED. Check 34.93 passes, and fails on v34.92.

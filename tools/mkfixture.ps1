@@ -6166,6 +6166,33 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.93',what:'the Settings side panel for the difficulty row says what the choice on its button means (it read "new player" on the main game)',
+   run:function(){
+     if(typeof diffRowHtml!=='function'||typeof setHintShort!=='function') return 'no difficulty row';
+     var bad=[], go=(P&&P.gameOpts)?JSON.stringify(P.gameOpts):null;
+     function pane(tag,word,want,never){
+       var b=document.getElementById('set_diff'), r=b&&b.closest?b.closest('.row'):null, h=r?r.querySelector('.hint'):null, s;
+       if(!b){ bad.push(tag+': no difficulty row'); return; }
+       if(b.textContent!==word){ bad.push(tag+': the row says "'+b.textContent+'" not "'+word+'"'); return; }
+       s=h?setHintShort(h.textContent):'';
+       if(s.indexOf(want)<0) bad.push(tag+': the side panel reads "'+s+'", not "'+want+'"');
+       if(never&&s.indexOf(never)>=0) bad.push(tag+': the side panel reads "'+s+'" on '+word);
+     }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       itchDefs(0); P.gameOpts={}; applyGameOpts(); SETSUB=''; renderSettings();
+       pane('main game','main game','standard hits','new player');
+       diffSet(ITCH_EASY); renderSettings();
+       pane('new player','new player','softer hits',null);
+       P.gameOpts.hits=0; applyGameOpts(); renderSettings();
+       pane('one row by hand','custom','changed by hand','new player');
+     } catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       SETSUB=''; try{ itchDefs(ON_ITCH?1:0); }catch(_d){}
+       try{ if(go===null) delete P.gameOpts; else P.gameOpts=JSON.parse(go); }catch(_g){}
+       try{ __topClear(); __resetCfg(); __cleanProfile(); applyGameOpts(); __resetCfg(); xfSnap(); renderSettings(); __topClear(); }catch(_f){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'34.92',what:'itch players start on the new player set (forgiving hits, the long raid, rich loot, light shake, the large crosshair, seven extras off), every row stays in Settings, and the difficulty row switches all twelve to the main game and back',
    run:function(){
      if(typeof itchDefs!=='function'||typeof diffRowHtml!=='function'||typeof diffSet!=='function') return 'no itch new player defaults';

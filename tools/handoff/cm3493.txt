@@ -1,0 +1,7 @@
+v34.93: the difficulty panel says what each choice means
+
+The side panel for the difficulty row matches the button: new player, main game or custom.
+
+Check 34.93. Fails on v34.92.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -3690,7 +3690,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='34.92';
+var VER='34.93';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -54544,7 +54544,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v34.92: On itch: the new player set, and the difficulty row puts the main game back in one click. Everywhere else: the main game, with the same row. Check 34.92 fails on v34.91',
+  now:'v34.93: The side panel for the difficulty row matches the button: new player, main game or custom. Check 34.93 fails on v34.92',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -71633,7 +71633,8 @@ function diffNow(){
 }
 function diffRowHtml(){
   var d=diffNow(), home=ON_ITCH?'new player':'main game';
-  return '<div class="row"><div style="flex:1"><b>difficulty</b><div class="hint">new player: softer hits, longer raids, more loot, fewer extras</div></div>'+
+  // v28.xx (cw-diffhint): the side panel keeps a hint only up to its first colon, so "new player: ..." read "new player" on the main game too; the hint now says what the choice on the button means
+  return '<div class="row"><div style="flex:1"><b>difficulty</b><div class="hint">'+(d==='new player'?'softer hits, longer raids, more loot, fewer extras':(d==='main game'?'standard hits, raid length and loot, extras on':'rows changed by hand'))+'</div></div>'+
     '<button id="set_diff" style="padding:6px 12px;min-width:92px'+(d===home?'':';color:var(--amber)')+'">'+d+'</button></div>';
 }
 function diffSet(t){

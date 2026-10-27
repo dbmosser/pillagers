@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.93 - THE DIFFICULTY PANEL SAYS WHAT EACH CHOICE MEANS
+
+Co-op hunt while he was away. Found in the pictures of v34.92: the Settings side panel showed the difficulty row as "difficulty / new player" even while the row said "main game", because the panel keeps a hint only up to its first colon. The hint now names what the choice on the button means: new player is softer hits, longer raids, more loot, fewer extras; main game is standard hits, raid length and loot, extras on; custom is rows changed by hand.
+
+MEASURED. Check 34.93 passes, and fails on v34.92.
 ## v34.92 - ITCH: NEW PLAYER DEFAULTS AND A DIFFICULTY ROW
 
 Co-op hunt while he was away. His orders of 10-26: "when you put the new one to itch, make it so that it defaults to the easiest settings (except kid mode), so noobs can play it and not be overwhelmed", then "I want visible settings for all this stuff so that a itch player can make the game as difficult as the other/main game". On itch a profile with no saved choice starts on the new player set he confirmed: forgiving hits, the 15 minute raid, rich loot, light shake, the large crosshair, and seven extras off (elite affixes, waves grow, overseer phases, overseer rampage, bounty pillager bot, orbital debris, suppression). Only the row defaults move, so every single row stays visible and changeable, and a new difficulty row at the top of THE RAID switches all twelve at once between new player and main game (custom when one row was changed by hand). His PC, the party copy and stable are not on itch, so they boot exactly as before.
