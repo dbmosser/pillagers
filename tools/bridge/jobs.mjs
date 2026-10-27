@@ -20,6 +20,24 @@ function run(program, argv, { timeoutMs = 60000, cwd } = {}) {
   });
 }
 const ps = (script, opts) => run(PS, [...PS_BASE, script], opts);
+const psFile = (file, args, opts) => run(PS, ['-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-File', file, ...args], opts);
+
+// the party copy he plays on 8802 (party-host-copy.ps1's default folder) and its game version
+const PARTY_DIR = 'C:\\claudecode\\pillagers-party';
+function partyVer() {
+  try { const m = /var VER='([0-9]+\.[0-9]+)';/.exec(fs.readFileSync(path.join(PARTY_DIR, 'dark_raiders.html'), 'utf8')); return m ? m[1] : null; } catch { return null; }
+}
+
+// bring the party copy to GitHub master now (what the idle runner does every minute). Exported with dryRun so it can be tested in the VM.
+export async function partyUpdate(ctx, { dryRun = false } = {}) {
+  const busy = await ps("@(Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -match 'party-host-copy\\.ps1' }).Count", { timeoutMs: 20000 });
+  if (parseInt(busy.out.trim(), 10) > 0) return { ok: false, busy: true, error: 'a party copy update is already running (the idle runner started it); ask main-status in a minute', ver: partyVer() };
+  const file = path.join(ctx.repoRoot, 'tools', 'migrate', 'party-host-copy.ps1');
+  if (!fs.existsSync(file)) return { ok: false, error: 'script missing: party-host-copy.ps1' };
+  const before = partyVer();
+  const r = await psFile(file, ['-Prepare', '-Force', ...(dryRun ? ['-DryRun'] : [])], { timeoutMs: 300000, cwd: path.join(ctx.repoRoot, 'tools', 'migrate') });
+  return { ok: r.code === 0, code: r.code, timedOut: r.timedOut, before, ver: partyVer(), out: r.out.slice(-3000), err: r.err.slice(-1000) };
+}
 
 // ---- the move-kit scripts the VM may ask the main PC to run, by fixed name. The value is the file under tools/migrate. A key not in this map is
 // refused. These take no VM-supplied arguments; they do what their own -Status / read-only default does unless a fixed flag is listed.
@@ -70,6 +88,18 @@ export const JOBS = {
     const r = await ps('& ' + JSON.stringify(file) + ' ' + entry.args.join(' '), { timeoutMs: 180000, cwd: path.join(ctx.repoRoot, 'tools', 'migrate') });
     return { ok: r.code === 0, code: r.code, out: r.out.slice(-6000), err: r.err.slice(-2000), job: String(args.key) };
   },
+
+  // 10-27 his "you can't seem to communicate effectively with the main PC": one read-only answer to "what is the main PC playing and doing":
+  // the party copy, what serves 8802 (process list only), the idle runner's status and log tail, this agent. See main-status.ps1.
+  async ['main-status'](_args, ctx) {
+    const file = path.join(ctx.repoRoot, 'tools', 'bridge', 'main-status.ps1');
+    if (!fs.existsSync(file)) return { ok: false, error: 'script missing: main-status.ps1' };
+    const r = await psFile(file, [], { timeoutMs: 60000 });
+    try { return JSON.parse(r.out.trim()); } catch { return { ok: false, error: 'main-status did not print JSON', raw: (r.out + r.err).slice(-2000) }; }
+  },
+
+  // update the party copy to GitHub master NOW (fixed: party-host-copy.ps1 -Prepare -Force, no VM-supplied arguments). He reloads to play it.
+  async ['party-update'](_args, ctx) { return partyUpdate(ctx); },
 
   // list what is in the one shared folder.
   async ['share-list'](_args, ctx) {

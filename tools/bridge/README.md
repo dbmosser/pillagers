@@ -14,6 +14,10 @@ It is **not** a "run any command on the main PC" shell. The only things it ever 
 | `share-list` | lists the one shared folder | read |
 | `share-get name=…` | reads a file **out of** the shared folder (capped 12 MB) | read |
 | `share-put name=… ` | writes a file **into** the shared folder (capped 12 MB) | write (one folder) |
+| `main-status` | (10-27) what the main PC plays and does, in one answer: the party copy (commit, game version), what serves 8802 (from the process list), the idle runner (heartbeat, status, last log lines), this agent | read |
+| `party-update` | (10-27) brings the party copy to GitHub master now (`party-host-copy.ps1 -Prepare -Force`, no VM arguments); he reloads to play it | write (the party copy) |
+
+**Since 10-27 the agent keeps itself current.** The idle runner on the main PC (tools/spare/spare-runner.ps1, `Ensure-Bridge`) runs the agent from its own copy `C:\PillagersIdle\game`, which follows GitHub master, and restarts it within a minute when the bridge files change. So a new job reaches the main PC by being pushed to master; he does nothing. If the new agent does not come up, the runner starts the old one again (his Startup shortcut, `C:\claudecode\dark raiders`) and logs a PROBLEM line, which `main-status` shows.
 
 The shared folder is `C:\Users\<you>\AppData\Local\PillagersBridge\share` on the main PC — a drop box both sides use. The move-kit's own scripts (the Ollama firewall bridge, the pad play relay) stay as they are; the bridge just lets the VM trigger and read them.
 
@@ -57,6 +61,8 @@ powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\bridg
 node tools\bridge\hostctl.mjs ping
 node tools\bridge\hostctl.mjs stats
 node tools\bridge\hostctl.mjs kit ollama-status
+node tools\bridge\hostctl.mjs main-status
+node tools\bridge\hostctl.mjs party-update
 node tools\bridge\hostctl.mjs share-put name=note.txt --file .\note.txt
 node tools\bridge\hostctl.mjs share-get name=report.json --save .\report.json
 ```

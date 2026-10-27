@@ -591,7 +591,7 @@ function Refresh-Party(){
     if((Running 'party-host-copy\.ps1') -gt 0){ return }
     $ls=G -C $R ls-remote origin refs/heads/master
     $m=[regex]::Match($ls,'(?m)^([0-9a-f]{40})\s'); if($script:gx -ne 0 -or -not $m.Success){ return }
-    $want=$m.Groups[1].Value; $have=G -C $PD rev-parse HEAD
+    $want=$m.Groups[1].Value; $script:lastMaster=$want; $have=G -C $PD rev-parse HEAD
     if($script:gx -ne 0 -or $have.Length -lt 8){ return }
     if($want -eq $have){ if((GetS 'party_head') -ne $have.Substring(0,8)){ PutS 'party_head' $have.Substring(0,8); PutS 'party_ver' (PartyVer $PD) }; return }
     $S=$T+'\migrate\party-host-copy.ps1'; if(-not (Test-Path -LiteralPath $S)){ return }
@@ -600,6 +600,36 @@ function Refresh-Party(){
     $script:partyP=$p; $script:partyS=Epoch; $script:partyW=$want
     Say ('GitHub master is at '+$want.Substring(0,8)+': updating the party copy')
   } catch { Say ('PROBLEM: party copy check failed: '+(Short $_.Exception.Message)) }
+}
+# 10-27 his "you can't seem to communicate effectively with the main PC from the VM": the bridge agent (tools\bridge\host-agent.mjs, the
+# VM's direct line to this PC) runs from this runner's copy, which follows GitHub master, so a new bridge job reaches the main PC by itself.
+# Once a minute in idle mode: when the agent runs from another folder (his Startup shortcut starts the 10-19 copy in C:\claudecode\dark
+# raiders) or the bridge files changed since it started, it is restarted from here. If the new one does not listen on 8830 within 10 s,
+# the old one is started again and the next try is in 30 minutes.
+$script:brT=0; $script:lastMaster=''; $script:tookMaster=''
+function Ensure-Bridge(){
+  if(-not $Idle){ return }
+  try{
+    if(((Epoch)-$script:brT) -lt 60){ return }
+    $script:brT=Epoch
+    $want=$T+'\bridge\host-agent.mjs'
+    if(-not (Test-Path -LiteralPath $want) -or -not (Test-Path -LiteralPath ($env:LOCALAPPDATA+'\PillagersBridge\key.txt'))){ return }
+    $h=(@('host-agent.mjs','jobs.mjs','bridge-common.mjs','main-status.ps1') | ForEach-Object { $f=$T+'\bridge\'+$_; if(Test-Path -LiteralPath $f){ (Get-FileHash -LiteralPath $f -Algorithm SHA256).Hash.Substring(0,8) } }) -join '-'
+    $ag=@(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -and ($_.CommandLine -match 'host-agent\.mjs') -and ($_.CommandLine -notmatch '--status|--once') })
+    $here=@($ag | Where-Object { ([string]$_.CommandLine).IndexOf($want,[StringComparison]::OrdinalIgnoreCase) -ge 0 })
+    if($ag.Count -eq 1 -and $here.Count -eq 1 -and (GetS 'bridge_hash') -eq $h){ return }
+    $script:brT=(Epoch)+1740   # a failure below waits 30 minutes; success sets it back
+    $exe=$(if($ag.Count -gt 0 -and $ag[0].ExecutablePath){ [string]$ag[0].ExecutablePath }else{ $Node })
+    foreach($p in $ag){ Stop-Process -Id ([int]$p.ProcessId) -Force -ErrorAction SilentlyContinue }
+    Start-Sleep -Milliseconds 800
+    $np=Start-Process -FilePath $exe -ArgumentList @(('"'+$want+'"'),'--port','8830') -WindowStyle Hidden -PassThru
+    $up=$false; for($i=0;$i -lt 20;$i++){ Start-Sleep -Milliseconds 500; if(@(Get-NetTCPConnection -LocalPort 8830 -State Listen -ErrorAction SilentlyContinue | Where-Object { $_.OwningProcess -eq $np.Id }).Count -gt 0){ $up=$true; break } }
+    if($up){ PutS 'bridge_hash' $h; $script:brT=Epoch; Say ('bridge agent now runs from the runner copy ('+$h+')'); return }
+    try{ Stop-Process -Id $np.Id -Force -ErrorAction SilentlyContinue }catch{}
+    $vbs='C:\claudecode\dark raiders\tools\bridge\start-agent-hidden.vbs'
+    if(Test-Path -LiteralPath $vbs){ Start-Process -FilePath wscript.exe -ArgumentList ('"'+$vbs+'"') | Out-Null }
+    Say 'PROBLEM: the bridge agent from the runner copy did not listen on 8830; the old one was started again, next try in 30 minutes'
+  } catch { $script:brT=(Epoch)+1740; Say ('PROBLEM: bridge check failed: '+(Short $_.Exception.Message)) }
 }
 
 function Build-Fixture(){
@@ -763,6 +793,17 @@ while($true){
       $pw=$(if($away -lt 900){ 'paused: he is using the PC' }elseif($away -lt $na){ 'paused: the VM takes its memory first' }elseif($vmn){ 'paused: the VM has the memory at night' }else{ 'paused: under 6 GB free' })
       if($script:working){ Stop-Work $pw }
       Refresh-Party
+      Ensure-Bridge
+      # a new runner is taken as soon as master moves (Refresh-Party asks GitHub every minute), not only at the 10-minute note
+      if($script:lastMaster -and $script:lastMaster -ne $script:tookMaster -and ((Running 'corpq\.sh|corpus-slices\.sh') -eq 0)){
+        $script:tookMaster=$script:lastMaster
+        if((Update-Game) -and (Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash -ne $SelfHash){
+          Say 'a new copy of this runner came from GitHub: restarting'
+          Remove-Item -LiteralPath $Hb -Force -ErrorAction SilentlyContinue
+          Start-Process -FilePath wscript.exe -ArgumentList ('"'+$T+'\spare\spare-start.vbs"') | Out-Null
+          exit 0
+        }
+      }
       $pt=[long]('0'+(GetS 'pub_t'))
       if((GetS 'pause_why') -ne $pw -or ((Epoch)-$pt) -ge ($PublishMin*60)){
         if((GetS 'pause_why') -ne $pw){ PutS 'pause_why' $pw; Say $pw }
@@ -812,6 +853,7 @@ while($true){
   }
   Ensure-Server
   Refresh-Party
+  Ensure-Bridge
   $cr=Running 'corpq\.sh|corpus-slices\.sh'
   $why=''
   if($cr -eq 0){
