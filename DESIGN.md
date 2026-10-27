@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.02 - FULLSCREEN GATE AND GO FULLSCREEN BUTTONS
+
+Co-op hunt while he was away. His order of 10-27: the game plays fullscreen, or the player holds the mouse 5 s to play windowed and accept glitches. A pause screen pops at the start and every time fullscreen is left, in 1P and in each 2P window; it says esc leaves fullscreen so pause with tab, and f11 works any time on chrome. Go fullscreen buttons on the pause menu and on the raid screen, shown only while windowed. His own exception to no new features until 11/1.
+
+MEASURED. Check 35.02 passes, and fails on v35.01.
 ## v35.01 - CORNER MONEY PRINTED ONCE
 
 Co-op hunt while he was away. His note on the v34.78 photo: text collisions in the top right box. The page text copy of the wallet was not hidden when the loop was driven ahead of the real clock (camera staging), so it printed over the canvas rows. trHide now reads the same real clock as the rows.

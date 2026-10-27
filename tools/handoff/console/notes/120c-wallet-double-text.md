@@ -1,0 +1,1 @@
+120c: cause = trHide compared the loop frame time with a real-clock stamp; the camera staging drives __loop with times ahead of the real clock, so the page text came back. Camera staging only, real play (rAF times) was fine, but both now read the real clock. Shipped v35.01.

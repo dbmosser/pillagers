@@ -1,0 +1,7 @@
+v35.02: fullscreen gate and go fullscreen buttons
+
+Play fullscreen or hold 5 s for windowed; the gate returns whenever fullscreen is left.
+
+Check 35.02. Fails on v35.01.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
