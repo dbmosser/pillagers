@@ -1,0 +1,24 @@
+[0,120) FAIL x3 || v9.07 a noise you cannot see leaves a ring on the ground, and one you can see does not -> two identical redraws differ, so no pixel measurement here means anything || v9.19 the names on screen are his names, not the ones I reached for -> the what-is-new card is at v34.91 against a build at v35.06 || v34.90 cw-thirdsize, his note of 2026-10-25, played on build 33.17 where the figure was drawn at 1.25 ("player character is still wayyy too ... -> staging: a hostile pillager (lean) aiming -0.5 pi: 583 gun pixels, 2354 mark pixels, 1 unsteady, mark placed
+[120,240) FAIL x1 || v33.68 cw-pixprops (86e) ship 1: the pixel adapter pixWrap and the containers, bodies, carcass and the 9 wrecks through it. After a warm-up ... -> 2 sprites touched the edge of the scratch
+[240,360) FAIL x1 || v33.51 cw-pixkit (86a): the pixel look row (local, on), pinned off in the fixture; pixBlit draws on whole device pixels and only edge pixels... -> the frozen raid frame is not steady, so it cannot be compared; with the pixel look off the raid frame differs from the frame with every pixel path stubbed off
+[360,480) FAIL x1 || v31.32 cw-trcol, his order (2026-10-18) everything in the right hand upper corner in a vertical 1 by 1 list, all the same size: in a raid th... -> the page text of the credits stayed hidden after the rows stopped being drawn
+[480,600) PASS, 102 checks, 18 could not run
+[600,720) PASS, 108 checks, 12 could not run
+[720,840) PASS, 110 checks, 10 could not run
+[840,960) PASS, 104 checks, 16 could not run
+[960,1080) PASS, 90 checks, 30 could not run
+[1080,1200) PASS, 110 checks, 10 could not run
+[1200,1320) PASS, 105 checks, 15 could not run
+[1320,1440) PASS, 94 checks, 26 could not run
+[1440,1560) PASS, 101 checks, 19 could not run
+[1560,1680) PASS, 97 checks, 23 could not run
+[1680,1800) PASS, 105 checks, 15 could not run
+[1800,1920) PASS, 118 checks, 2 could not run
+[1920,2040) PASS, 99 checks, 21 could not run
+[2040,2160) PASS, 89 checks, 31 could not run
+[2160,2280) PASS, 99 checks, 21 could not run
+[2280,2400) PASS, 110 checks, 10 could not run
+[2400,2520) PASS, 116 checks, 4 could not run
+[2520,2640) FAIL x2 || v10.54 the OUTFIT rack exists, each suit repaints the whole figure and hides the coat colour, an unowned suit changes nothing, and the Depot... -> an unowned suit repainted 1 pixels || v10.38 the WHAT IS NEW card is current, opens with a note, and retains its historical feature entries -> the card is at v34.91 against a build at v35.06, so a friend reads news that is 15 builds old
+[2640,2641) PASS, 1 checks, 0 could not run
+ALL DONE 13:21
