@@ -1,0 +1,7 @@
+v35.18: undercroft fixes
+
+the pack list stays put when you pack a row near the bottom; the character screen shows the whole floor; walking on a zoomed floor is smooth; a floor hotbar drag is let go on alt tab or when the backpack opens; dragging one gun onto the other trades their keys; a dimmed gun dropped off the stash hotbar says unequip in armory
+
+Check 35.18. Fails on v35.17.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

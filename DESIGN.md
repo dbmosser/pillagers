@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.18 - UNDERCROFT FIXES
+
+Co-op hunt while he was away. review of v35.12 and v35.13 (his Undercroft and hotbar asks 10-27)
+
+MEASURED. Check 35.18 passes, and fails on v35.17.
 ## v35.17 - FOG OF WAR FIXES
 
 Co-op hunt while he was away. review of v35.14 (his fog of war words 10-27)

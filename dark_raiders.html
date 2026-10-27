@@ -3724,7 +3724,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.17';
+var VER='35.18';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18655,7 +18655,7 @@ window.addEventListener('mouseup',function(e){
   // v8.96: releasing over a belt cell on the Undercroft binds it, and releasing
   // anywhere else lets go, which is the same pair of outcomes the raid has.
   if(HUBFD&&!(HUBFD.st&&HUBFD.st.drag)) HUBFD=null;   // cw-beltswap: a press on the floor belt that picked nothing up
-  if(state==='hub'&&((hubBagOpen&&hubBagG&&hubBagG.drag)||(!hubBagOpen&&HUBFD&&HUBFD.st.drag))){
+  if(state==='hub'&&((hubBagOpen&&hubBagG&&hubBagG.drag)||(!hubBagOpen&&HUBFD&&HUBFD.st.drag&&e.button===0))){   /* cw-beltfix: a right release does not drop the floor belt drag */
     var _hbS=(hubBagOpen&&hubBagG)?hubBagG:HUBFD.st;   // cw-beltswap: the open backpack, or the floor belt with it shut
     withHubBelt(function(){
       var d=G.drag; G.drag=null;
@@ -18678,19 +18678,17 @@ window.addEventListener('mouseup',function(e){
             if(d.fromHot===_H.i) return;
             if(_H.i>=GUNKEYS){ hubToast(beltClassWord('gun')); return; }   // v25.xx (belt2): a gun belongs on keys 1 to GUNKEYS (v22.45 let it go anywhere)
             var _hb8s=hotbarSlots(), _hb8t=_hb8s[_H.i], _hb8w=WEAPONS[d.key.slice(4)], _hb8n=(_hb8w&&_hb8w.name)||'That gun', _hb8h=(d.gunSlot==='gunA')?0:1;
-            if(_hb8t&&(_hb8t.k==='gunA'||_hb8t.k==='gunB')&&_hb8t.k!==d.gunSlot){
-              var _hb8a=P.equipped, _hb8b=P.equippedSec;
-              if(!(_hb8a&&_hb8a!=='fists'&&WEAPONS[_hb8a]&&_hb8b&&_hb8b!=='none'&&_hb8b!=='fists'&&WEAPONS[_hb8b])){ hubToast('ONLY ONE GUN'); return; }
-              P.equipped=_hb8b; P.equippedSec=_hb8a;
-              G.player=hubBagState().player;
-              // v19.18, from the review (2026-10-07): name the key the gun really shows on, as in a raid.
-              var _hb8z=hotbarSlots(), _hb8at=-1, _hb8id=d.key.slice(4), _hb8o=(_hb8t&&_hb8t.name)||'the other gun', _hb8q;
-              if(_hb8z[_H.i]&&_hb8z[_H.i].kind==='gun'&&_hb8z[_H.i].icon===_hb8id) _hb8at=_H.i;
-              else for(_hb8q=0;_hb8q<_hb8z.length;_hb8q++) if(_hb8z[_hb8q]&&_hb8z[_hb8q].kind==='gun'&&_hb8z[_hb8q].icon===_hb8id){ _hb8at=_hb8q; break; }
-              blip('pick'); hubToast(((_hb8at>=0)?(_hb8n+' on key '+slotKeyName(_hb8at)+((_hb8at===_H.i)?'':(' \u00b7 swapped with '+_hb8o))):('swapped with '+_hb8o)).toUpperCase());
+            // cw-beltfix (review 10-27, his ask 10-27 "swap them on the hotbar"): the belt places each gun in his hands on its class key,
+            // so trading hands (v18.91) left the belt as it was and only changed the gun he ascends holding. The two keys trade, as on the
+            // stash screen, and the guns stay in his hands. With one gun the second weapon cell is an empty key and takes it (below).
+            var _hb8o2=(_hb8t&&(_hb8t.k==='gunA'||_hb8t.k==='gunB')&&_hb8t.k!==d.gunSlot&&_hb8t.icon&&_hb8t.icon!=='fists'&&WEAPONS[_hb8t.icon])?('gun_'+_hb8t.icon):null;
+            if(_hb8o2&&_hb8o2!==d.key){
+              G.hotAssign=G.hotAssign||{};
+              for(var _hb8k in G.hotAssign) if(G.hotAssign[_hb8k]===d.key||G.hotAssign[_hb8k]===_hb8o2) delete G.hotAssign[_hb8k];
+              G.hotAssign[_H.i]=d.key; if(d.fromHot!==undefined&&d.fromHot!==_H.i) G.hotAssign[d.fromHot]=_hb8o2;
+              blip('pick'); hubToast((_hb8n+' on key '+slotKeyName(_H.i)+((d.fromHot!==undefined)?(' \u00b7 '+((WEAPONS[_hb8t.icon]&&WEAPONS[_hb8t.icon].name)||'the other gun')+' on key '+slotKeyName(d.fromHot)):'')).toUpperCase());
               return;
-            }
-            if(_H.i===_hb8h&&d.fromHot>=2&&G.hotAssign&&G.hotAssign[_hb8h]!==undefined&&G.hotAssign[d.fromHot]===undefined){
+            }            if(_H.i===_hb8h&&d.fromHot>=2&&G.hotAssign&&G.hotAssign[_hb8h]!==undefined&&G.hotAssign[d.fromHot]===undefined){
               var _hb8c=G.hotAssign[_hb8h]; delete G.hotAssign[_hb8h]; G.hotAssign[d.fromHot]=_hb8c;
               blip('pick'); hubToast((_hb8n+' on key '+slotKeyName(_hb8h)+' \u00b7 '+((ITEMS[_hb8c]&&ITEMS[_hb8c].name)||'Item')+' on key '+slotKeyName(d.fromHot)).toUpperCase());
               return;
@@ -47984,6 +47982,7 @@ function hubBagOpenSet(on){
   if(on){
     if(!hubBagG) hubBagG=hubBagState();
     hubBagOpen=true;
+    HUBFD=null;   // cw-beltfix (review 10-27): a floor belt drag held while the backpack opens is let go, not dropped on the next click
   } else {
     // Closing is the commit. The panel edits its own copy and the profile takes
     // it, so a half finished drag can never write a broken bag.
@@ -50629,6 +50628,7 @@ function placeName(n){
 // below 1 so a small window is exactly what it was before.
 var HZT=1, HZC=1, _hzLast=0;   // cw-hubfix, his ask 10-27: the wheel zooms the Undercroft floor (HZT the target, HZC the eased zoom)
 function hubZoomEase(){
+  var _ht=document.getElementById('title'); if(_ht&&_ht.classList.contains('on')) HZT=1;   // cw-beltfix (review 10-27): the character screen over the floor shows the whole room
   var n=performance.now(), d=_hzLast?Math.min(0.1,(n-_hzLast)/1000):0.016; _hzLast=n;
   HZC+=(HZT-HZC)*Math.min(1,d*14); if(Math.abs(HZT-HZC)<0.001) HZC=HZT;
 }
@@ -50662,8 +50662,9 @@ function drawHubWorld(dt){
   // grows. Passing W and H here instead of the scaled span is what would put the
   // player off centre at high zoom.
   hubZoomEase(); var S=hubScale(), vw=W/S, vh=H/S;   // cw-hubfix
-  var ox=Math.round(hubCam(p.x-vw/2,vw,HUBW));
-  var oy=Math.round(hubCam(p.y-vh*.55,vh,HUBH));
+  var _hsd=S*(DPR||1);   // cw-beltfix (review 10-27): snapped to screen pixels, not room units (up to 2.2 times coarser zoomed in), so walking does not judder
+  var ox=Math.round(hubCam(p.x-vw/2,vw,HUBW)*_hsd)/_hsd;
+  var oy=Math.round(hubCam(p.y-vh*.55,vh,HUBH)*_hsd)/_hsd;
   wc.fillStyle='#05070b'; wc.fillRect(0,0,W,H);
   wc.save(); wc.scale(S,S); wc.translate(-ox,-oy);
   if(hubGround._pe>1){   // v28.xx (cw-cx-pixhub): 2 world units a pixel, nearest when that is a whole number of screen pixels
@@ -51468,6 +51469,7 @@ function releaseAllKeys(soft){
   // drag set with the icon stuck to the cursor, and the next click anywhere bound that item to the belt key under it, or
   // deleted the key it came from, and saved it. The drag is dropped with the keys; the backpack stays open.
   if(typeof hubBagG!=='undefined'&&hubBagG) hubBagG.drag=null;
+  if(typeof HUBFD!=='undefined') HUBFD=null;   // cw-beltfix (review 10-27): and the floor belt drag with the backpack shut (v35.13)
   // v8.14, audit: and the DOM drag, which only the document mouseup ever
   // cleared. Released over the taskbar or another monitor, no mouseup arrives,
   // GRAB stays armed and the next click anywhere drops a stale item.
@@ -54767,7 +54769,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.17: with fog of war on: ground in plain view counts as seen whichever way you face (facing west it did not, so it was never marked explored); turning in Superhot opens the live view at once and marks the ground you look at; wall hits in sight always show their puff and sparks; smoke clouds in plain view show; pixel look blasts out of sight stay hidden Check 35.17 fails on v35.16',
+  now:'v35.18: the pack list stays put when you pack a row near the bottom; the character screen shows the whole floor; walking on a zoomed floor is smooth; a floor hotbar drag is let go on alt tab or when the backpack opens; dragging one gun onto the other trades their keys; a dimmed gun dropped off the stash hotbar says unequip in armory Check 35.18 fails on v35.17',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -55885,6 +55887,7 @@ function renderKitCol(){
     // binding. So this is one thing: let the key go.
     if(typeof from==='string'&&from.indexOf('plan:')===0){
       if(!key||!ITEMS[key]) return;
+      if(ghostGunDrag(key,from)){ say2('unequip in armory'); try{ sfx('clank'); }catch(e){} return; }   // cw-beltfix
       var _bs=+from.slice(5);
       if(!P.hotAssign||P.hotAssign[_bs]!==key){ say2('That item is no longer on that key.'); return; }
       delete P.hotAssign[_bs];
@@ -56400,6 +56403,13 @@ function rackToStash(key){
   if(P.equipped===gk||P.equippedSec===gk) return null;
   P.weapons.splice(wi,1); P.stash.push(key); saveProfile(); return null;
 }
+// cw-beltfix (review 10-27): a dimmed gun the stash belt shows by itself (a gun in his hands, no key bound) drags with 'plan:N' since
+// v35.13. Only the belt takes it; dropped on the stash, the backpack or DROP HERE it stays in his hands and says where guns are put away.
+function ghostGunDrag(key,from){
+  if(typeof from!=='string'||from.indexOf('plan:')!==0||String(key).indexOf('gun_')!==0) return false;
+  if((P.hotAssign||{})[+from.slice(5)]===key) return false;
+  var g=String(key).slice(4); return P.equipped===g||P.equippedSec===g;
+}
 function rackPut(slot,key){
   var why=rackToStash(key); if(why) return why;
   if(beltDropRefusal(key,slot|0)) return beltDropRefusal(key,slot|0);   // v25.xx (belt3): every key takes its own class
@@ -56724,7 +56734,7 @@ try{ renderFreeKit(); }catch(_fk){}
     });
   }
   try{ kitSetupRender(); }catch(_kse){}   // v26.xx (gunkeys2): the gun keys and the wheel plates
-  dropzone(document.getElementById('floordrop'),function(key,from){ if(from==='rack'){ say2('Put the gun in the stash first.'); return; } if(from==='kit'){ try{ unpackSome(key,1); }catch(_u){} } hubDropMake(key); });   // v18.30: drag to the floor
+  dropzone(document.getElementById('floordrop'),function(key,from){ if(ghostGunDrag(key,from)){ say2('unequip in armory'); try{ sfx('clank'); }catch(e){} return; } /* cw-beltfix */ if(from==='rack'){ say2('Put the gun in the stash first.'); return; } if(from==='kit'){ try{ unpackSome(key,1); }catch(_u){} } hubDropMake(key); });   // v18.30: drag to the floor
   // v20.79, from the whole-game bug hunt of 2026-10-08 (H49): the DROP HERE tip goes through padB, so a PlayStation pad is told CROSS.
   (function(){ var _fb=document.getElementById('floordropbtn'); if(_fb&&!_fb.onclick) _fb.onclick=function(){ say2(padB('Drag an item onto DROP HERE, or pick one up with A and press A here.')); }; })();
   dropzone(document.getElementById('stashgrid'),function(key,from){
@@ -56744,6 +56754,7 @@ try{ renderFreeKit(); }catch(_fk){}
     // only ever took from==='kit', so even once the belt could be dragged FROM,
     // the drop would have been ignored on arrival. Coming off the belt means the
     // same thing as coming out of the kit: it stays home, and its key goes with it.
+    if(ghostGunDrag(key,from)){ say2('unequip in armory'); try{ sfx('clank'); }catch(e){} return; }   // cw-beltfix: it never left his hands
     if(typeof from==='string'&&from.indexOf('plan:')===0){
       var _ps=+from.slice(5);
       if(P.hotAssign&&P.hotAssign[_ps]!==undefined) delete P.hotAssign[_ps];
@@ -70648,7 +70659,9 @@ function syncSectorPack(){
   // cw-hubfix, his note 10-27: packing an item rebuilt the list and threw it back to the top; the scroll is kept across the rebuild
   var _sk=[], _so=host.querySelector('.srplist'), _sl=_so?_so.scrollTop:0, _sa=host;
   while(_sa&&_sa!==document.body&&_sa.id!=='sectormodal'){ _sk.push([_sa,_sa.scrollTop]); _sa=_sa.parentElement; }
+  var _spl=document.getElementById('sectorplan');   // cw-beltfix (review 10-27): the belt strip lives in this box; without it the list is taller and the restored scroll was clamped
   host.innerHTML=h;
+  if(_spl&&_spl.parentNode!==host) host.appendChild(_spl);
   try{ var _sn=host.querySelector('.srplist'); if(_sn&&_sl) _sn.scrollTop=_sl; for(var _si=0;_si<_sk.length;_si++) if(_sk[_si][0].scrollTop!==_sk[_si][1]) _sk[_si][0].scrollTop=_sk[_si][1]; }catch(_sx){}
   host.onclick=function(ev){
     var t=ev.target&&ev.target.closest?ev.target.closest('[data-pd],[data-pa],[data-core],[data-pb]'):null, ch, pk, d, pa, hd, gt, n;
