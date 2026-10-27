@@ -32,6 +32,10 @@ if ($sv) {
   $m = [regex]::Match([string]$sv.CommandLine, '-Root\s+(?:"([^"]+)"|(\S+))')
   $root = $(if ($m.Success) { ($m.Groups[1].Value + $m.Groups[2].Value).TrimEnd('\') } else { 'C:\claudecode\dark raiders' })
   $play = [ordered]@{ kind = 'serve.ps1'; pid = [int]$sv.ProcessId; root = $root; ver = (Ver $root); isPartyCopy = ($root -ieq $PD) }
+  # one HEAD request (headers only, as party-host-copy -Status does): does 8802 answer with exactly the file on disk?
+  $fb = (Get-Item -LiteralPath (Join-Path $root 'dark_raiders.html')).Length
+  try { $rq = [Net.HttpWebRequest]::Create('http://localhost:8802/dark_raiders.html'); $rq.Method = 'HEAD'; $rq.Timeout = 4000; $rs = $rq.GetResponse(); $len = [long]$rs.ContentLength; $rs.Close() } catch { $len = -1 }
+  $play.servedBytes = $len; $play.servesFileOnDisk = ($len -gt 0 -and $len -eq $fb)
 } elseif ($procs | Where-Object { $_.CommandLine -match 'play-relay\.mjs' }) { $play = [ordered]@{ kind = 'relay to the VM' } }
 
 # the idle runner
