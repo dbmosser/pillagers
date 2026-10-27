@@ -1,10 +1,10 @@
 host=DESKTOP-82BKOP4
-seen=2026-10-27 11:30
-epoch=1793115041
+seen=2026-10-27 11:41
+epoch=1793115671
 game=21379642 v35.05
-test_run=running corpus-1027-1017.txt
-robots=1
-ram_free_gb=22.8
+test_run=idle
+robots=2
+ram_free_gb=23.3
 push_ok=1
 runner=1823BEEE
 mode=full
