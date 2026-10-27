@@ -864,7 +864,20 @@ function Check-Switch {
     $age = [int][math]::Floor(($now - $ct) / 60)
     $shown = Clean-Ascii $subject
     if ($shown.Length -gt 60) { $shown = $shown.Substring(0, 60) }
+    # 10-27: the lanes rest on purpose while the week is over its line (console-lane.sh writes "pacing your plan" every few
+    # minutes); a quiet master is then expected, not a stall. All three lane files must be fresh (30 min) and say so.
+    $rest = ''
+    foreach ($x in 'a', 'b', 'c') {
+      $sf = Join-Path $script:RepoRoot ('tools\handoff\console\status-' + $x + '.txt')
+      $sl = ''
+      if (Test-Path -LiteralPath $sf) {
+        if (((Get-Date) - (Get-Item -LiteralPath $sf).LastWriteTime).TotalMinutes -lt 30) { $sl = Get-FirstLine @(Get-Content -LiteralPath $sf -TotalCount 1) }
+      }
+      if ($sl -notmatch '^[0-9-]+ [0-9:]+ pacing your plan: (week [0-9]+% used \(the 80% line is at [0-9.]+% now\))') { $rest = ''; break }
+      $rest = $Matches[1]
+    }
     if ($age -le $script:ShipMaxMin) { Add-Result 'PASS' 'a ship happened recently' ('last ship "' + $shown + '" ' + $age + ' minute(s) ago (limit ' + $script:ShipMaxMin + ')') }
+    elseif ($rest -ne '') { Add-Result 'WARN' 'a ship happened recently' ('last ship "' + $shown + '" was ' + [int][math]::Floor($age / 60) + ' hours ago; the lanes are resting, the week is ahead of its line (' + $rest + ')') 'Nothing to do: the lanes pick up again once the line catches up with the week.' }
     else { Add-Result $gb 'a ship happened recently' ('last ship "' + $shown + '" was ' + [int][math]::Floor($age / 60) + ' hours ago (limit ' + ($script:ShipMaxMin / 60) + ')') 'Just switched over? Give the lanes an hour. Otherwise look at tools\handoff\nightly\nightly.log and the lane status files in tools\handoff\console (the Dev Console on port 8820 shows them).' }
   } else {
     Add-Result 'FAIL' 'a ship happened recently' 'git could not read the newest commit on master' 'See the repo item above.'

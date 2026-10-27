@@ -18,7 +18,12 @@ echo "== health $(date '+%m-%d %H:%M')"
 cd "$R" || exit 1
 lt=$(git log -1 --format=%ct master 2>/dev/null); age=$(( (now-lt)/60 ))
 echo "last ship: $(git log -1 --format='%s' master | cut -c1-70) ($age min ago)"
-[ $age -gt 180 ] && prob "nothing shipped for $((age/60)) h"
+# 10-27: the lanes rest on purpose while the week is over its line; a quiet master is expected then, not a stall
+if [ $age -gt 180 ]; then
+  rest=1; for x in a b c; do f="$C/status-$x.txt"; { [ -f "$f" ] && [ $(( now - $(stat -c %Y "$f") )) -lt 1800 ] && head -1 "$f" | grep -q '^[0-9-]* [0-9:]* pacing your plan'; } || rest=0; done
+  if [ $rest = 1 ]; then echo "nothing shipped for $((age/60)) h: lanes resting, the week is ahead of its line ($(head -1 "$C/status-a.txt" | grep -o 'week [0-9]*% used'))"
+  else prob "nothing shipped for $((age/60)) h"; fi
+fi
 # 2 the ship gate browser
 if up 9346 json/version; then echo "gate browser 9346: up"
 else if [ $FIX = 1 ]; then powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/cdp.ps1" -Start -Port 9346 >/dev/null 2>&1; up 9346 json/version && echo "gate browser 9346: was down, STARTED" || prob "gate browser 9346 down and would not start"; else prob "gate browser 9346 down"; fi; fi
