@@ -549,10 +549,21 @@ function Update-Game(){
   }
   return $true
 }
-# 10-27 his "I want the main PC to always have the latest build!": in idle mode, about every 5 minutes, whether he is at the PC or away,
+# 10-27 his "I want the main PC to always have the latest build!": in idle mode, every minute (10-27 evening "still not getting the latest
+# build": 5 minutes was too slow), whether he is at the PC or away,
 # the party copy his 8802 server plays (C:\claudecode\pillagers-party) is brought to GitHub master when master moved. Only -Prepare
 # (git fetch and reset in that copy, stable.html copied); never -Start or -Stop, never a look at 8802. He reloads the page to play it.
 function PartyVer([string]$d){ try{ $m=[regex]::Match([IO.File]::ReadAllText($d+'\dark_raiders.html'),"var VER='([0-9]+\.[0-9]+)';"); if($m.Success){ return $m.Groups[1].Value } }catch{}; return '?' }
+# what his 8802 really serves, from the process list only (no request to 8802): the -Root of the serve.ps1 on port 8802 and its game version
+function Play8802(){
+  try{
+    $c=@(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -and ($_.CommandLine -match 'serve\.ps1') -and (($_.CommandLine -match '-Port\s+"?8802\b') -or ($_.CommandLine -notmatch '-Port\b')) })
+    if($c.Count -eq 0){ if((Running 'play-relay\.mjs') -gt 0){ return 'relay to the VM' }; return 'nothing' }
+    $m=[regex]::Match([string]$c[0].CommandLine,'-Root\s+(?:"([^"]+)"|(\S+))')
+    $rt=$(if($m.Success){ ($m.Groups[1].Value+$m.Groups[2].Value).TrimEnd('\') }else{ 'C:\claudecode\dark raiders' })
+    return ($rt+' v'+(PartyVer $rt))
+  }catch{ return '?' }
+}
 $script:partyT=0; $script:partyP=$null; $script:partyS=0; $script:partyW=''
 function Refresh-Party(){
   if(-not $Idle){ return }
@@ -561,7 +572,7 @@ function Refresh-Party(){
     if($script:partyP){   # a refresh started earlier: look at it, never wait for it
       if(-not $script:partyP.HasExited){
         if(((Epoch)-$script:partyS) -lt 300){ return }
-        & taskkill.exe /T /F /PID $script:partyP.Id 2>&1 | Out-Null; $script:partyP=$null; $script:partyT=(Epoch)+1500
+        & taskkill.exe /T /F /PID $script:partyP.Id 2>&1 | Out-Null; $script:partyP=$null; $script:partyT=(Epoch)+1740
         Say 'PROBLEM: the party copy update took over 5 minutes and was stopped'; return
       }
       $rc=$script:partyP.ExitCode; $script:partyP=$null
@@ -569,12 +580,13 @@ function Refresh-Party(){
       if($ok){
         PutS 'party_head' ($now.Substring(0,8)); PutS 'party_ver' $ver
         Say ('party copy now at '+$now.Substring(0,8)+' (v'+$ver+'): he reloads the page to play it')
-        if($now -ne $script:partyW){ $script:partyT=(Epoch)+1500; Say ('party copy is not at the GitHub master it was sent to ('+$script:partyW.Substring(0,8)+'); next try in 30 minutes') }
-      } else { $script:partyT=(Epoch)+1500; Say ('PROBLEM: the party copy did not update (code '+$rc+'), next try in 30 minutes: '+(Short ((Get-Content -LiteralPath ($W+'\party-refresh.out') -Tail 3 -ErrorAction SilentlyContinue) -join ' '))) }
+        PutS 'pub_t' '0'   # the status note goes out at the next round, so the VM sees the new party= within a minute
+        if($now -ne $script:partyW){ $script:partyT=(Epoch)+1740; Say ('party copy is not at the GitHub master it was sent to ('+$script:partyW.Substring(0,8)+'); next try in 30 minutes') }
+      } else { $script:partyT=(Epoch)+1740; Say ('PROBLEM: the party copy did not update (code '+$rc+'), next try in 30 minutes: '+(Short ((Get-Content -LiteralPath ($W+'\party-refresh.out') -Tail 3 -ErrorAction SilentlyContinue) -join ' '))) }
       return
     }
     if(-not (Test-Path -LiteralPath ($PD+'\.git'))){ if(-not (GetS 'party_none')){ PutS 'party_none' '1'; Say 'no party copy on this PC: nothing to keep current' }; return }
-    if(((Epoch)-$script:partyT) -lt 300){ return }
+    if(((Epoch)-$script:partyT) -lt 60){ return }
     $script:partyT=Epoch
     if((Running 'party-host-copy\.ps1') -gt 0){ return }
     $ls=G -C $R ls-remote origin refs/heads/master
@@ -688,7 +700,7 @@ function Write-Status([string]$corpus,[int]$robots){
   $L=@(('host='+$HostN),('seen='+(Get-Date).ToString('yyyy-MM-dd HH:mm')),('epoch='+(Epoch)),('game='+(G -C $R rev-parse --short=8 HEAD)+' v'+(GameVer)),
     ('test_run='+$corpus),('robots='+$robots),('ram_free_gb='+$free),('push_ok='+(GetS 'push_ok')),('runner='+$SelfHash.Substring(0,8)),('mode='+$(if($Idle){ 'idle' }else{ 'full' })))
   # SPARE-PRESENCE-PAUSE: on the spare PC, when its pause began (epoch), for whoever reads the status; the VM goes by test_run=paused alone
-  if($Idle){ $L+=('spare_pc='+(SparePC)); $L+=('party='+(GetS 'party_ver')+' '+(GetS 'party_head')) } else {
+  if($Idle){ $L+=('spare_pc='+(SparePC)); $L+=('party='+(GetS 'party_ver')+' '+(GetS 'party_head')); $L+=('play8802='+(Play8802)) } else {
     if($corpus -like 'paused*' -and (GetS 'pause_t')){ $L+=('paused_since='+(GetS 'pause_t')) }
     if($script:noIn){ $L+='presence=off' }   # the presence checks did not load: it tests without pausing for anyone (see runner.log)
   }
