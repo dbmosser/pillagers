@@ -1,0 +1,116 @@
+{
+    "title":  "HOTBAR ITEMS FIXES",
+    "why":  "four review findings on the hotbar items",
+    "now":  "key 0 reads 0; drag a belt key off on the lift; pad reaches the lift belt; lift words show by the belt",
+    "edits":  [
+                  {
+                      "anchor":  "\u0027 on key \u0027+(_hb8at+1)+",
+                      "replacement":  "\u0027 on key \u0027+slotKeyName(_hb8at)+"
+                  },
+                  {
+                      "anchor":  "\u0027 on key \u0027+(_hb8h+1)+",
+                      "replacement":  "\u0027 on key \u0027+slotKeyName(_hb8h)+"
+                  },
+                  {
+                      "anchor":  "\u0027 on key \u0027+(d.fromHot+1)).toUpperCase());",
+                      "replacement":  "\u0027 on key \u0027+slotKeyName(d.fromHot)).toUpperCase());"
+                  },
+                  {
+                      "anchor":  "\u0027 on key \u0027+(_H.i+1)+",
+                      "replacement":  "\u0027 on key \u0027+slotKeyName(_H.i)+"
+                  },
+                  {
+                      "anchor":  "\u0027 on key \u0027+(d.fromHot+1)):\u0027\u0027)",
+                      "replacement":  "\u0027 on key \u0027+slotKeyName(d.fromHot)):\u0027\u0027)"
+                  },
+                  {
+                      "anchor":  "\u0027 to slot \u0027+(_onCell+1)",
+                      "replacement":  "\u0027 to slot \u0027+slotKeyName(_onCell)"
+                  },
+                  {
+                      "anchor":  "\u0027 to slot \u0027+(d.fromHot+1)",
+                      "replacement":  "\u0027 to slot \u0027+slotKeyName(d.fromHot)"
+                  },
+                  {
+                      "anchor":  "||_dit.name)+\u0027 to slot \u0027+(HC.i+1)).toUpperCase(),\u0027info\u0027,_gLost?",
+                      "replacement":  "||_dit.name)+\u0027 to slot \u0027+slotKeyName(HC.i)).toUpperCase(),\u0027info\u0027,_gLost?"
+                  },
+                  {
+                      "anchor":  "||_dit.name)+\u0027 to slot \u0027+(HC.i+1)).toUpperCase(),\u0027info\u0027,_gSub?",
+                      "replacement":  "||_dit.name)+\u0027 to slot \u0027+slotKeyName(HC.i)).toUpperCase(),\u0027info\u0027,_gSub?"
+                  },
+                  {
+                      "anchor":  "\u0027 off slot \u0027+(d.fromHot+1)",
+                      "replacement":  "\u0027 off slot \u0027+slotKeyName(d.fromHot)"
+                  },
+                  {
+                      "anchor":  "\u0027 to slot \u0027+(BELTAT+1)",
+                      "replacement":  "\u0027 to slot \u0027+slotKeyName(BELTAT)"
+                  },
+                  {
+                      "anchor":  "\u0027 to slot \u0027+(gi+1)",
+                      "replacement":  "\u0027 to slot \u0027+slotKeyName(gi)"
+                  },
+                  {
+                      "anchor":  "\u0027 to slot \u0027+(at+1)).toUpperCase(); say(txt); return txt;",
+                      "replacement":  "\u0027 to slot \u0027+slotKeyName(at)).toUpperCase(); say(txt); return txt;"
+                  },
+                  {
+                      "anchor":  "  txt=(it.name+\u0027 to slot \u0027+(at+1)).toUpperCase();\n  if(!quiet){ say(txt); if(BELTDISP){",
+                      "replacement":  "  txt=(it.name+\u0027 to slot \u0027+slotKeyName(at)).toUpperCase();   // cw-hotfix2: key 0 reads 0\n  if(!quiet){ say(txt); if(BELTDISP){"
+                  },
+                  {
+                      "anchor":  "(\u0027Key \u0027+(i+1)+\u0027: \u0027+it.name+\u0027, click to clear\u0027):(_fg?(\u0027Key \u0027+(i+1)+\u0027: \u0027+_fg.name):(\u0027Key \u0027+(i+1)+\u0027, free\u0027))",
+                      "replacement":  "(\u0027Key \u0027+slotKeyName(i)+\u0027: \u0027+it.name+\u0027, click to clear\u0027):(_fg?(\u0027Key \u0027+slotKeyName(i)+\u0027: \u0027+_fg.name):(\u0027Key \u0027+slotKeyName(i)+\u0027, free\u0027))"
+                  },
+                  {
+                      "anchor":  "font-size:14px\"\u003e\u0027+(i+1)+\u0027\u003c/span\u003e\u0027",
+                      "replacement":  "font-size:14px\"\u003e\u0027+slotKeyName(i)+\u0027\u003c/span\u003e\u0027"
+                  },
+                  {
+                      "anchor":  "font-size:12px;color:var(--ash)\"\u003e\u0027+(i+1)+\u0027\u003c/span\u003e\u0027:\u0027\u0027)",
+                      "replacement":  "font-size:12px;color:var(--ash)\"\u003e\u0027+slotKeyName(i)+\u0027\u003c/span\u003e\u0027:\u0027\u0027)"
+                  },
+                  {
+                      "anchor":  "  el.style.display=\u0027\u0027;\n  el.innerHTML=\u0027\u003cdiv class=\"srph\"\u003e\u003cb\u003ebelt\u003c/b\u003e\u003c/div\u003e\u0027+hotPlanHTML(\u0027sector\u0027);",
+                      "replacement":  "  el.style.display=\u0027\u0027; el.setAttribute(\u0027data-pan\u0027,\u0027b\u0027);   // cw-hotfix2: the belt is its own pad panel\n  el.innerHTML=\u0027\u003cdiv class=\"srph\"\u003e\u003cb\u003ebelt\u003c/b\u003e\u003cspan id=\"srplanmsg\"\u003e\u003c/span\u003e\u003c/div\u003e\u0027+hotPlanHTML(\u0027sector\u0027);"
+                  },
+                  {
+                      "anchor":  "    c.onclick=function(){ if((P.hotAssign||{})[ix]!==undefined){ delete P.hotAssign[ix]; saveProfile(); try{ sfx(\u0027pick\u0027); }catch(e){} rr(); } else say2(\u0027drag an item here\u0027); };",
+                      "replacement":  "    c.onclick=function(){ if((P.hotAssign||{})[ix]!==undefined){ delete P.hotAssign[ix]; saveProfile(); try{ sfx(\u0027pick\u0027); }catch(e){} rr(); return; } if(!padOn()){ say2(\u0027drag an item here\u0027); return; } var _pv=Object.keys(P.hotAssign||{}).map(function(q){ return P.hotAssign[q]; }), _pc=packList().filter(function(q){ return /^(throw|med|plate)$/.test(beltClassOf(q))\u0026\u0026_pv.indexOf(q)\u003c0\u0026\u0026beltDropRefusal(q,ix)===\u0027\u0027; })[0], _pw; if(!_pc){ say2(\u0027drag an item here\u0027); return; } _pw=planPut(ix,_pc); if(_pw){ say2(_pw); try{ sfx(\u0027clank\u0027); }catch(e){} return; } saveProfile(); try{ sfx(\u0027pick\u0027); }catch(e){} rr(); };   // cw-hotfix2: on a pad, A on an empty key pins the first listed item"
+                  },
+                  {
+                      "anchor":  "    row.addEventListener(\u0027mouseleave\u0027,function(){ if(INVHOVER===k) INVHOVER=null; });\n  });\n}\nfunction syncSectorKit(){",
+                      "replacement":  "    row.addEventListener(\u0027mouseleave\u0027,function(){ if(INVHOVER===k) INVHOVER=null; });\n  });\n  dropzone(sp,function(key,from){ if(typeof from!==\u0027string\u0027||from.indexOf(\u0027plan:\u0027)!==0) return; var fk=+from.slice(5); if((P.hotAssign||{})[fk]===key){ delete P.hotAssign[fk]; saveProfile(); try{ sfx(\u0027pick\u0027); }catch(e){} rr(); } });   // cw-hotfix2: drag a key off onto the pack to clear it\n}\nfunction syncSectorKit(){"
+                  },
+                  {
+                      "anchor":  "// (left and right change a pack row by one); X packs all and Y clears. Panels are marked data-pan: c conditions, k kit, p pack, a ascend.",
+                      "replacement":  "// (left and right change a pack row by one); X packs all and Y clears. Panels are marked data-pan: c conditions, k kit, p pack, a ascend, b belt."
+                  },
+                  {
+                      "anchor":  "  var order=[\u0027c\u0027,\u0027k\u0027,\u0027p\u0027], cur=PAD.focus, pan=srPan(cur)",
+                      "replacement":  "  var order=[\u0027c\u0027,\u0027k\u0027,\u0027p\u0027,\u0027b\u0027], cur=PAD.focus, pan=srPan(cur)"
+                  },
+                  {
+                      "anchor":  "    if(mv[1]\u003c0){ sub=list.filter(function(x){ return srPan(x)===\u0027p\u0027; }); if(!sub.length) sub=list.filter(function(x){ return srPan(x)===\u0027k\u0027; }); nx=PAD.srLast\u0026\u0026PAD.srLast.p\u0026\u0026sub.indexOf(PAD.srLast.p)\u003e=0?PAD.srLast.p:sub[sub.length-1]; if(nx) padSetFocus(nx); }",
+                      "replacement":  "    if(mv[1]\u003c0){ sub=list.filter(function(x){ return srPan(x)===\u0027b\u0027; }); nx=PAD.srLast\u0026\u0026PAD.srLast.b\u0026\u0026sub.indexOf(PAD.srLast.b)\u003e=0?PAD.srLast.b:sub[sub.length-1]; if(!sub.length){ sub=list.filter(function(x){ return srPan(x)===\u0027p\u0027; }); if(!sub.length) sub=list.filter(function(x){ return srPan(x)===\u0027k\u0027; }); nx=PAD.srLast\u0026\u0026PAD.srLast.p\u0026\u0026sub.indexOf(PAD.srLast.p)\u003e=0?PAD.srLast.p:sub[sub.length-1]; } if(nx) padSetFocus(nx); }   // cw-hotfix2: up from ascend reaches the belt"
+                  },
+                  {
+                      "anchor":  "  if(nx){ padSetFocus(nx); if(!PAD.srLast) PAD.srLast={}; PAD.srLast[pan]=nx; }\n  else if(mv[1]\u003e0\u0026\u0026pan!==\u0027c\u0027){",
+                      "replacement":  "  if(nx){ padSetFocus(nx); if(!PAD.srLast) PAD.srLast={}; PAD.srLast[pan]=nx; }\n  else if(mv[1]\u003e0\u0026\u0026pan===\u0027p\u0027\u0026\u0026(sub=list.filter(function(x){ return srPan(x)===\u0027b\u0027; })).length){ nx=PAD.srLast\u0026\u0026PAD.srLast.b\u0026\u0026sub.indexOf(PAD.srLast.b)\u003e=0?PAD.srLast.b:sub[0]; if(!PAD.srLast) PAD.srLast={}; PAD.srLast.p=cur; padSetFocus(nx); }   // cw-hotfix2: the pack runs down into the belt\n  else if(mv[1]\u003c0\u0026\u0026pan===\u0027b\u0027\u0026\u0026(sub=list.filter(function(x){ return srPan(x)===\u0027p\u0027; })).length){ nx=PAD.srLast\u0026\u0026PAD.srLast.p\u0026\u0026sub.indexOf(PAD.srLast.p)\u003e=0?PAD.srLast.p:sub[sub.length-1]; if(!PAD.srLast) PAD.srLast={}; PAD.srLast.b=cur; padSetFocus(nx); }\n  else if(mv[1]\u003e0\u0026\u0026pan!==\u0027c\u0027){"
+                  },
+                  {
+                      "anchor":  "function say2(t){ HUBSAY=t; HUBSAY_T=5; hubToast(t); }",
+                      "replacement":  "function say2(t){ var _sm=document.getElementById(\u0027sectormodal\u0027), _pm=document.getElementById(\u0027srplanmsg\u0027), _s; if(_sm\u0026\u0026_sm.classList.contains(\u0027on\u0027)\u0026\u0026_pm){ _s=String(t).toLowerCase(); _pm.textContent=_s; setTimeout(function(){ if(_pm.textContent===_s) _pm.textContent=\u0027\u0027; },4000); return; } HUBSAY=t; HUBSAY_T=5; hubToast(t); }   // cw-hotfix2: lift words show by the belt"
+                  },
+                  {
+                      "anchor":  "document.getElementById(\u0027sectordeploy\u0027).onclick=function(){\n  // v7.42: choosing the sector leads to the loadout question, not straight up.",
+                      "replacement":  "document.getElementById(\u0027sectordeploy\u0027).onclick=function(){\n  try{ if(HUBTOAST_T) clearTimeout(HUBTOAST_T); HUBTOAST_T=null; HUBTOAST_UNTIL=0; var _ht=document.getElementById(\u0027hubtoast\u0027); if(_ht) _ht.classList.remove(\u0027on\u0027); }catch(_t){}   // cw-hotfix2: no stale toast after the lift\n  // v7.42: choosing the sector leads to the loadout question, not straight up."
+                  },
+                  {
+                      "anchor":  "document.getElementById(\u0027closesector\u0027).onclick=function(){\n  document.getElementById(\u0027sectormodal\u0027).classList.remove(\u0027on\u0027);",
+                      "replacement":  "document.getElementById(\u0027closesector\u0027).onclick=function(){\n  try{ if(HUBTOAST_T) clearTimeout(HUBTOAST_T); HUBTOAST_T=null; HUBTOAST_UNTIL=0; var _ht=document.getElementById(\u0027hubtoast\u0027); if(_ht) _ht.classList.remove(\u0027on\u0027); }catch(_t){}   // cw-hotfix2: no stale toast after the lift\n  document.getElementById(\u0027sectormodal\u0027).classList.remove(\u0027on\u0027);"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027hotbar items fixes: key 0 reads 0, a belt key drags off on the lift, the pad reaches the lift belt, lift words show by the belt\u0027,\n   run:function(){\n     var bad=[], sp, spz, src=\u0027\u0027, sc, i, ht, pm, cl;\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       P.kitPick=\u0027mine\u0027; P.stash.push(\u0027medkit\u0027,\u0027medkit\u0027,\u0027frag\u0027,\u0027frag\u0027); saveProfile(); renderSector(); openModal(\u0027sectormodal\u0027);\n       sp=document.getElementById(\u0027sectorplan\u0027);\n       if(!sp) bad.push(\u0027no lift belt\u0027); else if(sp.getAttribute(\u0027data-pan\u0027)!==\u0027b\u0027) bad.push(\u0027lift belt is not a pad panel\u0027);\n       planPut(3,\u0027frag\u0027); syncSectorKit();\n       spz=document.getElementById(\u0027sectorpack\u0027);\n       if(!spz||typeof spz.__grabDrop!==\u0027function\u0027) bad.push(\u0027pack list takes no drop\u0027);\n       else { spz.__grabDrop(\u0027frag\u0027,\u0027plan:3\u0027); if((P.hotAssign||{})[3]!==undefined) bad.push(\u0027dragging key 4 off kept it\u0027); }\n       sc=document.scripts; for(i=0;i\u003csc.length;i++) src+=sc[i].textContent;\n       if(src.indexOf(\"\u0027 to slot \u0027+(at\"+\"+1)\")\u003e=0) bad.push(\u0027slot callout still counts key 0 as 9\u0027);\n       if(src.indexOf(\"+(d.fromHot\"+\"+1)\")\u003e=0) bad.push(\u0027drag callout still counts key 0 as 9\u0027);\n       ht=document.getElementById(\u0027hubtoast\u0027); if(ht) ht.classList.remove(\u0027on\u0027);\n       say2(\u0027x\u0027);\n       pm=document.getElementById(\u0027srplanmsg\u0027);\n       if(!pm) bad.push(\u0027no words line by the belt\u0027); else if(pm.textContent!==\u0027x\u0027) bad.push(\u0027belt words read \u0027+pm.textContent);\n       if(ht\u0026\u0026ht.classList.contains(\u0027on\u0027)) bad.push(\u0027words went to the hidden toast\u0027);\n       hubToast(\u0027y\u0027);\n       if(ht\u0026\u0026ht.classList.contains(\u0027on\u0027)){ cl=document.getElementById(\u0027closesector\u0027); if(cl) cl.click(); if(ht.classList.contains(\u0027on\u0027)) bad.push(\u0027toast still up after the lift closed\u0027); }\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{\n       try{ var sm=document.getElementById(\u0027sectormodal\u0027); if(sm) sm.classList.remove(\u0027on\u0027); }catch(_s){}\n       try{ if(pauseOpen) togglePauseBox(false); }catch(_p){}\n       try{ var K2=__keys(); for(var q2 in K2) delete K2[q2]; }catch(_k){}\n       try{ if(state===\u0027raid\u0027\u0026\u0026G\u0026\u0026!G.over) __endRaid(\u0027abandon\u0027); }catch(_e){}\n       try{ __topClear(); __cleanProfile(); }catch(_c){}\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

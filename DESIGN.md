@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.10 - HOTBAR ITEMS FIXES
+
+Co-op hunt while he was away. four review findings on the hotbar items
+
+MEASURED. Check 35.10 passes, and fails on v35.09.
 ## v35.09 - HOTBAR ITEMS FOLLOW-UP
 
 Co-op hunt while he was away. the v35.08 pre-raid drag landed on a screen that no longer opens, plus five review findings

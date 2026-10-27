@@ -3723,7 +3723,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.09';
+var VER='35.10';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18683,12 +18683,12 @@ window.addEventListener('mouseup',function(e){
               var _hb8z=hotbarSlots(), _hb8at=-1, _hb8id=d.key.slice(4), _hb8o=(_hb8t&&_hb8t.name)||'the other gun', _hb8q;
               if(_hb8z[_H.i]&&_hb8z[_H.i].kind==='gun'&&_hb8z[_H.i].icon===_hb8id) _hb8at=_H.i;
               else for(_hb8q=0;_hb8q<_hb8z.length;_hb8q++) if(_hb8z[_hb8q]&&_hb8z[_hb8q].kind==='gun'&&_hb8z[_hb8q].icon===_hb8id){ _hb8at=_hb8q; break; }
-              blip('pick'); hubToast(((_hb8at>=0)?(_hb8n+' on key '+(_hb8at+1)+((_hb8at===_H.i)?'':(' \u00b7 swapped with '+_hb8o))):('swapped with '+_hb8o)).toUpperCase());
+              blip('pick'); hubToast(((_hb8at>=0)?(_hb8n+' on key '+slotKeyName(_hb8at)+((_hb8at===_H.i)?'':(' \u00b7 swapped with '+_hb8o))):('swapped with '+_hb8o)).toUpperCase());
               return;
             }
             if(_H.i===_hb8h&&d.fromHot>=2&&G.hotAssign&&G.hotAssign[_hb8h]!==undefined&&G.hotAssign[d.fromHot]===undefined){
               var _hb8c=G.hotAssign[_hb8h]; delete G.hotAssign[_hb8h]; G.hotAssign[d.fromHot]=_hb8c;
-              blip('pick'); hubToast((_hb8n+' on key '+(_hb8h+1)+' \u00b7 '+((ITEMS[_hb8c]&&ITEMS[_hb8c].name)||'Item')+' on key '+(d.fromHot+1)).toUpperCase());
+              blip('pick'); hubToast((_hb8n+' on key '+slotKeyName(_hb8h)+' \u00b7 '+((ITEMS[_hb8c]&&ITEMS[_hb8c].name)||'Item')+' on key '+slotKeyName(d.fromHot)).toUpperCase());
               return;
             }
             // v22.45, the four-gun belt, build 4: THE UNDERCROFT BELT EDITS ALL FOUR GUN KEYS. A gun in his hands dropped on any key but
@@ -18702,7 +18702,7 @@ window.addEventListener('mouseup',function(e){
             G.hotAssign[_H.i]=d.key;
             if(_hb4p&&_hb4p!==d.key&&d.fromHot!==undefined&&G.hotAssign[d.fromHot]===undefined){ G.hotAssign[d.fromHot]=_hb4p; _hb4m=true; }
             blip('pick');
-            hubToast((_hb8n+' on key '+(_H.i+1)+(_hb4m?(' \u00b7 '+((ITEMS[_hb4p]&&ITEMS[_hb4p].name)||'Item')+' on key '+(d.fromHot+1)):'')).toUpperCase());
+            hubToast((_hb8n+' on key '+slotKeyName(_H.i)+(_hb4m?(' \u00b7 '+((ITEMS[_hb4p]&&ITEMS[_hb4p].name)||'Item')+' on key '+slotKeyName(d.fromHot)):'')).toUpperCase());
             return;
           }
           if(d.fromHot===_H.i) return;
@@ -18783,7 +18783,7 @@ window.addEventListener('mouseup',function(e){
           if(_gwHis&&!G.sim){ var _gw8f={}; for(var _gw8k in _gwA) if(!_gwU[_gw8k]) _gw8f[_gw8k]=_gwA[_gw8k]; P.hotAssign=JSON.parse(JSON.stringify(hotKeepPruned(_gw8f))); try{ saveProfile(); }catch(_gw8e){} }
           G.hot=gunCell(); blip('pick');
           var _gwTi=_gwT&&ITEMS[_gwT.a];
-          say((_gw8n+' to slot '+(_onCell+1)).toUpperCase(),'info',(_gwTi&&_gwTi.use!=='gun')?{sub:(_gwTi.name+' to slot '+(d.fromHot+1)).toUpperCase()}:null);   // v22.43: the shooter voice   // v22.xx (R52): the slot word
+          say((_gw8n+' to slot '+slotKeyName(_onCell)).toUpperCase(),'info',(_gwTi&&_gwTi.use!=='gun')?{sub:(_gwTi.name+' to slot '+slotKeyName(d.fromHot)).toUpperCase()}:null);   // v22.43: the shooter voice   // v22.xx (R52): the slot word
         }
         else {
           // v25.xx (belt2), HIS ORDER 2026-10-13: "so player can only carry 4 guns max". A gun belongs on keys 1 to GUNKEYS, so a gun in his
@@ -18882,7 +18882,7 @@ window.addEventListener('mouseup',function(e){
             G.hot=gunCell(); blip('pick');
             var _gNow=hotbarSlots()[HC.i];
             _gLost=_gLostNow();
-            say((((_gNow&&_gNow.name)||_dit.name)+' to slot '+(HC.i+1)).toUpperCase(),'info',_gLost?{sub:_gLost.trim()}:null);   // v22.xx (R52): the slot word
+            say((((_gNow&&_gNow.name)||_dit.name)+' to slot '+slotKeyName(HC.i)).toUpperCase(),'info',_gLost?{sub:_gLost.trim()}:null);   // v22.xx (R52): the slot word
           } else {
             // v21.90, from the review of 21.83: THE GUN THE KEY SHOWED IS THE ONE GIVEN UP, issued kit too: a loaner is left behind
             // as v18.88 left it. Issued kit fell to the give-up rule, which put his own other gun, on a key he never touched, into
@@ -18895,7 +18895,7 @@ window.addEventListener('mouseup',function(e){
               var _gUp=hotbarSlots()[HC.i];
               if(!(_gUp&&_gUp.kind==='gun'&&_gUp.inHand)) G.hot=gunCell();
               _gLost=_gLostNow();
-              var _gSub=[_gLost.trim(),_gunKeyHint].filter(function(_gs){ return !!_gs; }).join(' \u00b7 '); say((((_gUp&&_gUp.name)||_dit.name)+' to slot '+(HC.i+1)).toUpperCase(),'info',_gSub?{sub:_gSub}:null);   // v22.xx (R52): the slot word
+              var _gSub=[_gLost.trim(),_gunKeyHint].filter(function(_gs){ return !!_gs; }).join(' \u00b7 '); say((((_gUp&&_gUp.name)||_dit.name)+' to slot '+slotKeyName(HC.i)).toUpperCase(),'info',_gSub?{sub:_gSub}:null);   // v22.xx (R52): the slot word
             }
           }
           dropped=true;
@@ -19039,7 +19039,7 @@ window.addEventListener('mouseup',function(e){
         P.hotAssign=JSON.parse(JSON.stringify(hotKeepPruned(_uf)));
         try{ saveProfile(); }catch(_ue){}
         blip('pick');
-        say(((ITEMS[_wasKey]?ITEMS[_wasKey].name:'Item')+' off slot '+(d.fromHot+1)).toUpperCase());   // v22.58: the shooter voice   // v22.xx (R52): the slot word
+        say(((ITEMS[_wasKey]?ITEMS[_wasKey].name:'Item')+' off slot '+slotKeyName(d.fromHot)).toUpperCase());   // v22.58: the shooter voice   // v22.xx (R52): the slot word
       }
     }
     if(!dropped) mouse.down=false;
@@ -27013,7 +27013,7 @@ function gunClassPlace(key,quiet,slots,xo){
     if(at<0){ BELTAT=-2; txt=(it.name+' to backpack').toUpperCase(); if(!quiet) say(txt); return txt; }
     A[at]=key; U[at]=1; BELTAT=at;
   }
-  txt=(it.name+' to slot '+(at+1)).toUpperCase();
+  txt=(it.name+' to slot '+slotKeyName(at)).toUpperCase();   // cw-hotfix2: key 0 reads 0
   if(!quiet){ say(txt); if(BELTDISP){ say(BELTDISP.name,'pick',{item:BELTDISP.item,tag:BELTDISP.tag}); BELTDISP=null; } }
   return txt;
 }
@@ -27163,7 +27163,7 @@ function beltGunFull(key,quiet,slots,xo){
     for(gi=0;gi<GUNKEYS&&gi<sl2.length;gi++) if(sl2[gi]&&sl2[gi].kind==='gun'&&!sl2[gi].vacant&&!sl2[gi].inHand&&sl2[gi].icon===nc.id){ BELTAT=gi; break; }
     BELTDISP={item:'gun_'+ow.id,name:String(ow.name||ow.id),tag:bagged?'BACKPACK':'LEFT BEHIND'};
   }
-  txt=(BELTAT>=0)?(it.name+' to slot '+(BELTAT+1)).toUpperCase():(it.name+' stowed').toUpperCase();
+  txt=(BELTAT>=0)?(it.name+' to slot '+slotKeyName(BELTAT)).toUpperCase():(it.name+' stowed').toUpperCase();
   if(!quiet){ say(txt); if(BELTDISP){ say(BELTDISP.name,'pick',{item:BELTDISP.item,tag:BELTDISP.tag}); BELTDISP=null; } }
   return txt;
 }
@@ -27213,7 +27213,7 @@ function autoBelt(key,quiet,xo){   // v25.xx (belt1): xo = {found:the rolled gun
       if(G.hotAssign[gi]===undefined&&gs&&gs.kind==='gun'&&!gs.assigned&&(_abP?_abDup(gi,gs):(gs.vacant||(gs.icon==='fists'&&!gs.inHand)))){
         G.hotAssign[gi]=key; G.hotAuto=G.hotAuto||{}; G.hotAuto[gi]=1;
         if(_abP&&G.hot===gi) G.hot=gunCell();   // v22.57: the highlight never stays on a key that now shows a backpack gun
-        var _gbTxt=(it.name+' to slot '+(gi+1)).toUpperCase();   // v22.43: the shooter voice   // v22.xx (R52): the slot word
+        var _gbTxt=(it.name+' to slot '+slotKeyName(gi)).toUpperCase();   // v22.43: the shooter voice   // v22.xx (R52): the slot word
         BELTAT=gi; if(!quiet) say(_gbTxt);
         return _gbTxt;
       }
@@ -27475,7 +27475,7 @@ function beltClassPin(key,quiet,slots){
     G.hotAssign[at]=key; G.hotAuto=G.hotAuto||{}; G.hotAuto[at]=1;
     BELTAT=at;
     if(quiet) return;
-    txt=(it.name+' to slot '+(at+1)).toUpperCase(); say(txt); return txt;
+    txt=(it.name+' to slot '+slotKeyName(at)).toUpperCase(); say(txt); return txt;
   }
   // v25.xx (belt4): a grenade of a third kind has no key and goes to the backpack (BELTAT -2, the BACKPACK tag on its row)
   BELTAT=-2; if(!quiet) say('NO FREE KEY','info',{sub:String(it.name).toUpperCase()});
@@ -54683,7 +54683,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.09: the lift screen shows the belt; drag from the pack list or press a number while hovering; an item key never steals the highlight Check 35.09 fails on v35.08',
+  now:'v35.10: key 0 reads 0; drag a belt key off on the lift; pad reaches the lift belt; lift words show by the belt Check 35.10 fails on v35.09',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -54767,7 +54767,7 @@ function initBuildPicker(){
 var HUBSAY='',HUBSAY_T=0;
 // v8.13b: the same one writer say() uses, so a vendor line and a station
 // refusal can never end up on two different surfaces.
-function say2(t){ HUBSAY=t; HUBSAY_T=5; hubToast(t); }
+function say2(t){ var _sm=document.getElementById('sectormodal'), _pm=document.getElementById('srplanmsg'), _s; if(_sm&&_sm.classList.contains('on')&&_pm){ _s=String(t).toLowerCase(); _pm.textContent=_s; setTimeout(function(){ if(_pm.textContent===_s) _pm.textContent=''; },4000); return; } HUBSAY=t; HUBSAY_T=5; hubToast(t); }   // cw-hotfix2: lift words show by the belt
 // v12.62, 2026-09-08 audit: A COUNTER THAT TAKES MONEY SAYS WHAT IT DID, and
 // buying a spare does not quietly demote the gun in your hands. The buy handler
 // set the primary slot to whatever was bought, so a cheap pistol bought as a
@@ -56441,14 +56441,14 @@ function hotPlanHTML(where){
       var _fgk=(String(_fl[i].icon).indexOf('gun_')===0)?String(_fl[i].icon):('gun_'+_fl[i].icon);
       if(ITEMS[_fgk]) _fg={k:_fgk,name:escHtml(String(_fl[i].name||ITEMS[_fgk].name))};
     }
-    _gh[beltGroupOf(i)]+='<div data-plan="'+i+'" title="'+(it?('Key '+(i+1)+': '+it.name+', click to clear'):(_fg?('Key '+(i+1)+': '+_fg.name):('Key '+(i+1)+', free')))+'"'+
+    _gh[beltGroupOf(i)]+='<div data-plan="'+i+'" title="'+(it?('Key '+slotKeyName(i)+': '+it.name+', click to clear'):(_fg?('Key '+slotKeyName(i)+': '+_fg.name):('Key '+slotKeyName(i)+', free')))+'"'+
       ' style="width:34px;height:34px;border:1px '+(it?'solid':'dashed')+' var(--steel-hi);border-radius:3px;'+
       'display:flex;align-items:center;justify-content:center;cursor:'+(it?'pointer':'default')+';'+
       'background:rgba(0,0,0,.3);position:relative">'+
       // v19.79, seen on the 4K stash screenshot (2026-10-08): the key numbers in the belt slots were 10.5px, a speck in a 62px slot
       // on a TV. 14 in an empty slot, 12 in the corner of a filled one, with the stack count beside it.
-      (it?iconImgHTML(k,22):(_fg?('<span style="display:flex;opacity:.7">'+iconImgHTML(_fg.k,22)+'</span>'):'<span style="color:var(--ash);font-size:14px">'+(i+1)+'</span>'))+
-      ((it||_fg)?'<span style="position:absolute;right:2px;bottom:0;font-size:12px;color:var(--ash)">'+(i+1)+'</span>':'')+
+      (it?iconImgHTML(k,22):(_fg?('<span style="display:flex;opacity:.7">'+iconImgHTML(_fg.k,22)+'</span>'):'<span style="color:var(--ash);font-size:14px">'+slotKeyName(i)+'</span>'))+
+      ((it||_fg)?'<span style="position:absolute;right:2px;bottom:0;font-size:12px;color:var(--ash)">'+slotKeyName(i)+'</span>':'')+
       // v11.96, HIS ORDER: how many are coming, on the cell, so a key on a stack
       // reads as a stack. One is silent; the key number already says it is set.
       ((it&&packedCount(k)>1)?'<span style="position:absolute;left:2px;top:0;font-size:12px;color:var(--amber)">x'+packedCount(k)+'</span>':'')+
@@ -70588,12 +70588,12 @@ function syncSectorPlan(){
   if(!el){ el=document.createElement('div'); el.id='sectorplan'; el.style.flex='0 0 auto'; }
   if(el.parentNode!==sp) sp.appendChild(el);   // inside the pack box, so the ascend plate keeps its one column gap (34.84)
   if(kitPickOf()!=='mine'){ el.style.display='none'; el.innerHTML=''; return; }
-  el.style.display='';
-  el.innerHTML='<div class="srph"><b>belt</b></div>'+hotPlanHTML('sector');
+  el.style.display=''; el.setAttribute('data-pan','b');   // cw-hotfix2: the belt is its own pad panel
+  el.innerHTML='<div class="srph"><b>belt</b><span id="srplanmsg"></span></div>'+hotPlanHTML('sector');
   rr=function(){ try{ syncSectorKit(); }catch(_r1){} try{ refreshInv(); }catch(_r2){} };
   Array.prototype.forEach.call(el.querySelectorAll('[data-plan]'),function(c){
     var ix=+c.getAttribute('data-plan'), pk=(P.hotAssign||{})[ix];
-    c.onclick=function(){ if((P.hotAssign||{})[ix]!==undefined){ delete P.hotAssign[ix]; saveProfile(); try{ sfx('pick'); }catch(e){} rr(); } else say2('drag an item here'); };
+    c.onclick=function(){ if((P.hotAssign||{})[ix]!==undefined){ delete P.hotAssign[ix]; saveProfile(); try{ sfx('pick'); }catch(e){} rr(); return; } if(!padOn()){ say2('drag an item here'); return; } var _pv=Object.keys(P.hotAssign||{}).map(function(q){ return P.hotAssign[q]; }), _pc=packList().filter(function(q){ return /^(throw|med|plate)$/.test(beltClassOf(q))&&_pv.indexOf(q)<0&&beltDropRefusal(q,ix)===''; })[0], _pw; if(!_pc){ say2('drag an item here'); return; } _pw=planPut(ix,_pc); if(_pw){ say2(_pw); try{ sfx('clank'); }catch(e){} return; } saveProfile(); try{ sfx('pick'); }catch(e){} rr(); };   // cw-hotfix2: on a pad, A on an empty key pins the first listed item
     if(pk&&ITEMS[pk]) grabbable(c,pk,'plan:'+ix,ITEMS[pk].name);
     dropzone(c,function(key,from){
       if(from==='plan:'+ix){ if(P.hotAssign) delete P.hotAssign[ix]; saveProfile(); try{ sfx('pick'); }catch(e){} rr(); return; }
@@ -70615,6 +70615,7 @@ function syncSectorPlan(){
     row.addEventListener('mouseenter',function(){ INVHOVER=k; });
     row.addEventListener('mouseleave',function(){ if(INVHOVER===k) INVHOVER=null; });
   });
+  dropzone(sp,function(key,from){ if(typeof from!=='string'||from.indexOf('plan:')!==0) return; var fk=+from.slice(5); if((P.hotAssign||{})[fk]===key){ delete P.hotAssign[fk]; saveProfile(); try{ sfx('pick'); }catch(e){} rr(); } });   // cw-hotfix2: drag a key off onto the pack to clear it
 }
 function syncSectorKit(){
   var el=document.getElementById('sectorkit');
@@ -70632,10 +70633,10 @@ function syncSectorKit(){
   el.innerHTML=armed?'':line+'</div>';
 }
 // v32.45 (cw-preraid-a): THE PAD FLOW. Focus opens on ascend, so a normal ascent is one press. LB and RB jump between the conditions, the kit tiles and the pack; the d-pad moves up and down inside each one
-// (left and right change a pack row by one); X packs all and Y clears. Panels are marked data-pan: c conditions, k kit, p pack, a ascend.
+// (left and right change a pack row by one); X packs all and Y clears. Panels are marked data-pan: c conditions, k kit, p pack, a ascend, b belt.
 function srPan(el){ var p=(el&&el.closest)?el.closest('[data-pan]'):null; return p?p.getAttribute('data-pan'):''; }
 function srPanJump(list,dir){
-  var order=['c','k','p'], cur=PAD.focus, pan=srPan(cur), ix=order.indexOf(pan), ni, i, want, c=[], tgt;
+  var order=['c','k','p','b'], cur=PAD.focus, pan=srPan(cur), ix=order.indexOf(pan), ni, i, want, c=[], tgt;
   if(!PAD.srLast) PAD.srLast={};
   if(cur&&pan) PAD.srLast[pan]=cur;
   ni=(ix<0)?(dir>0?0:order.length-1):((ix+dir+order.length)%order.length);
@@ -70663,12 +70664,14 @@ function srPadNav(list,cur,mv){
     return true;
   }
   if(pan==='a'){
-    if(mv[1]<0){ sub=list.filter(function(x){ return srPan(x)==='p'; }); if(!sub.length) sub=list.filter(function(x){ return srPan(x)==='k'; }); nx=PAD.srLast&&PAD.srLast.p&&sub.indexOf(PAD.srLast.p)>=0?PAD.srLast.p:sub[sub.length-1]; if(nx) padSetFocus(nx); }
+    if(mv[1]<0){ sub=list.filter(function(x){ return srPan(x)==='b'; }); nx=PAD.srLast&&PAD.srLast.b&&sub.indexOf(PAD.srLast.b)>=0?PAD.srLast.b:sub[sub.length-1]; if(!sub.length){ sub=list.filter(function(x){ return srPan(x)==='p'; }); if(!sub.length) sub=list.filter(function(x){ return srPan(x)==='k'; }); nx=PAD.srLast&&PAD.srLast.p&&sub.indexOf(PAD.srLast.p)>=0?PAD.srLast.p:sub[sub.length-1]; } if(nx) padSetFocus(nx); }   // cw-hotfix2: up from ascend reaches the belt
     return true;
   }
   sub=list.filter(function(x){ return srPan(x)===pan; });
   nx=padStep(sub,cur,mv[0],mv[1]);
   if(nx){ padSetFocus(nx); if(!PAD.srLast) PAD.srLast={}; PAD.srLast[pan]=nx; }
+  else if(mv[1]>0&&pan==='p'&&(sub=list.filter(function(x){ return srPan(x)==='b'; })).length){ nx=PAD.srLast&&PAD.srLast.b&&sub.indexOf(PAD.srLast.b)>=0?PAD.srLast.b:sub[0]; if(!PAD.srLast) PAD.srLast={}; PAD.srLast.p=cur; padSetFocus(nx); }   // cw-hotfix2: the pack runs down into the belt
+  else if(mv[1]<0&&pan==='b'&&(sub=list.filter(function(x){ return srPan(x)==='p'; })).length){ nx=PAD.srLast&&PAD.srLast.p&&sub.indexOf(PAD.srLast.p)>=0?PAD.srLast.p:sub[sub.length-1]; if(!PAD.srLast) PAD.srLast={}; PAD.srLast.b=cur; padSetFocus(nx); }
   else if(mv[1]>0&&pan!=='c'){ nx=document.getElementById('sectordeploy'); if(nx){ if(!PAD.srLast) PAD.srLast={}; PAD.srLast[pan]=cur; padSetFocus(nx); } }
   return true;
 }
@@ -71353,6 +71356,7 @@ document.getElementById('stagedrop').onclick=function(){   // v26.xx (kit1): eve
   renderSector(); openModal('sectormodal');
 };
 document.getElementById('sectordeploy').onclick=function(){
+  try{ if(HUBTOAST_T) clearTimeout(HUBTOAST_T); HUBTOAST_T=null; HUBTOAST_UNTIL=0; var _ht=document.getElementById('hubtoast'); if(_ht) _ht.classList.remove('on'); }catch(_t){}   // cw-hotfix2: no stale toast after the lift
   // v7.42: choosing the sector leads to the loadout question, not straight up.
   document.getElementById('sectormodal').classList.remove('on');
   kitDeploy();   // v26.xx (kit1): the kit was chosen on this page, so it goes straight up
@@ -71371,6 +71375,7 @@ document.getElementById('conddaily').onclick=function(){
   DAILY.on=DAILY.on?0:1; syncSectorDaily();
 };
 document.getElementById('closesector').onclick=function(){
+  try{ if(HUBTOAST_T) clearTimeout(HUBTOAST_T); HUBTOAST_T=null; HUBTOAST_UNTIL=0; var _ht=document.getElementById('hubtoast'); if(_ht) _ht.classList.remove('on'); }catch(_t){}   // cw-hotfix2: no stale toast after the lift
   document.getElementById('sectormodal').classList.remove('on');
   DAILY.on=0;
 };

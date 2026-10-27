@@ -6168,6 +6168,37 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'35.10',what:'hotbar items fixes: key 0 reads 0, a belt key drags off on the lift, the pad reaches the lift belt, lift words show by the belt',
+   run:function(){
+     var bad=[], sp, spz, src='', sc, i, ht, pm, cl;
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       P.kitPick='mine'; P.stash.push('medkit','medkit','frag','frag'); saveProfile(); renderSector(); openModal('sectormodal');
+       sp=document.getElementById('sectorplan');
+       if(!sp) bad.push('no lift belt'); else if(sp.getAttribute('data-pan')!=='b') bad.push('lift belt is not a pad panel');
+       planPut(3,'frag'); syncSectorKit();
+       spz=document.getElementById('sectorpack');
+       if(!spz||typeof spz.__grabDrop!=='function') bad.push('pack list takes no drop');
+       else { spz.__grabDrop('frag','plan:3'); if((P.hotAssign||{})[3]!==undefined) bad.push('dragging key 4 off kept it'); }
+       sc=document.scripts; for(i=0;i<sc.length;i++) src+=sc[i].textContent;
+       if(src.indexOf("' to slot '+(at"+"+1)")>=0) bad.push('slot callout still counts key 0 as 9');
+       if(src.indexOf("+(d.fromHot"+"+1)")>=0) bad.push('drag callout still counts key 0 as 9');
+       ht=document.getElementById('hubtoast'); if(ht) ht.classList.remove('on');
+       say2('x');
+       pm=document.getElementById('srplanmsg');
+       if(!pm) bad.push('no words line by the belt'); else if(pm.textContent!=='x') bad.push('belt words read '+pm.textContent);
+       if(ht&&ht.classList.contains('on')) bad.push('words went to the hidden toast');
+       hubToast('y');
+       if(ht&&ht.classList.contains('on')){ cl=document.getElementById('closesector'); if(cl) cl.click(); if(ht.classList.contains('on')) bad.push('toast still up after the lift closed'); }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ var sm=document.getElementById('sectormodal'); if(sm) sm.classList.remove('on'); }catch(_s){}
+       try{ if(pauseOpen) togglePauseBox(false); }catch(_p){}
+       try{ var K2=__keys(); for(var q2 in K2) delete K2[q2]; }catch(_k){}
+       try{ if(state==='raid'&&G&&!G.over) __endRaid('abandon'); }catch(_e){}
+       try{ __topClear(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'35.09',what:'cw-hotfix1 (items on the hotbar follow-up): the lift screen shows the belt plan and takes a drop, a kit pick keeps the item key, and an item key never takes the highlight',
    run:function(){
      var bad=[];

@@ -1,0 +1,7 @@
+v35.10: hotbar items fixes
+
+key 0 reads 0; drag a belt key off on the lift; pad reaches the lift belt; lift words show by the belt
+
+Check 35.10. Fails on v35.09.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
