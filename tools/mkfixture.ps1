@@ -6168,6 +6168,13 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.99',what:'the bulwark wreck is drawn as big as the live bulwark (his note: bulwark too small)',
+   run:function(){
+     if(typeof wreckBulwarkK!=='function') return 'the bulwark wreck has no size factor (drawn at 1x)';
+     var k=wreckBulwarkK(), m=machMul({kind:'bulwark'});
+     if(Math.abs(k-m)>1e-6) return 'wreck factor '+k+' differs from live body factor '+m;
+     if(k<1.9) return 'wreck factor '+k+' is under 1.9';
+     return null; }},
   {v:'34.98',what:'a frozen redraw (dt 0) does not feed the auto resolution window, so two redraws of a frozen frame stay identical on a slow PC',
    run:function(){
      if(typeof DRS==='undefined'||typeof drsTick!=='function') return 'SKIP: no auto resolution';

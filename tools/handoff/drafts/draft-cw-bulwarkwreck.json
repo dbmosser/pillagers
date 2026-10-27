@@ -1,0 +1,12 @@
+{
+    "title":  "BULWARK WRECK MATCHES THE BIG BODY",
+    "why":  "His note: the bulwark is too small next to a pillager. The live body is now about 2x its old art; its wreck still lay at 1x. The wreck now uses the same factor.",
+    "now":  "A dead bulwark leaves a wreck as big as the machine was.",
+    "edits":  [
+                  {
+                      "anchor":  "function drawWreckBulwark(ct){\n  var P=MBPAL, fl=grit(ct.x,ct.y)\u003e.5?1:-1, o=!!ct.opened, i;\n  wc.save(); wc.translate(ct.x,ct.y-1); wc.scale(fl,1);",
+                      "replacement":  "// v28.xx (cw-bulwarkwreck), HIS NOTES (2026-10-25): \"Player too big vs the bulwark which is too small\". The live bulwark is drawn FIG_MACH*BULWARK_BIG times bigger; its wreck is drawn the same, so the corpse is as big as the machine was.\nfunction wreckBulwarkK(){ return FIG_MACH*BULWARK_BIG; }\nfunction drawWreckBulwark(ct){\n  var P=MBPAL, fl=grit(ct.x,ct.y)\u003e.5?1:-1, o=!!ct.opened, i, wk=wreckBulwarkK();\n  wc.save(); wc.translate(ct.x,ct.y-1); wc.scale(fl*wk,wk);"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the bulwark wreck is drawn as big as the live bulwark (his note: bulwark too small)\u0027,\n   run:function(){\n     if(typeof wreckBulwarkK!==\u0027function\u0027) return \u0027the bulwark wreck has no size factor (drawn at 1x)\u0027;\n     var k=wreckBulwarkK(), m=machMul({kind:\u0027bulwark\u0027});\n     if(Math.abs(k-m)\u003e1e-6) return \u0027wreck factor \u0027+k+\u0027 differs from live body factor \u0027+m;\n     if(k\u003c1.9) return \u0027wreck factor \u0027+k+\u0027 is under 1.9\u0027;\n     return null; }},"
+}

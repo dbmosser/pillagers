@@ -1,1 +1,1 @@
-10-27 07:18 running 119t-steady-frame-reds on Claude Code (your plan: week 44% of the 44.7% line, 5-hour 4%)
+10-27 07:32 pacing your plan: week 45% used (the 90% line is at 44.9% now), 5-hour window 6%

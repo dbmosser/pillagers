@@ -1,0 +1,7 @@
+v34.99: bulwark wreck matches the big body
+
+A dead bulwark leaves a wreck as big as the machine was.
+
+Check 34.99. Fails on v34.98.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

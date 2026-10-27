@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.99 - BULWARK WRECK MATCHES THE BIG BODY
+
+Co-op hunt while he was away. His note: the bulwark is too small next to a pillager. The live body is now about 2x its old art; its wreck still lay at 1x. The wreck now uses the same factor.
+
+MEASURED. Check 34.99 passes, and fails on v34.98.
 ## v34.98 - FROZEN REDRAW STAYS STEADY
 
 Co-op hunt while he was away. Two spare PC checks (9.07, 33.51) failed only on the slow machine: a redraw of a frozen frame fed the auto resolution window with a stale frame gap, so the scale could move between two redraws. Redraws with no clock step no longer steer quality.
