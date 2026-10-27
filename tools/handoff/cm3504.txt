@@ -1,0 +1,7 @@
+v35.04: fullscreen gate scales like the menus
+
+The fullscreen gate is the same size as the menus at 4K.
+
+Check 35.04. Fails on v35.03.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

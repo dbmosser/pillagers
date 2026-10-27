@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.04 - FULLSCREEN GATE SCALES LIKE THE MENUS
+
+Co-op hunt while he was away. The 4K pictures of v35.02 showed the fullscreen gate at half the size of the pause menu: it sits outside the windows the menu screen factor reaches. It now takes the same factor, and follows a resize while it is up.
+
+MEASURED. Check 35.04 passes, and fails on v35.03.
 ## v35.03 - RAID GO FULLSCREEN BUTTON OFF THE CLOCK
 
 Co-op hunt while he was away. The pictures of v35.02 showed the raid screen go fullscreen button sitting on the raid clock when no score plate is drawn, and its text did not grow at 4K. It moves to the clear top left corner and scales with the HUD.

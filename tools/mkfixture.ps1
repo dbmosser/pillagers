@@ -6168,6 +6168,36 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'35.04',what:'cw-fsgatezoom, the fullscreen gate of his 2026-10-27 order takes the menu screen factor like the pause menu, so at 4K it is not half the size of every other window',
+   run:function(){
+     if(typeof fsGateShow!=='function'||typeof menuScale!=='function'||typeof FSG!=='object') return 'no fullscreen gate here';
+     var bad=[], ms0=menuScale, ff0=fsFull, fsg0={ok:FSG.ok,force:FSG.force,why:FSG.why,was:FSG.was};
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       fsFull=function(){ return false; }; FSG.force=1; FSG.ok=0; FSG.why='start';
+       menuScale=function(){ return 1; }; fsGateShow('start');
+       var g=document.getElementById('fsgate'), c=g&&g.firstElementChild;
+       if(!c) throw new Error('the gate has no card');
+       var w1=c.getBoundingClientRect().width;
+       fsGateHide();
+       menuScale=function(){ return 2; }; fsGateShow('start');
+       var w2=c.getBoundingClientRect().width;
+       if(parseFloat(g.style.zoom||'1')!==2) bad.push('the gate zoom is '+(g.style.zoom||'none')+' while the menus are at 2');
+       if(!(w2>w1+1)) bad.push('the gate card is '+Math.round(w2)+'px wide at a menu factor of 2, '+Math.round(w1)+'px at 1');
+       menuScale=function(){ return 1.5; }; fsRaidBtnSync();
+       if(parseFloat(g.style.zoom||'1')!==1.5) bad.push('the open gate did not follow a new menu factor (a window resize): zoom '+(g.style.zoom||'none'));
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ menuScale=ms0; }catch(_m){}
+       try{ fsFull=ff0; }catch(_r){}
+       try{ FSG.why='start'; fsGateHide(); }catch(_h){}
+       try{ var g2=document.getElementById('fsgate'); if(g2) g2.style.zoom=''; }catch(_z){}
+       try{ for(var q in fsg0) FSG[q]=fsg0[q]; }catch(_q){}
+       try{ var rb=document.getElementById('raidfsbtn'); if(rb) rb.style.display='none'; }catch(_b){}
+       try{ var K2=__keys(); for(var q2 in K2) delete K2[q2]; }catch(_k){}
+       try{ __topClear(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'35.03',what:'cw-fsbtnspot, the raid screen go fullscreen button of his 2026-10-27 order sits in the top left corner, clear of the raid clock, the extract pill and the score plate with or without the plate, and its text grows with the HUD scale',
    run:function(){
      if(typeof fsRaidBtnSync!=='function'||typeof FSG!=='object') return 'no raid go fullscreen button here';

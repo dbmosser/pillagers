@@ -1,0 +1,20 @@
+{
+    "title":  "FULLSCREEN GATE SCALES LIKE THE MENUS",
+    "why":  "The 4K pictures of v35.02 showed the fullscreen gate at half the size of the pause menu: it sits outside the windows the menu screen factor reaches. It now takes the same factor, and follows a resize while it is up.",
+    "now":  "The fullscreen gate is the same size as the menus at 4K.",
+    "edits":  [
+                  {
+                      "anchor":  "function fsGateShow(why){",
+                      "replacement":  "// v16.xx (cw-fsgatezoom): the gate takes the menu screen factor like every other window (applyMenuZoom). It is mounted on the body,\n// outside that list, so at 4K it drew at half the size of the pause menu. Inset 0 still fills the screen at any zoom.\nfunction fsGateZoom(){\n  var g=document.getElementById(\u0027fsgate\u0027); if(!g) return 0;\n  var z=1; try{ z=menuScale(); }catch(_ms){}\n  if(!(z\u003e0)) z=1;\n  var zs=String(z); if(g.style.zoom!==zs) g.style.zoom=zs;\n  return z;\n}\nfunction fsGateShow(why){"
+                  },
+                  {
+                      "anchor":  "  FSG.open=1; g.style.display=\u0027flex\u0027;",
+                      "replacement":  "  FSG.open=1; g.style.display=\u0027flex\u0027;\n  try{ fsGateZoom(); }catch(_gz){}"
+                  },
+                  {
+                      "anchor":  "  if(on!==FSG.was){ FSG.was=on; try{ fsPauseBtnSync(); }catch(_pb){} }",
+                      "replacement":  "  if(on!==FSG.was){ FSG.was=on; try{ fsPauseBtnSync(); }catch(_pb){} }\n  if(FSG.open){ try{ fsGateZoom(); }catch(_gz){} }   // v16.xx (cw-fsgatezoom): a resize while the gate is up"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027cw-fsgatezoom, the fullscreen gate of his 2026-10-27 order takes the menu screen factor like the pause menu, so at 4K it is not half the size of every other window\u0027,\n   run:function(){\n     if(typeof fsGateShow!==\u0027function\u0027||typeof menuScale!==\u0027function\u0027||typeof FSG!==\u0027object\u0027) return \u0027no fullscreen gate here\u0027;\n     var bad=[], ms0=menuScale, ff0=fsFull, fsg0={ok:FSG.ok,force:FSG.force,why:FSG.why,was:FSG.was};\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       fsFull=function(){ return false; }; FSG.force=1; FSG.ok=0; FSG.why=\u0027start\u0027;\n       menuScale=function(){ return 1; }; fsGateShow(\u0027start\u0027);\n       var g=document.getElementById(\u0027fsgate\u0027), c=g\u0026\u0026g.firstElementChild;\n       if(!c) throw new Error(\u0027the gate has no card\u0027);\n       var w1=c.getBoundingClientRect().width;\n       fsGateHide();\n       menuScale=function(){ return 2; }; fsGateShow(\u0027start\u0027);\n       var w2=c.getBoundingClientRect().width;\n       if(parseFloat(g.style.zoom||\u00271\u0027)!==2) bad.push(\u0027the gate zoom is \u0027+(g.style.zoom||\u0027none\u0027)+\u0027 while the menus are at 2\u0027);\n       if(!(w2\u003ew1+1)) bad.push(\u0027the gate card is \u0027+Math.round(w2)+\u0027px wide at a menu factor of 2, \u0027+Math.round(w1)+\u0027px at 1\u0027);\n       menuScale=function(){ return 1.5; }; fsRaidBtnSync();\n       if(parseFloat(g.style.zoom||\u00271\u0027)!==1.5) bad.push(\u0027the open gate did not follow a new menu factor (a window resize): zoom \u0027+(g.style.zoom||\u0027none\u0027));\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{\n       try{ menuScale=ms0; }catch(_m){}\n       try{ fsFull=ff0; }catch(_r){}\n       try{ FSG.why=\u0027start\u0027; fsGateHide(); }catch(_h){}\n       try{ var g2=document.getElementById(\u0027fsgate\u0027); if(g2) g2.style.zoom=\u0027\u0027; }catch(_z){}\n       try{ for(var q in fsg0) FSG[q]=fsg0[q]; }catch(_q){}\n       try{ var rb=document.getElementById(\u0027raidfsbtn\u0027); if(rb) rb.style.display=\u0027none\u0027; }catch(_b){}\n       try{ var K2=__keys(); for(var q2 in K2) delete K2[q2]; }catch(_k){}\n       try{ __topClear(); __cleanProfile(); }catch(_c){}\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}
