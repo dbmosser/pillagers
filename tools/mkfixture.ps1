@@ -6166,6 +6166,17 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.91',what:'the what is new card is stamped with this build or later and still shows the three short lowercase real notes',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnList!=='function') return 'SKIP: this build has no what is new card';
+     if(parseFloat(WHATSNEW_VER)>34.91+0.001) return 'SKIP: the card has moved on, a later card check covers it';
+     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), lines=wnList(), i;
+     if(!(parseFloat(WHATSNEW_VER)>=34.91-0.001)) bad.push('the card is stamped v'+WHATSNEW_VER+', before v34.91');
+     if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
+     if(lines.length!==3) bad.push('the card shows '+lines.length+' notes, not three');
+     for(i=0;i<lines.length;i++){ if(String(lines[i])!==String(lines[i]).toLowerCase()||String(lines[i]).length>48) bad.push('note '+i+' is not short lowercase text'); }
+     if(/\balpha\b|polish pass/i.test(WHATSNEW.join('|'))) bad.push('the news has filler copy');
+     return bad.length?bad.join('; '):null; }},
   {v:'34.90',what:'cw-thirdsize, his note of 2026-10-25, played on build 33.17 where the figure was drawn at 1.25 ("player character is still wayyy too big, needs to be 1/3 of the size he is right now"): every human figure is drawn at 1.25/3 of its size 1 art times its build (measured on the drawn pixels, lean and broad), the pillager plate rides just over the smaller head, the world muzzle flash sits on the drawn gun tip, the side mark sits beside the body and never covers his gun (a hostile pillager or a hire, aiming any way), the reload bar and the frag and smoke cook plates over your head sit just over the drawn head at 1080, at 4K and aimed in (one HUD gap at every screen and zoom, the two cook plates by the same gap), the give prompt sits over the drawn head of the survivor at every screen and zoom, the glow round the survivor sits on his drawn body, the golden pillager (drawn through the golden body pass on its own canvas) is drawn the size of a plain one, the golden and the outlined body stand on a shadow of their drawn size, the forge flames, ice block and chill ring fit the drawn body, the get-up bar sits over the head of a body rising in a crouch and under his nameplate, the rifle flash reaches less far past the drawn muzzle than the drawn gun reaches past the body and is drawn the same in the partner window, the tracer is drawn at the height of the drawn muzzle in both windows, the survivor (no gun drawn) flashes as long as a lean pillager pistol shot at the height of his tracer, which is drawn at the pillager tracer height, the same in the partner window, a body on the ground (his order of 2026-10-20: scaled properly compared to bodies on ground) lies about as long as a standing pillager is tall, and the hit circle keeps its size',
    run:function(){
      if(typeof drawOp!=='function'||typeof drawOp0!=='function'||typeof gunMuzzleAt!=='function'||typeof worldSideCue!=='function'||typeof colourCueGlyph!=='function'||typeof spriteTop!=='function') return 'SKIP: no figure painter here';

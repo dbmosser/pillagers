@@ -1,30 +1,28 @@
-Latest stable: v29.09 (2026-10-18 10:23)
-Checked: 2026-10-26 08:06
+Latest stable: v34.18 (2026-10-26 11:11)
+Checked: 2026-10-26 22:30
 Play address: http://localhost:8802/stable.html
 Result: no change
 
 Newest test runs, newest first:
+  corpus-1026-0853  v34.90  failing 14, new 12  robots 1221 min/242 problems  -> 12 check(s) newly failing, e.g. v8.91 the three in-raid panels are twice the size, at every  | v9.07 a noise you cannot see leaves a ring on the ground, an
+  corpus-1026-0645  v34.89  failing 17, new 15  robots 298 min/67 problems  -> 15 check(s) newly failing, e.g. v8.91 the three in-raid panels are twice the size, at every  | v9.07 a noise you cannot see leaves a ring on the ground, an
   corpus-1026-0413  v34.88  failing 14, new 14  robots 418 min/58 problems  -> 14 check(s) newly failing, e.g. v8.91 the three in-raid panels are twice the size, at every  | v9.07 a noise you cannot see leaves a ring on the ground, an
   corpus-1026-0239  v34.86  failing 15, new 14  robots 230 min/33 problems  -> 14 check(s) newly failing, e.g. v8.91 the three in-raid panels are twice the size, at every  | v9.07 a noise you cannot see leaves a ring on the ground, an
   corpus-1025-2257  v34.84  failing 18, new 17  robots 237 min/85 problems  -> 17 check(s) newly failing, e.g. v8.89 a pillager wading out of sight draws no rings in the w | v8.91 the three in-raid panels are twice the size, at every 
   corpus-1025-1526  v34.83  failing 16, new 15  robots 1298 min/202 problems  -> 15 check(s) newly failing, e.g. v8.91 the three in-raid panels are twice the size, at every  | v9.07 a noise you cannot see leaves a ring on the ground, an
   corpus-1025-1332  v34.83  failing 14, new 13  robots 1298 min/202 problems  -> 13 check(s) newly failing, e.g. v8.91 the three in-raid panels are twice the size, at every  | v9.13 the backpack follows the monitor instead of staying it
   corpus-1025-0741  v34.69  failing 6, new 5  robots 245 min/0 problems  -> 5 check(s) newly failing, e.g. v9.13 the backpack follows the monitor instead of staying it | v31.90 J8 polling: null and disconnected slots pause in two 
-  corpus-1024-2302  v34.53  failing 44, new 38  robots 1161 min/0 problems  -> 38 check(s) newly failing, e.g. v8.93 a HUD panel can be resized by its corner grip, and the | v9.14 the writing on the sector map follows the monitor, lik
-  corpus-1024-1829  v34.53  failing 46, new 39  robots 1161 min/0 problems  -> 39 check(s) newly failing, e.g. v8.93 a HUD panel can be resized by its corner grip, and the | v9.14 the writing on the sector map follows the monitor, lik
 
 Checks that are newly red and still red (they block until fixed, or until listed in tools/handoff/stable-known-red.txt):
   v9.13 the backpack follows the monitor instead of staying its 1080p size
   v8.91 the three in-raid panels are twice the size, at every resolution, and neve
   v34.51 cw-playdata (job 113): the SEND PLAY DATA page opens with the export text
-  v33.84 cw-pixrole (86g): with the pixel look on the role gear is scaled by one f
   v33.58 cw-pixbody (86c): with the pixel look on a plain pillager is baked pixel
   v32.93 cw-demoreport, his answer 66: a finished demo run posts one run report to
   v32.92 daily save copies keep three dates per slot, leave the main bytes alone,
-  v26.06 his note: the crowbar swing is larger and more prominent: the bar is draw
   v21.39 the backpack words line up with the item grid: the BACKPACK title, EQUIPP
   v18.60 the compact legend names the keys as set and never runs a key into its wo
   v17.76 the raid controls legend: its two columns no longer collide (the label co
-  v11.06 the 23 jersey reads as a jersey rather than as a black block, and the num
   v9.07 a noise you cannot see leaves a ring on the ground, and one you can see do
   v33.51 cw-pixkit (86a): the pixel look row (local, on), pinned off in the fixtur
+  v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right hand lower corner m
