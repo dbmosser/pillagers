@@ -4595,3 +4595,12 @@
 2026-10-26 23:18:02 FUZZ ERROR CDP timeout at 146
 2026-10-26 23:18:10 FUZZ END raids=0 problems=0 unique=0 reason=ERROR: CDP timeout minutes=0.8
 2026-10-26 23:19:59 raid 12 demo1 raidSeed=1422673507 map=0 god=0 sec=103 end=ended problems=0 newUnique=0 totalUnique=6 totalProblems=10 events=3225 score=0 ents=46 travelPx=7027 fires=53 menuPct=20 heapMB=61 p2= gfx=10051/10.25/10.25/3/1 work=10209/4.25/6.25/8.25 build=34.90
+2026-10-26 23:23:14 FUZZ START seed=1416728160 minutes=60 raidsec=300 port=9332 srv=8806 build=34.92 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
+2026-10-26 23:23:53 raid 1 demo2p raidSeed=1792794908 map=0 god=0 sec=1 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=34.92
+2026-10-26 23:24:39 raid 13 demo2p raidSeed=1294577371 map=0 god=0 sec=275 end=hang problems=2 newUnique=1 totalUnique=7 totalProblems=12 events=4518 score=0 ents=50 travelPx=13364 fires=72 menuPct=15 heapMB=73 p2=link_3s_join_5s_pad_fwd_DEAD gfx=13810/10.25/20.25/51/1 gfx2=11336/10.25/19.75/114/1 work=13654/7.75/13.25/16.75 work2=13612/6.75/14.25/37.25 build=34.90
+2026-10-26 23:26:31 FUZZ ERROR Unable to connect to the remote server at 220
+2026-10-26 23:26:31 FUZZ END raids=13 problems=12 unique=7 reason=ERROR: Unable to connect to the remote server minutes=51.6
+2026-10-26 23:28:13 raid 2 demo2p raidSeed=54620015 map=0 god=1 sec=198 end=hang problems=1 newUnique=1 totalUnique=2 totalProblems=2 events=4788 score=50 ents=45 travelPx=17887 fires=96 menuPct=6 heapMB=69 p2=link_31s_join_33s_pad_fwd gfx=13334/10.25/20.25/50/1 gfx2=12933/10.25/20.25/78/1 work=13203/4.75/7.75/13.25 work2=12934/4.25/10.75/16.75 build=34.92
+2026-10-26 23:28:47 FUZZ START seed=517635003 minutes=60 raidsec=300 port=9331 srv=8806 build=34.92 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
+2026-10-26 23:30:34 FUZZ ERROR Unable to connect to the remote server at 220
+2026-10-26 23:30:35 FUZZ END raids=2 problems=2 unique=2 reason=ERROR: Unable to connect to the remote server minutes=8.2
