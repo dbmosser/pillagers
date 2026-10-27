@@ -1,0 +1,64 @@
+{
+    "title":  "ITEMS ON THE HOTBAR",
+    "why":  "his order of 10-27: players may drag medkits, grenades and other usables onto the bar, replacing that key\u0027s gun, from the raid backpack, the stash, the undercroft backpack and the pre-raid screen",
+    "now":  "drag a medkit, grenade, stim or plate onto any key of the bar, in raid, stash, undercroft or pre-raid; its key uses it at once and the gun stays in hand; a gun that lost its key moves to a free one",
+    "edits":  [
+                  {
+                      "anchor":  "function beltDropRefusal(key,ix){\n  var cls=beltClassOf(key);\n  if(!ITEMS[key]) return \u0027\u0027;\n  if(cls\u0026\u0026BELT_CLASS[ix]===cls) return \u0027\u0027;\n  return beltClassWord(cls);\n}",
+                      "replacement":  "function beltDropRefusal(key,ix){\n  var cls=beltClassOf(key);\n  if(!ITEMS[key]) return \u0027\u0027;\n  if(cls\u0026\u0026BELT_CLASS[ix]===cls) return \u0027\u0027;\n  if(/^(throw|med|plate)$/.test(cls)\u0026\u0026ix\u003e=0\u0026\u0026ix\u003cHOTBAR_N) return \u0027\u0027;   // cw-hotitems (his order of 10-27): a medkit, grenade, stim or plate goes on any key he drags it to\n  return beltClassWord(cls);\n}"
+                  },
+                  {
+                      "anchor":  "    if(aix\u003e=GUNKEYS||ait.use!==\u0027gun\u0027) continue;   // v25.xx (belt3): a pin on a gun key is a gun; the class keys read their own pins (beltClassCells)",
+                      "replacement":  "    if(aix\u003e=HOTBAR_N||!/^(gun|throw|med|plate)$/.test(beltClassOf(akey))) continue;   // cw-hotitems (his order of 10-27): an item he dragged onto a key shows there"
+                  },
+                  {
+                      "anchor":  "      var _pq=(G.pouch\u0026\u0026G.pouch[akey])||0;",
+                      "replacement":  "      var _pq=beltHave(akey);   // cw-hotitems: the pouch and the backpack"
+                  },
+                  {
+                      "anchor":  "  for(k in A){ if(!ITEMS[A[k]]||beltClassOf(A[k])!==BELT_CLASS[+k]){ (G.hotPruned=G.hotPruned||{})[k]=A[k]; delete A[k]; delete U[k]; } }",
+                      "replacement":  "  for(k in A){ if(!ITEMS[A[k]]||(beltClassOf(A[k])!==BELT_CLASS[+k]\u0026\u0026!(/^(throw|med|plate)$/.test(beltClassOf(A[k]))\u0026\u0026+k\u003cHOTBAR_N))){ (G.hotPruned=G.hotPruned||{})[k]=A[k]; delete A[k]; delete U[k]; } }   // cw-hotitems: an item pin stays"
+                  },
+                  {
+                      "anchor":  "      if(g.bag.indexOf(_hk)\u003c0\u0026\u0026!((g.pouch||{})[_hk]\u003e0)){ (g.hotPruned=g.hotPruned||{})[_ha]=_hk; delete g.hotAssign[_ha]; }   // v14.86: kept aside for his plan",
+                      "replacement":  "      if(/^(throw|med|plate)$/.test(beltClassOf(_hk))) continue;   // cw-hotitems: an item key he set stays, greyed when he has none\n      if(g.bag.indexOf(_hk)\u003c0\u0026\u0026!((g.pouch||{})[_hk]\u003e0)){ (g.hotPruned=g.hotPruned||{})[_ha]=_hk; delete g.hotAssign[_ha]; }   // v14.86: kept aside for his plan"
+                  },
+                  {
+                      "anchor":  "  for(k in P.hotAssign) if(!have[P.hotAssign[k]]) delete P.hotAssign[k];",
+                      "replacement":  "  for(k in P.hotAssign) if(!have[P.hotAssign[k]]\u0026\u0026!/^(throw|med|plate)$/.test(beltClassOf(P.hotAssign[k]))) delete P.hotAssign[k];   // cw-hotitems: an item key stays when he has none"
+                  },
+                  {
+                      "anchor":  "function clearKeysFor(key){\n  if(!P.hotAssign) return;\n  var live=stageKitLive(), still=0, i;",
+                      "replacement":  "function clearKeysFor(key){\n  if(!P.hotAssign) return;\n  if(/^(throw|med|plate)$/.test(beltClassOf(key))) return;   // cw-hotitems: an item key stays, greyed, until he drags it off\n  var live=stageKitLive(), still=0, i;"
+                  },
+                  {
+                      "anchor":  "      if(dn\u003eGUNKEYS\u0026\u0026!G.hubFloor) beltInstant(dn-1); else setHot(dn-1);",
+                      "replacement":  "      var _ic=(!G.hubFloor)?hotbarSlots()[dn-1]:null; if((dn\u003eGUNKEYS||(_ic\u0026\u0026/^(throw|heal|stim|armor)$/.test(_ic.kind)))\u0026\u0026!G.hubFloor) beltInstant(dn-1); else setHot(dn-1);   // cw-hotitems: an item key uses its item at once"
+                  },
+                  {
+                      "anchor":  "        if(_si\u0026\u0026_siDerived){\n          say(\u0027SLOT \u0027+slotKeyName(HC.i)+\u0027 TAKES GUNS ONLY\u0027);   // v22.43: the shooter voice   // v22.xx (R52): the slot word",
+                      "replacement":  "        if(_si\u0026\u0026_siDerived\u0026\u0026!(_dit\u0026\u0026/^(throw|med|plate)$/.test(beltClassOf(d.key)))){   // cw-hotitems (his order of 10-27): an item takes a gun key, the gun stays where it is\n          say(\u0027SLOT \u0027+slotKeyName(HC.i)+\u0027 TAKES GUNS ONLY\u0027);   // v22.43: the shooter voice   // v22.xx (R52): the slot word"
+                  },
+                  {
+                      "anchor":  "        if(d.fromHot===undefined\u0026\u0026G.bag.indexOf(d.key)\u003c0){ dropped=true; break; }",
+                      "replacement":  "        if(d.fromHot===undefined\u0026\u0026G.bag.indexOf(d.key)\u003c0\u0026\u0026!((G.pouch||{})[d.key]\u003e0)){ dropped=true; break; }   // cw-hotitems: a pouch grenade binds too"
+                  },
+                  {
+                      "anchor":  "        G.hot=HC.i;\n        blip(\u0027pick\u0027);\n        say(((ITEMS[d.key]?ITEMS[d.key].name:\u0027Item\u0027)+\u0027 to slot \u0027+(HC.i+1)).toUpperCase());   // v22.58: the shooter voice   // v22.xx (R52): the slot word",
+                      "replacement":  "        G.hot=(ITEMS[d.key]\u0026\u0026ITEMS[d.key].use===\u0027gun\u0027)?HC.i:gunCell();   // cw-hotitems: an item on a key leaves the gun in his hands selected\n        blip(\u0027pick\u0027);\n        say(((ITEMS[d.key]?ITEMS[d.key].name:\u0027Item\u0027)+\u0027 to slot \u0027+slotKeyName(HC.i)).toUpperCase());   // v22.58: the shooter voice   // v22.xx (R52): the slot word"
+                  },
+                  {
+                      "anchor":  "function beltInstant(i){\n  var p=G\u0026\u0026G.player, sl, c, cls=BELT_CLASS[i], ti, sv;\n  if(!G||G.sim||G.over||G.paused||G.trade||G.hubFloor||!p||i\u003cGUNKEYS||i\u003e=HOTBAR_N) return false;\n  if(p.downed){ say(\u0027NOT WHILE DOWN\u0027); return false; }\n  if(p.dying||p.specOut) return false;\n  sl=hotbarSlots(); c=sl[i];\n  if(cls===\u0027throw\u0027){\n    ti=(c\u0026\u0026c.kind===\u0027throw\u0027\u0026\u0026c.icon\u0026\u0026(c.count|0)\u003e0)?THROWKEYS.indexOf(c.icon):-1;\n    if(ti\u003c0){ say(\u0027NO THROWABLE ON KEY \u0027+(i+1)); return false; }",
+                      "replacement":  "function beltInstant(i){\n  var p=G\u0026\u0026G.player, sl, c, cls=\u0027\u0027, ti, sv;\n  if(!G||G.sim||G.over||G.paused||G.trade||G.hubFloor||!p||i\u003c0||i\u003e=HOTBAR_N) return false;\n  if(p.downed){ say(\u0027NOT WHILE DOWN\u0027); return false; }\n  if(p.dying||p.specOut) return false;\n  sl=hotbarSlots(); c=sl[i];\n  cls=BELT_CLASS[i]; if(c\u0026\u0026c.kind===\u0027throw\u0027) cls=\u0027throw\u0027; else if(c\u0026\u0026(c.kind===\u0027heal\u0027||c.kind===\u0027stim\u0027)) cls=\u0027med\u0027; else if(c\u0026\u0026c.kind===\u0027armor\u0027) cls=\u0027plate\u0027; else if(i\u003cGUNKEYS) return false;   // cw-hotitems: the item on the key decides\n  if(cls===\u0027throw\u0027){\n    ti=(c\u0026\u0026c.kind===\u0027throw\u0027\u0026\u0026c.icon\u0026\u0026(c.count|0)\u003e0)?THROWKEYS.indexOf(c.icon):-1;\n    if(ti\u003c0){ say(\u0027NO THROWABLE ON KEY \u0027+slotKeyName(i)); return false; }"
+                  },
+                  {
+                      "anchor":  "function beltPickCell(i){\n  var sl, c, ti;\n  if(!G||G.hubFloor||G.sim||i\u003cGUNKEYS||i\u003e=HOTBAR_N) return false;\n  sl=hotbarSlots(); c=sl[i];\n  if(!c) return false;\n  if(BELT_CLASS[i]===\u0027throw\u0027\u0026\u0026c.kind===\u0027throw\u0027\u0026\u0026c.icon\u0026\u0026(c.count|0)\u003e0){",
+                      "replacement":  "function beltPickCell(i){\n  var sl, c, ti;\n  if(!G||G.hubFloor||G.sim||i\u003c0||i\u003e=HOTBAR_N) return false;   // cw-hotitems: any key may hold an item\n  sl=hotbarSlots(); c=sl[i];\n  if(!c) return false;\n  if(c.kind===\u0027throw\u0027\u0026\u0026c.icon\u0026\u0026(c.count|0)\u003e0){"
+                  },
+                  {
+                      "anchor":  "  if(BELT_CLASS[i]===\u0027med\u0027\u0026\u0026(c.kind===\u0027heal\u0027||c.kind===\u0027stim\u0027)\u0026\u0026(c.count|0)\u003e0\u0026\u0026c.itemKey\u0026\u0026ITEMS[c.itemKey]){",
+                      "replacement":  "  if((c.kind===\u0027heal\u0027||c.kind===\u0027stim\u0027)\u0026\u0026(c.count|0)\u003e0\u0026\u0026c.itemKey\u0026\u0026ITEMS[c.itemKey]){"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027cw-hotitems (his order of 10-27): a medkit dragged onto the key of the gun in hand stays there, the gun moves to a free key, and the key uses the medkit with the gun still in hand\u0027,\n   run:function(){\n     var bad=[];\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       if(beltDropRefusal(\u0027frag\u0027,2)!==\u0027\u0027) bad.push(\u0027a frag is refused on key 3\u0027);\n       if(beltDropRefusal(\u0027medkit\u0027,0)!==\u0027\u0027) bad.push(\u0027a medkit is refused on key 1\u0027);\n       __deploy({kit:[\u0027gun_carbine\u0027,\u0027medkit\u0027,\u0027medkit\u0027,\u0027bandage\u0027,\u0027frag\u0027],safe:null,mapIx:0,seed:4242});\n       if(state!==\u0027raid\u0027||!G||G.over) throw new Error(\u0027no live raid to test on\u0027);\n       G.mapFirst=0; G.mapOpen=false; if(pauseOpen) togglePauseBox(false); syncPause();\n       var p=G.player, w0=p.wep\u0026\u0026p.wep.id, sl0=hotbarSlots(), k0=-1, k1=-1, i;\n       for(i=0;i\u003csl0.length;i++) if(sl0[i]\u0026\u0026sl0[i].kind===\u0027gun\u0027\u0026\u0026sl0[i].inHand\u0026\u0026sl0[i].icon===w0){ k0=i; break; }\n       if(k0\u003c0) throw new Error(\u0027the gun in hand shows on no key before the drop\u0027);\n       G.hotAssign=G.hotAssign||{}; G.hotAssign[k0]=\u0027medkit\u0027; if(G.hotAuto) delete G.hotAuto[k0]; classKeysSettle();\n       if(G.hotAssign[k0]!==\u0027medkit\u0027) bad.push(\u0027the medkit on key \u0027+slotKeyName(k0)+\u0027 was pruned\u0027);\n       var sl=hotbarSlots();\n       if(!sl[k0]||sl[k0].kind!==\u0027heal\u0027) bad.push(\u0027key \u0027+slotKeyName(k0)+\u0027 shows \u0027+(sl[k0]\u0026\u0026sl[k0].kind));\n       for(i=0;i\u003csl.length;i++) if(i!==k0\u0026\u0026sl[i]\u0026\u0026sl[i].kind===\u0027gun\u0027\u0026\u0026sl[i].inHand\u0026\u0026sl[i].icon===w0) k1=i;\n       if(k1\u003c0) bad.push(\u0027the gun in hand lost its key\u0027);\n       var cnt=function(){ return G.bag.filter(function(k){ return k===\u0027medkit\u0027; }).length; }, n0=cnt();\n       p.hp=Math.max(1,Math.round(p.maxhp*0.3));\n       if(!beltInstant(k0)) bad.push(\u0027key \u0027+slotKeyName(k0)+\u0027 did not use the medkit\u0027);\n       if(cnt()\u003e=n0\u0026\u0026!p.prep) bad.push(\u0027no medkit was spent\u0027);\n       if((p.wep\u0026\u0026p.wep.id)!==w0) bad.push(\u0027the gun in hand changed\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{\n       try{ if(pauseOpen) togglePauseBox(false); }catch(_p){}\n       try{ var K2=__keys(); for(var q2 in K2) delete K2[q2]; }catch(_k){}\n       try{ if(state===\u0027raid\u0027\u0026\u0026G\u0026\u0026!G.over) __endRaid(\u0027abandon\u0027); }catch(_e){}\n       try{ __topClear(); __cleanProfile(); }catch(_c){}\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

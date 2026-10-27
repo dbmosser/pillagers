@@ -1,20 +1,20 @@
 Latest stable: v34.53 (2026-10-27 02:38)
-Checked: 2026-10-27 10:54
+Checked: 2026-10-27 11:56
 Play address: http://localhost:8802/stable.html
 Result: no change
 
 Newest test runs, newest first:
-  corpus-1027-0855  v35.01  failing 9, new 4  robots 104 min/1 problems  -> 4 check(s) newly failing, e.g. v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right | v33.68 cw-pixprops (86e) ship 1: the pixel adapter pixWrap a
+  corpus-1027-1017  v35.05  failing 10, new 4  robots 43 min/0 problems  -> 4 check(s) newly failing, e.g. v33.68 cw-pixprops (86e) ship 1: the pixel adapter pixWrap a | v33.60 cw-cx-pixground (86b): THE PIXEL GROUND. With the pix
+  corpus-1027-0855  v35.01  failing 9, new 4  robots 114 min/1 problems  -> 4 check(s) newly failing, e.g. v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right | v33.68 cw-pixprops (86e) ship 1: the pixel adapter pixWrap a
   corpus-1027-0705  v34.96  failing 11, new 2  robots 874 min/76 problems  -> 2 check(s) newly failing, e.g. v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right | v30.17 the Settings detail pane and its focus look name the 
-  corpus-1027-0155  v34.96  failing 15, new 5  robots 874 min/76 problems  -> 5 check(s) newly failing, e.g. v9.07 a noise you cannot see leaves a ring on the ground, an | v34.90 cw-thirdsize, his note of 2026-10-25, played on build
-  corpus-1027-0032  v34.94  failing 16, new 5  robots 221 min/4 problems  -> 5 check(s) newly failing, e.g. v9.07 a noise you cannot see leaves a ring on the ground, an | v34.90 cw-thirdsize, his note of 2026-10-25, played on build
-  corpus-1026-2256  v34.92  failing 19, new 6  robots 95 min/32 problems  -> 6 check(s) newly failing, e.g. v9.07 a noise you cannot see leaves a ring on the ground, an | v34.90 cw-thirdsize, his note of 2026-10-25, played on build
-  corpus-1026-0853  v34.90  failing 14, new 3  robots 1300 min/259 problems  -> 3 check(s) newly failing, e.g. v9.07 a noise you cannot see leaves a ring on the ground, an | v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right
-  corpus-1026-0645  v34.89  failing 17, new 3  robots 298 min/67 problems  -> 3 check(s) newly failing, e.g. v9.07 a noise you cannot see leaves a ring on the ground, an | v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right
-  corpus-1026-0413  v34.88  failing 14, new 2  robots 418 min/58 problems  -> 2 check(s) newly failing, e.g. v9.07 a noise you cannot see leaves a ring on the ground, an | v33.51 cw-pixkit (86a): the pixel look row (local, on), pinn
+  corpus-1027-0155  v34.96  failing 15, new 3  robots 874 min/76 problems  -> 3 check(s) newly failing, e.g. v34.90 cw-thirdsize, his note of 2026-10-25, played on build | v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right
+  corpus-1027-0032  v34.94  failing 16, new 3  robots 221 min/4 problems  -> 3 check(s) newly failing, e.g. v34.90 cw-thirdsize, his note of 2026-10-25, played on build | v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right
+  corpus-1026-2256  v34.92  failing 19, new 4  robots 95 min/32 problems  -> 4 check(s) newly failing, e.g. v34.90 cw-thirdsize, his note of 2026-10-25, played on build | v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right
+  corpus-1026-0853  v34.90  failing 14, new 1  robots 1300 min/259 problems  -> 1 check(s) newly failing, e.g. v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right
+  corpus-1026-0645  v34.89  failing 17, new 1  robots 298 min/67 problems  -> 1 check(s) newly failing, e.g. v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right
 
 Checks that are newly red and still red (they block until fixed, or until listed in tools/handoff/stable-known-red.txt):
-  v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right hand lower corner m
   v30.17 the Settings detail pane and its focus look name the first row in view af
   v33.68 cw-pixprops (86e) ship 1: the pixel adapter pixWrap and the containers, b
   v31.32 cw-trcol, his order (2026-10-18) everything in the right hand upper corne
+  v33.60 cw-cx-pixground (86b): THE PIXEL GROUND. With the pixel look on, the same

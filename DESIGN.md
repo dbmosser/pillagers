@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.07 - THE WHAT IS NEW STAMP KEEPS UP
+
+Co-op hunt while he was away. The card was stamped v34.91 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.
+
+MEASURED. Check 35.07 passes, and fails on v35.06.
 ## v35.06 - FOG OF WAR OPTION
 
 Co-op hunt while he was away. His order of 10-27: a fog of war option that hides ground not yet explored, in the raid and on the map screen. Off by default, so the v7.57 whole map stays the default.
