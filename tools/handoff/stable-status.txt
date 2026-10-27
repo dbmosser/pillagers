@@ -1,10 +1,10 @@
 Latest stable: v34.53 (2026-10-27 02:38)
-Checked: 2026-10-27 06:45
+Checked: 2026-10-27 07:48
 Play address: http://localhost:8802/stable.html
 Result: no change
 
 Newest test runs, newest first:
-  corpus-1027-0155  v34.96  failing 15, new 14  robots 653 min/65 problems  -> 14 check(s) newly failing, e.g. v8.91 the three in-raid panels are twice the size, at every  | v9.07 a noise you cannot see leaves a ring on the ground, an
+  corpus-1027-0155  v34.96  failing 15, new 14  robots 776 min/75 problems  -> 14 check(s) newly failing, e.g. v8.91 the three in-raid panels are twice the size, at every  | v9.07 a noise you cannot see leaves a ring on the ground, an
   corpus-1027-0032  v34.94  failing 16, new 14  robots 221 min/4 problems  -> 14 check(s) newly failing, e.g. v8.91 the three in-raid panels are twice the size, at every  | v9.07 a noise you cannot see leaves a ring on the ground, an
   corpus-1026-2256  v34.92  failing 19, new 15  robots 95 min/32 problems  -> 15 check(s) newly failing, e.g. v8.91 the three in-raid panels are twice the size, at every  | v9.07 a noise you cannot see leaves a ring on the ground, an
   corpus-1026-0853  v34.90  failing 14, new 12  robots 1300 min/259 problems  -> 12 check(s) newly failing, e.g. v8.91 the three in-raid panels are twice the size, at every  | v9.07 a noise you cannot see leaves a ring on the ground, an

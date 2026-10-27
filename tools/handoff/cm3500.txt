@@ -1,0 +1,7 @@
+v35.00: every bush and tree stands on a patch of grass
+
+Bushes and trees sit on a patch of grass instead of on bare slab.
+
+Check 35.00. Fails on v34.99.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

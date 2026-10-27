@@ -1,0 +1,4 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  gfx-b-machine-damage                   staged       9.9s    | spot 2420,1880 clear 118 tier 2 hp 104/26 of 260 pins 133 steps 24 t 24.45 eye 1 spark 1 dmg 2/1
+== 4k : window 3876x2265, viewport 3840x2160
+  gfx-b-machine-damage                   staged       9.9s    | spot 2420,1880 clear 118 tier 2 hp 104/26 of 260 pins 135 steps 24 t 24.45 eye 1 spark 1 dmg 2/1

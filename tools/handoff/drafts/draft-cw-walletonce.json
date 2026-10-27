@@ -1,0 +1,12 @@
+{
+    "title":  "CORNER MONEY PRINTED ONCE",
+    "why":  "His note on the v34.78 photo: text collisions in the top right box. The page text copy of the wallet was not hidden when the loop was driven ahead of the real clock (camera staging), so it printed over the canvas rows. trHide now reads the same real clock as the rows.",
+    "now":  "The top right money box shows one layout only.",
+    "edits":  [
+                  {
+                      "anchor":  "var on=(now-TRG.t\u003c200)?1:0;",
+                      "replacement":  "var on; now=(typeof performance!==\u0027undefined\u0027)?performance.now():Date.now(); on=(now-TRG.t\u003c200)?1:0;   // v28.xx (cw-walletonce), HIS NOTE (2026-10-25) on the photo of v34.78: \"Text collisions on the menu thing\". The corner rows are stamped with the real clock, but the loop passed its own frame time: a driven loop (the camera staging, a test) runs ahead of the real clock, the page text came back and printed over the canvas rows. Both sides now read the same clock."
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027cw-walletonce, his note (text collisions on the menu thing): the page text in the top right corner stays hidden while the canvas rows are drawn, even when the loop is driven with a frame time ahead of the real clock (the camera staging), so the cash figure is named once\u0027,\n   run:function(){\n     if(typeof trHide!==\u0027function\u0027||typeof TRG!==\u0027object\u0027) return \u0027SKIP: no corner hide here\u0027;\n     var cl=document.body.classList, had=cl.contains(\u0027trcol\u0027), h0=TRG.hid, t0=TRG.t, bad=null;\n     try{\n       cl.remove(\u0027trcol\u0027); TRG.hid=0; TRG.t=performance.now();\n       trHide(performance.now()+5000);\n       if(!cl.contains(\u0027trcol\u0027)) bad=\u0027the page text came back over the canvas rows when the loop ran 5 s ahead of the real clock\u0027;\n     } finally { TRG.hid=h0; TRG.t=t0; if(had) cl.add(\u0027trcol\u0027); else cl.remove(\u0027trcol\u0027); }\n     return bad; }},"
+}

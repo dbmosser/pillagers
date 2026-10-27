@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.00 - EVERY BUSH AND TREE STANDS ON A PATCH OF GRASS
+
+Co-op hunt while he was away. His note on the v34.78 photo: bricks on the floor but a bush on top of the bricks makes no sense. The road cull only knows roads, so bushes still sat on slabs and tarmac. The ground bake now paints a ragged turf patch under every bush and tree. Render layer only: bushes and trees do not move and no seeded draw changes.
+
+MEASURED. Check 35.00 passes, and fails on v34.99.
 ## v34.99 - BULWARK WRECK MATCHES THE BIG BODY
 
 Co-op hunt while he was away. His note: the bulwark is too small next to a pillager. The live body is now about 2x its old art; its wreck still lay at 1x. The wreck now uses the same factor.
