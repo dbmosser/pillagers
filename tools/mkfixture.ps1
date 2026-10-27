@@ -11485,6 +11485,9 @@ window.__REGRESS=[
          // v28.xx (cw-cx-pixsets): a set uses pixels once its painter ships; the old build and unsupported poses retain vector fallback.
          if(q[0]==='a set'&&typeof pxSetUpper==='function'){
            if(PIX.bodies===b0) bad.push('the supported set was not drawn in pixels');
+         }else if(q[0]==='fists'){
+           // v35.xx (119s): since v28.xx cw-pixmelee a plain look keeps its pixel body in a punch (hand in the skin ramp), so fists must be pixels now; the vector body is what would be wrong
+           if(PIX.bodies===b0) bad.push('fists fell back to the vector body, a plain look should keep its pixel body in a punch');
          }else if(PIX.bodies!==b0) bad.push(q[0]+' was drawn in pixels but is still the vector body');
        });
        // a forced throw still draws a body, and is counted and logged
