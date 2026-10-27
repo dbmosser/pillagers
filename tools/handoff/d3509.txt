@@ -1,0 +1,5 @@
+## v35.09 - HOTBAR ITEMS FOLLOW-UP
+
+Co-op hunt while he was away. the v35.08 pre-raid drag landed on a screen that no longer opens, plus five review findings
+
+MEASURED. Check 35.09 passes, and fails on v35.08.

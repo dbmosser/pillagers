@@ -1,0 +1,7 @@
+v35.09: hotbar items follow-up
+
+the lift screen shows the belt; drag from the pack list or press a number while hovering; an item key never steals the highlight
+
+Check 35.09. Fails on v35.08.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

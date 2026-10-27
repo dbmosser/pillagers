@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.09 - HOTBAR ITEMS FOLLOW-UP
+
+Co-op hunt while he was away. the v35.08 pre-raid drag landed on a screen that no longer opens, plus five review findings
+
+MEASURED. Check 35.09 passes, and fails on v35.08.
 ## v35.08 - ITEMS ON THE HOTBAR
 
 Co-op hunt while he was away. his order of 10-27: players may drag medkits, grenades and other usables onto the bar, replacing that key's gun, from the raid backpack, the stash, the undercroft backpack and the pre-raid screen

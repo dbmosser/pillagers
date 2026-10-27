@@ -8,65 +8,65 @@
  14319  [weak spot]  // move; the multipliers, the effects and the damage are untouched. Pillagers have no weak spots.
  14320  [WEAK SPOT]  function weakTxt(m){ return 'WEAK SPOT '+(Math.round((+m||1)*10)/10).toFixed(1)+'x'; }
  17393  [diedWithMed]  closestExtract:1e9,deathKiller:null,deathDistExtract:null,diedWithMed:0,
- 20043  [[V]]  // shown FINISH [V] over every downed pillager and could not do it. Y (pad action 3, whatever CHANGE PAD BUTTONS has put it on) held with a downed pillager in finisher reach is the
- 22426  [SOMETHING HUGE]  // are hosting now, PILLAGER REINFORCEMENTS, SPOTTED BY SOMETHING HUGE, and the in-ring hints in two to four words. The inbound hint
- 22744  [OTHER GUN]  // HANDS with no comparison; the other gun he carries (OTHER GUN) and a packed gun (IN BACKPACK) are compared with it. It waits a
- 22760  [OTHER GUN]  if(p.sec&&p.sec.id===gk) return {w:p.sec,tag:'OTHER GUN'};
- 23070  [WEAK SPOT]  // v28.xx (cw-feedall), HIS ORDER (2026-10-15): "All text shown to the player on screen also goes into the player feed." ACTIVE RELOAD and a CLOSE CALL label with no score on it (a raid with no points) were skipped; they
- 23071  [WEAK SPOT]  if((/^(WEAK SPOT|PICKED UP|NOTORIETY \+\d+)$/).test(s)||(/ (DESTROYED|ELIMINATED)$/).test(s)||feedPwrOf(s)) return null;
- 23388  [weak spot]  // v27.xx (feel2f), HIS WORDS (2026-10-14): "coloured by weak spot/element". DAMAGE NUMBERS ARE CODED BY WHAT THE HIT WAS. A number over a target now says it before you read it: a hit on a
- 23445  [WEAK SPOT]  // every word sits on a plate that fits it. The floating labels (loot found, targets down, WEAK SPOT) sat on a plate a fixed 13 units
- 23496  [weak spot]  // is usually the oldest, so a fight that called out targets and weak spots pushed out the name of what he had just found. The oldest
- 23538  [diedWithMed]  if(_dmi&&_dmi.use==='heal'){ G.tel.diedWithMed=1; break; }
- 24431  [p.jam]  want=!!(mouse.down&&p.ammo>0&&p.reloading<=0&&!(p.drawT>0)&&p.jam<=0&&!p.downed&&!p.cooking);
- 24566  [[V]]  // reach showed FINISH [V] in tiny type over a ring, under the REVIVE prompt of the same man, and nobody saw it. It is now hudPrompt, the prompt every other world action uses (the
- 24567  [[V]]  // plate, the bone caps, the key drawn as a keycap): HOLD [V] FINISH, in danger red, over the man at the same spot as the REVIVE prompt and stacked under it when both are up. The ring
- 27959  [machines inbound]  // v9.34 (his 6) named the siege and promised its size, About N machines inbound, with N worked out here from the same ceiling
- 27963  [HEAVY BACKPACK]  // v24.xx (nobagline), HIS NOTE (2026-10-12): "'HEAVY BACKPACK ' - why does it say that when extracting -- we got rid of diff
- 27964  [HEAVY BACKPACK]  // backpack sizes etc a long time ago". The call said a third line after the siege, LIGHT, LOADED or HEAVY BACKPACK with They
- 29133  [p.jam]  if(mouse.down&&p.reloading<=0&&!p.hand&&p.wep.mag>0&&p.ammo<=0&&rlHave(p)&&!p.downed&&p.jam<=0&&CFG.autoRel!==0){   // v26.xx (settings4): AUTO-RELOAD WHEN EMPTY
- 29145  [jam>]  if(p.jam>0){ p.jam-=dt; if(p.jam<=0&&!G.sim) say('JAM CLEARED'); }   // v22.xx (R52)
- 29244  [p.jam]  else if(mouse.down&&!p.trigYield&&!p.cooking&&!p.hand&&!(p.drawT>0)&&p.reloading<=0&&p.jam<=0&&now-p.lastShot>p.wep.rof*spinMul(p)*pwrRof()&&spinGo(p)){   // v26.xx (feel13): the Support MG spins up first   // v13.62: no
- 29257  [jam>]  if(p.wep.jam>0&&rr()<p.wep.jam){
- 29258  [p.jam]  p.ammo--; p.lastShot=now; p.fired=true; p.jam=0.9;
- 29707  [Search resumed]  // v24.xx (nosearchline), HIS ORDER (2026-10-12): "'Search resumed' get rid of this messaging". Picking a search back up said
- 29708  [Search resumed]  // Search resumed, N% done (v11.94) in the raid text, every time. The search bar already shows how far the box got, so the line was
- 29812  [jam>]  if(p.jam>0) p.jam-=dt;
- 30067  [p.jam]  if(p.reloading<=0&&p.jam<=0&&now-p.lastShot>p.wep.rof&&(CFG.simReach===0||td<=TRW)&&
- 30089  [jam>]  var jr=(p.wep.jam>0)?rr():1;
- 30090  [jam>]  if(CFG.simJam!==0&&p.wep.jam>0&&jr<p.wep.jam){
- 30091  [p.jam]  p.ammo--; p.lastShot=now; p.jam=0.9; T.jams=(T.jams||0)+1;
- 33246  [WEAK SPOT]  /* v22.xx, the raid text rewrite (R46): WEAK SPOT ONCE PER TARGET. A shotgun blast or a fast burst on a vent pushed one
- 33247  [WEAK SPOT]  WEAK SPOT label per pellet, eight stacked words in one frame that also pushed the loot names out of the 40-label
- 33250  [WEAK SPOT]  if(!(en.weakLblT>(G.t||0)-0.5)){ en.weakLblT=(G.t||0); label(en.x,en.y-Math.round(en.r*1.3),weakTxt(WK.mult*((xf('xfOvPh')&&en.boss&&en.overheat>0)?1.5:1)),WK.c,0,true); }   /* v21.64, HIS NOTE (2026-10-09): OPTIC 2X rea
- 33301  [weak spot]  // into a pillager's back paid half again as much; a pillager is hit for what the round does, from any side. Machines keep their weak spots
- 33389  [weak spot]  // over the weak spot mark set above, so a weak spot never showed or sounded as one; it keeps it now. On a linked window the host
- 34837  [diedWithMed]  shots:T.shots,hits:T.hits,acc:acc,reloads:T.reloads,heals:T.heals,diedWithMed:T.diedWithMed||0,eliteKills:T.eliteKills||0,
- 34911  [diedWithMed]  // (G.tel.diedWithMed) is still recorded at death for the run report and the telemetry export line (unusedMed:1).
- 41313  [WEAK SPOT]  // the floating labels (loot found, targets down, WEAK SPOT) were drawn here in the world pass, under the darkness sheet and the fog
- 42522  [[V]]  // were bracketed words ([FIRE] use, [V] signal) beside the keycaps of every world prompt (ui7, hudPrompt). As hudPrompt does, the
- 42901  [stowLine]  // design choice from you". stowLine (v21.73) built the gun card's OTHER GUN line, naming the gun in the other slot and its rounds, on
- 43518  [JAMMED]  // with no magazine is never empty now, so Bare Hands keep the plain cross. JAMMED, the reload ring and every gun are unchanged.
- 43519  [jam>]  var rState=(p.jam>0)?'jam':(p.reloading>0?'reload':((p.ammo<=0&&!(p.wep&&p.wep.mag===0))?(!rlHave(p)?'dry':'empty'):''));
- 43556  [JAMMED]  // under it (NO AMMO, JAMMED, [R] RELOAD), the reload seconds beside it, the struck-through line and the widths of the magazine
- 43656  [JAMMED]  // on a pad, [SQUARE] RELOAD on a PlayStation pad, [R] RELOAD on a keyboard with R unmoved. NO AMMO and JAMMED keep their words.
- 43657  [JAMMED]  ctx.fillText(rState==='jam'?'JAMMED':(rState==='dry'?'NO AMMO':'['+keyLabel('KeyR','R')+'] RELOAD'),rx0,ry0+gap+len+LH(14)*_wz);
- 43668  [weak spot]  // the inner ends of the arms. White is a hit, orange (the gold tone of the design system) a weak spot, red (its danger tone) a kill,
- 44798  [JAMMED]  // never narrower than RELOADING or JAMMED, a held count of at least two figures, and the backpack row as at least two item figures and
- 44810  [JAMMED]  else {   // the rounds as ammoDraw draws them: a full magazine over a reserve of at least three figures, never narrower than RELOADING or JAMMED
- 44812  [JAMMED]  _gR2=Math.max(_gMs(_gFt,_gRs).width+4+_gMs(_gFm,_gMg).width,_gMs(_gFt,' / '+rsvShow(p)).width+4+_gMs(_gFm,String(p.ammo)).width,_gMs(_gFt,'RELOADING').width,_gMs(_gFt,'JAMMED').width);
- 44841  [JAMMED]  else if(p.jam>0){ ctx.fillStyle='#ff5a4a'; ctx.fillText('JAMMED',_gX,by-LH(14)); }
- 44851  [OTHER GUN]  // now names the other gun plainly (OTHER GUN, its name, its rounds), and with nothing but Bare Hands in the other slot there is no line.
- 44852  [OTHER GUN]  // v24.xx (noequipline), HIS ORDER (2026-10-12): the OTHER GUN line (v21.73) is gone. The card names the gun in his hands and its
- 45819  [WEAK SPOT]  ['WEAK SPOTS','The glowing parts take'],
- 45913  [JAMMED]  JAMMED:'#ff5a4a', HEALING:'#6fe0a0', REVIVING:'#7fc4a0', EXTRACTING:'#4de3d0',
- 45935  [JAMMED]  if(p.jam>0) parts.push('JAMMED');
- 53871  [WEAK SPOT]  // THE HUD CANVAS. The nameplates, the party tags, the damage numbers and the floating labels (loot found, targets down, WEAK SPOT)
- 57748  [diedWithMed]  if(r.diedWithMed) line+=' unusedMed:1';
- 61762  [jam>]  if(p&&!G.over&&!G.paused&&!G.mapOpen&&!G.bagOpen&&!G.trade&&!p.downed&&!(p.reloading>0)&&!(p.jam>0)&&!p.cooking&&p.wep&&p.wep.mag>0&&(p.ammo>0||p.reserve>0)){
- 63220  [Search resumed]  // v24.xx (nosearchline), HIS ORDER (2026-10-12): no Search resumed line on a linked window either; the search bar shows the progress.
- 63794  [p.jam]  p.swapped=false; p.reloading=0; p.jam=0;
- 63896  [HALLOWEEN]  // lamps, pumpkins by lamps and doors, the violet haze, HAPPY HALLOWEEN on the attract) is gone entirely: an arcade raid keeps the lamp
- 64067  [GO_SEC]  // pins it, as it pins GO_SEC).
- 67198  [p.jam]  if(S.act.clip>0&&p.wep&&p.wep.mag>0){ p.ammo=p.wep.mag; p.reloading=0; p.jam=0; }
- 67769  [HALLOWEEN]  // board and HOW TO PLAY only. After a run the RUN OVER card shows first and the loop goes on from the board. HAPPY HALLOWEEN sits
+ 20044  [[V]]  // shown FINISH [V] over every downed pillager and could not do it. Y (pad action 3, whatever CHANGE PAD BUTTONS has put it on) held with a downed pillager in finisher reach is the
+ 22427  [SOMETHING HUGE]  // are hosting now, PILLAGER REINFORCEMENTS, SPOTTED BY SOMETHING HUGE, and the in-ring hints in two to four words. The inbound hint
+ 22745  [OTHER GUN]  // HANDS with no comparison; the other gun he carries (OTHER GUN) and a packed gun (IN BACKPACK) are compared with it. It waits a
+ 22761  [OTHER GUN]  if(p.sec&&p.sec.id===gk) return {w:p.sec,tag:'OTHER GUN'};
+ 23071  [WEAK SPOT]  // v28.xx (cw-feedall), HIS ORDER (2026-10-15): "All text shown to the player on screen also goes into the player feed." ACTIVE RELOAD and a CLOSE CALL label with no score on it (a raid with no points) were skipped; they
+ 23072  [WEAK SPOT]  if((/^(WEAK SPOT|PICKED UP|NOTORIETY \+\d+)$/).test(s)||(/ (DESTROYED|ELIMINATED)$/).test(s)||feedPwrOf(s)) return null;
+ 23389  [weak spot]  // v27.xx (feel2f), HIS WORDS (2026-10-14): "coloured by weak spot/element". DAMAGE NUMBERS ARE CODED BY WHAT THE HIT WAS. A number over a target now says it before you read it: a hit on a
+ 23446  [WEAK SPOT]  // every word sits on a plate that fits it. The floating labels (loot found, targets down, WEAK SPOT) sat on a plate a fixed 13 units
+ 23497  [weak spot]  // is usually the oldest, so a fight that called out targets and weak spots pushed out the name of what he had just found. The oldest
+ 23539  [diedWithMed]  if(_dmi&&_dmi.use==='heal'){ G.tel.diedWithMed=1; break; }
+ 24433  [p.jam]  want=!!(mouse.down&&p.ammo>0&&p.reloading<=0&&!(p.drawT>0)&&p.jam<=0&&!p.downed&&!p.cooking);
+ 24568  [[V]]  // reach showed FINISH [V] in tiny type over a ring, under the REVIVE prompt of the same man, and nobody saw it. It is now hudPrompt, the prompt every other world action uses (the
+ 24569  [[V]]  // plate, the bone caps, the key drawn as a keycap): HOLD [V] FINISH, in danger red, over the man at the same spot as the REVIVE prompt and stacked under it when both are up. The ring
+ 27962  [machines inbound]  // v9.34 (his 6) named the siege and promised its size, About N machines inbound, with N worked out here from the same ceiling
+ 27966  [HEAVY BACKPACK]  // v24.xx (nobagline), HIS NOTE (2026-10-12): "'HEAVY BACKPACK ' - why does it say that when extracting -- we got rid of diff
+ 27967  [HEAVY BACKPACK]  // backpack sizes etc a long time ago". The call said a third line after the siege, LIGHT, LOADED or HEAVY BACKPACK with They
+ 29136  [p.jam]  if(mouse.down&&p.reloading<=0&&!p.hand&&p.wep.mag>0&&p.ammo<=0&&rlHave(p)&&!p.downed&&p.jam<=0&&CFG.autoRel!==0){   // v26.xx (settings4): AUTO-RELOAD WHEN EMPTY
+ 29148  [jam>]  if(p.jam>0){ p.jam-=dt; if(p.jam<=0&&!G.sim) say('JAM CLEARED'); }   // v22.xx (R52)
+ 29247  [p.jam]  else if(mouse.down&&!p.trigYield&&!p.cooking&&!p.hand&&!(p.drawT>0)&&p.reloading<=0&&p.jam<=0&&now-p.lastShot>p.wep.rof*spinMul(p)*pwrRof()&&spinGo(p)){   // v26.xx (feel13): the Support MG spins up first   // v13.62: no
+ 29260  [jam>]  if(p.wep.jam>0&&rr()<p.wep.jam){
+ 29261  [p.jam]  p.ammo--; p.lastShot=now; p.fired=true; p.jam=0.9;
+ 29710  [Search resumed]  // v24.xx (nosearchline), HIS ORDER (2026-10-12): "'Search resumed' get rid of this messaging". Picking a search back up said
+ 29711  [Search resumed]  // Search resumed, N% done (v11.94) in the raid text, every time. The search bar already shows how far the box got, so the line was
+ 29815  [jam>]  if(p.jam>0) p.jam-=dt;
+ 30070  [p.jam]  if(p.reloading<=0&&p.jam<=0&&now-p.lastShot>p.wep.rof&&(CFG.simReach===0||td<=TRW)&&
+ 30092  [jam>]  var jr=(p.wep.jam>0)?rr():1;
+ 30093  [jam>]  if(CFG.simJam!==0&&p.wep.jam>0&&jr<p.wep.jam){
+ 30094  [p.jam]  p.ammo--; p.lastShot=now; p.jam=0.9; T.jams=(T.jams||0)+1;
+ 33249  [WEAK SPOT]  /* v22.xx, the raid text rewrite (R46): WEAK SPOT ONCE PER TARGET. A shotgun blast or a fast burst on a vent pushed one
+ 33250  [WEAK SPOT]  WEAK SPOT label per pellet, eight stacked words in one frame that also pushed the loot names out of the 40-label
+ 33253  [WEAK SPOT]  if(!(en.weakLblT>(G.t||0)-0.5)){ en.weakLblT=(G.t||0); label(en.x,en.y-Math.round(en.r*1.3),weakTxt(WK.mult*((xf('xfOvPh')&&en.boss&&en.overheat>0)?1.5:1)),WK.c,0,true); }   /* v21.64, HIS NOTE (2026-10-09): OPTIC 2X rea
+ 33304  [weak spot]  // into a pillager's back paid half again as much; a pillager is hit for what the round does, from any side. Machines keep their weak spots
+ 33392  [weak spot]  // over the weak spot mark set above, so a weak spot never showed or sounded as one; it keeps it now. On a linked window the host
+ 34840  [diedWithMed]  shots:T.shots,hits:T.hits,acc:acc,reloads:T.reloads,heals:T.heals,diedWithMed:T.diedWithMed||0,eliteKills:T.eliteKills||0,
+ 34914  [diedWithMed]  // (G.tel.diedWithMed) is still recorded at death for the run report and the telemetry export line (unusedMed:1).
+ 41316  [WEAK SPOT]  // the floating labels (loot found, targets down, WEAK SPOT) were drawn here in the world pass, under the darkness sheet and the fog
+ 42525  [[V]]  // were bracketed words ([FIRE] use, [V] signal) beside the keycaps of every world prompt (ui7, hudPrompt). As hudPrompt does, the
+ 42904  [stowLine]  // design choice from you". stowLine (v21.73) built the gun card's OTHER GUN line, naming the gun in the other slot and its rounds, on
+ 43521  [JAMMED]  // with no magazine is never empty now, so Bare Hands keep the plain cross. JAMMED, the reload ring and every gun are unchanged.
+ 43522  [jam>]  var rState=(p.jam>0)?'jam':(p.reloading>0?'reload':((p.ammo<=0&&!(p.wep&&p.wep.mag===0))?(!rlHave(p)?'dry':'empty'):''));
+ 43559  [JAMMED]  // under it (NO AMMO, JAMMED, [R] RELOAD), the reload seconds beside it, the struck-through line and the widths of the magazine
+ 43659  [JAMMED]  // on a pad, [SQUARE] RELOAD on a PlayStation pad, [R] RELOAD on a keyboard with R unmoved. NO AMMO and JAMMED keep their words.
+ 43660  [JAMMED]  ctx.fillText(rState==='jam'?'JAMMED':(rState==='dry'?'NO AMMO':'['+keyLabel('KeyR','R')+'] RELOAD'),rx0,ry0+gap+len+LH(14)*_wz);
+ 43671  [weak spot]  // the inner ends of the arms. White is a hit, orange (the gold tone of the design system) a weak spot, red (its danger tone) a kill,
+ 44801  [JAMMED]  // never narrower than RELOADING or JAMMED, a held count of at least two figures, and the backpack row as at least two item figures and
+ 44813  [JAMMED]  else {   // the rounds as ammoDraw draws them: a full magazine over a reserve of at least three figures, never narrower than RELOADING or JAMMED
+ 44815  [JAMMED]  _gR2=Math.max(_gMs(_gFt,_gRs).width+4+_gMs(_gFm,_gMg).width,_gMs(_gFt,' / '+rsvShow(p)).width+4+_gMs(_gFm,String(p.ammo)).width,_gMs(_gFt,'RELOADING').width,_gMs(_gFt,'JAMMED').width);
+ 44844  [JAMMED]  else if(p.jam>0){ ctx.fillStyle='#ff5a4a'; ctx.fillText('JAMMED',_gX,by-LH(14)); }
+ 44854  [OTHER GUN]  // now names the other gun plainly (OTHER GUN, its name, its rounds), and with nothing but Bare Hands in the other slot there is no line.
+ 44855  [OTHER GUN]  // v24.xx (noequipline), HIS ORDER (2026-10-12): the OTHER GUN line (v21.73) is gone. The card names the gun in his hands and its
+ 45822  [WEAK SPOT]  ['WEAK SPOTS','The glowing parts take'],
+ 45916  [JAMMED]  JAMMED:'#ff5a4a', HEALING:'#6fe0a0', REVIVING:'#7fc4a0', EXTRACTING:'#4de3d0',
+ 45938  [JAMMED]  if(p.jam>0) parts.push('JAMMED');
+ 53874  [WEAK SPOT]  // THE HUD CANVAS. The nameplates, the party tags, the damage numbers and the floating labels (loot found, targets down, WEAK SPOT)
+ 57752  [diedWithMed]  if(r.diedWithMed) line+=' unusedMed:1';
+ 61766  [jam>]  if(p&&!G.over&&!G.paused&&!G.mapOpen&&!G.bagOpen&&!G.trade&&!p.downed&&!(p.reloading>0)&&!(p.jam>0)&&!p.cooking&&p.wep&&p.wep.mag>0&&(p.ammo>0||p.reserve>0)){
+ 63224  [Search resumed]  // v24.xx (nosearchline), HIS ORDER (2026-10-12): no Search resumed line on a linked window either; the search bar shows the progress.
+ 63798  [p.jam]  p.swapped=false; p.reloading=0; p.jam=0;
+ 63900  [HALLOWEEN]  // lamps, pumpkins by lamps and doors, the violet haze, HAPPY HALLOWEEN on the attract) is gone entirely: an arcade raid keeps the lamp
+ 64071  [GO_SEC]  // pins it, as it pins GO_SEC).
+ 67202  [p.jam]  if(S.act.clip>0&&p.wep&&p.wep.mag>0){ p.ammo=p.wep.mag; p.reloading=0; p.jam=0; }
+ 67773  [HALLOWEEN]  // board and HOW TO PLAY only. After a run the RUN OVER card shows first and the loop goes on from the board. HAPPY HALLOWEEN sits
