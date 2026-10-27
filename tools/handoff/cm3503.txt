@@ -1,0 +1,7 @@
+v35.03: raid go fullscreen button off the clock
+
+The raid go fullscreen button sits top left, clear of the clock.
+
+Check 35.03. Fails on v35.02.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

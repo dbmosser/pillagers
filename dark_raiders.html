@@ -3723,7 +3723,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.02';
+var VER='35.03';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -54603,7 +54603,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.02: Play fullscreen or hold 5 s for windowed; the gate returns whenever fullscreen is left. Check 35.02 fails on v35.01',
+  now:'v35.03: The raid go fullscreen button sits top left, clear of the clock. Check 35.03 fails on v35.02',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -69237,13 +69237,14 @@ function fsRaidBtnSync(){
     b.addEventListener('mousedown',function(ev){ if(ev) ev.stopPropagation(); });
     document.body.appendChild(b);
   }
-  var r=cv.getBoundingClientRect(), sx=(W>0)?r.width/W:1, sy=(H>0)?r.height/H:1, left, tf, top=Math.round(r.top+8*sy);
-  if(SCOREBOX.g===G&&SCOREBOX.w>0){ left=Math.round(r.left+(SCOREBOX.x-12)*sx); tf='translateX(-100%)'; }
-  else { left=Math.round(r.left+(W/2)*sx); tf='translateX(-50%)'; }
-  var lp=left+'px', tp=top+'px';
+  // v35.03 (cw-fsbtnspot): the top left corner, clear of the score plate, the raid clock and the extract pill in every mode (the first
+  // spot sat on the raid clock whenever no score plate was drawn), and sized with the HUD scale so it reads the same at 4K.
+  var r=cv.getBoundingClientRect(), z=Math.max(0.75,Math.min(2.2,(r.height>0?r.height:1080)/1080));
+  var lp=Math.round(r.left+16*z)+'px', tp=Math.round(r.top+14*z)+'px', fz=Math.round(15*z)+'px', pd=Math.round(7*z)+'px '+Math.round(14*z)+'px';
   if(b.style.left!==lp) b.style.left=lp;
   if(b.style.top!==tp) b.style.top=tp;
-  if(b.style.transform!==tf) b.style.transform=tf;
+  if(b.style.fontSize!==fz) b.style.fontSize=fz;
+  if(b.style.padding!==pd) b.style.padding=pd;
   if(b.style.display!=='') b.style.display='';
   return true;
 }

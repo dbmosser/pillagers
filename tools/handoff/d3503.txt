@@ -1,0 +1,5 @@
+## v35.03 - RAID GO FULLSCREEN BUTTON OFF THE CLOCK
+
+Co-op hunt while he was away. The pictures of v35.02 showed the raid screen go fullscreen button sitting on the raid clock when no score plate is drawn, and its text did not grow at 4K. It moves to the clear top left corner and scales with the HUD.
+
+MEASURED. Check 35.03 passes, and fails on v35.02.
