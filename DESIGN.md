@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.06 - FOG OF WAR OPTION
+
+Co-op hunt while he was away. His order of 10-27: a fog of war option that hides ground not yet explored, in the raid and on the map screen. Off by default, so the v7.57 whole map stays the default.
+
+MEASURED. Check 35.06 passes, and fails on v35.05.
 ## v35.05 - FULLSCREEN GATE WARNING LINE READABLE
 
 Co-op hunt while he was away. The picture check of v35.04 measured the may cause glitches line on the fullscreen gate at 4.33 to 1, under the 4.5 floor. It moves to the readable grey the other gate lines use.

@@ -6168,6 +6168,38 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'35.06',what:'cw-fogwar (his order of 10-27): with fog of war on, ground not yet explored is black on the map screen; off keeps the map as it was',
+   run:function(){
+     if(typeof fowMark!=='function'||typeof fowMask!=='function') return 'no fog of war option in this build';
+     var bad=[], fw0=CFG.fogWar, W0=W, H0=H, di0=CanvasRenderingContext2D.prototype.drawImage, hits=[];
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       if(state!=='raid'||!G||G.over) throw new Error('no live raid to test on');
+       G.mapFirst=0; G.mapOpen=false; if(pauseOpen) togglePauseBox(false); syncPause();
+       CFG.fogWar=1; G.fow=null; G._fowT=-1; fowMark();
+       var p=G.player;
+       if(!fowAt(p.x,p.y)) bad.push('the ground under the player is not explored after a look');
+       var fx=(p.x<WORLD_W/2)?WORLD_W-10:10, fy=(p.y<WORLD_H/2)?WORLD_H-10:10;
+       if(fowAt(fx,fy)) bad.push('the far corner '+fx+','+fy+' counts as explored at raid start');
+       W=1920; H=1080; G.mapOpen=true; G.mapFirst=0;
+       CanvasRenderingContext2D.prototype.drawImage=function(im){ if(im&&im===G._fowCv) hits.push([].slice.call(arguments,1)); return di0.apply(this,arguments); };
+       drawMapOverlay();
+       var M=mapProj(), want=G.seen.w*FOG_CELL*M.sc;
+       var ok=hits.some(function(a){ var n=a.length; return Math.abs(a[n-4]-M.ox)<2&&Math.abs(a[n-3]-M.oy)<2&&Math.abs(a[n-2]-want)<2; });
+       if(!ok) bad.push('fog on: the map screen did not lay the unexplored mask over the map ('+hits.length+' mask draws)');
+       hits.length=0; CFG.fogWar=0; drawMapOverlay();
+       if(hits.length) bad.push('fog off: the map screen still drew the mask');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ CanvasRenderingContext2D.prototype.drawImage=di0; }catch(_d){}
+       try{ CFG.fogWar=fw0; W=W0; H=H0; if(G) G.mapOpen=false; }catch(_r){}
+       try{ if(pauseOpen) togglePauseBox(false); }catch(_p){}
+       try{ var K2=__keys(); for(var q2 in K2) delete K2[q2]; }catch(_k){}
+       try{ if(state==='raid'&&G&&!G.over) __endRaid('abandon'); }catch(_e){}
+       try{ __topClear(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'35.05',what:'cw-fsgatewarn, the may cause glitches line on the fullscreen gate of his 2026-10-27 order reads at 4.5 to 1 or better against the gate card',
    run:function(){
      if(typeof fsGateShow!=='function'||typeof FSG!=='object') return 'no fullscreen gate here';

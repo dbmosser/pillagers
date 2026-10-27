@@ -1,0 +1,7 @@
+v35.06: fog of war option
+
+Settings has a fog of war option. On, ground you have not explored stays black in the raid and on the map.
+
+Check 35.06. Fails on v35.05.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
