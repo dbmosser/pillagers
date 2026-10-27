@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.96 - MACHINES IN THE PLAYER 2 WINDOW COME BACK FROM A BROKEN SPOT
+
+Co-op hunt while he was away. Found by the spare PC robots (p2:nan, two runs on 34.83, none since): in the player 2 window a few machines ended up at a spot that was not a number, so they vanished from the screen and never came back while the host kept sending their real spot. The step that slides a copy toward the host spot and the check that snaps a copy that is far off both stay broken on such a spot. A copy at a broken spot now snaps straight to the host spot on the next frame.
+
+MEASURED. Check 34.96 passes, and fails on v34.95.
 ## v34.95 - A TWO PLAYER RUN ENDS ON TIME
 
 Co-op hunt while he was away. Found by the spare PC robots (noend): a two player run went on past its clock. When player 2 asks to join on another map, the host builds a fresh raid and keeps the clock only while it is above 0. Once the clock is out (the site burning, or the clock resting at 0 while the host boards), the new raid got a full 10 minutes. Player 2 now waits for the next run, the same as when the RUN OVER card is up.

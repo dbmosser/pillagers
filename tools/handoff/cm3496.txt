@@ -1,0 +1,7 @@
+v34.96: machines in the player 2 window come back from a broken spot
+
+In a two player raid, a machine that drops out of the player 2 window comes back on the next frame instead of staying gone.
+
+Check 34.96. Fails on v34.95.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
