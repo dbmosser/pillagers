@@ -1,0 +1,7 @@
+v34.98: frozen redraw stays steady
+
+A redraw that does not advance the clock never changes the auto resolution.
+
+Check 34.98. Fails on v34.97.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

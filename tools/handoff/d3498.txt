@@ -1,0 +1,5 @@
+## v34.98 - FROZEN REDRAW STAYS STEADY
+
+Co-op hunt while he was away. Two spare PC checks (9.07, 33.51) failed only on the slow machine: a redraw of a frozen frame fed the auto resolution window with a stale frame gap, so the scale could move between two redraws. Redraws with no clock step no longer steer quality.
+
+MEASURED. Check 34.98 passes, and fails on v34.97.

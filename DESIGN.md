@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.98 - FROZEN REDRAW STAYS STEADY
+
+Co-op hunt while he was away. Two spare PC checks (9.07, 33.51) failed only on the slow machine: a redraw of a frozen frame fed the auto resolution window with a stale frame gap, so the scale could move between two redraws. Redraws with no clock step no longer steer quality.
+
+MEASURED. Check 34.98 passes, and fails on v34.97.
 ## v34.97 - EXPORT SURVIVES A RUN WITH NO OUTCOME
 
 Co-op hunt while he was away. The flight recorder export threw on any run record with no outcome field, which also killed the demo run report post and the play data page. The line now prints a question mark for it.
