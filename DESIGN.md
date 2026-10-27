@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.17 - FOG OF WAR FIXES
+
+Co-op hunt while he was away. review of v35.14 (his fog of war words 10-27)
+
+MEASURED. Check 35.17 passes, and fails on v35.16.
 ## v35.16 - FPS COUNTER SCREEN RATE
 
 Co-op hunt while he was away. His 10-27 question: a 144 cap can still show 60 fps when the browser supplies 60 screen refreshes per second.

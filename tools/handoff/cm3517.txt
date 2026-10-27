@@ -1,0 +1,7 @@
+v35.17: fog of war fixes
+
+with fog of war on: ground in plain view counts as seen whichever way you face (facing west it did not, so it was never marked explored); turning in Superhot opens the live view at once and marks the ground you look at; wall hits in sight always show their puff and sparks; smoke clouds in plain view show; pixel look blasts out of sight stay hidden
+
+Check 35.17. Fails on v35.16.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

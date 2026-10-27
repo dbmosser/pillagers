@@ -3724,7 +3724,7 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.16';
+var VER='35.17';
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -35795,21 +35795,25 @@ function fowAt(wx,wy){
 // I look at it". With fog of war on, tracers, sparks, smoke puffs and blasts draw only where he (or his mate, with shared sight) can see right
 // now, by the same shapes the fog sheet cuts open (the sight cone out to VF, and the plain circle of AMBR); the ground itself stays drawn
 // under the fog. Off, everything draws as before.
-function fowLive(x,y){
+function fowLive(x,y,r){
   if(CFG.fogWar!==1||!G||!G.player||G.sim) return true;
-  var p=G.player, dx, dy, i, e, R=VF(), A2=Math.max(70,AMBR());
-  A2*=A2;
-  if(G._fwlT!==G.t||!G._fwlE){
-    G._fwlT=G.t; G._fwlE=[];
+  var p=G.player, dx, dy, d, k, i, e, R=VF(), A=Math.max(70,AMBR()), r0=(r>0)?+r:0;
+  // cw-fowfix (review 10-27): Superhot holds G.t still while he turns, so the shapes are also rebuilt when he moves or turns, and
+  // render2D drops them once a frame at the air pass (a mate moves while G.t stands still)
+  if(G._fwlT!==G.t||G._fwlX!==p.x||G._fwlY!==p.y||G._fwlF!==p.face||!G._fwlE){
+    G._fwlT=G.t; G._fwlX=p.x; G._fwlY=p.y; G._fwlF=p.face; G._fwlE=[];
     var eyes=[{x:p.x,y:p.y,f:p.face}], segs=G.vseg||G.map.segs;
     if(CFG.sharedSight!==0&&NET.on){ try{ var M=netMates(); for(i=0;i<M.length;i++) eyes.push({x:M[i].x,y:M[i].y,f:M[i].f}); }catch(_m){} }
     for(i=0;i<eyes.length;i++){ e=eyes[i]; if(!isFinite(e.x)||!isFinite(e.y)||!isFinite(e.f)) continue; var poly=buildVisPoly(e.x,e.y,e.f,segs); if(poly&&poly.length>=3) G._fwlE.push({x:e.x,y:e.y,poly:poly}); }
   }
-  dx=x-p.x; dy=y-p.y; if(dx*dx+dy*dy<A2) return true;
-  for(i=0;i<G._fwlE.length;i++){ e=G._fwlE[i]; dx=x-e.x; dy=y-e.y; if(dx*dx+dy*dy<A2) return true; if(dx*dx+dy*dy<=R*R&&fowInPoly(x,y,e.poly)) return true; }
+  dx=x-p.x; dy=y-p.y; if(Math.sqrt(dx*dx+dy*dy)-r0<A) return true;
+  for(i=0;i<G._fwlE.length;i++){ e=G._fwlE[i]; dx=x-e.x; dy=y-e.y; d=Math.sqrt(dx*dx+dy*dy);
+    if(d-r0<A||d<=r0+6) return true;
+    // cw-fowfix: tested r0+6 units toward the eye: a wall hit lies on the edge of the shape, and a smoke cloud (r0, its radius) is a wall
+    // to sight itself, so from outside only its near edge is ever in the shape
+    if(d-r0<=R){ k=(r0+6)/d; if(fowInPoly(x-dx*k,y-dy*k,e.poly)) return true; } }
   return false;
-}
-function fowInPoly(x,y,poly){ var c=false,i,j,a,b; for(i=0,j=poly.length-1;i<poly.length;j=i++){ a=poly[i]; b=poly[j]; if(((a.y>y)!==(b.y>y))&&(x<(b.x-a.x)*(y-a.y)/(b.y-a.y)+a.x)) c=!c; } return c; }
+}function fowInPoly(x,y,poly){ var w=0,i,j,a,b,c; for(i=0,j=poly.length-1;i<poly.length;j=i++){ a=poly[j]; b=poly[i]; c=(b.x-a.x)*(y-a.y)-(x-a.x)*(b.y-a.y); if(a.y<=y){ if(b.y>y&&c>0) w++; } else if(b.y<=y&&c<0) w--; } return w!==0; }   // cw-fowfix: the nonzero rule, as the fog sheet fills the same shape (buildVisPoly folds over itself facing west)
 function fowMark(){
   if(CFG.fogWar!==1||!G||!G.seen||G.sim||!G.player) return;
   fowEnsure();
@@ -35818,8 +35822,8 @@ function fowMark(){
   for(y=cy-r0;y<=cy+r0;y++){ if(y<0||y>=S.h) continue;
     for(x=cx-r0;x<=cx+r0;x++){ if(x<0||x>=S.w) continue; k=y*S.w+x; if(F[k]) continue;
       dx=(x+0.5)*FOG_CELL-p.x; dy=(y+0.5)*FOG_CELL-p.y; if(dx*dx+dy*dy<=near*near){ F[k]=1; n++; } } }
-  if(!(G._fowT>G.t-0.1)){
-    G._fowT=G.t;
+  if(!(G._fowT>G.t-0.1)||(G._fowT===G.t&&(G._fowF!==p.face||G._fowX!==p.x||G._fowY!==p.y))){   // cw-fowfix: Superhot holds G.t still while he turns
+    G._fowT=G.t; G._fowF=p.face; G._fowX=p.x; G._fowY=p.y;
     var eyes=[{x:p.x,y:p.y,f:p.face}], R=Math.max(VF(),AMBR()), segs=G.vseg||G.map.segs;
     if(CFG.sharedSight!==0&&NET.on){ try{ var M=netMates(); for(i=0;i<M.length;i++) eyes.push({x:M[i].x,y:M[i].y,f:M[i].f}); }catch(_m){} }
     for(i=0;i<eyes.length;i++){
@@ -41513,6 +41517,7 @@ if(ne.kind==='listener'&&ne.state==='dormant') continue;
 // middle of COLD STORAGE. Per-map dressing belongs behind a def.dressing hook.
   // air pass: bullets, sparks, puffs, throws, smoke
   wc.globalCompositeOperation='lighter';
+  G._fwlE=null;   // cw-fowfix: fowLive rebuilds its sight shapes once a frame
   var _BLS=(G.fxBullets&&G.fxBullets.length)?G.bullets.concat(G.fxBullets):G.bullets;   // v16.21: with the tracers of the rest of the party
   for(i=0;i<_BLS.length;i++){
 var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1; if(!fowLive(b.x,b.y)) continue;   // cw-fow: no tracer out of sight with fog of war on
@@ -41584,7 +41589,7 @@ var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1; if(!fowLive(b.x,b.y)) contin
   }
   for(i=0;i<G.smokes.length;i++){
     var sm=G.smokes[i];
-    if(!fowLive(sm.x,sm.y)) continue;   // v28.xx (cw-cx-fowlive-rest): lingering smoke is live action too
+    if(!fowLive(sm.x,sm.y,sm.r)) continue;   // v28.xx (cw-cx-fowlive-rest): lingering smoke is live action too; cw-fowfix: by its near edge (smoke blocks sight, so its middle is never in sight from outside)
     var fade=clamp(Math.min(sm.t*3,(sm.life-sm.t)/1.5),0,1);
     wc.fillStyle='rgba(150,160,168,'+(.30*fade)+')';
     for(j=0;j<6;j++){
@@ -53833,7 +53838,7 @@ function pixFxImage(kind,x,y,r){
 function pixBoomDraw(){
   var n=0,Z=ZOOM(),i,j,b,t,d,q,x,y,z,a,k,R,f,sp,vx0=VX-240,vy0=VY-120,vx1=VX+W/Z+240,vy1=VY+H/Z+300;
   for(i=BOOMS.length-1;i>=0;i--){
-    b=BOOMS[i];t=(G.t||0)-b.t0;if(b.g!==G||t>4.6||t<-2){BOOMS.splice(i,1);continue;}if(t<0||b.x<vx0||b.x>vx1||b.y<vy0||b.y>vy1)continue;
+    b=BOOMS[i];t=(G.t||0)-b.t0;if(b.g!==G||t>4.6||t<-2){BOOMS.splice(i,1);continue;}if(t<0||b.x<vx0||b.x>vx1||b.y<vy0||b.y>vy1)continue;if(!fowLive(b.x,b.y))continue; // cw-fowfix: the pixel look blast is gated as gfxBoomDraw is
     wc.save();try{
       wc.globalCompositeOperation='source-over';
       for(j=0;j<b.deb.length;j++){
@@ -54762,7 +54767,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.16: The fps counter adds screen 60 when a settled screen rate is more than 5 below the selected cap. Frame timing and quality stay the same. Check 35.16 fails on v35.15',
+  now:'v35.17: with fog of war on: ground in plain view counts as seen whichever way you face (facing west it did not, so it was never marked explored); turning in Superhot opens the live view at once and marks the ground you look at; wall hits in sight always show their puff and sparks; smoke clouds in plain view show; pixel look blasts out of sight stay hidden Check 35.17 fails on v35.16',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

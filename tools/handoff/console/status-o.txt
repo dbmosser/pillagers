@@ -1,1 +1,1 @@
-10-27 17:46 gate: shipping cw-cx-fpsscreen (o-93-fps-counter-screen-rate, codex)
+10-27 17:55 waiting for RAM: 1 GB free, need 3 (o-93-fps-counter-screen-rate)
