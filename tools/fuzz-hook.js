@@ -3,8 +3,8 @@
 // poll that returns a compact state object) and never changes the game, its code or its seeded random stream.
 // ASCII only. Evaluated once per page load; a second evaluation returns 'already'.
 (function(){
-  if(window.__fz&&window.__fz.v===4) return 'already';
-  var Z=window.__fz={v:4,errs:[],raf:performance.now(),frames:0,lastPoll:performance.now(),cmap:{},dead:0};
+  if(window.__fz&&window.__fz.v===5) return 'already';
+  var Z=window.__fz={v:5,errs:[],raf:performance.now(),frames:0,lastPoll:performance.now(),cmap:{},dead:0};
   function push(k,m,w){
     if(Z.errs.length>=40) return;
     Z.errs.push({k:k,m:String(m==null?'':m).slice(0,400),w:String(w||'').slice(0,400)});
@@ -46,10 +46,24 @@
   })();
   // 3. the game's own crash list: what it caught is read as seen, so only new entries (or a repeat count that grew) are reported
   try{ (P.crashes||[]).forEach(function(c){ Z.cmap[c.kind+'|'+c.msg]=c.n||1; }); }catch(e){}
+  // 3b. 10-27: why a page went away. The robot reads this back from the fresh page (fz:bye) when its hook is gone mid raid.
+  function bye(why,extra){
+    var o={t:Date.now(),why:why};
+    try{ o.st=state; }catch(e){}
+    try{ o.stale=!!document.getElementById('stalesave'); o.crash=!!document.getElementById('crashnote'); }catch(e){}
+    try{ o.ss=SAVE_STALE; }catch(e){}
+    try{ o.cr=CRASH_RESTART; }catch(e){}
+    try{ o.rr=RESTORE_RELOAD; }catch(e){}
+    try{ o.href=location.href; }catch(e){}
+    if(extra) for(var k in extra) o[k]=extra[k];
+    try{ sessionStorage.setItem('fz:bye',JSON.stringify(o)); }catch(e){}
+  }
+  window.addEventListener('pagehide',function(){ if(!Z.dead) bye('pagehide'); });
   // 4. watchdog: if the driver stops polling (killed when he came back), the page lets go of the CPU on its own
   setInterval(function(){
     if(Z.dead||performance.now()-Z.lastPoll<45000) return;
     Z.dead=1;
+    bye('watchdog',{age:Math.round(performance.now()-Z.lastPoll)});
     try{ if(G&&!G.over&&state==='raid') endRaid('abandon'); }catch(e){}
     try{ location.href='about:blank'; }catch(e){}
   },5000);

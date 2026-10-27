@@ -213,6 +213,23 @@ $script:Hook=[IO.File]::ReadAllText($T+'\fuzz-hook.js')
 # (one at 00:22). So each robot window also gets the dead report address a fixed test copy has (mkfixture.ps1), whatever copy it runs.
 $DeadDrop="try{ LOCAL_DROP='http://127.0.0.1:9/telemetry'; }catch(e){}"
 function Block-Collector(){ Cmd 'Network.enable'; Cmd 'Network.setBlockedURLs' '{"urls":["*:8799/*"]}' }
+# 10-27: a robot page that loads afresh mid raid has lost the hook, and the next poll threw "reading 'poll'" (21 on the spare PC since 34.83).
+# The run now writes down where the page is, how it got there and what the hook saw as it left (fz:bye), puts the hook back, and carries on.
+$RELOADQ='(function(){ var o={}; try{ o.href=location.href; }catch(e){} try{ var n=performance.getEntriesByType("navigation")[0]; o.nav=n?n.type:"?"; }catch(e){} try{ o.age=Math.round(performance.now()); }catch(e){} try{ o.disc=!!document.wasDiscarded; o.rs=document.readyState; o.vis=document.visibilityState; }catch(e){} try{ o.gx=typeof window.__gx; o.fz=typeof window.__fz; }catch(e){} try{ o.stale=!!document.getElementById("stalesave"); o.crash=!!document.getElementById("crashnote"); }catch(e){} try{ o.bye=sessionStorage.getItem("fz:bye")||""; }catch(e){} try{ var k=[],i,x; for(i=0;i<localStorage.length;i++){ x=localStorage.key(i); if(x&&x.indexOf("salvagerun")===0) k.push(x+"="+String(localStorage.getItem(x)||"").length); } o.ls=k.join(","); }catch(e){} return JSON.stringify(o); })()'
+function Is-HookLost([string]$m){ return ($m -like "*reading 'poll'*" -or $m -like '*__fz is not defined*' -or $m -like '*__gx is not a function*' -or $m -like "*InputObject' because it is null*") }
+function Rehook([int]$sec){
+  $info=''; try{ $info=[string](Ev $RELOADQ 5000) }catch{ $info='no answer: '+$_.Exception.Message }
+  for($i=0;$i -lt $sec;$i++){
+    try{ if((Ev "typeof window.__gx==='function'&&typeof window.__deploy==='function'") -eq $true){
+      $r=Gx $script:Hook
+      if($r -ne 'installed' -and $r -ne 'already'){ return ($info+' | hook said '+$r) }
+      [void](Gx $DeadDrop)
+      return ($info+' | hook back')
+    } }catch{}
+    Start-Sleep 1
+  }
+  return ($info+' | no game page')
+}
 function Open-Page(){
   $base='http://127.0.0.1:'+$Port
   Pg-Drop2   # a player 2 window from a demo2p raid is closed with every other page just below
@@ -312,7 +329,7 @@ function Add-Problem([string]$kind,[string]$msg,[string]$where){
 $POLLX='JSON.stringify(window.__fz.poll())'
 
 # ---------------------------------------------------------------- demo2p: the real 2-player party rig (10-18)
-$script:p2Info=''; $script:p2Dead=$false; $script:p2StallAt=-99999.0; $script:scMis=0; $script:scRep=$false
+$script:p2Info=''; $script:p2Dead=$false; $script:p2StallAt=-99999.0; $script:scMis=0; $script:scRep=$false; $script:p2Re=0; $script:padSeed=0
 $SCJS='JSON.stringify({m:(ARCADE.mine|0),t:(ARCADE.mate|0),r:(state==="raid"&&G&&G.arcade&&!G.over)?1:0})'
 $P1PROBE='(function(){ try{ window.__fz.lastPoll=performance.now(); return JSON.stringify({inn:netInCount(),same:NET.same,arc:ARCADE.on?1:0,raid:(state==="raid"&&G)?1:0,garc:(G&&G.arcade)?1:0,err:NET.err||"",st:NET.status||""}); }catch(e){ return "ERR "+e; } })()'
 $P2PROBE='(function(){ try{ window.__fz.lastPoll=performance.now(); return JSON.stringify({inn:netInCount(),same:NET.same,role:NET.role,arc:ARCADE.on?1:0,arole:ARCADE.role,raid:(state==="raid"&&G)?1:0,garc:(G&&G.arcade)?1:0,wantIn:ARCADE.wantIn?1:0,err:NET.err||"",st:NET.status||"",padIx:NET.padIx,padOther:NET.padOther,pads:(navigator.getGamepads?navigator.getGamepads().length:-1),pcalls:(window.__fzpad?window.__fzpad.calls:-1)}); }catch(e){ return "ERR "+e; } })()'
@@ -322,7 +339,7 @@ function P2-PadLog(){ try{ Pg-Use $script:padPage; return [string](Gx 'window.__
 # Starts the 2-player demo as the title row does it, then opens player 2 in a window of its own and gets both into one raid.
 # Returns a string with "ok":true, or ERR text saying where it stopped (that text is the start problem).
 function Start-2P([int]$mapIx,[int]$rseed){
-  $script:p2Info=''; $script:p2Dead=$false; $script:p2StallAt=-99999.0; $script:scMis=0; $script:scRep=$false
+  $script:p2Info=''; $script:p2Dead=$false; $script:p2StallAt=-99999.0; $script:scMis=0; $script:scRep=$false; $script:p2Re=0
   if($script:PadJs -eq ''){ return 'ERR tools\fuzz-pad.js is missing' }
   $pair='fz'+$rseed.ToString('x')
   # Two ways the pad reaches player 2, as in a real party: even raid seeds, the player 2 window reads the pad itself; odd raid seeds, Chrome feeds only the window
@@ -359,7 +376,7 @@ function Start-2P([int]$mapIx,[int]$rseed){
     $r=Gx $script:Hook
     if($r -ne 'installed' -and $r -ne 'already'){ return ('ERR player 2 hook install said: '+$r) }
     [void](Gx $DeadDrop)
-    $padSeed=[int]($rseed -bxor 1540483477)
+    $padSeed=[int]($rseed -bxor 1540483477); $script:padSeed=$padSeed
     if($padMode -eq 'own'){ $r=Gx ($script:PadJs.Replace('__SEED__',[string]$padSeed)) } else { $r=Gx $script:BlindJs }
     if($r -ne 'installed' -and $r -ne 'already'){ return ('ERR the simulated pad install (player 2 window, '+$padMode+') said: '+$r) }
   }catch{ return 'ERR the player 2 window setup: '+$_.Exception.Message }
@@ -402,6 +419,22 @@ function P2-Poll([string]$mode){
   $q=$null; $err=''
   try{ Pg-Use 'p2'; $q=(Ev $POLLX 20000) | ConvertFrom-Json }catch{ $err=$_.Exception.Message }
   finally{ try{ Pg-Use 'p1' }catch{} }
+  if($err -ne '' -and (Is-HookLost $err) -and $script:p2Re -lt 2){
+    $script:p2Re++; $info=''
+    try{
+      Pg-Use 'p2'
+      $info=Rehook 15
+      if($info -like '*| hook back'){
+        if($script:padPage -eq 'p2'){ $r=Gx ($script:PadJs.Replace('__SEED__',[string]$script:padSeed)) } else { $r=Gx $script:BlindJs }
+        if($r -ne 'installed' -and $r -ne 'already'){ $info+=' | pad said '+$r }
+      }
+    }catch{ $info+=' | rehook threw '+$_.Exception.Message }
+    finally{ try{ Pg-Use 'p1' }catch{} }
+    $script:p2Info+=' RELOADED'
+    Add-Problem 'p2:reload' ('the player 2 page loaded afresh mid raid ('+$mode+'): '+$err) $info
+    if($info -notlike '*| hook back'){ $script:p2Dead=$true }
+    return
+  }
   if($err -ne ''){
     $script:p2Dead=$true
     if($err -like 'CDP timeout*'){ Add-Problem 'p2:hang' ('the player 2 page stopped answering for 10+ s ('+$mode+')') ('padlog='+(P2-PadLog)) }
@@ -569,7 +602,12 @@ function Run-Raid([string]$mode,[int]$rseed,[int]$secs){
       if(($tk % 5) -eq 0){
         try{ $o=(Ev $POLLX 20000) | ConvertFrom-Json }
         catch{
-          if($_.Exception.Message -like 'EVAL:*'){ Add-Problem 'poll' $_.Exception.Message ''; $reason='poll'; $script:needReset=$true; break }
+          $em=$_.Exception.Message
+          if(($em -like 'EVAL:*' -or $em -like "*InputObject' because it is null*") -and (Is-HookLost $em)){
+            $info=''; try{ $info=[string](Ev $RELOADQ 5000) }catch{ $info='no answer: '+$_.Exception.Message }
+            Add-Problem 'reload' ('the page loaded afresh mid raid ('+$mode+'): '+$em) $info; $reason='reload'; $script:needReset=$true; break
+          }
+          if($em -like 'EVAL:*'){ Add-Problem 'poll' $em ''; $reason='poll'; $script:needReset=$true; break }
           throw
         }
         foreach($e in @($o.errs)){ if($e){ Add-Problem ([string]$e.k) ([string]$e.m) ([string]$e.w) } }
