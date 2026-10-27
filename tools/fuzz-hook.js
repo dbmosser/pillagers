@@ -3,8 +3,8 @@
 // poll that returns a compact state object) and never changes the game, its code or its seeded random stream.
 // ASCII only. Evaluated once per page load; a second evaluation returns 'already'.
 (function(){
-  if(window.__fz&&window.__fz.v===5) return 'already';
-  var Z=window.__fz={v:5,errs:[],raf:performance.now(),frames:0,lastPoll:performance.now(),cmap:{},dead:0};
+  if(window.__fz&&window.__fz.v===6) return 'already';
+  var Z=window.__fz={v:6,errs:[],raf:performance.now(),frames:0,lastPoll:performance.now(),cmap:{},dead:0};
   function push(k,m,w){
     if(Z.errs.length>=40) return;
     Z.errs.push({k:k,m:String(m==null?'':m).slice(0,400),w:String(w||'').slice(0,400)});
@@ -61,7 +61,9 @@
   window.addEventListener('pagehide',function(){ if(!Z.dead) bye('pagehide'); });
   // 4. watchdog: if the driver stops polling (killed when he came back), the page lets go of the CPU on its own
   setInterval(function(){
-    if(Z.dead||performance.now()-Z.lastPoll<45000) return;
+    // 10-27: was 45 s; a slow driver on the busy spare PC went past that between polls and the page sent itself away (every reload today).
+    // Its job is only to free the CPU once the driver is gone, so 3 minutes is plenty.
+    if(Z.dead||performance.now()-Z.lastPoll<180000) return;
     Z.dead=1;
     bye('watchdog',{age:Math.round(performance.now()-Z.lastPoll)});
     try{ if(G&&!G.over&&state==='raid') endRaid('abandon'); }catch(e){}

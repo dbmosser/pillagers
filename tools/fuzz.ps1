@@ -508,7 +508,7 @@ function Run-Raid([string]$mode,[int]$rseed,[int]$secs){
     return $res
   }
   [void](Work-Now 'p1' $true)   # this raid's work times start from zero (the host page lives on across raids)
-  $endPhase=$false; $endAt=0.0; $reason=''; $stuckAcc=0.0; $lastX=$null; $lastY=$null; $menuTicks=0; $dragPts=$null; $dragI=0
+  $endPhase=$false; $endAt=0.0; $reason=''; $stuckAcc=0.0; $lastX=$null; $lastY=$null; $menuTicks=0; $dragPts=$null; $dragI=0; $p2At=-99.0
   $lUntil=0; $rUntil=0; $tx=$ScrCX; $ty=$ScrCY; $bagC=@(); $hotC=@(); $baseGb=@(); $baseSet=$false; $stallAt=-99999.0; $stuckRep=$false; $o=$null
   $a=New-Object double[] 24; $next=0; $selfDone=(-not $SelfTest -or $script:selfRan); $noPoll=0; $lastAm=$null; $menuPolls=0; $polls=0
   $dirs=@(@('KeyW'),@('KeyW','KeyD'),@('KeyD'),@('KeyS','KeyD'),@('KeyS'),@('KeyS','KeyA'),@('KeyA'),@('KeyW','KeyA'))
@@ -595,8 +595,9 @@ function Run-Raid([string]$mode,[int]$rseed,[int]$secs){
         $dx=($tx-$script:mx)*0.3+($a[18]-0.5)*6; $dy=($ty-$script:my)*0.3+($a[19]-0.5)*6
         if([Math]::Abs($dx)+[Math]::Abs($dy) -ge 2){ MMove ([int]($script:mx+$dx)) ([int]($script:my+$dy)) }
       }
-      # ---- the player 2 window (demo2p): polled every 10th tick, its problems are kind p2:...
-      if($mode -eq 'demo2p' -and ($tk % 10) -eq 3){ P2-Poll $mode }
+      # ---- the player 2 window (demo2p): polled every 5 s, its problems are kind p2:...
+      # 10-27: it was every 10th tick; on the busy spare PC ten ticks ran past 45 s and the page's own watchdog sent it away (every p2:reload today)
+      if($mode -eq 'demo2p' -and ($el-$p2At) -ge 5){ $p2At=$el; P2-Poll $mode }
       if(($tk % 400) -eq 7){ Gfx-Keep $res }   # the frame timer every 20 s, so a raid that ends in a death still has its numbers
       # ---- the poll, every 5th tick
       if(($tk % 5) -eq 0){
