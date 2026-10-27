@@ -4604,3 +4604,9 @@
 2026-10-26 23:28:47 FUZZ START seed=517635003 minutes=60 raidsec=300 port=9331 srv=8806 build=34.92 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
 2026-10-26 23:30:34 FUZZ ERROR Unable to connect to the remote server at 220
 2026-10-26 23:30:35 FUZZ END raids=2 problems=2 unique=2 reason=ERROR: Unable to connect to the remote server minutes=8.2
+2026-10-26 23:33:45 FUZZ ERROR CDP timeout at 146
+2026-10-26 23:33:36 raid 1 demo2p raidSeed=1726170520 map=0 god=0 sec=281 end=hang problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=5421 score=25 ents=44 travelPx=21240 fires=148 menuPct=20 heapMB=68 p2=link_4s_join_7s_pad_own gfx=14801/10.25/20.25/657/1 gfx2=15327/10.25/20.25/706/1 work=14659/7.25/18.75/33.25 work2=15329/6.25/17.75/33.25 build=34.92
+2026-10-26 23:33:58 FUZZ END raids=0 problems=0 unique=0 reason=ERROR: CDP timeout minutes=1.4
+2026-10-26 23:38:38 FUZZ ERROR CDP timeout at 146
+2026-10-26 23:39:02 FUZZ END raids=0 problems=0 unique=0 reason=ERROR: CDP timeout minutes=1.3
+2026-10-26 23:39:12 raid 2 demo2p raidSeed=1747647057 map=0 god=0 sec=302 end=clock-end problems=0 newUnique=0 totalUnique=1 totalProblems=1 events=6716 score=0 ents=50 travelPx=17999 fires=118 menuPct=11 heapMB=72 p2=link_3s_join_6s_pad_fwd gfx=20014/10.25/20.25/367/1 gfx2=19708/10.25/20.25/440/1 work=25308/7.75/19.25/28.75 work2=25979/5.75/17.75/28.25 build=34.92
