@@ -1,1 +1,1 @@
-10-27 01:26 pacing your plan: week 43% used (the 80% line is at 27.3% now), 5-hour window 10%
+10-27 07:15 running 119r-export-and-report-reds on Claude Code (your plan: week 44% of the 44.7% line, 5-hour 4%)

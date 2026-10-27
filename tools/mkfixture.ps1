@@ -6168,6 +6168,18 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'34.97',what:'cw-exportguard: the flight recorder export does not throw on a run record with no outcome (it prints a question mark), so the play data export and the demo run report still go out',
+   run:function(){
+     if(typeof buildExport!=='function') return 'SKIP: no buildExport';
+     var keep=P.log, t, bad=[];
+     try{
+       __runPrep(); __topClear(); __cleanProfile();
+       P.log=[{n:1,ver:'1.00',mapName:'zqx'},{n:2,outcome:'extract',haul:10}];
+       try{ t=buildExport(); }catch(e){ return 'the export threw on a record with no outcome: '+(e&&e.message||e); }
+       if(typeof t!=='string'||t.indexOf('#1 v1.00 ?')<0) bad.push('the record with no outcome is not printed with a question mark');
+       if(t.indexOf('#2 v?')<0||t.indexOf('EXTRACT')<0) bad.push('a normal record is missing from the export');
+       return bad.length?bad.join('; '):null;
+     } finally { P.log=keep; try{ __topClear(); }catch(_c){} } }},
   {v:'34.96',what:'cw-p2nan, robot report p2:nan: a machine copy in the player 2 window whose spot went broken (not a number) snaps back to where the host last put it on the next frame; a copy at a good spot still eases toward the host spot instead of jumping',
    run:function(){
      if(!window.__deploy||!window.__endRaid||typeof NET!=='object'||!NET||typeof netEntsEase!=='function'||typeof netEntMake!=='function') return 'SKIP: no raid or party here';

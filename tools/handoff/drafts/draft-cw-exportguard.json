@@ -1,0 +1,12 @@
+{
+    "title":  "EXPORT SURVIVES A RUN WITH NO OUTCOME",
+    "why":  "The flight recorder export threw on any run record with no outcome field, which also killed the demo run report post and the play data page. The line now prints a question mark for it.",
+    "now":  "The play data export and the demo run report no longer crash on an odd run record.",
+    "edits":  [
+                  {
+                      "anchor":  "\u0027 \u0027+r.outcome.toUpperCase()+\u0027 [\u0027",
+                      "replacement":  "\u0027 \u0027+String(r.outcome||\u0027?\u0027).toUpperCase()+\u0027 [\u0027"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027cw-exportguard: the flight recorder export does not throw on a run record with no outcome (it prints a question mark), so the play data export and the demo run report still go out\u0027,\n   run:function(){\n     if(typeof buildExport!==\u0027function\u0027) return \u0027SKIP: no buildExport\u0027;\n     var keep=P.log, t, bad=[];\n     try{\n       __runPrep(); __topClear(); __cleanProfile();\n       P.log=[{n:1,ver:\u00271.00\u0027,mapName:\u0027zqx\u0027},{n:2,outcome:\u0027extract\u0027,haul:10}];\n       try{ t=buildExport(); }catch(e){ return \u0027the export threw on a record with no outcome: \u0027+(e\u0026\u0026e.message||e); }\n       if(typeof t!==\u0027string\u0027||t.indexOf(\u0027#1 v1.00 ?\u0027)\u003c0) bad.push(\u0027the record with no outcome is not printed with a question mark\u0027);\n       if(t.indexOf(\u0027#2 v?\u0027)\u003c0||t.indexOf(\u0027EXTRACT\u0027)\u003c0) bad.push(\u0027a normal record is missing from the export\u0027);\n       return bad.length?bad.join(\u0027; \u0027):null;\n     } finally { P.log=keep; try{ __topClear(); }catch(_c){} } }},"
+}

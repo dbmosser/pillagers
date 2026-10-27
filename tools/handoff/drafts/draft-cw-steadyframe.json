@@ -1,0 +1,12 @@
+{
+    "title":  "FROZEN REDRAW STAYS STEADY",
+    "why":  "Two spare PC checks (9.07, 33.51) failed only on the slow machine: a redraw of a frozen frame fed the auto resolution window with a stale frame gap, so the scale could move between two redraws. Redraws with no clock step no longer steer quality.",
+    "now":  "A redraw that does not advance the clock never changes the auto resolution.",
+    "edits":  [
+                  {
+                      "anchor":  "if(state===\u0027raid\u0027\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!G.sim\u0026\u0026!HID.fromWorker\u0026\u0026!document.hidden\u0026\u0026DRS.frameStart!==undefined){",
+                      "replacement":  "if(dt\u003e0\u0026\u0026state===\u0027raid\u0027\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!G.sim\u0026\u0026!HID.fromWorker\u0026\u0026!document.hidden\u0026\u0026DRS.frameStart!==undefined){   // v28.xx (cw-steadyframe): a frozen redraw (dt 0) is not a real frame, so it never feeds the auto resolution window; on a slow PC its stale frame gap pushed the scale down between two redraws and the picture changed"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a frozen redraw (dt 0) does not feed the auto resolution window, so two redraws of a frozen frame stay identical on a slow PC\u0027,\n   run:function(){\n     if(typeof DRS===\u0027undefined\u0027||typeof drsTick!==\u0027function\u0027) return \u0027SKIP: no auto resolution\u0027;\n     __forceSize(1920,1080); __resetCfg(); __pinDefaults(0);\n     __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n     for(var f=0;f\u003c3;f++) __loop(performance.now()+f*16.7);\n     if(document.hidden) return \u0027SKIP: page hidden, the auto resolution does not tick\u0027;\n     DRS.win=[]; DRS.slowT=0; DRS.fastT=0; DRS.frameGap=40; DRS.frameStart=performance.now();\n     for(f=0;f\u003c8;f++) __frame(0);\n     var n=DRS.win?DRS.win.length:0;\n     if(n||DRS.slowT\u003e0) return \u0027frozen redraws fed the auto resolution window (\u0027+n+\u0027 samples, slow time \u0027+DRS.slowT.toFixed(0)+\u0027)\u0027;\n     return null; }},"
+}

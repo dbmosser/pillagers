@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v34.97 - EXPORT SURVIVES A RUN WITH NO OUTCOME
+
+Co-op hunt while he was away. The flight recorder export threw on any run record with no outcome field, which also killed the demo run report post and the play data page. The line now prints a question mark for it.
+
+MEASURED. Check 34.97 passes, and fails on v34.96.
 ## v34.96 - MACHINES IN THE PLAYER 2 WINDOW COME BACK FROM A BROKEN SPOT
 
 Co-op hunt while he was away. Found by the spare PC robots (p2:nan, two runs on 34.83, none since): in the player 2 window a few machines ended up at a spot that was not a number, so they vanished from the screen and never came back while the host kept sending their real spot. The step that slides a copy toward the host spot and the check that snaps a copy that is far off both stay broken on such a spot. A copy at a broken spot now snaps straight to the host spot on the next frame.

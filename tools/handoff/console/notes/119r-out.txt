@@ -1,0 +1,8 @@
+34.51: threw TypeError: Cannot read properties of undefined (reading 'toUpperCase')
+32.92: threw: TypeError: Cannot read properties of undefined (reading 'toUpperCase')
+    at http://localhost:8806/fixture.html?kz0=1:57563:54
+    at Array.forEach (<anonymous>)
+    at buildExport (http://localhost:8806/fixture.html?kz0=1:57559:9)
+    at Object.run (http://localhost:8806/fixture.html?kz0=1:
+32.93: ONE: the run end made 0 posts, not 1; TWO: player 2 report is not tagged seat p2 (0 posts)
+ALL DONE

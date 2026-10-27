@@ -1,0 +1,7 @@
+v34.97: export survives a run with no outcome
+
+The play data export and the demo run report no longer crash on an odd run record.
+
+Check 34.97. Fails on v34.96.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
