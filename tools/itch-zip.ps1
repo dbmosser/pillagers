@@ -1,5 +1,5 @@
 # itch-zip.ps1 (2026-10-20): builds tools\publish\pillagers-web.zip for itch. Called by tools/handoff/ship.sh (every ship) and
-# tools/itch-daily.sh (the daily catch-up), so both upload the same thing:
+# tools/itch-daily.sh (the catch-up the runner starts within about 10 minutes of any new build, his order 10-27), so both upload the same thing:
 #   index.html                 the game (the caller copies dark_raiders.html there first)
 #   attract.mp4 / attract.webm the title's gameplay clip, when one sits beside the game (v21.17)
 #   the licence texts          that must travel with the game (tools/PUBLISH.md): tools\fonts\OFL-*.txt for the five embedded fonts and

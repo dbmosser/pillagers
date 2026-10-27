@@ -16,7 +16,9 @@ Rewritten 2026-10-21 (coordinator job coord-04) to his release answers 71 to 79 
 
 The game is one self-contained HTML file. tools/itch-zip.ps1 builds tools/publish/pillagers-web.zip:
 index.html (the game), the title's attract clip when there is one, and the licence texts (below).
-Every ship (tools/handoff/ship.sh) and the once-a-day catch-up (tools/itch-daily.sh) push that zip with butler to ITCH_TARGET.
+Every ship (tools/handoff/ship.sh) pushes that zip with butler to ITCH_TARGET. His order of 10-27 ("Itch should also always get the latest build"):
+the runner (tools/nightly.sh) checks every pass, and when the build in git is newer than tools/handoff/nightly/itch-ver.txt it runs
+the catch-up (tools/itch-daily.sh), so itch has every build within about 10 minutes even when a ship skipped the upload.
 The butler key lives in his Windows user environment; it is never printed. He never uploads by hand.
 
 ## The itch page settings (set once on the page)
