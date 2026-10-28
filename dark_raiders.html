@@ -3730,8 +3730,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.55';
-var VER_AT='2026-10-28 00:56';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.56';
+var VER_AT='2026-10-28 01:07';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19741,6 +19741,16 @@ function padXMode(mateDown){
   if(inCombatNow()&&!p.hand&&p.wep&&p.ammo<p.wep.mag&&(rlHave(p)||p.reloading>0)) return 'KeyR';
   return (G.nearContainer||G.nearPad||G.nearDoor||G.nearPed||G.nearForge||(G.nearSeal&&!G.nearSeal.done)||(G.nearStray&&G.nearStray.found&&!G.nearStray.hostile))?'KeyE':'KeyR';
 }
+// v28.xx (cw-cx-xreloadsearch): the prompt and a fresh X press share the active-reload override; revives still win.
+function padXAction(mateDown){
+  if(mateDown===undefined){ mateDown=false; try{ mateDown=!!(NET.on&&typeof netMateDown==='function'&&netMateDown(G.player)>=0); }catch(_xm){} }
+  var mode=padXMode(mateDown), p=G&&G.player;
+  if(mode==='KeyE'&&p&&!p.downed&&p.reloading>0&&p.rlTot>0&&!G.nearDown&&!mateDown){
+    var f=1-p.reloading/p.rlTot;
+    if(f>=arLo(p)&&f<=arHi(p)) mode='KeyR';
+  }
+  return mode;
+}
 // v28.xx (cw-cx-padlost): J8, "pad lost", then "press a"; poll even in the covered window.
 // v28.xx (cw-cx-o07-reconnect): J8 and the disconnect critic: the existing action says reconnect while its pad is absent.
 // v34.67 (cw-demorcards), the critic on j8-p1-press-a and j8-p2-press-a (2 each): "the screen's real job, press a after a pad was lost, is a small title above a pause menu, so the player can't tell what happened". The title names the lost pad (p1 or p2, in that player's colour) and the same words as before; a career window with no pair keeps the bare words.
@@ -20174,13 +20184,24 @@ function pollPad(){
       // the roll began: X pressed while rolling onto a box held R for the whole hold and never searched. A roll reads neither E
       // nor R, so the choice now waits, holding nothing, until the reach has been looked up again after the press (G.nearN), and
       // the search grace starts then. Out of a roll, or downed, it is chosen on the press as before.
-      if(_xDown&&!PAD.xWas){ PAD.xMode=null; PAD.xNearN=(G.player&&G.player.roll>0&&!G.player.downed)?(G.nearN||0):null; }
+      if(_xDown&&!PAD.xWas){ PAD.xMode=null; PAD.xReloadGun=null; PAD.xNearN=(G.player&&G.player.roll>0&&!G.player.downed)?(G.nearN||0):null; }
       // v21.74, from the whole-game bug hunt of 2026-10-08 (K14): X HOLDS E AT THE SEAL AND AT A SURVIVOR. Neither was on this list,
       // so at THE SEAL (which stands clear of every wall, so usually nothing else is in reach) X held R and reloaded and the seal never
       // cut, and at a found survivor the [X] GIVE prompt was a reload too. A seal already open is left out (its reach is not looked
       // up again once it opens), and so is a survivor the prompt does not offer (not yet found, or turned hostile), so X still
       // reloads in a fight with him.
-      if(_xDown&&PAD.xMode==null&&(PAD.xNearN==null||PAD.xNearN!==(G.nearN||0)||(G.player&&G.player.downed))){ var _xm=false; try{ _xm=!!(NET.on&&typeof netMateDown==='function'&&netMateDown(G.player)>=0); }catch(_xe){} PAD.xMode=padXMode(_xm); /* v28.xx (cw-cx-xfight): his 3.10 b: reload wins during a fight. */ var _rp=G.player; if(PAD.xMode==='KeyE'&&_rp&&!_rp.downed&&_rp.reloading>0&&_rp.rlTot>0&&!G.nearDown&&!_xm){ var _arf=1-_rp.reloading/_rp.rlTot; if(_arf>=arLo(_rp)&&_arf<=arHi(_rp)) PAD.xMode='KeyR'; /* v35.xx (cw-reloadstack): the spot of this chain */ } if(PAD.xNearN!=null){ PAD.xDownAt=G.t; PAD.xNearN=null; _xSearch=!!(G.nearPad&&G.nearContainer); } }   // v28.37 (cloud-coop-pad-active-reload), CLOUD HUNT 2026-10-15: X is the only reload button on a controller, so in the sweet spot of a reload it lands the active reload even with a box, body, door or forge in reach (it searched instead, so player 2 could never get the bonus there); a downed teammate still takes the revive
+      if(_xDown&&PAD.xMode==null&&(PAD.xNearN==null||PAD.xNearN!==(G.nearN||0)||(G.player&&G.player.downed))){ var _xm=false; try{ _xm=!!(NET.on&&typeof netMateDown==='function'&&netMateDown(G.player)>=0); }catch(_xe){} PAD.xMode=padXAction(_xm); if(PAD.xNearN!=null){ PAD.xDownAt=G.t; PAD.xNearN=null; _xSearch=!!(G.nearPad&&G.nearContainer); } }   // v28.xx (cw-cx-xreloadsearch): share the exact press decision with the box prompt, including the narrowed active-reload spot.
+      // v28.xx (cw-cx-xreloadsearch): keep reload first (his 3.10 b), then search after the same gun completes its reload; cancellation never spends the hold.
+      if(_xDown&&PAD.xMode==='KeyR'&&G.player){
+        var _xr=G.player;
+        if(_xr.reloading>0){ PAD.xReloadGun=_xr.wep; PAD.xReloadN=_xr.padReloadN||0; }
+        else if(PAD.xReloadGun){
+          if(PAD.xReloadGun===_xr.wep&&(_xr.padReloadN||0)>PAD.xReloadN&&!_xr.hand&&!_xr.downed&&!(_xr.roll>0)&&G.nearContainer){
+            PAD.xMode='KeyE'; PAD.xDownAt=G.t; _xSearch=!!G.nearPad;
+          }
+          PAD.xReloadGun=null;
+        }
+      }
       if(_xDown&&G.player&&G.player.downed) PAD.xMode='KeyE';   // v17.04, co-op hunt 2026-09-28: downed, X holds E, also a hold carried onto the floor (above)
       PAD.xWas=_xDown;
       padHold('KeyR',_xDown&&PAD.xMode==='KeyR');
@@ -25888,6 +25909,7 @@ function tickReload(dt){
       // its count, each a feed row for what the gun card (RELOADING, the gun in hand, the rounds), the reticle ([R] RELOAD, NO AMMO)
       // and the belt band already show. The rows are gone; every sound stays.
       p.ammo+=take; p.reserve-=take*rktCost(p.wep);   // v28.xx (cw-rocket): a rocket costs 30
+      if(take>0) p.padReloadN=(p.padReloadN||0)+1; // v28.xx (cw-cx-xreloadsearch): completion survives a shot on this frame; cancelled reloads never stamp it.
       if(!G.sim){ if(!p.arHot) p.arStk=0; p.arHot=0; }   // v35.xx (cw-reloadstack): a reload left to run out on its own (no active reload) starts the chain over
       // v25.xx (reloaddone), HIS ORDER 2026-10-13: "'reload done' needs a sound always". v25.52 gave each gun its own steps and played the
       // last one (the rack, the pump, the bolt) only when the gun was EMPTY, so a reload with a round still chambered finished in
@@ -44907,6 +44929,8 @@ hudPanel(bx,by,bw,bh,undefined,1);   // v18.13: the one HUD panel
       // interaction while showing the corpse would be worse than the stutter.
       // v22.66 (R24): one prompt style. The fallen pillager's crew colour is the plate's accent bar (it was a bar beside the words),
       // and the one item a dropped crate holds is the second line, in its rarity colour.
+      // v28.xx (cw-cx-xreloadsearch): the box names the action X will take; a held search keeps its chosen action. The ring retains its separate Y search.
+      var _xReload=padOn()&&!G.nearPad&&((PAD.xWas&&PAD.xMode)?PAD.xMode:padXAction())==='KeyR';
       var _skey='['+((G.nearPad&&padOn())?padB(pbn(3)):keyLabel('KeyE','E'))+'] SEARCH ', _ft, _fcr=null, _fsub='', _fsc=null;  // v27.70 (cloud-menus-pad-prompts-follow-binds), CLOUD HUNT 2026-10-15: the ring prompt said [Y] SEARCH after the ring search moved off Y; it names the button as set
       if(nc2.fallen&&(nc2.fellAt===undefined||G.t-nc2.fellAt>2.3)){
         _ft=_skey+nc2.fallen.toUpperCase();
@@ -44914,11 +44938,12 @@ hudPanel(bx,by,bw,bh,undefined,1);   // v18.13: the one HUD panel
       }
       else if(nc2.tag) _ft=_skey+String(nc2.tag).toUpperCase();
       else _ft=_skey+(nc2.mercSrc?(String(nc2.mercSrc.name).toUpperCase()+"'S BACKPACK"):((nc2.type==='safe'&&nc2.camp)?'STRONGBOX':(nc2.type==='botwreck')?'WRECK':nc2.type.toUpperCase()));   // v22.xx (R49): SEARCH WRECK, the internal kind stays in the code
+      if(_xReload){ _ft='['+padB(pbn(2))+'] reload'; _fcr=null; }
       // His #23: item names in the world when you are near them. A single-item
       // crate that YOU dropped or a body someone emptied loot into is not a
       // mystery box, so it says what it holds; multi-item finds stay unsearched
       // secrets, because he explicitly wants searching to mean something.
-      if(nc2.loot.length===1&&nc2.dropped){
+      if(!_xReload&&nc2.loot.length===1&&nc2.dropped){
         var dit=ITEMS[nc2.loot[0]];
         if(dit){ _fsub=dit.name; _fsc=RCOL[dispR(nc2.loot[0])||dit.r]||'#cdd6dd'; }
       }
@@ -55404,7 +55429,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.55: The what is new stamp keeps up with the build; the three notes are unchanged. Check 35.55 fails on v35.54',
+  now:'v35.56: At a box, pad X names reload when it reloads; keep holding to search after it finishes. Check 35.56 fails on v35.55',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

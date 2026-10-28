@@ -358,3 +358,4 @@ UI follow-up from the mechanic task's first camera round: critic rated host 3 an
 
 Carry forward only existing HUD polish: final critic scores 3/3, with P1s on duplicate down/HP display, skill-check and countdown hierarchy, card contrast/tab and self-revive presentation. No current P0 remains after the recipe accepted the opening easy-mode offer. Images and report: tools/handoff/console/notes/shots/o-120e-downed-damage-cuts-recipes-4/. Camera cap is reached; no further mechanic or camera work is queued by this task. Do not remove the functioning skill-check feature or intentional danger tab solely on the critic's advice.
 
+10-28 01:04 v35.55 (cw-cardstamp) not on his main PC after 6 min (8802 serves 35.54); see tools/bridge main-status

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.56 - PAD X RELOAD THEN SEARCH
+
+Co-op hunt while he was away. The box said search when combat X would reload and the held button stayed on reload afterwards. The prompt now shares the press decision, including the active reload spot. A completed reload hands the same hold to search; a cancelled reload does not. Revives retain priority and keyboard controls are unchanged. Playtest watch: in both windows, hold X at a box with a partly empty magazine while fighting; see [x] reload, then search when rounds load. Also try a full magazine, no spare rounds and an active reload. The ring keeps its separate Y search prompt.
+
+MEASURED. Check 35.56 passes, and fails on v35.55.
 ## v35.55 - THE WHAT IS NEW STAMP KEEPS UP
 
 Co-op hunt while he was away. The card was stamped v35.39 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.
