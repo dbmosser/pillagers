@@ -14,3 +14,8 @@ ADDED 10-28 02:00 (CEO; sorted from run corpus-1027-2310 by commit 35fcbf4d8), 5
 - 23.02: the ping label is a lower case plate since v35.43 (cw-cx-pingread); the check wants CRIER in capitals.
 - 23.10: a finished goal now waits 4 s without a shot (v35.44 cw-msgroute); one line shows at once, the second 2.5 s later.
 - 32.69: the stash item line is a fixed 160px box that always shows, since v35.42 (his stash hover order).
+ADDED 10-28 04:00 (sorted from run corpus-1028-0157 on v35.58, the stable triage commit after 35fcbf4d8), 4 more to retarget the same way:
+- 34.26: concealed and in cover are state icons with a brief word on the vitals now (v35.49), at the vitals scale (24 px at 1080p); the check wants the old 19 px chip.
+- 27.35: the feed zone is 28 percent of the width since v35.53 (cw-hudsize, 20 px feed text); the check allows a quarter at most. Retarget to 28 percent and keep the controls list inside 47 percent.
+- 13.32: the loaner hint draws on the answer line under the character since v35.52 (cw-answerline), not in the feed; read the answer line (G.ans) for "equip your own gun".
+- 16.44: kid mode is applied through _hitMul in damagePlayer since v35.54 (o-120e); replace the source-text read for "amt*=netKidMul()" with a real hit on player 2 that proves the cut (check the damage taken, not the text).

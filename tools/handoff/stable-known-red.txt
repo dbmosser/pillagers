@@ -50,3 +50,11 @@ v23.02   # the ping on a crier draws "name, crier, 8m" in lower case; the check 
 v23.10   # a goal done waits for 4 s without a shot (feedCalm) and then shows one line, the second 2.5 s later; the check opens the crate in a fight and sees none (with calm it passes the same steps)
 # stash hover (his 10-27 order "mousing over different items in the stash ... changes the size of one of the sub menus", v35.42 cw-stashhover)
 v32.69   # the item line under the stash grids is one fixed 160px box, shown idle or hovered; the check wants the idle strip hidden
+# Stable triage 2026-10-28 (corpus-1028-0157 on v35.58, 8 newly red; each rerun alone on v35.64, fixture of master 46e84948d).
+# 4 are out of date (below); v35.53 and v35.44 pass on v35.64 and are not listed; v31.04 and v27.40 are real and have fix jobs (tasks 208 and 209).
+# the hud text and answer line (his 10-27 ask "the hud messaging is a clusterfuck, make it AAA", jobs 186e and 186c: v35.49 to v35.53)
+v34.26   # wants the hidden chip at label size (19 px at most); concealed and in cover are icons with a brief word on the vitals now, drawn at the vitals scale, 24 px at 1080p (v35.49 hud states)
+v27.35   # wants the feed zone under a quarter of the screen wide; it is 28 percent since v35.53 (cw-hudsize: the feed text is 20 px, so the zone grew from 24 percent)
+v13.32   # reads the loaner hint off the feed and g.msg; an info line shows on the answer line under the character since v35.52 (cw-answerline), and "scav pistol, equip your own gun at the stash" does draw there for the whole 5 s
+# kid mode in the hit code (v35.54 cw-cx-downcuts, o-120e: downed hits follow the damage cuts)
+v16.44   # source-text read for "amt*=netKidMul()"; the factor is carried in _hitMul now and still applied to amt, so player 2 still takes the cut
