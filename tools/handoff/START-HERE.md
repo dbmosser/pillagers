@@ -5,7 +5,7 @@
 **The game:** PILLAGERS (old name Dark Raiders; the file is still dark_raiders.html). The owner plays, gives orders and is not a coder; his answers are binding. Current build: `var VER` in dark_raiders.html (or `git log -1`).
 
 **His standing orders this week:**
-- "Ok no new features until Nov 1. Resources should now be spent polishing, bug fixing, etc" (10-27). Feature jobs wait in tools/handoff/console/after-nov1 and go back to tasks/ on Sun 11/1. His fullscreen gate, fog of war and hotbar items orders of 10-27 are his own exceptions.
+- "I don't want any development paused or delayed because of the party or any other anticipated date. Just keep developing" (10-28, about 08:10). This ended the 10-27 "no new features until Nov 1" freeze: the parked feature jobs are back in tasks/, and nothing is held for the party or any date. Party-breaking bugs still go first in line.
 - Party: Fri 10/30 night, the 2 player arcade demo on his main PC (http://localhost:8802/, click the demo). No launcher, no party mode. Party readiness comes first until then. Release: Thanksgiving, Thu 11/26 on itch. Never remind him about itch payments or the tax form.
 - Plan pace: weekly use climbs to 90% by Fri 10/30 08:00 (caps.txt PLAN_LINE_*). Helper lanes follow that line by themselves; chat sessions do not, so they must keep cost down (below).
 - Smooth look (pixel look off), pillager at size 1. Every player word lower case. The veto list of things he banned for good is in tools/handoff/console/RULES.md.

@@ -17,9 +17,10 @@ credit comes back on 11-01). His 10-19 rule: speed is fine, waste is not. Be thr
   every "after the party" or "after 10/30" hold in this file, in job files and in staging: nothing waits for the party. The Mon 10/26
   cutoff no longer holds back work he ordered. The party copy (the -Prepare snapshot on his PC) is refreshed Fri 10/30 afternoon (his 10-24 answer "Friday"; it was a Thu 10/29 lock); the
   game file keeps moving after it. Risky changes ship now, each with a line on what he should watch for on his next play.
-  HIS ORDER 10-27 (verbatim): "Ok no new features until Nov 1. Resources should now be spent polishing, bug fixing, etc". Until Sun 11/1
-  work only on fixes and polish of what the game already has; never start or write a new-feature job (feature jobs wait in
-  tools/handoff/console/after-nov1 and go back to tasks/ on 11/1). This beats any job file or answer page that asks for a new feature.
+  HIS ORDER 10-28 about 08:10 (verbatim): "I don't want any development paused or delayed because of the party or any other anticipated date. Just keep developing". This ENDS his 10-27
+  "no new features until Nov 1" freeze: the feature jobs parked in console/after-nov1 went back to tasks/ that morning, and no job is ever
+  held for the party or any other date again. Party-breaking bugs still go first in line; nothing else waits. The only brake left is the
+  weekly plan pacing (caps.txt PLAN_LINE_*), which keeps the plan from running out and stopping every chat before the reset.
 - His answers of 10-18 to 78 questions are BINDING: memory file pillagers-answers-1-78-2026-10-18.md (read it when your task
   names a question number like Q57).
 - Read the CURRENT block at the top of tools/handoff/START-HERE.md first (where things stand), then your task file and any memory file
