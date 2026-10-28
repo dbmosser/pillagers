@@ -364,3 +364,6 @@
 2026-10-27 23:56 o-120c-wallet-double-text 73s ok PARTIAL in=3282219 out=25291 run=4
 2026-10-28 00:02 o-120d-pad-trigger-not-aim 395s ok PARTIAL in=1465638 out=13706 run=1
 2026-10-28 00:17 o-120d-pad-trigger-not-aim 128s ok PARTIAL in=2358157 out=17671 run=2
+2026-10-28 00:20 o-120d-pad-trigger-not-aim 58s ok PARTIAL in=2906147 out=19571 run=3
+2026-10-28 00:22 o-120d-pad-trigger-not-aim 34s ok DONE in=3223487 out=20784 run=4
+2026-10-28 00:26 o-120e-downed-damage-cuts 218s ok PARTIAL in=690808 out=9015 run=1

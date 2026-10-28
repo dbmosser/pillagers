@@ -10,4 +10,9 @@ Findings 10-27 night:
 
 Decisions (logged, no question needed):
 - Icons show their word for about 2 s the first time they turn on, then icon only (so a new icon is never a mystery).
-- Low ammo pulses red (alpha), empty is solid red plus the key cap; the card width measure always includes the cap so the card never changes size.
+- Low ammo pulses red (alpha), empty is solid red plus the key cap; the card is not widened (34.89 keeps its padding even): the cap sits left of the 0, or over the 0 on a narrow card (the demo).
+
+Shipped: v35.49 cw-hudstates (23:56), v35.50 cw-extpill (00:03), v35.52 cw-answerline (00:12), v35.53 cw-hudsize (00:23), all ON HIS PC.
+Fixture retargets (fixq, hold on old and new): 35.30 THREE (icons), 35.30 FOUR (edge arrow), 35.44 (HEALTH FULL on the answer line).
+Decisions: no soft "no" sound exists, so the answer line is silent; a line given o.reach outright (checks only) keeps the feed; the full F1 list (second press) stays at 13 px (needs a fit redesign, not done here); "locked" and "no ammo" are world and reticle words, not say() lines, so they are untouched.
+Pictures: notes/shots/186e-1-after .. 186e-4-after (21, 33, 34, 50 at 1080). Critic not run (week 73%, line 55%).

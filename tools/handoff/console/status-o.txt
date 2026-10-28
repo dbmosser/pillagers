@@ -1,1 +1,1 @@
-10-28 00:17 pictures: recipe round 2 for o-120d-pad-trigger-not-aim (screens 120d-host-rt-smooth,120d-host-lt-smooth,120d-p2-rt-smooth,120d-p2-lt-smooth, camera 9364)
+10-28 00:28 gate: shipping cw-cx-downcuts (o-120e-downed-damage-cuts, codex)

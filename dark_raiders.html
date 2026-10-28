@@ -3730,8 +3730,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.53';
-var VER_AT='2026-10-28 00:17';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.54';
+var VER_AT='2026-10-28 00:29';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -23875,9 +23875,11 @@ function armorHitFoley(broke){
   foley('strapRip',null,null,{off:0.1,dur:0.12,g:0.5,rate:1.5,at:0.04,local:1});
 }
 function damagePlayer(amt,src,srcName,sx,sy){
-  // v21.97 (K7): and on a raid this window joined and took over when the host left
-  if(typeof NET==='object'&&NET&&((NET.on&&NET.role==='join')||(typeof G!=='undefined'&&G&&G.netWasJoin))&&isFinite(amt)) amt*=netKidMul();   // v16.44, his order: kid mode, player 2 takes less
-  if(typeof G!=='undefined'&&G&&G.arcade&&isFinite(amt)) amt*=ARCADE_DMG;   // v23.31 (arcade10): arcade hits take half
+  // v28.xx (cw-cx-downcuts): retain the same kid and demo factors for seconds lost on the floor; a taken-over join keeps kid mode.
+  var _hitMul=1;
+  if(typeof NET==='object'&&NET&&((NET.on&&NET.role==='join')||(typeof G!=='undefined'&&G&&G.netWasJoin))) _hitMul*=netKidMul();
+  if(typeof G!=='undefined'&&G&&G.arcade) _hitMul*=ARCADE_DMG;
+  if(isFinite(amt)) amt*=_hitMul;
   // v12.36, 2026-09-07 audit (corpse-redown): A DEAD MAN TAKES NO MORE HITS.
   // killPlayer does not end a live raid; it opens a 1.5 second beat and leaves
   // the body in the world with p.downed CLEARED and hp at 0, and the beat in
@@ -23964,7 +23966,7 @@ function damagePlayer(amt,src,srcName,sx,sy){
     // health he does not have. Logged before killPlayer, or the blow that
     // finishes him would be missing from the table that explains it.
     _logHit(amt,0);
-    p.downT-=3; blip('hit');
+    p.downT-=3*_hitMul*CFG.eDmg*easyDmgMul(); blip('hit');   // v28.xx (cw-cx-downcuts): the standing damage factors also cut the base 3 seconds, in live play and sim.
     if(p.downT<=0) killPlayer(src);
     return;
   }
@@ -55402,7 +55404,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.53: the feed, the answer line, the controls list and the danger line are bigger and easier to read Check 35.53 fails on v35.52',
+  now:'v35.54: Downed hits follow the same damage factors as standing hits. Check 35.54 fails on v35.53',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

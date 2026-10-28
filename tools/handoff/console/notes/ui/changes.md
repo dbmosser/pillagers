@@ -431,3 +431,7 @@
 
 2026-10-28 | o-120d-pad-trigger-not-aim | smooth raid, host and p2 | RT retains sprint and the unscoped view; LT retains 4x scope and stops sprint | before: no custom recipe before images | after: tools/handoff/console/notes/shots/o-120d-pad-trigger-not-aim-recipes-1/120d-host-rt-smooth-1080.jpg, 120d-host-lt-smooth-1080.jpg, 120d-p2-rt-smooth-1080.jpg, 120d-p2-lt-smooth-1080.jpg.
 
+2026-10-28 | o-120d-pad-trigger-not-aim | final smooth raid proof, both windows | RT retains steady spread and sprint at 1x; LT aims at 4x and stops sprint | before: no custom recipe before images | final after: tools/handoff/console/notes/shots/o-120d-pad-trigger-not-aim-recipes-3/120d-host-rt-smooth-1080.jpg, 120d-host-lt-smooth-1080.jpg, 120d-p2-rt-smooth-1080.jpg, 120d-p2-lt-smooth-1080.jpg. Critic 3/3/3/2, stopped after two follow-ups without higher scores; broader HUD findings logged.
+
+2026-10-28 | o-120e-downed-damage-cuts | raid downed timer, both roles | each hit now removes 3 seconds times the existing kid/demo/difficulty/easy factors; normal career stays 3 seconds; no layout/text change | before: not available for numerical camera recipes | after: lane camera-recipes.json downcuts-host-easy and downcuts-joined-kid-easy (paths pending lane)
+

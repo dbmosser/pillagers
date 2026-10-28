@@ -1,10 +1,10 @@
 Latest stable: v35.28 (2026-10-27 22:16)
-Checked: 2026-10-27 23:22
+Checked: 2026-10-28 00:25
 Play address: http://localhost:8802/stable.html
 Result: no change
 
 Newest test runs, newest first:
-  corpus-1027-2147  v35.37  failing 34, new 14  robots 103 min/0 problems  -> 14 check(s) newly failing, e.g. v8.89 a pillager wading out of sight draws no rings in the w | v9.09 the pointer says what a panel edge does: move, resize 
+  corpus-1027-2147  v35.37  failing 34, new 2  robots 103 min/0 problems  -> 2 check(s) newly failing, e.g. v8.89 a pillager wading out of sight draws no rings in the w | v35.35 cw-f1left, his order 2026-10-27 ("hitting f1 to get t
   corpus-1027-2024  v35.28  failing 18, new 0  robots 57 min/0 problems  -> this is the current stable
   corpus-1027-1900  v35.19  failing 20, new 1  robots 115 min/1 problems  -> 1 check(s) newly failing, e.g. v25.41 his order (add minimap): the minimap marks extraction
   corpus-1027-1843  v35.18  failing 13, new 0  robots 76 min/0 problems  -> older than the current stable
@@ -15,16 +15,4 @@ Newest test runs, newest first:
 
 Checks that are newly red and still red (they block until fixed, or until listed in tools/handoff/stable-known-red.txt):
   v8.89 a pillager wading out of sight draws no rings in the water
-  v9.09 the pointer says what a panel edge does: move, resize or minimise
   v35.35 cw-f1left, his order 2026-10-27 ("hitting f1 to get the controls should b
-  v32.24 the fire chip above the belt is not lime filled: the keycap behind the wo
-  v31.38 the armour and stamina bars are the same height (the critic, 10-19: three
-  v31.17 hp, armour and stamina bars are all the same width (the critic, 10-19: th
-  v25.66 his note (text at top mid is colliding): with an alert or the location ta
-  v18.49 at 4K the HUD stack does not overlap: the HIDDEN chip sits above the weap
-  v18.41 the posture chip is a HUD panel: a raid HUD frame draws a small panel at
-  v15.79 the party ascends together into one surface and sees each other up top: w
-  v13.08 the Undercroft is not a raid: the operator walks the floor with empty han
-  v12.80 the cover ground contract prints no line of its own on the in-raid panel,
-  v12.74 the Peddler stall knows what it just paid him: the balance line and the r
-  v9.66 the pillager board and the conditions panel are smaller than the rest of t
