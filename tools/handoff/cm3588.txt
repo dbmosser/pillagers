@@ -1,0 +1,7 @@
+v35.88: mainframe money in dollars and a lock icon on locked achievements
+
+contract rewards read in dollars and locked achievements show a lock
+
+Check 35.88. Fails on v35.87.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
