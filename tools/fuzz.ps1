@@ -73,8 +73,12 @@ $ScrW=[int]($Size -split 'x')[0]; $ScrH=[int]($Size -split 'x')[1]; $ScrK=$ScrW/
 
 function Stamp(){ (Get-Date).ToString('yyyy-MM-dd HH:mm:ss') }
 function Clean([string]$s){ ($s -replace '[^\x20-\x7e]','?') }
-function LogLine([string]$s){ [IO.File]::AppendAllText($LogF,(Clean $s)+"`n",$Enc) }
-function JsonRec($o){ [IO.File]::AppendAllText($Jsonl,(($o | ConvertTo-Json -Compress -Depth 6))+"`n",$Enc) }
+# 10-28: two robots started in the same second (and the runner copying fuzz.log for its results push) hold the log for a few ms; the
+# robot that lost the race died at once with 0 raids ("being used by another process"): 9 of 20 robot starts on the main PC on 10-26
+# and 10-27. Each write now tries for up to 1 s before it gives up the way it did before.
+function AppendRetry([string]$f,[string]$s){ for($k=0;$k -lt 20;$k++){ try{ [IO.File]::AppendAllText($f,$s,$Enc); return }catch{ Start-Sleep -Milliseconds 50 } }; [IO.File]::AppendAllText($f,$s,$Enc) }
+function LogLine([string]$s){ AppendRetry $LogF ((Clean $s)+"`n") }
+function JsonRec($o){ AppendRetry $Jsonl ((($o | ConvertTo-Json -Compress -Depth 6))+"`n") }
 function JsStr([string]$s){ (ConvertTo-Json -InputObject $s -Compress) }
 
 if((Test-Path -LiteralPath $Flag) -and -not $IgnoreFlag){ LogLine ((Stamp)+' FUZZ not started: light.flag exists (he is at the PC)'); Write-Output 'light.flag exists: not started'; exit 0 }

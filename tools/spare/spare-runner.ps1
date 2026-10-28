@@ -303,8 +303,22 @@ function SoundWho(){
 # unlocked, the passive signs, cheapest first: a full-screen program, sound, a game on the graphics card (the stopgap's order and cap).
 # Last, the time someone was last there by any sign, carried over a restart (seen_t). $script:awayWhy says which sign it was (runner.log
 # only). With no presence check loaded it says nobody, so the runner tests as before.
+# 10-28 IDLE MODE: the party plays on pads, and a pad does not move the Windows idle clock that the main PC's "VM light while gaming" check
+# goes by, so on a pads-only night the VM would start helpers, robots and the local AI on the party PC. While a pad is in use this writes
+# pad-seen.txt (epoch=, seen=) into the bridge share at most once a minute; the VM's tools/nightly.sh counts one under 10 minutes old as
+# gaming (nothing new starts). It records nothing of what was pressed.
+$script:padNoteT=[long]0
+function PadNote(){
+  try{
+    $e=Epoch; if(($e-$script:padNoteT) -lt 60){ return }; $script:padNoteT=$e
+    $sh=Join-Path $env:LOCALAPPDATA 'PillagersBridge\share'; if(-not (Test-Path -LiteralPath $sh)){ return }
+    $f=Join-Path $sh 'pad-seen.txt'
+    [IO.File]::WriteAllText($f+'.tmp',('epoch='+$e+"`r`nseen="+(Get-Date).ToString('yyyy-MM-dd HH:mm:ss')+"`r`n"),$Enc)
+    Move-Item -LiteralPath ($f+'.tmp') -Destination $f -Force
+  }catch{}
+}
 function AwaySec(){
-  if($Idle){ if([PillagersIdle.Input]::PadInUse()){ $script:padT=Get-Date }; return [Math]::Min([PillagersIdle.Input]::IdleSec(),((Get-Date)-$script:padT).TotalSeconds) }
+  if($Idle){ if([PillagersIdle.Input]::PadInUse()){ $script:padT=Get-Date; PadNote }; return [Math]::Min([PillagersIdle.Input]::IdleSec(),((Get-Date)-$script:padT).TotalSeconds) }
   if($script:noIn){ $script:awayWhy='nobody can be seen (the presence checks did not load)'; $script:humanAgo=1e9; return 1e9 }
   $now=Get-Date; $e=Epoch
   $o=$false
