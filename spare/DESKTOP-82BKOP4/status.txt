@@ -1,6 +1,6 @@
 host=DESKTOP-82BKOP4
-seen=2026-10-28 11:50
-epoch=1793202617
+seen=2026-10-28 12:00
+epoch=1793203243
 game=b0b468a8 v35.80
 test_run=running corpus-1028-1057.txt
 robots=1
@@ -10,5 +10,5 @@ runner=67F33AD0
 mode=full
 ram_total_gb=32
 cpu_threads=4
-cpu_pct=96
+cpu_pct=91
 cpu=Intel(R) Core(TM) i5-7600K CPU @ 3.80GHz
