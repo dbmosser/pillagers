@@ -29,7 +29,7 @@ if up 9346 json/version; then echo "gate browser 9346: up"
 else if [ $FIX = 1 ]; then powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/cdp.ps1" -Start -Port 9346 >/dev/null 2>&1; up 9346 json/version && echo "gate browser 9346: was down, STARTED" || prob "gate browser 9346 down and would not start"; else prob "gate browser 9346 down"; fi; fi
 # 2b 10-24: the gate browser grows with every ship (2.7 GB after ten ships on 10-24, which held the 10 GB VM at 1 GB free and kept
 # the helpers from starting). Over 1500 MB and no ship or gate running: restart it (a fresh one is about 350 MB).
-gm=$(powershell -NoProfile -Command "\$t=0; Get-CimInstance Win32_Process -Filter \"Name='chrome.exe'\" | Where-Object { \$_.CommandLine -match 'remote-debugging-port=9346(\s|\$)' } | ForEach-Object { \$t+=\$_.WorkingSetSize }; [int](\$t/1MB)" 2>/dev/null | tr -dc '0-9')
+gm=$(powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/chrome-tree-mb.ps1" -Port 9346 2>/dev/null | tr -dc '0-9')   # 10-28: the whole browser, not one process
 if [ "${gm:-0}" -gt 1500 ]; then
   gb=$(powershell -NoProfile -Command "@(Get-CimInstance Win32_Process | Where-Object { \$_.Name -match '^(bash|powershell)\.exe$' -and \$_.CommandLine -match 'shipone\.sh|[^(]ship\.sh|preflight\.sh|gate\.ps1|slicechk\.sh' }).Count" 2>/dev/null | tr -dc '0-9')
   curl -s -m 3 http://127.0.0.1:9346/json 2>/dev/null | grep -q '"url": *"http' && gb=1
