@@ -16,10 +16,15 @@
 - He talks to exactly two chats, both pinned and on his phone (his 10-27 night order: "Only give me the threads I need to interact with"): "CEO and Efficiency Czar" (runs the operation: chats, models, tools, check-ins, follow-up of every order) and "Gameplay Edit Intaker" (his game orders; it was "Game feature requests and edits"). Every other chat or agent is a helper: Remote Control off (the app default is now off), never pinned, archived when its job is ON HIS PC (the app also archives anything idle for 1 day). Never turn Remote Control on for a helper.
 - His order chat is "Gameplay Edit Intaker" (renamed by him 10-27 ~22:50; it was "Game feature requests and edits"). Each order goes into tools/handoff/console/open-orders.md the moment he gives it, then gets a job file in console/in-session/ and its own helper (a background agent from the CEO or orders chat, or a session with Remote Control off). Nothing lives only in a chat.
 - At most 3 sessions build at once (VM memory: each gate run opens Chrome; and the plan). More orders wait as job files.
-- Pick the session's cost to fit the job (start_session `model` / `effort`):
-  - text, layout, colour, one number or a small rule: `model: claude-sonnet-5-5`, `effort: high`;
-  - a normal fix or polish job: Opus, `effort: high`;
-  - only a bug that already failed once, a crash, or a rendering or netcode mystery: Opus, `effort: xhigh`.
+- **Model ladder** (10-27 night, his "figure out an efficient escalation plan"; our runs.log plus reports/model-escalation-research.md). Start each job on its rung, set with start_session `model` / `effort` (the lanes do it by themselves in console-lane.sh):
+  1. Free: the local reviewer (qwen) reads every new build's diff; Codex (lane o, Sol medium, high from run 3) takes small, exactly specified fixes with no old-check retarget.
+  2. Sonnet 5.5 high: text, layout, colour, one number, a small rule. Never Sonnet xhigh or max (Opus high scores higher for less).
+  3. Opus 5.5 high: a normal fix or polish job, and every Claude lane run from run 3 on.
+  4. Opus 5.5 xhigh, the top rung: a crash, a bug that already failed once, a rendering or netcode mystery, anything that can break the 2 player party demo (a lane job file whose first lines say `model: opus` starts on Opus). Never max.
+  - Move UP one rung after two failed preflights on the same cause, a critic score stuck twice, or him saying it is still broken: start the higher rung fresh with a short summary of what failed (a running session: set_session_model / set_session_effort from the CEO chat).
+  - Move DOWN: once a strong model has found the cause, a mechanical follow-up (renames, one number, retargets) goes to Sonnet or Codex as an exact job file.
+  - Lanes: 4 tries per job (runs 1-2 Sonnet, 3-4 Opus), then the job lands in failed/ and the CEO chat splits or re-scopes it.
+  - After the party: trial of Sonnet with an Opus advisor against Opus high (console/after-nov1/e1-advisor-trial.md).
 - A long chat that has been summarized twice hands its open orders to fresh sessions and keeps only check-ins.
 - Budget guard (10-27 night; week 66% at 21:42, burning about 1.5 points an hour against the line's 0.4): before starting a build session, read the week in console/plan-usage.txt and the line in console/status-a.txt. More than 10 points above the line: save by doing FEWER things at once (at most 2 build sessions), never by doing them worse; the model still follows the job (his 10-27 night: "this has to be AAA top to bottom"). Sonnet stays only for jobs it does as well: text, layout, colour, one number.
 - Fix and polish jobs that are not his direct orders wait in console/tasks/ for the helper lanes (a, b, c on his plan, o on Codex; status in console/status-LANE.txt).
