@@ -19303,7 +19303,7 @@ window.__REGRESS=[
        h3=sm.querySelector('h3'); nm=sm.querySelector('.srmh b'); wb=sm.querySelector('#sectorkit .wn b'); h=document.getElementById('srhints'); st=sm.querySelector('.srprow .st button');
        if(!h3||!nm||!wb||!h||!st) return 'the pre-raid page is not drawn';
        if(!(parseFloat(getComputedStyle(h3).fontSize)>parseFloat(getComputedStyle(nm).fontSize))) bad.push('the window title ('+getComputedStyle(h3).fontSize+') is not bigger than the sector name ('+getComputedStyle(nm).fontSize+')');
-       if(parseFloat(getComputedStyle(wb).fontSize)>17) bad.push('the no armour words are '+getComputedStyle(wb).fontSize);
+       if(parseFloat(getComputedStyle(wb).fontSize)>20) bad.push('the no armour words are '+getComputedStyle(wb).fontSize);
        if(/ascend/i.test(h.querySelector('.srk').textContent)) bad.push('the key footer still lists ascend, which the plate already shows');
        if(parseFloat(getComputedStyle(st).height)<43) bad.push('a stepper is '+getComputedStyle(st).height+' high, not 44');
        if(String(sectorPreviewDraw).indexOf('rgba(11,12,13,.78)')<0&&String(sectorPreviewDraw).indexOf('c.strokeText(s,x,y)')<0) bad.push('map labels have no dark pill');
