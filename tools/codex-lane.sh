@@ -453,13 +453,14 @@ $out
 # ---- camera-recipes.json (RULES-codex.md "Pictures"). 2026-10-20: the rules promised it but the lane never read the file, so o-04, o-05
 #      and o-07 to o-10 shipped and then sat in waiting/ asking for their two-window pictures. The first 6 screens of the file, no BEFORE.
 recipes_file(){ local f; for f in "$WD/camera-recipes.json" "$WD/"*camera-recipes.json; do [ -f "$f" ] && { echo "$f"; return; }; done; }
+#      10-28 (CEO): recipe rounds shoot 1080 AND 4k (o-120f and o-140 asked; his "4K first" picture rule). The critic still reads the 1080 ones only (its cost); the 4k ones sit beside them for the task notes.
 shoot_recipes(){  # shoot_recipes FILE ROUND -> pictures in notes/shots/NAME-recipes-ROUND, the camera's words in log/NAME-recipes-ROUND.camera.txt
   local out="tools/handoff/console/notes/shots/$name-recipes-$2" cl="$LS/recipes.json" names lg="$X/log/$name-recipes-$2.camera.txt"
   rd "$1" > "$cl"
   names=$(node -e "try{const j=JSON.parse(require('fs').readFileSync(process.argv[1],'utf8'));console.log((j.screens||[]).slice(0,6).map(x=>x&&x.name).filter(x=>typeof x==='string'&&/^[A-Za-z0-9_.-]{1,80}$/.test(x)).join(','))}catch(e){console.log('')}" "$cl" 2>/dev/null | tr -d '\r')
   [ -n "$names" ] || { echo "the recipe file has no readable screens (JSON with a screens list, each with a name of letters, digits, dots, dashes)" > "$lg"; return 1; }
   say "pictures: recipe round $2 for $name (screens $names, camera $CAM)"
-  ( cd "$R" && timeout 1500 powershell -NoProfile -ExecutionPolicy Bypass -File tools/uishots.ps1 -Recipes "$(cygpath -w "$cl")" -Screens "$names" -Out "$out" -Res 1080 -Port "$CAM" ) > "$lg" 2>&1
+  ( cd "$R" && timeout 1500 powershell -NoProfile -ExecutionPolicy Bypass -File tools/uishots.ps1 -Recipes "$(cygpath -w "$cl")" -Screens "$names" -Out "$out" -Res 1080,4k -Port "$CAM" ) > "$lg" 2>&1
   ls "$R/$out/"*-1080.jpg >/dev/null 2>&1; }
 critic_recipes(){  # critic_recipes ROUND : sets CRITWORST, CRITP, CRITTXT, PICS; each picture alone (a recipe screen has no BEFORE)
   local a out sc; CRITWORST=9; CRITP=0; CRITTXT=""; PICS=()
