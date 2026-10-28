@@ -7,3 +7,5 @@ His answers 2.55 b and 2.56 b (guidance). Do: the default for screen shake and p
 
 Rules: the seed 4242 fingerprint (ents 85/374, containers 165/593) must hold unless this brief says otherwise; the check must FAIL on the build before; both windows; player text all lower case. Say in DESIGN.md what he should watch for in a playtest.
 TASK DONE when it shipped; TASK PARTIAL with what is left.
+
+CUT Tue 10-27 about 20:00 by his priorities page (https://claude.ai/artifact/8mXPSJ5fqq5DiV1Mxsy8Xr, db answers): he marked it NEVERMIND. Do not build it.

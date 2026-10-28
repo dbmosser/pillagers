@@ -7,3 +7,5 @@ Do: today pings only work in a two-window party. Make the ping key and the pad p
 
 Rules: the seed 4242 fingerprint (ents 85/374, containers 165/593) must hold unless this brief says otherwise; the check must FAIL on the build before; both windows; player text all lower case. Say in DESIGN.md what he should watch for in a playtest.
 TASK DONE when it shipped; TASK PARTIAL with what is left.
+
+HIS PRIORITY 10-27 (priorities page): MEDIUM

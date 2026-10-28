@@ -73,3 +73,5 @@ Size: about 0.6 lane-nights, in 3 ships:
 (c) steps 3, 5 and 6
 
 TASK DONE when shipped with its checks, the re-measure written and the pictures looked at; TASK PARTIAL with what is left.
+
+HIS PRIORITY 10-27 (priorities page): LOW

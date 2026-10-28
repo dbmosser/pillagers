@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.24 - BUILD DATE ON THE TITLE
+
+Co-op hunt while he was away. his order 10-27: put the date and time of the update, in us eastern time
+
+MEASURED. Check 35.24 passes, and fails on v35.23.
 ## v35.23 - THE WHAT IS NEW STAMP KEEPS UP
 
 Co-op hunt while he was away. The card was stamped v35.07 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.

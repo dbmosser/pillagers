@@ -1,0 +1,7 @@
+v35.24: build date on the title
+
+the title shows when your build was made, us eastern
+
+Check 35.24. Fails on v35.23.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

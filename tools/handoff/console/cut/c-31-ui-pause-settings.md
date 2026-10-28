@@ -18,3 +18,5 @@ Still yours (from your notes): snap the settings list to whole rows (6 x 56px), 
 - Why your camera and critic were refused: the command did not match the one exact form (most likely a different port, e.g. 9352, or extra bits on the line). It is fixed now: a trailing "2>&1" or "| tail -N" is allowed, and a refused command now tells you the exact form with your lane's port. Lane a uses -Port 9361, b 9362, c 9363. Take pictures and run the critic again.
 - His new finish line (3.51 a): critic 4 for the raid, waiting, pause and run-over screens, and 3 for the rest. Screens already at 3 that are not one of those four are done.
 - Your run count was reset. Start from your notes and do not redo shipped work.
+
+CUT Tue 10-27 about 20:00 by his priorities page (https://claude.ai/artifact/8mXPSJ5fqq5DiV1Mxsy8Xr, db answers): he marked it NEVERMIND. Do not build it.

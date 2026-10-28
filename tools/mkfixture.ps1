@@ -6168,6 +6168,25 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'35.24',what:'cw-verat, his order 2026-10-27 (put the date and time of the update, in us eastern time): the title shows the build number and then the date and time the build shipped, us eastern, and the run report header carries the stamp; a copy with no stamp shows the number alone',
+   run:function(){
+     if(typeof VER_AT!=='string') return 'this build has no VER_AT stamp';
+     if(typeof verAtSay!=='function'||typeof titleVerSync!=='function') return 'this build has no date label';
+     var bad=[], keep=VER_AT, el=document.getElementById('titlever'), t, rep;
+     try{
+       if(!el) return 'no title version label';
+       VER_AT='2026-10-27 19:40'; titleVerSync(); t=String(el.textContent);
+       if(t!==verShown(VER)+' \u00b7 oct 27 7:40 pm et') bad.push('an evening build reads '+t);
+       VER_AT='2026-11-02 00:05'; titleVerSync(); t=String(el.textContent);
+       if(t!==verShown(VER)+' \u00b7 nov 2 12:05 am et') bad.push('a just after midnight build reads '+t);
+       rep=String(buildExport()).split('\n')[0];
+       if(rep.indexOf('build '+VER+', 2026-11-02 00:05 ET')<0) bad.push('the run report header has no build date: '+rep);
+       VER_AT=''; titleVerSync(); t=String(el.textContent);
+       if(t!==verShown(VER)) bad.push('a copy with no stamp reads '+t);
+       if(keep&&!/^\d{4}-\d\d-\d\d \d\d:\d\d$/.test(keep)) bad.push('the shipped stamp is not a date and time: '+keep);
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{ VER_AT=keep; try{ titleVerSync(); }catch(_t){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'35.23',what:'the what is new card is stamped with this build or later and still shows the three short lowercase real notes',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnList!=='function') return 'SKIP: this build has no what is new card';

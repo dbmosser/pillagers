@@ -48,6 +48,7 @@ section{margin-top:30px}
 .st.partly{border-color:var(--cyan);color:var(--cyan)}
 .st.parked,.st.queued{color:var(--muted)}
 .st.stuck{border-color:var(--high);color:#f08a78}
+.st.nojob,.st.cut{color:var(--muted);border-style:dashed}
 .pri{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .pri button{font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.06em;text-transform:uppercase;background:var(--panel2);color:var(--muted);border:1px solid var(--line);border-radius:5px;padding:10px 4px;cursor:pointer;min-height:42px}
 .pri button:hover{color:var(--fg)}
@@ -68,7 +69,7 @@ textarea::placeholder{color:#5f6672}
 
 <div class="wrap">
   <h1>Pillagers <span>feature priorities</span></h1>
-  <p class="lede">Every feature you've asked for that isn't in the game yet. Tap high, medium, low or nevermind on each one, and add a note if you want. Everything saves by itself.</p>
+  <p class="lede">Every feature you've asked for that isn't in the game yet. Tap high, medium, low or nevermind on each one, and add a note if you want. Everything saves by itself. Two new groups are at the top: your older asks that were never finished, and the 2 player demo ideas cut on 10-19.</p>
   <div id="warn" class="warn" hidden>Answers can't save from this view. Open the page on claude.ai while signed in.</div>
 
   <div class="bar">
@@ -82,12 +83,14 @@ textarea::placeholder{color:#5f6672}
 <script>
 // Ids are keys in the db collection "answers"; never renumber them.
 var GROUPS = [
+  {k:"r", name:"New: older asks never finished", sub:"From your answers and orders, 09-25 to 10-20"},
+  {k:"c", name:"New: cut from the party plan", sub:"Your round 2 and 3 answers for the 2 player demo; cut on 10-19 when the party became just the demo"},
   {k:"o", name:"Your 10-27 orders", sub:"Most are being built right now"},
   {k:"q", name:"Queued now", sub:"From your picks; allowed as polish before 11/1"},
   {k:"p", name:"Parked until Sun 11/1", sub:"From your 10-25 gameplay answers"},
   {k:"s", name:"Stuck", sub:"Tried and failed so far"}
 ];
-var ST = {building:"being built", partly:"partly done", queued:"queued", parked:"parked till 11/1", stuck:"stuck"};
+var ST = {building:"being built", partly:"partly done", queued:"queued", parked:"parked till 11/1", stuck:"stuck", nojob:"never queued", cut:"cut 10-19"};
 var ITEMS = [
   ["o-verat","o","Build date and time (US Eastern) next to the version, on the title screen and the what's new card","your order 10-27","building"],
   ["o-reloadstack","o","Active reload stacks, and the sweet spot gets smaller with each stack","your order 10-27","building"],
@@ -152,7 +155,48 @@ var ITEMS = [
   ["s-b31","s","Undercroft screens redesign up to the critic score","your menu redesign order","stuck"],
   ["s-c31","s","Pause and settings redesign up to the critic score","your menu redesign order","stuck"],
   ["s-94","s","60 fps on a 5 year old laptop at 1080p","your hardware answer 10-12","stuck"],
-  ["s-95","s","2 player stays smooth at full size on both TVs","your answers 2.11, 2.43","stuck"]
+  ["s-95","s","2 player stays smooth at full size on both TVs","your answers 2.11, 2.43","stuck"],
+
+  ["r-hubmusic","r","The Undercroft gets a short music loop","your answer 10-13","nojob"],
+  ["r-postfx","r","A finishing pass on the picture: soft bloom, colour grade by weather and time of day, light film grain","your graphics list 10-12","nojob"],
+  ["r-rain","r","Rain splashes on the ground, puddles reflect, wet sheen under lamps","your graphics list 10-12","nojob"],
+  ["r-wallshadow","r","Lamps throw shadows off walls","your graphics list 10-12","nojob"],
+  ["r-bodyshadow","r","Pillagers and machines cast a shadow away from a nearby lamp at night","your graphics list 10-12","nojob"],
+  ["r-lampdust","r","A few dust specks drift in each lamp's light at night","your graphics list 10-12","nojob"],
+  ["r-steam","r","Steam vents and drifting embers","your graphics list 10-12","nojob"],
+  ["r-plates","r","Hurt machines shed armour plates (smoke and sparks are already in)","your graphics list 10-12","partly"],
+  ["r-noisydebris","r","Glass, cans and chains make noise when stepped on or shot; crouch-walking avoids them","your pick 55, 10-14","nojob"],
+  ["r-debris","r","Papers, boxes and bolts scatter when you sprint, shoot or blast nearby","your pick 79, 10-14","nojob"],
+  ["r-splinters","r","Bullet hits throw splinters or dust by material (the sounds are already in)","your pick 80, 10-14","partly"],
+  ["r-outlines","r","Partners, crews, the golden enemy and things you can use get a consistent thin outline so busy 4K fights stay readable","your pick 81, 10-14","nojob"],
+  ["r-voicebudget","r","Cap how many sounds play at once, player and boss sounds first","your pick 94, 10-14","nojob"],
+  ["r-slowmo","r","A split second of slow motion on the Overseer's death, a self-revive and a last-second extraction","your pick 76, 10-14","nojob"],
+  ["r-combos","r","More element combos (today only a barrel blast shatters a frozen crawler)","your pick 14, 10-14","partly"],
+  ["r-medic","r","A medic pillager bot role (rusher, flanker, suppressor and marksman are in)","your pick 21, 10-14","partly"],
+  ["r-objtracker","r","A folded objective list that pulses when a goal completes","your pick 66, 10-14","partly"],
+  ["r-powerups","r","Power-ups drop more often, with a feed line, a minimap blip and a timer ring","your answer 10-15","partly"],
+  ["r-scavsmg","r","Scav pistol and SMG share one hotbar slot","your order 10-15","nojob"],
+  ["r-hud","r","Rebuild the whole raid HUD (it has been restyled, never rebuilt)","your answers 10-12, 10-18","partly"],
+  ["r-buildings","r","Buildings look like what they are (house, office, warehouse) in the smooth look too","your note 10-20","partly"],
+  ["r-wavemark","r","A map marker where a wave is about to land","your answer 10-12","nojob"],
+  ["r-pvp","r","PvP as an option","your order 09-25","nojob"],
+  ["r-online","r","2 player co-op over the internet through a server","your order 09-25","nojob"],
+  ["r-telemetry","r","Anonymous play stats from friends' games (needs one setup step from you)","your answer 10-12","nojob"],
+
+  ["c-passthrough","c","The two players walk through each other","your answer 2.60","cut"],
+  ["c-endrun","c","End run takes out only the player who pressed it; the run ends when both are out","your answer 2.23","cut"],
+  ["c-repick","c","A partner can pick up a downed player any number of times, a few seconds in the open each time","your answer 3.19","cut"],
+  ["c-windowdies","c","If one window dies the other plays on alone, and the next run is 2 player again","your answers 2.1, 3.9","cut"],
+  ["c-sharedkill","c","Both players get full points for a machine they both hurt in its last 5 seconds","your answer 2.26","cut"],
+  ["c-crown","c","The run over card shows the crown plus closest call and most damage","your answer 2.48","cut"],
+  ["c-arcadeboard","c","The score board starts like an old arcade: made-up initials and scores, AAA on top at about 10,000","your answer 2.49","cut"],
+  ["c-skipcount","c","Any button skips the score count-up","your answer 2.50","cut"],
+  ["c-bothscores","c","Both players' points show during the raid: score big at the top, clock smaller below","your answers 2.51, 3.23","cut"],
+  ["c-firstfight","c","The first fight comes 15 to 20 seconds in","your answer 2.62","cut"],
+  ["c-enemyorder","c","Enemy kinds arrive in order: crawlers and criers first, sentries and bots from minute 2, heavies later","your answer 2.65","cut"],
+  ["c-overseerhunt","c","The Overseer comes hunting if you haven't reached its lair by about minute 7","your answer 2.63","cut"],
+  ["c-finalrush","c","Last 90 seconds: a final rush with more machines and kills worth 1.5x","your answer 2.66","cut"],
+  ["c-randweather","c","Weather and time of day rolled at random for each demo run","your answers 2.16, 2.68","cut"]
 ];
 
 var FILTERS = [["all","All"],["open","Not answered"],["high","High"],["medium","Medium"],["low","Low"],["never","Nevermind"]];

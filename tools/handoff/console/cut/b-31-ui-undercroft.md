@@ -19,3 +19,5 @@ Still yours (from your notes and notes\04-style-guide-update.md): racks (14) but
 - Your run count was reset. Start from your notes and do not redo shipped work.
 
 Coordinator note 10-19 23:59: RE-QUEUED with fresh tries (the first five shipped real cleanups: v32.17 stash header, v32.18 racks explainer lines). Start from NEXT in notes/b-31-ui-undercroft.md: shorten or delete the sector and party paragraphs (log each reason), scale up the terms content, then critic 09-13. Pictures for 09-11 are in notes/shots/b-31-j4.
+
+CUT Tue 10-27 about 20:00 by his priorities page (https://claude.ai/artifact/8mXPSJ5fqq5DiV1Mxsy8Xr, db answers): he marked it NEVERMIND. Do not build it.

@@ -12,3 +12,5 @@ Screens 46 (how to play page) and 56 (tonight's best with a scored row) were als
 - You may still shoot 46 and 56 to look at the backdrop behind them. Do not score them, do not restyle their cards, and do not list them in your TASK DONE line.
 - 45 stays yours, but it is the same attract card as 56 (empty board against scored board) and as 46. Change the backdrop and the title on 45; leave the card's rows, buttons and spacing to task 12. If 45's remaining critic findings are all about the card, log them in your notes as "card: task 12's" and count 45 as done for now (your notes already did this in run 8).
 TASK DONE when 01, 44, 45 and 57 score 4 or more, or every remaining finding is logged as waiting on him or on task 12's card work.
+
+HIS PRIORITY 10-27 (priorities page): LOW

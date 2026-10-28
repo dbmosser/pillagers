@@ -27,3 +27,5 @@ outside the card.
 Pictures: camera-recipes.json with 23, 41-hub-backpack and 41-hub-backpack-pad-p1 at 1080p, then the critic.
 TASK DONE when 23 reaches 4 from the critic (never your own grade), or the fixes shipped and the scores are written with the reason
 for any point left, and 41 is not lower; TASK PARTIAL with what is left.
+
+CUT Tue 10-27 about 20:00 by his priorities page (https://claude.ai/artifact/8mXPSJ5fqq5DiV1Mxsy8Xr, db answers): he marked it NEVERMIND. Do not build it.

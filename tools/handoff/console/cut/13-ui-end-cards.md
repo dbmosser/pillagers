@@ -11,3 +11,5 @@ Settled:
 - Also binding: ALL text shown to the player is lower case.
 Already shipped since this job failed at 09:09: nothing on your screens by git log subject (35, 38, 40, 59, 60, 76, 77). Ships near them that are not yours: v30.98 player 2 gets the run over card (arcade), v31.20 the respawn count wording, v31.08 the what-is-new card stamp. Critic now (none is 4): 35, 38, 59, 77 = 3; 40, 60, 76 = 2.
 Still yours: the lone dark tile outside the card during the haul reveal on 76 (it looks like a leaked slot; fix first), the X and key hint on the end cards, then notes\ui\end-cards.md "Still open".
+
+CUT Tue 10-27 about 20:00 by his priorities page (https://claude.ai/artifact/8mXPSJ5fqq5DiV1Mxsy8Xr, db answers): he marked it NEVERMIND. Do not build it.
