@@ -547,6 +547,18 @@ function Watch([int]$sec){
 }
 
 $SelfHash=(Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash
+# 10-28: a new runner from GitHub is restarted into only when this Windows PowerShell can read it and it is ASCII. Otherwise this copy goes
+# on (it keeps 8802, the party copy and the bridge up), says PROBLEM once, and takes the next good copy from master.
+$script:badHash=''
+function NewRunnerOK(){
+  $h=(Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash
+  if($h -eq $SelfHash -or $h -eq $script:badHash){ return $false }
+  $msg=''
+  try{ $tk=$null; $er=$null; [void][Management.Automation.Language.Parser]::ParseFile($PSCommandPath,[ref]$tk,[ref]$er)
+    if($er -and $er.Count -gt 0){ $msg=([string]$er[0].Message)+' (line '+$er[0].Extent.StartLineNumber+')' } elseif([IO.File]::ReadAllText($PSCommandPath,[Text.Encoding]::GetEncoding(28591)) -match '[^\x00-\x7F]'){ $msg='it is not ASCII' } }catch{ return $true }
+  if($msg){ $script:badHash=$h; Say ('PROBLEM: the new runner from GitHub ('+$h.Substring(0,8)+') cannot be read, so this copy goes on: '+(Short $msg)); return $false }
+  return $true
+}
 Say ('spare runner started (pid '+$PID+', game v'+(GameVer)+')')
 
 function Ensure-Server(){
@@ -932,7 +944,7 @@ while($true){
       # a new runner is taken as soon as master moves (Refresh-Party asks GitHub every minute), not only at the 10-minute note
       if($script:lastMaster -and $script:lastMaster -ne $script:tookMaster -and ((Running 'corpq\.sh|corpus-slices\.sh') -eq 0)){
         $script:tookMaster=$script:lastMaster
-        if((Update-Game) -and (Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash -ne $SelfHash){
+        if((Update-Game) -and (NewRunnerOK)){
           Say 'a new copy of this runner came from GitHub: restarting'
           Remove-Item -LiteralPath $Hb -Force -ErrorAction SilentlyContinue
           Start-Process -FilePath wscript.exe -ArgumentList ('"'+$T+'\spare\spare-start.vbs"') | Out-Null
@@ -943,7 +955,7 @@ while($true){
       if((GetS 'pause_why') -ne $pw -or ((Epoch)-$pt) -ge ($PublishMin*60)){
         if((GetS 'pause_why') -ne $pw){ PutS 'pause_why' $pw; Say $pw }
         Write-Status $pw 0; Publish 'paused'
-        if(((Running 'corpq\.sh|corpus-slices\.sh') -eq 0) -and (Update-Game) -and (Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash -ne $SelfHash){
+        if(((Running 'corpq\.sh|corpus-slices\.sh') -eq 0) -and (Update-Game) -and (NewRunnerOK)){
           Say 'a new copy of this runner came from GitHub: restarting'
           Remove-Item -LiteralPath $Hb -Force -ErrorAction SilentlyContinue
           Start-Process -FilePath wscript.exe -ArgumentList ('"'+$T+'\spare\spare-start.vbs"') | Out-Null
@@ -970,7 +982,7 @@ while($true){
       $pt=[Math]::Max([long]('0'+(GetS 'pub_t')),$script:pubTry)
       if($chg -or ((Epoch)-$pt) -ge ($PublishMin*60)){
         $script:pubTry=[long](Epoch); Write-Status $pw 0; Publish 'paused'
-        if(((Running 'corpq\.sh|corpus-slices\.sh') -eq 0) -and (Update-Game) -and (Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash -ne $SelfHash){
+        if(((Running 'corpq\.sh|corpus-slices\.sh') -eq 0) -and (Update-Game) -and (NewRunnerOK)){
           Say 'a new copy of this runner came from GitHub: restarting'
           Save-Hold $away
           Remove-Item -LiteralPath $Hb -Force -ErrorAction SilentlyContinue
@@ -1000,7 +1012,7 @@ while($true){
       else { Say ('full test run ended without finishing: '+(Split-Path $cf -Leaf)) }
     }
     if(Update-Game){
-      if((Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash -ne $SelfHash){
+      if((NewRunnerOK)){
         if($why){ Write-Status 'idle' (Running 'fuzz\.ps1'); Publish $why }
         Say 'a new copy of this runner came from GitHub: restarting'
         Remove-Item -LiteralPath $Hb -Force -ErrorAction SilentlyContinue

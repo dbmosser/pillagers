@@ -41,6 +41,10 @@ PLAN_ACCOUNT_SHA=12a1aafbabb92b0e1071c81a9da0b3f6ff9c80852a0e5c0edddcf4e4a1d60cd
 # three lanes waiting for 4). His standing line is to stop a helper under 2 GB free, which one helper at 3 still respects.
 # Back to 3 once the VM gets more memory at night (tools/migrate/night-memory-setup.cmd on the main PC).
 RAM_FLOOR_GB=2
+# 10-28 (Main PC Correspondent): the local AI (tools/llm-night.ps1 from tools/nightly.sh, and the Ollama ship reviewer) is off. Each model load took
+# the main PC to 0.2-1.8 GB free on 10-27 (01:21, 01:27, 18:23 with him at the PC, 21:20, 21:51), and none of its hits was real (10 sampled;
+# the 10-25 hand check; the 09-29 32b run). The graphics card plays the 4K two-player robot instead. 1 = on.
+LOCAL_AI=0
 # 10-25 05:30 (coordinator): summarizing OFF. CLI_COMPACT=150000 made helpers summarize at about 50k, not 117k: 114 and 115 stopped 3 times with "Autocompact is thrashing" (05:11 to 05:21, $1.91). 1000000 = the model default (no early summary).
 # 10-25 15:15 (coordinator): his "switch to 400k" (Sun 10-25 about 15:05, from his phone): helpers get a 400k summary window instead of the 1M model default. 150000 summarized at about 50k and thrashed (05:11); 400000 sits far above the 52k a helper starts with.
 CLI_COMPACT=400000
