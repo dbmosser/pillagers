@@ -7838,14 +7838,14 @@ window.__REGRESS=[
        __topClear();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'35.51',what:'RT keeps pad spread without aim, scope or walk slowdown; held and toggled LS sprint survive; LT still aims and cuts sprint in both pad windows',
+  {v:'35.51',what:'RT keeps pad spread without aim, scope or walk slowdown; RT input without a shot preserves held and toggled LS sprint; LT still aims and cuts sprint in both pad windows',
    run:function(){
      var bad=[], ng=navigator.getGamepads, own=Object.prototype.hasOwnProperty.call(navigator,'getGamepads'),
          pk=Object.assign({},PAD), nk=Object.assign({},NET), rk=Object.assign({},RUMBLE), kk=keys, mm=Object.assign({},mouse),
          nf=netPadFocused, np=netSamePost, rn=rnd, cp=Object.assign({},CFG), g, p, pads, side, ix, q, mode, bounds;
      function pad(i){var b=[],j;for(j=0;j<17;j++)b.push({pressed:false,value:0});return {connected:true,id:'Xbox Wireless Controller',index:i,mapping:'standard',axes:[1,0,1,0],buttons:b,timestamp:1};}
      function poll(down){var j,b;for(j=0;j<17;j++){b=pads[ix].buttons[j];b.pressed=down.indexOf(j)>=0;b.value=b.pressed?1:0;}pads[ix].timestamp++;pollPad();}
-     function step(down){poll(down);updatePlayer(0.016);}
+     function step(down){var reload=p.reloading;p.reloading=999;try{poll(down);updatePlayer(0.016);}finally{p.reloading=reload;}} // v28.xx (cw-cx-shotendssprint): RT input with no gunshot preserves sprint; actual gunshots have their own check.
      function spread(){bounds=null;rnd=function(a,b){if(!bounds)bounds=[a,b];return (a+b)/2;};try{fireWeapon(p,p.wep,p.x+300,p.y,true);}finally{rnd=rn;}return bounds?bounds[1]:NaN;}
      function near(a,b){return isFinite(a)&&isFinite(b)&&Math.abs(a-b)<0.000001;}
      function bloom(aim,t){p.ads=aim;PAD.adsT=t;p.bloom=0;p.bloomK=0.4;p.bloomPend=0;p.bloomQ=0;p.blmX=p.x-2;p.blmY=p.y;g.sprinting=false;g.pCrouch=false;bloomTick(p,0.016);return [p.bloom,bloomCone(p,p.wep),spread()];}
