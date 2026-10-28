@@ -421,3 +421,4 @@
 
 2026-10-27 | o-139-solo-pings | solo raid world, minimap and full map | existing party ping marker now appears in solo, follows its enemy and clears after 10 seconds; same sound and shapes; pad tap pings and hold keeps the map | before: v35.38 party-only behavior | after: camera-recipes.json solo-ping-world, solo-ping-minimap, solo-ping-map (lane picture paths pending)
 
+2026-10-27 | cw-whitebars v35.40 | raid belt, raid backpack, stash, extracted card, pre-raid, KIA, codex | cream rank pips (black box under each item picture) removed everywhere except the loot rows; rarity colour borders and the ammo bar stay | tools/handoff/console/notes/shots/199-before, 199-after
