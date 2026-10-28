@@ -732,7 +732,10 @@ function Ensure-Play(){
     if(((Epoch)-$script:playT) -lt 60){ return }
     $script:playT=Epoch
     if(-not (Test-Path -LiteralPath ($PD+'\.git')) -or -not (Test-Path -LiteralPath ($PD+'\tools\serve.ps1'))){ return }
-    if((Running 'party-host-copy\.ps1') -gt 0){ $script:playMiss=0; return }
+    # 10-27 night: only a running -Start counts as a start underway. The -Prepare that Refresh-Party starts on every master move used to
+    # reset the count too, so with master moving every 1 to 3 minutes 8802 stayed down after his 23:12 restart; a -Prepare now skips the look.
+    if((Running 'party-host-copy\.ps1.*-Start') -gt 0){ $script:playMiss=0; return }
+    if((Running 'party-host-copy\.ps1') -gt 0){ return }
     $relay=((Running 'play-relay\.mjs') -gt 0)
     if($relay){ if(RelayGame){ $script:playMiss=0; return } } elseif(Answers 8802){ $script:playMiss=0; Ensure-Collector $PD; return }
     if((PartyIntent) -eq 'stopped'){ if($script:playMiss -ge 0){ Say '8802 has no server: the party copy was stopped on purpose, so it stays off'; $script:playMiss=-1 }; return }
