@@ -1,0 +1,68 @@
+{
+    "title":  "SHORT CALLOUTS",
+    "why":  "His 10-28 audit order: replace 15 sentence callouts with short text without periods. None is a TXSHIP key.",
+    "now":  "Short callouts keep the revive limit, core sources, next raid intel, packed core count and rack costs.",
+    "edits":  [
+                  {
+                      "anchor":  "say(\u0027Nothing to pick up.\u0027);",
+                      "replacement":  "say(\u0027nothing to pick up\u0027); /* v28.xx (cw-cx-sentence-callouts): his 10-28 audit order, short callouts without periods. */"
+                  },
+                  {
+                      "anchor":  "say(\u0027Self-revive spent. One per raid.\u0027);",
+                      "replacement":  "say(\u0027self-revive spent\u0027,\u0027info\u0027,{sub:\u0027one per raid\u0027}); /* v28.xx (cw-cx-sentence-callouts): his 10-28 audit order, short callouts without periods. */"
+                  },
+                  {
+                      "anchor":  "say(\u0027SELF-REVIVE USED\u0027,\u0027info\u0027,{sub:\u0027Back on your feet.\u0027});",
+                      "replacement":  "say(\u0027SELF-REVIVE USED\u0027,\u0027info\u0027,{sub:\u0027back on your feet\u0027}); /* v28.xx (cw-cx-sentence-callouts): his 10-28 audit order, short callouts without periods. */"
+                  },
+                  {
+                      "anchor":  "say(\u0027SEAL BROKEN\u0027,\u0027obj\u0027,{sub:\u0027Seal payout dropped.\u0027});",
+                      "replacement":  "say(\u0027SEAL BROKEN\u0027,\u0027obj\u0027,{sub:\u0027seal payout dropped\u0027}); /* v28.xx (cw-cx-sentence-callouts): his 10-28 audit order, short callouts without periods. */"
+                  },
+                  {
+                      "anchor":  "    say(\u0027HOT GROUND MOVED\u0027,\u0027obj\u0027,{sub:\u0027Check your map.\u0027});",
+                      "replacement":  "    say(\u0027HOT GROUND MOVED\u0027,\u0027obj\u0027,{sub:\u0027check map\u0027}); /* v28.xx (cw-cx-sentence-callouts): his 10-28 audit order, short callouts without periods. */"
+                  },
+                  {
+                      "anchor":  "if(!G.sim) say(\u0027HOT GROUND MOVED\u0027,\u0027obj\u0027,{sub:\u0027Check your map.\u0027});",
+                      "replacement":  "if(!G.sim) say(\u0027HOT GROUND MOVED\u0027,\u0027obj\u0027,{sub:\u0027check map\u0027}); /* v28.xx (cw-cx-sentence-callouts): his 10-28 audit order, short callouts without periods. */"
+                  },
+                  {
+                      "anchor":  "say(\u0027The mainframe wall is full.\u0027);",
+                      "replacement":  "say(\u0027mainframe wall full\u0027); /* v28.xx (cw-cx-sentence-callouts): his 10-28 audit order, short callouts without periods. */"
+                  },
+                  {
+                      "anchor":  "say(\u0027Not enough parts. \u0027+rackCostLine());",
+                      "replacement":  "say(\u0027not enough parts: \u0027+rackCostLine()); /* v28.xx (cw-cx-sentence-callouts): his 10-28 audit order, short callouts without periods. */"
+                  },
+                  {
+                      "anchor":  "say(\u0027Enter a name first.\u0027);",
+                      "replacement":  "say(\u0027name required\u0027); /* v28.xx (cw-cx-sentence-callouts): his 10-28 audit order, short callouts without periods. */"
+                  },
+                  {
+                      "anchor":  "say(\u0027That is not a Pillagers run report.\u0027);",
+                      "replacement":  "say(\u0027invalid pillagers run report\u0027); /* v28.xx (cw-cx-sentence-callouts): his 10-28 audit order, short callouts without periods. */"
+                  },
+                  {
+                      "anchor":  "say(\u0027A core is already slotted for your next raid.\u0027);",
+                      "replacement":  "say(\u0027core already slotted: next raid\u0027); /* v28.xx (cw-cx-sentence-callouts): his 10-28 audit order, short callouts without periods. */"
+                  },
+                  {
+                      "anchor":  "say(\u0027No Data Core in your stash. Find them in rare containers or on elite pillagers.\u0027);",
+                      "replacement":  "say(\u0027no data core: rare containers / elite pillagers\u0027); /* v28.xx (cw-cx-sentence-callouts): his 10-28 audit order, short callouts without periods. */"
+                  },
+                  {
+                      "anchor":  "say(\u0027Core slotted. Your next raid starts with intel.\u0027+(_cp?\u0027 Used \u0027+_cp+\u0027 packed Data Core out of your backpack.\u0027:\u0027\u0027));",
+                      "replacement":  "say(\u0027core slotted: next raid intel\u0027+(_cp?\u0027 / \u0027+_cp+\u0027 packed data core used\u0027:\u0027\u0027)); /* v28.xx (cw-cx-sentence-callouts): his 10-28 audit order, short callouts without periods. */"
+                  },
+                  {
+                      "anchor":  "say(\u0027SELECT A HEAL\u0027,\u0027info\u0027,{sub:\u0027Bandage, Medkit or Armour Plate.\u0027,key:\u0027selheal\u0027});",
+                      "replacement":  "say(\u0027SELECT A HEAL\u0027,\u0027info\u0027,{sub:\u0027bandage, medkit or armour plate\u0027,key:\u0027selheal\u0027}); /* v28.xx (cw-cx-sentence-callouts): his 10-28 audit order, short callouts without periods. */"
+                  },
+                  {
+                      "anchor":  "say(\u0027There is no profile to go back to.\u0027);",
+                      "replacement":  "say(\u0027no previous profile\u0027); /* v28.xx (cw-cx-sentence-callouts): his 10-28 audit order, short callouts without periods. */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the 15 audited sentence callouts use short text without periods; revive limit and packed core detail remain\u0027,\n   run:function(){\n     var bad=[], realSay=say, g, p, said=[];\n     function source(fn,text,label){ if(String(fn).indexOf(text)\u003c0) bad.push(label+\u0027 still has the old wording\u0027); }\n     function has(m,sub){ return said.some(function(x){return x.m===m\u0026\u0026(sub===undefined||x.sub===sub);}); }\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       source(bagHeldGun,\"say(\u0027nothing to pick up\u0027);\",\u0027empty hands\u0027);\n       source(selfRevive,\"say(\u0027self-revive spent\u0027,\u0027info\u0027,{sub:\u0027one per raid\u0027});\",\u0027spent revive\u0027);\n       source(selfRevive,\"sub:\u0027back on your feet\u0027\",\u0027revive success\u0027);\n       source(typeof _tpl===\u0027function\u0027?_tpl:updatePlayer,\"sub:\u0027seal payout dropped\u0027\",\u0027seal payout\u0027);\n       source(tickHot,\"sub:\u0027check map\u0027\",\u0027hot ground\u0027);\n       source(netWorldTake,\"sub:\u0027check map\u0027\",\u0027shared hot ground\u0027);\n       source(buildRack,\"say(\u0027mainframe wall full\u0027);\",\u0027rack limit\u0027);\n       source(buildRack,\"say(\u0027not enough parts: \u0027+rackCostLine());\",\u0027rack parts\u0027);\n       source(importGhost,\"say(\u0027name required\u0027);\",\u0027friend name\u0027);\n       source(importGhost,\"say(\u0027invalid pillagers run report\u0027);\",\u0027friend report\u0027);\n       source(slotCore,\"say(\u0027core already slotted: next raid\u0027);\",\u0027core already slotted\u0027);\n       source(slotCore,\"say(\u0027no data core: rare containers / elite pillagers\u0027);\",\u0027no core\u0027);\n       source(slotCore,\"say(\u0027core slotted: next raid intel\u0027+(_cp?\u0027 / \u0027+_cp+\u0027 packed data core used\u0027:\u0027\u0027));\",\u0027core success\u0027);\n       source(netAidHold,\"sub:\u0027bandage, medkit or armour plate\u0027\",\u0027heal choices\u0027);\n       source(renderSettingsInner,\"say(\u0027no previous profile\u0027);\",\u0027previous profile\u0027);\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state();\n       if(!g||!g.player||g.over) return \u0027staging: no live raid\u0027;\n       p=g.player; say=function(m,k,o){said.push({m:String(m),sub:o\u0026\u0026o.sub||\u0027\u0027});};\n       p.downed=true; p.revived=false; selfRevive();\n       if(p.downed||!p.revived||!has(\u0027SELF-REVIVE USED\u0027,\u0027back on your feet\u0027)) bad.push(\u0027revive success lost its callout\u0027);\n       p.downed=true; said=[];\n       if(selfRevive()!==false||!has(\u0027self-revive spent\u0027,\u0027one per raid\u0027)) bad.push(\u0027spent revive lost its limit detail\u0027);\n       p.downed=false;\n       P.intel=1; said=[]; slotCore();\n       if(!has(\u0027core already slotted: next raid\u0027)) bad.push(\u0027slotted core guard wording\u0027);\n       P.intel=0; P.stash=[]; said=[]; slotCore();\n       if(!has(\u0027no data core: rare containers / elite pillagers\u0027)) bad.push(\u0027missing core lost its source detail\u0027);\n       P.freeKit=0; P.kitSaved=null; P.stash=[\u0027core\u0027]; P.kit=[\u0027core\u0027]; P.hotAssign={}; said=[]; slotCore();\n       if(!P.intel||P.stash.indexOf(\u0027core\u0027)\u003e=0||P.kit.indexOf(\u0027core\u0027)\u003e=0||!has(\u0027core slotted: next raid intel / 1 packed data core used\u0027)) bad.push(\u0027packed core callout lost next raid intel or the spent packed item\u0027);\n     }catch(e){bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e));}\n     finally{say=realSay; try{if(g\u0026\u0026g.player)g.player.downed=false; __endRaid(\u0027abandon\u0027);}catch(e){} __topClear(); __cleanProfile();}\n     return bad.length?bad.join(\u0027; \u0027):null;\n   }},"
+}

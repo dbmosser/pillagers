@@ -1662,3 +1662,11 @@
 2026-10-28 0.0777 critic-o-09f-feed-keeps-the-name
 2026-10-28 0.0768 critic-o-09f-feed-keeps-the-name
 2026-10-28 0.0000 o-09f-feed-keeps-the-name
+2026-10-28 0.0852 critic-o-09f-feed-keeps-the-name
+2026-10-28 0.0866 critic-o-09f-feed-keeps-the-name
+2026-10-28 0.0839 critic-o-09f-feed-keeps-the-name
+2026-10-28 0.0836 critic-o-09f-feed-keeps-the-name
+2026-10-28 0.0000 o-09f-feed-keeps-the-name
+2026-10-28 0.0000 o-09g-sentence-callouts
+2026-10-28 0.0000 o-09g-sentence-callouts
+2026-10-28 0.0000 o-09g-sentence-callouts

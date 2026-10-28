@@ -3550,5 +3550,37 @@
   "pic": "tools/handoff/console/notes/shots/o-09f-feed-keeps-the-name-recipes-1/o09f-p2-feed-normal-1080.jpg",
   "task": "o-09f-feed-keeps-the-name",
   "when": "2026-10-28T23:14"
+ },
+ "p1-feed-after": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The raid HUD is readable, but its panels sit on top of each other, the feed line is cut off, and the pieces use different sizes, fills and accent colours, so it reads as unfinished.",
+  "findings": [
+   "P1 top-centre stack: clock, team score, extract chip: Give the stack one 8px grid with 8px gaps between cards. Use 16px inner padding on the score card. Put 'you' and 'p2' on separate rows with an 8px gap, or turn them into a two-column row. Make the extract chip the same width as the score card, or centre both on the clock.",
+   "P1 left feed line 'select a heal · bandage, medkit or armour p...': Shorten the text to something like 'heal: pick a bandage or medkit' that fits. Better, drop it. Add 24px of left margin (5% safe area) and put the bar inside the pill with 8px padding.",
+   "P1 bottom HUD: hp bar, 'f1 controls', hotbar, ammo card: Set a 48px left and bottom margin. Make the hp bar 24px tall with 16px text inside it. Render empty slots as dim 4px-radius tiles at the same 96px size. Dock 'f1 controls' on the hotbar's baseline, left of slot 1, as a 16px label. Align the ammo card's bottom edge with the hotbar's.",
+   "P1 hierarchy across the HUD: Keep one hero per area: the timer at 56px/800 and the ammo count at 56px. Drop the score to 32px/700 and the sub-scores to 16px muted (--tx-2). Follow the guide: P1 amber is allowed for the player ring, but keep the selected-slot outline consistent with the rest of the game's 'selected' treatment.",
+   "P2 minimap and goals chip, top right: Add a 24px right and top margin. Clip the icon cluster inside the map frame, with 8px padding from the edge. Join the goals strip to the minimap as one panel, with a shared border and an 8px radius or less (4px by the guide)."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-09f-feed-keeps-the-name-recipes-2/o09f-p1-feed-after-1080.jpg",
+  "task": "o-09f-feed-keeps-the-name",
+  "when": "2026-10-28T23:21"
+ },
+ "p2-feed-after": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The HUD is readable and mostly calm, with a clear ammo hero number and a clean lower-case feed line. But the team score panel is cramped and overlaps the timer and extract chips, the feed text is cut off, and the corners are crowded and inconsistent.",
+  "findings": [
+   "P1 top-centre team score card: Make the card 320px wide with 16px padding. Put 'team score' (16px, tx-2) on top and '0 sp' (hero 56px, centred) below. Put the per-player rows (16px) on one line beneath, amber for P1 and cyan for P2. Leave an 8px gap under the timer, with no overlap.",
+   "P1 left feed line 'select a heal · bandage, medkit or armour p...': Shorten it to 'select a heal' and drop the item list, or widen the box so it never truncates. Inset the box 5% from the screen edge (about 48px) and use a 4px radius. Move the 'f1 controls' chip to the same left edge and align it with the feed.",
+   "P1 top-right minimap and 'goals 0/3' chip: Inset the minimap's markers 8px from its border and move the 'n' compass letter to a fixed corner slot. Crop or fill the empty black area. Give the goals chip the same fill and 4px radius as the timer and score panels, 16px label text, and a 48px margin to the screen edge.",
+   "P2 hotbar slots 1-4 and numbers 5-0: Draw all 6 slots as 72px frames with a 1px --ui-line-hi border on the --ui-panel fill, and keep empty ones at 40% alpha. Use the lime --acc 2px border for the selected slot only. Use 16px numerals in tx-2. Make the 'f' badge 16px with a panel chip behind it.",
+   "P2 bottom-left hp bar: Put the hp bar in a 4px-radius --ui-panel card with 16px padding, and inset it 48px from the left and bottom edges. Put the label in tx-1 at 20px on the dark panel, and the number on the right side at 32px. Use --ok for the fill."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-09f-feed-keeps-the-name-recipes-2/o09f-p2-feed-after-1080.jpg",
+  "task": "o-09f-feed-keeps-the-name",
+  "when": "2026-10-28T23:22"
  }
 }

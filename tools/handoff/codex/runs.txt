@@ -467,3 +467,7 @@
 2026-10-28 19:07 o-09e-damage-numbers-merge-and-yours-red 68s ok DONE in=6152077 out=46280 run=5
 2026-10-28 19:12 o-09f-feed-keeps-the-name 311s ok PARTIAL in=1356605 out=11508 run=1
 2026-10-28 19:16 o-09f-feed-keeps-the-name 116s ok PARTIAL in=2107330 out=15726 run=2
+2026-10-28 19:24 o-09f-feed-keeps-the-name 116s ok DONE in=2761594 out=19388 run=3
+2026-10-28 19:30 o-09g-sentence-callouts 333s ok PARTIAL in=804060 out=14815 run=1
+2026-10-28 19:31 o-09g-sentence-callouts 56s ok PARTIAL in=1125378 out=16628 run=2
+2026-10-28 19:34 o-09g-sentence-callouts 107s ok PARTIAL in=1725762 out=20861 run=3

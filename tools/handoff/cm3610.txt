@@ -1,0 +1,7 @@
+v36.10: short callouts
+
+Short callouts keep the revive limit, core sources, next raid intel, packed core count and rack costs.
+
+Check 36.10. Fails on v36.09.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

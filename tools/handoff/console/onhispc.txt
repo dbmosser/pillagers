@@ -75,3 +75,4 @@
 10-28 18:09 v36.06 cw-cx-preraid-scroll on his pc after 65s (8802 serves 36.06) week 84%
 10-28 18:24 v36.07 cw-cx-dmgmerge on his pc after 65s (8802 serves 36.07) week 84%
 10-28 18:39 v36.08 cw-cx-dmgspace on his pc after 81s (8802 serves 36.08) week 84%
+10-28 19:20 v36.09 cw-cx-feedname on his pc after 17s (8802 serves 36.09) week 84%

@@ -3865,8 +3865,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.09';
-var VER_AT='2026-10-28 19:19';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.10';
+var VER_AT='2026-10-28 19:37';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -27424,7 +27424,7 @@ function bagHeldGun(slot){
   var sw=!!p.swapped;
   var isHand=(slot==='gunA')?!sw:sw;
   var g=isHand?p.wep:p.sec, issued=isHand?p.wepIssued:p.secIssued, arm=isHand?p.wepFromArmory:p.secFromArmory;
-  if(!g||g.id==='fists'||g.mag===0){ say('Nothing to pick up.'); return false; }   // v14.78: his word
+  if(!g||g.id==='fists'||g.mag===0){ say('nothing to pick up'); /* v28.xx (cw-cx-sentence-callouts): his 10-28 audit order, short callouts without periods. */ return false; }   // v14.78: his word
   if(issued){ say('ISSUED GEAR STAYS IN YOUR HANDS'); return false; }   // v22.43: the shooter voice   // v22.xx (R52): issued gear, not kit
   if(!ITEMS['gun_'+g.id]){ say('CANNOT STOW THAT GUN','info'); return false; }   // v22.xx (R52)   // v23.xx (tr9fixm): a short detail, never an explaining sentence
   G.bag.push('gun_'+g.id);
@@ -29448,7 +29448,7 @@ function giveUpTick(dt){
 }
 function selfRevive(){
   var p=G.player;
-  if(p.revived) { say('Self-revive spent. One per raid.'); return false; }   // v11.94, HIS NOTE: per raid
+  if(p.revived) { say('self-revive spent','info',{sub:'one per raid'}); /* v28.xx (cw-cx-sentence-callouts): his 10-28 audit order, short callouts without periods. */ return false; }   // v11.94, HIS NOTE: per raid
   // v6.45, his note: no medical required and none consumed. Everyone lands with one
   // of these and it is gone once used, so the decision is WHEN to spend it rather
   // than whether the bag happens to hold a bandage at the moment you go down.
@@ -29457,7 +29457,7 @@ function selfRevive(){
   // v26.13 (nightfix4), found by the overnight regression run of 2026-10-13 (check 23.04): THE SELF-REVIVE SAYS SO AGAIN. v25.40 gave it the injector and gear sounds, and
   // the note for that was written in front of the callout, which turned the say() call into comment text: since then getting up on your own said nothing on screen.
   // The callout is back as v22.xx (R51) had it, the caps headline with the rest as the detail, beside the new sounds.
-  say('SELF-REVIVE USED','info',{sub:'Back on your feet.'});
+  say('SELF-REVIVE USED','info',{sub:'back on your feet'}); /* v28.xx (cw-cx-sentence-callouts): his 10-28 audit order, short callouts without periods. */
   return true;
 }
 
@@ -30096,7 +30096,7 @@ if(!p.fired||p.wep.auto){
           var loot=sealPayout(SR.tier);
           var sc=setLoot(mkContainer(G.seal.x+rnd(-24,24),G.seal.y+rnd(20,40),'cache'),loot);
           sc.cache=1; sc.time=1.2; sc.tag='SEAL PAYOUT'; G.containers.push(sc);
-          say('SEAL BROKEN','obj',{sub:'Seal payout dropped.'});   // v22.xx (R53): an objective row in caps   // v23.xx (tr9fixm): a short detail, never an explaining sentence
+          say('SEAL BROKEN','obj',{sub:'seal payout dropped'}); /* v28.xx (cw-cx-sentence-callouts): his 10-28 audit order, short callouts without periods. */   // v22.xx (R53): an objective row in caps   // v23.xx (tr9fixm): a short detail, never an explaining sentence
           label(G.seal.x,G.seal.y-26,'SEAL BROKEN','#ffc04a',0,true);
           spark(G.seal.x,G.seal.y,'#ffc04a',40,420);
         }
@@ -47171,7 +47171,7 @@ function tickHot(dt){
   var sp=freeSpot(G.map,60);
   H.x=clamp(sp.x,H.r,WORLD_W-H.r); H.y=clamp(sp.y,H.r,WORLD_H-H.r);
   if(!G.sim&&!(typeof NET==='object'&&NET&&NET.specTick)){   // v21.24 (R2): a host watching his party makes no line or sound for it; the party is told by the world word
-    say('HOT GROUND MOVED','obj',{sub:'Check your map.'});   // v22.xx (R53): an objective row in caps
+    say('HOT GROUND MOVED','obj',{sub:'check map'}); /* v28.xx (cw-cx-sentence-callouts): his 10-28 audit order, short callouts without periods. */   // v22.xx (R53): an objective row in caps
     try{ sfx('charge',G.player.x,G.player.y); }catch(e){}
   }
   // Danger follows the loot. Nearest two idle machines are sent to it rather
@@ -55686,8 +55686,8 @@ function rackCostLine(){
   return parts.join(', ');
 }
 function buildRack(){
-  if((P.racks||0)>=RACK_CAP){ say('The mainframe wall is full.'); return; }
-  if(!rackAfford()){ say('Not enough parts. '+rackCostLine()); return; }
+  if((P.racks||0)>=RACK_CAP){ say('mainframe wall full'); /* v28.xx (cw-cx-sentence-callouts): his 10-28 audit order, short callouts without periods. */ return; }
+  if(!rackAfford()){ say('not enough parts: '+rackCostLine()); /* v28.xx (cw-cx-sentence-callouts): his 10-28 audit order, short callouts without periods. */ return; }
   // v15.18, mainframe audit finding 3: BUILD A RACK SAYS WHEN IT TAKES PACKED PARTS OUT OF THE BACKPACK. Packing leaves a part
   // in the stash, so packed copies count toward the rack cost and the button stays live with parts packed for the next ascent.
   // spendHeld unpacks the ones it still needs and returns how many, so the caller can say so, and this loop threw that number
@@ -55751,7 +55751,7 @@ function parseGhost(txt,name){
 function importGhost(){
   var nm=(document.getElementById('mfghostname')||{}).value||'';
   nm=nm.trim();
-  if(!nm){ say('Enter a name first.'); return; }
+  if(!nm){ say('name required'); /* v28.xx (cw-cx-sentence-callouts): his 10-28 audit order, short callouts without periods. */ return; }
   var inp=document.createElement('input');
   inp.type='file'; inp.accept='.txt';
   inp.onchange=function(){
@@ -55759,7 +55759,7 @@ function importGhost(){
     var rd=new FileReader();
     rd.onload=function(){
       var g=parseGhost(String(rd.result),nm);
-      if(!g){ say('That is not a Pillagers run report.'); return; }
+      if(!g){ say('invalid pillagers run report'); /* v28.xx (cw-cx-sentence-callouts): his 10-28 audit order, short callouts without periods. */ return; }
       P.ghost=g;
       saveProfile();
       blip('pick');
@@ -55823,9 +55823,9 @@ function applyGhost(){
   }
 }
 function slotCore(){
-  if(P.intel){ say('A core is already slotted for your next raid.'); return; }
+  if(P.intel){ say('core already slotted: next raid'); /* v28.xx (cw-cx-sentence-callouts): his 10-28 audit order, short callouts without periods. */ return; }
   var ix=P.stash.indexOf('core');
-  if(ix<0){ say('No Data Core in your stash. Find them in rare containers or on elite pillagers.'); return; }
+  if(ix<0){ say('no data core: rare containers / elite pillagers'); /* v28.xx (cw-cx-sentence-callouts): his 10-28 audit order, short callouts without periods. */ return; }
   // v15.53, rack audit finding: SLOT A DATA CORE SAYS WHEN IT TAKES A PACKED CORE OUT OF THE BACKPACK. Packing leaves an item
   // in the stash, so a core packed for the next ascent still lit this button, and a bare splice took a core out of the stash
   // whether or not a loose one was left. With every core he held packed, the backpack lost its core with no word: the kit was
@@ -55837,7 +55837,7 @@ function slotCore(){
   P.intel=1;
   saveProfile();
   blip('pick');
-  say('Core slotted. Your next raid starts with intel.'+(_cp?' Used '+_cp+' packed Data Core out of your backpack.':''));
+  say('core slotted: next raid intel'+(_cp?' / '+_cp+' packed data core used':'')); /* v28.xx (cw-cx-sentence-callouts): his 10-28 audit order, short callouts without periods. */
   renderMainframe(); try{ renderHub(); }catch(e){}
 }
 function renderMainframe(){
@@ -55971,7 +55971,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.09: Long feed rows keep the name and shorten the detail first. Check 36.09 fails on v36.08',
+  now:'v36.10: Short callouts keep the revive limit, core sources, next raid intel, packed core count and rack costs. Check 36.10 fails on v36.09',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -62464,7 +62464,7 @@ function netAidHold(quiet){
   // v22.79 (tr6fixa): the caps callouts. SELECT A HEAL with the three items as the detail; the teammate refusals name him in caps
   // (MOTH ARMOUR FULL, MOTH DOES NOT NEED IT, at most 33 characters with a 16 letter name), and ALREADY SLOTTING or ALREADY APPLYING
   // with the item as the detail, as the plate verb already says it.
-  if(!key||!ITEMS[key]){ if(!quiet) say('SELECT A HEAL','info',{sub:'Bandage, Medkit or Armour Plate.',key:'selheal'}); return false; }
+  if(!key||!ITEMS[key]){ if(!quiet) say('SELECT A HEAL','info',{sub:'bandage, medkit or armour plate',key:'selheal'}); /* v28.xx (cw-cx-sentence-callouts): his 10-28 audit order, short callouts without periods. */ return false; }
   return !!netAidStart(s,key);   // its own lines refuse a teammate who needs nothing, or an item you have none of
 }function netAidStart(s,key){
   var p=G.player, it=ITEMS[key], g=NET.up[s], nm=netSeatName(s)||'Your teammate', bi, arm, ceil;   // v22.xx (R50): it starts the line
@@ -63566,7 +63566,7 @@ function netWorldTake(peer,m){
   if(m.hz&&typeof m.hz.length==='number'&&G.hotZone&&isFinite(+m.hz[0])&&isFinite(+m.hz[1])){
     a=G.hotZone; k=m.hz[2]|0;
     a.x=clamp(+m.hz[0],a.r,WORLD_W-a.r); a.y=clamp(+m.hz[1],a.r,WORLD_H-a.r);
-    if(k>(a.moves|0)){ a.moves=k; a.at=0; if(!G.sim) say('HOT GROUND MOVED','obj',{sub:'Check your map.'}); }   // v22.xx (R53): an objective row in caps
+    if(k>(a.moves|0)){ a.moves=k; a.at=0; if(!G.sim) say('HOT GROUND MOVED','obj',{sub:'check map'}); /* v28.xx (cw-cx-sentence-callouts): his 10-28 audit order, short callouts without periods. */ }   // v22.xx (R53): an objective row in caps
   }
   try{ if(m.fl) flowNetTake(m.fl); else if(m.fl===null&&flowPeer()) flowHostOff(); }catch(_fnt){}   // v28.30 (cloud-coop-host-out-events-end), CLOUD HUNT 2026-10-15: a spectating host (extracted or dead) sends fl null, so its live raid events end here too instead of staying on for good
   return 'wd';
@@ -74013,7 +74013,7 @@ function renderSettingsInner(host){
   if(_unb) _unb.onclick=function(){
     var raw=preRestoreRaw(), d3=null;
     try{ d3=JSON.parse(raw); }catch(_e){}
-    if(!d3||typeof d3.credits!=='number'){ say('There is no profile to go back to.'); return; }
+    if(!d3||typeof d3.credits!=='number'){ say('no previous profile'); /* v28.xx (cw-cx-sentence-callouts): his 10-28 audit order, short callouts without periods. */ return; }
     // The one he is on now becomes the thing UNDO goes back to, so pressing it
     // twice returns him to where he was rather than stranding him.
     try{ localStorage.setItem(RESTORE_BACKUP_KEY,JSON.stringify(P)); }catch(_e2){}

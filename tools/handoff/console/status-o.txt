@@ -1,1 +1,1 @@
-10-28 19:17 gate: shipping cw-cx-feedname (o-09f-feed-keeps-the-name, codex)
+10-28 19:36 gate: shipping cw-cx-sentence-callouts (o-09g-sentence-callouts, codex)

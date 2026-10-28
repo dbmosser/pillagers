@@ -108,3 +108,7 @@
 2026-10-28 19:07 week=33.0% 5h=22.0% week_resets=2026-11-04 01:35 job=o-09e-damage-numbers-merge-and-yours-red
 2026-10-28 19:12 week=34.0% 5h=27.0% week_resets=2026-11-04 01:35 job=o-09f-feed-keeps-the-name
 2026-10-28 19:16 week=34.0% 5h=29.0% week_resets=2026-11-04 01:35 job=o-09f-feed-keeps-the-name
+2026-10-28 19:24 week=34.0% 5h=30.0% week_resets=2026-11-04 01:35 job=o-09f-feed-keeps-the-name
+2026-10-28 19:30 week=35.0% 5h=34.0% week_resets=2026-11-04 01:35 job=o-09g-sentence-callouts
+2026-10-28 19:31 week=35.0% 5h=35.0% week_resets=2026-11-04 01:35 job=o-09g-sentence-callouts
+2026-10-28 19:34 week=35.0% 5h=36.0% week_resets=2026-11-04 01:35 job=o-09g-sentence-callouts

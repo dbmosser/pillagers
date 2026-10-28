@@ -1,0 +1,5 @@
+## v36.10 - SHORT CALLOUTS
+
+Co-op hunt while he was away. His 10-28 audit order: replace 15 sentence callouts with short text without periods. None is a TXSHIP key.
+
+MEASURED. Check 36.10 passes, and fails on v36.09.
