@@ -7227,7 +7227,8 @@ window.__REGRESS=[
        avR=av.filter(function(q){ return q.x>W*0.7; });
        avT=av.filter(function(q){ return Math.abs(q.x-W/2)<3&&q.y>ext.y+2&&q.y<ext.y+H*0.12; });
        if(avR.length) bad.push('FOUR: '+lab+' still draws at the right edge ('+at(avR)+')');
-       if(avT.length!==1) bad.push('FOUR: '+lab+' does not draw under the extract distance at the top centre (drawn at '+(at(av)||'nowhere')+', extract distance at '+Math.round(ext.x)+','+Math.round(ext.y)+')');
+       if(typeof EXTARROW==='object'&&EXTARROW){ if(avT.length||!(EXTARROW.on&&EXTARROW.x>W*0.6)) bad.push('FOUR: a ring just off the right edge is not an edge arrow inside the right edge (arrow '+(EXTARROW.on?Math.round(EXTARROW.x)+','+Math.round(EXTARROW.y):'off')+', line under the pill '+avT.length+')'); }   // cw-extpill retarget (his ask 10-27, report job 6): the exit just off the screen is an edge arrow with its letter and distance
+       else if(avT.length!==1) bad.push('FOUR: '+lab+' does not draw under the extract distance at the top centre (drawn at '+(at(av)||'nowhere')+', extract distance at '+Math.round(ext.x)+','+Math.round(ext.y)+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        try{ if(Z&&kz){ Z.x=kz.x; Z.y=kz.y; Z.beaconT=kz.beaconT; Z.hold=kz.hold; Z.open=kz.open; } }catch(_z){}
