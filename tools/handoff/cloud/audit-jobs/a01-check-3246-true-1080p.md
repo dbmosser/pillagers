@@ -1,0 +1,11 @@
+# a01-check-3246-true-1080p : check 32.46 part ONE fails in a true 1920x1080 window while the screen is fine
+From the cloud audit of 2026-10-28 (tools/handoff/cloud/audit-2026-10-28.md, item 6). A fix to a check only; the game does not change.
+
+What: on v35.38, check 32.46 part ONE says "the map shows 757 px wide, under 800 (800 at 1080p) [1920x1080 cell 757x678 kit 760 side 680 scale 1.3]"
+in a 1920x1080 window. It passes at 1888x977 (the gate Chrome), 2560x1440 and 3840x2160, so no corpus run has ever seen it. The picture
+tools/handoff/cloud/audit-2026-10-28-shots/pre-raid-1920x1080.jpg shows the map about 965 px wide on screen: 757 is most likely the cell in
+CSS px before the 1.3 menu zoom (757 x 1.3 = 984). Confirm that reading first.
+
+Do: make part ONE measure the map as drawn on screen (after the menu zoom), so it holds at 1920x1080, 1888x977, 1440p and 4K. Retarget
+through fixq.sh as RULES.md says. Run it at 1920x1080 as well as in the gate Chrome before you call it done.
+TASK DONE when the retarget is committed and 32.46 passes in both window sizes.

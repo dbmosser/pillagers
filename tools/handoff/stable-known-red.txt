@@ -10,6 +10,9 @@ v22.52   # four-gun belt rules (guns only on keys 1 to 4, a medkit refused on ke
 v18.91   # a gun dropped on the other gun's key now trades the two keys and keeps the guns in his hands (cw-beltfix, his ask 10-27 "swap them on the hotbar")
 v13.99   # an item key he set stays, greyed, when none came up (cw-hotitems); no automatic Medical cell since wheel4
 v13.59   # same rule: crafting away the packed Bandages leaves his Bandage key greyed until he drags it off
+# added 2026-10-28 (cloud audit): the same items-on-hotbar order; both pass on v34.94, fail from v35.12 on, and fail alone on v35.38
+v23.05   # wants a Medkit refused on key 9 (the bar is guns only); items may go on any key now
+v11.96   # wants ITEMS GO ON THE WHEEL refusals on keys 7 to 9; items may go on any key now
 # the stash row is named hotbar (v35.12 undercroft fixes, his asks 10-27; check 35.12 requires the word)
 v10.26   # wants "tactical belt" on the stash loadout column
 v9.89    # same word check on the Undercroft loadout column
