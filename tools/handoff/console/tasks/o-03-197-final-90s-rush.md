@@ -1,4 +1,6 @@
 # 197-final-90s-rush : the last 90 seconds of a demo raid are a final rush with kills worth 1.5x
+HIS DECISION 10-28 about 08:40 (his reply to the ranked list of 32; this beats anything below in this file): #3 "1.05". In the final 90 s rush, kills are worth 1.05x, not 1.5x.
+He approved 13 of the 32 in one reply and asked for them to be made, then polish. Ship it, then the next o- job.
 Queue (priorities page 10-27): his priorities page batch 2 (https://claude.ai/artifact/8mXPSJ5fqq5DiV1Mxsy8Xr, db "answers"), Tue 10-27 about 20:07, item c-finalrush (his round 2 answer 2.66 b, from cut/16-party-raid-pacing.md line 10). HIS PRIORITY: LOW.
 effort: medium
 

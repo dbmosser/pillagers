@@ -1,4 +1,6 @@
 # 172-night-pays-cash : a night extraction pays 20 percent more $ on what you carry out
+HIS DECISION 10-28 about 08:40 (his reply to the ranked list of 32; this beats anything below in this file): #2 "All these modifiers like night rain etc stuff should contribute to sp not $ at 1.05". So this job changes: NO extra $ for night. Every raid condition modifier (night, rain, fog and the like) multiplies SP by 1.05 and adds no $. Find every place a modifier pays $ (endRaid hazard pay) or uses another SP or XP multiplier for these conditions (CFG.nightXp 1.2 and the like), and set them all to 1.05x SP with no $. Read how SP and XP relate on HEAD first, and say in the DESIGN entry what each old value was.
+He approved 13 of the 32 in one reply and asked for them to be made, then polish. Ship it, then the next o- job.
 Queue (coordinator 10-25 16:30): his 10-25 answer g-99, "Yes, $ too" (notes/answers-100-1025.md; line numbers read on v34.83, check them on HEAD). His 09-03 Q22 set the night XP bonus and did not rule out $. Career only: release work for Thanksgiving, not needed for the party.
 Since v34.81 the SMOOTH look is the default: test and take pictures in the smooth look.
 effort: low

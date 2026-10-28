@@ -1,4 +1,6 @@
 # 120d2-fire-ends-sprint : firing a gun ends the sprint for 0.35 s (his g-1 answer)
+HIS DECISION 10-28 about 08:40 (his reply to the ranked list of 32; this beats anything below in this file): #6 "ends your sprint period". Firing a gun ENDS the sprint outright, not for 0.35 s: the player must sprint again after firing (pad toggle sprint too).
+He approved 13 of the 32 in one reply and asked for them to be made, then polish. Ship it, then the next o- job.
 Parked 10-27 by the coordinator under his order "Ok no new features until Nov 1. Resources should now be spent polishing, bug fixing, etc". Split from 120d (the RT part stayed in tasks/). Before starting: check whether 120d shipped (git log --grep 120d) and re-read the line numbers on HEAD.
 effort: medium
 

@@ -1,4 +1,6 @@
 # 196-run-over-card-moments : the run over card shows the crown plus closest call and most damage
+HIS DECISION 10-28 about 08:40 (his reply to the ranked list of 32; this beats anything below in this file): #10 "yes". Build it as written.
+He approved 13 of the 32 in one reply and asked for them to be made, then polish. Ship it, then the next o- job.
 Queue (priorities page 10-27): his priorities page batch 2 (https://claude.ai/artifact/8mXPSJ5fqq5DiV1Mxsy8Xr, db "answers"), Tue 10-27 about 20:07, item c-crown (his round 2 answer 2.48 b, from cut/15-party-score-board.md line 9). HIS PRIORITY: LOW.
 effort: medium
 

@@ -1,4 +1,6 @@
 # 144-crates-faster-with-two : a box searches 1.5x faster while both pillagers stand at it
+HIS DECISION 10-28 about 08:40 (his reply to the ranked list of 32; this beats anything below in this file): #9 "yes". Build it as written.
+He approved 13 of the 32 in one reply and asked for them to be made, then polish. Ship it, then the next o- job.
 Queue (coordinator 10-25 16:30): his 10-25 answer g-57, "Crates open faster with two" (notes/answers-100-1025.md; line numbers read on v34.83, check them on HEAD). Party fix (Fri 10/30 first): a reward for two players staying close.
 Since v34.81 the SMOOTH look is the default: test and take pictures in the smooth look.
 effort: low

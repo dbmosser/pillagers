@@ -1,4 +1,6 @@
 # 194-unlimited-partner-pickups : a partner can pick up a downed player any number of times
+HIS DECISION 10-28 about 08:40 (his reply to the ranked list of 32; this beats anything below in this file): #14 "yes". Build it as written.
+He approved 13 of the 32 in one reply and asked for them to be made, then polish. Ship it, then the next o- job.
 Queue (priorities page 10-27): his priorities page batch 2 (https://claude.ai/artifact/8mXPSJ5fqq5DiV1Mxsy8Xr, db "answers"), Tue 10-27 about 20:07, item c-repick (his round 3 answer 3.19 a, from cut/14-party-2p-flow.md line 12). HIS PRIORITY: LOW.
 effort: small
 

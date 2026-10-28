@@ -1,4 +1,6 @@
 # 195-shared-last-5s-points : both players get full points for a machine they both hurt in its last 5 seconds
+HIS DECISION 10-28 about 08:40 (his reply to the ranked list of 32; this beats anything below in this file): #11 "last 2.5 secs". Both players get full points for a machine they both hurt in its LAST 2.5 SECONDS, not 5.
+He approved 13 of the 32 in one reply and asked for them to be made, then polish. Ship it, then the next o- job.
 Queue (priorities page 10-27): his priorities page batch 2 (https://claude.ai/artifact/8mXPSJ5fqq5DiV1Mxsy8Xr, db "answers"), Tue 10-27 about 20:07, item c-sharedkill (his round 2 answer 2.26 b, from cut/15-party-score-board.md line 6). HIS PRIORITY: LOW.
 effort: small
 

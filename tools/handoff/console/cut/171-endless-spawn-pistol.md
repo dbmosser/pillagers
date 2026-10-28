@@ -1,4 +1,5 @@
 # 171-endless-spawn-pistol : the scav pistol you ascend with never runs out of reserve
+HIS DECISION 10-28 about 08:40 (his reply to the ranked list of 32; this beats anything below in this file): #4 "No, I don't like this." CUT for good: never build, queue or suggest it again.
 Queue (coordinator 10-25 16:30): his 10-25 answer g-17, "Yes, endless but weak" (notes/answers-100-1025.md; line numbers read on v34.83, check them on HEAD). Career only (the demo deals its own guns): release work for Thanksgiving, not needed for the party. The scav pistol stays spawn-only (veto 10-12): this touches only its ammo.
 Since v34.81 the SMOOTH look is the default: test and take pictures in the smooth look.
 effort: low
