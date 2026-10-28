@@ -403,3 +403,5 @@
 2026-10-28 08:48 o-140-red-enemy-tracers 164s ok PARTIAL in=4343418 out=32190 run=4
 2026-10-28 08:54 o-140-red-enemy-tracers 102s ok PARTIAL in=4865442 out=35279 run=5
 2026-10-28 08:58 o-01-142-hot-ground-kills-pay-more 270s ok PARTIAL in=728482 out=10755 run=1
+2026-10-28 09:17 o-01-142-hot-ground-kills-pay-more 273s ok PARTIAL in=2391292 out=18499 run=2
+2026-10-28 09:17 o-01-142-hot-ground-kills-pay-more 35s ok PARTIAL in=2684103 out=19298 run=3

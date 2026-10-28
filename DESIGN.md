@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.73 - THE XP LINE KEEPS ITS OWN LINE ON THE EXTRACTED CARD
+
+Co-op hunt while he was away. his picture 10-28: "+2,386 xpthe seal on cold storage is broken. it reseals harder: stage 1 needs 55 seconds." cw-spmoney (v35.45) hid the season total and the next reward sentence of the career xp line in a span that ended the line, and the .ocsr + br rule hid the line break after it, so the next line ran into the xp figure. The hidden part now sits inside the xp span and the break stays.
+
+MEASURED. Check 35.73 passes, and fails on v35.72.
 ## v35.72 - NEW PLAYERS START ON HIS SETTINGS PAGE
 
 Co-op hunt while he was away. his order of 10-28 with a picture of his settings page: these should be the default settings for a new player, and for arcade mode

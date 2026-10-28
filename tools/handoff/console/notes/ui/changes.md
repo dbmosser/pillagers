@@ -479,3 +479,4 @@
 
 2026-10-28 | o-01-142-hot-ground-kills-pay-more | career/demo raid, both seats | hot-ground kill popup adds hot; SP bonus is the approved 1.05x | before: not photographed (custom recipes) | after: lane camera-recipes hotkill-career-p1, hotkill-career-p2, hotkill-demo-p1, hotkill-demo-p2 (pending).
 
+- 10-28 204-new-player-default-settings, settings the raid: a fresh profile now opens on new player with his listed rows (defaults only, no wording changed). after: tools/handoff/console/notes/shots/204-after/68-settings-sec-the-raid-1080.jpg
