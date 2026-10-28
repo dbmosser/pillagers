@@ -6,13 +6,21 @@
 # Never say a build is done without its ON HIS PC line.
 V=$1; K=${2:-}; R="/c/claudecode/dark raiders"; C="$R/tools/handoff/console"; OUT="$C/onhispc.txt"
 [ -z "$V" ] && { echo "usage: onhispc.sh NN.NN [KEY]"; exit 2; }
-want=$(echo "$V" | awk -F. '{printf "%d", $1*100+$2}'); t0=$(date +%s); got=""; hit=0
-for i in $(seq 1 24); do
+want=$(echo "$V" | awk -F. '{printf "%d", $1*100+$2}'); t0=$(date +%s); got=""; hit=0; bd=0; via=""
+# 10-28: after the VM's 04:21 restart the Default Switch moved and the bridge stopped answering. When main-status gives nothing, the
+# version comes from the status the main PC runner pushes to GitHub (spare-results, spare/JUL26/status.txt play8802=), looked at once a
+# minute, and the wait is 10 minutes instead of 6 (that status goes out within a round of the copy update).
+for i in $(seq 1 40); do
   got=$(cd "$R" && timeout 30 node tools/bridge/hostctl.mjs main-status 2>/dev/null | node -e '
     let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{const j=JSON.parse(s),p=j.play8802||{};
     process.stdout.write(p.servesFileOnDisk===false?"stale-"+(p.ver||"?"):(p.ver||""))}catch(e){}})')
+  if [ -z "$got" ]; then bd=$((bd+1))
+    if [ $((bd % 4)) = 1 ]; then git -C "$R" fetch -q origin +spare-results:refs/onhispc/spare-results 2>/dev/null
+      got=$(git -C "$R" show refs/onhispc/spare-results:spare/JUL26/status.txt 2>/dev/null | tr -d '\r' | sed -n 's/^play8802=.* v\([0-9]*\.[0-9]*\)$/\1/p' | head -1)
+      [ -n "$got" ] && via=" (its GitHub status; the bridge did not answer)"; fi; fi
   g=$(echo "$got" | awk -F. '/^[0-9]+\.[0-9]+$/{printf "%d", $1*100+$2}')
   [ -n "$g" ] && [ "$g" -ge "$want" ] && { hit=1; break; }
+  [ "$i" -ge 24 ] && [ "$bd" -lt "$i" ] && break   # the bridge answered at least once: 6 minutes as before
   sleep 15
 done
 dt=$(( $(date +%s) - t0 ))
@@ -23,8 +31,8 @@ if [ -z "$(find "$PU" -mmin -5 2>/dev/null)" ]; then
   set -- $u; [ -n "$2" ] && echo "$1 $2 $(date +%s)" > "$PU.ship.tmp" && mv -f "$PU.ship.tmp" "$PU"; fi
 read ses wk _ < "$PU" 2>/dev/null
 if [ $hit = 1 ]; then
-  echo "$(date '+%m-%d %H:%M') v$V ${K:+$K }on his pc after ${dt}s (8802 serves $got) week ${wk:-?}%" >> "$OUT"
-  echo "ON HIS PC v$V: his 8802 serves $got (${dt}s after the ship). He reloads to play it."
+  echo "$(date '+%m-%d %H:%M') v$V ${K:+$K }on his pc after ${dt}s (8802 serves $got$via) week ${wk:-?}%" >> "$OUT"
+  echo "ON HIS PC v$V: his 8802 serves $got (${dt}s after the ship)$via. He reloads to play it."
 else
   echo "$(date '+%m-%d %H:%M') v$V ${K:+$K }NOT on his pc after ${dt}s (8802 serves ${got:-no answer}) week ${wk:-?}%" >> "$OUT"
   echo "$(date '+%m-%d %H:%M') v$V ${K:+($K) }not on his main PC after 6 min (8802 serves ${got:-no answer}); see tools/bridge main-status" >> "$C/alarms.md"
