@@ -1,0 +1,10 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  04-stash-terminal                      staged       7.4s  
+  11-wirt-gambler                        staged       7.0s    | gamblemodal
+== 4k : window 3876x2265, viewport 3840x2160
+  04-stash-terminal                      staged       7.5s  
+  11-wirt-gambler                        staged       7.2s    | gamblemodal
+== 1080 : window 1956x1185, viewport 1920x1080
+  11b-wirt-after-rolls                   staged       7.4s    | gamblemodal
+== 4k : window 3876x2265, viewport 3840x2160
+  11b-wirt-after-rolls                   staged       7.5s    | gamblemodal

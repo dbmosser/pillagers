@@ -1,0 +1,7 @@
+v35.93: the gamble shows its odds and the stash hotbar lines up
+
+the gamble shows its odds by rarity and the stash hotbar lines up
+
+Check 35.93. Fails on v35.92.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

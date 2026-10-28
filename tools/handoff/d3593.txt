@@ -1,0 +1,5 @@
+## v35.93 - THE GAMBLE SHOWS ITS ODDS AND THE STASH HOTBAR LINES UP
+
+Co-op hunt while he was away. menus master pass 10-28: at Wirt the gamble panel was an empty box over its button until a first roll, beside an offer panel with a big picture; it now shows a mystery tile of the same size beside the odds of each rarity from the gamble pool (common 9, uncommon 34, rare 32 with keys, elite 25). On the stash screen the hotbar slots ran to the panel edge while every other grid sits on a 12px inset; they line up now. The backpack box shows a scroll bar on a Windows screen, so the hotbar right inset follows its width.
+
+MEASURED. Check 35.93 passes, and fails on v35.92.

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.93 - THE GAMBLE SHOWS ITS ODDS AND THE STASH HOTBAR LINES UP
+
+Co-op hunt while he was away. menus master pass 10-28: at Wirt the gamble panel was an empty box over its button until a first roll, beside an offer panel with a big picture; it now shows a mystery tile of the same size beside the odds of each rarity from the gamble pool (common 9, uncommon 34, rare 32 with keys, elite 25). On the stash screen the hotbar slots ran to the panel edge while every other grid sits on a 12px inset; they line up now. The backpack box shows a scroll bar on a Windows screen, so the hotbar right inset follows its width.
+
+MEASURED. Check 35.93 passes, and fails on v35.92.
 ## v35.92 - BOXES SEARCH FASTER TOGETHER
 
 Co-op hunt while he was away. His decision 10-28: Crates open faster with two. Every searchable box gains 1.5 times search speed while another live party member stands within 200 units, in demo and career co-op. The host search, host handling of a partner hold and partner bar use the same helper. Solo speed and seeded generation stay unchanged. Playtest watch: two players may stack on every box; watch that searching alone does not start to feel slow.

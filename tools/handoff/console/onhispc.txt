@@ -58,3 +58,4 @@
 10-28 13:44 v35.89 cw-pausecond on his pc after 65s (8802 serves 35.89) week 82%
 10-28 13:49 v35.90 cw-cx-wallnoise on his pc after 49s (8802 serves 35.90) week 82%
 10-28 14:06 v35.91 cw-cx-throwbank on his pc after 33s (8802 serves 35.91) week 82%
+10-28 14:53 v35.92 cw-cx-duosearch on his pc after 113s (8802 serves 35.92) week 82%

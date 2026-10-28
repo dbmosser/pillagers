@@ -2393,6 +2393,7 @@ body:has(#hub.on) #hubtoast{visibility:hidden;}
 #root #hub #hotplanwrap>div>div{gap:0!important;}
 #root #hub #hotplanwrap>div>div>div{flex:1;min-width:0;padding:0!important;background:transparent!important;}
 #root #hub #hotplanwrap>div>div>div>div:first-child{display:grid!important;grid-template-columns:repeat(9,minmax(0,1fr));gap:8px!important;width:100%;}
+#root #hub #hotplanwrap{box-sizing:border-box;padding:0 12px;}   /* v35.xx (cw-menupolish2): the hotbar slots sit on the backpack grid's 12px inset; they ran to the panel edge */
 #root #hub #hotplanwrap>div>div>div>div:last-child{display:none!important;}
 #root #hub #hotplanwrap [data-plan]{max-width:none!important;width:auto!important;border-color:var(--ui-line-hi)!important;}
 #root #hub #hotplanwrap [data-plan] span{font:600 18px/1.2 var(--f-cond)!important;letter-spacing:.04em;color:var(--tx-2)!important;}
@@ -2705,6 +2706,16 @@ body:has(#gamblemodal.on) #hubtoast,body:has(#opmodal.on #opane_rec[style*="disp
 #root #gamblemodal #wirtlot{flex:1 1 auto;display:flex !important;flex-direction:column;align-items:stretch !important;gap:24px !important;min-height:0;}
 #root #gamblemodal #wirtlot > span[title]{align-self:center;width:192px !important;height:192px !important;}
 #root #gamblemodal #wirtlot > span[title] img{width:176px !important;height:176px !important;}
+/* v35.xx (cw-menupolish2): THE GAMBLE panel: a 192px mystery tile (the offer picture's size) beside the odds, one row a rarity; the roll list takes what is left: name in its colour, a 6px bar, the percent */
+#root #gamblemodal #gambleodds{flex:none;display:flex;flex-direction:row;align-items:center;gap:var(--sp-3);width:100%;}
+#root #gamblemodal #wirtsec_gamble #gamblelist{min-height:0;}
+#root #gamblemodal #gambleodds .gbtile{flex:none;box-sizing:border-box;width:192px;height:192px;display:flex;align-items:center;justify-content:center;border-radius:var(--rad);background:radial-gradient(circle at 50% 50%,rgba(168,102,224,.24),rgba(0,0,0,0) 68%),var(--ui-raised);font:700 112px/1 var(--f-cond);color:var(--tx-2);}
+#root #gamblemodal #gambleodds .gbodds{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:var(--sp-1);}
+#root #gamblemodal #gambleodds .gbrow{display:grid;grid-template-columns:calc(var(--sp-1) * 14) 1fr calc(var(--sp-1) * 7);gap:var(--sp-2);align-items:center;font:600 var(--fs-label)/1.4 var(--f-cond);letter-spacing:var(--track);}
+#root #gamblemodal #gambleodds .gbrow span{color:var(--rc);}
+#root #gamblemodal #gambleodds .gbrow i{display:block;height:6px;border-radius:3px;overflow:hidden;background:var(--ui-line);}
+#root #gamblemodal #gambleodds .gbrow i b{display:block;height:100%;background:var(--rc);}
+#root #gamblemodal #gambleodds .gbrow em{font-style:normal;text-align:right;font-variant-numeric:tabular-nums;color:var(--tx-2);}
 #root #gamblemodal #wirtlot > span:not([title]){flex:1 1 auto;}
 #root #gamblemodal #wirtlotbtn{position:relative;flex:none;width:100%;min-width:0;min-height:56px;margin-bottom:32px;}
 #root #gamblemodal #gamblebtn[data-need]:not([data-need=""])::after,#root #gamblemodal #wirtlotbtn[data-need]:not([data-need=""])::after{position:absolute;top:calc(100% + 8px);left:0;right:0;margin:0;text-align:left;font-size:16px;line-height:1.4;display:block;}
@@ -2932,6 +2943,7 @@ body:has(#appearmodal.pixfashion.on) > #uimring{display:none !important}
   <div class="msub" id="gamble_line">Gamble with Wirt. No refunds, no complaints.</div>
   <div id="wirtsec_gamble" style="border:1px solid var(--steel-hi);padding:10px 12px;margin:6px 0 0">
     <div style="font-size:13px;letter-spacing:.14em;color:var(--tx-2);font-weight:700;margin-bottom:6px">THE GAMBLE</div>
+    <div id="gambleodds"></div><!-- v35.xx (cw-menupolish2): the mystery tile and the odds of each rarity (gambleOddsDraw) -->
     <div class="plist" id="gamblelist" style="border:1px solid var(--steel);max-height:220px"></div>
     <div style="display:flex;gap:8px;margin-top:10px">
       <button id="gamblebtn" style="padding:8px 22px;border-color:var(--amber);color:var(--amber)">Gamble 2500c</button>
@@ -3813,8 +3825,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.92';
-var VER_AT='2026-10-28 14:50';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.93';
+var VER_AT='2026-10-28 14:55';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -55833,7 +55845,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.92: Boxes search 1.5 times faster with a nearby teammate. Check 35.92 fails on v35.91',
+  now:'v35.93: the gamble shows its odds by rarity and the stash hotbar lines up Check 35.93 fails on v35.92',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -56636,6 +56648,23 @@ function barIconURL(tag){
   var cb=document.getElementById('closebar');
   if(cb) cb.onclick=function(){ document.getElementById('barmodal').classList.remove('on'); };
 }
+// v35.xx (cw-menupolish2), menus master pass 2026-10-28: THE GAMBLE panel was an empty box over its button until a first roll (its "nothing rolled yet" line is
+// hidden on purpose), beside an offer panel with a 192px picture. It now has a mystery tile of the same size and the odds of each rarity, read from
+// GAMBLE_POOL (a key counts as rare, as the keys are), each in its rarity colour. Display only: the pool, its weights and the price do not move.
+function gambleOdds(){
+  var by={}, tot=0, i, k, w, r, out=[], order=['common','uncommon','rare','elite','gold'];
+  for(i=0;i<GAMBLE_POOL.length;i++){ k=GAMBLE_POOL[i][0]; w=+GAMBLE_POOL[i][1]||0; r=(k==='KEY')?'rare':((typeof dispR==='function'&&dispR(k))||(ITEMS[k]&&ITEMS[k].r)||'common'); by[r]=(by[r]||0)+w; tot+=w; }
+  for(i=0;i<order.length;i++) if(by[order[i]]) out.push([order[i],tot?by[order[i]]/tot:0]);
+  return out;
+}
+function gambleOddsDraw(){
+  var el=document.getElementById('gambleodds'), O, h, i, pc;
+  if(!el) return false;
+  O=gambleOdds(); h='<div class="gbtile"><span>?</span></div><div class="gbodds">';
+  for(i=0;i<O.length;i++){ pc=Math.round(O[i][1]*100); h+='<div class="gbrow" style="--rc:'+(RCOL[O[i][0]]||'#9da3a8')+'"><span>'+O[i][0]+'</span><i><b style="width:'+pc+'%"></b></i><em>'+pc+'%</em></div>'; }
+  el.innerHTML=h+'</div>';
+  return true;
+}
 function renderGamble(){
   var el=document.getElementById('gamblelist');
   walletLine('wallet_gamble','$'+GAMBLE_PRICE.toLocaleString()+' per roll');
@@ -56656,6 +56685,7 @@ function renderGamble(){
        '<span class="vl">'+'$'+ival(log[i]).toLocaleString()+'</span></div>';
   }
   el.innerHTML=h;
+  try{ gambleOddsDraw(); }catch(_god){}   // v35.xx (cw-menupolish2): the mystery tile and the odds
   var b=document.getElementById('gamblebtn');
   // v15.05, wirt audit finding: THE GAMBLE BUTTON READS ITS PRICE WITH A COMMA. The money line and the empty roll list above
   // it print GAMBLE_PRICE through toLocaleString, and so does the Buy button of the Limited Time Offer, but this button printed
@@ -56858,6 +56888,20 @@ var ICLASS={
 // nothing leaves the stash until the lift goes. stageKitLive is what reconciles
 // the two, so reading it here means a kit entry whose stash copy was sold stops
 // being shown as though it were still coming with you.
+// v35.xx (cw-menupolish2), menus master pass 2026-10-28: THE HOTBAR ENDS WHERE THE BACKPACK ROW ENDS. The backpack box scrolls, and on a
+// Windows screen its 8px scroll bar takes width from the slots, so on the 12px inset alone the hotbar ran 6px past them at 1080. The hotbar's
+// right inset takes the same scroll bar width (none when the box does not scroll). Display only.
+// The stash renders while it is still hidden (the terminal adds .on after renderHub), so a ResizeObserver on the box measures again when
+// it shows and when its scroll bar comes or goes (its content box narrows); setting the hotbar inset never resizes the box.
+var _hotInsetRO=null;
+function hotInsetSync(){
+  var kg=document.getElementById('kitgrid'), hw=document.getElementById('hotplanwrap'), cs, sb;
+  if(!kg||!hw) return;
+  if(!_hotInsetRO&&typeof ResizeObserver==='function'){ _hotInsetRO=new ResizeObserver(function(){ try{ hotInsetSync(); }catch(_hr){} }); _hotInsetRO.observe(kg); }
+  cs=getComputedStyle(kg);
+  sb=Math.max(0,kg.offsetWidth-kg.clientWidth-(parseFloat(cs.borderLeftWidth)||0)-(parseFloat(cs.borderRightWidth)||0));
+  hw.style.paddingRight=(12+sb)+'px';
+}
 function renderKitCol(){
   var kg=document.getElementById('kitgrid'); if(!kg) return;
   var K=stageKitLive();
@@ -57846,6 +57890,7 @@ try{ renderFreeKit(); }catch(_fk){}
   stashSortKeys(shown,counts);   // v17.42: his pick 25, the sort he chose
   stashPinLocked(shown);   // v26.xx (career5): a locked item stays at the front, whatever the sort
   renderKitCol();
+  try{ hotInsetSync(); }catch(_his){}   // v35.xx (cw-menupolish2): the hotbar ends on the backpack row, scroll bar or not
 
   shown.forEach(function(k){
     var it=ITEMS[k];
