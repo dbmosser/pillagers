@@ -39,3 +39,14 @@ v25.66   # the loc state wants the location tag or a top row beside the clock; o
 v12.74   # reads the refusal off g.msg, the retired grey row; the refusal "need $1,140" goes to the left feed now (cw-quiettext v35.30, same as the 18 checks re-aimed in 8c67af2af)
 # his note 10-27 "extract into the ground, player pops back up" (job 189, v35.37 cw-xsink)
 v15.79   # a late position word after an extraction out word must not stand the teammate back up on the ring (netUpHid); the check expects him drawn again
+# Stable triage 2026-10-28 (corpus-1027-2310 on v35.43 from the spare PC, 14 newly red; each rerun alone on v35.58, fixture of master d6eaf0cbc).
+# 5 are out of date (below). 9 pass on v35.58 and are not listed: v35.35 v33.08 v31.51 v30.93 v29.03 v27.51 v13.40 v13.39 v13.38 (their fixture retargets from cw-fewermsg and cw-msgroute were ahead of the v35.43 build, which v35.44 caught up with).
+# solo pings (task 139, his 10-14 pick 46 "middle mouse pinging doesn't even work in 1 player", v35.41 cw-cx-solopings)
+v16.43   # reads the source for KeyN pinging only with NET.on; N pings in a one-player raid too now
+v16.46   # same source read for the D-UP tap pinging only with NET.on and NET.upSeed; the tap pings alone now
+# ping labels (v35.43 cw-cx-pingread: one readable plate over the target, all lower case)
+v23.02   # the ping on a crier draws "name, crier, 8m" in lower case; the check wants CRIER in capitals
+# fewer raid messages (his 10-27 complaint, v35.44 cw-msgroute)
+v23.10   # a goal done waits for 4 s without a shot (feedCalm) and then shows one line, the second 2.5 s later; the check opens the crate in a fight and sees none (with calm it passes the same steps)
+# stash hover (his 10-27 order "mousing over different items in the stash ... changes the size of one of the sub menus", v35.42 cw-stashhover)
+v32.69   # the item line under the stash grids is one fixed 160px box, shown idle or hovered; the check wants the idle strip hidden
