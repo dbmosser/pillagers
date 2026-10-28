@@ -1,0 +1,7 @@
+v36.00: kia card fits at 4k with a full hit list
+
+at 4k the kia card shows every hit and the run feel button without scrolling
+
+Check 36.00. Fails on v35.99.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

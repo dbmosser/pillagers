@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.00 - KIA CARD FITS AT 4K WITH A FULL HIT LIST
+
+Co-op hunt while he was away. menus master pass 10-28, on his 4K screen: with 8 hits in how it went the KIA card ran 71 px past the card, so the how did that run feel button hid under the log run button. Table rows are tighter and the lost money and lost items sit closer, so the whole card shows with no scrolling.
+
+MEASURED. Check 36.00 passes, and fails on v35.99.
 ## v35.99 - RUN OVER MOMENTS READ CLEARLY
 
 Co-op hunt while he was away. Critic scored both real run-over cards 3/5: uneven stat columns, small captions and a busy backdrop. Both players now keep a fixed four-stat grid, share actual deaths on the score wire, and read 20px captions over the quiet 80 percent scrim with 6px blur. Moments have a divider and 24px row gaps; the crown uses a small gold rule instead of a lime value. The card keeps the style guide 720px dialog width. Watch in playtest: compare both player rows and the six moments at 1080p and 4k; their columns and deaths should agree. No save key, seeded draw or combat values change.

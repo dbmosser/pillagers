@@ -3847,8 +3847,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.99';
-var VER_AT='2026-10-28 17:01';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.00';
+var VER_AT='2026-10-28 17:04';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -35951,6 +35951,9 @@ careerStyle('lgcss',
   '#root #oc_manifest .ockia>div>div{font-size:16px !important;letter-spacing:.02em}'+
   '#root #oc_manifest .ockia>div>div:first-child{letter-spacing:.14em;color:var(--tx-2,#aaa498) !important}'+
   '#root #oc_manifest .ockia>div:first-child>div:nth-child(2){font-size:14px !important;letter-spacing:.06em}'+
+  // v35.xx (cw-kiafit), menus master pass 2026-10-28, his 4K screen: with 8 hits the KIA card ran 71px past the card, so the how did that run feel button sat under log run.
+  '#root #oc_manifest .ockia>div>div{line-height:1.4 !important;padding-top:1px !important;padding-bottom:1px !important}'+
+  '#root #oc_manifest:has(.ockia) .ocloss{margin-bottom:12px !important}#root #oc_manifest:has(.ockia) .octiles{margin-bottom:8px !important}'+
   '#root #oc_manifest .ockia>div:first-child>div>span:nth-child(1){width:44px !important;text-align:left !important}'+
   '#root #oc_manifest .ockia>div:first-child>div>span:nth-child(3){width:60px !important}'+
   '#root #oc_manifest .ockia>div:first-child>div>span:nth-child(4){width:64px !important;white-space:nowrap}'+
@@ -55895,7 +55898,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.99: Run over stats align in both windows, with larger moment captions and a quieter backdrop. Check 35.99 fails on v35.98',
+  now:'v36.00: at 4k the kia card shows every hit and the run feel button without scrolling Check 36.00 fails on v35.99',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
