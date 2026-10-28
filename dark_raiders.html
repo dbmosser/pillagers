@@ -3730,8 +3730,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.71';
-var VER_AT='2026-10-28 09:06';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.72';
+var VER_AT='2026-10-28 09:11';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -4907,7 +4907,7 @@ function itemWanted(k){
 // still met it undefined on its second load and had NIGHT silently overwritten.
 // Once per profile, which is the shape that reads as a broken button.
 // v28.xx (cw-cx-flashdefault), his 2.61: "Yes, as a Settings switch that is on by default". New saves keep the new choice on reload.
-var P={credits:900,stash:[],weapons:['pistol'],equipped:'fists',runs:0,ext:0,died:0,best:0,dayMigrated:1,gameOpts:{flashRed:1},
+var P={credits:900,stash:[],weapons:['pistol'],equipped:'fists',runs:0,ext:0,died:0,best:0,dayMigrated:1,gameOpts:{flashRed:1},np1:1,
   padPreset:'pillagers',padSticks:'', // v28.xx (cw-cx-padpresets): layouts belong to each profile.
   // v12.43, 2026-09-08 first-hour audit: THE OTHER MIGRATIONS ARE BORN SET TOO,
   // for the same reason dayMigrated is above and pname is below. A migration
@@ -6010,6 +6010,7 @@ padPresetLoad(); // v28.xx (cw-cx-padpresets): legacy profiles keep their button
 // v28.xx (cw-cx-flashdefault): existing saves keep their choice, including the old implicit off. Profile fields only; the save key stays the same.
 if(!P.gameOpts||typeof P.gameOpts!=='object') P.gameOpts={};
 if(!Object.prototype.hasOwnProperty.call(P.gameOpts,'flashRed')) P.gameOpts.flashRed=(P.cfg&&P.cfg.flashRed===1)?1:0;
+try{ newpKeep(P); }catch(_np){}   // v35.xx (cw-newpdefs): a save from before the new player defaults keeps the rows it was playing on, once (P.np1 marks it done)
 // v35.xx (cw-shoff), HIS ORDER (2026-10-27): "superhot mode should be off by default". EVERY SITTING STARTS WITH SUPERHOT OFF, whatever the save says. His
 // saves since 10-25 carried it on, so the game opened with it on, and at the party it would have opened on for his guests. The Settings row and the key left
 // of 1 still turn it on, for that sitting only: this load (a boot, and a restore, which loads through here) puts it back off. The save key is unchanged, and a
@@ -55479,7 +55480,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.71: The what is new stamp keeps up with the build; the three notes are unchanged. Check 35.71 fails on v35.70',
+  now:'v35.72: a brand new save starts on new player: forgiving, long raid, rich, few pillagers and machines, light heat, superhot and fog of war off, shared sight on; every demo start takes the same list; saves from before keep their settings Check 35.72 fails on v35.71',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -64596,6 +64597,7 @@ function arcadeSandboxIn(role){
   // v28.xx (cw-cx-flashdefault), his 3.15: the demo starts on its own reduced flashing choice, even when the career save chose off.
   sb.gameOpts=sb.gameOpts||{}; sb.gameOpts.flashRed=1;
   if(sb.tuned) delete sb.tuned.flashRed;
+  newpSandbox(sb);   // v35.xx (cw-newpdefs), his order of 10-28 "and for arcade mode": every demo start takes the new player list
   sb.gameOpts.superhot=0; if(sb.tuned) delete sb.tuned.superhot;   // v35.xx (cw-shoff), his order of 10-27 "superhot mode should be off by default": the demo starts with it off too
   ARCADE.role=(role==='p2')?'p2':'host';
   sb.pname=(ARCADE.role==='p2')?'PLAYER 2':'PLAYER 1';
@@ -64603,6 +64605,7 @@ function arcadeSandboxIn(role){
   ARCADE.realJs=js; ARCADE.on=1;
   netUpPutP(JSON.stringify(sb));
   CFG.flashRed=1; // v28.xx (cw-cx-flashdefault): the demo setting takes effect in either window at entry.
+  newpDials();   // v35.xx (cw-newpdefs): the new player list takes effect in either window at entry (superhot keeps its own line, under the host word)
   if(netShHost()===null) CFG.superhot=0;   // v35.xx (cw-shoff): the demo starts with Superhot off; on a linked window the host word still decides (v16.74). Leaving puts the sitting dial back.
   try{ KEYS.inv=null; keysInv(); }catch(_ki){}
   try{ applyMenuZoom(); }catch(_tz){}   // v28.xx (cw-tvtext): the TV size takes hold at once
@@ -72894,14 +72897,59 @@ function itchDefs(on){
   var i, r, t=on?ITCH_EASY:MAIN_GAME;
   for(i=0;i<GAMEOPTS.length;i++){ r=GAMEOPTS[i]; if(DIFF_KEYS.indexOf(r.k)>=0&&typeof t[r.k]==='number') r.def=t[r.k]; }
 }
-if(ON_ITCH) itchDefs(1);
+// v35.xx (cw-newpdefs), HIS ORDER (2026-10-28), with a picture of his settings page: "these should be the default settings for a new player", then "and for arcade mode".
+// THE NEW PLAYER SET IS THE DEFAULT FOR EVERY BRAND NEW PROFILE, on every host (it was itch only): difficulty new player (forgiving hits, the long raid, rich loot,
+// light shake, the large crosshair, seven extras off), with the rows that already stood where his picture has them (edit the words off, superhot off, shared sight
+// on, fog of war off, few pillagers, few machines, light heat). Only the row defaults move. A SAVE FROM BEFORE keeps what it was playing on: newpKeep, once per
+// save (P.np1, born set on a new profile), writes the old default as a pick for each of the twelve rows it never picked whose default moved, so his save, and
+// any other, plays exactly as it did; a pick a save already holds is never touched. The storage key is unchanged. A brand new profile pays x1.05 (superhot off;
+// the other rows sit on their easiest step, which pays the base). THE DEMO takes the same list at every start in either window (newpSandbox, newpDials), as it
+// already took superhot off and reduced flashing; the sandbox is a copy, so leaving puts his career choices back. A linked window still builds its raid from the
+// host word. Raid length and loot amount: the row defaults only; a career and a demo raid keep their own 10 minute clock.
+var NEWP_SET=(function(){ var o={textEdit:0,superhot:0,sharedSight:0,fogWar:0,raiders:2,robots:2,ext:2}, k; for(k in ITCH_EASY) if(Object.prototype.hasOwnProperty.call(ITCH_EASY,k)) o[k]=ITCH_EASY[k]; return o; })();
+function newpRow(k){ var i; for(i=0;i<GAMEOPTS.length;i++) if(GAMEOPTS[i].k===k) return GAMEOPTS[i]; return null; }
+function newpHome(){ itchDefs(1); return true; }
+function newpKeep(p){
+  if(!p||typeof p!=='object'||p.np1===1) return false;
+  if(typeof DIFF_KEYS==='undefined'||!DIFF_KEYS||typeof MAIN_GAME==='undefined'||!MAIN_GAME) return false;
+  var t=ON_ITCH?ITCH_EASY:MAIN_GAME, i, k, row, was;
+  if(!p.gameOpts||typeof p.gameOpts!=='object') p.gameOpts={};
+  for(i=0;i<DIFF_KEYS.length;i++){
+    k=DIFF_KEYS[i]; if(typeof p.gameOpts[k]==='number') continue;
+    row=newpRow(k); if(!row||typeof t[k]!=='number') continue;
+    was=gameOptDefault({k:k,def:t[k]});
+    if(was!==gameOptDefault(row)) p.gameOpts[k]=was;
+  }
+  p.np1=1;
+  return true;
+}
+function newpSandbox(sb){
+  var k, row, oi, o;
+  if(!sb||typeof sb!=='object') return false;
+  sb.gameOpts=sb.gameOpts||{};
+  for(k in NEWP_SET) if(Object.prototype.hasOwnProperty.call(NEWP_SET,k)){
+    row=newpRow(k); if(!row) continue;
+    sb.gameOpts[k]=NEWP_SET[k];
+    if(sb.tuned&&typeof sb.tuned==='object') for(oi=0;oi<row.opts.length;oi++) for(o in row.opts[oi].cfg) delete sb.tuned[o];
+  }
+  return true;
+}
+function newpDials(){
+  var k, row, sel, c;
+  for(k in NEWP_SET) if(Object.prototype.hasOwnProperty.call(NEWP_SET,k)&&k!=='superhot'){
+    row=newpRow(k); sel=row&&row.opts[NEWP_SET[k]]; if(!sel) continue;
+    for(c in sel.cfg) CFG[c]=sel.cfg[c];
+  }
+  return true;
+}
+newpHome();
 function diffNow(){
   var e=true, m=true, i, v;
   for(i=0;i<DIFF_KEYS.length;i++){ v=gameOptLive(DIFF_KEYS[i]); if(v!==ITCH_EASY[DIFF_KEYS[i]]) e=false; if(v!==MAIN_GAME[DIFF_KEYS[i]]) m=false; }
   return e?'new player':(m?'main game':'custom');
 }
 function diffRowHtml(){
-  var d=diffNow(), home=ON_ITCH?'new player':'main game';
+  var d=diffNow(), home='new player';   // v35.xx (cw-newpdefs): new player is the default on every host now
   // v28.xx (cw-diffhint): the side panel keeps a hint only up to its first colon, so "new player: ..." read "new player" on the main game too; the hint now says what the choice on the button means
   return '<div class="row"><div style="flex:1"><b>difficulty</b><div class="hint">'+(d==='new player'?'softer hits, longer raids, more loot, fewer extras':(d==='main game'?'standard hits, raid length and loot, extras on':'rows changed by hand'))+'</div></div>'+
     '<button id="set_diff" style="padding:6px 12px;min-width:92px'+(d===home?'':';color:var(--amber)')+'">'+d+'</button></div>';

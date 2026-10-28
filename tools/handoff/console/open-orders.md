@@ -60,3 +60,4 @@ SHIPPED 10-28 v35.66: 201 air strike needs 3000 damage (was 1500). On his PC 168
 - His order 10-28 (verbatim, via the old intake chat): "can we move melee to z as default? and middle mouse should ping?" Job in-session/203-melee-z-middle-ping.md, helper (Opus high) started by the order chat.
 - His order 10-28 (verbatim, via the old intake chat, with a picture of his settings page): "these should be the default settings for a new player". Job in-session/204-new-player-default-settings.md, helper (Opus high) started by the order chat.
 - His addition 10-28 (verbatim) to job 204: "and for arcade mode". Sent to the 204 helper.
+- His report 10-28 (verbatim, with a picture of Settings display): "i have the game on 144 frame cap but its effectively capping at 60 -- can we fix this?" Job in-session/205-frame-cap-144-runs-60.md, helper (Opus high) started by the order chat.
