@@ -69,3 +69,5 @@
 2026-10-28 13:37 week=18.0% 5h=16.0% week_resets=2026-11-04 01:35 job=o-05-120d2-fire-ends-sprint
 2026-10-28 13:39 week=19.0% 5h=17.0% week_resets=2026-11-04 01:35 job=o-05-120d2-fire-ends-sprint
 2026-10-28 13:45 week=19.0% 5h=20.0% week_resets=2026-11-04 01:35 job=o-06-141-wall-hits-make-noise
+2026-10-28 13:50 week=19.0% 5h=20.0% week_resets=2026-11-04 01:35 job=o-06-141-wall-hits-make-noise
+2026-10-28 13:59 week=20.0% 5h=26.0% week_resets=2026-11-04 01:35 job=o-07-161-throws-bounce-once

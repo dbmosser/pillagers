@@ -1,0 +1,5 @@
+## v35.91 - THROWABLES BANK ONCE OFF COVER
+
+Co-op hunt while he was away. His 10-25 g-14 answer: Yes, one bounce. Approved again 10-28 #8. Frag, smoke and decoy reflect once, use half the reach left and stop short at the second wall. Tripwires and pillager charges keep their paths. Watch in play: bank throws can reach round corners into rooms you cannot see, which the old wall stop prevented; watch whether it feels like cheating and how often frags return to the thrower.
+
+MEASURED. Check 35.91 passes, and fails on v35.90.

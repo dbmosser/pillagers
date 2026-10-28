@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.91 - THROWABLES BANK ONCE OFF COVER
+
+Co-op hunt while he was away. His 10-25 g-14 answer: Yes, one bounce. Approved again 10-28 #8. Frag, smoke and decoy reflect once, use half the reach left and stop short at the second wall. Tripwires and pillager charges keep their paths. Watch in play: bank throws can reach round corners into rooms you cannot see, which the old wall stop prevented; watch whether it feels like cheating and how often frags return to the thrower.
+
+MEASURED. Check 35.91 passes, and fails on v35.90.
 ## v35.90 - WALL HITS MAKE A SMALL NOISE
 
 Co-op hunt while he was away. His 10-28 approval of pick 7 and 10-25 answer g-18: the impact makes noise. Player rounds striking solid cover more than 220 units from the firing point now make a 200-unit AI noise at the entry face, at most once per 0.2 seconds per window. Glass, rockets and enemy rounds add none. Noise and weather scale it once; rig rattle does not. The existing player noise queue carries player 2 impacts to the host. No text or new rings. Watch: shooting a far wall now pulls machines as intended, and stray fire wakes more of the map; watch stealth raids and whether the demo gets busier.

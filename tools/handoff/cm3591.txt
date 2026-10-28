@@ -1,0 +1,7 @@
+v35.91: throwables bank once off cover
+
+Frag, smoke and decoy bank once off a wall; the marker follows both legs and the rebound is a low hop.
+
+Check 35.91. Fails on v35.90.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

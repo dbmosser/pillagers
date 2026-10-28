@@ -10,3 +10,7 @@ Local validation passed: mk prints written; all three anchors occur once; genera
 
 The draft why field includes the requested DESIGN.md watch line; gen-draft.ps1 places that field in the DESIGN entry: shooting a far wall now pulls machines as intended, and stray fire wakes more of the map; watch stealth raids and whether the demo gets busier.
 
+
+--- codex run 2026-10-28 13:50 ---
+2026-10-28: Lane confirmed cw-cx-wallnoise shipped in v35.90. ON HIS PC v35.90: his play port served 35.90, 49 seconds after shipping. Task complete. Playtest watch: shooting a far wall now pulls machines as intended; watch stealth raids and whether stray fire makes the demo busier.
+
