@@ -1,13 +1,13 @@
 host=JUL26
-seen=2026-10-27 20:31
-epoch=1793147506
+seen=2026-10-27 20:42
+epoch=1793148129
 game=9a4bbb53 v35.29
 test_run=paused: he is using the PC
 robots=0
-ram_free_gb=8.8
+ram_free_gb=10.1
 push_ok=1
 runner=66D84C46
 mode=idle
-spare_pc=not answering (192.168.1.246), 20:31
+spare_pc=not answering (192.168.1.246), 20:42
 party=35.29 9a4bbb53
 play8802=C:\claudecode\pillagers-party v35.29
