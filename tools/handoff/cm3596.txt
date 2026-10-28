@@ -1,0 +1,7 @@
+v35.96: both players hold search for faster boxes
+
+Boxes search 1.5 times faster while both players hold search.
+
+Check 35.96. Fails on v35.95.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

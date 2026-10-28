@@ -1,0 +1,2 @@
+== 4k : window 3876x2265, viewport 3840x2160
+  11b-wirt-after-rolls                   staged       7.9s    | gamblemodal

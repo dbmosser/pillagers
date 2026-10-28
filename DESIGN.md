@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.96 - BOTH PLAYERS HOLD SEARCH FOR FASTER BOXES
+
+Co-op hunt while he was away. His correction 10-28: both players need to be actively looting, e.g. holding E. A nearby player doing nothing gives no bonus. Search input counts at an occupied box or a neighbouring box, for keys and pads. All three search paths require both inputs. One optional packet bit defaults off for older windows; input edges send immediately. Playtest watch: two players holding E together search faster; one standing by does nothing
+
+MEASURED. Check 35.96 passes, and fails on v35.95.
 ## v35.95 - THE RUN CARDS FIT AT 4K: KIA TABLES SIDE BY SIDE, DAMAGE IN TWO COLUMNS
 
 Co-op hunt while he was away. menus master pass 10-28, on his 4K screen: the KIA card with a hit history ran past the screen, so its stats and the run feel button slid under the log run button, and its HOW IT WENT and DAMAGE TAKEN tables were tiny stacked rows with centred names. They sit side by side at body size now. On the extracted card with many recovered guns the damage footnote ran under the button; its sources take two columns.

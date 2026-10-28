@@ -1,0 +1,3 @@
+{"generated":"2026-10-28T15:50:15","url":"http://localhost:8808/fixture.html","recipes":"tools/handoff/drafts/menus-round5/recipes-probe3.json","seconds":19,"screens":[
+{"name":"11p-wirt-probe","screen":"Wirt the Gambler modal","4k":{"staged":true,"note":"TILE flex 0 0 auto h 191.998px minh 96px maxh 192px ar 1 / 1 w 191.998px || LOT h 432.098px minh 0px dir column flex 1 1 auto disp flex || kids SPAN:192:0:96px,SPAN:143:1:auto,BUTTON:56:0:56px || styles 21","viewport":"3840x2160","shot":"11p-wirt-probe-4k.jpg","lint":""}}
+]}

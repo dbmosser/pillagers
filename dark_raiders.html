@@ -3825,8 +3825,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.95';
-var VER_AT='2026-10-28 15:28';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.96';
+var VER_AT='2026-10-28 15:52';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -55872,7 +55872,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.95: the kia card tables sit side by side and the extracted damage list fits above the button Check 35.95 fails on v35.94',
+  now:'v35.96: Boxes search 1.5 times faster while both players hold search. Check 35.96 fails on v35.95',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -60561,6 +60561,7 @@ function netOnState(peer,m){
   if(up){ g.cr=m.c?1:0; g.sp=m.sp?1:0; g.dn=m.dn?1:0; g.w=netClean(m.w,24); g.fk=(m.fk===1||m.fk===2)?m.fk:0; g.el=(g.fk===2&&typeof m.el==='string'&&ELEM[m.el])?m.el:''; g.sd=(+m.sd)>>>0; g.pz=m.pz?1:0; g.mf=(m.mf===1||m.mf===2)?m.mf:0; g.hp=+m.hp||0; g.mh=+m.mh||100; g.ar=+m.ar||0; g.ac=+m.ac||0; g.dt=+m.dt||0; g.sa=(m.sa===undefined)?1:(m.sa?1:0); g.hd=m.hd?1:0; }   // v15.79: crouched, sprinting, downed, the gun in hand and the seed of the raid he is in; v16.20: paused; v16.23: health and armour // v28.47 (cloud-coop-teammate-bare-hands), CLOUD HUNT 2026-10-15: hd kept; a word without it (an older window) reads as empty hands
   if(up&&(m.sh||g.sh)) g.sh=m.sh?1:0;   // v23.30 (arcade9): the teammate spawn shield
   if(up) g.xo=m.xo?1:0;   // v35.xx (cw-xsink): an extraction took him (the DEMO host out for the run); a word without it (an older window) reads as not out
+  if(up) g.shold=(m.shold===1)?1:0;   // v28.xx (cw-cx-bothsearch): search input, not a granted box or the busy-hands pose
   if(up) g.pb=m.pb?1:0;   // v28.48 (cloud-coop-teammate-shield-bubble), CLOUD HUNT 2026-10-15: his SHIELD BUBBLE, kept from every word; a word without it (an older window) reads as no bubble
   if(up){ g.fk=(m.fk===1||m.fk===2)?m.fk:0; g.el=(g.fk===2&&typeof m.el==='string'&&ELEM[m.el])?m.el:''; }   // v23.xx (forge8): his forged gun
   if(lk) g.lk=lk;
@@ -60570,6 +60571,7 @@ function netOnState(peer,m){
     if(lk) out.lk=lk;
     if(up&&g.fk){ out.fk=g.fk; if(g.el) out.el=g.el; }   // v23.xx (forge8)
     if(up&&g.xo) out.xo=1;   // v35.xx (cw-xsink): passed on as it came
+    if(up) out.shold=g.shold;   // v28.xx (cw-cx-bothsearch): forward both press and release
     if(up&&g.pb) out.pb=1;   // v28.48 (cloud-coop-teammate-shield-bubble), CLOUD HUNT 2026-10-15: his SHIELD BUBBLE passed on as it came
     for(i=0;i<NET.peers.length;i++) if(NET.peers[i]!==peer&&NET.peers[i].state==='in') netSendFast(NET.peers[i],out);
   }
@@ -61997,13 +61999,17 @@ function netUpTick(dt){
   // world stopped a teammate box kept filling, paying out and sounding. It now stands still whenever the world does, as in netSpecTick.
   if(NET.role==='host') netSrchTick((G.paused&&!netPauseLive())?0:dt); else if(NET.role==='join') netSrchSync();   // v15.91: the host runs every search one of the party holds; a linked window tells the host when its own hold ended
   NET.upAcc+=dt;
-  if(NET.upAcc<NET_HUB_STEP) return 0;
+  // v28.xx (cw-cx-bothsearch): publish input edges on this frame, even between the regular position packets.
+  var held=duoHolding()?1:0;
+  if(NET.upAcc<NET_HUB_STEP&&(NET.upHold||0)===held) return 0;
+  NET.upHold=held;
   try{ voiceProxAll(); }catch(_vp){}   // v16.10: voices by distance, on the same clock
-  NET.upAcc=Math.min(NET.upAcc-NET_HUB_STEP,NET_HUB_STEP);
+  NET.upAcc=Math.max(0,Math.min(NET.upAcc-NET_HUB_STEP,NET_HUB_STEP));   // v28.xx (cw-cx-bothsearch): an input edge may send before the position clock is due
   msg={t:'st',k:'r',sd:NET.upSeed>>>0,x:+(+p.x||0).toFixed(1),y:+(+p.y||0).toFixed(1),f:+(+p.face||0).toFixed(2),m:p.moving?1:0,r:(p.roll>0)?+(+p.roll).toFixed(2):0,
        c:(G.pCrouch||crouchHeld())?1:0,sp:G.sprinting?1:0,dn:p.downed?1:0,w:(p.wep&&p.wep.id)?String(p.wep.id):'',fk:(p.wep&&(p.wep.fk===1||p.wep.fk===2))?p.wep.fk:0,el:(p.wep&&p.wep.fk===2&&p.wep.el)?String(p.wep.el):'',pz:G.paused?1:0,mf:mapFirstWord(),
        hp:Math.round(p.hp||0),mh:Math.round(p.maxhp||100),ar:Math.round(p.armor||0),ac:Math.round(armorCap()||0),dt:p.downed?Math.max(0,Math.ceil(p.downT||0)):0,sa:(!CFG.superhot||G.shAct)?1:0,hd:(G.handsT>0||p.hand)?1:0,xo:ascOut(p)?1:0};   // v16.20: pz, this player is paused; v16.23: health and armour, for a teammate's bandage or plate // v28.47 (cloud-coop-teammate-bare-hands), CLOUD HUNT 2026-10-15: hd, his hands are busy (a grenade or heal out, a search or a seal), so his teammate draws him without his gun as he sees himself
   if(NET.role==='host') msg.s=NET.seat;   // a friend names no seat: the host files him under the seat of his link
+  msg.shold=held;   // v28.xx (cw-cx-bothsearch): one backward-safe bit for keyboard E or the pad search input
   lk=netLook(); ls=JSON.stringify(lk);
   if(ls!==NET.lkSent||NET.upN%10===0){ msg.lk=lk; NET.lkSent=ls; }
   if(G.arcade&&p.arcSh) msg.sh=1;   // v23.30 (arcade9): only while shielded
@@ -64460,7 +64466,7 @@ function netEntsView(){
 //   A SEARCH FROM ONE OF THE PARTY. On a linked window a held E on a numbered box (netSrchHold) sends the host a reliable
 //   {t:'srch',op:'start',cid,slow} once and draws the bar from where the host has it once granted; nothing is granted from
 //   this window own list, ever. The host (netSrchTake) grants it if nobody else holds the box, and refuses it as held, open,
-//   far or none; ONE SEARCHER PER BOX, so two players never double the search speed (numbers frozen). Every frame the host
+//   far or none; ONE SEARCHER PER BOX owns the loot. v28.xx (cw-cx-bothsearch): both holding search nearby gives 1.5x, even at an occupied box.
 //   (netSrchTick) runs each held search on the searcher slow factor with the staged pulls the play path makes, worst first,
 //   and sends each item to that seat as it comes out ({t:'loot',cid,items}), the rest with done:1 when the bar fills; the box
 //   is then open on the host and told open to everyone ({t:'cont',cid,st:'open',by}), with the litter any open leaves. The
@@ -64485,18 +64491,30 @@ function netEntsView(){
 // SOLO PLAY IS UNTOUCHED. The one line in the play path tests NET.on first; every call in here is behind NET.on; nothing
 // here draws from the seeded stream (rr, rnd, ri, pick, rollTable). The hot ground bonus a host open rolls at open time is
 // not rolled for a search one of the party makes, since that is a seeded draw the net code must not make; written down.
-// v28.xx (cw-cx-duosearch), his decision 2026-10-28: "Crates open faster with two". Every box, in demo and career co-op.
+// v28.xx (cw-cx-bothsearch), his correction 2026-10-28: "both players need to be actively looting", "e.g. holding E".
 var DUO_SRCH=1.5, DUO_R=200;
+function duoHolding(){
+  var p=G&&G.player, ct, i;
+  if(!G||G.over||G.sim||G.paused||G.bagOpen||G.mapOpen||G.mapFirst||G.trade||G.forgeUI||G.wheel||G.legendOn||!p||p.downed||p.dying||p.specOut||p.hp<=0||p.roll>0) return false;
+  if(!((keys.KeyE&&!(keys.PadX&&G.nearPad))||keys.PadSearch)) return false;
+  // v28.xx (cw-cx-bothsearch): an occupied box still counts; G.searching is cleared when its other searcher owns it.
+  for(i=0;i<(G.containers||[]).length;i++){
+    ct=G.containers[i];
+    if(!ct.opened&&!(ct.auto&&G.t-ct.dropT<8)&&Math.hypot(p.x-ct.x,p.y-ct.y)<46&&losClear(p.x,p.y,ct.x,ct.y,G.vseg)) return true;
+  }
+  return false;
+}
 function duoAt(ct,seat){
   if(!ct||!NET.on||!G||G.sim||!NET.upSeed||(G.seed>>>0)!==(NET.upSeed>>>0)) return false;
   if(seat===undefined) seat=NET.seat;
-  var p=G.player, i, q;
-  if(NET.role==='host'&&seat!==NET.seat&&!G.over&&p&&!p.downed&&!p.dying&&!p.specOut&&p.hp>0&&Math.hypot(p.x-ct.x,p.y-ct.y)<=DUO_R) return true;
+  var p=G.player, i, q, own=false, other=false;
+  if(duoHolding()&&Math.hypot(p.x-ct.x,p.y-ct.y)<=DUO_R){ if(seat===NET.seat) own=true; else other=true; }
   for(i=0;i<(NET.up||[]).length;i++){
     q=NET.up[i];
-    if(q&&q.seat!==seat&&netUpShown(q)&&!netUpGone(q)&&!netUpHid(q)&&!q.dn&&!q.specOut&&!q.out&&q.hp>0&&Math.hypot(q.x-ct.x,q.y-ct.y)<=DUO_R) return true;
+    // v28.xx (cw-cx-bothsearch): missing shold from an older window means no held input; use the latest position, before visual easing.
+    if(q&&q.shold===1&&!q.pz&&netUpShown(q)&&!netUpGone(q)&&!netUpHid(q)&&!q.dn&&!q.specOut&&!q.out&&q.hp>0&&Math.hypot((q.tx===undefined?q.x:q.tx)-ct.x,(q.ty===undefined?q.y:q.ty)-ct.y)<=DUO_R){ if(q.seat===seat) own=true; else other=true; }
   }
-  return false;
+  return own&&other;
 }
 var NET_SRCH_REACH=200;
 function netContPeer(){ return netEntsPeer(); }
@@ -64505,6 +64523,7 @@ function netContOf(cid){ return (NET.contMap&&cid>=0&&NET.contMap[cid])||null; }
 // Every container numbered at the build, in list order. Returns how many.
 function netContInit(g){
   var i, ct;
+  NET.upHold=0;   // v28.xx (cw-cx-bothsearch): a new raid starts with no previous held-input edge
   NET.contMap={}; NET.contN=0; NET.contN0=0; NET.srch=null; NET.holds={}; NET.srchOwn=-1;
   if(!g||!g.containers) return 0;
   for(i=0;i<g.containers.length;i++){ ct=g.containers[i]; ct.cid=i; ct.netBy=-1; ct.netOpen=ct.opened?1:0; NET.contMap[i]=ct; ct.netLn=ct.loot?ct.loot.length:0; ct.netPu=ct.pulled|0; ct.netTold=0; ct.netLk=undefined; }

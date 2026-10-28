@@ -1,0 +1,2 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  11p-wirt-probe                         staged       9.1s    | #wirtlot t234 b878 h645 sh646 ovvisible mb0px pb0px || #wirtlotbtn t790 b846 h56 sh84 ovvisible mb32px pb7px || par wirtsec_offer  || gp gamblemodal || wirtsec_offer t157 b903 sh746 ch746 pb24px dispflex ovvisible || gamblemodal t1 b1079 sh1080 ch1080 pb76px dispgrid ovhidden || root t0 b1080 sh1078

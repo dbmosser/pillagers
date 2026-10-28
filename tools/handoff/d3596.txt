@@ -1,0 +1,5 @@
+## v35.96 - BOTH PLAYERS HOLD SEARCH FOR FASTER BOXES
+
+Co-op hunt while he was away. His correction 10-28: both players need to be actively looting, e.g. holding E. A nearby player doing nothing gives no bonus. Search input counts at an occupied box or a neighbouring box, for keys and pads. All three search paths require both inputs. One optional packet bit defaults off for older windows; input edges send immediately. Playtest watch: two players holding E together search faster; one standing by does nothing
+
+MEASURED. Check 35.96 passes, and fails on v35.95.

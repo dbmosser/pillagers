@@ -1,0 +1,2 @@
+== 4k : window 3876x2265, viewport 3840x2160
+  11p-wirt-probe                         staged       8.1s    | #wirtlot t709 b1777 h1067 sh432 ovvisible mb0px pb0px || #wirtlotbtn t1559 b1698 h138 sh85 ovvisible mb32px pb7px || par wirtsec_offer  || gp gamblemodal || wirtsec_offer t520 b1838 sh532 ch532 pb24px dispflex ovvisible || gamblemodal t1 b2159 sh874 ch874 pb130px dispgrid ovhidden || root t0 b2160 s
