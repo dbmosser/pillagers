@@ -3724,8 +3724,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.25';
-var VER_AT='2026-10-27 20:11';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.26';
+var VER_AT='2026-10-27 20:14';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14982,6 +14982,40 @@ function setLoot(c,loot){ loot.sort(function(a,b){ return ival(a)-ival(b); }); c
 // CFG.ammoTell is the threshold in rounds and 0 switches the whole thing off. The default
 // 45 is a bit over one magazine of the rifle, which is the point at which a fight stops
 // being a decision and starts being arithmetic.
+// v35.xx (cw-ammoneed), HIS ORDER (2026-10-27): "player should have higher chance of finding ammo boxes if player has no ammo".
+// A box rolls its loot at the build, so the help is decided the moment a pillager with no ammo first searches it: a crate, locker,
+// body or wreck (any box whose LOOT table can hold an ammo box) that holds none gets one on AMMO_NEED.ch of boxes. That takes the
+// chance a box holds ammo from about 21 to 68 percent on a crate, 22 to 69 on a locker, 29 to 72 on a body and 45 to 78 on a wreck.
+// No ammo means nothing left to reload with: no rounds in the pool (not one rocket for the launcher) and no ammo box in the backpack.
+// The roll is a hash of the raid seed and the box, never a draw on the seeded stream, so the seed 4242 build and the raid after it
+// come out the same; it is decided once per box, and nothing is taken out of the box. In co-op the host decides for whoever opens
+// it: the window of player 2 says dry in its search request, from its own pillager.
+var AMMO_NEED={ch:0.6,tag:0x414d};
+function ammoDry(p,bag){
+  if(!p) return false;
+  if((+p.reserve||0)>=rktCost(p.wep)) return false;
+  for(var i=0;bag&&i<bag.length;i++){ var it=ITEMS[bag[i]]; if(it&&it.use==='ammo') return false; }
+  return true;
+}
+function ammoNeedRoll(ct){
+  var h=(((G&&G.seed)>>>0)^Math.imul(AMMO_NEED.tag,0x9E3779B1))>>>0;
+  h=(h^Math.imul(Math.round(ct.x)|0,374761393))>>>0;
+  h=(h^Math.imul(Math.round(ct.y)|0,668265263))>>>0;
+  h=Math.imul(h^(h>>>15),2246822519)>>>0;
+  h=Math.imul(h^(h>>>13),3266489917)>>>0;
+  return ((h^(h>>>16))>>>0)/4294967296;
+}
+function ammoNeed(ct,dry){
+  if(!dry||!ct||ct.opened||ct.ammoNeed||ct.pulled||ct.mercSrc||ct.dropped||!ct.loot) return false;
+  var t=LOOT[ct.type], ok=false, i, it;
+  for(i=0;t&&i<t.length;i++){ it=ITEMS[t[i][0]]; if(it&&it.use==='ammo') ok=true; }
+  if(!ok) return false;
+  ct.ammoNeed=1;   // once per box: stepping off and back on rolls nothing new
+  for(i=0;i<ct.loot.length;i++){ it=ITEMS[ct.loot[i]]; if(it&&it.use==='ammo') return false; }
+  if(ammoNeedRoll(ct)>=AMMO_NEED.ch) return false;
+  setLoot(ct,ct.loot.concat(['ammobox']));
+  return true;
+}
 function ammoTell(ct){
   if(!G||!G.player||ct.opened) return false;
   var th=(CFG.ammoTell===undefined?45:CFG.ammoTell);
@@ -29743,6 +29777,7 @@ at:Math.round(elapsed()),f:(_wcw.door?'door':(_wcw.furn?'furn':(_wcw.wreck?'wrec
       if(NET.on&&netSrchShared(near)) netSrchHold(near,dt); else {   // v15.91: on a linked window a shared box is searched through the host, and on the host a box one of the party holds is refused; the block below is the solo path, untouched
       if(G.searching!==near){
         G.searching=near;
+        ammoNeed(near,ammoDry(G.player,G.bag));   // v35.xx (cw-ammoneed): a pillager with no ammo is more likely to find an ammo box
         searchFoley(near,'rummage');   // v25.30 (usefoleyg): hands in the box
         // v24.xx (nosearchline), HIS ORDER (2026-10-12): "'Search resumed' get rid of this messaging". Picking a search back up said
         // Search resumed, N% done (v11.94) in the raid text, every time. The search bar already shows how far the box got, so the line was
@@ -54804,7 +54839,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.25: a belt key or a click takes the item out and the trigger uses it, the key again puts it away; drag an item off the wheel onto a belt key Check 35.25 fails on v35.24',
+  now:'v35.26: more ammo boxes when you run dry Check 35.26 fails on v35.25',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -63367,7 +63402,7 @@ function netSrchHold(near,dt){
     G.searching=near; near.netAskT=G.t;
     NET.srch={cid:cid,ok:0};
     q=netPeerOfSeat(0);
-    if(q) netSend(q,{t:'srch',op:'start',cid:cid,slow:+(+buzzSlow()).toFixed(3)});
+    if(q) netSend(q,{t:'srch',op:'start',cid:cid,slow:+(+buzzSlow()).toFixed(3),dry:ammoDry(G.player,G.bag)?1:0});   // v35.xx (cw-ammoneed): dry, his own ammo
     // v24.xx (nosearchline), HIS ORDER (2026-10-12): no Search resumed line on a linked window either; the search bar shows the progress.
     s=NET.srch;
   }
@@ -63425,6 +63460,7 @@ function netSrchTake(peer,m){
   slow=+m.slow; if(!isFinite(slow)||slow<1) slow=1; if(slow>2) slow=2;
   if(NET.holds[s]&&NET.holds[s].cid!==cid) netSrchEnd(s);   // one search per seat
   NET.holds[s]={cid:cid,slow:slow}; ct.netBy=s;
+  if(m.dry) ammoNeed(ct,1);   // v35.xx (cw-ammoneed): player 2 has no ammo, so the host rolls the help for his box
   netSend(peer,{t:'srch',cid:cid,ok:1,prog:+(+(ct.prog||0)).toFixed(3),n:(ct.loot?ct.loot.length:0)});
   netBroadcast({t:'cont',cid:cid,st:'held',by:s});
   return 'srch:ok';

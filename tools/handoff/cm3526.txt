@@ -1,0 +1,7 @@
+v35.26: more ammo when you run dry
+
+more ammo boxes when you run dry
+
+Check 35.26. Fails on v35.25.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.26 - MORE AMMO WHEN YOU RUN DRY
+
+Co-op hunt while he was away. his order 10-27: player should have higher chance of finding ammo boxes if player has no ammo; a box searched by a pillager with nothing left to reload holds an ammo box about 7 times in 10 instead of about 1 in 4
+
+MEASURED. Check 35.26 passes, and fails on v35.25.
 ## v35.25 - HOTBAR ITEMS WORK LIKE THE WHEEL
 
 Co-op hunt while he was away. his two orders of 10-27: drag items from the wheel to the hotbar, and a hotbar item works like the wheel (the number equips, the mouse uses)
