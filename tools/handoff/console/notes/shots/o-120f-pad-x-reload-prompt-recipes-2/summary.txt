@@ -1,0 +1,5 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  xreload-p1-reload                      staged       6.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"role":"host","after":false,"slot":1,"ammo":2,"near":true,"smooth":true,"prompt":"[x] reload","promptX":991,"promptY":540,"controlsFolded":true}
+  xreload-p1-search-after-reload         staged       6.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"role":"host","after":true,"slot":1,"ammo":25,"near":true,"smooth":true,"prompt":"[x] search ","promptX":991,"promptY":540,"controlsFolded":true}
+  xreload-p2-reload                      staged       6.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"role":"p2","after":false,"slot":0,"ammo":2,"near":true,"smooth":true,"prompt":"[x] reload","promptX":991,"promptY":540,"controlsFolded":true}
+  xreload-p2-search-after-reload         staged       6.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"role":"p2","after":true,"slot":0,"ammo":25,"near":true,"smooth":true,"prompt":"[x] search ","promptX":991,"promptY":540,"controlsFolded":true}

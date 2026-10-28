@@ -1385,3 +1385,13 @@
 2026-10-28 0.0000 o-120e-downed-damage-cuts
 2026-10-28 0.0000 o-120f-pad-x-reload-prompt
 2026-10-28 0.0000 o-120f-pad-x-reload-prompt
+2026-10-28 0.0906 critic-o-120f-pad-x-reload-prompt
+2026-10-28 0.0905 critic-o-120f-pad-x-reload-prompt
+2026-10-28 0.0897 critic-o-120f-pad-x-reload-prompt
+2026-10-28 0.0922 critic-o-120f-pad-x-reload-prompt
+2026-10-28 0.0000 o-120f-pad-x-reload-prompt
+2026-10-28 0.0922 critic-o-120f-pad-x-reload-prompt
+2026-10-28 0.0935 critic-o-120f-pad-x-reload-prompt
+2026-10-28 0.0920 critic-o-120f-pad-x-reload-prompt
+2026-10-28 0.0919 critic-o-120f-pad-x-reload-prompt
+2026-10-28 0.0000 o-120f-pad-x-reload-prompt

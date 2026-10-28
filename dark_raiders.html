@@ -3730,8 +3730,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.56';
-var VER_AT='2026-10-28 01:07';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.57';
+var VER_AT='2026-10-28 01:28';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13383,10 +13383,11 @@ function hudKey(label,x,y,a,sw,o){
 // 4K size and as legible as at 1080p. The returned width and bottom are the drawn ones, for a bar under the prompt.
 var HUDPROMPTZ=0.6;
 function hudPrompt(s,x,y,o){
-  var r;
-  ctx.save(); ctx.translate(x,y); ctx.scale(HUDPROMPTZ,HUDPROMPTZ); ctx.translate(-x,-y);
+  // v28.xx (cw-cx-xpromptread): Q7 lets the style guide override older sizes; only pad container prompts opt into its readable label floor.
+  var r,z=(o&&o.scale>0)?o.scale:HUDPROMPTZ;
+  ctx.save(); ctx.translate(x,y); ctx.scale(z,z); ctx.translate(-x,-y);
   try{ r=hudPromptDraw(s,x,y,o); } finally { ctx.restore(); }
-  return {w:r.w*HUDPROMPTZ,by:y+(r.by-y)*HUDPROMPTZ};
+  return {w:r.w*z,by:y+(r.by-y)*z};
 }
 function hudPromptDraw(s,x,y,o){
   var t=String(s), m, w, a, d, sub=(o&&o.sub)?String(o.sub):'', sw=0, h, bw, i0, i1;
@@ -44914,6 +44915,7 @@ hudPanel(bx,by,bw,bh,undefined,1);   // v18.13: the one HUD panel
   var nc2=G.nearContainer;
   if(nc2&&!G.searching&&!p.downed&&(_pk==='search'||G.nearPad)){   // v22.67 (R25): one prompt at a time; in a ring it names X, its own key
     var s=w2s(nc2.x,26,nc2.y);
+    if(s&&padOn()) s.y-=LH(24)*hudRes(); // v28.xx (cw-cx-xpromptread): clear the pillager head and reticle, at the same offset at 1080p and 4k.
     if(s){
       var _hsC=hudAtIn(s.x,s.y);   // v19.55: grows with the screen
       ctx.font=FS(TYPE.head); ctx.textAlign='center';   // v10.52, his note: the prompt was too small
@@ -44947,7 +44949,7 @@ hudPanel(bx,by,bw,bh,undefined,1);   // v18.13: the one HUD panel
         var dit=ITEMS[nc2.loot[0]];
         if(dit){ _fsub=dit.name; _fsc=RCOL[dispR(nc2.loot[0])||dit.r]||'#cdd6dd'; }
       }
-      hudPrompt(_ft,s.x,s.y,{accent:_fcr,sub:_fsub,subCol:_fsc});
+      hudPrompt(_ft,s.x,s.y,{accent:_fcr,sub:_fsub,subCol:_fsc,scale:padOn()?0.85:HUDPROMPTZ}); // v28.xx (cw-cx-xpromptread): the pad box action grows from about 12px to at least 16px; keyboard keeps its scale.
       ctx.textAlign='left';
       if(_hsC) ctx.restore();
     }
@@ -55429,7 +55431,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.56: At a box, pad X names reload when it reloads; keep holding to search after it finishes. Check 35.56 fails on v35.55',
+  now:'v35.57: Pad box prompts are readable above the pillager head; reload and search use the same size. Check 35.57 fails on v35.56',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

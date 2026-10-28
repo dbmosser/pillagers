@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.57 - PAD BOX PROMPTS CLEAR THE HEAD
+
+Co-op hunt while he was away. Round 2 critic: the pad X reload label is about 12px and sits against the pillager head and reticle. The style guide requires at least 16px for labels; Q7 permits it to override older layout and size orders, including the old 60 percent world prompt size. Only pad container prompts opt into 85 percent scale and move up 24 layout pixels, scaled for 4k. Reload and search share the treatment. Keyboard and other world prompts retain their existing geometry. Playtest watch: at a cache in both windows, X reload and X search should be readable above the head at 1080p and 4k.
+
+MEASURED. Check 35.57 passes, and fails on v35.56.
 ## v35.56 - PAD X RELOAD THEN SEARCH
 
 Co-op hunt while he was away. The box said search when combat X would reload and the held button stayed on reload afterwards. The prompt now shares the press decision, including the active reload spot. A completed reload hands the same hold to search; a cancelled reload does not. Revives retain priority and keyboard controls are unchanged. Playtest watch: in both windows, hold X at a box with a partly empty magazine while fighting; see [x] reload, then search when rounds load. Also try a full magazine, no spare rounds and an active reload. The ring keeps its separate Y search prompt.

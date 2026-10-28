@@ -1,1 +1,1 @@
-10-28 01:06 gate: shipping cw-cx-xreloadsearch (o-120f-pad-x-reload-prompt, codex)
+10-28 01:27 gate: shipping cw-cx-xpromptread (o-120f-pad-x-reload-prompt, codex)

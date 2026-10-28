@@ -1,0 +1,7 @@
+v35.57: pad box prompts clear the head
+
+Pad box prompts are readable above the pillager head; reload and search use the same size.
+
+Check 35.57. Fails on v35.56.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

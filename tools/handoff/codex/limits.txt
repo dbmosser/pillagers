@@ -14,3 +14,5 @@
 2026-10-28 00:42 week=8.0% 5h=32.0% week_resets=2026-11-03 16:21 job=o-120e-downed-damage-cuts
 2026-10-28 00:52 week=9.0% 5h=38.0% week_resets=2026-11-03 16:21 job=o-120f-pad-x-reload-prompt
 2026-10-28 00:53 week=9.0% 5h=39.0% week_resets=2026-11-03 16:21 job=o-120f-pad-x-reload-prompt
+2026-10-28 01:19 week=10.0% 5h=41.0% week_resets=2026-11-03 16:21 job=o-120f-pad-x-reload-prompt
+2026-10-28 01:25 week=10.0% 5h=44.0% week_resets=2026-11-03 16:21 job=o-120f-pad-x-reload-prompt

@@ -441,3 +441,5 @@
 
 2026-10-28 | o-120f-pad-x-reload-prompt | container prompt, both pad windows | the prompt says [x] reload when X reloads, then returns to search for the same held button after completion; removes the unrelated item subtitle during reload. Reason: the old search wording named an action X would not take. Before: unavailable for custom camera recipes. After: pending lane camera paths for xreload-p1-reload, xreload-p1-search-after-reload, xreload-p2-reload and xreload-p2-search-after-reload (1080p and 4k).
 
+2026-10-28 | o-120f-pad-x-reload-prompt | pad container reload/search, both windows | planned cw-cx-xpromptread: label about 11.7px to 16.6px, lifted 24 layout pixels above its former anchor, scaled at 4k. Q7 allows the style guide 16px floor to override older 60-percent sizing here. Before: tools/handoff/console/notes/shots/o-120f-pad-x-reload-prompt-recipes-2/xreload-p1-reload-1080.jpg and xreload-p2-reload-1080.jpg; after: lane round 3 pending. Original input fix already visible in the round 2 search-after-reload pictures for p1 and p2 in that same directory.
+

@@ -20,3 +20,21 @@ The draft why text includes the required DESIGN.md playtest watch line; the norm
 
 Regenerated the draft: written; six unique anchors; candidate game and check parse; mk remains ASCII. Same key and camera recipes are ready for lane preflight, shipping, ON HIS PC confirmation and picture review. No fixture retarget is needed.
 
+
+--- codex run 2026-10-28 01:19 ---
+2026-10-28, shipped v35.56 (4eb189e40); shipq.log confirms cw-cx-xreloadsearch SHIPPED at 01:08. Round 1 camera proved host uses pad slot 1 and p2 uses slot 0, both show [x] reload at 2 rounds and [x] search after the real held reload fills to 25. All four stages passed and UI lint reported zero findings. The four full-raid critic scores were 2. I inspected the attached pictures: the player and cache were near the left world boundary, directly under the open new-profile controls panel, so the task subject was visibly obscured. These pictures cannot validate the prompt presentation.
+
+Corrected camera staging only: find a clear interior map position without random draws, center the player/cache and camera anchor, center mouse aim, fold the existing controls panel (the normal experienced-player state, also the style-guide requirement), and explicitly disable legacy prompt mode. Added an assertion that the actual prompt is in the central 30-70% horizontal region and the middle half vertically. The search picture still must complete a real held reload and begin searching before release. No new ship key or game edit is needed for this camera correction. Four revised scenes handed over for round 2; request 1080p and 4k.
+
+The critic also listed broader roster, ammo, hotbar and health styling issues outside this input/prompt fix; coordinator handoff is in alarms-new.md. Its suggestion to remove the p2 keyboard-focus marker conflicts with his 3.5 c; that marker correctly shows which window accepts keyboard input even while pad prompts are active. Its suggestion to rename pillager bots to raiders conflicts with his wording rule. Keep both rulings.
+
+
+--- codex run 2026-10-28 01:25 ---
+2026-10-28, round 2 reviewed on v35.56. All four camera stages passed, both X labels were visible near x991/y540, and the critic improved from 2 to 3 on every scene. I inspected all four attached images. The task-specific remaining P1 is valid: the pad container label is about 12px and touches the head/crosshair.
+
+Prepared follow-up cw-cx-xpromptread: pad container reload/search prompts opt into 0.85 scale (about 16.6px at 1080p instead of 11.7px) and move 24 layout pixels upward, multiplied by hudRes at 4k. Keyboard prompt size/position and other world prompts keep their previous geometry. The plate, lime pad cap, text and subtitle grow together through the existing renderer. No animation or game feel values change. This uses his Q7 exception: the style guide can override older size/layout orders. Specifically style-guide.md lines 48 and 83 require at least 16px for labels, overriding the old v27.29 60-percent prompt sizing only for this pad container callout. It does not reword his text.
+
+New check captures actual fillText font/transforms and real HUD prompt positions in host and p2, at 1920x1080 and 3840x2160. Reload and search must meet 16px times hudRes and clear the original anchor by LH(24) times hudRes; keyboard E must retain its original font scale and anchor. The old build fails the measured font and lift assertions. Three unique anchors validated; candidate game and check parse; mk is ASCII.
+
+Round 3 recipes retain the real held-X search proof and now report the actual drawn prompt anchor. The clear map position also avoids forge/seal labels. Broader P1 findings for health, roster, contracts, hotbar and ammo remain handed to their owners, as in the last alarm. The p2 focus marker remains correct under his ruling. Lane: ship the follow-up, photograph and critic-review the four scenes, and return the ON HIS PC line. Please include 4k images as requested; neither earlier round included them.
+

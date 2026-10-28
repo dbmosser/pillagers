@@ -1,9 +1,10 @@
 Latest stable: v35.28 (2026-10-27 22:16)
-Checked: 2026-10-28 00:25
+Checked: 2026-10-28 01:28
 Play address: http://localhost:8802/stable.html
 Result: no change
 
 Newest test runs, newest first:
+  corpus-1027-2310  v35.43  failing 43, new 14  robots 115 min/0 problems  -> 14 check(s) newly failing, e.g. v35.35 cw-f1left, his order 2026-10-27 ("hitting f1 to get t | v33.08 golden sentry and pillager bot death callouts draw on
   corpus-1027-2147  v35.37  failing 34, new 2  robots 103 min/0 problems  -> 2 check(s) newly failing, e.g. v8.89 a pillager wading out of sight draws no rings in the w | v35.35 cw-f1left, his order 2026-10-27 ("hitting f1 to get t
   corpus-1027-2024  v35.28  failing 18, new 0  robots 57 min/0 problems  -> this is the current stable
   corpus-1027-1900  v35.19  failing 20, new 1  robots 115 min/1 problems  -> 1 check(s) newly failing, e.g. v25.41 his order (add minimap): the minimap marks extraction
@@ -11,8 +12,19 @@ Newest test runs, newest first:
   corpus-1027-1635  v35.11  failing 18, new 3  robots 111 min/0 problems  -> 3 check(s) newly failing, e.g. v8.85 a pillager footprint does not draw through a wall, and | v27.24 his order: one persistent feed at the bottom left tak
   corpus-1027-1326  v35.09  failing 16, new 0  robots 90 min/0 problems  -> older than the current stable
   corpus-1027-1146  v35.06  failing 8, new 1  robots 126 min/1 problems  -> 1 check(s) newly failing, e.g. v10.38 the WHAT IS NEW card is current, opens with a note, a
-  corpus-1027-1017  v35.05  failing 10, new 2  robots 82 min/9 problems  -> 2 check(s) newly failing, e.g. v8.89 a pillager wading out of sight draws no rings in the w | v33.60 cw-cx-pixground (86b): THE PIXEL GROUND. With the pix
 
 Checks that are newly red and still red (they block until fixed, or until listed in tools/handoff/stable-known-red.txt):
-  v8.89 a pillager wading out of sight draws no rings in the water
   v35.35 cw-f1left, his order 2026-10-27 ("hitting f1 to get the controls should b
+  v33.08 golden sentry and pillager bot death callouts draw once in both windows a
+  v32.69 named stash heading, neutral freebie action, no idle keyboard sentence or
+  v31.51 a new codex gun is one feed line at the bottom left, not also a second ca
+  v30.93 the left feed: a long detail sentence is not on the line, and an old line
+  v29.03 cw-feedall: all on-screen text goes into the feed: the map story card wri
+  v27.51 his order: the banners that came in at their own heights of the centre ar
+  v23.10 two contracts that finish on one container both show: one crate that fini
+  v23.02 never-words out of raid text: a machine wreck prompts SEARCH WRECK, a dea
+  v16.46 map markers reach the party through the host and clear; a danger ping rep
+  v16.43 ping: a ping reaches the party through the host with who made it, and sna
+  v13.40 a box searched on the hot ground says so: after a held X search through t
+  v13.39 helping the survivor while carrying notoriety shows the line about the ca
+  v13.38 a real player round that kills the last pillager a kill contract needs sh

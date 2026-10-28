@@ -373,3 +373,5 @@
 2026-10-28 00:42 o-120e-downed-damage-cuts 36s ok DONE in=2402677 out=17491 run=5
 2026-10-28 00:52 o-120f-pad-x-reload-prompt 562s ok PARTIAL in=1709975 out=20764 run=1
 2026-10-28 00:53 o-120f-pad-x-reload-prompt 63s ok PARTIAL in=2440411 out=22739 run=2
+2026-10-28 01:19 o-120f-pad-x-reload-prompt 145s ok PARTIAL in=3501718 out=27466 run=3
+2026-10-28 01:25 o-120f-pad-x-reload-prompt 241s ok PARTIAL in=4964655 out=36791 run=4
