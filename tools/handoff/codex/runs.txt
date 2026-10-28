@@ -367,3 +367,9 @@
 2026-10-28 00:20 o-120d-pad-trigger-not-aim 58s ok PARTIAL in=2906147 out=19571 run=3
 2026-10-28 00:22 o-120d-pad-trigger-not-aim 34s ok DONE in=3223487 out=20784 run=4
 2026-10-28 00:26 o-120e-downed-damage-cuts 218s ok PARTIAL in=690808 out=9015 run=1
+2026-10-28 00:36 o-120e-downed-damage-cuts 110s ok PARTIAL in=1373884 out=13164 run=2
+2026-10-28 00:38 o-120e-downed-damage-cuts 41s ok PARTIAL in=1648717 out=14525 run=3
+2026-10-28 00:40 o-120e-downed-damage-cuts 48s ok PARTIAL in=2061517 out=16116 run=4
+2026-10-28 00:42 o-120e-downed-damage-cuts 36s ok DONE in=2402677 out=17491 run=5
+2026-10-28 00:52 o-120f-pad-x-reload-prompt 562s ok PARTIAL in=1709975 out=20764 run=1
+2026-10-28 00:53 o-120f-pad-x-reload-prompt 63s ok PARTIAL in=2440411 out=22739 run=2

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.55 - THE WHAT IS NEW STAMP KEEPS UP
+
+Co-op hunt while he was away. The card was stamped v35.39 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.
+
+MEASURED. Check 35.55 passes, and fails on v35.54.
 ## v35.54 - DOWNED HITS FOLLOW DAMAGE CUTS
 
 Co-op hunt while he was away. Hits on a downed pillager ignored the kid, demo and easy damage cuts and always removed 3 seconds. The base stays 3 seconds in normal career. The current demo dial stays 1, following the later unify1 ruling. Watch in playtest: shoot a downed partner with kid mode or easy mode on and confirm the smaller timer loss leaves time to finish a revive in either window. Sim uses the same rule. No world generation or random draw changes.

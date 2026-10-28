@@ -435,3 +435,9 @@
 
 2026-10-28 | o-120e-downed-damage-cuts | raid downed timer, both roles | each hit now removes 3 seconds times the existing kid/demo/difficulty/easy factors; normal career stays 3 seconds; no layout/text change | before: not available for numerical camera recipes | after: lane camera-recipes.json downcuts-host-easy and downcuts-joined-kid-easy (paths pending lane)
 
+2026-10-28 | o-120e-downed-damage-cuts | raid downed timer | v35.54 shipped; easy costs 2.1s and kid-quarter plus easy 0.525s per hit; no text/layout change | before: no picture | after: tools/handoff/console/notes/shots/o-120e-downed-damage-cuts-recipes-1/downcuts-host-easy-1080.jpg and downcuts-joined-kid-easy-1080.jpg
+
+2026-10-28 | o-120e-downed-damage-cuts | raid downed timer, connected host and player 2 | final verification of shipped v35.54 damage cuts in smooth look; both role assertions pass, normal career remains 3s | before: no picture | after: tools/handoff/console/notes/shots/o-120e-downed-damage-cuts-recipes-4/downcuts-linked-p1-1080.jpg and downcuts-linked-p2-1080.jpg
+
+2026-10-28 | o-120f-pad-x-reload-prompt | container prompt, both pad windows | the prompt says [x] reload when X reloads, then returns to search for the same held button after completion; removes the unrelated item subtitle during reload. Reason: the old search wording named an action X would not take. Before: unavailable for custom camera recipes. After: pending lane camera paths for xreload-p1-reload, xreload-p1-search-after-reload, xreload-p2-reload and xreload-p2-search-after-reload (1080p and 4k).
+

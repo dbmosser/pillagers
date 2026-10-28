@@ -20,3 +20,4 @@
 10-28 00:12 v35.51 cw-cx-rtsteady on his pc after 163s (8802 serves 35.52) week 73%
 10-28 00:12 v35.52 cw-answerline on his pc after 17s (8802 serves 35.52) week 73%
 10-28 00:23 v35.53 cw-hudsize on his pc after 275s (8802 serves 35.53) week 73%
+10-28 00:33 v35.54 cw-cx-downcuts on his pc after 194s (8802 serves 35.54) week 73%

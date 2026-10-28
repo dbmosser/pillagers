@@ -8,3 +8,9 @@
 2026-10-28 00:20 week=7.0% 5h=24.0% week_resets=2026-11-03 16:21 job=o-120d-pad-trigger-not-aim
 2026-10-28 00:22 week=7.0% 5h=25.0% week_resets=2026-11-03 16:21 job=o-120d-pad-trigger-not-aim
 2026-10-28 00:26 week=8.0% 5h=28.0% week_resets=2026-11-03 16:21 job=o-120e-downed-damage-cuts
+2026-10-28 00:36 week=8.0% 5h=30.0% week_resets=2026-11-03 16:21 job=o-120e-downed-damage-cuts
+2026-10-28 00:38 week=8.0% 5h=30.0% week_resets=2026-11-03 16:21 job=o-120e-downed-damage-cuts
+2026-10-28 00:40 week=8.0% 5h=31.0% week_resets=2026-11-03 16:21 job=o-120e-downed-damage-cuts
+2026-10-28 00:42 week=8.0% 5h=32.0% week_resets=2026-11-03 16:21 job=o-120e-downed-damage-cuts
+2026-10-28 00:52 week=9.0% 5h=38.0% week_resets=2026-11-03 16:21 job=o-120f-pad-x-reload-prompt
+2026-10-28 00:53 week=9.0% 5h=39.0% week_resets=2026-11-03 16:21 job=o-120f-pad-x-reload-prompt

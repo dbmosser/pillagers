@@ -1827,33 +1827,33 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The raid HUD is much quieter: the currency line, the experimental tag, the glow discs and the long controls strip are gone. The result is a clear ammo hero and a one-line controls hint. The bottom-left stack and the bottom edge are still crowded, and the weapon bar is oversized and dim.",
+  "verdict": "The downed card is now one compact stack with a clear hero timer and a single self-revive prompt, but the red down label, timing bar, hp bar and 'down' tag all repeat the same state in several places.",
   "findings": [
-   "P1 bottom-left stack (armour 60 bar, hp 100 bar, 'the forge' label): Put both bars in one --ui-panel card (4px radius) at x=48, with its bottom 32px above the screen edge. Make hp 24px tall and armour 12px, 8px apart. Use 16px f-cond labels, tx-1, left-aligned, 8px inside the card. Show the hp number at 32px. Use --ok for hp and --r-rare for armour at 90% saturation. Move 'the forge' out of the stack to the world-label layer with an 8px gap, or drop it.",
-   "P1 weapon bar, bottom centre (10 slots): Draw only the active slot with a 2px --acc border and a --ui-raised fill. Give the others a 1px --ui-line-hi border at 40% opacity and silhouettes at 25% opacity. Mark slot 6 as 'equipped' with a 3px rarity bar instead of a fill. Raise the slot numbers to 16px tx-2 and lift the bar so its bottom is 32px above the screen edge. Put the 'f1 controls' chip 16px above the bar's left end.",
-   "P1 top-centre team score card: Merge them into one card, 4px radius, 1px --ui-line-hi border, 16px padding. Row 1: 'team score' at 16px tx-2. Row 2: '0 sp' at 56px 800 tx-1, with 'you' and 'p2' at 16px tx-2 on the right in amber and cyan. Row 3: the timer at 32px, with 'extract 117m' at 16px --extract on the same row, right-aligned. Make all text at least 4.5:1.",
-   "P2 top-right 'goals 0/3' dropdown and top-left 'keyboard' tag: Use the same card style for both: --ui-panel, 4px radius, 1px --ui-line-hi border, 48px from the screen edge and 32px from the top. Set both labels to 16px f-cond 600. Set 'keyboard' in tx-2, not lime, since lime means selected. Shrink 'goals 0/3' to 20px with a 16px chevron.",
-   "P2 compact smg ammo card, bottom-right: Move the card so it sits 48px from the right edge and 32px from the bottom. Set 'compact smg' to 20px tx-2. Keep '30' at 56px 800 tx-1 and set '/ 180' to 20px tx-2. Align the card's bottom edge with the weapon bar's bottom."
+   "P1 hp bar bottom-left (x24-430, y1033-1067) and 'down' tag (x26-103, y935-972): Remove the 'down' tag, or drop the card title and keep the tag. Draw the empty hp bar as a 12px bar with a 1px --danger outline and no fill, with a 16px tx-2 label.",
+   "P1 timing strip at the card top (x838-1082, y428-446): Remove one of the two bars. If the strip is a minigame, label it at 16px tx-2 and put it below the timer. Otherwise delete it and keep only the 8px bar under the number, filled with --danger and draining.",
+   "P2 self-revive line (x815-1105, y612-641): Draw the key as a 24px keycap chip with a 1px --ui-line-hi border and 4px radius. Set the label at 20px f-cond 600 and cut the clause to 'self-revive'. Show the remaining count as '1' at 16px tx-2.",
+   "P2 card chrome (x721-1199, y411-651): Use 24px padding on all sides. Remove the stub, or run it as a 3px --danger bar across the card top that shrinks with the timer.",
+   "P2 'player 2 joined' toast (x893-1027, y893-930): Move it to the left feed under the 'player 2' tag. Use --ui-panel with a 4px radius and a 1px --ui-line-hi border."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-120c-wallet-double-text-recipes-3/wallet-linked-demo-p1-1080.jpg",
-  "task": "o-120c-wallet-double-text",
-  "when": "2026-10-28T03:54"
+  "pic": "tools/handoff/console/notes/shots/o-120e-downed-damage-cuts-recipes-4/downcuts-linked-p1-1080.jpg",
+  "task": "o-120e-downed-damage-cuts",
+  "when": "2026-10-28T04:41"
  },
  "p2-1080": {
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The hp and armour bars are now clearly built and the top-centre alerts are tidier, but the HUD still mixes unrelated styles, with a capital-letter violation, floating unboxed elements and a stacked score card that crowds the centre.",
+  "verdict": "the easy-mode modal is gone and the downed card now reads clearly, with one hero number and a single prompt, but the card has no scrim, the player 1 label appears twice, and the bottom-left down tag and hp bar are still two separate pieces.",
   "findings": [
-   "P1 top-left 'keyboard' tag (x 10-105, y 6-32) and 'player 1' plate (x 16-170, y 325-360): Delete the mid-left plate. Keep only the over-head label, 16px f-cond 600, in P1 amber. Fold 'keyboard' into the hp card as a 14px tx-2 device tag, or drop it. Anchor all player info in one card at the 48px margin.",
-   "P1 hp and armour bars bottom-left (x 24-430, y 968-1068): Put both in one --ui-panel card (1px --ui-line-hi border, 4px radius) 48px from the left and bottom, bottom-aligned with the ammo card (y 1032). Make the bars 8px tall, with hp in --ok and armour in a blue-grey. Show labels at 16px tx-2 and '100' at 32px f-cond 700 tx-1.",
-   "P1 top-centre score card (x 810-1112, y 0-107) with the extract pill (x 889-1033, y 102-133): Offset the card 16px from the top. Use one hero: the timer '9:57' at 56px f-cond 800. Make 'team score 0 sp' a 20px row and the per-player scores 16px tx-2. Merge the pill and the arrow into one extract chip at 20px --extract, 16px below the card, with an 8px gap to the arrow.",
-   "P1 'spotted by the overseer' banner (x 743-1180, y 188-250): Shrink the text to 20px f-cond 700 in tx-1 on a --ui-panel strip with a 3px --danger left bar and a 4px radius. Keep it centred, 24px under the extract chip, with 16px padding. Fade it out after 2s.",
-   "P1 hotbar (x 553-1555, y 950-1062): Show only owned slots (2 here) at 64px, with the number at 16px tx-2. Give the active slot a 2px --acc border and --ui-raised fill. Lift the bar to 32px above the bottom edge. Drop the silhouettes."
+   "P1 HUD bottom-left (x 25-430, y 935-1068): 'down' tag and 'hp 0' bar: Remove the separate 'down' tag. Make one bar 280x24 at x 48, y 1008. Use a --ui-void track with a 1px --ui-line-hi border and a 4px radius. Put a 16px 'down' label inside, with the fill at 0 percent. Keep the red --danger for the label only.",
+   "P1 Downed card (x 721-1199, y 412-651) over the map: Add --scrim at about 0.5 alpha behind the card, or a 1px --ui-line-hi border plus a soft drop shadow. Delete the red fragment, or turn it into a full-width 3px timer bar along the top edge. Use a 4px radius.",
+   "P1 Card contents (x 760-1160, y 425-640): Keep only one bar, under the number. Make it 8px tall with a lime or --danger fill that shrinks. If the red bracket is a real mechanic, label it with a 16px tx-2 word. Otherwise remove it. Space the rows 16px apart.",
+   "P1 Self-revive prompt (x 815-1105, y 612-642): Put a 48px-tall button, 280px wide, with an --acc fill, --acc-ink text, and a 16px key cap with 'f' on the left, reading 'self-revive'. Put 'one per raid' as a 16px tx-2 tag on the right, or drop it.",
+   "P2 Top-left 'keyboard' chip (x 10-105, y 6-32) and 'player 1' health tag (x 15-170, y 322-352): Show the player name once, over the character. Move the keyboard chip to x 48, y 48 with a 16px tx-2 label and a --ui-line-hi border. Remove the left-edge health bar if the bottom-left bar covers the same thing."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-120c-wallet-double-text-recipes-3/wallet-linked-demo-p2-1080.jpg",
-  "task": "o-120c-wallet-double-text",
-  "when": "2026-10-28T03:55"
+  "pic": "tools/handoff/console/notes/shots/o-120e-downed-damage-cuts-recipes-4/downcuts-linked-p2-1080.jpg",
+  "task": "o-120e-downed-damage-cuts",
+  "when": "2026-10-28T04:42"
  },
  "pix86c-fashion": {
   "score": 3,
@@ -2718,5 +2718,37 @@
   "pic": "tools/handoff/console/notes/shots/o-120d-pad-trigger-not-aim-recipes-3/120d-p2-rt-smooth-1080.jpg",
   "task": "o-120d-pad-trigger-not-aim",
   "when": "2026-10-28T04:22"
+ },
+ "downcuts-host-easy": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The downed card is clear: the big timer is the focal point and the lime [f] prompt is readable. But the HUD around it is cluttered and inconsistent: stray status chips, mixed type scales, a tiny bar label, a purple zone name, and a down-state bar that is hard to read.",
+  "findings": [
+   "P1 downed card, top bar and timer bar: Keep one bar. Either drop the grey bar or merge it with the skill-check row. Label the skill-check bar with a 16px tx-2 word, remove the stray 4px red tick at the card corner, and align the card's inner padding to 24px on all sides.",
+   "P1 bottom-left status row (down, eye, leaf icon, concealed, in cover): Remove the 'down' chip, since the card already says it. Use one chip style (4px radius, 16px f-cond 600, 1px --ui-line-hi border). Reserve colour for the one chip that matters (danger or warn) and set the others in tx-2.",
+   "P1 hp 0 bar (bottom-left): Set one 5% left margin, about 48px, for the chips and the hp bar. Give the bar a 1px --ui-line-hi border on --ui-panel and show an empty-state tick or danger-red outline so it reads as 'empty'. Keep the number at 32px.",
+   "P1 top-left 'current pillager bots' panel: Drop the repeated '- dead' column and show names in tx-2 with one 'dead' tag at 16px. Make the title tx-2 at 16px and 'you' tx-1 at 20px. Move the panel to the 48px margin, and use the same 4px radius and border as the other cards.",
+   "P2 weapon slots (bottom centre): Give slot 1 a lime 2px border as the selected one. Give slot 3 a neutral 1px --ui-line-hi border. Raise the empty slots' contrast so the icons stay at about 40% opacity and the digits at 16px tx-2."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-120e-downed-damage-cuts-recipes-1/downcuts-host-easy-1080.jpg",
+  "task": "o-120e-downed-damage-cuts",
+  "when": "2026-10-28T04:34"
+ },
+ "downcuts-joined-kid-easy": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "the down card gets the eye first, which is right, but it is a small flat box with a clipped red tab and a stray timing bar. The HUD around it uses mixed panel styles, tiny text and several competing accents, so it reads as unfinished.",
+  "findings": [
+   "P1 down card, top edge (x720-1200, y423): Delete the red sliver or turn it into a full-width 3px --danger top bar. Put the skill-check bar directly under the timer. Use 32px 'down' in --danger, a 56px/800 timer, 24px padding, a 1px --ui-line-hi border and 4px radius.",
+   "P1 bottom-left status chips (y945-980: down, concealed, in cover, two icon discs): Remove the 'down' chip because the card already says it. Use one chip style: --ui-panel fill, 1px --ui-line-hi border, 16px label, 4px radius, 8px gap. Colour only the glyph. Merge 'concealed' and 'in cover' into one stealth state.",
+   "P1 'hp 0' bar (x25-430, y1035-1068): Show the empty state with a --danger outline and a 3px --danger segment. Set the label to 20px --tx-1. Make the bar the same width as the status row, aligned to the same 5% margin.",
+   "P1 top-left roster panel (x8-368, y143-260): Collapse it to a one-line 'squad 0/3' that expands on a key. If it stays open, use 16px rows, --tx-2 for dead players, no dashes, and drop the footer sentence. Put it on the 5% margin with the same panel token as the other cards.",
+   "P2 HUD corners (contracts 0/8 top-right, c 152m chip right, 'extract 152m' top-centre): Remove the duplicate 'c 152m' chip and keep only the top-centre extract line. Style contracts with the same panel token as the roster. Put the map label in --tx-1 or --tx-2 at 16px, not purple."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-120e-downed-damage-cuts-recipes-1/downcuts-joined-kid-easy-1080.jpg",
+  "task": "o-120e-downed-damage-cuts",
+  "when": "2026-10-28T04:34"
  }
 }

@@ -1,1 +1,1 @@
-10-28 00:28 gate: shipping cw-cx-downcuts (o-120e-downed-damage-cuts, codex)
+10-28 00:55 gate: the what is new card is stale, shipping a card refresh first (cw-cx-xreloadsearch, o-120f-pad-x-reload-prompt)
