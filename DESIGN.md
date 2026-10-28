@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.44 - FEWER RAID MESSAGES
+
+Co-op hunt while he was away. his complaint 10-27: too many messages reach the player (he left the design to us; built to the research rule of that night). Only the ladder reaches the screen: danger or teammate down, extraction, teammate news, a goal done, and the answer to something that did not work; the rest go to the run log, which the pause box lists. The left feed shows 3 lines that fade out after 5 s and takes one new line every 2.5 s; a goal done waits out the fight. His order 10-27 ~22:35 (the game told him about extraction b far across the map): an exit closing is said only for the exit you are heading to or one within 60 m. Kill lines, contract item nearby and all of looting are as they were. Measured in a staged 3 minute raid (seed 4242: looting, a fight, an extraction): 43.3 lines a minute before, 30 after
+
+MEASURED. Check 35.44 passes, and fails on v35.43.
 ## v35.43 - READABLE PING LABELS AND MAP GLYPHS
 
 Co-op hunt while he was away. The critic found the existing ping words too small, orange on busy ground and over the gun, and the minimap ping too small. Solo and party now share 16px bone text on an 85 percent shared HUD plate, raised above the target with an edge fallback. Minimap and full-map target shapes grow to 18px with their existing dark backing. Words, colours of the marker, sound, target following and 10 second lifetime stay the same. Playtest watch: ping a target near a screen edge in either window and confirm the label stays inside the screen and clear of the target; look for the larger shape on both maps.

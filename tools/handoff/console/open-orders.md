@@ -39,3 +39,4 @@ No HIGH items left except 177 hardcore save (parked until 11/1, goes first then)
 - HIGH: 177 hardcore save.
 - MEDIUM: 120d2, 141, 142, 147, 149, 153, 154, 161, 172, 175.
 - LOW: 144, 148, 150, 155, 156, 157, 158, 162, 169, 171, 174, 178, 182, 192, 193, 194, 195, 196, 197.
+10-28 extracted card: "this extracted screen is an absolute mess -- money versus raid score/sp should never be intermingled" -> cw-spmoney (Menus master draft), shipping 10-27 night

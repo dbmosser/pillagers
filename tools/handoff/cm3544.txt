@@ -1,0 +1,7 @@
+v35.44: fewer raid messages
+
+fewer raid messages: only danger, extraction, your teammate, goals done and failed tries show; the rest is in the run log on the pause box (43.3 to 30 lines a minute)
+
+Check 35.44. Fails on v35.43.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

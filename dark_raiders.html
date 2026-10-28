@@ -2726,6 +2726,8 @@ body:has(#appearmodal.pixfashion.on) > #uimring{display:none !important}
 <div class="pausebox" id="pausebox">
   <h3>RAID PAUSED</h3>
   <div id="pausekeys" style="font-size:13.5px;color:var(--ash);letter-spacing:.08em;text-align:center;line-height:1.8;max-width:730px">MOUSE aim &nbsp; LMB fire &nbsp; RMB aim down sights &nbsp; WASD move &nbsp; SPACE dodge roll &nbsp; SHIFT hold to sprint &nbsp; CTRL / C crouch toggle<br>E search / use &nbsp; X extraction &nbsp; R reload &nbsp; Q melee &nbsp; F next gun &nbsp; G throw &nbsp; U next grenade &nbsp; H heal, hold plate &nbsp; J next heal &nbsp; 1-4 guns &nbsp; 5-6 throw that grenade &nbsp; 7-8 use that heal &nbsp; 9 plate &nbsp; B / I backpack &nbsp; ENTER equip from backpack &nbsp; M map &nbsp; F1 controls &nbsp; TAB back out &nbsp; P / TAB pause</div>
+  <!-- v35.xx (cw-msgroute): the last lines of the run log, so a line that no longer shows in the raid is not lost (pauseLogSync) -->
+  <div id="pauselog" style="display:none;font-size:13px;color:var(--ash);margin-top:8px;max-width:620px;line-height:1.6;text-align:left;text-transform:lowercase;opacity:.85"></div>
   <div style="font-size:13.5px;color:var(--ash);margin-top:6px">Please provide feedback anything that went or felt wrong.</div>
   <textarea id="pausenote" rows="3" style="display:none;max-width:560px;font-size:13px" placeholder="e.g. the crier marked me through a wall, felt unfair"></textarea>
   <div style="display:flex;gap:8px">
@@ -3728,8 +3730,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.43';
-var VER_AT='2026-10-27 23:08';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.44';
+var VER_AT='2026-10-27 23:21';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20806,6 +20808,19 @@ function pauseFrameFit(){
   b.style.setProperty('--pbw',Math.max(780,Math.ceil(wd)+96)+'px');   // v19.94, seen on the 4K floor pause screenshot (2026-10-08): the floor's three buttons all but touched the frame sides
   return true;
 }
+// v35.xx (cw-msgroute): THE RUN LOG ON THE PAUSE BOX. Most raid lines now go only into the run log (msgReach), so the pause box lists its last 8 lines, oldest
+// first, with a detail after a middle dot. It is the log the run report already keeps (G.msgLog, 16 lines), not a new screen; pickup rows are left out.
+var PAUSELOGN=8;
+function pauseLogSync(on){
+  var el=document.getElementById('pauselog'), M=(G&&G.msgLog)||[], L=[], i, e, s, d;
+  if(!el) return;
+  if(!(on&&G&&!G.over)){ el.style.display='none'; return; }
+  for(i=M.length-1;i>=0&&L.length<PAUSELOGN;i--){ e=M[i]; if(!e||e.k==='pick'||!e.m) continue; s=String(e.m)+(e.sub?'  \u00b7  '+String(e.sub):''); L.unshift(s.length>90?s.slice(0,88)+'...':s); }
+  el.textContent='';
+  if(L.length){ d=document.createElement('div'); d.textContent='run log'; d.style.color='var(--steel-hi)'; el.appendChild(d); }
+  for(i=0;i<L.length;i++){ d=document.createElement('div'); d.textContent=L[i].toLowerCase(); el.appendChild(d); }
+  el.style.display=L.length?'':'none';
+}
 function togglePauseBox(on){
   // v8.70, HIS REPORT: ESC pauses in the Undercroft too. This returned on the
   // spot whenever there was no raid, so the floor had no pause at all. syncPause
@@ -20855,6 +20870,7 @@ function togglePauseBox(on){
   // ended by a misclick on a screen he only opened to read the controls.
   if(on) disarmAbandon();
   document.getElementById('pausebox').classList.toggle('on',on);
+  try{ pauseLogSync(on); }catch(_pls){}   // v35.xx (cw-msgroute): the run log's last lines
   // The box is written for a raid. On the floor there is no run to abandon and
   // nothing is paused but the room, so it says so and drops the abandon controls.
   (function(){
@@ -22626,7 +22642,7 @@ function alertShow(m,k,o,now){
            T:(o&&o.life>0)?o.life:MSGK[k].life,at:now};
   G.alert.T0=G.alert.T;   // v27.50 (alert3): the life it was shown with, for the time bar under the plate
 }
-function alertToFeed(e){ var o=e.o||{}; say(e.m,'obj',{sub:o.sub||'',key:o.key||'',fk:feedKindOf(e.m,e.k,null)}); }   // v35.xx (cw-quiettext): an alert that waited too long is written into the feed now, in its own colour (it is no longer written there when said)
+function alertToFeed(e){ var o=e.o||{}; say(e.m,'obj',{sub:o.sub||'',key:o.key||'',fk:feedKindOf(e.m,e.k,null),reach:msgReach(e.m,e.k,o)}); }   // v35.xx (cw-quiettext): an alert that waited too long is written into the feed now, in its own colour (it is no longer written there when said)
 function alertQDrop(m,key){ var q=G.alertQ, i; if(!q) return; for(i=q.length-1;i>=0;i--) if((q[i].m===m&&!msgDiffKey(q[i].key,key))||(key&&q[i].key===key)) q.splice(i,1); }   // v23.xx (tr9fixo): two keyed alerts with one headline are two alerts
 function alertEnq(m,k,o,now,back){   // v22.xx (tr3fixa): back, an alert another line displaced
   var q=(G.alertQ=G.alertQ||[]), key=(o&&o.key)||'', i, lo, lr;
@@ -23096,7 +23112,7 @@ function loreTick(dt){
     G.storyRead=1; if(G.tel) G.tel.storyRead=1;
     G.lore=L={name:String(st.name||'').toUpperCase(),text:String(st.text||''),x:st.x,y:st.y,T:LORELIFE,at:G.t||0};
     // v28.xx (cw-feedall), HIS ORDER (2026-10-15): "All text shown to the player on screen also goes into the player feed." The lore card was the one text that never did (v22.xx R39 kept it out): its name is an objective line and its text a line under it.
-    try{ if(L.name) feedAdd([{t:L.name,c:HUDC.warn}],'obj',{key:'lore:'+L.name}); if(L.text) feedAdd([{t:L.text,c:HUDC.text}],'info',{key:'loret:'+L.name,gl:''}); }catch(_lf){}
+    try{ if(L.name) say(L.name,'info',{reach:0}); }catch(_lf){}   // v35.xx (cw-msgroute): the story card is its one place; the run log keeps its name (22.88: no line holds the story)
   }
   if(L){ L.T-=dt; if(!(L.T>0)||Math.hypot(p.x-L.x,p.y-L.y)>LOREFAR) G.lore=null; }
 }
@@ -23140,7 +23156,10 @@ function drawLore(){
 // laid out above it. The old places (the message rows, the pickup stack, the kill feed, the loot labels) still show in this build; the
 // next builds move them out. A window has its own feed, and a teammate's lines reach it through the same say(). Cosmetic only: no
 // seeded draw, nothing under G.sim, no game state; the feed clock (G.fd.t) runs on msgTick, so it stands still under the solo pause.
-var FEED={show:10,keep:40,hold:6,dim:0.6,fade:1,again:1,merge:30,enter:0.14};
+// v35.xx (cw-msgroute), the research rule (2026-10-27): THREE LINES, FIVE SECONDS, THEN GONE. The feed showed 10 lines, each bright for 6 s and then held at 60
+// percent until ten newer ones pushed it off, so the corner was never empty. Now at most 3 lines, each fading in over 0.2 s, bright to 4.6 s and fully out at 5 s.
+// A repeat still joins its line as x2 and starts its time again (FEED.merge).
+var FEED={show:3,keep:40,hold:4.6,dim:0,fade:0.4,again:1,merge:30,enter:0.2};
 var FEEDBOX={on:0,x:0,y:0,w:0,h:0,rows:[]};
 var LEGHINT=null;   // v34.xx (cw-careerlegend): where the folded f1 controls line stood this frame (career raids), for the checks
 // v27.40 (medal0), HIS ANSWER (2026-10-14), "Halo puts medals in a row at the left": THE MEDAL SPOT IS RESERVED. A row for the style medals
@@ -23180,6 +23199,16 @@ function feedAdd(segs,fk,o){
     }
     break;
   }
+  // v35.xx (cw-msgroute): AT MOST ONE NEW FEED LINE EVERY 2.5 S, counted after repeats join their line. A line that would be new and is not danger or an answer
+  // (o.cap: b extraction, c teammate, d goal done) waits in F.q while the last new line is under 2.5 s old, while others wait, or (a goal done) while a shot was
+  // fired or taken in the last 4 s. feedTick lets the best ranked one in; a line said again while it waits keeps its one place.
+  if(o&&o.cap&&(now-(F.lastNew===undefined?-1e9:F.lastNew)<FEEDGAP||(F.q&&F.q.length)||(o.cap==='d'&&!feedCalm()))){
+    F.q=F.q||[];
+    for(i=0;i<F.q.length;i++) if((key&&F.q[i].key===key)||(!key&&!F.q[i].key&&F.q[i].txt===txt)){ F.q[i].segs=segs; F.q[i].txt=txt; F.q[i].o=o; return null; }
+    F.q.push({segs:segs,fk:fk,o:o,key:key,txt:txt,at:now});
+    return null;
+  }
+  F.lastNew=now;
   ln={id:(F.seq=(F.seq|0)+1),fk:fk||'info',segs:segs,txt:txt,key:key,n:n,tag:(o&&o.tag)?String(o.tag):'',money:'',col:(o&&o.col)||feedCol(fk),
       gl:(o&&o.gl!==undefined)?o.gl:FEEDGL[fk||'info'],at:now,last:now,born:now,mf:''};
   F.lines.push(ln);
@@ -23197,7 +23226,7 @@ function feedKindOf(s,k,o){
 }
 // every say(): the line goes into the feed whatever lane it also takes. A line the old pipeline says a second time (the waiting
 // queue coming out, an alert that waited too long going to the rows) is not written again (o.fd, G.msgDrain).
-function feedSay(m,k,o){
+function feedSay(m,k,o,cap){
   var s, sub, fk, col, D, item, tag, key, segs, cnt=false, gl;
   if(!G||G.sim||!G.player||G.msgDrain) return null;   // v35.xx (cw-quiettext): o.fd no longer keeps a line out: with the grey rows retired the feed is the one place it shows (the golden down callout)
   s=String(m); if(!s) return null;
@@ -23214,8 +23243,9 @@ function feedSay(m,k,o){
   fk=feedKindOf(s,k,o); col=feedCol(fk); gl=undefined;
   if(fk==='power'){ D=feedPwrOf(s); if(D) col=D.hex; }
   segs=[{t:s,c:(fk==='info'||fk==='dim')?feedCol(fk):col}];
+  var _mc=(cap==='c')?feedMateCol():''; if(_mc){ col=_mc; segs[0].c=_mc; }   // v35.xx (cw-msgroute): teammate news in the teammate's colour in a party raid
   if(sub&&sub.split(/\s+/).length<=4||sub&&o&&o.key) segs.push({t:'  \u00b7  '+sub,c:HUDC.dim});   // v28.xx (cw-feedcalm), the critic (2026-10-19): 'explaining sentences' in the left feed. A detail of five words or more (limited visibility due to fog, kill it for the hoard) stays out of the feed line; the headline is the line.
-  return feedAdd(segs,fk,{key:(o&&o.key)?('k:'+o.key):'',col:col});
+  return feedAdd(segs,fk,{key:(o&&o.key)?('k:'+o.key):'',col:col,cap:cap||'',still:(o&&o.still)||null});
 }
 // a world label (rising text): loot names are the pickup lines, hit feedback stays on its target, a kill has its own line and
 // a medal carries its own figure; everything else (a revive, a notoriety rise, a seal broken) is a line here too.
@@ -23228,6 +23258,7 @@ function feedLabel(t,c,ik){
   if((/^\s\+(\$|[\d,]+ SP$)/).test(s)) return null;
   // v28.xx (cw-feedsp): a kill popup "+50 SP" joins the kill line again, as "+$50" did before lean2.
   if((/^\+(\$[\d,]+|[\d,]+ SP)$/).test(s)) return feedMoney(s);
+  if(MSGLEAN) return null;   // v35.xx (cw-msgroute): a label is read where it rose (a kill's figure above still rides on its kill line)
   return feedAdd([{t:s,c:c||HUDC.text}],'info',{col:c||null,gl:'info'});
 }
 // the figure of a kill rides on his own kill line when that line is under a second old; otherwise it is a line of its own
@@ -23237,6 +23268,7 @@ function feedMoney(s){
   return feedAdd([{t:s,c:UIC.r_gold}],'money',{key:'m:'+s});
 }
 function feedMedal(txt,pts){
+  if(MSGLEAN) return null;   // v35.xx (cw-msgroute): the medal shows over the cursor ring; no second copy in the feed
   return feedAdd([{t:String(txt),c:UIC.r_gold},{t:'  +'+arcadeCr(pts),c:UIC.r_gold}],'medal',{});
 }
 function feedSame(a,b){
@@ -23276,7 +23308,24 @@ function feedTag(item,tag){
   if(!F) return;
   for(i=F.lines.length-1;i>=0;i--){ Ln=F.lines[i]; if(Ln.fk==='loot'&&Ln.key.indexOf('p:'+item+'|')===0){ Ln.tag=String(tag||''); Ln.mf=''; return; } }
 }
-function feedTick(dt){ if(G&&G.fd) G.fd.t+=dt; }
+function feedTick(dt){
+  var F=G&&G.fd, i, e, b=-1, o2, k, n=1, calm;
+  if(!F) return;
+  F.t+=dt;
+  if(!F.q||!F.q.length) return;   // v35.xx (cw-msgroute): the lines waiting their turn (feedAdd)
+  // extraction and teammate news wait at most 4 s and are asked again (o.still); a goal done waits out the fight
+  for(i=F.q.length-1;i>=0;i--){ e=F.q[i]; if((e.o.cap!=='d'&&F.t-e.at>FEEDWAIT)||!feedStill(e.o)) F.q.splice(i,1); }
+  if(!F.q.length||F.t-(F.lastNew===undefined?-1e9:F.lastNew)<FEEDGAP) return;
+  calm=feedCalm();
+  for(i=0;i<F.q.length;i++){ e=F.q[i]; if(e.o.cap==='d'&&!calm) continue; if(b<0||(FEEDRANK[e.o.cap]||9)<(FEEDRANK[F.q[b].o.cap]||9)) b=i; }
+  if(b<0) return;
+  e=F.q.splice(b,1)[0]; o2={}; for(k in e.o) o2[k]=e.o[k]; o2.cap='';
+  if(e.o.cap==='d'){   // every goal done that waited out the fight shows as this one line
+    for(i=0;i<F.q.length;){ if(F.q[i].o.cap!=='d'){ i++; continue; } if(F.q[i].txt===e.txt) n++; else e.segs=e.segs.concat([{t:'  \u00b7  ',c:HUDC.dim}],F.q[i].segs); F.q.splice(i,1); }
+    if(n>1) o2.n=n;
+  }
+  feedAdd(e.segs,e.fk,o2);
+}
 function feedRect(){
   // v27.35 (feedw), seen in the busy frame picture: the feed zone was 30 percent of the screen wide (576 px at 1080p) and its lines are
   // under 410, so the controls list beside it was squeezed to a sliver. The zone is 24 percent of the width, and each line is a little
@@ -23325,8 +23374,9 @@ function feedDraw(){ var _lgS=LEGSIDE, _fst=0; LEGSIDE=null;   // v35.xx (cw-f1l
   try{
     ctx.font=fL; ctx.textBaseline='alphabetic'; ctx.textAlign='left';
     y=R.y+R.h;
-    for(i=F.lines.length-1,n=0;i>=0&&n<FEED.show;i--,n++){
-      ln=F.lines[i]; al=feedAlpha(ln); e=Math.min(1,(F.t-ln.born)/FEED.enter);
+    for(i=F.lines.length-1,n=0;i>=0&&n<FEED.show;i--){
+      ln=F.lines[i]; al=feedAlpha(ln); if(!(al>0)) continue; n++;   // v35.xx (cw-msgroute): a line that has faded out holds no place
+      e=Math.min(1,(F.t-ln.born)/FEED.enter);
       pr=feedParts(ln,fL,R.w-pad*3-gs-Math.round(pad*0.7));
       w=Math.min(R.w,pad+Math.round(pad*0.5)+(ln.gl?gs+Math.round(pad*0.7):0)+pr.w+pad);
       x=R.x+(_fst=feedStep(_lgS,R,rs))+(_fst?0:Math.round((e-1)*LH(18)*rs)); yt=y-R.rh;   // beside the open list a new line fades in where it stands (sliding in from the left it ran under the list)
@@ -23373,6 +23423,47 @@ function sayWhenFree(m,kind,o){
   }
   say(m,kind,o);
 }
+// v35.xx (cw-msgroute), HIS COMPLAINT (2026-10-27): "there are too many messages coming in to the player", and on the plan: "You need to figure out what works".
+// Built to the research rule of that night (reports/Player alerts and HUD messaging.md). The quiet hud put each line in one place; this cuts how many there are.
+// A LINE REACHES THE SCREEN ONLY ON THE LADDER: P0 (a) danger to you now or your teammate down, the alert lane; P1 (b) a change in extraction; P2 (c) other
+// teammate news; P3 (d) a goal or contract done (not progress); P4 (e) the one-line answer to something you tried that did not work (health full, bandages stop
+// at 85, no x left: a key that silently does nothing reads as broken). Everything else (a codex entry, location revealed, weather and fog, running slowly, a
+// golden enemy, a stronghold, a discovery, lore, chatter, system lines, progress counts such as notoriety) is said into the run log (G.msgLog) and drawn
+// nowhere; the pause box lists the last lines of that log (pauseLogSync), so nothing is lost. msgReach() reads the kind and the words and gives the letter,
+// or '' for a log-only line; o.reach names it outright (0: the log only). The medal copy and the world label copies (cw-feedall, his order 2026-10-15) leave the
+// left feed (MSGLEAN): a medal shows over the cursor ring and a label where it rose. Kill lines and their figure stay (his answer g-86), "contract item nearby"
+// stays as it was, and looting is not touched: the pickup stack, its rows and sounds never pass through here. The hub floor keeps every line.
+// The list, call site by call site: tools/handoff/console/notes/raid-messages.md.
+var MSGLEAN=1, FEEDGAP=2.5, FEEDWAIT=4, FEEDCALM=4, FEEDRANK={b:1,c:2,d:3};
+var MSGCUTA=/^(NOTORIETY |CONVOY MOVING$|MACHINE CONVOY$|COOLANT RUPTURE$|GATE BREACHED$|YOUR RIVAL IS UP TOP$)/;
+var MSGOBJ=/^(CONTRACT DONE|GOAL DONE.*|GUN UPGRADED|CACHE MARKED|KEYCARD DROPPED|.+ IS DEAD|.+ DESTROYED|\d+ MINUTES? LEFT)$/;
+var MSGKEEP=[
+  ['e',/^(HEALTH FULL|ALREADY (HEALING|APPLYING|SLOTTING)|NOT WHILE DOWN|NO .+|NOTHING TO (USE|PICK UP)|.+ STOPS? AT \d+|TOO TIRED TO ROLL|THROW BLOCKED|THROW THE ONE IN YOUR HAND FIRST|MOVE IT TO THE BACKPACK FIRST|ISSUED GEAR STAYS IN YOUR HANDS|CANNOT .+|NOT IN BACKPACK|SLOT .+ TAKES GUNS ONLY|GUNS GO ON KEYS .+|ITEMS GO ON THE WHEEL|GUN SLOT \d+ EMPTY|EMPTY SLOT|STOP FIRST|ARMOUR FULL|NEED .+|HE NEEDS .+|NOT ENOUGH .+|HE WANTS NOTHING YOU CARRY|SELF-REVIVE SPENT.*|AIR STRIKE \d+%|WARDEN ARMOUR|BULWARK SHIELD|MAX TIER|CONTROLLER DISCONNECTED|WALL GLITCH SAVED TO RUN REPORT|ERROR SAVED TO YOUR RUN REPORT|FEEDBACK (SAVED|COPIED|NOT SAVED)|SUPERHOT (ON|OFF|FOLLOWS THE HOST)|PICK OTHER INITIALS|SELECT A HEAL|.+ (JAMMED|EMPTY|ARMOUR FULL|DOES NOT NEED IT|ALREADY HEALING|COULD NOT TAKE IT|MOVED AWAY|IS SEARCHING|TO BACKPACK))$/],
+  ['a',/^(MACHINE ALERT|OVERSEER RETURNS)$/],
+  ['b',/^(EXTRACTION \S+ IS CLOSED|PILLAGER BOT CALLED EXTRACTION)$/],
+  ['c',/^(.+ RECEIVED|GAVE .+ TO .+|TOOK .+ FROM .+|PLATE FROM .+|.+ PATCHED YOU UP|TAKING IT)$/],
+  ['d',/^(SOLD \d+ ITEMS?|SURVIVOR EXTRACTED)$/]
+];
+var MSGKEYS={loanstash:'e',selheal:'e',arcxout:'c',cdone:'d'};
+function msgReach(m,k,o){
+  var s, key=(o&&o.key)?String(o.key):'', i;
+  if(o&&o.reach!==undefined) return o.reach||'';
+  if(G&&G.hubFloor) return 'e';   // the hub floor is not a raid: every line, at once, as before
+  if(k==='pick') return 'd';
+  s=String(m).toUpperCase().replace(/[.\s]+$/,'');
+  if(s==='CONTRACT ITEM NEARBY') return 'e';   // close to looting: shown as it always was, at once (his call, 10-27)
+  if(MSGKEYS.hasOwnProperty(key)) return MSGKEYS[key];
+  if(k==='crit'||k==='warn') return MSGCUTA.test(s)?'':'a';
+  if(k==='ext') return (/^(EXTRACT|KNOCKED DOWN)/).test(s)?'b':'d';
+  if(k==='ally') return (/^THE PEDDLER /).test(s)?'':'c';
+  if(k==='obj') return MSGOBJ.test(s)?((/MINUTES? LEFT$/).test(s)?'b':'d'):'';
+  if(G&&G.paused&&(k==='sys'||k==='info')) return 'e';   // a menu answer under the co-op overlay pause (under the solo pause say() hands it to the answer line first)
+  for(i=0;i<MSGKEEP.length;i++) if(MSGKEEP[i][1].test(s)) return MSGKEEP[i][0];
+  return '';
+}
+function feedCalm(){ var p=G&&G.player; return !p||!((p.combatT||0)<FEEDCALM); }   // no shot fired or taken for 4 s (tickRegen's clock)
+function feedStill(o){ if(!o||typeof o.still!=='function') return true; try{ return !!o.still(); }catch(_fst){ return true; } }   // a waiting line that knows how is asked again before it shows
+function feedMateCol(){ try{ if(typeof NET==='object'&&NET&&NET.on&&NET.mode!=='pvp') return mapSeatColor(brlMe()===0?1:0); }catch(_fmc){} return ''; }   // the teammate's colour (his r3-13: P1 amber, P2 cyan)
 function say(m,kind,o){
   if(mapPopupHold('say',arguments)) return;
   if(G&&G.sim) return;
@@ -23386,7 +23477,8 @@ function say(m,kind,o){
     // never lost); a pickup line (money in or out, BACKPACK FULL) is the right-side pickup stack only, as looted items already were (cw-hudfix); and every other
     // line (obj, ally, info, chat, sys) is a feed line only: the two grey rows under the clock are retired. The pause answer line and the run log are as they
     // were. This reverses his rs-2 a ruling of 2026-10-24 (keep both alert copies).
-    if(msgAlertK(k)){ alertSay(m,k,o); return; }   // v22.13 (R08): crit, warn and ext take the alert lane, not a feed row
+    if(o&&o.reach===0) return;   // v35.xx (cw-msgroute): a line for the run log only (the codex, the story card), never on the pause answer line either
+    if(msgAlertK(k)){ if(msgReach(m,k,o)) alertSay(m,k,o); return; }   // v22.13 (R08): crit, warn and ext take the alert lane, not a feed row
     if(k==='pick'){ pickSay(m,o); return; }   // v22.50 (R16): an item picked up is a row in the pickup stack, never a feed row
     // v22.xx, the raid text rewrite (R37): A LINE SAID UNDER THE SOLO PAUSE BOX SHOWS ON IT. HIS ORDER (2026-10-09): the raid text
     // reads like a shooter HUD, and a menu answers on the menu. With the pause box open in a solo raid (the world stopped), a key
@@ -23398,7 +23490,10 @@ function say(m,kind,o){
     // v35.xx (cw-quietpause), HIS ORDER (2026-10-27): "build the quiet hud, all 5 changes". ONE PLACE UNDER THE PAUSE BOX TOO. The feed took the line before
     // this test ran, so a key or a Settings change under the solo pause showed on the answer line over the box AND sat in the left feed behind it, and was read
     // again after the box shut, about a change already made. The answer line is now its one place; the co-op overlay pause, where the world runs on, keeps the feed.
-    try{ feedSay(m,k,o); }catch(_fsy){}   // v27.24 (feed1): every other line said is in the feed
+    // v35.xx (cw-msgroute): a line off the ladder is in the run log and nowhere else; danger and an answer go into the feed at once, the rest take their turn
+    // there (feedAdd: one new line every 2.5 s, goal done after the fight)
+    var _rc=msgReach(m,k,o); if(!_rc) return;
+    try{ feedSay(m,k,o,(_rc==='a'||_rc==='e')?'':_rc); }catch(_fsy){}   // v27.24 (feed1): every other line said is in the feed
     return;   // v35.xx (cw-quiettext): the line is in the feed; the two grey message rows under the clock (v21.86 R04 to v23.xx tr9fixk) are retired
   }
   // v8.13, audit: no raid to say it into. The Mainframe's eleven messages and
@@ -28440,6 +28535,11 @@ function tickRaiderWaves(dt){
 }
 var XALARM_GAP=1.8;   // v27.xx (xalarm): seconds between throbs of the extraction alarm
 var XALARM_LEN=4;   // v33.35 (cw-xalarmshort), HIS ORDER (2026-10-20): "extraction siren is intrusive, it doesn't need to go off the entire time, just for maybe 4 seconds when the extraction is first called, and 4 seconds before the extraction actually starts". Seconds of siren at each end of the wait; replaces the whole-time loop of answer 41
+// v35.xx (cw-msgroute), HIS ORDER (2026-10-27 ~22:35): "the game is telling me about extraction b when it is happening far across the map from me". The closing and
+// closed lines came for every exit on the map. A line about one exit now shows only for the exit you are heading to (G.active, or one called: its beacon runs)
+// or one within 60 m; any other goes to the run log only, and the map shows its state.
+var EXTNEAR=60;
+function extMine(z){ var p=G&&G.player; if(!z||!G) return false; if(z===G.active||(z.beaconT!==null&&z.beaconT!==undefined)) return true; return !!p&&dist(p,z)<=EXTNEAR*U_PER_M; }
 function tickExtractPoints(dt){
   var p=G.player,T=G.tel;
   for(var zi=0;zi<G.zones.length;zi++){
@@ -28746,12 +28846,12 @@ z.hold=(raidClockOn())?Math.min(30,Math.max(3,G.timeLeft-1)):30;   // v12.24: wi
     if(!cz.warned&&G.timeLeft<=cz.closeAt+120){
       cz.warned=1;
       // v10.75, his one-word rule: the same letter the map and the banner use.
-      sayWhenFree('EXTRACTION '+extLetter(cz)+' CLOSING','ext',{c:'warn',sub:'Closes in '+fmtClock(Math.round(G.timeLeft-cz.closeAt))});   // v22.38 (R13)   // v21.92: an extraction line, ranked over ordinary rows so the queue never drops it;   // v14.11, HUD audit: waits its turn instead of writing over a line   // v22.xx (tr3fixc): the shooter voice, the time it really has left
+      sayWhenFree('EXTRACTION '+extLetter(cz)+' CLOSING','ext',{c:'warn',sub:'Closes in '+fmtClock(Math.round(G.timeLeft-cz.closeAt)),reach:extMine(cz)?undefined:0});   // v35.xx (cw-msgroute): only your exit or a near one   // v22.38 (R13)   // v21.92: an extraction line, ranked over ordinary rows so the queue never drops it;   // v14.11, HUD audit: waits its turn instead of writing over a line   // v22.xx (tr3fixc): the shooter voice, the time it really has left
     }
     if(cz.open&&G.timeLeft<=cz.closeAt){
       if(cz.beaconT!==null&&cz.beaconT!==undefined){ continue; }  // pulled: it completes
       cz.open=false;
-      sayWhenFree('EXTRACTION '+extLetter(cz)+' CLOSED','ext',{c:'warn'});   // v22.38 (R13)   // v21.92: ranked as an extraction line;   // v10.75: the letter, as everywhere else; v14.11: waits its turn
+      sayWhenFree('EXTRACTION '+extLetter(cz)+' CLOSED','ext',{c:'warn',reach:extMine(cz)?undefined:0});   // v35.xx (cw-msgroute): only your exit or a near one   // v22.38 (R13)   // v21.92: ranked as an extraction line;   // v10.75: the letter, as everywhere else; v14.11: waits its turn
       if(G.active===cz){
         for(var aj=0;aj<G.zones.length;aj++) if(G.zones[aj].open){ G.active=G.zones[aj]; break; }
       }
@@ -29671,8 +29771,8 @@ if(!p.fired||p.wep.auto){
         var rrv=idRec(downRdr.ident);
         rrv.standing=(rrv.standing||0)+3; rrv.met++;
         saveProfile();
-        say(String(downRdr.name).toUpperCase()+' IS BACK UP','ally',{sub:'He will remember that.'});   // v22.xx (R54): a caps callout
-      } else say('HE IS BACK UP','ally');
+        say(String(downRdr.name).toUpperCase()+' IS BACK UP','ally',{sub:'He will remember that.',reach:0});   // v35.xx (cw-msgroute): a spared bot is not your teammate   // v22.xx (R54): a caps callout
+      } else say('HE IS BACK UP','ally',{reach:0});
       label(downRdr.x,downRdr.y-18,'REVIVED','#7fc4a0',0,true);
     }
   }
@@ -45657,7 +45757,7 @@ function codexScan(){
     a=G.bag||[]; for(i=0;i<a.length;i++) item(a[i]);
     p=G.player;
     if(p){ if(p.wep&&p.wep.id) put(p.wep.id); if(p.sec&&p.sec.id) put(p.sec.id); }
-    if(n&&state==='raid'){ try{ /* v31.xx (cw-codexfeed), the critic on screen 36 (2026-10-19): a new gun showed twice, top centre and bottom left. say() puts every line in the feed AND the top lane, so this one goes to the feed only (a quiet note, not an alert). */ feedSay('CODEX ENTRY','info',{sub:String(WEAPONS[nw[0]].name).toUpperCase()+'  \u00b7  '+(ITEMRAR[gunRarity(nw[0])]||'')}); }catch(_cs){} }
+    if(n&&state==='raid'){ try{ /* v31.xx (cw-codexfeed), the critic on screen 36 (2026-10-19): a new gun showed twice, top centre and bottom left. say() puts every line in the feed AND the top lane, so this one goes to the feed only (a quiet note, not an alert). */ /* v35.xx (cw-msgroute): the run log only */ say('CODEX ENTRY','info',{reach:0,sub:String(WEAPONS[nw[0]].name).toUpperCase()+'  \u00b7  '+(ITEMRAR[gunRarity(nw[0])]||'')}); }catch(_cs){} }
   }
   if(n){ try{ saveProfile(); }catch(_sv){} }
   return n;
@@ -54984,7 +55084,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.43: Ping labels are readable above their targets and ping shapes are larger on both maps. Check 35.43 fails on v35.42',
+  now:'v35.44: fewer raid messages: only danger, extraction, your teammate, goals done and failed tries show; the rest is in the run log on the pause box (43.3 to 30 lines a minute) Check 35.44 fails on v35.43',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
