@@ -32608,8 +32608,8 @@ window.__REGRESS=[
        __endRaid('extract');
        man=document.getElementById('oc_manifest'); lg=man.querySelector('.lg'); tx=man.textContent||'';
        if(!lg) return 'the CAREER extraction card has no ledger';
-       for(i=0,rows=['KILLS','MEDALS','GOALS','EXTRACTION','RAID SCORE','CREDITS','ITEMS SECURED','HAUL VALUE','RAID TOTAL','ACCURACY','CONTAINERS','HEALTH'];i<rows.length;i++) if(lg.textContent.indexOf(rows[i])<0) bad.push('the ledger has no '+rows[i]);
-       if(lg.textContent.indexOf('OBJECTIVES')<0||lg.textContent.indexOf('COMBAT')<0) bad.push('the ledger rows are not grouped COMBAT and OBJECTIVES');
+       for(i=0,rows=['KILLS','MEDALS','GOALS','EXTRACTION','RAID SCORE','CREDITS','ITEMS SECURED','HAUL VALUE','MONEY','ACCURACY','CONTAINERS','HEALTH'];i<rows.length;i++) if(lg.textContent.indexOf(rows[i])<0) bad.push('the ledger has no '+rows[i]);
+       if(!lg.querySelector('.lgps')||!lg.querySelector('.lgpm')) bad.push('the ledger is not a RAID SCORE panel and a MONEY panel');   // retargeted for cw-spmoney, HIS ORDER 2026-10-28: sp and money never intermingled, so the one list grouped COMBAT and OBJECTIVES with a RAID TOTAL row is now two panels
        if(/items? secured for|You extracted with|ACHIEVEMENT:|CAREER SCORE/.test(tx)) bad.push('a sentence the ledger replaces is still on the card');
        if(dto('.sc')!==1500) bad.push('RAID SCORE is '+dto('.sc')+', not 1500 (750 x2)');
        if(dto('.cr')!==1500) bad.push('CREDITS is '+dto('.cr')+', not 1500 (one credit a point)');
