@@ -454,3 +454,6 @@
 
 2026-10-28 | o-137-os-reduce-motion | display settings and raid, both player windows | OS reduced motion supplies light shake / half intensity for unset controls; hit pause follows intensity (60/30/0 ms). Existing labels and layout retained. | before: none (custom media-query recipes) | after: pending lane camera-recipes.json, os-motion-p1-display / os-motion-p1-raid / os-motion-p2-display / os-motion-p2-raid.
 
+2026-10-28 | o-137-os-reduce-motion | both player windows, display settings and raid | Shipped v35.61: reduced motion starts unset shake light and intensity half; both windows verified smooth=true and both values=0.5. | before: none (custom media recipes) | after: tools/handoff/console/notes/shots/o-137-os-reduce-motion-recipes-1/os-motion-p1-display-1080.jpg, os-motion-p1-raid-1080.jpg, os-motion-p2-display-1080.jpg, os-motion-p2-raid-1080.jpg.
+2026-10-28 | o-137-os-reduce-motion | display settings, both windows | Follow-up prepared: OS light/half defaults use normal value styling instead of changed-value lime. | before: tools/handoff/console/notes/shots/o-137-os-reduce-motion-recipes-1/os-motion-p1-display-1080.jpg and os-motion-p2-display-1080.jpg | after: pending round 2.
+

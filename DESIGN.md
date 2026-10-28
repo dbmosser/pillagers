@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.62 - SHOW OS MOTION DEFAULTS AS DEFAULTS
+
+Co-op hunt while he was away. The settings list still compared light shake and half intensity against its old defaults, so the OS defaults looked like manual changes in both windows. Share the default lookup between the loader and settings display. Explicit player choices still win. Watch: with reduced motion and no chosen motion controls, light and half should have ordinary value styling. No timing or shake strength changes in this follow-up.
+
+MEASURED. Check 35.62 passes, and fails on v35.61.
 ## v35.61 - RESPECT COMPUTER REDUCED MOTION
 
 Co-op hunt while he was away. The computer reduced motion preference previously affected menu CSS only. Unset screen shake now starts light and unset effect intensity starts half. Each saved choice and each tuned dial wins independently. Hit pause now follows the existing effect intensity control: 60 ms at full, 30 ms at half, zero at off, with its immunity unchanged. No request leaves ordinary defaults unchanged. Watch in a smooth-look playtest: on both player windows with no saved motion choices, heavy hits should shake less and hold the target for a shorter beat; choosing full must survive reload. In co-op the host still owns enemy hit pause. No seeded draws or world generation change.

@@ -28,3 +28,4 @@
 2026-10-28 02:15 week=14.0% 5h=65.0% week_resets=2026-11-03 16:21 job=o-135-pad-poll-guard
 2026-10-28 02:21 week=14.0% 5h=69.0% week_resets=2026-11-03 16:21 job=o-137-os-reduce-motion
 2026-10-28 02:24 week=14.0% 5h=70.0% week_resets=2026-11-03 16:21 job=o-137-os-reduce-motion
+2026-10-28 02:35 week=0.0% 5h=0.0% week_resets=2026-11-04 01:34 job=o-137-os-reduce-motion

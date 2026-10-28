@@ -2878,5 +2878,69 @@
   "pic": "tools/handoff/console/notes/shots/o-132-hit-jolt-from-the-bullet-recipes-3/j132-p2-partner-shot-1080.jpg",
   "task": "o-132-hit-jolt-from-the-bullet",
   "when": "2026-10-28T06:06"
+ },
+ "p1-display": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "A clean, consistent settings card with a clear focus row and a good X close. It is let down by a mostly empty detail pane, lime used on non-selected values, tiny row text, and a scroll clip at the bottom.",
+  "findings": [
+   "P1 right detail pane: Fill the pane with the current value, the allowed options and a default marker. Or narrow it to about 480px and widen the rows. Set the description in 20px f-body tx-1/tx-2.",
+   "P1 value column: 'half' (effect intensity), 'light' (screen shake): Mark changed values with a small 6px dot or a '·' tag in tx-2, or use tx-1 with a 3px left tick. Keep lime only on the focused row.",
+   "P1 focused row 'render resolution': Give the row a --ui-raised fill, a 3px lime bar on its left edge, and a 1px --ui-line-hi border. Match the tab's treatment exactly.",
+   "P1 settings rows, tab labels, close hint: Set row names to 20px f-cond 600 in tx-1 or tx-2 at 4.5:1 or better. Set tabs to 20px. Keep the hint at 16px and raise it to tx-2. Add 8px row padding.",
+   "P2 bottom of the list: Add a 32px fade-to-panel mask at the bottom of the scroll area, or snap the scroll to whole rows. Make the scrollbar 8px in --ui-line-hi."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-137-os-reduce-motion-recipes-1/os-motion-p1-display-1080.jpg",
+  "task": "o-137-os-reduce-motion",
+  "when": "2026-10-28T06:30"
+ },
+ "p1-raid": {
+  "score": 2,
+  "pass": false,
+  "need": 4,
+  "verdict": "The HUD is readable and mostly lower case, but the controls panel covers a whole left-hand chunk of the screen, there are five competing panel styles and the 12/24 ammo number is the only strong hierarchy cue.",
+  "findings": [
+   "P0 controls list, left mid (16-314px x 504-802px): Fold it to a single 16px line ('f1 controls') at about x=48, y=1000. Expand only on F1. If the party demo needs it open, make that a separate mode flag.",
+   "P1 top-left scoreboard 'current pillager bots 3' and top-right 'contracts 0/8': Collapse the bot list to the 'you' row by default with the caret opening it. Raise rows to 16px with a 24px pitch. Move contracts into the cw-trcol vertical stack with the same panel width and height as its siblings.",
+   "P1 hud panel styling overall: Standardise all HUD panels: fill #16191b at .88 alpha, 1px #4a5257 border, 4px radius, 16px inner padding. Keep only the focused slot lime.",
+   "P1 extract chips: 'extract 152m' (top centre) and 'c 152m' (right, y=486): Keep the one top-centre chip and delete 'c 152m' (leave only the edge arrow). Raise the timer to 56px f-cond 800, with the extract chip underneath at 16px.",
+   "P1 ammo card, bottom right (1646-1910 x 903-1052): Make 12 56px tx-1 and '/ 24' 32px tx-2. Align every line right at a 24px inset. Put 'b / i backpack' and the item count on one 16px tx-2 line and remove the repeated $."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-137-os-reduce-motion-recipes-1/os-motion-p1-raid-1080.jpg",
+  "task": "o-137-os-reduce-motion",
+  "when": "2026-10-28T06:30"
+ },
+ "p2-display": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "This is a clean, consistent settings card with good focus treatment, but it has a few unexplained lime values, a mostly empty detail pane, and some small craft problems that stop it reading as polished.",
+  "findings": [
+   "P1 value column, 'half' and 'light' rows (effect intensity, screen shake): Draw all idle values in --tx-1. Use lime only for the focused row's value and arrows. If non-default needs marking, use a 4px --ui-line-hi dot or a 3px left tick instead of the accent.",
+   "P1 detail pane (x 1088-1870): Narrow the pane to about 420px and give the list the width, or fill it with a current-value readout and the list of choices. Rewrite the description to say what the option does. Set the description at 20px --tx-2, not the roughly 18px it is now.",
+   "P1 list rows, value column: Bring the value stepper to about 220px from the label's right edge, or right-align the stepper group at the list's right padding of 24px. Add a --ui-raised fill to the focused row and a 3px lime left bar, as the tab rail already does.",
+   "P2 bottom of list (crosshair size row): Fade the bottom 32px of the list to --ui-panel, or snap the scroll to whole rows. Widen the scrollbar thumb to 8px in --ui-line-hi.",
+   "P2 top-centre 'keyboard' chip (x 912-1007, y 7-31): Move the chip inside the header row, right-aligned beside the X, with a --ui-line-hi border and --tx-2 text at 16px. Remove the stray lime tick. If it is a tab marker, put it on the card's full top edge."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-137-os-reduce-motion-recipes-1/os-motion-p2-display-1080.jpg",
+  "task": "o-137-os-reduce-motion",
+  "when": "2026-10-28T06:31"
+ },
+ "p2-raid": {
+  "score": 2,
+  "pass": false,
+  "need": 4,
+  "verdict": "A readable raid HUD with a good bottom-right ammo hero, but the open controls panel, the leaderboard and the crowded top row compete with each other. Small type, mixed styles and an unfinished feel hold it at a 2.",
+  "findings": [
+   "P1 left mid, controls list (16-314 x 505-800): Fold it to one short line at mid-bottom left (about 280x32) and let f1 open it. If it stays open, cut it to 6 rows and set labels at 16px tx-2 on a --ui-panel fill.",
+   "P1 top-left leaderboard 'current pillager bots 3' (8-367 x 143-242): Set the heading to 16px tx-2 and the rows to 20px, and make 'you' lime. Use a 24px line pitch with 16px padding, and make the chevron a 32px hit target. Check whether these figures are money; if they are score, they must read 'sp'.",
+   "P1 top-centre, timer plus extract chip (860-1030 x 10-75): Make the timer 56px f-cond 800. Keep one extract readout, the teal chip at 20px, and drop the duplicate 'c 152m' chip or turn it into an edge arrow only.",
+   "P1 top-right 'contracts 0/8' bar (1603-1900 x 20-53): Shrink the bar to its content (about 200 px) and pad it 16px from the edge. Put the area name on a --ui-panel plate in tx-1, or drop the purple.",
+   "P2 bottom-left hp bar and status icons (22-430 x 940-1068): Keep the bar to about 24px high, with the 'hp' in 16px label type and 100 as a 32px number. Align it to a 48px margin from the bottom and left, and give the status icons small tooltips or counters."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-137-os-reduce-motion-recipes-1/os-motion-p2-raid-1080.jpg",
+  "task": "o-137-os-reduce-motion",
+  "when": "2026-10-28T06:31"
  }
 }

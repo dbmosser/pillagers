@@ -387,3 +387,4 @@
 2026-10-28 02:15 o-135-pad-poll-guard 38s ok DONE in=1039504 out=8076 run=2
 2026-10-28 02:21 o-137-os-reduce-motion 359s ok PARTIAL in=1262434 out=11804 run=1
 2026-10-28 02:24 o-137-os-reduce-motion 86s ok PARTIAL in=1724990 out=14465 run=2
+2026-10-28 02:35 o-137-os-reduce-motion 215s ok PARTIAL in=2792843 out=21086 run=3

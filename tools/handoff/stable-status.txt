@@ -1,30 +1,24 @@
 Latest stable: v35.28 (2026-10-27 22:16)
-Checked: 2026-10-28 01:28
+Checked: 2026-10-28 02:29
 Play address: http://localhost:8802/stable.html
 Result: no change
 
 Newest test runs, newest first:
-  corpus-1027-2310  v35.43  failing 43, new 14  robots 115 min/0 problems  -> 14 check(s) newly failing, e.g. v35.35 cw-f1left, his order 2026-10-27 ("hitting f1 to get t | v33.08 golden sentry and pillager bot death callouts draw on
+  corpus-1028-0034  v35.54  failing 40, new 8  robots 57 min/0 problems  -> 8 check(s) newly failing, e.g. v35.53 cw-hudsize, his ask 2026-10-27 (the hud messaging is  | v35.44 cw-msgroute, his complaint 2026-10-27 (too many messa
+  corpus-1027-2310  v35.43  failing 43, new 9  robots 115 min/0 problems  -> 9 check(s) newly failing, e.g. v35.35 cw-f1left, his order 2026-10-27 ("hitting f1 to get t | v33.08 golden sentry and pillager bot death callouts draw on
   corpus-1027-2147  v35.37  failing 34, new 2  robots 103 min/0 problems  -> 2 check(s) newly failing, e.g. v8.89 a pillager wading out of sight draws no rings in the w | v35.35 cw-f1left, his order 2026-10-27 ("hitting f1 to get t
   corpus-1027-2024  v35.28  failing 18, new 0  robots 57 min/0 problems  -> this is the current stable
   corpus-1027-1900  v35.19  failing 20, new 1  robots 115 min/1 problems  -> 1 check(s) newly failing, e.g. v25.41 his order (add minimap): the minimap marks extraction
   corpus-1027-1843  v35.18  failing 13, new 0  robots 76 min/0 problems  -> older than the current stable
-  corpus-1027-1635  v35.11  failing 18, new 3  robots 111 min/0 problems  -> 3 check(s) newly failing, e.g. v8.85 a pillager footprint does not draw through a wall, and | v27.24 his order: one persistent feed at the bottom left tak
-  corpus-1027-1326  v35.09  failing 16, new 0  robots 90 min/0 problems  -> older than the current stable
-  corpus-1027-1146  v35.06  failing 8, new 1  robots 126 min/1 problems  -> 1 check(s) newly failing, e.g. v10.38 the WHAT IS NEW card is current, opens with a note, a
+  corpus-1027-1635  v35.11  failing 18, new 6  robots 111 min/0 problems  -> 6 check(s) newly failing, e.g. v8.85 a pillager footprint does not draw through a wall, and | v9.07 a noise you cannot see leaves a ring on the ground, an
+  corpus-1027-1326  v35.09  failing 16, new 3  robots 90 min/0 problems  -> 3 check(s) newly failing, e.g. v9.07 a noise you cannot see leaves a ring on the ground, an | v34.90 cw-thirdsize, his note of 2026-10-25, played on build
 
 Checks that are newly red and still red (they block until fixed, or until listed in tools/handoff/stable-known-red.txt):
-  v35.35 cw-f1left, his order 2026-10-27 ("hitting f1 to get the controls should b
-  v33.08 golden sentry and pillager bot death callouts draw once in both windows a
-  v32.69 named stash heading, neutral freebie action, no idle keyboard sentence or
-  v31.51 a new codex gun is one feed line at the bottom left, not also a second ca
-  v30.93 the left feed: a long detail sentence is not on the line, and an old line
-  v29.03 cw-feedall: all on-screen text goes into the feed: the map story card wri
-  v27.51 his order: the banners that came in at their own heights of the centre ar
-  v23.10 two contracts that finish on one container both show: one crate that fini
-  v23.02 never-words out of raid text: a machine wreck prompts SEARCH WRECK, a dea
-  v16.46 map markers reach the party through the host and clear; a danger ping rep
-  v16.43 ping: a ping reaches the party through the host with who made it, and sna
-  v13.40 a box searched on the hot ground says so: after a held X search through t
-  v13.39 helping the survivor while carrying notoriety shows the line about the ca
-  v13.38 a real player round that kills the last pillager a kill contract needs sh
+  v35.53 cw-hudsize, his ask 2026-10-27 (the hud messaging is a clusterfuck, make
+  v35.44 cw-msgroute, his complaint 2026-10-27 (too many messages reach the player
+  v34.26 the raid HUD quiets its corners: the item count and backpack cue on the g
+  v31.04 cw-shkey, his note (2026-10-18) "superhot mode needs a toggle key": the k
+  v27.40 his answer: a row for the style medals is reserved between the feed and t
+  v27.35 seen in the busy frame picture: the feed zone is a quarter of the screen
+  v16.44 kid mode: player 2 takes the chosen fraction of every hit, the lower of i
+  v13.32 the quick ascent, which skips the sector page, tells a player who lands w

@@ -1,0 +1,5 @@
+## v35.62 - SHOW OS MOTION DEFAULTS AS DEFAULTS
+
+Co-op hunt while he was away. The settings list still compared light shake and half intensity against its old defaults, so the OS defaults looked like manual changes in both windows. Share the default lookup between the loader and settings display. Explicit player choices still win. Watch: with reduced motion and no chosen motion controls, light and half should have ordinary value styling. No timing or shake strength changes in this follow-up.
+
+MEASURED. Check 35.62 passes, and fails on v35.61.
