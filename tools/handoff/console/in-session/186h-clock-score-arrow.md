@@ -13,6 +13,7 @@ His words, verbatim:
 7. Same panel: "not sure what is meant by  'contracts 6/8' -- seems pretty useless if you aren't going to show the contracts"
 8. (picture of the roster: "current pillager bots  2", rows you / names with $ values, "0 out  2 dead") "This should say 'current pillagers'  and then 'value at risk'" (the header reads current pillagers, the money column is headed value at risk)
 9. "pillagers should always be referred to as 'pillagers' never 'pillager bots'" (reverses his 10-18 PM word; every player-facing "pillager bot(s)" becomes "pillager(s)"; built as its own follow-up build, key cw-pillagersword, so either can be reverted alone)
+10. (picture of the danger banner "locked on" / "machine has you in sight") "this should never say 'machine' without telling me which machine....eg overseer? etc" (every player-facing line that says "machine" names the kind instead: sentry, crawler, overseer and so on; in the words build cw-pillagersword)
 
 Keep: looting (pickup stack, loot rows, loot sounds, item labels) untouched; kill lines stay; money ($) is not score; player text lower case.
 
