@@ -16,3 +16,14 @@ Old checks that expect the banner at 16% or the move to the feed: re-aim through
 Pictures: uishots 21, 33, 34, 50 at 1080; look at them.
 Watch-for line for him: whether the lower danger slot covers enemies coming from above the character.
 TASK DONE when shipq prints ON HIS PC. Then send one line to the order chat (Gameplay Edit Intaker 2, local_cf9fff85-d314-431d-aba9-bc4ddd180177): "cw-dangerslot is ON HIS PC vNN.NN".
+
+## Downed card findings (folded in 10-28 by the CEO chat, from the Codex critic on o-120e, v35.54; final scores 3 and 3)
+Pictures: tools/handoff/console/notes/shots/o-120e-downed-damage-cuts-recipes-4/ (downcuts-linked-p1-1080.jpg, downcuts-linked-p2-1080.jpg, both windows) and o-120e-downed-damage-cuts-recipes-1/report.json. The critic's P1s, shortened, in its words:
+1. One state, one place: "the red down label, timing bar, hp bar and 'down' tag all repeat the same state in several places"; "the player 1 label appears twice"; "the bottom-left down tag and hp bar are still two separate pieces".
+2. Skill check and countdown: "nobody can tell which one is the bleed-out countdown". Make the bleed-out countdown the hero and the skill-check bar plainly secondary.
+3. Card contrast: "the card has no scrim" over a busy map.
+4. Self-revive: "it is the primary action but has no key chip". The key on a keycap chip in the shared HUD style; the line short and lower case.
+5. Empty hp bar: draw it as an outlined empty bar, not a dark block.
+6. Mixed status chips: the top-left "keyboard" chip "is tucked into the corner at x 10 ... and has a green border that matches nothing else". Bring it to the shared inset and style (see 186f, which owns the corner margins and panel style; whichever ships second rebases).
+7. Roster density and alignment: owned by 186f.
+Keep: the 3 px danger tab on the card (intentional, cw-downedcard) and the downed skill check itself (his downbar1 order of 10-16; removing it would be his call). Step 4 above (shrink the card into the danger slot if it covers the player) still decides where the card goes; do these with it, in the same build or a follow-up build cw-downedpolish.
