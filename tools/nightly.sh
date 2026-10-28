@@ -227,6 +227,13 @@ while true; do
   hr=$(date +%H)
   if [ "$hr" -ge 7 ] && [ "$hr" -lt 12 ] && [ "$(get report_am)" != "$(date +%F)" ] && [ -f "$R/tools/report.mjs" ]; then put report_am "$(date +%F)"; (node "$R/tools/report.mjs" --kind am --auto >> "$LOG" 2>&1) & fi
   if [ "$hr" -ge 18 ] && [ "$(get report_pm)" != "$(date +%F)" ] && [ -f "$R/tools/report.mjs" ]; then put report_pm "$(date +%F)"; (node "$R/tools/report.mjs" --kind pm --auto >> "$LOG" 2>&1) & fi
+  # (10) 10-27: the dashboard server (tools/devdash/server.mjs, 127.0.0.1:8820) was found dead at 19:27 and only the coordinator's health
+  #      sweep (tools/health.sh) started it again, so his desktop copy (pillagers-dashboard.html in the bridge share, which the server pushes
+  #      every 30 to 90 s) stood still for over an hour. Start it again whenever nothing answers on 8820.
+  if [ -f "$R/tools/devdash/server.mjs" ] && ! curl -s -m 5 -o /dev/null "http://127.0.0.1:8820/api" 2>/dev/null; then
+    powershell -NoProfile -Command "Start-Process -FilePath node -ArgumentList 'server.mjs' -WorkingDirectory 'C:\claudecode\dark raiders\tools\devdash' -WindowStyle Hidden" > /dev/null 2>&1
+    echo "$(date +%H:%M) dashboard server 8820 was down: started" >> "$LOG"
+  fi
   now=$(date +%s); st=$(get summary_t); [ -z "$st" ] && st=0
   [ $(( now - st )) -ge 3600 ] && { summary; put summary_t "$now"; }
   sleep 300

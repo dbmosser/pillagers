@@ -214,7 +214,8 @@ function snapshot(d) {
     .replace('href="/report"', 'href="#"')
     .replace('<script>', '<script>window.__SNAP=' + JSON.stringify(d).replace(/</g, '\u003c') + ';</script><script>');
 }
-function pushSnap() {
+function pushSnap() { try { pushSnap0(); } catch (e) { snapBusy = false; } }   // 10-27: a bad status file must not end the server
+function pushSnap0() {
   if (snapBusy) return;
   // 10-25: a copy goes only when something on the page changed, or 90 s after the last one (the page warns after 120 s of silence),
   // not every 30 s regardless: while the helpers rest most copies were the same page with a new clock.
@@ -243,3 +244,9 @@ function pushMem() {
   execFile(process.execPath, [R + '/tools/bridge/hostctl.mjs', 'share-put', 'name=' + MEM_NAME, '--file', MEM_TMP], { timeout: 20000, windowsHide: true }, () => { memBusy = false; });
 }
 setTimeout(pushMem, 5000); setInterval(pushMem, 30000);
+// 10-27: found dead at 19:27 with no trace, and his desktop copy stood still for over an hour. The runner (tools/nightly.sh step 10) starts
+// it again within 5 minutes; a crash now leaves its reason in pillagers-dashboard-crash.log (TEMP) first.
+process.on('uncaughtException', (e) => {
+  try { appendFileSync(os.tmpdir() + '/pillagers-dashboard-crash.log', new Date().toISOString() + ' ' + String((e && e.stack) || e).slice(0, 2000) + '\n'); } catch {}
+  process.exit(1);
+});
