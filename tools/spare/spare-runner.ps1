@@ -1060,11 +1060,9 @@ while($true){
     if((Running 'fuzz\.ps1.*-Port 9331(\s|$)') -eq 0){ Start-Robot 9331 'fixture-soak-spare1.html' }
     # 10-22: Start-Robot takes a screen size (fuzz.ps1 -Size), but both robots here stay at 1080p. A 4K robot on the main PC reads as "he is gaming"
     # to its game check (a program at 15% of the graphics card, 22:38 that night), which holds the VM to 30% of its processors; the VM plays the 4K robot.
-    if(Arrived){ continue }
-    # 10-26: on the spare (4 threads) a full run plus two robots chokes the robots: 5 to 10 connection failures an hour against about 1 with the two robots
-    # alone (fuzz.log 10-25 15:00 to 10-26 23:49), and their hang reports land on the build under test. While a full run goes, the second robot waits.
-    $fullRun=(-not $Idle) -and ((Running 'corpq\.sh|corpus-slices\.sh') -gt 0)
-    if((-not $fullRun) -and (Running 'fuzz\.ps1.*-Port 9332(\s|$)') -eq 0){ Start-Robot 9332 'fixture-soak-spare2.html' }
+    # 10-26: on the spare (4 threads) a full run plus two robots choked the robots. 10-28 (CEO): two robots alone choke it too: 4 game windows at
+    # 94-100% CPU, player 2 joins in 93-168 s instead of 4-8, and 23 false problems (16 hangs, CDP send timeouts) on v35.65 06:07-07:38, which
+    # alone blocked stable; 4-32 an hour on 10-26 and 9-28 on 10-27, while one robot was clean. So the spare runs ONE robot, like the main PC.
   }
   $cs='idle'; if((Running 'corpq\.sh|corpus-slices\.sh') -gt 0){ $cs='running '+(Split-Path (GetS 'corpus_file') -Leaf) }
   Write-Status $cs (Running 'fuzz\.ps1')
