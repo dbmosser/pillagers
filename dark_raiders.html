@@ -2718,6 +2718,9 @@ body:has(#gamblemodal.on) #hubtoast,body:has(#opmodal.on #opane_rec[style*="disp
 #root #gamblemodal #gambleodds .gbrow em{font-style:normal;text-align:right;font-variant-numeric:tabular-nums;color:var(--tx-2);}
 #root #gamblemodal #wirtlot > span:not([title]){flex:1 1 auto;}
 #root #gamblemodal #wirtlotbtn{position:relative;flex:none;width:100%;min-width:0;min-height:56px;margin-bottom:32px;}
+/* v35.xx (cw-wirtfit), menus master pass 2026-10-28, his 4K screen: the offer column ran 37px past its panel, so the buy button and its need line hung under the panel border. The picture tile gives up height first (192 down to 96, the inline flex:none it is built with is overridden), so the buy button lines up with the gamble button and the need line sits inside the panel. */
+#root #gamblemodal #wirtlot > span[title]{flex:1 1 192px !important;min-height:96px;max-height:192px;height:auto !important;}
+#root #gamblemodal #wirtlot > span[title] img{width:auto !important;height:calc(100% - 16px) !important;max-height:176px;aspect-ratio:1/1;}
 #root #gamblemodal #gamblebtn[data-need]:not([data-need=""])::after,#root #gamblemodal #wirtlotbtn[data-need]:not([data-need=""])::after{position:absolute;top:calc(100% + 8px);left:0;right:0;margin:0;text-align:left;font-size:16px;line-height:1.4;display:block;}
 #root #gamblemodal #gamblebtn:focus-visible,#root #gamblemodal #wirtlotbtn:focus-visible,#root #gamblemodal button.padfocus{outline:3px solid var(--acc) !important;outline-offset:2px;}
 </style><style id="uc-gamble-card2">
@@ -3825,8 +3828,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.96';
-var VER_AT='2026-10-28 15:52';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.97';
+var VER_AT='2026-10-28 15:56';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -55872,7 +55875,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.96: Boxes search 1.5 times faster while both players hold search. Check 35.96 fails on v35.95',
+  now:'v35.97: at 4k the wirt buy button lines up with the gamble button and its need line sits inside the panel Check 35.97 fails on v35.96',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

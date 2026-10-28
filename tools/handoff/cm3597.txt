@@ -1,0 +1,7 @@
+v35.97: wirt offer fits at 4k: the need line sits inside its panel
+
+at 4k the wirt buy button lines up with the gamble button and its need line sits inside the panel
+
+Check 35.97. Fails on v35.96.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

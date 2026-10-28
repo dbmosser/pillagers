@@ -62,3 +62,4 @@
 10-28 14:57 v35.93 cw-menupolish2 on his pc after 66s (8802 serves 35.93) week 82%
 10-28 15:27 v35.94 cw-bossbarfight on his pc after 65s (8802 serves 35.94) week 83%
 10-28 15:29 v35.95 cw-endcards on his pc after 17s (8802 serves 35.95) week 83%
+10-28 15:56 v35.96 cw-cx-bothsearch on his pc after 131s (8802 serves 35.96) week 83%

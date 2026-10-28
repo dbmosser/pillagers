@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.97 - WIRT OFFER FITS AT 4K: THE NEED LINE SITS INSIDE ITS PANEL
+
+Co-op hunt while he was away. menus master pass 10-28, on his 4K screen: the limited time offer column was 37 px taller than its panel, so the buy button sat off the panel floor and its need more line hung under the panel border. The offer picture now shrinks a little when the panel is short, so both buttons and both need lines line up inside their panels.
+
+MEASURED. Check 35.97 passes, and fails on v35.96.
 ## v35.96 - BOTH PLAYERS HOLD SEARCH FOR FASTER BOXES
 
 Co-op hunt while he was away. His correction 10-28: both players need to be actively looting, e.g. holding E. A nearby player doing nothing gives no bonus. Search input counts at an occupied box or a neighbouring box, for keys and pads. All three search paths require both inputs. One optional packet bit defaults off for older windows; input edges send immediately. Playtest watch: two players holding E together search faster; one standing by does nothing
