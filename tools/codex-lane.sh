@@ -529,6 +529,11 @@ while [ "$it" -lt "$left" ]; do
   rm -f "$X/fails.txt"
   # a counted run: work was done (or the run hit its time cut)
   claim=$(claim_of); lastclaim=$claim; wo=""; [ "$claim" = WAITING ] && wo=$(waiting_on)
+  # 10-28 (Codex Correspondent, item 6): a TASK WAITING on itself, or on a job no list or lane holds, is a try, not a wait (nothing would ever release it)
+  if [ -n "$wo" ]; then
+    heldby=0; [ "$wo" != "$name" ] && { [ -f "$C/tasks/$wo.md" ] || [ -f "$C/in-session/$wo.md" ] || [ -f "$C/blocked/$wo.md" ] || grep -qx "$wo" <(for d in "$C"/lane-*.lock; do cat "$d/task" 2>/dev/null; echo; done) && heldby=1; }
+    [ $heldby = 0 ] && wo=""
+  fi
   # 10-19 night: a run that ends TASK WAITING: OTHER-TASK-ID is not a try (spend line NAME-wait); the job parks in blocked/ below
   if [ -n "$wo" ]; then echo "$today 0.0000 $name-wait" >> "$C/cli-spend.txt"; else echo "$today 0.0000 $name" >> "$C/cli-spend.txt"; fi
   echo "$(date '+%F %H:%M') $name ${dt}s $CLASS $claim $(tokens) run=$((n0+it))" >> "$X/runs.txt"
