@@ -1,0 +1,30 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  161-p1-bank-marker                     NOT STAGED  11.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: no clear camera staging area
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html?netslot=A&pair=cxbank161m1r2:181853:33), <anonymous>:9:11)
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html?netslot=A&pair=cxbank161m1r2:181853:33), <anonymous>:10:5
+  161-p2-bank-marker                     NOT STAGED   6.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: no clear camera staging area
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html?netslot=A:181853:33), <anonymous>:9:11)
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html?netslot=A:181853:33), <anonymous>:10:5)
+    at window.__gx (http://localhost
+  161-p1-bank-landing                    NOT STAGED   6.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: no clear camera staging area
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html?netslot=A&pair=cxbank161l1r2:181853:33), <anonymous>:9:11)
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html?netslot=A&pair=cxbank161l1r2:181853:33), <anonymous>:10:5
+  161-p2-bank-landing                    NOT STAGED   7.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: no clear camera staging area
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html?netslot=A:181853:33), <anonymous>:9:11)
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html?netslot=A:181853:33), <anonymous>:10:5)
+    at window.__gx (http://localhost
+== 4k : window 3876x2265, viewport 3840x2160
+  161-p1-bank-marker                     NOT STAGED  10.9s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: no clear camera staging area
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html?netslot=A&pair=cxbank161m1r2:181853:33), <anonymous>:9:11)
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html?netslot=A&pair=cxbank161m1r2:181853:33), <anonymous>:10:5
+  161-p2-bank-marker                     NOT STAGED   6.6s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: no clear camera staging area
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html?netslot=A:181853:33), <anonymous>:9:11)
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html?netslot=A:181853:33), <anonymous>:10:5)
+    at window.__gx (http://localhost
+  161-p1-bank-landing                    NOT STAGED   6.6s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: no clear camera staging area
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html?netslot=A&pair=cxbank161l1r2:181853:33), <anonymous>:9:11)
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html?netslot=A&pair=cxbank161l1r2:181853:33), <anonymous>:10:5
+  161-p2-bank-landing                    NOT STAGED   8.2s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: no clear camera staging area
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html?netslot=A:181853:33), <anonymous>:9:11)
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html?netslot=A:181853:33), <anonymous>:10:5)
+    at window.__gx (http://localhost

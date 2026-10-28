@@ -1,0 +1,42 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  161-p1-bank-marker                     NOT STAGED  69.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at until (<anonymous>:10:11)
+    at async window.stageThrowBank (<anonymous>:52:3)
+    at async <anonymous>:127:48
+    at async <anonymous>:1:21
+  161-p2-bank-marker                     NOT STAGED  65.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at until (<anonymous>:10:11)
+    at async window.stageThrowBank (<anonymous>:52:3)
+    at async <anonymous>:127:48
+    at async <anonymous>:1:21
+  161-p1-bank-landing                    NOT STAGED  65.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at until (<anonymous>:10:11)
+    at async window.stageThrowBank (<anonymous>:52:3)
+    at async <anonymous>:127:48
+    at async <anonymous>:1:21
+  161-p2-bank-landing                    NOT STAGED  65.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at until (<anonymous>:10:11)
+    at async window.stageThrowBank (<anonymous>:52:3)
+    at async <anonymous>:127:48
+    at async <anonymous>:1:21
+== 4k : window 3876x2265, viewport 3840x2160
+  161-p1-bank-marker                     NOT STAGED  70.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at until (<anonymous>:10:11)
+    at async window.stageThrowBank (<anonymous>:52:3)
+    at async <anonymous>:127:48
+    at async <anonymous>:1:21
+  161-p2-bank-marker                     NOT STAGED  65.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at until (<anonymous>:10:11)
+    at async window.stageThrowBank (<anonymous>:52:3)
+    at async <anonymous>:127:48
+    at async <anonymous>:1:21
+  161-p1-bank-landing                    NOT STAGED  65.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at until (<anonymous>:10:11)
+    at async window.stageThrowBank (<anonymous>:52:3)
+    at async <anonymous>:127:48
+    at async <anonymous>:1:21
+  161-p2-bank-landing                    NOT STAGED  65.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at until (<anonymous>:10:11)
+    at async window.stageThrowBank (<anonymous>:52:3)
+    at async <anonymous>:127:48
+    at async <anonymous>:1:21

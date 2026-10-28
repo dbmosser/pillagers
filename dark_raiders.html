@@ -3813,8 +3813,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.91';
-var VER_AT='2026-10-28 14:04';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.92';
+var VER_AT='2026-10-28 14:50';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -30338,7 +30338,7 @@ at:Math.round(elapsed()),f:(_wcw.door?'door':(_wcw.furn?'furn':(_wcw.wreck?'wrec
         // Search resumed, N% done (v11.94) in the raid text, every time. The search bar already shows how far the box got, so the line was
         // chatter: picking a search back up now says nothing, and the progress carries on exactly as before.
       }
-      near.prog=(near.prog||0)+dt/buzzSlow()*(G.arcade?ARCADE_SRCH:1);   // v23.33 (arcade11): six times as fast in the arcade
+      near.prog=(near.prog||0)+dt/buzzSlow()*(G.arcade?ARCADE_SRCH:1)*(duoAt(near,NET.seat)?DUO_SRCH:1);   // v28.xx (cw-cx-duosearch): a nearby party member helps the host search
       // STAGED PULLS, v1.61. His note: "looting feels so uninspired, how can we make it
       // more interesting???" It was one hold, one lump of loot, about twenty one times a
       // raid, with no decision anywhere in it. Items now come out one at a time as the
@@ -55833,7 +55833,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.91: Frag, smoke and decoy bank once off a wall; the marker follows both legs and the rebound is a low hop. Check 35.91 fails on v35.90',
+  now:'v35.92: Boxes search 1.5 times faster with a nearby teammate. Check 35.92 fails on v35.91',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -64413,6 +64413,19 @@ function netEntsView(){
 // SOLO PLAY IS UNTOUCHED. The one line in the play path tests NET.on first; every call in here is behind NET.on; nothing
 // here draws from the seeded stream (rr, rnd, ri, pick, rollTable). The hot ground bonus a host open rolls at open time is
 // not rolled for a search one of the party makes, since that is a seeded draw the net code must not make; written down.
+// v28.xx (cw-cx-duosearch), his decision 2026-10-28: "Crates open faster with two". Every box, in demo and career co-op.
+var DUO_SRCH=1.5, DUO_R=200;
+function duoAt(ct,seat){
+  if(!ct||!NET.on||!G||G.sim||!NET.upSeed||(G.seed>>>0)!==(NET.upSeed>>>0)) return false;
+  if(seat===undefined) seat=NET.seat;
+  var p=G.player, i, q;
+  if(NET.role==='host'&&seat!==NET.seat&&!G.over&&p&&!p.downed&&!p.dying&&!p.specOut&&p.hp>0&&Math.hypot(p.x-ct.x,p.y-ct.y)<=DUO_R) return true;
+  for(i=0;i<(NET.up||[]).length;i++){
+    q=NET.up[i];
+    if(q&&q.seat!==seat&&netUpShown(q)&&!netUpGone(q)&&!netUpHid(q)&&!q.dn&&!q.specOut&&!q.out&&q.hp>0&&Math.hypot(q.x-ct.x,q.y-ct.y)<=DUO_R) return true;
+  }
+  return false;
+}
 var NET_SRCH_REACH=200;
 function netContPeer(){ return netEntsPeer(); }
 function netContHost(){ return netEntsHost(); }
@@ -64465,7 +64478,7 @@ function netSrchHold(near,dt){
     // v24.xx (nosearchline), HIS ORDER (2026-10-12): no Search resumed line on a linked window either; the search bar shows the progress.
     s=NET.srch;
   }
-  if(s.ok) near.prog=Math.min(near.time||1,(near.prog||0)+dt/buzzSlow());
+  if(s.ok) near.prog=Math.min(near.time||1,(near.prog||0)+dt/buzzSlow()*(G.arcade?ARCADE_SRCH:1)*(duoAt(near,NET.seat)?DUO_SRCH:1));   // v28.xx (cw-cx-duosearch): predict the same speed as the host
   G.searchT=near.prog||0;
   if(!G.sim) G.handsT=0.25;
   return s.ok?'hold':'asked';
@@ -64656,7 +64669,7 @@ function netSrchTick(dt){
     if(!Object.prototype.hasOwnProperty.call(NET.holds,s)) continue;
     r=NET.holds[s]; ct=netContOf(r.cid); q=netPeerOfSeat(+s);
     if(!ct||!q||ct.opened||ct.netBy!==(+s)){ netSrchEnd(+s); continue; }
-    ct.prog=(ct.prog||0)+dt/r.slow*(G.arcade?ARCADE_SRCH:1);   // v23.33 (arcade11): a box held through the host is fast in the arcade too
+    ct.prog=(ct.prog||0)+dt/r.slow*(G.arcade?ARCADE_SRCH:1)*(duoAt(ct,+s)?DUO_SRCH:1);   // v28.xx (cw-cx-duosearch): the host himself can help a partner search
     items=[];
     tot=(ct.loot?ct.loot.length:0)+(ct.pulled||0);
     if(tot>0&&ct.loot.length>0){

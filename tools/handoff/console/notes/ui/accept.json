@@ -3198,5 +3198,133 @@
   "pic": "tools/handoff/console/notes/shots/o-05-120d2-fire-ends-sprint-recipes-3/120d2-p2-shot-ends-sprint-1080.jpg",
   "task": "o-05-120d2-fire-ends-sprint",
   "when": "2026-10-28T17:38"
+ },
+ "61-p1-bank-landing": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "This is an in-raid HUD, not the bank landing, so the earlier logo and menu advice can't be judged. As a HUD it is cluttered: panels differ in style, the controls list is always open, and extraction is shown twice.",
+  "findings": [
+   "P0 whole screenshot (file name says 161-p1-bank-landing): Re-capture the bank landing at 1080 and check that the landing state is reached before the shot. Judge the landing separately.",
+   "P1 controls list panel (16-328, 455-802): Fold it to one 16px line, 'f1 controls', at x=96 and y=~1000. Open the full list only on F1, as a 90% card or a side panel, with a scrim of rgba(6,7,8,.8).",
+   "P1 extraction cues: 'extract 152m' top-centre (903-1017, 48-72) and 'c 152m' right (1783-1865, 470-503): Keep one cue. Use the top-centre chip as the single extract readout, 20px f-cond 600 teal text on a --ui-panel fill, 4px radius. Reduce the edge arrow to a bare teal chevron with no text.",
+   "P1 top-left stack: 'current pillagers 3' list (8-367, 143-242), player bar (16-170, 325-358) and the 'keyboard' chip (10-105, 5-32): Put all three in one left column at x=96, y=48, all on --ui-panel with a 1px --ui-line-hi border. Use 16px labels, a 24px row pitch and 8px padding. Make the 'value at risk' header tx-2. Move the keyboard chip into the top-right cluster.",
+   "P1 bottom-left status (24-330, 940-1068): hp bar, status icons, 'concealed' and 'in cover' chips: Set hp as a 56px hero number only if it is the one hero on this screen, otherwise 32px. Put the bar in a 4px-radius panel with 16px 'hp'. Set the chips to 16px with 8px gaps and 16px above the bar. Raise slot-number contrast to tx-2 at 16px, or drop the empty ones."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-07-161-throws-bounce-once-recipes-2/161-p1-bank-landing-1080.jpg",
+  "task": "o-07-161-throws-bounce-once",
+  "when": "2026-10-28T18:20"
+ },
+ "61-p1-bank-marker": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "This is a raid HUD, not the title menu I reviewed before. It has a clear ammo hero number and a readable hp bar. The left side is crowded with three stacked panels, and several lines are clipped or in the wrong case.",
+  "findings": [
+   "P1 controls list panel (16-327, 455-800): Fold it to one 16px line at the bottom-left, centred around x=480: 'f1 controls'. Open it only on F1. When open, use #16191b with a 1px #2e3337 border, a 4px radius and 16px tx-1 text. Do not draw it at 0.9 opacity over the play area.",
+   "P1 left column stack: pillagers list (8-367, 143-242), 'pillager' bar (14-170, 325-358), controls panel: Align them to a 5% (96px) margin and a single panel style: #16191b fill, 1px #2e3337 border, 4px radius, 16px text, 8px padding. Collapse the pillager list to a single line 'pillagers 3' that expands on key press. Move the player name tag into the hp bar.",
+   "P1 capitals on screen: 'run Info' (1610, 33), 'F1' key cap (44, 776): Lower-case 'run info'. Show the extract distance once, in the top-centre chip only. Remove the edge 'c 152m' chip or the top one.",
+   "P1 top-right 'run info' dropdown (1603-1900, 18-54) over the building: Make it a 16px label chip, 40px high, right-aligned to the 96px margin. Use the same panel style as the left stack. Show its contents only when it is open.",
+   "P2 bottom-left status: 'concealed' (118-229, 945-978), 'in cover' (238-327, 945-978), two circular icons (24-111): Keep the icons or the words, not both. Use the same chip height (32px), tx-1 text and a warn or ok glyph only. Leave a 24px gap above the hp bar."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-07-161-throws-bounce-once-recipes-2/161-p1-bank-marker-1080.jpg",
+  "task": "o-07-161-throws-bounce-once",
+  "when": "2026-10-28T18:20"
+ },
+ "61-p2-bank-landing": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "This file is named p2-bank-landing but shows an in-raid HUD, so the bank landing was not judged and none of the earlier title-menu advice could be checked. As a HUD it is readable, with a strong ammo hero, but the left column is a stack of mismatched panels and the extraction distance is drawn twice.",
+  "findings": [
+   "P0 whole screenshot (file 161-p2-bank-landing): Re-capture 161-p2-bank-landing at the title/bank state and re-run the review.",
+   "P1 left column: 'current pillagers' list, 'pillager' nameplate, controls list: Use one panel style: --ui-panel fill, 1px --ui-line-hi border, 4px radius, 16px padding. Set all text to at least 16px. Fold the controls list to one line ('f1 controls') at the bottom-left, 32px from the edge, and open the full list only on f1.",
+   "P1 extraction distance: top-centre 'extract 152m' and right-edge 'c 152m' with arrow: Keep one teal --extract readout (the top-centre one at 20px). Remove the 'c 152m' edge pill and keep only a small edge arrow without text.",
+   "P1 bottom-left status: concealed / in cover pills and round icons, plus hp bar: Make the chips one 32px height with 8px gaps and an 8px gap to the hp bar. Put 'hp 100' at 20px inside the bar with --acc-ink or --tx-1 and a 4px radius. Use --ok for the fill and give the bar a 1px --ui-line border.",
+   "P2 top-right 'run info' dropdown: Use the same --ui-panel fill and --ui-line-hi border as the other panels. Make it a 16px label with a 24px gap above the zone name, and fold it into the cw-trcol list."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-07-161-throws-bounce-once-recipes-2/161-p2-bank-landing-1080.jpg",
+  "task": "o-07-161-throws-bounce-once",
+  "when": "2026-10-28T18:21"
+ },
+ "61-p2-bank-marker": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The raid HUD reads clearly in the middle (timer, extract, ammo, hp), but the corners use inconsistent panels, the controls list is large and always open, and several small texts are hard to read from a couch.",
+  "findings": [
+   "P1 left controls list (x16-327, y455-800): In career raids, fold it to one 16px line 'f1 controls' at the mid-bottom left, 32px from the edge. If this is the party demo, keep the list but cut it to the 8 most-used rows. Use 16px minimum text, --ui-panel fill and a 1px --ui-line-hi border.",
+   "P1 extraction info: top-centre 'extract 152m' chip and right-edge 'c 152m' chip: Keep the top-centre chip and delete the right-edge chip. If an edge pointer stays, show only the teal arrow, with no text.",
+   "P1 panel system: value-at-risk list, pillager hp card, 'run info' dropdown, controls list, ammo card, 'in pillager's party' tooltip: Use one panel recipe: --ui-panel at 90% opacity, a 1px --ui-line-hi border, a 4px radius and 16px padding. Set row text to 16px with a 24px row pitch. Shrink the 'run info' bar to about 220px wide and right-align it to the 96px margin.",
+   "P1 hierarchy: hp bar bottom-left and ammo card bottom-right: Thin the bar to 16px tall and 280px wide with a --ui-panel track. Use --ok for the fill and a 16px 'hp 100' label above or inside it. Keep the ammo '12 / 24' as the one hero element.",
+   "P2 hotbar slots 3-0 (x780-1470): Put all 10 slots on a shared --ui-panel strip. Use --tx-2 for the numbers at 16px. Mark the selected slot with a lime --acc border, not amber, because lime means selected."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-07-161-throws-bounce-once-recipes-2/161-p2-bank-marker-1080.jpg",
+  "task": "o-07-161-throws-bounce-once",
+  "when": "2026-10-28T18:21"
+ },
+ "61-p1-grenade-around-corner": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The grenade banner and contract toast are gone, but the HUD is still scattered. It has mixed type sizes, a capital 'I' in 'run info', and a mid-screen toast. The left cluster has four loose elements, and the selected hotbar slot is amber instead of lime.",
+  "findings": [
+   "P0 top-right 'run info' dropdown: Render the label as 'run info' in lower case at 16px f-cond. Shrink the control to hug its text, about 140px wide. Use the --ui-panel fill, a 1px #4a5257 border and a 4px radius, the same as the scoreboard panel.",
+   "P1 top-left cluster: 'keyboard' chip, 'current pillagers 0' bar, 'pillager' plate: Stack them in one left column with an x=48 inset and 16px gaps between them. Give all three one panel style: --ui-panel at 90%, a 1px #4a5257 border, a 4px radius, and 16px tx-1 labels. Make the 'pillager' plate the same width as the pillagers bar, or merge the plate into that panel as a row.",
+   "P1 hotbar slots 1 to 0: Use a 2px #e6ff3d border and a --ui-raised fill on the selected slot. Raise the numbers to 16px tx-1 and put them at the same offset (8px top-left) on every slot. Show only filled slots, or reduce the empty ones to a 1px outline with no icon.",
+   "P1 'pillager joined' toast, centre bottom at (960, 911): Dock it to the left feed (x=48, y about 40% down), or put it at the top-centre alert position. Use --ui-panel, a 3px left bar in --ok, 16px text and a 4px radius. Leave 24px clear of the hotbar.",
+   "P1 top-centre timer '14:58', sun icon and 'extract 130m' chip: Set the timer at 32px f-cond 700 tx-1. Put 'extract 130m' under it as 16px --extract text with no pill or border. Drop the loose arrow or place it inline before the text at 16px. Give the sun icon a 16px label, or move it into the 'run info' panel."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-07-161-throws-bounce-once-recipes-4/161-p1-grenade-around-corner-1080.jpg",
+  "task": "o-07-161-throws-bounce-once",
+  "when": "2026-10-28T18:35"
+ },
+ "61-p1-grenade-bounce-aim": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The duplicate grenade alert is gone and the cook timer no longer sits on the name tag, but the HUD still mixes box styles, small text and a capital letter, and the bottom strip is cluttered.",
+  "findings": [
+   "P1 'run info' dropdown, top right: Change the string to 'run info'. Put both dropdowns in one chip style: --ui-panel fill, 1px --ui-line-hi border, 4px radius, 16px f-cond 600. Make them the same height (32px) and width, and inset 24px from the screen edges.",
+   "P1 Hotbar, bottom centre (slots 3, 5-8, 0 and the water-coloured strip): Put a --ui-panel strip at 90% opacity behind the whole hotbar. Hide empty slots, or draw them at 15% opacity with no icon. Use a 2px --acc border on the selected slot. Make numerals and ammo counts 16px minimum. Keep 'f1 controls' on that same strip, 8px above it.",
+   "P1 Left column: 'keyboard' chip, 'current pillagers 0' bar, 'pillager' name plate with hp bar: Stack them with 16px gaps in one 24px-inset column. Set the text to 16px in --tx-1 or --tx-2. Put the plate on --ui-panel with a 3px P1 bar. Fold 'keyboard' into the controls chip at the bottom, or put it in the same 32px chip style.",
+   "P1 Health bar, bottom left ('hp 100'): Make the bar 12px tall on --ui-panel with a --ok fill. Put '100' in 20px f-cond 700 over it or beside it. Group the two icons in a 32px chip row 8px above the bar, with a 1px --ui-line-hi border and 4px radius.",
+   "P2 Ammo card, bottom right: Set the card to --ui-panel with a 1px --ui-line-hi border and 4px radius. Set the hint to 16px --tx-2. Inset it 24px from the edges and leave 24px between the hotbar and the card. Use --acc only for the active weapon."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-07-161-throws-bounce-once-recipes-4/161-p1-grenade-bounce-aim-1080.jpg",
+  "task": "o-07-161-throws-bounce-once",
+  "when": "2026-10-28T18:36"
+ },
+ "61-p2-grenade-around-corner": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The HUD is readable, but the earlier fixes mostly weren't applied: there is still a capital 'I' in 'run Info', native-looking dropdowns, a stray party tooltip, ghost weapon silhouettes in the hotbar and a name tag that is too large.",
+  "findings": [
+   "P0 top-right 'run Info' dropdown: Change the label to 'run info'. Replace the select with a 56px-tall --ui-panel chip with a 1px --ui-line-hi border, 4px radius, a lime focus ring and an 'f2' hint. Make it at most 200px wide, inset 48px from the screen edges.",
+   "P1 centre-bottom 'in pillager's party' tooltip (y≈911): Delete it. If the party info is needed, show it as a 16px tag inside the player label.",
+   "P1 hotbar slots 3-0: Hide unowned slots, or draw them as 1px --ui-line outlines at 40% with a 14px --tx-2 numeral and no silhouettes. Keep slots 1 and 2 at 100px with the 3px lime border on the selected slot.",
+   "P1 player label 'pillager' above the characters (≈x940,y425): Set it to 16px --f-cond 600 in --tx-1 on a 1px --ui-line chip. Place one label per character, with the ring or number tinted amber for P1 and cyan for P2.",
+   "P1 top-left 'current pillagers 0' and 'keyboard' tag: Use one --ui-panel style: 16px --f-cond 600, 4px radius, 1px --ui-line-hi border, 8px padding. Left-align all three at x=48 with 8px gaps. Drop the dropdown arrow, or hide the panel when the count is 0."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-07-161-throws-bounce-once-recipes-4/161-p2-grenade-around-corner-1080.jpg",
+  "task": "o-07-161-throws-bounce-once",
+  "when": "2026-10-28T18:36"
+ },
+ "61-p2-grenade-bounce-aim": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The floating 'cooking' strip and the alert chip are gone, but the HUD is still cluttered, with a capital 'I' in 'run Info', dim status chips and a hot-pink blast ring that overpowers the whole scene.",
+  "findings": [
+   "P1 top-right 'run info' dropdown: Render 'run info' in lower case. Shrink the bar to about 200x40px, 16px f-cond, with a 4px radius and a --ui-line-hi border.",
+   "P1 bottom-left status chips 'concealed' and 'in cover': Use --tx-2 #aaa498 or brighter at 16px, with a 32px chip height and 8px padding. Make the icons and chips 32px so they share one baseline. Show the chip text only when the state changes.",
+   "P1 hp bar bottom-left: Use a 24px-high bar with 20px text, set inside a 48px margin from the screen edge. Keep the 56px hero for ammo only.",
+   "P1 top-left 'current pillagers 0' and the 'pillager' bar: Fix the count or the label. Make the panel 16px type on a --ui-panel fill, with 8px padding and 24px rows, and align the bar's left edge to the header at x=8.",
+   "P1 world: blast ring and tooltips ('in pillager's party', 'cooking 1.1s', name tags): Draw the ring at 40% opacity with a 2px stroke and no fill. Delete the 'cooking' strip, since the 1.1 on the reticle already shows the time. Bring the reticle number up to 20px. Remove the party tooltip or move it into the left feed."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-07-161-throws-bounce-once-recipes-4/161-p2-grenade-bounce-aim-1080.jpg",
+  "task": "o-07-161-throws-bounce-once",
+  "when": "2026-10-28T18:36"
  }
 }

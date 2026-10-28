@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.92 - BOXES SEARCH FASTER TOGETHER
+
+Co-op hunt while he was away. His decision 10-28: Crates open faster with two. Every searchable box gains 1.5 times search speed while another live party member stands within 200 units, in demo and career co-op. The host search, host handling of a partner hold and partner bar use the same helper. Solo speed and seeded generation stay unchanged. Playtest watch: two players may stack on every box; watch that searching alone does not start to feel slow.
+
+MEASURED. Check 35.92 passes, and fails on v35.91.
 ## v35.91 - THROWABLES BANK ONCE OFF COVER
 
 Co-op hunt while he was away. His 10-25 g-14 answer: Yes, one bounce. Approved again 10-28 #8. Frag, smoke and decoy reflect once, use half the reach left and stop short at the second wall. Tripwires and pillager charges keep their paths. Watch in play: bank throws can reach round corners into rooms you cannot see, which the old wall stop prevented; watch whether it feels like cheating and how often frags return to the thrower.

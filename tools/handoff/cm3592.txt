@@ -1,0 +1,7 @@
+v35.92: boxes search faster together
+
+Boxes search 1.5 times faster with a nearby teammate.
+
+Check 35.92. Fails on v35.91.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
