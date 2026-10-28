@@ -32,3 +32,11 @@ Pictures: tools/handoff/console/notes/shots/o-120g-partner-ship-stays-recipes-1/
 12. How-to-play attract card: the raid HUD shows through the card and its dimming layer; hide the HUD or make the dimming layer opaque enough under the card. The lime team-join line competes with the card's prompt; make it secondary. Keep the corner x (his Q43).
 13. Score, distance and arrow at top centre: one alignment, the same as the clock card in 3.
 14. P2: align the accent ticks on the panels.
+
+## More findings (o-132, folded 10-28 from notes/hud-critic-inbox.md)
+Pictures: tools/handoff/console/notes/shots/o-132-hit-jolt-from-the-bullet-recipes-2/ (scores p1 3, p2 2).
+15. Score and extract spacing at top centre (with 3 and 13).
+16. Goals (contracts) styling, one style with the other panels (with 1 and 8).
+17. Teammate strip margins, on the shared inset of 2.
+18. Bottom HUD alignment: hotbar, vitals and ammo card on one baseline.
+Before building, read tools/handoff/console/notes/hud-critic-inbox.md, fold any new line into 186g, 186f or 186d, and mark it FOLDED.
