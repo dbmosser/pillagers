@@ -15,3 +15,11 @@ Checks (each must FAIL on v35.25): a warn line said once draws in exactly one pl
 Pictures: uishots screens 21, 33, 34, 50 at 1080, look at them, and send the 33 picture to him (SendUserFile) with one line.
 Ship: preflight on lane g (check no other preflight runs on g first), then shipq. Rules: player text lower case, short; HUD layer only; no storage key change; seed fingerprint unchanged.
 TASK DONE when shipped and his main PC reports the build (git show origin/spare-results:spare/JUL26/status.txt, game=VER). Then move this file to console/done/ and report one line: build, on his PC, what to watch for (a warning now shows only once, at the top).
+
+## DONE 2026-10-27 21:20 (186a session)
+- v35.30 (27b937da4): one place per line (alert = top banner only, pick = right stack only, the rest = left feed only; grey centre rows retired); concealed is an eye icon in the left status column; an edge-held extraction ring shows under the extract distance.
+- v35.31 (705095bed): a line said under the solo pause box shows on the answer line only; a keyed feed line keeps its detail (contract done names the contract).
+- v35.33 (a4dec94e1): four lines whose detail matters carry a key (loaner gun waits at The Stash, contract item nearby, select a heal, 2P extracted / player 2 still out).
+- fixture 8c67af2af: 18 old checks re-aimed at the left feed and run log; all pass on 35.34.
+- His main PC reports game v35.34 (21:18). Pictures: notes/shots/186a-after (21, 33, 34, 50 at 1080).
+- Not mine, still failing: 9.89 (Undercroft loadout labels read "hotbar0 on keys", panel heading says hotbar) since about 35.30; it reads the hub belt labels, the 186b lane's area.
