@@ -1,0 +1,5 @@
+## v36.04 - PAUSE SP GOLD TOKEN
+
+Co-op hunt while he was away. Two pause score rules and three newer run-over rules introduced raw colours into ui-shared and stopped check 29.33 before its menu assertions.
+
+MEASURED. Check 36.04 passes, and fails on v36.03.

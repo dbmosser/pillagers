@@ -1,0 +1,7 @@
+v36.04: pause sp gold token
+
+Pause score gold and run-over seat colours use root tokens; the overlay uses the existing identical scrim token. All colours stay the same and the full shared-look check runs again.
+
+Check 36.04. Fails on v36.03.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

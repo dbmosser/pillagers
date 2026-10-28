@@ -1,1 +1,1 @@
-10-28 17:34 gate: the what is new card is stale, shipping a card refresh first (cw-cx-pausesp-gold, o-09c-red-29.33-pause-sp-gold-token)
+10-28 17:39 gate: shipping cw-cx-pausesp-gold (o-09c-red-29.33-pause-sp-gold-token, codex)

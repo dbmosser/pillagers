@@ -116,6 +116,7 @@
     --danger:#e5482f; --danger-bg:rgba(60,12,8,.86); --warn:#f5b73b; --ok:#76b97c;
     --extract:#47d8c6; --ally:#9cc7ff; --armour:#7fa6c9;
     --r-common:#9da3a8; --r-uncommon:#5fbf6a; --r-rare:#3f9de9; --r-elite:#a866e0; --r-gold:#ffc72e;
+    --score-gold:#ffc04a; --seat-one:#ffb454; --seat-two:#53d9e8; /* v28.xx (cw-cx-pausesp-gold): preserve the pause sp and run-over seat colours as root tokens. */
     --void:var(--ui-void); --steel:var(--ui-line); --steel-hi:var(--ui-line-hi); --ash:var(--tx-2);
     --bone:var(--tx-1); --amber:var(--acc); --rust:var(--danger); --coolant:var(--extract);
     --hazard:var(--danger); --gain:var(--ok); --win-top:var(--ui-panel); --win-bot:var(--ui-bg);
@@ -1883,7 +1884,7 @@ body #attract .arcover .aobmt > div:last-child{ font-size:calc(var(--fs-body) * 
 /* v28.xx (cw-cx-overmoments): six moments in two rows of three; only the crown figure uses the accent. */
 body #attract .arcover .aobmt > div:last-child{color:var(--tx-1) !important;}
 /* v28.xx (cw-cx-overmomentlook): critic round 3, both run-over cards 3/5. One stat grid, couch-size labels and a quiet scrim. */
-html body #attract[style*="block"]:has(.arcover[style*="block"]){background:rgba(6,7,8,.80);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);}
+html body #attract[style*="block"]:has(.arcover[style*="block"]){background:var(--scrim);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);}
 html body #attract[style*="block"]:has(.arcover[style*="block"]) > video{opacity:.12 !important;}
 html body #attract[style*="block"]:has(.arcover[style*="block"]) .arcstrip{display:none !important;}
 html body #attract .arcover::before{display:none;}
@@ -1893,8 +1894,8 @@ html body #attract .arcover .aos .aolb, html body #attract .arcover .aosc i{font
 html body #attract .arcover .aosr{display:grid;grid-template-columns:calc(48px * var(--attz,1)) repeat(4,minmax(0,1fr));column-gap:calc(16px * var(--attz,1));align-items:start;}
 html body #attract .arcover .aost[data-solo="1"] .aosr{grid-template-columns:repeat(3,minmax(0,1fr));}
 html body #attract .arcover .aosn{min-width:0;font-size:max(20px,calc(var(--fs-body) * var(--attz,1)));line-height:1.1;padding-top:calc(6px * var(--attz,1));}
-html body #attract .arcover .aosn[data-seat="1"], html body #attract .arcover .aowho[data-seat="p1"]{color:#ffb454;}
-html body #attract .arcover .aosn[data-seat="2"], html body #attract .arcover .aowho[data-seat="p2"]{color:#53d9e8;}
+html body #attract .arcover .aosn[data-seat="1"], html body #attract .arcover .aowho[data-seat="p1"]{color:var(--seat-one);}
+html body #attract .arcover .aosn[data-seat="2"], html body #attract .arcover .aowho[data-seat="p2"]{color:var(--seat-two);}
 html body #attract .arcover .aobm{border-top:1px solid var(--ui-line);padding-top:calc(24px * var(--attz,1));gap:calc(24px * var(--attz,1)) !important;}
 html body #attract .arcover .aobmt > div:first-child{font-size:max(20px,calc(var(--fs-body) * var(--attz,1))) !important;letter-spacing:.04em !important;}
 html body #attract .arcover .aobmt > div:last-child{font-size:max(20px,calc(var(--fs-body) * var(--attz,1))) !important;color:var(--tx-1) !important;}
@@ -2147,12 +2148,12 @@ body:not(.padon) #root #pausebox::before{ width:min(calc(var(--pw) + var(--sp-5)
 #root #pausebox #pausesp{ box-sizing:border-box; width:var(--pw); max-width:100%; display:flex; flex-direction:column; text-align:left; font:600 var(--fs-label)/1.25 var(--f-cond); letter-spacing:var(--track); color:var(--tx-1); }
 #root #pausebox #pausesp .psph{ display:flex; align-items:baseline; justify-content:space-between; padding:0 0 var(--sp-1); }
 #root #pausebox #pausesp .psph span{ color:var(--tx-2); }
-#root #pausebox #pausesp .psph b{ font:700 var(--fs-title)/1 var(--f-cond); color:#ffc04a; font-variant-numeric:tabular-nums; }
+#root #pausebox #pausesp .psph b{ font:700 var(--fs-title)/1 var(--f-cond); color:var(--score-gold); font-variant-numeric:tabular-nums; }
 #root #pausebox #pausesp .psprow{ display:grid; grid-template-columns:1fr auto calc(var(--sp-1) * 7); gap:var(--sp-2); align-items:baseline; padding:4px 0; }
 #root #pausebox #pausesp .psprule{ display:grid; grid-template-columns:1fr calc(var(--sp-1) * 7); gap:var(--sp-2); align-items:baseline; padding:4px 0; color:var(--tx-2); }
 #root #pausebox #pausesp .psp1{ margin-top:var(--sp-1); padding-top:calc(var(--sp-1) + 4px); border-top:1px solid var(--ui-line); }
 #root #pausebox #pausesp i{ font-style:normal; color:var(--tx-2); }
-#root #pausebox #pausesp .psprow b, #root #pausebox #pausesp .psprule b{ text-align:right; color:#ffc04a; font-variant-numeric:tabular-nums; }
+#root #pausebox #pausesp .psprow b, #root #pausebox #pausesp .psprule b{ text-align:right; color:var(--score-gold); font-variant-numeric:tabular-nums; }
 #root #pausebox #pausesp .psprow.z b{ color:var(--tx-2); }
 #root #pausebox.asking #pausesp, #root #pausebox.padlost #pausesp{ display:none !important; }
 #root #pausebox #pausesp .psc{ margin-top:var(--sp-1); }   /* v35.89 (cw-pausecond): the raid conditions sit a step under the settings rows */
@@ -3847,8 +3848,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.03';
-var VER_AT='2026-10-28 17:36';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.04';
+var VER_AT='2026-10-28 17:40';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -55899,7 +55900,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.03: The what is new stamp keeps up with the build; the three notes are unchanged. Check 36.03 fails on v36.02',
+  now:'v36.04: Pause score gold and run-over seat colours use root tokens; the overlay uses the existing identical scrim token. All colours stay the same and the full shared-look check runs again. Check 36.04 fails on v36.03',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
