@@ -1,0 +1,11 @@
+
+--- codex run 2026-10-28 11:52 ---
+2026-10-28, first preparation run (HEAD v35.82)
+- Checked HEAD first: arcadeWaveTick at dark_raiders.html:65715 already ramps waves, and arcadeKill at :68003 already applies streak/hot-ground bonuses, but neither has a final 90-second rush. No existing final-rush implementation found.
+- Prepared cw-cx-finalrush, following the latest decision of 1.05x rather than the superseded 1.5x brief. It applies only to the two-player demo, with a positive raid clock at or below 90 seconds. Career, solo demo, simulations and finished raids are excluded.
+- Waves get one extra body, always a crawler or sentry, 20 percent shorter intervals and two additional nearby slots. Existing breathers, extraction holds, authority checks and safe spawn positions remain in use. No seeded build code or storage key changed.
+- One short lowercase callout per raid: final rush / kills x1.05 sp. It is evaluated before the wave authority guard, so both windows receive it from their shared clock. Kill awards use the same scoring path on the host and partner.
+- Playtest watch is in the draft why field, which the shipping generator copies into DESIGN.md: both windows announce once at 1:30; a fresh sentry kill pays 105 sp before other bonuses; watch for more machines while breathers and called rings still hold waves.
+- Local validation: mk script prints written; all five anchors match once; applied replacements in memory; the complete inline game script, new regression check and both camera scenes parse in Node; mk and recipes are ASCII. The browser check was not run in the sandbox.
+- Regression stages a real demo raid, tests the 90-second boundary and expiry, host/partner kill credit, the actual alert object, one callout per seat, solo/career/simulation/finished exclusions, wave interval and added machine, cap, breather and extraction hold. It fails on HEAD because the rush functions are absent.
+- Camera recipes reuse the proven real-window linking setup from job 62, with separate player 1/player 2 photographs. Each scene checks 1.05x scoring in both real windows before photographing the start callout. The lane must run these, critic, preflight, ship and ON HIS PC confirmation.

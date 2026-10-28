@@ -41,3 +41,11 @@ Prepared cw-cx-condition-ui2, the SECOND visual follow-up. Conditions column is 
 New fixture-retarget.json contains only one NEW change: 32.57 accepts a readable warning up to 20px, including the current 16px and new 18px. It must pass on the old build before the new key ships.
 Local validation: mk printed written, seven anchors apply once in sequence, patched game JS and the new check parse, the retargeted 32.57 parses, all four camera recipes and game-scope payloads parse. MK is ASCII. No tracked file was edited.
 Next: preflight and ship cw-cx-condition-ui2, ON HIS PC, then round-3 camera and critic. Extraction cards still need their first correctly staged review of the shipped result design. Two camera rounds remain including round 3. Sector and Terms meet the score-3 target; if this second follow-up still does not raise them, use the stop-after-two-unimproved-follow-ups rule and record the best pictures. End cards still need 4 or the applicable stop rule. The real linked-window verification remains the earlier coordinator handoff.
+
+--- codex run 2026-10-28 11:43 ---
+2026-10-28, fifth run, HEAD v35.82.
+Preflight stopped before building: the pending patrols-description anchor was changed by cw-pillagersword in v35.82.
+Updated the SAME cw-cx-condition-ui2 key to anchor the current named list, "40% more sentries, crawlers, criers and pillagers.", and shorten it to "sentries, crawlers, criers, pillagers +40%". Preserved every named kind. Read the v35.82 regression entry: the new owner wording order forbids generic machine labels as well as pillager bots; this patch respects it.
+No other anchors changed. MK prints written on v35.82; all seven edit anchors match once and apply in order. Patched game JS, the new check, the already-applied 32.57 retarget and all camera payloads parse. MK is ASCII.
+Fixture retarget 29bec4d2e is already applied; it passed on v35.81. No new retarget is needed.
+Remaining: preflight and ship the same key, ON HIS PC confirmation, corrected round-3 pictures and critic; linked-window verification remains the existing coordinator handoff. This anchor refresh is not another visual follow-up or critic try.

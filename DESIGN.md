@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.83 - FINAL RUSH IN THE TWO PLAYER DEMO
+
+Co-op hunt while he was away. His 10-28 decision #3: final rush kills pay 1.05x SP. The two player demo had no final 90 second rush. Playtest watch: both windows should announce once at 1:30; fresh sentry kills pay 105 sp before other bonuses. More machines arrive, while breathers and called extraction rings still hold waves. Solo demo and career keep their pacing.
+
+MEASURED. Check 35.83 passes, and fails on v35.82.
 ## v35.82 - PILLAGERS, AND EVERY MACHINE BY NAME
 
 Co-op hunt while he was away. his HUD orders of 10-28: pillagers are always called pillagers, never pillager bots (the kind words, contracts, goals, events, settings, the Undercroft lines); a line never says machine without naming it: the alarm line names the machine nearest the sound (sentry alert, listener alert, overseer alert) and says nothing when no machine raised it, locked on names the machine that has you (2 sentries have you in sight), the convoy is the crawler convoy, the settings rows name the kinds

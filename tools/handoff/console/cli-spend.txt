@@ -1506,3 +1506,5 @@
 2026-10-28 0.0861 critic-o-02-172-night-pays-cash
 2026-10-28 0.0809 critic-o-02-172-night-pays-cash
 2026-10-28 0.0000 o-02-172-night-pays-cash
+2026-10-28 0.0000 o-02-172-night-pays-cash
+2026-10-28 0.0000 o-03-197-final-90s-rush
