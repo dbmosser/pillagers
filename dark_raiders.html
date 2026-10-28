@@ -1464,6 +1464,7 @@
   #fpsbox{ position:fixed; left:8px; top:6px; z-index:60; display:none; padding:3px 10px 2px 14px; background:rgba(11,12,13,.82); border:1px solid var(--ui-line-hi);
     color:var(--acc); font-family:var(--f-cond); font-weight:700; font-size:15px; line-height:1.3; letter-spacing:.14em; pointer-events:none; clip-path:polygon(8px 0,100% 0,100% 100%,0 100%,0 8px); }
   #fpsbox.on{ display:block; }
+  #fpsbox .fpshz{ display:block; white-space:pre; margin-top:2px; color:var(--tx-2); font-family:var(--f-cond); font-size:13px; font-weight:600; letter-spacing:.04em; line-height:1.25; }   /* v35.xx (cw-fpshz): the browser rate line */
   /* vNN.xx, UI REDESIGN ui5q2a (his #50, from the AAA judge of the title shots 01, 44 and 57): THE TITLE SITS ON THE WHOLE SCREEN.
      The Undercroft floor walking behind the title is smaller than the screen, so at 1080p and 4K it showed as a lighter rectangle
      with dark bands round it, like a letterboxed screenshot. The title glass now blurs the floor a little and closes to near black
@@ -3743,8 +3744,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.75';
-var VER_AT='2026-10-28 09:24';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.76';
+var VER_AT='2026-10-28 09:30';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -36007,7 +36008,7 @@ function drsMove(dir,now,q,scale){
   if(softer&&!DRS.said){ DRS.said=1; try{ sayWhenFree('RESOLUTION STEPPED DOWN','sys'); }catch(_ds){} }
   return true;
 }
-var VSYNC={last:0,ms:0,g:[],n:0};   /* v28.xx (cw-drscap): the screen rate. Browser frames come one screen refresh apart at the fastest, so the low tenth of the last 120 gaps is the refresh time; a spell of slow frames moves it up only slowly (2 percent of the way every 30 frames), so heavy fighting never reads as a slower screen, while a move to a slower screen is followed within about a minute. */ function vsyncNote(ts){ var g=ts-VSYNC.last, s, p; VSYNC.last=ts; if(!(g>1.5&&g<60)) return false; VSYNC.g.push(g); if(VSYNC.g.length>120) VSYNC.g.shift(); if(VSYNC.g.length<30||(++VSYNC.n)%30) return false; s=VSYNC.g.slice().sort(function(a,b){ return a-b; }); p=s[Math.floor(s.length*0.1)]; VSYNC.ms=(VSYNC.ms>0&&p>VSYNC.ms)?VSYNC.ms+(p-VSYNC.ms)*0.02:p; return true; } function drsChase(){ var c=+CFG.fpsCap, v=+VSYNC.ms, t; if(!(c>60)||!(v>0)) return 0; t=Math.max(1000/c,v); return t<16.2?t:0; }   /* the frame time a cap above 60 asks for, never faster than the screen; 0 keeps the 60 rule (cap off, a slower cap, no measure yet, or a screen at 60 Hz or slower) */ function drsTrim(s){ var k=Math.max(1,Math.floor(s.length*0.95)), i, a=0; for(i=0;i<k&&i<s.length;i++) a+=s[i]; return s.length?a/Math.min(k,s.length):0; }   /* mean of the sorted gaps without the slowest twentieth, so one hitch is not a slow spell */ function drsTick(gapMs,now){
+var VSYNC={last:0,ms:0,g:[],n:0,best:0};   /* v28.xx (cw-drscap): the screen rate. Browser frames come one screen refresh apart at the fastest, so the low tenth of the last 120 gaps is the refresh time; a spell of slow frames moves it up only slowly (2 percent of the way every 30 frames), so heavy fighting never reads as a slower screen, while a move to a slower screen is followed within about a minute. */ function vsyncNote(ts){ var g=ts-VSYNC.last, s, p; VSYNC.last=ts; if(!(g>1.5&&g<60)) return false; VSYNC.g.push(g); if(VSYNC.g.length>120) VSYNC.g.shift(); if(VSYNC.g.length<30||(++VSYNC.n)%30) return false; s=VSYNC.g.slice().sort(function(a,b){ return a-b; }); p=s[Math.floor(s.length*0.1)]; VSYNC.ms=(VSYNC.ms>0&&p>VSYNC.ms)?VSYNC.ms+(p-VSYNC.ms)*0.02:p; if(!(VSYNC.best>0)||p<VSYNC.best) VSYNC.best=p; return true; }   /* v35.xx (cw-fpshz): VSYNC.best, the fastest screen rate the browser has given this page since it loaded */ function drsChase(){ var c=+CFG.fpsCap, v=+VSYNC.ms, t; if(!(c>60)||!(v>0)) return 0; t=Math.max(1000/c,v); return t<16.2?t:0; }   /* the frame time a cap above 60 asks for, never faster than the screen; 0 keeps the 60 rule (cap off, a slower cap, no measure yet, or a screen at 60 Hz or slower) */ function drsTrim(s){ var k=Math.max(1,Math.floor(s.length*0.95)), i, a=0; for(i=0;i<k&&i<s.length;i++) a+=s[i]; return s.length?a/Math.min(k,s.length):0; }   /* mean of the sorted gaps without the slowest twentieth, so one hitch is not a slow spell */ function drsTick(gapMs,now){
   if(CFG.gfxAuto===0||!(gapMs>0)||gapMs>250) return false;
   now=(now!==undefined)?now:performance.now();
   /* v28.xx (cw-drscap), HIS ANSWER (2026-10-25): "Yes picture quality should reduce to chase a higher cap" and "Eg dynamic resolution" (this reverses his 2.43 a, a fast cap is no reason to shed above 60 fps). A cap above 60 is now a target (drsChase), never faster than the screen shows. Cap off still aims at 60, and a slower cap keeps its own budget. */
@@ -54089,8 +54090,15 @@ function brightApply(){
 // v26.xx (settings5): SHOW FPS. A small plate (#fpsbox, a DOM element, so it shows on every screen) with the frames each second, measured over half a
 // second of the frames the loop really runs, one number written twice a second. Off, the plate is hidden and nothing is measured.
 var FPSV={t0:0,n:0,fps:0,el:null};
+// v35.xx (cw-fpshz), HIS ORDER (2026-10-28, a picture of Settings with frame cap 144 and the plate reading 60 fps | screen 60): "i have the game on 144
+// frame cap but its effectively capping at 60 -- can we fix this?". The game draws only when the browser hands it a frame (requestAnimationFrame); the cap
+// can only skip frames, never add one, and his browser was handing over 60 a second. The plate said screen 60 but not where to change it, so while the
+// browser has never once given this page frames faster than that (VSYNC.best) a small second line names the three places a 60 Hz browser comes from.
+// Not during live raid play (it shows on the floor, in menus and on the pause screen), and never when the page has seen faster frames, because then the
+// 60 is the game's own load, not the browser.
+function fpsHzHint(){ var b=+VSYNC.best; if(!(b>0)||!(VSYNC.ms>0)||!(CFG.fpsCap>1000/b+5)) return ''; if(state==='raid'&&G&&!G.over&&!pauseOpen) return ''; return 'browser gives '+Math.round(1000/VSYNC.ms)+' hz\ncheck windows refresh rate, main display, hardware acceleration'; }
 function fpsTick(ts){
-  var el, s;
+  var el, s, h, hs;
   if(CFG.showFps!==1){ if(FPSV.el&&FPSV.el.className) FPSV.el.className=''; FPSV.t0=0; FPSV.n=0; return false; }
   if(!FPSV.t0){ FPSV.t0=ts; FPSV.n=0; return true; }
   FPSV.n++;
@@ -54098,8 +54106,9 @@ function fpsTick(ts){
     FPSV.fps=Math.round(FPSV.n*1000/(ts-FPSV.t0)); FPSV.t0=ts; FPSV.n=0;
     el=FPSV.el; if(!el||!el.isConnected){ el=document.getElementById('fpsbox'); if(!el){ el=document.createElement('div'); el.id='fpsbox'; document.body.appendChild(el); } FPSV.el=el; }
     // v28.xx (cw-cx-fpsscreen): his 10-27 question, "my screen is set to 144 fps, but it still says 60 fps". VSYNC.ms is positive only after enough refresh samples; show the screen rate when the cap exceeds it by more than 5.
-    s=FPSV.fps+' fps'; if(VSYNC.ms>0&&CFG.fpsCap>1000/VSYNC.ms+5) s+=' | screen '+Math.round(1000/VSYNC.ms);
-    if(el.textContent!==s) el.textContent=s; if(el.className!=='on') el.className='on';
+    s=FPSV.fps+' fps'; h=''; if(VSYNC.ms>0&&CFG.fpsCap>1000/VSYNC.ms+5){ s+=' | screen '+Math.round(1000/VSYNC.ms); h=fpsHzHint(); }
+    if(el.textContent!==s+h){ el.textContent=s; if(h){ hs=document.createElement('span'); hs.className='fpshz'; hs.textContent=h; el.appendChild(hs); } }   // v35.xx (cw-fpshz): the browser line under the plate
+    if(el.className!=='on') el.className='on';
   }
   return true;
 }
@@ -55513,7 +55522,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.75: the pause box shows what your raid pays in sp, setting by setting Check 35.75 fails on v35.74',
+  now:'v35.76: With the fps plate on and a cap above what the browser gives, a small line under the plate says browser gives 60 hz and names windows refresh rate, main display and hardware acceleration; it stays off in live raid play and when the page has seen faster frames. Check 35.76 fails on v35.75',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.76 - THE FPS PLATE SAYS WHERE A 60 HZ BROWSER COMES FROM
+
+Co-op hunt while he was away. His order 10-28 with a picture of frame cap 144 and the plate reading 60 fps and screen 60: i have the game on 144 frame cap but its effectively capping at 60, can we fix this. The game draws only when the browser hands it a frame and the cap only skips frames, so 60 from the browser holds it at 60. The plate said screen 60 but not where to change it.
+
+MEASURED. Check 35.76 passes, and fails on v35.75.
 ## v35.75 - THE PAUSE BOX SHOWS WHAT THE RAID PAYS IN SP
 
 Co-op hunt while he was away. his order 10-28 with a picture of the raid pause box: the run log list there is not helpful; it is where every setting that changes sp should show, so the player knows exactly what they are playing. The box now shows the settings multiplier this raid pays, one row per setting that moves it (pillager bots, machines, how hard they hit, heat when you call for extraction, fog of war, superhot) with its choice and factor, and the two end rules (extract x2, killed in action -50%). The run log list leaves the box; the run log stays in the run report.
