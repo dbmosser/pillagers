@@ -93,4 +93,5 @@ Coordinator corrections 10-21 (skeptic verify of the plan, binding; they overrid
 - Party copy: before 95 ships, tag the last commit without it (for example party-pre95), so -Prepare -Ref can fall back. Put 95 in the party copy only after he has played a two-TV rehearsal on his PC with the watch line. Fix or retire party.cfg URL_OPTIONS=1.
 - His pads: Chrome feeds pad data only to the window in front, so player 2's pad reaches it through player 1's window (netPadSend). A hitch in player 1's window still freezes player 2's controls after the split. Write that plainly in the result; do not claim the split ends all stalls.
 
-HIS PRIORITY 10-27 (priorities page): LOW
+HIS PRIORITY 10-27 (priorities page): MEDIUM (raised from low 20:02)
+RE-QUEUED 10-27 about 20:15: he raised it to MEDIUM on the priorities page. First read why it failed before (the notes above and its log). If the same blocker still stands, end with TASK PARTIAL naming the blocker and stop; do not burn tries on it.

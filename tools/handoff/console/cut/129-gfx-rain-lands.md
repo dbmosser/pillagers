@@ -25,3 +25,5 @@ Rules for every graphics job:
 - Checks (each must FAIL on the old build): the new drawing happens when it should, does not happen when it should not (the quality
   step, the setting off), and costs under the budget you measured.
 TASK DONE when it shipped with pictures and frame numbers; TASK PARTIAL with what is left.
+
+CUT Tue 10-27 about 20:10 by his priorities page batch 2 (https://claude.ai/artifact/8mXPSJ5fqq5DiV1Mxsy8Xr, db answers): he marked it NEVERMIND. Do not build it.

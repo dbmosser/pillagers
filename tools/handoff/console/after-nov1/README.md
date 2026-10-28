@@ -32,6 +32,7 @@ No lane or script lists this folder. These go back to tasks/ on Sun 11/1 (the fi
 ## His priorities, 10-27 about 20:00 (priorities page https://claude.ai/artifact/8mXPSJ5fqq5DiV1Mxsy8Xr, db "answers", ids p-NNN)
 On 11/1 move these back in this order. HIGH first, then MEDIUM, then LOW. Lanes take tasks/ by file name, so release a batch at a time.
 - HIGH: 177 hardcore save.
-- MEDIUM: 120d2, 141, 142, 147, 149, 153, 154, 161, 172.
-- LOW: 144, 148, 150, 155, 156, 157, 158, 162, 169, 171, 174, 175, 178, 182.
+- MEDIUM: 120d2, 141, 142, 147, 149, 153, 154, 161, 172, 175.
+- LOW: 144, 148, 150, 155, 156, 157, 158, 162, 169, 171, 174, 178, 182.
 - NEVERMIND (moved to console/cut): 133, 159, 160, 164, 167, 170, 173, 176, 179, 180, 181.
+- Added 10-27 about 20:20 from batch 2 of the priorities page, all LOW: 192 debris scatters, 193 end run per player, 194 unlimited partner pick-ups, 195 shared last-5s points, 196 run over card moments, 197 final 90 s rush.

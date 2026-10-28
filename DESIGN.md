@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.25 - HOTBAR ITEMS WORK LIKE THE WHEEL
+
+Co-op hunt while he was away. his two orders of 10-27: drag items from the wheel to the hotbar, and a hotbar item works like the wheel (the number equips, the mouse uses)
+
+MEASURED. Check 35.25 passes, and fails on v35.24.
 ## v35.24 - BUILD DATE ON THE TITLE
 
 Co-op hunt while he was away. his order 10-27: put the date and time of the update, in us eastern time

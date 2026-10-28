@@ -1,13 +1,11 @@
-# 130-gfx-body-lamp-shadows : pillagers and machines throw a shadow away from a nearby lamp at night (I8)
+# 128-gfx-lamp-dust : a few dust specks drift in each lamp's light at night (I9)
 Queue (coordinator 10-25 10:05): his question "What else can you do to improve graphics?" (Sun 10-25). This is the unfinished part of his
 10-12 graphics list, which he ordered in full ("add ALL of this stuff", memory note pillagers-graphics-program-2026-10-12). Sorts after
 the party fixes 117 to 121. Not held for the party (his 10-20 order); ship with a DESIGN.md line on what he should watch for.
-effort: medium
+effort: small
 
-Idea I8 (gfx11, part of item 2). The LIGHTING HIGH hint promises lamp shadows and HIGH draws the same as STANDARD. Near a lit lamp,
-draw one stretched shadow sprite per body pointing away from the lamp (a few baked directions in the pixel look), only on HIGH
-(gfxLightNow, about line 35457, add shadow to the quality ladder). Away from lamps the fixed shadow stays as now. Wall shadows from lamps
-(I12) are a separate, later job: do not start them here.
+Idea I9 (plan gfx34, never shipped). A handful of faint, pixel-snapped specks inside each lamp pool at night, driven by the raid
+clock (no random draw), drawn in the pre-fog hook so nothing shows through fog, off at the detail quality step. Subtle.
 
 Read first: notes/graphics-next-1025.md (where the 10-12 list stands, the 4K frame budget, his look rulings and vetoes; your
 idea is the I-number named above, with its line numbers and cautions).
@@ -25,3 +23,5 @@ Rules for every graphics job:
 - Checks (each must FAIL on the old build): the new drawing happens when it should, does not happen when it should not (the quality
   step, the setting off), and costs under the budget you measured.
 TASK DONE when it shipped with pictures and frame numbers; TASK PARTIAL with what is left.
+
+CUT Tue 10-27 about 20:10 by his priorities page batch 2 (https://claude.ai/artifact/8mXPSJ5fqq5DiV1Mxsy8Xr, db answers): he marked it NEVERMIND. Do not build it.

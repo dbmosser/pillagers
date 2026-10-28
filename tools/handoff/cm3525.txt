@@ -1,0 +1,7 @@
+v35.25: hotbar items work like the wheel
+
+a belt key or a click takes the item out and the trigger uses it, the key again puts it away; drag an item off the wheel onto a belt key
+
+Check 35.25. Fails on v35.24.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

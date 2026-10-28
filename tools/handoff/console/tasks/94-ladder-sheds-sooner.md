@@ -74,4 +74,5 @@ Size: about 0.6 lane-nights, in 3 ships:
 
 TASK DONE when shipped with its checks, the re-measure written and the pictures looked at; TASK PARTIAL with what is left.
 
-HIS PRIORITY 10-27 (priorities page): LOW
+HIS PRIORITY 10-27 (priorities page): MEDIUM (raised from low 20:02)
+RE-QUEUED 10-27 about 20:15: he raised it to MEDIUM on the priorities page. First read why it failed before (the notes above and its log). If the same blocker still stands, end with TASK PARTIAL naming the blocker and stop; do not burn tries on it.
