@@ -10,3 +10,5 @@ Build: drawBossBar shows the bar only for BOSSBAR_HOLD (4) seconds after a hit y
 Check (must FAIL on the build before): seen and near but not hit, no bar; a hit, the bar; 5 s later with no hit, no bar.
 Watch-for line for him: whether 4 s is long enough between bursts, or the bar blinks during a fight.
 TASK DONE when shipq prints ON HIS PC.
+
+SHIPPED v35.94 e4fa85a8f, ON HIS PC 2026-10-28. 3 older checks stage a hit first (fixture 3babf401f).
