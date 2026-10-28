@@ -123,7 +123,7 @@ function ai() {
       running: procs.codex || 0, runs: tail(CX + '/runs.txt', 8), stop: existsSync(CX + '/STOP'),
       done: tail(CX + '/runs.txt', 500).filter(l => /done/i.test(l)).length },
     google: { status: st('agy'), running: procs.reviewers.includes('agy'), busy: procs.agy || 0 },
-    local: { up: aiLive.ollamaUp, models: aiLive.models, loaded: aiLive.loaded, pull: pullState(), status: st('ollama'), running: procs.reviewers.includes('ollama'),
+    local: { off: kv(C + '/caps.txt').LOCAL_AI === '0', up: aiLive.ollamaUp, models: aiLive.models, loaded: aiLive.loaded, pull: pullState(), status: st('ollama'), running: procs.reviewers.includes('ollama'),
       night: tail(R + '/tools/handoff/llm-night/run.log', 1)[0] || '' },
     reviews: revs.slice(0, 6), reviewsToday: revs.filter(r => new Date(r.at).toLocaleDateString('en-CA') === day).length,
     findings: tail(SR + '/findings.txt', 6) };
