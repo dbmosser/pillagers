@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.42 - THE STASH HOVER KEEPS EVERY BOX THE SAME SIZE
+
+Co-op hunt while he was away. his order 10-27: mousing over different items in the stash changes the size of one of the sub menus, so the grids jump; the item line under the grids was hidden when idle and as tall as the hovered item had rows
+
+MEASURED. Check 35.42 passes, and fails on v35.41.
 ## v35.41 - SOLO PINGS IN ALL THREE VIEWS
 
 Co-op hunt while he was away. His pick 46: middle mouse pinging did not work in one player. Mouse, N and d-up tap now use the existing party marker, sound and 10 second lifetime alone too. Local enemy references follow unnumbered solo enemies; map and minimap refresh positions and expiry before drawing. Party messages and share-by-drop pings keep their existing path. Playtest watch: in the smooth look, ping an enemy alone, move between world, minimap and full map, and confirm the mark follows for 10 seconds then clears. Tap d-up to ping and hold it to open the map. In two windows, confirm both players still see each other ping and a dropped item still marks only the other window.
