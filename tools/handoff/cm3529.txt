@@ -1,0 +1,7 @@
+v35.29: guns first on the extracted card
+
+guns lead the haul on the extracted card
+
+Check 35.29. Fails on v35.28.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

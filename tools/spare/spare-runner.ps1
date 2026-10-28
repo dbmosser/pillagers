@@ -645,6 +645,12 @@ function PortOpen([int]$p){
   $c=New-Object Net.Sockets.TcpClient
   try{ $a=$c.BeginConnect('127.0.0.1',$p,$null,$null); return [bool]($a.AsyncWaitHandle.WaitOne(700) -and $c.Connected) }catch{ return $false }finally{ try{ $c.Close() }catch{} }
 }
+# something serves the port: the knock above, else (a server bound to ::1 only) any HTTP answer to a HEAD on localhost, even an error
+function Answers([int]$p){
+  if(PortOpen $p){ return $true }
+  try{ $rq=[Net.WebRequest]::Create('http://localhost:'+$p+'/dark_raiders.html'); $rq.Method='HEAD'; $rq.Timeout=4000; $rs=$rq.GetResponse(); $rs.Close(); return $true }
+  catch [Net.WebException]{ return ($null -ne $_.Exception.Response) }catch{ return $false }
+}
 # the play relay (10-19 route to the VM) delivers the game: a HEAD through it gets the page (over 1 MB) within 5 s. Asked only while a
 # relay runs: its Startup shortcut starts it at sign-in while host-stopped.txt says switched over, and its VM side has not answered since.
 function RelayGame(){
@@ -669,7 +675,7 @@ function Ensure-Play(){
         $script:playP=$null; $script:playT=(Epoch)+540; Say 'PROBLEM: starting the 8802 server took over 2 minutes and was stopped; next try in 10 minutes'; return
       }
       $rc=$script:playP.ExitCode; $script:playP=$null; $script:playMiss=0
-      if($rc -eq 0 -and (PortOpen 8802)){ Say ('8802 serves the party copy again (v'+(PartyVer $PD)+'): he reloads the page'); PutS 'pub_t' '0' }
+      if($rc -eq 0 -and (Answers 8802)){ Say ('8802 serves the party copy again (v'+(PartyVer $PD)+'): he reloads the page'); PutS 'pub_t' '0' }
       else { $script:playT=(Epoch)+540; Say ('PROBLEM: the 8802 server did not start (code '+$rc+'), next try in 10 minutes: '+(Short ((Get-Content -LiteralPath ($W+'\play-start.out') -Tail 3 -ErrorAction SilentlyContinue) -join ' '))) }
       return
     }
@@ -678,7 +684,7 @@ function Ensure-Play(){
     if(-not (Test-Path -LiteralPath ($PD+'\.git')) -or -not (Test-Path -LiteralPath ($PD+'\tools\serve.ps1'))){ return }
     if((Running 'party-host-copy\.ps1') -gt 0){ $script:playMiss=0; return }
     $relay=((Running 'play-relay\.mjs') -gt 0)
-    if($relay){ if(RelayGame){ $script:playMiss=0; return } } elseif(PortOpen 8802){ $script:playMiss=0; return }
+    if($relay){ if(RelayGame){ $script:playMiss=0; return } } elseif(Answers 8802){ $script:playMiss=0; return }
     if((PartyIntent) -eq 'stopped'){ if($script:playMiss -ge 0){ Say '8802 has no server: the party copy was stopped on purpose, so it stays off'; $script:playMiss=-1 }; return }
     if($script:playMiss -lt 0){ $script:playMiss=0 }
     $script:playMiss++
