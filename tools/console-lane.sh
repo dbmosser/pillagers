@@ -97,7 +97,7 @@ for i in $(seq 1 30); do mkdir "$C/pick.lock" 2>/dev/null && break; [ -n "$(find
 busy=$(for d in "$C"/lane-*.lock; do [ "$d" = "$LK" ] && continue; cat "$d/task" 2>/dev/null; echo; done)
 release
 if [ "$L" = a ]; then t=$(ls "$C/tasks/"[0-9]*.md 2>/dev/null | sort | free); else t=$(ls "$C/tasks/$L-"*.md 2>/dev/null | sort | free); fi
-[ -z "$t" ] && t=$(ls "$C/tasks/"*.md 2>/dev/null | grep -v "/o-[0-9][0-9]*-[^/]*.md$" | sort | free)   # 10-20 04:25: lane c picked o-02-corpus-green (a Codex job) once the queue ran short
+[ -z "$t" ] && t=$(ls "$C/tasks/"*.md 2>/dev/null | grep -v "/o-[^/]*\.md$" | sort | free)   # 10-20 04:25: lane c picked o-02-corpus-green (a Codex job) once the queue ran short; 10-27 night: the pattern now matches every o-*.md (lettered names like o-120e-name.md slipped through the old o-NN- form)
 [ -z "$t" ] && t=$(retry)
 [ -n "$t" ] && basename "$t" > "$LK/task"; rm -rf "$C/pick.lock"
 [ -z "$t" ] && { echo "$(date '+%m-%d %H:%M') no tasks left" > "$C/status-$L.txt"; exit 0; }

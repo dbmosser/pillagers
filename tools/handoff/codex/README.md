@@ -37,20 +37,24 @@ Nothing Codex does can change the shared game file or the shared git history. On
   the pictures and the camera's own output back. At most `CAMERA_ROUNDS` (4) rounds per job.
 - **No wasted tries.** A `TASK PARTIAL` with nothing new from Codex (no mk script, keys, retarget, recipes) and no lane work left is
   not re-run with the same message: the job is PARKED (`work/JOB/parked.txt`, status `parked`) and skipped until the task file, its
-  notes or Codex's files change (or `PARK_MIN`, default 360 minutes, passes). A first run that delivered nothing still gets its
+  notes or Codex's files change (or `PARK_MIN` (not built), default 360 minutes, passes). A first run that delivered nothing still gets its
   second run, and a run that was cut off by the time limit is never parked.
 - **Less context.** The bill follows the context sent again on every turn (input is 93-96% cached). When the last turn of the previous
-  run reported more than `CX_FRESH_AT` (3000000) input tokens, the next run is a FRESH thread (prompt + "where you left off": Codex's
+  run reported more than `CX_FRESH_AT` (not built) (3000000) input tokens, the next run is a FRESH thread (prompt + "where you left off": Codex's
   last message, its files, keys.txt, filed notes) instead of a resume. `lane.log`: `fresh start: thread at N tokens`.
   `RULES-codex.md` has short reading rules (no START-HERE.md, small reads, no re-reads).
-- **Model and effort.** gpt-6.1-sol at `CX_EFFORT_DEFAULT` (medium), high from run `CX_EFFORT_STEP_RUN` (3) of a job; gpt-6-luna at high.
+- **Model and effort.** gpt-6.1-sol at `CX_EFFORT_DEFAULT` (not built) (medium), high from run `CX_EFFORT_STEP_RUN` (not built) (3) of a job (the script reads only `CODEX_EFFORT`, high, from caps-codex.txt); gpt-6-luna at high.
   A task file may pin them in its first 10 lines: `effort: minimal|low|medium|high|xhigh|max|ultra` (only what the model lists in
   `~/.codex/models_cache.json`) and `model: gpt-6.1-sol|gpt-6-luna`. Shown in the status line, `--dry`, `lane.log` and `runs.txt`.
-- **Pace to the plan.** Before every run the lane reads the newest `~/.codex/sessions/**/rollout-*.jsonl` and its last `rate_limits`
-  (primary = 5 hours, secondary = week). At primary >= `CX_PAUSE_AT` (92) or secondary >= `CX_PAUSE_SEC_AT` (97) it writes
+- **Pace to the plan (not built: the lane reads no limit before a run and never rests on one it has not hit; see the meter below).** Before every run the lane reads the newest `~/.codex/sessions/**/rollout-*.jsonl` and its last `rate_limits`
+  (primary = 5 hours, secondary = week). At primary >= `CX_PAUSE_AT` (not built) (92) or secondary >= `CX_PAUSE_SEC_AT` (not built) (97) it writes
   `waiting for the ChatGPT limit: resets HH:MM` to `status-o.txt`, rests until the reset plus 2 minutes (the same rest file as a
   usage limit: the lane exits and the next start waits, the job is kept) and counts no run. A window whose reset time has passed counts
   as 0. `runs.txt` gets `model= effort= cached=NN% reasoning=N limits=P/S` per run. Codex runs with `forced_login_method="chatgpt"`.
+- **Meter (10-27).** After every Codex run the lane appends one line to `tools/handoff/codex/limits.txt`: date time, `week=N%`, `5h=N%`,
+  `week_resets=DATE TIME`, `job=NAME`. It reads the last `rate_limits` of the newest `~/.codex/sessions/**/rollout-*.jsonl`
+  (primary = 5 hours, secondary = week); local files only. `tools/handoff/console/checkin.sh` reads the newest line and flags Codex when
+  fewer than 5 `o-*.md` jobs are queued in `tasks/` while its week is under 90% used.
 
 ## Start, stop, look
 - Start: `bash tools/codex-lane.sh` (one job at a time; it starts the next job by itself after a long run).

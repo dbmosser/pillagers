@@ -231,6 +231,19 @@ screens_list(){ [ -f "$WD/shots.txt" ] && rd "$WD/shots.txt" | head -1 | tr -d '
 
 # ---- the Codex process
 kill_orphans(){ powershell -NoProfile -Command "Get-CimInstance Win32_Process | Where-Object { \$_.Name -match '^(codex|node)(\.exe)?\$' -and \$_.CommandLine -match 'pillagers-codex' -and \$_.CommandLine -match ' exec' } | ForEach-Object { Stop-Process -Id \$_.ProcessId -Force }" >/dev/null 2>&1; }
+# 10-27 night, the meter: after every Codex run, one line in codex/limits.txt: date time, week %, 5-hour %, week reset, job. Codex writes
+# its plan limits (rate_limits: primary = 5 hours, secondary = the week) into the newest ~/.codex/sessions/**/rollout-*.jsonl; the lane's
+# own --json output does not carry them. Local files only, no network; any miss writes nothing and never stops the lane.
+# tools/handoff/console/checkin.sh reads the newest line to tell whether Codex's week has room for more o-* jobs.
+meter(){ local d l="" f pr sr p5 pw rs
+  d=${CODEX_HOME:-$HOME/.codex}/sessions; [ -d "$d" ] || return 0
+  while IFS= read -r f; do l=$(grep -a '"rate_limits":{"limit_id"' "$f" 2>/dev/null | tail -1); [ -n "$l" ] && break; done < <(find "$d" -name 'rollout-*.jsonl' -printf '%T@ %p\n' 2>/dev/null | sort -rn | head -3 | cut -d' ' -f2-)
+  [ -n "$l" ] || return 0
+  pr=$(printf '%s' "$l" | grep -o '"primary":{[^}]*}' | tail -1); sr=$(printf '%s' "$l" | grep -o '"secondary":{[^}]*}' | tail -1)
+  p5=$(printf '%s' "$pr" | grep -o '"used_percent":[0-9.]*' | cut -d: -f2); pw=$(printf '%s' "$sr" | grep -o '"used_percent":[0-9.]*' | cut -d: -f2)
+  rs=$(printf '%s' "$sr" | grep -o '"resets_at":[0-9]*' | cut -d: -f2)
+  [ -n "$pw" ] || return 0
+  echo "$(date '+%F %H:%M') week=${pw}% 5h=${p5:-?}% week_resets=$([ -n "$rs" ] && date -d "@$rs" '+%F %H:%M' 2>/dev/null || echo '?') job=$name" >> "$X/limits.txt"; return 0; }
 run_codex(){  # run_codex fresh|resume PROMPTFILE [image files...] -> JSONL LAST ERRF RC
   local mode=$1 pf=$2; shift 2; local imgs=() i stamp; for i in "$@"; do imgs+=("--image=$(cygpath -m "$i")"); done
   stamp=$(date +%m%d-%H%M%S); JSONL="$X/log/$name-$stamp.jsonl"; LAST="$X/log/$name-$stamp.last.txt"; ERRF="$X/log/$name-$stamp.err"; cx_args
@@ -239,7 +252,7 @@ run_codex(){  # run_codex fresh|resume PROMPTFILE [image files...] -> JSONL LAST
   else
     ( cd "$W" && cxenv timeout -k 30 "$secs_max" "${CXBIN[@]}" exec -C "$WW" -s workspace-write -o "$(cygpath -m "$LAST")" "${CXA[@]}" "${imgs[@]}" - < "$pf" > "$JSONL" 2> "$ERRF" )
   fi
-  RC=$?; [ $RC = 124 ] || [ $RC = 137 ] && kill_orphans; return 0; }
+  RC=$?; [ $RC = 124 ] || [ $RC = 137 ] && kill_orphans; meter; return 0; }
 # parse the reset time out of "try again at 3:41 PM" / "try again in 2 hours 5 minutes" / "...at Oct 23rd, 2026 4:12 PM"
 parse_reset(){ local t="$1" m s e d h mi
   m=$(printf '%s' "$t" | grep -oiE 'try again in [^.]*' | head -1)
