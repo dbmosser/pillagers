@@ -26,3 +26,9 @@ Pictures: tools/handoff/console/notes/shots/o-120f-pad-x-reload-prompt-recipes-*
 10. Health and status chips: sizing, one scale with the other corner panels (186d owns the downed card's own bars; whichever ships second rebases).
 11. Ammo panel: padding inside the card, on the shared panel style of 1.
 Keep: the keyboard-focus marker (his order) and the word pillagers (player text never says "raiders").
+
+## More findings (folded in 10-28 by the CEO chat, from the Codex critic on o-120g, v35.58)
+Pictures: tools/handoff/console/notes/shots/o-120g-partner-ship-stays-recipes-1/. The two P0s from this round are their own job, 186g (party first).
+12. How-to-play attract card: the raid HUD shows through the card and its dimming layer; hide the HUD or make the dimming layer opaque enough under the card. The lime team-join line competes with the card's prompt; make it secondary. Keep the corner x (his Q43).
+13. Score, distance and arrow at top centre: one alignment, the same as the clock card in 3.
+14. P2: align the accent ticks on the panels.
