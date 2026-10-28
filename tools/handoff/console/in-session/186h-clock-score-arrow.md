@@ -15,6 +15,8 @@ His words, verbatim:
 9. "pillagers should always be referred to as 'pillagers' never 'pillager bots'" (reverses his 10-18 PM word; every player-facing "pillager bot(s)" becomes "pillager(s)"; built as its own follow-up build, key cw-pillagersword, so either can be reverted alone)
 10. (picture of the danger banner "locked on" / "machine has you in sight") "this should never say 'machine' without telling me which machine....eg overseer? etc" (every player-facing line that says "machine" names the kind instead: sentry, crawler, overseer and so on; in the words build cw-pillagersword)
 11. "this applies across the game -- there are 'machine alerts' on the left hand side -- need to tell player which type of machine" (the left feed lines and every other place in the game: each names the kind)
+12. (picture: the air strike meter plate at the right end of the belt, left of the gun card) "air strike needs to move ABOVE this weapon panel, and be further over on the right hand side" (airPlateAt: stand it on top of the gun card EDGEBOX.gun, right edges flush, the clearance loop kept)
+13. "ideally every single Hud element would be grabbable/ movable": a new feature, so it waits for 11/1 (his 10-27 order); filed as tools/handoff/console/after-nov1/186i-every-hud-panel-movable.md. Today six panels move (body, cond, gear, legend, mmap, raiders).
 
 Keep: looting (pickup stack, loot rows, loot sounds, item labels) untouched; kill lines stay; money ($) is not score; player text lower case.
 
