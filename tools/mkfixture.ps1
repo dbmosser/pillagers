@@ -17228,7 +17228,9 @@ window.__REGRESS=[
        if(PAD.focus!==dep) bad.push('THREE: pad focus does not open on ascend');
        seq=[]; pans=[];
        pad(5); seq.push(srPan(PAD.focus)); rel(); pad(5); seq.push(srPan(PAD.focus)); rel(); pad(5); seq.push(srPan(PAD.focus)); rel(); pad(5); seq.push(srPan(PAD.focus)); rel(); pad(4); seq.push(srPan(PAD.focus)); rel();
-       if(seq.join('')!=='ckpcp') bad.push('THREE: RB RB RB RB LB landed on panels '+seq.join(',')+', not c,k,p,c then back to p');
+       // v35.xx (stable triage 10-27) retarget: v35.10 (cw-hotfix2, his order of 10-27 that the bar is set on the pre-raid screen too, pad included) made the lift belt its own pad panel b after the pack, so RB from the pack reaches the belt before it wraps to the conditions
+       var w46=(document.querySelector('#sectorplan[data-pan="b"]')&&document.getElementById('sectorplan').style.display!=='none')?'ckpbp':'ckpcp';
+       if(seq.join('')!==w46) bad.push('THREE: RB RB RB RB LB landed on panels '+seq.join(',')+', not '+w46.slice(0,4).split('').join(',')+' then back to p');
        // FOUR: one A press from fresh focus ascends
        PAD.focus=null; padSetFocus(null); PAD.prev=[]; went=0;
        rel(); pad(0);
@@ -20792,6 +20794,7 @@ window.__REGRESS=[
            now=(typeof performance!=='undefined')?performance.now():Date.now();
            trHide(now); cs0=getComputedStyle(el).clipPath;
            if(!cs0||cs0==='none') bad.push('the page text of the credits is still showing while the rows are drawn (clip-path '+cs0+')');
+           if(typeof TRG==='object'&&TRG) TRG.t=-1e9;   // v35.xx (stable triage 10-27) retarget: since v35.01 (cw-walletonce, his note of 10-25 "Text collisions on the menu thing") trHide reads the real clock and ignores the time passed in, so the rows stopping is staged by an old stamp
            trHide(now+1e6);
            if(getComputedStyle(el).clipPath!=='none') bad.push('the page text of the credits stayed hidden after the rows stopped being drawn');
          }
@@ -45741,6 +45744,7 @@ window.__REGRESS=[
        __topClear(); __runPrep(); __deploy({kit:['gun_carbine'],seed:4242,mapIx:0});
        g=__state(); if(!g||g.over) return 'SKIP: no live raid';
        p=g.player; p.face=0;
+       sv.mmSz=CFG.mmSz; if(!(+CFG.mmSz>0)) CFG.mmSz=1;   // v35.xx (stable triage 10-27) retarget: since v33.35 (cw-mmoff, his order of 10-20) the minimap is a Settings row that starts off, so the check turns it on for itself instead of finding it on by luck (corpus-1027-1900 ran it after a check that left it off)
        render2D(0);
        if(!g.zones||g.zones.length<2) return 'SKIP: fewer than two extraction points';
        // two machines: one in plain sight ahead, one behind a wall inside the minimap
@@ -45777,6 +45781,7 @@ window.__REGRESS=[
      finally{
        try{ unwrap(); }catch(_u){}
        netUpShown=oldShown;
+       if('mmSz' in sv) CFG.mmSz=sv.mmSz;
        try{ if(mate){ var mi=NET.up.indexOf(mate); if(mi>=0) NET.up.splice(mi,1); } }catch(_m){}
        try{ if(A&&sv.A){ A.x=sv.A.x; A.y=sv.A.y; } if(B&&sv.B){ B.x=sv.B.x; B.y=sv.B.y; } if(sv.z0) g.zones[0].open=sv.z0.open; if(sv.z1) g.zones[1].beaconT=sv.z1.b; }catch(_r){}
        try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){} try{ __topClear(); }catch(_c){}
