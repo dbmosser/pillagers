@@ -3724,8 +3724,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.37';
-var VER_AT='2026-10-27 21:32';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.38';
+var VER_AT='2026-10-27 22:03';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -8836,7 +8836,7 @@ var SPK_BANK={
 
 // ================================================================ 2. helpers
 var SPK={ac:null,buf:{},nz:null,shp:{},at:{},n:{},last:'',t0:0};
-function spkCtx(a){ if(SPK.ac!==a){ SPK.ac=a; SPK.buf={}; SPK.nz=null; SPK.shp={}; } }
+function spkCtx(a){ a=a.__sndVoiceRaw||a; if(SPK.ac!==a){ SPK.ac=a; SPK.buf={}; SPK.nz=null; SPK.shp={}; } } // v28.xx (cw-cx-combatvoices): keep decoded clips cached across budgeted cues
 // one bank clip, decoded by the game's own sfxbWav (the same mu-law and PCM reader the foley bank uses)
 function spkWav(a,s){ return sfxbWav(a,s); }
 // a bank clip, decoded once per audio context (null when it cannot be)
@@ -9822,6 +9822,76 @@ function sndFindOut(a,t){
   SND_FIND_LAST={a:a,g:g};
   return g;
 }
+// v28.xx (cw-cx-combatvoices): Q27, stutter or harsh sound. A voice is the whole cue, including delayed gun action and tails.
+// The unity gate leaves a lone shot unchanged. Oldest voices yield on a 4 ms fade; at most two fading tails survive a burst.
+var SNDV={ac:null,live:[],fade:[],limits:{gun:6,impact:8,explosion:3},max:12,stolen:0};
+function sndVoiceKind(type){
+  if(/^(boom|airBoom|gateBreach|barrelBlast|barrelChain|barrelShock|barrelAcid|barrelCryo|coolantBurst)$/.test(type)) return 'explosion';
+  return SND_CAT[type]==='gun'?'gun':(SND_CAT[type]==='imp'?'impact':null);
+}
+function sndVoiceFree(v){
+  if(v.freed) return;
+  v.freed=true;
+  v.nodes.forEach(function(n){ try{ n.disconnect(); }catch(e){} });
+  try{ v.g.disconnect(); }catch(e){}
+  var i=SNDV.live.indexOf(v); if(i>=0) SNDV.live.splice(i,1);
+  i=SNDV.fade.indexOf(v); if(i>=0) SNDV.fade.splice(i,1);
+}
+function sndVoiceStop(v,t,fade){
+  var end=t+(fade?0.004:0);
+  v.end=end; v.retired=true;
+  try{ v.g.gain.cancelScheduledValues(t); v.g.gain.setValueAtTime(1,t); v.g.gain.linearRampToValueAtTime(0,end); }catch(e){}
+  v.sources.forEach(function(s){ try{ s.stop(end); }catch(e){} });
+  var i=SNDV.live.indexOf(v); if(i>=0) SNDV.live.splice(i,1);
+  if(!fade) sndVoiceFree(v);
+  else { SNDV.fade.push(v); while(SNDV.fade.length>2) sndVoiceStop(SNDV.fade[0],t,false); }
+}
+function sndVoicePrune(a,t){
+  SNDV.live.concat(SNDV.fade).forEach(function(v){
+    if(v.a!==a) sndVoiceStop(v,v.a.currentTime,false);
+    else if(v.end<=t) sndVoiceFree(v);
+  });
+  SNDV.ac=a;
+}
+function sndVoiceOpen(a,out,type,t){
+  var k=sndVoiceKind(type); if(!k) return null;
+  sndVoicePrune(a,t);
+  var v={a:a,kind:k,g:a.createGain(),nodes:[],sources:[],ends:[],end:Infinity,pending:0,sealed:false,freed:false,retired:false};
+  v.g.gain.value=1; v.g.connect(out);
+  // v28.xx (cw-cx-combatvoices): only this synchronous generator sees the facade; native methods keep their real context as receiver.
+  v.audio=new Proxy(a,{get:function(target,key){
+    if(key==='__sndVoiceRaw') return target;
+    var f=target[key]; if(typeof f!=='function') return f;
+    return function(){
+      var n=f.apply(target,arguments);
+      if(/^create/.test(key)&&n&&typeof n.disconnect==='function') v.nodes.push(n);
+      if(key==='createBufferSource'||key==='createOscillator'){
+        var ix=v.sources.length, start=n.start, stop=n.stop, done=false;
+        v.sources.push(n); v.ends.push(Infinity); v.pending++;
+        n.start=function(at,off,dur){
+          var r=start.apply(n,arguments), when=at===undefined?a.currentTime:at, rate=(n.playbackRate&&n.playbackRate.value)||1;
+          if(n.buffer&&!n.loop){ var len=n.buffer.duration||n.buffer.length/a.sampleRate; v.ends[ix]=Math.min(v.ends[ix],when+(dur===undefined?Math.max(0,len-(off||0)):dur)/rate); }
+          return r;
+        };
+        n.stop=function(at){ var r=stop.apply(n,arguments); v.ends[ix]=at===undefined?a.currentTime:at; return r; };
+        var ended=function(){ if(done) return; done=true; v.pending--; if(v.sealed&&v.pending===0) sndVoiceFree(v); };
+        if(n.addEventListener) n.addEventListener('ended',ended,{once:true}); else n.onended=ended;
+      }
+      return n;
+    };
+  }});
+  return v;
+}
+function sndVoiceSeal(v){
+  if(!v) return;
+  v.sealed=true;
+  if(!v.pending){ sndVoiceFree(v); return; }
+  v.end=Math.max.apply(Math,v.ends);
+  var t=v.a.currentTime, same=SNDV.live.filter(function(x){ return x.kind===v.kind; });
+  while(same.length>=SNDV.limits[v.kind]){ sndVoiceStop(same.shift(),t,true); SNDV.stolen++; }
+  while(SNDV.live.length>=SNDV.max){ sndVoiceStop(SNDV.live[0],t,true); SNDV.stolen++; }
+  SNDV.live.push(v);
+}
 function blip(type,d,pan){
   if(G&&G.sim) return;
   if(typeof NET==='object'&&NET&&NET.specTick) return;   // v17.13, co-op hunt 2026-09-28: the kept raid is silent in the spectating host window here too (a pillager going down, the beacon call)
@@ -9848,6 +9918,9 @@ function blip(type,d,pan){
     pn.connect(OUT); OUT=pn;
   }
   if(SND_CTX&&SND_CTX.lp>0){ var olp=a.createBiquadFilter(); olp.type='lowpass'; olp.frequency.value=SND_CTX.lp; olp.Q.value=0.7; olp.connect(OUT); OUT=olp; }   // v23.73 (his #45): through the wall
+  // v28.xx (cw-cx-combatvoices): budget the complete generator after distance culling, with the existing pan and muffle intact.
+  var _sv=sndVoiceOpen(a,OUT,type,t); if(_sv){ OUT=_sv.g; a=_sv.audio; }
+  try{
   if(SNDA_GEN[type]){ try{ SNDA_GEN[type](a,OUT,vol,t,arguments[3],d); }catch(_sa){} return; }   // v24.xx (sndA1): the new noises
     if(type==='reload'){
     // v10.56: the magazine out, a bright click, then in, a duller thock.
@@ -10565,6 +10638,7 @@ function blip(type,d,pan){
     g6.gain.setValueAtTime(.03*vol,t); g6.gain.exponentialRampToValueAtTime(.001,t+.08);
     o4.connect(g6); g6.connect(OUT); o4.start(t); o4.stop(t+.09);
   }
+  }finally{ sndVoiceSeal(_sv); }
 }
 
 // ================================================================ utils
@@ -54904,7 +54978,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.37: an extraction that sank him never draws him whole again Check 35.37 fails on v35.36',
+  now:'v35.38: Gunfire, impacts and explosions have bounded overlap; oldest sounds yield during heavy fights. Check 35.38 fails on v35.37',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

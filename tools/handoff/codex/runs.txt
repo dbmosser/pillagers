@@ -353,3 +353,4 @@
 2026-10-27 17:43 o-93-fps-counter-screen-rate 134s ok PARTIAL in=279973 out=6436 run=1
 2026-10-27 18:43 o-93-fps-counter-screen-rate 48s ok PARTIAL in=554481 out=8007 run=2
 2026-10-27 18:45 o-93-fps-counter-screen-rate 39s ok DONE in=884314 out=9399 run=3
+2026-10-27 21:58 o-131-gun-impact-sound-caps 506s ok PARTIAL in=1271729 out=18035 run=1

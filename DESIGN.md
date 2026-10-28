@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.38 - COMBAT SOUND VOICE CAPS
+
+Co-op hunt while he was away. Q27: stutter or harsh sound in a two player fight. Cap complete cues at 6 guns, 8 impacts, 3 explosions and 12 active combat voices per window. Replace the oldest cue first with a 4 ms fade and stop all its sources, including delayed pumps and tails. At most two retiring fades can overlap the active budget. An isolated shot retains every original layer, pitch, timing and level. Playtest watch: both windows firing the LMG and shotgun near metal impacts and explosions should stay clear; listen for clicks, lost nearby shots or missing shotgun pumps under pressure.
+
+MEASURED. Check 35.38 passes, and fails on v35.37.
 ## v35.37 - NO POP UP AFTER THE EXTRACTION SINK
 
 Co-op hunt while he was away. his note 10-27: after sinking into the ground on extraction he popped back up fully visible for a moment before the extracted screen

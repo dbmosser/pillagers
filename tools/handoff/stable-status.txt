@@ -1,28 +1,17 @@
-Latest stable: v34.53 (2026-10-27 02:38)
-Checked: 2026-10-27 21:13
+Latest stable: v35.18 (2026-10-27 21:44)
+Checked: 2026-10-27 21:44
 Play address: http://localhost:8802/stable.html
-Result: no change
+Result: PROMOTED v35.18 (was v34.53); play address http://localhost:8802/stable.html
 
 Newest test runs, newest first:
-  corpus-1027-1900  v35.19  failing 20, new 12  robots 115 min/1 problems  -> 12 check(s) newly failing, e.g. v8.66 dragging onto the belt assigns, refuses and moves corr | v33.68 cw-pixprops (86e) ship 1: the pixel adapter pixWrap a
-  corpus-1027-1843  v35.18  failing 13, new 11  robots 76 min/0 problems  -> 11 check(s) newly failing, e.g. v8.66 dragging onto the belt assigns, refuses and moves corr | v33.68 cw-pixprops (86e) ship 1: the pixel adapter pixWrap a
-  corpus-1027-1635  v35.11  failing 18, new 12  robots 111 min/0 problems  -> 12 check(s) newly failing, e.g. v8.66 dragging onto the belt assigns, refuses and moves corr | v8.85 a pillager footprint does not draw through a wall, and
-  corpus-1027-1326  v35.09  failing 16, new 8  robots 90 min/0 problems  -> 8 check(s) newly failing, e.g. v8.66 dragging onto the belt assigns, refuses and moves corr | v33.68 cw-pixprops (86e) ship 1: the pixel adapter pixWrap a
-  corpus-1027-1146  v35.06  failing 8, new 3  robots 126 min/1 problems  -> 3 check(s) newly failing, e.g. v33.68 cw-pixprops (86e) ship 1: the pixel adapter pixWrap a | v31.32 cw-trcol, his order (2026-10-18) everything in the ri
-  corpus-1027-1017  v35.05  failing 10, new 4  robots 82 min/9 problems  -> 4 check(s) newly failing, e.g. v33.68 cw-pixprops (86e) ship 1: the pixel adapter pixWrap a | v33.60 cw-cx-pixground (86b): THE PIXEL GROUND. With the pix
-  corpus-1027-0855  v35.01  failing 9, new 3  robots 114 min/1 problems  -> 3 check(s) newly failing, e.g. v33.68 cw-pixprops (86e) ship 1: the pixel adapter pixWrap a | v31.32 cw-trcol, his order (2026-10-18) everything in the ri
+  corpus-1027-1900  v35.19  failing 20, new 1  robots 115 min/1 problems  -> 1 check(s) newly failing, e.g. v25.41 his order (add minimap): the minimap marks extraction
+  corpus-1027-1843  v35.18  failing 13, new 0  robots 76 min/0 problems  -> QUALIFIES
+  corpus-1027-1635  v35.11  failing 18, new 3  robots 111 min/0 problems  -> 3 check(s) newly failing, e.g. v8.85 a pillager footprint does not draw through a wall, and | v27.24 his order: one persistent feed at the bottom left tak
+  corpus-1027-1326  v35.09  failing 16, new 0  robots 90 min/0 problems  -> QUALIFIES
+  corpus-1027-1146  v35.06  failing 8, new 1  robots 126 min/1 problems  -> 1 check(s) newly failing, e.g. v10.38 the WHAT IS NEW card is current, opens with a note, a
+  corpus-1027-1017  v35.05  failing 10, new 2  robots 82 min/9 problems  -> 2 check(s) newly failing, e.g. v33.60 cw-cx-pixground (86b): THE PIXEL GROUND. With the pix | v30.17 the Settings detail pane and its focus look name the 
+  corpus-1027-0855  v35.01  failing 9, new 1  robots 114 min/1 problems  -> 1 check(s) newly failing, e.g. v30.17 the Settings detail pane and its focus look name the 
   corpus-1027-0705  v34.96  failing 11, new 1  robots 874 min/76 problems  -> 1 check(s) newly failing, e.g. v30.17 the Settings detail pane and its focus look name the 
 
 Checks that are newly red and still red (they block until fixed, or until listed in tools/handoff/stable-known-red.txt):
-  v33.68 cw-pixprops (86e) ship 1: the pixel adapter pixWrap and the containers, b
-  v31.32 cw-trcol, his order (2026-10-18) everything in the right hand upper corne
-  v8.66 dragging onto the belt assigns, refuses and moves correctly
-  v26.27 wheel4, his order: the bar holds nine gun slots and nothing else; G, U, J
-  v22.52 any gun on any key in a raid (the four-gun belt, build 5): gun 1 in his h
-  v18.91 on the Undercroft floor with the backpack open, gun 2 on belt key 2 picke
-  v13.99 a belt key does not point at something that stayed behind: going up with
-  v13.59 crafting with items packed in the backpack unpacks them properly: a Medki
-  v32.46 the pre-raid page is design A, map first (his pick 2026-10-19): an ice bl
-  v10.26 the hotbar is the TACTICAL BELT everywhere a player reads it, and the old
-  v9.89 the tactical belt has one name on every surface that names it (his word si
   v25.41 his order (add minimap): the minimap marks extractions in their state, th

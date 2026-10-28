@@ -20,3 +20,21 @@ Checks (must FAIL on the build before): a codex entry, location revealed and run
 Pictures: uishots 21, 33, 34, 50 at 1080; look at them; send him the 33 picture with the before and after counts in one line.
 Ship: preflight on lane g (check no other preflight on g first), then shipq; wait for its ON HIS PC vNN.NN line. Rules: player text lower case; no storage key change; seed fingerprint unchanged.
 TASK DONE when shipq printed ON HIS PC for the build. Then move this file to console/done/ and report two lines: build, on his PC, lines per minute before and after, and what he should watch for.
+
+## RESEARCH RULE (10-27 ~22:10, replaces rules 1, 3 and 4 where they differ; looting rule 2 stands)
+Source: reports/Player alerts and HUD messaging.md (sections "The drafted five-kinds rule holds" and "PILLAGERS raid HUD, region by region"). Read those two sections first. Ship as TWO builds so either can be reverted alone.
+
+Build 1 (cw-msgroute): route and reshape the left feed (report jobs 1 and 2).
+- Ladder: P0 danger to you now or teammate down; P1 extraction change; P2 other teammate news; P3 goal or contract done; P4 one-line answer to something you tried that did not work. Everything else (the 27 lines with no kind, the 78 info lines unless one is truly one of the five, codex, location revealed, running slowly, fog, weather, stronghold, golden enemy, discoveries, lore, chatter, progress counts) goes to G.msgLog only. Sort each of the 40 warn lines into P0 or the log. Write the keep or cut list per call site into notes/raid-messages.md as planned.
+- The run log can be read on the pause screen so nothing is lost (a plain list of the last lines; it is the existing log, not a new screen).
+- Left feed: at most 3 lines; each lives 5 s, fades in about 0.2 s and fades fully out about 0.4 s (today: 10 lines, 6 s bright then held at 60%). At most one new line per 2.5 s in this slot, counted after repeats merge into one counted line ("x2") that resets its time. A line that waited more than 4 s is re-checked and dropped if no longer true. P3 goal-done lines wait until no shot fired or taken for about 4 s, then show as one merged line. Teammate lines in the teammate colour (P1 amber, P2 cyan).
+- KILL LINES STAY in the feed (his 10-25 answer g-86 asked for kill feed icons, job tasks/166): do not cut them; they follow the merge and the 3-line limit like any feed line. The report's "kill lines leave the feed" is overruled by his answer.
+- "contract item nearby": leave it exactly as it is (close to looting; his call).
+- No money exception is needed: money rows are in the pickup stack, which this job never touches.
+
+Build 2 (cw-dangerslot): the danger slot (report job 3), after build 1 is ON HIS PC.
+- Move the danger banner from about 16% of screen height to about 27% (y about 290 at 1080p), centred, one line about 30 px on a plate, scale in about 200 ms, life 3 s (4 s for "down" or as long as the state holds). One danger at a time; P0 replaces P1 at once and the P1 goes back to wait; same source and words not again for about 10 s; a danger that could not show within 1.5 s is dropped, never sent to the feed (today it moves to the feed after 2.5 s). Teammate down is P0 in the other window, teammate colour. Keep the "!" world mark over the enemy that saw you.
+- Downed card: today about 480 by 200 px at screen centre. Check first whether the camera centres the player (arcade picture says yes, career pictures look off centre). If it covers the player, shrink it into the danger slot (timer, bar, "[f] self-revive" line). If it does not cover the player, leave it and say so.
+
+Numbers for the report to him: lines drawn per minute in the staged 3 minute raid on the build before and after build 1. Checks must FAIL on the build before. Old checks expecting cut lines: re-aim through fixq, never loosen. Pictures: uishots 21, 33, 34, 50 at 1080 after each build; look at them. Watch-for line for him: whether he misses anything that now lives only in the log, and whether the lower danger slot covers enemies coming from above the character.
+Model note (Development efficiency 10-27): this session continues as is; no new session for this job.
