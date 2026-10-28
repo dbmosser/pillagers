@@ -3730,8 +3730,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.59';
-var VER_AT='2026-10-28 02:03';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.60';
+var VER_AT='2026-10-28 02:13';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19848,9 +19848,10 @@ function padLostPoll(gp){
   return true;
 }
 function pollPad(){
-  if(!navigator.getGamepads) return;
   if(typeof SNIP==='object'&&SNIP&&SNIP.on) return;   // v30.xx (cw-snip): the pad is not read while a snip is up, so a press cannot reach a menu under it
-  var gps=navigator.getGamepads(),gp=null;
+  var gps=[],gp=null;
+  // v28.xx (cw-cx-padpollguard): a frame policy can block pad reads; use the ordinary no-pad cleanup and keep drawing.
+  try{ if(navigator.getGamepads) gps=navigator.getGamepads()||[]; }catch(_pg){}
   // v15.77, HIS ORDER OF 2026-09-25 (multiplayer, build 4): EACH WINDOW ON ONE PC PLAYS A CONTROLLER OF ITS OWN. In a same
   // machine mode the pad this window plays comes from netPadTick (the net section): in front, its own pick out of every
   // connected pad, while it hands the other window the state of that window's pad; not in front, the state the window in
@@ -54824,7 +54825,8 @@ function loop(ts){
   // Ahead of every early return below, so zoom keeps easing in the hub, while
   // paused and on the death screen instead of freezing part way through a step.
   tickZoom(dt);
-  pollPad();
+  // v28.xx (cw-cx-padpollguard): even an unexpected pad-handler failure must leave keyboard, mouse and the rest of this frame running.
+  try{ pollPad(); }catch(_pp){ padRelease(); PAD.on=false; PAD.mx=0; PAD.my=0; PAD.aiming=false; RUMBLE.gp=null; RUMBLE.other=null; padBodyCls(); }
   if(NET.on&&NET.specG) netSpecTick(dt);   // v16.14: the raid the host left runs on for the party still up top, whatever this window shows
   if(state==='hub'){
     try{ craftHoldStep(dt); }catch(_ch){}   // v11.75: the craft hold fills here
@@ -55443,7 +55445,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.59: Hit jolts follow the incoming round in both windows. Check 35.59 fails on v35.58',
+  now:'v35.60: Blocked pad access keeps the game drawing and keyboard and mouse working. Check 35.60 fails on v35.59',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

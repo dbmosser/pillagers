@@ -1,0 +1,7 @@
+v35.60: blocked pad reads keep the game running
+
+Blocked pad access keeps the game drawing and keyboard and mouse working.
+
+Check 35.60. Fails on v35.59.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

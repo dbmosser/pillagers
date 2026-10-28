@@ -2851,32 +2851,32 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The easy-mode card and its scrim are gone, so this is now a clean in-raid HUD where the hp, ammo and hotbar read well. The top-centre cluster, the stray 'keyboard' chip and the crowded enemy tag still look unfinished.",
+  "verdict": "The hud is readable and has one clear hero number, the ammo count. The edges are still ragged: the score panel sits flush to the top, the damage number overlaps the enemy tag, and the loose chips share no margin or panel style.",
   "findings": [
-   "P1 top-centre score panel (x 808-1110, y 0-106): Set the top margin to 24px and the padding to 16px. Keep the 56px hero for the score only. Put the you/p2 lines at 16px minimum in --tx-2. Move the extract chip 8px below the panel. Tuck the hamburger inside the right padding, and attach the arrow to the chip.",
-   "P1 enemy tag over the crawler (x 1050-1145, y 440-495): Float the damage number 24px above the tag, or hide it while the tag is shown. Put the '!' 8px above the tag. Show the tag at 16px with 8px of vertical clearance from the sprite.",
-   "P1 minimap or goals dropdown 'goals 0/3' (x 1603-1900, y 22-65): Re-skin it as a --ui-panel card with a 1px --ui-line-hi border and 4px radius. Use a 16px label and a --tx-2 chevron, and align its top edge to the score panel at y 24. Use the 5% margin on the right.",
-   "P2 top-left 'keyboard' chip (x 10-105, y 5-32): Fade it out after 3s, or fold it into the player 1 bar as a 16px --tx-2 glyph. Put it on the 8px grid at 24px,24px.",
-   "P2 ammo card bottom-right (x 1650-1910, y 868-1016): Inset the card 5% from the right edge and 24px from the bottom. Set 'support mg' at 20px in --tx-1. Use the same 4px radius and the same border as the score panel."
+   "P1 top-centre score panel (x 808-1110, y 0-106): Move the panel to y=24. Set padding to 16px, radius to 4px and a 1px --ui-line-hi border. Make the sub-lines 16px in --tx-2. Place the chip 8px below the panel and move the sun icon outside the right padding.",
+   "P1 enemy tag over the crawler (x 730-830, y 408-495): Float the damage number 24px above the tag, or hide it while the tag shows. Put the '!' 8px above the tag, inside the same group. Leave 8px of clearance between the tag and the sprite.",
+   "P1 'goals 0/3' dropdown (x 1603-1900, y 22-65) vs the 'c 126m' chip (x 1745-1885, y 455-495): Use the --ui-panel fill and a 4px radius on the dropdown. Set its right margin to 96px (5%) and align its top to y=24 with the score panel. Remove the duplicate 'c 126m' chip, or move it into the dropdown. Keep the arrow, but only at the screen edge.",
+   "P1 bottom-right ammo card (x 1643-1910, y 868-1018): Inset the card 48px from the right edge. Align its bottom with the weapon bar's bottom, at y=1056. Set the gun name to 20px in --tx-2. Keep the 56px hero number for the ammo count.",
+   "P2 top-left 'keyboard' chip (x 10-105, y 5-32): Fade it out after 3s, or move it to 24px,24px as a 16px --tx-2 glyph on a --ui-panel chip."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-132-hit-jolt-from-the-bullet-recipes-2/j132-p1-partner-shot-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-132-hit-jolt-from-the-bullet-recipes-3/j132-p1-partner-shot-1080.jpg",
   "task": "o-132-hit-jolt-from-the-bullet",
-  "when": "2026-10-28T05:59"
+  "when": "2026-10-28T06:06"
  },
  "j132-p2-partner-shot": {
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "The easy-mode modal is gone and the HUD is readable, but the score plate still sits flush against the top edge, the left-edge player strip and keyboard chip are cramped, and the bottom row has several unrelated panels with no shared structure.",
+  "verdict": "The HUD is readable but it is still a loose scatter of panels with different edges, fills and margins. Almost none of the earlier layout advice was applied.",
   "findings": [
-   "P1 top-centre score plate (team score / 0 sp / you, p1 / 10:00): Offset the plate 16px from the top. Use 16px padding all round. Set the hero 'sp' number at 56px f-cond 800. Set the timer at 20px tx-2. Put the 'you' and 'p1' lines in one 16px row below the hero. Leave 8px between the plate and the extract chip.",
-   "P1 left edge, 'player 1' strip (x≈14–170, y≈325–358): Move the strip to x=96. Colour the name with the P1 amber token (P1 is amber everywhere). Use 16px label text and 8px tall bars. Drop the duplicate overhead tag, or drop the strip.",
-   "P1 bottom-left vitals (armour 60 / hp 100) and f1 controls chip: Use one 24px bar height for both, with 8px between them. Set the bottom edge at y=1080−54. Set x=96. Make the label 16px. Put the f1 chip at the same x=96, directly above the bars, with 16px text in tx-2 on --ui-panel.",
-   "P1 bottom row: 'in pillager's party' chip, air strike panel, weapon bar, ammo card: Share one baseline at y=1026. Use a 1px --ui-line-hi border and a 4px radius on every panel. Pull the ammo card in to the 96px margin. Fold the party chip into the top-left keyboard chip or remove it. Align the air strike panel's left edge to the weapon bar.",
-   "P2 top-left 'keyboard' chip: Move it to (96, 54). Use 16px f-cond 600 tx-2 on --ui-panel with a 1px --ui-line-hi border and 4px radius."
+   "P1 top-centre score plate (team score / 0 sp / you / p1 / 10:00): Offset the plate 16px from the top with 16px padding. Set the hero number to 56px f-cond 800. Set the timer to 20px tx-2. Put 'you 0 sp' and 'p1 0 sp' in one 16px row under the hero. Leave 8px between the plate and the extract chip.",
+   "P1 left 'player 1' strip (x≈14–170, y≈325–358) and the overhead 'player 1' tag: Move the strip to x=96 or remove it. Colour the name with the P1 amber token at 16px. Make the bars 8px tall. Drop the overhead tag or the strip, not both.",
+   "P1 bottom-left vitals (armour 60, hp 100) and the 'f1 controls' chip: Use one 24px bar height for both, 8px apart, at x=96 with the bottom edge at y=1026. Use 16px labels. Put the f1 chip at x=96 directly above the bars, in 16px tx-2 on --ui-panel.",
+   "P1 bottom row: party chip, air strike panel, weapon bar, ammo card: Put every panel on a baseline of y=1026 with a 1px --ui-line-hi border, a 4px radius and the --ui-panel fill. Pull the ammo card in to a 96px right margin. Align the air strike panel's left edge with the weapon bar and leave 16px above the bar. Fold the party chip into the keyboard chip or remove it.",
+   "P2 top-left 'keyboard' chip: Move it to (96, 54). Use 16px f-cond 600 tx-2 on --ui-panel with a 1px --ui-line-hi border and a 4px radius."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-132-hit-jolt-from-the-bullet-recipes-2/j132-p2-partner-shot-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-132-hit-jolt-from-the-bullet-recipes-3/j132-p2-partner-shot-1080.jpg",
   "task": "o-132-hit-jolt-from-the-bullet",
-  "when": "2026-10-28T05:59"
+  "when": "2026-10-28T06:06"
  }
 }
