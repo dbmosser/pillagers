@@ -7708,11 +7708,9 @@ window.__REGRESS=[
            g.timeLeft=oTL; g.active=oAct; p.x=oX; p.y=oY;
          }
        }
-       // SEVEN: the pause box lists the run log
+       // SEVEN (retargeted for cw-pausesp, HIS ORDER 2026-10-28: the pause box shows what the raid pays in sp, not the run log): a log-only line is kept in the run log the run report carries
        clr(); say('ZQ LOG ONLY');
-       togglePauseBox(true); pb=true; el=document.getElementById('pauselog'); L=el?String(el.textContent):'';
-       if(!el||el.style.display==='none'||L.toLowerCase().indexOf('zq log only')<0) bad.push('the pause box does not list the run log ('+JSON.stringify(L.slice(0,80))+')');
-       togglePauseBox(false); pb=false;
+       if(!logHas('ZQ LOG ONLY')) bad.push('a log-only line is not kept in the run log');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{
        codexNote=oCN; saveProfile=oSP; keys={};
