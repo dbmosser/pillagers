@@ -410,3 +410,4 @@
 2026-10-28 10:07 o-02-172-night-pays-cash 856s ok PARTIAL in=2268083 out=25301 run=1
 2026-10-28 10:47 o-02-172-night-pays-cash 758s ok PARTIAL in=6215911 out=46680 run=2
 2026-10-28 11:04 o-02-172-night-pays-cash 314s ok PARTIAL in=8132396 out=54059 run=3
+2026-10-28 11:35 o-02-172-night-pays-cash 649s ok PARTIAL in=11459463 out=70512 run=4

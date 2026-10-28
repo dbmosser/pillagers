@@ -1,1 +1,1 @@
-10-28 11:07 gate: shipping cw-cx-condition-ui (o-02-172-night-pays-cash, codex)
+10-28 11:36 waiting for RAM: 1 GB free, need 3 (o-02-172-night-pays-cash)

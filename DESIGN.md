@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.82 - PILLAGERS, AND EVERY MACHINE BY NAME
+
+Co-op hunt while he was away. his HUD orders of 10-28: pillagers are always called pillagers, never pillager bots (the kind words, contracts, goals, events, settings, the Undercroft lines); a line never says machine without naming it: the alarm line names the machine nearest the sound (sentry alert, listener alert, overseer alert) and says nothing when no machine raised it, locked on names the machine that has you (2 sentries have you in sight), the convoy is the crawler convoy, the settings rows name the kinds
+
+MEASURED. Check 35.82 passes, and fails on v35.81.
 ## v35.81 - CONDITION REWARD READABILITY
 
 Co-op hunt while he was away. The critic found undersized rewards, empty pack space, no Terms header and competing result totals.

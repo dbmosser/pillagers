@@ -51,33 +51,33 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The loud pack rows are gone and the lime ascend button now owns the screen, but the empty pack well, the blue map with its tiny haloed labels and the sparse small type keep it short of polished.",
+  "verdict": "The ascend button is a strong primary action and the card structure is sound, but the dead column, unreadable map labels and tiny, inconsistent type keep it at a 3.",
   "findings": [
-   "P1 right column, empty area between 'no data core' and 'belt' (y 400-750): Fill it with a 4-column grid of 72px empty pack slots (--ui-raised fill, 1px --ui-line border). Otherwise collapse it by moving belt and the armour warning up under the data core row. Add 1px --ui-line dividers and 24px gaps between kit, pack and belt.",
-   "P1 map panel fill and room boxes: Fill the map with --ui-void and draw room outlines in --ui-line-hi at 1px with a --ui-raised fill. Keep teal only for exits. Shrink the map width by about 15% and give the space to the right column.",
-   "P1 map labels ('the long dock', 'foreman office', 'blast freezer', 'chill row', 'exit a/b/c'): Set labels to 16px f-cond 600 in tx-1 with a 1px --ui-void text halo and no pill. Move them at least 8px clear of boxes and markers. Set exit labels to 16px in --extract. Remove the purple dashed squares or add a one-word legend ('keyed').",
-   "P1 conditions column (surface, weather, seed): Keep one selected signal (lime check only) and draw pad focus as a 2px --acc border. Raise the section labels to 16px tx-2 and the '+5% sp' values to 16px. Put a 1px --ui-line divider between the surface, weather and seed groups.",
-   "P1 kit tiles and pack row (my loadout, freebie kit, random kit, best kit, pack all, clear): Give the selected tile a 2px --acc border and a --ui-raised fill, and let the others fall back to a --ui-line border. Set sub-lines to 16px tx-2. Make 'pack all' and 'clear' 16px text buttons. Group the data core row with a label, 'data core', and a 24px checkbox."
+   "P1 right column, y 530-890 (between the belt and the armour warning): Add a 4-column grid of 72px pack slots (--ui-raised fill, 1px --ui-line border) under the pack header. Otherwise move the belt and the warning up under the data core row with 24px gaps. Put 1px --ui-line dividers between kit, pack and belt. Enlarge the belt cells to 48px.",
+   "P1 map labels ('the long dock', 'foreman office', 'blast freezer', 'chill row', 'exit a/b/c'): Set every label to 16px f-cond 600 in tx-1 with a 1px --ui-void halo. Move labels at least 8px clear of boxes and markers. Set exit labels in --extract at 16px. Remove the purple squares or add a 'keyed' legend entry. Draw room boxes with a --ui-raised fill and a 1px --ui-line-hi border.",
+   "P1 conditions column ('blackout +5% sp', 'night' row): Widen the column by 20px, or drop the value to a right-aligned 16px 'sp +5%' so every row stays on one line. Draw selected as a lime check plus a --ui-raised fill, and focus as a single 2px --acc border. Remove the 'conditions' heading. Set the section labels to 16px tx-2 with 16px of space above them.",
+   "P1 type sizes across the card (kit sublines, 'no armour equipped', 'burn for intel', 'enter', footer legend): Set the sublines, warning and checkbox label to 16px. Set the 'kit', 'pack' and 'belt' section labels to 16px f-cond 700 tx-2 with a 1px divider above each. Left-align 'no data core' to the icon. Set the warning to 16px --warn.",
+   "P2 kit tiles (my loadout, freebie kit, random kit, best kit): Give the selected tile a 2px --acc border and a --ui-raised fill, and use a --ui-line border on the others. Increase the tile height to 64px with an 8px gap."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-02-172-night-pays-cash-recipes-1/05-sector-page-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-02-172-night-pays-cash-recipes-2/05-sector-page-1080.jpg",
   "task": "o-02-172-night-pays-cash",
-  "when": "2026-10-28T14:34"
+  "when": "2026-10-28T15:24"
  },
  "06-terms": {
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The card is clean and all lower case, but it is still a small list floating in a big empty card. Nothing shows focus, the title is not in a header row, and the amber on signed rows hides the lime accent.",
+  "verdict": "The earlier advice was mostly followed: the title now sits at the top left, the focused row has a lime bar, and signed is a lime fill. The card still looks half-built, because the list ends at y=648 and about 370px of the card is empty below it.",
   "findings": [
-   "P1 whole card, focus: Fill the focused row with --ui-raised and add a 3px --acc left bar. Give the focused button an --acc fill with --acc-ink text. Keep idle buttons outlined in --ui-line-hi.",
-   "P1 title 'the terms' at (908-1012, 283) and the empty band above the list: Put the title at the top left in a 56px header row, at x=261 and on the X's line, in 32px f-cond 700. Make rows 88px tall with 24px padding so the list fills the card. Anchor a 72px footer row at the bottom.",
-   "P1 bonus '+5% sp' at x=1435-1523: Set the bonus to 20px f-cond 600. Use --tx-2 when idle and --acc when signed, with no amber. Keep the 32px weight for the title only.",
-   "P1 signed vs sign buttons at x=1533-1637: Make 'signed' an --acc fill with --acc-ink text and a check glyph. Make 'sign' a --ui-line-hi outline in --tx-1. Use 48px high buttons, 120px wide.",
-   "P2 row descriptions at y=381-684: Raise them to 16px --tx-2 with at least 4.5:1 contrast. Shorten each to a few words, for example 'raid clock -33%'."
+   "P1 whole card, y=650-1024: Make the rows 100px tall so the list fills y=200-760. Pin a 72px footer at the bottom of the card with 'sign nothing' on the left and the 'sp x1.10' total on the right. Use a 48px side margin so the column spans x=145-1775 and lines up with the X.",
+   "P1 row descriptions, x=287-571, y=262-613: Set them to 16px --tx-2 with a minimum 4.5:1 contrast. Cut each to 4 words or fewer, for example 'machines +40%' and 'raid clock -33%'. Remove the trailing period and the colon.",
+   "P1 sign buttons, x=1513-1633: Use a 2px --ui-line-hi border on idle buttons and 18px label text in --tx-1. Replace the double ring on the focused button with a single 3px --acc-hover outline offset 2px.",
+   "P1 bonus text '+5% sp', x=1443-1497: Keep the signed bonus in --tx-1 and the idle bonus in --tx-2. Reserve lime for the button fill and the focus bar. Show the +5% once in the header ('each term +5% sp') or only on the active rows.",
+   "P2 total 'sp x1.10', x=1604-1659, y=686: Draw it at the 56px hero size in f-cond 800, right-aligned in the footer row, with a 16px --tx-2 label 'score bonus' above it. Remove the hairline at y=711."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-02-172-night-pays-cash-recipes-1/06-terms-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-02-172-night-pays-cash-recipes-2/06-terms-1080.jpg",
   "task": "o-02-172-night-pays-cash",
-  "when": "2026-10-28T14:34"
+  "when": "2026-10-28T15:24"
  },
  "07-party-coop": {
   "score": 2,

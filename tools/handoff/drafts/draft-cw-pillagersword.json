@@ -164,12 +164,8 @@
                       "replacement":  "return \u0027golden \u0027+(kind===\u0027raider\u0027?\u0027pillager\u0027:(GOLD.kinds[kind]?kindWord(kind).toLowerCase():\u0027enemy\u0027))+\u0027 down\u0027; }   // v35.xx (cw-pillagersword)"
                   },
                   {
-                      "anchor":  "desc:\u002740% more machines, pillager bots and criers.\u0027}",
+                      "anchor":  "desc:\u002740% more machines, pillagers and criers.\u0027}",
                       "replacement":  "desc:\u002740% more sentries, crawlers, criers and pillagers.\u0027}"
-                  },
-                  {
-                      "anchor":  "desc:\u0027Every pillager bot is hostile and already searching for you.\u0027}",
-                      "replacement":  "desc:\u0027Every pillager is hostile and already searching for you.\u0027}"
                   },
                   {
                       "anchor":  "return \u0027Word has spread. Hires cost more and pillager bots trust you less.\u0027;",

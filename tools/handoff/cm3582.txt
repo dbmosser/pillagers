@@ -1,0 +1,7 @@
+v35.82: pillagers, and every machine by name
+
+pillagers, never pillager bots; alerts and locked on name the machine
+
+Check 35.82. Fails on v35.81.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
