@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.08 - DAMAGE NUMBERS CLEAR THE TARGET NAME
+
+Co-op hunt while he was away. The critic on the g-84 LMG pictures found growing numbers covering the target name and other hit colours. Draw each above the nameplate with an 8 unit gap and separate simultaneous numbers horizontally. Red numbers rise 48 units clear of the head and reticle. Watch: read a mixed weak point and body burst, two players hitting one enemy, and your red number near the reticle; colours and totals should remain distinct.
+
+MEASURED. Check 36.08 passes, and fails on v36.07.
 ## v36.07 - ONE GROWING DAMAGE NUMBER AND YOUR HURT IN RED
 
 Co-op hunt while he was away. His g-84 and g-85 answers on 10-25: Yes, one growing number; Yes, red numbers. Shotgun pellets and rapid bursts crowded the fight, and solo hurt had no number over you. Watch: one climbing number should read cleaner in shotgun, LMG and SMG fights; check a weak point still stands out in its own colour, two players on one enemy stay readable, and your red numbers do not crowd your body or reticle.

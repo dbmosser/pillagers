@@ -3390,5 +3390,101 @@
   "pic": "tools/handoff/console/notes/shots/o-09d-red-35.81-preraid-names-and-ledger-recipes-4/preraid-whole-names-1080.jpg",
   "task": "o-09d-red-35.81-preraid-names-and-ledger",
   "when": "2026-10-28T22:10"
+ },
+ "d151-incoming-p1": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "A busy raid HUD with several working parts, but the clustered top-centre stack, the clipped objective label, the muddled hp bar and the lack of any clear hierarchy keep it at amateur level.",
+  "findings": [
+   "P0 right edge, 'the long dock cache' label under the 'c 151m' chip: Stack the chip and the name in one panel (--ui-panel at 80% fill, 8px padding). Put the name at 16px tx-1 on its own line, 8px below the chip. Spell out 'cache 151m' or drop the 'c'. Keep the purple only as a 3px rarity bar.",
+   "P1 top-centre stack: timer, team score, extract chip: Use one panel (--ui-panel, 4px radius) with 16px padding, and leave an 8px gap between rows. Make the timer the only hero element (56px). Show the team score at 20px and the per-player scores as 16px tx-2 on one row. Put the extract chip in the same panel as a teal 16px line. Align every row to a common centre line.",
+   "P1 hp bar, bottom-left: Use a 12px tall bar inset 5% from the edge. Fill it with --ok or a tx-1 fill, put the damage chunk in --danger at 60% opacity, and put 'hp 81' at 20px tx-1 above the bar rather than on top of it. Raise the f1 hint to 16px with a 1px --ui-line-hi chip border.",
+   "P1 hotbar slots 1-9, bottom centre: Draw every slot as a 56px tile with --ui-panel at 70% fill and a 1px --ui-line border, 8px apart. Show empty slots at 40% opacity. Use a 2px --acc border for the selected slot only. Make the number labels 14-16px tx-2, aligned top-left inside the tile.",
+   "P1 ammo panel, bottom-right: Share one panel style with the other HUD boxes (same fill, 4px radius, 16px padding). Set the weapon name at 20px tx-2 and '7' at 56px 800 tx-1 with '/ 42' at 20px tx-2. Align the panel right edge to the same 5% margin as 'goals 0/3'."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-09e-damage-numbers-merge-and-yours-red-recipes-1/d151-incoming-p1-1080.jpg",
+  "task": "o-09e-damage-numbers-merge-and-yours-red",
+  "when": "2026-10-28T22:26"
+ },
+ "d151-incoming-p2": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The HUD is a coherent dark-panel set in lower case with a clear ammo hero number, but it is crowded and uneven, with several small labels, too many different sizes, and a score block that contradicts itself.",
+  "findings": [
+   "P1 team score panel (top centre): Drop to a single line per player or show the team total only. Make all three boxes one width (about 270px) with 16px padding, a 4px radius, and 8px gaps. Set the labels to 16px f-cond and the total to the 56px hero or 32px title size.",
+   "P1 hp bar (bottom left): Put the hp bar in a --ui-panel card inset 48px from the edge. Use 20px f-cond label text in tx-1 on the dark panel, a 12px bar, and 16px for the '-6'. Keep the red only for the damage chunk.",
+   "P1 weapon slots 1-3 and the empty slots 4-8 (bottom centre): Render the empty slots as real 56px panel tiles at 40% opacity with a 1px --ui-line border, or hide them. Move the 'f' badge to the top-right corner. Set the ammo count to 16px minimum and 600 weight.",
+   "P1 player 1 tag (top left) and the in-world 'player 1' label: Use amber for P1 in both the tag and the world label, and cyan for P2. Place the tag at 48px/48px inside a panel with the same style as the HUD cards, and make the world label a 16px chip.",
+   "P2 'in pillager's party' toast (bottom centre) and 'f1 controls' hint: Use the standard panel fill (--ui-panel at 90%), a 4px radius, and 16px label text. Align the hint to the same left edge as the hp card, and put the toast above the weapon row with a 16px gap."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-09e-damage-numbers-merge-and-yours-red-recipes-1/d151-incoming-p2-1080.jpg",
+  "task": "o-09e-damage-numbers-merge-and-yours-red",
+  "when": "2026-10-28T22:26"
+ },
+ "d151-lmg-p1": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The HUD is readable in the corners, but the damage numbers overlap the enemy label into an unreadable pile, the ammo readout contradicts itself, and the panels, type sizes and slot states don't follow one system.",
+  "findings": [
+   "P0 enemy at centre, 'sen_r-64' tag with '96' damage number and 'weak spot 2.0x': Float damage numbers up 40-60px from the hit point and fade them. Keep the name tag fixed 24px above the enemy head. Move the 'weak spot 2.0x' text into the number as a 16px suffix. Never let the number overlap the tag.",
+   "P1 bottom-right ammo card, '60 / 42': Show magazine / reserve in the correct order. Set the hero to 56px f-cond 800 in tx-1 with the reserve at 32px tx-2. Shrink the card to fit the content with 16px padding.",
+   "P1 hotbar, slots 1-2, 3-5 and 7-0, and the selected slot 6: Draw all 10 slots as 56px tiles with --ui-panel fill and a 1px --ui-line-hi border. Mark the equipped slot with a 2px --acc border and put the weapon icon in it. Dim empty slots to 40% opacity. Align the numbers inside the tiles at 16px.",
+   "P1 top-centre stack (timer, team score, extract 163m): Use one 4px-radius panel column at 8px gaps. Put the timer at 32px and the score at 20px, with you / p2 on one 16px line in amber and cyan. Fold the weather icon into the timer panel. Centre-align all three to the same width.",
+   "P1 player 2 bars, top-left (16,325) and over the character: Remove one of them. Dock the P2 card under the P1 hp bar at bottom-left with the same 16px label and bar style, in cyan. Give the in-world tag a --scrim backing."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-09e-damage-numbers-merge-and-yours-red-recipes-1/d151-lmg-p1-1080.jpg",
+  "task": "o-09e-damage-numbers-merge-and-yours-red",
+  "when": "2026-10-28T22:26"
+ },
+ "d151-lmg-p2": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The raid HUD has a clear hero number and a quiet palette, but its overlapping damage text, mismatched panels and tiny, dim labels make it look like a prototype and not a polished game.",
+  "findings": [
+   "P0 damage numbers above the enemy, around (530,430): Stack the popup in one column with 8px gaps. Put the hero number at 32px f-cond 800, with a 16px label below it. Drop the 'se' fragment. Draw the hit '36' as a separate popup that floats away at an offset of at least 24px.",
+   "P1 top-centre cluster: timer, team score, extract: Make all three panels the same width (about 270px) and stack them at 8px gaps. Use one --ui-panel fill at 90% opacity, a 1px --ui-line-hi border and 4px radius. Left-align the score block with the hero '0 sp' at 56px. Move the per-player rows under it at 16px. Move the sun icon out of the panel's footprint.",
+   "P1 bottom-right: air strike bar and 'support mg 60 / 42' panel: Make both panels the same width (about 300px) with a 16px gap between them. Draw the ammo as one hero line at 56px f-cond 800 in tx-1, with '/ 42' at 32px tx-2 on the same baseline. Use a 16px label for the title. Make the air strike bar 8px high, and use --acc for the fill only when it is ready.",
+   "P1 weapon slots 1–0 along the bottom: Draw all 10 slots at 72×72px with 8px gaps, a 1px --ui-line border on empty ones and a --ui-panel fill. Use a 2px --acc border on the selected slot. Set slot numbers at 16px tx-2 in the same top-left corner everywhere. Move the ammo count to a 16px label at bottom-right.",
+   "P1 hp bar, bottom left; player 1 tag, left edge: Put the hp bar inside a --ui-panel frame at 24px from the left and bottom edges, 320×32px. Use a 16px label 'hp' and a 20px value in f-cond. Match the 'player 1' plate to the same frame. Keep P1 amber and P2 cyan as the guide requires."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-09e-damage-numbers-merge-and-yours-red-recipes-1/d151-lmg-p2-1080.jpg",
+  "task": "o-09e-damage-numbers-merge-and-yours-red",
+  "when": "2026-10-28T22:27"
+ },
+ "d151-shotgun-p1": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The in-raid HUD works, but it has too many different panel shapes and type sizes. The team-score block is crowded, the weapon bar looks unfinished, and the hp bar's number is hard to read.",
+  "findings": [
+   "P1 top-centre stack (timer, team score, extract): Merge into one 8px-grid column of equal width. Timer is the hero at 56px. Under it, a single 16px line 'extract 125m' in --extract. Drop the 'team score' label and show 0 sp at 32px. Move the per-player split into the P1/P2 corner chips, or use 16px --tx-2 with 16px padding all round.",
+   "P1 bottom-left hp bar: Put it in a --ui-panel card with 4px radius, 24px from the left and bottom edges. Use a 16px bar with a 20px --tx-1 'hp 100' label, and fill it with --ok. Keep the bar and the card edge on the same 8px grid as the weapon slots.",
+   "P1 weapon slot bar (bottom centre): Draw every slot as a 64px frame with a 1px --ui-line-hi border and a --ui-panel fill, empty ones dimmed. Number each at 16px in a fixed corner. Use --acc for the selected slot border (3px) and show the weapon icon in it. Remove the ghost silhouettes or put them inside the frames at 30% opacity.",
+   "P1 top-right 'goals 0/3' chip vs other panels: Use the same card as the others (--ui-panel, 1px --ui-line-hi, 4px radius, 16px padding) at 16px label size. Align its top edge to the timer box (y 24) and its right edge to the ammo card (24px margin). Keep the chevron as a 16px glyph.",
+   "P2 ammo card (bottom-right): Set the weapon name to 20px --tx-2. Set the 7 to the 56px hero in --tx-1 and '/ 150' to 20px --tx-2 on the same baseline, so the loaded count is the single hero. Use the same card style as the other HUD panels."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-09e-damage-numbers-merge-and-yours-red-recipes-1/d151-shotgun-p1-1080.jpg",
+  "task": "o-09e-damage-numbers-merge-and-yours-red",
+  "when": "2026-10-28T22:27"
+ },
+ "d151-shotgun-p2": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The easy-mode prompt is a clear yes/no card with a lime primary button, but it is a flat, empty dark slab dropped over a busy HUD, with a faint countdown, a key-letter prefix on the buttons, and a cramped HUD around it.",
+  "findings": [
+   "P1 easy-mode card, top-right '12': Make it a 56px hero number in --acc, or a thin progress bar along the card's top edge that fills the full width. Right-align it to the 48px padding and baseline-align it with the title.",
+   "P1 card layout: Tighten the vertical gaps to 24px, or centre the title over the buttons. Make the lime top bar either the full-width countdown or remove it. Use 32px padding and a 4px radius on the card.",
+   "P1 buttons 'y yes' / 'n no': Put the key hint in a 16px chip (--ui-line-hi border) to the left of the label, and make the labels 20px/600. Cut the button height to 64px. Give 'no' a 2px --ui-line-hi border and a --ui-raised fill. Show a pad-button glyph when a pad is in use.",
+   "P1 scene behind the card: Add --scrim rgba(6,7,8,.80) behind the card, or at least .5 over the playfield. Move the card down by 48px or up by 24px so it clears the extract chip. Keep HUD elements visible only if they matter.",
+   "P2 top-centre HUD (clock, team score, extract chip): Align all three to a shared 260px width. Use a 16px minimum for the per-player lines. Add 8px of gap between the extract chip and the card, or hide the chip while the prompt is open."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-09e-damage-numbers-merge-and-yours-red-recipes-1/d151-shotgun-p2-1080.jpg",
+  "task": "o-09e-damage-numbers-merge-and-yours-red",
+  "when": "2026-10-28T22:28"
  }
 }

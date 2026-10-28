@@ -461,3 +461,4 @@
 2026-10-28 18:05 o-09d-red-35.81-preraid-names-and-ledger 241s ok PARTIAL in=4160335 out=31994 run=4
 2026-10-28 18:12 o-09d-red-35.81-preraid-names-and-ledger 110s ok PARTIAL in=4781234 out=35731 run=5
 2026-10-28 18:19 o-09e-damage-numbers-merge-and-yours-red 439s ok PARTIAL in=1207653 out=19415 run=1
+2026-10-28 18:34 o-09e-damage-numbers-merge-and-yours-red 381s ok PARTIAL in=3067441 out=33661 run=2

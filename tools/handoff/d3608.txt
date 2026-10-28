@@ -1,0 +1,5 @@
+## v36.08 - DAMAGE NUMBERS CLEAR THE TARGET NAME
+
+Co-op hunt while he was away. The critic on the g-84 LMG pictures found growing numbers covering the target name and other hit colours. Draw each above the nameplate with an 8 unit gap and separate simultaneous numbers horizontally. Red numbers rise 48 units clear of the head and reticle. Watch: read a mixed weak point and body burst, two players hitting one enemy, and your red number near the reticle; colours and totals should remain distinct.
+
+MEASURED. Check 36.08 passes, and fails on v36.07.

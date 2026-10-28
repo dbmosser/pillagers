@@ -1,0 +1,7 @@
+v36.08: damage numbers clear the target name
+
+Growing damage numbers sit above target names and separate when their text would overlap. Red hurt numbers sit clear of your head. Totals, colours and hit timing are unchanged.
+
+Check 36.08. Fails on v36.07.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

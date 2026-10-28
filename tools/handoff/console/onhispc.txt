@@ -73,3 +73,4 @@
 10-28 17:41 v36.04 cw-cx-pausesp-gold on his pc after 33s (8802 serves 36.04) week 84%
 10-28 18:00 v36.05 cw-cx-preraid-names on his pc after 66s (8802 serves 36.05) week 84%
 10-28 18:09 v36.06 cw-cx-preraid-scroll on his pc after 65s (8802 serves 36.06) week 84%
+10-28 18:24 v36.07 cw-cx-dmgmerge on his pc after 65s (8802 serves 36.07) week 84%

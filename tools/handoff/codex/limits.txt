@@ -102,3 +102,4 @@
 2026-10-28 18:05 week=30.0% 5h=5.0% week_resets=2026-11-04 01:35 job=o-09d-red-35.81-preraid-names-and-ledger
 2026-10-28 18:12 week=31.0% 5h=7.0% week_resets=2026-11-04 01:35 job=o-09d-red-35.81-preraid-names-and-ledger
 2026-10-28 18:19 week=31.0% 5h=12.0% week_resets=2026-11-04 01:35 job=o-09e-damage-numbers-merge-and-yours-red
+2026-10-28 18:34 week=32.0% 5h=16.0% week_resets=2026-11-04 01:35 job=o-09e-damage-numbers-merge-and-yours-red
