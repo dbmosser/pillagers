@@ -36,3 +36,17 @@ This retarget request has only six NEW edits in checks 35.33, 16.16 and 15.53. T
 
 Local results: all six new fixture anchors occur exactly once; mk prints written; all 15 game anchors are unique; TXSHIP unchanged; patched game script, new check, all five relevant older checks and four camera recipes parse; all handoff files ASCII. No browser tests are available in the sandbox. Lane retarget checks, preflight, photographs, critic, shipping and ON HIS PC remain.
 
+
+--- codex run 2026-10-28 19:46 ---
+2026-10-28, o-09g-sentence-callouts, shipped batch review and one text follow-up.
+
+Confirmed from lane: cw-cx-sentence-callouts shipped as v36.10; ON HIS PC v36.10, 49 seconds after shipping. Retarget commit 3bdd0db2f passed 15.53, 16.16 and 35.33 before shipping. All first-round pictures staged at 1080 and 4k with no camera-lint findings. First-round critic scores are 2 for each view; not accepted as finished visual review.
+
+Looked at the four attached 1080 images. The mainframe toasts show the new lower-case text clearly. Rack costs still repeat the whole existing cost row, a text-specific P1: follow-up cw-cx-rack-short-answer now says only not enough parts. The existing rack-cost row stays intact. One new retarget lets check 36.10 accept either refusal before this ships. The new follow-up check drives an unaffordable rack and asserts the exact short answer and no rack built.
+
+The first raid pictures do not show the revive answer because the heal answer immediately replaces it. The heal answer is drawn under the player, as his newer cw-answerline ruling requires, and the open controls cover its left side. Round-two recipes photograph each answer separately in each player layout, with the existing career controls folded and the player away from the map edge. They verify ANSBOX is actually drawn and contains the expected headline and detail, rather than accepting only a run-log entry. Hub recipes show the answer persisting after closing the mainframe to review the changed toast without grading the unrelated racks layout again.
+
+The critic demand to delete the Claude paragraph conflicts with the explicit task order to leave TXSHIP alone. It is a TXSHIP value and questions.md already logs that exact b-31 conflict. Kept it and did not ask again. Shrinking the mainframe card also conflicts with his Q43 near-full-screen card order. HUD panels, timer, status chips, control typography and the legacy control/answer overlap belong to open task 186f-hud-panel-consistency; coordinator handoff is in alarms-new.md. This task is text polish only.
+
+Local follow-up validation: mk prints written; game and fixture anchors each match once; patched JavaScript, new check, retargeted 36.10 and six camera recipes parse; all output files ASCII. The original shipped key remains listed, followed by the new text key. Lane preflight, follow-up ship, ON HIS PC and corrected camera review remain.
+

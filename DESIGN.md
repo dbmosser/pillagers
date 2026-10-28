@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.11 - SHORT RACK ANSWER
+
+Co-op hunt while he was away. The critic found the full rack cost list repeated in the refusal toast. His rule calls for short callouts.
+
+MEASURED. Check 36.11 passes, and fails on v36.10.
 ## v36.10 - SHORT CALLOUTS
 
 Co-op hunt while he was away. His 10-28 audit order: replace 15 sentence callouts with short text without periods. None is a TXSHIP key.

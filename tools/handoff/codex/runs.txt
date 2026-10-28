@@ -471,3 +471,4 @@
 2026-10-28 19:30 o-09g-sentence-callouts 333s ok PARTIAL in=804060 out=14815 run=1
 2026-10-28 19:31 o-09g-sentence-callouts 56s ok PARTIAL in=1125378 out=16628 run=2
 2026-10-28 19:34 o-09g-sentence-callouts 107s ok PARTIAL in=1725762 out=20861 run=3
+2026-10-28 19:46 o-09g-sentence-callouts 304s ok PARTIAL in=3393581 out=32144 run=4

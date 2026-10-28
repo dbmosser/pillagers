@@ -1670,3 +1670,8 @@
 2026-10-28 0.0000 o-09g-sentence-callouts
 2026-10-28 0.0000 o-09g-sentence-callouts
 2026-10-28 0.0000 o-09g-sentence-callouts
+2026-10-28 0.0835 critic-o-09g-sentence-callouts
+2026-10-28 0.0789 critic-o-09g-sentence-callouts
+2026-10-28 0.0806 critic-o-09g-sentence-callouts
+2026-10-28 0.0848 critic-o-09g-sentence-callouts
+2026-10-28 0.0000 o-09g-sentence-callouts

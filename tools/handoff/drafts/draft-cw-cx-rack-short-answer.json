@@ -1,0 +1,12 @@
+{
+    "title":  "SHORT RACK ANSWER",
+    "why":  "The critic found the full rack cost list repeated in the refusal toast. His rule calls for short callouts.",
+    "now":  "The refusal says not enough parts; the mainframe retains its cost row.",
+    "edits":  [
+                  {
+                      "anchor":  "say(\u0027not enough parts: \u0027+rackCostLine());",
+                      "replacement":  "say(\u0027not enough parts\u0027); /* v28.xx (cw-cx-rack-short-answer): his short-callout rule; the rack cost row already shows the parts. */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the rack refusal is a short answer; costs remain on the mainframe instead of being repeated in the toast\u0027,\n   run:function(){\n     var realSay=say, said=[], bad=[], g;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state();\n       if(!g||!g.player||g.over) return \u0027staging: no live raid\u0027;\n       P.racks=0; P.freeKit=0; P.kitSaved=null; P.stash=[]; P.kit=[];\n       say=function(m){said.push(String(m));};\n       buildRack();\n       if(said.length!==1||said[0]!==\u0027not enough parts\u0027) bad.push(\u0027rack refusal still repeats costs: \u0027+said.join(\u0027 | \u0027));\n       if(P.racks!==0) bad.push(\u0027an unaffordable rack was built\u0027);\n       renderMainframe();\n       var hint=document.getElementById(\u0027mfhint\u0027);\n       if(!hint||hint.textContent.toLowerCase().indexOf(rackCostLine().toLowerCase())\u003c0) bad.push(\u0027mainframe cost row lost the required parts\u0027);\n     }catch(e){bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e));}\n     finally{say=realSay; try{__endRaid(\u0027abandon\u0027);}catch(e){} __topClear(); __cleanProfile();}\n     return bad.length?bad.join(\u0027; \u0027):null;\n   }},"
+}
