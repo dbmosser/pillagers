@@ -3166,5 +3166,37 @@
   "pic": "tools/handoff/console/notes/shots/o-04-155-longshot-glint-recipes-4/gl155-p2-night-1080.jpg",
   "task": "o-04-155-longshot-glint",
   "when": "2026-10-28T17:12"
+ },
+ "d2-host-shot-ends-sprint": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The raid HUD has a clear ammo hero and a sensible hotbar, but the corners disagree on panel style, a capital letter shows on screen, and the p2 banner, stamina/hp bars and controls hint all look off-system.",
+  "findings": [
+   "P0 run info collapsed bar under minimap: Render the label as 'run info'. Use the same --ui-panel fill, 1px --ui-line-hi border and 4px radius as the pillagers list, with a 16px label.",
+   "P1 hp and stamina bars, bottom left: Make both bars the same 16px-high track on --ui-panel with a 1px border. Use --ok for the hp fill and --extract for stamina. Set the labels at 16px f-cond 600 in --tx-1, aligned left with 8px padding. Make hp the only bold element, with the number at 20px.",
+   "P1 p2 pad lost banner, top centre-left: Move the banner to top-centre under the extract chip (y≈110, centred on x=960). Set the text at 20px, put the gamepad glyph in a 24px box, and use the --ui-panel fill, 4px radius and a 3px --warn bar.",
+   "P1 hotbar slots 4-0 and the hint row: Either hide empty slots 4-0, or draw them as 48px frames with a 1px --ui-line border and a 16px --tx-2 number. Keep the lime border only on the selected slot.",
+   "P1 current pillagers list, top left: Set rows at 16px with a 24px pitch. Use --tx-1 for names and --tx-2 for the header. Use only --acc, amber or cyan for the 'you' row. Drop the pink. Inset the panel 48px from the left edge and 24px from the top."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-05-120d2-fire-ends-sprint-recipes-1/120d2-host-shot-ends-sprint-1080.jpg",
+  "task": "o-05-120d2-fire-ends-sprint",
+  "when": "2026-10-28T17:25"
+ },
+ "d2-p2-shot-ends-sprint": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "A readable raid HUD with a good ammo hero number and a clear selected slot, but it has a capital letter, stray text clutter, inconsistent type sizes and a dim, crowded bottom edge.",
+  "findings": [
+   "P1 top-right, 'run Info' header: Change it to 'run info'. Give it the same --ui-panel fill, 1px --ui-line-hi border and 4px radius as the other HUD panels, with a 32px row height and 16px label type.",
+   "P1 bottom-centre, slot row and number strip behind it: Remove the loose 4 to 0 labels and ghost icons. Either draw only the filled slots, or draw the empty slots as 64px outlined tiles at --ui-line with 8px gaps.",
+   "P1 bottom-left, stamina and hp bars: Put the pair in one --ui-panel at 85% opacity with a 1px --ui-line-hi border. Use a 16px label at the left, a 20px value in --tx-1, and bars of equal height (16px) with dark track fills. Colour the hp bar --ok and the stamina bar a neutral tone.",
+   "P1 top-left, 'current pillagers 7' roster: Use a 20px row pitch, 16px minimum text, --tx-2 at 4.5:1 or better for the header, and 16px of inner padding. Colour a name differently only for a clear reason, such as player colours (amber for P1, cyan for P2).",
+   "P2 bottom-right weapon card: Raise 'view backpack' to 16px in --tx-2 and prefix it with a key chip. Keep the 8 in --tx-1 and switch it to --danger only at 25% of the magazine or below."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-05-120d2-fire-ends-sprint-recipes-1/120d2-p2-shot-ends-sprint-1080.jpg",
+  "task": "o-05-120d2-fire-ends-sprint",
+  "when": "2026-10-28T17:25"
  }
 }
