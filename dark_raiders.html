@@ -3730,8 +3730,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.63';
-var VER_AT='2026-10-28 02:55';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.64';
+var VER_AT='2026-10-28 03:38';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -13212,7 +13212,7 @@ function FSz(spec,z){
 // v18.71, SEEN ON THE 4K RAID SCREENSHOT (2026-10-07): THE BELT TEXT GROWS WITH THE BELT. The belt slots are sized by the room
 // they have (up to LH(112)), but the key number, the count and the caption over them were the smallest HUD type, so at 4K a
 // count was a speck in the corner of a big slot. They now take a share of the slot size, never smaller than before.
-function beltFS(bw,k){ var f=FS(TYPE.micro), m=(/([\d.]+)px/).exec(f), n=m?parseFloat(m[1]):11, want=Math.round(bw*k); if(G&&G.hubFloor&&typeof G.hubBagBeltBottom==='number')want=Math.max(want,20*Math.max(.75,Math.min(2.2,H/1080))); return hudFloor16((want>n)?f.replace((/([\d.]+)px/),want+'px'):f); } // v28.xx (cw-cx-hubbagreadability): key numbers stay readable in the hub card.
+function beltFS(bw,k){ var f=FS(TYPE.micro), m=(/([\d.]+)px/).exec(f), n=m?parseFloat(m[1]):11, want=Math.max(Math.round(bw*k),(G&&!G.hubFloor)?Math.round(18*hudRes()):0); if(G&&G.hubFloor&&typeof G.hubBagBeltBottom==='number')want=Math.max(want,20*Math.max(.75,Math.min(2.2,H/1080))); return hudFloor16((want>n)?f.replace((/([\d.]+)px/),want+'px'):f); } // v28.xx (cw-cx-hubbagreadability): key numbers stay readable in the hub card. // v28.xx (cw-cx-hudtvread): raid key numbers and reserves have an 18px floor, grown with the TV and screen scale.
 // v19.66, seen on a 4K text scan (2026-10-08): the line over the belt grew 1.3 times from 1080p to 4K while the extraction lines above
 // it (v19.54) and the rest of the HUD grow twice, so it read as small print. It is the larger of the slot size and the screen-grown size.
 /* v31.xx (cw-beltcap), the critic on screen 36 (2026-10-19): the line over the belt (scav pistol, fire, use) was the smallest print on the HUD, 13 px, unreadable from a couch. It takes the label size (15.6 px rendered, the size of prompts) and the emote strip and bars above it move up with it, as they already read this function. */
@@ -42773,7 +42773,7 @@ function drawBuzzFx(){
   function gunGhostDraw(q,cx,cy,bw){
     var cl=gunKeyList()[q], id=GHOST_OF[cl], gh=id?gunGhost(id,bw*0.64):null, oa;
     if(!gh) return false;
-    oa=ctx.globalAlpha; ctx.globalAlpha=GHOST_A; ctx.drawImage(gh.c,cx-gh.s/2,cy-gh.s/2,gh.s,gh.s); ctx.globalAlpha=oa;
+    oa=ctx.globalAlpha; ctx.globalAlpha=GHOST_A*((G&&!G.hubFloor)?.45:1); ctx.drawImage(gh.c,cx-gh.s/2,cy-gh.s/2,gh.s,gh.s); ctx.globalAlpha=oa; // v28.xx (cw-cx-hudtvread): retain class silhouettes at less than half their old opacity in raids.
     return true;
   }
   function beltGroupOf(i){ return (i<GUNKEYS)?0:({throw:1,med:2,plate:3}[BELT_CLASS[i]]||0); }
@@ -42822,7 +42822,7 @@ function drawBuzzFx(){
           _topG=H-(34+LH(80))*(HUDZ.gear||1)*_hz*hudUserZ('gear')+hudOff('gear').dy;
       bw=Math.max(20,Math.min(Math.round(_nbw*_tv),Math.floor((W-LH(32)-_gt)/sl.length)));
       tw2=sl.length*bw+_gt; hx=Math.round((W-tw2)/2);
-      hy=Math.max(LH(16),Math.min(_topB,_topG)-bw-LH(24));
+      hy=Math.max(LH(16),Math.min(_topB,_topG)-bw-LH(12)); // v28.xx (cw-cx-hudtvread): half the excess gap, still above both bottom corners.
     }
     // v21.42, from the whole-game bug hunt of 2026-10-08 (W-A2): THE UNDERCROFT BELT IS CENTRED ON THE SCREEN. It was centred in the
     // room a raid leaves between the health block on the left and the gear stack on the right, and the health block is the wider of
@@ -42853,7 +42853,7 @@ function drawBuzzFx(){
       _gf=-1; _gl=-1;
       for(_gq2=0;_gq2<sl.length;_gq2++) if(beltGroupOf(_gq2)===_gg){ if(_gf<0) _gf=_gq2; _gl=_gq2; }
       if(_gf<0) continue;
-      hudPlate(hx+_gf*bw+_gx[_gf]-_pp,hy-_pp,(_gl-_gf)*bw+(_gx[_gl]-_gx[_gf])+bw+_pp*2,bw+_lbH+_pp*2,null,HUDC.plate);
+      if(G.hubFloor) hudPlate(hx+_gf*bw+_gx[_gf]-_pp,hy-_pp,(_gl-_gf)*bw+(_gx[_gl]-_gx[_gf])+bw+_pp*2,bw+_lbH+_pp*2,null,HUDC.plate); // v28.xx (cw-cx-hudtvread): raid empty slots no longer carry a solid full-width backing plate.
     }
     G.hotCells=[];
     for(var q=0;q<sl.length;q++){
@@ -42878,18 +42878,28 @@ function drawBuzzFx(){
       // v18.34, THE STYLING PASS IN THE RAID (2026-10-04): THE BELT KEYS ARE ROUNDED TILES. A belt key was a flat square with a thin
       // stroke. It is a rounded tile now with a light from the top, a rarity wash inside the same shape and a rounded ring, the
       // shape the stash cells took at v18.32. Every size, hit box and colour rule is unchanged.
+      var _quietBelt=!G.hubFloor, _vacant=!!S.vacant||S.kind==='empty'; // v28.xx (cw-cx-hudtvread): owned slots lead; keep every class key and hit cell.
       var _br=Math.max(3,bw*0.09);
       function _bpath(){ ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(bx+.5,hy+.5,bw-1,bw-1,_br); else ctx.rect(bx+.5,hy+.5,bw-1,bw-1); }
       ctx.save(); _bpath(); ctx.clip();
-      var _bg=ctx.createLinearGradient(0,hy,0,hy+bw); _bg.addColorStop(0,on?'rgba(70,56,28,.96)':'rgba(30,34,37,.9)');   /* vNN.xx (ui5q1t, his #35): a belt key is graphite like the HUD plate, not navy */ _bg.addColorStop(1,on?'rgba(38,32,20,.94)':'rgba(6,9,13,.86)');
-      ctx.fillStyle=_bg; ctx.fillRect(bx,hy,bw,bw);
+      // v28.xx (cw-cx-hudtvread): flat graphite owned tiles; unselected vacant raid slots have no slab.
+      if(_quietBelt){
+        if(!_vacant||on){ctx.fillStyle=on?UIC.ui_raised:UIC.ui_panel;ctx.fillRect(bx,hy,bw,bw);}
+      }else{
+        var _bg=ctx.createLinearGradient(0,hy,0,hy+bw);_bg.addColorStop(0,on?'rgba(70,56,28,.96)':'rgba(30,34,37,.9)');_bg.addColorStop(1,on?'rgba(38,32,20,.94)':'rgba(6,9,13,.86)');
+        ctx.fillStyle=_bg;ctx.fillRect(bx,hy,bw,bw);
+      }
       // the rarity wash goes OVER the base so a selected slot still reads as
       // selected, and under the icon so it never fights the portrait
       var _hr=(S.itemKey&&ITEMS[S.itemKey])?dispR(S.itemKey)
              :((S.kind==='gun'&&S.icon&&WEAPONS[S.icon])?gunRarity(S.icon)
              :((S.icon&&ITEMS[S.icon])?dispR(S.icon):null));
-      if(_hr&&!_bgDim){ var _hf=rfill(_hr); if(_hf){ ctx.fillStyle=_hf; if(_bgHalf) ctx.globalAlpha=.5; ctx.fillRect(bx,hy,bw,bw); ctx.globalAlpha=1; } }   // v24.xx (beltgrey): a reloadable gun keeps half its wash
-      ctx.fillStyle='rgba(255,255,255,.05)'; ctx.fillRect(bx,hy,bw,Math.max(1,bw*0.04));
+      // v28.xx (cw-cx-hudtvread): rarity is a 3px rail in the raid, not a second selected fill. Reloadable guns retain their half-grey state.
+      if(_hr&&!_bgDim){
+        if(_quietBelt){ctx.fillStyle=RCOL[_hr]||UIC.tx_2;ctx.globalAlpha=_bgHalf?.5:1;ctx.fillRect(bx+4,hy+bw-Math.max(3,3*hudRes())-2,bw-8,Math.max(3,3*hudRes()));ctx.globalAlpha=1;}
+        else{var _hf=rfill(_hr);if(_hf){ctx.fillStyle=_hf;if(_bgHalf)ctx.globalAlpha=.5;ctx.fillRect(bx,hy,bw,bw);ctx.globalAlpha=1;}}
+      }
+      if(!_quietBelt){ctx.fillStyle='rgba(255,255,255,.05)'; ctx.fillRect(bx,hy,bw,Math.max(1,bw*0.04));} // v28.xx (cw-cx-hudtvread): flat raid tiles have no gloss.
       ctx.restore();
       var dragOver=(G.drag&&mouse.x>=bx&&mouse.x<=bx+bw&&mouse.y>=hy&&mouse.y<=hy+bw)
         ||(!!G.bagOpen&&!!G.bagBelt&&q===clamp(G.bagBeltSel||0,0,sl.length-1));   // v16.79, his order: the backpack highlight on the belt row rings its key
@@ -42898,9 +42908,10 @@ function drawBuzzFx(){
       // the H cap), so up to three keys wear it at once: the gun in hand, the chosen grenade and the chosen heal. Same colour, width and corner. The other
       // grenade, the other heal, the plate and a key with nothing on it get none, and the Undercroft floor belt (no G or H there) keeps the gun ring alone.
       var _selOut=on||(state!=='hub'&&(S.count|0)>0&&((S.kind==='throw'&&!!S.icon&&!!_gSel&&S.icon===_gSel)||((S.kind==='heal'||S.kind==='stim')&&q===_mSel)));
-      ctx.strokeStyle=dragOver?'#ffc04a':(_selOut?'#ffc04a':((_hr&&RCOL[_hr]&&!_bgDim)?hexA(RCOL[_hr],.55):'rgba(140,152,163,.35)'));
-      ctx.lineWidth=(dragOver||_selOut)?2:1;
-      _bpath(); ctx.stroke();   // v18.34: the rounded ring
+      // v28.xx (cw-cx-hudtvread): his 10-13 order keeps selected guns, heals and throwables gold. Three pixels improves the ring; vacant raid slots lose their outlines.
+      ctx.strokeStyle=(dragOver||_selOut)?'#ffc04a':(_quietBelt?UIC.ui_line_hi:((_hr&&RCOL[_hr]&&!_bgDim)?hexA(RCOL[_hr],.55):'rgba(140,152,163,.35)'));
+      ctx.lineWidth=(dragOver||_selOut)?(_quietBelt?3:2):1;
+      if(!_quietBelt||!_vacant||dragOver||_selOut){_bpath();ctx.stroke();}
       if(G&&G.hubFloor&&typeof G.hubBagBeltBottom==='number'&&G.bagBelt&&q===clamp(G.bagBeltSel||0,0,sl.length-1)){ctx.strokeStyle='#e6ff3d';ctx.lineWidth=3;_bpath();ctx.stroke();} // v28.xx (cw-cx-hubbagreadability): focus is lime; the owner-required equipped gold ring stays.
       var cx2=bx+bw/2,cy2=hy+bw*0.45;
       ctx.globalAlpha=_bgDim?.28:(_bgHalf?.64:1);   // v24.xx (beltgrey): half grey while it can be reloaded
@@ -42926,8 +42937,8 @@ function drawBuzzFx(){
         ctx.fillRect(cx2-bw*0.16,cy2-bw*0.22,bw*0.22,bw*0.09);
       }
       ctx.globalAlpha=1;
-      ctx.font=beltFS(bw,0.13); ctx.fillStyle='rgba(160,172,184,.8)';   // v18.71: grows with the slot
-      ctx.fillText(slotKeyName(q),bx+LH(4),hy+Math.max(LH(11),Math.round(bw*0.13)+LH(3)));
+      ctx.font=beltFS(bw,0.13); ctx.fillStyle=UIC.tx_2;   // v18.71: grows with the slot
+      hudText(slotKeyName(q),bx+LH(4),hy+Math.max(LH(11),Math.round(bw*0.13)+LH(3))); // v28.xx (cw-cx-hudtvread): outlined key digits read on the ground behind vacant slots.
       // A slot he arranged himself is marked, so an assigned bar can be told from
       // the default one at a glance.
       if(S.assigned&&!S.auto){   // v21.83: not on a gun pin, which the game set, not he
@@ -44417,7 +44428,7 @@ if(!p.downed&&!G.bagOpen&&!G.mapOpen&&!(G.wheel&&!G.wheel.pad)){   // v28.xx (cw
   // and the party ping, Waypoint and arrow labels were filled with no outline and no plate, so over snow, a lit street or a fire they
   // washed out. Each now goes through hudText: a 2 x hudRes ink stroke with round joins, then the same fill. No shadowBlur (frame
   // cost); about twenty strokes a frame at most. The words, colours and places are unchanged.
-  if(G.arcade||G.career){ var _arcB=arcadeScoreHud(_yClk,_tz)||0; try{ if(SCOREBOX&&SCOREBOX.g===G&&SCOREBOX.w>0) wxIconDraw(Math.round(SCOREBOX.x+SCOREBOX.w+LH(16)*_tz),Math.round(SCOREBOX.y+Math.min(SCOREBOX.h/2,LH(28)*_tz)),Math.round(LH(10)*_tz)); }catch(_wxa){}   /* v35.xx (cw-extpill): the sky beside the score block */ if(_arcB>0&&_yCmp<_arcB+Math.round(3*_tz+_hCmp*0.80)){ _yCmp=_arcB+Math.round(3*_tz+_hCmp*0.80); _yArw=Math.round(_yCmp+_hCmp*0.90); _yMk=Math.round(_yArw+_hMk*1.30); } } else {   /* v25.xx (topmid): the compass starts under the score block, not through its clock row */ var _cpo=(!_noClk&&_tSrc<=CLOCK_RED&&_tSrc>0)?clockPopIn(W/2,_yClk-_hClk*0.35,G.timeLeft):false; hudText(mm+':'+(ss<10?'0':'')+ss,W/2,_yClk); if(_cpo) ctx.restore(); try{ ctx.font=_fClk; wxIconDraw(Math.round(W/2+ctx.measureText(mm+':'+(ss<10?'0':'')+ss).width/2+LH(18)*_tz),Math.round(_yClk-_hClk*0.36),Math.round(LH(10)*_tz)); }catch(_wxi){} }   /* v35.xx (cw-extpill): the sky beside the clock */   /* v23.xx (his answer 19): it pops on every second of the final minute */   // v23.29 (arcade8): in the arcade, TEAM SCORE in place of the clock
+  if(G.arcade||G.career){ var _arcB=arcadeScoreHud(_yClk,_tz)||0; try{ if(SCOREBOX&&SCOREBOX.g===G&&SCOREBOX.w>0) wxIconDraw(Math.round(SCOREBOX.x+SCOREBOX.w+LH(16)*_tz),Math.round(SCOREBOX.y+Math.min(SCOREBOX.h/2,LH(28)*_tz)),Math.round(LH(10)*_tz)); }catch(_wxa){}   /* v35.xx (cw-extpill): the sky beside the score block */ if(_arcB>0&&_yCmp<_arcB+Math.round(8*_tz+_hCmp*1.05)){ _yCmp=_arcB+Math.round(8*_tz+_hCmp*1.05); _yArw=Math.round(_yCmp+_hCmp*0.90); _yMk=Math.round(_yArw+_hMk*1.30); } } else {   /* v25.xx (topmid): the compass starts under the score block, not through its clock row */ var _cpo=(!_noClk&&_tSrc<=CLOCK_RED&&_tSrc>0)?clockPopIn(W/2,_yClk-_hClk*0.35,G.timeLeft):false; hudText(mm+':'+(ss<10?'0':'')+ss,W/2,_yClk); if(_cpo) ctx.restore(); try{ ctx.font=_fClk; wxIconDraw(Math.round(W/2+ctx.measureText(mm+':'+(ss<10?'0':'')+ss).width/2+LH(18)*_tz),Math.round(_yClk-_hClk*0.36),Math.round(LH(10)*_tz)); }catch(_wxi){} }   /* v35.xx (cw-extpill): the sky beside the clock */   /* v23.xx (his answer 19): it pops on every second of the final minute */   // v23.29 (arcade8): in the arcade, TEAM SCORE in place of the clock // v28.xx (cw-cx-hudtvread): the extraction pill clears the score plate by 8 scaled pixels.
   // HIS NOTE, 2026-08-26: "can you make it point to the NEAREST extraction instead,
   // and make it switch any time the player finds a nearer extraction -- also ...
   // the beacon indicator should change to like 'Marked Waypoint' and point to that
@@ -45328,7 +45339,7 @@ ctx.fillStyle='rgba(190,255,220,.85)';
   var _hpf=FS(TYPE.title), _hpx=parseFloat((/([\d.]+)px/.exec(_hpf)||[0,26])[1]), _hpm=HBH*1.08;
   if(_hpx>_hpm) _hpf=_hpf.replace(/[\d.]+px/,(Math.round(_hpm*10)/10)+'px');
   ctx.font=_hpf; ctx.fillStyle='#FFF6DC';
-  ctx.fillText('HP  '+Math.round(p.hp),24,(_hpx>_hpm)?Math.round(by+HBH/2+_hpm*0.36):by+18);
+  hudText('HP  '+Math.round(p.hp),24,(_hpx>_hpm)?Math.round(by+HBH/2+_hpm*0.36):by+18); // v28.xx (cw-cx-hudtvread): ink outline separates the word from its coloured bar; retain the larger hp hierarchy.
   drawLowHpRing(16,by,HBW,HBH,p.hp,p.maxhp);   // v28.xx (cw-lowhp)
   // v19.07: the co-op HUD (teammate rows, kill feed, pings, the controller paused word) is drawn after the corner scale ends, below
   // YOUR OWN STATUS, beside the health because that is where you already look.
@@ -45391,7 +45402,7 @@ if(p.armor>0){
     var _apf=FS(TYPE.label), _apx=parseFloat((/([\d.]+)px/.exec(_apf)||[0,13])[1]), _apm=16*1.08;
     if(_apx>_apm) _apf=_apf.replace(/[\d.]+px/,(Math.round(_apm*10)/10)+'px');
     ctx.font=_apf; ctx.fillStyle='#FFF6DC';
-    ctx.fillText('ARMOUR  '+Math.round(p.armor),24,(_apx>_apm)?Math.round(by-50+8+_apm*0.36):by-37);   /* v28.xx (cw-barheight): follows the bar */
+    hudText('ARMOUR  '+Math.round(p.armor),24,(_apx>_apm)?Math.round(by-50+8+_apm*0.36):by-37);   /* v28.xx (cw-barheight): follows the bar */ // v28.xx (cw-cx-hudtvread): ink outline separates the word from its coloured bar; retain the larger hp hierarchy.
   }
   var _stc=p.stamLock?'#c8452f':(p.stam<35?'#c98a1e':'#4f86a8');   // v28.xx (cw-stamlabel), the critic (2026-10-19): 'the stamina label sits outside its bar'. The fills are one step darker so the cream word reads inside the bar, the way the armour word does.
   var _lowDim=(p.hp>0&&p.hp/p.maxhp<0.25&&!p.stamLock);   // v28.xx (cw-lowhp2), the critic: stamina out-shouts a nearly dead health bar, so under a quarter health it steps back
@@ -45405,7 +45416,7 @@ if(p.armor>0){
   var _spf=FS(TYPE.label), _spx=parseFloat((/([\d.]+)px/.exec(_spf)||[0,13])[1]), _spm=16*1.08;
   if(_spx>_spm) _spf=_spf.replace(/[\d.]+px/,(Math.round(_spm*10)/10)+'px');
   ctx.save(); ctx.font=_spf; ctx.fillStyle='#FFF6DC'; ctx.shadowColor='rgba(0,0,0,.85)'; ctx.shadowBlur=3;
-  ctx.globalAlpha=_sfa; if(_sfa>0.001) ctx.fillText(p.stamLock?'WINDED':'STAMINA',24,(_spx>_spm)?Math.round(by-29+8+_spm*0.36):by-16);
+  ctx.globalAlpha=_sfa; if(_sfa>0.001) hudText(p.stamLock?'WINDED':'STAMINA',24,(_spx>_spm)?Math.round(by-29+8+_spm*0.36):by-16); // v28.xx (cw-cx-hudtvread): ink outline separates the word from its coloured bar; retain the larger hp hierarchy.
   ctx.restore();   /* v28.xx (cw-barheight): centred on the taller bar */   /* v28.xx (cw-barsame): the word follows the longer bar */
   ctx.restore();                          // v8.08: end of the corner scale
   ctx.restore();
@@ -55462,7 +55473,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.63: Large for tv grows raid panels, minimap and belt; the belt sits above the bottom corners. Check 35.63 fails on v35.62',
+  now:'v35.64: TV HUD labels read larger; empty belt slots are quieter and the score panel has room. Check 35.64 fails on v35.63',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -68358,40 +68369,27 @@ function arcadeScTake(m){
 }
 // The clock spot in the arcade: TEAM SCORE over the sum, YOU and the teammate score beside it. y is the clock line, z its scale.
 function arcadeScoreHud(y,z){
+  // v28.xx (cw-cx-hudtvread): readable score labels and a real top inset in both windows. Score, streak and final-minute clock rules stay the same.
   if(!G||!(G.arcade||G.career)||!ctx) return;
-  var cr=!G.arcade, solo=cr||!!ARCADE.solo;   // v24.xx (feat0h2): a CAREER raid reads its own score, one player to a window
-  var cx=Math.round(W/2), mine=Math.max(0,cr?((G.cs&&G.cs.s)|0):(ARCADE.mine|0)), mate=cr?0:Math.max(0,ARCADE.mate|0), nm=arcadeCr(mine+mate);   // v23.56 (arcade31): in credits
-  var fb=FSz(TYPE.title,z), fs=FSz(TYPE.micro,z), mh=/([\d.]+)px/.exec(fb), h=mh?+mh[1]:20, w, gx, yL=y+Math.round(10*z), _bot;   // v28.xx (cw-scoretop): the whole block rides 10 pixels lower (the label) and 14 (the number) so the SCORE label is not clipped at the top edge (the critic, 10-19)
-  // v25.xx (topmid), HIS NOTE 2026-10-13: "text at top mid iscolliding". The SCORE label sat flush on the number under it (1 pixel of
-  // ink over it at 1080p), so the number, the clock under it and everything below go down 4 pixels (times the screen scale) and the
-  // label stays at the top edge. The function returns the bottom of its ink, for the compass stack to start under.
-  y=y+Math.round(14*z); _bot=Math.round(y+h*0.22);
-  ctx.save(); ctx.textAlign='center';
-  // v28.xx (cw-scoreplate), the critic (2026-10-19): "the score cluster has no plate". One plate (the HUD plate, 78 percent) hangs from the top edge behind the label, the number and the clock, so the numbers read on any floor; it is as wide as the number plus the streak and the teammate score beside it.
-  var _sx0=arcadeStreakLive(), _cl0=raidClockOn(), _fin0=(_cl0&&Math.ceil(Math.max(0,+G.timeLeft||0))<=CLOCK_RED), _pw0, _ph0;
-  ctx.font=fb; _pw0=Math.max(Math.round(80*z),Math.round(ctx.measureText(nm).width/2+22*z+(solo?0:100*z)+(_sx0>1?40*z:0))); _ph0=Math.round(y+h*(_cl0?(_fin0?1.42:1.22):0.35));
-  hudPlate(cx-_pw0,-Math.round(8*z),_pw0*2,_ph0+Math.round(8*z),null,HUDC.plate); SCOREBOX.g=G; SCOREBOX.x=cx-_pw0; SCOREBOX.y=0; SCOREBOX.w=_pw0*2; SCOREBOX.h=_ph0;   /* v31.xx (cw-trcol2): where the plate is, for the world labels that keep clear of it */
-  ctx.font=fs; ctx.fillStyle=UIC.tx_2; hudText(solo?'SCORE':'TEAM SCORE',cx,Math.round(yL-h*0.80));   // v23.54 (arcade30): SCORE in the 1 player arcade; v28.xx (cw-scoretop): the label is quiet grey (amber is for a warning), the number is the hero
-  ctx.font=fb; ctx.fillStyle='#e8eef2'; hudText(nm,cx,y); w=ctx.measureText(nm).width;
-  if(raidClockOn()){   // v23.6x (feat0e): the DEMO clock under the score, red under 45 s like the raid clock
-    var _ct=Math.ceil(Math.max(0,+G.timeLeft||0)), _cm=Math.floor(_ct/60), _cs=_ct%60;
-    // v27.xx (clockbig), HIS ANSWER 14 (2026-10-13): "the countdown clock needs to be bigger". The clock under the score was the smallest type on the HUD (13 pixels at
-                    // 1080p, 19 in the last minute). It is the head size now (19.5) and the title size, the same as the score, in the last minute (26), and sits a little lower to
-                    // make room. DEMO and CAREER draw this one block.
-                    var _cfin=(_ct<=CLOCK_RED), _cy=Math.round(y+h*(_cfin?1.14:0.92)), _apo=(_cfin&&_ct>0)?clockPopIn(cx,_cy-h*0.3,G.timeLeft):false;   // v23.xx (his answer 19): the final minute, red, bigger and popping
-    ctx.font=_cfin?FSz(TYPE.title,z):FSz(TYPE.head,z); ctx.fillStyle=_cfin?'#ff5a4a':'#cdd6dd'; hudText(_cm+':'+(_cs<10?'0':'')+_cs,cx,_cy); if(_apo) ctx.restore();
-    _bot=Math.max(_bot,Math.round(_cy+(+((/([\d.]+)px/.exec(ctx.font)||[0,14])[1]))*0.25));   // v25.xx (topmid): the bottom of the clock row
-  }
-  gx=Math.round(cx+w/2+10*z);
-  ctx.font=fs; ctx.textAlign='left'; ctx.fillStyle='#cdd6dd';
-  if(!solo){   // v23.54 (arcade30): no YOU and P2 split in the 1 player arcade
-    hudText('YOU '+arcadeCr(mine),gx,Math.round(y-h*0.40));
-    hudText((ARCADE.role==='p2'?'P1 ':'P2 ')+arcadeCr(mate),gx,Math.round(y+h*0.15));
-  }
-  var _sx=arcadeStreakLive();   // v23.38 (arcade15): the live streak multiplier, left of the score
-  if(_sx>1){ ctx.font=fb; ctx.textAlign='right'; ctx.fillStyle='#ffc04a'; hudText('x'+_sx,Math.round(cx-w/2-10*z),y); }
-  ctx.restore();
-  return _bot;   // v25.xx (topmid): where the block ends, for the compass under it
+  var cr=!G.arcade,solo=cr||!!ARCADE.solo,cx=Math.round(W/2),mine=Math.max(0,cr?((G.cs&&G.cs.s)|0):(ARCADE.mine|0)),mate=cr?0:Math.max(0,ARCADE.mate|0),nm=arcadeCr(mine+mate),
+      fb=FSz(TYPE.title,z),fs=FSz(TYPE.label,z),h=parseFloat((/([\d.]+)px/.exec(fb)||[0,20])[1]),lh=parseFloat((/([\d.]+)px/.exec(fs)||[0,16])[1]),
+      clock=raidClockOn(),ct=Math.ceil(Math.max(0,+G.timeLeft||0)),fin=ct<=CLOCK_RED,fc=FSz(fin?TYPE.title:TYPE.head,z),ch=parseFloat((/([\d.]+)px/.exec(fc)||[0,20])[1]),
+      top=Math.round(16*z),pad=Math.round(12*z),labelY=top+pad+lh,scoreY=labelY+Math.round(8*z)+h,clockY=scoreY+Math.round(8*z)+ch,
+      sx=arcadeStreakLive(),w,gx,pw,bot,side=0,sw=0,apo=false;
+  ctx.save();ctx.textAlign='center';
+  ctx.font=fb;w=ctx.measureText(nm).width;
+  if(!solo){ctx.font=fs;side=Math.max(ctx.measureText('YOU '+arcadeCr(mine)).width,ctx.measureText((ARCADE.role==='p2'?'P1 ':'P2 ')+arcadeCr(mate)).width)+Math.round(24*z);}
+  if(sx>1){ctx.font=fb;sw=ctx.measureText('x'+sx).width+Math.round(10*z);}
+  pw=Math.ceil(Math.max(100*z,w/2+pad+Math.max(side,sw)));
+  bot=Math.ceil((clock?clockY+ch*.25:scoreY+h*.25)+pad);
+  hudPlate(cx-pw,top,pw*2,bot-top,null,HUDC.plate);
+  SCOREBOX.g=G;SCOREBOX.x=cx-pw;SCOREBOX.y=top;SCOREBOX.w=pw*2;SCOREBOX.h=bot-top;
+  ctx.font=fs;ctx.fillStyle=UIC.tx_2;hudText(solo?'SCORE':'TEAM SCORE',cx,labelY);
+  ctx.font=fb;ctx.fillStyle=UIC.tx_1;hudText(nm,cx,scoreY);
+  if(clock){apo=(fin&&ct>0)?clockPopIn(cx,clockY-ch*.3,G.timeLeft):false;ctx.font=fc;ctx.fillStyle=fin?'#ff5a4a':'#cdd6dd';hudText(Math.floor(ct/60)+':'+(ct%60<10?'0':'')+(ct%60),cx,clockY);if(apo)ctx.restore();}
+  if(!solo){gx=Math.round(cx+w/2+24*z);ctx.font=fs;ctx.textAlign='left';ctx.fillStyle=UIC.tx_2;hudText('YOU '+arcadeCr(mine),gx,Math.round(scoreY-lh*.5));hudText((ARCADE.role==='p2'?'P1 ':'P2 ')+arcadeCr(mate),gx,Math.round(scoreY+lh*.75));}
+  if(sx>1){ctx.font=fb;ctx.textAlign='right';ctx.fillStyle='#ffc04a';hudText('x'+sx,Math.round(cx-w/2-10*z),scoreY);}
+  ctx.restore();return bot;
 }
 // v23.35, HIS ORDER (2026-10-11), build 13 of 20 (arcade13): THE ARCADE HUD. A walk-up player needs the score, the way out and when he
 // drops back in, and nothing else. In the arcade the CONDITIONS panel, the CURRENT PILLAGERS board, the notoriety stamp and the

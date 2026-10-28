@@ -31,3 +31,6 @@
 2026-10-28 02:35 week=0.0% 5h=0.0% week_resets=2026-11-04 01:34 job=o-137-os-reduce-motion
 2026-10-28 02:42 week=0.0% 5h=1.0% week_resets=2026-11-04 01:35 job=o-137-os-reduce-motion
 2026-10-28 02:52 week=1.0% 5h=7.0% week_resets=2026-11-04 01:35 job=o-138-hud-size-row-does-nothing
+2026-10-28 03:12 week=2.0% 5h=11.0% week_resets=2026-11-04 01:35 job=o-138-hud-size-row-does-nothing
+2026-10-28 03:18 week=2.0% 5h=13.0% week_resets=2026-11-04 01:35 job=o-138-hud-size-row-does-nothing
+2026-10-28 03:35 week=3.0% 5h=19.0% week_resets=2026-11-04 01:35 job=o-138-hud-size-row-does-nothing

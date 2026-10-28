@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.64 - TV HUD READABILITY
+
+Co-op hunt while he was away. The clean two-window TV pictures scored 3. The large belt looked like a solid wall of empty tiles and the score labels were small and pressed against the top edge. Raid vacant keys now keep only quiet silhouettes and outlined key digits, while owned keys keep flat plates, 3px rarity rails and the owner-required gold ring. Raid belt text starts at 18px and grows with TV scale; the TV belt moves 12 logical pixels closer to the bottom corners. Vitals keep the owner-requested larger hp bar and gain ink outlines for contrast. Score labels use the label role, the panel has a 16px top inset and the extraction pill has an 8px gap. Playtest watch: check belt selection and ammo states, the final-minute clock and long score totals in both windows; check tv belt clicks after resizing panels. No world or feel values changed.
+
+MEASURED. Check 35.64 passes, and fails on v35.63.
 ## v35.63 - HUD SIZE WORKS FOR TV
 
 Co-op hunt while he was away. The existing HUD SIZE row saved a choice that no drawing code used. Text size changes fonts but leaves the vitals bars and partner plate fixed. Large for tv now grows raid panels, minimap and partner rows by 20 percent through the shared HUD scale. The belt grows above the bottom corners instead of being squeezed between them. Standard is unchanged. Playtest watch: in both windows at 1080p in the smooth look, switch HUD SIZE both ways, check panel spacing and belt clicks or dragging, and read the TV view from across the room. Saved panel positions or very large text may need adjustment.

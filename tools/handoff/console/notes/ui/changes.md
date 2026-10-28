@@ -461,3 +461,7 @@
 
 2026-10-28 | o-138-hud-size-row-does-nothing | raid HUD, both windows | large for tv now grows panels, minimap, belt and partner row by 20 percent; larger belt sits above the bottom corners; hint names panels instead of text because text size has its own control | pictures pending lane camera-recipes.json: hudtv-p1-standard, hudtv-p1-large, hudtv-p2-standard, hudtv-p2-large, hudtv-p1-large-half, hudtv-p2-large-half.
 
+2026-10-28 | o-138-hud-size-row-does-nothing | raid HUD, both windows | verified 20 percent TV growth; vitals panel bounds 516.8 to 620.16px wide; belt enlarged above corners; text size unchanged | standard: tools/handoff/console/notes/shots/o-138-hud-size-row-does-nothing-recipes-2/hudtv-p1-standard-1080.jpg and hudtv-p2-standard-1080.jpg; large: same folder hudtv-p1-large-1080.jpg and hudtv-p2-large-1080.jpg; TV distance: same folder hudtv-p1-large-half-1080.jpg and hudtv-p2-large-half-1080.jpg. Easy-mode offer obstructs the middle; clean replacement shots requested.
+
+2026-10-28 | o-138-hud-size-row-does-nothing | raid HUD, both windows | draft follow-up: vacant belt slabs removed, rarity reduced to thin rails, raid belt text at least 18px times HUD scale, gold equipment ring 2 to 3px, vitals text outlined, TV belt gap LH(24) to LH(12), score top inset 16px times HUD scale and extraction gap 8px | before: tools/handoff/console/notes/shots/o-138-hud-size-row-does-nothing-recipes-3/hudtv-p1-large-1080.jpg and hudtv-p2-large-1080.jpg; after: lane round 4 pending.
+
