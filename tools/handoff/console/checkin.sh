@@ -36,5 +36,8 @@ grep -E "^$(date +%m-%d) |^[0-9][0-9]:[0-9][0-9] " "$H/nightly/nightly.log" 2>/d
 # under a full run most are the machine choking, not the game; stable.mjs already weighs robot problems per version.)
 nb=$(sed -n '/^Checks that are newly red/,$p' "$H/stable-status.txt" 2>/dev/null | grep -c "^  v")
 [ "${nb:-0}" -gt 0 ] && flag "$nb newly red check(s) block stable ($(grep -m1 "^Latest stable" "$H/stable-status.txt" | cut -c1-50)): outdated ones go in tools/handoff/stable-known-red.txt, real ones become fix jobs"
+# 10-27 night: Codex (lane o) takes only o-* jobs and said "no tasks left" for most of five days while 30+ fix jobs waited. Flag it.
+cxi=$(grep -c "no tasks left" "$C/status-o.txt" 2>/dev/null); nt=$(ls "$C/tasks/"*.md 2>/dev/null | grep -vc "/README.md$")
+[ "${cxi:-0}" -gt 0 ] && [ "${nt:-0}" -gt 3 ] && flag "Codex is idle with $nt jobs waiting: rename up to 3 fix jobs that need no old-check retarget (no fixq or mkfixture work) to o-NAME.md in tasks/, party ones first"
 say "newest build: $(grep -m1 "^var VER='" dark_raiders.html | sed "s/var VER='\([0-9.]*\)'.*/v\1/"), last commit $(git log -1 --format='%cr')"
 [ $look = 1 ] && echo "VERDICT: LOOK (lines above)" || echo "VERDICT: ALL CLEAR"
