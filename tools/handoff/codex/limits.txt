@@ -89,3 +89,5 @@
 2026-10-28 16:58 week=27.0% 5h=71.0% week_resets=2026-11-04 01:35 job=o-09-196-run-over-card-moments
 2026-10-28 17:07 week=27.0% 5h=73.0% week_resets=2026-11-04 01:35 job=o-09-196-run-over-card-moments
 2026-10-28 17:08 week=28.0% 5h=75.0% week_resets=2026-11-04 01:35 job=o-09a-red-27.40-medal-spot-width
+2026-10-28 17:15 week=28.0% 5h=75.0% week_resets=2026-11-04 01:35 job=o-09a-red-27.40-medal-spot-width
+2026-10-28 17:18 week=28.0% 5h=77.0% week_resets=2026-11-04 01:35 job=o-09b-red-35.53-35.44-feed-hidden-after-abandon-ask

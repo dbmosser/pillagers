@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.02 - FEED RETURNS AFTER CANCELLED ABANDON
+
+Co-op hunt while he was away. Closing the pause box left its abandon question armed. The left feed waited behind that hidden question until the pause box reopened.
+
+MEASURED. Check 36.02 passes, and fails on v36.01.
 ## v36.01 - medal row follows feed width
 
 Co-op hunt while he was away. The feed grew to 28 percent but the reserved medal row stayed at 24 percent. Both now use the same width variable.

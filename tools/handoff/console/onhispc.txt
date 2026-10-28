@@ -67,3 +67,4 @@
 10-28 16:43 v35.98 cw-cx-overmoments on his pc after 83s (8802 serves 35.98) week 83%
 10-28 17:03 v35.99 cw-cx-overmomentlook on his pc after 67s (8802 serves 35.99) week 84%
 10-28 17:05 v36.00 cw-kiafit on his pc after 49s (8802 serves 36.00) week 84%
+10-28 17:14 v36.01 cw-cx-medalwidth on his pc after 97s (8802 serves 36.01) week 84%

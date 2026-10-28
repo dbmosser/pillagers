@@ -978,18 +978,18 @@
  "20-raid-hud-drop": {
   "score": 2,
   "pass": false,
-  "verdict": "the closer camera reads fine but it did nothing for the real problem: the hud is still a pile of mismatched boxes fighting each other for the eye.",
+  "need": 4,
+  "verdict": "The only change is that the contract-item toast is gone, so the keybind legend no longer has a banner pressed against it; the HUD is still a set of mismatched dark boxes with a capital letter and a clipped fill.",
   "findings": [
-   "P0 center screen, y~700-860: codex toast should auto-dismiss after ~3s or move to a corner slot; never render it stacked on the keybind legend, keep max one transient overlay center-screen at a time",
-   "P0 whole hud: credits/xp/stash/backpack stack (top right), run info panel, squad list (top left), minimap frame: rebuild all 5 panels on one component: same --ui-panel fill, same --rad 4px, same 24px padding, same header type size (fs-label 16px), delete the per-panel custom backgrounds",
-   "P1 run info panel, 3rd contract line: fix the string to its real noun (e.g. \"destroy 2 crawlers\"), QA every contract string for truncation",
-   "P1 keybind legend, lmb row: show only the context-active binding, or label the second row \"lmb (item wheel open)\" so it's clearly conditional",
-   "P1 bottom-left, \"standing\" tag above the stamina bar: redraw as a --rad 4px rectangle tag matching the hotbar cells and status bars"
+   "P0 top-left 'current pillagers' list and top-right 'run info' bar: Build every HUD panel on one component: fill --ui-panel at about 92% opacity, 1px --ui-line-hi border, --rad 4px, 16px padding, header in 16px f-cond 600 +.04em. Give the list, the run info bar, the legend and the ammo card the same border and header height of 32px.",
+   "P0 top-right, 'run info' header: Set one HUD margin of 24px (--sp-3) from every screen edge. Make the 'current pillagers' list and the run info bar the same 32px header height and align both text baselines to it.",
+   "P1 top-left list, the 'I' in 'run Info': Change the string to 'run info' (and check that no code uppercases it). Raise the list rows and header to 16px minimum and the money column to 16px f-cond 600.",
+   "P1 bottom-left, hp bar: Inset it to x=24 and y=1080-24-24. Make it a 24px-tall bar with a 1px --ui-line-hi border and 4px radius, and put 'hp' in 16px label type with '100' at 20px inside it. Keep 56px --fs-hero for ammo only.",
+   "P1 bottom-left, two round status icons above hp: Draw them as 32px rectangles with 4px radius, a 1px border and a tinted fill, 8px apart. Put a 16px label under each ('hidden', 'luck') or show the label on focus."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-04-camera-closer-after/20-raid-hud-drop-1080.jpg",
-  "task": "o-04-camera-closer",
-  "when": "2026-10-19T17:15",
-  "need": 4
+  "pic": "tools/handoff/console/notes/shots/o-09a-red-27.40-medal-spot-width-after/20-raid-hud-drop-1080.jpg",
+  "task": "o-09a-red-27.40-medal-spot-width",
+  "when": "2026-10-28T21:14"
  },
  "34-raid-downed-pickups": {
   "score": 3,

@@ -1,1 +1,1 @@
-10-28 17:10 gate: shipping cw-cx-medalwidth (o-09a-red-27.40-medal-spot-width, codex)
+10-28 17:19 gate: shipping cw-cx-abandonfeed (o-09b-red-35.53-35.44-feed-hidden-after-abandon-ask, codex)

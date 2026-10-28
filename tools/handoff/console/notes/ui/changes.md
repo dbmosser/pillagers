@@ -514,3 +514,5 @@
 2026-10-28 | o-09-196-run-over-card-moments | run over, both windows | final verification of v35.99: matching crown, closest call and damage; aligned rows and readable callouts; critic 4/5 each | before: tools/handoff/console/notes/shots/o-09-196-run-over-card-moments-recipes-3/run-over-moments-p1-1080.jpg and run-over-moments-p2-1080.jpg | after: tools/handoff/console/notes/shots/o-09-196-run-over-card-moments-recipes-4/run-over-moments-p1-1080.jpg and run-over-moments-p2-1080.jpg (4k variants also verified)
 2026-10-28 | o-09a-red-27.40-medal-spot-width | raid HUD (20) | reserved medal row width 24% to the shared 28% feed width (452 to 527 px at W=1882); before/after picture paths supplied by lane camera.
 
+2026-10-28 | o-09b-red-35.53-35.44-feed-hidden-after-abandon-ask | raid feed after Abandon + Escape | closing the pause box now clears the hidden question so the feed returns; no wording or layout changes | before: reproduced by regression on old build; after: lane camera recipe o09b-feed-after-escape-1080.jpg (pending)
+

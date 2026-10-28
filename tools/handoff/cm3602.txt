@@ -1,0 +1,7 @@
+v36.02: feed returns after cancelled abandon
+
+Escape cancels the abandon question and the left feed resumes.
+
+Check 36.02. Fails on v36.01.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
