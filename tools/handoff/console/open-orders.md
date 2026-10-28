@@ -4,12 +4,12 @@ One list, kept outside the chat (his feedback 10-27: orders were dropped in a su
 His priorities: https://claude.ai/artifact/8mXPSJ5fqq5DiV1Mxsy8Xr (db "answers"; ids and text in notes/priorities-page.html). All 100 items answered Tue 10-27 by about 20:08. Everything he marked NEVERMIND (44 asks) is listed in memory pillagers-nevermind-list-2026-10-27 and its job files are in console/cut. Do not bring those back.
 No HIGH items left except 177 hardcore save (parked until 11/1, goes first then).
 
-## His 10-27 orders (all MEDIUM; taken by the VM PC - Pillagers Dev chat and sessions it started)
-- Date and time (US Eastern) next to the version (cw-verat).
-- Active reload stacks, sweet spot shrinks each stack.
-- Extracted screen shows guns first.
-- White bars gone everywhere (v35.12 did shop, craft, wirt only).
-- More ammo boxes when out of ammo.
+## His 10-27 orders (all MEDIUM; the VM PC - Pillagers Dev chat is archived 10-27 22:20, the CEO chat follows these up)
+- Date and time (US Eastern) next to the version (cw-verat). SHIPPED v35.24.
+- Active reload stacks, sweet spot shrinks each stack. SHIPPED v35.27.
+- Extracted screen shows guns first. SHIPPED v35.29.
+- White bars gone everywhere (v35.12 did shop, craft, wirt only). Dropped twice; found by the CEO chat 10-27 22:20, building now (in-session/199-white-bars-everywhere.md).
+- More ammo boxes when out of ammo. SHIPPED v35.26.
 - Drag items from the wheel onto the hotbar; a belt item works like a wheel pick (in-session/185). SHIPPED v35.25 + v35.28, on his PC 20:26.
 
 ## His 10-27 evening orders in "Game feature requests and edits" (job files in console/in-session/; ids there are chat ids, not the tasks/ numbers)
@@ -20,7 +20,7 @@ No HIGH items left except 177 hardcore save (parked until 11/1, goes first then)
 - Extraction: no pop back up before the extracted card (189-extract-no-pop-up). SHIPPED v35.37, on his PC 21:35.
 - His complaint 10-27 ~21:25 (verbatim): "I am worried your quiet hud shit isn't actually addressing my complaint, which is that there are too many messages coming in to the player". He is right: the quiet hud cut copies, not the number of messages. The game has 338 say() call sites. Proposal sent: only 4 kinds reach the screen (danger to you now, extraction, your teammate, money or a contract done), one pickup row per search instead of per item, a rate cap; everything else stops showing. His answer (verbatim): "Ok? I don't know. You need to figure out what works". Decided and building as in-session/186c-fewer-raid-messages.md (5 kinds: the 4 plus refusals of his own input), in the quiet hud part A session, 21:30. 21:35 his words: "I feel like you are just fucking it up worse. I really like how looting feels and looks": the one-row-per-search pickup change is DROPPED; looting is never touched by this job.
 - His ask 10-27 ~21:40 (verbatim): "Can you do some real research on best practices in player alerts and messaging in terms of screen location etc and try to apply that to our game?" Research running in his orders thread; 186c is HELD before shipping (it finishes the message list and the before count) until the research sets the rule. Then (verbatim): "Everything about this game needs to be AAA and right now all the messaging on the hud is a clusterfuck". Research: 5 tracks (attention science, accessibility and sound, AAA shooter case studies, top-down games, notification systems), notes in research_notes/Player alerts and HUD messaging/, report to reports/. Report done 22:05, sent to his phone (reports/Player alerts and HUD messaging.md). Turned into jobs: 186c unheld with the research rule, 2 builds (cw-msgroute: five kinds, feed 3 lines 5 s, rate cap; then cw-dangerslot: danger banner to about 27% of screen height, one at a time, downed card check); kill lines stay (his g-86), looting untouched. 186e (in-session/, starts when cw-msgroute is on his PC, Sonnet): states as icons, extraction on the top pill, a small answer line under the character, text at readable size. Sounds per kind and message settings parked as after-nov1/198. The move-left question (a or b, picture on his phone) stays with lane d; the research says either is safe once urgent lines leave the left.
-- Left side: his note "nope, i was trying to say that all this shit moves to the left": the whole cluster moves left, not only the F1 list. Passed to the VM PC chat to show him a picture first.
+- Left side: his note "nope, i was trying to say that all this shit moves to the left": the whole cluster moves left, not only the F1 list. Passed to the VM PC chat to show him a picture first; he picked option a, SHIPPED v35.35 (f1 list and feed lines on the left).
 
 ## Queued now in tasks/ (fix, polish or tuning; priority line in each file)
 - MEDIUM: 139 solo pings; 140 red enemy tracers; 145 pad sprint toggle default; 151 damage numbers merge, yours red; 152 alarms volume row, low mag tick; 163 last minute ash and red glow; 165 partner row gun and ammo; 166 kill feed icons; 186 buildings read as house, office, warehouse in the smooth look; 03 title screen redesign, 94 60 fps on a 5 year old laptop, 95 2 player smooth on both TVs (re-queued from failed/, stop if the old blocker stands).
