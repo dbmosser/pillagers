@@ -40024,6 +40024,31 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.43 - READABLE PING LABELS AND MAP GLYPHS
+
+Co-op hunt while he was away. The critic found the existing ping words too small, orange on busy ground and over the gun, and the minimap ping too small. Solo and party now share 16px bone text on an 85 percent shared HUD plate, raised above the target with an edge fallback. Minimap and full-map target shapes grow to 18px with their existing dark backing. Words, colours of the marker, sound, target following and 10 second lifetime stay the same. Playtest watch: ping a target near a screen edge in either window and confirm the label stays inside the screen and clear of the target; look for the larger shape on both maps.
+
+MEASURED. Check 35.43 passes, and fails on v35.42.
+## v35.42 - THE STASH HOVER KEEPS EVERY BOX THE SAME SIZE
+
+Co-op hunt while he was away. his order 10-27: mousing over different items in the stash changes the size of one of the sub menus, so the grids jump; the item line under the grids was hidden when idle and as tall as the hovered item had rows
+
+MEASURED. Check 35.42 passes, and fails on v35.41.
+## v35.41 - SOLO PINGS IN ALL THREE VIEWS
+
+Co-op hunt while he was away. His pick 46: middle mouse pinging did not work in one player. Mouse, N and d-up tap now use the existing party marker, sound and 10 second lifetime alone too. Local enemy references follow unnumbered solo enemies; map and minimap refresh positions and expiry before drawing. Party messages and share-by-drop pings keep their existing path. Playtest watch: in the smooth look, ping an enemy alone, move between world, minimap and full map, and confirm the mark follows for 10 seconds then clears. Tap d-up to ping and hold it to open the map. In two windows, confirm both players still see each other ping and a dropped item still marks only the other window.
+
+MEASURED. Check 35.41 passes, and fails on v35.40.
+## v35.40 - NO WHITE BARS ANYWHERE
+
+Co-op hunt while he was away. his order 10-27: remove the white bars under items everywhere, and the higher white bars on the raid belt are not helpful
+
+MEASURED. Check 35.40 passes, and fails on v35.39.
+## v35.39 - THE WHAT IS NEW STAMP KEEPS UP
+
+Co-op hunt while he was away. The card was stamped v35.23 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.
+
+MEASURED. Check 35.39 passes, and fails on v35.38.
 ## v35.38 - COMBAT SOUND VOICE CAPS
 
 Co-op hunt while he was away. Q27: stutter or harsh sound in a two player fight. Cap complete cues at 6 guns, 8 impacts, 3 explosions and 12 active combat voices per window. Replace the oldest cue first with a 4 ms fade and stop all its sources, including delayed pumps and tails. At most two retiring fades can overlap the active budget. An isolated shot retains every original layer, pitch, timing and level. Playtest watch: both windows firing the LMG and shotgun near metal impacts and explosions should stay clear; listen for clicks, lost nearby shots or missing shotgun pumps under pressure.

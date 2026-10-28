@@ -36,8 +36,15 @@ grep -E "^$(date +%m-%d) |^[0-9][0-9]:[0-9][0-9] " "$H/nightly/nightly.log" 2>/d
 # under a full run most are the machine choking, not the game; stable.mjs already weighs robot problems per version.)
 nb=$(sed -n '/^Checks that are newly red/,$p' "$H/stable-status.txt" 2>/dev/null | grep -c "^  v")
 [ "${nb:-0}" -gt 0 ] && flag "$nb newly red check(s) block stable ($(grep -m1 "^Latest stable" "$H/stable-status.txt" | cut -c1-50)): outdated ones go in tools/handoff/stable-known-red.txt, real ones become fix jobs"
-# 10-27 night: Codex (lane o) takes only o-* jobs and said "no tasks left" for most of five days while 30+ fix jobs waited. Flag it.
-cxi=$(grep -c "no tasks left" "$C/status-o.txt" 2>/dev/null); nt=$(ls "$C/tasks/"*.md 2>/dev/null | grep -vc "/README.md$")
-[ "${cxi:-0}" -gt 0 ] && [ "${nt:-0}" -gt 3 ] && flag "Codex is idle with $nt jobs waiting: rename up to 3 fix jobs that need no old-check retarget (no fixq or mkfixture work) to o-NAME.md in tasks/, party ones first"
+# 10-27 night: Codex (lane o) takes only o-* jobs, sat near 2% of its week with 5 days left, and said "no tasks left" while 30+ fix jobs
+# waited for Claude. Flag it whenever fewer than 5 o-* jobs are queued while its week has room. The meter is the newest line of
+# codex/limits.txt (codex-lane.sh adds one after every Codex run: week %, 5-hour %, week reset). No line yet means no meter, so just flag
+# under 5. A week 90% or more used is no room; a reset time already past means the week turned over, so the old percent is stale (room).
+nq=$(ls "$C/tasks/"o-*.md 2>/dev/null | wc -l); xl=$(tail -1 "$H/codex/limits.txt" 2>/dev/null)
+xw=$(echo "$xl" | grep -o 'week=[0-9.]*' | head -1 | cut -d= -f2); xr=$(echo "$xl" | grep -o 'week_resets=[0-9-]* [0-9:]*' | head -1 | cut -d= -f2)
+[ -n "$xr" ] && [ "$(date -d "$xr" +%s 2>/dev/null || echo 9999999999)" -le "$(date +%s)" ] && xw=""
+say "codex: $nq o-* job(s) queued, week ${xw:-?}% used${xr:+ (resets $xr)}"
+xroom=1; [ -n "$xw" ] && awk -v w="$xw" 'BEGIN{exit !(w+0>=90)}' && xroom=0
+[ "${nq:-0}" -lt 5 ] && [ "$xroom" = 1 ] && flag "Codex has only $nq o-* job(s) queued (under 5)${xw:+ and its week is $xw% used}: rename more fix jobs that need no fixq or mkfixture retarget, no live measuring, soak or saved profile to o-NAME.md in tasks/, party ones first"
 say "newest build: $(grep -m1 "^var VER='" dark_raiders.html | sed "s/var VER='\([0-9.]*\)'.*/v\1/"), last commit $(git log -1 --format='%cr')"
 [ $look = 1 ] && echo "VERDICT: LOOK (lines above)" || echo "VERDICT: ALL CLEAR"

@@ -183,6 +183,8 @@ function mainPcHtml(mp){
   let o=row(!on?'d':paused?'a':'g',null,'<b>'+(!on?'Off':paused?'Resting':'Testing')+'</b>: '+esc(st)+'<div class="small">'+(on?'last report '+dur(age)+' ago':'it may be off or asleep')+(mp.ramFree?' &middot; '+esc(mp.ramFree)+' GB memory free':'')+(v?' &middot; has game version '+esc(v):'')+'</div>');
   o+=row(mp.robots?'g':'d',null,'<b>Crash-hunting robots:</b> '+(mp.robots?mp.robots+' playing now':'none playing')+'<div class="small">Today: '+mp.raidsToday+' raids, '+(mp.problemsToday?'<span class="warn">'+mp.problemsToday+' problem'+(mp.problemsToday>1?'s':'')+'</span>':'no problems')+'</div>');
   o+=endLine(mp.lastEnd);
+  // 10-27: the report receiver on his PC (8799): his notes and run reports reach us only while it is up; the runner starts it again when it is not
+  if(mp.receiver){ const rup=/^up/.test(mp.receiver); o+=row(rup?'g':'r',null,'<b>Report receiver 8799:</b> '+esc(mp.receiver)+(rup?'':'<div class="small">notes and run reports are not reaching us; the runner starts it again within a few minutes</div>')); }
   if(/not answering/.test(mp.spareSeen||'')) o+=row('a',null,'<b>Spare PC link:</b> the main PC cannot reach the spare PC right now (that only matters for sharing results faster; GitHub still carries them)');
   return o;
 }

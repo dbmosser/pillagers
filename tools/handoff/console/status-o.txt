@@ -1,1 +1,1 @@
-10-27 22:01 gate: shipping cw-cx-combatvoices (o-131-gun-impact-sound-caps, codex)
+10-27 23:06 gate: shipping cw-cx-pingread (o-139-solo-pings, codex)

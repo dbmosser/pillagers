@@ -1827,33 +1827,33 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "This is a clean, style-guide-correct card shell with a lime title tab and an X, but it is a dev-style preview window: the title is generic, a flat game crop fills the frame, and there is no player-facing hierarchy or label to tell the two pillagers apart.",
+  "verdict": "This is a readable raid HUD with a strong ammo hero number, but it has too many competing small panels, a duplicated extraction message, and mixed panel styles and colours, so it looks assembled rather than designed.",
   "findings": [
-   "P1 card body / art crop: Crop tighter on the two characters, add a 1px --ui-line-hi inner border and 4px radius, and drop or darken the pink slab (about 40% scrim) so the characters, not the floor, are the focal point.",
-   "P1 hierarchy: Add a 20px f-cond label under each ring ('player 1', 'player 2') in tx-1 on a --ui-panel pill. Enlarge the ring badge digits to at least 16px.",
-   "P1 title text: Use a clear title such as 'player 1' at 32px f-cond 700, 24px from the left edge, with the lime tab at 3px x 32px aligned to the cap height.",
-   "P2 header / close button: Make the X 40px with a --ui-line-hi border, and lime only on focus. Pad the header 16px below the divider before the art.",
-   "P2 card margins and footer: Use a uniform 5% margin (96px by 54px) with 24px inner padding on all sides, and add a 16px tx-2 footer legend with the live close key or button."
+   "P1 top-centre banner stack (8:59 / extract 152m / extraction c available): Keep one 20px f-cond pill, 'extract 152m', and drop the 'extraction c available' pill. Remove the arrow, or fold it into the pill. Raise the timer to 40-56px f-cond 800 in tx-1, with 8px between it and the pill.",
+   "P1 hp bar, bottom-left (hp 100): Make it 6-8px tall, with the 'hp 100' number at 20px beside it. Use --ok green, or --danger below 30%. Inset it 48px from the left and 32px from the bottom edge, and align it with the hotbar's left edge.",
+   "P1 left column (bots panel, 'pillager' bar, concealed badge, codex entry, controller connected, f1 controls): Put everything on one 16px left margin, with 8px vertical gaps, using the single --ui-panel fill, a 1px --ui-line-hi border and 4px radius. Merge 'controller connected' into the 'keyboard' tag. Raise all minimum text to 16px. Drop the 'pillager' bar or merge it with the hp bar.",
+   "P1 bots panel, top-left: Use 16px rows with 8px row padding and a 1px --ui-line divider. Mark the 'you' row with tx-1 and a 3px lime or amber left bar, and give the others tx-2. Put the header in label size, tx-2, without bold.",
+   "P2 world labels ('the long dock cache', 'sentry r-57', 'pillager · sentry · 19m', blue 'pillager' tag): Draw all world labels at 16px tx-1 on a 70% --ui-void pill with 4px padding, and offset them 12px above their target. Use the rarity colour only as a 3px bar. Use --danger for hostile labels. Remove the lilac."
   ],
-  "pic": "tools/handoff/console/notes/shots/86h-pix-sets-wardrobe-recipes-3/86h-demo-p1-1080.jpg",
-  "task": "86h-pix-sets-wardrobe",
-  "when": "2026-10-22T14:53"
+  "pic": "tools/handoff/console/notes/shots/o-139-solo-pings-recipes-1/party-ping-p1-1080.jpg",
+  "task": "o-139-solo-pings",
+  "when": "2026-10-28T02:40"
  },
  "p2-1080": {
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "This is a card frame around a raw game viewport with a small title and an X. It has no UI of its own: no player 2 state, no prompt, no controls, and nothing to show the player what to do or that the screen is live.",
+  "verdict": "The screen is a different one from the earlier player 2 card: it is now a title menu with a strong lime main button and a gold wordmark. It is still weakened by a toast that overlaps the controls legend, a stray 'player 2 window' label, and large dead areas.",
   "findings": [
-   "P0 whole card content: Add one live prompt centred below the viewport at 32px f-cond 700 in --tx-1, naming the key or pad button of the device in use (for example 'press any key to join'). Keep the line to 3 to 4 words and give it a 3px --acc top tab. The prompt is the single bold element and the title stays quiet.",
-   "P1 title 'linked demo / player 2': Set the title to 32px f-cond 700 with a 56px header row. Make it a single clear name such as 'player 2'. Move the lime bar to a 3px full-height left-edge tab on the card, or remove it.",
-   "P1 viewport (the pixel-art scene): Render at an integer pixel scale. Add a 1px --ui-line-hi inner border, a 4px radius and a 20 to 30% --scrim-style vignette. Remove the grey rectangle from the scene or draw it as an intentional spotlight. Reposition the characters so no prop overlaps them.",
-   "P1 player rings and numbers: Put a 16px f-cond 600 label ('player 1', 'player 2') under each ring, using the ring colours on a --ui-panel chip at 90% fill. Do not change the ring colours; that decision is still pending.",
-   "P1 layout: outer card and margins: Use the 56px header and 72px footer rows from section 2, a 1px --ui-line divider under the header, and 24px padding. Put the prompt and any legend in the footer at 16px."
+   "P0 bottom toast 'in pillager's party · ascend at the lift to join' over the controls legend: Move the toast to y≈940, at least 24px above the legend, or drop the legend on this screen. Give the toast a --ui-panel fill, a 1px --ui-line-hi border, 16px f-cond 600 text and 16px padding. Keep it from overlapping anything.",
+   "P1 'player 2 window' under the main button: Remove it, or turn it into a 16px tx-2 label inside a 56px header row that has a 1px --ui-line divider. If it must stay, put 24px of space above it and 32px below.",
+   "P1 wordmark 'pillagers' (orange gradient with drop shadow): Use a flat --tx-1 wordmark at 56px f-cond 800, or keep the gold only as a 3px underline bar. Keep the lime button as the single hot element.",
+   "P1 saves row and create row (y 643-735): Make every row 48px high with 8px gaps. Give the selected row a --ui-raised fill and a 3px lime left bar instead of a lime outline. Give the input a --ui-void fill with a visible caret. Set the 'saves' label at 16px tx-2.",
+   "P1 layout (content block in y 360-735, with 1080px of height): Add a 56px header and 72px footer with a 1px --ui-line divider. Put the legend and version in the footer on one baseline. Set the content block at 32px side margins and centre it on the optical centre (about y 480)."
   ],
-  "pic": "tools/handoff/console/notes/shots/86h-pix-sets-wardrobe-recipes-3/86h-demo-p2-1080.jpg",
-  "task": "86h-pix-sets-wardrobe",
-  "when": "2026-10-22T14:53"
+  "pic": "tools/handoff/console/notes/shots/o-139-solo-pings-recipes-1/party-ping-p2-1080.jpg",
+  "task": "o-139-solo-pings",
+  "when": "2026-10-28T02:40"
  },
  "pix86c-fashion": {
   "score": 3,
@@ -2590,5 +2590,53 @@
   "pic": "tools/handoff/console/notes/shots/o-93-fps-counter-screen-rate-recipes-2/fps-screen-rate-control-1080.jpg",
   "task": "o-93-fps-counter-screen-rate",
   "when": "2026-10-27T22:44"
+ },
+ "solo-ping-map": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The card frame, header and footer follow the guide well, but the map is cluttered with overlapping labels and the contracts list is a flat column of same-weight rows with no focal point.",
+  "findings": [
+   "P1 map, the cache labels around the foreman office and the blast freezer, and 'cache' above the strongbox: Collapse duplicate caches into a single icon with a count (e.g. 'cache x4'). Give every map label a 4px padded --ui-void plate at 80% opacity. Enforce a 12px minimum gap between labels and nudge colliding ones outward.",
+   "P1 map label type (cache, packing floor, the sump, scrap line, chill row): Set all map labels to 16px f-cond 600 with +.04em tracking. Use only three tones: tx-1 for interactive or locked places, tx-2 for static areas, and semantic colour for extract (teal) and danger (red). Drop pure white.",
+   "P1 contracts panel, row layout: Put the contract name at 20px tx-1 and the reward at 20px --acc on the same line. Put the progress as a 4px bar with the count in 16px tx-2 beside it. Highlight the first or focused row with --ui-raised and a 3px lime left bar. Cut the header to '0/8' and drop 'done'.",
+   "P1 map, route and waypoint state / player marker: Add 24px of inner padding to the map bounds, or clamp markers so the arrow's 40px disc stays inside. Draw a 2px lime reticle for the cursor and a bright waypoint pin at 24px.",
+   "P2 header, 'cold storage' / 'sector map' / '6pm · clear': Set 'sector map' to 16px tx-2 baseline-aligned with the title. Set the time to 16px tx-2 with 24px right margin before the X. Match the X button border to --ui-line-hi at 4px radius, 40x40."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-139-solo-pings-recipes-1/solo-ping-map-1080.jpg",
+  "task": "o-139-solo-pings",
+  "when": "2026-10-28T02:40"
+ },
+ "solo-ping-minimap": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The minimap ping reads and the hud is mostly clean and lower case, but small type, a crowded left side, a blank minimap and a loose type scale keep it at a solid but not yet polished 3.",
+  "findings": [
+   "P1 minimap top-right: Make ping markers at least 16px with a 2px dark outline and a short pulse ring. Move the north marker to a fixed corner tick. Crop or fill the empty area. Put the collapse chevron in the header row, not over the map.",
+   "P1 left panel 'current pillager bots 7': Raise to 16px with a 24px row pitch. Show only you plus the 3 nearest ranks, or collapse by default. Drop the purple, or make it your one declared player tint. Give the panel a 1px --ui-line-hi border and 8px padding.",
+   "P1 hud type scale across the screen: Snap to 56/32/20/16/14. Make slot numbers and ammo counts 16px. Set the timer to 32px. Set the footer to 16px --tx-2.",
+   "P2 bottom-left hp bar and 'f1 controls' chip: Put one 48px left margin on hp, the leaderboard and the toast. Use a 16px chip text size. Give the hp bar a dark track, a 4px radius and a 20px label.",
+   "P2 hotbar: Use a single 3px --acc border and a --ui-raised fill on the selected slot only. Move the 'f' quick-slot hint into the label size. Raise the empty silhouettes to about 45% opacity."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-139-solo-pings-recipes-1/solo-ping-minimap-1080.jpg",
+  "task": "o-139-solo-pings",
+  "when": "2026-10-28T02:41"
+ },
+ "solo-ping-world": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The in-raid HUD is functional and mostly lower case, but it is crowded and uses small text and inconsistent panel styling, and the new sentry ping labels are tiny, low-contrast and sit on a busy tile.",
+  "findings": [
+   "P1 sentry ping label under the sentry (\"you · sentry · 17m\") and the \"sentry r-46\" tag: Put both on one --ui-panel plate at 85% opacity with 1px --ui-line-hi. Use 16px f-cond 600 in --tx-1. Show distance in --tx-2. Place it 16px above the sentry, clear of the ring. Show one label, not two.",
+   "P1 top-left \"current pillager bots 7\" scoreboard: Collapse it by default to a single header line and open it on a key, or cut it to the top 3 plus you. Set rows to 16px with 24px height. Give the 'you' row a 3px --acc left bar and --tx-1 text. Drop the purple, or add a rarity glyph.",
+   "P1 bottom-left feed (\"codex entry…\", \"contract item nearby…\"): Shorten to \"contract item nearby\" and drop the explanation. Use one plate style: 16px text, 3px --warn bar for contracts, --ui-line-hi for info. Move the feed up 24px above the f1 tag. Make the plates the same width.",
+   "P1 hud bottom-right ammo card and hotbar: Drop the 'b / i backpack' line and the item count into a single 16px --tx-2 line. Dim empty slots to 40% opacity. Make the selected slot's border 3px --acc with --ui-raised fill. Keep the 8px gaps.",
+   "P2 hp bar bottom-left: Use 20px f-cond 700 on a 12px-high bar with a 1px --ui-line-hi frame and --ok fill. Put the number inside the bar's right edge, or inline at 20px. Set the left margin to 24px to match the panels."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-139-solo-pings-recipes-1/solo-ping-world-1080.jpg",
+  "task": "o-139-solo-pings",
+  "when": "2026-10-28T02:41"
  }
 }

@@ -4,7 +4,12 @@ TOTAL_USD=198
 END_DATE=2026-10-17
 PACE=0
 WORKSPACE_ID=wrkspc_01LtptfWuGJbsFuYZyeWFuW5
-MAXRUNS=5
+# 10-27 night (CEO chat): 4 tries, not 5. Runs 1-2 Sonnet, runs 3-4 Opus (console-lane.sh, ESC_*). 26 jobs failed after 5 Sonnet runs; $29 of their $47 went to runs 3-5.
+MAXRUNS=4
+ESC_AFTER=2
+ESC_MODEL=opus
+ESC_EFFORT=high
+CLI_EFFORT=high
 CLI=1
 CLI_LANES=3
 CLI_DAY_USD=25

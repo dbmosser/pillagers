@@ -45,7 +45,9 @@ for f in "$C"/status-*.txt; do l=${f##*status-}; l=${l%.txt}; echo "lane $l: $(h
 nf=$(find "$C/failed" -name '*.md' -mmin -120 2>/dev/null | wc -l); [ "$nf" -gt 0 ] && prob "$nf job(s) went to failed/ in the last 2 h: $(find "$C/failed" -name '*.md' -mmin -120 -printf '%f ' 2>/dev/null)"
 echo "jobs waiting: $(ls "$C/tasks/"*.md 2>/dev/null | wc -l); STOP: $([ -f "$C/STOP" ] && echo ON || echo off)"
 # 5 the full test run
-cl=$(grep "newly failing" "$H/nightly/nightly.log" 2>/dev/null | tail -1 | grep -o '[0-9]* check(s) newly failing' | head -1)
+# 10-27 night (CEO chat): the newest full run is the first line under "Newest test runs" in stable-status.txt (the spare PC runs it); nightly.log held a stale VM run and showed 12 newly failing while the newest run had 0
+cl=$(sed -n '/^Newest test runs/{n;p;q}' "$H/stable-status.txt" 2>/dev/null | sed -n 's/.*corpus-\([0-9-]*\) *\(v[0-9.]*\).*new \([0-9]*\).*/\3 check(s) newly failing (run \1 on \2)/p')
+[ -z "$cl" ] && cl=$(grep "newly failing" "$H/nightly/nightly.log" 2>/dev/null | tail -1 | grep -o '[0-9]* check(s) newly failing' | head -1)
 [ -n "$cl" ] && { echo "full test run: $cl"; n=${cl%% *}; [ "${n:-0}" -gt 10 ] && prob "full test run says $cl"; }
 # 6 ChatGPT lane
 if has 'codex-lane\.sh'; then echo "chatgpt lane: running ($(head -c 90 "$C/status-o.txt" | tr -d '\r\n'))"
@@ -69,6 +71,8 @@ nf="$H/notes-fetch.txt"; [ -f "$nf" ] && echo "notes from the main PC: $(head -1
 ss="$H/spare-status.txt"
 if [ ! -f "$ss" ] || grep -q "not set up yet\|no spare PC has reported" "$ss"; then echo "WAIT: spare PC not set up yet (his steps: tools/handoff/console/for-you.md)"
 elif grep -q "QUIET" "$ss"; then echo "WAIT: spare PC quiet: $(head -1 "$ss" | cut -c1-160)"
+# 10-28: it reports in but tests nothing new (77 hours on v34.13, 10-22 to 10-25, unflagged); tools/spare/spare-import.mjs writes STALLED
+elif grep -q "^STALLED" "$ss"; then prob "spare PC stalled (it reports in but tests nothing new): $(head -1 "$ss" | sed 's/; [A-Z0-9_-]* last seen.*//' | cut -c1-260)"
 else echo "spare PC: $(head -1 "$ss" | cut -c1-170)"; fi
 fm=$(powershell -NoProfile -Command "[int]((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1MB)" 2>/dev/null | tr -d '\r'); echo "free RAM: ${fm} GB"; rf=$(grep -m1 "^RAM_FLOOR_GB=" "$C/caps.txt" 2>/dev/null | cut -d= -f2 | tr -dc "0-9"); rf=${rf:-6}; [ "${fm:-9}" -lt "$rf" ] && prob "free RAM ${fm} GB is under the ${rf} GB floor (RAM_FLOOR_GB in console/caps.txt)"
 # 10-21: virtual memory too. At 02:19 Windows ran out of it (31.5 of 31.9 GB) with 4 GB of RAM free and both robots hung.

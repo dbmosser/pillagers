@@ -146,7 +146,9 @@ function spareInfo() {
     // 10-26, his "why don't you show detailed info on each PC": memory, mode, whether it can see the spare PC, why its robots last stopped
     v.mainPc = { seenEpoch: +ms.epoch || 0, testRun: ms.test_run || '', robots: +ms.robots || 0, game: ms.game || '', raidsToday: mr.length,
       problemsToday: mr.reduce((s, l) => s + +((/ problems=(\d+)/.exec(l) || [0, 0])[1]), 0),
-      ramFree: ms.ram_free_gb || '', mode: ms.mode || '', spareSeen: ms.spare_pc || '', lastEnd: ML.filter(l => /FUZZ END/.test(l)).slice(-1)[0] || '' };
+      ramFree: ms.ram_free_gb || '', mode: ms.mode || '', spareSeen: ms.spare_pc || '', lastEnd: ML.filter(l => /FUZZ END/.test(l)).slice(-1)[0] || '',
+      // 10-27 his "make sure we are always getting game telemetry back from the main pc": the 8799 report receiver, up or down, and the newest report and note
+      receiver: ms.receiver8799 || '' };
   }
   spareCache = { t: Date.now(), v }; return v;
 }

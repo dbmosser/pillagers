@@ -20,8 +20,8 @@ fi
 out=$(GATE_CDP=9346 bash tools/handoff/shipone.sh "$K" "$v" "$nw" 2>&1 | grep -v '^warning')
 if echo "$out" | grep -q "^SHIPPED"; then
   echo "$(date +%H:%M) $K: SHIPPED v${nw:0:2}.${nw:2}" >> "$LOG"; echo "$out" | tail -4
-  # 10-27, his "stuff you told me you did, you didn't do": free the lock, then wait for his main PC to serve the build
-  rmdir "$LK" 2>/dev/null; bash "$R/tools/handoff/onhispc.sh" "${nw:0:2}.${nw:2}" "$K" || true
+  # 10-27 (the trap is cleared first: after the wait it would remove the NEXT holder lock), his "stuff you told me you did, you didn't do": free the lock, then wait for his main PC to serve the build
+  trap - EXIT; rmdir "$LK" 2>/dev/null; bash "$R/tools/handoff/onhispc.sh" "${nw:0:2}.${nw:2}" "$K" || true
 else
   echo "$(date +%H:%M) $K: STOP $(echo "$out" | grep "^STOP" | tail -1 | cut -c1-300)" >> "$LOG"
   rm -f tools/handoff/a$nw.txt tools/handoff/cm$nw.txt tools/handoff/d$nw.txt tools/handoff/f$nw.ps1 tools/handoff/p$nw.ps1; rm -rf "$TEMP/pillagers-dry/dry$nw"

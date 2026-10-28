@@ -1,0 +1,5 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  h1-gun                                 staged       8.5s  
+  h2-medkit                              staged       8.2s  
+  h3-pistol                              staged       7.5s  
+  h4-idle                                staged       7.6s  

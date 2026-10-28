@@ -8,3 +8,11 @@ The fixture check repeats the stress trace for host and p2, logs combat voice me
 
 Full report prepared at .codex-work/o-131-gun-impact-sound-caps/notes/131-sound-caps.md. The draft why includes the requested DESIGN.md playtest watch line. No tracked game or fixture file was edited.
 
+
+--- codex run 2026-10-27 22:12 ---
+2026-10-27 run 2: Confirmed cw-cx-combatvoices shipped as v35.38, commit 9bd6b6a57. Lane logs: PREFLIGHT PASS; fixture.html check 35.38 PASS / PASS; verifySafe pass with entities 85/374 and containers 165/593; ON HIS PC v35.38 after 319 seconds. DESIGN.md has the requested playtest watch line. AUDIT.md records pass on v35.38 and fail on v35.37. No further code change is needed.
+
+Updated the prepared report at .codex-work/o-131-gun-impact-sound-caps/notes/131-sound-caps.md with the shipped version and verification evidence. Its 19 to 12 active voice count (14 including brief fades) is explicitly labeled as the local source probe; exact browser measurement values are not in the saved lane log. The shipped fixture check exercised host and p2 roles, but this is not a test of two connected browser windows.
+
+Only coordinator steps remain: copy the report to notes/131-sound-caps.md in the real repo, optionally capture the fixture measurement object to replace the local probe table with browser numbers, and complete two-connected-window verification. The requested real-repo report path is still absent. Leaving the shipped key unchanged and parking for these steps, rather than shipping another game change for documentation.
+

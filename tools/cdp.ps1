@@ -24,6 +24,8 @@ if($Start){
   $exe='C:\Program Files\Google\Chrome\Application\chrome.exe'
   if(-not (Test-Path $exe)){ $exe='C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe' }
   if($Size -notmatch '^\d{3,4},\d{3,4}$'){ $Size='1920,1080' }   # 10-22: -Size 3840,2160 for the 4K robot (fuzz.ps1 -Size)
+  # 10-27: this test Chrome saves any download into its own profile, never the Downloads folder of whoever is signed in (chrome-nodownloads.ps1)
+  $nd=Join-Path $PSScriptRoot 'chrome-nodownloads.ps1'; if(Test-Path -LiteralPath $nd){ . $nd; Set-NoDownloads $Profile }
   $a='--headless=new --window-size='+$Size+' --force-device-scale-factor=1 --remote-debugging-port='+$Port+
      ' --user-data-dir="'+$Profile+'" --no-first-run --no-default-browser-check --disable-background-timer-throttling'+
      ' --disable-renderer-backgrounding --disable-backgrounding-occluded-windows --autoplay-policy=no-user-gesture-required about:blank'

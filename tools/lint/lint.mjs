@@ -1,39 +1,45 @@
-// node tools/lint/lint.mjs [rule ...] : free, exact bug finder for dark_raiders.html (ESLint, no AI, about 10 s).
-// Checks only rules that mean a real bug (an undefined name, a duplicate key, code after a return...), never style.
-// Line numbers are the game file's own (the ones grep shows). Writes tools/lint/out/report.txt; prints the counts.
+// node tools/lint/lint.mjs [--file PATH] [--gate] : free, exact bug finder for the game file (ESLint, no AI, about 10 s).
+// Only rules that mean a real bug, never style. "error" rules (an undefined name, a duplicate key or case, a second function with the
+// same name...) stand at zero on the game: --gate (preflight.sh) fails on any of them, so a typo that would throw in the raid is caught
+// before the ship. "warn" rules (code after a return, x===x...) are leads for a person, never a gate: this game switches old code off
+// with a bare return on purpose.
+// Line numbers are the game file's own (the ones grep shows). Writes tools/lint/out/report.txt.
 // Setup once: cd tools/lint && npm install (eslint and globals are pinned in package.json; node_modules is gitignored).
-// Hits are leads: read the lines before fixing. Known false alarms go in tools/lint/known.txt ("rule line-text-start", one per line).
-import { ESLint } from "eslint";
-import globals from "globals";
+// A false alarm goes in tools/lint/known.txt as "rule start-of-the-trimmed-line", one per line.
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const game = path.join(here, "..", "..", "dark_raiders.html");
+const argv = process.argv.slice(2), gate = argv.includes("--gate");
+const fi = argv.indexOf("--file"), game = fi >= 0 ? argv[fi + 1] : path.join(here, "..", "..", "dark_raiders.html");
+let ESLint, globals;
+try { ({ ESLint } = await import("eslint")); globals = (await import("globals")).default; }
+catch (e) { console.log("lint: SKIP (run npm install in tools/lint)"); process.exit(0); }
+
 const lines = fs.readFileSync(game, "utf8").split("\n");
 const a = lines.findIndex(l => /<script>/.test(l)), b = lines.findIndex((l, i) => i > a && /<\/script>/.test(l));
 // blank out everything outside the script so the script keeps its place in the file
 const src = lines.map((l, i) => (i > a && i < b) ? l : (i === a ? l.replace(/^.*<script>/, "") : "")).join("\n");
+// names the game hangs on window (window.titleNameShown=...) are globals too
+const winNames = Object.fromEntries([...src.matchAll(/\bwindow\.([A-Za-z_$][\w$]*)\s*=(?!=)/g)].map(m => [m[1], "writable"]));
 
 const RULES = {
-  "no-undef": "error", "no-dupe-keys": "error", "no-unreachable": "error", "no-self-assign": "error",
-  "no-self-compare": "error", "no-dupe-else-if": "error", "no-duplicate-case": "error", "no-const-assign": "error",
-  "no-unsafe-negation": "error", "use-isnan": "error", "valid-typeof": "error",
-  "no-loss-of-precision": "error", "no-sparse-arrays": "error", "no-unsafe-finally": "error", "getter-return": "error",
-  "no-setter-return": "error", "no-compare-neg-zero": "error", "no-constant-binary-expression": "error",
-  "no-redeclare": ["error", { builtinGlobals: false }], "no-dupe-class-members": "error", "no-empty-character-class": "error",
-  "no-invalid-regexp": "error", "no-unused-private-class-members": "error", "no-useless-backreference": "error",
+  "no-undef": "error", "no-dupe-keys": "error", "no-self-assign": "error", "no-dupe-else-if": "error",
+  "no-duplicate-case": "error", "no-const-assign": "error", "no-unsafe-negation": "error", "use-isnan": "error",
+  "valid-typeof": "error", "no-loss-of-precision": "error", "no-unsafe-finally": "error", "getter-return": "error",
+  "no-setter-return": "error", "no-compare-neg-zero": "error", "no-redeclare": ["error", { builtinGlobals: false }],
+  "no-dupe-class-members": "error", "no-empty-character-class": "error", "no-invalid-regexp": "error",
+  "no-useless-backreference": "error",
+  "no-unreachable": "warn", "no-self-compare": "warn", "no-constant-binary-expression": "warn", "no-sparse-arrays": "warn",
 };
-const only = process.argv.slice(2);
-const rules = only.length ? Object.fromEntries(only.map(r => [r, RULES[r] || "error"])) : RULES;
 
 const eslint = new ESLint({
   overrideConfigFile: true,
   overrideConfig: [{
-    languageOptions: { ecmaVersion: "latest", sourceType: "script", globals: { ...globals.browser } },
+    languageOptions: { ecmaVersion: "latest", sourceType: "script", globals: { ...globals.browser, ...winNames } },
     linterOptions: { reportUnusedDisableDirectives: "off" },
-    rules,
+    rules: RULES,
   }],
 });
 const [res] = await eslint.lintText(src, { filePath: "dark_raiders.js" });
@@ -52,26 +58,25 @@ const gameLine = m => {
 };
 // reusing a var name inside one function is this codebase's style; only a second "function NAME" (the later one silently wins) is kept
 const nameOf = m => (m.message.match(/'([^']+)'/) || [])[1] || "";
-const known = fs.existsSync(path.join(here, "known.txt"))
-  ? fs.readFileSync(path.join(here, "known.txt"), "utf8").split("\n").map(s => s.trim()).filter(s => s && !s.startsWith("#")) : [];
+const kf = path.join(here, "known.txt");
+const known = fs.existsSync(kf) ? fs.readFileSync(kf, "utf8").split("\n").map(s => s.trim()).filter(s => s && !s.startsWith("#")) : [];
 const isKnown = (m, t) => known.some(k => { const [r, ...rest] = k.split(" "); return r === m.ruleId && t.trim().startsWith(rest.join(" ")); });
 const keep = m => {
   const t = lines[gameLine(m) - 1] || "";
   if (isKnown(m, t)) return false;
   if (m.ruleId !== "no-redeclare") return true;
-  const n = nameOf(m).replace(/[$]/g, "\\$");
-  return new RegExp("function\\s+" + n + "\\b").test(t);
+  return new RegExp("function\\s+" + nameOf(m).replace(/[$]/g, "\\$") + "\\b").test(t);
 };
 const msgs = res.messages.filter(m => !m.ruleId || keep(m));
-const by = {};
-for (const m of msgs) (by[m.ruleId || "parse"] ||= []).push(m);
+const errs = msgs.filter(m => m.severity === 2 || !m.ruleId);
 const clip = s => (s || "").trim().slice(0, 140);
-let out = `lint of dark_raiders.html ${new Date().toISOString().slice(0, 16)}: ${msgs.length} hit(s)\n`;
-for (const [r, ms] of Object.entries(by).sort((x, y) => x[1].length - y[1].length)) {
-  out += `\n== ${r}: ${ms.length}\n`;
-  for (const m of ms) out += `  ${gameLine(m)}: ${m.message} | ${clip(lines[gameLine(m) - 1])}\n`;
-}
+const row = m => `  ${gameLine(m)}: ${m.ruleId || "parse"}: ${m.message} | ${clip(lines[gameLine(m) - 1])}`;
+let out = `lint of ${path.basename(game)} ${new Date().toISOString().slice(0, 16)}: ${errs.length} bug hit(s), ${msgs.length - errs.length} lead(s)\n`;
+out += `\n== bugs (must stay at zero)\n${errs.map(row).join("\n")}\n\n== leads (read, often on purpose)\n`;
+out += msgs.filter(m => !errs.includes(m)).map(row).join("\n") + "\n";
 fs.mkdirSync(path.join(here, "out"), { recursive: true });
 fs.writeFileSync(path.join(here, "out", "report.txt"), out);
-const counts = Object.entries(by).map(([r, ms]) => `${r} ${ms.length}`).join(", ");
-console.log(`${msgs.length} hit(s): ${counts || "none"}. Full list: tools/lint/out/report.txt`);
+if (gate) {
+  if (errs.length) { console.log(`lint: FAIL ${errs.length}\n${errs.slice(0, 5).map(row).join("\n")}`); process.exit(1); }
+  console.log("lint: PASS");
+} else console.log(`${errs.length} bug hit(s), ${msgs.length - errs.length} lead(s). Full list: tools/lint/out/report.txt`);

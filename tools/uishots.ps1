@@ -117,6 +117,8 @@ function ChromeStart([int]$w,[int]$h){
     else{ throw "port $Port is already in use by another browser: close it first (uishots owns $Port only when it started it)" }
   }
   try{ if(Test-Path $ChromeProfile){ Remove-Item -Recurse -Force $ChromeProfile -ErrorAction Stop } }catch{}
+  # 10-27: this camera Chrome saves any download into its own profile, never the Downloads folder of whoever is signed in (chrome-nodownloads.ps1)
+  $nd=Join-Path $PSScriptRoot 'chrome-nodownloads.ps1'; if(Test-Path -LiteralPath $nd){ . $nd; Set-NoDownloads $ChromeProfile }
   $a='--headless=new --window-size='+$w+','+$h+' --force-device-scale-factor=1 --remote-debugging-port='+$Port+
      ' --user-data-dir="'+$ChromeProfile+'" --no-first-run --no-default-browser-check --disable-background-timer-throttling'+
      ' --disable-renderer-backgrounding --disable-backgrounding-occluded-windows --autoplay-policy=no-user-gesture-required about:blank'

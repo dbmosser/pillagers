@@ -20,6 +20,10 @@ g=$(pw -File "$(cygpath -w "$H/drafts/gen-draft-pf.ps1")" -Key "$K" -New "$NEW" 
 dr=$(pw -File "$(cygpath -w "$H/dryrun-pf.ps1")" -Tag "$T")
 echo "$dr" | grep -q "^p$T -> OK" || die "the build patch did not apply: $(echo "$dr" | grep "^p$T" | cut -c1-400)"
 echo "$dr" | grep -q "^f$T -> OK" || die "the check patch did not apply: $(echo "$dr" | grep "^f$T" | cut -c1-400)"
+# 10-27 night: the free code checker (tools/lint, ESLint, about 10 s) on the drafted build: a name that does not exist, a duplicate key or case, a second
+# function with one name. These stand at zero on the game, so any hit is new in this change (the parse check cannot see them; they throw in the raid).
+df="$TEMP/pillagers-dry/pf$T/dark_raiders.html"
+if [ -f "$df" ]; then lt=$(node "$R/tools/lint/lint.mjs" --file "$(cygpath -w "$df")" --gate 2>&1) || die "code checker: $(echo "$lt" | tail -5 | cut -c1-300) (a false alarm goes in tools/lint/known.txt)"; fi
 curl -s -m 5 "http://127.0.0.1:$CDP/json/version" > /dev/null || { pw -File "$(cygpath -w "$R/tools/cdp.ps1")" -Start -Port $CDP -Profile "$(cygpath -w "$TEMP")\pillagers-cdp$CDP" > /dev/null; sleep 4; }
 gt=$(pw -File "$(cygpath -w "$R/tools/gate.ps1")" -NN "$T" -V "$V" -Cdp $CDP)
 echo "$gt" | grep -q "^parse: PASS" || die "parse check: $(echo "$gt" | head -3 | cut -c1-300)"

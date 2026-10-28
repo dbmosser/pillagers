@@ -303,8 +303,22 @@ function SoundWho(){
 # unlocked, the passive signs, cheapest first: a full-screen program, sound, a game on the graphics card (the stopgap's order and cap).
 # Last, the time someone was last there by any sign, carried over a restart (seen_t). $script:awayWhy says which sign it was (runner.log
 # only). With no presence check loaded it says nobody, so the runner tests as before.
+# 10-28 IDLE MODE: the party plays on pads, and a pad does not move the Windows idle clock that the main PC's "VM light while gaming" check
+# goes by, so on a pads-only night the VM would start helpers, robots and the local AI on the party PC. While a pad is in use this writes
+# pad-seen.txt (epoch=, seen=) into the bridge share at most once a minute; the VM's tools/nightly.sh counts one under 10 minutes old as
+# gaming (nothing new starts). It records nothing of what was pressed.
+$script:padNoteT=[long]0
+function PadNote(){
+  try{
+    $e=Epoch; if(($e-$script:padNoteT) -lt 60){ return }; $script:padNoteT=$e
+    $sh=Join-Path $env:LOCALAPPDATA 'PillagersBridge\share'; if(-not (Test-Path -LiteralPath $sh)){ return }
+    $f=Join-Path $sh 'pad-seen.txt'
+    [IO.File]::WriteAllText($f+'.tmp',('epoch='+$e+"`r`nseen="+(Get-Date).ToString('yyyy-MM-dd HH:mm:ss')+"`r`n"),$Enc)
+    Move-Item -LiteralPath ($f+'.tmp') -Destination $f -Force
+  }catch{}
+}
 function AwaySec(){
-  if($Idle){ if([PillagersIdle.Input]::PadInUse()){ $script:padT=Get-Date }; return [Math]::Min([PillagersIdle.Input]::IdleSec(),((Get-Date)-$script:padT).TotalSeconds) }
+  if($Idle){ if([PillagersIdle.Input]::PadInUse()){ $script:padT=Get-Date; PadNote }; return [Math]::Min([PillagersIdle.Input]::IdleSec(),((Get-Date)-$script:padT).TotalSeconds) }
   if($script:noIn){ $script:awayWhy='nobody can be seen (the presence checks did not load)'; $script:humanAgo=1e9; return 1e9 }
   $now=Get-Date; $e=Epoch
   $o=$false
@@ -664,6 +678,42 @@ function PartyIntent(){
   }
   return $best
 }
+# 10-27 his order (via the main PC Claude): "make sure we are always getting game telemetry back from the main pc when we play on chrome on
+# the main pc". The 8799 report receiver (the party copy's tools\collector.ps1, which writes its exports folder: run reports, notes, snips)
+# was never started again after it died while 8802 still answered: party-host-copy -Start refuses a busy 8802, and the look below stopped
+# at 8802. Now, when 8802 answers (not a relay), nothing has answered on 8799 at 3 looks in a row (2+ minutes) and the party copy was not
+# stopped on purpose, the copy's own collector is started alone, hidden and detached (the runner never waits on it beyond 8 s). It never
+# stops anything: not 8802, not his play server, not a collector that answers. A new collector that does not answer within 8 s is stopped
+# (only that new process) and the next try is in 10 minutes. One runner.log line either way.
+$script:collMiss=0; $script:collT=0; $script:collDown=''
+function Ensure-Collector([string]$PD,[int]$port=8799){
+  if((Epoch) -lt $script:collT){ return }
+  $coll=$PD+'\tools\collector.ps1'; if(-not (Test-Path -LiteralPath $coll)){ return }
+  if(Answers $port){ $script:collMiss=0; $script:collDown=''; return }
+  if((PartyIntent) -eq 'stopped'){ $script:collMiss=0; return }
+  if(-not $script:collDown){ $script:collDown=(Get-Date).ToString('HH:mm') }
+  $script:collMiss++
+  if($script:collMiss -lt 3){ return }
+  $script:collMiss=0
+  $ps=Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
+  $np=Start-Process -FilePath $ps -WindowStyle Hidden -PassThru -ArgumentList ('-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "'+$coll+'" -Root "'+$PD.TrimEnd('\')+'" -Port '+$port)
+  $up=$false; for($i=0;$i -lt 16;$i++){ Start-Sleep -Milliseconds 500; if(PortOpen $port){ $up=$true; break } }
+  if($up){ Say ('report receiver '+$port+' had not answered since '+$script:collDown+' while 8802 serves: started the party copy''s own collector (pid '+$np.Id+'); run reports and notes reach exports again'); $script:collDown=''; PutS 'pub_t' '0'; return }
+  try{ Stop-Process -Id $np.Id -Force -ErrorAction SilentlyContinue }catch{}
+  $script:collT=(Epoch)+600
+  Say ('PROBLEM: report receiver '+$port+' down since '+$script:collDown+' and the party copy''s collector did not answer within 8 s; next try in 10 minutes')
+}
+# 10-27 (same order): the report receiver in the status note (and main-status): up or down by a knock on 8799 (a connect, no request), and
+# when the newest run report and note landed in the party copy's exports folder (HH:MM today, else MM-dd HH:MM)
+function NewestExport([string]$PD,[string]$filter){
+  try{ $f=Get-ChildItem -LiteralPath ($PD+'\exports') -Filter $filter -File -ErrorAction Stop | Sort-Object LastWriteTime | Select-Object -Last 1
+       if($f){ $t=$f.LastWriteTime; if($t.Date -eq (Get-Date).Date){ return $t.ToString('HH:mm') }; return $t.ToString('MM-dd HH:mm') } }catch{}
+  return 'none'
+}
+function Receiver8799(){
+  $PD='C:\claudecode\pillagers-party'
+  return ($(if(PortOpen 8799){ 'up' }else{ 'down' })+', last report '+(NewestExport $PD 'run-*.txt')+', last note '+(NewestExport $PD 'feedback-*.txt'))
+}
 function Ensure-Play(){
   if(-not $Idle){ return }
   try{
@@ -684,7 +734,7 @@ function Ensure-Play(){
     if(-not (Test-Path -LiteralPath ($PD+'\.git')) -or -not (Test-Path -LiteralPath ($PD+'\tools\serve.ps1'))){ return }
     if((Running 'party-host-copy\.ps1') -gt 0){ $script:playMiss=0; return }
     $relay=((Running 'play-relay\.mjs') -gt 0)
-    if($relay){ if(RelayGame){ $script:playMiss=0; return } } elseif(Answers 8802){ $script:playMiss=0; return }
+    if($relay){ if(RelayGame){ $script:playMiss=0; return } } elseif(Answers 8802){ $script:playMiss=0; Ensure-Collector $PD; return }
     if((PartyIntent) -eq 'stopped'){ if($script:playMiss -ge 0){ Say '8802 has no server: the party copy was stopped on purpose, so it stays off'; $script:playMiss=-1 }; return }
     if($script:playMiss -lt 0){ $script:playMiss=0 }
     $script:playMiss++
@@ -793,12 +843,19 @@ function SparePC([string]$n='DESKTOP-82BKOP4'){
 function Write-Status([string]$corpus,[int]$robots){
   $os=Get-CimInstance Win32_OperatingSystem -ErrorAction SilentlyContinue
   $free=if($os){ [math]::Round($os.FreePhysicalMemory/1MB,1) }else{ '?' }
+  # 10-28: the machine's real size and load, read only, so what it runs at once is sized from its numbers. The notes say 16 GB and
+  # 4 threads, but it has read 22 to 25 GB free all week, and every AMD X3D chip has 12 threads or more.
+  $tot=if($os){ [math]::Round($os.TotalVisibleMemorySize/1MB,1) }else{ '?' }
+  $cpu=@(Get-CimInstance Win32_Processor -ErrorAction SilentlyContinue); $thr='?'; $pct='?'; $cpuN='?'
+  if($cpu.Count){ $thr=($cpu | Measure-Object NumberOfLogicalProcessors -Sum).Sum; $lp=($cpu | Measure-Object LoadPercentage -Average).Average; if($null -ne $lp){ $pct=[math]::Round([double]$lp) }
+    $cpuN=(([string]$cpu[0].Name) -replace '[^\x20-\x7E]','' -replace '\w+=','' -replace '\s+',' ').Trim() }
   # 10-21: each pair in its own brackets. PowerShell's comma binds before +, so the old list was ONE string joined with spaces and the
   # VM's import never found epoch= (it read the spare PC as never seen).
   $L=@(('host='+$HostN),('seen='+(Get-Date).ToString('yyyy-MM-dd HH:mm')),('epoch='+(Epoch)),('game='+(G -C $R rev-parse --short=8 HEAD)+' v'+(GameVer)),
-    ('test_run='+$corpus),('robots='+$robots),('ram_free_gb='+$free),('push_ok='+(GetS 'push_ok')),('runner='+$SelfHash.Substring(0,8)),('mode='+$(if($Idle){ 'idle' }else{ 'full' })))
+    ('test_run='+$corpus),('robots='+$robots),('ram_free_gb='+$free),('push_ok='+(GetS 'push_ok')),('runner='+$SelfHash.Substring(0,8)),('mode='+$(if($Idle){ 'idle' }else{ 'full' })),
+    ('ram_total_gb='+$tot),('cpu_threads='+$thr),('cpu_pct='+$pct),('cpu='+$cpuN))
   # SPARE-PRESENCE-PAUSE: on the spare PC, when its pause began (epoch), for whoever reads the status; the VM goes by test_run=paused alone
-  if($Idle){ $L+=('spare_pc='+(SparePC)); $L+=('party='+(GetS 'party_ver')+' '+(GetS 'party_head')); $L+=('play8802='+(Play8802)) } else {
+  if($Idle){ $L+=('spare_pc='+(SparePC)); $L+=('party='+(GetS 'party_ver')+' '+(GetS 'party_head')); $L+=('play8802='+(Play8802)); $L+=('receiver8799='+(Receiver8799)) } else {
     if($corpus -like 'paused*' -and (GetS 'pause_t')){ $L+=('paused_since='+(GetS 'pause_t')) }
     if($script:noIn){ $L+='presence=off' }   # the presence checks did not load: it tests without pausing for anyone (see runner.log)
   }

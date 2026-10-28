@@ -85,6 +85,8 @@ async function main() {
     console.log(JSON.stringify({ ok: true, saved: opt.save, size: r.json.size, sha256: r.json.sha256 }));
     process.exit(0);
   }
+  // 10-27: main-status names the report receiver in one line first, on stderr so the JSON on stdout stays parseable (onhispc.sh reads it)
+  if (opt.job === 'main-status' && r.json && r.json.receiver8799 && r.json.receiver8799.line) console.error(r.json.receiver8799.line);
   console.log(r.json ? JSON.stringify(r.json, null, 2) : r.raw);
   process.exit(r.json && r.json.ok === false ? 1 : 0);
 }

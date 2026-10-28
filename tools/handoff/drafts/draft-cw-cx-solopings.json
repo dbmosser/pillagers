@@ -1,0 +1,80 @@
+{
+    "title":  "SOLO PINGS IN ALL THREE VIEWS",
+    "why":  "His pick 46: middle mouse pinging did not work in one player. Mouse, N and d-up tap now use the existing party marker, sound and 10 second lifetime alone too. Local enemy references follow unnumbered solo enemies; map and minimap refresh positions and expiry before drawing. Party messages and share-by-drop pings keep their existing path. Playtest watch: in the smooth look, ping an enemy alone, move between world, minimap and full map, and confirm the mark follows for 10 seconds then clears. Tap d-up to ping and hold it to open the map. In two windows, confirm both players still see each other ping and a dropped item still marks only the other window.",
+    "now":  "Solo mouse, N and pad pings show in the world, minimap and full map and follow an enemy for 10 seconds.",
+    "edits":  [
+                  {
+                      "anchor":  "  // With a party it marks what is under the cursor for them (netPingMake, the N key, and on the open map your marker). Alone there is nobody to\n  // ping and it does nothing. It latches no key.",
+                      "replacement":  "  // v28.xx (cw-cx-solopings), his pick 46: \"middle mouse pinging doesn\u0027t even work in 1 player\". Use the same ping alone and in a party.\n  // On the open map it still places your waypoint. It latches no key."
+                  },
+                  {
+                      "anchor":  "    if(NET.on) netPingMake();",
+                      "replacement":  "    netPingMake();"
+                  },
+                  {
+                      "anchor":  "  if(code===\u0027KeyN\u0027\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!repeat\u0026\u0026NET.on) netPingMake();   // v16.43: ping for the party",
+                      "replacement":  "  if(code===\u0027KeyN\u0027\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!repeat) netPingMake();   // v28.xx (cw-cx-solopings): N also works alone."
+                  },
+                  {
+                      "anchor":  "  // v16.46, HIS ORDER: PING ON D-PAD UP. A tap pings for the party (in solo it opens and shuts the map as before); a hold of 0.4 s",
+                      "replacement":  "  // v28.xx (cw-cx-solopings), his pick 46: a tap pings alone or in a party; a hold of 0.4 s"
+                  },
+                  {
+                      "anchor":  "      if(G.mapOpen\u0026\u0026G.mapCur) netWpFromMap(); else if(G.mapOpen) G.mapOpen=false; else if(NET.on\u0026\u0026NET.upSeed) netPingMake(); else G.mapOpen=true;   // v16.47: with the map cursor moved, a tap places the marker",
+                      "replacement":  "      if(G.mapOpen\u0026\u0026G.mapCur) netWpFromMap(); else if(G.mapOpen) G.mapOpen=false; else netPingMake();   // v28.xx (cw-cx-solopings): solo uses the same tap; hold still toggles the map."
+                  },
+                  {
+                      "anchor":  "  if(typeof G===\u0027undefined\u0027||!G||G.over||!G.player||!NET.on||!NET.upSeed) return null;",
+                      "replacement":  "  // v28.xx (cw-cx-solopings): only a party needs a shared raid seed. No ping behind a panel, while down, or on the Undercroft floor.\n  if(typeof G===\u0027undefined\u0027||!G||G.over||!G.player||G.hubFloor||G.sim||G.paused||G.bagOpen||G.trade||G.forgeUI||G.player.downed||G.player.dying||(NET.on\u0026\u0026!NET.upSeed)) return null;"
+                  },
+                  {
+                      "anchor":  "    if(NET.pingLast\u0026\u0026!NET.pingLast.dg){ NET.pingLast.dg=1; netBroadcast(NET.pingLast); netPingPush(NET.seat,NET.pingLast); }",
+                      "replacement":  "    if(NET.pingLast\u0026\u0026!NET.pingLast.dg){ NET.pingLast.dg=1; if(NET.on) netBroadcast(NET.pingLast); netPingPush(NET.seat,NET.pingLast,NET.pingTarget); }"
+                  },
+                  {
+                      "anchor":  "  for(i=0;i\u003cG.ents.length;i++){ e=G.ents[i]; if(!e.nid||e.hp\u003c=0||e.merc) continue; d=dist(e,w); if(d\u003cbd){ bd=d; hit=e; } }",
+                      "replacement":  "  for(i=0;i\u003cG.ents.length;i++){ e=G.ents[i]; if((NET.on\u0026\u0026!e.nid)||e.hp\u003c=0||e.merc) continue; d=dist(e,w); if(d\u003cbd){ bd=d; hit=e; } }"
+                  },
+                  {
+                      "anchor":  "  netBroadcast(m);\n  NET.pingLast=m;\n  netPingPush(NET.seat,m);",
+                      "replacement":  "  if(NET.on) netBroadcast(m);\n  NET.pingLast=m;\n  NET.pingTarget=NET.on?null:hit;   // v28.xx (cw-cx-solopings): solo targets have no network id; keep the local body out of the wire word.\n  netPingPush(NET.seat,m,NET.pingTarget);"
+                  },
+                  {
+                      "anchor":  "function netPingPush(s,o){",
+                      "replacement":  "function netPingPush(s,o,target){"
+                  },
+                  {
+                      "anchor":  "  NET.pings.push({s:s,x:o.x,y:o.y,w:o.w||\u0027\u0027,id:o.id,dg:o.dg?1:0,pl:o.pl?1:0,at:Date.now()});",
+                      "replacement":  "  NET.pings.push({s:s,x:o.x,y:o.y,w:o.w||\u0027\u0027,id:o.id,dg:o.dg?1:0,pl:o.pl?1:0,at:Date.now(),target:target||null});"
+                  },
+                  {
+                      "anchor":  "function netPingDraw(){",
+                      "replacement":  "// v28.xx (cw-cx-solopings): update before each drawing pass, including the paused map, so all three views follow and expire together.\nfunction netPingUpdate(){\n  var i, p, e, now=Date.now();\n  if(!NET.pings) return 0;\n  for(i=NET.pings.length-1;i\u003e=0;i--){\n    p=NET.pings[i];\n    if((now-p.at)/1000\u003eNET_PING_T){ NET.pings.splice(i,1); continue; }\n    e=p.target||(p.id\u0026\u0026NET.entMap?NET.entMap[p.id]:null);\n    if(e\u0026\u0026e.hp\u003e0\u0026\u0026G\u0026\u0026G.ents.indexOf(e)\u003e=0){ p.x=e.x; p.y=e.y; }\n  }\n  return NET.pings.length;\n}\nfunction netPingDraw(){\n  netPingUpdate();"
+                  },
+                  {
+                      "anchor":  "    if((now-p.at)/1000\u003eNET_PING_T){ NET.pings.splice(i,1); continue; }\n    e=(p.id\u0026\u0026NET.entMap)?NET.entMap[p.id]:null;\n    if(e\u0026\u0026e.hp\u003e0){ p.x=e.x; p.y=e.y; }   // a pinged enemy is followed while it lives",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "  try{ if(NET.on) netPingDraw(); }catch(_npd){}   // v16.43: the party pings",
+                      "replacement":  "  try{ netPingDraw(); }catch(_npd){}   // v28.xx (cw-cx-solopings): your ping is visible in solo too."
+                  },
+                  {
+                      "anchor":  "  // the party\u0027s marks and pings, then your waypoint\n  if(typeof NET===\u0027object\u0027\u0026\u0026NET){",
+                      "replacement":  "  // v28.xx (cw-cx-solopings): the same live pings in solo and in a party, then your waypoint.\n  if(typeof NET===\u0027object\u0027\u0026\u0026NET){\n    netPingUpdate();"
+                  },
+                  {
+                      "anchor":  "function netWpMapDraw(ox,oy,sc){",
+                      "replacement":  "function netWpMapDraw(ox,oy,sc){\n  netPingUpdate();   // v28.xx (cw-cx-solopings): opening the map must not freeze a target or extend its ping."
+                  },
+                  {
+                      "anchor":  "  try{ if(NET.on) netWpMapDraw(ox,oy,sc); }catch(_wm){}   // v16.46: the party\u0027s map markers on the map",
+                      "replacement":  "  try{ netWpMapDraw(ox,oy,sc); }catch(_wm){}   // v28.xx (cw-cx-solopings): solo pings on the full map."
+                  },
+                  {
+                      "anchor":  "  if(NET.on\u0026\u0026NET.role===\u0027host\u0027\u0026\u0026!G.sim) netUpAnnounce(G);   // v15.79: the party is told to ascend into this world (the net section)",
+                      "replacement":  "  NET.wps={}; NET.pings=[]; NET.pingAt=0; NET.pingLast=null; NET.pingTarget=null;   // v28.xx (cw-cx-solopings): no marks or double-tap state from the previous raid.\n  if(NET.on\u0026\u0026NET.role===\u0027host\u0027\u0026\u0026!G.sim) netUpAnnounce(G);   // v15.79: the party is told to ascend into this world (the net section)"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027solo mouse, N and pad pings draw in world, minimap and map, follow unnumbered enemies for 10 s, and retain host and guest pings\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid)) return \u0027SKIP: cannot deploy\u0027;\n     var keep={},nk=[\u0027on\u0027,\u0027role\u0027,\u0027seat\u0027,\u0027same\u0027,\u0027peers\u0027,\u0027upSeed\u0027,\u0027entMap\u0027,\u0027wps\u0027,\u0027pings\u0027,\u0027pingAt\u0027,\u0027pingLast\u0027,\u0027pingTarget\u0027],i,g,e,p,q,m,world=0,shown=[],sent=[],sounds=0,pad,clock=100,\n       ng=navigator.getGamepads,own=Object.prototype.hasOwnProperty.call(navigator,\u0027getGamepads\u0027),pk=Object.assign({},PAD),ao=ARCADE.on,at=ATT.on,\n       mw=mouseWorld,bc=netBroadcast,bp=blip,cg=colourCueGlyph,pd=netPingDraw,pn=netPadNow,ns=netSend;\n     nk.forEach(function(k){keep[k]=NET[k];});\n     function fresh(){NET.pings=[];NET.pingAt=0;NET.pingLast=null;NET.pingTarget=null;sent=[];sounds=0;}\n     function poll(b){for(var j=0;j\u003c17;j++)pad.buttons[j]={pressed:j===b,value:j===b?1:0};pollPad();}\n     try{\n       __runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();\n       NET.on=false;NET.same=null;NET.peers=[];ARCADE.on=false;ATT.on=false;\n       __deploy({kit:[\u0027gun_rifle\u0027],safe:null,mapIx:0,seed:4242});g=__state();p=g.player;\n       g.mapFirst=false;g.mapOpen=false;g.bagOpen=false;g.paused=false;g.rise=null;keys={};mouse.down=false;p.iv=999;\n       CFG.xfPix=0;\n       e=g.ents.filter(function(v){return v.hp\u003e0\u0026\u0026!v.merc;})[0];if(!e)return \u0027no target to stage\u0027;\n       delete e.nid;e.x=p.x+80;e.y=p.y-60;\n       mouseWorld=function(){return {x:e.x,y:e.y};};\n       netBroadcast=function(v){sent.push(v);};blip=function(k){if(k===\u0027pick\u0027)sounds++;};\n       colourCueGlyph=function(c,k){shown.push(k);return cg.apply(this,arguments);};\n       netPingDraw=function(){var n=pd();world+=n;return n;};\n       fresh();raidKey(\u0027Mouse1\u0027,false,null);\n       if(NET.pings.length!==1)return \u0027middle mouse made no solo ping\u0027;\n       q=NET.pings[0];if(q.target!==e||q.w!==netPingName(e))return \u0027unnumbered solo enemy was not tagged\u0027;\n       if(sent.length||sounds!==1)return \u0027solo ping sent a packet or missed the ordinary sound\u0027;\n       e.x+=20;e.y+=10;shown=[];mmMarks({x:100,y:100,w:400,h:400},.3,1);\n       if(q.x!==e.x||q.y!==e.y||shown.indexOf(\u0027target\u0027)\u003c0)return \u0027solo enemy not followed/drawn on minimap\u0027;\n       g.mapOpen=true;e.x+=20;shown=[];drawMapOverlayRaw();\n       if(q.x!==e.x||shown.indexOf(\u0027target\u0027)\u003c0)return \u0027solo ping missing or stale on full map\u0027;\n       g.mapOpen=false;drawHUD();if(!world)return \u0027solo world ping is not drawn by HUD\u0027;\n       q.at=Date.now()-9000;netPingDraw();if(NET.pings.length!==1)return \u0027ping ended before 10 seconds\u0027;\n       q.at=Date.now()-10001;g.mapOpen=true;shown=[];drawMapOverlayRaw();\n       if(NET.pings.length||shown.indexOf(\u0027target\u0027)\u003e=0)return \u0027ping outlived 10 seconds on open map\u0027;\n       g.mapOpen=false;fresh();raidKey(\u0027KeyN\u0027,false,null);if(NET.pings.length!==1)return \u0027N made no solo ping\u0027;\n       raidKey(\u0027KeyN\u0027,true,null);if(NET.pings.length!==1)return \u0027key repeat added a ping\u0027;\n       raidKey(\u0027KeyN\u0027,false,null);if(NET.pings.length!==1||!NET.pings[0].dg||NET.pings[0].target!==e)return \u0027solo double-tap lost danger or target\u0027;\n       fresh();pad={connected:true,index:0,id:\u0027Xbox solo ping\u0027,mapping:\u0027standard\u0027,axes:[0,0,0,0],buttons:[]};\n       navigator.getGamepads=function(){return [pad];};netPadNow=function(){return clock;};\n       PAD.prev=[];PAD.prevMap=null;PAD.mSpent=[];PAD.held={};PAD.announced=true;PAD.focus=null;PAD.duAt=null;PAD.duHeld=0;PAD.lossIx=-1;PAD.lossRaid=null;PAD.lost=null;PAD.claim=null;\n       poll(-1);poll(12);clock+=.1;poll(-1);\n       if(g.mapOpen||NET.pings.length!==1)return \u0027solo d-up tap opened map or failed to ping\u0027;\n       fresh();poll(12);clock+=.5;poll(12);poll(-1);\n       if(!g.mapOpen||NET.pings.length)return \u0027d-up hold failed to open map without ping\u0027;\n       poll(12);clock+=.1;poll(-1);if(g.mapOpen)return \u0027d-up tap did not close map\u0027;\n       navigator.getGamepads=function(){return [];};PAD.on=false;\n       e.nid=91;NET.entMap={91:e};NET.on=true;NET.upSeed=g.seed;\n       for(i=0;i\u003c2;i++){\n         NET.seat=i;NET.role=i?\u0027join\u0027:\u0027host\u0027;fresh();raidKey(\u0027Mouse1\u0027,false,null);m=NET.pingLast;\n         if(!m||m.id!==91||sent.length!==1||NET.pings.length!==1)return \u0027party sender failed in seat \u0027+i;\n         NET.pings=[];m.s=1-i;\n         if(netPingTake({state:\u0027in\u0027,seat:1-i},m)!==\u0027png\u0027||NET.pings.length!==1)return \u0027party receiver failed in seat \u0027+i;\n         e.x+=20;netPingDraw();if(NET.pings[0].x!==e.x)return \u0027party target stopped following in seat \u0027+i;\n       }\n       NET.role=\u0027host\u0027;NET.seat=0;NET.peers=[{state:\u0027in\u0027,seat:1}];fresh();\n       netSend=function(pe,v){sent.push({seat:pe.seat,m:v});return true;};\n       if(netPileShare(0,\u0027bandage\u0027,p.x,p.y)!==1||sent.length!==1||!sent[0].m.pl||NET.pings.length)return \u0027host drop no longer marks only the teammate\u0027;\n       fresh();if(netPileShare(1,\u0027bandage\u0027,p.x,p.y)!==1||NET.pings.length!==1||!NET.pings[0].pl||sent.length)return \u0027guest drop no longer marks only the host\u0027;\n       NET.on=false;NET.peers=[];fresh();\n       if(netPileShare(0,\u0027bandage\u0027,p.x,p.y)||NET.pings.length||sent.length)return \u0027solo drop started making automatic pings\u0027;\n       raidKey(\u0027KeyN\u0027,false,null);\n       __endRaid(\u0027abandon\u0027);__topClear();__deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       if(NET.pings.length||NET.pingAt||NET.pingLast||NET.pingTarget)return \u0027ping state leaked into next solo raid\u0027;\n       return null;\n     }finally{\n       mouseWorld=mw;netBroadcast=bc;blip=bp;colourCueGlyph=cg;netPingDraw=pd;netPadNow=pn;netSend=ns;\n       NET.on=false;try{__endRaid(\u0027abandon\u0027);}catch(_e){}__topClear();keys={};mouse.down=false;\n       nk.forEach(function(k){NET[k]=keep[k];});ARCADE.on=ao;ATT.on=at;\n       if(own)navigator.getGamepads=ng;else delete navigator.getGamepads;\n       Object.keys(PAD).forEach(function(k){delete PAD[k];});Object.assign(PAD,pk);\n     }\n   }},"
+}

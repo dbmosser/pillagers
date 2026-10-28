@@ -1,0 +1,7 @@
+v35.40: no white bars anywhere
+
+no cream rank bars under item pictures on the raid belt, hand, wheel, backpack, stash, hotbar, pre-raid pack, extracted card, KIA card and the rest of the menus; loot rows keep theirs; the rarity colour borders and the ammo bar stay
+
+Check 35.40. Fails on v35.39.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

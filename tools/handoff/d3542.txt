@@ -1,0 +1,5 @@
+## v35.42 - THE STASH HOVER KEEPS EVERY BOX THE SAME SIZE
+
+Co-op hunt while he was away. his order 10-27: mousing over different items in the stash changes the size of one of the sub menus, so the grids jump; the item line under the grids was hidden when idle and as tall as the hovered item had rows
+
+MEASURED. Check 35.42 passes, and fails on v35.41.

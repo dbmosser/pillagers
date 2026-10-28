@@ -1,0 +1,5 @@
+## v35.43 - READABLE PING LABELS AND MAP GLYPHS
+
+Co-op hunt while he was away. The critic found the existing ping words too small, orange on busy ground and over the gun, and the minimap ping too small. Solo and party now share 16px bone text on an 85 percent shared HUD plate, raised above the target with an edge fallback. Minimap and full-map target shapes grow to 18px with their existing dark backing. Words, colours of the marker, sound, target following and 10 second lifetime stay the same. Playtest watch: ping a target near a screen edge in either window and confirm the label stays inside the screen and clear of the target; look for the larger shape on both maps.
+
+MEASURED. Check 35.43 passes, and fails on v35.42.

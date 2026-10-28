@@ -107,6 +107,9 @@ S = C:\Users\User1\AppData\Local\Temp\claude\C--Users-User1-Desktop-dark-raiders
    It runs the same gates as a ship on your lane's own Chrome, without the lock, in about 2 minutes, and changes nothing. Fix
    your mk script until it prints PREFLIGHT PASS. Only then ship. The real gate is shared by every worker; do not spend it on a
    draft that has not passed preflight.
+   Preflight also runs the free code checker (tools/lint/lint.mjs, 10 s): a name that does not exist, a duplicate key or case, or a
+   second function with one name fails it, because these stand at zero on the game. Run node tools/lint/lint.mjs yourself for the
+   full list (tools/lint/out/report.txt); a real false alarm goes in tools/lint/known.txt.
    Ship it: bash "S/shipq.sh" cw-KEY  (it waits for the lock, runs the gate, prints SHIPPED or STOP with the reason).
    After SHIPPED it frees the lock and waits up to 6 minutes for his main PC: ON HIS PC vNN.NN or NOT ON HIS PC (10-27,
    tools/handoff/onhispc.sh). Never report a build as done without its ON HIS PC line.

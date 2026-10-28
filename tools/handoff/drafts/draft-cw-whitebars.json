@@ -1,0 +1,144 @@
+{
+    "title":  "NO WHITE BARS ANYWHERE",
+    "why":  "his order 10-27: remove the white bars under items everywhere, and the higher white bars on the raid belt are not helpful",
+    "now":  "no cream rank bars under item pictures on the raid belt, hand, wheel, backpack, stash, hotbar, pre-raid pack, extracted card, KIA card and the rest of the menus; loot rows keep theirs; the rarity colour borders and the ammo bar stay",
+    "edits":  [
+                  {
+                      "anchor":  "function iconSprite(key,S){",
+                      "replacement":  "function iconSprite(key,S,np){   // cw-whitebars, his order 10-27 (\"remove the white bars under items everywhere\"): np paints the sprite without the rank pips"
+                  },
+                  {
+                      "anchor":  "k=key+\u0027|\u0027+Math.round(S)+\u0027|\u0027+R; e=ICONSPR.m[k];",
+                      "replacement":  "k=key+\u0027|\u0027+Math.round(S)+\u0027|\u0027+R+(np?\u0027|np\u0027:\u0027\u0027); e=ICONSPR.m[k];"
+                  },
+                  {
+                      "anchor":  "drawItemIcon(c2,key,side/2,side/2,S*R);",
+                      "replacement":  "(np?drawItemIconArt:drawItemIcon)(c2,key,side/2,side/2,S*R);"
+                  },
+                  {
+                      "anchor":  "function drawIconSprite(c,key,cx,cy,S){",
+                      "replacement":  "function drawIconSprite(c,key,cx,cy,S,np){"
+                  },
+                  {
+                      "anchor":  "try{ e=iconSprite(key,S); }catch(_is){ e=null; }",
+                      "replacement":  "try{ e=iconSprite(key,S,np); }catch(_is){ e=null; }"
+                  },
+                  {
+                      "anchor":  "if(!e){ drawItemIcon(c,key,cx,cy,S); return false; }",
+                      "replacement":  "if(!e){ (np?drawItemIconArt:drawItemIcon)(c,key,cx,cy,S); return false; }"
+                  },
+                  {
+                      "anchor":  "drawIconSprite(ctx,h.k,x+LH(30),y+bh/2,LH(34));",
+                      "replacement":  "drawIconSprite(ctx,h.k,x+LH(30),y+bh/2,LH(34),1); // cw-whitebars, his order 10-27: no cream rank pips"
+                  },
+                  {
+                      "anchor":  "drawIconSprite(ctx,k,ix,iy,sz);",
+                      "replacement":  "drawIconSprite(ctx,k,ix,iy,sz,1);"
+                  },
+                  {
+                      "anchor":  "if(S.icon){ drawIconSprite(ctx,S.icon,cx2,cy2,bw*0.64); }",
+                      "replacement":  "if(S.icon){ drawIconSprite(ctx,S.icon,cx2,cy2,bw*0.64,1); }"
+                  },
+                  {
+                      "anchor":  "try{ e=iconSprite(id,S); }catch(_gi){ e=null; }",
+                      "replacement":  "try{ e=iconSprite(id,S,1); }catch(_gi){ e=null; }"
+                  },
+                  {
+                      "anchor":  "drawIconSprite(ctx,G.drag.key,cx,cy,size*.85);",
+                      "replacement":  "drawIconSprite(ctx,G.drag.key,cx,cy,size*.85,1);"
+                  },
+                  {
+                      "anchor":  "drawItemIcon(ctx,G.drag.key,mouse.x,mouse.y,ds*0.72);",
+                      "replacement":  "drawItemIconArt(ctx,G.drag.key,mouse.x,mouse.y,ds*0.72);"
+                  },
+                  {
+                      "anchor":  "drawIconSprite(ctx,G.player.wep.id,left+72*s,top+80*s,72*s);",
+                      "replacement":  "drawIconSprite(ctx,G.player.wep.id,left+72*s,top+80*s,72*s,1);"
+                  },
+                  {
+                      "anchor":  "drawIconSprite(ctx,st.key,tx+tile/2,ty+tile*.47,tile*.62);",
+                      "replacement":  "drawIconSprite(ctx,st.key,tx+tile/2,ty+tile*.47,tile*.62,1);"
+                  },
+                  {
+                      "anchor":  "drawIconSprite(ctx,key,dx+72*s,top+56*s,96*s);",
+                      "replacement":  "drawIconSprite(ctx,key,dx+72*s,top+56*s,96*s,1);"
+                  },
+                  {
+                      "anchor":  "drawIconSprite(ctx,p.wep.id,x+11+LH(16)*BZ,cy-LH(2)*BZ,LH(30)*BZ);",
+                      "replacement":  "drawIconSprite(ctx,p.wep.id,x+11+LH(16)*BZ,cy-LH(2)*BZ,LH(30)*BZ,1);"
+                  },
+                  {
+                      "anchor":  "drawIconSprite(ctx,st.key,tx+TILE/2,ty+TILE/2-LH(2)*BZ,TILE*0.62);",
+                      "replacement":  "drawIconSprite(ctx,st.key,tx+TILE/2,ty+TILE/2-LH(2)*BZ,TILE*0.62,1);"
+                  },
+                  {
+                      "anchor":  "if(!S.sold) drawItemIcon(ctx,S.k,x+LH(24),cy-LH(5),LH(18));",
+                      "replacement":  "if(!S.sold) drawItemIconArt(ctx,S.k,x+LH(24),cy-LH(5),LH(18));"
+                  },
+                  {
+                      "anchor":  "else drawItemIcon(_wx,_wc[_wi].getAttribute(\u0027data-k\u0027),28,28,40);",
+                      "replacement":  "else drawItemIconArt(_wx,_wc[_wi].getAttribute(\u0027data-k\u0027),28,28,40);"
+                  },
+                  {
+                      "anchor":  "iconImgHTML(keys[k],52)",
+                      "replacement":  "iconImgHTML(keys[k],52,1)"
+                  },
+                  {
+                      "anchor":  "iconImgHTML(_lk2,32)",
+                      "replacement":  "iconImgHTML(_lk2,32,1)"
+                  },
+                  {
+                      "anchor":  "        lines.push((ITEMS[\u0027gun_\u0027+gone[j].id]?iconImgHTML(\u0027gun_\u0027+gone[j].id,32)",
+                      "replacement":  "        lines.push((ITEMS[\u0027gun_\u0027+gone[j].id]?iconImgHTML(\u0027gun_\u0027+gone[j].id,32,1)"
+                  },
+                  {
+                      "anchor":  "else lines.push((ITEMS[\u0027gun_\u0027+gone[j].id]?iconImgHTML(\u0027gun_\u0027+gone[j].id,32)",
+                      "replacement":  "else lines.push((ITEMS[\u0027gun_\u0027+gone[j].id]?iconImgHTML(\u0027gun_\u0027+gone[j].id,32,1)"
+                  },
+                  {
+                      "anchor":  "iconImgHTML(id,52)",
+                      "replacement":  "iconImgHTML(id,52,1)"
+                  },
+                  {
+                      "anchor":  "iconImgHTML(ks[i],56)",
+                      "replacement":  "iconImgHTML(ks[i],56,1)"
+                  },
+                  {
+                      "anchor":  "iconImgHTML(k,22)+",
+                      "replacement":  "iconImgHTML(k,22,1)+"
+                  },
+                  {
+                      "anchor":  "iconImgHTML(sk,22)+",
+                      "replacement":  "iconImgHTML(sk,22,1)+"
+                  },
+                  {
+                      "anchor":  "iconImgHTML(k,30)+(count\u003e1",
+                      "replacement":  "iconImgHTML(k,30,1)+(count\u003e1"
+                  },
+                  {
+                      "anchor":  "iconImgHTML(k,30)+(counts[k]\u003e1",
+                      "replacement":  "iconImgHTML(k,30,1)+(counts[k]\u003e1"
+                  },
+                  {
+                      "anchor":  "iconImgHTML(_ik,30)",
+                      "replacement":  "iconImgHTML(_ik,30,1)"
+                  },
+                  {
+                      "anchor":  "iconImgHTML(GUN_CLASS_ICON[gl[i]],30)",
+                      "replacement":  "iconImgHTML(GUN_CLASS_ICON[gl[i]],30,1)"
+                  },
+                  {
+                      "anchor":  "iconImgHTML(wl[cell[i]],30)",
+                      "replacement":  "iconImgHTML(wl[cell[i]],30,1)"
+                  },
+                  {
+                      "anchor":  "iconImgHTML(k,(where?22:40))",
+                      "replacement":  "iconImgHTML(k,(where?22:40),1)"
+                  },
+                  {
+                      "anchor":  "iconImgHTML(_fg.k,(where?22:40))",
+                      "replacement":  "iconImgHTML(_fg.k,(where?22:40),1)"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027NO WHITE BARS: the cream rank pips are gone from the raid belt, hand, wheel, backpack, drag ghost, stash, hotbar, pre-raid belt, kit setup, crate, codex, extracted card and KIA card; the loot rows keep them (his order 10-27)\u0027,\n   run:function(){\n     var bad=[], pips=0, rp0=rarityPips, g=null, p=null, its, html, cv, oc, i;\n     function cold(){ _iconURL={}; ICONSPR.m={}; ICONSPR.n=0; pips=0; }\n     function none(where){ if(pips\u003e0) bad.push(where+\u0027 paints \u0027+pips+\u0027 rank pips\u0027); }\n     try{\n       __topClear(); __runPrep(); __pinDPR(1); __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       rarityPips=function(){ pips++; return 0; };\n       // (1) the raid: belt and the item in hand, the backpack with an item on the mouse, the item wheel\n       __deploy({kit:[\u0027bandage\u0027,\u0027medkit\u0027,\u0027plate\u0027,\u0027gun_rifle\u0027,\u0027gun_shotgun\u0027],safe:null,mapIx:0,seed:4242});\n       g=__state();\n       if(!g||!g.player) bad.push(\u0027staging: no raid\u0027);\n       else {\n         p=g.player; g.ents.length=0; p.iv=99;\n         p.hand={k:\u0027medkit\u0027,t:0.2,len:1,armed:0,used:0,prev:false};\n         cold(); __frame(); __frame(); none(\u0027the raid belt and the item in hand\u0027);\n         p.hand=null; g.bagOpen=true; g.drag={key:\u0027plate\u0027,bagIx:0}; mouse.x=W/2; mouse.y=H/2;\n         cold(); __frame(); __frame(); none(\u0027the raid backpack and the item on the mouse\u0027);\n         g.drag=null; g.bagOpen=false;\n         g.bag=[\u0027bandage\u0027,\u0027medkit\u0027,\u0027stim\u0027,\u0027plate\u0027]; g.pouch.frag=2; g.pouch.smoke=1; p.hand=null; g.wheel=null;\n         mouse.x=W/2; mouse.y=H/2; keys[\u0027KeyQ\u0027]=true; raidKey(\u0027KeyQ\u0027,false,null);\n         if(!g.wheel) bad.push(\u0027staging: the item wheel did not open\u0027);\n         cold(); __frame(); __frame(); none(\u0027the item wheel\u0027);\n         keys[\u0027KeyQ\u0027]=false; try{ wheelRelease(); }catch(_w){}\n         // control: the pickup stack is a loot row and stays exactly as it was\n         g.wheel=null; g.pick=[]; pickSay(\u0027bandage\u0027,{item:\u0027bandage\u0027}); for(i=0;i\u003cg.pick.length;i++) g.pick[i].at=(g.t||0)-1;\n         cold(); __frame(); __frame();\n         if(pips\u003c1) bad.push(\u0027control: the pickup stack no longer paints rank pips (it stays as it was)\u0027);\n         __endRaid(\u0027abandon\u0027); __topClear();\n       }\n       // (2) the Undercroft: backpack, floor belt, stash, hotbar row, kit setup, pre-raid pack and belt, crate, codex\n       __cleanProfile(); __hubEnter();\n       P.kit=[\u0027gun_rifle\u0027,\u0027gun_shotgun\u0027,\u0027medkit\u0027,\u0027plate\u0027]; P.hotAssign={4:\u0027gun_shotgun\u0027,5:\u0027medkit\u0027};\n       P.stash.push(\u0027medkit\u0027,\u0027medkit\u0027,\u0027bandage\u0027,\u0027plate\u0027,\u0027frag\u0027,\u0027frag\u0027,\u0027gun_rifle\u0027,\u0027gun_smg\u0027,\u0027core\u0027,\u0027smoke\u0027); saveProfile();\n       hubBagOpenSet(true); cold(); drawHubBag(); drawHubBag(); none(\u0027the Undercroft backpack and belt\u0027); hubBagOpenSet(false);\n       cold(); __hubFrame(); __hubFrame(); none(\u0027the Undercroft floor belt\u0027);\n       cold(); renderHub(); none(\u0027the stash grid, hotbar row and kit setup\u0027);\n       cold(); html=hotPlanHTML(); none(\u0027the stash hotbar row\u0027);\n       P.kitPick=\u0027mine\u0027; renderSector(); openModal(\u0027sectormodal\u0027);\n       cold(); html=hotPlanHTML(\u0027sector\u0027); renderSector(); syncSectorKit(); none(\u0027the pre-raid belt and pack\u0027);\n       try{ var sm=document.getElementById(\u0027sectormodal\u0027); if(sm) sm.classList.remove(\u0027on\u0027); }catch(_s){}\n       cold(); try{ renderCrate(); }catch(_c1){} none(\u0027the crate lists\u0027);\n       cold(); try{ renderCodex(); }catch(_c2){} none(\u0027the codex\u0027);\n       // (3) the extracted card and the KIA card\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state(); g.bag.push(\u0027medkit\u0027,\u0027plate\u0027,\u0027bandage\u0027,\u0027gun_rifle\u0027,\u0027core\u0027);\n       cold(); __endRaid(\u0027extract\u0027); its=document.querySelectorAll(\u0027#outcome .haulit img.ic\u0027);\n       if(its.length\u003c2) bad.push(\u0027staging: the extracted card shows \u0027+its.length+\u0027 item pictures\u0027);\n       none(\u0027the extracted card\u0027); __topClear();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state(); g.bag.push(\u0027medkit\u0027,\u0027plate\u0027,\u0027bandage\u0027,\u0027gun_rifle\u0027,\u0027gun_smg\u0027,\u0027core\u0027,\u0027frag\u0027,\u0027smoke\u0027);\n       cold(); __endRaid(\u0027dead\u0027); its=document.querySelectorAll(\u0027#outcome img.ic\u0027);\n       if(its.length\u003c1) bad.push(\u0027staging: the KIA card shows no item pictures\u0027);\n       none(\u0027the KIA card\u0027); __topClear();\n       // (4) the two draws that need a stall or a welcome list are read from their code\n       if(/drawItemIcon\\(ctx,S\\.k/.test(String(drawTrade))) bad.push(\u0027the stall stock icons still paint rank pips\u0027);\n       if(/else drawItemIcon\\(_wx/.test(String(maybeWelcome))) bad.push(\u0027the welcome list still paints rank pips\u0027);\n       // control: the loot name pop (drawItemIcon, wc) and the plain menu painter keep the pips\n       cold(); cv=document.createElement(\u0027canvas\u0027); cv.width=64; cv.height=64; drawItemIcon(cv.getContext(\u00272d\u0027),\u0027medkit\u0027,32,32,40);\n       if(pips\u003c1) bad.push(\u0027control: drawItemIcon no longer paints rank pips (the loot rows use it)\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{\n       try{ rarityPips=rp0; }catch(_rp){}\n       try{ keys[\u0027KeyQ\u0027]=false; }catch(_k){}\n       try{ hubBagOpenSet(false); }catch(_hb){}\n       try{ var sm2=document.getElementById(\u0027sectormodal\u0027); if(sm2) sm2.classList.remove(\u0027on\u0027); }catch(_s2){}\n       try{ if(state===\u0027raid\u0027\u0026\u0026G\u0026\u0026!G.over) __endRaid(\u0027abandon\u0027); }catch(_e){}\n       try{ __topClear(); __cleanProfile(); }catch(_c){}\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

@@ -1,0 +1,7 @@
+v35.42: the stash hover keeps every box the same size
+
+the item line under the stash grids is one fixed size box, hover or not: the backpack, hotbar, gun keys and stash grid no longer move when the mouse crosses items
+
+Check 35.42. Fails on v35.41.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
