@@ -326,7 +326,7 @@ $(printf '%s\n' "$pf" | tail -8)"; return 1
     # so the lane does, the same command the Claude lanes are allowed (console-lane.sh). Without this every run failed "Unable to connect".
     curl -s -m 3 http://127.0.0.1:9346/json/version >/dev/null 2>&1 || { log "gate browser (9346) was down, starting it"; powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/cdp.ps1" -Start -Port 9346 >/dev/null 2>&1; }
     out=$(timeout 7500 bash "$S/shipq.sh" "$k" 2>&1 | tail -14 | cut -c1-700); echo "$out" > "$X/log/$name-$k.ship.txt"
-    printf '%s\n' "$out" | grep -q '^SHIPPED' && { echo "$k" >> "$LS/shipped.txt"; SHIPPED_NOW+=("$k"); log "$name shipped $k: $(printf '%s\n' "$out" | grep '^SHIPPED' | head -1)"; return 0; }
+    printf '%s\n' "$out" | grep -q '^SHIPPED' && { echo "$k" >> "$LS/shipped.txt"; SHIPPED_NOW+=("$k"); ONHIS_NOW+=("$(printf '%s\n' "$out" | grep -m1 -E '^(NOT )?ON HIS PC' | cut -c1-240)"); log "$name shipped $k: $(printf '%s\n' "$out" | grep '^SHIPPED' | head -1)"; return 0; }
     if printf '%s\n' "$out" | grep -qi 'uncommitted changes'; then sleep 90; continue; fi
     if printf '%s\n' "$out" | grep -qiE 'stamped v[0-9.]+, .*behind'; then bash "$R/tools/handoff/shipkit/cardrefresh.sh" "$S" >> "$X/log/cardrefresh.txt" 2>&1; sleep 30; continue; fi
     break
@@ -522,7 +522,7 @@ while [ "$it" -lt "$left" ]; do
   git -C "$W" status --porcelain -uno 2>/dev/null | head -5 > "$X/log/$name-edits-in-copy.txt"
   harvest
   fi
-  fb=""; SHIPPED_NOW=(); gate=0; keys=$(keys_list); sc=$(screens_list)
+  fb=""; SHIPPED_NOW=(); ONHIS_NOW=(); gate=0; keys=$(keys_list); sc=$(screens_list)
   [ "$CLASS" = timeout ] && appendfb "Your last run was cut after $(cap RUN_MIN 45) minutes. Whatever is in .codex-work/$name was kept. Finish in fewer steps."
   rtg=0; RT_HOLD=""; RT_DONE=""
   [ -f "$WD/fixture-retarget.json" ] && { apply_retarget; rtg=$?; }
@@ -542,6 +542,8 @@ while [ "$it" -lt "$left" ]; do
     [ -n "$held" ] && appendfb "Not shipped yet, they wait on the fixture retarget: $held"; fi
   [ $gate = 0 ] && [ $rtg != 0 ] && gate=$rtg
   [ ${#SHIPPED_NOW[@]} -gt 0 ] && appendfb "Shipped: ${SHIPPED_NOW[*]} (game now v$(grep -m1 "^var VER='" "$R/dark_raiders.html" 2>/dev/null | sed "s/var VER='\([0-9]*\.[0-9]*\)'.*/\1/"))."
+  # 10-28 (CEO): Codex asked twice (o-120f, o-138) for the ON HIS PC line with the ship result; shipq prints it last
+  ohp=$(printf '%s\n' "${ONHIS_NOW[@]}" | grep -v '^$'); [ -n "$ohp" ] && appendfb "$ohp"
   if [ $gate = 2 ]; then r="waiting"; break; fi          # not Codex's fault: leave the job and try later
   if [ -n "$wo" ] && [ $gate = 0 ]; then r="blocked"; break; fi   # Codex says the rest waits on another task: park it, spend no more runs
   if [ $gate = 0 ]; then
