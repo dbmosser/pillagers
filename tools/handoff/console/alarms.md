@@ -386,3 +386,9 @@ The requested mechanics fix itself is SHIPPED and ON HIS PC v35.58, d6eaf0cbc; n
 
 2026-10-28 o-140-red-enemy-tracers: shipped v35.67, ON HIS PC confirmed. Day P1 tracer photograph scored 3 because of existing raid HUD findings: oversized hp bar, duplicate player card, inconsistent bot/controls panels and small controls/bot text. Please route these to open 186f-hud-panel-consistency (and any existing matching HUD jobs); the tracer change does not alter these panels. The other round-1 reviews were title screens from failed camera staging and are not valid tracer assessments. Camera cleanup was corrected for round 2. The previously logged request for both windows/day/night at 4K remains open; shoot_recipes hardcodes 1080p.
 
+2026-10-28 o-140-red-enemy-tracers final camera handoff: all four real linked-window/day/night 1080p scenes now stage correctly (recipes round 3, v35.70). Only required 4K coverage is missing from the tracer evidence. Do not spend the last camera round repeating 1080p. Coordinator can run from the real repo:
+
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/uishots.ps1 -Recipes C:/claudecode/pillagers-codex/.codex-work/o-140-red-enemy-tracers/camera-recipes.json -Out tools/handoff/console/notes/shots/o-140-red-enemy-tracers-4k -Res 4k -Port 9364
+
+Return the four *-4k.jpg pictures and their critic results. The already-shipped key is cw-cx-redtracers, v35.67, ON HIS PC confirmed. General raid-HUD scores remain P1 3/P2 2 because of hp/roster/hotbar/ammo styling, already logged in the HUD critic inbox (7dd8daa4d); no finding identifies a tracer-colour regression. Codex cannot perform the external camera run and will park rather than repeatedly request the same 1080p pictures.
+

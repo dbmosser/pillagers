@@ -41,3 +41,6 @@
 2026-10-28 07:55 week=6.0% 5h=5.0% week_resets=2026-11-04 01:35 job=o-140-red-enemy-tracers
 2026-10-28 08:02 week=6.0% 5h=6.0% week_resets=2026-11-04 01:35 job=o-140-red-enemy-tracers
 2026-10-28 08:22 week=6.0% 5h=9.0% week_resets=2026-11-04 01:35 job=o-140-red-enemy-tracers
+2026-10-28 08:48 week=6.0% 5h=11.0% week_resets=2026-11-04 01:35 job=o-140-red-enemy-tracers
+2026-10-28 08:54 week=7.0% 5h=12.0% week_resets=2026-11-04 01:35 job=o-140-red-enemy-tracers
+2026-10-28 08:58 week=7.0% 5h=15.0% week_resets=2026-11-04 01:35 job=o-01-142-hot-ground-kills-pay-more

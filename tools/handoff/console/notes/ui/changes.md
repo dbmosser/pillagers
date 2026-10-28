@@ -474,3 +474,8 @@
 
 2026-10-28 | o-140-red-enemy-tracers | raid, smooth look | shipped v35.67: hostile sentry and pillager bot rounds red, player rifle warm, forged player rounds cyan; muzzle flashes retain warm tints | before: no recipe before support | after verified day P1: tools/handoff/console/notes/shots/o-140-red-enemy-tracers-recipes-1/red-tracers-day-p1-1080.jpg; remaining day/night peer pictures are being restaged
 
+2026-10-28 | 202-difficulty-score-multiplier | settings the raid, career score card, career end card, demo run over card | shipped v35.69 and v35.70: score row "x1.33" under difficulty (none at x1.00), amber x tag right of the score label, "settings x1.33" row in the raid score panel, "settings x1.33" heading line under extracted x2 | before: none; after: notes/shots/202-after/ and notes/shots/202-after2/
+2026-10-28 | o-140-red-enemy-tracers | shipped v35.67 warning-red enemy rounds, smooth look | verified both real windows firing by day and rainy night at 1080p | final evidence: tools/handoff/console/notes/shots/o-140-red-enemy-tracers-recipes-3/red-tracers-day-p1-1080.jpg, red-tracers-day-p2-1080.jpg, red-tracers-night-p1-1080.jpg, red-tracers-night-p2-1080.jpg | 4K remains a coordinator handoff
+
+2026-10-28 | o-01-142-hot-ground-kills-pay-more | career/demo raid, both seats | hot-ground kill popup adds hot; SP bonus is the approved 1.05x | before: not photographed (custom recipes) | after: lane camera-recipes hotkill-career-p1, hotkill-career-p2, hotkill-demo-p1, hotkill-demo-p2 (pending).
+

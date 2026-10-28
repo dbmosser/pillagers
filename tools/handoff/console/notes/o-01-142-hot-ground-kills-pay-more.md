@@ -1,0 +1,6 @@
+
+--- codex run 2026-10-28 08:58 ---
+2026-10-28: Prepared cw-cx-hotkill for the approved 1.05x multiplier (the older 1.5x / 150-sp brief is superseded). Career and demo apply it after the streak, round once, and add hot to the kill popup. No style, power-up, team combo or seeded draw changes. The draft now field includes the DESIGN.md playtest watch line: is hot ground worth its two extra machines; watch demo sp totals on the board.
+Local validation: both exact function anchors occur once; replacement JS, fixture check JS and camera staging parse. An isolated scoring harness fails on original functions and passes on replacements for both modes, inside/edge/outside, invalid positions, streak multiplication and popup text. This is not a Chrome or full fixture result.
+The fixture check stages career and demo, host kills and partner netKillTake credits, comparing exact score deltas and popups. It also checks no-zone and invalid coordinates. Secondary award handlers are restored in finally. Four custom camera recipes stage career/demo host/partner popups in smooth look; partner pictures use a staged host kill word, not a live network pair. Await lane preflight, ship, ON HIS PC and critic pictures; do not claim shipped yet.
+

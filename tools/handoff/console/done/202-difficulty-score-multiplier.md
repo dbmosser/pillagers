@@ -31,3 +31,6 @@ Fog of war is the Settings toggle shipped by cw-fogwar (grep the fog option in t
 - Fog of war (his addition): fog on is one 5% step (DMUL_STEP.fog), stacked; it replaces my earlier "not counted" line. Each window draws its own fog, so the raid word now carries the host's fog row (m.fw) and a linked window takes it while it builds the raid (NET.upFw): host rules the multiplier, both windows pay the same. Like the other rows, the raid keeps the fog row it was built with (turning fog off mid raid keeps this raid's step; superhot alone is live). Hardest game now x1.61. The fog row already sits in THE RAID beside the new score row, so no Settings move was needed.
 - v35.68 cw-diffmul ON HIS PC 08:36 (maths and sp). Build 2 cw-dmulshow: display plus fog.
 - No two-window camera recipe exists; the party parity is covered by the host word path and the checks, not by a picture of each window.
+- v35.69 cw-dmulshow ON HIS PC 08:43 (display, fog row). v35.70 cw-dmulfix ON HIS PC 08:50: the pictures showed the demo card line in a hidden row and the Settings value off the value column; fixed (a third build, a fix to build 2 only, so each still reverts alone).
+- Pictures (1080): notes/shots/202-after (settings, raid tag, career card, demo card) and notes/shots/202-after2 (fixed settings and demo card). Not critic-scored.
+TASK DONE
