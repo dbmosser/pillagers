@@ -108,7 +108,7 @@ S = C:\Users\User1\AppData\Local\Temp\claude\C--Users-User1-Desktop-dark-raiders
    your mk script until it prints PREFLIGHT PASS. Only then ship. The real gate is shared by every worker; do not spend it on a
    draft that has not passed preflight.
    Ship it: bash "S/shipq.sh" cw-KEY  (it waits for the lock, runs the gate, prints SHIPPED or STOP with the reason).
-   After SHIPPED it frees the lock and waits up to 4 minutes for his main PC: ON HIS PC vNN.NN or NOT ON HIS PC (10-27,
+   After SHIPPED it frees the lock and waits up to 6 minutes for his main PC: ON HIS PC vNN.NN or NOT ON HIS PC (10-27,
    tools/handoff/onhispc.sh). Never report a build as done without its ON HIS PC line.
    Every ship also pushes GitHub on its own. Itch gets the game once a day (tools/itch-daily.sh, his 10-15 order), not per ship
    (10-25). Batch fixes with one cause into one ship: every ship runs the whole gate. The critic stores its answer per set of
@@ -200,6 +200,8 @@ actually look good". So for any change a player can see:
   with start_session `model` and `effort`. Text, layout, colour, one number or a small rule: claude-sonnet-5-5 at high. A normal
   fix or polish job: Opus at high. Opus at xhigh only for a bug that already failed once, a crash, or a rendering or netcode
   mystery. At most 3 sessions build at once; more orders wait as job files in console/in-session/.
+  Budget guard: week more than 10 points above the line (console/plan-usage.txt vs the line in status-a.txt) = Sonnet for every new
+  session; week at 85% or more before Fri 10/30 08:00 = only fixes for something that breaks the 2 player party demo start.
 
 ## Your notes and your ending
 - Your task file name is your task id. Keep notes in tools\handoff\console\notes\TASKID.md as you go, and read them first:

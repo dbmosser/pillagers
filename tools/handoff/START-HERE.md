@@ -20,6 +20,7 @@
   - a normal fix or polish job: Opus, `effort: high`;
   - only a bug that already failed once, a crash, or a rendering or netcode mystery: Opus, `effort: xhigh`.
 - A long chat that has been summarized twice hands its open orders to fresh sessions and keeps only check-ins.
+- Budget guard (10-27 night; week 66% at 21:42, burning about 1.5 points an hour against the line's 0.4): before starting a build session, read the week in console/plan-usage.txt and the line in console/status-a.txt. More than 10 points above the line: Sonnet at high for every new session. Week at 85% or more before Fri 10/30 08:00: start only fixes for something that breaks the 2 player party demo; everything else waits as a job file. His 10% stays his.
 - Fix and polish jobs that are not his direct orders wait in console/tasks/ for the helper lanes (a, b, c on his plan, o on Codex; status in console/status-LANE.txt).
 
 **How a change ships:** mk script, `bash tools/handoff/preflight.sh LANE cw-KEY` until PREFLIGHT PASS, then the ship queue script `shipq.sh cw-KEY` (exact paths and steps: RULES.md "How a change ships"). Never edit dark_raiders.html or tools/mkfixture.ps1 by hand; never bump versions by hand. Batch fixes with one cause into one ship.
