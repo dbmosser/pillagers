@@ -1,0 +1,7 @@
+v35.75: the pause box shows what the raid pays in sp
+
+the pause box shows what your raid pays in sp, setting by setting
+
+Check 35.75. Fails on v35.74.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

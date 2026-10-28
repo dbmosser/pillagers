@@ -3,7 +3,7 @@ $c='C:\claudecode\dark raiders\tools\cdp.ps1'
 try{ Invoke-RestMethod ("http://127.0.0.1:$Cdp/json/version") -TimeoutSec 2 | Out-Null }catch{
   $exe='C:\Program Files\Google\Chrome\Application\chrome.exe'
   $nd=Join-Path $PSScriptRoot '..\chrome-nodownloads.ps1'; if(Test-Path -LiteralPath $nd){ . $nd; Set-NoDownloads ($env:TEMP+'\pillagers-cdp'+$Cdp) }   # 10-27: downloads stay in the test profile
-  $a='--headless=new --window-size=3840,2160 --force-device-scale-factor=1 --remote-debugging-port='+$Cdp+' --user-data-dir="'+$env:TEMP+'\pillagers-cdp'+$Cdp+'" --no-first-run --disable-background-timer-throttling --disable-renderer-backgrounding --disable-backgrounding-occluded-windows --enable-gpu-rasterization --ignore-gpu-blocklist about:blank'
+  $a='--headless=new --window-size=3840,2160 --force-device-scale-factor=1 --remote-debugging-port='+$Cdp+' --user-data-dir="'+$env:TEMP+'\pillagers-cdp'+$Cdp+'" --no-first-run --disable-background-timer-throttling --disable-renderer-backgrounding --disable-backgrounding-occluded-windows --enable-gpu-rasterization --ignore-gpu-blocklist --force-prefers-no-reduced-motion about:blank'   # 10-28: normal motion (see cdp.ps1)
   Start-Process -FilePath $exe -ArgumentList $a | Out-Null
   for($i=0;$i -lt 60;$i++){ try{ Invoke-RestMethod ("http://127.0.0.1:$Cdp/json/version") -TimeoutSec 2 | Out-Null; break }catch{ Start-Sleep -Milliseconds 500 } }
 }

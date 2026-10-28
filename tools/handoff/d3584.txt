@@ -1,0 +1,5 @@
+## v35.84 - FINAL RUSH HUD CLEARANCE
+
+Co-op hunt while he was away. The critic found the final rush crowded by the clock, score and extraction arrow. During the two player demo rush the clock and score stay in separate windows with a 16px gap, the smaller score gets a solid backing, and extraction moves beside the clock. The rush panel is at least 416px wide with a 16px inset and 24px clearance. Playtest watch: check both windows at 1:30 for readable navigation and a clear rush banner; all scoring and wave timings stay as shipped in v35.83.
+
+MEASURED. Check 35.84 passes, and fails on v35.83.

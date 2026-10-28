@@ -1,0 +1,280 @@
+{
+    "title":  "PILLAGERS, AND EVERY MACHINE BY NAME",
+    "why":  "his HUD orders of 10-28: pillagers are always called pillagers, never pillager bots (the kind words, contracts, goals, events, settings, the Undercroft lines); a line never says machine without naming it: the alarm line names the machine nearest the sound (sentry alert, listener alert, overseer alert) and says nothing when no machine raised it, locked on names the machine that has you (2 sentries have you in sight), the convoy is the crawler convoy, the settings rows name the kinds",
+    "now":  "pillagers, never pillager bots; alerts and locked on name the machine",
+    "edits":  [
+                  {
+                      "anchor":  "var UNITPLURAL={sentry:\u0027sentries\u0027,crawler:\u0027crawlers\u0027,raider:\u0027pillager bots\u0027,snitch:\u0027criers\u0027,listener:\u0027listeners\u0027};",
+                      "replacement":  "// v35.xx (cw-pillagersword), HIS ORDERS (2026-10-28, the HUD Improver chat): \"pillagers should always be referred to as \u0027pillagers\u0027 never \u0027pillager bots\u0027\". Reverses the 10-18 word: a player and an AI one are both pillagers. Every machine kind has its plural too.\nvar UNITPLURAL={sentry:\u0027sentries\u0027,crawler:\u0027crawlers\u0027,raider:\u0027pillagers\u0027,snitch:\u0027criers\u0027,listener:\u0027listeners\u0027,choir:\u0027pillboxes\u0027,warden:\u0027wardens\u0027,bulwark:\u0027bulwarks\u0027,howler:\u0027howlers\u0027};"
+                  },
+                  {
+                      "anchor":  "var UNITNAME={sentry:\u0027sentry\u0027,crawler:\u0027crawler\u0027,raider:\u0027pillager bot\u0027,snitch:\u0027crier\u0027,listener:\u0027listener\u0027};",
+                      "replacement":  "var UNITNAME={sentry:\u0027sentry\u0027,crawler:\u0027crawler\u0027,raider:\u0027pillager\u0027,snitch:\u0027crier\u0027,listener:\u0027listener\u0027};   // v35.xx (cw-pillagersword): pillager, never pillager bot"
+                  },
+                  {
+                      "anchor":  "var KINDWORD={sentry:\u0027SENTRY\u0027,crawler:\u0027CRAWLER\u0027,raider:\u0027PILLAGER BOT\u0027,snitch:\u0027CRIER\u0027,",
+                      "replacement":  "var KINDWORD={sentry:\u0027SENTRY\u0027,crawler:\u0027CRAWLER\u0027,raider:\u0027PILLAGER\u0027,snitch:\u0027CRIER\u0027,"
+                  },
+                  {
+                      "anchor":  "function kindWord(k){ return KINDWORD[k]||String(k||\u0027\u0027).toUpperCase(); }",
+                      "replacement":  "function kindWord(k){ return KINDWORD[k]||String(k||\u0027\u0027).toUpperCase(); }\n// v35.xx (cw-pillagersword), HIS ORDERS (2026-10-28, the HUD Improver chat): \"this should never say \u0027machine\u0027 without telling me which machine....eg overseer? etc\" and \"this applies across the game -- there are \u0027machine alerts\u0027 on the left hand side -- need to tell player which type of machine\". The word for one machine as the player knows it: the Overseer by\n// name (he is a warden with the boss mark), every other kind by its KINDWORD. machNear finds the machine nearest a spot (within r), for the lines that only know a place.\nfunction machWord(e){ return (e\u0026\u0026e.boss)?\u0027OVERSEER\u0027:kindWord(e\u0026\u0026e.kind); }\nfunction machNear(x,y,r){ var i, e, d, best=null, bd=(r\u003e0?r:300); if(!G||!G.ents||!isFinite(x)||!isFinite(y)) return null; for(i=0;i\u003cG.ents.length;i++){ e=G.ents[i]; if(!e||!(e.hp\u003e0)||!ELEM_MACH[e.kind]) continue; d=Math.hypot(e.x-x,e.y-y); if(d\u003c=bd){ bd=d; best=e; } } return best; }"
+                  },
+                  {
+                      "anchor":  "desc:\u0027Destroy \u0027+n+\u0027 \u0027+(n\u003e1?UNITPLURAL[tgt]:(UNITNAME[tgt]||tgt))};",
+                      "replacement":  "desc:(tgt===\u0027raider\u0027?\u0027Eliminate \u0027:\u0027Destroy \u0027)+n+\u0027 \u0027+(n\u003e1?UNITPLURAL[tgt]:(UNITNAME[tgt]||tgt))};   // v35.xx (cw-pillagersword): a pillager is eliminated, as killWord says"
+                  },
+                  {
+                      "anchor":  "    if(t===\u0027kill\u0027) return \u0027destroy \u0027+((n\u003e1)?(UNITPLURAL[c.tgt]||c.tgt):(UNITNAME[c.tgt]||c.tgt));",
+                      "replacement":  "    if(t===\u0027kill\u0027) return (c.tgt===\u0027raider\u0027?\u0027eliminate \u0027:\u0027destroy \u0027)+((n\u003e1)?(UNITPLURAL[c.tgt]||c.tgt):(UNITNAME[c.tgt]||c.tgt));"
+                  },
+                  {
+                      "anchor":  "if(P.contracts) for(var _cm=0;_cm\u003cP.contracts.length;_cm++){\n  var _CC=P.contracts[_cm];\n",
+                      "replacement":  "if(P.contracts) for(var _cm=0;_cm\u003cP.contracts.length;_cm++){\n  var _CC=P.contracts[_cm];\n  if(_CC\u0026\u0026typeof _CC.desc===\u0027string\u0027\u0026\u0026/pillager bot/i.test(_CC.desc)) _CC.desc=_CC.desc.replace(/^Destroy (\\d+ pillager)/,\u0027Eliminate $1\u0027).replace(/pillager bot/gi,\u0027pillager\u0027);   // v35.xx (cw-pillagersword): a contract already on his board says pillager too\n"
+                  },
+                  {
+                      "anchor":  "function alarmOk(wx,wy){\n",
+                      "replacement":  "function alarmOk(wx,wy){\n  var _am;\n"
+                  },
+                  {
+                      "anchor":  "  try{ if(G\u0026\u0026G.player\u0026\u0026!G.over) say(\u0027MACHINE ALERT\u0027,\u0027info\u0027); }catch(_as){}",
+                      "replacement":  "  // v35.xx (cw-pillagersword), HIS ORDERS (2026-10-28, the HUD Improver chat): \"this applies across the game -- there are \u0027machine alerts\u0027 on the left hand side -- need to tell player which type of machine\". The alarm cue names the machine that raised it (the nearest one\n  // to the sound): SENTRY ALERT, LISTENER ALERT, OVERSEER ALERT. The ship landing, the seal and the notoriety stamp raise the cue with no machine there: no line.\n  try{ if(G\u0026\u0026G.player\u0026\u0026!G.over\u0026\u0026wx!==undefined\u0026\u0026wx!==null){ _am=machNear(wx,wy,260); if(_am) say(machWord(_am)+\u0027 ALERT\u0027,\u0027info\u0027); } }catch(_as){}"
+                  },
+                  {
+                      "anchor":  "  [\u0027a\u0027,/^(MACHINE ALERT|OVERSEER RETURNS)$/],",
+                      "replacement":  "  [\u0027a\u0027,/^((SENTRY|CRAWLER|CRIER|LISTENER|PILLBOX|WARDEN|BULWARK|HOWLER|OVERSEER) ALERT|OVERSEER RETURNS)$/],   // v35.xx (cw-pillagersword): the alert names its machine"
+                  },
+                  {
+                      "anchor":  "  if(!MSIREN.said){ MSIREN.said=1; try{ say(\u0027LOCKED ON\u0027,\u0027warn\u0027,{key:\u0027msiren\u0027,sub:\u0027MACHINE HAS YOU IN SIGHT\u0027}); }catch(_lo){} }",
+                      "replacement":  "  // v35.xx (cw-pillagersword), HIS ORDERS (2026-10-28, the HUD Improver chat): \"this should never say \u0027machine\u0027 without telling me which machine....eg overseer? etc\". The nearest machine that has him is named; two or more of one kind count\n  // in the plural (2 SENTRIES HAVE YOU IN SIGHT), a mix names the nearest and the rest (SENTRY +1 HAS YOU IN SIGHT).\n  if(!MSIREN.said){ MSIREN.said=1; try{ say(\u0027LOCKED ON\u0027,\u0027warn\u0027,{key:\u0027msiren\u0027,sub:machSightSub(near,n)}); }catch(_lo){} }"
+                  },
+                  {
+                      "anchor":  "function tickMachSiren(dt,still){",
+                      "replacement":  "function machSightSub(near,n){   // the loop just marked each machine that has him (sirenOn)\n  var w=machWord(near), one=1, i, e, pl;\n  if(n\u003e1){ for(i=0;i\u003cG.ents.length;i++){ e=G.ents[i]; if(e\u0026\u0026e!==near\u0026\u0026e.sirenOn===1\u0026\u0026(machWord(e)!==w)){ one=0; break; } } }\n  if(n\u003c=1) return w+\u0027 HAS YOU IN SIGHT\u0027;\n  pl=(w===\u0027OVERSEER\u0027)?\u0027OVERSEERS\u0027:String(UNITPLURAL[near.kind]||(near.kind+\u0027s\u0027)).toUpperCase();\n  return one?(n+\u0027 \u0027+pl+\u0027 HAVE YOU IN SIGHT\u0027):(w+\u0027 +\u0027+(n-1)+\u0027 HAVE YOU IN SIGHT\u0027);\n}\nfunction tickMachSiren(dt,still){"
+                  },
+                  {
+                      "anchor":  "EVENTS.convoy={name:\u0027MACHINE CONVOY\u0027,sub:\u0027ARMOURED TRAIN\u0027,",
+                      "replacement":  "EVENTS.convoy={name:\u0027CRAWLER CONVOY\u0027,sub:\u0027ARMOURED TRAIN\u0027,"
+                  },
+                  {
+                      "anchor":  "var MSGCUTA=/^(NOTORIETY |CONVOY MOVING$|MACHINE CONVOY$|",
+                      "replacement":  "var MSGCUTA=/^(NOTORIETY |CONVOY MOVING$|CRAWLER CONVOY$|"
+                  },
+                  {
+                      "anchor":  "SPK_INFO.evConvoyWarn={grp:\u0027events\u0027,lab:\u0027MACHINE CONVOY: announce\u0027,",
+                      "replacement":  "SPK_INFO.evConvoyWarn={grp:\u0027events\u0027,lab:\u0027CRAWLER CONVOY: announce\u0027,"
+                  },
+                  {
+                      "anchor":  "SPK_INFO.convoyRoll={grp:\u0027events\u0027,lab:\u0027MACHINE CONVOY: the train sets off\u0027,",
+                      "replacement":  "SPK_INFO.convoyRoll={grp:\u0027events\u0027,lab:\u0027CRAWLER CONVOY: the train sets off\u0027,"
+                  },
+                  {
+                      "anchor":  "        desc:\u0027Hit \u0027+up(2)+\u0027 machine weak points, then extract\u0027};",
+                      "replacement":  "        desc:\u0027Hit \u0027+up(2)+\u0027 sentry or warden weak points, then extract\u0027};   // v35.xx (cw-pillagersword): names the kinds, not a machine"
+                  },
+                  {
+                      "anchor":  "[\u0027xfFeud\u0027,\u0027machines vs pillagers\u0027,\u0027they fight on sight\u0027,\u0027w\u0027],",
+                      "replacement":  "[\u0027xfFeud\u0027,\u0027wardens and bulwarks vs pillagers\u0027,\u0027they fight on sight\u0027,\u0027w\u0027],"
+                  },
+                  {
+                      "anchor":  "[\u0027xfEvConvoy\u0027,\u0027event: machine convoy\u0027,\u0027an armoured train crosses\u0027,\u0027w\u0027],",
+                      "replacement":  "[\u0027xfEvConvoy\u0027,\u0027event: crawler convoy\u0027,\u0027an armoured train crosses\u0027,\u0027w\u0027],"
+                  },
+                  {
+                      "anchor":  "[\u0027xfEvBounty\u0027,\u0027event: bounty pillager bot\u0027,\u0027a marked boss hunts you\u0027,\u0027w\u0027],",
+                      "replacement":  "[\u0027xfEvBounty\u0027,\u0027event: bounty pillager\u0027,\u0027a marked boss hunts you\u0027,\u0027w\u0027],"
+                  },
+                  {
+                      "anchor":  "[\u0027xfTell\u0027,\u0027aim lanes\u0027,\u0027a machine paints its aim\u0027,\u0027w\u0027],",
+                      "replacement":  "[\u0027xfTell\u0027,\u0027aim lanes\u0027,\u0027sentries and wardens paint their aim\u0027,\u0027w\u0027],"
+                  },
+                  {
+                      "anchor":  ".replace(/^pillager roles$/i,\u0027pillager bot roles\u0027).replace(/^machines vs pillagers$/i,\u0027machines vs pillager bots\u0027); }",
+                      "replacement":  "; }   // v35.xx (cw-pillagersword): the rows say pillagers as written"
+                  },
+                  {
+                      "anchor":  "{k:\u0027raiders\u0027, label:\u0027Pillager bots\u0027,",
+                      "replacement":  "{k:\u0027raiders\u0027, label:\u0027Pillagers\u0027,"
+                  },
+                  {
+                      "anchor":  "They fight each other and the machines as well as you.\u0027,",
+                      "replacement":  "They fight each other and the sentries and crawlers as well as you.\u0027,"
+                  },
+                  {
+                      "anchor":  "{k:\u0027robots\u0027, label:\u0027Machines\u0027,",
+                      "replacement":  "{k:\u0027robots\u0027, label:\u0027Sentries and crawlers\u0027,"
+                  },
+                  {
+                      "anchor":  "w2:\u0027SHRED \\u00b7 ANTI-MACHINE\u0027}",
+                      "replacement":  "w2:\u0027SHRED \\u00b7 ANTI-ARMOUR\u0027}"
+                  },
+                  {
+                      "anchor":  "say(\u0027PILLAGER BOT REINFORCEMENTS\u0027,\u0027warn\u0027);",
+                      "replacement":  "say(\u0027PILLAGER REINFORCEMENTS\u0027,\u0027warn\u0027);"
+                  },
+                  {
+                      "anchor":  "(e.name||\u0027PILLAGER BOT\u0027)+\u0027 DOWNED\u0027",
+                      "replacement":  "(e.name||\u0027PILLAGER\u0027)+\u0027 DOWNED\u0027"
+                  },
+                  {
+                      "anchor":  "say(\u0027PILLAGER BOT TURNED HOSTILE\u0027,\u0027warn\u0027,{sub:e.name});",
+                      "replacement":  "say(\u0027PILLAGER TURNED HOSTILE\u0027,\u0027warn\u0027,{sub:e.name});"
+                  },
+                  {
+                      "anchor":  "say(\u0027PILLAGER BOT CALLED EXTRACTION\u0027,\u0027info\u0027,",
+                      "replacement":  "say(\u0027PILLAGER CALLED EXTRACTION\u0027,\u0027info\u0027,"
+                  },
+                  {
+                      "anchor":  "  [\u0027b\u0027,/^(EXTRACTION \\S+ IS CLOSED|PILLAGER BOT CALLED EXTRACTION)$/],",
+                      "replacement":  "  [\u0027b\u0027,/^(EXTRACTION \\S+ IS CLOSED|PILLAGER CALLED EXTRACTION)$/],"
+                  },
+                  {
+                      "anchor":  "(f.by.name||\u0027A PILLAGER BOT\u0027)+\"\u0027S CHARGE\"",
+                      "replacement":  "(f.by.name||\u0027A PILLAGER\u0027)+\"\u0027S CHARGE\""
+                  },
+                  {
+                      "anchor":  "String(G.nearDown.name||\u0027PILLAGER BOT\u0027).toUpperCase()",
+                      "replacement":  "String(G.nearDown.name||\u0027PILLAGER\u0027).toUpperCase()"
+                  },
+                  {
+                      "anchor":  "rsText(\u0027CURRENT PILLAGER BOTS  \u0027+RSTAT.live,",
+                      "replacement":  "rsText(\u0027CURRENT PILLAGERS  \u0027+RSTAT.live,"
+                  },
+                  {
+                      "anchor":  "[n(3),\u0027search in a ring; hold to finish a pillager bot\u0027]",
+                      "replacement":  "[n(3),\u0027search in a ring; hold to finish a pillager\u0027]"
+                  },
+                  {
+                      "anchor":  "[\u0027Y\u0027,\u0027search in a ring; hold to finish a pillager bot\u0027]",
+                      "replacement":  "[\u0027Y\u0027,\u0027search in a ring; hold to finish a pillager\u0027]"
+                  },
+                  {
+                      "anchor":  "pill3:{t:\u00273 PILLAGER BOTS\u0027,",
+                      "replacement":  "pill3:{t:\u00273 PILLAGERS\u0027,"
+                  },
+                  {
+                      "anchor":  "EVENTS.bounty={name:\u0027BOUNTY PILLAGER BOT\u0027,",
+                      "replacement":  "EVENTS.bounty={name:\u0027BOUNTY PILLAGER\u0027,"
+                  },
+                  {
+                      "anchor":  "flowChip(BOUNTY.pay,\u0027BOUNTY CLAIMED\u0027,\u0027BOUNTY PILLAGER BOT\u0027);",
+                      "replacement":  "flowChip(BOUNTY.pay,\u0027BOUNTY CLAIMED\u0027,\u0027BOUNTY PILLAGER\u0027);"
+                  },
+                  {
+                      "anchor":  "return \u0027golden \u0027+(kind===\u0027raider\u0027?\u0027pillager bot\u0027:(GOLD.kinds[kind]?kind:\u0027enemy\u0027))+\u0027 down\u0027; }",
+                      "replacement":  "return \u0027golden \u0027+(kind===\u0027raider\u0027?\u0027pillager\u0027:(GOLD.kinds[kind]?kindWord(kind).toLowerCase():\u0027enemy\u0027))+\u0027 down\u0027; }   // v35.xx (cw-pillagersword)"
+                  },
+                  {
+                      "anchor":  "desc:\u002740% more machines, pillagers and criers.\u0027}",
+                      "replacement":  "desc:\u002740% more sentries, crawlers, criers and pillagers.\u0027}"
+                  },
+                  {
+                      "anchor":  "return \u0027Word has spread. Hires cost more and pillager bots trust you less.\u0027;",
+                      "replacement":  "return \u0027Word has spread. Hires cost more and pillagers trust you less.\u0027;"
+                  },
+                  {
+                      "anchor":  "return \u0027Hires cost more and pillager bots trust you less.\u0027;",
+                      "replacement":  "return \u0027Hires cost more and pillagers trust you less.\u0027;"
+                  },
+                  {
+                      "anchor":  "or a pillager bot who had not fought you.\u0027);",
+                      "replacement":  "or a pillager who had not fought you.\u0027);"
+                  },
+                  {
+                      "anchor":  "_bits.push(\u0027Pillager bots need \u0027+",
+                      "replacement":  "_bits.push(\u0027Pillagers need \u0027+"
+                  },
+                  {
+                      "anchor":  "Find them in rare containers or on elite pillager bots.\u0027",
+                      "replacement":  "Find them in rare containers or on elite pillagers.\u0027"
+                  },
+                  {
+                      "anchor":  "\u0027Half the pillager bots down here walk past scrap. Their loss.\u0027,",
+                      "replacement":  "\u0027Half the pillagers down here walk past scrap. Their loss.\u0027,"
+                  },
+                  {
+                      "anchor":  "\u003cspan class=\"vpill\"\u003ePILLAGER BOT\u003c/span\u003e",
+                      "replacement":  "\u003cspan class=\"vpill\"\u003ePILLAGER\u003c/span\u003e"
+                  },
+                  {
+                      "anchor":  "d:\u0027Kill 25 pillager bots in all.\u0027}",
+                      "replacement":  "d:\u0027Kill 25 pillagers in all.\u0027}"
+                  },
+                  {
+                      "anchor":  "d:\u0027Kill 100 machines in all.\u0027}",
+                      "replacement":  "d:\u0027Kill 100 sentries, crawlers and other machines in all.\u0027}"
+                  },
+                  {
+                      "anchor":  "[\u0027nRaider\u0027,\u0027Pillager bots\u0027,0,20,1,0],",
+                      "replacement":  "[\u0027nRaider\u0027,\u0027Pillagers\u0027,0,20,1,0],"
+                  },
+                  {
+                      "anchor":  "[\u0027packMax\u0027,\u0027Machines that answer a call\u0027,0,10,1,0],",
+                      "replacement":  "[\u0027packMax\u0027,\u0027Sentries, crawlers, criers that answer a call\u0027,0,10,1,0],"
+                  },
+                  {
+                      "anchor":  "[\u0027raiderExtract\u0027,\u0027Seconds a pillager bot must hold the ring\u0027,",
+                      "replacement":  "[\u0027raiderExtract\u0027,\u0027Seconds a pillager must hold the ring\u0027,"
+                  },
+                  {
+                      "anchor":  "[\u0027raiderFeud\u0027,\u0027Pillager bot crews feud (0 truce)\u0027,",
+                      "replacement":  "[\u0027raiderFeud\u0027,\u0027Pillager crews feud (0 truce)\u0027,"
+                  },
+                  {
+                      "anchor":  "[\u0027raiderFloorN\u0027,\u0027Min pillager bots alive\u0027,",
+                      "replacement":  "[\u0027raiderFloorN\u0027,\u0027Min pillagers alive\u0027,"
+                  },
+                  {
+                      "anchor":  "\u0027  |  Pillager bots extracted: \u0027+rExt",
+                      "replacement":  "\u0027  |  Pillagers extracted: \u0027+rExt"
+                  },
+                  {
+                      "anchor":  "[SNDCOL.robot.move, \u0027machine moving\u0027],",
+                      "replacement":  "[SNDCOL.robot.move, \u0027sentry or crawler moving\u0027],"
+                  },
+                  {
+                      "anchor":  "[SNDCOL.robot.fire, \u0027machine firing\u0027],",
+                      "replacement":  "[SNDCOL.robot.fire, \u0027sentry or pillbox firing\u0027],"
+                  },
+                  {
+                      "anchor":  "[SNDCOL.raider.move,\u0027pillager bot moving\u0027],",
+                      "replacement":  "[SNDCOL.raider.move,\u0027pillager moving\u0027],"
+                  },
+                  {
+                      "anchor":  "[SNDCOL.raider.fire,\u0027pillager bot firing\u0027],",
+                      "replacement":  "[SNDCOL.raider.fire,\u0027pillager firing\u0027],"
+                  },
+                  {
+                      "anchor":  "a pillager bot walking out tries a revive",
+                      "replacement":  "a pillager walking out tries a revive"
+                  },
+                  {
+                      "anchor":  "[\u0027DONE\u0027,\u0027Pillager bots play like people:",
+                      "replacement":  "[\u0027DONE\u0027,\u0027Pillagers play like people:"
+                  },
+                  {
+                      "anchor":  "[\u0027DONE\u0027,\u0027Plain-language raid settings: pillager bots, machines, damage,",
+                      "replacement":  "[\u0027DONE\u0027,\u0027Plain-language raid settings: pillagers, sentries, crawlers, damage,"
+                  },
+                  {
+                      "anchor":  "[\u0027DONE\u0027,\u0027Pillager bots that equip what they loot,",
+                      "replacement":  "[\u0027DONE\u0027,\u0027Pillagers that equip what they loot,"
+                  },
+                  {
+                      "anchor":  "for you and for every pillager bot on the board\u0027],",
+                      "replacement":  "for you and for every pillager on the board\u0027],"
+                  },
+                  {
+                      "anchor":  "[\u0027DONE\u0027,\u0027Machines that answer a call and take roles:",
+                      "replacement":  "[\u0027DONE\u0027,\u0027Sentries, crawlers and criers answer a call and take roles:"
+                  },
+                  {
+                      "anchor":  "[\u0027DONE\u0027,\u0027Machine voices: tell a Sentry",
+                      "replacement":  "[\u0027DONE\u0027,\u0027Sentry and crawler voices: tell a Sentry"
+                  },
+                  {
+                      "anchor":  "and pillager bots who hide in them too\u0027],",
+                      "replacement":  "and pillagers who hide in them too\u0027],"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027cw-pillagersword, his HUD orders of 2026-10-28 (HUD Improver chat): \"pillagers should always be referred to as pillagers never pillager bots\", and a line never says machine without telling which machine: the kind words, the contract and goal words, the event names, the settings rows say pillager; the alarm line names the machine nearest the sound (and says nothing when no machine raised it); the locked on line names the machine that has you, counting a crowd of one kind in the plural\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid\u0026\u0026window.__runPrep\u0026\u0026window.__resetCfg\u0026\u0026window.__pinDefaults\u0026\u0026window.__cleanProfile)) return \u0027SKIP: this fixture cannot deploy\u0027;\n     if(typeof kindWord!==\u0027function\u0027||typeof alarmOk!==\u0027function\u0027||typeof say!==\u0027function\u0027||typeof XF_ROWS!==\u0027object\u0027||typeof GAMEOPTS!==\u0027object\u0027||typeof GOALS!==\u0027object\u0027) return \u0027SKIP: no word tables here\u0027;\n     var bad=[], g, p, c0=(typeof CAREER_ON===\u0027number\u0027)?CAREER_ON:0, oSay=say, said=[], i, e, s, sen=null, oEnts=null, oAL, ox, oy, w;\n     function WB(t){ return /pillager bots?\\b/i.test(String(t)); }\n     function MA(t){ return /\\bmachines?\\b/i.test(String(t)); }\n     try{\n       // ONE: the tables say pillager\n       if(kindWord(\u0027raider\u0027)!==\u0027PILLAGER\u0027) bad.push(\u0027the kind word is \u0027+JSON.stringify(kindWord(\u0027raider\u0027)));\n       if(UNITPLURAL.raider!==\u0027pillagers\u0027||UNITNAME.raider!==\u0027pillager\u0027) bad.push(\u0027the contract words are \u0027+UNITNAME.raider+\u0027 / \u0027+UNITPLURAL.raider);\n       if(WB(GOALS.pill3\u0026\u0026GOALS.pill3.t)) bad.push(\u0027the goal reads \u0027+GOALS.pill3.t);\n       if(EVENTS.bounty\u0026\u0026WB(EVENTS.bounty.name)) bad.push(\u0027the bounty event reads \u0027+EVENTS.bounty.name);\n       if(EVENTS.convoy\u0026\u0026MA(EVENTS.convoy.name)) bad.push(\u0027the convoy event reads \u0027+EVENTS.convoy.name);\n       if(typeof goldDownName===\u0027function\u0027\u0026\u0026WB(goldDownName(\u0027raider\u0027))) bad.push(\u0027the golden kill reads \u0027+goldDownName(\u0027raider\u0027));\n       for(i=0;i\u003cXF_ROWS.length;i++){ w=XF_ROWS[i]; if(w\u0026\u0026w.length\u003e2\u0026\u0026(WB(w[1])||WB(w[2])||MA(w[1])||MA(w[2]))) bad.push(\u0027the settings row reads \u0027+JSON.stringify(w[1]+\u0027 / \u0027+w[2])); }\n       for(i=0;i\u003cGAMEOPTS.length;i++){ w=GAMEOPTS[i]; if(w\u0026\u0026(WB(w.label)||WB(w.hint)||MA(w.label)||MA(w.hint))) bad.push(\u0027the raid setup row reads \u0027+JSON.stringify(w.label)); }\n       if(typeof machWord!==\u0027function\u0027||typeof machSightSub!==\u0027function\u0027){ bad.push(\u0027no machine word for the alert lines\u0027); return bad.join(\u0027; \u0027); }\n       if(machWord({kind:\u0027warden\u0027,boss:1})!==\u0027OVERSEER\u0027) bad.push(\u0027the Overseer is called \u0027+machWord({kind:\u0027warden\u0027,boss:1}));\n       // TWO: a career raid; the alarm line names the machine nearest the sound\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       CAREER_ON=1; __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||g.over||!g.player) return \u0027SKIP: staging: no raid\u0027;\n       p=g.player;\n       for(i=0;i\u003cg.ents.length;i++){ e=g.ents[i]; if(e\u0026\u0026e.kind===\u0027sentry\u0027\u0026\u0026e.hp\u003e0){ sen=e; break; } }\n       if(!sen) return \u0027SKIP: staging: no sentry\u0027;\n       ox=sen.x; oy=sen.y; oAL=ALARM_LAST;\n       say=function(m,k,o){ said.push({m:String(m),o:o||null}); };\n       sen.x=p.x+120; sen.y=p.y;\n       ALARM_LAST=-99; said=[]; alarmOk(sen.x,sen.y);\n       s=said.map(function(r){ return r.m; }).join(\u0027 | \u0027);\n       if(!/^SENTRY ALERT$/.test(s)) bad.push(\u0027a sentry raises the alarm and the line reads \u0027+JSON.stringify(s));\n       oEnts=g.ents; g.ents=[];\n       ALARM_LAST=-99; said=[]; alarmOk(p.x,p.y);\n       if(said.length) bad.push(\u0027with no machine near the alarm still says \u0027+JSON.stringify(said[0].m));\n       g.ents=oEnts; oEnts=null;\n       // THREE: locked on names the machine; one kind in a crowd counts in the plural\n       if(machSightSub(sen,1)!==\u0027SENTRY HAS YOU IN SIGHT\u0027) bad.push(\u0027locked on reads \u0027+JSON.stringify(machSightSub(sen,1)));\n       if(machSightSub({kind:\u0027warden\u0027,boss:1},1)!==\u0027OVERSEER HAS YOU IN SIGHT\u0027) bad.push(\u0027locked on by the Overseer reads \u0027+JSON.stringify(machSightSub({kind:\u0027warden\u0027,boss:1},1)));\n       var s2={kind:\u0027sentry\u0027,hp:1,sirenOn:1}, c2={kind:\u0027crawler\u0027,hp:1,sirenOn:1};\n       oEnts=g.ents; g.ents=[sen,s2]; sen.sirenOn=1;\n       if(machSightSub(sen,2)!==\u00272 SENTRIES HAVE YOU IN SIGHT\u0027) bad.push(\u0027two sentries read \u0027+JSON.stringify(machSightSub(sen,2)));\n       g.ents=[sen,c2];\n       if(machSightSub(sen,2)!==\u0027SENTRY +1 HAVE YOU IN SIGHT\u0027) bad.push(\u0027a sentry and a crawler read \u0027+JSON.stringify(machSightSub(sen,2)));\n       g.ents=oEnts; oEnts=null; sen.sirenOn=0;\n       // FOUR: the board title and the goals say pillager on screen\n       if(MA(machSightSub(sen,1))||WB(machSightSub(sen,1))) bad.push(\u0027the sight line still says machine\u0027);\n     }catch(err){ bad.push(\u0027threw: \u0027+(err\u0026\u0026err.message||err)); }\n     finally{\n       say=oSay; CAREER_ON=c0;\n       try{ var g2=__state(); if(oEnts\u0026\u0026g2) g2.ents=oEnts; if(sen){ sen.x=ox; sen.y=oy; sen.sirenOn=0; } if(oAL!==undefined) ALARM_LAST=oAL; if(g2\u0026\u0026!g2.over) __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

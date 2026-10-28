@@ -1,0 +1,29 @@
+
+--- codex run 2026-10-28 08:58 ---
+2026-10-28: Prepared cw-cx-hotkill for the approved 1.05x multiplier (the older 1.5x / 150-sp brief is superseded). Career and demo apply it after the streak, round once, and add hot to the kill popup. No style, power-up, team combo or seeded draw changes. The draft now field includes the DESIGN.md playtest watch line: is hot ground worth its two extra machines; watch demo sp totals on the board.
+Local validation: both exact function anchors occur once; replacement JS, fixture check JS and camera staging parse. An isolated scoring harness fails on original functions and passes on replacements for both modes, inside/edge/outside, invalid positions, streak multiplication and popup text. This is not a Chrome or full fixture result.
+The fixture check stages career and demo, host kills and partner netKillTake credits, comparing exact score deltas and popups. It also checks no-zone and invalid coordinates. Secondary award handlers are restored in finally. Four custom camera recipes stage career/demo host/partner popups in smooth look; partner pictures use a staged host kill word, not a live network pair. Await lane preflight, ship, ON HIS PC and critic pictures; do not claim shipped yet.
+
+
+--- codex run 2026-10-28 09:17 ---
+2026-10-28 retry after v35.73 parse STOP: the failure is reproducible in the unchanged v35.72 fixture before our draft. The game itself compiles and passes parsecheck; the fixture balance is parens +2/braces +1. Located the cause in the existing v35.36 HUD check: return /contracts regex/ confuses the parse gate scanner, which does not recognize a regex after return. Added fixture-retarget.json with a single exact anchor, wrapping that regex in parentheses without changing its meaning. The lane must apply it and run 35.36 before retrying cw-cx-hotkill (same key).
+Offline reproduction now runs the actual tools/parsecheck.html logic, including compilation, balance, duplicate functions, DEVNOW and stamp checks, against reconstructed full baseline and drafted fixtures. Baseline passes after the fixture correction; the drafted next-version fixture passes too. The scoring harness still fails on original functions and passes on replacements in both modes. No Chrome checks were run here.
+Moved the required hot-ground playtest watch line into the draft why field as well: gen-draft.ps1 uses why, not now, for DESIGN.md. Camera recipes and keys.txt are unchanged. Shipping, ON HIS PC confirmation and four smooth-look popup pictures/critic results remain the lane steps.
+
+
+--- codex run 2026-10-28 09:17 ---
+2026-10-28: Removed fixture-retarget.json. The refreshed master already contains the parenthesized regex in check 35.36 at tools/mkfixture.ps1:8038, so no fixture edit remains necessary. Regenerated cw-cx-hotkill against current v35.72: written; both game anchors remain unique. Scoring harness passes for the replacement and fails for original functions. Actual parsecheck logic passes for the unchanged baseline fixture and reconstructed v35.73 drafted fixture without any fixture retarget. Same key remains in keys.txt; retry its preflight and ship, then obtain ON HIS PC and camera/critic results. No game or fixture source was edited.
+
+
+--- codex run 2026-10-28 09:41 ---
+2026-10-28: cw-cx-hotkill shipped in v35.77; lane confirmed ON HIS PC v35.77 (8802 served 35.77 after 33 seconds). Reviewed all four attached 1080p pictures. Career/demo, host/partner show 105 sp total and the lower-case +105 sp hot popup. These are staged host/partner kill-credit routes, not a live paired transport.
+Camera round 1 failed its staging assertion because arcadeCr now includes SP: actual stored label is +105 SP hot, drawn lower case by the text door; our camera had hard-coded +105 hot. Fixed camera-stage.js to derive the expected text from arcadeCr(105), and compare lower-case evidence in recipe expect. Also answer no to the demo easy-mode offer through easyAnswer(false), and dismiss the opening map flag before shooting. No shipped game code changed, and the same already-shipped key remains in keys.txt.
+Round 1 critic scores: career p1 3, career p2 2, demo p1 3, demo p2 3. Its listed findings target the existing roster, vitals, hotbar, ammo, controls and easy-mode card; no quoted finding identifies a defect in the new hot popup. Corrected recipes handed over for round 2, which should show the unobstructed raid. The suggestion to rename the roster bots conflicts with his 10-28 order and must not be applied.
+
+
+--- codex run 2026-10-28 09:53 ---
+2026-10-28 completion: cw-cx-hotkill shipped as v35.77; ON HIS PC v35.77 was confirmed by the lane after 33 seconds. Verified HOT_KILLX=1.05 and its application in both scoring functions on current master. The required playtest watch is present in DESIGN.md:40029.
+Camera round 2 succeeded at 1080p and 4k for all four scenes. Each reported credited:105, popup:+105 sp hot, smooth:true, with host seat 0 and partner seat 1. Reviewed the four attached 1080p shots: the popup is visible, lower case and unobstructed in each. Partner scenes exercise netKillTake with a staged host kill word; this does not claim a live paired transport test.
+Final evidence: tools/handoff/console/notes/shots/o-01-142-hot-ground-kills-pay-more-recipes-2/report.json and hotkill-career-p1-1080.jpg, hotkill-career-p2-1080.jpg, hotkill-demo-p1-1080.jpg, hotkill-demo-p2-1080.jpg in that folder.
+Critic round 2 scored all four full raid screens 3/5. The quoted findings concern the existing HUD (roster, controls, hotbar, vitals, ammo, score card and margins), rather than the hot popup. These scores do not meet the whole-raid 4/5 target, and no full-HUD approval is claimed. Existing HUD findings are handed to the coordinator; no broad HUD redesign is included in this small scoring job. The scoring change and requested popup evidence are complete; no further ship key is needed.
+

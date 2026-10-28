@@ -26,3 +26,23 @@ Revised camera recipes for round 2. The old cleanup used beforeunload, but uisho
 
 Await corrected scene pictures and critic reviews. The coordinator's extra 4K camera run is still needed because the lane only requests 1080p. DESIGN.md received the required danger-HUD/noise-ring/attack-lane/night/rain/crew-fight playtest watch line through the shipped draft why text.
 
+
+--- codex run 2026-10-28 08:48 ---
+Round 2 review: day P1 and rainy-night P1 are valid raid pictures, both scored 3 because of existing HUD findings. Both bodies and enemy rounds are now clear of tree canopies. Night P2 reported a successful real link and the expected red remote tints, but its image still showed the title overlay, so it does NOT count as a valid P2 photograph. Day P2 timed out linking. No new game change is needed; cw-cx-redtracers remains shipped v35.67 and ON HIS PC was confirmed.
+
+Prepared round 3 camera recipes. P2's title overlay is now explicitly dismissed, and both the stage report and final expect predicate require it to be off. A live G state alone no longer counts as a visible raid. Each screen has its own pair ID, avoiding cross-scene offer traffic. The popup host now finishes loading its profile before it opens the real link. The guest repeats its normal ready word once both profiles are loaded; the real game handshake still creates the connection. A failure now includes role, pair, status and error diagnostics and closes the partner. The cleanup timeout allows slower linking. The camera waits 5.6 seconds for the ordinary five-second join toast to expire (round 2's 2.4-second wait was too short). All revised camera JavaScript parses; the recipe JSON is ASCII.
+
+The best valid existing evidence is round 2: tools/handoff/console/notes/shots/o-140-red-enemy-tracers-recipes-2/red-tracers-day-p1-1080.jpg and red-tracers-night-p1-1080.jpg. Round 3 is the second camera follow-up. General HUD critic findings are already handed to 186f-hud-panel-consistency; their score must not justify changing tracer width, colour or gun feel beyond this task. The additional 4K capture still requires the coordinator because the lane's recipe camera requests only 1080p.
+
+
+--- codex run 2026-10-28 08:54 ---
+Round 3 on v35.70: all four recipes staged successfully. Reviewed all four attached 1080p pictures: P1 and P2 now both show the raid, a firing sentry, a hostile pillager bot, warm player rounds and cyan forged player rounds. Day and rainy-night pictures exist for both windows. The camera reports visible:true, smooth:true, six local/remote hostile rounds at #ff3b2f, and preserved forged element widths. No title overlay remains. No further game edits or camera retries are justified by the tracer result.
+
+Final valid critic scores: day P1 3, night P1 3, day P2 2, night P2 2. P1 remains at 3 after two follow-ups; the remaining findings concern existing roster, hp, ammo and hotbar panels. P2's first valid raid reviews also concern those existing HUD elements. These are recorded with the coordinator's HUD critic inbox (commit 7dd8daa4d), previously routed to 186f-hud-panel-consistency. This task does not claim that the entire raid HUD meets critic 4.
+
+Two best complete picture sets retained: round 3 daylight (red-tracers-day-p1-1080.jpg and red-tracers-day-p2-1080.jpg) and round 3 rainy night (red-tracers-night-p1-1080.jpg and red-tracers-night-p2-1080.jpg), all under tools/handoff/console/notes/shots/o-140-red-enemy-tracers-recipes-3/. Round 2's P1 shots remain useful comparison pictures; its P2 title shots are invalid evidence.
+
+The game fix shipped v35.67 and was confirmed ON HIS PC v35.67. DESIGN.md:40042 contains the ship entry and its playtest watch line. No direct game or fixture edits were made. Required 4K photographs remain unavailable: only the coordinator can run -Res 4k, as the lane hardcodes 1080p and Codex cannot start Chrome. No fourth 1080p round is requested. The recipes are ready unchanged for a real 4K run; the coordinator alarm now provides the exact camera command. Remaining external work is 4K capture/review and the already-assigned general HUD findings.
+
+
+--- CEO 10-28 09:10 --- 4K coverage done: the four recipe scenes shot at 4K on v35.70 (all staged, lint 1 small each: the 8 px keyboard marker, owner-ordered) in tools/handoff/console/notes/shots/o-140-red-enemy-tracers-4k/. Looked at night-p2: the red enemy tracers read clearly against the night ground at 4K, distinct from the players' pale shots. No critic run (its cost); no further camera round needed.

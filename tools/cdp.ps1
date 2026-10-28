@@ -26,9 +26,12 @@ if($Start){
   if($Size -notmatch '^\d{3,4},\d{3,4}$'){ $Size='1920,1080' }   # 10-22: -Size 3840,2160 for the 4K robot (fuzz.ps1 -Size)
   # 10-27: this test Chrome saves any download into its own profile, never the Downloads folder of whoever is signed in (chrome-nodownloads.ps1)
   $nd=Join-Path $PSScriptRoot 'chrome-nodownloads.ps1'; if(Test-Path -LiteralPath $nd){ . $nd; Set-NoDownloads $Profile }
+  # 10-28: --force-prefers-no-reduced-motion, because the VM's animation effects went off and tests read the OS reduce request;
+  #   checks that test reduced motion stub matchMedia themselves. Every test Chrome launch in tools/ carries the same flag.
   $a='--headless=new --window-size='+$Size+' --force-device-scale-factor=1 --remote-debugging-port='+$Port+
      ' --user-data-dir="'+$Profile+'" --no-first-run --no-default-browser-check --disable-background-timer-throttling'+
-     ' --disable-renderer-backgrounding --disable-backgrounding-occluded-windows --autoplay-policy=no-user-gesture-required about:blank'
+     ' --disable-renderer-backgrounding --disable-backgrounding-occluded-windows --autoplay-policy=no-user-gesture-required'+
+     ' --force-prefers-no-reduced-motion about:blank'
   Start-Process -FilePath $exe -ArgumentList $a | Out-Null
   for($i=0;$i -lt 40;$i++){ try{ Invoke-RestMethod "http://127.0.0.1:$Port/json/version" -TimeoutSec 2 | Out-Null; Write-Output "browser up on $Port"; exit 0 }catch{ Start-Sleep -Milliseconds 250 } }
   Write-Output 'browser did not start'; exit 1

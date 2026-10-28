@@ -40024,6 +40024,81 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.85 - ELITE LONGSHOT GLINT
+
+Co-op hunt while he was away. His 10-28 yes to #5: a 272 damage elite Longshot shot needs a half-second warning. A growing white muzzle star with a red core and the machine charge sound precede player-directed shots in chase and at the extraction ring. The star draws above fog only on a clear line to the local player. Both windows use ninth-field bit 4; burn, get-up and other shared bits stay intact. Aim and cooldown draws keep their order; cooldown repays the warning time. No new switch or player text. Watch in play: the glint must read at range in the smooth look and at night; revealing a hidden Longshot pillager must not feel like a wallhack; Longshot pillagers should lose more duels because players can dodge.
+
+MEASURED. Check 35.85 passes, and fails on v35.84.
+## v35.84 - FINAL RUSH HUD CLEARANCE
+
+Co-op hunt while he was away. The critic found the final rush crowded by the clock, score and extraction arrow. During the two player demo rush the clock and score stay in separate windows with a 16px gap, the smaller score gets a solid backing, and extraction moves beside the clock. The rush panel is at least 416px wide with a 16px inset and 24px clearance. Playtest watch: check both windows at 1:30 for readable navigation and a clear rush banner; all scoring and wave timings stay as shipped in v35.83.
+
+MEASURED. Check 35.84 passes, and fails on v35.83.
+## v35.83 - FINAL RUSH IN THE TWO PLAYER DEMO
+
+Co-op hunt while he was away. His 10-28 decision #3: final rush kills pay 1.05x SP. The two player demo had no final 90 second rush. Playtest watch: both windows should announce once at 1:30; fresh sentry kills pay 105 sp before other bonuses. More machines arrive, while breathers and called extraction rings still hold waves. Solo demo and career keep their pacing.
+
+MEASURED. Check 35.83 passes, and fails on v35.82.
+## v35.82 - PILLAGERS, AND EVERY MACHINE BY NAME
+
+Co-op hunt while he was away. his HUD orders of 10-28: pillagers are always called pillagers, never pillager bots (the kind words, contracts, goals, events, settings, the Undercroft lines); a line never says machine without naming it: the alarm line names the machine nearest the sound (sentry alert, listener alert, overseer alert) and says nothing when no machine raised it, locked on names the machine that has you (2 sentries have you in sight), the convoy is the crawler convoy, the settings rows name the kinds
+
+MEASURED. Check 35.82 passes, and fails on v35.81.
+## v35.81 - CONDITION REWARD READABILITY
+
+Co-op hunt while he was away. The critic found undersized rewards, empty pack space, no Terms header and competing result totals.
+
+MEASURED. Check 35.81 passes, and fails on v35.80.
+## v35.80 - CLOCK OVER SCORE, ARROW TO THE NEAREST EXIT
+
+Co-op hunt while he was away. his HUD orders of 10-28 morning, with pictures: the clock in its own bigger card above the score card; the extraction arrow always to the nearest exit; score only in its card (no sp floats; kill lines keep their +sp); the band above the belt (exit inbound, in progress) only within 250 m; the gun card without the item count and value; the run info panel in the top right corner with no contracts count; the board reads current pillagers and value at risk; the air strike meter on top of the gun card; the downed card lifted off the player
+
+MEASURED. Check 35.80 passes, and fails on v35.79.
+## v35.79 - CONDITIONS PAY SP ONLY
+
+Co-op hunt while he was away. His 10-28 decision: all raid condition modifiers contribute to SP, never cash, at 1.05 each.
+
+MEASURED. Check 35.79 passes, and fails on v35.78.
+## v35.78 - A JAGGED WHITE BOLT FROM THE SKY TO EACH LIGHTNING STRIKE
+
+Co-op hunt while he was away. His order 10-28: when the lightning hits, along with the flash, it would be cool to have a white jagged line lightning graphic extend from the top of the screen down to the hit location, so it looks like sky-to-ground lightning. A strike showed only the flash sheet and the warning ring.
+
+MEASURED. Check 35.78 passes, and fails on v35.77.
+## v35.77 - HOT GROUND KILLS PAY FIVE PERCENT MORE
+
+Co-op hunt while he was away. His 10-28 decision: hot ground kills should pay 1.05x sp, replacing the proposed 1.5x. Watch in play: is hot ground worth its two extra machines; watch demo sp totals on the board.
+
+MEASURED. Check 35.77 passes, and fails on v35.76.
+## v35.76 - THE FPS PLATE SAYS WHERE A 60 HZ BROWSER COMES FROM
+
+Co-op hunt while he was away. His order 10-28 with a picture of frame cap 144 and the plate reading 60 fps and screen 60: i have the game on 144 frame cap but its effectively capping at 60, can we fix this. The game draws only when the browser hands it a frame and the cap only skips frames, so 60 from the browser holds it at 60. The plate said screen 60 but not where to change it.
+
+MEASURED. Check 35.76 passes, and fails on v35.75.
+## v35.75 - THE PAUSE BOX SHOWS WHAT THE RAID PAYS IN SP
+
+Co-op hunt while he was away. his order 10-28 with a picture of the raid pause box: the run log list there is not helpful; it is where every setting that changes sp should show, so the player knows exactly what they are playing. The box now shows the settings multiplier this raid pays, one row per setting that moves it (pillager bots, machines, how hard they hit, heat when you call for extraction, fog of war, superhot) with its choice and factor, and the two end rules (extract x2, killed in action -50%). The run log list leaves the box; the run log stays in the run report.
+
+MEASURED. Check 35.75 passes, and fails on v35.74.
+## v35.74 - MELEE ON Z, DROP ON V
+
+Co-op hunt while he was away. his order 10-28: can we move melee to z as default? and middle mouse should ping?
+
+MEASURED. Check 35.74 passes, and fails on v35.73.
+## v35.73 - THE XP LINE KEEPS ITS OWN LINE ON THE EXTRACTED CARD
+
+Co-op hunt while he was away. his picture 10-28: "+2,386 xpthe seal on cold storage is broken. it reseals harder: stage 1 needs 55 seconds." cw-spmoney (v35.45) hid the season total and the next reward sentence of the career xp line in a span that ended the line, and the .ocsr + br rule hid the line break after it, so the next line ran into the xp figure. The hidden part now sits inside the xp span and the break stays.
+
+MEASURED. Check 35.73 passes, and fails on v35.72.
+## v35.72 - NEW PLAYERS START ON HIS SETTINGS PAGE
+
+Co-op hunt while he was away. his order of 10-28 with a picture of his settings page: these should be the default settings for a new player, and for arcade mode
+
+MEASURED. Check 35.72 passes, and fails on v35.71.
+## v35.71 - THE WHAT IS NEW STAMP KEEPS UP
+
+Co-op hunt while he was away. The card was stamped v35.55 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.
+
+MEASURED. Check 35.71 passes, and fails on v35.70.
 ## v35.70 - THE SCORE MULTIPLIER LINES SHOW AND LINE UP
 
 Co-op hunt while he was away. the pictures of v35.69: the demo run over card kept its settings line in a hidden row, and the Settings score value sat left of the value column

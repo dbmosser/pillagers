@@ -33,14 +33,14 @@ The shared folder is `C:\Users\<you>\AppData\Local\PillagersBridge\share` on the
 
 **On the main PC** (normal PowerShell window):
 ```
-powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\bridge\setup-key.ps1" -Show
+powershell -ExecutionPolicy Bypass -File "C:\PillagersIdle\game\tools\bridge\setup-key.ps1" -Show
 ```
 This makes the shared key and prints it. Copy the whole line.
 
 **On the main PC, in an ADMINISTRATOR window** (this is the one admin step):
 ```
-powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\bridge\host-bridge.ps1" -Firewall -DryRun
-powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\bridge\host-bridge.ps1" -Firewall
+powershell -ExecutionPolicy Bypass -File "C:\PillagersIdle\game\tools\bridge\host-bridge.ps1" -Firewall -DryRun
+powershell -ExecutionPolicy Bypass -File "C:\PillagersIdle\game\tools\bridge\host-bridge.ps1" -Firewall
 ```
 
 **Inside the VM** (normal PowerShell window) — paste the key the main PC printed. Run it from the Pillagers repo folder inside the VM (`tools\bridge` is part of the repo, so it is there once the VM has the repo):
@@ -52,7 +52,7 @@ powershell -ExecutionPolicy Bypass -File .\tools\bridge\setup-key.ps1 -Set <past
 
 **On the main PC**, start the agent (and have it start at every logon):
 ```
-powershell -ExecutionPolicy Bypass -File "C:\claudecode\dark raiders\tools\bridge\host-bridge.ps1" -Install
+powershell -ExecutionPolicy Bypass -File "C:\PillagersIdle\game\tools\bridge\host-bridge.ps1" -Install
 ```
 `-Status` looks, `-Start`/`-Stop` start/stop it now, `-Uninstall` removes the logon shortcut.
 

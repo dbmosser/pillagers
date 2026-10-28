@@ -1,0 +1,7 @@
+v35.83: final rush in the two player demo
+
+At 90 seconds the two player demo calls final rush. Kills pay 1.05x SP; wave intervals shorten 20 percent and each pack gains one machine with two more nearby slots. Solo demo and career keep their pacing. Playtest watch: both windows should announce once at 1:30 and a fresh sentry kill should pay 105 sp; breathers and called extraction rings must still hold the waves.
+
+Check 35.83. Fails on v35.82.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

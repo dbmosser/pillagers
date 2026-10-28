@@ -1,0 +1,7 @@
+v35.72: new players start on his settings page
+
+a brand new save starts on new player: forgiving, long raid, rich, few pillagers and machines, light heat, superhot and fog of war off, shared sight on; every demo start takes the same list; saves from before keep their settings
+
+Check 35.72. Fails on v35.71.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

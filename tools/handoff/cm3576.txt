@@ -1,0 +1,7 @@
+v35.76: the fps plate says where a 60 hz browser comes from
+
+With the fps plate on and a cap above what the browser gives, a small line under the plate says browser gives 60 hz and names windows refresh rate, main display and hardware acceleration; it stays off in live raid play and when the page has seen faster frames.
+
+Check 35.76. Fails on v35.75.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

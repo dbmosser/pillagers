@@ -1,0 +1,5 @@
+## v35.79 - CONDITIONS PAY SP ONLY
+
+Co-op hunt while he was away. His 10-28 decision: all raid condition modifiers contribute to SP, never cash, at 1.05 each.
+
+MEASURED. Check 35.79 passes, and fails on v35.78.

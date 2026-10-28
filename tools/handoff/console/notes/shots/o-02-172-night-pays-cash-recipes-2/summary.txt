@@ -1,0 +1,10 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  05-sector-page                         staged       5.3s  total   1: clip 1 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | surface night weather fog
+  06-terms                               NOT STAGED   4.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | expect failed: U.modal()!=='' -> expect threw: TypeError: U.modal is not a function
+  condition-sp-extracted-host            NOT STAGED 122.9s    | the fixture did not load
+  condition-sp-extracted-guest           NOT STAGED 122.8s    | the fixture did not load
+== 4k : window 3876x2265, viewport 3840x2160
+  05-sector-page                         staged       5.5s  total   6: clip 6 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | surface night weather fog
+  06-terms                               NOT STAGED   5.0s  total   1: clip 0 off 1 small 0 contrast 0 font 0 overlap 0 focus 0  | expect failed: U.modal()!=='' -> expect threw: TypeError: U.modal is not a function
+  condition-sp-extracted-host            NOT STAGED 122.5s    | the fixture did not load
+  condition-sp-extracted-guest           NOT STAGED 122.9s    | the fixture did not load

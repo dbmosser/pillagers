@@ -1,0 +1,4 @@
+{"generated":"2026-10-28T08:51:35","url":"http://localhost:8808/fixture.html","recipes":"tools/handoff/console/notes/202/recipes.json","seconds":34,"screens":[
+{"name":"d1-settings-score-row","screen":"Settings THE RAID with hard rows, the score row","1080":{"staged":true,"note":"x1.33","viewport":"1920x1080","shot":"d1-settings-score-row-1080.jpg","lint":""}},
+{"name":"d4-demo-run-over","screen":"1 player demo run over card of an extraction with the settings line","1080":{"staged":true,"note":"1.33","viewport":"1920x1080","shot":"d4-demo-run-over-1080.jpg","lint":""}}
+]}

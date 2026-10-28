@@ -1,0 +1,7 @@
+v35.85: elite longshot glint
+
+Elite Longshot shots have a half-second muzzle glint in both windows.
+
+Check 35.85. Fails on v35.84.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

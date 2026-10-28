@@ -1,20 +1,30 @@
 Latest stable: v35.28 (2026-10-27 22:16)
-Checked: 2026-10-28 07:51
+Checked: 2026-10-28 12:01
 Play address: http://localhost:8802/stable.html
 Result: no change
 
 Newest test runs, newest first:
-  corpus-1028-0442  v35.65  failing 45, new 4  robots 162 min/23 problems  -> 4 check(s) newly failing, e.g. v35.53 cw-hudsize, his ask 2026-10-27 (the hud messaging is  | v35.44 cw-msgroute, his complaint 2026-10-27 (too many messa
-  corpus-1028-0320  v35.63  failing 42, new 4  robots 115 min/1 problems  -> 4 check(s) newly failing, e.g. v35.53 cw-hudsize, his ask 2026-10-27 (the hud messaging is  | v35.44 cw-msgroute, his complaint 2026-10-27 (too many messa
-  corpus-1028-0157  v35.58  failing 44, new 4  robots 57 min/0 problems  -> 4 check(s) newly failing, e.g. v35.53 cw-hudsize, his ask 2026-10-27 (the hud messaging is  | v35.44 cw-msgroute, his complaint 2026-10-27 (too many messa
-  corpus-1028-0034  v35.54  failing 40, new 4  robots 57 min/0 problems  -> 4 check(s) newly failing, e.g. v35.53 cw-hudsize, his ask 2026-10-27 (the hud messaging is  | v35.44 cw-msgroute, his complaint 2026-10-27 (too many messa
-  corpus-1027-2310  v35.43  failing 43, new 9  robots 115 min/0 problems  -> 9 check(s) newly failing, e.g. v35.35 cw-f1left, his order 2026-10-27 ("hitting f1 to get t | v33.08 golden sentry and pillager bot death callouts draw on
-  corpus-1027-2147  v35.37  failing 34, new 2  robots 103 min/0 problems  -> 2 check(s) newly failing, e.g. v8.89 a pillager wading out of sight draws no rings in the w | v35.35 cw-f1left, his order 2026-10-27 ("hitting f1 to get t
-  corpus-1027-2024  v35.28  failing 18, new 0  robots 57 min/0 problems  -> this is the current stable
-  corpus-1027-1900  v35.19  failing 20, new 1  robots 115 min/1 problems  -> 1 check(s) newly failing, e.g. v25.41 his order (add minimap): the minimap marks extraction
+  corpus-1028-0934  v35.76  failing 72, new 23  robots 114 min/0 problems  -> 23 check(s) newly failing, e.g. v35.36 cw-quiethud (his order of 10-27, build the quiet hud, | v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right
+  corpus-1028-0755  v35.66  failing 46, new 5  robots 58 min/0 problems  -> 5 check(s) newly failing, e.g. v35.53 cw-hudsize, his ask 2026-10-27 (the hud messaging is  | v35.44 cw-msgroute, his complaint 2026-10-27 (too many messa
+  corpus-1028-0722  v35.65  failing 45, new 7  robots 240 min/44 problems  -> 7 check(s) newly failing, e.g. v35.53 cw-hudsize, his ask 2026-10-27 (the hud messaging is  | v35.44 cw-msgroute, his complaint 2026-10-27 (too many messa
+  corpus-1028-0442  v35.65  failing 45, new 6  robots 240 min/44 problems  -> 6 check(s) newly failing, e.g. v9.07 a noise you cannot see leaves a ring on the ground, an | v35.53 cw-hudsize, his ask 2026-10-27 (the hud messaging is 
+  corpus-1028-0320  v35.63  failing 42, new 6  robots 115 min/1 problems  -> 6 check(s) newly failing, e.g. v9.07 a noise you cannot see leaves a ring on the ground, an | v35.53 cw-hudsize, his ask 2026-10-27 (the hud messaging is 
+  corpus-1028-0157  v35.58  failing 44, new 7  robots 57 min/0 problems  -> 7 check(s) newly failing, e.g. v9.07 a noise you cannot see leaves a ring on the ground, an | v35.53 cw-hudsize, his ask 2026-10-27 (the hud messaging is 
+  corpus-1028-0034  v35.54  failing 40, new 7  robots 57 min/0 problems  -> 7 check(s) newly failing, e.g. v9.07 a noise you cannot see leaves a ring on the ground, an | v35.53 cw-hudsize, his ask 2026-10-27 (the hud messaging is 
+  corpus-1027-2310  v35.43  failing 43, new 12  robots 115 min/0 problems  -> 12 check(s) newly failing, e.g. v9.07 a noise you cannot see leaves a ring on the ground, an | v35.35 cw-f1left, his order 2026-10-27 ("hitting f1 to get t
 
 Checks that are newly red and still red (they block until fixed, or until listed in tools/handoff/stable-known-red.txt):
-  v35.53 cw-hudsize, his ask 2026-10-27 (the hud messaging is a clusterfuck, make
-  v35.44 cw-msgroute, his complaint 2026-10-27 (too many messages reach the player
   v31.04 cw-shkey, his note (2026-10-18) "superhot mode needs a toggle key": the k
   v27.40 his answer: a row for the style medals is reserved between the feed and t
+  v35.36 cw-quiethud (his order of 10-27, build the quiet hud, changes 2 3 4): in
+  v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right hand lower corner m
+  v33.01 the experimental page switches style medals, team combo, fuel fires and t
+  v31.64 his order 2026-10-18 (no raider on screen; the AI ones are pillager bots)
+  v30.53 the demo gun card has no item-value line and no backpack hint; career kee
+  v29.33 the title and mode menu run on the shared look: tokens in the CSS equal U
+  v27.99 his answer 14: the DEMO countdown clock is bigger: the minutes and second
+  v27.44 feel2g, a cloud review finding (#5): the finisher works on a controller.
+  v27.37 nolockdown, his order (get rid of the sealed lockdown thing): the lockdow
+  v27.36 strikeplace, his playtest note (air strike bar in a weird place, collidin
+  v26.72 his yes (suggestion 25): an elite machine rolls one visible affix (shield
+  v26.47 settings6, his order 2026-10-14: DISPLAY has CROSSHAIR (cross, dot, circl

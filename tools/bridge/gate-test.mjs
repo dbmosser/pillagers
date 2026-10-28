@@ -36,8 +36,9 @@ async function runCase([label, zoomPct, mode, port], shareDir) {
   const prefs = { partition: { per_host_zoom_levels: { x: {} } }, download: { default_directory: path.join(dir, 'downloads'), prompt_for_download: false, directory_upgrade: true }, savefile: { default_directory: path.join(dir, 'downloads') } };
   if (zoomPct !== 100) prefs.partition.per_host_zoom_levels.x.localhost = { last_modified: '13437019067440923', zoom_level: Math.log(zoomPct / 100) / Math.log(1.2) };
   fs.writeFileSync(path.join(dir, 'Default', 'Preferences'), JSON.stringify(prefs));
+  // 10-28: --force-prefers-no-reduced-motion: normal motion whatever the OS asks (see tools/cdp.ps1)
   const args = ['--user-data-dir=' + dir, '--remote-debugging-port=' + port, '--no-first-run', '--no-default-browser-check', '--disable-extensions', '--disable-sync',
-    '--window-position=-1200,40', mode === 'f11' ? '--start-fullscreen' : mode === 'max' ? '--start-maximized' : '--window-size=1000,600', 'about:blank'];
+    '--force-prefers-no-reduced-motion', '--window-position=-1200,40', mode === 'f11' ? '--start-fullscreen' : mode === 'max' ? '--start-maximized' : '--window-size=1000,600', 'about:blank'];
   const ch = spawn(CHROME, args, { stdio: 'ignore', detached: false, windowsHide: false });
   const out = { label, zoomPct, mode };
   try {

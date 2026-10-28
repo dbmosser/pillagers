@@ -51,33 +51,33 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The ascend button is a strong primary action, and the card, X and lime focus follow the guide. The screen still crams a map, a conditions column and a kit and pack column into one card, with truncated names, tiny type and a competing lime price highlight.",
+  "verdict": "The ascend button is a strong primary action and the card structure is sound, but the dead column, unreadable map labels and tiny, inconsistent type keep it at a 3.",
   "findings": [
-   "P1 right column: pack rows (medkit to compact s...): Widen the name column to at least 160px or drop the /n cap into a 16px tx-2 sub-line. Give the price column a fixed 88px width and draw it in tx-1 for affordable items, with --danger only on rows the player can't afford. Show every name in full, with no ellipsis.",
-   "P1 right column: the $660 price on the bandage row: Make the focused buy slot a 2px --acc border on a --ui-raised fill with tx-1 text, never a lime-tinted fill. Also hide focus on idle rows.",
-   "P1 whole card: hierarchy and density: Add 1px --ui-line dividers and 24px gaps between the kit, pack and loadout sub-sections. Raise the section labels to 16px f-cond 600 in tx-2. Shrink the map by about 15% and give the freed width to the right column.",
-   "P1 map: room labels and exit markers: Draw room labels at 16px f-cond 600 in tx-1 with no pill, and put a 1px --ui-void halo under the text. Move labels clear of the boxes. Draw the exit text at 16px. Tint the map fill with --ui-raised instead of blue. Add a one-word legend or remove the purple squares.",
-   "P2 footer legend and ascend button: Set the legend at 16px in tx-2 and align it to the 24px padding. Make the keycap text 16px with 8px padding. Make it clear the hint is for the live device."
+   "P1 right column, y 530-890 (between the belt and the armour warning): Add a 4-column grid of 72px pack slots (--ui-raised fill, 1px --ui-line border) under the pack header. Otherwise move the belt and the warning up under the data core row with 24px gaps. Put 1px --ui-line dividers between kit, pack and belt. Enlarge the belt cells to 48px.",
+   "P1 map labels ('the long dock', 'foreman office', 'blast freezer', 'chill row', 'exit a/b/c'): Set every label to 16px f-cond 600 in tx-1 with a 1px --ui-void halo. Move labels at least 8px clear of boxes and markers. Set exit labels in --extract at 16px. Remove the purple squares or add a 'keyed' legend entry. Draw room boxes with a --ui-raised fill and a 1px --ui-line-hi border.",
+   "P1 conditions column ('blackout +5% sp', 'night' row): Widen the column by 20px, or drop the value to a right-aligned 16px 'sp +5%' so every row stays on one line. Draw selected as a lime check plus a --ui-raised fill, and focus as a single 2px --acc border. Remove the 'conditions' heading. Set the section labels to 16px tx-2 with 16px of space above them.",
+   "P1 type sizes across the card (kit sublines, 'no armour equipped', 'burn for intel', 'enter', footer legend): Set the sublines, warning and checkbox label to 16px. Set the 'kit', 'pack' and 'belt' section labels to 16px f-cond 700 tx-2 with a 1px divider above each. Left-align 'no data core' to the icon. Set the warning to 16px --warn.",
+   "P2 kit tiles (my loadout, freebie kit, random kit, best kit): Give the selected tile a 2px --acc border and a --ui-raised fill, and use a --ui-line border on the others. Increase the tile height to 64px with an 8px gap."
   ],
-  "pic": "tools/handoff/console/notes/shots/86-after2/05-sector-page-1080.jpg",
-  "task": "manual",
-  "when": "2026-10-21T05:21"
+  "pic": "tools/handoff/console/notes/shots/o-02-172-night-pays-cash-recipes-2/05-sector-page-1080.jpg",
+  "task": "o-02-172-night-pays-cash",
+  "when": "2026-10-28T15:24"
  },
  "06-terms": {
   "score": 3,
   "pass": true,
-  "verdict": "The terms card now has a readable hierarchy, with bright row names, a bold bonus number and a larger 'sign nothing' button. It is still a flat grey list with no accent, no focus state and a lot of dead space, so it looks like a table and not a game menu.",
+  "need": 3,
+  "verdict": "The earlier advice was mostly followed: the title now sits at the top left, the focused row has a lime bar, and signed is a lime fill. The card still looks half-built, because the list ends at y=648 and about 370px of the card is empty below it.",
   "findings": [
-   "P1 whole card, no focus or selection: Fill the focused row with --ui-raised and add a 3px --acc left bar. Make the focused sign button an --acc fill with --acc-ink text. Keep the idle buttons outlined in --ui-line-hi.",
-   "P1 layout, top and bottom of the card: Put the title in the 56px header row at the top left, aligned with the list's left edge at x=261, and on the same line as the X. Make rows 88px tall with 24px padding so the list fills the card, and anchor the footer row at the bottom.",
-   "P1 bonus numbers (+25%, +30%): Set the bonus to the 32px title size in --tx-1, or in --acc as the hero number, and keep the title at 32px but quieter. Add a small 'pay' label (16px, tx-2) above or after each number. Pick one bold element per screen.",
-   "P2 row descriptions: Raise descriptions to 16px at --tx-2 with at least 4.5:1 contrast. Shorten the strings, for example 'raid clock -33%'.",
-   "P2 footer status line and divider: Drop the sentence or turn it into a 16px status chip ('signed: none'). Put the status and 'sign nothing' in one 72px footer row, with the button right-aligned or as the lime default action. Use 24px spacing between the list and the footer."
+   "P1 whole card, y=650-1024: Make the rows 100px tall so the list fills y=200-760. Pin a 72px footer at the bottom of the card with 'sign nothing' on the left and the 'sp x1.10' total on the right. Use a 48px side margin so the column spans x=145-1775 and lines up with the X.",
+   "P1 row descriptions, x=287-571, y=262-613: Set them to 16px --tx-2 with a minimum 4.5:1 contrast. Cut each to 4 words or fewer, for example 'machines +40%' and 'raid clock -33%'. Remove the trailing period and the colon.",
+   "P1 sign buttons, x=1513-1633: Use a 2px --ui-line-hi border on idle buttons and 18px label text in --tx-1. Replace the double ring on the focused button with a single 3px --acc-hover outline offset 2px.",
+   "P1 bonus text '+5% sp', x=1443-1497: Keep the signed bonus in --tx-1 and the idle bonus in --tx-2. Reserve lime for the button fill and the focus bar. Show the +5% once in the header ('each term +5% sp') or only on the active rows.",
+   "P2 total 'sp x1.10', x=1604-1659, y=686: Draw it at the 56px hero size in f-cond 800, right-aligned in the footer row, with a 16px --tx-2 label 'score bonus' above it. Remove the hairline at y=711."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-31-m2/06-terms-1080.jpg",
-  "task": "manual",
-  "when": "2026-10-20T05:34",
-  "need": 3
+  "pic": "tools/handoff/console/notes/shots/o-02-172-night-pays-cash-recipes-2/06-terms-1080.jpg",
+  "task": "o-02-172-night-pays-cash",
+  "when": "2026-10-28T15:24"
  },
  "07-party-coop": {
   "score": 2,
@@ -1827,33 +1827,33 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The HUD hasn't changed since the last review: the same scattered panels in three different styles, with the 'pillager joined' toast still bottom-centre and the ammo block unchanged.",
+  "verdict": "This is a different screen from the one I reviewed before, a yes/no prompt over a live raid. The lime yes button is clear and the card is clean, but the card overlaps the HUD and has dead space and weak yes/no styling.",
   "findings": [
-   "P1 'pillager joined' toast (x874-1045, y838-884): Move it to the left feed at x=16 as a 16px tx-1 row on --ui-panel with a 1px --ui-line-hi border and 4px radius. Delete the bottom-centre toast slot.",
-   "P1 top-left bots panel (x8-367, y143-260): Fold it to one 20px line, 'bots 0', and open the list on focus. If the rows stay, make names 16px tx-1 and replace 'dead' with an 8px --danger dot. Give the header the same 32px height and 16px 600 label as the 'contracts' pill.",
-   "P1 ammo block (x1648-1912, y905-1054): Show the magazine at 56px 800 tx-1 and the reserve beside it at 20px tx-2, with no slash. Raise the footer to 16px tx-2. Inset the panel to x≤1866 and y≤1026.",
-   "P1 'contract item nearby · gold glow marks the box' (x16-409, y778-805): Cut it to 'contract item nearby' at 16px 600 tx-1. Use the same --ui-panel row as the other feed items, with the 3px --r-gold bar and 8px padding.",
-   "P2 hotbar (x555-1480, y958-1060): Draw all slots as 72px squares on --ui-panel with a 1px --ui-line border and 8px gaps. Show ghost icons inside the slots at 30% opacity. Give the selected slot a 2px --acc border. Use 16px numerals."
+   "P1 card, x492-1427 y261-579: Centre the card at y540 (y375-705). Add a --scrim rgba(6,7,8,.80) layer behind it, with an optional 4px blur, so the HUD and map drop to about 40% brightness.",
+   "P1 title row, x539-1382 y315-360: Reduce the title-to-button gap to 32px. Turn the countdown into a 16px tx-2 '11s' aligned to the title baseline, or a thin 3px lime bar that drains along the card top edge.",
+   "P1 buttons, x539-1382 y432-533: Make both buttons 64px tall. Keep yes as the lime fill. Give no a 1px --ui-line-hi border with tx-1 text, so it is clearly a button. Add a 2px lime focus ring when no is selected. Keep the 32px gap between the buttons.",
+   "P2 button labels, x711-772 y470-497: Put the key in a 28px keycap (1px border, 16px text) beside the 20px 600 'yes' label. On pad, swap the keycap for the pad button glyph.",
+   "P2 card top edge, x492-562 y261-264: Either make it a full-width 3px timer bar, or align it to the x539 content edge at 64px wide."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-140-red-enemy-tracers-recipes-2/red-tracers-night-p1-1080.jpg",
-  "task": "o-140-red-enemy-tracers",
-  "when": "2026-10-28T12:45"
+  "pic": "tools/handoff/console/notes/shots/o-03-197-final-90s-rush-recipes-2/rush-p1-1080.jpg",
+  "task": "o-03-197-final-90s-rush",
+  "when": "2026-10-28T16:05"
  },
  "p2-1080": {
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "A big lime button and a gold wordmark sit in the middle of a dark screen. The earlier advice was not followed, and the screen is still small, sparse and generic, with nothing marking it as player 2's.",
+  "verdict": "This frame is a raid screenshot with a 'want easy mode?' modal, not the player 2 title I reviewed before, and the modal is a flat black box with a glaring lime fill that has no hierarchy or craft behind it.",
   "findings": [
-   "P1 'pillagers' wordmark (x 802-1118, y 360-440): Make it flat --tx-1, or flat --r-gold #ffc72e, with no gradient or shadow. Use 96px f-cond 800. Add a cyan 'player 2' tag at 16px f-cond 600 at x 96, y 96, or move the 'keyboard' pill there.",
-   "P1 'keyboard' pill (x 912-1007, y 7-31): Move it into the top-left tag at x 96, y 96, in cyan. Render it as 16px f-cond 600 text with a 1px --ui-line-hi border, 4px radius and 8px/16px padding. Put 'player 2' and 'keyboard' on one line.",
-   "P1 saves block (x 681-1239, y 615-735): Make the save row 64px tall with a --ui-raised fill, 20px f-cond 600 text, and the name in --tx-1. Keep the 2px lime border as the only focus cue. Make the 'saves' label 16px --tx-2 with a 16px gap above the row. Make the three controls 56px tall with 16px label type, --ui-panel fill, 1px --ui-line-hi border and 8px gaps. Give the field a fixed width of about 50%.",
-   "P1 vertical composition (y 360-735 on a 1080 canvas): Make the column 640px wide and move the whole block up so the wordmark sits at y 260-360. Alternatively, add one piece of art behind it, such as a character silhouette or the undercroft entrance, at 20-30% opacity on the right half.",
-   "P1 key-hint row (x 726-1193, y 1030-1055): Set the labels to 16px f-cond 600 in --tx-2, with --tx-1 key caps and a 24px gap between pairs. Move the row up to y 1000-1040. Alternatively, keep only 'f1 controls'."
+   "P0 screen identity (whole frame): Re-capture the real p2 title screen. If this modal is meant to be the p2 screen, say so, and give it the title composition from my earlier review.",
+   "P1 modal card (x 493-1427, y 261-579): Add a 1px --ui-line-hi border and a 4px radius. Use --ui-panel fill on an 80% --scrim over the whole screen. Centre the card at y 540 and make it 880x360. Make the top edge either a full-width 4px lime bar or nothing.",
+   "P1 'y yes' button (x 539-945, y 432-533): Cut the button to 64px tall. Use 24px f-cond 700 text in --acc-ink and put the 'y' key hint in a 28x28 chip at the left. Keep it as the only lime fill. Decide the default deliberately, since lime should mean 'selected'.",
+   "P1 'n no' button (x 976-1382, y 432-533): Fill it --ui-raised with a 2px --ui-line-hi border and --tx-1 label. Show a 3px lime focus outline on whichever button holds pad focus. Use the same 64px height as the yes button.",
+   "P1 title 'want easy mode?' (x 539-790, y 316-350): Set the title at 32px f-cond 700 --tx-1, with a 16px --tx-2 line below it that states the effect in 6 words or fewer. Make the countdown a 40px hero-style number in a 56px ring or bar, tinted --tx-2. Cut the gap to 32px between the title block and the buttons."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-140-red-enemy-tracers-recipes-2/red-tracers-night-p2-1080.jpg",
-  "task": "o-140-red-enemy-tracers",
-  "when": "2026-10-28T12:45"
+  "pic": "tools/handoff/console/notes/shots/o-03-197-final-90s-rush-recipes-2/rush-p2-1080.jpg",
+  "task": "o-03-197-final-90s-rush",
+  "when": "2026-10-28T16:05"
  },
  "pix86c-fashion": {
   "score": 3,
@@ -3038,5 +3038,69 @@
   "pic": "tools/handoff/console/notes/shots/o-138-hud-size-row-does-nothing-recipes-4/hudtv-p2-standard-1080.jpg",
   "task": "o-138-hud-size-row-does-nothing",
   "when": "2026-10-28T07:43"
+ },
+ "condition-sp-extracted-guest": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "It is a clean, readable result card with a clear lime primary action. But it holds too much for one screen, the stats are inconsistent (kills appears twice), the small text is below the guide's size floor, and the amber and teal blocks compete with the lime button.",
+  "findings": [
+   "P1 Whole card, below the two total boxes: Cut it to hero, two panels, one medal row and the primary action. Move the stat strip and the feedback toggle off this screen, or fold them into the panels. Use 16px gaps between groups and 24px between sections.",
+   "P1 Hero numbers: '2,000 sp' and '$2,520': Make the score total a single 56px f-cond 800 hero in tx-1 or lime. Drop the money total to the 20px body size in tx-1. Keep amber for the 3px rarity bar only.",
+   "P1 Gem tile under the panels (959,489): Label it, or move it into the money panel as an item row, or delete it.",
+   "P1 Stat strip: kills, accuracy, containers, time, health: Use 16px labels with +.04em tracking and 28px values. Drop the duplicate kills tile. Show 3 tiles at most.",
+   "P2 Two panels, row text and dividers: Make labels tx-2 at 16px weight 600. Make values tx-1 at 20px weight 700. Use a --ui-line divider."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-02-172-night-pays-cash-recipes-1/condition-sp-extracted-guest-1080.jpg",
+  "task": "o-02-172-night-pays-cash",
+  "when": "2026-10-28T14:34"
+ },
+ "condition-sp-extracted-host": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The card is tidy and the lime leaderboard button reads as the main action, but it holds too many stacked elements, the stats contradict the score, the type is tiny, and the amber, teal, gold and lime colours compete.",
+  "findings": [
+   "P1 stat chips row (kills 0, accuracy 0%, containers 0, time 0:00, health 100): Remove the row, or fix the values. If it stays, drop the duplicate kills chip and use real values at 20px for the number and 16px for the label.",
+   "P1 hierarchy, the whole card: Make the 2,000 sp total the single hero at 56px, f-cond 800. Drop $2,520 to 32px in tx-1. Keep the title at 32px.",
+   "P1 labels and captions: stat chip labels, medal names, 'out clean · never spotted', 'personal best', +148 xp: Set every label to 16px minimum, 600 weight. Use tx-1 for the xp line at 20px. Delete the 'out clean · never spotted' explaining sentence.",
+   "P1 colour use: amber score panel, teal money panel, gold medals, lime button: Make both panels --ui-panel with a --ui-line-hi border. Use tx-1 for the values, with lime only on the hero total. Keep teal only on the 'extracted' title. Use a 3px rarity-gold bar on the medals, with no fill.",
+   "P1 vertical rhythm, between the gem tile, stat chips, medals, xp, feedback button and leaderboard: Remove the unlabelled gem tile or give it a name. Put gaps on the 8px grid at 24px between groups. Make the content column the full card width minus 48px padding."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-02-172-night-pays-cash-recipes-1/condition-sp-extracted-host-1080.jpg",
+  "task": "o-02-172-night-pays-cash",
+  "when": "2026-10-28T14:35"
+ },
+ "finalrush-host-raid": {
+  "score": 2,
+  "pass": false,
+  "need": 4,
+  "verdict": "The final rush banner is now a wide red-edged panel, but the top-centre stack is still a pile of overlapping boxes, the HUD uses inconsistent type sizes, and the bottom-left and bottom-right clusters are untouched.",
+  "findings": [
+   "P1 final rush banner (x650-1270, y265-390): Shrink the banner to about 420px wide with 16px padding. Centre it on x=960 and put it at y=260 with 24px of clear space above and below. Fill it with --ui-panel at 90% opacity. Use a 4px --danger left bar and drop the partial bottom line. Set the title to 32px --danger and the subline to 20px tx-2. Remove the 'the seal' text from behind it.",
+   "P1 top-centre stack (extract chip, timer, weather icon, team score): Use one 16px gap between all boxes and centre each on x=960. Make the timer the only 56px hero. Put the extract chip on the left of the timer at the same top edge and the weather icon on the right. Make the team score box the same width as the timer row. Show 'team score' as a 16px tx-2 label above one 20px row, with 'you' and 'p2' left-aligned at 16px tx-2.",
+   "P1 bottom-left bars (armour 60, hp 100) and f1 controls chip: Use one 16px label and one 20px value format for both bars. Make both bars 32px high and 400px wide, stacked with an 8px gap and left edge at x=48. Put each label on a dark --ui-panel plate. Set the f1 chip's left edge at x=48 on its own row 16px above the bars.",
+   "P1 bottom-right ammo panel (x1605-1910, y868-1017): Inset the panel 48px from the right and bottom edges. Cap the ammo count at 56px f-cond 800 and the weapon name at 20px. Move the weapon slot tiles to sit directly left of the ammo panel on the same baseline.",
+   "P2 weapon slots 1-0 on the bottom strip: Draw all 10 slots as equal 64px tiles with a --ui-line border and --ui-panel fill. Put the number in a 16px label inside each tile. Dim empty tiles to 40% opacity. Give the selected tile a 3px --acc border."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-03-197-final-90s-rush-recipes-4/finalrush-host-raid-1080.jpg",
+  "task": "o-03-197-final-90s-rush",
+  "when": "2026-10-28T16:27"
+ },
+ "finalrush-partner-raid": {
+  "score": 3,
+  "pass": false,
+  "need": 4,
+  "verdict": "The top-centre is now a clear timer-then-banner hierarchy with consistent dark panels, but the final rush banner is oversized and mostly empty, the team score box has uneven alignment, and the bottom-left bars still sit loose on the map.",
+  "findings": [
+   "P1 final rush banner, centre: Shrink it to fit its content, about 320x72px, with 16px padding. Keep the 4px red left bar, put the warning glyph and 'final rush' on one line at 20-24px, and put 'kills x1.05 sp' at 16px in tx-2. Anchor it 16px under the team score panel.",
+   "P1 team score panel, below the timer: Make the panel the same width as the timer, or 220px. Use a two-column grid with a shared baseline: 210 sp at 32px tx-1 on the left, and 'you 105' and 'player 2 105' at 16px on the right. Use 8px padding and a 1px --ui-line-hi border with a 4px radius.",
+   "P1 bottom-left armour 60 and hp 100 bars: Put both in one --ui-panel container with a 4px radius and 8px padding. Make both bars 20px tall with 20px f-cond 600 labels. Use --ok for hp. Right-align the numbers on a dark track. Align the container left edge with the weapon slots at a 5% margin.",
+   "P1 weapon slot row, 1 to 0: Draw all 10 slots as 56px tiles with --ui-panel at 85% fill and a 1px --ui-line border. Keep the numbers at 16px in tx-2. Make the selected tile's border 2px --acc lime, and set ammo counts at 16px tx-1. Align the bottoms of the slot row and the ammo panel.",
+   "P2 top-right goals 0/3 panel: Drop the 'run goals' line, and align the three goal rows to one left edge at 16px. Right-align the '+400 sp' rewards in tx-2. Collapse the panel to just 'goals 0/3' by default and open it with a key. Set the panel inset to 24px to match the HUD margin."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-03-197-final-90s-rush-recipes-4/finalrush-partner-raid-1080.jpg",
+  "task": "o-03-197-final-90s-rush",
+  "when": "2026-10-28T16:28"
  }
 }

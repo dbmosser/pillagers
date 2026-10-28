@@ -1,0 +1,10 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  05-sector-page                         staged      10.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | sectormodal
+  06-terms                               staged      10.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | termsmodal
+  condition-sp-extracted-host            staged       8.3s  total   3: clip 0 off 0 small 3 contrast 0 font 0 overlap 0 focus 0
+  condition-sp-extracted-guest           staged       8.3s  total   3: clip 0 off 0 small 3 contrast 0 font 0 overlap 0 focus 0
+== 4k : window 3876x2265, viewport 3840x2160
+  05-sector-page                         staged      10.7s  total   4: clip 4 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | sectormodal
+  06-terms                               staged      11.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | termsmodal
+  condition-sp-extracted-host            staged       8.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  condition-sp-extracted-guest           staged       8.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0

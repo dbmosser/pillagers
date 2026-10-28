@@ -59,8 +59,20 @@ MODEL=$(cap CODEX_MODEL gpt-6.1-sol); EFFORT=$(cap CODEX_EFFORT high); CAM=$(cap
 PFN=$(cap PREFLIGHT_CHROME_N 9); PFPORT=$((9350+PFN))
 # 10-21: the smaller of free RAM and free virtual memory (Windows ran out of virtual memory at 02:19 with 4 GB of RAM free)
 freegb(){ if [ -n "$CX_FREEGB" ]; then echo "$CX_FREEGB"; return; fi; powershell -NoProfile -Command "\$o=Get-CimInstance Win32_OperatingSystem; [int]([Math]::Min(\$o.FreePhysicalMemory,\$o.FreeVirtualMemory)/1MB)" 2>/dev/null | tr -dc '0-9'; }
+# 10-28 09:47: this lane sat at "waiting for RAM: 0 GB free, need 3" while a test Chrome left by an ended preflight (9358, 2.9 GB, two game
+# pages) and six idle ones held the memory. Before it waits it closes LEFTOVER test Chromes (tools/close-leftover-test-chromes.ps1: a
+# pillagers-cdp temp profile on 9331-9399, over 45 min old, no gate or test script using its port), logs each close in log/lane.log and
+# reads memory again. Never under CX_FREEGB (tests fake the memory; they must not close real browsers). -Lane o: while this lane runs, the
+# sweep keeps its Chrome ($PFPORT) for every other caller (rt_checks sleeps 20 s on it with no script on the port); here, waiting for RAM, the
+# lane is not using it, so its own sweep may close it.
+sweepchromes(){ local o; [ -n "$CX_FREEGB" ] && return 1
+  o=$(timeout 90 powershell -NoProfile -ExecutionPolicy Bypass -File "$(cygpath -w "$R/tools/close-leftover-test-chromes.ps1")" -Lane o 2>/dev/null | tr -d '\r')
+  printf '%s\n' "$o" | grep '^closed' | while IFS= read -r l; do log "lane $L: $l"; done
+  printf '%s\n' "$o" | grep -q '^closed' && { sleep 3; return 0; }; return 1; }
 ramwait(){ local floor g i; floor=$(cap RAM_FLOOR_GB 6)
-  for i in 1 2 3 4 5 6 7 8 9 10; do g=$(freegb); g=${g:-0}; [ "$g" -ge "$floor" ] && return 0; say "waiting for RAM: $g GB free, need $floor (${name:-codex})"; sleep 60; done; return 1; }
+  for i in 1 2 3 4 5 6 7 8 9 10; do g=$(freegb); g=${g:-0}; [ "$g" -ge "$floor" ] && return 0
+    sweepchromes && { g=$(freegb); g=${g:-0}; [ "$g" -ge "$floor" ] && return 0; }
+    say "waiting for RAM: $g GB free, need $floor (${name:-codex})"; sleep 60; done; return 1; }
 
 # ---------------------------------------------------------------- the codex program and a clean environment for it
 find_codex(){

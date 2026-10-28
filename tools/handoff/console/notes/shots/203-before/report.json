@@ -1,0 +1,5 @@
+{"generated":"2026-10-28T09:03:05","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":40,"screens":[
+{"name":"24-raid-controls-full-H","screen":"Full controls list (H)","1080":{"staged":false,"note":"expect failed: U.raid()\u0026\u0026__state().legendOn===2 -\u003e false (legendOn 1)","viewport":"1920x1080","shot":"24-raid-controls-full-H-1080.jpg","lint":""}},
+{"name":"32-keys-window","screen":"CHANGE KEYS window (keysmodal)","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"32-keys-window-1080.jpg","lint":""}},
+{"name":"80-raid-controls-career-after-f1","screen":"Career raid after one F1: the compact controls list opens (his rs-1, v34.54)","1080":{"staged":true,"note":"career 1 legendOn 1","viewport":"1920x1080","shot":"80-raid-controls-career-after-f1-1080.jpg","lint":""}}
+]}

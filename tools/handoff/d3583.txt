@@ -1,0 +1,5 @@
+## v35.83 - FINAL RUSH IN THE TWO PLAYER DEMO
+
+Co-op hunt while he was away. His 10-28 decision #3: final rush kills pay 1.05x SP. The two player demo had no final 90 second rush. Playtest watch: both windows should announce once at 1:30; fresh sentry kills pay 105 sp before other bonuses. More machines arrive, while breathers and called extraction rings still hold waves. Solo demo and career keep their pacing.
+
+MEASURED. Check 35.83 passes, and fails on v35.82.

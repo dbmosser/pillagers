@@ -1,0 +1,7 @@
+v35.74: melee on z, drop on v
+
+melee swings on Z and drop for a teammate is on V by default; a save that moved either key keeps it; every key list says so; middle mouse pings as before
+
+Check 35.74. Fails on v35.73.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

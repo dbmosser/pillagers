@@ -1,0 +1,7 @@
+v35.79: conditions pay sp only
+
+Night and hard weather were 1.20x and 1.10x XP. Terms were additive +25% for blackout and short window, +30% for heavy patrols, they know you and silent running, on haul cash and the spForRun part of Mainframe XP. SP is the live raid score and leaderboard; XP is the separate reward track. Each active condition now multiplies SP by 1.05, stacking multiplicatively, with no extra cash or XP. Career cash conversion uses the score before these conditions; the demo applies them to earned SP. Existing difficulty settings and dose XP are unchanged. Watch: compare matching day and night extractions, rain/fog, and several signed Terms in both windows; SP should rise while money and XP stay level. Seven conditions give 1.4071x SP. No seeded random calls or world generation changed.
+
+Check 35.79. Fails on v35.78.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

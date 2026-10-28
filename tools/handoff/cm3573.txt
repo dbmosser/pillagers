@@ -1,0 +1,7 @@
+v35.73: the xp line keeps its own line on the extracted card
+
+the xp line on the extracted card keeps its own line
+
+Check 35.73. Fails on v35.72.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

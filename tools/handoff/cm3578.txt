@@ -1,0 +1,7 @@
+v35.78: a jagged white bolt from the sky to each lightning strike
+
+Each lightning strike that lands on screen draws a white jagged bolt with two or three side forks from the top edge of the view down to the strike point, brightest at the ground, with a quick double flicker, gone in about a third of a second with the flash. Render only: where strikes land and what they hit are unchanged, and the shape uses no game random number. Effects reduced: no bolt.
+
+Check 35.78. Fails on v35.77.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
