@@ -3724,8 +3724,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.35';
-var VER_AT='2026-10-27 21:17';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.36';
+var VER_AT='2026-10-27 21:20';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5784,7 +5784,9 @@ function trBW(){ var u=uiScale(); if(trDemo()&&u>1.2) u=1.2; return 300/(HUDZ.co
 function trGeo(){
   var g=TRG, T=G&&G.tel, n=0;
   g.z=(HUDZ.cond||1)*hudRes()*hudUserZ('cond');
-  if(!trDemo()) n=4;
+  // v35.xx (cw-quiethud), HIS ORDER (2026-10-27): "build the quiet hud, all 5 changes" (change 2, one money number). The wallet rows (cash, xp, stash
+  // and backpack) are not drawn in a raid any more: the backpack value is on the ammo card, the forge and the pedlar show the balance on their own
+  // screens, and the run info panel moves up into the corner. The Undercroft and the menus keep the page text.
   if(T&&T.notes&&T.notes.length) n++;
   g.n=(n+1)>>1; g.bw=trBW(); g.ls=LH(13)+3; g.rh=16+LH(13)+(g.n>0?g.n-1:0)*g.ls; g.x=W-16-g.bw;   // v33.xx (cw-cornercompact), HIS ORDER (2026-10-20): "this takes up way too much of the screen, figure out how to make it much more compact". The four plates are ONE plate now: figures in two columns on short lines (n is the lines, rh the plate's height), about a third of the old block
   g.yE=Math.ceil((g.y0+(n?g.rh+g.gp:0))*g.z);   // where the next item (the minimap) starts, in screen px: under the last row and one gap
@@ -5815,14 +5817,15 @@ function trRow(i,lab,val){
 // drawn last in drawHUD, so the rows stay over the sector map and the backpack the way the page text did
 function trColDraw(){
   var g=trGeo(), T=G&&G.tel, i=0, nn=(T&&T.notes)?T.notes.length:0;
-  if(!(g.n>0)||!G||!G.player) return 0;
-  TRG.t=(typeof performance!=='undefined')?performance.now():Date.now();
+  if(!G||!G.player) return 0;
+  TRG.t=(typeof performance!=='undefined')?performance.now():Date.now();   // v35.xx (cw-quiethud): stamped with no rows too, so the page copy of the wallet stays clipped away in a raid
+  if(!(g.n>0)) return 0;
   if(nn&&TRV.nn!==nn){ TRV.nn=nn; TRV.ns=String(nn); }
   ctx.save(); hudZoomIn('cond',W,0);
   ctx.globalAlpha=1; ctx.font=FS(TYPE.label); ctx.textBaseline='alphabetic';
   // v33.xx (cw-raiddollar), his rule (Q59: "$ for money, SP for score"): the money row is the figure alone, $900 as in the Undercroft,
   // and the stash and backpack rows are money too (item values), so they carry $. xp stays a plain number.
-  if(!trDemo()){ trRow(i++,'cash','$'+TRV.c); /* v33.xx (cw-cornercompact2): the critic found the money figure with no label read as part of the xp pair; a short word names it */ trRow(i++,'xp',TRV.x); trRow(i++,'stash','$'+TRV.sv); trRow(i++,'backpack','$'+TRV.bv); }
+  // v35.xx (cw-quiethud): no wallet rows in a raid (change 2); the notes row stays
   if(nn) trRow(i++,'notes logged',TRV.ns);
   ctx.textAlign='left';
   ctx.restore();
@@ -18687,7 +18690,9 @@ cv.addEventListener('mousedown',function(e){
         }
         if(inRect(HB2.tg,mouse.x,mouse.y)){
           P.hud=P.hud||{}; P.hud[hk]=P.hud[hk]||{};
-          P.hud[hk].c=!P.hud[hk].c; saveProfile(); blip('pick');
+          if(hk==='cond'){ P.hud.cond.o=riOpen()?0:1; RIF.until=0; }   // v35.xx (cw-quiethud): the run info arrow opens it for good from folded, and folds it from open
+          else P.hud[hk].c=!P.hud[hk].c;
+          saveProfile(); blip('pick');
           return;
         }
         // ONLY THE BAR DRAGS, v5.31. The body still swallows the click so the
@@ -42620,36 +42625,9 @@ function drawBuzzFx(){
       if(G&&G.hubFloor&&typeof G.hubBagBeltBottom==='number'&&G.drag&&G.drag.pad&&G.drag.fromHot===q){ctx.fillStyle='rgba(22,25,27,.6)';ctx.fillRect(bx+2,hy+2,bw-4,bw-4);} // v28.xx (cw-cx-hubbagreadability): dim the held item's origin after its icon is drawn.
     }
     // v26.xx (wheel4): no group labels under the belt; it holds nine guns and nothing else.
-    // v13.08, HIS NOTE: not in the Undercroft. The belt strip is drawn on the floor
-    // as well as in a raid, and this caption offers two actions that do not exist
-    // down there: there is nothing to fire at and nobody to signal. It stays in a
-    // raid, where both are real and he uses them.
-    if(state!=='hub'){
-      ctx.font=beltCapFS(bw); ctx.textAlign='center';   // v18.71: grows with the slots under it; v19.66: and with the screen
-      // v19.34, seen on the 4K fog screenshot (2026-10-08): grey words straight on the ground, so on pale ground (fog, sand, a lit
-      // floor) they all but vanished. They sit on a soft dark strip now, a little brighter, at the same size and place.
-      var _bcT=sl[sel].name+'   [FIRE] use', _bcW=ctx.measureText(_bcT).width, _bcF=parseFloat(((/([\d.]+)px/).exec(String(ctx.font))||[0,11])[1])||11;
-      BELTCAP={x:Math.round(W/2-_bcW/2-_bcF*0.6),y:Math.round(hy-LH(6)-_bcF*0.95),w:Math.round(_bcW+_bcF*1.2),h:Math.round(_bcF*1.25)};   // v28.xx (cw-hudcorner): the caption strip as drawn, screen pixels, so the keys chip on its row and the list over it keep off it
-      ctx.fillStyle='rgba(17,19,21,.72)'; ctx.fillRect(BELTCAP.x,BELTCAP.y,BELTCAP.w,BELTCAP.h);   // vNN.xx (ui5q1n): graphite, as the HUD plate
-      ctx.fillStyle='#b4bfca';
-      // vNN.xx, UI REDESIGN ui5q1n (his #50 and #35, from the AAA judge of the raid HUD shot): THE BELT CAPTION DRAWS KEYCAPS. Its keys
-      // were bracketed words ([FIRE] use, [V] signal) beside the keycaps of every world prompt (ui7, hudPrompt). As hudPrompt does, the
-      // line is still drawn whole through the TX door (his wording and the word editor are untouched), with each bracketed key cut out
-      // by a clip, and a keycap (hudKey) drawn in its place. Same words, same place, same size.
-      (function(){
-        var _y=hy-LH(6), _T=(typeof TX==='function')?TX(_bcT):_bcT, _tw=hudRawW(_T), _x0=W/2-_tw/2, _m=ctx.measureText(_T), _re=/\[[^\]]+\]/g, _k, _ks=[];
-        var _a=(_m.actualBoundingBoxAscent>0)?_m.actualBoundingBoxAscent:_bcF*0.72;
-        while((_k=_re.exec(_T))) _ks.push({i:_k.index,s:_k[0]});
-        if(!_ks.length||typeof hudKey!=='function'){ ctx.fillText(_bcT,W/2,_y); return; }   // v13.52: no pad button reaches V; v18.71: the key as set
-        ctx.save(); ctx.beginPath(); ctx.rect(_x0-_bcF,_y-_a-_bcF,_tw+_bcF*2,_a+_bcF*2);
-        _ks.forEach(function(q){ q.x=_x0+hudRawW(_T.slice(0,q.i)); q.w=hudRawW(q.s); ctx.rect(q.x,_y-_a-_bcF,q.w,_a+_bcF*2); });
-        ctx.clip('evenodd');
-        try{ ctx.fillText(_bcT,W/2,_y); } finally { ctx.restore(); }
-        _ks.forEach(function(q){ hudKey(q.s.slice(1,-1),q.x,_y,_a,q.w,{fill:'#3b434b',ink:UIC.tx_1}); });   // v28.xx (cw-firechip), the critic (2026-10-20): the fire chip had a lime fill beside the lime selected slot, two lime fills. The belt caption keycaps are a quiet grey chip now; lime stays on the selected slot.
-        ctx.textAlign='center';
-      })();
-      ctx.textAlign='left';
-    }
+    // v35.xx (cw-quiethud), HIS ORDER (2026-10-27): "build the quiet hud, all 5 changes" (change 4, the gun name once). The caption over the belt (the
+    // name of the key in hand and the fire key) is gone: the ammo card names the gun or the item, and an item in hand draws its own fire key line (drawHand).
+    BELTCAP=null;
   }
 
 // v9.12: A PANEL MUST KEEP ITS HANDLE ON SCREEN. The drag writes P.hud[id].dx/dy
@@ -43540,6 +43518,17 @@ function drawMinimap(){
   MMAP.box=r;
   return 1;
 }
+// v35.xx (cw-quiethud), HIS ORDER (2026-10-27): "build the quiet hud, all 5 changes" (change 3, things at rest hide). The stamina bar shows only while
+// stamina is not full: it fades in over 0.15 s when it starts to drain and out over 0.5 s once it is full again, so it never pops. A new raid starts at
+// its resting state with no fade. Real time, so a slowed raid clock does not hold it.
+var STAMF={g:null,a:0,t:0};
+function stamFade(p){
+  var now=(typeof performance!=='undefined')?performance.now():Date.now(), want=(p&&(p.stamLock||p.stam<100))?1:0, d;
+  if(STAMF.g!==G){ STAMF.g=G; STAMF.a=want; STAMF.t=now; return want; }
+  d=Math.min(0.1,Math.max(0,(now-STAMF.t)/1000)); STAMF.t=now;
+  STAMF.a=want?Math.min(1,STAMF.a+d/0.15):Math.max(0,STAMF.a-d/0.5);
+  return STAMF.a;
+}
 function drawHUD(){
   var p=G.player,T=G.tel,i;
   hudClampAll();
@@ -44075,7 +44064,10 @@ else if(CC.ck==='elite'){ note=((T.eliteKills||0)>0)?'elite down, get out':'no e
         else if(CC.ck==='weak'){ note=((T.weakHits||0))+' of '+CC.n+' weak points hit'; }
         // v12.80: a conduct note with nothing to say prints nothing, instead of
         // an empty row with a bullet on it.
-        if(note) _clines.push({v:(lost?'LOST   ':'')+note,vc:lost?UIC.danger:UIC.ok});
+        // v35.xx (cw-quiethud), change 3: a conduct line that only says nothing has happened yet is at rest and draws nothing; it comes back the
+        // moment it changes (broken, or the elite down), and that opens the panel. The count line says the contract is there.
+        var _crest=!lost&&(CC.ck==='clean'||CC.ck==='steady'||(CC.ck==='elite'&&!((T.eliteKills||0)>0)));
+        if(note&&!_crest) _clines.push({v:(lost?'LOST   ':'')+note,vc:lost?UIC.danger:UIC.ok});
       }
       // v4.04: and the COUNTING contracts too. v4.03 fixed the conduct ones
       // because a rule you cannot see is a rule you will break, and the same
@@ -44155,10 +44147,19 @@ else if(CC.ck==='elite'){ note=((T.eliteKills||0)>0)?'elite down, get out':'no e
       rows[_wq].wrapped=rows[_wq].v?wrap(rows[_wq].v):[];
       total+=(rows[_wq].k?1:0)+rows[_wq].wrapped.length;
     }
+    // v35.xx (cw-quiethud), change 3: what can move (the contract lines and the goals) opens the panel for a moment when it changes, and the one line
+    // the folded panel shows is the count: contracts done of all, and goals done of all.
+    var _rsig=(_arc?'':_clines.map(function(q){ return q.v; }).join('|'))+'#', _rcn=0, _rcd=0, _rgn=0, _rgd=0, _rtl=[], _rg, _rc;
+    if(G.flow&&G.flow.goals) for(_rg=0;_rg<G.flow.goals.length;_rg++){ _rgn++; if(G.flow.goals[_rg].done) _rgd++; _rsig+=String(G.flow.goals[_rg].v)+'/'+(G.flow.goals[_rg].done?1:0)+';'; }
+    if(!_arc&&CFG.condHud!==0&&P.contracts) for(_rc=0;_rc<P.contracts.length;_rc++){ if(!P.contracts[_rc]) continue; _rcn++; if(P.contracts[_rc].prog>=P.contracts[_rc].n) _rcd++; }
+    if(_rcn) _rtl.push('contracts '+_rcd+'/'+_rcn);
+    if(_rgn) _rtl.push('goals '+_rgd+'/'+_rgn);
+    var _rttl=_rtl.length?_rtl.join('   '):'run info';
+    riNote(_rsig);
     delete HUDBOX.cond;
     var HOc=hudOff('cond');
     var bh=HOc.c?(pad*2+lh):(pad*2+lh+total*lh);
-    var bx=W-16-bw, by=LH(30);   // v8.33: was LH(30)+LH(12)*2+LH(6), reserving
+    var bx=W-16-bw, by=TRG.y0;   // v35.xx (cw-quiethud), change 2: with the wallet rows gone the panel starts at the top of the corner column, where they were   // v8.33: was LH(30)+LH(12)*2+LH(6), reserving
                                  // two rows for the hunt counters. They are gone.
     // v10.42: the drag is screen pixels and this space is scaled by _cz about
     // the top right corner, so dx is worth dx/_cz here and the left screen edge
@@ -44176,7 +44177,7 @@ else if(CC.ck==='elite'){ note=((T.eliteKills||0)>0)?'elite down, get out':'no e
 hudPanel(bx,by,bw,bh,undefined,1);   // v18.13: the one HUD panel
     ctx.textAlign='left';
     var ry=by+pad+LH(8);
-    ctx.fillStyle=UIC.tx_1; ctx.fillText('RUN INFO',bx+pad,ry);   // v27.42 (info1): was CONDITIONS; v28.xx (cw-runinfotitle), the critic (2026-10-19): 'Lime is spent on a label ... Remove all lime.' The title is white
+    ctx.fillStyle=UIC.tx_1; ctx.fillText(_rttl,bx+pad,ry);   /* v35.xx (cw-quiethud): the title is the count, folded or open */   // v27.42 (info1): was CONDITIONS; v28.xx (cw-runinfotitle), the critic (2026-10-19): 'Lime is spent on a label ... Remove all lime.' The title is white
     HUDBOX.cond={x:bx,y:by,w:bw,h:bh,tg:{x:bx+bw-LH(20),y:by,w:LH(20),h:LH(16)}};
     ctx.textAlign='right'; ctx.fillStyle=UIC.tx_2;
     hudChev(bx+bw-pad,ry,!HOc.c);   // vNN.xx (ui5q2p): a drawn chevron, not [-]
@@ -44781,7 +44782,11 @@ ctx.fillStyle='rgba(190,255,220,.85)';
     // from occasional to permanent.
     // The status now stacks ABOVE the armour bar when there is one, and stays
     // where it was when there is not, so nothing moves for a player with no rig.
-    var _ps=playerStatus();
+    // v35.xx (cw-quiethud), HIS ORDER (2026-10-27): "build the quiet hud, all 5 changes" (change 3, things at rest hide). The posture word shows only
+    // when it matters, crouched or down; standing, jogging and the rest are at rest and draw nothing (the reticle, the use bar and the search bar
+    // carry the actions). The pillager board keeps its own status words.
+    var _ps=p.downed?'DOWN':(G.pCrouch?'CROUCHED':'');
+    if(!_ps) return;
     // v8.97, his note twice over: "standing is colliding on top of stamina". The
   // old 44 and 22 left a REMAINDER of one to six pixels under the chip, because
   // the chip height follows the text size and the number holding it up did not.
@@ -44823,8 +44828,9 @@ if(p.armor>0){
   }
   var _stc=p.stamLock?'#c8452f':(p.stam<35?'#c98a1e':'#4f86a8');   // v28.xx (cw-stamlabel), the critic (2026-10-19): 'the stamina label sits outside its bar'. The fills are one step darker so the cream word reads inside the bar, the way the armour word does.
   var _lowDim=(p.hp>0&&p.hp/p.maxhp<0.25&&!p.stamLock);   // v28.xx (cw-lowhp2), the critic: stamina out-shouts a nearly dead health bar, so under a quarter health it steps back
-  if(_lowDim) ctx.globalAlpha=0.45;
-  bar(16,by-29,HBW,16,p.stam/100,_stc);   /* v28.xx (cw-barheight): 16 high like the armour bar, same bottom edge as before */   /* v28.xx (cw-barsame): same width as the health bar */
+  var _sfa=stamFade(p);   // v35.xx (cw-quiethud), change 3: the stamina bar and its word show only while stamina is not full, fading in and out
+  ctx.globalAlpha=(_lowDim?0.45:1)*_sfa;
+  if(_sfa>0.001) bar(16,by-29,HBW,16,p.stam/100,_stc);   /* v28.xx (cw-barheight): 16 high like the armour bar, same bottom edge as before */   /* v28.xx (cw-barsame): same width as the health bar */
   ctx.globalAlpha=1;  // v18.40, THE STYLING PASS IN THE RAID (2026-10-04): THE STAMINA WORD SITS BESIDE ITS BAR. It was dark text inside a 12 unit bar
   // in a face taller than the bar, so it spilled over the top edge and read as a smudge. It sits just past the bar's end now, in
   // the bar's own colour, and WINDED still replaces it when the bar locks.
@@ -44832,7 +44838,7 @@ if(p.armor>0){
   var _spf=FS(TYPE.label), _spx=parseFloat((/([\d.]+)px/.exec(_spf)||[0,13])[1]), _spm=16*1.08;
   if(_spx>_spm) _spf=_spf.replace(/[\d.]+px/,(Math.round(_spm*10)/10)+'px');
   ctx.save(); ctx.font=_spf; ctx.fillStyle='#FFF6DC'; ctx.shadowColor='rgba(0,0,0,.85)'; ctx.shadowBlur=3;
-  ctx.fillText(p.stamLock?'WINDED':'STAMINA',24,(_spx>_spm)?Math.round(by-29+8+_spm*0.36):by-16);
+  ctx.globalAlpha=_sfa; if(_sfa>0.001) ctx.fillText(p.stamLock?'WINDED':'STAMINA',24,(_spx>_spm)?Math.round(by-29+8+_spm*0.36):by-16);
   ctx.restore();   /* v28.xx (cw-barheight): centred on the taller bar */   /* v28.xx (cw-barsame): the word follows the longer bar */
   ctx.restore();                          // v8.08: end of the corner scale
   ctx.restore();
@@ -46346,9 +46352,19 @@ function hudHit(mx,my){
   }
   return null;
 }
+// v35.xx (cw-quiethud), HIS ORDER (2026-10-27): "build the quiet hud, all 5 changes" (change 3, things at rest hide). THE RUN INFO PANEL FOLDS TO ONE LINE
+// AT REST, its count (contracts 1/3, the demo goals 0/3). When a contract or a goal moves (riNote, from the panel) it opens for RI_OPEN_MS and folds
+// again; its arrow opens it for good (P.hud.cond.o) and folds it again. Real time, so a slowed raid clock does not hold it open. A new raid starts folded.
+var RIF={g:null,sig:'',until:0}, RI_OPEN_MS=4000;
+function riNow(){ return (typeof performance!=='undefined')?performance.now():Date.now(); }
+function riNote(sig){
+  if(RIF.g!==G){ RIF.g=G; RIF.sig=sig; RIF.until=0; return; }
+  if(sig!==RIF.sig){ RIF.sig=sig; RIF.until=riNow()+RI_OPEN_MS; }
+}
+function riOpen(){ return !!((P&&P.hud&&P.hud.cond&&P.hud.cond.o)||(G&&RIF.g===G&&riNow()<RIF.until)); }
 function hudOff(id){
   var o=(P&&P.hud&&P.hud[id])||{};
-  return {dx:o.dx||0,dy:o.dy||0,c:!!o.c&&id!=='body'};   // v16.28, his note: the vitals block (health) never folds away
+  return {dx:o.dx||0,dy:o.dy||0,c:(id==='cond')?!riOpen():(!!o.c&&id!=='body')};   // v35.xx (cw-quiethud): run info is folded unless it is open for a moment or for good   // v16.28, his note: the vitals block (health) never folds away
 }
 // v18.13, THE STYLING PASS, STAGE C: ONE PANEL FOR THE RAID HUD. Five HUD boxes (conditions, the pillager board, both legends and
 // the backpack) each drew their own flat black rectangle with a thin stroke. They share one panel now: rounded corners, a slight
@@ -54876,7 +54892,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.35: the f1 key list opens on the left Check 35.35 fails on v35.34',
+  now:'v35.36: the raid hud is quieter: no money card in the corner, the posture word and the stamina bar show only when they matter, run info folds to its count and opens when a contract moves, and the gun is named only on the ammo card Check 35.36 fails on v35.35',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

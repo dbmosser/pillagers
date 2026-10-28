@@ -1,0 +1,7 @@
+v35.36: quiet hud panels
+
+the raid hud is quieter: no money card in the corner, the posture word and the stamina bar show only when they matter, run info folds to its count and opens when a contract moves, and the gun is named only on the ammo card
+
+Check 35.36. Fails on v35.35.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

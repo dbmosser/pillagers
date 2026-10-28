@@ -14,10 +14,10 @@ No HIGH items left except 177 hardcore save (parked until 11/1, goes first then)
 
 ## His 10-27 evening orders in "Game feature requests and edits" (job files in console/in-session/; ids there are chat ids, not the tasks/ numbers)
 - "recovering to 85" icon lies in Superhot (184). SHIPPED v35.22, on his PC 20:01.
-- Quiet hud, all 5 changes (186a text lanes: no double lines, concealed icon, extraction word up top; 186b panels: one money number, hide at rest, gun name once). Building.
-- Plain title backdrop, no robots in the Undercroft (187-title-plain-backdrop). Building.
-- Superhot off at every start (188-superhot-off-by-default). In the ship queue.
-- Extraction: no pop back up before the extracted card (189-extract-no-pop-up). WAITING for a build slot (3 at once); its session was stopped at 20:50 with VM RAM at 0.6 GB free.
+- Quiet hud, all 5 changes. 186a text lanes (no double lines, concealed icon, extraction word up top) SHIPPED v35.30/31/33, on his PC 21:18 (as 35.34). 186b panels (one money number, hide at rest, gun name once) in the ship queue 21:20.
+- Plain title backdrop, no robots in the Undercroft (187). SHIPPED v35.34, on his PC 21:15. The robots were the title fight from his 10-18 Q52/Q54 answers; his 10-27 order reverses them.
+- Superhot off at every start (188). SHIPPED v35.32, on his PC 21:10.
+- Extraction: no pop back up before the extracted card (189-extract-no-pop-up). Resumed 21:20 (it waited for a build slot).
 - Left side: his note "nope, i was trying to say that all this shit moves to the left": the whole cluster moves left, not only the F1 list. Passed to the VM PC chat to show him a picture first.
 
 ## Queued now in tasks/ (fix, polish or tuning; priority line in each file)
