@@ -26,3 +26,5 @@ Rules for every graphics job:
 TASK DONE when it shipped with pictures and frame numbers; TASK PARTIAL with what is left.
 
 Coordinator 10-25 11:19: the stale index is fixed (shipone.sh now refreshes it), but shipq.sh cw-flashlight then STOPPED at 11:15: "verifySafe did not pass" on top of v34.76 (job 127 glow pools also works in the light pass). Rebuild the draft on HEAD, run preflight until PASS, then ship.
+
+4K NUMBERS (CEO 10-28 04:40): for 4K frame cost use tools/handoff/spare/perf-4k.txt (one line per build: the main PC robot's 4K two-window raids on his RX 7900 XTX, newest first, written by spare-import.mjs) instead of running fuzz.ps1 -Size 3840x2160 on a scratch port. The VM has no graphics card, so its 4K numbers are processor-drawn and do not count.

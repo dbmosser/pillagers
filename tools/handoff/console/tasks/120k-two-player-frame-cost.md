@@ -8,3 +8,5 @@ Do: compare the time of each draw pass (G.tel.gfx.pass: world, HUD, fog, light) 
 Rules: the seed 4242 fingerprint (ents 85/374, containers 165/593) must hold unless this brief says otherwise; the check must FAIL on the build before; both windows; player text all lower case. Say in DESIGN.md what he should watch for in a playtest.
 Also (coordinator 10-26, from job 127): include the 127 glow (POST FX on and off, the forge and burning bodies in view; camera screens 81 to 92 stage them) in the 4K two-window frame time, and say in DESIGN.md what it costs. That is the last open part of 127-gfx-glow-pools.
 TASK DONE when it shipped; TASK PARTIAL with what is left.
+
+4K NUMBERS (CEO 10-28 04:40): for 4K frame cost use tools/handoff/spare/perf-4k.txt (one line per build: the main PC robot's 4K two-window raids on his RX 7900 XTX, newest first, written by spare-import.mjs) instead of running fuzz.ps1 -Size 3840x2160 on a scratch port. The VM has no graphics card, so its 4K numbers are processor-drawn and do not count.
