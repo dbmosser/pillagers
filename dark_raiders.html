@@ -3730,8 +3730,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.62';
-var VER_AT='2026-10-28 02:38';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.63';
+var VER_AT='2026-10-28 02:55';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -42812,6 +42812,18 @@ function drawBuzzFx(){
     var _lbF=beltFS(bw,0.115), _lbP=parseFloat(((/([\d.]+)px/).exec(String(_lbF))||[0,10])[1])||10, _lbH=0;   // v25.xx (belt6a): the group label strip under the keys
     var hx=Math.round(_rL+(_room-tw2)/2),hy=H-bw-LH(13)-_lbH;
     if(hx<_rL) hx=Math.round(_rL);
+    // v28.xx (cw-cx-hudtv): bigger corners would squeeze the belt smaller. In TV mode grow the slots above both corners, with the same recorded click and drag cells.
+    var _tv=hudTvScale();
+    if(_tv>1){
+      var _nz=_hz/_tv, _nbR=390*(HUDZ.body||1)*_nz*hudUserZ('body')+Math.max(0,hudOff('body').dx),
+          _ngL=W-252*(HUDZ.gear||1)*_nz*hudUserZ('gear')+Math.min(0,hudOff('gear').dx),
+          _nbw=Math.max(20,Math.min(Math.floor((_ngL-_nbR-LH(28)-_gt)/sl.length),LH(112))),
+          _topB=H-(34+50+LH(5)+LH(18))*(HUDZ.body||1)*_hz*hudUserZ('body')+hudOff('body').dy,
+          _topG=H-(34+LH(80))*(HUDZ.gear||1)*_hz*hudUserZ('gear')+hudOff('gear').dy;
+      bw=Math.max(20,Math.min(Math.round(_nbw*_tv),Math.floor((W-LH(32)-_gt)/sl.length)));
+      tw2=sl.length*bw+_gt; hx=Math.round((W-tw2)/2);
+      hy=Math.max(LH(16),Math.min(_topB,_topG)-bw-LH(24));
+    }
     // v21.42, from the whole-game bug hunt of 2026-10-08 (W-A2): THE UNDERCROFT BELT IS CENTRED ON THE SCREEN. It was centred in the
     // room a raid leaves between the health block on the left and the gear stack on the right, and the health block is the wider of
     // the two, so on the Undercroft floor, where neither is drawn, the belt sat right of the middle (about 190 pixels on the 4K
@@ -46862,9 +46874,11 @@ var _legAnchorY=null,_legBase=null;
 // screen is than 1080p. Never below 1, so 1080p is unchanged by it and smaller
 // windows do not shrink the HUD into nothing; capped so a very wide screen does
 // not turn the corners into billboards.
+// v28.xx (cw-cx-hudtv): HUD SIZE already saved a choice but nothing read it. Grow raid panels and their hit boxes together; the Undercroft keeps its own layout.
+function hudTvScale(){ return (CFG.hudTv===1&&typeof G!=='undefined'&&G&&!G.hubFloor&&!G.over)?1.2:1; }
 function hudRes(){
   if(!W||!H) return 1;
-  return clamp(Math.min(W/1920,H/1080),1,2.2);
+  return clamp(Math.min(W/1920,H/1080),1,2.2)*hudTvScale();
 }
 // The corner transforms, written once. sx,sy is the anchor the block grows from.
 function hudZoomIn(k,ax,ay){
@@ -55448,7 +55462,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.62: OS reduced motion defaults use ordinary settings value styling. Check 35.62 fails on v35.61',
+  now:'v35.63: Large for tv grows raid panels, minimap and belt; the belt sits above the bottom corners. Check 35.63 fails on v35.62',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -72433,7 +72447,7 @@ var GAMEOPTS=[
      {n:'OFF',  cfg:{fxInt:0}}
    ], def:0},
   {k:'hudTv', label:'HUD SIZE',
-   hint:'Large for TV: bigger raid text for a screen across the room.',
+   hint:'Large for tv: bigger raid panels, minimap and belt.', // v28.xx (cw-cx-hudtv): say what the existing choice now changes.
    opts:[
      {n:'STANDARD',     cfg:{hudTv:0}},
      {n:'LARGE FOR TV', cfg:{hudTv:1}}

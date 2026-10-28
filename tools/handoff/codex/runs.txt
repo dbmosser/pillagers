@@ -388,3 +388,5 @@
 2026-10-28 02:21 o-137-os-reduce-motion 359s ok PARTIAL in=1262434 out=11804 run=1
 2026-10-28 02:24 o-137-os-reduce-motion 86s ok PARTIAL in=1724990 out=14465 run=2
 2026-10-28 02:35 o-137-os-reduce-motion 215s ok PARTIAL in=2792843 out=21086 run=3
+2026-10-28 02:42 o-137-os-reduce-motion 83s ok DONE in=3239255 out=23057 run=4
+2026-10-28 02:52 o-138-hud-size-row-does-nothing 590s ok PARTIAL in=1933757 out=15440 run=1

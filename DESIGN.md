@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.63 - HUD SIZE WORKS FOR TV
+
+Co-op hunt while he was away. The existing HUD SIZE row saved a choice that no drawing code used. Text size changes fonts but leaves the vitals bars and partner plate fixed. Large for tv now grows raid panels, minimap and partner rows by 20 percent through the shared HUD scale. The belt grows above the bottom corners instead of being squeezed between them. Standard is unchanged. Playtest watch: in both windows at 1080p in the smooth look, switch HUD SIZE both ways, check panel spacing and belt clicks or dragging, and read the TV view from across the room. Saved panel positions or very large text may need adjustment.
+
+MEASURED. Check 35.63 passes, and fails on v35.62.
 ## v35.62 - SHOW OS MOTION DEFAULTS AS DEFAULTS
 
 Co-op hunt while he was away. The settings list still compared light shake and half intensity against its old defaults, so the OS defaults looked like manual changes in both windows. Share the default lookup between the loader and settings display. Explicit player choices still win. Watch: with reduced motion and no chosen motion controls, light and half should have ordinary value styling. No timing or shake strength changes in this follow-up.

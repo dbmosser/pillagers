@@ -1,0 +1,14 @@
+
+--- codex run 2026-10-28 02:52 ---
+2026-10-28, first run on v35.62. The HUD SIZE row only wrote CFG.hudTv; there were no readers. Text size changes FS and LH, but the vitals bar stays 300 by 26 inside a fixed HUDZ.body zoom and the partner plate stays 158 by 36 inside hudRes. Increasing text alone cannot enlarge all the panels named in the task, so retained the existing HUD SIZE control.
+
+Prepared cw-cx-hudtv: large for tv applies a 1.2 multiplier through the shared raid HUD scale, covering the corner panels, minimap, partner row, drawing and hit boxes. Standard and the Undercroft retain their previous scale. The enlarged belt uses the normal slot width times 1.2, above both bottom corner panels, with its existing recorded click and drag cells. It is capped to the screen width. Hint now says bigger raid panels, minimap and belt. Reason for rewording: the old hint promised only bigger text, which is the separate text size control. No world generation or feel values changed.
+
+The regression check draws both settings in each seat role and compares vitals, ammo, minimap and partner widths. It checks belt growth, on-screen cells, clearance above the bottom corners, unchanged slot count and unchanged text choice, plus the hub scale control. It fails on v35.62 because no panel grows there. The minimap is explicitly enabled for the test; it stays off by default for players. No fixture retarget is anticipated because the standard setting remains unchanged.
+
+Local verification: mk printed written; all three anchors match exactly once; generated replacements inspected; patched game scripts, regression check and six camera bodies parse in Node; mk is ASCII. No browser, runtime fixture test, preflight or ship was run in the sandbox.
+
+camera-recipes.json reuses the existing real linked two-window arcade staging from job 95. It sets both real windows to 1920x1080, smooth look, 120 percent text and minimap on. Four native-size captures cover each window at standard and large for tv. Two more present each real window TV capture at 960x540 within a 1080p image for the requested distance check. It copies the selected window canvases before closing both windows. Half-size pictures are diagnostic distance views. The camera note records seat, role, raid, smooth look, setting, dimensions and partner/belt/minimap presence; staging fails if either window is missing these.
+
+The draft why field contains the Playtest watch paragraph and is written into DESIGN.md by gen-draft.ps1 during shipping. Watch panel spacing, belt clicking and dragging and readability across the room in both windows; saved panel positions or unusually large text can need adjustment. Still needs lane preflight, ship including ON HIS PC, camera review and critic finish line. Record actual picture paths in changes-new.md once the lane returns them.
+

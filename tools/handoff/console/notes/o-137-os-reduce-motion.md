@@ -36,3 +36,15 @@ The round-1 raid camera used the existing arcade route, but the critic applied t
 
 Await follow-up ship, main-PC confirmation and round-2 pictures/critic. Round-1 pictures: tools/handoff/console/notes/shots/o-137-os-reduce-motion-recipes-1/os-motion-p1-display-1080.jpg, os-motion-p1-raid-1080.jpg, os-motion-p2-display-1080.jpg, os-motion-p2-raid-1080.jpg.
 
+
+--- codex run 2026-10-28 02:42 ---
+2026-10-28, o-137-os-reduce-motion, complete on v35.62.
+
+Both keys in keys.txt shipped: cw-cx-osmotion (a8c39a96e, v35.61) and cw-cx-osmotionlabel (4057ab64f, v35.62). Read the main-PC receipt: 10-28 02:39 v35.62 cw-cx-osmotionlabel on his pc after 33s (8802 serves 35.62). The ship gates accepted the new checks and standard fingerprint. DESIGN.md includes the requested playtest watch lines.
+
+Opened and reviewed all four round-2 pictures with the image viewer. Both actual player routes show light shake and half effect intensity in normal value styling; the misleading changed-value tint is gone. Camera confirms player identity 1/2, shake=0.5, intensity=0.5, smooth=true in settings and raids. Both career raid stages confirm career=1 and legendOn=0, with the existing folded f1 controls chip visible. Camera lint: zero findings on all four pictures. Regression checks cover motion amplitude, actual hit pause, saved/tuned precedence, ordinary defaults and unavailable media APIs; still pictures do not prove motion timing.
+
+Final critic scores: player-1 settings 3, player-2 settings 3, player-1 career raid 3, player-2 career raid 3. The settings meet their screen score threshold; the unchanged overall raid HUD remains below its broader screen-polish target of 4. Remaining findings concern existing HUD/layout work, not this task's motion behavior: panel recipes, hp/score hierarchy, bot list typography, duplicate extract distance, settings pane/focus/scroll styling. These were handed to the coordinator, without treating them as passed or redesigning the HUD in a motion fix. The specific task finish condition is shipped, and both requested changes are shipped and on the main PC. No task code or verification remains outstanding.
+
+Final pictures: tools/handoff/console/notes/shots/o-137-os-reduce-motion-recipes-2/os-motion-p1-display-1080.jpg, os-motion-p1-raid-1080.jpg, os-motion-p2-display-1080.jpg, os-motion-p2-raid-1080.jpg. Earlier pictures remain in the matching recipes-1 folder for comparison. No further camera round or ship requested.
+

@@ -1,0 +1,5 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  os-motion-p1-display                   staged       8.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"player":1,"shake":0.5,"intensity":0.5,"smooth":true}
+  os-motion-p1-raid                      staged       9.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"player":1,"shake":0.5,"intensity":0.5,"smooth":true,"career":1,"legendOn":0}
+  os-motion-p2-display                   staged       7.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"player":2,"shake":0.5,"intensity":0.5,"smooth":true}
+  os-motion-p2-raid                      staged       9.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"player":2,"shake":0.5,"intensity":0.5,"smooth":true,"career":1,"legendOn":0}
