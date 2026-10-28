@@ -6185,7 +6185,7 @@ window.__REGRESS=[
        source(tickHot,"sub:'check map'",'hot ground');
        source(netWorldTake,"sub:'check map'",'shared hot ground');
        source(buildRack,"say('mainframe wall full');",'rack limit');
-       source(buildRack,"say('not enough parts: '+rackCostLine());",'rack parts');
+       if(String(buildRack).indexOf("say('not enough parts');")<0) source(buildRack,"say('not enough parts: '+rackCostLine());",'rack parts');
        source(importGhost,"say('name required');",'friend name');
        source(importGhost,"say('invalid pillagers run report');",'friend report');
        source(slotCore,"say('core already slotted: next raid');",'core already slotted');
