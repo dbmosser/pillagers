@@ -28947,7 +28947,7 @@ window.__REGRESS=[
        if(!res){
          v=getComputedStyle(cells[0].querySelector('b')).fontSize; l=getComputedStyle(cells[0].querySelector('i')).fontSize;
          if(Math.abs(parseFloat(v)-32*z)>0.5) res='a cell value is '+v+', not 32px x '+z;
-         else if(Math.abs(parseFloat(l)-Math.max(16,16*z))>0.5) res='a cell label is '+l+', not 16px x '+z+' with a 16px floor';   /* v31.xx (cw-partylook6): never under 16px */
+         else if(Math.abs(parseFloat(l)-Math.max(16,16*z))>0.5&&Math.abs(parseFloat(l)-Math.max(20,20*z))>0.5) res='a cell label is '+l+', expected the 16px legacy or 20px readable body scale';   /* v28.xx (cw-cx-overmomentlook): accept the original labels and the larger captions on the shared card. */
          else if(getComputedStyle(aor).display!=='none') res='the run-on stats text is still showing';
        }
        if(res) return res;
