@@ -1,0 +1,21 @@
+# stable-known-red.txt : read by tools/stable.mjs. One check prefix per line (e.g. v29.10); text after # is a comment.
+# A listed check never counts as a NEW failure when stable judges a test run. List only checks that are red because his newer
+# order changed the behaviour on purpose (the check is out of date), never a real bug. Remove a line once a full test run passes it.
+#
+# Stable triage 2026-10-27 21:45 (runs corpus-1027-1843 on v35.18 and corpus-1027-1900 on v35.19, each check rerun on v35.37):
+# items on the hotbar (his order 10-27, v35.08 to v35.25; checks 35.08, 35.10, 35.13, 35.25 guard the new behaviour)
+v8.66    # a bandage dropped on a gun key now stays: items may go on any key
+v26.27   # "nine gun slots and nothing else" (wheel4) is reversed: a frag, heal, plate or stim on key 3 is accepted
+v22.52   # four-gun belt rules (guns only on keys 1 to 4, a medkit refused on key 3); it skipped until v35.08 let its staging through
+v18.91   # a gun dropped on the other gun's key now trades the two keys and keeps the guns in his hands (cw-beltfix, his ask 10-27 "swap them on the hotbar")
+v13.99   # an item key he set stays, greyed, when none came up (cw-hotitems); no automatic Medical cell since wheel4
+v13.59   # same rule: crafting away the packed Bandages leaves his Bandage key greyed until he drags it off
+# the stash row is named hotbar (v35.12 undercroft fixes, his asks 10-27; check 35.12 requires the word)
+v10.26   # wants "tactical belt" on the stash loadout column
+v9.89    # same word check on the Undercroft loadout column
+# pixel look only (his order 10-25: smooth graphics, the pixel look is an off-by-default experimental switch)
+v33.68   # 2 sprites touch the edge of the pixel scratch canvas; only drawn with the pixel look on
+# retargeted 2026-10-27 in commit 89f62b743 (pass on v35.37); listed only because the finished runs above recorded them red.
+# Remove these two lines once a full run on v35.38 or newer passes them.
+v31.32   # the check passed a fake future time that trHide ignores since v35.01; it now stages an old stamp
+v32.46   # RB now reaches the lift belt panel (v35.10, pad reaches the lift belt) before it wraps to the conditions
