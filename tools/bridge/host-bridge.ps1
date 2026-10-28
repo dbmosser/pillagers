@@ -73,7 +73,10 @@ if ($Firewall) {
   $netStr = ('{0}.{1}.{2}.{3}/{4}' -f (($net -shr 24) -band 255), (($net -shr 16) -band 255), (($net -shr 8) -band 255), ($net -band 255), $prefix)
   $node = Find-Node
   if (-not $node) { Say 'node.exe not found; cannot scope the rule to it. Install Node first.' 'FAIL'; exit 2 }
-  Say ('rule "' + $RuleName + '": inbound, allow, TCP ' + $Port + ', only from ' + $netStr + ', only program ' + $node) 'STEP'
+  # 10-28: the Default Switch gets a new subnet at every restart of this PC (192.168.160.0/20, then 172.17.96.0/20 on 10-27, 172.20.160.0/20
+  # after the 10-28 04:19 crash), so a rule pinned to one subnet (or to the adapter) cut the VM off after each restart. LocalSubnet follows
+  # whatever subnet this PC is on now; the agent still listens only on the Default Switch address and every request is signed.
+  Say ('rule "' + $RuleName + '": inbound, allow, TCP ' + $Port + ', only from this PC''s own subnets (now ' + $netStr + '), only program ' + $node) 'STEP'
   if ($DryRun) { Say 'dry run: nothing changed.' 'DRY'; exit 0 }
   if (-not (Test-IsAdmin)) { Say 'This needs an ADMINISTRATOR window. Right-click PowerShell, Run as administrator, run the same command.' 'FAIL'; exit 3 }
   $existing = Get-NetFirewallRule -DisplayName $RuleName -ErrorAction SilentlyContinue
@@ -83,8 +86,8 @@ if ($Firewall) {
   }
   if ($existing) { $existing | Remove-NetFirewallRule }
   try {
-    New-NetFirewallRule -DisplayName $RuleName -Description 'Lets the Pillagers VM reach the host bridge agent. Remove with host-bridge.ps1 -Firewall -Undo.' -Direction Inbound -Action Allow -Protocol TCP -LocalPort $Port -RemoteAddress $netStr -Program $node -Profile Any -ErrorAction Stop | Out-Null
-    Say ('rule added: TCP ' + $Port + ' inbound, only from ' + $netStr + ', only ' + (Split-Path $node -Leaf)) 'DONE'
+    New-NetFirewallRule -DisplayName $RuleName -Description 'Lets the Pillagers VM reach the host bridge agent. Remove with host-bridge.ps1 -Firewall -Undo.' -Direction Inbound -Action Allow -Protocol TCP -LocalPort $Port -RemoteAddress LocalSubnet -Program $node -Profile Any -ErrorAction Stop | Out-Null
+    Say ('rule added: TCP ' + $Port + ' inbound, only from this PC''s own subnets (it survives a restart), only ' + (Split-Path $node -Leaf)) 'DONE'
   } catch { Say ('could not add the rule: ' + $_.Exception.Message) 'FAIL'; exit 1 }
   exit 0
 }
