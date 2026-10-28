@@ -5225,3 +5225,9 @@
 2026-10-28 08:18:39 raid 16 career raidSeed=838186430 map=0 god=0 sec=238 end=reload problems=1 newUnique=1 totalUnique=8 totalProblems=14 events=185 score=0 ents=52 travelPx=1253 fires=1 menuPct=30 heapMB=44 p2= gfx=928/10.25/20.25/4/1 work=890/8.75/13.75/17.25 build=35.65
 2026-10-28 08:19:19 raid 17 demo2 raidSeed=1740349729 map=0 god=0 sec=33 end=hang problems=1 newUnique=0 totalUnique=8 totalProblems=15 events=106 score=0 ents=50 travelPx=1089 fires=7 menuPct=0 heapMB=38 p2= gfx=62/10.25/10.25/1/1 work=74/5.25/9.75/16.75 build=35.65
 2026-10-28 08:24:03 raid 14 demo2p raidSeed=1002523162 map=0 god=0 sec=317 end=nostart problems=1 newUnique=0 totalUnique=5 totalProblems=8 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=35.65
+2026-10-28 08:24:33 raid 18 demo2 raidSeed=2051902236 map=0 god=1 sec=144 end=hang problems=1 newUnique=0 totalUnique=8 totalProblems=16 events=1206 score=250 ents=52 travelPx=5111 fires=47 menuPct=23 heapMB=59 p2= gfx=2523/10.25/10.25/5/1 work=2523/4.75/9.25/12.25 build=35.65
+2026-10-28 08:26:22 raid 15 demo2p raidSeed=2017113035 map=0 god=0 sec=64 end=clock-end problems=0 newUnique=0 totalUnique=5 totalProblems=8 events=1219 score=0 ents=51 travelPx=3416 fires=22 menuPct=12 heapMB=66 p2=link_5s_join_68s_pad_fwd gfx=11821/10.25/11.25/85/1 gfx2=9601/10.25/20.25/422/1 work=6141/4.75/9.75/15.75 work2=9604/5.75/15.25/25.75 build=35.65
+2026-10-28 08:26:22 FUZZ END raids=15 problems=8 unique=5 reason=time minutes=60.3
+2026-10-28 08:27:16 FUZZ ERROR Unable to connect to the remote server at 241
+2026-10-28 08:27:16 FUZZ END raids=18 problems=16 unique=8 reason=ERROR: Unable to connect to the remote server minutes=61.2
+2026-10-28 08:31:07 FUZZ START seed=462746387 minutes=60 raidsec=300 port=9331 srv=8806 build=35.66 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
