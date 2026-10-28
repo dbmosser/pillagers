@@ -29,3 +29,45 @@ Preflight reached the extraction-ring assertion twice and stopped with "ring sho
 Fixed only the new fixture check: e.beat=1 stages an already-acquired target at the ring. The original assertions still require no immediate shot, a full 0.5 second glint, then exactly one owned bullet after 0.5 seconds. Split the initial failure into an actual early-shot message and a missing-tell message with state, cooldown, acquisition time and glint values. No gameplay, drawing or network code changed this run.
 
 Re-ran the mk script: written. Local validation passed again: nine unique anchors, nine effective edits, the complete drafted game script and fixture check parse, and ASCII handoff files. No tracked file changed. keys.txt still requests cw-cx-longshotglint. The four real-pair camera scenes remain ready for both 1080 and 4k. Pending lane work is preflight, ship, ON HIS PC receipt and picture/critic review.
+
+--- codex run 2026-10-28 12:55 ---
+2026-10-28, v35.85 shipped and ON HIS PC confirmed by the lane (33 seconds after shipping). No new game key this run.
+
+Reviewed the round-1 pictures and camera report. Only gl155-p2-day-1080 staged. It shows both white/red stars, including the left star without a visible body. Its actual network report proves both real windows were connected, smooth=true, glints=2, bodies=[true,false], phase about 0.04 seconds and ninth-field bits [4,4]. The other seven resolution/scene combinations were NOT STAGED, so their lobby/easy-mode pictures and critic comments are not acceptance evidence for this feature.
+
+Fixed the camera recipes. The p1 query now includes netslot=A, exactly as the proven source recipe did; omitting it was the difference in the failed p1 pairing setup. The recipes now use normal co-op and the fixture deploy with fixed map 0, seed 4242, rather than random arcade maps. This also removes the unrelated arcade board from the setup. The clear-range search checks both players to both shooter positions, plus clearance around the four standing positions, on a 50-unit grid over the map. It no longer rejects an otherwise valid firing lane because there is a wall somewhere in an 870 by 130 unit rectangle. Freeze the disposable camera simulation and dismiss any easy prompt before the range search. Pin calm weather and the day/night condition in both windows. The final expectation also rejects visible modals and an easy prompt. Neither real raid geometry nor the game source is changed by these camera-only fixes.
+
+Generated four revised recipes. The lane should photograph all four again at both 1080 and 4k. The shipped key stays in keys.txt and must be skipped, not rebuilt against its own applied anchors.
+
+Round-1 critic score was 2 on each picture. Three critics judged unrelated screens because staging failed. The staged p2/day critic discussed pre-existing general HUD layout, bars, hotbar and labels; it did not identify a defect in the new glints. Those global HUD changes are not part of this attack-warning task and are handed to the coordinator. No HUD restyle is being mixed into this gameplay change. Pending: valid p1/p2 day/night pictures at both resolutions and their critic review.
+
+
+--- codex run 2026-10-28 13:03 ---
+2026-10-28, camera round 2 review on shipped v35.85.
+
+The report confirms 7 of 8 scene/resolution combinations staged: p1/day, p2/day and p1/night at both 1080 and 4k, plus p2/night at 4k. Only p2/night at 1080 failed its real two-window handshake. Every successful scene reports two glints, visible-body states [true,false], phase 0.04 and ninth-field bits [4,4] in both real linked windows. Reviewed the attached 1080 pictures and opened gl155-p2-night-4k.jpg. The visible shooter star remains clear against the night scene. The fog-side star is covered by the fixture's forced-open controls list, so round 2 is still not a complete visual acceptance.
+
+Prepared revised camera recipes for round 3. Fold the existing controls list with G.legendOn=0 and fold the existing pillager board with P.hud.raiders.c=1, in the disposable camera profile only. This addresses the critic's P0/P1 controls-list finding without changing game defaults; __deploy deliberately forces that list open for old checks. It also removes the unrelated dead/extracted staging rows from the picture. The new range-search margins account for both camera windows' current world viewport, so the player is centered away from map-edge camera clamps. The report now includes each muzzle star's screen coordinates and fails staging unless both are safely inside both viewports. It also requires the existing panels to be folded.
+
+The player 2 host popup previously started pairing as soon as its APIs existed, before waiting for its profile to finish loading. Pair setup now waits for the main profile and popup host profile before picking co-op. This removes that race from the occasional failed link. All four generated recipes, prelude and expectations parse and are ASCII. No game source change and no new ship key.
+
+Round-2 critic scores are 2. The controls-list P0/P1 is a fixture-staging defect and is addressed in this camera update. Other P1s concern inherited HUD styling, repeated extraction distance, cache-label colour and health-bar sizing; those were already handed to the coordinator. The title-screen review for failed p2/night-1080 is unrelated to the glint. No unrelated HUD redesign is included in this attack-warning task.
+
+Pending lane work: run revised camera-recipes.json at 1080 and 4k, all four scenes, and critic review. cw-cx-longshotglint remains shipped v35.85 with ON HIS PC receipt; do not run its mk again.
+
+
+--- codex run 2026-10-28 13:09 ---
+2026-10-28, camera round 3 review, v35.85 remains shipped and ON HIS PC.
+
+Reviewed all four attached 1080 scenes and opened p1/night and p2/day at 4k. Both stars are now unobstructed. The left body stays in fog and only its glint shows; the right body and its muzzle glint are visible. Day/night is apparent and the stars remain distinct against both backgrounds.
+
+The NOT STAGED result is from my new companion-window viewport assertion, not a glint, pairing or capture failure. All eight reports contain two actual glints and bodies=[true,false] in both real linked windows. Each photographed window also has both stars safely on screen. The unphotographed companion popup is only about 800 pixels wide in headless Chrome; it fails the 100 pixel margin test (for example x=8 and x=710 in a p1 scene). Its own full-size pictures are taken separately by the corresponding p2 recipes, and vice versa. The camera should check screenshot bounds in the window it is photographing, not require that the smaller companion popup also fit a full-size composition.
+
+Fixed that assertion for the final camera round. Keep every two-window state assertion (real connection, smooth, two glints, correct body visibility, unchanged phase and ninth-field bits) in both windows. Require both stars' screen bounds in report.views[report.captureIx], the actual photographed seat. Include viewport dimensions in the report to make the distinction explicit. All four revised programs, the prelude and expectations parse and are ASCII. No gameplay change or new ship key.
+
+Critic round 3: p1/day 2, p1/night 3, p2/day 2, p2/night 2. Controls and roster folds are now acknowledged improvements. Remaining findings concern the existing HUD, not the glint: health-bar sizing and margins, retained party health card, extraction labels, hotbar, run-info/roster styling and cache colours. The request to hide current pillagers also conflicts with his fresh 10-28 order naming that HUD control (recorded at dark_raiders.html line 47386). Do not remove that feature to satisfy the critic. The alleged capital I in run info is not present in the attached picture. These inherited findings were already handed to the coordinator; this task has not earned a raid-HUD score of 4, and no claim otherwise is made.
+
+Best current pictures: tools/handoff/console/notes/shots/o-04-155-longshot-glint-recipes-3/gl155-p1-night-4k.jpg and gl155-p2-day-1080.jpg. They show the new glint while keeping the other body in fog. Round 2 is retained in the adjacent recipes-2 folder as the earlier framing, with the fixture controls list open. The only game implementation is shipped v35.85.
+
+Pending: final camera report with the corrected photographed-seat assertion. All implementation and shipping work is complete, including the regression gate and ON HIS PC receipt. Do not expand this feature task into an unrelated HUD redesign.
+

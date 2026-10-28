@@ -1,0 +1,7 @@
+v35.86: gunfire ends sprint
+
+A fired gunshot ends sprint until a fresh sprint press, in both windows and on keys or pad. Melee and a trigger that fires no round keep sprint.
+
+Check 35.86. Fails on v35.85.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

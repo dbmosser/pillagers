@@ -23,8 +23,9 @@
 # starts nothing until no key, mouse or game pad has been used for 15 minutes and 6 GB are free; it stops everything it started within
 # seconds of a touch (or under 4 GB free); and a build another PC is testing or has tested stays that PC's: here it gets robots only.
 # The VM's nights come first: from 22:40 to 23:10 it holds nothing, and until 06:45 it starts only with 10 GB free (see VMNight below).
-# 10-28: while the VM's memory follows him it starts only after the VM stops growing and with 8 GB free, stops under 5 GB at two looks,
-# waits 30 minutes after a memory stop, and runs one robot at 4K in both windows (see the idle loop, Watch and the robot lines).
+# 10-28: while the VM's memory follows him it starts only after the VM stops growing and with 6 GB free, stops under 4 GB at two looks,
+# waits 30 minutes after a memory stop, and runs one robot at 4K in both windows (see the idle loop, Watch and the robot lines). While he
+# is at the PC but not playing, one robot runs at 1080p and below-normal priority; it stops within seconds once he plays (see Playing).
 # 10-26 SPARE-PRESENCE-PAUSE (his "make it so that the JTPC pauses testing whenever someone is at the JTPC -- eg my son wants to use it
 # for gaming"): the SPARE PC now stops all its test work (scripts and test Chromes) within seconds of someone being there, and starts
 # again by itself once nobody has been there for 15 minutes. Someone is there when a key or the mouse was used, a game pad changed since
@@ -137,6 +138,17 @@ public static bool PadInUse(){
   # existed (AwaySec says nobody) and says so
   $script:noIn=$true; Say ('PROBLEM: cannot tell whether someone is at the PC (the keyboard and mouse check did not load), so this runner tests without pausing for anyone: '+(Short "$_"))
 }
+# 10-28 (Main PC Correspondent), his "what about daytime testing when i'm at the pc?": the window in front and the shell's full-screen state,
+# so the runner can tell him working at the PC (one light robot may run) from him playing (nothing runs). If this does not load, nothing
+# runs while he is at the PC, as before.
+$script:noFg=$true
+if($Idle){ try{ Add-Type -Namespace PillagersIdle -Name Fg -ErrorAction Stop -MemberDefinition @'
+[DllImport("user32.dll")] static extern IntPtr GetForegroundWindow();
+[DllImport("user32.dll", CharSet = CharSet.Unicode)] static extern int GetWindowText(IntPtr h, System.Text.StringBuilder s, int n);
+[DllImport("shell32.dll")] static extern int SHQueryUserNotificationState(out int s);
+public static string Title(){ try { System.Text.StringBuilder b = new System.Text.StringBuilder(512); GetWindowText(GetForegroundWindow(), b, 512); return b.ToString(); } catch { return ""; } }
+public static int Quns(){ try { int s; if (SHQueryUserNotificationState(out s) != 0) return -1; return s; } catch { return -1; } }
+'@; $script:noFg=$false }catch{ Say ('PROBLEM: the window-in-front check did not load, so nothing runs while he is at the PC (as before): '+(Short "$_")) } }
 if(-not $Idle -and -not $script:noIn){
   $MySid=[uint32][Diagnostics.Process]::GetCurrentProcess().SessionId
   # another account at the screen: the console session is not this runner's, someone is signed in to it (the sign-in screen has no user
@@ -314,7 +326,7 @@ function SoundWho(){
 # goes by, so on a pads-only night the VM would start helpers, robots and the local AI on the party PC. While a pad is in use this writes
 # pad-seen.txt (epoch=, seen=) into the bridge share at most once a minute; the VM's tools/nightly.sh counts one under 10 minutes old as
 # gaming (nothing new starts). It records nothing of what was pressed.
-$script:padNoteT=[long]0; $script:gcAtStart=$false
+$script:padNoteT=[long]0; $script:gcAtStart=$false; $script:lightRun=$false
 function PadNote(){
   try{
     $e=Epoch; if(($e-$script:padNoteT) -lt 60){ return }; $script:padNoteT=$e
@@ -396,6 +408,23 @@ function ShareGaming(){ try{ $f=Join-Path $env:LOCALAPPDATA 'PillagersBridge\sha
   if(((Get-Date)-$i.LastWriteTime).TotalMinutes -gt 5){ return '' }; return [IO.File]::ReadAllText($f) }catch{ return '' } }
 function VmGrowing(){ return ((ShareGaming) -match '(?m)^mem=away, VM [0-9.]+ -> ') }
 function GameChrome(){ return ((ShareGaming) -match '(?m)^what=chrome\b') }
+# 10-28: is he playing, not just working at the PC? A pad used in the last 15 minutes, the main PC game check's gaming=1, a full-screen
+# program, the game's own window in front ("Pillagers", "Pillagers, player 2"), or a program working the graphics card like a game in the
+# last 10 minutes (GpuGame; test Chromes are left out). LightOK: he may be at the PC and one light robot may run.
+$script:playWhy=''
+function Playing(){
+  $script:playWhy=''
+  if(((Get-Date)-$script:padT).TotalSeconds -lt 900){ $script:playWhy='a game pad'; return $true }
+  if((ShareGaming) -match '(?m)^gaming=1'){ $script:playWhy='the main PC game check'; return $true }
+  $q=-1; try{ $q=[PillagersIdle.Fg]::Quns() }catch{}
+  if($q -ge 2 -and $q -le 4){ $script:playWhy='a full-screen program'; return $true }
+  $t=''; try{ $t=[PillagersIdle.Fg]::Title() }catch{}
+  if($t -match '^(?i)pillagers(,| -|$)'){ $script:playWhy='the game in front'; return $true }
+  GpuGame
+  if(((Get-Date)-$script:gpuT).TotalSeconds -lt 600){ $script:playWhy='a game on the graphics card'; return $true }
+  return $false
+}
+function LightOK(){ if($script:noFg){ return $false }; return (-not (Playing)) }
 function VMResizeSoon(){ if((FollowAway) -gt 0){ return $false }; $hm=HourMin; return ($hm -ge 2240 -and $hm -lt 2310) }
 function VMNight(){ if((FollowAway) -gt 0){ return $false }; $hm=HourMin; return ($hm -ge 2240 -or $hm -lt 645) }
 # ends only what this runner started: the test scripts run from C:\PillagersIdle, and the test Chromes (debug port and pillagers-cdp profile)
@@ -547,10 +576,10 @@ function Watch([int]$sec){
   $end=(Get-Date).AddSeconds($sec); $k=0; $lo=0
   while((Get-Date) -lt $end){
     Start-Sleep -Seconds 5; $k++
-    if((AwaySec) -lt 30){ if($Idle){ Stop-Work 'he is back at the PC' }else{ Stop-Work ('someone is at the PC: '+$script:awayWhy) -Refund }; return }
+    if((AwaySec) -lt 30){ if($Idle){ if((-not $script:lightRun) -or -not (LightOK)){ Stop-Work $(if($script:playWhy){ 'he is playing ('+$script:playWhy+')' }else{ 'he is back at the PC' }); return } }else{ Stop-Work ('someone is at the PC: '+$script:awayWhy) -Refund; return } }
     if($Idle -and ($k % 6) -eq 0){
-      if((FreeGB) -lt 5){ $lo++ }else{ $lo=0 }
-      if($lo -ge 2){ PutS 'lowstop_t' ([string](Epoch)); Stop-Work 'under 5 GB free at two looks'; return }
+      if((FreeGB) -lt 4){ $lo++ }else{ $lo=0 }
+      if($lo -ge 2){ PutS 'lowstop_t' ([string](Epoch)); Stop-Work 'under 4 GB free at two looks'; return }
       if(VMResizeSoon){ Stop-Work 'the VM takes its night memory at 23:00'; return }
       # 10-28: if the main PC's game check reads the 4K robot as him playing (it skips pillagers-cdp Chromes since 10-24), the VM would be
       # held to 30% of its processors: the robot goes back to 1080p for the rest of the day
@@ -853,13 +882,16 @@ function Start-Corpus(){
   Say ('full test run started on '+$head.Substring(0,8)+' (v'+(GameVer)+') -> '+$name)
 }
 
-function Start-Robot([int]$port,[string]$copy,[string]$size=''){
+function Start-Robot([int]$port,[string]$copy,[string]$size='',[switch]$Low){
   if(-not (Test-Path -LiteralPath ($T+'\fxcorpus.html'))){ return }
   $env:FUZZ_OUT_DIR=$FzOut; $env:FUZZ_COPY_NAME=$copy
-  Start-Process -FilePath powershell.exe -WindowStyle Hidden -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-WindowStyle','Hidden',
-    '-File',('"'+$T+'\fuzz.ps1"'),'-Minutes',[string]$FuzzMinutes,'-IgnoreFlag','-Port',[string]$port,'-MinFreeGB',$(if($Idle){ '3' }else{ '2' }),'-Fixture','fxcorpus.html',$(if($size){ '-Size' }else{ '-P2Share' }),$(if($size){ $size }else{ '75' })) | Out-Null
+  $pr=Start-Process -FilePath powershell.exe -WindowStyle Hidden -PassThru -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-WindowStyle','Hidden',
+    '-File',('"'+$T+'\fuzz.ps1"'),'-Minutes',[string]$FuzzMinutes,'-IgnoreFlag','-Port',[string]$port,'-MinFreeGB',$(if($Idle){ '3' }else{ '2' }),'-Fixture','fxcorpus.html',$(if($size){ '-Size' }else{ '-P2Share' }),$(if($size){ $size }else{ '75' }))
+  # 10-28: below normal at once; the robot's Chrome and its other children take the class it has when they start
+  if($Low -and $pr){ try{ $pr.PriorityClass=[Diagnostics.ProcessPriorityClass]::BelowNormal }catch{} }
+  $script:lightRun=[bool]$Low   # Watch lets only a light robot go on while he is at the PC
   Remove-Item Env:FUZZ_OUT_DIR,Env:FUZZ_COPY_NAME -ErrorAction SilentlyContinue
-  Say ('robot started on '+$port+$(if($size){ ' at '+$size }else{ '' }))
+  Say ('robot started on '+$port+$(if($size){ ' at '+$size }else{ '' })+$(if($Low){ ', below normal (he is at the PC)' }else{ '' }))
 }
 
 # 10-22 his "All this work and you can't tell what it's doing?!": the spare PC went quiet at 09:27 and the VM (behind the main PC's private
@@ -951,17 +983,20 @@ while($true){
     $away=AwaySec; $fg=FreeGB; $vmn=VMNight
     # 10-28 (Main PC Correspondent): no more start-and-stop. 116 stints on 10-25 to 10-27 lasted a median 4 minutes: work started at 6 GB
     # free while the VM was still growing into the same memory, and stopped at 4. Now, while the VM's memory follows him, nothing starts
-    # until the VM has stopped growing, a start needs 8 GB free (his 6 GB kept free plus the robot), work stops under 5 GB at two looks
-    # (Watch; under 4 at one look here), and after a memory stop nothing starts for 30 minutes. His rulings stand: the VM takes its memory
-    # first, 6 GB stay free.
+    # until the VM has stopped growing, a start needs 6 GB free (the 4 GB he keeps free plus the robot), work stops under 4 GB at two looks
+    # (Watch; under 3 at one look here), and after a memory stop nothing starts for 30 minutes. His rulings: the VM takes its memory first;
+    # 4 GB stay free (his 10-28 afternoon "can we knock it down to only leave 4gb free?"; it was 6).
     $fw=FollowAway
-    $ng=$(if(VMResizeSoon){ 999 }elseif($script:working){ 4 }elseif($vmn){ 10 }else{ 8 })
+    $ng=$(if(VMResizeSoon){ 999 }elseif($script:working){ 3 }elseif($vmn){ 10 }else{ 6 })
     $na=$(if($script:working -or $fw -le 0){ 900 }else{ [Math]::Max(900,($fw+2)*60) })
     $grow=(-not $script:working) -and ($fw -gt 0) -and (VmGrowing)
     $lowW=(-not $script:working) -and (((Epoch)-[long]('0'+(GetS 'lowstop_t'))) -lt 1800)
-    if($away -lt $na -or $fg -lt $ng -or $grow -or $lowW){
-      $pw=$(if($away -lt 900){ 'paused: he is using the PC' }elseif($away -lt $na -or $grow){ 'paused: the VM takes its memory first' }elseif($lowW){ 'paused: 30 minutes after a memory stop' }elseif($vmn){ 'paused: the VM has the memory at night' }else{ 'paused: under '+$ng+' GB free' })
-      if($script:working){ if($away -ge 900 -and $ng -lt 999 -and $fg -lt $ng){ PutS 'lowstop_t' ([string](Epoch)) }; Stop-Work $pw }
+    # 10-28: at the PC but not playing (his "what about daytime testing when i'm at the pc?"): one light robot may run (1080p, below normal)
+    $light=($away -lt 900) -and (LightOK)
+    $busy=(($away -lt $na) -and -not $light)
+    if($busy -or $fg -lt $ng -or $grow -or $lowW){
+      $pw=$(if($away -lt 900 -and -not $light){ 'paused: he is using the PC'+$(if($script:playWhy){ ' ('+$script:playWhy+')' }else{ '' }) }elseif($busy -or $grow){ 'paused: the VM takes its memory first' }elseif($lowW){ 'paused: 30 minutes after a memory stop' }elseif($vmn){ 'paused: the VM has the memory at night' }else{ 'paused: under '+$ng+' GB free' })
+      if($script:working){ if((-not $busy) -and $ng -lt 999 -and $fg -lt $ng){ PutS 'lowstop_t' ([string](Epoch)) }; Stop-Work $pw }
       Refresh-Party
       Ensure-Bridge
       Ensure-Play
@@ -1044,7 +1079,7 @@ while($true){
         exit 0
       }
       if(Arrived){ continue }   # SPARE-PRESENCE-PAUSE (never in IDLE MODE)
-      Start-Corpus
+      if(-not $Idle -or (AwaySec) -ge 900){ Start-Corpus }   # 10-28: never a full run while he is at the main PC (only the light robot)
     }
   }
   if(Arrived){ continue }
@@ -1055,7 +1090,8 @@ while($true){
     # fuzz.log), and the memory goes further. The 10-22 reason for 1080p is gone: the main PC game check skips pillagers-cdp Chromes since
     # 10-24; if it still reads the robot as a game, Watch puts it back to 1080p for the day (no4k).
     # (a Chrome game he left drawing already shows in the game check: then this start plays 1080p and nothing is blamed on the robot)
-    if((Running 'fuzz\.ps1.*-Port 9332(\s|$)') -eq 0){ $script:gcAtStart=(GameChrome); Start-Robot 9332 'fixture-soak-spare2.html' $(if($script:gcAtStart -or (GetS 'no4k') -eq (Get-Date).ToString('yyyy-MM-dd')){ '' }else{ '3840x2160' }) }
+    # 10-28: while he is at the PC (working, not playing) the robot plays 1080p at below-normal priority, so his programs come first
+    if((Running 'fuzz\.ps1.*-Port 9332(\s|$)') -eq 0){ $atPc=((AwaySec) -lt 900); $script:gcAtStart=(GameChrome); Start-Robot 9332 'fixture-soak-spare2.html' $(if($atPc -or $script:gcAtStart -or (GetS 'no4k') -eq (Get-Date).ToString('yyyy-MM-dd')){ '' }else{ '3840x2160' }) -Low:$atPc }
   } else {
     if((Running 'fuzz\.ps1.*-Port 9331(\s|$)') -eq 0){ Start-Robot 9331 'fixture-soak-spare1.html' }
     # 10-22: Start-Robot takes a screen size (fuzz.ps1 -Size), but both robots here stay at 1080p. A 4K robot on the main PC reads as "he is gaming"

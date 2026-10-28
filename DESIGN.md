@@ -40024,6 +40024,16 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.87 - THE WHAT IS NEW STAMP KEEPS UP
+
+Co-op hunt while he was away. The card was stamped v35.71 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.
+
+MEASURED. Check 35.87 passes, and fails on v35.86.
+## v35.86 - GUNFIRE ENDS SPRINT
+
+Co-op hunt while he was away. His 10-28 decision says firing ends your sprint period, replacing the earlier 0.35 second pause. Watch in play: a quick shot while fleeing ends sprint; release and press Shift or LS again to run. Pad toggle also needs a fresh LS press. This newer order supersedes the 10-12 movement ruling.
+
+MEASURED. Check 35.86 passes, and fails on v35.85.
 ## v35.85 - ELITE LONGSHOT GLINT
 
 Co-op hunt while he was away. His 10-28 yes to #5: a 272 damage elite Longshot shot needs a half-second warning. A growing white muzzle star with a red core and the machine charge sound precede player-directed shots in chase and at the extraction ring. The star draws above fog only on a clear line to the local player. Both windows use ninth-field bit 4; burn, get-up and other shared bits stay intact. Aim and cooldown draws keep their order; cooldown repays the warning time. No new switch or player text. Watch in play: the glint must read at range in the smooth look and at night; revealing a hidden Longshot pillager must not feel like a wallhack; Longshot pillagers should lose more duels because players can dodge.

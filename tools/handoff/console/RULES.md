@@ -43,7 +43,7 @@ credit comes back on 11-01). His 10-19 rule: speed is fine, waste is not. Be thr
   language, it better have a damn good reason" (Q8): write that reason next to the change in notes\ui\changes.md.
 - Never edit dark_raiders.html directly. Every game change ships through a mk script and the ship queue (below).
 - Never git push --force, reset, rebase or delete branches. Never commit anything in tools/handoff/console/.
-- Keep 6 GB of RAM free. The machine already runs up to 13 test Chromes at once (list in the header of tools/nightly.sh). Start only
+- Keep 4 GB of RAM free on the main PC (his 10-28 afternoon "can we knock it down to only leave 4gb free?"; it was 6). The machine already runs up to 13 test Chromes at once (list in the header of tools/nightly.sh). Start only
   your own lane's Chromes (the preflight one, the uishots camera on your lane's port), close what you start, and never use another port.
 - In-game text is short, punchy callouts, and EVERY WORD ON SCREEN IS LOWER CASE (his order 2026-10-18, later the same day:
   "change all text shown to player to lowercase only -- i don't like how you have random words capitalized"; "location revealed",

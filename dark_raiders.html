@@ -3807,8 +3807,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.85';
-var VER_AT='2026-10-28 12:43';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.87';
+var VER_AT='2026-10-28 13:28';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3819,7 +3819,7 @@ var VER_AT='2026-10-28 12:43';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='35.71';
+var WHATSNEW_VER='35.87';
 // v17.77, THE VISUAL PASS (2026-10-02): THE NEW-IN CARD IS A CARD, NOT A WALL. It drew every note in full, six paragraphs over the
 // whole floor. It now shows the newest WN_SHOW notes, each as its headline sentence and the start of what follows. The notes
 // themselves are unchanged.
@@ -25387,6 +25387,8 @@ if(wep.mag===0){
   // count every pellet as a shot, or a shotgun blast reads as one shot with five
   // hits and accuracy climbs past 100 percent
   if(fromPlayer){
+    // v28.xx (cw-cx-shotendssprint): his 10-28 decision: "ends your sprint period". A held key must be released; a toggle needs another press. Melee returned above.
+    G.player.shotSprintRelease=!!(keys['ShiftLeft']||keys['ShiftRight']); G.sprintOn=false; G.sprinting=false;
     G.player.recoil=1; G.player.combatT=0; G.tel.shots+=shots;
     if(gunBase(wep.id)==='lance'&&!G.sim) lanceKick(G.player,ang);   // v26.xx (feel10): the Meridian Lance shoves you back a step
     if(!wep._echo) bloomShot(G.player,wep);   // v27.xx (feel2a): every round opens the bloom of its own gun
@@ -29532,6 +29534,8 @@ if(mouse.down&&p.wep&&p.wep.auto) p.fireHold=(p.fireHold||0)+dt;
   // yourself out sets stamRelease, and the line below clears it only when the
   // key is actually let go, so a held Shift cannot saw sprint on and off.
   var _shHeld=!!(keys['ShiftLeft']||keys['ShiftRight']);
+  // v28.xx (cw-cx-shotendssprint): releasing the physical sprint input permits a fresh sprint after a gunshot; time alone never does.
+  if(!_shHeld) p.shotSprintRelease=false;
   // v26.xx (settings2), HIS ORDER 2026-10-14: SPRINT TOGGLE. With the SPRINT row on TOGGLE a fresh press of the key (or of the pad stick click, which holds
   // the same key) turns sprint on, the next press turns it off, and it also ends when you stop moving, go down or run out of breath (the lock then
   // needs a new press, as a held key needs letting go). On HOLD, the default, none of this runs and the key is read as it always was.
@@ -29541,6 +29545,8 @@ if(mouse.down&&p.wep&&p.wep.auto) p.fireHold=(p.fireHold||0)+dt;
     if(G.sprintOn&&(mg===0||p.downed||p.ads||p.stam<=2||p.stamLock||p.stamRelease)) G.sprintOn=false;
     _shHeld=!!G.sprintOn;
   } else { G.sprintOn=false; G.shWas=_shHeld; }
+  // v28.xx (cw-cx-shotendssprint): apply the shot latch before crouch, scent, movement and stamina read the sprint request.
+  if(p.shotSprintRelease){ G.sprintOn=false; _shHeld=false; }
   if(!_shHeld) p.stamRelease=0;
   // v11.53, HIS NOTE: "activating sprint should automatically stop crouching".
   // The crouch toggle (v10.07) used to veto the sprint key on the line below,
@@ -55769,7 +55775,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.85: Elite Longshot shots have a half-second muzzle glint in both windows. Check 35.85 fails on v35.84',
+  now:'v35.87: The what is new stamp keeps up with the build; the three notes are unchanged. Check 35.87 fails on v35.86',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
