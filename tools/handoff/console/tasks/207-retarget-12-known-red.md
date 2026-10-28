@@ -43,3 +43,9 @@ ADDED 10-28 14:01 (sorted from run corpus-1028-1057 on v35.80; rerun alone on v3
 - 15.59: the raid backpack gun hint reads V drop one. Build the needle ZN from keyName(keysOf('KeyZ'))+' drop'+' one'; the raidKey('KeyZ') drop and the floor parts already pass.
 
 ADDED 10-28 (CEO): v26.72 is a flake, not out of date: its first part rolls elite affixes before it resets the settings, so a demo raid started by 26.74 or 26.73 just before it (demo has elite affixes off since v35.72) leaves them off. Cure: __resetCfg(); xfSnap(); before the affix rolls (passes twice alone and after a demo start). Then remove its known-red line.
+
+ADDED 10-28 15:35 (JTPC Correspondent; red in every spare PC full run since v35.76, through corpus-1028-1346 on v35.89). Not in known-red: stable-baseline.txt already ignores them, so they block nothing, but while they stay red they guard nothing either. Retarget the same way:
+- 10.64, 11.27, 11.38: they press F for the crowbar ("F did not swing", "melee count 0 to 0"); melee is on Z since v35.74 (cw-meleez, job 203, his order). Press keysOf('KeyV') (Z by default), as 25.67 does. 11.38's merc and hostile parts already pass once the swing lands.
+- 11.26: the pause box key line wants "V melee"; it reads the melee key from keysOf now. Expect keyName(keysOf('KeyV'))+' melee'; keep the no literal entity assert.
+- 23.56: an arcade valuable worth 70 pays 95 (pot, score and the +SP tag) because the full run's settings sit above default and every harder row pays 5 percent a step since v35.68 (his order). In arcade the pot is the score, so it multiplies with it. Stage the default settings (multiplier x1.00) before the pickup so the check still proves pot = score = value; or expect value times the live multiplier.
+- 22.32: the Pillbox alert draws at 30px while the callout size computes 29.7px (from v35.54 on). Not visible. Compare the sizes within 1 px, keep the font family and the alert words.
