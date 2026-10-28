@@ -6295,16 +6295,16 @@ window.__REGRESS=[
        finally{ __topClear(); }
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'35.92',what:'cw-cx-duosearch: every search door is 1.5 times faster with a nearby live party member, demo and career; solo, stale, downed and departed members give no bonus',
+  {v:'35.92',what:'cw-cx-duosearch: every search door is 1.5 times faster with a nearby live party member holding search (older builds accept standing), demo and career; solo, stale, downed and departed members give no bonus',
    run:function(){
      var nk=Object.assign({},NET), cfg=Object.assign({},CFG), kk=keys, md=mouse.down, bs=buzzSlow, ns=netSend, nb=netBroadcast, ax=ARCADE.xOut,
          g,p,ct,word,k,mode,door,base,fast,bad=[];
-     function reset(){ ct.prog=0; ct.pulled=0; ct.opened=false; ct.loot=['bandage']; ct.time=100; ct.netBy=-1; g.searching=null; g.searchT=0; NET.srch=null; NET.srchOwn=-1; NET.holds={}; keys={}; p.downed=false; p.dying=false; p.specOut=false; p.hand=null; p.reloading=0; p.roll=0; }
+     function reset(){ ct.prog=0; ct.pulled=0; ct.opened=false; ct.loot=['bandage']; ct.time=100; ct.netBy=-1; g.searching=null; g.searchT=0; NET.srch=null; NET.srchOwn=-1; NET.holds={}; keys={}; p.downed=false; p.dying=false; p.specOut=false; p.hand=null; p.reloading=0; p.roll=0; if(typeof duoHolding==='function'){ keys.KeyE=true; word.shold=1; } }
      function pos(d){ word.x=ct.x+d; word.y=ct.y; word.tx=word.x; word.ty=word.y; }
      function step(which,d){
        reset(); pos(d); NET.role='host'; NET.seat=0; word.seat=1; p.x=ct.x-30; p.y=ct.y;
        if(which===0){ keys.KeyE=true; for(var n=0;n<60;n++) updatePlayer(1/60); keys={}; }
-       if(which===1){ p.x=ct.x-d; word.x=ct.x+30; word.tx=word.x; NET.holds={1:{cid:ct.cid,slow:1}}; ct.netBy=1; for(var j=0;j<60;j++) netSrchTick(1/60); }
+       if(which===1){ p.x=ct.x-((typeof duoHolding==='function'&&d<=DUO_R)?30:d); word.x=ct.x+30; word.tx=word.x; NET.holds={1:{cid:ct.cid,slow:1}}; ct.netBy=1; for(var j=0;j<60;j++) netSrchTick(1/60); }
        if(which===2){ NET.role='join'; NET.seat=1; word.seat=0; G.searching=ct; NET.srch={cid:ct.cid,ok:1}; for(var t=0;t<60;t++) netSrchHold(ct,1/60); }
        return ct.prog;
      }
@@ -6338,7 +6338,7 @@ window.__REGRESS=[
        NET.upOut[1]=4242; if(duoAt(ct,0)) bad.push('departed partner helped'); NET.upOut={};
        pos(200); if(!duoAt(ct,0)) bad.push('200 radius excluded'); pos(201); if(duoAt(ct,0)) bad.push('outside radius helped');
        NET.up=[]; if(duoAt(ct,0)) bad.push('solo helped'); NET.up=[word];
-       if(!duoAt(ct,1)) bad.push('nearby host did not help partner');
+       if(typeof duoHolding==='function') pos(30); if(!duoAt(ct,1)) bad.push('nearby host did not help partner');
        p.downed=true; if(duoAt(ct,1)) bad.push('downed host helped'); p.downed=false;
        p.specOut=true; if(duoAt(ct,1)) bad.push('spectating host helped'); p.specOut=false;
        NET.on=false; if(duoAt(ct,0)) bad.push('offline bonus');
