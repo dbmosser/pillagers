@@ -17,8 +17,9 @@
 #       one run takes 2.5 to 3.5 hours;
 #   (3) the local-LLM audits (tools/llm-night.ps1) once per new HEAD, only with 20+ GB of RAM free (the model holds about 12 GB);
 #   (4) once a day, the itch and GitHub backup catch-up (tools/itch-daily.sh); (4b) 10-27, his "Itch should also always get the latest
-#       build if that is feasible": whenever the last commit holds a build itch does not have yet, itch-daily.sh --itch in the background
-#       (at most one try per 10 minutes), so itch follows each ship within about 10 minutes;
+#       build if that is feasible" and his later "please make sure itch is always getting the latest version": tools/itch-follow.sh in the
+#       background whenever it is not running (it looks at the last commit every 30 seconds and runs itch-daily.sh --itch for any build
+#       itch does not have), so itch follows each ship within about a minute;
 #   (5) the Console worker LANES (tools/console-lane.sh LANE; the older tools/console-worker.sh is still honoured: lane a waits while it runs).
 #       This file starts lanes a, b and c, each one Claude task at a time (a lane with an empty list takes another lane's job). Lanes e and f
 #       (CLI_ALWAYS in tools/handoff/console/caps.txt) are started by the lanes themselves and always run on Claude Code on his plan, paced by
@@ -86,11 +87,11 @@ while true; do
   fi
   head=$(git -C "$R" rev-parse --short HEAD 2>/dev/null)
   if [ "$(get backup_day)" != "$(date +%F)" ]; then put backup_day "$(date +%F)"; bash "$R/tools/itch-daily.sh" >> "$LOG" 2>&1; fi
-  # (4b) see the header: itch gets each new build. itch-ver.txt is written by itch-daily.sh once itch has that build.
-  hv=$(git -C "$R" show HEAD:dark_raiders.html 2>/dev/null | grep -m1 "^var VER='" | sed "s/var VER='\([0-9.]*\)'.*/\1/")
-  it=$(get itch_try)
-  if [ -n "$hv" ] && [ "$hv" != "$(tr -d '\r\n ' < "$N/itch-ver.txt" 2>/dev/null)" ] && [ $(( $(date +%s) - ${it:-0} )) -ge 600 ] && [ -f "$R/tools/itch-daily.sh" ]; then
-    put itch_try "$(date +%s)"; (timeout 1500 bash "$R/tools/itch-daily.sh" --itch >> "$LOG" 2>&1) &
+  # (4b) see the header: itch gets each new build. The follower holds itch-follow.lock and touches it every 30 seconds, so a lock untouched
+  # for 15 minutes is left from a dead one; it ends itself after 55 minutes and this starts the next (at most one start per 2 minutes).
+  fl="$N/itch-follow.lock"; it=$(get itch_try)
+  if [ -f "$R/tools/itch-follow.sh" ] && { [ ! -d "$fl" ] || [ $(( $(date +%s) - $(stat -c %Y "$fl" 2>/dev/null || echo 0) )) -ge 900 ]; } && [ $(( $(date +%s) - ${it:-0} )) -ge 120 ]; then
+    put itch_try "$(date +%s)"; (timeout 4200 bash "$R/tools/itch-follow.sh" >> "$LOG" 2>&1) &
   fi
   ram=$(freegb); [ -z "$ram" ] && ram=0
   rf=$(grep -m1 "^RAM_FLOOR_GB=" "$R/tools/handoff/console/caps.txt" 2>/dev/null | cut -d= -f2 | tr -dc "0-9"); rf=${rf:-6}

@@ -615,7 +615,7 @@ function Ensure-Bridge(){
     $script:brT=Epoch
     $want=$T+'\bridge\host-agent.mjs'
     if(-not (Test-Path -LiteralPath $want) -or -not (Test-Path -LiteralPath ($env:LOCALAPPDATA+'\PillagersBridge\key.txt'))){ return }
-    $h=(@('host-agent.mjs','jobs.mjs','bridge-common.mjs','main-status.ps1') | ForEach-Object { $f=$T+'\bridge\'+$_; if(Test-Path -LiteralPath $f){ (Get-FileHash -LiteralPath $f -Algorithm SHA256).Hash.Substring(0,8) } }) -join '-'
+    $h=(@('host-agent.mjs','jobs.mjs','bridge-common.mjs','gate-test.mjs','main-status.ps1') | ForEach-Object { $f=$T+'\bridge\'+$_; if(Test-Path -LiteralPath $f){ (Get-FileHash -LiteralPath $f -Algorithm SHA256).Hash.Substring(0,8) } }) -join '-'
     $ag=@(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -and ($_.CommandLine -match 'host-agent\.mjs') -and ($_.CommandLine -notmatch '--status|--once') })
     $here=@($ag | Where-Object { ([string]$_.CommandLine).IndexOf($want,[StringComparison]::OrdinalIgnoreCase) -ge 0 })
     if($ag.Count -eq 1 -and $here.Count -eq 1 -and (GetS 'bridge_hash') -eq $h){ return }

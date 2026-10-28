@@ -6168,6 +6168,38 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'35.28',what:'cw-wheeldrophint: while an item picked up off the wheel is held, the hint over the wheel says drop on a key, not release to take out',
+   run:function(){
+     var bad=[], g, p, w, m, bi, an, pt, has;
+     function idx(k2){ var q; for(q=0;q<w.list.length;q++) if(w.list[q].k===k2) return q; return -1; }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:['gun_carbine','medkit','bandage','frag'],safe:null,mapIx:0,seed:4242});
+       if(state!=='raid'||!G||G.over) throw new Error('no live raid to test on');
+       G.mapFirst=0; G.mapOpen=false; G.bagOpen=false; if(pauseOpen) togglePauseBox(false); syncPause();
+       g=G; p=g.player; keys={}; mouse.down=false; p.hand=null; g.drag=null; g.wheel=null;
+       has=function(rx){ return pt.some(function(h){ return rx.test(String(h.t)); }); };
+       mouse.x=W/2; mouse.y=H/2; keys.KeyQ=true; raidKey('KeyQ',false,null); w=g.wheel;
+       if(!w) throw new Error('Q opened no wheel');
+       m=w.list.length; bi=idx('bandage'); if(bi<0) throw new Error('no bandage slot on the wheel');
+       an=-Math.PI/2+bi*(Math.PI*2/m); mouse.x=w.mx+Math.cos(an)*220; mouse.y=w.my+Math.sin(an)*220; updatePlayer(0.016);
+       pt=txRecord(function(){ __drawHUD(); });
+       if(!has(/release to take out/i)) bad.push('control: the open wheel does not say release to take out');
+       cv.dispatchEvent(new MouseEvent('mousedown',{button:0,bubbles:true}));
+       if(!g.drag||!g.drag.fromWheel) throw new Error('staging: a press on the bandage picked nothing up');
+       updatePlayer(0.016);
+       pt=txRecord(function(){ __drawHUD(); });
+       if(!has(/drop on a key/i)) bad.push('the held item does not say drop on a key');
+       if(has(/release to take out/i)) bad.push('the held item still says release to take out');
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ if(G){ G.drag=null; G.wheel=null; if(G.player) G.player.hand=null; } mouse.down=false; }catch(_d){}
+       try{ if(pauseOpen) togglePauseBox(false); }catch(_p){}
+       try{ var K2=__keys(); for(var q2 in K2) delete K2[q2]; }catch(_k){}
+       try{ if(state==='raid'&&G&&!G.over) __endRaid('abandon'); }catch(_e){}
+       try{ __topClear(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'35.27',what:'cw-reloadstack, his order 2026-10-27 (make the active reload stack but it gets harder each time): each active reload in a row adds to the bonus (x1.15, x1.25, x1.35), the sweet spot narrows each time, a miss or a reload left to run out starts the chain over, and the ring, the bar and X on a pad follow the narrower spot',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__sim)) return 'SKIP: no raid here';

@@ -3724,8 +3724,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.27';
-var VER_AT='2026-10-27 20:19';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.28';
+var VER_AT='2026-10-27 20:22';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -24436,12 +24436,14 @@ function drawWheel(){
     ctx.font=FSz(TYPE.label,sk); ctx.fillStyle=UIC.tx_3; hudText('AIM TO CHOOSE',cx,cy+LH(20)*sc);
   }
   hk=padOn()?pbn(13):String(keyLabel('KeyQ','Q'));
+  var _whd=!w.hub&&G.drag&&G.drag.fromWheel, _wht=w.hub?'RELEASE TO CLOSE':(_whd?'DROP ON A KEY':'RELEASE TO TAKE OUT');   // cw-wheeldrophint: an item held off the wheel (cw-beltwheel) drops on a belt key
+  if(_whd) hk='LMB';
   kk=Math.min(sk,2.4); by=cy-R-LH(38)*sc;
   ctx.save(); ctx.translate(cx,by); ctx.scale(kk,kk);
-  ctx.font=FS(TYPE.label); tw=ctx.measureText(w.hub?'RELEASE TO CLOSE':'RELEASE TO TAKE OUT').width+LH(52);
+  ctx.font=FS(TYPE.label); tw=ctx.measureText(_wht).width+LH(52);
   hudPlate(-tw/2,-LH(16),tw,LH(26),null,HUDC.plate);
   hudKey(hk,-tw/2+LH(8),LH(2),LH(9),LH(34));
-  ctx.textAlign='left'; ctx.fillStyle=UIC.tx_1; hudText(w.hub?'RELEASE TO CLOSE':'RELEASE TO TAKE OUT',-tw/2+LH(46),LH(2));
+  ctx.textAlign='left'; ctx.fillStyle=UIC.tx_1; hudText(_wht,-tw/2+LH(46),LH(2));
   ctx.restore();
   ctx.textAlign='left';
   ctx.restore();
@@ -54847,7 +54849,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.27: active reload stacks, the sweet spot shrinks each time Check 35.27 fails on v35.26',
+  now:'v35.28: while an item off the wheel is held the hint says lmb drop on a key Check 35.28 fails on v35.27',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

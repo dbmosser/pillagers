@@ -308,7 +308,7 @@ $script:RxHelper  = 'gemini\.js|codex\.js|run-api\.mjs|review-batch\.mjs|critic\
 $script:RxShip    = '^(?!.*\s-c\s).*(shipq\.sh|shipone\.sh|shipdraft\.sh|fixq\.sh|preflight\.sh|preflight-i\.sh|[\\/]ship\.sh|gate\.ps1|mkfixture\.ps1|uishots\.ps1)'
 $script:RxFuzz    = 'fuzz\.ps1'
 $script:RxCorpus  = 'corpq\.sh|corpus-slices\.sh'
-$script:RxReview  = 'llm-night\.ps1|ship-review\.ps1|review-nightly\.sh|itch-daily\.sh|stable\.sh|governor\.sh|waitship\.sh'
+$script:RxReview  = 'llm-night\.ps1|ship-review\.ps1|review-nightly\.sh|itch-daily\.sh|itch-follow\.sh|stable\.sh|governor\.sh|waitship\.sh'
 $script:RxServers = 'tools[\\/]serve\.ps1|tools[\\/]collector\.ps1|tools[\\/]capture\.ps1|tools[\\/]start-servers\.ps1'
 $script:RxPyPages = 'http\.server\s+(8871|8872)\b'
 

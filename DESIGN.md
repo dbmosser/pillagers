@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.28 - WHEEL DROP HINT
+
+Co-op hunt while he was away. the hint over the wheel said release to take out while an item from it was held for a belt key, which then takes nothing out
+
+MEASURED. Check 35.28 passes, and fails on v35.27.
 ## v35.27 - ACTIVE RELOAD STACKS
 
 Co-op hunt while he was away. his order 10-27: make the active reload stack but it gets harder each time; each active reload in a row adds 10 percent to the bonus up to x1.55 and narrows the next sweet spot by a quarter, a miss or a reload left to run out starts over

@@ -7,6 +7,7 @@ import { execFile } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { BRIDGE_VERSION, hashFileSafe } from './bridge-common.mjs';
+import { gateTest } from './gate-test.mjs';
 
 const PS = 'powershell';
 const PS_BASE = ['-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-Command'];
@@ -21,6 +22,34 @@ function run(program, argv, { timeoutMs = 60000, cwd } = {}) {
 }
 const ps = (script, opts) => run(PS, [...PS_BASE, script], opts);
 const psFile = (file, args, opts) => run(PS, ['-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-File', file, ...args], opts);
+
+// run one of the bridge's own read-only .ps1 reports, which print one JSON object
+async function psJson(file, timeoutMs) {
+  if (!fs.existsSync(file)) return { ok: false, error: 'script missing: ' + path.basename(file) };
+  const r = await psFile(file, [], { timeoutMs });
+  try { return JSON.parse(r.out.trim()); } catch { return { ok: false, error: path.basename(file) + ' did not print JSON', raw: (r.out + r.err).slice(-2000) }; }
+}
+
+// his Chrome's zoom for the game's hosts, per profile (Default, Profile N): nothing else is read out of Preferences
+function chromeZoom() {
+  const base = path.join(process.env.LOCALAPPDATA || '', 'Google', 'Chrome', 'User Data');
+  const out = {};
+  let dirs = [];
+  try { dirs = fs.readdirSync(base).filter((d) => d === 'Default' || /^Profile \d+$/.test(d)); } catch { return { error: 'no Chrome user data folder' }; }
+  for (const d of dirs) {
+    let p; try { p = JSON.parse(fs.readFileSync(path.join(base, d, 'Preferences'), 'utf8')); } catch { continue; }
+    const part = (p && p.partition) || {};
+    const hosts = {};
+    for (const zl of Object.values(part.per_host_zoom_levels || {})) {
+      for (const h of ['localhost', '127.0.0.1', '[::1]']) { if (zl && zl[h] && typeof zl[h].zoom_level === 'number') hosts[h] = Math.round(100 * Math.pow(1.2, zl[h].zoom_level)); }
+    }
+    // default_zoom_level is a number in older Chrome, { partition: level } in newer
+    const dz = part.default_zoom_level;
+    const dl = typeof dz === 'number' ? dz : (dz && typeof dz === 'object' ? Object.values(dz).find((v) => typeof v === 'number') : undefined);
+    out[d] = { hostsPct: hosts, defaultPct: typeof dl === 'number' ? Math.round(100 * Math.pow(1.2, dl)) : 100 };
+  }
+  return out;
+}
 
 // the party copy he plays on 8802 (party-host-copy.ps1's default folder) and its game version
 const PARTY_DIR = 'C:\\claudecode\\pillagers-party';
@@ -100,6 +129,22 @@ export const JOBS = {
 
   // update the party copy to GitHub master NOW (fixed: party-host-copy.ps1 -Prepare -Force, no VM-supplied arguments). He reloads to play it.
   async ['party-update'](_args, ctx) { return partyUpdate(ctx); },
+
+  // 10-27 his "the main pc is not always going to have claude code open": the checks the main PC Claude ran by hand, as fixed jobs.
+  // play-check (read only): GET his 8802 page and /stable.html, SHA256 and game version of what is SERVED against the file on disk.
+  async ['play-check'](_args, ctx) { return psJson(path.join(ctx.repoRoot, 'tools', 'bridge', 'play-check.ps1'), 90000); },
+
+  // chrome-view (read only): monitors and scales, his Chrome windows that show the game (others counted, never named), and his Chrome's
+  // zoom for localhost / 127.0.0.1 only, from each profile's Preferences (zoom_level is log base 1.2 of the zoom).
+  async ['chrome-view'](_args, ctx) {
+    const r = await psJson(path.join(ctx.repoRoot, 'tools', 'bridge', 'chrome-view.ps1'), 60000);
+    r.zoom = chromeZoom();
+    return r;
+  },
+
+  // gate-test: the fullscreen gate on his left 4K screen in throwaway Chromes, against the party copy on its own port (never 8802). Only
+  // after 10 minutes without keyboard or mouse. JPEGs land in the share folder as gate-<label>.jpg. See gate-test.mjs.
+  async ['gate-test'](_args, ctx) { return gateTest(ctx); },
 
   // list what is in the one shared folder.
   async ['share-list'](_args, ctx) {

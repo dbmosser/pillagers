@@ -1,0 +1,7 @@
+v35.28: wheel drop hint
+
+while an item off the wheel is held the hint says lmb drop on a key
+
+Check 35.28. Fails on v35.27.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
