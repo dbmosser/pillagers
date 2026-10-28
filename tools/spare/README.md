@@ -1,6 +1,6 @@
 # The spare PC: the test and robot machine (2026-10-20)
 
-His spare PC (RTX 2080, AMD X3D, 16 GB, always on and connected; his answer: "16gb ram, it can stay on and connected") takes the full test
+His spare PC (RTX 2080, Intel i5-7600K with 4 threads, 32 GB as its status note reads (he said 16 GB), always on and connected; his answer: "16gb ram, it can stay on and connected") takes the full test
 run and the crash robots off the VM, so the VM's memory goes to the helper lanes and the stable build can move again.
 
 ## What runs where
