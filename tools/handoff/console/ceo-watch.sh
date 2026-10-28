@@ -11,7 +11,18 @@ while true; do
   new=""
   # new alarm lines since the last look
   al=$(wc -c < "$C/alarms.md" 2>/dev/null || echo 0)
-  if [ "$al" -gt "$al0" ]; then new+=$(tail -c +$((al0+1)) "$C/alarms.md" | grep -v '^\s*$' | sed 's/^/ALARM: /')$'\n'; fi
+  # 10-28 (morning cost check): every wake re-reads the whole CEO chat, and most wakes overnight were Codex notes that needed nothing.
+  # A camera-critic HUD note (critic + hud, no P0, no request, no failure) goes straight to notes/hud-critic-inbox.md for the HUD lane,
+  # and a plain "shipped / ON HIS PC confirmed / camera limit" close-out is only logged; anything else still wakes the CEO.
+  if [ "$al" -gt "$al0" ]; then
+    while IFS= read -r l; do
+      [ -z "$(echo "$l" | tr -d '[:space:]')" ] && continue
+      if echo "$l" | grep -qiE 'P0|not on his|needs you|please (run|include|confirm|return)|fail|crash|freez|hang'; then new+="ALARM: $l"$'\n'
+      elif echo "$l" | grep -qi 'critic' && echo "$l" | grep -qi 'hud'; then echo "- $(date '+%m-%d %H:%M') (auto from alarms.md): $(echo "$l" | cut -c1-600)" >> "$C/notes/hud-critic-inbox.md"
+      elif echo "$l" | grep -qiE 'on his pc confirmed|camera (limit|cap) (is )?reached|no further (mechanic|camera)'; then :
+      else new+="ALARM: $l"$'\n'; fi
+    done < <(tail -c +$((al0+1)) "$C/alarms.md")
+  fi
   [ "$al" -lt "$al0" ] && al0=$al
   al0=$al
   # LOOK / STOP lines of the check-in, each reported once (digits ignored, so "1 time(s)" and "2 time(s)" count as the same line)
