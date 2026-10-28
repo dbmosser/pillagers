@@ -6743,7 +6743,7 @@ window.__REGRESS=[
        try{ __topClear(); __cleanProfile(); }catch(_c){}
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'35.31',what:'cw-quietpause, his order 2026-10-27 (build the quiet hud, all 5 changes): a line said under the solo pause box shows on the answer line over the box only and is not also written into the left feed behind it; with the box shut a system line is a feed line; and a finished contract whose words run to five or more names them on its feed line, now the one place it shows (cw-fewermsg retarget, his complaint 2026-10-27: only five kinds of line reach the screen; the probe lines here are marked as answers, a kind that does)',
+  {v:'35.31',what:'cw-quietpause, his order 2026-10-27 (build the quiet hud, all 5 changes): a line said under the solo pause box shows on the answer line over the box only and is not also written into the left feed behind it; with the box shut a system line is a feed line; and a finished contract whose words run to five or more names them on its feed line, now the one place it shows (cw-fewermsg retarget, his complaint 2026-10-27: only five kinds of line reach the screen; the probe lines here are marked as answers, a kind that does; cw-msgroute retarget, the research rule of 10-27: a goal done waits until no shot was fired or taken for 4 s, so the crate is opened in calm)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
      if(typeof togglePauseBox!=='function'||typeof syncPause!=='function'||typeof netPauseLive!=='function') return 'SKIP: no pause box in this build';
@@ -6774,7 +6774,7 @@ window.__REGRESS=[
          c1=ct?{type:'open',ct:ct.type,n:2,prog:1,desc:'Open 2 zqx9k long named boxes',reward:100}:null;
          if(c1){ P2.contracts=[c1]; H1=contractDesc(c1); }
          if(c1&&String(H1).split(/\s+/).length>=5){
-           g.fd={t:0,seq:0,lines:[]}; contractOpen(ct);
+           g.fd={t:0,seq:0,lines:[]}; g.player.combatT=99; contractOpen(ct);   // cw-msgroute retarget: in calm, so the goal done line does not wait out a fight
            L=g.fd.lines; for(i=0;i<L.length;i++) if(String(L[i].txt).indexOf('CONTRACT DONE')===0) ln=L[i];
            if(c1.prog<c1.n||!ln) bad.push('TWO control: the crate did not finish the contract into a line of the left feed (progress '+c1.prog+' of '+c1.n+')');
            else if(String(ln.txt).indexOf(H1)<0) bad.push('TWO: the finished contract line reads '+JSON.stringify(ln.txt)+', without its words '+JSON.stringify(H1));
@@ -23211,7 +23211,7 @@ window.__REGRESS=[
        try{ if(__state()&&!__state().over) __endRaid('abandon'); }catch(_e2){}
        __resetCfg(); __topClear();
      } }},
-  {v:'30.93',what:'the left feed: a long detail sentence is not on the line, and an old line stays readable (dim 0.6 or more)',
+  {v:'30.93',what:'the left feed: a long detail sentence is not on the line, and an old line fades fully out after its 5 s (cw-msgroute retarget, the research rule of 10-27 for his complaint, too many messages reach the player: three lines, five seconds, then gone; it was held at 0.6)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy';
      var g=null, ln, F;
@@ -23227,7 +23227,7 @@ window.__REGRESS=[
        ln=F.lines[F.lines.length-1];
        if(!(/1 on the map/i).test(ln.txt)) return 'a short detail left the feed line: '+ln.txt;
        F.t+=FEED.hold+FEED.fade+1;
-       if(feedAlpha(ln)<0.59) return 'an old feed line reads '+feedAlpha(ln)+', under 0.6';
+       if(feedAlpha(ln)>0) return 'an old feed line still reads '+feedAlpha(ln)+' after its 5 s';
        return null;
      } finally {
        try{ __endRaid('abandon'); }catch(_e){}
@@ -85911,7 +85911,7 @@ window.__REGRESS=[
        __topClear(); __resetCfg(); __cleanProfile();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'14.11',what:'ring closure lines wait their turn: one extraction tick in which one ring closes and another is warned keeps both lines, showing or queued, while a ring closing alone says it is closed (raid HUD and map screen audit 2026-09-15, finding 3)',
+  {v:'14.11',what:'ring closure lines wait their turn: one extraction tick in which one ring closes and another is warned keeps both lines, showing or queued, while a ring closing alone says it is closed (raid HUD and map screen audit 2026-09-15, finding 3; cw-msgroute retarget, his order 2026-10-27 ~22:35: a line about one exit is said only for the exit you are heading to or one within 60 m, so each part starts heading to ring 0, and ring 1 is the one you head to once ring 0 shuts)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
      if(typeof tickExtractPoints!=='function') return 'SKIP: no extraction tick in this build';
@@ -85924,7 +85924,7 @@ window.__REGRESS=[
        if(!g||!g.player||g.sim) return 'SKIP: no live raid';
        if(!(g.zones&&g.zones.length>=2)) return 'SKIP: fewer than two extraction points';
        g.ents.length=0;
-       function reset(){ for(var i=0;i<g.zones.length;i++){ var z=g.zones[i]; z.open=true; z.warned=1; z.closeAt=-9999; z.beaconT=null; z.hold=null; z.pullT=null; } g.msg=''; g.msgT=0; g.msgQ=[]; g.alert=null; g.alertQ=[]; }
+       function reset(){ for(var i=0;i<g.zones.length;i++){ var z=g.zones[i]; z.open=true; z.warned=1; z.closeAt=-9999; z.beaconT=null; z.hold=null; z.pullT=null; } g.active=g.zones[0]; g.msg=''; g.msgT=0; g.msgQ=[]; g.alert=null; g.alertQ=[]; }
        function lines(){ return [String(g.msg||''),String((g.alert&&g.alert.m)||'')+' '+String((g.alert&&g.alert.sub)||'')].concat((g.msgQ||[]).map(String),(g.alertQ||[]).map(function(e){ return String(e&&e.m)+' '+String((e&&e.o&&e.o.sub)||''); })); }   /* retargeted for the alert lane (R08): extraction lines show or wait in the alert slot */
        // CONTROL: a ring closing alone says so.
        reset();
