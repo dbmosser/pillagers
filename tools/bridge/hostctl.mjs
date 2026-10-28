@@ -5,6 +5,11 @@
 //   node hostctl.mjs stats
 //   node hostctl.mjs kit ollama-status
 //   node hostctl.mjs kit play-status
+//   node hostctl.mjs main-status        (party copy, what serves 8802, idle runner status and log)
+//   node hostctl.mjs party-update       (party copy to GitHub master now)
+//   node hostctl.mjs play-check         (GET 8802: version + SHA256 served vs the file on disk)
+//   node hostctl.mjs chrome-view        (monitors, his game Chrome windows, his localhost zoom)
+//   node hostctl.mjs gate-test          (fullscreen gate in throwaway Chromes on his left screen; only after 10 min without input)
 //   node hostctl.mjs share-list
 //   node hostctl.mjs share-get name=run-123.json           (prints the file's text; add --save PATH to write it)
 //   node hostctl.mjs share-put name=note.txt --file ./note.txt
