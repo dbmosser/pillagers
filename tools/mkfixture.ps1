@@ -63046,7 +63046,7 @@ window.__REGRESS=[
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
      if(typeof throwFrom!=='function'||typeof mouseWorld!=='function'||typeof rayHitG!=='function') return 'SKIP: no throw, aim point or wall ray in this build';
-     var bad=[], g=null, said=[], realSay=say, realMW=mouseWorld, realRay=rayHitG, n0=0, kinds=['frag','smoke','decoy'], i, want, got;
+     var bad=[], g=null, said=[], realSay=say, realMW=mouseWorld, oldSegs=null, oldGrid=null, n0=0, kinds=['frag','smoke','decoy'], i, want, got;
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
@@ -63055,7 +63055,8 @@ window.__REGRESS=[
        var p=g.player;
        // The aim is 100 to the east and a wall stands 30 off, so every kind is stopped short inside its own warning radius.
        mouseWorld=function(){ return {x:p.x+100,y:p.y}; };
-       rayHitG=function(){ return 30; };
+       oldSegs=g.map.segs; oldGrid=g.grid;
+       g.map.segs=[{x1:p.x+30,y1:p.y-500,x2:p.x+30,y2:p.y+500}]; g.grid=null;
        say=function(m,k){ said.push({m:String(m),k:k}); };
        n0=g.throws.length;
        for(i=0;i<kinds.length;i++){
@@ -63069,7 +63070,7 @@ window.__REGRESS=[
        }
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{
-       say=realSay; mouseWorld=realMW; rayHitG=realRay;
+       say=realSay; mouseWorld=realMW; if(g&&oldSegs){ g.map.segs=oldSegs; g.grid=oldGrid; }
        try{ var g2=__state(); if(g2&&g2.throws) g2.throws.length=Math.min(g2.throws.length,n0); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
        __topClear();
      }
