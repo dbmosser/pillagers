@@ -14,12 +14,17 @@
 #      a preflight with no lane letter 9351..9359).
 #   The launcher (cdp.ps1 -Start) exits right after it starts Chrome, so a missing parent process means nothing; only live users count.
 #   The live users are read again just before each close.
+#   4. (10-28 review) it is not the ship gate browser 9346 (-GatePort). shipq.sh, shipone.sh, runchk.sh and gate.ps1 never start it and a ship
+#      with it down STOPs at "parse check" (09:12 and 09:13 today); only the Codex lane starts it before its own ships. So the sweep never
+#      leaves it closed: it is kept, and only when it has grown past 1500 MB (-GateRestartMB) with nothing live on it is it restarted (closed,
+#      and a fresh one started on the same port and profile at once), the same rule as tools/health.sh step 2b.
+#   5. (10-28 review) it is not 9359 while codex-lane.sh runs, unless the Codex lane itself is the caller (-Lane o); see LivePorts.
 # A close is the same as tools/close-test-chromes.ps1: taskkill /T /F on the root pid (the whole Chrome tree). Prints one line per close
 # ("closed leftover test Chrome PORT (...)"), which the lane writes to its log, then "freed about N GB" or "nothing to close".
 #   powershell -NoProfile -ExecutionPolicy Bypass -File tools\close-leftover-test-chromes.ps1 -List   (each test Chrome and why it stays; closes nothing)
 #   powershell -NoProfile -ExecutionPolicy Bypass -File tools\close-leftover-test-chromes.ps1         (close the leftovers)
 #   -MinAgeMin 0 is for tests only; -Port 9359 (or a list) looks at those ports only, so a test never closes anyone else's browser.
-param([int]$MinAgeMin = 45, [switch]$List, [string[]]$Port = @(),
+param([int]$MinAgeMin = 45, [switch]$List, [string[]]$Port = @(), [int]$GatePort = 9346, [int]$GateRestartMB = 1500, [string]$Lane = '',
       [string]$ShipLock = 'C:\Users\User1\AppData\Local\Temp\claude\C--Users-User1-Desktop-dark-raiders\8a09e991-b4f4-4b23-b10f-ded92e837fc3\scratchpad\shipq.lock')
 $ErrorActionPreference = 'Continue'
 $fso = $null; try { $fso = New-Object -ComObject Scripting.FileSystemObject } catch { }
@@ -40,6 +45,10 @@ function LivePorts {
   foreach ($pr in $sh) {
     if ($pr.ProcessId -eq $PID) { continue }
     $c = [string]$pr.CommandLine; if (-not $c) { continue }
+    # 5. (10-28 review) the Codex lane's own Chrome 9359: its trial check run (codex-lane.sh rt_checks) opens a page, sleeps 20 s, then runs
+    #    the checks, with no script on 9359 in that gap. So a running codex-lane.sh holds 9359 for every other caller; the lane itself passes
+    #    -Lane o from its RAM wait, when it is not using that Chrome, so its own sweep may still close it.
+    if ($Lane -ne 'o' -and $c -match '(?i)(?<![\w.-])codex-lane\.sh') { Hold (9350 + $laneN['o']) ('codex-lane.sh (pid ' + $pr.ProcessId + ')') }
     $ms = [regex]::Matches($c, $scriptRx); if ($ms.Count -eq 0) { continue }
     $names = @($ms | ForEach-Object { $_.Groups[1].Value.ToLowerInvariant() } | Select-Object -Unique)
     $who = ($names -join '+') + ' (pid ' + $pr.ProcessId + ')'
@@ -80,7 +89,7 @@ $tests = @($all | Where-Object { $_.Name -ieq 'chrome.exe' -and ([string]$_.Comm
   $par = if ($ud) { Split-Path -Parent $ud } else { '' }
   $ok = ($dp -ge 9331 -and $dp -le 9399 -and $leaf -match '^(?i)pillagers-cdp\d*$' -and $par -and ($temps -contains (Norm $par)))
   $mins = if ($_.CreationDate) { ($now - $_.CreationDate).TotalMinutes } else { -1 }
-  [PSCustomObject]@{ Pid = [int]$_.ProcessId; Port = $dp; Ours = $ok; Mins = $mins; Age = [int][Math]::Floor($mins); Start = $_.CreationDate; MB = (TreeMB $_); Profile = $leaf; Proc = $_ }
+  [PSCustomObject]@{ Pid = [int]$_.ProcessId; Port = $dp; Ours = $ok; Mins = $mins; Age = [int][Math]::Floor($mins); Start = $_.CreationDate; MB = (TreeMB $_); Profile = $leaf; Dir = $ud; Proc = $_ }
 } | Sort-Object Port)
 $want = @($Port | ForEach-Object { $_ -split '[,\s]+' } | Where-Object { $_ -match '^\d+$' } | ForEach-Object { [int]$_ })   # -Port 9357,9359 arrives as one string under -File
 if ($Port.Count) { $tests = @($tests | Where-Object { $want -contains $_.Port }) }
@@ -92,26 +101,44 @@ if ($List) {
     $why = if (-not $t.Ours) { 'not a test Chrome of ours (port outside 9331-9399 or no pillagers-cdp temp profile): never touched' }
            elseif ($t.Mins -lt 0 -or $t.Mins -le $MinAgeMin) { "kept: $($t.Age) min old (closes after $MinAgeMin)" }
            elseif ($live.ContainsKey($t.Port)) { 'kept: in use by ' + $live[$t.Port] }
+           elseif ($t.Port -eq $GatePort -and $t.MB -le $GateRestartMB) { "kept: the ship gate browser (ships expect it up; restarted only over $GateRestartMB MB)" }
+           elseif ($t.Port -eq $GatePort) { 'over ' + $GateRestartMB + ' MB, nothing live on it (would RESTART: close and start a fresh one)' }
            else { 'LEFTOVER (would close)' }
     "Chrome $($t.Port) pid $($t.Pid) $($t.MB) MB up $($t.Age) min profile $($t.Profile): $why"
   }
   return
 }
+# FreshGate : after the ship gate browser closes, start a fresh one on the same port and profile (the command the lanes and health.sh use)
+function FreshGate($t) {
+  for ($i = 0; $i -lt 20; $i++) { try { Invoke-RestMethod ("http://127.0.0.1:" + $t.Port + "/json/version") -TimeoutSec 1 | Out-Null; Start-Sleep -Milliseconds 250 } catch { break } }
+  $prof = if ($t.Dir) { $t.Dir } else { Join-Path $env:TEMP 'pillagers-cdp' }
+  for ($k = 0; $k -lt 2; $k++) {
+    try { Invoke-RestMethod ("http://127.0.0.1:" + $t.Port + "/json/version") -TimeoutSec 2 | Out-Null; return '; a fresh one is up' } catch { }
+    $o = (& powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'cdp.ps1') -Start -Port $t.Port -Profile $prof 2>&1 | Out-String)
+    if ($o -match 'browser up') { return '; started a fresh one (the ship gate browser)' }
+    Start-Sleep -Seconds 2
+  }
+  return '; the fresh ship gate Chrome did NOT start (tools\cdp.ps1 -Start -Port ' + $t.Port + ')'
+}
 $freed = 0; $n = 0
 foreach ($t in @($tests | Where-Object { $_.Ours -and $_.Mins -gt $MinAgeMin })) {
+  $gate = ($t.Port -eq $GatePort)
+  if ($gate -and $t.MB -le $GateRestartMB) { continue }   # the ship gate browser stays up (see 4 above)
   if ($live.ContainsKey($t.Port)) { continue }
-  $live = LivePorts                                  # read again right before the close: a gate may have just started on it
-  if ($live.ContainsKey($t.Port)) { continue }
-  $still = Get-CimInstance Win32_Process -Filter ("ProcessId=" + $t.Pid) -ErrorAction SilentlyContinue
-  if (-not $still -or [string]$still.CommandLine -ne [string]$t.Proc.CommandLine) { continue }   # gone, or the pid now belongs to something else
   $pages = ''
   try { $js = Invoke-RestMethod ("http://127.0.0.1:" + $t.Port + "/json") -TimeoutSec 2; $pg = @($js | Where-Object { $_.type -eq 'page' })
     $nm = @($pg | ForEach-Object { $u = [string]$_.url; if ($u -eq '' -or $u -like 'about:*') { 'blank' } else { (($u -split '[?#]')[0] -split '/')[-1] } })
     $pages = if ($nm.Count) { ', pages ' + (($nm | Select-Object -First 4) -join ' ') + $(if ($nm.Count -gt 4) { ' +' + ($nm.Count - 4) } else { '' }) } else { ', no pages' } } catch { }
+  $live = LivePorts                                  # read again right before the close (after the page list, so the gap is short): a gate may have just started on it
+  if ($live.ContainsKey($t.Port)) { continue }
+  $still = Get-CimInstance Win32_Process -Filter ("ProcessId=" + $t.Pid) -ErrorAction SilentlyContinue
+  if (-not $still -or [string]$still.CommandLine -ne [string]$t.Proc.CommandLine) { continue }   # gone, or the pid now belongs to something else
   & taskkill.exe /PID $t.Pid /T /F 2>&1 | Out-Null
   Start-Sleep -Milliseconds 400
   $st = if ($t.Start) { $t.Start.ToString('HH:mm') } else { '?' }
-  if (Get-Process -Id $t.Pid -ErrorAction SilentlyContinue) { "could not close test Chrome $($t.Port) (pid $($t.Pid) still running)" }
-  else { "closed leftover test Chrome $($t.Port) (pid $($t.Pid), $([Math]::Round($t.MB / 1024, 1)) GB, started $st, $($t.Age) min old, no gate or test on its port$pages)"; $freed += $t.MB; $n++ }
+  if (Get-Process -Id $t.Pid -ErrorAction SilentlyContinue) { "could not close test Chrome $($t.Port) (pid $($t.Pid) still running)"; continue }
+  $fresh = if ($gate) { FreshGate $t } else { '' }
+  "closed leftover test Chrome $($t.Port) (pid $($t.Pid), $([Math]::Round($t.MB / 1024, 1)) GB, started $st, $($t.Age) min old, no gate or test on its port$pages)$fresh"
+  $freed += $(if ($gate) { [Math]::Max(0, $t.MB - 400) } else { $t.MB }); $n++
 }
 if ($n -eq 0) { 'nothing to close' } else { 'freed about ' + [Math]::Round($freed / 1024, 1) + ' GB (' + $n + ' test Chrome' + $(if ($n -gt 1) { 's' } else { '' }) + ')' }
