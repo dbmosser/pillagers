@@ -3531,11 +3531,11 @@ window.__REGRESS=[
      if(!gd) return 'no extraction zone to stand next to';
      // The measurement is only worth anything if a fixed clock is stable.
      gd.beaconT=20;
-     var s1=boxMean(700,570,520,60), s2=boxMean(700,570,520,60);
+     __frame(0); var dy0=570-Math.round(((typeof DOWNLIFT==='number')?DOWNLIFT:0)*((typeof hudRes==='function')?hudRes():1)); var s1=boxMean(700,dy0,520,60), s2=boxMean(700,dy0,520,60);   // cw-clockcard, HIS ORDER (2026-10-28): "the downed card blocks the view of the centered player -- needs to move up". The card is lifted by DOWNLIFT (1080p units, scaled by hudRes), so the boxes read off it follow it up.
      if(Math.abs(s1-s2)>0.01) return 'the same clock draws two different boxes, so no brightness reading here means anything';
      // It has to actually be drawing the message, or a blank box passes as calm.
      if(s1<3) bad.push('the downed message box is nearly empty at '+s1.toFixed(2)+', nothing is being drawn there');
-     var dn=swing(gd,570,60);
+     var dn=swing(gd,dy0,60);
      // Measured before v9.08: 21.1 percent, cycling every 1.2 seconds, while he
      // is bleeding to death.
      if(dn.pct>3) bad.push('the downed message still pulses, '+dn.pct.toFixed(1)+' percent brightness swing');
@@ -3566,7 +3566,7 @@ window.__REGRESS=[
        var g3=setup(W2,H2,true); if(!g3) return 0;
        __frame(0);
        var sc=(W2>=3840?2:1);
-       var y0=Math.round(H2/2-90*sc), hh=Math.round(180*sc);
+       var y0=Math.round(H2/2-90*sc)-Math.round(((typeof DOWNLIFT==='number')?DOWNLIFT:0)*((typeof hudRes==='function')?hudRes():sc)), hh=Math.round(180*sc);   // cw-clockcard: the downed card is lifted by DOWNLIFT (his order 2026-10-28, "needs to move up"), so the scan follows it up
        if(y0<0){ hh+=y0; y0=0; }
        if(y0+hh>H2) hh=H2-y0;
        var x0=Math.max(0,Math.round(W2/2-260*sc)), ww=Math.min(W2-x0,Math.round(520*sc));
@@ -8000,10 +8000,21 @@ window.__REGRESS=[
        // ONE: the corner wallet card draws nothing in a raid, and its page copy stays clipped away
        ['cash','stash','xp'].forEach(function(w){ if(has(w)) bad.push('ONE: the corner card still draws '+w); });
        trHide(); if(!document.body.classList.contains('trcol')) bad.push('ONE: the page copy of the wallet shows in the raid');
-       // TWO: the backpack value draws once, on the ammo card
+       // TWO: the backpack value draws once, on the pillager board's YOU row; the ammo card no longer carries it (cw-clockcard, his order 2026-10-28 on the gun card: "remove the stash value as that is already shown in another window")
        v=bagValue(); if(!(v>0)) throw new Error('staging: an empty backpack');
        vs='$'+v.toLocaleString(); hits=hasIn(vs.toLowerCase());
-       if(hits.length!==1) bad.push('TWO: the backpack value '+vs+' drew '+hits.length+' times: '+hits.map(function(r){ return JSON.stringify(r.s); }).join(', '));
+       if(hits.length) bad.push('TWO: with the board left out the backpack value '+vs+' still drew '+hits.length+' times: '+hits.map(function(r){ return JSON.stringify(r.s); }).join(', '));
+       var brows=null, bsame=0; P.hud.raiders={};   // the board open for this one frame (P.hud is put back in finally)
+       drawRaiderBoard=function(){ var o=rb.apply(this,arguments); brows=RSTAT.rows; return o; };   // RSTAT.rows is cleared at the end of every frame, so it is read inside the board
+       try{ grab(); } finally { drawRaiderBoard=function(){}; }
+       hits=hasIn(vs.toLowerCase());
+       if(!brows||!brows.length) bad.push('TWO: the pillager board drew no rows');
+       else {
+         if(!(brows[0].me&&brows[0].val===v)) bad.push('TWO: the board YOU row does not carry the backpack value '+vs+' (it has '+(brows[0].me?brows[0].val:'no YOU row')+')');
+         bsame=brows.filter(function(w){ return !w.me&&w.val===v; }).length;   // a rival carrying the very same figure draws it too
+         if(hits.length<1||hits.length>1+bsame) bad.push('TWO: with the board up the backpack value '+vs+' drew '+hits.length+' times: '+hits.map(function(r){ return JSON.stringify(r.s); }).join(', '));
+       }
+       grab();   // the counts below are taken with the board left out again
        // THREE: standing still at full stamina, no posture word and no stamina bar
        if(has('standing')) bad.push('THREE: standing still the posture word still shows');
        if(has('stamina')||has('winded')) bad.push('THREE: at full stamina the stamina bar still shows');
@@ -8020,9 +8031,11 @@ window.__REGRESS=[
        g.pCrouch=true; grab();
        if(!has('crouched')) bad.push('FIVE: crouched, the posture word does not show');
        g.pCrouch=false;
-       // SIX: run info at rest is one line, its count; a contract that moves opens it, and it folds again
+       // SIX: run info at rest is one line, its title; a contract that moves opens it, and it folds again
+       // (cw-clockcard, his note 2026-10-28: "'contracts 6/8' -- seems pretty useless": the title is 'goals D/N' or 'run info', never the contract count)
        grab();
-       if(!hasIn('contracts 1/3').length) bad.push('SIX: folded, the run info line is not its count (contracts 1/3)');
+       if(!rec.some(function(r){ return r.lo==='run info'||/^goals \d+\/\d+$/.test(r.lo); })) bad.push('SIX: folded, the run info line is not its title (goals D/N or run info)');
+       if(rec.some(function(r){ return /contracts \d+\/\d+/.test(r.lo); })) bad.push('SIX: the run info title still prints the contract count');
        if(hasIn(CRAWL).length) bad.push('SIX: at rest run info still lists its contracts');
        P.contracts[0].prog=2; grab();
        if(!hasIn(CRAWL).length) bad.push('SIX: a contract moved and run info did not open');
@@ -10312,12 +10325,13 @@ window.__REGRESS=[
      function mw(f,s){ var w; ctx.save(); try{ ctx.font=f; w=ctx.measureText(String(s)).width; } finally { ctx.restore(); } return w; }
      function wide(f,s){ var q, w, b=-1, d='0'; for(q=0;q<10;q++){ w=mw(f,String(q)); if(w>b){ b=w; d=String(q); } } return String(s).replace(/[0-9]/g,d); }
      // the widest each row of the card can read with this gun in hand (card units): the name with its aim word, the rounds as a full
-     // magazine over a reserve of three figures in the widest digit, or RELOADING; in career the backpack row with two item and five money figures
+     // magazine over a reserve of three figures in the widest digit, or RELOADING, or an empty 0 with the reload key cap left of it; in career
+     // the backpack key row alone (cw-clockcard, his order 2026-10-28: "item number is useless; remove it. also remove the stash value")
      function room(g){
-       var p=g.player, w=p.wep, ft=FS(TYPE.title), fm=FS(TYPE.num), ff=hudFineFS(), fl=FS(TYPE.label), o=+w.optic||0, n, r, f=0, cv=0, i;
+       var p=g.player, w=p.wep, ft=FS(TYPE.title), fm=FS(TYPE.num), ff=hudFineFS(), fl=FS(TYPE.label), o=+w.optic||0, n, r, f=0, ck=(typeof ammoCapKey==='function')?ammoCapKey():'r';
        n=Math.max(mw(fl,w.name+'  [ADS]'),o>1?mw(fl,w.name+'  '+(+o.toFixed(2))+'x SCOPE'):0);
-       r=Math.max(mw(ft,' / '+wide(ft,Math.max(100,rsvShow(p)|0)))+4+mw(fm,wide(fm,Math.max(w.mag|0,p.ammo|0))),mw(ft,'RELOADING'),mw(ft,'JAMMED'));
-       if(!trDemo()){ for(i=0;i<G.bag.length;i++) cv+=ival(G.bag[i]); f=mw(ff,keyLabel('KeyB','B')+' / '+keyLabel('KeyI','I')+'  BACKPACK')+LH(16)+mw(ff,wide(ff,Math.max(10,G.bag.length))+' ITEMS  $'+wide(ff,Math.max(10000,cv).toLocaleString())); }
+       r=Math.max(mw(ft,' / '+wide(ft,Math.max(100,rsvShow(p)|0)))+4+mw(fm,wide(fm,Math.max(w.mag|0,p.ammo|0))),mw(ft,'RELOADING'),mw(ft,'JAMMED'),mw(ft,' / '+wide(ft,Math.max(100,rsvShow(p)|0)))+4+mw(fm,'0')+LH(10)+Math.max(LH(24),mw(FS(TYPE.head),ck)+LH(14)));
+       if(!trDemo()) f=mw(ff,keyLabel('KeyB','B')+' / '+keyLabel('KeyI','I')+'  BACKPACK');
        return Math.max(n,r,f);
      }
      // 5. the card keeps one size and place while he plays: every gun, a shot, one round left, empty, reloading, aiming (and aiming
@@ -10436,8 +10450,10 @@ window.__REGRESS=[
            for(i=0;i<r.rects.length;i++){ b=r.rects[i]; if(b.c==='#e6ff3d'&&hit(b,{x:card.x-2,y:card.y-2,w:card.w+4,h:card.h+4})){ bad.push(tag+'a lime stub is drawn on the gun card at '+R(b)); break; } }
            for(i=0;i<r.texts.length;i++){ b=r.texts[i]; if(b.w>0&&b.x+b.w/2>card.x&&b.x+b.w/2<card.x+card.w&&b.y+b.h/2>card.y&&b.y+b.h/2<card.y+card.h) T.push(b); }
            need=[['the gun name',function(q){ return q.y+q.h<card.y+card.h*0.5; }],['the rounds',function(q){ return q.s===String(g.player.ammo); }],['the reserve',function(q){ return /^ \/ /.test(q.s); }]];
-           if(!g.arcade) need.push(['the item count',function(q){ return /item/.test(q.s); }],['the backpack key',function(q){ return /backpack/.test(q.s); }]);
+           if(!g.arcade) need.push(['the backpack key',function(q){ return /backpack/.test(q.s); }]);
            for(i=0;i<need.length;i++) if(!T.some(need[i][1])) bad.push(tag+need[i][0]+' is not on the gun card');
+           // cw-clockcard, his order 2026-10-28: "item number is useless; remove it. also remove the stash value": no item count, no $ value on the card
+           for(i=0;i<T.length;i++) if(/\bitems?\b/i.test(T[i].s)||/\$/.test(T[i].s)){ bad.push(tag+'the gun card still shows the item count or the stash value: "'+T[i].s+'"'); break; }
            for(i=0;i<T.length;i++){ b=T[i]; if(b.x<card.x-0.5||b.y<card.y-0.5||b.x+b.w>card.x+card.w+0.5||b.y+b.h>card.y+card.h+0.5) bad.push(tag+'"'+b.s+'" runs over the edge of the gun card'); U=U?{x:Math.min(U.x,b.x),y:Math.min(U.y,b.y),r:Math.max(U.r,b.x+b.w),b:Math.max(U.b,b.y+b.h)}:{x:b.x,y:b.y,r:b.x+b.w,b:b.y+b.h}; }
            if(U){
              U.x=Math.min(U.x,U.r-room(g)*z);   // the room each row keeps for its other states is content too
@@ -21329,7 +21345,7 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ var q=document.getElementById('settingsmodal'); if(q) q.classList.remove('on'); }catch(_k){} try{ __topClear(); }catch(_c){} document.body.classList.toggle('padon',padWas); }
      return bad.length?bad.join('; '):null; }},
-  {v:'31.64',what:'his order 2026-10-18 (no raider on screen; the AI ones are pillager bots): the settings rows, the pillager bots option, the board title, the sound key, the contract words, the callouts and the bush hint say pillager bot(s) and none of them says raider',
+  {v:'31.64',what:'his order 2026-10-18 (no raider on screen; the AI ones are pillager bots): the settings rows, the pillager bots option, the sound key, the contract words, the callouts and the bush hint say pillager bot(s), the board title says CURRENT PILLAGERS (his 2026-10-28 order), and none of them says raider',
    run:function(){
      var bad=[], i, s, src, rx=/\braiders?\b/i, g=null, draws, head=false, old=false, want, txt;
      try{
@@ -21367,10 +21383,11 @@ window.__REGRESS=[
          if(g&&g.player){
            draws=__textTrace(function(){ __frame(0.016); });
            for(i=0;i<draws.length;i++){ s=String(draws[i].t);
-             if(/^CURRENT PILLAGER BOTS\s+\d+$/.test(s)) head=true;
-             if(/^CURRENT PILLAGERS/.test(s)) old=true; }
-           if(!head) bad.push('the board drew no CURRENT PILLAGER BOTS heading');
-           if(old) bad.push('the board still reads CURRENT PILLAGERS');
+             // HIS ORDER (2026-10-28): "This should say 'current pillagers'"; "pillagers should always be referred to as 'pillagers' never 'pillager bots'"
+             if(/^CURRENT PILLAGERS\s+\d+$/.test(s)) head=true;
+             if(/^CURRENT PILLAGER BOTS/.test(s)) old=true; }
+           if(!head) bad.push('the board drew no CURRENT PILLAGERS heading');
+           if(old) bad.push('the board still reads CURRENT PILLAGER BOTS');
          }
        }
        return bad.length?bad.join('; '):null;
@@ -22492,9 +22509,9 @@ window.__REGRESS=[
      function judge(tag,r,wallet,notes){
        var C=HUDBOX.cond, labs=wallet?['cash','xp','stash','backpack']:[], pl=[], i,j,p,q,box,rows=[],mm=MMAP.box,ref=null,eps=1.5;
        if(notes) labs.push('notes logged');
-       if(!C||!mm){ bad.push(tag+': missing run info or minimap'); return; }
-       for(i=0;i<r.p.length;i++){p=r.p[i];if(p.x0>=W*.55&&p.x1<=W+1&&p.x1-p.x0>=W*.06&&p.y0>=0&&p.y1<=C.y+C.h+2)pl.push(p);}
-       pl.sort(function(a,b){return a.y0-b.y0;});
+       if(!C||!mm){ bad.push(tag+': missing run info or minimap'); return; }   /* v35.xx (cw-clockcard), HIS ORDER (2026-10-28): "this menu should spawn in upper right hand corner": the column is the minimap, the run info panel, then the notes row UNDER it (EDGEBOX.notes) */ var NB=(labs.length&&typeof EDGEBOX==='object'&&EDGEBOX&&EDGEBOX.notes)?EDGEBOX.notes:null, yB=NB?Math.max(C.y+C.h,NB.y+NB.h)+2:C.y+C.h+2;
+       for(i=0;i<r.p.length;i++){p=r.p[i];if(p.x0>=W*.55&&p.x1<=W+1&&p.x1-p.x0>=W*.06&&p.y0>=0&&p.y1<=yB)pl.push(p);}
+       pl.sort(function(a,b){return a.y0-b.y0;}); if(pl[0]&&(pl[0].y0>H*.05||W-pl[0].x1>W*.03))bad.push(tag+': the column does not start at the top right corner'); if(mm.y+mm.h>C.y+.5)bad.push(tag+': the minimap is not above the run info panel');
        if(pl.length!==(labs.length?3:2))bad.push(tag+': expected compact wallet, minimap and run info plates; found '+pl.length);
        for(i=0;i<pl.length;i++){
          p=pl[i];if(Math.abs(p.x0-C.x)>eps||Math.abs(p.x1-C.x-C.w)>eps)bad.push(tag+': corner plate width or right edge differs');
@@ -22502,9 +22519,9 @@ window.__REGRESS=[
        }
        if(Math.abs(mm.w-mm.h)>eps||Math.abs(mm.x-C.x)>eps||Math.abs(mm.w-C.w)>eps)bad.push(tag+': minimap is not a column-width square');
        if(labs.length){
-         box=pl[0];if(!box){bad.push(tag+': wallet plate missing');return;}
-         if(box.y0>H*.05||W-box.x1>W*.03)bad.push(tag+': wallet is not at the top right');
-         if(box.y1>mm.y-.5)bad.push(tag+': wallet overlaps the minimap');
+         box=pl[pl.length-1];if(!box||pl.length<3){bad.push(tag+': notes plate missing');return;}
+         if(W-box.x1>W*.03)bad.push(tag+': notes row is not on the right edge'); if(box.y0>C.y+C.h+H*.03)bad.push(tag+': notes row is not right under the run info panel');
+         if(box.y0<C.y+C.h-.5)bad.push(tag+': notes row overlaps the run info panel');
          for(i=0;i<labs.length;i++){
            var label=null,value=null,left=box.x0+(i%2)*(box.x1-box.x0)/2,right=left+(box.x1-box.x0)/2;
            for(j=0;j<r.t.length;j++){q=r.t[j];if(q.d===labs[i]&&q.al==='left'&&q.x>=left&&q.x<right&&q.y>=box.y0&&q.y<=box.y1){label=q;break;}}
@@ -22521,7 +22538,7 @@ window.__REGRESS=[
            rows[i]=label;
          }
        }
-       for(i=0;i<r.t.length;i++){q=r.t[i];if(q.d==='run info'||((typeof riOpen==='function')&&/^(contracts|goals) \d+\/\d+/i.test(q.d)))ref=q;if(q.x>=C.x&&q.x<=C.x+C.w&&q.y>=0&&q.y<=C.y+C.h&&q.d!==q.d.toLowerCase())bad.push(tag+': corner text is not lower case');}
+       for(i=0;i<r.t.length;i++){q=r.t[i];if(q.d==='run info'||((typeof riOpen==='function')&&/^(contracts|goals) \d+\/\d+/i.test(q.d)))ref=q;if(q.x>=C.x&&q.x<=C.x+C.w&&q.y>=0&&q.y<=yB&&q.d!==q.d.toLowerCase())bad.push(tag+': corner text is not lower case');}
        if(!ref)bad.push(tag+': run info title missing');
      }
      try{
@@ -26222,7 +26239,7 @@ window.__REGRESS=[
        try{ __endRaid('abandon'); }catch(_e){}
        __topClear();
      } }},
-  {v:'30.53',what:'the demo gun card has no item-value line and no backpack hint; career keeps both (his Q56, 10-18)',
+  {v:'30.53',what:'the demo gun card has no item-value line and no backpack hint; career keeps the backpack hint and has no item-value line (his Q56, 10-18; his order 10-28)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy';
      var g=null, oF=ctx.fillText, tx=[], a0, car, dem;
@@ -26235,7 +26252,9 @@ window.__REGRESS=[
        g.bagOpen=false; g.mapOpen=false; g.paused=false; keys={}; mouse.down=false; a0=g.arcade;
        g.arcade=0; car=cue();
        g.arcade=1; dem=cue();
-       if(!car.bp||!car.val) return 'career lost the backpack hint or the item-value line (hint '+car.bp+', value '+car.val+')';
+       // his order (2026-10-28): "item number is useless; remove it. also remove the stash value": career keeps the backpack hint, no item-value line
+       if(!car.bp) return 'career lost the backpack hint';
+       if(car.val) return 'career still shows the item-value line (N ITEMS $N)';
        if(dem.bp) return 'the demo still shows the backpack hint';
        if(dem.val) return 'the demo still shows the item-value line';
        return null;
@@ -34070,7 +34089,7 @@ window.__REGRESS=[
        __topClear();
      }
      return bad.length?bad.slice(0,6).join('; '):null; }},
-  {v:'27.99',what:'his answer 14: the DEMO countdown clock is bigger: the minutes and seconds under the score draw at 18 pixels or more, and in the last minute at 25 or more, and clear the score',
+  {v:'27.99',what:'his answer 14: the DEMO countdown clock is bigger: the minutes and seconds draw at 18 pixels or more, and in the last minute at 25 or more; his order 2026-10-28: the clock stands above the score in bigger type',
    run:function(){
      if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object'||typeof arcadeScoreHud!=='function') return 'SKIP: no arcade here';
      var bad=[], g=null, proto, oFt, rec=[], own=false, px0, px1, y0, y1, bot0, bot1, rs=say;
@@ -34091,11 +34110,11 @@ window.__REGRESS=[
        say=function(){}; own=true;
        proto=CanvasRenderingContext2D.prototype; oFt=proto.fillText;
        px0=grab(300); px1=grab(30);
-       if(!px0.c) bad.push('the clock is not drawn under the score at 5:00');
+       if(!px0.c) bad.push('the clock is not drawn with the score at 5:00');
        else if(!(px(px0.c.f)>=18)) bad.push('the clock is '+px(px0.c.f)+' pixels at 5:00, not 18 or more');
-       if(!px1.c) bad.push('the clock is not drawn under the score at 0:30');
+       if(!px1.c) bad.push('the clock is not drawn with the score at 0:30');
        else if(!(px(px1.c.f)>=25)) bad.push('the clock is '+px(px1.c.f)+' pixels in the last minute, not 25 or more');
-       if(px0.c&&px0.all.length>1){ y0=px0.c.y; var sc=px0.all.filter(function(r){ return r.t!==px0.c.t&&/\d/.test(r.t)&&px(r.f)>=20; })[0]; if(sc&&!(px0.c.y>sc.y+px(px0.c.f)*0.5)) bad.push('the clock sits on the score ('+px0.c.y+' under '+sc.y+')'); }
+       /* his order 2026-10-28: "Clock should be bigger than score and should be above score." */ if(px0.c&&px0.all.length>1){ y0=px0.c.y; var sc=px0.all.filter(function(r){ return r.t!==px0.c.t&&/\d/.test(r.t)&&px(r.f)>=20; })[0]; if(sc){ if(!(px0.c.y<sc.y-px(sc.f))) bad.push('the clock is not above the score ('+px0.c.y+' vs score '+sc.y+')'); if(!(px(px0.c.f)>px(sc.f))) bad.push('the clock is '+px(px0.c.f)+' pixels, not bigger than the score at '+px(sc.f)); } }
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{
        try{ if(proto&&oFt) proto.fillText=oFt; }catch(_f){}
@@ -36619,8 +36638,8 @@ window.__REGRESS=[
        if(hand&&plate.x<hand.x+hand.w&&!(typeof handPlateBox==='function'&&plate.y+plate.h<=hand.y-Math.round(8*z))) bad.push(tag+'the plate is neither right of nor clear above the item in hand');
        if(hit(plate,HUDBOX.gear,0)) bad.push(tag+'the plate overlaps the gear card');
        if(hit(plate,HUDBOX.body,0)) bad.push(tag+'the plate overlaps the health block');
-       if(Math.abs((plate.x+plate.w)-(last.x+last.w))>Math.round(24*z)) bad.push(tag+'the plate ends at '+Math.round(plate.x+plate.w)+', not at the right end of the gun bar ('+Math.round(last.x+last.w)+')');
-       if(!(plate.y+plate.h<=last.y)) bad.push(tag+'the plate is not over the gun bar');
+       /* v35.xx (cw-clockcard), HIS ORDER (2026-10-28): "air strike needs to move ABOVE this weapon panel, and be further over on the right hand side": right edge flush with the gun card (HUDBOX.gear), or with the screen margin where it clamps */ var GC=HUDBOX.gear, gR; if(!(GC&&GC.w>0&&GC.h>0)){ bad.push(tag+'staging: no gun card drawn'); return; } gR=Math.min(GC.x+GC.w,W-Math.round(8*z)); if(Math.abs((plate.x+plate.w)-gR)>2) bad.push(tag+'the plate ends at '+Math.round(plate.x+plate.w)+', not flush with the right edge of the gun card ('+Math.round(gR)+')');
+       if(!(plate.y+plate.h<=GC.y)) bad.push(tag+'the plate is not above the gun card (plate bottom '+Math.round(plate.y+plate.h)+', card top '+Math.round(GC.y)+')');   // v35.xx (cw-clockcard): over the gun card now, not merely over the gun bar
      }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -54202,10 +54221,14 @@ window.__REGRESS=[
        if(seen.indexOf('YOU '+arcadeCr(1234))<0) bad.push('the HUD does not show YOU 1,234 SP');
        if(seen.some(function(s){ return s.indexOf('$1,234')>=0; })) bad.push('the HUD score is still drawn in dollars');
        if(__state()===g&&!g.over){
-         g.labels=[]; ARCADE.streak=null;
+         g.labels=[]; ARCADE.streak=null; g.fd=null;
+         // cw-clockcard (his HUD orders 2026-10-28): sp floats removed; the +N SP rides on the player's own kill line in the feed (Ln.money)
+         var kl=(typeof feedKillLine==='function')?feedKillLine('YOU',true,false,'CRAWLER',HUDC.warn,''):null;
          d=arcadeKill('crawler',false,false,p.x+300,p.y);
          if(d!==50) bad.push('a crawler kill scored '+d+', not 50');
-         if(!hasLbl(g,'+'+arcadeCr(50))) bad.push('the crawler kill popup is not +50 SP ('+(g.labels||[]).map(function(l){ return l&&l.txt; }).join(',')+')');
+         if(hasLbl(g,'+'+arcadeCr(50))||(g.labels||[]).some(function(l){ return l&&/\bSP\b/.test(String(l.txt||'')); })) bad.push('the crawler kill still floats an SP label ('+(g.labels||[]).map(function(l){ return l&&l.txt; }).join(',')+')');
+         if(!kl) bad.push('no kill line in the feed for the crawler kill');
+         else if(kl.money!=='+'+arcadeCr(50)) bad.push('the crawler kill line does not carry +50 SP ('+(kl.money||'nothing')+')');
        } else bad.push('the arcade raid ended');
        bT=arcadeBoardTonight; bB=arcadeBoardBest; ownB=true;
        arcadeBoardTonight=function(){ return [{run:'zz31',i:'QXZ',s:4321,t:Date.now()}]; };
@@ -55484,7 +55507,7 @@ window.__REGRESS=[
        __topClear();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'23.38',what:'arcade15, his order 2026-10-11: popups and streaks, two crawler kills 0.5 s apart chain a x2 streak, the second scores 100 with a +100 popup, DOUBLE KILL takes the alert lane, the x2 badge shows beside TEAM SCORE, a kill 5 s later starts again, and a normal raid gets none of it',
+  {v:'23.38',what:'arcade15, his order 2026-10-11: popups and streaks, two crawler kills 0.5 s apart chain a x2 streak, the second scores 100 with no SP float over the body (his order 2026-10-28), DOUBLE KILL takes the alert lane, the x2 badge shows beside TEAM SCORE, a kill 5 s later starts again, and a normal raid gets none of it',
    run:function(){
      var bad=[], g=null, g2=null, m0, d, rs=say, own=false, lines=[], cx=null, ft=null, ownF=false, seen=[], f, i, hasL=false, nD='DOUBLE '+'KILL';
      function kill(gg,dx){ var q=mkCrawler(gg.player.x+dx,gg.player.y); q.byPlayer=1; q.elite=0; q.hp=0; gg.ents.push(q); __ents(0.016); return gg.ents.indexOf(q)<0; }
@@ -55501,13 +55524,14 @@ window.__REGRESS=[
        if(!kill(g,300)) return 'SKIP: staging: the first crawler did not die';
        d=(ARCADE.mine|0)-m0;
        if(d!==50) bad.push('the first crawler kill scored '+d+', not 50');
-       if(!hasLbl(g,'+50')) bad.push('no +50 popup for the first kill');
+       // re-aimed (cw-clockcard), his order 2026-10-28: "score ... should NOT pop on the screen (like looting does) every time sp is earned"
+       if(hasLbl(g,'+50')) bad.push('a +50 SP popup still floats in G.labels for the first kill');
        g.t+=0.5; m0=ARCADE.mine|0;
        if(!kill(g,340)) return 'SKIP: staging: the second crawler did not die';
        d=(ARCADE.mine|0)-m0;
        if(!ARCADE.streak||ARCADE.streak.n!==2) bad.push('two kills 0.5 s apart give a streak of '+(ARCADE.streak?ARCADE.streak.n:'none')+', not 2');
        if(d!==100) bad.push('the second kill of a streak scored '+d+', not 100 (x2)');
-       if(!hasLbl(g,'+100')) bad.push('no +100 popup in G.labels ('+(g.labels||[]).map(function(l){ return l&&l.txt; }).join(',')+')');
+       if(hasLbl(g,'+100')||hasLbl(g,'+50')) bad.push('an SP popup still floats in G.labels ('+(g.labels||[]).map(function(l){ return l&&l.txt; }).join(',')+')');
        if(lines.indexOf(nD+'|ext')<0) bad.push('DOUBLE KILL was not said in the ext lane ('+lines.slice(-3).join(' / ')+')');
        if(!g.alert||g.alert.m!==nD) bad.push('the alert lane holds '+(g.alert?g.alert.m:'nothing')+', not DOUBLE KILL');
        if(!g.over&&__state()===g){
@@ -97262,10 +97286,18 @@ window.__REGRESS=[
        var ln=null; for(var i=0;i<rec.length;i++) if(/notes? logged/.test(rec[i].t)){ ln=rec[i]; break; }
        if(!ln) bad.push('control: the notes line was not drawn');
        // v28.xx (cw-cx-newreds): The notes row lives inside the compact wallet, below its cash/stash lines; the hidden DOM box is not its boundary.
+       // v35.xx (cw-clockcard), HIS ORDER (2026-10-28): "this menu should spawn in upper right hand corner": the notes row is UNDER the run info panel now.
        else if(typeof TRG==='object'&&TRG&&TRG.n>0){
-         var tg=trGeo(), edge=tg.yE/tg.z, top=tg.y0;
-         if(!(ln.y>top&&ln.y<edge)) bad.push('the notes row is outside the compact wallet: '+ln.y+' vs '+top+'..'+edge);
-         var prior=0; for(var j=0;j<rec.length;j++) if(/^(cash|xp|stash|backpack)$/.test(rec[j].t)&&rec[j].y>top&&rec[j].y<edge) prior=Math.max(prior,rec[j].y);
+         var tg=trGeo(), top=tg.y0, C0=(typeof HUDBOX!=='undefined')&&HUDBOX.cond, NB=(typeof EDGEBOX!=='undefined')&&EDGEBOX.notes, ny=(TRG.yN>0)?TRG.yN:top, edge=ny+tg.rh;
+         if(!(ln.y>ny&&ln.y<edge)) bad.push('the notes row is outside its plate: '+ln.y+' vs '+ny+'..'+edge);
+         if(C0&&C0.h>0){
+           var MB=(typeof MMAP==='object'&&MMAP&&MMAP.box)||null, ctop=MB?(MB.y+MB.h+Math.round(tg.gp*tg.z)):Math.ceil(top*tg.z);   // the top of the corner column, or one gap under the minimap when it is on (the reset turns it on)
+           if(!(ln.y*tg.z>C0.y+C0.h)) bad.push('the notes row is not under the run info panel: '+Math.round(ln.y*tg.z)+' vs panel bottom '+Math.round(C0.y+C0.h));
+           if(NB&&NB.y<C0.y+C0.h) bad.push('the notes plate starts at '+Math.round(NB.y)+', over the run info panel ending at '+Math.round(C0.y+C0.h));
+           if(MB&&MB.y>Math.ceil(top*tg.z)+2) bad.push('the minimap is not in the top right corner: top '+Math.round(MB.y)+' vs '+Math.ceil(top*tg.z));
+           if(C0.y>ctop+tg.z+2) bad.push('the run info panel is not at the top of the corner column: top '+Math.round(C0.y)+' vs '+Math.round(ctop));
+         }
+         var prior=0; for(var j=0;j<rec.length;j++) if(/^(cash|xp|stash|backpack)$/.test(rec[j].t)&&rec[j].y>ny&&rec[j].y<edge) prior=Math.max(prior,rec[j].y);
          if(typeof riOpen==='function'){ if(prior) bad.push('186b (the quiet hud): wallet figures are still drawn in the raid corner'); }   // his order of 10-27: the notes row is the only row
          else if(!prior||ln.y<=prior) bad.push('the notes row is not below the wallet figures');
        }else if(ln.y<=bottom) bad.push('the notes line overlaps the legacy corner readout');
