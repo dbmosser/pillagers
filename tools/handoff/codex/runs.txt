@@ -454,3 +454,7 @@
 2026-10-28 17:28 o-09b-red-35.53-35.44-feed-hidden-after-abandon-ask 69s ok PARTIAL in=1141002 out=10596 run=3
 2026-10-28 17:30 o-09b-red-35.53-35.44-feed-hidden-after-abandon-ask 36s ok DONE in=1313980 out=11690 run=4
 2026-10-28 17:33 o-09c-red-29.33-pause-sp-gold-token 199s ok PARTIAL in=592821 out=8327 run=1
+2026-10-28 17:42 o-09c-red-29.33-pause-sp-gold-token 15s ok DONE in=688074 out=8572 run=2
+2026-10-28 17:45 o-09d-red-35.81-preraid-names-and-ledger 226s ok PARTIAL in=863625 out=7849 run=1
+2026-10-28 17:48 o-09d-red-35.81-preraid-names-and-ledger 68s ok PARTIAL in=1198147 out=10423 run=2
+2026-10-28 17:55 o-09d-red-35.81-preraid-names-and-ledger 331s ok PARTIAL in=2902346 out=22555 run=3

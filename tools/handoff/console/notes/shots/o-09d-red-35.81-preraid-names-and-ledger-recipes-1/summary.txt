@@ -1,0 +1,14 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  preraid-zones-20                       NOT STAGED   4.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: ocLedger is not defined
+    at <anonymous>:26:19
+    at async <anonymous>:1:21
+  preraid-zones-24                       NOT STAGED   6.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: renderSector is not defined
+    at <anonymous>:5:1
+    at async <anonymous>:1:21
+== 4k : window 3876x2265, viewport 3840x2160
+  preraid-zones-20                       NOT STAGED   4.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: ocLedger is not defined
+    at <anonymous>:26:19
+    at async <anonymous>:1:21
+  preraid-zones-24                       NOT STAGED   6.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: renderSector is not defined
+    at <anonymous>:5:1
+    at async <anonymous>:1:21

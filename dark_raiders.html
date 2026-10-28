@@ -3,8 +3,15 @@
 <title>Pillagers</title>
 <style id="cx-condition-ui">
 /* v28.xx (cw-cx-condition-ui): critic round 1, readable condition rewards and one result hero. His chosen blue map and map-first proportions stay. */
-#root #sectormodal #srkitcol{gap:24px}
-#root #sectormodal #sectorpack{flex:0 1 auto;min-height:0;padding:16px 0;border-top:1px solid var(--ui-line);border-bottom:1px solid var(--ui-line)}
+/* v28.xx (cw-cx-preraid-names): preserve whole pack names beside the existing steppers and buy slots, including when the list scrolls. */
+#root #sectormodal #srkitcol{gap:16px;overflow-y:auto}
+#root #sectormodal .srprow[data-pk]{flex:0 0 auto;min-height:48px;max-height:none;padding:4px 0;gap:8px}
+#root #sectormodal .srprow[data-pk] .nm{white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;line-height:1.1}
+#root #sectormodal .srprow[data-pk] .st,#root #sectormodal .srprow[data-pk] .held{flex:none}
+#root #sectormodal .srprow .srbuy.dis{opacity:1}
+#root #sectormodal #sectorkitpick .kitb{height:auto;min-height:52px;padding-top:6px;padding-bottom:6px}
+#root #sectormodal .kitb span{min-width:0;white-space:normal;overflow-wrap:anywhere}
+#root #sectormodal #sectorpack{flex:1 1 auto;min-height:150px;padding:8px 0;border-top:1px solid var(--ui-line);border-bottom:1px solid var(--ui-line)}
 #root #sectormodal .srplist:empty{display:none}
 #root #sectormodal #sectorkit{margin-top:auto!important}
 #root #sectormodal .srcap{font-size:18px;letter-spacing:.04em}
@@ -3848,8 +3855,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.04';
-var VER_AT='2026-10-28 17:40';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.05';
+var VER_AT='2026-10-28 17:58';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -55900,7 +55907,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.04: Pause score gold and run-over seat colours use root tokens; the overlay uses the existing identical scrim token. All colours stay the same and the full shared-look check runs again. Check 36.04 fails on v36.03',
+  now:'v36.05: Pack names wrap beside the same controls. The pack keeps scroll space at 4K. Zones return to the chosen 20 px start and 14 px floor; exits and keyed rooms return to 18 px. The 24 px long dock label crowded a room outline at both resolutions. Comparison pictures: tools/handoff/console/notes/shots/o-09d-red-35.81-preraid-names-and-ledger-recipes-2/preraid-zones-20-1080.jpg, preraid-zones-24-1080.jpg, preraid-zones-20-4k.jpg and preraid-zones-24-4k.jpg. Terms and rewards keep their readability gains. Watch: scroll a long pack at 4K; full names, prices and steppers must stay readable and ascend must remain reachable. Check 36.05 fails on v36.04',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -71829,7 +71836,7 @@ function sectorTitle(n){ return String(n||'').toLowerCase().replace(/\b[a-z]/g,f
 // named zones, the buildings and landmarks, and the extraction points as rings. Drawn once per render into a small canvas.
 function sectorPreviewDraw(cv,M){
   // v32.45 (cw-preraid-a), HIS WORDS (2026-10-19): "give the map some different color so it breaks up the monotny/overwhelmingness of the screen". The map is ICE BLUE: ground #0c1a28, each zone a slightly different blue,
-  // buildings darker with a light edge, names 20 px (shrinking to 12 to fit), exits teal and keyed rooms purple. Everything is still read from the sector's own data, never a made-up shape.
+  // v28.xx (cw-cx-preraid-names): his design A pick (10-20), zones start at 20 px and shrink to 14; exits and keyed rooms stay 18. The 24 px comparison put the long dock over a room outline.
   var c=cv.getContext('2d'), _sk=!!(cv._k&&cv._lw&&cv._lh), W0=_sk?cv._lw:cv.width, H0=_sk?cv._lh:cv.height, sc=Math.min(W0/M.w,H0/M.h), ox=(W0-M.w*sc)/2, oy=(H0-M.h*sc)/2, i, z, b, e, n=0, FF='"Barlow Condensed","Bahnschrift SemiCondensed","Arial Narrow",sans-serif', ZF=['#14304a','#152e3f','#182c47','#172a40','#112538'], R=Math.max(12,78*sc*1.2), L, a1, a2;
   if(!c) return 0;
   var EX=(M.extracts&&M.buildings)?extractsOutside(M.extracts,M.buildings,M.w,M.h):(M.extracts||null);   // v22.16 (K27): the rings where the raid puts them
@@ -71847,11 +71854,11 @@ function sectorPreviewDraw(cv,M){
   if(M.locked) for(i=0;i<M.locked.length;i++){ b=M.locked[i]; if(!b||typeof b.x!=='number'||!b.w) continue;
     c.fillStyle='#1a1228'; c.fillRect(ox+b.x*sc,oy+b.y*sc,b.w*sc,b.h*sc);
     c.strokeStyle='#a866e0'; c.lineWidth=2; c.setLineDash([7,4]); c.strokeRect(ox+b.x*sc+1,oy+b.y*sc+1,b.w*sc-2,b.h*sc-2); c.setLineDash([]);
-    c.font='600 22px '+FF; c.textAlign='right'; c.fillStyle='#e6f1fb'; put(TX(String(b.name||'')),ox+b.x*sc-8,oy+(b.y+b.h/2)*sc+5); n++; }
+    c.font='600 18px '+FF; c.textAlign='right'; c.fillStyle='#e6f1fb'; put(TX(String(b.name||'')),ox+b.x*sc-8,oy+(b.y+b.h/2)*sc+5); n++; }
   if(M.zones) for(i=0;i<M.zones.length;i++){ z=M.zones[i]; if(typeof z.x!=='number'||!z.name) continue;
     // v18.69: a name shrinks to fit its zone and breaks onto two lines at a space; v19.97: and keeps clear of an extraction ring
     (function(){
-      var zw=Math.max(10,z.w*sc-6), fs=24, cx=ox+(z.x+z.w/2)*sc, cy=oy+(z.y+z.h/2)*sc, nm=TX(String(z.name)), ws, k, a1, a2, best=-1, bw=1e9, w1, w2;
+      var zw=Math.max(10,z.w*sc-6), fs=20, cx=ox+(z.x+z.w/2)*sc, cy=oy+(z.y+z.h/2)*sc, nm=TX(String(z.name)), ws, k, a1, a2, best=-1, bw=1e9, w1, w2;
       c.fillStyle='#e6f1fb'; c.textAlign='center';
       // v28.xx (cw-cx-condition-ui): cache room and label bounds once per name; candidate positions only compare rectangles.
       var labelObstacles=null;
@@ -71868,7 +71875,7 @@ function sectorPreviewDraw(cv,M){
       }
       function place(hh,hw){ var top=oy+z.y*sc+hh+1, bot=oy+(z.y+z.h)*sc-hh-1, cand=[cy,top,bot,cy-hh*2-8,cy+hh*2+8], j, e2, ry, r2, k, y, best=null; if(EX) for(j=0;j<EX.length;j++){ e2=EX[j]; if(!e2) continue; ry=oy+e2.y*sc; r2=R+2; cand.push(ry-r2-hh-1,ry+r2+hh+1); } for(k=0;k<cand.length;k++){ y=cand[k]; if(y<top||y>bot||hits(y,hh,hw)) continue; if(best===null||Math.abs(y-cy)<Math.abs(best-cy)) best=y; } return best===null?cy:best; }
       c.font='bold '+fs+'px '+FF;
-      while(fs>20&&c.measureText(nm).width>zw){ fs--; c.font='bold '+fs+'px '+FF; }
+      while(fs>14&&c.measureText(nm).width>zw){ fs--; c.font='bold '+fs+'px '+FF; }
       if(c.measureText(nm).width>zw&&nm.indexOf(' ')>0){
         ws=nm.split(' ');
         for(k=1;k<ws.length;k++){ w1=txRawW(c,ws.slice(0,k).join(' ')); w2=txRawW(c,ws.slice(k).join(' ')); if(Math.max(w1,w2)<bw){ bw=Math.max(w1,w2); best=k; } }
@@ -71882,7 +71889,7 @@ function sectorPreviewDraw(cv,M){
     c.strokeStyle='rgba(71,216,198,.3)'; c.lineWidth=2; c.setLineDash([3,5]); c.beginPath(); c.arc(ox+e.x*sc,oy+e.y*sc,R+7,0,6.2832); c.stroke(); c.setLineDash([]);
     c.strokeStyle='#47d8c6'; c.lineWidth=3; c.beginPath(); c.arc(ox+e.x*sc,oy+e.y*sc,R,0,6.2832); c.stroke();
     c.fillStyle='#47d8c6'; c.beginPath(); c.arc(ox+e.x*sc,oy+e.y*sc,6,0,6.2832); c.fill();
-    c.font='600 22px '+FF; c.textAlign='center'; c.fillStyle='#47d8c6'; put(TX('exit '+String.fromCharCode(97+i)),ox+e.x*sc,oy+e.y*sc+R+22); n++; }
+    c.font='600 18px '+FF; c.textAlign='center'; c.fillStyle='#47d8c6'; put(TX('exit '+String.fromCharCode(97+i)),ox+e.x*sc,oy+e.y*sc+R+22); n++; }
   c.textAlign='left';
   c.setTransform(1,0,0,1,0,0);
   return n;

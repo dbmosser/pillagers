@@ -1,0 +1,6 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  preraid-zones-20                       staged      10.6s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0  | {"scope":"exact historical ledger functions and unchanged base pack CSS; condition style disabled for v35.80, enabled for v35.81","basePackCssIdentical":true,"pack3580":null,"pack3581":"names cut to dots: BURST CARBINE (FIELD)","ledgerv3580":{"original2871":null,"label":"KILLS","value":"600 SP"},"le
+  preraid-zones-24                       staged       6.9s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0  | 24 px comparison, 14 px shrink floor, 18 px exits and keyed rooms
+== 4k : window 3876x2265, viewport 3840x2160
+  preraid-zones-20                       staged      10.8s  total   6: clip 5 off 0 small 0 contrast 1 font 0 overlap 0 focus 0  | {"scope":"exact historical ledger functions and unchanged base pack CSS; condition style disabled for v35.80, enabled for v35.81","basePackCssIdentical":true,"pack3580":"names cut to dots: BANDAGE, SMOKE CANISTER, FRAG CHARGE, ARMOUR PLATE, BURST CARBINE (FIELD), COMPACT SMG (FIELD)","pack3581":"nam
+  preraid-zones-24                       staged       7.0s  total   6: clip 5 off 0 small 0 contrast 1 font 0 overlap 0 focus 0  | 24 px comparison, 14 px shrink floor, 18 px exits and keyed rooms

@@ -517,3 +517,5 @@
 2026-10-28 | o-09b-red-35.53-35.44-feed-hidden-after-abandon-ask | raid feed after Abandon + Escape | closing the pause box now clears the hidden question so the feed returns; no wording or layout changes | before: reproduced by regression on old build; after: lane camera recipe o09b-feed-after-escape-1080.jpg (pending)
 
 2026-10-28 | o-09b-red-35.53-35.44-feed-hidden-after-abandon-ask | raid feed after Abandon + Escape | v36.02 clears the question on close; restored bandage feed visible, staged at 1080p and 4k | before: old-build regression; after: C:/claudecode/dark raiders/tools/handoff/console/notes/shots/o-09b-red-35.53-35.44-feed-hidden-after-abandon-ask-recipes-3/o09b-feed-after-escape-1080.jpg
+2026-10-28 | o-09d-red-35.81-preraid-names-and-ledger | pre-raid | whole pack names wrap; scroll space restored; gap 24 to 16; zones 24 to 20 with floor 14, exit/key labels 22 to 18; comparison rejects 24 because long dock crowds room outline; before tools/handoff/console/notes/shots/o-09d-red-35.81-preraid-names-and-ledger-recipes-2/preraid-zones-24-1080.jpg and preraid-zones-24-4k.jpg; after pending recipe round 3.
+

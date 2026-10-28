@@ -3342,5 +3342,37 @@
   "pic": "tools/handoff/console/notes/shots/o-09b-red-35.53-35.44-feed-hidden-after-abandon-ask-recipes-3/o09b-feed-after-escape-1080.jpg",
   "task": "o-09b-red-35.53-35.44-feed-hidden-after-abandon-ask",
   "when": "2026-10-28T21:29"
+ },
+ "20-1080": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The screen now renders as a proper 90% card with a title, an x, a map, option columns and a lime ascend button, but three columns share the same visual weight and the small text is too small for a couch.",
+  "findings": [
+   "P1 hierarchy: map vs side columns: Keep the 32px 'pre-raid' title. Make 'cold storage' the 32px zone name in tx-1 and demote the stats line to 16px tx-2. Add a 2px --ui-line-hi border to the map panel. Give conditions and kit the same 16px label style and 16px column gaps.",
+   "P1 small text: 'no armour equipped', belt numbers 1-0, '/1', zone labels, map room labels: Set all of these to 16px f-cond 600. Make the belt slots 40px with 16px digits in tx-2. Make the warning 16px --warn with a 24px glyph, and move it directly above the ascend button with an 8px gap.",
+   "P1 pack rows, price column: Use one price style: 16px right-aligned, tx-1 when affordable and --danger when not. Show 'free' or a dash in the blank cells. Make the steppers 40px square with 8px gaps and add 12px more row height.",
+   "P2 conditions column: Give the selected row a --ui-raised fill with a 4px --acc left bar. Raise the '+5% sp' tags to 16px --warn. Group the rows under 16px tx-2 labels with 24px between groups.",
+   "P2 map panel: Dim the room fills to --ui-panel and the map tint to 8% opacity, and draw walls at 1px --ui-line-hi. Keep the teal exits. Add a 16px legend for the purple squares, or remove them."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-09d-red-35.81-preraid-names-and-ledger-recipes-2/preraid-zones-20-1080.jpg",
+  "task": "o-09d-red-35.81-preraid-names-and-ledger",
+  "when": "2026-10-28T21:49"
+ },
+ "24-1080": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The old world-space station-label screen is now a proper centred pre-raid card with an x, one lime primary button and clear columns, but it is crowded, the type sizes are too small and uneven, and the map is an empty-looking block of boxes.",
+  "findings": [
+   "P1 pack list rows (medkit to compact smg), prices, belt, no-armour warning: Set every row value to 16px minimum and row names to 20px. Show prices in tx-1 at 16px. Use --danger only on the one row the player cannot afford, and put a 'cannot afford' state on that row instead of colouring the whole column. Set the warning to 16px --warn.",
+   "P1 right column (kit, pack, belt, warning, ascend): Use 16px gaps between sections and one row height of 48px. Make the steppers 40x40 with a 1px --ui-line-hi border. Make the price column a fixed 96px, right-aligned. Move the belt into its own pane or collapse it. Keep the scrollbar but pad it 8px from the price column.",
+   "P1 map zone labels (the long dock, packing floor, chill row, scrap line, the sump): Use one label style: 20px f-cond 600 tx-1 on a --scrim pill with 8px padding, placed 8px clear of any outline. Put the 14px keyed-room labels on the same pill style at 16px. Fill the room boxes with a --ui-raised tint at 40% and add small loot or door glyphs so they are not blank.",
+   "P1 header and subheader ('pre-raid', 'cold storage', 'ascending here', stat line): Make 'pre-raid' the 32px f-cond 700 title. Make 'cold storage' 20px tx-1 as the subtitle. Fold the stat line into a 16px tx-2 line directly under the subtitle on the left, and make 'ascending here' a quiet 16px label with no border.",
+   "P2 conditions column (surface, weather, seed): Give the selected row a 3px --acc left bar plus a --ui-raised fill, and give idle rows a 1px --ui-line border. Set group labels to 16px tx-2 with +.04em tracking and a 24px top gap. Set '+5% sp' to tx-1 at 16px."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-09d-red-35.81-preraid-names-and-ledger-recipes-2/preraid-zones-24-1080.jpg",
+  "task": "o-09d-red-35.81-preraid-names-and-ledger",
+  "when": "2026-10-28T21:50"
  }
 }

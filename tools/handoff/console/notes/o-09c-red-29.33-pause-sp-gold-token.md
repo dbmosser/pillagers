@@ -7,3 +7,6 @@
 - New regression fails immediately on the original raw pause gold. On the patched build it checks the computed root gold, unchanged seat tokens, invokes all of check 29.33 (including its mode, button, font and panel assertions), then stages a seeded live raid and verifies computed headline, non-muted setting factor, and end-rule gold are rgb(255, 192, 74). Raid and profile cleanup follows existing pause checks.
 - No screenshots requested because this is an exact-colour token refactor with no visible change. No fixture retarget is needed.
 - Remaining lane work: preflight, ship gate, fingerprint, and ON HIS PC confirmation. Do not report the build as shipped until those results arrive.
+
+--- codex run 2026-10-28 17:42 ---
+2026-10-28 completion: The lane reports cw-cx-pausesp-gold shipped in game v36.04. The shipped regression includes the computed pause gold assertions and the full unchanged check 29.33. ON HIS PC v36.04: his 8802 serves 36.04, confirmed 33 seconds after shipping. Task complete; no further changes or pictures required for this exact-colour token refactor.

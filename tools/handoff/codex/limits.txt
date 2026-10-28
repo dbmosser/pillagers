@@ -95,3 +95,7 @@
 2026-10-28 17:28 week=28.0% 5h=79.0% week_resets=2026-11-04 01:35 job=o-09b-red-35.53-35.44-feed-hidden-after-abandon-ask
 2026-10-28 17:30 week=28.0% 5h=79.0% week_resets=2026-11-04 01:35 job=o-09b-red-35.53-35.44-feed-hidden-after-abandon-ask
 2026-10-28 17:33 week=29.0% 5h=82.0% week_resets=2026-11-04 01:35 job=o-09c-red-29.33-pause-sp-gold-token
+2026-10-28 17:42 week=29.0% 5h=82.0% week_resets=2026-11-04 01:35 job=o-09c-red-29.33-pause-sp-gold-token
+2026-10-28 17:45 week=29.0% 5h=85.0% week_resets=2026-11-04 01:35 job=o-09d-red-35.81-preraid-names-and-ledger
+2026-10-28 17:48 week=29.0% 5h=86.0% week_resets=2026-11-04 01:35 job=o-09d-red-35.81-preraid-names-and-ledger
+2026-10-28 17:55 week=30.0% 5h=3.0% week_resets=2026-11-04 01:35 job=o-09d-red-35.81-preraid-names-and-ledger

@@ -70,3 +70,4 @@
 10-28 17:14 v36.01 cw-cx-medalwidth on his pc after 97s (8802 serves 36.01) week 84%
 10-28 17:23 v36.02 cw-cx-abandonfeed on his pc after 49s (8802 serves 36.02) week 84%
 10-28 17:37 v36.03 cw-cardstamp on his pc after 17s (8802 serves 36.03) week 84%
+10-28 17:41 v36.04 cw-cx-pausesp-gold on his pc after 33s (8802 serves 36.04) week 84%
