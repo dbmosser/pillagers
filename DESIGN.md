@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.35 - F1 KEY LIST ON THE LEFT
+
+Co-op hunt while he was away. his order 10-27 hitting f1 to get the controls should be over on the left, not the middle of the screen; on the picture he picked a: just the f1 key list moves to the left side
+
+MEASURED. Check 35.35 passes, and fails on v35.34.
 ## v35.34 - NOTHING BEHIND THE TITLE, NO ROBOTS IN THE UNDERCROFT
 
 Co-op hunt while he was away. his order 10-27: get rid of the graphics behind the title screen, they make no sense, there are robots inside the undercroft and that should never happen. The title showed the Undercroft floor with a pillager and a sentry fighting each side of the menu

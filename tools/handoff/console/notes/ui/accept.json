@@ -883,17 +883,17 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The menu is a clean, readable column with a strong lime primary, but it is unchanged apart from the moving background sprites. The orange gradient logo, the stacked button list and the busy backdrop keep it from looking polished.",
+  "verdict": "The busy sprite backdrop is gone and the menu now reads clearly on a calm dark vignette, but the gold gradient logo, the four same-weight mode rows and the cramped saves block are all still unchanged and generic.",
   "findings": [
-   "P1 pillagers logo: Use a flat tx-1 wordmark, or a flat --acc one, with no gradient and no shadow. Keep gold only for rarity bars. The title and the primary button should not both shout, so make the logo about 56px f-cond 800 in tx-1.",
-   "P1 mode buttons and saves block (y 441-805): Keep '1 player' as the hero. Give the other modes a quieter style (a 16px label row or 2 columns). Add 32px between the mode group and saves. Move the arcade demos out of the main list or demote them.",
-   "P1 background sprites: Raise the scrim to rgba(6,7,8,.80) or more over the centre 700px column. Keep the sprites out of x 640-1280 and y 280-820, or blur them harder and drop their opacity to 40 percent.",
-   "P2 saves row (y 713-754) and name row (y 765-804): Use one row style, with --ui-raised fill and a 1px --ui-line-hi border. Use lime only for the selected row. Make 'change name' and 'create a new save' the same fill, with 16px gaps. Make the 'saves' label 16px tx-2 at 4.5:1 or better.",
-   "P2 tagline 'ascend. pillage. extract.': Use 20px --tx-2 with +.04em tracking and add a 24px gap above and 32px below, or delete it. Put it on a calm band."
+   "P1 pillagers logo (x 800-1120, y 290-370): Make the wordmark flat. Use tx-1 #efe9dc at 56px f-cond 800 with no gradient and no shadow, or use flat --acc. Remove the shadow.",
+   "P1 mode buttons (y 441-665): Keep co-op as the only secondary row. Put the two arcade demos in a single 16px tx-2 row of two small buttons with a 16px gap, or move them into a submenu. Drop '(same machine)' or make it a 16px tx-2 sub-label.",
+   "P1 whole screen, empty space: Add one controlled art element. For example, a darkened key-art plate at 30 percent opacity behind the column, or a left-aligned layout with the menu in a 560px column at x 96 and hero art on the right. At the least, add a hairline --ui-line panel (--ui-panel, 4px radius, 24px padding) behind the column.",
+   "P2 saves block (y 685-805): Make the label 16px tx-2 at 4.5:1 or better. Use a --ui-raised fill with a 3px lime left bar for the selected save, and tx-1 for the name. Give the three bottom controls one fill, --ui-panel with a --ui-line-hi border. Put 32px between the mode list and the saves.",
+   "P2 tagline 'ascend. pillage. extract.' (y 406): Set it at 20px --tx-2 with +.04em tracking, with 16px between the logo and the tagline and 40px between the tagline and the buttons. Or delete it."
   ],
-  "pic": "tools/handoff/console/notes/shots/89-hub-floor-after/01-title-mode-menu-1080.jpg",
-  "task": "89-hub-floor",
-  "when": "2026-10-22T10:05"
+  "pic": "tools/handoff/console/notes/shots/187-after/01-title-mode-menu-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-28T01:17"
  },
  "44-title-from-character-select": {
   "score": 3,

@@ -1,0 +1,7 @@
+v35.35: f1 key list on the left
+
+the f1 key list opens on the left
+
+Check 35.35. Fails on v35.34.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
