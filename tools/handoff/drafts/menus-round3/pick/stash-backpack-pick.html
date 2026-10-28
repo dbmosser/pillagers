@@ -1,0 +1,107 @@
+<title>Stash Backpack Pick</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500&display=swap">
+<style>
+/* layout: one column of picture cards, each option a full-width screenshot with its pick button under it */
+:root{
+  --bg:#eef0ed; --panel:#ffffff; --line:#cfd4cd; --fg:#16191a; --muted:#5b6360; --acc:#5a6e00; --acc-ink:#ffffff; --pickbg:#f3f8dc;
+  --f-display:"Barlow Condensed","Arial Narrow",Arial,sans-serif; --f-body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0f1112; --panel:#171a1c; --line:#2c3134; --fg:#e8ebe6; --muted:#9aa29e; --acc:#e6ff3d; --acc-ink:#121400; --pickbg:#1f2410; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0f1112; --panel:#171a1c; --line:#2c3134; --fg:#e8ebe6; --muted:#9aa29e; --acc:#e6ff3d; --acc-ink:#121400; --pickbg:#1f2410; color-scheme:dark }
+body{background:var(--bg);color:var(--fg);font:400 17px/1.5 var(--f-body);}
+.wrap{max-width:1180px;margin:0 auto;padding-block:28px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:28px;}
+h1{font:700 clamp(30px,5vw,44px)/1.1 var(--f-display);letter-spacing:.01em;margin:0;text-wrap:balance;}
+.lede{margin:8px 0 0;color:var(--muted);max-width:62ch;}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:20px;display:grid;gap:14px;min-width:0;}
+.card.on{border-color:var(--acc);background:var(--pickbg);}
+.card h2{font:700 26px/1.2 var(--f-display);margin:0;letter-spacing:.02em;}
+.tag{font:600 14px/1 var(--f-display);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+.card p{margin:0;max-width:70ch;}
+.shots{display:grid;grid-template-columns:2fr 1fr;gap:12px;align-items:start;}
+@media (max-width:720px){.shots{grid-template-columns:1fr;}}
+figure{margin:0;display:grid;gap:6px;min-width:0;}
+figure img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:4px;max-width:100%;}
+figcaption{font-size:14px;color:var(--muted);}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;}
+button{font:700 18px/1 var(--f-display);letter-spacing:.06em;padding:12px 22px;border-radius:4px;border:1px solid var(--acc);background:transparent;color:var(--fg);cursor:pointer;}
+button.primary{background:var(--acc);color:var(--acc-ink);}
+button:focus-visible{outline:3px solid var(--acc);outline-offset:3px;}
+.state{font-size:15px;color:var(--muted);}
+textarea{width:100%;box-sizing:border-box;min-height:70px;font:inherit;padding:10px;border:1px solid var(--line);border-radius:4px;background:var(--panel);color:var(--fg);}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Your stash on your 4K screen: pick a backpack layout</h1>
+    <p class="lede">On your screen the right side of the stash is squeezed: the 12 backpack slots get no room at all, and the key hints sit on top of the gun keys. Two fixes fit. Pick one; nothing changes until you do.</p>
+  </header>
+
+  <section class="card" id="card-now">
+    <span class="tag">today</span>
+    <h2>What you see now</h2>
+    <div class="shots">
+      <figure><img src="img/67-now-4k.jpg" alt="stash today at 4K with a stocked stash: backpack hidden, hotbar over the backpack title, key hints over the gun keys" loading="lazy"><figcaption>a stocked stash</figcaption></figure>
+      <figure><img src="img/04-now-4k.jpg" alt="stash today at 4K for a new player" loading="lazy"><figcaption>a new player</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="card" id="card-a">
+    <span class="tag">option a</span>
+    <h2>Backpack and keys on two tabs</h2>
+    <p>The loadout side gets two tabs. <b>backpack</b> shows all 12 slots full size and the hotbar under them. <b>keys</b> holds the gun keys and the item wheel. The item details strip at the bottom goes away; details pop up beside the item you point at, so nothing resizes.</p>
+    <div class="shots">
+      <figure><img src="img/67-a-keys-tab-4k.jpg" alt="option a at 4K: backpack tab with 12 full slots and the hotbar" loading="lazy"><figcaption>a stocked stash</figcaption></figure>
+      <figure><img src="img/04-a-keys-tab-4k.jpg" alt="option a at 4K for a new player" loading="lazy"><figcaption>a new player</figcaption></figure>
+    </div>
+    <div class="row"><button class="primary" id="pick-a" data-pick="a">pick option a</button></div>
+  </section>
+
+  <section class="card" id="card-b">
+    <span class="tag">option b</span>
+    <h2>Everything stays, the loadout side scrolls</h2>
+    <p>Nothing moves or goes away. The backpack shows all 12 slots full size, and the loadout side scrolls: the hotbar, gun keys and item wheel are below it. On your screen you scroll to reach the hotbar.</p>
+    <div class="shots">
+      <figure><img src="img/67-b-scroll-4k.jpg" alt="option b at 4K: backpack with 12 full slots, the rest of the loadout below a scroll" loading="lazy"><figcaption>a stocked stash</figcaption></figure>
+      <figure><img src="img/04-b-scroll-4k.jpg" alt="option b at 4K for a new player" loading="lazy"><figcaption>a new player</figcaption></figure>
+    </div>
+    <div class="row"><button class="primary" id="pick-b" data-pick="b">pick option b</button></div>
+  </section>
+
+  <section class="card">
+    <h2>Anything to add?</h2>
+    <textarea id="note" placeholder="optional: what you would change"></textarea>
+    <div class="row"><button id="send-note">save note</button><span class="state" id="state">no pick yet</span></div>
+  </section>
+</div>
+
+<script>
+(function(){
+  var stateEl=document.getElementById('state'), noteEl=document.getElementById('note'), ref=null, cur={};
+  function show(d){
+    cur=d||{};
+    ['a','b'].forEach(function(k){ document.getElementById('card-'+k).classList.toggle('on',cur.pick===k); });
+    if(cur.note&&document.activeElement!==noteEl&&!noteEl.value) noteEl.value=cur.note;
+    stateEl.textContent=cur.pick?('you picked option '+cur.pick):'no pick yet';
+  }
+  function save(patch){
+    if(!ref){ stateEl.textContent='could not save here; tell the chat instead'; return; }
+    var d={pick:cur.pick||'',note:cur.note||'',at:new Date().toISOString()};
+    for(var k in patch) d[k]=patch[k];
+    stateEl.textContent='saving...';
+    ref.set(d).then(function(){ show(d); }).catch(function(){ stateEl.textContent='could not save; tell the chat instead'; });
+  }
+  [].forEach.call(document.querySelectorAll('[data-pick]'),function(b){ b.addEventListener('click',function(){ save({pick:b.getAttribute('data-pick')}); }); });
+  document.getElementById('send-note').addEventListener('click',function(){ save({note:noteEl.value.trim()}); });
+  if(window.claude&&window.claude.use){
+    window.claude.use('db').then(function(db){
+      if(!db) return;
+      ref=db.doc('answers/stash-backpack');
+      ref.onSnapshot(function(s){ show(s&&s.exists?s.data():{}); });
+    }).catch(function(){});
+  }
+})();
+</script>
