@@ -53,12 +53,17 @@ if(-not (Test-Path -LiteralPath ($R+'\'+$Mark))){ Write-Output ('refusing: no '+
 # the test scripts (corpq.sh, corpus-slices.sh, fuzz.ps1) take their folders from these; unset, they use the spare PC's paths as before
 if($Idle){ $env:PILLAGERS_ROOT=($R -replace '\\','/'); $env:PILLAGERS_SCRATCH=(($W+'\scratch') -replace '\\','/'); New-Item -ItemType Directory -Force -Path ($W+'\scratch') | Out-Null }
 New-Item -ItemType Directory -Force -Path $W,$Out,$FzOut,$CorpDir | Out-Null
+# 10-28 his "everything should restart automatically when I restart my pc": a heartbeat written before this boot is stale whatever its age.
+# After his 23:12 restart the sign-in start found a heartbeat from before the restart, under 10 minutes old, and exited; the runner (and so
+# 8802 and 8799) came back only with the 15-minute task at 23:24.
+$Boot=$null; try{ $Boot=(Get-CimInstance Win32_OperatingSystem -ErrorAction Stop).LastBootUpTime }catch{}
+function HbAgeSec(){ $t=(Get-Item -LiteralPath $Hb -ErrorAction Stop).LastWriteTime; if($Boot -and $t -lt $Boot){ return 1e9 }; return ((Get-Date)-$t).TotalSeconds }
 if(-not $Once -and (Test-Path -LiteralPath $Hb)){
-  if(((Get-Date)-(Get-Item -LiteralPath $Hb).LastWriteTime).TotalSeconds -lt 600){ exit 0 }   # another copy is alive
+  if((HbAgeSec) -lt 600){ exit 0 }   # another copy is alive
 }
-# SPARE-PRESENCE-PAUSE: a heartbeat 10+ minutes old means this PC was off or the last copy died; a pause it was in is over (see below the
-# functions). A copy that restarts itself for a new runner deletes the heartbeat first, so its pause and paused_since go on.
-$HbOld=$false; if(-not $Idle){ try{ $HbOld=(((Get-Date)-(Get-Item -LiteralPath $Hb -ErrorAction Stop).LastWriteTime).TotalSeconds -ge 600) }catch{} }
+# SPARE-PRESENCE-PAUSE: a heartbeat 10+ minutes old (or from before this boot) means this PC was off or the last copy died; a pause it was in
+# is over (see below the functions). A copy that restarts itself for a new runner deletes the heartbeat first, so its pause and paused_since go on.
+$HbOld=$false; if(-not $Idle){ try{ $HbOld=((HbAgeSec) -ge 600) }catch{} }
 $Git=(Get-Command git -ErrorAction SilentlyContinue).Source; if(-not $Git){ $Git='C:\Program Files\Git\cmd\git.exe' }
 $Node=(Get-Command node -ErrorAction SilentlyContinue).Source; if(-not $Node){ $Node='C:\Program Files\nodejs\node.exe' }
 
@@ -609,6 +614,7 @@ function Refresh-Party(){
     $want=$m.Groups[1].Value; $script:lastMaster=$want; $have=G -C $PD rev-parse HEAD
     if($script:gx -ne 0 -or $have.Length -lt 8){ return }
     if($want -eq $have){ if((GetS 'party_head') -ne $have.Substring(0,8)){ PutS 'party_head' $have.Substring(0,8); PutS 'party_ver' (PartyVer $PD) }; return }
+    if($script:playMiss -gt 0){ return }   # 10-28: 8802 is down; Ensure-Play starts it first and the copy update follows (see Ensure-Play)
     $S=$T+'\migrate\party-host-copy.ps1'; if(-not (Test-Path -LiteralPath $S)){ return }
     $p=Start-Process powershell.exe -NoNewWindow -PassThru -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-File',('"'+$S+'"'),'-Prepare','-Force') -RedirectStandardOutput ($W+'\party-refresh.out') -RedirectStandardError ($W+'\party-refresh.err')
     [void]$p.Handle   # PS 5.1: hold the handle so ExitCode is filled in later
@@ -732,16 +738,16 @@ function Ensure-Play(){
     if(((Epoch)-$script:playT) -lt 60){ return }
     $script:playT=Epoch
     if(-not (Test-Path -LiteralPath ($PD+'\.git')) -or -not (Test-Path -LiteralPath ($PD+'\tools\serve.ps1'))){ return }
-    # 10-27 night: only a running -Start counts as a start underway. The -Prepare that Refresh-Party starts on every master move used to
-    # reset the count too, so with master moving every 1 to 3 minutes 8802 stayed down after his 23:12 restart; a -Prepare now skips the look.
-    if((Running 'party-host-copy\.ps1.*-Start') -gt 0){ $script:playMiss=0; return }
-    if((Running 'party-host-copy\.ps1') -gt 0){ return }
     $relay=((Running 'play-relay\.mjs') -gt 0)
     if($relay){ if(RelayGame){ $script:playMiss=0; return } } elseif(Answers 8802){ $script:playMiss=0; Ensure-Collector $PD; return }
     if((PartyIntent) -eq 'stopped'){ if($script:playMiss -ge 0){ Say '8802 has no server: the party copy was stopped on purpose, so it stays off'; $script:playMiss=-1 }; return }
     if($script:playMiss -lt 0){ $script:playMiss=0 }
     $script:playMiss++
     if($script:playMiss -lt 3){ return }
+    # 10-28: a running party-host-copy (the copy update Refresh-Party starts on every new master, or a -Start) used to set the misses back
+    # to 0 before they were counted; with master moving every 1 to 3 minutes 8802 stayed down 18+ minutes after his 23:12 restart. Now the
+    # misses count, a start waits only for the one that is running, and Refresh-Party starts no new update while 8802 is down.
+    if((Running 'party-host-copy\.ps1') -gt 0){ return }
     $S=$T+'\migrate\party-host-copy.ps1'; if(-not (Test-Path -LiteralPath $S)){ return }
     $a=@('-NoProfile','-ExecutionPolicy','Bypass','-File',('"'+$S+'"'),'-Start')
     if(-not $relay -and (PortOpen 8799) -and (Running 'pillagers-party[\\/]+tools[\\/]+collector\.ps1') -eq 0){ $a+='-NoCollector' }
