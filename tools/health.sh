@@ -87,10 +87,10 @@ if [ -n "$ms" ]; then
   kv(){ printf '%s\n' "$ms" | sed -n "s/^$1=//p" | head -1; }
   me=$(kv epoch | tr -dc 0-9); ma=$(( (now - ${me:-0}) / 60 )); mr=$(kv runner | tr -dc 0-9A-F)
   mh=$(git -C "$R" show "master:tools/spare/spare-runner.ps1" 2>/dev/null | sed 's/$/\r/' | sha256sum | cut -c1-8 | tr a-f A-F)
-  mt=$(git -C "$R" log -1 --format=%ct master -- tools/spare/spare-runner.ps1 2>/dev/null)
+  mt=$(git -C "$R" log -1 --first-parent --format=%ct master -- tools/spare/spare-runner.ps1 2>/dev/null)
   echo "main PC runner: $(kv test_run | cut -c1-60), robots $(kv robots), $(kv ram_free_gb) GB free, runner $mr, $ma min ago"
   [ "$ma" -gt 30 ] && prob "main PC runner silent for $ma min (it keeps 8802, the party copy and the bridge up)"
-  [ "$ma" -le 30 ] && [ -n "$mh" ] && [ "$mr" != "$mh" ] && [ $(( now - ${mt:-$now} )) -gt 1200 ] && prob "main PC runner is not on master's copy (it runs $mr, master is $mh): a new runner it could not read, or no update"
+  [ "$ma" -le 30 ] && [ -n "$mh" ] && [ "$mr" != "$mh" ] && ! kv test_run | grep -q "^running" && [ $(( now - ${mt:-$now} )) -gt 1200 ] && prob "main PC runner is not on master's copy (it runs $mr, master is $mh): a new runner it could not read, or no update"
   [ -f "$H/spare/perf-4k.txt" ] && echo "4K two windows on the main PC card: $(head -1 "$H/spare/perf-4k.txt" | cut -c1-220)"
 fi
 fm=$(powershell -NoProfile -Command "[int]((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1MB)" 2>/dev/null | tr -d '\r'); echo "free RAM: ${fm} GB"; rf=$(grep -m1 "^RAM_FLOOR_GB=" "$C/caps.txt" 2>/dev/null | cut -d= -f2 | tr -dc "0-9"); rf=${rf:-6}; [ "${fm:-9}" -lt "$rf" ] && prob "free RAM ${fm} GB is under the ${rf} GB floor (RAM_FLOOR_GB in console/caps.txt)"
