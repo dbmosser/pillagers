@@ -9380,9 +9380,10 @@ window.__REGRESS=[
      } catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ SETSUB=''; try{ renderSettings(); __topClear(); }catch(_f){} }
      return bad.length?bad.join('; '):null; }},
-  {v:'34.93',what:'the Settings side panel for the difficulty row says what the choice on its button means (it read "new player" on the main game)',
+  {v:'34.93',what:'without an OS reduced motion request: the Settings side panel for the difficulty row says what the choice on its button means (it read "new player" on the main game)',
    run:function(){
      if(typeof diffRowHtml!=='function'||typeof setHintShort!=='function') return 'no difficulty row';
+     var om=window.matchMedia;
      var bad=[], go=(P&&P.gameOpts)?JSON.stringify(P.gameOpts):null;
      function pane(tag,word,want,never){
        var b=document.getElementById('set_diff'), r=b&&b.closest?b.closest('.row'):null, h=r?r.querySelector('.hint'):null, s;
@@ -9393,6 +9394,11 @@ window.__REGRESS=[
        if(never&&s.indexOf(never)>=0) bad.push(tag+': the side panel reads "'+s+'" on '+word);
      }
      try{
+       // v28.xx (cw-cx-osmotion): isolate ordinary defaults; the motion check covers the OS override.
+       window.matchMedia=function(q){
+         if(q==='(prefers-reduced-motion: reduce)') return {matches:false,media:q};
+         return om?om.call(window,q):{matches:false,media:q};
+       };
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        itchDefs(0); P.gameOpts={}; applyGameOpts(); SETSUB=''; renderSettings();
        pane('main game','main game','standard hits','new player');
@@ -9402,14 +9408,16 @@ window.__REGRESS=[
        pane('one row by hand','custom','changed by hand','new player');
      } catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
+       window.matchMedia=om;
        SETSUB=''; try{ itchDefs(ON_ITCH?1:0); }catch(_d){}
        try{ if(go===null) delete P.gameOpts; else P.gameOpts=JSON.parse(go); }catch(_g){}
        try{ __topClear(); __resetCfg(); __cleanProfile(); applyGameOpts(); __resetCfg(); xfSnap(); renderSettings(); __topClear(); }catch(_f){}
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'34.92',what:'itch players start on the new player set (forgiving hits, the long raid, rich loot, light shake, the large crosshair, seven extras off), every row stays in Settings, and the difficulty row switches all twelve to the main game and back',
+  {v:'34.92',what:'without an OS reduced motion request: itch players start on the new player set (forgiving hits, the long raid, rich loot, light shake, the large crosshair, seven extras off), every row stays in Settings, and the difficulty row switches all twelve to the main game and back',
    run:function(){
      if(typeof itchDefs!=='function'||typeof diffRowHtml!=='function'||typeof diffSet!=='function') return 'no itch new player defaults';
+     var om=window.matchMedia;
      var bad=[], go=(P&&P.gameOpts)?JSON.stringify(P.gameOpts):null, i, k, b, x;
      var XF=['xfAffix','xfRamp','xfOvPh','xfEvRamp','xfEvBounty','xfEvDebris','xfSupp'];
      function want(tag,ed,rs,lm,sh,xh,xf,word){
@@ -9424,6 +9432,11 @@ window.__REGRESS=[
        else if(b.textContent!==word) bad.push(tag+': the difficulty row says "'+b.textContent+'" not "'+word+'"');
      }
      try{
+       // v28.xx (cw-cx-osmotion): isolate ordinary defaults; the motion check covers the OS override.
+       window.matchMedia=function(q){
+         if(q==='(prefers-reduced-motion: reduce)') return {matches:false,media:q};
+         return om?om.call(window,q):{matches:false,media:q};
+       };
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        // 1 itch, nothing saved: the new player set, and every single row still on its page
        P.gameOpts={}; itchDefs(1); applyGameOpts(); SETSUB=''; renderSettings();
@@ -9447,6 +9460,7 @@ window.__REGRESS=[
        want('not itch',1,540,1,1,1,1,'main game');
      } catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
+       window.matchMedia=om;
        SETSUB=''; try{ itchDefs(ON_ITCH?1:0); }catch(_d){}
        try{ if(go===null) delete P.gameOpts; else P.gameOpts=JSON.parse(go); }catch(_g){}
        try{ __topClear(); __resetCfg(); __cleanProfile(); applyGameOpts(); __resetCfg(); xfSnap(); renderSettings(); __topClear(); }catch(_f){}
