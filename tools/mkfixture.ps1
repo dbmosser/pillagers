@@ -23848,10 +23848,10 @@ window.__REGRESS=[
        try{ __endRaid('abandon'); __topClear(); __cleanProfile(); }catch(_e){}
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'30.69',what:'behind the title a pillager and a robot really fight: shots fly, hits land, the robot dies and the pillager goes down, drawn in the hub pass (his Q52/Q54)',
+  {v:'30.69',what:'the title fight (a pillager and a robot, his Q52/Q54) is off the Undercroft floor since his order of 2026-10-27 (no robots in the Undercroft): the hub pass never draws it, and on its own it still runs and draws without a fault',
    run:function(){
      if(typeof tskInit!=='function'||typeof tskStep!=='function'||typeof tskDraw!=='function') return 'no title fight (no tskInit, tskStep, tskDraw)';
-     if(String(drawHubWorld).indexOf('tskDraw')<0) return 'the hub pass never draws the title fight';
+     if(String(drawHubWorld).indexOf('tskDraw')>=0) return 'the hub pass still draws the title fight';   // retargeted 2026-10-27 (v35.xx cw-titleplain), his order: "there are robots inside the undercroft??? that should never happen"
      var was=TSK, i, err=null;
      try{
        tskInit();
@@ -69384,9 +69384,9 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ delete ctx.fillText; delete wc.fillText; if(ctx.fillText!==oF1) ctx.fillText=oF1; if(wc.fillText!==oF2) wc.fillText=oF2; if(was&&t) t.classList.add('on'); else if(t) t.classList.remove('on'); state=st0; try{ __topClear(); }catch(_c){} }
      return bad.length?bad.join('; '):null; }},
-  {v:'17.83',what:'the title has the Undercroft behind it: with the title up and no floor built yet, one frame builds the floor and draws it under a translucent title',
+  {v:'17.83',what:'the title sits on a plain backdrop (retargeted 2026-10-27, v35.xx cw-titleplain, his order: no graphics behind the title): with the title up and no floor built yet, one frame builds no floor and paints the backdrop under a translucent title',
    run:function(){
-     if(typeof titleSceneReady!=='function'||typeof titleOn!=='function') return 'the title sits on a flat gradient';
+     if(typeof titlePlainBack!=='function'||typeof titleOn!=='function') return 'the title has no plain backdrop';
      if(typeof loop!=='function'||typeof wc==='undefined'||!wc) return 'SKIP: no loop or world canvas in this fixture';
      var bad=[], t=document.getElementById('title'), was=t&&t.classList.contains('on'), st0=state, HB0=HB, d, k, lit=0, bg;
      try{
@@ -69395,8 +69395,8 @@ window.__REGRESS=[
        bg=getComputedStyle(t).backgroundColor;
        if(!/rgba\(/.test(bg)||!(parseFloat(bg.split(',')[3])<1)) bad.push('the title background is not translucent ('+bg+')');
        HID.fromWorker=1; try{ loop(performance.now()); loop(performance.now()+16); }finally{ HID.fromWorker=0; }
-       if(!HB) bad.push('the floor was not built under the title');
-       else{ d=wc.getImageData(0,0,cv.width,cv.height).data; for(k=3;k<d.length;k+=4*211) if(d[k]>0) lit++; if(lit<100) bad.push('nothing was drawn under the title ('+lit+' lit samples)'); }
+       if(HB) bad.push('a floor was built under the title');
+       d=wc.getImageData(0,0,cv.width,cv.height).data; for(k=3;k<d.length;k+=4*211) if(d[k]>0) lit++; if(lit<100) bad.push('the title backdrop was not painted ('+lit+' lit samples)');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ if(!was&&t) t.classList.remove('on'); state=st0; if(HB0) HB=HB0; try{ __topClear(); }catch(_c){} }   // the floor the other checks were built on comes back, not the one this check built under the title
      return bad.length?bad.join('; '):null; }},
