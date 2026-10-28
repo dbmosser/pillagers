@@ -8035,7 +8035,7 @@ window.__REGRESS=[
        // (cw-clockcard, his note 2026-10-28: "'contracts 6/8' -- seems pretty useless": the title is 'goals D/N' or 'run info', never the contract count)
        grab();
        if(!rec.some(function(r){ return r.lo==='run info'||/^goals \d+\/\d+$/.test(r.lo); })) bad.push('SIX: folded, the run info line is not its title (goals D/N or run info)');
-       if(rec.some(function(r){ return /contracts \d+\/\d+/.test(r.lo); })) bad.push('SIX: the run info title still prints the contract count');
+       if(rec.some(function(r){ return (/contracts \d+\/\d+/).test(r.lo); })) bad.push('SIX: the run info title still prints the contract count');
        if(hasIn(CRAWL).length) bad.push('SIX: at rest run info still lists its contracts');
        P.contracts[0].prog=2; grab();
        if(!hasIn(CRAWL).length) bad.push('SIX: a contract moved and run info did not open');
