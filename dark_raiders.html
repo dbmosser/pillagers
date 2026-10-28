@@ -3724,8 +3724,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.39';
-var VER_AT='2026-10-27 22:29';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.40';
+var VER_AT='2026-10-27 22:34';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -24423,7 +24423,7 @@ function drawHand(){
   bw=hb.w; bh=hb.h; x=hb.x; y=hb.y;
   ctx.save();
   hudPlate(x,y,bw,bh,UIC.acc,HUDC.plate);
-  drawIconSprite(ctx,h.k,x+LH(30),y+bh/2,LH(34));
+  drawIconSprite(ctx,h.k,x+LH(30),y+bh/2,LH(34),1); // cw-whitebars, his order 10-27: no cream rank pips
   ctx.textAlign='left'; ctx.font=FS(TYPE.head); ctx.fillStyle=UIC.tx_1; hudText(String(it.name).toUpperCase(),x+LH(54),y+LH(19));
   fl=(h.len>0)?1-h.t/h.len:1;
   if(h.t>0){
@@ -24490,7 +24490,7 @@ function drawWheel(){
     if(on){ ctx.beginPath(); ctx.arc(cx,cy,ri+LH(2)*sc,a0+0.02,a1-0.02); ctx.lineWidth=LH(3)*Math.min(sk,2); ctx.strokeStyle=UIC.acc; ctx.stroke(); }
     rm=(ri+ro)/2; sz=on?R*0.36:R*0.31; ix=cx+Math.cos(ac)*rm; iy=cy+Math.sin(ac)*rm-R*0.05;
     ctx.globalAlpha=fade*(ok?1:0.3);
-    drawIconSprite(ctx,k,ix,iy,sz);
+    drawIconSprite(ctx,k,ix,iy,sz,1);
     ctx.globalAlpha=fade;
     ctx.textAlign='center';
     nm=String(it.name).toUpperCase();
@@ -34733,7 +34733,7 @@ var _cdone=contractExtract(G.bag,haul);
     (function(){ var keys=G.bag.slice(), iss=(_issN||0), k, s='', n=0;
       for(k=keys.length-1;k>=0&&iss>0;k--) if(keys[k]==='bandage'){ keys.splice(k,1); iss--; }
       keys.sort(function(a,b){ return (((ITEMS[b]&&ITEMS[b].use==='gun')?1:0)-((ITEMS[a]&&ITEMS[a].use==='gun')?1:0))||(ival(b)-ival(a)); });   // v35.xx (cw-gunsfirst), HIS ORDER (2026-10-27): "on the extracted screen, always show guns first, that's the best thing to extract, regardless of color/rarity". Guns lead the strip, the dearest gun first, so a gun is never cut by the eight tile cap; everything after them keeps the value order. The reveal still runs right to left, so the guns land last.
-      for(k=0;k<keys.length&&k<8;k++){ if(ITEMS[keys[k]]){ s+='<span class="haulit" data-k="'+keys[k]+'" data-r="'+(dispR(keys[k])||ITEMS[keys[k]].r||'common')+'" data-v="'+ival(keys[k])+'" title="'+escHtml(ITEMS[keys[k]].name)+'" style="display:inline-block;margin:3px;padding:3px;border-radius:8px;background:rgba(0,0,0,.25);border:1px solid '+(RCOL[dispR(keys[k])||ITEMS[keys[k]].r]||'rgba(127,146,216,.35)')+'">'+iconImgHTML(keys[k],52)+'</span>'; n++; } }   // v19.99, seen on the 4K extraction card (2026-10-08): the haul pictures were 34px chips; 52 now
+      for(k=0;k<keys.length&&k<8;k++){ if(ITEMS[keys[k]]){ s+='<span class="haulit" data-k="'+keys[k]+'" data-r="'+(dispR(keys[k])||ITEMS[keys[k]].r||'common')+'" data-v="'+ival(keys[k])+'" title="'+escHtml(ITEMS[keys[k]].name)+'" style="display:inline-block;margin:3px;padding:3px;border-radius:8px;background:rgba(0,0,0,.25);border:1px solid '+(RCOL[dispR(keys[k])||ITEMS[keys[k]].r]||'rgba(127,146,216,.35)')+'">'+iconImgHTML(keys[k],52,1)+'</span>'; n++; } }   // v19.99, seen on the 4K extraction card (2026-10-08): the haul pictures were 34px chips; 52 now
       if(keys.length>8) s+='<span style="color:var(--ash);margin-left:6px">+'+(keys.length-8)+' more</span>';
       if(n) lines.push('<span class="haulstrip" data-sec="'+_secV+'" style="display:inline-block;margin:4px 0 2px">'+s+'</span>');   // v26.xx (career7): the value the card secured, for the reveal total
     })();
@@ -34770,7 +34770,7 @@ var _cdone=contractExtract(G.bag,haul);
       var _lk2=G.bag[shown[j]];
       var li2=ITEMS[_lk2];
       if(!li2) continue;
-      lines.push(iconImgHTML(_lk2,32)+' '+'<span style="color:'+(RCOL[dispR(_lk2)||li2.r]||'#cdd6dd')+'">'+li2.name+'</span>'+   // v19.04, seen on the KIA card screenshot (2026-10-07): each lost thing with its picture, as the backpack and stash show it
+      lines.push(iconImgHTML(_lk2,32,1)+' '+'<span style="color:'+(RCOL[dispR(_lk2)||li2.r]||'#cdd6dd')+'">'+li2.name+'</span>'+   // v19.04, seen on the KIA card screenshot (2026-10-07): each lost thing with its picture, as the backpack and stash show it
         '<span style="color:var(--rust)">  LOST</span>');
     }
     var gone=carriedGuns(G.player), _gp0=G.player;
@@ -34795,14 +34795,14 @@ var _cdone=contractExtract(G.bag,haul);
       _gunN++; if(ITEMS['gun_'+gone[j].id]) _gunVal+=ival('gun_'+gone[j].id);
       var wi=_egArm?P.weapons.indexOf(gone[j].id):-1;
       if(wi>=0){ P.weapons.splice(wi,1); (G.forgeGone=G.forgeGone||[]).push(gone[j].id);   // v23.xx (forge12): its forge goes with it
-        lines.push((ITEMS['gun_'+gone[j].id]?iconImgHTML('gun_'+gone[j].id,32)+' ':'')+'<span style="color:#cdd6dd">'+gone[j].name+'</span><span style="color:var(--rust)">  LOST</span>'); }   // v19.04: and the gun's picture
+        lines.push((ITEMS['gun_'+gone[j].id]?iconImgHTML('gun_'+gone[j].id,32,1)+' ':'')+'<span style="color:#cdd6dd">'+gone[j].name+'</span><span style="color:var(--rust)">  LOST</span>'); }   // v19.04: and the gun's picture
       // v9.55, HIS QUESTION: "KIA screen -- why is the gun different from the
       // others?" This branch is a gun picked up during the raid and never banked,
       // against the branch above which is one out of your armoury. The difference
       // is real, and it is also not actionable and not explained, and every loot
       // item beside it, picked up in the same raid, says LOST. One word, one
       // outcome.
-      else lines.push((ITEMS['gun_'+gone[j].id]?iconImgHTML('gun_'+gone[j].id,32)+' ':'')+'<span style="color:#cdd6dd">'+gone[j].name+'</span><span style="color:var(--rust)">  LOST</span>');   // v19.04: and the gun's picture
+      else lines.push((ITEMS['gun_'+gone[j].id]?iconImgHTML('gun_'+gone[j].id,32,1)+' ':'')+'<span style="color:#cdd6dd">'+gone[j].name+'</span><span style="color:var(--rust)">  LOST</span>');   // v19.04: and the gun's picture
     }
     if(lostIdx.length>shown.length) lines.push('<span style="color:var(--ash)">and '+(lostIdx.length-shown.length)+' more, all gone</span>');
     // v10.72: the guns are in this line now. It listed them as LOST above and
@@ -42509,7 +42509,7 @@ function drawBuzzFx(){
   var GHOST_A=0.27, GHOST_OF={pistol:'pistol',smg:'smg',rifle:'rifle',carbine:'carbine',lmg:'lmg',shotgun:'shotgun',sniper:'sniper',energy:'lance',rocket:'rocket'}, GHOSTSPR={};
   function gunGhost(id,S){
     var e=null, k=id+'|'+Math.round(S), c=GHOSTSPR[k], t, x;
-    try{ e=iconSprite(id,S); }catch(_gi){ e=null; }
+    try{ e=iconSprite(id,S,1); }catch(_gi){ e=null; }
     if(!e||!e.c) return null;
     if(c&&c.src===e.c) return c;
     t=document.createElement('canvas'); t.width=e.c.width; t.height=e.c.height; x=t.getContext('2d');
@@ -42644,7 +42644,7 @@ function drawBuzzFx(){
       // Real item portraits, v2.87: the slot draws the same icon the inventory
       // and the shops use, so a Kettle looks like a Kettle everywhere. The old
       // four-glyph fallback survives for any slot without an icon key.
-      if(S.icon){ drawIconSprite(ctx,S.icon,cx2,cy2,bw*0.64); }   // v18.33: the sprite icon
+      if(S.icon){ drawIconSprite(ctx,S.icon,cx2,cy2,bw*0.64,1); }   // v18.33: the sprite icon
       else if(S.kind==='gun'&&S.vacant&&q<GUNKEYS&&gunGhostDraw(q,cx2,cy2,bw)){ /* v27.xx (gunghost): the ghost of the class this key is for */ }
       else if(S.kind==='gun'){
         ctx.fillRect(cx2-bw*0.28,cy2-bw*0.05,bw*0.46,bw*0.11);
@@ -45838,7 +45838,7 @@ function renderCodex(){
     id=L[i]; W=WEAPONS[id]; r=gunRarity(id); f=codexHas(id); kn=f?gunKillsOf(id):0;
     nw=(f&&seen>0&&(+P.codex[id])>seen);
     h+='<div class="cxt '+(f?'yes':'no')+'" data-gun="'+id+'" style="--cx:'+(RCOL[r]||'#9da3a8')+'">'+
-       '<div class="cxi">'+iconImgHTML(id,52)+'</div>'+
+       '<div class="cxi">'+iconImgHTML(id,52,1)+'</div>'+
        '<div class="cxb"><div class="cxn">'+(f?escHtml(W.name):'NOT FOUND')+'</div>'+
        '<div class="cxr">'+escHtml(ITEMRAR[r]||'')+(gunClassOf(id)?'  \u00b7  '+escHtml(gunClassOf(id)):'')+'</div>'+
        (kn>0?'<div class="cxk">KILLS  '+kn.toLocaleString()+'</div>':'')+'</div>'+
@@ -47121,7 +47121,7 @@ function drawTrade(){
     cy+=LH(20);
     var can=!S.sold&&(P.credits||0)>=S.price;
     ctx.font=FS(TYPE.label);
-    if(!S.sold) drawItemIcon(ctx,S.k,x+LH(24),cy-LH(5),LH(18));
+    if(!S.sold) drawItemIconArt(ctx,S.k,x+LH(24),cy-LH(5),LH(18));
     ctx.fillStyle=S.sold?'#4d5762':(can?IT.c:'#8a5a4a');
     ctx.fillText((padOn()?(((G.pedSel||0)===i+1)?padB('['+pbn(0)+']')+'  ':'     '):('['+(i+2)+']  '))+(S.sold?'sold':IT.name),x+LH(38),cy);   // v13.49: the pad marker
     ctx.textAlign='right';
@@ -48046,25 +48046,25 @@ function mercImgHTML(id,S){
 // sprite painted once per item and size, at the screen scale, with the same lift: sharper, shaded like the stash, and one draw
 // call per icon instead of thirty fills. A size or screen scale change paints a new sprite; the store is capped.
 var ICONSPR={m:{},n:0};
-function iconSprite(key,S){
+function iconSprite(key,S,np){   // cw-whitebars, his order 10-27 ("remove the white bars under items everywhere"): np paints the sprite without the rank pips
   var R, side, k, e, cv2, c2, it;
   if(!(S>0)) return null;
   R=Math.max(1,Math.min(3,Math.round((typeof DPRH==='number'&&DPRH>0)?DPRH*1.5:1.5)));   // v23.xx (gfx4): icons draw on the HUD canvas, which no longer takes the render scale
-  k=key+'|'+Math.round(S)+'|'+R; e=ICONSPR.m[k];
+  k=key+'|'+Math.round(S)+'|'+R+(np?'|np':''); e=ICONSPR.m[k];
   if(e) return e;
   side=Math.ceil(S*1.3*R);
   cv2=document.createElement('canvas'); cv2.width=side; cv2.height=side; c2=cv2.getContext('2d'); if(!c2) return null;
-  drawItemIcon(c2,key,side/2,side/2,S*R);
+  (np?drawItemIconArt:drawItemIcon)(c2,key,side/2,side/2,S*R);
   it=ITEMS[key];
   if(!(WEAPONS[key]||(it&&it.use==='gun'))&&typeof iconLift==='function') iconLift(c2,side,side);
   if(ICONSPR.n>400){ ICONSPR.m={}; ICONSPR.n=0; }
   e={c:cv2,s:side/R}; ICONSPR.m[k]=e; ICONSPR.n++;
   return e;
 }
-function drawIconSprite(c,key,cx,cy,S){
+function drawIconSprite(c,key,cx,cy,S,np){
   var e=null;
-  try{ e=iconSprite(key,S); }catch(_is){ e=null; }
-  if(!e){ drawItemIcon(c,key,cx,cy,S); return false; }
+  try{ e=iconSprite(key,S,np); }catch(_is){ e=null; }
+  if(!e){ (np?drawItemIconArt:drawItemIcon)(c,key,cx,cy,S); return false; }
   c.drawImage(e.c,cx-e.s/2,cy-e.s/2,e.s,e.s);
   return true;
 }
@@ -48315,7 +48315,7 @@ function drawDragGhost(){
     ctx.save();ctx.globalAlpha=1;ctx.strokeStyle='#e6ff3d';ctx.lineWidth=3*s;ctx.strokeRect(c.x-2*s,c.y-2*s,c.w+4*s,c.h+4*s);
     ctx.fillStyle='#0b0c0d';mapRR(cx-size/2+4*s,cy-size/2+4*s,size,size,4*s);ctx.fill();
     ctx.fillStyle='#1e2225';mapRR(cx-size/2,cy-size/2,size,size,4*s);ctx.fill();
-    drawIconSprite(ctx,G.drag.key,cx,cy,size*.85);ctx.restore();return;
+    drawIconSprite(ctx,G.drag.key,cx,cy,size*.85,1);ctx.restore();return;
   }
   var DI=ITEMS[G.drag.key], ds=LH(26);
   ctx.globalAlpha=.92;
@@ -48323,7 +48323,7 @@ function drawDragGhost(){
   ctx.fillRect(mouse.x-ds/2,mouse.y-ds/2,ds,ds);
   ctx.strokeStyle='#7fc4a0'; ctx.lineWidth=1.5;
   ctx.strokeRect(mouse.x-ds/2+.5,mouse.y-ds/2+.5,ds-1,ds-1);
-  drawItemIcon(ctx,G.drag.key,mouse.x,mouse.y,ds*0.72);
+  drawItemIconArt(ctx,G.drag.key,mouse.x,mouse.y,ds*0.72);
   ctx.globalAlpha=1;
   ctx.font=FS(TYPE.micro); ctx.fillStyle='#cdd6dd'; ctx.textAlign='center';
   if(!(G.hubFloor&&padOn())) ctx.fillText(DI.name,mouse.x,mouse.y+ds); // v28.xx (cw-cx-hubbagcard): the held item is named in the detail pane, clear of the belt.
@@ -48371,7 +48371,7 @@ function drawHubBagCard(){
     text('tactical belt',left,beltTop-16*s,20,'#aaa498');
     ctx.fillStyle='#1e2225';mapRR(left,top,lw,128*s,4*s);ctx.fill();
     text('equipped',left+24*s,top+28*s,20,'#aaa498');
-    drawIconSprite(ctx,G.player.wep.id,left+72*s,top+80*s,72*s);
+    drawIconSprite(ctx,G.player.wep.id,left+72*s,top+80*s,72*s,1);
     text(G.player.wep.name,left+144*s,top+56*s,20);
     var w=G.player.wep;
     text('dmg '+(w.dmg*(w.pellets||1))+'  range '+Math.round(w.rng/10)+'m  '+(w.auto?'auto':'semi')+(w.mag?'  mag '+w.mag:''),left+144*s,top+88*s,20,'#aaa498');
@@ -48392,7 +48392,7 @@ function drawHubBagCard(){
       if(!st)continue;
       G.bagCells.push({x:tx,y:ty,w:tile,h:tile,key:st.key,stackIx:ix,bagIx:st.idxs[0]});
       ctx.fillStyle=RCOL[dispR(st.key)]||'#4a5257';ctx.fillRect(tx+2,ty+tile-4*s,tile-4,3*s);
-      drawIconSprite(ctx,st.key,tx+tile/2,ty+tile*.47,tile*.62);
+      drawIconSprite(ctx,st.key,tx+tile/2,ty+tile*.47,tile*.62,1);
       if(st.idxs.length>1){ctx.textAlign='right';text(String(st.idxs.length),tx+tile-8*s,ty+tile-10*s,16);ctx.textAlign='left';}
       if(st.idxs.some(function(k){return !!prot[k];}))text('\u25c6',tx+8*s,ty+22*s,16,'#76b97c');
       if(G.drag&&G.drag.pad&&st.idxs.indexOf(G.drag.bagIx)>=0){ctx.fillStyle='rgba(22,25,27,.6)';ctx.fillRect(tx+2,ty+2,tile-4,tile-4);}
@@ -48418,7 +48418,7 @@ function drawHubBagCard(){
       var dh=Math.max(gy+rows*(tile+gap)-gap-top,sz?112*s+sz.h:(216+Math.min(6,rr.length)*36)*s);
       ctx.fillStyle='#1e2225';mapRR(dx,top,dw,dh,4*s);ctx.fill();ctx.strokeStyle='#4a5257';ctx.lineWidth=1;ctx.stroke();
       ctx.fillStyle=RCOL[dispR(key)]||'#4a5257';ctx.fillRect(dx+1,top+dh-4*s,dw-2,3*s);
-      drawIconSprite(ctx,key,dx+72*s,top+56*s,96*s);
+      drawIconSprite(ctx,key,dx+72*s,top+56*s,96*s,1);
       if(G.drag){ctx.strokeStyle='#4a5257';ctx.lineWidth=1;mapRR(dx+144*s,top+40*s,64*s,32*s,4*s);ctx.stroke();text('held',dx+152*s,top+62*s,20);}
       if(sz){gunCardDraw(cmp,right,top+112*s+sz.h,1,tag);G.bagCardBox={x:dx,y:top+112*s,w:sz.w,h:sz.h};}
       else{
@@ -48575,7 +48575,7 @@ function drawBag(){
   ctx.font=bFS(TYPE.micro); ctx.fillStyle='#aaa498';
   ctx.fillText('EQUIPPED',x+11,cy);
   cy+=LH(24)*BZ;
-  drawIconSprite(ctx,p.wep.id,x+11+LH(16)*BZ,cy-LH(2)*BZ,LH(30)*BZ);   // v18.33: the sprite icon
+  drawIconSprite(ctx,p.wep.id,x+11+LH(16)*BZ,cy-LH(2)*BZ,LH(30)*BZ,1);   // v18.33: the sprite icon
   ctx.font=bFS(TYPE.head); ctx.fillStyle='#cdd6dd';
   ctx.fillText(p.wep.name,x+11+LH(38)*BZ,cy);
   ctx.font=bFS(TYPE.label); ctx.textAlign='right';
@@ -48625,7 +48625,7 @@ function drawBag(){
       ctx.lineWidth=(si===sel)?3:1.2;
       ctx.strokeRect(tx+.5,ty+.5,TILE-1,TILE-1);
       if(G.need&&G.need[st.key]>0){ ctx.save(); ctx.strokeStyle='#ffd452'; ctx.lineWidth=Math.max(2,LH(2)*BZ); ctx.globalAlpha=.75+.25*Math.sin((+G.t||0)*4); ctx.strokeRect(tx+2,ty+2,TILE-4,TILE-4); ctx.restore(); }   // v26.xx (career3): an item a contract needs
-      drawIconSprite(ctx,st.key,tx+TILE/2,ty+TILE/2-LH(2)*BZ,TILE*0.62);   // v18.33: the sprite icon
+      drawIconSprite(ctx,st.key,tx+TILE/2,ty+TILE/2-LH(2)*BZ,TILE*0.62,1);   // v18.33: the sprite icon
       if(st.idxs.length>1){
         ctx.font=bFS(TYPE.micro); ctx.textAlign='right'; ctx.fillStyle='#FFF6DC';
         ctx.fillText(String(st.idxs.length),tx+TILE-LH(4)*BZ,ty+TILE-LH(4)*BZ);
@@ -54978,7 +54978,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.39: The what is new stamp keeps up with the build; the three notes are unchanged. Check 35.39 fails on v35.38',
+  now:'v35.40: no cream rank bars under item pictures on the raid belt, hand, wheel, backpack, stash, hotbar, pre-raid pack, extracted card, KIA card and the rest of the menus; loot rows keep theirs; the rarity colour borders and the ammo bar stay Check 35.40 fails on v35.39',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -55667,7 +55667,7 @@ function renderCheat(){
   for(var i=0;i<ks.length;i++){
     var it=ITEMS[ks[i]];
     h+='<div class="vcell" data-ck="'+ks[i]+'" title="'+escHtml(it.name)+'">'+
-       iconImgHTML(ks[i],56)+'<div class="vlbl">'+escHtml(it.name)+'</div></div>';
+       iconImgHTML(ks[i],56,1)+'<div class="vlbl">'+escHtml(it.name)+'</div></div>';
   }
   g.innerHTML=h;
   var cells=g.querySelectorAll('[data-ck]');
@@ -55925,7 +55925,7 @@ function renderCrate(){
   var h='',i;
   for(i=0;i<CRATE_KIT.length;i++){
     var k=CRATE_KIT[i],it=ITEMS[k];
-    h+='<div class="row" draggable="true" data-take="'+k+'">'+iconImgHTML(k,22)+
+    h+='<div class="row" draggable="true" data-take="'+k+'">'+iconImgHTML(k,22,1)+
        '<span class="nm" style="color:'+(RCOL[dispR(k)||it.r]||'#cdd6dd')+'">'+it.name+'</span>'+
        '<button data-takebtn="'+k+'" style="padding:2px 10px;font-size:11px">Take</button></div>';
   }
@@ -55937,7 +55937,7 @@ function renderCrate(){
     for(var sk in counts){
       var sit=ITEMS[sk]; if(!sit) continue;
       any=true;
-      sh+='<div class="row" draggable="true" data-bin="'+sk+'">'+iconImgHTML(sk,22)+
+      sh+='<div class="row" draggable="true" data-bin="'+sk+'">'+iconImgHTML(sk,22,1)+
           '<span class="nm" style="color:'+(RCOL[dispR(sk)||sit.r]||'#cdd6dd')+'">'+sit.name+' x'+counts[sk]+'</span>'+
           '<button data-binbtn="'+sk+'" style="padding:2px 10px;font-size:11px">Bin</button></div>';
     }
@@ -56530,7 +56530,7 @@ function invCell(k,count,opt){
   opt=opt||{};
   var cell=document.createElement('div');
   cell.className='cell c-'+(dispR(k)||'common')+(opt.junk?' junk':'');
-  cell.innerHTML=iconImgHTML(k,30)+(count>1?'<span class="cnt">'+count+'</span>':'');
+  cell.innerHTML=iconImgHTML(k,30,1)+(count>1?'<span class="cnt">'+count+'</span>':'');
   // The tooltip is the only place the verbs are written down. They are not
   // narrated on the screen any more, because a control that reads as a control
   // does not need a sentence next to it.
@@ -56676,13 +56676,13 @@ function kitSetupRender(){
   if(!gg||!wg) return;
   gl=gunKeyTable().slice(); wl=wheelOrderTable().slice();
   h='';
-  for(i=0;i<gl.length;i++) h+='<div class="kst" data-gk="'+i+'" title="KEY '+slotKeyName(i)+' \u00b7 '+GUN_CLASS_NAME[gl[i]]+' \u00b7 DRAG ONTO ANOTHER KEY TO SWAP"><b>'+slotKeyName(i)+'</b>'+iconImgHTML(GUN_CLASS_ICON[gl[i]],30)+'<span>'+GUN_CLASS_NAME[gl[i]]+'</span></div>';
+  for(i=0;i<gl.length;i++) h+='<div class="kst" data-gk="'+i+'" title="KEY '+slotKeyName(i)+' \u00b7 '+GUN_CLASS_NAME[gl[i]]+' \u00b7 DRAG ONTO ANOTHER KEY TO SWAP"><b>'+slotKeyName(i)+'</b>'+iconImgHTML(GUN_CLASS_ICON[gl[i]],30,1)+'<span>'+GUN_CLASS_NAME[gl[i]]+'</span></div>';
   gg.innerHTML=h;
   for(i=0;i<wl.length;i++) cell[WHEEL_AT[i][0]*3+WHEEL_AT[i][1]]=i;
   h='';
   for(i=0;i<9;i++){
     if(i===4){ h+='<div class="kstc"><span>WHEEL</span></div>'; continue; }
-    h+='<div class="kst" data-wh="'+cell[i]+'" title="'+WHEEL_NAME[wl[cell[i]]]+' \u00b7 DRAG ONTO ANOTHER PLACE TO SWAP">'+iconImgHTML(wl[cell[i]],30)+'<span>'+WHEEL_NAME[wl[cell[i]]]+'</span></div>';
+    h+='<div class="kst" data-wh="'+cell[i]+'" title="'+WHEEL_NAME[wl[cell[i]]]+' \u00b7 DRAG ONTO ANOTHER PLACE TO SWAP">'+iconImgHTML(wl[cell[i]],30,1)+'<span>'+WHEEL_NAME[wl[cell[i]]]+'</span></div>';
   }
   wg.innerHTML=h;
   Array.prototype.forEach.call(gg.querySelectorAll('[data-gk]'),function(el){
@@ -56750,7 +56750,7 @@ function hotPlanHTML(where){
       'background:rgba(0,0,0,.3);position:relative">'+
       // v19.79, seen on the 4K stash screenshot (2026-10-08): the key numbers in the belt slots were 10.5px, a speck in a 62px slot
       // on a TV. 14 in an empty slot, 12 in the corner of a filled one, with the stack count beside it.
-      (it?iconImgHTML(k,(where?22:40)):(_fg?('<span style="display:flex;opacity:.7">'+iconImgHTML(_fg.k,(where?22:40))+'</span>'):'<span style="color:var(--ash);font-size:14px">'+slotKeyName(i)+'</span>'))+
+      (it?iconImgHTML(k,(where?22:40),1):(_fg?('<span style="display:flex;opacity:.7">'+iconImgHTML(_fg.k,(where?22:40),1)+'</span>'):'<span style="color:var(--ash);font-size:14px">'+slotKeyName(i)+'</span>'))+
       ((it||_fg)?'<span style="position:absolute;right:2px;bottom:0;font-size:12px;color:var(--ash)">'+slotKeyName(i)+'</span>':'')+
       // v11.96, HIS ORDER: how many are coming, on the cell, so a key on a stack
       // reads as a stack. One is silent; the key number already says it is set.
@@ -57007,7 +57007,7 @@ try{ renderFreeKit(); }catch(_fk){}
     // v5.95: the pointer route beside the HTML5 one, because the HTML5 one has
     // never been demonstrated working here or for him.
     grabbable(cell,k,'stash',it.name);
-    cell.innerHTML=iconImgHTML(k,30)+(counts[k]>1?('<span class="cnt">'+counts[k]+'</span>'):'');
+    cell.innerHTML=iconImgHTML(k,30,1)+(counts[k]>1?('<span class="cnt">'+counts[k]+'</span>'):'');
     if(stashLocked(k)) cell.innerHTML+='<span class="kstar">\u2605</span>';   // v26.xx (career5): the lock
     cell.title=it.name+'  x'+counts[k]+'\nright-click for everything you can do with it';
     // v5.98: hovering IS the selection, so a number key can bind whatever is
@@ -57158,7 +57158,7 @@ try{ renderFreeKit(); }catch(_fk){}
         var oc=document.createElement('div');
         oc.className='cell c-'+gunRarity(gk);
         oc.style.borderColor=inSlot?'var(--amber)':'';
-        oc.innerHTML=(ITEMS[_ik]?iconImgHTML(_ik,30):('<span style="font-size:10.5px">'+escHtml(W.name.slice(0,6))+'</span>'))+
+        oc.innerHTML=(ITEMS[_ik]?iconImgHTML(_ik,30,1):('<span style="font-size:10.5px">'+escHtml(W.name.slice(0,6))+'</span>'))+
           (inSlot?('<span class="cnt" style="background:var(--amber);color:#0d1435;padding:1px 7px;border-radius:7px;right:7px;bottom:6px;text-shadow:none">'+inSlot+'</span>'):'');   // v19.96, seen on the 4K stash screenshot (2026-10-08): the slot number was a bare amber sliver jammed into the rounded corner
         oc.title=W.name+'\nYours. Right-click it to equip it.'+
           (inSlot?('\nCurrently gun '+inSlot+'.'):'');
@@ -71804,7 +71804,7 @@ function maybeWelcome(){
   for(var k in counts){ var it=ITEMS[k]; if(!it) continue;
     rows+='<div class="row"><canvas class="wpic" data-k="'+k+'" width="56" height="56" style="flex:none;margin-right:14px"></canvas><div style="flex:1"><b class="r-'+(it.r||'common')+'">'+it.name+'</b>'+(counts[k]>1?'<span class="wq">x'+counts[k]+'</span>':'')+'<div class="hint">to your stash</div></div></div>'; }   // v17.90: with its icon
   box.innerHTML=rows;
-  try{ var _wc=box.querySelectorAll('canvas.wpic'), _wi, _wx; for(_wi=0;_wi<_wc.length;_wi++){ _wx=_wc[_wi].getContext('2d'); if(!_wx) continue; try{ if(_wc[_wi].getAttribute('data-g')) gunIcon(_wx,_wc[_wi].getAttribute('data-g'),28,28,40); else drawItemIcon(_wx,_wc[_wi].getAttribute('data-k'),28,28,40); }catch(_we){} } }catch(_wl){}   // v17.90: the icons
+  try{ var _wc=box.querySelectorAll('canvas.wpic'), _wi, _wx; for(_wi=0;_wi<_wc.length;_wi++){ _wx=_wc[_wi].getContext('2d'); if(!_wx) continue; try{ if(_wc[_wi].getAttribute('data-g')) gunIcon(_wx,_wc[_wi].getAttribute('data-g'),28,28,40); else drawItemIconArt(_wx,_wc[_wi].getAttribute('data-k'),28,28,40); }catch(_we){} } }catch(_wl){}   // v17.90: the icons
   document.getElementById('welcometake').onclick=function(){
     P.weapons=P.weapons||[];
     // v13.29, HIS RULING 2026-09-13: the whole pack goes to the stash, guns included,

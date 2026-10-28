@@ -12,7 +12,7 @@ No HIGH items left except 177 hardcore save (parked until 11/1, goes first then)
 - More ammo boxes when out of ammo. SHIPPED v35.26.
 - Drag items from the wheel onto the hotbar; a belt item works like a wheel pick (in-session/185). SHIPPED v35.25 + v35.28, on his PC 20:26.
 
-## His 10-27 evening orders in "Game feature requests and edits" (job files in console/in-session/; ids there are chat ids, not the tasks/ numbers)
+## His 10-27 evening orders in "Gameplay Edit Intaker" (was "Game feature requests and edits"; job files in console/in-session/; ids there are chat ids, not the tasks/ numbers)
 - "recovering to 85" icon lies in Superhot (184). SHIPPED v35.22, on his PC 20:01.
 - Quiet hud, all 5 changes. 186a text lanes (no double lines, concealed icon, extraction word up top) SHIPPED v35.30/31/33, on his PC 21:18 (as 35.34). 186b panels (one money number, hide at rest, gun name once) SHIPPED v35.36, on his PC by 21:35 (he reports 35.37).
 - Plain title backdrop, no robots in the Undercroft (187). SHIPPED v35.34, on his PC 21:15. The robots were the title fight from his 10-18 Q52/Q54 answers; his 10-27 order reverses them.

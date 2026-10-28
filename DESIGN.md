@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.40 - NO WHITE BARS ANYWHERE
+
+Co-op hunt while he was away. his order 10-27: remove the white bars under items everywhere, and the higher white bars on the raid belt are not helpful
+
+MEASURED. Check 35.40 passes, and fails on v35.39.
 ## v35.39 - THE WHAT IS NEW STAMP KEEPS UP
 
 Co-op hunt while he was away. The card was stamped v35.23 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.

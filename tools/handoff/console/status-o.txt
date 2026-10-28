@@ -1,1 +1,1 @@
-10-27 22:26 gate: the what is new card is stale, shipping a card refresh first (cw-cx-solopings, o-139-solo-pings)
+10-27 22:33 gate: shipping cw-cx-solopings (o-139-solo-pings, codex)
