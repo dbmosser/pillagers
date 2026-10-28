@@ -1827,33 +1827,33 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The hub's one-hot-label hierarchy is clear, with 'enter raid!' as the lime hero. The top-right currency strip floats unframed on the void, the lower-case stat text is tiny, and the exclamation mark and the '***experimental feature may glitch***' caption read as template and debug text.",
+  "verdict": "This is a readable raid HUD with a strong ammo hero number and a clear weapon bar. It sits on an inconsistent margin grid, and the HP and armour bars, the score plate and the goals dropdown each use a different type size and panel treatment.",
   "findings": [
-   "P1 top-right currency strip: '$4,471,337  98,761 xp  stash $0 bag $0': Put the money and xp in a --ui-panel card (4px radius, 1px --ui-line-hi border, 16px padding) inset 48px from the right and 32px from the top. Stack the rows vertically, each 20px f-cond 600 tx-1 with a 16px tx-2 label. Move 'stash $0 bag $0' into this stack at tx-2 and 16px. Cut the 56px money figure to 32px so it doesn't compete with 'enter raid'.",
-   "P1 station labels (the gambler, mainframe, shop, settings, the stash, fashion, last pour): Use one label style: --ui-panel fill, 1px --ui-line-hi border, 4px radius, 8px by 16px padding, 20px f-cond 600 tx-1. Anchor each label 16px above its pad. Show the nearest station's label with a 2px --acc border and leave the others at 70% opacity. Shorten 'shop, craft, and hire' to 'shop'.",
-   "P1 '***experimental feature may glitch***' above the last pour: Remove the asterisks and the sentence. Show a 16px f-cond 600 --warn 'beta' tag, 8px by 8px padding, in the label's top-right corner.",
-   "P1 'enter raid!' title, top-centre: Make it a 64px-tall button with --acc fill, --acc-ink 32px f-cond 800 text, a 4px radius and 24px side padding. Remove the '!'. Keep it 16px above the pad, clear of the pillars, with a 2px --acc-hover ring when it's in focus.",
-   "P2 bottom controls strip (wasd walk, shift jog, e use station, m map): Set the text to 16px f-cond 600, with label tx-2 at 4.5:1 or better. Use 24px gaps between pairs and 32px above the hotbar. Draw one --ui-panel strip. Fold it to one line as in the rs-1 rule, with F1 to open."
+   "P1 top-centre team score plate: Inset the plate 24px from the top. Use a 4px radius and a 1px --ui-line-hi border. Make '0 sp' the single 56px f-cond 800 hero number and the clock a 20px tx-1 line. Put 'you' and 'p2' on one 16px tx-2 line. Fold the extract line into the plate as a 16px --extract row with 8px padding so no chip overhangs.",
+   "P1 bottom-left hp and armour bars: Inset the stack 48px from the left and 32px from the bottom, the same as the ammo card. Make both bars 28px tall with 20px f-cond 700 labels. Put them in one --ui-panel card with a 4px radius, 8px gap and 16px padding. Reserve the 56px hero size for the ammo count only.",
+   "P1 top-right 'goals 0/3' dropdown: Restyle it as a --ui-panel card with a 4px radius, a 1px --ui-line-hi border and 20px f-cond 600 text. Pin it 48px from the right and 32px from the top. Align its top edge with the score plate's top edge. Make the chevron 16px tx-2.",
+   "P1 bottom weapon bar and ammo card: Make slot numbers 16px tx-1. Draw only the selected slot with a 2px --acc border and give every other slot a 1px --ui-line-hi border, including slot 1. Dim empty slots to 50% opacity. Move the ammo card to 48px from the right and 32px from the bottom, with its bottom edge level with the weapon bar. Raise the weapon name to 20px tx-1.",
+   "P2 top-left 'keyboard' tag: Remove it from the raid HUD, or inset it 32px and 48px with 16px tx-2 text and no fill. Show it only while the controls list is open."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-120c-wallet-double-text-recipes-1/wallet-hub-p1-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-120c-wallet-double-text-recipes-2/wallet-linked-demo-p1-1080.jpg",
   "task": "o-120c-wallet-double-text",
-  "when": "2026-10-28T03:27"
+  "when": "2026-10-28T03:46"
  },
  "p2-1080": {
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "This is a different screen from the last review, the hub with the party's overlapping crowd and the pad of stations. The eye lands on the lime 'enter raid!' sign, which is correct, and the labels are clean, but the top-right currency row is raw, the station labels disagree in style, and the amber warning label is noisy.",
+  "verdict": "The new frame is cleaner, with the pillager list and the double banners gone, but the top-centre card is crowded, the hp and armour bars are chunky and overlap the bottom edge, and the HUD uses too many different panel styles.",
   "findings": [
-   "P1 top-right currency strip (x 1428-1893, y 22-56): Put the row in one --ui-panel pill with a 1px --ui-line-hi border and 4px radius, anchored at x 1872 (48px margin) and y 24. Make money 32px tx-1 and xp 20px tx-2. Set 'stash $0 bag $0' at 16px tx-2 as a second line, or drop it, because the stash label is already given by the stash station. Keep one hero size on the screen.",
-   "P1 '***experimental feature may glitch***' tag (x 1388-1637, y 752-780): Delete the asterisks and the sentence. Show a 16px --warn 'beta' chip, 4px radius with a 1px --warn border, inside the 'the last pour' label at 8px padding, or drop it altogether.",
-   "P1 station labels (wirt the gambler, the mainframe, shop craft and hire, settings, the stash, fashion, the last pour): Set station labels to 20px f-cond 600 tx-1 on --ui-panel with a 1px --ui-line-hi border and 4px radius. Give the nearest station a 2px --acc border and a lime 'e' keycap. Shorten the shop label to 'the shop'. Raise '6 rewards waiting' to 16px and make it a lime-ink badge ('6') on the mainframe label.",
-   "P1 'enter raid!' sign (x 835-1087, y 88-148): Make it a --acc fill button, 4px radius, with --acc-ink 32px text 'enter raid', and add an 'e' keycap on the right. Drop the exclamation mark. Set 8px padding top and bottom. Keep it centred on x 960 and offset it 8px above the station ring.",
-   "P2 hotbar (x 457-1467, y 953-1062) and the controls hint (x 757-1165, y 900-940): Raise the hint to 16px and move it to y 900 with a 24px gap above the hotbar. Dim slots 3-0 to 30% or hide them in the hub. Make slot 1 a 2px --acc border on a --ui-raised fill. Replace slot 2's fill with a 3px rarity bar at the bottom."
+   "P1 top-centre score card (x 810-1112, y 0-107) and extract pill (x 889-1033, y 103-133): Give the card a 24px top margin and 16px padding. Put the 56px hero 'sp' and the 32px clock on a single column. Set 'you 0 sp · pl 0 sp' at 16px f-cond in tx-2 on one line, and drop the 'team score' label. Move the extract pill 8px below the card as a separate element, and put the arrow inside it as a 16px glyph.",
+   "P1 hp and armour bars (x 24-430, y 967-1070): Use 320x16 bars in a 1px --ui-line-hi frame with a 4px radius, an 8px gap between them and a 48px bottom margin. Put 'hp 100' and 'armour 60' at 16px f-cond 600 in tx-1 above or beside the bars. Keep the hp fill --ok and the armour fill a muted blue. Align the block's bottom with the hotbar's bottom at y 1056.",
+   "P1 HUD panel styles, all corners: Use one container: --ui-panel at 85% opacity, a 1px --ui-line-hi border, a 4px radius and 16px padding. Apply it to the score, goals, ammo and hotbar. Reserve lime for the selected slot only.",
+   "P2 goals 0/3 dropdown (x 1604-1903, y 22-65): Set the width to about 200px and the right margin to 24px. Align the top with the score card at y 24. Replace the chevron with a 'tab' keycap at 16px. Use 16px type.",
+   "P2 ammo card (x 1652-1912, y 870-1018): Set the right and bottom margins to 24px/48px. Set 'support mg' at 20px tx-2. Use the standard panel style, and keep 56px for '60' only, with '/ 360' at 32px tx-2."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-120c-wallet-double-text-recipes-1/wallet-hub-p2-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-120c-wallet-double-text-recipes-2/wallet-linked-demo-p2-1080.jpg",
   "task": "o-120c-wallet-double-text",
-  "when": "2026-10-28T03:27"
+  "when": "2026-10-28T03:46"
  },
  "pix86c-fashion": {
   "score": 3,
@@ -2643,16 +2643,16 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "A mostly clean, consistent in-raid HUD with a strong ammo hero number and a good quiet hotbar, but the top-left roster panel is a wall of small text and dead rows, the hp bar is the odd one out, and the 'wallet' this shot is named for (0 items $0) is a tiny afterthought.",
+  "verdict": "The HUD is readable and has a sound hierarchy (ammo, hotbar and timer), but the earlier advice was mostly not followed: the hp bar is still bare, the roster is still open, and slots 3 to 0 still show silhouettes.",
   "findings": [
-   "P1 top-left 'current pillager bots' roster: Collapse it to the one-line summary '0 out · 7 dead' (folded by default, chevron to expand). If it stays open, drop dead rows to 40% opacity, delete the repeated '- dead' column, use 16px/600 rows on a 24px pitch, and recolour fbi_surveillance_van to tx-1 unless the colour has a meaning.",
-   "P1 bottom-right ammo card, wallet line 'b / i backpack  0 items $0': Raise to 16px/600 f-cond in tx-2 at 4.5:1 or better. Give the card 16px padding and a 1px --ui-line divider above the line. Colour the '$0' tx-1 and keep '0 items' in tx-2 so the money reads first. Drop the 'b / i' key hint into a small key chip like the F1 one.",
-   "P1 bottom-left hp bar vs the rest of the HUD: Put the bar in a 4px-radius --ui-panel card with a 1px --ui-line-hi border. Use a 24px high fill with --ok, and print 'hp 100' at 20px/600 inside it or left of it, not 32px bold. Turn the fill --warn below 50% and --danger below 25%.",
-   "P2 hotbar slots 3–0: Hide the silhouettes for slots the player does not own (show just the number, at 14px tx-2). Raise the slot numbers to 16px. Keep the lime 2px border on the active slot only.",
-   "P2 top-centre timer and extract chip '9:00 / extract 14m': Put the timer on the same 80% scrim chip as the extract line, or add a 2px dark text shadow. Align the chip width to the timer, and attach the arrow to the chip's bottom edge with a 4px gap."
+   "P1 bottom-left hp bar ('hp 100'): Put it in a 4px-radius --ui-panel card with a 1px --ui-line-hi border. Set the bar to 24px high with a --ui-raised track. Use 20px/600 for 'hp 100'. Turn the fill --warn below 50% and --danger below 25%. Keep a 24px margin from the left and bottom edges.",
+   "P1 top-left roster 'current pillager bots 1': Fold it by default to one line, '0 out · 2 dead', with a chevron. When open, use 16px/600 rows on a 24px pitch, show dead rows at 40% opacity, and delete the '- dead' column. Leave a 16px gap before the pillager tag, or move the tag to the hp card.",
+   "P1 bottom-right ammo card footer 'b / i backpack  3 items $1,220': Use 16px/600 f-cond. Add a 1px --ui-line divider above the line and 16px card padding. Colour '$1,220' tx-1 and keep '3 items' in tx-2. Turn 'b / i' into a key chip like the 'f1' one.",
+   "P2 hotbar slots 3 to 0 and slot numbers: Show only a 16px tx-2 number in empty slots, with no silhouette and a 1px --ui-line border. Reserve the 2px lime border for the active slot. Mark an owned but inactive slot with a --ui-line-hi border and a full-colour icon.",
+   "P2 top-centre '8:55' and 'extract 133m' chip: Put the timer and the chip on one 80% --scrim plate with 8px padding. Attach the arrow to the plate's bottom edge with a 4px gap, in --extract."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-120c-wallet-double-text-recipes-1/wallet-career-p1-legacy-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-120c-wallet-double-text-recipes-2/wallet-linked-career-p1-legacy-1080.jpg",
   "task": "o-120c-wallet-double-text",
-  "when": "2026-10-28T03:25"
+  "when": "2026-10-28T03:45"
  }
 }

@@ -12,3 +12,5 @@
 10-27 23:37 v35.45 cw-spmoney NOT on his pc after 458s (8802 serves no answer) week 72%
 10-27 23:37 v35.44 cw-msgroute on his pc after 251s (8802 serves 35.45) week 72%
 10-27 23:38 v35.46 cw-cx-walletframe on his pc after 17s (8802 serves 35.46) week 72%
+10-27 23:42 v35.47 cloud-ach-born-scan on his pc after 16s (8802 serves 35.47) week 72%
+10-27 23:42 v35.45 cw-spmoney on his pc after 1s (8802 serves 35.47) week 72%

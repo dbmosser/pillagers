@@ -1,0 +1,7 @@
+v35.48: player 2 chooses easy or normal too
+
+player 2 also chooses easy or normal
+
+Check 35.48. Fails on v35.47.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

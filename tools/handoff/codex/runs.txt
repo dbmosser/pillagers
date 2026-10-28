@@ -360,3 +360,4 @@
 2026-10-27 22:56 o-139-solo-pings 169s ok PARTIAL in=4806941 out=35929 run=3
 2026-10-27 23:24 o-120c-wallet-double-text 281s ok PARTIAL in=649325 out=7813 run=1
 2026-10-27 23:34 o-120c-wallet-double-text 386s ok PARTIAL in=2051307 out=18815 run=2
+2026-10-27 23:49 o-120c-wallet-double-text 137s ok PARTIAL in=2771396 out=23161 run=3

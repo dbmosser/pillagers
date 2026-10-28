@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.48 - PLAYER 2 CHOOSES EASY OR NORMAL TOO
+
+Co-op hunt while he was away. Found in the cloud audit of 2026-10-28 on the real 2-player rig (two windows, paired, player 2 on a simulated pad, the fuzz robot's own steps). His answer 2.28 c: in the demo each player chooses easy or normal before their run starts. Only arcadeDeploy asks, and only player 1 runs it; player 2 enters through netUpTake, so player 2 never gets the card. Proven in headless Chromium on v35.38: with both windows in the raid, player 1 held easyAsk {waitMap:0} with the card on screen, player 2 held easyAsk null. A yes player 2 gave at the second-death offer also carried into the next run, since nothing reset it. Fix: when player 2 enters a demo run, its window runs the same easyStartAsk player 1 runs (fresh card, the run starts on normal). Watch at the party: player 2 sees the want easy mode card after its opening map and answers it with A or B.
+
+MEASURED. Check 35.48 passes, and fails on v35.47.
 ## v35.47 - NEW SAVES COUNT EACH KILL ONCE
 
 Co-op hunt while he was away. Found in the cloud audit of 2026-10-28 (lint class C, now that it runs). A new save is not born with achScan, the stamp of the one-time scan that credits runs from before live counting. Live runs already add their kills (achRun with live true), so the first time a new save opens its stats page the scan adds every logged run a second time. Proven in headless Chromium on v35.38: two runs of 7 pillager kills read 14, then 28 after the first look at the stats page, and the 25 kill medal unlocked; machines went 60 to 120. Fix: the born profile carries achScan:1 like mig739 and dayMigrated. Old saves are untouched (a loaded save replaces the literal whole), so a save from before live counting still gets its one scan.
