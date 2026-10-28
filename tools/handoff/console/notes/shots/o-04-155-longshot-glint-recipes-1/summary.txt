@@ -1,0 +1,31 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  gl155-p1-day                           NOT STAGED  69.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at stageDropPair (<anonymous>:131:11)
+    at async <anonymous>:135:8
+    at async <anonymous>:1:21
+  gl155-p2-day                           staged       6.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"realPair":[{"on":true,"role":"host","seat":0,"roster":[{"seat":0,"pid":"94544897","name":"PILLAGER","host":true},{"seat":1,"pid":"759f7ee9","name":"PLAYER 2","host":false}],"status":"PLAYER 2 joined","err":"","made":1,"codeLen":1188,"links":1},{"on":true,"role":"join","seat":1,"roster":[{"seat":0,
+  gl155-p1-night                         NOT STAGED  65.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at stageDropPair (<anonymous>:131:11)
+    at async <anonymous>:135:8
+    at async <anonymous>:1:21
+  gl155-p2-night                         NOT STAGED   6.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: no open range for the two glints
+    at stageDropPair (<anonymous>:131:11)
+    at async <anonymous>:135:8
+    at async <anonymous>:1:21
+== 4k : window 3876x2265, viewport 3840x2160
+  gl155-p1-day                           NOT STAGED  70.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at stageDropPair (<anonymous>:131:11)
+    at async <anonymous>:135:8
+    at async <anonymous>:1:21
+  gl155-p2-day                           NOT STAGED   6.3s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: no open range for the two glints
+    at stageDropPair (<anonymous>:131:11)
+    at async <anonymous>:135:8
+    at async <anonymous>:1:21
+  gl155-p1-night                         NOT STAGED  66.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at stageDropPair (<anonymous>:131:11)
+    at async <anonymous>:135:8
+    at async <anonymous>:1:21
+  gl155-p2-night                         NOT STAGED   6.4s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: no open range for the two glints
+    at stageDropPair (<anonymous>:131:11)
+    at async <anonymous>:135:8
+    at async <anonymous>:1:21

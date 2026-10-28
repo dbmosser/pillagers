@@ -3102,5 +3102,69 @@
   "pic": "tools/handoff/console/notes/shots/o-03-197-final-90s-rush-recipes-4/finalrush-partner-raid-1080.jpg",
   "task": "o-03-197-final-90s-rush",
   "when": "2026-10-28T16:28"
+ },
+ "l155-p1-day": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The HUD is still a pile of unrelated widgets: the hp bar and chips are crammed into the bottom edge, the two top-left dropdowns still don't line up, and the timer is not the hero. The earlier fixes were mostly not applied.",
+  "findings": [
+   "P1 bottom-left hp bar and status chips, 24-430 x 940-1068: Move the block to y=1000 or higher, which gives a 54px bottom margin. Draw 'hp' at 16px tx-2 and '100' at 32px f-cond 700 over a 12px bar with a 4px radius. Make the chips one 16px row of icon plus word with a 1px --ui-line-hi border. Reserve --danger for real damage.",
+   "P1 top-left dropdowns 'current pillagers 0' (8-367 x 143-260) and 'run info' (1603-1900 x 18-55), plus the 'pillager' bar (14-170 x 325-358): Make both dropdowns 360x40, 4px radius, 1px --ui-line-hi border, --ui-panel at 85% fill and 16px f-cond 600 text, with a 54px margin and the same y=24. Delete the left 'pillager' bar.",
+   "P1 top-centre timer, 'extract 74m' and the extraction label, 920-1015 x 10-72 and 1630-1780 x 465-488: Set the timer to 56px f-cond 800 tx-1 and shrink the sun to 20px. Keep 'extract 74m' as a single 20px teal chip. Fix the string to 'extraction c available' with the right spelling, and make it 16px with a 4px radius and the same chip style.",
+   "P1 ammo card, 1668-1910 x 902-1052: Inset the card to a 54px right margin. Put 'b / i backpack' at 16px tx-2 (4.5:1). Draw the silhouette at 100% in the left half. Set '/ 24' at 32px tx-2 so '12' is the only hero.",
+   "P2 hotbar, 553-1060 x 955-1058: Draw every slot as a 100x100 tile with a 4px radius, 1px --ui-line border and an 8px gap. Set numerals at 16px tx-2. Dim empty slots to 50%. Keep the selected slot amber for P1."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-04-155-longshot-glint-recipes-4/gl155-p1-day-1080.jpg",
+  "task": "o-04-155-longshot-glint",
+  "when": "2026-10-28T17:11"
+ },
+ "l155-p1-night": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The ammo panel and weapon slots are solid, but the previous round's fixes were mostly not applied: the hp bar is still oversized, the top-left debug-style dropdowns and the pillager bar are still there, and the chips are still inconsistent.",
+  "findings": [
+   "P1 hp bar, bottom-left (24,1035)-(430,1068): Make the bar 320x16px at x=48, with a 20px f-cond 600 tx-1 'hp 100' label above it. Use --ok at about 80% saturation and a 1px --ui-line track. Leave 24px above it.",
+   "P1 top-left 'keyboard' tag (10,8), 'current pillagers 0' dropdown (8,142)-(367,170), top-right 'run info' dropdown (1603,19)-(1901,55): Use --ui-panel fill, 1px --ui-line-hi border, 4px radius, 16px/600 label and 16px padding. Align to x=48 and y=48. Fold 'current pillagers 0' into the run info dropdown. Hide the keyboard tag after 3s.",
+   "P1 'pillager' bar, left (14,325)-(168,355): Delete it. If a squad panel is needed, put it at x=48 with a 16px label and an 8px-high hp bar inside a --ui-panel card.",
+   "P1 'the long dock cache' (1447,130): Set it in tx-1, 20px f-cond 600, in a --ui-panel chip at 80% alpha with 8px/12px padding. Place it top-centre under the 'extract 74m' chip and fade it after 3s.",
+   "P1 chips: 'extract 74m' (905,47), 'extraction c available' (1630,467), 'pillager joined' (895,893), 'f1 controls' (437,930): Use one chip: --ui-panel fill, 3px left bar in the meaning colour (extract teal), 16px/600 text, 8px/12px padding. Fix the spelling or shorten it to 'extract c'. Move 'pillager joined' to the left feed."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-04-155-longshot-glint-recipes-4/gl155-p1-night-1080.jpg",
+  "task": "o-04-155-longshot-glint",
+  "when": "2026-10-28T17:11"
+ },
+ "l155-p2-day": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The in-raid HUD is still a set of unrelated floating pieces, and almost none of the earlier fixes have landed. The bottom row has no shared edge, the top-left stack has no panel, and the empty slots 3 to 0 sit on the map unframed.",
+  "findings": [
+   "P1 hp bar, bottom-left: Put hp on a --ui-panel plate with 16px padding, a 4px radius and a bottom margin of 24px. Make the bar 16px high and 280px wide. Put the 'hp' label in tx-2 at 16px and the '100' in tx-1 at 28px beside or above the bar, not on the green. Keep the bar 16px clear of the slot row.",
+   "P1 bottom row: f1 controls, slots, party chip, ammo card: Use one 24px bottom margin so hp, slots and ammo all end at y=1056, with 24px side margins. Left-align 'f1 controls' over the hp plate at x=24. Move the party chip into the left feed or the top-left panel, in the same --ui-panel style.",
+   "P1 top-left stack: keyboard tag, current pillagers dropdown, pillager name bar: Use one --ui-panel at x=24, y=24 with 16px padding and a 4px radius. Put the device tag, the 'current pillagers 0' row and the self row inside it. Make text 20px tx-1 for names and 16px tx-2 for labels. Use amber for P1. Drop the chevron.",
+   "P1 run info dropdown, top-right: Shrink it to a hugging chip: a 16px tx-2 'run info' label, a 16px chevron, 8px 16px padding, --ui-panel, a 4px radius, and 24px from the top and right edges. Use the same style as the left dropdown. Make the label lower case.",
+   "P1 weapon slots 3 to 0: Draw all 10 slots as 72px --ui-panel tiles at 70% fill with a 1px --ui-line-hi border and an 8px gap. Put the number in the top-left at 16px tx-2. Make the active tile's border 2px lime --acc. Delete the 'f' badge."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-04-155-longshot-glint-recipes-4/gl155-p2-day-1080.jpg",
+  "task": "o-04-155-longshot-glint",
+  "when": "2026-10-28T17:12"
+ },
+ "l155-p2-night": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The HUD has an ammo card and slot tiles now, but the raw browser dropdowns, the off-grid hp bar and the crowded top-centre cluster from last review are all still here, so it still reads as a debug overlay on a good-looking map.",
+  "findings": [
+   "P0 top-right 'run Info' select (x1603-1900, y20-54) and left 'current pillagers 0' select (x8-367, y142-172): Hide all three in a career raid. If they stay, make them --ui-panel chips with a 4px radius and a 1px --ui-line-hi border, 16px f-cond 600 --tx-2 text, and a 16px chevron. Set the text to 'run info', inset them to x96 and y54, and move 'keyboard' into the same chip style.",
+   "P1 bottom-left hp bar (x24-430, y1035-1068): Put it in a --ui-panel card with a 1px --ui-line-hi border and a 4px radius, inset to x96 and y(1080-54). Make the bar 24px tall with --ok fill, and set 'hp 100' to 32px f-cond 700 --tx-1 with 8px padding. Left-align the card with the 'f1 controls' hint.",
+   "P1 weapon slots (x553-770 filled, 3-0 empty, y955-1060): Draw all 10 slots as 72px --ui-panel tiles on an 8px gap, with a 1px --ui-line border. Show empty slots at 40% opacity. Make the selected border 2px --acc. Set slot numbers to 16px --tx-2. Move the party chip off the strip, to y888 at x96.",
+   "P1 top-centre cluster (x905-1035, y10-95): Put the timer in a --ui-panel plate, 32px f-cond 700 --tx-1. Put 'extract 70m' under it as a 16px --extract label with a 1px --extract border, at the same width. Move the arrow inside the pill at 16px. Align the moon icon inside the plate.",
+   "P1 ammo card (x1668-1910, y902-1052): Inset the card to x1824 (96px margin). Right-align all three rows to a 24px inner padding. Set 'b / i backpack' to 16px --tx-2. Keep 12 at 56px f-cond 800 and make '/ 24' 32px --tx-2."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-04-155-longshot-glint-recipes-4/gl155-p2-night-1080.jpg",
+  "task": "o-04-155-longshot-glint",
+  "when": "2026-10-28T17:12"
  }
 }

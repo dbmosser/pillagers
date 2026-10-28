@@ -60,3 +60,8 @@
 2026-10-28 12:20 week=15.0% 5h=64.0% week_resets=2026-11-04 01:35 job=o-03-197-final-90s-rush
 2026-10-28 12:39 week=16.0% 5h=71.0% week_resets=2026-11-04 01:35 job=o-04-155-longshot-glint
 2026-10-28 12:40 week=16.0% 5h=72.0% week_resets=2026-11-04 01:35 job=o-04-155-longshot-glint
+2026-10-28 12:55 week=17.0% 5h=4.0% week_resets=2026-11-04 01:35 job=o-04-155-longshot-glint
+2026-10-28 13:03 week=17.0% 5h=8.0% week_resets=2026-11-04 01:35 job=o-04-155-longshot-glint
+2026-10-28 13:09 week=18.0% 5h=10.0% week_resets=2026-11-04 01:35 job=o-04-155-longshot-glint
+2026-10-28 13:17 week=18.0% 5h=13.0% week_resets=2026-11-04 01:35 job=o-05-120d2-fire-ends-sprint
+2026-10-28 13:19 week=18.0% 5h=14.0% week_resets=2026-11-04 01:35 job=o-05-120d2-fire-ends-sprint
