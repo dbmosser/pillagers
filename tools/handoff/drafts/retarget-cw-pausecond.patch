@@ -1,6 +1,6 @@
---- a/tools/mkfixture.ps1	2026-10-28 17:20:18.473678737 +0000
-+++ b/tools/mkfixture.ps1	2026-10-28 17:20:18.553678735 +0000
-@@ -6719,16 +6719,16 @@
+--- a/tools/mkfixture.ps1	2026-10-28 17:34:13.430558063 +0000
++++ b/tools/mkfixture.ps1	2026-10-28 17:34:13.525659638 +0000
+@@ -6818,16 +6818,16 @@
         if(document.getElementById('pauselog')&&document.getElementById('pauselog').offsetHeight) bad.push('the run log list is still on the pause box');
         if(/run log/i.test(box.innerText||'')) bad.push('the pause box still says run log');
         hd=el.querySelector('.psph b');
@@ -20,7 +20,7 @@
         if(!/extract\s*x2/i.test(el.innerText||'')||!/killed in action\s*-50%/i.test(el.innerText||'')) bad.push('the end rules are not listed ('+JSON.stringify((el.innerText||'').slice(-60))+')');
         h3=box.querySelector('h3'); btns=document.getElementById('resumebtn'); btns=btns&&btns.parentNode;
         if(h3&&btns){ r1=h3.getBoundingClientRect(); r2=el.getBoundingClientRect(); r3=btns.getBoundingClientRect(); if(!(r2.top>=r1.bottom-1&&r2.bottom<=r3.top+1)) bad.push('the panel is not between the title and the buttons ('+[r1.bottom,r2.top,r2.bottom,r3.top].map(Math.round).join(',')+')'); }
-@@ -6737,7 +6737,7 @@
+@@ -6836,7 +6836,7 @@
         CFG.superhot=1; document.getElementById('closesettings').onclick();
         rows=el.querySelectorAll('.psprow'); rr=rowOf(gameOptLabel('superhot'));
         if(word(rr)!=='on'||Math.abs(fac(rr)-1)>0.001) bad.push('after Settings closed superhot reads '+word(rr)+' x'+fac(rr)+', not on x1.00');
