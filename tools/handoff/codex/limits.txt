@@ -103,3 +103,8 @@
 2026-10-28 18:12 week=31.0% 5h=7.0% week_resets=2026-11-04 01:35 job=o-09d-red-35.81-preraid-names-and-ledger
 2026-10-28 18:19 week=31.0% 5h=12.0% week_resets=2026-11-04 01:35 job=o-09e-damage-numbers-merge-and-yours-red
 2026-10-28 18:34 week=32.0% 5h=16.0% week_resets=2026-11-04 01:35 job=o-09e-damage-numbers-merge-and-yours-red
+2026-10-28 18:46 week=33.0% 5h=19.0% week_resets=2026-11-04 01:35 job=o-09e-damage-numbers-merge-and-yours-red
+2026-10-28 18:58 week=33.0% 5h=21.0% week_resets=2026-11-04 01:35 job=o-09e-damage-numbers-merge-and-yours-red
+2026-10-28 19:07 week=33.0% 5h=22.0% week_resets=2026-11-04 01:35 job=o-09e-damage-numbers-merge-and-yours-red
+2026-10-28 19:12 week=34.0% 5h=27.0% week_resets=2026-11-04 01:35 job=o-09f-feed-keeps-the-name
+2026-10-28 19:16 week=34.0% 5h=29.0% week_resets=2026-11-04 01:35 job=o-09f-feed-keeps-the-name

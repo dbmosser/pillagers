@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.09 - FEED KEEPS THE NAME
+
+Co-op hunt while he was away. The audit saw select a heal shortened while its detail stayed whole in the player 2 feed.
+
+MEASURED. Check 36.09 passes, and fails on v36.08.
 ## v36.08 - DAMAGE NUMBERS CLEAR THE TARGET NAME
 
 Co-op hunt while he was away. The critic on the g-84 LMG pictures found growing numbers covering the target name and other hit colours. Draw each above the nameplate with an 8 unit gap and separate simultaneous numbers horizontally. Red numbers rise 48 units clear of the head and reticle. Watch: read a mixed weak point and body burst, two players hitting one enemy, and your red number near the reticle; colours and totals should remain distinct.

@@ -1,0 +1,7 @@
+v36.09: feed keeps the name
+
+Long feed rows keep the name and shorten the detail first.
+
+Check 36.09. Fails on v36.08.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

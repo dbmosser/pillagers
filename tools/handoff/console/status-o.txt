@@ -1,1 +1,1 @@
-10-28 18:35 gate: shipping cw-cx-dmgspace (o-09e-damage-numbers-merge-and-yours-red, codex)
+10-28 19:17 gate: shipping cw-cx-feedname (o-09f-feed-keeps-the-name, codex)

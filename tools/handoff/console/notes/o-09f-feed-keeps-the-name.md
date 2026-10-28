@@ -1,0 +1,21 @@
+
+--- codex run 2026-10-28 19:12 ---
+2026-10-28 run 1, baseline v36.08.
+Prepared mk-cw-cx-feedname.ps1. It preserves the first segment and trims/removes trailing detail, tag, money/count segments as needed. A name is shortened only if it cannot fit alone. The source segments and the width/font cache behavior are preserved. No copy changes.
+Anchors tested against workspace game: written, exactly one edit; draft inspected. Regression JS parses with node --check. Browser checks belong to the lane; none were run here.
+Regression covers both NET host/join and ARCADE host/p2 roles, 1600x900, 1920x1080 and 4K, overflowing sub and tag, multiple trailing segments, exact-fit name, oversized name, unchanged short row, cached result and widening a cached row.
+Size investigation: feedRect and feedFont have no player-seat branches. Width depends on W; font depends on uiScale (per-player P.uiScale), H and hudRes (including per-profile CFG.hudTv). Auto resolution only changes world DPR; W/H use CSS dimensions and HUD uses DPRH, so the audit resolution stepped down line does not explain a different feed width. v35.53 (5cf6731bc), after the v35.39 audit, already widened BOTH feeds from 24 to 28 percent and raised the minimum font. Historical picture alone cannot establish the earlier profiles/window metrics; no speculative P2-only size change made.
+Handing over camera recipes ONLY for this round, keys.txt deliberately empty. Need actual BEFORE pictures before submitting the ship key: the addendum says recipe screens are photographed only after keys ship. Recipe screens show the exact reported callout in P1 and P2 URL contexts, at normal and 175 percent saved text size, with identical staging. Camera returns W/H/font/zone/profile size/role diagnostics. These are isolated role windows, not a live paired session.
+NEXT RUN: inspect these baseline pictures, then put cw-cx-feedname in keys.txt and leave the same recipes for AFTER. The mk script is already prepared and anchor-tested. Require preflight, ship and ON HIS PC, plus after pictures/critic before done. The lane must also verify a real paired demo if isolated staging is insufficient; no Chrome can be run from Codex.
+Watch on next play: a long loot/kill row should lose trailing detail before its first name. In a zone too narrow even for name plus the three-dot mark, detail is removed so a name that fits alone remains whole.
+
+
+--- codex run 2026-10-28 19:16 ---
+2026-10-28 run 2, v36.08.
+Round 1 pictures inspected: all show arcade cards, not the raid feed. Their critic findings concern unchanged cards and cannot grade this task. Cause: recipe enabled ARCADE without setting ARCADE.ownAt, so arcadeIdleTick immediately ended/benched the staged run. No game code fix for a camera-only mistake.
+Round 1 report confirms equal P1/P2 sizes: at 1080 both W1918/H1078, feed width537, normal font20px and large font27.3px. At 4K both W3838/H2158, width1075, normal40px and large54.5px. This rules out a current seat-specific feed width/font difference under matched settings.
+Queued cw-cx-feedname in keys.txt. Same prepared fix, anchor retested (written); replacement, check and updated camera JS syntax checked. No fixture retarget needed.
+Replaced camera recipes with four controlled A/B screens, both URL contexts at 175 percent saved text size. Before screens restore ONLY the exact v36.08 feedParts function in the disposable camera page, copied from this run source; after screens use the shipped function. This is a runtime comparison of old/new code, not a claim of photographing an old release. Original audit P2 before image also remains tools/handoff/cloud/audit-2026-10-28-shots/2p-player2-select-a-cut.jpg.
+New recipe initializes idle timestamps, removes any stale over/initials state, hides attract/modal overlays, and expects the raid feed with no arcade card. Both before/after use the same real select-a-heal callout. It reports the measured parts for direct evidence. No production functions other than feedParts are replaced, and feedParts is replaced only in the two before pages.
+Remaining: lane preflight and ship, ON HIS PC line, then inspect valid after pictures/critic. Isolated player-role window staging proves the shared feed renderer; no live network session was driven here.
+

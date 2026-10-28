@@ -1,0 +1,5 @@
+## v36.09 - FEED KEEPS THE NAME
+
+Co-op hunt while he was away. The audit saw select a heal shortened while its detail stayed whole in the player 2 feed.
+
+MEASURED. Check 36.09 passes, and fails on v36.08.

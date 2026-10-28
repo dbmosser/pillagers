@@ -1,0 +1,26 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  d151-shotgun-p1                        staged      10.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"kind":"shotgun","seat":1,"realPair":[{"on":true,"role":"host","seat":0,"roster":[{"seat":0,"pid":"61a88dd8","name":"PILLAGER","host":true},{"seat":1,"pid":"f8169b7d","name":"PLAYER 2","host":false}],"status":"PLAYER 2 joined","err":"","made":1,"codeLen":1186,"links":1},{"on":true,"role":"join","se
+  d151-shotgun-p2                        staged       6.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"kind":"shotgun","seat":2,"realPair":[{"on":true,"role":"host","seat":0,"roster":[{"seat":0,"pid":"ebdc2d33","name":"PILLAGER","host":true},{"seat":1,"pid":"863743f9","name":"PLAYER 2","host":false}],"status":"PLAYER 2 joined","err":"","made":1,"codeLen":1188,"links":1},{"on":true,"role":"join","se
+  d151-lmg-p1                            staged       6.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"kind":"lmg","seat":1,"realPair":[{"on":true,"role":"host","seat":0,"roster":[{"seat":0,"pid":"79aaf856","name":"PILLAGER","host":true},{"seat":1,"pid":"ec77d0f3","name":"PLAYER 2","host":false}],"status":"PLAYER 2 joined","err":"","made":1,"codeLen":1192,"links":1},{"on":true,"role":"join","seat":
+  d151-lmg-p2                            staged       7.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"kind":"lmg","seat":2,"realPair":[{"on":true,"role":"host","seat":0,"roster":[{"seat":0,"pid":"aed36829","name":"PILLAGER","host":true},{"seat":1,"pid":"c6c42b82","name":"PLAYER 2","host":false}],"status":"PLAYER 2 joined","err":"","made":1,"codeLen":1182,"links":1},{"on":true,"role":"join","seat":
+  d151-incoming-p1                       NOT STAGED 105.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at stageDropPair (<anonymous>:136:33)
+    at async <anonymous>:138:8
+    at async <anonymous>:1:21
+  d151-incoming-p2                       NOT STAGED 105.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at stageDropPair (<anonymous>:136:33)
+    at async <anonymous>:138:8
+    at async <anonymous>:1:21
+== 4k : window 3876x2265, viewport 3840x2160
+  d151-shotgun-p1                        staged      10.9s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | {"kind":"shotgun","seat":1,"realPair":[{"on":true,"role":"host","seat":0,"roster":[{"seat":0,"pid":"c0b36e63","name":"PILLAGER","host":true},{"seat":1,"pid":"6b512a92","name":"PLAYER 2","host":false}],"status":"PLAYER 2 joined","err":"","made":1,"codeLen":1192,"links":1},{"on":true,"role":"join","se
+  d151-shotgun-p2                        staged       6.9s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | {"kind":"shotgun","seat":2,"realPair":[{"on":true,"role":"host","seat":0,"roster":[{"seat":0,"pid":"1f15d2da","name":"PILLAGER","host":true},{"seat":1,"pid":"4e40f96f","name":"PLAYER 2","host":false}],"status":"PLAYER 2 joined","err":"","made":1,"codeLen":1190,"links":1},{"on":true,"role":"join","se
+  d151-lmg-p1                            staged       7.4s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | {"kind":"lmg","seat":1,"realPair":[{"on":true,"role":"host","seat":0,"roster":[{"seat":0,"pid":"59f6e811","name":"PILLAGER","host":true},{"seat":1,"pid":"d50a1d68","name":"PLAYER 2","host":false}],"status":"PLAYER 2 joined","err":"","made":1,"codeLen":1186,"links":1},{"on":true,"role":"join","seat":
+  d151-lmg-p2                            staged       7.6s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | {"kind":"lmg","seat":2,"realPair":[{"on":true,"role":"host","seat":0,"roster":[{"seat":0,"pid":"a1b687fc","name":"PILLAGER","host":true},{"seat":1,"pid":"5e3b3baf","name":"PLAYER 2","host":false}],"status":"PLAYER 2 joined","err":"","made":1,"codeLen":1189,"links":1},{"on":true,"role":"join","seat":
+  d151-incoming-p1                       NOT STAGED 106.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at stageDropPair (<anonymous>:136:33)
+    at async <anonymous>:138:8
+    at async <anonymous>:1:21
+  d151-incoming-p2                       NOT STAGED  15.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host did not link the existing p2 window: p2raid
+    at stageDropPair (<anonymous>:136:33)
+    at async <anonymous>:138:8
+    at async <anonymous>:1:21

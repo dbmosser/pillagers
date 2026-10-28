@@ -1,0 +1,18 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  d151-incoming-p1                       NOT STAGED 110.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at stageDropPair (<anonymous>:137:33)
+    at async <anonymous>:139:8
+    at async <anonymous>:1:21
+  d151-incoming-p2                       NOT STAGED 105.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at stageDropPair (<anonymous>:137:33)
+    at async <anonymous>:139:8
+    at async <anonymous>:1:21
+== 4k : window 3876x2265, viewport 3840x2160
+  d151-incoming-p1                       NOT STAGED 110.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at stageDropPair (<anonymous>:137:33)
+    at async <anonymous>:139:8
+    at async <anonymous>:1:21
+  d151-incoming-p2                       NOT STAGED 106.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at stageDropPair (<anonymous>:137:33)
+    at async <anonymous>:139:8
+    at async <anonymous>:1:21

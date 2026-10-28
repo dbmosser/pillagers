@@ -3865,8 +3865,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.08';
-var VER_AT='2026-10-28 18:36';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.09';
+var VER_AT='2026-10-28 19:19';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -23627,10 +23627,14 @@ function feedParts(ln,fL,maxW){
   if(ln.money) P.push({t:'  '+ln.money,c:UIC.r_gold});
   if(ln.tag) P.push({t:'  \u00b7  '+ln.tag,c:HUDC.dim});
   for(i=0;i<P.length;i++){ P[i].w=ctx.measureText(P[i].t).width; w+=P[i].w; }
-  if(w>maxW&&P.length){   // too long for the zone: the first piece gives way, with a mark at its end
-    t=P[0].t; tw=w-P[0].w;
-    while(t.length>3&&tw+ctx.measureText(t+'...').width>maxW) t=t.slice(0,-1);
-    P[0].t=t+'...'; P[0].w=ctx.measureText(P[0].t).width; w=tw+P[0].w;
+  // v28.xx (cw-cx-feedname): the audit (10-28) saw "select a ..." while its detail stayed whole. Keep the name; shorten trailing detail first.
+  for(i=P.length-1;i>=0&&w>maxW;i--){
+    if(i===0&&P[0].w<=maxW){ w=P[0].w; break; }
+    t=P[i].t; tw=w-P[i].w;
+    while(t.length&&tw+ctx.measureText(t+'...').width>maxW) t=t.slice(0,-1);
+    c0=ctx.measureText(t+'...').width;
+    if(tw+c0<=maxW){ P[i].t=t+'...'; P[i].w=c0; w=tw+c0; }
+    else { P.pop(); w=tw; }
   }
   ln.pr=P; ln.pr.w=w; ln.mf=fL; ln.pw=maxW;
   return P;
@@ -55967,7 +55971,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.08: Growing damage numbers sit above target names and separate when their text would overlap. Red hurt numbers sit clear of your head. Totals, colours and hit timing are unchanged. Check 36.08 fails on v36.07',
+  now:'v36.09: Long feed rows keep the name and shorten the detail first. Check 36.09 fails on v36.08',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
