@@ -417,3 +417,5 @@
 2026-10-28 12:06 o-03-197-final-90s-rush 69s ok PARTIAL in=3615910 out=19931 run=3
 2026-10-28 12:17 o-03-197-final-90s-rush 467s ok PARTIAL in=6390806 out=34066 run=4
 2026-10-28 12:20 o-03-197-final-90s-rush 90s ok PARTIAL in=7315977 out=36412 run=5
+2026-10-28 12:39 o-04-155-longshot-glint 652s ok PARTIAL in=2362434 out=21971 run=1
+2026-10-28 12:40 o-04-155-longshot-glint 68s ok PARTIAL in=2938279 out=23916 run=2

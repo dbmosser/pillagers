@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.85 - ELITE LONGSHOT GLINT
+
+Co-op hunt while he was away. His 10-28 yes to #5: a 272 damage elite Longshot shot needs a half-second warning. A growing white muzzle star with a red core and the machine charge sound precede player-directed shots in chase and at the extraction ring. The star draws above fog only on a clear line to the local player. Both windows use ninth-field bit 4; burn, get-up and other shared bits stay intact. Aim and cooldown draws keep their order; cooldown repays the warning time. No new switch or player text. Watch in play: the glint must read at range in the smooth look and at night; revealing a hidden Longshot pillager must not feel like a wallhack; Longshot pillagers should lose more duels because players can dodge.
+
+MEASURED. Check 35.85 passes, and fails on v35.84.
 ## v35.84 - FINAL RUSH HUD CLEARANCE
 
 Co-op hunt while he was away. The critic found the final rush crowded by the clock, score and extraction arrow. During the two player demo rush the clock and score stay in separate windows with a 16px gap, the smaller score gets a solid backing, and extraction moves beside the clock. The rush panel is at least 416px wide with a 16px inset and 24px clearance. Playtest watch: check both windows at 1:30 for readable navigation and a clear rush banner; all scoring and wave timings stay as shipped in v35.83.

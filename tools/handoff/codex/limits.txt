@@ -58,3 +58,5 @@
 2026-10-28 12:06 week=14.0% 5h=57.0% week_resets=2026-11-04 01:35 job=o-03-197-final-90s-rush
 2026-10-28 12:17 week=14.0% 5h=62.0% week_resets=2026-11-04 01:35 job=o-03-197-final-90s-rush
 2026-10-28 12:20 week=15.0% 5h=64.0% week_resets=2026-11-04 01:35 job=o-03-197-final-90s-rush
+2026-10-28 12:39 week=16.0% 5h=71.0% week_resets=2026-11-04 01:35 job=o-04-155-longshot-glint
+2026-10-28 12:40 week=16.0% 5h=72.0% week_resets=2026-11-04 01:35 job=o-04-155-longshot-glint

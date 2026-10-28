@@ -3075,32 +3075,32 @@
   "score": 2,
   "pass": false,
   "need": 4,
-  "verdict": "the raid hud is readable and mostly lower case, but the top-centre is a stack of five boxes that crowd each other and the 'final rush' alert, and the bottom-left hud has uneven widths and weak contrast.",
+  "verdict": "The final rush banner is now a wide red-edged panel, but the top-centre stack is still a pile of overlapping boxes, the HUD uses inconsistent type sizes, and the bottom-left and bottom-right clusters are untouched.",
   "findings": [
-   "P1 top-centre stack (timer, team score, extract chip, final rush banner): Leave a 16px gap between all boxes and centre them on the same width. Make the timer the only 56px hero. Drop 'team score' to 20px with you/p2 in 16px muted text. Move the final rush banner to y≈260 with 24px of clear space around it, and move the extract chip into the timer row or beside it.",
-   "P1 final rush banner: Widen it to about 420px with 16px padding. Use a 32px title in --danger and a 20px tx-2 subline. Keep the triangle at 32px. Add a 4px --danger left bar and fill it with --ui-panel at 90% so it reads as the one hot element.",
-   "P1 extract chip and player 2 world label: Move the extract chip and its arrow out of the banner's footprint, for example to the left of the timer at y=60 with 16px gap. Raise the world tag to 16px with a --ui-panel plate. Keep player 2 cyan, as the style guide says.",
-   "P2 bottom-left (armour, hp, f1 controls): Use one 16px label and one 20px value format for both bars. Make both bars 32px high and the same width. Put the labels on a dark plate with 4.5:1 contrast. Align the f1 chip's left edge to x=48 (5% margin) on its own row above the bars.",
-   "P2 bottom-right ammo panel and weapon slots: Inset the ammo panel 48px from the right and bottom edges. Draw 8 equal 64px slot tiles with a --ui-line border for all slots, and show the numbers inside the tiles. Dim the empty ones to 40% opacity."
+   "P1 final rush banner (x650-1270, y265-390): Shrink the banner to about 420px wide with 16px padding. Centre it on x=960 and put it at y=260 with 24px of clear space above and below. Fill it with --ui-panel at 90% opacity. Use a 4px --danger left bar and drop the partial bottom line. Set the title to 32px --danger and the subline to 20px tx-2. Remove the 'the seal' text from behind it.",
+   "P1 top-centre stack (extract chip, timer, weather icon, team score): Use one 16px gap between all boxes and centre each on x=960. Make the timer the only 56px hero. Put the extract chip on the left of the timer at the same top edge and the weather icon on the right. Make the team score box the same width as the timer row. Show 'team score' as a 16px tx-2 label above one 20px row, with 'you' and 'p2' left-aligned at 16px tx-2.",
+   "P1 bottom-left bars (armour 60, hp 100) and f1 controls chip: Use one 16px label and one 20px value format for both bars. Make both bars 32px high and 400px wide, stacked with an 8px gap and left edge at x=48. Put each label on a dark --ui-panel plate. Set the f1 chip's left edge at x=48 on its own row 16px above the bars.",
+   "P1 bottom-right ammo panel (x1605-1910, y868-1017): Inset the panel 48px from the right and bottom edges. Cap the ammo count at 56px f-cond 800 and the weapon name at 20px. Move the weapon slot tiles to sit directly left of the ammo panel on the same baseline.",
+   "P2 weapon slots 1-0 on the bottom strip: Draw all 10 slots as equal 64px tiles with a --ui-line border and --ui-panel fill. Put the number in a 16px label inside each tile. Dim empty tiles to 40% opacity. Give the selected tile a 3px --acc border."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-03-197-final-90s-rush-recipes-3/finalrush-host-raid-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-03-197-final-90s-rush-recipes-4/finalrush-host-raid-1080.jpg",
   "task": "o-03-197-final-90s-rush",
-  "when": "2026-10-28T16:09"
+  "when": "2026-10-28T16:27"
  },
  "finalrush-partner-raid": {
-  "score": 2,
+  "score": 3,
   "pass": false,
   "need": 4,
-  "verdict": "The raid HUD has the right pieces, but the top centre is a stack of five competing boxes, and the weapon slots, bars and goals dropdown do not share one style.",
+  "verdict": "The top-centre is now a clear timer-then-banner hierarchy with consistent dark panels, but the final rush banner is oversized and mostly empty, the team score box has uneven alignment, and the bottom-left bars still sit loose on the map.",
   "findings": [
-   "P1 top centre: timer, rain icon, team score, extract chip and final rush banner: Keep the timer as the one hero element (56px, f-cond 800). Move the team score to a smaller 20px row under it with 16px gaps. Move the extract chip beside the compass arrow. Show the final rush banner in place of the grey rows, with 24px clearance on all sides.",
-   "P1 team score panel (210 sp, you 105 sp, p1 105 sp): Use a solid --ui-panel fill at 92% opacity or higher with a 1px --ui-line-hi border and 4px radius. Put the left-hand column and the right-hand column on shared baselines. Set the sub-lines in tx-1 or tx-2 at 16px with 8px padding. Rename 'p1' to 'player 1' and 'you' to 'player 1' or keep 'you' only if consistent.",
-   "P1 bottom-left bars: armour 60 and hp 100: Put both bars in one --ui-panel container with a 4px radius and 8px padding. Use 20px labels in the same weight for both rows. Use --ok for hp and a muted blue for armour. Add a dark text track behind the numbers. Pull the container in to a 5% margin.",
-   "P1 weapon slots 1 to 0 and the ammo panel at bottom right: Draw empty slots as 56px tiles with --ui-panel fill and a --ui-line border, with the number at 16px. Make the selected tile's border 2px lime (--acc). Use the same 4px radius and border for the ammo panel. Raise the weapon name to tx-1 at 20px. Make the 360 counts 16px or larger.",
-   "P2 goals 0/3 dropdown, top right: Restyle it as a --ui-panel chip with a 1px --ui-line-hi border and a 4px radius. Use 20px text. Pull it in to a 24px margin. Match it to the other top-right items (cw-trcol)."
+   "P1 final rush banner, centre: Shrink it to fit its content, about 320x72px, with 16px padding. Keep the 4px red left bar, put the warning glyph and 'final rush' on one line at 20-24px, and put 'kills x1.05 sp' at 16px in tx-2. Anchor it 16px under the team score panel.",
+   "P1 team score panel, below the timer: Make the panel the same width as the timer, or 220px. Use a two-column grid with a shared baseline: 210 sp at 32px tx-1 on the left, and 'you 105' and 'player 2 105' at 16px on the right. Use 8px padding and a 1px --ui-line-hi border with a 4px radius.",
+   "P1 bottom-left armour 60 and hp 100 bars: Put both in one --ui-panel container with a 4px radius and 8px padding. Make both bars 20px tall with 20px f-cond 600 labels. Use --ok for hp. Right-align the numbers on a dark track. Align the container left edge with the weapon slots at a 5% margin.",
+   "P1 weapon slot row, 1 to 0: Draw all 10 slots as 56px tiles with --ui-panel at 85% fill and a 1px --ui-line border. Keep the numbers at 16px in tx-2. Make the selected tile's border 2px --acc lime, and set ammo counts at 16px tx-1. Align the bottoms of the slot row and the ammo panel.",
+   "P2 top-right goals 0/3 panel: Drop the 'run goals' line, and align the three goal rows to one left edge at 16px. Right-align the '+400 sp' rewards in tx-2. Collapse the panel to just 'goals 0/3' by default and open it with a key. Set the panel inset to 24px to match the HUD margin."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-03-197-final-90s-rush-recipes-3/finalrush-partner-raid-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-03-197-final-90s-rush-recipes-4/finalrush-partner-raid-1080.jpg",
   "task": "o-03-197-final-90s-rush",
-  "when": "2026-10-28T16:09"
+  "when": "2026-10-28T16:28"
  }
 }
