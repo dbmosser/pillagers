@@ -3730,8 +3730,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.64';
-var VER_AT='2026-10-28 03:38';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.65';
+var VER_AT='2026-10-28 04:15';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -41812,6 +41812,8 @@ if(ne.kind==='listener'&&ne.state==='dormant') continue;
     var crewC=null;
     if(ne.kind==='raider'&&CFG.raiderFeud!==0&&!ne.merc&&ne.crew!==undefined)
       crewC=['#c8452f','#4a90c2','#c2a54a','#7a4ac2'][ne.crew%4];
+    // v28.xx (cw-cx-pingmerge): the HUD ping owns the target name while it is live; crew and health still draw here.
+    var pingPlate=netPingForEntity(ne);
     wc.font=FS(TYPE.micro);
     var tw=wc.measureText(plate).width;
     // Plate height follows the actual rendered font, or the scaled-up text
@@ -41827,7 +41829,7 @@ if(ne.kind==='listener'&&ne.state==='dormant') continue;
     var ph2=Math.ceil(parseFloat((wc.font.match(/([\d.]+)px/)||[0,12])[1])*1.35);
     if(wlUnder(ne.x-tw/2-11,ne.y-lift-ph2+3,tw+22,ph2+5)) continue;   // v31.xx (cw-trcol2): a nameplate (with its crew block and health pip) is not drawn over the corner column or the score plate
     wc.fillStyle='rgba(6,9,13,.62)';
-    wc.fillRect(ne.x-tw/2-4,ne.y-lift-ph2+3,tw+8,ph2);
+    if(!pingPlate) wc.fillRect(ne.x-tw/2-4,ne.y-lift-ph2+3,tw+8,ph2); // v28.xx (cw-cx-pingmerge): no empty duplicate plate.
     // v8.39, audit: the plate is centred on the entity and the text was drawn at
     // ne.x with textAlign left, so it began at the middle of its own box. See
     // the fillText below, which now starts at the plate's inner left edge.
@@ -41845,7 +41847,7 @@ if(ne.kind==='listener'&&ne.state==='dormant') continue;
       :(ne.state==='chase'||ne.state==='alarm'
         ? (hostile?'#ff6b5a':'#ff9a3c')
         : (hostile?'#e0a89e':'#9aa6b2'))));
-    wc.fillText(plate,ne.x-tw/2,ne.y-lift);   // v8.39: inside its plate, not off the right of it
+    if(!pingPlate) wc.fillText(plate,ne.x-tw/2,ne.y-lift); // v28.xx (cw-cx-pingmerge): the ping plate carries this same name.
     // health pip so a wounded target reads at a glance
     if(ne.hp<ne.maxhp){
       var fw=clamp(ne.hp/ne.maxhp,0,1);
@@ -43980,7 +43982,7 @@ function mmMarks(r,sc,R){
     for(i=0;i<(NET.pings||[]).length;i++){
       q=NET.pings[i]; if(!q||!isFinite(q.x)) continue; s=at(q.x,q.y); if(s.out) continue;
       ctx.fillStyle=q.dg?'#ff4a3a':(q.w?'#ff8a3c':'#6fe0ff');
-      colourCueGlyph(ctx,q.dg?'danger':q.pl?'loot':q.w?'target':'place',s.x,s.y,1.5*R,ctx.fillStyle);MMAP.ops+=3;   // v28.xx (cw-cx-pingread): 18px target shape and 21px dark backing at 1080p.
+      colourCueGlyph(ctx,q.dg?'danger':q.pl?'loot':q.w?'target':'place',s.x,s.y,2*R,ctx.fillStyle);MMAP.ops+=3; // v28.xx (cw-cx-pingmerge): 24px target, 28px dark backing at 1080p.
     }
   }
   if(G.waypoint&&isFinite(G.waypoint.x)){
@@ -55473,7 +55475,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.64: TV HUD labels read larger; empty belt slots are quieter and the score panel has room. Check 35.64 fails on v35.63',
+  now:'v35.65: Target pings use one readable name label and larger map markers. Check 35.65 fails on v35.64',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -62432,7 +62434,7 @@ function netWpMapDraw(ox,oy,sc){
   }
   for(i=0;i<(NET.pings||[]).length;i++){   // live pings show on the map too
     p=NET.pings[i]; px=ox+p.x*sc; py=oy+p.y*sc;
-    colourCueGlyph(ctx,p.dg?'danger':p.pl?'loot':p.w?'target':'place',px,py,1.5*Math.max(1,hudRes()),p.dg?'#ff4a3a':p.w?'#ff8a3c':'#6fe0ff'); // v28.xx (cw-cx-pingread): the same larger ping shape on the full map.
+    colourCueGlyph(ctx,p.dg?'danger':p.pl?'loot':p.w?'target':'place',px,py,2*Math.max(1,hudRes()),p.dg?'#ff4a3a':p.w?'#ff8a3c':'#6fe0ff'); // v28.xx (cw-cx-pingmerge): match the minimap 24px ping and dark backing.
   }
   return n;
 }
@@ -62698,6 +62700,16 @@ function netPingUpdate(){
   return NET.pings.length;
 }
 // v28.xx (cw-cx-pingread), critic on his solo ping: 13px orange words covered the target. One readable plate above the body, for every seat.
+// v28.xx (cw-cx-pingmerge): one name for a live pinged target; keep its health and crew marks. The peddler keeps the deal prompt.
+function netPingForEntity(e){
+  if(!e||e.hp<=0||e.kind==='peddler'||!G||G.ents.indexOf(e)<0)return null;
+  var i,p,now=Date.now();
+  for(i=(NET.pings||[]).length-1;i>=0;i--){
+    p=NET.pings[i];
+    if(!p.pl&&now-p.at<=NET_PING_T*1000&&(p.target===e||(p.id&&NET.entMap&&NET.entMap[p.id]===e)))return p;
+  }
+  return null;
+}
 function netPingLabel(lbl,x,y,r){
   var w, left, by, top;
   ctx.save();
@@ -62728,7 +62740,10 @@ function netPingDraw(){
     ctx.beginPath(); ctx.moveTo(x,y-LH(12)*r); ctx.lineTo(x+LH(9)*r,y); ctx.lineTo(x,y+LH(12)*r); ctx.lineTo(x-LH(9)*r,y); ctx.closePath(); ctx.stroke();
     ctx.restore();
     nm=(p.s===NET.seat)?'YOU':(netSeatName(p.s)||'PILLAGER');
-    lbl=nm+(p.w?('  \u00b7  '+p.w):(p.dg?'  \u00b7  DANGER':''))+'  \u00b7  '+((G&&G.player)?metres(dist(G.player,p)):0)+'m';   // v22.xx (R43): 120m   // v22.xx (R49): no colon labels; NAME, what, distance
+    // v28.xx (cw-cx-pingmerge): retain the specific target identity and its running/friendly detail in the one readable plate.
+    e=p.target||(p.id&&NET.entMap?NET.entMap[p.id]:null);
+    var pingName=(e&&netPingForEntity(e)&&e.name)?e.name+(e.state==='extract'?' [running]':(e._plateTag||'')):p.w;
+    lbl=nm+(pingName?('  \u00b7  '+pingName):(p.dg?'  \u00b7  DANGER':''))+'  \u00b7  '+((G&&G.player)?metres(dist(G.player,p)):0)+'m';
     netPingLabel(lbl,x,y,r);   // v28.xx (cw-cx-pingread): 16px bone text, shared plate and a clear gap above the target.
     n++;
   }

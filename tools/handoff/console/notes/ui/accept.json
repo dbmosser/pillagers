@@ -1827,33 +1827,33 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The downed card is now one compact stack with a clear hero timer and a single self-revive prompt, but the red down label, timing bar, hp bar and 'down' tag all repeat the same state in several places.",
+  "verdict": "The downed card is gone and the raid HUD now reads clearly, with a good hero ammo number and a quiet top centre. It is still not polished: the left side is crowded with overlapping panels, panel styles and radii vary, and the minimap is high contrast and heavy.",
   "findings": [
-   "P1 hp bar bottom-left (x24-430, y1033-1067) and 'down' tag (x26-103, y935-972): Remove the 'down' tag, or drop the card title and keep the tag. Draw the empty hp bar as a 12px bar with a 1px --danger outline and no fill, with a 16px tx-2 label.",
-   "P1 timing strip at the card top (x838-1082, y428-446): Remove one of the two bars. If the strip is a minigame, label it at 16px tx-2 and put it below the timer. Otherwise delete it and keep only the 8px bar under the number, filled with --danger and draining.",
-   "P2 self-revive line (x815-1105, y612-641): Draw the key as a 24px keycap chip with a 1px --ui-line-hi border and 4px radius. Set the label at 20px f-cond 600 and cut the clause to 'self-revive'. Show the remaining count as '1' at 16px tx-2.",
-   "P2 card chrome (x721-1199, y411-651): Use 24px padding on all sides. Remove the stub, or run it as a 3px --danger bar across the card top that shrinks with the timer.",
-   "P2 'player 2 joined' toast (x893-1027, y893-930): Move it to the left feed under the 'player 2' tag. Use --ui-panel with a 4px radius and a 1px --ui-line-hi border."
+   "P1 scoreboard card top-left (x8-367, y143-242): Set rows at 16px f-cond 600 with 24px row pitch. Make the header 16px tx-2. Show 'you' in tx-1 and the others in tx-2. Fold the list to a single line by default, since the owner wants the corners quiet.",
+   "P1 minimap and contracts (x1603-1901, y19-362): Fill the minimap with --ui-panel at 85% opacity and a 1px --ui-line-hi border. Draw the wall bars in --ui-line-hi, not white. Use the same 4px radius, 16px label and chevron on contracts and on the scoreboard.",
+   "P1 hp bar bottom-left (x24-430, y1033-1067): Draw a 12px tall bar in --ok with a --ui-line track. Put '100' at 20px f-cond 700 and 'hp' at 16px tx-2 above the bar. Move it to x=54 (5% margin) and align its baseline to the weapon slot row.",
+   "P2 'pillager' name card (x13-170, y323-358) and 'p1' tag (x943-977, y612-642): Remove the left 'pillager' card, since the name already floats over the character. Redraw 'p1' as a 16px label chip with --ui-panel fill, a 1px amber border and 4px radius, 24px above the head.",
+   "P2 'pillager joined' toast (x894-1025, y893-930): Move it to the left feed at x=54, y=370 (below the scoreboard). Use --ui-panel fill, 1px --ui-line-hi border, 4px radius, 16px f-cond 600 tx-1 text, 8px by 16px padding."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-120e-downed-damage-cuts-recipes-4/downcuts-linked-p1-1080.jpg",
-  "task": "o-120e-downed-damage-cuts",
-  "when": "2026-10-28T04:41"
+  "pic": "tools/handoff/console/notes/shots/o-139-solo-pings-recipes-3/party-ping-p1-1080.jpg",
+  "task": "o-139-solo-pings",
+  "when": "2026-10-28T08:03"
  },
  "p2-1080": {
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "the easy-mode modal is gone and the downed card now reads clearly, with one hero number and a single prompt, but the card has no scrim, the player 1 label appears twice, and the bottom-left down tag and hp bar are still two separate pieces.",
+  "verdict": "This is a clean, readable dark card with a clear lime action, but it has a stray lime tick, a heavy white close box, small type, no visible pad focus and wasted row space, so it reads as a competent template and not a polished AAA screen.",
   "findings": [
-   "P1 HUD bottom-left (x 25-430, y 935-1068): 'down' tag and 'hp 0' bar: Remove the separate 'down' tag. Make one bar 280x24 at x 48, y 1008. Use a --ui-void track with a 1px --ui-line-hi border and a 4px radius. Put a 16px 'down' label inside, with the fill at 0 percent. Keep the red --danger for the label only.",
-   "P1 Downed card (x 721-1199, y 412-651) over the map: Add --scrim at about 0.5 alpha behind the card, or a 1px --ui-line-hi border plus a soft drop shadow. Delete the red fragment, or turn it into a full-width 3px timer bar along the top edge. Use a 4px radius.",
-   "P1 Card contents (x 760-1160, y 425-640): Keep only one bar, under the number. Make it 8px tall with a lime or --danger fill that shrinks. If the red bracket is a real mechanic, label it with a 16px tx-2 word. Otherwise remove it. Space the rows 16px apart.",
-   "P1 Self-revive prompt (x 815-1105, y 612-642): Put a 48px-tall button, 280px wide, with an --acc fill, --acc-ink text, and a 16px key cap with 'f' on the left, reading 'self-revive'. Put 'one per raid' as a 16px tx-2 tag on the right, or drop it.",
-   "P2 Top-left 'keyboard' chip (x 10-105, y 6-32) and 'player 1' health tag (x 15-170, y 322-352): Show the player name once, over the character. Move the keyboard chip to x 48, y 48 with a 16px tx-2 label and a --ui-line-hi border. Remove the left-edge health bar if the bottom-left bar covers the same thing."
+   "P1 card top-left edge (x 504-540, y 157): Delete it. If it is meant as a header accent, make it a 3px lime bar along the full card top at x 480-1440, or a 48x3 bar aligned to the title's left edge at x 521, y 157.",
+   "P1 take the pack button (x 1200-1399, y 810-866) and close x (x 1375-1423, y 175-221): Give the button a 2px --acc-hover outer ring with 4px offset, or a 4px white inner border, as the focus state. Make the x box 40x40 with a --ui-line-hi border, a 2px --tx-2 glyph, and a lime border on focus. Align its right edge to the 1399 content margin.",
+   "P1 rows (x 521-1399, y 285-780): Right-align every quantity in a 56px-wide column and show 'x1' on single items, or narrow the card to about 720px wide. Alternatively add a 16px tx-2 type tag (weapon, heal, throwable) right-aligned at x 1399. Tint the focused row with --ui-raised.",
+   "P2 title 'welcome pack' (x 521-694, y 222-252): Set the title to 32px f-cond 700 in --tx-1, vertically centred with the x box at y 198. Make the header row 72px tall, with the divider at y 270 and a 16px gap to the first row.",
+   "P2 rarity bars (x 610-614 in each row): Move each bar flush to the icon's right edge, at x 586, as a 3px full-row-height bar in the --r-* colour. Use --r-common #9da3a8 at full opacity for the grey rows."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-120e-downed-damage-cuts-recipes-4/downcuts-linked-p2-1080.jpg",
-  "task": "o-120e-downed-damage-cuts",
-  "when": "2026-10-28T04:42"
+  "pic": "tools/handoff/console/notes/shots/o-139-solo-pings-recipes-3/party-ping-p2-1080.jpg",
+  "task": "o-139-solo-pings",
+  "when": "2026-10-28T08:03"
  },
  "pix86c-fashion": {
   "score": 3,
@@ -2595,49 +2595,49 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The card frame, header and footer follow the guide well, but the map is cluttered with overlapping labels and the contracts list is a flat column of same-weight rows with no focal point.",
+  "verdict": "The contracts panel is now a clean, readable list and the header is tidy, but the map still has colliding, plate-less labels and the contract rows have no focus state or accent.",
   "findings": [
-   "P1 map, the cache labels around the foreman office and the blast freezer, and 'cache' above the strongbox: Collapse duplicate caches into a single icon with a count (e.g. 'cache x4'). Give every map label a 4px padded --ui-void plate at 80% opacity. Enforce a 12px minimum gap between labels and nudge colliding ones outward.",
-   "P1 map label type (cache, packing floor, the sump, scrap line, chill row): Set all map labels to 16px f-cond 600 with +.04em tracking. Use only three tones: tx-1 for interactive or locked places, tx-2 for static areas, and semantic colour for extract (teal) and danger (red). Drop pure white.",
-   "P1 contracts panel, row layout: Put the contract name at 20px tx-1 and the reward at 20px --acc on the same line. Put the progress as a 4px bar with the count in 16px tx-2 beside it. Highlight the first or focused row with --ui-raised and a 3px lime left bar. Cut the header to '0/8' and drop 'done'.",
-   "P1 map, route and waypoint state / player marker: Add 24px of inner padding to the map bounds, or clamp markers so the arrow's 40px disc stays inside. Draw a 2px lime reticle for the cursor and a bright waypoint pin at 24px.",
-   "P2 header, 'cold storage' / 'sector map' / '6pm · clear': Set 'sector map' to 16px tx-2 baseline-aligned with the title. Set the time to 16px tx-2 with 24px right margin before the X. Match the X button border to --ui-line-hi at 4px radius, 40x40."
+   "P1 map, cache labels around the foreman office, blast freezer and strongbox (about 8 'cache' strings): Draw one cache icon per cluster with a 16px tx-2 'x4' count and no repeated words. Give the remaining labels a 4px padded --ui-void plate at 80% and a 12px minimum gap.",
+   "P1 map labels (packing floor, the sump, scrap line, chill row, strongbox, hot ground): Set all labels to 16px f-cond 600 with +.04em tracking. Use tx-1 for interactive or locked places, tx-2 (#aaa498) for static areas, and keep teal for extract and red for danger. Put every label on a --ui-void plate at 80%. Drop pure white.",
+   "P1 contracts panel, rows: Fill the first or focused row with --ui-raised and a 3px --acc left bar. Set the reward to 20px tx-1 with the progress count at 16px tx-2. Make the progress bar 4px, filled in --acc to the current count.",
+   "P1 map, player marker and waypoint cursor (530,450) and (571,440): Draw a 2px --acc reticle at 24px for the waypoint cursor. Scale the player marker to 40px with a 2px dark outline. Move 'seal 0%' 24px away from the cursor.",
+   "P2 contracts panel header: Change the header to '0/8' at 16px tx-2. Set the title to 20px f-cond 700 and keep it distinct from the screen title. Trim the panel padding so the last row sits 24px from the bottom."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-139-solo-pings-recipes-1/solo-ping-map-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-139-solo-pings-recipes-3/solo-ping-map-1080.jpg",
   "task": "o-139-solo-pings",
-  "when": "2026-10-28T02:40"
+  "when": "2026-10-28T08:03"
  },
  "solo-ping-minimap": {
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The minimap ping reads and the hud is mostly clean and lower case, but small type, a crowded left side, a blank minimap and a loose type scale keep it at a solid but not yet polished 3.",
+  "verdict": "The minimap now has a proper header-less frame and a tidy contracts bar, but the ping markers are still tiny, the left rank list is still cramped and unbordered, and the HUD type sizes are scattered, so it reads as a competent prototype and not a polished HUD.",
   "findings": [
-   "P1 minimap top-right: Make ping markers at least 16px with a 2px dark outline and a short pulse ring. Move the north marker to a fixed corner tick. Crop or fill the empty area. Put the collapse chevron in the header row, not over the map.",
-   "P1 left panel 'current pillager bots 7': Raise to 16px with a 24px row pitch. Show only you plus the 3 nearest ranks, or collapse by default. Drop the purple, or make it your one declared player tint. Give the panel a 1px --ui-line-hi border and 8px padding.",
-   "P1 hud type scale across the screen: Snap to 56/32/20/16/14. Make slot numbers and ammo counts 16px. Set the timer to 32px. Set the footer to 16px --tx-2.",
-   "P2 bottom-left hp bar and 'f1 controls' chip: Put one 48px left margin on hp, the leaderboard and the toast. Use a 16px chip text size. Give the hp bar a dark track, a 4px radius and a 20px label.",
-   "P2 hotbar: Use a single 3px --acc border and a --ui-raised fill on the selected slot only. Move the 'f' quick-slot hint into the label size. Raise the empty silhouettes to about 45% opacity."
+   "P1 minimap top-right (markers, 'n', chevron): Make markers 16px with a 2px --ui-void outline and a 1.5s pulse ring. Replace 'n' with a 16px tick fixed in the top-left corner. Move the chevron into the contracts header row, or drop it. Dim the wall strips to --ui-line-hi so the markers read.",
+   "P1 left panel 'current pillager bots 7': Set rows to 16px on a 24px pitch with 8px padding and a 1px --ui-line-hi border. Show only you plus the 3 nearest ranks by default and fold the rest under the chevron. Use --tx-1 for every name and highlight only 'you' with --acc. Keep money as '$'.",
+   "P1 type scale across the HUD: Set the timer to 32px f-cond 700. Keep ammo '30' as the single 56px hero. Set '/ 60' to 32px. Set slot numbers, 'compact smg' and the key hints to 16px, and the '4 items $1,560' footer to 16px --tx-2. Make the 'hp 100' text 20px.",
+   "P2 bottom-left hp bar and 'f1 controls' chip: Put one 48px left margin on hp, the leaderboard and the controls chip. Give the bar a --ui-panel track, a 4px radius and a 20px label. Pin the 'f1 controls' chip to the left end of the hotbar row at 16px.",
+   "P2 hotbar: Use a 3px --acc border and --ui-raised fill on the selected slot only. Draw empty slots as 1px --ui-line outlined 72px tiles at 45% silhouette opacity. Move the 'f' badge to the top-right corner, clear of the ammo number."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-139-solo-pings-recipes-1/solo-ping-minimap-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-139-solo-pings-recipes-3/solo-ping-minimap-1080.jpg",
   "task": "o-139-solo-pings",
-  "when": "2026-10-28T02:41"
+  "when": "2026-10-28T08:04"
  },
  "solo-ping-world": {
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "The in-raid HUD is functional and mostly lower case, but it is crowded and uses small text and inconsistent panel styling, and the new sentry ping labels are tiny, low-contrast and sit on a busy tile.",
+  "verdict": "The in-world pings and the compact hud are readable, but none of the earlier fixes landed: the sentry still has two stacked labels, the scoreboard is still always open, and the ammo card, hp bar and hotbar still don't share a type scale or an edge.",
   "findings": [
-   "P1 sentry ping label under the sentry (\"you · sentry · 17m\") and the \"sentry r-46\" tag: Put both on one --ui-panel plate at 85% opacity with 1px --ui-line-hi. Use 16px f-cond 600 in --tx-1. Show distance in --tx-2. Place it 16px above the sentry, clear of the ring. Show one label, not two.",
-   "P1 top-left \"current pillager bots 7\" scoreboard: Collapse it by default to a single header line and open it on a key, or cut it to the top 3 plus you. Set rows to 16px with 24px height. Give the 'you' row a 3px --acc left bar and --tx-1 text. Drop the purple, or add a rarity glyph.",
-   "P1 bottom-left feed (\"codex entry…\", \"contract item nearby…\"): Shorten to \"contract item nearby\" and drop the explanation. Use one plate style: 16px text, 3px --warn bar for contracts, --ui-line-hi for info. Move the feed up 24px above the f1 tag. Make the plates the same width.",
-   "P1 hud bottom-right ammo card and hotbar: Drop the 'b / i backpack' line and the item count into a single 16px --tx-2 line. Dim empty slots to 40% opacity. Make the selected slot's border 3px --acc with --ui-raised fill. Keep the 8px gaps.",
-   "P2 hp bar bottom-left: Use 20px f-cond 700 on a 12px-high bar with a 1px --ui-line-hi frame and --ok fill. Put the number inside the bar's right edge, or inline at 20px. Set the left margin to 24px to match the panels."
+   "P1 sentry labels at centre (\"you · sentry · 17m\" over \"sentry r-46\"): Show one plate: --ui-panel at 85% with a 1px --ui-line-hi border, 16px f-cond 600. Write \"sentry r-46\" in --tx-1 and \"17m\" in --tx-2. Put it 16px above the sentry's head, clear of the ring. Delete the second label.",
+   "P1 top-left scoreboard \"current pillager bots 7\": Start it folded to the header line and open it on a key. If it stays open, cut it to the top 3 plus 'you'. Use 16px rows on a 24px pitch. Give the 'you' row a 3px --acc left bar and --tx-1 text. Set the other names in --tx-2. Use one text colour, or put a rarity glyph beside the purple name. Put the money values in tabular f-cond.",
+   "P1 bottom-right ammo card \"compact smg 30 / 60\": Set the card margin to 24px on the right and the bottom. Use 16px --tx-2 for the gun name. Keep 56px f-cond 800 for the hero number. Put the backpack hint and the item value on one 16px line with a minimum of 4.5:1 contrast. Use 4px corners and a 1px --ui-line-hi border to match the minimap and contracts card.",
+   "P1 hotbar slots 1–8 and the hp bar, bottom edge: Make the selected slot's border 3px --acc on a --ui-raised fill. Dim empty slots to 40% opacity and remove the ghost silhouettes. Set slot numbers at 16px --tx-2. Make the hp bar 12px high with a 1px --ui-line-hi frame and an --ok fill. Put '100' at 20px f-cond 700 inline. Set the left margin to 24px. Leave 48px between the bar and slot 1.",
+   "P2 minimap column, contracts bar and extract pill (top right and top centre): Use one panel recipe on every HUD box: --ui-panel, 1px --ui-line-hi, 4px radius, 8px padding. Set the extract pill text at 16px f-cond 600, with 8px by 16px padding. Put the clock on the same plate style or leave it bare, as the other counters are."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-139-solo-pings-recipes-1/solo-ping-world-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-139-solo-pings-recipes-3/solo-ping-world-1080.jpg",
   "task": "o-139-solo-pings",
-  "when": "2026-10-28T02:41"
+  "when": "2026-10-28T08:04"
  },
  "p1-legacy": {
   "score": 3,
@@ -2947,96 +2947,96 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The easy-mode card that dominated the last version is gone, and the HUD now reads as a coherent ARC-Raiders-style set of flat dark panels. The hotbar is oversized and its selected slot still uses amber, the left stat bars are crude and crowded, and the type sizes don't follow the scale.",
+  "verdict": "The hud is clearly tidier: empty hotbar slots are ghosted, the selected slot has a clear outline, hp is the one bold bar and the ammo card is a clean hero number. But the selected slot uses amber where the guide says lime, the panels disagree on width and margin, and the minimap is still half empty.",
   "findings": [
-   "P1 hotbar (bottom centre, 9 slots, about 1200x130): Shrink the slots to 72px. Drop empty-slot silhouettes to 30% opacity and remove their borders. Use a 3px --acc outline plus an --ui-raised fill on the selected slot only. Set slot numbers to 16px tx-2. Show ammo in 16px f-cond 600.",
-   "P1 bottom-left stat bars (armour 40, stamina, hp 100): Make all three bars 14px high with a 4px gap. Put the label (16px f-cond 600, tx-1) above or inside the left end and the value right-aligned in the same size. Make hp the only bar with the 32px hero value. Use --ok for hp, a muted blue for armour and tx-2 for stamina. Align the stack to the same 5% margin (96px) as the ammo card.",
-   "P1 top-centre score panel and extract chip: Give the timer the 56px hero slot. Set the team score to 20px and the you and p2 lines to 16px with a 24px column gap. Put the extract chip fully below the panel with an 8px gap and attach the arrow to it, or drop the chip border and use --extract text only.",
-   "P2 right column (minimap, goals 0/3, ammo card): Use one column width of 360px and one right margin of 48px for all three. Crop the minimap to its content or fill the void. Use --ui-panel with a 1px --ui-line-hi border everywhere. Make the chevrons 16px tx-2.",
-   "P2 riot scattergun ammo card: Use 24px padding on every side. Set the name to 20px tx-1 and 7 at 56px f-cond 800 tx-1. Set / 42 at 32px tx-2. Align the right edge to the 48px margin."
+   "P1 top-centre score panel: Set the timer to the 56px f-cond 800 hero. Set the score to 20px tx-1 and the you and p2 lines to 16px tx-2 with 24px padding on every side. Leave an 8px gap above the extract chip. Move the weather icon inside the panel or drop it.",
+   "P1 right column (minimap, goals, ammo card): Use one 360px column and a 48px right margin for all three blocks. Crop the minimap to its content, for example 360x240. Give each block a 1px --ui-line-hi border, a --ui-panel fill and a 4px radius. Align the ammo card's top and bottom to the same grid.",
+   "P1 hotbar selected slot (slot 4): Use a 3px --acc outline and a --ui-raised fill on the selected slot. Give every slot a fixed 72px box on an 8px gap, with the number inside the top-left at 16px tx-2. Drop the empty-slot ghosts to 20% opacity.",
+   "P1 bottom-left stat bars (armour, stamina, hp): Make armour and stamina 14px high and hp 20px high, with a 4px gap. Put the labels at 16px f-cond 600 tx-1 above each bar, with the value right-aligned. Reserve the 32px value for hp only. Inset the stack 48px from the left and bottom edges.",
+   "P2 player 2 tag (left, y 325-365) and f1 controls hint (y 647-675): Move the player 2 plate to sit directly above the hp stack at the same 48px left inset, 16px label, 8px bar. Place the f1 controls hint at bottom-centre-left, with its baseline 8px above the hotbar, in a --ui-panel pill."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-138-hud-size-row-does-nothing-recipes-3/hudtv-p1-large-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-138-hud-size-row-does-nothing-recipes-4/hudtv-p1-large-1080.jpg",
   "task": "o-138-hud-size-row-does-nothing",
-  "when": "2026-10-28T07:20"
+  "when": "2026-10-28T07:41"
  },
  "p1-large-half": {
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "The game frame is still rendered as a 960x540 window in the middle of a 1920x1080 black canvas, so the 'large' HUD size has no visible effect, and the HUD inside it is still tiny and uneven.",
+  "verdict": "The HUD is still drawn into a 960x540 box in the middle of a black 1920x1080 frame, with tiny type. The 'hp 100' label is still the boldest thing on screen, and the ammo card is still crowded against the corner.",
   "findings": [
-   "P0 whole frame (480,270 to 1440,810): Render the canvas at the full 1920x1080 with 5% margins (96x54px). Scale the HUD by the size multiplier (large = 1.25x) relative to that 1080 height, not relative to the 540px inner frame.",
-   "P0 top-centre score block, 'extract 141m' chip, 'goals 0/3', 'controls' hint, 'player 2' tag: Set '0 sp' to 56px f-cond 800 and the extract timer to 32px. Set 'team score', 'you', 'p2', 'goals', 'controls' and 'extract' labels to 16px f-cond 600 in tx-2. Move the block 24px down from the top so it is not clipped. Set the extract chip to 16px with 8px padding.",
-   "P1 bottom-left hp / armour / stamina (493,740 to 737,804): Set all three bars to 12px high with an 8px gap. Use --ok for the hp fill. Put the labels outside the bars at 16px f-cond 600 tx-2, and the value at 20px tx-1. Remove the bold 'hp 100' so ammo is the only hero element.",
-   "P1 weapon hotbar (661,598 to 1259,663): Draw only the selected slot with a 2px --acc border and --ui-raised fill. Show rarity as a 3px bottom bar, never as a tinted fill. Set the slot numbers to 14px tx-2 and the ammo counts to 16px tx-1. Put 16px of space between the bar and the player.",
-   "P1 ammo card, bottom-right (1312,704 to 1436,773): Inset the card 48px from the right and bottom edges. Align its right edge with the minimap's right edge. Set 'support mg' to 16px f-cond 600 tx-2. Keep 60 / 360 at 56px."
+   "P0 whole frame (480,270 to 1440,810): Render the canvas at the full 1920x1080 with 96x54px margins. Apply the size multiplier (large = 1.25x) to the 1080 base, so labels reach 16px and body text 20px. Check that 'large' actually changes the result.",
+   "P0 top-centre score block (890,280 to 1030,350), extract chip (928,357), minimap (1250,280 to 1430,488): Move the score block 24px below the top edge. Set '0 sp' to 56px f-cond 800 and the timer to 32px. Set the labels to 16px tx-2. Put the extract chip 16px below the block, at 16px with 8px padding. Inset the minimap 48px from the right and top, and crop or fill its empty lower half. Give 'goals' a 16px label with 8px padding.",
+   "P1 bottom-left bars (493,740 to 737,804): Make all three bars 12px high with an 8px gap. Put the labels outside the bars at 16px f-cond 600 tx-2, with the values at 20px tx-1. Keep hp green but drop the bold. Inset the stack 48px from the left and bottom edges.",
+   "P1 ammo card (1300,704 to 1436,773): Inset the card 48px from the right and bottom edges. Align its right edge with the minimap's. Set the weapon name to 16px tx-2 and the ammo to 56px f-cond 800, with '/ 42' at 20px tx-2.",
+   "P1 hotbar (796,609 to 1058,670): Draw all slots as 64px tiles on a --ui-raised fill with a 1px --ui-line border. Give only the selected slot a 2px --acc border. Add a 3px rarity bar at the bottom. Set the slot numbers to 14px tx-2 and the counts to 16px tx-1. Put 16px between the hotbar and the player."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-138-hud-size-row-does-nothing-recipes-3/hudtv-p1-large-half-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-138-hud-size-row-does-nothing-recipes-4/hudtv-p1-large-half-1080.jpg",
   "task": "o-138-hud-size-row-does-nothing",
-  "when": "2026-10-28T07:21"
+  "when": "2026-10-28T07:41"
  },
  "p1-standard": {
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "This is now an in-raid HUD, not the 'want easy mode?' modal I reviewed before, and it reads as a competent but template-like HUD. The corner clusters are uneven, the top-centre score box is tiny, and the left stats bars are inconsistent with each other.",
+  "verdict": "The hud is readable and the ammo hero number lands well, but the margins are still 0 to 24px (not 48) and the corners don't line up. The vitals bars are still uneven, the hotbar is cluttered, and the top-centre box is cramped.",
   "findings": [
-   "P1 bottom-left vitals (armour 40 / stamina / hp 100): Give all three bars the same 20px height, 8px gap and 4px radius on a --ui-panel fill with a 1px --ui-line border. Put the label at 16px f-cond in tx-1 on the left and the number right-aligned. Make hp the only one with a hero-size number (56px, f-cond 800). Move the cluster to 48px from the left and bottom edges.",
-   "P1 top-centre team score box: Set the score to 32px f-cond 800 and the timer to 20px. Raise all secondary text to 16px in --tx-2. Put 8px of space between the box and the extract pill, or merge the pill into the box as a bottom row separated by a 1px --ui-line. Pad the box 16px.",
-   "P1 hotbar (slots 1-0): Draw the selected slot with a 2px --acc outline and a 2px offset. Set slot numbers and ammo counts to 16px f-cond 600. Dim empty slots to 40% opacity. Keep the slot radius at 4px and the gap at 8px.",
-   "P1 support mg ammo card (bottom-right): Align the card's bottom and right edges to the same 48px margin as the left cluster. Make its height match the hotbar (about 108px). Set the label to 16px tx-2 and the 60 to 56px f-cond 800 tx-1, with '/ 360' at 20px tx-2.",
-   "P2 top-right minimap and 'goals 0/3' bar: Inset both panels 48px from the top and right. Give them the same --ui-panel fill and 1px --ui-line-hi border at 4px radius. Move the collapse chevron out of the map area into the goals header. Set the goals label to 16px f-cond 600."
+   "P1 bottom-left vitals (armour/stamina/hp): Move the cluster to 48px from the left and bottom edges. Give the three bars the same 20px height, 8px gap and 4px radius, on a --ui-panel fill with a 1px --ui-line border. Put the labels in 16px tx-1 on the left and the numbers right-aligned. Make hp the only 56px f-cond 800 number, or drop the hero from hp since ammo already has one.",
+   "P1 hotbar (slots 1-0 and 5/6): Draw all 10 slots as 64px tiles with an 8px gap on --ui-panel at 4px radius. Dim empty slots to 40% opacity. Give the selected slot a 2px --acc outline with a 2px offset. Set numbers and ammo to 16px f-cond 600 in tx-1. Centre the row and lift it 48px from the bottom.",
+   "P1 bottom edge alignment (vitals, hotbar, ammo card): Put all three clusters on the same 48px bottom margin, with the left and right clusters 48px from their screen edges. Make the ammo card the same height as the hotbar tiles (about 72px), right edge at x=1872.",
+   "P1 top-centre team score box: Set the score to 32px f-cond 800, the timer to 20px, and the you/p2 lines to 16px tx-2. Pad the box 16px. Merge the extract pill into the box as a bottom row separated by a 1px --ui-line. Put the weather glyph inside the box at 16px.",
+   "P1 top-right minimap and goals bar: Inset the map 48px from the top and right. Use a --ui-panel fill, a 1px --ui-line-hi border and 4px radius on both the map and goals panels. Move the chevron into the goals header. Crop the map to the explored area or fill it. Set the goals label to 16px f-cond 600."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-138-hud-size-row-does-nothing-recipes-3/hudtv-p1-standard-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-138-hud-size-row-does-nothing-recipes-4/hudtv-p1-standard-1080.jpg",
   "task": "o-138-hud-size-row-does-nothing",
-  "when": "2026-10-28T07:21"
+  "when": "2026-10-28T07:42"
  },
  "p2-large": {
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The easy-mode card from the earlier review is not in this frame, which shows the large-size race HUD. It reads cleanly in the corners, but the oversized 10-slot hotbar dominates the middle of the screen and sits on top of the players.",
+  "verdict": "The hotbar now shows only the two owned slots with a clear active ring, and the ammo block is a strong hero number. The rest of the HUD is still uneven: the top panel is flush against the screen edge, the three bars each have a different height, and the bottom-left corner is crowded.",
   "findings": [
-   "P1 hotbar, bottom centre (x360-1560, y655-790): Show only owned slots, or shrink empty slots to 48px at 25% opacity. Cut the bar height to about 96px and dock it flush to the bottom margin (32px up). Drop the ammo number from the slot, or drop the panel counter.",
-   "P1 hotbar active slot 5 and slot 6: Use a 2px --acc ring on the active slot only. Give both owned slots the same --ui-raised fill and mark rarity with a 3px bottom bar. Draw the 'f' key hint as a 20px chip with a --ui-line-hi border on every slot that has a key.",
-   "P1 top-centre team score panel (x786-1134, y0-107): Offset the panel 16px from the top. Set the labels to 16px tx-2 and the timer to 32px f-cond 700. Leave 8px between the panel and the extract pill, and give the pill the same 4px radius as the panel.",
-   "P2 bottom-left bars: armour, stamina, hp: Make all three bars 20px tall with a 4px gap. Use 16px f-cond labels inside the bar, left-aligned at 8px padding. Dim the hp fill to --ok at about 80% and go to --danger only below 30%.",
-   "P2 'f1 controls' hint, left (x226-346, y630-657): Anchor it at 32px from the left edge directly above the hp stack, with a 16px --tx-2 label and an 'f1' chip. Use a --scrim fill at .80."
+   "P1 hotbar, x365-1450, y680-800: Remove the ghost silhouettes and the idle digits. Keep the two cards on one 8px-grid gap (16px). Dock the bar 32px above the bottom edge, so the card bottoms land near y1048. Show a key digit only inside a card.",
+   "P1 top-centre team score panel, x822-1098, y20-162: Left-align one column: 56px f-cond 800 '0 sp' with the 32px timer under it, and the 16px tx-2 'you / p1' rows on the right. Use 8px between the panel and the extract pill, 4px radius everywhere, and the same --scrim fill as the minimap panel.",
+   "P1 bottom-left bars, x28-516, y943-1068: Set all three bars to 24px with a 4px gap and 16-20px f-cond labels at 8px left padding. Fill hp with --ok at about 80% and switch to --danger below 30%. Drop the hp label to 20px. Remove or merge the duplicate 'player 1' card.",
+   "P2 'f1 controls' hint, x226-346, y647-675: Anchor it at x32, 16px above the top of the hp stack (y~920). Use a 16px tx-2 label and an 'f1' chip with a --ui-line-hi border on --scrim at .80.",
+   "P2 minimap and goals, x1540-1900, y20-435: Crop the minimap to its used area or fill it. Use a 32px margin everywhere. Give goals the same 4px radius and --scrim fill as the other panels. Make the compass icons 16px minimum."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-138-hud-size-row-does-nothing-recipes-3/hudtv-p2-large-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-138-hud-size-row-does-nothing-recipes-4/hudtv-p2-large-1080.jpg",
   "task": "o-138-hud-size-row-does-nothing",
-  "when": "2026-10-28T07:21"
+  "when": "2026-10-28T07:42"
  },
  "p2-large-half": {
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "The HUD still sits as a 960x540 window in a black 1920x1080 frame, so every element is tiny and unreadable at couch distance. The element hierarchy is also unchanged: the 'want easy mode?' card is gone, but the top score panel, the bottom-left bars and the ammo card are all still below the token sizes.",
+  "verdict": "The HUD is still a small 960x540 window inside a black 1920x1080 frame, so the large-HUD setting is not shown to work, and inside the window the HUD is still small and has hierarchy problems.",
   "findings": [
-   "P1 whole frame: the game render occupies 480-1440 x 270-810 of a 1920x1080 black letterbox: Make the large HUD scale apply to the real 1920x1080 frame. Render at full 1080 and scale text to the tokens: 56px hero, 20px body, 16px label. Do not shoot a letterboxed 50% window as the reference.",
-   "P1 top-centre score panel (873-1047 x 270-323): Hero '0 sp' at 56px f-cond 800. Timer at 20px tx-2 on the line below. Sub-scores at 16px tx-2 in a row, with p1 in amber and p2 in cyan. Move the panel 24px from the top with 16px padding. Put a 16px teal 'extract 148m' tag 8px under it.",
-   "P1 bottom-left bars (armour 40 / stamina / hp 100, 493-737 x 742-805): Use a uniform 12px bar height with 8px gaps. Give labels 16px tx-1 left of each bar and numbers in f-cond 600. Set the hp fill to --ok at about 80% opacity so the number is the bright element. Move the block 48px in from the left and bottom edges.",
-   "P1 weapon hotbar (661-1259 x 598-663): Show only owned slots at 72px square with 8px gaps, and dim the empty ones to 30%. Put the slot numbers at 16px tx-2. Mark the selected slot with a 3px --acc bottom bar and a --ui-raised fill. Ammo at 16px tx-1. Move the strip down to a 24px bottom margin so it sits clear of the player.",
-   "P2 ammo card (1312-1435 x 704-773): Set the number at 56px f-cond 800. Set the weapon name at 16px tx-2 left-aligned above it. Use a 4px radius and 16px padding as on the score panel. Move the card 48px from the right and bottom edges so its baseline matches the hp bar."
+   "P0 whole frame (game window 480-1440 x 270-810): Render the capture at the full 1920x1080. Make the 'large' preset scale every HUD element by about 1.5x, so the 20px body text is 30px and the 16px labels are 24px. Re-shoot with the setting on.",
+   "P1 top-centre score panel (891-1029 x 280-351): Set '0 sp' at 56px f-cond 800 in tx-1. Set the timer at 20px tx-2. Set the sub-scores at 16px, with you in amber and p2 in cyan. Use 16px padding and move the panel 24px from the top. Do not show both 'you' and 'p1', since that is the same value twice.",
+   "P1 bottom-left bars (armour 40 / stamina / hp 100, 493-737 x 742-805): Give all three bars a uniform 12px height with 8px gaps. Set the labels at 16px tx-1 on a --ui-panel plate. Show hp at 56px in f-cond 800, with its bar thin (8px). Move the block 48px in from the left and bottom edges.",
+   "P1 weapon hotbar (729-1060 x 608-670): Show only owned slots. Make them 72px square with 8px gaps, in one contiguous row centred at the bottom, 24px from the bottom edge. Set slot numbers at 16px tx-2. Mark the selected slot with a 3px --acc bottom bar and a --ui-raised fill. Remove the ghost icons and the digit row.",
+   "P1 ammo card (1309-1435 x 704-773): Align the card's bottom edge with the hp bar's bottom edge, and sit it 48px from the right and bottom edges. Set 'compact smg' at 16px tx-2, left-aligned. Keep the number at 56px. Use a 4px radius and 16px padding."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-138-hud-size-row-does-nothing-recipes-3/hudtv-p2-large-half-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-138-hud-size-row-does-nothing-recipes-4/hudtv-p2-large-half-1080.jpg",
   "task": "o-138-hud-size-row-does-nothing",
-  "when": "2026-10-28T07:22"
+  "when": "2026-10-28T07:42"
  },
  "p2-standard": {
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "This is the raid HUD, not the easy-mode card I reviewed before, so that advice no longer applies. The HUD is readable and the 56px ammo count is a good hero number. It is let down by edge margins that vary, type under the 16px floor, three bottom-left bars with three different treatments, and two competing hotbar highlight states.",
+  "verdict": "The HUD is readable, but the corner groups sit on ragged margins, the hotbar is nearly invisible against the street, and the vitals bars and score panel are still not tidied the way last review asked.",
   "findings": [
-   "P1 bottom-left vitals (armour 40, stamina, hp 100, x22-430, y965-1070): Make all three rows the same: 24px tall, 8px gap, 4px radius, --ui-panel track. Use 16px f-cond 600 tx-1 labels sitting outside the fill, with the value right-aligned in tx-1. Keep hp as the only emphasised row (20px, 700). Indent the block to the 5% margin (48px left, 54px bottom).",
-   "P1 top-centre score panel (x815-1105, y0-88) and extract pill (y85-110): Drop the panel 16px from the top and give it 16px padding. Set 'you' and 'p1' at 16px tx-2, with the 56px hero 'sp' number kept. Put 8px of space between the panel and the extract pill. Give the pill a 1px --extract border and 16px text.",
-   "P1 hotbar (x550-1558, y953-1062): Use one selected state: a 2px outline in the player colour, plus a --ui-raised fill. Make owned-but-unselected slots plain --ui-panel with the icon at full opacity, and empty slots at 40% opacity. Set slot numbers and counts at 16px f-cond 600 tx-2, with the selected slot's number in tx-1.",
-   "P2 edge margins (minimap x1603-1903, ammo panel to x1910, left vitals x22): Put every corner group on one safe-area inset of 48px (right and left) and 32px (top and bottom). Align the ammo panel's bottom edge with the hotbar's bottom edge.",
-   "P2 minimap goals row ('goals 0/3', y325-360): Give the minimap and the goals row one shared 1px --ui-line-hi border and 4px radius, with no gap between them. Use 16px f-cond 600 for the goals label and align the count to the right."
+   "P1 bottom-left vitals (x22-430, y965-1070): Make every row 24px tall with an 8px gap and a 4px radius on a --ui-panel track. Put 16px f-cond 600 tx-1 labels outside the fill, with the value right-aligned. Keep hp as the only emphasised row, at 20px 700. Inset the block 48px left and 32px bottom.",
+   "P1 hotbar (x550-1558, y953-1062): Draw all 10 slots as 56x56 --ui-panel tiles with 8px gaps, with empties at 40% opacity. Selected state is a 2px player-colour outline plus a --ui-raised fill. Set numbers and counts at 16px f-cond 600 tx-2, and the selected slot's number in tx-1. Align the bottom edge to y=1048.",
+   "P1 top-centre score panel (x845-1075, y17-135) and extract pill (y145-170): Make the 56px hero the sp number only. Move the timer to 20px 700 on its own row, or to the panel's right side. Set 'you' and 'p1' at 16px tx-2. Give the panel 16px padding. Put 8px between the panel and the pill. Give the pill a 1px --extract border and 16px text. Move the weather icon inside the panel's right edge.",
+   "P2 edge margins (minimap x1603-1903, ammo panel x1705-1910, vitals x22, player 1 tag x15): Use one safe area: 48px left and right, 32px top and bottom. Align the ammo panel's bottom edge to the hotbar baseline at y=1048.",
+   "P2 minimap and goals row (x1603-1903, y17-362): Join the map and the goals row into one panel with a 1px --ui-line-hi border and a 4px radius. Put a 1px --ui-line divider between them. Align the count right at 16px f-cond 600 and shrink the chevron to 12px."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-138-hud-size-row-does-nothing-recipes-3/hudtv-p2-standard-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-138-hud-size-row-does-nothing-recipes-4/hudtv-p2-standard-1080.jpg",
   "task": "o-138-hud-size-row-does-nothing",
-  "when": "2026-10-28T07:22"
+  "when": "2026-10-28T07:43"
  }
 }

@@ -1,1 +1,1 @@
-10-28 03:36 gate: shipping cw-cx-hudtvread (o-138-hud-size-row-does-nothing, codex)
+10-28 04:14 gate: shipping cw-cx-pingmerge (o-139-solo-pings, codex)

@@ -393,3 +393,7 @@
 2026-10-28 03:12 o-138-hud-size-row-does-nothing 250s ok PARTIAL in=4164980 out=21674 run=2
 2026-10-28 03:18 o-138-hud-size-row-does-nothing 112s ok PARTIAL in=4833067 out=24825 run=3
 2026-10-28 03:35 o-138-hud-size-row-does-nothing 743s ok PARTIAL in=8003319 out=43896 run=4
+2026-10-28 03:45 o-138-hud-size-row-does-nothing 124s ok DONE in=9282513 out=47168 run=5
+2026-10-28 03:46 o-139-solo-pings 38s crash rc=1 (not counted)
+2026-10-28 04:00 o-139-solo-pings 253s ok PARTIAL in=848542 out=6459 run=4
+2026-10-28 04:12 o-139-solo-pings 480s ok PARTIAL in=2373039 out=19766 run=5

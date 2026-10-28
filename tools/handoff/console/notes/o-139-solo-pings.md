@@ -42,3 +42,31 @@ Regenerated the same draft against refreshed v35.42: written; four exact unique 
 
 Still outstanding: successful live ship and ON HIS PC for cw-cx-pingread, then camera/critic round 2 with a valid guest raid picture. Original solo behavior is already shipped and confirmed on his PC as v35.41.
 
+
+--- codex run 2026-10-28 04:00 ---
+2026-10-28, continuation on refreshed v35.64.
+
+Both keys are already shipped. Read the saved ship reports: cw-cx-solopings is v35.41 (cd809033b), fixture PASS / PASS, ON HIS PC after 34s; cw-cx-pingread is v35.43 (34e36f915), fixture PASS / PASS, ON HIS PC after 17s. Both reports preserve the seed fingerprint: entities 85/374, containers 165/593. The earlier shared-file IOException is resolved. DESIGN.md at v35.43 includes the edge/4k playtest watch line. No new game change or fixture retarget is needed this run.
+
+Inspected the four valid round-2 pictures. World ping uses the new padded plate above the sentry; minimap and full map have the larger target glyph. All three solo stages report smooth=true and followed=true. The host picture reports linked=true, counts [1,1], smooth=true, sender p2 pad. The guest picture is invalid: report.json says NOT STAGED, host did not link p2: p2raid. Saved accept.json still points to round-1 pictures for the three solo views; do not claim round-2 critic approval from those entries.
+
+Updated camera-stage.js and regenerated camera-recipes.json for round 3. Before pairing, the camera now finishes any active staged/restored raid, clears the fixture G, enters the Undercroft and calls the real p2LiveBeat when in player 2. This clears the active-raid heartbeat through the normal game function rather than bypassing netSamePick or changing its guard. The newly opened host is also put on the floor before its real invite. Unload and timeout cleanup finish both staged raids before closing the partner, avoiding a lingering p2 raid mark between scenes. Both real roster and raid checks, actual mouse/pad input, receipt in both windows, and smooth-look assertions are retained. No synthetic network receipt or fake success was added.
+
+Validation: camera-stage.js passes node --check; all five complete recipe bodies and their expect expressions parse; camera/key handoffs are plain ASCII. Only the private output folder changed. keys.txt still lists the two shipped keys for the lane to skip. No browser, localhost, shared writer, queue or agents used.
+
+Remaining lane work: capture/critic round 3 on the current build, especially a valid player 2 raid picture receiving the host middle-mouse ping, then return those pictures and reviews. The requested three solo pictures and valid host picture already exist under tools/handoff/console/notes/shots/o-139-solo-pings-recipes-2/. The latest camera revision supplies new work to the lane; this is not a request to repeat an unchanged recipe.
+
+--- codex run 2026-10-28 04:12 ---
+2026-10-28, round-3 feedback on v35.64.
+
+Inspected all five attached pictures. Solo world/minimap/map and the real host receipt are staged, smooth=true; solo target references follow. Critic scores: world 2, minimap 3, map 3, host 3. Guest is NOT STAGED (both real windows did not link); its welcome-pack score 3 is not a ping review. World P1 is the still-duplicated enemy name below the new ping plate. Map/minimap P1 includes a small crosshair, which is the target ping. Other P1 items describe the existing scoreboard, health/hotbar/ammo layout and map label/contracts presentation; the earlier coordinator handoff covers those outside this task. No HUD redesign or game-feel changes added.
+
+Prepared cw-cx-pingmerge, seven unique edits. The live target ping plate now includes the specific enemy name plus distance and existing friendly/running detail. Its normal name text and backplate wait until expiry; crew and wounded-health marks remain. The peddler retains its existing deal prompt. Both map target glyphs grow from 18px to 24px, with 28px dark backing at 1080p. Existing sound, packets, share-by-drop, controls, lifetime and generation stay intact. This is follow-up 2 after the initial solo fix. The draft why gives the DESIGN.md playtest watch line.
+
+The new regression check stages a real seeded sentry and first proves its normal name and wounded pip draw. It then measures the actual complete frame in solo and guest states: exactly one specific name with sender and distance; no old duplicate; health pip retained. Expiring the ping must restore the old name and pip. Both map drawing functions must draw the larger target glyph. The old build should fail at the generic ping plus old name; the lane must prove the Chrome old-fail/new-pass. No old fixture retarget is needed: check 35.43 accepts glyph sizes at least 1.5 and its synthetic target without an entity still exercises the same 16px label.
+
+Camera repair: the earlier fold assignment changed hudOff(), which returns a copy; it now sets P.hud.raiders.c on the disposable camera profile. Both scenes use distinct valid pair codes. The guest scene waits for loaded profiles, resets both real connections, stops its old broadcast channel, and boots its real p2 channel with the scene pair before the host invite. This addresses a guest already auto-linked to the previous camera host, whose join role ignores a new offer. The host popup has a fresh unique name to avoid reading an old page while it navigates. Actual roster, both-live-raids, pad/mouse input and packet-receipt assertions remain. A failed final handshake now closes the partner and reports both real states/modes for the coordinator.
+
+Validation: mk printed written on v35.64; seven exact anchors unique under sequential replacement; patched inline game, new regression and all five complete regenerated recipes parse in Node; handoffs ASCII. No shared/tracked file edits, browser, network, queue or agents. keys.txt includes cw-cx-pingmerge after the two shipped keys.
+
+Remaining lane work: preflight/ship/ON HIS PC for cw-cx-pingmerge and camera/critic round 4 of 4. Need a valid player 2 picture receiving the real host middle mouse ping. If a broader HUD critique remains after this second follow-up without a score increase, retain round 3 and round 4 as the best-version evidence under the stopping rule; do not turn solo pings into an unrelated HUD redesign.

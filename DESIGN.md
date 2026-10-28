@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.65 - ONE READABLE TARGET PING LABEL
+
+Co-op hunt while he was away. The solo ping critic still found the normal enemy name touching the ping label. A live target ping now carries the specific enemy identity and distance in one existing readable plate; its old name text and backing wait until that ping expires. Crew and wounded-health marks stay visible, and the peddler keeps its deal prompt. Both maps use 24px target glyphs with 28px dark backing at 1080p. Sound, input, lifetime, sharing and world generation are unchanged. Playtest watch: mark a wounded sentry in solo and in either party window, check that one name and its health pip remain, then wait 10 seconds for the usual name to return; check both maps near white walls.
+
+MEASURED. Check 35.65 passes, and fails on v35.64.
 ## v35.64 - TV HUD READABILITY
 
 Co-op hunt while he was away. The clean two-window TV pictures scored 3. The large belt looked like a solid wall of empty tiles and the score labels were small and pressed against the top edge. Raid vacant keys now keep only quiet silhouettes and outlined key digits, while owned keys keep flat plates, 3px rarity rails and the owner-required gold ring. Raid belt text starts at 18px and grows with TV scale; the TV belt moves 12 logical pixels closer to the bottom corners. Vitals keep the owner-requested larger hp bar and gain ink outlines for contrast. Score labels use the label role, the panel has a 16px top inset and the extraction pill has an 8px gap. Playtest watch: check belt selection and ammo states, the final-minute clock and long score totals in both windows; check tv belt clicks after resizing panels. No world or feel values changed.
