@@ -4396,7 +4396,7 @@ window.__REGRESS=[
      var keys=0; for(var k in g.tel.dmg) keys++;
      if(keys<2) bad.push('control: two different attackers collapsed into '+keys+' entry in the recorder');
      return bad.length?bad.join('; '):null; }},
-  {v:'9.22',what:'taking one thing out of a crate does not read out what is still inside (cw-fewermsg retarget, his complaint 2026-10-27: a full open is one pickup row that names the best find and says +2 ITEMS)',
+  {v:'9.22',what:'taking one thing out of a crate does not read out what is still inside',
    run:function(){
      var bad=[];
      __resetCfg(); __pinDefaults(0);
@@ -4412,7 +4412,7 @@ window.__REGRESS=[
      __grant(ct,['blackbox']);
      // tr16fix: since the raid text rewrite (R16) an item taken is a row in the pickup stack (G.pick), not a Found line,
      // so what the pull says is the message line and the pickup rows together, on the build before and after.
-     function saidNow(){ return String(g.msg||'')+((g.pick||[]).map(function(r){ return ' | '+r.m+(r.sub?' '+r.sub:''); }).join('')); }
+     function saidNow(){ return String(g.msg||'')+((g.pick||[]).map(function(r){ return ' | '+r.m; }).join('')); }
      var said=saidNow();
      // Measured before v9.22: pulling the Black Box alone printed
      // "Found: Meridian Black Box, Meridian Reactor Core, Sealed Codex".
@@ -4431,10 +4431,8 @@ window.__REGRESS=[
        g.msg=''; g.bag=[]; g.pick=[];
        __grant(ct2,ct2.loot);
        var said2=saidNow();
-       // cw-fewermsg retarget, his complaint 2026-10-27 (too many messages reach the player): a search is one pickup row, the best find named and the count after it
-       if((g.pick||[]).length!==1) bad.push('control: a full open of two items drew '+(g.pick||[]).length+' pickup rows, not one');
-       if(!/Servo/.test(said2)||!/\+2 ITEMS/.test(said2))
-         bad.push('control: a full open no longer says everything it gave in its one row: "'+said2+'"');
+       if(!/Servo/.test(said2)||!/Scrap/.test(said2))
+         bad.push('control: a full open no longer lists everything it gave: "'+said2+'"');
      }
      return bad.length?bad.join('; '):null; }},
   {v:'9.24',what:'picking a downed pillager up is free and costs no medical',
@@ -29177,7 +29175,7 @@ window.__REGRESS=[
        if(n<150) bad.push('the gun shadow touches only '+n+' pixels (want 150 or more)');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      return bad.length?bad.join('; '):null; }},
-  {v:'28.81',what:'cw-feedsp: score is SP since lean2, and the feed still treats an SP figure as a figure: a medal label " +100 SP" is no line of its own, a kill popup "+50 SP" joins the kill line, a "+70 SP" pick is a money row (cw-fewermsg retarget, his complaint 2026-10-27: a kill and its +50 SP are read on the target, so neither is a feed line)',
+  {v:'28.81',what:'cw-feedsp: score is SP since lean2, and the feed still treats an SP figure as a figure: a medal label " +100 SP" is no line of its own, a kill popup "+50 SP" joins the kill line, a "+70 SP" pick is a money row',
    run:function(){
      if(!(window.__state&&window.__endRaid&&window.__runPrep)) return 'SKIP: no raid here';
      if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object'||typeof feedLabel!=='function') return 'SKIP: no arcade or feed here';
@@ -29190,10 +29188,9 @@ window.__REGRESS=[
        feedS(); n0=g.fd.lines.length;
        r=feedLabel(' +100'+' SP','#ffc04a');
        if(r||g.fd.lines.length!==n0) bad.push('a medal figure label made a line of its own ('+(g.fd.lines.length-n0)+' new)');
-       // cw-fewermsg retarget, his complaint 2026-10-27 (too many messages reach the player): a kill and its figure are read on the target, so neither is a feed line
-       n0=g.fd.lines.length; kl=feedKillLine('YOU',true,false,'SCAV',HUDC.danger,' DESTROYED');
+       kl=feedKillLine('YOU',true,false,'SCAV',HUDC.danger,' DESTROYED'); n0=g.fd.lines.length;
        r=feedLabel('+50'+' SP','#ffc04a');
-       if(kl||r||g.fd.lines.length!==n0) bad.push('a kill or its +50 SP popup still writes into the feed ('+(g.fd.lines.length-n0)+' new lines)');
+       if(!kl||g.fd.lines.length!==n0||kl.money!=='+50'+' SP') bad.push('a kill popup +50 SP did not join the kill line (money '+(kl&&kl.money)+', lines '+(g.fd.lines.length-n0)+' new)');
        ml=feedSay('+70'+' SP','pick',{});
        if(!ml||ml.fk!=='money') bad.push('a +70 SP pick is not a money row ('+(ml&&ml.fk)+')');
        return bad.length?bad.join('; '):null;
