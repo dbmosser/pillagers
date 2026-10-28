@@ -17,6 +17,7 @@ His words, verbatim:
 11. "this applies across the game -- there are 'machine alerts' on the left hand side -- need to tell player which type of machine" (the left feed lines and every other place in the game: each names the kind)
 12. (picture: the air strike meter plate at the right end of the belt, left of the gun card) "air strike needs to move ABOVE this weapon panel, and be further over on the right hand side" (airPlateAt: stand it on top of the gun card EDGEBOX.gun, right edges flush, the clearance loop kept)
 13. "ideally every single Hud element would be grabbable/ movable": a new feature, so it waits for 11/1 (his 10-27 order); filed as tools/handoff/console/after-nov1/186i-every-hud-panel-movable.md. Today six panels move (body, cond, gear, legend, mmap, raiders).
+14. "when player is downed, the downed card blocks the view of the centered player -- needs to move up" (the downed card, drawn about H/2 at line ~45748, lifts so its bottom edge clears the player sprite at screen centre, both windows, 1080 and 4K; this settles step 4 of 186d-danger-slot)
 
 Keep: the kill lines WITH their +sp, his words 10-28 (picture of "you > crawler m-10 +50 sp"): "these look good, sp can stay" (so item 3 removes the other sp pops, never the kill line figure); looting (pickup stack, loot rows, loot sounds, item labels) untouched; kill lines stay; money ($) is not score; player text lower case.
 
