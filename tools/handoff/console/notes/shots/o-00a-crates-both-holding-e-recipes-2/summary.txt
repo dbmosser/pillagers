@@ -1,0 +1,29 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  both-search-career-p1                  staged      12.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"mode":"career","seat":1,"idle":1.0000000000000009,"same":1.499999999999995,"adjacent":1.5000000000000018,"released":0.9999999999999964,"pad":1.5000000000000213,"menu":1.0000000000000107,"hostIdle":1,"peerIdle":1,"hostFast":1.5,"peerFast":1.5,"hostReleased":1,"peerReleased":1,"visible":[1,1]}
+  both-search-career-p2                  NOT STAGED  65.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at until (<anonymous>:11:11)
+    at async stageDuoPair (<anonymous>:51:3)
+    at async <anonymous>:159:8
+    at async <anonymous>:1:21
+  both-search-demo-p1                    NOT STAGED  31.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: adjacent search position missing
+    at until (<anonymous>:11:11)
+    at async stageDuoPair (<anonymous>:117:3)
+    at async <anonymous>:159:8
+    at async <anonymous>:1:21
+  both-search-demo-p2                    NOT STAGED  67.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at until (<anonymous>:11:11)
+    at async stageDuoPair (<anonymous>:51:3)
+    at async <anonymous>:159:8
+    at async <anonymous>:1:21
+== 4k : window 3876x2265, viewport 3840x2160
+  both-search-career-p1                  staged      12.3s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | {"mode":"career","seat":1,"idle":1.0000000000000009,"same":1.499999999999995,"adjacent":1.5000000000000018,"released":0.9999999999999964,"pad":1.5000000000000213,"menu":1.0000000000000098,"hostIdle":1,"peerIdle":1,"hostFast":1.5,"peerFast":1.5,"hostReleased":1,"peerReleased":1,"visible":[1,1]}
+  both-search-career-p2                  NOT STAGED  15.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host did not link the existing p2 window: p2raid
+    at stageDuoPair (<anonymous>:46:38)
+    at async <anonymous>:159:8
+    at async <anonymous>:1:21
+  both-search-demo-p1                    staged      10.8s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | {"mode":"demo","seat":1,"idle":1.000000000000001,"same":1.4999999999999947,"adjacent":1.5000000000000004,"released":0.9999999999999964,"pad":1.5000000000000213,"menu":1.0000000000000062,"hostIdle":1,"peerIdle":1,"hostFast":1.5,"peerFast":1.5,"hostReleased":1,"peerReleased":1,"visible":[1,1]}
+  both-search-demo-p2                    NOT STAGED  67.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at until (<anonymous>:11:11)
+    at async stageDuoPair (<anonymous>:51:3)
+    at async <anonymous>:159:8
+    at async <anonymous>:1:21

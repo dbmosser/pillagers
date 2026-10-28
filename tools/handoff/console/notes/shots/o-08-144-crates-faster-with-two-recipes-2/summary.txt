@@ -1,0 +1,40 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  duo-search-career-p1                   NOT STAGED  10.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host search ratio 1.0000000000000013/1.0000000000000013
+    at stageDuoPair (<anonymous>:103:64)
+    at async <anonymous>:123:8
+    at async <anonymous>:1:21
+  duo-search-career-p2                   NOT STAGED  65.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at until (<anonymous>:11:11)
+    at async stageDuoPair (<anonymous>:50:3)
+    at async <anonymous>:123:8
+    at async <anonymous>:1:21
+  duo-search-demo-p1                     NOT STAGED  31.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not enter a raid
+    at until (<anonymous>:11:11)
+    at async stageDuoPair (<anonymous>:65:3)
+    at async <anonymous>:123:8
+    at async <anonymous>:1:21
+  duo-search-demo-p2                     NOT STAGED  68.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at until (<anonymous>:11:11)
+    at async stageDuoPair (<anonymous>:50:3)
+    at async <anonymous>:123:8
+    at async <anonymous>:1:21
+== 4k : window 3876x2265, viewport 3840x2160
+  duo-search-career-p1                   NOT STAGED  11.1s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host search ratio 1.0000000000000013/1.0000000000000013
+    at stageDuoPair (<anonymous>:103:64)
+    at async <anonymous>:123:8
+    at async <anonymous>:1:21
+  duo-search-career-p2                   NOT STAGED  66.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at until (<anonymous>:11:11)
+    at async stageDuoPair (<anonymous>:50:3)
+    at async <anonymous>:123:8
+    at async <anonymous>:1:21
+  duo-search-demo-p1                     NOT STAGED  31.9s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not enter a raid
+    at until (<anonymous>:11:11)
+    at async stageDuoPair (<anonymous>:65:3)
+    at async <anonymous>:123:8
+    at async <anonymous>:1:21
+  duo-search-demo-p2                     NOT STAGED  68.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at until (<anonymous>:11:11)
+    at async stageDuoPair (<anonymous>:50:3)
+    at async <anonymous>:123:8
+    at async <anonymous>:1:21

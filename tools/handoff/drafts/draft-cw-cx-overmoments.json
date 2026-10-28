@@ -1,0 +1,144 @@
+{
+    "title":  "RUN OVER CROWN AND MOMENTS",
+    "why":  "His #196 yes on 2026-10-28: keep the crown and add closest call and most damage to both two player run over cards. Actual health damage is counted by the authority, capped at health left, across guns, melee, frags, tripwires, barrels, elements and air strikes. Watch in playtest: hurt each player to different positive health, use different damage sources, then compare the crown and both new callouts in both windows after the score settles. Fatal and downed health must not win closest call; ties share credit. No save key, feel values or seeded draws change.",
+    "now":  "Two player run over shows crown, closest call and most damage alongside the existing moments.",
+    "edits":  [
+                  {
+                      "anchor":  "function arcadeBmNew(){ return {st:0,hl:0,ls:0,cur:0,lid:\u0027\u0027}; }",
+                      "replacement":  "// v28.xx (cw-cx-overmoments), his #196 yes (2026-10-28): crown, closest call and most damage. No saved state or seeded draws.\nfunction arcadeBmNew(){ return {st:0,hl:0,ls:0,cc:0,dm:0,cur:0,lid:\u0027\u0027}; }\nfunction arcadeBmAuth(){ return ARCADE.role===\u0027host\u0027||!!(G\u0026\u0026G.netWasJoin); }\n// v28.xx (cw-cx-overmoments): return the original blow unchanged; record health actually removed once on the body authority.\nfunction arcadeBmDamage(e,n,seat){\n  var b, v;\n  if(!G||G.sim||!G.arcade||!ARCADE.on||!arcadeBmAuth()||seat\u003c0||!e||e.finished||e.merc||e.friendlyPC||!(e.hp\u003e0)||!(n\u003e0)) return n;\n  v=Math.min(e.hp,n);\n  if((seat|0)\u003e0) b=ARCADE.mateBm||(ARCADE.mateBm=arcadeBmNew());\n  else b=ARCADE.bm||(ARCADE.bm=arcadeBmNew());\n  b.dm=(+b.dm||0)+v; ARCADE.scDirty=1;\n  return n;\n}\nfunction arcadeBmHealth(p){\n  var b;\n  if(!G||G.sim||!G.arcade||!ARCADE.on||!p||p.downed||p.dying||p.specOut||!(p.hp\u003e0)) return;\n  b=ARCADE.bm||(ARCADE.bm=arcadeBmNew());\n  if(!b.cc||p.hp\u003cb.cc){ b.cc=p.hp; ARCADE.scDirty=1; }\n}\n// v28.xx (cw-cx-overmoments): the final host snapshot survives arcend beating the last score heartbeat.\nfunction arcadeBmEndTake(m){\n  var out={}, k, r;\n  if(!m||typeof m!==\u0027object\u0027) return null;\n  for(k in m) if([\u0027st\u0027,\u0027hl\u0027,\u0027ls\u0027,\u0027cc\u0027,\u0027dm\u0027,\u0027cr\u0027].indexOf(k)\u003e=0){\n    r=m[k]; if(!r||!isFinite(r.v)||r.v\u003c0) continue;\n    out[k]={v:+r.v,who:/^(P1|P2|p1|p2|p1 \\+ p2)$/.test(r.who)?r.who:\u0027\u0027};\n  }\n  return out;\n}"
+                  },
+                  {
+                      "anchor":  "function arcadeBmWire(){ var b=ARCADE.bm||arcadeBmNew(); return [b.st|0,b.hl|0,b.ls|0]; }",
+                      "replacement":  "function arcadeBmWire(){ var b=ARCADE.bm||arcadeBmNew(); return [b.st|0,b.hl|0,b.ls|0,+b.cc||0,+b.dm||0]; }"
+                  },
+                  {
+                      "anchor":  "function arcadeBmTake(w){ if(!Array.isArray(w)) return null; return {st:Math.max(0,w[0]|0),hl:Math.max(0,w[1]|0),ls:Math.max(0,w[2]|0)}; }",
+                      "replacement":  "function arcadeBmTake(w){ if(!Array.isArray(w)) return null; return {st:Math.max(0,w[0]|0),hl:Math.max(0,w[1]|0),ls:Math.max(0,w[2]|0),cc:isFinite(w[3])?Math.max(0,+w[3]):0,dm:isFinite(w[4])?Math.max(0,+w[4]):0}; }"
+                  },
+                  {
+                      "anchor":  "  try{ m.bm=arcadeBmWire(); }catch(_bmw){}   // v23.xx (his answer 20): the best moments go with the score",
+                      "replacement":  "  try{ m.bm=arcadeBmWire(); }catch(_bmw){}   // v23.xx (his answer 20): the best moments go with the score\n  if(arcadeBmAuth()) m.md=+(ARCADE.mateBm\u0026\u0026ARCADE.mateBm.dm)||0; // v28.xx (cw-cx-overmoments): the host measured player 2 damage."
+                  },
+                  {
+                      "anchor":  "  try{ if(m.bm) ARCADE.mateBm=arcadeBmTake(m.bm); }catch(_bmt){}   // v23.xx (his answer 20)",
+                      "replacement":  "  // v28.xx (cw-cx-overmoments): a peer reports its health, but only the authority measures damage applied to bodies.\n  try{\n    if(m.bm){\n      var _mb=arcadeBmTake(m.bm), _md=+(ARCADE.mateBm\u0026\u0026ARCADE.mateBm.dm)||0;\n      if(_mb){ if(arcadeBmAuth()) _mb.dm=_md; ARCADE.mateBm=_mb; }\n    }\n    if(!arcadeBmAuth()\u0026\u0026isFinite(m.md)\u0026\u0026m.md\u003e=0){ (ARCADE.bm||(ARCADE.bm=arcadeBmNew())).dm=+m.md; }\n  }catch(_bmt){}"
+                  },
+                  {
+                      "anchor":  "  return out;\n}\nfunction arcadeBmDraw(c,o,counting){",
+                      "replacement":  "  // v28.xx (cw-cx-overmoments): low positive health wins closest call; ties share credit, with stable seat names in either window.\n  [\u0027cc\u0027,\u0027dm\u0027].forEach(function(key){\n    a=+me[key]||0; b=mt?(+mt[key]||0):0;\n    var remote=key===\u0027cc\u0027?(b\u003e0\u0026\u0026(!a||b\u003ca)):(b\u003ea), v=remote?b:a;\n    out[key]={v:v,who:two?(a\u003e0\u0026\u0026a===b?\u0027p1 + p2\u0027:(remote?(host?\u0027p2\u0027:\u0027p1\u0027):(host?\u0027p1\u0027:\u0027p2\u0027))):\u0027\u0027};\n  });\n  if(two){\n    a=Math.max(0,ARCADE.mine|0); b=Math.max(0,ARCADE.mate|0);\n    out.cr={v:Math.max(a,b),who:a===b?\u0027p1 + p2\u0027:(a\u003eb?(host?\u0027p1\u0027:\u0027p2\u0027):(host?\u0027p2\u0027:\u0027p1\u0027))};\n  }\n  return out;\n}\nfunction arcadeBmDraw(c,o,counting){"
+                  },
+                  {
+                      "anchor":  "    if(m.st\u0026\u0026m.st.v\u003e=2) rows.push([\u0027BEST STREAK\u0027,m.st.v+\u0027 KILLS\u0027,m.st.who]);",
+                      "replacement":  "    // v28.xx (cw-cx-overmoments): three short two-player callouts ahead of the existing moments.\n    if(!ARCADE.solo\u0026\u0026m.cr){\n      rows.push([\u0027crown\u0027,arcadeCr(m.cr.v),m.cr.who]);\n      if(m.cc\u0026\u0026m.cc.v\u003e0) rows.push([\u0027closest call\u0027,Math.max(1,Math.ceil(m.cc.v))+\u0027 hp\u0027,m.cc.who]);\n      if(m.dm\u0026\u0026m.dm.v\u003e0) rows.push([\u0027most damage\u0027,Math.max(1,Math.round(m.dm.v)).toLocaleString(\u0027en-US\u0027),m.dm.who]);\n    }\n    if(m.st\u0026\u0026m.st.v\u003e=2) rows.push([\u0027BEST STREAK\u0027,m.st.v+\u0027 KILLS\u0027,m.st.who]);"
+                  },
+                  {
+                      "anchor":  "    el.style.cssText=\u0027display:none;justify-content:center;gap:2.4em;margin:.55em 0 .1em;\u0027;",
+                      "replacement":  "    el.style.cssText=\u0027display:none;grid-template-columns:repeat(3,minmax(0,1fr));width:100%;gap:16px 24px;margin:.55em 0 .1em;\u0027;"
+                  },
+                  {
+                      "anchor":  "      t=document.createElement(\u0027div\u0027); t.className=\u0027aobmt\u0027; t.style.cssText=\u0027text-align:center;line-height:1.05\u0027;",
+                      "replacement":  "      t=document.createElement(\u0027div\u0027); t.className=\u0027aobmt\u0027+(rows[i][0]===\u0027crown\u0027?\u0027 aocrown\u0027:\u0027\u0027); t.style.cssText=\u0027text-align:center;line-height:1.05;min-width:0\u0027;"
+                  },
+                  {
+                      "anchor":  "  el.style.display=counting?\u0027none\u0027:\u0027flex\u0027;",
+                      "replacement":  "  el.style.display=counting?\u0027none\u0027:\u0027grid\u0027;"
+                  },
+                  {
+                      "anchor":  "body #attract .arcover .aobmt \u003e div:last-child{ font-size:calc(var(--fs-body) * var(--attz,1)) !important; line-height:1.4; color:var(--acc) !important; }",
+                      "replacement":  "body #attract .arcover .aobmt \u003e div:last-child{ font-size:calc(var(--fs-body) * var(--attz,1)) !important; line-height:1.4; color:var(--acc) !important; }\n/* v28.xx (cw-cx-overmoments): six moments in two rows of three; only the crown figure uses the accent. */\nbody #attract .arcover .aobmt \u003e div:last-child{color:var(--tx-1) !important;}\nbody #attract .arcover .aocrown \u003e div:last-child{color:var(--acc) !important;}"
+                  },
+                  {
+                      "anchor":  "  p.hp-=amt;",
+                      "replacement":  "  p.hp-=amt;\n  if(amt\u003e0) arcadeBmHealth(p); // v28.xx (cw-cx-overmoments): a fatal or downing blow is never a survived health value."
+                  },
+                  {
+                      "anchor":  "      e.hp-=dm; e.hitT=.2;\n      if(!seat)",
+                      "replacement":  "      e.hp-=arcadeBmDamage(e,dm,seat); e.hitT=.2;\n      if(!seat)"
+                  },
+                  {
+                      "anchor":  "        e.hp-=BRL_FIRE_EN*dt;",
+                      "replacement":  "        e.hp-=arcadeBmDamage(e,BRL_FIRE_EN*dt,f.by);"
+                  },
+                  {
+                      "anchor":  "      e.hp-=dm; e.hitT=.2;\n      if(s===0)",
+                      "replacement":  "      e.hp-=arcadeBmDamage(e,dm,s); e.hitT=.2;\n      if(s===0)"
+                  },
+                  {
+                      "anchor":  "    e.hp-=dm; e.hitT=.2;\n    if(s===0)",
+                      "replacement":  "    e.hp-=arcadeBmDamage(e,dm,s); e.hitT=.2;\n    if(s===0)"
+                  },
+                  {
+                      "anchor":  "      best.hp-=a; best.hitT=.16;",
+                      "replacement":  "      best.hp-=arcadeBmDamage(best,a,s); best.hitT=.16;"
+                  },
+                  {
+                      "anchor":  "e.hp-=Q.en*dt*(ELEM_MACH[e.kind]?Q.mach:1);",
+                      "replacement":  "e.hp-=arcadeBmDamage(e,Q.en*dt*(ELEM_MACH[e.kind]?Q.mach:1),f.by);"
+                  },
+                  {
+                      "anchor":  "else e.hp-=_fdm;",
+                      "replacement":  "else e.hp-=arcadeBmDamage(e,_fdm,_fMine?0:-1);"
+                  },
+                  {
+                      "anchor":  "else { e.hp=0; e.byPlayer=true; e.pHitT=.3; e.pHitSeat=0; }",
+                      "replacement":  "else { arcadeBmDamage(e,e.hp,0); e.hp=0; e.byPlayer=true; e.pHitT=.3; e.pHitSeat=0; }"
+                  },
+                  {
+                      "anchor":  "else _me.hp-=_mdm;",
+                      "replacement":  "else _me.hp-=arcadeBmDamage(_me,_mdm,0);"
+                  },
+                  {
+                      "anchor":  "  best.hp-=a; best.hitT=.16; best.pHitT=.3; best.pHitSeat=seat|0;",
+                      "replacement":  "  best.hp-=arcadeBmDamage(best,a,seat); best.hitT=.16; best.pHitT=.3; best.pHitSeat=seat|0;"
+                  },
+                  {
+                      "anchor":  "e.hp-=(e.burnDps||0)*t;",
+                      "replacement":  "e.hp-=arcadeBmDamage(e,(e.burnDps||0)*t,e.burnBy|0);"
+                  },
+                  {
+                      "anchor":  "else en.hp-=affixSoak(en,edmg);",
+                      "replacement":  "else en.hp-=arcadeBmDamage(en,affixSoak(en,edmg),0);"
+                  },
+                  {
+                      "anchor":  "  e.hp-=(m.sk?affixSoak(e,d):d);",
+                      "replacement":  "  e.hp-=arcadeBmDamage(e,(m.sk?affixSoak(e,d):d),m.nc?-1:s);"
+                  },
+                  {
+                      "anchor":  "} else e.hp-=dm;   // v27.19 (coop6):",
+                      "replacement":  "} else e.hp-=arcadeBmDamage(e,dm,0);   // v27.19 (coop6):"
+                  },
+                  {
+                      "anchor":  "  var run0=ARCADE.run, k0=ARCADE.kills|0;   // v23.29 (arcade8): the same run, so the team score carries on",
+                      "replacement":  "  var run0=ARCADE.run, k0=ARCADE.kills|0;   // v23.29 (arcade8): the same run, so the team score carries on\n  var _mom0=ARCADE.bm, _mateMom0=ARCADE.mateBm; // v28.xx (cw-cx-overmoments): player 2 joining continues this run."
+                  },
+                  {
+                      "anchor":  "  if(run0) ARCADE.run=run0; ARCADE.kills=k0;",
+                      "replacement":  "  if(run0){ ARCADE.run=run0; ARCADE.bm=_mom0; ARCADE.mateBm=_mateMom0; } ARCADE.kills=k0;"
+                  },
+                  {
+                      "anchor":  "\n      mt=((ARCADE.mate|0)\u003e0||(ARCADE.mateK|0)\u003e0)?{s:Math.max(0,ARCADE.mate|0),k:ARCADE.mateK|0,x:ARCADE.mateX|0,d:-1}:null;",
+                      "replacement":  "\n      mt=((ARCADE.mate|0)\u003e0||(ARCADE.mateK|0)\u003e0||!!ARCADE.mateBm)?{s:Math.max(0,ARCADE.mate|0),k:ARCADE.mateK|0,x:ARCADE.mateX|0,d:-1}:null;"
+                  },
+                  {
+                      "anchor":  "\n  mt=((ARCADE.mate|0)\u003e0||(ARCADE.mateK|0)\u003e0)?{s:Math.max(0,ARCADE.mate|0),k:ARCADE.mateK|0,x:ARCADE.mateX|0,d:-1}:null;",
+                      "replacement":  "\n  mt=((ARCADE.mate|0)\u003e0||(ARCADE.mateK|0)\u003e0||!!ARCADE.mateBm)?{s:Math.max(0,ARCADE.mate|0),k:ARCADE.mateK|0,x:ARCADE.mateX|0,d:-1}:null;"
+                  },
+                  {
+                      "anchor":  "ARCADE.endSend={id:id,at:now,last:now,x2:x2,ko:ko,hf:hf};",
+                      "replacement":  "ARCADE.endSend={id:id,at:now,last:now,x2:x2,ko:ko,hf:hf,bm:ARCADE.over\u0026\u0026ARCADE.over.bm};"
+                  },
+                  {
+                      "anchor":  "var _am={t:\u0027arcend\u0027,pair:NET.pair,run:id,x2:x2};",
+                      "replacement":  "var _am={t:\u0027arcend\u0027,pair:NET.pair,run:id,x2:x2,bm:ARCADE.endSend.bm};"
+                  },
+                  {
+                      "anchor":  "var _am={t:\u0027arcend\u0027,pair:NET.pair,run:e.id,x2:e.x2?1:0};",
+                      "replacement":  "var _am={t:\u0027arcend\u0027,pair:NET.pair,run:e.id,x2:e.x2?1:0,bm:e.bm};"
+                  },
+                  {
+                      "anchor":  "  try{ ARCADE.over.bm=arcadeBmFinal(); }catch(_bmf){}\n  return ARCADE.over;",
+                      "replacement":  "  try{ ARCADE.over.bm=arcadeBmEndTake(m\u0026\u0026m.bm)||arcadeBmFinal(); }catch(_bmf){}\n  return ARCADE.over;"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027two player run over keeps crown and shows lowest health survived and actual total damage in both seats\u0027,\n   run:function(){\n     var sv, src, tried, bk, oldPost, messages=[], g, p, e, c, tx, end, b1, b2, id, bad=[];\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       if(typeof arcadeBmDamage!==\u0027function\u0027||typeof arcadeBmHealth!==\u0027function\u0027) return \u0027closest call and damage tracking are missing\u0027;\n       bk=localStorage.getItem(ARCADE_BOARD_KEY); sv={bc:NET.bc,same:NET.same,pair:NET.pair,on:NET.on,role:NET.role,upSeed:NET.upSeed,entMap:NET.entMap};\n       src=ATT.src; tried=ATT.tried; ATT.src=null; ATT.tried=true;\n       oldPost=netSamePost; netSamePost=function(m){messages.push(m);return true;};\n       NET.bc={postMessage:function(){},close:function(){}}; NET.same=\u0027host\u0027; NET.pair=\u0027moments\u0027; NET.on=false;\n       if(!arcadeEnter(\u0027host\u0027)||!arcadeDeploy({mapIx:0,seed:4242})) return \u0027could not stage demo\u0027;\n       g=__state(); p=g.player; id=ARCADE.run.id; ARCADE.solo=0;\n       p.arcSh=0; p.iv=0; p.armor=0; p.hp=40; p.downed=false; p.dying=false; g.pwr={};\n       CFG.eDmg=1; ARCADE.easy=0;\n       damagePlayer(5,\u0027fire\u0027,\u0027fire\u0027,p.x+80,p.y);\n       if(!(p.hp\u003e0\u0026\u0026p.hp\u003c40\u0026\u0026ARCADE.bm.cc===p.hp)) bad.push(\u0027a survived hit was not recorded at actual health\u0027);\n       var health=ARCADE.bm.cc;\n       p.hp=0; arcadeBmHealth(p); p.hp=1; p.downed=true; arcadeBmHealth(p); p.downed=false; p.hp=100;\n       if(ARCADE.bm.cc!==health) bad.push(\u0027zero or downed health displaced a survived hit\u0027);\n       e={x:p.x+60,y:p.y,r:12,hp:30,kind:\u0027crawler\u0027,finished:false};\n       finishHim(p,e);\n       if(ARCADE.bm.dm!==30) bad.push(\u0027finisher damage did not cap at remaining health\u0027);\n       e={x:p.x+80,y:p.y,r:12,hp:100,kind:\u0027crawler\u0027,burnT:1,burnDps:10,burnBy:0};\n       g.ents=[e]; elemTick(0.5);\n       if(ARCADE.bm.dm!==35||e.hp!==95) bad.push(\u0027element damage not counted once\u0027);\n       arcadeBmDamage({hp:100,merc:true},40,0); arcadeBmDamage({hp:100},40,-1);\n       if(ARCADE.bm.dm!==35) bad.push(\u0027hire or environmental damage counted\u0027);\n       e.hp=50; NET.on=true; NET.role=\u0027host\u0027; NET.upSeed=g.seed; NET.entMap={7:e};\n       netShotTake({state:\u0027in\u0027,seat:1},{id:7,dmg:500});\n       if(!ARCADE.mateBm||ARCADE.mateBm.dm!==50) bad.push(\u0027partner shot did not count actual damage\u0027);\n       NET.on=false;\n       arcadeScTake({run:id,s:200,k:1,x:0,bm:[4,100,70,7,9999]});\n       if(ARCADE.mateBm.dm!==50) bad.push(\u0027peer could replace authoritative damage\u0027);\n       ARCADE.mine=400; ARCADE.mate=200; ARCADE.kills=2;\n       b1=arcadeBmFinal();\n       if(b1.cc.v!==7||b1.cc.who!==\u0027p2\u0027||b1.dm.v!==50||b1.dm.who!==\u0027p2\u0027||b1.cr.v!==400||b1.cr.who!==\u0027p1\u0027) bad.push(\u0027wrong winner or total\u0027);\n       arcadeRunEnd(\u0027idle\u0027); end=messages.filter(function(m){return m.t===\u0027arcend\u0027;}).pop();\n       if(!end||!end.bm||end.bm.dm.v!==50) bad.push(\u0027final moments missing from run end message\u0027);\n       ARCADE.ini=null; ARCADE.over.at=Date.now()-3000; arcadeAttShow();\n       c=document.querySelector(\u0027#attract .arcover\u0027); tx=c?c.textContent.toLowerCase():\u0027\u0027;\n       if(tx.indexOf(\u0027crown\u0027)\u003c0||tx.indexOf(\u0027closest call\u0027)\u003c0||tx.indexOf(\u00277 hp\u0027)\u003c0||tx.indexOf(\u0027most damage\u0027)\u003c0) bad.push(\u0027host card lacks the three callouts\u0027);\n       ARCADE.role=\u0027p2\u0027; ARCADE.mine=200; ARCADE.mate=400; ARCADE.bm={st:0,hl:0,ls:0,cc:90,dm:0}; ARCADE.mateBm=null;\n       arcadeOverMirror(end); b2=ARCADE.over.bm;\n       if(JSON.stringify(b1)!==JSON.stringify(b2)) bad.push(\u0027player 2 snapshot differs from host\u0027);\n       ARCADE.over.at=Date.now()-3000; arcadeAttShow();\n       c=document.querySelector(\u0027#attract .arcover\u0027); tx=c?c.textContent.toLowerCase():\u0027\u0027;\n       if(tx.indexOf(\u0027closest call\u0027)\u003c0||tx.indexOf(\u00277 hp\u0027)\u003c0||tx.indexOf(\u0027most damage\u0027)\u003c0) bad.push(\u0027player 2 card lacks moments\u0027);\n       ARCADE.role=\u0027host\u0027; ARCADE.bm=arcadeBmNew(); ARCADE.mateBm=arcadeBmNew();\n       ARCADE.bm.cc=ARCADE.mateBm.cc=7; ARCADE.bm.dm=ARCADE.mateBm.dm=50;\n       var tie=arcadeBmFinal(); if(tie.cc.who!==\u0027p1 + p2\u0027||tie.dm.who!==\u0027p1 + p2\u0027) bad.push(\u0027ties not shared\u0027);\n       if(arcadeBmTake([1,2,3]).cc!==0||arcadeBmTake([1,2,3]).dm!==0) bad.push(\u0027old score words are not compatible\u0027);\n       if(!arcadeDeploy({mapIx:0,seed:4242})||ARCADE.bm.cc||ARCADE.bm.dm||ARCADE.mateBm) bad.push(\u0027new run kept moments\u0027);\n       return bad.length?bad.join(\u0027; \u0027):null;\n     }finally{\n       if(oldPost) netSamePost=oldPost;\n       try{ARCADE.over=null;ARCADE.ini=null;if(ARCADE.on) arcadeLeave();}catch(_l){}\n       try{__endRaid(\u0027abandon\u0027);}catch(_e){}\n       if(sv){NET.bc=sv.bc;NET.same=sv.same;NET.pair=sv.pair;NET.on=sv.on;NET.role=sv.role;NET.upSeed=sv.upSeed;NET.entMap=sv.entMap;ATT.src=src;ATT.tried=tried;}\n       if(bk===null)localStorage.removeItem(ARCADE_BOARD_KEY);else if(bk!==undefined)localStorage.setItem(ARCADE_BOARD_KEY,bk);\n       __topClear();\n     }\n   }},"
+}

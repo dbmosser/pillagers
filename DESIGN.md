@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.98 - RUN OVER CROWN AND MOMENTS
+
+Co-op hunt while he was away. His #196 yes on 2026-10-28: keep the crown and add closest call and most damage to both two player run over cards. Actual health damage is counted by the authority, capped at health left, across guns, melee, frags, tripwires, barrels, elements and air strikes. Watch in playtest: hurt each player to different positive health, use different damage sources, then compare the crown and both new callouts in both windows after the score settles. Fatal and downed health must not win closest call; ties share credit. No save key, feel values or seeded draws change.
+
+MEASURED. Check 35.98 passes, and fails on v35.97.
 ## v35.97 - WIRT OFFER FITS AT 4K: THE NEED LINE SITS INSIDE ITS PANEL
 
 Co-op hunt while he was away. menus master pass 10-28, on his 4K screen: the limited time offer column was 37 px taller than its panel, so the buy button sat off the panel floor and its need more line hung under the panel border. The offer picture now shrinks a little when the panel is short, so both buttons and both need lines line up inside their panels.

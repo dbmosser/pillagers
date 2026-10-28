@@ -1880,6 +1880,9 @@ body #attract .arcover .aobm{ justify-content:flex-start !important; gap:calc(va
 body #attract .arcover .aobmt{ text-align:left !important; }
 body #attract .arcover .aobmt > div:first-child{ font-size:calc(var(--fs-label) * var(--attz,1)) !important; color:var(--tx-2) !important; opacity:1 !important; letter-spacing:var(--track) !important; }
 body #attract .arcover .aobmt > div:last-child{ font-size:calc(var(--fs-body) * var(--attz,1)) !important; line-height:1.4; color:var(--acc) !important; }
+/* v28.xx (cw-cx-overmoments): six moments in two rows of three; only the crown figure uses the accent. */
+body #attract .arcover .aobmt > div:last-child{color:var(--tx-1) !important;}
+body #attract .arcover .aocrown > div:last-child{color:var(--acc) !important;}
 body #attract .arcover .aoi{ font-size:calc(var(--fs-label) * var(--attz,1)); color:var(--tx-2); margin-top:calc(var(--sp-3) * var(--attz,1)); }
 body #attract .arcover .aol{ font-size:calc(var(--fs-hero) * var(--attz,1)); line-height:1.1; letter-spacing:.3em; margin:calc(var(--sp-1) * var(--attz,1)) 0; }
 body #attract .arcover .aoq{ font-size:calc(var(--fs-label) * var(--attz,1)); color:var(--tx-2); opacity:1; }
@@ -3828,8 +3831,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.97';
-var VER_AT='2026-10-28 15:56';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.98';
+var VER_AT='2026-10-28 16:40';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21660,7 +21663,7 @@ function tripBlast(T,x,y){
     de=dist(e,bp);
     if(de<R+e.r&&losClear(x,y,e.x,e.y,G.map.segs)){
       dm=110*(1-Math.max(0,de-e.r)/R)+30;
-      e.hp-=dm; e.hitT=.2;
+      e.hp-=arcadeBmDamage(e,dm,seat); e.hitT=.2;
       if(!seat) notoAggress(e); else if(e.kind==='raider'&&e.hostile===false&&!e.friendlyPC) e.hostile=true;   // v23.xx (feat1c): a wire of player 2 turns a neutral as his round does
       if(e.hp<=0){ e.byPlayer=!seat; e.bySeat=seat; }
       e.pHitT=.3; e.pHitSeat=seat;
@@ -21874,7 +21877,7 @@ function brlFireTick(dt){
       if(!e||!(e.hp>0)||e.finished||e.kind==='snitch') continue;
       if(f.by>=0&&e.merc&&!e.downed) continue;
       if(Math.hypot(e.x-f.x,e.y-f.y)<f.r+(e.r||12)&&losClear(f.x,f.y,e.x,e.y,G.map.segs)){
-        e.hp-=BRL_FIRE_EN*dt; e.hitT=Math.max(e.hitT||0,0.1);
+        e.hp-=arcadeBmDamage(e,BRL_FIRE_EN*dt,f.by); e.hitT=Math.max(e.hitT||0,0.1);
         if(e.hp<=0&&f.by>=0){ e.byPlayer=(f.by===0); e.bySeat=(f.by>0)?f.by:0; }
       }
     }
@@ -21950,7 +21953,7 @@ function brlBlast(B){
     if(de<R+e.r&&losClear(x,y,e.x,e.y,G.map.segs)){
       dm=120*(1-Math.max(0,de-e.r)/R)+30;
       if(brlShatterOk(e)){ dm=e.hp+1; brlShatterFx(e); }   // v28.xx (cw-barrels3): a blast shatters a frozen crawler
-      e.hp-=dm; e.hitT=.2;
+      e.hp-=arcadeBmDamage(e,dm,s); e.hitT=.2;
       if(s===0) notoAggress(e); else if(s>0&&e.kind==='raider'&&e.hostile===false&&!e.friendlyPC) e.hostile=true;
       if(e.hp<=0){ e.byPlayer=(s===0); e.bySeat=(s>0)?s:0; }
       if(s>=0){ e.pHitT=.3; e.pHitSeat=s; e.blow='x'; e.blowT=G.t; }
@@ -22029,7 +22032,7 @@ function brlBlastK(B){
     dm=K.ed*(1-Math.max(0,de-e.r)/R)+K.eb;
     if(brlShatterOk(e)){ dm=e.hp+1; brlShatterFx(e); }
     else if(B.k==='acid'&&ELEM_MACH[e.kind]) dm*=1.25;
-    e.hp-=dm; e.hitT=.2;
+    e.hp-=arcadeBmDamage(e,dm,s); e.hitT=.2;
     if(s===0) notoAggress(e); else if(s>0&&e.kind==='raider'&&e.hostile===false&&!e.friendlyPC) e.hostile=true;
     if(e.hp<=0){ e.byPlayer=(s===0); e.bySeat=(s>0)?s:0; }
     if(s>=0){ e.pHitT=.3; e.pHitSeat=s; e.blow='x'; e.blowT=G.t; }
@@ -22060,7 +22063,7 @@ function brlArcs(s,x,y,p){
       if(!best) break;
       best.zapN=BRL_ZAPN;
       a=elemSoak(best,BRL_ARC*(depth?0.7:1));
-      best.hp-=a; best.hitT=.16;
+      best.hp-=arcadeBmDamage(best,a,s); best.hitT=.16;
       if(s>=0){ best.pHitT=.3; best.pHitSeat=s; if(best.hp<=0){ best.byPlayer=(s===0); best.bySeat=(s>0)?s:0; } }
       elemProvoke(best,(s===0)?p.x:x,(s===0)?p.y:y,s>0?s:0);
       if(best.hp>0) elemStun(best,1);
@@ -22090,7 +22093,7 @@ function brlPoolTick(f,dt,peer,me){
     if(f.by>=0&&e.merc&&!e.downed) continue;
     if(!(Math.hypot(e.x-f.x,e.y-f.y)<f.r+(e.r||12)&&losClear(f.x,f.y,e.x,e.y,G.map.segs))) continue;
     if(f.k==='acid'){
-      e.hp-=Q.en*dt*(ELEM_MACH[e.kind]?Q.mach:1); e.hitT=Math.max(e.hitT||0,0.1);
+      e.hp-=arcadeBmDamage(e,Q.en*dt*(ELEM_MACH[e.kind]?Q.mach:1),f.by); e.hitT=Math.max(e.hitT||0,0.1);
       if(elemOk(e)){ elemShred(e,Q.shred*dt); G.elemAny=1; }
       if(e.hp<=0&&f.by>=0){ e.byPlayer=(f.by===0); e.bySeat=(f.by>0)?f.by:0; }
     } else if(tick&&elemOk(e)) elemChill(e,Q.chill);
@@ -22416,7 +22419,7 @@ function explodeFrag(f){
     if(_fMine&&e.merc&&!e.downed) continue;   // v13.68, hire audit: your charge spares your hire, as your rounds (v6.72) and fists (v11.38) do
     if(de<R+e.r&&losClear(f.x,f.y,e.x,e.y,G.map.segs)){
       var _fdm=115*(1-Math.max(0,de-e.r)/R)+25;   // v11.77: was 85 and 15
-      if(_fMine&&NET.on&&netEntsPeer()) netShotSend(e,_fdm,Math.atan2(e.y-f.y,e.x-f.x),null); else e.hp-=_fdm;   // v15.80: on a linked window the host runs this body, so the blow is a request to the host
+      if(_fMine&&NET.on&&netEntsPeer()) netShotSend(e,_fdm,Math.atan2(e.y-f.y,e.x-f.x),null); else e.hp-=arcadeBmDamage(e,_fdm,_fMine?0:-1);   // v15.80: on a linked window the host runs this body, so the blow is a request to the host
       e.hitT=.2;
       // v8.30, his ruling: "frag kills a neutral should def get a point." And
       // it closes the hole v8.29 opened - a frag that only WOUNDED a neutral
@@ -24270,6 +24273,7 @@ function damagePlayer(amt,src,srcName,sx,sy){
   // untouched and no PRNG draw is added.
   var _pre=p.hp;
   p.hp-=amt;
+  if(amt>0) arcadeBmHealth(p); // v28.xx (cw-cx-overmoments): a fatal or downing blow is never a survived health value.
   if(NET.on&&!G.sim&&amt>0.5&&CFG.dmgNumbers!==0){ try{ netFxDmg(p.x,p.y-26,Math.round(amt),'#ff5a4a',p.hp<=0); }catch(_nfd){} }   // v16.25, his note: your teammate sees the damage you take, in red, over you
   // v9.20: now that both numbers are true, this is the row. amt is what got
   // through the multiplier and the plate, and p.hp is what he has left.
@@ -25142,7 +25146,7 @@ function finishHim(p,e){
   var a=Math.atan2(e.y-p.y,e.x-p.x);
   notoAggress(e);
   if(NET.on&&netEntsPeer()) netShotSend(e,(+e.hp||1)+5,a,null,0,'');
-  else { e.hp=0; e.byPlayer=true; e.pHitT=.3; e.pHitSeat=0; }
+  else { arcadeBmDamage(e,e.hp,0); e.hp=0; e.byPlayer=true; e.pHitT=.3; e.pHitSeat=0; }
   try{ meleeImpact(p.x,p.y,e.x,e.y,e.r); meleeFoley('hit',e.x,e.y); sfx('finishBlow',e.x,e.y); G.shake=Math.max(G.shake||0,4.2); bloodFx(e.x,e.y-14,p.x,p.y,40); }catch(_f){}   // v27.95 (snd4): and the heavy blow of the finisher on top
   scoreBonus(FIN_PTS,e.x,e.y-30,'FINISHER'); try{ label(e.x,e.y-30,'FINISHER','#ffc04a',0,true); }catch(_l){}   // v35.xx (cw-clockcard): the word, never the figure
   if(G.tel) G.tel.finishers=(G.tel.finishers||0)+1;
@@ -25397,7 +25401,7 @@ if(wep.mag===0){
         if(!losClear(sh.x,sh.y,_me.x,_me.y,G.map.segs)) continue;
         var _mdm=(wep.crowbar?crowbarDmgOn(_me):wep.dmg)*pwrMul('dmg',fromPlayer);   // v28.xx (cw-meleeone): the crowbar blow is worked out from the body it lands on
         if(_me.kind!=='raider'&&Math.abs(Math.atan2(Math.sin(base-_me.face),Math.cos(base-_me.face)))<0.9) _mdm*=1.5;   // v27.xx (crowbar15), the cloud review of 2026-10-15 (finding 14) and his answer 31: no bonus damage on a pillager, from any side; a machine keeps its blow from behind
-        if(NET.on&&netEntsPeer()) netShotSend(_me,_mdm,base,null,0,'',0,wep.crowbar?1:0); else _me.hp-=_mdm;   // v28.xx (cw-meleeone): and the host holds a body the crowbar leaves standing (hs), as it holds its own   // v15.80: on a linked window the host runs this body, so the blow is a request to the host
+        if(NET.on&&netEntsPeer()) netShotSend(_me,_mdm,base,null,0,'',0,wep.crowbar?1:0); else _me.hp-=arcadeBmDamage(_me,_mdm,0);   // v28.xx (cw-meleeone): and the host holds a body the crowbar leaves standing (hs), as it holds its own   // v15.80: on a linked window the host runs this body, so the blow is a request to the host
         _me.hitT=.16; _me.pHitT=.3; _me.pHitSeat=0;   // v11.37: your strike provokes; v17.31, co-op hunt 2026-09-28: yours, not a seat
         notoAggress(_me);            // v8.30: same rule, bare hands included
         if(_me.hp<=0) _me.byPlayer=true;
@@ -31609,7 +31613,7 @@ function elemArc(e,d,seat,sx,sy){
   if(!best) return null;
   cd[seat]=0.2;
   a=elemSoak(best,0.5*d);
-  best.hp-=a; best.hitT=.16; best.pHitT=.3; best.pHitSeat=seat|0;
+  best.hp-=arcadeBmDamage(best,a,seat); best.hitT=.16; best.pHitT=.3; best.pHitSeat=seat|0;
   elemProvoke(best,sx,sy,seat);
   elemCredit(best,seat);
   elemArcFx(e.x,e.y,best.x,best.y,1);   // v23.xx (forge8): the arc line, on every window
@@ -31633,7 +31637,7 @@ function elemTick(dt){
     if(e.panicT>0){ e.panicT-=dt; if(e.panicT<0||e.downed||e.hp<=0) e.panicT=0; }
     if(e.burnT>0){
       t=Math.min(dt,e.burnT); e.burnT-=dt;
-      if(e.hp>0&&!e.finished&&!e.merc&&!e.friendlyPC){ e.hp-=(e.burnDps||0)*t; elemCredit(e,e.burnBy|0); }
+      if(e.hp>0&&!e.finished&&!e.merc&&!e.friendlyPC){ e.hp-=arcadeBmDamage(e,(e.burnDps||0)*t,e.burnBy|0); elemCredit(e,e.burnBy|0); }
       if(e.burnT<=0){ e.burnT=0; e.burnDps=0; }
     }
   }
@@ -33983,7 +33987,7 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
               }
               if(xf('xfOvPh')&&en.boss&&en.overheat>0){ edmg*=1.5; if(!WK&&!G.sim&&!(en.weakLblT>(G.t||0)-0.5)){ en.weakLblT=(G.t||0); label(en.x,en.y-Math.round(en.r*1.3),weakTxt(1.5),'#ffc04a',0,true); } }   // v27.xx (weakx): and the exposed core says its multiplier too   // v26.xx (ai24): the Overseer core is exposed while it vents
               if(b.el==='acid'&&ELEM_MACH[en.kind]) edmg*=1.25;   // v23.xx (forge6): ACID, a quarter more into a machine; player 2's window sends the real number
-              if(NET.on&&netEntsPeer()) netShotSend(en,edmg,Math.atan2(b.vy,b.vx),WK,_nar,b.el,1,b.dmg>=HITSTOP_DMG); else en.hp-=affixSoak(en,edmg); /*v28.xx (cw-hitstoprule), CLOUD HUNT 2026-10-15: player 2 round says if it is heavy by the same raw number the host own round uses*/   // v15.80: on a linked window the host runs this body, so the round is a request to the host with the damage worked out here   // v28.xx (cw-blastshield), CLOUD HUNT 2026-10-15: player 2 round is marked for the shield soak
+              if(NET.on&&netEntsPeer()) netShotSend(en,edmg,Math.atan2(b.vy,b.vx),WK,_nar,b.el,1,b.dmg>=HITSTOP_DMG); else en.hp-=arcadeBmDamage(en,affixSoak(en,edmg),0); /*v28.xx (cw-hitstoprule), CLOUD HUNT 2026-10-15: player 2 round says if it is heavy by the same raw number the host own round uses*/   // v15.80: on a linked window the host runs this body, so the round is a request to the host with the damage worked out here   // v28.xx (cw-blastshield), CLOUD HUNT 2026-10-15: player 2 round is marked for the shield soak
               en.hitT=.16; animHitFrom(en,b.vx,b.vy); hitStopOn(en,b.dmg);   // v26.xx (feel10): a heavy round stops the body for a beat // v28.xx (cw-cx-hitjolt): the incoming round, including the linked shooter prediction
               // HIS Q42. The number IS the feedback: without it a weak point and
               // a body shot look identical, which is most of why the weak point
@@ -55875,7 +55879,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.97: at 4k the wirt buy button lines up with the gamble button and its need line sits inside the panel Check 35.97 fails on v35.96',
+  now:'v35.98: Two player run over shows crown, closest call and most damage alongside the existing moments. Check 35.98 fails on v35.97',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -64174,7 +64178,7 @@ function netShotTake(peer,m){
   var _nel=(typeof m.el==='string'&&ELEM[m.el])?m.el:'';
   if(_nel==='acid'&&typeof m.ar==='number'&&m.ar>=1&&m.ar<=1.5&&!m.wk&&e.armor>0) elemShred(e,d/m.ar);
   if(typeof m.ar==='number'&&m.ar>=1&&m.ar<=1.5&&!m.wk&&e.armor>0){ var _nab=d/m.ar, _nsk=elemAbsorb(e), _nea=Math.min(e.armor,_nab*_nsk); e.armor-=_nea; d=(_nab-_nea)*m.ar; }   // v22.04 (K16): armour first, then the back shot bonus, as a host round
-  e.hp-=(m.sk?affixSoak(e,d):d); e.hitT=.16; e.pHitT=.3; e.pHitSeat=s; hitStopOn(e,m.hs===1?HITSTOP_DMG:0); /*v28.xx (cw-nearmiss), CLOUD HUNT 2026-10-15: no suppHit here: a gun round already counted by its sup word as it reached him, and the host own frag, fists, finisher, air strike and screen clear never pin*/ /*v28.xx (cw-hitstoprule), CLOUD HUNT 2026-10-15: hit stop by the host rule, not by the multiplied number*/   // v26.xx (ai22): and player 2's rounds that land pin him as yours do   // v17.31, co-op hunt 2026-09-28: and whose round it was, so a man who made peace turned by it charges that seat   // v28.xx (cw-blastshield), CLOUD HUNT 2026-10-15: only a round soaks on the shield (v26.72), as on the host
+  e.hp-=arcadeBmDamage(e,(m.sk?affixSoak(e,d):d),m.nc?-1:s); e.hitT=.16; e.pHitT=.3; e.pHitSeat=s; hitStopOn(e,m.hs===1?HITSTOP_DMG:0); /*v28.xx (cw-nearmiss), CLOUD HUNT 2026-10-15: no suppHit here: a gun round already counted by its sup word as it reached him, and the host own frag, fists, finisher, air strike and screen clear never pin*/ /*v28.xx (cw-hitstoprule), CLOUD HUNT 2026-10-15: hit stop by the host rule, not by the multiplied number*/   // v26.xx (ai22): and player 2's rounds that land pin him as yours do   // v17.31, co-op hunt 2026-09-28: and whose round it was, so a man who made peace turned by it charges that seat   // v28.xx (cw-blastshield), CLOUD HUNT 2026-10-15: only a round soaks on the shield (v26.72), as on the host
   // v28.xx (cw-cx-hitjolt): the partner shot already carries its bearing; older blow words can use the shooter position.
   if(m.sk&&typeof m.a==='number'&&isFinite(m.a)) animHitFrom(e,Math.cos(m.a),Math.sin(m.a));
   else animHitFrom(e,e.x-sx,e.y-sy);
@@ -66137,7 +66141,7 @@ function airBlast(st,i){
     if(!airFoe(e)) continue;
     de=dist(e,q); if(de>=R+e.r) continue;
     dm=Math.round(AIR.dmg*(1-Math.max(0,de-e.r)/R)+AIR.dmg*0.25);
-    if(typeof NET==='object'&&NET&&NET.on&&typeof netEntsPeer==='function'&&netEntsPeer()){ airS().blast=1; try{ netShotSend(e,dm,Math.atan2(e.y-q.y,e.x-q.x),null); } finally { airS().blast=0; } } else e.hp-=dm;   // v27.19 (coop6): the strike own damage never refills the meter, on a linked window either
+    if(typeof NET==='object'&&NET&&NET.on&&typeof netEntsPeer==='function'&&netEntsPeer()){ airS().blast=1; try{ netShotSend(e,dm,Math.atan2(e.y-q.y,e.x-q.x),null); } finally { airS().blast=0; } } else e.hp-=arcadeBmDamage(e,dm,0);   // v27.19 (coop6): the strike own damage never refills the meter, on a linked window either
     e.airH=(e.hp>0)?e.hp:0; e.hitT=.2; e.pHitT=.3; e.pHitSeat=0; e.blow='a'; e.blowT=G.t;   // v27.xx (cloud-robust-air-tally), CLOUD HUNT 2026-10-15: the last blow was the strike, so the kill is on no gun (gunKillNote) and is no gun style (styleKill)
     if(e.hp<=0){ e.byPlayer=true; e.bySeat=0; }
     else if(e.state!=='alarm'&&!e.downed){ e.state='chase'; e.alert=2.5; e.tx=p.x; e.ty=p.y; }
@@ -68162,7 +68166,35 @@ function arcadeStreakLive(){
 // window keeps its own (ARCADE.bm), reset at every drop into a new run; player 2 sends its own with the score word (arcsc bm), so in
 // the 2 player demo the card shows the best of the two with P1 or P2 beside it. A moment that did not happen is left off. Display
 // only: nothing is scored, saved or drawn from a seeded stream.
-function arcadeBmNew(){ return {st:0,hl:0,ls:0,cur:0,lid:''}; }
+// v28.xx (cw-cx-overmoments), his #196 yes (2026-10-28): crown, closest call and most damage. No saved state or seeded draws.
+function arcadeBmNew(){ return {st:0,hl:0,ls:0,cc:0,dm:0,cur:0,lid:''}; }
+function arcadeBmAuth(){ return ARCADE.role==='host'||!!(G&&G.netWasJoin); }
+// v28.xx (cw-cx-overmoments): return the original blow unchanged; record health actually removed once on the body authority.
+function arcadeBmDamage(e,n,seat){
+  var b, v;
+  if(!G||G.sim||!G.arcade||!ARCADE.on||!arcadeBmAuth()||seat<0||!e||e.finished||e.merc||e.friendlyPC||!(e.hp>0)||!(n>0)) return n;
+  v=Math.min(e.hp,n);
+  if((seat|0)>0) b=ARCADE.mateBm||(ARCADE.mateBm=arcadeBmNew());
+  else b=ARCADE.bm||(ARCADE.bm=arcadeBmNew());
+  b.dm=(+b.dm||0)+v; ARCADE.scDirty=1;
+  return n;
+}
+function arcadeBmHealth(p){
+  var b;
+  if(!G||G.sim||!G.arcade||!ARCADE.on||!p||p.downed||p.dying||p.specOut||!(p.hp>0)) return;
+  b=ARCADE.bm||(ARCADE.bm=arcadeBmNew());
+  if(!b.cc||p.hp<b.cc){ b.cc=p.hp; ARCADE.scDirty=1; }
+}
+// v28.xx (cw-cx-overmoments): the final host snapshot survives arcend beating the last score heartbeat.
+function arcadeBmEndTake(m){
+  var out={}, k, r;
+  if(!m||typeof m!=='object') return null;
+  for(k in m) if(['st','hl','ls','cc','dm','cr'].indexOf(k)>=0){
+    r=m[k]; if(!r||!isFinite(r.v)||r.v<0) continue;
+    out[k]={v:+r.v,who:/^(P1|P2|p1|p2|p1 \+ p2)$/.test(r.who)?r.who:''};
+  }
+  return out;
+}
 function arcadeBmKill(n,x,y){
   var b=ARCADE.bm||(ARCADE.bm=arcadeBmNew()), d;
   if((n|0)>b.st) b.st=n|0;
@@ -68175,8 +68207,8 @@ function arcadeBmLoot(n){
   b.cur+=Math.max(0,n|0); if(b.cur>b.hl) b.hl=b.cur;
   return b;
 }
-function arcadeBmWire(){ var b=ARCADE.bm||arcadeBmNew(); return [b.st|0,b.hl|0,b.ls|0]; }
-function arcadeBmTake(w){ if(!Array.isArray(w)) return null; return {st:Math.max(0,w[0]|0),hl:Math.max(0,w[1]|0),ls:Math.max(0,w[2]|0)}; }
+function arcadeBmWire(){ var b=ARCADE.bm||arcadeBmNew(); return [b.st|0,b.hl|0,b.ls|0,+b.cc||0,+b.dm||0]; }
+function arcadeBmTake(w){ if(!Array.isArray(w)) return null; return {st:Math.max(0,w[0]|0),hl:Math.max(0,w[1]|0),ls:Math.max(0,w[2]|0),cc:isFinite(w[3])?Math.max(0,+w[3]):0,dm:isFinite(w[4])?Math.max(0,+w[4]):0}; }
 // the moments of the run for the card: the best of this window and the other, with who
 function arcadeBmFinal(){
   var me=ARCADE.bm||arcadeBmNew(), mt=ARCADE.mateBm||null, host=(ARCADE.role==='host'), two=!ARCADE.solo&&!!mt, out={}, k, a, b;
@@ -68184,6 +68216,16 @@ function arcadeBmFinal(){
     a=me[k2]|0; b=mt?(mt[k2]|0):0;
     out[k2]=(b>a)?{v:b,who:two?(host?'P2':'P1'):''}:{v:a,who:two?(host?'P1':'P2'):''};
   });
+  // v28.xx (cw-cx-overmoments): low positive health wins closest call; ties share credit, with stable seat names in either window.
+  ['cc','dm'].forEach(function(key){
+    a=+me[key]||0; b=mt?(+mt[key]||0):0;
+    var remote=key==='cc'?(b>0&&(!a||b<a)):(b>a), v=remote?b:a;
+    out[key]={v:v,who:two?(a>0&&a===b?'p1 + p2':(remote?(host?'p2':'p1'):(host?'p1':'p2'))):''};
+  });
+  if(two){
+    a=Math.max(0,ARCADE.mine|0); b=Math.max(0,ARCADE.mate|0);
+    out.cr={v:Math.max(a,b),who:a===b?'p1 + p2':(a>b?(host?'p1':'p2'):(host?'p2':'p1'))};
+  }
   return out;
 }
 function arcadeBmDraw(c,o,counting){
@@ -68191,21 +68233,27 @@ function arcadeBmDraw(c,o,counting){
   if(!c||!m) return false;
   el=c.querySelector('.aobm');
   if(!el){
+    // v28.xx (cw-cx-overmoments): three short two-player callouts ahead of the existing moments.
+    if(!ARCADE.solo&&m.cr){
+      rows.push(['crown',arcadeCr(m.cr.v),m.cr.who]);
+      if(m.cc&&m.cc.v>0) rows.push(['closest call',Math.max(1,Math.ceil(m.cc.v))+' hp',m.cc.who]);
+      if(m.dm&&m.dm.v>0) rows.push(['most damage',Math.max(1,Math.round(m.dm.v)).toLocaleString('en-US'),m.dm.who]);
+    }
     if(m.st&&m.st.v>=2) rows.push(['BEST STREAK',m.st.v+' KILLS',m.st.who]);
     if(m.hl&&m.hl.v>0) rows.push(['BIGGEST HAUL',arcadeCr(m.hl.v),m.hl.who]);
     if(m.ls&&m.ls.v>0) rows.push(['LONGEST SHOT',m.ls.v+' M',m.ls.who]);
     if(!rows.length) return false;
     el=document.createElement('div'); el.className='aobm';
-    el.style.cssText='display:none;justify-content:center;gap:2.4em;margin:.55em 0 .1em;';
+    el.style.cssText='display:none;grid-template-columns:repeat(3,minmax(0,1fr));width:100%;gap:16px 24px;margin:.55em 0 .1em;';
     for(i=0;i<rows.length;i++){
-      t=document.createElement('div'); t.className='aobmt'; t.style.cssText='text-align:center;line-height:1.05';
+      t=document.createElement('div'); t.className='aobmt'+(rows[i][0]==='crown'?' aocrown':''); t.style.cssText='text-align:center;line-height:1.05;min-width:0';
       s1=document.createElement('div'); s1.style.cssText='font-size:.62em;letter-spacing:.14em;color:#f2e6c8;opacity:.78'; s1.textContent=rows[i][0]+(rows[i][2]?'  \u00b7  '+rows[i][2]:'');
       s2=document.createElement('div'); s2.style.cssText='font-size:1.25em;color:#ffc04a'; s2.textContent=rows[i][1];
       t.appendChild(s1); t.appendChild(s2); el.appendChild(t);
     }
     c.appendChild(el);
   }
-  el.style.display=counting?'none':'flex';
+  el.style.display=counting?'none':'grid';
   return true;
 }
 // v24.xx (feat0h2), HIS MODE DESIGN AND HIS RULE (2026-10-12): "high score is still an objective" in CAREER, and the scoring is "EXACTLY
@@ -68903,6 +68951,7 @@ function arcadeScFlush(now){
   if(now-(+ARCADE.scAt||0)<ARCADE_SC_MS) return false;
   var m={t:'arcsc',pair:NET.pair,run:ARCADE.run.id,s:Math.max(0,ARCADE.mine|0),k:Math.max(0,ARCADE.kills|0),x:Math.max(0,ARCADE.ext|0)};
   try{ m.bm=arcadeBmWire(); }catch(_bmw){}   // v23.xx (his answer 20): the best moments go with the score
+  if(arcadeBmAuth()) m.md=+(ARCADE.mateBm&&ARCADE.mateBm.dm)||0; // v28.xx (cw-cx-overmoments): the host measured player 2 damage.
   if(ARCADE.scEv){ m.ev=ARCADE.scEv; m.n=Math.max(0,ARCADE.scN|0); }
   ARCADE.scDirty=0; ARCADE.scEv=''; ARCADE.scN=0; ARCADE.scAt=now;
   netSamePost(m);
@@ -68920,7 +68969,14 @@ function arcadeScTake(m){
       ARCADE.run={id:id}; ARCADE.scDirty=1; ARCADE.scAt=0;
     }
   } else if(!ARCADE.run||ARCADE.run.id!==id) return 'ignored';
-  try{ if(m.bm) ARCADE.mateBm=arcadeBmTake(m.bm); }catch(_bmt){}   // v23.xx (his answer 20)
+  // v28.xx (cw-cx-overmoments): a peer reports its health, but only the authority measures damage applied to bodies.
+  try{
+    if(m.bm){
+      var _mb=arcadeBmTake(m.bm), _md=+(ARCADE.mateBm&&ARCADE.mateBm.dm)||0;
+      if(_mb){ if(arcadeBmAuth()) _mb.dm=_md; ARCADE.mateBm=_mb; }
+    }
+    if(!arcadeBmAuth()&&isFinite(m.md)&&m.md>=0){ (ARCADE.bm||(ARCADE.bm=arcadeBmNew())).dm=+m.md; }
+  }catch(_bmt){}
   ARCADE.scSeen=Date.now(); ARCADE.mate=Math.max(0,Math.round(+m.s||0)); ARCADE.mateK=Math.max(0,m.k|0); ARCADE.mateX=Math.max(0,m.x|0);
   if(m.ev==='x'&&ARCADE.role==='host'){ try{ arcadeBoardPut(); }catch(_bx){} }   // v23.41 (arcade18): a player 2 extraction checkpoints the board row
   if(m.ev==='x'&&(m.n|0)>0&&G&&G.arcade&&!G.over){ try{ say((ARCADE.role==='p2'?'PLAYER 1':'PLAYER 2')+' EXTRACTED +'+arcadeCr(m.n|0),'ally'); }catch(_sx){} }   // v23.56 (arcade31): in credits
@@ -69650,11 +69706,12 @@ function arcadeRebuild(){
   var s={mine:ARCADE.mine|0,mate:ARCADE.mate|0,ext:ARCADE.ext|0,deaths:ARCADE.deaths|0,xo:ARCADE.xOut||0}, bench=!!(G.player&&G.player.specOut), ok;
   netSamePost({t:'arcnew',pair:NET.pair});
   var run0=ARCADE.run, k0=ARCADE.kills|0;   // v23.29 (arcade8): the same run, so the team score carries on
+  var _mom0=ARCADE.bm, _mateMom0=ARCADE.mateBm; // v28.xx (cw-cx-overmoments): player 2 joining continues this run.
   var tl0=(typeof G.timeLeft==='number')?G.timeLeft:0;   // v23.6x (feat0e): the run keeps its clock
   ok=arcadeDeploy({role:'host',mapIx:P.mapIx});
   if(ok&&G&&G.arcade&&tl0>0&&G.timeLeft>tl0) G.timeLeft=tl0;
   ARCADE.mine=s.mine; ARCADE.mate=s.mate; ARCADE.ext=s.ext; ARCADE.deaths=s.deaths; ARCADE.xOut=s.xo;
-  if(run0) ARCADE.run=run0; ARCADE.kills=k0;
+  if(run0){ ARCADE.run=run0; ARCADE.bm=_mom0; ARCADE.mateBm=_mateMom0; } ARCADE.kills=k0;
   if(!ok||!G||!G.player){ try{ arcadeAttShow(); }catch(_aa){} return false; }
   if(bench){ G.player.specOut=1; try{ mapFirstBench(); }catch(_mfb2){} arcadeAttShow(); }
   try{ say('PLAYER 2 JOINING','ally'); }catch(_sj){}
@@ -69745,7 +69802,7 @@ function arcadeRunEnd(why){
   // v31.27 (cw-endhalf), HIS Q60 (2026-10-18): "Ending early halves the score, the same as dying." END RUN from the pause menu (why 'menu') halves both scores like a death or the burn.
   // An idle out stays as it was (question 78 decides it) and an extraction still doubles (arcadeX2).
   if(why==='dead'||why==='burn'||why==='menu'){ ARCADE.mine=Math.floor(Math.max(0,ARCADE.mine|0)/2); ARCADE.mate=Math.floor(Math.max(0,ARCADE.mate|0)/2); }  var host=(ARCADE.role==='host'), me={s:Math.max(0,ARCADE.mine|0),k:ARCADE.kills|0,x:ARCADE.ext|0,d:ARCADE.deaths|0},
-      mt=((ARCADE.mate|0)>0||(ARCADE.mateK|0)>0)?{s:Math.max(0,ARCADE.mate|0),k:ARCADE.mateK|0,x:ARCADE.mateX|0,d:-1}:null;
+      mt=((ARCADE.mate|0)>0||(ARCADE.mateK|0)>0||!!ARCADE.mateBm)?{s:Math.max(0,ARCADE.mate|0),k:ARCADE.mateK|0,x:ARCADE.mateX|0,d:-1}:null;
   ARCADE.over={at:Date.now(),why:String(why||''),team:arcadeTeam(),p1:host?me:mt,p2:host?mt:me};
   try{ ARCADE.over.dm=diffMul(); }catch(_dm){}   // v35.xx (cw-dmulshow): the settings multiplier the run paid, for the card
   try{ outMusic(why==='extract'?'win':((why==='dead'||why==='burn')?'kia':'')); }catch(_om){}   // v26.xx (outcomemusic): the RUN OVER card of an extraction run, a death or a burn plays its piece; an idle out or END RUN none
@@ -69773,8 +69830,8 @@ function arcadeEndSend(){
   var x2=ARCADE.x2?1:0; ARCADE.x2=0;   // v24.xx (feat0g): an extraction run end tells player 2 the score was doubled
   var ko=(!x2&&ARCADE.over&&(ARCADE.over.why==='dead'||ARCADE.over.why==='burn'))?1:0;   // v26.xx (outcomemusic): a run that ended on a death or the burn, so player 2 plays the failure piece
   var hf=(!x2&&ARCADE.over&&ARCADE.over.why==='menu')?1:0;   // v31.27 (cw-endhalf): the run ended on END RUN, so player 2 halves its figures too (no failure piece: hf, not ko)
-  ARCADE.endSend={id:id,at:now,last:now,x2:x2,ko:ko,hf:hf};
-  var _am={t:'arcend',pair:NET.pair,run:id,x2:x2}; if(ko) _am.ko=1; if(hf) _am.hf=1;
+  ARCADE.endSend={id:id,at:now,last:now,x2:x2,ko:ko,hf:hf,bm:ARCADE.over&&ARCADE.over.bm};
+  var _am={t:'arcend',pair:NET.pair,run:id,x2:x2,bm:ARCADE.endSend.bm}; if(ko) _am.ko=1; if(hf) _am.hf=1;
   netSamePost(_am);  return true;
 }
 // Run from the attract tick. Returns what it did: '', again or done.
@@ -69785,7 +69842,7 @@ function arcadeEndTick(now){
   if(!ARCADE.on||ARCADE.role!=='host'||now-e.at>=ARCADE_END.ms||(G&&G.arcade)){ ARCADE.endSend=null; return 'done'; }
   if(now-e.last<ARCADE_END.every) return '';
   e.last=now;
-  var _am={t:'arcend',pair:NET.pair,run:e.id,x2:e.x2?1:0}; if(e.ko) _am.ko=1; if(e.hf) _am.hf=1;   // v31.27 (cw-endhalf): the same word every time, hf kept for END RUN
+  var _am={t:'arcend',pair:NET.pair,run:e.id,x2:e.x2?1:0,bm:e.bm}; if(e.ko) _am.ko=1; if(e.hf) _am.hf=1;   // v31.27 (cw-endhalf): the same word every time, hf kept for END RUN
   netSamePost(_am);  return 'again';
 }
 // v30.xx (cw-p1p2), HIS ORDER (2026-10-18): "there seem to be a lot of inconsistencies between p1 and p2 games, please coordinate them better". The host built
@@ -69797,10 +69854,10 @@ function arcadeOverMirror(m){
   var me, mt;
   if(!ARCADE.on||ARCADE.role!=='p2'||ARCADE.solo) return null;
   me={s:Math.max(0,ARCADE.mine|0),k:ARCADE.kills|0,x:ARCADE.ext|0,d:ARCADE.deaths|0};
-  mt=((ARCADE.mate|0)>0||(ARCADE.mateK|0)>0)?{s:Math.max(0,ARCADE.mate|0),k:ARCADE.mateK|0,x:ARCADE.mateX|0,d:-1}:null;
+  mt=((ARCADE.mate|0)>0||(ARCADE.mateK|0)>0||!!ARCADE.mateBm)?{s:Math.max(0,ARCADE.mate|0),k:ARCADE.mateK|0,x:ARCADE.mateX|0,d:-1}:null;
   ARCADE.over={at:Date.now(),why:(m&&m.x2)?'extract':((m&&m.ko)?'dead':((m&&m.hf)?'menu':'')),team:arcadeTeam(),p1:mt,p2:me};
   try{ ARCADE.over.dm=diffMul(); }catch(_dm){}   // v35.xx (cw-dmulshow): the settings multiplier, as the host card has it
-  try{ ARCADE.over.bm=arcadeBmFinal(); }catch(_bmf){}
+  try{ ARCADE.over.bm=arcadeBmEndTake(m&&m.bm)||arcadeBmFinal(); }catch(_bmf){}
   return ARCADE.over;
 }
 // Player 2 takes the host run end, from arcend or the marked out word, whichever comes first.

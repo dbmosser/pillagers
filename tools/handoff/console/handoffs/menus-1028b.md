@@ -15,6 +15,7 @@ His feedback pictures are 3838x2158. Hub zoom there is 2.27 (about 1690x950 layo
 cw-spmoney v35.45, cw-xpbreak v35.73, cw-pausesp v35.75, cw-menupolish1 v35.88, cw-pausecond v35.89,
 cw-menupolish2 v35.93 (Wirt gamble panel: mystery tile beside the odds by rarity; stash hotbar ends on the backpack row, scroll bar or not),
 cw-endcards v35.95 (KIA card: how it went and damage taken side by side at body size, names left aligned, time as m:ss; extracted card: damage taken sources in two columns so the footnote sits above the button).
+cw-wirtfit v35.97 (Wirt offer at 4K: the offer picture gives up height when the panel is short, so the buy button lines up with the gamble button and its need line sits inside the panel; builder menus-round5/build-round5.py).
 
 ## Waiting on his pick: stash backpack (do NOT build before he picks)
 At 4K the stash loadout column gets 207 to 255 layout px but needs about 410 before the 12 backpack slots (his answers 8 and 28) fit. Today the backpack box is 0 tall there and the key hints row sits over the gun keys.
@@ -26,7 +27,6 @@ At 4K the stash loadout column gets 207 to 255 layout px but needs about 410 bef
 - Memory note: pillagers-stash-backpack-pick-2026-10-28.md.
 
 ## Next candidates
-- Wirt's offer panel at 4K: the "need $X more" line sits outside its panel (seen in the round 2 4K pictures, pre-existing).
 - KIA card with 8 or more grouped hits may still scroll a little at 4K (5 grouped hits fit exactly: 822 of 822 px).
 - The 16-screen survey sheets in tools/handoff/drafts/menus-round1/ for anything else that looks squeezed at 4K.
 

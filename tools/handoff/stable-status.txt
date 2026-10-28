@@ -1,9 +1,10 @@
 Latest stable: v35.28 (2026-10-27 22:16)
-Checked: 2026-10-28 15:04
+Checked: 2026-10-28 16:06
 Play address: http://localhost:8802/stable.html
 Result: no change
 
 Newest test runs, newest first:
+  corpus-1028-1346  v35.89  failing 69, new 7  robots 114 min/1 problems  -> 7 check(s) newly failing, e.g. v33.48 the pre-raid pack names are shown whole beside the bu | v32.53 the pre-raid map draws its zone names at 20 px, shrin
   corpus-1028-1222  v35.83  failing 70, new 8  robots 57 min/1 problems  -> 8 check(s) newly failing, e.g. v8.89 a pillager wading out of sight draws no rings in the w | v33.48 the pre-raid pack names are shown whole beside the bu
   corpus-1028-1057  v35.80  failing 66, new 3  robots 57 min/1 problems  -> 3 check(s) newly failing, e.g. v31.04 cw-shkey, his note (2026-10-18) "superhot mode needs  | v29.33 the title and mode menu run on the shared look: token
   corpus-1028-0934  v35.76  failing 72, new 9  robots 114 min/0 problems  -> 9 check(s) newly failing, e.g. v35.36 cw-quiethud (his order of 10-27, build the quiet hud, | v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right
@@ -11,13 +12,11 @@ Newest test runs, newest first:
   corpus-1028-0722  v35.65  failing 45, new 7  robots 240 min/44 problems  -> 7 check(s) newly failing, e.g. v35.53 cw-hudsize, his ask 2026-10-27 (the hud messaging is  | v35.44 cw-msgroute, his complaint 2026-10-27 (too many messa
   corpus-1028-0442  v35.65  failing 45, new 4  robots 240 min/44 problems  -> 4 check(s) newly failing, e.g. v35.53 cw-hudsize, his ask 2026-10-27 (the hud messaging is  | v35.44 cw-msgroute, his complaint 2026-10-27 (too many messa
   corpus-1028-0320  v35.63  failing 42, new 4  robots 115 min/1 problems  -> 4 check(s) newly failing, e.g. v35.53 cw-hudsize, his ask 2026-10-27 (the hud messaging is  | v35.44 cw-msgroute, his complaint 2026-10-27 (too many messa
-  corpus-1028-0157  v35.58  failing 44, new 4  robots 57 min/0 problems  -> 4 check(s) newly failing, e.g. v35.53 cw-hudsize, his ask 2026-10-27 (the hud messaging is  | v35.44 cw-msgroute, his complaint 2026-10-27 (too many messa
 
 Checks that are newly red and still red (they block until fixed, or until listed in tools/handoff/stable-known-red.txt):
   v31.04 cw-shkey, his note (2026-10-18) "superhot mode needs a toggle key": the k
   v27.40 his answer: a row for the style medals is reserved between the feed and t
   v29.33 the title and mode menu run on the shared look: tokens in the CSS equal U
-  v8.89 a pillager wading out of sight draws no rings in the water
   v33.48 the pre-raid pack names are shown whole beside the buy slot (the kit colu
   v32.53 the pre-raid map draws its zone names at 20 px, shrinking to no less than
   v28.71 his order 2026-10-15 (score as SP): every score figure reads N SP and nev

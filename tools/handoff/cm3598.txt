@@ -1,0 +1,7 @@
+v35.98: run over crown and moments
+
+Two player run over shows crown, closest call and most damage alongside the existing moments.
+
+Check 35.98. Fails on v35.97.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

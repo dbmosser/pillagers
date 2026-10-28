@@ -1827,33 +1827,33 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The title screen is a clean, centred column menu with a readable wordmark, but the error banner and its lime retry button compete with the focused row, the saves block is weak, and the orange gradient wordmark clashes with the lime accent.",
+  "verdict": "The core raid hud is readable, with a clear timer, ammo and score. The corners still don't share a margin or panel language, and the hotbar and bars are loose, so it still reads as unfinished.",
   "findings": [
-   "P1 error banner, x681-1239 y637-703: Make 'retry' an outlined 40px button with a 1px --acc border and no fill, since the banner is not the primary action. Shorten the copy to one line, 'player 2 is in a raid in another window', at 16px in tx-1. Move the banner to y≈395, above the list, or set it 24px clear of the list with a 3px --danger left bar only.",
-   "P1 wordmark, x802-1118 y255-335: Use a flat --tx-1 wordmark at 800 weight, about 96px, with no gradient or shadow. If the orange stays, make it one flat --warn fill, and never beside lime. Put the tagline 16px below it, with 48px between tagline and list.",
-   "P1 menu list, x681-1239 y403-627: Fill the focused row with --ui-raised and add a 4px --acc left bar. Make the border 2px --acc and the text 22px, on a 64px row. Make '1 player' the default focus, and move the demos into a smaller secondary group 24px below, named 'demo'. Drop '(same machine)' to a 16px tx-2 sublabel.",
-   "P1 saves block, x681-1239 y722-842: Set the 'saves' label at 16px with +.04em tracking in tx-2 (≥4.5:1). Use the lime border on the saves row only when it has focus, otherwise --ui-line-hi. Make the field and buttons one 40px row on an 8px gap, with equal-width buttons and the name field set 16px in from the card edge. Put the whole block in a --ui-panel card with 16px padding.",
-   "P2 top-right buttons, x1611-1823 y33-81: Use 16px f-cond 600 labels, 40px high, a 4px radius and 16px side padding. Align the right edge to x=1824 (96px margin) and the top to 48px, with a 16px gap. Use the same --ui-line-hi border as the menu rows."
+   "P1 hotbar x553-1500 y955-1060: Draw all nine slots as 80x80 --ui-panel tiles with a 1px --ui-line-hi border and 8px gaps. Dim empty slots to 40% and put the number at the top-left in 16px tx-2. Centre the row on x960 with its bottom at y1032. The active slot gets a 2px --acc border, not amber.",
+   "P1 hp and armour bars x24-430 y965-1068: Put the pair in one 320x72 --ui-panel block at x48 with its bottom at y1032 and a 1px --ui-line-hi border. Use 12px bars on a --ui-line track (--ok for hp, #3f9de9 for armour). Use 16px tx-2 labels and 20px tx-1 numbers right-aligned, both the same size. Keep an 8px gap between the rows.",
+   "P1 corner margins and panel style: keyboard tag x10-105 y5-32, run info dropdown x1603-1901 y18-54, ammo x1605-1910 y868-1017, timer x887-1033 y18-102: Use a 48px outer margin on every corner. Use one panel recipe: --ui-panel at 88% opacity, a 1px --ui-line-hi border and a 4px radius. 'keyboard' becomes a 32px-high tag at x48,y48 with a 3px amber left bar. The goals dropdown becomes 240x40 with its right edge at x1872 and its top at y48.",
+   "P1 team score block x826-1094 y110-215 and extract chip x888-1032 y225-257: Make one 268px-wide panel under the timer with 16px padding. 'team score' is a 16px tx-2 label, and '0 sp' is 32px tx-1 on the left. 'you' and 'p2' sit as two 16px rows on the right, with the p1 amber and p2 cyan 3px bars as markers. Put the extract chip inside the same column at 16px gap, using --extract text with a 3px --extract left bar and the same 4px radius.",
+   "P2 ammo panel x1605-1910 y868-1017: Right-align the panel to x1872, with its bottom at y1032. Fold 'golden' into the panel as a 16px --r-gold label at the top-left, or remove it. Keep the weapon name at 16px tx-2 and make the 30 the 56px f-cond 800 hero."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-08-144-crates-faster-with-two-recipes-1/duo-search-demo-p1-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-08-144-crates-faster-with-two-recipes-2/duo-search-demo-p1-1080.jpg",
   "task": "o-08-144-crates-faster-with-two",
-  "when": "2026-10-28T18:57"
+  "when": "2026-10-28T20:26"
  },
  "p2-1080": {
-  "score": 2,
-  "pass": false,
+  "score": 3,
+  "pass": true,
   "need": 3,
-  "verdict": "The real p2 title screen now shows a clear lime primary button, but the controls hint strip is clipped by an overlapping toast, the title is a gradient-orange template wordmark, and the saves block and top-right buttons are loosely styled.",
+  "verdict": "The screen is calm and readable, with one clear lime action, but the orange gradient logo clashes with the lime accent, and the type is small and inconsistent. The lower half is a loose stack of tiny, unevenly styled controls.",
   "findings": [
-   "P0 Bottom hint strip and toast (x 726-1193, y 1004-1056): Move the toast to y 940-976, or to the top-centre banner slot. Keep the hint row on one clear 32px line at y 1040-1072. Never let two elements share that band.",
-   "P1 Title wordmark (x 802-1118, y 360-440): Fill the wordmark flat --tx-1 (#efe9dc) at --fs-hero 56px, f-cond 800, with no gradient and no drop glow. Alternatively use flat --acc, with the button changing to a quiet outline.",
-   "P1 Saves list and name row (x 681-1239, y 615-735): Make every row 48px tall on an 8px gap, 20px f-cond 600 text, --ui-panel fill and 1px --ui-line-hi borders. Put 'saves' as a 16px --tx-2 label with 8px of space under it. Keep lime only on the selected row's border.",
-   "P1 'player 2 window' (x 909-1010, y 579-593): Make it a 16px --tx-2 f-cond line with 16px of space above and 24px below, or make it a proper secondary button of the same width as the main action. Remove the bold weight.",
-   "P2 Top-right 'go fullscreen' and 'settings' (x 1611-1823, y 33-81): Use 48px tall buttons at y 40, right edge x 1824, 16px f-cond 600 text, and a --ui-line-hi border. Highlight only on focus."
+   "P1 Title logo 'pillagers' (x 800-1120, y 360-440): Make the logo flat --tx-1 (#efe9dc) at 800 weight, with no gradient or shadow. Or keep it as art and take the lime button down a step. Give one element the heat.",
+   "P1 Saves block (x 681-1239, y 615-735): Use one row height of 56px with an 8px gap and a 4px radius on --ui-panel. Set 'saves' to 16px f-cond 600 --tx-2. Mark the selected save with a 2px lime left bar and --tx-1 text, not lime text.",
+   "P1 'player 2 window' (x 909-1010, y 578-594): If it is an action, make it a 48px secondary button, 20px, with a 1px --ui-line-hi border, placed 16px below the primary. If it is only a status, remove it.",
+   "P1 Top-centre 'keyboard' chip (x 912-1007, y 7-31) and top-right buttons (x 1611-1823, y 33-81): Move the chip and buttons onto a 48px top margin. Give them 56px of height, 20px text, 16px side padding and a --ui-line-hi border. Draw the chip in --tx-2 and --ui-line, not green.",
+   "P2 Bottom key hints (x 726-1193, y 1030-1055): Put the legend and the version stamp on one 48px bottom margin. Set the stamp to 14px f-body 500 --tx-2, with its left edge on the same 96px margin as the other items."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-08-144-crates-faster-with-two-recipes-1/duo-search-demo-p2-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-08-144-crates-faster-with-two-recipes-2/duo-search-demo-p2-1080.jpg",
   "task": "o-08-144-crates-faster-with-two",
-  "when": "2026-10-28T18:57"
+  "when": "2026-10-28T20:26"
  },
  "pix86c-fashion": {
   "score": 3,

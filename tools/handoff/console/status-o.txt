@@ -1,1 +1,1 @@
-10-28 15:56 waiting for RAM: 1 GB free, need 3 (o-00a-crates-both-holding-e)
+10-28 16:39 gate: shipping cw-cx-overmoments (o-09-196-run-over-card-moments, codex)
