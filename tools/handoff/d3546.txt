@@ -1,0 +1,5 @@
+## v35.46 - PAGE WALLET STAYS HIDDEN IN THE NEW HUD FRAME
+
+Co-op hunt while he was away. His wallet collision was fixed in v35.01. Verification found one remaining timing gap: after a slow frame the loop could unclip the page wallet before the HUD refreshed its stamp. The corner draw now clips the page wallet immediately, including when the quiet HUD has no wallet rows.
+
+MEASURED. Check 35.46 passes, and fails on v35.45.

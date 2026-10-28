@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.46 - PAGE WALLET STAYS HIDDEN IN THE NEW HUD FRAME
+
+Co-op hunt while he was away. His wallet collision was fixed in v35.01. Verification found one remaining timing gap: after a slow frame the loop could unclip the page wallet before the HUD refreshed its stamp. The corner draw now clips the page wallet immediately, including when the quiet HUD has no wallet rows.
+
+MEASURED. Check 35.46 passes, and fails on v35.45.
 ## v35.45 - THE EXTRACTED CARD SPLITS SCORE AND MONEY
 
 Co-op hunt while he was away. his order 10-28 with a picture of the extracted card: "this extracted screen is an absolute mess -- money versus raid score/sp should never be intermingled". The career ledger was one list: sp rows, the credits in $, the haul, and a raid total in $ drawn in the score gold; damage taken sat above the result; the card ran past 1080p so the xp line and a next reward sentence were cut off behind the button. Now a raid score panel (sp only, gold) and a money panel ($ only, teal) side by side, each with its own total; the haul pictures under both; damage taken under the result on an extraction; the xp line is the figure only. Same figures and same rules (1 sp banks 1 dollar on an extraction, KIA halves the score).

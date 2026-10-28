@@ -1,1 +1,1 @@
-10-27 23:27 running o-120c-wallet-double-text (codex, run 2 of 5)
+10-27 23:36 gate: shipping cw-cx-walletframe (o-120c-wallet-double-text, codex)

@@ -8,3 +8,6 @@
 10-27 22:38 v35.41 cw-cx-solopings on his pc after 34s (8802 serves 35.41) week 68%
 10-27 22:41 v35.42 cw-stashhover on his pc after 18s (8802 serves 35.42) week 68%
 10-27 23:09 v35.43 cw-cx-pingread on his pc after 17s (8802 serves 35.43) week 70%
+10-27 23:33 v35.44 cw-msgroute NOT on his pc after 675s (8802 serves no answer) week 71%
+10-27 23:37 v35.45 cw-spmoney NOT on his pc after 458s (8802 serves no answer) week 72%
+10-27 23:37 v35.44 cw-msgroute on his pc after 251s (8802 serves 35.45) week 72%

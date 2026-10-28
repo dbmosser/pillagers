@@ -1,6 +1,6 @@
 # 186e-hud-states-pill-answer-sizes : lasting states become icons, extraction lives on the pill, a small answer line, text at readable size
 Queue: his ask 10-27 ~21:40 (verbatim): "Can you do some real research on best practices in player alerts and messaging in terms of screen location etc and try to apply that to our game?" and "Everything about this game needs to be AAA and right now all the messaging on the hud is a clusterfuck". This is report jobs 5, 6, 7 and 9 of reports/Player alerts and HUD messaging.md. Polish, allowed before 11/1.
-START ONLY AFTER 186c build 1 (cw-msgroute) is ON HIS PC: it uses the five-kinds routing (P4 answers). Model: claude-sonnet-5-5, effort high (Development efficiency budget guard 10-27). Lanes skip in-session/.
+START ONLY AFTER 186c build 1 (cw-msgroute) is ON HIS PC: it uses the five-kinds routing (P4 answers). Model: claude-opus-5-5, effort high (rung 3, set 10-28 by the order chat: four rendering builds, "AAA top to bottom" outranks the old Sonnet pick). cw-msgroute is ON HIS PC v35.44. Lanes skip in-session/.
 Read first: the report sections "Top centre", "Centre", "Bottom left", "Bottom right", "The numbers at a glance".
 
 Do, one build each (separate mk scripts so each can be reverted alone):

@@ -40,3 +40,5 @@ No HIGH items left except 177 hardcore save (parked until 11/1, goes first then)
 - MEDIUM: 120d2, 141, 142, 147, 149, 153, 154, 161, 172, 175.
 - LOW: 144, 148, 150, 155, 156, 157, 158, 162, 169, 171, 174, 178, 182, 192, 193, 194, 195, 196, 197.
 10-28 extracted card: "this extracted screen is an absolute mess -- money versus raid score/sp should never be intermingled" -> cw-spmoney (Menus master draft), shipping 10-27 night
+
+- 10-28 00:0x: 186c build 1 (cw-msgroute) ON HIS PC v35.44 (his 8802 serves 35.45): lines in a staged 3 minute raid, 43.3 before, 30 after. Build 2 (186d danger slot) is now a lane job, tasks/186d-danger-slot.md. 186e started as its own helper on Opus high (job file updated); order chat "Gameplay Edit Intaker 2" took over from the old intaker at 23:1x.
