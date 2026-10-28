@@ -45,7 +45,9 @@ for f in "$C"/status-*.txt; do l=${f##*status-}; l=${l%.txt}; echo "lane $l: $(h
 nf=$(find "$C/failed" -name '*.md' -mmin -120 2>/dev/null | wc -l); [ "$nf" -gt 0 ] && prob "$nf job(s) went to failed/ in the last 2 h: $(find "$C/failed" -name '*.md' -mmin -120 -printf '%f ' 2>/dev/null)"
 echo "jobs waiting: $(ls "$C/tasks/"*.md 2>/dev/null | wc -l); STOP: $([ -f "$C/STOP" ] && echo ON || echo off)"
 # 5 the full test run
-cl=$(grep "newly failing" "$H/nightly/nightly.log" 2>/dev/null | tail -1 | grep -o '[0-9]* check(s) newly failing' | head -1)
+# 10-27 night (CEO chat): the newest full run is the first line under "Newest test runs" in stable-status.txt (the spare PC runs it); nightly.log held a stale VM run and showed 12 newly failing while the newest run had 0
+cl=$(sed -n '/^Newest test runs/{n;p;q}' "$H/stable-status.txt" 2>/dev/null | sed -n 's/.*corpus-\([0-9-]*\) *\(v[0-9.]*\).*new \([0-9]*\).*/\3 check(s) newly failing (run \1 on \2)/p')
+[ -z "$cl" ] && cl=$(grep "newly failing" "$H/nightly/nightly.log" 2>/dev/null | tail -1 | grep -o '[0-9]* check(s) newly failing' | head -1)
 [ -n "$cl" ] && { echo "full test run: $cl"; n=${cl%% *}; [ "${n:-0}" -gt 10 ] && prob "full test run says $cl"; }
 # 6 ChatGPT lane
 if has 'codex-lane\.sh'; then echo "chatgpt lane: running ($(head -c 90 "$C/status-o.txt" | tr -d '\r\n'))"
