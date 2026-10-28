@@ -138,16 +138,13 @@ public static bool PadInUse(){
   # existed (AwaySec says nobody) and says so
   $script:noIn=$true; Say ('PROBLEM: cannot tell whether someone is at the PC (the keyboard and mouse check did not load), so this runner tests without pausing for anyone: '+(Short "$_"))
 }
-# 10-28 (Main PC Correspondent), his "what about daytime testing when i'm at the pc?": the window in front and the shell's full-screen state,
-# so the runner can tell him working at the PC (one light robot may run) from him playing (nothing runs). If this does not load, nothing
+# 10-28 (Main PC Correspondent), his "what about daytime testing when i'm at the pc?": the title of the window in front, so the runner can tell him working at the PC (one light robot may run) from him playing (nothing runs). If this does not load, nothing
 # runs while he is at the PC, as before.
 $script:noFg=$true
 if($Idle){ try{ Add-Type -Namespace PillagersIdle -Name Fg -ErrorAction Stop -MemberDefinition @'
 [DllImport("user32.dll")] static extern IntPtr GetForegroundWindow();
 [DllImport("user32.dll", CharSet = CharSet.Unicode)] static extern int GetWindowText(IntPtr h, System.Text.StringBuilder s, int n);
-[DllImport("shell32.dll")] static extern int SHQueryUserNotificationState(out int s);
 public static string Title(){ try { System.Text.StringBuilder b = new System.Text.StringBuilder(512); GetWindowText(GetForegroundWindow(), b, 512); return b.ToString(); } catch { return ""; } }
-public static int Quns(){ try { int s; if (SHQueryUserNotificationState(out s) != 0) return -1; return s; } catch { return -1; } }
 '@; $script:noFg=$false }catch{ Say ('PROBLEM: the window-in-front check did not load, so nothing runs while he is at the PC (as before): '+(Short "$_")) } }
 if(-not $Idle -and -not $script:noIn){
   $MySid=[uint32][Diagnostics.Process]::GetCurrentProcess().SessionId
@@ -326,7 +323,7 @@ function SoundWho(){
 # goes by, so on a pads-only night the VM would start helpers, robots and the local AI on the party PC. While a pad is in use this writes
 # pad-seen.txt (epoch=, seen=) into the bridge share at most once a minute; the VM's tools/nightly.sh counts one under 10 minutes old as
 # gaming (nothing new starts). It records nothing of what was pressed.
-$script:padNoteT=[long]0; $script:gcAtStart=$false; $script:lightRun=$false
+$script:padNoteT=[long]0; $script:gcAtStart=$false; $script:lightRun=$false; $script:padUseT=(Get-Date).AddDays(-1)   # a real pad use only
 function PadNote(){
   try{
     $e=Epoch; if(($e-$script:padNoteT) -lt 60){ return }; $script:padNoteT=$e
@@ -337,7 +334,7 @@ function PadNote(){
   }catch{}
 }
 function AwaySec(){
-  if($Idle){ if([PillagersIdle.Input]::PadInUse()){ $script:padT=Get-Date; PadNote }; return [Math]::Min([PillagersIdle.Input]::IdleSec(),((Get-Date)-$script:padT).TotalSeconds) }
+  if($Idle){ if([PillagersIdle.Input]::PadInUse()){ $script:padT=Get-Date; $script:padUseT=$script:padT; PadNote }; return [Math]::Min([PillagersIdle.Input]::IdleSec(),((Get-Date)-$script:padT).TotalSeconds) }
   if($script:noIn){ $script:awayWhy='nobody can be seen (the presence checks did not load)'; $script:humanAgo=1e9; return 1e9 }
   $now=Get-Date; $e=Epoch
   $o=$false
@@ -408,16 +405,15 @@ function ShareGaming(){ try{ $f=Join-Path $env:LOCALAPPDATA 'PillagersBridge\sha
   if(((Get-Date)-$i.LastWriteTime).TotalMinutes -gt 5){ return '' }; return [IO.File]::ReadAllText($f) }catch{ return '' } }
 function VmGrowing(){ return ((ShareGaming) -match '(?m)^mem=away, VM [0-9.]+ -> ') }
 function GameChrome(){ return ((ShareGaming) -match '(?m)^what=chrome\b') }
-# 10-28: is he playing, not just working at the PC? A pad used in the last 15 minutes, the main PC game check's gaming=1, a full-screen
-# program, the game's own window in front ("Pillagers", "Pillagers, player 2"), or a program working the graphics card like a game in the
-# last 10 minutes (GpuGame; test Chromes are left out). LightOK: he may be at the PC and one light robot may run.
+# 10-28: is he playing, not just working at the PC? A pad used in the last 15 minutes, the main PC game check's gaming=1, the game's own
+# window in front ("Pillagers", "Pillagers, player 2"), or a program working the graphics card like a game in the last 10 minutes (GpuGame;
+# test Chromes are left out). No full-screen test: his "get rid of the whole fullscreen concept ... i fullscreen apps all the time".
+# LightOK: he may be at the PC and one light robot may run.
 $script:playWhy=''
 function Playing(){
   $script:playWhy=''
-  if(((Get-Date)-$script:padT).TotalSeconds -lt 900){ $script:playWhy='a game pad'; return $true }
+  if(((Get-Date)-$script:padUseT).TotalSeconds -lt 900){ $script:playWhy='a game pad'; return $true }
   if((ShareGaming) -match '(?m)^gaming=1'){ $script:playWhy='the main PC game check'; return $true }
-  $q=-1; try{ $q=[PillagersIdle.Fg]::Quns() }catch{}
-  if($q -ge 2 -and $q -le 4){ $script:playWhy='a full-screen program'; return $true }
   $t=''; try{ $t=[PillagersIdle.Fg]::Title() }catch{}
   if($t -match '^(?i)pillagers(,| -|$)'){ $script:playWhy='the game in front'; return $true }
   GpuGame
