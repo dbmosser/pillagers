@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.74 - MELEE ON Z, DROP ON V
+
+Co-op hunt while he was away. his order 10-28: can we move melee to z as default? and middle mouse should ping?
+
+MEASURED. Check 35.74 passes, and fails on v35.73.
 ## v35.73 - THE XP LINE KEEPS ITS OWN LINE ON THE EXTRACTED CARD
 
 Co-op hunt while he was away. his picture 10-28: "+2,386 xpthe seal on cold storage is broken. it reseals harder: stage 1 needs 55 seconds." cw-spmoney (v35.45) hid the season total and the next reward sentence of the career xp line in a span that ended the line, and the .ocsr + br rule hid the line break after it, so the next line ran into the xp figure. The hidden part now sits inside the xp span and the break stays.
