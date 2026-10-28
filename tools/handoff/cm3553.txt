@@ -1,0 +1,7 @@
+v35.53: hud text at a readable size
+
+the feed, the answer line, the controls list and the danger line are bigger and easier to read
+
+Check 35.53. Fails on v35.52.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

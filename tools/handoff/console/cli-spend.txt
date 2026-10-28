@@ -1355,3 +1355,10 @@
 2026-10-27 0.0973 critic-o-120c-wallet-double-text
 2026-10-27 0.0000 o-120c-wallet-double-text
 2026-10-27 0.0000 o-120d-pad-trigger-not-aim
+2026-10-28 0.0925 critic-o-120d-pad-trigger-not-aim
+2026-10-28 0.0905 critic-o-120d-pad-trigger-not-aim
+2026-10-28 0.0890 critic-o-120d-pad-trigger-not-aim
+2026-10-28 0.0911 critic-o-120d-pad-trigger-not-aim
+2026-10-27 0.0000 o-120d-pad-trigger-not-aim
+2026-10-28 0.0935 critic-o-120d-pad-trigger-not-aim
+2026-10-28 0.0935 critic-o-120d-pad-trigger-not-aim

@@ -2654,5 +2654,69 @@
   "pic": "tools/handoff/console/notes/shots/o-120c-wallet-double-text-recipes-3/wallet-linked-career-p1-legacy-1080.jpg",
   "task": "o-120c-wallet-double-text",
   "when": "2026-10-28T03:53"
+ },
+ "120d-host-lt-smooth": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The empty-slot prompt is gone and the bars are cleaner, but the open controls list is now the largest panel on screen and the bots list, minimap and bars still ignore the margin and type scale.",
+  "findings": [
+   "P1 controls list, mid-left (open): Fold it to one 16px line at mid-bottom left ('f1 controls'), and open it only on F1. If it stays open for the party demo, set the text to 16px --tx-1 with the key chips in --ui-line-hi, and balance it to 8 rows per column.",
+   "P1 hp and stamina bars, bottom-left: Put both bars in one --ui-panel card with a 4px radius and a 1px --ui-line-hi border, 24px from the edges and bottom-aligned with the hotbar. Make the bars 16px tall with a 16px f-cond label on the left and the value on the right in --tx-1. Use --ok for hp, and desaturate stamina to a muted --extract.",
+   "P1 bots list, top-left: Move it to a 24px margin. Add 4px of row padding (24px rows). Set the title to a 16px --tx-2 label and the rows in --tx-1, with only 'you' in --acc. Remove the purple unless it is a rarity. Collapse the list to one line by default.",
+   "P1 minimap and contracts card, top-right: Crop the minimap to a 240px square with a 4px radius and a 1px --ui-line-hi border, at 24px from the right and top. Make the icons at least 12px. Make the contracts row the same width, 16px, --tx-2. Keep the 24px right margin shared with the ammo card.",
+   "P2 timer and extract chip, top-centre: Put both in one centred --ui-panel card with a 4px radius. Keep the timer at --tx-1 and put the extract row in --extract with a 1px --extract top divider. Put the arrow inside the card on the same row."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-120d-pad-trigger-not-aim-recipes-2/120d-host-lt-smooth-1080.jpg",
+  "task": "o-120d-pad-trigger-not-aim",
+  "when": "2026-10-28T04:18"
+ },
+ "120d-host-rt-smooth": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The hotbar now has a single clear selection and the bot roster is trimmed, but the HUD still has five unrelated panel styles, three corners of clutter, and no single hero element.",
+  "findings": [
+   "P1 top-left roster, bottom-left controls list and top-right minimap card: Put both panels on --ui-panel with a 1px --ui-line-hi border and a 4px radius, and align both to x=54. Make the controls text 16px at minimum, or fold the list to one line as the spec says. Remove the purple name, or give it a 4px rarity bar. Collapse the roster to the top 3 plus 'you'.",
+   "P1 top-centre timer and extract pill: Make 'extract 136m' the hero: 40px --f-cond 800 in --extract. Shrink the clock to a 16px --tx-2 tag beside it. Drop the orange circle, or make it a 16px glyph. Attach the arrow to the pill, or remove it.",
+   "P1 bottom-left stamina and hp bars: Inset both bars to x=54, with the bottom at y=1026. Make both 20px tall with an 8px gap. Set both labels at 16px --f-cond 600 in --tx-1, with the value right-aligned. Make hp the only bold one, and make stamina --tx-2.",
+   "P1 hotbar, slots 1-9: Use #e6ff3d for the selected border and a --ui-raised fill. Lift idle icons to 55% opacity. Make slot numbers 14px minimum. Show the 'rb' chip on slots 1 and 9 only, or on none. Raise the hotbar to the 54px bottom margin.",
+   "P2 bottom-right weapon card: Inset the card to 54px from the right and bottom. Align all three rows to the right edge. Set both footer items at 16px --tx-2. Set the ammo number at 56px 800 in --tx-1, and the '/ 50' at 32px --tx-2."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-120d-pad-trigger-not-aim-recipes-2/120d-host-rt-smooth-1080.jpg",
+  "task": "o-120d-pad-trigger-not-aim",
+  "when": "2026-10-28T04:18"
+ },
+ "p2-lt-smooth": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The raid HUD is readable and mostly flat and dark, but it carries capitals, three competing slot highlights, a bar that's missing its text, and a cluttered top-left list, so it doesn't yet read as one coherent system.",
+  "findings": [
+   "P1 hotbar slot 2 vs slot 7, and the 'p2' tag: Give lime a single meaning (selected). Slot 2 gets a --ui-line-hi 1px border with a dimmed icon. Slot 7 gets a 2px --acc border plus an --ui-raised fill. Drop the ownership tag to 14px, or fold it into the tooltip.",
+   "P1 top-left 'current pillager bots' list: Collapse to a single line, '7 dead · 0 out', at 16px tx-2 and expand on a key. If the list stays, use 16px tx-1 names, drop 'dead' from every row, remove the purple, and fix the row height to 24px.",
+   "P1 stamina and hp bars, bottom-left: Make both bars 12px tall with the same width. Put a 16px label above each in tx-2. Give hp the one hero number, in tx-1 at 32px, right-aligned. Use --ok for hp, and tx-2 at 40% for stamina. Align the left edge to the 5% margin (96px).",
+   "P1 ammo/weapon card, bottom-right: Use 'longshot' alone at 20px. Move the 4x label to a 16px tag. Set 'view backpack' and the item count at 16px tx-2. Remove the duplicate $3,510 from one location.",
+   "P2 contract item toast, bottom-left of centre: Make it 'contract item nearby' in lower case at 16px, and drop the explaining clause. Use --warn only for the glyph and keep the text tx-1."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-120d-pad-trigger-not-aim-recipes-1/120d-p2-lt-smooth-1080.jpg",
+  "task": "o-120d-pad-trigger-not-aim",
+  "when": "2026-10-28T04:14"
+ },
+ "p2-rt-smooth": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The in-raid HUD is readable and mostly all lower case, with a decent hero ammo number, but it breaks the guide in several places: three different corner panel styles, a 'p2' tag that is the wrong colour, small type, and a hint that explains itself.",
+  "findings": [
+   "P1 top-left pillager-bots list and the top-right minimap/contracts card: Use one panel: fill #16191b, 1px #4a5257 border, 4px radius, 16px padding. Collapse the bots list to one line by default ('7 dead · 0 out') and open it with a key. Give the minimap and contracts header the same header row height (32px).",
+   "P1 bots list rows (x 15-345, y 185-310): Set names to 16px f-cond 600 in --tx-2 at 4.5:1 or better. Drop '- dead' from each row and show only the count. Give the panel a solid 0.92 fill. Remove the purple tint, or limit it to the rarity palette.",
+   "P1 'p2' tag under the player (x 895-935, y 878-908): Use the exact P2 cyan from the ring and tag. Make the text 16px with 8px/4px padding on a --ui-panel fill, and keep teal for extraction. The 'extract 137m' pill uses the same teal, so make the two clearly different.",
+   "P1 'empty slot · [lb] [rb] gun' tooltip (x 795-1035, y 678-708): Remove the sentence. Show only a key-hint chip ('lb rb') in 16px --tx-2 inside the empty slot, or show it only while that slot is focused. If it stays, use the same panel as the other cards, 16px, with 8px padding.",
+   "P1 weapon bar (x 550-1558, y 950-1060): Show one selected state only, with a 2px --acc border and a --ui-raised fill, and dim every other slot to 40%. Raise the slot numbers to 16px. Use the lime accent for selection, not amber or gold. Brighten the idle icons to --tx-2."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-120d-pad-trigger-not-aim-recipes-1/120d-p2-rt-smooth-1080.jpg",
+  "task": "o-120d-pad-trigger-not-aim",
+  "when": "2026-10-28T04:15"
  }
 }

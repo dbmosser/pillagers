@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.53 - HUD TEXT AT A READABLE SIZE
+
+Co-op hunt while he was away. his ask 10-27 ~21:40: the hud messaging is a clusterfuck, make it AAA (report reports/Player alerts and HUD messaging.md, job 9, the Xbox floors at 1080p). The left feed was 15.6 px and is 20 (its zone a little wider so a line still fits whole), the answer line is 20, the opened controls list was 16 and is 18, the danger headline was 26 and is 30. Contrast was read for every word colour on the hud plate over white and black ground: all pass 4.5 to 1 except the red of a shut exit on the pill (3.2), which is now a lighter red (4.8). Looting, the pickup stack, item labels and the money rows are untouched.
+
+MEASURED. Check 35.53 passes, and fails on v35.52.
 ## v35.52 - ANSWER LINE UNDER YOUR FEET
 
 Co-op hunt while he was away. his ask 10-27 ~21:40: the hud messaging is a clusterfuck, make it AAA (report reports/Player alerts and HUD messaging.md, job 7). The answer to a try that did not work (health full, no ammo, locked) is one small line about 70 px under the character, at least 20 px, for 2 s, once per press, and no longer a line in the left feed. There is no soft no sound in the game, so it stays silent. Backpack full stays in the pickup stack and contract item nearby stays in the feed, exactly as before; looting is untouched.
