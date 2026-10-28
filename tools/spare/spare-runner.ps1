@@ -678,6 +678,42 @@ function PartyIntent(){
   }
   return $best
 }
+# 10-27 his order (via the main PC Claude): "make sure we are always getting game telemetry back from the main pc when we play on chrome on
+# the main pc". The 8799 report receiver (the party copy's tools\collector.ps1, which writes its exports folder: run reports, notes, snips)
+# was never started again after it died while 8802 still answered: party-host-copy -Start refuses a busy 8802, and the look below stopped
+# at 8802. Now, when 8802 answers (not a relay), nothing has answered on 8799 at 3 looks in a row (2+ minutes) and the party copy was not
+# stopped on purpose, the copy's own collector is started alone, hidden and detached (the runner never waits on it beyond 8 s). It never
+# stops anything: not 8802, not his play server, not a collector that answers. A new collector that does not answer within 8 s is stopped
+# (only that new process) and the next try is in 10 minutes. One runner.log line either way.
+$script:collMiss=0; $script:collT=0; $script:collDown=''
+function Ensure-Collector([string]$PD,[int]$port=8799){
+  if((Epoch) -lt $script:collT){ return }
+  $coll=$PD+'\tools\collector.ps1'; if(-not (Test-Path -LiteralPath $coll)){ return }
+  if(Answers $port){ $script:collMiss=0; $script:collDown=''; return }
+  if((PartyIntent) -eq 'stopped'){ $script:collMiss=0; return }
+  if(-not $script:collDown){ $script:collDown=(Get-Date).ToString('HH:mm') }
+  $script:collMiss++
+  if($script:collMiss -lt 3){ return }
+  $script:collMiss=0
+  $ps=Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
+  $np=Start-Process -FilePath $ps -WindowStyle Hidden -PassThru -ArgumentList ('-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "'+$coll+'" -Root "'+$PD.TrimEnd('\')+'" -Port '+$port)
+  $up=$false; for($i=0;$i -lt 16;$i++){ Start-Sleep -Milliseconds 500; if(PortOpen $port){ $up=$true; break } }
+  if($up){ Say ('report receiver '+$port+' had not answered since '+$script:collDown+' while 8802 serves: started the party copy''s own collector (pid '+$np.Id+'); run reports and notes reach exports again'); $script:collDown=''; PutS 'pub_t' '0'; return }
+  try{ Stop-Process -Id $np.Id -Force -ErrorAction SilentlyContinue }catch{}
+  $script:collT=(Epoch)+600
+  Say ('PROBLEM: report receiver '+$port+' down since '+$script:collDown+' and the party copy''s collector did not answer within 8 s; next try in 10 minutes')
+}
+# 10-27 (same order): the report receiver in the status note (and main-status): up or down by a knock on 8799 (a connect, no request), and
+# when the newest run report and note landed in the party copy's exports folder (HH:MM today, else MM-dd HH:MM)
+function NewestExport([string]$PD,[string]$filter){
+  try{ $f=Get-ChildItem -LiteralPath ($PD+'\exports') -Filter $filter -File -ErrorAction Stop | Sort-Object LastWriteTime | Select-Object -Last 1
+       if($f){ $t=$f.LastWriteTime; if($t.Date -eq (Get-Date).Date){ return $t.ToString('HH:mm') }; return $t.ToString('MM-dd HH:mm') } }catch{}
+  return 'none'
+}
+function Receiver8799(){
+  $PD='C:\claudecode\pillagers-party'
+  return ($(if(PortOpen 8799){ 'up' }else{ 'down' })+', last report '+(NewestExport $PD 'run-*.txt')+', last note '+(NewestExport $PD 'feedback-*.txt'))
+}
 function Ensure-Play(){
   if(-not $Idle){ return }
   try{
@@ -698,7 +734,7 @@ function Ensure-Play(){
     if(-not (Test-Path -LiteralPath ($PD+'\.git')) -or -not (Test-Path -LiteralPath ($PD+'\tools\serve.ps1'))){ return }
     if((Running 'party-host-copy\.ps1') -gt 0){ $script:playMiss=0; return }
     $relay=((Running 'play-relay\.mjs') -gt 0)
-    if($relay){ if(RelayGame){ $script:playMiss=0; return } } elseif(Answers 8802){ $script:playMiss=0; return }
+    if($relay){ if(RelayGame){ $script:playMiss=0; return } } elseif(Answers 8802){ $script:playMiss=0; Ensure-Collector $PD; return }
     if((PartyIntent) -eq 'stopped'){ if($script:playMiss -ge 0){ Say '8802 has no server: the party copy was stopped on purpose, so it stays off'; $script:playMiss=-1 }; return }
     if($script:playMiss -lt 0){ $script:playMiss=0 }
     $script:playMiss++
@@ -819,7 +855,7 @@ function Write-Status([string]$corpus,[int]$robots){
     ('test_run='+$corpus),('robots='+$robots),('ram_free_gb='+$free),('push_ok='+(GetS 'push_ok')),('runner='+$SelfHash.Substring(0,8)),('mode='+$(if($Idle){ 'idle' }else{ 'full' })),
     ('ram_total_gb='+$tot),('cpu_threads='+$thr),('cpu_pct='+$pct),('cpu='+$cpuN))
   # SPARE-PRESENCE-PAUSE: on the spare PC, when its pause began (epoch), for whoever reads the status; the VM goes by test_run=paused alone
-  if($Idle){ $L+=('spare_pc='+(SparePC)); $L+=('party='+(GetS 'party_ver')+' '+(GetS 'party_head')); $L+=('play8802='+(Play8802)) } else {
+  if($Idle){ $L+=('spare_pc='+(SparePC)); $L+=('party='+(GetS 'party_ver')+' '+(GetS 'party_head')); $L+=('play8802='+(Play8802)); $L+=('receiver8799='+(Receiver8799)) } else {
     if($corpus -like 'paused*' -and (GetS 'pause_t')){ $L+=('paused_since='+(GetS 'pause_t')) }
     if($script:noIn){ $L+='presence=off' }   # the presence checks did not load: it tests without pausing for anyone (see runner.log)
   }

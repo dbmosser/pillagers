@@ -242,6 +242,9 @@ function Open-Page(){
   Ws-Connect $tab.webSocketDebuggerUrl
   Cmd 'Page.enable'
   Block-Collector
+  # 10-27: and this robot Chrome saves no file at all while its page is driven (it covers the player 2 window too): the game's fallback saved its
+  # blank demo notes into the Downloads of whoever was signed in, 585 in his since 10-18. cdp.ps1 -Start also points its downloads at its own profile.
+  try{ Cmd 'Browser.setDownloadBehavior' '{"behavior":"deny"}' }catch{}
   Cmd 'Emulation.setDeviceMetricsOverride' ('{"width":'+$ScrW+',"height":'+$ScrH+',"deviceScaleFactor":1,"mobile":false}')
   Cmd 'Emulation.setFocusEmulationEnabled' '{"enabled":true}'
   Cmd 'Page.bringToFront'
