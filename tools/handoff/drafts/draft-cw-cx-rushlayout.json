@@ -1,0 +1,72 @@
+{
+    "title":  "FINAL RUSH HUD CLEARANCE",
+    "why":  "The critic found the final rush crowded by the clock, score and extraction arrow. During the two player demo rush the clock and score stay in separate windows with a 16px gap, the smaller score gets a solid backing, and extraction moves beside the clock. The rush panel is at least 416px wide with a 16px inset and 24px clearance. Playtest watch: check both windows at 1:30 for readable navigation and a clear rush banner; all scoring and wave timings stay as shipped in v35.83.",
+    "now":  "The final rush banner has more space, a wide graphite panel and clear red title. The smaller score stays below the larger clock; extraction sits beside the clock during the rush.",
+    "edits":  [
+                  {
+                      "anchor":  "  return {a:a,hl:hl,sl:sl,bl:bl,hf:hf,lf:lf,hp:hp,gs:gs,w:Math.ceil(LH(12)+gs+LH(7)+w+LH(10)),h:y+Math.round((sl.length?lp:hp)*0.3)+LH(5)};",
+                      "replacement":  "  // v28.xx (cw-cx-rushlayout): the rush uses a 416px minimum panel and a 16px inset at the normal text scale.\n  if(a.key===\u0027finalrush\u0027){\n    for(i=0;i\u003cbl.length;i++) bl[i]+=LH(7);\n    return {a:a,hl:hl,sl:sl,bl:bl,hf:hf,lf:lf,hp:hp,gs:gs,w:Math.max(LH(320),Math.ceil(LH(12)+gs+LH(7)+w+LH(12))),h:y+Math.round((sl.length?lp:hp)*0.3)+LH(24)};\n  }\n  return {a:a,hl:hl,sl:sl,bl:bl,hf:hf,lf:lf,hp:hp,gs:gs,w:Math.ceil(LH(12)+gs+LH(7)+w+LH(10)),h:y+Math.round((sl.length?lp:hp)*0.3)+LH(5)};"
+                  },
+                  {
+                      "anchor":  "  hudPlate(x0,y0,L.w,L.h,col,(a.k===\u0027crit\u0027||a.k===\u0027warn\u0027)?HUDC.dangerPlate:HUDC.plate);",
+                      "replacement":  "  hudPlate(x0,y0,L.w,L.h,col,a.key===\u0027finalrush\u0027?\u0027rgba(17,19,21,.96)\u0027:((a.k===\u0027crit\u0027||a.k===\u0027warn\u0027)?HUDC.dangerPlate:HUDC.plate));   // v28.xx (cw-cx-rushlayout): red marks the rush title, with quiet graphite behind its detail."
+                  },
+                  {
+                      "anchor":  "  ALERTY=LH(96); if(G\u0026\u0026(G.arcade||G.career)\u0026\u0026!G.over\u0026\u0026HUDTOPB\u003e0) ALERTY=Math.max(ALERTY,Math.ceil(HUDTOPB/z)+LH(6));   // v35.xx (cw-clockcard): under the clock card, the score card, the extract pill and its arrow (the stack grew by the clock card)",
+                      "replacement":  "  ALERTY=LH(96); if(G\u0026\u0026(G.arcade||G.career)\u0026\u0026!G.over\u0026\u0026HUDTOPB\u003e0) ALERTY=Math.max(ALERTY,Math.ceil(HUDTOPB/z)+LH(6));   // v35.xx (cw-clockcard): under the clock card, the score card, the extract pill and its arrow (the stack grew by the clock card)\n  if(arcadeRushOn()) ALERTY=Math.max(ALERTY,Math.ceil(HUDTOPB/z)+LH(18));   // v28.xx (cw-cx-rushlayout): 24px clear space above the rush callout."
+                  },
+                  {
+                      "anchor":  "  var _tz=hudRes();",
+                      "replacement":  "  var _tz=hudRes(), _rushUI=arcadeRushOn(), _compX=W/2;   // v28.xx (cw-cx-rushlayout): the rush keeps navigation beside the clock, clear of the callout."
+                  },
+                  {
+                      "anchor":  "    var _epw=Math.round(ctx.measureText(TX(_xpt)).width+LH(20)), _eph=Math.round(_hCmp*1.5), _xpk=extPillPulse(_xps), _xpx=Math.round(W/2-_epw/2), _xpy=Math.round(_yCmp-_hCmp*1.05);",
+                      "replacement":  "    var _epw=Math.round(ctx.measureText(TX(_xpt)).width+LH(20)), _eph=Math.round(_hCmp*1.5), _xpk=extPillPulse(_xps), _xpx=Math.round(W/2-_epw/2), _xpy=Math.round(_yCmp-_hCmp*1.05);\n    // v28.xx (cw-cx-rushlayout): move the existing extraction chip and arrow together, without duplicating a navigation control.\n    if(_rushUI\u0026\u0026CLOCKBOX.g===G){\n      _compX=Math.round(CLOCKBOX.x-24*_tz-_epw/2);\n      _yCmp=Math.round(CLOCKBOX.y+CLOCKBOX.h/2+_hCmp*0.35);\n      _yArw=Math.round(_yCmp+_hCmp*1.2);\n      _xpx=Math.round(_compX-_epw/2); _xpy=Math.round(_yCmp-_hCmp*1.05);\n    }"
+                  },
+                  {
+                      "anchor":  "    if(_xpk\u003e0){ var _xsc=1+0.12*Math.sin(Math.PI*_xpk); ctx.translate(W/2,_xpy+_eph/2); ctx.scale(_xsc,_xsc); ctx.translate(-W/2,-(_xpy+_eph/2)); }",
+                      "replacement":  "    if(_xpk\u003e0){ var _xsc=1+0.12*Math.sin(Math.PI*_xpk); ctx.translate(_compX,_xpy+_eph/2); ctx.scale(_xsc,_xsc); ctx.translate(-_compX,-(_xpy+_eph/2)); }"
+                  },
+                  {
+                      "anchor":  "    hudText(_xpt,W/2,_yCmp);",
+                      "replacement":  "    hudText(_xpt,_compX,_yCmp);"
+                  },
+                  {
+                      "anchor":  "    ctx.save(); ctx.translate(W/2,_yArw+(G.arcade?Math.round(8*_tz):0)); ctx.rotate(za+Math.PI/2);",
+                      "replacement":  "    ctx.save(); ctx.translate(_compX,_yArw+(G.arcade?Math.round(8*_tz):0)); ctx.rotate(za+Math.PI/2);"
+                  },
+                  {
+                      "anchor":  "  HUDTOPB=(G.arcade||G.career)?Math.max((SCOREBOX.g===G)?SCOREBOX.y+SCOREBOX.h:0,Math.round(_yCmp+_hCmp*0.3)):0;   // v35.xx (cw-clockcard): the alert band starts under the top centre stack",
+                      "replacement":  "  HUDTOPB=(G.arcade||G.career)?Math.max((SCOREBOX.g===G)?SCOREBOX.y+SCOREBOX.h:0,Math.round(_yCmp+_hCmp*0.3)):0;   // v35.xx (cw-clockcard): the alert band starts under the top centre stack\n  if(_rushUI\u0026\u0026SCOREBOX.g===G) HUDTOPB=SCOREBOX.y+SCOREBOX.h;   // v28.xx (cw-cx-rushlayout): the side compass no longer occupies the alert column."
+                  },
+                  {
+                      "anchor":  "  if(!G||!(G.arcade||G.career)||!ctx) return;",
+                      "replacement":  "  if(!G||!(G.arcade||G.career)||!ctx) return;\n  var rushUI=arcadeRushOn();   // v28.xx (cw-cx-rushlayout): keep the larger clock above a quieter score window throughout the final rush."
+                  },
+                  {
+                      "anchor":  "      fb=FSz(TYPE.title,z),fs=FSz(TYPE.label,z),h=parseFloat((/([\\d.]+)px/.exec(fb)||[0,20])[1]),lh=parseFloat((/([\\d.]+)px/.exec(fs)||[0,16])[1]),",
+                      "replacement":  "      fb=FSz(rushUI?TYPE.head:TYPE.title,z),fs=FSz(TYPE.label,z),h=parseFloat((/([\\d.]+)px/.exec(fb)||[0,20])[1]),lh=parseFloat((/([\\d.]+)px/.exec(fs)||[0,16])[1]),"
+                  },
+                  {
+                      "anchor":  "    top=cBot+Math.round(6*z);",
+                      "replacement":  "    top=cBot+Math.round((rushUI?16:6)*z);   // v28.xx (cw-cx-rushlayout): a full 16px gap between the separate clock and score windows."
+                  },
+                  {
+                      "anchor":  "  bot=Math.ceil(scoreY+h*.25+pad);",
+                      "replacement":  "  bot=Math.ceil(scoreY+Math.max(h*.25,rushUI?lh:0)+pad);   // v28.xx (cw-cx-rushlayout): the partner figure keeps its descent and bottom inset with the quieter score font."
+                  },
+                  {
+                      "anchor":  "  hudPlate(cx-pw,top,pw*2,bot-top,null,HUDC.plate);",
+                      "replacement":  "  hudPlate(cx-pw,top,pw*2,bot-top,null,rushUI?\u0027rgba(17,19,21,.96)\u0027:HUDC.plate);   // v28.xx (cw-cx-rushlayout): score labels stay legible over a wall or rain."
+                  },
+                  {
+                      "anchor":  "  var z=WTX.z, X=(x-WTX.ox)*z, Y=(y-WTX.oy)*z, X1=X+w*z, Y1=Y+h*z, s=SCOREBOX;",
+                      "replacement":  "  var z=WTX.z, X=(x-WTX.ox)*z, Y=(y-WTX.oy)*z, X1=X+w*z, Y1=Y+h*z, s=SCOREBOX;\n  // v28.xx (cw-cx-rushlayout): keep world nameplates out of the rush banner, as they already clear the score and clock.\n  if(ALERTL\u0026\u0026G\u0026\u0026G.alert===ALERTL.a\u0026\u0026ALERTL.a.key===\u0027finalrush\u0027){\n    var az=(HUDZ.msg||1)*hudRes()*hudUserZ(\u0027msg\u0027), aw=ALERTL.w*az, ay=ALERTY*az;\n    if(X1\u003eW/2-aw/2-8\u0026\u0026X\u003cW/2+aw/2+8\u0026\u0026Y1\u003eay-8\u0026\u0026Y\u003cay+ALERTL.h*az+8) return true;\n  }"
+                  },
+                  {
+                      "anchor":  "  var _lanes=function(){",
+                      "replacement":  "  if(arcadeRushOn()) msgLayout();   // v28.xx (cw-cx-rushlayout): the header was just measured; use this frame when drawing the rush, including its first frame.\n  var _lanes=function(){"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027final rush HUD gives its banner 416px and 24px clearance, moves navigation beside the clock and keeps the clock above a quieter score in both seats\u0027,\n   run:function(){\n     var g,role0=ARCADE.role,solo0=ARCADE.solo,rec=[],plates=[],of=hudText,op=hudPlate,i,clock,score,nav,banner,z;\n     function text(re){ for(var k=0;k\u003crec.length;k++) if(re.test(rec[k].s)) return rec[k]; return null; }\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       if(!arcadeDeploy({mapIx:0,seed:4242})) throw Error(\u0027no demo\u0027);\n       g=__state(); if(!g||!g.player||g.over) throw Error(\u0027no live raid\u0027);\n       easyAnswer(false); ARCADE.solo=0; g.timeLeft=90; g.paused=false; g.mapOpen=false; g.bagOpen=false; keys={}; mouse.down=false;\n       ARCADE.mine=105; ARCADE.mate=105; z=hudRes();\n       hudText=function(s,x,y){ var t=ctx.getTransform(),m=/([\\d.]+)px/.exec(ctx.font); rec.push({s:String(s),x:t.a*x+t.c*y+t.e,y:t.b*x+t.d*y+t.f,px:m?+m[1]:0}); return of.apply(this,arguments); };\n       hudPlate=function(x,y,w,h,a,f){ var t=ctx.getTransform(); plates.push({x:t.a*x+t.c*y+t.e,y:t.b*x+t.d*y+t.f,w:w*t.a,h:h*t.d,a:a,f:f}); return op.apply(this,arguments); };\n       for(i=0;i\u003c2;i++){\n         ARCADE.role=i?\u0027p2\u0027:\u0027host\u0027; g.arcRushSaid=0; g.alert=null; g.alertQ=[]; arcadeRushTick(); g.t+=0.2;\n         HUDTOPB=0; rec=[]; plates=[]; drawHUD();\n         clock=text(/^1:30$/); score=text(/^210 sp$/i); nav=text(/^extract /i); banner=text(/^final rush$/i);\n         if(!clock||!score||!nav||!banner) throw Error(\u0027seat \u0027+i+\u0027 missing clock, score, navigation or rush\u0027);\n         if(SCOREBOX.y-CLOCKBOX.y-CLOCKBOX.h\u003cMath.round(16*z)) throw Error(\u0027clock and score gap is under 16px\u0027);\n         if(!(clock.px\u003escore.px\u0026\u0026clock.y\u003cscore.y)) throw Error(\u0027clock is not the larger read above score\u0027);\n         if(!(nav.x\u003cCLOCKBOX.x-16*z)) throw Error(\u0027navigation still crowds the centre column\u0027);\n         var p=plates.filter(function(q){ return q.a===HUDC.danger\u0026\u0026q.f===\u0027rgba(17,19,21,.96)\u0027; })[0];\n         if(!p||p.w\u003c400*z) throw Error(\u0027rush panel is narrower than 400px\u0027);\n         if(p.y-(SCOREBOX.y+SCOREBOX.h)\u003c20*z) throw Error(\u0027rush panel lacks clear space below score\u0027);\n         if(!ALERTL||ALERTL.a.key!==\u0027finalrush\u0027||ALERTL.bl[0]\u003cLH(12)) throw Error(\u0027rush inset is missing\u0027);\n         var wz=WTX.z||1;\n         if(!wlUnder(WTX.ox+(p.x+p.w/2)/wz,WTX.oy+(p.y+p.h/2)/wz,16/wz,16/wz)) throw Error(\u0027world nameplates can cross the rush banner\u0027);\n       }\n       return null;\n     }catch(e){ return String(e\u0026\u0026e.message||e); }\n     finally{\n       hudText=of; hudPlate=op;\n       try{ if(ARCADE.on) arcadeLeave(); if(__state()\u0026\u0026!__state().over) __endRaid(\u0027abandon\u0027); }catch(_e){}\n       ARCADE.role=role0; ARCADE.solo=solo0;\n       try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}\n     } }},"
+}

@@ -3807,8 +3807,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.83';
-var VER_AT='2026-10-28 11:54';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.84';
+var VER_AT='2026-10-28 12:23';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -23198,6 +23198,11 @@ function alertLayout(){   // with the message scale not yet applied: the alert p
   y=LH(5)+Math.round(hp*0.82);
   for(i=0;i<hl.length;i++){ bl.push(y); if(i<hl.length-1) y+=Math.round(hp*1.2); }
   for(i=0;i<sl.length;i++){ y+=Math.round(lp*(i?1.2:1.35)); bl.push(y); }
+  // v28.xx (cw-cx-rushlayout): the rush uses a 416px minimum panel and a 16px inset at the normal text scale.
+  if(a.key==='finalrush'){
+    for(i=0;i<bl.length;i++) bl[i]+=LH(7);
+    return {a:a,hl:hl,sl:sl,bl:bl,hf:hf,lf:lf,hp:hp,gs:gs,w:Math.max(LH(320),Math.ceil(LH(12)+gs+LH(7)+w+LH(12))),h:y+Math.round((sl.length?lp:hp)*0.3)+LH(24)};
+  }
   return {a:a,hl:hl,sl:sl,bl:bl,hf:hf,lf:lf,hp:hp,gs:gs,w:Math.ceil(LH(12)+gs+LH(7)+w+LH(10)),h:y+Math.round((sl.length?lp:hp)*0.3)+LH(5)};
 }
 function alertGlyph(kd,x,cy,s,col){
@@ -23225,7 +23230,7 @@ function alertDraw(L){   // inside the message scale, at the top of the band
   if(!(al>0)) return;
   ctx.globalAlpha=oa*al;
   ctx.save(); ctx.translate(0,Math.round((1-Math.min(1,(now-a.at)/0.12))*-LH(10)));   // v27.50 (alert3): it drops in from 10 above over its fade in
-  hudPlate(x0,y0,L.w,L.h,col,(a.k==='crit'||a.k==='warn')?HUDC.dangerPlate:HUDC.plate);
+  hudPlate(x0,y0,L.w,L.h,col,a.key==='finalrush'?'rgba(17,19,21,.96)':((a.k==='crit'||a.k==='warn')?HUDC.dangerPlate:HUDC.plate));   // v28.xx (cw-cx-rushlayout): red marks the rush title, with quiet graphite behind its detail.
   alertGlyph(a.icon||(a.k==='ext'?'ring':'threat'),gx,y0+L.bl[0]-Math.round(L.hp*0.36),L.gs,col);
   tx=gx+L.gs+LH(7);
   ctx.textAlign='left';
@@ -40609,6 +40614,11 @@ var _wlF='', _wlP=12;
 function wlHit(b,X,Y,X1,Y1){ return !!b&&b.w>0&&X1>b.x-3&&X<b.x+b.w+3&&Y1>b.y-3&&Y<b.y+b.h+3; }
 function wlUnder(x,y,w,h){
   var z=WTX.z, X=(x-WTX.ox)*z, Y=(y-WTX.oy)*z, X1=X+w*z, Y1=Y+h*z, s=SCOREBOX;
+  // v28.xx (cw-cx-rushlayout): keep world nameplates out of the rush banner, as they already clear the score and clock.
+  if(ALERTL&&G&&G.alert===ALERTL.a&&ALERTL.a.key==='finalrush'){
+    var az=(HUDZ.msg||1)*hudRes()*hudUserZ('msg'), aw=ALERTL.w*az, ay=ALERTY*az;
+    if(X1>W/2-aw/2-8&&X<W/2+aw/2+8&&Y1>ay-8&&Y<ay+ALERTL.h*az+8) return true;
+  }
   return wlHit(EDGEBOX.trcol,X,Y,X1,Y1)||wlHit(HUDBOX.cond,X,Y,X1,Y1)||(s.g===G&&wlHit(s,X,Y,X1,Y1))||(CLOCKBOX.g===G&&wlHit(CLOCKBOX,X,Y,X1,Y1))||wlHit(EDGEBOX.notes,X,Y,X1,Y1);   // v35.xx (cw-clockcard): and the clock card and the notes row
 }
 function wlPx(){ var f=wc.font, m; if(f!==_wlF){ _wlF=f; m=/([\d.]+)px/.exec(f); _wlP=m?+m[1]:12; } return _wlP; }   // the size of the font wc is set to, in the units it draws in
@@ -43940,6 +43950,7 @@ function msgLayout(){
   // v22.13 (R08): the alert plate is laid out first, at the top of the band; the feed rows start under it (HUDFEEDT, before the
   // message scale) and HUDALERTB is its bottom on screen. With no alert both are where the feed always was.
   ALERTY=LH(96); if(G&&(G.arcade||G.career)&&!G.over&&HUDTOPB>0) ALERTY=Math.max(ALERTY,Math.ceil(HUDTOPB/z)+LH(6));   // v35.xx (cw-clockcard): under the clock card, the score card, the extract pill and its arrow (the stack grew by the clock card)
+  if(arcadeRushOn()) ALERTY=Math.max(ALERTY,Math.ceil(HUDTOPB/z)+LH(18));   // v28.xx (cw-cx-rushlayout): 24px clear space above the rush callout.
   HUDFEEDT=ALERTY; HUDALERTB=0; ALERTL=null;
   try{ al=alertLayout(); }catch(_al){ al=null; }
   if(al){ ALERTL=al; HUDALERTB=Math.round((ALERTY+al.h)*z); HUDFEEDT=ALERTY+al.h+LH(4); }
@@ -44620,7 +44631,7 @@ if(!p.downed&&!G.bagOpen&&!G.mapOpen&&!(G.wheel&&!G.wheel.pad)){   // v28.xx (cw
   // text scale went above 1.
   // It stacks from the size of its own type now. _yClk works out to exactly 30 at
   // 1920x1080, which is where the clock has always been.
-  var _tz=hudRes();
+  var _tz=hudRes(), _rushUI=arcadeRushOn(), _compX=W/2;   // v28.xx (cw-cx-rushlayout): the rush keeps navigation beside the clock, clear of the callout.
   var _fClk=FSz(TYPE.title,_tz), _fCmp=FSz(TYPE.label,_tz), _fMk=FSz(TYPE.head,_tz);
   function _fpx(f){ var m=/([\d.]+)px/.exec(f); return m?+m[1]:12; }
   var _hClk=_fpx(_fClk), _hCmp=_fpx(_fCmp), _hMk=_fpx(_fMk);
@@ -44684,21 +44695,29 @@ if(!p.downed&&!G.bagOpen&&!G.mapOpen&&!(G.wheel&&!G.wheel.pad)){   // v28.xx (cw
     if(!_tgt){ _tgt=G.active; _lbl='EXTRACTION'; }
   }
   HUDTOPB=(G.arcade||G.career)?Math.max((SCOREBOX.g===G)?SCOREBOX.y+SCOREBOX.h:0,Math.round(_yCmp+_hCmp*0.3)):0;   // v35.xx (cw-clockcard): the alert band starts under the top centre stack
+  if(_rushUI&&SCOREBOX.g===G) HUDTOPB=SCOREBOX.y+SCOREBOX.h;   // v28.xx (cw-cx-rushlayout): the side compass no longer occupies the alert column.
   if(_tgt){
     var za=Math.atan2(_tgt.y-p.y,_tgt.x-p.x),zd=Math.round(dist(p,_tgt));
     ctx.font=_fCmp; ctx.fillStyle=_col;
     // v28.xx (cw-extplate), the critic (2026-10-19): 'extract 148m is bare teal text, no plate'. The distance line sits on the HUD plate like the score block above it.
     var _xps=extPillState(_lbl==='WAYPOINT'?null:_tgt,_lbl), _xpt=_lbl+' '+metres(zd)+'m'+_xps.tail; if(_xps.col) _col=_xps.col;   // v35.xx (cw-extpill): the exit's state on the pill
     var _epw=Math.round(ctx.measureText(TX(_xpt)).width+LH(20)), _eph=Math.round(_hCmp*1.5), _xpk=extPillPulse(_xps), _xpx=Math.round(W/2-_epw/2), _xpy=Math.round(_yCmp-_hCmp*1.05);
+    // v28.xx (cw-cx-rushlayout): move the existing extraction chip and arrow together, without duplicating a navigation control.
+    if(_rushUI&&CLOCKBOX.g===G){
+      _compX=Math.round(CLOCKBOX.x-24*_tz-_epw/2);
+      _yCmp=Math.round(CLOCKBOX.y+CLOCKBOX.h/2+_hCmp*0.35);
+      _yArw=Math.round(_yCmp+_hCmp*1.2);
+      _xpx=Math.round(_compX-_epw/2); _xpy=Math.round(_yCmp-_hCmp*1.05);
+    }
     ctx.save();
-    if(_xpk>0){ var _xsc=1+0.12*Math.sin(Math.PI*_xpk); ctx.translate(W/2,_xpy+_eph/2); ctx.scale(_xsc,_xsc); ctx.translate(-W/2,-(_xpy+_eph/2)); }
+    if(_xpk>0){ var _xsc=1+0.12*Math.sin(Math.PI*_xpk); ctx.translate(_compX,_xpy+_eph/2); ctx.scale(_xsc,_xsc); ctx.translate(-_compX,-(_xpy+_eph/2)); }
     hudPlate(_xpx,_xpy,_epw,_eph,null,HUDC.plate);
     if(_xpk>0||_xps.st==='closing'||_xps.st==='closed'){ ctx.save(); ctx.globalAlpha=(_xpk>0)?(1-_xpk*0.7):0.8; ctx.lineWidth=Math.max(1.5,1.5*_tz); ctx.strokeStyle=_col; ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(_xpx+0.5,_xpy+0.5,_epw-1,_eph-1,Math.min(_eph/2,LH(4))); else ctx.rect(_xpx,_xpy,_epw,_eph); ctx.stroke(); ctx.restore(); }   // v35.xx (cw-extpill): the state's edge, and the ring of the one pulse
     ctx.fillStyle=_col;
-    hudText(_xpt,W/2,_yCmp);
+    hudText(_xpt,_compX,_yCmp);
     ctx.restore(); EXTPILL.st=_xps.st; EXTPILL.col=_col; EXTPILL.txt=_xpt;   // v35.xx (cw-extpill)
     var _az=_tz*(G.arcade?ARCADE_ARW:1);   // v23.35 (arcade13): in the arcade the arrow is twice the size, set lower so it clears the label
-    ctx.save(); ctx.translate(W/2,_yArw+(G.arcade?Math.round(8*_tz):0)); ctx.rotate(za+Math.PI/2);
+    ctx.save(); ctx.translate(_compX,_yArw+(G.arcade?Math.round(8*_tz):0)); ctx.rotate(za+Math.PI/2);
     ctx.fillStyle=_col;
     // the arrow is geometry, so it scales with the screen like the type does
     ctx.beginPath(); ctx.moveTo(0,-8*_az); ctx.lineTo(-5*_az,5*_az); ctx.lineTo(5*_az,5*_az); ctx.closePath(); ctx.fill();
@@ -45001,6 +45020,7 @@ hudPanel(bx,by,bw,bh,undefined,1);   // v18.13: the one HUD panel
   // was drawn here, before the sector map, whose opaque backing is drawn last, so with the map open WAYPOINT MARKED, a ring
   // closing or a Crier marking you was drawn underneath it and never seen. The band is now one function (_lanes): it is drawn here
   // as before with the map shut, and after drawMapOverlay with the map open, so it shows over the map.
+  if(arcadeRushOn()) msgLayout();   // v28.xx (cw-cx-rushlayout): the header was just measured; use this frame when drawing the rush, including its first frame.
   var _lanes=function(){
   var _frows=feedRows(), _alL=ALERTL, _loc=_alL?null:locUp();   // v21.86 (R04): the rows msgLayout laid out; v22.13 (R08): and the alert over them; v22.xx (R34): or the location tag
   if(_frows.length||_alL||_loc){
@@ -55711,7 +55731,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.83: At 90 seconds the two player demo calls final rush. Kills pay 1.05x SP; wave intervals shorten 20 percent and each pack gains one machine with two more nearby slots. Solo demo and career keep their pacing. Playtest watch: both windows should announce once at 1:30 and a fresh sentry kill should pay 105 sp; breathers and called extraction rings must still hold the waves. Check 35.83 fails on v35.82',
+  now:'v35.84: The final rush banner has more space, a wide graphite panel and clear red title. The smaller score stays below the larger clock; extraction sits beside the clock during the rush. Check 35.84 fails on v35.83',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -68707,8 +68727,9 @@ function arcadeScoreHud(y,z){
   // has its own card on top, in the big number size (39 px at 1080p, over the score's 26), the same size all raid (red with its pop in the final minute, so the
   // score card under it never jumps). The score card under it keeps its label, its figure, the YOU and partner column and the streak. SCOREBOX stays the score card.
   if(!G||!(G.arcade||G.career)||!ctx) return;
+  var rushUI=arcadeRushOn();   // v28.xx (cw-cx-rushlayout): keep the larger clock above a quieter score window throughout the final rush.
   var cr=!G.arcade,solo=cr||!!ARCADE.solo,cx=Math.round(W/2),mine=Math.max(0,cr?((G.cs&&G.cs.s)|0):(ARCADE.mine|0)),mate=cr?0:Math.max(0,ARCADE.mate|0),nm=arcadeCr(mine+mate),
-      fb=FSz(TYPE.title,z),fs=FSz(TYPE.label,z),h=parseFloat((/([\d.]+)px/.exec(fb)||[0,20])[1]),lh=parseFloat((/([\d.]+)px/.exec(fs)||[0,16])[1]),
+      fb=FSz(rushUI?TYPE.head:TYPE.title,z),fs=FSz(TYPE.label,z),h=parseFloat((/([\d.]+)px/.exec(fb)||[0,20])[1]),lh=parseFloat((/([\d.]+)px/.exec(fs)||[0,16])[1]),
       clock=raidClockOn(),ct=Math.ceil(Math.max(0,+G.timeLeft||0)),fin=ct<=CLOCK_RED,fc=FSz(TYPE.huge,z),ch=parseFloat((/([\d.]+)px/.exec(fc)||[0,30])[1]),
       top=Math.round(16*z),pad=Math.round(12*z),cpad=Math.round(10*z),cw=0,cBot=0,clockY=0,labelY,scoreY,
       sx=arcadeStreakLive(),w,gx,pw,bot,side=0,sw=0,apo=false;
@@ -68720,7 +68741,7 @@ function arcadeScoreHud(y,z){
     hudPlate(cx-cw,top,cw*2,cBot-top,null,HUDC.plate);
     CLOCKBOX.g=G;CLOCKBOX.x=cx-cw;CLOCKBOX.y=top;CLOCKBOX.w=cw*2;CLOCKBOX.h=cBot-top;
     apo=(fin&&ct>0)?clockPopIn(cx,clockY-ch*.3,G.timeLeft):false;ctx.font=fc;ctx.fillStyle=fin?'#ff5a4a':'#cdd6dd';hudText(Math.floor(ct/60)+':'+(ct%60<10?'0':'')+(ct%60),cx,clockY);if(apo)ctx.restore();
-    top=cBot+Math.round(6*z);
+    top=cBot+Math.round((rushUI?16:6)*z);   // v28.xx (cw-cx-rushlayout): a full 16px gap between the separate clock and score windows.
   }
   labelY=top+pad+lh;scoreY=labelY+Math.round(8*z)+h;
   ctx.font=fb;w=ctx.measureText(nm).width;
@@ -68728,8 +68749,8 @@ function arcadeScoreHud(y,z){
   if(sx>1){ctx.font=fb;sw=ctx.measureText('x'+sx).width+Math.round(10*z);}
   pw=Math.ceil(Math.max(100*z,w/2+pad+Math.max(side,sw)));
   ctx.font=fs; pw=Math.max(pw,Math.ceil(dmulTagW(ctx.measureText(solo?'SCORE':'TEAM SCORE').width,z)+pad));   // v35.xx (cw-dmulshow): room for the multiplier tag
-  bot=Math.ceil(scoreY+h*.25+pad);
-  hudPlate(cx-pw,top,pw*2,bot-top,null,HUDC.plate);
+  bot=Math.ceil(scoreY+Math.max(h*.25,rushUI?lh:0)+pad);   // v28.xx (cw-cx-rushlayout): the partner figure keeps its descent and bottom inset with the quieter score font.
+  hudPlate(cx-pw,top,pw*2,bot-top,null,rushUI?'rgba(17,19,21,.96)':HUDC.plate);   // v28.xx (cw-cx-rushlayout): score labels stay legible over a wall or rain.
   SCOREBOX.g=G;SCOREBOX.x=cx-pw;SCOREBOX.y=top;SCOREBOX.w=pw*2;SCOREBOX.h=bot-top;
   ctx.font=fs;ctx.fillStyle=UIC.tx_2;hudText(solo?'SCORE':'TEAM SCORE',cx,labelY);
   dmulTag(cx,labelY,ctx.measureText(solo?'SCORE':'TEAM SCORE').width,z);   // v35.xx (cw-dmulshow): the settings multiplier beside the label

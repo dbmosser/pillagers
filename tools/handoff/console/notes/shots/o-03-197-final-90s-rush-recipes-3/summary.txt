@@ -1,0 +1,6 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  finalrush-host-raid                    staged      11.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | real linked demo windows: [{"got":105,"want":105,"role":"host"},{"got":105,"want":105,"role":"p2"}]
+  finalrush-partner-raid                 staged       6.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | real linked demo windows: [{"got":105,"want":105,"role":"host"},{"got":105,"want":105,"role":"p2"}]
+== 4k : window 3876x2265, viewport 3840x2160
+  finalrush-host-raid                    staged      11.5s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | real linked demo windows: [{"got":105,"want":105,"role":"host"},{"got":105,"want":105,"role":"p2"}]
+  finalrush-partner-raid                 staged       7.9s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | real linked demo windows: [{"got":105,"want":105,"role":"host"},{"got":105,"want":105,"role":"p2"}]

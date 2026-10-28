@@ -1,10 +1,10 @@
 Latest stable: v35.28 (2026-10-27 22:16)
-Checked: 2026-10-28 11:00
+Checked: 2026-10-28 12:01
 Play address: http://localhost:8802/stable.html
 Result: no change
 
 Newest test runs, newest first:
-  corpus-1028-0934  v35.76  failing 72, new 23  robots 73 min/0 problems  -> 23 check(s) newly failing, e.g. v35.36 cw-quiethud (his order of 10-27, build the quiet hud, | v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right
+  corpus-1028-0934  v35.76  failing 72, new 23  robots 114 min/0 problems  -> 23 check(s) newly failing, e.g. v35.36 cw-quiethud (his order of 10-27, build the quiet hud, | v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right
   corpus-1028-0755  v35.66  failing 46, new 5  robots 58 min/0 problems  -> 5 check(s) newly failing, e.g. v35.53 cw-hudsize, his ask 2026-10-27 (the hud messaging is  | v35.44 cw-msgroute, his complaint 2026-10-27 (too many messa
   corpus-1028-0722  v35.65  failing 45, new 7  robots 240 min/44 problems  -> 7 check(s) newly failing, e.g. v35.53 cw-hudsize, his ask 2026-10-27 (the hud messaging is  | v35.44 cw-msgroute, his complaint 2026-10-27 (too many messa
   corpus-1028-0442  v35.65  failing 45, new 6  robots 240 min/44 problems  -> 6 check(s) newly failing, e.g. v9.07 a noise you cannot see leaves a ring on the ground, an | v35.53 cw-hudsize, his ask 2026-10-27 (the hud messaging is 

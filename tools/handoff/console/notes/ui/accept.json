@@ -1827,33 +1827,33 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The HUD is much calmer than before: the roster and controls clutter is gone, the contracts stack is collapsed to a goals chip, and the corners are anchored. The bottom strip is still loose, though. Bars and slots don't share a baseline, and the hotbar is cramped and low-contrast.",
+  "verdict": "This is a different screen from the one I reviewed before, a yes/no prompt over a live raid. The lime yes button is clear and the card is clean, but the card overlaps the HUD and has dead space and weak yes/no styling.",
   "findings": [
-   "P1 hotbar, x560-1470 y955-1058: Draw all 10 slots as 72px --ui-panel squares with 8px gaps and a 1px --ui-line border, ending at y<=1032. Use a 2px --acc border on the selected slot. Put 16px tx-2 numerals inside the top-left corner. Draw empty slots at 40% opacity.",
-   "P1 hp and armour bars, x24-430 y965-1070: Put both on one --ui-panel plate at x48 with 16px padding, a 1px --ui-line-hi border and 4px radius. Make each bar 16px tall with an 8px gap. Use a 20px 700 tx-1 numeral to the left of the bar and a 16px tx-2 label. End the plate at y<=1032.",
-   "P1 ammo block, x1650-1910 y868-1017: Set the panel right edge to x1872 and the bottom to y<=1032, matching the minimap edge. Make '/ 360' 20px 600 tx-2 so only the 60 is hero. Use 16px padding.",
-   "P1 top-centre team score, x795-1125 y18-155: Cut the panel to 240x96. Make the score 32px 700 tx-1 with a 16px tx-2 'team score' label above it, and the timer 20px 600 tx-2. Move 'you' and 'p2' into 16px rows coloured amber and cyan. Anchor the panel at y24.",
-   "P2 minimap and goals chip, x1603-1902 y18-370: Crop or shrink the minimap to 280x240. Raise the icons to 16px minimum or drop them. Leave an 8px gap before the goals chip. Use the same 4px radius and 1px --ui-line-hi border on both, and align them at x1872."
+   "P1 card, x492-1427 y261-579: Centre the card at y540 (y375-705). Add a --scrim rgba(6,7,8,.80) layer behind it, with an optional 4px blur, so the HUD and map drop to about 40% brightness.",
+   "P1 title row, x539-1382 y315-360: Reduce the title-to-button gap to 32px. Turn the countdown into a 16px tx-2 '11s' aligned to the title baseline, or a thin 3px lime bar that drains along the card top edge.",
+   "P1 buttons, x539-1382 y432-533: Make both buttons 64px tall. Keep yes as the lime fill. Give no a 1px --ui-line-hi border with tx-1 text, so it is clearly a button. Add a 2px lime focus ring when no is selected. Keep the 32px gap between the buttons.",
+   "P2 button labels, x711-772 y470-497: Put the key in a 28px keycap (1px border, 16px text) beside the 20px 600 'yes' label. On pad, swap the keycap for the pad button glyph.",
+   "P2 card top edge, x492-562 y261-264: Either make it a full-width 3px timer bar, or align it to the x539 content edge at 64px wide."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-01-142-hot-ground-kills-pay-more-recipes-2/hotkill-demo-p1-1080.jpg",
-  "task": "o-01-142-hot-ground-kills-pay-more",
-  "when": "2026-10-28T13:51"
+  "pic": "tools/handoff/console/notes/shots/o-03-197-final-90s-rush-recipes-2/rush-p1-1080.jpg",
+  "task": "o-03-197-final-90s-rush",
+  "when": "2026-10-28T16:05"
  },
  "p2-1080": {
-  "score": 3,
-  "pass": true,
+  "score": 2,
+  "pass": false,
   "need": 3,
-  "verdict": "The controls list is now folded and the roster panel is gone, but the bottom edge is still cluttered with floating hotbar digits, unframed bars and a 'keyboard' chip, so the HUD reads as scattered.",
+  "verdict": "This frame is a raid screenshot with a 'want easy mode?' modal, not the player 2 title I reviewed before, and the modal is a flat black box with a glaring lime fill that has no hierarchy or craft behind it.",
   "findings": [
-   "P1 hotbar (x 560-1470, y 955-1058): Draw only the filled slots as 72px boxes with an 8px gap, centred on x 960, and delete the floating digits. Make the active ring 2px --acc. Move the 'f' chip to the top-right of the slot at 16px.",
-   "P1 hp and armour bars (x 24-430, y 965-1068): Put both in one --ui-panel card (1px --ui-line-hi border, 4px radius) inset 48px left and 32px bottom. Make the bars 12px tall. Set the labels at 16px --tx-2 and the numbers at 20px --tx-1. Make hp --ok and armour a quiet blue.",
-   "P1 team score panel (x 795-1125, y 18-156): Cut the panel to the hero '105 sp' at 56px and the 10:00 timer at 20px, and show the per-player split only on a hold. Pad 16px evenly and use a 1px --ui-line-hi border.",
-   "P1 'keyboard' chip (x 8-105, y 8-32) and 'f1 controls' chip (x 410-537, y 922-950): Fold 'keyboard' into the f1 line, or hide it after 3 seconds. Set 'f1 controls' at 16px --tx-2, x 48, 16px above the hp card. Use the same 4px radius and border on every chip.",
-   "P2 ammo card (x 1650-1910, y 868-1017): Inset to x 1872 and bottom y 1048. Set '25' at 56px 800 and '/ 150' at 24px 600 --tx-2. Add a 1px --ui-line-hi border. Show 'auto rifle' at 16px --tx-2."
+   "P0 screen identity (whole frame): Re-capture the real p2 title screen. If this modal is meant to be the p2 screen, say so, and give it the title composition from my earlier review.",
+   "P1 modal card (x 493-1427, y 261-579): Add a 1px --ui-line-hi border and a 4px radius. Use --ui-panel fill on an 80% --scrim over the whole screen. Centre the card at y 540 and make it 880x360. Make the top edge either a full-width 4px lime bar or nothing.",
+   "P1 'y yes' button (x 539-945, y 432-533): Cut the button to 64px tall. Use 24px f-cond 700 text in --acc-ink and put the 'y' key hint in a 28x28 chip at the left. Keep it as the only lime fill. Decide the default deliberately, since lime should mean 'selected'.",
+   "P1 'n no' button (x 976-1382, y 432-533): Fill it --ui-raised with a 2px --ui-line-hi border and --tx-1 label. Show a 3px lime focus outline on whichever button holds pad focus. Use the same 64px height as the yes button.",
+   "P1 title 'want easy mode?' (x 539-790, y 316-350): Set the title at 32px f-cond 700 --tx-1, with a 16px --tx-2 line below it that states the effect in 6 words or fewer. Make the countdown a 40px hero-style number in a 56px ring or bar, tinted --tx-2. Cut the gap to 32px between the title block and the buttons."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-01-142-hot-ground-kills-pay-more-recipes-2/hotkill-demo-p2-1080.jpg",
-  "task": "o-01-142-hot-ground-kills-pay-more",
-  "when": "2026-10-28T13:51"
+  "pic": "tools/handoff/console/notes/shots/o-03-197-final-90s-rush-recipes-2/rush-p2-1080.jpg",
+  "task": "o-03-197-final-90s-rush",
+  "when": "2026-10-28T16:05"
  },
  "pix86c-fashion": {
   "score": 3,
@@ -3070,5 +3070,37 @@
   "pic": "tools/handoff/console/notes/shots/o-02-172-night-pays-cash-recipes-1/condition-sp-extracted-host-1080.jpg",
   "task": "o-02-172-night-pays-cash",
   "when": "2026-10-28T14:35"
+ },
+ "finalrush-host-raid": {
+  "score": 2,
+  "pass": false,
+  "need": 4,
+  "verdict": "the raid hud is readable and mostly lower case, but the top-centre is a stack of five boxes that crowd each other and the 'final rush' alert, and the bottom-left hud has uneven widths and weak contrast.",
+  "findings": [
+   "P1 top-centre stack (timer, team score, extract chip, final rush banner): Leave a 16px gap between all boxes and centre them on the same width. Make the timer the only 56px hero. Drop 'team score' to 20px with you/p2 in 16px muted text. Move the final rush banner to y≈260 with 24px of clear space around it, and move the extract chip into the timer row or beside it.",
+   "P1 final rush banner: Widen it to about 420px with 16px padding. Use a 32px title in --danger and a 20px tx-2 subline. Keep the triangle at 32px. Add a 4px --danger left bar and fill it with --ui-panel at 90% so it reads as the one hot element.",
+   "P1 extract chip and player 2 world label: Move the extract chip and its arrow out of the banner's footprint, for example to the left of the timer at y=60 with 16px gap. Raise the world tag to 16px with a --ui-panel plate. Keep player 2 cyan, as the style guide says.",
+   "P2 bottom-left (armour, hp, f1 controls): Use one 16px label and one 20px value format for both bars. Make both bars 32px high and the same width. Put the labels on a dark plate with 4.5:1 contrast. Align the f1 chip's left edge to x=48 (5% margin) on its own row above the bars.",
+   "P2 bottom-right ammo panel and weapon slots: Inset the ammo panel 48px from the right and bottom edges. Draw 8 equal 64px slot tiles with a --ui-line border for all slots, and show the numbers inside the tiles. Dim the empty ones to 40% opacity."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-03-197-final-90s-rush-recipes-3/finalrush-host-raid-1080.jpg",
+  "task": "o-03-197-final-90s-rush",
+  "when": "2026-10-28T16:09"
+ },
+ "finalrush-partner-raid": {
+  "score": 2,
+  "pass": false,
+  "need": 4,
+  "verdict": "The raid HUD has the right pieces, but the top centre is a stack of five competing boxes, and the weapon slots, bars and goals dropdown do not share one style.",
+  "findings": [
+   "P1 top centre: timer, rain icon, team score, extract chip and final rush banner: Keep the timer as the one hero element (56px, f-cond 800). Move the team score to a smaller 20px row under it with 16px gaps. Move the extract chip beside the compass arrow. Show the final rush banner in place of the grey rows, with 24px clearance on all sides.",
+   "P1 team score panel (210 sp, you 105 sp, p1 105 sp): Use a solid --ui-panel fill at 92% opacity or higher with a 1px --ui-line-hi border and 4px radius. Put the left-hand column and the right-hand column on shared baselines. Set the sub-lines in tx-1 or tx-2 at 16px with 8px padding. Rename 'p1' to 'player 1' and 'you' to 'player 1' or keep 'you' only if consistent.",
+   "P1 bottom-left bars: armour 60 and hp 100: Put both bars in one --ui-panel container with a 4px radius and 8px padding. Use 20px labels in the same weight for both rows. Use --ok for hp and a muted blue for armour. Add a dark text track behind the numbers. Pull the container in to a 5% margin.",
+   "P1 weapon slots 1 to 0 and the ammo panel at bottom right: Draw empty slots as 56px tiles with --ui-panel fill and a --ui-line border, with the number at 16px. Make the selected tile's border 2px lime (--acc). Use the same 4px radius and border for the ammo panel. Raise the weapon name to tx-1 at 20px. Make the 360 counts 16px or larger.",
+   "P2 goals 0/3 dropdown, top right: Restyle it as a --ui-panel chip with a 1px --ui-line-hi border and a 4px radius. Use 20px text. Pull it in to a 24px margin. Match it to the other top-right items (cw-trcol)."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-03-197-final-90s-rush-recipes-3/finalrush-partner-raid-1080.jpg",
+  "task": "o-03-197-final-90s-rush",
+  "when": "2026-10-28T16:09"
  }
 }

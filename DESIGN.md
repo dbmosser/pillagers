@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.84 - FINAL RUSH HUD CLEARANCE
+
+Co-op hunt while he was away. The critic found the final rush crowded by the clock, score and extraction arrow. During the two player demo rush the clock and score stay in separate windows with a 16px gap, the smaller score gets a solid backing, and extraction moves beside the clock. The rush panel is at least 416px wide with a 16px inset and 24px clearance. Playtest watch: check both windows at 1:30 for readable navigation and a clear rush banner; all scoring and wave timings stay as shipped in v35.83.
+
+MEASURED. Check 35.84 passes, and fails on v35.83.
 ## v35.83 - FINAL RUSH IN THE TWO PLAYER DEMO
 
 Co-op hunt while he was away. His 10-28 decision #3: final rush kills pay 1.05x SP. The two player demo had no final 90 second rush. Playtest watch: both windows should announce once at 1:30; fresh sentry kills pay 105 sp before other bonuses. More machines arrive, while breathers and called extraction rings still hold waves. Solo demo and career keep their pacing.

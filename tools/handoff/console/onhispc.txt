@@ -49,3 +49,4 @@
 10-28 10:46 v35.80 cw-clockcard on his pc after 49s (8802 serves 35.80) week 80%
 10-28 11:10 v35.81 cw-cx-condition-ui on his pc after 49s (8802 serves 35.81) week 80%
 10-28 11:37 v35.82 cw-pillagersword on his pc after 33s (8802 serves 35.82) week 80%
+10-28 11:56 v35.83 cw-cx-finalrush on his pc after 49s (8802 serves 35.83) week 80%
