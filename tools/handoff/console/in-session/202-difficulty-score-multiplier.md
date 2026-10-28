@@ -25,3 +25,9 @@ Choices made (small, mine):
 - Applied to sp from kills, style medals, goals, bounty, strongholds and vaults. Not to money, the haul, loot pickups or the demo loot pot. The career payout is 1 sp = $1 on extraction, so the bank follows the sp, as it always has.
 - Test fixture pins DMUL_ON=0 (committed 70aefa3f8) so the older checks keep their figures; the new check turns it on for itself.
 - Settings line: shows the dials as they stand (next raid); on a linked window its own rows, the host word rules the raid itself.
+
+ADDED 10-28 (his verbatim): "Fog of war should also be one of the multiplier items. Adjust the settings menu if needed to make this happen"
+Fog of war is the Settings toggle shipped by cw-fogwar (grep the fog option in the Settings rows). Fog ON counts as harder and pays its factor (+5% like a dial step; pick the same constant style). Stacks with the rest. If the Settings menu has no clean place for the multiplier line or the fog row needs a change to show its bonus, adjust the menu (one control per job, no second row for an existing control).
+- Fog of war (his addition): fog on is one 5% step (DMUL_STEP.fog), stacked; it replaces my earlier "not counted" line. Each window draws its own fog, so the raid word now carries the host's fog row (m.fw) and a linked window takes it while it builds the raid (NET.upFw): host rules the multiplier, both windows pay the same. Like the other rows, the raid keeps the fog row it was built with (turning fog off mid raid keeps this raid's step; superhot alone is live). Hardest game now x1.61. The fog row already sits in THE RAID beside the new score row, so no Settings move was needed.
+- v35.68 cw-diffmul ON HIS PC 08:36 (maths and sp). Build 2 cw-dmulshow: display plus fog.
+- No two-window camera recipe exists; the party parity is covered by the host word path and the checks, not by a picture of each window.

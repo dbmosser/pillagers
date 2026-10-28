@@ -3730,8 +3730,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.68';
-var VER_AT='2026-10-28 08:32';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.69';
+var VER_AT='2026-10-28 08:40';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -35541,6 +35541,7 @@ function ocLedger(how,lines,x){
     p=parts[i]; v=p[2]; if(!v) continue;
     sh+=row('','<span class="lgl">'+p[1]+'</span>'+((v<0)?('<b>-'+arcadeCr(-v)+'</b>'):cnt(v,'')));
   }
+  var _dm=diffMul(); if(_dm>1) sh+=row('dm','<span class="lgl">settings</span><b>x'+_dm.toFixed(2)+'</b>');   // v35.xx (cw-dmulshow): the settings multiplier, once (the rows above already have it in)
   if(ex) sh+=row('','<span class="lgl">EXTRACTION x2</span>'+cnt(s,'+'));
   else if(s>0) sh+=row('lost','<span class="lgl">KIA -50%</span><b>-'+arcadeCr(s-fin)+'</b>');   // v28.67 (lean1): HIS RULE, KIA is a 50% score penalty
   sh+=row('sc','<span class="lgl">TOTAL</span>'+((fin>0)?cnt(fin,''):('<b>'+arcadeCr(0)+'</b>')));
@@ -55478,7 +55479,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.68: harder settings pay more sp: 5 percent a step on pillagers, machines, how hard they hit and extraction heat, and superhot off, stacked Check 35.68 fails on v35.67',
+  now:'v35.69: fog of war on pays 5 percent more sp; the settings score multiplier shows in settings, beside the score in a raid and once on the end card Check 35.69 fails on v35.68',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -61196,6 +61197,7 @@ function netUpAnnounce(g){
   if(!NET.on||NET.role!=='host'||!g||g.sim) return null;
   m={t:'raid',seed:g.seed>>>0,mapIx:clamp((P&&P.mapIx)|0,0,FIXED_MAPS.length-1),cond:(P&&P.cond==='night')?'night':'day',wx:(g.wx&&g.wx.id)||'',
      iss:g.issDraw?1:0,terms:netUpTerms(termsOn()),merc:(P&&typeof P.merc==='string')?P.merc:'',cfg:netUpCfgDiff(),fp:netUpFp(g)};
+  m.fw=(CFG.fogWar===1)?1:0;   // v35.xx (cw-dmulshow): the host's fog of war, for the party's score multiplier (each window still draws its own fog)
   if(g.arcade) m.arc=1;   // v23.25 (arcade6): an arcade raid word says so; only arcade words gain the field
   NET.up=[]; NET.upAcc=0; NET.upN=0; NET.upSeed=m.seed; NET.upFp=m.fp; NET.sum={}; NET.wps={}; NET.pings=[];
   netEntsInit(g);   // v15.80: every body numbered in list order, the numbers a linked window gives the same bodies
@@ -61260,6 +61262,7 @@ function netUpStart(m){
   for(k in CFG) if(Object.prototype.hasOwnProperty.call(CFG,k)) keepCfg[k]=CFG[k];
   keep={terms:P.terms,merc:P.merc,intel:P.intel,wxPick:P.wxPick};
   NET.upHold=true; NET.upIss=(m.iss===1)?true:((m.iss===0)?false:null);
+  NET.upFw=(m.fw===1||m.fw===0)?m.fw:null;   // v35.xx (cw-dmulshow): the host's fog of war row, read by the score multiplier while this raid is built
   try{
     for(k in DEF) if(Object.prototype.hasOwnProperty.call(DEF,k)) CFG[k]=DEF[k];
     if(m.cfg&&typeof m.cfg==='object') for(k in m.cfg) if(Object.prototype.hasOwnProperty.call(DEF,k)&&(typeof m.cfg[k]==='number'||typeof m.cfg[k]==='string'||typeof m.cfg[k]==='boolean')) CFG[k]=m.cfg[k];
@@ -61270,7 +61273,7 @@ function netUpStart(m){
     if(G&&!G.sim) G.terms=P.terms.slice();   // v20.31 (H27): the raid keeps the Terms it was built with, for the pay, the XP and the panel
   }catch(e){ threw=netErrText(e); }
   finally{
-    NET.upHold=false; NET.upIss=null; pendSeed=null;
+    NET.upHold=false; NET.upIss=null; pendSeed=null; NET.upFw=null;
     for(k in keepCfg) if(Object.prototype.hasOwnProperty.call(keepCfg,k)) CFG[k]=keepCfg[k];
     P.terms=keep.terms; P.merc=keep.merc; P.intel=keep.intel; P.wxPick=keep.wxPick;
   }
@@ -67507,16 +67510,19 @@ function arcadeRunId(){ ARCADE.runN=(ARCADE.runN|0)+1; return 'r'+Date.now().toS
 // Brutal 2, over Standard), heat when you call for extraction (Standard 1, Heavy 2, over Light) and superhot (off is 1 step over on). Each step pays its row's
 // DMUL_STEP (5%, one constant a row, to tune) and the rows multiply, so the hardest game pays x1.54. A row set easier than its default pays no less. Not counted:
 // raid length (a career and a demo raid run their own 10 minute clock, so the row changes nothing there), how much is out there (it is worth only, read when
-// sold, so lean for one raid would cost nothing), fog of war and shared sight (each window's own view, not in the raid word, so two windows would differ).
+// sold, so lean for one raid would cost nothing) and shared sight (each window's own view). Fog of war pays a step since his addition of 10-28 (see below).
 // A raid takes the rows from the dials it was built with (G.dmul at careerPostBuild and arcadePostBuild, so a linked window builds with the host's dials, as the
 // raid word builds the raid), superhot read live (the host word rules it on a linked window). spMul puts it on sp earned: kills (arcadeKillPts, before the
 // streak), style medals (scoreBonus), goals, bounty and strongholds (flowChip) and vaults. Never on money, the haul, loot pickups or the loot pot.
 // DMUL_ON 0 (the test fixture) pays x1, so the older checks keep their figures.
-var DMUL_ON=1, DMUL_STEP={raiders:0.05,robots:0.05,hits:0.05,ext:0.05,superhot:0.05};
+// v35.xx (cw-dmulshow), HIS ADDITION (2026-10-28): "Fog of war should also be one of the multiplier items". Fog of war on is one step (fog). Each window
+// draws its own fog, so the raid word carries the host's (fw) and a linked window takes the host's at the build (NET.upFw while NET.upHold), as for every row.
+var DMUL_ON=1, DMUL_STEP={raiders:0.05,robots:0.05,hits:0.05,ext:0.05,fog:0.05,superhot:0.05};
 function diffTiers(c){
   c=c||CFG||{};
   var n=+c.nRaider||0, s=+c.nSentry||0, d=+c.eDmg||0, v=(c.siegeVol===undefined)?1:(+c.siegeVol||0);
-  return {raiders:n>=15?2:(n>=10?1:0), robots:s>=28?2:(s>=20?1:0), hits:d>=1.4?2:(d>=1.2?1:0), ext:v>=1.4?2:(v>=1?1:0), superhot:c.superhot?0:1};
+  var fw=(typeof NET==='object'&&NET&&NET.upHold&&(NET.upFw===0||NET.upFw===1))?NET.upFw:((c.fogWar===1)?1:0);   // v35.xx (cw-dmulshow): fog of war, the host's while a linked window builds the raid
+  return {raiders:n>=15?2:(n>=10?1:0), robots:s>=28?2:(s>=20?1:0), hits:d>=1.4?2:(d>=1.2?1:0), ext:v>=1.4?2:(v>=1?1:0), fog:fw, superhot:c.superhot?0:1};
 }
 // the product of the rows (noSh: all but superhot, which a raid reads live)
 function diffMulOf(c,noSh){ var t=diffTiers(c), m=1, k; for(k in DMUL_STEP) if(!(noSh&&k==='superhot')) m*=1+DMUL_STEP[k]*(t[k]|0); return Math.round(m*1e4)/1e4; }
@@ -68419,6 +68425,16 @@ function arcadeScTake(m){
   return 'arcsc';
 }
 // The clock spot in the arcade: TEAM SCORE over the sum, YOU and the teammate score beside it. y is the clock line, z its scale.
+// v35.xx (cw-dmulshow), his order of 2026-10-28: the settings multiplier this raid pays, small and amber to the right of the score label, in the font the label
+// was drawn in. Nothing at x1.00. Returns the tag text or ''.
+function dmulTag(cx,y,lw,z){
+  var m=diffMul(), t;
+  if(!(m>1)) return '';
+  t='x'+m.toFixed(2);
+  ctx.save(); ctx.textAlign='left'; ctx.fillStyle='#ffc04a'; hudText(t,Math.round(cx+lw/2+8*z),y); ctx.restore();
+  return t;
+}
+function dmulTagW(lw,z){ var m=diffMul(); if(!(m>1)) return 0; return lw/2+8*z+ctx.measureText('x'+m.toFixed(2)).width; }
 function arcadeScoreHud(y,z){
   // v28.xx (cw-cx-hudtvread): readable score labels and a real top inset in both windows. Score, streak and final-minute clock rules stay the same.
   if(!G||!(G.arcade||G.career)||!ctx) return;
@@ -68432,10 +68448,12 @@ function arcadeScoreHud(y,z){
   if(!solo){ctx.font=fs;side=Math.max(ctx.measureText('YOU '+arcadeCr(mine)).width,ctx.measureText((ARCADE.role==='p2'?'P1 ':'P2 ')+arcadeCr(mate)).width)+Math.round(24*z);}
   if(sx>1){ctx.font=fb;sw=ctx.measureText('x'+sx).width+Math.round(10*z);}
   pw=Math.ceil(Math.max(100*z,w/2+pad+Math.max(side,sw)));
+  ctx.font=fs; pw=Math.max(pw,Math.ceil(dmulTagW(ctx.measureText(solo?'SCORE':'TEAM SCORE').width,z)+pad));   // v35.xx (cw-dmulshow): room for the multiplier tag
   bot=Math.ceil((clock?clockY+ch*.25:scoreY+h*.25)+pad);
   hudPlate(cx-pw,top,pw*2,bot-top,null,HUDC.plate);
   SCOREBOX.g=G;SCOREBOX.x=cx-pw;SCOREBOX.y=top;SCOREBOX.w=pw*2;SCOREBOX.h=bot-top;
   ctx.font=fs;ctx.fillStyle=UIC.tx_2;hudText(solo?'SCORE':'TEAM SCORE',cx,labelY);
+  dmulTag(cx,labelY,ctx.measureText(solo?'SCORE':'TEAM SCORE').width,z);   // v35.xx (cw-dmulshow): the settings multiplier beside the label
   ctx.font=fb;ctx.fillStyle=UIC.tx_1;hudText(nm,cx,scoreY);
   if(clock){apo=(fin&&ct>0)?clockPopIn(cx,clockY-ch*.3,G.timeLeft):false;ctx.font=fc;ctx.fillStyle=fin?'#ff5a4a':'#cdd6dd';hudText(Math.floor(ct/60)+':'+(ct%60<10?'0':'')+(ct%60),cx,clockY);if(apo)ctx.restore();}
   if(!solo){gx=Math.round(cx+w/2+24*z);ctx.font=fs;ctx.textAlign='left';ctx.fillStyle=UIC.tx_2;hudText('YOU '+arcadeCr(mine),gx,Math.round(scoreY-lh*.5));hudText((ARCADE.role==='p2'?'P1 ':'P2 ')+arcadeCr(mate),gx,Math.round(scoreY+lh*.75));}
@@ -69213,6 +69231,7 @@ function arcadeRunEnd(why){
   if(why==='dead'||why==='burn'||why==='menu'){ ARCADE.mine=Math.floor(Math.max(0,ARCADE.mine|0)/2); ARCADE.mate=Math.floor(Math.max(0,ARCADE.mate|0)/2); }  var host=(ARCADE.role==='host'), me={s:Math.max(0,ARCADE.mine|0),k:ARCADE.kills|0,x:ARCADE.ext|0,d:ARCADE.deaths|0},
       mt=((ARCADE.mate|0)>0||(ARCADE.mateK|0)>0)?{s:Math.max(0,ARCADE.mate|0),k:ARCADE.mateK|0,x:ARCADE.mateX|0,d:-1}:null;
   ARCADE.over={at:Date.now(),why:String(why||''),team:arcadeTeam(),p1:host?me:mt,p2:host?mt:me};
+  try{ ARCADE.over.dm=diffMul(); }catch(_dm){}   // v35.xx (cw-dmulshow): the settings multiplier the run paid, for the card
   try{ outMusic(why==='extract'?'win':((why==='dead'||why==='burn')?'kia':'')); }catch(_om){}   // v26.xx (outcomemusic): the RUN OVER card of an extraction run, a death or a burn plays its piece; an idle out or END RUN none
   try{ ARCADE.over.bm=arcadeBmFinal(); }catch(_bmf){}   // v23.xx (his answer 20): the best moments of the run
   var _bw=false; try{ _bw=arcadeBoardPut(); }catch(_bp){}   // v23.41 (arcade18): the final board row
@@ -69264,6 +69283,7 @@ function arcadeOverMirror(m){
   me={s:Math.max(0,ARCADE.mine|0),k:ARCADE.kills|0,x:ARCADE.ext|0,d:ARCADE.deaths|0};
   mt=((ARCADE.mate|0)>0||(ARCADE.mateK|0)>0)?{s:Math.max(0,ARCADE.mate|0),k:ARCADE.mateK|0,x:ARCADE.mateX|0,d:-1}:null;
   ARCADE.over={at:Date.now(),why:(m&&m.x2)?'extract':((m&&m.ko)?'dead':((m&&m.hf)?'menu':'')),team:arcadeTeam(),p1:mt,p2:me};
+  try{ ARCADE.over.dm=diffMul(); }catch(_dm){}   // v35.xx (cw-dmulshow): the settings multiplier, as the host card has it
   try{ ARCADE.over.bm=arcadeBmFinal(); }catch(_bmf){}
   return ARCADE.over;
 }
@@ -69365,6 +69385,7 @@ function arcadeOverSync(){
     c.textContent=''; c.setAttribute('data-at',sig);
     ln=oc?(ARCADE.solo?[['aoh','RUN OVER'],['aos','SCORE '+arcadeCr(o.team)],['aor',arcadeOverRow('YOU',o.p1)]]   // v23.54 (arcade30): the 1 player arcade, one row; v23.56 (arcade31): in credits
       :[['aoh','RUN OVER'],['aos','TEAM SCORE '+arcadeCr(o.team)],['aor',arcadeOverRow('P1',o.p1)],['aor',arcadeOverRow('P2',o.p2)]]):[];
+    if(oc&&o.dm>1) for(i=0;i<ln.length;i++) if(ln[i][0]==='aos'){ ln.splice(i+1,0,['aor aodm','settings x'+(+o.dm).toFixed(2)]); break; }   // v35.xx (cw-dmulshow): the settings multiplier, once, under the score
     if(oc&&o.why==='extract') ln.splice(1,0,['aoh','EXTRACTED x2']); else if(oc&&(o.why==='dead'||o.why==='burn')) ln.splice(1,0,['aoh','KIA -50%']); else if(oc&&o.why==='menu') ln.splice(1,0,['aoh','ended early -50%']);   // v24.xx (feat0g): the run ended on an extraction
     for(i=0;i<ln.length;i++){ if(!ln[i][1]) continue; el=document.createElement('div'); el.className=ln[i][0]; el.textContent=ln[i][1];
       if(ln[i][0]==='aoh'&&/ -50%$/.test(ln[i][1])){ el.textContent=ln[i][1].replace(/-50%$/,''); var _aw=document.createElement('span'); _aw.className='aow'; _aw.textContent='-50%'; el.appendChild(_aw); }   // v31.xx (cw-partylook8): the penalty in warn amber
@@ -72885,6 +72906,13 @@ function diffRowHtml(){
   return '<div class="row"><div style="flex:1"><b>difficulty</b><div class="hint">'+(d==='new player'?'softer hits, longer raids, more loot, fewer extras':(d==='main game'?'standard hits, raid length and loot, extras on':'rows changed by hand'))+'</div></div>'+
     '<button id="set_diff" style="padding:6px 12px;min-width:92px'+(d===home?'':';color:var(--amber)')+'">'+d+'</button></div>';
 }
+// v35.xx (cw-dmulshow), HIS ORDER (2026-10-28): "that should give a score multiplier ... and that should be indicated to the player". The score row under
+// difficulty: what the rows as they stand pay (diffMulOf, superhot in), redrawn with every click. No row at x1.00.
+function dmulRowHtml(){
+  var m=DMUL_ON?Math.round(diffMulOf(CFG)*100)/100:1;
+  if(!(m>1)) return '';
+  return '<div class="row" id="set_dmulrow"><div style="flex:1"><b>score</b><div class="hint">harder rows pay more sp</div></div><b id="set_dmul" style="padding:6px 12px;min-width:92px;text-align:center;color:var(--amber)">x'+m.toFixed(2)+'</b></div>';
+}
 function diffSet(t){
   var i, k, row, oi, o, tk=tunedKeys();
   P.gameOpts=P.gameOpts||{};
@@ -73129,7 +73157,7 @@ function renderSettingsInner(host){
       (_dflt?'':';color:var(--amber)')+'">'+(_gs?_gs.n:'CUSTOM')+'</button></div>';
   }
   if(SETSUB==='exp'){ expPage(host,_SEC); return; }   // v32.xx (cw-expmenu1): the experimental page replaces the list until back
-  _SEC['THE RAID']=diffRowHtml()+(_SEC['THE RAID']||'')+expRowHtml();   // v32.xx (cw-expmenu2): the open row ends THE RAID, where the features it switches are; v28.xx (cw-itcheasy): the difficulty row heads it
+  _SEC['THE RAID']=diffRowHtml()+dmulRowHtml()+(_SEC['THE RAID']||'')+expRowHtml();   // v35.xx (cw-dmulshow): the score multiplier row under difficulty   // v32.xx (cw-expmenu2): the open row ends THE RAID, where the features it switches are; v28.xx (cw-itcheasy): the difficulty row heads it
   // v16.50, stability: Settings opens in a raid since v16.45, and three of its buttons do not belong there. PICK FILE opens a
   // file window a controller cannot shut, and a restore or its UNDO reloads the window, which drops a teammate out of the party
   // and loses the run. In a raid they are greyed out; in the Undercroft they work as before.
