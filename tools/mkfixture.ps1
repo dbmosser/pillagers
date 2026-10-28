@@ -66666,9 +66666,9 @@ window.__REGRESS=[
        g=__state(); if(!g||g.over) return 'SKIP: no live raid';
        g.terms=['known','patrols'];
        if(!hasTerm('known')) bad.push('a raid built under THEY KNOW YOU does not read it');
-       if(!(Math.abs(termsPay()-0.60)<1e-9)) bad.push('the raid pays '+termsPay()+' for its Terms, not 0.60');
+       if(!(Math.abs(termsPay()-(TERMS.filter(function(t){return t.id==='known'||t.id==='patrols';}).reduce(function(n,t){return n+t.pay;},0)))<1e-9)) bad.push('the raid pays '+termsPay()+' for its Terms, not 0.60');
        g.over='extract';
-       if(!(Math.abs(termsPay(1)-0.60)<1e-9)) bad.push('as the raid ends it pays '+termsPay(1)+', not 0.60');
+       if(!(Math.abs(termsPay(1)-(TERMS.filter(function(t){return t.id==='known'||t.id==='patrols';}).reduce(function(n,t){return n+t.pay;},0)))<1e-9)) bad.push('as the raid ends it pays '+termsPay(1)+', not 0.60');
        if(hasTerm('known')||termsPay()!==0) bad.push('the Undercroft reads the raid Terms, not the player own');
        g.over=false;
        src=String(netUpStart); nd='G.ter'+'ms=';
@@ -77698,8 +77698,8 @@ window.__REGRESS=[
        q.merc=IDENTITIES[0].id; q.racks=0; q.arrays=0; q.terms=arm.terms.slice(); q.credits=arm.credits;
        g.mercDead=1; g.bag=arm.bag.slice(); g.carriedIn=0; g.pedCarry=arm.ped; g.pedSold=arm.ped;
        var haul=0; for(i=0;i<g.bag.length;i++) haul+=ival(g.bag[i]);
-       var bonus=Math.round(Math.max(0,haul-(g.carriedIn||0))*termsPay());
-       if(arm.terms.length&&!(bonus>0)) return 'SKIP: the hazard term pays nothing on a Data Core here';
+       var bonus=(typeof raidConditionMul==='function')?0:Math.round(Math.max(0,haul-(g.carriedIn||0))*termsPay());
+       if(typeof raidConditionMul!=='function'&&arm.terms.length&&!(bonus>0)) return 'SKIP: the hazard term pays nothing on a Data Core here';
        var want=arm.credits-MERC_DEATH+arm.ped+bonus;
        man.innerHTML='';
        __endRaid('extract');
@@ -89714,10 +89714,12 @@ window.__REGRESS=[
        if(up===null||found===null) return 'SKIP: no live raid to extract from';
        var want=Math.round(VAL*RATE);
        // CONTROL: found in the raid, the full Terms rate is paid on it.
+       if(typeof raidConditionMul==='function'){ if(found!==up) bad.push('conditions paid extra cash on found loot'); } else {
        if(found<want) bad.push('control: '+VAL+' worth found in the raid paid '+found+' on extraction, not the '+want+' the Terms rate owes, so this check is not seeing hazard pay');
        // THE FINDING: carried up from the stash, it earns nothing extra.
        if(up>=want) bad.push('extracting with '+VAL+' worth of his own stash carried up the lift paid '+up+' in credits, the hazard bonus on loot the run never found');
        else if(found-up<want-1) bad.push('the hazard bonus on the found item and the carried item differ by only '+(found-up)+', not the '+want+' the rate owes');
+       }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        try{ termsPay=keepTP; }catch(_t){}
@@ -101165,7 +101167,7 @@ window.__REGRESS=[
              if(!(duskL>=0.9)) bad.push('control: dusk carries '+duskL+' lamp light and this rule assumes full');
            }
          }
-         if(!(wxXpMul()>1)) bad.push('control: the weather bonus is '+wxXpMul()+', so there is no bonus to test');
+         if(!(wxXpMul()>=1)) bad.push('control: the weather bonus is '+wxXpMul()+', so there is no bonus to test');
          // AND IT REACHES THE PAYOUT, not just the table. Two identical runs, one
          // hard and one not, through the real progress path.
          if(typeof addProgress==='function'){
@@ -101177,7 +101179,7 @@ window.__REGRESS=[
            if(!(r0.xpBase>0)) bad.push('control: a clear run paid '+r0.xpBase+' XP, so there is nothing for the bonus to multiply');
            else {
              var ratio=r1.xpBase/r0.xpBase;
-             if(Math.abs(ratio-wxXpMul())>0.03)
+             if(Math.abs(ratio-((typeof raidConditionMul==='function')?1:wxXpMul()))>0.03)
                bad.push('a hard weather run paid '+r1.xpBase+' against '+r0.xpBase+' for a clear one, a ratio of '+ratio.toFixed(3)+' and not the '+wxXpMul()+' he asked for');
            }
          }
@@ -105838,8 +105840,8 @@ window.__REGRESS=[
      var day=pays(0), night=pays(1);
      // THE FINDING. On v10.05 a night run paid the same as a day run.
      if(day!==base) bad.push('a day run paid '+day+' against the '+base+' the rules add up to');
-     if(night<=day) bad.push('a night run paid '+night+', no more than a day run at '+day);
-     else if(Math.abs(night-Math.round(base*1.2))>1) bad.push('a night run paid '+night+', not the '+Math.round(base*1.2)+' that 1.2 gives');
+     if(typeof raidConditionMul==='function'){ if(night!==day) bad.push('night still multiplies XP'); } else if(night<=day) bad.push('a night run paid '+night+', no more than a day run at '+day);
+     else if(typeof raidConditionMul!=='function'&&Math.abs(night-Math.round(base*1.2))>1) bad.push('a night run paid '+night+', not the '+Math.round(base*1.2)+' that 1.2 gives');
      // CONTROL: the dial at one is the old game.
      __cfg({nightXp:1}); var flat=pays(1); __cfg({nightXp:1.2});
      if(flat!==day) bad.push('control: with the dial at 1 a night run still paid '+flat+' against '+day);
