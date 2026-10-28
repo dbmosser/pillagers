@@ -23,6 +23,8 @@
 # starts nothing until no key, mouse or game pad has been used for 15 minutes and 6 GB are free; it stops everything it started within
 # seconds of a touch (or under 4 GB free); and a build another PC is testing or has tested stays that PC's: here it gets robots only.
 # The VM's nights come first: from 22:40 to 23:10 it holds nothing, and until 06:45 it starts only with 10 GB free (see VMNight below).
+# 10-28: while the VM's memory follows him it starts only after the VM stops growing and with 8 GB free, stops under 5 GB at two looks,
+# waits 30 minutes after a memory stop, and runs one robot at 4K in both windows (see the idle loop, Watch and the robot lines).
 # 10-26 SPARE-PRESENCE-PAUSE (his "make it so that the JTPC pauses testing whenever someone is at the JTPC -- eg my son wants to use it
 # for gaming"): the SPARE PC now stops all its test work (scripts and test Chromes) within seconds of someone being there, and starts
 # again by itself once nobody has been there for 15 minutes. Someone is there when a key or the mouse was used, a game pad changed since
@@ -312,7 +314,7 @@ function SoundWho(){
 # goes by, so on a pads-only night the VM would start helpers, robots and the local AI on the party PC. While a pad is in use this writes
 # pad-seen.txt (epoch=, seen=) into the bridge share at most once a minute; the VM's tools/nightly.sh counts one under 10 minutes old as
 # gaming (nothing new starts). It records nothing of what was pressed.
-$script:padNoteT=[long]0
+$script:padNoteT=[long]0; $script:gcAtStart=$false
 function PadNote(){
   try{
     $e=Epoch; if(($e-$script:padNoteT) -lt 60){ return }; $script:padNoteT=$e
@@ -387,6 +389,13 @@ function FollowAway(){
        $t=[IO.File]::ReadAllText($f); if($t -match '(?m)^follow=away' -and $t -match '(?m)^awaymin=(\d+)'){ return [int]$Matches[1] } }catch{}
   return 0
 }
+# 10-28 (Main PC Correspondent): what the main PC's memory task wrote this minute (gaming.txt in the bridge share, under 5 minutes old).
+# VmGrowing: it is still giving the VM memory while he is away ("mem=away, VM 12 -> 13 GB"); once it says "(its most)", "no more room" or
+# "refused", the VM takes no more, so work started then keeps its memory. GameChrome: its game check names a Chrome this minute.
+function ShareGaming(){ try{ $f=Join-Path $env:LOCALAPPDATA 'PillagersBridge\share\gaming.txt'; $i=Get-Item -LiteralPath $f -ErrorAction Stop
+  if(((Get-Date)-$i.LastWriteTime).TotalMinutes -gt 5){ return '' }; return [IO.File]::ReadAllText($f) }catch{ return '' } }
+function VmGrowing(){ return ((ShareGaming) -match '(?m)^mem=away, VM [0-9.]+ -> ') }
+function GameChrome(){ return ((ShareGaming) -match '(?m)^what=chrome\b') }
 function VMResizeSoon(){ if((FollowAway) -gt 0){ return $false }; $hm=HourMin; return ($hm -ge 2240 -and $hm -lt 2310) }
 function VMNight(){ if((FollowAway) -gt 0){ return $false }; $hm=HourMin; return ($hm -ge 2240 -or $hm -lt 645) }
 # ends only what this runner started: the test scripts run from C:\PillagersIdle, and the test Chromes (debug port and pillagers-cdp profile)
@@ -535,18 +544,37 @@ function IdleWork(){
 function Arrived(){ if($Idle){ return $false }; return ((AwaySec) -lt 30) }
 # the wait between rounds, looking for him every 5 seconds (10-26 SPARE-PRESENCE-PAUSE: on the spare PC too, for anyone)
 function Watch([int]$sec){
-  $end=(Get-Date).AddSeconds($sec); $k=0
+  $end=(Get-Date).AddSeconds($sec); $k=0; $lo=0
   while((Get-Date) -lt $end){
     Start-Sleep -Seconds 5; $k++
     if((AwaySec) -lt 30){ if($Idle){ Stop-Work 'he is back at the PC' }else{ Stop-Work ('someone is at the PC: '+$script:awayWhy) -Refund }; return }
     if($Idle -and ($k % 6) -eq 0){
-      if((FreeGB) -lt 4){ Stop-Work 'under 4 GB free'; return }
+      if((FreeGB) -lt 5){ $lo++ }else{ $lo=0 }
+      if($lo -ge 2){ PutS 'lowstop_t' ([string](Epoch)); Stop-Work 'under 5 GB free at two looks'; return }
       if(VMResizeSoon){ Stop-Work 'the VM takes its night memory at 23:00'; return }
+      # 10-28: if the main PC's game check reads the 4K robot as him playing (it skips pillagers-cdp Chromes since 10-24), the VM would be
+      # held to 30% of its processors: the robot goes back to 1080p for the rest of the day
+      if((-not $script:gcAtStart) -and (GameChrome) -and ((Running 'corpq\.sh|corpus-slices\.sh') -eq 0) -and (Running 'fuzz\.ps1.*-Port 9332\s.*3840x2160') -gt 0){ PutS 'no4k' ((Get-Date).ToString('yyyy-MM-dd')); Stop-Work 'the 4K robot reads as a game to the main PC game check: 1080p for the rest of today'; return }
     }
+    # 10-28: his 8802, the party copy and the bridge are looked after every minute while the runner works too (once per 5-minute round
+    # before: v35.38 took 319 s to reach his PC while robots ran); each throttles itself to 60 s
+    if($Idle -and ($k % 12) -eq 0){ Refresh-Party; Ensure-Bridge; Ensure-Play }
   }
 }
 
 $SelfHash=(Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash
+# 10-28: a new runner from GitHub is restarted into only when this Windows PowerShell can read it and it is ASCII. Otherwise this copy goes
+# on (it keeps 8802, the party copy and the bridge up), says PROBLEM once, and takes the next good copy from master.
+$script:badHash=''
+function NewRunnerOK(){
+  $h=(Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash
+  if($h -eq $SelfHash -or $h -eq $script:badHash){ return $false }
+  $msg=''
+  try{ $tk=$null; $er=$null; [void][Management.Automation.Language.Parser]::ParseFile($PSCommandPath,[ref]$tk,[ref]$er)
+    if($er -and $er.Count -gt 0){ $msg=([string]$er[0].Message)+' (line '+$er[0].Extent.StartLineNumber+')' } elseif([IO.File]::ReadAllText($PSCommandPath,[Text.Encoding]::GetEncoding(28591)) -match '[^\x00-\x7F]'){ $msg='it is not ASCII' } }catch{ return $true }
+  if($msg){ $script:badHash=$h; Say ('PROBLEM: the new runner from GitHub ('+$h.Substring(0,8)+') cannot be read, so this copy goes on: '+(Short $msg)); return $false }
+  return $true
+}
 Say ('spare runner started (pid '+$PID+', game v'+(GameVer)+')')
 
 function Ensure-Server(){
@@ -921,18 +949,26 @@ while($true){
   if($Idle){
     # IDLE MODE: while he is at the PC (or memory is short) nothing runs; a look every 20 seconds, a status note when that changes
     $away=AwaySec; $fg=FreeGB; $vmn=VMNight
-    $ng=$(if(VMResizeSoon){ 999 }elseif($script:working){ 4 }elseif($vmn){ 10 }else{ 6 })
-    $fw=FollowAway; $na=$(if($script:working -or $fw -le 0){ 900 }else{ [Math]::Max(900,($fw+2)*60) })
-    if($away -lt $na -or $fg -lt $ng){
-      $pw=$(if($away -lt 900){ 'paused: he is using the PC' }elseif($away -lt $na){ 'paused: the VM takes its memory first' }elseif($vmn){ 'paused: the VM has the memory at night' }else{ 'paused: under 6 GB free' })
-      if($script:working){ Stop-Work $pw }
+    # 10-28 (Main PC Correspondent): no more start-and-stop. 116 stints on 10-25 to 10-27 lasted a median 4 minutes: work started at 6 GB
+    # free while the VM was still growing into the same memory, and stopped at 4. Now, while the VM's memory follows him, nothing starts
+    # until the VM has stopped growing, a start needs 8 GB free (his 6 GB kept free plus the robot), work stops under 5 GB at two looks
+    # (Watch; under 4 at one look here), and after a memory stop nothing starts for 30 minutes. His rulings stand: the VM takes its memory
+    # first, 6 GB stay free.
+    $fw=FollowAway
+    $ng=$(if(VMResizeSoon){ 999 }elseif($script:working){ 4 }elseif($vmn){ 10 }else{ 8 })
+    $na=$(if($script:working -or $fw -le 0){ 900 }else{ [Math]::Max(900,($fw+2)*60) })
+    $grow=(-not $script:working) -and ($fw -gt 0) -and (VmGrowing)
+    $lowW=(-not $script:working) -and (((Epoch)-[long]('0'+(GetS 'lowstop_t'))) -lt 1800)
+    if($away -lt $na -or $fg -lt $ng -or $grow -or $lowW){
+      $pw=$(if($away -lt 900){ 'paused: he is using the PC' }elseif($away -lt $na -or $grow){ 'paused: the VM takes its memory first' }elseif($lowW){ 'paused: 30 minutes after a memory stop' }elseif($vmn){ 'paused: the VM has the memory at night' }else{ 'paused: under '+$ng+' GB free' })
+      if($script:working){ if($away -ge 900 -and $ng -lt 999 -and $fg -lt $ng){ PutS 'lowstop_t' ([string](Epoch)) }; Stop-Work $pw }
       Refresh-Party
       Ensure-Bridge
       Ensure-Play
       # a new runner is taken as soon as master moves (Refresh-Party asks GitHub every minute), not only at the 10-minute note
       if($script:lastMaster -and $script:lastMaster -ne $script:tookMaster -and ((Running 'corpq\.sh|corpus-slices\.sh') -eq 0)){
         $script:tookMaster=$script:lastMaster
-        if((Update-Game) -and (Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash -ne $SelfHash){
+        if((Update-Game) -and (NewRunnerOK)){
           Say 'a new copy of this runner came from GitHub: restarting'
           Remove-Item -LiteralPath $Hb -Force -ErrorAction SilentlyContinue
           Start-Process -FilePath wscript.exe -ArgumentList ('"'+$T+'\spare\spare-start.vbs"') | Out-Null
@@ -943,7 +979,7 @@ while($true){
       if((GetS 'pause_why') -ne $pw -or ((Epoch)-$pt) -ge ($PublishMin*60)){
         if((GetS 'pause_why') -ne $pw){ PutS 'pause_why' $pw; Say $pw }
         Write-Status $pw 0; Publish 'paused'
-        if(((Running 'corpq\.sh|corpus-slices\.sh') -eq 0) -and (Update-Game) -and (Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash -ne $SelfHash){
+        if(((Running 'corpq\.sh|corpus-slices\.sh') -eq 0) -and (Update-Game) -and (NewRunnerOK)){
           Say 'a new copy of this runner came from GitHub: restarting'
           Remove-Item -LiteralPath $Hb -Force -ErrorAction SilentlyContinue
           Start-Process -FilePath wscript.exe -ArgumentList ('"'+$T+'\spare\spare-start.vbs"') | Out-Null
@@ -970,7 +1006,7 @@ while($true){
       $pt=[Math]::Max([long]('0'+(GetS 'pub_t')),$script:pubTry)
       if($chg -or ((Epoch)-$pt) -ge ($PublishMin*60)){
         $script:pubTry=[long](Epoch); Write-Status $pw 0; Publish 'paused'
-        if(((Running 'corpq\.sh|corpus-slices\.sh') -eq 0) -and (Update-Game) -and (Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash -ne $SelfHash){
+        if(((Running 'corpq\.sh|corpus-slices\.sh') -eq 0) -and (Update-Game) -and (NewRunnerOK)){
           Say 'a new copy of this runner came from GitHub: restarting'
           Save-Hold $away
           Remove-Item -LiteralPath $Hb -Force -ErrorAction SilentlyContinue
@@ -1000,7 +1036,7 @@ while($true){
       else { Say ('full test run ended without finishing: '+(Split-Path $cf -Leaf)) }
     }
     if(Update-Game){
-      if((Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash -ne $SelfHash){
+      if((NewRunnerOK)){
         if($why){ Write-Status 'idle' (Running 'fuzz\.ps1'); Publish $why }
         Say 'a new copy of this runner came from GitHub: restarting'
         Remove-Item -LiteralPath $Hb -Force -ErrorAction SilentlyContinue
@@ -1012,14 +1048,24 @@ while($true){
     }
   }
   if(Arrived){ continue }
-  if((Running 'fuzz\.ps1.*-Port 9331(\s|$)') -eq 0){ Start-Robot 9331 'fixture-soak-spare1.html' }
-  # 10-22: Start-Robot takes a screen size (fuzz.ps1 -Size), but both robots here stay at 1080p. A 4K robot on the main PC reads as "he is gaming"
-  # to its game check (a program at 15% of the graphics card, 22:38 that night), which holds the VM to 30% of its processors; the VM plays the 4K robot.
-  if(Arrived){ continue }
-  # 10-26: on the spare (4 threads) a full run plus two robots chokes the robots: 5 to 10 connection failures an hour against about 1 with the two robots
-  # alone (fuzz.log 10-25 15:00 to 10-26 23:49), and their hang reports land on the build under test. While a full run goes, the second robot waits.
-  $fullRun=(-not $Idle) -and ((Running 'corpq\.sh|corpus-slices\.sh') -gt 0)
-  if((-not $fullRun) -and (Running 'fuzz\.ps1.*-Port 9332(\s|$)') -eq 0){ Start-Robot 9332 'fixture-soak-spare2.html' }
+  if($Idle){
+    # 10-28 (Main PC Correspondent), his "i don't think the party is any reason to not use the gpu": the main PC runs ONE robot, playing the
+    # 2-player raid at 4K in both windows on his RX 7900 XTX, the only frame numbers at party size on a real card (the VM has no graphics
+    # card). One, not two: its two 1080p robots found 0 problems in 960 raids, raid lines carry no port (two robots mix their numbers in one
+    # fuzz.log), and the memory goes further. The 10-22 reason for 1080p is gone: the main PC game check skips pillagers-cdp Chromes since
+    # 10-24; if it still reads the robot as a game, Watch puts it back to 1080p for the day (no4k).
+    # (a Chrome game he left drawing already shows in the game check: then this start plays 1080p and nothing is blamed on the robot)
+    if((Running 'fuzz\.ps1.*-Port 9332(\s|$)') -eq 0){ $script:gcAtStart=(GameChrome); Start-Robot 9332 'fixture-soak-spare2.html' $(if($script:gcAtStart -or (GetS 'no4k') -eq (Get-Date).ToString('yyyy-MM-dd')){ '' }else{ '3840x2160' }) }
+  } else {
+    if((Running 'fuzz\.ps1.*-Port 9331(\s|$)') -eq 0){ Start-Robot 9331 'fixture-soak-spare1.html' }
+    # 10-22: Start-Robot takes a screen size (fuzz.ps1 -Size), but both robots here stay at 1080p. A 4K robot on the main PC reads as "he is gaming"
+    # to its game check (a program at 15% of the graphics card, 22:38 that night), which holds the VM to 30% of its processors; the VM plays the 4K robot.
+    if(Arrived){ continue }
+    # 10-26: on the spare (4 threads) a full run plus two robots chokes the robots: 5 to 10 connection failures an hour against about 1 with the two robots
+    # alone (fuzz.log 10-25 15:00 to 10-26 23:49), and their hang reports land on the build under test. While a full run goes, the second robot waits.
+    $fullRun=(-not $Idle) -and ((Running 'corpq\.sh|corpus-slices\.sh') -gt 0)
+    if((-not $fullRun) -and (Running 'fuzz\.ps1.*-Port 9332(\s|$)') -eq 0){ Start-Robot 9332 'fixture-soak-spare2.html' }
+  }
   $cs='idle'; if((Running 'corpq\.sh|corpus-slices\.sh') -gt 0){ $cs='running '+(Split-Path (GetS 'corpus_file') -Leaf) }
   Write-Status $cs (Running 'fuzz\.ps1')
   $pt=[long]('0'+(GetS 'pub_t'))

@@ -15,7 +15,7 @@
 #   (2) the full regression corpus (corpq.sh, Chrome 9344): at most every 4 hours AND only on a new game HEAD (corpus_t and corpus_head
 #       in state.txt). It does not wait for the ship queue to be idle and takes no ship lock (it tests a frozen copy, tools/fxcorpus.html);
 #       one run takes 2.5 to 3.5 hours;
-#   (3) the local-LLM audits (tools/llm-night.ps1) once per new HEAD, only with 20+ GB of RAM free (the model holds about 12 GB);
+#   (3) the local-LLM audits (tools/llm-night.ps1) once per new HEAD; OFF since 10-28 unless caps.txt LOCAL_AI=1 (see the caps note);
 #   (4) once a day, the itch and GitHub backup catch-up (tools/itch-daily.sh); (4b) 10-27, his "Itch should also always get the latest
 #       build if that is feasible" and his later "please make sure itch is always getting the latest version": tools/itch-follow.sh in the
 #       background whenever it is not running (it looks at the last commit every 30 seconds and runs itch-daily.sh --itch for any build
@@ -178,7 +178,8 @@ $gm"; fi
     #     the model runs on the main PC's graphics card (PILLAGERS_OLLAMA_URL), so the VM's own RAM does not matter: it runs when that
     #     Ollama answers and the main PC is not busy (CPU under 60%, a rough "not gaming" sign, read through the host bridge). Without
     #     a remote Ollama it keeps the old rule (20+ GB free here, the model holds about 12 GB).
-    if [ "$(get llm_head)" != "$head" ] && [ "$(running 'llm-night\.ps1')" = "0" ] && llm_ok; then
+    #     10-28: off unless caps.txt says LOCAL_AI=1 (each load took the main PC to 0.2-1.8 GB free on 10-27; none of its hits was real).
+    if [ "$(grep -m1 '^LOCAL_AI=' "$R/tools/handoff/console/caps.txt" 2>/dev/null | cut -d= -f2 | tr -dc 01)" = 1 ] && [ "$(get llm_head)" != "$head" ] && [ "$(running 'llm-night\.ps1')" = "0" ] && llm_ok; then
       since=$(get llm_head); put llm_head "$head"
       echo "$(date +%H:%M) llm audits start, since ${since:-whole file}" >> "$LOG"
       (powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/llm-night.ps1" -Model qwen2.5-coder:14b ${since:+-Since $since} > /dev/null 2>&1
