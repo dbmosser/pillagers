@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.34 - NOTHING BEHIND THE TITLE, NO ROBOTS IN THE UNDERCROFT
+
+Co-op hunt while he was away. his order 10-27: get rid of the graphics behind the title screen, they make no sense, there are robots inside the undercroft and that should never happen. The title showed the Undercroft floor with a pillager and a sentry fighting each side of the menu
+
+MEASURED. Check 35.34 passes, and fails on v35.33.
 ## v35.33 - THE QUIET HUD, DETAILS THAT MATTER STAY
 
 Co-op hunt while he was away. his order 10-27: build the quiet hud, all 5 changes; with the grey rows retired the feed is the one place a raid line shows, and it drops a detail of five words or more, so the loaner line no longer said his own gun waits at The Stash and the 2 player Extracted line no longer said player 2 is still out

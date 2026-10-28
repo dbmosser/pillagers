@@ -132,15 +132,15 @@ ctx.fillText(_lg[_lk+1],_lcx+LH(12),_yy);
 '@
 
 SubRx @'
-var VER='35.29';
+var VER='35.33';
 '@ @'
-var VER='35.30';
+var VER='35.34';
 '@
 
-$pat = "(?m)^  now:'v35\.29:.*$"
+$pat = "(?m)^  now:'v35\.33:.*$"
 $c = ([regex]::Matches($s, $pat)).Count
 if ($c -ne 1) { throw "DEVNOW now line matched $c times, expected 1" }
-$new = "  now:'v35.30: the f1 key list opens on the left Check 35.30 fails on v35.29',"
+$new = "  now:'v35.34: the f1 key list opens on the left Check 35.34 fails on v35.33',"
 $s = [regex]::Replace($s, $pat, { param($m) $new })
 if (([regex]::Matches($s, "(?m)^  now:'")).Count -ne 1) { throw "more than one now key in DEVNOW" }
 $script:s = $s

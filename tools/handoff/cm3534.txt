@@ -1,0 +1,7 @@
+v35.34: nothing behind the title, no robots in the undercroft
+
+the title sits on a plain dark backdrop; no sentry fight on the floor and nobody in the crowd wears The Machine
+
+Check 35.34. Fails on v35.33.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

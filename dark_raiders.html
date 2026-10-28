@@ -3724,8 +3724,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.33';
-var VER_AT='2026-10-27 21:11';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.34';
+var VER_AT='2026-10-27 21:13';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -49701,7 +49701,9 @@ function hubRollLook(){
     // Measured before this line: 182 ghost masks and 172 Spartan helmets in
     // 2,000 rolls, so on an eight man floor one of the two was usually there.
     // v20.09: and the build now that it draws (v20.01), so the floor has Broad and Curved people in it too
-    for(var i=0;i<COSMETICS.length;i++){ var c=COSMETICS[i]; if(c.id==='crown'||c.crowd===0) continue; (byKind[c.kind]=byKind[c.kind]||[]).push(c.id); }
+    // v35.xx (cw-titleplain), HIS ORDER (2026-10-27): "there are robots inside the undercroft??? that should never happen". Nobody in the crowd wears
+    // The Machine (outrobot), the one outfit that is a robot; it stays on the rack for him, and The Android and The Trooper (people) still roll.
+    for(var i=0;i<COSMETICS.length;i++){ var c=COSMETICS[i]; if(c.id==='crown'||c.crowd===0||c.id==='outrobot') continue; (byKind[c.kind]=byKind[c.kind]||[]).push(c.id); }
     for(var k in byKind){ var ids=byKind[k], id=ids[(Math.random()*ids.length)|0]; if(k==='face') lk.faceMark=id; else lk[k]=id; }
   }
   return lk;
@@ -49736,6 +49738,8 @@ function hubErrandDest(c){
 // lens) and answers with twin shots, hits spark, the machine blows up and a new one rolls in, the pillager goes down now and then and gets up. The bodies
 // are the game's own drawOp and drawSentryS, the shots are tracers; it runs only while the title or the attract is up, on its own little random
 // generator (never the raid seed), 4 bodies, a few shots and at most 90 sparks a frame, so it costs nothing at 4K.
+// v35.xx (cw-titleplain), his order 2026-10-27: the fight is off the floor (no robots in the Undercroft) and nothing calls tskInit, tskStep or tskDraw
+// now; tskOn still keeps the floor labels and the belt off under the title and the attract pages.
 var TSK=null;
 function tskOn(){ var a=false; try{ a=!!(ATT&&ATT.on); }catch(_a){} return titleOn()||a; }
 function tskRnd(){ TSK.s=(Math.imul(TSK.s,1664525)+1013904223)>>>0; return TSK.s/4294967296; }
@@ -50779,8 +50783,8 @@ function drawHubWorld(dt){
   // No lamp fixtures here. The hub is a lit interior and HB has its own light
   // list; the raid's lamp pass reads G.lights and G is null on this screen.
   DR.push({k:p.y-((G&&G.map&&G.map.liftAt)?G.map.liftAt(p.x,p.y)*0.5:0),pl:1});
-  // v28.xx (cw-title-fight), Q52/Q54: the fights under the title and the attract pages, sorted with everything else.
-  if(tskOn()){ try{ if(!TSK) tskInit(); tskStep(dt); for(i=0;i<TSK.ents.length;i++) DR.push({k:TSK.ents[i].y,tk:TSK.ents[i]}); DR.push({k:99999,tk:{kind:'fx'}}); }catch(_tk){} }
+  // v35.xx (cw-titleplain), HIS ORDER (2026-10-27): "there are robots inside the undercroft??? that should never happen". The title fight (cw-title-fight,
+  // a pillager and a sentry each side of the menu, also on the floor behind the arcade attract pages) is no longer put on the floor: no machine is drawn here.
   // v15.75 (multiplayer, build 2): the party, sorted with the walls, the posts, the crowd and him. Only while a party is on.
   if(NET.on) netDrawPeers(DR);
   try{ netMatePeer(DR); }catch(_mp){}   // v30.xx (cw-p1p2): and the other window of the pair, when no linked party already draws him
@@ -50820,7 +50824,6 @@ function drawHubWorld(dt){
       wc.globalCompositeOperation='source-over';
     } else if(it.dp){
       hubDrawDrop(it.dp);   // v18.28: a crate someone dropped for a teammate
-    } else if(it.tk){ try{ tskDraw(it.tk); }catch(_td){ try{ wc.restore(); }catch(_tr){} }
     } else if(it.np){
       // v15.75 (multiplayer, build 2): one of the party. Only netDrawPeers puts one in this list, and only while a party is on.
       netDrawPeer(it.np);
@@ -51292,6 +51295,13 @@ function titleSceneReady(){
   if(HB) return true;
   try{ HB=buildHub(); if(!hubGround) hubGround=bakeHubGround(); }catch(_ts){ HB=null; }
   return !!HB;
+}
+// v35.xx (cw-titleplain), his order (2026-10-27): the title's own backdrop. The world canvas is one flat menu colour (--ui-bg, #111315) under the
+// title glass and the HUD canvas holds nothing, so no floor, no figure and no machine shows behind the title. titleSceneReady above stays for a
+// crate a teammate drops before this window has a floor (v18.58); the title no longer calls it.
+function titlePlainBack(){
+  try{ wc.save(); wc.setTransform(1,0,0,1,0,0); wc.globalAlpha=1; wc.globalCompositeOperation='source-over'; wc.fillStyle='#111315'; wc.fillRect(0,0,wc.canvas.width,wc.canvas.height); wc.restore(); }catch(_tpw){}
+  try{ ctx.save(); ctx.setTransform(1,0,0,1,0,0); ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height); ctx.restore(); }catch(_tph){}
 }
 // v21.17, HIS ASK (2026-10-08): "i want to record or capture myself playing somehow and then I want the game to play that when its
 // idling at the first screen/char select screen -- like how old arcade games would show gameplay while no one was playing".
@@ -54230,7 +54240,12 @@ function loop(ts){
   if(NET.on&&NET.specG) netSpecTick(dt);   // v16.14: the raid the host left runs on for the party still up top, whatever this window shows
   if(state==='hub'){
     try{ craftHoldStep(dt); }catch(_ch){}   // v11.75: the craft hold fills here
-    if(!HB&&titleOn()) titleSceneReady();   // v17.83: the floor under the title
+    // v35.xx (cw-titleplain), HIS ORDER (2026-10-27): "get rid of the graphics behind the title screen -- they make no sens,e, there are robots inside the
+    // undercroft??? that should never happen". v17.83 built the Undercroft floor while the title was up and drew it under the title glass, people milling
+    // and, since cw-title-fight, a pillager and a sentry fighting each side of the menu. The title now sits on a plain dark backdrop (titlePlainBack): no
+    // floor is built for it and none is drawn under it. A floor that already exists (the title called back from the floor, a party still linked) keeps its
+    // update here as before; only its drawing stops. ENTER THE UNDERCROFT builds and draws the floor as it always has (showScreen).
+    if(titleOn()){ if(HB){ try{ updateHubWorld(dt); }catch(_tpu){} } if(wc&&W>0) titlePlainBack(); return; }
     if(HB&&wc&&W>0){
       // v8.95: the HUD canvas holds whatever the last raid left there, so it is
       // cleared every frame. v11.58, from the 2026-09-06 menu audit: ABOVE the
@@ -54840,7 +54855,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.33: quiet hud: the feed keeps the details that matter (your gun waits at the stash, player 2 still out) Check 35.33 fails on v35.32',
+  now:'v35.34: the title sits on a plain dark backdrop; no sentry fight on the floor and nobody in the crowd wears The Machine Check 35.34 fails on v35.33',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

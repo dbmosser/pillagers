@@ -12,12 +12,12 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-if ($s.Contains("  {v:'35.30',what:")) { throw "check 35.30 is in the fixture already" }
+if ($s.Contains("  {v:'35.34',what:")) { throw "check 35.34 is in the fixture already" }
 
 SubRx @'
-  {v:'35.29',what:
+  {v:'35.33',what:
 '@ @'
-  {v:'35.30',what:'cw-f1left, his order 2026-10-27 ("hitting f1 to get the controls should be over on the left, not the middle of the screen"; on the picture he picked a: "just the f1 key list moves to the left side"): the compact list, the full list and the undercroft controls card draw at the left side, the feed lines step right of the opened list, and the list stays clear of the vitals, at 1080p and 4K',
+  {v:'35.34',what:'cw-f1left, his order 2026-10-27 ("hitting f1 to get the controls should be over on the left, not the middle of the screen"; on the picture he picked a: "just the f1 key list moves to the left side"): the compact list, the full list and the undercroft controls card draw at the left side, the feed lines step right of the opened list, and the list stays clear of the vitals, at 1080p and 4K',
    run:function(){
      if(!window.__deploy||!window.__endRaid||!window.__forceSize) return 'SKIP: no raid in this fixture';
      if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so nothing renders';
@@ -71,7 +71,7 @@ SubRx @'
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ proto.fillText=o; drawLegend=od; say=oSay; P.runs=r0; if(hud0!==undefined) P.hud=hud0; try{ if(typeof HB==='object'&&HB) HB.legend=false; }catch(_h){} try{ __forceSize(1920,1080); }catch(_f){} try{ if(G&&!G.over) __endRaid('abandon'); __topClear(); }catch(_c){} __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
-  {v:'35.29',what:
+  {v:'35.33',what:
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)
