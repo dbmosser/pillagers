@@ -8309,6 +8309,7 @@ window.__REGRESS=[
   {v:'34.89',what:'cw-hudcorner, his note of 2026-10-25 ("in raid, right hand lower corner menu and minizmized controls f1 key are awkward take a look"): the gun card is one plain panel that hugs its rows (as wide as they can read with that gun in hand) with even padding and no lime stub, and keeps one size and place for every gun through a shot, an empty magazine, a reload, aiming in, a reserve that loses or gains a figure and loot in the backpack; the folded f1 controls chip stands on the belt caption row just left of key 1 in the caption style, and F1 opens the list upward from it (it may end on the top of the use bar plate when it stands over the plate columns), clear of the vitals, the feed, the medals, the caption, the belt, the use bar of a bandage (and it does not move when the bandage goes on), both use bars of a bandage and a plate at once (from their first frame, and back in its place after), four power up timer chips and, with the ship called, the raised use bar (one or both) and the countdown, landing on each new place in its first frame with no flash, ending before 47 percent of the width, in career, the demo and the second window at 1080 and 4K, and still clear of the vitals, the feed, the belt and the use bar (one or both) and ending before 47 percent (or, where the feed leaves no such room, right against the feed and short of the middle) on a short screen (1280x720, 1366x768 and 1600x900, career and the demo, where the party type puts the belt spot beside the bars); a pad shows no chip',
    run:function(){
      if(!window.__deploy||!window.__endRaid||!window.__forceSize||typeof arcadeDeploy!=='function'||typeof hudPanel!=='function'||typeof bar!=='function'||typeof hudKey!=='function') return 'SKIP: no raid staging in this fixture';
+     var QH=(typeof riOpen==='function');   // 186b (cw-quiethud): the quiet hud draws no caption over the belt; the chip keeps its own strip on that row
      var bad=[], PR=CanvasRenderingContext2D.prototype, oT=PR.fillText, oR=PR.fillRect, oPanel=hudPanel, oBar=bar, oKey=hudKey, oPad=padOn, oSay=say, r0=P.runs, nsv=null, nsp=(typeof netSamePost==='function')?netSamePost:null, hud0=(P.hud===undefined)?undefined:JSON.stringify(P.hud), rec=null, done=0;
      var SZ=[[1920,1080,'1080'],[3840,2160,'4k']], MD=['career','demo','second window'], si, mi;
      function hit(a,b){ return !!(a&&b&&a.w>0&&b.w>0&&a.h>0&&b.h>0&&a.x<b.x+b.w-0.5&&b.x<a.x+a.w-0.5&&a.y<b.y+b.h-0.5&&b.y<a.y+a.h-0.5); }
@@ -8498,15 +8499,17 @@ window.__REGRESS=[
          // 2. the folded chip
          chip=(typeof LEGHINT!=='undefined'&&LEGHINT)?{x:LEGHINT.x,y:LEGHINT.y,w:LEGHINT.w,h:LEGHINT.h}:null; cs=capStrip(r); c0=(G.hotCells&&G.hotCells[0])||null; rs=Math.max(1,hudRes());
          if(!chip) bad.push(tag+'the folded chip did not draw');
-         else if(!cs||!c0) bad.push(tag+'no belt caption or belt this frame');
+         else if(QH&&cs) bad.push(tag+'the caption over the belt still draws (186b, the quiet hud: the ammo card names the gun)');
+         else if((!QH&&!cs)||!c0) bad.push(tag+'no belt caption or belt this frame');
          else {
-           if(!r.rects.some(function(q){ return q.c===cs.c&&Math.abs(q.x-chip.x)<=1&&Math.abs(q.y-chip.y)<=1&&Math.abs(q.w-chip.w)<=1&&Math.abs(q.h-chip.h)<=1; })) bad.push(tag+'the folded chip '+R(chip)+' is not drawn on a belt caption strip');
-           if(Math.abs(chip.y-cs.y)>1||Math.abs(chip.h-cs.h)>1) bad.push(tag+'the folded chip '+R(chip)+' is not on the belt caption row '+R(cs));
+           if(!r.rects.some(function(q){ return q.c===(cs?cs.c:'rgba(17, 19, 21, 0.72)')&&Math.abs(q.x-chip.x)<=1&&Math.abs(q.y-chip.y)<=1&&Math.abs(q.w-chip.w)<=1&&Math.abs(q.h-chip.h)<=1; })) bad.push(tag+'the folded chip '+R(chip)+' is not drawn on a belt caption strip');
+           if(cs&&(Math.abs(chip.y-cs.y)>1||Math.abs(chip.h-cs.h)>1)) bad.push(tag+'the folded chip '+R(chip)+' is not on the belt caption row '+R(cs));
+           if(!cs&&(chip.y+chip.h<c0.y-LH(16)*rs||chip.y+chip.h>c0.y+LH(8)*rs)) bad.push(tag+'the folded chip '+R(chip)+' is not on the row just over belt key 1 at '+Math.round(c0.y));
            ct=r.texts.filter(function(q){ return /controls$/.test(q.s)&&q.x+q.w/2>chip.x&&q.x+q.w/2<chip.x+chip.w&&q.y+q.h/2>chip.y&&q.y+q.h/2<chip.y+chip.h; })[0];
-           cc=r.texts.filter(function(q){ return /use$/.test(q.s)&&q.x+q.w/2>cs.x&&q.x+q.w/2<cs.x+cs.w&&q.y+q.h/2>cs.y&&q.y+q.h/2<cs.y+cs.h; })[0];
-           if(!ct||!cc) bad.push(tag+'the chip words or the caption words were not drawn');
-           else if(Math.abs(ct.px-cc.px)>0.05||ct.c!==cc.c) bad.push(tag+'the chip words are '+Math.round(ct.px*10)/10+'px '+ct.c+', the caption words '+Math.round(cc.px*10)/10+'px '+cc.c);
-           kf=r.keys.filter(function(q){ return /^f1$/.test(q.l)&&q.x>=chip.x-1&&q.x+q.w<=chip.x+chip.w+1&&q.y>=chip.y-1&&q.y+q.h<=chip.y+chip.h+1; })[0]; kc=r.keys.filter(function(q){ return q.x>=cs.x&&q.x<=cs.x+cs.w&&q.y>=cs.y-1&&q.y+q.h<=cs.y+cs.h+1; })[0];
+           cc=!cs?null:r.texts.filter(function(q){ return /use$/.test(q.s)&&q.x+q.w/2>cs.x&&q.x+q.w/2<cs.x+cs.w&&q.y+q.h/2>cs.y&&q.y+q.h/2<cs.y+cs.h; })[0];
+           if(!ct||(cs&&!cc)) bad.push(tag+'the chip words or the caption words were not drawn');
+           else if(cc&&(Math.abs(ct.px-cc.px)>0.05||ct.c!==cc.c)) bad.push(tag+'the chip words are '+Math.round(ct.px*10)/10+'px '+ct.c+', the caption words '+Math.round(cc.px*10)/10+'px '+cc.c);
+           kf=r.keys.filter(function(q){ return /^f1$/.test(q.l)&&q.x>=chip.x-1&&q.x+q.w<=chip.x+chip.w+1&&q.y>=chip.y-1&&q.y+q.h<=chip.y+chip.h+1; })[0]; kc=!cs?null:r.keys.filter(function(q){ return q.x>=cs.x&&q.x<=cs.x+cs.w&&q.y>=cs.y-1&&q.y+q.h<=cs.y+cs.h+1; })[0];
            if(!kf) bad.push(tag+'f1 is not a key cap on the chip');
            else if(kc&&kf.fill!==kc.fill) bad.push(tag+'the f1 cap is '+kf.fill+', the caption caps '+kc.fill);
            gap=c0.x-LH(4)-(chip.x+chip.w);
@@ -8673,7 +8676,7 @@ window.__REGRESS=[
            hh=hudHit(q.x,q.y); if(!hh||hh.id!=='cond') bad.push(tag+': with run info dragged over the fold tab the pointer answers for '+(hh?hh.id+' '+hh.part:'nothing'));
            press(q);
            if(P.hud.mmap&&P.hud.mmap.c) bad.push(tag+': with run info dragged over the fold tab a click there folded the minimap under it');
-           if(!(P.hud.cond&&P.hud.cond.c)) bad.push(tag+': with run info dragged over the fold tab a click on its chevron did not fold run info');
+           if((typeof riOpen==='function')?!(P.hud.cond&&P.hud.cond.o):!(P.hud.cond&&P.hud.cond.c)) bad.push(tag+': with run info dragged over the fold tab a click on its chevron did not '+((typeof riOpen==='function')?'open run info for good (186b, the quiet hud: it rests folded)':'fold run info'));
          }
          P.hud={}; frame();
        }
@@ -9954,7 +9957,7 @@ window.__REGRESS=[
   {v:'34.39',what:'cw-downedcard: no run info contract row wraps (it stays inside the panel), and the downed card is the shared raid panel with the timer as its biggest text',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame&&window.__loop)) return 'SKIP: this fixture cannot deploy and draw';
-     var proto=CanvasRenderingContext2D.prototype, o=proto.fillText, hp0=hudPanel, bad=[], panels=[], seen=[], g, p, i, j, n, md=mouse.down, kc=null;
+     var ri186=null, proto=CanvasRenderingContext2D.prototype, o=proto.fillText, hp0=hudPanel, bad=[], panels=[], seen=[], g, p, i, j, n, md=mouse.down, kc=null;
      function px(c){ var m=/([\d.]+)px/.exec(c.font); return m?parseFloat(m[1])*c.getTransform().a:0; }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -9966,6 +9969,7 @@ window.__REGRESS=[
        g.bagOpen=false; g.mapOpen=false;
        hudPanel=function(x,y,w,h){ panels.push({x:x,y:y,w:w,h:h,a:arguments[4],plain:arguments[5]}); return hp0.apply(this,arguments); };
        proto.fillText=function(t,x,y){ if(this===ctx&&typeof t==='string'&&t.length&&/\S/.test(t)){ seen.push({t:String(t),x:x,y:y,px:px(this),w:this.measureText(String(t)).width}); } return o.apply(this,arguments); };
+       if(typeof riOpen==='function'){ ri186=(P.hud&&P.hud.cond)?JSON.stringify(P.hud.cond):''; P.hud=P.hud||{}; P.hud.cond={o:1}; }   // 186b (cw-quiethud): run info rests folded to its count; it is measured open (its arrow, for good)
        __frame(0.001);
        n=0;
        for(i=0;i<seen.length;i++){
@@ -9998,7 +10002,7 @@ window.__REGRESS=[
          else if(!(tm>other+1)) bad.push('the timer is '+tm.toFixed(1)+' px, the biggest other text is '+other.toFixed(1));
        }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ proto.fillText=o; hudPanel=hp0; mouse.down=md; try{ if(kc) P.contracts=kc; var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     finally{ try{ if(ri186!==null&&P.hud){ if(ri186) P.hud.cond=JSON.parse(ri186); else delete P.hud.cond; } }catch(_r186){} proto.fillText=o; hudPanel=hp0; mouse.down=md; try{ if(kc) P.contracts=kc; var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
   {v:'34.38',what:'the Settings pane hint keeps its first clause whole and marks a cut with an ellipsis, never a bare mid-sentence stop',
    run:function(){
@@ -13778,13 +13782,15 @@ window.__REGRESS=[
   {v:'33.39',what:'cw-cornercompact2: the first corner cell is labelled cash and the two columns are 20 apart',
    run:function(){
      if(typeof trRow!=='function'||typeof trColDraw!=='function') return 'SKIP: no corner rows here';
-     if(String(trColDraw).indexOf("'cash'")<0) return 'the money cell has no cash label';
+     if(typeof riOpen==='function'){ if(String(trColDraw).indexOf("'cash'")>=0) return '186b (the quiet hud): the raid corner still has a cash cell'; }   // his order of 10-27: no wallet rows in a raid
+     else if(String(trColDraw).indexOf("'cash'")<0) return 'the money cell has no cash label';
      if(String(trRow).indexOf('cw+20')<0) return 'the two columns are not 20 apart';
      return null; }},
   {v:'33.38',what:'cw-cornercompact, his order: the raid corner money block is one short plate (at most 40 percent of the four-row height) at 1080 and 4K, all four figures drawn, the minimap one gap under it',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__frame&&window.__forceSize&&window.__runPrep&&window.__topClear&&window.__endRaid&&window.__P)) return 'SKIP: this fixture cannot deploy and draw';
      if(typeof trColDraw!=='function'||typeof trGeo!=='function'||typeof trDemo!=='function') return 'SKIP: no corner rows here';
+     var QH=(typeof riOpen==='function');   // 186b (cw-quiethud), his order of 10-27: no wallet rows in a raid, so the corner draws no figures and the minimap starts the column
      if(!window.innerWidth||!window.innerHeight) return 'SKIP: the pane is 0x0, nothing here can be measured';
      var bad=[], proto=CanvasRenderingContext2D.prototype, oFt=proto.fillText, own=Object.prototype.hasOwnProperty.call(ctx,'fillText'), f0=ctx.fillText;
      var sw=cv.style.width, sh=cv.style.height, hw=hcv.style.width, hh=hcv.style.height, sizes=[[1920,1080],[3840,2160]], k, g, gg, oldH, r, n, a, R, mb, keepC, keepX, p;
@@ -13803,11 +13809,12 @@ window.__REGRESS=[
          r=[]; if(own) delete ctx.fillText;
          proto.fillText=function(s){ if(this===ctx) r.push({s:String(s),al:this.textAlign}); return oFt.apply(this,arguments); };
          try{ n=trColDraw(); } finally { proto.fillText=oFt; if(own) ctx.fillText=f0; }
-         if(!(n>=4)) bad.push(sizes[k][0]+': the corner drew '+n+' figures');
+         if(QH){ if(n!==0) bad.push(sizes[k][0]+': 186b (the quiet hud): the raid corner drew '+n+' wallet figures'); }
+         else if(!(n>=4)) bad.push(sizes[k][0]+': the corner drew '+n+' figures');
          R=[]; for(a=0;a<r.length;a++) if(r[a].al==='right') R.push(r[a].s);
-         if(R[0]!=='$'+(4321).toLocaleString()||R[1]!==(77).toLocaleString()||!/^\$[0-9]/.test(R[2]||'')||!/^\$[0-9]/.test(R[3]||'')) bad.push(sizes[k][0]+': the four figures read '+R.slice(0,4).join(' | '));
+         if(!QH&&(R[0]!=='$'+(4321).toLocaleString()||R[1]!==(77).toLocaleString()||!/^\$[0-9]/.test(R[2]||'')||!/^\$[0-9]/.test(R[3]||''))) bad.push(sizes[k][0]+': the four figures read '+R.slice(0,4).join(' | '));
          __frame(0.016); mb=MMAP.box;
-         if(mb){ if(Math.abs(mb.y-Math.ceil((gg.y0+gg.rh+gg.gp)*gg.z))>1) bad.push(sizes[k][0]+': the minimap top '+mb.y+' is not one gap under the block'); }
+         if(mb){ if(QH){ if(Math.abs(mb.y-Math.ceil(gg.y0*gg.z))>1) bad.push(sizes[k][0]+': 186b (the quiet hud): the minimap top '+mb.y+' is not at the top of the corner column ('+Math.ceil(gg.y0*gg.z)+')'); } else if(Math.abs(mb.y-Math.ceil((gg.y0+gg.rh+gg.gp)*gg.z))>1) bad.push(sizes[k][0]+': the minimap top '+mb.y+' is not one gap under the block'); }
          else bad.push(sizes[k][0]+': no minimap box to measure the gap');
          try{ if(__state()&&!__state().over) __endRaid('abandon'); }catch(_e){}
          p=__P(); p.credits=keepC; p.xp=keepX;
@@ -17713,6 +17720,7 @@ window.__REGRESS=[
        __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||!g.player) return 'SKIP: no raid';
+       g.player.stam=50; if(typeof stamFade==='function'){ for(var f186=0;f186<2;f186++){ var t186=performance.now(); while(performance.now()-t186<110){} __frame(); } }   // 186b (cw-quiethud): the stamina bar shows only below full; drained, it fades in
        PR.fillText=function(s,x){ var t=String(s).toUpperCase(); if(t==='STAMINA'||t==='WINDED') xs.push(x); return of.apply(this,arguments); };
        __frame(); __frame();
        PR.fillText=of;
@@ -19812,7 +19820,8 @@ window.__REGRESS=[
        arm(tag,'with its right end 14 px left of the column',L-tw/2-14,cy,true);
        if(rows){
          // v28.xx (cw-cx-newreds): The compact block still protects its gap above the minimap from world labels.
-         if(pl.length===1&&mm.y-pl[0].y1>2){ gy=(pl[0].y1+mm.y)/2; arm(tag,'in the gap under the compact wallet',L+w/2,gy+py*0.35,false); }
+         if(typeof riOpen==='function'){ if(pl.length) bad.push(tag+': 186b (the quiet hud): '+pl.length+' wallet plates are still drawn above the minimap'); }   // his order of 10-27: no wallet rows in a raid, the minimap starts the column
+         else if(pl.length===1&&mm.y-pl[0].y1>2){ gy=(pl[0].y1+mm.y)/2; arm(tag,'in the gap under the compact wallet',L+w/2,gy+py*0.35,false); }
          else if(pl.length>=4&&pl[3].y0-pl[2].y1>2){ gy=(pl[2].y1+pl[3].y0)/2; arm(tag,'in the gap between the stash and backpack rows',L+w/2,gy+py*0.35,false); }
          else bad.push(tag+': no measurable protected gap above the minimap ('+pl.length+' row plates)');
        }
@@ -20547,9 +20556,9 @@ window.__REGRESS=[
            if(!label){bad.push(tag+': missing '+labs[i]+' in its compact cell');continue;}
            for(j=0;j<r.t.length;j++){q=r.t[j];if(q.al==='right'&&q.x>label.x&&q.x<=right+eps&&Math.abs(q.y-label.y)<.5){value=q;break;}}
            if(!value){bad.push(tag+': '+labs[i]+' has no figure in its cell');continue;}
-           if(i===0&&value.d!=='$'+(4471337).toLocaleString())bad.push(tag+': wrong cash figure '+value.d);
-           if(i===1&&value.d!==(98761).toLocaleString())bad.push(tag+': wrong xp figure '+value.d);
-           if((i===2||i===3)&&!/^\$[0-9,.]+$/.test(value.d))bad.push(tag+': '+labs[i]+' is not a money figure');
+           if(labs[i]==='cash'&&value.d!=='$'+(4471337).toLocaleString())bad.push(tag+': wrong cash figure '+value.d);
+           if(labs[i]==='xp'&&value.d!==(98761).toLocaleString())bad.push(tag+': wrong xp figure '+value.d);
+           if((labs[i]==='stash'||labs[i]==='backpack')&&!/^\$[0-9,.]+$/.test(value.d))bad.push(tag+': '+labs[i]+' is not a money figure');
            if(labs[i]==='notes logged'&&value.d!=='1')bad.push(tag+': wrong note count '+value.d);
            if(Math.abs(value.px-label.px)>.3)bad.push(tag+': label and figure type sizes differ');
            if(i%2&&rows[i-1]&&Math.abs(label.y-rows[i-1].y)>.5)bad.push(tag+': paired cells are on different baselines');
@@ -20557,7 +20566,7 @@ window.__REGRESS=[
            rows[i]=label;
          }
        }
-       for(i=0;i<r.t.length;i++){q=r.t[i];if(q.d==='run info')ref=q;if(q.x>=C.x&&q.x<=C.x+C.w&&q.y>=0&&q.y<=C.y+C.h&&q.d!==q.d.toLowerCase())bad.push(tag+': corner text is not lower case');}
+       for(i=0;i<r.t.length;i++){q=r.t[i];if(q.d==='run info'||((typeof riOpen==='function')&&/^(contracts|goals) \d+\/\d+/i.test(q.d)))ref=q;if(q.x>=C.x&&q.x<=C.x+C.w&&q.y>=0&&q.y<=C.y+C.h&&q.d!==q.d.toLowerCase())bad.push(tag+': corner text is not lower case');}
        if(!ref)bad.push(tag+': run info title missing');
      }
      try{
@@ -20569,7 +20578,7 @@ window.__REGRESS=[
        p0=__P(); p0.credits=4471337; p0.xp=98761; p0.hud={};
        g.tel.notes=[{t:1,txt:'probe note 4242'}];
        syncTopRight();
-       o=grab(); colL=HUDBOX.cond?HUDBOX.cond.x:0; colW=HUDBOX.cond?HUDBOX.cond.w:0; judge('career 1080p',o,true,true);
+       o=grab(); colL=HUDBOX.cond?HUDBOX.cond.x:0; colW=HUDBOX.cond?HUDBOX.cond.w:0; judge('career 1080p',o,typeof riOpen!=='function',true);   /* 186b (cw-quiethud): no wallet rows in a raid; the notes row stays */
        if(g.wx&&g.wx.name&&colL){   // the map header: the time and weather line ends left of the column (the page box it used to keep clear of is clipped in a raid)
          oSz=CFG.mmSz; CFG.mmSz=1.35; __frame(0.016); colL2=HUDBOX.cond?HUDBOX.cond.x:0;   // the large minimap, so the column starts well left of where the header ends on its own
          g.ents.length=0; g.bagOpen=false; g.mapOpen=true; TRG.hid=1;   // hid 1 is how a raid runs: the page readout is clipped, so only the column keeps the header off the corner
@@ -20593,7 +20602,7 @@ window.__REGRESS=[
          }
        }
        __forceSize(3840,2160); g.tel.notes=[];
-       o=grab(); judge('career 4k',o,true,false);
+       o=grab(); judge('career 4k',o,typeof riOpen!=='function',false);
        __endRaid('abandon'); __topClear();
        p0=__P(); p0.credits=keepC; p0.xp=keepX;
        __forceSize(1920,1080);
@@ -21155,14 +21164,15 @@ window.__REGRESS=[
        __deploy({kit:['gun_shotgun','gun_rifle'],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||!g.player||g.over) return 'SKIP: staging: no raid';
        g.bagOpen=false; g.mapOpen=false; g.paused=false; keys={}; mouse.down=false;
+       g.player.stam=50; if(typeof stamFade==='function'){ for(var f186=0;f186<2;f186++){ var t186=performance.now(); while(performance.now()-t186<110){} __frame(0.016); } }   // 186b (cw-quiethud): the stamina bar shows only below full; drained, it fades in
        ctx.fillText=function(s,x,y){ if(String(s)==='STAMINA'||String(s)==='WINDED'){ at=x; aw=ctx.measureText(String(s)).width; } return oFT.apply(this,arguments); };
-       try{ __frame(0.016); }finally{ ctx.fillText=oFT; }
+       try{ __frame(0.016); }finally{ delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; }
        if(at===null) return 'the stamina word is not drawn';
        if(at+aw>16+300+8+aw+1) return 'the stamina word starts too far right (x '+at+')';
        if(at>16+300+9) return 'the stamina word is past the 300 wide bar end plus gap (x '+at+')';
        return null;
      } finally {
-       ctx.fillText=oFT;
+       delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT;
        try{ __endRaid('abandon'); }catch(_e2){}
        __topClear();
      } }},
@@ -23929,22 +23939,23 @@ window.__REGRESS=[
   {v:'30.67',what:'the Run info panel has a white title and grey section headings, no lime (the critic, 10-19)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy';
-     var g=null, oF=ctx.fillText, rec=[], t, lime=[], i;
+     var g=null, oF=ctx.fillText, rec=[], t, lime=[], i, ri186=null;
      try{
        __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:['gun_shotgun','gun_rifle'],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||!g.player||g.over) return 'SKIP: staging: no raid';
        g.bagOpen=false; g.mapOpen=false; g.paused=false; keys={}; mouse.down=false;
+       if(typeof riOpen==='function'){ ri186=(P.hud&&P.hud.cond)?JSON.stringify(P.hud.cond):''; P.hud=P.hud||{}; P.hud.cond={o:1}; }   // 186b (cw-quiethud): run info rests folded to its count; it is measured open (its arrow, for good)
        ctx.fillText=function(s){ rec.push({s:String(s),c:String(this.fillStyle).toLowerCase()}); return oF.apply(this,arguments); };
-       try{ __frame(0.016); }finally{ ctx.fillText=oF; }
-       t=rec.filter(function(r){ return (/^run info$/i).test(r.s); });
+       try{ __frame(0.016); }finally{ delete ctx.fillText; if(ctx.fillText!==oF) ctx.fillText=oF; }
+       t=rec.filter(function(r){ return (/^run info$/i).test(r.s)||((typeof riOpen==='function')&&/^(contracts|goals) \d+\/\d+/i.test(r.s)); });
        if(!t.length) return 'the Run info panel is not drawn in this staging';
        if(t[t.length-1].c==='#e6ff3d') return 'the Run info title is lime';
        for(i=0;i<rec.length;i++){ if(rec[i].c==='#e6ff3d'&&(/^(run goals|contracts)$/i).test(rec[i].s)) lime.push(rec[i].s); }
        if(lime.length) return 'a Run info section heading is lime: '+lime.join(',');
        return null;
      } finally {
-       ctx.fillText=oF;
+       try{ if(ri186!==null&&P.hud){ if(ri186) P.hud.cond=JSON.parse(ri186); else delete P.hud.cond; } }catch(_r186){} delete ctx.fillText; if(ctx.fillText!==oF) ctx.fillText=oF;
        try{ __endRaid('abandon'); }catch(_e){}
        __topClear();
      } }},
@@ -26372,7 +26383,7 @@ window.__REGRESS=[
   {v:'29.61',what:'the run info panel is on the shared palette: accent headings and tx_1 goal rows, not the old off-palette amber and grey',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)||typeof goalsTick!=='function'||typeof careerPostBuild!=='function') return 'SKIP: this fixture cannot deploy and draw';
-     var bad=[], proto=CanvasRenderingContext2D.prototype, o=proto.fillText, heads={}, rowc=null, g, gl, i, key;
+     var bad=[], proto=CanvasRenderingContext2D.prototype, o=proto.fillText, heads={}, rowc=null, g, gl, i, key, ri186=null;
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
@@ -26384,14 +26395,15 @@ window.__REGRESS=[
        if(!(g.flow&&g.flow.goals&&g.flow.goals.length)) return 'SKIP: the raid has no run goals here';
        g.t=2; try{ goalsTick(0.1); }catch(_g2){}
        gl=g.flow.goals[0]; key=String(gl.t).slice(0,8).toLowerCase();
-       proto.fillText=function(t,x,y){ var s=String(t).toLowerCase(); if(/^(run info|run goals)$/.test(s)) heads[s]=String(this.fillStyle).toLowerCase(); else if(rowc===null&&key&&s.indexOf(key)===0) rowc=String(this.fillStyle).toLowerCase(); return o.apply(this,arguments); };
+       if(typeof riOpen==='function'){ ri186=(P.hud&&P.hud.cond)?JSON.stringify(P.hud.cond):''; P.hud=P.hud||{}; P.hud.cond={o:1}; }   // 186b (cw-quiethud): run info rests folded to its count; it is measured open (its arrow, for good)
+       proto.fillText=function(t,x,y){ var s=String(t).toLowerCase(); if(((typeof riOpen==='function')&&/^(contracts|goals) \d+\/\d+/i.test(s))) s='run info'; if(/^(run info|run goals)$/.test(s)) heads[s]=String(this.fillStyle).toLowerCase(); else if(rowc===null&&key&&s.indexOf(key)===0) rowc=String(this.fillStyle).toLowerCase(); return o.apply(this,arguments); };
        __frame(0.001);
        /* v32.xx (54-corpus-reds-c): the style guide keeps the accent for focus and the main action, so the headings read in tx_1 or tx_2; what must not come back is the old off-palette amber and grey */
        if(heads['run info']!==UIC.tx_1&&heads['run info']!==UIC.tx_2) bad.push('the run info heading is '+heads['run info']+', not tx_1 '+UIC.tx_1+' or tx_2 '+UIC.tx_2);
        if(heads['run goals']!==UIC.tx_1&&heads['run goals']!==UIC.tx_2) bad.push('the run goals heading is '+heads['run goals']+', not tx_1 '+UIC.tx_1+' or tx_2 '+UIC.tx_2);
        if(rowc!==UIC.tx_1) bad.push('the first goal row is '+rowc+', not tx_1 '+UIC.tx_1);
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ proto.fillText=o; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     finally{ try{ if(ri186!==null&&P.hud){ if(ri186) P.hud.cond=JSON.parse(ri186); else delete P.hud.cond; } }catch(_r186){} proto.fillText=o; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
   {v:'29.60',what:'the UI motion layer opens and closes a window on a steppable clock (240 ms ease-out with a 16 px rise, 140 ms close, 35 ms stagger of at most 8 items, 200 ms tab slide) and a press or a close mid-move retargets within one frame, with no jump over 12 percent',
    run:function(){
@@ -27069,7 +27081,7 @@ window.__REGRESS=[
        g=__state(); if(!g||!g.player||g.over) return 'SKIP: no live raid';
        g.bagOpen=false; g.mapOpen=false;
        want=parseFloat((/([\d.]+)px/).exec(String(FS(TYPE.label)))[1]);
-       proto.fillText=function(t,x,y){ if(/^run info$/i.test(String(t))){ var fm=(/([\d.]+)px/).exec(String(this.font)); hit=fm?parseFloat(fm[1]):0; } return o.apply(this,arguments); };
+       proto.fillText=function(t,x,y){ if(/^run info$/i.test(String(t))||((typeof riOpen==='function')&&/^(contracts|goals) \d+\/\d+/i.test(String(t)))){ var fm=(/([\d.]+)px/).exec(String(this.font)); hit=fm?parseFloat(fm[1]):0; } return o.apply(this,arguments); };
        __frame(0.001);
        if(hit===null) bad.push('the run info heading was not drawn');
        else if(Math.abs(hit-want)>0.6) bad.push('run info text is '+hit+' px, not the label size '+want);
@@ -34343,8 +34355,9 @@ window.__REGRESS=[
   {v:'27.42',what:'his answer: the run goals are rows of one panel with the contracts, called RUN INFO, and there is no separate goals panel; in the DEMO the panel holds the goals alone',
    run:function(){
      if(!window.__deploy||!window.__endRaid||!window.__frame||!window.__textTrace||typeof goalsHud!=='function'||typeof careerPostBuild!=='function') return 'SKIP: no raid or goals here';
-     var bad=[], g, tr, i, gl, at, wasA, ok;
+     var bad=[], g, tr, i, gl, at, wasA, ok, ri186=null;
      function at2(t){ return tr.filter(function(e){ return e.t.toUpperCase().indexOf(String(t).toUpperCase())===0; }); }
+     function ttl(){ return tr.filter(function(e){ return e.t.toUpperCase().indexOf('RUN INFO')===0||((typeof riOpen==='function')&&/^(contracts|goals) \d+\/\d+/i.test(e.t)); }); }   // 186b (cw-quiethud): the title is the count
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        try{ __pinDPR(1); }catch(_d){}
@@ -34358,8 +34371,9 @@ window.__REGRESS=[
        g.t=2; try{ goalsTick(0.1); }catch(_g2){}
        if(g.fd&&g.fd.lines.some(function(l){ return l.txt.indexOf('RUN GOALS')===0; })) bad.push('a RUN GOALS callout is still said at the start of the raid');
        gl=g.flow.goals[0];
+       if(typeof riOpen==='function'){ ri186=(P.hud&&P.hud.cond)?JSON.stringify(P.hud.cond):''; P.hud=P.hud||{}; P.hud.cond={o:1}; }   // 186b (cw-quiethud): run info rests folded to its count; it is measured open (its arrow, for good)
        tr=__textTrace(function(){ __frame(0.016); });
-       if(!at2('RUN INFO').length) bad.push('the panel is not called RUN INFO');
+       if(!ttl().length) bad.push('the panel is not called RUN INFO');
        if(at2('CONDITIONS').length) bad.push('the panel still says CONDITIONS');
        if(!at2('RUN GOALS').length) bad.push('RUN GOALS is not a heading of the panel');
        if(!at2(String(gl.t)).length) bad.push('the first run goal ('+gl.t+') is not drawn');
@@ -34369,10 +34383,10 @@ window.__REGRESS=[
        // the DEMO holds the goals only
        wasA=g.arcade; g.arcade=1;
        try{ for(i=0;i<3;i++) __frame(0.016); tr=__textTrace(function(){ __frame(0.016); }); } finally { g.arcade=wasA; }
-       if(!at2('RUN INFO').length) bad.push('the DEMO panel is not drawn');
+       if(!ttl().length) bad.push('the DEMO panel is not drawn');
        if(at2('CONTRACTS').length) bad.push('the DEMO panel lists contracts');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ try{ var g2=__state(); if(g2&&!g2.over){ g2.arcade=0; g2.career=0; g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     finally{ try{ if(ri186!==null&&P.hud){ if(ri186) P.hud.cond=JSON.parse(ri186); else delete P.hud.cond; } }catch(_r186){} try{ var g2=__state(); if(g2&&!g2.over){ g2.arcade=0; g2.career=0; g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
   {v:'27.41',what:'the cloud review (finding 22), the Overseer is not an endless crawler farm: it calls three crawlers at a time and twelve in all, however long the fight goes on',
    run:function(){
@@ -68265,6 +68279,7 @@ window.__REGRESS=[
          }
          return oFT.apply(this,arguments);
        };
+       g.player.stam=60; if(typeof stamFade==='function'){ for(var f186=0;f186<2;f186++){ var t186=performance.now(); while(performance.now()-t186<110){} __frame(0.016); } }   // 186b (cw-quiethud): the stamina bar shows only below full; drained, it fades in
        verify('STAMINA'); g.player.stam=1; g.player.stimT=0; g.player.stamLock=1; g.player.stamRelease=1; verify('WINDED');
        return bad.length?bad.join('; '):null;
      } finally {
@@ -95271,7 +95286,8 @@ window.__REGRESS=[
          var tg=trGeo(), edge=tg.yE/tg.z, top=tg.y0;
          if(!(ln.y>top&&ln.y<edge)) bad.push('the notes row is outside the compact wallet: '+ln.y+' vs '+top+'..'+edge);
          var prior=0; for(var j=0;j<rec.length;j++) if(/^(cash|xp|stash|backpack)$/.test(rec[j].t)&&rec[j].y>top&&rec[j].y<edge) prior=Math.max(prior,rec[j].y);
-         if(!prior||ln.y<=prior) bad.push('the notes row is not below the wallet figures');
+         if(typeof riOpen==='function'){ if(prior) bad.push('186b (the quiet hud): wallet figures are still drawn in the raid corner'); }   // his order of 10-27: the notes row is the only row
+         else if(!prior||ln.y<=prior) bad.push('the notes row is not below the wallet figures');
        }else if(ln.y<=bottom) bad.push('the notes line overlaps the legacy corner readout');
        if(ln&&ln.y>H) bad.push('the notes line is drawn off the canvas at y '+Math.round(ln.y));
        var C=(typeof HUDBOX!=='undefined')&&HUDBOX.cond;
