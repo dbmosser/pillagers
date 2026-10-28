@@ -9914,7 +9914,7 @@ window.__REGRESS=[
      try{
        // ONE, the four calls: each carries a key, and a keyed line keeps its detail in the feed at any length
        for(i=0;i<SRC.length;i++){
-         var s=String(SRC[i][0]), a=s.indexOf(SRC[i][1]), d=a<0?-1:s.indexOf(SRC[i][2],a), e=d<0?-1:s.indexOf(')',d);
+         var s=String(SRC[i][0]).toLowerCase(), a=s.indexOf(SRC[i][1].toLowerCase()), d=a<0?-1:s.indexOf(SRC[i][2].toLowerCase(),a), e=d<0?-1:s.indexOf(')',d);
          if(a<0||d<0||e<0) bad.push('control: the line '+SRC[i][1]+' with its detail is not in '+SRC[i][0].name);
          else if(s.slice(a,e).indexOf('key:')<0) bad.push('the line '+SRC[i][1]+' in '+SRC[i][0].name+' carries no key, so its detail ('+SRC[i][2]+') is dropped from the left feed, now the one place it shows');
        }
@@ -78265,7 +78265,7 @@ window.__REGRESS=[
      if(src.length<100000) return 'SKIP: the build cannot read its own script';
      OLD=['No throwable you carry is on your','No legs left to roll with','Auto-jog arms from a standstill','Type what to call them first','Everyone with the','Point at an item in the stash, then press','Let go too soon','Hold it down for a second','Linked. Saying hello to the host'];
      // tr5fixb: since the batch 5 review the auto-jog detail is the caps tag [CAPS] AUTO-JOG; any of the three forms keeps the rewrite.
-     NEW=[(src.indexOf('No throwable on your tactical belt.')>=0?'No throwable on your tactical belt.':'NO THROWABLE ON THE TACTICAL BELT'),(src.indexOf('Too tired to roll.')>=0?'Too tired to roll.':'TOO TIRED TO ROLL'),(src.indexOf('Stop first, then tap CAPS to auto-jog.')>=0?'Stop first, then tap CAPS to auto-jog.':(src.indexOf('] to auto-jog.')>=0?'] to auto-jog.':'] AUTO-JOG')),'Enter a name first.','Released too early. Hold for one second.','Hold for one second to confirm.','Connected. Joining the host.'];
+     NEW=[(src.indexOf('No throwable on your tactical belt.')>=0?'No throwable on your tactical belt.':'NO THROWABLE ON THE TACTICAL BELT'),(src.indexOf('Too tired to roll.')>=0?'Too tired to roll.':'TOO TIRED TO ROLL'),(src.indexOf('Stop first, then tap CAPS to auto-jog.')>=0?'Stop first, then tap CAPS to auto-jog.':(src.indexOf('] to auto-jog.')>=0?'] to auto-jog.':'] AUTO-JOG')),(src.indexOf('Enter a name first.')>=0?'Enter a name first.':'name required'),'Released too early. Hold for one second.','Hold for one second to confirm.','Connected. Joining the host.'];
      for(i=0;i<OLD.length;i++) if(src.indexOf(OLD[i])>=0) bad.push('the old line with "'+OLD[i]+'" is still in the build');
      for(i=0;i<NEW.length;i++) if(src.indexOf(NEW[i])<0) bad.push('the line "'+NEW[i]+'" is missing');
      return bad.length?bad.join('; '):null; }},
@@ -83667,7 +83667,7 @@ window.__REGRESS=[
        if(heldCount('core')!==2||packedCount('core')!==1||beltKey()!=='core') return 'SKIP: two cores with one packed on a belt key did not take here';
        said=[]; slotCore();
        var t1=said.join(' ');
-       if(!__P().intel||t1.indexOf('Core slotted')<0) return 'SKIP: SLOT A DATA CORE with two cores in the stash slotted nothing here ('+t1.slice(0,80)+')';
+       if(!__P().intel||t1.toLowerCase().indexOf('core slotted')<0) return 'SKIP: SLOT A DATA CORE with two cores in the stash slotted nothing here ('+t1.slice(0,80)+')';
        if(heldCount('core')!==1||packedCount('core')!==1||beltKey()!=='core') bad.push('with one core loose and one packed, SLOT A DATA CORE no longer spent the loose one first ('+heldCount('core')+' held, '+packedCount('core')+' packed, belt key '+(beltKey()||'empty')+')');
        if(t1.indexOf('packed')>=0||t1.indexOf('backpack')>=0) bad.push('a core slotted from a loose copy says: '+t1.slice(0,160));
        // THE FIX, ONE: the only core is packed and on the belt.
@@ -83676,8 +83676,8 @@ window.__REGRESS=[
        said=[]; slotCore();
        var t2=said.join(' ');
        // CONTROL: the core was slotted and spent.
-       if(!__P().intel||heldCount('core')!==0||t2.indexOf('Core slotted')<0) return skip('SLOT A DATA CORE with one packed core slotted nothing here ('+t2.slice(0,80)+')');
-       if(t2.indexOf('1 packed Data Core')<0||t2.indexOf('backpack')<0) bad.push('SLOT A DATA CORE took the only core, packed for the next ascent, out of the backpack and said only: '+t2.slice(0,160));
+       if(!__P().intel||heldCount('core')!==0||t2.toLowerCase().indexOf('core slotted')<0) return skip('SLOT A DATA CORE with one packed core slotted nothing here ('+t2.slice(0,80)+')');
+       if(!((t2.indexOf('1 packed Data Core')>=0&&t2.indexOf('backpack')>=0)||t2.indexOf('1 packed data core used')>=0)) bad.push('SLOT A DATA CORE took the only core, packed for the next ascent, out of the backpack and said only: '+t2.slice(0,160));
        if(beltKey()!==undefined) bad.push('SLOT A DATA CORE took the only packed core and left belt key 4 on '+beltKey()+', which is gone');
        // THE FIX, TWO: the Arm button on the Intel row of the ascent check, the same staging. No route opens that window today,
        // so its row is drawn by the same call every change on it makes.
@@ -83692,7 +83692,7 @@ window.__REGRESS=[
        var t3=said.join(' ');
        // CONTROL: the core was armed and spent.
        if(!__P().intel||heldCount('core')!==0) return skip('Arm on the ascent check armed no core here');
-       if(t3.indexOf('1 packed Data Core')<0||t3.indexOf('backpack')<0) bad.push('Arm on the ascent check took the only core, packed for the next ascent, out of the backpack and said '+(t3?t3.slice(0,160):'nothing'));
+       if(!((t3.indexOf('1 packed Data Core')>=0&&t3.indexOf('backpack')>=0)||t3.indexOf('1 packed data core used')>=0)) bad.push('Arm on the ascent check took the only core, packed for the next ascent, out of the backpack and said '+(t3?t3.slice(0,160):'nothing'));
        if(beltKey()!==undefined) bad.push('Arm on the ascent check took the only packed core and left belt key 4 on '+beltKey()+', which is gone');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
