@@ -3730,8 +3730,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.44';
-var VER_AT='2026-10-27 23:21';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.45';
+var VER_AT='2026-10-27 23:28';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -35160,6 +35160,7 @@ raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
     // because never being seen is a real thing that happened.
     s.textContent=(_fcE===null||_fcE===undefined)?'OUT CLEAN   \u00b7   NEVER SPOTTED':'';
     DEATH_FEED_HTML=recapHtml(T);   // v23.xx (feat3a): DAMAGE TAKEN, when anything hit you
+    if(DEATH_FEED_HTML) DEATH_FEED_HTML='<div class="ocrecap">'+DEATH_FEED_HTML+'</div>';   // v35.45 (cw-spmoney): on the EXTRACTED card the damage block is a footnote under the result, lined up with it (CSS ocrecap)
   }
   else if(how==='dead'){ t.textContent='KILLED IN ACTION'; t.style.color='var(--hazard)';
     var kn=(T.lastHitName&&T.deathKiller!=='timer')?T.lastHitName:String(T.deathKiller||'unknown').toUpperCase();
@@ -35235,8 +35236,10 @@ raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
   OC_LG=null;
   try{ if(G.career&&G.cs&&!G.sim&&(how==='extract'||how==='dead')) lines=ocLedger(how,lines,{acc:acc,sec:_tsec,hp:Math.round(G.player.hp),haul:haul}); }catch(_lg){ OC_LG=null; }   // v27.NN (cboard2): the AFTER ACTION LEDGER
   try{ if(!OC_LG){ var _kn2=0; for(var _kk2 in (T.kills||{})) _kn2+=(T.kills[_kk2]||0); lines=ocStatRow(lines,{c:T.containers|0,k:_kn2,acc:acc,sec:_tsec}); } }catch(_sr){}   // v28.xx (cw-endcard-stats): the stats row and the achievement chips
-  document.getElementById('oc_manifest').innerHTML=
-    (DEATH_FEED_HTML||'')+lines.join('<br>');
+  // v35.45 (cw-spmoney), HIS ORDER (2026-10-28) on the extracted card: "this extracted screen is an absolute mess". The result leads: on an extraction DAMAGE TAKEN
+  // comes after the ledger and the lines, where it was the first thing under the title; a KIA card still opens on what killed you.
+  document.getElementById('oc_manifest').innerHTML=(how==='extract')?
+    (lines.join('<br>')+(DEATH_FEED_HTML||'')):((DEATH_FEED_HTML||'')+lines.join('<br>'));
    try{ netScoreDraw(); }catch(_nsd){}   // v17.39: the PARTY block under the manifest
   DEATH_FEED_HTML='';
   selTags=[]; buildTags();
@@ -35416,31 +35419,42 @@ function ocLedger(how,lines,x){
     if((m=/^.* lost, \$([\d,]+) gone$/.exec(ln))){ lostV=+m[1].replace(/,/g,''); continue; }
     if(/^You extracted with \d+ of 100 health$/.test(ln)||ln.indexOf(' accuracy &middot; ')>=0||ln.indexOf('>ACHIEVEMENT: ')>=0) continue;
     if(/>(CAREER SCORE |SCORE LOST|CAREER BEST|CAREER BOARD #)/.test(ln)) continue;
+    // v35.45 (cw-spmoney): the xp line here reads "+2,782 xp" (or "+65 xp . 50% penalty"), as ocStatRow made it on every other card. The season total and the
+    // "next: ..., reward n of 100, ... claim it at the mainframe" sentence stay as hidden text (ocsr), so nothing that reads the card moves. In his picture of
+    // 2026-10-28 that sentence was the line cut in half behind the leaderboard button.
+    if((m=/^(<span style="color:var\(--amber\)">\+[\d,]+ XP)(?: (\((\d+)% penalty [^)]*\)))?(  &middot;  [\d,]+(?: of [\d,]+| XP in all))(<\/span>)(.*)$/.exec(ln))){ rest.push(m[1]+(m[3]?'  &middot;  '+m[3]+'% penalty':'')+'<span class="ocsr">'+(m[2]?' '+m[2]:'')+m[4]+'</span>'+m[5]+(m[6]?'<span class="ocsr">'+m[6]+'</span>':'')); continue; }
     rest.push(ln);
   }
   parts=[['COMBAT','KILLS',b.kill|0],['COMBAT','MEDALS',b.style|0],['OBJECTIVES','GOALS',b.goal|0],['OBJECTIVES','BOUNTY',b.bounty|0],['OBJECTIVES','STRONGHOLDS',b.strong|0],['OBJECTIVES','VAULTS',b.vault|0],['FORGE','UPGRADES',b.forge|0]];
   for(i=0;i<parts.length;i++) sum+=parts[i][2];
   if(s-sum!==0) parts.push(['OTHER','BONUSES',s-sum]);
+  // v35.45 (cw-spmoney), HIS ORDER (2026-10-28), on a picture of this card: "this extracted screen is an absolute mess -- money versus raid score/sp should never be
+  // intermingled". It was one list: sp rows, then the credits in $, then the haul, then a RAID TOTAL in $ drawn in the score's own gold. Now two panels side by side.
+  // RAID SCORE (gold, sp only): where each point came from, the x2 or the KIA half, and its total. MONEY (teal, $ only): items secured, haul value, the credits
+  // banked, and its total. No row carries both units and no total sits in the other panel. The figures, the classes the tally and the checks read (sc, cr, hv,
+  // tot, lost, haultot) and his rules (1 sp banks $1 on an extraction, KIA halves the score and banks nothing) are unchanged. The haul pictures sit under both.
+  var sh='', mh='';
   for(i=0;i<parts.length;i++){
     p=parts[i]; v=p[2]; if(!v) continue;
-    tg=(p[0]!==prev)?p[0]:''; prev=p[0];
-    h+=row('','<span class="lgt">'+tg+'</span><span class="lgl">'+p[1]+'</span>'+((v<0)?('<b>-'+arcadeCr(-v)+'</b>'):cnt(v,'')));
+    sh+=row('','<span class="lgl">'+p[1]+'</span>'+((v<0)?('<b>-'+arcadeCr(-v)+'</b>'):cnt(v,'')));
   }
-  if(ex) h+=row('','<span class="lgt">EXTRACTION</span><span class="lgl">x2</span>'+cnt(s,'+'));
-  else if(s>0) h+=row('lost','<span class="lgt">KIA</span><span class="lgl">-50%</span><b>-'+arcadeCr(s-fin)+'</b>');   // v28.67 (lean1): HIS RULE, KIA is a 50% score penalty
-  h+=row('sc','<span class="lgl">RAID SCORE'+((R&&R.best)?' <em class="lgpb">PERSONAL BEST</em>':'')+'</span>'+((fin>0)?cnt(fin,''):('<b>'+arcadeCr(0)+'</b>')));
-  if(ex) h+=row('cr','<span class="lgt">CREDITS</span><span class="lgl">BANKED</span>'+((fin>0)?cnt(fin,'+',1):'<b>+'+arcadeMoney(0)+'</b>'));
-  else h+=row('lost','<span class="lgt">CREDITS</span><span class="lgl">NOT BANKED</span><b><s>+'+arcadeMoney(fin)+'</s> LOST</b>');
+  if(ex) sh+=row('','<span class="lgl">EXTRACTION x2</span>'+cnt(s,'+'));
+  else if(s>0) sh+=row('lost','<span class="lgl">KIA -50%</span><b>-'+arcadeCr(s-fin)+'</b>');   // v28.67 (lean1): HIS RULE, KIA is a 50% score penalty
+  sh+=row('sc','<span class="lgl">TOTAL</span>'+((fin>0)?cnt(fin,''):('<b>'+arcadeCr(0)+'</b>')));
   if(ex){
-    h+=row('','<span class="lgt">HAUL</span><span class="lgl">ITEMS SECURED</span><b>'+ni+'</b>');
-    if(strip){ h+='<div class="lgstrip" style="--i:'+idx+'">'+strip+'</div>'; idx++; }
-    h+=row('hv','<span class="lgt"></span><span class="lgl">HAUL VALUE</span><b id="haultot" data-pre="">'+arcadeMoney(hv)+'</b>');
+    mh+=row('ni','<span class="lgl">ITEMS SECURED</span><b>'+ni+'</b>');
+    mh+=row('hv','<span class="lgl">HAUL VALUE</span><b id="haultot" data-pre="">'+arcadeMoney(hv)+'</b>');
+    mh+=row('cr','<span class="lgl">CREDITS BANKED</span>'+((fin>0)?cnt(fin,'+',1):'<b>+'+arcadeMoney(0)+'</b>'));
     tot=fin+hv;
   } else {
-    h+=row('lost','<span class="lgt">HAUL</span><span class="lgl">VALUE</span><b><s>'+arcadeMoney(lostV||x.haul||0)+'</s> LOST</b>');
+    mh+=row('lost','<span class="lgl">HAUL VALUE</span><b><s>'+arcadeMoney(lostV||x.haul||0)+'</s> LOST</b>');
+    mh+=row('lost','<span class="lgl">CREDITS NOT BANKED</span><b><s>+'+arcadeMoney(fin)+'</s> LOST</b>');
     tot=0;
   }
-  h+=row('tot'+(ex?'':' lost'),'<span class="lgl">RAID TOTAL</span>'+((tot>0)?cnt(tot,'',1):('<b>'+arcadeMoney(0)+'</b>')));
+  mh+=row('tot'+(ex?'':' lost'),'<span class="lgl">TOTAL</span>'+((tot>0)?cnt(tot,'',1):('<b>'+arcadeMoney(0)+'</b>')));
+  h+='<div class="lgcols"><div class="lgp lgps"><div class="lgh">RAID SCORE'+((R&&R.best)?' <em class="lgpb">PERSONAL BEST</em>':'')+'</div>'+sh+'</div>'+
+     '<div class="lgp lgpm"><div class="lgh">MONEY</div>'+mh+'</div></div>';
+  if(ex&&strip){ h+='<div class="lgstrip" style="--i:'+idx+'">'+strip+'</div>'; idx++; }
   for(kk in (T.kills||{})) kn+=(T.kills[kk]||0);
   tiles=[[kn,'KILLS'],[(x.acc|0)+'%','ACCURACY'],[T.containers|0,'CONTAINERS'],[fmtClock(x.sec|0),'TIME'],[ex?(x.hp|0):0,'HEALTH']];
   h+='<div class="lgst" style="--i:'+idx+'">';
@@ -35452,6 +35466,9 @@ function ocLedger(how,lines,x){
     h+='</div>'; idx++;
   }
   OC_LG={t:idx*0.09+0.35,end:0};
+  // v35.45 (cw-spmoney): the lines under the ledger go through ocStatRow like every other card, so each recovered gun is one name chip and a finished
+  // contract one chip, not a sentence a line (eight recovered guns were eight sentences and ran the card past 1080p). Their words stay as hidden text (ocsr).
+  try{ rest=ocStatRow(rest,{}); }catch(_osr){}
   return ['<div class="lg">'+h+'</div>'].concat(rest);
 }
 careerStyle('lgcss',
@@ -35474,7 +35491,25 @@ careerStyle('lgcss',
   '.lg .lgeb{width:92px;text-align:center}.lg .lgeb svg{width:46px;height:46px;display:block;margin:0 auto 4px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.6))}'+
   '.lg .lgeb i{display:block;font-style:normal;font-size:10.5px;letter-spacing:.14em;line-height:1.25;color:#ffe69a}'+
   '@keyframes lgin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}'+
-  '.lg.lgdone .lgr,.lg.lgdone .lgstrip,.lg.lgdone .lgst,.lg.lgdone .lgem{animation:none;opacity:1}');
+  '.lg.lgdone .lgr,.lg.lgdone .lgstrip,.lg.lgdone .lgst,.lg.lgdone .lgem{animation:none;opacity:1}'+
+  // v35.45 (cw-spmoney): the two panels. Each has one colour for its figures and its top bar (score gold #ffc04a, money teal #7fe3d4, the colours the
+  // RAID SCORE and CREDITS rows already had), rows at 16px with no tag column, and its total pinned to its foot so the two totals line up. The ledger takes the
+  // card's full 624px, so six medal emblems fit on one line.
+  '.lg{width:100%;max-width:624px}'+
+  '.lg .lgcols{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:stretch}'+
+  '.lg .lgp{display:flex;flex-direction:column;min-width:0;padding:12px 16px 14px;border:1px solid var(--ui-line,#2e3337);border-top:3px solid var(--lgc);border-radius:4px;background:rgba(0,0,0,.22)}'+
+  '.lg .lgps{--lgc:#ffc04a}.lg .lgpm{--lgc:#7fe3d4}'+
+  '.lg .lgh{display:flex;align-items:center;gap:8px;min-height:24px;margin:0 0 4px;font-size:16px;letter-spacing:.14em;color:var(--lgc)}'+
+  '.lg .lgh .lgpb{margin-left:auto;font-size:12px}'+
+  '.lg .lgp .lgr{grid-template-columns:1fr auto;gap:0 12px;padding:4px 0;font-size:16px;border-bottom:0}'+
+  '.lg .lgp .lgr .lgl{grid-column:auto;min-width:0}'+
+  '.lg .lgp .lgr b{color:var(--lgc)}.lg .lgp .lgr.ni b{color:var(--tx-1,#efe9dc)}.lg .lgp .lgr.lost b,.lg .lgp .lgr.lost .lgl{color:var(--rust)}'+
+  '.lg .lgp .lgr.sc,.lg .lgp .lgr.tot{margin-top:auto;padding:10px 0 0;border:0;border-top:1px solid var(--lgc);border-radius:0;background:none;font-size:28px;letter-spacing:.06em;color:var(--lgc)}'+
+  '.lg .lgp .lgr.sc .lgl,.lg .lgp .lgr.tot .lgl{align-self:center;font-size:16px;letter-spacing:.14em;color:var(--tx-2,#aaa498)}'+
+  '.lg .lgp .lgr.tot.lost{border-top-color:var(--rust)}'+
+  '#root #oc_manifest .ocrecap{width:100%;max-width:624px;margin:8px auto 0;text-align:left}'+
+  '#root #oc_manifest .ocrecap>div>div{font-size:16px !important;letter-spacing:.04em}'+
+  '#root #oc_manifest .ocrecap>div>div:first-child{letter-spacing:.14em;color:var(--tx-2,#aaa498) !important}');
 // v27.NN (cboard3), HIS ORDER (2026-10-15): "career mode should still have a leaderboard that is shown after every match". THE LEADERBOARD STEP. After a CAREER extraction
 // or death the run card has a second step in the same card (no second window): the ledger, then the haul reveal, then the LEADERBOARD. The continue control reads
 // LEADERBOARD on the first step; a click on it, ENTER or the pad A advances (the first press while the tally or the reveal runs only lands it, as before), and on the
@@ -55084,7 +55119,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.44: fewer raid messages: only danger, extraction, your teammate, goals done and failed tries show; the rest is in the run log on the pause box (43.3 to 30 lines a minute) Check 35.44 fails on v35.43',
+  now:'v35.45: the extracted card keeps score and money apart: score on the left in sp, money on the right in dollars Check 35.45 fails on v35.44',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

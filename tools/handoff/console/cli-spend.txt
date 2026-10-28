@@ -1332,3 +1332,10 @@
 2026-10-27 0.0832 critic-o-139-solo-pings
 2026-10-27 0.0000 o-139-solo-pings
 2026-10-27 0.0000 o-139-solo-pings
+2026-10-27 0.0000 o-120c-wallet-double-text
+2026-10-27 0.2248 critic-o-120c-wallet-double-text
+2026-10-27 0.0958 critic-o-120c-wallet-double-text
+2026-10-27 0.0957 critic-o-120c-wallet-double-text
+2026-10-27 0.0929 critic-o-120c-wallet-double-text
+2026-10-27 0.0941 critic-o-120c-wallet-double-text
+2026-10-27 0.0964 critic-o-120c-wallet-double-text

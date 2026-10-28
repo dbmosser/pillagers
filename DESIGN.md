@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.45 - THE EXTRACTED CARD SPLITS SCORE AND MONEY
+
+Co-op hunt while he was away. his order 10-28 with a picture of the extracted card: "this extracted screen is an absolute mess -- money versus raid score/sp should never be intermingled". The career ledger was one list: sp rows, the credits in $, the haul, and a raid total in $ drawn in the score gold; damage taken sat above the result; the card ran past 1080p so the xp line and a next reward sentence were cut off behind the button. Now a raid score panel (sp only, gold) and a money panel ($ only, teal) side by side, each with its own total; the haul pictures under both; damage taken under the result on an extraction; the xp line is the figure only. Same figures and same rules (1 sp banks 1 dollar on an extraction, KIA halves the score).
+
+MEASURED. Check 35.45 passes, and fails on v35.44.
 ## v35.44 - FEWER RAID MESSAGES
 
 Co-op hunt while he was away. his complaint 10-27: too many messages reach the player (he left the design to us; built to the research rule of that night). Only the ladder reaches the screen: danger or teammate down, extraction, teammate news, a goal done, and the answer to something that did not work; the rest go to the run log, which the pause box lists. The left feed shows 3 lines that fade out after 5 s and takes one new line every 2.5 s; a goal done waits out the fight. His order 10-27 ~22:35 (the game told him about extraction b far across the map): an exit closing is said only for the exit you are heading to or one within 60 m. Kill lines, contract item nearby and all of looting are as they were. Measured in a staged 3 minute raid (seed 4242: looting, a fight, an extraction): 43.3 lines a minute before, 30 after

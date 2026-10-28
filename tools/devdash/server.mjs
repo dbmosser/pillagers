@@ -163,24 +163,34 @@ function data() {
   const daysLeft = Math.max(1, Math.round((new Date(end) - new Date(today)) / 864e5) + 1), share = Math.max(0, (total - before) / daysLeft);
   const tasks = existsSync(C + '/tasks') ? readdirSync(C + '/tasks').filter(f => f.endsWith('.md')).sort() : [];
   const lane = f => /^[0-9]/.test(f) ? 'a' : f[0];
+  // 10-27 (Dashboard Correspondent): old marks a helper that is switched off (no news for 2 days, nothing running, nothing queued),
+  // so the page folds D, E and F into one line instead of showing their 10-18 and 10-19 notes as news
   const lanes = ['a', 'b', 'c', 'd', 'e', 'f', 'o'].filter(l => l < 'd' || existsSync(C + '/status-' + l + '.txt')).map(l => ({ lane: l, status: rd(C + '/status-' + l + '.txt').trim(), busy: existsSync(C + '/lane-' + l + '.lock'),
-    queue: tasks.filter(f => lane(f) === l).map(f => f.replace(/\.md$/, '')) }));
+    queue: tasks.filter(f => lane(f) === l).map(f => f.replace(/\.md$/, '')) })).map(x => ({ ...x, old: !x.busy && !x.queue.length && (ageS(C + '/status-' + x.lane + '.txt') ?? 1e9) > 2 * 86400 }));
   const lockOwner = existsSync(S + '/shipq.lock') ? rd(S + '/shipq.owner').trim() : '';
-  const commits = git(['log', '-14', '--format=%h|%ad|%s', '--date=format:%m-%d %H:%M']).split('\n').filter(Boolean).map(l => l.split('|'));
+  // 10-27: format-local, so a commit made in a cloud chat shows his clock time (02:54 was 22:54 here)
+  const commits = git(['log', '-14', '--format=%h|%ad|%s', '--date=format-local:%m-%d %H:%M']).split('\n').filter(Boolean).map(l => l.split('|'));
   const shipsToday = git(['log', '--since=midnight', '--format=%s']).split('\n').filter(s => /^v\d+\.\d+:/.test(s)).length;
   const hb = ageS(N + '/runner.heartbeat');
   const titles = {}; (tail(S + "/shipq.log", 12).join(" ") + " " + lockOwner).replace(/cw-[A-Za-z0-9_-]+/g, k => { if (!titles[k]) { try { titles[k] = JSON.parse(rd(R + "/tools/handoff/drafts/draft-" + k + ".json").replace(/^﻿/, "")).title || ""; } catch {} } return k; });
   const st = kv(R + '/tools/handoff/stable.txt');
   // 10-20: his notes from the main PC (tools/fetch-notes.mjs, coord-01) and the spare PC (tools/spare/spare-import.mjs)
   const notes = rd(R + '/tools/handoff/notes-fetch.txt').trim().slice(0, 240), spare = rd(R + '/tools/handoff/spare-status.txt').trim().slice(0, 300);
+  // 10-27: the version his main PC serves on 8802 (tools/handoff/onhispc.sh), the version on itch (the runner's itch step), the feature
+  // jobs parked until 11/1 (his 10-27 "no new features until Nov 1"), and whether this page's copy reaches his desktop (the bridge)
+  const op = tail(C + '/onhispc.txt', 20).reverse().map(l => /^(\d\d-\d\d \d\d:\d\d) .*\(8802 serves ([\d.]+)\)/.exec(l)).find(Boolean);
+  const after = existsSync(C + '/after-nov1') ? readdirSync(C + '/after-nov1').filter(f => f.endsWith('.md')).length : 0;
   return { now: new Date().toLocaleTimeString(), ver: ver(), shipsToday, cpu, notes, spare, spareInfo: spareInfo(),
+    onPc: op ? { ver: op[2], at: op[1] } : null, itch: rd(N + '/itch-ver.txt').trim(), afterNov1: after,
+    link: { ok: snapOkAt > snapFailAt, okAt: snapOkAt, failAt: snapFailAt },
     stable: { version: st.version || '', at: st.at || '', address: st.address || '', frozen: existsSync(R + '/tools/handoff/stable.freeze') }, report: latestReport(), ramFree: +(os.freemem() / 2 ** 30).toFixed(1), ramTot: Math.round(os.totalmem() / 2 ** 30), cpus: os.cpus().length,
     procs, runnerAgeS: hb, lockOwner, titles, lanes, stopFile: existsSync(C + '/STOP'),
     spend: { real: !!real, today: +(real ? real.today_usd : spentToday0).toFixed(2), all: +(real ? real.month_usd : spentAll0).toFixed(2), total, share: +share.toFixed(2), daysLeft, end },
     done: existsSync(C + '/done') ? readdirSync(C + '/done').length : 0, failed: existsSync(C + '/failed') ? readdirSync(C + '/failed') : [],
     blocked: existsSync(C + '/blocked') ? readdirSync(C + '/blocked').filter(f => f.endsWith('.md')).map(f => ({ job: f.slice(0, -3), on: rd(C + '/blocked/' + f.slice(0, -3) + '.on').trim() })) : [],
     questions: tail(C + '/for-you.md', 12), plan: plan(), runs: tail(C + '/runs.log', 10), shipq: tail(S + '/shipq.log', 12),
-    ai: ai(), nightly: tail(N + '/nightly.log', 8), fuzz: tail(R + '/tools/handoff/fuzz/fuzz.log', 4), review: tail(C + '/review/review.log', 3), commits };
+    // 10-27: only the runner's own time-stamped lines (butler's "Use the butler status" and raw bridge JSON leaked onto the page)
+    ai: ai(), nightly: tail(N + '/nightly.log', 60).filter(l => /^(\d\d-\d\d )?\d\d:\d\d /.test(l)).slice(-8), fuzz: tail(R + '/tools/handoff/fuzz/fuzz.log', 4), review: tail(C + '/review/review.log', 3), commits };
 }
 const PAGE = () => rd("C:/claudecode/dark raiders/tools/devdash/index.html");   // read per request, so edits show at once
 http.createServer((q, s) => {
@@ -206,7 +216,7 @@ const SNAP_TAIL = "tick();(function(){var age=Math.round((Date.now()-window.__SN
   "if(age>120)$('upd').innerHTML='<span class=\"warn\">No news from the VM for '+Math.round(age/60)+' min (it may be restarting); this page keeps trying</span>';" +
   "try{var y=sessionStorage.getItem('dashY');if(y)scrollTo(0,+y);}catch(e){}" +
   "setTimeout(function(){try{sessionStorage.setItem('dashY',String(scrollY));}catch(e){}location.reload();},30000);})();";
-let snapBusy = false, snapErrAt = 0, snapSig = '', snapSent = 0;
+let snapBusy = false, snapErrAt = 0, snapSig = '', snapSent = 0, snapOkAt = 0, snapFailAt = 0;
 function snapshot(d) {
   d = d || data(); d.snapAt = Date.now();
   return PAGE()
@@ -221,14 +231,15 @@ function pushSnap0() {
   if (snapBusy) return;
   // 10-25: a copy goes only when something on the page changed, or 90 s after the last one (the page warns after 120 s of silence),
   // not every 30 s regardless: while the helpers rest most copies were the same page with a new clock.
-  const d = data(), sig = JSON.stringify({ ...d, now: 0, cpu: 0, ramFree: 0, runnerAgeS: 0, procs: { ...d.procs, t: 0 }, ai: { ...d.ai, local: { ...d.ai.local, loaded: 0 } },
+  const d = data(), sig = JSON.stringify({ ...d, now: 0, cpu: 0, ramFree: 0, runnerAgeS: 0, procs: { ...d.procs, t: 0 }, link: d.link.ok, ai: { ...d.ai, local: { ...d.ai.local, loaded: 0 } },
     plan: d.plan && { ...d.plan, ageS: 0, line: 0, perDay: 0, catchUp: 0 }, spareInfo: { ...d.spareInfo, seenEpoch: 0, mainPc: d.spareInfo.mainPc && { ...d.spareInfo.mainPc, seenEpoch: 0 } } });
   if (sig === snapSig && Date.now() - snapSent < 90e3) return;
   snapBusy = true; snapSig = sig; snapSent = Date.now();
   try { writeFileSync(SNAP_TMP, snapshot(d)); } catch (e) { snapBusy = false; return; }
   execFile(process.execPath, [R + '/tools/bridge/hostctl.mjs', 'share-put', 'name=' + SNAP_NAME, '--file', SNAP_TMP], { timeout: 20000, windowsHide: true }, (err, out, errOut) => {
     snapBusy = false;
-    if ((err || !/"ok":\s*true/.test(String(out))) && Date.now() - snapErrAt > 600000) {
+    const ok = !err && /"ok":\s*true/.test(String(out)); if (ok) snapOkAt = Date.now(); else snapFailAt = Date.now();
+    if (!ok && Date.now() - snapErrAt > 600000) {
       snapErrAt = Date.now();
       try { appendFileSync(SNAP_LOG, new Date().toISOString() + ' push failed: ' + String((err && err.message) || out || errOut).replace(/\s+/g, ' ').slice(0, 300) + '\n'); } catch {}
     }

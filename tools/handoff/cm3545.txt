@@ -1,0 +1,7 @@
+v35.45: the extracted card splits score and money
+
+the extracted card keeps score and money apart: score on the left in sp, money on the right in dollars
+
+Check 35.45. Fails on v35.44.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
