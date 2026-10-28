@@ -3744,8 +3744,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.77';
-var VER_AT='2026-10-28 09:35';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.78';
+var VER_AT='2026-10-28 10:03';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -11639,6 +11639,7 @@ function strikeTick(dt){
     if(S.t>0) continue;
     // THE BOLT. Everything below happens once, on the frame it lands.
     G.strikes.splice(i,1);
+    try{ boltMark(S); }catch(_bm){}   // v35.xx (cw-skybolt): the sky bolt picture only; nothing in the sim reads it and it draws no random number
     if(S.rm){ lightningFlash(); if(!G.sim) sfxHere('alarm',S.x,S.y); continue; }   // v16.06: a host bolt on a linked window: the flash and the crack only; the host lands the hit (netAreaHitPeers) // v28.xx (cw-cx-flashdefault): the peer bolt uses the same visual limiter.
     lightningFlash(); // v28.xx (cw-cx-flashdefault): the local bolt uses the same visual limiter.
     var d=dist(p,S);
@@ -23729,6 +23730,70 @@ function brightFlashOk(){
 // v28.xx (cw-cx-flashdefault): keep the real lightning timer for bot sight, damage and sound; limit only the sheet and fog lift.
 function lightningFlash(){ G.lightning=0.34; G._flashBolt=brightFlashOk(); }
 function lightningVisual(){ return CFG.flashRed===1&&!G._flashBolt?0:(G.lightning||0); }
+// v35.xx (cw-skybolt), HIS ORDER (2026-10-28): "when the lightning hits, along with the flash, it would be cool to have a white jagged line lightning
+// grahpic extend from the top of the screen down to the hit location, so it looks like sky-to-ground lightning". RENDER ONLY: boltMark keeps where a strike
+// landed (never in the sim), drawBolts draws it in screen space from the top edge of the view down to the strike point for BOLT_LIFE seconds, with the
+// flash, so it works at any zoom. The jagged shape and its forks come from a hash of the strike number and spot (boltShape), never from a game random
+// stream, so the seed fingerprint and replays do not move and both party windows draw the same bolt. Effects reduced or a flash the reduced flashing
+// limiter held back: no bolt. A strike off screen: no bolt.
+var BOLT_LIFE=0.32;
+function boltSeed(S){ var h=(((S.id||S.rid||0)|0)*2654435761)^(Math.round(+S.x||0)*40503)^(Math.round(+S.y||0)*9973); return (h>>>0)||1; }
+function boltMark(S){
+  if(typeof G==='undefined'||!G||G.sim||!S||!isFinite(+S.x)||!isFinite(+S.y)) return;
+  var Lb=G.bolts||(G.bolts=[]);
+  Lb.push({x:+S.x,y:+S.y,t:0,s:boltSeed(S)});
+  if(Lb.length>4) Lb.shift();
+}
+function boltRand(seed){ var s=(seed>>>0)||1; return function(){ s=(s+0x6D2B79F5)>>>0; var t=s; t=Math.imul(t^(t>>>15),t|1); t^=t+Math.imul(t^(t>>>7),t|61); return ((t^(t>>>14))>>>0)/4294967296; }; }
+// The bolt as fractions: f runs from 0 at the top edge to 1 at the strike, d is the sideways kick in bolt lengths. The main line is a random walk pinned at
+// both ends (a bridge), so it always leaves the top and always lands on the strike; two or three forks branch off it going down and out.
+function boltShape(seed){
+  var r=boltRand(seed), n=16, w=[0], m=[], fk=[], i, j, d=0, f;
+  for(i=1;i<=n;i++){ d+=(r()-0.5)*0.13; w.push(d); }
+  for(i=0;i<=n;i++){ f=(i===0||i===n)?i/n:(i+(r()-0.5)*0.55)/n; m.push({f:f,d:w[i]-w[n]*i/n}); }
+  var nf=2+((r()*2)|0);
+  for(j=0;j<nf;j++){
+    var at=2+((r()*(n-6))|0), side=r()<0.5?-1:1, q=m[at], pts=[{f:q.f,d:q.d}], ff=q.f, fd=q.d, segs=3+((r()*2)|0);
+    for(i=0;i<segs;i++){ ff+=0.022+r()*0.03; fd+=side*(0.02+r()*0.04)+(r()-0.5)*0.025; pts.push({f:Math.min(0.97,ff),d:fd}); }
+    fk.push(pts);
+  }
+  return {lean:(r()-0.5)*0.5, m:m, fk:fk};
+}
+// Brightness over the bolt life: full, a quick dip, full again (the double flicker), then out.
+function boltEnv(t){ if(!(t>=0)||t>=BOLT_LIFE) return 0; if(t<0.06) return 1; if(t<0.10) return 0.3; if(t<0.15) return 0.95; return 0.95*Math.max(0,1-(t-0.15)/(BOLT_LIFE-0.15)); }
+function drawBolts(c,dt,Z,ox,oy,VWp,VHp){
+  var Lb=(typeof G!=='undefined'&&G)?G.bolts:null, i, j, b, n=0;
+  if(!Lb||!Lb.length) return 0;
+  var step=Math.max(0,Math.min(0.1,+dt||0));
+  for(i=Lb.length-1;i>=0;i--){ Lb[i].t+=step; if(!(Lb[i].t<BOLT_LIFE)) Lb.splice(i,1); }
+  if(!Lb.length||CFG.fxLevel===0||(CFG.flashRed===1&&!G._flashBolt)) return 0;
+  var k=Math.max(1,VHp/1080), fK=flashK();
+  c.save();
+  try{
+    c.lineJoin='miter'; c.miterLimit=3; c.lineCap='round';
+    for(i=0;i<Lb.length;i++){
+      b=Lb[i]; var a=boltEnv(b.t)*fK; if(a<0.02) continue;
+      var sx=(b.x-ox)*Z, sy=(b.y-oy)*Z;
+      if(sx<-40||sx>VWp+40||sy<12||sy>VHp+40) continue;
+      var sh=b.sh||(b.sh=boltShape(b.s)), x0=sx+sh.lean*sy, y0=-4*k, len=Math.sqrt((sx-x0)*(sx-x0)+(sy-y0)*(sy-y0));
+      var line=function(list){ var u, q=list[0]; c.moveTo(x0+(sx-x0)*q.f+q.d*len,y0+(sy-y0)*q.f); for(u=1;u<list.length;u++){ q=list[u]; c.lineTo(x0+(sx-x0)*q.f+q.d*len,y0+(sy-y0)*q.f); } };
+      c.globalCompositeOperation='lighter';
+      c.beginPath(); line(sh.m); for(j=0;j<sh.fk.length;j++) line(sh.fk[j]);
+      c.strokeStyle='rgba(185,205,255,'+(0.45*a).toFixed(3)+')'; c.lineWidth=12*k; c.stroke();
+      var rg=c.createRadialGradient(sx,sy,0,sx,sy,50*k);
+      rg.addColorStop(0,'rgba(255,255,255,'+(0.95*a).toFixed(3)+')'); rg.addColorStop(1,'rgba(190,210,255,0)');
+      c.fillStyle=rg; c.beginPath(); c.arc(sx,sy,50*k,0,6.2832); c.fill();
+      c.globalCompositeOperation='source-over';
+      c.beginPath(); for(j=0;j<sh.fk.length;j++) line(sh.fk[j]);
+      c.strokeStyle='rgba(240,246,255,'+(0.9*a).toFixed(3)+')'; c.lineWidth=2*k; c.stroke();
+      var lg=c.createLinearGradient(x0,y0,sx,sy);
+      lg.addColorStop(0,'rgba(255,255,255,'+(0.8*a).toFixed(3)+')'); lg.addColorStop(1,'rgba(255,255,255,'+a.toFixed(3)+')');
+      c.beginPath(); line(sh.m); c.strokeStyle=lg; c.lineWidth=3.6*k; c.stroke();
+      n++;
+    }
+  } finally { c.globalCompositeOperation='source-over'; c.restore(); }
+  return n;
+}
 function flash(x,y,r,col,life){
   if(G.sim||!brightFlashOk()) return;
   G.flashes.push({x:x,y:y,r:r*(CFG.flashRed===1?0.6:1),c:col||'#ffc27a',t:0,life:(life||.14)*(CFG.flashRed===1?0.7:1)});   // v26.xx (settings9): REDUCED FLASHING, a smaller and shorter light
@@ -42535,6 +42600,7 @@ wc.drawImage(fogC,0,0,W,H);   // v18.03: stretched back over the frame
       wc.globalCompositeOperation='source-over';
     }
   }
+  try{ drawBolts(wc,dt,Z,ox,oy,W,H); }catch(_bk){}   // v35.xx (cw-skybolt): the sky bolt, top edge to the strike, over the flash and under the HUD
   try{ gfxScreen(dt); }catch(_gsc){}   // v23.xx (gfx2): screen effects hook, before the HUD
   gfxpMark('wx');   // v23.xx (gfx1): rain, weather fog and the overlays
   try{ drawHUD(); } finally { GFXWT=null; }   // v23.xx (gfx5): the world text hand-off is this frame's only
@@ -55522,7 +55588,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.77: A kill inside hot ground pays 1.05x sp after its streak bonus in career and demo, in either window. Its popup adds hot. Watch in play: is hot ground worth its two extra machines; watch demo sp totals on the board. Check 35.77 fails on v35.76',
+  now:'v35.78: Each lightning strike that lands on screen draws a white jagged bolt with two or three side forks from the top edge of the view down to the strike point, brightest at the ground, with a quick double flicker, gone in about a third of a second with the flash. Render only: where strikes land and what they hit are unchanged, and the shape uses no game random number. Effects reduced: no bolt. Check 35.78 fails on v35.77',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

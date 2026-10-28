@@ -43,3 +43,4 @@
 10-28 09:22 v35.74 cw-meleez on his pc after 53s (8802 serves 35.74) week 79%
 10-28 09:25 v35.75 cw-pausesp on his pc after 17s (8802 serves 35.75) week 79%
 10-28 09:31 v35.76 cw-fpshz on his pc after 49s (8802 serves 35.76) week 79%
+10-28 09:37 v35.77 cw-cx-hotkill on his pc after 33s (8802 serves 35.77) week 79%

@@ -46,3 +46,5 @@
 2026-10-28 08:58 week=7.0% 5h=15.0% week_resets=2026-11-04 01:35 job=o-01-142-hot-ground-kills-pay-more
 2026-10-28 09:17 week=8.0% 5h=19.0% week_resets=2026-11-04 01:35 job=o-01-142-hot-ground-kills-pay-more
 2026-10-28 09:17 week=8.0% 5h=19.0% week_resets=2026-11-04 01:35 job=o-01-142-hot-ground-kills-pay-more
+2026-10-28 09:41 week=8.0% 5h=21.0% week_resets=2026-11-04 01:35 job=o-01-142-hot-ground-kills-pay-more
+2026-10-28 09:53 week=8.0% 5h=22.0% week_resets=2026-11-04 01:35 job=o-01-142-hot-ground-kills-pay-more

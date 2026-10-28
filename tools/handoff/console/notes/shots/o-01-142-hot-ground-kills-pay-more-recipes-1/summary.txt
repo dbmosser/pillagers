@@ -1,0 +1,26 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  hotkill-career-p1                      NOT STAGED   5.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: hot popup missing: [{"x":2110,"y":3220,"txt":"+105 SP hot","c":"#ffc04a","t":0,"life":1.9,"big":true,"ik":null,"w":74.48200988769531}]
+    at hotStage (eval at window.__gx (http://localhost:8808/fixture.html?career=1:180797:33), <anonymous>:21:37)
+    at eval (eval at window.__gx (h
+  hotkill-career-p2                      NOT STAGED   4.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: hot popup missing: [{"x":2110,"y":3220,"txt":"+105 SP hot","c":"#ffc04a","t":0,"life":1.9,"big":true,"ik":null,"w":74.48200988769531}]
+    at hotStage (eval at window.__gx (http://localhost:8808/fixture.html?career=1&p2=1&mode=coop&pair=h142:180797:33), <anonymous>:21:37)
+    at eva
+  hotkill-demo-p1                        NOT STAGED   4.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: hot popup missing: [{"x":2110,"y":3220,"txt":"+105 SP hot","c":"#ffc04a","t":0,"life":1.9,"big":true,"ik":null,"w":93.20213317871094}]
+    at hotStage (eval at window.__gx (http://localhost:8808/fixture.html?career=1:180797:33), <anonymous>:21:37)
+    at eval (eval at window.__gx (h
+  hotkill-demo-p2                        NOT STAGED   4.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: hot popup missing: [{"x":2110,"y":3220,"txt":"+105 SP hot","c":"#ffc04a","t":0,"life":1.9,"big":true,"ik":null,"w":93.20213317871094}]
+    at hotStage (eval at window.__gx (http://localhost:8808/fixture.html?career=1&p2=1&mode=coop&pair=h142:180797:33), <anonymous>:21:37)
+    at eva
+== 4k : window 3876x2265, viewport 3840x2160
+  hotkill-career-p1                      NOT STAGED   5.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: hot popup missing: [{"x":2110,"y":3220,"txt":"+105 SP hot","c":"#ffc04a","t":0,"life":1.9,"big":true,"ik":null,"w":74.48200988769531}]
+    at hotStage (eval at window.__gx (http://localhost:8808/fixture.html?career=1:180797:33), <anonymous>:21:37)
+    at eval (eval at window.__gx (h
+  hotkill-career-p2                      NOT STAGED   5.1s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: hot popup missing: [{"x":2110,"y":3220,"txt":"+105 SP hot","c":"#ffc04a","t":0,"life":1.9,"big":true,"ik":null,"w":74.48200988769531}]
+    at hotStage (eval at window.__gx (http://localhost:8808/fixture.html?career=1&p2=1&mode=coop&pair=h142:180797:33), <anonymous>:21:37)
+    at eva
+  hotkill-demo-p1                        NOT STAGED   5.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: hot popup missing: [{"x":2110,"y":3220,"txt":"+105 SP hot","c":"#ffc04a","t":0,"life":1.9,"big":true,"ik":null,"w":93.20213317871094}]
+    at hotStage (eval at window.__gx (http://localhost:8808/fixture.html?career=1:180797:33), <anonymous>:21:37)
+    at eval (eval at window.__gx (h
+  hotkill-demo-p2                        NOT STAGED   5.2s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: hot popup missing: [{"x":2110,"y":3220,"txt":"+105 SP hot","c":"#ffc04a","t":0,"life":1.9,"big":true,"ik":null,"w":93.20213317871094}]
+    at hotStage (eval at window.__gx (http://localhost:8808/fixture.html?career=1&p2=1&mode=coop&pair=h142:180797:33), <anonymous>:21:37)
+    at eva

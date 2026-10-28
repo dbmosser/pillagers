@@ -405,3 +405,5 @@
 2026-10-28 08:58 o-01-142-hot-ground-kills-pay-more 270s ok PARTIAL in=728482 out=10755 run=1
 2026-10-28 09:17 o-01-142-hot-ground-kills-pay-more 273s ok PARTIAL in=2391292 out=18499 run=2
 2026-10-28 09:17 o-01-142-hot-ground-kills-pay-more 35s ok PARTIAL in=2684103 out=19298 run=3
+2026-10-28 09:41 o-01-142-hot-ground-kills-pay-more 94s ok PARTIAL in=3274117 out=22025 run=4
+2026-10-28 09:53 o-01-142-hot-ground-kills-pay-more 72s ok DONE in=3686990 out=23688 run=5

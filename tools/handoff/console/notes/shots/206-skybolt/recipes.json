@@ -1,0 +1,27 @@
+{
+ "about": "206 sky bolt, staged landed strike held at its first frame",
+ "prelude": "window.__uis={prep:async function(){__pinDPR(1);}};",
+ "screens": [
+  {
+   "name": "bolt-demo-p1",
+   "screen": "sky bolt demo host",
+   "query": "?career=1",
+   "expect": "window.__boltEvidence&&window.__boltEvidence.n>=1",
+   "js": "return __gx(\"function boltStage(mode,role){\\n  __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\\n  NET.on=false; CFG.xfPix=0;\\n  if(mode==='demo'){ if(!arcadeDeploy({mapIx:0,seed:4242})) throw Error('demo did not deploy'); }\\n  else __deploy({kit:['gun_rifle'],safe:null,mapIx:0,seed:4242});\\n  var g=__state(), p=g.player, storm=null, i;\\n  for(i=0;i<WEATHER.length;i++) if(WEATHER[i].lightning){ storm=WEATHER[i]; break; }\\n  g.ents=[]; g.bagOpen=false; g.mapOpen=false; g.mapFirst=0; g.paused=false; p.iv=999;\\n  if(typeof easyAnswer==='function') easyAnswer(false);\\n  g.wx=storm; g.wxNext=null; g.strikeAt=999;\\n  NET.role=role; NET.seat=role==='join'?1:0; if(mode==='demo'&&role==='join') ARCADE.role='p2';\\n  var dp=damagePlayer; damagePlayer=function(){};\\n  var S={x:p.x+260,y:p.y-140,t:0.001,hit:0};\\n  if(role==='join'){ S.rm=1; S.rid=7; } else S.id=7;\\n  g.strikes=[S]; strikeTick(0.016); damagePlayer=dp;\\n  var b=g.bolts&&g.bolts[0]; if(!b) throw Error('no bolt: '+JSON.stringify(g.bolts));\\n  window.__boltKeep=setInterval(function(){ if(!g.bolts||!g.bolts.length) g.bolts=[b]; b.t=0.02; g.lightning=0.22; g._flashBolt=true; p.iv=999; },25);\\n  document.querySelectorAll('.modal.on').forEach(function(e){e.classList.remove('on');});\\n  __frame(0);\\n  window.__boltEvidence={mode:mode,role:role,n:g.bolts.length,seed:b.s};\\n  return JSON.stringify(window.__boltEvidence);\\n}\\n\\nboltStage(\\\"demo\\\",\\\"host\\\");\");"
+  },
+  {
+   "name": "bolt-demo-p2",
+   "screen": "sky bolt demo join",
+   "query": "?career=1&p2=1&mode=coop&pair=b206",
+   "expect": "window.__boltEvidence&&window.__boltEvidence.n>=1",
+   "js": "return __gx(\"function boltStage(mode,role){\\n  __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\\n  NET.on=false; CFG.xfPix=0;\\n  if(mode==='demo'){ if(!arcadeDeploy({mapIx:0,seed:4242})) throw Error('demo did not deploy'); }\\n  else __deploy({kit:['gun_rifle'],safe:null,mapIx:0,seed:4242});\\n  var g=__state(), p=g.player, storm=null, i;\\n  for(i=0;i<WEATHER.length;i++) if(WEATHER[i].lightning){ storm=WEATHER[i]; break; }\\n  g.ents=[]; g.bagOpen=false; g.mapOpen=false; g.mapFirst=0; g.paused=false; p.iv=999;\\n  if(typeof easyAnswer==='function') easyAnswer(false);\\n  g.wx=storm; g.wxNext=null; g.strikeAt=999;\\n  NET.role=role; NET.seat=role==='join'?1:0; if(mode==='demo'&&role==='join') ARCADE.role='p2';\\n  var dp=damagePlayer; damagePlayer=function(){};\\n  var S={x:p.x+260,y:p.y-140,t:0.001,hit:0};\\n  if(role==='join'){ S.rm=1; S.rid=7; } else S.id=7;\\n  g.strikes=[S]; strikeTick(0.016); damagePlayer=dp;\\n  var b=g.bolts&&g.bolts[0]; if(!b) throw Error('no bolt: '+JSON.stringify(g.bolts));\\n  window.__boltKeep=setInterval(function(){ if(!g.bolts||!g.bolts.length) g.bolts=[b]; b.t=0.02; g.lightning=0.22; g._flashBolt=true; p.iv=999; },25);\\n  document.querySelectorAll('.modal.on').forEach(function(e){e.classList.remove('on');});\\n  __frame(0);\\n  window.__boltEvidence={mode:mode,role:role,n:g.bolts.length,seed:b.s};\\n  return JSON.stringify(window.__boltEvidence);\\n}\\n\\nboltStage(\\\"demo\\\",\\\"join\\\");\");"
+  },
+  {
+   "name": "bolt-career-p1",
+   "screen": "sky bolt career host",
+   "query": "?career=1",
+   "expect": "window.__boltEvidence&&window.__boltEvidence.n>=1",
+   "js": "return __gx(\"function boltStage(mode,role){\\n  __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\\n  NET.on=false; CFG.xfPix=0;\\n  if(mode==='demo'){ if(!arcadeDeploy({mapIx:0,seed:4242})) throw Error('demo did not deploy'); }\\n  else __deploy({kit:['gun_rifle'],safe:null,mapIx:0,seed:4242});\\n  var g=__state(), p=g.player, storm=null, i;\\n  for(i=0;i<WEATHER.length;i++) if(WEATHER[i].lightning){ storm=WEATHER[i]; break; }\\n  g.ents=[]; g.bagOpen=false; g.mapOpen=false; g.mapFirst=0; g.paused=false; p.iv=999;\\n  if(typeof easyAnswer==='function') easyAnswer(false);\\n  g.wx=storm; g.wxNext=null; g.strikeAt=999;\\n  NET.role=role; NET.seat=role==='join'?1:0; if(mode==='demo'&&role==='join') ARCADE.role='p2';\\n  var dp=damagePlayer; damagePlayer=function(){};\\n  var S={x:p.x+260,y:p.y-140,t:0.001,hit:0};\\n  if(role==='join'){ S.rm=1; S.rid=7; } else S.id=7;\\n  g.strikes=[S]; strikeTick(0.016); damagePlayer=dp;\\n  var b=g.bolts&&g.bolts[0]; if(!b) throw Error('no bolt: '+JSON.stringify(g.bolts));\\n  window.__boltKeep=setInterval(function(){ if(!g.bolts||!g.bolts.length) g.bolts=[b]; b.t=0.02; g.lightning=0.22; g._flashBolt=true; p.iv=999; },25);\\n  document.querySelectorAll('.modal.on').forEach(function(e){e.classList.remove('on');});\\n  __frame(0);\\n  window.__boltEvidence={mode:mode,role:role,n:g.bolts.length,seed:b.s};\\n  return JSON.stringify(window.__boltEvidence);\\n}\\n\\nboltStage(\\\"career\\\",\\\"host\\\");\");"
+  }
+ ]
+}

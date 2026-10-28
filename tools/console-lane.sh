@@ -177,6 +177,15 @@ if [ $ENGINE = cli ]; then
   fi
   # 10-21: the smaller of free RAM and free virtual memory (Windows ran out of virtual memory at 02:19 with 4 GB of RAM free)
   rf=$(( $(cap RAM_FLOOR_GB 6) + 1 )); g=$(powershell -NoProfile -Command "\$o=Get-CimInstance Win32_OperatingSystem; [int]([Math]::Min(\$o.FreePhysicalMemory,\$o.FreeVirtualMemory)/1MB)" 2>/dev/null | tr -dc '0-9')
+  # 10-28 09:47: the codex lane sat at "waiting for RAM: 0 GB free" while a test Chrome left by an ended preflight (9358, 2.9 GB, two game
+  # pages) and six idle ones held the memory. Before a lane waits for RAM it closes LEFTOVER test Chromes (tools/close-leftover-test-chromes.ps1:
+  # a pillagers-cdp temp profile on 9331-9399, over 45 min old, no gate or test script using its port), logs each close in runs.log and
+  # reads memory again.
+  sweepchromes(){ local o; o=$(timeout 90 powershell -NoProfile -ExecutionPolicy Bypass -File "$(cygpath -w "$R/tools/close-leftover-test-chromes.ps1")" 2>/dev/null | tr -d '\r')
+    printf '%s\n' "$o" | grep '^closed' | while IFS= read -r l; do echo "$(date '+%m-%d %H:%M') lane $L: $l" >> "$C/runs.log"; done
+    printf '%s\n' "$o" | grep -q '^closed' || return 1; sleep 3
+    g=$(powershell -NoProfile -Command "\$o=Get-CimInstance Win32_OperatingSystem; [int]([Math]::Min(\$o.FreePhysicalMemory,\$o.FreeVirtualMemory)/1MB)" 2>/dev/null | tr -dc '0-9'); return 0; }
+  [ "${g:-0}" -lt "$rf" ] && sweepchromes
   [ "${g:-0}" -lt "$rf" ] && { echo "$(date '+%m-%d %H:%M') waiting for RAM: ${g:-0} GB free, a helper starts at $rf; $name kept" > "$C/status-$L.txt"; exit 0; }
   # 10-20 00:10: lanes a and b both saw 3 GB free in the same second and both started (2.2 GB left). A new helper's memory shows only
   # after a minute or two, so one lane starts at a time: start.lock holds the others back for 2 minutes, then anyone may clear it.
@@ -189,6 +198,7 @@ if [ $ENGINE = cli ]; then
     echo "$(date '+%m-%d %H:%M') waiting: another helper is just starting (trying again in about 2 minutes); $name kept" > "$C/status-$L.txt"
     sleep $((125 + 15 * ($(printf '%d' "'$L") - 97)))
     g=$(powershell -NoProfile -Command "\$o=Get-CimInstance Win32_OperatingSystem; [int]([Math]::Min(\$o.FreePhysicalMemory,\$o.FreeVirtualMemory)/1MB)" 2>/dev/null | tr -dc '0-9')
+    [ "${g:-0}" -lt "$rf" ] && sweepchromes
     [ "${g:-0}" -lt "$rf" ] && { echo "$(date '+%m-%d %H:%M') waiting for RAM: ${g:-0} GB free, a helper starts at $rf; $name kept" > "$C/status-$L.txt"; exit 0; }
   done
   echo "$(date '+%m-%d %H:%M') running $name on Claude Code (your plan: week $wk% of the $line% line, 5-hour $ses%)" > "$C/status-$L.txt"

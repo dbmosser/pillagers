@@ -1827,33 +1827,33 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The scene reads well and the hero ammo number is strong, but none of the earlier hud fixes were applied: the bots panel, hp bar, hotbar and the duplicate 'pillager' plate are all unchanged, and the bottom edge still has no margin.",
+  "verdict": "The HUD is much calmer than before: the roster and controls clutter is gone, the contracts stack is collapsed to a goals chip, and the corners are anchored. The bottom strip is still loose, though. Bars and slots don't share a baseline, and the hotbar is cramped and low-contrast.",
   "findings": [
-   "P1 top-left bots panel (x8-367, y143-260): Fold it to a single 32px 'bots 0' pill matching 'contracts 0/8' and open it on focus. If the rows stay, use 16px tx-1 names, replace 'dead' with an 8px --danger dot, drop the footer line, and use --ui-panel with a 1px --ui-line-hi border.",
-   "P1 hp bar (x24-430, y1036-1070): Make it 280x16px on a --ui-panel plate with a 1px --ui-line-hi border and a --ok fill. Use a 20px 700 tx-1 '100' label. Position it at x=48 and y<=1032.",
-   "P1 hotbar (x555-1480, y958-1060): Draw all 10 slots as 72px squares on --ui-panel with a 1px --ui-line border and 8px gaps. Give the selected slot a 2px --acc border only. Use 16px numerals at the top-left, remove the silhouettes, and end the bar at y<=1032.",
-   "P1 ammo block (x1648-1912, y905-1054): Show the magazine at 56px 800 tx-1 and the reserve at 20px tx-2 with no slash. Set the footer to 16px tx-2 with 16px padding. Inset the panel so it ends at x<=1872 and y<=1032.",
-   "P1 left-middle 'pillager' plate (x16-170, y325-358): Remove it, or dock it into the hp plate at bottom left at 16px 600 tx-1."
+   "P1 hotbar, x560-1470 y955-1058: Draw all 10 slots as 72px --ui-panel squares with 8px gaps and a 1px --ui-line border, ending at y<=1032. Use a 2px --acc border on the selected slot. Put 16px tx-2 numerals inside the top-left corner. Draw empty slots at 40% opacity.",
+   "P1 hp and armour bars, x24-430 y965-1070: Put both on one --ui-panel plate at x48 with 16px padding, a 1px --ui-line-hi border and 4px radius. Make each bar 16px tall with an 8px gap. Use a 20px 700 tx-1 numeral to the left of the bar and a 16px tx-2 label. End the plate at y<=1032.",
+   "P1 ammo block, x1650-1910 y868-1017: Set the panel right edge to x1872 and the bottom to y<=1032, matching the minimap edge. Make '/ 360' 20px 600 tx-2 so only the 60 is hero. Use 16px padding.",
+   "P1 top-centre team score, x795-1125 y18-155: Cut the panel to 240x96. Make the score 32px 700 tx-1 with a 16px tx-2 'team score' label above it, and the timer 20px 600 tx-2. Move 'you' and 'p2' into 16px rows coloured amber and cyan. Anchor the panel at y24.",
+   "P2 minimap and goals chip, x1603-1902 y18-370: Crop or shrink the minimap to 280x240. Raise the icons to 16px minimum or drop them. Leave an 8px gap before the goals chip. Use the same 4px radius and 1px --ui-line-hi border on both, and align them at x1872."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-140-red-enemy-tracers-recipes-3/red-tracers-night-p1-1080.jpg",
-  "task": "o-140-red-enemy-tracers",
-  "when": "2026-10-28T12:52"
+  "pic": "tools/handoff/console/notes/shots/o-01-142-hot-ground-kills-pay-more-recipes-2/hotkill-demo-p1-1080.jpg",
+  "task": "o-01-142-hot-ground-kills-pay-more",
+  "when": "2026-10-28T13:51"
  },
  "p2-1080": {
-  "score": 2,
-  "pass": false,
+  "score": 3,
+  "pass": true,
   "need": 3,
-  "verdict": "The raid HUD reads fine at a glance, with a clear ammo hero number and a good top-centre clock and extract banner. The previous advice on the hp bar, empty hotbar slots, keyboard pill, roster and name plates was mostly not applied, and the corners and edges are still crowded and inconsistent.",
+  "verdict": "The controls list is now folded and the roster panel is gone, but the bottom edge is still cluttered with floating hotbar digits, unframed bars and a 'keyboard' chip, so the HUD reads as scattered.",
   "findings": [
-   "P1 hp bar, bottom-left (x 22-430, y 1036-1072): Put it in a --ui-panel card with a 1px --ui-line-hi border and 4px radius, 48px from the left and 32px from the bottom. Make the bar 12px tall in --ok. Set 'hp' in 16px --tx-2 and '100' in 32px f-cond 700 --tx-1, outside the bar.",
-   "P1 hotbar, empty slots 3-8 and 0 (x 780-1470, y 962-1040): Draw every slot as a 104x104 --ui-panel box at 55% fill with a 1px --ui-line border and an 8px gap. Put 16px --tx-2 numbers in the top-left corner. Delete the ghost weapon icons, or hide the empty slots entirely.",
-   "P1 roster panel, top-left (x 8-367, y 143-260): Inset it 48px from the edges. Use 16px f-cond 600 text with 32px rows. Colour dead rows --tx-2 and replace the word 'dead' with a red x glyph. Show only the footer total, in --tx-1. Make the title 16px --tx-2 and the 'you' row 20px --tx-1.",
-   "P1 'keyboard' pill (x 10-105, y 7-31), contracts dropdown (x 1605-1903, y 19-55), top-left and top-right corners: Drop the pill once the raid starts, or restyle it in amber for P1 and cyan for P2. Give it a 1px --ui-line-hi border, 4px radius and 8px/16px padding. Restyle contracts as a --ui-panel card with 16px f-cond 600 text. Keep both 48px from the edges.",
-   "P1 ammo block, bottom-right (x 1648-1912, y 904-1054): Inset the card 48px from the right and 32px from the bottom. Set the hero at 56px f-cond 800, the weapon name at 20px --tx-1, and the footer at 16px --tx-2. Move 'b / i backpack' to a single key-hint chip."
+   "P1 hotbar (x 560-1470, y 955-1058): Draw only the filled slots as 72px boxes with an 8px gap, centred on x 960, and delete the floating digits. Make the active ring 2px --acc. Move the 'f' chip to the top-right of the slot at 16px.",
+   "P1 hp and armour bars (x 24-430, y 965-1068): Put both in one --ui-panel card (1px --ui-line-hi border, 4px radius) inset 48px left and 32px bottom. Make the bars 12px tall. Set the labels at 16px --tx-2 and the numbers at 20px --tx-1. Make hp --ok and armour a quiet blue.",
+   "P1 team score panel (x 795-1125, y 18-156): Cut the panel to the hero '105 sp' at 56px and the 10:00 timer at 20px, and show the per-player split only on a hold. Pad 16px evenly and use a 1px --ui-line-hi border.",
+   "P1 'keyboard' chip (x 8-105, y 8-32) and 'f1 controls' chip (x 410-537, y 922-950): Fold 'keyboard' into the f1 line, or hide it after 3 seconds. Set 'f1 controls' at 16px --tx-2, x 48, 16px above the hp card. Use the same 4px radius and border on every chip.",
+   "P2 ammo card (x 1650-1910, y 868-1017): Inset to x 1872 and bottom y 1048. Set '25' at 56px 800 and '/ 150' at 24px 600 --tx-2. Add a 1px --ui-line-hi border. Show 'auto rifle' at 16px --tx-2."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-140-red-enemy-tracers-recipes-3/red-tracers-night-p2-1080.jpg",
-  "task": "o-140-red-enemy-tracers",
-  "when": "2026-10-28T12:52"
+  "pic": "tools/handoff/console/notes/shots/o-01-142-hot-ground-kills-pay-more-recipes-2/hotkill-demo-p2-1080.jpg",
+  "task": "o-01-142-hot-ground-kills-pay-more",
+  "when": "2026-10-28T13:51"
  },
  "pix86c-fashion": {
   "score": 3,

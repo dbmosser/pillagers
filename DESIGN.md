@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.78 - A JAGGED WHITE BOLT FROM THE SKY TO EACH LIGHTNING STRIKE
+
+Co-op hunt while he was away. His order 10-28: when the lightning hits, along with the flash, it would be cool to have a white jagged line lightning graphic extend from the top of the screen down to the hit location, so it looks like sky-to-ground lightning. A strike showed only the flash sheet and the warning ring.
+
+MEASURED. Check 35.78 passes, and fails on v35.77.
 ## v35.77 - HOT GROUND KILLS PAY FIVE PERCENT MORE
 
 Co-op hunt while he was away. His 10-28 decision: hot ground kills should pay 1.05x sp, replacing the proposed 1.5x. Watch in play: is hot ground worth its two extra machines; watch demo sp totals on the board.

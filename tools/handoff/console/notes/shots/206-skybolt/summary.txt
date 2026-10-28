@@ -1,0 +1,8 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  bolt-demo-p1                           staged       5.4s    | {"mode":"demo","role":"host","n":1,"seed":1474669111}
+  bolt-demo-p2                           staged       4.9s    | {"mode":"demo","role":"join","n":1,"seed":1474669111}
+  bolt-career-p1                         staged       5.1s    | {"mode":"career","role":"host","n":1,"seed":1474669111}
+== 4k : window 3876x2265, viewport 3840x2160
+  bolt-demo-p1                           staged       5.5s    | {"mode":"demo","role":"host","n":1,"seed":1474669111}
+  bolt-demo-p2                           staged       5.0s    | {"mode":"demo","role":"join","n":1,"seed":1474669111}
+  bolt-career-p1                         staged       5.2s    | {"mode":"career","role":"host","n":1,"seed":1474669111}
