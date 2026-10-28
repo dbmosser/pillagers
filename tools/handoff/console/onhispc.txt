@@ -6,3 +6,4 @@
 10-27 22:31 v35.39 cw-cardstamp on his pc after 50s (8802 serves 35.39) week 68%
 10-27 22:36 v35.40 cw-whitebars on his pc after 68s (8802 serves 35.40) week 68%
 10-27 22:38 v35.41 cw-cx-solopings on his pc after 34s (8802 serves 35.41) week 68%
+10-27 22:41 v35.42 cw-stashhover on his pc after 18s (8802 serves 35.42) week 68%

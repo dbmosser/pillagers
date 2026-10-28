@@ -356,3 +356,5 @@
 2026-10-27 21:58 o-131-gun-impact-sound-caps 506s ok PARTIAL in=1271729 out=18035 run=1
 2026-10-27 22:12 o-131-gun-impact-sound-caps 110s ok PARTIAL in=2032584 out=21260 run=2
 2026-10-27 22:24 o-139-solo-pings 711s ok PARTIAL in=2051316 out=22526 run=1
+2026-10-27 22:47 o-139-solo-pings 380s ok PARTIAL in=3724816 out=33358 run=2
+2026-10-27 22:56 o-139-solo-pings 169s ok PARTIAL in=4806941 out=35929 run=3

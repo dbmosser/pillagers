@@ -5,14 +5,17 @@
   var SECS=window.__ZQSECS||180, FPS=60, out={feed:0,alert:0,pick:0,txt:[],phase:{},end:'',secs:0,said:{}};
   var oSay=say;   // every line said, drawn or not, counted by its words (the how often column of raid-messages.md)
   say=function(m){ try{ var k=String(m); out.said[k]=(out.said[k]||0)+1; }catch(_c){} return oSay.apply(this,arguments); };
-  var g, p, t0, f=0, ph='land', phT=0, tgt=null, opened=0, lastAlert=null, seq0=0, seenPick=[], i;
+  var g, p, t0, f=0, ph='land', phT=0, tgt=null, opened=0, lastAlert=null, seq0=0, seenPick=[], seenFeed={}, i;
   function now(){ return f/FPS; }
   function setPhase(n){ ph=n; phT=now(); tgt=null; keys={}; mouse.down=false; }
   function aimAt(x,y){ var pz=ZOOM(); var cx=(g.camX===undefined?p.x-W/(2*pz):g.camX), cy=(g.camY===undefined?p.y-H/pz*0.54:g.camY); mouse.x=(x-cx)*pz; mouse.y=(y-cy)*pz; }
   function walkTo(x,y){ keys={}; var dx=x-p.x, dy=y-p.y; if(dx>8) keys.KeyD=true; if(dx<-8) keys.KeyA=true; if(dy>8) keys.KeyS=true; if(dy<-8) keys.KeyW=true; }
   function count(){
     var F=g.fd, L=(F&&F.lines)||[], j, r, a=g.alert;
-    for(j=0;j<L.length;j++) if(L[j].id>seq0){ seq0=L[j].id; out.feed++; out.phase[ph]=(out.phase[ph]||0)+1; if(out.txt.length<160) out.txt.push(Math.round(now())+' F '+L[j].txt); }
+    // a feed line counts once it is drawn (FEEDBOX.rows, written by the frame's feedDraw); one added and pushed off before any frame drew it does not
+    for(j=0;j<L.length;j++) if(L[j].id>seq0){ seq0=L[j].id; out.feedAdded=(out.feedAdded||0)+1; }
+    var R=(typeof FEEDBOX!=='undefined'&&FEEDBOX&&FEEDBOX.rows)||[];
+    for(j=0;j<R.length;j++) if(!(R[j].a>0)) continue; else if(!seenFeed[R[j].id]){ seenFeed[R[j].id]=1; out.feed++; out.phase[ph]=(out.phase[ph]||0)+1; if(out.txt.length<160) out.txt.push(Math.round(now())+' F '+R[j].t); }
     if(a&&a!==lastAlert){ lastAlert=a; out.alert++; out.phase[ph]=(out.phase[ph]||0)+1; if(out.txt.length<160) out.txt.push(Math.round(now())+' A '+a.m+(a.sub?' / '+a.sub:'')); }
     for(j=0;j<(g.pick||[]).length;j++){ r=g.pick[j]; if(seenPick.indexOf(r)<0){ seenPick.push(r); out.pick++; out.phase[ph]=(out.phase[ph]||0)+1; if(out.txt.length<160) out.txt.push(Math.round(now())+' P '+r.m+(r.n>1?' x'+r.n:'')+(r.tag?' / '+r.tag:'')); } }
   }

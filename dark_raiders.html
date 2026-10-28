@@ -3728,8 +3728,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.42';
-var VER_AT='2026-10-27 22:40';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.43';
+var VER_AT='2026-10-27 23:08';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -43505,7 +43505,7 @@ function mmMarks(r,sc,R){
     for(i=0;i<(NET.pings||[]).length;i++){
       q=NET.pings[i]; if(!q||!isFinite(q.x)) continue; s=at(q.x,q.y); if(s.out) continue;
       ctx.fillStyle=q.dg?'#ff4a3a':(q.w?'#ff8a3c':'#6fe0ff');
-      colourCueGlyph(ctx,q.dg?'danger':q.pl?'loot':q.w?'target':'place',s.x,s.y,.85*R,ctx.fillStyle);MMAP.ops+=3;
+      colourCueGlyph(ctx,q.dg?'danger':q.pl?'loot':q.w?'target':'place',s.x,s.y,1.5*R,ctx.fillStyle);MMAP.ops+=3;   // v28.xx (cw-cx-pingread): 18px target shape and 21px dark backing at 1080p.
     }
   }
   if(G.waypoint&&isFinite(G.waypoint.x)){
@@ -54984,7 +54984,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.42: the item line under the stash grids is one fixed size box, hover or not: the backpack, hotbar, gun keys and stash grid no longer move when the mouse crosses items Check 35.42 fails on v35.41',
+  now:'v35.43: Ping labels are readable above their targets and ping shapes are larger on both maps. Check 35.43 fails on v35.42',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -61942,7 +61942,7 @@ function netWpMapDraw(ox,oy,sc){
   }
   for(i=0;i<(NET.pings||[]).length;i++){   // live pings show on the map too
     p=NET.pings[i]; px=ox+p.x*sc; py=oy+p.y*sc;
-    colourCueGlyph(ctx,p.dg?'danger':p.pl?'loot':p.w?'target':'place',px,py,Math.max(1,hudRes()),p.dg?'#ff4a3a':p.w?'#ff8a3c':'#6fe0ff'); // v28.xx (cw-cx-minicues): the same ping shapes on the sector map.
+    colourCueGlyph(ctx,p.dg?'danger':p.pl?'loot':p.w?'target':'place',px,py,1.5*Math.max(1,hudRes()),p.dg?'#ff4a3a':p.w?'#ff8a3c':'#6fe0ff'); // v28.xx (cw-cx-pingread): the same larger ping shape on the full map.
   }
   return n;
 }
@@ -62207,6 +62207,20 @@ function netPingUpdate(){
   }
   return NET.pings.length;
 }
+// v28.xx (cw-cx-pingread), critic on his solo ping: 13px orange words covered the target. One readable plate above the body, for every seat.
+function netPingLabel(lbl,x,y,r){
+  var w, left, by, top;
+  ctx.save();
+  lbl=String(lbl).toLowerCase();
+  ctx.font='600 '+(16*r)+'px '+HUDF;
+  w=Math.min(W-32*r,hudRawW(lbl)+16*r);
+  left=clamp(x-w/2,8*r,W-w-8*r);
+  by=clamp(y<132*r?y+48*r:y-88*r,32*r,H-24*r);top=by-24*r;
+  hudPanel(left,top,w,32*r,.85,1);
+  ctx.textAlign='center';ctx.textBaseline='alphabetic';ctx.fillStyle=UIC.tx_1;
+  ctx.fillText(lbl,left+w/2,by);
+  ctx.restore();
+}
 function netPingDraw(){
   netPingUpdate();
   netPilePrune();   // v32.xx (cw-droppings)
@@ -62225,7 +62239,7 @@ function netPingDraw(){
     ctx.restore();
     nm=(p.s===NET.seat)?'YOU':(netSeatName(p.s)||'PILLAGER');
     lbl=nm+(p.w?('  \u00b7  '+p.w):(p.dg?'  \u00b7  DANGER':''))+'  \u00b7  '+((G&&G.player)?metres(dist(G.player,p)):0)+'m';   // v22.xx (R43): 120m   // v22.xx (R49): no colon labels; NAME, what, distance
-    ctx.font=hudFS(TYPE.micro); ctx.textAlign='center'; ctx.fillStyle=c; hudText(lbl,clamp(x,LH(60)*r,W-LH(60)*r),y-LH(16)*r); ctx.textAlign='left';
+    netPingLabel(lbl,x,y,r);   // v28.xx (cw-cx-pingread): 16px bone text, shared plate and a clear gap above the target.
     n++;
   }
   return n;

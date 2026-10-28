@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.43 - READABLE PING LABELS AND MAP GLYPHS
+
+Co-op hunt while he was away. The critic found the existing ping words too small, orange on busy ground and over the gun, and the minimap ping too small. Solo and party now share 16px bone text on an 85 percent shared HUD plate, raised above the target with an edge fallback. Minimap and full-map target shapes grow to 18px with their existing dark backing. Words, colours of the marker, sound, target following and 10 second lifetime stay the same. Playtest watch: ping a target near a screen edge in either window and confirm the label stays inside the screen and clear of the target; look for the larger shape on both maps.
+
+MEASURED. Check 35.43 passes, and fails on v35.42.
 ## v35.42 - THE STASH HOVER KEEPS EVERY BOX THE SAME SIZE
 
 Co-op hunt while he was away. his order 10-27: mousing over different items in the stash changes the size of one of the sub menus, so the grids jump; the item line under the grids was hidden when idle and as tall as the hovered item had rows
