@@ -1425,6 +1425,9 @@ try{ GO_SEC=0; }catch(e){}
 // 10-25 (coordinator, job 112r): ?career=1 keeps the game default CAREER raid, for camera screens 79 and 80 (the folded keys
 // list at a career drop, his rs-1); the staging JS cannot reach CAREER_ON from outside.
 try{ if(!/[?&]career=1(&|$)/.test(location.search)) CAREER_ON=0; }catch(e){}
+// v35.xx (cw-diffmul, his order of 2026-10-28): harder Settings rows and superhot off multiply the sp a raid pays. The checks score as before (the pinned
+// dials alone would pay x1.22); the multiplier check sets DMUL_ON back to 1 for itself. On a build with no multiplier this only makes a global.
+try{ DMUL_ON=0; }catch(e){}
 // THE FIXTURE IS SILENT. Verification drives real frames, and real frames fire real
 // gunshots, alarms and machine voices through WebAudio. On 2026-08-24 a 40 raid batch
 // played all of it out loud on Daniel's PC while he was trying to work. He should never
