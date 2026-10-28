@@ -447,3 +447,5 @@
 
 2026-10-28 | o-120g-partner-ship-stays | 120g-host-extracted / 120g-partner-boarding | retain the shared called ship and its existing boarding clock after player 1 extracts; clear only player 1 pull state | before: none (custom two-window recipe) | after: lane camera-recipes.json outputs 120g-host-extracted-1080.jpg and 120g-partner-boarding-1080.jpg pending
 
+2026-10-28 | o-120g-partner-ship-stays | shared extraction / v35.58 d6eaf0cbc | called ship keeps its existing boarding clock after host leaves; both real smooth-look windows verified and ON HIS PC | before: none (custom two-window recipe) | after: tools/handoff/console/notes/shots/o-120g-partner-ship-stays-recipes-1/120g-host-extracted-1080.jpg and tools/handoff/console/notes/shots/o-120g-partner-ship-stays-recipes-1/120g-partner-boarding-1080.jpg | critic 3 and 2; existing HUD findings handed off, no visual pass claimed
+

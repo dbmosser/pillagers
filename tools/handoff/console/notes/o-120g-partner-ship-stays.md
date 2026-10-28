@@ -26,3 +26,19 @@ Local checks rerun: mk writes the draft with one matching anchor; old and patche
 
 Remaining: lane preflight retry, ship, ON HIS PC, two-window camera scenes and critic results. No tracked game files edited.
 
+
+--- codex run 2026-10-28 01:50 ---
+2026-10-28 - o-120g-partner-ship-stays - shipped mechanics and two-window evidence
+
+cw-cx-partnership shipped as v35.58, commit d6eaf0cbc. Read the lane logs: PREFLIGHT PASS; fixture check 35.58 PASS / PASS; verifySafe pass with entities 85/374 and containers 165/593; ON HIS PC v35.58, confirmed 64 seconds after shipping. DESIGN.md:40027 includes the requested playtest watch line.
+
+Opened and inspected both supplied 1080p pictures with the image viewer. Camera report confirms two real linked windows in smooth look and seed 4242. After host extraction, host and partner both retain about 26 seconds of boarding time; host is out, partner is not out, and neither has a pull in progress. Partner then starts a 0.5-second boarding pull. The second recipe completes that same pull and records both real windows with run-over reason extract. The shipped regression also covers the unchanged solo extraction and score doubling.
+
+Evidence: tools/handoff/console/notes/shots/o-120g-partner-ship-stays-recipes-1/120g-host-extracted-1080.jpg and 120g-partner-boarding-1080.jpg; report.json in that folder records the two-window states and bothOut results. Both scenes staged and DOM lint returned zero issues. These are evidence pictures of existing screens, not new screen designs.
+
+Visual review remains below the full raid target: critic 3 for host how-to-play attract, 2 for partner raid. Do not record these as visual passes. The mechanics patch changes no drawing, label, menu, type or panel code. Existing HUD work 186f already owns timer/panel hierarchy, player tags, vitals and control-chip alignment, including prior findings from o-120d and o-120f; 186d owns the danger slot. Logged this round as a coordinator handoff in alarms-new.md rather than adding a HUD redesign to the shipped small extraction fix. Additional items are label collisions and attract-card opacity. No features disabled and no critique hidden through camera staging changes.
+
+Two critic recommendations cannot be applied literally: the a in the extraction line is extraction ring A, not an accidental token; name the ring clearly in the HUD work rather than deleting its identity. The how-to-play corner x is required by his Q43; keep it. The extract in progress wording is identified as his phrase in tickExtractPoints; any rewording needs the Q8 reason in the UI change log. Preserve these when addressing the presentation issues.
+
+The requested extraction fix is shipped and verified in both windows, with the solo control and fingerprint intact. No additional game key is needed for this task. Existing visual issues are handed to the coordinator and existing HUD jobs; no visual acceptance is claimed.
+

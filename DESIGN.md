@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.59 - HIT JOLT FOLLOWS THE ROUND
+
+Co-op hunt while he was away. A partner shot jolted a body away from the viewer instead of along the incoming round. Local bullet collisions record their bearing for this flash and the host sends that cosmetic bearing to the linked window. Damage, hit stop, movement, jolt sizes and fade are unchanged. Watch in playtest: stand on opposite sides of a crawler and alternate shots; both windows should show it flinch away from the shooter, then settle back to the same position. Test in the smooth look.
+
+MEASURED. Check 35.59 passes, and fails on v35.58.
 ## v35.58 - PARTNER SHIP STAYS AFTER HOST EXTRACTION
 
 Co-op hunt while he was away. The both-out host branch erased the shared ship while player 2 was still playing. Keep the called ship on its existing clock and clear only the host pull. Playtest watch: in smooth look, have player 2 call a ship, board as player 1 first, then board as player 2 without calling again; the run should end only after both are out. Solo extraction should still end at once.

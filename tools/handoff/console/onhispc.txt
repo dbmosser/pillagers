@@ -24,3 +24,4 @@
 10-28 01:04 v35.55 cw-cardstamp NOT on his pc after 384s (8802 serves 35.54) week 73%
 10-28 01:14 v35.56 cw-cx-xreloadsearch NOT on his pc after 385s (8802 serves 35.55) week 73%
 10-28 01:30 v35.57 cw-cx-xpromptread on his pc after 65s (8802 serves 35.57) week 74%
+10-28 01:46 v35.58 cw-cx-partnership on his pc after 64s (8802 serves 35.58) week 74%

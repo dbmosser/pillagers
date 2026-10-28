@@ -1402,3 +1402,13 @@
 2026-10-28 0.0000 o-120f-pad-x-reload-prompt
 2026-10-28 0.0000 o-120g-partner-ship-stays
 2026-10-28 0.0000 o-120g-partner-ship-stays
+2026-10-28 0.0884 critic-o-120g-partner-ship-stays
+2026-10-28 0.0906 critic-o-120g-partner-ship-stays
+2026-10-28 0.0000 o-120g-partner-ship-stays
+2026-10-28 0.0000 o-132-hit-jolt-from-the-bullet
+2026-10-28 0.0931 critic-o-132-hit-jolt-from-the-bullet
+2026-10-28 0.0907 critic-o-132-hit-jolt-from-the-bullet
+2026-10-28 0.0000 o-132-hit-jolt-from-the-bullet
+2026-10-28 0.0908 critic-o-132-hit-jolt-from-the-bullet
+2026-10-28 0.0916 critic-o-132-hit-jolt-from-the-bullet
+2026-10-28 0.0000 o-132-hit-jolt-from-the-bullet

@@ -1,0 +1,5 @@
+## v35.59 - HIT JOLT FOLLOWS THE ROUND
+
+Co-op hunt while he was away. A partner shot jolted a body away from the viewer instead of along the incoming round. Local bullet collisions record their bearing for this flash and the host sends that cosmetic bearing to the linked window. Damage, hit stop, movement, jolt sizes and fade are unchanged. Watch in playtest: stand on opposite sides of a crawler and alternate shots; both windows should show it flinch away from the shooter, then settle back to the same position. Test in the smooth look.
+
+MEASURED. Check 35.59 passes, and fails on v35.58.

@@ -2814,5 +2814,69 @@
   "pic": "tools/handoff/console/notes/shots/o-120f-pad-x-reload-prompt-recipes-3/xreload-p2-search-after-reload-1080.jpg",
   "task": "o-120f-pad-x-reload-prompt",
   "when": "2026-10-28T05:32"
+ },
+ "120g-host-extracted": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "A clean, well-aligned how-to-play card with a clear title, tidy key-cap table and a visible lime prompt, but it is held back by a ghosted underlay that shows through the scrim, a stray lime bar on the card edge, and a redundant close button on a walk-up screen.",
+  "findings": [
+   "P1 scrim behind the card (header area around y=200-230 and the middle y=380-400): Make the card fill opaque #16191b. Raise the scrim to rgba(6,7,8,.80) and blur the layer behind it, or hide the underlying HUD prompt layer while this card is open.",
+   "P1 HUD behind the card (team score, extraction tag, player 2 bar, hp/armour, weapon slots, riot scattergun 7/42): Darken to scrim .80 plus a 6px blur. Drop the lime join-your-team line while the card is open, or fold it into the card footer. Only one lime prompt should be on screen.",
+   "P2 card top-left (x=574-610, y=175): Either remove it, or make it a full-width 3px lime top bar on the card, or align it exactly to the title's left edge, inset 0, 32px wide, 3px high, like the other windows.",
+   "P2 close x button (x=1298-1346, y=192-240): If the x is standard for every window card, keep it but enlarge the glyph to 20px and use --ui-line-hi #4a5257 for the border. If this walk-up screen is any-key-only, remove it.",
+   "P2 column headers 'keyboard' / 'controller' (y=278): Use 16px f-cond 600, +.04em, color --tx-2 #aaa498. Tighten the gap to the rule to 8px."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-120g-partner-ship-stays-recipes-1/120g-host-extracted-1080.jpg",
+  "task": "o-120g-partner-ship-stays",
+  "when": "2026-10-28T05:47"
+ },
+ "120g-partner-boarding": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The raid HUD has too many competing banners stacked in the top centre and the middle, and it breaks the one-place-per-line rule. The overlapping name tag and a stray 'a' in the extract line show it is unfinished.",
+  "findings": [
+   "P0 centre of screen, under the player ring: Draw only one label at a time. Hide the cache label while a name tag sits within 120px of it. Give the tag a 4px radius --ui-panel plate with 8px padding. Put the cache label on its own line at least 24px below the tag.",
+   "P0 'extract in progress! a 26s left' line: Remove the stray token. Write it as 'extracting 26s' in 56px f-cond 800 --extract (the hero size, once per screen). Put it on an --ui-panel plate at 80% opacity with 8px padding. Drop the 'hold [x] to extract' banner while extraction is running. Delete the duplicate lines.",
+   "P1 top-centre stack: team score, extraction 3m chip, teal arrow, siege incoming: Make one 320px column with consistent 8px gaps. Give the score panel, the chip and the banner the same width and a 4px radius. Move the extraction arrow into the chip. Put the siege banner 24px below the column and draw it in --danger with no outer glow.",
+   "P1 'hold [x] to extract' banner: Use 32px f-cond 700 text on an --ui-panel plate with a 3px --extract bar on the left. Show the key as a 24px keycap chip with a 1px --ui-line-hi border. Hold the scale back for the extraction hero number only.",
+   "P1 bottom-left: f1 controls, armour 60, hp 100 bars: Give armour and hp one shared height of 24px, 8px apart, with 16px f-cond 600 labels. Put the hp fill in --ok and the armour fill in a desaturated blue. Align the f1 chip's left edge to the bar edge at x=24 and set it 16px above the armour bar."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-120g-partner-ship-stays-recipes-1/120g-partner-boarding-1080.jpg",
+  "task": "o-120g-partner-ship-stays",
+  "when": "2026-10-28T05:47"
+ },
+ "j132-p1-partner-shot": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The easy-mode card and its scrim are gone, so this is now a clean in-raid HUD where the hp, ammo and hotbar read well. The top-centre cluster, the stray 'keyboard' chip and the crowded enemy tag still look unfinished.",
+  "findings": [
+   "P1 top-centre score panel (x 808-1110, y 0-106): Set the top margin to 24px and the padding to 16px. Keep the 56px hero for the score only. Put the you/p2 lines at 16px minimum in --tx-2. Move the extract chip 8px below the panel. Tuck the hamburger inside the right padding, and attach the arrow to the chip.",
+   "P1 enemy tag over the crawler (x 1050-1145, y 440-495): Float the damage number 24px above the tag, or hide it while the tag is shown. Put the '!' 8px above the tag. Show the tag at 16px with 8px of vertical clearance from the sprite.",
+   "P1 minimap or goals dropdown 'goals 0/3' (x 1603-1900, y 22-65): Re-skin it as a --ui-panel card with a 1px --ui-line-hi border and 4px radius. Use a 16px label and a --tx-2 chevron, and align its top edge to the score panel at y 24. Use the 5% margin on the right.",
+   "P2 top-left 'keyboard' chip (x 10-105, y 5-32): Fade it out after 3s, or fold it into the player 1 bar as a 16px --tx-2 glyph. Put it on the 8px grid at 24px,24px.",
+   "P2 ammo card bottom-right (x 1650-1910, y 868-1016): Inset the card 5% from the right edge and 24px from the bottom. Set 'support mg' at 20px in --tx-1. Use the same 4px radius and the same border as the score panel."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-132-hit-jolt-from-the-bullet-recipes-2/j132-p1-partner-shot-1080.jpg",
+  "task": "o-132-hit-jolt-from-the-bullet",
+  "when": "2026-10-28T05:59"
+ },
+ "j132-p2-partner-shot": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The easy-mode modal is gone and the HUD is readable, but the score plate still sits flush against the top edge, the left-edge player strip and keyboard chip are cramped, and the bottom row has several unrelated panels with no shared structure.",
+  "findings": [
+   "P1 top-centre score plate (team score / 0 sp / you, p1 / 10:00): Offset the plate 16px from the top. Use 16px padding all round. Set the hero 'sp' number at 56px f-cond 800. Set the timer at 20px tx-2. Put the 'you' and 'p1' lines in one 16px row below the hero. Leave 8px between the plate and the extract chip.",
+   "P1 left edge, 'player 1' strip (x≈14–170, y≈325–358): Move the strip to x=96. Colour the name with the P1 amber token (P1 is amber everywhere). Use 16px label text and 8px tall bars. Drop the duplicate overhead tag, or drop the strip.",
+   "P1 bottom-left vitals (armour 60 / hp 100) and f1 controls chip: Use one 24px bar height for both, with 8px between them. Set the bottom edge at y=1080−54. Set x=96. Make the label 16px. Put the f1 chip at the same x=96, directly above the bars, with 16px text in tx-2 on --ui-panel.",
+   "P1 bottom row: 'in pillager's party' chip, air strike panel, weapon bar, ammo card: Share one baseline at y=1026. Use a 1px --ui-line-hi border and a 4px radius on every panel. Pull the ammo card in to the 96px margin. Fold the party chip into the top-left keyboard chip or remove it. Align the air strike panel's left edge to the weapon bar.",
+   "P2 top-left 'keyboard' chip: Move it to (96, 54). Use 16px f-cond 600 tx-2 on --ui-panel with a 1px --ui-line-hi border and 4px radius."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-132-hit-jolt-from-the-bullet-recipes-2/j132-p2-partner-shot-1080.jpg",
+  "task": "o-132-hit-jolt-from-the-bullet",
+  "when": "2026-10-28T05:59"
  }
 }
