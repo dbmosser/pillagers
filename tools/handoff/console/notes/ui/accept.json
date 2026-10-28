@@ -1827,33 +1827,33 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The layout is sound, with ammo, hotbar and hp readable. The earlier fixes were not applied, so the corners still carry mismatched widgets: the 'pillager' card, the loose hp bar, a white-bar minimap, and a toast and p1 chip that do not match the other panels.",
+  "verdict": "This is a clean, calm column menu with a clear lime focus bar, but the picture is a title screen rather than the raid HUD I reviewed before. The orange-gold gradient wordmark ignores the lime accent, an error banner with a loud lime button splits the hierarchy, and the saves block is cramped and unstructured.",
   "findings": [
-   "P1 hp bar bottom-left (x24-430, y1033-1067): Move it to x=54 and make the bar 12px tall in --ok on a --ui-line track. Put '100' at 20px f-cond 700 tx-1 and 'hp' at 16px tx-2 above the bar. Line its baseline up with the hotbar bottom (y~1055).",
-   "P1 minimap (x1603-1901, y19-318): Draw walls in --ui-line-hi. Fill the map with --ui-panel at 85% with a 1px --ui-line-hi border and 4px radius. Keep the player arrow as the only --acc element. Set a 8px gap to contracts and make both widgets the same width, radius and border.",
-   "P1 'pillager' card (x13-170, y323-358) plus 'current pillager bots 3' bar (x8-367, y143-170): Delete the 'pillager' card. Move the bots dropdown to x=54, y=54, with --ui-panel fill, a 1px --ui-line-hi border, a 4px radius and 16px label text. Fold it into the pause or settings menu if it is a dev control.",
-   "P2 'p1' chip (x943-977, y612-642) and name tag 'pillager' (x937-983, y504-519): Make the p1 chip a 16px f-cond 700 label with 4px radius, 8px by 4px padding, --ui-panel fill and a 1px amber border, 8px under the feet ring. Set the name tag to 16px on --ui-panel with a tx-1 label.",
-   "P2 'pillager joined' toast (x894-1025, y893-930): Move it to the left feed at x=54, y~220. Use --ui-panel, a 1px --ui-line-hi border, a 4px radius, 16px f-cond 600 tx-1 and 8px by 16px padding. Give it a 3s fade."
+   "P1 error banner (x681-1239, y637-703) with 'retry' button (x1079-1229, y646-694): Cut the copy to one 16px line, e.g. 'player 2 is in a raid in the other window'. Make retry an outlined 1px --ui-line-hi button in tx-1, 32px tall, so lime stays on the focus bar only. Keep the 3px --danger left bar. Move the banner out of the list flow, to y~860 under the saves block, or make it a toast at top-centre.",
+   "P1 'pillagers' wordmark (x802-1118, y255-333): Fill it with flat --tx-1 #efe9dc, or flat --acc at most, with no gradient and no shadow. Keep 800 weight and move it to the 56px hero size or slightly larger. Drop the tagline to 16px tx-2 with 16px (--sp-2) spacing under it.",
+   "P1 saves block (x681-1239, y723-842): Use one lime focus at a time. Make idle rows a 1px --ui-line-hi border with tx-1 text. Put 'saves' at 16px f-cond 600 tx-2 with 16px above the first row. Make the rows 56px high like the mode buttons. Move 'change name' and 'create a new save' to the right-aligned actions of the selected save row, or put them under a 1px --ui-line divider with 16px gaps.",
+   "P2 mode list (x681-1239, y403-627): Make '1 player' the only 20px 700 row with the --ui-raised fill. Put the arcade demos under a 16px 'demo' label in tx-2 with a 24px gap. Drop '(same machine)', or show it as a 16px tx-2 sub-label inside the row. Give the focus lime left bar 4px wide and spaced evenly.",
+   "P2 top-right buttons 'go fullscreen' and 'settings' (x1611-1823, y33-81): Set the margin to 54px: right edge at x=1866, top y=54. Make the buttons 40px high with 16px f-cond 600 tx-1. Align the left version stamp to x=54 as well."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-139-solo-pings-recipes-4/party-ping-p1-1080.jpg",
-  "task": "o-139-solo-pings",
-  "when": "2026-10-28T08:18"
+  "pic": "tools/handoff/console/notes/shots/o-140-red-enemy-tracers-recipes-1/red-tracers-night-p1-1080.jpg",
+  "task": "o-140-red-enemy-tracers",
+  "when": "2026-10-28T12:18"
  },
  "p2-1080": {
-  "score": 3,
-  "pass": true,
+  "score": 2,
+  "pass": false,
   "need": 3,
-  "verdict": "This is the in-raid hud rather than the welcome pack card my earlier review covered, so none of that advice can be judged. As a hud it is readable and mostly lower case, but too many equal-weight boxes compete and the hp bar and the corner widgets are rough.",
+  "verdict": "The toast is gone and the screen is cleaner, but it still reads as a generic centred template: the gradient wordmark, the tiny saves rows, the loose hint row and the hidden player 2 identity are all unchanged.",
   "findings": [
-   "P1 hp bar (x 24-430, y 1035-1068): Inset it to the 5% margin (x 96, y 1000). Make it 260x16 with a 1px --ui-line-hi border. Show 'hp 100' as a 20px f-cond 600 label in --tx-1 above the bar. Leave 56px hero for ammo only.",
-   "P1 top-left stack (x 8-366, y 143-168) and 'pillager' tag (x 14-170, y 325-358): Put both on --ui-panel with a 1px --ui-line-hi border and 4px radius. Share a left edge at x 96. Set both to 16px f-cond 600 text. Put the player tag in the bottom-left cluster with the hp bar, in amber for P1 or cyan for P2. Move the bots control out of the raid hud.",
-   "P1 minimap (x 1603-1901, y 19-318) and contracts row (x 1603-1901, y 327-362): Inset the stack to x 1776 with a 48px margin. Give the minimap a 1px --ui-line-hi border. Tone the wall bars down to --ui-line-hi. Make the contracts row the same --ui-panel and height as the other panels, with a 16px label.",
-   "P1 ammo card (x 1646-1910, y 903-1052): Inset the card to x 1776 with the same 48px right margin. Raise the footer to 16px f-cond 600 in --tx-2. Keep the 56px hero. Increase the padding to 16px all round.",
-   "P2 hotbar (x 555-1550, y 957-1058): Give all 10 slots a 64x64 --ui-panel tile with a 1px --ui-line-hi border and an 8px gap. Raise the row to y 984-1048 so it clears the bottom margin. Use a 2px --acc border on the selected slot instead of amber. Show the key number at 16px in --tx-2."
+   "P1 'pillagers' wordmark (x 802-1118, y 360-440): Make the wordmark flat --tx-1 or flat --r-gold #ffc72e, with no gradient or shadow, at 96px f-cond 800. Add a 'player 2' tag in cyan, 16px f-cond 600, at x 96, y 96. Drop the 'keyboard' pill to 16px --tx-2, or fold it into that tag.",
+   "P1 saves block (x 681-1239, y 615-735): Make the save row 64px tall with a --ui-raised fill and 20px f-cond 600 text. Keep the 2px lime border as the only focus cue and set the name in --tx-1. Make the 'saves' label 16px --tx-2 with a 16px gap to the row. Make 'change name' and 'create a new save' 56px tall, 16px label type, --ui-panel fill, 1px --ui-line-hi border, with an 8px gap.",
+   "P1 key-hint row (x 726-1193, y 1030-1055): Set the labels to 16px f-cond 600 in --tx-2 with --tx-1 key caps and a 24px gap between pairs. Move the row up to y 1000-1040. Alternatively remove it and keep only 'f1 controls'.",
+   "P1 'player 2 window' (x 909-1010, y 578-594): Move it to the top-left 'player 2' tag. If it has to stay here, set it at 16px --tx-2 with 24px of space above and below.",
+   "P2 tagline 'ascend. pillage. extract.' (x 865-1055, y 468-486): Set it to 16px f-cond 600 in --tx-2 with +.04em tracking. Use 16px above it and 24px below it. Or delete it."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-139-solo-pings-recipes-4/party-ping-p2-1080.jpg",
-  "task": "o-139-solo-pings",
-  "when": "2026-10-28T08:18"
+  "pic": "tools/handoff/console/notes/shots/o-140-red-enemy-tracers-recipes-1/red-tracers-night-p2-1080.jpg",
+  "task": "o-140-red-enemy-tracers",
+  "when": "2026-10-28T12:18"
  },
  "pix86c-fashion": {
   "score": 3,

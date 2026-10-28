@@ -1,1 +1,1 @@
-10-28 08:09 gate: shipping cw-cx-redtracers (o-140-red-enemy-tracers, codex)
+10-28 08:32 gate waiting on another worker; o-140-red-enemy-tracers kept (codex)

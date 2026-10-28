@@ -1,0 +1,14 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  red-tracers-day-p1                     staged      11.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"ok":true,"seat":1,"night":false,"rain":false,"red":"#ff3b2f","views":[{"smooth":true,"local":[{"tint":"#ff3b2f","el":""},{"tint":"#ff3b2f","el":""},{"tint":"#ffcf7a","el":""},{"tint":"#ff3b2f","el":""},{"tint":"#ff3b2f","el":""},{"tint":"#ffcf7a","el":""},{"tint":"#ff3b2f","el":""},{"tint":"#ff3b2
+  red-tracers-day-p2                     NOT STAGED  15.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host did not link p2
+    at stageTracers (<anonymous>:32:55)
+    at async <anonymous>:122:48
+    at async <anonymous>:1:21
+  red-tracers-night-p1                   NOT STAGED   4.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host did not open p2
+    at stageTracers (<anonymous>:18:53)
+    at <anonymous>:122:54
+    at async <anonymous>:1:21
+  red-tracers-night-p2                   NOT STAGED  15.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host did not link p2
+    at stageTracers (<anonymous>:32:55)
+    at async <anonymous>:122:48
+    at async <anonymous>:1:21

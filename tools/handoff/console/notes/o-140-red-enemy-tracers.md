@@ -16,3 +16,13 @@ Fixed the first preflight failure in the check, without changing the game edits.
 
 Regenerated the draft on v35.66: written. All three anchors matched once. The patched game JavaScript, revised regression check and camera recipes parse successfully; handoff files remain ASCII. Await lane preflight/ship, ON HIS PC, linked-window pictures and critic results. The existing coordinator alarm for the additional 4K pictures remains open.
 
+
+--- codex run 2026-10-28 08:22 ---
+cw-cx-redtracers shipped as v35.67. Lane confirmed: ON HIS PC v35.67: his 8802 serves 35.67 (167s after the ship), from GitHub status; the bridge did not answer. The owner reloads to play it. No further game edit is needed from the gate results.
+
+Reviewed all four round-1 pictures. Only day P1 staged. Its real linked-window report confirms six hostile red rounds, warm player rifle rounds and forged shock rounds/remote widths. The other three pictures are title screens, so their critic scores do not assess this change. Day P1 scored 3, with findings about existing hp, bot/player cards and controls presentation rather than the new tracer colours. General HUD findings are handed to the open HUD consistency work, not mixed into this render-only colour fix.
+
+Revised camera recipes for round 2. The old cleanup used beforeunload, but uishots deliberately suppresses listeners of that type. Cleanup now runs on pagehide, abandons the disposable partner raid before closing its popup, and removes its temporary raid marker. Before opening each pair it also clears the temporary profile's stale raid marker and mate heartbeat; the shipped game's protection against reopening a real P2 raid is unchanged. Failure messages now include the actual opener return value. The camera uses the legitimate folded-controls state and waits for the join toast to expire. Spot selection avoids tree canopies so both player bodies are visible. Four scenes remain: P1/P2 daylight and P1/P2 rainy night. Revised camera JavaScript parses; JSON and scripts are ASCII.
+
+Await corrected scene pictures and critic reviews. The coordinator's extra 4K camera run is still needed because the lane only requests 1080p. DESIGN.md received the required danger-HUD/noise-ring/attack-lane/night/rain/crew-fight playtest watch line through the shipped draft why text.
+

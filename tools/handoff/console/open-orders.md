@@ -49,3 +49,7 @@ No HIGH items left except 177 hardcore save (parked until 11/1, goes first then)
 
 - His order 10-28 (verbatim, via the old intake chat): "make it 3000 damage to unlock an airstrike instead of 1500". Job in-session/201-airstrike-3000.md, helper (Sonnet high) started by the order chat.
 SHIPPED 10-28 v35.66: 201 air strike needs 3000 damage (was 1500). On his PC 168s after the ship.
+
+- His order 10-28 (verbatim): "Ok here's the edit. When the player makes the game harder in any way in the settings (eg number of enemies, number of pillagers, damage taken, etc, that should give a score multiplier (maybe an additional 5% for each tier/level) and that should be indicated to the player. Super hot off should be considered harder and should also give the multiplier. All these multipliers should stack. Eg if player wants to play a really hard game, that should give more points." A new feature, so PARKED until Sun 11/1: console/after-nov1/202-difficulty-score-multiplier.md (Opus high, goes to tasks/ on 11/1, first in line). Told him.
+- 10-28 his answer on the multiplier (verbatim): "No I want it now". Hold lifted by him: job 202 moved from after-nov1 to in-session/, helper (Opus high) started now.
+- His standing order 10-28 ~08:10 (verbatim, via the CEO chat): "I don't want any development paused or delayed because of the party or any other anticipated date. Just keep developing". Ends the Nov 1 freeze; the order chat files every order straight into tasks/ or in-session/, never after-nov1.

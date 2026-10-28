@@ -3730,8 +3730,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.67';
-var VER_AT='2026-10-28 08:11';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.68';
+var VER_AT='2026-10-28 08:32';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -55478,7 +55478,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.67: Enemy rounds warn in red in both windows; allied rounds keep their gun colours. Check 35.67 fails on v35.66',
+  now:'v35.68: harder settings pay more sp: 5 percent a step on pillagers, machines, how hard they hit and extraction heat, and superhot off, stacked Check 35.68 fails on v35.67',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -64926,7 +64926,8 @@ function arcadeKeycardDrop(e){
 // keycard door, a vault gun in one box, on their own side stream so the seeded raid is unchanged), the same Vault Keycard in an
 // ordinary box outside each, and the same keycard drops from the fight (an elite or the boss while a vault is shut, or every 12th
 // kill with no keycard left in the world, the host only). Opening a vault pays VAULT OPEN +$500 into the CAREER score of the opener.
-function arcadeVaultPay(R){
+function arcadeVaultPay(R){ return arcadeVaultPayN(R,spMul(ARCADE_VAULT_PAY)); }   // v35.xx (cw-diffmul): the vault pay with the settings multiplier in
+function arcadeVaultPayN(R,ARCADE_VAULT_PAY){   // v35.xx (cw-diffmul): the parameter stands in for the constant, so every line below pays and shows the figure paid
   if(G&&G.career&&G.cs&&R){
     G.cs.s=(G.cs.s|0)+ARCADE_VAULT_PAY; csTally('vault',ARCADE_VAULT_PAY);
     try{ label(R.doorX,R.doorY-30,'+'+arcadeCr(ARCADE_VAULT_PAY),'#ffc04a',0,true); }catch(_cl){}
@@ -65118,6 +65119,7 @@ function careerPostBuild(g){
   try{ arcadeVaults(g); }catch(_cv){}   // v24.xx (careervault): the two DEMO vaults (side stream)
   try{ arcadeKeycards(g); }catch(_ck){}   // v24.xx (careervault): a keycard per vault in a box outside (side stream)
   g.cs={s:0,k:0,streak:null,waveT:0,waveN:0};
+  g.dmul=diffMulOf(CFG,1);   // v35.xx (cw-diffmul): the settings multiplier rows this raid was built with (a linked window builds under the host word)
   return true;
 }
 // Run from startRaid right after the build, in every window that builds the arcade raid, so both builds stay identical.
@@ -65125,6 +65127,7 @@ function arcadePostBuild(g){
   if(!g||g.sim) return false;
   var i, e;
   g.arcade=1; g.raidLen=g.timeLeft=ARCADE_RAID_SEC;   // v23.6x (feat0e): the 10 minute DEMO clock
+  g.dmul=diffMulOf(CFG,1);   // v35.xx (cw-diffmul): the settings multiplier rows, as for a career raid (his rule: the demo and career play the same)
   for(i=0;i<(g.zones||[]).length;i++) g.zones[i].closeAt=undefined;
   for(i=g.ents.length-1;i>=0;i--){ e=g.ents[i]; if(e&&(e.kind==='peddler'||e.kind==='stray')) g.ents.splice(i,1); }
   try{ arcadeVaults(g); }catch(_av){}   // v23.9x (feat4b): two strongrooms sealed into vaults (side stream)
@@ -65777,6 +65780,7 @@ function goalProg(id,S){
 function flowChip(n,head,sub){
   var p=G.player;
   if(!(n>0)) return 0;
+  n=spMul(n);   // v35.xx (cw-diffmul): the settings multiplier
   if(G.arcade&&typeof ARCADE==='object'&&ARCADE&&ARCADE.on){ ARCADE.mine=(ARCADE.mine|0)+n; try{ arcadeScSend(); }catch(_cs1){} }
   else if(G.career&&G.cs){ G.cs.s=(G.cs.s|0)+n; csTally(/^GOAL/.test(head)?'goal':(/^BOUNTY/.test(head)?'bounty':'strong'),n); }
   else return 0;
@@ -67495,7 +67499,35 @@ function arcadeCullTick(dt){
   return n;
 }
 function arcadeRunId(){ ARCADE.runN=(ARCADE.runN|0)+1; return 'r'+Date.now().toString(36)+'_'+ARCADE.runN; }
-function arcadeKillPts(k,el,boss){ var n=boss?ARCADE_BOSSPTS:(ARCADE_KILLPTS[k]|0); return el?n*(el>1?el:2):n; }   // v26.xx (ai25): an affixed elite passes 3, a plain elite 2
+// v35.xx (cw-diffmul), HIS ORDER (2026-10-28): "When the player makes the game harder in any way in the settings (eg number of enemies, number of pillagers, damage
+// taken, etc, that should give a score multiplier (maybe an additional 5% for each tier/level) and that should be indicated to the player. Super hot off should be
+// considered harder and should also give the multiplier. All these multipliers should stack."
+// THE SETTINGS SCORE MULTIPLIER. The Settings rows that make a raid harder, read from the dials they write (a dial moved on the tuning console counts by where it
+// stands, and nothing new is saved): pillager bots (Standard 1 step, Many 2, over Few), machines (Standard 1, Many 2, over Few), how hard they hit (Hardened 1,
+// Brutal 2, over Standard), heat when you call for extraction (Standard 1, Heavy 2, over Light) and superhot (off is 1 step over on). Each step pays its row's
+// DMUL_STEP (5%, one constant a row, to tune) and the rows multiply, so the hardest game pays x1.54. A row set easier than its default pays no less. Not counted:
+// raid length (a career and a demo raid run their own 10 minute clock, so the row changes nothing there), how much is out there (it is worth only, read when
+// sold, so lean for one raid would cost nothing), fog of war and shared sight (each window's own view, not in the raid word, so two windows would differ).
+// A raid takes the rows from the dials it was built with (G.dmul at careerPostBuild and arcadePostBuild, so a linked window builds with the host's dials, as the
+// raid word builds the raid), superhot read live (the host word rules it on a linked window). spMul puts it on sp earned: kills (arcadeKillPts, before the
+// streak), style medals (scoreBonus), goals, bounty and strongholds (flowChip) and vaults. Never on money, the haul, loot pickups or the loot pot.
+// DMUL_ON 0 (the test fixture) pays x1, so the older checks keep their figures.
+var DMUL_ON=1, DMUL_STEP={raiders:0.05,robots:0.05,hits:0.05,ext:0.05,superhot:0.05};
+function diffTiers(c){
+  c=c||CFG||{};
+  var n=+c.nRaider||0, s=+c.nSentry||0, d=+c.eDmg||0, v=(c.siegeVol===undefined)?1:(+c.siegeVol||0);
+  return {raiders:n>=15?2:(n>=10?1:0), robots:s>=28?2:(s>=20?1:0), hits:d>=1.4?2:(d>=1.2?1:0), ext:v>=1.4?2:(v>=1?1:0), superhot:c.superhot?0:1};
+}
+// the product of the rows (noSh: all but superhot, which a raid reads live)
+function diffMulOf(c,noSh){ var t=diffTiers(c), m=1, k; for(k in DMUL_STEP) if(!(noSh&&k==='superhot')) m*=1+DMUL_STEP[k]*(t[k]|0); return Math.round(m*1e4)/1e4; }
+// the multiplier now, to two places: this raid's rows and superhot as it stands; outside a raid, the dials as they stand
+function diffMul(){
+  if(!DMUL_ON) return 1;
+  var b=(typeof G!=='undefined'&&G&&!G.sim&&typeof G.dmul==='number')?G.dmul:diffMulOf(CFG,1), sh=(CFG&&CFG.superhot)?1:1+DMUL_STEP.superhot;
+  return Math.max(1,Math.round(b*sh*100)/100);
+}
+function spMul(n){ var m=diffMul(); return (n>0&&m>1)?Math.round(n*m):n; }
+function arcadeKillPts(k,el,boss){ var n=boss?ARCADE_BOSSPTS:(ARCADE_KILLPTS[k]|0); return spMul(el?n*(el>1?el:2):n); }   // v26.xx (ai25): an affixed elite passes 3, a plain elite 2. v35.xx (cw-diffmul): with the settings multiplier in
 // v23.31, HIS ORDER (2026-10-11), build 10 of 20 (arcade10): EASIER FOR NEWCOMERS. Every kill this window credits to its own player
 // refunds half a magazine of the gun in his hands into his reserve, and every 3rd kill of the run adds a Bandage to the backpack
 // while he carries fewer than 5 heals (the pickup stack shows it as KILL BONUS). The drop already gives 6 magazines and full
@@ -67686,6 +67718,7 @@ function arcadeBmDraw(c,o,counting){
 // neither it adds nothing and returns 0. Live play only; no seeded draw.
 function scoreBonus(n,x,y,txt){
   if(!G||G.sim||G.over||!(n>0)) return 0;
+  n=spMul(n);   // v35.xx (cw-diffmul): the settings multiplier
   if(G.arcade&&typeof ARCADE==='object'&&ARCADE&&ARCADE.on){ ARCADE.mine=(ARCADE.mine|0)+n; try{ arcadeScSend(); }catch(_e){} }
   else if(G.career&&G.cs){ G.cs.s=(G.cs.s|0)+n; csTally('style',n); }
   else return 0;
@@ -67776,7 +67809,7 @@ function styTone(notes){
 // one medal: the figure into the score, the plate over the cursor ring, the note. Returns the figure paid.
 function styMedal(txt,pts,x,y){
   var S=styS();
-  if(!scoreBonus(pts,x,y-12,'')) return 0;
+  pts=scoreBonus(pts,x,y-12,''); if(!pts) return 0;   // v35.xx (cw-diffmul): the figure paid, settings multiplier in, for the plate and the feed
   try{ feedMedal(txt,pts); }catch(_fmd){}   // v27.24 (feed1): the medal and its figure in the feed
   S.pops.push({txt:txt,pts:pts,t:+G.t||0});
   if(S.pops.length>8) S.pops.shift();

@@ -472,3 +472,5 @@
 2026-10-28 o-139-solo-pings full map: match the 24px target glyph and 28px dark backing, scaled at 4k. Before tools/handoff/console/notes/shots/o-139-solo-pings-recipes-3/solo-ping-map-1080.jpg; after tools/handoff/console/notes/shots/o-139-solo-pings-recipes-4/solo-ping-map-1080.jpg (lane capture pending).
 2026-10-28 | o-140-red-enemy-tracers | raid, smooth look, both windows | hostile machine and pillager bot tracers use #ff3b2f; allied gun and player element colours stay; receiver enemy muzzle flashes use warm #ffc27a | before: no custom-recipe before pictures | after: pending lane pictures at tools/handoff/console/notes/shots/o-140-red-enemy-tracers-recipes-1/red-tracers-{day,night}-p{1,2}-1080.jpg; 4K requested from coordinator
 
+2026-10-28 | o-140-red-enemy-tracers | raid, smooth look | shipped v35.67: hostile sentry and pillager bot rounds red, player rifle warm, forged player rounds cyan; muzzle flashes retain warm tints | before: no recipe before support | after verified day P1: tools/handoff/console/notes/shots/o-140-red-enemy-tracers-recipes-1/red-tracers-day-p1-1080.jpg; remaining day/night peer pictures are being restaged
+

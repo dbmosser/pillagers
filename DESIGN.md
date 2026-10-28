@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.68 - HARDER SETTINGS PAY MORE SP
+
+Co-op hunt while he was away. his order of 10-28: every Settings row set harder than the default pays 5 percent more sp a step, superhot off pays a step, and the rows multiply; money and loot never
+
+MEASURED. Check 35.68 passes, and fails on v35.67.
 ## v35.67 - WARNING RED ENEMY TRACERS
 
 Co-op hunt while he was away. His g-88 answer: Enemy tracers in a warning colour. Hostile machines and pillager bots fire #ff3b2f rounds in both windows. Player, hire and friendly rounds retain gun colours, including player forge elements and widths. Muzzle flashes stay warm. Render only; no seeded draw or text changes. Watch in play: red enemy rounds must stand out from the red danger HUD, red noise rings and attack lanes, at night and in rain. Two hostile pillager crews fighting each other must still read.
