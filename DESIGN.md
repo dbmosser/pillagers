@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.49 - HUD STATES ON THE VITALS
+
+Co-op hunt while he was away. his ask 10-27 ~21:40: the hud messaging is a clusterfuck, make it AAA (report reports/Player alerts and HUD messaging.md, job 5). Revealed, concealed and in cover are small icons beside the stance chip bottom left for as long as they are true (each word shows for 2 s the first time), and the hidden pill leaves the mid left column. Under a quarter health the hp bar pulses slowly, 1.2 a second, with no text. Low ammo pulses the count red; an empty gun with rounds to load shows the reload key cap on the gun card. Looting, the pickup stack and the money rows are untouched.
+
+MEASURED. Check 35.49 passes, and fails on v35.48.
 ## v35.48 - PLAYER 2 CHOOSES EASY OR NORMAL TOO
 
 Co-op hunt while he was away. Found in the cloud audit of 2026-10-28 on the real 2-player rig (two windows, paired, player 2 on a simulated pad, the fuzz robot's own steps). His answer 2.28 c: in the demo each player chooses easy or normal before their run starts. Only arcadeDeploy asks, and only player 1 runs it; player 2 enters through netUpTake, so player 2 never gets the card. Proven in headless Chromium on v35.38: with both windows in the raid, player 1 held easyAsk {waitMap:0} with the card on screen, player 2 held easyAsk null. A yes player 2 gave at the second-death offer also carried into the next run, since nothing reset it. Fix: when player 2 enters a demo run, its window runs the same easyStartAsk player 1 runs (fresh card, the run starts on normal). Watch at the party: player 2 sees the want easy mode card after its opening map and answers it with A or B.
