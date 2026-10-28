@@ -200,7 +200,7 @@ function mainPcHtml(mp){
 // one line per question in for-you.md; blank lines and the "nothing for you" line are not questions
 const qList=d=>(d.questions||[]).map(q=>String(q).trim()).filter(q=>q&&!/^nothing for you/i.test(q));
 function crewHtml(d){
-  const a=d.ai||{}, p=d.procs, L=d.lanes.filter(l=>l.lane!=='o'&&!l.old), busy=L.filter(l=>l.busy&&/running/.test(l.status)).length,   // a resting helper holds its lock for a moment while it checks the pace alive=d.runnerAgeS!==null&&d.runnerAgeS<900;
+  const a=d.ai||{}, p=d.procs, L=d.lanes.filter(l=>l.lane!=='o'&&!l.old), busy=L.filter(l=>l.busy&&/running/.test(l.status)).length, alive=d.runnerAgeS!==null&&d.runnerAgeS<900;   // busy: a resting helper holds its lock for a moment while it checks the pace
   const lr=L.map(l=>laneLine(l.status)), rest=lr.find(x=>x[0]==='a');
   let o='';
   o+=svcRow(busy?'g':rest?'a':'d','Claude helpers',busy?busy+' working now':(rest?esc(rest[1]):'idle'),L.length+' helpers on; '+d.done+' jobs finished so far');
