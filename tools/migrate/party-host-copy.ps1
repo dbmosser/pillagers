@@ -369,7 +369,8 @@ function Invoke-Prepare {
   $prev = Read-PartyState
   $running = $false
   if ($prev -and $prev.state -eq 'running') { $running = $true }
-  Save-PartyState @{ state = $(if ($running) { 'running' } else { 'prepared' }); dir = $Dir; ref = $Ref; head = $facts.Head; port = $Port; pids = $(if ($running) { @($prev.pids) } else { @() }); relayWasRunning = $(if ($prev) { [bool]$prev.relayWasRunning } else { $false }) }
+  # a deliberate -Stop stays "stopped" through later updates: the idle runner (spare-runner.ps1 Ensure-Play) serves 8802 again only when it does not say so
+  Save-PartyState @{ state = $(if ($running) { 'running' } elseif ($prev -and $prev.state -eq 'stopped') { 'stopped' } else { 'prepared' }); dir = $Dir; ref = $Ref; head = $facts.Head; port = $Port; pids = $(if ($running) { @($prev.pids) } else { @() }); relayWasRunning = $(if ($prev) { [bool]$prev.relayWasRunning } else { $false }) }
   if ($running) { Write-Mig 'The copy is being served right now; the NEW files are served at once (the server reads the file on every request). Reload the page.' 'INFO' }
   Write-Mig 'Next: -Start on party night (or earlier to rehearse), then open http://localhost:8802/dark_raiders.html in Chrome.' 'INFO'
   return 0

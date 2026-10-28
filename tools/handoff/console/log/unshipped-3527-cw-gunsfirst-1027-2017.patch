@@ -1,0 +1,31 @@
+diff --git a/dark_raiders.html b/dark_raiders.html
+index 6c439e8dd..a5f97a9e5 100644
+--- a/dark_raiders.html
++++ b/dark_raiders.html
+@@ -3724,7 +3724,7 @@ var cv=document.getElementById('cv');
+ var hcv=document.getElementById('hcv');
+ 
+ // ================================================================ config
+-var VER='35.26';
++var VER='35.27';
+ var VER_AT='2026-10-27 20:14';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+ // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
+ // and thirty builds have landed since; nothing in the game says so, and finding
+@@ -34634,7 +34634,7 @@ var _cdone=contractExtract(G.bag,haul);
+     // the same pictures the backpack and stash use. Issued Bandages handed back are not shown, as they are not counted.
+     (function(){ var keys=G.bag.slice(), iss=(_issN||0), k, s='', n=0;
+       for(k=keys.length-1;k>=0&&iss>0;k--) if(keys[k]==='bandage'){ keys.splice(k,1); iss--; }
+-      keys.sort(function(a,b){ return ival(b)-ival(a); });
++      keys.sort(function(a,b){ return (((ITEMS[b]&&ITEMS[b].use==='gun')?1:0)-((ITEMS[a]&&ITEMS[a].use==='gun')?1:0))||(ival(b)-ival(a)); });   // v35.xx (cw-gunsfirst), HIS ORDER (2026-10-27): "on the extracted screen, always show guns first, that's the best thing to extract, regardless of color/rarity". Guns lead the strip, the dearest gun first, so a gun is never cut by the eight tile cap; everything after them keeps the value order. The reveal still runs right to left, so the guns land last.
+       for(k=0;k<keys.length&&k<8;k++){ if(ITEMS[keys[k]]){ s+='<span class="haulit" data-k="'+keys[k]+'" data-r="'+(dispR(keys[k])||ITEMS[keys[k]].r||'common')+'" data-v="'+ival(keys[k])+'" title="'+escHtml(ITEMS[keys[k]].name)+'" style="display:inline-block;margin:3px;padding:3px;border-radius:8px;background:rgba(0,0,0,.25);border:1px solid '+(RCOL[dispR(keys[k])||ITEMS[keys[k]].r]||'rgba(127,146,216,.35)')+'">'+iconImgHTML(keys[k],52)+'</span>'; n++; } }   // v19.99, seen on the 4K extraction card (2026-10-08): the haul pictures were 34px chips; 52 now
+       if(keys.length>8) s+='<span style="color:var(--ash);margin-left:6px">+'+(keys.length-8)+' more</span>';
+       if(n) lines.push('<span class="haulstrip" data-sec="'+_secV+'" style="display:inline-block;margin:4px 0 2px">'+s+'</span>');   // v26.xx (career7): the value the card secured, for the reveal total
+@@ -54839,7 +54839,7 @@ var ROADMAP=[
+ // v7.63: parsecheck now FAILS the build when this field does not name the
+ // current VER, so it cannot silently rot a third time.
+ var DEVNOW={
+-  now:'v35.26: more ammo boxes when you run dry Check 35.26 fails on v35.25',
++  now:'v35.27: guns lead the haul on the extracted card Check 35.27 fails on v35.26',
+   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
+ };
+ // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

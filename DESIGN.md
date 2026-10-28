@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.27 - ACTIVE RELOAD STACKS
+
+Co-op hunt while he was away. his order 10-27: make the active reload stack but it gets harder each time; each active reload in a row adds 10 percent to the bonus up to x1.55 and narrows the next sweet spot by a quarter, a miss or a reload left to run out starts over
+
+MEASURED. Check 35.27 passes, and fails on v35.26.
 ## v35.26 - MORE AMMO WHEN YOU RUN DRY
 
 Co-op hunt while he was away. his order 10-27: player should have higher chance of finding ammo boxes if player has no ammo; a box searched by a pillager with nothing left to reload holds an ammo box about 7 times in 10 instead of about 1 in 4

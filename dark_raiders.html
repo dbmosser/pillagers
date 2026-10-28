@@ -3724,8 +3724,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.26';
-var VER_AT='2026-10-27 20:14';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.27';
+var VER_AT='2026-10-27 20:19';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20069,7 +20069,7 @@ function pollPad(){
       // cut, and at a found survivor the [X] GIVE prompt was a reload too. A seal already open is left out (its reach is not looked
       // up again once it opens), and so is a survivor the prompt does not offer (not yet found, or turned hostile), so X still
       // reloads in a fight with him.
-      if(_xDown&&PAD.xMode==null&&(PAD.xNearN==null||PAD.xNearN!==(G.nearN||0)||(G.player&&G.player.downed))){ var _xm=false; try{ _xm=!!(NET.on&&typeof netMateDown==='function'&&netMateDown(G.player)>=0); }catch(_xe){} PAD.xMode=padXMode(_xm); /* v28.xx (cw-cx-xfight): his 3.10 b: reload wins during a fight. */ var _rp=G.player; if(PAD.xMode==='KeyE'&&_rp&&!_rp.downed&&_rp.reloading>0&&_rp.rlTot>0&&!G.nearDown&&!_xm){ var _arf=1-_rp.reloading/_rp.rlTot; if(_arf>=AR_A&&_arf<=AR_B) PAD.xMode='KeyR'; } if(PAD.xNearN!=null){ PAD.xDownAt=G.t; PAD.xNearN=null; _xSearch=!!(G.nearPad&&G.nearContainer); } }   // v28.37 (cloud-coop-pad-active-reload), CLOUD HUNT 2026-10-15: X is the only reload button on a controller, so in the sweet spot of a reload it lands the active reload even with a box, body, door or forge in reach (it searched instead, so player 2 could never get the bonus there); a downed teammate still takes the revive
+      if(_xDown&&PAD.xMode==null&&(PAD.xNearN==null||PAD.xNearN!==(G.nearN||0)||(G.player&&G.player.downed))){ var _xm=false; try{ _xm=!!(NET.on&&typeof netMateDown==='function'&&netMateDown(G.player)>=0); }catch(_xe){} PAD.xMode=padXMode(_xm); /* v28.xx (cw-cx-xfight): his 3.10 b: reload wins during a fight. */ var _rp=G.player; if(PAD.xMode==='KeyE'&&_rp&&!_rp.downed&&_rp.reloading>0&&_rp.rlTot>0&&!G.nearDown&&!_xm){ var _arf=1-_rp.reloading/_rp.rlTot; if(_arf>=arLo(_rp)&&_arf<=arHi(_rp)) PAD.xMode='KeyR'; /* v35.xx (cw-reloadstack): the spot of this chain */ } if(PAD.xNearN!=null){ PAD.xDownAt=G.t; PAD.xNearN=null; _xSearch=!!(G.nearPad&&G.nearContainer); } }   // v28.37 (cloud-coop-pad-active-reload), CLOUD HUNT 2026-10-15: X is the only reload button on a controller, so in the sweet spot of a reload it lands the active reload even with a box, body, door or forge in reach (it searched instead, so player 2 could never get the bonus there); a downed teammate still takes the revive
       if(_xDown&&G.player&&G.player.downed) PAD.xMode='KeyE';   // v17.04, co-op hunt 2026-09-28: downed, X holds E, also a hold carried onto the floor (above)
       PAD.xWas=_xDown;
       padHold('KeyR',_xDown&&PAD.xMode==='KeyR');
@@ -24870,7 +24870,7 @@ if(wep.mag===0){
   for(var pel=0;pel<shots;pel++){
     var ang=base+rnd(-spx,spx);
     G.bullets.push({sx:sh.x,sy:sh.y,mzd:Math.max(0,gunMuzD(sh,wep)-17),ly:shotLy(sh,wep),x:sh.x+Math.cos(ang)*17,y:sh.y+Math.sin(ang)*17,   // v28.xx (cw-thirdsize): ly, the height its tracer is drawn at, the gun line of the drawn body (drawing only)
-      vx:Math.cos(ang)*(wep.rkt?RKT_SPD:1180),vy:Math.sin(ang)*(wep.rkt?RKT_SPD:1180),dmg:wep.dmg*((sh&&sh.elite)?(CFG.eliteDmg===undefined?1.6:CFG.eliteDmg):1)*((fromPlayer&&!G.sim&&G.player.arBonus>0)?AR_BONUS:1)*pwrMul('dmg',fromPlayer),   // v26.xx (feel11): the active reload bonus
+      vx:Math.cos(ang)*(wep.rkt?RKT_SPD:1180),vy:Math.sin(ang)*(wep.rkt?RKT_SPD:1180),dmg:wep.dmg*((sh&&sh.elite)?(CFG.eliteDmg===undefined?1.6:CFG.eliteDmg):1)*((fromPlayer&&!G.sim&&G.player.arBonus>0)?(G.player.arMul||AR_BONUS):1)*pwrMul('dmg',fromPlayer),   // v26.xx (feel11): the active reload bonus
       life:wep.rng/(wep.rkt?RKT_SPD:1180),player:!!fromPlayer,owner:sh,tint:wep.tint||'#ffd48a',
       el:(fromPlayer&&wep.el&&ELEM[wep.el])?wep.el:'',   // v23.xx (forge3): a MK III round carries its element
       rkt:wep.rkt?1:0,_pen:wep.rkt?99:0,thru:(wep.id==='lance')?1:0,gid:fromPlayer?String(wep.id||''):''});   // v26.xx (career1): the round carries the id of the gun it came from, for the kill tally   // v11.84, HIS NOTE: the Lance travels through crawlers
@@ -25559,6 +25559,13 @@ function rlfxStop(){
 // normal speed, with no jam and no penalty. The bonus ends when the magazine runs dry, at the next reload or when you change gun. Live play only
 // (G.sim never runs it), and nothing here draws from the seeded stream.
 var AR_A=0.42, AR_B=0.60, AR_BONUS=1.15;
+// v35.xx (cw-reloadstack), HIS ORDER (2026-10-27): "make the active reload stack but it gets harder each time". THE ACTIVE RELOAD STACKS. Each active reload in a row adds AR_STEP
+// to the bonus of the next magazine (x1.15, x1.25, x1.35, x1.45, then x1.55 from AR_STK_MAX on), and each one narrows the next sweet spot around its middle by AR_NARROW (18, 13.5,
+// 10.1, 7.6, then 5.7 percent of the reload). A press outside the sweet spot, or a reload left to run out on its own, starts the chain over and the spot is wide again; a swap that
+// cuts a reload short keeps it. The chain lives on the player (p.arStk), so in co-op each pillager has their own; the ring, the bar and X on a pad all read arLo and arHi. Live play only.
+var AR_STEP=0.10, AR_STK_MAX=5, AR_NARROW=0.75;
+function arLo(p){ var k=Math.min((p&&p.arStk)||0,AR_STK_MAX-1); return (k>0)?(AR_A+AR_B)/2-(AR_B-AR_A)/2*Math.pow(AR_NARROW,k):AR_A; }
+function arHi(p){ var k=Math.min((p&&p.arStk)||0,AR_STK_MAX-1); return (k>0)?(AR_A+AR_B)/2+(AR_B-AR_A)/2*Math.pow(AR_NARROW,k):AR_B; }
 function activeReloadTick(p){
   var f;
   if(!G||G.sim||!p||!p.wep) return false;
@@ -25573,10 +25580,10 @@ function activeReloadTick(p){
   // a dull miss (arMiss); the Support MG's spin has its own sound, a motor engaging and a whine climbing two octaves as the barrels wind up (lmgSpinUp) and falling as
   // they wind down (lmgWindDown); and the finisher lands with a heavy blow of its own (finishBlow) on top of the crowbar sound. No words, no voices. Cosmetic only:
   // no seeded draw, no game state.
-  if(f<AR_A||f>AR_B){ try{ blip('arMiss'); }catch(_am){} return false; }
-  p.arBonus=1; p.arGun=p.wep;
-  p.reloading=1; tickReload(0.002);
-  try{ blip('arHit'); spark(p.x,p.y-14,'#9fe8b0',14,260); label(p.x,p.y-34,'ACTIVE RELOAD','#9fe8b0',0,true); }catch(_ar){}
+  if(f<arLo(p)||f>arHi(p)){ p.arStk=0; try{ blip('arMiss'); }catch(_am){} return false; }   // v35.xx (cw-reloadstack): the spot narrows with the chain, and a miss starts it over
+  p.arStk=Math.min((p.arStk||0)+1,AR_STK_MAX); p.arMul=AR_BONUS+AR_STEP*(p.arStk-1); p.arBonus=1; p.arGun=p.wep;   // v35.xx (cw-reloadstack): one more in the chain, a bigger bonus
+  p.reloading=1; p.arHot=1; tickReload(0.002);   // v35.xx (cw-reloadstack): arHot tells tickReload this reload ended on an active reload
+  try{ blip('arHit'); spark(p.x,p.y-14,'#9fe8b0',14,260); label(p.x,p.y-34,(p.arStk>1)?'ACTIVE RELOAD x'+p.arStk:'ACTIVE RELOAD','#9fe8b0',0,true);   /* v35.xx (cw-reloadstack): the chain count from the second one on */ }catch(_ar){}
   return true;
 }
 // v27.xx (feel2c), HIS WORDS (2026-10-14): "keep -- bar needs a clear red line for when the active reload happens". THE RELOAD BAR SHOWS THE ACTIVE RELOAD IN RED. The bar over the
@@ -25584,8 +25591,8 @@ function activeReloadTick(p){
 // line at each end that reaches past the bar, a white playhead runs along it, and while the playhead is inside the zone (the moment R counts) the zone goes light red and its lines white;
 // once it is missed the zone dims. The sweet spot on the cursor ring is red too, with a red tick across the ring at each end, the same cue in the same colours. Cosmetic only.
 function reloadBarDraw(x,y,p){
-  var tot=(p.rlTot>0)?p.rlTot:p.wep.reload, f=clamp(1-p.reloading/tot,0,1), BW=LH(88), BH=LH(8), x0=Math.round(x-BW/2), y0=Math.round(y-LH(18)), zx=Math.round(x0+BW*AR_A), zw=Math.round(BW*(AR_B-AR_A));
-  var inz=(f>=AR_A&&f<=AR_B), miss=(f>AR_B), lw=Math.max(2,Math.round(LH(2))), ex=Math.round(LH(3));
+  var tot=(p.rlTot>0)?p.rlTot:p.wep.reload, f=clamp(1-p.reloading/tot,0,1), BW=LH(88), BH=LH(8), x0=Math.round(x-BW/2), y0=Math.round(y-LH(18)), lo=arLo(p), hi=arHi(p), zx=Math.round(x0+BW*lo), zw=Math.round(BW*(hi-lo));   // v35.xx (cw-reloadstack): the red zone narrows with the chain
+  var inz=(f>=lo&&f<=hi), miss=(f>hi), lw=Math.max(2,Math.round(LH(2))), ex=Math.round(LH(3));
   ctx.fillStyle='rgba(6,9,13,.78)';
   ctx.fillRect(x0-2,y0-2,BW+4,BH+4);
   bar(x0,y0,BW,BH,f,'#ffc04a');
@@ -25618,6 +25625,7 @@ function tickReload(dt){
       // its count, each a feed row for what the gun card (RELOADING, the gun in hand, the rounds), the reticle ([R] RELOAD, NO AMMO)
       // and the belt band already show. The rows are gone; every sound stays.
       p.ammo+=take; p.reserve-=take*rktCost(p.wep);   // v28.xx (cw-rocket): a rocket costs 30
+      if(!G.sim){ if(!p.arHot) p.arStk=0; p.arHot=0; }   // v35.xx (cw-reloadstack): a reload left to run out on its own (no active reload) starts the chain over
       // v25.xx (reloaddone), HIS ORDER 2026-10-13: "'reload done' needs a sound always". v25.52 gave each gun its own steps and played the
       // last one (the rack, the pump, the bolt) only when the gun was EMPTY, so a reload with a round still chambered finished in
       // silence on every gun. Now the short click and thud of v10.56 (reloadin, on the gun bus, quiet under gunfire) plays on EVERY
@@ -43747,14 +43755,14 @@ if(!p.downed&&!G.bagOpen&&!G.mapOpen&&!(G.wheel&&!G.wheel.pad)){   // v28.xx (cw
         ctx.stroke();
       }
       // v26.xx (feel11): THE SWEET SPOT, a bright stretch of the ring: full while the ring is before it or inside it, dim once it is missed
-      ctx.strokeStyle=(_rlf>AR_B)?'rgba(255,69,56,.40)':((_rlf>=AR_A)?'rgb(255,150,138)':'rgb(232,58,44)'); ctx.lineWidth=((_rlf>=AR_A&&_rlf<=AR_B)?6.8:5.4)*_wz; ctx.lineCap='butt';   // v27.xx (feel2c): the sweet spot is red
-      if(_rlf>=AR_A&&_rlf<=AR_B){ ctx.shadowColor='rgba(255,90,70,.95)'; ctx.shadowBlur=9*_wz; }   // lit while R counts
-      ctx.beginPath(); ctx.arc(rx0,ry0,_rlr,-1.5708+6.2832*AR_A,-1.5708+6.2832*AR_B); ctx.stroke();
+      var _arA=arLo(p), _arB=arHi(p); /* v35.xx (cw-reloadstack): the sweet spot narrows with the chain */ ctx.strokeStyle=(_rlf>_arB)?'rgba(255,69,56,.40)':((_rlf>=_arA)?'rgb(255,150,138)':'rgb(232,58,44)'); ctx.lineWidth=((_rlf>=_arA&&_rlf<=_arB)?6.8:5.4)*_wz; ctx.lineCap='butt';   // v27.xx (feel2c): the sweet spot is red
+      if(_rlf>=_arA&&_rlf<=_arB){ ctx.shadowColor='rgba(255,90,70,.95)'; ctx.shadowBlur=9*_wz; }   // lit while R counts
+      ctx.beginPath(); ctx.arc(rx0,ry0,_rlr,-1.5708+6.2832*_arA,-1.5708+6.2832*_arB); ctx.stroke();
       ctx.shadowBlur=0; ctx.shadowColor='rgba(0,0,0,0)';
       // v27.xx (feel2c): and the red line: a tick across the ring at each end of the zone, white while the ring is inside it
-      ctx.strokeStyle=(_rlf>AR_B)?'rgba(255,69,56,.45)':((_rlf>=AR_A)?'rgb(255,255,255)':'rgb(255,69,56)'); ctx.lineWidth=2.4*_wz;
+      ctx.strokeStyle=(_rlf>_arB)?'rgba(255,69,56,.45)':((_rlf>=_arA)?'rgb(255,255,255)':'rgb(255,69,56)'); ctx.lineWidth=2.4*_wz;
       for(var _rq=0;_rq<2;_rq++){
-        var _rqa=-1.5708+6.2832*(_rq?AR_B:AR_A), _rqc=Math.cos(_rqa), _rqs=Math.sin(_rqa);
+        var _rqa=-1.5708+6.2832*(_rq?_arB:_arA), _rqc=Math.cos(_rqa), _rqs=Math.sin(_rqa);
         ctx.beginPath(); ctx.moveTo(rx0+_rqc*(_rlr-7*_wz),ry0+_rqs*(_rlr-7*_wz)); ctx.lineTo(rx0+_rqc*(_rlr+7*_wz),ry0+_rqs*(_rlr+7*_wz)); ctx.stroke();
       }
     } else if(rState){
@@ -54839,7 +54847,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.26: more ammo boxes when you run dry Check 35.26 fails on v35.25',
+  now:'v35.27: active reload stacks, the sweet spot shrinks each time Check 35.27 fails on v35.26',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

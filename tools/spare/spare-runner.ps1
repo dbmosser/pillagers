@@ -552,7 +552,8 @@ function Update-Game(){
 # 10-27 his "I want the main PC to always have the latest build!": in idle mode, every minute (10-27 evening "still not getting the latest
 # build": 5 minutes was too slow), whether he is at the PC or away,
 # the party copy his 8802 server plays (C:\claudecode\pillagers-party) is brought to GitHub master when master moved. Only -Prepare
-# (git fetch and reset in that copy, stable.html copied); never -Start or -Stop, never a look at 8802. He reloads the page to play it.
+# (git fetch and reset in that copy, stable.html copied); never -Stop, no request to 8802. He reloads the page to play it. (Ensure-Play
+# below is the one -Start: only when nothing has served 8802 for 2 minutes.)
 function PartyVer([string]$d){ try{ $m=[regex]::Match([IO.File]::ReadAllText($d+'\dark_raiders.html'),"var VER='([0-9]+\.[0-9]+)';"); if($m.Success){ return $m.Groups[1].Value } }catch{}; return '?' }
 # what his 8802 really serves, from the process list only (no request to 8802): the -Root of the serve.ps1 on port 8802 and its game version
 function Play8802(){
@@ -630,6 +631,67 @@ function Ensure-Bridge(){
     if(Test-Path -LiteralPath $vbs){ Start-Process -FilePath wscript.exe -ArgumentList ('"'+$vbs+'"') | Out-Null }
     Say 'PROBLEM: the bridge agent from the runner copy did not listen on 8830; the old one was started again, next try in 30 minutes'
   } catch { $script:brT=(Epoch)+1740; Say ('PROBLEM: bridge check failed: '+(Short $_.Exception.Message)) }
+}
+# 10-27 his "the main pc is not always going to have claude code open": nothing served his 8802 again after a restart or a crash (the
+# server from a -Start lived until the next reboot). Once a minute in idle mode it knocks on 127.0.0.1:8802 (a connect, no request). When
+# nothing answered at 3 looks in a row (2+ minutes, so a server starting at sign-in gets there first), or a play relay holds 8802 but
+# has not delivered the game at 3 looks (the main PC Claude found 10-27 that its Startup shortcut takes 8802 and 8799 at every sign-in
+# and forwards to a VM port nobody answers, so the page hangs), no party-host-copy runs, and the party copy's last running/stopped record
+# is not "stopped" (a deliberate -Stop, from either copy of the script), it runs party-host-copy -Start (which stops such a relay first;
+# the game on 8802 and the run-report collector on 8799; -NoCollector when something else holds 8799) as a child it never waits on.
+# Never a -Stop; a relay that delivers the game is left alone. A failure tries again in 10 minutes.
+$script:playT=0; $script:playMiss=0; $script:playP=$null; $script:playS=0
+function PortOpen([int]$p){
+  $c=New-Object Net.Sockets.TcpClient
+  try{ $a=$c.BeginConnect('127.0.0.1',$p,$null,$null); return [bool]($a.AsyncWaitHandle.WaitOne(700) -and $c.Connected) }catch{ return $false }finally{ try{ $c.Close() }catch{} }
+}
+# the play relay (10-19 route to the VM) delivers the game: a HEAD through it gets the page (over 1 MB) within 5 s. Asked only while a
+# relay runs: its Startup shortcut starts it at sign-in while host-stopped.txt says switched over, and its VM side has not answered since.
+function RelayGame(){
+  try{ $rq=[Net.WebRequest]::Create('http://127.0.0.1:8802/dark_raiders.html'); $rq.Method='HEAD'; $rq.Timeout=5000; $rs=$rq.GetResponse(); $n=[long]$rs.ContentLength; $rs.Close(); return ($n -gt 1000000) }catch{ return $false }
+}
+# the newest "running" or "stopped" record of the party copy (its state file sits next to whichever party-host-copy.ps1 wrote it)
+function PartyIntent(){
+  $best=''; $bt=''
+  foreach($f in @(($T+'\migrate\state\party-copy.json'),'C:\claudecode\dark raiders\tools\migrate\state\party-copy.json')){
+    try{ $s=Get-Content -LiteralPath $f -Raw -ErrorAction Stop | ConvertFrom-Json; if(($s.state -eq 'running' -or $s.state -eq 'stopped') -and [string]$s.time -gt $bt){ $best=[string]$s.state; $bt=[string]$s.time } }catch{}
+  }
+  return $best
+}
+function Ensure-Play(){
+  if(-not $Idle){ return }
+  try{
+    $PD='C:\claudecode\pillagers-party'
+    if($script:playP){   # a start begun earlier: look at it, never wait for it
+      if(-not $script:playP.HasExited){
+        if(((Epoch)-$script:playS) -lt 120){ return }
+        Stop-Process -Id $script:playP.Id -Force -ErrorAction SilentlyContinue   # only the script: a server it already started keeps serving
+        $script:playP=$null; $script:playT=(Epoch)+540; Say 'PROBLEM: starting the 8802 server took over 2 minutes and was stopped; next try in 10 minutes'; return
+      }
+      $rc=$script:playP.ExitCode; $script:playP=$null; $script:playMiss=0
+      if($rc -eq 0 -and (PortOpen 8802)){ Say ('8802 serves the party copy again (v'+(PartyVer $PD)+'): he reloads the page'); PutS 'pub_t' '0' }
+      else { $script:playT=(Epoch)+540; Say ('PROBLEM: the 8802 server did not start (code '+$rc+'), next try in 10 minutes: '+(Short ((Get-Content -LiteralPath ($W+'\play-start.out') -Tail 3 -ErrorAction SilentlyContinue) -join ' '))) }
+      return
+    }
+    if(((Epoch)-$script:playT) -lt 60){ return }
+    $script:playT=Epoch
+    if(-not (Test-Path -LiteralPath ($PD+'\.git')) -or -not (Test-Path -LiteralPath ($PD+'\tools\serve.ps1'))){ return }
+    if((Running 'party-host-copy\.ps1') -gt 0){ $script:playMiss=0; return }
+    $relay=((Running 'play-relay\.mjs') -gt 0)
+    if($relay){ if(RelayGame){ $script:playMiss=0; return } } elseif(PortOpen 8802){ $script:playMiss=0; return }
+    if((PartyIntent) -eq 'stopped'){ if($script:playMiss -ge 0){ Say '8802 has no server: the party copy was stopped on purpose, so it stays off'; $script:playMiss=-1 }; return }
+    if($script:playMiss -lt 0){ $script:playMiss=0 }
+    $script:playMiss++
+    if($script:playMiss -lt 3){ return }
+    $S=$T+'\migrate\party-host-copy.ps1'; if(-not (Test-Path -LiteralPath $S)){ return }
+    $a=@('-NoProfile','-ExecutionPolicy','Bypass','-File',('"'+$S+'"'),'-Start')
+    if(-not $relay -and (PortOpen 8799) -and (Running 'pillagers-party[\\/]+tools[\\/]+collector\.ps1') -eq 0){ $a+='-NoCollector' }
+    $p=Start-Process powershell.exe -NoNewWindow -PassThru -ArgumentList $a -RedirectStandardOutput ($W+'\play-start.out') -RedirectStandardError ($W+'\play-start.err')
+    [void]$p.Handle   # PS 5.1: hold the handle so ExitCode is filled in later
+    $script:playP=$p; $script:playS=Epoch
+    $w8=$(if($relay){ 'the play relay on 8802 has not delivered the game for 2 minutes (its VM side does not answer)' }else{ 'nothing has answered on 8802 for 2 minutes' })
+    Say ($w8+': serving the party copy again (party-host-copy -Start'+$(if($a -contains '-NoCollector'){ ' -NoCollector' }else{ '' })+')')
+  } catch { $script:playT=(Epoch)+540; Say ('PROBLEM: 8802 check failed: '+(Short $_.Exception.Message)) }
 }
 
 function Build-Fixture(){
@@ -794,6 +856,7 @@ while($true){
       if($script:working){ Stop-Work $pw }
       Refresh-Party
       Ensure-Bridge
+      Ensure-Play
       # a new runner is taken as soon as master moves (Refresh-Party asks GitHub every minute), not only at the 10-minute note
       if($script:lastMaster -and $script:lastMaster -ne $script:tookMaster -and ((Running 'corpq\.sh|corpus-slices\.sh') -eq 0)){
         $script:tookMaster=$script:lastMaster
@@ -854,6 +917,7 @@ while($true){
   Ensure-Server
   Refresh-Party
   Ensure-Bridge
+  Ensure-Play
   $cr=Running 'corpq\.sh|corpus-slices\.sh'
   $why=''
   if($cr -eq 0){

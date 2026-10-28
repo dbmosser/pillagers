@@ -1,0 +1,7 @@
+v35.27: active reload stacks
+
+active reload stacks, the sweet spot shrinks each time
+
+Check 35.27. Fails on v35.26.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
