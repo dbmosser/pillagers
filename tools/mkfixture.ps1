@@ -8418,8 +8418,10 @@ window.__REGRESS=[
      function lowEnd(L,ch,u,rs){ var lo=ch.y-LH(16)*rs; if(u&&L.x<u.x+u.w&&L.x+L.w>u.x-LH(6)*rs) lo=Math.min(lo,u.y-LH(16)*rs); return lo; }
      function clearOf(n,box,r,tag){
        var i, v=vitals(r), cs=capStrip(r), hc=G.hotCells||[];
-       if(FEEDBOX&&FEEDBOX.on&&hit(box,FEEDBOX)) bad.push(tag+n+' '+R(box)+' is over the feed '+R(FEEDBOX));
-       if(typeof MEDALBOX==='object'&&MEDALBOX&&MEDALBOX.on&&hit(box,MEDALBOX)) bad.push(tag+n+' '+R(box)+' is over the medal spot '+R(MEDALBOX));
+       var lft=(n==='the opened list'&&typeof legLeftDock==='function'&&legLeftDock())?legLeftDock():null;   /* retarget (cw-f1left, his order of 2026-10-27 "should be over on the left, not the middle of the screen"): the opened list stands at the left edge in the feed zone and the feed lines step right of it, so the test is the lines; it rests in the medal spot only where the dock dropped there */
+       if(lft){ if((FEEDBOX.rows||[]).some(function(q){ return hit(box,q); })) bad.push(tag+'a feed line is under '+n+' '+R(box)); }
+       else if(FEEDBOX&&FEEDBOX.on&&hit(box,FEEDBOX)) bad.push(tag+n+' '+R(box)+' is over the feed '+R(FEEDBOX));
+       if(typeof MEDALBOX==='object'&&MEDALBOX&&MEDALBOX.on&&hit(box,MEDALBOX)&&!(lft&&FEEDBOX&&lft.b>FEEDBOX.y+FEEDBOX.h+0.5)) bad.push(tag+n+' '+R(box)+' is over the medal spot '+R(MEDALBOX));
        if(cs&&hit(box,cs)) bad.push(tag+n+' '+R(box)+' is over the belt caption '+R(cs));
        for(i=0;i<hc.length;i++) if(hit(box,hc[i])){ bad.push(tag+n+' '+R(box)+' is over belt key '+(i+1)); break; }
        for(i=0;i<v.length;i++) if(hit(box,v[i])){ bad.push(tag+n+' '+R(box)+' is over the vitals '+R(v[i])); break; }
@@ -8486,8 +8488,9 @@ window.__REGRESS=[
            __frame(0.016); L3=lbox();
            if(!same(L3,L)) bad.push(tag+'the opened list is not back in its place in the first frame after the bandage and the plate are done: '+R(L3)+', before '+R(L));
            wideOk(L,tag);
-           if(L.x<chip.x-2||L.x>chip.x+chip.w) bad.push(tag+'the opened list '+R(L)+' does not start on the chip '+R(chip));
-           if(L.y+L.h>chip.y+chip.h+2||L.y+L.h<lowEnd(L,chip,ub3.u,rs)) bad.push(tag+'the opened list '+R(L)+' does not end on the chip row '+R(chip)+' or on the use bar '+R(ub3.u));
+           if(typeof legLeftDock==='function'&&legLeftDock()){ var D5=legLeftDock(); if(Math.abs(L.x-D5.x)>2||Math.abs(L.y+L.h-D5.b)>2) bad.push(tag+'the opened list '+R(L)+' does not stand on the left dock at '+Math.round(D5.x)+', bottom '+Math.round(D5.b)); }   /* retarget (cw-f1left, his order of 2026-10-27 "should be over on the left, not the middle of the screen"): the list no longer grows from the chip; it stands on the left dock */
+           else { if(L.x<chip.x-2||L.x>chip.x+chip.w) bad.push(tag+'the opened list '+R(L)+' does not start on the chip '+R(chip));
+           if(L.y+L.h>chip.y+chip.h+2||L.y+L.h<lowEnd(L,chip,ub3.u,rs)) bad.push(tag+'the opened list '+R(L)+' does not end on the chip row '+R(chip)+' or on the use bar '+R(ub3.u)); }
            if(c0&&L.y+L.h>c0.y-LH(4)+0.5) bad.push(tag+'the opened list '+R(L)+' runs down over the belt plate');
            clearOf('the opened list',L,r,tag);
            if(MD[mi]!=='second window'&&typeof pwrS==='function'){   // four power up timers: the chip row over the belt
@@ -8545,7 +8548,8 @@ window.__REGRESS=[
            if(!ub6.u) bad.push(tg+'no use bar plate drew with a bandage in use');
            else if(hit(ub6.L,ub6.u)) bad.push(tg+'with a bandage in use the opened list '+R(ub6.L)+' covers the use bar '+R(ub6.u));
            bothOk(g2,tg,'');   // a bandage and a plate at once
-           if(ch2&&ch2.x+L2.w<=W*0.47&&(L2.x<ch2.x-2||L2.x>ch2.x+ch2.w||L2.y+L2.h>ch2.y+ch2.h+2||L2.y+L2.h<lowEnd(L2,ch2,ub6.u,Math.max(1,hudRes())))) bad.push(tg+'the opened list '+R(L2)+' does not grow up from the chip '+R(ch2));
+           if(typeof legLeftDock==='function'&&legLeftDock()){ var D6=legLeftDock(); if(Math.abs(L2.x-D6.x)>2||Math.abs(L2.y+L2.h-D6.b)>2) bad.push(tg+'the opened list '+R(L2)+' does not stand on the left dock at '+Math.round(D6.x)+', bottom '+Math.round(D6.b)); }   /* retarget (cw-f1left, his order of 2026-10-27 "should be over on the left, not the middle of the screen"): it stands on the left dock, not on the chip */
+           else if(ch2&&ch2.x+L2.w<=W*0.47&&(L2.x<ch2.x-2||L2.x>ch2.x+ch2.w||L2.y+L2.h>ch2.y+ch2.h+2||L2.y+L2.h<lowEnd(L2,ch2,ub6.u,Math.max(1,hudRes())))) bad.push(tg+'the opened list '+R(L2)+' does not grow up from the chip '+R(ch2));
          }
          g2.legendOn=0; done++;
        }
