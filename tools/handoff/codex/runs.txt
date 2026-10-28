@@ -446,3 +446,5 @@
 2026-10-28 16:48 o-09-196-run-over-card-moments 76s ok PARTIAL in=3967970 out=25863 run=2
 2026-10-28 16:52 o-09-196-run-over-card-moments 52s ok PARTIAL in=4433666 out=27766 run=3
 2026-10-28 16:58 o-09-196-run-over-card-moments 271s ok PARTIAL in=6269531 out=40198 run=4
+2026-10-28 17:07 o-09-196-run-over-card-moments 109s ok DONE in=7095263 out=43802 run=5
+2026-10-28 17:08 o-09a-red-27.40-medal-spot-width 100s ok PARTIAL in=230651 out=5151 run=1

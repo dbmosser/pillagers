@@ -3847,8 +3847,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.00';
-var VER_AT='2026-10-28 17:04';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.01';
+var VER_AT='2026-10-28 17:11';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -23583,14 +23583,15 @@ function hudLum(c){
 function hudOver(fill,ground){ var m=/rgba?\(([^)]*)\)/.exec(String(fill)), p, a; if(!m) return fill; p=m[1].split(','); a=(p[3]===undefined)?1:+p[3]; return 'rgb('+Math.round(+p[0]*a+ground*(1-a))+','+Math.round(+p[1]*a+ground*(1-a))+','+Math.round(+p[2]*a+ground*(1-a))+')'; }
 function hudCR(fg,bg){ var a=hudLum(fg), b=hudLum(bg); return (Math.max(a,b)+0.05)/(Math.min(a,b)+0.05); }
 function feedRect(){
+  // v28.xx (cw-cx-medalwidth), HIS ANSWER: "a row for the style medals is reserved between the feed and the vitals, the width of the feed". Share the feed width so the reserved row cannot drift.
   // v27.35 (feedw), seen in the busy frame picture: the feed zone was 30 percent of the screen wide (576 px at 1080p) and its lines are
   // under 410, so the controls list beside it was squeezed to a sliver. The zone is 24 percent of the width, and each line is a little
   // tighter (1.38 x the type, was 1.5), so the ten lines are about 280 px tall at 1080p.
-  var rs=Math.max(1,hudRes()), fp=msgPx(feedFont()), rh=Math.round(fp*1.38),   /* v35.xx (cw-hudsize): 20 px */ gap=Math.max(2,Math.round(LH(2)*rs)), B=HUDBOX.body, h=FEED.show*rh+(FEED.show-1)*gap, bot;
+  var rs=Math.max(1,hudRes()), fp=msgPx(feedFont()), rh=Math.round(fp*1.38),   /* v35.xx (cw-hudsize): 20 px */ gap=Math.max(2,Math.round(LH(2)*rs)), B=HUDBOX.body, h=FEED.show*rh+(FEED.show-1)*gap, fw=Math.round(W*0.28), bot;
   bot=((B&&B.h>0&&B.y>H*0.5)?B.y:Math.round(H-LH(142)*rs*1.4))-Math.round(LH(8)*rs);
-  MEDALBOX.h=Math.round(LH(40)*rs); MEDALBOX.y=bot-MEDALBOX.h; MEDALBOX.x=Math.round(LH(9)*rs); MEDALBOX.w=Math.round(W*0.24); MEDALBOX.on=1;   // v27.40 (medal0): the medal spot, on the vitals
+  MEDALBOX.h=Math.round(LH(40)*rs); MEDALBOX.y=bot-MEDALBOX.h; MEDALBOX.x=Math.round(LH(9)*rs); MEDALBOX.w=fw; MEDALBOX.on=1;   // v27.40 (medal0): the medal spot, on the vitals
   bot=MEDALBOX.y-Math.round(LH(6)*rs);   // and the feed stands on it
-  return {x:Math.round(LH(9)*rs),y:bot-h,w:Math.round(W*0.28),h:h,rh:rh,gap:gap,fp:fp};   // v35.xx (cw-hudsize): 28 percent, so a 20 px line fits whole
+  return {x:Math.round(LH(9)*rs),y:bot-h,w:fw,h:h,rh:rh,gap:gap,fp:fp};   // v35.xx (cw-hudsize): 28 percent, so a 20 px line fits whole
 }
 function feedGlyph(name,x,cy,s,col){
   var Pt=name?uiIconPath(name):null;
@@ -55898,7 +55899,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.00: at 4k the kia card shows every hit and the run feel button without scrolling Check 36.00 fails on v35.99',
+  now:'v36.01: The medal row matches the feed width. Check 36.01 fails on v36.00',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

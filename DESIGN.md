@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.01 - medal row follows feed width
+
+Co-op hunt while he was away. The feed grew to 28 percent but the reserved medal row stayed at 24 percent. Both now use the same width variable.
+
+MEASURED. Check 36.01 passes, and fails on v36.00.
 ## v36.00 - KIA CARD FITS AT 4K WITH A FULL HIT LIST
 
 Co-op hunt while he was away. menus master pass 10-28, on his 4K screen: with 8 hits in how it went the KIA card ran 71 px past the card, so the how did that run feel button hid under the log run button. Table rows are tighter and the lost money and lost items sit closer, so the whole card shows with no scrolling.

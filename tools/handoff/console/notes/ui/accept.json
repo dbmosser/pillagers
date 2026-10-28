@@ -1824,36 +1824,36 @@
   "when": "2026-10-21T07:38"
  },
  "p1-1080": {
-  "score": 3,
+  "score": 4,
   "pass": true,
   "need": 3,
-  "verdict": "The run-over card has a clear hero number and a calm layout, but the p1/p2 stat grid is misaligned, the labels are too small, and the card is half empty and stays too quiet against a busy lobby behind it.",
+  "verdict": "The earlier advice was mostly followed: the stat grid is aligned, the backdrop is blurred and the player colours are right. What's left is a small card with a wide dead strip on the right and a few type-scale slips.",
   "findings": [
-   "P1 p1/p2 stat rows x633-1205 y450-590: Use one 5-column grid: a 48px label column, then four 200px columns for score, kills, extractions and deaths. Left-align every value and label on the same x in both rows, show deaths for p2 too (0), and centre the p1/p2 tags on the number line.",
-   "P1 all small labels (team score, score, kills, award captions) y310-730: Set every label to 16px f-cond 600 with +.04em tracking, in tx-2 (#aaa498). Set award values to 20px tx-1. Give the grid 8px extra row gap to make room.",
-   "P1 card x601-1319 y237-843 and backdrop: Use scrim rgba(6,7,8,.80) plus a 6px blur. Hide the toast and world labels while the card is up. Widen the card to 1000px, or put the 7,050 sp hero on the left and a p1/p2 split bar on the right of that block.",
-   "P2 awards grid x633-1200 y618-735: Make award values tx-1. Put the crown on a 3px --r-gold left bar, not lime. Colour the 'p1' and 'p2' suffixes amber and cyan to match the player colours. Add 24px between the two rows.",
-   "P2 yellow tab x633-670 y237-241: Either extend it to a 3px lime bar the full 56px width of the 'run over' title, placed above it, or delete it."
+   "P1 card x601-1319 y213-867, hero block x633-810 y295-385: Widen the card to about 1000px. Put the hero on the left and a p1/p2 split bar on the right of that block: 8px tall, amber (4,250) and cyan (2,800) segments sized in proportion, with a 'p1 60%' / 'p2 40%' label (16px) under it. Alternatively raise the hero to 72px.",
+   "P1 award grid x633-1286 y640-765: Set the captions to 16px f-cond 600 in tx-2 and the values to 20px tx-1. Give every award cell a 3px left bar in its player colour, with the crown's bar in --r-gold. Use 24px column gaps and a 16px row gap, and align the first bar flush with the grid's left edge at x633.",
+   "P1 stat rows x633-1286 y437-590: Show each caption once, as a column header row above p1 (16px tx-2), and drop it from the p2 row. Use 5 columns: a 48px tag column, then four 200px columns. Centre the p1/p2 tags on the number baseline. Dim the 0 values to tx-2 so 13 and 8 stand out.",
+   "P2 'press any key' prompt x1105-1286 y800-833: Keep the prompt, but make the lime ring 40px and the text 24px f-cond 700 tx-1 so it clearly beats the stat numbers. Put 32px of space above it. Alternatively centre the prompt at the card's bottom edge.",
+   "P2 title 'run over' x633-736 y243-270: Set the title to 32px f-cond 700. Add a 16px gap under it, and a 1px --ui-line rule below the title row, matching the dividers lower in the card."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-09-196-run-over-card-moments-recipes-3/run-over-moments-p1-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-09-196-run-over-card-moments-recipes-4/run-over-moments-p1-1080.jpg",
   "task": "o-09-196-run-over-card-moments",
-  "when": "2026-10-28T20:53"
+  "when": "2026-10-28T21:04"
  },
  "p2-1080": {
-  "score": 3,
+  "score": 4,
   "pass": true,
   "need": 3,
-  "verdict": "The run-over card is clean and readable, with a good hero number and a live prompt. The p1/p2 stat rows don't align, the labels are tiny, and the dimmed background still shows through and adds noise.",
+  "verdict": "The card now has a clear hierarchy: a 56px hero score, a stat grid with aligned columns, and a lime-ringed prompt. It is clean and consistent, but it is a bit small and sparse on the screen, and the awards block is still ragged.",
   "findings": [
-   "P1 p1/p2 stat rows (x 633-1290, y 450-595): Use one 4-column grid with 160px columns starting at x=705 (score, kills, extractions, deaths) for both rows. Show deaths for p1 too. Align the p1 and p2 row labels to the number baseline, 20px f-cond 700, tinted amber and cyan. Put a 16px gap between rows.",
-   "P1 labels across the card (team score, score, kills, extractions, awards labels; y 310-730): Set every label to 16px f-cond 600 in --tx-2 with +.04em tracking. Set values to 20px, except the team score at 56px. Use an 8px gap between label and value.",
-   "P1 background (full screen): Use scrim rgba(6,7,8,.80) over the whole frame, including the bars. Remove or hide the 'player 1' world label while the card is open.",
-   "P1 awards grid (x 633-1290, y 618-735): Make awards 3 columns of 20px values under 16px --tx-2 labels. Use --tx-1 for all values, including the crown, and drop the lime. Add a 1px --ui-line divider above the grid, with 24px padding.",
-   "P2 card title and top accent (x 633-740, y 265-297; accent bar x 634-670, y 237): Set the title to 32px f-cond 700. Use 24px padding and a 16px gap to the label, then the hero at 56px f-cond 800. Delete the lime tick or make it a full-width 2px bar. Consider putting the hero and the player rows side by side to use the empty right half."
+   "P1 awards grid (x 633-1286, y 640-765): Give all six awards the same 3px left bar in --ui-line, or give none a bar and mark the crown with a small glyph. Keep every text start at x=633. Labels 16px f-cond 600 --tx-2, values 20px --tx-1. Use a 24px row gap and 24px padding above the bottom divider.",
+   "P1 card size (x 601-1318, y 213-867): Widen the card to about 90% of the screen, or at least about 1100px. Put the team score hero on the left and a short p1/p2 score split bar on the right in the same row. Alternatively keep the card compact but raise the stat values to 24px.",
+   "P1 stat rows (x 633-1286, y 440-590): Set the values to 32px f-cond 700 (the title token) or 20px, never 30px. Set the p1/p2 tags to 20px f-cond 700 on the value baseline. Dim zero values to --tx-2.",
+   "P2 prompt row (x 1015-1286, y 800-833): Raise the prompt to 24px or keep 20px with the ring at 40px. Add a 1px --ui-line divider above it with a 24px gap. Keep it right-aligned.",
+   "P2 title and hero block (x 633-807, y 240-385): Use 16px between the title and the 'team score' label, 8px between the label and the hero, and 24px below the hero before the divider."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-09-196-run-over-card-moments-recipes-3/run-over-moments-p2-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-09-196-run-over-card-moments-recipes-4/run-over-moments-p2-1080.jpg",
   "task": "o-09-196-run-over-card-moments",
-  "when": "2026-10-28T20:54"
+  "when": "2026-10-28T21:05"
  },
  "pix86c-fashion": {
   "score": 3,

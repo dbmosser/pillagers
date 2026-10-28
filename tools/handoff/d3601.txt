@@ -1,0 +1,5 @@
+## v36.01 - medal row follows feed width
+
+Co-op hunt while he was away. The feed grew to 28 percent but the reserved medal row stayed at 24 percent. Both now use the same width variable.
+
+MEASURED. Check 36.01 passes, and fails on v36.00.
