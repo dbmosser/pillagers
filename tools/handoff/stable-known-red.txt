@@ -58,3 +58,8 @@ v27.35   # wants the feed zone under a quarter of the screen wide; it is 28 perc
 v13.32   # reads the loaner hint off the feed and g.msg; an info line shows on the answer line under the character since v35.52 (cw-answerline), and "scav pistol, equip your own gun at the stash" does draw there for the whole 5 s
 # kid mode in the hit code (v35.54 cw-cx-downcuts, o-120e: downed hits follow the damage cuts)
 v16.44   # source-text read for "amt*=netKidMul()"; the factor is carried in _hitMul now and still applied to amt, so player 2 still takes the cut
+# Stable triage 2026-10-28 (corpus-1028-0442 on v35.65, 7 newly red; rerun alone on v35.65). v31.04 v27.40 v35.53 v35.44 already have jobs 208, o-209 and o-210; the other 3 are out of date (below).
+# tv hud readability (v35.64 cw-cx-hudtvread, job o-138 hud size for tv: the score panel gets a real top inset, empty belt keys go quieter)
+v31.50   # finds the score and clock plate by its top edge touching y 0 or 1; since v35.64 it is inset 16 px (x zoom) from the top, so no plate is found
+v30.96   # wants the score plate hung from the top edge (y at or under 0); v35.64 draws it at 16 px under the top edge, still centred and covering the clock row
+v27.22   # wants the empty gun key ghost at alpha 0.2 to 0.35; in a raid it is 0.1215 since v35.64 (45 percent of the old 0.27, empty belt slots quieter)

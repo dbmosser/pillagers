@@ -19,3 +19,7 @@ ADDED 10-28 04:00 (sorted from run corpus-1028-0157 on v35.58, the stable triage
 - 27.35: the feed zone is 28 percent of the width since v35.53 (cw-hudsize, 20 px feed text); the check allows a quarter at most. Retarget to 28 percent and keep the controls list inside 47 percent.
 - 13.32: the loaner hint draws on the answer line under the character since v35.52 (cw-answerline), not in the feed; read the answer line (G.ans) for "equip your own gun".
 - 16.44: kid mode is applied through _hitMul in damagePlayer since v35.54 (o-120e); replace the source-text read for "amt*=netKidMul()" with a real hit on player 2 that proves the cut (check the damage taken, not the text).
+ADDED 10-28 07:50 (sorted from run corpus-1028-0442 on v35.65), 3 more to retarget the same way:
+- 31.50: it finds the score and clock plate by y0 at 1 or less; v35.64 (cw-cx-hudtvread) insets the plate 16 px (times the hud zoom) from the top edge. Find it by being centred at the top and holding the SCORE label, keep the label-overlap asserts.
+- 30.96: it wants the plate hung from the top edge (y at or under 0); it is inset since v35.64. Keep the centred and covers-the-clock-row asserts, expect y near 16 times the zoom.
+- 27.22: the empty gun key ghost is 0.1215 alpha in a raid since v35.64 (GHOST_A times 0.45, empty belt slots quieter for tv); allow that value and keep the carried gun opaque and the dragged-off key returning to its ghost.
