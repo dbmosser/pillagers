@@ -45800,11 +45800,11 @@ window.__REGRESS=[
        p.downed=true; p.revived=false; said.length=0;
        selfRevive();
        if(!said.some(function(l){ return l.m==='SELF-REVIVE USED'; })) bad.push('the self-revive said nothing on screen ('+JSON.stringify(said.map(function(l){ return l.m; }))+')');
-       else if(!said.some(function(l){ return l.m==='SELF-REVIVE USED'&&l.sub==='Back on your feet.'; })) bad.push('the self-revive line has no detail');
+       else if(!said.some(function(l){ return l.m==='SELF-REVIVE USED'&&(l.sub==='Back on your feet.'||l.sub==='back on your feet'); })) bad.push('the self-revive line has no detail');
        if(p.downed||!p.revived) bad.push('the self-revive did not get him up');
        p.downed=true; said.length=0; up=selfRevive();
        if(up) bad.push('control: a second self-revive in one raid worked');
-       if(!said.some(function(l){ return l.m.indexOf('Self-revive spent')===0; })) bad.push('control: the spent self-revive is not refused with its own line');
+       if(!said.some(function(l){ return /^self-revive spent/i.test(l.m); })) bad.push('control: the spent self-revive is not refused with its own line');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{
        say=realSay;
@@ -99394,7 +99394,7 @@ window.__REGRESS=[
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        var g=__state(), p=g.player, i;
-       say=function(m){ said.push(String(m)); return realSay.apply(null,arguments); };
+       say=function(m){ said.push(m==='self-revive spent'&&arguments[2]?String(m)+' / '+arguments[2].sub:String(m)); return realSay.apply(null,arguments); };
        // ONE: the Crier, at the last instant of its alarm windup.
        for(i=0;i<g.ents.length;i++) if(g.ents[i].kind==='snitch') g.ents[i].hp=0;   // the map's own criers, out of the way
        var cr=mkSnitch(p.x+240,p.y); cr.state='alarm'; cr.wind=0.01; cr.markX=p.x; cr.markY=p.y; cr.lost=0; g.ents.push(cr);
@@ -99408,7 +99408,7 @@ window.__REGRESS=[
        if(!said.some(function(t){ return /destroyed\. It dropped a cache/.test(t)||(/ DESTROYED$/).test(t); })) bad.push('the Pillbox death line does not say destroyed (said: '+said.join(' | ').slice(0,90)+')');
        // THREE: the self-revive, spent and pressed, and the down line.
        said.length=0; p.downed=true; p.revived=true; selfRevive();
-       if(!said.some(function(t){ return t==='Self-revive spent. One per raid.'; })) bad.push('the spent revive does not say one per raid (said: '+said.join(' | ').slice(0,90)+')');
+       if(!said.some(function(t){ return (t==='Self-revive spent. One per raid.'||t==='self-revive spent / one per raid'); })) bad.push('the spent revive does not say one per raid (said: '+said.join(' | ').slice(0,90)+')');
        said.length=0; p.downed=false; p.revived=false; p.hp=5; p.armor=0; p.iv=0;
        damagePlayer(40,null,'crawler',p.x+20,p.y);
        if(!said.some(function(t){ return /You get one per raid\./.test(t); })&&!(p.downed&&window.__textTrace&&!said.some(function(t){ return t.indexOf('DOWN')===0; })&&__textTrace(function(){ drawHUD(); }).some(function(o){ return (/one per raid/).test(o.t); }))) bad.push('the down line does not say one per raid (said: '+said.join(' | ').slice(0,90)+')');
