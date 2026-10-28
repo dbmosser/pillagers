@@ -1,0 +1,7 @@
+v35.95: the run cards fit at 4k: kia tables side by side, damage in two columns
+
+the kia card tables sit side by side and the extracted damage list fits above the button
+
+Check 35.95. Fails on v35.94.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

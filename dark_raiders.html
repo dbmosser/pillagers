@@ -3825,8 +3825,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.94';
-var VER_AT='2026-10-28 15:26';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.95';
+var VER_AT='2026-10-28 15:28';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -35613,7 +35613,7 @@ raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
         var e=L[i],last=(i===L.length-1);
         h+='<div style="display:flex;gap:10px;font-size:11.5px;padding:2px 0;'+
            (last?'color:var(--hazard);font-weight:700':'color:var(--ash)')+'">'+
-           '<span style="width:92px;text-align:right;opacity:.7">'+fmtMS(e.t)+'</span>'+
+           '<span style="width:92px;text-align:right;opacity:.7">'+(Math.floor(Math.max(0,e.t)/60)+':'+('0'+(Math.max(0,e.t)%60)).slice(-2))+'</span>'+   // v35.xx (cw-endcards): 2:24, as the card's time stat reads, so the side by side table fits
            '<span style="flex:1">'+escHtml(e.n)+(e.c>1?(' \u00d7'+e.c):'')+'</span>'+
            '<span style="width:52px;text-align:right">-'+e.a+'</span>'+
            '<span style="width:58px;text-align:right;opacity:.8">'+e.hp+' left</span></div>';
@@ -35622,6 +35622,7 @@ raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
       DEATH_FEED_HTML=h;
     })();
     DEATH_FEED_HTML=(DEATH_FEED_HTML||'')+recapHtml(T);   // v23.xx (feat3a): DAMAGE TAKEN
+    if(DEATH_FEED_HTML) DEATH_FEED_HTML='<div class="ockia">'+DEATH_FEED_HTML+'</div>';   // v35.xx (cw-endcards): HOW IT WENT and DAMAGE TAKEN side by side (CSS ockia)
   }
   else { t.textContent='ABANDONED'; t.style.color='var(--tx-1)';   // v28.xx (cw-abtitle60) the critic on screen 60 (2 of 5): "the title is dull grey, dimmer than every other text, reads as disabled". Only extract and KIA take a colour; this one is the plain title colour.
     s.textContent=G.netLeft?G.netLeft   // v15.91: the host left, so this run ended for the whole party, his ruling
@@ -35918,7 +35919,25 @@ careerStyle('lgcss',
   '.lg .lgp .lgr.tot.lost{border-top-color:var(--rust)}'+
   '#root #oc_manifest .ocrecap{width:100%;max-width:624px;margin:8px auto 0;text-align:left}'+
   '#root #oc_manifest .ocrecap>div>div{font-size:16px !important;letter-spacing:.04em}'+
-  '#root #oc_manifest .ocrecap>div>div:first-child{letter-spacing:.14em;color:var(--tx-2,#aaa498) !important}');
+  '#root #oc_manifest .ocrecap>div>div:first-child{letter-spacing:.14em;color:var(--tx-2,#aaa498) !important}'+
+  // v35.xx (cw-endcards), menus master pass 2026-10-28: at 4K a hit history made the KIA card taller than the screen, so its stats and the run feel button slid
+  // under the log run button, and the extracted card's DAMAGE TAKEN footnote sat under it with many guns recovered. On the KIA card HOW IT WENT and DAMAGE TAKEN
+  // sit side by side at the 16px body size, names left aligned (11.5px rows, stacked, names centred); on the EXTRACTED card the sources take two columns.
+  '#root #oc_manifest .ockia{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);column-gap:24px;align-items:start;width:100%;margin:0 0 8px;text-align:left}'+
+  '#root #oc_manifest .ockia>div{margin-top:0 !important}'+
+  '#root #oc_manifest .ockia>div>div{font-size:16px !important;letter-spacing:.02em}'+
+  '#root #oc_manifest .ockia>div>div:first-child{letter-spacing:.14em;color:var(--tx-2,#aaa498) !important}'+
+  '#root #oc_manifest .ockia>div:first-child>div:nth-child(2){font-size:14px !important;letter-spacing:.06em}'+
+  '#root #oc_manifest .ockia>div:first-child>div>span:nth-child(1){width:44px !important;text-align:left !important}'+
+  '#root #oc_manifest .ockia>div:first-child>div>span:nth-child(3){width:60px !important}'+
+  '#root #oc_manifest .ockia>div:first-child>div>span:nth-child(4){width:64px !important;white-space:nowrap}'+
+  '#root #oc_manifest .ockia>div:last-child>div>span:nth-child(2){width:40px !important}'+
+  '#root #oc_manifest .ockia>div:last-child>div>span:nth-child(3){width:auto !important;min-width:44px;white-space:nowrap}'+
+  '#root #oc_manifest:has(.ockia) .ocloss{margin-top:8px}#root #oc_manifest:has(.ockia) .octiles{margin-bottom:16px}#root #oc_manifest:has(.ockia) .ocstat{margin-bottom:8px}'+
+  '#root #oc_manifest:has(.ockia) span:empty+br{display:none}'+
+  '#root #oc_manifest .ocrecap>div{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:24px}'+
+  '#root #oc_manifest .ocrecap>div>div:first-child{grid-column:1 / -1}'+
+  '#root #oc_manifest .ocrecap>div>div>span:last-child{width:auto !important;min-width:48px;white-space:nowrap}');
 // v27.NN (cboard3), HIS ORDER (2026-10-15): "career mode should still have a leaderboard that is shown after every match". THE LEADERBOARD STEP. After a CAREER extraction
 // or death the run card has a second step in the same card (no second window): the ledger, then the haul reveal, then the LEADERBOARD. The continue control reads
 // LEADERBOARD on the first step; a click on it, ENTER or the pad A advances (the first press while the tally or the reveal runs only lands it, as before), and on the
@@ -55853,7 +55872,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.94: the overseer bar shows only while you fight him Check 35.94 fails on v35.93',
+  now:'v35.95: the kia card tables sit side by side and the extracted damage list fits above the button Check 35.95 fails on v35.94',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

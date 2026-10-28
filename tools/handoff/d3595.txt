@@ -1,0 +1,5 @@
+## v35.95 - THE RUN CARDS FIT AT 4K: KIA TABLES SIDE BY SIDE, DAMAGE IN TWO COLUMNS
+
+Co-op hunt while he was away. menus master pass 10-28, on his 4K screen: the KIA card with a hit history ran past the screen, so its stats and the run feel button slid under the log run button, and its HOW IT WENT and DAMAGE TAKEN tables were tiny stacked rows with centred names. They sit side by side at body size now. On the extracted card with many recovered guns the damage footnote ran under the button; its sources take two columns.
+
+MEASURED. Check 35.95 passes, and fails on v35.94.
