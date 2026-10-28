@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.06 - PRE RAID PACK SCROLL SPACE
+
+Co-op hunt while he was away. The 4K picture showed the belt consuming the pack minimum, viewport margins growing twice under menu zoom, and a dim unaffordable price at 2.45 to 1 contrast.
+
+MEASURED. Check 36.06 passes, and fails on v36.05.
 ## v36.05 - PRE RAID WHOLE NAMES AND CHOSEN MAP TYPE
 
 Co-op hunt while he was away. v35.81 clipped pack names and replaced the chosen map sizes. The ledger still has its SP value under the new counted kills label.

@@ -458,3 +458,4 @@
 2026-10-28 17:45 o-09d-red-35.81-preraid-names-and-ledger 226s ok PARTIAL in=863625 out=7849 run=1
 2026-10-28 17:48 o-09d-red-35.81-preraid-names-and-ledger 68s ok PARTIAL in=1198147 out=10423 run=2
 2026-10-28 17:55 o-09d-red-35.81-preraid-names-and-ledger 331s ok PARTIAL in=2902346 out=22555 run=3
+2026-10-28 18:05 o-09d-red-35.81-preraid-names-and-ledger 241s ok PARTIAL in=4160335 out=31994 run=4

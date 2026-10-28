@@ -3374,5 +3374,21 @@
   "pic": "tools/handoff/console/notes/shots/o-09d-red-35.81-preraid-names-and-ledger-recipes-2/preraid-zones-24-1080.jpg",
   "task": "o-09d-red-35.81-preraid-names-and-ledger",
   "when": "2026-10-28T21:50"
+ },
+ "preraid-whole-names": {
+  "score": 3,
+  "pass": false,
+  "need": 4,
+  "verdict": "The screen is coherent and lower case, and the lime 'ascend' button reads clearly as the primary action. But the map is a flat grid of empty dark boxes that fills the largest area, and the three columns are crowded with small, low-contrast text and uneven type sizes.",
+  "findings": [
+   "P1 map panel (left, about 65% of the card): Put loot, spawn and tier markers or room fills on the map. Otherwise shrink the map to about 50% of the card width and give the freed space to conditions and kit. Cut the rectangle outline opacity by about 40% so the exit markers and zone names carry the map.",
+   "P1 map zone labels (the long dock, foreman office, blast freezer, chill row, scrap line): Set labels in f-cond 600 at 16px with a 4px padding plate, fill --ui-panel at 80%. Keep at least 8px clear of every box edge and marker, and stop using the outline stroke.",
+   "P1 pack list (right column): Use a fixed 5-column grid: name, cap, stepper, price. Right-align every price at 16px, and show '$0' or a dash when there is no price. Give the stepper buttons 32px hit targets, raise the '/1' to --tx-2 at 16px, and add 8px padding before the scrollbar.",
+   "P1 type scale across the card: Give all section labels one style: f-cond 700 at 16px, +.04em, --tx-2. Make 'conditions' a header and drop 'surface' to a plain sub-label. Raise the belt numerals and the warning text to 16px minimum, and the esc/click keycaps to 16px.",
+   "P2 header row and footer: Make 'pre-raid' 32px f-cond 700 and 'cold storage' 20px with --tx-1. Raise the footer legend to 16px and align it to the 24px inner margin. Reduce the bottom empty band."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-09d-red-35.81-preraid-names-and-ledger-recipes-3/preraid-whole-names-1080.jpg",
+  "task": "o-09d-red-35.81-preraid-names-and-ledger",
+  "when": "2026-10-28T22:01"
  }
 }

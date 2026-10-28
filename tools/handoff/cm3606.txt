@@ -1,0 +1,7 @@
+v36.06: pre raid pack scroll space
+
+The pack reserves 120 px for scrolling rows above the belt. The pre-raid card keeps its chosen 5 percent physical margins at 4K. Prices use primary text with a danger border when unaffordable; unsold slots show a dash. Scrollbars have 8 px clearance and the condition list scrolls inside its panel. Map type, Terms and rewards stay as chosen. Watch: at 4K scroll the pack and condition column, and reach ascend in the right column.
+
+Check 36.06. Fails on v36.05.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

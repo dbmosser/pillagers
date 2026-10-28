@@ -1,0 +1,5 @@
+## v36.06 - PRE RAID PACK SCROLL SPACE
+
+Co-op hunt while he was away. The 4K picture showed the belt consuming the pack minimum, viewport margins growing twice under menu zoom, and a dim unaffordable price at 2.45 to 1 contrast.
+
+MEASURED. Check 36.06 passes, and fails on v36.05.

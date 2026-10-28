@@ -1,1 +1,1 @@
-10-28 17:57 gate: shipping cw-cx-preraid-names (o-09d-red-35.81-preraid-names-and-ledger, codex)
+10-28 18:06 gate: shipping cw-cx-preraid-scroll (o-09d-red-35.81-preraid-names-and-ledger, codex)

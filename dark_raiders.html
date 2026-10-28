@@ -11,7 +11,17 @@
 #root #sectormodal .srprow .srbuy.dis{opacity:1}
 #root #sectormodal #sectorkitpick .kitb{height:auto;min-height:52px;padding-top:6px;padding-bottom:6px}
 #root #sectormodal .kitb span{min-width:0;white-space:normal;overflow-wrap:anywhere}
-#root #sectormodal #sectorpack{flex:1 1 auto;min-height:150px;padding:8px 0;border-top:1px solid var(--ui-line);border-bottom:1px solid var(--ui-line)}
+/* v28.xx (cw-cx-preraid-scroll): reserve rows as well as the belt at 4K; an unsold item has a dash, while an unaffordable price stays readable inside a danger border. */
+#root #sectormodal #sectorpack{flex:1 0 280px;min-height:280px;padding:8px 0;border-top:1px solid var(--ui-line);border-bottom:1px solid var(--ui-line)}
+#root #sectormodal #sectorpack .srplist{min-height:120px;padding-right:8px;scrollbar-gutter:stable}
+#root #sectormodal #sectorpack .srbuy.dis{opacity:1;color:var(--tx-1);border-color:var(--danger)}
+#root #sectormodal #sectorpack .srbuy.sp{display:grid;place-items:center}
+#root #sectormodal #sectorpack .srbuy.sp::after{content:'-';color:var(--tx-2);font:600 16px var(--f-cond)}
+#root #sectormodal #srside{overflow-y:auto;padding-right:4px}
+/* v28.xx (cw-cx-preraid-scroll): viewport units also grow under menu zoom; divide the pre-raid card margins by that zoom so the 4K card keeps its chosen 5 percent margins. */
+#root #sectormodal.modal.ui-win{padding:calc(5vh / var(--sectorzoom,1) + 22px) calc(5vw / var(--sectorzoom,1) + 22px)!important}
+#root #sectormodal.modal.ui-win::before{inset:calc(5vh / var(--sectorzoom,1)) calc(5vw / var(--sectorzoom,1))!important}
+#root #sectormodal > .ui-foot > .ui-back{top:calc(5vh / var(--sectorzoom,1) + 12px)!important;right:calc(5vw / var(--sectorzoom,1) + 16px)!important}
 #root #sectormodal .srplist:empty{display:none}
 #root #sectormodal #sectorkit{margin-top:auto!important}
 #root #sectormodal .srcap{font-size:18px;letter-spacing:.04em}
@@ -3855,8 +3865,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.05';
-var VER_AT='2026-10-28 17:58';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.06';
+var VER_AT='2026-10-28 18:07';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -55907,7 +55917,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.05: Pack names wrap beside the same controls. The pack keeps scroll space at 4K. Zones return to the chosen 20 px start and 14 px floor; exits and keyed rooms return to 18 px. The 24 px long dock label crowded a room outline at both resolutions. Comparison pictures: tools/handoff/console/notes/shots/o-09d-red-35.81-preraid-names-and-ledger-recipes-2/preraid-zones-20-1080.jpg, preraid-zones-24-1080.jpg, preraid-zones-20-4k.jpg and preraid-zones-24-4k.jpg. Terms and rewards keep their readability gains. Watch: scroll a long pack at 4K; full names, prices and steppers must stay readable and ascend must remain reachable. Check 36.05 fails on v36.04',
+  now:'v36.06: The pack reserves 120 px for scrolling rows above the belt. The pre-raid card keeps its chosen 5 percent physical margins at 4K. Prices use primary text with a danger border when unaffordable; unsold slots show a dash. Scrollbars have 8 px clearance and the condition list scrolls inside its panel. Map type, Terms and rewards stay as chosen. Watch: at 4K scroll the pack and condition column, and reach ascend in the right column. Check 36.06 fails on v36.05',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -70881,6 +70891,7 @@ function applyMenuZoom(){
     // station panel alone, at 0.92, which is one notch of the wheel. He can put
     // it back without leaving the room now that the wheel reaches it down there.
     m.style.zoom=(m.id==='hub')?(_sf*0.92):_sf;
+    if(m.id==='sectormodal') m.style.setProperty('--sectorzoom',String(_sf));   // v28.xx (cw-cx-preraid-scroll): the pre-raid card keeps its 5 percent physical margins under menu zoom.
   });
   // v12.25, HIS NOTE: "credits and xp in right hand corner way too small; all
   // menus, words, UI, hud etc should scale depending on 1080p vs 1440p vs 4k".
