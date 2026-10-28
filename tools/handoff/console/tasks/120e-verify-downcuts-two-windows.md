@@ -1,0 +1,5 @@
+VERIFY v35.54 (cw-cx-downcuts, Codex o-120e) IN A CONNECTED TWO-WINDOW SESSION. CEO 10-28 00:40. HIGH: party is Fri 10/30 and downed play is party-critical. Check only, no game change unless it fails.
+Codex could not reach localhost, so its check proved the numbers in single-window sim only. Open host + player 2 in one camera Chrome (tools/uishots.ps1 with "popups": true, the ?p2=1&mode=coop&pair=.. address the game gives, as tools/fuzz.ps1 does), connect them, and down each player in turn.
+Expect: host on easy loses 3*EASY_MUL seconds of downed timer per hit; joined player with kid mode (1/4) on easy loses 3*0.25*EASY_MUL; normal career stays 3 seconds. ARCADE_DMG stays 1 (unify1 ruling: demo and career play the same); do not restore the old half setting.
+Take one picture from EACH window while downed and look at them. Codex's staged single views: tools/handoff/console/notes/shots/o-120e-downed-damage-cuts-recipes-1/.
+TASK DONE when both windows show the expected timer loss with pictures in notes/shots/120e-verify/, or FAIL with the numbers seen (then write the fix job).
