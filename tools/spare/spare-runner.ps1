@@ -146,6 +146,8 @@ if($Idle){ try{ Add-Type -Namespace PillagersIdle -Name Fg -ErrorAction Stop -Me
 [DllImport("user32.dll")] static extern IntPtr GetForegroundWindow();
 [DllImport("user32.dll", CharSet = CharSet.Unicode)] static extern int GetWindowText(IntPtr h, System.Text.StringBuilder s, int n);
 [DllImport("shell32.dll")] static extern int SHQueryUserNotificationState(out int s);
+[DllImport("user32.dll")] static extern uint GetWindowThreadProcessId(IntPtr h, out uint pid);
+public static uint FgPid(){ try { uint p; GetWindowThreadProcessId(GetForegroundWindow(), out p); return p; } catch { return 0; } }
 public static string Title(){ try { System.Text.StringBuilder b = new System.Text.StringBuilder(512); GetWindowText(GetForegroundWindow(), b, 512); return b.ToString(); } catch { return ""; } }
 public static int Quns(){ try { int s; if (SHQueryUserNotificationState(out s) != 0) return -1; return s; } catch { return -1; } }
 '@; $script:noFg=$false }catch{ Say ('PROBLEM: the window-in-front check did not load, so nothing runs while he is at the PC (as before): '+(Short "$_")) } }
@@ -417,7 +419,12 @@ function Playing(){
   if(((Get-Date)-$script:padT).TotalSeconds -lt 900){ $script:playWhy='a game pad'; return $true }
   if((ShareGaming) -match '(?m)^gaming=1'){ $script:playWhy='the main PC game check'; return $true }
   $q=-1; try{ $q=[PillagersIdle.Fg]::Quns() }catch{}
-  if($q -ge 2 -and $q -le 4){ $script:playWhy='a full-screen program'; return $true }
+  # 10-28 his "a full-screen program is open -- does this include the VM?": a full-screen VM window (Hyper-V's VM connection or a remote
+  # desktop window in front) is work, not play, so it does not count; a game in full screen still does
+  if($q -ge 2 -and $q -le 4){
+    $fn=''; try{ $fp=[PillagersIdle.Fg]::FgPid(); if($fp){ $fn=(Get-Process -Id ([int]$fp) -ErrorAction Stop).ProcessName } }catch{}
+    if($fn -notmatch '^(vmconnect|mstsc|msrdc)$'){ $script:playWhy='a full-screen program'+$(if($fn){ ' ('+$fn+')' }else{ '' }); return $true }
+  }
   $t=''; try{ $t=[PillagersIdle.Fg]::Title() }catch{}
   if($t -match '^(?i)pillagers(,| -|$)'){ $script:playWhy='the game in front'; return $true }
   GpuGame
