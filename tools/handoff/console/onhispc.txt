@@ -64,3 +64,4 @@
 10-28 15:29 v35.95 cw-endcards on his pc after 17s (8802 serves 35.95) week 83%
 10-28 15:56 v35.96 cw-cx-bothsearch on his pc after 131s (8802 serves 35.96) week 83%
 10-28 15:57 v35.97 cw-wirtfit on his pc after 34s (8802 serves 35.97) week 83%
+10-28 16:43 v35.98 cw-cx-overmoments on his pc after 83s (8802 serves 35.98) week 83%

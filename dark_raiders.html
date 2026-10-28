@@ -1882,7 +1882,23 @@ body #attract .arcover .aobmt > div:first-child{ font-size:calc(var(--fs-label) 
 body #attract .arcover .aobmt > div:last-child{ font-size:calc(var(--fs-body) * var(--attz,1)) !important; line-height:1.4; color:var(--acc) !important; }
 /* v28.xx (cw-cx-overmoments): six moments in two rows of three; only the crown figure uses the accent. */
 body #attract .arcover .aobmt > div:last-child{color:var(--tx-1) !important;}
-body #attract .arcover .aocrown > div:last-child{color:var(--acc) !important;}
+/* v28.xx (cw-cx-overmomentlook): critic round 3, both run-over cards 3/5. One stat grid, couch-size labels and a quiet scrim. */
+html body #attract[style*="block"]:has(.arcover[style*="block"]){background:rgba(6,7,8,.80);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);}
+html body #attract[style*="block"]:has(.arcover[style*="block"]) > video{opacity:.12 !important;}
+html body #attract[style*="block"]:has(.arcover[style*="block"]) .arcstrip{display:none !important;}
+html body #attract .arcover::before{display:none;}
+html body #attract .arcover .aoh{font-size:max(32px,calc(var(--fs-title) * var(--attz,1)));}
+html body #attract .arcover .aos{margin-top:calc(var(--sp-2) * var(--attz,1));}
+html body #attract .arcover .aos .aolb, html body #attract .arcover .aosc i{font-size:max(20px,calc(var(--fs-body) * var(--attz,1))) !important;letter-spacing:.04em;}
+html body #attract .arcover .aosr{display:grid;grid-template-columns:calc(48px * var(--attz,1)) repeat(4,minmax(0,1fr));column-gap:calc(16px * var(--attz,1));align-items:start;}
+html body #attract .arcover .aost[data-solo="1"] .aosr{grid-template-columns:repeat(3,minmax(0,1fr));}
+html body #attract .arcover .aosn{min-width:0;font-size:max(20px,calc(var(--fs-body) * var(--attz,1)));line-height:1.1;padding-top:calc(6px * var(--attz,1));}
+html body #attract .arcover .aosn[data-seat="1"], html body #attract .arcover .aowho[data-seat="p1"]{color:#ffb454;}
+html body #attract .arcover .aosn[data-seat="2"], html body #attract .arcover .aowho[data-seat="p2"]{color:#53d9e8;}
+html body #attract .arcover .aobm{border-top:1px solid var(--ui-line);padding-top:calc(24px * var(--attz,1));gap:calc(24px * var(--attz,1)) !important;}
+html body #attract .arcover .aobmt > div:first-child{font-size:max(20px,calc(var(--fs-body) * var(--attz,1))) !important;letter-spacing:.04em !important;}
+html body #attract .arcover .aobmt > div:last-child{font-size:max(20px,calc(var(--fs-body) * var(--attz,1))) !important;color:var(--tx-1) !important;}
+html body #attract .arcover .aocrown{border-left:3px solid var(--r-gold);padding-left:calc(12px * var(--attz,1));}
 body #attract .arcover .aoi{ font-size:calc(var(--fs-label) * var(--attz,1)); color:var(--tx-2); margin-top:calc(var(--sp-3) * var(--attz,1)); }
 body #attract .arcover .aol{ font-size:calc(var(--fs-hero) * var(--attz,1)); line-height:1.1; letter-spacing:.3em; margin:calc(var(--sp-1) * var(--attz,1)) 0; }
 body #attract .arcover .aoq{ font-size:calc(var(--fs-label) * var(--attz,1)); color:var(--tx-2); opacity:1; }
@@ -3831,8 +3847,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.98';
-var VER_AT='2026-10-28 16:40';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.99';
+var VER_AT='2026-10-28 17:01';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -55879,7 +55895,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.98: Two player run over shows crown, closest call and most damage alongside the existing moments. Check 35.98 fails on v35.97',
+  now:'v35.99: Run over stats align in both windows, with larger moment captions and a quieter backdrop. Check 35.99 fails on v35.98',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -65658,7 +65674,7 @@ function arcadeDeploy(o){
   try{ arcadeIniEnd(); }catch(_ie){}   // v23.41 (arcade18): initials still up keep what is there
   ARCADE.over=null; try{ arcadeOverSync(); }catch(_ov){}   // v23.39 (arcade16): the RUN OVER card goes
   ARCADE.mine=0; ARCADE.mate=0; ARCADE.pot=0; ARCADE.ext=0; ARCADE.banner=null; ARCADE.x2=0;   // v23.23 (arcade4)
-  ARCADE.kills=0; ARCADE.mateK=0; ARCADE.mateX=0; ARCADE.scEv=''; ARCADE.scN=0; ARCADE.scAt=0; ARCADE.scDirty=(ARCADE.role!=='p2')?1:0;   // v23.29 (arcade8)
+  ARCADE.kills=0; ARCADE.mateK=0; ARCADE.mateX=0; ARCADE.mateD=-1; ARCADE.scEv=''; ARCADE.scN=0; ARCADE.scAt=0; ARCADE.scDirty=(ARCADE.role!=='p2')?1:0;   // v23.29 (arcade8)
   if(ARCADE.role!=='p2') ARCADE.run={id:arcadeRunId()};   // v23.29 (arcade8): the host owns the run id
   try{ arcadeLook(); }catch(_alk){}   // v27.xx (randchar): a new character every run
   startRaid();
@@ -68247,7 +68263,8 @@ function arcadeBmDraw(c,o,counting){
     el.style.cssText='display:none;grid-template-columns:repeat(3,minmax(0,1fr));width:100%;gap:16px 24px;margin:.55em 0 .1em;';
     for(i=0;i<rows.length;i++){
       t=document.createElement('div'); t.className='aobmt'+(rows[i][0]==='crown'?' aocrown':''); t.style.cssText='text-align:center;line-height:1.05;min-width:0';
-      s1=document.createElement('div'); s1.style.cssText='font-size:.62em;letter-spacing:.14em;color:#f2e6c8;opacity:.78'; s1.textContent=rows[i][0]+(rows[i][2]?'  \u00b7  '+rows[i][2]:'');
+      s1=document.createElement('div'); s1.style.cssText='letter-spacing:.04em;color:var(--tx-2)'; s1.textContent=rows[i][0];
+      if(rows[i][2]){ var who=document.createElement('span'); who.className='aowho'; who.setAttribute('data-seat',String(rows[i][2]).toLowerCase()); who.textContent=' \u00b7 '+rows[i][2]; s1.appendChild(who); }
       s2=document.createElement('div'); s2.style.cssText='font-size:1.25em;color:#ffc04a'; s2.textContent=rows[i][1];
       t.appendChild(s1); t.appendChild(s2); el.appendChild(t);
     }
@@ -68949,7 +68966,7 @@ function arcadeScFlush(now){
     else return false;
   }
   if(now-(+ARCADE.scAt||0)<ARCADE_SC_MS) return false;
-  var m={t:'arcsc',pair:NET.pair,run:ARCADE.run.id,s:Math.max(0,ARCADE.mine|0),k:Math.max(0,ARCADE.kills|0),x:Math.max(0,ARCADE.ext|0)};
+  var m={t:'arcsc',pair:NET.pair,run:ARCADE.run.id,s:Math.max(0,ARCADE.mine|0),k:Math.max(0,ARCADE.kills|0),x:Math.max(0,ARCADE.ext|0),d:Math.max(0,ARCADE.deaths|0)};
   try{ m.bm=arcadeBmWire(); }catch(_bmw){}   // v23.xx (his answer 20): the best moments go with the score
   if(arcadeBmAuth()) m.md=+(ARCADE.mateBm&&ARCADE.mateBm.dm)||0; // v28.xx (cw-cx-overmoments): the host measured player 2 damage.
   if(ARCADE.scEv){ m.ev=ARCADE.scEv; m.n=Math.max(0,ARCADE.scN|0); }
@@ -68978,6 +68995,7 @@ function arcadeScTake(m){
     if(!arcadeBmAuth()&&isFinite(m.md)&&m.md>=0){ (ARCADE.bm||(ARCADE.bm=arcadeBmNew())).dm=+m.md; }
   }catch(_bmt){}
   ARCADE.scSeen=Date.now(); ARCADE.mate=Math.max(0,Math.round(+m.s||0)); ARCADE.mateK=Math.max(0,m.k|0); ARCADE.mateX=Math.max(0,m.x|0);
+  ARCADE.mateD=(typeof m.d==='number'&&isFinite(m.d)&&m.d>=0)?Math.floor(m.d):-1; // v28.xx (cw-cx-overmomentlook): both cards show the same actual deaths.
   if(m.ev==='x'&&ARCADE.role==='host'){ try{ arcadeBoardPut(); }catch(_bx){} }   // v23.41 (arcade18): a player 2 extraction checkpoints the board row
   if(m.ev==='x'&&(m.n|0)>0&&G&&G.arcade&&!G.over){ try{ say((ARCADE.role==='p2'?'PLAYER 1':'PLAYER 2')+' EXTRACTED +'+arcadeCr(m.n|0),'ally'); }catch(_sx){} }   // v23.56 (arcade31): in credits
   if(ARCADE.role==='p2') arcadeScFlush(Date.now());
@@ -69802,7 +69820,7 @@ function arcadeRunEnd(why){
   // v31.27 (cw-endhalf), HIS Q60 (2026-10-18): "Ending early halves the score, the same as dying." END RUN from the pause menu (why 'menu') halves both scores like a death or the burn.
   // An idle out stays as it was (question 78 decides it) and an extraction still doubles (arcadeX2).
   if(why==='dead'||why==='burn'||why==='menu'){ ARCADE.mine=Math.floor(Math.max(0,ARCADE.mine|0)/2); ARCADE.mate=Math.floor(Math.max(0,ARCADE.mate|0)/2); }  var host=(ARCADE.role==='host'), me={s:Math.max(0,ARCADE.mine|0),k:ARCADE.kills|0,x:ARCADE.ext|0,d:ARCADE.deaths|0},
-      mt=((ARCADE.mate|0)>0||(ARCADE.mateK|0)>0||!!ARCADE.mateBm)?{s:Math.max(0,ARCADE.mate|0),k:ARCADE.mateK|0,x:ARCADE.mateX|0,d:-1}:null;
+      mt=((ARCADE.mate|0)>0||(ARCADE.mateK|0)>0||!!ARCADE.mateBm)?{s:Math.max(0,ARCADE.mate|0),k:ARCADE.mateK|0,x:ARCADE.mateX|0,d:(typeof ARCADE.mateD==='number'?ARCADE.mateD:-1)}:null;
   ARCADE.over={at:Date.now(),why:String(why||''),team:arcadeTeam(),p1:host?me:mt,p2:host?mt:me};
   try{ ARCADE.over.dm=diffMul(); }catch(_dm){}   // v35.xx (cw-dmulshow): the settings multiplier the run paid, for the card
   try{ outMusic(why==='extract'?'win':((why==='dead'||why==='burn')?'kia':'')); }catch(_om){}   // v26.xx (outcomemusic): the RUN OVER card of an extraction run, a death or a burn plays its piece; an idle out or END RUN none
@@ -69854,7 +69872,7 @@ function arcadeOverMirror(m){
   var me, mt;
   if(!ARCADE.on||ARCADE.role!=='p2'||ARCADE.solo) return null;
   me={s:Math.max(0,ARCADE.mine|0),k:ARCADE.kills|0,x:ARCADE.ext|0,d:ARCADE.deaths|0};
-  mt=((ARCADE.mate|0)>0||(ARCADE.mateK|0)>0||!!ARCADE.mateBm)?{s:Math.max(0,ARCADE.mate|0),k:ARCADE.mateK|0,x:ARCADE.mateX|0,d:-1}:null;
+  mt=((ARCADE.mate|0)>0||(ARCADE.mateK|0)>0||!!ARCADE.mateBm)?{s:Math.max(0,ARCADE.mate|0),k:ARCADE.mateK|0,x:ARCADE.mateX|0,d:(typeof ARCADE.mateD==='number'?ARCADE.mateD:-1)}:null;
   ARCADE.over={at:Date.now(),why:(m&&m.x2)?'extract':((m&&m.ko)?'dead':((m&&m.hf)?'menu':'')),team:arcadeTeam(),p1:mt,p2:me};
   try{ ARCADE.over.dm=diffMul(); }catch(_dm){}   // v35.xx (cw-dmulshow): the settings multiplier, as the host card has it
   try{ ARCADE.over.bm=arcadeBmEndTake(m&&m.bm)||arcadeBmFinal(); }catch(_bmf){}
@@ -69931,15 +69949,15 @@ function arcadeOverCount(c,o){
 function arcadeOverStats(c,o){
   var rows=ARCADE.solo?[[null,o&&o.p1]]:[['P1',o&&o.p1],['P2',o&&o.p2]], hd=[['Score','s'],['Kills','k'],['Extractions','x'],['Deaths','d']], g, row, cell, v, l, i, j, r;
   if(!c||!o) return false;
-  g=document.createElement('div'); g.className='aost';
+  g=document.createElement('div'); g.className='aost'; g.setAttribute('data-solo',ARCADE.solo?'1':'0');
   for(i=0;i<rows.length;i++){
     r=rows[i][1]; if(!r) continue;
     row=document.createElement('div'); row.className='aosr';
-    if(rows[i][0]){ cell=document.createElement('span'); cell.className='aosn'; cell.textContent=rows[i][0]; row.appendChild(cell); }
+    if(rows[i][0]){ cell=document.createElement('span'); cell.className='aosn'; cell.textContent=rows[i][0]; cell.setAttribute('data-seat',String(i+1)); row.appendChild(cell); }
     for(j=ARCADE.solo?1:0;j<hd.length;j++){
-      if(hd[j][1]==='d'&&!(r.d>=0)) continue;
+      // v28.xx (cw-cx-overmomentlook): every player keeps all four cells, including a dash for an older peer with unknown deaths.
       cell=document.createElement('span'); cell.className='aosc';
-      v=document.createElement('b'); v.textContent=(hd[j][1]==='s')?arcadeCr(r.s):String(r[hd[j][1]]|0); cell.appendChild(v);
+      v=document.createElement('b'); v.textContent=(hd[j][1]==='s')?arcadeCr(r.s):((hd[j][1]==='d'&&!(r.d>=0))?'--':String(r[hd[j][1]]|0)); cell.appendChild(v);
       l=document.createElement('i'); l.textContent=hd[j][0]; cell.appendChild(l);
       row.appendChild(cell);
     }

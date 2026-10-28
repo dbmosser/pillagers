@@ -1,0 +1,3 @@
+{"generated":"2026-10-28T16:57:09","url":"http://localhost:8808/fixture.html","recipes":"tools/handoff/drafts/menus-round5/recipes-kia.json","seconds":41,"screens":[
+{"name":"35p-kia-10hits","screen":"KIA with hits","1080":{"staged":true,"note":"rows 10 || scrollers ","viewport":"1920x1080","shot":"35p-kia-10hits-1080.jpg","lint":""},"4k":{"staged":true,"note":"rows 10 || scrollers ocwin sh911 ch840","viewport":"3840x2160","shot":"35p-kia-10hits-4k.jpg","lint":""}}
+]}

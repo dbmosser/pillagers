@@ -1,0 +1,4 @@
+== 4k : window 3876x2265, viewport 3840x2160
+  35p-kia-10hits                         staged      10.2s    | rows 10 || scrollers ocwin sh911 ch840
+== 1080 : window 1956x1185, viewport 1920x1080
+  35p-kia-10hits                         staged       9.9s    | rows 10 || scrollers 

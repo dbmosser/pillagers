@@ -1827,33 +1827,33 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The core raid hud is readable, with a clear timer, ammo and score. The corners still don't share a margin or panel language, and the hotbar and bars are loose, so it still reads as unfinished.",
+  "verdict": "The run-over card has a clear hero number and a calm layout, but the p1/p2 stat grid is misaligned, the labels are too small, and the card is half empty and stays too quiet against a busy lobby behind it.",
   "findings": [
-   "P1 hotbar x553-1500 y955-1060: Draw all nine slots as 80x80 --ui-panel tiles with a 1px --ui-line-hi border and 8px gaps. Dim empty slots to 40% and put the number at the top-left in 16px tx-2. Centre the row on x960 with its bottom at y1032. The active slot gets a 2px --acc border, not amber.",
-   "P1 hp and armour bars x24-430 y965-1068: Put the pair in one 320x72 --ui-panel block at x48 with its bottom at y1032 and a 1px --ui-line-hi border. Use 12px bars on a --ui-line track (--ok for hp, #3f9de9 for armour). Use 16px tx-2 labels and 20px tx-1 numbers right-aligned, both the same size. Keep an 8px gap between the rows.",
-   "P1 corner margins and panel style: keyboard tag x10-105 y5-32, run info dropdown x1603-1901 y18-54, ammo x1605-1910 y868-1017, timer x887-1033 y18-102: Use a 48px outer margin on every corner. Use one panel recipe: --ui-panel at 88% opacity, a 1px --ui-line-hi border and a 4px radius. 'keyboard' becomes a 32px-high tag at x48,y48 with a 3px amber left bar. The goals dropdown becomes 240x40 with its right edge at x1872 and its top at y48.",
-   "P1 team score block x826-1094 y110-215 and extract chip x888-1032 y225-257: Make one 268px-wide panel under the timer with 16px padding. 'team score' is a 16px tx-2 label, and '0 sp' is 32px tx-1 on the left. 'you' and 'p2' sit as two 16px rows on the right, with the p1 amber and p2 cyan 3px bars as markers. Put the extract chip inside the same column at 16px gap, using --extract text with a 3px --extract left bar and the same 4px radius.",
-   "P2 ammo panel x1605-1910 y868-1017: Right-align the panel to x1872, with its bottom at y1032. Fold 'golden' into the panel as a 16px --r-gold label at the top-left, or remove it. Keep the weapon name at 16px tx-2 and make the 30 the 56px f-cond 800 hero."
+   "P1 p1/p2 stat rows x633-1205 y450-590: Use one 5-column grid: a 48px label column, then four 200px columns for score, kills, extractions and deaths. Left-align every value and label on the same x in both rows, show deaths for p2 too (0), and centre the p1/p2 tags on the number line.",
+   "P1 all small labels (team score, score, kills, award captions) y310-730: Set every label to 16px f-cond 600 with +.04em tracking, in tx-2 (#aaa498). Set award values to 20px tx-1. Give the grid 8px extra row gap to make room.",
+   "P1 card x601-1319 y237-843 and backdrop: Use scrim rgba(6,7,8,.80) plus a 6px blur. Hide the toast and world labels while the card is up. Widen the card to 1000px, or put the 7,050 sp hero on the left and a p1/p2 split bar on the right of that block.",
+   "P2 awards grid x633-1200 y618-735: Make award values tx-1. Put the crown on a 3px --r-gold left bar, not lime. Colour the 'p1' and 'p2' suffixes amber and cyan to match the player colours. Add 24px between the two rows.",
+   "P2 yellow tab x633-670 y237-241: Either extend it to a 3px lime bar the full 56px width of the 'run over' title, placed above it, or delete it."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-08-144-crates-faster-with-two-recipes-2/duo-search-demo-p1-1080.jpg",
-  "task": "o-08-144-crates-faster-with-two",
-  "when": "2026-10-28T20:26"
+  "pic": "tools/handoff/console/notes/shots/o-09-196-run-over-card-moments-recipes-3/run-over-moments-p1-1080.jpg",
+  "task": "o-09-196-run-over-card-moments",
+  "when": "2026-10-28T20:53"
  },
  "p2-1080": {
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The screen is calm and readable, with one clear lime action, but the orange gradient logo clashes with the lime accent, and the type is small and inconsistent. The lower half is a loose stack of tiny, unevenly styled controls.",
+  "verdict": "The run-over card is clean and readable, with a good hero number and a live prompt. The p1/p2 stat rows don't align, the labels are tiny, and the dimmed background still shows through and adds noise.",
   "findings": [
-   "P1 Title logo 'pillagers' (x 800-1120, y 360-440): Make the logo flat --tx-1 (#efe9dc) at 800 weight, with no gradient or shadow. Or keep it as art and take the lime button down a step. Give one element the heat.",
-   "P1 Saves block (x 681-1239, y 615-735): Use one row height of 56px with an 8px gap and a 4px radius on --ui-panel. Set 'saves' to 16px f-cond 600 --tx-2. Mark the selected save with a 2px lime left bar and --tx-1 text, not lime text.",
-   "P1 'player 2 window' (x 909-1010, y 578-594): If it is an action, make it a 48px secondary button, 20px, with a 1px --ui-line-hi border, placed 16px below the primary. If it is only a status, remove it.",
-   "P1 Top-centre 'keyboard' chip (x 912-1007, y 7-31) and top-right buttons (x 1611-1823, y 33-81): Move the chip and buttons onto a 48px top margin. Give them 56px of height, 20px text, 16px side padding and a --ui-line-hi border. Draw the chip in --tx-2 and --ui-line, not green.",
-   "P2 Bottom key hints (x 726-1193, y 1030-1055): Put the legend and the version stamp on one 48px bottom margin. Set the stamp to 14px f-body 500 --tx-2, with its left edge on the same 96px margin as the other items."
+   "P1 p1/p2 stat rows (x 633-1290, y 450-595): Use one 4-column grid with 160px columns starting at x=705 (score, kills, extractions, deaths) for both rows. Show deaths for p1 too. Align the p1 and p2 row labels to the number baseline, 20px f-cond 700, tinted amber and cyan. Put a 16px gap between rows.",
+   "P1 labels across the card (team score, score, kills, extractions, awards labels; y 310-730): Set every label to 16px f-cond 600 in --tx-2 with +.04em tracking. Set values to 20px, except the team score at 56px. Use an 8px gap between label and value.",
+   "P1 background (full screen): Use scrim rgba(6,7,8,.80) over the whole frame, including the bars. Remove or hide the 'player 1' world label while the card is open.",
+   "P1 awards grid (x 633-1290, y 618-735): Make awards 3 columns of 20px values under 16px --tx-2 labels. Use --tx-1 for all values, including the crown, and drop the lime. Add a 1px --ui-line divider above the grid, with 24px padding.",
+   "P2 card title and top accent (x 633-740, y 265-297; accent bar x 634-670, y 237): Set the title to 32px f-cond 700. Use 24px padding and a 16px gap to the label, then the hero at 56px f-cond 800. Delete the lime tick or make it a full-width 2px bar. Consider putting the hero and the player rows side by side to use the empty right half."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-08-144-crates-faster-with-two-recipes-2/duo-search-demo-p2-1080.jpg",
-  "task": "o-08-144-crates-faster-with-two",
-  "when": "2026-10-28T20:26"
+  "pic": "tools/handoff/console/notes/shots/o-09-196-run-over-card-moments-recipes-3/run-over-moments-p2-1080.jpg",
+  "task": "o-09-196-run-over-card-moments",
+  "when": "2026-10-28T20:54"
  },
  "pix86c-fashion": {
   "score": 3,

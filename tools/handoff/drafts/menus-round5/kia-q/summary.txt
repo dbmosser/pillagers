@@ -1,0 +1,2 @@
+== 4k : window 3876x2265, viewport 3840x2160
+  35q-kia-10hits                         staged      10.1s    | z 2.47 | oc_x h48 mt0px mb0px posabsolute | oc_title h38 mt0px mb8px posstatic | oc_sub h19 mt0px mb16px posstatic | oc_manifest h639 mt0px mb0px posstatic | >ockia h307 mt0px mb8px posstatic | >>DIV h307 mt0px mb0px posstatic | >>DIV h160 mt0px mb0px posstatic | >SPAN h19 mt0px mb0px posstatic | >o

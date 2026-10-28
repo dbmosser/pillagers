@@ -84,3 +84,6 @@
 2026-10-28 16:18 week=24.0% 5h=54.0% week_resets=2026-11-04 01:35 job=o-00a-crates-both-holding-e
 2026-10-28 16:28 week=25.0% 5h=57.0% week_resets=2026-11-04 01:35 job=o-08-144-crates-faster-with-two
 2026-10-28 16:38 week=26.0% 5h=65.0% week_resets=2026-11-04 01:35 job=o-09-196-run-over-card-moments
+2026-10-28 16:48 week=26.0% 5h=67.0% week_resets=2026-11-04 01:35 job=o-09-196-run-over-card-moments
+2026-10-28 16:52 week=26.0% 5h=68.0% week_resets=2026-11-04 01:35 job=o-09-196-run-over-card-moments
+2026-10-28 16:58 week=27.0% 5h=71.0% week_resets=2026-11-04 01:35 job=o-09-196-run-over-card-moments

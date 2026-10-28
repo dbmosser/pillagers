@@ -1,0 +1,7 @@
+v35.99: run over moments read clearly
+
+Run over stats align in both windows, with larger moment captions and a quieter backdrop.
+
+Check 35.99. Fails on v35.98.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

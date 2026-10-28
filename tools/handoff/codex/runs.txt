@@ -443,3 +443,6 @@
 2026-10-28 16:18 o-00a-crates-both-holding-e 79s ok PARTIAL in=4332048 out=33361 run=5
 2026-10-28 16:28 o-08-144-crates-faster-with-two 120s ok DONE in=2581962 out=24018 run=3
 2026-10-28 16:38 o-09-196-run-over-card-moments 561s ok PARTIAL in=3260436 out=23307 run=1
+2026-10-28 16:48 o-09-196-run-over-card-moments 76s ok PARTIAL in=3967970 out=25863 run=2
+2026-10-28 16:52 o-09-196-run-over-card-moments 52s ok PARTIAL in=4433666 out=27766 run=3
+2026-10-28 16:58 o-09-196-run-over-card-moments 271s ok PARTIAL in=6269531 out=40198 run=4

@@ -1,0 +1,22 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  run-over-moments-p1                    NOT STAGED  36.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: target did not mirror
+    at until (<anonymous>:11:11)
+    at async stageDuoPair (<anonymous>:83:3)
+    at async <anonymous>:100:8
+    at async <anonymous>:1:21
+  run-over-moments-p2                    NOT STAGED  31.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: target did not mirror
+    at until (<anonymous>:11:11)
+    at async stageDuoPair (<anonymous>:83:3)
+    at async <anonymous>:100:8
+    at async <anonymous>:1:21
+== 4k : window 3876x2265, viewport 3840x2160
+  run-over-moments-p1                    NOT STAGED  36.5s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: target did not mirror
+    at until (<anonymous>:11:11)
+    at async stageDuoPair (<anonymous>:83:3)
+    at async <anonymous>:100:8
+    at async <anonymous>:1:21
+  run-over-moments-p2                    NOT STAGED  32.1s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: target did not mirror
+    at until (<anonymous>:11:11)
+    at async stageDuoPair (<anonymous>:83:3)
+    at async <anonymous>:100:8
+    at async <anonymous>:1:21
