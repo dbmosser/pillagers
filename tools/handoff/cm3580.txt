@@ -1,0 +1,7 @@
+v35.80: clock over score, arrow to the nearest exit
+
+clock card over the score card; arrow to the nearest exit; no sp pop-ups; far exits stay quiet; tidier gun card, goals panel and board; air strike over the gun card; downed card above you
+
+Check 35.80. Fails on v35.79.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

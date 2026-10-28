@@ -51,33 +51,33 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The ascend button is a strong primary action, and the card, X and lime focus follow the guide. The screen still crams a map, a conditions column and a kit and pack column into one card, with truncated names, tiny type and a competing lime price highlight.",
+  "verdict": "The loud pack rows are gone and the lime ascend button now owns the screen, but the empty pack well, the blue map with its tiny haloed labels and the sparse small type keep it short of polished.",
   "findings": [
-   "P1 right column: pack rows (medkit to compact s...): Widen the name column to at least 160px or drop the /n cap into a 16px tx-2 sub-line. Give the price column a fixed 88px width and draw it in tx-1 for affordable items, with --danger only on rows the player can't afford. Show every name in full, with no ellipsis.",
-   "P1 right column: the $660 price on the bandage row: Make the focused buy slot a 2px --acc border on a --ui-raised fill with tx-1 text, never a lime-tinted fill. Also hide focus on idle rows.",
-   "P1 whole card: hierarchy and density: Add 1px --ui-line dividers and 24px gaps between the kit, pack and loadout sub-sections. Raise the section labels to 16px f-cond 600 in tx-2. Shrink the map by about 15% and give the freed width to the right column.",
-   "P1 map: room labels and exit markers: Draw room labels at 16px f-cond 600 in tx-1 with no pill, and put a 1px --ui-void halo under the text. Move labels clear of the boxes. Draw the exit text at 16px. Tint the map fill with --ui-raised instead of blue. Add a one-word legend or remove the purple squares.",
-   "P2 footer legend and ascend button: Set the legend at 16px in tx-2 and align it to the 24px padding. Make the keycap text 16px with 8px padding. Make it clear the hint is for the live device."
+   "P1 right column, empty area between 'no data core' and 'belt' (y 400-750): Fill it with a 4-column grid of 72px empty pack slots (--ui-raised fill, 1px --ui-line border). Otherwise collapse it by moving belt and the armour warning up under the data core row. Add 1px --ui-line dividers and 24px gaps between kit, pack and belt.",
+   "P1 map panel fill and room boxes: Fill the map with --ui-void and draw room outlines in --ui-line-hi at 1px with a --ui-raised fill. Keep teal only for exits. Shrink the map width by about 15% and give the space to the right column.",
+   "P1 map labels ('the long dock', 'foreman office', 'blast freezer', 'chill row', 'exit a/b/c'): Set labels to 16px f-cond 600 in tx-1 with a 1px --ui-void text halo and no pill. Move them at least 8px clear of boxes and markers. Set exit labels to 16px in --extract. Remove the purple dashed squares or add a one-word legend ('keyed').",
+   "P1 conditions column (surface, weather, seed): Keep one selected signal (lime check only) and draw pad focus as a 2px --acc border. Raise the section labels to 16px tx-2 and the '+5% sp' values to 16px. Put a 1px --ui-line divider between the surface, weather and seed groups.",
+   "P1 kit tiles and pack row (my loadout, freebie kit, random kit, best kit, pack all, clear): Give the selected tile a 2px --acc border and a --ui-raised fill, and let the others fall back to a --ui-line border. Set sub-lines to 16px tx-2. Make 'pack all' and 'clear' 16px text buttons. Group the data core row with a label, 'data core', and a 24px checkbox."
   ],
-  "pic": "tools/handoff/console/notes/shots/86-after2/05-sector-page-1080.jpg",
-  "task": "manual",
-  "when": "2026-10-21T05:21"
+  "pic": "tools/handoff/console/notes/shots/o-02-172-night-pays-cash-recipes-1/05-sector-page-1080.jpg",
+  "task": "o-02-172-night-pays-cash",
+  "when": "2026-10-28T14:34"
  },
  "06-terms": {
   "score": 3,
   "pass": true,
-  "verdict": "The terms card now has a readable hierarchy, with bright row names, a bold bonus number and a larger 'sign nothing' button. It is still a flat grey list with no accent, no focus state and a lot of dead space, so it looks like a table and not a game menu.",
+  "need": 3,
+  "verdict": "The card is clean and all lower case, but it is still a small list floating in a big empty card. Nothing shows focus, the title is not in a header row, and the amber on signed rows hides the lime accent.",
   "findings": [
-   "P1 whole card, no focus or selection: Fill the focused row with --ui-raised and add a 3px --acc left bar. Make the focused sign button an --acc fill with --acc-ink text. Keep the idle buttons outlined in --ui-line-hi.",
-   "P1 layout, top and bottom of the card: Put the title in the 56px header row at the top left, aligned with the list's left edge at x=261, and on the same line as the X. Make rows 88px tall with 24px padding so the list fills the card, and anchor the footer row at the bottom.",
-   "P1 bonus numbers (+25%, +30%): Set the bonus to the 32px title size in --tx-1, or in --acc as the hero number, and keep the title at 32px but quieter. Add a small 'pay' label (16px, tx-2) above or after each number. Pick one bold element per screen.",
-   "P2 row descriptions: Raise descriptions to 16px at --tx-2 with at least 4.5:1 contrast. Shorten the strings, for example 'raid clock -33%'.",
-   "P2 footer status line and divider: Drop the sentence or turn it into a 16px status chip ('signed: none'). Put the status and 'sign nothing' in one 72px footer row, with the button right-aligned or as the lime default action. Use 24px spacing between the list and the footer."
+   "P1 whole card, focus: Fill the focused row with --ui-raised and add a 3px --acc left bar. Give the focused button an --acc fill with --acc-ink text. Keep idle buttons outlined in --ui-line-hi.",
+   "P1 title 'the terms' at (908-1012, 283) and the empty band above the list: Put the title at the top left in a 56px header row, at x=261 and on the X's line, in 32px f-cond 700. Make rows 88px tall with 24px padding so the list fills the card. Anchor a 72px footer row at the bottom.",
+   "P1 bonus '+5% sp' at x=1435-1523: Set the bonus to 20px f-cond 600. Use --tx-2 when idle and --acc when signed, with no amber. Keep the 32px weight for the title only.",
+   "P1 signed vs sign buttons at x=1533-1637: Make 'signed' an --acc fill with --acc-ink text and a check glyph. Make 'sign' a --ui-line-hi outline in --tx-1. Use 48px high buttons, 120px wide.",
+   "P2 row descriptions at y=381-684: Raise them to 16px --tx-2 with at least 4.5:1 contrast. Shorten each to a few words, for example 'raid clock -33%'."
   ],
-  "pic": "tools/handoff/console/notes/shots/b-31-m2/06-terms-1080.jpg",
-  "task": "manual",
-  "when": "2026-10-20T05:34",
-  "need": 3
+  "pic": "tools/handoff/console/notes/shots/o-02-172-night-pays-cash-recipes-1/06-terms-1080.jpg",
+  "task": "o-02-172-night-pays-cash",
+  "when": "2026-10-28T14:34"
  },
  "07-party-coop": {
   "score": 2,
@@ -3038,5 +3038,37 @@
   "pic": "tools/handoff/console/notes/shots/o-138-hud-size-row-does-nothing-recipes-4/hudtv-p2-standard-1080.jpg",
   "task": "o-138-hud-size-row-does-nothing",
   "when": "2026-10-28T07:43"
+ },
+ "condition-sp-extracted-guest": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "It is a clean, readable result card with a clear lime primary action. But it holds too much for one screen, the stats are inconsistent (kills appears twice), the small text is below the guide's size floor, and the amber and teal blocks compete with the lime button.",
+  "findings": [
+   "P1 Whole card, below the two total boxes: Cut it to hero, two panels, one medal row and the primary action. Move the stat strip and the feedback toggle off this screen, or fold them into the panels. Use 16px gaps between groups and 24px between sections.",
+   "P1 Hero numbers: '2,000 sp' and '$2,520': Make the score total a single 56px f-cond 800 hero in tx-1 or lime. Drop the money total to the 20px body size in tx-1. Keep amber for the 3px rarity bar only.",
+   "P1 Gem tile under the panels (959,489): Label it, or move it into the money panel as an item row, or delete it.",
+   "P1 Stat strip: kills, accuracy, containers, time, health: Use 16px labels with +.04em tracking and 28px values. Drop the duplicate kills tile. Show 3 tiles at most.",
+   "P2 Two panels, row text and dividers: Make labels tx-2 at 16px weight 600. Make values tx-1 at 20px weight 700. Use a --ui-line divider."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-02-172-night-pays-cash-recipes-1/condition-sp-extracted-guest-1080.jpg",
+  "task": "o-02-172-night-pays-cash",
+  "when": "2026-10-28T14:34"
+ },
+ "condition-sp-extracted-host": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The card is tidy and the lime leaderboard button reads as the main action, but it holds too many stacked elements, the stats contradict the score, the type is tiny, and the amber, teal, gold and lime colours compete.",
+  "findings": [
+   "P1 stat chips row (kills 0, accuracy 0%, containers 0, time 0:00, health 100): Remove the row, or fix the values. If it stays, drop the duplicate kills chip and use real values at 20px for the number and 16px for the label.",
+   "P1 hierarchy, the whole card: Make the 2,000 sp total the single hero at 56px, f-cond 800. Drop $2,520 to 32px in tx-1. Keep the title at 32px.",
+   "P1 labels and captions: stat chip labels, medal names, 'out clean · never spotted', 'personal best', +148 xp: Set every label to 16px minimum, 600 weight. Use tx-1 for the xp line at 20px. Delete the 'out clean · never spotted' explaining sentence.",
+   "P1 colour use: amber score panel, teal money panel, gold medals, lime button: Make both panels --ui-panel with a --ui-line-hi border. Use tx-1 for the values, with lime only on the hero total. Keep teal only on the 'extracted' title. Use a 3px rarity-gold bar on the medals, with no fill.",
+   "P1 vertical rhythm, between the gem tile, stat chips, medals, xp, feedback button and leaderboard: Remove the unlabelled gem tile or give it a name. Put gaps on the 8px grid at 24px between groups. Make the content column the full card width minus 48px padding."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-02-172-night-pays-cash-recipes-1/condition-sp-extracted-host-1080.jpg",
+  "task": "o-02-172-night-pays-cash",
+  "when": "2026-10-28T14:35"
  }
 }

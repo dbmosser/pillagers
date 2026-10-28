@@ -1497,3 +1497,7 @@
 2026-10-28 0.0850 critic-o-01-142-hot-ground-kills-pay-more
 2026-10-28 0.0000 o-01-142-hot-ground-kills-pay-more
 2026-10-28 0.0000 o-02-172-night-pays-cash
+2026-10-28 0.0862 critic-o-02-172-night-pays-cash
+2026-10-28 0.0803 critic-o-02-172-night-pays-cash
+2026-10-28 0.0801 critic-o-02-172-night-pays-cash
+2026-10-28 0.0792 critic-o-02-172-night-pays-cash

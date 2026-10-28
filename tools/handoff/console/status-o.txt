@@ -1,1 +1,1 @@
-10-28 10:19 gate: shipping cw-cx-condition-sp (o-02-172-night-pays-cash, codex)
+10-28 10:35 running o-02-172-night-pays-cash (codex, run 2 of 5)
