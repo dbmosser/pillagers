@@ -1,4 +1,5 @@
 # a02-feed-keeps-the-name : a feed row that is too long cuts the name and keeps the detail
+Queued 10-28 by the CEO from the Auditor's handoff (his "All of it" on the audit). Party demo: player 2's feed row loses the item name. Line numbers are from v35.39: find them on HEAD.
 From the cloud audit of 2026-10-28 (tools/handoff/cloud/audit-2026-10-28.md, item 7). Polish of what the game already has.
 
 What: feedParts (dark_raiders.html, "too long for the zone: the first piece gives way") shortens the FIRST piece of a feed row, which

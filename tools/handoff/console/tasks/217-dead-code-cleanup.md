@@ -1,4 +1,5 @@
 # a05-dead-code-after-party : 45 functions the game never calls (start after the party, Sat 10/31 or later)
+Queued 10-28 by the CEO from the Auditor's handoff. No player change and some risk: run it last, after the 2 player party demo (Fri 10/30) has been played.
 From the cloud audit of 2026-10-28 (tools/handoff/cloud/audit-2026-10-28.md, item 10). Cleanup, no change a player can see.
 
 What: on v35.39, 45 top-level functions (about 420 lines) are never called by the game. 28 of them are still called by checks, so

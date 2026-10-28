@@ -1,4 +1,5 @@
 # a04-name-tags-overlap : name tags of enemies standing together print over each other
+Queued 10-28 by the CEO from the Auditor's handoff (his "All of it" on the audit). Take pictures at 1080 and 4K with several machines standing together.
 From the cloud audit of 2026-10-28 (tools/handoff/cloud/audit-2026-10-28.md, item 9). Polish of what the game already has.
 
 What: two crawlers side by side drew their tags on top of each other, read as "craw crawler c-73", next to a pillager bot's tag

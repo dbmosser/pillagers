@@ -1,4 +1,5 @@
 # a03-sentence-callouts : 15 callouts are written as sentences
+Queued 10-28 by the CEO from the Auditor's handoff (his "All of it" on the audit). Line numbers are from v35.39: find them on HEAD. Never reword his own TXSHIP lines (hire banner, "buy a friend.", "stuff for you to do.", "no history between you.", crafting and notoriety descriptions); the AI humans are "pillagers", never "pillager bots" (his 10-28 order). Old checks that read these texts get retargeted under the lock in the same job.
 From the cloud audit of 2026-10-28 (tools/handoff/cloud/audit-2026-10-28.md, item 8). Text polish only.
 
 His rule: short callouts, never an explaining sentence. These say() lines (line numbers on v35.39) are full sentences with periods:
