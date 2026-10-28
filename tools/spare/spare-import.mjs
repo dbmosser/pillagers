@@ -101,15 +101,67 @@ function perf4k(f, h) {
   return `4K frames on ${h}: work ${mid(0)} ms typical, ${mid(1)} ms slowest 1 in 20, ${mid(2)} ms slowest 1 in 100 (${k.length} windows, newest ${last})`;
 }
 
+// 10-28: per build, the main PC robot's 4K two-window raids on a real graphics card (its FUZZ START has size=3840x2160 and a gpu= naming
+// Radeon, GeForce, NVIDIA or RTX; the VM's 4K robot draws on the processor and is left out). Builds with 6+ such raids, newest first, go
+// to tools/handoff/spare/perf-4k.txt for jobs 120k, 124 and 125 and the coordinator. pair = p1 p50 + p2 p50 (the party's two windows
+// share one thread; 8.3 ms is the 120 Hz budget); slow = frames over 25 ms; scale = the lowest draw scale seen.
+function perf4kBuilds(f, h) {
+  if (!fs.existsSync(f)) return [];
+  let big = false, gpu = ''; const by = {};
+  for (const ln of fs.readFileSync(f, 'utf8').split('\n')) {
+    if (ln.includes(' FUZZ START ')) { gpu = ((/ gpu=(\S+)/.exec(ln) || [])[1] || '').replace(/_2d=.*$/, ''); big = ln.includes(' size=3840x2160') && /Radeon|GeForce|NVIDIA|RTX/i.test(gpu); continue; }
+    if (!big || !/ raid \d+ demo2p /.test(ln)) continue;
+    const w1 = / work=(\d+)\/([\d.]+)\/([\d.]+)\/([\d.]+)/.exec(ln), w2 = / work2=(\d+)\/([\d.]+)\/([\d.]+)\/([\d.]+)/.exec(ln), b = / build=([\d.]+)\s*$/.exec(ln);
+    if (!w1 || !w2 || !b || +w1[1] < 300 || +w2[1] < 300) continue;
+    const g1 = / gfx=(\d+)\/[\d.]+\/[\d.]+\/(\d+)\/([\d.]+)/.exec(ln), g2 = / gfx2=(\d+)\/[\d.]+\/[\d.]+\/(\d+)\/([\d.]+)/.exec(ln);
+    const e = (by[b[1]] ||= { r: [], gpu, t: '' });
+    e.r.push({ a: [+w1[2], +w1[3], +w1[4]], b: [+w2[2], +w2[3], +w2[4]], fr: (g1 ? +g1[1] : 0) + (g2 ? +g2[1] : 0), sl: (g1 ? +g1[2] : 0) + (g2 ? +g2[2] : 0), q: Math.min(g1 ? +g1[3] : 1, g2 ? +g2[3] : 1) });
+    e.t = ln.slice(5, 16);
+  }
+  const med = (a) => { const s = [...a].sort((x, y) => x - y); return s[Math.floor(s.length / 2)]; };
+  return Object.entries(by).filter(([, v]) => v.r.length >= 6).map(([ver, v]) => {
+    const r = v.r, p = (k, i) => med(r.map((x) => x[k][i])), fr = r.reduce((s, x) => s + x.fr, 0), sl = r.reduce((s, x) => s + x.sl, 0);
+    return { t: v.t, line: `v${ver} 4K two windows on ${v.gpu} (${h}): ${r.length} raids; work p50/p95/p99 ms p1 ${p('a', 0)}/${p('a', 1)}/${p('a', 2)}, p2 ${p('b', 0)}/${p('b', 1)}/${p('b', 2)}; pair p50 ${med(r.map((x) => x.a[0] + x.b[0]))} (8.3 = 120 Hz); slow ${fr ? (100 * sl / fr).toFixed(1) : '?'}%; scale ${Math.min(...r.map((x) => x.q))}; newest ${v.t}` };
+  });
+}
+function writePerf4k(SP) {
+  const out = []; for (const h of fs.readdirSync(SP)) out.push(...perf4kBuilds(path.join(SP, h, 'fuzz.log'), h));
+  out.sort((x, y) => (x.t < y.t ? 1 : -1));
+  if (out.length) { const f = path.join(SP, 'perf-4k.txt'); fs.writeFileSync(f + '.part', out.slice(0, 40).map((x) => x.line).join('\n') + '\n'); fs.renameSync(f + '.part', f); }
+}
+
 // 3 the live mark and the status line
 // a paused spare PC writes epoch=0 (host and seen stay for the dashboard), so nightly.sh sets spl=0 on its next pass
 if (seen) fs.writeFileSync(path.join(SP, 'live.txt'), `epoch=${paused ? 0 : seen}\nhost=${seenHost}\nseen=${seenSt.seen || ''}\n${paused ? 'paused=1\n' : ''}`);
 const ago = seen ? Math.round((Date.now() / 1000 - seen) / 60) : -1;
 let line = !seen ? `no spare PC has reported yet (checked ${stamp()})`
   : `${seenHost} last seen ${seenSt.seen || '?'} (${ago} min ago${ago >= 30 ? ', QUIET: the VM runs the tests and robots again' : paused ? ', PAUSED (someone is using it): the VM runs the tests and robots' : ''}), game ${seenSt.game || '?'}, ` +
-    `test run ${seenSt.test_run || '?'}, robots ${seenSt.robots || '?'}, push ${seenSt.push_ok === '0' ? 'FAILING' : 'ok'}`;
+    `test run ${seenSt.test_run || '?'}, robots ${seenSt.robots || '?'}, push ${seenSt.push_ok === '0' ? 'FAILING' : 'ok'}` +
+    (seenSt.cpu_threads ? `, ram ${seenSt.ram_free_gb || '?'} of ${seenSt.ram_total_gb || '?'} GB free, cpu ${seenSt.cpu_pct || '?'}% of ${seenSt.cpu_threads} threads` : '');
+// 10-28: a spare PC that keeps reporting in but has stopped working. 10-22 10:23 to 10-25 15:26 it sat on v34.13 with no full run for
+// 77 hours while about 70 builds shipped, and nothing said so, since it never went quiet. STALLED goes first in the line (tools/health.sh
+// makes it a PROBLEM) when its game copy is 3 hours behind the newest game change here, or no full run from any machine has finished
+// in 5 hours (by its start minute) while the game changed after the last one. Never while it is quiet or paused.
+const gameTimes = (from) => { try { return git(['log', '--format=%ct', `${from}..HEAD`, '--', 'dark_raiders.html']).split('\n').filter(Boolean).map(Number); } catch { return null; } };
+const stall = [];
+if (seen && ago < 30 && !paused) {
+  const sha = (seenSt.game || '').split(' ')[0], now = Date.now() / 1000;
+  const behind = /^[0-9a-f]{7,40}$/.test(sha) ? gameTimes(sha) : null;
+  if (behind && behind.length && now - Math.min(...behind) >= 3 * 3600) stall.push(`its game copy ${seenSt.game} is ${((now - Math.min(...behind)) / 3600).toFixed(1)} h behind (${behind.length} newer game commits)`);
+  let last = '', lastH = '';
+  for (const [h, list] of Object.entries(hosts)) for (const n of list) { const m = /^corpus\/corpus-(\d{4}-\d{4})\.txt\.head$/.exec(n); if (m && m[1] > last) { last = m[1]; lastH = h; } }
+  if (last) {
+    const d = new Date(new Date().getFullYear(), +last.slice(0, 2) - 1, +last.slice(2, 4), +last.slice(5, 7), +last.slice(7, 9));
+    if (d > new Date()) d.setFullYear(d.getFullYear() - 1);
+    let head = ''; try { head = blob(`spare/${lastH}/corpus/corpus-${last}.txt.head`).toString('utf8').trim().split(/\s+/)[0]; } catch { }
+    const since = /^[0-9a-f]{7,40}$/.test(head) ? gameTimes(head) : null, hrs = (now - d / 1000) / 3600;
+    if (since && since.length && hrs >= 5) stall.push(`its newest finished full run started ${hrs.toFixed(1)} h ago (corpus-${last} on ${lastH}) and the game changed ${since.length} time(s) since`);
+  }
+}
+if (stall.length) line = `STALLED: ${stall.join('; ')}; ` + line;
 for (const [h, st, ep] of idleHosts) line += `; main PC ${h} last seen ${st.seen || '?'} (${ep ? Math.round((Date.now() / 1000 - ep) / 60) : '?'} min ago): ${st.test_run || '?'}, robots ${st.robots || '0'}${st.spare_pc ? `; spare PC as the main PC sees it: ${st.spare_pc}` : ''}`;
 for (const h of fs.readdirSync(SP)) { const p = perf4k(path.join(SP, h, 'fuzz.log'), h); if (p) line += '; ' + p; }
+try { writePerf4k(SP); } catch (e) { console.log(`${stamp().slice(6)} perf-4k.txt not written: ${String(e.message || e).slice(0, 120)}`); }   // 10-28: one line per build for the 4K jobs
 { const p = perf4k(path.join(R, 'tools', 'handoff', 'fuzz', 'fuzz.log'), 'the VM'); if (p) line += '; ' + p; }   // 10-22: the VM's own second robot plays at 4K
 if (got.length) line += `; took ${got.length} finished run(s) now: ${got.join(', ').slice(0, 200)}`;
 if (bad.length) line += `; could not take ${bad.length}: ${bad.join('; ').slice(0, 300)}`;

@@ -14,7 +14,7 @@
 //   node hostctl.mjs share-get name=run-123.json           (prints the file's text; add --save PATH to write it)
 //   node hostctl.mjs share-put name=note.txt --file ./note.txt
 //
-//   --host ADDR   the main PC's Default Switch address (default: env PILLAGERS_HOST_IP, else 192.168.160.1)
+//   --host ADDR   the main PC's Default Switch address (default: env PILLAGERS_HOST_IP, else the default gateway, else 192.168.160.1)
 //   --port N      default 8830
 //   --save PATH   for share-get: write the file out instead of printing it
 //   --file PATH   for share-put: the local file to send
@@ -25,10 +25,21 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import http from 'node:http';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 import { AGENT_PORT, DEFAULT_SWITCH_IP, BRIDGE_VERSION, dataDir, keyFile, readKey, hmac, sha256hex, EMPTY_HASH, sigText } from './bridge-common.mjs';
 
+// 10-27 night: his XMP restart moved the Default Switch from 192.168.160.0/20 to 172.17.96.0/20 and every bridge call timed out. The
+// main PC is the VM's default gateway on the Default Switch, so read it fresh each run; env PILLAGERS_HOST_IP still wins, 192.168.160.1 is last.
+function gatewayIp() {
+  try {
+    const out = execFileSync('route', ['print', '-4', '0.0.0.0'], { encoding: 'utf8', timeout: 5000, windowsHide: true });
+    const m = out.match(/^\s*0\.0\.0\.0\s+0\.0\.0\.0\s+(\d+\.\d+\.\d+\.\d+)\s/m);
+    return m ? m[1] : null;
+  } catch { return null; }
+}
+
 function parse(argv) {
-  const o = { host: process.env.PILLAGERS_HOST_IP || DEFAULT_SWITCH_IP, port: AGENT_PORT, job: null, args: {}, save: null, file: null };
+  const o = { host: process.env.PILLAGERS_HOST_IP || gatewayIp() || DEFAULT_SWITCH_IP, port: AGENT_PORT, job: null, args: {}, save: null, file: null };
   const rest = [];
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
@@ -85,6 +96,8 @@ async function main() {
     console.log(JSON.stringify({ ok: true, saved: opt.save, size: r.json.size, sha256: r.json.sha256 }));
     process.exit(0);
   }
+  // 10-27: main-status names the report receiver in one line first, on stderr so the JSON on stdout stays parseable (onhispc.sh reads it)
+  if (opt.job === 'main-status' && r.json && r.json.receiver8799 && r.json.receiver8799.line) console.error(r.json.receiver8799.line);
   console.log(r.json ? JSON.stringify(r.json, null, 2) : r.raw);
   process.exit(r.json && r.json.ok === false ? 1 : 0);
 }

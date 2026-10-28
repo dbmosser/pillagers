@@ -1,0 +1,7 @@
+v35.56: pad x reload then search
+
+At a box, pad X names reload when it reloads; keep holding to search after it finishes.
+
+Check 35.56. Fails on v35.55.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

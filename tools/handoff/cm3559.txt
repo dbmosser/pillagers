@@ -1,0 +1,7 @@
+v35.59: hit jolt follows the round
+
+Hit jolts follow the incoming round in both windows.
+
+Check 35.59. Fails on v35.58.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

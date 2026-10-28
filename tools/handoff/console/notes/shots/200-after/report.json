@@ -1,0 +1,6 @@
+{"generated":"2026-10-27T22:42:04","url":"http://localhost:8808/fixture.html","recipes":"C:\\Users\\VMOCT2~1\\AppData\\Local\\Temp\\claude\\C--claudecode-dark-raiders\\2ff9a479-6e55-4375-8ce2-20a40c071a7e\\scratchpad\\recipe200.json","seconds":43,"screens":[
+{"name":"h1-gun","screen":"stash hover 0","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"h1-gun-1080.jpg","lint":""}},
+{"name":"h2-medkit","screen":"stash hover 3","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"h2-medkit-1080.jpg","lint":""}},
+{"name":"h3-pistol","screen":"stash hover 7","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"h3-pistol-1080.jpg","lint":""}},
+{"name":"h4-idle","screen":"stash hover 99","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"h4-idle-1080.jpg","lint":""}}
+]}

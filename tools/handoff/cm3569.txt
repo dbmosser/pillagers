@@ -1,0 +1,7 @@
+v35.69: the score multiplier on screen, fog of war pays
+
+fog of war on pays 5 percent more sp; the settings score multiplier shows in settings, beside the score in a raid and once on the end card
+
+Check 35.69. Fails on v35.68.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -2,30 +2,28 @@
 
 ## A. dials defined but never read
 
-  (could not find the CFG defaults object)
 
 ## B. banned vocabulary in prose the player can read
 
-  line 2667 [touchdown] Re-measured on all four maps: EVERY enemy at touchdown is one your walk woke, 9 to 25 of them, and zero come from the siege. One word: QUIETER movemen
-  line 2670 [touchdown] Re-measured on all four maps: EVERY enemy at touchdown is one your walk woke, 9 to 25 of them, and zero come from the siege. One word: QUIETER movemen
+  line 6159 [touchdown] Re-measured on all four maps: EVERY enemy at touchdown is one your walk woke, 9 to 25 of them, and zero come from the siege. One word: QUIETER movemen
+  line 6162 [touchdown] Re-measured on all four maps: EVERY enemy at touchdown is one your walk woke, 9 to 25 of them, and zero come from the siege. One word: QUIETER movemen
+  line 54987 [hotbar] v35.42: the item line under the stash grids is one fixed size box, hover or not: the backpack, hotbar, gun keys and stash grid no longer move when the
 
 ## C. one-shot migrations missing from the born profile
 
+  line 57560 : achScan stamps itself but a new profile is not born with it
 
 ## D. a message written inside a loop and overwritten after it
 
-  (cleared) line 7806 : doEmote - v12.84: mutually exclusive branches with early returns, nothing is overwritten
-  (cleared) line 11768 : cycleThrow - v12.84: mutually exclusive branches with early returns, nothing is overwritten
-  (cleared) line 12999 : useMedical - v12.84: mutually exclusive branches with early returns, nothing is overwritten
+  (cleared) line 16113 : pedSellAll - v35.39: no say() runs inside a loop (the scan spans from a loop to a later line); the early return and the two at the end are separate feed rows
+  (cleared) line 20967 : cycleThrow - v12.84: mutually exclusive branches with early returns, nothing is overwritten
+  (cleared) line 25385 : useMedical - v12.84: mutually exclusive branches with early returns, nothing is overwritten
+  (cleared) line 27296 : beltGunField - v35.39: a one-line function, so the scan ran on into beltSlidePlan; its say() calls are early returns
+  (cleared) line 27629 : beltClassPin - v35.39: the say() in the loop returns at once; the one after it runs only when the loop found nothing
+  (cleared) line 50761 : tickClockWarn - v35.39: the loops only pick a mark; the say() calls after them are exclusive branches
+  (cleared) line 61695 : netGiftTake - v35.39: the loop returns at once; the say() calls after it are exclusive branches
+  (cleared) line 66719 : shNetTake - v35.39: each say() is its own feed row (gate breached, stronghold cleared, once per raid on the map)
 
-  3 found, 3 already read and cleared, 0 to read
+  8 found, 8 already read and cleared, 0 to read
 
-## E. one thing spelled two ways
-
-  [you killed him ] vs [You killed him ]
-  [EXTRACTION INBOUND] vs [Extraction inbound]
-  [HOLD TO CRAFT] vs [Hold to craft]
-  [your stats] vs [YOUR STATS]
-  [tactical belt] vs [TACTICAL BELT]
-
-TOTALS  A=0  B=2  C=0  D=0  E=5
+TOTALS  A=0  B=3  C=1  D=0

@@ -1,0 +1,5 @@
+## v35.61 - RESPECT COMPUTER REDUCED MOTION
+
+Co-op hunt while he was away. The computer reduced motion preference previously affected menu CSS only. Unset screen shake now starts light and unset effect intensity starts half. Each saved choice and each tuned dial wins independently. Hit pause now follows the existing effect intensity control: 60 ms at full, 30 ms at half, zero at off, with its immunity unchanged. No request leaves ordinary defaults unchanged. Watch in a smooth-look playtest: on both player windows with no saved motion choices, heavy hits should shake less and hold the target for a shorter beat; choosing full must survive reload. In co-op the host still owns enemy hit pause. No seeded draws or world generation change.
+
+MEASURED. Check 35.61 passes, and fails on v35.60.

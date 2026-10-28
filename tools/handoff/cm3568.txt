@@ -1,0 +1,7 @@
+v35.68: harder settings pay more sp
+
+harder settings pay more sp: 5 percent a step on pillagers, machines, how hard they hit and extraction heat, and superhot off, stacked
+
+Check 35.68. Fails on v35.67.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

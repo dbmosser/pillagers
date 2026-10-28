@@ -1,5 +1,10 @@
 # Cloud drafts: index (2026-10-15)
 
+## 2026-10-28 full audit (newest; read first)
+
+tools/handoff/cloud/audit-2026-10-28.md: the ranked findings. Two drafts with GATE PASS on v35.42: cloud-ach-born-scan, cloud-p2-easy-card.
+Lane jobs a01 to a05: tools/handoff/cloud/audit-jobs/. Everything below this section is from 10-15 and older.
+
 Every draft below was found, proven, drafted, reviewed and gated by a cloud hunt (see tools/handoff/CLOUD-DRAFTS.md and the
 five findings files in this folder). Ship one with `bash tools/handoff/shipone.sh KEY PREV NEW` on his PC. Gate any draft
 in the cloud with `python3 tools/cloud/draftgate.py KEY`. The PC kept shipping while the hunts ran, so a draft can STOP

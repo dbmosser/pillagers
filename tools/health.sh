@@ -45,7 +45,9 @@ for f in "$C"/status-*.txt; do l=${f##*status-}; l=${l%.txt}; echo "lane $l: $(h
 nf=$(find "$C/failed" -name '*.md' -mmin -120 2>/dev/null | wc -l); [ "$nf" -gt 0 ] && prob "$nf job(s) went to failed/ in the last 2 h: $(find "$C/failed" -name '*.md' -mmin -120 -printf '%f ' 2>/dev/null)"
 echo "jobs waiting: $(ls "$C/tasks/"*.md 2>/dev/null | wc -l); STOP: $([ -f "$C/STOP" ] && echo ON || echo off)"
 # 5 the full test run
-cl=$(grep "newly failing" "$H/nightly/nightly.log" 2>/dev/null | tail -1 | grep -o '[0-9]* check(s) newly failing' | head -1)
+# 10-27 night (CEO chat): the newest full run is the first line under "Newest test runs" in stable-status.txt (the spare PC runs it); nightly.log held a stale VM run and showed 12 newly failing while the newest run had 0
+cl=$(sed -n '/^Newest test runs/{n;p;q}' "$H/stable-status.txt" 2>/dev/null | sed -n 's/.*corpus-\([0-9-]*\) *\(v[0-9.]*\).*new \([0-9]*\).*/\3 check(s) newly failing (run \1 on \2)/p')
+[ -z "$cl" ] && cl=$(grep "newly failing" "$H/nightly/nightly.log" 2>/dev/null | tail -1 | grep -o '[0-9]* check(s) newly failing' | head -1)
 [ -n "$cl" ] && { echo "full test run: $cl"; n=${cl%% *}; [ "${n:-0}" -gt 10 ] && prob "full test run says $cl"; }
 # 6 ChatGPT lane
 if has 'codex-lane\.sh'; then echo "chatgpt lane: running ($(head -c 90 "$C/status-o.txt" | tr -d '\r\n'))"
@@ -57,7 +59,12 @@ if has 'ship-review\.ps1.*-Engine agy'; then echo "google checker: running ($(he
 else if [ $FIX = 1 ]; then powershell -NoProfile -Command "Start-Process -FilePath powershell.exe -ArgumentList '-NoProfile','-ExecutionPolicy','Bypass','-File','\"C:\claudecode\dark raiders\tools\ship-review.ps1\"','-Engine','agy','-Loop','-EveryMin','20' -WindowStyle Hidden" && echo "google checker: was down, STARTED"; else prob "google checker not running"; fi; fi
 # 7b the local AI reviewer (Ollama). 10-19: nothing restarted it, so it sat idle all afternoon. It rests by itself in his PC hours and
 # when the PC has under 11 GB free (the model takes about 4 GB of the PC's memory even on the graphics card).
-if has 'ship-review\.ps1.*-Engine ollama'; then echo "local AI reviewer: running ($(head -c 90 "$H/ship-review/status-ollama.txt" 2>/dev/null | tr -d '\r\n'))"
+la=$(grep -m1 '^LOCAL_AI=' "$C/caps.txt" 2>/dev/null | cut -d= -f2 | tr -dc 01)
+if [ "$la" != 1 ]; then
+  # 10-28: retired (caps.txt LOCAL_AI=0): a model load took the main PC to 0.2-1.8 GB free and none of its hits was real
+  if has 'ship-review\.ps1.*-Engine ollama' && [ $FIX = 1 ]; then powershell -NoProfile -Command "Get-CimInstance Win32_Process | Where-Object { \$_.ProcessId -ne \$PID -and \$_.CommandLine -match 'ship-review\.ps1.*-Engine ollama' } | ForEach-Object { Stop-Process -Id \$_.ProcessId -Force }" >/dev/null 2>&1; echo "local AI reviewer: retired 10-28 (caps LOCAL_AI=0), stopped"
+  else echo "local AI reviewer: retired 10-28 (caps LOCAL_AI=0)"; fi
+elif has 'ship-review\.ps1.*-Engine ollama'; then echo "local AI reviewer: running ($(head -c 90 "$H/ship-review/status-ollama.txt" 2>/dev/null | tr -d '\r\n'))"
 else if [ $FIX = 1 ]; then powershell -NoProfile -Command "Start-Process -FilePath powershell.exe -ArgumentList '-NoProfile','-ExecutionPolicy','Bypass','-File','\"C:\claudecode\dark raiders\tools\ship-review.ps1\"','-Engine','ollama','-Loop','-EveryMin','20' -WindowStyle Hidden" && echo "local AI reviewer: was down, STARTED"; else prob "local AI reviewer not running"; fi; fi
 grep -hE "BUG|CHECKED" "$H/ship-review/findings.txt" 2>/dev/null | tail -3 | sed 's/^/  checker lead: /' | cut -c1-200
 # 8 dashboard
@@ -69,7 +76,23 @@ nf="$H/notes-fetch.txt"; [ -f "$nf" ] && echo "notes from the main PC: $(head -1
 ss="$H/spare-status.txt"
 if [ ! -f "$ss" ] || grep -q "not set up yet\|no spare PC has reported" "$ss"; then echo "WAIT: spare PC not set up yet (his steps: tools/handoff/console/for-you.md)"
 elif grep -q "QUIET" "$ss"; then echo "WAIT: spare PC quiet: $(head -1 "$ss" | cut -c1-160)"
+# 10-28: it reports in but tests nothing new (77 hours on v34.13, 10-22 to 10-25, unflagged); tools/spare/spare-import.mjs writes STALLED
+elif grep -q "^STALLED" "$ss"; then prob "spare PC stalled (it reports in but tests nothing new): $(head -1 "$ss" | sed 's/; [A-Z0-9_-]* last seen.*//' | cut -c1-260)"
 else echo "spare PC: $(head -1 "$ss" | cut -c1-170)"; fi
+# 10-28: the main PC runner (tools/spare/spare-runner.ps1, idle mode on JUL26) also keeps his 8802, the party copy and the bridge up, and
+# a new runner it cannot read is not taken (it goes on with the old one): a silent runner, or one not on master's copy 20 minutes after
+# that file changed, is a PROBLEM. runner= is the first 8 of the SHA256 of the CRLF checkout there.
+ms=$(git -C "$R" cat-file blob "refs/spare-import/spare-results:spare/JUL26/status.txt" 2>/dev/null | tr -d '\r')
+if [ -n "$ms" ]; then
+  kv(){ printf '%s\n' "$ms" | sed -n "s/^$1=//p" | head -1; }
+  me=$(kv epoch | tr -dc 0-9); ma=$(( (now - ${me:-0}) / 60 )); mr=$(kv runner | tr -dc 0-9A-F)
+  mh=$(git -C "$R" show "master:tools/spare/spare-runner.ps1" 2>/dev/null | sed 's/$/\r/' | sha256sum | cut -c1-8 | tr a-f A-F)
+  mt=$(git -C "$R" log -1 --first-parent --format=%ct master -- tools/spare/spare-runner.ps1 2>/dev/null)
+  echo "main PC runner: $(kv test_run | cut -c1-60), robots $(kv robots), $(kv ram_free_gb) GB free, runner $mr, $ma min ago"
+  [ "$ma" -gt 30 ] && prob "main PC runner silent for $ma min (it keeps 8802, the party copy and the bridge up)"
+  [ "$ma" -le 30 ] && [ -n "$mh" ] && [ "$mr" != "$mh" ] && ! kv test_run | grep -q "^running" && [ $(( now - ${mt:-$now} )) -gt 1200 ] && prob "main PC runner is not on master's copy (it runs $mr, master is $mh): a new runner it could not read, or no update"
+  [ -f "$H/spare/perf-4k.txt" ] && echo "4K two windows on the main PC card: $(head -1 "$H/spare/perf-4k.txt" | cut -c1-220)"
+fi
 fm=$(powershell -NoProfile -Command "[int]((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1MB)" 2>/dev/null | tr -d '\r'); echo "free RAM: ${fm} GB"; rf=$(grep -m1 "^RAM_FLOOR_GB=" "$C/caps.txt" 2>/dev/null | cut -d= -f2 | tr -dc "0-9"); rf=${rf:-6}; [ "${fm:-9}" -lt "$rf" ] && prob "free RAM ${fm} GB is under the ${rf} GB floor (RAM_FLOOR_GB in console/caps.txt)"
 # 10-21: virtual memory too. At 02:19 Windows ran out of it (31.5 of 31.9 GB) with 4 GB of RAM free and both robots hung.
 fv=$(powershell -NoProfile -Command "\$o=Get-CimInstance Win32_OperatingSystem; '{0} {1}' -f [int](\$o.FreeVirtualMemory/1MB), [int](\$o.TotalVirtualMemorySize/1MB)" 2>/dev/null | tr -d '\r'); echo "free virtual memory: ${fv% *} GB of ${fv#* } GB"; [ "${fv% *}" -lt "$rf" ] 2>/dev/null && prob "free virtual memory ${fv% *} GB is under the ${rf} GB floor: Windows may refuse new programs (see the System log, event 2004)"

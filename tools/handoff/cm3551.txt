@@ -1,0 +1,7 @@
+v35.51: pad trigger keeps steady spread without focus aim
+
+pad trigger fire keeps its steady spread without cutting sprint or pulsing a scoped view. lt and right mouse still aim.
+
+Check 35.51. Fails on v35.50.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

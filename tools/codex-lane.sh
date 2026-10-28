@@ -231,6 +231,19 @@ screens_list(){ [ -f "$WD/shots.txt" ] && rd "$WD/shots.txt" | head -1 | tr -d '
 
 # ---- the Codex process
 kill_orphans(){ powershell -NoProfile -Command "Get-CimInstance Win32_Process | Where-Object { \$_.Name -match '^(codex|node)(\.exe)?\$' -and \$_.CommandLine -match 'pillagers-codex' -and \$_.CommandLine -match ' exec' } | ForEach-Object { Stop-Process -Id \$_.ProcessId -Force }" >/dev/null 2>&1; }
+# 10-27 night, the meter: after every Codex run, one line in codex/limits.txt: date time, week %, 5-hour %, week reset, job. Codex writes
+# its plan limits (rate_limits: primary = 5 hours, secondary = the week) into the newest ~/.codex/sessions/**/rollout-*.jsonl; the lane's
+# own --json output does not carry them. Local files only, no network; any miss writes nothing and never stops the lane.
+# tools/handoff/console/checkin.sh reads the newest line to tell whether Codex's week has room for more o-* jobs.
+meter(){ local d l="" f pr sr p5 pw rs
+  d=${CODEX_HOME:-$HOME/.codex}/sessions; [ -d "$d" ] || return 0
+  while IFS= read -r f; do l=$(grep -a '"rate_limits":{"limit_id"' "$f" 2>/dev/null | tail -1); [ -n "$l" ] && break; done < <(find "$d" -name 'rollout-*.jsonl' -printf '%T@ %p\n' 2>/dev/null | sort -rn | head -3 | cut -d' ' -f2-)
+  [ -n "$l" ] || return 0
+  pr=$(printf '%s' "$l" | grep -o '"primary":{[^}]*}' | tail -1); sr=$(printf '%s' "$l" | grep -o '"secondary":{[^}]*}' | tail -1)
+  p5=$(printf '%s' "$pr" | grep -o '"used_percent":[0-9.]*' | cut -d: -f2); pw=$(printf '%s' "$sr" | grep -o '"used_percent":[0-9.]*' | cut -d: -f2)
+  rs=$(printf '%s' "$sr" | grep -o '"resets_at":[0-9]*' | cut -d: -f2)
+  [ -n "$pw" ] || return 0
+  echo "$(date '+%F %H:%M') week=${pw}% 5h=${p5:-?}% week_resets=$([ -n "$rs" ] && date -d "@$rs" '+%F %H:%M' 2>/dev/null || echo '?') job=$name" >> "$X/limits.txt"; return 0; }
 run_codex(){  # run_codex fresh|resume PROMPTFILE [image files...] -> JSONL LAST ERRF RC
   local mode=$1 pf=$2; shift 2; local imgs=() i stamp; for i in "$@"; do imgs+=("--image=$(cygpath -m "$i")"); done
   stamp=$(date +%m%d-%H%M%S); JSONL="$X/log/$name-$stamp.jsonl"; LAST="$X/log/$name-$stamp.last.txt"; ERRF="$X/log/$name-$stamp.err"; cx_args
@@ -239,7 +252,7 @@ run_codex(){  # run_codex fresh|resume PROMPTFILE [image files...] -> JSONL LAST
   else
     ( cd "$W" && cxenv timeout -k 30 "$secs_max" "${CXBIN[@]}" exec -C "$WW" -s workspace-write -o "$(cygpath -m "$LAST")" "${CXA[@]}" "${imgs[@]}" - < "$pf" > "$JSONL" 2> "$ERRF" )
   fi
-  RC=$?; [ $RC = 124 ] || [ $RC = 137 ] && kill_orphans; return 0; }
+  RC=$?; [ $RC = 124 ] || [ $RC = 137 ] && kill_orphans; meter; return 0; }
 # parse the reset time out of "try again at 3:41 PM" / "try again in 2 hours 5 minutes" / "...at Oct 23rd, 2026 4:12 PM"
 parse_reset(){ local t="$1" m s e d h mi
   m=$(printf '%s' "$t" | grep -oiE 'try again in [^.]*' | head -1)
@@ -313,7 +326,7 @@ $(printf '%s\n' "$pf" | tail -8)"; return 1
     # so the lane does, the same command the Claude lanes are allowed (console-lane.sh). Without this every run failed "Unable to connect".
     curl -s -m 3 http://127.0.0.1:9346/json/version >/dev/null 2>&1 || { log "gate browser (9346) was down, starting it"; powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/cdp.ps1" -Start -Port 9346 >/dev/null 2>&1; }
     out=$(timeout 7500 bash "$S/shipq.sh" "$k" 2>&1 | tail -14 | cut -c1-700); echo "$out" > "$X/log/$name-$k.ship.txt"
-    printf '%s\n' "$out" | grep -q '^SHIPPED' && { echo "$k" >> "$LS/shipped.txt"; SHIPPED_NOW+=("$k"); log "$name shipped $k: $(printf '%s\n' "$out" | grep '^SHIPPED' | head -1)"; return 0; }
+    printf '%s\n' "$out" | grep -q '^SHIPPED' && { echo "$k" >> "$LS/shipped.txt"; SHIPPED_NOW+=("$k"); ONHIS_NOW+=("$(printf '%s\n' "$out" | grep -m1 -E '^(NOT )?ON HIS PC' | cut -c1-240)"); log "$name shipped $k: $(printf '%s\n' "$out" | grep '^SHIPPED' | head -1)"; return 0; }
     if printf '%s\n' "$out" | grep -qi 'uncommitted changes'; then sleep 90; continue; fi
     if printf '%s\n' "$out" | grep -qiE 'stamped v[0-9.]+, .*behind'; then bash "$R/tools/handoff/shipkit/cardrefresh.sh" "$S" >> "$X/log/cardrefresh.txt" 2>&1; sleep 30; continue; fi
     break
@@ -440,13 +453,14 @@ $out
 # ---- camera-recipes.json (RULES-codex.md "Pictures"). 2026-10-20: the rules promised it but the lane never read the file, so o-04, o-05
 #      and o-07 to o-10 shipped and then sat in waiting/ asking for their two-window pictures. The first 6 screens of the file, no BEFORE.
 recipes_file(){ local f; for f in "$WD/camera-recipes.json" "$WD/"*camera-recipes.json; do [ -f "$f" ] && { echo "$f"; return; }; done; }
+#      10-28 (CEO): recipe rounds shoot 1080 AND 4k (o-120f and o-140 asked; his "4K first" picture rule). The critic still reads the 1080 ones only (its cost); the 4k ones sit beside them for the task notes.
 shoot_recipes(){  # shoot_recipes FILE ROUND -> pictures in notes/shots/NAME-recipes-ROUND, the camera's words in log/NAME-recipes-ROUND.camera.txt
   local out="tools/handoff/console/notes/shots/$name-recipes-$2" cl="$LS/recipes.json" names lg="$X/log/$name-recipes-$2.camera.txt"
   rd "$1" > "$cl"
   names=$(node -e "try{const j=JSON.parse(require('fs').readFileSync(process.argv[1],'utf8'));console.log((j.screens||[]).slice(0,6).map(x=>x&&x.name).filter(x=>typeof x==='string'&&/^[A-Za-z0-9_.-]{1,80}$/.test(x)).join(','))}catch(e){console.log('')}" "$cl" 2>/dev/null | tr -d '\r')
   [ -n "$names" ] || { echo "the recipe file has no readable screens (JSON with a screens list, each with a name of letters, digits, dots, dashes)" > "$lg"; return 1; }
   say "pictures: recipe round $2 for $name (screens $names, camera $CAM)"
-  ( cd "$R" && timeout 1500 powershell -NoProfile -ExecutionPolicy Bypass -File tools/uishots.ps1 -Recipes "$(cygpath -w "$cl")" -Screens "$names" -Out "$out" -Res 1080 -Port "$CAM" ) > "$lg" 2>&1
+  ( cd "$R" && timeout 1500 powershell -NoProfile -ExecutionPolicy Bypass -File tools/uishots.ps1 -Recipes "$(cygpath -w "$cl")" -Screens "$names" -Out "$out" -Res 1080,4k -Port "$CAM" ) > "$lg" 2>&1
   ls "$R/$out/"*-1080.jpg >/dev/null 2>&1; }
 critic_recipes(){  # critic_recipes ROUND : sets CRITWORST, CRITP, CRITTXT, PICS; each picture alone (a recipe screen has no BEFORE)
   local a out sc; CRITWORST=9; CRITP=0; CRITTXT=""; PICS=()
@@ -509,7 +523,7 @@ while [ "$it" -lt "$left" ]; do
   git -C "$W" status --porcelain -uno 2>/dev/null | head -5 > "$X/log/$name-edits-in-copy.txt"
   harvest
   fi
-  fb=""; SHIPPED_NOW=(); gate=0; keys=$(keys_list); sc=$(screens_list)
+  fb=""; SHIPPED_NOW=(); ONHIS_NOW=(); gate=0; keys=$(keys_list); sc=$(screens_list)
   [ "$CLASS" = timeout ] && appendfb "Your last run was cut after $(cap RUN_MIN 45) minutes. Whatever is in .codex-work/$name was kept. Finish in fewer steps."
   rtg=0; RT_HOLD=""; RT_DONE=""
   [ -f "$WD/fixture-retarget.json" ] && { apply_retarget; rtg=$?; }
@@ -529,6 +543,8 @@ while [ "$it" -lt "$left" ]; do
     [ -n "$held" ] && appendfb "Not shipped yet, they wait on the fixture retarget: $held"; fi
   [ $gate = 0 ] && [ $rtg != 0 ] && gate=$rtg
   [ ${#SHIPPED_NOW[@]} -gt 0 ] && appendfb "Shipped: ${SHIPPED_NOW[*]} (game now v$(grep -m1 "^var VER='" "$R/dark_raiders.html" 2>/dev/null | sed "s/var VER='\([0-9]*\.[0-9]*\)'.*/\1/"))."
+  # 10-28 (CEO): Codex asked twice (o-120f, o-138) for the ON HIS PC line with the ship result; shipq prints it last
+  ohp=$(printf '%s\n' "${ONHIS_NOW[@]}" | grep -v '^$'); [ -n "$ohp" ] && appendfb "$ohp"
   if [ $gate = 2 ]; then r="waiting"; break; fi          # not Codex's fault: leave the job and try later
   if [ -n "$wo" ] && [ $gate = 0 ]; then r="blocked"; break; fi   # Codex says the rest waits on another task: park it, spend no more runs
   if [ $gate = 0 ]; then

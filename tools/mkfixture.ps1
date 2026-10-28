@@ -1425,6 +1425,9 @@ try{ GO_SEC=0; }catch(e){}
 // 10-25 (coordinator, job 112r): ?career=1 keeps the game default CAREER raid, for camera screens 79 and 80 (the folded keys
 // list at a career drop, his rs-1); the staging JS cannot reach CAREER_ON from outside.
 try{ if(!/[?&]career=1(&|$)/.test(location.search)) CAREER_ON=0; }catch(e){}
+// v35.xx (cw-diffmul, his order of 2026-10-28): harder Settings rows and superhot off multiply the sp a raid pays. The checks score as before (the pinned
+// dials alone would pay x1.22); the multiplier check sets DMUL_ON back to 1 for itself. On a build with no multiplier this only makes a global.
+try{ DMUL_ON=0; }catch(e){}
 // THE FIXTURE IS SILENT. Verification drives real frames, and real frames fire real
 // gunshots, alarms and machine voices through WebAudio. On 2026-08-24 a 40 raid batch
 // played all of it out loud on Daniel's PC while he was trying to work. He should never
@@ -4396,7 +4399,7 @@ window.__REGRESS=[
      var keys=0; for(var k in g.tel.dmg) keys++;
      if(keys<2) bad.push('control: two different attackers collapsed into '+keys+' entry in the recorder');
      return bad.length?bad.join('; '):null; }},
-  {v:'9.22',what:'taking one thing out of a crate does not read out what is still inside (cw-fewermsg retarget, his complaint 2026-10-27: a full open is one pickup row that names the best find and says +2 ITEMS)',
+  {v:'9.22',what:'taking one thing out of a crate does not read out what is still inside',
    run:function(){
      var bad=[];
      __resetCfg(); __pinDefaults(0);
@@ -4412,7 +4415,7 @@ window.__REGRESS=[
      __grant(ct,['blackbox']);
      // tr16fix: since the raid text rewrite (R16) an item taken is a row in the pickup stack (G.pick), not a Found line,
      // so what the pull says is the message line and the pickup rows together, on the build before and after.
-     function saidNow(){ return String(g.msg||'')+((g.pick||[]).map(function(r){ return ' | '+r.m+(r.sub?' '+r.sub:''); }).join('')); }
+     function saidNow(){ return String(g.msg||'')+((g.pick||[]).map(function(r){ return ' | '+r.m; }).join('')); }
      var said=saidNow();
      // Measured before v9.22: pulling the Black Box alone printed
      // "Found: Meridian Black Box, Meridian Reactor Core, Sealed Codex".
@@ -4431,10 +4434,8 @@ window.__REGRESS=[
        g.msg=''; g.bag=[]; g.pick=[];
        __grant(ct2,ct2.loot);
        var said2=saidNow();
-       // cw-fewermsg retarget, his complaint 2026-10-27 (too many messages reach the player): a search is one pickup row, the best find named and the count after it
-       if((g.pick||[]).length!==1) bad.push('control: a full open of two items drew '+(g.pick||[]).length+' pickup rows, not one');
-       if(!/Servo/.test(said2)||!/\+2 ITEMS/.test(said2))
-         bad.push('control: a full open no longer says everything it gave in its one row: "'+said2+'"');
+       if(!/Servo/.test(said2)||!/Scrap/.test(said2))
+         bad.push('control: a full open no longer lists everything it gave: "'+said2+'"');
      }
      return bad.length?bad.join('; '):null; }},
   {v:'9.24',what:'picking a downed pillager up is free and costs no medical',
@@ -6170,6 +6171,1390 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'35.70',what:'cw-dmulfix, from the pictures of v35.69: the demo run over card shows its settings x line as a heading line under extracted x2 (it sat in a player row, which the restyled card hides), and the Settings score value stands centred in the value column as the other values do',
+   run:function(){
+     if(!(window.__runPrep&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile)) return 'SKIP: this fixture cannot stage';
+     if(typeof diffMul!=='function'||typeof dmulRowHtml!=='function'||typeof arcadeOverSync!=='function'||typeof openSettings!=='function') return 'SKIP: no score multiplier display here';
+     var bad=[], d0=DMUL_ON, K=['superhot','nRaider','eDmg'], sv={}, i, el, b, r1, r2, aOn=ARCADE.on, aOv=ARCADE.over, aSo=ARCADE.solo, c, ln=null, kids, m;
+     for(i=0;i<K.length;i++) sv[K[i]]=CFG[K[i]];
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       DMUL_ON=1; CFG.superhot=0; CFG.nRaider=15; CFG.eDmg=1.4;
+       // ONE: Settings, the value in the value column
+       openSettings(); m=document.getElementById('settingsmodal');
+       el=document.getElementById('set_dmul'); b=document.getElementById('go_superhot')||document.getElementById('go_raiders');
+       if(!el||!b) bad.push('staging: no score value or no value button ('+!!el+', '+!!b+')');
+       else {
+         r1=el.getBoundingClientRect(); r2=b.getBoundingClientRect();
+         if(!(r2.width>0)) bad.push('staging: the Settings list has no layout');
+         else { if(Math.abs((r1.left+r1.width/2)-(r2.left+r2.width/2))>4) bad.push('the score value is centred at '+Math.round(r1.left+r1.width/2)+', the value column at '+Math.round(r2.left+r2.width/2)); if(Math.abs(r1.width-r2.width)>4) bad.push('the score value box is '+Math.round(r1.width)+' px wide, a value button '+Math.round(r2.width)); }
+       }
+       try{ if(m) m.classList.remove('on'); }catch(_m){}
+       // TWO: the demo run over card, a heading line that shows
+       ARCADE.on=1; ARCADE.solo=1; ARCADE.over={at:Date.now(),why:'extract',team:2000,p1:{s:2000,k:3,x:1,d:0},p2:null,dm:1.22};
+       try{ arcadeOverSync(); }catch(e3){ bad.push('arcadeOverSync threw '+e3.message); }
+       c=document.querySelector('#attract .arcover');
+       if(!c) bad.push('staging: no run over card');
+       else {
+         kids=c.children;
+         for(i=0;i<kids.length;i++) if(/^settings x1\.22$/i.test(String(kids[i].textContent).trim())) ln=kids[i];
+         if(!ln) bad.push('the demo run over card has no settings x1.22 line');
+         else {
+           if(getComputedStyle(ln).display==='none') bad.push('the settings line on the demo run over card is hidden');
+           if(!ln.classList.contains('aoh')||!(ln.previousElementSibling&&/extracted/i.test(ln.previousElementSibling.textContent))) bad.push('the settings line does not stand under extracted x2');
+         }
+       }
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       DMUL_ON=d0; ARCADE.over=aOv; ARCADE.solo=aSo; ARCADE.on=aOn;
+       try{ arcadeOverSync(); }catch(_s){} try{ var _c=document.querySelector('#attract .arcover'); if(_c) _c.style.display='none'; }catch(_c2){}
+       try{ var _m=document.getElementById('settingsmodal'); if(_m) _m.classList.remove('on'); }catch(_m2){}
+       for(i=0;i<K.length;i++) CFG[K[i]]=sv[K[i]];
+       __topClear();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'35.69',what:'cw-dmulshow, his order of 2026-10-28 that the settings score multiplier is indicated to the player: Settings draws a score row with the multiplier the rows pay (it follows a click, and no row at x1.00), a raid draws the x tag beside the score label (none at x1.00), and the career end card and the demo run over card each show one settings line with it',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__runPrep&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile)) return 'SKIP: this fixture cannot deploy';
+     if(typeof diffMul!=='function'||typeof diffMulOf!=='function') return 'SKIP: no settings score multiplier in this build';
+     if(typeof openSettings!=='function'||typeof arcadeScoreHud!=='function'||typeof ocLedger!=='function'||typeof arcadeOverSync!=='function') return 'SKIP: no settings page, score card or end cards here';
+     var bad=[], g, p, c0=(typeof CAREER_ON==='number')?CAREER_ON:0, d0=DMUL_ON, K=['superhot','nRaider','nSentry','eDmg','siegeVol','fogWar'], sv={}, i, m, el, want, rec=[], CP=CanvasRenderingContext2D.prototype, oF=CP.fillText, aOn=ARCADE.on, aOv=ARCADE.over, aSo=ARCADE.solo, lg, c;
+     function spy(){ rec=[]; CP.fillText=function(s){ rec.push(String(s)); return oF.apply(this,arguments); }; }
+     function tag(){ for(var q=0;q<rec.length;q++) if(/^x\d\.\d\d$/.test(rec[q])) return rec[q]; return null; }
+     for(i=0;i<K.length;i++) sv[K[i]]=CFG[K[i]];
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       DMUL_ON=1;
+       // ZERO: his addition, fog of war on is a step, and a linked window building the raid takes the host's
+       if(Math.abs(diffMulOf({superhot:1,nRaider:5,nSentry:12,eDmg:1,siegeVol:0.6,fogWar:1})-1.05)>0.0051) bad.push('fog of war on pays x'+diffMulOf({superhot:1,nRaider:5,nSentry:12,eDmg:1,siegeVol:0.6,fogWar:1})+', not x1.05');
+       if(Math.abs(diffMulOf({superhot:1,nRaider:5,nSentry:12,eDmg:1,siegeVol:0.6,fogWar:0})-1)>0.0051) bad.push('fog of war off pays a step');
+       if(typeof NET==='object'&&NET){ var _uh=NET.upHold, _uf=NET.upFw; try{ NET.upHold=true; NET.upFw=1; m=diffMulOf({superhot:1,nRaider:5,nSentry:12,eDmg:1,siegeVol:0.6,fogWar:0}); } finally { NET.upHold=_uh; NET.upFw=_uf; } if(Math.abs(m-1.05)>0.0051) bad.push('a linked window building the raid does not take the host fog of war (x'+m+')'); }
+       if(typeof netUpAnnounce==='function'&&!/\bm\.fw=/.test(String(netUpAnnounce))) bad.push('the raid word does not carry the host fog of war');
+       CFG.fogWar=0;
+       // ONE: Settings, the score row
+       CFG.superhot=0; CFG.nRaider=15; CFG.nSentry=28; CFG.eDmg=1.4; CFG.siegeVol=1.4;
+       openSettings(); m=document.getElementById('settingsmodal');
+       el=document.getElementById('set_dmul'); want='x'+(Math.round(diffMulOf(CFG)*100)/100).toFixed(2);
+       if(!el) bad.push('Settings draws no score row with the hardest rows');
+       else if(String(el.textContent).trim()!==want) bad.push('the Settings score row reads '+JSON.stringify(el.textContent)+', not '+want);
+       if(want!=='x1.54') bad.push('staging: the hardest rows pay '+want);
+       CFG.eDmg=1; renderSettings(); el=document.getElementById('set_dmul'); want='x'+(Math.round(diffMulOf(CFG)*100)/100).toFixed(2);
+       if(!el||String(el.textContent).trim()!==want) bad.push('the Settings score row did not follow a row change to '+want+' ('+(el?el.textContent:'none')+')');
+       CFG.superhot=1; CFG.nRaider=5; CFG.nSentry=12; CFG.siegeVol=0.6; renderSettings();
+       if(document.getElementById('set_dmul')) bad.push('Settings draws a score row at x1.00');
+       CFG.fogWar=1; renderSettings(); el=document.getElementById('set_dmul');
+       if(!el||String(el.textContent).trim()!=='x1.05') bad.push('fog of war on alone reads '+(el?el.textContent:'no score row')+' in Settings, not x1.05');
+       CFG.fogWar=0;
+       try{ if(m) m.classList.remove('on'); }catch(_m){}
+       // TWO: a career raid, the tag beside the score label
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); DMUL_ON=1;
+       CAREER_ON=1; CFG.superhot=0; CFG.eDmg=1.4;
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over||!g.player) return 'SKIP: staging: no raid';
+       if(!g.career||!g.cs) return 'SKIP: staging: not a career raid';
+       p=g.player; keys={}; g.mapOpen=false; g.bagOpen=false; g.paused=false;
+       want='x'+diffMul().toFixed(2);
+       spy(); try{ arcadeScoreHud(30,hudRes()); }catch(e1){ bad.push('arcadeScoreHud threw '+e1.message); } CP.fillText=oF;
+       if(tag()!==want) bad.push('the score card draws '+JSON.stringify(tag())+' beside the score, not '+want);
+       DMUL_ON=0; spy(); try{ arcadeScoreHud(30,hudRes()); }catch(e2){} CP.fillText=oF; DMUL_ON=1;
+       if(tag()) bad.push('the score card draws '+tag()+' at x1.00');
+       // THREE: the career end card, one settings line
+       g.cs.s=1000; g.tel=g.tel||{};
+       lg=ocLedger('extract',[],{acc:50,sec:300,hp:80,haul:0}).join('');
+       i=lg.split(want).length-1;
+       if(i!==1||!/>settings</i.test(lg)) bad.push('the career end card shows '+want+' '+i+' time(s) (a settings row: '+/>settings</i.test(lg)+')');
+       DMUL_ON=0; lg=ocLedger('extract',[],{acc:50,sec:300,hp:80,haul:0}).join(''); DMUL_ON=1;
+       if(/>settings</i.test(lg)) bad.push('the career end card shows a settings row at x1.00');
+       try{ __endRaid('abandon'); }catch(_ea){}
+       // FOUR: the demo run over card
+       __topClear();
+       ARCADE.on=1; ARCADE.solo=1; ARCADE.over={at:Date.now(),why:'extract',team:2000,p1:{s:2000,k:3,x:1,d:0},p2:null,dm:1.22};
+       try{ arcadeOverSync(); }catch(e3){ bad.push('arcadeOverSync threw '+e3.message); }
+       c=document.querySelector('#attract .arcover');
+       if(!c) bad.push('staging: no run over card');
+       else { i=String(c.textContent).split('x1.22').length-1; if(i!==1) bad.push('the demo run over card shows x1.22 '+i+' time(s)'); }
+       ARCADE.over.dm=1; ARCADE.over.at=Date.now()+1; try{ arcadeOverSync(); }catch(e4){}
+       c=document.querySelector('#attract .arcover');
+       if(c&&/settings x/i.test(c.textContent)) bad.push('the demo run over card shows a settings line at x1.00');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       CP.fillText=oF; DMUL_ON=d0; CAREER_ON=c0; keys={};
+       ARCADE.over=aOv; ARCADE.solo=aSo; ARCADE.on=aOn;
+       try{ arcadeOverSync(); }catch(_s){} try{ var _c=document.querySelector('#attract .arcover'); if(_c) _c.style.display='none'; }catch(_c2){}
+       try{ var _m=document.getElementById('settingsmodal'); if(_m) _m.classList.remove('on'); }catch(_m2){}
+       for(i=0;i<K.length;i++) CFG[K[i]]=sv[K[i]];
+       try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'35.68',what:'cw-diffmul, his order of 2026-10-28: every Settings row set harder than its default pays 5 percent more sp a step (pillager bots, machines, how hard they hit, extraction heat), superhot off pays a step, and the rows multiply (x1.54 at the hardest); a raid keeps the rows it was built with and reads superhot live; kills, style bonuses, goals and vaults pay sp with it in',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__runPrep&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile)) return 'SKIP: this fixture cannot deploy';
+     if(typeof careerKill!=='function'||typeof scoreBonus!=='function'||typeof arcadeKillPts!=='function') return 'SKIP: no career score here';
+     if(typeof diffMul!=='function'||typeof diffMulOf!=='function'||typeof spMul!=='function') return 'there is no settings score multiplier in this build';
+     var bad=[], g, p, c0=(typeof CAREER_ON==='number')?CAREER_ON:0, d0=DMUL_ON, K=['superhot','nRaider','nSentry','eDmg','siegeVol'], sv={}, i, s0, v, base;
+     function o(sh,n,s,d,h){ return {superhot:sh,nRaider:n,nSentry:s,eDmg:d,siegeVol:h}; }
+     function near(a,b){ return Math.abs(a-b)<0.0051; }
+     for(i=0;i<K.length;i++) sv[K[i]]=CFG[K[i]];
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       DMUL_ON=1;
+       // ONE: the rows. Defaults (Few, Few, Standard, Light) with superhot on pay nothing; superhot off pays one step
+       if(!near(diffMulOf(o(1,5,12,1,0.6)),1)) bad.push('the defaults with superhot on pay x'+diffMulOf(o(1,5,12,1,0.6)));
+       if(!near(diffMulOf(o(0,5,12,1,0.6)),1.05)) bad.push('superhot off pays x'+diffMulOf(o(0,5,12,1,0.6))+', not x1.05');
+       if(!near(diffMulOf(o(1,10,12,1,0.6)),1.05)||!near(diffMulOf(o(1,15,12,1,0.6)),1.10)) bad.push('pillager bots standard and many do not pay x1.05 and x1.10');
+       if(!near(diffMulOf(o(1,5,20,1,0.6)),1.05)||!near(diffMulOf(o(1,5,28,1,0.6)),1.10)) bad.push('machines standard and many do not pay x1.05 and x1.10');
+       if(!near(diffMulOf(o(1,5,12,1.2,0.6)),1.05)||!near(diffMulOf(o(1,5,12,1.4,0.6)),1.10)) bad.push('hardened and brutal hits do not pay x1.05 and x1.10');
+       if(!near(diffMulOf(o(1,5,12,1,1)),1.05)||!near(diffMulOf(o(1,5,12,1,1.4)),1.10)) bad.push('standard and heavy extraction heat do not pay x1.05 and x1.10');
+       if(!near(diffMulOf(o(1,0,12,0.7,0.6)),1)) bad.push('easier rows take sp away');
+       v=diffMulOf(o(0,15,28,1.4,1.4)); if(!(Math.abs(v-1.05*1.1*1.1*1.1*1.1)<0.0002)) bad.push('the hardest game pays x'+v+', the rows do not multiply');
+       // TWO: a career raid takes its rows at the build, superhot live
+       CAREER_ON=1; CFG.superhot=0; CFG.nRaider=10; CFG.nSentry=20; CFG.siegeVol=1; CFG.eDmg=1.4;
+       base=diffMulOf(CFG,1);
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over||!g.player) return 'SKIP: staging: no raid';
+       if(!g.career||!g.cs) return 'SKIP: staging: not a career raid';
+       p=g.player;
+       if(!(typeof g.dmul==='number'&&near(g.dmul,base))) bad.push('the raid did not keep the rows it was built with ('+g.dmul+' vs '+base+')');
+       v=diffMul(); if(!near(v,Math.round(base*1.05*100)/100)) bad.push('the raid pays x'+v+', not x'+Math.round(base*1.05*100)/100);
+       CFG.eDmg=1; CFG.nRaider=5; if(!near(diffMul(),v)) bad.push('a row moved after the build changed this raid multiplier');
+       CFG.superhot=1; if(!near(diffMul(),Math.round(base*100)/100)) bad.push('superhot on did not take its step off at once'); CFG.superhot=0;
+       if(!(v>1.3)) bad.push('staging: the raid multiplier is only x'+v);
+       // THREE: the sp paid with it in
+       g.cs.streak=null; s0=g.cs.s|0; careerKill('crawler',0,0,p.x+40,p.y);
+       if((g.cs.s|0)-s0!==Math.round(50*v)) bad.push('a crawler kill paid '+((g.cs.s|0)-s0)+' sp, not '+Math.round(50*v));
+       if(arcadeKillPts('sentry',0,0)!==Math.round(100*v)) bad.push('a demo sentry kill is worth '+arcadeKillPts('sentry',0,0)+', not '+Math.round(100*v));
+       s0=g.cs.s|0; i=scoreBonus(100,p.x,p.y,'LONG SHOT');
+       if(i!==Math.round(100*v)||(g.cs.s|0)-s0!==i) bad.push('a 100 sp bonus paid '+((g.cs.s|0)-s0)+' (said '+i+'), not '+Math.round(100*v));
+       if(typeof flowChip==='function'){ s0=g.cs.s|0; i=flowChip(200,'GOAL DONE','goal'); if(i!==Math.round(200*v)||(g.cs.s|0)-s0!==i) bad.push('a 200 sp goal paid '+((g.cs.s|0)-s0)+', not '+Math.round(200*v)); }
+       if(typeof arcadeVaultPay==='function'&&typeof ARCADE_VAULT_PAY==='number'){ s0=g.cs.s|0; arcadeVaultPay({doorX:p.x,doorY:p.y}); if((g.cs.s|0)-s0!==Math.round(ARCADE_VAULT_PAY*v)) bad.push('a vault paid '+((g.cs.s|0)-s0)+', not '+Math.round(ARCADE_VAULT_PAY*v)); }
+       // FOUR: the fixture switch pays x1
+       DMUL_ON=0; s0=g.cs.s|0; scoreBonus(100,p.x,p.y,'LONG SHOT'); if((g.cs.s|0)-s0!==100) bad.push('with the multiplier off a 100 sp bonus paid '+((g.cs.s|0)-s0));
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       DMUL_ON=d0; CAREER_ON=c0; keys={};
+       for(i=0;i<K.length;i++) CFG[K[i]]=sv[K[i]];
+       try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'35.67',what:'enemy rounds warn red in both windows; allied and forged player rounds keep gun colours, and muzzle flashes stay warm',
+   run:function(){
+     var g=null,p,keep={},k,sent=[],flashes=[],local=[],oFlash=flash,oFx=gfxShotFx,by0=GFX.bypass;
+     function peer(seat){ return {state:'in',seat:seat,name:'tracer check',timers:[],dc:{readyState:'open',send:function(t){sent.push(JSON.parse(t));}}}; }
+     function shot(sh,w,mine,tint,label){
+       g.bullets.length=0; local.length=0;
+       fireWeapon(sh,w,p.x+300,p.y,mine);
+       var b=g.bullets[g.bullets.length-1];
+       if(!b) throw Error(label+' made no round');
+       if(b.tint!==tint) throw Error(label+' tint '+b.tint+', expected '+tint);
+       if(local[local.length-1]!== (w.tint||'#ffc27a')) throw Error(label+' changed the local muzzle tint');
+       return b;
+     }
+     function take(b,sh,w,expected){
+       NET.role='host'; NET.seat=0; NET.peers=[peer(1)]; sent.length=0;
+       if(!netFxShot(b,sh,w,0)) throw Error('shot was not sent');
+       var m=sent.filter(function(q){return q.t==='fx'&&q.k==='b';})[0],j,fb,hasMuzzle=sh===p||sh.kind==='raider';
+       if(!m||m.b[5]!==b.tint) throw Error('wire changed tracer tint');
+       // Machines have no held gun muzzle: their normal word has eight fields.
+       // Player and pillager bot words carry the drawn muzzle, exercising both receiver calls below.
+       if(hasMuzzle&&m.b.length<11) throw Error(sh.kind+' modern muzzle word missing');
+       if(!hasMuzzle&&m.b.length!==8) throw Error(sh.kind+' base shot word has '+m.b.length+' fields');
+       NET.role='join'; NET.seat=1; NET.peers=[peer(0)];
+       for(j=0;j<(hasMuzzle?2:1);j++){
+         g.fxBullets=[]; flashes.length=0;
+         netFxTake(NET.peers[0],{t:'fx',k:'b',s:0,b:j?m.b.slice(0,8):m.b});
+         fb=g.fxBullets[0];
+         if(!fb||fb.tint!==b.tint||fb.elw!==(b.el?1:0)) throw Error('receiver changed tracer colour or elemental width');
+         if(flashes.length!==1||flashes[0]!==expected) throw Error((hasMuzzle&&!j?'modern':'legacy')+' receiver flash '+flashes.join(',')+', expected '+expected);
+       }
+     }
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:['gun_rifle'],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player||g.over) return 'SKIP: staging: no raid';
+       p=g.player; p.iv=999; keys={}; mouse.down=false; CFG.xfPix=0;
+       for(k in NET) keep[k]=NET[k];
+       NET.on=false; GFX.bypass=0;
+       flash=function(x,y,r,c,t){local.push(c);return oFlash.apply(this,arguments);};
+       gfxShotFx=function(x,y,a,c){flashes.push(c);return true;};
+       var s={kind:'sentry',x:p.x-150,y:p.y,r:22,hp:150,face:0,hostile:true},
+           bot={kind:'raider',x:p.x-150,y:p.y-60,r:11,hp:70,face:0,hostile:true},
+           sw={dmg:14,spread:0.1,rng:340,noise:340,tint:'#ff9a6a'},rw=cloneObj(WEAPONS.rifle),b,fw,i;
+       b=shot(s,sw,false,'#ff3b2f','sentry');
+       if(typeof ENEMY_TRACER==='undefined'||ENEMY_TRACER!=='#ff3b2f') return 'missing shared warning colour';
+       shot(bot,rw,false,ENEMY_TRACER,'hostile pillager bot');
+       var allies=[{kind:'raider',merc:1},{kind:'raider',friendlyPC:1},{kind:'raider',friendly:1},{kind:'stray'},{kind:'peddler'}];
+       for(i=0;i<allies.length;i++){ allies[i].x=bot.x; allies[i].y=bot.y; allies[i].r=11; allies[i].hp=70; allies[i].face=0; shot(allies[i],rw,false,'#ffcf7a','ally '+i); }
+       shot(p,rw,true,rw.tint,'player');
+       fw=forgeApply(cloneObj(WEAPONS.rifle),2,'shock');
+       if(fw.el!=='shock'||!fw.tint) return 'forged rifle did not stage';
+       bot.elite=true; shot(bot,fw,false,ENEMY_TRACER,'forged elite pillager bot');
+       b=shot(p,fw,true,fw.tint,'forged player');
+       if(b.el!=='shock') return 'forged player round lost its element';
+       NET.on=true; NET.up=[]; NET.upSeed=g.seed>>>0;
+       NET.roster=[{seat:0,pid:'me',name:'host',host:true},{seat:1,pid:'tracer-mate',name:'mate'}];
+       take(b,p,fw,fw.tint);
+       NET.on=false; b=shot(s,sw,false,ENEMY_TRACER,'network sentry'); NET.on=true; take(b,s,sw,'#ffc27a');
+       NET.on=false; b=shot(bot,rw,false,ENEMY_TRACER,'network bot'); NET.on=true; take(b,bot,rw,'#ffc27a');
+       return null;
+     } finally {
+       flash=oFlash; gfxShotFx=oFx; GFX.bypass=by0;
+       if(g){ g.bullets.length=0; g.fxBullets=[]; }
+       if(Object.keys(keep).length){for(k in NET) if(!(k in keep)) delete NET[k]; for(k in keep) NET[k]=keep[k];}
+       try{__endRaid('abandon');}catch(_e){} __topClear();
+     }
+   }},
+  {v:'35.66',what:'cw-airstrike3000: the damage needed to unlock an air strike is 3000, not 1500 (his order)',
+   run:function(){
+     if(typeof AIR!=='object'||AIR===null) return 'SKIP: no AIR table';
+     if(AIR.need!==3000) return 'the air strike needs '+AIR.need+' damage, not 3000';
+     return null; }},
+  {v:'35.65',what:'a solo or guest target ping draws one specific name plate, keeps the health pip, restores the normal name on expiry, and has 24px map glyphs',
+   run:function(){
+     var PR=CanvasRenderingContext2D.prototype,ft=PR.fillText,fr=PR.fillRect,cg=colourCueGlyph,cs=canSee;
+     var pk=NET.pings,wk=NET.wps,em=NET.entMap,on=NET.on,seat=NET.seat,ow=W,oh=H,g,e,p,words=[],health=0,glyphs=[],j;
+     try{
+       __runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();
+       __forceSize(1920,1080);
+       __deploy({kit:['gun_rifle'],safe:null,mapIx:0,seed:4242});g=__state();p=g.player;
+       g.mapFirst=false;g.mapOpen=false;g.bagOpen=false;g.paused=false;CFG.xfPix=0;
+       e=g.ents.filter(function(q){return q.hp>0&&q.kind==='sentry';})[0];
+       if(!e)return 'no seeded sentry';
+       p.x=WORLD_W/2;p.y=WORLD_H/2;e.x=p.x+100;e.y=p.y-20;e.name='zq ping sentry';e.nid=42;e.hp=e.maxhp/2;e.state='patrol';e.seen=true;
+       NET.on=false;NET.wps={};NET.pings=[];NET.entMap={42:e};
+       canSee=function(){return true;};
+       PR.fillText=function(s){var t=String(s).toLowerCase();if(t.indexOf('zq ping sentry')>=0)words.push(t);return ft.apply(this,arguments);};
+       PR.fillRect=function(x,y,w,h){if(this.fillStyle==='#ffc04a'&&h===3&&/_wtA/.test(String(new Error().stack)))health++;return fr.apply(this,arguments);};
+       __frame();words=[];health=0;__frame();
+       if(words.filter(function(t){return t==='zq ping sentry';}).length!==1||!health)return 'control: normal target name or health pip did not draw';
+       for(j=0;j<2;j++){
+         NET.on=!!j;NET.seat=j;
+         NET.pings=[{s:j,x:e.x,y:e.y,w:'sentry',id:j?42:undefined,target:j?null:e,at:Date.now()}];
+         words=[];health=0;__frame();
+         if(words.length!==1||words[0]==='zq ping sentry'||words[0].indexOf('you')<0||!/\d+m/.test(words[0]))return 'target ping still has duplicate labels or loses its identity/distance in seat '+j;
+         if(!health)return 'ping hides the wounded target health pip in seat '+j;
+         NET.pings[0].at=Date.now()-NET_PING_T*1000-10;
+         words=[];health=0;__frame();
+         if(words.length!==1||words[0]!=='zq ping sentry'||!health)return 'expiry failed to restore the normal target name and health pip';
+       }
+       colourCueGlyph=function(c,k,x,y,s){glyphs.push({k:k,s:s});return cg.apply(this,arguments);};
+       NET.on=false;NET.pings=[{s:0,x:p.x,y:p.y,w:'sentry',at:Date.now()}];
+       glyphs=[];mmMarks({x:100,y:100,w:400,h:400},.3,1);
+       if(!glyphs.some(function(v){return v.k==='target'&&v.s>=2;}))return 'minimap target is below 24px';
+       glyphs=[];netWpMapDraw(0,0,.1);
+       if(!glyphs.some(function(v){return v.k==='target'&&v.s>=2*hudRes();}))return 'full-map target is below 24px scaled';
+       return null;
+     }finally{
+       PR.fillText=ft;PR.fillRect=fr;colourCueGlyph=cg;canSee=cs;
+       NET.on=false;try{__endRaid('abandon');}catch(err){}__topClear();__forceSize(ow,oh);
+       NET.pings=pk;NET.wps=wk;NET.entMap=em;NET.on=on;NET.seat=seat;
+     }
+   }},
+  {v:'35.64',what:'cw-cx-hudtvread: raid belt vacant keys have no full tile slabs, owned gold rings remain, key digits grow with tv, score labels clear 16px with a top inset in either seat',
+   run:function(){
+     var c0=JSON.stringify(CFG),a0={},g=null,ga,us=P.uiScale,hd=P.hud,of=ctx.fillRect,os=ctx.stroke,ot=hudText,rects=[],strokes=[],texts=[],bad=[],k;
+     ['solo','role','mine','mate'].forEach(function(n){a0[n]=ARCADE[n];});
+     function px(){return parseFloat((/([\d.]+)px/.exec(ctx.font)||[0,0])[1]);}
+     try{
+       __runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();P.uiScale=1.2;P.hud={};CFG.xfPix=0;
+       __deploy({kit:['gun_carbine','gun_smg'],mapIx:0,seed:4242});g=__state();if(!g||g.over)return 'could not stage raid';ga=g.arcade;g.bagOpen=false;g.mapOpen=false;g.paused=false;keys={};mouse.down=false;
+       ctx.fillRect=function(x,y,w,h){rects.push({x:x,y:y,w:w,h:h});return of.apply(this,arguments);};
+       ctx.stroke=function(){strokes.push({c:ctx.strokeStyle,w:ctx.lineWidth});return os.apply(this,arguments);};
+       hudText=function(t,x,y){texts.push({t:String(t),px:px(),y:y});return ot.apply(this,arguments);};
+       for(var tv=0;tv<2;tv++){
+         CFG.hudTv=tv;g.arcade=false;rects=[];strokes=[];texts=[];drawBelt();
+         var cells=g.hotCells||[],slots=hotbarSlots(),vac=0,digits=texts.filter(function(t){return /^[0-9]$/.test(t.t);});
+         if(digits.length<cells.length)bad.push('missing outlined key digits');
+         digits.forEach(function(t){if(t.px<Math.round(18*hudRes()))bad.push('key digit too small: '+t.px);});
+         for(var i=0;i<cells.length;i++)if((slots[i].vacant||slots[i].kind==='empty')&&i!==hotSel()){
+           vac++;var q=cells[i];
+           if(rects.some(function(r){return Math.abs(r.x-q.x)<.01&&Math.abs(r.y-q.y)<.01&&Math.abs(r.w-q.w)<.01&&Math.abs(r.h-q.h)<.01;}))bad.push('vacant key still has a slab');
+         }
+         if(!vac)bad.push('no vacant class keys staged');
+         if(!strokes.some(function(s){return s.c==='#ffc04a'&&s.w===3;}))bad.push('owned gold ring missing');
+         g.arcade=true;ARCADE.solo=0;ARCADE.mine=11;ARCADE.mate=22;
+         for(var seat=0;seat<2;seat++){
+           ARCADE.role=seat?'p2':'host';texts=[];arcadeScoreHud(30,hudRes());
+           if(SCOREBOX.y<16)bad.push('score panel touches top edge');
+           var labs=texts.filter(function(t){return /^(TEAM SCORE|YOU |P[12] )/.test(t.t);});
+           if(labs.length!==3)bad.push('score labels missing');
+           labs.forEach(function(t){if(t.px<16)bad.push('score label under 16px');});
+         }
+       }
+       return bad.length?bad.join('; '):null;
+     }finally{
+       ctx.fillRect=of;ctx.stroke=os;hudText=ot;if(g)g.arcade=ga;
+       for(k in a0)ARCADE[k]=a0[k];try{__endRaid('abandon');}catch(_e){}
+       for(k in CFG)delete CFG[k];var old=JSON.parse(c0);for(k in old)CFG[k]=old[k];P.uiScale=us;P.hud=hd;keys={};mouse.down=false;__topClear();
+     }
+   }},
+  {v:'35.63',what:'cw-cx-hudtv: large for tv grows drawn vitals, ammo, minimap, belt and partner row in either seat; belt cells stay on screen above the corners; hub and text choice stay unchanged',
+   run:function(){
+     var c0=JSON.stringify(CFG), nk={}, k, us, hd, bad=[], g=null;
+     function box(b){ return b?{x:b.x,y:b.y,w:b.w,h:b.h}:null; }
+     function shot(tv){
+       CFG.hudTv=tv; drawHUD(); drawHUD();
+       return {body:box(HUDBOX.body),gear:box(HUDBOX.gear),map:box(MMAP.box),mate:box(NETTEAMBOX),cells:(g.hotCells||[]).map(box),top:VITBOX.top};
+     }
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       us=P.uiScale; hd=P.hud; P.uiScale=1.2; P.hud={};
+       ['on','role','seat','roster','up','upSeed'].forEach(function(n){nk[n]=NET[n];});
+       CFG.xfPix=0; CFG.minimap=1; CFG.mmSz=1;
+       __deploy({kit:['gun_carbine','gun_smg','medkit','bandage','plate','frag','smoke'],mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player||g.over) return 'could not stage a raid';
+       g.bagOpen=false; g.mapOpen=false; g.paused=false; g.legendOn=0; g.player.armor=40; g.player.stam=60; keys={}; mouse.down=false;
+       for(var seat=0;seat<2;seat++){
+         NET.on=true; NET.role=seat?'peer':'host'; NET.seat=seat; NET.upSeed=4242;
+         NET.roster=[{seat:0,name:'player 1'},{seat:1,name:'player 2'}];
+         NET.up=[{n:1,age:0,seat:1-seat,sd:4242,hp:75,mh:100,ar:40,ac:100,x:g.player.x+60,y:g.player.y+40}];
+         var a=shot(0), b=shot(1);
+         ['body','gear','map','mate'].forEach(function(n){
+           if(!a[n]||!b[n]||!(a[n].w>0)) bad.push('seat '+seat+' missing '+n);
+           else if(Math.abs(b[n].w/a[n].w-1.2)>0.025) bad.push('seat '+seat+' '+n+' width '+a[n].w+' -> '+b[n].w);
+         });
+         if(!a.cells.length||a.cells.length!==b.cells.length) bad.push('belt cells missing or changed count');
+         else for(var i=0;i<b.cells.length;i++){
+           var q=b.cells[i];
+           if(q.w<a.cells[i].w*1.1) bad.push('seat '+seat+' belt slot '+i+' did not grow');
+           if(q.x<0||q.y<0||q.x+q.w>W||q.y+q.h>H) bad.push('belt slot off screen');
+           if(q.y+q.h>Math.min(b.top,b.gear.y)-LH(8)) bad.push('belt slot overlaps bottom corners');
+           if(i&&q.x<b.cells[i-1].x+b.cells[i-1].w) bad.push('belt slots overlap');
+         }
+         if(P.uiScale!==1.2) bad.push('tv choice changed text size');
+         CFG.hudTv=0; var z=hudRes(); CFG.hudTv=1; g.hubFloor=true;
+         if(hudRes()!==z) bad.push('tv choice changed the hub');
+         g.hubFloor=false;
+       }
+       return bad.length?bad.join('; '):null;
+     }finally{
+       for(k in nk) NET[k]=nk[k];
+       if(g) g.hubFloor=false;
+       try{__endRaid('abandon');}catch(_e){}
+       for(k in CFG) delete CFG[k]; var old=JSON.parse(c0); for(k in old) CFG[k]=old[k];
+       P.uiScale=us; P.hud=hd; keys={}; mouse.down=false; __topClear();
+     }
+   }},
+  {v:'35.62',what:'OS motion defaults render as defaults, while saved departures from them remain marked as changed',
+   run:function(){
+     var om=window.matchMedia, go=P.gameOpts, tk=P.tuned, sub=SETSUB, reduced=true, bad=[];
+     function inspect(tag,k,changed){
+       var b=document.getElementById('go_'+k);
+       if(!b) bad.push(tag+': no '+k+' row');
+       else if(!!b.style.color!==changed) bad.push(tag+': '+k+' changed marker '+b.style.color);
+     }
+     function draw(){ applyGameOpts(); SETSUB=''; renderSettings(); }
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       window.matchMedia=function(q){ return q==='(prefers-reduced-motion: reduce)'?{matches:reduced,media:q}:(om?om.call(window,q):{matches:false,media:q}); };
+       P.gameOpts={}; P.tuned={}; draw();
+       if(CFG.shake!==0.5||CFG.fxInt!==0.5) bad.push('OS motion defaults changed');
+       inspect('OS defaults','shake',false); inspect('OS defaults','fxInt',false);
+       P.gameOpts={shake:2,fxInt:0}; draw();
+       inspect('saved full','shake',true); inspect('saved full','fxInt',true);
+       if(CFG.shake!==1||CFG.fxInt!==1) bad.push('saved full was overridden');
+       reduced=false; P.gameOpts={}; draw();
+       inspect('ordinary defaults','shake',false); inspect('ordinary defaults','fxInt',false);
+       P.gameOpts={shake:0,fxInt:2}; draw();
+       inspect('saved off','shake',true); inspect('saved off','fxInt',true);
+       return bad.length?bad.join('; '):null;
+     } finally {
+       window.matchMedia=om; P.gameOpts=go; P.tuned=tk; SETSUB=sub;
+       __topClear(); __resetCfg();
+       try{ renderSettings(); __topClear(); }catch(_e){}
+     }
+   }},
+  {v:'35.61',what:'OS reduced motion supplies light shake and half intensity only for unset choices in both player windows, and really reduces shake and hit pause',
+   run:function(){
+     if(typeof gameOptIx!=='function'||typeof hitStopOn!=='function'||typeof gfxTrauma!=='function') return 'missing motion controls';
+     var bad=[], g=null, om=window.matchMedia, go=P.gameOpts, tk=P.tuned, ns=NET.same, nr=NET.role, no=NET.on;
+     var reduced=false, mode='ok', i, j, full, light, k;
+     function mm(q){
+       if(q==='(prefers-reduced-motion: reduce)'){
+         if(mode==='throw') throw new Error('media unavailable');
+         return {matches:reduced,media:q};
+       }
+       return om?om.call(window,q):{matches:false,media:q};
+     }
+     function want(tag,sh,fi){
+       applyGameOpts();
+       if(CFG.shake!==sh||CFG.fxInt!==fi) bad.push(tag+': shake/intensity '+CFG.shake+'/'+CFG.fxInt+' wanted '+sh+'/'+fi);
+     }
+     function pause(tag,seconds){
+       var e={hp:100,boss:false,downed:false,finished:false,stopT:0,stopImm:0};
+       var hit=hitStopOn(e,64);
+       if(hit!==(seconds>0)||Math.abs(e.stopT-seconds)>1e-8) bad.push(tag+': hit pause '+e.stopT+' wanted '+seconds);
+       if(seconds>0&&(e.stopImm!==HITSTOP_IMM||hitStopOn(e,64)!==false)) bad.push(tag+': hit immunity changed');
+     }
+     function shake(){ GFX.shG=null; g.shake=0; gfxTrauma(0); g.shake=7; return gfxTrauma(0.016); }
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       window.matchMedia=mm; itchDefs(0); P.gameOpts={}; P.tuned={};
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player||g.sim) return 'could not stage a live raid';
+       for(i=0;i<2;i++){
+         NET.same=i?'p2':'host'; NET.role=i?'join':'host'; NET.on=false;
+         k=i?'player 2':'player 1';
+         reduced=false; P.gameOpts={}; P.tuned={}; want(k+' usual',1,1); pause(k+' usual',HITSTOP_T); full=shake();
+         reduced=true; want(k+' reduced',0.5,0.5); pause(k+' reduced',HITSTOP_T*0.5); light=shake();
+         if(!(full>0)||Math.abs(light-full*0.25)>1e-8) bad.push(k+': actual camera shake did not fall to one quarter');
+         if(gameOptIx('shake')!==1||gameOptIx('fxInt')!==1) bad.push(k+': rows do not show light/half');
+         if(Object.prototype.hasOwnProperty.call(P.gameOpts,'shake')||Object.prototype.hasOwnProperty.call(P.gameOpts,'fxInt')) bad.push(k+': defaults were saved as player picks');
+         for(j=0;j<4;j++){
+           P.gameOpts={shake:j}; want(k+' saved shake '+j,[0,0.5,1,1.5][j],0.5);
+         }
+         for(j=0;j<3;j++){
+           P.gameOpts={fxInt:j}; want(k+' saved intensity '+j,0.5,[1,0.5,0][j]); pause(k+' saved intensity '+j,HITSTOP_T*[1,0.5,0][j]);
+         }
+         P.gameOpts={shake:2,fxInt:0}; want(k+' saved full',1,1);
+         reduced=false; want(k+' saved full without OS request',1,1);
+         reduced=true; P.gameOpts={}; P.tuned={shake:1,fxInt:1}; CFG.shake=1.3; CFG.fxInt=0.7; want(k+' tuned',1.3,0.7);
+         P.tuned={}; P.gameOpts={}; mode='throw'; want(k+' unavailable query',1,1);
+         mode='ok'; window.matchMedia=undefined; want(k+' no media API',1,1); window.matchMedia=mm;
+         reduced=false; want(k+' unset after OS request ends',1,1);
+         reduced=true; itchDefs(1); want(k+' itch reduced',0.5,0.5); itchDefs(0);
+       }
+       return bad.length?bad.join('; '):null;
+     } finally {
+       window.matchMedia=om; NET.same=ns; NET.role=nr; NET.on=no;
+       P.gameOpts=go; P.tuned=tk; itchDefs(ON_ITCH?1:0);
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear(); __resetCfg();
+       GFX.shG=null; GFX.tr=0; GFX.shL=0; GFX.shA=0; GFX.sx=0; GFX.sy=0;
+     }
+   }},
+  {v:'35.60',what:'blocked browser pad reads and a throwing pad handler cannot stop real smooth-look frames in either window role',
+   run:function(){
+     var ng=navigator.getGamepads, own=Object.prototype.hasOwnProperty.call(navigator,'getGamepads'),
+       pk=Object.assign({},PAD), nk=Object.assign({},NET), rk=Object.assign({},RUMBLE), cp=Object.assign({},CFG),
+       kk=keys, mm=Object.assign({},mouse), pp=pollPad, rr=render2D, nf=netPadFocused, np=netSamePost,
+       oldTs=lastTs, reads=0, calls=0, draws=0, g, side, phase, j, before, clock, bad=[];
+     function held(){
+       keys={KeyD:true,ShiftLeft:true}; mouse.down=true;
+       PAD.on=true; PAD.mx=1; PAD.my=1; PAD.held={ShiftLeft:1}; PAD.firing=0; PAD.adsing=0;
+       PAD.lossRaid=null; PAD.lossIx=-1; PAD.lost=null; PAD.claim=null;
+     }
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       NET.on=false; NET.same='';
+       __deploy({kit:['gun_rifle'],safe:null,mapIx:0,seed:4242}); g=__state();
+       if(!g||!g.player||g.over) return 'no live raid';
+       __topClear(); g.mapFirst=false; g.mapOpen=false; g.bagOpen=false; g.paused=false; g.rise=null;
+       g.ents=[]; g.zones=[]; g.player.iv=9999;
+       CFG.xfPix=0; CFG.fpsCap=0; CFG.superhot=0; CFG.gfxAuto=0;
+       netPadFocused=function(){return true;}; netSamePost=function(){return true;};
+       navigator.getGamepads=function(){reads++;throw new DOMException('pads blocked by frame policy','SecurityError');};
+       render2D=function(dt){
+         var c=__gfxCount([wc,ctx],['fillRect','drawImage','fillText'],function(){return rr(dt);});
+         if(c.total>0) draws++;
+         return c.ret;
+       };
+       clock=performance.now();
+       for(side=0;side<2;side++){
+         NET.same=side?'p2':'host'; NET.role=side?'join':'host'; NET.seat=side; NET.on=false;
+         NET.pair='cx-padpollguard'; NET.padFwd=null; NET.padWas=null; NET.padIx=-1; NET.padOther=-1;
+         pollPad=pp; held(); before=reads;
+         try{pollPad();}catch(e){return NET.same+': blocked pad read escaped: '+e.name;}
+         if(reads!==before+1||PAD.on||PAD.mx||PAD.my||keys.ShiftLeft||!keys.KeyD||!mouse.down)
+           bad.push(NET.same+': blocked read did not release only pad input');
+         for(phase=0;phase<2;phase++){
+           pollPad=phase?function(){calls++;throw new Error('pad handler failure');}:pp;
+           held(); draws=0; before=g.t; var n=phase?calls:reads;
+           for(j=0;j<3;j++){
+             try{__loop(clock+=20);}catch(e){return NET.same+'/'+phase+': frame stopped: '+e.message;}
+           }
+           if(draws!==3||(phase?calls:reads)!==n+3) bad.push(NET.same+'/'+phase+': only '+draws+' of three frames drew');
+           if(!(g.t>before)) bad.push(NET.same+'/'+phase+': raid clock stopped');
+           if(PAD.on||PAD.mx||PAD.my||keys.ShiftLeft||!keys.KeyD||!mouse.down)
+             bad.push(NET.same+'/'+phase+': pad input stayed held or keyboard/mouse was cleared');
+         }
+       }
+       return bad.length?bad.join('; '):null;
+     }finally{
+       pollPad=pp; render2D=rr; netPadFocused=nf; netSamePost=np;
+       if(own)navigator.getGamepads=ng;else delete navigator.getGamepads;
+       try{padRelease();NET.on=false;NET.same='';__endRaid('abandon');}catch(_end){} __topClear();
+       Object.keys(PAD).forEach(function(k){delete PAD[k];});Object.assign(PAD,pk);
+       Object.keys(NET).forEach(function(k){delete NET[k];});Object.assign(NET,nk);
+       Object.assign(RUMBLE,rk);Object.assign(CFG,cp);keys=kk;Object.assign(mouse,mm);lastTs=oldTs;
+       padBodyCls();
+     }
+   }},
+  {v:'35.59',what:'a partner bullet jolts along its travel direction in both seats, with unchanged damage, position, jolt size and fade',
+   run:function(){
+     var NK={}, k, g, e, p, row, cp, s, r, x, y, hp, oSend=netSend, oFast=netSendFast, oRay=rayHitG, walls, brl, origEnts, bad=[];
+     for(k in NET) NK[k]=NET[k];
+     function left(body,tag){ var v=animHitShift(body); if(!v||Math.abs(v.x+8)>0.02||Math.abs(v.y)>0.02) bad.push(tag+' '+JSON.stringify(v)); }
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       NET.on=false; NET.role=null; NET.peers=[];
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player||g.over) return 'no live fixture raid';
+       p=g.player; e=g.ents.filter(function(b){return b.kind==='crawler'&&b.hp>0;})[0];
+       if(!e) return 'no crawler to shoot';
+       origEnts=g.ents; g.ents=[e]; e.x=p.x+100; e.y=p.y; e.hp=e.maxhp=1000; e.armor=0; e.affix=null;
+       e.nid=9101; e.nIn=1; e.nT=0; x=e.x; y=e.y;
+       netSend=netSendFast=function(){return true;};
+       NET.on=true; NET.role='host'; NET.seat=0; NET.upSeed=g.seed>>>0; NET.entMap={9101:e}; NET.peers=[{seat:1,state:'in'}]; NET.up=[]; NET.specG=null;
+       hp=e.hp;
+       r=netShotTake(NET.peers[0],{t:'shot',id:9101,dmg:10,a:Math.PI,x:e.x+100,y:e.y,sk:1});
+       if(r!=='shot'||e.hp!==hp-10) bad.push('partner damage changed: '+r+' '+e.hp);
+       left(e,'host saw partner shot toward shooter');
+       if(e.x!==x||e.y!==y) bad.push('jolt moved simulation position');
+       row=JSON.parse(JSON.stringify(netEntRow(e)));
+       cp=Object.assign({},e); delete cp.hitJoltA; delete cp.hitJoltUntil; cp.hitT=0; cp.nIn=1; cp.nT=0;
+       g.ents=[cp]; NET.entMap={9101:cp}; NET.role='join'; NET.seat=1; NET.peers=[{seat:0,state:'in'}]; NET.entLast=0; NET.entGone={};
+       r=netEntsApply(NET.peers[0],{sd:g.seed>>>0,n:1,e:[row]});
+       if(r!=='ents') bad.push('partner snapshot refused '+r);
+       left(cp,'linked window lost partner bearing');
+       p.x=e.x+100; left(cp,'bearing changed with viewer position');
+       cp.hitT=.08; s=animHitShift(cp); if(!s||Math.abs(s.x+4)>0.02) bad.push('half flash no longer 4 px');
+       cp.hitT=0; if(animHitShift(cp)!==null) bad.push('jolt after flash');
+       g.t+=1; cp.hitT=.16; if(typeof animHitAngle==='function'&&animHitAngle(cp)!==null) bad.push('old bearing leaked to another hit');
+       // Exercise the actual local collision path with a round moving left, opposite the viewer-to-body vector.
+       NET.on=false; p.x=x-100; g.ents=[e]; e.x=x; e.y=y; e.hp=1000; e.hitT=0;
+       walls=g.map.walls; brl=g.brl; g.map.walls=[]; g.brl=[]; CFG.destruct=0; rayHitG=function(){return 1e9;};
+       g.bullets=[{x:x+5,y:y,vx:-100,vy:0,dmg:10,life:1,player:true,owner:p}];
+       updateBullets(.01); left(e,'local player collision did not record incoming round');
+       if(e.hp!==990||e.x!==x||e.y!==y) bad.push('local hit damage or position changed');
+       e.hitT=0; g.bullets=[{x:x+5,y:y,vx:-100,vy:0,dmg:10,life:1,player:false,owner:{kind:'raider',name:'fixture',x:x+100,y:y}}];
+       updateBullets(.01); left(e,'bot round used this window player');
+       if(e.hp!==980) bad.push('bot round damage changed');
+       // A zero-radian bearing must survive JSON and snapshots as a real direction.
+       NET.on=true; NET.role='host'; NET.upSeed=g.seed>>>0; NET.entMap={9101:e}; e.hitT=0;
+       netShotTake({seat:1,state:'in'},{t:'shot',id:9101,dmg:10,a:0,x:x-100,y:y,sk:1});
+       row=JSON.parse(JSON.stringify(netEntRow(e))); cp.hitT=0;
+       NET.role='join'; NET.entMap={9101:cp}; g.ents=[cp]; NET.entLast=0;
+       netEntsApply({seat:0,state:'in'},{sd:g.seed>>>0,n:2,e:[row]});
+       s=animHitShift(cp); if(!s||Math.abs(s.x-8)>0.02||Math.abs(s.y)>0.02) bad.push('zero bearing lost in snapshot');
+     }catch(ex){bad.push('threw: '+(ex&&ex.message||ex));}
+     finally{
+       netSend=oSend; netSendFast=oFast; rayHitG=oRay;
+       if(g){if(walls)g.map.walls=walls; if(brl)g.brl=brl; if(origEnts)g.ents=origEnts; g.bullets=[];}
+       for(k in NET) if(!(k in NK)) delete NET[k]; for(k in NK) NET[k]=NK[k];
+       try{__endRaid('abandon');}catch(_e){} __topClear(); __resetCfg();
+     }
+     return bad.length?bad.join('; '):null;
+   }},
+  {v:'35.58',what:'a partner-called ship survives the host extracting, reaches player 2 without an active pull, and still boards them; solo extraction still ends and doubles score',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)||typeof arcadeDeploy!=='function'||typeof netWorldSend!=='function'||typeof netBeaconTake!=='function') return 'SKIP: no extraction fixture';
+     var h, j, hz, z, ix, i, k, nk={}, ak={}, peer={state:'in',seat:1}, wd=null, out=null,
+         send=netSendFast, post=netSamePost, hostMine=1500, hostMate=400;
+     function need(ok,msg){ if(!ok) throw Error(msg); }
+     function deploy(){
+       ARCADE.role='host';
+       need(arcadeDeploy({mapIx:0,seed:4242}), 'could not stage an arcade raid');
+       var g=__state(); need(g&&g.player&&!g.over, 'no live arcade player');
+       CFG.xfPix=0; keys={}; mouse.down=false; ARCADE.holdT=0; ARCADE.waveT=0; ARCADE.over=null;
+       ARCADE.ownAt=Date.now(); ARCADE.mateAt=Date.now(); ARCADE.run={id:'cx-partnership'};
+       g.ents.length=0; g.player.iv=999; g.player.downed=false; g.player.buzz=0;
+       return g;
+     }
+     function board(g){ for(var n=0;n<40&&!g.arcX&&!g.arcEnd;n++) tryExtractTick(0.1,true); }
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       for(k in NET) nk[k]=NET[k]; for(k in ARCADE) ak[k]=ARCADE[k];
+       netSendFast=function(p,m){ if(m.t==='wd') wd=JSON.parse(JSON.stringify(m)); return true; };
+       netSamePost=function(m){ if(m.t==='arcx') out=JSON.parse(JSON.stringify(m)); return true; };
+       h=deploy(); ARCADE.role='host'; ARCADE.solo=0; ARCADE.mine=hostMine; ARCADE.mate=hostMate;
+       NET.on=true; NET.role='host'; NET.same='host'; NET.seat=0; NET.upSeed=h.seed>>>0;
+       NET.peers=[peer]; NET.up=[{seat:1,x:h.player.x,y:h.player.y,hp:100,age:0}];
+       ix=h.zones.findIndex(function(q){return q&&q.open!==false;}); need(ix>=0,'no open ring'); hz=h.zones[ix];
+       hz.beaconT=null; hz.hold=null; h.player.x=hz.x; h.player.y=hz.y;
+       need(netBeaconTake(peer,{i:ix,g:0})==='called','partner call was not accepted by the host');
+       hz.beaconT=0; tickExtractPoints(0.05); need(hz.hold>0,'partner ship did not land');
+       board(h);
+       need(h.arcX&&h.player.specOut&&!h.arcEnd,'host did not extract while the partner stayed in');
+       need(hz.beaconT!==null&&hz.hold>0,'host extraction dismissed the partner ship');
+       need(hz.hold<30&&h.shipHold===hz.hold,'boarding time or the host mirror was reset');
+       for(i=0;i<h.zones.length;i++) need(h.zones[i].pullT===null&&h.zones[i].boardT===0&&h.zones[i].pullFloor===0,'host boarding progress survived');
+       // World packets round clocks to hundredths through netNum, unlike the live floating-point timer.
+       var left=hz.hold, wireLeft=netNum(left), sent=netWorldSend();
+       need(sent===1&&wd&&wd.z[ix]&&wd.z[ix][2]===wireLeft,'host did not transmit the live ship: sent '+sent+', hold '+left+', packet '+(wd&&wd.z[ix]&&wd.z[ix][2]));
+       // Receive the real world packet in the other role with no pull or recent-call grace period.
+       NET.on=false; j=deploy(); ARCADE.role='p2'; ARCADE.solo=0; ARCADE.mine=500;
+       NET.on=true; NET.role='join'; NET.same='p2'; NET.seat=1; NET.upSeed=j.seed>>>0; NET.peers=[peer]; NET.up=[];
+       z=j.zones[ix]; z.pullT=null; delete z.netCallAt; j.player.x=z.x; j.player.y=z.y;
+       need(netWorldTake(peer,wd)==='wd','player 2 rejected the world packet');
+       need(z.beaconT!==null&&z.hold===wireLeft,'player 2 lost the ship without a pull in progress');
+       board(j); need(j.arcX&&j.player.specOut&&out&&out.t==='arcx','player 2 could not board the retained ship');
+       // Deliver player 2 extraction back to the already extracted host.
+       G=h; ARCADE.role='host'; ARCADE.mine=hostMine; ARCADE.mate=hostMate; ARCADE.xOut='h';
+       NET.role='host'; NET.same='host'; NET.seat=0;
+       need(arcadeOnMsg(out)==='arcx'&&h.arcEnd==='extract','both extractions did not end the run');
+       need(ARCADE.mine+ARCADE.mate===4000,'both-out extraction score was not doubled once');
+       NET.on=false; h.arcEnd=null;
+       // Solo control uses the same boarding path and still ends immediately.
+       var s=deploy(); ARCADE.role='host'; ARCADE.solo=1; ARCADE.mine=700; ARCADE.mate=0;
+       z=s.zones[ix]; s.active=z; z.open=true; z.beaconT=0; z.hold=20; z.holdMax=30; z.pullT=null;
+       s.player.x=z.x; s.player.y=z.y; board(s);
+       need(s.arcEnd==='extract'&&ARCADE.mine===1400&&!s.player.specOut,'solo extraction changed');
+       return null;
+     }catch(e){ return String(e&&e.message||e); }
+     finally{
+       netSendFast=send; netSamePost=post; keys={};
+       try{ NET.on=false; ARCADE.ini=null; if(ARCADE.on) arcadeLeave(); }catch(_l){}
+       try{ if(__state()&&!__state().over) __endRaid('abandon'); }catch(_e){}
+       for(k in nk) NET[k]=nk[k]; for(k in ak) ARCADE[k]=ak[k];
+       __topClear();
+     }
+   }},
+  {v:'35.57',what:'pad container reload and search labels meet the 16px floor and sit above the head in both windows at 1080p and 4k; keyboard prompt geometry stays unchanged',
+   run:function(){
+     var pk=Object.assign({},PAD),nk=Object.assign({},NET),ik=Object.assign({},INDEV),cp=Object.assign({},CFG),pm=P.keymap,
+         hp=hudPrompt,ft=ctx.fillText,ow=W,oh=H,g,p,ct,side,size,mode,cap=[],text=[],collect=false,bad=[],base,res,k,expected,label,skin;
+     function near(a,b){return Math.abs(a-b)<0.6;}
+     try{
+       __runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();
+       __deploy({kit:['gun_rifle'],safe:null,mapIx:0,seed:4242});g=__state();p=g&&g.player;if(!p||g.over)return 'no live raid';__topClear();
+       INDEV.legacy=false;NET.on=false;P.keymap=null;CFG.xfPix=0;keys={};mouse.down=false;
+       g.mapFirst=false;g.mapOpen=false;g.bagOpen=false;g.paused=false;g.legendOn=0;g.ents=[];g.searching=null;
+       g.nearPad=false;g.nearDown=null;g.nearDoor=null;g.nearForge=null;g.nearPed=null;g.nearSeal=null;g.nearStray=null;
+       ct=g.containers.filter(function(c){return !c.opened;})[0];if(!ct)return 'no camera box';ct.x=p.x+12;ct.y=p.y;ct.tag='cache';g.nearContainer=ct;
+       p.hand=null;p.downed=false;p.roll=0;p.drawT=0;p.reloading=0;p.reserve=60;p.wep=cloneObj(WEAPONS.rifle);p.hurtAt=g.t;p.iv=9999;
+       PAD.on=true;PAD.brand='xbox';PAD.xWas=false;PAD.xMode=null;
+       hudPrompt=function(s,x,y,o){if(collect)cap.push({s:String(s).toLowerCase(),x:x,y:y});return hp.apply(this,arguments);};
+       ctx.fillText=function(s,x,y){
+         if(collect){var m=/([\d.]+)px/.exec(this.font),t=this.getTransform(),d=(typeof DPRH==='number'&&DPRH>0)?DPRH:1;
+           text.push({s:String(s).toLowerCase(),px:m?(+m[1])*Math.abs(t.a)/d:0});}
+         return ft.apply(this,arguments);
+       };
+       for(size=0;size<2;size++){
+         __forceSize(size?3840:1920,size?2160:1080);res=hudRes();
+         for(side=0;side<2;side++){
+           NET.same=side?'p2':'host';NET.seat=side?1:0;
+           for(mode=0;mode<3;mode++){
+             INDEV.dev=mode===2?'kb':'pad';p.ammo=mode===0?2:p.wep.mag;
+             render2D(0);base=w2s(ct.x,26,ct.y);cap=[];text=[];collect=true;try{drawHUD();}finally{collect=false;}
+             expected=mode===0?'[x] reload':mode===1?'[x] search cache':'[e] search cache';
+             label=cap.filter(function(r){return r.s===expected;})[0];skin=text.filter(function(r){return r.s===expected;})[0];
+             k=NET.same+'/'+(size?'4k':'1080')+'/'+mode;
+             if(!label||!skin){bad.push(k+': prompt not drawn '+expected);continue;}
+             if(!near(label.x,base.x)||!near(label.y,base.y-(mode===2?0:LH(24)*res)))bad.push(k+': prompt did not clear the head or keyboard moved');
+             if(mode<2&&skin.px<15.9*res)bad.push(k+': label is only '+skin.px.toFixed(1)+'px');
+             if(mode===2&&!near(skin.px,(+(/([\d.]+)px/.exec(FS(TYPE.head))||[0,0])[1])*HUDPROMPTZ*res))bad.push(k+': keyboard scale changed');
+           }
+         }
+       }
+       return bad.length?bad.join('; '):null;
+     }finally{
+       collect=false;hudPrompt=hp;ctx.fillText=ft;
+       try{NET.on=false;NET.same='';__endRaid('abandon');}catch(e){}__topClear();__forceSize(ow,oh);
+       Object.keys(PAD).forEach(function(k){delete PAD[k];});Object.assign(PAD,pk);
+       Object.keys(NET).forEach(function(k){delete NET[k];});Object.assign(NET,nk);
+       Object.assign(INDEV,ik);Object.assign(CFG,cp);P.keymap=pm;keys={};mouse.down=false;
+     }
+   }},
+  {v:'35.56',what:'pad box prompt matches X reload/search and a held X searches after a completed reload in both windows; keyboard, revives and active reload keep their actions',
+   run:function(){
+     var ng=navigator.getGamepads,own=Object.prototype.hasOwnProperty.call(navigator,'getGamepads'),pk=Object.assign({},PAD),nk=Object.assign({},NET),
+         ik=Object.assign({},INDEV),rk=Object.assign({},RUMBLE),nf=netPadFocused,np=netSamePost,pm=P.padmap,ps=P.padSticks,cp=Object.assign({},CFG),kk=keys,mm=Object.assign({},mouse),hp=hudPrompt,
+         g,p,ct,pads,ix,side,q,j,texts=[],bad=[];
+     function pd(i){var b=[];for(var k=0;k<17;k++)b.push({pressed:false,value:0});return {connected:true,index:i,id:'Xbox Wireless Controller',mapping:'standard',axes:[0,0,0,0],buttons:b,timestamp:1};}
+     function poll(down){pads[ix].buttons[2]={pressed:down,value:down?1:0};pads[ix].timestamp++;pollPad();}
+     function step(down){g.t+=0.016;poll(down);updatePlayer(0.016);}
+     function prompt(){texts=[];render2D(0);drawHUD();return texts;}
+     function has(action){return texts.some(function(t){return t.indexOf('[x] '+action)===0;});}
+     function reset(ammo,reserve){
+       pads[ix].buttons[7]={pressed:false,value:0};poll(false);padRelease();keys={};PAD.prev=[];PAD.xAfterTrade=0;PAD.xNearN=null;
+       p.hand=null;p.downed=false;p.roll=0;p.drawT=0;p.jam=0;p.cd=0;p.ammo=ammo;p.reserve=reserve;p.reloading=0;p.rlTot=0;p.rlArm=0;p.arStk=0;p.arBonus=0;p.lastShot=g.t*1000;p.hurtAt=-100;
+       ct.opened=false;ct.prog=0;ct.pulled=0;ct.time=2;ct.loot=['bandage'];g.searching=null;g.searchT=0;g.nearDown=null;
+       g.nearContainer=ct;g.nearPad=false;g.nearDoor=null;g.nearForge=null;g.nearPed=null;g.nearSeal=null;g.nearStray=null;
+       step(false);INDEV.dev='pad';
+     }
+     try{
+       __runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();
+       INDEV.legacy=false; // v28.xx (cw-cx-xreloadsearch): __runPrep enables legacy pad hints; this check also exercises live switching back to keyboard.
+       __deploy({kit:['gun_rifle'],safe:null,mapIx:0,seed:4242});g=__state();p=g&&g.player;if(!p||g.over)return 'no live raid';__topClear();
+       g.mapFirst=false;g.mapOpen=false;g.bagOpen=false;g.paused=false;g.trade=null;g.forgeUI=null;g.wheel=null;g.ents=[];g.zones=[];g.t=10;p.iv=9999;
+       ct=g.containers.filter(function(c){return !c.opened;})[0];if(!ct)return 'no box to stage';
+       ct.x=p.x+12;ct.y=p.y;ct.auto=false;g.containers=[ct];p.wep=cloneObj(WEAPONS.rifle);
+       CFG.xfPix=0;P.padmap=null;P.padSticks='';NET.on=false;netSamePost=function(){return true;};netPadFocused=function(){return true;};
+       pads=[pd(0),pd(1)];navigator.getGamepads=function(){return pads;};
+       hudPrompt=function(s){texts.push(String(s).toLowerCase());return hp.apply(this,arguments);};
+       for(side=0;side<2;side++){
+         NET.same=side?'p2':'host';NET.pair='cx-xreloadsearch';NET.padIx=-1;NET.padOther=-1;NET.padWas={pair:NET.pair,host:1,p2:0};NET.padFwd=null;ix=side?0:1;
+         padRelease();PAD.prev=[];PAD.prevMap=null;PAD.mSpent=[];PAD.held={};PAD.focus=null;PAD.announced=true;PAD.lossRaid=null;PAD.lossIx=-1;PAD.lost=null;
+         for(q=0;q<4;q++){
+           reset(q===0?0:2,q===3?1:60);
+           if(PAD.ix!==ix)bad.push(NET.same+': wrong pad slot');
+           if(g.nearContainer!==ct)return 'box staging is out of reach';
+           if(q===2){p.lastShot=-1e9;p.reloading=p.wep.reload/2;p.rlTot=p.wep.reload;p.rlArm=1;}
+           prompt();if(!has('reload'))bad.push(NET.same+'/'+q+': box prompt does not name reload');
+           if(q===3)pads[ix].buttons[7]={pressed:true,value:1};
+           step(true);if(!keys.KeyR||keys.KeyE)bad.push(NET.same+'/'+q+': X did not choose reload');
+           for(j=0;j<500&&p.reloading>0;j++){
+             if(g.searching)bad.push(NET.same+'/'+q+': searched before reload ended');
+             p.lastShot=g.t*1000;step(true);
+           }
+           pads[ix].buttons[7]={pressed:false,value:0};
+           if(p.reloading>0||!(p.reserve<(q===3?1:60)))bad.push(NET.same+'/'+q+': reload did not finish');
+           poll(true);prompt();if(!has('search')||has('reload'))bad.push(NET.same+'/'+q+': held X prompt did not change to search');
+           step(true);if(g.searching!==ct||!keys.KeyE||keys.KeyR)bad.push(NET.same+'/'+q+': held X did not start search after reload');
+         }
+         reset(p.wep.mag,60);prompt();if(!has('search'))bad.push(NET.same+': full magazine prompt is not search');
+         step(true);if(g.searching!==ct||keys.KeyR)bad.push(NET.same+': full magazine X did not search');
+         reset(2,0);prompt();if(!has('search'))bad.push(NET.same+': no reserve prompt is not search');
+         step(true);if(g.searching!==ct||keys.KeyR)bad.push(NET.same+': no reserve X did not search');
+         reset(2,60);g.nearDown={};poll(true);if(!keys.KeyE||keys.KeyR)bad.push(NET.same+': reload blocked revive');
+         reset(2,60);step(true);poll(true);p.reloading=0;poll(true);
+         if(PAD.xMode!=='KeyR'||keys.KeyE)bad.push(NET.same+': cancelled reload started search');
+         reset(2,60);INDEV.dev='kb';prompt();
+         if(padOn()||!texts.some(function(t){return t.indexOf('[e] search ')===0;}))bad.push(NET.same+': keyboard prompt changed: '+texts.join(' / '));
+         keys.KeyE=true;updatePlayer(0.016);if(g.searching!==ct)bad.push(NET.same+': keyboard E no longer searches');keys.KeyE=false;
+       }
+       return bad.length?bad.join('; '):null;
+     }finally{
+       hudPrompt=hp;netPadFocused=nf;netSamePost=np;
+       try{padRelease();NET.on=false;NET.same='';__endRaid('abandon');}catch(e){}__topClear();
+       if(own)navigator.getGamepads=ng;else delete navigator.getGamepads;
+       Object.keys(PAD).forEach(function(k){delete PAD[k];});Object.assign(PAD,pk);
+       Object.keys(NET).forEach(function(k){delete NET[k];});Object.assign(NET,nk);
+       Object.assign(INDEV,ik);Object.assign(RUMBLE,rk);Object.assign(CFG,cp);P.padmap=pm;P.padSticks=ps;keys=kk;Object.assign(mouse,mm);
+     }
+   }},
+  {v:'35.55',what:'the what is new card is stamped with this build or later and still shows the three short lowercase real notes',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnList!=='function') return 'SKIP: this build has no what is new card';
+     if(parseFloat(WHATSNEW_VER)>35.55+0.001) return 'SKIP: the card has moved on, a later card check covers it';
+     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), lines=wnList(), i;
+     if(!(parseFloat(WHATSNEW_VER)>=35.55-0.001)) bad.push('the card is stamped v'+WHATSNEW_VER+', before v35.55');
+     if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
+     if(lines.length!==3) bad.push('the card shows '+lines.length+' notes, not three');
+     for(i=0;i<lines.length;i++){ if(String(lines[i])!==String(lines[i]).toLowerCase()||String(lines[i]).length>48) bad.push('note '+i+' is not short lowercase text'); }
+     if(/\balpha\b|polish pass/i.test(WHATSNEW.join('|'))) bad.push('the news has filler copy');
+     return bad.length?bad.join('; '):null; }},
+  {v:'35.54',what:'downed hits use standing demo, kid and easy damage factors in both player roles and sim; normal career still costs 3 seconds',
+   run:function(){
+     var g=null, pf=null, saved=null, bad=[], i, sim, arc, easy, role;
+     function near(a,b){ return Math.abs(a-b)<1e-6; }
+     function hit(down){
+       var p=g.player;
+       p.iv=0; p.arcSh=0; p.armor=0; p.hp=100; p.downed=!!down; p.dying=false; p.specOut=false; p.downT=17;
+       g.deathBeat=null;
+       damagePlayer(8,'raider','pillager bot',p.x+100,p.y);
+       return down?17-p.downT:100-p.hp;
+     }
+     function pair(label,want){
+       var standing=hit(false), seconds=hit(true);
+       if(!near(standing,8*want)) bad.push(label+' standing lost '+standing+', expected '+8*want);
+       if(!near(seconds,3*want)) bad.push(label+' downed lost '+seconds+'s, expected '+3*want+'s');
+     }
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       pf=__P(); saved={on:NET.on,role:NET.role,kid:NET.kidHost,own:pf.kidDmg,demo:ARCADE_DMG,easy:ARCADE.easy,dmg:CFG.eDmg};
+       __deploy({kit:['gun_rifle'],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player||g.over) return 'no raid for downed damage check';
+       g.ents.length=0; keys={}; mouse.down=false; pf.kidDmg=0.5; NET.kidHost=0.25; CFG.eDmg=1;
+       for(sim=0;sim<2;sim++) for(role=0;role<3;role++) for(arc=0;arc<2;arc++) for(easy=0;easy<2;easy++){
+         g.sim=sim; NET.on=role<2?1:0; NET.role=role===1?'join':'host'; g.netWasJoin=role===2;
+         g.arcade=!!arc; g.easyC=!!easy; ARCADE.easy=easy;
+         pair('sim '+sim+' role '+role+' demo '+arc+' easy '+easy,(role?0.25:1)*(arc?ARCADE_DMG:1)*(easy?EASY_MUL:1));
+       }
+       // v28.xx (cw-cx-downcuts): the live demo dial is 1 by unify1; probe half without changing the shipped default.
+       g.sim=0; NET.on=1; NET.role='host'; g.netWasJoin=false; g.arcade=true; g.easyC=false; ARCADE.easy=0;
+       ARCADE_DMG=0.5; pair('demo half hook',0.5);
+       NET.role='join'; ARCADE.easy=1; pair('demo half plus kid plus easy',0.5*0.25*EASY_MUL);
+       ARCADE_DMG=saved.demo; NET.on=0; g.netWasJoin=false; g.arcade=false; ARCADE.easy=0; g.easyC=false;
+       CFG.eDmg=0.7; pair('forgiving damage setting',0.7);
+       CFG.eDmg=1; pair('normal career control',1);
+       return bad.length?bad.join('; '):null;
+     } finally {
+       if(g){ g.sim=0; g.arcade=false; g.netWasJoin=false; g.player.downed=false; g.player.hp=100; }
+       if(saved){ NET.on=saved.on; NET.role=saved.role; NET.kidHost=saved.kid; pf.kidDmg=saved.own; ARCADE_DMG=saved.demo; ARCADE.easy=saved.easy; CFG.eDmg=saved.dmg; }
+       try{ __endRaid('abandon'); }catch(_e){}
+       __topClear();
+     }
+   }},
+  {v:'35.53',what:'cw-hudsize, his ask 2026-10-27 (the hud messaging is a clusterfuck, make it AAA), the research rule for type at 1080p: the left feed and the answer line at least 20 px, the opened controls list at least 18 px, the danger slot headline about 30 px, and every colour of words on the hud plate at 4.5 to 1 or better over the lightest and the darkest ground',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
+     if(typeof drawHUD!=='function'||!window.__textTrace||typeof feedAdd!=='function') return 'SKIP: no hud here';
+     var bad=[], g, p, tr, o, i, oL, all=null, cs, bw, bb, nm;
+     function find(re){ for(var j=0;j<tr.length;j++) if(re.test(String(tr[j].t))) return tr[j]; return null; }
+     function clr(){ g.fd={t:0,seq:0,lines:[]}; g.alert=null; g.alertQ=[]; g.pick=[]; g.ans=null; g.ansSeen={}; }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       try{ __pinDPR(1); __forceSize(1920,1080); }catch(_fs){}
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over||!g.player||g.sim) return 'SKIP: staging: no raid';
+       p=g.player; keys={}; g.mapOpen=false; g.bagOpen=false; g.paused=false; all=g.ents.slice(); g.ents=[]; oL=g.legendOn;
+       try{ render2D(0); }catch(_r0){}
+       if(typeof hudCR!=='function'||typeof feedFont!=='function') return 'no size floors or contrast reader (feedFont, hudCR)';
+       // ONE: the feed at 20 px or more
+       clr(); feedAdd([{t:'ZQ FEED LINE',c:null}],'info',{});
+       tr=__textTrace(function(){ drawHUD(); }); o=find(/zq feed line/i);
+       if(!o) bad.push('control: the feed line did not draw'); else if(!(o.px>=20)) bad.push('the feed is '+o.px.toFixed(1)+' px, under 20');
+       // TWO: the answer line at 20 px or more
+       if(typeof ansSay==='function'){ clr(); say('HEALTH FULL'); if(g.ans) g.ans.at-=0.5; tr=__textTrace(function(){ drawHUD(); }); o=find(/^health full$/i); if(!o) bad.push('control: the answer line did not draw'); else if(!(o.px>=20)) bad.push('the answer line is '+o.px.toFixed(1)+' px, under 20'); }
+       // THREE: the opened controls list at 18 px or more
+       clr(); g.legendOn=1; tr=__textTrace(function(){ drawHUD(); }); o=find(/^sprint$/i);
+       if(!o) bad.push('control: the opened controls list did not draw'); else if(!(o.px>=18-0.05)) bad.push('the opened controls list is '+o.px.toFixed(1)+' px, under 18');
+       g.legendOn=oL;
+       // FOUR: the danger slot headline about 30 px
+       clr(); say('ZQ DANGER','warn'); g.t=(g.t||0)+0.3; try{ msgTick(0.3); }catch(_mt){} tr=__textTrace(function(){ drawHUD(); }); o=find(/^zq danger$/i);
+       if(!o) bad.push('control: the danger line did not draw'); else if(!(o.px>=28&&o.px<=36)) bad.push('the danger slot is '+o.px.toFixed(1)+' px, not about 30');
+       // FIVE: words on the plate read at 4.5 to 1 over white and over black ground
+       bw=hudOver(HUDC.plate,255); bb=hudOver(HUDC.plate,0);
+       cs=[['the cream',HUDC.text],['the grey',HUDC.dim],['the teal','#4de3d0'],['the amber',HUDC.warn],['the red on a plate',(typeof HUDTXT_RED==='string')?HUDTXT_RED:HUDC.danger]];
+       for(i=0;i<cs.length;i++){ nm=Math.min(hudCR(cs[i][1],bw),hudCR(cs[i][1],bb)); if(nm<4.5) bad.push(cs[i][0]+' reads '+nm.toFixed(2)+' to 1 on the plate, under 4.5'); }
+       if(typeof extPillState==='function'){ var zc={open:false}; if(extPillState(zc,'EXTRACT').col!==HUDTXT_RED) bad.push('a shut exit on the pill is not in the lighter red'); }
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       keys={};
+       try{ if(g){ g.legendOn=oL; g.ans=null; g.alert=null; g.alertQ=[]; if(all) g.ents=all; } }catch(_z){}
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       __topClear();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'35.52',what:'cw-answerline, his ask 2026-10-27 (the hud messaging is a clusterfuck, make it AAA), the research rule for the centre: the answer to a try that did not work (health full, no ammo, locked) is one small line about 70 px under the character (over the head when the character stands low on a short window), at least 20 px, for 2 s, once per press (said again while it shows or while the key is held it does not restart or come back), and not in the left feed; backpack full stays in the pickup stack and contract item nearby stays in the feed',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
+     if(typeof drawHUD!=='function'||!window.__textTrace||typeof w2s!=='function'||typeof feedDraw!=='function') return 'SKIP: no hud here';
+     var bad=[], g, p, tr, o, ps, Tn=0, oSN=statusNow, i, a0, all=null;
+     function feedHas(s){ var F=(g.fd&&g.fd.lines)||[], c=0; for(var j=0;j<F.length;j++) if(String(F[j].txt).indexOf(s)>=0) c++; return c; }
+     function clr(){ g.fd={t:0,seq:0,lines:[]}; g.alert=null; g.alertQ=[]; g.pick=[]; g.ans=null; g.ansSeen={}; }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       try{ __pinDPR(1); __forceSize(1920,1080); }catch(_fs){}
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over||!g.player||g.sim) return 'SKIP: staging: no raid';
+       p=g.player; keys={}; g.mapOpen=false; g.bagOpen=false; g.paused=false; all=g.ents.slice(); g.ents=[];
+       try{ render2D(0); }catch(_r0){}
+       if(typeof ansSay!=='function'||typeof ansDraw!=='function') return 'no answer line under the character (ansSay, ansDraw)';
+       statusNow=function(){ return Tn; };
+       // ONE: an answer draws under the feet, at least 20 px, and not in the feed
+       clr(); Tn=100; say('HEALTH FULL');
+       if(feedHas('HEALTH FULL')) bad.push('health full still goes into the left feed');
+       Tn=100.5; tr=__textTrace(function(){ drawHUD(); }); ps=w2s(p.x,0,p.y);
+       o=null; for(i=0;i<tr.length;i++) if((/^health full$/i).test(tr[i].t)){ o=tr[i]; break; }
+       if(!o) bad.push('health full is not drawn');
+       else {
+         if(!(Math.abs(o.x-ps.x)<40&&((o.y-ps.y>40&&o.y-ps.y<120)||(ps.y+70>H-150&&o.y<ps.y-40)))) bad.push('health full is drawn at '+Math.round(o.x)+','+Math.round(o.y)+', not about 70 px under the feet at '+Math.round(ps.x)+','+Math.round(ps.y));
+         if(!(o.px>=20)) bad.push('the answer line is '+o.px.toFixed(1)+' px, under 20');
+       }
+       // TWO: two seconds, then gone
+       Tn=102.2; tr=__textTrace(function(){ drawHUD(); });
+       for(i=0;i<tr.length;i++) if((/^health full$/i).test(tr[i].t)) { bad.push('health full still draws 2.2 s later'); break; }
+       // THREE: once per press: said again while it shows it does not restart; held (said every 30 ms) it does not come back; pressed again it shows
+       clr(); Tn=200; say('THROW BLOCKED'); a0=g.ans&&g.ans.at;
+       for(Tn=200.03;Tn<203;Tn+=0.03) say('THROW BLOCKED');
+       if(!(g.ans&&g.ans.at===a0)) bad.push('throw blocked said while the key is held restarted the line');
+       if(ansUp()) bad.push('throw blocked came back while the key was still held');
+       Tn=205; say('THROW BLOCKED'); if(!(ansUp()&&g.ans.at===205)) bad.push('throw blocked pressed again does not show again');
+       Tn=205.3; say('TOO TIRED TO ROLL'); if(!(ansUp()&&g.ans.m==='TOO TIRED TO ROLL')) bad.push('a new answer does not replace the last one');
+       // FOUR: backpack full stays in the pickup stack; contract item nearby stays in the feed
+       clr(); Tn=300; say('BACKPACK FULL','pick',{key:'bagfull',sub:'drop something'});
+       if(ansUp()) bad.push('backpack full went to the answer line');
+       if(!(g.pick&&g.pick.length&&(/backpack full/i).test(g.pick[g.pick.length-1].m))) bad.push('backpack full is no longer a pickup row');
+       clr(); say('CONTRACT ITEM NEARBY','obj',{sub:'GOLD GLOW MARKS THE BOX',key:'needhint'});
+       if(ansUp()||feedHas('CONTRACT ITEM NEARBY')!==1) bad.push('contract item nearby left the feed');
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       statusNow=oSN; keys={};
+       try{ if(g){ g.ans=null; if(all) g.ents=all; } }catch(_z){}
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       __topClear();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'35.51',what:'RT keeps pad spread without aim, scope or walk slowdown; held and toggled LS sprint survive; LT still aims and cuts sprint in both pad windows',
+   run:function(){
+     var bad=[], ng=navigator.getGamepads, own=Object.prototype.hasOwnProperty.call(navigator,'getGamepads'),
+         pk=Object.assign({},PAD), nk=Object.assign({},NET), rk=Object.assign({},RUMBLE), kk=keys, mm=Object.assign({},mouse),
+         nf=netPadFocused, np=netSamePost, rn=rnd, cp=Object.assign({},CFG), g, p, pads, side, ix, q, mode, bounds;
+     function pad(i){var b=[],j;for(j=0;j<17;j++)b.push({pressed:false,value:0});return {connected:true,id:'Xbox Wireless Controller',index:i,mapping:'standard',axes:[1,0,1,0],buttons:b,timestamp:1};}
+     function poll(down){var j,b;for(j=0;j<17;j++){b=pads[ix].buttons[j];b.pressed=down.indexOf(j)>=0;b.value=b.pressed?1:0;}pads[ix].timestamp++;pollPad();}
+     function step(down){poll(down);updatePlayer(0.016);}
+     function spread(){bounds=null;rnd=function(a,b){if(!bounds)bounds=[a,b];return (a+b)/2;};try{fireWeapon(p,p.wep,p.x+300,p.y,true);}finally{rnd=rn;}return bounds?bounds[1]:NaN;}
+     function near(a,b){return isFinite(a)&&isFinite(b)&&Math.abs(a-b)<0.000001;}
+     function bloom(aim,t){p.ads=aim;PAD.adsT=t;p.bloom=0;p.bloomK=0.4;p.bloomPend=0;p.bloomQ=0;p.blmX=p.x-2;p.blmY=p.y;g.sprinting=false;g.pCrouch=false;bloomTick(p,0.016);return [p.bloom,bloomCone(p,p.wep),spread()];}
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:['gun_sniper'],safe:null,mapIx:0,seed:4242});
+       g=__state();p=g&&g.player;if(!p||g.over) return 'no live raid';
+       g.ents=[];g.bagOpen=false;g.mapOpen=false;g.mapFirst=0;g.paused=false;g.trade=null;g.forgeUI=null;
+       p.wep=cloneObj(WEAPONS.sniper);p.hand=null;p.downed=false;p.roll=0;p.iv=999;p.ammo=50;p.reserve=50;p.drawT=0;p.reloading=0;p.jam=0;
+       if(!(p.wep.optic>1))return 'scoped rifle staging has no optic';
+       CFG.xfPix=0;P.padmap=null;P.padSticks='';
+       netPadFocused=function(){return true;};netSamePost=function(){return true;};NET.on=false;
+       pads=[pad(0),pad(1)];navigator.getGamepads=function(){return pads;};
+       for(side=0;side<2;side++){
+         NET.same=side?'p2':'host';NET.pair='cx-rtsteady';NET.padIx=-1;NET.padOther=-1;NET.padWas={pair:NET.pair,host:1,p2:0};NET.padFwd=null;
+         ix=side?0:1;padRelease();PAD.prev=[];PAD.prevMap=null;PAD.mSpent=[];PAD.held={};PAD.focus=null;PAD.announced=true;PAD.lossRaid=null;PAD.lossIx=-1;PAD.lost=null;PAD.adsT=0;PAD.adsing=0;
+         keys={};p.ads=false;poll([]);
+         if(PAD.ix!==ix)bad.push(NET.same+': wrong pad slot');
+         for(mode=0;mode<2;mode++){
+           CFG.sprintTgl=mode;g.sprintOn=false;g.shWas=false;p.stam=100;p.stamLock=false;p.stamRelease=0;p.ads=false;g.crouchTog=false;
+           step([]);step([10]);if(mode)step([]);
+           if(!g.sprinting)bad.push(NET.same+': LS did not start '+mode+' sprint');
+           for(q=0;q<3;q++){
+             step(mode?[7]:[7,10]);
+             if(!mouse.down||!PAD.firing)bad.push(NET.same+': RT did not fire');
+             if(p.ads||opticMag()!==1)bad.push(NET.same+': RT entered aim or scope');
+             if(!g.sprinting||(mode&&!g.sprintOn))bad.push(NET.same+': RT cut '+mode+' sprint');
+             step(mode?[]:[10]);
+             if(p.ads||opticMag()!==1||!g.sprinting)bad.push(NET.same+': RT settle changed sprint or scope');
+           }
+           step(mode?[6]:[6,10]);
+           if(!p.ads||opticMag()!==p.wep.optic||g.sprinting||(mode&&g.sprintOn))bad.push(NET.same+': LT did not aim and cut sprint');
+           step(mode?[]:[10]);
+           if(p.ads||opticMag()!==1||(!mode&&!g.sprinting))bad.push(NET.same+': LT release did not restore held sprint');
+           step([]);
+         }
+         CFG.sprintTgl=0;g.sprintOn=false;g.shWas=false;p.stam=100;
+         poll([]);var x=p.x,y=p.y;updatePlayer(0.016);var walk=Math.hypot(p.x-x,p.y-y);
+         p.x=x;p.y=y;poll([7]);updatePlayer(0.016);var shooting=Math.hypot(p.x-x,p.y-y);
+         if(!(walk>0)||!near(shooting,walk))bad.push(NET.same+': RT changed walk speed '+walk+'/'+shooting);
+         poll([7]);var rt=bloom(false,0.35),lt=bloom(true,0),hip=bloom(false,0);
+         for(q=0;q<3;q++)if(!near(rt[q],lt[q]))bad.push(NET.same+': RT lost steady spread component '+q);
+         if(!(rt[2]<hip[2])||!(rt[1]<hip[1])||!(rt[0]<hip[0]))bad.push(NET.same+': RT has hip spread');
+         p.ads=false;PAD.adsT=0.35;padRelease();
+         if(PAD.adsT>0)bad.push(NET.same+': released pad kept its settle');
+       }
+       return bad.length?bad.join('; '):null;
+     }finally{
+       rnd=rn;netPadFocused=nf;netSamePost=np;
+       try{padRelease();NET.on=false;NET.same='';__endRaid('abandon');}catch(e){}__topClear();
+       if(own)navigator.getGamepads=ng;else delete navigator.getGamepads;
+       Object.keys(PAD).forEach(function(k){delete PAD[k];});Object.assign(PAD,pk);
+       Object.keys(NET).forEach(function(k){delete NET[k];});Object.assign(NET,nk);
+       Object.assign(RUMBLE,rk);Object.assign(CFG,cp);keys=kk;Object.assign(mouse,mm);
+     }
+   }},
+  {v:'35.50',what:'cw-extpill, his ask 2026-10-27 (the hud messaging is a clusterfuck, make it AAA), the research rule for the top centre: the extract pill under the clock carries the state of its exit, teal while open, amber inside the two minute warning with a countdown in its last minute, red once shut, and one pulse on each change; an open exit just off the screen draws an edge arrow with its letter and distance (c 152m) clear of the corner panels and the pickup stack column, and no longer the line under the pill; the sky (weather, else time of day) is a small icon beside the clock',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
+     if(typeof drawHUD!=='function'||!window.__textTrace||typeof w2s!=='function'||typeof zoneBadge!=='function') return 'SKIP: no hud here';
+     var bad=[], g, p, Z=null, kz=null, s, sx=null, d, i, tr, o, L, oTL, lab, ox, oy, near=[], all=null, oW;
+     function find(re){ var r=[]; for(var j=0;j<tr.length;j++) if(re.test(String(tr[j].t))) r.push(tr[j]); return r; }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       try{ __pinDPR(1); __forceSize(1920,1080); }catch(_fs){}
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over||!g.player||g.sim) return 'SKIP: staging: no raid';
+       p=g.player; keys={}; g.mapOpen=false; g.bagOpen=false; g.paused=false; all=g.ents.slice(); g.ents=[]; g.waypoint=null;
+       if(typeof extPillState!=='function'||typeof extEdgeArrow!=='function'||typeof wxIconDraw!=='function') return 'no extraction state on the pill, edge arrow or sky icon (extPillState, extEdgeArrow, wxIconDraw)';
+       for(i=0;i<g.zones.length;i++) if(g.zones[i].open!==false){ Z=g.zones[i]; break; }
+       if(!Z) return 'SKIP: no open exit here';
+       kz={x:Z.x,y:Z.y,b:Z.beaconT,h:Z.hold,o:Z.open,c:Z.closeAt,w:Z.warned}; oTL=g.timeLeft; ox=p.x; oy=p.y;
+       for(i=0;i<g.zones.length;i++) if(g.zones[i]!==Z) near.push({z:g.zones[i],o:g.zones[i].open});
+       for(i=0;i<near.length;i++) near[i].z.open=false;   // only Z is open, so the compass and the pill name it
+       Z.beaconT=null; Z.hold=null; Z.open=true; Z.closeAt=undefined; Z.x=p.x+700; Z.y=p.y;
+       // ONE: the pill state, teal open, amber closing with the last minute counted, red once shut, one pulse on a change
+       drawHUD(); if(EXTPILL.st!=='open') bad.push('an open exit reads '+EXTPILL.st+' on the pill');
+       Z.closeAt=g.timeLeft-90; drawHUD();
+       if(EXTPILL.st!=='closing'||EXTPILL.col!==HUDC.warn||!(/closing/).test(EXTPILL.txt)) bad.push('an exit 90 s from closing reads '+EXTPILL.st+' "'+EXTPILL.txt+'" in '+EXTPILL.col+', not amber closing');
+       if(!(extPillPulse(EXTPS)>0)) bad.push('the pill does not pulse when its exit starts closing');
+       Z.closeAt=g.timeLeft-42; tr=__textTrace(function(){ drawHUD(); });
+       if(!find(/0:42$/).filter(function(q){ return Math.abs(q.x-W/2)<4&&q.y<H*0.2; }).length) bad.push('the pill does not count the last minute (0:42) under the clock');
+       G.xpAt=-1e9; drawHUD(); if(extPillPulse(EXTPS)>0) bad.push('the pill pulses on with no change');
+       Z.closeAt=undefined; drawHUD(); if(EXTPILL.st!=='open'||!(extPillPulse(EXTPS)>0)) bad.push('the pill does not turn back and pulse when the exit opens again');
+       // TWO: the exit just off the right edge is an edge arrow with its letter and distance, and not the line under the pill
+       g.xpAt=-1e9; Z.closeAt=undefined; try{ render2D(0); }catch(_r0){}
+       for(d=200;d<4000;d+=10){ Z.x=p.x+d; Z.y=p.y; s=w2s(Z.x,Z.r+18,Z.y); if(s&&s.x>W+30){ sx=s; break; } }
+       if(!sx||sx.x>W+80||sx.y<40||sx.y>H-40) bad.push('control: could not stand an exit just off the right edge');
+       else {
+         drawHUD(); tr=__textTrace(function(){ drawHUD(); });
+         lab=extLetter(Z).toLowerCase()+' '+metres(dist(p,Z))+'m';
+         o=find(new RegExp('^'+lab+'$','i'));
+         if(!EXTARROW.on||!o.length) bad.push('no edge arrow "'+lab+'" for an exit just off the right edge');
+         else {
+           if(!(o[0].x>W*0.6&&o[0].x<W-20&&o[0].y>H*0.1&&o[0].y<H*0.9)) bad.push('the edge arrow is not inside the right edge ('+Math.round(o[0].x)+','+Math.round(o[0].y)+')');
+           if(EXTARROW.x+EXTARROW.w>W-LH(250)&&EXTARROW.y+EXTARROW.h>H*0.5) bad.push('the edge arrow sits in the pickup stack column');
+           for(var k in HUDBOX){ var B=HUDBOX[k]; if(B&&B.w>0&&EXTARROW.x<B.x+B.w&&EXTARROW.x+EXTARROW.w>B.x&&EXTARROW.y<B.y+B.h&&EXTARROW.y+EXTARROW.h>B.y) bad.push('the edge arrow lands on the '+k+' panel'); }
+         }
+         L=find(/extraction \w available/i); if(L.length) bad.push('the line "'+L[0].t+'" still draws ('+Math.round(L[0].x)+','+Math.round(L[0].y)+')');
+         Z.open=false; drawHUD(); if(EXTARROW.on) bad.push('a closed exit gets an edge arrow'); Z.open=true;
+       }
+       // THREE: the sky icon beside the clock
+       oW=g.wx; for(i=0;i<WEATHER.length;i++) if(WEATHER[i].id==='fog'){ g.wx=WEATHER[i]; g.wxNext=null; }
+       drawHUD();
+       if(WXICON.id!=='fog') bad.push('the sky icon reads '+WXICON.id+' under fog');
+       if(!(Math.abs(WXICON.x-W/2)<W*0.15&&WXICON.y<H*0.12)) bad.push('the sky icon is not beside the clock ('+Math.round(WXICON.x)+','+Math.round(WXICON.y)+')');
+       for(i=0;i<WEATHER.length;i++) if(WEATHER[i].id==='clear') g.wx=WEATHER[i];
+       drawHUD(); if(!(/^(sun|low|night)$/).test(WXICON.id)) bad.push('a clear sky does not show the time of day ('+WXICON.id+')');
+       g.wx=oW;
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       try{ if(Z&&kz){ Z.x=kz.x; Z.y=kz.y; Z.beaconT=kz.b; Z.hold=kz.h; Z.open=kz.o; Z.closeAt=kz.c; Z.warned=kz.w; } for(i=0;i<near.length;i++) near[i].z.open=near[i].o; if(g){ g.timeLeft=oTL; if(all) g.ents=all; } if(p){ p.x=ox; p.y=oy; } }catch(_z){}
+       keys={};
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       __topClear();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'35.49',what:'cw-hudstates, his ask 2026-10-27 (the hud messaging is a clusterfuck, make it AAA), the research rule for the bottom corners: revealed, concealed and in cover are small icons beside the stance chip bottom left for as long as they are true, and the hidden pill leaves the status column; under a quarter health the hp bar pulses slowly (under 3 a second) with no text; low ammo pulses the count red; an empty gun with rounds to load shows the reload key cap on the gun card, and a loaded one does not',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
+     if(typeof drawHUD!=='function'||!window.__textTrace||typeof concealState!=='function'||typeof statusLive!=='function') return 'SKIP: no hud here';
+     var bad=[], g, p, L, i, t, mx, mn, ups, prev, tr, hs, HH, o0={};
+     function ids(a){ return a.map(function(e){ return e.id; }).join(','); }
+     function capAt(){ var tq=__textTrace(function(){ drawHUD(); }); for(var j=0;j<tq.length;j++) if(String(tq[j].t).toLowerCase()==='r'&&tq[j].x>W*0.6&&tq[j].y>H*0.7) return true; return false; }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over||!g.player) return 'SKIP: staging: no raid';
+       p=g.player; keys={}; g.mapOpen=false; g.bagOpen=false; g.paused=false;
+       o0={hp:p.hp,ammo:p.ammo,res:p.reserve,mk:g.marked,pb:g.pBush,pc:g.pCrouch,cc:g.pConceal};
+       if(typeof hudStateList!=='function'||typeof hpPulseA!=='function'||typeof ammoCapOn!=='function') return 'no lasting state icons, hp pulse or reload key cap (hudStateList, hpPulseA, ammoCapOn)';
+       // ONE: the icons, beside the stance chip, for as long as they are true
+       g.marked=0; g.pBush=0; g.pCrouch=false;
+       L=hudStateList(); if(L.length) bad.push('icons drawn with nothing true: '+ids(L));
+       g.marked=2; g.pBush=1; g.pConceal=0.2;
+       L=hudStateList(); if(ids(L)!=='reveal,conceal,cover') bad.push('revealed and in a bush gives '+ids(L)+', not reveal,conceal,cover');
+       drawHUD();
+       if(HUDSTBOX.n!==3) bad.push('the row drew '+HUDSTBOX.n+' icons, not 3');
+       if(!(HUDSTBOX.x<W*0.25&&HUDSTBOX.y>H*0.75)) bad.push('the icons are not beside the stance chip bottom left (x '+Math.round(HUDSTBOX.x)+', y '+Math.round(HUDSTBOX.y)+')');
+       statusLive(p); for(i=0;i<STATUSL.length;i++) if(STATUSL[i].id==='hide'&&STATUSL[i].on) bad.push('the hidden pill is still in the status column');
+       tr=__textTrace(function(){ drawHUD(); });
+       for(i=0;i<tr.length;i++) if((/concealed|in cover|hidden/i).test(tr[i].t)&&!(tr[i].x<W*0.4&&tr[i].y>H*0.75)) bad.push('"'+tr[i].t+'" still drawn away from the vitals (x '+Math.round(tr[i].x)+', y '+Math.round(tr[i].y)+')');
+       g.marked=0; L=hudStateList(); if(ids(L)!=='conceal,cover') bad.push('the revealed icon outlives the mark ('+ids(L)+')');
+       g.marked=0; g.pBush=0; drawHUD(); if(HUDSTBOX.n!==0) bad.push('icons stay after the states end');
+       // TWO: low health pulses the bar, slowly, with no text line
+       mx=0; mn=1; ups=0; prev=0;
+       for(t=0;t<=2;t+=0.01){ hs=hpPulseA(10,100,t); if(hs>mx) mx=hs; if(hs<mn) mn=hs; if(prev<0.5&&hs>=0.5) ups++; prev=hs; }
+       if(!(mx>0.8&&mn<0.2)) bad.push('the low health pulse does not swing (min '+mn.toFixed(2)+', max '+mx.toFixed(2)+')');
+       if(ups/2>=3) bad.push('the low health pulse runs '+(ups/2)+' a second, not under 3');
+       if(hpPulseA(60,100,0.4)!==0) bad.push('the bar pulses at 60 health');
+       p.hp=10; drawHUD(); if(!HPPULSE.on) bad.push('the hp bar does not pulse at 10 health');
+       tr=__textTrace(function(){ drawHUD(); });
+       for(i=0;i<tr.length;i++) if((/low health|health low/i).test(tr[i].t)) bad.push('a low health text line');
+       p.hp=o0.hp; drawHUD(); if(HPPULSE.on) bad.push('control: the bar still pulses at full health');
+       // THREE: an empty gun with rounds to load shows the reload key cap; a loaded or low one does not
+       HH=hotbarSlots()[hotSel()];
+       if(!(p.wep&&p.wep.mag>0&&(!HH||HH.kind==='gun'))) bad.push('control: no gun in hand');
+       else {
+         p.reloading=0; p.jam=0; p.reserve=Math.max(24,p.reserve|0);
+         p.ammo=0; if(!ammoCapOn(p)) bad.push('ammoCapOn is false for an empty gun with rounds to load');
+         if(!capAt()) bad.push('no reload key cap on the gun card of an empty gun');
+         p.ammo=1; if(!ammoLow(p)) bad.push('one round left is not low ammo');
+         if(capAt()) bad.push('the key cap shows on a gun that still has a round');
+         p.ammo=p.wep.mag; if(ammoLow(p)||capAt()) bad.push('a full magazine reads as low or shows the key cap');
+       }
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       try{ if(p){ p.hp=o0.hp; p.ammo=o0.ammo; p.reserve=o0.res; g.marked=o0.mk; g.pBush=o0.pb; g.pCrouch=o0.pc; g.pConceal=o0.cc; } }catch(_e1){}
+       keys={};
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       __topClear();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'35.48',what:'cloud-p2-easy-card: player 2 joining a 2 player demo run gets the easy or normal card in its own window and starts the run on normal, as player 1 does (his 2.28 c: each player chooses before the run)',
+   run:function(){
+     var bad=[], out=[], sv=null, m=null, peer, r, g1, ck=null, k;
+     try{
+       __topClear(); __runPrep();
+       if(typeof arcadeEnter!=='function'||typeof arcadeDeploy!=='function'||typeof netUpTake!=='function'||typeof netUpAnnounce!=='function'||typeof easyStartAsk!=='function'||typeof easyLive!=='function'||typeof ARCADE!=='object') return 'SKIP: no arcade or easy card in this build';
+       if(__state()&&!__state().over) __endRaid('abandon');
+       if(__state()) return 'SKIP: a raid is still up after __topClear';
+       if(NET.on) return 'SKIP: a party link is up in the fixture';
+       sv={bc:NET.bc,same:NET.same,pair:NET.pair,mode:NET.mode,arcPick:NET.arcPick,busy:NET.sameBusy,role:NET.role,on:NET.on,hostSeed:NET.hostSeed,lateBan:NET.lateBan,up:NET.up,upWord:NET.upWord,upSeed:NET.upSeed,upFp:NET.upFp,lateOut:NET.lateOut,status:NET.status,err:NET.err,sum:NET.sum,wps:NET.wps,pings:NET.pings,upAcc:NET.upAcc,upN:NET.upN};
+       NET.bc={postMessage:function(o){ out.push(o); },close:function(){}}; NET.same='host'; NET.pair='tp'; NET.sameBusy=true;
+       if(!arcadeEnter('host')) return 'SKIP: arcadeEnter(host) failed';
+       if(!arcadeDeploy({mapIx:0,seed:4242})) return 'SKIP: arcadeDeploy failed';
+       if(!ARCADE.easyAsk) return 'SKIP: player 1 got no easy card either';
+       NET.on=true; NET.role='host';
+       try{ m=netUpAnnounce(__state()); } finally{ NET.on=sv.on; NET.role=sv.role; }
+       if(!m||m.arc!==1) return 'SKIP: the arcade raid word carries no arc';
+       arcadeRaidStop();
+       NET.role='join'; NET.same='p2'; peer={state:'in',seat:0}; ARCADE.role='p2'; ARCADE.wantIn=1;
+       ARCADE.easyAsk=null; ARCADE.easyAsked=1; ARCADE.easy=1;   // what the player 2 window holds after a yes on the run before
+       ck=commitKit; commitKit=function(){};
+       r=netUpTake(peer,m); g1=__state();
+       if(r!=='up'||!g1||g1.arcade!==1) return 'SKIP: player 2 did not join the arcade raid ('+r+')';
+       if(!ARCADE.easyAsk) bad.push('player 2 joined the demo run and got no easy or normal card');
+       if(ARCADE.easy) bad.push('player 2 starts the new run on easy without choosing it');
+       if(ARCADE.easyAsk&&ARCADE.easyAsk.waitMap){ try{ mapFirstEnd('test'); }catch(_mf){} }
+       if(ARCADE.easyAsk&&!easyLive()) bad.push('the card is not live in the player 2 window');
+     }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
+     finally{
+       try{ if(ck) commitKit=ck; }catch(_c){}
+       try{ ARCADE.easyAsk=null; ARCADE.easyAsked=0; ARCADE.easy=0; }catch(_ez){}
+       try{ if(typeof ARCADE==='object'&&ARCADE.on) arcadeLeave(); }catch(_l){}
+       try{ if(__state()&&!__state().over) __endRaid('abandon'); }catch(_e){}
+       try{ if(sv){ netSameStop(); NET.bc=sv.bc||null; NET.same=sv.same||''; NET.pair=sv.pair||''; NET.mode=sv.mode||''; NET.arcPick=sv.arcPick||0; NET.sameBusy=!!sv.busy;
+         NET.role=sv.role; NET.on=sv.on; NET.hostSeed=sv.hostSeed; NET.lateBan=sv.lateBan; NET.up=sv.up; NET.upWord=sv.upWord; NET.upSeed=sv.upSeed; NET.upFp=sv.upFp;
+         NET.lateOut=sv.lateOut; NET.status=sv.status; NET.err=sv.err; NET.sum=sv.sum; NET.wps=sv.wps; NET.pings=sv.pings; NET.upAcc=sv.upAcc; NET.upN=sv.upN; } }catch(_ns){}
+       try{ for(k in keys) keys[k]=false; }catch(_k){}
+       __topClear();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'35.47',what:'cloud-ach-born-scan: a new save that plays two runs and then opens its stats page keeps its true kill counts: the one-time log scan is for saves from before live counting, so it never adds the same runs twice',
+   run:function(){
+     if(typeof achRun!=='function'||typeof achStatsDraw!=='function') return 'SKIP: this fixture has no achievements';
+     var SRC='', sc=document.getElementsByTagName('script'), i;
+     for(i=0;i<sc.length;i++) SRC+=(sc[i].textContent||'');
+     var NEED='var '+'P='+'{'+'cre'+'dits:';
+     var a=SRC.indexOf(NEED);
+     if(a<0) return 'SKIP: the born profile is not in this page';
+     var lo=a+NEED.indexOf('{'), hi=SRC.indexOf('}'+';',lo), born=null;
+     if(hi<0) return 'SKIP: the born profile has no end in this page';
+     try{ born=(new Function('return '+SRC.slice(lo,hi+1)))(); }catch(_b){ born=null; }
+     if(!born||typeof born.credits!=='number') return 'SKIP: the born profile did not read back as a profile';
+     var keep=P, bad=[], r, rec;
+     try{
+       P=born; P.log=[]; P.ach={}; P.achN={};
+       for(r=0;r<2;r++){ rec={kills:{raider:7,crawler:30},dmg:{},outcome:'died',haul:0,downs:0}; P.log.push(rec); achRun(rec,true); }
+       if((P.achN.raider|0)!==14) return 'SKIP: two live runs did not count 14 pillager kills (counted '+(P.achN.raider|0)+')';
+       achStatsDraw(document.createElement('div'));
+       if((P.achN.raider|0)!==14) bad.push('opening the stats page turned 14 pillager kills into '+(P.achN.raider|0));
+       if((P.achN.mach|0)!==60) bad.push('opening the stats page turned 60 machine kills into '+(P.achN.mach|0));
+       if(P.ach.pill25) bad.push('the 25 pillager kill medal unlocked at 14 kills');
+       achStatsDraw(document.createElement('div'));
+       if((P.achN.raider|0)!==14) bad.push('a second look at the stats page moved the count to '+(P.achN.raider|0));
+     } finally { P=keep; try{ saveProfile(); }catch(_s){} }
+     return bad.length?bad.join('; '):null;
+   }},
+  {v:'35.46',what:'cw-cx-walletframe: drawing the corner clips the page wallet in that same frame, even after an old stamp, with no wallet rows and with empty or full backpacks',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__textTrace)||typeof trColDraw!=='function') return 'SKIP: no corner renderer';
+     var bad=[], g=null, had=document.body.classList.contains('trcol'), h0=TRG.hid, t0=TRG.t, c0=P.credits;
+     function sample(label,frame){
+       var el=document.getElementById('topright');
+       if(!el){ bad.push('missing page wallet'); return; }
+       document.body.classList.remove('trcol'); TRG.hid=0; TRG.t=-1e9;
+       var tr=__textTrace(function(){ if(frame) __frame(0.016); else trColDraw(); });
+       if(!document.body.classList.contains('trcol')||getComputedStyle(el).clipPath==='none') bad.push(label+': page wallet is visible in the newly drawn frame');
+       var cash='$'+(P.credits||0).toLocaleString();
+       if(tr.some(function(t){ return t.t===cash&&t.x>W*0.65&&t.y<H*0.22; })) bad.push(label+': obsolete canvas cash row returned');
+     }
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||!g.player||g.over) return 'SKIP: no live career raid';
+       if(typeof mapFirstEnd==='function'&&g.mapFirst) mapFirstEnd('fixture');
+       g.mapOpen=false; g.bagOpen=false; g.rise=null; g.ents=[]; g.tel=g.tel||{}; g.tel.notes=[];
+       P.credits=4471337; syncTopRight();
+       g.bag=[]; sample('empty bag, direct corner',false); sample('empty bag, rendered frame',true);
+       g.bag=['medkit','medkit','bandage','frag','frag','frag']; syncTopRight();
+       sample('full bag, direct corner',false); sample('full bag, rendered frame',true);
+       g.tel.notes=[{t:1,txt:'fixture note'}]; sample('notes row',false);
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     finally{
+       try{ if(g&&!g.over){ g.career=0; g.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       __topClear(); __cleanProfile(); P.credits=c0; syncTopRight(); TRG.hid=h0; TRG.t=t0; document.body.classList.toggle('trcol',had);
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'35.45',what:'his order 2026-10-28 (sp and money never intermingled): the CAREER extracted card shows a RAID SCORE panel of sp figures only and a MONEY panel of dollar figures only, side by side in two colours, the money total in the money panel and no RAID TOTAL row; the KIA card splits the same way; the xp line hides the season total and the next reward sentence; DAMAGE TAKEN comes after the ledger on an extraction',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__runPrep&&window.__endRaid&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile&&window.__P&&window.__applyLoaded)) return 'SKIP: this fixture cannot deploy';
+     if(typeof ocLedger!=='function'||typeof lbCountEnd!=='function'||typeof haulRevealSkip!=='function') return 'SKIP: no ledger here';
+     var bad=[], g, c0=(typeof CAREER_ON==='number')?CAREER_ON:0, snap=null, man, lg, ps, pm, r1, r2, i, bs, t, rc, cs, ct, cc;
+     function raid(){
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       CAREER_ON=1;
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over) return false;
+       g.player.iv=99; g.player.hp=100; g.player.downed=false;
+       g.bag=['scrap','board','optic','servo','core','medkit','gun_carbine'];
+       g.cs.s=750; g.cs.k=4; g.cs.b={kill:600,style:150};
+       if(G.tel) G.tel.hitLog=[{t:30,n:'SENTRY R-34',w:'AUTOCANNON',a:20,hp:80}];
+       return true;
+     }
+     function units(tag){
+       var k, txt;
+       bs=ps.querySelectorAll('.lgr b');
+       if(!bs.length) bad.push(tag+': the RAID SCORE panel has no figures');
+       for(k=0;k<bs.length;k++){ txt=bs[k].textContent||''; if(/\$/.test(txt)||!/ SP$/.test(txt)) bad.push(tag+': the RAID SCORE panel shows "'+txt+'", not an sp figure'); }
+       bs=pm.querySelectorAll('.lgr b');
+       if(!bs.length) bad.push(tag+': the MONEY panel has no figures');
+       for(k=0;k<bs.length;k++){ txt=bs[k].textContent||''; if(/SP/.test(txt)) bad.push(tag+': the MONEY panel shows "'+txt+'", an sp figure'); else if(!bs[k].closest('.ni')&&txt.indexOf('$')<0) bad.push(tag+': the MONEY panel shows "'+txt+'", not a dollar figure'); }
+     }
+     try{
+       snap=JSON.parse(JSON.stringify(__P()));
+       if(!raid()) return 'SKIP: no live raid';
+       if(!g.career||!g.cs) return 'SKIP: no CAREER raid in this build';
+       __endRaid('extract');
+       haulRevealSkip(); haulRevealSkip();
+       man=document.getElementById('oc_manifest'); lg=man?man.querySelector('.lg'):null;
+       if(!lg) return 'the CAREER extraction card has no ledger';
+       lbCountEnd(lg);
+       ps=lg.querySelector('.lgps'); pm=lg.querySelector('.lgpm');
+       if(!ps||!pm) return 'the ledger is one list, not a RAID SCORE panel and a MONEY panel ('+(lg.textContent||'').slice(0,100)+')';
+       r1=ps.getBoundingClientRect(); r2=pm.getBoundingClientRect();
+       if(!(r1.width>100&&r2.width>100&&r2.left>=r1.right-1&&Math.abs(r1.top-r2.top)<2)) bad.push('the two panels are not side by side ('+[r1.left,r1.top,r1.width,r2.left,r2.top,r2.width].map(Math.round).join(',')+')');
+       if((ps.querySelector('.lgh')||{}).textContent.indexOf('RAID SCORE')!==0) bad.push('the score panel is not headed RAID SCORE');
+       if((pm.querySelector('.lgh')||{}).textContent!=='MONEY') bad.push('the money panel is not headed MONEY');
+       if(!ps.querySelector('.lgr.sc [data-to]')) bad.push('the raid score total is not in the score panel');
+       if(!pm.querySelector('.lgr.tot [data-to]')) bad.push('the money total is not in the money panel');
+       if(!pm.querySelector('.lgr.cr [data-to]')) bad.push('the credits banked are not in the money panel');
+       if(!pm.contains(document.getElementById('haultot'))) bad.push('the haul value is not in the money panel');
+       if((lg.textContent||'').indexOf('RAID TOTAL')>=0) bad.push('a RAID TOTAL row is still on the card');
+       if(+pm.querySelector('.lgr.tot [data-to]').getAttribute('data-to')!==1500+(+document.querySelector('#oc_manifest .haulstrip').getAttribute('data-sec')||0)) bad.push('the money total is not credits 1500 plus the haul');
+       units('extracted');
+       cs=getComputedStyle(ps.querySelector('.lgr.sc b')).color; ct=getComputedStyle(pm.querySelector('.lgr.tot b')).color; cc=getComputedStyle(pm.querySelector('.lgr.cr b')).color;
+       if(cs===ct) bad.push('the money total is drawn in the score colour '+cs);
+       if(ct!==cc) bad.push('the money total ('+ct+') and the credits banked ('+cc+') are not one money colour');
+       rc=man.querySelector('.ocrecap');
+       if(!rc) bad.push('the extracted card has no DAMAGE TAKEN block after a hit');
+       else if(!(lg.compareDocumentPosition(rc)&Node.DOCUMENT_POSITION_FOLLOWING)) bad.push('DAMAGE TAKEN still sits above the result');
+       t=man.innerText||'';
+       if(/Claim it at the Mainframe|XP away/i.test(t)) bad.push('the next reward sentence is still shown');
+       if(/XP\s+\S\s+[\d,]+ of [\d,]+/i.test(t)) bad.push('the xp line still shows the season total');
+       // a death splits the same way
+       __endRaid('abandon');
+       if(!raid()) return bad.concat(['SKIP: no second raid']).join('; ');
+       __endRaid('dead');
+       man=document.getElementById('oc_manifest'); lg=man?man.querySelector('.lg'):null;
+       if(!lg) bad.push('the KIA card has no ledger');
+       else {
+         lbCountEnd(lg);
+         ps=lg.querySelector('.lgps'); pm=lg.querySelector('.lgpm');
+         if(!ps||!pm) bad.push('the KIA ledger is not split into two panels');
+         else {
+           units('kia');
+           if(pm.querySelectorAll('.lgr.lost s').length<2) bad.push('the KIA money panel does not strike the haul and the credits as LOST');
+           if(!ps.querySelector('.lgr.lost')) bad.push('the KIA score panel has no -50% row');
+         }
+       }
+     }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
+     finally{
+       try{ CAREER_ON=c0; }catch(_r){}
+       try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){}
+       try{ if(snap&&window.__applyLoaded) __applyLoaded(snap); }catch(_s){}
+       __topClear(); }
+     return bad.length?bad.join('; '):null; }},
+  {v:'35.44',what:'cw-msgroute, his complaint 2026-10-27 (too many messages reach the player), the research rule: only the ladder reaches the screen (danger or teammate down, extraction, teammate news, a goal done, the answer to something that did not work); a codex entry, location revealed and running slowly draw nothing and stay in the run log, which the pause box lists; danger draws at once; the left feed shows at most 3 lines, each gone after 5 s, and takes one new line every 2.5 s; an answer and contract item nearby go in at once; teammate news that waited over 4 s is dropped; a goal done waits out the fight and shows as one line; kill lines stay; a search of several items still draws one pickup row per item (looting untouched); his order 10-27 ~22:35: an exit over 200 m away closing draws nothing, the exit you are heading to closing still draws its line',
+   run:function(){
+     if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
+     if(typeof feedSay!=='function'||typeof feedTick!=='function'||typeof feedDraw!=='function'||typeof feedKillLine!=='function'||typeof pickSay!=='function'||typeof codexScan!=='function'||typeof openContainer!=='function'||typeof togglePauseBox!=='function') return 'SKIP: no feed, pickup stack, codex or pause box here';
+     var bad=[], g, p, i, ik, it0, ks=[], box=null, oCN=codexNote, oSP=saveProfile, GK='', rows0, made=0, el, L, pb=false;
+     function feedHas(s){ var F=(g.fd&&g.fd.lines)||[], c=0; for(var j=0;j<F.length;j++) if(String(F[j].txt).indexOf(s)>=0) c++; return c; }
+     function onTop(s){ return !!(g.alert&&g.alert.T>0&&g.alert.m===s); }
+     function logHas(s){ var M=g.msgLog||[]; for(var j=0;j<M.length;j++) if(M[j].m===s) return true; return false; }
+     function clr(){ g.fd={t:0,seq:0,lines:[]}; g.alert=null; g.alertQ=[]; g.pick=[]; g.msgLog=[]; p.combatT=99; }
+     function drawn(){ feedDraw(); return (FEEDBOX&&FEEDBOX.rows)?FEEDBOX.rows.length:-1; }
+     try{
+       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       g=__state(); if(!g||g.over||!g.player) return 'SKIP: staging: no raid';
+       p=g.player; keys={}; g.mapOpen=false; g.bagOpen=false; g.paused=false; g.ents.length=0; g.waveT=-1e9;
+       // ONE: the lines off the ladder draw nothing, and stay in the run log
+       clr(); say('RUNNING SLOWLY','sys'); say('LOCATION REVEALED');
+       if(feedHas('RUNNING SLOWLY')||onTop('RUNNING SLOWLY')) bad.push('RUNNING SLOWLY still draws a line');
+       if(feedHas('LOCATION REVEALED')||onTop('LOCATION REVEALED')) bad.push('LOCATION REVEALED still draws a line');
+       if(!logHas('RUNNING SLOWLY')) bad.push('control: RUNNING SLOWLY is not in the run log');
+       for(ik in ITEMS) if(ITEMS[ik]&&ITEMS[ik].use==='gun'&&ITEMS[ik].gk){ GK=ik; break; }
+       if(!GK) bad.push('control: no gun item to stage a codex entry');
+       else {
+         clr(); codexNote=function(w){ return w===ITEMS[GK].gk; }; saveProfile=function(){}; g.bag.push(GK);
+         try{ codexScan(); } finally { codexNote=oCN; saveProfile=oSP; i=g.bag.lastIndexOf(GK); if(i>=0) g.bag.splice(i,1); }
+         if(feedHas('CODEX ENTRY')||onTop('CODEX ENTRY')) bad.push('a codex entry still draws a line');
+       }
+       // TWO: danger draws at once
+       clr(); say('ZQ DANGER','warn');
+       if(!onTop('ZQ DANGER')) bad.push('a danger line does not draw at once');
+       g.alert=null; say('ZQ CRIT','crit');
+       if(!onTop('ZQ CRIT')) bad.push('a crit does not draw at once');
+       // THREE (looting untouched, holds on both builds): a search of three items draws one pickup row per item
+       for(ik in ITEMS){ it0=ITEMS[ik]; if(it0&&!it0.gk&&!it0.use&&it0.val>0) ks.push(ik); if(ks.length>=3) break; }
+       for(i=0;i<g.containers.length;i++){ var c=g.containers[i]; if(c&&!c.opened&&!c.cache&&!c.strong&&!c.auto){ box=c; break; } }
+       if(ks.length<3||!box) bad.push('control: no three items or no box to stage a search');
+       else {
+         clr(); box.loot=ks.slice(); rows0=[];
+         for(i=0;i<3;i++){ box.loot.shift(); openContainer(box,[ks[i]]); for(var r0=0;r0<g.pick.length;r0++) if(rows0.indexOf(g.pick[r0])<0){ rows0.push(g.pick[r0]); made++; } }
+         if(made!==3) bad.push('a search of three items drew '+made+' pickup rows, not one per item ('+JSON.stringify(g.pick.map(function(r){ return r.m+(r.sub?' / '+r.sub:''); }))+')');
+       }
+       // FOUR: one new feed line every 2.5 s; an answer and contract item nearby at once; teammate news that waited over 4 s is dropped
+       clr(); say('ZQ ONE RECEIVED','info'); say('ZQ TWO RECEIVED','info');
+       if(feedHas('ZQ ONE RECEIVED')!==1) bad.push('control: a teammate line did not reach the feed');
+       if(feedHas('ZQ TWO RECEIVED')) bad.push('two lines in one second draw two feed lines');
+       feedTick(2.6);
+       if(feedHas('ZQ TWO RECEIVED')!==1) bad.push('the second line did not follow 2.5 s later');
+       say('HEALTH FULL');
+       if(typeof ansSay==='function'){ if(!(g.ans&&g.ans.m==='HEALTH FULL')||feedHas('HEALTH FULL')) bad.push('the answer HEALTH FULL does not show at once on the answer line under the character'); }   // cw-answerline retarget (his ask 10-27, report job 7): an answer shows at once under the feet, not in the feed
+       else if(feedHas('HEALTH FULL')!==1) bad.push('the answer HEALTH FULL waits behind another line');
+       say('CONTRACT ITEM NEARBY','obj',{sub:'GOLD GLOW MARKS THE BOX',key:'needhint'});   // as the contract item hint says it
+       if(feedHas('CONTRACT ITEM NEARBY')!==1) bad.push('contract item nearby no longer shows at once');
+       clr(); say('ZQ A RECEIVED','info'); say('ZQ B RECEIVED','info'); say('ZQ C RECEIVED','info');
+       for(i=0;i<4;i++) feedTick(2.6);
+       if(feedHas('ZQ B RECEIVED')!==1) bad.push('control: the second waiting line never drew');
+       if(feedHas('ZQ C RECEIVED')) bad.push('a teammate line that waited over 4 s still drew');
+       // FIVE: a goal done waits until no shot was fired or taken for 4 s, then the goals done are one line
+       clr(); p.combatT=0; say('CONTRACT DONE','obj'); say('GOAL DONE','obj');
+       if(feedHas('CONTRACT DONE')||feedHas('GOAL DONE')) bad.push('a goal done line drew in the middle of a fight');
+       p.combatT=1; feedTick(3);
+       if(feedHas('CONTRACT DONE')||feedHas('GOAL DONE')) bad.push('a goal done line drew before the fight was over');
+       p.combatT=5; feedTick(0.1);
+       if(g.fd.lines.length!==1||feedHas('CONTRACT DONE')!==1||feedHas('GOAL DONE')!==1) bad.push('the goals done after the fight are not one line ('+JSON.stringify(g.fd.lines.map(function(l){ return l.txt; }))+')');
+       // SIX: at most three feed lines, each gone after 5 s; a kill line still reaches the feed
+       clr(); for(i=0;i<5;i++) feedAdd([{t:'ZQ LINE '+i,c:null}],'info',{});
+       i=drawn(); if(i!==3) bad.push('five feed lines up draw '+i+' lines, not 3');
+       feedTick(5.2); i=drawn(); if(i!==0) bad.push('feed lines 5.2 s old still draw ('+i+')');
+       clr(); feedKillLine('YOU',true,false,'ZQ BOT',HUDC.danger,'');
+       if(!feedHas('ZQ BOT')) bad.push('a kill line no longer reaches the feed');
+       // EIGHT (his order 10-27 ~22:35): an exit far across the map closing draws nothing; the exit you are heading to closing still draws its line
+       var zs=g.zones||[], zA=null, zB=null, sv=[], oTL=g.timeLeft, oAct=g.active, oX=p.x, oY=p.y, nm;
+       function xHas(s){ var q=g.alertQ||[], j; if(onTop(s)||feedHas(s)) return true; for(j=0;j<q.length;j++) if(q[j].m===s) return true; return false; }
+       for(i=0;i<zs.length&&!zA;i++) for(var j2=0;j2<zs.length;j2++) if(i!==j2&&dist(zs[i],zs[j2])>200*U_PER_M){ zA=zs[i]; zB=zs[j2]; break; }
+       if(!zA) bad.push('control: no two exits 200 m apart');
+       else {
+         for(i=0;i<zs.length;i++) sv.push({z:zs[i],c:zs[i].closeAt,w:zs[i].warned,o:zs[i].open,b:zs[i].beaconT});
+         try{
+           clr(); g.msgT=0; g.msgQ=[]; p.x=zB.x; p.y=zB.y; g.active=zB;
+           for(i=0;i<zs.length;i++){ zs[i].closeAt=undefined; zs[i].beaconT=null; }
+           zA.closeAt=g.timeLeft-60; zA.warned=0; zA.open=true;   // inside its two minute warning, not shut yet
+           tickExtractPoints(0); nm='EXTRACTION '+extLetter(zA)+' CLOSING';
+           if(xHas(nm)) bad.push('an exit over 200 m away closing still draws '+nm);
+           if(!logHas(nm)) bad.push('control: the far exit closing is not in the run log');
+           clr(); g.msgT=0; g.msgQ=[]; zA.closeAt=undefined; zB.closeAt=g.timeLeft-60; zB.warned=0; zB.open=true;
+           tickExtractPoints(0); nm='EXTRACTION '+extLetter(zB)+' CLOSING';
+           if(!xHas(nm)) bad.push('the exit you are heading to closing no longer draws '+nm);
+         } finally {
+           for(i=0;i<sv.length;i++){ sv[i].z.closeAt=sv[i].c; sv[i].z.warned=sv[i].w; sv[i].z.open=sv[i].o; sv[i].z.beaconT=sv[i].b; }
+           g.timeLeft=oTL; g.active=oAct; p.x=oX; p.y=oY;
+         }
+       }
+       // SEVEN: the pause box lists the run log
+       clr(); say('ZQ LOG ONLY');
+       togglePauseBox(true); pb=true; el=document.getElementById('pauselog'); L=el?String(el.textContent):'';
+       if(!el||el.style.display==='none'||L.toLowerCase().indexOf('zq log only')<0) bad.push('the pause box does not list the run log ('+JSON.stringify(L.slice(0,80))+')');
+       togglePauseBox(false); pb=false;
+     }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
+     finally{
+       codexNote=oCN; saveProfile=oSP; keys={};
+       try{ if(pb) togglePauseBox(false); }catch(_e0){}
+       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
+       __topClear();
+     }
+     return bad.length?bad.join('; '):null; }},
+  {v:'35.43',what:'solo and party ping labels are 16px bone on a padded plate clear of the target, with 18px map glyphs at 1080p and doubled at 4k',
+   run:function(){
+     if(typeof netPingLabel!=='function')return 'ping label remains tiny bare orange text';
+     var g,p,pk=NET.pings,wk=NET.wps,on=NET.on,seat=NET.seat,ow=W,oh=H,wp=w2s,hp=hudPanel,ft=ctx.fillText,cg=colourCueGlyph,panels=[],texts=[],glyphs=[],pos,r,i,j,n;
+     try{
+       __runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();
+       __deploy({kit:['gun_rifle'],safe:null,mapIx:0,seed:4242});g=__state();p=g.player;g.mapFirst=false;g.mapOpen=false;g.bagOpen=false;g.paused=false;CFG.xfPix=0;
+       NET.wps={};NET.seat=0;
+       hudPanel=function(x,y,w,h,a,plain){panels.push({x:x,y:y,w:w,h:h,a:a,plain:plain});return hp.apply(this,arguments);};
+       ctx.fillText=function(s,x,y){texts.push({s:String(s),x:x,y:y,font:this.font,c:this.fillStyle});return ft.apply(this,arguments);};
+       colourCueGlyph=function(c,k,x,y,s){glyphs.push({k:k,s:s});return cg.apply(this,arguments);};
+       w2s=function(){return pos;};
+       for(i=0;i<2;i++){
+         __forceSize(i?3840:1920,i?2160:1080);r=hudRes();
+         for(j=0;j<3;j++){
+           NET.on=!!(j%2);pos=j===0?{x:2,y:2}:j===1?{x:W-2,y:H-2}:{x:W/2,y:H/2};
+           NET.pings=[{s:0,x:p.x+60,y:p.y,w:'sentry',at:Date.now()}];panels=[];texts=[];
+           n=netPingDraw();if(n!==1||panels.length!==1||texts.length!==1)return 'ping did not draw exactly one label plate';
+           var b=panels[0],t=texts[0];
+           if(Math.abs(parseFloat(t.font.match(/([\d.]+)px/)[1])-16*r)>.1)return 'ping label is not 16px scaled';
+           if(t.c!==UIC.tx_1||t.s!==t.s.toLowerCase()||!/sentry/.test(t.s))return 'ping label lost its readable colour or specific target';
+           if(b.a!==.85||b.plain!==1||b.h!==32*r||b.x<0||b.y<0||b.x+b.w>W||b.y+b.h>H)return 'ping plate is missing, clipped or not padded';
+           if(t.x<=b.x||t.x>=b.x+b.w||t.y<=b.y||t.y>=b.y+b.h)return 'label escaped its plate';
+           if(j===2&&b.y+b.h>pos.y-64*r)return 'ping label still overlaps the target';
+         }
+         glyphs=[];mmMarks({x:100,y:100,w:400,h:400},.3,1);
+         if(!glyphs.some(function(v){return v.k==='target'&&v.s>=1.5;}))return 'minimap ping remains smaller than 18px';
+         glyphs=[];netWpMapDraw(0,0,.1);
+         if(!glyphs.some(function(v){return v.k==='target'&&v.s>=1.5*r;}))return 'full-map ping remains smaller than 18px scaled';
+       }
+       return null;
+     }finally{
+       w2s=wp;hudPanel=hp;ctx.fillText=ft;colourCueGlyph=cg;
+       NET.on=false;try{__endRaid('abandon');}catch(e){}__topClear();__forceSize(ow,oh);NET.pings=pk;NET.wps=wk;NET.on=on;NET.seat=seat;
+     }
+   }},
   {v:'35.42',what:'THE STASH HOVER KEEPS EVERY BOX: mousing over six different items (a gun, an SMG, a medkit, armour, a grenade, junk) and an idle line leaves every panel of the stash screen at the same size and place to the pixel, and the item line holds the longest gun',
    run:function(){
      if(!window.__hubEnter||!window.__station) return 'SKIP: this fixture cannot walk the Undercroft';
@@ -6745,7 +8130,7 @@ window.__REGRESS=[
        try{ __topClear(); __cleanProfile(); }catch(_c){}
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'35.31',what:'cw-quietpause, his order 2026-10-27 (build the quiet hud, all 5 changes): a line said under the solo pause box shows on the answer line over the box only and is not also written into the left feed behind it; with the box shut a system line is a feed line; and a finished contract whose words run to five or more names them on its feed line, now the one place it shows (cw-fewermsg retarget, his complaint 2026-10-27: only five kinds of line reach the screen; the probe lines here are marked as answers, a kind that does)',
+  {v:'35.31',what:'cw-quietpause, his order 2026-10-27 (build the quiet hud, all 5 changes): a line said under the solo pause box shows on the answer line over the box only and is not also written into the left feed behind it; with the box shut a system line is a feed line; and a finished contract whose words run to five or more names them on its feed line, now the one place it shows (cw-fewermsg retarget, his complaint 2026-10-27: only five kinds of line reach the screen; the probe lines here are marked as answers, a kind that does; cw-msgroute retarget, the research rule of 10-27: a goal done waits until no shot was fired or taken for 4 s, so the crate is opened in calm)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
      if(typeof togglePauseBox!=='function'||typeof syncPause!=='function'||typeof netPauseLive!=='function') return 'SKIP: no pause box in this build';
@@ -6776,7 +8161,7 @@ window.__REGRESS=[
          c1=ct?{type:'open',ct:ct.type,n:2,prog:1,desc:'Open 2 zqx9k long named boxes',reward:100}:null;
          if(c1){ P2.contracts=[c1]; H1=contractDesc(c1); }
          if(c1&&String(H1).split(/\s+/).length>=5){
-           g.fd={t:0,seq:0,lines:[]}; contractOpen(ct);
+           g.fd={t:0,seq:0,lines:[]}; g.player.combatT=99; contractOpen(ct);   // cw-msgroute retarget: in calm, so the goal done line does not wait out a fight
            L=g.fd.lines; for(i=0;i<L.length;i++) if(String(L[i].txt).indexOf('CONTRACT DONE')===0) ln=L[i];
            if(c1.prog<c1.n||!ln) bad.push('TWO control: the crate did not finish the contract into a line of the left feed (progress '+c1.prog+' of '+c1.n+')');
            else if(String(ln.txt).indexOf(H1)<0) bad.push('TWO: the finished contract line reads '+JSON.stringify(ln.txt)+', without its words '+JSON.stringify(H1));
@@ -6834,7 +8219,8 @@ window.__REGRESS=[
        hl=h.filter(function(q){ return q.x<W*0.35; }); hr=h.filter(function(q){ return q.x>W*0.6; });
        cn=said(/^concealed$/i).filter(function(q){ return q.x<W*0.35; });
        if(hr.length) bad.push('THREE: concealed in cover still draws at the right ('+at(hr)+')');
-       if(!cn.length||!hl.length) bad.push('THREE: concealed in cover is not a status icon at the left (name drawn '+cn.length+', reason drawn '+hl.length+')');
+       if(typeof HUDSTBOX==='object'&&HUDSTBOX){ if(!((/conceal/).test(HUDSTBOX.ids)&&(/cover/).test(HUDSTBOX.ids)&&HUDSTBOX.x<W*0.35)) bad.push('THREE: concealed in cover is not an icon at the left beside the stance chip ('+HUDSTBOX.ids+' at x '+Math.round(HUDSTBOX.x)+')'); }   // cw-hudstates retarget (his ask 10-27, report job 5): the hidden state is an icon beside the stance chip, its word only for 2 s when it first turns on
+       else if(!cn.length||!hl.length) bad.push('THREE: concealed in cover is not a status icon at the left (name drawn '+cn.length+', reason drawn '+hl.length+')');
        g.pBush=kp.bush; g.pConceal=kp.conceal; g.pCrouch=kp.crouch;
        // FIVE: a pickup line (money carried out) draws in the right-side pickup stack only, not also in the left feed
        quiet(); say('+$4,321','pick',{tag:'CARRIED',c:'gain'}); pass();
@@ -6858,7 +8244,8 @@ window.__REGRESS=[
        avR=av.filter(function(q){ return q.x>W*0.7; });
        avT=av.filter(function(q){ return Math.abs(q.x-W/2)<3&&q.y>ext.y+2&&q.y<ext.y+H*0.12; });
        if(avR.length) bad.push('FOUR: '+lab+' still draws at the right edge ('+at(avR)+')');
-       if(avT.length!==1) bad.push('FOUR: '+lab+' does not draw under the extract distance at the top centre (drawn at '+(at(av)||'nowhere')+', extract distance at '+Math.round(ext.x)+','+Math.round(ext.y)+')');
+       if(typeof EXTARROW==='object'&&EXTARROW){ if(avT.length||!(EXTARROW.on&&EXTARROW.x>W*0.6)) bad.push('FOUR: a ring just off the right edge is not an edge arrow inside the right edge (arrow '+(EXTARROW.on?Math.round(EXTARROW.x)+','+Math.round(EXTARROW.y):'off')+', line under the pill '+avT.length+')'); }   // cw-extpill retarget (his ask 10-27, report job 6): the exit just off the screen is an edge arrow with its letter and distance
+       else if(avT.length!==1) bad.push('FOUR: '+lab+' does not draw under the extract distance at the top centre (drawn at '+(at(av)||'nowhere')+', extract distance at '+Math.round(ext.x)+','+Math.round(ext.y)+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        try{ if(Z&&kz){ Z.x=kz.x; Z.y=kz.y; Z.beaconT=kz.beaconT; Z.hold=kz.hold; Z.open=kz.open; } }catch(_z){}
@@ -8449,9 +9836,10 @@ window.__REGRESS=[
      } catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ SETSUB=''; try{ renderSettings(); __topClear(); }catch(_f){} }
      return bad.length?bad.join('; '):null; }},
-  {v:'34.93',what:'the Settings side panel for the difficulty row says what the choice on its button means (it read "new player" on the main game)',
+  {v:'34.93',what:'without an OS reduced motion request: the Settings side panel for the difficulty row says what the choice on its button means (it read "new player" on the main game)',
    run:function(){
      if(typeof diffRowHtml!=='function'||typeof setHintShort!=='function') return 'no difficulty row';
+     var om=window.matchMedia;
      var bad=[], go=(P&&P.gameOpts)?JSON.stringify(P.gameOpts):null;
      function pane(tag,word,want,never){
        var b=document.getElementById('set_diff'), r=b&&b.closest?b.closest('.row'):null, h=r?r.querySelector('.hint'):null, s;
@@ -8462,6 +9850,11 @@ window.__REGRESS=[
        if(never&&s.indexOf(never)>=0) bad.push(tag+': the side panel reads "'+s+'" on '+word);
      }
      try{
+       // v28.xx (cw-cx-osmotion): isolate ordinary defaults; the motion check covers the OS override.
+       window.matchMedia=function(q){
+         if(q==='(prefers-reduced-motion: reduce)') return {matches:false,media:q};
+         return om?om.call(window,q):{matches:false,media:q};
+       };
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        itchDefs(0); P.gameOpts={}; applyGameOpts(); SETSUB=''; renderSettings();
        pane('main game','main game','standard hits','new player');
@@ -8471,14 +9864,16 @@ window.__REGRESS=[
        pane('one row by hand','custom','changed by hand','new player');
      } catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
+       window.matchMedia=om;
        SETSUB=''; try{ itchDefs(ON_ITCH?1:0); }catch(_d){}
        try{ if(go===null) delete P.gameOpts; else P.gameOpts=JSON.parse(go); }catch(_g){}
        try{ __topClear(); __resetCfg(); __cleanProfile(); applyGameOpts(); __resetCfg(); xfSnap(); renderSettings(); __topClear(); }catch(_f){}
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'34.92',what:'itch players start on the new player set (forgiving hits, the long raid, rich loot, light shake, the large crosshair, seven extras off), every row stays in Settings, and the difficulty row switches all twelve to the main game and back',
+  {v:'34.92',what:'without an OS reduced motion request: itch players start on the new player set (forgiving hits, the long raid, rich loot, light shake, the large crosshair, seven extras off), every row stays in Settings, and the difficulty row switches all twelve to the main game and back',
    run:function(){
      if(typeof itchDefs!=='function'||typeof diffRowHtml!=='function'||typeof diffSet!=='function') return 'no itch new player defaults';
+     var om=window.matchMedia;
      var bad=[], go=(P&&P.gameOpts)?JSON.stringify(P.gameOpts):null, i, k, b, x;
      var XF=['xfAffix','xfRamp','xfOvPh','xfEvRamp','xfEvBounty','xfEvDebris','xfSupp'];
      function want(tag,ed,rs,lm,sh,xh,xf,word){
@@ -8493,6 +9888,11 @@ window.__REGRESS=[
        else if(b.textContent!==word) bad.push(tag+': the difficulty row says "'+b.textContent+'" not "'+word+'"');
      }
      try{
+       // v28.xx (cw-cx-osmotion): isolate ordinary defaults; the motion check covers the OS override.
+       window.matchMedia=function(q){
+         if(q==='(prefers-reduced-motion: reduce)') return {matches:false,media:q};
+         return om?om.call(window,q):{matches:false,media:q};
+       };
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        // 1 itch, nothing saved: the new player set, and every single row still on its page
        P.gameOpts={}; itchDefs(1); applyGameOpts(); SETSUB=''; renderSettings();
@@ -8516,6 +9916,7 @@ window.__REGRESS=[
        want('not itch',1,540,1,1,1,1,'main game');
      } catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
+       window.matchMedia=om;
        SETSUB=''; try{ itchDefs(ON_ITCH?1:0); }catch(_d){}
        try{ if(go===null) delete P.gameOpts; else P.gameOpts=JSON.parse(go); }catch(_g){}
        try{ __topClear(); __resetCfg(); __cleanProfile(); applyGameOpts(); __resetCfg(); xfSnap(); renderSettings(); __topClear(); }catch(_f){}
@@ -23213,7 +24614,7 @@ window.__REGRESS=[
        try{ if(__state()&&!__state().over) __endRaid('abandon'); }catch(_e2){}
        __resetCfg(); __topClear();
      } }},
-  {v:'30.93',what:'the left feed: a long detail sentence is not on the line, and an old line stays readable (dim 0.6 or more)',
+  {v:'30.93',what:'the left feed: a long detail sentence is not on the line, and an old line fades fully out after its 5 s (cw-msgroute retarget, the research rule of 10-27 for his complaint, too many messages reach the player: three lines, five seconds, then gone; it was held at 0.6)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy';
      var g=null, ln, F;
@@ -23229,7 +24630,7 @@ window.__REGRESS=[
        ln=F.lines[F.lines.length-1];
        if(!(/1 on the map/i).test(ln.txt)) return 'a short detail left the feed line: '+ln.txt;
        F.t+=FEED.hold+FEED.fade+1;
-       if(feedAlpha(ln)<0.59) return 'an old feed line reads '+feedAlpha(ln)+', under 0.6';
+       if(feedAlpha(ln)>0) return 'an old feed line still reads '+feedAlpha(ln)+' after its 5 s';
        return null;
      } finally {
        try{ __endRaid('abandon'); }catch(_e){}
@@ -29177,7 +30578,7 @@ window.__REGRESS=[
        if(n<150) bad.push('the gun shadow touches only '+n+' pixels (want 150 or more)');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      return bad.length?bad.join('; '):null; }},
-  {v:'28.81',what:'cw-feedsp: score is SP since lean2, and the feed still treats an SP figure as a figure: a medal label " +100 SP" is no line of its own, a kill popup "+50 SP" joins the kill line, a "+70 SP" pick is a money row (cw-fewermsg retarget, his complaint 2026-10-27: a kill and its +50 SP are read on the target, so neither is a feed line)',
+  {v:'28.81',what:'cw-feedsp: score is SP since lean2, and the feed still treats an SP figure as a figure: a medal label " +100 SP" is no line of its own, a kill popup "+50 SP" joins the kill line, a "+70 SP" pick is a money row',
    run:function(){
      if(!(window.__state&&window.__endRaid&&window.__runPrep)) return 'SKIP: no raid here';
      if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object'||typeof feedLabel!=='function') return 'SKIP: no arcade or feed here';
@@ -29190,10 +30591,9 @@ window.__REGRESS=[
        feedS(); n0=g.fd.lines.length;
        r=feedLabel(' +100'+' SP','#ffc04a');
        if(r||g.fd.lines.length!==n0) bad.push('a medal figure label made a line of its own ('+(g.fd.lines.length-n0)+' new)');
-       // cw-fewermsg retarget, his complaint 2026-10-27 (too many messages reach the player): a kill and its figure are read on the target, so neither is a feed line
-       n0=g.fd.lines.length; kl=feedKillLine('YOU',true,false,'SCAV',HUDC.danger,' DESTROYED');
+       kl=feedKillLine('YOU',true,false,'SCAV',HUDC.danger,' DESTROYED'); n0=g.fd.lines.length;
        r=feedLabel('+50'+' SP','#ffc04a');
-       if(kl||r||g.fd.lines.length!==n0) bad.push('a kill or its +50 SP popup still writes into the feed ('+(g.fd.lines.length-n0)+' new lines)');
+       if(!kl||g.fd.lines.length!==n0||kl.money!=='+50'+' SP') bad.push('a kill popup +50 SP did not join the kill line (money '+(kl&&kl.money)+', lines '+(g.fd.lines.length-n0)+' new)');
        ml=feedSay('+70'+' SP','pick',{});
        if(!ml||ml.fk!=='money') bad.push('a +70 SP pick is not a money row ('+(ml&&ml.fk)+')');
        return bad.length?bad.join('; '):null;
@@ -32472,8 +33872,8 @@ window.__REGRESS=[
        __endRaid('extract');
        man=document.getElementById('oc_manifest'); lg=man.querySelector('.lg'); tx=man.textContent||'';
        if(!lg) return 'the CAREER extraction card has no ledger';
-       for(i=0,rows=['KILLS','MEDALS','GOALS','EXTRACTION','RAID SCORE','CREDITS','ITEMS SECURED','HAUL VALUE','RAID TOTAL','ACCURACY','CONTAINERS','HEALTH'];i<rows.length;i++) if(lg.textContent.indexOf(rows[i])<0) bad.push('the ledger has no '+rows[i]);
-       if(lg.textContent.indexOf('OBJECTIVES')<0||lg.textContent.indexOf('COMBAT')<0) bad.push('the ledger rows are not grouped COMBAT and OBJECTIVES');
+       for(i=0,rows=['KILLS','MEDALS','GOALS','EXTRACTION','RAID SCORE','CREDITS','ITEMS SECURED','HAUL VALUE','MONEY','ACCURACY','CONTAINERS','HEALTH'];i<rows.length;i++) if(lg.textContent.indexOf(rows[i])<0) bad.push('the ledger has no '+rows[i]);
+       if(!lg.querySelector('.lgps')||!lg.querySelector('.lgpm')) bad.push('the ledger is not a RAID SCORE panel and a MONEY panel');   // retargeted for cw-spmoney, HIS ORDER 2026-10-28: sp and money never intermingled, so the one list grouped COMBAT and OBJECTIVES with a RAID TOTAL row is now two panels
        if(/items? secured for|You extracted with|ACHIEVEMENT:|CAREER SCORE/.test(tx)) bad.push('a sentence the ledger replaces is still on the card');
        if(dto('.sc')!==1500) bad.push('RAID SCORE is '+dto('.sc')+', not 1500 (750 x2)');
        if(dto('.cr')!==1500) bad.push('CREDITS is '+dto('.cr')+', not 1500 (one credit a point)');
@@ -85914,7 +87314,7 @@ window.__REGRESS=[
        __topClear(); __resetCfg(); __cleanProfile();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'14.11',what:'ring closure lines wait their turn: one extraction tick in which one ring closes and another is warned keeps both lines, showing or queued, while a ring closing alone says it is closed (raid HUD and map screen audit 2026-09-15, finding 3)',
+  {v:'14.11',what:'ring closure lines wait their turn: one extraction tick in which one ring closes and another is warned keeps both lines, showing or queued, while a ring closing alone says it is closed (raid HUD and map screen audit 2026-09-15, finding 3; cw-msgroute retarget, his order 2026-10-27 ~22:35: a line about one exit is said only for the exit you are heading to or one within 60 m, so each part starts heading to ring 0, and ring 1 is the one you head to once ring 0 shuts)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
      if(typeof tickExtractPoints!=='function') return 'SKIP: no extraction tick in this build';
@@ -85927,7 +87327,7 @@ window.__REGRESS=[
        if(!g||!g.player||g.sim) return 'SKIP: no live raid';
        if(!(g.zones&&g.zones.length>=2)) return 'SKIP: fewer than two extraction points';
        g.ents.length=0;
-       function reset(){ for(var i=0;i<g.zones.length;i++){ var z=g.zones[i]; z.open=true; z.warned=1; z.closeAt=-9999; z.beaconT=null; z.hold=null; z.pullT=null; } g.msg=''; g.msgT=0; g.msgQ=[]; g.alert=null; g.alertQ=[]; }
+       function reset(){ for(var i=0;i<g.zones.length;i++){ var z=g.zones[i]; z.open=true; z.warned=1; z.closeAt=-9999; z.beaconT=null; z.hold=null; z.pullT=null; } g.active=g.zones[0]; g.msg=''; g.msgT=0; g.msgQ=[]; g.alert=null; g.alertQ=[]; }
        function lines(){ return [String(g.msg||''),String((g.alert&&g.alert.m)||'')+' '+String((g.alert&&g.alert.sub)||'')].concat((g.msgQ||[]).map(String),(g.alertQ||[]).map(function(e){ return String(e&&e.m)+' '+String((e&&e.o&&e.o.sub)||''); })); }   /* retargeted for the alert lane (R08): extraction lines show or wait in the alert slot */
        // CONTROL: a ring closing alone says so.
        reset();

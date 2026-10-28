@@ -1,0 +1,41 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  hudtv-p1-standard                      NOT STAGED  79.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at until (<anonymous>:6:155)
+    at async window.__c7stage (<anonymous>:33:5)
+    at async <anonymous>:61:1
+    at async <anonymous>:1:21
+  hudtv-p1-large                         NOT STAGED  75.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at until (<anonymous>:6:155)
+    at async window.__c7stage (<anonymous>:33:5)
+    at async <anonymous>:61:1
+    at async <anonymous>:1:21
+  hudtv-p1-large-half                    NOT STAGED  75.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at until (<anonymous>:6:155)
+    at async window.__c7stage (<anonymous>:33:5)
+    at async <anonymous>:61:1
+    at async <anonymous>:1:21
+  hudtv-p2-standard                      NOT STAGED  75.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at until (<anonymous>:6:155)
+    at async window.__c7stage (<anonymous>:33:5)
+    at async <anonymous>:61:1
+    at async <anonymous>:1:21
+  hudtv-p2-large                         NOT STAGED  75.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at until (<anonymous>:6:155)
+    at async window.__c7stage (<anonymous>:33:5)
+    at async <anonymous>:61:1
+    at async <anonymous>:1:21
+  hudtv-p2-large-half                    NOT STAGED  75.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at until (<anonymous>:6:155)
+    at async window.__c7stage (<anonymous>:33:5)
+    at async <anonymous>:61:1
+    at async <anonymous>:1:21
+  hudtv-p1-large-half                    NOT STAGED  75.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at until (<anonymous>:6:155)
+    at async window.__c7stage (<anonymous>:33:5)
+    at async <anonymous>:61:1
+    at async <anonymous>:1:21
+  hudtv-p2-large-half                    NOT STAGED  75.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at until (<anonymous>:6:155)
+    at async window.__c7stage (<anonymous>:33:5)
+    at async <anonymous>:61:1
+    at async <anonymous>:1:21

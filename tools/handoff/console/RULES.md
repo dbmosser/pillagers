@@ -17,9 +17,10 @@ credit comes back on 11-01). His 10-19 rule: speed is fine, waste is not. Be thr
   every "after the party" or "after 10/30" hold in this file, in job files and in staging: nothing waits for the party. The Mon 10/26
   cutoff no longer holds back work he ordered. The party copy (the -Prepare snapshot on his PC) is refreshed Fri 10/30 afternoon (his 10-24 answer "Friday"; it was a Thu 10/29 lock); the
   game file keeps moving after it. Risky changes ship now, each with a line on what he should watch for on his next play.
-  HIS ORDER 10-27 (verbatim): "Ok no new features until Nov 1. Resources should now be spent polishing, bug fixing, etc". Until Sun 11/1
-  work only on fixes and polish of what the game already has; never start or write a new-feature job (feature jobs wait in
-  tools/handoff/console/after-nov1 and go back to tasks/ on 11/1). This beats any job file or answer page that asks for a new feature.
+  HIS ORDER 10-28 about 08:10 (verbatim): "I don't want any development paused or delayed because of the party or any other anticipated date. Just keep developing". This ENDS his 10-27
+  "no new features until Nov 1" freeze: the feature jobs parked in console/after-nov1 went back to tasks/ that morning, and no job is ever
+  held for the party or any other date again. Party-breaking bugs still go first in line; nothing else waits. The only brake left is the
+  weekly plan pacing (caps.txt PLAN_LINE_*), which keeps the plan from running out and stopping every chat before the reset.
 - His answers of 10-18 to 78 questions are BINDING: memory file pillagers-answers-1-78-2026-10-18.md (read it when your task
   names a question number like Q57).
 - Read the CURRENT block at the top of tools/handoff/START-HERE.md first (where things stand), then your task file and any memory file
@@ -220,7 +221,7 @@ actually look good". So for any change a player can see:
   the job parks in waiting\ until the coordinator has done it. A TASK WAITING that names your own id or a task that is not open
   counts as a try.
 
-- WORDS (his order 10-18 PM): on screen a player is a "pillager", the AI humans are "pillager bots", and "raider" never shows. Code names (kind raider, CFG.nRaider) stay as they are.
+- WORDS (his order 10-28 AM, reversing 10-18 PM): "pillagers should always be referred to as 'pillagers' never 'pillager bots'". On screen players and the AI humans are both "pillagers"; "pillager bot" and "raider" never show. Code names (kind raider, CFG.nRaider) stay as they are.
 
 - HIS ROUND 2-3 RULES (10-18 evening; full list in tools/handoff/q-round3/answers.md):
   - Finish line (3.51 a): critic 4 for the raid, waiting, pause and run-over screens; 3 is enough for the rest.
@@ -229,5 +230,5 @@ actually look good". So for any change a player can see:
   - You may decide alone (2.85): anything that is not a brand new feature and not a change to one of his rulings, including tuning up to about 25 percent.
   - A 2-player change is done only after you have seen it work in both windows, with a picture from each (2.86 a).
   - Mon 10/26 and the lock: his 10-20 23:00 order beats 3.37 c and 2.81 c for the game file: nothing waits for the party; the lock freezes only the party copy.
-  - Callouts use the specific name, e.g. "golden sentry down" or "golden pillager bot down" (3.84 b).
+  - Callouts use the specific name, e.g. "golden sentry down" or "golden pillager down" (3.84 b).
   - Plain language ALWAYS in anything written for him (2.38 b).

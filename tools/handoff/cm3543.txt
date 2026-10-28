@@ -1,0 +1,7 @@
+v35.43: readable ping labels and map glyphs
+
+Ping labels are readable above their targets and ping shapes are larger on both maps.
+
+Check 35.43. Fails on v35.42.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

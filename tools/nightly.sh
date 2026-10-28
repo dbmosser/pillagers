@@ -15,7 +15,7 @@
 #   (2) the full regression corpus (corpq.sh, Chrome 9344): at most every 4 hours AND only on a new game HEAD (corpus_t and corpus_head
 #       in state.txt). It does not wait for the ship queue to be idle and takes no ship lock (it tests a frozen copy, tools/fxcorpus.html);
 #       one run takes 2.5 to 3.5 hours;
-#   (3) the local-LLM audits (tools/llm-night.ps1) once per new HEAD, only with 20+ GB of RAM free (the model holds about 12 GB);
+#   (3) the local-LLM audits (tools/llm-night.ps1) once per new HEAD; OFF since 10-28 unless caps.txt LOCAL_AI=1 (see the caps note);
 #   (4) once a day, the itch and GitHub backup catch-up (tools/itch-daily.sh); (4b) 10-27, his "Itch should also always get the latest
 #       build if that is feasible" and his later "please make sure itch is always getting the latest version": tools/itch-follow.sh in the
 #       background whenever it is not running (it looks at the last commit every 30 seconds and runs itch-daily.sh --itch for any build
@@ -110,6 +110,14 @@ while true; do
     ck=$(printf '%s\n' "$gm" | sed -n 's/^checked=//p' | head -1); cks=$(date -d "$ck" +%s 2>/dev/null || echo 0)
     [ $(( $(date +%s) - cks )) -lt 600 ] && isg=1
   fi
+  # 10-28: the party plays on pads, which move neither the Windows idle clock nor (two game windows) the 15% graphics card line that
+  # gaming.txt goes by. The main PC's idle runner reads the pads and writes pad-seen.txt (epoch=) to the bridge share while one is in use:
+  # under 10 minutes old it counts as gaming here, so nothing new starts (helpers, robots, the full run, the local AI). No file, no change.
+  if [ $isg = 0 ]; then
+    pe=$(timeout 25 node "$R/tools/bridge/hostctl.mjs" share-get name=pad-seen.txt 2>/dev/null | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{try{const j=JSON.parse(s);if(j.ok&&j.base64)process.stdout.write(Buffer.from(j.base64,'base64').toString())}catch(e){}})" 2>/dev/null | tr -d '\r' | sed -n 's/^epoch=//p' | head -1 | tr -dc '0-9')
+    if [ -n "$pe" ] && [ $(( $(date +%s) - pe )) -lt 600 ] && [ $(( pe - $(date +%s) )) -lt 600 ]; then isg=1; gm="what=pads
+$gm"; fi
+  fi
   # 10-20 10:00 (his "reduce load when I am at the PC"): the check also writes atpc=1 when the main PC had keyboard or mouse input in the last
   # 10 minutes (atpc=0 when it had none). Then the long jobs that draw on his graphics card (the full test run's browser, the robots) and
   # the local AI start nothing new (atq=1); the helpers go on (the main PC holds the VM to -AtPcCpuPct of its processors). One failed read
@@ -170,7 +178,8 @@ while true; do
     #     the model runs on the main PC's graphics card (PILLAGERS_OLLAMA_URL), so the VM's own RAM does not matter: it runs when that
     #     Ollama answers and the main PC is not busy (CPU under 60%, a rough "not gaming" sign, read through the host bridge). Without
     #     a remote Ollama it keeps the old rule (20+ GB free here, the model holds about 12 GB).
-    if [ "$(get llm_head)" != "$head" ] && [ "$(running 'llm-night\.ps1')" = "0" ] && llm_ok; then
+    #     10-28: off unless caps.txt says LOCAL_AI=1 (each load took the main PC to 0.2-1.8 GB free on 10-27; none of its hits was real).
+    if [ "$(grep -m1 '^LOCAL_AI=' "$R/tools/handoff/console/caps.txt" 2>/dev/null | cut -d= -f2 | tr -dc 01)" = 1 ] && [ "$(get llm_head)" != "$head" ] && [ "$(running 'llm-night\.ps1')" = "0" ] && llm_ok; then
       since=$(get llm_head); put llm_head "$head"
       echo "$(date +%H:%M) llm audits start, since ${since:-whole file}" >> "$LOG"
       (powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/llm-night.ps1" -Model qwen2.5-coder:14b ${since:+-Since $since} > /dev/null 2>&1

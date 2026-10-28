@@ -1,3 +1,8 @@
+--- BINDING 10-27 23:25 (CEO). Read first; this block beats everything below. ---
+His order 10-27 about 20:30, shipped as v35.34 (cw-titleplain): "get rid of the graphics behind the title screen -- they make no sens,e, there are robots inside the undercroft??? that should never happen".
+So the live backdrop part of this task (Q52/Q54: the dimmed map, the pillager-versus-robot fight) is CANCELLED for good. Never put the floor, figures, machines or a fight back behind the title, the scoreboard, the how-to pages or any menu. Never draw a robot or machine in the Undercroft.
+What is left: polish of the title screens themselves (01, 44, 45, 57) on the plain v35.34 backdrop: logo, the one line "Ascend. Pillage. Extract.", mode rows, spacing. If the critic only asks for a backdrop, log it as "ruled out 10-27" and do not build one.
+
 THE TITLE AND THE LIVE BACKDROP (his answers 10-18). His answers of 10-18 are in the memory file pillagers-answers-1-78-2026-10-18.md (read the numbers named here first). Notes: notes\03-title-and-backdrop.md.
 - Q50: keep the normal title screen (no special party version). Q51: drop the story paragraph and the three step cards for one
   line, "Ascend. Pillage. Extract." Q53: no raiders beside the logo. Q72: no PvP row (task 01 hides it).

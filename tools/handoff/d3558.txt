@@ -1,0 +1,5 @@
+## v35.58 - PARTNER SHIP STAYS AFTER HOST EXTRACTION
+
+Co-op hunt while he was away. The both-out host branch erased the shared ship while player 2 was still playing. Keep the called ship on its existing clock and clear only the host pull. Playtest watch: in smooth look, have player 2 call a ship, board as player 1 first, then board as player 2 without calling again; the run should end only after both are out. Solo extraction should still end at once.
+
+MEASURED. Check 35.58 passes, and fails on v35.57.

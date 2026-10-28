@@ -1,0 +1,7 @@
+v35.64: tv hud readability
+
+TV HUD labels read larger; empty belt slots are quieter and the score panel has room.
+
+Check 35.64. Fails on v35.63.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

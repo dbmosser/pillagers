@@ -40,5 +40,6 @@ echo "$fx" | grep -q '"ents":{"0":85,"1":374}' || die "entity fingerprint moved"
 echo "$fx" | grep -q '"containers":{"0":165,"1":593}' || die "container fingerprint moved"
 cd "$H" && bash ship.sh commit "$NEW" "cm$NEW.txt" 2>&1 | tail -3
 git -C "$R" log -1 --format=%s | grep -q "^v$V:" || die "the save step did not commit v$V (10-19: a missing tools/publish folder let SHIPPED print with nothing saved)"
-cd "$R" && git push -q origin master 2>&1 | tail -2
+# 10-27 night: a push rejected because GitHub moved first (v35.44 sat waiting for a build GitHub never got) now merges origin/master and pushes again, up to 3 tries.
+cd "$R" && for pt in 1 2 3; do po=$(git push -q origin master 2>&1) && break; echo "$po" | tail -2; git fetch -q origin master && git merge -q --no-edit origin/master 2>&1 | tail -2; done
 echo "SHIPPED v$V ($K): $(git log --oneline -1)"

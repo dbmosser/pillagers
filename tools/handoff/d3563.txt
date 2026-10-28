@@ -1,0 +1,5 @@
+## v35.63 - HUD SIZE WORKS FOR TV
+
+Co-op hunt while he was away. The existing HUD SIZE row saved a choice that no drawing code used. Text size changes fonts but leaves the vitals bars and partner plate fixed. Large for tv now grows raid panels, minimap and partner rows by 20 percent through the shared HUD scale. The belt grows above the bottom corners instead of being squeezed between them. Standard is unchanged. Playtest watch: in both windows at 1080p in the smooth look, switch HUD SIZE both ways, check panel spacing and belt clicks or dragging, and read the TV view from across the room. Saved panel positions or very large text may need adjustment.
+
+MEASURED. Check 35.63 passes, and fails on v35.62.

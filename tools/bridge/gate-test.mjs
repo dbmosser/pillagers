@@ -31,7 +31,9 @@ async function up(url) { try { const r = await fetch(url, { method: 'HEAD' }); r
 async function runCase([label, zoomPct, mode, port], shareDir) {
   const dir = path.join(os.tmpdir(), 'pv-gate-' + label + '-' + Date.now());
   fs.mkdirSync(path.join(dir, 'Default'), { recursive: true });
-  const prefs = { partition: { per_host_zoom_levels: { x: {} } } };
+  // 10-27: this throwaway Chrome saves any download into its own folder, never his Downloads (tools/chrome-nodownloads.ps1 does the same for the test Chromes)
+  fs.mkdirSync(path.join(dir, 'downloads'), { recursive: true });
+  const prefs = { partition: { per_host_zoom_levels: { x: {} } }, download: { default_directory: path.join(dir, 'downloads'), prompt_for_download: false, directory_upgrade: true }, savefile: { default_directory: path.join(dir, 'downloads') } };
   if (zoomPct !== 100) prefs.partition.per_host_zoom_levels.x.localhost = { last_modified: '13437019067440923', zoom_level: Math.log(zoomPct / 100) / Math.log(1.2) };
   fs.writeFileSync(path.join(dir, 'Default', 'Preferences'), JSON.stringify(prefs));
   const args = ['--user-data-dir=' + dir, '--remote-debugging-port=' + port, '--no-first-run', '--no-default-browser-check', '--disable-extensions', '--disable-sync',

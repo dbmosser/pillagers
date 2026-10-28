@@ -25,7 +25,11 @@ No HIGH items left except 177 hardcore save (parked until 11/1, goes first then)
 - His note 10-27 ~22:25 with a belt picture (verbatim): "the higher white bars need to be removed as they are not helpful". These are the cream rarity pips (same bars as "White bars gone everywhere"); SHIPPED v35.40 with job 199 (belt included); the lower thin bar on each belt slot stays.
 
 - His order 10-27 ~22:35 (verbatim): "the game is telling me about extraction b when it is happening far across the map from me." The "extraction X closing / closed" lines fire for every exit on the map. Added to 186c build 1 (cw-msgroute): exit lines only for the exit you are heading to or one within about 60 m; the rest stay on the map and pill.
-- His order 10-27 ~22:40 (verbatim): "mousing over different items in the stash is a complete clusterfuck because it changes the size of one of the sub menus". Job in-session/200-stash-hover-no-resize.md, session stash-hover (Sonnet high) started 22:45.
+- His order 10-27 ~22:40 (verbatim): "mousing over different items in the stash is a complete clusterfuck because it changes the size of one of the sub menus". Job in-session/200-stash-hover-no-resize.md, session stash-hover (Sonnet high) started 22:45. SHIPPED v35.42 (daf166dce, ON HIS PC): the item line under the stash grids is one fixed 160px box, hover or not, so the backpack, hotbar, gun keys and grids no longer jump; job moved to console/done/.
+
+- 10-27 ~23:10: a fresh successor order chat "Gameplay Edit Intaker 2" (Sonnet high) was proposed to him as a card (the cost seat asked; this chat is long). Until he starts it, "Gameplay Edit Intaker" keeps taking his edits. Open here: 186c (HUD Improver session, build 1 then build 2) and 186e (start after cw-msgroute is ON HIS PC).
+
+- 10-27 ~23:20: the Auditor cloud session sent two ready bug fixes on branch claude/audit-2026-10-28 (df251088): draft-cloud-ach-born-scan (a new save counts every kill twice the first time its stats page opens) and draft-cloud-p2-easy-card (player 2 never gets the easy mode card). Plus tool changes to merge. Not shipped yet: it came from another session, not from him; asked him in game words for a yes.
 
 ## Queued now in tasks/ (fix, polish or tuning; priority line in each file)
 - MEDIUM: 139 solo pings; 140 red enemy tracers; 145 pad sprint toggle default; 151 damage numbers merge, yours red; 152 alarms volume row, low mag tick; 163 last minute ash and red glow; 165 partner row gun and ammo; 166 kill feed icons; 186 buildings read as house, office, warehouse in the smooth look; 03 title screen redesign, 94 60 fps on a 5 year old laptop, 95 2 player smooth on both TVs (re-queued from failed/, stop if the old blocker stands).
@@ -35,3 +39,18 @@ No HIGH items left except 177 hardcore save (parked until 11/1, goes first then)
 - HIGH: 177 hardcore save.
 - MEDIUM: 120d2, 141, 142, 147, 149, 153, 154, 161, 172, 175.
 - LOW: 144, 148, 150, 155, 156, 157, 158, 162, 169, 171, 174, 178, 182, 192, 193, 194, 195, 196, 197.
+10-28 extracted card: "this extracted screen is an absolute mess -- money versus raid score/sp should never be intermingled" -> cw-spmoney (Menus master draft), shipping 10-27 night
+
+- 10-28 00:0x: 186c build 1 (cw-msgroute) ON HIS PC v35.44 (his 8802 serves 35.45): lines in a staged 3 minute raid, 43.3 before, 30 after. Build 2 (186d danger slot) is now a lane job, tasks/186d-danger-slot.md. 186e started as its own helper on Opus high (job file updated); order chat "Gameplay Edit Intaker 2" took over from the old intaker at 23:1x.
+- 10-28 186e build 1 (cw-hudstates): SHIPPED v35.49, ON HIS PC 23:56 (10-27). Revealed, hidden and in cover are small icons beside the stance chip; low health pulses the hp bar; low ammo pulses the count red; an empty gun shows the reload key on the gun card.
+- 10-28 186e build 2 (cw-extpill): SHIPPED v35.50, ON HIS PC 00:03. The extract pill turns amber with a last minute countdown when its exit is closing (red when shut, one pulse per change); an exit just off screen is an edge arrow "c 152m"; the sky is a small icon beside the clock.
+- 10-28 186e build 3 (cw-answerline): SHIPPED v35.52, ON HIS PC 00:12. A try that did not work (health full, throw blocked, too tired to roll) answers in one small line under the character for 2 s, once per press; backpack full stays in the pickup stack.
+- 10-28 186e build 4 (cw-hudsize): SHIPPED v35.53, ON HIS PC 00:23. Feed and answer line at least 20 px, the opened controls list 18 px, danger headline 30 px; red words on a plate are a lighter red for contrast. Job file in console/done/.
+
+- His order 10-28 (verbatim, via the old intake chat): "make it 3000 damage to unlock an airstrike instead of 1500". Job in-session/201-airstrike-3000.md, helper (Sonnet high) started by the order chat.
+SHIPPED 10-28 v35.66: 201 air strike needs 3000 damage (was 1500). On his PC 168s after the ship.
+
+- His order 10-28 (verbatim): "Ok here's the edit. When the player makes the game harder in any way in the settings (eg number of enemies, number of pillagers, damage taken, etc, that should give a score multiplier (maybe an additional 5% for each tier/level) and that should be indicated to the player. Super hot off should be considered harder and should also give the multiplier. All these multipliers should stack. Eg if player wants to play a really hard game, that should give more points." A new feature, so PARKED until Sun 11/1: console/after-nov1/202-difficulty-score-multiplier.md (Opus high, goes to tasks/ on 11/1, first in line). Told him.
+- 10-28 his answer on the multiplier (verbatim): "No I want it now". Hold lifted by him: job 202 moved from after-nov1 to in-session/, helper (Opus high) started now.
+- His standing order 10-28 ~08:10 (verbatim, via the CEO chat): "I don't want any development paused or delayed because of the party or any other anticipated date. Just keep developing". Ends the Nov 1 freeze; the order chat files every order straight into tasks/ or in-session/, never after-nov1.
+- His addition 10-28 (verbatim) to job 202: "Fog of war should also be one of the multiplier items. Adjust the settings menu if needed to make this happen". Sent to the 202 helper.

@@ -23,6 +23,8 @@
 # starts nothing until no key, mouse or game pad has been used for 15 minutes and 6 GB are free; it stops everything it started within
 # seconds of a touch (or under 4 GB free); and a build another PC is testing or has tested stays that PC's: here it gets robots only.
 # The VM's nights come first: from 22:40 to 23:10 it holds nothing, and until 06:45 it starts only with 10 GB free (see VMNight below).
+# 10-28: while the VM's memory follows him it starts only after the VM stops growing and with 8 GB free, stops under 5 GB at two looks,
+# waits 30 minutes after a memory stop, and runs one robot at 4K in both windows (see the idle loop, Watch and the robot lines).
 # 10-26 SPARE-PRESENCE-PAUSE (his "make it so that the JTPC pauses testing whenever someone is at the JTPC -- eg my son wants to use it
 # for gaming"): the SPARE PC now stops all its test work (scripts and test Chromes) within seconds of someone being there, and starts
 # again by itself once nobody has been there for 15 minutes. Someone is there when a key or the mouse was used, a game pad changed since
@@ -53,12 +55,17 @@ if(-not (Test-Path -LiteralPath ($R+'\'+$Mark))){ Write-Output ('refusing: no '+
 # the test scripts (corpq.sh, corpus-slices.sh, fuzz.ps1) take their folders from these; unset, they use the spare PC's paths as before
 if($Idle){ $env:PILLAGERS_ROOT=($R -replace '\\','/'); $env:PILLAGERS_SCRATCH=(($W+'\scratch') -replace '\\','/'); New-Item -ItemType Directory -Force -Path ($W+'\scratch') | Out-Null }
 New-Item -ItemType Directory -Force -Path $W,$Out,$FzOut,$CorpDir | Out-Null
+# 10-28 his "everything should restart automatically when I restart my pc": a heartbeat written before this boot is stale whatever its age.
+# After his 23:12 restart the sign-in start found a heartbeat from before the restart, under 10 minutes old, and exited; the runner (and so
+# 8802 and 8799) came back only with the 15-minute task at 23:24.
+$Boot=$null; try{ $Boot=(Get-CimInstance Win32_OperatingSystem -ErrorAction Stop).LastBootUpTime }catch{}
+function HbAgeSec(){ $t=(Get-Item -LiteralPath $Hb -ErrorAction Stop).LastWriteTime; if($Boot -and $t -lt $Boot){ return 1e9 }; return ((Get-Date)-$t).TotalSeconds }
 if(-not $Once -and (Test-Path -LiteralPath $Hb)){
-  if(((Get-Date)-(Get-Item -LiteralPath $Hb).LastWriteTime).TotalSeconds -lt 600){ exit 0 }   # another copy is alive
+  if((HbAgeSec) -lt 600){ exit 0 }   # another copy is alive
 }
-# SPARE-PRESENCE-PAUSE: a heartbeat 10+ minutes old means this PC was off or the last copy died; a pause it was in is over (see below the
-# functions). A copy that restarts itself for a new runner deletes the heartbeat first, so its pause and paused_since go on.
-$HbOld=$false; if(-not $Idle){ try{ $HbOld=(((Get-Date)-(Get-Item -LiteralPath $Hb -ErrorAction Stop).LastWriteTime).TotalSeconds -ge 600) }catch{} }
+# SPARE-PRESENCE-PAUSE: a heartbeat 10+ minutes old (or from before this boot) means this PC was off or the last copy died; a pause it was in
+# is over (see below the functions). A copy that restarts itself for a new runner deletes the heartbeat first, so its pause and paused_since go on.
+$HbOld=$false; if(-not $Idle){ try{ $HbOld=((HbAgeSec) -ge 600) }catch{} }
 $Git=(Get-Command git -ErrorAction SilentlyContinue).Source; if(-not $Git){ $Git='C:\Program Files\Git\cmd\git.exe' }
 $Node=(Get-Command node -ErrorAction SilentlyContinue).Source; if(-not $Node){ $Node='C:\Program Files\nodejs\node.exe' }
 
@@ -303,8 +310,22 @@ function SoundWho(){
 # unlocked, the passive signs, cheapest first: a full-screen program, sound, a game on the graphics card (the stopgap's order and cap).
 # Last, the time someone was last there by any sign, carried over a restart (seen_t). $script:awayWhy says which sign it was (runner.log
 # only). With no presence check loaded it says nobody, so the runner tests as before.
+# 10-28 IDLE MODE: the party plays on pads, and a pad does not move the Windows idle clock that the main PC's "VM light while gaming" check
+# goes by, so on a pads-only night the VM would start helpers, robots and the local AI on the party PC. While a pad is in use this writes
+# pad-seen.txt (epoch=, seen=) into the bridge share at most once a minute; the VM's tools/nightly.sh counts one under 10 minutes old as
+# gaming (nothing new starts). It records nothing of what was pressed.
+$script:padNoteT=[long]0; $script:gcAtStart=$false
+function PadNote(){
+  try{
+    $e=Epoch; if(($e-$script:padNoteT) -lt 60){ return }; $script:padNoteT=$e
+    $sh=Join-Path $env:LOCALAPPDATA 'PillagersBridge\share'; if(-not (Test-Path -LiteralPath $sh)){ return }
+    $f=Join-Path $sh 'pad-seen.txt'
+    [IO.File]::WriteAllText($f+'.tmp',('epoch='+$e+"`r`nseen="+(Get-Date).ToString('yyyy-MM-dd HH:mm:ss')+"`r`n"),$Enc)
+    Move-Item -LiteralPath ($f+'.tmp') -Destination $f -Force
+  }catch{}
+}
 function AwaySec(){
-  if($Idle){ if([PillagersIdle.Input]::PadInUse()){ $script:padT=Get-Date }; return [Math]::Min([PillagersIdle.Input]::IdleSec(),((Get-Date)-$script:padT).TotalSeconds) }
+  if($Idle){ if([PillagersIdle.Input]::PadInUse()){ $script:padT=Get-Date; PadNote }; return [Math]::Min([PillagersIdle.Input]::IdleSec(),((Get-Date)-$script:padT).TotalSeconds) }
   if($script:noIn){ $script:awayWhy='nobody can be seen (the presence checks did not load)'; $script:humanAgo=1e9; return 1e9 }
   $now=Get-Date; $e=Epoch
   $o=$false
@@ -368,6 +389,13 @@ function FollowAway(){
        $t=[IO.File]::ReadAllText($f); if($t -match '(?m)^follow=away' -and $t -match '(?m)^awaymin=(\d+)'){ return [int]$Matches[1] } }catch{}
   return 0
 }
+# 10-28 (Main PC Correspondent): what the main PC's memory task wrote this minute (gaming.txt in the bridge share, under 5 minutes old).
+# VmGrowing: it is still giving the VM memory while he is away ("mem=away, VM 12 -> 13 GB"); once it says "(its most)", "no more room" or
+# "refused", the VM takes no more, so work started then keeps its memory. GameChrome: its game check names a Chrome this minute.
+function ShareGaming(){ try{ $f=Join-Path $env:LOCALAPPDATA 'PillagersBridge\share\gaming.txt'; $i=Get-Item -LiteralPath $f -ErrorAction Stop
+  if(((Get-Date)-$i.LastWriteTime).TotalMinutes -gt 5){ return '' }; return [IO.File]::ReadAllText($f) }catch{ return '' } }
+function VmGrowing(){ return ((ShareGaming) -match '(?m)^mem=away, VM [0-9.]+ -> ') }
+function GameChrome(){ return ((ShareGaming) -match '(?m)^what=chrome\b') }
 function VMResizeSoon(){ if((FollowAway) -gt 0){ return $false }; $hm=HourMin; return ($hm -ge 2240 -and $hm -lt 2310) }
 function VMNight(){ if((FollowAway) -gt 0){ return $false }; $hm=HourMin; return ($hm -ge 2240 -or $hm -lt 645) }
 # ends only what this runner started: the test scripts run from C:\PillagersIdle, and the test Chromes (debug port and pillagers-cdp profile)
@@ -516,18 +544,37 @@ function IdleWork(){
 function Arrived(){ if($Idle){ return $false }; return ((AwaySec) -lt 30) }
 # the wait between rounds, looking for him every 5 seconds (10-26 SPARE-PRESENCE-PAUSE: on the spare PC too, for anyone)
 function Watch([int]$sec){
-  $end=(Get-Date).AddSeconds($sec); $k=0
+  $end=(Get-Date).AddSeconds($sec); $k=0; $lo=0
   while((Get-Date) -lt $end){
     Start-Sleep -Seconds 5; $k++
     if((AwaySec) -lt 30){ if($Idle){ Stop-Work 'he is back at the PC' }else{ Stop-Work ('someone is at the PC: '+$script:awayWhy) -Refund }; return }
     if($Idle -and ($k % 6) -eq 0){
-      if((FreeGB) -lt 4){ Stop-Work 'under 4 GB free'; return }
+      if((FreeGB) -lt 5){ $lo++ }else{ $lo=0 }
+      if($lo -ge 2){ PutS 'lowstop_t' ([string](Epoch)); Stop-Work 'under 5 GB free at two looks'; return }
       if(VMResizeSoon){ Stop-Work 'the VM takes its night memory at 23:00'; return }
+      # 10-28: if the main PC's game check reads the 4K robot as him playing (it skips pillagers-cdp Chromes since 10-24), the VM would be
+      # held to 30% of its processors: the robot goes back to 1080p for the rest of the day
+      if((-not $script:gcAtStart) -and (GameChrome) -and ((Running 'corpq\.sh|corpus-slices\.sh') -eq 0) -and (Running 'fuzz\.ps1.*-Port 9332\s.*3840x2160') -gt 0){ PutS 'no4k' ((Get-Date).ToString('yyyy-MM-dd')); Stop-Work 'the 4K robot reads as a game to the main PC game check: 1080p for the rest of today'; return }
     }
+    # 10-28: his 8802, the party copy and the bridge are looked after every minute while the runner works too (once per 5-minute round
+    # before: v35.38 took 319 s to reach his PC while robots ran); each throttles itself to 60 s
+    if($Idle -and ($k % 12) -eq 0){ Refresh-Party; Ensure-Bridge; Ensure-Play }
   }
 }
 
 $SelfHash=(Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash
+# 10-28: a new runner from GitHub is restarted into only when this Windows PowerShell can read it and it is ASCII. Otherwise this copy goes
+# on (it keeps 8802, the party copy and the bridge up), says PROBLEM once, and takes the next good copy from master.
+$script:badHash=''
+function NewRunnerOK(){
+  $h=(Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash
+  if($h -eq $SelfHash -or $h -eq $script:badHash){ return $false }
+  $msg=''
+  try{ $tk=$null; $er=$null; [void][Management.Automation.Language.Parser]::ParseFile($PSCommandPath,[ref]$tk,[ref]$er)
+    if($er -and $er.Count -gt 0){ $msg=([string]$er[0].Message)+' (line '+$er[0].Extent.StartLineNumber+')' } elseif([IO.File]::ReadAllText($PSCommandPath,[Text.Encoding]::GetEncoding(28591)) -match '[^\x00-\x7F]'){ $msg='it is not ASCII' } }catch{ return $true }
+  if($msg){ $script:badHash=$h; Say ('PROBLEM: the new runner from GitHub ('+$h.Substring(0,8)+') cannot be read, so this copy goes on: '+(Short $msg)); return $false }
+  return $true
+}
 Say ('spare runner started (pid '+$PID+', game v'+(GameVer)+')')
 
 function Ensure-Server(){
@@ -595,6 +642,7 @@ function Refresh-Party(){
     $want=$m.Groups[1].Value; $script:lastMaster=$want; $have=G -C $PD rev-parse HEAD
     if($script:gx -ne 0 -or $have.Length -lt 8){ return }
     if($want -eq $have){ if((GetS 'party_head') -ne $have.Substring(0,8)){ PutS 'party_head' $have.Substring(0,8); PutS 'party_ver' (PartyVer $PD) }; return }
+    if($script:playMiss -gt 0){ return }   # 10-28: 8802 is down; Ensure-Play starts it first and the copy update follows (see Ensure-Play)
     $S=$T+'\migrate\party-host-copy.ps1'; if(-not (Test-Path -LiteralPath $S)){ return }
     $p=Start-Process powershell.exe -NoNewWindow -PassThru -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-File',('"'+$S+'"'),'-Prepare','-Force') -RedirectStandardOutput ($W+'\party-refresh.out') -RedirectStandardError ($W+'\party-refresh.err')
     [void]$p.Handle   # PS 5.1: hold the handle so ExitCode is filled in later
@@ -664,6 +712,42 @@ function PartyIntent(){
   }
   return $best
 }
+# 10-27 his order (via the main PC Claude): "make sure we are always getting game telemetry back from the main pc when we play on chrome on
+# the main pc". The 8799 report receiver (the party copy's tools\collector.ps1, which writes its exports folder: run reports, notes, snips)
+# was never started again after it died while 8802 still answered: party-host-copy -Start refuses a busy 8802, and the look below stopped
+# at 8802. Now, when 8802 answers (not a relay), nothing has answered on 8799 at 3 looks in a row (2+ minutes) and the party copy was not
+# stopped on purpose, the copy's own collector is started alone, hidden and detached (the runner never waits on it beyond 8 s). It never
+# stops anything: not 8802, not his play server, not a collector that answers. A new collector that does not answer within 8 s is stopped
+# (only that new process) and the next try is in 10 minutes. One runner.log line either way.
+$script:collMiss=0; $script:collT=0; $script:collDown=''
+function Ensure-Collector([string]$PD,[int]$port=8799){
+  if((Epoch) -lt $script:collT){ return }
+  $coll=$PD+'\tools\collector.ps1'; if(-not (Test-Path -LiteralPath $coll)){ return }
+  if(Answers $port){ $script:collMiss=0; $script:collDown=''; return }
+  if((PartyIntent) -eq 'stopped'){ $script:collMiss=0; return }
+  if(-not $script:collDown){ $script:collDown=(Get-Date).ToString('HH:mm') }
+  $script:collMiss++
+  if($script:collMiss -lt 3){ return }
+  $script:collMiss=0
+  $ps=Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
+  $np=Start-Process -FilePath $ps -WindowStyle Hidden -PassThru -ArgumentList ('-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "'+$coll+'" -Root "'+$PD.TrimEnd('\')+'" -Port '+$port)
+  $up=$false; for($i=0;$i -lt 16;$i++){ Start-Sleep -Milliseconds 500; if(PortOpen $port){ $up=$true; break } }
+  if($up){ Say ('report receiver '+$port+' had not answered since '+$script:collDown+' while 8802 serves: started the party copy''s own collector (pid '+$np.Id+'); run reports and notes reach exports again'); $script:collDown=''; PutS 'pub_t' '0'; return }
+  try{ Stop-Process -Id $np.Id -Force -ErrorAction SilentlyContinue }catch{}
+  $script:collT=(Epoch)+600
+  Say ('PROBLEM: report receiver '+$port+' down since '+$script:collDown+' and the party copy''s collector did not answer within 8 s; next try in 10 minutes')
+}
+# 10-27 (same order): the report receiver in the status note (and main-status): up or down by a knock on 8799 (a connect, no request), and
+# when the newest run report and note landed in the party copy's exports folder (HH:MM today, else MM-dd HH:MM)
+function NewestExport([string]$PD,[string]$filter){
+  try{ $f=Get-ChildItem -LiteralPath ($PD+'\exports') -Filter $filter -File -ErrorAction Stop | Sort-Object LastWriteTime | Select-Object -Last 1
+       if($f){ $t=$f.LastWriteTime; if($t.Date -eq (Get-Date).Date){ return $t.ToString('HH:mm') }; return $t.ToString('MM-dd HH:mm') } }catch{}
+  return 'none'
+}
+function Receiver8799(){
+  $PD='C:\claudecode\pillagers-party'
+  return ($(if(PortOpen 8799){ 'up' }else{ 'down' })+', last report '+(NewestExport $PD 'run-*.txt')+', last note '+(NewestExport $PD 'feedback-*.txt'))
+}
 function Ensure-Play(){
   if(-not $Idle){ return }
   try{
@@ -682,13 +766,16 @@ function Ensure-Play(){
     if(((Epoch)-$script:playT) -lt 60){ return }
     $script:playT=Epoch
     if(-not (Test-Path -LiteralPath ($PD+'\.git')) -or -not (Test-Path -LiteralPath ($PD+'\tools\serve.ps1'))){ return }
-    if((Running 'party-host-copy\.ps1') -gt 0){ $script:playMiss=0; return }
     $relay=((Running 'play-relay\.mjs') -gt 0)
-    if($relay){ if(RelayGame){ $script:playMiss=0; return } } elseif(Answers 8802){ $script:playMiss=0; return }
+    if($relay){ if(RelayGame){ $script:playMiss=0; return } } elseif(Answers 8802){ $script:playMiss=0; Ensure-Collector $PD; return }
     if((PartyIntent) -eq 'stopped'){ if($script:playMiss -ge 0){ Say '8802 has no server: the party copy was stopped on purpose, so it stays off'; $script:playMiss=-1 }; return }
     if($script:playMiss -lt 0){ $script:playMiss=0 }
     $script:playMiss++
     if($script:playMiss -lt 3){ return }
+    # 10-28: a running party-host-copy (the copy update Refresh-Party starts on every new master, or a -Start) used to set the misses back
+    # to 0 before they were counted; with master moving every 1 to 3 minutes 8802 stayed down 18+ minutes after his 23:12 restart. Now the
+    # misses count, a start waits only for the one that is running, and Refresh-Party starts no new update while 8802 is down.
+    if((Running 'party-host-copy\.ps1') -gt 0){ return }
     $S=$T+'\migrate\party-host-copy.ps1'; if(-not (Test-Path -LiteralPath $S)){ return }
     $a=@('-NoProfile','-ExecutionPolicy','Bypass','-File',('"'+$S+'"'),'-Start')
     if(-not $relay -and (PortOpen 8799) -and (Running 'pillagers-party[\\/]+tools[\\/]+collector\.ps1') -eq 0){ $a+='-NoCollector' }
@@ -793,12 +880,19 @@ function SparePC([string]$n='DESKTOP-82BKOP4'){
 function Write-Status([string]$corpus,[int]$robots){
   $os=Get-CimInstance Win32_OperatingSystem -ErrorAction SilentlyContinue
   $free=if($os){ [math]::Round($os.FreePhysicalMemory/1MB,1) }else{ '?' }
+  # 10-28: the machine's real size and load, read only, so what it runs at once is sized from its numbers. The notes say 16 GB and
+  # 4 threads, but it has read 22 to 25 GB free all week, and every AMD X3D chip has 12 threads or more.
+  $tot=if($os){ [math]::Round($os.TotalVisibleMemorySize/1MB,1) }else{ '?' }
+  $cpu=@(Get-CimInstance Win32_Processor -ErrorAction SilentlyContinue); $thr='?'; $pct='?'; $cpuN='?'
+  if($cpu.Count){ $thr=($cpu | Measure-Object NumberOfLogicalProcessors -Sum).Sum; $lp=($cpu | Measure-Object LoadPercentage -Average).Average; if($null -ne $lp){ $pct=[math]::Round([double]$lp) }
+    $cpuN=(([string]$cpu[0].Name) -replace '[^\x20-\x7E]','' -replace '\w+=','' -replace '\s+',' ').Trim() }
   # 10-21: each pair in its own brackets. PowerShell's comma binds before +, so the old list was ONE string joined with spaces and the
   # VM's import never found epoch= (it read the spare PC as never seen).
   $L=@(('host='+$HostN),('seen='+(Get-Date).ToString('yyyy-MM-dd HH:mm')),('epoch='+(Epoch)),('game='+(G -C $R rev-parse --short=8 HEAD)+' v'+(GameVer)),
-    ('test_run='+$corpus),('robots='+$robots),('ram_free_gb='+$free),('push_ok='+(GetS 'push_ok')),('runner='+$SelfHash.Substring(0,8)),('mode='+$(if($Idle){ 'idle' }else{ 'full' })))
+    ('test_run='+$corpus),('robots='+$robots),('ram_free_gb='+$free),('push_ok='+(GetS 'push_ok')),('runner='+$SelfHash.Substring(0,8)),('mode='+$(if($Idle){ 'idle' }else{ 'full' })),
+    ('ram_total_gb='+$tot),('cpu_threads='+$thr),('cpu_pct='+$pct),('cpu='+$cpuN))
   # SPARE-PRESENCE-PAUSE: on the spare PC, when its pause began (epoch), for whoever reads the status; the VM goes by test_run=paused alone
-  if($Idle){ $L+=('spare_pc='+(SparePC)); $L+=('party='+(GetS 'party_ver')+' '+(GetS 'party_head')); $L+=('play8802='+(Play8802)) } else {
+  if($Idle){ $L+=('spare_pc='+(SparePC)); $L+=('party='+(GetS 'party_ver')+' '+(GetS 'party_head')); $L+=('play8802='+(Play8802)); $L+=('receiver8799='+(Receiver8799)) } else {
     if($corpus -like 'paused*' -and (GetS 'pause_t')){ $L+=('paused_since='+(GetS 'pause_t')) }
     if($script:noIn){ $L+='presence=off' }   # the presence checks did not load: it tests without pausing for anyone (see runner.log)
   }
@@ -855,18 +949,26 @@ while($true){
   if($Idle){
     # IDLE MODE: while he is at the PC (or memory is short) nothing runs; a look every 20 seconds, a status note when that changes
     $away=AwaySec; $fg=FreeGB; $vmn=VMNight
-    $ng=$(if(VMResizeSoon){ 999 }elseif($script:working){ 4 }elseif($vmn){ 10 }else{ 6 })
-    $fw=FollowAway; $na=$(if($script:working -or $fw -le 0){ 900 }else{ [Math]::Max(900,($fw+2)*60) })
-    if($away -lt $na -or $fg -lt $ng){
-      $pw=$(if($away -lt 900){ 'paused: he is using the PC' }elseif($away -lt $na){ 'paused: the VM takes its memory first' }elseif($vmn){ 'paused: the VM has the memory at night' }else{ 'paused: under 6 GB free' })
-      if($script:working){ Stop-Work $pw }
+    # 10-28 (Main PC Correspondent): no more start-and-stop. 116 stints on 10-25 to 10-27 lasted a median 4 minutes: work started at 6 GB
+    # free while the VM was still growing into the same memory, and stopped at 4. Now, while the VM's memory follows him, nothing starts
+    # until the VM has stopped growing, a start needs 8 GB free (his 6 GB kept free plus the robot), work stops under 5 GB at two looks
+    # (Watch; under 4 at one look here), and after a memory stop nothing starts for 30 minutes. His rulings stand: the VM takes its memory
+    # first, 6 GB stay free.
+    $fw=FollowAway
+    $ng=$(if(VMResizeSoon){ 999 }elseif($script:working){ 4 }elseif($vmn){ 10 }else{ 8 })
+    $na=$(if($script:working -or $fw -le 0){ 900 }else{ [Math]::Max(900,($fw+2)*60) })
+    $grow=(-not $script:working) -and ($fw -gt 0) -and (VmGrowing)
+    $lowW=(-not $script:working) -and (((Epoch)-[long]('0'+(GetS 'lowstop_t'))) -lt 1800)
+    if($away -lt $na -or $fg -lt $ng -or $grow -or $lowW){
+      $pw=$(if($away -lt 900){ 'paused: he is using the PC' }elseif($away -lt $na -or $grow){ 'paused: the VM takes its memory first' }elseif($lowW){ 'paused: 30 minutes after a memory stop' }elseif($vmn){ 'paused: the VM has the memory at night' }else{ 'paused: under '+$ng+' GB free' })
+      if($script:working){ if($away -ge 900 -and $ng -lt 999 -and $fg -lt $ng){ PutS 'lowstop_t' ([string](Epoch)) }; Stop-Work $pw }
       Refresh-Party
       Ensure-Bridge
       Ensure-Play
       # a new runner is taken as soon as master moves (Refresh-Party asks GitHub every minute), not only at the 10-minute note
       if($script:lastMaster -and $script:lastMaster -ne $script:tookMaster -and ((Running 'corpq\.sh|corpus-slices\.sh') -eq 0)){
         $script:tookMaster=$script:lastMaster
-        if((Update-Game) -and (Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash -ne $SelfHash){
+        if((Update-Game) -and (NewRunnerOK)){
           Say 'a new copy of this runner came from GitHub: restarting'
           Remove-Item -LiteralPath $Hb -Force -ErrorAction SilentlyContinue
           Start-Process -FilePath wscript.exe -ArgumentList ('"'+$T+'\spare\spare-start.vbs"') | Out-Null
@@ -877,7 +979,7 @@ while($true){
       if((GetS 'pause_why') -ne $pw -or ((Epoch)-$pt) -ge ($PublishMin*60)){
         if((GetS 'pause_why') -ne $pw){ PutS 'pause_why' $pw; Say $pw }
         Write-Status $pw 0; Publish 'paused'
-        if(((Running 'corpq\.sh|corpus-slices\.sh') -eq 0) -and (Update-Game) -and (Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash -ne $SelfHash){
+        if(((Running 'corpq\.sh|corpus-slices\.sh') -eq 0) -and (Update-Game) -and (NewRunnerOK)){
           Say 'a new copy of this runner came from GitHub: restarting'
           Remove-Item -LiteralPath $Hb -Force -ErrorAction SilentlyContinue
           Start-Process -FilePath wscript.exe -ArgumentList ('"'+$T+'\spare\spare-start.vbs"') | Out-Null
@@ -904,7 +1006,7 @@ while($true){
       $pt=[Math]::Max([long]('0'+(GetS 'pub_t')),$script:pubTry)
       if($chg -or ((Epoch)-$pt) -ge ($PublishMin*60)){
         $script:pubTry=[long](Epoch); Write-Status $pw 0; Publish 'paused'
-        if(((Running 'corpq\.sh|corpus-slices\.sh') -eq 0) -and (Update-Game) -and (Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash -ne $SelfHash){
+        if(((Running 'corpq\.sh|corpus-slices\.sh') -eq 0) -and (Update-Game) -and (NewRunnerOK)){
           Say 'a new copy of this runner came from GitHub: restarting'
           Save-Hold $away
           Remove-Item -LiteralPath $Hb -Force -ErrorAction SilentlyContinue
@@ -934,7 +1036,7 @@ while($true){
       else { Say ('full test run ended without finishing: '+(Split-Path $cf -Leaf)) }
     }
     if(Update-Game){
-      if((Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash -ne $SelfHash){
+      if((NewRunnerOK)){
         if($why){ Write-Status 'idle' (Running 'fuzz\.ps1'); Publish $why }
         Say 'a new copy of this runner came from GitHub: restarting'
         Remove-Item -LiteralPath $Hb -Force -ErrorAction SilentlyContinue
@@ -946,14 +1048,22 @@ while($true){
     }
   }
   if(Arrived){ continue }
-  if((Running 'fuzz\.ps1.*-Port 9331(\s|$)') -eq 0){ Start-Robot 9331 'fixture-soak-spare1.html' }
-  # 10-22: Start-Robot takes a screen size (fuzz.ps1 -Size), but both robots here stay at 1080p. A 4K robot on the main PC reads as "he is gaming"
-  # to its game check (a program at 15% of the graphics card, 22:38 that night), which holds the VM to 30% of its processors; the VM plays the 4K robot.
-  if(Arrived){ continue }
-  # 10-26: on the spare (4 threads) a full run plus two robots chokes the robots: 5 to 10 connection failures an hour against about 1 with the two robots
-  # alone (fuzz.log 10-25 15:00 to 10-26 23:49), and their hang reports land on the build under test. While a full run goes, the second robot waits.
-  $fullRun=(-not $Idle) -and ((Running 'corpq\.sh|corpus-slices\.sh') -gt 0)
-  if((-not $fullRun) -and (Running 'fuzz\.ps1.*-Port 9332(\s|$)') -eq 0){ Start-Robot 9332 'fixture-soak-spare2.html' }
+  if($Idle){
+    # 10-28 (Main PC Correspondent), his "i don't think the party is any reason to not use the gpu": the main PC runs ONE robot, playing the
+    # 2-player raid at 4K in both windows on his RX 7900 XTX, the only frame numbers at party size on a real card (the VM has no graphics
+    # card). One, not two: its two 1080p robots found 0 problems in 960 raids, raid lines carry no port (two robots mix their numbers in one
+    # fuzz.log), and the memory goes further. The 10-22 reason for 1080p is gone: the main PC game check skips pillagers-cdp Chromes since
+    # 10-24; if it still reads the robot as a game, Watch puts it back to 1080p for the day (no4k).
+    # (a Chrome game he left drawing already shows in the game check: then this start plays 1080p and nothing is blamed on the robot)
+    if((Running 'fuzz\.ps1.*-Port 9332(\s|$)') -eq 0){ $script:gcAtStart=(GameChrome); Start-Robot 9332 'fixture-soak-spare2.html' $(if($script:gcAtStart -or (GetS 'no4k') -eq (Get-Date).ToString('yyyy-MM-dd')){ '' }else{ '3840x2160' }) }
+  } else {
+    if((Running 'fuzz\.ps1.*-Port 9331(\s|$)') -eq 0){ Start-Robot 9331 'fixture-soak-spare1.html' }
+    # 10-22: Start-Robot takes a screen size (fuzz.ps1 -Size), but both robots here stay at 1080p. A 4K robot on the main PC reads as "he is gaming"
+    # to its game check (a program at 15% of the graphics card, 22:38 that night), which holds the VM to 30% of its processors; the VM plays the 4K robot.
+    # 10-26: on the spare (4 threads) a full run plus two robots choked the robots. 10-28 (CEO): two robots alone choke it too: 4 game windows at
+    # 94-100% CPU, player 2 joins in 93-168 s instead of 4-8, and 23 false problems (16 hangs, CDP send timeouts) on v35.65 06:07-07:38, which
+    # alone blocked stable; 4-32 an hour on 10-26 and 9-28 on 10-27, while one robot was clean. So the spare runs ONE robot, like the main PC.
+  }
   $cs='idle'; if((Running 'corpq\.sh|corpus-slices\.sh') -gt 0){ $cs='running '+(Split-Path (GetS 'corpus_file') -Leaf) }
   Write-Status $cs (Running 'fuzz\.ps1')
   $pt=[long]('0'+(GetS 'pub_t'))

@@ -48,6 +48,26 @@ $runner = [ordered]@{
   partyRefresh = (Tail (Join-Path $W 'party-refresh.out') 12)
 }
 
+# 10-27 his order (via the main PC Claude) "make sure we are always getting game telemetry back from the main pc": the report receiver on
+# 8799 (a connect, no request), which collector holds it (from the process list), and when the newest run report and note landed in the
+# party copy's exports folder (HH:MM today, else MM-dd HH:MM). The idle runner starts the copy's collector again when 8799 is silent.
+function PortUp([int]$p) {
+  $c = New-Object Net.Sockets.TcpClient
+  try { $a = $c.BeginConnect('127.0.0.1', $p, $null, $null); return [bool]($a.AsyncWaitHandle.WaitOne(700) -and $c.Connected) } catch { return $false } finally { try { $c.Close() } catch {} }
+}
+function Newest([string]$filter) {
+  try {
+    $f = Get-ChildItem -LiteralPath (Join-Path $PD 'exports') -Filter $filter -File -ErrorAction Stop | Sort-Object LastWriteTime | Select-Object -Last 1
+    if ($f) { $t = $f.LastWriteTime; if ($t.Date -eq (Get-Date).Date) { return $t.ToString('HH:mm') }; return $t.ToString('MM-dd HH:mm') }
+  } catch {}
+  return 'none'
+}
+$rcUp = PortUp 8799
+$col = $procs | Where-Object { $_.CommandLine -match 'collector\.ps1' } | Select-Object -First 1
+$receiver = [ordered]@{ up = $rcUp; lastReport = (Newest 'run-*.txt'); lastNote = (Newest 'feedback-*.txt')
+  collectorPid = $(if ($col) { [int]$col.ProcessId } else { $null }); collectorCmd = $(if ($col) { (([string]$col.CommandLine) -replace '\s+', ' ') } else { $null }) }
+$receiver.line = 'report receiver 8799 ' + $(if ($rcUp) { 'up' } else { 'down' }) + ', last report ' + $receiver.lastReport + ', last note ' + $receiver.lastNote
+
 # the bridge agent (this request runs under it)
 $ag = $procs | Where-Object { $_.CommandLine -match 'host-agent\.mjs' -and $_.CommandLine -notmatch '--status|--once' } | Select-Object -First 1
 $bridge = [ordered]@{ agentPid = $(if ($ag) { [int]$ag.ProcessId } else { $null }); agentCmd = $(if ($ag) { (([string]$ag.CommandLine) -replace '\s+', ' ') } else { $null }) }
@@ -56,5 +76,5 @@ $os = Get-CimInstance Win32_OperatingSystem
 [ordered]@{
   ok = $true; host = $env:COMPUTERNAME; now = (Get-Date).ToString('s')
   freeGB = $(if ($os) { [math]::Round($os.FreePhysicalMemory / 1MB, 1) } else { $null })
-  party = $party; play8802 = $play; runner = $runner; bridge = $bridge
+  receiver8799 = $receiver; party = $party; play8802 = $play; runner = $runner; bridge = $bridge
 } | ConvertTo-Json -Depth 5 -Compress

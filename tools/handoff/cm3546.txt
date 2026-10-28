@@ -1,0 +1,7 @@
+v35.46: page wallet stays hidden in the new hud frame
+
+The old corner money text stays hidden as soon as the raid HUD draws.
+
+Check 35.46. Fails on v35.45.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

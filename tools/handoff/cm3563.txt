@@ -1,0 +1,7 @@
+v35.63: hud size works for tv
+
+Large for tv grows raid panels, minimap and belt; the belt sits above the bottom corners.
+
+Check 35.63. Fails on v35.62.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

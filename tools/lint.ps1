@@ -5,7 +5,9 @@ $ErrorActionPreference = 'Stop'
 # It prints COUNTS ONLY. Everything it finds goes to tools/lint-report.txt, so a
 # run costs almost nothing to read and the detail is there when a count moves.
 # Run it after any build: powershell -File tools/lint.ps1
-$g = 'C:\claudecode\dark raiders\dark_raiders.html'
+# 2026-10-28 (cloud audit): paths from this script's folder, so the same file runs on his PC and in a cloud copy.
+$root = [IO.Path]::GetFullPath([IO.Path]::Combine($PSScriptRoot, '..'))
+$g = [IO.Path]::Combine($root, 'dark_raiders.html')
 $s = [IO.File]::ReadAllText($g)
 $lines = $s -split "\r?\n"
 $out = New-Object Collections.ArrayList
@@ -23,7 +25,11 @@ $aHits = 0
 # defaults object and into the weapon table, and reported fields like dmg, mag
 # and reload as dials: thirty six hits on the first run and every one of them
 # noise. Walk the braces and stop where the object actually closes.
-$cfgStart = $s.IndexOf('var CFG={')
+# 2026-10-28 (cloud audit): the defaults moved to var DEF={ (var CFG={} is now an empty
+# object filled by applyCfg), so this found an empty body and reported zero without
+# checking a single dial. DEF first; CFG kept for an old build.
+$cfgStart = $s.IndexOf('var DEF={')
+if ($cfgStart -lt 0) { $cfgStart = $s.IndexOf('var CFG={') }
 $body = ''
 if ($cfgStart -ge 0) {
   $i = $cfgStart + 8; $depth = 0
@@ -37,6 +43,8 @@ if ($cfgStart -ge 0) {
 }
 Say '## A. dials defined but never read'
 Say ''
+# Comments inside the defaults are not dials ("// five: nOf multiplies..." read as a key named five).
+if ($body) { $body = [regex]::Replace($body, '//[^\r\n]*', '') }
 if ($body) {
   $keys = [regex]::Matches($body, '([A-Za-z_][A-Za-z0-9_]*)\s*:') | ForEach-Object { $_.Groups[1].Value } | Select-Object -Unique
   foreach ($k in $keys) {
@@ -44,7 +52,7 @@ if ($body) {
     $bracket = ([regex]::Matches($s, "CFG\[\s*'" + [regex]::Escape($k) + "'\s*\]")).Count
     if ($reads -eq 0 -and $bracket -eq 0) { $aHits++; Say ("  " + $k + " : defined in the defaults and read nowhere") }
   }
-} else { Say '  (could not find the CFG defaults object)' }
+} else { $aHits++; Say '  CHECK DID NOT RUN: could not find the defaults object (var DEF={ or var CFG={), so this zero would mean nothing' }
 Say ''
 
 # ---------------------------------------------------------------- CLASS B
@@ -135,7 +143,14 @@ $dSeen = 0
 $dCleared = @{
   'useMedical' = 'v12.84: mutually exclusive branches with early returns, nothing is overwritten';
   'cycleThrow' = 'v12.84: mutually exclusive branches with early returns, nothing is overwritten';
-  'doEmote'    = 'v12.84: mutually exclusive branches with early returns, nothing is overwritten'
+  'doEmote'    = 'v12.84: mutually exclusive branches with early returns, nothing is overwritten';
+  # 2026-10-28 (cloud audit, v35.39): read and cleared. Every say() now goes to the multi-line feed, and none of these overwrites one.
+  'pedSellAll'    = 'v35.39: no say() runs inside a loop (the scan spans from a loop to a later line); the early return and the two at the end are separate feed rows';
+  'beltGunField'  = 'v35.39: a one-line function, so the scan ran on into beltSlidePlan; its say() calls are early returns';
+  'beltClassPin'  = 'v35.39: the say() in the loop returns at once; the one after it runs only when the loop found nothing';
+  'tickClockWarn' = 'v35.39: the loops only pick a mark; the say() calls after them are exclusive branches';
+  'netGiftTake'   = 'v35.39: the loop returns at once; the say() calls after it are exclusive branches';
+  'shNetTake'     = 'v35.39: each say() is its own feed row (gate breached, stronghold cleared, once per raid on the map)'
 }
 Say '## D. a message written inside a loop and overwritten after it'
 Say ''
@@ -162,6 +177,6 @@ Say ("  " + $dSeen + " found, " + ($dSeen - $dHits) + " already read and cleared
 Say ''
 
 Say ('TOTALS  A=' + $aHits + '  B=' + $bHits + '  C=' + $cHits + '  D=' + $dHits)
-[IO.File]::WriteAllText('C:\claudecode\dark raiders\tools\lint-report.txt', ($out -join "`r`n"), (New-Object Text.UTF8Encoding $false))
+[IO.File]::WriteAllText([IO.Path]::Combine($root, 'tools', 'lint-report.txt'), ($out -join "`r`n"), (New-Object Text.UTF8Encoding $false))
 Write-Output ('LINT  dials-never-read=' + $aHits + '  banned-words=' + $bHits + '  unstamped-migrations=' + $cHits + '  overwritten-lines=' + $dHits + ' (' + ($dSeen - $dHits) + ' cleared)')
 Write-Output 'detail: tools/lint-report.txt'

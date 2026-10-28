@@ -1,0 +1,7 @@
+v35.58: partner ship stays after host extraction
+
+When player 1 extracts first, the called ship stays for player 2 until its boarding window closes.
+
+Check 35.58. Fails on v35.57.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,7 @@
+v35.49: hud states on the vitals
+
+revealed, hidden and in cover are small icons by your stance; low health pulses the bar; low ammo pulses the count; an empty gun shows the reload key
+
+Check 35.49. Fails on v35.48.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

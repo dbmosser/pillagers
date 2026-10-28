@@ -40024,6 +40024,146 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.70 - THE SCORE MULTIPLIER LINES SHOW AND LINE UP
+
+Co-op hunt while he was away. the pictures of v35.69: the demo run over card kept its settings line in a hidden row, and the Settings score value sat left of the value column
+
+MEASURED. Check 35.70 passes, and fails on v35.69.
+## v35.69 - THE SCORE MULTIPLIER ON SCREEN, FOG OF WAR PAYS
+
+Co-op hunt while he was away. his order of 10-28, that the multiplier should be indicated to the player, and his addition that fog of war is a multiplier row (the host's in a party): a score row in Settings under difficulty, a small x tag beside the score label in a raid, and one settings line on the extracted card and the demo run over card; nothing at x1.00
+
+MEASURED. Check 35.69 passes, and fails on v35.68.
+## v35.68 - HARDER SETTINGS PAY MORE SP
+
+Co-op hunt while he was away. his order of 10-28: every Settings row set harder than the default pays 5 percent more sp a step, superhot off pays a step, and the rows multiply; money and loot never
+
+MEASURED. Check 35.68 passes, and fails on v35.67.
+## v35.67 - WARNING RED ENEMY TRACERS
+
+Co-op hunt while he was away. His g-88 answer: Enemy tracers in a warning colour. Hostile machines and pillager bots fire #ff3b2f rounds in both windows. Player, hire and friendly rounds retain gun colours, including player forge elements and widths. Muzzle flashes stay warm. Render only; no seeded draw or text changes. Watch in play: red enemy rounds must stand out from the red danger HUD, red noise rings and attack lanes, at night and in rain. Two hostile pillager crews fighting each other must still read.
+
+MEASURED. Check 35.67 passes, and fails on v35.66.
+## v35.66 - AIR STRIKE NEEDS 3000 DAMAGE
+
+Co-op hunt while he was away. His order 10-28: make it 3000 damage to unlock an airstrike instead of 1500. One number, AIR.need 1500 to 3000.
+
+MEASURED. Check 35.66 passes, and fails on v35.65.
+## v35.65 - ONE READABLE TARGET PING LABEL
+
+Co-op hunt while he was away. The solo ping critic still found the normal enemy name touching the ping label. A live target ping now carries the specific enemy identity and distance in one existing readable plate; its old name text and backing wait until that ping expires. Crew and wounded-health marks stay visible, and the peddler keeps its deal prompt. Both maps use 24px target glyphs with 28px dark backing at 1080p. Sound, input, lifetime, sharing and world generation are unchanged. Playtest watch: mark a wounded sentry in solo and in either party window, check that one name and its health pip remain, then wait 10 seconds for the usual name to return; check both maps near white walls.
+
+MEASURED. Check 35.65 passes, and fails on v35.64.
+## v35.64 - TV HUD READABILITY
+
+Co-op hunt while he was away. The clean two-window TV pictures scored 3. The large belt looked like a solid wall of empty tiles and the score labels were small and pressed against the top edge. Raid vacant keys now keep only quiet silhouettes and outlined key digits, while owned keys keep flat plates, 3px rarity rails and the owner-required gold ring. Raid belt text starts at 18px and grows with TV scale; the TV belt moves 12 logical pixels closer to the bottom corners. Vitals keep the owner-requested larger hp bar and gain ink outlines for contrast. Score labels use the label role, the panel has a 16px top inset and the extraction pill has an 8px gap. Playtest watch: check belt selection and ammo states, the final-minute clock and long score totals in both windows; check tv belt clicks after resizing panels. No world or feel values changed.
+
+MEASURED. Check 35.64 passes, and fails on v35.63.
+## v35.63 - HUD SIZE WORKS FOR TV
+
+Co-op hunt while he was away. The existing HUD SIZE row saved a choice that no drawing code used. Text size changes fonts but leaves the vitals bars and partner plate fixed. Large for tv now grows raid panels, minimap and partner rows by 20 percent through the shared HUD scale. The belt grows above the bottom corners instead of being squeezed between them. Standard is unchanged. Playtest watch: in both windows at 1080p in the smooth look, switch HUD SIZE both ways, check panel spacing and belt clicks or dragging, and read the TV view from across the room. Saved panel positions or very large text may need adjustment.
+
+MEASURED. Check 35.63 passes, and fails on v35.62.
+## v35.62 - SHOW OS MOTION DEFAULTS AS DEFAULTS
+
+Co-op hunt while he was away. The settings list still compared light shake and half intensity against its old defaults, so the OS defaults looked like manual changes in both windows. Share the default lookup between the loader and settings display. Explicit player choices still win. Watch: with reduced motion and no chosen motion controls, light and half should have ordinary value styling. No timing or shake strength changes in this follow-up.
+
+MEASURED. Check 35.62 passes, and fails on v35.61.
+## v35.61 - RESPECT COMPUTER REDUCED MOTION
+
+Co-op hunt while he was away. The computer reduced motion preference previously affected menu CSS only. Unset screen shake now starts light and unset effect intensity starts half. Each saved choice and each tuned dial wins independently. Hit pause now follows the existing effect intensity control: 60 ms at full, 30 ms at half, zero at off, with its immunity unchanged. No request leaves ordinary defaults unchanged. Watch in a smooth-look playtest: on both player windows with no saved motion choices, heavy hits should shake less and hold the target for a shorter beat; choosing full must survive reload. In co-op the host still owns enemy hit pause. No seeded draws or world generation change.
+
+MEASURED. Check 35.61 passes, and fails on v35.60.
+## v35.60 - BLOCKED PAD READS KEEP THE GAME RUNNING
+
+Co-op hunt while he was away. An embedded browser may deny getGamepads with a SecurityError. Pad polling now handles that as an empty pad list, and the frame loop also catches a failing pad handler and releases pad-owned input. Watch in a playtest: inside the itch frame, both windows should keep animating and accept keyboard movement and mouse fire when pads are blocked; with pads allowed, the first pad still controls p2 and the second p1.
+
+MEASURED. Check 35.60 passes, and fails on v35.59.
+## v35.59 - HIT JOLT FOLLOWS THE ROUND
+
+Co-op hunt while he was away. A partner shot jolted a body away from the viewer instead of along the incoming round. Local bullet collisions record their bearing for this flash and the host sends that cosmetic bearing to the linked window. Damage, hit stop, movement, jolt sizes and fade are unchanged. Watch in playtest: stand on opposite sides of a crawler and alternate shots; both windows should show it flinch away from the shooter, then settle back to the same position. Test in the smooth look.
+
+MEASURED. Check 35.59 passes, and fails on v35.58.
+## v35.58 - PARTNER SHIP STAYS AFTER HOST EXTRACTION
+
+Co-op hunt while he was away. The both-out host branch erased the shared ship while player 2 was still playing. Keep the called ship on its existing clock and clear only the host pull. Playtest watch: in smooth look, have player 2 call a ship, board as player 1 first, then board as player 2 without calling again; the run should end only after both are out. Solo extraction should still end at once.
+
+MEASURED. Check 35.58 passes, and fails on v35.57.
+## v35.57 - PAD BOX PROMPTS CLEAR THE HEAD
+
+Co-op hunt while he was away. Round 2 critic: the pad X reload label is about 12px and sits against the pillager head and reticle. The style guide requires at least 16px for labels; Q7 permits it to override older layout and size orders, including the old 60 percent world prompt size. Only pad container prompts opt into 85 percent scale and move up 24 layout pixels, scaled for 4k. Reload and search share the treatment. Keyboard and other world prompts retain their existing geometry. Playtest watch: at a cache in both windows, X reload and X search should be readable above the head at 1080p and 4k.
+
+MEASURED. Check 35.57 passes, and fails on v35.56.
+## v35.56 - PAD X RELOAD THEN SEARCH
+
+Co-op hunt while he was away. The box said search when combat X would reload and the held button stayed on reload afterwards. The prompt now shares the press decision, including the active reload spot. A completed reload hands the same hold to search; a cancelled reload does not. Revives retain priority and keyboard controls are unchanged. Playtest watch: in both windows, hold X at a box with a partly empty magazine while fighting; see [x] reload, then search when rounds load. Also try a full magazine, no spare rounds and an active reload. The ring keeps its separate Y search prompt.
+
+MEASURED. Check 35.56 passes, and fails on v35.55.
+## v35.55 - THE WHAT IS NEW STAMP KEEPS UP
+
+Co-op hunt while he was away. The card was stamped v35.39 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.
+
+MEASURED. Check 35.55 passes, and fails on v35.54.
+## v35.54 - DOWNED HITS FOLLOW DAMAGE CUTS
+
+Co-op hunt while he was away. Hits on a downed pillager ignored the kid, demo and easy damage cuts and always removed 3 seconds. The base stays 3 seconds in normal career. The current demo dial stays 1, following the later unify1 ruling. Watch in playtest: shoot a downed partner with kid mode or easy mode on and confirm the smaller timer loss leaves time to finish a revive in either window. Sim uses the same rule. No world generation or random draw changes.
+
+MEASURED. Check 35.54 passes, and fails on v35.53.
+## v35.53 - HUD TEXT AT A READABLE SIZE
+
+Co-op hunt while he was away. his ask 10-27 ~21:40: the hud messaging is a clusterfuck, make it AAA (report reports/Player alerts and HUD messaging.md, job 9, the Xbox floors at 1080p). The left feed was 15.6 px and is 20 (its zone a little wider so a line still fits whole), the answer line is 20, the opened controls list was 16 and is 18, the danger headline was 26 and is 30. Contrast was read for every word colour on the hud plate over white and black ground: all pass 4.5 to 1 except the red of a shut exit on the pill (3.2), which is now a lighter red (4.8). Looting, the pickup stack, item labels and the money rows are untouched.
+
+MEASURED. Check 35.53 passes, and fails on v35.52.
+## v35.52 - ANSWER LINE UNDER YOUR FEET
+
+Co-op hunt while he was away. his ask 10-27 ~21:40: the hud messaging is a clusterfuck, make it AAA (report reports/Player alerts and HUD messaging.md, job 7). The answer to a try that did not work (health full, no ammo, locked) is one small line about 70 px under the character, at least 20 px, for 2 s, once per press, and no longer a line in the left feed. There is no soft no sound in the game, so it stays silent. Backpack full stays in the pickup stack and contract item nearby stays in the feed, exactly as before; looting is untouched.
+
+MEASURED. Check 35.52 passes, and fails on v35.51.
+## v35.51 - pad trigger keeps steady spread without focus aim
+
+Co-op hunt while he was away. RT used the focus aim flag to steady shots, so it also cut sprint, slowed walking and pulsed a scope. Keep the existing pad spread and settle time separately. Playtest watch: on a pad, RT no longer cuts the sprint or pulses a scoped view; LT still aims. Pad players move at full speed while shooting; check a pad fight still feels fair.
+
+MEASURED. Check 35.51 passes, and fails on v35.50.
+## v35.50 - EXTRACTION ON THE PILL
+
+Co-op hunt while he was away. his ask 10-27 ~21:40: the hud messaging is a clusterfuck, make it AAA (report reports/Player alerts and HUD messaging.md, job 6). The extract pill under the clock carries the state of its exit: teal open, amber in the two minute warning with a countdown in the last minute, red once shut, one pulse on each change. An open exit just off the screen is an edge arrow with its letter and distance (c 152m), slid along an oval inside the edges until it is clear of the corner panels and the pickup stack column; the extraction c available line under the pill is gone. The sky (weather, else the time of day) is a small icon beside the clock. Looting is untouched.
+
+MEASURED. Check 35.50 passes, and fails on v35.49.
+## v35.49 - HUD STATES ON THE VITALS
+
+Co-op hunt while he was away. his ask 10-27 ~21:40: the hud messaging is a clusterfuck, make it AAA (report reports/Player alerts and HUD messaging.md, job 5). Revealed, concealed and in cover are small icons beside the stance chip bottom left for as long as they are true (each word shows for 2 s the first time), and the hidden pill leaves the mid left column. Under a quarter health the hp bar pulses slowly, 1.2 a second, with no text. Low ammo pulses the count red; an empty gun with rounds to load shows the reload key cap on the gun card. Looting, the pickup stack and the money rows are untouched.
+
+MEASURED. Check 35.49 passes, and fails on v35.48.
+## v35.48 - PLAYER 2 CHOOSES EASY OR NORMAL TOO
+
+Co-op hunt while he was away. Found in the cloud audit of 2026-10-28 on the real 2-player rig (two windows, paired, player 2 on a simulated pad, the fuzz robot's own steps). His answer 2.28 c: in the demo each player chooses easy or normal before their run starts. Only arcadeDeploy asks, and only player 1 runs it; player 2 enters through netUpTake, so player 2 never gets the card. Proven in headless Chromium on v35.38: with both windows in the raid, player 1 held easyAsk {waitMap:0} with the card on screen, player 2 held easyAsk null. A yes player 2 gave at the second-death offer also carried into the next run, since nothing reset it. Fix: when player 2 enters a demo run, its window runs the same easyStartAsk player 1 runs (fresh card, the run starts on normal). Watch at the party: player 2 sees the want easy mode card after its opening map and answers it with A or B.
+
+MEASURED. Check 35.48 passes, and fails on v35.47.
+## v35.47 - NEW SAVES COUNT EACH KILL ONCE
+
+Co-op hunt while he was away. Found in the cloud audit of 2026-10-28 (lint class C, now that it runs). A new save is not born with achScan, the stamp of the one-time scan that credits runs from before live counting. Live runs already add their kills (achRun with live true), so the first time a new save opens its stats page the scan adds every logged run a second time. Proven in headless Chromium on v35.38: two runs of 7 pillager kills read 14, then 28 after the first look at the stats page, and the 25 kill medal unlocked; machines went 60 to 120. Fix: the born profile carries achScan:1 like mig739 and dayMigrated. Old saves are untouched (a loaded save replaces the literal whole), so a save from before live counting still gets its one scan.
+
+MEASURED. Check 35.47 passes, and fails on v35.46.
+## v35.46 - PAGE WALLET STAYS HIDDEN IN THE NEW HUD FRAME
+
+Co-op hunt while he was away. His wallet collision was fixed in v35.01. Verification found one remaining timing gap: after a slow frame the loop could unclip the page wallet before the HUD refreshed its stamp. The corner draw now clips the page wallet immediately, including when the quiet HUD has no wallet rows.
+
+MEASURED. Check 35.46 passes, and fails on v35.45.
+## v35.45 - THE EXTRACTED CARD SPLITS SCORE AND MONEY
+
+Co-op hunt while he was away. his order 10-28 with a picture of the extracted card: "this extracted screen is an absolute mess -- money versus raid score/sp should never be intermingled". The career ledger was one list: sp rows, the credits in $, the haul, and a raid total in $ drawn in the score gold; damage taken sat above the result; the card ran past 1080p so the xp line and a next reward sentence were cut off behind the button. Now a raid score panel (sp only, gold) and a money panel ($ only, teal) side by side, each with its own total; the haul pictures under both; damage taken under the result on an extraction; the xp line is the figure only. Same figures and same rules (1 sp banks 1 dollar on an extraction, KIA halves the score).
+
+MEASURED. Check 35.45 passes, and fails on v35.44.
+## v35.44 - FEWER RAID MESSAGES
+
+Co-op hunt while he was away. his complaint 10-27: too many messages reach the player (he left the design to us; built to the research rule of that night). Only the ladder reaches the screen: danger or teammate down, extraction, teammate news, a goal done, and the answer to something that did not work; the rest go to the run log, which the pause box lists. The left feed shows 3 lines that fade out after 5 s and takes one new line every 2.5 s; a goal done waits out the fight. His order 10-27 ~22:35 (the game told him about extraction b far across the map): an exit closing is said only for the exit you are heading to or one within 60 m. Kill lines, contract item nearby and all of looting are as they were. Measured in a staged 3 minute raid (seed 4242: looting, a fight, an extraction): 43.3 lines a minute before, 30 after
+
+MEASURED. Check 35.44 passes, and fails on v35.43.
+## v35.43 - READABLE PING LABELS AND MAP GLYPHS
+
+Co-op hunt while he was away. The critic found the existing ping words too small, orange on busy ground and over the gun, and the minimap ping too small. Solo and party now share 16px bone text on an 85 percent shared HUD plate, raised above the target with an edge fallback. Minimap and full-map target shapes grow to 18px with their existing dark backing. Words, colours of the marker, sound, target following and 10 second lifetime stay the same. Playtest watch: ping a target near a screen edge in either window and confirm the label stays inside the screen and clear of the target; look for the larger shape on both maps.
+
+MEASURED. Check 35.43 passes, and fails on v35.42.
 ## v35.42 - THE STASH HOVER KEEPS EVERY BOX THE SAME SIZE
 
 Co-op hunt while he was away. his order 10-27: mousing over different items in the stash changes the size of one of the sub menus, so the grids jump; the item line under the grids was hidden when idle and as tall as the hovered item had rows

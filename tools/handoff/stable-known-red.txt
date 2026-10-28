@@ -10,6 +10,9 @@ v22.52   # four-gun belt rules (guns only on keys 1 to 4, a medkit refused on ke
 v18.91   # a gun dropped on the other gun's key now trades the two keys and keeps the guns in his hands (cw-beltfix, his ask 10-27 "swap them on the hotbar")
 v13.99   # an item key he set stays, greyed, when none came up (cw-hotitems); no automatic Medical cell since wheel4
 v13.59   # same rule: crafting away the packed Bandages leaves his Bandage key greyed until he drags it off
+# added 2026-10-28 (cloud audit): the same items-on-hotbar order; both pass on v34.94, fail from v35.12 on, and fail alone on v35.38
+v23.05   # wants a Medkit refused on key 9 (the bar is guns only); items may go on any key now
+v11.96   # wants ITEMS GO ON THE WHEEL refusals on keys 7 to 9; items may go on any key now
 # the stash row is named hotbar (v35.12 undercroft fixes, his asks 10-27; check 35.12 requires the word)
 v10.26   # wants "tactical belt" on the stash loadout column
 v9.89    # same word check on the Undercroft loadout column
@@ -19,3 +22,44 @@ v33.68   # 2 sprites touch the edge of the pixel scratch canvas; only drawn with
 # Remove these two lines once a full run on v35.38 or newer passes them.
 v31.32   # the check passed a fake future time that trHide ignores since v35.01; it now stages an old stamp
 v32.46   # RB now reaches the lift belt panel (v35.10, pad reaches the lift belt) before it wraps to the conditions
+# Stable triage 2026-10-28 (corpus-1027-2147 on v35.37 had 14 newly red; each rerun alone on v35.48, fixture of master 0143427a1).
+# 12 are out of date by his 10-27 orders. v8.89 (renderer not deterministic at dt 0, a corpus-only flake) and v35.35 (retargeted in 716318cfb) pass on v35.48 and are not listed.
+# Remove a line once a full run passes it or it is retargeted.
+# the quiet hud (his 10-27 order "build the quiet hud, all 5 changes": v35.30 to v35.36 cw-quiettext and cw-quiethud)
+v9.09    # picks the first panel with a minimise glyph, now the conditions card folded to one line (no resize corner, v35.36 change 3); passes when aimed at the pillager board
+v9.66    # the conditions card folds to one line (300 by 38) at rest, so the "barely drew" control fires (v35.36 change 3)
+v12.80   # the contract note line only prints while the folded run info card is open (v35.36 change 3), the control reads it at rest
+v13.08   # control wants the belt caption (name, FIRE, SIGNAL) drawn in a raid; it is deleted on purpose (v35.36 change 4, the gun name shows once)
+v32.24   # same belt caption: its fire chip is no longer drawn, so there is no keycap to measure (v35.36 change 4)
+v31.38   # wants the stamina bar drawn at full stamina; it shows only below full now (v35.36 change 3)
+v31.17   # same stamina bar rule: a fresh raid draws two vitals bars, not three (v35.36 change 3)
+v18.41   # wants the STANDING posture chip while standing; the posture word shows only crouched or down (v35.36 change 3)
+v18.49   # wants the right-hand HIDDEN chip when crouched; the concealment state moved to the status icon list (v35.30 to v35.33 cw-quiettext)
+v25.66   # the loc state wants the location tag or a top row beside the clock; one alert at a time rules the top centre, the boss spotted alert replaces the tag (quiet hud, v35.30 to v35.33)
+v12.74   # reads the refusal off g.msg, the retired grey row; the refusal "need $1,140" goes to the left feed now (cw-quiettext v35.30, same as the 18 checks re-aimed in 8c67af2af)
+# his note 10-27 "extract into the ground, player pops back up" (job 189, v35.37 cw-xsink)
+v15.79   # a late position word after an extraction out word must not stand the teammate back up on the ring (netUpHid); the check expects him drawn again
+# Stable triage 2026-10-28 (corpus-1027-2310 on v35.43 from the spare PC, 14 newly red; each rerun alone on v35.58, fixture of master d6eaf0cbc).
+# 5 are out of date (below). 9 pass on v35.58 and are not listed: v35.35 v33.08 v31.51 v30.93 v29.03 v27.51 v13.40 v13.39 v13.38 (their fixture retargets from cw-fewermsg and cw-msgroute were ahead of the v35.43 build, which v35.44 caught up with).
+# solo pings (task 139, his 10-14 pick 46 "middle mouse pinging doesn't even work in 1 player", v35.41 cw-cx-solopings)
+v16.43   # reads the source for KeyN pinging only with NET.on; N pings in a one-player raid too now
+v16.46   # same source read for the D-UP tap pinging only with NET.on and NET.upSeed; the tap pings alone now
+# ping labels (v35.43 cw-cx-pingread: one readable plate over the target, all lower case)
+v23.02   # the ping on a crier draws "name, crier, 8m" in lower case; the check wants CRIER in capitals
+# fewer raid messages (his 10-27 complaint, v35.44 cw-msgroute)
+v23.10   # a goal done waits for 4 s without a shot (feedCalm) and then shows one line, the second 2.5 s later; the check opens the crate in a fight and sees none (with calm it passes the same steps)
+# stash hover (his 10-27 order "mousing over different items in the stash ... changes the size of one of the sub menus", v35.42 cw-stashhover)
+v32.69   # the item line under the stash grids is one fixed 160px box, shown idle or hovered; the check wants the idle strip hidden
+# Stable triage 2026-10-28 (corpus-1028-0157 on v35.58, 8 newly red; each rerun alone on v35.64, fixture of master 46e84948d).
+# 4 are out of date (below); v35.53 and v35.44 pass on v35.64 and are not listed; v31.04 and v27.40 are real and have fix jobs (tasks 208 and 209).
+# the hud text and answer line (his 10-27 ask "the hud messaging is a clusterfuck, make it AAA", jobs 186e and 186c: v35.49 to v35.53)
+v34.26   # wants the hidden chip at label size (19 px at most); concealed and in cover are icons with a brief word on the vitals now, drawn at the vitals scale, 24 px at 1080p (v35.49 hud states)
+v27.35   # wants the feed zone under a quarter of the screen wide; it is 28 percent since v35.53 (cw-hudsize: the feed text is 20 px, so the zone grew from 24 percent)
+v13.32   # reads the loaner hint off the feed and g.msg; an info line shows on the answer line under the character since v35.52 (cw-answerline), and "scav pistol, equip your own gun at the stash" does draw there for the whole 5 s
+# kid mode in the hit code (v35.54 cw-cx-downcuts, o-120e: downed hits follow the damage cuts)
+v16.44   # source-text read for "amt*=netKidMul()"; the factor is carried in _hitMul now and still applied to amt, so player 2 still takes the cut
+# Stable triage 2026-10-28 (corpus-1028-0442 on v35.65, 7 newly red; rerun alone on v35.65). v31.04 v27.40 v35.53 v35.44 already have jobs 208, o-209 and o-210; the other 3 are out of date (below).
+# tv hud readability (v35.64 cw-cx-hudtvread, job o-138 hud size for tv: the score panel gets a real top inset, empty belt keys go quieter)
+v31.50   # finds the score and clock plate by its top edge touching y 0 or 1; since v35.64 it is inset 16 px (x zoom) from the top, so no plate is found
+v30.96   # wants the score plate hung from the top edge (y at or under 0); v35.64 draws it at 16 px under the top edge, still centred and covering the clock row
+v27.22   # wants the empty gun key ghost at alpha 0.2 to 0.35; in a raid it is 0.1215 since v35.64 (45 percent of the old 0.27, empty belt slots quieter)

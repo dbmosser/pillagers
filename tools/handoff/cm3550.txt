@@ -1,0 +1,7 @@
+v35.50: extraction on the pill
+
+the extract pill turns amber and counts down when your exit is closing; an exit off screen is an edge arrow with its letter and distance; the sky is an icon by the clock
+
+Check 35.50. Fails on v35.49.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

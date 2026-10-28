@@ -1,0 +1,7 @@
+v35.65: one readable target ping label
+
+Target pings use one readable name label and larger map markers.
+
+Check 35.65. Fails on v35.64.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

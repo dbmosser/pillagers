@@ -6,3 +6,33 @@
 10-27 22:31 v35.39 cw-cardstamp on his pc after 50s (8802 serves 35.39) week 68%
 10-27 22:36 v35.40 cw-whitebars on his pc after 68s (8802 serves 35.40) week 68%
 10-27 22:38 v35.41 cw-cx-solopings on his pc after 34s (8802 serves 35.41) week 68%
+10-27 22:41 v35.42 cw-stashhover on his pc after 18s (8802 serves 35.42) week 68%
+10-27 23:09 v35.43 cw-cx-pingread on his pc after 17s (8802 serves 35.43) week 70%
+10-27 23:33 v35.44 cw-msgroute NOT on his pc after 675s (8802 serves no answer) week 71%
+10-27 23:37 v35.45 cw-spmoney NOT on his pc after 458s (8802 serves no answer) week 72%
+10-27 23:37 v35.44 cw-msgroute on his pc after 251s (8802 serves 35.45) week 72%
+10-27 23:38 v35.46 cw-cx-walletframe on his pc after 17s (8802 serves 35.46) week 72%
+10-27 23:42 v35.47 cloud-ach-born-scan on his pc after 16s (8802 serves 35.47) week 72%
+10-27 23:42 v35.45 cw-spmoney on his pc after 1s (8802 serves 35.47) week 72%
+10-27 23:52 v35.48 cloud-p2-easy-card on his pc after 80s (8802 serves 35.48) week 72%
+10-27 23:56 v35.49 cw-hudstates on his pc after 65s (8802 serves 35.49) week 72%
+10-28 00:03 v35.50 cw-extpill on his pc after 65s (8802 serves 35.50) week 72%
+10-28 00:12 v35.51 cw-cx-rtsteady on his pc after 163s (8802 serves 35.52) week 73%
+10-28 00:12 v35.52 cw-answerline on his pc after 17s (8802 serves 35.52) week 73%
+10-28 00:23 v35.53 cw-hudsize on his pc after 275s (8802 serves 35.53) week 73%
+10-28 00:33 v35.54 cw-cx-downcuts on his pc after 194s (8802 serves 35.54) week 73%
+10-28 01:04 v35.55 cw-cardstamp NOT on his pc after 384s (8802 serves 35.54) week 73%
+10-28 01:14 v35.56 cw-cx-xreloadsearch NOT on his pc after 385s (8802 serves 35.55) week 73%
+10-28 01:30 v35.57 cw-cx-xpromptread on his pc after 65s (8802 serves 35.57) week 74%
+10-28 01:46 v35.58 cw-cx-partnership on his pc after 64s (8802 serves 35.58) week 74%
+10-28 02:05 v35.59 cw-cx-hitjolt on his pc after 49s (8802 serves 35.59) week 74%
+10-28 02:14 v35.60 cw-cx-padpollguard on his pc after 17s (8802 serves 35.60) week 74%
+10-28 02:29 v35.61 cw-cx-osmotion on his pc after 65s (8802 serves 35.61) week 74%
+10-28 02:39 v35.62 cw-cx-osmotionlabel on his pc after 33s (8802 serves 35.62) week 74%
+10-28 02:57 v35.63 cw-cx-hudtv on his pc after 32s (8802 serves 35.63) week 74%
+10-28 03:39 v35.64 cw-cx-hudtvread on his pc after 33s (8802 serves 35.64) week 74%
+10-28 04:16 v35.65 cw-cx-pingmerge on his pc after 17s (8802 serves 35.65) week 74%
+10-28 07:57 v35.66 cw-airstrike3000 on his pc after 168s (8802 serves 35.66 (its GitHub status; the bridge did not answer)) week 75%
+10-28 08:15 v35.67 cw-cx-redtracers on his pc after 167s (8802 serves 35.67 (its GitHub status; the bridge did not answer)) week 76%
+10-28 08:36 v35.68 cw-diffmul on his pc after 168s (8802 serves 35.68 (its GitHub status; the bridge did not answer)) week 77%
+10-28 08:43 v35.69 cw-dmulshow on his pc after 168s (8802 serves 35.69 (its GitHub status; the bridge did not answer)) week 77%

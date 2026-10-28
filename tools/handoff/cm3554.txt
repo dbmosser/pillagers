@@ -1,0 +1,7 @@
+v35.54: downed hits follow damage cuts
+
+Downed hits follow the same damage factors as standing hits.
+
+Check 35.54. Fails on v35.53.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

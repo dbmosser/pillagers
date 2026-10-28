@@ -1,0 +1,7 @@
+v35.62: show os motion defaults as defaults
+
+OS reduced motion defaults use ordinary settings value styling.
+
+Check 35.62. Fails on v35.61.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

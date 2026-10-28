@@ -2726,6 +2726,8 @@ body:has(#appearmodal.pixfashion.on) > #uimring{display:none !important}
 <div class="pausebox" id="pausebox">
   <h3>RAID PAUSED</h3>
   <div id="pausekeys" style="font-size:13.5px;color:var(--ash);letter-spacing:.08em;text-align:center;line-height:1.8;max-width:730px">MOUSE aim &nbsp; LMB fire &nbsp; RMB aim down sights &nbsp; WASD move &nbsp; SPACE dodge roll &nbsp; SHIFT hold to sprint &nbsp; CTRL / C crouch toggle<br>E search / use &nbsp; X extraction &nbsp; R reload &nbsp; Q melee &nbsp; F next gun &nbsp; G throw &nbsp; U next grenade &nbsp; H heal, hold plate &nbsp; J next heal &nbsp; 1-4 guns &nbsp; 5-6 throw that grenade &nbsp; 7-8 use that heal &nbsp; 9 plate &nbsp; B / I backpack &nbsp; ENTER equip from backpack &nbsp; M map &nbsp; F1 controls &nbsp; TAB back out &nbsp; P / TAB pause</div>
+  <!-- v35.xx (cw-msgroute): the last lines of the run log, so a line that no longer shows in the raid is not lost (pauseLogSync) -->
+  <div id="pauselog" style="display:none;font-size:13px;color:var(--ash);margin-top:8px;max-width:620px;line-height:1.6;text-align:left;text-transform:lowercase;opacity:.85"></div>
   <div style="font-size:13.5px;color:var(--ash);margin-top:6px">Please provide feedback anything that went or felt wrong.</div>
   <textarea id="pausenote" rows="3" style="display:none;max-width:560px;font-size:13px" placeholder="e.g. the crier marked me through a wall, felt unfair"></textarea>
   <div style="display:flex;gap:8px">
@@ -3728,8 +3730,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.42';
-var VER_AT='2026-10-27 22:40';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.70';
+var VER_AT='2026-10-28 08:47';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3740,7 +3742,7 @@ var VER_AT='2026-10-27 22:40';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "
 // including measurement-only ones, so keying the card on it would re-show the
 // same unchanged list every session, and a card that nags is a card that gets
 // walked through unread. WHATSNEW_VER moves only when the list itself changes.
-var WHATSNEW_VER='35.39';
+var WHATSNEW_VER='35.55';
 // v17.77, THE VISUAL PASS (2026-10-02): THE NEW-IN CARD IS A CARD, NOT A WALL. It drew every note in full, six paragraphs over the
 // whole floor. It now shows the newest WN_SHOW notes, each as its headline sentence and the start of what follows. The notes
 // themselves are unchanged.
@@ -4917,6 +4919,7 @@ var P={credits:900,stash:[],weapons:['pistol'],equipped:'fists',runs:0,ext:0,die
   // load took it, once, silently. mig945 is the rig buyback, harmless on an
   // empty stash, and is stamped for the same reason: the rule is the rule.
   mig739:1,mig945:1,beltV:5,   // v21.93: beltV, the four-gun belt plan, born set (beltSlidePlan)
+  achScan:1,   // v35.47 (cloud-ach-born-scan), CLOUD AUDIT 2026-10-28: BORN SET. Live runs already count kills (achRun live), so the one-time log scan in achStatsDraw added every run again the first time a new save opened its stats: 14 pillager kills read 28 and unlocked the 25 kill medal
   // v11.73, from the 2026-09-06 menu audit: BORN SET, like dayMigrated above.
   // The pname default lives inside applyLoadedProfile, which only runs when a
   // save exists, so a player who has never saved had no name at all and the
@@ -5823,6 +5826,7 @@ function trColDraw(){
   var g=trGeo(), T=G&&G.tel, i=0, nn=(T&&T.notes)?T.notes.length:0;
   if(!G||!G.player) return 0;
   TRG.t=(typeof performance!=='undefined')?performance.now():Date.now();   // v35.xx (cw-quiethud): stamped with no rows too, so the page copy of the wallet stays clipped away in a raid
+  trHide();   // v28.xx (cw-cx-walletframe), HIS NOTE (2026-10-25): "Text collisions on the menu thing". Hide the page wallet in the frame that draws the corner, including the quiet hud with no rows: the loop hide check runs before drawing and can see an old stamp after a long frame.
   if(!(g.n>0)) return 0;
   if(nn&&TRV.nn!==nn){ TRV.nn=nn; TRV.ns=String(nn); }
   ctx.save(); hudZoomIn('cond',W,0);
@@ -13208,7 +13212,7 @@ function FSz(spec,z){
 // v18.71, SEEN ON THE 4K RAID SCREENSHOT (2026-10-07): THE BELT TEXT GROWS WITH THE BELT. The belt slots are sized by the room
 // they have (up to LH(112)), but the key number, the count and the caption over them were the smallest HUD type, so at 4K a
 // count was a speck in the corner of a big slot. They now take a share of the slot size, never smaller than before.
-function beltFS(bw,k){ var f=FS(TYPE.micro), m=(/([\d.]+)px/).exec(f), n=m?parseFloat(m[1]):11, want=Math.round(bw*k); if(G&&G.hubFloor&&typeof G.hubBagBeltBottom==='number')want=Math.max(want,20*Math.max(.75,Math.min(2.2,H/1080))); return hudFloor16((want>n)?f.replace((/([\d.]+)px/),want+'px'):f); } // v28.xx (cw-cx-hubbagreadability): key numbers stay readable in the hub card.
+function beltFS(bw,k){ var f=FS(TYPE.micro), m=(/([\d.]+)px/).exec(f), n=m?parseFloat(m[1]):11, want=Math.max(Math.round(bw*k),(G&&!G.hubFloor)?Math.round(18*hudRes()):0); if(G&&G.hubFloor&&typeof G.hubBagBeltBottom==='number')want=Math.max(want,20*Math.max(.75,Math.min(2.2,H/1080))); return hudFloor16((want>n)?f.replace((/([\d.]+)px/),want+'px'):f); } // v28.xx (cw-cx-hubbagreadability): key numbers stay readable in the hub card. // v28.xx (cw-cx-hudtvread): raid key numbers and reserves have an 18px floor, grown with the TV and screen scale.
 // v19.66, seen on a 4K text scan (2026-10-08): the line over the belt grew 1.3 times from 1080p to 4K while the extraction lines above
 // it (v19.54) and the rest of the HUD grow twice, so it read as small print. It is the larger of the slot size and the screen-grown size.
 /* v31.xx (cw-beltcap), the critic on screen 36 (2026-10-19): the line over the belt (scav pistol, fire, use) was the smallest print on the HUD, 13 px, unreadable from a couch. It takes the label size (15.6 px rendered, the size of prompts) and the emote strip and bars above it move up with it, as they already read this function. */
@@ -13379,10 +13383,11 @@ function hudKey(label,x,y,a,sw,o){
 // 4K size and as legible as at 1080p. The returned width and bottom are the drawn ones, for a bar under the prompt.
 var HUDPROMPTZ=0.6;
 function hudPrompt(s,x,y,o){
-  var r;
-  ctx.save(); ctx.translate(x,y); ctx.scale(HUDPROMPTZ,HUDPROMPTZ); ctx.translate(-x,-y);
+  // v28.xx (cw-cx-xpromptread): Q7 lets the style guide override older sizes; only pad container prompts opt into its readable label floor.
+  var r,z=(o&&o.scale>0)?o.scale:HUDPROMPTZ;
+  ctx.save(); ctx.translate(x,y); ctx.scale(z,z); ctx.translate(-x,-y);
   try{ r=hudPromptDraw(s,x,y,o); } finally { ctx.restore(); }
-  return {w:r.w*HUDPROMPTZ,by:y+(r.by-y)*HUDPROMPTZ};
+  return {w:r.w*z,by:y+(r.by-y)*z};
 }
 function hudPromptDraw(s,x,y,o){
   var t=String(s), m, w, a, d, sub=(o&&o.sub)?String(o.sub):'', sw=0, h, bw, i0, i1;
@@ -19711,7 +19716,7 @@ function padAxis(v){ return padStick(v,0).x; }
 // every exit out of pollPad and from the disconnect event.
 function padRelease(){
   // v28.xx (cw-cx-triggerhyst): forget trigger travel when a menu or pad loss releases owned inputs.
-  PAD.rtHeld=false; PAD.ltHeld=false;
+  PAD.rtHeld=false; PAD.ltHeld=false; PAD.adsT=0; // v28.xx (cw-cx-rtsteady): a released pad cannot leave a spread bonus behind.
   // v17.00, co-op hunt 2026-09-28: AND THE X PRESS LATCH. PAD.xWas was written only in the raid branch, so a menu, another
   // screen or the stall between two X presses left it set, the next X was not seen as a new press, and the choice of the X
   // before (reload) was held again beside a box, which was then never searched until X was let go and pressed once more.
@@ -19736,6 +19741,16 @@ function padXMode(mateDown){
   if(p.downed||mateDown||G.nearDown) return 'KeyE';
   if(inCombatNow()&&!p.hand&&p.wep&&p.ammo<p.wep.mag&&(rlHave(p)||p.reloading>0)) return 'KeyR';
   return (G.nearContainer||G.nearPad||G.nearDoor||G.nearPed||G.nearForge||(G.nearSeal&&!G.nearSeal.done)||(G.nearStray&&G.nearStray.found&&!G.nearStray.hostile))?'KeyE':'KeyR';
+}
+// v28.xx (cw-cx-xreloadsearch): the prompt and a fresh X press share the active-reload override; revives still win.
+function padXAction(mateDown){
+  if(mateDown===undefined){ mateDown=false; try{ mateDown=!!(NET.on&&typeof netMateDown==='function'&&netMateDown(G.player)>=0); }catch(_xm){} }
+  var mode=padXMode(mateDown), p=G&&G.player;
+  if(mode==='KeyE'&&p&&!p.downed&&p.reloading>0&&p.rlTot>0&&!G.nearDown&&!mateDown){
+    var f=1-p.reloading/p.rlTot;
+    if(f>=arLo(p)&&f<=arHi(p)) mode='KeyR';
+  }
+  return mode;
 }
 // v28.xx (cw-cx-padlost): J8, "pad lost", then "press a"; poll even in the covered window.
 // v28.xx (cw-cx-o07-reconnect): J8 and the disconnect critic: the existing action says reconnect while its pad is absent.
@@ -19833,9 +19848,10 @@ function padLostPoll(gp){
   return true;
 }
 function pollPad(){
-  if(!navigator.getGamepads) return;
   if(typeof SNIP==='object'&&SNIP&&SNIP.on) return;   // v30.xx (cw-snip): the pad is not read while a snip is up, so a press cannot reach a menu under it
-  var gps=navigator.getGamepads(),gp=null;
+  var gps=[],gp=null;
+  // v28.xx (cw-cx-padpollguard): a frame policy can block pad reads; use the ordinary no-pad cleanup and keep drawing.
+  try{ if(navigator.getGamepads) gps=navigator.getGamepads()||[]; }catch(_pg){}
   // v15.77, HIS ORDER OF 2026-09-25 (multiplayer, build 4): EACH WINDOW ON ONE PC PLAYS A CONTROLLER OF ITS OWN. In a same
   // machine mode the pad this window plays comes from netPadTick (the net section): in front, its own pick out of every
   // connected pad, while it hands the other window the state of that window's pad; not in front, the state the window in
@@ -20124,7 +20140,8 @@ function pollPad(){
   if(pressed(11)&&!PAD.prev[11]&&_rsLive) meleeStrike();
   PAD.adsTog=false;
   PAD.adsAim=!!(PAD.ltHeld&&!G.over&&!G.paused); // v28.xx (cw-cx-triggerhyst): focus uses the same hysteresis as fire.
-  if(PAD.adsT>0||PAD.adsAim){ G.player.ads=true; PAD.adsing=1; }
+  // v28.xx (cw-cx-rtsteady): his 10-20 aim order names right mouse and LT; RT settles spread only.
+  if(PAD.adsAim){ G.player.ads=true; PAD.adsing=1; }
   else if(PAD.adsing){ G.player.ads=false; PAD.adsing=0; }
 
   // With the bag open the dpad browses it, the same doubling the arrow keys
@@ -20169,13 +20186,24 @@ function pollPad(){
       // the roll began: X pressed while rolling onto a box held R for the whole hold and never searched. A roll reads neither E
       // nor R, so the choice now waits, holding nothing, until the reach has been looked up again after the press (G.nearN), and
       // the search grace starts then. Out of a roll, or downed, it is chosen on the press as before.
-      if(_xDown&&!PAD.xWas){ PAD.xMode=null; PAD.xNearN=(G.player&&G.player.roll>0&&!G.player.downed)?(G.nearN||0):null; }
+      if(_xDown&&!PAD.xWas){ PAD.xMode=null; PAD.xReloadGun=null; PAD.xNearN=(G.player&&G.player.roll>0&&!G.player.downed)?(G.nearN||0):null; }
       // v21.74, from the whole-game bug hunt of 2026-10-08 (K14): X HOLDS E AT THE SEAL AND AT A SURVIVOR. Neither was on this list,
       // so at THE SEAL (which stands clear of every wall, so usually nothing else is in reach) X held R and reloaded and the seal never
       // cut, and at a found survivor the [X] GIVE prompt was a reload too. A seal already open is left out (its reach is not looked
       // up again once it opens), and so is a survivor the prompt does not offer (not yet found, or turned hostile), so X still
       // reloads in a fight with him.
-      if(_xDown&&PAD.xMode==null&&(PAD.xNearN==null||PAD.xNearN!==(G.nearN||0)||(G.player&&G.player.downed))){ var _xm=false; try{ _xm=!!(NET.on&&typeof netMateDown==='function'&&netMateDown(G.player)>=0); }catch(_xe){} PAD.xMode=padXMode(_xm); /* v28.xx (cw-cx-xfight): his 3.10 b: reload wins during a fight. */ var _rp=G.player; if(PAD.xMode==='KeyE'&&_rp&&!_rp.downed&&_rp.reloading>0&&_rp.rlTot>0&&!G.nearDown&&!_xm){ var _arf=1-_rp.reloading/_rp.rlTot; if(_arf>=arLo(_rp)&&_arf<=arHi(_rp)) PAD.xMode='KeyR'; /* v35.xx (cw-reloadstack): the spot of this chain */ } if(PAD.xNearN!=null){ PAD.xDownAt=G.t; PAD.xNearN=null; _xSearch=!!(G.nearPad&&G.nearContainer); } }   // v28.37 (cloud-coop-pad-active-reload), CLOUD HUNT 2026-10-15: X is the only reload button on a controller, so in the sweet spot of a reload it lands the active reload even with a box, body, door or forge in reach (it searched instead, so player 2 could never get the bonus there); a downed teammate still takes the revive
+      if(_xDown&&PAD.xMode==null&&(PAD.xNearN==null||PAD.xNearN!==(G.nearN||0)||(G.player&&G.player.downed))){ var _xm=false; try{ _xm=!!(NET.on&&typeof netMateDown==='function'&&netMateDown(G.player)>=0); }catch(_xe){} PAD.xMode=padXAction(_xm); if(PAD.xNearN!=null){ PAD.xDownAt=G.t; PAD.xNearN=null; _xSearch=!!(G.nearPad&&G.nearContainer); } }   // v28.xx (cw-cx-xreloadsearch): share the exact press decision with the box prompt, including the narrowed active-reload spot.
+      // v28.xx (cw-cx-xreloadsearch): keep reload first (his 3.10 b), then search after the same gun completes its reload; cancellation never spends the hold.
+      if(_xDown&&PAD.xMode==='KeyR'&&G.player){
+        var _xr=G.player;
+        if(_xr.reloading>0){ PAD.xReloadGun=_xr.wep; PAD.xReloadN=_xr.padReloadN||0; }
+        else if(PAD.xReloadGun){
+          if(PAD.xReloadGun===_xr.wep&&(_xr.padReloadN||0)>PAD.xReloadN&&!_xr.hand&&!_xr.downed&&!(_xr.roll>0)&&G.nearContainer){
+            PAD.xMode='KeyE'; PAD.xDownAt=G.t; _xSearch=!!G.nearPad;
+          }
+          PAD.xReloadGun=null;
+        }
+      }
       if(_xDown&&G.player&&G.player.downed) PAD.xMode='KeyE';   // v17.04, co-op hunt 2026-09-28: downed, X holds E, also a hold carried onto the floor (above)
       PAD.xWas=_xDown;
       padHold('KeyR',_xDown&&PAD.xMode==='KeyR');
@@ -20806,6 +20834,19 @@ function pauseFrameFit(){
   b.style.setProperty('--pbw',Math.max(780,Math.ceil(wd)+96)+'px');   // v19.94, seen on the 4K floor pause screenshot (2026-10-08): the floor's three buttons all but touched the frame sides
   return true;
 }
+// v35.xx (cw-msgroute): THE RUN LOG ON THE PAUSE BOX. Most raid lines now go only into the run log (msgReach), so the pause box lists its last 8 lines, oldest
+// first, with a detail after a middle dot. It is the log the run report already keeps (G.msgLog, 16 lines), not a new screen; pickup rows are left out.
+var PAUSELOGN=8;
+function pauseLogSync(on){
+  var el=document.getElementById('pauselog'), M=(G&&G.msgLog)||[], L=[], i, e, s, d;
+  if(!el) return;
+  if(!(on&&G&&!G.over)){ el.style.display='none'; return; }
+  for(i=M.length-1;i>=0&&L.length<PAUSELOGN;i--){ e=M[i]; if(!e||e.k==='pick'||!e.m) continue; s=String(e.m)+(e.sub?'  \u00b7  '+String(e.sub):''); L.unshift(s.length>90?s.slice(0,88)+'...':s); }
+  el.textContent='';
+  if(L.length){ d=document.createElement('div'); d.textContent='run log'; d.style.color='var(--steel-hi)'; el.appendChild(d); }
+  for(i=0;i<L.length;i++){ d=document.createElement('div'); d.textContent=L[i].toLowerCase(); el.appendChild(d); }
+  el.style.display=L.length?'':'none';
+}
 function togglePauseBox(on){
   // v8.70, HIS REPORT: ESC pauses in the Undercroft too. This returned on the
   // spot whenever there was no raid, so the floor had no pause at all. syncPause
@@ -20855,6 +20896,7 @@ function togglePauseBox(on){
   // ended by a misclick on a screen he only opened to read the controls.
   if(on) disarmAbandon();
   document.getElementById('pausebox').classList.toggle('on',on);
+  try{ pauseLogSync(on); }catch(_pls){}   // v35.xx (cw-msgroute): the run log's last lines
   // The box is written for a raid. On the floor there is no run to abandon and
   // nothing is paused but the room, so it says so and drops the abandon controls.
   (function(){
@@ -22626,7 +22668,7 @@ function alertShow(m,k,o,now){
            T:(o&&o.life>0)?o.life:MSGK[k].life,at:now};
   G.alert.T0=G.alert.T;   // v27.50 (alert3): the life it was shown with, for the time bar under the plate
 }
-function alertToFeed(e){ var o=e.o||{}; say(e.m,'obj',{sub:o.sub||'',key:o.key||'',fk:feedKindOf(e.m,e.k,null)}); }   // v35.xx (cw-quiettext): an alert that waited too long is written into the feed now, in its own colour (it is no longer written there when said)
+function alertToFeed(e){ var o=e.o||{}; say(e.m,'obj',{sub:o.sub||'',key:o.key||'',fk:feedKindOf(e.m,e.k,null),reach:msgReach(e.m,e.k,o)}); }   // v35.xx (cw-quiettext): an alert that waited too long is written into the feed now, in its own colour (it is no longer written there when said)
 function alertQDrop(m,key){ var q=G.alertQ, i; if(!q) return; for(i=q.length-1;i>=0;i--) if((q[i].m===m&&!msgDiffKey(q[i].key,key))||(key&&q[i].key===key)) q.splice(i,1); }   // v23.xx (tr9fixo): two keyed alerts with one headline are two alerts
 function alertEnq(m,k,o,now,back){   // v22.xx (tr3fixa): back, an alert another line displaced
   var q=(G.alertQ=G.alertQ||[]), key=(o&&o.key)||'', i, lo, lr;
@@ -23026,7 +23068,8 @@ function alertLayout(){   // with the message scale not yet applied: the alert p
   // v27.50 (alert3), HIS ANSWER (2026-10-14), "just polish UI up as you see fit consistent with AAA practices", and the HUD spec (section 6): the
   // headline of an alert is the L size (the 32 px step), the detail under it stays the S size. It was the M size, the size of a prompt; a callout
   // that has to be read in a firefight is the biggest line the HUD has bar the score and DOWN.
-  hf=FS(TYPE.title); lf=FS(TYPE.label); hp=msgPx(hf); lp=msgPx(lf); gs=Math.round(hp*0.9);
+  hf=FS(TYPE.title); if(msgPx(hf)<ALERTPX) hf=hf.replace(/[\d.]+px/,ALERTPX+'px');   // v35.xx (cw-hudsize): the danger headline is 30 px at 1080p (was 26), still under the message scale
+  lf=FS(TYPE.label); hp=msgPx(hf); lp=msgPx(lf); gs=Math.round(hp*0.9);
   mw=Math.max(LH(80),msgMaxW()-gs-LH(29));
   ctx.save();
   try{
@@ -23096,7 +23139,7 @@ function loreTick(dt){
     G.storyRead=1; if(G.tel) G.tel.storyRead=1;
     G.lore=L={name:String(st.name||'').toUpperCase(),text:String(st.text||''),x:st.x,y:st.y,T:LORELIFE,at:G.t||0};
     // v28.xx (cw-feedall), HIS ORDER (2026-10-15): "All text shown to the player on screen also goes into the player feed." The lore card was the one text that never did (v22.xx R39 kept it out): its name is an objective line and its text a line under it.
-    try{ if(L.name) feedAdd([{t:L.name,c:HUDC.warn}],'obj',{key:'lore:'+L.name}); if(L.text) feedAdd([{t:L.text,c:HUDC.text}],'info',{key:'loret:'+L.name,gl:''}); }catch(_lf){}
+    try{ if(L.name) say(L.name,'info',{reach:0}); }catch(_lf){}   // v35.xx (cw-msgroute): the story card is its one place; the run log keeps its name (22.88: no line holds the story)
   }
   if(L){ L.T-=dt; if(!(L.T>0)||Math.hypot(p.x-L.x,p.y-L.y)>LOREFAR) G.lore=null; }
 }
@@ -23140,7 +23183,10 @@ function drawLore(){
 // laid out above it. The old places (the message rows, the pickup stack, the kill feed, the loot labels) still show in this build; the
 // next builds move them out. A window has its own feed, and a teammate's lines reach it through the same say(). Cosmetic only: no
 // seeded draw, nothing under G.sim, no game state; the feed clock (G.fd.t) runs on msgTick, so it stands still under the solo pause.
-var FEED={show:10,keep:40,hold:6,dim:0.6,fade:1,again:1,merge:30,enter:0.14};
+// v35.xx (cw-msgroute), the research rule (2026-10-27): THREE LINES, FIVE SECONDS, THEN GONE. The feed showed 10 lines, each bright for 6 s and then held at 60
+// percent until ten newer ones pushed it off, so the corner was never empty. Now at most 3 lines, each fading in over 0.2 s, bright to 4.6 s and fully out at 5 s.
+// A repeat still joins its line as x2 and starts its time again (FEED.merge).
+var FEED={show:3,keep:40,hold:4.6,dim:0,fade:0.4,again:1,merge:30,enter:0.2};
 var FEEDBOX={on:0,x:0,y:0,w:0,h:0,rows:[]};
 var LEGHINT=null;   // v34.xx (cw-careerlegend): where the folded f1 controls line stood this frame (career raids), for the checks
 // v27.40 (medal0), HIS ANSWER (2026-10-14), "Halo puts medals in a row at the left": THE MEDAL SPOT IS RESERVED. A row for the style medals
@@ -23180,6 +23226,16 @@ function feedAdd(segs,fk,o){
     }
     break;
   }
+  // v35.xx (cw-msgroute): AT MOST ONE NEW FEED LINE EVERY 2.5 S, counted after repeats join their line. A line that would be new and is not danger or an answer
+  // (o.cap: b extraction, c teammate, d goal done) waits in F.q while the last new line is under 2.5 s old, while others wait, or (a goal done) while a shot was
+  // fired or taken in the last 4 s. feedTick lets the best ranked one in; a line said again while it waits keeps its one place.
+  if(o&&o.cap&&(now-(F.lastNew===undefined?-1e9:F.lastNew)<FEEDGAP||(F.q&&F.q.length)||(o.cap==='d'&&!feedCalm()))){
+    F.q=F.q||[];
+    for(i=0;i<F.q.length;i++) if((key&&F.q[i].key===key)||(!key&&!F.q[i].key&&F.q[i].txt===txt)){ F.q[i].segs=segs; F.q[i].txt=txt; F.q[i].o=o; return null; }
+    F.q.push({segs:segs,fk:fk,o:o,key:key,txt:txt,at:now});
+    return null;
+  }
+  F.lastNew=now;
   ln={id:(F.seq=(F.seq|0)+1),fk:fk||'info',segs:segs,txt:txt,key:key,n:n,tag:(o&&o.tag)?String(o.tag):'',money:'',col:(o&&o.col)||feedCol(fk),
       gl:(o&&o.gl!==undefined)?o.gl:FEEDGL[fk||'info'],at:now,last:now,born:now,mf:''};
   F.lines.push(ln);
@@ -23197,7 +23253,7 @@ function feedKindOf(s,k,o){
 }
 // every say(): the line goes into the feed whatever lane it also takes. A line the old pipeline says a second time (the waiting
 // queue coming out, an alert that waited too long going to the rows) is not written again (o.fd, G.msgDrain).
-function feedSay(m,k,o){
+function feedSay(m,k,o,cap){
   var s, sub, fk, col, D, item, tag, key, segs, cnt=false, gl;
   if(!G||G.sim||!G.player||G.msgDrain) return null;   // v35.xx (cw-quiettext): o.fd no longer keeps a line out: with the grey rows retired the feed is the one place it shows (the golden down callout)
   s=String(m); if(!s) return null;
@@ -23214,8 +23270,9 @@ function feedSay(m,k,o){
   fk=feedKindOf(s,k,o); col=feedCol(fk); gl=undefined;
   if(fk==='power'){ D=feedPwrOf(s); if(D) col=D.hex; }
   segs=[{t:s,c:(fk==='info'||fk==='dim')?feedCol(fk):col}];
+  var _mc=(cap==='c')?feedMateCol():''; if(_mc){ col=_mc; segs[0].c=_mc; }   // v35.xx (cw-msgroute): teammate news in the teammate's colour in a party raid
   if(sub&&sub.split(/\s+/).length<=4||sub&&o&&o.key) segs.push({t:'  \u00b7  '+sub,c:HUDC.dim});   // v28.xx (cw-feedcalm), the critic (2026-10-19): 'explaining sentences' in the left feed. A detail of five words or more (limited visibility due to fog, kill it for the hoard) stays out of the feed line; the headline is the line.
-  return feedAdd(segs,fk,{key:(o&&o.key)?('k:'+o.key):'',col:col});
+  return feedAdd(segs,fk,{key:(o&&o.key)?('k:'+o.key):'',col:col,cap:cap||'',still:(o&&o.still)||null});
 }
 // a world label (rising text): loot names are the pickup lines, hit feedback stays on its target, a kill has its own line and
 // a medal carries its own figure; everything else (a revive, a notoriety rise, a seal broken) is a line here too.
@@ -23228,6 +23285,7 @@ function feedLabel(t,c,ik){
   if((/^\s\+(\$|[\d,]+ SP$)/).test(s)) return null;
   // v28.xx (cw-feedsp): a kill popup "+50 SP" joins the kill line again, as "+$50" did before lean2.
   if((/^\+(\$[\d,]+|[\d,]+ SP)$/).test(s)) return feedMoney(s);
+  if(MSGLEAN) return null;   // v35.xx (cw-msgroute): a label is read where it rose (a kill's figure above still rides on its kill line)
   return feedAdd([{t:s,c:c||HUDC.text}],'info',{col:c||null,gl:'info'});
 }
 // the figure of a kill rides on his own kill line when that line is under a second old; otherwise it is a line of its own
@@ -23237,6 +23295,7 @@ function feedMoney(s){
   return feedAdd([{t:s,c:UIC.r_gold}],'money',{key:'m:'+s});
 }
 function feedMedal(txt,pts){
+  if(MSGLEAN) return null;   // v35.xx (cw-msgroute): the medal shows over the cursor ring; no second copy in the feed
   return feedAdd([{t:String(txt),c:UIC.r_gold},{t:'  +'+arcadeCr(pts),c:UIC.r_gold}],'medal',{});
 }
 function feedSame(a,b){
@@ -23276,16 +23335,51 @@ function feedTag(item,tag){
   if(!F) return;
   for(i=F.lines.length-1;i>=0;i--){ Ln=F.lines[i]; if(Ln.fk==='loot'&&Ln.key.indexOf('p:'+item+'|')===0){ Ln.tag=String(tag||''); Ln.mf=''; return; } }
 }
-function feedTick(dt){ if(G&&G.fd) G.fd.t+=dt; }
+function feedTick(dt){
+  var F=G&&G.fd, i, e, b=-1, o2, k, n=1, calm;
+  if(!F) return;
+  F.t+=dt;
+  if(!F.q||!F.q.length) return;   // v35.xx (cw-msgroute): the lines waiting their turn (feedAdd)
+  // extraction and teammate news wait at most 4 s and are asked again (o.still); a goal done waits out the fight
+  for(i=F.q.length-1;i>=0;i--){ e=F.q[i]; if((e.o.cap!=='d'&&F.t-e.at>FEEDWAIT)||!feedStill(e.o)) F.q.splice(i,1); }
+  if(!F.q.length||F.t-(F.lastNew===undefined?-1e9:F.lastNew)<FEEDGAP) return;
+  calm=feedCalm();
+  for(i=0;i<F.q.length;i++){ e=F.q[i]; if(e.o.cap==='d'&&!calm) continue; if(b<0||(FEEDRANK[e.o.cap]||9)<(FEEDRANK[F.q[b].o.cap]||9)) b=i; }
+  if(b<0) return;
+  e=F.q.splice(b,1)[0]; o2={}; for(k in e.o) o2[k]=e.o[k]; o2.cap='';
+  if(e.o.cap==='d'){   // every goal done that waited out the fight shows as this one line
+    for(i=0;i<F.q.length;){ if(F.q[i].o.cap!=='d'){ i++; continue; } if(F.q[i].txt===e.txt) n++; else e.segs=e.segs.concat([{t:'  \u00b7  ',c:HUDC.dim}],F.q[i].segs); F.q.splice(i,1); }
+    if(n>1) o2.n=n;
+  }
+  feedAdd(e.segs,e.fk,o2);
+}
+// v35.xx (cw-hudsize), HIS ASK (2026-10-27 ~21:40): "Everything about this game needs to be AAA and right now all the messaging on the hud is a clusterfuck", built
+// to the research of that night (reports/Player alerts and HUD messaging.md, job 9, the Xbox accessibility floors at 1080p). TEXT AT A READABLE SIZE: the left
+// feed was 15.6 px and is at least 20 (its zone is 28 percent of the width, was 24, so a long line still fits whole), the answer line is at least 20 (cw-answerline),
+// the opened controls list was 16 and is 18, and the danger slot headline was 26 and is 30. Every size still grows with the screen and the text size setting.
+// CONTRAST: every raid line sits on the one HUD plate (88 percent graphite), so it was read against that plate laid over the lightest ground (white) and the darkest
+// (black); words on it need 4.5 to 1. The cream, the grey, the teal and the amber pass both; the red of a shut exit on the pill did not over white (3.2), so text
+// in red on a plate is the lighter HUDTXT_RED (4.8). hudCR and hudOver are the reader the check uses.
+var FEEDPX=20, LEGCK=1.125, ALERTPX=30, HUDTXT_RED='#ff6a55';
+function feedFont(){ var f=hudFS(TYPE.label), r=Math.max(1,hudRes()), px=msgPx(f); return (px<FEEDPX*r)?f.replace(/[\d.]+px/,(FEEDPX*r).toFixed(1)+'px'):f; }
+function hudLum(c){
+  var s=String(c), m, r, gg, b;
+  function lin(v){ v/=255; return (v<=0.03928)?v/12.92:Math.pow((v+0.055)/1.055,2.4); }
+  if(s.charAt(0)==='#'){ if(s.length===4) s='#'+s[1]+s[1]+s[2]+s[2]+s[3]+s[3]; r=parseInt(s.substr(1,2),16); gg=parseInt(s.substr(3,2),16); b=parseInt(s.substr(5,2),16); }
+  else { m=/rgba?\(([^)]*)\)/.exec(s); if(!m) return 0; m=m[1].split(','); r=+m[0]; gg=+m[1]; b=+m[2]; }
+  return 0.2126*lin(r)+0.7152*lin(gg)+0.0722*lin(b);
+}
+function hudOver(fill,ground){ var m=/rgba?\(([^)]*)\)/.exec(String(fill)), p, a; if(!m) return fill; p=m[1].split(','); a=(p[3]===undefined)?1:+p[3]; return 'rgb('+Math.round(+p[0]*a+ground*(1-a))+','+Math.round(+p[1]*a+ground*(1-a))+','+Math.round(+p[2]*a+ground*(1-a))+')'; }
+function hudCR(fg,bg){ var a=hudLum(fg), b=hudLum(bg); return (Math.max(a,b)+0.05)/(Math.min(a,b)+0.05); }
 function feedRect(){
   // v27.35 (feedw), seen in the busy frame picture: the feed zone was 30 percent of the screen wide (576 px at 1080p) and its lines are
   // under 410, so the controls list beside it was squeezed to a sliver. The zone is 24 percent of the width, and each line is a little
   // tighter (1.38 x the type, was 1.5), so the ten lines are about 280 px tall at 1080p.
-  var rs=Math.max(1,hudRes()), fp=msgPx(hudFS(TYPE.label)), rh=Math.round(fp*1.38), gap=Math.max(2,Math.round(LH(2)*rs)), B=HUDBOX.body, h=FEED.show*rh+(FEED.show-1)*gap, bot;
+  var rs=Math.max(1,hudRes()), fp=msgPx(feedFont()), rh=Math.round(fp*1.38),   /* v35.xx (cw-hudsize): 20 px */ gap=Math.max(2,Math.round(LH(2)*rs)), B=HUDBOX.body, h=FEED.show*rh+(FEED.show-1)*gap, bot;
   bot=((B&&B.h>0&&B.y>H*0.5)?B.y:Math.round(H-LH(142)*rs*1.4))-Math.round(LH(8)*rs);
   MEDALBOX.h=Math.round(LH(40)*rs); MEDALBOX.y=bot-MEDALBOX.h; MEDALBOX.x=Math.round(LH(9)*rs); MEDALBOX.w=Math.round(W*0.24); MEDALBOX.on=1;   // v27.40 (medal0): the medal spot, on the vitals
   bot=MEDALBOX.y-Math.round(LH(6)*rs);   // and the feed stands on it
-  return {x:Math.round(LH(9)*rs),y:bot-h,w:Math.round(W*0.24),h:h,rh:rh,gap:gap,fp:fp};
+  return {x:Math.round(LH(9)*rs),y:bot-h,w:Math.round(W*0.28),h:h,rh:rh,gap:gap,fp:fp};   // v35.xx (cw-hudsize): 28 percent, so a 20 px line fits whole
 }
 function feedGlyph(name,x,cy,s,col){
   var Pt=name?uiIconPath(name):null;
@@ -23320,13 +23414,14 @@ function feedDraw(){ var _lgS=LEGSIDE, _fst=0; LEGSIDE=null;   // v35.xx (cw-f1l
   if(feedWaits()) return 0;   // v28.xx (cw-feedmap), the critic on screen 22 (2026-10-19): toasts ("running slowly", codex entry) sat on top of the open map. The feed waits behind the map and is back when it closes.
   R=feedRect(); FEEDBOX.x=R.x; FEEDBOX.y=R.y; FEEDBOX.w=R.w; FEEDBOX.h=R.h; FEEDBOX.on=1;   // the zone is kept whether or not a line is up
   if(!F||!F.lines.length) return 0;
-  rs=Math.max(1,hudRes()); fL=hudFS(TYPE.label); pad=Math.round(LH(7)*rs); gs=Math.round(R.fp*0.95); oa=ctx.globalAlpha;
+  rs=Math.max(1,hudRes()); fL=feedFont(); pad=Math.round(LH(7)*rs);   /* v35.xx (cw-hudsize): 20 px */ gs=Math.round(R.fp*0.95); oa=ctx.globalAlpha;
   ctx.save();
   try{
     ctx.font=fL; ctx.textBaseline='alphabetic'; ctx.textAlign='left';
     y=R.y+R.h;
-    for(i=F.lines.length-1,n=0;i>=0&&n<FEED.show;i--,n++){
-      ln=F.lines[i]; al=feedAlpha(ln); e=Math.min(1,(F.t-ln.born)/FEED.enter);
+    for(i=F.lines.length-1,n=0;i>=0&&n<FEED.show;i--){
+      ln=F.lines[i]; al=feedAlpha(ln); if(!(al>0)) continue; n++;   // v35.xx (cw-msgroute): a line that has faded out holds no place
+      e=Math.min(1,(F.t-ln.born)/FEED.enter);
       pr=feedParts(ln,fL,R.w-pad*3-gs-Math.round(pad*0.7));
       w=Math.min(R.w,pad+Math.round(pad*0.5)+(ln.gl?gs+Math.round(pad*0.7):0)+pr.w+pad);
       x=R.x+(_fst=feedStep(_lgS,R,rs))+(_fst?0:Math.round((e-1)*LH(18)*rs)); yt=y-R.rh;   // beside the open list a new line fades in where it stands (sliding in from the left it ran under the list)
@@ -23373,6 +23468,93 @@ function sayWhenFree(m,kind,o){
   }
   say(m,kind,o);
 }
+// v35.xx (cw-msgroute), HIS COMPLAINT (2026-10-27): "there are too many messages coming in to the player", and on the plan: "You need to figure out what works".
+// Built to the research rule of that night (reports/Player alerts and HUD messaging.md). The quiet hud put each line in one place; this cuts how many there are.
+// A LINE REACHES THE SCREEN ONLY ON THE LADDER: P0 (a) danger to you now or your teammate down, the alert lane; P1 (b) a change in extraction; P2 (c) other
+// teammate news; P3 (d) a goal or contract done (not progress); P4 (e) the one-line answer to something you tried that did not work (health full, bandages stop
+// at 85, no x left: a key that silently does nothing reads as broken). Everything else (a codex entry, location revealed, weather and fog, running slowly, a
+// golden enemy, a stronghold, a discovery, lore, chatter, system lines, progress counts such as notoriety) is said into the run log (G.msgLog) and drawn
+// nowhere; the pause box lists the last lines of that log (pauseLogSync), so nothing is lost. msgReach() reads the kind and the words and gives the letter,
+// or '' for a log-only line; o.reach names it outright (0: the log only). The medal copy and the world label copies (cw-feedall, his order 2026-10-15) leave the
+// left feed (MSGLEAN): a medal shows over the cursor ring and a label where it rose. Kill lines and their figure stay (his answer g-86), "contract item nearby"
+// stays as it was, and looting is not touched: the pickup stack, its rows and sounds never pass through here. The hub floor keeps every line.
+// The list, call site by call site: tools/handoff/console/notes/raid-messages.md.
+var MSGLEAN=1, FEEDGAP=2.5, FEEDWAIT=4, FEEDCALM=4, FEEDRANK={b:1,c:2,d:3};
+var MSGCUTA=/^(NOTORIETY |CONVOY MOVING$|MACHINE CONVOY$|COOLANT RUPTURE$|GATE BREACHED$|YOUR RIVAL IS UP TOP$)/;
+var MSGOBJ=/^(CONTRACT DONE|GOAL DONE.*|GUN UPGRADED|CACHE MARKED|KEYCARD DROPPED|.+ IS DEAD|.+ DESTROYED|\d+ MINUTES? LEFT)$/;
+var MSGKEEP=[
+  ['e',/^(HEALTH FULL|ALREADY (HEALING|APPLYING|SLOTTING)|NOT WHILE DOWN|NO .+|NOTHING TO (USE|PICK UP)|.+ STOPS? AT \d+|TOO TIRED TO ROLL|THROW BLOCKED|THROW THE ONE IN YOUR HAND FIRST|MOVE IT TO THE BACKPACK FIRST|ISSUED GEAR STAYS IN YOUR HANDS|CANNOT .+|NOT IN BACKPACK|SLOT .+ TAKES GUNS ONLY|GUNS GO ON KEYS .+|ITEMS GO ON THE WHEEL|GUN SLOT \d+ EMPTY|EMPTY SLOT|STOP FIRST|ARMOUR FULL|NEED .+|HE NEEDS .+|NOT ENOUGH .+|HE WANTS NOTHING YOU CARRY|SELF-REVIVE SPENT.*|AIR STRIKE \d+%|WARDEN ARMOUR|BULWARK SHIELD|MAX TIER|CONTROLLER DISCONNECTED|WALL GLITCH SAVED TO RUN REPORT|ERROR SAVED TO YOUR RUN REPORT|FEEDBACK (SAVED|COPIED|NOT SAVED)|SUPERHOT (ON|OFF|FOLLOWS THE HOST)|PICK OTHER INITIALS|SELECT A HEAL|.+ (JAMMED|EMPTY|ARMOUR FULL|DOES NOT NEED IT|ALREADY HEALING|COULD NOT TAKE IT|MOVED AWAY|IS SEARCHING|TO BACKPACK))$/],
+  ['a',/^(MACHINE ALERT|OVERSEER RETURNS)$/],
+  ['b',/^(EXTRACTION \S+ IS CLOSED|PILLAGER BOT CALLED EXTRACTION)$/],
+  ['c',/^(.+ RECEIVED|GAVE .+ TO .+|TOOK .+ FROM .+|PLATE FROM .+|.+ PATCHED YOU UP|TAKING IT)$/],
+  ['d',/^(SOLD \d+ ITEMS?|SURVIVOR EXTRACTED)$/]
+];
+var MSGKEYS={loanstash:'e',selheal:'e',arcxout:'c',cdone:'d'};
+function msgReach(m,k,o){
+  var s, key=(o&&o.key)?String(o.key):'', i;
+  if(o&&o.reach!==undefined) return o.reach||'';
+  if(G&&G.hubFloor) return 'e';   // the hub floor is not a raid: every line, at once, as before
+  if(k==='pick') return 'd';
+  s=String(m).toUpperCase().replace(/[.\s]+$/,'');
+  if(s==='CONTRACT ITEM NEARBY') return 'e';   // close to looting: shown as it always was, at once (his call, 10-27)
+  if(MSGKEYS.hasOwnProperty(key)) return MSGKEYS[key];
+  if(k==='crit'||k==='warn') return MSGCUTA.test(s)?'':'a';
+  if(k==='ext') return (/^(EXTRACT|KNOCKED DOWN)/).test(s)?'b':'d';
+  if(k==='ally') return (/^THE PEDDLER /).test(s)?'':'c';
+  if(k==='obj') return MSGOBJ.test(s)?((/MINUTES? LEFT$/).test(s)?'b':'d'):'';
+  if(G&&G.paused&&(k==='sys'||k==='info')) return 'e';   // a menu answer under the co-op overlay pause (under the solo pause say() hands it to the answer line first)
+  for(i=0;i<MSGKEEP.length;i++) if(MSGKEEP[i][1].test(s)) return MSGKEEP[i][0];
+  return '';
+}
+// v35.xx (cw-answerline), HIS ASK (2026-10-27 ~21:40): "Everything about this game needs to be AAA and right now all the messaging on the hud is a clusterfuck", built
+// to the research of that night (reports/Player alerts and HUD messaging.md, Centre, job 7). THE ANSWER TO SOMETHING YOU TRIED THAT DID NOT WORK SITS UNDER YOUR FEET.
+// A P4 line (msgReach e: health full, no ammo, locked, bandages stop at 85, too tired to roll...) was a line in the left feed, out at the edge where the eye seldom
+// goes. It is now one small line about 70 px under the character, at least 20 px tall, on a plate, for 2 s, and only one at a time (a new answer replaces it).
+// ONCE PER PRESS: the same line said again while it shows does not restart it, and said again within 0.35 s of the last time (a key held down repeats) it does not
+// come back after it has gone; let go and press again and it shows again. There is no soft "no" sound in the game to give it, so it stays silent (the research asked
+// for one only if it existed). BACKPACK FULL is a pickup row and stays in the pickup stack exactly as before; contract item nearby (close to looting, his call),
+// a pad unplugged and the saved run report notes stay in the feed; so do answers on the hub floor, under a pause or with the backpack open, and a line
+// whose lane is named outright (o.reach, which only the checks use to stage a feed line).
+var ANSLIFE=2, ANSGAP=0.35, ANSOFF=70;
+var ANSFEED=/^(CONTRACT ITEM NEARBY|CONTROLLER DISCONNECTED|WALL GLITCH SAVED TO RUN REPORT|ERROR SAVED TO YOUR RUN REPORT|FEEDBACK (SAVED|COPIED|NOT SAVED)|PICK OTHER INITIALS)$/;
+var ANSBOX={on:0,x:0,y:0,w:0,h:0,px:0,t:''};
+function ansOn(m){ return !!(G&&!G.hubFloor&&!G.paused&&!G.over&&!G.bagOpen&&!G.mapOpen&&G.player&&!ANSFEED.test(String(m).toUpperCase().replace(/[.\s]+$/,''))); }
+function ansSay(m,o){
+  var s=String(m), now=statusNow(), A=G.ans, seen=(G.ansSeen=G.ansSeen||{}), last=seen[s];
+  seen[s]=now;
+  if(A&&A.m===s&&now-A.at<ANSLIFE) return A;                     // said again while it shows: one line, its time is not refreshed
+  if(last!==undefined&&now-last<ANSGAP) return A;                 // the key is still held: it does not come back
+  G.ans={m:s,sub:(o&&o.sub)?String(o.sub):'',at:now};
+  return G.ans;
+}
+function ansUp(){ var A=G&&G.ans; return (A&&statusNow()-A.at<ANSLIFE)?A:null; }
+function ansDraw(){
+  var A=ansUp(), p=G&&G.player, ps, hr, f, px, t, tw, al, x, y, bw, bh, k;
+  ANSBOX.on=0;
+  if(!A||!p||G.mapOpen||G.bagOpen||G.over) return false;
+  ps=w2s(p.x,0,p.y); if(!ps) return false;
+  hr=Math.max(1,hudRes()); f=hudFS(TYPE.head); px=msgPx(f);
+  if(px<20*hr){ px=20*hr; f=f.replace(/[\d.]+px/,px.toFixed(1)+'px'); }
+  k=statusNow()-A.at; al=clamp(k/0.12,0,1)*clamp((ANSLIFE-k)/0.3,0,1);
+  if(!(al>0.01)) return false;
+  t=A.m+(A.sub?'  \u00b7  '+A.sub:'');
+  ctx.save();
+  try{
+    ctx.font=f; ctx.textAlign='center'; ctx.globalAlpha=al;
+    tw=ctx.measureText(TX(t)).width; bw=Math.round(tw+LH(16)*hr); bh=Math.round(px*1.45);
+    x=Math.round(ps.x); y=Math.round(ps.y+ANSOFF*hr);
+    if(y>H-LH(150)*hr) y=Math.round(ps.y-LH(100)*hr);   // the character low on the screen (a short window): over the head, never on the belt
+    x=clamp(x,bw/2+LH(8)*hr,W-bw/2-LH(8)*hr); y=clamp(y,bh,H-LH(150)*hr);
+    hudPlate(Math.round(x-bw/2),Math.round(y-bh/2),bw,bh,null,HUDC.plate);
+    ctx.fillStyle=HUDC.text;
+    hudText(t,x,Math.round(y+px*0.36));
+    ANSBOX.on=1; ANSBOX.x=x-bw/2; ANSBOX.y=y-bh/2; ANSBOX.w=bw; ANSBOX.h=bh; ANSBOX.px=px; ANSBOX.t=t;
+  } finally { ctx.restore(); }
+  return true;
+}
+function feedCalm(){ var p=G&&G.player; return !p||!((p.combatT||0)<FEEDCALM); }   // no shot fired or taken for 4 s (tickRegen's clock)
+function feedStill(o){ if(!o||typeof o.still!=='function') return true; try{ return !!o.still(); }catch(_fst){ return true; } }   // a waiting line that knows how is asked again before it shows
+function feedMateCol(){ try{ if(typeof NET==='object'&&NET&&NET.on&&NET.mode!=='pvp') return mapSeatColor(brlMe()===0?1:0); }catch(_fmc){} return ''; }   // the teammate's colour (his r3-13: P1 amber, P2 cyan)
 function say(m,kind,o){
   if(mapPopupHold('say',arguments)) return;
   if(G&&G.sim) return;
@@ -23386,7 +23568,8 @@ function say(m,kind,o){
     // never lost); a pickup line (money in or out, BACKPACK FULL) is the right-side pickup stack only, as looted items already were (cw-hudfix); and every other
     // line (obj, ally, info, chat, sys) is a feed line only: the two grey rows under the clock are retired. The pause answer line and the run log are as they
     // were. This reverses his rs-2 a ruling of 2026-10-24 (keep both alert copies).
-    if(msgAlertK(k)){ alertSay(m,k,o); return; }   // v22.13 (R08): crit, warn and ext take the alert lane, not a feed row
+    if(o&&o.reach===0) return;   // v35.xx (cw-msgroute): a line for the run log only (the codex, the story card), never on the pause answer line either
+    if(msgAlertK(k)){ if(msgReach(m,k,o)) alertSay(m,k,o); return; }   // v22.13 (R08): crit, warn and ext take the alert lane, not a feed row
     if(k==='pick'){ pickSay(m,o); return; }   // v22.50 (R16): an item picked up is a row in the pickup stack, never a feed row
     // v22.xx, the raid text rewrite (R37): A LINE SAID UNDER THE SOLO PAUSE BOX SHOWS ON IT. HIS ORDER (2026-10-09): the raid text
     // reads like a shooter HUD, and a menu answers on the menu. With the pause box open in a solo raid (the world stopped), a key
@@ -23398,7 +23581,11 @@ function say(m,kind,o){
     // v35.xx (cw-quietpause), HIS ORDER (2026-10-27): "build the quiet hud, all 5 changes". ONE PLACE UNDER THE PAUSE BOX TOO. The feed took the line before
     // this test ran, so a key or a Settings change under the solo pause showed on the answer line over the box AND sat in the left feed behind it, and was read
     // again after the box shut, about a change already made. The answer line is now its one place; the co-op overlay pause, where the world runs on, keeps the feed.
-    try{ feedSay(m,k,o); }catch(_fsy){}   // v27.24 (feed1): every other line said is in the feed
+    // v35.xx (cw-msgroute): a line off the ladder is in the run log and nowhere else; danger and an answer go into the feed at once, the rest take their turn
+    // there (feedAdd: one new line every 2.5 s, goal done after the fight)
+    var _rc=msgReach(m,k,o); if(!_rc) return;
+    if(_rc==='e'&&!(o&&o.reach!==undefined)&&ansOn(m)){ ansSay(m,o); return; }   // v35.xx (cw-answerline): a try that did not work answers under your feet, not in the feed (a line given o.reach outright keeps its lane)
+    try{ feedSay(m,k,o,(_rc==='a'||_rc==='e')?'':_rc); }catch(_fsy){}   // v27.24 (feed1): every other line said is in the feed
     return;   // v35.xx (cw-quiettext): the line is in the feed; the two grey message rows under the clock (v21.86 R04 to v23.xx tr9fixk) are retired
   }
   // v8.13, audit: no raid to say it into. The Mainframe's eleven messages and
@@ -23711,9 +23898,11 @@ function armorHitFoley(broke){
   foley('strapRip',null,null,{off:0.1,dur:0.12,g:0.5,rate:1.5,at:0.04,local:1});
 }
 function damagePlayer(amt,src,srcName,sx,sy){
-  // v21.97 (K7): and on a raid this window joined and took over when the host left
-  if(typeof NET==='object'&&NET&&((NET.on&&NET.role==='join')||(typeof G!=='undefined'&&G&&G.netWasJoin))&&isFinite(amt)) amt*=netKidMul();   // v16.44, his order: kid mode, player 2 takes less
-  if(typeof G!=='undefined'&&G&&G.arcade&&isFinite(amt)) amt*=ARCADE_DMG;   // v23.31 (arcade10): arcade hits take half
+  // v28.xx (cw-cx-downcuts): retain the same kid and demo factors for seconds lost on the floor; a taken-over join keeps kid mode.
+  var _hitMul=1;
+  if(typeof NET==='object'&&NET&&((NET.on&&NET.role==='join')||(typeof G!=='undefined'&&G&&G.netWasJoin))) _hitMul*=netKidMul();
+  if(typeof G!=='undefined'&&G&&G.arcade) _hitMul*=ARCADE_DMG;
+  if(isFinite(amt)) amt*=_hitMul;
   // v12.36, 2026-09-07 audit (corpse-redown): A DEAD MAN TAKES NO MORE HITS.
   // killPlayer does not end a live raid; it opens a 1.5 second beat and leaves
   // the body in the world with p.downed CLEARED and hp at 0, and the beat in
@@ -23800,7 +23989,7 @@ function damagePlayer(amt,src,srcName,sx,sy){
     // health he does not have. Logged before killPlayer, or the blow that
     // finishes him would be missing from the table that explains it.
     _logHit(amt,0);
-    p.downT-=3; blip('hit');
+    p.downT-=3*_hitMul*CFG.eDmg*easyDmgMul(); blip('hit');   // v28.xx (cw-cx-downcuts): the standing damage factors also cut the base 3 seconds, in live play and sim.
     if(p.downT<=0) killPlayer(src);
     return;
   }
@@ -24860,6 +25049,8 @@ function bloomResetTick(p){
   return true;
 }
 function blmOf(w){ return (w&&w.id&&BLM[gunBase(w.id)])||null; }
+// v28.xx (cw-cx-rtsteady): the existing 0.35 second pad settle changes accuracy without entering focus aim.
+function shotSteady(p){ return !!(p&&(p.ads||(G&&p===G.player&&PAD.on&&PAD.adsT>0))); }
 function bloomTick(p,dt){
   var sp, base, tgt, b0, t;
   if(!G||G.sim||!p) return 0;
@@ -24868,7 +25059,7 @@ function bloomTick(p,dt){
   p.blmX=p.x; p.blmY=p.y;
   base=(sp<12)?0:((G.sprinting||p.roll>0)?0.9:0.45);
   if(G.pCrouch) base=(sp<12)?-0.3:0.1;
-  if(p.ads) base*=0.4;
+  if(shotSteady(p)) base*=0.4; // v28.xx (cw-cx-rtsteady): retain the movement bloom bonus on RT.
   t=blmOf(p.wep)||BLM.pistol;
   if(p.bloomPend>0){ p.bloomK=Math.min(1,(p.bloomK||0)+p.bloomPend); p.bloomPend=0; p.bloomQ=0; if(p.bloomK>=0.25) p.bloomArm=1; if(p.bloomK>(p.bloomPk||0)) p.bloomPk=p.bloomK; }   // the rounds since the last step open the bloom (and arm the reset flash)
   p.bloomQ=((p.bloomQ===undefined)?9:p.bloomQ)+dt;
@@ -24891,7 +25082,7 @@ function bloomCone(p,w){
   var t;
   if(!G||G.sim||!p) return 0;
   t=blmOf(w); if(!t) return 0;
-  return t.cone*Math.max(0,Math.min(1,p.bloomK||0))*(p.ads?0.5:1);
+  return t.cone*Math.max(0,Math.min(1,p.bloomK||0))*(shotSteady(p)?0.5:1); // v28.xx (cw-cx-rtsteady): RT retains the same bloom cone.
 }
 function bloomMul(p){ return (G&&!G.sim&&p)?(1+BLOOM_SPREAD*Math.max(-0.3,Math.min(2.0,p.bloom||0))):1; }
 function bloomPx(p){ return Math.max(-0.3,Math.min(2.0,(p&&p.bloom)||0))*BLOOM_PX; }
@@ -24905,6 +25096,9 @@ function gunShake(wep){
   var b=(wep&&wep.id)?gunBase(wep.id):'', s=GUN_SHAKE[b];
   return (s===undefined)?((wep&&wep.dmg>40)?4.5:2.2):s;
 }
+// v34.xx (cw-redtracers): his g-88 answer, "Enemy tracers in a warning colour". Allies keep their gun tint; no seeded draw.
+var ENEMY_TRACER='#ff3b2f';
+function foeShot(sh,fromPlayer){ return !fromPlayer&&sh&&!sh.merc&&!sh.friendlyPC&&!sh.friendly&&sh.kind!=='stray'&&sh.kind!=='peddler'; }
 function fireWeapon(sh,wep,tx,ty,fromPlayer){
   if(fromPlayer&&G&&G.arcade&&G.player&&G.player.arcSh) arcadeShieldOff();   // v23.30 (arcade9): a shot drops the spawn shield
 // PARITY, v3.95, second item off his audit. Steady aim was not a player
@@ -24920,7 +25114,7 @@ function fireWeapon(sh,wep,tx,ty,fromPlayer){
   if(G&&!G.sim){
     // v8.52, audit: two more combatT stamps for the deleted radio. See damagePlayer.
   }
-var spx=wep.spread*(((fromPlayer&&G.player.ads)||(!fromPlayer&&sh&&sh.steady))?0.4:1)*(fromPlayer?bloomMul(G.player):1)+(fromPlayer?bloomCone(G.player,wep):0);   // v26.xx (feel19): and it is true, the spread follows the ring
+var spx=wep.spread*(((fromPlayer&&shotSteady(G.player))||(!fromPlayer&&sh&&sh.steady))?0.4:1)*(fromPlayer?bloomMul(G.player):1)+(fromPlayer?bloomCone(G.player,wep):0);   // v26.xx (feel19): and it is true, the spread follows the ring
   if(!fromPlayer&&sh&&isFinite(tx)&&isFinite(ty)){ var _afd=Math.hypot(tx-sh.x,ty-sh.y); if(_afd>ACC_NEAR) spx*=1+Math.min(ACC_FALL,(_afd-ACC_NEAR)/ACC_SPAN); }   // 2026-10-12 (accfall): wider at long range
   // v4.38 HIS ANSWER 7: the Compact SMG climbs on a held trigger. Short taps
   // stay accurate; spraying the whole magazine is a choice with a cost.
@@ -24966,7 +25160,7 @@ if(wep.mag===0){
     var ang=base+rnd(-spx,spx);
     G.bullets.push({sx:sh.x,sy:sh.y,mzd:Math.max(0,gunMuzD(sh,wep)-17),ly:shotLy(sh,wep),x:sh.x+Math.cos(ang)*17,y:sh.y+Math.sin(ang)*17,   // v28.xx (cw-thirdsize): ly, the height its tracer is drawn at, the gun line of the drawn body (drawing only)
       vx:Math.cos(ang)*(wep.rkt?RKT_SPD:1180),vy:Math.sin(ang)*(wep.rkt?RKT_SPD:1180),dmg:wep.dmg*((sh&&sh.elite)?(CFG.eliteDmg===undefined?1.6:CFG.eliteDmg):1)*((fromPlayer&&!G.sim&&G.player.arBonus>0)?(G.player.arMul||AR_BONUS):1)*pwrMul('dmg',fromPlayer),   // v26.xx (feel11): the active reload bonus
-      life:wep.rng/(wep.rkt?RKT_SPD:1180),player:!!fromPlayer,owner:sh,tint:wep.tint||'#ffd48a',
+      life:wep.rng/(wep.rkt?RKT_SPD:1180),player:!!fromPlayer,owner:sh,tint:foeShot(sh,fromPlayer)?ENEMY_TRACER:(wep.tint||'#ffd48a'),   // v28.xx (cw-cx-redtracers): hostile machines and pillager bots, including forged guns, warn in red
       el:(fromPlayer&&wep.el&&ELEM[wep.el])?wep.el:'',   // v23.xx (forge3): a MK III round carries its element
       rkt:wep.rkt?1:0,_pen:wep.rkt?99:0,thru:(wep.id==='lance')?1:0,gid:fromPlayer?String(wep.id||''):''});   // v26.xx (career1): the round carries the id of the gun it came from, for the kill tally   // v11.84, HIS NOTE: the Lance travels through crawlers
     if(NET.on) netFxShot(G.bullets[G.bullets.length-1],sh,wep,ang);   // v16.21: the rest of the party sees this round   // v28.xx (cw-muzzlenet), CLOUD HUNT 2026-10-15: with the gun, for where its flash is drawn
@@ -25720,6 +25914,7 @@ function tickReload(dt){
       // its count, each a feed row for what the gun card (RELOADING, the gun in hand, the rounds), the reticle ([R] RELOAD, NO AMMO)
       // and the belt band already show. The rows are gone; every sound stays.
       p.ammo+=take; p.reserve-=take*rktCost(p.wep);   // v28.xx (cw-rocket): a rocket costs 30
+      if(take>0) p.padReloadN=(p.padReloadN||0)+1; // v28.xx (cw-cx-xreloadsearch): completion survives a shot on this frame; cancelled reloads never stamp it.
       if(!G.sim){ if(!p.arHot) p.arStk=0; p.arHot=0; }   // v35.xx (cw-reloadstack): a reload left to run out on its own (no active reload) starts the chain over
       // v25.xx (reloaddone), HIS ORDER 2026-10-13: "'reload done' needs a sound always". v25.52 gave each gun its own steps and played the
       // last one (the rack, the pump, the bolt) only when the gun was EMPTY, so a reload with a round still chambered finished in
@@ -28440,6 +28635,11 @@ function tickRaiderWaves(dt){
 }
 var XALARM_GAP=1.8;   // v27.xx (xalarm): seconds between throbs of the extraction alarm
 var XALARM_LEN=4;   // v33.35 (cw-xalarmshort), HIS ORDER (2026-10-20): "extraction siren is intrusive, it doesn't need to go off the entire time, just for maybe 4 seconds when the extraction is first called, and 4 seconds before the extraction actually starts". Seconds of siren at each end of the wait; replaces the whole-time loop of answer 41
+// v35.xx (cw-msgroute), HIS ORDER (2026-10-27 ~22:35): "the game is telling me about extraction b when it is happening far across the map from me". The closing and
+// closed lines came for every exit on the map. A line about one exit now shows only for the exit you are heading to (G.active, or one called: its beacon runs)
+// or one within 60 m; any other goes to the run log only, and the map shows its state.
+var EXTNEAR=60;
+function extMine(z){ var p=G&&G.player; if(!z||!G) return false; if(z===G.active||(z.beaconT!==null&&z.beaconT!==undefined)) return true; return !!p&&dist(p,z)<=EXTNEAR*U_PER_M; }
 function tickExtractPoints(dt){
   var p=G.player,T=G.tel;
   for(var zi=0;zi<G.zones.length;zi++){
@@ -28746,12 +28946,12 @@ z.hold=(raidClockOn())?Math.min(30,Math.max(3,G.timeLeft-1)):30;   // v12.24: wi
     if(!cz.warned&&G.timeLeft<=cz.closeAt+120){
       cz.warned=1;
       // v10.75, his one-word rule: the same letter the map and the banner use.
-      sayWhenFree('EXTRACTION '+extLetter(cz)+' CLOSING','ext',{c:'warn',sub:'Closes in '+fmtClock(Math.round(G.timeLeft-cz.closeAt))});   // v22.38 (R13)   // v21.92: an extraction line, ranked over ordinary rows so the queue never drops it;   // v14.11, HUD audit: waits its turn instead of writing over a line   // v22.xx (tr3fixc): the shooter voice, the time it really has left
+      sayWhenFree('EXTRACTION '+extLetter(cz)+' CLOSING','ext',{c:'warn',sub:'Closes in '+fmtClock(Math.round(G.timeLeft-cz.closeAt)),reach:extMine(cz)?undefined:0});   // v35.xx (cw-msgroute): only your exit or a near one   // v22.38 (R13)   // v21.92: an extraction line, ranked over ordinary rows so the queue never drops it;   // v14.11, HUD audit: waits its turn instead of writing over a line   // v22.xx (tr3fixc): the shooter voice, the time it really has left
     }
     if(cz.open&&G.timeLeft<=cz.closeAt){
       if(cz.beaconT!==null&&cz.beaconT!==undefined){ continue; }  // pulled: it completes
       cz.open=false;
-      sayWhenFree('EXTRACTION '+extLetter(cz)+' CLOSED','ext',{c:'warn'});   // v22.38 (R13)   // v21.92: ranked as an extraction line;   // v10.75: the letter, as everywhere else; v14.11: waits its turn
+      sayWhenFree('EXTRACTION '+extLetter(cz)+' CLOSED','ext',{c:'warn',reach:extMine(cz)?undefined:0});   // v35.xx (cw-msgroute): only your exit or a near one   // v22.38 (R13)   // v21.92: ranked as an extraction line;   // v10.75: the letter, as everywhere else; v14.11: waits its turn
       if(G.active===cz){
         for(var aj=0;aj<G.zones.length;aj++) if(G.zones[aj].open){ G.active=G.zones[aj]; break; }
       }
@@ -29671,8 +29871,8 @@ if(!p.fired||p.wep.auto){
         var rrv=idRec(downRdr.ident);
         rrv.standing=(rrv.standing||0)+3; rrv.met++;
         saveProfile();
-        say(String(downRdr.name).toUpperCase()+' IS BACK UP','ally',{sub:'He will remember that.'});   // v22.xx (R54): a caps callout
-      } else say('HE IS BACK UP','ally');
+        say(String(downRdr.name).toUpperCase()+' IS BACK UP','ally',{sub:'He will remember that.',reach:0});   // v35.xx (cw-msgroute): a spared bot is not your teammate   // v22.xx (R54): a caps callout
+      } else say('HE IS BACK UP','ally',{reach:0});
       label(downRdr.x,downRdr.y-18,'REVIVED','#7fc4a0',0,true);
     }
   }
@@ -31187,7 +31387,10 @@ var HITSTOP_DMG=40, HITSTOP_T=0.06, HITSTOP_IMM=0.30, LANCE_KICK_V=190, LANCE_KI
 function hitStopOn(e,dmg){
   if(!G||G.sim||!e||e.boss||e.downed||e.finished||!(e.hp>0)||!(dmg>=HITSTOP_DMG)) return false;
   if(e.stopImm>0) return false;   // v27.xx (feel2h): just stopped: not again for HITSTOP_IMM
-  e.stopT=HITSTOP_T; e.stopImm=HITSTOP_IMM; G.elemAny=1;
+  // v28.xx (cw-cx-osmotion): honor the existing effect intensity dial for hit pause too; full keeps the usual 60 ms beat.
+  var k=(CFG.fxInt===undefined)?1:Math.max(0,Math.min(1,+CFG.fxInt||0));
+  if(!k) return false;
+  e.stopT=HITSTOP_T*k; e.stopImm=HITSTOP_IMM; G.elemAny=1;
   return true;
 }
 function lanceKick(p,ang){
@@ -33487,7 +33690,7 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
               if(xf('xfOvPh')&&en.boss&&en.overheat>0){ edmg*=1.5; if(!WK&&!G.sim&&!(en.weakLblT>(G.t||0)-0.5)){ en.weakLblT=(G.t||0); label(en.x,en.y-Math.round(en.r*1.3),weakTxt(1.5),'#ffc04a',0,true); } }   // v27.xx (weakx): and the exposed core says its multiplier too   // v26.xx (ai24): the Overseer core is exposed while it vents
               if(b.el==='acid'&&ELEM_MACH[en.kind]) edmg*=1.25;   // v23.xx (forge6): ACID, a quarter more into a machine; player 2's window sends the real number
               if(NET.on&&netEntsPeer()) netShotSend(en,edmg,Math.atan2(b.vy,b.vx),WK,_nar,b.el,1,b.dmg>=HITSTOP_DMG); else en.hp-=affixSoak(en,edmg); /*v28.xx (cw-hitstoprule), CLOUD HUNT 2026-10-15: player 2 round says if it is heavy by the same raw number the host own round uses*/   // v15.80: on a linked window the host runs this body, so the round is a request to the host with the damage worked out here   // v28.xx (cw-blastshield), CLOUD HUNT 2026-10-15: player 2 round is marked for the shield soak
-              en.hitT=.16; hitStopOn(en,b.dmg);   // v26.xx (feel10): a heavy round stops the body for a beat
+              en.hitT=.16; animHitFrom(en,b.vx,b.vy); hitStopOn(en,b.dmg);   // v26.xx (feel10): a heavy round stops the body for a beat // v28.xx (cw-cx-hitjolt): the incoming round, including the linked shooter prediction
               // HIS Q42. The number IS the feedback: without it a weak point and
               // a body shot look identical, which is most of why the weak point
               // system reads as decoration.
@@ -33656,7 +33859,7 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
             // raiders only, so machines still never shoot each other.
             if(dist(b,en3)<en3.r+3&&(en3.kind!==b.owner.kind||feudFoe(b.owner,en3)||
                (_mOwn&&en3.kind==='raider'&&!en3.merc&&en3.hostile!==false&&!en3.friendlyPC))){
-              en3.hp-=b.dmg; en3.hitT=.16;
+              en3.hp-=b.dmg; en3.hitT=.16; animHitFrom(en3,b.vx,b.vy); // v28.xx (cw-cx-hitjolt): bot and hired companion rounds use their own bearing too
               if(en3.hp<=0){ en3.byPlayer=false; en3.bySeat=0; }   // v15.80: an enemy round on the host credits no seat either
               // A RAIDER SHOT BY A RIVAL MUST NOT GO AND HUNT THE PLAYER, which
               // is what the line below would have done: 'chase' means chase HIM.
@@ -35060,6 +35263,7 @@ raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
     // because never being seen is a real thing that happened.
     s.textContent=(_fcE===null||_fcE===undefined)?'OUT CLEAN   \u00b7   NEVER SPOTTED':'';
     DEATH_FEED_HTML=recapHtml(T);   // v23.xx (feat3a): DAMAGE TAKEN, when anything hit you
+    if(DEATH_FEED_HTML) DEATH_FEED_HTML='<div class="ocrecap">'+DEATH_FEED_HTML+'</div>';   // v35.45 (cw-spmoney): on the EXTRACTED card the damage block is a footnote under the result, lined up with it (CSS ocrecap)
   }
   else if(how==='dead'){ t.textContent='KILLED IN ACTION'; t.style.color='var(--hazard)';
     var kn=(T.lastHitName&&T.deathKiller!=='timer')?T.lastHitName:String(T.deathKiller||'unknown').toUpperCase();
@@ -35135,8 +35339,10 @@ raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
   OC_LG=null;
   try{ if(G.career&&G.cs&&!G.sim&&(how==='extract'||how==='dead')) lines=ocLedger(how,lines,{acc:acc,sec:_tsec,hp:Math.round(G.player.hp),haul:haul}); }catch(_lg){ OC_LG=null; }   // v27.NN (cboard2): the AFTER ACTION LEDGER
   try{ if(!OC_LG){ var _kn2=0; for(var _kk2 in (T.kills||{})) _kn2+=(T.kills[_kk2]||0); lines=ocStatRow(lines,{c:T.containers|0,k:_kn2,acc:acc,sec:_tsec}); } }catch(_sr){}   // v28.xx (cw-endcard-stats): the stats row and the achievement chips
-  document.getElementById('oc_manifest').innerHTML=
-    (DEATH_FEED_HTML||'')+lines.join('<br>');
+  // v35.45 (cw-spmoney), HIS ORDER (2026-10-28) on the extracted card: "this extracted screen is an absolute mess". The result leads: on an extraction DAMAGE TAKEN
+  // comes after the ledger and the lines, where it was the first thing under the title; a KIA card still opens on what killed you.
+  document.getElementById('oc_manifest').innerHTML=(how==='extract')?
+    (lines.join('<br>')+(DEATH_FEED_HTML||'')):((DEATH_FEED_HTML||'')+lines.join('<br>'));
    try{ netScoreDraw(); }catch(_nsd){}   // v17.39: the PARTY block under the manifest
   DEATH_FEED_HTML='';
   selTags=[]; buildTags();
@@ -35316,31 +35522,43 @@ function ocLedger(how,lines,x){
     if((m=/^.* lost, \$([\d,]+) gone$/.exec(ln))){ lostV=+m[1].replace(/,/g,''); continue; }
     if(/^You extracted with \d+ of 100 health$/.test(ln)||ln.indexOf(' accuracy &middot; ')>=0||ln.indexOf('>ACHIEVEMENT: ')>=0) continue;
     if(/>(CAREER SCORE |SCORE LOST|CAREER BEST|CAREER BOARD #)/.test(ln)) continue;
+    // v35.45 (cw-spmoney): the xp line here reads "+2,782 xp" (or "+65 xp . 50% penalty"), as ocStatRow made it on every other card. The season total and the
+    // "next: ..., reward n of 100, ... claim it at the mainframe" sentence stay as hidden text (ocsr), so nothing that reads the card moves. In his picture of
+    // 2026-10-28 that sentence was the line cut in half behind the leaderboard button.
+    if((m=/^(<span style="color:var\(--amber\)">\+[\d,]+ XP)(?: (\((\d+)% penalty [^)]*\)))?(  &middot;  [\d,]+(?: of [\d,]+| XP in all))(<\/span>)(.*)$/.exec(ln))){ rest.push(m[1]+(m[3]?'  &middot;  '+m[3]+'% penalty':'')+'<span class="ocsr">'+(m[2]?' '+m[2]:'')+m[4]+'</span>'+m[5]+(m[6]?'<span class="ocsr">'+m[6]+'</span>':'')); continue; }
     rest.push(ln);
   }
   parts=[['COMBAT','KILLS',b.kill|0],['COMBAT','MEDALS',b.style|0],['OBJECTIVES','GOALS',b.goal|0],['OBJECTIVES','BOUNTY',b.bounty|0],['OBJECTIVES','STRONGHOLDS',b.strong|0],['OBJECTIVES','VAULTS',b.vault|0],['FORGE','UPGRADES',b.forge|0]];
   for(i=0;i<parts.length;i++) sum+=parts[i][2];
   if(s-sum!==0) parts.push(['OTHER','BONUSES',s-sum]);
+  // v35.45 (cw-spmoney), HIS ORDER (2026-10-28), on a picture of this card: "this extracted screen is an absolute mess -- money versus raid score/sp should never be
+  // intermingled". It was one list: sp rows, then the credits in $, then the haul, then a RAID TOTAL in $ drawn in the score's own gold. Now two panels side by side.
+  // RAID SCORE (gold, sp only): where each point came from, the x2 or the KIA half, and its total. MONEY (teal, $ only): items secured, haul value, the credits
+  // banked, and its total. No row carries both units and no total sits in the other panel. The figures, the classes the tally and the checks read (sc, cr, hv,
+  // tot, lost, haultot) and his rules (1 sp banks $1 on an extraction, KIA halves the score and banks nothing) are unchanged. The haul pictures sit under both.
+  var sh='', mh='';
   for(i=0;i<parts.length;i++){
     p=parts[i]; v=p[2]; if(!v) continue;
-    tg=(p[0]!==prev)?p[0]:''; prev=p[0];
-    h+=row('','<span class="lgt">'+tg+'</span><span class="lgl">'+p[1]+'</span>'+((v<0)?('<b>-'+arcadeCr(-v)+'</b>'):cnt(v,'')));
+    sh+=row('','<span class="lgl">'+p[1]+'</span>'+((v<0)?('<b>-'+arcadeCr(-v)+'</b>'):cnt(v,'')));
   }
-  if(ex) h+=row('','<span class="lgt">EXTRACTION</span><span class="lgl">x2</span>'+cnt(s,'+'));
-  else if(s>0) h+=row('lost','<span class="lgt">KIA</span><span class="lgl">-50%</span><b>-'+arcadeCr(s-fin)+'</b>');   // v28.67 (lean1): HIS RULE, KIA is a 50% score penalty
-  h+=row('sc','<span class="lgl">RAID SCORE'+((R&&R.best)?' <em class="lgpb">PERSONAL BEST</em>':'')+'</span>'+((fin>0)?cnt(fin,''):('<b>'+arcadeCr(0)+'</b>')));
-  if(ex) h+=row('cr','<span class="lgt">CREDITS</span><span class="lgl">BANKED</span>'+((fin>0)?cnt(fin,'+',1):'<b>+'+arcadeMoney(0)+'</b>'));
-  else h+=row('lost','<span class="lgt">CREDITS</span><span class="lgl">NOT BANKED</span><b><s>+'+arcadeMoney(fin)+'</s> LOST</b>');
+  var _dm=diffMul(); if(_dm>1) sh+=row('dm','<span class="lgl">settings</span><b>x'+_dm.toFixed(2)+'</b>');   // v35.xx (cw-dmulshow): the settings multiplier, once (the rows above already have it in)
+  if(ex) sh+=row('','<span class="lgl">EXTRACTION x2</span>'+cnt(s,'+'));
+  else if(s>0) sh+=row('lost','<span class="lgl">KIA -50%</span><b>-'+arcadeCr(s-fin)+'</b>');   // v28.67 (lean1): HIS RULE, KIA is a 50% score penalty
+  sh+=row('sc','<span class="lgl">TOTAL</span>'+((fin>0)?cnt(fin,''):('<b>'+arcadeCr(0)+'</b>')));
   if(ex){
-    h+=row('','<span class="lgt">HAUL</span><span class="lgl">ITEMS SECURED</span><b>'+ni+'</b>');
-    if(strip){ h+='<div class="lgstrip" style="--i:'+idx+'">'+strip+'</div>'; idx++; }
-    h+=row('hv','<span class="lgt"></span><span class="lgl">HAUL VALUE</span><b id="haultot" data-pre="">'+arcadeMoney(hv)+'</b>');
+    mh+=row('ni','<span class="lgl">ITEMS SECURED</span><b>'+ni+'</b>');
+    mh+=row('hv','<span class="lgl">HAUL VALUE</span><b id="haultot" data-pre="">'+arcadeMoney(hv)+'</b>');
+    mh+=row('cr','<span class="lgl">CREDITS BANKED</span>'+((fin>0)?cnt(fin,'+',1):'<b>+'+arcadeMoney(0)+'</b>'));
     tot=fin+hv;
   } else {
-    h+=row('lost','<span class="lgt">HAUL</span><span class="lgl">VALUE</span><b><s>'+arcadeMoney(lostV||x.haul||0)+'</s> LOST</b>');
+    mh+=row('lost','<span class="lgl">HAUL VALUE</span><b><s>'+arcadeMoney(lostV||x.haul||0)+'</s> LOST</b>');
+    mh+=row('lost','<span class="lgl">CREDITS NOT BANKED</span><b><s>+'+arcadeMoney(fin)+'</s> LOST</b>');
     tot=0;
   }
-  h+=row('tot'+(ex?'':' lost'),'<span class="lgl">RAID TOTAL</span>'+((tot>0)?cnt(tot,'',1):('<b>'+arcadeMoney(0)+'</b>')));
+  mh+=row('tot'+(ex?'':' lost'),'<span class="lgl">TOTAL</span>'+((tot>0)?cnt(tot,'',1):('<b>'+arcadeMoney(0)+'</b>')));
+  h+='<div class="lgcols"><div class="lgp lgps"><div class="lgh">RAID SCORE'+((R&&R.best)?' <em class="lgpb">PERSONAL BEST</em>':'')+'</div>'+sh+'</div>'+
+     '<div class="lgp lgpm"><div class="lgh">MONEY</div>'+mh+'</div></div>';
+  if(ex&&strip){ h+='<div class="lgstrip" style="--i:'+idx+'">'+strip+'</div>'; idx++; }
   for(kk in (T.kills||{})) kn+=(T.kills[kk]||0);
   tiles=[[kn,'KILLS'],[(x.acc|0)+'%','ACCURACY'],[T.containers|0,'CONTAINERS'],[fmtClock(x.sec|0),'TIME'],[ex?(x.hp|0):0,'HEALTH']];
   h+='<div class="lgst" style="--i:'+idx+'">';
@@ -35352,6 +35570,9 @@ function ocLedger(how,lines,x){
     h+='</div>'; idx++;
   }
   OC_LG={t:idx*0.09+0.35,end:0};
+  // v35.45 (cw-spmoney): the lines under the ledger go through ocStatRow like every other card, so each recovered gun is one name chip and a finished
+  // contract one chip, not a sentence a line (eight recovered guns were eight sentences and ran the card past 1080p). Their words stay as hidden text (ocsr).
+  try{ rest=ocStatRow(rest,{}); }catch(_osr){}
   return ['<div class="lg">'+h+'</div>'].concat(rest);
 }
 careerStyle('lgcss',
@@ -35374,7 +35595,25 @@ careerStyle('lgcss',
   '.lg .lgeb{width:92px;text-align:center}.lg .lgeb svg{width:46px;height:46px;display:block;margin:0 auto 4px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.6))}'+
   '.lg .lgeb i{display:block;font-style:normal;font-size:10.5px;letter-spacing:.14em;line-height:1.25;color:#ffe69a}'+
   '@keyframes lgin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}'+
-  '.lg.lgdone .lgr,.lg.lgdone .lgstrip,.lg.lgdone .lgst,.lg.lgdone .lgem{animation:none;opacity:1}');
+  '.lg.lgdone .lgr,.lg.lgdone .lgstrip,.lg.lgdone .lgst,.lg.lgdone .lgem{animation:none;opacity:1}'+
+  // v35.45 (cw-spmoney): the two panels. Each has one colour for its figures and its top bar (score gold #ffc04a, money teal #7fe3d4, the colours the
+  // RAID SCORE and CREDITS rows already had), rows at 16px with no tag column, and its total pinned to its foot so the two totals line up. The ledger takes the
+  // card's full 624px, so six medal emblems fit on one line.
+  '.lg{width:100%;max-width:624px}'+
+  '.lg .lgcols{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:stretch}'+
+  '.lg .lgp{display:flex;flex-direction:column;min-width:0;padding:12px 16px 14px;border:1px solid var(--ui-line,#2e3337);border-top:3px solid var(--lgc);border-radius:4px;background:rgba(0,0,0,.22)}'+
+  '.lg .lgps{--lgc:#ffc04a}.lg .lgpm{--lgc:#7fe3d4}'+
+  '.lg .lgh{display:flex;align-items:center;gap:8px;min-height:24px;margin:0 0 4px;font-size:16px;letter-spacing:.14em;color:var(--lgc)}'+
+  '.lg .lgh .lgpb{margin-left:auto;font-size:12px}'+
+  '.lg .lgp .lgr{grid-template-columns:1fr auto;gap:0 12px;padding:4px 0;font-size:16px;border-bottom:0}'+
+  '.lg .lgp .lgr .lgl{grid-column:auto;min-width:0}'+
+  '.lg .lgp .lgr b{color:var(--lgc)}.lg .lgp .lgr.ni b{color:var(--tx-1,#efe9dc)}.lg .lgp .lgr.lost b,.lg .lgp .lgr.lost .lgl{color:var(--rust)}'+
+  '.lg .lgp .lgr.sc,.lg .lgp .lgr.tot{margin-top:auto;padding:10px 0 0;border:0;border-top:1px solid var(--lgc);border-radius:0;background:none;font-size:28px;letter-spacing:.06em;color:var(--lgc)}'+
+  '.lg .lgp .lgr.sc .lgl,.lg .lgp .lgr.tot .lgl{align-self:center;font-size:16px;letter-spacing:.14em;color:var(--tx-2,#aaa498)}'+
+  '.lg .lgp .lgr.tot.lost{border-top-color:var(--rust)}'+
+  '#root #oc_manifest .ocrecap{width:100%;max-width:624px;margin:8px auto 0;text-align:left}'+
+  '#root #oc_manifest .ocrecap>div>div{font-size:16px !important;letter-spacing:.04em}'+
+  '#root #oc_manifest .ocrecap>div>div:first-child{letter-spacing:.14em;color:var(--tx-2,#aaa498) !important}');
 // v27.NN (cboard3), HIS ORDER (2026-10-15): "career mode should still have a leaderboard that is shown after every match". THE LEADERBOARD STEP. After a CAREER extraction
 // or death the run card has a second step in the same card (no second window): the ledger, then the haul reveal, then the LEADERBOARD. The continue control reads
 // LEADERBOARD on the first step; a click on it, ENTER or the pad A advances (the first press while the tally or the reveal runs only lands it, as before), and on the
@@ -38183,10 +38422,22 @@ function spriteTop0(e){
 // fell, beside the puff and the decal it always left; a linked window plays it from the death word (netEntDeathFx).
 var DEATH_COL={warden:'#6a5a3a',choir:'#5a4a3a',sentry:'#56606c',crawler:'#46525c',raider:'#7a5446',snitch:'#6a6040',howler:'#5a4a52',bulwark:'#4c5460',listener:'#4a4a58',stray:'#6a5a4a'};
 var HIT_JOLT={crawler:8,raider:6.5,sentry:3};   // v28.xx (cw-joltsentry), his Q5 enemy feel: the Sentry (radius 22, the heaviest common machine) 5 to 3 px at the full 0.16 s flash, so it reads as plate that holds its ground   // v28.xx (cw-joltraider), his Q5 enemy feel: the raider, the commonest body, 5 to 6.5 px at the full 0.16 s flash   // v28.xx (cw-joltcrawler), his Q5 enemy feel: a hit shoves a body this many px at full hit flash (0.16 s); the light Crawler (radius 15) 5 to 8 px, so a tap reads as a hit; every other body keeps 5
+// v28.xx (cw-cx-hitjolt): record the incoming bearing for drawing only; no hit, damage, movement or random draw changes.
+function animHitFrom(e,dx,dy){
+  if(!e) return;
+  e.hitJoltA=(typeof dx==='number'&&typeof dy==='number'&&isFinite(dx)&&isFinite(dy)&&Math.hypot(dx,dy)>0.0001)?Math.atan2(dy,dx):null;
+  e.hitJoltUntil=((typeof G!=='undefined'&&G&&G.t)||0)+0.16;
+}
+// v28.xx (cw-cx-hitjolt): a bearing belongs only to this flash, never a later unrelated hit.
+function animHitAngle(e){
+  return (e&&e.hitT>0&&typeof e.hitJoltA==='number'&&isFinite(e.hitJoltA)&&e.hitJoltUntil>=((typeof G!=='undefined'&&G&&G.t)||0))?e.hitJoltA:null;
+}
 function animHitShift(e){
-  var p, dx, dy, d, a;
+  var p, dx, dy, d, a, ha;
   if(!e||!(e.hitT>0)||typeof G==='undefined'||!G||!G.player) return null;
-  p=G.player; dx=e.x-p.x; dy=e.y-p.y; d=Math.hypot(dx,dy);
+  ha=animHitAngle(e);
+  if(ha!==null){ dx=Math.cos(ha); dy=Math.sin(ha); d=1; }
+  else { p=G.player; dx=e.x-p.x; dy=e.y-p.y; d=Math.hypot(dx,dy); }
   if(!(d>0.5)) return null;
   a=(HIT_JOLT[e.kind]||5)*Math.max(0,Math.min(1,e.hitT/0.16));
   return {x:dx/d*a,y:dy/d*a};
@@ -41565,6 +41816,8 @@ if(ne.kind==='listener'&&ne.state==='dormant') continue;
     var crewC=null;
     if(ne.kind==='raider'&&CFG.raiderFeud!==0&&!ne.merc&&ne.crew!==undefined)
       crewC=['#c8452f','#4a90c2','#c2a54a','#7a4ac2'][ne.crew%4];
+    // v28.xx (cw-cx-pingmerge): the HUD ping owns the target name while it is live; crew and health still draw here.
+    var pingPlate=netPingForEntity(ne);
     wc.font=FS(TYPE.micro);
     var tw=wc.measureText(plate).width;
     // Plate height follows the actual rendered font, or the scaled-up text
@@ -41580,7 +41833,7 @@ if(ne.kind==='listener'&&ne.state==='dormant') continue;
     var ph2=Math.ceil(parseFloat((wc.font.match(/([\d.]+)px/)||[0,12])[1])*1.35);
     if(wlUnder(ne.x-tw/2-11,ne.y-lift-ph2+3,tw+22,ph2+5)) continue;   // v31.xx (cw-trcol2): a nameplate (with its crew block and health pip) is not drawn over the corner column or the score plate
     wc.fillStyle='rgba(6,9,13,.62)';
-    wc.fillRect(ne.x-tw/2-4,ne.y-lift-ph2+3,tw+8,ph2);
+    if(!pingPlate) wc.fillRect(ne.x-tw/2-4,ne.y-lift-ph2+3,tw+8,ph2); // v28.xx (cw-cx-pingmerge): no empty duplicate plate.
     // v8.39, audit: the plate is centred on the entity and the text was drawn at
     // ne.x with textAlign left, so it began at the middle of its own box. See
     // the fillText below, which now starts at the plate's inner left edge.
@@ -41598,7 +41851,7 @@ if(ne.kind==='listener'&&ne.state==='dormant') continue;
       :(ne.state==='chase'||ne.state==='alarm'
         ? (hostile?'#ff6b5a':'#ff9a3c')
         : (hostile?'#e0a89e':'#9aa6b2'))));
-    wc.fillText(plate,ne.x-tw/2,ne.y-lift);   // v8.39: inside its plate, not off the right of it
+    if(!pingPlate) wc.fillText(plate,ne.x-tw/2,ne.y-lift); // v28.xx (cw-cx-pingmerge): the ping plate carries this same name.
     // health pip so a wounded target reads at a glance
     if(ne.hp<ne.maxhp){
       var fw=clamp(ne.hp/ne.maxhp,0,1);
@@ -42526,7 +42779,7 @@ function drawBuzzFx(){
   function gunGhostDraw(q,cx,cy,bw){
     var cl=gunKeyList()[q], id=GHOST_OF[cl], gh=id?gunGhost(id,bw*0.64):null, oa;
     if(!gh) return false;
-    oa=ctx.globalAlpha; ctx.globalAlpha=GHOST_A; ctx.drawImage(gh.c,cx-gh.s/2,cy-gh.s/2,gh.s,gh.s); ctx.globalAlpha=oa;
+    oa=ctx.globalAlpha; ctx.globalAlpha=GHOST_A*((G&&!G.hubFloor)?.45:1); ctx.drawImage(gh.c,cx-gh.s/2,cy-gh.s/2,gh.s,gh.s); ctx.globalAlpha=oa; // v28.xx (cw-cx-hudtvread): retain class silhouettes at less than half their old opacity in raids.
     return true;
   }
   function beltGroupOf(i){ return (i<GUNKEYS)?0:({throw:1,med:2,plate:3}[BELT_CLASS[i]]||0); }
@@ -42565,6 +42818,18 @@ function drawBuzzFx(){
     var _lbF=beltFS(bw,0.115), _lbP=parseFloat(((/([\d.]+)px/).exec(String(_lbF))||[0,10])[1])||10, _lbH=0;   // v25.xx (belt6a): the group label strip under the keys
     var hx=Math.round(_rL+(_room-tw2)/2),hy=H-bw-LH(13)-_lbH;
     if(hx<_rL) hx=Math.round(_rL);
+    // v28.xx (cw-cx-hudtv): bigger corners would squeeze the belt smaller. In TV mode grow the slots above both corners, with the same recorded click and drag cells.
+    var _tv=hudTvScale();
+    if(_tv>1){
+      var _nz=_hz/_tv, _nbR=390*(HUDZ.body||1)*_nz*hudUserZ('body')+Math.max(0,hudOff('body').dx),
+          _ngL=W-252*(HUDZ.gear||1)*_nz*hudUserZ('gear')+Math.min(0,hudOff('gear').dx),
+          _nbw=Math.max(20,Math.min(Math.floor((_ngL-_nbR-LH(28)-_gt)/sl.length),LH(112))),
+          _topB=H-(34+50+LH(5)+LH(18))*(HUDZ.body||1)*_hz*hudUserZ('body')+hudOff('body').dy,
+          _topG=H-(34+LH(80))*(HUDZ.gear||1)*_hz*hudUserZ('gear')+hudOff('gear').dy;
+      bw=Math.max(20,Math.min(Math.round(_nbw*_tv),Math.floor((W-LH(32)-_gt)/sl.length)));
+      tw2=sl.length*bw+_gt; hx=Math.round((W-tw2)/2);
+      hy=Math.max(LH(16),Math.min(_topB,_topG)-bw-LH(12)); // v28.xx (cw-cx-hudtvread): half the excess gap, still above both bottom corners.
+    }
     // v21.42, from the whole-game bug hunt of 2026-10-08 (W-A2): THE UNDERCROFT BELT IS CENTRED ON THE SCREEN. It was centred in the
     // room a raid leaves between the health block on the left and the gear stack on the right, and the health block is the wider of
     // the two, so on the Undercroft floor, where neither is drawn, the belt sat right of the middle (about 190 pixels on the 4K
@@ -42594,7 +42859,7 @@ function drawBuzzFx(){
       _gf=-1; _gl=-1;
       for(_gq2=0;_gq2<sl.length;_gq2++) if(beltGroupOf(_gq2)===_gg){ if(_gf<0) _gf=_gq2; _gl=_gq2; }
       if(_gf<0) continue;
-      hudPlate(hx+_gf*bw+_gx[_gf]-_pp,hy-_pp,(_gl-_gf)*bw+(_gx[_gl]-_gx[_gf])+bw+_pp*2,bw+_lbH+_pp*2,null,HUDC.plate);
+      if(G.hubFloor) hudPlate(hx+_gf*bw+_gx[_gf]-_pp,hy-_pp,(_gl-_gf)*bw+(_gx[_gl]-_gx[_gf])+bw+_pp*2,bw+_lbH+_pp*2,null,HUDC.plate); // v28.xx (cw-cx-hudtvread): raid empty slots no longer carry a solid full-width backing plate.
     }
     G.hotCells=[];
     for(var q=0;q<sl.length;q++){
@@ -42619,18 +42884,28 @@ function drawBuzzFx(){
       // v18.34, THE STYLING PASS IN THE RAID (2026-10-04): THE BELT KEYS ARE ROUNDED TILES. A belt key was a flat square with a thin
       // stroke. It is a rounded tile now with a light from the top, a rarity wash inside the same shape and a rounded ring, the
       // shape the stash cells took at v18.32. Every size, hit box and colour rule is unchanged.
+      var _quietBelt=!G.hubFloor, _vacant=!!S.vacant||S.kind==='empty'; // v28.xx (cw-cx-hudtvread): owned slots lead; keep every class key and hit cell.
       var _br=Math.max(3,bw*0.09);
       function _bpath(){ ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(bx+.5,hy+.5,bw-1,bw-1,_br); else ctx.rect(bx+.5,hy+.5,bw-1,bw-1); }
       ctx.save(); _bpath(); ctx.clip();
-      var _bg=ctx.createLinearGradient(0,hy,0,hy+bw); _bg.addColorStop(0,on?'rgba(70,56,28,.96)':'rgba(30,34,37,.9)');   /* vNN.xx (ui5q1t, his #35): a belt key is graphite like the HUD plate, not navy */ _bg.addColorStop(1,on?'rgba(38,32,20,.94)':'rgba(6,9,13,.86)');
-      ctx.fillStyle=_bg; ctx.fillRect(bx,hy,bw,bw);
+      // v28.xx (cw-cx-hudtvread): flat graphite owned tiles; unselected vacant raid slots have no slab.
+      if(_quietBelt){
+        if(!_vacant||on){ctx.fillStyle=on?UIC.ui_raised:UIC.ui_panel;ctx.fillRect(bx,hy,bw,bw);}
+      }else{
+        var _bg=ctx.createLinearGradient(0,hy,0,hy+bw);_bg.addColorStop(0,on?'rgba(70,56,28,.96)':'rgba(30,34,37,.9)');_bg.addColorStop(1,on?'rgba(38,32,20,.94)':'rgba(6,9,13,.86)');
+        ctx.fillStyle=_bg;ctx.fillRect(bx,hy,bw,bw);
+      }
       // the rarity wash goes OVER the base so a selected slot still reads as
       // selected, and under the icon so it never fights the portrait
       var _hr=(S.itemKey&&ITEMS[S.itemKey])?dispR(S.itemKey)
              :((S.kind==='gun'&&S.icon&&WEAPONS[S.icon])?gunRarity(S.icon)
              :((S.icon&&ITEMS[S.icon])?dispR(S.icon):null));
-      if(_hr&&!_bgDim){ var _hf=rfill(_hr); if(_hf){ ctx.fillStyle=_hf; if(_bgHalf) ctx.globalAlpha=.5; ctx.fillRect(bx,hy,bw,bw); ctx.globalAlpha=1; } }   // v24.xx (beltgrey): a reloadable gun keeps half its wash
-      ctx.fillStyle='rgba(255,255,255,.05)'; ctx.fillRect(bx,hy,bw,Math.max(1,bw*0.04));
+      // v28.xx (cw-cx-hudtvread): rarity is a 3px rail in the raid, not a second selected fill. Reloadable guns retain their half-grey state.
+      if(_hr&&!_bgDim){
+        if(_quietBelt){ctx.fillStyle=RCOL[_hr]||UIC.tx_2;ctx.globalAlpha=_bgHalf?.5:1;ctx.fillRect(bx+4,hy+bw-Math.max(3,3*hudRes())-2,bw-8,Math.max(3,3*hudRes()));ctx.globalAlpha=1;}
+        else{var _hf=rfill(_hr);if(_hf){ctx.fillStyle=_hf;if(_bgHalf)ctx.globalAlpha=.5;ctx.fillRect(bx,hy,bw,bw);ctx.globalAlpha=1;}}
+      }
+      if(!_quietBelt){ctx.fillStyle='rgba(255,255,255,.05)'; ctx.fillRect(bx,hy,bw,Math.max(1,bw*0.04));} // v28.xx (cw-cx-hudtvread): flat raid tiles have no gloss.
       ctx.restore();
       var dragOver=(G.drag&&mouse.x>=bx&&mouse.x<=bx+bw&&mouse.y>=hy&&mouse.y<=hy+bw)
         ||(!!G.bagOpen&&!!G.bagBelt&&q===clamp(G.bagBeltSel||0,0,sl.length-1));   // v16.79, his order: the backpack highlight on the belt row rings its key
@@ -42639,9 +42914,10 @@ function drawBuzzFx(){
       // the H cap), so up to three keys wear it at once: the gun in hand, the chosen grenade and the chosen heal. Same colour, width and corner. The other
       // grenade, the other heal, the plate and a key with nothing on it get none, and the Undercroft floor belt (no G or H there) keeps the gun ring alone.
       var _selOut=on||(state!=='hub'&&(S.count|0)>0&&((S.kind==='throw'&&!!S.icon&&!!_gSel&&S.icon===_gSel)||((S.kind==='heal'||S.kind==='stim')&&q===_mSel)));
-      ctx.strokeStyle=dragOver?'#ffc04a':(_selOut?'#ffc04a':((_hr&&RCOL[_hr]&&!_bgDim)?hexA(RCOL[_hr],.55):'rgba(140,152,163,.35)'));
-      ctx.lineWidth=(dragOver||_selOut)?2:1;
-      _bpath(); ctx.stroke();   // v18.34: the rounded ring
+      // v28.xx (cw-cx-hudtvread): his 10-13 order keeps selected guns, heals and throwables gold. Three pixels improves the ring; vacant raid slots lose their outlines.
+      ctx.strokeStyle=(dragOver||_selOut)?'#ffc04a':(_quietBelt?UIC.ui_line_hi:((_hr&&RCOL[_hr]&&!_bgDim)?hexA(RCOL[_hr],.55):'rgba(140,152,163,.35)'));
+      ctx.lineWidth=(dragOver||_selOut)?(_quietBelt?3:2):1;
+      if(!_quietBelt||!_vacant||dragOver||_selOut){_bpath();ctx.stroke();}
       if(G&&G.hubFloor&&typeof G.hubBagBeltBottom==='number'&&G.bagBelt&&q===clamp(G.bagBeltSel||0,0,sl.length-1)){ctx.strokeStyle='#e6ff3d';ctx.lineWidth=3;_bpath();ctx.stroke();} // v28.xx (cw-cx-hubbagreadability): focus is lime; the owner-required equipped gold ring stays.
       var cx2=bx+bw/2,cy2=hy+bw*0.45;
       ctx.globalAlpha=_bgDim?.28:(_bgHalf?.64:1);   // v24.xx (beltgrey): half grey while it can be reloaded
@@ -42667,8 +42943,8 @@ function drawBuzzFx(){
         ctx.fillRect(cx2-bw*0.16,cy2-bw*0.22,bw*0.22,bw*0.09);
       }
       ctx.globalAlpha=1;
-      ctx.font=beltFS(bw,0.13); ctx.fillStyle='rgba(160,172,184,.8)';   // v18.71: grows with the slot
-      ctx.fillText(slotKeyName(q),bx+LH(4),hy+Math.max(LH(11),Math.round(bw*0.13)+LH(3)));
+      ctx.font=beltFS(bw,0.13); ctx.fillStyle=UIC.tx_2;   // v18.71: grows with the slot
+      hudText(slotKeyName(q),bx+LH(4),hy+Math.max(LH(11),Math.round(bw*0.13)+LH(3))); // v28.xx (cw-cx-hudtvread): outlined key digits read on the ground behind vacant slots.
       // A slot he arranged himself is marked, so an assigned bar can be told from
       // the default one at a glance.
       if(S.assigned&&!S.auto){   // v21.83: not on a gun pin, which the game set, not he
@@ -42810,14 +43086,148 @@ function runInfoCap(live){
 // v28.xx (cw-hudammo), HIS ANSWER Q57 (2026-10-18): "Ammo needs to be prominent. Ideally redesign the whole raid HUD." AMMO IS THE ONE HERO NUMBER OF THE GUN CARD.
 // The rounds in the gun are drawn at the big number size (TYPE.num, 44 rendered), the reserve small beside it (TYPE.title, 26), the way Destiny 2 and
 // Halo read: one big figure and a quiet one. The big figure is amber when the magazine is a quarter full or less, red when empty; the reserve goes red at none.
-function ammoDraw(p,x,y){
+function ammoDraw(p,x,y,lx){
   var rs=rsvShow(p), tail=' / '+rs, w, c=UIC.tx_1;
-  if(p.ammo===0) c=UIC.danger; else if(p.ammo<=Math.ceil((p.wep.mag||0)*0.25)) c=UIC.warn;
+  var lo=ammoLow(p), fw, kc, kw, kh, kx, ky;   // v35.xx (cw-hudstates): low ammo pulses red (it was a steady amber); empty is steady red and shows the reload key cap
+  if(p.ammo===0||lo) c=UIC.danger;
   ctx.font=FS(TYPE.title); ctx.fillStyle=(rs<=0)?UIC.danger:UIC.tx_2; ctx.fillText(tail,x,y);
   w=ctx.measureText(tail).width;
-  ctx.font=FS(TYPE.num); ctx.fillStyle=c; ctx.fillText(String(p.ammo),x-w-4,y);
+  ctx.font=FS(TYPE.num); ctx.fillStyle=c;
+  var oa=ctx.globalAlpha; if(lo) ctx.globalAlpha=oa*(0.5+0.5*(0.5+0.5*Math.cos(statusNow()*6.2832*HUDPULSE_HZ)));
+  ctx.fillText(String(p.ammo),x-w-4,y); ctx.globalAlpha=oa;
+  if(ammoCapOn(p)){
+    fw=ctx.measureText(String(p.ammo)).width; kc=ammoCapKey(); ctx.font=FS(TYPE.head); kw=Math.max(LH(24),ctx.measureText(kc).width+LH(14)); kh=LH(24);
+    kx=x-w-4-fw-LH(10)-kw; ky=Math.round(y-LH(18)-kh/2);
+    if(typeof lx==='number'&&kx<lx) kx=x-w-4-kw;   // no room left of the 0 on a narrow card (the demo): the cap stands over the 0
+    ctx.font=FS(TYPE.head);
+    ctx.save();
+    ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(kx,ky,kw,kh,LH(4)); else ctx.rect(kx,ky,kw,kh);
+    ctx.fillStyle='rgba(8,12,18,.92)'; ctx.fill(); ctx.lineWidth=1.5; ctx.strokeStyle=UIC.tx_1; ctx.stroke();
+    ctx.fillStyle=UIC.tx_1; ctx.textAlign='center'; ctx.fillText(kc,kx+kw/2,ky+kh/2+LH(6));
+    ctx.restore();
+  }
 }
 var EDGEBOX={}, GUNCARD_LAST=null;   // v24.9x (ringbadge): the gun card, pickup rows and co-op kill feed as last drawn, screen pixels
+// v35.xx (cw-extpill), HIS ASK (2026-10-27 ~21:40): "Everything about this game needs to be AAA and right now all the messaging on the hud is a clusterfuck", built
+// to the research of that night (reports/Player alerts and HUD messaging.md, Top centre and Centre, job 6). EXTRACTION LIVES ON THE PILL UNDER THE CLOCK. The pill
+// names the exit the compass points at: teal while it is open (as before), amber once it is inside its two minute warning ("closing"), with its countdown in the
+// last minute ("0:42"), red if it has shut, and it pulses once (a 0.6 s swell and ring) each time that state changes. AN EXIT JUST OFF THE SCREEN IS AN EDGE ARROW:
+// its letter and distance ("c 152m") on a plate with an arrow pointing at it, pinned to an oval inside the screen edges and slid along it until it is clear of every
+// corner panel, the feed, the gun card and the pickup stack's column (empty or not); a closed exit gets no arrow. It replaces the "extraction c available" line
+// under the pill. THE SKY IS A SMALL ICON BESIDE THE CLOCK from the ascend: the weather when it is not clear (cloud, rain, fog, storm, blackout), else the time of
+// day (sun, low sun, moon); it pulses once when the sky turns. Cosmetic only: nothing here draws a random number or changes game state.
+var EXTPS={st:'',col:'',tail:''}, EXTPILL={st:'',col:'',txt:''}, EXTARROW={on:0,x:0,y:0,w:0,h:0,t:''}, WXICON={id:'',x:0,y:0};
+function extPillState(z,lbl){
+  var o=EXTPS, l;
+  o.st='open'; o.col=''; o.tail='';
+  if(!z||lbl==='WAYPOINT'){ o.st='way'; return o; }
+  if(z.open===false){ o.st='closed'; o.col=HUDTXT_RED;   /* v35.xx (cw-hudsize): 4.8 to 1 on the plate over white, was 3.2 */ o.tail=' \u00b7 closed'; return o; }
+  if(z.beaconT!==null&&z.beaconT!==undefined){ o.st='called'; return o; }
+  if(z.closeAt!==undefined&&G&&G.timeLeft<=z.closeAt+120){ l=Math.max(0,Math.ceil(G.timeLeft-z.closeAt)); o.st='closing'; o.col=HUDC.warn; o.tail=(l<=60)?(' \u00b7 '+fmtClock(l)):' \u00b7 closing'; }
+  return o;
+}
+function extPillPulse(s){
+  var now=statusNow(), k;
+  if(G.xpSt===undefined){ G.xpSt=s.st; G.xpAt=-1e9; } else if(G.xpSt!==s.st){ G.xpSt=s.st; G.xpAt=now; }
+  k=(now-G.xpAt)/0.6;
+  return (k>=0&&k<1)?Math.max(k,0.001):0;
+}
+function extEdgeArrow(E){
+  var hr=Math.max(1,hudRes()), p=G.player, ps, ox=W/2, oy=H/2, a0, lab, f=hudFS(TYPE.head), tw, bw, bh, k, s, a=0, cx=0, cy=0, ok=false, mx, rx, ry, i, B, L=[], col='#4de3d0', ar, ux, uy, tx, ty;
+  EXTARROW.on=0;
+  if(!E||!E.za||!E.z||!G) return false;
+  ps=p?w2s(p.x,0,p.y):null; if(ps){ ox=ps.x; oy=ps.y; }
+  a0=Math.atan2(E.sy-oy,E.sx-ox);
+  lab=extLetter(E.z).toLowerCase()+' '+metres(E.d)+'m';
+  mx=LH(6)*hr; ar=LH(8)*hr;
+  ctx.save();
+  try{
+    ctx.font=f; tw=ctx.measureText(TX(lab)).width; bw=Math.round(tw+LH(16)*hr); bh=Math.round(msgPx(f)*1.5);
+    // what it keeps off: every HUD panel and edge stack as last drawn, the gun card corner, the teammate rows, the feed, the pickup stack's column even while it is
+    // empty, and the clock with the pill
+    for(k in HUDBOX){ B=HUDBOX[k]; if(B&&B.w>0&&B.h>0) L.push(B); }
+    for(k in EDGEBOX){ B=EDGEBOX[k]; if(B&&B.w>0&&B.h>0) L.push(B); }
+    if(typeof NETTEAMBOX==='object'&&NETTEAMBOX&&NETTEAMBOX.n&&NETTEAMBOX.w>0) L.push(NETTEAMBOX);
+    if(G.cornerBox) L.push(G.cornerBox);
+    if(typeof FEEDBOX==='object'&&FEEDBOX&&FEEDBOX.on&&FEEDBOX.w>0) L.push(FEEDBOX);
+    L.push({x:W-LH(250)*hr,y:Math.round(H*0.5),w:LH(250)*hr,h:H});
+    L.push({x:W/2-LH(170)*hr,y:0,w:LH(340)*hr,h:LH(130)*hr});
+    var hit=function(x0,y0){ var j, b; for(j=0;j<L.length;j++){ b=L[j]; if(x0+bw/2+ar*2+mx>b.x&&x0-bw/2-ar*2-mx<b.x+b.w&&y0+bh/2+ar+mx>b.y&&y0-bh/2-ar-mx<b.y+b.h) return true; } return false; };
+    rx=W/2-bw/2-ar*2-LH(16)*hr; ry=H/2-bh/2-ar-LH(16)*hr;
+    for(s=1;s>=0.55&&!ok;s-=0.15) for(i=0;i<29&&!ok;i++){ a=a0+((i&1)?1:-1)*Math.ceil(i/2)*0.06; cx=W/2+Math.cos(a)*rx*s; cy=H/2+Math.sin(a)*ry*s; if(!hit(cx,cy)) ok=true; }
+    if(!ok){ cx=W/2+Math.cos(a0)*rx*0.55; cy=H/2+Math.sin(a0)*ry*0.55; }
+    cx=Math.round(cx); cy=Math.round(cy);
+    hudPlate(Math.round(cx-bw/2),Math.round(cy-bh/2),bw,bh,null,HUDC.plate);
+    ctx.textAlign='center'; ctx.fillStyle=col;
+    hudText(lab,cx,Math.round(cy+msgPx(f)*0.36));
+    // the arrow just outside the plate on the side of the exit, pointing at it
+    ux=cx+Math.cos(a0)*(bw/2+ar*1.2); uy=cy+Math.sin(a0)*(bh/2+ar*0.9);
+    tx=ux+Math.cos(a0)*ar; ty=uy+Math.sin(a0)*ar;
+    ctx.beginPath(); ctx.moveTo(tx,ty);
+    ctx.lineTo(ux+Math.cos(a0+2.3)*ar*0.9,uy+Math.sin(a0+2.3)*ar*0.9);
+    ctx.lineTo(ux+Math.cos(a0-2.3)*ar*0.9,uy+Math.sin(a0-2.3)*ar*0.9);
+    ctx.closePath(); ctx.fillStyle=col; ctx.fill(); ctx.lineWidth=Math.max(1.5,1.5*hr); ctx.strokeStyle=HUDC.ink; ctx.lineJoin='round'; ctx.stroke();
+    EXTARROW.on=1; EXTARROW.x=cx-bw/2; EXTARROW.y=cy-bh/2; EXTARROW.w=bw; EXTARROW.h=bh; EXTARROW.t=lab;
+  } finally { ctx.restore(); }
+  return true;
+}
+function wxIconId(){
+  var w=wx(), t=tod();
+  if(w&&w.id&&w.id!=='clear'&&w.id!=='turning') return w.id;
+  if(typeof P!=='undefined'&&P&&P.cond==='night') return 'night';
+  return (t&&(t.id==='dawn'||t.id==='golden'||t.id==='dusk'))?'low':'sun';
+}
+function wxCloud(x,y,s,col){
+  ctx.fillStyle=col; ctx.beginPath(); ctx.arc(x-s*0.42,y+s*0.12,s*0.34,0,6.2832); ctx.fill();
+  ctx.beginPath(); ctx.arc(x,y-s*0.12,s*0.44,0,6.2832); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+s*0.44,y+s*0.14,s*0.32,0,6.2832); ctx.fill();
+  ctx.fillRect(x-s*0.42,y+s*0.1,s*0.86,s*0.36);
+}
+function wxSun(x,y,s,col){
+  var i, a;
+  ctx.fillStyle=col; ctx.strokeStyle=col; ctx.beginPath(); ctx.arc(x,y,s*0.42,0,6.2832); ctx.fill();
+  ctx.lineWidth=Math.max(1,s*0.14); ctx.beginPath();
+  for(i=0;i<8;i++){ a=i*0.7854; ctx.moveTo(x+Math.cos(a)*s*0.62,y+Math.sin(a)*s*0.62); ctx.lineTo(x+Math.cos(a)*s*0.9,y+Math.sin(a)*s*0.9); }
+  ctx.stroke();
+}
+function wxIconDraw(cx,cy,r){
+  var id=wxIconId(), u=r*0.66, now=statusNow(), k, sc, i;
+  if(!G) return '';
+  if(G.wxIc!==id){ if(G.wxIc!==undefined) G.wxIcAt=now; G.wxIc=id; }
+  k=(now-(G.wxIcAt===undefined?-1e9:G.wxIcAt))/0.6; sc=(k>=0&&k<1)?1+0.2*Math.sin(Math.PI*k):1;
+  WXICON.id=id; WXICON.x=cx; WXICON.y=cy;
+  ctx.save();
+  try{
+    ctx.translate(cx,cy); ctx.scale(sc,sc);
+    ctx.beginPath(); ctx.arc(0,0,r,0,6.2832); ctx.fillStyle='rgba(8,12,18,.78)'; ctx.fill();
+    ctx.lineWidth=Math.max(1,r*0.08); ctx.strokeStyle='rgba(127,146,216,.45)'; ctx.stroke();
+    ctx.lineCap='round'; ctx.lineJoin='round';
+    if(id==='sun') wxSun(0,0,u,'#ffd25a');
+    else if(id==='low'){
+      ctx.fillStyle='#ff9d5a'; ctx.strokeStyle='#ff9d5a'; ctx.beginPath(); ctx.arc(0,u*0.3,u*0.5,Math.PI,6.2832); ctx.closePath(); ctx.fill();
+      ctx.lineWidth=Math.max(1,u*0.14); ctx.beginPath(); ctx.moveTo(-u*0.95,u*0.42); ctx.lineTo(u*0.95,u*0.42);
+      ctx.moveTo(0,-u*0.42); ctx.lineTo(0,-u*0.72); ctx.moveTo(-u*0.56,-u*0.1); ctx.lineTo(-u*0.78,-u*0.3); ctx.moveTo(u*0.56,-u*0.1); ctx.lineTo(u*0.78,-u*0.3); ctx.stroke();
+    } else if(id==='night'){
+      ctx.fillStyle='#cdd6dd'; ctx.beginPath(); ctx.arc(0,0,u*0.66,0,6.2832); ctx.fill();
+      ctx.fillStyle='rgb(8,12,18)'; ctx.beginPath(); ctx.arc(u*0.32,-u*0.22,u*0.56,0,6.2832); ctx.fill();
+    } else if(id==='partly'){ wxSun(-u*0.32,-u*0.3,u*0.66,'#ffd25a'); wxCloud(u*0.12,u*0.16,u*0.78,'#cdd6dd'); }
+    else if(id==='rain'){
+      wxCloud(0,-u*0.28,u*0.8,'#a5b1bc'); ctx.strokeStyle='#6fb6d8'; ctx.lineWidth=Math.max(1,u*0.14); ctx.beginPath();
+      for(i=-1;i<=1;i++){ ctx.moveTo(i*u*0.4,u*0.36); ctx.lineTo(i*u*0.4-u*0.14,u*0.78); }
+      ctx.stroke();
+    } else if(id==='fog'){
+      ctx.strokeStyle='#a5b1bc'; ctx.lineWidth=Math.max(1,u*0.18); ctx.beginPath();
+      ctx.moveTo(-u*0.8,-u*0.42); ctx.lineTo(u*0.5,-u*0.42); ctx.moveTo(-u*0.5,0); ctx.lineTo(u*0.8,0); ctx.moveTo(-u*0.8,u*0.42); ctx.lineTo(u*0.6,u*0.42); ctx.stroke();
+    } else if(id==='storm'){
+      wxCloud(0,-u*0.3,u*0.8,'#7d8894');
+      ctx.fillStyle='#ffd25a'; ctx.beginPath(); ctx.moveTo(u*0.1,u*0.02); ctx.lineTo(-u*0.26,u*0.5); ctx.lineTo(-u*0.02,u*0.5); ctx.lineTo(-u*0.16,u*0.92); ctx.lineTo(u*0.3,u*0.36); ctx.lineTo(u*0.06,u*0.36); ctx.closePath(); ctx.fill();
+    } else {
+      ctx.strokeStyle='#8a96a1'; ctx.lineWidth=Math.max(1,u*0.14); ctx.beginPath(); ctx.arc(0,-u*0.14,u*0.48,0,6.2832); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(-u*0.2,u*0.5); ctx.lineTo(u*0.2,u*0.5); ctx.moveTo(-u*0.72,u*0.62); ctx.lineTo(u*0.72,-u*0.86); ctx.stroke();
+    }
+  } finally { ctx.restore(); }
+  return id;
+}
 function zoneBadge(z){
   var L=extLetter(z); L=(L==='?')?'':' '+L;
   if(!z.open) return 'EXTRACTION'+L+' CLOSED';
@@ -43049,7 +43459,7 @@ function statusLive(p){
     } else if(E.id==='hide'){
       // v35.xx (cw-quiettext): the words and colour of the right-side chip it replaces; a name that changes is measured again
       var cs=concealState();
-      if(cs){ E.on=true; E.col=cs.col; E.bad=cs.bad; if(E.nm!==cs.nm){ E.nm=cs.nm; E.nf=''; } if(E.vk!==cs.v){ E.vk=cs.v; E.v=cs.v; } }
+      if(cs&&!HUDSTATES){ E.on=true; E.col=cs.col; E.bad=cs.bad;   /* v35.xx (cw-hudstates): an icon beside the stance chip now (hudStateDraw) */ if(E.nm!==cs.nm){ E.nm=cs.nm; E.nf=''; } if(E.vk!==cs.v){ E.vk=cs.v; E.v=cs.v; } }
     } else if(B){
       // a drink: every dose of this kind in the profile, the ring and the time on the one with the longest left
       n=0; mx=0; du=180;
@@ -43120,6 +43530,77 @@ function statusGlyph(id,cx,cy,u,col){
 // v24.xx (noequipline), HIS ORDER (2026-10-12): "don't need to tell what else in the backpack when i equip a different gun -- weird
 // design choice from you". stowLine (v21.73) built the gun card's OTHER GUN line, naming the gun in the other slot and its rounds, on
 // every frame and so on every swap. It is gone with both of its callers: the gun card shows the gun in his hands and its ammo only.
+// v35.xx (cw-hudstates), HIS ASK (2026-10-27 ~21:40): "Everything about this game needs to be AAA and right now all the messaging on the hud is a clusterfuck", built
+// to the research of that night (reports/Player alerts and HUD messaging.md, Bottom left and Bottom right). LASTING STATES ARE SMALL ICONS BESIDE THE STANCE CHIP,
+// for as long as they are true: revealed (the crier mark runs, G.marked: a red open eye), concealed (concealState: the struck eye in its state colour) and in cover
+// (in a bush: a leaf cluster). The hidden pill in the status column at mid left (cw-quiettext) is gone; the column keeps the timed statuses. The first time an icon
+// turns on, or after it has been off 3 s, its word shows beside the row for 2.2 s, then the icon stands alone. Drawn inside the vitals zoom, so it grows and moves
+// with the vitals; the vitals box already holds it, so no new HUDBOX. HUDSTBOX is the row as last drawn, in screen pixels (the checks read it).
+// LOW HEALTH PULSES THE BAR and LOW AMMO PULSES THE COUNT, slowly (1.2 a second, under the 3 a second limit of XAG 118), with no text line; an empty gun with rounds
+// to load shows a small key cap for reload on the gun card.
+var HUDSTATES=1, HUDST_WORD=2.2, HUDST_AGAIN=3, HUDPULSE_HZ=1.2;
+var HUDSTBOX={n:0,x:0,y:0,w:0,h:0,ids:''}, HPPULSE={on:0,a:0};
+function hudStateList(){
+  var p=G&&G.player, L=[], cs;
+  if(!p) return L;
+  if(G.marked>0) L.push({id:'reveal',col:'#ff5a4a',w:'revealed'});
+  cs=concealState();
+  if(cs) L.push({id:'conceal',col:cs.col,w:String(cs.nm).toLowerCase()});
+  if(G.pBush) L.push({id:'cover',col:'#7fc4a0',w:'in cover'});
+  return L;
+}
+function hudStateGlyph(id,cx,cy,u,col){
+  ctx.fillStyle=col; ctx.strokeStyle=col;
+  if(id==='conceal'){ statusGlyph('hide',cx,cy,u,col); return; }
+  if(id==='reveal'){
+    ctx.beginPath(); ctx.lineWidth=u*0.24; ctx.lineCap='round'; ctx.lineJoin='round';
+    ctx.moveTo(cx-u,cy); ctx.quadraticCurveTo(cx,cy-u*1.1,cx+u,cy); ctx.quadraticCurveTo(cx,cy+u*1.1,cx-u,cy); ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx,cy,u*0.38,0,6.2832); ctx.fill();
+    ctx.lineCap='butt'; ctx.lineJoin='miter';
+    return;
+  }
+  ctx.beginPath(); ctx.arc(cx-u*0.46,cy+u*0.24,u*0.5,0,6.2832); ctx.fill();
+  ctx.beginPath(); ctx.arc(cx+u*0.46,cy+u*0.24,u*0.5,0,6.2832); ctx.fill();
+  ctx.beginPath(); ctx.arc(cx,cy-u*0.34,u*0.58,0,6.2832); ctx.fill();
+}
+function hudStateDraw(p,by){
+  var L=hudStateList(), i, e, now=statusNow(), S=(G.hudSt=G.hudSt||{}), k, ps, pw=0, up, x, cy, d, r, u, Tm, ws=[], wt, tw, al, ids=[];
+  for(k in S) if(S.hasOwnProperty(k)) S[k].seen=0;
+  for(i=0;i<L.length;i++){ e=L[i]; ids.push(e.id); k=S[e.id]; if(!k) k=S[e.id]={at:now,off:-1e9,on:0}; else if(!k.on&&now-k.off>HUDST_AGAIN) k.at=now; k.on=1; k.seen=1; }
+  for(k in S) if(S.hasOwnProperty(k)&&S[k].on&&!S[k].seen){ S[k].on=0; S[k].off=now; }
+  HUDSTBOX.n=L.length; HUDSTBOX.ids=ids.join(',');
+  if(!L.length){ HUDSTBOX.w=0; return 0; }
+  ps=p.downed?'DOWN':(G.pCrouch?'CROUCHED':'');
+  ctx.save();
+  try{
+    ctx.font=FS(TYPE.label); ctx.textAlign='left';
+    if(ps) pw=ctx.measureText(ps).width+14+LH(6);   // beside the stance chip when it shows, where the chip would be when it does not
+    up=(p.armor>0)?(50+LH(5)):(29+LH(5));            // the chip's own lift over the bars (v8.97)
+    d=LH(18); r=d/2; u=d*0.27; x=18+pw; cy=by-up-LH(10);
+    Tm=ctx.getTransform(); HUDSTBOX.x=Tm.a*x+Tm.e; HUDSTBOX.y=Tm.d*(cy-r)+Tm.f; HUDSTBOX.h=d*Tm.d;
+    for(i=0;i<L.length;i++){
+      e=L[i];
+      ctx.beginPath(); ctx.arc(x+r,cy,r,0,6.2832); ctx.fillStyle='rgba(8,12,18,.9)'; ctx.fill();
+      ctx.lineWidth=Math.max(1.2,d*0.07); ctx.strokeStyle=e.col; ctx.stroke();
+      hudStateGlyph(e.id,x+r,cy,u,e.col);
+      if(now-S[e.id].at<HUDST_WORD) ws.push(e);
+      x+=d+LH(4);
+    }
+    for(i=0;i<ws.length;i++){
+      e=ws[i]; wt=now-S[e.id].at; al=clamp((HUDST_WORD-wt)/0.4,0,1)*clamp(wt/0.15,0,1);
+      tw=ctx.measureText(e.w).width;
+      if(al>0.01){ ctx.globalAlpha=al; hudPanel(x,cy-LH(8),tw+14,LH(16),0.88,1); ctx.fillStyle=e.col; ctx.fillText(e.w,x+7,cy+LH(4)); ctx.globalAlpha=1; }
+      x+=tw+14+LH(4);
+    }
+    HUDSTBOX.w=Tm.a*x+Tm.e-HUDSTBOX.x;
+  } finally { ctx.restore(); }
+  return L.length;
+}
+function hpPulseA(hp,mx,t){ if(!(hp>0)||!(mx>0)||hp/mx>=0.25) return 0; return 0.5-0.5*Math.cos(t*6.2832*HUDPULSE_HZ); }
+function ammoLow(p){ return !!(p&&p.wep&&p.wep.mag>0&&p.ammo>0&&p.ammo<=Math.ceil((p.wep.mag||0)*0.25)); }
+function ammoCapOn(p){ return !!(p&&p.wep&&p.wep.mag>0&&p.ammo===0&&!(p.reloading>0)&&!(p.jam>0)&&rsvShow(p)>0); }
+function ammoCapKey(){ var s=padOn()?String(padB(pbn(2))):String(keyLabel('KeyR','R')); return s.replace(/[\[\]]/g,'').toLowerCase(); }
+function ammoCapW(){ var o=ctx.font, w; ctx.font=FS(TYPE.head); w=ctx.measureText(ammoCapKey()).width; ctx.font=o; return Math.max(LH(24),w+LH(14))+LH(10); }
 function drawStatusIcons(){
   var p=G&&G.player, L=STATUSL, E, i, j, n=0, s=0, hr, S, g, r, ox, oy, yBot, rows, B, wC, nf, vf, x, y, cx, cy, tx, tw, lw, rr, u, hx, ph;
   if(!p||G.over||G.sim||G.mapOpen) return 0;
@@ -43505,7 +43986,7 @@ function mmMarks(r,sc,R){
     for(i=0;i<(NET.pings||[]).length;i++){
       q=NET.pings[i]; if(!q||!isFinite(q.x)) continue; s=at(q.x,q.y); if(s.out) continue;
       ctx.fillStyle=q.dg?'#ff4a3a':(q.w?'#ff8a3c':'#6fe0ff');
-      colourCueGlyph(ctx,q.dg?'danger':q.pl?'loot':q.w?'target':'place',s.x,s.y,.85*R,ctx.fillStyle);MMAP.ops+=3;
+      colourCueGlyph(ctx,q.dg?'danger':q.pl?'loot':q.w?'target':'place',s.x,s.y,2*R,ctx.fillStyle);MMAP.ops+=3; // v28.xx (cw-cx-pingmerge): 24px target, 28px dark backing at 1080p.
     }
   }
   if(G.waypoint&&isFinite(G.waypoint.x)){
@@ -43953,7 +44434,7 @@ if(!p.downed&&!G.bagOpen&&!G.mapOpen&&!(G.wheel&&!G.wheel.pad)){   // v28.xx (cw
   // and the party ping, Waypoint and arrow labels were filled with no outline and no plate, so over snow, a lit street or a fire they
   // washed out. Each now goes through hudText: a 2 x hudRes ink stroke with round joins, then the same fill. No shadowBlur (frame
   // cost); about twenty strokes a frame at most. The words, colours and places are unchanged.
-  if(G.arcade||G.career){ var _arcB=arcadeScoreHud(_yClk,_tz)||0; if(_arcB>0&&_yCmp<_arcB+Math.round(3*_tz+_hCmp*0.80)){ _yCmp=_arcB+Math.round(3*_tz+_hCmp*0.80); _yArw=Math.round(_yCmp+_hCmp*0.90); _yMk=Math.round(_yArw+_hMk*1.30); } } else {   /* v25.xx (topmid): the compass starts under the score block, not through its clock row */ var _cpo=(!_noClk&&_tSrc<=CLOCK_RED&&_tSrc>0)?clockPopIn(W/2,_yClk-_hClk*0.35,G.timeLeft):false; hudText(mm+':'+(ss<10?'0':'')+ss,W/2,_yClk); if(_cpo) ctx.restore(); }   /* v23.xx (his answer 19): it pops on every second of the final minute */   // v23.29 (arcade8): in the arcade, TEAM SCORE in place of the clock
+  if(G.arcade||G.career){ var _arcB=arcadeScoreHud(_yClk,_tz)||0; try{ if(SCOREBOX&&SCOREBOX.g===G&&SCOREBOX.w>0) wxIconDraw(Math.round(SCOREBOX.x+SCOREBOX.w+LH(16)*_tz),Math.round(SCOREBOX.y+Math.min(SCOREBOX.h/2,LH(28)*_tz)),Math.round(LH(10)*_tz)); }catch(_wxa){}   /* v35.xx (cw-extpill): the sky beside the score block */ if(_arcB>0&&_yCmp<_arcB+Math.round(8*_tz+_hCmp*1.05)){ _yCmp=_arcB+Math.round(8*_tz+_hCmp*1.05); _yArw=Math.round(_yCmp+_hCmp*0.90); _yMk=Math.round(_yArw+_hMk*1.30); } } else {   /* v25.xx (topmid): the compass starts under the score block, not through its clock row */ var _cpo=(!_noClk&&_tSrc<=CLOCK_RED&&_tSrc>0)?clockPopIn(W/2,_yClk-_hClk*0.35,G.timeLeft):false; hudText(mm+':'+(ss<10?'0':'')+ss,W/2,_yClk); if(_cpo) ctx.restore(); try{ ctx.font=_fClk; wxIconDraw(Math.round(W/2+ctx.measureText(mm+':'+(ss<10?'0':'')+ss).width/2+LH(18)*_tz),Math.round(_yClk-_hClk*0.36),Math.round(LH(10)*_tz)); }catch(_wxi){} }   /* v35.xx (cw-extpill): the sky beside the clock */   /* v23.xx (his answer 19): it pops on every second of the final minute */   // v23.29 (arcade8): in the arcade, TEAM SCORE in place of the clock // v28.xx (cw-cx-hudtvread): the extraction pill clears the score plate by 8 scaled pixels.
   // HIS NOTE, 2026-08-26: "can you make it point to the NEAREST extraction instead,
   // and make it switch any time the player finds a nearer extraction -- also ...
   // the beacon indicator should change to like 'Marked Waypoint' and point to that
@@ -43986,10 +44467,15 @@ _tgt=G.active; _lbl='EXTRACTION';
     var za=Math.atan2(_tgt.y-p.y,_tgt.x-p.x),zd=Math.round(dist(p,_tgt));
     ctx.font=_fCmp; ctx.fillStyle=_col;
     // v28.xx (cw-extplate), the critic (2026-10-19): 'extract 148m is bare teal text, no plate'. The distance line sits on the HUD plate like the score block above it.
-    var _epw=Math.round(ctx.measureText(TX(_lbl+' '+metres(zd)+'m')).width+LH(20)), _eph=Math.round(_hCmp*1.5);
-    hudPlate(Math.round(W/2-_epw/2),Math.round(_yCmp-_hCmp*1.05),_epw,_eph,null,HUDC.plate);
+    var _xps=extPillState(_lbl==='WAYPOINT'?null:_tgt,_lbl), _xpt=_lbl+' '+metres(zd)+'m'+_xps.tail; if(_xps.col) _col=_xps.col;   // v35.xx (cw-extpill): the exit's state on the pill
+    var _epw=Math.round(ctx.measureText(TX(_xpt)).width+LH(20)), _eph=Math.round(_hCmp*1.5), _xpk=extPillPulse(_xps), _xpx=Math.round(W/2-_epw/2), _xpy=Math.round(_yCmp-_hCmp*1.05);
+    ctx.save();
+    if(_xpk>0){ var _xsc=1+0.12*Math.sin(Math.PI*_xpk); ctx.translate(W/2,_xpy+_eph/2); ctx.scale(_xsc,_xsc); ctx.translate(-W/2,-(_xpy+_eph/2)); }
+    hudPlate(_xpx,_xpy,_epw,_eph,null,HUDC.plate);
+    if(_xpk>0||_xps.st==='closing'||_xps.st==='closed'){ ctx.save(); ctx.globalAlpha=(_xpk>0)?(1-_xpk*0.7):0.8; ctx.lineWidth=Math.max(1.5,1.5*_tz); ctx.strokeStyle=_col; ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(_xpx+0.5,_xpy+0.5,_epw-1,_eph-1,Math.min(_eph/2,LH(4))); else ctx.rect(_xpx,_xpy,_epw,_eph); ctx.stroke(); ctx.restore(); }   // v35.xx (cw-extpill): the state's edge, and the ring of the one pulse
     ctx.fillStyle=_col;
-    hudText(_lbl+' '+metres(zd)+'m',W/2,_yCmp);
+    hudText(_xpt,W/2,_yCmp);
+    ctx.restore(); EXTPILL.st=_xps.st; EXTPILL.col=_col; EXTPILL.txt=_xpt;   // v35.xx (cw-extpill)
     var _az=_tz*(G.arcade?ARCADE_ARW:1);   // v23.35 (arcade13): in the arcade the arrow is twice the size, set lower so it clears the label
     ctx.save(); ctx.translate(W/2,_yArw+(G.arcade?Math.round(8*_tz):0)); ctx.rotate(za+Math.PI/2);
     ctx.fillStyle=_col;
@@ -44332,6 +44818,7 @@ hudPanel(bx,by,bw,bh,undefined,1);   // v18.13: the one HUD panel
     ctx.restore();                              // v10.43: end of the message scale
   }
   try{ feedDraw(); }catch(_fdw){}   // v27.24 (feed1): the feed, bottom left (over the map too)
+  try{ ansDraw(); }catch(_ansd){}   // v35.xx (cw-answerline): the answer line under the character
   };
   if(!G.mapOpen) _lanes();   // v22.xx (R38): with the map open the band is drawn after it, below
   // Extraction ring labels, drawn on the HUD above the fog. Three unexplained
@@ -44376,7 +44863,7 @@ hudPanel(bx,by,bw,bh,undefined,1);   // v18.13: the one HUD panel
     // teammate rows, as each was drawn last frame) it slides along the edge to the nearest clear place. A badge over its ring is untouched.
     var _zaw=0, _zcl=false, zcx=(zwid+24*_zr<W)?clamp(zs.x,zwid/2+12*_zr,W-zwid/2-12*_zr):zs.x;
     if(zcx!==zs.x&&zwid+24*_zr+LH(12)*_zr<W){ _zcl=true; _zaw=LH(12)*_zr; zcx=clamp(zs.x,(zwid+_zaw)/2+12*_zr,W-(zwid+_zaw)/2-12*_zr); }
-    if(zcx!==zs.x){ var _zed=dist(p,zz2); if(!_zEdge||(za&&!_zEdge.za)||(za===_zEdge.za&&_zed<_zEdge.d)) _zEdge={lab:zlab,za:za,d:_zed}; continue; }   // v35.xx (cw-quiettext): held at the edge, it goes to the top centre instead
+    if(zcx!==zs.x){ var _zed=dist(p,zz2); if(!_zEdge||(za&&!_zEdge.za)||(za===_zEdge.za&&_zed<_zEdge.d)) _zEdge={lab:zlab,za:za,d:_zed,z:zz2,sx:zs.x,sy:zs.y}; continue; }   // v35.xx (cw-quiettext): held at the edge, it goes to the top centre instead
     var _zhw=(zwid+_zaw)/2, zsy=hudDodge(zcx,zs.y,_zhw+6*_zr,LH(15)*_zr,0);
     if(_zcl) zsy=ringBadgeSlide(zcx-_zhw-6*_zr,zcx+_zhw+6*_zr,zsy,LH(11)*_zr,LH(4)*_zr);
     // v21.07, from the whole-game bug hunt of 2026-10-08 (V-D5), seen on the 4K backpack screenshot: A RING LABEL NEVER PRINTS UNDER
@@ -44405,16 +44892,7 @@ hudPanel(bx,by,bw,bh,undefined,1);   // v18.13: the one HUD panel
   // A ring just off the screen had its badge (EXTRACTION C AVAILABLE) pinned to the edge with an arrow, out on its own at the right. It is now one line at the
   // top centre, under the extract distance and its arrow (where the MARKED row was until v22.13), on the same plate in the ring colour: an open ring before a
   // closed one, then the nearest. It steps aside for an alert or the location tag that would reach it. A badge over its ring is drawn there as before.
-  if(_zEdge&&typeof _yMk==='number'&&typeof _yArw==='number'){
-    ctx.font=_fCmp; ctx.textAlign='center';
-    var _zeb=_yArw+(G.arcade?Math.round(8*_tz):0)+5*_tz*(G.arcade?ARCADE_ARW:1), _zey=Math.max(_yMk,Math.round(_zeb+LH(3)*_tz+_hCmp*1.05)), _zew=Math.round(ctx.measureText(_zEdge.lab).width+LH(20)), _zeh=Math.round(_hCmp*1.5), _zet=Math.round(_zey-_hCmp*1.05);
-    var _zea=Math.round((LH(96)-LH(10))*(HUDZ.msg||1)*hudRes()*hudUserZ('msg'));
-    if(!((ALERTL||locUp())&&_zet+_zeh>_zea)){
-      hudPlate(Math.round(W/2-_zew/2),_zet,_zew,_zeh,null,HUDC.plate);
-      ctx.fillStyle=_zEdge.za?'#4de3d0':'rgba(168,180,193,.95)';
-      hudText(_zEdge.lab,W/2,_zey);
-    }
-  }
+  EXTARROW.on=0; if(_zEdge&&_zEdge.za){ try{ extEdgeArrow(_zEdge); }catch(_xea){} }   // v35.xx (cw-extpill): an open exit just off the screen is an edge arrow with its letter and distance
   ctx.textAlign='left';
   // projected world labels
   var _pk=promptPick(p);   // v22.67 (R25): the one target a held E acts on; only its E prompt is drawn
@@ -44482,6 +44960,7 @@ hudPanel(bx,by,bw,bh,undefined,1);   // v18.13: the one HUD panel
   var nc2=G.nearContainer;
   if(nc2&&!G.searching&&!p.downed&&(_pk==='search'||G.nearPad)){   // v22.67 (R25): one prompt at a time; in a ring it names X, its own key
     var s=w2s(nc2.x,26,nc2.y);
+    if(s&&padOn()) s.y-=LH(24)*hudRes(); // v28.xx (cw-cx-xpromptread): clear the pillager head and reticle, at the same offset at 1080p and 4k.
     if(s){
       var _hsC=hudAtIn(s.x,s.y);   // v19.55: grows with the screen
       ctx.font=FS(TYPE.head); ctx.textAlign='center';   // v10.52, his note: the prompt was too small
@@ -44497,6 +44976,8 @@ hudPanel(bx,by,bw,bh,undefined,1);   // v18.13: the one HUD panel
       // interaction while showing the corpse would be worse than the stutter.
       // v22.66 (R24): one prompt style. The fallen pillager's crew colour is the plate's accent bar (it was a bar beside the words),
       // and the one item a dropped crate holds is the second line, in its rarity colour.
+      // v28.xx (cw-cx-xreloadsearch): the box names the action X will take; a held search keeps its chosen action. The ring retains its separate Y search.
+      var _xReload=padOn()&&!G.nearPad&&((PAD.xWas&&PAD.xMode)?PAD.xMode:padXAction())==='KeyR';
       var _skey='['+((G.nearPad&&padOn())?padB(pbn(3)):keyLabel('KeyE','E'))+'] SEARCH ', _ft, _fcr=null, _fsub='', _fsc=null;  // v27.70 (cloud-menus-pad-prompts-follow-binds), CLOUD HUNT 2026-10-15: the ring prompt said [Y] SEARCH after the ring search moved off Y; it names the button as set
       if(nc2.fallen&&(nc2.fellAt===undefined||G.t-nc2.fellAt>2.3)){
         _ft=_skey+nc2.fallen.toUpperCase();
@@ -44504,15 +44985,16 @@ hudPanel(bx,by,bw,bh,undefined,1);   // v18.13: the one HUD panel
       }
       else if(nc2.tag) _ft=_skey+String(nc2.tag).toUpperCase();
       else _ft=_skey+(nc2.mercSrc?(String(nc2.mercSrc.name).toUpperCase()+"'S BACKPACK"):((nc2.type==='safe'&&nc2.camp)?'STRONGBOX':(nc2.type==='botwreck')?'WRECK':nc2.type.toUpperCase()));   // v22.xx (R49): SEARCH WRECK, the internal kind stays in the code
+      if(_xReload){ _ft='['+padB(pbn(2))+'] reload'; _fcr=null; }
       // His #23: item names in the world when you are near them. A single-item
       // crate that YOU dropped or a body someone emptied loot into is not a
       // mystery box, so it says what it holds; multi-item finds stay unsearched
       // secrets, because he explicitly wants searching to mean something.
-      if(nc2.loot.length===1&&nc2.dropped){
+      if(!_xReload&&nc2.loot.length===1&&nc2.dropped){
         var dit=ITEMS[nc2.loot[0]];
         if(dit){ _fsub=dit.name; _fsc=RCOL[dispR(nc2.loot[0])||dit.r]||'#cdd6dd'; }
       }
-      hudPrompt(_ft,s.x,s.y,{accent:_fcr,sub:_fsub,subCol:_fsc});
+      hudPrompt(_ft,s.x,s.y,{accent:_fcr,sub:_fsub,subCol:_fsc,scale:padOn()?0.85:HUDPROMPTZ}); // v28.xx (cw-cx-xpromptread): the pad box action grows from about 12px to at least 16px; keyboard keeps its scale.
       ctx.textAlign='left';
       if(_hsC) ctx.restore();
     }
@@ -44814,6 +45296,15 @@ var by=H-34;
   var HBW=300,HBH=26;   /* v28.xx (cw-barnarrow), the critic (2026-10-19): at 360 the stamina word past the bar ran into belt slot 1; all three vitals bars are 300 wide, the word ends clear of the belt */
   VITBOX=(function(){ var R=hudZoomRect('body',0,H,{x:16,y:by-50,w:HBW,h:50+HBH}), T=hudZoomRect('body',0,H,{x:16,y:by-50-LH(5)-LH(18),w:HBW,h:1}); R.x+=_boB.dx; R.y+=_boB.dy; R.top=T.y+_boB.dy; return R; })();   /* v28.xx (cw-hudcorner): the three bars as drawn (armour always counted) and top, the top of the posture tag over the armour bar, with his drag, so the keys chip keeps off the vitals */
   bar(16,by,HBW,HBH,p.hp/p.maxhp,p.hp>50?'#5fae6f':(p.hp>25?'#d0a13c':'#c8452f'));
+  // v35.xx (cw-hudstates): under a quarter health the whole bar pulses red, 1.2 a second, brightest on the health that is left; no text line
+  HPPULSE.on=0; HPPULSE.a=hpPulseA(p.hp,p.maxhp,statusNow());
+  if(p.hp>0&&p.hp/p.maxhp<0.25){
+    HPPULSE.on=1;
+    ctx.save(); ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(16,by,HBW,HBH,6); else ctx.rect(16,by,HBW,HBH); ctx.clip();
+    ctx.fillStyle='rgba(200,40,30,'+(0.10+0.30*HPPULSE.a).toFixed(3)+')'; ctx.fillRect(16,by,HBW,HBH);
+    ctx.fillStyle='rgba(255,170,150,'+(0.45*HPPULSE.a).toFixed(3)+')'; ctx.fillRect(16,by,HBW*clamp(p.hp/p.maxhp,0,1),HBH);
+    ctx.restore();
+  }
   // THE RED BLOCK, his note the same day. Drawn from the current health up to
   // what it was before the hit, so the width of the red IS the size of the hit.
   if(p.hpGhost>p.hp){
@@ -44854,7 +45345,7 @@ ctx.fillStyle='rgba(190,255,220,.85)';
   var _hpf=FS(TYPE.title), _hpx=parseFloat((/([\d.]+)px/.exec(_hpf)||[0,26])[1]), _hpm=HBH*1.08;
   if(_hpx>_hpm) _hpf=_hpf.replace(/[\d.]+px/,(Math.round(_hpm*10)/10)+'px');
   ctx.font=_hpf; ctx.fillStyle='#FFF6DC';
-  ctx.fillText('HP  '+Math.round(p.hp),24,(_hpx>_hpm)?Math.round(by+HBH/2+_hpm*0.36):by+18);
+  hudText('HP  '+Math.round(p.hp),24,(_hpx>_hpm)?Math.round(by+HBH/2+_hpm*0.36):by+18); // v28.xx (cw-cx-hudtvread): ink outline separates the word from its coloured bar; retain the larger hp hierarchy.
   drawLowHpRing(16,by,HBW,HBH,p.hp,p.maxhp);   // v28.xx (cw-lowhp)
   // v19.07: the co-op HUD (teammate rows, kill feed, pings, the controller paused word) is drawn after the corner scale ends, below
   // YOUR OWN STATUS, beside the health because that is where you already look.
@@ -44894,6 +45385,7 @@ ctx.fillStyle='rgba(190,255,220,.85)';
     ctx.fillStyle=STATCOL[_ps.split(' + ')[0]]||'#a5b1bc';
     ctx.fillText(_ps,25,by-_up-LH(6));
   })();
+  try{ hudStateDraw(p,by); }catch(_hsd){}   // v35.xx (cw-hudstates): revealed, concealed, in cover, beside the stance chip
   // The number that was just taken off, fading.
   // vNN.xx, UI REDESIGN ui5q1l (his #50 and #35, from the AAA judge of the raid fight shot): THE DAMAGE NUMBER STAYS IN THE HEALTH BAR.
   // It floated out past the right end of the bar, at 1080p straight over the frame of belt key 1. It is drawn inside the right end of
@@ -44916,7 +45408,7 @@ if(p.armor>0){
     var _apf=FS(TYPE.label), _apx=parseFloat((/([\d.]+)px/.exec(_apf)||[0,13])[1]), _apm=16*1.08;
     if(_apx>_apm) _apf=_apf.replace(/[\d.]+px/,(Math.round(_apm*10)/10)+'px');
     ctx.font=_apf; ctx.fillStyle='#FFF6DC';
-    ctx.fillText('ARMOUR  '+Math.round(p.armor),24,(_apx>_apm)?Math.round(by-50+8+_apm*0.36):by-37);   /* v28.xx (cw-barheight): follows the bar */
+    hudText('ARMOUR  '+Math.round(p.armor),24,(_apx>_apm)?Math.round(by-50+8+_apm*0.36):by-37);   /* v28.xx (cw-barheight): follows the bar */ // v28.xx (cw-cx-hudtvread): ink outline separates the word from its coloured bar; retain the larger hp hierarchy.
   }
   var _stc=p.stamLock?'#c8452f':(p.stam<35?'#c98a1e':'#4f86a8');   // v28.xx (cw-stamlabel), the critic (2026-10-19): 'the stamina label sits outside its bar'. The fills are one step darker so the cream word reads inside the bar, the way the armour word does.
   var _lowDim=(p.hp>0&&p.hp/p.maxhp<0.25&&!p.stamLock);   // v28.xx (cw-lowhp2), the critic: stamina out-shouts a nearly dead health bar, so under a quarter health it steps back
@@ -44930,7 +45422,7 @@ if(p.armor>0){
   var _spf=FS(TYPE.label), _spx=parseFloat((/([\d.]+)px/.exec(_spf)||[0,13])[1]), _spm=16*1.08;
   if(_spx>_spm) _spf=_spf.replace(/[\d.]+px/,(Math.round(_spm*10)/10)+'px');
   ctx.save(); ctx.font=_spf; ctx.fillStyle='#FFF6DC'; ctx.shadowColor='rgba(0,0,0,.85)'; ctx.shadowBlur=3;
-  ctx.globalAlpha=_sfa; if(_sfa>0.001) ctx.fillText(p.stamLock?'WINDED':'STAMINA',24,(_spx>_spm)?Math.round(by-29+8+_spm*0.36):by-16);
+  ctx.globalAlpha=_sfa; if(_sfa>0.001) hudText(p.stamLock?'WINDED':'STAMINA',24,(_spx>_spm)?Math.round(by-29+8+_spm*0.36):by-16); // v28.xx (cw-cx-hudtvread): ink outline separates the word from its coloured bar; retain the larger hp hierarchy.
   ctx.restore();   /* v28.xx (cw-barheight): centred on the taller bar */   /* v28.xx (cw-barsame): the word follows the longer bar */
   ctx.restore();                          // v8.08: end of the corner scale
   ctx.restore();
@@ -45055,7 +45547,7 @@ if(p.armor>0){
   else if(p.jam>0){ ctx.fillStyle='#ff5a4a'; ctx.fillText('JAMMED',_gX,by-LH(14)); }
   else if(p.reloading>0){ ctx.fillStyle='#ffc04a'; ctx.fillText('RELOADING',_gX,by-LH(14)); }
   else {
-    ammoDraw(p,_gX,by-LH(14));   // v28.xx (cw-hudammo), his Q57: the rounds are the hero number
+    ammoDraw(p,_gX,by-LH(14),(typeof _wpx==='number'&&_wpx===_wpx)?_wpx+_gP:null);   // v35.xx (cw-hudstates): with the card's left inner edge, for the reload key cap   // v28.xx (cw-hudammo), his Q57: the rounds are the hero number
   }
   // v10.89, HIS NOTE: the stowed gun is still shown, because it was never meant
   // to be a secret, but the bracket in front of it promised a key that no longer
@@ -45657,7 +46149,7 @@ function codexScan(){
     a=G.bag||[]; for(i=0;i<a.length;i++) item(a[i]);
     p=G.player;
     if(p){ if(p.wep&&p.wep.id) put(p.wep.id); if(p.sec&&p.sec.id) put(p.sec.id); }
-    if(n&&state==='raid'){ try{ /* v31.xx (cw-codexfeed), the critic on screen 36 (2026-10-19): a new gun showed twice, top centre and bottom left. say() puts every line in the feed AND the top lane, so this one goes to the feed only (a quiet note, not an alert). */ feedSay('CODEX ENTRY','info',{sub:String(WEAPONS[nw[0]].name).toUpperCase()+'  \u00b7  '+(ITEMRAR[gunRarity(nw[0])]||'')}); }catch(_cs){} }
+    if(n&&state==='raid'){ try{ /* v31.xx (cw-codexfeed), the critic on screen 36 (2026-10-19): a new gun showed twice, top centre and bottom left. say() puts every line in the feed AND the top lane, so this one goes to the feed only (a quiet note, not an alert). */ /* v35.xx (cw-msgroute): the run log only */ say('CODEX ENTRY','info',{reach:0,sub:String(WEAPONS[nw[0]].name).toUpperCase()+'  \u00b7  '+(ITEMRAR[gunRarity(nw[0])]||'')}); }catch(_cs){} }
   }
   if(n){ try{ saveProfile(); }catch(_sv){} }
   return n;
@@ -46399,9 +46891,11 @@ var _legAnchorY=null,_legBase=null;
 // screen is than 1080p. Never below 1, so 1080p is unchanged by it and smaller
 // windows do not shrink the HUD into nothing; capped so a very wide screen does
 // not turn the corners into billboards.
+// v28.xx (cw-cx-hudtv): HUD SIZE already saved a choice but nothing read it. Grow raid panels and their hit boxes together; the Undercroft keeps its own layout.
+function hudTvScale(){ return (CFG.hudTv===1&&typeof G!=='undefined'&&G&&!G.hubFloor&&!G.over)?1.2:1; }
 function hudRes(){
   if(!W||!H) return 1;
-  return clamp(Math.min(W/1920,H/1080),1,2.2);
+  return clamp(Math.min(W/1920,H/1080),1,2.2)*hudTvScale();
 }
 // The corner transforms, written once. sx,sy is the anchor the block grows from.
 function hudZoomIn(k,ax,ay){
@@ -46951,7 +47445,7 @@ function drawLegend(fz,left){   // v20.74 (H40): fz is the zoom the full list is
     // above already says D-UP ping, and the row added here named both bumpers, which never ping. On keys N still pings.
     if(typeof NET==='object'&&NET&&NET.on){ if(padOn()) MN.push(['Y','drop to trade']); else MN.push(['Z','drop to trade'],['N','ping']); }   // v18.27: his order, trading is dropping
     if(!padOn()) for(mi=0;mi<MN.length;mi++) MN[mi]=[legendKeys(MN[mi][0]),MN[mi][1]];   // v18.60: the keys as set
-    var _q=1/(HUDZ.legend||1), Q=function(n){ return n*_q; }, _lf=uiFont('label',_q), _pd=Q(12), _rh=Q(22), _chH=Q(20), _cpd=Q(8), _cg=Q(8), _gap=Q(24);
+    var _q=LEGCK/(HUDZ.legend||1), Q=function(n){ return n*_q; }, _lf=uiFont('label',_q),   /* v35.xx (cw-hudsize): 18 px at 1080p, was 16; the panel grows with its rows */ _pd=Q(12), _rh=Q(22), _chH=Q(20), _cpd=Q(8), _cg=Q(8), _gap=Q(24);
     var _secs=padOn()?[['move',0,4],['fight',4,9],['gear',9,99]]:[['move',0,4],['fight',4,8],['gear',8,14],['raid',14,99]], _cols=[[],[]], _si, _sk;
     for(_si=0;_si<_secs.length;_si++){ ci=_si<2?0:1; _cols[ci].push({h:_secs[_si][0]}); for(_sk=_secs[_si][1];_sk<Math.min(_secs[_si][2],MN.length);_sk++) _cols[ci].push({k:padB(MN[_sk][0]),w:MN[_sk][1]}); }
     ctx.font=_lf;
@@ -54365,7 +54859,8 @@ function loop(ts){
   // Ahead of every early return below, so zoom keeps easing in the hub, while
   // paused and on the death screen instead of freezing part way through a step.
   tickZoom(dt);
-  pollPad();
+  // v28.xx (cw-cx-padpollguard): even an unexpected pad-handler failure must leave keyboard, mouse and the rest of this frame running.
+  try{ pollPad(); }catch(_pp){ padRelease(); PAD.on=false; PAD.mx=0; PAD.my=0; PAD.aiming=false; RUMBLE.gp=null; RUMBLE.other=null; padBodyCls(); }
   if(NET.on&&NET.specG) netSpecTick(dt);   // v16.14: the raid the host left runs on for the party still up top, whatever this window shows
   if(state==='hub'){
     try{ craftHoldStep(dt); }catch(_ch){}   // v11.75: the craft hold fills here
@@ -54984,7 +55479,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.42: the item line under the stash grids is one fixed size box, hover or not: the backpack, hotbar, gun keys and stash grid no longer move when the mouse crosses items Check 35.42 fails on v35.41',
+  now:'v35.70: the demo run over card shows settings x under extracted x2; the settings score value lines up with the other values Check 35.70 fails on v35.69',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -60702,6 +61197,7 @@ function netUpAnnounce(g){
   if(!NET.on||NET.role!=='host'||!g||g.sim) return null;
   m={t:'raid',seed:g.seed>>>0,mapIx:clamp((P&&P.mapIx)|0,0,FIXED_MAPS.length-1),cond:(P&&P.cond==='night')?'night':'day',wx:(g.wx&&g.wx.id)||'',
      iss:g.issDraw?1:0,terms:netUpTerms(termsOn()),merc:(P&&typeof P.merc==='string')?P.merc:'',cfg:netUpCfgDiff(),fp:netUpFp(g)};
+  m.fw=(CFG.fogWar===1)?1:0;   // v35.xx (cw-dmulshow): the host's fog of war, for the party's score multiplier (each window still draws its own fog)
   if(g.arcade) m.arc=1;   // v23.25 (arcade6): an arcade raid word says so; only arcade words gain the field
   NET.up=[]; NET.upAcc=0; NET.upN=0; NET.upSeed=m.seed; NET.upFp=m.fp; NET.sum={}; NET.wps={}; NET.pings=[];
   netEntsInit(g);   // v15.80: every body numbered in list order, the numbers a linked window gives the same bodies
@@ -60766,6 +61262,7 @@ function netUpStart(m){
   for(k in CFG) if(Object.prototype.hasOwnProperty.call(CFG,k)) keepCfg[k]=CFG[k];
   keep={terms:P.terms,merc:P.merc,intel:P.intel,wxPick:P.wxPick};
   NET.upHold=true; NET.upIss=(m.iss===1)?true:((m.iss===0)?false:null);
+  NET.upFw=(m.fw===1||m.fw===0)?m.fw:null;   // v35.xx (cw-dmulshow): the host's fog of war row, read by the score multiplier while this raid is built
   try{
     for(k in DEF) if(Object.prototype.hasOwnProperty.call(DEF,k)) CFG[k]=DEF[k];
     if(m.cfg&&typeof m.cfg==='object') for(k in m.cfg) if(Object.prototype.hasOwnProperty.call(DEF,k)&&(typeof m.cfg[k]==='number'||typeof m.cfg[k]==='string'||typeof m.cfg[k]==='boolean')) CFG[k]=m.cfg[k];
@@ -60776,7 +61273,7 @@ function netUpStart(m){
     if(G&&!G.sim) G.terms=P.terms.slice();   // v20.31 (H27): the raid keeps the Terms it was built with, for the pay, the XP and the panel
   }catch(e){ threw=netErrText(e); }
   finally{
-    NET.upHold=false; NET.upIss=null; pendSeed=null;
+    NET.upHold=false; NET.upIss=null; pendSeed=null; NET.upFw=null;
     for(k in keepCfg) if(Object.prototype.hasOwnProperty.call(keepCfg,k)) CFG[k]=keepCfg[k];
     P.terms=keep.terms; P.merc=keep.merc; P.intel=keep.intel; P.wxPick=keep.wxPick;
   }
@@ -60912,6 +61409,7 @@ function netLateBtn(){
   if(why){ NET.err='Your party went up without you: this window was '+why+'.'; netBroadcast({t:'up',st:'no',why:why}); netRefresh(); return 'busy'; }
   var _lr=netUpStart(m);
   if(m.arc&&_lr==='up'&&typeof ARCADE==='object'&&ARCADE&&ARCADE.on){ ARCADE.wantIn=0; ARCADE.late=0; }   // v23.25 (arcade6): in; a later arcade word is taken because he is in an arcade raid
+  if(m.arc&&_lr==='up'&&typeof ARCADE==='object'&&ARCADE&&ARCADE.on&&ARCADE.role==='p2'){ try{ easyStartAsk(); }catch(_esa){} }   // v35.48 (cloud-p2-easy-card), CLOUD AUDIT 2026-10-28: his 2.28 c, EACH player chooses easy or normal as a run starts. Only arcadeDeploy (player 1) asked, so player 2 never saw the card and kept a yes from the run before
   if(m.late&&typeof G!=='undefined'&&G&&!G.over){ try{ netLateApply(m); }catch(_la){} }   // v17.46: his pick 3, a late join
   return _lr;
 }
@@ -61370,7 +61868,7 @@ function netFxTake(peer,m){
     a=m.b; G.fxBullets=G.fxBullets||[];
     if(G.fxBullets.length<80) G.fxBullets.push({x:+a[0]||0,y:+a[1]||0,vx:+a[2]||0,vy:+a[3]||0,life:Math.min(3,Math.max(0,+a[4]||0)),tint:(/^#[0-9a-fA-F]{3,8}$/).test(a[5])?a[5]:'#ffd48a',owner:1,fx:1,elw:a[6]?1:0}); var _mzw=(a.length>=11&&isFinite(a[8])&&isFinite(a[9])&&isFinite(a[10])&&Math.abs(a[9]-a[0])<120&&Math.abs(a[10]-a[1])<120)?1:0, _fb=G.fxBullets[G.fxBullets.length-1]; if(_mzw&&(+a[8])>0&&_fb&&_fb.fx&&_fb.x===(+a[0]||0)){ var _fv=Math.hypot(_fb.vx,_fb.vy)||1; _fb.mzd=Math.min(80,+a[8]); _fb.sx=_fb.x-_fb.vx/_fv*17; _fb.sy=_fb.y-_fb.vy/_fv*17; } if(_mzw&&_fb&&_fb.fx&&_fb.x===(+a[0]||0)&&!pixOn()) _fb.ly=(a.length>=12&&isFinite(a[11])&&(+a[11])>0&&(+a[11])<60)?+a[11]:20*FIG_SCALE; /* cw-figone: the height the shooter window drew it at (field 12); 20 times the figure size from an older window */ /* v28.xx (cw-thirdsize): his tracer at the gun line of his drawn body, as in his own window */   // v28.xx (cw-muzzlenet), CLOUD HUNT 2026-10-15: a word that carries the drawn muzzle starts the tracer there, as the shooter window does
     if(!G.sim&&a[7]){ try{ spark(+a[0]||0,+a[1]||0,'#fff0c0',12,320); ricoPing(+a[0]||0,+a[1]||0); }catch(_rc){} }   // v28.xx (cw-ricoseen), CLOUD HUNT 2026-10-15: a bounce word: the ricochet spark and ping, as the shooter sees and hears it, no muzzle flash
-    else if(!G.sim){ try{ if(_mzw) gfxShotFx(+a[9],+a[10]+12,Math.atan2(+a[3]||0,+a[2]||0),a[5],pixOn()?1:FIG_SCALE/0.8); /* v28.xx (cw-thirdsize): a teammate flash at the drawn muzzle is sized to his smaller gun */ else gfxShotFx(+a[0]||0,+a[1]||0,Math.atan2(+a[3]||0,+a[2]||0),a[5]); }catch(_gsx){} }   // v23.xx (gfx24): and its muzzle flash
+    else if(!G.sim){ try{ if(_mzw) gfxShotFx(+a[9],+a[10]+12,Math.atan2(+a[3]||0,+a[2]||0),a[5]===ENEMY_TRACER?'#ffc27a':a[5],pixOn()?1:FIG_SCALE/0.8); /* v28.xx (cw-thirdsize): a teammate flash at the drawn muzzle is sized to his smaller gun */ else gfxShotFx(+a[0]||0,+a[1]||0,Math.atan2(+a[3]||0,+a[2]||0),a[5]===ENEMY_TRACER?'#ffc27a':a[5]); }catch(_gsx){} }   // v23.xx (gfx24): and its muzzle flash   // v28.xx (cw-cx-redtracers): the warning tint belongs to the tracer; both packet shapes keep a warm flash
     return 'fx:b';
   }
   if(m.k==='a'&&m.a&&m.a.length>=4){   // v23.xx (forge8): a shock arc the host drew
@@ -61942,7 +62440,7 @@ function netWpMapDraw(ox,oy,sc){
   }
   for(i=0;i<(NET.pings||[]).length;i++){   // live pings show on the map too
     p=NET.pings[i]; px=ox+p.x*sc; py=oy+p.y*sc;
-    colourCueGlyph(ctx,p.dg?'danger':p.pl?'loot':p.w?'target':'place',px,py,Math.max(1,hudRes()),p.dg?'#ff4a3a':p.w?'#ff8a3c':'#6fe0ff'); // v28.xx (cw-cx-minicues): the same ping shapes on the sector map.
+    colourCueGlyph(ctx,p.dg?'danger':p.pl?'loot':p.w?'target':'place',px,py,2*Math.max(1,hudRes()),p.dg?'#ff4a3a':p.w?'#ff8a3c':'#6fe0ff'); // v28.xx (cw-cx-pingmerge): match the minimap 24px ping and dark backing.
   }
   return n;
 }
@@ -62207,6 +62705,30 @@ function netPingUpdate(){
   }
   return NET.pings.length;
 }
+// v28.xx (cw-cx-pingread), critic on his solo ping: 13px orange words covered the target. One readable plate above the body, for every seat.
+// v28.xx (cw-cx-pingmerge): one name for a live pinged target; keep its health and crew marks. The peddler keeps the deal prompt.
+function netPingForEntity(e){
+  if(!e||e.hp<=0||e.kind==='peddler'||!G||G.ents.indexOf(e)<0)return null;
+  var i,p,now=Date.now();
+  for(i=(NET.pings||[]).length-1;i>=0;i--){
+    p=NET.pings[i];
+    if(!p.pl&&now-p.at<=NET_PING_T*1000&&(p.target===e||(p.id&&NET.entMap&&NET.entMap[p.id]===e)))return p;
+  }
+  return null;
+}
+function netPingLabel(lbl,x,y,r){
+  var w, left, by, top;
+  ctx.save();
+  lbl=String(lbl).toLowerCase();
+  ctx.font='600 '+(16*r)+'px '+HUDF;
+  w=Math.min(W-32*r,hudRawW(lbl)+16*r);
+  left=clamp(x-w/2,8*r,W-w-8*r);
+  by=clamp(y<132*r?y+48*r:y-88*r,32*r,H-24*r);top=by-24*r;
+  hudPanel(left,top,w,32*r,.85,1);
+  ctx.textAlign='center';ctx.textBaseline='alphabetic';ctx.fillStyle=UIC.tx_1;
+  ctx.fillText(lbl,left+w/2,by);
+  ctx.restore();
+}
 function netPingDraw(){
   netPingUpdate();
   netPilePrune();   // v32.xx (cw-droppings)
@@ -62224,8 +62746,11 @@ function netPingDraw(){
     ctx.beginPath(); ctx.moveTo(x,y-LH(12)*r); ctx.lineTo(x+LH(9)*r,y); ctx.lineTo(x,y+LH(12)*r); ctx.lineTo(x-LH(9)*r,y); ctx.closePath(); ctx.stroke();
     ctx.restore();
     nm=(p.s===NET.seat)?'YOU':(netSeatName(p.s)||'PILLAGER');
-    lbl=nm+(p.w?('  \u00b7  '+p.w):(p.dg?'  \u00b7  DANGER':''))+'  \u00b7  '+((G&&G.player)?metres(dist(G.player,p)):0)+'m';   // v22.xx (R43): 120m   // v22.xx (R49): no colon labels; NAME, what, distance
-    ctx.font=hudFS(TYPE.micro); ctx.textAlign='center'; ctx.fillStyle=c; hudText(lbl,clamp(x,LH(60)*r,W-LH(60)*r),y-LH(16)*r); ctx.textAlign='left';
+    // v28.xx (cw-cx-pingmerge): retain the specific target identity and its running/friendly detail in the one readable plate.
+    e=p.target||(p.id&&NET.entMap?NET.entMap[p.id]:null);
+    var pingName=(e&&netPingForEntity(e)&&e.name)?e.name+(e.state==='extract'?' [running]':(e._plateTag||'')):p.w;
+    lbl=nm+(pingName?('  \u00b7  '+pingName):(p.dg?'  \u00b7  DANGER':''))+'  \u00b7  '+((G&&G.player)?metres(dist(G.player,p)):0)+'m';
+    netPingLabel(lbl,x,y,r);   // v28.xx (cw-cx-pingread): 16px bone text, shared plate and a clear gap above the target.
     n++;
   }
   return n;
@@ -62910,7 +63435,7 @@ function netEntFlags(e){
 }
 function netEntRow(e){
   var k=NET_ENT_KINDS.indexOf(e.kind), s=NET_ENT_STATES.indexOf(e.state), mh=e.maxhp||1;
-  return [e.nid,(k<0)?0:k,Math.round(e.x),Math.round(e.y),+(+e.face||0).toFixed(2),(s<0)?0:s,Math.ceil(clamp(e.hp/mh,0,1)*20),netEntFlags(e),(e.burnT>0?1:0)|((e.downed&&e.getUp>0)?2:0)];  // v28.28 (cloud-coop-getup-vs-burn), CLOUD HUNT 2026-10-15: bit 8388608 is both burning and getting up, so the row carries the two apart
+  return [e.nid,(k<0)?0:k,Math.round(e.x),Math.round(e.y),+(+e.face||0).toFixed(2),(s<0)?0:s,Math.ceil(clamp(e.hp/mh,0,1)*20),netEntFlags(e),(e.burnT>0?1:0)|((e.downed&&e.getUp>0)?2:0),animHitAngle(e)];  // v28.28 (cloud-coop-getup-vs-burn), CLOUD HUNT 2026-10-15: bit 8388608 is both burning and getting up, so the row carries the two apart // v28.xx (cw-cx-hitjolt): optional tenth column is a cosmetic bearing; zero is valid
 }
 // A body that arrived after the build: what a linked window needs to draw and name it.
 function netEntGunWord(e){ var m=netEntNewWord(e); delete m.idn; delete m.lx; delete m.ly; return m; }  // v28.39 (cloud-coop-pillager-gun-sync), CLOUD HUNT 2026-10-15: a known body took another gun: the new word without his name tag, so player 2 keeps his place, look and state and takes the gun
@@ -63024,6 +63549,8 @@ function netEntsApply(peer,m){
     e.state=NET_ENT_STATES[st]||'patrol';
     e.hp=Math.round(clamp(hb,0,20)/20*(e.maxhp||1));
     netEntFlagsApply(e,fl,(typeof r[8]==='number'&&isFinite(r[8]))?(r[8]|0):undefined);  // v28.28 (cloud-coop-getup-vs-burn), CLOUD HUNT 2026-10-15: the burn and get-up apart
+    // v28.xx (cw-cx-hitjolt): every viewer takes the host bearing, with old nine-column snapshots still accepted.
+    if((fl&64)&&typeof r[9]==='number'&&isFinite(r[9])) animHitFrom(e,Math.cos(r[9]),Math.sin(r[9]));
     n++;
   }
   return 'ents';
@@ -63203,6 +63730,9 @@ function netShotTake(peer,m){
   if(_nel==='acid'&&typeof m.ar==='number'&&m.ar>=1&&m.ar<=1.5&&!m.wk&&e.armor>0) elemShred(e,d/m.ar);
   if(typeof m.ar==='number'&&m.ar>=1&&m.ar<=1.5&&!m.wk&&e.armor>0){ var _nab=d/m.ar, _nsk=elemAbsorb(e), _nea=Math.min(e.armor,_nab*_nsk); e.armor-=_nea; d=(_nab-_nea)*m.ar; }   // v22.04 (K16): armour first, then the back shot bonus, as a host round
   e.hp-=(m.sk?affixSoak(e,d):d); e.hitT=.16; e.pHitT=.3; e.pHitSeat=s; hitStopOn(e,m.hs===1?HITSTOP_DMG:0); /*v28.xx (cw-nearmiss), CLOUD HUNT 2026-10-15: no suppHit here: a gun round already counted by its sup word as it reached him, and the host own frag, fists, finisher, air strike and screen clear never pin*/ /*v28.xx (cw-hitstoprule), CLOUD HUNT 2026-10-15: hit stop by the host rule, not by the multiplied number*/   // v26.xx (ai22): and player 2's rounds that land pin him as yours do   // v17.31, co-op hunt 2026-09-28: and whose round it was, so a man who made peace turned by it charges that seat   // v28.xx (cw-blastshield), CLOUD HUNT 2026-10-15: only a round soaks on the shield (v26.72), as on the host
+  // v28.xx (cw-cx-hitjolt): the partner shot already carries its bearing; older blow words can use the shooter position.
+  if(m.sk&&typeof m.a==='number'&&isFinite(m.a)) animHitFrom(e,Math.cos(m.a),Math.sin(m.a));
+  else animHitFrom(e,e.x-sx,e.y-sy);
   /* v28.xx (cw-blowround), CLOUD HUNT 2026-10-15: only a gun round (sk) rolls him out of the line; player 2 crowbar, frag, finisher and air strike do not, as the host own blows do not */
   if(m.sk&&CFG.raiderRoll!==0&&e.kind==='raider'&&!e.downed&&!e.finished&&!e.roll&&!(e.rollCd>0)&&e.hp>0&&typeof m.a==='number'&&isFinite(m.a)&&
      dist(e,{x:sx,y:sy})<(CFG.raiderRollEar===undefined?900:CFG.raiderRollEar)){
@@ -64399,7 +64929,8 @@ function arcadeKeycardDrop(e){
 // keycard door, a vault gun in one box, on their own side stream so the seeded raid is unchanged), the same Vault Keycard in an
 // ordinary box outside each, and the same keycard drops from the fight (an elite or the boss while a vault is shut, or every 12th
 // kill with no keycard left in the world, the host only). Opening a vault pays VAULT OPEN +$500 into the CAREER score of the opener.
-function arcadeVaultPay(R){
+function arcadeVaultPay(R){ return arcadeVaultPayN(R,spMul(ARCADE_VAULT_PAY)); }   // v35.xx (cw-diffmul): the vault pay with the settings multiplier in
+function arcadeVaultPayN(R,ARCADE_VAULT_PAY){   // v35.xx (cw-diffmul): the parameter stands in for the constant, so every line below pays and shows the figure paid
   if(G&&G.career&&G.cs&&R){
     G.cs.s=(G.cs.s|0)+ARCADE_VAULT_PAY; csTally('vault',ARCADE_VAULT_PAY);
     try{ label(R.doorX,R.doorY-30,'+'+arcadeCr(ARCADE_VAULT_PAY),'#ffc04a',0,true); }catch(_cl){}
@@ -64591,6 +65122,7 @@ function careerPostBuild(g){
   try{ arcadeVaults(g); }catch(_cv){}   // v24.xx (careervault): the two DEMO vaults (side stream)
   try{ arcadeKeycards(g); }catch(_ck){}   // v24.xx (careervault): a keycard per vault in a box outside (side stream)
   g.cs={s:0,k:0,streak:null,waveT:0,waveN:0};
+  g.dmul=diffMulOf(CFG,1);   // v35.xx (cw-diffmul): the settings multiplier rows this raid was built with (a linked window builds under the host word)
   return true;
 }
 // Run from startRaid right after the build, in every window that builds the arcade raid, so both builds stay identical.
@@ -64598,6 +65130,7 @@ function arcadePostBuild(g){
   if(!g||g.sim) return false;
   var i, e;
   g.arcade=1; g.raidLen=g.timeLeft=ARCADE_RAID_SEC;   // v23.6x (feat0e): the 10 minute DEMO clock
+  g.dmul=diffMulOf(CFG,1);   // v35.xx (cw-diffmul): the settings multiplier rows, as for a career raid (his rule: the demo and career play the same)
   for(i=0;i<(g.zones||[]).length;i++) g.zones[i].closeAt=undefined;
   for(i=g.ents.length-1;i>=0;i--){ e=g.ents[i]; if(e&&(e.kind==='peddler'||e.kind==='stray')) g.ents.splice(i,1); }
   try{ arcadeVaults(g); }catch(_av){}   // v23.9x (feat4b): two strongrooms sealed into vaults (side stream)
@@ -64795,7 +65328,8 @@ function arcadeExtractEnd(){
   if(!ARCADE.solo&&ARCADE.xOut!=='p'&&typeof arcadeMateLive==='function'&&arcadeMateLive()){
     var _xi, _xz;
     ARCADE.ext=(ARCADE.ext|0)+1; ARCADE.xOut='h';
-    for(_xi=0;_xi<(G.zones||[]).length;_xi++){ _xz=G.zones[_xi]; if(!_xz) continue; if(dist(p,_xz)<_xz.r&&typeof _xz.hold==='number'){ _xz.beaconT=null; _xz.hold=null; if(_xz===G.active){ G.beaconT=null; G.shipHold=null; } } _xz.pullT=null; _xz.boardT=0; _xz.pullFloor=0; }
+    // v28.xx (cw-cx-partnership): his Q65, "In 2P the run ends when both players are out." Keep the shared ship and its remaining time; clear only this window's boarding progress.
+    for(_xi=0;_xi<(G.zones||[]).length;_xi++){ _xz=G.zones[_xi]; if(!_xz) continue; _xz.pullT=null; _xz.boardT=0; _xz.pullFloor=0; }
     p.specOut=1; p.vx=0; p.vy=0; keys={};
     try{ say('Extracted','ally',{sub:'Player 2 is still out',key:'arcxout'}); }catch(_xs){}
     try{ arcadeScSend(); }catch(_xc){}
@@ -65043,7 +65577,7 @@ function flowDirFired(D,amb,made){
 // v26.xx (flow2), HIS YES (2026-10-14) to suggestion 5: "no codes but a air strike would be cool, it should be something you have to build up by
 // doing so much damage". THE AIR STRIKE. A METER fills from the damage YOU deal: every frame (before the bodies are cleared, so a killing blow
 // is seen) the tick reads each hostile body's health, and a drop while the body carries your hit mark (pHitT, which every round, charge,
-// strike of the crowbar and shock of yours sets for a third of a second) is damage dealt, never more than the health it had. AIR.need (1,500)
+// strike of the crowbar and shock of yours sets for a third of a second) is damage dealt, never more than the health it had. AIR.need (3,000; v28.xx cw-airstrike3000, HIS ORDER 2026-10-28: "make it 3000 damage to unlock an airstrike instead of 1500")
 // fills it; the callout says AIR STRIKE READY, PRESS G. G aims it: the gun goes quiet (the trigger yields, as with the wheel), a dashed red
 // ring follows the cursor out to AIR.reach (1,100) from you, LMB calls it on that spot, G or opening the map, backpack or wheel cancels. AIR STRIKE
 // INBOUND, then 1.5 s later six blasts (AIR.R 105 wide each, one every 0.2 s) walk over the ring (150 across): each deals up to 212 to every
@@ -65051,7 +65585,7 @@ function flowDirFired(D,amb,made){
 // never calls damagePlayer, never reaches a teammate, your hire, a friendly pillager or a peaceful bystander, the Peddler or the Survivor. The
 // strike's own damage never refills the meter. The meter starts empty each raid and is spent by the call. DEMO and CAREER are the same. The
 // blasts are placed with Math.random like the wave director and nothing draws from the seeded stream.
-var AIR={need:1500,R:105,dmg:170,delay:1.5,n:6,gap:0.2,spread:150,reach:1100,aimMin:0.15};
+var AIR={need:3000,R:105,dmg:170,delay:1.5,n:6,gap:0.2,spread:150,reach:1100,aimMin:0.15};
 function airS(){ var S=flowS(); if(!S.air) S.air={m:0,aim:0,aimT:0,prev:0,sk:[],used:0,dealt:0,rdy:0}; return S.air; }
 function airReady(){ return airS().m>=AIR.need; }
 function airSide(e){ return !!e&&!e.neutral&&e.kind!=='peddler'&&e.kind!=='stray'&&!e.merc&&!e.friendlyPC&&!e.friendly&&!e.hire&&!(e.kind==='raider'&&!e.hostile); }
@@ -65249,6 +65783,7 @@ function goalProg(id,S){
 function flowChip(n,head,sub){
   var p=G.player;
   if(!(n>0)) return 0;
+  n=spMul(n);   // v35.xx (cw-diffmul): the settings multiplier
   if(G.arcade&&typeof ARCADE==='object'&&ARCADE&&ARCADE.on){ ARCADE.mine=(ARCADE.mine|0)+n; try{ arcadeScSend(); }catch(_cs1){} }
   else if(G.career&&G.cs){ G.cs.s=(G.cs.s|0)+n; csTally(/^GOAL/.test(head)?'goal':(/^BOUNTY/.test(head)?'bounty':'strong'),n); }
   else return 0;
@@ -66967,7 +67502,38 @@ function arcadeCullTick(dt){
   return n;
 }
 function arcadeRunId(){ ARCADE.runN=(ARCADE.runN|0)+1; return 'r'+Date.now().toString(36)+'_'+ARCADE.runN; }
-function arcadeKillPts(k,el,boss){ var n=boss?ARCADE_BOSSPTS:(ARCADE_KILLPTS[k]|0); return el?n*(el>1?el:2):n; }   // v26.xx (ai25): an affixed elite passes 3, a plain elite 2
+// v35.xx (cw-diffmul), HIS ORDER (2026-10-28): "When the player makes the game harder in any way in the settings (eg number of enemies, number of pillagers, damage
+// taken, etc, that should give a score multiplier (maybe an additional 5% for each tier/level) and that should be indicated to the player. Super hot off should be
+// considered harder and should also give the multiplier. All these multipliers should stack."
+// THE SETTINGS SCORE MULTIPLIER. The Settings rows that make a raid harder, read from the dials they write (a dial moved on the tuning console counts by where it
+// stands, and nothing new is saved): pillager bots (Standard 1 step, Many 2, over Few), machines (Standard 1, Many 2, over Few), how hard they hit (Hardened 1,
+// Brutal 2, over Standard), heat when you call for extraction (Standard 1, Heavy 2, over Light) and superhot (off is 1 step over on). Each step pays its row's
+// DMUL_STEP (5%, one constant a row, to tune) and the rows multiply, so the hardest game pays x1.54. A row set easier than its default pays no less. Not counted:
+// raid length (a career and a demo raid run their own 10 minute clock, so the row changes nothing there), how much is out there (it is worth only, read when
+// sold, so lean for one raid would cost nothing) and shared sight (each window's own view). Fog of war pays a step since his addition of 10-28 (see below).
+// A raid takes the rows from the dials it was built with (G.dmul at careerPostBuild and arcadePostBuild, so a linked window builds with the host's dials, as the
+// raid word builds the raid), superhot read live (the host word rules it on a linked window). spMul puts it on sp earned: kills (arcadeKillPts, before the
+// streak), style medals (scoreBonus), goals, bounty and strongholds (flowChip) and vaults. Never on money, the haul, loot pickups or the loot pot.
+// DMUL_ON 0 (the test fixture) pays x1, so the older checks keep their figures.
+// v35.xx (cw-dmulshow), HIS ADDITION (2026-10-28): "Fog of war should also be one of the multiplier items". Fog of war on is one step (fog). Each window
+// draws its own fog, so the raid word carries the host's (fw) and a linked window takes the host's at the build (NET.upFw while NET.upHold), as for every row.
+var DMUL_ON=1, DMUL_STEP={raiders:0.05,robots:0.05,hits:0.05,ext:0.05,fog:0.05,superhot:0.05};
+function diffTiers(c){
+  c=c||CFG||{};
+  var n=+c.nRaider||0, s=+c.nSentry||0, d=+c.eDmg||0, v=(c.siegeVol===undefined)?1:(+c.siegeVol||0);
+  var fw=(typeof NET==='object'&&NET&&NET.upHold&&(NET.upFw===0||NET.upFw===1))?NET.upFw:((c.fogWar===1)?1:0);   // v35.xx (cw-dmulshow): fog of war, the host's while a linked window builds the raid
+  return {raiders:n>=15?2:(n>=10?1:0), robots:s>=28?2:(s>=20?1:0), hits:d>=1.4?2:(d>=1.2?1:0), ext:v>=1.4?2:(v>=1?1:0), fog:fw, superhot:c.superhot?0:1};
+}
+// the product of the rows (noSh: all but superhot, which a raid reads live)
+function diffMulOf(c,noSh){ var t=diffTiers(c), m=1, k; for(k in DMUL_STEP) if(!(noSh&&k==='superhot')) m*=1+DMUL_STEP[k]*(t[k]|0); return Math.round(m*1e4)/1e4; }
+// the multiplier now, to two places: this raid's rows and superhot as it stands; outside a raid, the dials as they stand
+function diffMul(){
+  if(!DMUL_ON) return 1;
+  var b=(typeof G!=='undefined'&&G&&!G.sim&&typeof G.dmul==='number')?G.dmul:diffMulOf(CFG,1), sh=(CFG&&CFG.superhot)?1:1+DMUL_STEP.superhot;
+  return Math.max(1,Math.round(b*sh*100)/100);
+}
+function spMul(n){ var m=diffMul(); return (n>0&&m>1)?Math.round(n*m):n; }
+function arcadeKillPts(k,el,boss){ var n=boss?ARCADE_BOSSPTS:(ARCADE_KILLPTS[k]|0); return spMul(el?n*(el>1?el:2):n); }   // v26.xx (ai25): an affixed elite passes 3, a plain elite 2. v35.xx (cw-diffmul): with the settings multiplier in
 // v23.31, HIS ORDER (2026-10-11), build 10 of 20 (arcade10): EASIER FOR NEWCOMERS. Every kill this window credits to its own player
 // refunds half a magazine of the gun in his hands into his reserve, and every 3rd kill of the run adds a Bandage to the backpack
 // while he carries fewer than 5 heals (the pickup stack shows it as KILL BONUS). The drop already gives 6 magazines and full
@@ -67158,6 +67724,7 @@ function arcadeBmDraw(c,o,counting){
 // neither it adds nothing and returns 0. Live play only; no seeded draw.
 function scoreBonus(n,x,y,txt){
   if(!G||G.sim||G.over||!(n>0)) return 0;
+  n=spMul(n);   // v35.xx (cw-diffmul): the settings multiplier
   if(G.arcade&&typeof ARCADE==='object'&&ARCADE&&ARCADE.on){ ARCADE.mine=(ARCADE.mine|0)+n; try{ arcadeScSend(); }catch(_e){} }
   else if(G.career&&G.cs){ G.cs.s=(G.cs.s|0)+n; csTally('style',n); }
   else return 0;
@@ -67248,7 +67815,7 @@ function styTone(notes){
 // one medal: the figure into the score, the plate over the cursor ring, the note. Returns the figure paid.
 function styMedal(txt,pts,x,y){
   var S=styS();
-  if(!scoreBonus(pts,x,y-12,'')) return 0;
+  pts=scoreBonus(pts,x,y-12,''); if(!pts) return 0;   // v35.xx (cw-diffmul): the figure paid, settings multiplier in, for the plate and the feed
   try{ feedMedal(txt,pts); }catch(_fmd){}   // v27.24 (feed1): the medal and its figure in the feed
   S.pops.push({txt:txt,pts:pts,t:+G.t||0});
   if(S.pops.length>8) S.pops.shift();
@@ -67858,41 +68425,40 @@ function arcadeScTake(m){
   return 'arcsc';
 }
 // The clock spot in the arcade: TEAM SCORE over the sum, YOU and the teammate score beside it. y is the clock line, z its scale.
+// v35.xx (cw-dmulshow), his order of 2026-10-28: the settings multiplier this raid pays, small and amber to the right of the score label, in the font the label
+// was drawn in. Nothing at x1.00. Returns the tag text or ''.
+function dmulTag(cx,y,lw,z){
+  var m=diffMul(), t;
+  if(!(m>1)) return '';
+  t='x'+m.toFixed(2);
+  ctx.save(); ctx.textAlign='left'; ctx.fillStyle='#ffc04a'; hudText(t,Math.round(cx+lw/2+8*z),y); ctx.restore();
+  return t;
+}
+function dmulTagW(lw,z){ var m=diffMul(); if(!(m>1)) return 0; return lw/2+8*z+ctx.measureText('x'+m.toFixed(2)).width; }
 function arcadeScoreHud(y,z){
+  // v28.xx (cw-cx-hudtvread): readable score labels and a real top inset in both windows. Score, streak and final-minute clock rules stay the same.
   if(!G||!(G.arcade||G.career)||!ctx) return;
-  var cr=!G.arcade, solo=cr||!!ARCADE.solo;   // v24.xx (feat0h2): a CAREER raid reads its own score, one player to a window
-  var cx=Math.round(W/2), mine=Math.max(0,cr?((G.cs&&G.cs.s)|0):(ARCADE.mine|0)), mate=cr?0:Math.max(0,ARCADE.mate|0), nm=arcadeCr(mine+mate);   // v23.56 (arcade31): in credits
-  var fb=FSz(TYPE.title,z), fs=FSz(TYPE.micro,z), mh=/([\d.]+)px/.exec(fb), h=mh?+mh[1]:20, w, gx, yL=y+Math.round(10*z), _bot;   // v28.xx (cw-scoretop): the whole block rides 10 pixels lower (the label) and 14 (the number) so the SCORE label is not clipped at the top edge (the critic, 10-19)
-  // v25.xx (topmid), HIS NOTE 2026-10-13: "text at top mid iscolliding". The SCORE label sat flush on the number under it (1 pixel of
-  // ink over it at 1080p), so the number, the clock under it and everything below go down 4 pixels (times the screen scale) and the
-  // label stays at the top edge. The function returns the bottom of its ink, for the compass stack to start under.
-  y=y+Math.round(14*z); _bot=Math.round(y+h*0.22);
-  ctx.save(); ctx.textAlign='center';
-  // v28.xx (cw-scoreplate), the critic (2026-10-19): "the score cluster has no plate". One plate (the HUD plate, 78 percent) hangs from the top edge behind the label, the number and the clock, so the numbers read on any floor; it is as wide as the number plus the streak and the teammate score beside it.
-  var _sx0=arcadeStreakLive(), _cl0=raidClockOn(), _fin0=(_cl0&&Math.ceil(Math.max(0,+G.timeLeft||0))<=CLOCK_RED), _pw0, _ph0;
-  ctx.font=fb; _pw0=Math.max(Math.round(80*z),Math.round(ctx.measureText(nm).width/2+22*z+(solo?0:100*z)+(_sx0>1?40*z:0))); _ph0=Math.round(y+h*(_cl0?(_fin0?1.42:1.22):0.35));
-  hudPlate(cx-_pw0,-Math.round(8*z),_pw0*2,_ph0+Math.round(8*z),null,HUDC.plate); SCOREBOX.g=G; SCOREBOX.x=cx-_pw0; SCOREBOX.y=0; SCOREBOX.w=_pw0*2; SCOREBOX.h=_ph0;   /* v31.xx (cw-trcol2): where the plate is, for the world labels that keep clear of it */
-  ctx.font=fs; ctx.fillStyle=UIC.tx_2; hudText(solo?'SCORE':'TEAM SCORE',cx,Math.round(yL-h*0.80));   // v23.54 (arcade30): SCORE in the 1 player arcade; v28.xx (cw-scoretop): the label is quiet grey (amber is for a warning), the number is the hero
-  ctx.font=fb; ctx.fillStyle='#e8eef2'; hudText(nm,cx,y); w=ctx.measureText(nm).width;
-  if(raidClockOn()){   // v23.6x (feat0e): the DEMO clock under the score, red under 45 s like the raid clock
-    var _ct=Math.ceil(Math.max(0,+G.timeLeft||0)), _cm=Math.floor(_ct/60), _cs=_ct%60;
-    // v27.xx (clockbig), HIS ANSWER 14 (2026-10-13): "the countdown clock needs to be bigger". The clock under the score was the smallest type on the HUD (13 pixels at
-                    // 1080p, 19 in the last minute). It is the head size now (19.5) and the title size, the same as the score, in the last minute (26), and sits a little lower to
-                    // make room. DEMO and CAREER draw this one block.
-                    var _cfin=(_ct<=CLOCK_RED), _cy=Math.round(y+h*(_cfin?1.14:0.92)), _apo=(_cfin&&_ct>0)?clockPopIn(cx,_cy-h*0.3,G.timeLeft):false;   // v23.xx (his answer 19): the final minute, red, bigger and popping
-    ctx.font=_cfin?FSz(TYPE.title,z):FSz(TYPE.head,z); ctx.fillStyle=_cfin?'#ff5a4a':'#cdd6dd'; hudText(_cm+':'+(_cs<10?'0':'')+_cs,cx,_cy); if(_apo) ctx.restore();
-    _bot=Math.max(_bot,Math.round(_cy+(+((/([\d.]+)px/.exec(ctx.font)||[0,14])[1]))*0.25));   // v25.xx (topmid): the bottom of the clock row
-  }
-  gx=Math.round(cx+w/2+10*z);
-  ctx.font=fs; ctx.textAlign='left'; ctx.fillStyle='#cdd6dd';
-  if(!solo){   // v23.54 (arcade30): no YOU and P2 split in the 1 player arcade
-    hudText('YOU '+arcadeCr(mine),gx,Math.round(y-h*0.40));
-    hudText((ARCADE.role==='p2'?'P1 ':'P2 ')+arcadeCr(mate),gx,Math.round(y+h*0.15));
-  }
-  var _sx=arcadeStreakLive();   // v23.38 (arcade15): the live streak multiplier, left of the score
-  if(_sx>1){ ctx.font=fb; ctx.textAlign='right'; ctx.fillStyle='#ffc04a'; hudText('x'+_sx,Math.round(cx-w/2-10*z),y); }
-  ctx.restore();
-  return _bot;   // v25.xx (topmid): where the block ends, for the compass under it
+  var cr=!G.arcade,solo=cr||!!ARCADE.solo,cx=Math.round(W/2),mine=Math.max(0,cr?((G.cs&&G.cs.s)|0):(ARCADE.mine|0)),mate=cr?0:Math.max(0,ARCADE.mate|0),nm=arcadeCr(mine+mate),
+      fb=FSz(TYPE.title,z),fs=FSz(TYPE.label,z),h=parseFloat((/([\d.]+)px/.exec(fb)||[0,20])[1]),lh=parseFloat((/([\d.]+)px/.exec(fs)||[0,16])[1]),
+      clock=raidClockOn(),ct=Math.ceil(Math.max(0,+G.timeLeft||0)),fin=ct<=CLOCK_RED,fc=FSz(fin?TYPE.title:TYPE.head,z),ch=parseFloat((/([\d.]+)px/.exec(fc)||[0,20])[1]),
+      top=Math.round(16*z),pad=Math.round(12*z),labelY=top+pad+lh,scoreY=labelY+Math.round(8*z)+h,clockY=scoreY+Math.round(8*z)+ch,
+      sx=arcadeStreakLive(),w,gx,pw,bot,side=0,sw=0,apo=false;
+  ctx.save();ctx.textAlign='center';
+  ctx.font=fb;w=ctx.measureText(nm).width;
+  if(!solo){ctx.font=fs;side=Math.max(ctx.measureText('YOU '+arcadeCr(mine)).width,ctx.measureText((ARCADE.role==='p2'?'P1 ':'P2 ')+arcadeCr(mate)).width)+Math.round(24*z);}
+  if(sx>1){ctx.font=fb;sw=ctx.measureText('x'+sx).width+Math.round(10*z);}
+  pw=Math.ceil(Math.max(100*z,w/2+pad+Math.max(side,sw)));
+  ctx.font=fs; pw=Math.max(pw,Math.ceil(dmulTagW(ctx.measureText(solo?'SCORE':'TEAM SCORE').width,z)+pad));   // v35.xx (cw-dmulshow): room for the multiplier tag
+  bot=Math.ceil((clock?clockY+ch*.25:scoreY+h*.25)+pad);
+  hudPlate(cx-pw,top,pw*2,bot-top,null,HUDC.plate);
+  SCOREBOX.g=G;SCOREBOX.x=cx-pw;SCOREBOX.y=top;SCOREBOX.w=pw*2;SCOREBOX.h=bot-top;
+  ctx.font=fs;ctx.fillStyle=UIC.tx_2;hudText(solo?'SCORE':'TEAM SCORE',cx,labelY);
+  dmulTag(cx,labelY,ctx.measureText(solo?'SCORE':'TEAM SCORE').width,z);   // v35.xx (cw-dmulshow): the settings multiplier beside the label
+  ctx.font=fb;ctx.fillStyle=UIC.tx_1;hudText(nm,cx,scoreY);
+  if(clock){apo=(fin&&ct>0)?clockPopIn(cx,clockY-ch*.3,G.timeLeft):false;ctx.font=fc;ctx.fillStyle=fin?'#ff5a4a':'#cdd6dd';hudText(Math.floor(ct/60)+':'+(ct%60<10?'0':'')+(ct%60),cx,clockY);if(apo)ctx.restore();}
+  if(!solo){gx=Math.round(cx+w/2+24*z);ctx.font=fs;ctx.textAlign='left';ctx.fillStyle=UIC.tx_2;hudText('YOU '+arcadeCr(mine),gx,Math.round(scoreY-lh*.5));hudText((ARCADE.role==='p2'?'P1 ':'P2 ')+arcadeCr(mate),gx,Math.round(scoreY+lh*.75));}
+  if(sx>1){ctx.font=fb;ctx.textAlign='right';ctx.fillStyle='#ffc04a';hudText('x'+sx,Math.round(cx-w/2-10*z),scoreY);}
+  ctx.restore();return bot;
 }
 // v23.35, HIS ORDER (2026-10-11), build 13 of 20 (arcade13): THE ARCADE HUD. A walk-up player needs the score, the way out and when he
 // drops back in, and nothing else. In the arcade the CONDITIONS panel, the CURRENT PILLAGERS board, the notoriety stamp and the
@@ -68665,6 +69231,7 @@ function arcadeRunEnd(why){
   if(why==='dead'||why==='burn'||why==='menu'){ ARCADE.mine=Math.floor(Math.max(0,ARCADE.mine|0)/2); ARCADE.mate=Math.floor(Math.max(0,ARCADE.mate|0)/2); }  var host=(ARCADE.role==='host'), me={s:Math.max(0,ARCADE.mine|0),k:ARCADE.kills|0,x:ARCADE.ext|0,d:ARCADE.deaths|0},
       mt=((ARCADE.mate|0)>0||(ARCADE.mateK|0)>0)?{s:Math.max(0,ARCADE.mate|0),k:ARCADE.mateK|0,x:ARCADE.mateX|0,d:-1}:null;
   ARCADE.over={at:Date.now(),why:String(why||''),team:arcadeTeam(),p1:host?me:mt,p2:host?mt:me};
+  try{ ARCADE.over.dm=diffMul(); }catch(_dm){}   // v35.xx (cw-dmulshow): the settings multiplier the run paid, for the card
   try{ outMusic(why==='extract'?'win':((why==='dead'||why==='burn')?'kia':'')); }catch(_om){}   // v26.xx (outcomemusic): the RUN OVER card of an extraction run, a death or a burn plays its piece; an idle out or END RUN none
   try{ ARCADE.over.bm=arcadeBmFinal(); }catch(_bmf){}   // v23.xx (his answer 20): the best moments of the run
   var _bw=false; try{ _bw=arcadeBoardPut(); }catch(_bp){}   // v23.41 (arcade18): the final board row
@@ -68716,6 +69283,7 @@ function arcadeOverMirror(m){
   me={s:Math.max(0,ARCADE.mine|0),k:ARCADE.kills|0,x:ARCADE.ext|0,d:ARCADE.deaths|0};
   mt=((ARCADE.mate|0)>0||(ARCADE.mateK|0)>0)?{s:Math.max(0,ARCADE.mate|0),k:ARCADE.mateK|0,x:ARCADE.mateX|0,d:-1}:null;
   ARCADE.over={at:Date.now(),why:(m&&m.x2)?'extract':((m&&m.ko)?'dead':((m&&m.hf)?'menu':'')),team:arcadeTeam(),p1:mt,p2:me};
+  try{ ARCADE.over.dm=diffMul(); }catch(_dm){}   // v35.xx (cw-dmulshow): the settings multiplier, as the host card has it
   try{ ARCADE.over.bm=arcadeBmFinal(); }catch(_bmf){}
   return ARCADE.over;
 }
@@ -68817,6 +69385,7 @@ function arcadeOverSync(){
     c.textContent=''; c.setAttribute('data-at',sig);
     ln=oc?(ARCADE.solo?[['aoh','RUN OVER'],['aos','SCORE '+arcadeCr(o.team)],['aor',arcadeOverRow('YOU',o.p1)]]   // v23.54 (arcade30): the 1 player arcade, one row; v23.56 (arcade31): in credits
       :[['aoh','RUN OVER'],['aos','TEAM SCORE '+arcadeCr(o.team)],['aor',arcadeOverRow('P1',o.p1)],['aor',arcadeOverRow('P2',o.p2)]]):[];
+    if(oc&&o.dm>1) ln.splice(1,0,['aoh','settings x'+(+o.dm).toFixed(2)]);   // v35.xx (cw-dmulfix): the settings multiplier, once, a heading line under extracted x2 (the aor rows are hidden on the restyled card)
     if(oc&&o.why==='extract') ln.splice(1,0,['aoh','EXTRACTED x2']); else if(oc&&(o.why==='dead'||o.why==='burn')) ln.splice(1,0,['aoh','KIA -50%']); else if(oc&&o.why==='menu') ln.splice(1,0,['aoh','ended early -50%']);   // v24.xx (feat0g): the run ended on an extraction
     for(i=0;i<ln.length;i++){ if(!ln[i][1]) continue; el=document.createElement('div'); el.className=ln[i][0]; el.textContent=ln[i][1];
       if(ln[i][0]==='aoh'&&/ -50%$/.test(ln[i][1])){ el.textContent=ln[i][1].replace(/-50%$/,''); var _aw=document.createElement('span'); _aw.className='aow'; _aw.textContent='-50%'; el.appendChild(_aw); }   // v31.xx (cw-partylook8): the penalty in warn amber
@@ -71948,7 +72517,7 @@ var GAMEOPTS=[
      {n:'OFF',  cfg:{fxInt:0}}
    ], def:0},
   {k:'hudTv', label:'HUD SIZE',
-   hint:'Large for TV: bigger raid text for a screen across the room.',
+   hint:'Large for tv: bigger raid panels, minimap and belt.', // v28.xx (cw-cx-hudtv): say what the existing choice now changes.
    opts:[
      {n:'STANDARD',     cfg:{hudTv:0}},
      {n:'LARGE FOR TV', cfg:{hudTv:1}}
@@ -72337,6 +72906,13 @@ function diffRowHtml(){
   return '<div class="row"><div style="flex:1"><b>difficulty</b><div class="hint">'+(d==='new player'?'softer hits, longer raids, more loot, fewer extras':(d==='main game'?'standard hits, raid length and loot, extras on':'rows changed by hand'))+'</div></div>'+
     '<button id="set_diff" style="padding:6px 12px;min-width:92px'+(d===home?'':';color:var(--amber)')+'">'+d+'</button></div>';
 }
+// v35.xx (cw-dmulshow), HIS ORDER (2026-10-28): "that should give a score multiplier ... and that should be indicated to the player". The score row under
+// difficulty: what the rows as they stand pay (diffMulOf, superhot in), redrawn with every click. No row at x1.00.
+function dmulRowHtml(){
+  var m=DMUL_ON?Math.round(diffMulOf(CFG)*100)/100:1;
+  if(!(m>1)) return '';
+  return '<div class="row" id="set_dmulrow"><div style="flex:1"><b>score</b><div class="hint">harder rows pay more sp</div></div><b id="set_dmul" style="display:inline-flex;justify-content:center;align-items:center;box-sizing:border-box;margin-left:0;min-width:calc(var(--sp-5) * 6);min-height:var(--btn-h-sm);padding:6px 12px;border:1px solid transparent;font-size:var(--fs-body);font-weight:600;letter-spacing:var(--track);color:var(--amber)">x'+m.toFixed(2)+'</b></div>';
+}
 function diffSet(t){
   var i, k, row, oi, o, tk=tunedKeys();
   P.gameOpts=P.gameOpts||{};
@@ -72361,12 +72937,20 @@ function gameOptLive(k){
   }
   return -1;
 }
+// v28.xx (cw-cx-osmotionlabel): the row and the loader share the computer-aware default; light/half is not a manual change.
+function gameOptDefault(row){
+  if(row.k==='shake'||row.k==='fxInt'){
+    try{ if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches) return 1; }catch(_rm){}
+  }
+  return row.def;
+}
 function gameOptIx(k){
   var row=null;
   for(var i=0;i<GAMEOPTS.length;i++) if(GAMEOPTS[i].k===k) row=GAMEOPTS[i];
   if(!row) return 0;
   var v=(P.gameOpts&&P.gameOpts[k]);
-  return (typeof v==='number'&&v>=0&&v<row.opts.length)?v:row.def;
+  if(typeof v==='number'&&v>=0&&v<row.opts.length) return v;
+  return gameOptDefault(row);
 }
 // Writes the chosen options into CFG. Called after the profile loads and again on
 // every change, so the dials and the words can never disagree.
@@ -72566,14 +73150,14 @@ function renderSettingsInner(host){
     var _gr=GAMEOPTS[_gq], _lv=gameOptLive(_gr.k), _gs=(_lv>=0)?_gr.opts[_lv]:null;
     if(_gr.k==='textEdit'&&!DEV_LOCAL) continue;
     if(typeof _gr.show==='function'&&!_gr.show()) continue;   // v26.xx (settings1): a row that does not apply here (no vibration) is not drawn   // v10.49, his note: the editor is his machine only
-    var _dflt=(_lv===_gr.def);
+    var _dflt=(_lv===gameOptDefault(_gr));   // v28.xx (cw-cx-osmotionlabel): OS motion defaults use the ordinary value style.
     var _sk=setSecOf(_gr); _SEC[_sk]=(_SEC[_sk]||'')+'<div class="row"><div style="flex:1"><b>'+_gr.label+'</b>'+
       '<div class="hint">'+_gr.hint+(_gs?'':' Set by hand in the tuning console; click to put a word back on it.')+((G&&!G.over&&!G.sim&&(_gr.k==='raiders'||_gr.k==='robots'))?' In a raid this takes effect from the next raid.':'')+'</div></div>'+
       '<button id="go_'+_gr.k+'" style="padding:6px 12px;min-width:92px'+
       (_dflt?'':';color:var(--amber)')+'">'+(_gs?_gs.n:'CUSTOM')+'</button></div>';
   }
   if(SETSUB==='exp'){ expPage(host,_SEC); return; }   // v32.xx (cw-expmenu1): the experimental page replaces the list until back
-  _SEC['THE RAID']=diffRowHtml()+(_SEC['THE RAID']||'')+expRowHtml();   // v32.xx (cw-expmenu2): the open row ends THE RAID, where the features it switches are; v28.xx (cw-itcheasy): the difficulty row heads it
+  _SEC['THE RAID']=diffRowHtml()+dmulRowHtml()+(_SEC['THE RAID']||'')+expRowHtml();   // v35.xx (cw-dmulshow): the score multiplier row under difficulty   // v32.xx (cw-expmenu2): the open row ends THE RAID, where the features it switches are; v28.xx (cw-itcheasy): the difficulty row heads it
   // v16.50, stability: Settings opens in a raid since v16.45, and three of its buttons do not belong there. PICK FILE opens a
   // file window a controller cannot shut, and a restore or its UNDO reloads the window, which drops a teammate out of the party
   // and loses the run. In a raid they are greyed out; in the Undercroft they work as before.
