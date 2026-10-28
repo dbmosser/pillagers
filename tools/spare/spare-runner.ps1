@@ -807,10 +807,17 @@ function SparePC([string]$n='DESKTOP-82BKOP4'){
 function Write-Status([string]$corpus,[int]$robots){
   $os=Get-CimInstance Win32_OperatingSystem -ErrorAction SilentlyContinue
   $free=if($os){ [math]::Round($os.FreePhysicalMemory/1MB,1) }else{ '?' }
+  # 10-28: the machine's real size and load, read only, so what it runs at once is sized from its numbers. The notes say 16 GB and
+  # 4 threads, but it has read 22 to 25 GB free all week, and every AMD X3D chip has 12 threads or more.
+  $tot=if($os){ [math]::Round($os.TotalVisibleMemorySize/1MB,1) }else{ '?' }
+  $cpu=@(Get-CimInstance Win32_Processor -ErrorAction SilentlyContinue); $thr='?'; $pct='?'; $cpuN='?'
+  if($cpu.Count){ $thr=($cpu | Measure-Object NumberOfLogicalProcessors -Sum).Sum; $lp=($cpu | Measure-Object LoadPercentage -Average).Average; if($null -ne $lp){ $pct=[math]::Round([double]$lp) }
+    $cpuN=(([string]$cpu[0].Name) -replace '[^\x20-\x7E]','' -replace '\w+=','' -replace '\s+',' ').Trim() }
   # 10-21: each pair in its own brackets. PowerShell's comma binds before +, so the old list was ONE string joined with spaces and the
   # VM's import never found epoch= (it read the spare PC as never seen).
   $L=@(('host='+$HostN),('seen='+(Get-Date).ToString('yyyy-MM-dd HH:mm')),('epoch='+(Epoch)),('game='+(G -C $R rev-parse --short=8 HEAD)+' v'+(GameVer)),
-    ('test_run='+$corpus),('robots='+$robots),('ram_free_gb='+$free),('push_ok='+(GetS 'push_ok')),('runner='+$SelfHash.Substring(0,8)),('mode='+$(if($Idle){ 'idle' }else{ 'full' })))
+    ('test_run='+$corpus),('robots='+$robots),('ram_free_gb='+$free),('push_ok='+(GetS 'push_ok')),('runner='+$SelfHash.Substring(0,8)),('mode='+$(if($Idle){ 'idle' }else{ 'full' })),
+    ('ram_total_gb='+$tot),('cpu_threads='+$thr),('cpu_pct='+$pct),('cpu='+$cpuN))
   # SPARE-PRESENCE-PAUSE: on the spare PC, when its pause began (epoch), for whoever reads the status; the VM goes by test_run=paused alone
   if($Idle){ $L+=('spare_pc='+(SparePC)); $L+=('party='+(GetS 'party_ver')+' '+(GetS 'party_head')); $L+=('play8802='+(Play8802)) } else {
     if($corpus -like 'paused*' -and (GetS 'pause_t')){ $L+=('paused_since='+(GetS 'pause_t')) }

@@ -107,7 +107,29 @@ if (seen) fs.writeFileSync(path.join(SP, 'live.txt'), `epoch=${paused ? 0 : seen
 const ago = seen ? Math.round((Date.now() / 1000 - seen) / 60) : -1;
 let line = !seen ? `no spare PC has reported yet (checked ${stamp()})`
   : `${seenHost} last seen ${seenSt.seen || '?'} (${ago} min ago${ago >= 30 ? ', QUIET: the VM runs the tests and robots again' : paused ? ', PAUSED (someone is using it): the VM runs the tests and robots' : ''}), game ${seenSt.game || '?'}, ` +
-    `test run ${seenSt.test_run || '?'}, robots ${seenSt.robots || '?'}, push ${seenSt.push_ok === '0' ? 'FAILING' : 'ok'}`;
+    `test run ${seenSt.test_run || '?'}, robots ${seenSt.robots || '?'}, push ${seenSt.push_ok === '0' ? 'FAILING' : 'ok'}` +
+    (seenSt.cpu_threads ? `, ram ${seenSt.ram_free_gb || '?'} of ${seenSt.ram_total_gb || '?'} GB free, cpu ${seenSt.cpu_pct || '?'}% of ${seenSt.cpu_threads} threads` : '');
+// 10-28: a spare PC that keeps reporting in but has stopped working. 10-22 10:23 to 10-25 15:26 it sat on v34.13 with no full run for
+// 77 hours while about 70 builds shipped, and nothing said so, since it never went quiet. STALLED goes first in the line (tools/health.sh
+// makes it a PROBLEM) when its game copy is 3 hours behind the newest game change here, or no full run from any machine has finished
+// in 5 hours (by its start minute) while the game changed after the last one. Never while it is quiet or paused.
+const gameTimes = (from) => { try { return git(['log', '--format=%ct', `${from}..HEAD`, '--', 'dark_raiders.html']).split('\n').filter(Boolean).map(Number); } catch { return null; } };
+const stall = [];
+if (seen && ago < 30 && !paused) {
+  const sha = (seenSt.game || '').split(' ')[0], now = Date.now() / 1000;
+  const behind = /^[0-9a-f]{7,40}$/.test(sha) ? gameTimes(sha) : null;
+  if (behind && behind.length && now - Math.min(...behind) >= 3 * 3600) stall.push(`its game copy ${seenSt.game} is ${((now - Math.min(...behind)) / 3600).toFixed(1)} h behind (${behind.length} newer game commits)`);
+  let last = '', lastH = '';
+  for (const [h, list] of Object.entries(hosts)) for (const n of list) { const m = /^corpus\/corpus-(\d{4}-\d{4})\.txt\.head$/.exec(n); if (m && m[1] > last) { last = m[1]; lastH = h; } }
+  if (last) {
+    const d = new Date(new Date().getFullYear(), +last.slice(0, 2) - 1, +last.slice(2, 4), +last.slice(5, 7), +last.slice(7, 9));
+    if (d > new Date()) d.setFullYear(d.getFullYear() - 1);
+    let head = ''; try { head = blob(`spare/${lastH}/corpus/corpus-${last}.txt.head`).toString('utf8').trim().split(/\s+/)[0]; } catch { }
+    const since = /^[0-9a-f]{7,40}$/.test(head) ? gameTimes(head) : null, hrs = (now - d / 1000) / 3600;
+    if (since && since.length && hrs >= 5) stall.push(`its newest finished full run started ${hrs.toFixed(1)} h ago (corpus-${last} on ${lastH}) and the game changed ${since.length} time(s) since`);
+  }
+}
+if (stall.length) line = `STALLED: ${stall.join('; ')}; ` + line;
 for (const [h, st, ep] of idleHosts) line += `; main PC ${h} last seen ${st.seen || '?'} (${ep ? Math.round((Date.now() / 1000 - ep) / 60) : '?'} min ago): ${st.test_run || '?'}, robots ${st.robots || '0'}${st.spare_pc ? `; spare PC as the main PC sees it: ${st.spare_pc}` : ''}`;
 for (const h of fs.readdirSync(SP)) { const p = perf4k(path.join(SP, h, 'fuzz.log'), h); if (p) line += '; ' + p; }
 { const p = perf4k(path.join(R, 'tools', 'handoff', 'fuzz', 'fuzz.log'), 'the VM'); if (p) line += '; ' + p; }   // 10-22: the VM's own second robot plays at 4K

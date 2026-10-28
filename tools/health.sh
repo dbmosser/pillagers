@@ -71,6 +71,8 @@ nf="$H/notes-fetch.txt"; [ -f "$nf" ] && echo "notes from the main PC: $(head -1
 ss="$H/spare-status.txt"
 if [ ! -f "$ss" ] || grep -q "not set up yet\|no spare PC has reported" "$ss"; then echo "WAIT: spare PC not set up yet (his steps: tools/handoff/console/for-you.md)"
 elif grep -q "QUIET" "$ss"; then echo "WAIT: spare PC quiet: $(head -1 "$ss" | cut -c1-160)"
+# 10-28: it reports in but tests nothing new (77 hours on v34.13, 10-22 to 10-25, unflagged); tools/spare/spare-import.mjs writes STALLED
+elif grep -q "^STALLED" "$ss"; then prob "spare PC stalled (it reports in but tests nothing new): $(head -1 "$ss" | sed 's/; [A-Z0-9_-]* last seen.*//' | cut -c1-260)"
 else echo "spare PC: $(head -1 "$ss" | cut -c1-170)"; fi
 fm=$(powershell -NoProfile -Command "[int]((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1MB)" 2>/dev/null | tr -d '\r'); echo "free RAM: ${fm} GB"; rf=$(grep -m1 "^RAM_FLOOR_GB=" "$C/caps.txt" 2>/dev/null | cut -d= -f2 | tr -dc "0-9"); rf=${rf:-6}; [ "${fm:-9}" -lt "$rf" ] && prob "free RAM ${fm} GB is under the ${rf} GB floor (RAM_FLOOR_GB in console/caps.txt)"
 # 10-21: virtual memory too. At 02:19 Windows ran out of it (31.5 of 31.9 GB) with 4 GB of RAM free and both robots hung.
