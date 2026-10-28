@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.88 - MAINFRAME MONEY IN DOLLARS AND A LOCK ICON ON LOCKED ACHIEVEMENTS
+
+Co-op hunt while he was away. menus master pass of 10-28 over every station window: the Mainframe contract card paid its money as 320 c (his rule: $ for money), and the achievements list glued the word LOCKED to each locked name (locked first out) with earned and locked rows in one colour. The reward reads $320, a locked row gets a lock icon, an earned row reads in the emblem gold.
+
+MEASURED. Check 35.88 passes, and fails on v35.87.
 ## v35.87 - THE WHAT IS NEW STAMP KEEPS UP
 
 Co-op hunt while he was away. The card was stamped v35.71 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.

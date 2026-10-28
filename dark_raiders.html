@@ -2636,6 +2636,11 @@ body:has(#wnmodal.on) #hubtoast,body:has(#settingsmodal.recmode.on) #hubtoast{vi
 #root #opane_rec #achlist > div:first-child{grid-column:1/-1;font:600 20px/1.4 var(--f-cond) !important;letter-spacing:.04em !important;color:var(--tx-1) !important;margin-bottom:8px !important;}
 #root #opane_rec #achlist > div:not(:first-child){display:grid !important;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:16px !important;padding:12px 0 !important;border-bottom:1px solid var(--ui-line);font-size:16px !important;line-height:1.4;color:var(--tx-2) !important;}
 #root #opane_rec #achlist > div > span{width:auto !important;min-width:0;}
+/* v35.88 (cw-menupolish1): the lock icon sits before a locked name in the muted colour; an earned achievement reads in the emblem gold, its line in tx-1 */
+#root #opane_rec #achlist .achlk{display:inline-block;vertical-align:-2px;margin-right:8px;color:var(--tx-2);}
+#root #opane_rec #achlist > div.achrow.achon{color:var(--tx-1) !important;}
+#root #opane_rec #achlist > div.achrow.achon > span:first-child{color:#ffe69a;}
+#root #opane_rec #achlist > div.achrow:not(.achon) > span:first-child{color:var(--tx-2);}
 #root #opane_rec .crlab,#root #opane_rec .runline{font-size:16px;letter-spacing:.04em;}
 /* v28.xx (cw-cx-ucfinish): keep the existing toast inside these three cards, 24px above their lower edge. */
 body:has(#gamblemodal.on,#barmodal.on,#opane_rec[style*="display: flex"]) #hubtoast{bottom:calc(5vh + 24px);font-size:16px;}
@@ -3807,8 +3812,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.87';
-var VER_AT='2026-10-28 13:28';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.88';
+var VER_AT='2026-10-28 13:33';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -55775,7 +55780,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.87: The what is new stamp keeps up with the build; the three notes are unchanged. Check 35.87 fails on v35.86',
+  now:'v35.88: contract rewards read in dollars and locked achievements show a lock Check 35.88 fails on v35.87',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -58357,8 +58362,10 @@ function achStatsDraw(g){
   }
   for(i=0;i<ACHS.length;i++){
     a=ACHS[i]; if(P.ach[a.id]) n++;
-    h+='<div style="display:flex;gap:14px;font-size:14px;padding:3px 0;color:'+(P.ach[a.id]?'var(--amber)':'var(--ash)')+'">'+
-       '<span style="width:230px;flex:0 0 230px">'+(P.ach[a.id]?'':'LOCKED ')+a.n+'</span><span style="flex:1">'+a.d+'</span></div>';
+    // v35.88 (cw-menupolish1): a locked achievement shows a lock icon before its name, not the word LOCKED glued to it (it read "locked first out"), and an
+    // earned one carries class achon so it stands out in the gold its emblem has on the extracted card.
+    h+='<div class="achrow'+(P.ach[a.id]?' achon':'')+'" style="display:flex;gap:14px;font-size:14px;padding:3px 0;color:'+(P.ach[a.id]?'var(--amber)':'var(--ash)')+'">'+
+       '<span style="width:230px;flex:0 0 230px">'+(P.ach[a.id]?'':uiIcon('lock',16,'achlk'))+a.n+'</span><span style="flex:1">'+a.d+'</span></div>';
   }
   old=document.getElementById('achlist'); if(old&&old.parentNode) old.parentNode.removeChild(old);
   g.insertAdjacentHTML('beforeend','<div id="achlist" style="grid-column:1/-1;margin-top:10px;border-top:1px solid var(--steel-hi);padding-top:8px">'+
@@ -59035,7 +59042,7 @@ function renderConDetail(){
   rw.innerHTML='<div class="crlab" style="margin:0 0 7px">REWARDS</div>';
   var line=document.createElement('div'); line.className='crewline';
   var money=document.createElement('div'); money.className='crewc';
-  money.innerHTML=(c.reward||0).toLocaleString()+'<em>c</em>';   // v8.42: see the note on the contract row
+  money.innerHTML='$'+(c.reward||0).toLocaleString();   // v8.42: see the note on the contract row. v35.88 (cw-menupolish1): money reads $N (his rule: $ for money), never N c
   line.appendChild(money);
   var gks=gearKeys(c.gear),seen={};
   for(var gi=0;gi<gks.length;gi++) seen[gks[gi]]=(seen[gks[gi]]||0)+1;
