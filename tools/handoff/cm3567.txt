@@ -1,0 +1,7 @@
+v35.67: warning red enemy tracers
+
+Enemy rounds warn in red in both windows; allied rounds keep their gun colours.
+
+Check 35.67. Fails on v35.66.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

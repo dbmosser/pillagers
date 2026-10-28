@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.67 - WARNING RED ENEMY TRACERS
+
+Co-op hunt while he was away. His g-88 answer: Enemy tracers in a warning colour. Hostile machines and pillager bots fire #ff3b2f rounds in both windows. Player, hire and friendly rounds retain gun colours, including player forge elements and widths. Muzzle flashes stay warm. Render only; no seeded draw or text changes. Watch in play: red enemy rounds must stand out from the red danger HUD, red noise rings and attack lanes, at night and in rain. Two hostile pillager crews fighting each other must still read.
+
+MEASURED. Check 35.67 passes, and fails on v35.66.
 ## v35.66 - AIR STRIKE NEEDS 3000 DAMAGE
 
 Co-op hunt while he was away. His order 10-28: make it 3000 damage to unlock an airstrike instead of 1500. One number, AIR.need 1500 to 3000.

@@ -3730,8 +3730,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.66';
-var VER_AT='2026-10-28 07:53';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.67';
+var VER_AT='2026-10-28 08:11';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -25096,6 +25096,9 @@ function gunShake(wep){
   var b=(wep&&wep.id)?gunBase(wep.id):'', s=GUN_SHAKE[b];
   return (s===undefined)?((wep&&wep.dmg>40)?4.5:2.2):s;
 }
+// v34.xx (cw-redtracers): his g-88 answer, "Enemy tracers in a warning colour". Allies keep their gun tint; no seeded draw.
+var ENEMY_TRACER='#ff3b2f';
+function foeShot(sh,fromPlayer){ return !fromPlayer&&sh&&!sh.merc&&!sh.friendlyPC&&!sh.friendly&&sh.kind!=='stray'&&sh.kind!=='peddler'; }
 function fireWeapon(sh,wep,tx,ty,fromPlayer){
   if(fromPlayer&&G&&G.arcade&&G.player&&G.player.arcSh) arcadeShieldOff();   // v23.30 (arcade9): a shot drops the spawn shield
 // PARITY, v3.95, second item off his audit. Steady aim was not a player
@@ -25157,7 +25160,7 @@ if(wep.mag===0){
     var ang=base+rnd(-spx,spx);
     G.bullets.push({sx:sh.x,sy:sh.y,mzd:Math.max(0,gunMuzD(sh,wep)-17),ly:shotLy(sh,wep),x:sh.x+Math.cos(ang)*17,y:sh.y+Math.sin(ang)*17,   // v28.xx (cw-thirdsize): ly, the height its tracer is drawn at, the gun line of the drawn body (drawing only)
       vx:Math.cos(ang)*(wep.rkt?RKT_SPD:1180),vy:Math.sin(ang)*(wep.rkt?RKT_SPD:1180),dmg:wep.dmg*((sh&&sh.elite)?(CFG.eliteDmg===undefined?1.6:CFG.eliteDmg):1)*((fromPlayer&&!G.sim&&G.player.arBonus>0)?(G.player.arMul||AR_BONUS):1)*pwrMul('dmg',fromPlayer),   // v26.xx (feel11): the active reload bonus
-      life:wep.rng/(wep.rkt?RKT_SPD:1180),player:!!fromPlayer,owner:sh,tint:wep.tint||'#ffd48a',
+      life:wep.rng/(wep.rkt?RKT_SPD:1180),player:!!fromPlayer,owner:sh,tint:foeShot(sh,fromPlayer)?ENEMY_TRACER:(wep.tint||'#ffd48a'),   // v28.xx (cw-cx-redtracers): hostile machines and pillager bots, including forged guns, warn in red
       el:(fromPlayer&&wep.el&&ELEM[wep.el])?wep.el:'',   // v23.xx (forge3): a MK III round carries its element
       rkt:wep.rkt?1:0,_pen:wep.rkt?99:0,thru:(wep.id==='lance')?1:0,gid:fromPlayer?String(wep.id||''):''});   // v26.xx (career1): the round carries the id of the gun it came from, for the kill tally   // v11.84, HIS NOTE: the Lance travels through crawlers
     if(NET.on) netFxShot(G.bullets[G.bullets.length-1],sh,wep,ang);   // v16.21: the rest of the party sees this round   // v28.xx (cw-muzzlenet), CLOUD HUNT 2026-10-15: with the gun, for where its flash is drawn
@@ -55475,7 +55478,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.66: An air strike now needs 3000 damage to charge, twice as much as before. Check 35.66 fails on v35.65',
+  now:'v35.67: Enemy rounds warn in red in both windows; allied rounds keep their gun colours. Check 35.67 fails on v35.66',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -61862,7 +61865,7 @@ function netFxTake(peer,m){
     a=m.b; G.fxBullets=G.fxBullets||[];
     if(G.fxBullets.length<80) G.fxBullets.push({x:+a[0]||0,y:+a[1]||0,vx:+a[2]||0,vy:+a[3]||0,life:Math.min(3,Math.max(0,+a[4]||0)),tint:(/^#[0-9a-fA-F]{3,8}$/).test(a[5])?a[5]:'#ffd48a',owner:1,fx:1,elw:a[6]?1:0}); var _mzw=(a.length>=11&&isFinite(a[8])&&isFinite(a[9])&&isFinite(a[10])&&Math.abs(a[9]-a[0])<120&&Math.abs(a[10]-a[1])<120)?1:0, _fb=G.fxBullets[G.fxBullets.length-1]; if(_mzw&&(+a[8])>0&&_fb&&_fb.fx&&_fb.x===(+a[0]||0)){ var _fv=Math.hypot(_fb.vx,_fb.vy)||1; _fb.mzd=Math.min(80,+a[8]); _fb.sx=_fb.x-_fb.vx/_fv*17; _fb.sy=_fb.y-_fb.vy/_fv*17; } if(_mzw&&_fb&&_fb.fx&&_fb.x===(+a[0]||0)&&!pixOn()) _fb.ly=(a.length>=12&&isFinite(a[11])&&(+a[11])>0&&(+a[11])<60)?+a[11]:20*FIG_SCALE; /* cw-figone: the height the shooter window drew it at (field 12); 20 times the figure size from an older window */ /* v28.xx (cw-thirdsize): his tracer at the gun line of his drawn body, as in his own window */   // v28.xx (cw-muzzlenet), CLOUD HUNT 2026-10-15: a word that carries the drawn muzzle starts the tracer there, as the shooter window does
     if(!G.sim&&a[7]){ try{ spark(+a[0]||0,+a[1]||0,'#fff0c0',12,320); ricoPing(+a[0]||0,+a[1]||0); }catch(_rc){} }   // v28.xx (cw-ricoseen), CLOUD HUNT 2026-10-15: a bounce word: the ricochet spark and ping, as the shooter sees and hears it, no muzzle flash
-    else if(!G.sim){ try{ if(_mzw) gfxShotFx(+a[9],+a[10]+12,Math.atan2(+a[3]||0,+a[2]||0),a[5],pixOn()?1:FIG_SCALE/0.8); /* v28.xx (cw-thirdsize): a teammate flash at the drawn muzzle is sized to his smaller gun */ else gfxShotFx(+a[0]||0,+a[1]||0,Math.atan2(+a[3]||0,+a[2]||0),a[5]); }catch(_gsx){} }   // v23.xx (gfx24): and its muzzle flash
+    else if(!G.sim){ try{ if(_mzw) gfxShotFx(+a[9],+a[10]+12,Math.atan2(+a[3]||0,+a[2]||0),a[5]===ENEMY_TRACER?'#ffc27a':a[5],pixOn()?1:FIG_SCALE/0.8); /* v28.xx (cw-thirdsize): a teammate flash at the drawn muzzle is sized to his smaller gun */ else gfxShotFx(+a[0]||0,+a[1]||0,Math.atan2(+a[3]||0,+a[2]||0),a[5]===ENEMY_TRACER?'#ffc27a':a[5]); }catch(_gsx){} }   // v23.xx (gfx24): and its muzzle flash   // v28.xx (cw-cx-redtracers): the warning tint belongs to the tracer; both packet shapes keep a warm flash
     return 'fx:b';
   }
   if(m.k==='a'&&m.a&&m.a.length>=4){   // v23.xx (forge8): a shock arc the host drew

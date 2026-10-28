@@ -32,3 +32,4 @@
 10-28 02:57 v35.63 cw-cx-hudtv on his pc after 32s (8802 serves 35.63) week 74%
 10-28 03:39 v35.64 cw-cx-hudtvread on his pc after 33s (8802 serves 35.64) week 74%
 10-28 04:16 v35.65 cw-cx-pingmerge on his pc after 17s (8802 serves 35.65) week 74%
+10-28 07:57 v35.66 cw-airstrike3000 on his pc after 168s (8802 serves 35.66 (its GitHub status; the bridge did not answer)) week 75%

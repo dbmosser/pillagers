@@ -48,3 +48,4 @@ No HIGH items left except 177 hardcore save (parked until 11/1, goes first then)
 - 10-28 186e build 4 (cw-hudsize): SHIPPED v35.53, ON HIS PC 00:23. Feed and answer line at least 20 px, the opened controls list 18 px, danger headline 30 px; red words on a plate are a lighter red for contrast. Job file in console/done/.
 
 - His order 10-28 (verbatim, via the old intake chat): "make it 3000 damage to unlock an airstrike instead of 1500". Job in-session/201-airstrike-3000.md, helper (Sonnet high) started by the order chat.
+SHIPPED 10-28 v35.66: 201 air strike needs 3000 damage (was 1500). On his PC 168s after the ship.

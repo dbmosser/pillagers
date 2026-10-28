@@ -38,3 +38,5 @@
 2026-10-28 03:46 week=4.0% 5h=23.0% week_resets=2026-11-04 01:35 job=o-139-solo-pings
 2026-10-28 04:00 week=4.0% 5h=26.0% week_resets=2026-11-04 01:35 job=o-139-solo-pings
 2026-10-28 04:12 week=5.0% 5h=30.0% week_resets=2026-11-04 01:35 job=o-139-solo-pings
+2026-10-28 07:55 week=6.0% 5h=5.0% week_resets=2026-11-04 01:35 job=o-140-red-enemy-tracers
+2026-10-28 08:02 week=6.0% 5h=6.0% week_resets=2026-11-04 01:35 job=o-140-red-enemy-tracers
