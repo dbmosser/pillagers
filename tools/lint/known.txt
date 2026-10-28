@@ -1,0 +1,3 @@
+# false alarms: "rule start-of-the-trimmed-line"
+# guarded by typeof resolvePlayer==='function' (v23.25 arcade): the name is gone, the guard keeps it harmless
+no-undef if(typeof L.x==='number'&&typeof L.y==='number'&&isFinite(L.x)
