@@ -18,7 +18,7 @@ His words, verbatim:
 12. (picture: the air strike meter plate at the right end of the belt, left of the gun card) "air strike needs to move ABOVE this weapon panel, and be further over on the right hand side" (airPlateAt: stand it on top of the gun card EDGEBOX.gun, right edges flush, the clearance loop kept)
 13. "ideally every single Hud element would be grabbable/ movable": a new feature, so it waits for 11/1 (his 10-27 order); filed as tools/handoff/console/after-nov1/186i-every-hud-panel-movable.md. Today six panels move (body, cond, gear, legend, mmap, raiders).
 
-Keep: looting (pickup stack, loot rows, loot sounds, item labels) untouched; kill lines stay; money ($) is not score; player text lower case.
+Keep: the kill lines WITH their +sp, his words 10-28 (picture of "you > crawler m-10 +50 sp"): "these look good, sp can stay" (so item 3 removes the other sp pops, never the kill line figure); looting (pickup stack, loot rows, loot sounds, item labels) untouched; kill lines stay; money ($) is not score; player text lower case.
 
 Check (must FAIL on the build before): the clock draws in its own card above a separate score card, clock type larger than score type; the extraction arrow and distance name the nearest open ring; earning sp draws no float or feed line; a ring called or in progress over 250 m away draws no bottom line, and one under 250 m does.
 Pictures: uishots 21, 33, 34, 50 at 1080 plus both party windows; look at them.
