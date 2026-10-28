@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.52 - ANSWER LINE UNDER YOUR FEET
+
+Co-op hunt while he was away. his ask 10-27 ~21:40: the hud messaging is a clusterfuck, make it AAA (report reports/Player alerts and HUD messaging.md, job 7). The answer to a try that did not work (health full, no ammo, locked) is one small line about 70 px under the character, at least 20 px, for 2 s, once per press, and no longer a line in the left feed. There is no soft no sound in the game, so it stays silent. Backpack full stays in the pickup stack and contract item nearby stays in the feed, exactly as before; looting is untouched.
+
+MEASURED. Check 35.52 passes, and fails on v35.51.
 ## v35.51 - pad trigger keeps steady spread without focus aim
 
 Co-op hunt while he was away. RT used the focus aim flag to steady shots, so it also cut sprint, slowed walking and pulsed a scope. Keep the existing pad spread and settle time separately. Playtest watch: on a pad, RT no longer cuts the sprint or pulses a scoped view; LT still aims. Pad players move at full speed while shooting; check a pad fight still feels fair.

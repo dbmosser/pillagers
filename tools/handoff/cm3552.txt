@@ -1,0 +1,7 @@
+v35.52: answer line under your feet
+
+when something you try does not work, the answer shows small under your feet for 2 s
+
+Check 35.52. Fails on v35.51.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
