@@ -1,0 +1,25 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  duo-search-career-p1                   staged      12.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"mode":"career","seat":1,"hostAlone":1.0000000000000013,"hostTogether":1.4999999999999987,"ratio":1.4999999999999967,"hostPartnerStep":1.5,"partnerBarStep":1.5,"visible":[1,1],"network":[{"on":true,"role":"host","seat":0,"roster":[{"seat":0,"pid":"fcde74c3","name":"PILLAGER","host":true},{"seat":1,
+  duo-search-career-p2                   staged      17.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"mode":"career","seat":2,"hostAlone":1.0000000000000013,"hostTogether":1.4999999999999987,"ratio":1.4999999999999967,"hostPartnerStep":1.5,"partnerBarStep":1.5,"visible":[1,1],"network":[{"on":true,"role":"host","seat":0,"roster":[{"seat":0,"pid":"b76d9b56","name":"PILLAGER","host":true},{"seat":1,
+  duo-search-demo-p1                     NOT STAGED   4.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host did not open a real player 2 window: p2raid
+    at stageDuoPair (<anonymous>:18:36)
+    at <anonymous>:109:14
+    at async <anonymous>:1:21
+  duo-search-demo-p2                     NOT STAGED  15.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host did not link the existing p2 window: p2raid
+    at stageDuoPair (<anonymous>:35:38)
+    at async <anonymous>:109:8
+    at async <anonymous>:1:21
+== 4k : window 3876x2265, viewport 3840x2160
+  duo-search-career-p1                   staged      11.9s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | {"mode":"career","seat":1,"hostAlone":1.0000000000000013,"hostTogether":1.4999999999999987,"ratio":1.4999999999999967,"hostPartnerStep":1.5,"partnerBarStep":1.5,"visible":[1,1],"network":[{"on":true,"role":"host","seat":0,"roster":[{"seat":0,"pid":"349729ab","name":"PILLAGER","host":true},{"seat":1,
+  duo-search-career-p2                   NOT STAGED  16.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host did not link the existing p2 window: p2raid
+    at stageDuoPair (<anonymous>:35:38)
+    at async <anonymous>:109:8
+    at async <anonymous>:1:21
+  duo-search-demo-p1                     NOT STAGED   4.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host did not open a real player 2 window: p2raid
+    at stageDuoPair (<anonymous>:18:36)
+    at <anonymous>:109:14
+    at async <anonymous>:1:21
+  duo-search-demo-p2                     NOT STAGED  43.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host did not link the existing p2 window: p2raid
+    at stageDuoPair (<anonymous>:35:38)
+    at async <anonymous>:109:8
+    at async <anonymous>:1:21

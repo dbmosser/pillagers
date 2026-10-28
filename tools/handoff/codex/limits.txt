@@ -76,3 +76,6 @@
 2026-10-28 14:33 week=21.0% 5h=34.0% week_resets=2026-11-04 01:35 job=o-07-161-throws-bounce-once
 2026-10-28 14:38 week=21.0% 5h=35.0% week_resets=2026-11-04 01:35 job=o-07-161-throws-bounce-once
 2026-10-28 14:45 week=22.0% 5h=39.0% week_resets=2026-11-04 01:35 job=o-08-144-crates-faster-with-two
+2026-10-28 15:01 week=22.0% 5h=41.0% week_resets=2026-11-04 01:35 job=o-08-144-crates-faster-with-two
+2026-10-28 15:23 week=23.0% 5h=47.0% week_resets=2026-11-04 01:35 job=o-00a-crates-both-holding-e
+2026-10-28 15:25 week=24.0% 5h=48.0% week_resets=2026-11-04 01:35 job=o-00a-crates-both-holding-e

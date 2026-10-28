@@ -1,0 +1,5 @@
+## v35.94 - THE OVERSEER BAR ONLY IN A FIGHT
+
+Co-op hunt while he was away. his order of 10-28 with a picture: the Overseer's health bar goes away unless you are fighting him; it shows for 4 seconds after any hit you or your partner land on him and hides again after
+
+MEASURED. Check 35.94 passes, and fails on v35.93.

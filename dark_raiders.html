@@ -3825,8 +3825,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.93';
-var VER_AT='2026-10-28 14:55';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.94';
+var VER_AT='2026-10-28 15:26';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -44087,6 +44087,10 @@ function msgLayout(){
   HUDMSGB=Math.round((HUDFEEDT+LH(17)+ex)*z);   // v22.13 (R08): under the feed, which starts under an alert
   return rows;
 }
+// v35.xx (cw-bossbarfight), HIS ORDER (2026-10-28, a picture of the bar across the top while the Overseer walked among the crawlers): "the overseer's health bar should go
+// away unless i'm actively fighting him eg dealt damage in last few secs". The bar shows for BOSSBAR_HOLD seconds after the last hit you or your partner landed on
+// him (pHitT, which every round, charge, blade and air strike of the party sets); a joined window, which does not hold the hit marks, counts a drop in his health.
+var BOSSBAR_HOLD=4;
 function drawBossBar(){
   var e=null, p=G&&G.player, i, w, x, y, f;
   HUDBOSSB=0;   // v20.55 (H38): nothing drawn yet this frame
@@ -44098,6 +44102,10 @@ function drawBossBar(){
   // 900 was enough, so the bar announced THE OVERSEER through walls and behind your back. It now waits until this player has
   // seen him once (canSee: the same view cone, range, darkness and walls that decide what you see), and from then on shows as
   // before while he is alive and near. Each window keeps its own: player 2 sees the bar when player 2 has seen him.
+  var _bft=+G.t||0, _bfj=(typeof NET==='object'&&NET&&NET.on&&NET.role==='join');
+  if((+e.pHitT||0)>0||(_bfj&&typeof e.barHp==='number'&&e.hp<e.barHp)) e.barHitAt=_bft;   // v35.xx (cw-bossbarfight): a hit landed on him
+  e.barHp=e.hp;
+  if(!(typeof e.barHitAt==='number'&&_bft>=e.barHitAt&&_bft-e.barHitAt<BOSSBAR_HOLD)) return;   // v35.xx (cw-bossbarfight): not in a fight with him, no bar
   if(!e.barSeen){ var _bsv=false; try{ _bsv=canSee(p.x,p.y,p.face,e.x,e.y,G.vseg); }catch(_bs){ _bsv=false; } if(!_bsv) return; e.barSeen=1; }
   f=Math.max(0,Math.min(1,e.hp/(e.maxhp||e.hp)));
   w=Math.min(520,W*0.4); x=W/2-w/2; y=Math.round(LH(108)*hudRes());   // v18.49: below the clock, the compass and the extract arrow, scaled with them (was LH(64), inside the stack)
@@ -55845,7 +55853,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.93: the gamble shows its odds by rarity and the stash hotbar lines up Check 35.93 fails on v35.92',
+  now:'v35.94: the overseer bar shows only while you fight him Check 35.94 fails on v35.93',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

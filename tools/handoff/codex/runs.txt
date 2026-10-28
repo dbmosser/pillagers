@@ -435,3 +435,6 @@
 2026-10-28 14:33 o-07-161-throws-bounce-once 269s ok PARTIAL in=5081718 out=41187 run=4
 2026-10-28 14:38 o-07-161-throws-bounce-once 104s ok DONE in=5717445 out=44597 run=5
 2026-10-28 14:45 o-08-144-crates-faster-with-two 399s ok PARTIAL in=1042807 out=14567 run=1
+2026-10-28 15:01 o-08-144-crates-faster-with-two 217s ok PARTIAL in=1934735 out=20643 run=2
+2026-10-28 15:23 o-00a-crates-both-holding-e 513s ok PARTIAL in=1064707 out=19482 run=1
+2026-10-28 15:25 o-00a-crates-both-holding-e 110s ok PARTIAL in=1893325 out=23700 run=2

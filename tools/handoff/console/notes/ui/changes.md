@@ -506,3 +506,5 @@
 2026-10-28 | o-07-161-throws-bounce-once final evidence | raid throwable marker/landing | v35.91 one wall bounce verified in both real windows; final camera cleanup only, no additional game changes | before: no baseline recipe; after: tools/handoff/console/notes/shots/o-07-161-throws-bounce-once-recipes-4/161-p1-grenade-bounce-aim-1080.jpg, 161-p2-grenade-bounce-aim-1080.jpg, 161-p1-grenade-around-corner-1080.jpg, 161-p2-grenade-around-corner-1080.jpg | whole-HUD critic 2/2/2/3, stopped at camera cap and handed off
 2026-10-28 | o-08-144-crates-faster-with-two | raid search bar, both windows | existing progress bar fills 1.5 times faster with a live party member within 200 units; no text or layout added | before: unchanged layout, no recipe before shot | after: pending lane camera duo-search-career-p1, duo-search-career-p2, duo-search-demo-p1, duo-search-demo-p2
 
+2026-10-28 | o-00a-crates-both-holding-e | crate search, both windows | 1.5x now requires both held search inputs; standing nearby gives 1x. No player text or layout change. Before: v35.93. After pictures pending lane camera recipes both-search-career-p1/p2 and both-search-demo-p1/p2.
+

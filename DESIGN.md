@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.94 - THE OVERSEER BAR ONLY IN A FIGHT
+
+Co-op hunt while he was away. his order of 10-28 with a picture: the Overseer's health bar goes away unless you are fighting him; it shows for 4 seconds after any hit you or your partner land on him and hides again after
+
+MEASURED. Check 35.94 passes, and fails on v35.93.
 ## v35.93 - THE GAMBLE SHOWS ITS ODDS AND THE STASH HOTBAR LINES UP
 
 Co-op hunt while he was away. menus master pass 10-28: at Wirt the gamble panel was an empty box over its button until a first roll, beside an offer panel with a big picture; it now shows a mystery tile of the same size beside the odds of each rarity from the gamble pool (common 9, uncommon 34, rare 32 with keys, elite 25). On the stash screen the hotbar slots ran to the panel edge while every other grid sits on a 12px inset; they line up now. The backpack box shows a scroll bar on a Windows screen, so the hotbar right inset follows its width.

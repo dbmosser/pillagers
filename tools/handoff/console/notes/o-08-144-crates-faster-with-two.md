@@ -12,3 +12,9 @@ Handed over four smooth-look camera recipes: real connected career host/player 2
 
 Camera setup uses the real player 2 query without netslot (NETP2 is disabled by netslot), and adds arc=1 for the demo player 2 boot. Both windows use the standard party opener and live search grant.
 
+
+--- codex run 2026-10-28 15:01 ---
+2026-10-28 follow-up: cw-cx-duosearch shipped as v35.92; lane confirmed ON HIS PC v35.92 (113 seconds after ship). Career 1080 captures staged in both actual connected windows. Both measured host alone=1.0, host together=1.5, host partner step=1.5, partner bar step=1.5, and visible=[1,1]. No game code follow-up needed.
+
+Round 1 demo pictures did not stage: a leftover test host popup blocked its close with the normal live-raid beforeunload warning, leaving the player 2 heartbeat fresh. Updated camera-only cleanup to close its named test windows, clear test heartbeat marks, bypass that warning only in test windows, close the peer on pagehide, and use a unique party code per recipe. The live connection and normal keyboard search grant remain required. The controls list and current pillagers board are folded through their existing controls for cleaner search pictures. Node syntax checks run again. Request round 2 with these changed recipes; no new ship key.
+

@@ -1,0 +1,9 @@
+== 4k : window 3876x2265, viewport 3840x2160
+  35-kia-card                            staged      10.2s  
+  38-extracted-card                      staged       9.7s  
+== 1080 : window 1956x1185, viewport 1920x1080
+  35-kia-card                            staged      10.1s  
+  38-extracted-card                      staged       9.4s  
+== 4k : window 3876x2265, viewport 3840x2160
+  35b-kia-hits                           staged      10.1s  
+  38b-extract-guns-hits                  staged       9.4s  

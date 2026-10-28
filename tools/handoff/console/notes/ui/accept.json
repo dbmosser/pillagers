@@ -1827,33 +1827,33 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "This is a different screen from the one I reviewed before, a yes/no prompt over a live raid. The lime yes button is clear and the card is clean, but the card overlaps the HUD and has dead space and weak yes/no styling.",
+  "verdict": "The title screen is a clean, centred column menu with a readable wordmark, but the error banner and its lime retry button compete with the focused row, the saves block is weak, and the orange gradient wordmark clashes with the lime accent.",
   "findings": [
-   "P1 card, x492-1427 y261-579: Centre the card at y540 (y375-705). Add a --scrim rgba(6,7,8,.80) layer behind it, with an optional 4px blur, so the HUD and map drop to about 40% brightness.",
-   "P1 title row, x539-1382 y315-360: Reduce the title-to-button gap to 32px. Turn the countdown into a 16px tx-2 '11s' aligned to the title baseline, or a thin 3px lime bar that drains along the card top edge.",
-   "P1 buttons, x539-1382 y432-533: Make both buttons 64px tall. Keep yes as the lime fill. Give no a 1px --ui-line-hi border with tx-1 text, so it is clearly a button. Add a 2px lime focus ring when no is selected. Keep the 32px gap between the buttons.",
-   "P2 button labels, x711-772 y470-497: Put the key in a 28px keycap (1px border, 16px text) beside the 20px 600 'yes' label. On pad, swap the keycap for the pad button glyph.",
-   "P2 card top edge, x492-562 y261-264: Either make it a full-width 3px timer bar, or align it to the x539 content edge at 64px wide."
+   "P1 error banner, x681-1239 y637-703: Make 'retry' an outlined 40px button with a 1px --acc border and no fill, since the banner is not the primary action. Shorten the copy to one line, 'player 2 is in a raid in another window', at 16px in tx-1. Move the banner to y≈395, above the list, or set it 24px clear of the list with a 3px --danger left bar only.",
+   "P1 wordmark, x802-1118 y255-335: Use a flat --tx-1 wordmark at 800 weight, about 96px, with no gradient or shadow. If the orange stays, make it one flat --warn fill, and never beside lime. Put the tagline 16px below it, with 48px between tagline and list.",
+   "P1 menu list, x681-1239 y403-627: Fill the focused row with --ui-raised and add a 4px --acc left bar. Make the border 2px --acc and the text 22px, on a 64px row. Make '1 player' the default focus, and move the demos into a smaller secondary group 24px below, named 'demo'. Drop '(same machine)' to a 16px tx-2 sublabel.",
+   "P1 saves block, x681-1239 y722-842: Set the 'saves' label at 16px with +.04em tracking in tx-2 (≥4.5:1). Use the lime border on the saves row only when it has focus, otherwise --ui-line-hi. Make the field and buttons one 40px row on an 8px gap, with equal-width buttons and the name field set 16px in from the card edge. Put the whole block in a --ui-panel card with 16px padding.",
+   "P2 top-right buttons, x1611-1823 y33-81: Use 16px f-cond 600 labels, 40px high, a 4px radius and 16px side padding. Align the right edge to x=1824 (96px margin) and the top to 48px, with a 16px gap. Use the same --ui-line-hi border as the menu rows."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-03-197-final-90s-rush-recipes-2/rush-p1-1080.jpg",
-  "task": "o-03-197-final-90s-rush",
-  "when": "2026-10-28T16:05"
+  "pic": "tools/handoff/console/notes/shots/o-08-144-crates-faster-with-two-recipes-1/duo-search-demo-p1-1080.jpg",
+  "task": "o-08-144-crates-faster-with-two",
+  "when": "2026-10-28T18:57"
  },
  "p2-1080": {
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "This frame is a raid screenshot with a 'want easy mode?' modal, not the player 2 title I reviewed before, and the modal is a flat black box with a glaring lime fill that has no hierarchy or craft behind it.",
+  "verdict": "The real p2 title screen now shows a clear lime primary button, but the controls hint strip is clipped by an overlapping toast, the title is a gradient-orange template wordmark, and the saves block and top-right buttons are loosely styled.",
   "findings": [
-   "P0 screen identity (whole frame): Re-capture the real p2 title screen. If this modal is meant to be the p2 screen, say so, and give it the title composition from my earlier review.",
-   "P1 modal card (x 493-1427, y 261-579): Add a 1px --ui-line-hi border and a 4px radius. Use --ui-panel fill on an 80% --scrim over the whole screen. Centre the card at y 540 and make it 880x360. Make the top edge either a full-width 4px lime bar or nothing.",
-   "P1 'y yes' button (x 539-945, y 432-533): Cut the button to 64px tall. Use 24px f-cond 700 text in --acc-ink and put the 'y' key hint in a 28x28 chip at the left. Keep it as the only lime fill. Decide the default deliberately, since lime should mean 'selected'.",
-   "P1 'n no' button (x 976-1382, y 432-533): Fill it --ui-raised with a 2px --ui-line-hi border and --tx-1 label. Show a 3px lime focus outline on whichever button holds pad focus. Use the same 64px height as the yes button.",
-   "P1 title 'want easy mode?' (x 539-790, y 316-350): Set the title at 32px f-cond 700 --tx-1, with a 16px --tx-2 line below it that states the effect in 6 words or fewer. Make the countdown a 40px hero-style number in a 56px ring or bar, tinted --tx-2. Cut the gap to 32px between the title block and the buttons."
+   "P0 Bottom hint strip and toast (x 726-1193, y 1004-1056): Move the toast to y 940-976, or to the top-centre banner slot. Keep the hint row on one clear 32px line at y 1040-1072. Never let two elements share that band.",
+   "P1 Title wordmark (x 802-1118, y 360-440): Fill the wordmark flat --tx-1 (#efe9dc) at --fs-hero 56px, f-cond 800, with no gradient and no drop glow. Alternatively use flat --acc, with the button changing to a quiet outline.",
+   "P1 Saves list and name row (x 681-1239, y 615-735): Make every row 48px tall on an 8px gap, 20px f-cond 600 text, --ui-panel fill and 1px --ui-line-hi borders. Put 'saves' as a 16px --tx-2 label with 8px of space under it. Keep lime only on the selected row's border.",
+   "P1 'player 2 window' (x 909-1010, y 579-593): Make it a 16px --tx-2 f-cond line with 16px of space above and 24px below, or make it a proper secondary button of the same width as the main action. Remove the bold weight.",
+   "P2 Top-right 'go fullscreen' and 'settings' (x 1611-1823, y 33-81): Use 48px tall buttons at y 40, right edge x 1824, 16px f-cond 600 text, and a --ui-line-hi border. Highlight only on focus."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-03-197-final-90s-rush-recipes-2/rush-p2-1080.jpg",
-  "task": "o-03-197-final-90s-rush",
-  "when": "2026-10-28T16:05"
+  "pic": "tools/handoff/console/notes/shots/o-08-144-crates-faster-with-two-recipes-1/duo-search-demo-p2-1080.jpg",
+  "task": "o-08-144-crates-faster-with-two",
+  "when": "2026-10-28T18:57"
  },
  "pix86c-fashion": {
   "score": 3,

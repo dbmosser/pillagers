@@ -1,0 +1,4 @@
+{"generated":"2026-10-28T15:12:14","url":"http://localhost:8808/fixture.html","recipes":"tools/handoff/drafts/menus-round4/recipes-cards.json","seconds":31,"screens":[
+{"name":"35b-kia-hits","screen":"KIA with hits","4k":{"staged":true,"note":"","viewport":"3840x2160","shot":"35b-kia-hits-4k.jpg","lint":""}},
+{"name":"38b-extract-guns-hits","screen":"EXTRACTED many guns","4k":{"staged":true,"note":"","viewport":"3840x2160","shot":"38b-extract-guns-hits-4k.jpg","lint":""}}
+]}

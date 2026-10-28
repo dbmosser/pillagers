@@ -1,0 +1,7 @@
+v35.94: the overseer bar only in a fight
+
+the overseer bar shows only while you fight him
+
+Check 35.94. Fails on v35.93.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
