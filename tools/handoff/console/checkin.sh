@@ -31,5 +31,10 @@ today=$(date +%F); nf=$(find "$C/failed" -type f -newermt "-2 hours" 2>/dev/null
 rp=$(grep "^$today .*problems=[1-9]" "$H/fuzz/fuzz.log" 2>/dev/null | wc -l); [ "$rp" -gt 0 ] && flag "robots: $rp raid(s) today with problems; newest: $(grep "^$today .*problems=[1-9]" "$H/fuzz/fuzz.log" | tail -1 | cut -c1-120)"
 say "robots today: $(grep -c "^$today .* raid [0-9]" "$H/fuzz/fuzz.log" 2>/dev/null) raids, $rp with problems; last: $(tail -1 "$H/fuzz/fuzz.log" | cut -c1-19)"
 grep -E "^$(date +%m-%d) |^[0-9][0-9]:[0-9][0-9] " "$H/nightly/nightly.log" 2>/dev/null | tail -60 | grep -iE "fail|error|stuck|not started|hang|timeout" | grep -v "stable: no change" | tail -3 | cut -c1-150 | while read -r l; do echo "night log: $l"; done
+# 10-27 night: the spare PC finished a full run every 1.5 h all day, each with 8 to 12 newly red checks, and nothing here said so (the
+# "stable: no change" lines are filtered above), so stable sat at v34.53 for 19 hours. (Spare PC robot hangs are left out: on its 4 threads
+# under a full run most are the machine choking, not the game; stable.mjs already weighs robot problems per version.)
+nb=$(sed -n '/^Checks that are newly red/,$p' "$H/stable-status.txt" 2>/dev/null | grep -c "^  v")
+[ "${nb:-0}" -gt 0 ] && flag "$nb newly red check(s) block stable ($(grep -m1 "^Latest stable" "$H/stable-status.txt" | cut -c1-50)): outdated ones go in tools/handoff/stable-known-red.txt, real ones become fix jobs"
 say "newest build: $(grep -m1 "^var VER='" dark_raiders.html | sed "s/var VER='\([0-9.]*\)'.*/v\1/"), last commit $(git log -1 --format='%cr')"
 [ $look = 1 ] && echo "VERDICT: LOOK (lines above)" || echo "VERDICT: ALL CLEAR"
