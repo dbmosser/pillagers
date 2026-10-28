@@ -159,7 +159,7 @@ function aiHtml(a,p){
     'Google Antigravity, free, with a daily limit. It only reads; Claude checks every bug it lists before anything changes.');
   // 10-28: it runs on his main PC, so while the link to the main PC is down it cannot be reached; say that, not "not running"
   const lw=!l.up&&!/main PC/.test(ls.msg)&&window.__LINK&&!window.__LINK.ok&&window.__LINK.failAt;
-  o+=svcRow(!l.up?(lw||/main PC/.test(ls.msg)?'a':'r'):l.loaded.length?'g':(l.pull&&l.pull!=='done')?'b':'d','Local AI (your graphics card)',(!l.up?(lw?'Waiting: it runs on your main PC, and the link to your main PC is not answering.':/main PC/.test(ls.msg)?'Resting.':'<span class="warn">Not running.</span>'):l.loaded.length?'Thinking now ('+esc(l.loaded.join(', '))+').':(l.pull&&l.pull!=='done'&&!has38)?'Downloading the new model: '+esc(l.pull):'Idle.')+(ls.msg&&!lw?' '+esc(you(ls.msg).replace(/ \(Ollama\)/,'')):''),
+  o+=svcRow(!l.up?(lw||/main PC/.test(ls.msg)?'a':'r'):l.loaded.length?'g':(l.pull&&l.pull!=='done')?'b':'d','Local AI (your graphics card)',(!l.up?(lw?'Waiting: it runs on your main PC, and the link to your main PC is not answering.':/main PC/.test(ls.msg)?'Resting.':'<span class="warn">Not running.</span>'):l.loaded.length?'Thinking now ('+esc(l.loaded.join(', '))+').':(l.pull&&l.pull!=='done'&&!has38)?'Downloading the new model: '+esc(l.pull):'Idle.')+(ls.msg&&!lw&&!/not running/.test(ls.msg)?' '+esc(you(ls.msg).replace(/ \(Ollama\)/,'')):''),
     'Free. Models: '+(l.models.map(m=>esc(m.name)+' ('+m.gb+' GB)').join(', ')||'none')+'. Rests during your usual PC hours so your games stay smooth.');
   o+='<div class="small" style="margin:10px 0 2px"><b>Bug checks</b> ('+a.reviewsToday+' today)</div>'+(a.reviews.length?a.reviews.map(r=>row(r.bugs?'a':'g',new Date(r.at).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),rvLine(r))).join(''):row('d',null,'None yet'));
   if(a.findings.length) o+='<div class="small" style="margin:10px 0 2px"><b>Latest possible bugs</b> (leads, not facts: Claude checks each one in the code)</div>'+a.findings.slice().reverse().map(f=>{f=String(f);return row('a',null,esc(f.length>220?f.slice(0,217).replace(/\s+\S*$/,'')+' ...':f));}).join('');
@@ -229,7 +229,7 @@ async function tick(){
   const op=d.onPc; $('onpc').innerHTML=op?(op.ver===d.ver?'v'+esc(op.ver):'<span'+(op.ver<d.ver?' class="warn"':'')+'>v'+esc(op.ver)+'</span>'):'?';
   $('itch').innerHTML=d.itch?(d.itch===d.ver?'v'+esc(d.itch):'<span class="warn">v'+esc(d.itch)+'</span>'):'?';
   { const n=new Date(), dt=[];   // his dates (CLAUDE.md, 10-27): each line drops off by itself once its day is past
-    if(n<new Date(2026,9,31)) dt.push('Party: Fri 10/30 night'); if(n<new Date(2026,10,2)) dt.push('fixes and polish only until Sun 11/1');
+    if(n<new Date(2026,10,1)) dt.push('Party: Sat 10/31 night'); if(n<new Date(2026,10,2)) dt.push('fixes and polish only until Sun 11/1');   // 10-28: his words moved the party from Fri 10/30
     if(n<new Date(2026,10,27)) dt.push('release on itch: Thu 11/26'); $('dates').textContent=dt.join(' · '); }
   const sb=d.stable||{}; $('stable').textContent=sb.version?('v'+sb.version+' ('+sb.at.slice(5)+')'+(sb.frozen?' frozen':'')):'none yet';
   const nf=/last (?:fetch|try) \d\d-\d\d (\d\d:\d\d)/.exec(d.notes||''), sp=d.spare||'', sl=/last seen \S+ (\d\d:\d\d)/.exec(sp);

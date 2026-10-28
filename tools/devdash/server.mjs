@@ -93,8 +93,13 @@ function getJson(url) { return new Promise(res => { const rq = http.get(url, { t
 let OLL = String(process.env.PILLAGERS_OLLAMA_URL || '').trim();
 if (!OLL) try { OLL = (execFileSync('reg', ['query', 'HKCU\\Environment', '/v', 'PILLAGERS_OLLAMA_URL'], { encoding: 'utf8', windowsHide: true }).match(/REG_\w+\s+(\S+)/) || [])[1] || ''; } catch {}
 OLL = /^https?:\/\/(localhost|127(\.\d{1,3}){3}|10(\.\d{1,3}){3}|192\.168(\.\d{1,3}){2}|172\.(1[6-9]|2\d|3[01])(\.\d{1,3}){2})(:\d{1,5})?\/*$/.test(OLL) ? OLL.replace(/\/+$/, '') : 'http://127.0.0.1:11434';
+// 10-28: the VM's network moves on a restart (192.168.160.x, then 172.17.96.x, then 172.20.160.x), so when the set address is silent
+// try the main PC at the VM's default gateway too, the same fallback hostctl.mjs uses
+let GW = ''; try { GW = (execFileSync('ipconfig', { encoding: 'utf8', windowsHide: true }).match(/Default Gateway[ .]*:\s*(\d+\.\d+\.\d+\.\d+)/) || [])[1] || ''; } catch {}
 async function aiPoll() {
-  const tags = await getJson(OLL + '/api/tags'), ps = tags ? await getJson(OLL + '/api/ps') : null;
+  let tags = await getJson(OLL + '/api/tags');
+  if (!tags && GW && !OLL.includes('//' + GW + ':')) { const alt = 'http://' + GW + ':11434'; tags = await getJson(alt + '/api/tags'); if (tags) OLL = alt; }
+  const ps = tags ? await getJson(OLL + '/api/ps') : null;
   aiLive.ollamaUp = !!tags; aiLive.models = tags ? (tags.models || []).map(m => ({ name: m.name, gb: +(m.size / 2 ** 30).toFixed(1) })) : [];
   aiLive.loaded = ps ? (ps.models || []).map(m => m.name) : []; aiLive.t = Date.now();
   if (Date.now() - aiLive.lt > 30 * 60e3) { aiLive.lt = Date.now();   // 10-25: the Codex login check every 30 min (was 10); it starts Codex each time
