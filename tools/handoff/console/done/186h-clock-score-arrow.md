@@ -27,4 +27,5 @@ Watch-for line for him: whether the clock is easy to find at a glance and the ar
 TASK DONE when shipq prints ON HIS PC.
 
 SHIPPED build 1 (items 1-8, 12, 14): v35.80 fe4fc9000, ON HIS PC 2026-10-28. 13 older checks re-aimed (fixture 61b7616af, 60cf84630, 380387869). Hot ground kills: the hot mark rides on his kill line (+N sp hot), no float.
-NEXT: build 2, key cw-pillagersword (items 9-11, the words), sites in notes/186h/words-sites.md.
+SHIPPED build 2 (items 9-11): v35.82 3c33b72f1, ON HIS PC 2026-10-28. 68 word sites; 6 older checks re-aimed (fixture e3232382b). Left as is on purpose: lore notes, changelog history, the MACHINE BREAKER title, The Machine outfit, his feedback chips, same machine (the computer).
+Item 13 (every panel movable) waits in after-nov1/186i.
