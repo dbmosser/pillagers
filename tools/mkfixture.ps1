@@ -14794,7 +14794,8 @@ window.__REGRESS=[
          feedTick(0.3); trace=__textTrace(function(){ __frame(0.016); }); want=names[i];
          hits=trace.filter(function(r){ return r.t.toLowerCase().indexOf(want)>=0; });
          if(hits.length!==1) return (side?'linked ':'host ')+want+' drawn '+hits.length+' times';
-         if(hits[0].t.toLowerCase().indexOf('search the hoard')<0) return 'missing search the hoard';
+         // v35.30 (cw-quiettext) retarget, his order 2026-10-27 (build the quiet hud): a feed line draws its name and its detail as two pieces on one line, so the detail may be its own piece.
+         if(hits[0].t.toLowerCase().indexOf('search the hoard')<0&&!trace.some(function(r){ return r.t.toLowerCase().indexOf('search the hoard')>=0&&(r.y===undefined||Math.abs(r.y-hits[0].y)<4); })) return 'missing search the hoard';
        }
        return null;
      } finally {
@@ -17406,15 +17407,17 @@ window.__REGRESS=[
        g.mapOpen=false; msgTick(0.1);
        if(g.fd.lines.length!==1||String(g.fd.lines[0].txt).toLowerCase().replace(/\s+/g,' ')!=='codex entry \u00b7 scav pistol') bad.push('codex was not first after close: '+JSON.stringify(g.fd.lines.map(function(r){ return r.txt; })));
        if(g.msgT>0) bad.push('weather overwrote the first notice');
-       for(i=0;i<70&&g.msg!=='WEATHER TURN';i++) tick(1);
-       if(g.msg!=='WEATHER TURN'||g.msgT<3) bad.push('weather did not follow with its full lifetime');
+       // v35.30 (cw-quiettext) retarget, his order 2026-10-27 (build the quiet hud): the grey rows are retired: the weather notice is a line of the left feed, fresh on the feed clock when it comes out.
+       function wl(){ var L=g.fd.lines; for(var q=0;q<L.length;q++) if(String(L[q].txt).indexOf('WEATHER TURN')===0) return L[q]; return null; }
+       for(i=0;i<70&&!wl()&&g.msg!=='WEATHER TURN';i++) tick(1);
+       if(!(g.msg==='WEATHER TURN'&&g.msgT>=3)&&!(wl()&&g.fd.t-wl().at<=1.2)) bad.push('weather did not follow with its full lifetime');
        for(i=0;i<40&&g.mapPop.q.length;i++) tick(1);
        if(document.getElementById('hubtoast').textContent.toLowerCase()!=='corner notice') bad.push('corner notice was not last');
        if(g.mapPop.q.length) bad.push('the notice queue did not drain');
        // v28.xx (cw-cx-sectorhold-o03): an already visible popup also waits when M leaves world time running.
        g.mapPop.wait=0; say('existing notice','info'); msg=g.msgT; ft=g.fd.t; g.mapOpen=true; tick(120);
        if(g.msgT!==msg||g.fd.t!==ft) bad.push('an existing notice aged behind the map');
-       g.mapOpen=false; msgTick(0.1); if(Math.abs(g.msgT-(msg-0.1))>0.001) bad.push('existing notice lost its remaining time');
+       g.mapOpen=false; msgTick(0.1); if(msg>0?Math.abs(g.msgT-(msg-0.1))>0.001:Math.abs(g.fd.t-(ft+0.1))>0.001) bad.push('existing notice lost its remaining time');   // v35.30 (cw-quiettext) retarget, his order 2026-10-27 (build the quiet hud): with no grey row the remaining time is the feed clock
        // v28.xx (cw-cx-sectorhold-o03): closing/opening/closing clears feed layout metadata as well as pixels (32.25).
        g.mapOpen=false; __drawHUD();
        if(!FEEDBOX.on||!FEEDBOX.rows.length) bad.push('feed layout control missing with the map shut');
@@ -22196,7 +22199,7 @@ window.__REGRESS=[
      // The key as it arrives: a keydown on the window, and a keyup, with the repeat flag a held key sends.
      function bq(rep){ clearKeys(); window.dispatchEvent(new KeyboardEvent('keydown',{code:'Backquote',key:'`',repeat:!!rep,bubbles:true,cancelable:true})); window.dispatchEvent(new KeyboardEvent('keyup',{code:'Backquote',key:'`',bubbles:true,cancelable:true})); clearKeys(); }
      function setSuper(v){ P.gameOpts=P.gameOpts||{}; P.gameOpts.superhot=v; applyGameOpts(); }
-     function topMsg(){ return g&&g.msg; }
+     function topMsg(){ if(g&&g.msg) return g.msg; var L=(g&&g.fd&&g.fd.lines)||[]; return L.length?String(L[L.length-1].txt):''; }   // v35.30 (cw-quiettext) retarget, his order 2026-10-27 (build the quiet hud): the grey rows are retired, so the line on top is the newest line of the left feed
      // Every Superhot line the player can see: the two message rows over the screen and the lines of the left feed.
      function shLines(){ return (g.feed||[]).map(function(f){ return f&&f.m; }).concat(((g.fd&&g.fd.lines)||[]).map(function(l){ return l&&l.txt; })).filter(function(m){ return /^SUPERHOT/.test(m||''); }); }
      function wipe(){ g.msg=''; g.msgT=0; g.feed=[]; g.msgQ=[]; g.fd={t:0,seq:0,lines:[]}; }
@@ -33864,7 +33867,7 @@ window.__REGRESS=[
        __topClear();
      }
      return bad.length?bad.slice(0,8).join('; '):null; }},
-  {v:'27.51',what:'his order: the banners that came in at their own heights of the centre are alerts in the top centre lane: a notoriety rise and the drop-in count, and the notoriety is in the feed',
+  {v:'27.51',what:'his order: the banners that came in at their own heights of the centre are alerts in the top centre lane: a notoriety rise and the drop-in count, and the notoriety is not also a line of the left feed (v35.30 retarget: every raid line shows in one place)',
    run:function(){
      if(!window.__deploy||!window.__endRaid||!window.__frame||typeof notoStamp!=='function'||typeof arcadeDropHud!=='function'||typeof ARCADE==='undefined') return 'SKIP: no raid or arcade here';
      var bad=[], g, a, i, holdWas=ARCADE.holdT, hit=false, F, ln, ni=ARCADE.on;
@@ -33878,7 +33881,7 @@ window.__REGRESS=[
        a=g.alert; if(!a||String(a.m).indexOf('NOTORIETY')!==0) bad.push('a notoriety rise is not an alert in the top lane');
        else if(a.sub!=='YOU STARTED THAT FIGHT') bad.push('the alert detail reads "'+a.sub+'", not why');
        F=g.fd; ln=null; if(F) for(i=0;i<F.lines.length;i++) if(F.lines[i].txt.indexOf('NOTORIETY')===0) ln=F.lines[i];
-       if(!ln) bad.push('the notoriety rise is not a line in the feed');
+       if(ln) bad.push('the notoriety rise is drawn twice: the top alert and again a line of the left feed');   // v35.30 (cw-quiettext) retarget, his order 2026-10-27 (build the quiet hud): an alert is the top banner only
        for(i=0;i<document.scripts.length&&!hit;i++) if(String(document.scripts[i].text).indexOf('v8.27: THE NOTO'+'RIETY STAMP')>=0) hit=true;
        if(hit) bad.push('the notoriety banner draw is still in the source');
        g.alert=null; g.alertQ=[];
@@ -54618,9 +54621,9 @@ window.__REGRESS=[
      H=[nm16+' IS JOINING',nm16+' ABANDONED','HAND-OVER FAILED',nm20+' EMPTY',nm20+' WANTS REVENGE',nm20+' TRUSTED YOU'];
      for(i=0;i<H.length;i++) if(H[i].length>34) bad.push(JSON.stringify(H[i])+' is over 34');
      return bad.length?bad.join('; '):null; }},
-  {v:'23.10',what:'two contracts that finish on one container both show: one crate that finishes an open contract and a district contract in the same frame leaves two CONTRACT DONE rows, each with its own words as the detail, rather than the second writing over the first',
+  {v:'23.10',what:'two contracts that finish on one container both show: one crate that finishes an open contract and a district contract in the same frame leaves two CONTRACT DONE lines in the left feed, each with its own words as the detail, rather than the second writing over the first',
    run:function(){
-     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)||typeof contractOpen!=='function'||typeof contractDesc!=='function'||typeof feedRows!=='function') return 'SKIP: no contracts or feed rows here';
+     if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P)||typeof contractOpen!=='function'||typeof contractDesc!=='function'||typeof feedSay!=='function') return 'SKIP: no contracts or feed here';
      var bad=[], P2=__P(), con0=P2.contracts, g=null, i, ct=null, c1, c2, H1, H2, got=[], all;
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); keys={};
@@ -54633,18 +54636,20 @@ window.__REGRESS=[
        P2.contracts=[c1,c2];
        H1=contractDesc(c1); H2=contractDesc(c2);   /* v34.46 (cw-cdoneshort): the detail is the contract words only */
        if(H1===H2) return 'SKIP: staging: the two contracts read the same';
-       g.paused=false; g.msg=''; g.msgT=0; g.msgSub=''; g.msgKey=''; g.feed=[]; g.msgQ=[]; g.msgQM=[];
+       g.paused=false; g.msg=''; g.msgT=0; g.msgSub=''; g.msgKey=''; g.feed=[]; g.msgQ=[]; g.msgQM=[]; g.fd={t:0,seq:0,lines:[]};
        contractOpen(ct);
        if(c1.prog<c1.n||c2.prog<c2.n) return 'SKIP: staging: the crate did not finish both contracts';
-       all=feedRows();
+       // v35.30 (cw-quiettext) retarget, his order 2026-10-27 (build the quiet hud): the grey rows are retired and nothing waits: each line is a line of the left feed, its detail after a middle dot.
+       function fdRows(){ return ((g.fd&&g.fd.lines)||[]).map(function(l){ var s=String(l.txt), ix=s.indexOf('  \u00b7  '); return ix<0?{m:s,sub:''}:{m:s.slice(0,ix),sub:s.slice(ix+5)}; }); }
+       all=fdRows();
        for(i=0;i<all.length;i++) got.push(String(all[i].m)+' | '+String(all[i].sub||''));
        for(i=0;i<(g.msgQ||[]).length;i++) got.push(String(g.msgQ[i])+' | '+String((g.msgQM[i]&&g.msgQM[i].o&&g.msgQM[i].o.sub)||''));
        if(got.indexOf('CONTRACT DONE | '+H1)<0) bad.push('the open contract line is not showing or waiting (rows and queue: '+JSON.stringify(got)+')');
        if(got.indexOf('CONTRACT DONE | '+H2)<0) bad.push('the district contract line is not showing or waiting (rows and queue: '+JSON.stringify(got)+')');
-       g.msg=''; g.msgT=0; g.feed=[]; g.msgQ=[]; g.msgQM=[];
-       say('ZQX9K SAME','info',{sub:'one'}); say('ZQX9K SAME','info',{sub:'two'});
-       all=feedRows();
-       if(all.length!==1||all[0].sub!=='two') bad.push('a line with no key said twice no longer refreshes in place: '+JSON.stringify(all.map(function(r){ return r.m+' | '+r.sub; })));
+       g.msg=''; g.msgT=0; g.feed=[]; g.msgQ=[]; g.msgQM=[]; g.fd={t:0,seq:0,lines:[]};
+       say('ZQX9K SAME','info',{sub:'one'}); say('ZQX9K SAME','info',{sub:'one'});
+       all=fdRows();
+       if(all.length!==1||all[0].sub!=='one') bad.push('a line with no key said twice is not one line of the left feed: '+JSON.stringify(all.map(function(r){ return r.m+' | '+r.sub; })));
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{
        P2.contracts=con0; keys={};
@@ -55631,7 +55636,9 @@ window.__REGRESS=[
      if(typeof togglePauseBox!=='function'||typeof syncPause!=='function'||typeof restoreCursor!=='function') return 'SKIP: no pause box in this build';
      var bad=[], g, el=document.getElementById('hubtoast'), f0, NC='Cursor '+'reset', i, inFeed=false, NZ='ZQ '+'PING';
      if(!el) return 'SKIP: no answer line in this page';
-     function feedHas(s){ var F=g.feed||[], j, U=String(s).toUpperCase(); if(g.msgT>0&&String(g.msg).toUpperCase().indexOf(U)>=0) return true; for(j=0;j<F.length;j++) if(F[j]&&F[j].T>0&&String(F[j].m).toUpperCase().indexOf(U)>=0) return true; return false; }   // tr55fix: in any case (CURSOR RESET)
+     function feedHas(s){ var F=g.feed||[], j, U=String(s).toUpperCase(), FL=(g.fd&&g.fd.lines)||[]; if(g.msgT>0&&String(g.msg).toUpperCase().indexOf(U)>=0) return true;
+       for(j=0;j<FL.length;j++) if(String(FL[j].txt).toUpperCase().indexOf(U)>=0) return true;   // v35.30 (cw-quiettext) retarget, his order 2026-10-27 (build the quiet hud): the grey rows are retired, so the feed is the lines of the left feed
+       for(j=0;j<F.length;j++) if(F[j]&&F[j].T>0&&String(F[j].m).toUpperCase().indexOf(U)>=0) return true; return false; }   // tr55fix: in any case (CURSOR RESET)
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
@@ -58157,7 +58164,10 @@ window.__REGRESS=[
        if(!dang) bad.push('the Pillbox line is not on the danger plate');
        if(!(g.alert&&g.alert.m===PB&&g.alert.k==='warn')) bad.push('the alert lane does not hold the Pillbox line as a warning ('+JSON.stringify(g.alert&&{m:g.alert.m,k:g.alert.k})+')');
        if(!loot) bad.push('the line said in the same frame was not drawn');
-       if(g.msg!==LOOT) bad.push('the line said in the same frame is not the feed row (G.msg '+JSON.stringify(g.msg)+')');
+       // v35.30 (cw-quiettext) retarget, his order 2026-10-27 (build the quiet hud): the line said in the same frame is a line of the left feed and the alert is the top banner only, not a feed line as well.
+       var FL=(g.fd&&g.fd.lines)||[], inF=false, pbF=false; for(j=0;j<FL.length;j++){ if(FL[j].txt===LOOT) inF=true; if(String(FL[j].txt).indexOf('THE PILLBOX')===0) pbF=true; }
+       if(g.msg!==LOOT&&!inF) bad.push('the line said in the same frame is not a line of the left feed');
+       if(pbF) bad.push('the Pillbox alert is drawn twice: the top banner and again a line of the left feed');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{
        unspy(); say=realSay; keys={};
@@ -58893,7 +58903,10 @@ window.__REGRESS=[
        if(!after) bad.push('an ordinary line said 0.4 s after the Crier line took it off the screen');
        else if(after.a<0.99) bad.push('an ordinary line said under the Crier line dimmed it to alpha '+after.a);
        if(!lootSeen) bad.push('the ordinary line said under the alert was not drawn');
-       if(g.msg!==LOOT) bad.push('the ordinary line is not the feed row (G.msg '+JSON.stringify(g.msg)+')');
+       // v35.30 (cw-quiettext) retarget, his order 2026-10-27 (build the quiet hud): the ordinary line is a line of the left feed and the alert is the top banner only, not a feed line as well.
+       var FL=(g.fd&&g.fd.lines)||[], inF=false, rvF=false; for(j=0;j<FL.length;j++){ if(FL[j].txt===LOOT) inF=true; if(String(FL[j].txt).indexOf(RV)===0) rvF=true; }
+       if(g.msg!==LOOT&&!inF) bad.push('the ordinary line is not a line of the left feed');
+       if(rvF) bad.push('the Crier alert is drawn twice: the top banner and again a line of the left feed');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{
        unspy(); say=realSay; keys={};
@@ -59661,7 +59674,7 @@ window.__REGRESS=[
        __topClear(); __cleanProfile();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'21.94',what:'a raid line with a detail shows it on its row as HEADLINE, a middle dot, then the detail, and a line with no detail is drawn as before',
+  {v:'21.94',what:'a raid line with a detail shows it on its line of the left feed as HEADLINE, a middle dot, then the detail, and a line with no detail is drawn as before',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy';
      var bad=[], ev=[], g, realSay=say, H1=['ZQ','HEAD'].join(' '), D1=['zq','detail'].join(' '), PL=['zq','plain'].join(' '), want=H1+'  \u00b7  '+D1, oFT=ctx.fillText, j, got=false, gotPl=false, gotBare=false;
@@ -59674,11 +59687,13 @@ window.__REGRESS=[
        g=__state(); if(!g||g.over||!g.player) return 'SKIP: staging: no raid';
        keys={}; g.mapOpen=false; g.bagOpen=false; g.msgT=0; g.msg=''; g.msgQ=[]; g.msgQM=[]; g.feed=[];
        realSay(PL); realSay(H1,'info',{sub:D1});
-       if(g.msg!==H1) bad.push('G.msg is '+JSON.stringify(g.msg)+', not the headline alone');
+       // v35.30 (cw-quiettext) retarget, his order 2026-10-27 (build the quiet hud): the grey rows are retired: the line is a line of the left feed, its words the headline, a middle dot and the detail, drawn as two pieces.
+       var FL=(g.fd&&g.fd.lines)||[], ln=FL.length?FL[FL.length-1]:null;
+       if(g.msg!==H1&&!(ln&&ln.txt===want)) bad.push('the newest feed line reads '+JSON.stringify(ln&&ln.txt)+', not '+JSON.stringify(want));
        say=function(){};
        spy();
        try{ __frame(0.016); } finally { unspy(); }
-       for(j=0;j<ev.length;j++){ if(ev[j]===want) got=true; if(ev[j]===H1) gotBare=true; if(ev[j]===PL) gotPl=true; }
+       for(j=0;j<ev.length;j++){ if(ev[j]===want||(ev[j]===H1&&ev.indexOf('  \u00b7  '+D1)>=0)) got=true; if(ev[j]===H1) gotBare=true; if(ev[j]===PL) gotPl=true; }
        if(!got) bad.push('the line with a detail was not drawn as '+JSON.stringify(want)+(gotBare?' (only the headline was drawn)':''));
        if(!gotPl) bad.push('the line with no detail was not drawn exactly as said');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
@@ -59808,14 +59823,14 @@ window.__REGRESS=[
        __topClear();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'21.91',what:'the waiting queue: no copies, at most four, the highest rank first, a line that outranks the rows said at once, a keyed line refreshed in place, and a line waiting behind two rows shows within 4 s while a full backpack is said every frame on one row',
+  {v:'21.91',what:'nothing waits behind the feed (v35.30 retarget, his order 2026-10-27, the quiet hud: the grey rows and their waiting queue are retired): a line sent to wait is a line of the left feed at once, the same line twice is one feed line, an objective is not held behind ordinary lines, a keyed line said again with new words refreshes its one feed line, and a full backpack said every frame of a search fills one row',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame&&window.__loop)) return 'SKIP: this fixture cannot deploy or step the loop';
      if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so the frame loop cannot draw';
-     if(typeof feedRows!=='function'||typeof bagWeight!=='function') return 'SKIP: no message rows or no backpack weight here';
-     var bad=[], g, p, realSay=say, keepBW=bagWeight, keepAuto=P.autoloot, BF=['Backpack','full'].join(' '), t0, f=0, i, n, rows, box=null, firstQ=-1, maxBF=0;
-     function clr(){ g.msgT=0; g.msg=''; g.msgQ=[]; g.msgQM=[]; g.feed=[]; g.msgAt=undefined; g.msgKey=''; }
-     function cnt(s){ var q=g.msgQ||[], c=0; for(var j=0;j<q.length;j++) if(q[j]===s) c++; return c; }
+     if(typeof feedSay!=='function'||typeof bagWeight!=='function') return 'SKIP: no feed or no backpack weight here';
+     var bad=[], g, p, realSay=say, keepBW=bagWeight, keepAuto=P.autoloot, BF=['Backpack','full'].join(' '), t0, f=0, i, n, L, box=null, firstQ=-1, maxBF=0;
+     function clr(){ g.msgT=0; g.msg=''; g.msgQ=[]; g.msgQM=[]; g.feed=[]; g.msgAt=undefined; g.msgKey=''; g.fd={t:0,seq:0,lines:[]}; }
+     function inF(s){ var F=(g.fd&&g.fd.lines)||[], c=0; for(var j=0;j<F.length;j++) if(String(F[j].txt)===s) c++; return c; }
      function step(){ __loop(t0+(++f)*16.7); }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -59823,51 +59838,41 @@ window.__REGRESS=[
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||g.over||!g.player) return 'SKIP: staging: no raid';
        p=g.player; keys={}; g.mapOpen=false; g.bagOpen=false; g.ents.length=0; g.waveT=-1e9;
-       // only the probe lines and the backpack line may speak, the queue included (it says through say)
+       // only the probe lines and the backpack line may speak
        say=function(m){ var s=String(m); if(s.indexOf('zq')===0||s.indexOf('ZQ')===0||s.toUpperCase().indexOf(BF.toUpperCase())===0) return realSay.apply(this,arguments); };
        t0=performance.now();
-       // ONE: no copies, and at most four waiting (two warnings on the rows, so ordinary lines wait)
-       clr(); say('ZQ W1','obj'); say('ZQ W2','obj'); /* retargeted for the alert lane (the raid text R08): crit, warn and ext lines take the alert slot, so the high row is an objective */
+       // ONE: no copies, and nothing waits
+       clr(); say('ZQ W1','obj'); say('ZQ W2','obj');
        sayWhenFree('zq dup'); sayWhenFree('zq dup');
-       if(cnt('zq dup')!==1) bad.push('the same line waits '+cnt('zq dup')+' times over');
-       for(i=1;i<=5;i++) sayWhenFree('zq c'+i);
-       if((g.msgQ||[]).length>4) bad.push('the queue holds '+g.msgQ.length+' lines, more than four');
-       // TWO: the highest rank comes out first
-       clr(); say('ZQ W1','obj'); say('ZQ W2','obj'); /* retargeted for the alert lane (the raid text R08): crit, warn and ext lines take the alert slot, so the high row is an objective */
-       sayWhenFree('zq i1'); sayWhenFree('zq o1','obj');
-       g.msgAt=-1e3; if(g.feed&&g.feed[1]) g.feed[1].at=-1e3;   // both rows past their protection, still showing
-       step();
-       if(g.msg!=='zq o1') bad.push('with an ordinary line and an objective waiting, '+JSON.stringify(g.msg)+' came out first, not the objective');
-       // THREE: a line that outranks every row showing is said at once
-       clr(); say('zq p1'); say('zq p2'); sayWhenFree('ZQ BIG','obj'); /* retargeted for the alert lane (the raid text R08): crit, warn and ext lines take the alert slot, so the high row is an objective */
-       if(g.msg!=='ZQ BIG') bad.push('a warning sent to wait behind two ordinary rows waited instead of showing at once');
-       // FOUR: a keyed line said again with new words refreshes its row instead of taking a second one
-       clr(); say('zq k 1','info',{key:'zqk'}); say('zq k 2','info',{key:'zqk'});
-       rows=feedRows(); n=0; for(i=0;i<rows.length;i++) if(String(rows[i].m).indexOf('zq k ')===0) n++;
-       if(g.msg!=='zq k 2'||n!==1) bad.push('a keyed line said twice fills '+n+' rows (top '+JSON.stringify(g.msg)+')');
-       // FIVE, THE PLAY PATH: a line waits behind two rows while X is held on a box with the backpack full
+       if(inF('zq dup')!==1) bad.push('the same line sent to wait twice is '+inF('zq dup')+' lines of the left feed, not one');
+       if((g.msgQ||[]).length) bad.push('a line still waits in the queue ('+g.msgQ.length+')');
+       // TWO: an objective sent to wait behind ordinary lines is a feed line at once
+       clr(); say('zq p1'); say('zq p2'); sayWhenFree('ZQ BIG','obj');
+       if(inF('ZQ BIG')!==1) bad.push('an objective sent to wait behind two ordinary lines is not a line of the left feed at once');
+       // THREE: a keyed line said again with new words (past the one second a repeat only refreshes) is one feed line with the new words
+       clr(); say('zq k 1','info',{key:'zqk'}); g.fd.t+=1.5; say('zq k 2','info',{key:'zqk'});
+       L=g.fd.lines; n=0; for(i=0;i<L.length;i++) if(String(L[i].txt).indexOf('zq k ')===0) n++;
+       if(n!==1||inF('zq k 2')!==1) bad.push('a keyed line said twice fills '+n+' feed lines ('+JSON.stringify(L.map(function(l){ return l.txt; }))+')');
+       // FOUR, THE PLAY PATH: X held on a box with the backpack full while a line is sent to wait
        for(i=0;i<g.containers.length;i++){ var c=g.containers[i]; if(c&&!c.opened&&c.loot&&c.loot.length&&!c.cache&&!c.strong&&!c.auto){ box=c; break; } }
        if(!box) bad.push('SKIP: no box to stage the full backpack on');
        else {
          box.x=p.x+20; box.y=p.y; box.opened=false; box.prog=0; p.downed=false;
          P.autoloot=0; bagWeight=function(){ return 1e9; };
          clr(); say('zq s1'); say('zq s2'); sayWhenFree('zq q');
-         if(cnt('zq q')!==1) bad.push('staging: the probe line did not wait behind two rows');
+         if(inF('zq q')===1) firstQ=0;
          keys[__srchKey()]=true;
          for(i=0;i<360;i++){
            step(); if(g.over) break;
-           rows=feedRows(); n=0;
-           for(var r=0;r<rows.length;r++){ if(String(rows[r].m).toUpperCase().indexOf(BF.toUpperCase())===0) n++; if(rows[r].m==='zq q'&&firstQ<0) firstQ=i; }
-           // tr19fix: since the raid text rewrite (R19) the full backpack is one keyed red row in the pickup stack (G.pick), not a feed
-           // row; it is counted there too, so said every frame it must still fill one row in all, on the build before and after.
+           L=(g.fd&&g.fd.lines)||[]; n=0;
+           for(var r=0;r<L.length;r++) if(String(L[r].txt).toUpperCase().indexOf(BF.toUpperCase())===0) n++;
            for(var r2=0;r2<(g.pick||[]).length;r2++) if(String(g.pick[r2].m).toUpperCase().indexOf(BF.toUpperCase())===0) n++;
            if(n>maxBF) maxBF=n;
          }
          keys={};
          if(maxBF<1) bad.push('SKIP: the full backpack line was never said, so the play path was not staged');
          if(maxBF>1) bad.push('the backpack full line said every frame filled '+maxBF+' rows');
-         if(firstQ<0) bad.push('the waiting line never showed in 6 s of X held on a full backpack');
-         else if(firstQ>240) bad.push('the waiting line took '+(firstQ/60).toFixed(1)+' s to show, more than 4 s');
+         if(firstQ<0) bad.push('a line sent to wait while two lines show is not a line of the left feed at once');
        }
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{
@@ -60057,11 +60062,12 @@ window.__REGRESS=[
          spy();
          try{ __frame(0.016); } finally { unspy(); }
          pc=[];
-         for(j=0;j<ev.length;j++){ t=ev[j].t.replace(/\u2026$/,''); if(t.length>=8&&LONG.indexOf(t)>=0) pc.push(ev[j]); }
+         // v35.30 (cw-quiettext) retarget, his order 2026-10-27 (build the quiet hud): the grey rows are retired: the long line is a line of the left feed, cut with an end mark inside the screen, and its whole text is in the run log.
+         for(j=0;j<ev.length;j++){ t=ev[j].t.replace(/(\u2026|\.\.\.)$/,''); if(t.length>=8&&LONG.indexOf(t)>=0) pc.push(ev[j]); }
          if(!pc.length){ bad.push('at '+at+' the long line was not drawn'); continue; }
          if(pc.length>2) bad.push('at '+at+' the long line was drawn in '+pc.length+' pieces, more than two');
          for(j=0;j<pc.length;j++) if(pc[j].x0<-0.5||pc[j].x1>W+0.5) bad.push('at '+at+' a piece of the long line runs from x '+Math.round(pc[j].x0)+' to '+Math.round(pc[j].x1)+', off a screen '+W+' wide');
-         if(!(g.tel&&g.tel.longLines&&g.tel.longLines.indexOf(LONG)>=0)) bad.push('at '+at+' the full long line is not in the run report (G.tel.longLines)');
+         if(!(g.tel&&g.tel.longLines&&g.tel.longLines.indexOf(LONG)>=0)&&!(g.msgLog||[]).some(function(r){ return r.m===LONG; })) bad.push('at '+at+' the full long line is not in the run report (G.tel.longLines) or the run log (G.msgLog)');
        }
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{
@@ -60345,11 +60351,12 @@ window.__REGRESS=[
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{ P.txt=keep; }
      return bad.length?bad.join('; '):null; }},
-  {v:'21.80',what:'the raid text module: the fixture runs the real say(), and say() carries a kind, a log and the kind of a waiting line',
+  {v:'21.80',what:'the raid text module: the fixture runs the real say(), and say() carries a kind into the run log and the feed, and a line sent to wait is said at once (v35.30 retarget: the grey rows and their waiting queue are retired)',
    run:function(){
      if(!window.__deploy||!window.__endRaid||!window.__loop) return 'SKIP: no raid here';
-     var bad=[], g, i, f, lg, hit;
+     var bad=[], g, i, lg, hit;
      var hit2=function(){ var L2=__msgLog(); for(var j=0;j<L2.length;j++) if(L2[j].m==='zq q') return L2[j]; return null; };
+     var newest=function(){ var L=(g&&g.fd&&g.fd.lines)||[]; return L.length?String(L[L.length-1].txt):''; };
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
@@ -60358,36 +60365,32 @@ window.__REGRESS=[
        if(typeof window.__sayReal!=='function') bad.push('the fixture keeps no handle on the real say()');
        else if(say===window.__sayReal) bad.push('say() is not wrapped, so __lastSay never moves');
        if(String(say).indexOf('G.msg'+'T=3.2')>=0) bad.push('the fixture say() is still a copy of the old body');
-       g.msgQ=[]; g.msgT=0;
+       // v35.30 (cw-quiettext) retarget, his order 2026-10-27 (build the quiet hud): the grey rows are retired, so a line said is read from the run log
+       // (G.msgLog, the kind as say() read it) and the left feed (G.fd), not from G.msg and its clock.
+       g.msgQ=[]; g.msgT=0; g.fd={t:0,seq:0,lines:[]};
        __say('zq'+'wrap');
-       if(g.msg!=='zqwrap'||window.__lastSay!=='zqwrap') bad.push('__say did not reach the game (msg '+g.msg+', last '+window.__lastSay+')');
+       lg=__msgLog(); hit=lg[lg.length-1];
+       if(!hit||hit.m!=='zqwrap'||window.__lastSay!=='zqwrap') bad.push('__say did not reach the game (log '+(hit&&hit.m)+', last '+window.__lastSay+')');
        // R01, the kinds.
-       say('zq kind','obj',{sub:'zq detail.'}); /* retargeted for the alert lane (the raid text R08): crit, warn and ext lines take the alert slot, so the high row is an objective */
-       if(g.msgK!=='obj') bad.push('say(m,obj) leaves the kind as '+g.msgK);
-       if(g.msg!=='zq kind'||g.msgT!==3.2) bad.push('say(m,obj) no longer shows the line for 3.2 s (msg '+g.msg+', T '+g.msgT+')');
-       if(g.msgSub!=='zq detail.') bad.push('the detail is not kept in msgSub');
+       say('zq kind','obj',{sub:'zq detail.'});
        lg=__msgLog(); hit=lg[lg.length-1];
        if(!hit||hit.m!=='zq kind'||hit.k!=='obj') bad.push('the log does not end with the obj line');
+       else if(hit.sub!=='zq detail.') bad.push('the detail is not kept in the log');
+       if(newest().indexOf('zq kind')!==0||newest().indexOf('zq detail.')<0) bad.push('say(m,obj) with a detail is not the newest feed line with its detail (it reads '+JSON.stringify(newest())+')');
        say('zq plain');
-       if(g.msgK!=='info') bad.push('a one-string say is kind '+g.msgK+', not info');
+       lg=__msgLog(); if(lg[lg.length-1].k!=='info') bad.push('a one-string say is kind '+lg[lg.length-1].k+', not info');
        say('zq odd','nonsense');
-       if(g.msgK!=='info') bad.push('an unknown kind is not read as info');
+       lg=__msgLog(); if(lg[lg.length-1].k!=='info') bad.push('an unknown kind is not read as info');
        for(i=0;i<20;i++) say('zq ring '+i,'chat');
        if(__msgLog().length!==16) bad.push('the log is not a ring of 16 (it holds '+__msgLog().length+')');
        g.sim=true; say('zq sim','crit'); g.sim=false;
-       if(g.msg==='zq sim'||__msgLog()[15].m==='zq sim') bad.push('say() acts while G.sim is set');
-       // The queue: strings in msgQ, the kind beside it, and the kind survives the drain.
-       // v21.88 retarget (the raid text R06): the rows are emptied first. With two protected rows up, a direct say of equal rank
-       // now sends the row it takes back to the queue, so 'zq odd' would wait in front of 'zq q'; this part tests the queue alone.
-       // v21.89 retarget (the raid text R07): a waiting line that outranks every row showing is said at once, and an objective
-       // outranks an ordinary line, so the two rows it waits behind are warnings: it still waits there on every build.
-       g.msgQ=[]; g.msgQM=[]; g.msgT=0; g.msg=''; g.feed=[]; say('zq showing a','obj'); say('zq showing b','obj'); sayWhenFree('zq q','obj'); /* retargeted for the alert lane (the raid text R08): crit, warn and ext lines take the alert slot, so the high row is an objective */
-       if(!(g.msgQ&&g.msgQ.length===1&&g.msgQ[0]==='zq q')) bad.push('the queue no longer holds the plain string ('+JSON.stringify(g.msgQ)+')');
-       if(!(g.msgQM&&g.msgQM.length===1&&g.msgQM[0]&&g.msgQM[0].k==='obj')) bad.push('the waiting line lost its kind');
-       g.msgT=0.01;
-       for(f=0;f<6&&!hit2();f++) __loop(performance.now()+f*16.7);
-       if(!hit2()) bad.push('the waiting line never showed');
-       else if(hit2().k!=='obj') bad.push('the waiting line showed as kind '+hit2().k+', not obj');
+       if(__msgLog()[15].m==='zq sim'||newest()==='zq sim'||(g.alert&&g.alert.m==='zq sim')) bad.push('say() acts while G.sim is set');
+       // Nothing waits: a line sent to wait while others show is said at once, with its kind, and the queue stays empty.
+       g.msgQ=[]; g.msgQM=[]; g.msgT=0; g.msg=''; g.feed=[]; say('zq showing a','obj'); say('zq showing b','obj'); sayWhenFree('zq q','obj');
+       if(!hit2()) bad.push('a line sent to wait was not said at once');
+       else if(hit2().k!=='obj') bad.push('the line sent to wait was said as kind '+hit2().k+', not obj');
+       if(newest()!=='zq q') bad.push('the line sent to wait is not the newest feed line (it reads '+JSON.stringify(newest())+')');
+       if((g.msgQ||[]).length) bad.push('a line still waits in the queue ('+JSON.stringify(g.msgQ)+')');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{ try{ var g2=__state(); if(g2){ g2.sim=false; g2.msgQ=[]; g2.msgQM=[]; } if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); }
      return bad.length?bad.join('; '):null; }},
@@ -63508,7 +63511,8 @@ window.__REGRESS=[
          B=bossBand();
          O=band(function(s){ return s.indexOf(' offers you ')>=0||s.indexOf(' OFFERS ')>=0; },1);
          C=band(function(s){ return s.indexOf(CP)===0; },1);
-         var noMsg=(typeof MSGROWS!=='undefined'&&!MSGROWS);   // v27.xx (feed3) retarget: the top rows are lines of the feed, so there is no message plate to keep a band
+         var noMsg=(typeof MSGROWS!=='undefined'&&!MSGROWS)||(typeof feedRows==='function'&&!feedRows().length);   // v35.30 (cw-quiettext) retarget, his order 2026-10-27 (build the quiet hud): the grey rows are retired, so no message plate draws in the top centre
+           // v27.xx (feed3) retarget: the top rows are lines of the feed, so there is no message plate to keep a band
          if((!M&&!noMsg)||!B||!O||!C){ bad.push('control at '+at+': not all four were drawn (message '+!!M+', boss bar '+!!B+', offer '+!!O+', controller word '+!!C+')'); continue; }
          if(M&&hit(M,B)) bad.push('at '+at+' the message plate ('+rd(M)+') covers the boss bar ('+rd(B)+')');
          if(hit(O,C)) bad.push('at '+at+' the offer line ('+rd(O)+') and the controller word ('+rd(C)+') print on top of each other');
@@ -88146,6 +88150,8 @@ window.__REGRESS=[
      function endAny(){ try{ var g0=__state(); if(g0&&!g0.over){ g0.player.downed=false; g0.searching=null; __endRaid('abandon'); } }catch(_0){} }
      // What the HUD draws: G.msg while G.msgT is above zero, read after each whole frame.
      function note(seen){ var gg=__state(); if(seen&&gg&&gg.msg&&gg.msgT>0&&(seen.length===0||seen[seen.length-1]!==String(gg.msg))) seen.push(String(gg.msg));
+       // v35.30 (cw-quiettext) retarget, his order 2026-10-27 (build the quiet hud): the grey rows are retired and a raid line is a line of the left feed, so each new feed line counts as shown (seen.fd: ids read).
+       if(seen&&gg){ seen.fd=seen.fd||{}; var FL=(gg.fd&&gg.fd.lines)||[]; for(var q2=0;q2<FL.length;q2++) if(!seen.fd[FL[q2].id]){ seen.fd[FL[q2].id]=1; seen.push(String(FL[q2].txt)); } }
        // tr16fix: since the raid text rewrite (R16) the items taken are rows in the pickup stack (G.pick), not a Found line; they are
        // kept apart in seen.pk so the hot ground line is still read from the message line, on the build before and after.
        if(seen&&gg&&gg.pick&&gg.pick.length){ seen.pk=seen.pk||[]; for(var q=0;q<gg.pick.length;q++) if(seen.pk.indexOf(String(gg.pick[q].m))<0) seen.pk.push(String(gg.pick[q].m)); } }
@@ -88180,6 +88186,7 @@ window.__REGRESS=[
        var p=g.player;
        p.x=spot.x; p.y=spot.y; p.downed=false;
        g.msgQ=[]; g.msgT=0;
+       seen.fd={}; var FL0=(g.fd&&g.fd.lines)||[]; for(var q3=0;q3<FL0.length;q3++) seen.fd[FL0[q3].id]=1;   // v35.30 (cw-quiettext) retarget, his order 2026-10-27 (build the quiet hud): a feed line from before this search is not this search's
        keys={}; keys[__srchKey()]=true;
        for(var s=0;s<1500&&!ct.opened;s++){
          __loop(t0+(++f)*16.7); note(seen);
@@ -88280,12 +88287,14 @@ window.__REGRESS=[
        e.want='bandage'; e.helped=0; e.hostile=false; e.downed=false;
        g.bag=['bandage'];
        P2.notoriety=2;
-       g.msgQ=[]; g.msgT=0; g.msg='';
-       var seen=[];
+       g.msgQ=[]; g.msgT=0; g.msg=''; g.fd={t:0,seq:0,lines:[]};
+       var seen=[], fdId={};
        // tr18fix: since the raid text rewrite (R18) what he pays is a +$ row in the pickup stack tagged FROM THE SURVIVOR, where no
        // line can write over it, instead of the He pays you sentence; either one shown counts, on the build before and after.
        var pickPaid=false;
        var note=function(){ var g1=__state(); if(g1&&g1.msg&&(seen.length===0||seen[seen.length-1]!==g1.msg)) seen.push(String(g1.msg));
+         // v35.30 (cw-quiettext) retarget, his order 2026-10-27 (build the quiet hud): the grey rows are retired and a raid line is a line of the left feed, in the order said, so every new feed line counts as shown.
+         var FL=(g1&&g1.fd&&g1.fd.lines)||[]; for(var q0=0;q0<FL.length;q0++) if(!fdId[FL[q0].id]){ fdId[FL[q0].id]=1; seen.push(String(FL[q0].txt)); }
          if(g1&&g1.pick) for(var q=0;q<g1.pick.length;q++) if(String(g1.pick[q].m).charAt(0)==='+'&&/SURVIVOR/.test(String(g1.pick[q].tag||''))) pickPaid=true; };
        // THE PLAYER PATH: E held through one player update beside him, the same
        // test the key handler feeds (updatePlayer, the stray scan and strayLock).
@@ -88362,6 +88371,8 @@ window.__REGRESS=[
        // second row instead of writing over it. Every line on either row counts as shown, the older row first, with its detail.
        function rowTxt(m,s){ return String(m)+(s?' '+s:''); }
        function note(){ var g=__state(); if(!g) return; var up=[], f1=g.feed&&g.feed[1];
+         // v35.30 (cw-quiettext) retarget, his order 2026-10-27 (build the quiet hud): the grey rows are retired and a raid line is a line of the left feed, in the order said, so every feed line counts as shown.
+         var FL=(g.fd&&g.fd.lines)||[]; for(var q=0;q<FL.length;q++) up.push(String(FL[q].txt));
          if(g.msgT>0&&g.msg&&f1&&f1.T>0&&f1.m&&f1.m!==g.msg) up.push(rowTxt(f1.m,f1.sub));
          if(g.msg) up.push(rowTxt(g.msg,g.msgSub));
          for(var u=0;u<up.length;u++) if(seen.indexOf(up[u])<0) seen.push(up[u]); }
@@ -88750,13 +88761,17 @@ window.__REGRESS=[
        // r1334c: and no wave either. With nobody alive the spawner sends a man every
        // eight seconds with a line of its own; its clock is held back for the check.
        G2.waveT=-1e9;
-       G2.msgQ=[]; G2.msgT=0;
+       G2.msgQ=[]; G2.msgT=0; G2.fd={t:0,seq:0,lines:[]};
        var L1=['first','line','of','three'].join(' '), L2=['second','line','of','three'].join(' '), L3=['third','line','of','three'].join(' ');
        say(L1);
        if(typeof sayWhenFree==='function'){ sayWhenFree(L2); sayWhenFree(L3); }
        else { say(L2); say(L3); }   // v13.32 and earlier: the direct say the rival warning used
        var seen=[];
-       function note(){ var g=__state(); if(g&&g.msg&&(seen.length===0||seen[seen.length-1]!==g.msg)) seen.push(String(g.msg)); }
+       // v35.30 (cw-quiettext) retarget, his order 2026-10-27 (build the quiet hud): nothing waits behind the grey rows any more: each line is a line of the left feed, in the order said, none written over.
+       var fdId={};
+       function note(){ var g=__state(); if(g&&g.msg&&(seen.length===0||seen[seen.length-1]!==g.msg)) seen.push(String(g.msg));
+         var FL=(g&&g.fd&&g.fd.lines)||[]; for(var q=0;q<FL.length;q++) if(!fdId[FL[q].id]){ fdId[FL[q].id]=1; seen.push(String(FL[q].txt)); } }
+       function newest(){ var g=__state(), FL=(g&&g.fd&&g.fd.lines)||[]; return FL.length?String(FL[FL.length-1].txt):''; }
        note();
        for(i=0;i<720;i++){ __loop(t0+(++f)*16.7); note(); }
        var order=[L1,L2,L3].map(function(l){ return seen.indexOf(l); });
@@ -88770,7 +88785,7 @@ window.__REGRESS=[
          G2.msgQ=[]; G2.msgT=0;
          var L4=['said','at','once'].join(' ');
          sayWhenFree(L4);
-         if(__state().msg!==L4) bad.push('control: with nothing showing, a line through the queue was held back instead of said at once');
+         if(__state().msg!==L4&&newest()!==L4) bad.push('control: with nothing showing, a line through the queue was held back instead of said at once');
        }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
@@ -88810,6 +88825,8 @@ window.__REGRESS=[
        // v21.86 (raid text R04): two message rows, and a raid line may carry its detail (o.sub, v21.94). A line on either row,
        // headline or detail, counts as shown, so the planned YOU CARRY A LOANER with Equip your own gun as its detail reads too.
        function note(){ var g=__state(); if(!g) return; var up=[], f1=g.feed&&g.feed[1];
+         // v35.30 (cw-quiettext) retarget, his order 2026-10-27 (build the quiet hud): the grey rows are retired and a raid line is a line of the left feed, so every feed line counts as shown.
+         var FL=(g.fd&&g.fd.lines)||[]; for(var q=0;q<FL.length;q++) up.push(String(FL[q].txt));
          if(g.msg) up.push(String(g.msg)+(g.msgSub?' '+g.msgSub:''));
          if(g.msgT>0&&g.msg&&f1&&f1.T>0&&f1.m&&f1.m!==g.msg) up.push(String(f1.m)+(f1.sub?' '+f1.sub:''));
          for(var u=0;u<up.length;u++) if(seen.indexOf(up[u])<0) seen.push(up[u]); }
