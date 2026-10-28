@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.31 - THE QUIET HUD, PAUSE BOX AND CONTRACT NAMES
+
+Co-op hunt while he was away. his order 10-27: build the quiet hud, all 5 changes; a line said under the solo pause box showed on the answer line and again in the left feed behind the box, and with the grey rows gone CONTRACT DONE lost which contract when its words ran to five or more
+
+MEASURED. Check 35.31 passes, and fails on v35.30.
 ## v35.30 - THE QUIET HUD, ONE PLACE PER LINE
 
 Co-op hunt while he was away. his order 10-27: build the quiet hud, all 5 changes (this ship is changes 1 and 5); a warning showed as the top banner and again in the left feed, a remark as a grey row under the clock and again in the feed, a money pickup in the right stack and again in the feed, the hidden word sat alone at the right and the extraction badge at the right edge

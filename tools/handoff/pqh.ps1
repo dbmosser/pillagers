@@ -185,15 +185,15 @@ SubRx @'
 '@
 
 SubRx @'
-var VER='35.29';
-'@ @'
 var VER='35.30';
+'@ @'
+var VER='35.31';
 '@
 
-$pat = "(?m)^  now:'v35\.29:.*$"
+$pat = "(?m)^  now:'v35\.30:.*$"
 $c = ([regex]::Matches($s, $pat)).Count
 if ($c -ne 1) { throw "DEVNOW now line matched $c times, expected 1" }
-$new = "  now:'v35.30: the raid hud is quieter: no money card in the corner, the posture word and the stamina bar show only when they matter, run info folds to its count and opens when a contract moves, and the gun is named only on the ammo card Check 35.30 fails on v35.29',"
+$new = "  now:'v35.31: the raid hud is quieter: no money card in the corner, the posture word and the stamina bar show only when they matter, run info folds to its count and opens when a contract moves, and the gun is named only on the ammo card Check 35.31 fails on v35.30',"
 $s = [regex]::Replace($s, $pat, { param($m) $new })
 if (([regex]::Matches($s, "(?m)^  now:'")).Count -ne 1) { throw "more than one now key in DEVNOW" }
 $script:s = $s

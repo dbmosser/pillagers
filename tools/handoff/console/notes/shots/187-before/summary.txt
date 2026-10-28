@@ -2,3 +2,6 @@
   01-title-mode-menu                     staged       5.4s  
 == 4k : window 3876x2265, viewport 3840x2160
   01-title-mode-menu                     staged       5.8s  
+== 1080 : window 1956x1185, viewport 1920x1080
+  03-hub-floor                           staged       9.9s  
+  44-title-from-character-select         staged      12.9s  

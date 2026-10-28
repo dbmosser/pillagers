@@ -1,0 +1,135 @@
+diff --git a/AUDIT.md b/AUDIT.md
+index 0967727f1..ca1b6bc01 100644
+--- a/AUDIT.md
++++ b/AUDIT.md
+@@ -3844,6 +3844,7 @@ AND THE SECOND HALF OF THE STRETCH:
+ | WHEEL DROP HINT | v35.28 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 35.28 passes, fails on v35.27 |
+ | GUNS FIRST ON THE EXTRACTED CARD | v35.29 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 35.29 passes, fails on v35.28 |
+ | THE QUIET HUD, ONE PLACE PER LINE | v35.30 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 35.30 passes, fails on v35.29 |
++| SUPERHOT OFF EACH SITTING | v35.31 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 35.31 passes, fails on v35.30 |
+ | THE v11.24 FEUD CHECK MEASURED THE BULWARK, NOT FEUDS | v11.41 | harness repair, shipped with v11.41 because it blocked the corpus and the contract change cannot touch it. The v11.24 check parks pillagers at the COLD STORAGE centre at peace with the machines, counts hits on pillagers, calls them feud hits, and asserts raiderFeud 0 drops them to a third. PROVEN the hits are the BULWARK'S: with nBulwark 0 the only thing that can hit a pillager is another pillager, and the centre seat then shows ZERO pillager-on-pillager combat whether feuds are on or off (on 0, off 0; the raw count was 41 on, 42 off, all Bulwark). Fails identically on the v11.40 control and on a v11.36 fixture built before the v11.37 provoke change, so not a regression and not caused by anything this session; its earlier greens were contamination. FIX: the check isolates the Bulwark out, passes only on real isolable feud combat, and otherwise skips with both hit counts named. FOR HIS RULING: whether the rival-crew feud fires at all in real play, which the sim cannot see |
+ | HIS TWO REAL RUNS, 2026-09-04, AUTHENTICATED AND CONSUMED | v10.98 | Run #1 v10.96 COLD STORAGE, fog at dawn, 59s, EXTRACT 2,685c from ONE container, 6 items, 18 shots at 67 percent, 4 crawlers killed, 1 down, revived twice by raiders and three revives total, 2 walls down, 1 story read, contracts haul and kill-crawler, moved 7,594, sprint 14s, crouch 0s, closest extract 1m, ents 105. Run #2 v10.96 COLD STORAGE, clear noon, 13s, ABANDON carrying 460c and 3 items, no shot fired, moved 1,181, closest extract 96m. Both real: real durations, real distance, a named weapon, no fixture signature. Profile after: 2 runs, 1 extracted, 0 died, credits 395,700 which is the cheat box, XP 343, stash 4. HIS 13 SECOND ABANDON IS UNEXPLAINED and is a question for him, not a defect I can measure |
+ | TWO CHECKS DISAGREED ABOUT THE SERVO | v10.97 | Caught by the full corpus. v9.43 requires the servo to be SELLABLE because there is no repair to keep it for; v10.97 requires it KEPT because the contract board asks for it by name. Both right about their own premise. v9.43's real subject is the REASON and not the shelf, which its own message says: it was written when a dead repair economy was the only thing keeping the servo. It asks about the reason now and fails if the servo's KEEP line mentions repairs while the wear table has one band. Its sibling assertion, that the servo is not a crafting part, and every control around it, are untouched and still pass. No dial moves |
+diff --git a/DESIGN.md b/DESIGN.md
+index d1512a668..51f2af234 100644
+--- a/DESIGN.md
++++ b/DESIGN.md
+@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
+ one he named; touchdown, inbound, lastcall and board are untouched, so the family
+ may now be led by a sound three times the length of its siblings.
+ 
++## v35.31 - SUPERHOT OFF EACH SITTING
++
++Co-op hunt while he was away. his order of 10-27: superhot mode should be off by default; his save has carried it on since 10-25, so the game opened with it on and the party would have too
++
++MEASURED. Check 35.31 passes, and fails on v35.30.
+ ## v35.30 - THE QUIET HUD, ONE PLACE PER LINE
+ 
+ Co-op hunt while he was away. his order 10-27: build the quiet hud, all 5 changes (this ship is changes 1 and 5); a warning showed as the top banner and again in the left feed, a remark as a grey row under the clock and again in the feed, a money pickup in the right stack and again in the feed, the hidden word sat alone at the right and the extraction badge at the right edge
+diff --git a/dark_raiders.html b/dark_raiders.html
+index e2a1b3957..14bad31e2 100644
+--- a/dark_raiders.html
++++ b/dark_raiders.html
+@@ -3724,8 +3724,8 @@ var cv=document.getElementById('cv');
+ var hcv=document.getElementById('hcv');
+ 
+ // ================================================================ config
+-var VER='35.30';
+-var VER_AT='2026-10-27 20:43';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
++var VER='35.31';
++var VER_AT='2026-10-27 20:46';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+ // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
+ // and thirty builds have landed since; nothing in the game says so, and finding
+ // out that heals take time by dying mid-heal is the wrong way to learn it. This
+@@ -5999,6 +5999,13 @@ padPresetLoad(); // v28.xx (cw-cx-padpresets): legacy profiles keep their button
+ // v28.xx (cw-cx-flashdefault): existing saves keep their choice, including the old implicit off. Profile fields only; the save key stays the same.
+ if(!P.gameOpts||typeof P.gameOpts!=='object') P.gameOpts={};
+ if(!Object.prototype.hasOwnProperty.call(P.gameOpts,'flashRed')) P.gameOpts.flashRed=(P.cfg&&P.cfg.flashRed===1)?1:0;
++// v35.xx (cw-shoff), HIS ORDER (2026-10-27): "superhot mode should be off by default". EVERY SITTING STARTS WITH SUPERHOT OFF, whatever the save says. His
++// saves since 10-25 carried it on, so the game opened with it on, and at the party it would have opened on for his guests. The Settings row and the key left
++// of 1 still turn it on, for that sitting only: this load (a boot, and a restore, which loads through here) puts it back off. The save key is unchanged, and a
++// linked window still takes the host word over this (v16.74). Set only where it was on, so a save that never had it keeps the same shape.
++if(P.gameOpts.superhot) P.gameOpts.superhot=0;
++if(P.cfg&&typeof P.cfg==='object'&&P.cfg.superhot) P.cfg.superhot=0;
++if(P.tuned&&typeof P.tuned==='object'&&P.tuned.superhot) delete P.tuned.superhot;
+ if(typeof P.pname!=='string'||!P.pname)P.pname='PILLAGER';   // v7.64: named at the title screen; v7.85: typed
+ if(!P.arrays)P.arrays=0;   // v6.76: folded racks. Additive, so old saves just have none.
+ // v12.35, his order: the safe pocket is gone. Both fields are cleared off any
+@@ -54827,7 +54834,7 @@ var ROADMAP=[
+ // v7.63: parsecheck now FAILS the build when this field does not name the
+ // current VER, so it cannot silently rot a third time.
+ var DEVNOW={
+-  now:'v35.30: quiet hud: every raid line shows once, warnings at the top and the rest in the left feed; hidden is a status icon; an off-screen extraction shows under the extract distance Check 35.30 fails on v35.29',
++  now:'v35.31: every sitting starts with superhot off: the settings row and the key left of 1 still turn it on for that sitting, the next load is off again, and the 2 player demo starts with it off Check 35.31 fails on v35.30',
+   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
+ };
+ // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
+@@ -63889,12 +63896,14 @@ function arcadeSandboxIn(role){
+   // v28.xx (cw-cx-flashdefault), his 3.15: the demo starts on its own reduced flashing choice, even when the career save chose off.
+   sb.gameOpts=sb.gameOpts||{}; sb.gameOpts.flashRed=1;
+   if(sb.tuned) delete sb.tuned.flashRed;
++  sb.gameOpts.superhot=0; if(sb.tuned) delete sb.tuned.superhot;   // v35.xx (cw-shoff), his order of 10-27 "superhot mode should be off by default": the demo starts with it off too
+   ARCADE.role=(role==='p2')?'p2':'host';
+   sb.pname=(ARCADE.role==='p2')?'PLAYER 2':'PLAYER 1';
+   ARCADE.cfgAll=arcadeCfgCopy(CFG);   // v23.27 (arcfixb)
+   ARCADE.realJs=js; ARCADE.on=1;
+   netUpPutP(JSON.stringify(sb));
+   CFG.flashRed=1; // v28.xx (cw-cx-flashdefault): the demo setting takes effect in either window at entry.
++  if(netShHost()===null) CFG.superhot=0;   // v35.xx (cw-shoff): the demo starts with Superhot off; on a linked window the host word still decides (v16.74). Leaving puts the sitting dial back.
+   try{ KEYS.inv=null; keysInv(); }catch(_ki){}
+   try{ applyMenuZoom(); }catch(_tz){}   // v28.xx (cw-tvtext): the TV size takes hold at once
+   return true;
+diff --git a/tools/mkfixture.ps1 b/tools/mkfixture.ps1
+index 9e3eb5ea9..c0a9a3cf2 100644
+--- a/tools/mkfixture.ps1
++++ b/tools/mkfixture.ps1
+@@ -6168,6 +6168,49 @@ window.__REGRESS=[
+      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+      finally{ say2=_s2; __topClear(); __cleanProfile(); }
+      return bad.length?bad.join('; '):null; }},
++  {v:'35.31',what:'cw-shoff (his order of 10-27, superhot mode should be off by default): every sitting starts with superhot off: a save with superhot on (his saves since 10-25) loads with it off, the settings row still turns it on for the sitting, turned on and saved the next load is off again, and the 2 player demo starts with it off for both players and leaving it puts the sitting choice back',
++   run:function(){
++     if(typeof applyLoadedProfile!=='function'||typeof cycleGameOpt!=='function'||typeof gameOptIx!=='function'||typeof applyGameOpts!=='function'||typeof arcadeSandboxIn!=='function'||typeof arcadeSandboxOut!=='function') return 'SKIP: no profile loader, superhot row or demo sandbox in this build';
++     if(typeof netShHost==='function'&&netShHost()!==null) return 'SKIP: a linked window, where the host word decides';
++     var saved=P, cfg={}, k, oldStore=storeSet, oldSave=saveProfile, bad=[], i;
++     function need(ok,msg){ if(!ok) bad.push(msg); }
++     // The bytes saveProfile writes (P.cfg is the live dials), with the saved Superhot word set when one is given.
++     function saveOf(on){ var s=JSON.parse(JSON.stringify(P)); s.gameOpts=s.gameOpts||{}; if(on!==undefined) s.gameOpts.superhot=on; s.cfg=JSON.parse(JSON.stringify(CFG)); s.cfgv=18; return JSON.stringify(s); }
++     for(k in CFG) cfg[k]=CFG[k];
++     try{
++       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
++       storeSet=function(){}; saveProfile=function(){};
++       // ONE: his save as his exports show it since 10-25, Superhot on in the row and in the dials, loads with it off
++       CFG.superhot=1;
++       applyLoadedProfile({value:saveOf(1)});
++       need(CFG.superhot===0,'ONE: a save with superhot on loaded with the dial at '+CFG.superhot);
++       need(gameOptIx('superhot')===0,'ONE: a save with superhot on loaded with the settings row at '+gameOptIx('superhot'));
++       // TWO (control): the settings row still turns it on in the same sitting
++       cycleGameOpt('superhot');
++       need(CFG.superhot===1&&gameOptIx('superhot')===1,'TWO: the settings row did not turn superhot on for the sitting (dial '+CFG.superhot+', row '+gameOptIx('superhot')+')');
++       // THREE: turned on in this sitting and saved as the game saves, the next load is off again
++       applyLoadedProfile({value:saveOf()});
++       need(CFG.superhot===0,'THREE: turned on in settings, the next load had the dial at '+CFG.superhot);
++       need(gameOptIx('superhot')===0,'THREE: turned on in settings, the next load had the settings row at '+gameOptIx('superhot'));
++       // FOUR: the 2 player demo starts with it off for either player, also when the sitting turned it on, and leaving puts the sitting choice back
++       for(i=0;i<2;i++){
++         P.gameOpts=P.gameOpts||{}; P.gameOpts.superhot=1; CFG.superhot=1;
++         if(!arcadeSandboxIn(i?'p2':'host')) throw new Error('staging: the demo sandbox did not open');
++         need(CFG.superhot===0,'FOUR: the demo started with superhot at '+CFG.superhot+' for '+(i?'player 2':'player 1'));
++         applyGameOpts();
++         need(CFG.superhot===0,'FOUR: in the demo the settings pass put the sitting choice back ('+CFG.superhot+') for '+(i?'player 2':'player 1'));
++         arcadeSandboxOut();
++         need(CFG.superhot===1&&P.gameOpts.superhot===1,'FOUR: leaving the demo did not put the sitting choice back (dial '+CFG.superhot+')');
++       }
++     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
++     finally{
++       try{ if(ARCADE.on) arcadeSandboxOut(); }catch(_a){}
++       P=saved; storeSet=oldStore; saveProfile=oldSave;
++       for(k in CFG) if(!(k in cfg)) delete CFG[k]; for(k in cfg) CFG[k]=cfg[k];
++       try{ KEYS.inv=null; }catch(_k){}
++       try{ __topClear(); __cleanProfile(); }catch(_c){}
++     }
++     return bad.length?bad.join('; '):null; }},
+   {v:'35.30',what:'cw-quiettext, his order 2026-10-27 (build the quiet hud, all 5 changes), changes 1 and 5: a warn line said once draws in one place only (the top banner), an info line draws in the left feed and not at the top centre, a money pickup line draws in the right stack and not in the feed, concealed in cover is a status icon at the left and not the right-side word, and a ring badge held at the screen edge draws under the extract distance at the top centre',
+    run:function(){
+      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: no raid here';

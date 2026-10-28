@@ -1,0 +1,7 @@
+v35.31: the quiet hud, pause box and contract names
+
+quiet hud: a line said under the pause box shows on the box only; contract done names the contract
+
+Check 35.31. Fails on v35.30.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

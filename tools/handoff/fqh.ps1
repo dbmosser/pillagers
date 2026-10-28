@@ -12,12 +12,12 @@ function SubRx([string]$old, [string]$new) {
   $script:n++
 }
 
-if ($s.Contains("  {v:'35.30',what:")) { throw "check 35.30 is in the fixture already" }
+if ($s.Contains("  {v:'35.31',what:")) { throw "check 35.31 is in the fixture already" }
 
 SubRx @'
-  {v:'35.29',what:
+  {v:'35.30',what:
 '@ @'
-  {v:'35.30',what:'cw-quiethud (his order of 10-27, build the quiet hud, changes 2 3 4): in a raid the corner wallet card is gone and the backpack value draws once, the posture word shows only crouched, the stamina bar only below full and it fades, run info folds to its count and opens when a contract moves (its arrow opens it for good), and the belt caption is gone while the ammo card names the gun',
+  {v:'35.31',what:'cw-quiethud (his order of 10-27, build the quiet hud, changes 2 3 4): in a raid the corner wallet card is gone and the backpack value draws once, the posture word shows only crouched, the stamina bar only below full and it fades, run info folds to its count and opens when a contract moves (its arrow opens it for good), and the belt caption is gone while the ammo card names the gun',
    run:function(){
      var bad=[], g, p, PR=CanvasRenderingContext2D.prototype, ot=PR.fillText, rec=[], oldC=P.contracts, oldHud=P.hud?JSON.parse(JSON.stringify(P.hud)):null, rb=drawRaiderBoard, v, vs, hits, t, k, tg, CRAWL='destroy 5 crawlers';
      function grab(){ rec=[]; PR.fillText=function(s,x,y){ rec.push({s:String(s),lo:String(s).toLowerCase(),a:this.globalAlpha}); return ot.apply(this,arguments); }; try{ __frame(0.016); } finally { PR.fillText=ot; } }
@@ -86,7 +86,7 @@ SubRx @'
        try{ __topClear(); __cleanProfile(); }catch(_c){}
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'35.29',what:
+  {v:'35.30',what:
 '@
 
 $src = [IO.File]::ReadAllText($MyInvocation.MyCommand.Definition)

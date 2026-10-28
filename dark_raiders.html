@@ -3724,8 +3724,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.30';
-var VER_AT='2026-10-27 20:43';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.31';
+var VER_AT='2026-10-27 21:06';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -23108,7 +23108,7 @@ function feedSay(m,k,o){
   fk=feedKindOf(s,k,o); col=feedCol(fk); gl=undefined;
   if(fk==='power'){ D=feedPwrOf(s); if(D) col=D.hex; }
   segs=[{t:s,c:(fk==='info'||fk==='dim')?feedCol(fk):col}];
-  if(sub&&sub.split(/\s+/).length<=4) segs.push({t:'  \u00b7  '+sub,c:HUDC.dim});   // v28.xx (cw-feedcalm), the critic (2026-10-19): 'explaining sentences' in the left feed. A detail of five words or more (limited visibility due to fog, kill it for the hoard) stays out of the feed line; the headline is the line.
+  if(sub&&sub.split(/\s+/).length<=4||sub&&o&&o.key) segs.push({t:'  \u00b7  '+sub,c:HUDC.dim});   // v28.xx (cw-feedcalm), the critic (2026-10-19): 'explaining sentences' in the left feed. A detail of five words or more (limited visibility due to fog, kill it for the hoard) stays out of the feed line; the headline is the line.
   return feedAdd(segs,fk,{key:(o&&o.key)?('k:'+o.key):'',col:col});
 }
 // a world label (rising text): loot names are the pickup lines, hit feedback stays on its target, a kill has its own line and
@@ -23282,7 +23282,6 @@ function say(m,kind,o){
     // were. This reverses his rs-2 a ruling of 2026-10-24 (keep both alert copies).
     if(msgAlertK(k)){ alertSay(m,k,o); return; }   // v22.13 (R08): crit, warn and ext take the alert lane, not a feed row
     if(k==='pick'){ pickSay(m,o); return; }   // v22.50 (R16): an item picked up is a row in the pickup stack, never a feed row
-    try{ feedSay(m,k,o); }catch(_fsy){}   // v27.24 (feed1): every other line said is in the feed
     // v22.xx, the raid text rewrite (R37): A LINE SAID UNDER THE SOLO PAUSE BOX SHOWS ON IT. HIS ORDER (2026-10-09): the raid text
     // reads like a shooter HUD, and a menu answers on the menu. With the pause box open in a solo raid (the world stopped), a key
     // or a Settings change said its line into the raid feed behind the box, where it was not seen, and its clock stood still, so it
@@ -23290,6 +23289,10 @@ function say(m,kind,o){
     // to the answer line (#hubtoast, z 200, over the pause box and scaled with the menus since v12.25), with its detail after a
     // middle dot. The co-op overlay pause, where the world runs on, keeps the lanes.
     if((k==='sys'||k==='info')&&G.paused&&!G.over){ var _npl=false; try{ _npl=netPauseLive(); }catch(_np){} if(!_npl){ hubToast((o&&o.sub)?String(m)+'  \u00b7  '+String(o.sub):String(m)); return; } }
+    // v35.xx (cw-quietpause), HIS ORDER (2026-10-27): "build the quiet hud, all 5 changes". ONE PLACE UNDER THE PAUSE BOX TOO. The feed took the line before
+    // this test ran, so a key or a Settings change under the solo pause showed on the answer line over the box AND sat in the left feed behind it, and was read
+    // again after the box shut, about a change already made. The answer line is now its one place; the co-op overlay pause, where the world runs on, keeps the feed.
+    try{ feedSay(m,k,o); }catch(_fsy){}   // v27.24 (feed1): every other line said is in the feed
     return;   // v35.xx (cw-quiettext): the line is in the feed; the two grey message rows under the clock (v21.86 R04 to v23.xx tr9fixk) are retired
   }
   // v8.13, audit: no raid to say it into. The Mainframe's eleven messages and
@@ -54827,7 +54830,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.30: quiet hud: every raid line shows once, warnings at the top and the rest in the left feed; hidden is a status icon; an off-screen extraction shows under the extract distance Check 35.30 fails on v35.29',
+  now:'v35.31: quiet hud: a line said under the pause box shows on the box only; contract done names the contract Check 35.31 fails on v35.30',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

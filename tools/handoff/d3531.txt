@@ -1,0 +1,5 @@
+## v35.31 - THE QUIET HUD, PAUSE BOX AND CONTRACT NAMES
+
+Co-op hunt while he was away. his order 10-27: build the quiet hud, all 5 changes; a line said under the solo pause box showed on the answer line and again in the left feed behind the box, and with the grey rows gone CONTRACT DONE lost which contract when its words ran to five or more
+
+MEASURED. Check 35.31 passes, and fails on v35.30.
