@@ -34763,7 +34763,7 @@ window.__REGRESS=[
        // ONE: the prompt is on the screen with its keycap, over him
        down(); step(2); down(); draw();
        an=w2s(rd.x,26,rd.y);
-       fin=find('HOLD [V] FINISH'); vk=null; for(i=0;i<cap.length;i++) if(String(cap[i].t).toLowerCase()==='v'&&Math.abs(cap[i].x-an.x)<80){ vk=cap[i]; }
+       /* retarget (cw-meleez): melee is on Z by default since his 10-28 order, so the prompt and its keycap name the melee key as set */ fin=find('HOLD ['+keyLabel('KeyV','V')+'] FINISH'); vk=null; for(i=0;i<cap.length;i++) if(String(cap[i].t).toLowerCase()===String(keyLabel('KeyV','V')).toLowerCase()&&Math.abs(cap[i].x-an.x)<80){ vk=cap[i]; }
        if(!fin) bad.push('ONE: no HOLD [V] FINISH prompt was drawn over a downed pillager in reach');
        else {
          if(!(Math.abs(fin.x-an.x)<4)) bad.push('ONE: the FINISH prompt is '+Math.round(fin.x-an.x)+' px to the side of him');
@@ -34777,7 +34777,7 @@ window.__REGRESS=[
        rd.downed=0; rd.hostile=false; rd.state='patrol'; rd.hp=rd.maxhp=100; step(2); draw();
        if(find('FINISH')) bad.push('THREE: a standing pillager got a FINISH prompt');
        down(); step(2); down(); p.downed=true; draw(); p.downed=false;
-       if(find('HOLD [V] FINISH')) bad.push('THREE: a downed player got a FINISH prompt');
+       if(find('HOLD ['+keyLabel('KeyV','V')+'] FINISH')) bad.push('THREE: a downed player got a FINISH prompt');
        // FOUR: on a controller the prompt names the button as bound
        PAD.on=true; down(); step(2); down(); draw();
        if(!find('HOLD [Y] FINISH')) bad.push('FOUR: on a pad the prompt does not name the Y button');
