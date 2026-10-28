@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.90 - WALL HITS MAKE A SMALL NOISE
+
+Co-op hunt while he was away. His 10-28 approval of pick 7 and 10-25 answer g-18: the impact makes noise. Player rounds striking solid cover more than 220 units from the firing point now make a 200-unit AI noise at the entry face, at most once per 0.2 seconds per window. Glass, rockets and enemy rounds add none. Noise and weather scale it once; rig rattle does not. The existing player noise queue carries player 2 impacts to the host. No text or new rings. Watch: shooting a far wall now pulls machines as intended, and stray fire wakes more of the map; watch stealth raids and whether the demo gets busier.
+
+MEASURED. Check 35.90 passes, and fails on v35.89.
 ## v35.89 - THE PAUSE BOX LISTS THE RAID CONDITIONS THAT PAY SP
 
 Co-op hunt while he was away. his order 10-28 for the pause box was every modifier that changes sp. cw-pausesp listed the settings; the conditions (night, hard weather, signed terms, x1.05 each since cw-cx-condition-sp the same day) were missing and the headline left them out. They are rows now, a clear day shows one muted conditions none row, and the headline is settings times conditions.

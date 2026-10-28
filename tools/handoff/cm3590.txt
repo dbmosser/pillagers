@@ -1,0 +1,7 @@
+v35.90: wall hits make a small noise
+
+far wall hits make a small noise that machines investigate.
+
+Check 35.90. Fails on v35.89.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

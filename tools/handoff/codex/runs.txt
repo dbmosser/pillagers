@@ -427,3 +427,4 @@
 2026-10-28 13:27 o-05-120d2-fire-ends-sprint 131s ok PARTIAL in=1681833 out=16969 run=3
 2026-10-28 13:37 o-05-120d2-fire-ends-sprint 72s ok PARTIAL in=1998964 out=19065 run=4
 2026-10-28 13:39 o-05-120d2-fire-ends-sprint 40s ok DONE in=2359239 out=20344 run=5
+2026-10-28 13:45 o-06-141-wall-hits-make-noise 336s ok PARTIAL in=709337 out=11094 run=1

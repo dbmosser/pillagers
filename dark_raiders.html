@@ -3813,8 +3813,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.89';
-var VER_AT='2026-10-28 13:42';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.90';
+var VER_AT='2026-10-28 13:47';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33778,6 +33778,14 @@ function ricochetOff(b,w,ux,uy){
   if(typeof NET==='object'&&NET&&NET.on) netFxShot(b);   // v28.xx (cw-ricoseen), CLOUD HUNT 2026-10-15: a ricochet was seen only in the window that fired it; the party gets the bounced round as a second tracer
   return true;
 }
+// v28.xx (cw-cx-wallnoise), his 10-28 yes: a distant player round hitting solid cover makes a small noise at the impact.
+const IMPACT_NOISE=200;
+function impactNoise(x,y,sx,sy){
+  if(!G||!isFinite(sx)||!isFinite(sy)||Math.hypot(x-sx,y-sy)<=220) return;
+  if(typeof G.impNzT==='number'&&G.t<G.impNzT) return;
+  G.impNzT=G.t+0.2;
+  ping(x,y,IMPACT_NOISE*CFG.noiseMult*wx().noise,false,false,'player','move',null,1);
+}
 function updateBullets(dt){
   var p=G.player;
   for(var i=G.bullets.length-1;i>=0;i--){
@@ -34150,6 +34158,8 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
         var _rs=!!_struck&&!(_struck.hpLeft<=0);   // on a linked window the host takes the broken wall away a moment later, so the wall's own strength decides in both windows
         var _pf=(_rs&&ricoFace(b,_struck,ux,uy))?null:penFactor(_struck);   // v26.xx (feel18): a glancing round at steel glances, it does not punch through
         if(_pf&&(b._pen||0)<PEN_MAX&&b.dmg*_pf.dmg>=PEN_FLOOR){
+          // v28.xx (cw-cx-wallnoise): sound starts at the entry face, before the round steps out through cover.
+          if(b.player&&!b.rkt&&matOf(_struck)!=='glass') impactNoise(b.x,b.y,b.sx,b.sy);
           b._pen=(b._pen||0)+1;
           b.dmg*=_pf.dmg;
           b.vx*=_pf.spd; b.vy*=_pf.spd;
@@ -34170,6 +34180,8 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
           if(!G.sim) G.puffs.push({x:b.x,y:b.y,t:0,life:.18,c:'#8a939c',r:6});
           sfx("clank",b.x,b.y,matOf(_struck));
         } else {
+          // v28.xx (cw-cx-wallnoise): a stopped or bouncing player round uses the same impact noise budget.
+          if(b.player&&!b.rkt&&matOf(_struck)!=='glass') impactNoise(b.x,b.y,b.sx,b.sy);
           spark(b.x,b.y,'#ffd9a0',5,150);
           if(!G.sim) G.puffs.push({x:b.x,y:b.y,t:0,life:.22,c:'#8a939c',r:9});
           decal(b.x,b.y,'#0d0f13',_decR);
@@ -55788,7 +55800,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.89: the pause box also lists night, weather and terms in the score panel Check 35.89 fails on v35.88',
+  now:'v35.90: far wall hits make a small noise that machines investigate. Check 35.90 fails on v35.89',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

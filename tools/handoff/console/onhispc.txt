@@ -55,3 +55,4 @@
 10-28 13:24 v35.86 cw-cx-shotendssprint on his pc after 65s (8802 serves 35.86) week 81%
 10-28 13:29 v35.87 cw-cardstamp on his pc after 17s (8802 serves 35.87) week 81%
 10-28 13:34 v35.88 cw-menupolish1 on his pc after 33s (8802 serves 35.88) week 82%
+10-28 13:44 v35.89 cw-pausecond on his pc after 65s (8802 serves 35.89) week 82%
