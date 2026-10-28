@@ -1462,3 +1462,8 @@
 2026-10-28 0.0914 critic-o-139-solo-pings
 2026-10-28 0.0936 critic-o-139-solo-pings
 2026-10-28 0.0000 o-139-solo-pings
+2026-10-28 0.0926 critic-o-139-solo-pings
+2026-10-28 0.0960 critic-o-139-solo-pings
+2026-10-28 0.0922 critic-o-139-solo-pings
+2026-10-28 0.0928 critic-o-139-solo-pings
+2026-10-28 0.0919 critic-o-139-solo-pings

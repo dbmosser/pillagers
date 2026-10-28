@@ -1,0 +1,6 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  solo-ping-world                        staged       5.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"view":"world","solo":true,"age":217,"smooth":true,"followed":true}
+  solo-ping-minimap                      staged       5.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"view":"minimap","solo":true,"age":213,"smooth":true,"followed":true}
+  solo-ping-map                          staged       5.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"view":"map","solo":true,"age":207,"smooth":true,"followed":true}
+  party-ping-p1                          staged      10.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"seat":1,"linked":true,"counts":[1,1],"smooth":true,"sender":"p2 pad"}
+  party-ping-p2                          staged       7.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"seat":2,"linked":true,"counts":[1,1],"smooth":true,"sender":"p1 mouse"}

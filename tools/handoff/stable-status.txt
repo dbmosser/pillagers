@@ -1,24 +1,20 @@
 Latest stable: v35.28 (2026-10-27 22:16)
-Checked: 2026-10-28 03:30
+Checked: 2026-10-28 07:51
 Play address: http://localhost:8802/stable.html
 Result: no change
 
 Newest test runs, newest first:
-  corpus-1028-0157  v35.58  failing 44, new 8  robots 57 min/0 problems  -> 8 check(s) newly failing, e.g. v35.53 cw-hudsize, his ask 2026-10-27 (the hud messaging is  | v35.44 cw-msgroute, his complaint 2026-10-27 (too many messa
-  corpus-1028-0034  v35.54  failing 40, new 8  robots 57 min/0 problems  -> 8 check(s) newly failing, e.g. v35.53 cw-hudsize, his ask 2026-10-27 (the hud messaging is  | v35.44 cw-msgroute, his complaint 2026-10-27 (too many messa
+  corpus-1028-0442  v35.65  failing 45, new 4  robots 162 min/23 problems  -> 4 check(s) newly failing, e.g. v35.53 cw-hudsize, his ask 2026-10-27 (the hud messaging is  | v35.44 cw-msgroute, his complaint 2026-10-27 (too many messa
+  corpus-1028-0320  v35.63  failing 42, new 4  robots 115 min/1 problems  -> 4 check(s) newly failing, e.g. v35.53 cw-hudsize, his ask 2026-10-27 (the hud messaging is  | v35.44 cw-msgroute, his complaint 2026-10-27 (too many messa
+  corpus-1028-0157  v35.58  failing 44, new 4  robots 57 min/0 problems  -> 4 check(s) newly failing, e.g. v35.53 cw-hudsize, his ask 2026-10-27 (the hud messaging is  | v35.44 cw-msgroute, his complaint 2026-10-27 (too many messa
+  corpus-1028-0034  v35.54  failing 40, new 4  robots 57 min/0 problems  -> 4 check(s) newly failing, e.g. v35.53 cw-hudsize, his ask 2026-10-27 (the hud messaging is  | v35.44 cw-msgroute, his complaint 2026-10-27 (too many messa
   corpus-1027-2310  v35.43  failing 43, new 9  robots 115 min/0 problems  -> 9 check(s) newly failing, e.g. v35.35 cw-f1left, his order 2026-10-27 ("hitting f1 to get t | v33.08 golden sentry and pillager bot death callouts draw on
   corpus-1027-2147  v35.37  failing 34, new 2  robots 103 min/0 problems  -> 2 check(s) newly failing, e.g. v8.89 a pillager wading out of sight draws no rings in the w | v35.35 cw-f1left, his order 2026-10-27 ("hitting f1 to get t
   corpus-1027-2024  v35.28  failing 18, new 0  robots 57 min/0 problems  -> this is the current stable
   corpus-1027-1900  v35.19  failing 20, new 1  robots 115 min/1 problems  -> 1 check(s) newly failing, e.g. v25.41 his order (add minimap): the minimap marks extraction
-  corpus-1027-1843  v35.18  failing 13, new 0  robots 76 min/0 problems  -> older than the current stable
-  corpus-1027-1635  v35.11  failing 18, new 3  robots 111 min/0 problems  -> 3 check(s) newly failing, e.g. v8.85 a pillager footprint does not draw through a wall, and | v27.24 his order: one persistent feed at the bottom left tak
 
 Checks that are newly red and still red (they block until fixed, or until listed in tools/handoff/stable-known-red.txt):
   v35.53 cw-hudsize, his ask 2026-10-27 (the hud messaging is a clusterfuck, make
   v35.44 cw-msgroute, his complaint 2026-10-27 (too many messages reach the player
-  v34.26 the raid HUD quiets its corners: the item count and backpack cue on the g
   v31.04 cw-shkey, his note (2026-10-18) "superhot mode needs a toggle key": the k
   v27.40 his answer: a row for the style medals is reserved between the feed and t
-  v27.35 seen in the busy frame picture: the feed zone is a quarter of the screen
-  v16.44 kid mode: player 2 takes the chosen fraction of every hit, the lower of i
-  v13.32 the quick ascent, which skips the sector page, tells a player who lands w

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.66 - AIR STRIKE NEEDS 3000 DAMAGE
+
+Co-op hunt while he was away. His order 10-28: make it 3000 damage to unlock an airstrike instead of 1500. One number, AIR.need 1500 to 3000.
+
+MEASURED. Check 35.66 passes, and fails on v35.65.
 ## v35.65 - ONE READABLE TARGET PING LABEL
 
 Co-op hunt while he was away. The solo ping critic still found the normal enemy name touching the ping label. A live target ping now carries the specific enemy identity and distance in one existing readable plate; its old name text and backing wait until that ping expires. Crew and wounded-health marks stay visible, and the peddler keeps its deal prompt. Both maps use 24px target glyphs with 28px dark backing at 1080p. Sound, input, lifetime, sharing and world generation are unchanged. Playtest watch: mark a wounded sentry in solo and in either party window, check that one name and its health pip remain, then wait 10 seconds for the usual name to return; check both maps near white walls.

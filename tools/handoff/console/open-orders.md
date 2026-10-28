@@ -46,3 +46,5 @@ No HIGH items left except 177 hardcore save (parked until 11/1, goes first then)
 - 10-28 186e build 2 (cw-extpill): SHIPPED v35.50, ON HIS PC 00:03. The extract pill turns amber with a last minute countdown when its exit is closing (red when shut, one pulse per change); an exit just off screen is an edge arrow "c 152m"; the sky is a small icon beside the clock.
 - 10-28 186e build 3 (cw-answerline): SHIPPED v35.52, ON HIS PC 00:12. A try that did not work (health full, throw blocked, too tired to roll) answers in one small line under the character for 2 s, once per press; backpack full stays in the pickup stack.
 - 10-28 186e build 4 (cw-hudsize): SHIPPED v35.53, ON HIS PC 00:23. Feed and answer line at least 20 px, the opened controls list 18 px, danger headline 30 px; red words on a plate are a lighter red for contrast. Job file in console/done/.
+
+- His order 10-28 (verbatim, via the old intake chat): "make it 3000 damage to unlock an airstrike instead of 1500". Job in-session/201-airstrike-3000.md, helper (Sonnet high) started by the order chat.

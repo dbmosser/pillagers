@@ -1,0 +1,16 @@
+{
+    "title":  "AIR STRIKE NEEDS 3000 DAMAGE",
+    "why":  "His order 10-28: make it 3000 damage to unlock an airstrike instead of 1500. One number, AIR.need 1500 to 3000.",
+    "now":  "An air strike now needs 3000 damage to charge, twice as much as before.",
+    "edits":  [
+                  {
+                      "anchor":  "var AIR={need:1500,",
+                      "replacement":  "var AIR={need:3000,"
+                  },
+                  {
+                      "anchor":  "AIR.need (1,500)",
+                      "replacement":  "AIR.need (3,000; v28.xx cw-airstrike3000, HIS ORDER 2026-10-28: \"make it 3000 damage to unlock an airstrike instead of 1500\")"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027cw-airstrike3000: the damage needed to unlock an air strike is 3000, not 1500 (his order)\u0027,\n   run:function(){\n     if(typeof AIR!==\u0027object\u0027||AIR===null) return \u0027SKIP: no AIR table\u0027;\n     if(AIR.need!==3000) return \u0027the air strike needs \u0027+AIR.need+\u0027 damage, not 3000\u0027;\n     return null; }},"
+}

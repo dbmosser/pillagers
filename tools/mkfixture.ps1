@@ -6168,6 +6168,11 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'35.66',what:'cw-airstrike3000: the damage needed to unlock an air strike is 3000, not 1500 (his order)',
+   run:function(){
+     if(typeof AIR!=='object'||AIR===null) return 'SKIP: no AIR table';
+     if(AIR.need!==3000) return 'the air strike needs '+AIR.need+' damage, not 3000';
+     return null; }},
   {v:'35.65',what:'a solo or guest target ping draws one specific name plate, keeps the health pip, restores the normal name on expiry, and has 24px map glyphs',
    run:function(){
      var PR=CanvasRenderingContext2D.prototype,ft=PR.fillText,fr=PR.fillRect,cg=colourCueGlyph,cs=canSee;

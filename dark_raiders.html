@@ -3730,8 +3730,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.65';
-var VER_AT='2026-10-28 04:15';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.66';
+var VER_AT='2026-10-28 07:53';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -55475,7 +55475,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.65: Target pings use one readable name label and larger map markers. Check 35.65 fails on v35.64',
+  now:'v35.66: An air strike now needs 3000 damage to charge, twice as much as before. Check 35.66 fails on v35.65',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -65568,7 +65568,7 @@ function flowDirFired(D,amb,made){
 // v26.xx (flow2), HIS YES (2026-10-14) to suggestion 5: "no codes but a air strike would be cool, it should be something you have to build up by
 // doing so much damage". THE AIR STRIKE. A METER fills from the damage YOU deal: every frame (before the bodies are cleared, so a killing blow
 // is seen) the tick reads each hostile body's health, and a drop while the body carries your hit mark (pHitT, which every round, charge,
-// strike of the crowbar and shock of yours sets for a third of a second) is damage dealt, never more than the health it had. AIR.need (1,500)
+// strike of the crowbar and shock of yours sets for a third of a second) is damage dealt, never more than the health it had. AIR.need (3,000; v28.xx cw-airstrike3000, HIS ORDER 2026-10-28: "make it 3000 damage to unlock an airstrike instead of 1500")
 // fills it; the callout says AIR STRIKE READY, PRESS G. G aims it: the gun goes quiet (the trigger yields, as with the wheel), a dashed red
 // ring follows the cursor out to AIR.reach (1,100) from you, LMB calls it on that spot, G or opening the map, backpack or wheel cancels. AIR STRIKE
 // INBOUND, then 1.5 s later six blasts (AIR.R 105 wide each, one every 0.2 s) walk over the ring (150 across): each deals up to 212 to every
@@ -65576,7 +65576,7 @@ function flowDirFired(D,amb,made){
 // never calls damagePlayer, never reaches a teammate, your hire, a friendly pillager or a peaceful bystander, the Peddler or the Survivor. The
 // strike's own damage never refills the meter. The meter starts empty each raid and is spent by the call. DEMO and CAREER are the same. The
 // blasts are placed with Math.random like the wave director and nothing draws from the seeded stream.
-var AIR={need:1500,R:105,dmg:170,delay:1.5,n:6,gap:0.2,spread:150,reach:1100,aimMin:0.15};
+var AIR={need:3000,R:105,dmg:170,delay:1.5,n:6,gap:0.2,spread:150,reach:1100,aimMin:0.15};
 function airS(){ var S=flowS(); if(!S.air) S.air={m:0,aim:0,aimT:0,prev:0,sk:[],used:0,dealt:0,rdy:0}; return S.air; }
 function airReady(){ return airS().m>=AIR.need; }
 function airSide(e){ return !!e&&!e.neutral&&e.kind!=='peddler'&&e.kind!=='stray'&&!e.merc&&!e.friendlyPC&&!e.friendly&&!e.hire&&!(e.kind==='raider'&&!e.hostile); }
