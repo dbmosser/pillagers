@@ -1,0 +1,1 @@
+| NO POP UP AFTER THE EXTRACTION SINK | v35.37 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 35.37 passes, fails on v35.36 |

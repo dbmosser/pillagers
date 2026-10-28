@@ -3724,8 +3724,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.36';
-var VER_AT='2026-10-27 21:20';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.37';
+var VER_AT='2026-10-27 21:32';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17584,6 +17584,18 @@ function ascentSink(p){
   zs=g.zones;
   if(zs&&!g.over) for(i=0;i<zs.length;i++){ z=zs[i]; if(z&&z.pullT>0){ k=Math.min(1,z.pullT/1.4); s=Math.max(s,ASC_SINK*k*k); } }
   return s;
+}
+// v35.xx (cw-xsink), HIS NOTE (2026-10-27): "when player extracts into the ground, player pops back up and is shown fully visible for a moment before the 'extracted' screen comes
+// up.  this should not happen". The boarding hold sinks him (ascentSink) only while a ring's pull runs in a live raid, and the frame the pull completes ends the raid (G.over),
+// or in the 2 player DEMO benches him with the ring's pull cleared, so every frame after it drew him whole, standing on the ring. Once an extraction has taken him he is not
+// drawn in the world he left: G.over is extract, or the DEMO has him out (specOut) after his own extraction (G.arcX, or the host out for the run while player 2 plays on).
+// His aim line goes with him, and the other window stops drawing him too (netUpHid). A death, an abandon and a bench nobody extracted from are unchanged. Drawing only:
+// no seeded draw, and the raid ends and pays as before.
+function ascOut(p){
+  var g=G;
+  if(!g||g.sim||!p||p!==g.player) return false;
+  if(g.over==='extract') return true;
+  return !!(g.arcade&&p.specOut&&(g.arcX||(typeof ARCADE==='object'&&ARCADE&&ARCADE.xOut==='h')));
 }
 ['keydown','mousedown','touchstart'].forEach(function(n){ window.addEventListener(n,function(e){ if(e&&e.repeat) return; if(G&&G.rise&&!G.mapFirst) G.rise=null; },true); });
 // the hatch, the teal light up out of it and the clip at the ground line; ascentEnd closes the clip and draws the dust ring
@@ -37114,12 +37126,12 @@ function drawAimMark(sh,wep,ang,dist,ads,bld){
 }
 function aimMarks(p){
   var w=p.wep, mw, d, M, i, g, n=0;
-  if(w&&w.id&&w.id!=='fists'&&p.hp>0&&!p.downed&&!(G.deathBeat>0)&&!(p.roll>0)&&!(G.handsT>0)&&!p.hand&&!(G.punchT>0)){
+  if(w&&w.id&&w.id!=='fists'&&p.hp>0&&!p.downed&&!(G.deathBeat>0)&&!(p.roll>0)&&!(G.handsT>0)&&!p.hand&&!(G.punchT>0)&&!ascOut(p)){   // v35.xx (cw-xsink): no aim line from a pillager an extraction took
     mw=mouseWorld(); d=Math.hypot(mw.x-p.x,mw.y-p.y);
     if(drawAimMark(p,w,p.face,d,!!p.ads,cosWorn('build'))) n++;
   }
   if(NET.on&&NET.up) for(i=0;i<NET.up.length;i++){
-    g=NET.up[i]; if(!netUpShown(g)||g.dn||g.hd||g.roll>0||!g.wep||g.wep.id==='fists') continue;
+    g=NET.up[i]; if(!netUpShown(g)||netUpHid(g)||g.dn||g.hd||g.roll>0||!g.wep||g.wep.id==='fists') continue;
     if(drawAimMark(g,g.wep,g.f,200,false,g.lk&&g.lk.build)) n++;
   }
   return n;
@@ -40601,7 +40613,7 @@ var SHD=G.shells[i];
     if(!canSee(p.x,p.y,p.face,CW.x,CW.y,G.vseg)) continue;
     DR.push({k:CW.y,cr:CW});
   }
-  DR.push({k:p.y-drawLift((G&&G.map&&G.map.liftAt)?G.map.liftAt(p.x,p.y):0),pl:1});
+  if(!ascOut(p)) DR.push({k:p.y-drawLift((G&&G.map&&G.map.liftAt)?G.map.liftAt(p.x,p.y):0),pl:1});   // v35.xx (cw-xsink): an extraction that took him leaves no body on the ring
   if(NET.on) netUpDraw(DR);   // v15.79: the others in the party, sorted into the same list at the depth of where they stand
   DR.sort(function(a,b){return a.k-b.k;});
   try{ if(!G.sim) aimMarks(p); }catch(_am){}   // v32.xx (cw-playerstates), HIS PICK a16 B: the dotted aim line and the rare gun laser, under the bodies
@@ -54892,7 +54904,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.36: the raid hud is quieter: no money card in the corner, the posture word and the stamina bar show only when they matter, run info folds to its count and opens when a contract moves, and the gun is named only on the ammo card Check 35.36 fails on v35.35',
+  now:'v35.37: an extraction that sank him never draws him whole again Check 35.37 fails on v35.36',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -59543,6 +59555,7 @@ function netOnState(peer,m){
   if(up&&m.dn&&!g.dn&&g.n>1&&typeof G!=='undefined'&&G&&!G.over&&!G.sim&&(G.seed>>>0)===((+m.sd)>>>0)){ try{ say('TEAMMATE DOWN','crit',{sub:'REVIVE '+String(netSeatName(s)||'your teammate').toUpperCase(),key:'tmdown'+s,icon:'party',hold:(function(gg){ return function(){ return !!(gg&&gg.dn); }; })(g)}); padRumble(0.55,420); try{ sndDowned(0,x,y); }catch(_dn){} try{ sndMateAlert(); }catch(_mq){} }catch(_md){} }   // v24.xx (his order 2026-10-12): and heard, where he fell
   if(up){ g.cr=m.c?1:0; g.sp=m.sp?1:0; g.dn=m.dn?1:0; g.w=netClean(m.w,24); g.fk=(m.fk===1||m.fk===2)?m.fk:0; g.el=(g.fk===2&&typeof m.el==='string'&&ELEM[m.el])?m.el:''; g.sd=(+m.sd)>>>0; g.pz=m.pz?1:0; g.mf=(m.mf===1||m.mf===2)?m.mf:0; g.hp=+m.hp||0; g.mh=+m.mh||100; g.ar=+m.ar||0; g.ac=+m.ac||0; g.dt=+m.dt||0; g.sa=(m.sa===undefined)?1:(m.sa?1:0); g.hd=m.hd?1:0; }   // v15.79: crouched, sprinting, downed, the gun in hand and the seed of the raid he is in; v16.20: paused; v16.23: health and armour // v28.47 (cloud-coop-teammate-bare-hands), CLOUD HUNT 2026-10-15: hd kept; a word without it (an older window) reads as empty hands
   if(up&&(m.sh||g.sh)) g.sh=m.sh?1:0;   // v23.30 (arcade9): the teammate spawn shield
+  if(up) g.xo=m.xo?1:0;   // v35.xx (cw-xsink): an extraction took him (the DEMO host out for the run); a word without it (an older window) reads as not out
   if(up) g.pb=m.pb?1:0;   // v28.48 (cloud-coop-teammate-shield-bubble), CLOUD HUNT 2026-10-15: his SHIELD BUBBLE, kept from every word; a word without it (an older window) reads as no bubble
   if(up){ g.fk=(m.fk===1||m.fk===2)?m.fk:0; g.el=(g.fk===2&&typeof m.el==='string'&&ELEM[m.el])?m.el:''; }   // v23.xx (forge8): his forged gun
   if(lk) g.lk=lk;
@@ -59551,6 +59564,7 @@ function netOnState(peer,m){
     if(up){ out.k='r'; out.sd=g.sd; out.c=g.cr; out.sp=g.sp; out.dn=g.dn; out.w=g.w; out.pz=g.pz; out.mf=g.mf|0; out.hp=g.hp; out.mh=g.mh; out.ar=g.ar; out.ac=g.ac; out.dt=g.dt; out.sa=g.sa; out.hd=g.hd; }   // v15.79: passed on as it came // v28.47 (cloud-coop-teammate-bare-hands), CLOUD HUNT 2026-10-15: hd passed on too
     if(lk) out.lk=lk;
     if(up&&g.fk){ out.fk=g.fk; if(g.el) out.el=g.el; }   // v23.xx (forge8)
+    if(up&&g.xo) out.xo=1;   // v35.xx (cw-xsink): passed on as it came
     if(up&&g.pb) out.pb=1;   // v28.48 (cloud-coop-teammate-shield-bubble), CLOUD HUNT 2026-10-15: his SHIELD BUBBLE passed on as it came
     for(i=0;i<NET.peers.length;i++) if(NET.peers[i]!==peer&&NET.peers[i].state==='in') netSendFast(NET.peers[i],out);
   }
@@ -60980,7 +60994,7 @@ function netUpTick(dt){
   NET.upAcc=Math.min(NET.upAcc-NET_HUB_STEP,NET_HUB_STEP);
   msg={t:'st',k:'r',sd:NET.upSeed>>>0,x:+(+p.x||0).toFixed(1),y:+(+p.y||0).toFixed(1),f:+(+p.face||0).toFixed(2),m:p.moving?1:0,r:(p.roll>0)?+(+p.roll).toFixed(2):0,
        c:(G.pCrouch||crouchHeld())?1:0,sp:G.sprinting?1:0,dn:p.downed?1:0,w:(p.wep&&p.wep.id)?String(p.wep.id):'',fk:(p.wep&&(p.wep.fk===1||p.wep.fk===2))?p.wep.fk:0,el:(p.wep&&p.wep.fk===2&&p.wep.el)?String(p.wep.el):'',pz:G.paused?1:0,mf:mapFirstWord(),
-       hp:Math.round(p.hp||0),mh:Math.round(p.maxhp||100),ar:Math.round(p.armor||0),ac:Math.round(armorCap()||0),dt:p.downed?Math.max(0,Math.ceil(p.downT||0)):0,sa:(!CFG.superhot||G.shAct)?1:0,hd:(G.handsT>0||p.hand)?1:0};   // v16.20: pz, this player is paused; v16.23: health and armour, for a teammate's bandage or plate // v28.47 (cloud-coop-teammate-bare-hands), CLOUD HUNT 2026-10-15: hd, his hands are busy (a grenade or heal out, a search or a seal), so his teammate draws him without his gun as he sees himself
+       hp:Math.round(p.hp||0),mh:Math.round(p.maxhp||100),ar:Math.round(p.armor||0),ac:Math.round(armorCap()||0),dt:p.downed?Math.max(0,Math.ceil(p.downT||0)):0,sa:(!CFG.superhot||G.shAct)?1:0,hd:(G.handsT>0||p.hand)?1:0,xo:ascOut(p)?1:0};   // v16.20: pz, this player is paused; v16.23: health and armour, for a teammate's bandage or plate // v28.47 (cloud-coop-teammate-bare-hands), CLOUD HUNT 2026-10-15: hd, his hands are busy (a grenade or heal out, a search or a seal), so his teammate draws him without his gun as he sees himself
   if(NET.role==='host') msg.s=NET.seat;   // a friend names no seat: the host files him under the seat of his link
   lk=netLook(); ls=JSON.stringify(lk);
   if(ls!==NET.lkSent||NET.upN%10===0){ msg.lk=lk; NET.lkSent=ls; }
@@ -60998,6 +61012,10 @@ function netUpShown(g){ return !!g&&g.n>0&&g.age<NET_HUB_STALE&&g.seat!==NET.sea
 // v16.86: a seat whose raid on this seed ended (its out word came) and that has not come up again since. A last position
 // word of his landing after the out word still draws him for a moment (check 15.79 counts on that); he is nobody to wait for.
 function netUpGone(g){ return !!g&&!!NET.upOut&&!!NET.upOut[g.seat]&&NET.upOut[g.seat]===(g.sd>>>0); }
+// v35.xx (cw-xsink), his note 2026-10-27 (ascOut): a teammate an extraction took is not drawn here either: his word says he is out (xo, the DEMO host out for the run),
+// his extraction out word came on this raid (a late position word must not stand him back up on the ring for NET_HUB_STALE), or player 2 extracted in a DEMO run that
+// goes on. Drawing only: he still counts as up top everywhere netUpShown is read.
+function netUpHid(g){ return !!g&&(g.xo===1||(netUpGone(g)&&!!NET.upHow&&NET.upHow[g.seat]==='extract')||(typeof G!=='undefined'&&!!G&&!!G.arcade&&NET.role==='host'&&typeof ARCADE==='object'&&!!ARCADE&&ARCADE.xOut==='p')); }
 // v16.38, HIS NOTE: the host screen should clearly say You are hosting, do not quit. Is this window hosting a raid its party is in?
 // Then the pause box says so, and closing the window asks first (the browser's own leave page question).
 function netHostHolds(){
@@ -61038,7 +61056,7 @@ function netMateLamp(c,r){
 function netUpDraw(DR){
   var i, g, n=0;
   if(!NET.on||!DR||typeof G==='undefined'||!G) return 0;
-  for(i=0;i<NET.up.length;i++){ g=NET.up[i]; if(netUpShown(g)){ DR.push({k:g.y-drawLift((G.map&&G.map.liftAt)?G.map.liftAt(g.x,g.y):0),up:g}); n++; } }
+  for(i=0;i<NET.up.length;i++){ g=NET.up[i]; if(netUpShown(g)&&!netUpHid(g)){ DR.push({k:g.y-drawLift((G.map&&G.map.liftAt)?G.map.liftAt(g.x,g.y):0),up:g}); n++; } }
   return n;
 }
 // One of the party up top: drawOp as this window draws its own body up top, in his fit and racks with his gun, crouched,
@@ -61084,7 +61102,7 @@ function netUpTags(){
   try{
     wc.font=FS(TYPE.micro);
     for(i=0;i<NET.up.length;i++){
-      g=NET.up[i]; if(!netUpShown(g)) continue;
+      g=NET.up[i]; if(!netUpShown(g)||netUpHid(g)) continue;   // v35.xx (cw-xsink): no name plate over a teammate an extraction took
       nm=netSeatName(g.seat)||'PILLAGER';
       tw=wc.measureText(nm).width;
       if(wlUnder(g.x-tw/2-4,g.y-(g.dn?77:62)-U,tw+8,(g.dn?28:13)+8)){ n++; continue; }   // v31.xx (cw-trcol2): nor a party name (and its DOWN plate) over the corner column or the score plate

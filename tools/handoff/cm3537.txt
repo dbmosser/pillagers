@@ -1,0 +1,7 @@
+v35.37: no pop up after the extraction sink
+
+an extraction that sank him never draws him whole again
+
+Check 35.37. Fails on v35.36.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

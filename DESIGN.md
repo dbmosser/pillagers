@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.37 - NO POP UP AFTER THE EXTRACTION SINK
+
+Co-op hunt while he was away. his note 10-27: after sinking into the ground on extraction he popped back up fully visible for a moment before the extracted screen
+
+MEASURED. Check 35.37 passes, and fails on v35.36.
 ## v35.36 - QUIET HUD PANELS
 
 Co-op hunt while he was away. his order of 10-27: build the quiet hud, all 5 changes; this build is changes 2, 3 and 4 (one money number, things at rest hide, the gun name once)

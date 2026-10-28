@@ -1,1 +1,3 @@
 10-27 21:20 v35.35 cw-f1left on his pc after 86s (8802 serves 35.35) week 65%
+10-27 21:26 v35.36 cw-quiethud NOT on his pc after 264s (8802 serves 35.35) week 66%
+10-27 21:26 v35.36 cw-quiethud on his pc after 2s (8802 serves 35.36) week 66%
