@@ -22,3 +22,20 @@ v33.68   # 2 sprites touch the edge of the pixel scratch canvas; only drawn with
 # Remove these two lines once a full run on v35.38 or newer passes them.
 v31.32   # the check passed a fake future time that trHide ignores since v35.01; it now stages an old stamp
 v32.46   # RB now reaches the lift belt panel (v35.10, pad reaches the lift belt) before it wraps to the conditions
+# Stable triage 2026-10-28 (corpus-1027-2147 on v35.37 had 14 newly red; each rerun alone on v35.48, fixture of master 0143427a1).
+# 12 are out of date by his 10-27 orders. v8.89 (renderer not deterministic at dt 0, a corpus-only flake) and v35.35 (retargeted in 716318cfb) pass on v35.48 and are not listed.
+# Remove a line once a full run passes it or it is retargeted.
+# the quiet hud (his 10-27 order "build the quiet hud, all 5 changes": v35.30 to v35.36 cw-quiettext and cw-quiethud)
+v9.09    # picks the first panel with a minimise glyph, now the conditions card folded to one line (no resize corner, v35.36 change 3); passes when aimed at the pillager board
+v9.66    # the conditions card folds to one line (300 by 38) at rest, so the "barely drew" control fires (v35.36 change 3)
+v12.80   # the contract note line only prints while the folded run info card is open (v35.36 change 3), the control reads it at rest
+v13.08   # control wants the belt caption (name, FIRE, SIGNAL) drawn in a raid; it is deleted on purpose (v35.36 change 4, the gun name shows once)
+v32.24   # same belt caption: its fire chip is no longer drawn, so there is no keycap to measure (v35.36 change 4)
+v31.38   # wants the stamina bar drawn at full stamina; it shows only below full now (v35.36 change 3)
+v31.17   # same stamina bar rule: a fresh raid draws two vitals bars, not three (v35.36 change 3)
+v18.41   # wants the STANDING posture chip while standing; the posture word shows only crouched or down (v35.36 change 3)
+v18.49   # wants the right-hand HIDDEN chip when crouched; the concealment state moved to the status icon list (v35.30 to v35.33 cw-quiettext)
+v25.66   # the loc state wants the location tag or a top row beside the clock; one alert at a time rules the top centre, the boss spotted alert replaces the tag (quiet hud, v35.30 to v35.33)
+v12.74   # reads the refusal off g.msg, the retired grey row; the refusal "need $1,140" goes to the left feed now (cw-quiettext v35.30, same as the 18 checks re-aimed in 8c67af2af)
+# his note 10-27 "extract into the ground, player pops back up" (job 189, v35.37 cw-xsink)
+v15.79   # a late position word after an extraction out word must not stand the teammate back up on the ring (netUpHid); the check expects him drawn again
