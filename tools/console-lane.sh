@@ -204,8 +204,16 @@ if [ $ENGINE = cli ]; then
   # pictures.
   # Helpers never use MCP tools (--strict-mcp-config) or the coordinator memory index (DISABLE_AUTO_MEMORY, which also keeps
   # helpers out of that folder): together a step starts at 39k instead of 52k (measured 10-25 in a helper-like setting).
+  # 10-27 night (CEO chat, his "figure out an efficient escalation plan to figure out which model to use"): the model climbs with the tries.
+  # runs.log 10-17..10-27: 63 of 100 finished jobs were done on run 1 and 15 on run 2, while 26 jobs failed after up to 5 Sonnet runs and
+  # $29 of their $47 went to runs 3 to 5 that changed nothing. So runs 1-2 are Sonnet, every later run is Opus (caps ESC_*), and a job file
+  # whose first 5 lines say "model: opus" starts on Opus (the coordinator marks crashes and party breakers that way).
+  pr=$(cat "$C/spend.txt" "$C/cli-spend.txt" 2>/dev/null | grep -c " $name$")
+  lm=$(cap CLI_MODEL sonnet); le=$(cap CLI_EFFORT high)
+  if [ "$pr" -ge "$(cap ESC_AFTER 2)" ] || head -5 "$t" | grep -qi "^model: *opus"; then lm=$(cap ESC_MODEL opus); le=$(cap ESC_EFFORT high); fi
+  sed -i "s/ on Claude Code (/ on Claude Code, $lm $le, run $((pr+1)) (/" "$C/status-$L.txt" 2>/dev/null
   ( cd "$R" && printf '%s' "Your task id is $name. Your lane is $L. You run in Claude Code: run every command with the Bash tool (never the PowerShell tool), use Read (it also shows pictures; it replaces view_image), Grep, Glob, Write, Edit and Bash, with each Bash command typed exactly in a form your rules list. $(cat "$t")" | env -u ANTHROPIC_API_KEY CLAUDE_CODE_AUTO_COMPACT_WINDOW="$(cap CLI_COMPACT 1000000)" CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 claude -p \
-      --append-system-prompt-file "$(cygpath -m "$C/RULES.md")" --model "$(cap CLI_MODEL sonnet)" --output-format json --max-turns "$(cap CLI_TURNS 150)" --strict-mcp-config \
+      --append-system-prompt-file "$(cygpath -m "$C/RULES.md")" --model "$lm" --effort "$le" --output-format json --max-turns "$(cap CLI_TURNS 150)" --strict-mcp-config \
       --allowedTools "${ALLOW[@]}" > "$out" 2> "$C/log/$name-$stamp.err" )
   cost=$(grep -o '"total_cost_usd":[0-9.eE+-]*' "$out" | tail -1 | cut -d: -f2); cost=${cost:-0}
   if awk -v c="$cost" 'BEGIN{exit !(c+0==0)}'; then
