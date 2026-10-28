@@ -220,7 +220,7 @@ actually look good". So for any change a player can see:
   the job parks in waiting\ until the coordinator has done it. A TASK WAITING that names your own id or a task that is not open
   counts as a try.
 
-- WORDS (his order 10-18 PM): on screen a player is a "pillager", the AI humans are "pillager bots", and "raider" never shows. Code names (kind raider, CFG.nRaider) stay as they are.
+- WORDS (his order 10-28 AM, reversing 10-18 PM): "pillagers should always be referred to as 'pillagers' never 'pillager bots'". On screen players and the AI humans are both "pillagers"; "pillager bot" and "raider" never show. Code names (kind raider, CFG.nRaider) stay as they are.
 
 - HIS ROUND 2-3 RULES (10-18 evening; full list in tools/handoff/q-round3/answers.md):
   - Finish line (3.51 a): critic 4 for the raid, waiting, pause and run-over screens; 3 is enough for the rest.
@@ -229,5 +229,5 @@ actually look good". So for any change a player can see:
   - You may decide alone (2.85): anything that is not a brand new feature and not a change to one of his rulings, including tuning up to about 25 percent.
   - A 2-player change is done only after you have seen it work in both windows, with a picture from each (2.86 a).
   - Mon 10/26 and the lock: his 10-20 23:00 order beats 3.37 c and 2.81 c for the game file: nothing waits for the party; the lock freezes only the party copy.
-  - Callouts use the specific name, e.g. "golden sentry down" or "golden pillager bot down" (3.84 b).
+  - Callouts use the specific name, e.g. "golden sentry down" or "golden pillager down" (3.84 b).
   - Plain language ALWAYS in anything written for him (2.38 b).
