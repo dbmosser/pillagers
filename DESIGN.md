@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.23 - THE WHAT IS NEW STAMP KEEPS UP
+
+Co-op hunt while he was away. The card was stamped v35.07 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.
+
+MEASURED. Check 35.23 passes, and fails on v35.22.
 ## v35.22 - RECOVERING IN SUPERHOT
 
 Co-op hunt while he was away. his note 10-27 on build 35.19: recovering to 85 shown while his health stood still

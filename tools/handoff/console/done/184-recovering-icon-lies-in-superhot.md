@@ -11,3 +11,5 @@ Fix direction: keep it in the HUD layer. statusLive notices when p.regenUpT chan
 Check: Superhot on, regen running, then no input for 5 real seconds: RECOVERING must go dark; must FAIL on v35.20. Control: Superhot off, regen running: icon stays lit while points land.
 Rules: player text lower case; HUD only; no storage key change.
 TASK DONE when shipped and his main PC reports the build (spare/JUL26/status.txt party=VER).
+
+RESULT 10-27 19:50: SHIPPED v35.22 (2e03f5b20, cw-restfreeze). Cause confirmed: the check fails on v35.21 (Superhot froze the raid clock, icon stayed lit). His main PC reports party=35.22. Pictures: icon on at hp 61 while acting, gone after 5 s standing still.

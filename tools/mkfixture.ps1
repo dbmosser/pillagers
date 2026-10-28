@@ -6168,6 +6168,17 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'35.23',what:'the what is new card is stamped with this build or later and still shows the three short lowercase real notes',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnList!=='function') return 'SKIP: this build has no what is new card';
+     if(parseFloat(WHATSNEW_VER)>35.23+0.001) return 'SKIP: the card has moved on, a later card check covers it';
+     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), lines=wnList(), i;
+     if(!(parseFloat(WHATSNEW_VER)>=35.23-0.001)) bad.push('the card is stamped v'+WHATSNEW_VER+', before v35.23');
+     if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
+     if(lines.length!==3) bad.push('the card shows '+lines.length+' notes, not three');
+     for(i=0;i<lines.length;i++){ if(String(lines[i])!==String(lines[i]).toLowerCase()||String(lines[i]).length>48) bad.push('note '+i+' is not short lowercase text'); }
+     if(/\balpha\b|polish pass/i.test(WHATSNEW.join('|'))) bad.push('the news has filler copy');
+     return bad.length?bad.join('; '):null; }},
   {v:'35.22',what:'cw-restfreeze, his note of 2026-10-27 on build 35.19 with Superhot on ("it says i\'m recovering to 85 when I\'m not"): on real frames, with Superhot on and no input, time and health stand still and the RECOVERING mark goes dark; it shows while time moves and points land, with Superhot on (a key held) and off',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop&&window.__keysRef)||typeof lastTs!=='number') return 'SKIP: this fixture cannot step a live raid frame';

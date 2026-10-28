@@ -1,0 +1,24 @@
+{
+    "title":  "BUILD DATE ON THE TITLE",
+    "why":  "his order 10-27: put the date and time of the update, in us eastern time",
+    "now":  "the title shows when your build was made, us eastern",
+    "edits":  [
+                  {
+                      "anchor":  "// WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43",
+                      "replacement":  "var VER_AT=\u0027\u0027;   // v35.xx (cw-verat), HIS ORDER (2026-10-27): \"also put the date and time of the update, in us eastern time\". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.\n// WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43"
+                  },
+                  {
+                      "anchor":  "function buildExport(){",
+                      "replacement":  "// v35.xx (cw-verat): the build date beside the player number on the title, \" . oct 27 7:40 pm et\"; nothing when the copy carries no stamp.\nfunction verAtSay(){\n  var m=/^(\\d{4})-(\\d\\d)-(\\d\\d) (\\d\\d):(\\d\\d)$/.exec(typeof VER_AT===\u0027string\u0027?VER_AT:\u0027\u0027), mo, h;\n  if(!m) return \u0027\u0027;\n  mo=[\u0027jan\u0027,\u0027feb\u0027,\u0027mar\u0027,\u0027apr\u0027,\u0027may\u0027,\u0027jun\u0027,\u0027jul\u0027,\u0027aug\u0027,\u0027sep\u0027,\u0027oct\u0027,\u0027nov\u0027,\u0027dec\u0027][(+m[2])-1]; if(!mo) return \u0027\u0027;\n  h=+m[4];\n  return \u0027 \\u00b7 \u0027+mo+\u0027 \u0027+(+m[3])+\u0027 \u0027+(h%12||12)+\u0027:\u0027+m[5]+\u0027 \u0027+(h\u003c12?\u0027am\u0027:\u0027pm\u0027)+\u0027 et\u0027;\n}\nfunction titleVerSync(){ var t=document.getElementById(\u0027titlever\u0027); if(t) t.textContent=verShown(VER)+verAtSay(); return t?t.textContent:\u0027\u0027; }\nfunction buildExport(){"
+                  },
+                  {
+                      "anchor":  "document.getElementById(\u0027titlever\u0027).textContent=verShown(VER);",
+                      "replacement":  "titleVerSync();"
+                  },
+                  {
+                      "anchor":  "L.push(\u0027=== PILLAGERS \u0027+verShown(VER)+\u0027 (build \u0027+VER+\u0027) FLIGHT RECORDER ===\u0027);",
+                      "replacement":  "L.push(\u0027=== PILLAGERS \u0027+verShown(VER)+\u0027 (build \u0027+VER+((typeof VER_AT===\u0027string\u0027\u0026\u0026VER_AT)?\u0027, \u0027+VER_AT+\u0027 ET\u0027:\u0027\u0027)+\u0027) FLIGHT RECORDER ===\u0027);   // v35.xx (cw-verat): the build date too, so an export says when his copy was built"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027cw-verat, his order 2026-10-27 (put the date and time of the update, in us eastern time): the title shows the build number and then the date and time the build shipped, us eastern, and the run report header carries the stamp; a copy with no stamp shows the number alone\u0027,\n   run:function(){\n     if(typeof VER_AT!==\u0027string\u0027) return \u0027this build has no VER_AT stamp\u0027;\n     if(typeof verAtSay!==\u0027function\u0027||typeof titleVerSync!==\u0027function\u0027) return \u0027this build has no date label\u0027;\n     var bad=[], keep=VER_AT, el=document.getElementById(\u0027titlever\u0027), t, rep;\n     try{\n       if(!el) return \u0027no title version label\u0027;\n       VER_AT=\u00272026-10-27 19:40\u0027; titleVerSync(); t=String(el.textContent);\n       if(t!==verShown(VER)+\u0027 \\u00b7 oct 27 7:40 pm et\u0027) bad.push(\u0027an evening build reads \u0027+t);\n       VER_AT=\u00272026-11-02 00:05\u0027; titleVerSync(); t=String(el.textContent);\n       if(t!==verShown(VER)+\u0027 \\u00b7 nov 2 12:05 am et\u0027) bad.push(\u0027a just after midnight build reads \u0027+t);\n       rep=String(buildExport()).split(\u0027\\n\u0027)[0];\n       if(rep.indexOf(\u0027build \u0027+VER+\u0027, 2026-11-02 00:05 ET\u0027)\u003c0) bad.push(\u0027the run report header has no build date: \u0027+rep);\n       VER_AT=\u0027\u0027; titleVerSync(); t=String(el.textContent);\n       if(t!==verShown(VER)) bad.push(\u0027a copy with no stamp reads \u0027+t);\n       if(keep\u0026\u0026!/^\\d{4}-\\d\\d-\\d\\d \\d\\d:\\d\\d$/.test(keep)) bad.push(\u0027the shipped stamp is not a date and time: \u0027+keep);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ VER_AT=keep; try{ titleVerSync(); }catch(_t){} }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

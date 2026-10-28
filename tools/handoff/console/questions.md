@@ -108,3 +108,4 @@ the raid shows an alert twice: the red banner and a row in the left feed ("the p
 - 10-27 15:00 coordinator (fog of war): the explored ground resets each raid (nothing carries over). Should it carry over between raids on the same map?
 - 10-27 15:00 coordinator (fog of war): pings, noise rings, extract markers and teammate markers still show over the black. Should any of them hide until explored?
 - 10-27 15:00 coordinator (fog of war): the map that opens first at raid start is almost all black with fog on. Skip that opening map when fog is on?
+- 10-27 19:58 lane g (his order "on the extracted screen, always show guns first"): read as the item strip on the EXTRACTED card: guns lead it (dearest gun first), loot after keeps the value order. The two guns in your hands are kept but were never in that strip (only the backpack is). Should the guns in your hands show in the strip too?

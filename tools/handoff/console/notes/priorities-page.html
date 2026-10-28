@@ -1,0 +1,278 @@
+<title>Pillagers Feature Priorities</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
+<style>
+/* Layout: one column of ask cards under a sticky progress bar; four groups in the order he gave them. Single dark look on purpose (the game's own night palette). */
+:root{
+  --bg:#111418; --panel:#191d22; --panel2:#20252c; --line:#2b323b;
+  --fg:#e8e3d6; --muted:#8f97a3;
+  --amber:#f0a33a; --cyan:#52c6d6;
+  --high:#e5543d; --med:#f0a33a; --low:#52a8d6; --never:#6c7380;
+  --display:"Chakra Petch", "Segoe UI", system-ui, sans-serif;
+  --body:"Barlow", "Segoe UI", system-ui, sans-serif;
+  color-scheme:dark;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.45}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:860px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 80px}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(26px,5vw,38px);letter-spacing:.02em;margin:0;text-wrap:balance}
+h1 span{color:var(--amber)}
+.lede{color:var(--muted);margin:8px 0 0;max-width:62ch}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:14px 12px;border-bottom:1px solid var(--line);margin-top:18px;display:flex;flex-direction:column;gap:10px}
+.prog{display:flex;align-items:center;gap:12px;font-family:var(--display);font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.prog b{color:var(--fg);font-variant-numeric:tabular-nums}
+.track{flex:1;height:6px;background:var(--panel2);border-radius:3px;overflow:hidden;min-width:60px}
+.fill{height:100%;width:0;background:linear-gradient(90deg,var(--amber),var(--cyan));transition:width .25s}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-family:var(--display);font-size:13px;letter-spacing:.05em;text-transform:uppercase;background:var(--panel);color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:5px 12px;cursor:pointer}
+.chip[aria-pressed="true"]{color:var(--bg);background:var(--fg);border-color:var(--fg)}
+.chip:focus-visible,.pri button:focus-visible,textarea:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.warn{background:#3a2412;border:1px solid #6b4318;color:#f5cf9a;padding:10px 12px;border-radius:6px;margin-top:14px}
+section{margin-top:30px}
+.gh{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.gh h2{font-family:var(--display);font-weight:600;font-size:20px;letter-spacing:.04em;text-transform:uppercase;margin:0}
+.gh p{margin:0;color:var(--muted);font-size:14px}
+.list{display:flex;flex-direction:column;gap:10px}
+.item{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--line);border-radius:6px;padding:14px 14px 12px;display:grid;gap:10px}
+.item[data-pri="high"]{border-left-color:var(--high)}
+.item[data-pri="medium"]{border-left-color:var(--med)}
+.item[data-pri="low"]{border-left-color:var(--low)}
+.item[data-pri="never"]{border-left-color:var(--never);opacity:.62}
+.top{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+.what{min-width:0;flex:1 1 320px}
+.what h3{font-size:17px;font-weight:600;margin:0;line-height:1.35}
+.meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:5px;font-size:13px;color:var(--muted)}
+.st{font-family:var(--display);font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:3px;border:1px solid var(--line);color:var(--fg);white-space:nowrap}
+.st.building{border-color:var(--amber);color:var(--amber)}
+.st.partly{border-color:var(--cyan);color:var(--cyan)}
+.st.parked,.st.queued{color:var(--muted)}
+.st.stuck{border-color:var(--high);color:#f08a78}
+.pri{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.pri button{font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.06em;text-transform:uppercase;background:var(--panel2);color:var(--muted);border:1px solid var(--line);border-radius:5px;padding:10px 4px;cursor:pointer;min-height:42px}
+.pri button:hover{color:var(--fg)}
+.pri button[aria-pressed="true"][data-v="high"]{background:var(--high);border-color:var(--high);color:#fff}
+.pri button[aria-pressed="true"][data-v="medium"]{background:var(--med);border-color:var(--med);color:#1a1205}
+.pri button[aria-pressed="true"][data-v="low"]{background:var(--low);border-color:var(--low);color:#06141c}
+.pri button[aria-pressed="true"][data-v="never"]{background:var(--never);border-color:var(--never);color:#fff}
+.note{display:grid;gap:4px}
+textarea{width:100%;box-sizing:border-box;min-height:40px;resize:vertical;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:5px;padding:8px 10px;font:inherit;font-size:15px}
+textarea::placeholder{color:#5f6672}
+.saved{font-size:12px;color:var(--muted);min-height:16px}
+.saved.ok{color:var(--cyan)}
+.saved.err{color:#f08a78}
+.empty{color:var(--muted);font-style:italic;padding:8px 0}
+@media (max-width:480px){.pri button{font-size:12px;letter-spacing:.03em}}
+@media (prefers-reduced-motion:reduce){.fill{transition:none}}
+</style>
+
+<div class="wrap">
+  <h1>Pillagers <span>feature priorities</span></h1>
+  <p class="lede">Every feature you've asked for that isn't in the game yet. Tap high, medium, low or nevermind on each one, and add a note if you want. Everything saves by itself.</p>
+  <div id="warn" class="warn" hidden>Answers can't save from this view. Open the page on claude.ai while signed in.</div>
+
+  <div class="bar">
+    <div class="prog"><span><b id="done">0</b> of <b id="total">0</b> answered</span><div class="track"><div class="fill" id="fill"></div></div></div>
+    <div class="chips" id="chips"></div>
+  </div>
+
+  <div id="groups"></div>
+</div>
+
+<script>
+// Ids are keys in the db collection "answers"; never renumber them.
+var GROUPS = [
+  {k:"o", name:"Your 10-27 orders", sub:"Most are being built right now"},
+  {k:"q", name:"Queued now", sub:"From your picks; allowed as polish before 11/1"},
+  {k:"p", name:"Parked until Sun 11/1", sub:"From your 10-25 gameplay answers"},
+  {k:"s", name:"Stuck", sub:"Tried and failed so far"}
+];
+var ST = {building:"being built", partly:"partly done", queued:"queued", parked:"parked till 11/1", stuck:"stuck"};
+var ITEMS = [
+  ["o-verat","o","Build date and time (US Eastern) next to the version, on the title screen and the what's new card","your order 10-27","building"],
+  ["o-reloadstack","o","Active reload stacks, and the sweet spot gets smaller with each stack","your order 10-27","building"],
+  ["o-gunsfirst","o","Extracted screen always shows guns first, whatever the rarity","your order 10-27","building"],
+  ["o-whitebars","o","Remove the white bars under items everywhere (gone from shop, craft and wirt so far)","your order 10-27","partly"],
+  ["o-f1left","o","F1 controls list on the left, not the middle","your order 10-27","building"],
+  ["o-ammopity","o","More ammo boxes when you're out of ammo","your order 10-27","building"],
+  ["o-wheeldrag","o","Drag items from the item wheel onto the hotbar; a hotbar item works like a wheel pick (number equips, click uses)","your order 10-27","building"],
+
+  ["q-139","q","Pings work in 1 player, in the world, the minimap and the map","your pick 10-14","queued"],
+  ["q-140","q","Enemy tracers in a warning red","your answer g-88","queued"],
+  ["q-143","q","A partner who joins late ascends at a random spot","your answer g-56","queued"],
+  ["q-145","q","Pad sprint defaults to toggle","your answer g-68","queued"],
+  ["q-146","q","The overseer ignores decoys","your answer g-13","queued"],
+  ["q-151","q","Hits on one target grow one damage number; damage you take shows red over you","your answers g-84, g-85","queued"],
+  ["q-152","q","An alarms volume row, and a light tick on your last rounds","your answers g-81, g-82","queued"],
+  ["q-163","q","In the last minute ash falls and the world slowly turns red","your answer g-48","queued"],
+  ["q-165","q","Your partner's row shows their gun and ammo","your answer g-64","queued"],
+  ["q-166","q","Kill feed shows a small gun or element icon","your answer g-86","queued"],
+  ["q-168","q","A faint ring shows how far your own noise reaches","your answer g-90","queued"],
+  ["q-120i","q","Screen shake and pad rumble start at half","your answers 2.55, 2.56","queued"],
+
+  ["p-177","p","Hardcore save: picked when making a new player; when that pillager dies the save is gone and they move to a graveyard screen ranked by stash value","your answer g-98","parked"],
+  ["p-170","p","Carry a downed partner at walking pace","your answer g-63","parked"],
+  ["p-169","p","The player who gets out first watches the partner live and can still ping","your answer g-54","parked"],
+  ["p-144","p","A box searches 1.5x faster while both pillagers stand at it","your answer g-57","parked"],
+  ["p-156","p","In a 2 player raid the overseer goes after whoever hurt it most","your answer g-24","parked"],
+  ["p-150","p","Revives: a bandage halves the pick-up time, the bleed clock holds during it, a sharper alert at 5 s, and a save medal","your answer g-58","parked"],
+  ["p-182","p","A second boss, the juggernaut, roams the far half of the map","your answer g-52","parked"],
+  ["p-181","p","A rare stalker machine shadows you just out of sight and strikes when you look away","your answer g-31","parked"],
+  ["p-158","p","Some sentries and bulwarks start asleep and wake on noise, a hit or a close step","your answer g-25","parked"],
+  ["p-178","p","Three machines walk fixed patrol routes between landmarks","your answer g-46","parked"],
+  ["p-148","p","Some hurt pillager bots charge instead of running, and every bot runs from a live grenade","your answer g-23","parked"],
+  ["p-155","p","An elite bot with a longshot shows a half second glint before each shot","your answer g-11","parked"],
+  ["p-154","p","An unseen machine's windup paints a red streak at your feet; wardens and bulwarks open up after their big shot","your answer g-20","parked"],
+  ["p-157","p","A hurt golden enemy bolts so you chase it, and it never leaves the map","your answer g-21","parked"],
+  ["p-164","p","Opening a vault with a keycard sounds an alarm and sends a pack","your answer g-49","parked"],
+  ["p-167","p","A machine that slips out of sight leaves a fading last-seen mark","your answer g-89","parked"],
+  ["p-159","p","A dead warden, overseer, bulwark or choir leaves a wreck that blocks rounds and sight (big machines only)","your answer g-27","parked"],
+  ["p-120d2","p","Firing a gun ends a sprint","your answer g-1","parked"],
+  ["p-149","p","Single-shot guns repeat while held, shotguns load shell by shell, and a fresh pull cancels a reload","your answer g-15","parked"],
+  ["p-147","p","Healing moves you at half speed, and a big hit stops it","your answer g-2","parked"],
+  ["p-153","p","An explosion shoves you, and a big hit nudges your aim for a quarter second","your answer g-3","parked"],
+  ["p-161","p","A thrown frag, smoke or decoy bounces once off a wall","your answer g-14","parked"],
+  ["p-141","p","Your rounds that hit a wall make a small noise where they land","your answer g-18","parked"],
+  ["p-142","p","A kill inside the hot ground pays 1.5x SP","your answer g-47","parked"],
+  ["p-172","p","A night extraction pays 20 percent more $ on what you carry out","your answer g-99","parked"],
+  ["p-162","p","Every ascend spot has an unopened box in sight","your answer g-43","parked"],
+  ["p-171","p","The scav pistol you ascend with never runs out of reserve ammo","your answer g-17","parked"],
+  ["p-174","p","A quarter of elite bots carry a forged element gun you can take from the body","your answer g-36","parked"],
+  ["p-173","p","The crowbar can be forged with an element","your answer g-35","parked"],
+  ["p-175","p","Break down a spare gun in the stash into parts","your answer g-40","parked"],
+  ["p-160","p","Cold Storage gets a second forge spot; only one is lit each raid, sometimes guarded","your answer g-32","parked"],
+  ["p-176","p","The codex lists the eight machines with a picture and your kill count","your answer g-100","parked"],
+  ["p-179","p","One ordinary building per raid that machines never walk into","your answer g-50","parked"],
+  ["p-180","p","The killed in action card replays the last 4 seconds before you went down","your answer g-91","parked"],
+  ["p-133","p","The party run report records time to first kill, death spot, controls, downs and revives","your 2 player demo orders","parked"],
+
+  ["s-03","s","Title screen redesign up to the critic score you set","your menu redesign order","stuck"],
+  ["s-13","s","End of raid cards redesign up to the critic score","your menu redesign order","stuck"],
+  ["s-115","s","In-raid backpack reads like an inventory, not a debug panel","your menu redesign order","stuck"],
+  ["s-b31","s","Undercroft screens redesign up to the critic score","your menu redesign order","stuck"],
+  ["s-c31","s","Pause and settings redesign up to the critic score","your menu redesign order","stuck"],
+  ["s-94","s","60 fps on a 5 year old laptop at 1080p","your hardware answer 10-12","stuck"],
+  ["s-95","s","2 player stays smooth at full size on both TVs","your answers 2.11, 2.43","stuck"]
+];
+
+var FILTERS = [["all","All"],["open","Not answered"],["high","High"],["medium","Medium"],["low","Low"],["never","Nevermind"]];
+var PRI = [["high","High"],["medium","Medium"],["low","Low"],["never","Nevermind"]];
+var ANS = {};            // id -> {pri, note}
+var filter = "all";
+var db = null;
+var timers = {};
+
+function el(tag, cls, text){ var e=document.createElement(tag); if(cls) e.className=cls; if(text!=null) e.textContent=text; return e; }
+
+function buildChips(){
+  var box=document.getElementById("chips");
+  FILTERS.forEach(function(f){
+    var b=el("button","chip",f[1]); b.type="button"; b.id="chip-"+f[0];
+    b.setAttribute("aria-pressed", f[0]===filter?"true":"false");
+    b.onclick=function(){ filter=f[0]; document.querySelectorAll(".chip").forEach(function(c){ c.setAttribute("aria-pressed", c===b?"true":"false"); }); applyFilter(); };
+    box.appendChild(b);
+  });
+}
+
+function buildList(){
+  var root=document.getElementById("groups");
+  GROUPS.forEach(function(g){
+    var sec=el("section"); sec.dataset.g=g.k;
+    var gh=el("div","gh"); gh.appendChild(el("h2",null,g.name)); gh.appendChild(el("p",null,g.sub)); sec.appendChild(gh);
+    var list=el("div","list");
+    ITEMS.filter(function(it){ return it[1]===g.k; }).forEach(function(it){ list.appendChild(buildItem(it)); });
+    var none=el("div","empty","Nothing here for this filter."); none.hidden=true; sec.appendChild(list); sec.appendChild(none);
+    root.appendChild(sec);
+  });
+}
+
+function buildItem(it){
+  var id=it[0];
+  var card=el("article","item"); card.id="item-"+id; card.dataset.id=id; card.dataset.pri="";
+  var top=el("div","top"); var what=el("div","what");
+  what.appendChild(el("h3",null,it[2]));
+  var meta=el("div","meta"); meta.appendChild(el("span","st "+it[4],ST[it[4]])); meta.appendChild(el("span",null,it[3]));
+  what.appendChild(meta); top.appendChild(what); card.appendChild(top);
+  var pri=el("div","pri"); pri.setAttribute("role","group"); pri.setAttribute("aria-label","priority");
+  PRI.forEach(function(p){
+    var b=el("button",null,p[1]); b.type="button"; b.dataset.v=p[0]; b.id="pri-"+id+"-"+p[0]; b.setAttribute("aria-pressed","false");
+    b.onclick=function(){ var cur=(ANS[id]||{}).pri||""; setPri(id, cur===p[0]?"":p[0]); };
+    pri.appendChild(b);
+  });
+  card.appendChild(pri);
+  var nw=el("div","note");
+  var ta=el("textarea"); ta.id="note-"+id; ta.rows=1; ta.placeholder="note (optional)";
+  ta.oninput=function(){ var a=ANS[id]||(ANS[id]={pri:"",note:""}); a.note=ta.value; clearTimeout(timers[id]); timers[id]=setTimeout(function(){ save(id); },700); status(id,"","typing"); };
+  ta.onblur=function(){ if(timers[id]){ clearTimeout(timers[id]); timers[id]=null; save(id); } };
+  nw.appendChild(ta); nw.appendChild(el("div","saved")); card.appendChild(nw);
+  return card;
+}
+
+function setPri(id, v){
+  var a=ANS[id]||(ANS[id]={pri:"",note:""}); a.pri=v; paint(id); save(id); refresh();
+}
+
+function paint(id){
+  var a=ANS[id]||{pri:"",note:""}; var card=document.getElementById("item-"+id); if(!card) return;
+  card.dataset.pri=a.pri||"";
+  card.querySelectorAll(".pri button").forEach(function(b){ b.setAttribute("aria-pressed", b.dataset.v===a.pri?"true":"false"); });
+  var ta=document.getElementById("note-"+id); if(ta && document.activeElement!==ta && ta.value!==(a.note||"")) ta.value=a.note||"";
+}
+
+function status(id, cls, text){
+  var s=document.querySelector("#item-"+CSS.escape(id)+" .saved"); if(!s) return;
+  s.className="saved"+(cls?" "+cls:""); s.textContent=text||"";
+}
+
+function save(id){
+  timers[id]=null;
+  var a=ANS[id]||{pri:"",note:""};
+  try{ localStorage.setItem("pfp:"+id, JSON.stringify(a)); }catch(e){}
+  if(!db){ status(id,"err","not saved (sign in on claude.ai)"); return; }
+  status(id,"","saving");
+  db.doc("answers/"+id).set({pri:a.pri||"", note:a.note||"", at:new Date().toISOString()})
+    .then(function(){ status(id,"ok","saved"); })
+    .catch(function(e){ status(id,"err","could not save: "+((e&&e.message)||"error")); });
+}
+
+function refresh(){
+  var n=0; ITEMS.forEach(function(it){ if((ANS[it[0]]||{}).pri) n++; });
+  document.getElementById("done").textContent=n;
+  document.getElementById("total").textContent=ITEMS.length;
+  document.getElementById("fill").style.width=(100*n/ITEMS.length)+"%";
+  applyFilter();
+}
+
+function applyFilter(){
+  document.querySelectorAll("section[data-g]").forEach(function(sec){
+    var shown=0;
+    sec.querySelectorAll(".item").forEach(function(card){
+      var p=(ANS[card.dataset.id]||{}).pri||"";
+      var ok= filter==="all" || (filter==="open" ? !p : p===filter);
+      card.hidden=!ok; if(ok) shown++;
+    });
+    sec.querySelector(".empty").hidden = shown>0;
+  });
+}
+
+function loadLocal(){
+  ITEMS.forEach(function(it){
+    try{ var s=localStorage.getItem("pfp:"+it[0]); if(s){ ANS[it[0]]=JSON.parse(s); paint(it[0]); } }catch(e){}
+  });
+}
+
+buildChips(); buildList(); loadLocal(); refresh();
+
+(async function(){
+  try{ db = window.claude && window.claude.use ? await window.claude.use("db") : null; }catch(e){ db=null; }
+  if(!db){ document.getElementById("warn").hidden=false; return; }
+  db.collection("answers").limit(1000).onSnapshot(function(snap){
+    snap.docs.forEach(function(d){
+      if(!d.exists) return; var v=d.data()||{};
+      if(timers[d.id]) return;   // an edit of this item is still waiting to save
+      ANS[d.id]={pri:v.pri||"", note:v.note||""}; paint(d.id);
+    });
+    refresh();
+  }, function(){ document.getElementById("warn").hidden=false; });
+})();
+</script>

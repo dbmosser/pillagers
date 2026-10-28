@@ -1,0 +1,4 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  79-raid-controls-folded-career         staged       7.7s    | career 1 legendOn 0
+  80-raid-controls-career-after-f1       staged       9.1s    | career 1 legendOn 1
+  24-raid-controls-full-H                NOT STAGED  11.6s    | expect failed: U.raid()&&__state().legendOn===2 -> false (legendOn 1)
