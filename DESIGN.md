@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.50 - EXTRACTION ON THE PILL
+
+Co-op hunt while he was away. his ask 10-27 ~21:40: the hud messaging is a clusterfuck, make it AAA (report reports/Player alerts and HUD messaging.md, job 6). The extract pill under the clock carries the state of its exit: teal open, amber in the two minute warning with a countdown in the last minute, red once shut, one pulse on each change. An open exit just off the screen is an edge arrow with its letter and distance (c 152m), slid along an oval inside the edges until it is clear of the corner panels and the pickup stack column; the extraction c available line under the pill is gone. The sky (weather, else the time of day) is a small icon beside the clock. Looting is untouched.
+
+MEASURED. Check 35.50 passes, and fails on v35.49.
 ## v35.49 - HUD STATES ON THE VITALS
 
 Co-op hunt while he was away. his ask 10-27 ~21:40: the hud messaging is a clusterfuck, make it AAA (report reports/Player alerts and HUD messaging.md, job 5). Revealed, concealed and in cover are small icons beside the stance chip bottom left for as long as they are true (each word shows for 2 s the first time), and the hidden pill leaves the mid left column. Under a quarter health the hp bar pulses slowly, 1.2 a second, with no text. Low ammo pulses the count red; an empty gun with rounds to load shows the reload key cap on the gun card. Looting, the pickup stack and the money rows are untouched.

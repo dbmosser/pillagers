@@ -16,3 +16,8 @@ Player text rules hold (all lower case, $ for money).
 TASK DONE when it shipped with pictures; TASK PARTIAL with what is left.
 
 NOTE 10-27 21:30 (job 186b, v35.36): the wallet rows are no longer drawn in a raid at all (his quiet hud order, change 2), and the page copy stays clipped there. Re-check in a raid and in the Undercroft whether any double text still shows before working this; in a raid it should be gone.
+
+Lane note 2026-10-27 23:56: shipped cw-cx-walletframe and parked: only lane-side steps are left. Codex's last words:
+The fix is on his PC. The repeat run passed all 51 wallet checks. Archived the recipes to stop redundant 1080p runs; the coordinator’s 4K command is ready.
+
+TASK PARTIAL: actual 4K captures require the coordinator; broader critic findings remain handed off.
