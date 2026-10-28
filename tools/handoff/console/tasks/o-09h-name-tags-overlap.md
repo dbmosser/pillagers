@@ -9,3 +9,5 @@ Do: when two world name tags overlap, stack the later one above the earlier (or 
 the REVIVE and FINISH prompts. Rendering layer only; no simulation change. Check: two tagged enemies one body apart draw tags whose
 boxes do not overlap. Pictures before and after. Say in DESIGN.md what he should watch for in a fight.
 TASK DONE when shipped and ON HIS PC.
+
+ALSO (CEO 10-28 18:40, from the o-09e critic, P0): at the right screen edge a cache name is overprinted by a distance chip. Picture: notes/shots/o-09e-damage-numbers-merge-and-yours-red-recipes-1/ (incoming-p1). Same cause family as the tag overlap: give the distance chip and the cache name their own lines, or stack them, at 1080 and 4K.
