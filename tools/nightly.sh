@@ -110,6 +110,14 @@ while true; do
     ck=$(printf '%s\n' "$gm" | sed -n 's/^checked=//p' | head -1); cks=$(date -d "$ck" +%s 2>/dev/null || echo 0)
     [ $(( $(date +%s) - cks )) -lt 600 ] && isg=1
   fi
+  # 10-28: the party plays on pads, which move neither the Windows idle clock nor (two game windows) the 15% graphics card line that
+  # gaming.txt goes by. The main PC's idle runner reads the pads and writes pad-seen.txt (epoch=) to the bridge share while one is in use:
+  # under 10 minutes old it counts as gaming here, so nothing new starts (helpers, robots, the full run, the local AI). No file, no change.
+  if [ $isg = 0 ]; then
+    pe=$(timeout 25 node "$R/tools/bridge/hostctl.mjs" share-get name=pad-seen.txt 2>/dev/null | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{try{const j=JSON.parse(s);if(j.ok&&j.base64)process.stdout.write(Buffer.from(j.base64,'base64').toString())}catch(e){}})" 2>/dev/null | tr -d '\r' | sed -n 's/^epoch=//p' | head -1 | tr -dc '0-9')
+    if [ -n "$pe" ] && [ $(( $(date +%s) - pe )) -lt 600 ] && [ $(( pe - $(date +%s) )) -lt 600 ]; then isg=1; gm="what=pads
+$gm"; fi
+  fi
   # 10-20 10:00 (his "reduce load when I am at the PC"): the check also writes atpc=1 when the main PC had keyboard or mouse input in the last
   # 10 minutes (atpc=0 when it had none). Then the long jobs that draw on his graphics card (the full test run's browser, the robots) and
   # the local AI start nothing new (atq=1); the helpers go on (the main PC holds the VM to -AtPcCpuPct of its processors). One failed read
