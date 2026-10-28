@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.32 - SUPERHOT OFF EACH SITTING
+
+Co-op hunt while he was away. his order of 10-27: superhot mode should be off by default; his save has carried it on since 10-25, so the game opened with it on and the party would have too
+
+MEASURED. Check 35.32 passes, and fails on v35.31.
 ## v35.31 - THE QUIET HUD, PAUSE BOX AND CONTRACT NAMES
 
 Co-op hunt while he was away. his order 10-27: build the quiet hud, all 5 changes; a line said under the solo pause box showed on the answer line and again in the left feed behind the box, and with the grey rows gone CONTRACT DONE lost which contract when its words ran to five or more

@@ -1,0 +1,7 @@
+v35.32: superhot off each sitting
+
+every sitting starts with superhot off: the settings row and the key left of 1 still turn it on for that sitting, the next load is off again, and the 2 player demo starts with it off
+
+Check 35.32. Fails on v35.31.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

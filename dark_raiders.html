@@ -3724,8 +3724,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.31';
-var VER_AT='2026-10-27 21:06';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.32';
+var VER_AT='2026-10-27 21:09';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5999,6 +5999,13 @@ padPresetLoad(); // v28.xx (cw-cx-padpresets): legacy profiles keep their button
 // v28.xx (cw-cx-flashdefault): existing saves keep their choice, including the old implicit off. Profile fields only; the save key stays the same.
 if(!P.gameOpts||typeof P.gameOpts!=='object') P.gameOpts={};
 if(!Object.prototype.hasOwnProperty.call(P.gameOpts,'flashRed')) P.gameOpts.flashRed=(P.cfg&&P.cfg.flashRed===1)?1:0;
+// v35.xx (cw-shoff), HIS ORDER (2026-10-27): "superhot mode should be off by default". EVERY SITTING STARTS WITH SUPERHOT OFF, whatever the save says. His
+// saves since 10-25 carried it on, so the game opened with it on, and at the party it would have opened on for his guests. The Settings row and the key left
+// of 1 still turn it on, for that sitting only: this load (a boot, and a restore, which loads through here) puts it back off. The save key is unchanged, and a
+// linked window still takes the host word over this (v16.74). Set only where it was on, so a save that never had it keeps the same shape.
+if(P.gameOpts.superhot) P.gameOpts.superhot=0;
+if(P.cfg&&typeof P.cfg==='object'&&P.cfg.superhot) P.cfg.superhot=0;
+if(P.tuned&&typeof P.tuned==='object'&&P.tuned.superhot) delete P.tuned.superhot;
 if(typeof P.pname!=='string'||!P.pname)P.pname='PILLAGER';   // v7.64: named at the title screen; v7.85: typed
 if(!P.arrays)P.arrays=0;   // v6.76: folded racks. Additive, so old saves just have none.
 // v12.35, his order: the safe pocket is gone. Both fields are cleared off any
@@ -54830,7 +54837,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.31: quiet hud: a line said under the pause box shows on the box only; contract done names the contract Check 35.31 fails on v35.30',
+  now:'v35.32: every sitting starts with superhot off: the settings row and the key left of 1 still turn it on for that sitting, the next load is off again, and the 2 player demo starts with it off Check 35.32 fails on v35.31',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -63892,12 +63899,14 @@ function arcadeSandboxIn(role){
   // v28.xx (cw-cx-flashdefault), his 3.15: the demo starts on its own reduced flashing choice, even when the career save chose off.
   sb.gameOpts=sb.gameOpts||{}; sb.gameOpts.flashRed=1;
   if(sb.tuned) delete sb.tuned.flashRed;
+  sb.gameOpts.superhot=0; if(sb.tuned) delete sb.tuned.superhot;   // v35.xx (cw-shoff), his order of 10-27 "superhot mode should be off by default": the demo starts with it off too
   ARCADE.role=(role==='p2')?'p2':'host';
   sb.pname=(ARCADE.role==='p2')?'PLAYER 2':'PLAYER 1';
   ARCADE.cfgAll=arcadeCfgCopy(CFG);   // v23.27 (arcfixb)
   ARCADE.realJs=js; ARCADE.on=1;
   netUpPutP(JSON.stringify(sb));
   CFG.flashRed=1; // v28.xx (cw-cx-flashdefault): the demo setting takes effect in either window at entry.
+  if(netShHost()===null) CFG.superhot=0;   // v35.xx (cw-shoff): the demo starts with Superhot off; on a linked window the host word still decides (v16.74). Leaving puts the sitting dial back.
   try{ KEYS.inv=null; keysInv(); }catch(_ki){}
   try{ applyMenuZoom(); }catch(_tz){}   // v28.xx (cw-tvtext): the TV size takes hold at once
   return true;
