@@ -1,13 +1,13 @@
 host=JUL26
 seen=2026-10-27 21:30
-epoch=1793151000
+epoch=1793151054
 game=b6baf930 v35.36
 test_run=paused: under 6 GB free
 robots=0
-ram_free_gb=4.7
+ram_free_gb=1.8
 push_ok=1
 runner=66D84C46
 mode=idle
 spare_pc=not answering (192.168.1.246), 21:30
-party=35.36 3e2e5cfe
+party=35.36 b6baf930
 play8802=C:\claudecode\pillagers-party v35.36
