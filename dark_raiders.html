@@ -2059,6 +2059,19 @@ body:not(.padon) #root #pausebox::before{ width:min(calc(var(--pw) + var(--sp-5)
 #root #pausebox.asking::before{ height:min(calc(var(--sp-1) * 40),calc(100% - var(--sp-4))) !important; }
 /* v28.xx (cw-endx2), the critic on 59 (3 of 5): "the close x floats about 16px outside the card top-right corner, a stray glyph". The armed card is a fixed 40 units tall (320px) while the x was placed off the normal pause frame height (400px+), so it sat 40px too high. It now sits sp-3 inside the armed card corner. */
 #root #pausebox.asking #pausex{ top:calc(50% - var(--sp-1) * 20 + var(--sp-5) - var(--sp-1)); }   /* v34.xx (cw-endcards2), the critic on 59 (3 of 5): "the x is centred on a different baseline than the title (428 against 444)". 16px lower, on the title row. */
+/* v35.75 (cw-pausesp): the score panel under the title, the column's own width (--pw). Headline row: score label left, the multiplier in the sp gold at title size.
+   A row: the setting, its choice, its factor; a factor of x1.00 is muted. A line, then the two end rules. Hidden while abandon asks and while a pad is lost. */
+#root #pausebox #pausesp{ box-sizing:border-box; width:var(--pw); max-width:100%; display:flex; flex-direction:column; text-align:left; font:600 var(--fs-label)/1.25 var(--f-cond); letter-spacing:var(--track); color:var(--tx-1); }
+#root #pausebox #pausesp .psph{ display:flex; align-items:baseline; justify-content:space-between; padding:0 0 var(--sp-1); }
+#root #pausebox #pausesp .psph span{ color:var(--tx-2); }
+#root #pausebox #pausesp .psph b{ font:700 var(--fs-title)/1 var(--f-cond); color:#ffc04a; font-variant-numeric:tabular-nums; }
+#root #pausebox #pausesp .psprow{ display:grid; grid-template-columns:1fr auto calc(var(--sp-1) * 7); gap:var(--sp-2); align-items:baseline; padding:4px 0; }
+#root #pausebox #pausesp .psprule{ display:grid; grid-template-columns:1fr calc(var(--sp-1) * 7); gap:var(--sp-2); align-items:baseline; padding:4px 0; color:var(--tx-2); }
+#root #pausebox #pausesp .psp1{ margin-top:var(--sp-1); padding-top:calc(var(--sp-1) + 4px); border-top:1px solid var(--ui-line); }
+#root #pausebox #pausesp i{ font-style:normal; color:var(--tx-2); }
+#root #pausebox #pausesp .psprow b, #root #pausebox #pausesp .psprule b{ text-align:right; color:#ffc04a; font-variant-numeric:tabular-nums; }
+#root #pausebox #pausesp .psprow.z b{ color:var(--tx-2); }
+#root #pausebox.asking #pausesp, #root #pausebox.padlost #pausesp{ display:none !important; }
 /* v28.xx (cw-setnear2) critic c-31 round 2 (Settings 2): "steppers float 400px from the label with 200px of dead space to their right", "the section label Controls repeats the active tab", "the toast overlaps the card footer". Now: the card is 15 x 48 wide, the stepper is right-aligned at the row edge (6 x 48 wide), the section label that sits straight under the tab strip is gone (the tab already says it), and the toast moves to the top while Settings is open. */
 #root #settingsmodal{ --cw:calc(var(--sp-5) * 15); }
 #root #setlist .row:not(.setjump) > div:first-child{ flex:1 1 auto !important; }
@@ -2726,8 +2739,8 @@ body:has(#appearmodal.pixfashion.on) > #uimring{display:none !important}
 <div class="pausebox" id="pausebox">
   <h3>RAID PAUSED</h3>
   <div id="pausekeys" style="font-size:13.5px;color:var(--ash);letter-spacing:.08em;text-align:center;line-height:1.8;max-width:730px">MOUSE aim &nbsp; LMB fire &nbsp; RMB aim down sights &nbsp; WASD move &nbsp; SPACE dodge roll &nbsp; SHIFT hold to sprint &nbsp; CTRL / C crouch toggle<br>E search / use &nbsp; X extraction &nbsp; R reload &nbsp; Q melee &nbsp; F next gun &nbsp; G throw &nbsp; U next grenade &nbsp; H heal, hold plate &nbsp; J next heal &nbsp; 1-4 guns &nbsp; 5-6 throw that grenade &nbsp; 7-8 use that heal &nbsp; 9 plate &nbsp; B / I backpack &nbsp; ENTER equip from backpack &nbsp; M map &nbsp; F1 controls &nbsp; TAB back out &nbsp; P / TAB pause</div>
-  <!-- v35.xx (cw-msgroute): the last lines of the run log, so a line that no longer shows in the raid is not lost (pauseLogSync) -->
-  <div id="pauselog" style="display:none;font-size:13px;color:var(--ash);margin-top:8px;max-width:620px;line-height:1.6;text-align:left;text-transform:lowercase;opacity:.85"></div>
+  <!-- v35.75 (cw-pausesp): what this raid pays in sp, setting by setting (pauseSpSync). It replaces the run log list (cw-msgroute), which stays in the run report -->
+  <div id="pausesp" style="display:none"></div>
   <div style="font-size:13.5px;color:var(--ash);margin-top:6px">Please provide feedback anything that went or felt wrong.</div>
   <textarea id="pausenote" rows="3" style="display:none;max-width:560px;font-size:13px" placeholder="e.g. the crier marked me through a wall, felt unfair"></textarea>
   <div style="display:flex;gap:8px">
@@ -3730,8 +3743,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.74';
-var VER_AT='2026-10-28 09:20';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.75';
+var VER_AT='2026-10-28 09:24';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20835,18 +20848,38 @@ function pauseFrameFit(){
   b.style.setProperty('--pbw',Math.max(780,Math.ceil(wd)+96)+'px');   // v19.94, seen on the 4K floor pause screenshot (2026-10-08): the floor's three buttons all but touched the frame sides
   return true;
 }
-// v35.xx (cw-msgroute): THE RUN LOG ON THE PAUSE BOX. Most raid lines now go only into the run log (msgReach), so the pause box lists its last 8 lines, oldest
-// first, with a detail after a middle dot. It is the log the run report already keeps (G.msgLog, 16 lines), not a new screen; pickup rows are left out.
-var PAUSELOGN=8;
-function pauseLogSync(on){
-  var el=document.getElementById('pauselog'), M=(G&&G.msgLog)||[], L=[], i, e, s, d;
-  if(!el) return;
-  if(!(on&&G&&!G.over)){ el.style.display='none'; return; }
-  for(i=M.length-1;i>=0&&L.length<PAUSELOGN;i--){ e=M[i]; if(!e||e.k==='pick'||!e.m) continue; s=String(e.m)+(e.sub?'  \u00b7  '+String(e.sub):''); L.unshift(s.length>90?s.slice(0,88)+'...':s); }
-  el.textContent='';
-  if(L.length){ d=document.createElement('div'); d.textContent='run log'; d.style.color='var(--steel-hi)'; el.appendChild(d); }
-  for(i=0;i<L.length;i++){ d=document.createElement('div'); d.textContent=L[i].toLowerCase(); el.appendChild(d); }
-  el.style.display=L.length?'':'none';
+// v35.75 (cw-pausesp), HIS ORDER (2026-10-28), on a picture of the pause box: "this isnt really helpful -- this is where all the modifiers/settings that impact sp should be shown, so the player knows exactly what they are playing".
+// THE SCORE PANEL ON THE PAUSE BOX, in a raid (career or demo; never on the floor). The headline is the settings multiplier this raid pays (diffMul, what spMul
+// puts on every sp), then one row per setting that moves it, with the choice it stands at and its own factor: pillager bots, machines, how hard they hit, heat
+// when you call for extraction and fog of war as the raid was built with them (G.dmrows, kept beside G.dmul at the build, so a linked window shows the host's
+// rows, as it is paid), and superhot as it stands now (read live, as diffMul reads it). The rows multiply to the headline. Under them the two end rules every
+// raid scores by: an extraction doubles the raid score, a death halves it. Words are the Settings labels, so a row can be found there. The run log list that
+// stood here (cw-msgroute) is gone from the box; the run log itself (G.msgLog) still goes out in the run report.
+function gameOptLabel(k){ for(var i=0;i<GAMEOPTS.length;i++) if(GAMEOPTS[i].k===k) return String(GAMEOPTS[i].label).toLowerCase(); return k; }
+function dmulRows(c){
+  var t=diffTiers(c), K=[['raiders','raiders'],['robots','robots'],['hits','hits'],['ext','ext'],['fog','fogWar']], out=[], i, k, oi, w, row;
+  for(i=0;i<K.length;i++){
+    k=K[i][0]; row=null;
+    for(oi=0;oi<GAMEOPTS.length;oi++) if(GAMEOPTS[oi].k===K[i][1]) row=GAMEOPTS[oi];
+    if(k==='fog') w=t.fog?'on':'off';
+    else { oi=gameOptLive(K[i][1]); w=(row&&oi>=0)?row.opts[oi].n:'custom'; }
+    out.push([gameOptLabel(K[i][1]),String(w).toLowerCase(),DMUL_ON?1+DMUL_STEP[k]*(t[k]|0):1]);
+  }
+  return out;
+}
+function pauseSpSync(on){
+  var el=document.getElementById('pausesp'), R, h, i, sh;
+  if(!el) return false;
+  if(!(on&&G&&!G.over&&!G.sim)){ el.style.display='none'; el.textContent=''; return false; }
+  R=(G.dmrows&&G.dmrows.length)?G.dmrows:dmulRows(CFG);
+  sh=(CFG&&CFG.superhot)?1:(DMUL_ON?1+DMUL_STEP.superhot:1);
+  function rw(l,w,x){ return '<div class="psprow'+(x>1?'':' z')+'"><span>'+escHtml(l)+'</span><i>'+escHtml(w)+'</i><b>x'+x.toFixed(2)+'</b></div>'; }
+  h='<div class="psph"><span>score</span><b>x'+diffMul().toFixed(2)+'</b></div>';
+  for(i=0;i<R.length;i++) h+=rw(R[i][0],R[i][1],R[i][2]);
+  h+=rw(gameOptLabel('superhot'),(CFG&&CFG.superhot)?'on':'off',sh);
+  h+='<div class="psprule psp1"><span>extract</span><b>x2</b></div><div class="psprule"><span>killed in action</span><b>-50%</b></div>';
+  el.innerHTML=h; el.style.display='';
+  return true;
 }
 function togglePauseBox(on){
   // v8.70, HIS REPORT: ESC pauses in the Undercroft too. This returned on the
@@ -20897,7 +20930,7 @@ function togglePauseBox(on){
   // ended by a misclick on a screen he only opened to read the controls.
   if(on) disarmAbandon();
   document.getElementById('pausebox').classList.toggle('on',on);
-  try{ pauseLogSync(on); }catch(_pls){}   // v35.xx (cw-msgroute): the run log's last lines
+  try{ pauseSpSync(on); }catch(_pls){}   // v35.75 (cw-pausesp): what this raid pays in sp, setting by setting (it was the run log's last lines, cw-msgroute)
   // The box is written for a raid. On the floor there is no run to abandon and
   // nothing is paused but the room, so it says so and drops the abandon controls.
   (function(){
@@ -55480,7 +55513,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.74: melee swings on Z and drop for a teammate is on V by default; a save that moved either key keeps it; every key list says so; middle mouse pings as before Check 35.74 fails on v35.73',
+  now:'v35.75: the pause box shows what your raid pays in sp, setting by setting Check 35.75 fails on v35.74',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -65126,6 +65159,7 @@ function careerPostBuild(g){
   try{ arcadeKeycards(g); }catch(_ck){}   // v24.xx (careervault): a keycard per vault in a box outside (side stream)
   g.cs={s:0,k:0,streak:null,waveT:0,waveN:0};
   g.dmul=diffMulOf(CFG,1);   // v35.xx (cw-diffmul): the settings multiplier rows this raid was built with (a linked window builds under the host word)
+  try{ g.dmrows=dmulRows(CFG); }catch(_dr){ g.dmrows=null; }   // v35.75 (cw-pausesp): each row's choice and factor, for the pause box score panel
   return true;
 }
 // Run from startRaid right after the build, in every window that builds the arcade raid, so both builds stay identical.
@@ -65134,6 +65168,7 @@ function arcadePostBuild(g){
   var i, e;
   g.arcade=1; g.raidLen=g.timeLeft=ARCADE_RAID_SEC;   // v23.6x (feat0e): the 10 minute DEMO clock
   g.dmul=diffMulOf(CFG,1);   // v35.xx (cw-diffmul): the settings multiplier rows, as for a career raid (his rule: the demo and career play the same)
+  try{ g.dmrows=dmulRows(CFG); }catch(_dr){ g.dmrows=null; }   // v35.75 (cw-pausesp): each row's choice and factor, for the pause box score panel
   for(i=0;i<(g.zones||[]).length;i++) g.zones[i].closeAt=undefined;
   for(i=g.ents.length-1;i>=0;i--){ e=g.ents[i]; if(e&&(e.kind==='peddler'||e.kind==='stray')) g.ents.splice(i,1); }
   try{ arcadeVaults(g); }catch(_av){}   // v23.9x (feat4b): two strongrooms sealed into vaults (side stream)
@@ -73414,6 +73449,7 @@ document.getElementById('closedev').onclick=function(){
 document.getElementById('closesettings').onclick=function(){
   if(SETSUB){ SETSUB=''; renderSettings(); return; }   // v32.xx (cw-expmenu1): esc and B leave the experimental page first
   document.getElementById('settingsmodal').classList.remove('on');
+  try{ if(pauseOpen) pauseSpSync(true); }catch(_psr){}   // v35.75 (cw-pausesp): a superhot switched in Settings mid raid shows at once on the pause box
 };
 // The terminal copies of these two are GONE at v2.98, so their handlers have to
 // tolerate a missing element rather than throwing at load and taking every

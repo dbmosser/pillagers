@@ -7,3 +7,4 @@
 - Old check 27.83 retargeted (HOLD [key] FINISH as set), fixture commit 4dd5ed4ef, 27.83 PASS.
 - Preflight lane d PASS (control fails on TWO/THREE, newest 80: 0 new failures).
 - Seen on the before shot: the raid HUD board says "current pillager bots 3" (his 10-28 AM words order: never "pillager bots"). Not this job; another lane (cw-clockcard fixture commit mentions "current pillagers").
+- SHIPPED v35.74 (bb61ad7d1), ON HIS PC 09:22 (53 s). After pictures in notes/shots/203-after. Job done.

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.75 - THE PAUSE BOX SHOWS WHAT THE RAID PAYS IN SP
+
+Co-op hunt while he was away. his order 10-28 with a picture of the raid pause box: the run log list there is not helpful; it is where every setting that changes sp should show, so the player knows exactly what they are playing. The box now shows the settings multiplier this raid pays, one row per setting that moves it (pillager bots, machines, how hard they hit, heat when you call for extraction, fog of war, superhot) with its choice and factor, and the two end rules (extract x2, killed in action -50%). The run log list leaves the box; the run log stays in the run report.
+
+MEASURED. Check 35.75 passes, and fails on v35.74.
 ## v35.74 - MELEE ON Z, DROP ON V
 
 Co-op hunt while he was away. his order 10-28: can we move melee to z as default? and middle mouse should ping?
