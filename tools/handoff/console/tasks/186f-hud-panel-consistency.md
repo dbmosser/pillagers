@@ -17,3 +17,12 @@ Check (must FAIL on the build before): the corner panels share one inset (within
 Pictures: uishots 21, 33, 34, 50 at 1080, plus the party windows; look at them before and after, and run the critic on the after set; the target is 4 or better.
 Watch-for line for him: whether the HUD reads calmer and the clock is easier to find in a fight.
 TASK DONE when shipq prints ON HIS PC.
+
+## More findings (folded in 10-28 by the CEO chat, from the Codex critic on o-120f, v35.56; all were there before that change)
+Pictures: tools/handoff/console/notes/shots/o-120f-pad-x-reload-prompt-recipes-*/.
+7. Controls panel: its default state and its type contrast. His rulings stand: the folded "f1 controls" chip and the list opening toward the left edge (cw-f1left, his 10-27 order). Raise contrast and type size only.
+8. Roster and contracts: alignment and small text (with 4 above).
+9. Hotbar: the selected slot must read clearly above the others (selection hierarchy).
+10. Health and status chips: sizing, one scale with the other corner panels (186d owns the downed card's own bars; whichever ships second rebases).
+11. Ammo panel: padding inside the card, on the shared panel style of 1.
+Keep: the keyboard-focus marker (his order) and the word pillagers (player text never says "raiders").
