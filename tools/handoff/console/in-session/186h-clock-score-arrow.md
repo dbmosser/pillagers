@@ -25,3 +25,6 @@ Check (must FAIL on the build before): the clock draws in its own card above a s
 Pictures: uishots 21, 33, 34, 50 at 1080 plus both party windows; look at them.
 Watch-for line for him: whether the clock is easy to find at a glance and the arrow ever points at a far ring.
 TASK DONE when shipq prints ON HIS PC.
+
+SHIPPED build 1 (items 1-8, 12, 14): v35.80 fe4fc9000, ON HIS PC 2026-10-28. 13 older checks re-aimed (fixture 61b7616af, 60cf84630, 380387869). Hot ground kills: the hot mark rides on his kill line (+N sp hot), no float.
+NEXT: build 2, key cw-pillagersword (items 9-11, the words), sites in notes/186h/words-sites.md.
