@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.30 - THE QUIET HUD, ONE PLACE PER LINE
+
+Co-op hunt while he was away. his order 10-27: build the quiet hud, all 5 changes (this ship is changes 1 and 5); a warning showed as the top banner and again in the left feed, a remark as a grey row under the clock and again in the feed, a money pickup in the right stack and again in the feed, the hidden word sat alone at the right and the extraction badge at the right edge
+
+MEASURED. Check 35.30 passes, and fails on v35.29.
 ## v35.29 - GUNS FIRST ON THE EXTRACTED CARD
 
 Co-op hunt while he was away. his order 10-27: on the extracted screen always show guns first, the best thing to extract, regardless of rarity

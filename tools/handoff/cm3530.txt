@@ -1,0 +1,7 @@
+v35.30: the quiet hud, one place per line
+
+quiet hud: every raid line shows once, warnings at the top and the rest in the left feed; hidden is a status icon; an off-screen extraction shows under the extract distance
+
+Check 35.30. Fails on v35.29.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

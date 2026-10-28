@@ -1,0 +1,72 @@
+{
+    "title":  "F1 KEY LIST ON THE LEFT",
+    "why":  "his order 10-27 hitting f1 to get the controls should be over on the left, not the middle of the screen; on the picture he picked a: just the f1 key list moves to the left side",
+    "now":  "the f1 key list opens on the left",
+    "edits":  [
+                  {
+                      "anchor":  "function legDock(s){",
+                      "replacement":  "// v35.xx (cw-f1left), HIS ORDER (2026-10-27): \"hitting f1 to get the controls should be over on the left, not the middle of the screen\", and on the\n// picture he picked a: \"just the f1 key list moves to the left side\". THE OPENED LIST STANDS AT THE LEFT EDGE. Its left edge is the feed\u0027s and its\n// bottom the feed zone\u0027s bottom (just over the medal spot and the vitals), so it stands in the feed\u0027s place, and the feed lines step right of it\n// while it is open (feedStep). Where a tall bot list would reach it (a short screen), its bottom drops into the medal spot as far as it must, never\n// over the vitals. The full list (F1 twice) stands on the same corner. Null without a feed zone, and then the old place (bottom left, over the\n// vitals) stands. The folded f1 chip stays on the belt row; legDock and legChipSpot below are kept for it and for the older checks.\nvar LEGSIDE=null, LEGFULL=null;   // LEGSIDE: the opened list (compact or full) as drawn this frame, in screen pixels; LEGFULL: the full list panel in its own space, from drawLegend\nfunction legLeftDock(){\n  var rs=Math.max(1,hudRes()), g=Math.round(LH(8)*rs), b, h, rb;\n  if(!G||!FEEDBOX.on||!(FEEDBOX.w\u003e0)) return null;\n  b=FEEDBOX.y+FEEDBOX.h; h=(G.legendOn===1\u0026\u0026_legBase\u0026\u0026_legBase.h\u003e0)?_legBase.h:0;\n  rb=(!G.arcade\u0026\u0026HUDBOX.raiders\u0026\u0026HUDBOX.raiders.w\u003e0)?HUDBOX.raiders:null;\n  if(rb\u0026\u0026h\u003e0\u0026\u0026b-h\u003crb.y+rb.h+g\u0026\u0026MEDALBOX.on\u0026\u0026MEDALBOX.h\u003e0) b=Math.min(MEDALBOX.y+MEDALBOX.h,Math.round(rb.y+rb.h+g+h));\n  return {x:FEEDBOX.x,z:LEGZ0,b:b};\n}\n// how far the feed lines step right so they stand beside the opened list (s, last frame) and never under it\nfunction feedStep(s,R,rs){ return (s\u0026\u0026R\u0026\u0026s.x\u003cR.x+R.w\u0026\u0026s.y\u003cR.y+R.h\u0026\u0026s.y+s.h\u003eR.y)?Math.max(0,Math.round(s.x+s.w+LH(10)*rs-R.x)):0; }\n// the full list is tall: where it reaches the bot list, the board steps aside while it is open\nfunction legOverBoard(){ var s=LEGSIDE, r=HUDBOX.raiders; return !!(s\u0026\u0026G\u0026\u0026G.legendOn===2\u0026\u0026r\u0026\u0026r.w\u003e0\u0026\u0026s.x\u003cr.x+r.w\u0026\u0026r.x\u003cs.x+s.w\u0026\u0026s.y\u003cr.y+r.h\u0026\u0026r.y\u003cs.y+s.h); }\nfunction legDock(s){"
+                  },
+                  {
+                      "anchor":  "var _lcs=(G.legendOn===1)?legChipSpot():null, _lgD=_lcs?legDock(_lcs):null;",
+                      "replacement":  "LEGSIDE=null; var _lcs=null, _lgD=(G.legendOn===1)?legLeftDock():null;   // v35.xx (cw-f1left), his order (2026-10-27) \"should be over on the left, not the middle of the screen\": the compact list stands at the left edge in the feed place (legLeftDock), no longer on the belt chip"
+                  },
+                  {
+                      "anchor":  "ctx.translate(W/2,H); ctx.scale(_fz,_fz); ctx.translate(-W/2,-H);",
+                      "replacement":  "var _f1L=legLeftDock();   // v35.xx (cw-f1left): the full list stands at the left edge too, its bottom where the compact list\u0027s is, scaled about that corner and capped so its top stays on the screen\n      if(_f1L){ _fz=Math.min(_fz,Math.max(0.5,(_f1L.b-Math.round(LH(12)*_lgR))/(_fBox+LH(10)))); ctx.translate(_f1L.x,_f1L.b); ctx.scale(_fz,_fz); ctx.translate(-6,-H); }\n      else { ctx.translate(W/2,H); ctx.scale(_fz,_fz); ctx.translate(-W/2,-H); }"
+                  },
+                  {
+                      "anchor":  "drawLegend(G.legendOn===2\u0026\u0026!HOL.c?_fz:1);",
+                      "replacement":  "if(_f1L) LEGFULL=null; drawLegend(G.legendOn===2\u0026\u0026!HOL.c?_fz:1,!!_f1L); if(_f1L\u0026\u0026LEGFULL) LEGSIDE={x:_f1L.x+(LEGFULL.x-6)*_fz,y:_f1L.b+(LEGFULL.y-H)*_fz,w:LEGFULL.w*_fz,h:LEGFULL.h*_fz};"
+                  },
+                  {
+                      "anchor":  "HUDBOX.legend=_lz;",
+                      "replacement":  "HUDBOX.legend=_lz; if(G.legendOn===1\u0026\u0026!HOL.c) LEGSIDE={x:_lz.x,y:_lz.y,w:_lz.w,h:_lz.h};   // v35.xx (cw-f1left): the opened compact list as drawn, so the feed lines step right of it"
+                  },
+                  {
+                      "anchor":  "function drawLegend(fz){",
+                      "replacement":  "function drawLegend(fz,left){"
+                  },
+                  {
+                      "anchor":  "x=Math.max(14,Math.round((W-LEGW)/2));",
+                      "replacement":  "x=left?14:Math.max(14,Math.round((W-LEGW)/2)); if(left){ top=H-4-boxH; LEGFULL={x:x-8,y:top-6,w:LEGW,h:boxH+10}; }   // v35.xx (cw-f1left): on the left the panel bottom is H in this space, and drawHUD puts that corner on the feed zone bottom"
+                  },
+                  {
+                      "anchor":  "hudPanel(x-8,top-6,LEGW,boxH+10,0.84,1);",
+                      "replacement":  "if(left){ ctx.fillStyle=\u0027#111315\u0027; ctx.fillRect(x-8,top-6,LEGW,boxH+10); } hudPanel(x-8,top-6,LEGW,boxH+10,0.84,1);"
+                  },
+                  {
+                      "anchor":  "function feedDraw(){",
+                      "replacement":  "function feedDraw(){ var _lgS=LEGSIDE, _fst=0; LEGSIDE=null;   // v35.xx (cw-f1left): the opened controls list as drawn last frame (it draws after the feed); read once, so a frame without the list leaves the feed in its place"
+                  },
+                  {
+                      "anchor":  "x=R.x+Math.round((e-1)*LH(18)*rs); yt=y-R.rh;",
+                      "replacement":  "x=R.x+(_fst=feedStep(_lgS,R,rs))+(_fst?0:Math.round((e-1)*LH(18)*rs)); yt=y-R.rh;   // beside the open list a new line fades in where it stands (sliding in from the left it ran under the list)"
+                  },
+                  {
+                      "anchor":  "else if(!G.mapOpen\u0026\u0026!G.bagOpen){",
+                      "replacement":  "else if(!G.mapOpen\u0026\u0026!G.bagOpen\u0026\u0026!legOverBoard()){   // v35.xx (cw-f1left): not while the full controls list stands over it"
+                  },
+                  {
+                      "anchor":  "var _bx=[HUDBOX.raiders,HUDBOX.legend,HUDBOX.body,",
+                      "replacement":  "var _bx=[legOverBoard()?null:HUDBOX.raiders,HUDBOX.legend,(G\u0026\u0026G.legendOn===2)?LEGSIDE:null,HUDBOX.body,"
+                  },
+                  {
+                      "anchor":  "var _lx=W/2-_lbw/2, _ly=H/2-_lbh/2;",
+                      "replacement":  "var _lx=Math.round(LH(24)), _ly=H/2-_lbh/2, _lcx=_lx+_lbw/2;   // v35.xx (cw-f1left), his order (2026-10-27): the F1 key list on the floor stands at the left too"
+                  },
+                  {
+                      "anchor":  "ctx.fillText(\u0027CONTROLS\u0027,W/2,_ly+LH(24));",
+                      "replacement":  "ctx.fillText(\u0027CONTROLS\u0027,_lcx,_ly+LH(24));"
+                  },
+                  {
+                      "anchor":  "ctx.fillText(_lg[_lk],W/2-LH(12),_yy);",
+                      "replacement":  "ctx.fillText(_lg[_lk],_lcx-LH(12),_yy);"
+                  },
+                  {
+                      "anchor":  "ctx.fillText(_lg[_lk+1],W/2+LH(12),_yy);",
+                      "replacement":  "ctx.fillText(_lg[_lk+1],_lcx+LH(12),_yy);"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027cw-f1left, his order 2026-10-27 (\"hitting f1 to get the controls should be over on the left, not the middle of the screen\"; on the picture he picked a: \"just the f1 key list moves to the left side\"): the compact list, the full list and the undercroft controls card draw at the left side, the feed lines step right of the opened list, and the list stays clear of the vitals, at 1080p and 4K\u0027,\n   run:function(){\n     if(!window.__deploy||!window.__endRaid||!window.__forceSize) return \u0027SKIP: no raid in this fixture\u0027;\n     if(window.__vpAlive\u0026\u0026!__vpAlive()) return \u0027SKIP: the pane has no layout, so nothing renders\u0027;\n     var bad=[], r0=P.runs, oSay=say, g=null, proto=CanvasRenderingContext2D.prototype, o=proto.fillText, od=drawLegend, inL=0, rec=[], sz=[[1920,1080],[3840,2160]], s, i, j, L, fx, rw, tag, hbOn, hud0;\n     function hit(a,b){ return a\u0026\u0026b\u0026\u0026a.w\u003e0\u0026\u0026b.w\u003e0\u0026\u0026a.x\u003cb.x+b.w\u0026\u0026b.x\u003ca.x+a.w\u0026\u0026a.y\u003cb.y+b.h\u0026\u0026b.y\u003ca.y+a.h; }\n     function grab(fn,all){ rec=[]; proto.fillText=function(t,x,y){ if(all||inL){ var m=this.getTransform(), cw=(this.canvas\u0026\u0026this.canvas.width)||1; rec.push({t:String(t).toLowerCase(),f:(m.a*x+m.c*y+m.e)/cw}); } return o.apply(this,arguments); }; try{ fn(); } finally { proto.fillText=o; } }\n     function fr(re){ var a=[], k; for(k=0;k\u003crec.length;k++) if(re.test(rec[k].t)) a.push(rec[k].f); return a; }\n     function pc(a){ return Math.round(Math.max.apply(null,a)*100); }\n     try{\n       drawLegend=function(){ inL++; try{ return od.apply(this,arguments); } finally { inL--; } };\n       say=function(){};\n       P.runs=0; __runPrep(); __topClear(); try{ __pinDPR(1); }catch(_d){} __forceSize(1920,1080); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||g.over) return \u0027SKIP: staging: no raid\u0027;\n       g.career=1; g.arcade=0; g.legendAutoDone=true; g.bagOpen=false; g.mapOpen=false; keys={}; hud0=P.hud; P.hud={};\n       say=oSay; for(i=0;i\u003c4;i++) say(\u0027FEED LINE \u0027+i,\u0027info\u0027); say=function(){};\n       for(s=0;s\u003csz.length;s++){\n         __forceSize(sz[s][0],sz[s][1]); tag=sz[s][0]+\u0027x\u0027+sz[s][1]+\u0027: \u0027;\n         g.legendOn=1; for(i=0;i\u003c12;i++) __frame(0.016);\n         grab(function(){ __frame(0.016); });\n         fx=fr(/^(move|sprint|crouch|roll|fire|sights|reload|melee|next gun|item wheel|guns|backpack|use item|map|search|extract)$/);\n         if(fx.length\u003c8) bad.push(tag+\u0027the compact list rows were not drawn (\u0027+fx.length+\u0027)\u0027);\n         else if(Math.max.apply(null,fx)\u003e0.2) bad.push(tag+\u0027the compact list is not on the left: its words reach \u0027+pc(fx)+\u0027 percent of the width\u0027);\n         L=HUDBOX.legend;\n         if(!L||!(L.w\u003e0)) bad.push(tag+\u0027no list box\u0027);\n         else {\n           if(L.x\u003eW*0.05) bad.push(tag+\u0027the list box starts at x \u0027+Math.round(L.x)+\u0027, not at the left edge\u0027);\n           if(hit(L,HUDBOX.body)) bad.push(tag+\u0027the opened list overlaps the vitals\u0027);\n           rw=FEEDBOX.rows||[]; if(!rw.length) bad.push(tag+\u0027control: no feed line was laid out\u0027);\n           for(j=0;j\u003crw.length;j++) if(hit(L,rw[j])){ bad.push(tag+\u0027the feed line \u0027+rw[j].t+\u0027 is under the opened list\u0027); break; }\n         }\n         g.legendOn=2; for(i=0;i\u003c6;i++) __frame(0.016);\n         grab(function(){ __frame(0.016); });\n         fx=fr(/^(move|fight|gear|world|team|also)$/);\n         if(fx.length\u003c5) bad.push(tag+\u0027the full list headings were not drawn (\u0027+fx.length+\u0027)\u0027);\n         else if(Math.max.apply(null,fx)\u003e0.1) bad.push(tag+\u0027the full list is not on the left: its headings stand at \u0027+pc(fx)+\u0027 percent of the width\u0027);\n         g.legendOn=0; for(i=0;i\u003c4;i++) __frame(0.016);\n       }\n       __forceSize(1920,1080);\n       __endRaid(\u0027abandon\u0027); __topClear(); __runPrep();\n       G=null; keys={}; __showScreen(\u0027hub\u0027); __hubEnter(); if(window.__wnseen) __wnseen(1);\n       if(typeof HB!==\u0027object\u0027||!HB) bad.push(\u0027no undercroft floor to draw\u0027);\n       else {\n         hbOn=HB.legend; HB.legend=false; grab(function(){ __hubFrame(0.016); },1);\n         if(fr(/^controls$/).length) bad.push(\u0027control: a controls card was drawn on the floor with F1 off\u0027);\n         HB.legend=true; grab(function(){ __hubFrame(0.016); },1); HB.legend=hbOn;\n         fx=fr(/^controls$/);\n         if(!fx.length) bad.push(\u0027the undercroft controls card was not drawn with F1 on\u0027);\n         else if(Math.max.apply(null,fx)\u003e0.35) bad.push(\u0027the undercroft controls card is not on the left: its title stands at \u0027+pc(fx)+\u0027 percent of the width\u0027);\n       }\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ proto.fillText=o; drawLegend=od; say=oSay; P.runs=r0; if(hud0!==undefined) P.hud=hud0; try{ if(typeof HB===\u0027object\u0027\u0026\u0026HB) HB.legend=false; }catch(_h){} try{ __forceSize(1920,1080); }catch(_f){} try{ if(G\u0026\u0026!G.over) __endRaid(\u0027abandon\u0027); __topClear(); }catch(_c){} __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

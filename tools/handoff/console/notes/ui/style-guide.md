@@ -12,8 +12,9 @@ Rule of the guide: the code already HAS most tokens (CSS :root at line ~40, UIC 
 - Raid controls list (his answer rs-1, 2026-10-24 23:55, his words: "should be on right hand side, minimized, hit key to reveal", corrected
   a minute later: "I meant keys should be in mid bottom LEFT hand side"): in a career raid it sits mid-bottom on the left-hand side, folded to one short line from the start, and F1 opens it there. It replaces his v6.68
   "always open on arrival" for career. The party demo keeps today's list for walk-up players. Job 112r builds it.
-- The same alert in two places stays (his answer rs-2 a, 2026-10-24: keep both, the red banner and its row in the left log, his 10-15
-  order that every line also goes in the log). It is his ruling: tell the critic, and do not mark a raid screen down for it.
+- Every raid line shows in ONE place (his order 2026-10-27, "build the quiet hud, all 5 changes", job 186a; it reverses his rs-2 a of
+  10-24, keep both): an alert is the top-centre banner only, every other line is the left feed only, the grey rows under the clock are
+  gone, pickups are the right stack. A line drawn twice is a defect again.
 - Career HUD top-right: a vertical 1 by 1 list, every item the same size (his newest chat order, 10-18 afternoon). It replaces the Q58 "one row". Another helper builds it under key cw-trcol (not shipped as of v31.23). Screen tasks leave that corner alone.
 - Player colours (his answer to r3-13, 10-18 evening, tools/handoff/q-round3/answers.md): P1 is amber and P2 is cyan everywhere, raid and menus. Lime (--acc) only means "selected". (Fixed 10-25: this line said he had not answered.) Until then change no ring colour and add no new per-player tint.
 

@@ -1,0 +1,3 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  38-extracted-card                      staged       9.4s  
+  77-haul-reveal-done                    staged      12.6s  

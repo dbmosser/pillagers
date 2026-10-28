@@ -12,3 +12,5 @@ Order 2: a number key (or pad pick) on a belt item puts it in hand the way a whe
 Checks: drag from the wheel onto slot 3 binds the item to slot 3; pressing 3 then holds the item and nothing is spent until a click; both must FAIL on v35.20. Control: a plain wheel pick still works as before.
 Rules: player text lower case; both players; no storage key change; take pictures.
 TASK DONE when shipped and his main PC reports the build (spare/JUL26/status.txt party=VER).
+
+SHIPPED 10-27: v35.25 (0b02b4741, the two orders) and v35.28 (0fa764174, the wheel hint says lmb drop on a key while an item is held). Main PC reported party=35.25 at 20:13 and 35.28 after. Not done: pad (no pad drag), the Undercroft floor wheel.

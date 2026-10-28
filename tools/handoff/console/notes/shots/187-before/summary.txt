@@ -1,0 +1,4 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  01-title-mode-menu                     staged       5.4s  
+== 4k : window 3876x2265, viewport 3840x2160
+  01-title-mode-menu                     staged       5.8s  
