@@ -3744,8 +3744,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.76';
-var VER_AT='2026-10-28 09:30';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.77';
+var VER_AT='2026-10-28 09:35';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -55522,7 +55522,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.76: With the fps plate on and a cap above what the browser gives, a small line under the plate says browser gives 60 hz and names windows refresh rate, main display and hardware acceleration; it stays off in live raid play and when the page has seen faster frames. Check 35.76 fails on v35.75',
+  now:'v35.77: A kill inside hot ground pays 1.05x sp after its streak bonus in career and demo, in either window. Its popup adds hot. Watch in play: is hot ground worth its two extra machines; watch demo sp totals on the board. Check 35.77 fails on v35.76',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -67778,13 +67778,18 @@ function scoreBonus(n,x,y,txt){
   try{ label(x,y,txt+' +'+arcadeCr(n),'#ffc04a',0,true); }catch(_l){}
   return n;
 }
+// v28.xx (cw-cx-hotkill): his 10-28 decision replaces the proposed 1.5 with 1.05.
+var HOT_KILLX=1.05;
 function scoreKill(st,k,el,boss,x,y){
   var n=arcadeKillPts(k,el,boss), s, t=+G.t||0, mx, c;
   if(!(n>0)||!st) return 0;
   s=st.streak;
   if(!s||!(t-s.t<ARCADE_STREAK_GAP)||t<s.t) s=st.streak={n:0,t:t};
   s.n++; s.t=t; mx=arcadeStreakX(s.n); n*=mx;
-  if(isFinite(x)&&isFinite(y)){ try{ label(x,y-20,'+'+arcadeCr(n),'#ffc04a',0,true); }catch(_alb){} }
+  // v28.xx (cw-cx-hotkill): his 10-28 decision, "should just be 1.05", after the streak in either window.
+  var hot=G.hotZone&&Number.isFinite(x)&&Number.isFinite(y)&&Math.hypot(x-G.hotZone.x,y-G.hotZone.y)<=G.hotZone.r;
+  if(hot) n=Math.round(n*HOT_KILLX);
+  if(isFinite(x)&&isFinite(y)){ try{ label(x,y-20,'+'+arcadeCr(n)+(hot?' hot':''),'#ffc04a',0,true); }catch(_alb){} }
   c=arcadeStreakCall(s.n);
   if(c){ try{ say(c,'ext',{sub:'x'+mx}); }catch(_asc){} try{ if(ANN_STREAK[c]) blip('medal'+(SPK_MEDALS[c]||1)); }catch(_avc){} }   // v27.94 (snd3): the streak is a medal pop that climbs, DOUBLE KILL medal1 to UNSTOPPABLE medal5
   try{ chainTickPlay(s.n); }catch(_ctk){}   // v28.xx (cw-chaintick): a rising tick for each kill in the chain
@@ -67808,8 +67813,11 @@ function arcadeKill(k,el,boss,x,y,ke){
   s=ARCADE.streak;   // v23.38 (arcade15): the chain, the multiplier, the popup and the callout
   if(!s||!(t-s.t<ARCADE_STREAK_GAP)||t<s.t) s=ARCADE.streak={n:0,t:t};
   s.n++; s.t=t; mx=arcadeStreakX(s.n); n*=mx;
+  // v28.xx (cw-cx-hotkill): his 10-28 decision, "should just be 1.05", after the streak in either window.
+  var hot=G.hotZone&&Number.isFinite(x)&&Number.isFinite(y)&&Math.hypot(x-G.hotZone.x,y-G.hotZone.y)<=G.hotZone.r;
+  if(hot) n=Math.round(n*HOT_KILLX);
   try{ arcadeBmKill(s.n,x,y); }catch(_bmk){}   // v23.xx (his answer 20): the best streak and the longest shot
-  if(isFinite(x)&&isFinite(y)){ try{ label(x,y-20,'+'+arcadeCr(n),'#ffc04a',0,true); }catch(_alb){} }   // v23.56 (arcade31): +$50
+  if(isFinite(x)&&isFinite(y)){ try{ label(x,y-20,'+'+arcadeCr(n)+(hot?' hot':''),'#ffc04a',0,true); }catch(_alb){} }   // v23.56 (arcade31): +$50
   c=arcadeStreakCall(s.n);
   if(c){ try{ say(c,'ext',{sub:'x'+mx}); }catch(_asc){} try{ if(ANN_STREAK[c]) blip('medal'+(SPK_MEDALS[c]||1)); }catch(_avc){} }   // v27.94 (snd3): the streak plays a medal pop that climbs (it was a chime ladder)
   try{ chainTickPlay(s.n); }catch(_ctk){}   // v28.xx (cw-chaintick): a rising tick for each kill in the chain

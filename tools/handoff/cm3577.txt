@@ -1,0 +1,7 @@
+v35.77: hot ground kills pay five percent more
+
+A kill inside hot ground pays 1.05x sp after its streak bonus in career and demo, in either window. Its popup adds hot. Watch in play: is hot ground worth its two extra machines; watch demo sp totals on the board.
+
+Check 35.77. Fails on v35.76.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
