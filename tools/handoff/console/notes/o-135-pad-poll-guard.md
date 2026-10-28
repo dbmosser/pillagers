@@ -8,3 +8,7 @@ The draft why field is copied into DESIGN.md by the normal ship generator. It in
 
 Local validation: mk script printed written and both anchors matched once. Patched game scripts and the regression check receive a syntax-only parse in validate.cjs; no browser or localhost was used. The lane must run preflight, confirm the check fails before and passes after, retain the 4242 fingerprints, ship, and report ON HIS PC. No visual layout change needs critic pictures.
 
+
+--- codex run 2026-10-28 02:15 ---
+2026-10-28 completion: The lane shipped cw-cx-padpollguard as v35.60. Confirmed both guards in the refreshed game and the playtest watch in DESIGN.md. DESIGN records check 35.60 passes and fails on v35.59. The shipping log reports SHIPPED v35.60. onhispc.txt confirms v35.60 was on his PC after 17 seconds, serving 35.60. No further changes are needed.
+

@@ -26,3 +26,4 @@
 10-28 01:30 v35.57 cw-cx-xpromptread on his pc after 65s (8802 serves 35.57) week 74%
 10-28 01:46 v35.58 cw-cx-partnership on his pc after 64s (8802 serves 35.58) week 74%
 10-28 02:05 v35.59 cw-cx-hitjolt on his pc after 49s (8802 serves 35.59) week 74%
+10-28 02:14 v35.60 cw-cx-padpollguard on his pc after 17s (8802 serves 35.60) week 74%

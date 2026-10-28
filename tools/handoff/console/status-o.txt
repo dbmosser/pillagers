@@ -1,1 +1,1 @@
-10-28 02:12 gate: shipping cw-cx-padpollguard (o-135-pad-poll-guard, codex)
+10-28 02:26 gate: shipping cw-cx-osmotion (o-137-os-reduce-motion, codex)

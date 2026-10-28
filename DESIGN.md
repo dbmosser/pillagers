@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.61 - RESPECT COMPUTER REDUCED MOTION
+
+Co-op hunt while he was away. The computer reduced motion preference previously affected menu CSS only. Unset screen shake now starts light and unset effect intensity starts half. Each saved choice and each tuned dial wins independently. Hit pause now follows the existing effect intensity control: 60 ms at full, 30 ms at half, zero at off, with its immunity unchanged. No request leaves ordinary defaults unchanged. Watch in a smooth-look playtest: on both player windows with no saved motion choices, heavy hits should shake less and hold the target for a shorter beat; choosing full must survive reload. In co-op the host still owns enemy hit pause. No seeded draws or world generation change.
+
+MEASURED. Check 35.61 passes, and fails on v35.60.
 ## v35.60 - BLOCKED PAD READS KEEP THE GAME RUNNING
 
 Co-op hunt while he was away. An embedded browser may deny getGamepads with a SecurityError. Pad polling now handles that as an empty pad list, and the frame loop also catches a failing pad handler and releases pad-owned input. Watch in a playtest: inside the itch frame, both windows should keep animating and accept keyboard movement and mouse fire when pads are blocked; with pads allowed, the first pad still controls p2 and the second p1.

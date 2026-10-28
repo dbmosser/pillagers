@@ -1416,3 +1416,6 @@
 2026-10-28 0.0908 critic-o-132-hit-jolt-from-the-bullet
 2026-10-28 0.0000 o-132-hit-jolt-from-the-bullet
 2026-10-28 0.0000 o-135-pad-poll-guard
+2026-10-28 0.0000 o-135-pad-poll-guard
+2026-10-28 0.0000 o-137-os-reduce-motion
+2026-10-28 0.0000 o-137-os-reduce-motion

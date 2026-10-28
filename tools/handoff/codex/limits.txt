@@ -25,3 +25,6 @@
 2026-10-28 02:00 week=13.0% 5h=61.0% week_resets=2026-11-03 16:21 job=o-132-hit-jolt-from-the-bullet
 2026-10-28 02:07 week=13.0% 5h=62.0% week_resets=2026-11-03 16:21 job=o-132-hit-jolt-from-the-bullet
 2026-10-28 02:10 week=13.0% 5h=64.0% week_resets=2026-11-03 16:21 job=o-135-pad-poll-guard
+2026-10-28 02:15 week=14.0% 5h=65.0% week_resets=2026-11-03 16:21 job=o-135-pad-poll-guard
+2026-10-28 02:21 week=14.0% 5h=69.0% week_resets=2026-11-03 16:21 job=o-137-os-reduce-motion
+2026-10-28 02:24 week=14.0% 5h=70.0% week_resets=2026-11-03 16:21 job=o-137-os-reduce-motion

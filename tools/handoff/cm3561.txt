@@ -1,0 +1,7 @@
+v35.61: respect computer reduced motion
+
+Computer reduced motion starts unset shake light and intensity half. Saved settings win.
+
+Check 35.61. Fails on v35.60.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
