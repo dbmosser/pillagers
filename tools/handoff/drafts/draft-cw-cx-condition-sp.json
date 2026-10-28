@@ -1,0 +1,132 @@
+{
+    "title":  "CONDITIONS PAY SP ONLY",
+    "why":  "His 10-28 decision: all raid condition modifiers contribute to SP, never cash, at 1.05 each.",
+    "now":  "Night and hard weather were 1.20x and 1.10x XP. Terms were additive +25% for blackout and short window, +30% for heavy patrols, they know you and silent running, on haul cash and the spForRun part of Mainframe XP. SP is the live raid score and leaderboard; XP is the separate reward track. Each active condition now multiplies SP by 1.05, stacking multiplicatively, with no extra cash or XP. Career cash conversion uses the score before these conditions; the demo applies them to earned SP. Existing difficulty settings and dose XP are unchanged. Watch: compare matching day and night extractions, rain/fog, and several signed Terms in both windows; SP should rise while money and XP stay level. Seven conditions give 1.4071x SP. No seeded random calls or world generation changed.",
+    "edits":  [
+                  {
+                      "anchor":  "nightXp:1.2,wxXp:1.1",
+                      "replacement":  "nightXp:1.05,wxXp:1.05"
+                  },
+                  {
+                      "anchor":  "function wxXpMul(){ return (CFG.wxXp===undefined)?1.1:CFG.wxXp; }",
+                      "replacement":  "function wxXpMul(){ return 1.05; }   // v28.xx (cw-cx-condition-sp): badge only; weather no longer multiplies XP"
+                  },
+                  {
+                      "anchor":  "// v10.06, his answer 22: a night run pays more. Dial nightXp, 1.2 by default.\nfunction nightXpMul(){ return (CFG.nightXp===undefined)?1.2:CFG.nightXp; }",
+                      "replacement":  "// v28.xx (cw-cx-condition-sp), his 10-28 decision: \"All these modifiers like night rain etc stuff should contribute to sp not $ at 1.05\".\n// v28.xx (cw-cx-condition-sp): XP is the separate Mainframe reward track; neither it nor cash receives these multipliers.\nfunction nightXpMul(){ return 1.05; }   // v28.xx (cw-cx-condition-sp): badge only; the old nightXp dial no longer changes XP\nfunction raidConditionRows(){\n  var out=[], ts=termsOf(), i, w=wx(), hard=0;\n  if(!isDay()) out.push([\u0027night\u0027,1.05]);\n  if(w){\n    hard=(w.view!==undefined\u0026\u0026w.view\u003c1)?1:0;\n    if(!hard\u0026\u0026w.lights!==undefined\u0026\u0026w.lights\u003c1\u0026\u0026ts.indexOf(\u0027blackout\u0027)\u003c0){\n      var base=lampBase(); hard=((base-base*w.lights)\u003e=0.15)?1:0;\n    }\n    if(hard) out.push([String(w.name||w.id).toLowerCase(),1.05]);\n  }\n  for(i=0;i\u003cTERMS.length;i++) if(ts.indexOf(TERMS[i].id)\u003e=0) out.push([TERMS[i].name.toLowerCase(),1.05]);\n  return out;\n}\nfunction raidConditionMul(){\n  if(!DMUL_ON) return 1;\n  var rows=raidConditionRows(), m=1;\n  for(var i=0;i\u003crows.length;i++) m*=rows[i][1];\n  return m;\n}"
+                  },
+                  {
+                      "anchor":  "  var tmul=1+(rec.termPay||0);",
+                      "replacement":  "  var tmul=1;   // v28.xx (cw-cx-condition-sp): signed conditions multiply raid SP, never Mainframe XP"
+                  },
+                  {
+                      "anchor":  "  return Math.round((spForRun(rec)+xpForRun(rec))*(rec.night?nightXpMul():1)*(rec.wxHard?wxXpMul():1));",
+                      "replacement":  "  return spForRun(rec)+xpForRun(rec);   // v28.xx (cw-cx-condition-sp): condition bonuses belong only to SP"
+                  },
+                  {
+                      "anchor":  "  // v10.06: and a night run pays its multiplier on top.\n  // v11.00, his note 16: hard weather pays too, and both apply, so a hard night\n  // is 1.2 times 1.1.",
+                      "replacement":  "  // v28.xx (cw-cx-condition-sp): night, weather and signed Terms now multiply SP only."
+                  },
+                  {
+                      "anchor":  "  \u003cdiv class=\"msub\"\u003eSign for worse conditions. Walk out to get paid more.\u003c/div\u003e",
+                      "replacement":  "  \u003cdiv class=\"msub\"\u003eworse odds. +5% sp each.\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "  [\u0027DONE\u0027,\u0027THE TERMS: sign for worse odds and Meridian pays better\u0027],",
+                      "replacement":  "  [\u0027DONE\u0027,\u0027the terms: +5% sp per condition\u0027],"
+                  },
+                  {
+                      "anchor":  "  {id:\u0027blackout\u0027,name:\u0027BLACKOUT PROTOCOL\u0027,pay:0.25,",
+                      "replacement":  "  {id:\u0027blackout\u0027,name:\u0027BLACKOUT PROTOCOL\u0027,pay:0.05,"
+                  },
+                  {
+                      "anchor":  "  {id:\u0027window\u0027,  name:\u0027SHORT WINDOW\u0027,pay:0.25,",
+                      "replacement":  "  {id:\u0027window\u0027,  name:\u0027SHORT WINDOW\u0027,pay:0.05,"
+                  },
+                  {
+                      "anchor":  "  {id:\u0027patrols\u0027, name:\u0027HEAVY PATROLS\u0027,pay:0.30,",
+                      "replacement":  "  {id:\u0027patrols\u0027, name:\u0027HEAVY PATROLS\u0027,pay:0.05,"
+                  },
+                  {
+                      "anchor":  "  {id:\u0027known\u0027,   name:\u0027THEY KNOW YOU\u0027,pay:0.30,",
+                      "replacement":  "  {id:\u0027known\u0027,   name:\u0027THEY KNOW YOU\u0027,pay:0.05,"
+                  },
+                  {
+                      "anchor":  "  {id:\u0027silence\u0027, name:\u0027SILENT RUNNING\u0027,pay:0.30,",
+                      "replacement":  "  {id:\u0027silence\u0027, name:\u0027SILENT RUNNING\u0027,pay:0.05,"
+                  },
+                  {
+                      "anchor":  "      var _mdIn=P.credits+((how===\u0027extract\u0027)?((G.pedCarry||0)+Math.round(Math.max(0,haul-(G.carriedIn||0))*termsPay(1))):0);",
+                      "replacement":  "      var _mdIn=P.credits+((how===\u0027extract\u0027)?(G.pedCarry||0):0);   // v28.xx (cw-cx-condition-sp): no hazard cash is coming"
+                  },
+                  {
+                      "anchor":  "  // HAZARD PAY. Only on an extraction: signing for worse conditions and then\n  // dying under them is simply a worse day, which is what makes it a bet rather\n  // than a difficulty slider.\n\n  if(how===\u0027extract\u0027\u0026\u0026tPay\u003e0){\n    // v13.53, end-of-raid audit: only what the run brought home earns hazard pay. The\n    // lift\u0027s own cargo goes straight back to the stash, as v12.65 and v12.69 already count.\n    var bonus=Math.round(Math.max(0,haul-(G.carriedIn||0))*tPay);\n    P.credits+=bonus;\n    var tn=[];\n    for(var tq=0;tq\u003cTERMS.length;tq++) if(termsOf().indexOf(TERMS[tq].id)\u003e=0) tn.push(TERMS[tq].name);\n    lines.push(\u0027\u003cspan style=\"color:var(--amber)\"\u003eHazard pay +\u0027+Math.round(tPay*100)+\n      \u0027%: \u0027+\u0027$\u0027+bonus.toLocaleString()+\u0027 for \u0027+tn.join(\u0027, \u0027)+\u0027.\u003c/span\u003e\u0027);\n  } else if(how===\u0027dead\u0027\u0026\u0026tPay\u003e0){\n    lines.push(\u0027\u003cspan style=\"color:var(--rust)\"\u003eYou signed for \u0027+Math.round(tPay*100)+\n      \u0027% and did not come back for it.\u003c/span\u003e\u0027);\n  }\n  try{ careerSettle",
+                      "replacement":  "  // v28.xx (cw-cx-condition-sp): signed conditions pay 1.05x SP each, with no hazard cash.\n  try{ careerSettle"
+                  },
+                  {
+                      "anchor":  "    vl.textContent=\u0027+\u0027+Math.round(T.pay*100)+\u0027%\u0027;",
+                      "replacement":  "    vl.textContent=\u0027+5% sp\u0027;   // v28.xx (cw-cx-condition-sp): every signed condition is 1.05x SP"
+                  },
+                  {
+                      "anchor":  "    ? \u0027\u003cspan style=\"color:#ffc04a\"\u003eHazard pay +\u0027+Math.round(tp*100)+\u0027% on anything you carry out.\u003c/span\u003e\u0027\n    : \u0027\u003cspan style=\"color:var(--ash)\"\u003eNothing signed. Standard terms, standard pay.\u003c/span\u003e\u0027;",
+                      "replacement":  "    ? \u0027\u003cspan style=\"color:#ffc04a\"\u003esp x\u0027+Math.pow(1.05,termsOn().length).toFixed(2)+\u0027\u003c/span\u003e\u0027\n    : \u0027\u003cspan style=\"color:var(--ash)\"\u003eno terms signed\u003c/span\u003e\u0027;"
+                  },
+                  {
+                      "anchor":  "      rows.push({k:TERMS[_tq].name,v:\u0027+\u0027+Math.round(TERMS[_tq].pay*100)+\u0027% pay\u0027,c:\u0027#ffc04a\u0027});",
+                      "replacement":  "      rows.push({k:TERMS[_tq].name,v:\u0027+5% sp\u0027,c:\u0027#ffc04a\u0027});   // v28.xx (cw-cx-condition-sp): score only"
+                  },
+                  {
+                      "anchor":  "  if(nx) nx.textContent=\u0027+\u0027+Math.round((nightXpMul()-1)*100)+\u0027%\u0027;",
+                      "replacement":  "  if(nx) nx.textContent=\u0027+5% sp\u0027;   // v28.xx (cw-cx-condition-sp): explicit unit"
+                  },
+                  {
+                      "anchor":  "return isDay()?\u0027\u0027:(\u0027+\u0027+Math.round((wxXpMul()-1)*100)+\u0027%\u0027);",
+                      "replacement":  "return isDay()?\u0027\u0027:\u0027+5% sp\u0027;"
+                  },
+                  {
+                      "anchor":  "  return hard?(\u0027+\u0027+Math.round((wxXpMul()-1)*100)+\u0027%\u0027):\u0027\u0027;",
+                      "replacement":  "  return hard?\u0027+5% sp\u0027:\u0027\u0027;   // v28.xx (cw-cx-condition-sp): weather is score only"
+                  },
+                  {
+                      "anchor":  "  var s=Math.max(0,G.cs.s|0), fin=0, best=false, rk=0, R=null;",
+                      "replacement":  "  // v28.xx (cw-cx-condition-sp): conditions multiply the final SP once; cash uses the score before conditions.\n  var s=Math.max(0,G.cs.s|0), fin=0, best=false, rk=0, R=null, cm=raidConditionMul();\n  G.careerConditionMul=cm;\n  G.careerCash=(how===\u0027extract\u0027)?s*2:0;"
+                  },
+                  {
+                      "anchor":  "    fin=s*2;\n    P.credits=(+P.credits||0)+fin;",
+                      "replacement":  "    fin=Math.round(s*2*cm);\n    P.credits=(+P.credits||0)+G.careerCash;"
+                  },
+                  {
+                      "anchor":  "R=careerBoardAdd(how,(how===\u0027extract\u0027)?fin:Math.floor(s/2));",
+                      "replacement":  "R=careerBoardAdd(how,(how===\u0027extract\u0027)?fin:Math.round(Math.floor(s/2)*cm));"
+                  },
+                  {
+                      "anchor":  "      lines.push(\u0027\u003cspan style=\"color:#ffc04a;font-weight:700\"\u003eCAREER SCORE \u0027+arcadeCr(s)+\u0027 x2  \\u00b7  +\u0027+arcadeN(fin)+\u0027 CR\u003c/span\u003e\u0027);",
+                      "replacement":  "      lines.push(\u0027\u003cspan style=\"color:#ffc04a;font-weight:700\"\u003eCAREER SCORE \u0027+arcadeCr(fin)+\u0027\u003c/span\u003e\u0027);"
+                  },
+                  {
+                      "anchor":  "fin=ex?s*2:Math.floor(s/2), b=c.b||{}",
+                      "replacement":  "fin=Math.round((ex?s*2:Math.floor(s/2))*((G.careerConditionMul===undefined)?1:G.careerConditionMul)), cash=(G.careerCash===undefined)?(ex?s*2:0):G.careerCash, b=c.b||{}"
+                  },
+                  {
+                      "anchor":  "  if(ex) sh+=row(\u0027\u0027,\u0027\u003cspan class=\"lgl\"\u003eEXTRACTION x2\u003c/span\u003e\u0027+cnt(s,\u0027+\u0027));",
+                      "replacement":  "  // v28.xx (cw-cx-condition-sp): conditions stay in the SP panel; cash stays in the money panel.\n  var crs=raidConditionRows();\n  if(DMUL_ON) for(i=0;i\u003ccrs.length;i++) sh+=row(\u0027dm\u0027,\u0027\u003cspan class=\"lgl\"\u003e\u0027+escHtml(crs[i][0])+\u0027\u003c/span\u003e\u003cb\u003ex1.05\u003c/b\u003e\u0027);\n  if(ex) sh+=row(\u0027\u0027,\u0027\u003cspan class=\"lgl\"\u003eEXTRACTION x2\u003c/span\u003e\u0027+cnt(Math.round(s*((G.careerConditionMul===undefined)?1:G.careerConditionMul)),\u0027+\u0027));"
+                  },
+                  {
+                      "anchor":  "    mh+=row(\u0027cr\u0027,\u0027\u003cspan class=\"lgl\"\u003eCREDITS BANKED\u003c/span\u003e\u0027+((fin\u003e0)?cnt(fin,\u0027+\u0027,1):\u0027\u003cb\u003e+\u0027+arcadeMoney(0)+\u0027\u003c/b\u003e\u0027));\n    tot=fin+hv;",
+                      "replacement":  "    mh+=row(\u0027cr\u0027,\u0027\u003cspan class=\"lgl\"\u003eCREDITS BANKED\u003c/span\u003e\u0027+((cash\u003e0)?cnt(cash,\u0027+\u0027,1):\u0027\u003cb\u003e+\u0027+arcadeMoney(0)+\u0027\u003c/b\u003e\u0027));\n    tot=cash+hv;"
+                  },
+                  {
+                      "anchor":  "arcadeCr(s-fin)+\u0027\u003c/b\u003e\u0027);",
+                      "replacement":  "arcadeCr(Math.round(s*((G.careerConditionMul===undefined)?1:G.careerConditionMul))-fin)+\u0027\u003c/b\u003e\u0027);"
+                  },
+                  {
+                      "anchor":  "arcadeMoney(fin)+\u0027\u003c/s\u003e LOST\u003c/b\u003e\u0027);",
+                      "replacement":  "arcadeMoney(Math.floor(s/2))+\u0027\u003c/s\u003e LOST\u003c/b\u003e\u0027);"
+                  },
+                  {
+                      "anchor":  "function spMul(n){ var m=diffMul(); return (n\u003e0\u0026\u0026m\u003e1)?Math.round(n*m):n; }",
+                      "replacement":  "// v28.xx (cw-cx-condition-sp): demo conditions multiply earned SP; career applies them at settlement to keep cash unchanged.\nfunction spMul(n){ var m=diffMul()*((G\u0026\u0026G.arcade)?raidConditionMul():1); return (n\u003e0\u0026\u0026m\u003e1)?Math.round(n*m):n; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027night, hard weather and each signed condition multiply SP by 1.05, with no condition cash or XP\u0027,\n   run:function(){\n     var d0=DMUL_ON, c0=CAREER_ON, g, q, bad=[], day, night, wet, signed, host, guest, all, k;\n     function rec(n,w,t){ return {outcome:\u0027extract\u0027,haul:10000,carriedIn:0,containers:4,kills:{crawler:2},dist:2000,night:n,wxHard:w,termPay:t}; }\n     function one(cond,weather,terms,own,how){\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       DMUL_ON=1; CAREER_ON=1; q=__P(); q.cond=cond; q.wxPick=weather; q.terms=terms.slice(); q.merc=\u0027\u0027;\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state();\n       if(!g||!g.player||g.over) throw new Error(\u0027no live raid\u0027);\n       g.terms=terms.slice(); q.terms=own===undefined?terms.slice():own.slice();\n       g.career=1; g.cs={s:1000,k:0,b:{kill:1000}}; g.bag=[\u0027core\u0027]; g.carriedIn=0; g.pedCarry=0;\n       g.wx=WEATHER.filter(function(w){return w.id===weather;})[0];\n       g.player.downed=false; g.player.hp=100; q.credits=10000; q.racks=0; q.arrays=0;\n       var factor=raidConditionMul();\n       __endRaid(how||\u0027extract\u0027);\n       return {cash:q.credits-10000,score:g.careerLb\u0026\u0026g.careerLb.score,factor:factor,paid:g.careerPaid,html:document.getElementById(\u0027oc_manifest\u0027).innerHTML};\n     }\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       var xp=xpBaseFor(rec(0,0,0));\n       if(xpBaseFor(rec(1,1,1.4))!==xp) return \u0027night, weather or Terms still multiply XP\u0027;\n       if(typeof raidConditionMul!==\u0027function\u0027) return \u0027raid conditions have no SP-only multiplier\u0027;\n       day=one(\u0027day\u0027,\u0027clear\u0027,[]);\n       night=one(\u0027night\u0027,\u0027clear\u0027,[]);\n       wet=one(\u0027day\u0027,\u0027fog\u0027,[]);\n       signed=one(\u0027day\u0027,\u0027clear\u0027,[\u0027known\u0027]);\n       host=one(\u0027night\u0027,\u0027fog\u0027,[\u0027known\u0027]);\n       guest=one(\u0027night\u0027,\u0027fog\u0027,[\u0027known\u0027],[]);\n       all=one(\u0027night\u0027,\u0027fog\u0027,TERMS.map(function(t){return t.id;}),[]);\n       if(day.score!==2000) bad.push(\u0027day control score \u0027+day.score);\n       if(night.score!==2100||wet.score!==2100||signed.score!==2100) bad.push(\u0027one condition does not pay 1.05x SP\u0027);\n       if(guest.score!==Math.round(2000*Math.pow(1.05,3))) bad.push(\u0027guest did not score host raid conditions\u0027);\n       if(guest.score!==host.score||guest.cash!==host.cash) bad.push(\u0027host and guest settlement differ\u0027);\n       if(all.score!==Math.round(2000*Math.pow(1.05,7))) bad.push(\u0027all seven conditions do not stack multiplicatively\u0027);\n       var cases=[night,wet,signed,host,guest,all];\n       for(k=0;k\u003ccases.length;k++) if(cases[k].cash!==day.cash) bad.push(\u0027condition \u0027+k+\u0027 paid extra cash\u0027);\n       if(/hazard pay/i.test(all.html)) bad.push(\u0027the card still promises hazard cash\u0027);\n       if(!/x1.05/.test(night.html)) bad.push(\u0027the score panel omits the night factor\u0027);\n       var credits=q.credits; careerSettle(\u0027extract\u0027,[]); if(q.credits!==credits) bad.push(\u0027settlement paid twice\u0027);\n       var dead=one(\u0027night\u0027,\u0027fog\u0027,[\u0027known\u0027],[],\u0027dead\u0027);\n       if(dead.score!==Math.round(500*Math.pow(1.05,3))) bad.push(\u0027death score conditions differ\u0027);\n       if(dead.cash\u003e0) bad.push(\u0027death paid condition cash\u0027);\n       var abandon=one(\u0027night\u0027,\u0027fog\u0027,[\u0027known\u0027],[],\u0027abandon\u0027);\n       if(abandon.cash\u003e0||abandon.score) bad.push(\u0027abandon paid score or condition cash\u0027);\n       return bad.length?bad.join(\u0027; \u0027):null;\n     } finally {\n       try{ if(g\u0026\u0026!g.over){g.player.downed=false; __endRaid(\u0027abandon\u0027);} }catch(e){}\n       DMUL_ON=d0; CAREER_ON=c0; __topClear(); __resetCfg(); __cleanProfile();\n     }\n   }},"
+}
