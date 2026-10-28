@@ -17200,7 +17200,7 @@ window.__REGRESS=[
   {v:'33.08',what:'golden sentry and pillager bot death callouts draw once in both windows and keep search the hoard (critic duplicate finding) (cw-fewermsg retarget, his complaint 2026-10-27: a golden enemy is a cut line now: drawn nowhere in either window, said once into the run log)',
    run:function(){
      var g=null, oPeer=flowPeer, own=Object.prototype.hasOwnProperty.call(XF,'xfGold'), gold0=XF.xfGold,
-         kinds=['sentry','raider'], names=['golden sentry down','golden pillager bot down'], i, side, trace, hits, want;
+         kinds=['sentry','raider'], names=['golden sentry down','golden pillager down'], i, side, trace, hits, want;   /* cw-pillagersword retarget, his 10-28 word: pillager, never pillager bot */
      try{
        __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
@@ -17233,7 +17233,7 @@ window.__REGRESS=[
    run:function(){
      if(typeof goldDownName!=='function') return 'no specific golden death name helper';
      var g=null, oSay=say, oPeer=flowPeer, goldOwn=Object.prototype.hasOwnProperty.call(XF,'xfGold'), gold0=XF.xfGold,
-         kinds=['sentry','raider','crawler','bulwark','howler','listener'], names=['sentry','pillager bot','crawler','bulwark','howler','listener'], lines=[], i, want, e, n, w;
+         kinds=['sentry','raider','crawler','bulwark','howler','listener'], names=['sentry','pillager','crawler','bulwark','howler','listener'], lines=[], i, want, e, n, w;   /* cw-pillagersword retarget, his 10-28 word */
      function heard(want){ return lines.length===1&&lines[0].m===want&&lines[0].k==='obj'&&lines[0].sub==='SEARCH THE HOARD'; }
      try{
        __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -17260,7 +17260,7 @@ window.__REGRESS=[
        }
        g.flow.gold={ref:{kind:'raider'},dead:0}; lines.length=0;
        goldNetTake([0,1,100,200]);
-       if(!heard('golden pillager bot down')) return 'older word lost the mirrored kind';
+       if(!heard('golden pillager down')) return 'older word lost the mirrored kind';
        return null;
      } finally {
        say=oSay; flowPeer=oPeer; if(goldOwn) XF.xfGold=gold0; else delete XF.xfGold;
@@ -19528,7 +19528,7 @@ window.__REGRESS=[
        if(g.forgeUI.cells.length!==4||g.forgeUI.closeBox.w<40)return 'missing choices or close target';
        if(text.some(function(t){return t.t==='close';}))return 'duplicate close legend';
        if(!text.some(function(t){return t.t==='current';}))return 'current tier is not labeled';
-       var s=gunCardMetrics().s,effects=text.filter(function(t){return /^(burn|panic|chain|stun|slow|freeze|shred|anti-machine)$/.test(t.t);});
+       var s=gunCardMetrics().s,effects=text.filter(function(t){return /^(burn|panic|chain|stun|slow|freeze|shred|anti-armour)$/.test(t.t);});   /* cw-pillagersword: his 10-28 order, never a bare machine */
        if(effects.length!==8||effects.some(function(t){return t.px<Math.round(16*s);}))return 'element effects are too small or missing';
        if(text.filter(function(t){return t.t==='$6,000';}).length!==4)return 'missing dollar prices';
        if(!forgeBuy(0)||P.credits!==4000||g.cs.s!==0||ARCADE.mine!==0)return 'element purchase changed stash or score';
@@ -21797,35 +21797,38 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ var q=document.getElementById('settingsmodal'); if(q) q.classList.remove('on'); }catch(_k){} try{ __topClear(); }catch(_c){} document.body.classList.toggle('padon',padWas); }
      return bad.length?bad.join('; '):null; }},
-  {v:'31.64',what:'his order 2026-10-18 (no raider on screen; the AI ones are pillager bots): the settings rows, the pillager bots option, the sound key, the contract words, the callouts and the bush hint say pillager bot(s), the board title says CURRENT PILLAGERS (his 2026-10-28 order), and none of them says raider',
+  {v:'31.64',what:'his orders 2026-10-18 (no raider on screen) and 2026-10-28 (pillagers, never pillager bots; cw-pillagersword retarget): the settings rows, the pillagers option, the sound key, the contract words, the callouts and the bush hint say pillager(s), the board title says CURRENT PILLAGERS, and none of them says raider or pillager bot',
    run:function(){
      var bad=[], i, s, src, rx=/\braiders?\b/i, g=null, draws, head=false, old=false, want, txt;
      try{
        // 1. the settings rows (key, label)
-       want={nRaider:/pillager bots/i,raiderExtract:/pillager bot/i,raiderFeud:/pillager bot/i,raiderFloorN:/pillager bots/i};
+       // cw-pillagersword retarget, HIS ORDER (2026-10-28): "pillagers should always be referred to as 'pillagers' never 'pillager bots'"
+       want={nRaider:/^pillagers$/i,raiderExtract:/a pillager must/i,raiderFeud:/^pillager crews/i,raiderFloorN:/pillagers alive/i};
        for(i=0;i<SLIDERS.length;i++){ s=SLIDERS[i];
          if(rx.test(String(s[1]))) bad.push('settings row '+s[0]+' says '+s[1]);
-         if(want[s[0]]&&!want[s[0]].test(String(s[1]))) bad.push('settings row '+s[0]+' reads '+JSON.stringify(s[1])+', not pillager bots');
-         if(/\bAI pillagers\b|\bpillagers alive\b/i.test(String(s[1]))) bad.push('settings row '+s[0]+' still names the AI ones pillagers: '+s[1]); }
+         if(want[s[0]]&&!want[s[0]].test(String(s[1]))) bad.push('settings row '+s[0]+' reads '+JSON.stringify(s[1])+', not pillagers');
+         if(/\bAI pillagers\b|pillager bots?/i.test(String(s[1]))) bad.push('settings row '+s[0]+' still says '+s[1]); }
        // 2. the pillager bots option (label and hint)
        for(i=0;i<GAMEOPTS.length;i++){ s=GAMEOPTS[i];
          if(rx.test(String(s.label)+' '+String(s.hint))) bad.push('option '+s.k+' says raider');
-         if(s.k==='raiders'&&!/pillager bots/i.test(String(s.label))) bad.push('the AI pillagers option reads '+JSON.stringify(s.label)); }
+         if(/pillager bots?/i.test(String(s.label)+' '+String(s.hint))) bad.push('option '+s.k+' says pillager bot');
+         if(s.k==='raiders'&&!/^pillagers$/i.test(String(s.label))) bad.push('the pillagers option reads '+JSON.stringify(s.label)); }
        // 3. the kind-to-word tables and the sound key
-       if(UNITNAME.raider!=='pillager bot'||UNITPLURAL.raider!=='pillager bots'||KINDWORD.raider!=='PILLAGER BOT') bad.push('the kind words read '+UNITNAME.raider+' / '+UNITPLURAL.raider+' / '+KINDWORD.raider);
+       if(UNITNAME.raider!=='pillager'||UNITPLURAL.raider!=='pillagers'||KINDWORD.raider!=='PILLAGER') bad.push('the kind words read '+UNITNAME.raider+' / '+UNITPLURAL.raider+' / '+KINDWORD.raider);
        txt=JSON.stringify(SOUNDKEY);
-       if(txt.indexOf('pillager bot moving')<0||txt.indexOf('pillager bot firing')<0) bad.push('the sound key does not say pillager bot moving and firing');
+       if(txt.indexOf('pillager moving')<0||txt.indexOf('pillager firing')<0||/pillager bot/i.test(txt)) bad.push('the sound key does not say pillager moving and firing');
        // 4. the bush hint on the roadmap, and no raider anywhere on it
        txt=JSON.stringify(ROADMAP);
-       if(txt.indexOf('pillager bots who hide in them too')<0) bad.push('the bush hint does not say pillager bots');
+       if(txt.indexOf('pillagers who hide in them too')<0||/pillager bot/i.test(txt)) bad.push('the bush hint does not say pillagers');
        if(rx.test(txt)) bad.push('the roadmap still says raider');
        if(rx.test(JSON.stringify(TERMS))||rx.test(JSON.stringify(ACHS))) bad.push('the heat terms or the achievements say raider');
+       if(/pillager bot/i.test(JSON.stringify(TERMS)+JSON.stringify(ACHS))) bad.push('the heat terms or the achievements say pillager bot');
        // 5. the callouts and legend rows in the page source
        src=[].slice.call(document.scripts).map(function(x){ return x.textContent||''; }).join('\n');
        // (the strings are split so this check does not find itself in the page source)
-       ["say('PILLAGER BOT"+" REINFORCEMENTS'","say('PILLAGER BOT"+" TURNED HOSTILE'","say('PILLAGER BOT"+" CALLED EXTRACTION'","hold to finish a pillager"+" bot'","|  Pillager bots"+" extracted: '","pillager bots trust"+" you less.","Kill 25 pillager"+" bots in all.","t:'3 PILLAGER"+" BOTS'","BOUNTY PILLAGER"+" BOT'","a pillager bot"+" who had not fought you."].forEach(function(n){
+       ["say('PILLAGER"+" REINFORCEMENTS'","say('PILLAGER"+" TURNED HOSTILE'","say('PILLAGER"+" CALLED EXTRACTION'","hold to finish a pillager"+"'","|  Pillagers"+" extracted: '","pillagers trust"+" you less.","Kill 25 pillager"+"s in all.","t:'3 PILLAGER"+"S'","BOUNTY PILLAGER"+"'","a pillager"+" who had not fought you."].forEach(function(n){
          if(src.indexOf(n)<0) bad.push('the page has no '+n); });
-       ["say('PILLAGER"+" REINFORCEMENTS'","say('PILLAGER"+" TURNED HOSTILE'","say('PILLAGER"+" CALLED EXTRACTION'","hold to finish a pillager"+"'","AI pillagers"+" extracted","and pillagers"+" trust you less","raiders who"+" hide"].forEach(function(n){
+       ["say('PILLAGER BOT"+" REINFORCEMENTS'","say('PILLAGER BOT"+" TURNED HOSTILE'","say('PILLAGER BOT"+" CALLED EXTRACTION'","hold to finish a pillager"+" bot'","AI pillagers"+" extracted","pillager bots"+" trust you less","raiders who"+" hide"].forEach(function(n){
          if(src.indexOf(n)>=0) bad.push('the page still says '+n); });
        // 6. the board of who is still out there, drawn in a real raid
        if(typeof __frame==='function'&&typeof __textTrace==='function'){
@@ -31271,7 +31274,7 @@ window.__REGRESS=[
        }
        return bad.length?bad.join('; '):null;
      } finally { mouse.down=md; try{ __endRaid('abandon'); }catch(_e){} __topClear(); } }},
-  {v:'28.77',what:'the low alarm only sounds near you, at most once every 4 s, and says MACHINE ALERT (his note: an annoying low siren too often, meaning unknown)',
+  {v:'28.77',what:'the low alarm only sounds near you, at most once every 4 s, and names the machine that raised it, SENTRY ALERT (his note: an annoying low siren too often, meaning unknown; his 10-28 order: never machine without which machine)',
    run:function(){
      if(typeof alarmOk!=='function') return 'the alarm has no range, no cooldown and no words (no alarmOk)';
      var g=null, rs=say, said=[], a, b, c, d;
@@ -31289,7 +31292,10 @@ window.__REGRESS=[
        if(!b) return 'an alarm 100 away does not sound';
        if(c) return 'a second alarm inside 4 s still sounds';
        if(!d) return 'the alarm does not sound again after its cooldown';
-       if(said.indexOf('MACHINE ALERT')<0) return 'the alarm does not say MACHINE ALERT';
+       var sn=null, sx, sy, q; for(q=0;q<g.ents.length;q++){ if(g.ents[q]&&g.ents[q].kind==='sentry'&&g.ents[q].hp>0){ sn=g.ents[q]; break; } } if(!sn) return 'SKIP: staging: no sentry';   /* cw-pillagersword retarget, his 10-28 order: the alert names the machine */
+       sx=sn.x; sy=sn.y; sn.x=g.player.x+60; sn.y=g.player.y; said=[]; ALARM_LAST=-99; try{ alarmOk(sn.x,sn.y); } finally { sn.x=sx; sn.y=sy; }
+       if(said.indexOf('SENTRY ALERT')<0) return 'the alarm by a sentry does not say SENTRY ALERT ('+said.join(', ')+')';
+       if(said.some(function(m){ return /MACHINE/.test(m); })) return 'the alarm still says machine';
        return null;
      } finally {
        say=rs; ALARM_LAST=-99;
@@ -100777,8 +100783,8 @@ window.__REGRESS=[
      //    has to still cover the four things that make noises he can be hurt by.
      var n=0; for(k in live) n++;
      if(n<4) bad.push('control: only '+n+' colours were found in the colour table, so this is not checking the game');
-     var need=[['machine moving','robot moving'],['machine firing','robot firing'],
-               ['pillager moving','pillager bot moving'],['pillager firing','pillager bot firing']];   /* v31.xx retarget (cw-vocab-bots) */
+     var need=[['sentry or crawler moving','robot moving'],['sentry or pillbox firing','robot firing'],
+               ['pillager moving','pillager bot moving'],['pillager firing','pillager bot firing']];   /* v31.xx retarget (cw-vocab-bots); cw-pillagersword: the machine lines name the kinds (his 10-28 order) */
      for(i=0;i<need.length;i++){
        var have=false;
        for(j=0;j<need[i].length;j++) if(joined.indexOf(need[i][j])>=0) have=true;
