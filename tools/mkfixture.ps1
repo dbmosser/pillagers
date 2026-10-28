@@ -7146,7 +7146,8 @@ window.__REGRESS=[
        hl=h.filter(function(q){ return q.x<W*0.35; }); hr=h.filter(function(q){ return q.x>W*0.6; });
        cn=said(/^concealed$/i).filter(function(q){ return q.x<W*0.35; });
        if(hr.length) bad.push('THREE: concealed in cover still draws at the right ('+at(hr)+')');
-       if(!cn.length||!hl.length) bad.push('THREE: concealed in cover is not a status icon at the left (name drawn '+cn.length+', reason drawn '+hl.length+')');
+       if(typeof HUDSTBOX==='object'&&HUDSTBOX){ if(!((/conceal/).test(HUDSTBOX.ids)&&(/cover/).test(HUDSTBOX.ids)&&HUDSTBOX.x<W*0.35)) bad.push('THREE: concealed in cover is not an icon at the left beside the stance chip ('+HUDSTBOX.ids+' at x '+Math.round(HUDSTBOX.x)+')'); }   // cw-hudstates retarget (his ask 10-27, report job 5): the hidden state is an icon beside the stance chip, its word only for 2 s when it first turns on
+       else if(!cn.length||!hl.length) bad.push('THREE: concealed in cover is not a status icon at the left (name drawn '+cn.length+', reason drawn '+hl.length+')');
        g.pBush=kp.bush; g.pConceal=kp.conceal; g.pCrouch=kp.crouch;
        // FIVE: a pickup line (money carried out) draws in the right-side pickup stack only, not also in the left feed
        quiet(); say('+$4,321','pick',{tag:'CARRIED',c:'gain'}); pass();
