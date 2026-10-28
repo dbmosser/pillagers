@@ -37023,7 +37023,7 @@ window.__REGRESS=[
        __topClear(); __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||g.over) return 'SKIP: no live raid';
        g.t=Math.max(g.t||0,30); g.bossDone=0; if(CFG.boss===0) CFG.boss=1; b=bossTick(true); CFG.boss=cb0; if(!b) return 'SKIP: staging: no Overseer';
-       b.x=g.player.x+200; b.y=g.player.y; b.barSeen=1;
+       b.x=g.player.x+200; b.y=g.player.y; b.barSeen=1; b.pHitT=0.3;   /* cw-bossbarfight retarget, his order 2026-10-28: the bar shows only while you fight him (a hit in the last 4 s) */
        for(k=0;k<want.length;k++){
          b.hp=Math.max(1,Math.round(b.maxhp*want[k][0]));
          tr=__textTrace(function(){ drawBossBar(); });
@@ -66605,7 +66605,7 @@ window.__REGRESS=[
        for(i=0;i<g.ents.length;i++) if(g.ents[i]&&g.ents[i].name===BOSS_NAME&&g.ents[i].hp>0){ e=g.ents[i]; break; }
        if(!e&&typeof bossTick==='function'){ g.t=Math.max(g.t||0,2.5); try{ e=bossTick(true); }catch(_bt){ e=null; } }
        if(!e) return 'SKIP: no Overseer in this raid';
-       e.x=p.x+150; e.y=p.y; g.bossRef=e; e.barSeen=1;   // seen: this check is about the layout, not when the bar first shows
+       e.x=p.x+150; e.y=p.y; g.bossRef=e; e.barSeen=1; e.pHitT=0.3; e.barHitAt=+g.t||0;   // seen and in a fight (cw-bossbarfight): this check is about the layout, not when the bar first shows
        nm=String(e.name);
        netPadDead=function(){ return true; };
        say=function(){};   // nothing replaces the probe message mid-frame
@@ -70696,7 +70696,7 @@ window.__REGRESS=[
        for(i=0;i<g.ents.length;i++) if(g.ents[i]&&g.ents[i].name===BOSS_NAME&&g.ents[i].hp>0){ e=g.ents[i]; break; }
        if(!e&&typeof bossTick==='function'){ g.t=Math.max(g.t||0,2.5); try{ e=bossTick(true); }catch(_bt){ e=null; } }
        if(!e) return 'SKIP: no Overseer in this raid';
-       o0={x:e.x,y:e.y}; g.bossRef=e; delete e.barSeen;
+       o0={x:e.x,y:e.y}; g.bossRef=e; delete e.barSeen; e.pHitT=0.3; e.barHitAt=+g.t||0;   /* cw-bossbarfight retarget, his order 2026-10-28: the bar shows only while you fight him (a hit in the last 4 s) */
        __frame(0.016); f=p.face||0;
        e.x=p.x-Math.cos(f)*320; e.y=p.y-Math.sin(f)*320;
        if(canSee(p.x,p.y,p.face,e.x,e.y,g.vseg)) return 'SKIP: the spot behind the player is in view';
