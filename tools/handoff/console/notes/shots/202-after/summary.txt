@@ -1,0 +1,5 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  d1-settings-score-row                  staged       8.9s    | x1.33
+  d2-career-raid-tag                     staged       8.6s    | 1.33
+  d3-career-extracted-card               staged      10.8s    | ok
+  d4-demo-run-over                       staged      13.9s    | 1.33

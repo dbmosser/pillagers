@@ -1,0 +1,6 @@
+{"generated":"2026-10-28T08:41:50","url":"http://localhost:8808/fixture.html","recipes":"tools/handoff/console/notes/202/recipes.json","seconds":54,"screens":[
+{"name":"d1-settings-score-row","screen":"Settings THE RAID with hard rows, the score row","1080":{"staged":true,"note":"x1.33","viewport":"1920x1080","shot":"d1-settings-score-row-1080.jpg","lint":""}},
+{"name":"d2-career-raid-tag","screen":"Career raid HUD with the x tag by the score","1080":{"staged":true,"note":"1.33","viewport":"1920x1080","shot":"d2-career-raid-tag-1080.jpg","lint":""}},
+{"name":"d3-career-extracted-card","screen":"Career extracted card with the settings row","1080":{"staged":true,"note":"ok","viewport":"1920x1080","shot":"d3-career-extracted-card-1080.jpg","lint":""}},
+{"name":"d4-demo-run-over","screen":"1 player demo run over card of an extraction with the settings line","1080":{"staged":true,"note":"1.33","viewport":"1920x1080","shot":"d4-demo-run-over-1080.jpg","lint":""}}
+]}

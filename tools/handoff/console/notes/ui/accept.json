@@ -1827,33 +1827,33 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "This is a clean, calm column menu with a clear lime focus bar, but the picture is a title screen rather than the raid HUD I reviewed before. The orange-gold gradient wordmark ignores the lime accent, an error banner with a loud lime button splits the hierarchy, and the saves block is cramped and unstructured.",
+  "verdict": "The HUD hasn't changed since the last review: the same scattered panels in three different styles, with the 'pillager joined' toast still bottom-centre and the ammo block unchanged.",
   "findings": [
-   "P1 error banner (x681-1239, y637-703) with 'retry' button (x1079-1229, y646-694): Cut the copy to one 16px line, e.g. 'player 2 is in a raid in the other window'. Make retry an outlined 1px --ui-line-hi button in tx-1, 32px tall, so lime stays on the focus bar only. Keep the 3px --danger left bar. Move the banner out of the list flow, to y~860 under the saves block, or make it a toast at top-centre.",
-   "P1 'pillagers' wordmark (x802-1118, y255-333): Fill it with flat --tx-1 #efe9dc, or flat --acc at most, with no gradient and no shadow. Keep 800 weight and move it to the 56px hero size or slightly larger. Drop the tagline to 16px tx-2 with 16px (--sp-2) spacing under it.",
-   "P1 saves block (x681-1239, y723-842): Use one lime focus at a time. Make idle rows a 1px --ui-line-hi border with tx-1 text. Put 'saves' at 16px f-cond 600 tx-2 with 16px above the first row. Make the rows 56px high like the mode buttons. Move 'change name' and 'create a new save' to the right-aligned actions of the selected save row, or put them under a 1px --ui-line divider with 16px gaps.",
-   "P2 mode list (x681-1239, y403-627): Make '1 player' the only 20px 700 row with the --ui-raised fill. Put the arcade demos under a 16px 'demo' label in tx-2 with a 24px gap. Drop '(same machine)', or show it as a 16px tx-2 sub-label inside the row. Give the focus lime left bar 4px wide and spaced evenly.",
-   "P2 top-right buttons 'go fullscreen' and 'settings' (x1611-1823, y33-81): Set the margin to 54px: right edge at x=1866, top y=54. Make the buttons 40px high with 16px f-cond 600 tx-1. Align the left version stamp to x=54 as well."
+   "P1 'pillager joined' toast (x874-1045, y838-884): Move it to the left feed at x=16 as a 16px tx-1 row on --ui-panel with a 1px --ui-line-hi border and 4px radius. Delete the bottom-centre toast slot.",
+   "P1 top-left bots panel (x8-367, y143-260): Fold it to one 20px line, 'bots 0', and open the list on focus. If the rows stay, make names 16px tx-1 and replace 'dead' with an 8px --danger dot. Give the header the same 32px height and 16px 600 label as the 'contracts' pill.",
+   "P1 ammo block (x1648-1912, y905-1054): Show the magazine at 56px 800 tx-1 and the reserve beside it at 20px tx-2, with no slash. Raise the footer to 16px tx-2. Inset the panel to x≤1866 and y≤1026.",
+   "P1 'contract item nearby · gold glow marks the box' (x16-409, y778-805): Cut it to 'contract item nearby' at 16px 600 tx-1. Use the same --ui-panel row as the other feed items, with the 3px --r-gold bar and 8px padding.",
+   "P2 hotbar (x555-1480, y958-1060): Draw all slots as 72px squares on --ui-panel with a 1px --ui-line border and 8px gaps. Show ghost icons inside the slots at 30% opacity. Give the selected slot a 2px --acc border. Use 16px numerals."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-140-red-enemy-tracers-recipes-1/red-tracers-night-p1-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-140-red-enemy-tracers-recipes-2/red-tracers-night-p1-1080.jpg",
   "task": "o-140-red-enemy-tracers",
-  "when": "2026-10-28T12:18"
+  "when": "2026-10-28T12:45"
  },
  "p2-1080": {
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "The toast is gone and the screen is cleaner, but it still reads as a generic centred template: the gradient wordmark, the tiny saves rows, the loose hint row and the hidden player 2 identity are all unchanged.",
+  "verdict": "A big lime button and a gold wordmark sit in the middle of a dark screen. The earlier advice was not followed, and the screen is still small, sparse and generic, with nothing marking it as player 2's.",
   "findings": [
-   "P1 'pillagers' wordmark (x 802-1118, y 360-440): Make the wordmark flat --tx-1 or flat --r-gold #ffc72e, with no gradient or shadow, at 96px f-cond 800. Add a 'player 2' tag in cyan, 16px f-cond 600, at x 96, y 96. Drop the 'keyboard' pill to 16px --tx-2, or fold it into that tag.",
-   "P1 saves block (x 681-1239, y 615-735): Make the save row 64px tall with a --ui-raised fill and 20px f-cond 600 text. Keep the 2px lime border as the only focus cue and set the name in --tx-1. Make the 'saves' label 16px --tx-2 with a 16px gap to the row. Make 'change name' and 'create a new save' 56px tall, 16px label type, --ui-panel fill, 1px --ui-line-hi border, with an 8px gap.",
-   "P1 key-hint row (x 726-1193, y 1030-1055): Set the labels to 16px f-cond 600 in --tx-2 with --tx-1 key caps and a 24px gap between pairs. Move the row up to y 1000-1040. Alternatively remove it and keep only 'f1 controls'.",
-   "P1 'player 2 window' (x 909-1010, y 578-594): Move it to the top-left 'player 2' tag. If it has to stay here, set it at 16px --tx-2 with 24px of space above and below.",
-   "P2 tagline 'ascend. pillage. extract.' (x 865-1055, y 468-486): Set it to 16px f-cond 600 in --tx-2 with +.04em tracking. Use 16px above it and 24px below it. Or delete it."
+   "P1 'pillagers' wordmark (x 802-1118, y 360-440): Make it flat --tx-1, or flat --r-gold #ffc72e, with no gradient or shadow. Use 96px f-cond 800. Add a cyan 'player 2' tag at 16px f-cond 600 at x 96, y 96, or move the 'keyboard' pill there.",
+   "P1 'keyboard' pill (x 912-1007, y 7-31): Move it into the top-left tag at x 96, y 96, in cyan. Render it as 16px f-cond 600 text with a 1px --ui-line-hi border, 4px radius and 8px/16px padding. Put 'player 2' and 'keyboard' on one line.",
+   "P1 saves block (x 681-1239, y 615-735): Make the save row 64px tall with a --ui-raised fill, 20px f-cond 600 text, and the name in --tx-1. Keep the 2px lime border as the only focus cue. Make the 'saves' label 16px --tx-2 with a 16px gap above the row. Make the three controls 56px tall with 16px label type, --ui-panel fill, 1px --ui-line-hi border and 8px gaps. Give the field a fixed width of about 50%.",
+   "P1 vertical composition (y 360-735 on a 1080 canvas): Make the column 640px wide and move the whole block up so the wordmark sits at y 260-360. Alternatively, add one piece of art behind it, such as a character silhouette or the undercroft entrance, at 20-30% opacity on the right half.",
+   "P1 key-hint row (x 726-1193, y 1030-1055): Set the labels to 16px f-cond 600 in --tx-2, with --tx-1 key caps and a 24px gap between pairs. Move the row up to y 1000-1040. Alternatively, keep only 'f1 controls'."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-140-red-enemy-tracers-recipes-1/red-tracers-night-p2-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-140-red-enemy-tracers-recipes-2/red-tracers-night-p2-1080.jpg",
   "task": "o-140-red-enemy-tracers",
-  "when": "2026-10-28T12:18"
+  "when": "2026-10-28T12:45"
  },
  "pix86c-fashion": {
   "score": 3,

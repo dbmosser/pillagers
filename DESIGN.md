@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.70 - THE SCORE MULTIPLIER LINES SHOW AND LINE UP
+
+Co-op hunt while he was away. the pictures of v35.69: the demo run over card kept its settings line in a hidden row, and the Settings score value sat left of the value column
+
+MEASURED. Check 35.70 passes, and fails on v35.69.
 ## v35.69 - THE SCORE MULTIPLIER ON SCREEN, FOG OF WAR PAYS
 
 Co-op hunt while he was away. his order of 10-28, that the multiplier should be indicated to the player, and his addition that fog of war is a multiplier row (the host's in a party): a score row in Settings under difficulty, a small x tag beside the score label in a raid, and one settings line on the extracted card and the demo run over card; nothing at x1.00

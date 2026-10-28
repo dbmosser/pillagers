@@ -35,3 +35,4 @@
 10-28 07:57 v35.66 cw-airstrike3000 on his pc after 168s (8802 serves 35.66 (its GitHub status; the bridge did not answer)) week 75%
 10-28 08:15 v35.67 cw-cx-redtracers on his pc after 167s (8802 serves 35.67 (its GitHub status; the bridge did not answer)) week 76%
 10-28 08:36 v35.68 cw-diffmul on his pc after 168s (8802 serves 35.68 (its GitHub status; the bridge did not answer)) week 77%
+10-28 08:43 v35.69 cw-dmulshow on his pc after 168s (8802 serves 35.69 (its GitHub status; the bridge did not answer)) week 77%

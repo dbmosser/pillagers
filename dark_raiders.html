@@ -3730,8 +3730,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.69';
-var VER_AT='2026-10-28 08:40';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.70';
+var VER_AT='2026-10-28 08:47';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -55479,7 +55479,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.69: fog of war on pays 5 percent more sp; the settings score multiplier shows in settings, beside the score in a raid and once on the end card Check 35.69 fails on v35.68',
+  now:'v35.70: the demo run over card shows settings x under extracted x2; the settings score value lines up with the other values Check 35.70 fails on v35.69',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -69385,7 +69385,7 @@ function arcadeOverSync(){
     c.textContent=''; c.setAttribute('data-at',sig);
     ln=oc?(ARCADE.solo?[['aoh','RUN OVER'],['aos','SCORE '+arcadeCr(o.team)],['aor',arcadeOverRow('YOU',o.p1)]]   // v23.54 (arcade30): the 1 player arcade, one row; v23.56 (arcade31): in credits
       :[['aoh','RUN OVER'],['aos','TEAM SCORE '+arcadeCr(o.team)],['aor',arcadeOverRow('P1',o.p1)],['aor',arcadeOverRow('P2',o.p2)]]):[];
-    if(oc&&o.dm>1) for(i=0;i<ln.length;i++) if(ln[i][0]==='aos'){ ln.splice(i+1,0,['aor aodm','settings x'+(+o.dm).toFixed(2)]); break; }   // v35.xx (cw-dmulshow): the settings multiplier, once, under the score
+    if(oc&&o.dm>1) ln.splice(1,0,['aoh','settings x'+(+o.dm).toFixed(2)]);   // v35.xx (cw-dmulfix): the settings multiplier, once, a heading line under extracted x2 (the aor rows are hidden on the restyled card)
     if(oc&&o.why==='extract') ln.splice(1,0,['aoh','EXTRACTED x2']); else if(oc&&(o.why==='dead'||o.why==='burn')) ln.splice(1,0,['aoh','KIA -50%']); else if(oc&&o.why==='menu') ln.splice(1,0,['aoh','ended early -50%']);   // v24.xx (feat0g): the run ended on an extraction
     for(i=0;i<ln.length;i++){ if(!ln[i][1]) continue; el=document.createElement('div'); el.className=ln[i][0]; el.textContent=ln[i][1];
       if(ln[i][0]==='aoh'&&/ -50%$/.test(ln[i][1])){ el.textContent=ln[i][1].replace(/-50%$/,''); var _aw=document.createElement('span'); _aw.className='aow'; _aw.textContent='-50%'; el.appendChild(_aw); }   // v31.xx (cw-partylook8): the penalty in warn amber
@@ -72911,7 +72911,7 @@ function diffRowHtml(){
 function dmulRowHtml(){
   var m=DMUL_ON?Math.round(diffMulOf(CFG)*100)/100:1;
   if(!(m>1)) return '';
-  return '<div class="row" id="set_dmulrow"><div style="flex:1"><b>score</b><div class="hint">harder rows pay more sp</div></div><b id="set_dmul" style="padding:6px 12px;min-width:92px;text-align:center;color:var(--amber)">x'+m.toFixed(2)+'</b></div>';
+  return '<div class="row" id="set_dmulrow"><div style="flex:1"><b>score</b><div class="hint">harder rows pay more sp</div></div><b id="set_dmul" style="display:inline-flex;justify-content:center;align-items:center;box-sizing:border-box;margin-left:0;min-width:calc(var(--sp-5) * 6);min-height:var(--btn-h-sm);padding:6px 12px;border:1px solid transparent;font-size:var(--fs-body);font-weight:600;letter-spacing:var(--track);color:var(--amber)">x'+m.toFixed(2)+'</b></div>';
 }
 function diffSet(t){
   var i, k, row, oi, o, tk=tunedKeys();

@@ -1,0 +1,5 @@
+## v35.70 - THE SCORE MULTIPLIER LINES SHOW AND LINE UP
+
+Co-op hunt while he was away. the pictures of v35.69: the demo run over card kept its settings line in a hidden row, and the Settings score value sat left of the value column
+
+MEASURED. Check 35.70 passes, and fails on v35.69.

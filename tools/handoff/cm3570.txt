@@ -1,0 +1,7 @@
+v35.70: the score multiplier lines show and line up
+
+the demo run over card shows settings x under extracted x2; the settings score value lines up with the other values
+
+Check 35.70. Fails on v35.69.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
