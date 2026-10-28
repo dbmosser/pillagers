@@ -37,6 +37,8 @@
 3. tools/handoff/console/open-orders.md for what he has asked for and not got yet.
 4. Screen work: tools/handoff/console/notes/ui/style-guide.md; camera: tools/uishots.ps1; look at the pictures.
 
+**Watching (10-27 night, his "why only once every 2 hours?"):** the CEO chat runs tools/handoff/console/ceo-watch.sh in the background: checkin.sh every 10 minutes, no AI cost, and it wakes the CEO only on a LOOK/STOP line or alarms.md line it has not reported before (then the CEO handles it and starts the watcher again). The 2-hourly check-in stays as the full review; he hears only about changes he will notice.
+
 **Where the news is:** tools/handoff/nightly/DATE.md (runner summary), tools/handoff/console/alarms.md, the dev dashboard (tools/devdash, port 8820). Check-ins: tools/handoff/console/checkin.sh prints ALL CLEAR / LOOK / STOP.
 
 **Never:** test on, restart or change his 8802 server; change the storage key `salvagerun:profile` without a migration; edit a running bash script in place (write .new, `bash -n`, then mv); add 3D, a raycaster or WebGL (this project is the 2.5D one only).
