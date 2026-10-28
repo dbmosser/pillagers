@@ -11,3 +11,5 @@ Reading of his order: the game starts every sitting with Superhot off. It is no 
 Checks (must FAIL on v35.28): a profile saved with superhot 1 loads with CFG.superhot 0; turning it on in Settings then reloading gives 0; the demo starts at 0. Control: the Settings row still turns it on in the same sitting.
 Ship: preflight on lane h (check no other preflight runs on h first), then shipq. Rules: player text lower case; no storage key change; seed fingerprint unchanged.
 TASK DONE when shipped and his main PC reports the build (git show origin/spare-results:spare/JUL26/status.txt, game=VER). Then move this file to console/done/ and report one line: build, on his PC, and that the key left of 1 still turns it on for one sitting.
+
+DONE 10-27 21:11: SHIPPED v35.32 (f8f5b31b3, cw-shoff); his main PC status 21:10 reports party=35.32 and 8802 serves v35.32. No old checks needed re-aiming (none reload a saved Superhot).

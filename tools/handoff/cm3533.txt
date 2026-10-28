@@ -1,0 +1,7 @@
+v35.33: the quiet hud, details that matter stay
+
+quiet hud: the feed keeps the details that matter (your gun waits at the stash, player 2 still out)
+
+Check 35.33. Fails on v35.32.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

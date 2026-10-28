@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.33 - THE QUIET HUD, DETAILS THAT MATTER STAY
+
+Co-op hunt while he was away. his order 10-27: build the quiet hud, all 5 changes; with the grey rows retired the feed is the one place a raid line shows, and it drops a detail of five words or more, so the loaner line no longer said his own gun waits at The Stash and the 2 player Extracted line no longer said player 2 is still out
+
+MEASURED. Check 35.33 passes, and fails on v35.32.
 ## v35.32 - SUPERHOT OFF EACH SITTING
 
 Co-op hunt while he was away. his order of 10-27: superhot mode should be off by default; his save has carried it on since 10-25, so the game opened with it on and the party would have too
