@@ -32522,7 +32522,8 @@ window.__REGRESS=[
        lbCountEnd(lg);
        if(txt('.sc')!=='1,500 SP') bad.push('RAID SCORE reads '+txt('.sc')+', not 1,500 SP');
        rows=lg.querySelectorAll('.lgr');
-       for(i=0;i<rows.length;i++){ var l=rows[i].querySelector('.lgl'); if(l&&l.textContent==='KILLS'){ var b=rows[i].querySelector('b'); kills=b?b.textContent:''; } }
+       /* v28.xx (cw-cx-preraid-names): v35.81 added the kill count to the label; the 600 SP value and its units stay required. Accept both labels. */
+       for(i=0;i<rows.length;i++){ var l=rows[i].querySelector('.lgl'); if(l&&/^KILLS(?: \(\d+\))?$/.test(l.textContent)){ var b=rows[i].querySelector('b'); kills=b?b.textContent:''; } }
        if(kills!=='600 SP') bad.push('the KILLS row reads '+kills+', not 600 SP');
        if(txt('.cr')!=='+$1,500') bad.push('CREDITS BANKED reads '+txt('.cr')+', not +$1,500 (credits stay dollars)');
        ht=document.getElementById('haultot');
