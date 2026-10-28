@@ -21,7 +21,7 @@ const srv = http.createServer((q, r) => {
 await new Promise(ok => srv.listen(0, '127.0.0.1', ok));
 const base = 'http://127.0.0.1:' + srv.address().port + '/tools/';
 const [cmd, file, a3, a4] = process.argv.slice(2);
-const browser = await pw.chromium.launch({ executablePath: '/opt/pw-browsers/chromium', args: ['--autoplay-policy=no-user-gesture-required', '--use-fake-device-for-media-stream', '--use-fake-ui-for-media-stream'] });
+const browser = await pw.chromium.launch({ executablePath: '/opt/pw-browsers/chromium', args: ['--autoplay-policy=no-user-gesture-required', '--use-fake-device-for-media-stream', '--use-fake-ui-for-media-stream', '--force-prefers-no-reduced-motion'] });   // 10-28: normal motion (see tools/cdp.ps1)
 const page = await (await browser.newContext({ viewport: { width: 1920, height: 1080 } })).newPage();
 page.on('pageerror', e => console.log('pageerror: ' + e.message));
 let ok = false;

@@ -121,7 +121,8 @@ function ChromeStart([int]$w,[int]$h){
   $nd=Join-Path $PSScriptRoot 'chrome-nodownloads.ps1'; if(Test-Path -LiteralPath $nd){ . $nd; Set-NoDownloads $ChromeProfile }
   $a='--headless=new --window-size='+$w+','+$h+' --force-device-scale-factor=1 --remote-debugging-port='+$Port+
      ' --user-data-dir="'+$ChromeProfile+'" --no-first-run --no-default-browser-check --disable-background-timer-throttling'+
-     ' --disable-renderer-backgrounding --disable-backgrounding-occluded-windows --autoplay-policy=no-user-gesture-required about:blank'
+     ' --disable-renderer-backgrounding --disable-backgrounding-occluded-windows --autoplay-policy=no-user-gesture-required'+
+     ' --force-prefers-no-reduced-motion about:blank'   # 10-28: normal motion, whatever the OS asks (see cdp.ps1)
   # 10-20: two-window pictures (player 1 and player 2) open the second window with window.open, which a headless camera blocks
   # (no user gesture). -NoPopupBlock, or "popups": true in the recipe file, lets this throwaway camera browser open it.
   if($NoPopupBlock -or ($spec -and $spec.popups)){ $a=$a.Replace(' about:blank',' --disable-popup-blocking about:blank') }

@@ -4,7 +4,8 @@ const mode = process.argv[2] || 'offline', HP = 8871, CP = 9351;
 const GAME = 'C:/claudecode/dark raiders/dark_raiders.html';
 const srv = http.createServer((q, r) => { r.setHeader('content-type', 'text/html'); r.end(fs.readFileSync(GAME)); }).listen(HP, '127.0.0.1');
 const args = ['--headless=new', '--window-size=1920,1080', '--remote-debugging-port=' + CP, '--user-data-dir=' + process.env.TEMP + '\\p47-' + mode,
-  '--no-first-run', '--disable-background-timer-throttling', '--disable-renderer-backgrounding', '--disable-backgrounding-occluded-windows', '--autoplay-policy=no-user-gesture-required'];
+  '--no-first-run', '--disable-background-timer-throttling', '--disable-renderer-backgrounding', '--disable-backgrounding-occluded-windows', '--autoplay-policy=no-user-gesture-required',
+  '--force-prefers-no-reduced-motion'];   // 10-28: normal motion (see tools/cdp.ps1)
 if (mode === 'offline') args.push('--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE localhost , EXCLUDE 127.0.0.1');
 args.push('about:blank');
 const ch = spawn('C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe', args, { stdio: 'ignore' });
