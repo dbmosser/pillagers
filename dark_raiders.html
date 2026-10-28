@@ -3730,8 +3730,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.57';
-var VER_AT='2026-10-28 01:28';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.58';
+var VER_AT='2026-10-28 01:44';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -55431,7 +55431,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.57: Pad box prompts are readable above the pillager head; reload and search use the same size. Check 35.57 fails on v35.56',
+  now:'v35.58: When player 1 extracts first, the called ship stays for player 2 until its boarding window closes. Check 35.58 fails on v35.57',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -65257,7 +65257,8 @@ function arcadeExtractEnd(){
   if(!ARCADE.solo&&ARCADE.xOut!=='p'&&typeof arcadeMateLive==='function'&&arcadeMateLive()){
     var _xi, _xz;
     ARCADE.ext=(ARCADE.ext|0)+1; ARCADE.xOut='h';
-    for(_xi=0;_xi<(G.zones||[]).length;_xi++){ _xz=G.zones[_xi]; if(!_xz) continue; if(dist(p,_xz)<_xz.r&&typeof _xz.hold==='number'){ _xz.beaconT=null; _xz.hold=null; if(_xz===G.active){ G.beaconT=null; G.shipHold=null; } } _xz.pullT=null; _xz.boardT=0; _xz.pullFloor=0; }
+    // v28.xx (cw-cx-partnership): his Q65, "In 2P the run ends when both players are out." Keep the shared ship and its remaining time; clear only this window's boarding progress.
+    for(_xi=0;_xi<(G.zones||[]).length;_xi++){ _xz=G.zones[_xi]; if(!_xz) continue; _xz.pullT=null; _xz.boardT=0; _xz.pullFloor=0; }
     p.specOut=1; p.vx=0; p.vy=0; keys={};
     try{ say('Extracted','ally',{sub:'Player 2 is still out',key:'arcxout'}); }catch(_xs){}
     try{ arcadeScSend(); }catch(_xc){}

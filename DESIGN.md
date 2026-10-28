@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.58 - PARTNER SHIP STAYS AFTER HOST EXTRACTION
+
+Co-op hunt while he was away. The both-out host branch erased the shared ship while player 2 was still playing. Keep the called ship on its existing clock and clear only the host pull. Playtest watch: in smooth look, have player 2 call a ship, board as player 1 first, then board as player 2 without calling again; the run should end only after both are out. Solo extraction should still end at once.
+
+MEASURED. Check 35.58 passes, and fails on v35.57.
 ## v35.57 - PAD BOX PROMPTS CLEAR THE HEAD
 
 Co-op hunt while he was away. Round 2 critic: the pad X reload label is about 12px and sits against the pillager head and reticle. The style guide requires at least 16px for labels; Q7 permits it to override older layout and size orders, including the old 60 percent world prompt size. Only pad container prompts opt into 85 percent scale and move up 24 layout pixels, scaled for 4k. Reload and search share the treatment. Keyboard and other world prompts retain their existing geometry. Playtest watch: at a cache in both windows, X reload and X search should be readable above the head at 1080p and 4k.

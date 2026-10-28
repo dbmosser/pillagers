@@ -375,3 +375,6 @@
 2026-10-28 00:53 o-120f-pad-x-reload-prompt 63s ok PARTIAL in=2440411 out=22739 run=2
 2026-10-28 01:19 o-120f-pad-x-reload-prompt 145s ok PARTIAL in=3501718 out=27466 run=3
 2026-10-28 01:25 o-120f-pad-x-reload-prompt 241s ok PARTIAL in=4964655 out=36791 run=4
+2026-10-28 01:34 o-120f-pad-x-reload-prompt 102s ok DONE in=5909187 out=40206 run=5
+2026-10-28 01:40 o-120g-partner-ship-stays 361s ok PARTIAL in=975880 out=14409 run=1
+2026-10-28 01:41 o-120g-partner-ship-stays 68s ok PARTIAL in=1344444 out=16730 run=2

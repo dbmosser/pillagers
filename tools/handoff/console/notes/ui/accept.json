@@ -2755,64 +2755,64 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The reload prompt now sits on the player and the controls panel is gone, but the prompt is tiny and the HUD panels still don't match each other.",
+  "verdict": "The reload prompt is now a clear lime key cap on a dark chip, but the HUD panels still don't match each other and the bottom row is crowded and uneven.",
   "findings": [
-   "P1 reload prompt, x≈965-1022,y≈536: Use 16px f-cond 600 for the label and a 24px lime x cap. Put it on an --ui-panel fill with a 1px --acc border and 4px radius. Move it 32px above the player so it clears the head. Pulse it with the --m-in bounce.",
-   "P1 top-left 'current pillager bots 0' panel vs top-right 'contracts 0/8' panel vs bottom-right ammo panel: Give all three the same --ui-panel fill, 1px --ui-line-hi border, 4px radius and 16px padding. Use a 16px 600 title and 16px rows in --tx-2. Drop the '0' after the title and the 'dead' suffix. Add a 3px amber bar on the 'you' row.",
-   "P1 hp bar, x24-430,y1035-1068: Make the bar 12px high in --ok on a --ui-line track. Set '100' to 20px f-cond. Move the left edge to 48px and align the bar with the weapon hotbar baseline. Keep the hero size for the ammo number only.",
-   "P1 ammo panel, x1643-1910,y903-1062: Right-align the weapon name at 20px. Put '2 / 60' on one baseline with '/ 60' at 20px --tx-2. Move the footer to one 16px --tx-2 line with a 1px --ui-line divider above it.",
-   "P2 hotbar, x550-1558,y950-1062: Mark the equipped slot with a 2px --acc border. Mark slot 1 only with a lime tint, not an amber border. Set slot numbers and counts to 16px --tx-2. Dim empty slots to 60% opacity."
+   "P1 top-left bots panel (x8-367,y143-260), top-right contracts (x1603-1900,y18-54), ammo panel (x1643-1910,y903-1062): Give all three panels --ui-panel fill, a 1px --ui-line-hi border, a 4px radius and 16px padding. Use a 16px f-cond 600 title and 16px --tx-2 rows. Drop the '0' after the title and the 'dead' suffix. Add a 3px amber bar on the 'you' row. Put the ammo footer on one 16px line with a 1px --ui-line divider above it.",
+   "P1 hp bar, x24-430,y1035-1068: Make the bar 12px high in --ok on a --ui-line track. Set '100' to 20px f-cond 600 above or beside the bar. Move the left edge to 48px and align the baseline with the hotbar bottom (y≈1058).",
+   "P1 hotbar, x550-1558,y950-1062: Mark only the equipped slot with a 2px --acc border and a --ui-raised fill. Remove the amber border and the blue fill. Set slot numbers and counts to 16px --tx-2. Dim unowned slots to 50% opacity.",
+   "P2 reload prompt chip, x946-1038,y484-511: Use 20px f-cond 700 text and a 1px --acc border on a --ui-panel fill. Move it 32px above the head. Give it an --m-in bounce on appear.",
+   "P2 world labels 'chill row' / 'the forge' (x900-1015,y160-205) and 'p1' tag (x940-980,y612-642): Set 'chill row' to 16px --tx-1 at +.04em with a 60% black text shadow. Make 'the forge' --tx-2. Make the p1 tag a 16px label on a --ui-panel chip with a 2px amber bottom bar rather than a solid fill."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-120f-pad-x-reload-prompt-recipes-2/xreload-p1-reload-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-120f-pad-x-reload-prompt-recipes-3/xreload-p1-reload-1080.jpg",
   "task": "o-120f-pad-x-reload-prompt",
-  "when": "2026-10-28T05:20"
+  "when": "2026-10-28T05:31"
  },
  "p1-search-after-reload": {
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The big controls list and the duplicate toast are gone and the ammo card is a strong hero, but the HUD corners still don't match each other and the hp bar, roster panel and bottom-left corner are rough.",
+  "verdict": "The HUD is readable, but the earlier corner-panel advice was mostly not followed: the hp bar is still a bare green slab, the roster sits off the grid, and the weapon bar's gold border and selection are still muddled.",
   "findings": [
-   "P1 hp bar, bottom-left (24-430, 1035-1067): Rebuild it as a --ui-panel plate, 320x40, with a 1px --ui-line-hi border and a 4px radius. Put a 12px fill bar inside it (--ok above 40%, --danger below). Show '100' at 20px f-cond 700 in tx-1 and 'hp' at 16px in tx-2. Align it to x=48, with its baseline on the weapon bar's bottom edge.",
+   "P1 hp bar, bottom-left (24-430, 1035-1067): Rebuild it as a 320x40 --ui-panel plate with a 1px --ui-line-hi border and a 4px radius. Inside it, put a 12px --ok fill bar (--danger below 40%). Set '100' at 20px f-cond 700 in tx-1 and 'hp' at 16px in tx-2. Place it at x=48, with its bottom at 1032 (48px margin).",
    "P1 top-left roster panel (8-367, 143-260): Move it to x=48, y=48. Rename the header 'raiders' at 16px. Put 'dead' in its own right-hand column in --danger at 16px. Set the rows to 16px with 8px gaps, 'you' in tx-1 and the others in tx-2. Delete the footer line. Use a 1px --ui-line-hi border and 85% --ui-panel.",
-   "P1 HUD corners overall: Use one HUD panel token everywhere: --ui-panel at 85%, a 1px --ui-line-hi border, a 4px radius, and a 48px margin on all four corners. Bring the contracts, roster, ammo and hp panels onto that grid.",
-   "P1 weapon bar (549-1558, 951-1060): Mark the equipped slot with a 2px --acc border and --ui-raised fill. Raise slot numbers to 16px tx-2. Lift the bar to a 24px gap from the bottom. Drop the gold border.",
-   "P2 ammo card (1643-1910, 903-1052): Set the footer to 16px tx-2. Add a 24x24 key cap for the backpack key before 'view backpack'. Move 'auto rifle' to 16px tx-2 and align it on the left edge with the footer text."
+   "P1 HUD corners overall: Use one HUD panel token: --ui-panel at 85%, a 1px --ui-line-hi border, a 4px radius, and a 48px margin on all four corners. Align the contracts and ammo panels' outer edges to x=1872, and the hp and roster panels' outer edges to x=48.",
+   "P1 weapon bar (549-1558, 951-1060): Mark only the equipped slot, with a 2px --acc border and --ui-raised fill. Remove the gold border from slot 1 and the blue tint from slot 3, which holds the rifle but is not equipped. Raise the slot numbers to 16px tx-2. Lift the bar to a 24px gap from the bottom.",
+   "P2 ammo card (1643-1910, 903-1052): Set the footer to 16px tx-2. Add a 24x24 key cap for the backpack key before 'view backpack'. Move 'auto rifle' to 16px tx-2 and align it on the left edge with the footer text. Move the card to a 48px margin."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-120f-pad-x-reload-prompt-recipes-2/xreload-p1-search-after-reload-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-120f-pad-x-reload-prompt-recipes-3/xreload-p1-search-after-reload-1080.jpg",
   "task": "o-120f-pad-x-reload-prompt",
-  "when": "2026-10-28T05:20"
+  "when": "2026-10-28T05:31"
  },
  "p2-reload": {
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The controls list no longer covers the reload prompt, and the screen reads much cleaner. The hud is still uneven: the reload prompt is tiny, the hotbar has two competing highlights, and the ammo panel's hero number is red.",
+  "verdict": "The reload prompt is now a proper lime-capped chip above the player and reads clearly, but the HUD around it is still inconsistent: the ammo count is red and mismatched, the hotbar has two competing highlights, the hp bar is oversized, and the contracts and bots panels differ.",
   "findings": [
-   "P1 reload prompt at the player (x965-1025, y527-545): Raise it to 16px f-cond 600 with 8px padding on a --ui-panel fill. Put the key cap on a lime --acc fill with --acc-ink text, 20px tall. Move it 16px above the head so it clears the weapon sprite.",
-   "P1 hotbar, x548-1558, y950-1060: One active-state rule: lime --acc 3px border plus --ui-raised fill on the active slot only. Every other slot gets a 1px --ui-line-hi border. Raise slot numbers to 16px and idle icons to opacity 0.6 or more. Keep amber only if it means P1, and then not on the slot border.",
-   "P1 ammo block, x1642-1910, y903-1052: Make the count 56px 800 and the '/ 60' 32px 600 in --tx-2. Set the three small lines to 16px --tx-2. Pad the panel 16px and use a 4px radius. Align its top and bottom edges to the hotbar (y950-1060).",
-   "P1 left stack: bots panel (x8-367, y143-260), contract toast (x15-410, y776-802): Set all bots rows to 16px --tx-2 at 4.5:1 or better, with the header 16px tx-1. Cut the toast to 'contract item nearby' and delete the explaining half. Give both panels the same 4px radius and 16px padding.",
-   "P2 hp bar, x24-430, y1035-1068: Shrink the bar to 240px wide and 24px tall. Put 'hp 100' at 20px f-cond 700 in tx-1. Inset it 48px from the left and 32px from the bottom, and use --ok for the fill only."
+   "P1 hotbar, x548-1558, y950-1060: Use one active rule: a 3px --acc border on the equipped slot with a --ui-raised fill. Every other slot gets a 1px --ui-line-hi border. Raise idle icons to opacity 0.6 or more and slot numbers to 16px --tx-2. Drop the blue fill and the amber border. Make the 'rb' tag 16px or move it out of the slot.",
+   "P1 ammo block, x1642-1910, y903-1052: Use --tx-1 for the count and turn it --danger only at 25% ammo or less. Set '/ 60' to 32px --tx-2. Set the footer lines to 16px --tx-2 with 16px padding. Align the panel's bottom edge to the hotbar's (y1060) and give it a 4px radius.",
+   "P1 hp bar, x24-430, y1035-1068: Shrink the bar to 240x20px with a --ok fill on a --ui-void track. Set the 'hp 100' label to 20px f-cond 700 in --tx-1, placed beside the bar rather than inside it. Inset the group 48px from the left and 32px from the bottom.",
+   "P2 bots panel, x8-367, y143-260: Use 16px rows with a 16px header in --tx-1. Show the status as a small --danger glyph instead of the word 'dead'. Pad the panel 16px, set the radius to 4px and inset it 48px from the left.",
+   "P2 contracts 0/8, x1602-1900, y18-55: Use the --ui-panel fill, a 1px --ui-line-hi border and a 4px radius on all three. Set the label to 16px f-cond 600. Align it to the 48px right margin."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-120f-pad-x-reload-prompt-recipes-2/xreload-p2-reload-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-120f-pad-x-reload-prompt-recipes-3/xreload-p2-reload-1080.jpg",
   "task": "o-120f-pad-x-reload-prompt",
-  "when": "2026-10-28T05:21"
+  "when": "2026-10-28T05:32"
  },
  "p2-search-after-reload": {
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The controls list is gone, the pills are quieter and the screen is much cleaner, but the hud still sits tight to the screen edges, uses a mix of off-scale type sizes, and mixes amber, gold, lime and teal accents.",
+  "verdict": "The in-raid HUD is readable and the 25/37 ammo number leads, but none of the earlier advice was applied: the hud still has no shared margin, three competing highlights on the weapon bar, and mixed colour roles.",
   "findings": [
-   "P1 hp bar, bottom-left (x24-430, y1035-1067): Make the bar 8px thick with a --ok fill that turns --danger below 30%. Put the 'hp 100' label above it at 20px f-cond 600 in tx-1. Move it to x 96, bottom 54 (the 5% margin), with a 1px --ui-line-hi track.",
-   "P1 top-left roster panel (x8-367, y143-260) and keyboard chip (x10-105, y8-31): Move the panel to x 96, y 54 and the chip to the same margin. Set the rows at 16px, right-align the amounts, and colour 'dead' --danger. Set the header at 16px tx-2. Use a 4px radius and a 1px --ui-line-hi border on all of them.",
-   "P1 weapon bar, bottom-centre (x550-1558, y950-1062): Mark only the equipped slot, with a 2px --acc border and a --ui-raised fill, and give the rest a 1px --ui-line border. Raise the icon opacity on idle slots to about 60%. Set the numbers to 16px tx-2.",
-   "P1 colour roles: contract toast (x15-410, y776-802), extraction pill (x893-1028, y47-73), 'the forge' label, p2 tag: Keep teal only for extraction. Make the 'x' chip --acc, which means interact. Set world labels to tx-1 at 16px. Use --warn only for the contract toast bar. Give the p2 tag a 1px cyan border with tx-1 text.",
-   "P2 ammo panel, bottom-right (x1642-1910, y902-1052): Move it to right 96, bottom 54. Set 'view backpack' and '3 items $1,620' at 16px in tx-2. Make the weapon name 20px tx-1. Keep 25 at 56px f-cond 800, with 37 at 32px tx-2."
+   "P1 weapon bar, bottom-centre (x550-1558, y950-1062): Mark only the equipped slot, with a 2px --acc border and a --ui-raised fill. Give every other slot a 1px --ui-line border. Raise idle icon opacity to about 60%. Set the slot numbers to 16px tx-2.",
+   "P1 hp bar, bottom-left (x24-430, y1035-1067): Make the bar 8px thick with a --ok fill that turns --danger below 30%, on a 1px --ui-line-hi track. Put 'hp 100' above it at 20px f-cond 600 tx-1. Place the block at x 96, bottom 54.",
+   "P1 HUD margins: keyboard chip (x10-105, y8-31), roster panel (x8-367, y143-260), contracts (x1602-1900, y18-54), ammo panel (x1642-1910): Put all corner elements on the 5% margin: left 96, top 54, right 96, bottom 54. Use a 4px radius and a 1px --ui-line-hi border on every panel and chip.",
+   "P1 roster panel (x8-367, y143-260): Set the rows at 16px, right-align the amounts, and colour 'dead' --danger. Make the header 16px tx-2 and the 'you' row tx-1 at weight 700. Anchor the panel at x 96, y 54 and move the chip into the same stack.",
+   "P1 colour roles: extraction pill (x893-1028, y47-73), contract toast (x15-410, y776-802), 'the forge' label (x949-1010, y185-202), 'x search cache' chip, p2 tag (x940-980, y612-642): Keep teal only for extraction. Make world labels tx-1 at 16px f-cond 600. Use --warn only for the contract toast bar. Give the p2 tag a 1px cyan border with tx-1 text. Set 'chill row' in 16px f-cond with +.04em tracking."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-120f-pad-x-reload-prompt-recipes-2/xreload-p2-search-after-reload-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-120f-pad-x-reload-prompt-recipes-3/xreload-p2-search-after-reload-1080.jpg",
   "task": "o-120f-pad-x-reload-prompt",
-  "when": "2026-10-28T05:21"
+  "when": "2026-10-28T05:32"
  }
 }

@@ -16,3 +16,6 @@
 2026-10-28 00:53 week=9.0% 5h=39.0% week_resets=2026-11-03 16:21 job=o-120f-pad-x-reload-prompt
 2026-10-28 01:19 week=10.0% 5h=41.0% week_resets=2026-11-03 16:21 job=o-120f-pad-x-reload-prompt
 2026-10-28 01:25 week=10.0% 5h=44.0% week_resets=2026-11-03 16:21 job=o-120f-pad-x-reload-prompt
+2026-10-28 01:34 week=11.0% 5h=46.0% week_resets=2026-11-03 16:21 job=o-120f-pad-x-reload-prompt
+2026-10-28 01:40 week=11.0% 5h=50.0% week_resets=2026-11-03 16:21 job=o-120g-partner-ship-stays
+2026-10-28 01:41 week=11.0% 5h=51.0% week_resets=2026-11-03 16:21 job=o-120g-partner-ship-stays

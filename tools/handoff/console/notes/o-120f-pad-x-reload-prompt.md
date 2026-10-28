@@ -38,3 +38,17 @@ New check captures actual fillText font/transforms and real HUD prompt positions
 
 Round 3 recipes retain the real held-X search proof and now report the actual drawn prompt anchor. The clear map position also avoids forge/seal labels. Broader P1 findings for health, roster, contracts, hotbar and ammo remain handed to their owners, as in the last alarm. The p2 focus marker remains correct under his ruling. Lane: ship the follow-up, photograph and critic-review the four scenes, and return the ON HIS PC line. Please include 4k images as requested; neither earlier round included them.
 
+
+--- codex run 2026-10-28 01:34 ---
+2026-10-28, final evidence on v35.57. Both keys shipped: cw-cx-xreloadsearch in v35.56 (4eb189e40) and cw-cx-xpromptread in v35.57 (b235969ca). DESIGN.md records both regression checks passing, with each failing on its previous build, and contains the playtest watch lines. The full ship gates therefore also retained the required seed 4242 fingerprint.
+
+ON HIS PC v35.57 confirmed from the real repo tools/handoff/console/onhispc.txt line 26: 10-28 01:30 v35.57 cw-cx-xpromptread on his pc after 65s (8802 serves 35.57). I read the recorded confirmation only; I did not access his play port. The earlier v35.56 sync timed out while 35.55 was still served, but the later installed v35.57 contains both fixes.
+
+Inspected all four round 3 pictures. Host/p1 uses pad slot 1; p2 uses slot 0. Both show the raised [x] reload label with 2 rounds and [x] search cache with 25 rounds after a real uninterrupted X hold completes its reload and begins searching. The actual prompt anchor is x991/y503 in all four. The prompt clears the head and reticle. Its label/keycap match between reload and search. The regression check also measures pad font and lift in both roles at 1080p and 4k and preserves keyboard geometry.
+
+Round 3 critic scores remain 3 on every full-raid picture. The reload prompt itself is now P2 only for p1 and has no prompt-specific P0/P1 in the p2 review (the critic says it reads clearly). Remaining P1 findings concern hotbar selection, hp, panel margins, roster, contracts and ammo. They are explicitly owned by 186f-hud-panel-consistency: commit 896a21ba4 assigned the o-120f findings to that job. This task completes its shipped X-action fix without claiming that the whole raid reached 4. Do not change owner-ordered lower-case pillager-bot wording, keyboard-focus marker, party colours or contract callout to satisfy contradictory critic suggestions.
+
+Two best evidence sets: round 2 (v35.56, score 3, small prompt) and round 3 (v35.57, score 3, readable raised prompt). Keep round 3 as the selected version. Their directories are tools/handoff/console/notes/shots/o-120f-pad-x-reload-prompt-recipes-2/ and tools/handoff/console/notes/shots/o-120f-pad-x-reload-prompt-recipes-3/. The final files are xreload-p1-reload-1080.jpg, xreload-p1-search-after-reload-1080.jpg, xreload-p2-reload-1080.jpg and xreload-p2-search-after-reload-1080.jpg. No more input or prompt code remains to ship.
+
+Camera limitation: the lane returned only 1080p images in all three rounds despite the 4k request; I cannot run the camera from this sandbox. The shipped regression check did test the actual font/geometry at 3840x2160, but a 4k visual inspection remains a coordinator camera follow-up. DOM lint was zero; its report explicitly excludes canvas HUD text, which was reviewed from pictures and tested by canvas capture instead.
+
